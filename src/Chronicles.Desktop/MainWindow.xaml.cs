@@ -315,6 +315,23 @@ public partial class MainWindow : Window, IDisposable
         CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
         CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
         CultivationStateText.Text = FormatCultivationState(agent.CultivationState, agent.BottleneckCause);
+        var cultivation = agent.Cultivation;
+        CultivationAuthorityText.Text =
+            $"선천 수행자질 종합 {cultivation.InnateAptitudeCompositeHundredths / 100m:0.00} · 50.00 기준 수행 {cultivation.BaselineCultivationYears:N2}년 · 직전 Work {KoreanNumberFormatter.Format(cultivation.WorkBefore)} + {KoreanNumberFormatter.Format(cultivation.LastGain)} = {KoreanNumberFormatter.Format(cultivation.WorkAfter)} · 이월 {KoreanNumberFormatter.Format(cultivation.PendingCarryoverWork)}";
+        var gateText = cultivation.EntryGates.Count == 0
+            ? "입문 Gate 해당 없음"
+            : string.Join(
+                " · ",
+                cultivation.EntryGates.Select(gate =>
+                    $"G{gate.GateNumber} {(gate.Passed ? "통과" : "대기")} {gate.GateScoreHundredths / 100m:0.00}"));
+        var componentText = cultivation.Components.Count == 0
+            ? "경지 구성요소 준비 전"
+            : string.Join(
+                " · ",
+                cultivation.Components.Select(component =>
+                    $"{component.KoreanName} {component.ValueHundredths / 100m:0.00}/{component.LimitHundredths / 100m:0.00}"));
+        CultivationComponentText.Text =
+            $"{gateText} · 축기 경로 {FormatFoundationRoute(cultivation.FoundationRoute)} · {componentText}";
         RootText.Text = QualityRules.Format(agent.Aptitudes.SpiritualRoot);
         BoneText.Text = QualityRules.Format(agent.Aptitudes.Bone);
         ConstitutionText.Text = QualityRules.Format(agent.Aptitudes.Constitution);
@@ -325,6 +342,13 @@ public partial class MainWindow : Window, IDisposable
         SpellText.Text = $"{QualityRules.Format(agent.SpellQuality)} · 숙련 {agent.SpellMastery / 100m:0.00} · 이해 {agent.SpellUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.SpellTrainingExperience)}";
         HealthText.Text = $"{KoreanNumberFormatter.Format(Math.Max(0, agent.Health))} / {KoreanNumberFormatter.Format(agent.MaximumHealth)}";
         QiText.Text = $"{KoreanNumberFormatter.Format(agent.Qi)} / {KoreanNumberFormatter.Format(agent.MaximumQi)}";
+        var combat = agent.CombatAttributes;
+        CombatAttributeText.Text =
+            $"공격 {KoreanNumberFormatter.Format(combat.Attack)} · 방어 {KoreanNumberFormatter.Format(combat.Defense)} · 공격속도 {combat.AttackSpeedBasisPoints / 100m:0.00}% · 방어속도 {combat.DefenseSpeedBasisPoints / 100m:0.00}%\n" +
+            $"관통 {KoreanNumberFormatter.Format(combat.Penetration)} · 관통방어 {KoreanNumberFormatter.Format(combat.PenetrationDefense)} · 치명타 확률 {combat.CriticalChanceBasisPoints / 100m:0.00}% · 치명타 위력 {combat.CriticalPowerBasisPoints / 100m:0.00}% · 치명타 방어 {combat.CriticalDefenseBasisPoints / 100m:0.00}% · 회피 {combat.EvasionBasisPoints / 100m:0.00}%\n" +
+            $"판단력 {KoreanNumberFormatter.Format(combat.Judgment)} · 집중력 {KoreanNumberFormatter.Format(combat.Focus)} · 법술 효율 {combat.SpellEfficiencyBasisPoints / 100m:0.00}% · 수행 효율 {combat.CultivationEfficiencyBasisPoints / 100m:0.00}%";
+        InjuryText.Text =
+            $"부상 {FormatInjurySeverity(agent.InjurySeverity)} · 누적 {agent.InjuryPoints / 100m:0.00}% · 중상부터 전투 사망 확률 발생";
         var battles = agent.Wins + agent.Losses;
         var winRate = battles == 0 ? 0m : agent.Wins * 100m / battles;
         RecordText.Text = $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · 승률 {winRate:0.##}% · 경험 {KoreanNumberFormatter.Format(agent.CombatExperience)}";
@@ -645,6 +669,15 @@ public partial class MainWindow : Window, IDisposable
         CultivationBottleneckCause.RealmComponent => "경지 구성요소",
         CultivationBottleneckCause.Method => "돌파 공법 지식·숙련",
         _ => "미확인",
+    };
+
+    private static string FormatFoundationRoute(FoundationRoute route) => route switch
+    {
+        FoundationRoute.None => "미정",
+        FoundationRoute.Human => "인도축기",
+        FoundationRoute.Earth => "지도축기",
+        FoundationRoute.Heaven => "천도축기",
+        _ => route.ToString(),
     };
 
     private string GetAgentName(AgentId agentId) =>

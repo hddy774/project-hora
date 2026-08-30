@@ -265,7 +265,10 @@ public partial class MainWindow : Window, IDisposable
         SelectedNameText.Text = agent.Name;
         SelectedIdText.Text = $"{agent.Id} · 최종 목표 #{agent.TargetRank}";
         SelectedRankText.Text = $"전투력 #{agent.Rank:N0} · 경지 #{agent.RealmRank:N0} · 자질 #{agent.AptitudeRank:N0}";
-        RealmText.Text = FormatRealm(agent.RealmStage, agent.RealmLayer);
+        RealmText.Text = FormatRealm(
+            agent.RealmStage,
+            agent.RealmLayer,
+            agent.Cultivation.GreatPerfectionAchieved);
         AgeText.Text = $"{KoreanNumberFormatter.Format(agent.AgeYears)} / {KoreanNumberFormatter.Format(agent.MaximumLifespanYears)}세";
         LifeText.Text = $"제 {agent.LifeNumber:N0}생";
         ActivityText.Text = FormatActivity(agent.Activity);
@@ -341,7 +344,7 @@ public partial class MainWindow : Window, IDisposable
         entry.Rank,
         entry.AgentId,
         entry.Name,
-        FormatRealm(entry.RealmStage, entry.RealmLayer),
+        FormatRealm(entry.RealmStage, entry.RealmLayer, entry.GreatPerfectionAchieved),
         entry.Category switch
         {
             RankingCategory.CombatPower => KoreanNumberFormatter.Format(entry.CombatPower.Total),
@@ -355,7 +358,10 @@ public partial class MainWindow : Window, IDisposable
         agent.Rank,
         agent.Id,
         agent.Name,
-        FormatRealm(agent.RealmStage, agent.RealmLayer),
+        FormatRealm(
+            agent.RealmStage,
+            agent.RealmLayer,
+            agent.Cultivation.GreatPerfectionAchieved),
         KoreanNumberFormatter.Format(agent.CombatPower.Total),
         FormatActivity(agent.Activity));
 
@@ -375,7 +381,7 @@ public partial class MainWindow : Window, IDisposable
             WorldEventKind.TechniqueEnlightenment => $"{primary}, 공법 깨달음 · 이해도 {worldEvent.Value / 100m:0.00}",
             WorldEventKind.SpellEnlightenment => $"{primary}, 법술 깨달음 · 이해도 {worldEvent.Value / 100m:0.00}",
             WorldEventKind.CultivationEntered => $"{primary}, 입문 3 Gate를 통과해 연기경에 입문",
-            WorldEventKind.GreatPerfectionAchieved => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 대원만 완성",
+            WorldEventKind.GreatPerfectionAchieved => $"{primary}, {FormatEncodedRealm(worldEvent.Value, greatPerfection: true)} 완성",
             WorldEventKind.Death => $"{primary}, {worldEvent.Value:N0}세에 수명을 다함",
             WorldEventKind.ReincarnationEntered => $"{primary}, 윤회의 강에 들어감",
             WorldEventKind.Rebirth => $"{primary}, 제 {worldEvent.Value:N0}생으로 환생",
@@ -430,7 +436,7 @@ public partial class MainWindow : Window, IDisposable
             ChronicleEventKind.TechniqueAcquired => $"새 공법 획득 · {FormatQuality(entry.Value)}",
             ChronicleEventKind.SpellAcquired => $"새 법술 획득 · {FormatQuality(entry.Value)}",
             ChronicleEventKind.CultivationEntered => "입문 3 Gate를 통과해 연기경에 입문",
-            ChronicleEventKind.GreatPerfectionAchieved => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage)} 대원만 완성",
+            ChronicleEventKind.GreatPerfectionAchieved => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage, greatPerfection: true)} 완성",
             ChronicleEventKind.FortuitousEncounter => "인생을 바꾸는 기연을 만남",
             ChronicleEventKind.Death => $"{entry.Value:N0}세에 수명을 다함",
             ChronicleEventKind.ReincarnationEntered => "육신을 떠나 윤회의 강에 들어감",
@@ -593,19 +599,31 @@ public partial class MainWindow : Window, IDisposable
     private static string GetAgentName(WorldSnapshot snapshot, AgentId agentId) =>
         snapshot.AgentNames.TryGetValue(agentId.Value, out var name) ? name : agentId.ToString();
 
-    private static string FormatEncodedRealm(long encodedRealm)
+    private static string FormatEncodedRealm(long encodedRealm, bool greatPerfection = false)
     {
         var stage = (RealmStage)(encodedRealm / 10);
         var layer = checked((int)(encodedRealm % 10));
-        return FormatRealm(stage, layer);
+        return FormatRealm(stage, layer, greatPerfection);
     }
 
     private static string FormatQuality(long hundredths) =>
         QualityRules.Format(new QualityValue(checked((ushort)hundredths)));
 
-    private static string FormatRealm(RealmStage stage, int layer)
+    private static string FormatRealm(
+        RealmStage stage,
+        int layer,
+        bool greatPerfection = false)
     {
-        return $"{FormatRealmStage(stage)} {layer.ToString(CultureInfo.InvariantCulture)}층";
+        var boundedLayer = Math.Clamp(layer, 1, RealmRules.MinorStageCount);
+        var minorStage = greatPerfection && boundedLayer == RealmRules.MinorStageCount
+            ? "대원만"
+            : boundedLayer switch
+            {
+                <= 3 => "초기",
+                <= 6 => "중기",
+                _ => "후기",
+            };
+        return $"{FormatRealmStage(stage)} · {minorStage} · {boundedLayer.ToString(CultureInfo.InvariantCulture)}층";
     }
 
     private static string FormatRealmStage(RealmStage stage) => stage switch

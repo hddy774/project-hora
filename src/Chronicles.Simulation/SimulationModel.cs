@@ -276,6 +276,7 @@ public sealed record RankingEntry(
     string Name,
     RealmStage RealmStage,
     int RealmLayer,
+    bool GreatPerfectionAchieved,
     AgentActivity Activity,
     CombatPowerBreakdown CombatPower,
     int AptitudeScore,

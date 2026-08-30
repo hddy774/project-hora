@@ -284,6 +284,7 @@ public sealed partial class World
                 _agents.Names[agentIndex],
                 _agents.RealmStages[agentIndex],
                 _agents.RealmLayers[agentIndex],
+                _agents.GreatPerfectionAchieved[agentIndex],
                 _agents.Activities[agentIndex],
                 _agents.Power[agentIndex],
                 aptitudeScore,

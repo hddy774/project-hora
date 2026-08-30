@@ -6,9 +6,22 @@ public enum RealmStage : byte
 {
     QiRefining,
     FoundationEstablishment,
-    CoreFormation,
+    GoldenCore,
     NascentSoul,
     SpiritTransformation,
+    VoidRefinement,
+    BodyIntegration,
+    TribulationCrossing,
+    Mahayana,
+    HalfImmortal,
+}
+
+public enum MinorStage : byte
+{
+    Early = 1,
+    Middle,
+    Late,
+    GreatCompletion,
 }
 
 public enum AgentActivity : byte
@@ -124,7 +137,7 @@ public static class CombatPowerFormula
         int spellMastery,
         int combatExperience)
     {
-        if (realmLayer is < 1 or > 9)
+        if (realmLayer is < 1 or > RealmRules.MinorStageCount)
         {
             throw new ArgumentOutOfRangeException(nameof(realmLayer));
         }

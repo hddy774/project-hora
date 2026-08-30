@@ -145,7 +145,7 @@ public sealed partial class World
         {
             var agent = checkpoint.Agents[index];
             if (string.IsNullOrWhiteSpace(agent.Name)
-                || agent.RealmLayer is < 1 or > 9
+                || agent.RealmLayer is < 1 or > RealmRules.MinorStageCount
                 || agent.TargetRank != 1
                 || agent.NextDecisionTick <= checkpoint.Tick
                 || agent.Opponent < -1

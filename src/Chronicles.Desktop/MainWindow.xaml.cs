@@ -104,7 +104,7 @@ public partial class MainWindow : Window, IDisposable
         _applyingObservation = true;
         var snapshot = observation.World;
         _latestSnapshot = snapshot;
-        WorldTickText.Text = $"{snapshot.Tick.Value:N0} tick";
+        WorldTickText.Text = $"{GameCalendar.GetYear(snapshot.Tick):N0}년";
         PopulationText.Text = snapshot.Population.ToString("N0", CultureInfo.CurrentCulture);
         ActiveCombatText.Text = snapshot.ActiveCombats.ToString("N0", CultureInfo.CurrentCulture);
         CompletedCombatText.Text = snapshot.TotalCombatsCompleted.ToString("N0", CultureInfo.CurrentCulture);
@@ -112,7 +112,7 @@ public partial class MainWindow : Window, IDisposable
         BreakthroughText.Text = snapshot.TotalBreakthroughs.ToString("N0", CultureInfo.CurrentCulture);
         StatusText.Text = _runner?.IsPaused == true
             ? $"일시정지 · {_speed}× · seed {DefaultWorldSeed}"
-            : $"실시간 진행 · {_speed}× · seed {DefaultWorldSeed}";
+            : $"실시간 진행 · {_speed}× · 게임 1년당 현실 {GameCalendar.GetRealSecondsPerGameYear(_speed):0.###}초";
         StatusText.Foreground = (Brush)FindResource("SecondaryTextBrush");
 
         try
@@ -267,12 +267,30 @@ public partial class MainWindow : Window, IDisposable
         {
             RealmStage.QiRefining => "연기",
             RealmStage.FoundationEstablishment => "축기",
-            RealmStage.CoreFormation => "결단",
-            RealmStage.NascentSoul => "원영",
-            RealmStage.SpiritTransformation => "화신",
+            RealmStage.GoldenCore => "금단경",
+            RealmStage.NascentSoul => "원영경",
+            RealmStage.SpiritTransformation => "화신경",
+            RealmStage.VoidRefinement => "연허경",
+            RealmStage.BodyIntegration => "합체경",
+            RealmStage.TribulationCrossing => "도겁경",
+            RealmStage.Mahayana => "대승경",
+            RealmStage.HalfImmortal => "반선경",
             _ => stage.ToString(),
         };
-        return $"{name} {layer}층";
+        if (stage is RealmStage.QiRefining or RealmStage.FoundationEstablishment)
+        {
+            name += "경";
+        }
+
+        var minorStage = (MinorStage)layer switch
+        {
+            MinorStage.Early => "초기",
+            MinorStage.Middle => "중기",
+            MinorStage.Late => "후기",
+            MinorStage.GreatCompletion => "대원만",
+            _ => layer.ToString(CultureInfo.InvariantCulture),
+        };
+        return $"{name} {minorStage}";
     }
 
     private static string FormatActivity(AgentActivity activity) => activity switch
@@ -394,9 +412,13 @@ public partial class MainWindow : Window, IDisposable
 
     private void Speed1Button_Click(object sender, RoutedEventArgs e) => SetSpeed(1);
 
-    private void Speed4Button_Click(object sender, RoutedEventArgs e) => SetSpeed(4);
+    private void Speed10Button_Click(object sender, RoutedEventArgs e) => SetSpeed(10);
 
-    private void Speed16Button_Click(object sender, RoutedEventArgs e) => SetSpeed(16);
+    private void Speed25Button_Click(object sender, RoutedEventArgs e) => SetSpeed(25);
+
+    private void Speed50Button_Click(object sender, RoutedEventArgs e) => SetSpeed(50);
+
+    private void Speed100Button_Click(object sender, RoutedEventArgs e) => SetSpeed(100);
 
     private void SetSpeed(int speed)
     {

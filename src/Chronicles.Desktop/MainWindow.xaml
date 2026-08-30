@@ -42,7 +42,7 @@
                            VerticalAlignment="Center"
                            Foreground="{StaticResource SecondaryTextBrush}" />
                 <TextBlock x:Name="WorldTickText"
-                           Width="100"
+                           Width="150"
                            VerticalAlignment="Center"
                            Foreground="{StaticResource AccentBrush}"
                            FontSize="18"
@@ -51,8 +51,10 @@
                 <Button Margin="0,0,5,0" Click="SaveButton_Click">저장</Button>
                 <Button Margin="0,0,12,0" Click="LoadButton_Click">불러오기</Button>
                 <Button Margin="0,0,5,0" Click="Speed1Button_Click">1×</Button>
-                <Button Margin="0,0,5,0" Click="Speed4Button_Click">4×</Button>
-                <Button Click="Speed16Button_Click">16×</Button>
+                <Button Margin="0,0,5,0" Click="Speed10Button_Click">10×</Button>
+                <Button Margin="0,0,5,0" Click="Speed25Button_Click">25×</Button>
+                <Button Margin="0,0,5,0" Click="Speed50Button_Click">50×</Button>
+                <Button Click="Speed100Button_Click">100×</Button>
             </StackPanel>
         </Grid>
 

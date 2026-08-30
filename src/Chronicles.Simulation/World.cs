@@ -249,10 +249,21 @@ public sealed partial class World
 
     private void ResolveCultivation(int index)
     {
-        var gain = 80
-            + (_agents.SpiritualRoots[index] * 3)
-            + (_agents.Comprehensions[index] * 2)
-            + (_agents.TechniqueGrades[index] * 20);
+        if (RealmRules.IsFinalStage(_agents.RealmStages[index], _agents.RealmLayers[index]))
+        {
+            _agents.CultivationProgress[index] = GetCultivationRequirement(index);
+            return;
+        }
+
+        var rateBasisPoints = Math.Clamp(
+            10_000
+            + ((_agents.SpiritualRoots[index] - 50) * 40)
+            + ((_agents.Comprehensions[index] - 50) * 40)
+            + ((_agents.TechniqueGrades[index] - 1) * 300),
+            3_000,
+            18_000);
+        var actionTicks = CalculateActivityDuration(index);
+        var gain = Math.Max(1, checked((int)(actionTicks * rateBasisPoints / 10_000)));
         _agents.CultivationProgress[index] = checked(_agents.CultivationProgress[index] + gain);
 
         var requirement = GetCultivationRequirement(index);
@@ -367,19 +378,18 @@ public sealed partial class World
 
     private int GetCultivationRequirement(int index)
     {
-        var stage = (int)_agents.RealmStages[index] + 1;
-        return checked(2_000 + (stage * stage * 1_000) + (_agents.RealmLayers[index] * stage * 500));
+        return RealmRules.GetMinorStageRequiredWork(_agents.RealmStages[index]);
     }
 
     private void AdvanceRealm(int index)
     {
-        if (_agents.RealmLayers[index] < 9)
+        if (_agents.RealmLayers[index] < RealmRules.MinorStageCount)
         {
             _agents.RealmLayers[index]++;
             return;
         }
 
-        if (_agents.RealmStages[index] < RealmStage.SpiritTransformation)
+        if (_agents.RealmStages[index] < RealmStage.HalfImmortal)
         {
             _agents.RealmStages[index]++;
             _agents.RealmLayers[index] = 1;

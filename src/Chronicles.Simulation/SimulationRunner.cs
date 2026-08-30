@@ -44,9 +44,9 @@ public sealed class SimulationRunner : IDisposable
 
     public void SetSpeed(int speed)
     {
-        if (speed is not (1 or 4 or 16))
+        if (speed is not (1 or 10 or 25 or 50 or 100))
         {
-            throw new ArgumentOutOfRangeException(nameof(speed), "배속은 1, 4, 16 중 하나여야 합니다.");
+            throw new ArgumentOutOfRangeException(nameof(speed), "배속은 1, 10, 25, 50, 100 중 하나여야 합니다.");
         }
 
         Volatile.Write(ref _speed, speed);

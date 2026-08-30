@@ -6,6 +6,7 @@ using System.Diagnostics;
 var tests = new (string Name, Action Body)[]
 {
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
+    ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("동일 seed 결정론", DeterministicWorld),
     ("이벤트 기반 성장", EventDrivenGrowth),
@@ -45,6 +46,36 @@ static void DefaultPopulationAndGoal()
     }
 }
 
+static void GameTimeAndRealmRules()
+{
+    Equal(2_000L, GameCalendar.TicksPerYear, "1게임년 tick 수");
+    Equal(10L, GameCalendar.GetYear(new SimulationTick(20_000)), "tick의 게임년 변환");
+    Equal(1d, GameCalendar.GetRealSecondsPerGameYear(10), "10배속 게임년 현실 초");
+
+    var expectedLifespans = new long[]
+    {
+        150, 300, 600, 1_200, 3_000, 9_000, 20_000, 100_000, 100_000, 1_000_000,
+    };
+    Equal(expectedLifespans.Length, RealmRules.All.Count, "10대경지 수");
+    for (var index = 0; index < expectedLifespans.Length; index++)
+    {
+        Equal(expectedLifespans[index], RealmRules.GetProfile((RealmStage)index).MaximumLifespanYears, "경지별 수명");
+        Equal(
+            expectedLifespans[index] / 3m,
+            RealmRules.GetProfile((RealmStage)index).TargetCultivationYears,
+            "기준 수행 기간은 수명의 3분의 1");
+    }
+
+    using var runner = new SimulationRunner(World.Create(1, 10));
+    foreach (var speed in new[] { 1, 10, 25, 50, 100 })
+    {
+        runner.SetSpeed(speed);
+        Equal(speed, runner.Speed, "지원 배속");
+    }
+
+    Throws<ArgumentOutOfRangeException>(() => runner.SetSpeed(4), "미지원 배속");
+}
+
 static void CombatPowerAndRanking()
 {
     var world = World.CreateDefault(77);
@@ -80,10 +111,10 @@ static void EventDrivenGrowth()
 {
     var world = World.CreateDefault(11);
     var before = world.ComputeStateHash();
-    world.AdvanceTo(new SimulationTick(1_000));
+    world.AdvanceTo(new SimulationTick(60_000));
     True(before != world.ComputeStateHash(), "시간 진행 후 상태가 바뀌어야 합니다.");
     True(world.TotalBreakthroughs > 0, "10,000명 세계에서 돌파가 발생해야 합니다.");
-    Equal(1_000L, world.Tick.Value, "도달 tick");
+    Equal(60_000L, world.Tick.Value, "도달 tick");
 }
 
 static void ActiveRankingCompetition()

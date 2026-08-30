@@ -456,6 +456,8 @@ static void ObservationQueriesAreReadOnly()
     var nameSearch = world.SearchAgents(leader.Name[..1], 25);
     var firstPage = world.BrowseAgents(0, 500);
     var finalPage = world.BrowseAgents(9_500, 500);
+    var personalLog = world.GetAgentPersonalLog(leader.Id);
+    var chronicle = world.GetAgentChronicle(leader.Id);
     var snapshot = world.CreateSnapshot(150, 150);
 
     Equal(1, exactSearch.Count, "정확한 Agent ID 검색 결과");
@@ -466,6 +468,8 @@ static void ObservationQueriesAreReadOnly()
     Equal(150, snapshot.CombatPowerRankings.Count, "전투력 랭킹 조회 크기");
     Equal(150, snapshot.RealmRankings.Count, "경지 랭킹 조회 크기");
     Equal(150, snapshot.AptitudeRankings.Count, "자질 랭킹 조회 크기");
+    True(personalLog.Count <= World.PersonalLogCapacity, "개인 로그 조회 크기");
+    True(chronicle.Count > 0, "영구 연대기 조회");
     Equal(before, world.ComputeStateHash(), "관찰 조회는 세계 상태를 바꾸면 안 됩니다.");
 }
 

@@ -225,15 +225,21 @@ public sealed partial class World
         if (technique)
         {
             _agents.TechniqueQualities[index] = improved.Hundredths;
-            _agents.TechniqueMasteries[index] = 200;
-            AddChronicle(index, ChronicleEventKind.TechniqueEnlightenment, improved.Hundredths);
+            _agents.TechniqueMasteries[index] = 0;
+            _agents.TechniqueTrainingExperience[index] = 0;
+            _agents.TechniqueUnderstanding[index] = 0;
+            AddChronicle(index, ChronicleEventKind.TechniqueAcquired, improved.Hundredths);
+            AddEvent(WorldEventKind.TechniqueAcquired, index, improved.Hundredths);
             AddEvent(WorldEventKind.TechniqueBookPurchased, index, improved.Hundredths);
         }
         else
         {
             _agents.SpellQualities[index] = improved.Hundredths;
-            _agents.SpellMasteries[index] = 200;
-            AddChronicle(index, ChronicleEventKind.SpellEnlightenment, improved.Hundredths);
+            _agents.SpellMasteries[index] = 0;
+            _agents.SpellTrainingExperience[index] = 0;
+            _agents.SpellUnderstanding[index] = 0;
+            AddChronicle(index, ChronicleEventKind.SpellAcquired, improved.Hundredths);
+            AddEvent(WorldEventKind.SpellAcquired, index, improved.Hundredths);
             AddEvent(WorldEventKind.SpellBookPurchased, index, improved.Hundredths);
         }
 

@@ -10,8 +10,10 @@ public static class CombatPowerFormula
         Aptitudes aptitudes,
         QualityValue techniqueQuality,
         int techniqueMastery,
+        int techniqueUnderstanding,
         QualityValue spellQuality,
         int spellMastery,
+        int spellUnderstanding,
         int combatExperience,
         long treasurePower)
     {
@@ -30,9 +32,11 @@ public static class CombatPowerFormula
             + (QualityRules.GetEffectiveHundredths(aptitudes.Mind) * 10)
             + (QualityRules.GetEffectiveHundredths(aptitudes.Soul) * 8)) / 100);
         var techniqueEffect = QualityRules.GetEffectiveHundredths(techniqueQuality);
-        var technique = checked(techniqueEffect * (750L + (techniqueMastery * 3L)) / 100);
+        var technique = checked(
+            techniqueEffect * (10_000L + (techniqueMastery * 2L) + (techniqueUnderstanding * 3L)) / 1_000);
         var spellEffect = QualityRules.GetEffectiveHundredths(spellQuality);
-        var spell = checked(spellEffect * (600L + (spellMastery * 2L)) / 100);
+        var spell = checked(
+            spellEffect * (10_000L + (spellMastery * 2L) + (spellUnderstanding * 3L)) / 1_200);
         var experience = Math.Min(40_000L, IntegerSquareRoot(Math.Max(0, combatExperience)) * 80L);
         return new CombatPowerBreakdown(realm, aptitude, technique, spell, experience, treasurePower);
     }

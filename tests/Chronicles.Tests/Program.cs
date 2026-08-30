@@ -13,6 +13,7 @@ var tests = new (string Name, Action Body)[]
     ("소경지·대경지 돌파 영구 연대기", CultivationBreakthroughChronicle),
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
     ("8단계 품질 경계와 격차 배율", QualityTiersAndBoundaryMultipliers),
+    ("공법·법술 경험·숙련·이해·품질 불변", SkillMasteryUnderstandingAndImmutableQuality),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
@@ -249,7 +250,7 @@ static void CultivationBreakthroughChronicle()
         CultivationProgress = RealmRules.GetMinorStageRequiredWork(RealmStage.QiRefining, 9),
         CultivationState = CultivationState.PreflightReady,
         CultivationBottleneckCause = CultivationBottleneckCause.None,
-        TechniqueMastery = 500,
+        TechniqueMastery = 5_000,
         Health = majorCheckpoint.Agents[0].MaximumHealth,
         Qi = majorCheckpoint.Agents[0].MaximumQi,
         Activity = AgentActivity.Cultivating,
@@ -433,6 +434,48 @@ static void QualityTiersAndBoundaryMultipliers()
     BoundaryRatio(7_999, 8_000, 2m, "상품→극상품");
     BoundaryRatio(8_999, 9_000, 4m, "극상품→천품");
     BoundaryRatio(9_999, 10_000, 10m, "천품→무결품");
+}
+
+static void SkillMasteryUnderstandingAndImmutableQuality()
+{
+    Equal(100L, SkillProgressionRules.GetRequiredExperience(10), "숙련 0.10 요구 경험");
+    Equal(10_000L, SkillProgressionRules.GetRequiredExperience(100), "숙련 1.00 요구 경험");
+    Equal(100_000_000L, SkillProgressionRules.GetRequiredExperience(10_000), "숙련 100.00 요구 경험");
+    Equal((ushort)100, SkillProgressionRules.GetMasteryHundredths(10_000), "경험→숙련 제곱근 곡선");
+    True(
+        SkillProgressionRules.GetRequiredExperience(9_001) - SkillProgressionRules.GetRequiredExperience(9_000)
+            > SkillProgressionRules.GetRequiredExperience(1_001) - SkillProgressionRules.GetRequiredExperience(1_000),
+        "고숙련 구간의 다음 0.01 요구 경험이 더 커야 합니다.");
+
+    var original = World.Create(991122, 500);
+    var checkpoint = original.CreateCheckpoint();
+    var originalQualities = checkpoint.Agents.Select(agent => agent.TechniqueQuality).ToArray();
+    var prepared = checkpoint.Agents.Select(agent => agent with
+    {
+        Comprehension = 10_000,
+        TechniqueMastery = 0,
+        Activity = AgentActivity.TrainingTechnique,
+        NextDecisionTick = 1,
+        SkillProgress = new SkillProgressCheckpoint(0, 0, 0, 0),
+    }).ToArray();
+    var world = World.Restore(checkpoint with { Agents = prepared });
+    world.AdvanceTo(new SimulationTick(1));
+    var enlightenmentCount = 0;
+    for (var index = 0; index < world.Population; index++)
+    {
+        var agent = world.GetAgentSnapshot(new AgentId(index));
+        Equal(originalQualities[index], agent.TechniqueQuality.Hundredths, "수련·깨달음은 공법 품질 불변");
+        True(agent.TechniqueTrainingExperience > 0, "공법 수련 경험 누적");
+        True(agent.TechniqueMastery > 0, "누적 경험으로 숙련도 상승");
+        if (world.GetAgentChronicle(new AgentId(index))
+            .Any(item => item.Kind == ChronicleEventKind.TechniqueEnlightenment))
+        {
+            enlightenmentCount++;
+            True(agent.TechniqueUnderstanding > 0, "깨달음은 이해도만 상승");
+        }
+    }
+
+    True(enlightenmentCount > 0, "다수 수련자 중 공법 깨달음이 발생해야 합니다.");
 }
 
 static void BoundaryRatio(int lowerHundredths, int upperHundredths, decimal expected, string message)

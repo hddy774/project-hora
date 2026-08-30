@@ -390,7 +390,7 @@ public sealed partial class World
             }
 
             if (_agents.RealmStages[index] == RealmStage.QiRefining
-                && _agents.TechniqueMasteries[index] < 250)
+                && _agents.TechniqueMasteries[index] < 2_500)
             {
                 return CultivationBottleneckCause.Method;
             }

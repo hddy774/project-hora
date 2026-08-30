@@ -86,7 +86,7 @@ public static class CultivationRules
         new("cultivation.floor_weights", FormulaRevision, "80/90/100/105/110/115/125/135/140", "9층 합계 1,000 임시 성장 곡선", true),
         new("cultivation.aptitude_composite", FormulaRevision, "6대 선천 자질 산술평균", "50.00 기준 수행 기간 보존", true),
         new("cultivation.component_thresholds", FormulaRevision, "3→4 40.00, 6→7 60.00, 대원만 75.00", "Typed Component Gate 임시값", true),
-        new("cultivation.method_mastery", FormulaRevision, "삼도축기요결 250", "연기→축기 Method Preflight 임시값", true),
+        new("cultivation.method_mastery", FormulaRevision, "삼도축기요결 숙련도 25.00", "연기→축기 Method Preflight 임시값", true),
         new("cultivation.stabilization", FormulaRevision, "대경지 성공 후 1회 평가", "고정 연수 없이 최소 1회 commit", true),
     ];
 

@@ -48,8 +48,12 @@ internal sealed class AgentStore
         CultivationTraces = new CultivationTraceState[count];
         TechniqueQualities = new ushort[count];
         TechniqueMasteries = new ushort[count];
+        TechniqueTrainingExperience = new long[count];
+        TechniqueUnderstanding = new ushort[count];
         SpellQualities = new ushort[count];
         SpellMasteries = new ushort[count];
+        SpellTrainingExperience = new long[count];
+        SpellUnderstanding = new ushort[count];
         CombatExperience = new int[count];
         Wins = new int[count];
         Losses = new int[count];
@@ -121,8 +125,12 @@ internal sealed class AgentStore
     public CultivationTraceState[] CultivationTraces { get; }
     public ushort[] TechniqueQualities { get; }
     public ushort[] TechniqueMasteries { get; }
+    public long[] TechniqueTrainingExperience { get; }
+    public ushort[] TechniqueUnderstanding { get; }
     public ushort[] SpellQualities { get; }
     public ushort[] SpellMasteries { get; }
+    public long[] SpellTrainingExperience { get; }
+    public ushort[] SpellUnderstanding { get; }
     public int[] CombatExperience { get; }
     public int[] Wins { get; }
     public int[] Losses { get; }
@@ -183,8 +191,10 @@ internal sealed class AgentStore
             GetAptitudes(index),
             new QualityValue(TechniqueQualities[index]),
             TechniqueMasteries[index],
+            TechniqueUnderstanding[index],
             new QualityValue(SpellQualities[index]),
             SpellMasteries[index],
+            SpellUnderstanding[index],
             CombatExperience[index],
             GetTreasurePower(index));
     }
@@ -225,9 +235,13 @@ internal sealed class AgentStore
             index * CultivationRules.FormationSlotCount,
             CultivationRules.FormationSlotCount);
         TechniqueQualities[index] = CreateQuality(random);
-        TechniqueMasteries[index] = (ushort)(50 + random.NextInt(251));
+        TechniqueMasteries[index] = checked((ushort)(500 + random.NextInt(2_501)));
+        TechniqueTrainingExperience[index] = SkillProgressionRules.GetRequiredExperience(TechniqueMasteries[index]);
+        TechniqueUnderstanding[index] = 0;
         SpellQualities[index] = CreateQuality(random);
-        SpellMasteries[index] = (ushort)(40 + random.NextInt(221));
+        SpellMasteries[index] = checked((ushort)(400 + random.NextInt(2_201)));
+        SpellTrainingExperience[index] = SkillProgressionRules.GetRequiredExperience(SpellMasteries[index]);
+        SpellUnderstanding[index] = 0;
         CombatExperience[index] = 0;
         Wins[index] = 0;
         Losses[index] = 0;

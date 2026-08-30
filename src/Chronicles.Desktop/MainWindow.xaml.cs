@@ -284,8 +284,8 @@ public partial class MainWindow : Window, IDisposable
         ComprehensionText.Text = QualityRules.Format(agent.Aptitudes.Comprehension);
         MindText.Text = QualityRules.Format(agent.Aptitudes.Mind);
         SoulText.Text = QualityRules.Format(agent.Aptitudes.Soul);
-        TechniqueText.Text = $"{QualityRules.Format(agent.TechniqueQuality)} · 숙련 {KoreanNumberFormatter.Format(agent.TechniqueMastery)}";
-        SpellText.Text = $"{QualityRules.Format(agent.SpellQuality)} · 숙련 {KoreanNumberFormatter.Format(agent.SpellMastery)}";
+        TechniqueText.Text = $"{QualityRules.Format(agent.TechniqueQuality)} · 숙련 {agent.TechniqueMastery / 100m:0.00} · 이해 {agent.TechniqueUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.TechniqueTrainingExperience)}";
+        SpellText.Text = $"{QualityRules.Format(agent.SpellQuality)} · 숙련 {agent.SpellMastery / 100m:0.00} · 이해 {agent.SpellUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.SpellTrainingExperience)}";
         HealthText.Text = $"{KoreanNumberFormatter.Format(Math.Max(0, agent.Health))} / {KoreanNumberFormatter.Format(agent.MaximumHealth)}";
         QiText.Text = $"{KoreanNumberFormatter.Format(agent.Qi)} / {KoreanNumberFormatter.Format(agent.MaximumQi)}";
         var battles = agent.Wins + agent.Losses;
@@ -368,12 +368,14 @@ public partial class MainWindow : Window, IDisposable
         var summary = worldEvent.Kind switch
         {
             WorldEventKind.BreakthroughSucceeded => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 돌파 성공",
-            WorldEventKind.BreakthroughFailed => $"{primary}, 돌파 실패로 내상을 입음",
+            WorldEventKind.BreakthroughFailed => $"{primary}, 돌파 시도 실패 · 재준비",
             WorldEventKind.MinorStageBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 소경지 돌파",
             WorldEventKind.BottleneckBreakthrough => $"{primary}, {worldEvent.Value:N0}번의 시도 끝에 병목 돌파",
             WorldEventKind.MajorRealmBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 대경지 돌파",
-            WorldEventKind.TechniqueEnlightenment => $"{primary}, 공법 {FormatQuality(worldEvent.Value)}의 깨달음 획득",
-            WorldEventKind.SpellEnlightenment => $"{primary}, 법술 {FormatQuality(worldEvent.Value)}의 깨달음 획득",
+            WorldEventKind.TechniqueEnlightenment => $"{primary}, 공법 깨달음 · 이해도 {worldEvent.Value / 100m:0.00}",
+            WorldEventKind.SpellEnlightenment => $"{primary}, 법술 깨달음 · 이해도 {worldEvent.Value / 100m:0.00}",
+            WorldEventKind.CultivationEntered => $"{primary}, 입문 3 Gate를 통과해 연기경에 입문",
+            WorldEventKind.GreatPerfectionAchieved => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 대원만 완성",
             WorldEventKind.Death => $"{primary}, {worldEvent.Value:N0}세에 수명을 다함",
             WorldEventKind.ReincarnationEntered => $"{primary}, 윤회의 강에 들어감",
             WorldEventKind.Rebirth => $"{primary}, 제 {worldEvent.Value:N0}생으로 환생",
@@ -423,8 +425,12 @@ public partial class MainWindow : Window, IDisposable
             ChronicleEventKind.BottleneckBreakthrough => $"{entry.Value:N0}번의 시도 끝에 병목을 돌파",
             ChronicleEventKind.MajorRealmBreakthrough => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage)} 대경지 돌파",
             ChronicleEventKind.BreakthroughFailure => "처음으로 현재 경지의 병목과 마주함",
-            ChronicleEventKind.TechniqueEnlightenment => $"공법 {FormatQuality(entry.Value)}의 깨달음을 얻음",
-            ChronicleEventKind.SpellEnlightenment => $"법술 {FormatQuality(entry.Value)}의 깨달음을 얻음",
+            ChronicleEventKind.TechniqueEnlightenment => $"공법 깨달음으로 이해도 {entry.Value / 100m:0.00} 달성",
+            ChronicleEventKind.SpellEnlightenment => $"법술 깨달음으로 이해도 {entry.Value / 100m:0.00} 달성",
+            ChronicleEventKind.TechniqueAcquired => $"새 공법 획득 · {FormatQuality(entry.Value)}",
+            ChronicleEventKind.SpellAcquired => $"새 법술 획득 · {FormatQuality(entry.Value)}",
+            ChronicleEventKind.CultivationEntered => "입문 3 Gate를 통과해 연기경에 입문",
+            ChronicleEventKind.GreatPerfectionAchieved => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage)} 대원만 완성",
             ChronicleEventKind.FortuitousEncounter => "인생을 바꾸는 기연을 만남",
             ChronicleEventKind.Death => $"{entry.Value:N0}세에 수명을 다함",
             ChronicleEventKind.ReincarnationEntered => "육신을 떠나 윤회의 강에 들어감",

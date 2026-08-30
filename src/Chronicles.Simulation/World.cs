@@ -163,8 +163,12 @@ public sealed partial class World
             _agents.GetAptitudes(index),
             new QualityValue(_agents.TechniqueQualities[index]),
             _agents.TechniqueMasteries[index],
+            _agents.TechniqueTrainingExperience[index],
+            _agents.TechniqueUnderstanding[index],
             new QualityValue(_agents.SpellQualities[index]),
             _agents.SpellMasteries[index],
+            _agents.SpellTrainingExperience[index],
+            _agents.SpellUnderstanding[index],
             _agents.CombatExperience[index],
             _agents.Wins[index],
             _agents.Losses[index],
@@ -387,8 +391,12 @@ public sealed partial class World
             Add(ref hash, (byte)trace.Blocker);
             Add(ref hash, _agents.TechniqueQualities[index]);
             Add(ref hash, _agents.TechniqueMasteries[index]);
+            Add(ref hash, (ulong)_agents.TechniqueTrainingExperience[index]);
+            Add(ref hash, _agents.TechniqueUnderstanding[index]);
             Add(ref hash, _agents.SpellQualities[index]);
             Add(ref hash, _agents.SpellMasteries[index]);
+            Add(ref hash, (ulong)_agents.SpellTrainingExperience[index]);
+            Add(ref hash, _agents.SpellUnderstanding[index]);
             Add(ref hash, (ulong)_agents.CombatExperience[index]);
             Add(ref hash, (ulong)_agents.Wins[index]);
             Add(ref hash, (ulong)_agents.Losses[index]);
@@ -509,42 +517,62 @@ public sealed partial class World
 
     private void ResolveTechniqueTraining(int index)
     {
-        var gain = 4
-            + (GetQualityEffect(_agents.Comprehensions[index]) / 8)
-            + (GetQualityEffect(_agents.Bones[index]) / 12)
-            + (GetQualityEffect(_agents.Minds[index]) / 20);
-        var mastery = _agents.TechniqueMasteries[index] + gain;
-        var currentQuality = new QualityValue(_agents.TechniqueQualities[index]);
-        if (mastery >= 1_000 && currentQuality.Tier < QualityTier.Flawless)
+        var experienceGain = SkillProgressionRules.GetTechniqueExperienceGain(
+            _agents.Comprehensions[index],
+            _agents.Bones[index]);
+        _agents.TechniqueTrainingExperience[index] = Math.Min(
+            SkillProgressionRules.MaximumExperience,
+            checked(_agents.TechniqueTrainingExperience[index] + experienceGain));
+        _agents.TechniqueMasteries[index] = SkillProgressionRules.GetMasteryHundredths(
+            _agents.TechniqueTrainingExperience[index]);
+        var chance = SkillProgressionRules.GetEnlightenmentChanceBasisPoints(
+            _agents.Comprehensions[index],
+            _agents.TechniqueUnderstanding[index]);
+        if (_agents.TechniqueUnderstanding[index] < SkillProgressionRules.MaximumHundredths
+            && _random.Chance(chance))
         {
-            var nextQuality = QualityRules.GetNextTierMinimum(currentQuality);
-            _agents.TechniqueQualities[index] = nextQuality.Hundredths;
-            mastery = 250;
-            AddChronicle(index, ChronicleEventKind.TechniqueEnlightenment, nextQuality.Hundredths);
-            AddEvent(WorldEventKind.TechniqueEnlightenment, index, nextQuality.Hundredths);
+            _agents.TechniqueUnderstanding[index] = SkillProgressionRules.ApplyUnderstandingGain(
+                _agents.TechniqueUnderstanding[index],
+                _agents.Comprehensions[index]);
+            AddChronicle(
+                index,
+                ChronicleEventKind.TechniqueEnlightenment,
+                _agents.TechniqueUnderstanding[index]);
+            AddEvent(
+                WorldEventKind.TechniqueEnlightenment,
+                index,
+                _agents.TechniqueUnderstanding[index]);
         }
-
-        _agents.TechniqueMasteries[index] = (ushort)Math.Min(1_000, mastery);
     }
 
     private void ResolveSpellTraining(int index)
     {
-        var gain = 4
-            + (GetQualityEffect(_agents.Comprehensions[index]) / 7)
-            + (GetQualityEffect(_agents.SpiritualRoots[index]) / 14)
-            + (GetQualityEffect(_agents.Minds[index]) / 18);
-        var mastery = _agents.SpellMasteries[index] + gain;
-        var currentQuality = new QualityValue(_agents.SpellQualities[index]);
-        if (mastery >= 1_000 && currentQuality.Tier < QualityTier.Flawless)
+        var experienceGain = SkillProgressionRules.GetSpellExperienceGain(
+            _agents.Comprehensions[index],
+            _agents.SpiritualRoots[index]);
+        _agents.SpellTrainingExperience[index] = Math.Min(
+            SkillProgressionRules.MaximumExperience,
+            checked(_agents.SpellTrainingExperience[index] + experienceGain));
+        _agents.SpellMasteries[index] = SkillProgressionRules.GetMasteryHundredths(
+            _agents.SpellTrainingExperience[index]);
+        var chance = SkillProgressionRules.GetEnlightenmentChanceBasisPoints(
+            _agents.Comprehensions[index],
+            _agents.SpellUnderstanding[index]);
+        if (_agents.SpellUnderstanding[index] < SkillProgressionRules.MaximumHundredths
+            && _random.Chance(chance))
         {
-            var nextQuality = QualityRules.GetNextTierMinimum(currentQuality);
-            _agents.SpellQualities[index] = nextQuality.Hundredths;
-            mastery = 200;
-            AddChronicle(index, ChronicleEventKind.SpellEnlightenment, nextQuality.Hundredths);
-            AddEvent(WorldEventKind.SpellEnlightenment, index, nextQuality.Hundredths);
+            _agents.SpellUnderstanding[index] = SkillProgressionRules.ApplyUnderstandingGain(
+                _agents.SpellUnderstanding[index],
+                _agents.Comprehensions[index]);
+            AddChronicle(
+                index,
+                ChronicleEventKind.SpellEnlightenment,
+                _agents.SpellUnderstanding[index]);
+            AddEvent(
+                WorldEventKind.SpellEnlightenment,
+                index,
+                _agents.SpellUnderstanding[index]);
         }
-
-        _agents.SpellMasteries[index] = (ushort)Math.Min(1_000, mastery);
     }
 
     private void ResolveRecovery(int index)

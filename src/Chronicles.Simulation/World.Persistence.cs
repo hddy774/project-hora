@@ -124,7 +124,12 @@ public sealed partial class World
                     _agents.CopyCultivationComponentValues(index),
                     _agents.CopyCultivationComponentLimits(index),
                     _agents.CopyFormationValues(index),
-                    _agents.CultivationTraces[index]));
+                    _agents.CultivationTraces[index]),
+                new SkillProgressCheckpoint(
+                    _agents.TechniqueTrainingExperience[index],
+                    _agents.TechniqueUnderstanding[index],
+                    _agents.SpellTrainingExperience[index],
+                    _agents.SpellUnderstanding[index]));
         }
 
         return new WorldCheckpoint(
@@ -210,9 +215,29 @@ public sealed partial class World
             InitializeRealmComponents(index);
         }
         _agents.TechniqueQualities[index] = checkpoint.TechniqueQuality;
-        _agents.TechniqueMasteries[index] = checkpoint.TechniqueMastery;
+        _agents.TechniqueMasteries[index] = schemaVersion < 9
+            ? checked((ushort)Math.Min(10_000, checkpoint.TechniqueMastery * 10))
+            : checkpoint.TechniqueMastery;
         _agents.SpellQualities[index] = checkpoint.SpellQuality;
-        _agents.SpellMasteries[index] = checkpoint.SpellMastery;
+        _agents.SpellMasteries[index] = schemaVersion < 9
+            ? checked((ushort)Math.Min(10_000, checkpoint.SpellMastery * 10))
+            : checkpoint.SpellMastery;
+        if (checkpoint.SkillProgress is { } skillProgress)
+        {
+            _agents.TechniqueTrainingExperience[index] = skillProgress.TechniqueExperience;
+            _agents.TechniqueUnderstanding[index] = skillProgress.TechniqueUnderstanding;
+            _agents.SpellTrainingExperience[index] = skillProgress.SpellExperience;
+            _agents.SpellUnderstanding[index] = skillProgress.SpellUnderstanding;
+        }
+        else
+        {
+            _agents.TechniqueTrainingExperience[index] = SkillProgressionRules.GetRequiredExperience(
+                _agents.TechniqueMasteries[index]);
+            _agents.TechniqueUnderstanding[index] = 0;
+            _agents.SpellTrainingExperience[index] = SkillProgressionRules.GetRequiredExperience(
+                _agents.SpellMasteries[index]);
+            _agents.SpellUnderstanding[index] = 0;
+        }
         _agents.CombatExperience[index] = checkpoint.CombatExperience;
         _agents.Wins[index] = checkpoint.Wins;
         _agents.Losses[index] = checkpoint.Losses;
@@ -249,7 +274,7 @@ public sealed partial class World
     private static void ValidateCheckpoint(WorldCheckpoint checkpoint)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
-        if (checkpoint.SchemaVersion is not 7 and not WorldCheckpoint.CurrentSchemaVersion)
+        if (checkpoint.SchemaVersion is < 7 or > WorldCheckpoint.CurrentSchemaVersion)
         {
             throw new InvalidDataException($"지원하지 않는 세계 schema {checkpoint.SchemaVersion}입니다.");
         }
@@ -342,6 +367,9 @@ public sealed partial class World
                 || agent.Soul > QualityValue.MaximumHundredths
                 || agent.TechniqueQuality > QualityValue.MaximumHundredths
                 || agent.SpellQuality > QualityValue.MaximumHundredths
+                || (checkpoint.SchemaVersion >= 9
+                    && (agent.TechniqueMastery > SkillProgressionRules.MaximumHundredths
+                        || agent.SpellMastery > SkillProgressionRules.MaximumHundredths))
                 || agent.SpiritStones < 0
                 || agent.GrowthPills < 0
                 || agent.BreakthroughPills < 0
@@ -395,6 +423,11 @@ public sealed partial class World
                 && !IsValidCultivationCheckpoint(agent.Cultivation))
             {
                 throw new InvalidDataException($"Agent {index}의 수행 V2 체크포인트가 잘못되었습니다.");
+            }
+
+            if (checkpoint.SchemaVersion >= 9 && !IsValidSkillProgress(agent.SkillProgress))
+            {
+                throw new InvalidDataException($"Agent {index}의 공법·법술 성장 체크포인트가 잘못되었습니다.");
             }
 
             if (agent.PersonalLog.Any(entry =>
@@ -508,4 +541,10 @@ public sealed partial class World
             && Enum.IsDefined(value.LatestTrace.Outcome)
             && Enum.IsDefined(value.LatestTrace.Blocker);
     }
+
+    private static bool IsValidSkillProgress(SkillProgressCheckpoint? checkpoint) => checkpoint is { } value
+        && value.TechniqueExperience is >= 0 and <= SkillProgressionRules.MaximumExperience
+        && value.SpellExperience is >= 0 and <= SkillProgressionRules.MaximumExperience
+        && value.TechniqueUnderstanding <= SkillProgressionRules.MaximumHundredths
+        && value.SpellUnderstanding <= SkillProgressionRules.MaximumHundredths;
 }

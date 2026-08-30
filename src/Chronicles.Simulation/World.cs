@@ -101,6 +101,18 @@ public sealed partial class World
             }
 
             Tick = new SimulationTick(dueTick);
+            var actionMonth = GameCalendar.GetMonthIndex(Tick);
+            if (_agents.LastActionMonths[agentIndex] >= actionMonth)
+            {
+                ScheduleAgent(
+                    agentIndex,
+                    GameCalendar.GetMonthStart(checked(_agents.LastActionMonths[agentIndex] + 1)).Value);
+                continue;
+            }
+
+            _agents.LastActionMonths[agentIndex] = actionMonth;
+            _agents.LastActionTicks[agentIndex] = dueTick;
+            _agents.ActionsTaken[agentIndex] = checked(_agents.ActionsTaken[agentIndex] + 1);
             if (_agents.Activities[agentIndex] != AgentActivity.Reincarnating
                 && HasReachedMaximumLifespan(agentIndex))
             {
@@ -158,6 +170,10 @@ public sealed partial class World
             _agents.Opponents[index] < 0 ? null : new AgentId(_agents.Opponents[index]),
             new SimulationTick(_agents.LastCombatTicks[index]),
             _agents.ChallengesIssued[index],
+            _agents.ActionsTaken[index],
+            _agents.LastActionMonths[index] < 0
+                ? null
+                : GameCalendar.GetDate(new SimulationTick(_agents.LastActionTicks[index])),
             _agents.SpiritStones[index],
             _agents.GrowthPills[index],
             _agents.BreakthroughPills[index],
@@ -325,6 +341,9 @@ public sealed partial class World
             Add(ref hash, (ulong)_agents.MaximumQi[index]);
             Add(ref hash, (byte)_agents.Activities[index]);
             Add(ref hash, (ulong)_agents.NextDecisionTicks[index]);
+            Add(ref hash, (ulong)(_agents.LastActionMonths[index] + 1));
+            Add(ref hash, (ulong)_agents.LastActionTicks[index]);
+            Add(ref hash, (ulong)_agents.ActionsTaken[index]);
             Add(ref hash, (ulong)(_agents.Opponents[index] + 1));
             Add(ref hash, (ulong)(_agents.LastOpponents[index] + 1));
             Add(ref hash, (ulong)_agents.LastCombatTicks[index]);
@@ -795,8 +814,15 @@ public sealed partial class World
 
     private void ScheduleAgent(int index, long tick)
     {
-        _agents.NextDecisionTicks[index] = tick;
-        _decisionSchedule.Enqueue(index, (tick, index));
+        var scheduledTick = new SimulationTick(tick);
+        if (GameCalendar.GetMonthIndex(scheduledTick) <= _agents.LastActionMonths[index])
+        {
+            scheduledTick = GameCalendar.GetMonthStart(
+                checked(_agents.LastActionMonths[index] + 1));
+        }
+
+        _agents.NextDecisionTicks[index] = scheduledTick.Value;
+        _decisionSchedule.Enqueue(index, (scheduledTick.Value, index));
     }
 
     private int ValidateAgent(AgentId agentId)

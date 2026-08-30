@@ -227,6 +227,8 @@ public sealed record AgentSnapshot(
     AgentId? OpponentId,
     SimulationTick LastCombatTick,
     int ChallengesIssued,
+    int ActionsTaken,
+    GameDate? LastActionDate,
     long SpiritStones,
     int GrowthPills,
     int BreakthroughPills,

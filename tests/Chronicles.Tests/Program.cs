@@ -7,6 +7,7 @@ var tests = new (string Name, Action Body)[]
 {
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
+    ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
     ("8단계 품질 경계와 격차 배율", QualityTiersAndBoundaryMultipliers),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
@@ -54,7 +55,7 @@ static void DefaultPopulationAndGoal()
 
 static void GameTimeAndRealmRules()
 {
-    Equal("0.0.1", ProductInfo.Version, "제품 버전");
+    Equal("0.0.2", ProductInfo.Version, "제품 버전");
     Equal(2_000L, GameCalendar.TicksPerYear, "1게임년 tick 수");
     Equal(10L, GameCalendar.GetYear(new SimulationTick(20_000)), "tick의 게임년 변환");
     Equal(1d, GameCalendar.GetRealSecondsPerGameYear(10), "10배속 게임년 현실 초");
@@ -81,6 +82,46 @@ static void GameTimeAndRealmRules()
     }
 
     Throws<ArgumentOutOfRangeException>(() => runner.SetSpeed(4), "미지원 배속");
+}
+
+static void CalendarAndMonthlyActionLimit()
+{
+    Equal(new GameDate(0, 1, 1), GameCalendar.GetDate(new SimulationTick(0)), "세계 시작일");
+    Equal(new GameDate(0, 1, 30), GameCalendar.GetDate(new SimulationTick(166)), "첫 달 마지막 날");
+    Equal(new GameDate(0, 2, 1), GameCalendar.GetDate(new SimulationTick(167)), "둘째 달 첫날");
+    Equal(new GameDate(0, 12, 30), GameCalendar.GetDate(new SimulationTick(1_999)), "첫해 마지막 날");
+    Equal(new GameDate(1, 1, 1), GameCalendar.GetDate(new SimulationTick(2_000)), "다음해 첫날");
+    Equal(167L, GameCalendar.GetMonthStart(1).Value, "둘째 달 시작 tick");
+    Equal(334L, GameCalendar.GetMonthStart(2).Value, "셋째 달 시작 tick");
+    Equal(2_000L, GameCalendar.GetMonthStart(12).Value, "다음해 시작 tick");
+
+    var world = World.Create(99001, 500);
+    var previousActions = new int[world.Population];
+    for (var month = 0; month < 24; month++)
+    {
+        var endOfMonth = GameCalendar.GetMonthStart(month + 1).Value - 1;
+        world.AdvanceTo(new SimulationTick(endOfMonth));
+        for (var index = 0; index < world.Population; index++)
+        {
+            var agent = world.GetAgentSnapshot(new AgentId(index));
+            var delta = agent.ActionsTaken - previousActions[index];
+            True(delta is >= 0 and <= 1, $"Agent {index}의 월 행동 횟수는 최대 1회여야 합니다.");
+            previousActions[index] = agent.ActionsTaken;
+        }
+    }
+
+    True(previousActions.All(count => count > 0), "모든 AI가 월별 행동 일정에 참여해야 합니다.");
+    var checkpoint = world.CreateCheckpoint();
+    var restored = World.Restore(checkpoint);
+    for (var index = 0; index < world.Population; index++)
+    {
+        var originalAgent = world.GetAgentSnapshot(new AgentId(index));
+        var restoredAgent = restored.GetAgentSnapshot(new AgentId(index));
+        Equal(originalAgent.ActionsTaken, restoredAgent.ActionsTaken, "저장 후 월 행동 누계");
+        True(
+            Nullable.Equals(originalAgent.LastActionDate, restoredAgent.LastActionDate),
+            "저장 후 마지막 행동일");
+    }
 }
 
 static void BirthAptitudesChronicleAndReincarnation()

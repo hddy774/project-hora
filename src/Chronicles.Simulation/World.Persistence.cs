@@ -90,6 +90,9 @@ public sealed partial class World
                 _agents.MaximumQi[index],
                 _agents.Activities[index],
                 _agents.NextDecisionTicks[index],
+                _agents.LastActionMonths[index],
+                _agents.LastActionTicks[index],
+                _agents.ActionsTaken[index],
                 _agents.TargetRanks[index],
                 _agents.Opponents[index],
                 _agents.LastOpponents[index],
@@ -165,6 +168,9 @@ public sealed partial class World
         _agents.MaximumQi[index] = checkpoint.MaximumQi;
         _agents.Activities[index] = checkpoint.Activity;
         _agents.NextDecisionTicks[index] = checkpoint.NextDecisionTick;
+        _agents.LastActionMonths[index] = checkpoint.LastActionMonth;
+        _agents.LastActionTicks[index] = checkpoint.LastActionTick;
+        _agents.ActionsTaken[index] = checkpoint.ActionsTaken;
         _agents.TargetRanks[index] = checkpoint.TargetRank;
         _agents.Opponents[index] = checkpoint.Opponent;
         _agents.LastOpponents[index] = checkpoint.LastOpponent;
@@ -275,6 +281,15 @@ public sealed partial class World
                 || agent.Chronicle is not { Length: > 0 }
                 || agent.TargetRank != 1
                 || agent.NextDecisionTick <= checkpoint.Tick
+                || agent.LastActionMonth < -1
+                || agent.LastActionMonth > GameCalendar.GetMonthIndex(new SimulationTick(checkpoint.Tick))
+                || agent.LastActionTick < 0
+                || agent.LastActionTick > checkpoint.Tick
+                || agent.ActionsTaken < 0
+                || (agent.LastActionMonth < 0 && (agent.LastActionTick != 0 || agent.ActionsTaken != 0))
+                || (agent.LastActionMonth >= 0
+                    && GameCalendar.GetMonthIndex(new SimulationTick(agent.LastActionTick)) != agent.LastActionMonth)
+                || GameCalendar.GetMonthIndex(new SimulationTick(agent.NextDecisionTick)) <= agent.LastActionMonth
                 || agent.Opponent < -1
                 || agent.Opponent >= checkpoint.Agents.Length)
             {

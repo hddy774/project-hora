@@ -45,6 +45,9 @@ internal sealed class AgentStore
         MaximumQi = new int[count];
         Activities = new AgentActivity[count];
         NextDecisionTicks = new long[count];
+        LastActionMonths = new long[count];
+        LastActionTicks = new long[count];
+        ActionsTaken = new int[count];
         TargetRanks = new int[count];
         Opponents = new int[count];
         LastOpponents = new int[count];
@@ -65,6 +68,7 @@ internal sealed class AgentStore
         Array.Fill(LastOpponents, -1);
         Array.Fill(ActiveMissionMaterials, byte.MaxValue);
         Array.Fill(EquippedTreasureQualities, EconomyRules.EmptyTreasureQuality);
+        Array.Fill(LastActionMonths, -1);
         for (var index = 0; index < count; index++)
         {
             Chronicles[index] = [];
@@ -99,6 +103,9 @@ internal sealed class AgentStore
     public int[] MaximumQi { get; }
     public AgentActivity[] Activities { get; }
     public long[] NextDecisionTicks { get; }
+    public long[] LastActionMonths { get; }
+    public long[] LastActionTicks { get; }
+    public int[] ActionsTaken { get; }
     public int[] TargetRanks { get; }
     public int[] Opponents { get; }
     public int[] LastOpponents { get; }
@@ -120,6 +127,8 @@ internal sealed class AgentStore
     {
         Souls[index] = CreateAptitude(random);
         LifeNumbers[index] = 1;
+        LastActionMonths[index] = -1;
+        ActionsTaken[index] = 0;
         InitializeBody(index, random, birthTick: 0);
     }
 

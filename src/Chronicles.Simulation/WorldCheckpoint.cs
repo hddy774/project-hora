@@ -29,6 +29,9 @@ public sealed record AgentCheckpoint(
     int MaximumQi,
     AgentActivity Activity,
     long NextDecisionTick,
+    long LastActionMonth,
+    long LastActionTick,
+    int ActionsTaken,
     int TargetRank,
     int Opponent,
     int LastOpponent,
@@ -82,5 +85,5 @@ public sealed record WorldCheckpoint(
     long RankingTotalAbsoluteMovement,
     CityMarketCheckpoint Market)
 {
-    public const int CurrentSchemaVersion = 6;
+    public const int CurrentSchemaVersion = 7;
 }

@@ -1,6 +1,7 @@
 using Chronicles.Core;
 using Chronicles.Persistence;
 using Chronicles.Simulation;
+using System.Diagnostics;
 
 var tests = new (string Name, Action Body)[]
 {
@@ -13,6 +14,7 @@ var tests = new (string Name, Action Body)[]
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
+    ("10,000명 로컬 실시간 성능 예산", DefaultWorldPerformanceBudget),
 };
 
 var failures = 0;
@@ -194,6 +196,25 @@ static void AtomicSaveFileRoundTrip()
             Directory.Delete(root, recursive: true);
         }
     }
+}
+
+static void DefaultWorldPerformanceBudget()
+{
+    const long targetTick = 5_000;
+    var stopwatch = Stopwatch.StartNew();
+    var world = World.CreateDefault(20260830);
+    world.AdvanceTo(new SimulationTick(targetTick));
+    var snapshot = world.CreateSnapshot(150, 150);
+    stopwatch.Stop();
+
+    Console.WriteLine(
+        $"PERF: {world.Population:N0}명 · {targetTick:N0} tick · {stopwatch.Elapsed.TotalMilliseconds:N0} ms");
+    Equal(targetTick, snapshot.Tick.Value, "성능 검증 도달 tick");
+    Equal(10_000, snapshot.Population, "성능 검증 인구");
+    True(snapshot.TotalCombatsCompleted > 0, "성능 검증 중 전투가 완료되어야 합니다.");
+    True(
+        stopwatch.Elapsed < TimeSpan.FromSeconds(10),
+        $"10,000명 시뮬레이션 성능 예산 10초를 초과했습니다: {stopwatch.Elapsed.TotalSeconds:N2}초");
 }
 
 static void Equal<T>(T expected, T actual, string message)

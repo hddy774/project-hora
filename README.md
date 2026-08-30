@@ -4,7 +4,7 @@
 Windows용 자율 관찰 시뮬레이션입니다. 플레이어는 세계를 조종하지 않고 인물을
 추적하고, 판단 이유와 전투 타임라인, 순위 변동과 돌파 기록을 관찰합니다.
 
-## 첫 릴리스 목표
+## 현재 구현
 
 - 10,000명 이벤트 기반 실시간 AI
 - 영근·근골·체질·오성 자질
@@ -27,3 +27,11 @@ dotnet build Chronicles.slnx -c Release
 dotnet run --project src/Chronicles.Desktop/Chronicles.Desktop.csproj
 dotnet run --project tests/Chronicles.Tests/Chronicles.Tests.csproj -c Release
 ```
+
+## 이 PC에서 바로 실행
+
+저장소 루트의 `로컬_빌드_및_실행.cmd`를 두 번 클릭하면 전체 테스트 후 Windows x64
+독립 실행본을 만들고 바탕화면에 `선로만상록 PC` 바로가기를 생성합니다. .NET 런타임은
+실행 파일에 포함됩니다.
+
+자세한 로컬 점검 절차는 [PC 로컬 실행 및 테스트](docs/LOCAL_TESTING.md)를 참고하세요.

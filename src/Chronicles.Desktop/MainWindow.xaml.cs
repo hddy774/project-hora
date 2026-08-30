@@ -870,7 +870,7 @@ public partial class MainWindow : Window, IDisposable
     private static string FormatMonster(long monsterId)
     {
         var index = checked((int)monsterId);
-        return (uint)index < WorldMapRules.AllMonsters.Count
+        return (uint)index < (uint)WorldMapRules.AllMonsters.Count
             ? WorldMapRules.AllMonsters[index].KoreanName
             : $"미확인 요수 #{index}";
     }

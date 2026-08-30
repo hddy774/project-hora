@@ -1,9 +1,11 @@
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Chronicles.Core;
+using Chronicles.Persistence;
 using Chronicles.Simulation;
 
 namespace Chronicles.Desktop;
@@ -111,6 +113,7 @@ public partial class MainWindow : Window, IDisposable
         StatusText.Text = _runner?.IsPaused == true
             ? $"일시정지 · {_speed}× · seed {DefaultWorldSeed}"
             : $"실시간 진행 · {_speed}× · seed {DefaultWorldSeed}";
+        StatusText.Foreground = (Brush)FindResource("SecondaryTextBrush");
 
         try
         {
@@ -314,6 +317,79 @@ public partial class MainWindow : Window, IDisposable
         var paused = !_runner.IsPaused;
         _runner.SetPaused(paused);
         PauseButton.Content = paused ? "계속 진행" : "일시정지";
+    }
+
+    private async void SaveButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_runner is null)
+        {
+            return;
+        }
+
+        try
+        {
+            StatusText.Text = "세계 저장 중…";
+            var checkpoint = _runner.CreateCheckpoint();
+            await Task.Run(() => WorldSaveStore.Save(WorldSaveStore.DefaultPath, checkpoint));
+            StatusText.Text = $"저장 완료 · {WorldSaveStore.DefaultPath}";
+            StatusText.Foreground = (Brush)FindResource("PositiveBrush");
+        }
+        catch (IOException exception)
+        {
+            ShowPersistenceError(exception);
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            ShowPersistenceError(exception);
+        }
+        catch (InvalidOperationException exception)
+        {
+            ShowPersistenceError(exception);
+        }
+        catch (InvalidDataException exception)
+        {
+            ShowPersistenceError(exception);
+        }
+    }
+
+    private async void LoadButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_runner is null)
+        {
+            return;
+        }
+
+        try
+        {
+            StatusText.Text = "세계 불러오는 중…";
+            var checkpoint = await Task.Run(() => WorldSaveStore.Load(WorldSaveStore.DefaultPath));
+            _runner.RestoreCheckpoint(checkpoint);
+            _selectedAgent = null;
+            StatusText.Text = $"불러오기 완료 · {WorldSaveStore.DefaultPath}";
+            StatusText.Foreground = (Brush)FindResource("PositiveBrush");
+        }
+        catch (FileNotFoundException exception)
+        {
+            ShowPersistenceError(exception);
+        }
+        catch (InvalidDataException exception)
+        {
+            ShowPersistenceError(exception);
+        }
+        catch (IOException exception)
+        {
+            ShowPersistenceError(exception);
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            ShowPersistenceError(exception);
+        }
+    }
+
+    private void ShowPersistenceError(Exception exception)
+    {
+        StatusText.Text = $"저장 오류: {exception.Message}";
+        StatusText.Foreground = (Brush)FindResource("DangerBrush");
     }
 
     private void Speed1Button_Click(object sender, RoutedEventArgs e) => SetSpeed(1);

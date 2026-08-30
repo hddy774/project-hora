@@ -13,7 +13,9 @@
 ```text
 Chronicles.Core
     └── Chronicles.Simulation
-            └── Chronicles.Desktop
+            ├── Chronicles.Persistence
+            │       └── Chronicles.Desktop
+            └──────────── Chronicles.Desktop
 
 Chronicles.Tests ──> Core + Simulation
 ```
@@ -32,6 +34,12 @@ Chronicles.Tests ──> Core + Simulation
 
 SimulationRunner가 게시한 불변 스냅샷만 읽는다. 일시정지, 배속, 검색과 추적
 명령을 전달하고 WPF 화면을 그린다.
+
+### Chronicles.Persistence
+
+Simulation의 명시적 체크포인트를 Brotli 압축 payload와 SHA-256 checksum을 가진
+versioned `.cmip` container로 변환한다. 같은 폴더의 임시 파일을 flush한 뒤 원자적으로
+교체하며, 손상되거나 지원하지 않는 schema는 세계를 바꾸기 전에 거부한다.
 
 ### Chronicles.Tests
 

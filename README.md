@@ -14,6 +14,9 @@ Windows용 자율 관찰 시뮬레이션입니다. 플레이어는 세계를 조
 - 일시정지, 배속, 검색, 즐겨찾기와 사건 타임라인
 - 결정론적 저장·불러오기와 Windows x64 배포
 
+게임 내 **저장**과 **불러오기**는 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip`을
+사용합니다. 저장 파일은 압축되며 checksum 검증을 통과한 경우에만 복원됩니다.
+
 기획 정본은 [게임 디자인](docs/GAME_DESIGN.md), 코드 경계는
 [아키텍처](docs/ARCHITECTURE.md)를 따릅니다.
 

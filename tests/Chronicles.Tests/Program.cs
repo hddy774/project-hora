@@ -1,4 +1,5 @@
 using Chronicles.Core;
+using Chronicles.Persistence;
 using Chronicles.Simulation;
 
 var tests = new (string Name, Action Body)[]
@@ -9,6 +10,9 @@ var tests = new (string Name, Action Body)[]
     ("이벤트 기반 성장", EventDrivenGrowth),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
     ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
+    ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
+    ("손상 저장 거부", CorruptedSaveIsRejected),
+    ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
 };
 
 var failures = 0;
@@ -130,6 +134,68 @@ static void ObservationQueriesAreReadOnly()
     Equal(before, world.ComputeStateHash(), "관찰 조회는 세계 상태를 바꾸면 안 됩니다.");
 }
 
+static void SaveCodecRoundTrip()
+{
+    var original = World.CreateDefault(314159);
+    original.AdvanceTo(new SimulationTick(2_500));
+    var checkpoint = original.CreateCheckpoint();
+    var encoded = WorldSaveCodec.Encode(checkpoint);
+    var decoded = WorldSaveCodec.Decode(encoded);
+    Equal(checkpoint.RandomState, decoded.RandomState, "저장 왕복 RNG 상태");
+    Equal(checkpoint.EventSequence, decoded.EventSequence, "저장 왕복 사건 sequence");
+    Equal(checkpoint.TotalChallenges, decoded.TotalChallenges, "저장 왕복 도전 합계");
+    Equal(checkpoint.Agents[0], decoded.Agents[0], "저장 왕복 첫 Agent");
+    Equal(checkpoint.Agents[^1], decoded.Agents[^1], "저장 왕복 마지막 Agent");
+    Equal(checkpoint.Events.Length, decoded.Events.Length, "저장 왕복 사건 수");
+    if (checkpoint.Events.Length > 0)
+    {
+        Equal(checkpoint.Events[0], decoded.Events[0], "저장 왕복 첫 사건");
+        Equal(checkpoint.Events[^1], decoded.Events[^1], "저장 왕복 마지막 사건");
+    }
+
+    var restored = World.Restore(decoded);
+    Equal(original.ComputeStateHash(), restored.ComputeStateHash(), "저장 왕복 상태 해시");
+    Equal(original.TotalCombatsCompleted, restored.TotalCombatsCompleted, "저장 왕복 완료 전투");
+    Equal(original.ActiveCombats, restored.ActiveCombats, "저장 왕복 진행 중 전투");
+
+    original.AdvanceTo(new SimulationTick(3_000));
+    restored.AdvanceTo(new SimulationTick(3_000));
+    Equal(original.ComputeStateHash(), restored.ComputeStateHash(), "복원 후 계속 진행 상태 해시");
+    True(encoded.Length < 8_000_000, "10,000명 저장 파일은 합리적인 크기여야 합니다.");
+}
+
+static void CorruptedSaveIsRejected()
+{
+    var world = World.Create(2718, 250);
+    world.AdvanceTo(new SimulationTick(200));
+    var encoded = WorldSaveCodec.Encode(world.CreateCheckpoint());
+    encoded[^1] ^= 0x5A;
+    Throws<InvalidDataException>(() => WorldSaveCodec.Decode(encoded), "checksum 손상 저장");
+}
+
+static void AtomicSaveFileRoundTrip()
+{
+    var root = Path.Combine(Path.GetTempPath(), "ChroniclesTests", Guid.NewGuid().ToString("N"));
+    var path = Path.Combine(root, "world.cmip");
+    try
+    {
+        var world = World.Create(1618, 500);
+        world.AdvanceTo(new SimulationTick(400));
+        WorldSaveStore.Save(path, world.CreateCheckpoint());
+        True(File.Exists(path), "원자 저장 결과 파일");
+        True(!File.Exists(path + ".tmp"), "임시 저장 파일이 남으면 안 됩니다.");
+        var restored = World.Restore(WorldSaveStore.Load(path));
+        Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "원자 저장 파일 상태 해시");
+    }
+    finally
+    {
+        if (Directory.Exists(root))
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+}
+
 static void Equal<T>(T expected, T actual, string message)
     where T : IEquatable<T>
 {
@@ -145,4 +211,19 @@ static void True(bool condition, string message)
     {
         throw new InvalidOperationException(message);
     }
+}
+
+static void Throws<TException>(Action action, string message)
+    where TException : Exception
+{
+    try
+    {
+        action();
+    }
+    catch (TException)
+    {
+        return;
+    }
+
+    throw new InvalidOperationException($"{message}: {typeof(TException).Name}이 발생해야 합니다.");
 }

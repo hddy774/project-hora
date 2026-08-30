@@ -10,14 +10,15 @@
 ## 의존 방향
 
 ```text
-Chronicles.Core <- Chronicles.Simulation <- Chronicles.Desktop
-                          ^
-                          |
-                  Chronicles.Tests
+Chronicles.Core <- Chronicles.Simulation <- Chronicles.Persistence
+                          ^                    ^
+                          |                    |
+                  Chronicles.Tests       Chronicles.Desktop
 ```
 
 - `Core`: 안정 ID, 정수 시간, 결정론적 난수, 값 타입과 정의 ID.
 - `Simulation`: AI 상태, 수행, 경지, 공법, 법술, 전투, 전투력과 랭킹.
+- `Persistence`: versioned save container, 압축, checksum과 원자 저장.
 - `Desktop`: 읽기 전용 스냅샷 표시와 일시정지·배속·검색·추적 입력.
 - `Tests`: 공식, 결정론, 경쟁 활성도, 성능과 저장 회귀 검증.
 

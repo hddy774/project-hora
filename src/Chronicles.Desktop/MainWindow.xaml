@@ -48,6 +48,8 @@
                            FontSize="18"
                            FontWeight="SemiBold" />
                 <Button x:Name="PauseButton" Margin="14,0,7,0" Click="PauseButton_Click">일시정지</Button>
+                <Button Margin="0,0,5,0" Click="SaveButton_Click">저장</Button>
+                <Button Margin="0,0,12,0" Click="LoadButton_Click">불러오기</Button>
                 <Button Margin="0,0,5,0" Click="Speed1Button_Click">1×</Button>
                 <Button Margin="0,0,5,0" Click="Speed4Button_Click">4×</Button>
                 <Button Click="Speed16Button_Click">16×</Button>

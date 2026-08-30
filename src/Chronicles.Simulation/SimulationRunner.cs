@@ -7,7 +7,7 @@ public sealed class SimulationRunner : IDisposable
     private const int BaseTicksPerPulse = 20;
     private const int PulseMilliseconds = 100;
     private readonly object _worldGate = new();
-    private readonly World _world;
+    private World _world;
     private readonly ManualResetEventSlim _stop = new(initialState: false);
     private readonly Thread _worker;
     private int _speed = 1;
@@ -86,6 +86,24 @@ public sealed class SimulationRunner : IDisposable
         lock (_worldGate)
         {
             return _world.SearchAgents(query, limit);
+        }
+    }
+
+    public WorldCheckpoint CreateCheckpoint()
+    {
+        lock (_worldGate)
+        {
+            return _world.CreateCheckpoint();
+        }
+    }
+
+    public void RestoreCheckpoint(WorldCheckpoint checkpoint)
+    {
+        ArgumentNullException.ThrowIfNull(checkpoint);
+        var restored = World.Restore(checkpoint);
+        lock (_worldGate)
+        {
+            _world = restored;
         }
     }
 

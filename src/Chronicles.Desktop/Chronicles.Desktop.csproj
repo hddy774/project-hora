@@ -9,5 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="../Chronicles.Core/Chronicles.Core.csproj" />
     <ProjectReference Include="../Chronicles.Simulation/Chronicles.Simulation.csproj" />
+    <ProjectReference Include="../Chronicles.Persistence/Chronicles.Persistence.csproj" />
   </ItemGroup>
 </Project>

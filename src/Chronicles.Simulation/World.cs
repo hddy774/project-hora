@@ -169,11 +169,19 @@ public sealed partial class World
     public ulong ComputeStateHash()
     {
         var hash = 14695981039346656037UL;
+        Add(ref hash, Seed);
         Add(ref hash, (ulong)Tick.Value);
         Add(ref hash, _random.State);
+        Add(ref hash, (ulong)_eventSequence);
+        Add(ref hash, (ulong)_totalBreakthroughs);
+        Add(ref hash, (ulong)_totalChallenges);
+        Add(ref hash, (ulong)_totalCombatsStarted);
+        Add(ref hash, (ulong)_totalCombatsCompleted);
+        Add(ref hash, (ulong)_activeCombats);
         for (var index = 0; index < Population; index++)
         {
             Add(ref hash, (ulong)index);
+            AddString(ref hash, _agents.Names[index]);
             Add(ref hash, _agents.SpiritualRoots[index]);
             Add(ref hash, _agents.Bones[index]);
             Add(ref hash, _agents.Constitutions[index]);
@@ -198,6 +206,16 @@ public sealed partial class World
             Add(ref hash, _agents.Guarding[index] ? 1UL : 0UL);
             Add(ref hash, (ulong)_agents.ChallengesIssued[index]);
             Add(ref hash, (ulong)_rankByAgent[index]);
+        }
+
+        foreach (var worldEvent in _events)
+        {
+            Add(ref hash, (ulong)worldEvent.Sequence);
+            Add(ref hash, (ulong)worldEvent.Tick.Value);
+            Add(ref hash, (byte)worldEvent.Kind);
+            Add(ref hash, (ulong)worldEvent.PrimaryAgent.Value);
+            Add(ref hash, (ulong)(worldEvent.SecondaryAgent?.Value + 1 ?? 0));
+            Add(ref hash, unchecked((ulong)(long)worldEvent.Value));
         }
 
         return hash;
@@ -429,5 +447,15 @@ public sealed partial class World
             hash ^= (byte)(value >> shift);
             hash *= 1099511628211UL;
         }
+    }
+
+    private static void AddString(ref ulong hash, string value)
+    {
+        foreach (var character in value)
+        {
+            Add(ref hash, character);
+        }
+
+        Add(ref hash, 0xFFFFUL);
     }
 }

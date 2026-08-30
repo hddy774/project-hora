@@ -138,7 +138,7 @@ public sealed partial class World
     private bool ShouldAttemptRetreat(int actor, int target)
     {
         var healthPercent = _agents.Health[actor] * 100 / _agents.MaximumHealth[actor];
-        var powerDisadvantage = _agents.Power[target].Total * 100 / Math.Max(1, _agents.Power[actor].Total);
+        var powerDisadvantage = _agents.Power[target].Total * 100 / Math.Max(1L, _agents.Power[actor].Total);
         return healthPercent < 24 || (healthPercent < 40 && powerDisadvantage > 125);
     }
 
@@ -147,9 +147,9 @@ public sealed partial class World
         var experienceDifference = IntegerExperienceAdvantage(actor, target);
         var chance = Math.Clamp(
             2_300
-            + (_agents.Comprehensions[actor] * 35)
+            + (GetQualityEffect(_agents.Comprehensions[actor]) * 35)
             + experienceDifference
-            - (_agents.Comprehensions[target] * 15),
+            - (GetQualityEffect(_agents.Comprehensions[target]) * 15),
             800,
             8_500);
         return _random.Chance(chance);
@@ -161,7 +161,7 @@ public sealed partial class World
         var baseChance = healthPercent < 45 ? 35 : 13;
         if (_agents.Power[target].Spell > _agents.Power[target].Technique)
         {
-            baseChance += _agents.Comprehensions[actor] / 10;
+            baseChance += GetQualityEffect(_agents.Comprehensions[actor]) / 10;
         }
 
         return _random.NextInt(100) < Math.Min(55, baseChance);
@@ -176,12 +176,12 @@ public sealed partial class World
     private void ResolvePhysicalAttack(int actor, int target)
     {
         var baseDamage = 30
-            + (_agents.Bones[actor] * 2)
-            + (_agents.TechniqueGrades[actor] * 24)
+            + (GetQualityEffect(_agents.Bones[actor]) * 2)
+            + (GetQualityEffect(_agents.TechniqueQualities[actor]) * 24)
             + (_agents.TechniqueMasteries[actor] / 20)
             + (GetRealmCombatScale(actor) / 3);
-        var defense = (_agents.Constitutions[target] * 2)
-            + (_agents.Bones[target] / 2)
+        var defense = (GetQualityEffect(_agents.Constitutions[target]) * 2)
+            + (GetQualityEffect(_agents.Bones[target]) / 2)
             + (GetRealmCombatScale(target) / 5);
         var damage = ApplyPowerRatioAndVariance(actor, target, Math.Max(12, baseDamage - (defense / 3)));
         damage = ApplyGuard(target, damage);
@@ -194,13 +194,13 @@ public sealed partial class World
         var qiCost = GetSpellQiCost(actor);
         _agents.Qi[actor] -= qiCost;
         var baseDamage = 38
-            + (_agents.SpiritualRoots[actor] * 2)
-            + _agents.Comprehensions[actor]
-            + (_agents.SpellGrades[actor] * 32)
+            + (GetQualityEffect(_agents.SpiritualRoots[actor]) * 2)
+            + GetQualityEffect(_agents.Comprehensions[actor])
+            + (GetQualityEffect(_agents.SpellQualities[actor]) * 32)
             + (_agents.SpellMasteries[actor] / 16)
             + (GetRealmCombatScale(actor) / 2);
-        var defense = (_agents.Constitutions[target] * 2)
-            + _agents.SpiritualRoots[target]
+        var defense = (GetQualityEffect(_agents.Constitutions[target]) * 2)
+            + GetQualityEffect(_agents.SpiritualRoots[target])
             + (GetRealmCombatScale(target) / 4);
         var damage = ApplyPowerRatioAndVariance(actor, target, Math.Max(15, baseDamage - (defense / 3)));
         damage = ApplyGuard(target, damage);
@@ -211,10 +211,11 @@ public sealed partial class World
     private int ApplyPowerRatioAndVariance(int actor, int target, int baseDamage)
     {
         var actorPower = _agents.Power[actor].Total;
-        var targetPower = Math.Max(1, _agents.Power[target].Total);
-        var ratio = Math.Clamp(actorPower * 100 / targetPower, 70, 145);
+        var targetPower = Math.Max(1L, _agents.Power[target].Total);
+        var ratio = (int)Math.Clamp(actorPower * 100 / targetPower, 70L, 145L);
         var variance = 88 + _random.NextInt(25);
-        return Math.Max(1, checked(baseDamage * ratio * variance / 10_000));
+        var scaledDamage = checked((long)baseDamage * ratio * variance / 10_000);
+        return checked((int)Math.Clamp(scaledDamage, 1L, int.MaxValue));
     }
 
     private int ApplyGuard(int target, int damage)
@@ -234,8 +235,8 @@ public sealed partial class World
         _activeCombats--;
         _agents.Wins[winner]++;
         _agents.Losses[loser]++;
-        var winnerGain = 150 + Math.Min(350, _agents.Power[loser].Total / 400);
-        var loserGain = 70 + Math.Min(180, _agents.Power[winner].Total / 800);
+        var winnerGain = 150 + (int)Math.Min(350L, _agents.Power[loser].Total / 400);
+        var loserGain = 70 + (int)Math.Min(180L, _agents.Power[winner].Total / 800);
         _agents.CombatExperience[winner] = checked(_agents.CombatExperience[winner] + winnerGain);
         _agents.CombatExperience[loser] = checked(_agents.CombatExperience[loser] + loserGain);
         _agents.Health[loser] = Math.Max(1, _agents.Health[loser]);
@@ -258,12 +259,13 @@ public sealed partial class World
 
     private long CalculateCombatActionDuration(int index)
     {
-        var speedAptitude = (_agents.Bones[index] + _agents.Comprehensions[index]) / 2;
+        var speedAptitude = (GetQualityEffect(_agents.Bones[index]) + GetQualityEffect(_agents.Comprehensions[index])) / 2;
         var experienceReduction = Math.Min(5, _agents.CombatExperience[index] / 5_000);
         return Math.Max(5, 15 - (speedAptitude / 14) - experienceReduction);
     }
 
-    private int GetSpellQiCost(int index) => 55 + (_agents.SpellGrades[index] * 18);
+    private int GetSpellQiCost(int index) =>
+        55 + ((int)new QualityValue(_agents.SpellQualities[index]).Tier * 18);
 
     private int GetRealmCombatScale(int index)
     {

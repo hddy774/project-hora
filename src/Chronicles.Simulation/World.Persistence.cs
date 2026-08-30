@@ -66,9 +66,9 @@ public sealed partial class World
                 _agents.RealmStages[index],
                 _agents.RealmLayers[index],
                 _agents.CultivationProgress[index],
-                _agents.TechniqueGrades[index],
+                _agents.TechniqueQualities[index],
                 _agents.TechniqueMasteries[index],
-                _agents.SpellGrades[index],
+                _agents.SpellQualities[index],
                 _agents.SpellMasteries[index],
                 _agents.CombatExperience[index],
                 _agents.Wins[index],
@@ -123,9 +123,9 @@ public sealed partial class World
         _agents.RealmStages[index] = checkpoint.RealmStage;
         _agents.RealmLayers[index] = checkpoint.RealmLayer;
         _agents.CultivationProgress[index] = checkpoint.CultivationProgress;
-        _agents.TechniqueGrades[index] = checkpoint.TechniqueGrade;
+        _agents.TechniqueQualities[index] = checkpoint.TechniqueQuality;
         _agents.TechniqueMasteries[index] = checkpoint.TechniqueMastery;
-        _agents.SpellGrades[index] = checkpoint.SpellGrade;
+        _agents.SpellQualities[index] = checkpoint.SpellQuality;
         _agents.SpellMasteries[index] = checkpoint.SpellMastery;
         _agents.CombatExperience[index] = checkpoint.CombatExperience;
         _agents.Wins[index] = checkpoint.Wins;
@@ -169,6 +169,14 @@ public sealed partial class World
         {
             var agent = checkpoint.Agents[index];
             if (string.IsNullOrWhiteSpace(agent.Name)
+                || agent.SpiritualRoot > QualityValue.MaximumHundredths
+                || agent.Bone > QualityValue.MaximumHundredths
+                || agent.Constitution > QualityValue.MaximumHundredths
+                || agent.Comprehension > QualityValue.MaximumHundredths
+                || agent.Mind > QualityValue.MaximumHundredths
+                || agent.Soul > QualityValue.MaximumHundredths
+                || agent.TechniqueQuality > QualityValue.MaximumHundredths
+                || agent.SpellQuality > QualityValue.MaximumHundredths
                 || agent.RealmLayer is < 1 or > RealmRules.MinorStageCount
                 || agent.BirthTick < 0
                 || agent.BirthTick > checkpoint.Tick

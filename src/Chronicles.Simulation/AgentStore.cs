@@ -19,12 +19,12 @@ internal sealed class AgentStore
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
         Count = count;
         Names = new string[count];
-        SpiritualRoots = new byte[count];
-        Bones = new byte[count];
-        Constitutions = new byte[count];
-        Comprehensions = new byte[count];
-        Minds = new byte[count];
-        Souls = new byte[count];
+        SpiritualRoots = new ushort[count];
+        Bones = new ushort[count];
+        Constitutions = new ushort[count];
+        Comprehensions = new ushort[count];
+        Minds = new ushort[count];
+        Souls = new ushort[count];
         BirthTicks = new long[count];
         LifeNumbers = new int[count];
         BottleneckFailures = new ushort[count];
@@ -32,9 +32,9 @@ internal sealed class AgentStore
         RealmStages = new RealmStage[count];
         RealmLayers = new byte[count];
         CultivationProgress = new int[count];
-        TechniqueGrades = new byte[count];
+        TechniqueQualities = new ushort[count];
         TechniqueMasteries = new ushort[count];
-        SpellGrades = new byte[count];
+        SpellQualities = new ushort[count];
         SpellMasteries = new ushort[count];
         CombatExperience = new int[count];
         Wins = new int[count];
@@ -64,12 +64,12 @@ internal sealed class AgentStore
 
     public int Count { get; }
     public string[] Names { get; }
-    public byte[] SpiritualRoots { get; }
-    public byte[] Bones { get; }
-    public byte[] Constitutions { get; }
-    public byte[] Comprehensions { get; }
-    public byte[] Minds { get; }
-    public byte[] Souls { get; }
+    public ushort[] SpiritualRoots { get; }
+    public ushort[] Bones { get; }
+    public ushort[] Constitutions { get; }
+    public ushort[] Comprehensions { get; }
+    public ushort[] Minds { get; }
+    public ushort[] Souls { get; }
     public long[] BirthTicks { get; }
     public int[] LifeNumbers { get; }
     public ushort[] BottleneckFailures { get; }
@@ -77,9 +77,9 @@ internal sealed class AgentStore
     public RealmStage[] RealmStages { get; }
     public byte[] RealmLayers { get; }
     public int[] CultivationProgress { get; }
-    public byte[] TechniqueGrades { get; }
+    public ushort[] TechniqueQualities { get; }
     public ushort[] TechniqueMasteries { get; }
-    public byte[] SpellGrades { get; }
+    public ushort[] SpellQualities { get; }
     public ushort[] SpellMasteries { get; }
     public int[] CombatExperience { get; }
     public int[] Wins { get; }
@@ -114,12 +114,12 @@ internal sealed class AgentStore
     }
 
     public Aptitudes GetAptitudes(int index) => new(
-        SpiritualRoots[index],
-        Bones[index],
-        Constitutions[index],
-        Comprehensions[index],
-        Minds[index],
-        Souls[index]);
+        new QualityValue(SpiritualRoots[index]),
+        new QualityValue(Bones[index]),
+        new QualityValue(Constitutions[index]),
+        new QualityValue(Comprehensions[index]),
+        new QualityValue(Minds[index]),
+        new QualityValue(Souls[index]));
 
     public void RecalculatePower(int index)
     {
@@ -127,9 +127,9 @@ internal sealed class AgentStore
             RealmStages[index],
             RealmLayers[index],
             GetAptitudes(index),
-            TechniqueGrades[index],
+            new QualityValue(TechniqueQualities[index]),
             TechniqueMasteries[index],
-            SpellGrades[index],
+            new QualityValue(SpellQualities[index]),
             SpellMasteries[index],
             CombatExperience[index]);
     }
@@ -147,16 +147,20 @@ internal sealed class AgentStore
         RealmStages[index] = RealmStage.QiRefining;
         RealmLayers[index] = 1;
         CultivationProgress[index] = 0;
-        TechniqueGrades[index] = (byte)(1 + random.NextInt(3));
+        TechniqueQualities[index] = CreateQuality(random);
         TechniqueMasteries[index] = (ushort)(50 + random.NextInt(251));
-        SpellGrades[index] = (byte)(1 + random.NextInt(3));
+        SpellQualities[index] = CreateQuality(random);
         SpellMasteries[index] = (ushort)(40 + random.NextInt(221));
         CombatExperience[index] = 0;
         Wins[index] = 0;
         Losses[index] = 0;
-        MaximumHealth[index] = 800 + (Constitutions[index] * 8) + (Bones[index] * 3);
+        MaximumHealth[index] = 800
+            + (GetEffectiveWhole(Constitutions[index]) * 8)
+            + (GetEffectiveWhole(Bones[index]) * 3);
         Health[index] = MaximumHealth[index];
-        MaximumQi[index] = 500 + (SpiritualRoots[index] * 10) + (Comprehensions[index] * 2);
+        MaximumQi[index] = 500
+            + (GetEffectiveWhole(SpiritualRoots[index]) * 10)
+            + (GetEffectiveWhole(Comprehensions[index]) * 2);
         Qi[index] = MaximumQi[index];
         Activities[index] = AgentActivity.Cultivating;
         NextDecisionTicks[index] = checked(birthTick + 1 + random.NextInt(20));
@@ -171,8 +175,13 @@ internal sealed class AgentStore
         RecalculatePower(index);
     }
 
-    private static byte CreateAptitude(DeterministicRandom random) =>
-        (byte)(15 + ((random.NextInt(86) + random.NextInt(86)) / 2));
+    private static ushort CreateAptitude(DeterministicRandom random) => CreateQuality(random);
+
+    private static ushort CreateQuality(DeterministicRandom random) =>
+        checked((ushort)random.NextInt(QualityValue.MaximumHundredths + 1));
+
+    private static int GetEffectiveWhole(ushort rawQuality) =>
+        QualityRules.GetEffectiveWhole(new QualityValue(rawQuality));
 
     private static string CreateName(int index, DeterministicRandom random)
     {

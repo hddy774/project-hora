@@ -4,21 +4,21 @@ namespace Chronicles.Simulation;
 
 public sealed record AgentCheckpoint(
     string Name,
-    byte SpiritualRoot,
-    byte Bone,
-    byte Constitution,
-    byte Comprehension,
-    byte Mind,
-    byte Soul,
+    ushort SpiritualRoot,
+    ushort Bone,
+    ushort Constitution,
+    ushort Comprehension,
+    ushort Mind,
+    ushort Soul,
     long BirthTick,
     int LifeNumber,
     ushort BottleneckFailures,
     RealmStage RealmStage,
     byte RealmLayer,
     int CultivationProgress,
-    byte TechniqueGrade,
+    ushort TechniqueQuality,
     ushort TechniqueMastery,
-    byte SpellGrade,
+    ushort SpellQuality,
     ushort SpellMastery,
     int CombatExperience,
     int Wins,
@@ -56,5 +56,5 @@ public sealed record WorldCheckpoint(
     int TotalDeaths,
     int TotalReincarnations)
 {
-    public const int CurrentSchemaVersion = 2;
+    public const int CurrentSchemaVersion = 3;
 }

@@ -57,15 +57,20 @@ public enum WorldEventKind : byte
 }
 
 public readonly record struct Aptitudes(
-    byte SpiritualRoot,
-    byte Bone,
-    byte Constitution,
-    byte Comprehension,
-    byte Mind,
-    byte Soul)
+    QualityValue SpiritualRoot,
+    QualityValue Bone,
+    QualityValue Constitution,
+    QualityValue Comprehension,
+    QualityValue Mind,
+    QualityValue Soul)
 {
     public int RankingScore =>
-        SpiritualRoot + Bone + Constitution + Comprehension + Mind + Soul;
+        SpiritualRoot.Hundredths
+        + Bone.Hundredths
+        + Constitution.Hundredths
+        + Comprehension.Hundredths
+        + Mind.Hundredths
+        + Soul.Hundredths;
 }
 
 public enum ChronicleEventKind : byte
@@ -102,13 +107,13 @@ public readonly record struct LifeChronicleEntry(
     int Value);
 
 public readonly record struct CombatPowerBreakdown(
-    int Realm,
-    int Aptitude,
-    int Technique,
-    int Spell,
-    int Experience)
+    long Realm,
+    long Aptitude,
+    long Technique,
+    long Spell,
+    long Experience)
 {
-    public int Total => checked(Realm + Aptitude + Technique + Spell + Experience);
+    public long Total => checked(Realm + Aptitude + Technique + Spell + Experience);
 }
 
 public readonly record struct WorldEvent(
@@ -117,7 +122,7 @@ public readonly record struct WorldEvent(
     WorldEventKind Kind,
     AgentId PrimaryAgent,
     AgentId? SecondaryAgent,
-    int Value);
+    long Value);
 
 public sealed record AgentSnapshot(
     AgentId Id,
@@ -134,9 +139,9 @@ public sealed record AgentSnapshot(
     int CultivationProgress,
     int CultivationRequirement,
     Aptitudes Aptitudes,
-    int TechniqueGrade,
+    QualityValue TechniqueQuality,
     int TechniqueMastery,
-    int SpellGrade,
+    QualityValue SpellQuality,
     int SpellMastery,
     int CombatExperience,
     int Wins,
@@ -195,9 +200,9 @@ public static class CombatPowerFormula
         RealmStage realmStage,
         int realmLayer,
         Aptitudes aptitudes,
-        int techniqueGrade,
+        QualityValue techniqueQuality,
         int techniqueMastery,
-        int spellGrade,
+        QualityValue spellQuality,
         int spellMastery,
         int combatExperience)
     {
@@ -209,15 +214,17 @@ public static class CombatPowerFormula
         var stage = (int)realmStage + 1;
         var realm = checked((stage * stage * stage * 2_000) + (realmLayer * stage * stage * 250));
         var aptitude = checked(
-            (aptitudes.SpiritualRoot * 15)
-            + (aptitudes.Bone * 14)
-            + (aptitudes.Constitution * 13)
-            + (aptitudes.Comprehension * 14)
-            + (aptitudes.Mind * 10)
-            + (aptitudes.Soul * 8));
-        var technique = checked((techniqueGrade * 750) + (techniqueMastery * techniqueGrade * 3));
-        var spell = checked((spellGrade * 600) + (spellMastery * spellGrade * 2));
-        var experience = Math.Min(40_000, IntegerSquareRoot(Math.Max(0, combatExperience)) * 80);
+            ((QualityRules.GetEffectiveHundredths(aptitudes.SpiritualRoot) * 15)
+            + (QualityRules.GetEffectiveHundredths(aptitudes.Bone) * 14)
+            + (QualityRules.GetEffectiveHundredths(aptitudes.Constitution) * 13)
+            + (QualityRules.GetEffectiveHundredths(aptitudes.Comprehension) * 14)
+            + (QualityRules.GetEffectiveHundredths(aptitudes.Mind) * 10)
+            + (QualityRules.GetEffectiveHundredths(aptitudes.Soul) * 8)) / 100);
+        var techniqueEffect = QualityRules.GetEffectiveHundredths(techniqueQuality);
+        var technique = checked(techniqueEffect * (750L + (techniqueMastery * 3L)) / 100);
+        var spellEffect = QualityRules.GetEffectiveHundredths(spellQuality);
+        var spell = checked(spellEffect * (600L + (spellMastery * 2L)) / 100);
+        var experience = Math.Min(40_000L, IntegerSquareRoot(Math.Max(0, combatExperience)) * 80L);
         return new CombatPowerBreakdown(realm, aptitude, technique, spell, experience);
     }
 

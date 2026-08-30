@@ -8,6 +8,7 @@ var tests = new (string Name, Action Body)[]
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
+    ("8단계 품질 경계와 격차 배율", QualityTiersAndBoundaryMultipliers),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("동일 seed 결정론", DeterministicWorld),
@@ -154,6 +155,41 @@ static void KoreanLargeNumberFormatting()
     Equal("1조", KoreanNumberFormatter.Format(1_000_000_000_000), "조 단위 표기");
 }
 
+static void QualityTiersAndBoundaryMultipliers()
+{
+    Equal(8, QualityRules.All.Count, "품질 단계 수");
+    True(new QualityValue(999).Tier == QualityTier.Scrap, "9.99 미만 폐품");
+    True(new QualityValue(1_000).Tier == QualityTier.ExtremeLow, "10 이상 극하품");
+    True(new QualityValue(2_999).Tier == QualityTier.ExtremeLow, "29.99 극하품");
+    True(new QualityValue(3_000).Tier == QualityTier.Low, "30 이상 하품");
+    True(new QualityValue(3_999).Tier == QualityTier.Low, "39.99 하품");
+    True(new QualityValue(4_000).Tier == QualityTier.Medium, "40 이상 중품");
+    True(new QualityValue(5_999).Tier == QualityTier.Medium, "59.99 중품");
+    True(new QualityValue(6_000).Tier == QualityTier.High, "60 이상 상품");
+    True(new QualityValue(7_999).Tier == QualityTier.High, "79.99 상품");
+    True(new QualityValue(8_000).Tier == QualityTier.ExtremeHigh, "80 이상 극상품");
+    True(new QualityValue(8_999).Tier == QualityTier.ExtremeHigh, "89.99 극상품");
+    True(new QualityValue(9_000).Tier == QualityTier.Heaven, "90 이상 천품");
+    True(new QualityValue(9_999).Tier == QualityTier.Heaven, "99.99 천품");
+    True(new QualityValue(10_000).Tier == QualityTier.Flawless, "100 무결품");
+
+    BoundaryRatio(999, 1_000, 5m, "폐품→극하품");
+    BoundaryRatio(2_999, 3_000, 2m, "극하품→하품");
+    BoundaryRatio(3_999, 4_000, 1.5m, "하품→중품");
+    BoundaryRatio(5_999, 6_000, 1.5m, "중품→상품");
+    BoundaryRatio(7_999, 8_000, 2m, "상품→극상품");
+    BoundaryRatio(8_999, 9_000, 4m, "극상품→천품");
+    BoundaryRatio(9_999, 10_000, 10m, "천품→무결품");
+}
+
+static void BoundaryRatio(int lowerHundredths, int upperHundredths, decimal expected, string message)
+{
+    var lower = QualityRules.GetEffectiveHundredths(new QualityValue(checked((ushort)lowerHundredths)));
+    var upper = QualityRules.GetEffectiveHundredths(new QualityValue(checked((ushort)upperHundredths)));
+    var ratio = (decimal)upper / lower;
+    True(Math.Abs(ratio - expected) < 0.01m, $"{message} 경계 배율: expected≈{expected}, actual={ratio}");
+}
+
 static void CombatPowerAndRanking()
 {
     var world = World.CreateDefault(77);
@@ -162,7 +198,7 @@ static void CombatPowerAndRanking()
     Equal(1_000, snapshot.RealmRankings.Count, "경지 TOP 1000");
     Equal(1_000, snapshot.AptitudeRankings.Count, "자질 TOP 1000");
 
-    var previousPower = int.MaxValue;
+    var previousPower = long.MaxValue;
     foreach (var entry in snapshot.CombatPowerRankings)
     {
         True(entry.Category == RankingCategory.CombatPower, "전투력 랭킹 범주");

@@ -22,12 +22,12 @@ Chronicles.Tests ──> Core + Simulation
 
 ### Chronicles.Core
 
-안정 Agent ID, 정수 simulation tick, 고정된 정의 ID, 결정론적 난수와 전투력 값
+안정 Agent ID, 정수 simulation tick, 0.01 단위 공통 품질값과 경계 배율, 고정된 정의 ID, 결정론적 난수와 전투력 값
 타입을 소유한다. UI, 파일 시스템과 WPF를 참조하지 않는다.
 
 ### Chronicles.Simulation
 
-10,000명 권위 상태, AI 결정, 수행·돌파, 공법·법술, 전투 타임라인, 전투력과
+10,000명 권위 상태, AI 결정, 수행·돌파, 공법·법술 품질과 숙련, 전투 타임라인, 전투력과
 전투력·경지·자질 랭킹, 전체 인물 탐색, 생애 일대기, 수명 판정과 윤회를 소유한다. 렌더 프레임과 벽시계에 의존하지
 않는다. 안정 Agent ID는 영혼 슬롯으로 유지하고 생 번호·이름·탄생 tick으로 현생을
 구분한다.

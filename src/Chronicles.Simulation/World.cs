@@ -126,9 +126,9 @@ public sealed partial class World
             _agents.CultivationProgress[index],
             GetCultivationRequirement(index),
             _agents.GetAptitudes(index),
-            _agents.TechniqueGrades[index],
+            new QualityValue(_agents.TechniqueQualities[index]),
             _agents.TechniqueMasteries[index],
-            _agents.SpellGrades[index],
+            new QualityValue(_agents.SpellQualities[index]),
             _agents.SpellMasteries[index],
             _agents.CombatExperience[index],
             _agents.Wins[index],
@@ -265,9 +265,9 @@ public sealed partial class World
             Add(ref hash, (byte)_agents.RealmStages[index]);
             Add(ref hash, _agents.RealmLayers[index]);
             Add(ref hash, (ulong)_agents.CultivationProgress[index]);
-            Add(ref hash, _agents.TechniqueGrades[index]);
+            Add(ref hash, _agents.TechniqueQualities[index]);
             Add(ref hash, _agents.TechniqueMasteries[index]);
-            Add(ref hash, _agents.SpellGrades[index]);
+            Add(ref hash, _agents.SpellQualities[index]);
             Add(ref hash, _agents.SpellMasteries[index]);
             Add(ref hash, (ulong)_agents.CombatExperience[index]);
             Add(ref hash, (ulong)_agents.Wins[index]);
@@ -352,13 +352,18 @@ public sealed partial class World
             return;
         }
 
+        var spiritualRoot = GetQualityEffect(_agents.SpiritualRoots[index]);
+        var comprehension = GetQualityEffect(_agents.Comprehensions[index]);
+        var mind = GetQualityEffect(_agents.Minds[index]);
+        var soul = GetQualityEffect(_agents.Souls[index]);
+        var technique = GetQualityEffect(_agents.TechniqueQualities[index]);
         var rateBasisPoints = Math.Clamp(
             10_000
-            + ((_agents.SpiritualRoots[index] - 50) * 40)
-            + ((_agents.Comprehensions[index] - 50) * 40)
-            + ((_agents.Minds[index] - 50) * 20)
-            + ((_agents.Souls[index] - 50) * 10)
-            + ((_agents.TechniqueGrades[index] - 1) * 300),
+            + ((spiritualRoot - 50) * 40)
+            + ((comprehension - 50) * 40)
+            + ((mind - 50) * 20)
+            + ((soul - 50) * 10)
+            + ((technique - 50) * 10),
             3_000,
             18_000);
         var actionTicks = CalculateActivityDuration(index);
@@ -372,13 +377,14 @@ public sealed partial class World
         }
 
         var stagePenalty = ((int)_agents.RealmStages[index] * 550) + (_agents.RealmLayers[index] * 80);
+        var constitution = GetQualityEffect(_agents.Constitutions[index]);
         var chance = Math.Clamp(
             4_500
-            + (_agents.Comprehensions[index] * 30)
-            + (_agents.SpiritualRoots[index] * 20)
-            + (_agents.Constitutions[index] * 10)
-            + (_agents.Minds[index] * 10)
-            + (_agents.Souls[index] * 5)
+            + (comprehension * 30)
+            + (spiritualRoot * 20)
+            + (constitution * 10)
+            + (mind * 10)
+            + (soul * 5)
             - stagePenalty,
             1_200,
             9_500);
@@ -432,16 +438,18 @@ public sealed partial class World
     private void ResolveTechniqueTraining(int index)
     {
         var gain = 4
-            + (_agents.Comprehensions[index] / 8)
-            + (_agents.Bones[index] / 12)
-            + (_agents.Minds[index] / 20);
+            + (GetQualityEffect(_agents.Comprehensions[index]) / 8)
+            + (GetQualityEffect(_agents.Bones[index]) / 12)
+            + (GetQualityEffect(_agents.Minds[index]) / 20);
         var mastery = _agents.TechniqueMasteries[index] + gain;
-        if (mastery >= 1_000 && _agents.TechniqueGrades[index] < 5)
+        var currentQuality = new QualityValue(_agents.TechniqueQualities[index]);
+        if (mastery >= 1_000 && currentQuality.Tier < QualityTier.Flawless)
         {
-            _agents.TechniqueGrades[index]++;
+            var nextQuality = QualityRules.GetNextTierMinimum(currentQuality);
+            _agents.TechniqueQualities[index] = nextQuality.Hundredths;
             mastery = 250;
-            AddChronicle(index, ChronicleEventKind.TechniqueEnlightenment, _agents.TechniqueGrades[index]);
-            AddEvent(WorldEventKind.TechniqueEnlightenment, index, _agents.TechniqueGrades[index]);
+            AddChronicle(index, ChronicleEventKind.TechniqueEnlightenment, nextQuality.Hundredths);
+            AddEvent(WorldEventKind.TechniqueEnlightenment, index, nextQuality.Hundredths);
         }
 
         _agents.TechniqueMasteries[index] = (ushort)Math.Min(1_000, mastery);
@@ -450,16 +458,18 @@ public sealed partial class World
     private void ResolveSpellTraining(int index)
     {
         var gain = 4
-            + (_agents.Comprehensions[index] / 7)
-            + (_agents.SpiritualRoots[index] / 14)
-            + (_agents.Minds[index] / 18);
+            + (GetQualityEffect(_agents.Comprehensions[index]) / 7)
+            + (GetQualityEffect(_agents.SpiritualRoots[index]) / 14)
+            + (GetQualityEffect(_agents.Minds[index]) / 18);
         var mastery = _agents.SpellMasteries[index] + gain;
-        if (mastery >= 1_000 && _agents.SpellGrades[index] < 5)
+        var currentQuality = new QualityValue(_agents.SpellQualities[index]);
+        if (mastery >= 1_000 && currentQuality.Tier < QualityTier.Flawless)
         {
-            _agents.SpellGrades[index]++;
+            var nextQuality = QualityRules.GetNextTierMinimum(currentQuality);
+            _agents.SpellQualities[index] = nextQuality.Hundredths;
             mastery = 200;
-            AddChronicle(index, ChronicleEventKind.SpellEnlightenment, _agents.SpellGrades[index]);
-            AddEvent(WorldEventKind.SpellEnlightenment, index, _agents.SpellGrades[index]);
+            AddChronicle(index, ChronicleEventKind.SpellEnlightenment, nextQuality.Hundredths);
+            AddEvent(WorldEventKind.SpellEnlightenment, index, nextQuality.Hundredths);
         }
 
         _agents.SpellMasteries[index] = (ushort)Math.Min(1_000, mastery);
@@ -467,8 +477,8 @@ public sealed partial class World
 
     private void ResolveRecovery(int index)
     {
-        var healthGain = 20 + (_agents.Constitutions[index] * 4);
-        var qiGain = 15 + (_agents.SpiritualRoots[index] * 5);
+        var healthGain = 20 + (GetQualityEffect(_agents.Constitutions[index]) * 4);
+        var qiGain = 15 + (GetQualityEffect(_agents.SpiritualRoots[index]) * 5);
         _agents.Health[index] = Math.Min(_agents.MaximumHealth[index], _agents.Health[index] + healthGain);
         _agents.Qi[index] = Math.Min(_agents.MaximumQi[index], _agents.Qi[index] + qiGain);
     }
@@ -509,10 +519,10 @@ public sealed partial class World
     {
         return _agents.Activities[index] switch
         {
-            AgentActivity.Cultivating => Math.Max(30, 145 - ((_agents.SpiritualRoots[index] + _agents.Comprehensions[index]) / 2)),
-            AgentActivity.TrainingTechnique => Math.Max(34, 150 - ((_agents.Bones[index] + _agents.Comprehensions[index]) / 2)),
-            AgentActivity.TrainingSpell => Math.Max(34, 150 - ((_agents.SpiritualRoots[index] + _agents.Comprehensions[index]) / 2)),
-            AgentActivity.Recovering => Math.Max(24, 120 - _agents.Constitutions[index]),
+            AgentActivity.Cultivating => Math.Max(30, 145 - ((GetQualityEffect(_agents.SpiritualRoots[index]) + GetQualityEffect(_agents.Comprehensions[index])) / 2)),
+            AgentActivity.TrainingTechnique => Math.Max(34, 150 - ((GetQualityEffect(_agents.Bones[index]) + GetQualityEffect(_agents.Comprehensions[index])) / 2)),
+            AgentActivity.TrainingSpell => Math.Max(34, 150 - ((GetQualityEffect(_agents.SpiritualRoots[index]) + GetQualityEffect(_agents.Comprehensions[index])) / 2)),
+            AgentActivity.Recovering => Math.Max(24, 120 - GetQualityEffect(_agents.Constitutions[index])),
             AgentActivity.SeekingChallenge => 20,
             AgentActivity.Fighting => CalculateCombatActionDuration(index),
             AgentActivity.Reincarnating => GameCalendar.TicksPerYear,
@@ -592,7 +602,7 @@ public sealed partial class World
         return aptitudeComparison != 0 ? aptitudeComparison : left.CompareTo(right);
     }
 
-    private void AddEvent(WorldEventKind kind, int primaryAgent, int value, int? secondaryAgent = null)
+    private void AddEvent(WorldEventKind kind, int primaryAgent, long value, int? secondaryAgent = null)
     {
         if (_events.Count == EventCapacity)
         {
@@ -611,6 +621,9 @@ public sealed partial class World
     private long GetAgeYears(int index) => GameCalendar.GetAgeYears(
         new SimulationTick(_agents.BirthTicks[index]),
         Tick);
+
+    private static int GetQualityEffect(ushort rawQuality) =>
+        QualityRules.GetEffectiveWhole(new QualityValue(rawQuality));
 
     private bool HasReachedMaximumLifespan(int index) =>
         GetAgeYears(index) >= RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears;

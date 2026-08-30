@@ -214,14 +214,14 @@ public partial class MainWindow : Window, IDisposable
         CultivationProgressBar.Maximum = Math.Max(1, agent.CultivationRequirement);
         CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
         CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
-        RootText.Text = agent.Aptitudes.SpiritualRoot.ToString(CultureInfo.CurrentCulture);
-        BoneText.Text = agent.Aptitudes.Bone.ToString(CultureInfo.CurrentCulture);
-        ConstitutionText.Text = agent.Aptitudes.Constitution.ToString(CultureInfo.CurrentCulture);
-        ComprehensionText.Text = agent.Aptitudes.Comprehension.ToString(CultureInfo.CurrentCulture);
-        MindText.Text = agent.Aptitudes.Mind.ToString(CultureInfo.CurrentCulture);
-        SoulText.Text = agent.Aptitudes.Soul.ToString(CultureInfo.CurrentCulture);
-        TechniqueText.Text = $"{agent.TechniqueGrade}품 · 숙련 {KoreanNumberFormatter.Format(agent.TechniqueMastery)}";
-        SpellText.Text = $"{agent.SpellGrade}품 · 숙련 {KoreanNumberFormatter.Format(agent.SpellMastery)}";
+        RootText.Text = QualityRules.Format(agent.Aptitudes.SpiritualRoot);
+        BoneText.Text = QualityRules.Format(agent.Aptitudes.Bone);
+        ConstitutionText.Text = QualityRules.Format(agent.Aptitudes.Constitution);
+        ComprehensionText.Text = QualityRules.Format(agent.Aptitudes.Comprehension);
+        MindText.Text = QualityRules.Format(agent.Aptitudes.Mind);
+        SoulText.Text = QualityRules.Format(agent.Aptitudes.Soul);
+        TechniqueText.Text = $"{QualityRules.Format(agent.TechniqueQuality)} · 숙련 {KoreanNumberFormatter.Format(agent.TechniqueMastery)}";
+        SpellText.Text = $"{QualityRules.Format(agent.SpellQuality)} · 숙련 {KoreanNumberFormatter.Format(agent.SpellMastery)}";
         HealthText.Text = $"{KoreanNumberFormatter.Format(Math.Max(0, agent.Health))} / {KoreanNumberFormatter.Format(agent.MaximumHealth)}";
         QiText.Text = $"{KoreanNumberFormatter.Format(agent.Qi)} / {KoreanNumberFormatter.Format(agent.MaximumQi)}";
         RecordText.Text = $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · {KoreanNumberFormatter.Format(agent.CombatExperience)}";
@@ -243,7 +243,7 @@ public partial class MainWindow : Window, IDisposable
         SetPowerRow(ExperiencePowerBar, ExperiencePowerText, power.Experience, maximum);
     }
 
-    private static void SetPowerRow(ProgressBar bar, TextBlock label, int value, int maximum)
+    private static void SetPowerRow(ProgressBar bar, TextBlock label, long value, long maximum)
     {
         bar.Maximum = maximum;
         bar.Value = value;
@@ -259,7 +259,7 @@ public partial class MainWindow : Window, IDisposable
         {
             RankingCategory.CombatPower => KoreanNumberFormatter.Format(entry.CombatPower.Total),
             RankingCategory.Realm => KoreanNumberFormatter.Format(entry.Score % 1_000_000_000L),
-            RankingCategory.Aptitude => KoreanNumberFormatter.Format(entry.AptitudeScore),
+            RankingCategory.Aptitude => (entry.AptitudeScore / 100m).ToString("0.##", CultureInfo.CurrentCulture),
             _ => entry.Score.ToString(CultureInfo.CurrentCulture),
         },
         FormatActivity(entry.Activity));
@@ -285,8 +285,8 @@ public partial class MainWindow : Window, IDisposable
             WorldEventKind.MinorStageBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 소경지 돌파",
             WorldEventKind.BottleneckBreakthrough => $"{primary}, {worldEvent.Value:N0}번의 시도 끝에 병목 돌파",
             WorldEventKind.MajorRealmBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 대경지 돌파",
-            WorldEventKind.TechniqueEnlightenment => $"{primary}, 공법 {worldEvent.Value}품의 깨달음 획득",
-            WorldEventKind.SpellEnlightenment => $"{primary}, 법술 {worldEvent.Value}품의 깨달음 획득",
+            WorldEventKind.TechniqueEnlightenment => $"{primary}, 공법 {FormatQuality(worldEvent.Value)}의 깨달음 획득",
+            WorldEventKind.SpellEnlightenment => $"{primary}, 법술 {FormatQuality(worldEvent.Value)}의 깨달음 획득",
             WorldEventKind.Death => $"{primary}, {worldEvent.Value:N0}세에 수명을 다함",
             WorldEventKind.ReincarnationEntered => $"{primary}, 윤회의 강에 들어감",
             WorldEventKind.Rebirth => $"{primary}, 제 {worldEvent.Value:N0}생으로 환생",
@@ -323,8 +323,8 @@ public partial class MainWindow : Window, IDisposable
             ChronicleEventKind.BottleneckBreakthrough => $"{entry.Value:N0}번의 시도 끝에 병목을 돌파",
             ChronicleEventKind.MajorRealmBreakthrough => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage)} 대경지 돌파",
             ChronicleEventKind.BreakthroughFailure => "처음으로 현재 경지의 병목과 마주함",
-            ChronicleEventKind.TechniqueEnlightenment => $"공법 {entry.Value}품의 깨달음을 얻음",
-            ChronicleEventKind.SpellEnlightenment => $"법술 {entry.Value}품의 깨달음을 얻음",
+            ChronicleEventKind.TechniqueEnlightenment => $"공법 {FormatQuality(entry.Value)}의 깨달음을 얻음",
+            ChronicleEventKind.SpellEnlightenment => $"법술 {FormatQuality(entry.Value)}의 깨달음을 얻음",
             ChronicleEventKind.FortuitousEncounter => "인생을 바꾸는 기연을 만남",
             ChronicleEventKind.Death => $"{entry.Value:N0}세에 수명을 다함",
             ChronicleEventKind.ReincarnationEntered => "육신을 떠나 윤회의 강에 들어감",
@@ -355,12 +355,15 @@ public partial class MainWindow : Window, IDisposable
     private static string GetAgentName(WorldSnapshot snapshot, AgentId agentId) =>
         snapshot.AgentNames.TryGetValue(agentId.Value, out var name) ? name : agentId.ToString();
 
-    private static string FormatEncodedRealm(int encodedRealm)
+    private static string FormatEncodedRealm(long encodedRealm)
     {
         var stage = (RealmStage)(encodedRealm / 10);
-        var layer = encodedRealm % 10;
+        var layer = checked((int)(encodedRealm % 10));
         return FormatRealm(stage, layer);
     }
+
+    private static string FormatQuality(long hundredths) =>
+        QualityRules.Format(new QualityValue(checked((ushort)hundredths)));
 
     private static string FormatRealm(RealmStage stage, int layer)
     {

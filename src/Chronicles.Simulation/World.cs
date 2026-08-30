@@ -187,6 +187,7 @@ public sealed partial class World
             _agents.MissionsCompleted[index],
             GetActiveMissionSnapshot(index),
             _agents.GetInventoryItemCount(index),
+            GetMaterialHoldingSnapshots(index),
             GetEquippedTreasureSnapshots(index),
             _agents.Power[index]);
     }
@@ -312,6 +313,14 @@ public sealed partial class World
         Add(ref hash, (ulong)_rankingTotalAbsoluteMovement);
         var market = _market.CreateCheckpoint();
         Add(ref hash, (ulong)market.TreasurySpiritStones);
+        Add(ref hash, (ulong)market.PurchaseTransactions);
+        Add(ref hash, (ulong)market.SaleTransactions);
+        Add(ref hash, (ulong)market.MissionDeliveries);
+        Add(ref hash, (ulong)market.MaterialsProcessed);
+        Add(ref hash, (ulong)market.PillsProduced);
+        Add(ref hash, (ulong)market.TreasuresProduced);
+        Add(ref hash, (ulong)market.TechniqueBooksProduced);
+        Add(ref hash, (ulong)market.SpellBooksProduced);
         Add(ref hash, (ulong)market.TreasureQualityHundredths);
         for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
         {

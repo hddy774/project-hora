@@ -109,7 +109,7 @@ public partial class MainWindow : Window, IDisposable
         _applyingObservation = true;
         var snapshot = observation.World;
         _latestSnapshot = snapshot;
-        WorldTickText.Text = $"{KoreanNumberFormatter.Format(GameCalendar.GetYear(snapshot.Tick))}년";
+        WorldTickText.Text = FormatGameDate(GameCalendar.GetDate(snapshot.Tick));
         PopulationText.Text = KoreanNumberFormatter.Format(snapshot.Population);
         ActiveCombatText.Text = KoreanNumberFormatter.Format(snapshot.ActiveCombats);
         CompletedCombatText.Text = KoreanNumberFormatter.Format(snapshot.TotalCombatsCompleted);
@@ -125,7 +125,10 @@ public partial class MainWindow : Window, IDisposable
             UpdateRankingRows(snapshot);
             UpdateStatistics(snapshot);
             UpdateEventRows(snapshot);
-            UpdateSelectedAgent(observation.SelectedAgent, observation.SelectedChronicle);
+            UpdateSelectedAgent(
+                observation.SelectedAgent,
+                observation.SelectedPersonalLog,
+                observation.SelectedChronicle);
         }
         finally
         {
@@ -231,18 +234,32 @@ public partial class MainWindow : Window, IDisposable
                 FormatPopulationRatio(item.Count, snapshot.Population)))
             .ToArray();
         MarketTreasuryText.Text = $"도시 영석 {KoreanNumberFormatter.Format(snapshot.Market.TreasurySpiritStones)}";
+        CityTreasuryText.Text = $"{KoreanNumberFormatter.Format(snapshot.Market.TreasurySpiritStones)} 영석";
+        CityTransactionText.Text =
+            $"구매 {KoreanNumberFormatter.Format(snapshot.Market.PurchaseTransactions)}건 · 판매 {KoreanNumberFormatter.Format(snapshot.Market.SaleTransactions)}건";
+        CityMissionText.Text =
+            $"임무 납품 {KoreanNumberFormatter.Format(snapshot.Market.MissionDeliveries)}건 · 가공 재료 {KoreanNumberFormatter.Format(snapshot.Market.MaterialsProcessed)}개";
+        CityProductionText.Text =
+            $"단약 {KoreanNumberFormatter.Format(snapshot.Market.PillsProduced)} · 법보 {KoreanNumberFormatter.Format(snapshot.Market.TreasuresProduced)} · 공법서 {KoreanNumberFormatter.Format(snapshot.Market.TechniqueBooksProduced)} · 법술서 {KoreanNumberFormatter.Format(snapshot.Market.SpellBooksProduced)}";
+        CityInventoryText.Text =
+            $"총 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Stock))}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind == MarketGoodKind.Material).Sum(item => item.Stock))}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind != MarketGoodKind.Material).Sum(item => item.Stock))}개";
+        CityFlowText.Text =
+            $"공급 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Supply))} · 수요 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Demand))}";
         MarketGrid.ItemsSource = snapshot.Market.Goods
             .Select(item => new MarketRow(
                 FormatMarketGood(item),
                 KoreanNumberFormatter.Format(item.CityBasePrice),
                 KoreanNumberFormatter.Format(item.CurrentPrice),
+                FormatPriceChange(item.CityBasePrice, item.CurrentPrice),
                 KoreanNumberFormatter.Format(item.Stock),
-                $"{KoreanNumberFormatter.Format(item.Supply)} / {KoreanNumberFormatter.Format(item.Demand)}"))
+                KoreanNumberFormatter.Format(item.Supply),
+                KoreanNumberFormatter.Format(item.Demand)))
             .ToArray();
     }
 
     private void UpdateSelectedAgent(
         AgentSnapshot agent,
+        IReadOnlyList<PersonalLogEntry> personalLog,
         IReadOnlyList<LifeChronicleEntry> chronicle)
     {
         SelectedNameText.Text = agent.Name;
@@ -255,9 +272,12 @@ public partial class MainWindow : Window, IDisposable
         OpponentText.Text = agent.OpponentId is { } opponent
             ? GetAgentName(opponent)
             : "없음";
+        ActionScheduleText.Text =
+            $"누적 행동 {KoreanNumberFormatter.Format(agent.ActionsTaken)}회 · 마지막 {FormatOptionalGameDate(agent.LastActionDate)} · 다음 {FormatGameDate(GameCalendar.GetDate(agent.NextDecisionTick))}";
         CultivationProgressBar.Maximum = Math.Max(1, agent.CultivationRequirement);
         CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
         CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
+        CultivationStateText.Text = FormatCultivationState(agent.CultivationState, agent.BottleneckCause);
         RootText.Text = QualityRules.Format(agent.Aptitudes.SpiritualRoot);
         BoneText.Text = QualityRules.Format(agent.Aptitudes.Bone);
         ConstitutionText.Text = QualityRules.Format(agent.Aptitudes.Constitution);
@@ -268,7 +288,9 @@ public partial class MainWindow : Window, IDisposable
         SpellText.Text = $"{QualityRules.Format(agent.SpellQuality)} · 숙련 {KoreanNumberFormatter.Format(agent.SpellMastery)}";
         HealthText.Text = $"{KoreanNumberFormatter.Format(Math.Max(0, agent.Health))} / {KoreanNumberFormatter.Format(agent.MaximumHealth)}";
         QiText.Text = $"{KoreanNumberFormatter.Format(agent.Qi)} / {KoreanNumberFormatter.Format(agent.MaximumQi)}";
-        RecordText.Text = $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · {KoreanNumberFormatter.Format(agent.CombatExperience)}";
+        var battles = agent.Wins + agent.Losses;
+        var winRate = battles == 0 ? 0m : agent.Wins * 100m / battles;
+        RecordText.Text = $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · 승률 {winRate:0.##}% · 경험 {KoreanNumberFormatter.Format(agent.CombatExperience)}";
         SpiritStoneText.Text = $"{KoreanNumberFormatter.Format(agent.SpiritStones)}개";
         PillInventoryText.Text = $"수행단 {agent.GrowthPills:N0} · 돌파단 {agent.BreakthroughPills:N0}";
         MissionText.Text = agent.ActiveMission is { } mission
@@ -279,7 +301,17 @@ public partial class MainWindow : Window, IDisposable
             "  ·  ",
             agent.EquippedTreasures.Select(item =>
                 $"{FormatTreasureSlot(item.Slot)} {(item.Quality is { } quality ? QualityRules.Format(quality) : "미장착")}"));
+        MaterialDetailText.Text = agent.Materials.Count == 0
+            ? "보유 재료 없음"
+            : string.Join(
+                "  ·  ",
+                agent.Materials.Select(item =>
+                    $"{EconomyRules.GetMaterial(item.Material).KoreanName} {KoreanNumberFormatter.Format(item.Count)}"));
         SetPowerBreakdown(agent.CombatPower);
+        PersonalLogList.ItemsSource = personalLog
+            .Reverse()
+            .Select(entry => FormatPersonalLog(agent, entry))
+            .ToArray();
         ChronicleList.ItemsSource = chronicle
             .Reverse()
             .Select(FormatChronicle)
@@ -379,7 +411,7 @@ public partial class MainWindow : Window, IDisposable
             WorldEventKind.BreakthroughFailed or WorldEventKind.CombatRetreated => (Brush)FindResource("DangerBrush"),
             _ => (Brush)FindResource("PrimaryTextBrush"),
         };
-        return new EventRow($"T+{worldEvent.Tick.Value:N0}", summary, color);
+        return new EventRow(FormatGameDate(GameCalendar.GetDate(worldEvent.Tick)), summary, color);
     }
 
     private EventRow FormatChronicle(LifeChronicleEntry entry)
@@ -412,10 +444,136 @@ public partial class MainWindow : Window, IDisposable
             _ => (Brush)FindResource("PrimaryTextBrush"),
         };
         return new EventRow(
-            $"제 {entry.LifeNumber:N0}생 · {entry.AgeYears:N0}세 · 세계 {GameCalendar.GetYear(entry.Tick):N0}년",
+            $"제 {entry.LifeNumber:N0}생 · {entry.AgeYears:N0}세 · 세계 {FormatGameDate(GameCalendar.GetDate(entry.Tick))}",
             summary,
             color);
     }
+
+    private EventRow FormatPersonalLog(AgentSnapshot agent, PersonalLogEntry entry)
+    {
+        var related = entry.RelatedAgent is { } relatedAgent
+            ? GetAgentName(relatedAgent)
+            : "";
+        var summary = entry.Kind switch
+        {
+            PersonalLogKind.ActionCompleted when entry.Activity is { } activity =>
+                $"{FormatActivity(activity)} 행동을 마침",
+            PersonalLogKind.WorldEvent when entry.WorldEventKind is { } eventKind =>
+                FormatPersonalWorldEvent(entry, eventKind, related),
+            PersonalLogKind.Chronicle when entry.ChronicleEventKind is { } chronicleKind =>
+                FormatPersonalChronicle(chronicleKind, entry.Value),
+            _ => "기록을 확인할 수 없음",
+        };
+        var color = entry.Kind switch
+        {
+            PersonalLogKind.Chronicle => (Brush)FindResource("AccentBrush"),
+            PersonalLogKind.WorldEvent when entry.WorldEventKind is
+                WorldEventKind.CombatEnded or WorldEventKind.MissionCompleted =>
+                entry.IsPrimaryActor
+                    ? (Brush)FindResource("PositiveBrush")
+                    : (Brush)FindResource("DangerBrush"),
+            PersonalLogKind.WorldEvent when entry.WorldEventKind is
+                WorldEventKind.BreakthroughFailed or WorldEventKind.CombatRetreated =>
+                (Brush)FindResource("DangerBrush"),
+            _ => (Brush)FindResource("PrimaryTextBrush"),
+        };
+        return new EventRow(
+            $"제 {entry.LifeNumber:N0}생 · {FormatGameDate(GameCalendar.GetDate(entry.Tick))} · {agent.Id}",
+            summary,
+            color);
+    }
+
+    private static string FormatPersonalWorldEvent(
+        PersonalLogEntry entry,
+        WorldEventKind kind,
+        string related) => kind switch
+    {
+        WorldEventKind.NewLeader => entry.IsPrimaryActor ? "새로운 전투력 1위에 오름" : "전투력 1위 자리를 내어줌",
+        WorldEventKind.CombatStarted => entry.IsPrimaryActor ? $"{related}에게 도전" : $"{related}의 도전을 받음",
+        WorldEventKind.CombatPhysicalAttack => entry.IsPrimaryActor
+            ? $"{related}에게 공법 공격 · 피해 {entry.Value:N0}"
+            : $"{related}의 공법 공격을 받음 · 피해 {entry.Value:N0}",
+        WorldEventKind.CombatSpellCast => entry.IsPrimaryActor
+            ? $"{related}에게 법술 사용 · 피해 {entry.Value:N0}"
+            : $"{related}의 법술을 받음 · 피해 {entry.Value:N0}",
+        WorldEventKind.CombatGuarded => entry.IsPrimaryActor ? "다음 공격에 대비해 방어" : $"{related}이 방어 태세를 취함",
+        WorldEventKind.CombatRetreated => entry.IsPrimaryActor ? $"{related}과의 전투에서 이탈" : $"{related}이 전투에서 이탈",
+        WorldEventKind.CombatEnded => entry.IsPrimaryActor
+            ? $"{related}에게 승리 · 경험 +{entry.Value:N0}"
+            : $"{related}에게 패배",
+        WorldEventKind.MissionCompleted => $"도시 임무 완료 · 영석 +{KoreanNumberFormatter.Format(entry.Value)}",
+        WorldEventKind.TreasureCrafted => $"{FormatQuality(entry.Value)} 법보 제작",
+        WorldEventKind.PillCrafted => $"{FormatPill((PillKind)entry.Value)} 제작",
+        WorldEventKind.PillPurchased => $"{FormatPill((PillKind)entry.Value)} 구매",
+        WorldEventKind.MaterialSold => $"{EconomyRules.GetMaterial((MaterialId)entry.Value).KoreanName} 판매",
+        WorldEventKind.MaterialPurchased => $"{EconomyRules.GetMaterial((MaterialId)entry.Value).KoreanName} 구매",
+        WorldEventKind.TreasurePurchased => $"{FormatQuality(entry.Value)} 법보 구매",
+        WorldEventKind.TechniqueBookPurchased => $"공법서로 {FormatQuality(entry.Value)} 공법 습득",
+        WorldEventKind.SpellBookPurchased => $"법술서로 {FormatQuality(entry.Value)} 법술 습득",
+        _ => kind.ToString(),
+    };
+
+    private static string FormatPersonalChronicle(ChronicleEventKind kind, long value) => kind switch
+    {
+        ChronicleEventKind.Birth => "세상에 태어남",
+        ChronicleEventKind.MinorStageBreakthrough => "소경지 돌파",
+        ChronicleEventKind.BottleneckBreakthrough => $"{value:N0}번의 실패 끝에 병목 돌파",
+        ChronicleEventKind.MajorRealmBreakthrough => "대경지 돌파",
+        ChronicleEventKind.BreakthroughFailure => "처음으로 현재 경지의 병목과 마주함",
+        ChronicleEventKind.TechniqueEnlightenment => $"공법 {FormatQuality(value)}의 깨달음",
+        ChronicleEventKind.SpellEnlightenment => $"법술 {FormatQuality(value)}의 깨달음",
+        ChronicleEventKind.FortuitousEncounter => "인생을 바꾸는 기연",
+        ChronicleEventKind.Death => $"{value:N0}세에 수명을 다함",
+        ChronicleEventKind.ReincarnationEntered => "윤회의 강에 들어감",
+        ChronicleEventKind.Rebirth => "새로운 육신으로 환생",
+        _ => kind.ToString(),
+    };
+
+    private static string FormatGameDate(GameDate date) =>
+        $"{KoreanNumberFormatter.Format(date.Year)}년 {date.Month:N0}월 {date.Day:N0}일";
+
+    private static string FormatOptionalGameDate(GameDate? date) =>
+        date is { } value ? FormatGameDate(value) : "아직 없음";
+
+    private static string FormatPriceChange(int basePrice, int currentPrice)
+    {
+        if (basePrice <= 0)
+        {
+            return "-";
+        }
+
+        var change = (currentPrice - basePrice) * 100m / basePrice;
+        return change switch
+        {
+            > 0 => $"+{change:0.##}%",
+            < 0 => $"{change:0.##}%",
+            _ => "0%",
+        };
+    }
+
+    private static string FormatCultivationState(
+        CultivationState state,
+        CultivationBottleneckCause cause) => state switch
+    {
+        CultivationState.Progressing => "현재 단계의 수행 Work를 축적하는 중",
+        CultivationState.PreparingBreakthrough => "돌파 준비 중 · 다음 월에 Preflight 검증",
+        CultivationState.PreflightReady => "돌파 Preflight 준비 완료 · 다음 월에 시도",
+        CultivationState.AttemptingBreakthrough => "돌파 시도 중",
+        CultivationState.Bottleneck => $"병목 · 원인: {FormatBottleneckCause(cause)}",
+        CultivationState.Stabilizing => "돌파 성공 · 새 경지 안착 중",
+        CultivationState.Completed => "반선경 대원만 · 현재 수행체계 완성",
+        _ => state.ToString(),
+    };
+
+    private static string FormatBottleneckCause(CultivationBottleneckCause cause) => cause switch
+    {
+        CultivationBottleneckCause.Knowledge => "공법·법술 이해",
+        CultivationBottleneckCause.Body => "육신 기반",
+        CultivationBottleneckCause.SpiritualRoot => "영근·영력 운용",
+        CultivationBottleneckCause.Resources => "돌파 자원",
+        CultivationBottleneckCause.Stability => "정신·영혼 안정성",
+        _ => "미확인",
+    };
 
     private string GetAgentName(AgentId agentId) =>
         _latestSnapshot is null ? agentId.ToString() : GetAgentName(_latestSnapshot, agentId);

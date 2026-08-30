@@ -9,6 +9,14 @@ internal sealed class CityMarket
     private readonly long[] _supply;
     private readonly long[] _demand;
     private long _treasureQualityHundredths;
+    private long _purchaseTransactions;
+    private long _saleTransactions;
+    private long _missionDeliveries;
+    private long _materialsProcessed;
+    private long _pillsProduced;
+    private long _treasuresProduced;
+    private long _techniqueBooksProduced;
+    private long _spellBooksProduced;
 
     public CityMarket(int population)
     {
@@ -39,6 +47,14 @@ internal sealed class CityMarket
         _supply = checkpoint.Supply.ToArray();
         _demand = checkpoint.Demand.ToArray();
         _treasureQualityHundredths = checkpoint.TreasureQualityHundredths;
+        _purchaseTransactions = checkpoint.PurchaseTransactions;
+        _saleTransactions = checkpoint.SaleTransactions;
+        _missionDeliveries = checkpoint.MissionDeliveries;
+        _materialsProcessed = checkpoint.MaterialsProcessed;
+        _pillsProduced = checkpoint.PillsProduced;
+        _treasuresProduced = checkpoint.TreasuresProduced;
+        _techniqueBooksProduced = checkpoint.TechniqueBooksProduced;
+        _spellBooksProduced = checkpoint.SpellBooksProduced;
     }
 
     public long TreasurySpiritStones { get; private set; }
@@ -59,6 +75,7 @@ internal sealed class CityMarket
 
         _stock[goodId] -= count;
         _demand[goodId] = checked(_demand[goodId] + count);
+        _purchaseTransactions = checked(_purchaseTransactions + 1);
         TreasurySpiritStones = checked(TreasurySpiritStones + cost);
         Reprice(goodId);
         return true;
@@ -75,6 +92,7 @@ internal sealed class CityMarket
         }
 
         TreasurySpiritStones -= proceeds;
+        _saleTransactions = checked(_saleTransactions + 1);
         AddSupply(goodId, count);
         return true;
     }
@@ -86,6 +104,7 @@ internal sealed class CityMarket
         var reward = checked(((long)_prices[goodId] * count) + realmBonus);
         reward = Math.Min(reward, TreasurySpiritStones);
         TreasurySpiritStones -= reward;
+        _missionDeliveries = checked(_missionDeliveries + 1);
         AddSupply(goodId, count);
         return reward;
     }
@@ -101,6 +120,11 @@ internal sealed class CityMarket
 
         _stock[goodId] -= count;
         _demand[goodId] = checked(_demand[goodId] + count);
+        if (EconomyRules.GetMarketGood(goodId).Kind == MarketGoodKind.Material)
+        {
+            _materialsProcessed = checked(_materialsProcessed + count);
+        }
+
         Reprice(goodId);
         return true;
     }
@@ -108,7 +132,22 @@ internal sealed class CityMarket
     public void AddCityProduction(int goodId, int count)
     {
         ValidateCount(count);
-        AddSupply(ValidateGood(goodId), count);
+        goodId = ValidateGood(goodId);
+        switch (EconomyRules.GetMarketGood(goodId).Kind)
+        {
+            case MarketGoodKind.GrowthPill:
+            case MarketGoodKind.BreakthroughPill:
+                _pillsProduced = checked(_pillsProduced + count);
+                break;
+            case MarketGoodKind.TechniqueBook:
+                _techniqueBooksProduced = checked(_techniqueBooksProduced + count);
+                break;
+            case MarketGoodKind.SpellBook:
+                _spellBooksProduced = checked(_spellBooksProduced + count);
+                break;
+        }
+
+        AddSupply(goodId, count);
     }
 
     public bool TrySpendTreasury(int amount)
@@ -126,6 +165,7 @@ internal sealed class CityMarket
     public void AddTreasureProduction(QualityValue quality)
     {
         _treasureQualityHundredths = checked(_treasureQualityHundredths + quality.Hundredths);
+        _treasuresProduced = checked(_treasuresProduced + 1);
         AddSupply(EconomyRules.TreasureGoodId, 1);
     }
 
@@ -174,11 +214,29 @@ internal sealed class CityMarket
                 _demand[goodId]);
         }
 
-        return new CityMarketSnapshot(TreasurySpiritStones, goods);
+        return new CityMarketSnapshot(
+            TreasurySpiritStones,
+            _purchaseTransactions,
+            _saleTransactions,
+            _missionDeliveries,
+            _materialsProcessed,
+            _pillsProduced,
+            _treasuresProduced,
+            _techniqueBooksProduced,
+            _spellBooksProduced,
+            goods);
     }
 
     public CityMarketCheckpoint CreateCheckpoint() => new(
         TreasurySpiritStones,
+        _purchaseTransactions,
+        _saleTransactions,
+        _missionDeliveries,
+        _materialsProcessed,
+        _pillsProduced,
+        _treasuresProduced,
+        _techniqueBooksProduced,
+        _spellBooksProduced,
         _stock.ToArray(),
         _prices.ToArray(),
         _supply.ToArray(),

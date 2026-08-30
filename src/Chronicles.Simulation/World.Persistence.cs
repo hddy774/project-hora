@@ -259,6 +259,14 @@ public sealed partial class World
 
         if (checkpoint.Market is null
             || checkpoint.Market.TreasurySpiritStones < 0
+            || checkpoint.Market.PurchaseTransactions < 0
+            || checkpoint.Market.SaleTransactions < 0
+            || checkpoint.Market.MissionDeliveries < 0
+            || checkpoint.Market.MaterialsProcessed < 0
+            || checkpoint.Market.PillsProduced < 0
+            || checkpoint.Market.TreasuresProduced < 0
+            || checkpoint.Market.TechniqueBooksProduced < 0
+            || checkpoint.Market.SpellBooksProduced < 0
             || checkpoint.Market.Stock is not { Length: EconomyRules.MarketGoodCount }
             || checkpoint.Market.Prices is not { Length: EconomyRules.MarketGoodCount }
             || checkpoint.Market.Supply is not { Length: EconomyRules.MarketGoodCount }

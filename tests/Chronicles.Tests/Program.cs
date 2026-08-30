@@ -524,6 +524,14 @@ static void EconomyLoop()
     True(
         market.Goods.Single(item => item.Kind == MarketGoodKind.SpellBook).Supply > 0,
         "도시는 영석으로 법술서를 생산해야 합니다.");
+    True(market.PurchaseTransactions > 0, "도시 시장 구매 거래 누계");
+    True(market.SaleTransactions > 0, "도시 시장 판매 거래 누계");
+    Equal((long)world.TotalMissionsCompleted, market.MissionDeliveries, "도시 임무 납품 누계");
+    True(market.MaterialsProcessed > 0, "도시 가공 재료 누계");
+    True(market.PillsProduced > 0, "도시 단약 생산 누계");
+    True(market.TreasuresProduced > 0, "도시 법보 생산 누계");
+    True(market.TechniqueBooksProduced > 0, "도시 공법서 생산 누계");
+    True(market.SpellBooksProduced > 0, "도시 법술서 생산 누계");
 
     var agentsWithEquipment = 0;
     var agentsWithPills = 0;
@@ -532,6 +540,7 @@ static void EconomyLoop()
     {
         var agent = world.GetAgentSnapshot(new AgentId(index));
         Equal(7, agent.EquippedTreasures.Count, "개별 법보 슬롯 수");
+        Equal(agent.InventoryItemCount, agent.Materials.Sum(item => item.Count), "개별 재료 상세 합계");
         if (agent.EquippedTreasures.Any(item => item.Quality is not null))
         {
             agentsWithEquipment++;
@@ -569,6 +578,8 @@ static void SaveCodecRoundTrip()
     Equal(checkpoint.LastRankingRefreshTick, decoded.LastRankingRefreshTick, "저장 왕복 랭킹 갱신 시점");
     Equal(checkpoint.RankingRisenCount, decoded.RankingRisenCount, "저장 왕복 순위 상승 집계");
     Equal(checkpoint.Market.TreasurySpiritStones, decoded.Market.TreasurySpiritStones, "저장 왕복 도시 영석");
+    Equal(checkpoint.Market.PurchaseTransactions, decoded.Market.PurchaseTransactions, "저장 왕복 도시 구매 거래");
+    Equal(checkpoint.Market.MaterialsProcessed, decoded.Market.MaterialsProcessed, "저장 왕복 도시 가공 누계");
     True(checkpoint.Market.Stock.SequenceEqual(decoded.Market.Stock), "저장 왕복 시장 재고");
     True(checkpoint.Market.Prices.SequenceEqual(decoded.Market.Prices), "저장 왕복 시장 가격");
     Equal(checkpoint.Agents[0].Name, decoded.Agents[0].Name, "저장 왕복 첫 Agent 이름");

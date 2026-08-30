@@ -471,6 +471,21 @@ public sealed partial class World
             _agents.GetMaterialCount(index, material));
     }
 
+    private MaterialHoldingSnapshot[] GetMaterialHoldingSnapshots(int index)
+    {
+        var holdings = new List<MaterialHoldingSnapshot>();
+        foreach (var definition in EconomyRules.AllMaterials)
+        {
+            var count = _agents.GetMaterialCount(index, definition.Id);
+            if (count > 0)
+            {
+                holdings.Add(new MaterialHoldingSnapshot(definition.Id, count));
+            }
+        }
+
+        return holdings.ToArray();
+    }
+
     private EquippedTreasureSnapshot[] GetEquippedTreasureSnapshots(int index)
     {
         var equipment = new EquippedTreasureSnapshot[EconomyRules.TreasureSlotCount];

@@ -183,6 +183,10 @@ public readonly record struct ActiveMissionSnapshot(
     int RequiredCount,
     int HeldCount);
 
+public readonly record struct MaterialHoldingSnapshot(
+    MaterialId Material,
+    int Count);
+
 public readonly record struct EquippedTreasureSnapshot(
     TreasureSlot Slot,
     QualityValue? Quality);
@@ -234,6 +238,14 @@ public readonly record struct MarketGoodSnapshot(
 
 public sealed record CityMarketSnapshot(
     long TreasurySpiritStones,
+    long PurchaseTransactions,
+    long SaleTransactions,
+    long MissionDeliveries,
+    long MaterialsProcessed,
+    long PillsProduced,
+    long TreasuresProduced,
+    long TechniqueBooksProduced,
+    long SpellBooksProduced,
     IReadOnlyList<MarketGoodSnapshot> Goods);
 
 public sealed record AgentSnapshot(
@@ -277,6 +289,7 @@ public sealed record AgentSnapshot(
     int MissionsCompleted,
     ActiveMissionSnapshot? ActiveMission,
     int InventoryItemCount,
+    IReadOnlyList<MaterialHoldingSnapshot> Materials,
     IReadOnlyList<EquippedTreasureSnapshot> EquippedTreasures,
     CombatPowerBreakdown CombatPower);
 

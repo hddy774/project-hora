@@ -54,6 +54,14 @@ public sealed record AgentCheckpoint(
 
 public sealed record CityMarketCheckpoint(
     long TreasurySpiritStones,
+    long PurchaseTransactions,
+    long SaleTransactions,
+    long MissionDeliveries,
+    long MaterialsProcessed,
+    long PillsProduced,
+    long TreasuresProduced,
+    long TechniqueBooksProduced,
+    long SpellBooksProduced,
     int[] Stock,
     int[] Prices,
     long[] Supply,

@@ -25,5 +25,7 @@ internal sealed record MarketRow(
     string Name,
     string BasePrice,
     string CurrentPrice,
+    string Change,
     string Stock,
-    string SupplyDemand);
+    string Supply,
+    string Demand);

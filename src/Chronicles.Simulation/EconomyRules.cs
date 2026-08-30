@@ -58,11 +58,27 @@ public enum PillKind : byte
     Breakthrough,
 }
 
+public enum MarketGoodKind : byte
+{
+    Material,
+    GrowthPill,
+    BreakthroughPill,
+    Treasure,
+    TechniqueBook,
+    SpellBook,
+}
+
 public readonly record struct MaterialDefinition(
     MaterialId Id,
     string KoreanName,
     MaterialCategory Category,
-    int ShopSellPrice);
+    int CityBasePrice);
+
+public readonly record struct MarketGoodDefinition(
+    int Id,
+    MarketGoodKind Kind,
+    MaterialId? Material,
+    int CityBasePrice);
 
 public static class EconomyRules
 {
@@ -72,6 +88,17 @@ public static class EconomyRules
     public const int MissionRequiredItems = 2;
     public const int GrowthPillPrice = 50;
     public const int BreakthroughPillPrice = 100;
+    public const int MarketGoodCount = MaterialCount + 5;
+    public const int GrowthPillGoodId = MaterialCount;
+    public const int BreakthroughPillGoodId = MaterialCount + 1;
+    public const int TreasureGoodId = MaterialCount + 2;
+    public const int TechniqueBookGoodId = MaterialCount + 3;
+    public const int SpellBookGoodId = MaterialCount + 4;
+    public const int TreasureBasePrice = 240;
+    public const int TechniqueBookBasePrice = 300;
+    public const int SpellBookBasePrice = 300;
+    public const int TechniqueBookProductionCost = 150;
+    public const int SpellBookProductionCost = 150;
 
     private static readonly MaterialDefinition[] Materials =
     [
@@ -126,6 +153,36 @@ public static class EconomyRules
         PillKind.Breakthrough => BreakthroughPillPrice,
         _ => throw new ArgumentOutOfRangeException(nameof(kind)),
     };
+
+    public static int GetPillGoodId(PillKind kind) => kind switch
+    {
+        PillKind.Growth => GrowthPillGoodId,
+        PillKind.Breakthrough => BreakthroughPillGoodId,
+        _ => throw new ArgumentOutOfRangeException(nameof(kind)),
+    };
+
+    public static MarketGoodDefinition GetMarketGood(int goodId)
+    {
+        if (goodId is >= 0 and < MaterialCount)
+        {
+            var material = GetMaterial((MaterialId)goodId);
+            return new MarketGoodDefinition(
+                goodId,
+                MarketGoodKind.Material,
+                material.Id,
+                material.CityBasePrice);
+        }
+
+        return goodId switch
+        {
+            GrowthPillGoodId => new(goodId, MarketGoodKind.GrowthPill, null, GrowthPillPrice),
+            BreakthroughPillGoodId => new(goodId, MarketGoodKind.BreakthroughPill, null, BreakthroughPillPrice),
+            TreasureGoodId => new(goodId, MarketGoodKind.Treasure, null, TreasureBasePrice),
+            TechniqueBookGoodId => new(goodId, MarketGoodKind.TechniqueBook, null, TechniqueBookBasePrice),
+            SpellBookGoodId => new(goodId, MarketGoodKind.SpellBook, null, SpellBookBasePrice),
+            _ => throw new ArgumentOutOfRangeException(nameof(goodId)),
+        };
+    }
 
     public static bool IsArmor(TreasureSlot slot) =>
         slot is TreasureSlot.ArmorOne or TreasureSlot.ArmorTwo or TreasureSlot.ArmorThree;

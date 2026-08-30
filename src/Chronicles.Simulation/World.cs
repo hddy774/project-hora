@@ -7,6 +7,7 @@ public sealed partial class World
     private const int EventCapacity = 512;
     private readonly DeterministicRandom _random;
     private readonly AgentStore _agents;
+    private readonly CityMarket _market;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
     private readonly int[] _agentByRank;
     private readonly int[] _rankByAgent;
@@ -40,6 +41,7 @@ public sealed partial class World
         Seed = seed;
         _random = new DeterministicRandom(seed);
         _agents = new AgentStore(population);
+        _market = new CityMarket(population);
         _agentByRank = new int[population];
         _rankByAgent = new int[population];
         _agentByRealmRank = new int[population];
@@ -184,6 +186,7 @@ public sealed partial class World
             _agentByAptitudeRank,
             actualRankingCount);
         var statistics = CreateStatistics();
+        var market = _market.CreateSnapshot();
 
         var recentEvents = _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray();
         var agentNames = new Dictionary<int, string>((actualRankingCount * 3) + (recentEvents.Length * 2));
@@ -208,6 +211,7 @@ public sealed partial class World
             realmRankings,
             aptitudeRankings,
             statistics,
+            market,
             agentNames,
             recentEvents,
             _totalBreakthroughs,
@@ -282,6 +286,16 @@ public sealed partial class World
         Add(ref hash, (ulong)_rankingFallenCount);
         Add(ref hash, (ulong)_rankingUnchangedCount);
         Add(ref hash, (ulong)_rankingTotalAbsoluteMovement);
+        var market = _market.CreateCheckpoint();
+        Add(ref hash, (ulong)market.TreasurySpiritStones);
+        Add(ref hash, (ulong)market.TreasureQualityHundredths);
+        for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
+        {
+            Add(ref hash, (ulong)market.Stock[goodId]);
+            Add(ref hash, (ulong)market.Prices[goodId]);
+            Add(ref hash, (ulong)market.Supply[goodId]);
+            Add(ref hash, (ulong)market.Demand[goodId]);
+        }
         for (var index = 0; index < Population; index++)
         {
             Add(ref hash, (ulong)index);

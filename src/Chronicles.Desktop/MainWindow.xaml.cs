@@ -230,6 +230,15 @@ public partial class MainWindow : Window, IDisposable
                 KoreanNumberFormatter.Format(item.Count),
                 FormatPopulationRatio(item.Count, snapshot.Population)))
             .ToArray();
+        MarketTreasuryText.Text = $"도시 영석 {KoreanNumberFormatter.Format(snapshot.Market.TreasurySpiritStones)}";
+        MarketGrid.ItemsSource = snapshot.Market.Goods
+            .Select(item => new MarketRow(
+                FormatMarketGood(item),
+                KoreanNumberFormatter.Format(item.CityBasePrice),
+                KoreanNumberFormatter.Format(item.CurrentPrice),
+                KoreanNumberFormatter.Format(item.Stock),
+                $"{KoreanNumberFormatter.Format(item.Supply)} / {KoreanNumberFormatter.Format(item.Demand)}"))
+            .ToArray();
     }
 
     private void UpdateSelectedAgent(
@@ -341,6 +350,10 @@ public partial class MainWindow : Window, IDisposable
             WorldEventKind.PillCrafted => $"{primary}, {FormatPill((PillKind)worldEvent.Value)} 제작",
             WorldEventKind.PillPurchased => $"{primary}, 영석으로 {FormatPill((PillKind)worldEvent.Value)} 구매",
             WorldEventKind.MaterialSold => $"{primary}, {EconomyRules.GetMaterial((MaterialId)worldEvent.Value).KoreanName} 판매",
+            WorldEventKind.MaterialPurchased => $"{primary}, 시장에서 {EconomyRules.GetMaterial((MaterialId)worldEvent.Value).KoreanName} 구매",
+            WorldEventKind.TreasurePurchased => $"{primary}, 시장에서 {FormatQuality(worldEvent.Value)} 법보 구매",
+            WorldEventKind.TechniqueBookPurchased => $"{primary}, 공법서를 구매해 {FormatQuality(worldEvent.Value)} 공법 습득",
+            WorldEventKind.SpellBookPurchased => $"{primary}, 법술서를 구매해 {FormatQuality(worldEvent.Value)} 법술 습득",
             WorldEventKind.NewLeader => $"{primary}, {secondary}을 제치고 새로운 1위 등극",
             WorldEventKind.CombatStarted => $"{primary}, 상위권 {secondary}에게 도전",
             WorldEventKind.CombatPhysicalAttack => $"{primary} → {secondary}, 공법 공격 {worldEvent.Value:N0} 피해",
@@ -359,7 +372,9 @@ public partial class MainWindow : Window, IDisposable
                 or WorldEventKind.MajorRealmBreakthrough
                 or WorldEventKind.Rebirth
                 or WorldEventKind.TreasureCrafted
-                or WorldEventKind.PillCrafted => (Brush)FindResource("AccentBrush"),
+                or WorldEventKind.PillCrafted
+                or WorldEventKind.TechniqueBookPurchased
+                or WorldEventKind.SpellBookPurchased => (Brush)FindResource("AccentBrush"),
             WorldEventKind.CombatEnded => (Brush)FindResource("PositiveBrush"),
             WorldEventKind.BreakthroughFailed or WorldEventKind.CombatRetreated => (Brush)FindResource("DangerBrush"),
             _ => (Brush)FindResource("PrimaryTextBrush"),
@@ -498,6 +513,18 @@ public partial class MainWindow : Window, IDisposable
         TreasureSlot.WeaponTwo => "무기 II",
         TreasureSlot.WeaponThree => "무기 III",
         _ => slot.ToString(),
+    };
+
+    private static string FormatMarketGood(MarketGoodSnapshot item) => item.Kind switch
+    {
+        MarketGoodKind.Material when item.Material is { } material =>
+            EconomyRules.GetMaterial(material).KoreanName,
+        MarketGoodKind.GrowthPill => "수행단",
+        MarketGoodKind.BreakthroughPill => "돌파단",
+        MarketGoodKind.Treasure => "도시 법보",
+        MarketGoodKind.TechniqueBook => "공법서",
+        MarketGoodKind.SpellBook => "법술서",
+        _ => item.Kind.ToString(),
     };
 
     private void RankingGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -20,3 +20,10 @@ internal sealed record DistributionRow(
     string Label,
     string Count,
     string Ratio);
+
+internal sealed record MarketRow(
+    string Name,
+    string BasePrice,
+    string CurrentPrice,
+    string Stock,
+    string SupplyDemand);

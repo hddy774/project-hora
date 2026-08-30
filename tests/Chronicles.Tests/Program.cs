@@ -342,11 +342,30 @@ static void EconomyLoop()
     Equal(7, EconomyRules.TreasureSlotCount, "법보 장착 슬롯 수");
 
     var world = World.Create(707, 2_000);
+    var initialMarket = world.CreateSnapshot(1, 0).Market;
+    Equal(EconomyRules.MarketGoodCount, initialMarket.Goods.Count, "시장 상품 수");
+    True(
+        initialMarket.Goods.All(item => item.CurrentPrice == item.CityBasePrice),
+        "시장 초기 가격은 도시 기준가여야 합니다.");
     world.AdvanceTo(new SimulationTick(8_000));
     True(world.TotalMissionsCompleted > 0, "도시 임무가 완료되어야 합니다.");
     True(world.TotalTreasuresCrafted > 0, "법보 제작이 발생해야 합니다.");
     True(world.TotalPillsCrafted > 0, "단약 제작이 발생해야 합니다.");
     True(world.TotalMaterialsSold > 0, "재료 판매가 발생해야 합니다.");
+    var market = world.CreateSnapshot(1, 0).Market;
+    True(market.TreasurySpiritStones >= 0, "도시 시장 영석은 음수가 될 수 없습니다.");
+    True(market.Goods.All(item => item.Stock >= 0), "시장 재고는 음수가 될 수 없습니다.");
+    True(market.Goods.Any(item => item.Supply > 0), "임무 납품·판매·도시 생산이 공급으로 기록되어야 합니다.");
+    True(market.Goods.Any(item => item.Demand > 0), "구매·도시 생산 소비가 수요로 기록되어야 합니다.");
+    True(
+        market.Goods.Any(item => item.CurrentPrice != item.CityBasePrice),
+        "공급과 수요에 따라 시장 가격이 변동해야 합니다.");
+    True(
+        market.Goods.Single(item => item.Kind == MarketGoodKind.TechniqueBook).Supply > 0,
+        "도시는 영석으로 공법서를 생산해야 합니다.");
+    True(
+        market.Goods.Single(item => item.Kind == MarketGoodKind.SpellBook).Supply > 0,
+        "도시는 영석으로 법술서를 생산해야 합니다.");
 
     var agentsWithEquipment = 0;
     var agentsWithPills = 0;
@@ -390,6 +409,9 @@ static void SaveCodecRoundTrip()
     Equal(checkpoint.TotalMissionsCompleted, decoded.TotalMissionsCompleted, "저장 왕복 임무 합계");
     Equal(checkpoint.LastRankingRefreshTick, decoded.LastRankingRefreshTick, "저장 왕복 랭킹 갱신 시점");
     Equal(checkpoint.RankingRisenCount, decoded.RankingRisenCount, "저장 왕복 순위 상승 집계");
+    Equal(checkpoint.Market.TreasurySpiritStones, decoded.Market.TreasurySpiritStones, "저장 왕복 도시 영석");
+    True(checkpoint.Market.Stock.SequenceEqual(decoded.Market.Stock), "저장 왕복 시장 재고");
+    True(checkpoint.Market.Prices.SequenceEqual(decoded.Market.Prices), "저장 왕복 시장 가격");
     Equal(checkpoint.Agents[0].Name, decoded.Agents[0].Name, "저장 왕복 첫 Agent 이름");
     Equal(checkpoint.Agents[0].Soul, decoded.Agents[0].Soul, "저장 왕복 첫 Agent 영혼");
     True(

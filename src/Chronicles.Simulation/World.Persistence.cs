@@ -11,6 +11,7 @@ public sealed partial class World
         Tick = new SimulationTick(checkpoint.Tick);
         _random = new DeterministicRandom(checkpoint.RandomState);
         _agents = new AgentStore(checkpoint.Agents.Length);
+        _market = new CityMarket(checkpoint.Market);
         _agentByRank = new int[checkpoint.Agents.Length];
         _rankByAgent = new int[checkpoint.Agents.Length];
         _agentByRealmRank = new int[checkpoint.Agents.Length];
@@ -132,7 +133,8 @@ public sealed partial class World
             _rankingRisenCount,
             _rankingFallenCount,
             _rankingUnchangedCount,
-            _rankingTotalAbsoluteMovement);
+            _rankingTotalAbsoluteMovement,
+            _market.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint)
@@ -222,6 +224,24 @@ public sealed partial class World
             || checkpoint.RankingTotalAbsoluteMovement < 0)
         {
             throw new InvalidDataException("세계 체크포인트의 순위 변동 통계가 잘못되었습니다.");
+        }
+
+        if (checkpoint.Market is null
+            || checkpoint.Market.TreasurySpiritStones < 0
+            || checkpoint.Market.Stock is not { Length: EconomyRules.MarketGoodCount }
+            || checkpoint.Market.Prices is not { Length: EconomyRules.MarketGoodCount }
+            || checkpoint.Market.Supply is not { Length: EconomyRules.MarketGoodCount }
+            || checkpoint.Market.Demand is not { Length: EconomyRules.MarketGoodCount }
+            || checkpoint.Market.Stock.Any(value => value < 0)
+            || checkpoint.Market.Prices.Any(value => value < 1)
+            || checkpoint.Market.Supply.Any(value => value < 0)
+            || checkpoint.Market.Demand.Any(value => value < 0)
+            || checkpoint.Market.TreasureQualityHundredths < 0
+            || checkpoint.Market.TreasureQualityHundredths
+                > (long)checkpoint.Market.Stock[EconomyRules.TreasureGoodId]
+                    * QualityValue.MaximumHundredths)
+        {
+            throw new InvalidDataException("세계 체크포인트의 도시 시장 상태가 잘못되었습니다.");
         }
 
         for (var index = 0; index < checkpoint.Agents.Length; index++)

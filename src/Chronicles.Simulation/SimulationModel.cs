@@ -63,6 +63,10 @@ public enum WorldEventKind : byte
     PillCrafted,
     PillPurchased,
     MaterialSold,
+    MaterialPurchased,
+    TreasurePurchased,
+    TechniqueBookPurchased,
+    SpellBookPurchased,
 }
 
 public readonly record struct Aptitudes(
@@ -178,6 +182,20 @@ public sealed record WorldStatistics(
     int TotalMaterialsSold,
     long TotalSpiritStones);
 
+public readonly record struct MarketGoodSnapshot(
+    int GoodId,
+    MarketGoodKind Kind,
+    MaterialId? Material,
+    int CityBasePrice,
+    int CurrentPrice,
+    int Stock,
+    long Supply,
+    long Demand);
+
+public sealed record CityMarketSnapshot(
+    long TreasurySpiritStones,
+    IReadOnlyList<MarketGoodSnapshot> Goods);
+
 public sealed record AgentSnapshot(
     AgentId Id,
     string Name,
@@ -237,6 +255,7 @@ public sealed record WorldSnapshot(
     IReadOnlyList<RankingEntry> RealmRankings,
     IReadOnlyList<RankingEntry> AptitudeRankings,
     WorldStatistics Statistics,
+    CityMarketSnapshot Market,
     IReadOnlyDictionary<int, string> AgentNames,
     IReadOnlyList<WorldEvent> RecentEvents,
     int TotalBreakthroughs,

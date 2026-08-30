@@ -46,6 +46,14 @@ public sealed record AgentCheckpoint(
     ushort[] EquippedTreasureQualities,
     LifeChronicleEntry[] Chronicle);
 
+public sealed record CityMarketCheckpoint(
+    long TreasurySpiritStones,
+    int[] Stock,
+    int[] Prices,
+    long[] Supply,
+    long[] Demand,
+    long TreasureQualityHundredths);
+
 public sealed record WorldCheckpoint(
     int SchemaVersion,
     ulong Seed,
@@ -71,7 +79,8 @@ public sealed record WorldCheckpoint(
     int RankingRisenCount,
     int RankingFallenCount,
     int RankingUnchangedCount,
-    long RankingTotalAbsoluteMovement)
+    long RankingTotalAbsoluteMovement,
+    CityMarketCheckpoint Market)
 {
-    public const int CurrentSchemaVersion = 5;
+    public const int CurrentSchemaVersion = 6;
 }

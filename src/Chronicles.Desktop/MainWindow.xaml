@@ -516,6 +516,28 @@
                                     <DataGridTextColumn Header="비율" Binding="{Binding Ratio}" Width="64" />
                                 </DataGrid.Columns>
                             </DataGrid>
+                            <Grid Margin="0,16,0,6">
+                                <TextBlock Text="도시 시장 공급·수요"
+                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                           FontWeight="SemiBold" />
+                                <TextBlock x:Name="MarketTreasuryText"
+                                           HorizontalAlignment="Right"
+                                           Foreground="{StaticResource AccentBrush}" />
+                            </Grid>
+                            <DataGrid x:Name="MarketGrid"
+                                      Height="250"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      EnableRowVirtualization="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="상품" Binding="{Binding Name}" Width="*" />
+                                    <DataGridTextColumn Header="기준가" Binding="{Binding BasePrice}" Width="56" />
+                                    <DataGridTextColumn Header="현재가" Binding="{Binding CurrentPrice}" Width="56" />
+                                    <DataGridTextColumn Header="재고" Binding="{Binding Stock}" Width="48" />
+                                    <DataGridTextColumn Header="공급/수요" Binding="{Binding SupplyDemand}" Width="74" />
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </StackPanel>
                     </ScrollViewer>
                     <Grid Grid.Row="1" Margin="16,14,16,10">

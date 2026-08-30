@@ -82,6 +82,10 @@ internal sealed class AgentStore
         BreakthroughPills = new int[count];
         MissionsCompleted = new int[count];
         ActiveMissionMaterials = new byte[count];
+        LocationIds = new ushort[count];
+        TravelDestinationIds = new ushort[count];
+        MonsterHunts = new int[count];
+        MonsterVictories = new int[count];
         MaterialInventory = new int[checked(count * EconomyRules.MaterialCount)];
         EquippedTreasureQualities = new ushort[checked(count * EconomyRules.TreasureSlotCount)];
         Power = new CombatPowerBreakdown[count];
@@ -163,6 +167,10 @@ internal sealed class AgentStore
     public int[] BreakthroughPills { get; }
     public int[] MissionsCompleted { get; }
     public byte[] ActiveMissionMaterials { get; }
+    public ushort[] LocationIds { get; }
+    public ushort[] TravelDestinationIds { get; }
+    public int[] MonsterHunts { get; }
+    public int[] MonsterVictories { get; }
     public int[] MaterialInventory { get; }
     public ushort[] EquippedTreasureQualities { get; }
     public CombatPowerBreakdown[] Power { get; }
@@ -181,10 +189,14 @@ internal sealed class AgentStore
         // 승패는 한 생의 육신 상태가 아니라 수선자 전체 일대기의 누계다.
         var accumulatedWins = Wins[index];
         var accumulatedLosses = Losses[index];
+        var accumulatedMonsterHunts = MonsterHunts[index];
+        var accumulatedMonsterVictories = MonsterVictories[index];
         LifeNumbers[index] = checked(LifeNumbers[index] + 1);
         InitializeBody(index, random, birthTick);
         Wins[index] = accumulatedWins;
         Losses[index] = accumulatedLosses;
+        MonsterHunts[index] = accumulatedMonsterHunts;
+        MonsterVictories[index] = accumulatedMonsterVictories;
     }
 
     public Aptitudes GetAptitudes(int index) => new(
@@ -311,6 +323,10 @@ internal sealed class AgentStore
         BreakthroughPills[index] = 0;
         MissionsCompleted[index] = 0;
         ActiveMissionMaterials[index] = byte.MaxValue;
+        LocationIds[index] = WorldMapRules.CityLocationId;
+        TravelDestinationIds[index] = WorldMapRules.CityLocationId;
+        MonsterHunts[index] = 0;
+        MonsterVictories[index] = 0;
         Array.Clear(MaterialInventory, index * EconomyRules.MaterialCount, EconomyRules.MaterialCount);
         Array.Fill(
             EquippedTreasureQualities,

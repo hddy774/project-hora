@@ -31,6 +31,8 @@ public sealed partial class World
     private int _totalTreasuresCrafted;
     private int _totalPillsCrafted;
     private int _totalMaterialsSold;
+    private int _totalMonsterHunts;
+    private int _totalMonsterVictories;
     private long _lastRankingRefreshTick;
     private long _rankingMovementFromTick;
     private int _rankingRisenCount;
@@ -79,6 +81,8 @@ public sealed partial class World
     public int TotalTreasuresCrafted => _totalTreasuresCrafted;
     public int TotalPillsCrafted => _totalPillsCrafted;
     public int TotalMaterialsSold => _totalMaterialsSold;
+    public int TotalMonsterHunts => _totalMonsterHunts;
+    public int TotalMonsterVictories => _totalMonsterVictories;
 
     public static World CreateDefault(ulong seed) =>
         new(seed, ProductInfo.DefaultPopulation);
@@ -188,6 +192,10 @@ public sealed partial class World
             _agents.LastActionMonths[index] < 0
                 ? null
                 : GameCalendar.GetDate(new SimulationTick(_agents.LastActionTicks[index])),
+            _agents.LocationIds[index],
+            _agents.TravelDestinationIds[index],
+            _agents.MonsterHunts[index],
+            _agents.MonsterVictories[index],
             _agents.SpiritStones[index],
             _agents.GrowthPills[index],
             _agents.BreakthroughPills[index],
@@ -219,6 +227,7 @@ public sealed partial class World
             actualRankingCount);
         var statistics = CreateStatistics();
         var market = _market.CreateSnapshot();
+        var map = CreateMapSnapshot();
 
         var recentEvents = _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray();
         var agentNames = new Dictionary<int, string>((actualRankingCount * 3) + (recentEvents.Length * 2));
@@ -244,6 +253,7 @@ public sealed partial class World
             aptitudeRankings,
             statistics,
             market,
+            map,
             agentNames,
             recentEvents,
             _totalBreakthroughs,
@@ -314,6 +324,8 @@ public sealed partial class World
         Add(ref hash, (ulong)_totalTreasuresCrafted);
         Add(ref hash, (ulong)_totalPillsCrafted);
         Add(ref hash, (ulong)_totalMaterialsSold);
+        Add(ref hash, (ulong)_totalMonsterHunts);
+        Add(ref hash, (ulong)_totalMonsterVictories);
         Add(ref hash, (ulong)_lastRankingRefreshTick);
         Add(ref hash, (ulong)_rankingMovementFromTick);
         Add(ref hash, (ulong)_rankingRisenCount);
@@ -427,6 +439,10 @@ public sealed partial class World
             Add(ref hash, (ulong)_agents.BreakthroughPills[index]);
             Add(ref hash, (ulong)_agents.MissionsCompleted[index]);
             Add(ref hash, _agents.ActiveMissionMaterials[index]);
+            Add(ref hash, _agents.LocationIds[index]);
+            Add(ref hash, _agents.TravelDestinationIds[index]);
+            Add(ref hash, (ulong)_agents.MonsterHunts[index]);
+            Add(ref hash, (ulong)_agents.MonsterVictories[index]);
             for (var material = 0; material < EconomyRules.MaterialCount; material++)
             {
                 Add(ref hash, (ulong)_agents.MaterialInventory[(index * EconomyRules.MaterialCount) + material]);
@@ -516,6 +532,11 @@ public sealed partial class World
             case AgentActivity.CraftingPill:
                 ResolvePillCrafting(index);
                 return false;
+            case AgentActivity.Traveling:
+                ResolveTravel(index);
+                return false;
+            case AgentActivity.HuntingMonster:
+                return ResolveMonsterHunt(index);
             default:
                 throw new InvalidOperationException("알 수 없는 AI 행동입니다.");
         }
@@ -655,14 +676,19 @@ public sealed partial class World
         if (rank > 1
             && GetAgeYears(index) >= CultivationRules.EntryAgeYears
             && Tick.Value >= 60
+            && WorldMapRules.IsCity(_agents.LocationIds[index])
             && _random.NextInt(100) < challengeChance)
         {
             _agents.Activities[index] = AgentActivity.SeekingChallenge;
             return;
         }
 
-        var roll = _random.NextInt(100);
-        var activity = SelectNonCombatActivity(index, roll);
+        AgentActivity activity;
+        if (!TrySelectMapActivity(index, out activity))
+        {
+            var roll = _random.NextInt(100);
+            activity = SelectNonCombatActivity(index, roll);
+        }
         if (_agents.CultivationStates[index] == CultivationState.Completed
             && activity == AgentActivity.Cultivating)
         {
@@ -687,6 +713,8 @@ public sealed partial class World
             AgentActivity.TradingInCity => 45,
             AgentActivity.CraftingTreasure => 110,
             AgentActivity.CraftingPill => 90,
+            AgentActivity.Traveling => CalculateTravelDuration(index),
+            AgentActivity.HuntingMonster => CalculateMonsterHuntDuration(index),
             _ => throw new InvalidOperationException("알 수 없는 AI 행동입니다."),
         };
     }

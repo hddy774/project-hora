@@ -29,7 +29,12 @@ var tests = new (string Name, Action Body)[]
     ("10,000명 로컬 실시간 성능 예산", DefaultWorldPerformanceBudget),
 };
 
-tests = [.. tests, ("교대 전투 속성과 누적 부상 사망", CombatAuthorityAndInjury)];
+tests =
+[
+    .. tests,
+    ("교대 전투 속성과 누적 부상 사망", CombatAuthorityAndInjury),
+    ("3×3 지도와 지형별 요수 생태", WorldMapAndBiomeMonsters),
+];
 
 var failures = 0;
 foreach (var test in tests)
@@ -632,6 +637,33 @@ static void CombatAuthorityAndInjury()
             .Any(index => world.GetAgentChronicle(new AgentId(index))
                 .Any(entry => entry.Kind == ChronicleEventKind.CombatDeath)),
         "전투 사망 영구 연대기");
+}
+
+static void WorldMapAndBiomeMonsters()
+{
+    Equal(9, WorldMapRules.AllLocations.Count, "3×3 지도 위치 수");
+    Equal(9, WorldMapRules.AllMonsters.Count, "지형별 요수 수");
+    Equal(1, WorldMapRules.AllLocations.Count(item => item.Biome == BiomeType.City), "중앙 도시 수");
+    foreach (var location in WorldMapRules.AllLocations.Where(item => item.Biome != BiomeType.City))
+    {
+        var monsters = WorldMapRules.GetMonsters(location.Biome);
+        Equal(3, monsters.Count, $"{location.KoreanName} 요수 종 수");
+        True(monsters.All(monster => monster.Biome == location.Biome), "요수와 서식 지형 일치");
+    }
+
+    var world = World.Create(9009, 1_000);
+    world.AdvanceTo(new SimulationTick(20_000));
+    var snapshot = world.CreateSnapshot(25, 25);
+    Equal(world.Population, snapshot.Map.Locations.Sum(location => location.Population), "지도 인구 보존");
+    True(snapshot.Map.Locations.Count(location => location.Population > 0) > 1, "AI 지도 이동");
+    True(world.TotalMonsterHunts > 0, "요수 사냥 누계");
+    True(world.TotalMonsterVictories > 0, "요수 사냥 승리 누계");
+    True(world.TotalMonsterVictories <= world.TotalMonsterHunts, "요수 사냥 집계 보존");
+    True(
+        Enumerable.Range(0, world.Population)
+            .Select(index => world.GetAgentSnapshot(new AgentId(index)))
+            .Any(agent => agent.MonsterVictories > 0 && agent.InventoryItemCount > 0),
+        "지형 요수 전리품 획득");
 }
 
 static void ObservationQueriesAreReadOnly()

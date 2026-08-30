@@ -15,6 +15,8 @@ public enum AgentActivity : byte
     TradingInCity,
     CraftingTreasure,
     CraftingPill,
+    Traveling,
+    HuntingMonster,
 }
 
 public enum WorldEventKind : byte
@@ -51,6 +53,9 @@ public enum WorldEventKind : byte
     SpellAcquired,
     CombatInjury,
     CombatDeath,
+    TravelCompleted,
+    MonsterHuntWon,
+    MonsterHuntLost,
 }
 
 public readonly record struct Aptitudes(
@@ -202,7 +207,8 @@ public readonly record struct MarketGoodSnapshot(
     int CurrentPrice,
     int Stock,
     long Supply,
-    long Demand);
+    long Demand,
+    QualityValue? AverageQuality = null);
 
 public sealed record CityMarketSnapshot(
     long TreasurySpiritStones,
@@ -258,6 +264,10 @@ public sealed record AgentSnapshot(
     int ChallengesIssued,
     int ActionsTaken,
     GameDate? LastActionDate,
+    ushort LocationId,
+    ushort TravelDestinationId,
+    int MonsterHunts,
+    int MonsterVictories,
     long SpiritStones,
     int GrowthPills,
     int BreakthroughPills,
@@ -290,6 +300,7 @@ public sealed record WorldSnapshot(
     IReadOnlyList<RankingEntry> AptitudeRankings,
     WorldStatistics Statistics,
     CityMarketSnapshot Market,
+    WorldMapSnapshot Map,
     IReadOnlyDictionary<int, string> AgentNames,
     IReadOnlyList<WorldEvent> RecentEvents,
     int TotalBreakthroughs,

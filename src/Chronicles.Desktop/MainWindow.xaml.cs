@@ -19,6 +19,7 @@ public partial class MainWindow : Window, IDisposable
     private AgentId? _selectedAgent;
     private RankingCategory? _rankingCategory = RankingCategory.CombatPower;
     private int _explorerOffset;
+    private int _selectedMarketGoodId;
     private int _speed = 1;
     private bool _disposed;
     private bool _applyingObservation;
@@ -245,8 +246,9 @@ public partial class MainWindow : Window, IDisposable
             $"총 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Stock))}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind == MarketGoodKind.Material).Sum(item => item.Stock))}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind != MarketGoodKind.Material).Sum(item => item.Stock))}개";
         CityFlowText.Text =
             $"공급 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Supply))} · 수요 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Demand))}";
-        MarketGrid.ItemsSource = snapshot.Market.Goods
+        var marketRows = snapshot.Market.Goods
             .Select(item => new MarketRow(
+                item.GoodId,
                 FormatMarketGood(item),
                 KoreanNumberFormatter.Format(item.CityBasePrice),
                 KoreanNumberFormatter.Format(item.CurrentPrice),
@@ -254,6 +256,35 @@ public partial class MainWindow : Window, IDisposable
                 KoreanNumberFormatter.Format(item.Stock),
                 KoreanNumberFormatter.Format(item.Supply),
                 KoreanNumberFormatter.Format(item.Demand)))
+            .ToArray();
+        MarketGrid.ItemsSource = marketRows;
+        var selectedMarketRow = marketRows.FirstOrDefault(item => item.GoodId == _selectedMarketGoodId)
+            ?? marketRows[0];
+        _selectedMarketGoodId = selectedMarketRow.GoodId;
+        MarketGrid.SelectedItem = selectedMarketRow;
+        UpdateMarketDetail(snapshot.Market.Goods[_selectedMarketGoodId]);
+
+        MapSummaryText.Text =
+            $"요수 사냥 {KoreanNumberFormatter.Format(snapshot.Map.TotalMonsterHunts)}회 · 승리 {KoreanNumberFormatter.Format(snapshot.Map.TotalMonsterVictories)}회 · 도시·숲·평야·산맥 실시간 인구";
+        MapTileList.ItemsSource = snapshot.Map.Locations
+            .OrderBy(item => item.Y)
+            .ThenBy(item => item.X)
+            .Select(item => new MapTileRow(
+                item.Name,
+                FormatBiome(item.Biome),
+                $"{KoreanNumberFormatter.Format(item.Population)}명",
+                FormatMonsterList(item),
+                GetBiomeBrush(item.Biome)))
+            .ToArray();
+        MapLocationGrid.ItemsSource = snapshot.Map.Locations
+            .OrderBy(item => item.Y)
+            .ThenBy(item => item.X)
+            .Select(item => new MapLocationRow(
+                item.Name,
+                FormatBiome(item.Biome),
+                $"{item.X},{item.Y}",
+                KoreanNumberFormatter.Format(item.Population),
+                FormatMonsterList(item)))
             .ToArray();
     }
 
@@ -277,6 +308,9 @@ public partial class MainWindow : Window, IDisposable
             : "없음";
         ActionScheduleText.Text =
             $"누적 행동 {KoreanNumberFormatter.Format(agent.ActionsTaken)}회 · 마지막 {FormatOptionalGameDate(agent.LastActionDate)} · 다음 {FormatGameDate(GameCalendar.GetDate(agent.NextDecisionTick))}";
+        var location = WorldMapRules.GetLocation(agent.LocationId);
+        LocationText.Text =
+            $"현재 위치 {location.KoreanName} · {FormatBiome(location.Biome)} · 요수 사냥 {KoreanNumberFormatter.Format(agent.MonsterVictories)}/{KoreanNumberFormatter.Format(agent.MonsterHunts)}승";
         CultivationProgressBar.Maximum = Math.Max(1, agent.CultivationRequirement);
         CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
         CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
@@ -401,6 +435,11 @@ public partial class MainWindow : Window, IDisposable
             WorldEventKind.CombatGuarded => $"{primary}, 다음 공격에 대비해 방어",
             WorldEventKind.CombatRetreated => $"{primary}, {secondary}과의 전투에서 이탈",
             WorldEventKind.CombatEnded => $"{primary}, {secondary}에게 승리 · 경험 +{worldEvent.Value:N0}",
+            WorldEventKind.CombatInjury => $"{primary}, 전투 중 {FormatInjurySeverity((InjurySeverity)worldEvent.Value)} 부상",
+            WorldEventKind.CombatDeath => $"{primary}, {worldEvent.Value:N0}세에 전투 부상으로 사망",
+            WorldEventKind.TravelCompleted => $"{primary}, {WorldMapRules.GetLocation(checked((ushort)worldEvent.Value)).KoreanName}에 도착",
+            WorldEventKind.MonsterHuntWon => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 승리",
+            WorldEventKind.MonsterHuntLost => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 패배",
             _ => worldEvent.Kind.ToString(),
         };
         var color = worldEvent.Kind switch
@@ -415,8 +454,12 @@ public partial class MainWindow : Window, IDisposable
                 or WorldEventKind.PillCrafted
                 or WorldEventKind.TechniqueBookPurchased
                 or WorldEventKind.SpellBookPurchased => (Brush)FindResource("AccentBrush"),
-            WorldEventKind.CombatEnded => (Brush)FindResource("PositiveBrush"),
-            WorldEventKind.BreakthroughFailed or WorldEventKind.CombatRetreated => (Brush)FindResource("DangerBrush"),
+            WorldEventKind.CombatEnded or WorldEventKind.MonsterHuntWon => (Brush)FindResource("PositiveBrush"),
+            WorldEventKind.BreakthroughFailed
+                or WorldEventKind.CombatRetreated
+                or WorldEventKind.CombatInjury
+                or WorldEventKind.CombatDeath
+                or WorldEventKind.MonsterHuntLost => (Brush)FindResource("DangerBrush"),
             _ => (Brush)FindResource("PrimaryTextBrush"),
         };
         return new EventRow(FormatGameDate(GameCalendar.GetDate(worldEvent.Tick)), summary, color);
@@ -439,13 +482,14 @@ public partial class MainWindow : Window, IDisposable
             ChronicleEventKind.GreatPerfectionAchieved => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage, greatPerfection: true)} 완성",
             ChronicleEventKind.FortuitousEncounter => "인생을 바꾸는 기연을 만남",
             ChronicleEventKind.Death => $"{entry.Value:N0}세에 수명을 다함",
+            ChronicleEventKind.CombatDeath => $"{entry.Value:N0}세에 전투 부상으로 사망",
             ChronicleEventKind.ReincarnationEntered => "육신을 떠나 윤회의 강에 들어감",
             ChronicleEventKind.Rebirth => $"{entry.PersonName}, 새로운 육신으로 환생",
             _ => entry.Kind.ToString(),
         };
         var color = entry.Kind switch
         {
-            ChronicleEventKind.Death => (Brush)FindResource("DangerBrush"),
+            ChronicleEventKind.Death or ChronicleEventKind.CombatDeath => (Brush)FindResource("DangerBrush"),
             ChronicleEventKind.Birth or ChronicleEventKind.Rebirth => (Brush)FindResource("PositiveBrush"),
             ChronicleEventKind.MinorStageBreakthrough
                 or ChronicleEventKind.BottleneckBreakthrough
@@ -485,7 +529,11 @@ public partial class MainWindow : Window, IDisposable
                     ? (Brush)FindResource("PositiveBrush")
                     : (Brush)FindResource("DangerBrush"),
             PersonalLogKind.WorldEvent when entry.WorldEventKind is
-                WorldEventKind.BreakthroughFailed or WorldEventKind.CombatRetreated =>
+                WorldEventKind.BreakthroughFailed
+                or WorldEventKind.CombatRetreated
+                or WorldEventKind.CombatInjury
+                or WorldEventKind.CombatDeath
+                or WorldEventKind.MonsterHuntLost =>
                 (Brush)FindResource("DangerBrush"),
             _ => (Brush)FindResource("PrimaryTextBrush"),
         };
@@ -513,6 +561,11 @@ public partial class MainWindow : Window, IDisposable
         WorldEventKind.CombatEnded => entry.IsPrimaryActor
             ? $"{related}에게 승리 · 경험 +{entry.Value:N0}"
             : $"{related}에게 패배",
+        WorldEventKind.CombatInjury => $"{FormatInjurySeverity((InjurySeverity)entry.Value)} 부상",
+        WorldEventKind.CombatDeath => $"{entry.Value:N0}세에 전투 부상으로 사망",
+        WorldEventKind.TravelCompleted => $"{WorldMapRules.GetLocation(checked((ushort)entry.Value)).KoreanName}에 도착",
+        WorldEventKind.MonsterHuntWon => $"{FormatMonster(entry.Value)} 사냥 승리",
+        WorldEventKind.MonsterHuntLost => $"{FormatMonster(entry.Value)} 사냥 패배",
         WorldEventKind.MissionCompleted => $"도시 임무 완료 · 영석 +{KoreanNumberFormatter.Format(entry.Value)}",
         WorldEventKind.TreasureCrafted => $"{FormatQuality(entry.Value)} 법보 제작",
         WorldEventKind.PillCrafted => $"{FormatPill((PillKind)entry.Value)} 제작",
@@ -536,6 +589,7 @@ public partial class MainWindow : Window, IDisposable
         ChronicleEventKind.SpellEnlightenment => $"법술 {FormatQuality(value)}의 깨달음",
         ChronicleEventKind.FortuitousEncounter => "인생을 바꾸는 기연",
         ChronicleEventKind.Death => $"{value:N0}세에 수명을 다함",
+        ChronicleEventKind.CombatDeath => $"{value:N0}세에 전투 부상으로 사망",
         ChronicleEventKind.ReincarnationEntered => "윤회의 강에 들어감",
         ChronicleEventKind.Rebirth => "새로운 육신으로 환생",
         _ => kind.ToString(),
@@ -672,6 +726,8 @@ public partial class MainWindow : Window, IDisposable
         AgentActivity.TradingInCity => "도시 거래",
         AgentActivity.CraftingTreasure => "법보 제작",
         AgentActivity.CraftingPill => "단약 제작",
+        AgentActivity.Traveling => "지역 이동",
+        AgentActivity.HuntingMonster => "요수 사냥",
         _ => activity.ToString(),
     };
 
@@ -705,6 +761,113 @@ public partial class MainWindow : Window, IDisposable
         MarketGoodKind.SpellBook => "법술서",
         _ => item.Kind.ToString(),
     };
+
+    private void UpdateMarketDetail(MarketGoodSnapshot item)
+    {
+        MarketDetailNameText.Text = FormatMarketGood(item);
+        var (type, description, production) = item.Kind switch
+        {
+            MarketGoodKind.Material when item.Material is { } material => FormatMaterialDetail(material),
+            MarketGoodKind.GrowthPill => (
+                "단약 · 성장",
+                "복용한 수선자의 수행 Work 축적을 돕는 성장용 단약입니다.",
+                "도시는 단약 제작용 재료 2개를 가공해 수행단 또는 돌파단 1개를 생산합니다."),
+            MarketGoodKind.BreakthroughPill => (
+                "단약 · 돌파",
+                "대경지 돌파 준비와 자원 병목 해소에 사용하는 돌파용 단약입니다.",
+                "도시는 단약 제작용 재료 2개를 가공하며, 두 단약의 재고가 균형을 이루도록 생산합니다."),
+            MarketGoodKind.Treasure => (
+                $"법보 · 평균 품질 {(item.AverageQuality is { } quality ? QualityRules.Format(quality) : "재고 없음")}",
+                "무기 3칸·방어구 3칸·본명법보 1칸 중 약한 장비를 교체하며 실제 공격·방어 속성에 반영됩니다.",
+                "도시는 법보 제작용 재료 2개를 가공해 표준 법보를 만들고, 수선자도 제작품을 시장에 판매합니다."),
+            MarketGoodKind.TechniqueBook => (
+                "서적 · 공법",
+                "현재 공법보다 높은 다음 품질 단계의 공법을 새로 습득합니다. 기존 공법 자체의 품질은 변하지 않습니다.",
+                $"도시는 영석 {KoreanNumberFormatter.Format(EconomyRules.TechniqueBookProductionCost)}개를 사용해 공법서 1권을 제작합니다."),
+            MarketGoodKind.SpellBook => (
+                "서적 · 법술",
+                "현재 법술보다 높은 다음 품질 단계의 법술을 새로 습득합니다. 기존 법술 자체의 품질은 변하지 않습니다.",
+                $"도시는 영석 {KoreanNumberFormatter.Format(EconomyRules.SpellBookProductionCost)}개를 사용해 법술서 1권을 제작합니다."),
+            _ => ("상품", "상세 정보가 아직 등록되지 않았습니다.", "생산 정보가 없습니다."),
+        };
+        MarketDetailTypeText.Text = type;
+        MarketDetailDescriptionText.Text = description;
+        MarketDetailProductionText.Text = production;
+        MarketDetailEconomyText.Text =
+            $"기준 {KoreanNumberFormatter.Format(item.CityBasePrice)} · 현재 {KoreanNumberFormatter.Format(item.CurrentPrice)} 영석 · 재고 {KoreanNumberFormatter.Format(item.Stock)} · 공급 {KoreanNumberFormatter.Format(item.Supply)} · 수요 {KoreanNumberFormatter.Format(item.Demand)}";
+    }
+
+    private static (string Type, string Description, string Production) FormatMaterialDetail(
+        MaterialId material)
+    {
+        var definition = EconomyRules.GetMaterial(material);
+        var (category, usage) = definition.Category switch
+        {
+            MaterialCategory.Treasure => ("법보 제작 재료", "법보 제작과 도시 법보 생산에 사용됩니다."),
+            MaterialCategory.Pill => ("단약 제작 재료", "수행단·돌파단 제조와 도시 단약 생산에 사용됩니다."),
+            MaterialCategory.Miscellaneous => ("기타 재료", "도시 임무 납품·수선자 간 거래·후속 제작 확장에 사용됩니다."),
+            _ => ("재료", "용도가 미확정입니다."),
+        };
+        return (
+            $"재료 · {category}",
+            $"{definition.KoreanName}. {usage}",
+            "수선자가 임무·요수 사냥으로 획득해 납품하거나 판매하면 도시의 실물 재고와 공급량이 증가합니다.");
+    }
+
+    private static string FormatBiome(BiomeType biome) => biome switch
+    {
+        BiomeType.City => "도시",
+        BiomeType.Forest => "숲",
+        BiomeType.Plains => "평야",
+        BiomeType.Mountains => "산맥",
+        _ => biome.ToString(),
+    };
+
+    private static string FormatInjurySeverity(InjurySeverity severity) => severity switch
+    {
+        InjurySeverity.None => "없음",
+        InjurySeverity.Light => "경상",
+        InjurySeverity.Moderate => "중등상",
+        InjurySeverity.Severe => "중상",
+        InjurySeverity.Critical => "치명상",
+        InjurySeverity.Fatal => "사망상",
+        _ => severity.ToString(),
+    };
+
+    private static string FormatMonster(long monsterId)
+    {
+        var index = checked((int)monsterId);
+        return (uint)index < WorldMapRules.AllMonsters.Count
+            ? WorldMapRules.AllMonsters[index].KoreanName
+            : $"미확인 요수 #{index}";
+    }
+
+    private static string FormatMonsterList(MapLocationSnapshot location) =>
+        location.Monsters.Count == 0
+            ? "안전지대"
+            : string.Join(" · ", location.Monsters.Select(monster => monster.KoreanName));
+
+    private Brush GetBiomeBrush(BiomeType biome) => (Brush)FindResource(biome switch
+    {
+        BiomeType.City => "CityBiomeBrush",
+        BiomeType.Forest => "ForestBiomeBrush",
+        BiomeType.Plains => "PlainsBiomeBrush",
+        BiomeType.Mountains => "MountainBiomeBrush",
+        _ => "PanelAltBrush",
+    });
+
+    private void MarketGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_applyingObservation
+            || _latestSnapshot is null
+            || MarketGrid.SelectedItem is not MarketRow row)
+        {
+            return;
+        }
+
+        _selectedMarketGoodId = row.GoodId;
+        UpdateMarketDetail(_latestSnapshot.Market.Goods[row.GoodId]);
+    }
 
     private void RankingGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {

@@ -13,6 +13,10 @@
         <SolidColorBrush x:Key="AccentDarkBrush" Color="#3B3020" />
         <SolidColorBrush x:Key="PositiveBrush" Color="#60D394" />
         <SolidColorBrush x:Key="DangerBrush" Color="#FF758F" />
+        <SolidColorBrush x:Key="CityBiomeBrush" Color="#3B3020" />
+        <SolidColorBrush x:Key="ForestBiomeBrush" Color="#18372C" />
+        <SolidColorBrush x:Key="PlainsBiomeBrush" Color="#293622" />
+        <SolidColorBrush x:Key="MountainBiomeBrush" Color="#2C3040" />
 
         <Style x:Key="PanelStyle" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource PanelBrush}" />

@@ -22,6 +22,7 @@ internal sealed record DistributionRow(
     string Ratio);
 
 internal sealed record MarketRow(
+    int GoodId,
     string Name,
     string BasePrice,
     string CurrentPrice,
@@ -29,3 +30,17 @@ internal sealed record MarketRow(
     string Stock,
     string Supply,
     string Demand);
+
+internal sealed record MapTileRow(
+    string Name,
+    string Biome,
+    string Population,
+    string Monsters,
+    Brush Background);
+
+internal sealed record MapLocationRow(
+    string Name,
+    string Biome,
+    string Coordinates,
+    string Population,
+    string Monsters);

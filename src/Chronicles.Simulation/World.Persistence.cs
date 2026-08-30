@@ -32,6 +32,8 @@ public sealed partial class World
         _totalTreasuresCrafted = checkpoint.TotalTreasuresCrafted;
         _totalPillsCrafted = checkpoint.TotalPillsCrafted;
         _totalMaterialsSold = checkpoint.TotalMaterialsSold;
+        _totalMonsterHunts = checkpoint.Map?.TotalMonsterHunts ?? 0;
+        _totalMonsterVictories = checkpoint.Map?.TotalMonsterVictories ?? 0;
         _lastRankingRefreshTick = checkpoint.LastRankingRefreshTick;
         _rankingMovementFromTick = checkpoint.RankingMovementFromTick;
         _rankingRisenCount = checkpoint.RankingRisenCount;
@@ -133,7 +135,12 @@ public sealed partial class World
                 new CombatAuthorityCheckpoint(
                     _agents.CombatActions[index],
                     _agents.CombatTurnOwners[index],
-                    _agents.InjuryPoints[index]));
+                    _agents.InjuryPoints[index]),
+                new MapAgentCheckpoint(
+                    _agents.LocationIds[index],
+                    _agents.TravelDestinationIds[index],
+                    _agents.MonsterHunts[index],
+                    _agents.MonsterVictories[index]));
         }
 
         return new WorldCheckpoint(
@@ -163,7 +170,10 @@ public sealed partial class World
             _rankingFallenCount,
             _rankingUnchangedCount,
             _rankingTotalAbsoluteMovement,
-            _market.CreateCheckpoint());
+            _market.CreateCheckpoint(),
+            new WorldMapCheckpoint(
+                _totalMonsterHunts,
+                _totalMonsterVictories));
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -280,6 +290,20 @@ public sealed partial class World
         _agents.BreakthroughPills[index] = checkpoint.BreakthroughPills;
         _agents.MissionsCompleted[index] = checkpoint.MissionsCompleted;
         _agents.ActiveMissionMaterials[index] = checkpoint.ActiveMissionMaterial;
+        if (checkpoint.Map is { } map)
+        {
+            _agents.LocationIds[index] = map.LocationId;
+            _agents.TravelDestinationIds[index] = map.TravelDestinationId;
+            _agents.MonsterHunts[index] = map.MonsterHunts;
+            _agents.MonsterVictories[index] = map.MonsterVictories;
+        }
+        else
+        {
+            _agents.LocationIds[index] = WorldMapRules.CityLocationId;
+            _agents.TravelDestinationIds[index] = WorldMapRules.CityLocationId;
+            _agents.MonsterHunts[index] = 0;
+            _agents.MonsterVictories[index] = 0;
+        }
         _agents.RestoreEconomyState(
             index,
             checkpoint.MaterialInventory,
@@ -329,6 +353,15 @@ public sealed partial class World
             || checkpoint.TotalMaterialsSold < 0)
         {
             throw new InvalidDataException("세계 체크포인트의 경제 집계가 잘못되었습니다.");
+        }
+
+        if (checkpoint.SchemaVersion >= 11
+            && (checkpoint.Map is not { } map
+                || map.TotalMonsterHunts < 0
+                || map.TotalMonsterVictories < 0
+                || map.TotalMonsterVictories > map.TotalMonsterHunts))
+        {
+            throw new InvalidDataException("세계 체크포인트의 지도 집계가 잘못되었습니다.");
         }
 
         if (checkpoint.LastRankingRefreshTick < 0
@@ -436,7 +469,7 @@ public sealed partial class World
                 throw new InvalidDataException($"Agent {index} 체크포인트가 잘못되었습니다.");
             }
 
-            if (checkpoint.SchemaVersion == WorldCheckpoint.CurrentSchemaVersion
+            if (checkpoint.SchemaVersion >= 8
                 && !IsValidCultivationCheckpoint(agent.Cultivation))
             {
                 throw new InvalidDataException($"Agent {index}의 수행 V2 체크포인트가 잘못되었습니다.");
@@ -451,6 +484,11 @@ public sealed partial class World
                 && !IsValidCombatAuthority(agent.CombatAuthority, checkpoint.Agents.Length))
             {
                 throw new InvalidDataException($"Agent {index}의 전투 권위 체크포인트가 잘못되었습니다.");
+            }
+
+            if (checkpoint.SchemaVersion >= 11 && !IsValidMapAgent(agent.Map))
+            {
+                throw new InvalidDataException($"Agent {index}의 지도 체크포인트가 잘못되었습니다.");
             }
 
             if (agent.PersonalLog.Any(entry =>
@@ -577,4 +615,11 @@ public sealed partial class World
         && value.TurnOwner >= -1
         && value.TurnOwner < population
         && value.InjuryPoints <= CombatInjuryRules.MaximumInjuryPoints;
+
+    private static bool IsValidMapAgent(MapAgentCheckpoint? checkpoint) => checkpoint is { } value
+        && value.LocationId < WorldMapRules.LocationCount
+        && value.TravelDestinationId < WorldMapRules.LocationCount
+        && value.MonsterHunts >= 0
+        && value.MonsterVictories >= 0
+        && value.MonsterVictories <= value.MonsterHunts;
 }

@@ -53,7 +53,8 @@ public sealed record AgentCheckpoint(
     LifeChronicleEntry[] Chronicle,
     CultivationCheckpoint? Cultivation = null,
     SkillProgressCheckpoint? SkillProgress = null,
-    CombatAuthorityCheckpoint? CombatAuthority = null);
+    CombatAuthorityCheckpoint? CombatAuthority = null,
+    MapAgentCheckpoint? Map = null);
 
 public sealed record CityMarketCheckpoint(
     long TreasurySpiritStones,
@@ -98,7 +99,8 @@ public sealed record WorldCheckpoint(
     int RankingFallenCount,
     int RankingUnchangedCount,
     long RankingTotalAbsoluteMovement,
-    CityMarketCheckpoint Market)
+    CityMarketCheckpoint Market,
+    WorldMapCheckpoint? Map = null)
 {
-    public const int CurrentSchemaVersion = 10;
+    public const int CurrentSchemaVersion = 11;
 }

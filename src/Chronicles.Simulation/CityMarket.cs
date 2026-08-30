@@ -211,7 +211,13 @@ internal sealed class CityMarket
                 _prices[goodId],
                 _stock[goodId],
                 _supply[goodId],
-                _demand[goodId]);
+                _demand[goodId],
+                goodId == EconomyRules.TreasureGoodId && _stock[goodId] > 0
+                    ? new QualityValue(checked((ushort)Math.Clamp(
+                        _treasureQualityHundredths / _stock[goodId],
+                        0,
+                        QualityValue.MaximumHundredths)))
+                    : null);
         }
 
         return new CityMarketSnapshot(

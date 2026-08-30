@@ -64,6 +64,7 @@ public sealed partial class World
         if (challenger == defender
             || _agents.Activities[defender] == AgentActivity.Fighting
             || _agents.Activities[defender] == AgentActivity.SeekingChallenge
+            || _agents.LocationIds[challenger] != _agents.LocationIds[defender]
             || _agents.Health[defender] * 100 < _agents.MaximumHealth[defender] * 60
             || _agents.Qi[defender] * 100 < _agents.MaximumQi[defender] * 25)
         {

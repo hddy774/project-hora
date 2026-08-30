@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Chronicles.Core/Chronicles.Core.csproj" />
+    <Project Path="src/Chronicles.Simulation/Chronicles.Simulation.csproj" />
+    <Project Path="src/Chronicles.Desktop/Chronicles.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Chronicles.Tests/Chronicles.Tests.csproj" />
+  </Folder>
+</Solution>

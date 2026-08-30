@@ -4,7 +4,8 @@ namespace Chronicles.Simulation;
 
 public sealed partial class World
 {
-    private const int EventCapacity = 512;
+    public const int WorldLogCapacity = 100;
+    public const int PersonalLogCapacity = 100;
     private readonly DeterministicRandom _random;
     private readonly AgentStore _agents;
     private readonly CityMarket _market;
@@ -15,9 +16,10 @@ public sealed partial class World
     private readonly int[] _realmRankByAgent;
     private readonly int[] _agentByAptitudeRank;
     private readonly int[] _aptitudeRankByAgent;
-    private readonly Queue<WorldEvent> _events = new(EventCapacity);
+    private readonly Queue<WorldEvent> _events = new(WorldLogCapacity);
     private long _eventSequence;
     private long _chronicleSequence;
+    private long _personalLogSequence;
     private int _totalBreakthroughs;
     private int _totalChallenges;
     private int _totalCombatsStarted;
@@ -123,6 +125,7 @@ public sealed partial class World
             var resolvedActivity = _agents.Activities[agentIndex];
             var alreadyScheduled = ResolveActivity(agentIndex);
             TryResolveBottleneckAfterAction(agentIndex, resolvedActivity);
+            AddPersonalActionLog(agentIndex, resolvedActivity);
             if (alreadyScheduled)
             {
                 continue;
@@ -289,6 +292,7 @@ public sealed partial class World
         Add(ref hash, _random.State);
         Add(ref hash, (ulong)_eventSequence);
         Add(ref hash, (ulong)_chronicleSequence);
+        Add(ref hash, (ulong)_personalLogSequence);
         Add(ref hash, (ulong)_totalBreakthroughs);
         Add(ref hash, (ulong)_totalChallenges);
         Add(ref hash, (ulong)_totalCombatsStarted);
@@ -374,6 +378,20 @@ public sealed partial class World
             Add(ref hash, (ulong)_rankByAgent[index]);
             Add(ref hash, (ulong)_realmRankByAgent[index]);
             Add(ref hash, (ulong)_aptitudeRankByAgent[index]);
+            foreach (var entry in _agents.PersonalLogs[index])
+            {
+                Add(ref hash, (ulong)entry.Sequence);
+                Add(ref hash, (ulong)entry.Tick.Value);
+                Add(ref hash, (ulong)entry.LifeNumber);
+                Add(ref hash, (byte)entry.Kind);
+                Add(ref hash, (ulong)((int?)entry.Activity + 1 ?? 0));
+                Add(ref hash, (ulong)((int?)entry.WorldEventKind + 1 ?? 0));
+                Add(ref hash, (ulong)((int?)entry.ChronicleEventKind + 1 ?? 0));
+                Add(ref hash, entry.IsPrimaryActor ? 1UL : 0UL);
+                Add(ref hash, (ulong)(entry.RelatedAgent?.Value + 1 ?? 0));
+                Add(ref hash, unchecked((ulong)entry.Value));
+            }
+
             foreach (var entry in _agents.Chronicles[index])
             {
                 Add(ref hash, (ulong)entry.Sequence);
@@ -935,7 +953,21 @@ public sealed partial class World
 
     private void AddEvent(WorldEventKind kind, int primaryAgent, long value, int? secondaryAgent = null)
     {
-        if (_events.Count == EventCapacity)
+        if (!IsChronicleMirroredWorldEvent(kind))
+        {
+            AddPersonalWorldEventLog(primaryAgent, kind, value, secondaryAgent, isPrimaryActor: true);
+            if (secondaryAgent is { } secondary)
+            {
+                AddPersonalWorldEventLog(secondary, kind, value, primaryAgent, isPrimaryActor: false);
+            }
+        }
+
+        if (!IsImportantWorldEvent(kind, primaryAgent, secondaryAgent, value))
+        {
+            return;
+        }
+
+        if (_events.Count == WorldLogCapacity)
         {
             _events.Dequeue();
         }
@@ -946,6 +978,109 @@ public sealed partial class World
             kind,
             new AgentId(primaryAgent),
             secondaryAgent is null ? null : new AgentId(secondaryAgent.Value),
+            value));
+    }
+
+    private bool IsImportantWorldEvent(
+        WorldEventKind kind,
+        int primaryAgent,
+        int? secondaryAgent,
+        long value) => kind switch
+    {
+        WorldEventKind.NewLeader
+            or WorldEventKind.BreakthroughSucceeded
+            or WorldEventKind.MajorRealmBreakthrough
+            or WorldEventKind.Death
+            or WorldEventKind.ReincarnationEntered
+            or WorldEventKind.Rebirth => true,
+        WorldEventKind.BottleneckBreakthrough => _rankByAgent[primaryAgent] <= 100,
+        WorldEventKind.TechniqueEnlightenment
+            or WorldEventKind.SpellEnlightenment
+            or WorldEventKind.TreasureCrafted
+            or WorldEventKind.TreasurePurchased
+            or WorldEventKind.TechniqueBookPurchased
+            or WorldEventKind.SpellBookPurchased => value >= 9_000,
+        WorldEventKind.CombatEnded =>
+            _rankByAgent[primaryAgent] <= 10
+            || (secondaryAgent is { } secondary && _rankByAgent[secondary] <= 10),
+        _ => false,
+    };
+
+    private static bool IsChronicleMirroredWorldEvent(WorldEventKind kind) => kind is
+        WorldEventKind.BreakthroughFailed
+        or WorldEventKind.MinorStageBreakthrough
+        or WorldEventKind.BottleneckBreakthrough
+        or WorldEventKind.MajorRealmBreakthrough
+        or WorldEventKind.TechniqueEnlightenment
+        or WorldEventKind.SpellEnlightenment
+        or WorldEventKind.Death
+        or WorldEventKind.ReincarnationEntered
+        or WorldEventKind.Rebirth;
+
+    private void AddPersonalActionLog(int index, AgentActivity activity) =>
+        AddPersonalLog(
+            index,
+            PersonalLogKind.ActionCompleted,
+            activity,
+            worldEventKind: null,
+            chronicleEventKind: null,
+            isPrimaryActor: true,
+            relatedAgent: null,
+            value: 0);
+
+    private void AddPersonalWorldEventLog(
+        int index,
+        WorldEventKind kind,
+        long value,
+        int? relatedAgent,
+        bool isPrimaryActor) =>
+        AddPersonalLog(
+            index,
+            PersonalLogKind.WorldEvent,
+            activity: null,
+            worldEventKind: kind,
+            chronicleEventKind: null,
+            isPrimaryActor,
+            relatedAgent,
+            value);
+
+    private void AddPersonalChronicleLog(int index, ChronicleEventKind kind, int value) =>
+        AddPersonalLog(
+            index,
+            PersonalLogKind.Chronicle,
+            activity: null,
+            worldEventKind: null,
+            chronicleEventKind: kind,
+            isPrimaryActor: true,
+            relatedAgent: null,
+            value);
+
+    private void AddPersonalLog(
+        int index,
+        PersonalLogKind kind,
+        AgentActivity? activity,
+        WorldEventKind? worldEventKind,
+        ChronicleEventKind? chronicleEventKind,
+        bool isPrimaryActor,
+        int? relatedAgent,
+        long value)
+    {
+        var log = _agents.PersonalLogs[index];
+        if (log.Count == PersonalLogCapacity)
+        {
+            log.RemoveAt(0);
+        }
+
+        log.Add(new PersonalLogEntry(
+            ++_personalLogSequence,
+            Tick,
+            _agents.LifeNumbers[index],
+            kind,
+            activity,
+            worldEventKind,
+            chronicleEventKind,
+            isPrimaryActor,
+            relatedAgent is null ? null : new AgentId(relatedAgent.Value),
             value));
     }
 
@@ -1001,6 +1136,7 @@ public sealed partial class World
             _agents.RealmStages[index],
             (MinorStage)_agents.RealmLayers[index],
             value));
+        AddPersonalChronicleLog(index, kind, value);
     }
 
     private static int EncodeRealm(RealmStage stage, int minorStage) =>

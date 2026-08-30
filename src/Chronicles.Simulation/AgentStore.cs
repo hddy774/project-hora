@@ -29,6 +29,7 @@ internal sealed class AgentStore
         LifeNumbers = new int[count];
         BottleneckFailures = new ushort[count];
         Chronicles = new List<LifeChronicleEntry>[count];
+        PersonalLogs = new List<PersonalLogEntry>[count];
         RealmStages = new RealmStage[count];
         RealmLayers = new byte[count];
         CultivationProgress = new int[count];
@@ -74,6 +75,7 @@ internal sealed class AgentStore
         for (var index = 0; index < count; index++)
         {
             Chronicles[index] = [];
+            PersonalLogs[index] = [];
         }
     }
 
@@ -89,6 +91,7 @@ internal sealed class AgentStore
     public int[] LifeNumbers { get; }
     public ushort[] BottleneckFailures { get; }
     public List<LifeChronicleEntry>[] Chronicles { get; }
+    public List<PersonalLogEntry>[] PersonalLogs { get; }
     public RealmStage[] RealmStages { get; }
     public byte[] RealmLayers { get; }
     public int[] CultivationProgress { get; }

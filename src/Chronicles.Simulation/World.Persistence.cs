@@ -20,6 +20,7 @@ public sealed partial class World
         _aptitudeRankByAgent = new int[checkpoint.Agents.Length];
         _eventSequence = checkpoint.EventSequence;
         _chronicleSequence = checkpoint.ChronicleSequence;
+        _personalLogSequence = checkpoint.PersonalLogSequence;
         _totalBreakthroughs = checkpoint.TotalBreakthroughs;
         _totalChallenges = checkpoint.TotalChallenges;
         _totalCombatsStarted = checkpoint.TotalCombatsStarted;
@@ -48,7 +49,7 @@ public sealed partial class World
             ScheduleAgent(index, _agents.NextDecisionTicks[index]);
         }
 
-        foreach (var worldEvent in checkpoint.Events.TakeLast(EventCapacity))
+        foreach (var worldEvent in checkpoint.Events.TakeLast(WorldLogCapacity))
         {
             _events.Enqueue(worldEvent);
         }
@@ -110,6 +111,7 @@ public sealed partial class World
                 _agents.ActiveMissionMaterials[index],
                 _agents.CopyMaterialInventory(index),
                 _agents.CopyEquippedTreasureQualities(index),
+                _agents.PersonalLogs[index].ToArray(),
                 _agents.Chronicles[index].ToArray());
         }
 
@@ -122,6 +124,7 @@ public sealed partial class World
             _events.ToArray(),
             _eventSequence,
             _chronicleSequence,
+            _personalLogSequence,
             _totalBreakthroughs,
             _totalChallenges,
             _totalCombatsStarted,
@@ -192,6 +195,7 @@ public sealed partial class World
             index,
             checkpoint.MaterialInventory,
             checkpoint.EquippedTreasureQualities);
+        _agents.PersonalLogs[index].AddRange(checkpoint.PersonalLog);
         _agents.Chronicles[index].AddRange(checkpoint.Chronicle);
     }
 
@@ -206,6 +210,23 @@ public sealed partial class World
         if (checkpoint.Agents is not { Length: > 0 } || checkpoint.Tick < 0)
         {
             throw new InvalidDataException("세계 체크포인트의 인구 또는 시간이 잘못되었습니다.");
+        }
+
+        if (checkpoint.Events is null
+            || checkpoint.Events.Length > WorldLogCapacity
+            || checkpoint.EventSequence < 0
+            || checkpoint.ChronicleSequence < 0
+            || checkpoint.PersonalLogSequence < 0
+            || checkpoint.Events.Any(entry =>
+                entry.Sequence < 1
+                || entry.Sequence > checkpoint.EventSequence
+                || entry.Tick.Value > checkpoint.Tick
+                || entry.PrimaryAgent.Value < 0
+                || entry.PrimaryAgent.Value >= checkpoint.Agents.Length
+                || (entry.SecondaryAgent is { } secondary
+                    && (secondary.Value < 0 || secondary.Value >= checkpoint.Agents.Length))))
+        {
+            throw new InvalidDataException("세계 로그 또는 로그 sequence가 잘못되었습니다.");
         }
 
         if (checkpoint.TotalCombatsStarted != checkpoint.TotalCombatsCompleted + checkpoint.ActiveCombats)
@@ -292,6 +313,8 @@ public sealed partial class World
                 || agent.BirthTick < 0
                 || agent.BirthTick > checkpoint.Tick
                 || agent.LifeNumber < 1
+                || agent.PersonalLog is null
+                || agent.PersonalLog.Length > PersonalLogCapacity
                 || agent.Chronicle is not { Length: > 0 }
                 || agent.TargetRank != 1
                 || agent.NextDecisionTick <= checkpoint.Tick
@@ -308,6 +331,34 @@ public sealed partial class World
                 || agent.Opponent >= checkpoint.Agents.Length)
             {
                 throw new InvalidDataException($"Agent {index} 체크포인트가 잘못되었습니다.");
+            }
+
+            if (agent.PersonalLog.Any(entry =>
+                    entry.Sequence < 1
+                    || entry.Sequence > checkpoint.PersonalLogSequence
+                    || entry.Tick.Value > checkpoint.Tick
+                    || entry.LifeNumber < 1
+                    || entry.LifeNumber > agent.LifeNumber
+                    || !Enum.IsDefined(entry.Kind)
+                    || (entry.Activity is { } activity && !Enum.IsDefined(activity))
+                    || (entry.WorldEventKind is { } eventKind && !Enum.IsDefined(eventKind))
+                    || (entry.ChronicleEventKind is { } chronicleKind && !Enum.IsDefined(chronicleKind))
+                    || (entry.Kind == PersonalLogKind.ActionCompleted
+                        && (entry.Activity is null
+                            || entry.WorldEventKind is not null
+                            || entry.ChronicleEventKind is not null))
+                    || (entry.Kind == PersonalLogKind.WorldEvent
+                        && (entry.Activity is not null
+                            || entry.WorldEventKind is null
+                            || entry.ChronicleEventKind is not null))
+                    || (entry.Kind == PersonalLogKind.Chronicle
+                        && (entry.Activity is not null
+                            || entry.WorldEventKind is not null
+                            || entry.ChronicleEventKind is null))
+                    || (entry.RelatedAgent is { } related
+                        && (related.Value < 0 || related.Value >= checkpoint.Agents.Length))))
+            {
+                throw new InvalidDataException($"Agent {index}의 개인 로그가 잘못되었습니다.");
             }
 
             if (agent.Chronicle.Any(entry =>

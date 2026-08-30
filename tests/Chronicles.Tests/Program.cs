@@ -12,6 +12,7 @@ var tests = new (string Name, Action Body)[]
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
     ("8단계 품질 경계와 격차 배율", QualityTiersAndBoundaryMultipliers),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
+    ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("동일 seed 결정론", DeterministicWorld),
     ("이벤트 기반 성장", EventDrivenGrowth),
@@ -240,6 +241,68 @@ static void BirthAptitudesChronicleAndReincarnation()
     True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.Death), "사망 일대기");
     True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.ReincarnationEntered), "윤회의 강 일대기");
     True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.Rebirth), "환생 일대기");
+}
+
+static void WorldPersonalLogsAndPermanentChronicle()
+{
+    var world = World.Create(772211, 1);
+    var endTick = GameCalendar.GetMonthStart(180).Value - 1;
+    world.AdvanceTo(new SimulationTick(endTick));
+    var personalLog = world.GetAgentPersonalLog(new AgentId(0));
+    Equal(World.PersonalLogCapacity, personalLog.Count, "개인 로그 최대 100줄");
+    True(
+        personalLog.Zip(personalLog.Skip(1), (left, right) => left.Sequence < right.Sequence).All(value => value),
+        "개인 로그는 발생 순서대로 유지되어야 합니다.");
+    True(personalLog.Any(entry => entry.Kind == PersonalLogKind.ActionCompleted), "개인 행동 로그");
+
+    var restoredLogWorld = World.Restore(world.CreateCheckpoint());
+    True(
+        personalLog.SequenceEqual(restoredLogWorld.GetAgentPersonalLog(new AgentId(0))),
+        "개인 로그 저장 왕복");
+
+    var busyWorld = World.Create(772212, 2_000);
+    busyWorld.AdvanceTo(new SimulationTick(8_000));
+    var worldLog = busyWorld.CreateSnapshot(10, 500).RecentEvents;
+    True(worldLog.Count <= World.WorldLogCapacity, "세계 로그 최대 100줄");
+    True(
+        worldLog.All(entry => entry.Kind is not (
+            WorldEventKind.CombatStarted
+            or WorldEventKind.CombatPhysicalAttack
+            or WorldEventKind.CombatSpellCast
+            or WorldEventKind.CombatGuarded
+            or WorldEventKind.CombatRetreated
+            or WorldEventKind.MinorStageBreakthrough
+            or WorldEventKind.BreakthroughFailed
+            or WorldEventKind.MissionCompleted
+            or WorldEventKind.MaterialSold
+            or WorldEventKind.MaterialPurchased
+            or WorldEventKind.PillPurchased)),
+        "전체 로그에는 반복적인 개인 사건이 노출되면 안 됩니다.");
+
+    var chronicleWorld = World.Create(772213, 1);
+    var checkpoint = chronicleWorld.CreateCheckpoint();
+    var agent = checkpoint.Agents[0];
+    var permanentEntries = Enumerable.Range(1, 150)
+        .Select(sequence => new LifeChronicleEntry(
+            sequence,
+            new SimulationTick(0),
+            1,
+            0,
+            agent.Name,
+            ChronicleEventKind.FortuitousEncounter,
+            RealmStage.QiRefining,
+            MinorStage.Early,
+            sequence))
+        .ToArray();
+    var permanent = World.Restore(checkpoint with
+    {
+        ChronicleSequence = permanentEntries.Length,
+        Agents = [agent with { Chronicle = permanentEntries }],
+    });
+    Equal(150, permanent.GetAgentChronicle(new AgentId(0)).Count, "연대기는 100줄로 잘리지 않음");
+    var encoded = WorldSaveCodec.Encode(permanent.CreateCheckpoint());
+    var loaded = World.Restore(WorldSaveCodec.Decode(encoded));
+    Equal(150, loaded.GetAgentChronicle(new AgentId(0)).Count, "영구 연대기 저장 왕복");
 }
 
 static void KoreanLargeNumberFormatting()
@@ -500,6 +563,7 @@ static void SaveCodecRoundTrip()
     var decoded = WorldSaveCodec.Decode(encoded);
     Equal(checkpoint.RandomState, decoded.RandomState, "저장 왕복 RNG 상태");
     Equal(checkpoint.EventSequence, decoded.EventSequence, "저장 왕복 사건 sequence");
+    Equal(checkpoint.PersonalLogSequence, decoded.PersonalLogSequence, "저장 왕복 개인 로그 sequence");
     Equal(checkpoint.TotalChallenges, decoded.TotalChallenges, "저장 왕복 도전 합계");
     Equal(checkpoint.TotalMissionsCompleted, decoded.TotalMissionsCompleted, "저장 왕복 임무 합계");
     Equal(checkpoint.LastRankingRefreshTick, decoded.LastRankingRefreshTick, "저장 왕복 랭킹 갱신 시점");
@@ -518,6 +582,9 @@ static void SaveCodecRoundTrip()
     True(
         checkpoint.Agents[0].Chronicle.SequenceEqual(decoded.Agents[0].Chronicle),
         "저장 왕복 첫 Agent 일대기");
+    True(
+        checkpoint.Agents[0].PersonalLog.SequenceEqual(decoded.Agents[0].PersonalLog),
+        "저장 왕복 첫 Agent 개인 로그");
     Equal(checkpoint.Agents[^1].Name, decoded.Agents[^1].Name, "저장 왕복 마지막 Agent 이름");
     True(
         checkpoint.Agents[^1].Chronicle.SequenceEqual(decoded.Agents[^1].Chronicle),

@@ -49,6 +49,7 @@ public sealed record AgentCheckpoint(
     byte ActiveMissionMaterial,
     int[] MaterialInventory,
     ushort[] EquippedTreasureQualities,
+    PersonalLogEntry[] PersonalLog,
     LifeChronicleEntry[] Chronicle);
 
 public sealed record CityMarketCheckpoint(
@@ -68,6 +69,7 @@ public sealed record WorldCheckpoint(
     WorldEvent[] Events,
     long EventSequence,
     long ChronicleSequence,
+    long PersonalLogSequence,
     int TotalBreakthroughs,
     int TotalChallenges,
     int TotalCombatsStarted,

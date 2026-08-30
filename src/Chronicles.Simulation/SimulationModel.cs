@@ -122,6 +122,25 @@ public enum ChronicleEventKind : byte
     Rebirth,
 }
 
+public enum PersonalLogKind : byte
+{
+    ActionCompleted,
+    WorldEvent,
+    Chronicle,
+}
+
+public readonly record struct PersonalLogEntry(
+    long Sequence,
+    SimulationTick Tick,
+    int LifeNumber,
+    PersonalLogKind Kind,
+    AgentActivity? Activity,
+    WorldEventKind? WorldEventKind,
+    ChronicleEventKind? ChronicleEventKind,
+    bool IsPrimaryActor,
+    AgentId? RelatedAgent,
+    long Value);
+
 public enum RankingCategory : byte
 {
     CombatPower,
@@ -298,6 +317,7 @@ public sealed record WorldSnapshot(
 public sealed record WorldObservation(
     WorldSnapshot World,
     AgentSnapshot SelectedAgent,
+    IReadOnlyList<PersonalLogEntry> SelectedPersonalLog,
     IReadOnlyList<LifeChronicleEntry> SelectedChronicle);
 
 public static class CombatPowerFormula

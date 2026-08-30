@@ -78,7 +78,11 @@ public sealed class SimulationRunner : IDisposable
             var world = _world.CreateSnapshot(rankingCount, eventCount);
             var agentId = selectedAgent ?? world.LeaderId;
             var agent = _world.GetAgentSnapshot(agentId);
-            return new WorldObservation(world, agent, _world.GetAgentChronicle(agentId));
+            return new WorldObservation(
+                world,
+                agent,
+                _world.GetAgentPersonalLog(agentId),
+                _world.GetAgentChronicle(agentId));
         }
     }
 

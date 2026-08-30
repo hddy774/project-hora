@@ -21,6 +21,12 @@ public sealed partial class World
         return _agents.Chronicles[index].ToArray();
     }
 
+    public IReadOnlyList<PersonalLogEntry> GetAgentPersonalLog(AgentId agentId)
+    {
+        var index = ValidateAgent(agentId);
+        return _agents.PersonalLogs[index].ToArray();
+    }
+
     public IReadOnlyList<AgentSnapshot> BrowseAgents(int offset, int limit = 500)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(offset);

@@ -57,7 +57,8 @@ static void DefaultPopulationAndGoal()
 
 static void GameTimeAndRealmRules()
 {
-    Equal("0.0.2", ProductInfo.Version, "제품 버전");
+    var expectedVersion = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "VERSION")).Trim();
+    Equal(expectedVersion, ProductInfo.Version, "제품 버전");
     Equal(2_000L, GameCalendar.TicksPerYear, "1게임년 tick 수");
     Equal(10L, GameCalendar.GetYear(new SimulationTick(20_000)), "tick의 게임년 변환");
     Equal(1d, GameCalendar.GetRealSecondsPerGameYear(10), "10배속 게임년 현실 초");

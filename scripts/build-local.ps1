@@ -104,6 +104,10 @@ Write-Host "실행 파일: $executablePath"
 if ($CreateDesktopShortcut) {
     $desktopDirectory = [Environment]::GetFolderPath([Environment+SpecialFolder]::DesktopDirectory)
     $shortcutPath = Join-Path $desktopDirectory '선로만상록 PC.lnk'
+    if (Test-Path -LiteralPath $shortcutPath) {
+        Remove-Item -LiteralPath $shortcutPath -Force
+    }
+
     $shell = New-Object -ComObject WScript.Shell
     $shortcut = $shell.CreateShortcut($shortcutPath)
     $shortcut.TargetPath = $executablePath

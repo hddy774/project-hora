@@ -138,7 +138,7 @@ public partial class MainWindow : Window, IDisposable
 
     private void UpdateRankingRows(WorldSnapshot snapshot)
     {
-        IReadOnlyList<RankingRow> rows;
+        RankingRow[] rows;
         var search = SearchTextBox.Text.Trim();
         if (_rankingCategory is { } category)
         {
@@ -147,7 +147,7 @@ public partial class MainWindow : Window, IDisposable
                 RankingCategory.CombatPower => snapshot.CombatPowerRankings,
                 RankingCategory.Realm => snapshot.RealmRankings,
                 RankingCategory.Aptitude => snapshot.AptitudeRankings,
-                _ => throw new ArgumentOutOfRangeException(nameof(category)),
+                _ => throw new InvalidOperationException($"지원하지 않는 랭킹 분류입니다: {category}"),
             };
             rows = rankings.Select(ToRankingRow).ToArray();
             RankingScopeText.Text = $"TOP {rankings.Count:N0}";
@@ -168,8 +168,8 @@ public partial class MainWindow : Window, IDisposable
 
             if (search.Length == 0)
             {
-                var first = rows.Count == 0 ? 0 : _explorerOffset + 1;
-                var last = _explorerOffset + rows.Count;
+                var first = rows.Length == 0 ? 0 : _explorerOffset + 1;
+                var last = _explorerOffset + rows.Length;
                 RankingScopeText.Text = $"{first:N0}–{last:N0} / {snapshot.Population:N0}";
                 var currentPage = (_explorerOffset / ExplorerPageSize) + 1;
                 var pageCount = Math.Max(1, (snapshot.Population + ExplorerPageSize - 1) / ExplorerPageSize);
@@ -180,7 +180,7 @@ public partial class MainWindow : Window, IDisposable
             }
             else
             {
-                RankingScopeText.Text = $"검색 {rows.Count:N0}명";
+                RankingScopeText.Text = $"검색 {rows.Length:N0}명";
                 ExplorerNavigationPanel.Visibility = Visibility.Collapsed;
             }
         }

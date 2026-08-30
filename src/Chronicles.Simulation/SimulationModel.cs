@@ -45,6 +45,10 @@ public enum WorldEventKind : byte
     TreasurePurchased,
     TechniqueBookPurchased,
     SpellBookPurchased,
+    CultivationEntered,
+    GreatPerfectionAchieved,
+    TechniqueAcquired,
+    SpellAcquired,
 }
 
 public readonly record struct Aptitudes(
@@ -77,6 +81,10 @@ public enum ChronicleEventKind : byte
     Death,
     ReincarnationEntered,
     Rebirth,
+    CultivationEntered,
+    GreatPerfectionAchieved,
+    TechniqueAcquired,
+    SpellAcquired,
 }
 
 public enum PersonalLogKind : byte
@@ -248,7 +256,8 @@ public sealed record AgentSnapshot(
     int InventoryItemCount,
     IReadOnlyList<MaterialHoldingSnapshot> Materials,
     IReadOnlyList<EquippedTreasureSnapshot> EquippedTreasures,
-    CombatPowerBreakdown CombatPower);
+    CombatPowerBreakdown CombatPower,
+    CultivationReadProjection Cultivation);
 
 public sealed record RankingEntry(
     RankingCategory Category,

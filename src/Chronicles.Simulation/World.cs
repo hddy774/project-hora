@@ -189,7 +189,8 @@ public sealed partial class World
             _agents.GetInventoryItemCount(index),
             GetMaterialHoldingSnapshots(index),
             GetEquippedTreasureSnapshots(index),
-            _agents.Power[index]);
+            _agents.Power[index],
+            CreateCultivationProjection(index));
     }
 
     public WorldSnapshot CreateSnapshot(int rankingCount = 1_000, int eventCount = 100)
@@ -345,8 +346,45 @@ public sealed partial class World
             Add(ref hash, (byte)_agents.RealmStages[index]);
             Add(ref hash, _agents.RealmLayers[index]);
             Add(ref hash, (ulong)_agents.CultivationProgress[index]);
+            Add(ref hash, (ulong)_agents.PendingCultivationWork[index]);
+            Add(ref hash, (ulong)_agents.LastCultivationWorkBefore[index]);
+            Add(ref hash, (ulong)_agents.LastCultivationWorkGain[index]);
             Add(ref hash, (byte)_agents.CultivationStates[index]);
             Add(ref hash, (byte)_agents.CultivationBottleneckCauses[index]);
+            Add(ref hash, _agents.FloorNineCompleted[index] ? 1UL : 0UL);
+            Add(ref hash, _agents.GreatPerfectionAchieved[index] ? 1UL : 0UL);
+            Add(ref hash, _agents.EntryGatePassMasks[index]);
+            Add(ref hash, (byte)_agents.FoundationRoutes[index]);
+            for (var component = 0; component < CultivationRules.RealmComponentSlotCount; component++)
+            {
+                var cultivationOffset = (index * CultivationRules.RealmComponentSlotCount) + component;
+                Add(ref hash, _agents.CultivationComponentValues[cultivationOffset]);
+                Add(ref hash, _agents.CultivationComponentLimits[cultivationOffset]);
+            }
+
+            for (var formation = 0; formation < CultivationRules.FormationSlotCount; formation++)
+            {
+                Add(ref hash, _agents.FormationValues[(index * CultivationRules.FormationSlotCount) + formation]);
+            }
+
+            var trace = _agents.CultivationTraces[index];
+            Add(ref hash, (ulong)trace.Tick);
+            Add(ref hash, (ulong)trace.FormulaRevision);
+            Add(ref hash, (byte)trace.AttemptClass);
+            Add(ref hash, (byte)trace.Outcome);
+            Add(ref hash, (byte)trace.Realm);
+            Add(ref hash, trace.SourceFloor);
+            Add(ref hash, trace.DestinationFloor);
+            Add(ref hash, (ulong)trace.WorkBefore);
+            Add(ref hash, (ulong)trace.WorkGain);
+            Add(ref hash, (ulong)trace.WorkAfter);
+            Add(ref hash, (ulong)trace.RequiredWork);
+            Add(ref hash, (ulong)trace.CarryoverWork);
+            Add(ref hash, (ulong)trace.BaseChanceBasisPoints);
+            Add(ref hash, unchecked((ulong)(long)trace.ModifierBasisPoints));
+            Add(ref hash, (ulong)trace.FinalChanceBasisPoints);
+            Add(ref hash, unchecked((ulong)(long)trace.RollBasisPoints));
+            Add(ref hash, (byte)trace.Blocker);
             Add(ref hash, _agents.TechniqueQualities[index]);
             Add(ref hash, _agents.TechniqueMasteries[index]);
             Add(ref hash, _agents.SpellQualities[index]);
@@ -536,6 +574,7 @@ public sealed partial class World
             case CultivationState.PreparingBreakthrough:
             case CultivationState.PreflightReady:
             case CultivationState.Stabilizing:
+            case CultivationState.Stable:
                 _agents.Activities[index] = AgentActivity.Cultivating;
                 return;
             case CultivationState.Bottleneck:
@@ -552,15 +591,28 @@ public sealed partial class World
                             ? AgentActivity.TradingInCity
                             : AgentActivity.DoingCityMission,
                     CultivationBottleneckCause.Stability => AgentActivity.Recovering,
+                    CultivationBottleneckCause.EntryGate => AgentActivity.Cultivating,
+                    CultivationBottleneckCause.RealmComponent => AgentActivity.Cultivating,
+                    CultivationBottleneckCause.Method => AgentActivity.TrainingTechnique,
                     _ => AgentActivity.Cultivating,
                 };
                 return;
         }
 
+        if (_agents.CultivationStates[index] is CultivationState.PreCultivation
+            or CultivationState.EntryTraining)
+        {
+            _agents.Activities[index] = AgentActivity.Cultivating;
+            return;
+        }
+
         var rank = _rankByAgent[index];
         var sinceLastCombat = Tick.Value - _agents.LastCombatTicks[index];
         var challengeChance = sinceLastCombat > 700 ? 58 : 34;
-        if (rank > 1 && Tick.Value >= 60 && _random.NextInt(100) < challengeChance)
+        if (rank > 1
+            && GetAgeYears(index) >= CultivationRules.EntryAgeYears
+            && Tick.Value >= 60
+            && _random.NextInt(100) < challengeChance)
         {
             _agents.Activities[index] = AgentActivity.SeekingChallenge;
             return;
@@ -719,6 +771,8 @@ public sealed partial class World
         WorldEventKind.NewLeader
             or WorldEventKind.BreakthroughSucceeded
             or WorldEventKind.MajorRealmBreakthrough
+            or WorldEventKind.CultivationEntered
+            or WorldEventKind.GreatPerfectionAchieved
             or WorldEventKind.Death
             or WorldEventKind.ReincarnationEntered
             or WorldEventKind.Rebirth => true,
@@ -740,6 +794,10 @@ public sealed partial class World
         or WorldEventKind.MinorStageBreakthrough
         or WorldEventKind.BottleneckBreakthrough
         or WorldEventKind.MajorRealmBreakthrough
+        or WorldEventKind.CultivationEntered
+        or WorldEventKind.GreatPerfectionAchieved
+        or WorldEventKind.TechniqueAcquired
+        or WorldEventKind.SpellAcquired
         or WorldEventKind.TechniqueEnlightenment
         or WorldEventKind.SpellEnlightenment
         or WorldEventKind.Death

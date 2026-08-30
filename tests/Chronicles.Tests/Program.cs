@@ -7,8 +7,10 @@ var tests = new (string Name, Action Body)[]
 {
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
+    ("자질 50.00 기준 수행 기간·9층 Work", CultivationAuthorityRules),
     ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
     ("Notion 수행 Work·준비·Preflight·안착 상태", CultivationStateMachine),
+    ("소경지·대경지 돌파 영구 연대기", CultivationBreakthroughChronicle),
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
     ("8단계 품질 경계와 격차 배율", QualityTiersAndBoundaryMultipliers),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
@@ -127,15 +129,34 @@ static void CalendarAndMonthlyActionLimit()
     }
 }
 
+static void CultivationAuthorityRules()
+{
+    Equal(9, RealmRules.MinorStageCount, "모든 대경지는 1~9층");
+    Equal(1_000, CultivationRules.GetMonthlyRealmWorkGain(5_000), "자질 50.00 월 Work");
+    Equal(500, CultivationRules.GetMonthlyRealmWorkGain(2_500), "자질 25.00 월 Work");
+    Equal(2_000, CultivationRules.GetMonthlyRealmWorkGain(10_000), "자질 100.00 월 Work");
+    foreach (var profile in RealmRules.All)
+    {
+        var expected = checked(profile.MaximumLifespanYears * 4L * CultivationRules.BaseMonthlyWork);
+        Equal(expected, RealmRules.GetTotalRealmRequiredWork(profile.Stage), "9층 Work 합계");
+        Equal(profile.MaximumLifespanYears / 3m, profile.TargetCultivationYears, "50.00 기준 수행 기간");
+    }
+
+    var gate = CultivationRules.EvaluateEntryGate(1, 5_500, 5_000);
+    Equal(6_250, gate.GateScoreHundredths, "입문 GateScore");
+    True(gate.Passed, "Core 40.00 및 GateScore 60.00 통과");
+    True(CultivationRules.ProvisionalBalances.All(item => item.RequiresReview), "임시 수치는 재검토 표시");
+}
+
 static void CultivationStateMachine()
 {
     var baseline = World.Create(551122, 1);
-    var requirement = baseline.GetAgentSnapshot(new AgentId(0)).CultivationRequirement;
+    var requirement = RealmRules.GetMinorStageRequiredWork(RealmStage.QiRefining, 1);
     var checkpoint = baseline.CreateCheckpoint();
     var preparedAgent = checkpoint.Agents[0] with
     {
         CultivationProgress = requirement,
-        CultivationState = CultivationState.Progressing,
+        CultivationState = CultivationState.RealmCultivation,
         CultivationBottleneckCause = CultivationBottleneckCause.None,
         Activity = AgentActivity.Cultivating,
         NextDecisionTick = 1,
@@ -158,14 +179,8 @@ static void CultivationStateMachine()
     world.AdvanceTo(GameCalendar.GetMonthStart(2));
     var attempted = world.GetAgentSnapshot(new AgentId(0));
     True(
-        attempted.CultivationState is CultivationState.Stabilizing or CultivationState.Bottleneck,
-        "돌파 시도는 성공 안착 또는 원인이 있는 병목으로 끝나야 합니다.");
-    if (attempted.CultivationState == CultivationState.Bottleneck)
-    {
-        True(
-            attempted.BottleneckCause != CultivationBottleneckCause.None,
-            "병목은 원인 없이 저장될 수 없습니다.");
-    }
+        attempted.CultivationState is CultivationState.Stable or CultivationState.PreparingBreakthrough,
+        "돌파 시도는 성공 안정 또는 실제 실패 후 재준비로 끝나야 합니다.");
 
     var restored = World.Restore(world.CreateCheckpoint());
     var restoredAgent = restored.GetAgentSnapshot(new AgentId(0));
@@ -176,8 +191,85 @@ static void CultivationStateMachine()
     {
         True(!string.IsNullOrWhiteSpace(profile.StableId), "Realm Profile 안정 ID");
         Equal(RealmProfile.CurrentRevision, profile.Revision, "Realm Profile revision");
-        True(profile.RequiresStabilization, "돌파 성공 후 안착 상태");
+        Equal(
+            profile.Stage != RealmStage.QiRefining,
+            profile.RequiresStabilization,
+            "대경지 진입 뒤에만 안착 상태");
     }
+}
+
+static void CultivationBreakthroughChronicle()
+{
+    var minorWorld = World.Create(444001, 1);
+    var checkpoint = minorWorld.CreateCheckpoint();
+    var requirement = RealmRules.GetMinorStageRequiredWork(RealmStage.QiRefining, 1);
+    var minorAgent = checkpoint.Agents[0] with
+    {
+        SpiritualRoot = 10_000,
+        Bone = 10_000,
+        Constitution = 10_000,
+        Comprehension = 10_000,
+        Mind = 10_000,
+        CultivationProgress = requirement,
+        CultivationState = CultivationState.PreflightReady,
+        CultivationBottleneckCause = CultivationBottleneckCause.None,
+        Health = checkpoint.Agents[0].MaximumHealth,
+        Qi = checkpoint.Agents[0].MaximumQi,
+        Activity = AgentActivity.Cultivating,
+        NextDecisionTick = 1,
+    };
+    minorWorld = World.Restore(checkpoint with { Agents = [minorAgent] });
+    for (var month = 1; month <= 12
+        && minorWorld.GetAgentSnapshot(new AgentId(0)).RealmLayer == 1; month++)
+    {
+        minorWorld.AdvanceTo(GameCalendar.GetMonthStart(month));
+    }
+
+    Equal(2, minorWorld.GetAgentSnapshot(new AgentId(0)).RealmLayer, "1→2층 돌파");
+    True(
+        minorWorld.GetAgentChronicle(new AgentId(0))
+            .Any(item => item.Kind == ChronicleEventKind.MinorStageBreakthrough),
+        "소경지 돌파 영구 연대기");
+
+    var majorWorld = World.Create(444002, 1);
+    var majorCheckpoint = majorWorld.CreateCheckpoint();
+    var majorCultivation = majorCheckpoint.Agents[0].Cultivation!.Value with
+    {
+        FloorNineCompleted = true,
+        GreatPerfectionAchieved = true,
+    };
+    var majorAgent = majorCheckpoint.Agents[0] with
+    {
+        SpiritualRoot = 10_000,
+        Bone = 10_000,
+        Constitution = 10_000,
+        Comprehension = 10_000,
+        Mind = 10_000,
+        RealmLayer = 9,
+        CultivationProgress = RealmRules.GetMinorStageRequiredWork(RealmStage.QiRefining, 9),
+        CultivationState = CultivationState.PreflightReady,
+        CultivationBottleneckCause = CultivationBottleneckCause.None,
+        TechniqueMastery = 500,
+        Health = majorCheckpoint.Agents[0].MaximumHealth,
+        Qi = majorCheckpoint.Agents[0].MaximumQi,
+        Activity = AgentActivity.Cultivating,
+        NextDecisionTick = 1,
+        Cultivation = majorCultivation,
+    };
+    majorWorld = World.Restore(majorCheckpoint with { Agents = [majorAgent] });
+    for (var month = 1; month <= 36
+        && majorWorld.GetAgentSnapshot(new AgentId(0)).RealmStage == RealmStage.QiRefining; month++)
+    {
+        majorWorld.AdvanceTo(GameCalendar.GetMonthStart(month));
+    }
+
+    True(
+        majorWorld.GetAgentSnapshot(new AgentId(0)).RealmStage == RealmStage.FoundationEstablishment,
+        "연기→축기 대경지 돌파");
+    True(
+        majorWorld.GetAgentChronicle(new AgentId(0))
+            .Any(item => item.Kind == ChronicleEventKind.MajorRealmBreakthrough),
+        "대경지 돌파 영구 연대기");
 }
 
 static void BirthAptitudesChronicleAndReincarnation()
@@ -206,7 +298,7 @@ static void BirthAptitudesChronicleAndReincarnation()
     {
         BirthTick = 0,
         RealmStage = RealmStage.QiRefining,
-        RealmLayer = (byte)MinorStage.Early,
+        RealmLayer = (byte)MinorStage.Floor1,
         CultivationProgress = 0,
         Activity = AgentActivity.Cultivating,
         NextDecisionTick = deathTick,
@@ -292,7 +384,7 @@ static void WorldPersonalLogsAndPermanentChronicle()
             agent.Name,
             ChronicleEventKind.FortuitousEncounter,
             RealmStage.QiRefining,
-            MinorStage.Early,
+            MinorStage.Floor1,
             sequence))
         .ToArray();
     var permanent = World.Restore(checkpoint with
@@ -417,7 +509,7 @@ static void EventDrivenGrowth()
 static void ActiveRankingCompetition()
 {
     var world = World.CreateDefault(774);
-    world.AdvanceTo(new SimulationTick(2_000));
+    world.AdvanceTo(new SimulationTick(20_000));
     True(world.TotalChallenges >= 1_000, "충분한 상위권 도전이 발생해야 합니다.");
     True(world.TotalCombatsStarted >= 500, "실제 전투가 지속해서 시작되어야 합니다.");
     True(world.TotalCombatsCompleted >= 400, "실제 전투 결과가 누적되어야 합니다.");
@@ -510,7 +602,7 @@ static void EconomyLoop()
     True(
         initialMarket.Goods.All(item => item.CurrentPrice == item.CityBasePrice),
         "시장 초기 가격은 도시 기준가여야 합니다.");
-    world.AdvanceTo(new SimulationTick(8_000));
+    world.AdvanceTo(new SimulationTick(24_000));
     True(world.TotalMissionsCompleted > 0, "도시 임무가 완료되어야 합니다.");
     True(world.TotalTreasuresCrafted > 0, "법보 제작이 발생해야 합니다.");
     True(world.TotalPillsCrafted > 0, "단약 제작이 발생해야 합니다.");
@@ -657,7 +749,7 @@ static void AtomicSaveFileRoundTrip()
 
 static void DefaultWorldPerformanceBudget()
 {
-    const long targetTick = 5_000;
+    const long targetTick = 20_000;
     var stopwatch = Stopwatch.StartNew();
     var world = World.CreateDefault(20260830);
     world.AdvanceTo(new SimulationTick(targetTick));

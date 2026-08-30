@@ -50,7 +50,8 @@ public sealed record AgentCheckpoint(
     int[] MaterialInventory,
     ushort[] EquippedTreasureQualities,
     PersonalLogEntry[] PersonalLog,
-    LifeChronicleEntry[] Chronicle);
+    LifeChronicleEntry[] Chronicle,
+    CultivationCheckpoint? Cultivation = null);
 
 public sealed record CityMarketCheckpoint(
     long TreasurySpiritStones,
@@ -97,5 +98,5 @@ public sealed record WorldCheckpoint(
     long RankingTotalAbsoluteMovement,
     CityMarketCheckpoint Market)
 {
-    public const int CurrentSchemaVersion = 7;
+    public const int CurrentSchemaVersion = 8;
 }

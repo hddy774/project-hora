@@ -555,12 +555,15 @@ public partial class MainWindow : Window, IDisposable
         CultivationState state,
         CultivationBottleneckCause cause) => state switch
     {
-        CultivationState.Progressing => "현재 단계의 수행 Work를 축적하는 중",
+        CultivationState.PreCultivation => "선천 수행 준비기 · 5세부터 입문 수련",
+        CultivationState.EntryTraining => "입문 수련 · Work와 3개 Gate를 함께 검증",
+        CultivationState.RealmCultivation => "현재 층의 수행 Work를 축적하는 중",
         CultivationState.PreparingBreakthrough => "돌파 준비 중 · 다음 월에 Preflight 검증",
         CultivationState.PreflightReady => "돌파 Preflight 준비 완료 · 다음 월에 시도",
         CultivationState.AttemptingBreakthrough => "돌파 시도 중",
         CultivationState.Bottleneck => $"병목 · 원인: {FormatBottleneckCause(cause)}",
         CultivationState.Stabilizing => "돌파 성공 · 새 경지 안착 중",
+        CultivationState.Stable => "현재 전이 완료 · 다음 수행 목표 정리 중",
         CultivationState.Completed => "반선경 대원만 · 현재 수행체계 완성",
         _ => state.ToString(),
     };
@@ -572,6 +575,9 @@ public partial class MainWindow : Window, IDisposable
         CultivationBottleneckCause.SpiritualRoot => "영근·영력 운용",
         CultivationBottleneckCause.Resources => "돌파 자원",
         CultivationBottleneckCause.Stability => "정신·영혼 안정성",
+        CultivationBottleneckCause.EntryGate => "입문 3개 Gate",
+        CultivationBottleneckCause.RealmComponent => "경지 구성요소",
+        CultivationBottleneckCause.Method => "돌파 공법 지식·숙련",
         _ => "미확인",
     };
 
@@ -593,16 +599,7 @@ public partial class MainWindow : Window, IDisposable
 
     private static string FormatRealm(RealmStage stage, int layer)
     {
-        var name = FormatRealmStage(stage);
-        var minorStage = (MinorStage)layer switch
-        {
-            MinorStage.Early => "초기",
-            MinorStage.Middle => "중기",
-            MinorStage.Late => "후기",
-            MinorStage.GreatCompletion => "대원만",
-            _ => layer.ToString(CultureInfo.InvariantCulture),
-        };
-        return $"{name} {minorStage}";
+        return $"{FormatRealmStage(stage)} {layer.ToString(CultureInfo.InvariantCulture)}층";
     }
 
     private static string FormatRealmStage(RealmStage stage) => stage switch

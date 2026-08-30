@@ -41,7 +41,7 @@ public sealed partial class World
 
         for (var index = 0; index < checkpoint.Agents.Length; index++)
         {
-            RestoreAgent(index, checkpoint.Agents[index]);
+            RestoreAgent(index, checkpoint.Agents[index], checkpoint.SchemaVersion);
             _agentByRank[index] = index;
             _agentByRealmRank[index] = index;
             _agentByAptitudeRank[index] = index;
@@ -112,7 +112,19 @@ public sealed partial class World
                 _agents.CopyMaterialInventory(index),
                 _agents.CopyEquippedTreasureQualities(index),
                 _agents.PersonalLogs[index].ToArray(),
-                _agents.Chronicles[index].ToArray());
+                _agents.Chronicles[index].ToArray(),
+                new CultivationCheckpoint(
+                    _agents.PendingCultivationWork[index],
+                    _agents.LastCultivationWorkBefore[index],
+                    _agents.LastCultivationWorkGain[index],
+                    _agents.FloorNineCompleted[index],
+                    _agents.GreatPerfectionAchieved[index],
+                    _agents.EntryGatePassMasks[index],
+                    _agents.FoundationRoutes[index],
+                    _agents.CopyCultivationComponentValues(index),
+                    _agents.CopyCultivationComponentLimits(index),
+                    _agents.CopyFormationValues(index),
+                    _agents.CultivationTraces[index]));
         }
 
         return new WorldCheckpoint(
@@ -145,7 +157,7 @@ public sealed partial class World
             _market.CreateCheckpoint());
     }
 
-    private void RestoreAgent(int index, AgentCheckpoint checkpoint)
+    private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
     {
         _agents.Names[index] = checkpoint.Name;
         _agents.SpiritualRoots[index] = checkpoint.SpiritualRoot;
@@ -158,10 +170,45 @@ public sealed partial class World
         _agents.LifeNumbers[index] = checkpoint.LifeNumber;
         _agents.BottleneckFailures[index] = checkpoint.BottleneckFailures;
         _agents.RealmStages[index] = checkpoint.RealmStage;
-        _agents.RealmLayers[index] = checkpoint.RealmLayer;
-        _agents.CultivationProgress[index] = checkpoint.CultivationProgress;
+        var migratedFloor = schemaVersion == 7
+            ? MigrateLegacyFloor(checkpoint.RealmLayer)
+            : checkpoint.RealmLayer;
+        _agents.RealmLayers[index] = migratedFloor;
+        _agents.CultivationProgress[index] = schemaVersion == 7
+            ? MigrateLegacyCultivationWork(
+                checkpoint.RealmStage,
+                checkpoint.RealmLayer,
+                migratedFloor,
+                checkpoint.CultivationProgress)
+            : checkpoint.CultivationProgress;
         _agents.CultivationStates[index] = checkpoint.CultivationState;
         _agents.CultivationBottleneckCauses[index] = checkpoint.CultivationBottleneckCause;
+        var cultivation = checkpoint.Cultivation;
+        if (cultivation is { } current)
+        {
+            _agents.PendingCultivationWork[index] = current.PendingCarryoverWork;
+            _agents.LastCultivationWorkBefore[index] = current.LastWorkBefore;
+            _agents.LastCultivationWorkGain[index] = current.LastWorkGain;
+            _agents.FloorNineCompleted[index] = current.FloorNineCompleted;
+            _agents.GreatPerfectionAchieved[index] = current.GreatPerfectionAchieved;
+            _agents.EntryGatePassMasks[index] = current.EntryGatePassMask;
+            _agents.FoundationRoutes[index] = current.FoundationRoute;
+            _agents.RestoreCultivationArrays(
+                index,
+                current.ComponentValues,
+                current.ComponentLimits,
+                current.FormationValues);
+            _agents.CultivationTraces[index] = current.LatestTrace;
+        }
+        else
+        {
+            var legacyCompleted = checkpoint.CultivationState == CultivationState.Completed;
+            _agents.FloorNineCompleted[index] = legacyCompleted;
+            _agents.GreatPerfectionAchieved[index] = legacyCompleted;
+            _agents.EntryGatePassMasks[index] = 0b111;
+            _agents.CultivationTraces[index] = CultivationTraceState.Empty;
+            InitializeRealmComponents(index);
+        }
         _agents.TechniqueQualities[index] = checkpoint.TechniqueQuality;
         _agents.TechniqueMasteries[index] = checkpoint.TechniqueMastery;
         _agents.SpellQualities[index] = checkpoint.SpellQuality;
@@ -202,7 +249,7 @@ public sealed partial class World
     private static void ValidateCheckpoint(WorldCheckpoint checkpoint)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
-        if (checkpoint.SchemaVersion != WorldCheckpoint.CurrentSchemaVersion)
+        if (checkpoint.SchemaVersion is not 7 and not WorldCheckpoint.CurrentSchemaVersion)
         {
             throw new InvalidDataException($"지원하지 않는 세계 schema {checkpoint.SchemaVersion}입니다.");
         }
@@ -311,13 +358,16 @@ public sealed partial class World
                 || !Enum.IsDefined(agent.CultivationState)
                 || !Enum.IsDefined(agent.CultivationBottleneckCause)
                 || agent.CultivationProgress < 0
-                || agent.CultivationProgress > RealmRules.GetMinorStageRequiredWork(agent.RealmStage)
+                || agent.CultivationProgress > GetCheckpointCultivationRequirement(checkpoint.SchemaVersion, agent)
                 || (agent.CultivationState == CultivationState.Bottleneck
                     && agent.CultivationBottleneckCause == CultivationBottleneckCause.None)
                 || (agent.CultivationState != CultivationState.Bottleneck
                     && agent.CultivationBottleneckCause != CultivationBottleneckCause.None)
                 || (agent.CultivationState == CultivationState.Completed
-                    && !RealmRules.IsFinalStage(agent.RealmStage, agent.RealmLayer))
+                    && !(agent.RealmStage == RealmStage.HalfImmortal
+                        && (checkpoint.SchemaVersion == 7
+                            ? agent.RealmLayer == 4
+                            : agent.RealmLayer == RealmRules.MinorStageCount)))
                 || agent.BirthTick < 0
                 || agent.BirthTick > checkpoint.Tick
                 || agent.LifeNumber < 1
@@ -339,6 +389,12 @@ public sealed partial class World
                 || agent.Opponent >= checkpoint.Agents.Length)
             {
                 throw new InvalidDataException($"Agent {index} 체크포인트가 잘못되었습니다.");
+            }
+
+            if (checkpoint.SchemaVersion == WorldCheckpoint.CurrentSchemaVersion
+                && !IsValidCultivationCheckpoint(agent.Cultivation))
+            {
+                throw new InvalidDataException($"Agent {index}의 수행 V2 체크포인트가 잘못되었습니다.");
             }
 
             if (agent.PersonalLog.Any(entry =>
@@ -384,5 +440,72 @@ public sealed partial class World
                 throw new InvalidDataException($"Agent {index}의 전투 상대가 일치하지 않습니다.");
             }
         }
+    }
+
+    private static byte MigrateLegacyFloor(byte legacyFloor) => legacyFloor switch
+    {
+        1 => 1,
+        2 => 4,
+        3 => 7,
+        4 => 9,
+        _ => throw new InvalidDataException("기존 소경지 값이 잘못되었습니다."),
+    };
+
+    private static int MigrateLegacyCultivationWork(
+        RealmStage realm,
+        byte legacyFloor,
+        byte destinationFloor,
+        int progress)
+    {
+        var oldLifespanTicks = checked(RealmRules.GetProfile(realm).MaximumLifespanYears * GameCalendar.TicksPerYear);
+        var oldRequirement = checked((int)((oldLifespanTicks + 6) / 12));
+        var newRequirement = RealmRules.GetMinorStageRequiredWork(realm, destinationFloor);
+        return oldRequirement == 0
+            ? 0
+            : checked((int)Math.Min(newRequirement, (long)progress * newRequirement / oldRequirement));
+    }
+
+    private static int GetCheckpointCultivationRequirement(int schemaVersion, AgentCheckpoint agent)
+    {
+        if (schemaVersion == 7)
+        {
+            var lifespanTicks = checked(RealmRules.GetProfile(agent.RealmStage).MaximumLifespanYears * GameCalendar.TicksPerYear);
+            return checked((int)((lifespanTicks + 6) / 12));
+        }
+
+        return agent.CultivationState is CultivationState.PreCultivation or CultivationState.EntryTraining
+            ? CultivationRules.RequiredEntryWork
+            : RealmRules.GetMinorStageRequiredWork(agent.RealmStage, agent.RealmLayer);
+    }
+
+    private static bool IsValidCultivationCheckpoint(CultivationCheckpoint? checkpoint)
+    {
+        if (checkpoint is not { } value
+            || value.PendingCarryoverWork < 0
+            || value.LastWorkBefore < 0
+            || value.LastWorkGain < 0
+            || value.EntryGatePassMask > 0b111
+            || !Enum.IsDefined(value.FoundationRoute)
+            || value.ComponentValues is not { Length: CultivationRules.RealmComponentSlotCount }
+            || value.ComponentLimits is not { Length: CultivationRules.RealmComponentSlotCount }
+            || value.FormationValues is not { Length: CultivationRules.FormationSlotCount })
+        {
+            return false;
+        }
+
+        for (var component = 0; component < CultivationRules.RealmComponentSlotCount; component++)
+        {
+            if (value.ComponentValues[component] > value.ComponentLimits[component]
+                || value.ComponentLimits[component] > QualityValue.MaximumHundredths)
+            {
+                return false;
+            }
+        }
+
+        return value.FormationValues.All(item => item <= QualityValue.MaximumHundredths)
+            && value.LatestTrace.FormulaRevision is >= 0 and <= CultivationRules.FormulaRevision
+            && Enum.IsDefined(value.LatestTrace.AttemptClass)
+            && Enum.IsDefined(value.LatestTrace.Outcome)
+            && Enum.IsDefined(value.LatestTrace.Blocker);
     }
 }

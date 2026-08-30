@@ -33,8 +33,19 @@ internal sealed class AgentStore
         RealmStages = new RealmStage[count];
         RealmLayers = new byte[count];
         CultivationProgress = new int[count];
+        PendingCultivationWork = new int[count];
+        LastCultivationWorkBefore = new int[count];
+        LastCultivationWorkGain = new int[count];
         CultivationStates = new CultivationState[count];
         CultivationBottleneckCauses = new CultivationBottleneckCause[count];
+        FloorNineCompleted = new bool[count];
+        GreatPerfectionAchieved = new bool[count];
+        EntryGatePassMasks = new byte[count];
+        FoundationRoutes = new FoundationRoute[count];
+        CultivationComponentValues = new ushort[checked(count * CultivationRules.RealmComponentSlotCount)];
+        CultivationComponentLimits = new ushort[checked(count * CultivationRules.RealmComponentSlotCount)];
+        FormationValues = new ushort[checked(count * CultivationRules.FormationSlotCount)];
+        CultivationTraces = new CultivationTraceState[count];
         TechniqueQualities = new ushort[count];
         TechniqueMasteries = new ushort[count];
         SpellQualities = new ushort[count];
@@ -95,8 +106,19 @@ internal sealed class AgentStore
     public RealmStage[] RealmStages { get; }
     public byte[] RealmLayers { get; }
     public int[] CultivationProgress { get; }
+    public int[] PendingCultivationWork { get; }
+    public int[] LastCultivationWorkBefore { get; }
+    public int[] LastCultivationWorkGain { get; }
     public CultivationState[] CultivationStates { get; }
     public CultivationBottleneckCause[] CultivationBottleneckCauses { get; }
+    public bool[] FloorNineCompleted { get; }
+    public bool[] GreatPerfectionAchieved { get; }
+    public byte[] EntryGatePassMasks { get; }
+    public FoundationRoute[] FoundationRoutes { get; }
+    public ushort[] CultivationComponentValues { get; }
+    public ushort[] CultivationComponentLimits { get; }
+    public ushort[] FormationValues { get; }
+    public CultivationTraceState[] CultivationTraces { get; }
     public ushort[] TechniqueQualities { get; }
     public ushort[] TechniqueMasteries { get; }
     public ushort[] SpellQualities { get; }
@@ -180,8 +202,28 @@ internal sealed class AgentStore
         RealmStages[index] = RealmStage.QiRefining;
         RealmLayers[index] = 1;
         CultivationProgress[index] = 0;
-        CultivationStates[index] = CultivationState.Progressing;
+        PendingCultivationWork[index] = 0;
+        LastCultivationWorkBefore[index] = 0;
+        LastCultivationWorkGain[index] = 0;
+        CultivationStates[index] = CultivationState.PreCultivation;
         CultivationBottleneckCauses[index] = CultivationBottleneckCause.None;
+        FloorNineCompleted[index] = false;
+        GreatPerfectionAchieved[index] = false;
+        EntryGatePassMasks[index] = 0;
+        FoundationRoutes[index] = FoundationRoute.None;
+        CultivationTraces[index] = CultivationTraceState.Empty;
+        Array.Clear(
+            CultivationComponentValues,
+            index * CultivationRules.RealmComponentSlotCount,
+            CultivationRules.RealmComponentSlotCount);
+        Array.Clear(
+            CultivationComponentLimits,
+            index * CultivationRules.RealmComponentSlotCount,
+            CultivationRules.RealmComponentSlotCount);
+        Array.Clear(
+            FormationValues,
+            index * CultivationRules.FormationSlotCount,
+            CultivationRules.FormationSlotCount);
         TechniqueQualities[index] = CreateQuality(random);
         TechniqueMasteries[index] = (ushort)(50 + random.NextInt(251));
         SpellQualities[index] = CreateQuality(random);
@@ -223,6 +265,84 @@ internal sealed class AgentStore
 
     public int GetMaterialCount(int index, MaterialId material) =>
         MaterialInventory[GetMaterialOffset(index, material)];
+
+    public int GetCultivationComponentValue(int index, int component) =>
+        CultivationComponentValues[GetCultivationComponentOffset(index, component)];
+
+    public int GetCultivationComponentLimit(int index, int component) =>
+        CultivationComponentLimits[GetCultivationComponentOffset(index, component)];
+
+    public void SetCultivationComponent(int index, int component, int value, int limit)
+    {
+        if (value is < 0 or > QualityValue.MaximumHundredths
+            || limit is < 0 or > QualityValue.MaximumHundredths
+            || value > limit)
+        {
+            throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        var offset = GetCultivationComponentOffset(index, component);
+        CultivationComponentValues[offset] = checked((ushort)value);
+        CultivationComponentLimits[offset] = checked((ushort)limit);
+    }
+
+    public int GetCultivationComponentAverage(int index, int count)
+    {
+        if (count == 0)
+        {
+            return 0;
+        }
+
+        var start = index * CultivationRules.RealmComponentSlotCount;
+        var total = 0;
+        for (var component = 0; component < count; component++)
+        {
+            total += CultivationComponentValues[start + component];
+        }
+
+        return total / count;
+    }
+
+    public ushort[] CopyCultivationComponentValues(int index) =>
+        CopyCultivationArray(
+            CultivationComponentValues,
+            index,
+            CultivationRules.RealmComponentSlotCount);
+
+    public ushort[] CopyCultivationComponentLimits(int index) =>
+        CopyCultivationArray(
+            CultivationComponentLimits,
+            index,
+            CultivationRules.RealmComponentSlotCount);
+
+    public ushort[] CopyFormationValues(int index) =>
+        CopyCultivationArray(FormationValues, index, CultivationRules.FormationSlotCount);
+
+    public void RestoreCultivationArrays(
+        int index,
+        ushort[] componentValues,
+        ushort[] componentLimits,
+        ushort[] formationValues)
+    {
+        Array.Copy(
+            componentValues,
+            0,
+            CultivationComponentValues,
+            index * CultivationRules.RealmComponentSlotCount,
+            CultivationRules.RealmComponentSlotCount);
+        Array.Copy(
+            componentLimits,
+            0,
+            CultivationComponentLimits,
+            index * CultivationRules.RealmComponentSlotCount,
+            CultivationRules.RealmComponentSlotCount);
+        Array.Copy(
+            formationValues,
+            0,
+            FormationValues,
+            index * CultivationRules.FormationSlotCount,
+            CultivationRules.FormationSlotCount);
+    }
 
     public void AddMaterial(int index, MaterialId material, int count)
     {
@@ -352,6 +472,23 @@ internal sealed class AgentStore
 
     private static int GetTreasureOffset(int index, TreasureSlot slot) =>
         checked((index * EconomyRules.TreasureSlotCount) + (int)slot);
+
+    private static int GetCultivationComponentOffset(int index, int component)
+    {
+        if ((uint)component >= CultivationRules.RealmComponentSlotCount)
+        {
+            throw new ArgumentOutOfRangeException(nameof(component));
+        }
+
+        return checked((index * CultivationRules.RealmComponentSlotCount) + component);
+    }
+
+    private static ushort[] CopyCultivationArray(ushort[] source, int index, int width)
+    {
+        var copy = new ushort[width];
+        Array.Copy(source, index * width, copy, 0, width);
+        return copy;
+    }
 
     private static string CreateName(int index, DeterministicRandom random)
     {

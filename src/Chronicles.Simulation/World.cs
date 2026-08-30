@@ -28,6 +28,12 @@ public sealed partial class World
     private int _totalTreasuresCrafted;
     private int _totalPillsCrafted;
     private int _totalMaterialsSold;
+    private long _lastRankingRefreshTick;
+    private long _rankingMovementFromTick;
+    private int _rankingRisenCount;
+    private int _rankingFallenCount;
+    private int _rankingUnchangedCount;
+    private long _rankingTotalAbsoluteMovement;
 
     private World(ulong seed, int population)
     {
@@ -177,6 +183,7 @@ public sealed partial class World
             RankingCategory.Aptitude,
             _agentByAptitudeRank,
             actualRankingCount);
+        var statistics = CreateStatistics();
 
         var recentEvents = _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray();
         var agentNames = new Dictionary<int, string>((actualRankingCount * 3) + (recentEvents.Length * 2));
@@ -200,6 +207,7 @@ public sealed partial class World
             combatPowerRankings,
             realmRankings,
             aptitudeRankings,
+            statistics,
             agentNames,
             recentEvents,
             _totalBreakthroughs,
@@ -268,6 +276,12 @@ public sealed partial class World
         Add(ref hash, (ulong)_totalTreasuresCrafted);
         Add(ref hash, (ulong)_totalPillsCrafted);
         Add(ref hash, (ulong)_totalMaterialsSold);
+        Add(ref hash, (ulong)_lastRankingRefreshTick);
+        Add(ref hash, (ulong)_rankingMovementFromTick);
+        Add(ref hash, (ulong)_rankingRisenCount);
+        Add(ref hash, (ulong)_rankingFallenCount);
+        Add(ref hash, (ulong)_rankingUnchangedCount);
+        Add(ref hash, (ulong)_rankingTotalAbsoluteMovement);
         for (var index = 0; index < Population; index++)
         {
             Add(ref hash, (ulong)index);
@@ -611,14 +625,46 @@ public sealed partial class World
     private void RefreshRankings(bool recordLeaderChange)
     {
         var previousLeader = _agentByRank[0];
+        if (recordLeaderChange)
+        {
+            _rankingRisenCount = 0;
+            _rankingFallenCount = 0;
+            _rankingUnchangedCount = 0;
+            _rankingTotalAbsoluteMovement = 0;
+        }
+
         Array.Sort(_agentByRank, CompareAgentsByPower);
         Array.Sort(_agentByRealmRank, CompareAgentsByRealm);
         Array.Sort(_agentByAptitudeRank, CompareAgentsByAptitude);
         for (var offset = 0; offset < _agentByRank.Length; offset++)
         {
-            _rankByAgent[_agentByRank[offset]] = offset + 1;
+            var agent = _agentByRank[offset];
+            var previousRank = _rankByAgent[agent];
+            var currentRank = offset + 1;
+            if (recordLeaderChange)
+            {
+                if (currentRank < previousRank)
+                {
+                    _rankingRisenCount++;
+                }
+                else if (currentRank > previousRank)
+                {
+                    _rankingFallenCount++;
+                }
+
+                _rankingTotalAbsoluteMovement += Math.Abs((long)currentRank - previousRank);
+            }
+
+            _rankByAgent[agent] = currentRank;
             _realmRankByAgent[_agentByRealmRank[offset]] = offset + 1;
             _aptitudeRankByAgent[_agentByAptitudeRank[offset]] = offset + 1;
+        }
+
+        if (recordLeaderChange)
+        {
+            _rankingMovementFromTick = _lastRankingRefreshTick;
+            _lastRankingRefreshTick = Tick.Value;
+            _rankingUnchangedCount = Population - _rankingRisenCount - _rankingFallenCount;
         }
 
         var leader = _agentByRank[0];

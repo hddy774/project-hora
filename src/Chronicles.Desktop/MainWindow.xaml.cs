@@ -123,6 +123,7 @@ public partial class MainWindow : Window, IDisposable
         try
         {
             UpdateRankingRows(snapshot);
+            UpdateStatistics(snapshot);
             UpdateEventRows(snapshot);
             UpdateSelectedAgent(observation.SelectedAgent, observation.SelectedChronicle);
         }
@@ -195,6 +196,40 @@ public partial class MainWindow : Window, IDisposable
             .Select(item => FormatEvent(snapshot, item))
             .ToArray();
         EventList.ItemsSource = rows;
+    }
+
+    private void UpdateStatistics(WorldSnapshot snapshot)
+    {
+        var statistics = snapshot.Statistics;
+        DeathStatText.Text = KoreanNumberFormatter.Format(statistics.TotalDeaths);
+        WinStatText.Text = KoreanNumberFormatter.Format(statistics.TotalWins);
+        LossStatText.Text = KoreanNumberFormatter.Format(statistics.TotalLosses);
+        ReincarnationStatText.Text = KoreanNumberFormatter.Format(statistics.TotalReincarnations);
+        MissionStatText.Text = KoreanNumberFormatter.Format(statistics.TotalMissionsCompleted);
+        SpiritStoneStatText.Text = KoreanNumberFormatter.Format(statistics.TotalSpiritStones);
+
+        var movement = statistics.RankingMovement;
+        var changeRate = snapshot.Population == 0
+            ? 0m
+            : movement.ChangedCount * 100m / snapshot.Population;
+        var averageMovement = movement.ChangedCount == 0
+            ? 0m
+            : movement.TotalAbsoluteMovement / (decimal)movement.ChangedCount;
+        RankingMovementText.Text =
+            $"변동 {changeRate:0.##}% · 상승 {movement.RisenCount:N0} · 하락 {movement.FallenCount:N0} · 유지 {movement.UnchangedCount:N0} · 평균 {averageMovement:0.##}위";
+
+        RealmDistributionGrid.ItemsSource = statistics.RealmDistribution
+            .Select(item => new DistributionRow(
+                FormatRealmStage(item.Realm),
+                KoreanNumberFormatter.Format(item.Count),
+                FormatPopulationRatio(item.Count, snapshot.Population)))
+            .ToArray();
+        PowerDistributionGrid.ItemsSource = statistics.CombatPowerDistribution
+            .Select(item => new DistributionRow(
+                FormatPowerRange(item.MinimumInclusive, item.MaximumExclusive),
+                KoreanNumberFormatter.Format(item.Count),
+                FormatPopulationRatio(item.Count, snapshot.Population)))
+            .ToArray();
     }
 
     private void UpdateSelectedAgent(
@@ -385,25 +420,7 @@ public partial class MainWindow : Window, IDisposable
 
     private static string FormatRealm(RealmStage stage, int layer)
     {
-        var name = stage switch
-        {
-            RealmStage.QiRefining => "연기",
-            RealmStage.FoundationEstablishment => "축기",
-            RealmStage.GoldenCore => "금단경",
-            RealmStage.NascentSoul => "원영경",
-            RealmStage.SpiritTransformation => "화신경",
-            RealmStage.VoidRefinement => "연허경",
-            RealmStage.BodyIntegration => "합체경",
-            RealmStage.TribulationCrossing => "도겁경",
-            RealmStage.Mahayana => "대승경",
-            RealmStage.HalfImmortal => "반선경",
-            _ => stage.ToString(),
-        };
-        if (stage is RealmStage.QiRefining or RealmStage.FoundationEstablishment)
-        {
-            name += "경";
-        }
-
+        var name = FormatRealmStage(stage);
         var minorStage = (MinorStage)layer switch
         {
             MinorStage.Early => "초기",
@@ -413,6 +430,39 @@ public partial class MainWindow : Window, IDisposable
             _ => layer.ToString(CultureInfo.InvariantCulture),
         };
         return $"{name} {minorStage}";
+    }
+
+    private static string FormatRealmStage(RealmStage stage) => stage switch
+    {
+        RealmStage.QiRefining => "연기경",
+        RealmStage.FoundationEstablishment => "축기경",
+        RealmStage.GoldenCore => "금단경",
+        RealmStage.NascentSoul => "원영경",
+        RealmStage.SpiritTransformation => "화신경",
+        RealmStage.VoidRefinement => "연허경",
+        RealmStage.BodyIntegration => "합체경",
+        RealmStage.TribulationCrossing => "도겁경",
+        RealmStage.Mahayana => "대승경",
+        RealmStage.HalfImmortal => "반선경",
+        _ => stage.ToString(),
+    };
+
+    private static string FormatPopulationRatio(int count, int population) =>
+        population == 0 ? "0%" : $"{count * 100m / population:0.##}%";
+
+    private static string FormatPowerRange(long minimum, long? maximum)
+    {
+        if (maximum is null)
+        {
+            return $"{KoreanNumberFormatter.Format(minimum)} 이상";
+        }
+
+        if (minimum == 0)
+        {
+            return $"{KoreanNumberFormatter.Format(maximum.Value)} 미만";
+        }
+
+        return $"{KoreanNumberFormatter.Format(minimum)}~{KoreanNumberFormatter.Format(maximum.Value)}";
     }
 
     private static string FormatActivity(AgentActivity activity) => activity switch

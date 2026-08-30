@@ -15,3 +15,8 @@ internal sealed record EventRow(
     string Time,
     string Summary,
     Brush Color);
+
+internal sealed record DistributionRow(
+    string Label,
+    string Count,
+    string Ratio);

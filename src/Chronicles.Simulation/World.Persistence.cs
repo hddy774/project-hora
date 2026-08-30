@@ -30,6 +30,12 @@ public sealed partial class World
         _totalTreasuresCrafted = checkpoint.TotalTreasuresCrafted;
         _totalPillsCrafted = checkpoint.TotalPillsCrafted;
         _totalMaterialsSold = checkpoint.TotalMaterialsSold;
+        _lastRankingRefreshTick = checkpoint.LastRankingRefreshTick;
+        _rankingMovementFromTick = checkpoint.RankingMovementFromTick;
+        _rankingRisenCount = checkpoint.RankingRisenCount;
+        _rankingFallenCount = checkpoint.RankingFallenCount;
+        _rankingUnchangedCount = checkpoint.RankingUnchangedCount;
+        _rankingTotalAbsoluteMovement = checkpoint.RankingTotalAbsoluteMovement;
 
         for (var index = 0; index < checkpoint.Agents.Length; index++)
         {
@@ -120,7 +126,13 @@ public sealed partial class World
             _totalMissionsCompleted,
             _totalTreasuresCrafted,
             _totalPillsCrafted,
-            _totalMaterialsSold);
+            _totalMaterialsSold,
+            _lastRankingRefreshTick,
+            _rankingMovementFromTick,
+            _rankingRisenCount,
+            _rankingFallenCount,
+            _rankingUnchangedCount,
+            _rankingTotalAbsoluteMovement);
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint)
@@ -195,6 +207,21 @@ public sealed partial class World
             || checkpoint.TotalMaterialsSold < 0)
         {
             throw new InvalidDataException("세계 체크포인트의 경제 집계가 잘못되었습니다.");
+        }
+
+        if (checkpoint.LastRankingRefreshTick < 0
+            || checkpoint.LastRankingRefreshTick > checkpoint.Tick
+            || checkpoint.RankingMovementFromTick < 0
+            || checkpoint.RankingMovementFromTick > checkpoint.LastRankingRefreshTick
+            || checkpoint.RankingRisenCount < 0
+            || checkpoint.RankingFallenCount < 0
+            || checkpoint.RankingUnchangedCount < 0
+            || checkpoint.RankingRisenCount
+                + checkpoint.RankingFallenCount
+                + checkpoint.RankingUnchangedCount > checkpoint.Agents.Length
+            || checkpoint.RankingTotalAbsoluteMovement < 0)
+        {
+            throw new InvalidDataException("세계 체크포인트의 순위 변동 통계가 잘못되었습니다.");
         }
 
         for (var index = 0; index < checkpoint.Agents.Length; index++)

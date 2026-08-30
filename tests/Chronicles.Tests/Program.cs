@@ -15,6 +15,7 @@ var tests = new (string Name, Action Body)[]
     ("이벤트 기반 성장", EventDrivenGrowth),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
     ("도시 임무·영석·재료·단약·법보 경제 순환", EconomyLoop),
+    ("전체 분포·랭킹 변동·승패·사망 통계", WorldStatisticsQuery),
     ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
@@ -310,6 +311,28 @@ static void ObservationQueriesAreReadOnly()
     Equal(before, world.ComputeStateHash(), "관찰 조회는 세계 상태를 바꾸면 안 됩니다.");
 }
 
+static void WorldStatisticsQuery()
+{
+    var world = World.CreateDefault(808);
+    world.AdvanceTo(new SimulationTick(2_000));
+    var before = world.ComputeStateHash();
+    var statistics = world.CreateStatistics();
+
+    Equal(10, statistics.RealmDistribution.Count, "경지 분포 구간 수");
+    Equal(world.Population, statistics.RealmDistribution.Sum(item => item.Count), "경지 분포 전체 인구");
+    Equal(world.Population, statistics.CombatPowerDistribution.Sum(item => item.Count), "전투력 분포 전체 인구");
+    Equal((long)world.TotalCombatsCompleted, statistics.TotalWins, "통계 승리 수");
+    Equal((long)world.TotalCombatsCompleted, statistics.TotalLosses, "통계 패배 수");
+    Equal(world.TotalDeaths, statistics.TotalDeaths, "통계 사망 수");
+    Equal(
+        world.Population,
+        statistics.RankingMovement.RisenCount
+            + statistics.RankingMovement.FallenCount
+            + statistics.RankingMovement.UnchangedCount,
+        "랭킹 변동 인구 보존");
+    Equal(before, world.ComputeStateHash(), "통계 조회는 세계 상태를 바꾸면 안 됩니다.");
+}
+
 static void EconomyLoop()
 {
     Equal(30, EconomyRules.AllMaterials.Count, "전체 재료 수");
@@ -365,6 +388,8 @@ static void SaveCodecRoundTrip()
     Equal(checkpoint.EventSequence, decoded.EventSequence, "저장 왕복 사건 sequence");
     Equal(checkpoint.TotalChallenges, decoded.TotalChallenges, "저장 왕복 도전 합계");
     Equal(checkpoint.TotalMissionsCompleted, decoded.TotalMissionsCompleted, "저장 왕복 임무 합계");
+    Equal(checkpoint.LastRankingRefreshTick, decoded.LastRankingRefreshTick, "저장 왕복 랭킹 갱신 시점");
+    Equal(checkpoint.RankingRisenCount, decoded.RankingRisenCount, "저장 왕복 순위 상승 집계");
     Equal(checkpoint.Agents[0].Name, decoded.Agents[0].Name, "저장 왕복 첫 Agent 이름");
     Equal(checkpoint.Agents[0].Soul, decoded.Agents[0].Soul, "저장 왕복 첫 Agent 영혼");
     True(

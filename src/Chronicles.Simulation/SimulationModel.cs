@@ -143,6 +143,41 @@ public readonly record struct EquippedTreasureSnapshot(
     TreasureSlot Slot,
     QualityValue? Quality);
 
+public readonly record struct RealmDistributionEntry(
+    RealmStage Realm,
+    int Count);
+
+public readonly record struct CombatPowerDistributionEntry(
+    long MinimumInclusive,
+    long? MaximumExclusive,
+    int Count);
+
+public readonly record struct RankingMovementStatistics(
+    SimulationTick FromTick,
+    SimulationTick ToTick,
+    int RisenCount,
+    int FallenCount,
+    int UnchangedCount,
+    long TotalAbsoluteMovement)
+{
+    public int ChangedCount => checked(RisenCount + FallenCount);
+}
+
+public sealed record WorldStatistics(
+    IReadOnlyList<RealmDistributionEntry> RealmDistribution,
+    IReadOnlyList<CombatPowerDistributionEntry> CombatPowerDistribution,
+    RankingMovementStatistics RankingMovement,
+    int TotalDeaths,
+    long TotalWins,
+    long TotalLosses,
+    int TotalReincarnations,
+    int TotalBreakthroughs,
+    int TotalMissionsCompleted,
+    int TotalTreasuresCrafted,
+    int TotalPillsCrafted,
+    int TotalMaterialsSold,
+    long TotalSpiritStones);
+
 public sealed record AgentSnapshot(
     AgentId Id,
     string Name,
@@ -201,6 +236,7 @@ public sealed record WorldSnapshot(
     IReadOnlyList<RankingEntry> CombatPowerRankings,
     IReadOnlyList<RankingEntry> RealmRankings,
     IReadOnlyList<RankingEntry> AptitudeRankings,
+    WorldStatistics Statistics,
     IReadOnlyDictionary<int, string> AgentNames,
     IReadOnlyList<WorldEvent> RecentEvents,
     int TotalBreakthroughs,

@@ -65,7 +65,13 @@ public sealed record WorldCheckpoint(
     int TotalMissionsCompleted,
     int TotalTreasuresCrafted,
     int TotalPillsCrafted,
-    int TotalMaterialsSold)
+    int TotalMaterialsSold,
+    long LastRankingRefreshTick,
+    long RankingMovementFromTick,
+    int RankingRisenCount,
+    int RankingFallenCount,
+    int RankingUnchangedCount,
+    long RankingTotalAbsoluteMovement)
 {
-    public const int CurrentSchemaVersion = 4;
+    public const int CurrentSchemaVersion = 5;
 }

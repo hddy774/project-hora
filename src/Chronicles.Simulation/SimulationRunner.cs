@@ -76,8 +76,9 @@ public sealed class SimulationRunner : IDisposable
         lock (_worldGate)
         {
             var world = _world.CreateSnapshot(rankingCount, eventCount);
-            var agent = _world.GetAgentSnapshot(selectedAgent ?? world.LeaderId);
-            return new WorldObservation(world, agent);
+            var agentId = selectedAgent ?? world.LeaderId;
+            var agent = _world.GetAgentSnapshot(agentId);
+            return new WorldObservation(world, agent, _world.GetAgentChronicle(agentId));
         }
     }
 

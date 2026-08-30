@@ -8,6 +8,11 @@ public sealed record AgentCheckpoint(
     byte Bone,
     byte Constitution,
     byte Comprehension,
+    byte Mind,
+    byte Soul,
+    long BirthTick,
+    int LifeNumber,
+    ushort BottleneckFailures,
     RealmStage RealmStage,
     byte RealmLayer,
     int CultivationProgress,
@@ -31,7 +36,8 @@ public sealed record AgentCheckpoint(
     long CombatStartedTick,
     byte CombatActions,
     bool Guarding,
-    int ChallengesIssued);
+    int ChallengesIssued,
+    LifeChronicleEntry[] Chronicle);
 
 public sealed record WorldCheckpoint(
     int SchemaVersion,
@@ -41,11 +47,14 @@ public sealed record WorldCheckpoint(
     AgentCheckpoint[] Agents,
     WorldEvent[] Events,
     long EventSequence,
+    long ChronicleSequence,
     int TotalBreakthroughs,
     int TotalChallenges,
     int TotalCombatsStarted,
     int TotalCombatsCompleted,
-    int ActiveCombats)
+    int ActiveCombats,
+    int TotalDeaths,
+    int TotalReincarnations)
 {
-    public const int CurrentSchemaVersion = 1;
+    public const int CurrentSchemaVersion = 2;
 }

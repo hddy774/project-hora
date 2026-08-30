@@ -14,11 +14,14 @@ public sealed partial class World
         _agentByRank = new int[checkpoint.Agents.Length];
         _rankByAgent = new int[checkpoint.Agents.Length];
         _eventSequence = checkpoint.EventSequence;
+        _chronicleSequence = checkpoint.ChronicleSequence;
         _totalBreakthroughs = checkpoint.TotalBreakthroughs;
         _totalChallenges = checkpoint.TotalChallenges;
         _totalCombatsStarted = checkpoint.TotalCombatsStarted;
         _totalCombatsCompleted = checkpoint.TotalCombatsCompleted;
         _activeCombats = checkpoint.ActiveCombats;
+        _totalDeaths = checkpoint.TotalDeaths;
+        _totalReincarnations = checkpoint.TotalReincarnations;
 
         for (var index = 0; index < checkpoint.Agents.Length; index++)
         {
@@ -49,6 +52,11 @@ public sealed partial class World
                 _agents.Bones[index],
                 _agents.Constitutions[index],
                 _agents.Comprehensions[index],
+                _agents.Minds[index],
+                _agents.Souls[index],
+                _agents.BirthTicks[index],
+                _agents.LifeNumbers[index],
+                _agents.BottleneckFailures[index],
                 _agents.RealmStages[index],
                 _agents.RealmLayers[index],
                 _agents.CultivationProgress[index],
@@ -72,7 +80,8 @@ public sealed partial class World
                 _agents.CombatStartedTicks[index],
                 _agents.CombatActions[index],
                 _agents.Guarding[index],
-                _agents.ChallengesIssued[index]);
+                _agents.ChallengesIssued[index],
+                _agents.Chronicles[index].ToArray());
         }
 
         return new WorldCheckpoint(
@@ -83,11 +92,14 @@ public sealed partial class World
             agents,
             _events.ToArray(),
             _eventSequence,
+            _chronicleSequence,
             _totalBreakthroughs,
             _totalChallenges,
             _totalCombatsStarted,
             _totalCombatsCompleted,
-            _activeCombats);
+            _activeCombats,
+            _totalDeaths,
+            _totalReincarnations);
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint)
@@ -97,6 +109,11 @@ public sealed partial class World
         _agents.Bones[index] = checkpoint.Bone;
         _agents.Constitutions[index] = checkpoint.Constitution;
         _agents.Comprehensions[index] = checkpoint.Comprehension;
+        _agents.Minds[index] = checkpoint.Mind;
+        _agents.Souls[index] = checkpoint.Soul;
+        _agents.BirthTicks[index] = checkpoint.BirthTick;
+        _agents.LifeNumbers[index] = checkpoint.LifeNumber;
+        _agents.BottleneckFailures[index] = checkpoint.BottleneckFailures;
         _agents.RealmStages[index] = checkpoint.RealmStage;
         _agents.RealmLayers[index] = checkpoint.RealmLayer;
         _agents.CultivationProgress[index] = checkpoint.CultivationProgress;
@@ -121,6 +138,7 @@ public sealed partial class World
         _agents.CombatActions[index] = checkpoint.CombatActions;
         _agents.Guarding[index] = checkpoint.Guarding;
         _agents.ChallengesIssued[index] = checkpoint.ChallengesIssued;
+        _agents.Chronicles[index].AddRange(checkpoint.Chronicle);
     }
 
     private static void ValidateCheckpoint(WorldCheckpoint checkpoint)
@@ -146,12 +164,25 @@ public sealed partial class World
             var agent = checkpoint.Agents[index];
             if (string.IsNullOrWhiteSpace(agent.Name)
                 || agent.RealmLayer is < 1 or > RealmRules.MinorStageCount
+                || agent.BirthTick < 0
+                || agent.BirthTick > checkpoint.Tick
+                || agent.LifeNumber < 1
+                || agent.Chronicle is not { Length: > 0 }
                 || agent.TargetRank != 1
                 || agent.NextDecisionTick <= checkpoint.Tick
                 || agent.Opponent < -1
                 || agent.Opponent >= checkpoint.Agents.Length)
             {
                 throw new InvalidDataException($"Agent {index} 체크포인트가 잘못되었습니다.");
+            }
+
+            if (agent.Chronicle.Any(entry =>
+                    entry.LifeNumber < 1
+                    || entry.Tick.Value > checkpoint.Tick
+                    || entry.Sequence < 1
+                    || entry.Sequence > checkpoint.ChronicleSequence))
+            {
+                throw new InvalidDataException($"Agent {index}의 일대기가 잘못되었습니다.");
             }
 
             if (agent.Activity == AgentActivity.Fighting

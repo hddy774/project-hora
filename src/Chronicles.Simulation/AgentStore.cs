@@ -23,6 +23,12 @@ internal sealed class AgentStore
         Bones = new byte[count];
         Constitutions = new byte[count];
         Comprehensions = new byte[count];
+        Minds = new byte[count];
+        Souls = new byte[count];
+        BirthTicks = new long[count];
+        LifeNumbers = new int[count];
+        BottleneckFailures = new ushort[count];
+        Chronicles = new List<LifeChronicleEntry>[count];
         RealmStages = new RealmStage[count];
         RealmLayers = new byte[count];
         CultivationProgress = new int[count];
@@ -50,6 +56,10 @@ internal sealed class AgentStore
         Power = new CombatPowerBreakdown[count];
         Array.Fill(Opponents, -1);
         Array.Fill(LastOpponents, -1);
+        for (var index = 0; index < count; index++)
+        {
+            Chronicles[index] = [];
+        }
     }
 
     public int Count { get; }
@@ -58,6 +68,12 @@ internal sealed class AgentStore
     public byte[] Bones { get; }
     public byte[] Constitutions { get; }
     public byte[] Comprehensions { get; }
+    public byte[] Minds { get; }
+    public byte[] Souls { get; }
+    public long[] BirthTicks { get; }
+    public int[] LifeNumbers { get; }
+    public ushort[] BottleneckFailures { get; }
+    public List<LifeChronicleEntry>[] Chronicles { get; }
     public RealmStage[] RealmStages { get; }
     public byte[] RealmLayers { get; }
     public int[] CultivationProgress { get; }
@@ -86,32 +102,24 @@ internal sealed class AgentStore
 
     public void Initialize(int index, DeterministicRandom random)
     {
-        Names[index] = CreateName(index, random);
-        SpiritualRoots[index] = CreateAptitude(random);
-        Bones[index] = CreateAptitude(random);
-        Constitutions[index] = CreateAptitude(random);
-        Comprehensions[index] = CreateAptitude(random);
-        RealmStages[index] = RealmStage.QiRefining;
-        RealmLayers[index] = 1;
-        TechniqueGrades[index] = (byte)(1 + random.NextInt(3));
-        TechniqueMasteries[index] = (ushort)(50 + random.NextInt(251));
-        SpellGrades[index] = (byte)(1 + random.NextInt(3));
-        SpellMasteries[index] = (ushort)(40 + random.NextInt(221));
-        MaximumHealth[index] = 800 + (Constitutions[index] * 8) + (Bones[index] * 3);
-        Health[index] = MaximumHealth[index];
-        MaximumQi[index] = 500 + (SpiritualRoots[index] * 10) + (Comprehensions[index] * 2);
-        Qi[index] = MaximumQi[index];
-        Activities[index] = AgentActivity.Cultivating;
-        NextDecisionTicks[index] = 1 + random.NextInt(20);
-        TargetRanks[index] = 1;
-        RecalculatePower(index);
+        Souls[index] = CreateAptitude(random);
+        LifeNumbers[index] = 1;
+        InitializeBody(index, random, birthTick: 0);
+    }
+
+    public void Rebirth(int index, DeterministicRandom random, long birthTick)
+    {
+        LifeNumbers[index] = checked(LifeNumbers[index] + 1);
+        InitializeBody(index, random, birthTick);
     }
 
     public Aptitudes GetAptitudes(int index) => new(
         SpiritualRoots[index],
         Bones[index],
         Constitutions[index],
-        Comprehensions[index]);
+        Comprehensions[index],
+        Minds[index],
+        Souls[index]);
 
     public void RecalculatePower(int index)
     {
@@ -124,6 +132,43 @@ internal sealed class AgentStore
             SpellGrades[index],
             SpellMasteries[index],
             CombatExperience[index]);
+    }
+
+    private void InitializeBody(int index, DeterministicRandom random, long birthTick)
+    {
+        Names[index] = CreateName(index, random);
+        SpiritualRoots[index] = CreateAptitude(random);
+        Bones[index] = CreateAptitude(random);
+        Constitutions[index] = CreateAptitude(random);
+        Comprehensions[index] = CreateAptitude(random);
+        Minds[index] = CreateAptitude(random);
+        BirthTicks[index] = birthTick;
+        BottleneckFailures[index] = 0;
+        RealmStages[index] = RealmStage.QiRefining;
+        RealmLayers[index] = 1;
+        CultivationProgress[index] = 0;
+        TechniqueGrades[index] = (byte)(1 + random.NextInt(3));
+        TechniqueMasteries[index] = (ushort)(50 + random.NextInt(251));
+        SpellGrades[index] = (byte)(1 + random.NextInt(3));
+        SpellMasteries[index] = (ushort)(40 + random.NextInt(221));
+        CombatExperience[index] = 0;
+        Wins[index] = 0;
+        Losses[index] = 0;
+        MaximumHealth[index] = 800 + (Constitutions[index] * 8) + (Bones[index] * 3);
+        Health[index] = MaximumHealth[index];
+        MaximumQi[index] = 500 + (SpiritualRoots[index] * 10) + (Comprehensions[index] * 2);
+        Qi[index] = MaximumQi[index];
+        Activities[index] = AgentActivity.Cultivating;
+        NextDecisionTicks[index] = checked(birthTick + 1 + random.NextInt(20));
+        TargetRanks[index] = 1;
+        Opponents[index] = -1;
+        LastOpponents[index] = -1;
+        LastCombatTicks[index] = birthTick;
+        CombatStartedTicks[index] = 0;
+        CombatActions[index] = 0;
+        Guarding[index] = false;
+        ChallengesIssued[index] = 0;
+        RecalculatePower(index);
     }
 
     private static byte CreateAptitude(DeterministicRandom random) =>

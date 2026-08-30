@@ -12,11 +12,14 @@ public sealed partial class World
     private readonly int[] _rankByAgent;
     private readonly Queue<WorldEvent> _events = new(EventCapacity);
     private long _eventSequence;
+    private long _chronicleSequence;
     private int _totalBreakthroughs;
     private int _totalChallenges;
     private int _totalCombatsStarted;
     private int _totalCombatsCompleted;
     private int _activeCombats;
+    private int _totalDeaths;
+    private int _totalReincarnations;
 
     private World(ulong seed, int population)
     {
@@ -29,6 +32,7 @@ public sealed partial class World
         for (var index = 0; index < population; index++)
         {
             _agents.Initialize(index, _random);
+            AddChronicle(index, ChronicleEventKind.Birth);
             _agentByRank[index] = index;
             _decisionSchedule.Enqueue(index, (_agents.NextDecisionTicks[index], index));
         }
@@ -45,6 +49,8 @@ public sealed partial class World
     public int TotalCombatsStarted => _totalCombatsStarted;
     public int TotalCombatsCompleted => _totalCombatsCompleted;
     public int ActiveCombats => _activeCombats;
+    public int TotalDeaths => _totalDeaths;
+    public int TotalReincarnations => _totalReincarnations;
 
     public static World CreateDefault(ulong seed) =>
         new(seed, ProductInfo.DefaultPopulation);
@@ -69,6 +75,13 @@ public sealed partial class World
             }
 
             Tick = new SimulationTick(dueTick);
+            if (_agents.Activities[agentIndex] != AgentActivity.Reincarnating
+                && HasReachedMaximumLifespan(agentIndex))
+            {
+                BeginReincarnation(agentIndex);
+                continue;
+            }
+
             var alreadyScheduled = ResolveActivity(agentIndex);
             if (alreadyScheduled)
             {
@@ -93,6 +106,9 @@ public sealed partial class World
             _agents.Names[index],
             _rankByAgent[index],
             _agents.TargetRanks[index],
+            GetAgeYears(index),
+            RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears,
+            _agents.LifeNumbers[index],
             _agents.RealmStages[index],
             _agents.RealmLayers[index],
             _agents.CultivationProgress[index],
@@ -163,6 +179,8 @@ public sealed partial class World
             _totalCombatsStarted,
             _totalCombatsCompleted,
             _activeCombats,
+            _totalDeaths,
+            _totalReincarnations,
             LeaderId);
     }
 
@@ -173,11 +191,14 @@ public sealed partial class World
         Add(ref hash, (ulong)Tick.Value);
         Add(ref hash, _random.State);
         Add(ref hash, (ulong)_eventSequence);
+        Add(ref hash, (ulong)_chronicleSequence);
         Add(ref hash, (ulong)_totalBreakthroughs);
         Add(ref hash, (ulong)_totalChallenges);
         Add(ref hash, (ulong)_totalCombatsStarted);
         Add(ref hash, (ulong)_totalCombatsCompleted);
         Add(ref hash, (ulong)_activeCombats);
+        Add(ref hash, (ulong)_totalDeaths);
+        Add(ref hash, (ulong)_totalReincarnations);
         for (var index = 0; index < Population; index++)
         {
             Add(ref hash, (ulong)index);
@@ -186,6 +207,11 @@ public sealed partial class World
             Add(ref hash, _agents.Bones[index]);
             Add(ref hash, _agents.Constitutions[index]);
             Add(ref hash, _agents.Comprehensions[index]);
+            Add(ref hash, _agents.Minds[index]);
+            Add(ref hash, _agents.Souls[index]);
+            Add(ref hash, (ulong)_agents.BirthTicks[index]);
+            Add(ref hash, (ulong)_agents.LifeNumbers[index]);
+            Add(ref hash, _agents.BottleneckFailures[index]);
             Add(ref hash, (byte)_agents.RealmStages[index]);
             Add(ref hash, _agents.RealmLayers[index]);
             Add(ref hash, (ulong)_agents.CultivationProgress[index]);
@@ -194,8 +220,12 @@ public sealed partial class World
             Add(ref hash, _agents.SpellGrades[index]);
             Add(ref hash, _agents.SpellMasteries[index]);
             Add(ref hash, (ulong)_agents.CombatExperience[index]);
+            Add(ref hash, (ulong)_agents.Wins[index]);
+            Add(ref hash, (ulong)_agents.Losses[index]);
             Add(ref hash, (ulong)_agents.Health[index]);
+            Add(ref hash, (ulong)_agents.MaximumHealth[index]);
             Add(ref hash, (ulong)_agents.Qi[index]);
+            Add(ref hash, (ulong)_agents.MaximumQi[index]);
             Add(ref hash, (byte)_agents.Activities[index]);
             Add(ref hash, (ulong)_agents.NextDecisionTicks[index]);
             Add(ref hash, (ulong)(_agents.Opponents[index] + 1));
@@ -206,6 +236,18 @@ public sealed partial class World
             Add(ref hash, _agents.Guarding[index] ? 1UL : 0UL);
             Add(ref hash, (ulong)_agents.ChallengesIssued[index]);
             Add(ref hash, (ulong)_rankByAgent[index]);
+            foreach (var entry in _agents.Chronicles[index])
+            {
+                Add(ref hash, (ulong)entry.Sequence);
+                Add(ref hash, (ulong)entry.Tick.Value);
+                Add(ref hash, (ulong)entry.LifeNumber);
+                Add(ref hash, (ulong)entry.AgeYears);
+                AddString(ref hash, entry.PersonName);
+                Add(ref hash, (byte)entry.Kind);
+                Add(ref hash, (byte)entry.RealmStage);
+                Add(ref hash, (byte)entry.MinorStage);
+                Add(ref hash, unchecked((ulong)(long)entry.Value));
+            }
         }
 
         foreach (var worldEvent in _events)
@@ -242,6 +284,9 @@ public sealed partial class World
                 return false;
             case AgentActivity.Fighting:
                 return ResolveCombatAction(index);
+            case AgentActivity.Reincarnating:
+                CompleteRebirth(index);
+                return true;
             default:
                 throw new InvalidOperationException("알 수 없는 AI 행동입니다.");
         }
@@ -259,6 +304,8 @@ public sealed partial class World
             10_000
             + ((_agents.SpiritualRoots[index] - 50) * 40)
             + ((_agents.Comprehensions[index] - 50) * 40)
+            + ((_agents.Minds[index] - 50) * 20)
+            + ((_agents.Souls[index] - 50) * 10)
             + ((_agents.TechniqueGrades[index] - 1) * 300),
             3_000,
             18_000);
@@ -278,6 +325,8 @@ public sealed partial class World
             + (_agents.Comprehensions[index] * 30)
             + (_agents.SpiritualRoots[index] * 20)
             + (_agents.Constitutions[index] * 10)
+            + (_agents.Minds[index] * 10)
+            + (_agents.Souls[index] * 5)
             - stagePenalty,
             1_200,
             9_500);
@@ -285,12 +334,44 @@ public sealed partial class World
         if (_random.Chance(chance))
         {
             _agents.CultivationProgress[index] -= requirement;
+            var previousRealm = _agents.RealmStages[index];
+            var previousMinorStage = (MinorStage)_agents.RealmLayers[index];
+            var bottleneckFailures = _agents.BottleneckFailures[index];
             AdvanceRealm(index);
+            if (bottleneckFailures > 0)
+            {
+                AddChronicle(index, ChronicleEventKind.BottleneckBreakthrough, bottleneckFailures);
+                AddEvent(WorldEventKind.BottleneckBreakthrough, index, bottleneckFailures);
+            }
+
+            if (_agents.RealmStages[index] != previousRealm)
+            {
+                AddChronicle(index, ChronicleEventKind.MajorRealmBreakthrough);
+                AddEvent(
+                    WorldEventKind.MajorRealmBreakthrough,
+                    index,
+                    EncodeRealm(_agents.RealmStages[index], _agents.RealmLayers[index]));
+            }
+            else if ((MinorStage)_agents.RealmLayers[index] != previousMinorStage)
+            {
+                AddChronicle(index, ChronicleEventKind.MinorStageBreakthrough);
+                AddEvent(
+                    WorldEventKind.MinorStageBreakthrough,
+                    index,
+                    EncodeRealm(_agents.RealmStages[index], _agents.RealmLayers[index]));
+            }
+
+            _agents.BottleneckFailures[index] = 0;
             _totalBreakthroughs++;
-            AddEvent(WorldEventKind.BreakthroughSucceeded, index, ((int)_agents.RealmStages[index] * 10) + _agents.RealmLayers[index]);
             return;
         }
 
+        if (_agents.BottleneckFailures[index] == 0)
+        {
+            AddChronicle(index, ChronicleEventKind.BreakthroughFailure, chance);
+        }
+
+        _agents.BottleneckFailures[index]++;
         _agents.CultivationProgress[index] = requirement * 3 / 4;
         _agents.Health[index] = Math.Max(1, _agents.Health[index] - (_agents.MaximumHealth[index] / 8));
         AddEvent(WorldEventKind.BreakthroughFailed, index, chance);
@@ -298,12 +379,17 @@ public sealed partial class World
 
     private void ResolveTechniqueTraining(int index)
     {
-        var gain = 4 + (_agents.Comprehensions[index] / 8) + (_agents.Bones[index] / 12);
+        var gain = 4
+            + (_agents.Comprehensions[index] / 8)
+            + (_agents.Bones[index] / 12)
+            + (_agents.Minds[index] / 20);
         var mastery = _agents.TechniqueMasteries[index] + gain;
         if (mastery >= 1_000 && _agents.TechniqueGrades[index] < 5)
         {
             _agents.TechniqueGrades[index]++;
             mastery = 250;
+            AddChronicle(index, ChronicleEventKind.TechniqueEnlightenment, _agents.TechniqueGrades[index]);
+            AddEvent(WorldEventKind.TechniqueEnlightenment, index, _agents.TechniqueGrades[index]);
         }
 
         _agents.TechniqueMasteries[index] = (ushort)Math.Min(1_000, mastery);
@@ -311,12 +397,17 @@ public sealed partial class World
 
     private void ResolveSpellTraining(int index)
     {
-        var gain = 4 + (_agents.Comprehensions[index] / 7) + (_agents.SpiritualRoots[index] / 14);
+        var gain = 4
+            + (_agents.Comprehensions[index] / 7)
+            + (_agents.SpiritualRoots[index] / 14)
+            + (_agents.Minds[index] / 18);
         var mastery = _agents.SpellMasteries[index] + gain;
         if (mastery >= 1_000 && _agents.SpellGrades[index] < 5)
         {
             _agents.SpellGrades[index]++;
             mastery = 200;
+            AddChronicle(index, ChronicleEventKind.SpellEnlightenment, _agents.SpellGrades[index]);
+            AddEvent(WorldEventKind.SpellEnlightenment, index, _agents.SpellGrades[index]);
         }
 
         _agents.SpellMasteries[index] = (ushort)Math.Min(1_000, mastery);
@@ -372,6 +463,7 @@ public sealed partial class World
             AgentActivity.Recovering => Math.Max(24, 120 - _agents.Constitutions[index]),
             AgentActivity.SeekingChallenge => 20,
             AgentActivity.Fighting => CalculateCombatActionDuration(index),
+            AgentActivity.Reincarnating => GameCalendar.TicksPerYear,
             _ => throw new InvalidOperationException("알 수 없는 AI 행동입니다."),
         };
     }
@@ -433,6 +525,60 @@ public sealed partial class World
             secondaryAgent is null ? null : new AgentId(secondaryAgent.Value),
             value));
     }
+
+    private long GetAgeYears(int index) => GameCalendar.GetAgeYears(
+        new SimulationTick(_agents.BirthTicks[index]),
+        Tick);
+
+    private bool HasReachedMaximumLifespan(int index) =>
+        GetAgeYears(index) >= RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears;
+
+    private void BeginReincarnation(int index)
+    {
+        var opponent = _agents.Opponents[index];
+        if (opponent >= 0 && _agents.Opponents[opponent] == index)
+        {
+            FinishCombat(opponent, index);
+        }
+
+        var age = checked((int)Math.Min(int.MaxValue, GetAgeYears(index)));
+        _totalDeaths++;
+        AddChronicle(index, ChronicleEventKind.Death, age);
+        AddEvent(WorldEventKind.Death, index, age);
+        AddChronicle(index, ChronicleEventKind.ReincarnationEntered);
+        AddEvent(WorldEventKind.ReincarnationEntered, index, _agents.LifeNumbers[index]);
+        _agents.Activities[index] = AgentActivity.Reincarnating;
+        _agents.Opponents[index] = -1;
+        _agents.Health[index] = 0;
+        _agents.Qi[index] = 0;
+        ScheduleAgent(index, checked(Tick.Value + GameCalendar.TicksPerYear));
+    }
+
+    private void CompleteRebirth(int index)
+    {
+        _agents.Rebirth(index, _random, Tick.Value);
+        _totalReincarnations++;
+        AddChronicle(index, ChronicleEventKind.Rebirth);
+        AddEvent(WorldEventKind.Rebirth, index, _agents.LifeNumbers[index]);
+        ScheduleAgent(index, _agents.NextDecisionTicks[index]);
+    }
+
+    private void AddChronicle(int index, ChronicleEventKind kind, int value = 0)
+    {
+        _agents.Chronicles[index].Add(new LifeChronicleEntry(
+            ++_chronicleSequence,
+            Tick,
+            _agents.LifeNumbers[index],
+            GetAgeYears(index),
+            _agents.Names[index],
+            kind,
+            _agents.RealmStages[index],
+            (MinorStage)_agents.RealmLayers[index],
+            value));
+    }
+
+    private static int EncodeRealm(RealmStage stage, int minorStage) =>
+        ((int)stage * 10) + minorStage;
 
     private void ScheduleAgent(int index, long tick)
     {

@@ -23,6 +23,8 @@ public partial class MainWindow : Window, IDisposable
     public MainWindow()
     {
         InitializeComponent();
+        Title = $"{ProductInfo.KoreanTitle} PC v{ProductInfo.Version}";
+        VersionText.Text = $"VERSION {ProductInfo.Version}";
         var world = World.CreateDefault(DefaultWorldSeed);
         _runner = new SimulationRunner(world);
         _runner.SnapshotPublished += Runner_SnapshotPublished;
@@ -119,7 +121,7 @@ public partial class MainWindow : Window, IDisposable
         {
             UpdateRankingRows(snapshot);
             UpdateEventRows(snapshot);
-            UpdateSelectedAgent(observation.SelectedAgent);
+            UpdateSelectedAgent(observation.SelectedAgent, observation.SelectedChronicle);
         }
         finally
         {
@@ -160,12 +162,16 @@ public partial class MainWindow : Window, IDisposable
         EventList.ItemsSource = rows;
     }
 
-    private void UpdateSelectedAgent(AgentSnapshot agent)
+    private void UpdateSelectedAgent(
+        AgentSnapshot agent,
+        IReadOnlyList<LifeChronicleEntry> chronicle)
     {
         SelectedNameText.Text = agent.Name;
         SelectedIdText.Text = $"{agent.Id} · 최종 목표 #{agent.TargetRank}";
         SelectedRankText.Text = $"RANK #{agent.Rank:N0}";
         RealmText.Text = FormatRealm(agent.RealmStage, agent.RealmLayer);
+        AgeText.Text = $"{agent.AgeYears:N0} / {agent.MaximumLifespanYears:N0}세";
+        LifeText.Text = $"제 {agent.LifeNumber:N0}생";
         ActivityText.Text = FormatActivity(agent.Activity);
         OpponentText.Text = agent.OpponentId is { } opponent
             ? GetAgentName(opponent)
@@ -177,12 +183,18 @@ public partial class MainWindow : Window, IDisposable
         BoneText.Text = agent.Aptitudes.Bone.ToString(CultureInfo.CurrentCulture);
         ConstitutionText.Text = agent.Aptitudes.Constitution.ToString(CultureInfo.CurrentCulture);
         ComprehensionText.Text = agent.Aptitudes.Comprehension.ToString(CultureInfo.CurrentCulture);
+        MindText.Text = agent.Aptitudes.Mind.ToString(CultureInfo.CurrentCulture);
+        SoulText.Text = agent.Aptitudes.Soul.ToString(CultureInfo.CurrentCulture);
         TechniqueText.Text = $"{agent.TechniqueGrade}품 · 숙련 {agent.TechniqueMastery:N0}";
         SpellText.Text = $"{agent.SpellGrade}품 · 숙련 {agent.SpellMastery:N0}";
         HealthText.Text = $"{Math.Max(0, agent.Health):N0} / {agent.MaximumHealth:N0}";
         QiText.Text = $"{agent.Qi:N0} / {agent.MaximumQi:N0}";
         RecordText.Text = $"{agent.Wins:N0}승 {agent.Losses:N0}패 · {agent.CombatExperience:N0}";
         SetPowerBreakdown(agent.CombatPower);
+        ChronicleList.ItemsSource = chronicle
+            .Reverse()
+            .Select(FormatChronicle)
+            .ToArray();
     }
 
     private void SetPowerBreakdown(CombatPowerBreakdown power)
@@ -229,6 +241,14 @@ public partial class MainWindow : Window, IDisposable
         {
             WorldEventKind.BreakthroughSucceeded => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 돌파 성공",
             WorldEventKind.BreakthroughFailed => $"{primary}, 돌파 실패로 내상을 입음",
+            WorldEventKind.MinorStageBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 소경지 돌파",
+            WorldEventKind.BottleneckBreakthrough => $"{primary}, {worldEvent.Value:N0}번의 시도 끝에 병목 돌파",
+            WorldEventKind.MajorRealmBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 대경지 돌파",
+            WorldEventKind.TechniqueEnlightenment => $"{primary}, 공법 {worldEvent.Value}품의 깨달음 획득",
+            WorldEventKind.SpellEnlightenment => $"{primary}, 법술 {worldEvent.Value}품의 깨달음 획득",
+            WorldEventKind.Death => $"{primary}, {worldEvent.Value:N0}세에 수명을 다함",
+            WorldEventKind.ReincarnationEntered => $"{primary}, 윤회의 강에 들어감",
+            WorldEventKind.Rebirth => $"{primary}, 제 {worldEvent.Value:N0}생으로 환생",
             WorldEventKind.NewLeader => $"{primary}, {secondary}을 제치고 새로운 1위 등극",
             WorldEventKind.CombatStarted => $"{primary}, 상위권 {secondary}에게 도전",
             WorldEventKind.CombatPhysicalAttack => $"{primary} → {secondary}, 공법 공격 {worldEvent.Value:N0} 피해",
@@ -240,12 +260,52 @@ public partial class MainWindow : Window, IDisposable
         };
         var color = worldEvent.Kind switch
         {
-            WorldEventKind.NewLeader or WorldEventKind.BreakthroughSucceeded => (Brush)FindResource("AccentBrush"),
+            WorldEventKind.NewLeader
+                or WorldEventKind.BreakthroughSucceeded
+                or WorldEventKind.MinorStageBreakthrough
+                or WorldEventKind.BottleneckBreakthrough
+                or WorldEventKind.MajorRealmBreakthrough
+                or WorldEventKind.Rebirth => (Brush)FindResource("AccentBrush"),
             WorldEventKind.CombatEnded => (Brush)FindResource("PositiveBrush"),
             WorldEventKind.BreakthroughFailed or WorldEventKind.CombatRetreated => (Brush)FindResource("DangerBrush"),
             _ => (Brush)FindResource("PrimaryTextBrush"),
         };
         return new EventRow($"T+{worldEvent.Tick.Value:N0}", summary, color);
+    }
+
+    private EventRow FormatChronicle(LifeChronicleEntry entry)
+    {
+        var summary = entry.Kind switch
+        {
+            ChronicleEventKind.Birth => $"{entry.PersonName}, 세상에 태어남",
+            ChronicleEventKind.MinorStageBreakthrough => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage)} 소경지 돌파",
+            ChronicleEventKind.BottleneckBreakthrough => $"{entry.Value:N0}번의 시도 끝에 병목을 돌파",
+            ChronicleEventKind.MajorRealmBreakthrough => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage)} 대경지 돌파",
+            ChronicleEventKind.BreakthroughFailure => "처음으로 현재 경지의 병목과 마주함",
+            ChronicleEventKind.TechniqueEnlightenment => $"공법 {entry.Value}품의 깨달음을 얻음",
+            ChronicleEventKind.SpellEnlightenment => $"법술 {entry.Value}품의 깨달음을 얻음",
+            ChronicleEventKind.FortuitousEncounter => "인생을 바꾸는 기연을 만남",
+            ChronicleEventKind.Death => $"{entry.Value:N0}세에 수명을 다함",
+            ChronicleEventKind.ReincarnationEntered => "육신을 떠나 윤회의 강에 들어감",
+            ChronicleEventKind.Rebirth => $"{entry.PersonName}, 새로운 육신으로 환생",
+            _ => entry.Kind.ToString(),
+        };
+        var color = entry.Kind switch
+        {
+            ChronicleEventKind.Death => (Brush)FindResource("DangerBrush"),
+            ChronicleEventKind.Birth or ChronicleEventKind.Rebirth => (Brush)FindResource("PositiveBrush"),
+            ChronicleEventKind.MinorStageBreakthrough
+                or ChronicleEventKind.BottleneckBreakthrough
+                or ChronicleEventKind.MajorRealmBreakthrough
+                or ChronicleEventKind.TechniqueEnlightenment
+                or ChronicleEventKind.SpellEnlightenment
+                or ChronicleEventKind.FortuitousEncounter => (Brush)FindResource("AccentBrush"),
+            _ => (Brush)FindResource("PrimaryTextBrush"),
+        };
+        return new EventRow(
+            $"제 {entry.LifeNumber:N0}생 · {entry.AgeYears:N0}세 · 세계 {GameCalendar.GetYear(entry.Tick):N0}년",
+            summary,
+            color);
     }
 
     private string GetAgentName(AgentId agentId) =>
@@ -301,6 +361,7 @@ public partial class MainWindow : Window, IDisposable
         AgentActivity.Recovering => "회복",
         AgentActivity.SeekingChallenge => "도전 탐색",
         AgentActivity.Fighting => "전투 중",
+        AgentActivity.Reincarnating => "윤회 중",
         _ => activity.ToString(),
     };
 

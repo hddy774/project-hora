@@ -35,6 +35,10 @@
                            Margin="1,5,0,0"
                            Foreground="{StaticResource SecondaryTextBrush}"
                            FontSize="13" />
+                <TextBlock x:Name="VersionText"
+                           Margin="1,3,0,0"
+                           Foreground="{StaticResource AccentBrush}"
+                           FontSize="11" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="세계 시간"
@@ -176,16 +180,26 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <StackPanel>
                                 <TextBlock Text="경지" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
                                 <TextBlock x:Name="RealmText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
                             </StackPanel>
                             <StackPanel Grid.Column="1">
+                                <TextBlock Text="나이 / 수명" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="AgeText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="생" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="LifeText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="3">
                                 <TextBlock Text="현재 행동" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
                                 <TextBlock x:Name="ActivityText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
                             </StackPanel>
-                            <StackPanel Grid.Column="2">
+                            <StackPanel Grid.Column="4">
                                 <TextBlock Text="상대" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
                                 <TextBlock x:Name="OpponentText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
@@ -211,7 +225,7 @@
                                    Foreground="{StaticResource PrimaryTextBrush}"
                                    FontSize="15"
                                    FontWeight="SemiBold" />
-                        <UniformGrid Rows="1" Columns="4">
+                        <UniformGrid Rows="2" Columns="3">
                             <Border Background="{StaticResource PanelAltBrush}" CornerRadius="7" Padding="10" Margin="0,0,5,0">
                                 <StackPanel>
                                     <TextBlock Text="영근" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
@@ -230,10 +244,22 @@
                                     <TextBlock x:Name="ConstitutionText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="SemiBold" />
                                 </StackPanel>
                             </Border>
-                            <Border Background="{StaticResource PanelAltBrush}" CornerRadius="7" Padding="10" Margin="5,0,0,0">
+                            <Border Background="{StaticResource PanelAltBrush}" CornerRadius="7" Padding="10" Margin="0,10,5,0">
                                 <StackPanel>
                                     <TextBlock Text="오성" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
                                     <TextBlock x:Name="ComprehensionText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelAltBrush}" CornerRadius="7" Padding="10" Margin="5,10,5,0">
+                                <StackPanel>
+                                    <TextBlock Text="정신" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                    <TextBlock x:Name="MindText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelAltBrush}" CornerRadius="7" Padding="10" Margin="5,10,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="영혼" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                    <TextBlock x:Name="SoulText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="SemiBold" />
                                 </StackPanel>
                             </Border>
                         </UniformGrid>
@@ -322,6 +348,28 @@
                             <ProgressBar x:Name="ExperiencePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
                             <TextBlock x:Name="ExperiencePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
                         </Grid>
+
+                        <TextBlock Text="수선자 일대기"
+                                   Margin="0,28,0,10"
+                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold" />
+                        <ListBox x:Name="ChronicleList"
+                                 Height="260"
+                                 Background="{StaticResource PanelAltBrush}"
+                                 BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="12,9">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                            <TextBlock Text="{Binding Summary}" Margin="0,3,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel>
                 </ScrollViewer>
             </Border>

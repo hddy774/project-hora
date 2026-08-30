@@ -7,6 +7,7 @@ var tests = new (string Name, Action Body)[]
 {
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
+    ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("동일 seed 결정론", DeterministicWorld),
     ("이벤트 기반 성장", EventDrivenGrowth),
@@ -43,11 +44,13 @@ static void DefaultPopulationAndGoal()
     for (var index = 0; index < world.Population; index++)
     {
         Equal(1, world.GetAgentSnapshot(new AgentId(index)).TargetRank, "모든 AI의 목표 순위");
+        Equal(0L, world.GetAgentSnapshot(new AgentId(index)).AgeYears, "모든 AI의 시작 나이");
     }
 }
 
 static void GameTimeAndRealmRules()
 {
+    Equal("0.0.1", ProductInfo.Version, "제품 버전");
     Equal(2_000L, GameCalendar.TicksPerYear, "1게임년 tick 수");
     Equal(10L, GameCalendar.GetYear(new SimulationTick(20_000)), "tick의 게임년 변환");
     Equal(1d, GameCalendar.GetRealSecondsPerGameYear(10), "10배속 게임년 현실 초");
@@ -74,6 +77,70 @@ static void GameTimeAndRealmRules()
     }
 
     Throws<ArgumentOutOfRangeException>(() => runner.SetSpeed(4), "미지원 배속");
+}
+
+static void BirthAptitudesChronicleAndReincarnation()
+{
+    var initial = World.Create(8801, 1);
+    var initialAgent = initial.GetAgentSnapshot(new AgentId(0));
+    var initialSoul = initialAgent.Aptitudes.Soul;
+    Equal(1, initialAgent.LifeNumber, "첫 생 번호");
+    Equal(0L, initialAgent.AgeYears, "탄생 나이");
+    Equal(6, new[]
+    {
+        initialAgent.Aptitudes.SpiritualRoot,
+        initialAgent.Aptitudes.Bone,
+        initialAgent.Aptitudes.Constitution,
+        initialAgent.Aptitudes.Comprehension,
+        initialAgent.Aptitudes.Mind,
+        initialAgent.Aptitudes.Soul,
+    }.Length, "6대 수행자질");
+    var initialChronicle = initial.GetAgentChronicle(new AgentId(0));
+    Equal(1, initialChronicle.Count, "첫 일대기 기록 수");
+    True(initialChronicle[0].Kind == ChronicleEventKind.Birth, "탄생 기록");
+
+    var deathTick = GameCalendar.FromYears(150).Value;
+    var checkpoint = initial.CreateCheckpoint();
+    var preparedAgent = checkpoint.Agents[0] with
+    {
+        BirthTick = 0,
+        RealmStage = RealmStage.QiRefining,
+        RealmLayer = (byte)MinorStage.Early,
+        CultivationProgress = 0,
+        Activity = AgentActivity.Cultivating,
+        NextDecisionTick = deathTick,
+        Opponent = -1,
+    };
+    var prepared = checkpoint with
+    {
+        Tick = deathTick - 1,
+        Agents = [preparedAgent],
+    };
+    var world = World.Restore(prepared);
+    world.AdvanceTo(new SimulationTick(deathTick));
+    var dead = world.GetAgentSnapshot(new AgentId(0));
+    Equal(150L, dead.AgeYears, "연기경 최대 수명 도달");
+    True(dead.Activity == AgentActivity.Reincarnating, "윤회의 강 상태");
+    Equal(1, world.TotalDeaths, "사망 집계");
+
+    world.AdvanceTo(new SimulationTick(deathTick + GameCalendar.TicksPerYear));
+    var reborn = world.GetAgentSnapshot(new AgentId(0));
+    Equal(2, reborn.LifeNumber, "환생 후 생 번호");
+    Equal(0L, reborn.AgeYears, "환생 나이");
+    Equal(initialSoul, reborn.Aptitudes.Soul, "영혼 자질 윤회 연속성");
+    True(
+        reborn.Aptitudes.SpiritualRoot != initialAgent.Aptitudes.SpiritualRoot
+        || reborn.Aptitudes.Bone != initialAgent.Aptitudes.Bone
+        || reborn.Aptitudes.Constitution != initialAgent.Aptitudes.Constitution
+        || reborn.Aptitudes.Comprehension != initialAgent.Aptitudes.Comprehension
+        || reborn.Aptitudes.Mind != initialAgent.Aptitudes.Mind,
+        "새 육신의 자질은 다시 형성되어야 합니다.");
+    Equal(1, world.TotalReincarnations, "환생 집계");
+
+    var chronicle = world.GetAgentChronicle(new AgentId(0));
+    True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.Death), "사망 일대기");
+    True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.ReincarnationEntered), "윤회의 강 일대기");
+    True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.Rebirth), "환생 일대기");
 }
 
 static void CombatPowerAndRanking()
@@ -109,12 +176,12 @@ static void DeterministicWorld()
 
 static void EventDrivenGrowth()
 {
-    var world = World.CreateDefault(11);
+    var world = World.Create(11, 1_000);
     var before = world.ComputeStateHash();
-    world.AdvanceTo(new SimulationTick(60_000));
+    world.AdvanceTo(new SimulationTick(220_000));
     True(before != world.ComputeStateHash(), "시간 진행 후 상태가 바뀌어야 합니다.");
-    True(world.TotalBreakthroughs > 0, "10,000명 세계에서 돌파가 발생해야 합니다.");
-    Equal(60_000L, world.Tick.Value, "도달 tick");
+    True(world.TotalBreakthroughs > 0, "장기 수행에서 돌파가 발생해야 합니다.");
+    Equal(220_000L, world.Tick.Value, "도달 tick");
 }
 
 static void ActiveRankingCompetition()
@@ -177,8 +244,15 @@ static void SaveCodecRoundTrip()
     Equal(checkpoint.RandomState, decoded.RandomState, "저장 왕복 RNG 상태");
     Equal(checkpoint.EventSequence, decoded.EventSequence, "저장 왕복 사건 sequence");
     Equal(checkpoint.TotalChallenges, decoded.TotalChallenges, "저장 왕복 도전 합계");
-    Equal(checkpoint.Agents[0], decoded.Agents[0], "저장 왕복 첫 Agent");
-    Equal(checkpoint.Agents[^1], decoded.Agents[^1], "저장 왕복 마지막 Agent");
+    Equal(checkpoint.Agents[0].Name, decoded.Agents[0].Name, "저장 왕복 첫 Agent 이름");
+    Equal(checkpoint.Agents[0].Soul, decoded.Agents[0].Soul, "저장 왕복 첫 Agent 영혼");
+    True(
+        checkpoint.Agents[0].Chronicle.SequenceEqual(decoded.Agents[0].Chronicle),
+        "저장 왕복 첫 Agent 일대기");
+    Equal(checkpoint.Agents[^1].Name, decoded.Agents[^1].Name, "저장 왕복 마지막 Agent 이름");
+    True(
+        checkpoint.Agents[^1].Chronicle.SequenceEqual(decoded.Agents[^1].Chronicle),
+        "저장 왕복 마지막 Agent 일대기");
     Equal(checkpoint.Events.Length, decoded.Events.Length, "저장 왕복 사건 수");
     if (checkpoint.Events.Length > 0)
     {

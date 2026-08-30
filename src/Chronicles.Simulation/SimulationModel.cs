@@ -32,6 +32,7 @@ public enum AgentActivity : byte
     Recovering,
     SeekingChallenge,
     Fighting,
+    Reincarnating,
 }
 
 public enum WorldEventKind : byte
@@ -45,13 +46,53 @@ public enum WorldEventKind : byte
     CombatGuarded,
     CombatRetreated,
     CombatEnded,
+    MinorStageBreakthrough,
+    BottleneckBreakthrough,
+    MajorRealmBreakthrough,
+    TechniqueEnlightenment,
+    SpellEnlightenment,
+    Death,
+    ReincarnationEntered,
+    Rebirth,
 }
 
 public readonly record struct Aptitudes(
     byte SpiritualRoot,
     byte Bone,
     byte Constitution,
-    byte Comprehension);
+    byte Comprehension,
+    byte Mind,
+    byte Soul)
+{
+    public int RankingScore =>
+        SpiritualRoot + Bone + Constitution + Comprehension + Mind + Soul;
+}
+
+public enum ChronicleEventKind : byte
+{
+    Birth,
+    MinorStageBreakthrough,
+    BottleneckBreakthrough,
+    MajorRealmBreakthrough,
+    BreakthroughFailure,
+    TechniqueEnlightenment,
+    SpellEnlightenment,
+    FortuitousEncounter,
+    Death,
+    ReincarnationEntered,
+    Rebirth,
+}
+
+public readonly record struct LifeChronicleEntry(
+    long Sequence,
+    SimulationTick Tick,
+    int LifeNumber,
+    long AgeYears,
+    string PersonName,
+    ChronicleEventKind Kind,
+    RealmStage RealmStage,
+    MinorStage MinorStage,
+    int Value);
 
 public readonly record struct CombatPowerBreakdown(
     int Realm,
@@ -76,6 +117,9 @@ public sealed record AgentSnapshot(
     string Name,
     int Rank,
     int TargetRank,
+    long AgeYears,
+    long MaximumLifespanYears,
+    int LifeNumber,
     RealmStage RealmStage,
     int RealmLayer,
     int CultivationProgress,
@@ -119,11 +163,14 @@ public sealed record WorldSnapshot(
     int TotalCombatsStarted,
     int TotalCombatsCompleted,
     int ActiveCombats,
+    int TotalDeaths,
+    int TotalReincarnations,
     AgentId LeaderId);
 
 public sealed record WorldObservation(
     WorldSnapshot World,
-    AgentSnapshot SelectedAgent);
+    AgentSnapshot SelectedAgent,
+    IReadOnlyList<LifeChronicleEntry> SelectedChronicle);
 
 public static class CombatPowerFormula
 {
@@ -148,7 +195,9 @@ public static class CombatPowerFormula
             (aptitudes.SpiritualRoot * 15)
             + (aptitudes.Bone * 14)
             + (aptitudes.Constitution * 13)
-            + (aptitudes.Comprehension * 14));
+            + (aptitudes.Comprehension * 14)
+            + (aptitudes.Mind * 10)
+            + (aptitudes.Soul * 8));
         var technique = checked((techniqueGrade * 750) + (techniqueMastery * techniqueGrade * 3));
         var spell = checked((spellGrade * 600) + (spellMastery * spellGrade * 2));
         var experience = Math.Min(40_000, IntegerSquareRoot(Math.Max(0, combatExperience)) * 80);

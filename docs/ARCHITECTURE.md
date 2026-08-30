@@ -28,7 +28,9 @@ Chronicles.Tests ──> Core + Simulation
 ### Chronicles.Simulation
 
 10,000명 권위 상태, AI 결정, 수행·돌파, 공법·법술, 전투 타임라인, 전투력과
-랭킹을 소유한다. 렌더 프레임과 벽시계에 의존하지 않는다.
+랭킹, 생애 일대기, 수명 판정과 윤회를 소유한다. 렌더 프레임과 벽시계에 의존하지
+않는다. 안정 Agent ID는 영혼 슬롯으로 유지하고 생 번호·이름·탄생 tick으로 현생을
+구분한다.
 
 ### Chronicles.Desktop
 

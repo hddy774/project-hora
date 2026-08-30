@@ -4,6 +4,12 @@ namespace Chronicles.Simulation;
 
 public sealed partial class World
 {
+    public IReadOnlyList<LifeChronicleEntry> GetAgentChronicle(AgentId agentId)
+    {
+        var index = ValidateAgent(agentId);
+        return _agents.Chronicles[index].ToArray();
+    }
+
     public IReadOnlyList<AgentSnapshot> SearchAgents(string? query, int limit = 100)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(limit);

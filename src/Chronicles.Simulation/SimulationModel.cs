@@ -99,6 +99,7 @@ public sealed record WorldSnapshot(
     SimulationTick Tick,
     int Population,
     IReadOnlyList<RankingEntry> Rankings,
+    IReadOnlyDictionary<int, string> AgentNames,
     IReadOnlyList<WorldEvent> RecentEvents,
     int TotalBreakthroughs,
     int TotalChallenges,
@@ -106,6 +107,10 @@ public sealed record WorldSnapshot(
     int TotalCombatsCompleted,
     int ActiveCombats,
     AgentId LeaderId);
+
+public sealed record WorldObservation(
+    WorldSnapshot World,
+    AgentSnapshot SelectedAgent);
 
 public static class CombatPowerFormula
 {

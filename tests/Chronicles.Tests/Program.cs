@@ -8,6 +8,7 @@ var tests = new (string Name, Action Body)[]
     ("동일 seed 결정론", DeterministicWorld),
     ("이벤트 기반 성장", EventDrivenGrowth),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
+    ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
 };
 
 var failures = 0;
@@ -110,6 +111,23 @@ static void ActiveRankingCompetition()
 
     var events = world.CreateSnapshot(20, 512).RecentEvents;
     True(events.Any(item => item.Kind == WorldEventKind.CombatEnded), "관찰 사건에 전투 결과가 있어야 합니다.");
+}
+
+static void ObservationQueriesAreReadOnly()
+{
+    var world = World.CreateDefault(991);
+    world.AdvanceTo(new SimulationTick(300));
+    var before = world.ComputeStateHash();
+    var leader = world.GetAgentSnapshot(world.LeaderId);
+    var exactSearch = world.SearchAgents(leader.Id.ToString());
+    var nameSearch = world.SearchAgents(leader.Name[..1], 25);
+    var snapshot = world.CreateSnapshot(150, 150);
+
+    Equal(1, exactSearch.Count, "정확한 Agent ID 검색 결과");
+    Equal(leader.Id, exactSearch[0].Id, "정확한 Agent ID 검색 대상");
+    True(nameSearch.Count > 0, "이름 검색 결과가 있어야 합니다.");
+    Equal(150, snapshot.Rankings.Count, "랭킹 조회 크기");
+    Equal(before, world.ComputeStateHash(), "관찰 조회는 세계 상태를 바꾸면 안 됩니다.");
 }
 
 static void Equal<T>(T expected, T actual, string message)

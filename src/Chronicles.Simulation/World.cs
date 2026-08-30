@@ -137,10 +137,26 @@ public sealed partial class World
         }
 
         var recentEvents = _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray();
+        var agentNames = new Dictionary<int, string>(actualRankingCount + (recentEvents.Length * 2));
+        foreach (var ranking in rankings)
+        {
+            agentNames[ranking.AgentId.Value] = ranking.Name;
+        }
+
+        foreach (var worldEvent in recentEvents)
+        {
+            agentNames[worldEvent.PrimaryAgent.Value] = _agents.Names[worldEvent.PrimaryAgent.Value];
+            if (worldEvent.SecondaryAgent is { } secondaryAgent)
+            {
+                agentNames[secondaryAgent.Value] = _agents.Names[secondaryAgent.Value];
+            }
+        }
+
         return new WorldSnapshot(
             Tick,
             Population,
             rankings,
+            agentNames,
             recentEvents,
             _totalBreakthroughs,
             _totalChallenges,

@@ -2,48 +2,374 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="선로만상록 PC"
-        Width="1280"
-        Height="800"
-        MinWidth="1024"
-        MinHeight="640"
+        Width="1500"
+        Height="900"
+        MinWidth="1180"
+        MinHeight="720"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource BackgroundBrush}"
-        FontFamily="Malgun Gothic">
-    <Grid Margin="32">
+        FontFamily="Malgun Gothic"
+        TextOptions.TextFormattingMode="Display">
+    <Grid Margin="22">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="24" />
+            <RowDefinition Height="14" />
+            <RowDefinition Height="82" />
+            <RowDefinition Height="14" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel>
-            <TextBlock Text="선로만상록"
-                       Foreground="{StaticResource PrimaryTextBrush}"
-                       FontSize="34"
-                       FontWeight="SemiBold" />
-            <TextBlock Text="10,000명의 수선자가 랭킹 1위를 향해 움직이는 실시간 관찰 세계"
-                       Margin="0,8,0,0"
-                       Foreground="{StaticResource SecondaryTextBrush}"
-                       FontSize="15" />
-        </StackPanel>
-
-        <Border Grid.Row="2"
-                Padding="28"
-                CornerRadius="12"
-                Background="{StaticResource PanelBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="세계 생성 준비 완료"
-                           Foreground="{StaticResource AccentBrush}"
-                           FontSize="22"
-                           FontWeight="SemiBold"
-                           HorizontalAlignment="Center" />
-                <TextBlock Text="다음 개발 단계에서 수행·전투력·랭킹 시뮬레이션이 연결됩니다."
-                           Margin="0,12,0,0"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="선로만상록"
+                           Foreground="{StaticResource PrimaryTextBrush}"
+                           FontSize="29"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="만상경 · 10,000명의 자율 경쟁 관찰"
+                           Margin="1,5,0,0"
                            Foreground="{StaticResource SecondaryTextBrush}"
-                           FontSize="14" />
+                           FontSize="13" />
             </StackPanel>
-        </Border>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="세계 시간"
+                           Margin="0,0,9,0"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource SecondaryTextBrush}" />
+                <TextBlock x:Name="WorldTickText"
+                           Width="100"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource AccentBrush}"
+                           FontSize="18"
+                           FontWeight="SemiBold" />
+                <Button x:Name="PauseButton" Margin="14,0,7,0" Click="PauseButton_Click">일시정지</Button>
+                <Button Margin="0,0,5,0" Click="Speed1Button_Click">1×</Button>
+                <Button Margin="0,0,5,0" Click="Speed4Button_Click">4×</Button>
+                <Button Click="Speed16Button_Click">16×</Button>
+            </StackPanel>
+        </Grid>
+
+        <UniformGrid Grid.Row="2" Rows="1" Columns="5">
+            <Border Style="{StaticResource PanelStyle}" Margin="0,0,7,0">
+                <StackPanel>
+                    <TextBlock Text="현재 인구" Foreground="{StaticResource SecondaryTextBrush}" FontSize="12" />
+                    <TextBlock x:Name="PopulationText" Margin="0,5,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="22" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource PanelStyle}" Margin="7,0">
+                <StackPanel>
+                    <TextBlock Text="진행 중 전투" Foreground="{StaticResource SecondaryTextBrush}" FontSize="12" />
+                    <TextBlock x:Name="ActiveCombatText" Margin="0,5,0,0" Foreground="{StaticResource DangerBrush}" FontSize="22" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource PanelStyle}" Margin="7,0">
+                <StackPanel>
+                    <TextBlock Text="완료된 전투" Foreground="{StaticResource SecondaryTextBrush}" FontSize="12" />
+                    <TextBlock x:Name="CompletedCombatText" Margin="0,5,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="22" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource PanelStyle}" Margin="7,0">
+                <StackPanel>
+                    <TextBlock Text="상위권 도전" Foreground="{StaticResource SecondaryTextBrush}" FontSize="12" />
+                    <TextBlock x:Name="ChallengeText" Margin="0,5,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="22" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource PanelStyle}" Margin="7,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="경지 돌파" Foreground="{StaticResource SecondaryTextBrush}" FontSize="12" />
+                    <TextBlock x:Name="BreakthroughText" Margin="0,5,0,0" Foreground="{StaticResource PositiveBrush}" FontSize="22" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="430" />
+                <ColumnDefinition Width="14" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="14" />
+                <ColumnDefinition Width="365" />
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource PanelStyle}" Padding="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Margin="16,14,16,10">
+                        <TextBlock Text="전투력 랭킹"
+                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                   FontSize="17"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="TOP 150"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   FontSize="11" />
+                    </Grid>
+                    <TextBox x:Name="SearchTextBox"
+                             Grid.Row="1"
+                             Margin="16,0,16,12"
+                             TextChanged="SearchTextBox_TextChanged"
+                             ToolTip="이름 또는 A00001 형식으로 검색" />
+                    <DataGrid x:Name="RankingGrid"
+                              Grid.Row="2"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              EnableRowVirtualization="True"
+                              SelectionChanged="RankingGrid_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Rank}" Width="44" />
+                            <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="*" />
+                            <DataGridTextColumn Header="경지" Binding="{Binding Realm}" Width="78" />
+                            <DataGridTextColumn Header="전투력" Binding="{Binding Power}" Width="78" />
+                            <DataGridTextColumn Header="상태" Binding="{Binding Activity}" Width="78" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Style="{StaticResource PanelStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock x:Name="SelectedNameText"
+                                           Text="인물을 선택하세요"
+                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                           FontSize="24"
+                                           FontWeight="SemiBold" />
+                                <TextBlock x:Name="SelectedIdText"
+                                           Margin="0,4,0,0"
+                                           Foreground="{StaticResource SecondaryTextBrush}" />
+                            </StackPanel>
+                            <Border Grid.Column="1"
+                                    Padding="12,7"
+                                    CornerRadius="16"
+                                    Background="{StaticResource AccentDarkBrush}"
+                                    VerticalAlignment="Top">
+                                <TextBlock x:Name="SelectedRankText"
+                                           Foreground="{StaticResource AccentBrush}"
+                                           FontWeight="Bold" />
+                            </Border>
+                        </Grid>
+
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="경지" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="RealmText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="현재 행동" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="ActivityText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="상대" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="OpponentText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="수행 진척"
+                                   Margin="0,24,0,0"
+                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                   FontSize="12" />
+                        <ProgressBar x:Name="CultivationProgressBar"
+                                     Margin="0,8,0,0"
+                                     Height="9"
+                                     Foreground="{StaticResource PositiveBrush}"
+                                     Background="{StaticResource PanelAltBrush}" />
+                        <TextBlock x:Name="CultivationText"
+                                   Margin="0,6,0,0"
+                                   HorizontalAlignment="Right"
+                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                   FontSize="11" />
+
+                        <TextBlock Text="선천 자질"
+                                   Margin="0,24,0,10"
+                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold" />
+                        <UniformGrid Rows="1" Columns="4">
+                            <Border Background="{StaticResource PanelAltBrush}" CornerRadius="7" Padding="10" Margin="0,0,5,0">
+                                <StackPanel>
+                                    <TextBlock Text="영근" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                    <TextBlock x:Name="RootText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelAltBrush}" CornerRadius="7" Padding="10" Margin="5,0">
+                                <StackPanel>
+                                    <TextBlock Text="근골" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                    <TextBlock x:Name="BoneText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelAltBrush}" CornerRadius="7" Padding="10" Margin="5,0">
+                                <StackPanel>
+                                    <TextBlock Text="체질" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                    <TextBlock x:Name="ConstitutionText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{StaticResource PanelAltBrush}" CornerRadius="7" Padding="10" Margin="5,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="오성" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                    <TextBlock x:Name="ComprehensionText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" FontSize="19" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+
+                        <Grid Margin="0,24,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,10,0">
+                                <TextBlock Text="공법" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="TechniqueText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="14" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock Text="법술" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="SpellText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="14" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,18,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="생명력" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="HealthText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="영력" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="QiText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="전적 / 경험" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="RecordText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,26,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="전투력 구성"
+                                       Foreground="{StaticResource PrimaryTextBrush}"
+                                       FontSize="15"
+                                       FontWeight="SemiBold" />
+                            <TextBlock x:Name="TotalPowerText"
+                                       Grid.Column="1"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       FontSize="18"
+                                       FontWeight="Bold" />
+                        </Grid>
+                        <Grid Margin="0,13,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="72" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="경지" Foreground="{StaticResource SecondaryTextBrush}" />
+                            <ProgressBar x:Name="RealmPowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
+                            <TextBlock x:Name="RealmPowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
+                        </Grid>
+                        <Grid Margin="0,9,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="70" /><ColumnDefinition Width="*" /><ColumnDefinition Width="72" /></Grid.ColumnDefinitions>
+                            <TextBlock Text="자질" Foreground="{StaticResource SecondaryTextBrush}" />
+                            <ProgressBar x:Name="AptitudePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
+                            <TextBlock x:Name="AptitudePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
+                        </Grid>
+                        <Grid Margin="0,9,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="70" /><ColumnDefinition Width="*" /><ColumnDefinition Width="72" /></Grid.ColumnDefinitions>
+                            <TextBlock Text="공법" Foreground="{StaticResource SecondaryTextBrush}" />
+                            <ProgressBar x:Name="TechniquePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
+                            <TextBlock x:Name="TechniquePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
+                        </Grid>
+                        <Grid Margin="0,9,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="70" /><ColumnDefinition Width="*" /><ColumnDefinition Width="72" /></Grid.ColumnDefinitions>
+                            <TextBlock Text="법술" Foreground="{StaticResource SecondaryTextBrush}" />
+                            <ProgressBar x:Name="SpellPowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
+                            <TextBlock x:Name="SpellPowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
+                        </Grid>
+                        <Grid Margin="0,9,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="70" /><ColumnDefinition Width="*" /><ColumnDefinition Width="72" /></Grid.ColumnDefinitions>
+                            <TextBlock Text="경험" Foreground="{StaticResource SecondaryTextBrush}" />
+                            <ProgressBar x:Name="ExperiencePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
+                            <TextBlock x:Name="ExperiencePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <Border Grid.Column="4" Style="{StaticResource PanelStyle}" Padding="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Margin="16,14,16,10">
+                        <TextBlock Text="실시간 만상록"
+                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                   FontSize="17"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="LIVE"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource DangerBrush}"
+                                   FontSize="11"
+                                   FontWeight="Bold" />
+                    </Grid>
+                    <ListBox x:Name="EventList"
+                             Grid.Row="1"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="{StaticResource PrimaryTextBrush}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="14,11">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock Text="{Binding Summary}" Margin="0,4,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="6">
+            <TextBlock x:Name="StatusText"
+                       Text="세계 초기화 중…"
+                       Foreground="{StaticResource SecondaryTextBrush}"
+                       FontSize="11" />
+            <TextBlock Text="관찰은 세계 상태와 전투 결과에 영향을 주지 않습니다."
+                       HorizontalAlignment="Right"
+                       Foreground="{StaticResource SecondaryTextBrush}"
+                       FontSize="11" />
+        </Grid>
     </Grid>
 </Window>

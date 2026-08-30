@@ -26,6 +26,12 @@ public enum WorldEventKind : byte
     BreakthroughSucceeded,
     BreakthroughFailed,
     NewLeader,
+    CombatStarted,
+    CombatPhysicalAttack,
+    CombatSpellCast,
+    CombatGuarded,
+    CombatRetreated,
+    CombatEnded,
 }
 
 public readonly record struct Aptitudes(
@@ -75,6 +81,9 @@ public sealed record AgentSnapshot(
     int MaximumQi,
     AgentActivity Activity,
     SimulationTick NextDecisionTick,
+    AgentId? OpponentId,
+    SimulationTick LastCombatTick,
+    int ChallengesIssued,
     CombatPowerBreakdown CombatPower);
 
 public sealed record RankingEntry(
@@ -92,6 +101,10 @@ public sealed record WorldSnapshot(
     IReadOnlyList<RankingEntry> Rankings,
     IReadOnlyList<WorldEvent> RecentEvents,
     int TotalBreakthroughs,
+    int TotalChallenges,
+    int TotalCombatsStarted,
+    int TotalCombatsCompleted,
+    int ActiveCombats,
     AgentId LeaderId);
 
 public static class CombatPowerFormula

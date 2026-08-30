@@ -2,7 +2,7 @@ using Chronicles.Core;
 
 namespace Chronicles.Simulation;
 
-public sealed class World
+public sealed partial class World
 {
     private const int EventCapacity = 512;
     private readonly DeterministicRandom _random;
@@ -13,6 +13,10 @@ public sealed class World
     private readonly Queue<WorldEvent> _events = new(EventCapacity);
     private long _eventSequence;
     private int _totalBreakthroughs;
+    private int _totalChallenges;
+    private int _totalCombatsStarted;
+    private int _totalCombatsCompleted;
+    private int _activeCombats;
 
     private World(ulong seed, int population)
     {
@@ -37,6 +41,10 @@ public sealed class World
     public int Population => _agents.Count;
     public AgentId LeaderId => new(_agentByRank[0]);
     public int TotalBreakthroughs => _totalBreakthroughs;
+    public int TotalChallenges => _totalChallenges;
+    public int TotalCombatsStarted => _totalCombatsStarted;
+    public int TotalCombatsCompleted => _totalCombatsCompleted;
+    public int ActiveCombats => _activeCombats;
 
     public static World CreateDefault(ulong seed) =>
         new(seed, ProductInfo.DefaultPopulation);
@@ -61,12 +69,16 @@ public sealed class World
             }
 
             Tick = new SimulationTick(dueTick);
-            ResolveActivity(agentIndex);
+            var alreadyScheduled = ResolveActivity(agentIndex);
+            if (alreadyScheduled)
+            {
+                continue;
+            }
+
             SelectNextActivity(agentIndex);
             _agents.RecalculatePower(agentIndex);
             var nextTick = checked(dueTick + CalculateActivityDuration(agentIndex));
-            _agents.NextDecisionTicks[agentIndex] = nextTick;
-            _decisionSchedule.Enqueue(agentIndex, (nextTick, agentIndex));
+            ScheduleAgent(agentIndex, nextTick);
         }
 
         Tick = targetTick;
@@ -99,6 +111,9 @@ public sealed class World
             _agents.MaximumQi[index],
             _agents.Activities[index],
             new SimulationTick(_agents.NextDecisionTicks[index]),
+            _agents.Opponents[index] < 0 ? null : new AgentId(_agents.Opponents[index]),
+            new SimulationTick(_agents.LastCombatTicks[index]),
+            _agents.ChallengesIssued[index],
             _agents.Power[index]);
     }
 
@@ -128,6 +143,10 @@ public sealed class World
             rankings,
             recentEvents,
             _totalBreakthroughs,
+            _totalChallenges,
+            _totalCombatsStarted,
+            _totalCombatsCompleted,
+            _activeCombats,
             LeaderId);
     }
 
@@ -155,32 +174,40 @@ public sealed class World
             Add(ref hash, (ulong)_agents.Qi[index]);
             Add(ref hash, (byte)_agents.Activities[index]);
             Add(ref hash, (ulong)_agents.NextDecisionTicks[index]);
+            Add(ref hash, (ulong)(_agents.Opponents[index] + 1));
+            Add(ref hash, (ulong)(_agents.LastOpponents[index] + 1));
+            Add(ref hash, (ulong)_agents.LastCombatTicks[index]);
+            Add(ref hash, (ulong)_agents.CombatStartedTicks[index]);
+            Add(ref hash, _agents.CombatActions[index]);
+            Add(ref hash, _agents.Guarding[index] ? 1UL : 0UL);
+            Add(ref hash, (ulong)_agents.ChallengesIssued[index]);
             Add(ref hash, (ulong)_rankByAgent[index]);
         }
 
         return hash;
     }
 
-    private void ResolveActivity(int index)
+    private bool ResolveActivity(int index)
     {
         switch (_agents.Activities[index])
         {
             case AgentActivity.Cultivating:
                 ResolveCultivation(index);
-                break;
+                return false;
             case AgentActivity.TrainingTechnique:
                 ResolveTechniqueTraining(index);
-                break;
+                return false;
             case AgentActivity.TrainingSpell:
                 ResolveSpellTraining(index);
-                break;
+                return false;
             case AgentActivity.Recovering:
                 ResolveRecovery(index);
-                break;
+                return false;
             case AgentActivity.SeekingChallenge:
+                ResolveSeekingChallenge(index);
+                return false;
             case AgentActivity.Fighting:
-                // 전투 수직 절편에서 같은 event schedule에 연결합니다.
-                break;
+                return ResolveCombatAction(index);
             default:
                 throw new InvalidOperationException("알 수 없는 AI 행동입니다.");
         }
@@ -260,10 +287,24 @@ public sealed class World
 
     private void SelectNextActivity(int index)
     {
+        if (_agents.Activities[index] == AgentActivity.Fighting)
+        {
+            return;
+        }
+
         if (_agents.Health[index] * 100 < _agents.MaximumHealth[index] * 70
             || _agents.Qi[index] * 100 < _agents.MaximumQi[index] * 35)
         {
             _agents.Activities[index] = AgentActivity.Recovering;
+            return;
+        }
+
+        var rank = _rankByAgent[index];
+        var sinceLastCombat = Tick.Value - _agents.LastCombatTicks[index];
+        var challengeChance = sinceLastCombat > 700 ? 58 : 34;
+        if (rank > 1 && Tick.Value >= 60 && _random.NextInt(100) < challengeChance)
+        {
+            _agents.Activities[index] = AgentActivity.SeekingChallenge;
             return;
         }
 
@@ -285,7 +326,7 @@ public sealed class World
             AgentActivity.TrainingSpell => Math.Max(34, 150 - ((_agents.SpiritualRoots[index] + _agents.Comprehensions[index]) / 2)),
             AgentActivity.Recovering => Math.Max(24, 120 - _agents.Constitutions[index]),
             AgentActivity.SeekingChallenge => 20,
-            AgentActivity.Fighting => 10,
+            AgentActivity.Fighting => CalculateCombatActionDuration(index),
             _ => throw new InvalidOperationException("알 수 없는 AI 행동입니다."),
         };
     }
@@ -347,6 +388,12 @@ public sealed class World
             new AgentId(primaryAgent),
             secondaryAgent is null ? null : new AgentId(secondaryAgent.Value),
             value));
+    }
+
+    private void ScheduleAgent(int index, long tick)
+    {
+        _agents.NextDecisionTicks[index] = tick;
+        _decisionSchedule.Enqueue(index, (tick, index));
     }
 
     private int ValidateAgent(AgentId agentId)

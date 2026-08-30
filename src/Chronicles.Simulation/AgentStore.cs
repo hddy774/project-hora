@@ -40,7 +40,16 @@ internal sealed class AgentStore
         Activities = new AgentActivity[count];
         NextDecisionTicks = new long[count];
         TargetRanks = new int[count];
+        Opponents = new int[count];
+        LastOpponents = new int[count];
+        LastCombatTicks = new long[count];
+        CombatStartedTicks = new long[count];
+        CombatActions = new byte[count];
+        Guarding = new bool[count];
+        ChallengesIssued = new int[count];
         Power = new CombatPowerBreakdown[count];
+        Array.Fill(Opponents, -1);
+        Array.Fill(LastOpponents, -1);
     }
 
     public int Count { get; }
@@ -66,6 +75,13 @@ internal sealed class AgentStore
     public AgentActivity[] Activities { get; }
     public long[] NextDecisionTicks { get; }
     public int[] TargetRanks { get; }
+    public int[] Opponents { get; }
+    public int[] LastOpponents { get; }
+    public long[] LastCombatTicks { get; }
+    public long[] CombatStartedTicks { get; }
+    public byte[] CombatActions { get; }
+    public bool[] Guarding { get; }
+    public int[] ChallengesIssued { get; }
     public CombatPowerBreakdown[] Power { get; }
 
     public void Initialize(int index, DeterministicRandom random)

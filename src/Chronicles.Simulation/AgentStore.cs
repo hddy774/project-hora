@@ -53,9 +53,18 @@ internal sealed class AgentStore
         CombatActions = new byte[count];
         Guarding = new bool[count];
         ChallengesIssued = new int[count];
+        SpiritStones = new long[count];
+        GrowthPills = new int[count];
+        BreakthroughPills = new int[count];
+        MissionsCompleted = new int[count];
+        ActiveMissionMaterials = new byte[count];
+        MaterialInventory = new int[checked(count * EconomyRules.MaterialCount)];
+        EquippedTreasureQualities = new ushort[checked(count * EconomyRules.TreasureSlotCount)];
         Power = new CombatPowerBreakdown[count];
         Array.Fill(Opponents, -1);
         Array.Fill(LastOpponents, -1);
+        Array.Fill(ActiveMissionMaterials, byte.MaxValue);
+        Array.Fill(EquippedTreasureQualities, EconomyRules.EmptyTreasureQuality);
         for (var index = 0; index < count; index++)
         {
             Chronicles[index] = [];
@@ -98,6 +107,13 @@ internal sealed class AgentStore
     public byte[] CombatActions { get; }
     public bool[] Guarding { get; }
     public int[] ChallengesIssued { get; }
+    public long[] SpiritStones { get; }
+    public int[] GrowthPills { get; }
+    public int[] BreakthroughPills { get; }
+    public int[] MissionsCompleted { get; }
+    public byte[] ActiveMissionMaterials { get; }
+    public int[] MaterialInventory { get; }
+    public ushort[] EquippedTreasureQualities { get; }
     public CombatPowerBreakdown[] Power { get; }
 
     public void Initialize(int index, DeterministicRandom random)
@@ -131,7 +147,8 @@ internal sealed class AgentStore
             TechniqueMasteries[index],
             new QualityValue(SpellQualities[index]),
             SpellMasteries[index],
-            CombatExperience[index]);
+            CombatExperience[index],
+            GetTreasurePower(index));
     }
 
     private void InitializeBody(int index, DeterministicRandom random, long birthTick)
@@ -172,7 +189,136 @@ internal sealed class AgentStore
         CombatActions[index] = 0;
         Guarding[index] = false;
         ChallengesIssued[index] = 0;
+        SpiritStones[index] = 0;
+        GrowthPills[index] = 0;
+        BreakthroughPills[index] = 0;
+        MissionsCompleted[index] = 0;
+        ActiveMissionMaterials[index] = byte.MaxValue;
+        Array.Clear(MaterialInventory, index * EconomyRules.MaterialCount, EconomyRules.MaterialCount);
+        Array.Fill(
+            EquippedTreasureQualities,
+            EconomyRules.EmptyTreasureQuality,
+            index * EconomyRules.TreasureSlotCount,
+            EconomyRules.TreasureSlotCount);
         RecalculatePower(index);
+    }
+
+    public int GetMaterialCount(int index, MaterialId material) =>
+        MaterialInventory[GetMaterialOffset(index, material)];
+
+    public void AddMaterial(int index, MaterialId material, int count)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
+        var offset = GetMaterialOffset(index, material);
+        MaterialInventory[offset] = checked(MaterialInventory[offset] + count);
+    }
+
+    public void ConsumeMaterial(int index, MaterialId material, int count)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
+        var offset = GetMaterialOffset(index, material);
+        if (MaterialInventory[offset] < count)
+        {
+            throw new InvalidOperationException("보유하지 않은 재료를 소비할 수 없습니다.");
+        }
+
+        MaterialInventory[offset] -= count;
+    }
+
+    public int GetInventoryItemCount(int index)
+    {
+        var total = 0;
+        var start = index * EconomyRules.MaterialCount;
+        for (var material = 0; material < EconomyRules.MaterialCount; material++)
+        {
+            total = checked(total + MaterialInventory[start + material]);
+        }
+
+        return total;
+    }
+
+    public int[] CopyMaterialInventory(int index)
+    {
+        var copy = new int[EconomyRules.MaterialCount];
+        Array.Copy(
+            MaterialInventory,
+            index * EconomyRules.MaterialCount,
+            copy,
+            0,
+            copy.Length);
+        return copy;
+    }
+
+    public ushort[] CopyEquippedTreasureQualities(int index)
+    {
+        var copy = new ushort[EconomyRules.TreasureSlotCount];
+        Array.Copy(
+            EquippedTreasureQualities,
+            index * EconomyRules.TreasureSlotCount,
+            copy,
+            0,
+            copy.Length);
+        return copy;
+    }
+
+    public void RestoreEconomyState(int index, int[] materials, ushort[] treasures)
+    {
+        Array.Copy(
+            materials,
+            0,
+            MaterialInventory,
+            index * EconomyRules.MaterialCount,
+            EconomyRules.MaterialCount);
+        Array.Copy(
+            treasures,
+            0,
+            EquippedTreasureQualities,
+            index * EconomyRules.TreasureSlotCount,
+            EconomyRules.TreasureSlotCount);
+    }
+
+    public ushort GetTreasureQuality(int index, TreasureSlot slot) =>
+        EquippedTreasureQualities[GetTreasureOffset(index, slot)];
+
+    public void SetTreasureQuality(int index, TreasureSlot slot, ushort quality) =>
+        EquippedTreasureQualities[GetTreasureOffset(index, slot)] = quality;
+
+    public long GetTreasurePower(int index)
+    {
+        long effectiveHundredths = 0;
+        for (var slot = 0; slot < EconomyRules.TreasureSlotCount; slot++)
+        {
+            var raw = EquippedTreasureQualities[(index * EconomyRules.TreasureSlotCount) + slot];
+            if (raw != EconomyRules.EmptyTreasureQuality)
+            {
+                effectiveHundredths = checked(
+                    effectiveHundredths + QualityRules.GetEffectiveHundredths(new QualityValue(raw)));
+            }
+        }
+
+        return checked(effectiveHundredths * 250 / 100);
+    }
+
+    public int GetTreasureCombatEffect(int index, bool attack)
+    {
+        long total = 0;
+        for (var slotIndex = 0; slotIndex < EconomyRules.TreasureSlotCount; slotIndex++)
+        {
+            var slot = (TreasureSlot)slotIndex;
+            if (slot != TreasureSlot.NatalTreasure
+                && (attack ? !EconomyRules.IsWeapon(slot) : !EconomyRules.IsArmor(slot)))
+            {
+                continue;
+            }
+
+            var raw = GetTreasureQuality(index, slot);
+            if (raw != EconomyRules.EmptyTreasureQuality)
+            {
+                total += QualityRules.GetEffectiveWhole(new QualityValue(raw));
+            }
+        }
+
+        return checked((int)Math.Min(int.MaxValue, total));
     }
 
     private static ushort CreateAptitude(DeterministicRandom random) => CreateQuality(random);
@@ -182,6 +328,12 @@ internal sealed class AgentStore
 
     private static int GetEffectiveWhole(ushort rawQuality) =>
         QualityRules.GetEffectiveWhole(new QualityValue(rawQuality));
+
+    private static int GetMaterialOffset(int index, MaterialId material) =>
+        checked((index * EconomyRules.MaterialCount) + (int)material);
+
+    private static int GetTreasureOffset(int index, TreasureSlot slot) =>
+        checked((index * EconomyRules.TreasureSlotCount) + (int)slot);
 
     private static string CreateName(int index, DeterministicRandom random)
     {

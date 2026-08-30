@@ -225,6 +225,16 @@ public partial class MainWindow : Window, IDisposable
         HealthText.Text = $"{KoreanNumberFormatter.Format(Math.Max(0, agent.Health))} / {KoreanNumberFormatter.Format(agent.MaximumHealth)}";
         QiText.Text = $"{KoreanNumberFormatter.Format(agent.Qi)} / {KoreanNumberFormatter.Format(agent.MaximumQi)}";
         RecordText.Text = $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · {KoreanNumberFormatter.Format(agent.CombatExperience)}";
+        SpiritStoneText.Text = $"{KoreanNumberFormatter.Format(agent.SpiritStones)}개";
+        PillInventoryText.Text = $"수행단 {agent.GrowthPills:N0} · 돌파단 {agent.BreakthroughPills:N0}";
+        MissionText.Text = agent.ActiveMission is { } mission
+            ? $"{EconomyRules.GetMaterial(mission.Material).KoreanName} {mission.HeldCount:N0}/{mission.RequiredCount:N0} · 완료 {agent.MissionsCompleted:N0}"
+            : $"수주 대기 · 완료 {agent.MissionsCompleted:N0}";
+        MaterialText.Text = $"{KoreanNumberFormatter.Format(agent.InventoryItemCount)}개";
+        EquipmentText.Text = string.Join(
+            "  ·  ",
+            agent.EquippedTreasures.Select(item =>
+                $"{FormatTreasureSlot(item.Slot)} {(item.Quality is { } quality ? QualityRules.Format(quality) : "미장착")}"));
         SetPowerBreakdown(agent.CombatPower);
         ChronicleList.ItemsSource = chronicle
             .Reverse()
@@ -241,6 +251,7 @@ public partial class MainWindow : Window, IDisposable
         SetPowerRow(TechniquePowerBar, TechniquePowerText, power.Technique, maximum);
         SetPowerRow(SpellPowerBar, SpellPowerText, power.Spell, maximum);
         SetPowerRow(ExperiencePowerBar, ExperiencePowerText, power.Experience, maximum);
+        SetPowerRow(TreasurePowerBar, TreasurePowerText, power.Treasure, maximum);
     }
 
     private static void SetPowerRow(ProgressBar bar, TextBlock label, long value, long maximum)
@@ -290,6 +301,11 @@ public partial class MainWindow : Window, IDisposable
             WorldEventKind.Death => $"{primary}, {worldEvent.Value:N0}세에 수명을 다함",
             WorldEventKind.ReincarnationEntered => $"{primary}, 윤회의 강에 들어감",
             WorldEventKind.Rebirth => $"{primary}, 제 {worldEvent.Value:N0}생으로 환생",
+            WorldEventKind.MissionCompleted => $"{primary}, 도시 임무 완료 · 영석 +{KoreanNumberFormatter.Format(worldEvent.Value)}",
+            WorldEventKind.TreasureCrafted => $"{primary}, {FormatQuality(worldEvent.Value)} 법보 제작",
+            WorldEventKind.PillCrafted => $"{primary}, {FormatPill((PillKind)worldEvent.Value)} 제작",
+            WorldEventKind.PillPurchased => $"{primary}, 영석으로 {FormatPill((PillKind)worldEvent.Value)} 구매",
+            WorldEventKind.MaterialSold => $"{primary}, {EconomyRules.GetMaterial((MaterialId)worldEvent.Value).KoreanName} 판매",
             WorldEventKind.NewLeader => $"{primary}, {secondary}을 제치고 새로운 1위 등극",
             WorldEventKind.CombatStarted => $"{primary}, 상위권 {secondary}에게 도전",
             WorldEventKind.CombatPhysicalAttack => $"{primary} → {secondary}, 공법 공격 {worldEvent.Value:N0} 피해",
@@ -306,7 +322,9 @@ public partial class MainWindow : Window, IDisposable
                 or WorldEventKind.MinorStageBreakthrough
                 or WorldEventKind.BottleneckBreakthrough
                 or WorldEventKind.MajorRealmBreakthrough
-                or WorldEventKind.Rebirth => (Brush)FindResource("AccentBrush"),
+                or WorldEventKind.Rebirth
+                or WorldEventKind.TreasureCrafted
+                or WorldEventKind.PillCrafted => (Brush)FindResource("AccentBrush"),
             WorldEventKind.CombatEnded => (Brush)FindResource("PositiveBrush"),
             WorldEventKind.BreakthroughFailed or WorldEventKind.CombatRetreated => (Brush)FindResource("DangerBrush"),
             _ => (Brush)FindResource("PrimaryTextBrush"),
@@ -406,7 +424,30 @@ public partial class MainWindow : Window, IDisposable
         AgentActivity.SeekingChallenge => "도전 탐색",
         AgentActivity.Fighting => "전투 중",
         AgentActivity.Reincarnating => "윤회 중",
+        AgentActivity.DoingCityMission => "도시 임무",
+        AgentActivity.TradingInCity => "도시 거래",
+        AgentActivity.CraftingTreasure => "법보 제작",
+        AgentActivity.CraftingPill => "단약 제작",
         _ => activity.ToString(),
+    };
+
+    private static string FormatPill(PillKind kind) => kind switch
+    {
+        PillKind.Growth => "수행단",
+        PillKind.Breakthrough => "돌파단",
+        _ => kind.ToString(),
+    };
+
+    private static string FormatTreasureSlot(TreasureSlot slot) => slot switch
+    {
+        TreasureSlot.NatalTreasure => "본명법보",
+        TreasureSlot.ArmorOne => "방어구 I",
+        TreasureSlot.ArmorTwo => "방어구 II",
+        TreasureSlot.ArmorThree => "방어구 III",
+        TreasureSlot.WeaponOne => "무기 I",
+        TreasureSlot.WeaponTwo => "무기 II",
+        TreasureSlot.WeaponThree => "무기 III",
+        _ => slot.ToString(),
     };
 
     private void RankingGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

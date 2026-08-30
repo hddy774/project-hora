@@ -178,10 +178,12 @@ public sealed partial class World
         var baseDamage = 30
             + (GetQualityEffect(_agents.Bones[actor]) * 2)
             + (GetQualityEffect(_agents.TechniqueQualities[actor]) * 24)
+            + (_agents.GetTreasureCombatEffect(actor, attack: true) * 5)
             + (_agents.TechniqueMasteries[actor] / 20)
             + (GetRealmCombatScale(actor) / 3);
         var defense = (GetQualityEffect(_agents.Constitutions[target]) * 2)
             + (GetQualityEffect(_agents.Bones[target]) / 2)
+            + (_agents.GetTreasureCombatEffect(target, attack: false) * 5)
             + (GetRealmCombatScale(target) / 5);
         var damage = ApplyPowerRatioAndVariance(actor, target, Math.Max(12, baseDamage - (defense / 3)));
         damage = ApplyGuard(target, damage);
@@ -197,10 +199,12 @@ public sealed partial class World
             + (GetQualityEffect(_agents.SpiritualRoots[actor]) * 2)
             + GetQualityEffect(_agents.Comprehensions[actor])
             + (GetQualityEffect(_agents.SpellQualities[actor]) * 32)
+            + (_agents.GetTreasureCombatEffect(actor, attack: true) * 5)
             + (_agents.SpellMasteries[actor] / 16)
             + (GetRealmCombatScale(actor) / 2);
         var defense = (GetQualityEffect(_agents.Constitutions[target]) * 2)
             + GetQualityEffect(_agents.SpiritualRoots[target])
+            + (_agents.GetTreasureCombatEffect(target, attack: false) * 5)
             + (GetRealmCombatScale(target) / 4);
         var damage = ApplyPowerRatioAndVariance(actor, target, Math.Max(15, baseDamage - (defense / 3)));
         damage = ApplyGuard(target, damage);

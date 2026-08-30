@@ -328,6 +328,36 @@
                             </StackPanel>
                         </Grid>
 
+                        <TextBlock Text="도시 경제·법보"
+                                   Margin="0,24,0,10"
+                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold" />
+                        <UniformGrid Rows="1" Columns="4">
+                            <StackPanel>
+                                <TextBlock Text="영석" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="SpiritStoneText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="단약" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="PillInventoryText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="도시 임무" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="MissionText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="보유 재료" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="MaterialText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" />
+                            </StackPanel>
+                        </UniformGrid>
+                        <TextBlock x:Name="EquipmentText"
+                                   Margin="0,10,0,0"
+                                   Padding="10"
+                                   Background="{StaticResource PanelAltBrush}"
+                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                   TextWrapping="Wrap" />
+
                         <Grid Margin="0,26,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -376,6 +406,12 @@
                             <TextBlock Text="경험" Foreground="{StaticResource SecondaryTextBrush}" />
                             <ProgressBar x:Name="ExperiencePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
                             <TextBlock x:Name="ExperiencePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
+                        </Grid>
+                        <Grid Margin="0,9,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="70" /><ColumnDefinition Width="*" /><ColumnDefinition Width="72" /></Grid.ColumnDefinitions>
+                            <TextBlock Text="법보" Foreground="{StaticResource SecondaryTextBrush}" />
+                            <ProgressBar x:Name="TreasurePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
+                            <TextBlock x:Name="TreasurePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
                         </Grid>
 
                         <TextBlock Text="수선자 일대기"

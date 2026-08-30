@@ -14,6 +14,7 @@ var tests = new (string Name, Action Body)[]
     ("동일 seed 결정론", DeterministicWorld),
     ("이벤트 기반 성장", EventDrivenGrowth),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
+    ("도시 임무·영석·재료·단약·법보 경제 순환", EconomyLoop),
     ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
@@ -207,7 +208,8 @@ static void CombatPowerAndRanking()
             + entry.CombatPower.Aptitude
             + entry.CombatPower.Technique
             + entry.CombatPower.Spell
-            + entry.CombatPower.Experience), "전투력 합계");
+            + entry.CombatPower.Experience
+            + entry.CombatPower.Treasure), "전투력 합계");
         True(entry.CombatPower.Total <= previousPower, "랭킹은 전투력 내림차순이어야 합니다.");
         previousPower = entry.CombatPower.Total;
     }
@@ -308,6 +310,50 @@ static void ObservationQueriesAreReadOnly()
     Equal(before, world.ComputeStateHash(), "관찰 조회는 세계 상태를 바꾸면 안 됩니다.");
 }
 
+static void EconomyLoop()
+{
+    Equal(30, EconomyRules.AllMaterials.Count, "전체 재료 수");
+    Equal(10, EconomyRules.AllMaterials.Count(item => item.Category == MaterialCategory.Treasure), "법보 재료 수");
+    Equal(10, EconomyRules.AllMaterials.Count(item => item.Category == MaterialCategory.Pill), "단약 재료 수");
+    Equal(10, EconomyRules.AllMaterials.Count(item => item.Category == MaterialCategory.Miscellaneous), "기타 재료 수");
+    Equal(7, EconomyRules.TreasureSlotCount, "법보 장착 슬롯 수");
+
+    var world = World.Create(707, 2_000);
+    world.AdvanceTo(new SimulationTick(8_000));
+    True(world.TotalMissionsCompleted > 0, "도시 임무가 완료되어야 합니다.");
+    True(world.TotalTreasuresCrafted > 0, "법보 제작이 발생해야 합니다.");
+    True(world.TotalPillsCrafted > 0, "단약 제작이 발생해야 합니다.");
+    True(world.TotalMaterialsSold > 0, "재료 판매가 발생해야 합니다.");
+
+    var agentsWithEquipment = 0;
+    var agentsWithPills = 0;
+    var agentsWithMissionHistory = 0;
+    for (var index = 0; index < world.Population; index++)
+    {
+        var agent = world.GetAgentSnapshot(new AgentId(index));
+        Equal(7, agent.EquippedTreasures.Count, "개별 법보 슬롯 수");
+        if (agent.EquippedTreasures.Any(item => item.Quality is not null))
+        {
+            agentsWithEquipment++;
+            True(agent.CombatPower.Treasure > 0, "장착 법보는 전투력에 반영되어야 합니다.");
+        }
+
+        if (agent.GrowthPills > 0 || agent.BreakthroughPills > 0)
+        {
+            agentsWithPills++;
+        }
+
+        if (agent.MissionsCompleted > 0)
+        {
+            agentsWithMissionHistory++;
+        }
+    }
+
+    True(agentsWithEquipment > 0, "법보를 장착한 AI가 있어야 합니다.");
+    True(agentsWithPills > 0, "단약을 보유한 AI가 있어야 합니다.");
+    True(agentsWithMissionHistory > 0, "임무 이력이 있는 AI가 있어야 합니다.");
+}
+
 static void SaveCodecRoundTrip()
 {
     var original = World.CreateDefault(314159);
@@ -318,8 +364,15 @@ static void SaveCodecRoundTrip()
     Equal(checkpoint.RandomState, decoded.RandomState, "저장 왕복 RNG 상태");
     Equal(checkpoint.EventSequence, decoded.EventSequence, "저장 왕복 사건 sequence");
     Equal(checkpoint.TotalChallenges, decoded.TotalChallenges, "저장 왕복 도전 합계");
+    Equal(checkpoint.TotalMissionsCompleted, decoded.TotalMissionsCompleted, "저장 왕복 임무 합계");
     Equal(checkpoint.Agents[0].Name, decoded.Agents[0].Name, "저장 왕복 첫 Agent 이름");
     Equal(checkpoint.Agents[0].Soul, decoded.Agents[0].Soul, "저장 왕복 첫 Agent 영혼");
+    True(
+        checkpoint.Agents[0].MaterialInventory.SequenceEqual(decoded.Agents[0].MaterialInventory),
+        "저장 왕복 첫 Agent 재료");
+    True(
+        checkpoint.Agents[0].EquippedTreasureQualities.SequenceEqual(decoded.Agents[0].EquippedTreasureQualities),
+        "저장 왕복 첫 Agent 법보");
     True(
         checkpoint.Agents[0].Chronicle.SequenceEqual(decoded.Agents[0].Chronicle),
         "저장 왕복 첫 Agent 일대기");

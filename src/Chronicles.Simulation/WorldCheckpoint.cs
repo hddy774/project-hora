@@ -37,6 +37,13 @@ public sealed record AgentCheckpoint(
     byte CombatActions,
     bool Guarding,
     int ChallengesIssued,
+    long SpiritStones,
+    int GrowthPills,
+    int BreakthroughPills,
+    int MissionsCompleted,
+    byte ActiveMissionMaterial,
+    int[] MaterialInventory,
+    ushort[] EquippedTreasureQualities,
     LifeChronicleEntry[] Chronicle);
 
 public sealed record WorldCheckpoint(
@@ -54,7 +61,11 @@ public sealed record WorldCheckpoint(
     int TotalCombatsCompleted,
     int ActiveCombats,
     int TotalDeaths,
-    int TotalReincarnations)
+    int TotalReincarnations,
+    int TotalMissionsCompleted,
+    int TotalTreasuresCrafted,
+    int TotalPillsCrafted,
+    int TotalMaterialsSold)
 {
-    public const int CurrentSchemaVersion = 3;
+    public const int CurrentSchemaVersion = 4;
 }

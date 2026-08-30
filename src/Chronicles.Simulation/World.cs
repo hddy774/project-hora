@@ -24,6 +24,10 @@ public sealed partial class World
     private int _activeCombats;
     private int _totalDeaths;
     private int _totalReincarnations;
+    private int _totalMissionsCompleted;
+    private int _totalTreasuresCrafted;
+    private int _totalPillsCrafted;
+    private int _totalMaterialsSold;
 
     private World(ulong seed, int population)
     {
@@ -61,6 +65,10 @@ public sealed partial class World
     public int ActiveCombats => _activeCombats;
     public int TotalDeaths => _totalDeaths;
     public int TotalReincarnations => _totalReincarnations;
+    public int TotalMissionsCompleted => _totalMissionsCompleted;
+    public int TotalTreasuresCrafted => _totalTreasuresCrafted;
+    public int TotalPillsCrafted => _totalPillsCrafted;
+    public int TotalMaterialsSold => _totalMaterialsSold;
 
     public static World CreateDefault(ulong seed) =>
         new(seed, ProductInfo.DefaultPopulation);
@@ -142,6 +150,13 @@ public sealed partial class World
             _agents.Opponents[index] < 0 ? null : new AgentId(_agents.Opponents[index]),
             new SimulationTick(_agents.LastCombatTicks[index]),
             _agents.ChallengesIssued[index],
+            _agents.SpiritStones[index],
+            _agents.GrowthPills[index],
+            _agents.BreakthroughPills[index],
+            _agents.MissionsCompleted[index],
+            GetActiveMissionSnapshot(index),
+            _agents.GetInventoryItemCount(index),
+            GetEquippedTreasureSnapshots(index),
             _agents.Power[index]);
     }
 
@@ -249,6 +264,10 @@ public sealed partial class World
         Add(ref hash, (ulong)_activeCombats);
         Add(ref hash, (ulong)_totalDeaths);
         Add(ref hash, (ulong)_totalReincarnations);
+        Add(ref hash, (ulong)_totalMissionsCompleted);
+        Add(ref hash, (ulong)_totalTreasuresCrafted);
+        Add(ref hash, (ulong)_totalPillsCrafted);
+        Add(ref hash, (ulong)_totalMaterialsSold);
         for (var index = 0; index < Population; index++)
         {
             Add(ref hash, (ulong)index);
@@ -285,6 +304,20 @@ public sealed partial class World
             Add(ref hash, _agents.CombatActions[index]);
             Add(ref hash, _agents.Guarding[index] ? 1UL : 0UL);
             Add(ref hash, (ulong)_agents.ChallengesIssued[index]);
+            Add(ref hash, (ulong)_agents.SpiritStones[index]);
+            Add(ref hash, (ulong)_agents.GrowthPills[index]);
+            Add(ref hash, (ulong)_agents.BreakthroughPills[index]);
+            Add(ref hash, (ulong)_agents.MissionsCompleted[index]);
+            Add(ref hash, _agents.ActiveMissionMaterials[index]);
+            for (var material = 0; material < EconomyRules.MaterialCount; material++)
+            {
+                Add(ref hash, (ulong)_agents.MaterialInventory[(index * EconomyRules.MaterialCount) + material]);
+            }
+
+            for (var slot = 0; slot < EconomyRules.TreasureSlotCount; slot++)
+            {
+                Add(ref hash, _agents.EquippedTreasureQualities[(index * EconomyRules.TreasureSlotCount) + slot]);
+            }
             Add(ref hash, (ulong)_rankByAgent[index]);
             Add(ref hash, (ulong)_realmRankByAgent[index]);
             Add(ref hash, (ulong)_aptitudeRankByAgent[index]);
@@ -339,6 +372,18 @@ public sealed partial class World
             case AgentActivity.Reincarnating:
                 CompleteRebirth(index);
                 return true;
+            case AgentActivity.DoingCityMission:
+                ResolveCityMission(index);
+                return false;
+            case AgentActivity.TradingInCity:
+                ResolveCityTrading(index);
+                return false;
+            case AgentActivity.CraftingTreasure:
+                ResolveTreasureCrafting(index);
+                return false;
+            case AgentActivity.CraftingPill:
+                ResolvePillCrafting(index);
+                return false;
             default:
                 throw new InvalidOperationException("알 수 없는 AI 행동입니다.");
         }
@@ -368,6 +413,12 @@ public sealed partial class World
             18_000);
         var actionTicks = CalculateActivityDuration(index);
         var gain = Math.Max(1, checked((int)(actionTicks * rateBasisPoints / 10_000)));
+        if (_agents.GrowthPills[index] > 0)
+        {
+            _agents.GrowthPills[index]--;
+            gain = checked(gain + Math.Max(1, gain / 2));
+        }
+
         _agents.CultivationProgress[index] = checked(_agents.CultivationProgress[index] + gain);
 
         var requirement = GetCultivationRequirement(index);
@@ -378,6 +429,13 @@ public sealed partial class World
 
         var stagePenalty = ((int)_agents.RealmStages[index] * 550) + (_agents.RealmLayers[index] * 80);
         var constitution = GetQualityEffect(_agents.Constitutions[index]);
+        var breakthroughPillBonus = 0;
+        if (_agents.BreakthroughPills[index] > 0)
+        {
+            _agents.BreakthroughPills[index]--;
+            breakthroughPillBonus = 1_500;
+        }
+
         var chance = Math.Clamp(
             4_500
             + (comprehension * 30)
@@ -385,6 +443,7 @@ public sealed partial class World
             + (constitution * 10)
             + (mind * 10)
             + (soul * 5)
+            + breakthroughPillBonus
             - stagePenalty,
             1_200,
             9_500);
@@ -507,12 +566,7 @@ public sealed partial class World
         }
 
         var roll = _random.NextInt(100);
-        _agents.Activities[index] = roll switch
-        {
-            < 55 => AgentActivity.Cultivating,
-            < 80 => AgentActivity.TrainingTechnique,
-            _ => AgentActivity.TrainingSpell,
-        };
+        _agents.Activities[index] = SelectNonCombatActivity(index, roll);
     }
 
     private long CalculateActivityDuration(int index)
@@ -526,6 +580,10 @@ public sealed partial class World
             AgentActivity.SeekingChallenge => 20,
             AgentActivity.Fighting => CalculateCombatActionDuration(index),
             AgentActivity.Reincarnating => GameCalendar.TicksPerYear,
+            AgentActivity.DoingCityMission => 80,
+            AgentActivity.TradingInCity => 45,
+            AgentActivity.CraftingTreasure => 110,
+            AgentActivity.CraftingPill => 90,
             _ => throw new InvalidOperationException("알 수 없는 AI 행동입니다."),
         };
     }

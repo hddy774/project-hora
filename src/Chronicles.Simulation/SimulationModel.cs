@@ -33,6 +33,10 @@ public enum AgentActivity : byte
     SeekingChallenge,
     Fighting,
     Reincarnating,
+    DoingCityMission,
+    TradingInCity,
+    CraftingTreasure,
+    CraftingPill,
 }
 
 public enum WorldEventKind : byte
@@ -54,6 +58,11 @@ public enum WorldEventKind : byte
     Death,
     ReincarnationEntered,
     Rebirth,
+    MissionCompleted,
+    TreasureCrafted,
+    PillCrafted,
+    PillPurchased,
+    MaterialSold,
 }
 
 public readonly record struct Aptitudes(
@@ -111,9 +120,10 @@ public readonly record struct CombatPowerBreakdown(
     long Aptitude,
     long Technique,
     long Spell,
-    long Experience)
+    long Experience,
+    long Treasure)
 {
-    public long Total => checked(Realm + Aptitude + Technique + Spell + Experience);
+    public long Total => checked(Realm + Aptitude + Technique + Spell + Experience + Treasure);
 }
 
 public readonly record struct WorldEvent(
@@ -123,6 +133,15 @@ public readonly record struct WorldEvent(
     AgentId PrimaryAgent,
     AgentId? SecondaryAgent,
     long Value);
+
+public readonly record struct ActiveMissionSnapshot(
+    MaterialId Material,
+    int RequiredCount,
+    int HeldCount);
+
+public readonly record struct EquippedTreasureSnapshot(
+    TreasureSlot Slot,
+    QualityValue? Quality);
 
 public sealed record AgentSnapshot(
     AgentId Id,
@@ -155,6 +174,13 @@ public sealed record AgentSnapshot(
     AgentId? OpponentId,
     SimulationTick LastCombatTick,
     int ChallengesIssued,
+    long SpiritStones,
+    int GrowthPills,
+    int BreakthroughPills,
+    int MissionsCompleted,
+    ActiveMissionSnapshot? ActiveMission,
+    int InventoryItemCount,
+    IReadOnlyList<EquippedTreasureSnapshot> EquippedTreasures,
     CombatPowerBreakdown CombatPower);
 
 public sealed record RankingEntry(
@@ -204,7 +230,8 @@ public static class CombatPowerFormula
         int techniqueMastery,
         QualityValue spellQuality,
         int spellMastery,
-        int combatExperience)
+        int combatExperience,
+        long treasurePower)
     {
         if (realmLayer is < 1 or > RealmRules.MinorStageCount)
         {
@@ -225,7 +252,7 @@ public static class CombatPowerFormula
         var spellEffect = QualityRules.GetEffectiveHundredths(spellQuality);
         var spell = checked(spellEffect * (600L + (spellMastery * 2L)) / 100);
         var experience = Math.Min(40_000L, IntegerSquareRoot(Math.Max(0, combatExperience)) * 80L);
-        return new CombatPowerBreakdown(realm, aptitude, technique, spell, experience);
+        return new CombatPowerBreakdown(realm, aptitude, technique, spell, experience, treasurePower);
     }
 
     private static int IntegerSquareRoot(int value)

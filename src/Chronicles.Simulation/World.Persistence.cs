@@ -26,6 +26,10 @@ public sealed partial class World
         _activeCombats = checkpoint.ActiveCombats;
         _totalDeaths = checkpoint.TotalDeaths;
         _totalReincarnations = checkpoint.TotalReincarnations;
+        _totalMissionsCompleted = checkpoint.TotalMissionsCompleted;
+        _totalTreasuresCrafted = checkpoint.TotalTreasuresCrafted;
+        _totalPillsCrafted = checkpoint.TotalPillsCrafted;
+        _totalMaterialsSold = checkpoint.TotalMaterialsSold;
 
         for (var index = 0; index < checkpoint.Agents.Length; index++)
         {
@@ -87,6 +91,13 @@ public sealed partial class World
                 _agents.CombatActions[index],
                 _agents.Guarding[index],
                 _agents.ChallengesIssued[index],
+                _agents.SpiritStones[index],
+                _agents.GrowthPills[index],
+                _agents.BreakthroughPills[index],
+                _agents.MissionsCompleted[index],
+                _agents.ActiveMissionMaterials[index],
+                _agents.CopyMaterialInventory(index),
+                _agents.CopyEquippedTreasureQualities(index),
                 _agents.Chronicles[index].ToArray());
         }
 
@@ -105,7 +116,11 @@ public sealed partial class World
             _totalCombatsCompleted,
             _activeCombats,
             _totalDeaths,
-            _totalReincarnations);
+            _totalReincarnations,
+            _totalMissionsCompleted,
+            _totalTreasuresCrafted,
+            _totalPillsCrafted,
+            _totalMaterialsSold);
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint)
@@ -144,6 +159,15 @@ public sealed partial class World
         _agents.CombatActions[index] = checkpoint.CombatActions;
         _agents.Guarding[index] = checkpoint.Guarding;
         _agents.ChallengesIssued[index] = checkpoint.ChallengesIssued;
+        _agents.SpiritStones[index] = checkpoint.SpiritStones;
+        _agents.GrowthPills[index] = checkpoint.GrowthPills;
+        _agents.BreakthroughPills[index] = checkpoint.BreakthroughPills;
+        _agents.MissionsCompleted[index] = checkpoint.MissionsCompleted;
+        _agents.ActiveMissionMaterials[index] = checkpoint.ActiveMissionMaterial;
+        _agents.RestoreEconomyState(
+            index,
+            checkpoint.MaterialInventory,
+            checkpoint.EquippedTreasureQualities);
         _agents.Chronicles[index].AddRange(checkpoint.Chronicle);
     }
 
@@ -165,6 +189,14 @@ public sealed partial class World
             throw new InvalidDataException("세계 체크포인트의 전투 수가 일치하지 않습니다.");
         }
 
+        if (checkpoint.TotalMissionsCompleted < 0
+            || checkpoint.TotalTreasuresCrafted < 0
+            || checkpoint.TotalPillsCrafted < 0
+            || checkpoint.TotalMaterialsSold < 0)
+        {
+            throw new InvalidDataException("세계 체크포인트의 경제 집계가 잘못되었습니다.");
+        }
+
         for (var index = 0; index < checkpoint.Agents.Length; index++)
         {
             var agent = checkpoint.Agents[index];
@@ -177,6 +209,18 @@ public sealed partial class World
                 || agent.Soul > QualityValue.MaximumHundredths
                 || agent.TechniqueQuality > QualityValue.MaximumHundredths
                 || agent.SpellQuality > QualityValue.MaximumHundredths
+                || agent.SpiritStones < 0
+                || agent.GrowthPills < 0
+                || agent.BreakthroughPills < 0
+                || agent.MissionsCompleted < 0
+                || (agent.ActiveMissionMaterial != byte.MaxValue
+                    && agent.ActiveMissionMaterial >= EconomyRules.MaterialCount)
+                || agent.MaterialInventory is not { Length: EconomyRules.MaterialCount }
+                || agent.MaterialInventory.Any(count => count < 0)
+                || agent.EquippedTreasureQualities is not { Length: EconomyRules.TreasureSlotCount }
+                || agent.EquippedTreasureQualities.Any(quality =>
+                    quality != EconomyRules.EmptyTreasureQuality
+                    && quality > QualityValue.MaximumHundredths)
                 || agent.RealmLayer is < 1 or > RealmRules.MinorStageCount
                 || agent.BirthTick < 0
                 || agent.BirthTick > checkpoint.Tick

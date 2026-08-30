@@ -32,6 +32,8 @@ internal sealed class AgentStore
         RealmStages = new RealmStage[count];
         RealmLayers = new byte[count];
         CultivationProgress = new int[count];
+        CultivationStates = new CultivationState[count];
+        CultivationBottleneckCauses = new CultivationBottleneckCause[count];
         TechniqueQualities = new ushort[count];
         TechniqueMasteries = new ushort[count];
         SpellQualities = new ushort[count];
@@ -90,6 +92,8 @@ internal sealed class AgentStore
     public RealmStage[] RealmStages { get; }
     public byte[] RealmLayers { get; }
     public int[] CultivationProgress { get; }
+    public CultivationState[] CultivationStates { get; }
+    public CultivationBottleneckCause[] CultivationBottleneckCauses { get; }
     public ushort[] TechniqueQualities { get; }
     public ushort[] TechniqueMasteries { get; }
     public ushort[] SpellQualities { get; }
@@ -173,6 +177,8 @@ internal sealed class AgentStore
         RealmStages[index] = RealmStage.QiRefining;
         RealmLayers[index] = 1;
         CultivationProgress[index] = 0;
+        CultivationStates[index] = CultivationState.Progressing;
+        CultivationBottleneckCauses[index] = CultivationBottleneckCause.None;
         TechniqueQualities[index] = CreateQuality(random);
         TechniqueMasteries[index] = (ushort)(50 + random.NextInt(251));
         SpellQualities[index] = CreateQuality(random);

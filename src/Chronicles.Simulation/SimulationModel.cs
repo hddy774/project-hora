@@ -24,6 +24,27 @@ public enum MinorStage : byte
     GreatCompletion,
 }
 
+public enum CultivationState : byte
+{
+    Progressing,
+    PreparingBreakthrough,
+    PreflightReady,
+    AttemptingBreakthrough,
+    Bottleneck,
+    Stabilizing,
+    Completed,
+}
+
+public enum CultivationBottleneckCause : byte
+{
+    None,
+    Knowledge,
+    Body,
+    SpiritualRoot,
+    Resources,
+    Stability,
+}
+
 public enum AgentActivity : byte
 {
     Cultivating,
@@ -210,6 +231,8 @@ public sealed record AgentSnapshot(
     int RealmLayer,
     int CultivationProgress,
     int CultivationRequirement,
+    CultivationState CultivationState,
+    CultivationBottleneckCause BottleneckCause,
     Aptitudes Aptitudes,
     QualityValue TechniqueQuality,
     int TechniqueMastery,

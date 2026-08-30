@@ -8,6 +8,7 @@ var tests = new (string Name, Action Body)[]
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
     ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
+    ("Notion 수행 Work·준비·Preflight·안착 상태", CultivationStateMachine),
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
     ("8단계 품질 경계와 격차 배율", QualityTiersAndBoundaryMultipliers),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
@@ -121,6 +122,59 @@ static void CalendarAndMonthlyActionLimit()
         True(
             Nullable.Equals(originalAgent.LastActionDate, restoredAgent.LastActionDate),
             "저장 후 마지막 행동일");
+    }
+}
+
+static void CultivationStateMachine()
+{
+    var baseline = World.Create(551122, 1);
+    var requirement = baseline.GetAgentSnapshot(new AgentId(0)).CultivationRequirement;
+    var checkpoint = baseline.CreateCheckpoint();
+    var preparedAgent = checkpoint.Agents[0] with
+    {
+        CultivationProgress = requirement,
+        CultivationState = CultivationState.Progressing,
+        CultivationBottleneckCause = CultivationBottleneckCause.None,
+        Activity = AgentActivity.Cultivating,
+        NextDecisionTick = 1,
+    };
+    var world = World.Restore(checkpoint with { Agents = [preparedAgent] });
+    var randomBeforePreparation = world.CreateCheckpoint().RandomState;
+
+    world.AdvanceTo(new SimulationTick(1));
+    var preparing = world.GetAgentSnapshot(new AgentId(0));
+    True(
+        preparing.CultivationState == CultivationState.PreparingBreakthrough,
+        "Work 충족 뒤에는 즉시 확률 판정하지 않고 돌파 준비에 들어가야 합니다.");
+    Equal(randomBeforePreparation, world.CreateCheckpoint().RandomState, "돌파 준비는 RNG를 소비하지 않음");
+
+    world.AdvanceTo(GameCalendar.GetMonthStart(1));
+    var preflight = world.GetAgentSnapshot(new AgentId(0));
+    True(preflight.CultivationState == CultivationState.PreflightReady, "준비 뒤 Preflight 대기 상태");
+    Equal(randomBeforePreparation, world.CreateCheckpoint().RandomState, "Preflight 준비는 RNG를 소비하지 않음");
+
+    world.AdvanceTo(GameCalendar.GetMonthStart(2));
+    var attempted = world.GetAgentSnapshot(new AgentId(0));
+    True(
+        attempted.CultivationState is CultivationState.Stabilizing or CultivationState.Bottleneck,
+        "돌파 시도는 성공 안착 또는 원인이 있는 병목으로 끝나야 합니다.");
+    if (attempted.CultivationState == CultivationState.Bottleneck)
+    {
+        True(
+            attempted.BottleneckCause != CultivationBottleneckCause.None,
+            "병목은 원인 없이 저장될 수 없습니다.");
+    }
+
+    var restored = World.Restore(world.CreateCheckpoint());
+    var restoredAgent = restored.GetAgentSnapshot(new AgentId(0));
+    True(attempted.CultivationState == restoredAgent.CultivationState, "수행 상태 저장 왕복");
+    True(attempted.BottleneckCause == restoredAgent.BottleneckCause, "병목 원인 저장 왕복");
+
+    foreach (var profile in RealmRules.All)
+    {
+        True(!string.IsNullOrWhiteSpace(profile.StableId), "Realm Profile 안정 ID");
+        Equal(RealmProfile.CurrentRevision, profile.Revision, "Realm Profile revision");
+        True(profile.RequiresStabilization, "돌파 성공 후 안착 상태");
     }
 }
 

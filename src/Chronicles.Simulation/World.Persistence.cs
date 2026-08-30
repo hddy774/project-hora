@@ -77,6 +77,8 @@ public sealed partial class World
                 _agents.RealmStages[index],
                 _agents.RealmLayers[index],
                 _agents.CultivationProgress[index],
+                _agents.CultivationStates[index],
+                _agents.CultivationBottleneckCauses[index],
                 _agents.TechniqueQualities[index],
                 _agents.TechniqueMasteries[index],
                 _agents.SpellQualities[index],
@@ -155,6 +157,8 @@ public sealed partial class World
         _agents.RealmStages[index] = checkpoint.RealmStage;
         _agents.RealmLayers[index] = checkpoint.RealmLayer;
         _agents.CultivationProgress[index] = checkpoint.CultivationProgress;
+        _agents.CultivationStates[index] = checkpoint.CultivationState;
+        _agents.CultivationBottleneckCauses[index] = checkpoint.CultivationBottleneckCause;
         _agents.TechniqueQualities[index] = checkpoint.TechniqueQuality;
         _agents.TechniqueMasteries[index] = checkpoint.TechniqueMastery;
         _agents.SpellQualities[index] = checkpoint.SpellQuality;
@@ -274,7 +278,17 @@ public sealed partial class World
                 || agent.EquippedTreasureQualities.Any(quality =>
                     quality != EconomyRules.EmptyTreasureQuality
                     && quality > QualityValue.MaximumHundredths)
-                || agent.RealmLayer is < 1 or > RealmRules.MinorStageCount
+                || !RealmRules.IsValidMinorStage(agent.RealmStage, agent.RealmLayer)
+                || !Enum.IsDefined(agent.CultivationState)
+                || !Enum.IsDefined(agent.CultivationBottleneckCause)
+                || agent.CultivationProgress < 0
+                || agent.CultivationProgress > RealmRules.GetMinorStageRequiredWork(agent.RealmStage)
+                || (agent.CultivationState == CultivationState.Bottleneck
+                    && agent.CultivationBottleneckCause == CultivationBottleneckCause.None)
+                || (agent.CultivationState != CultivationState.Bottleneck
+                    && agent.CultivationBottleneckCause != CultivationBottleneckCause.None)
+                || (agent.CultivationState == CultivationState.Completed
+                    && !RealmRules.IsFinalStage(agent.RealmStage, agent.RealmLayer))
                 || agent.BirthTick < 0
                 || agent.BirthTick > checkpoint.Tick
                 || agent.LifeNumber < 1

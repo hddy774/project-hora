@@ -6,6 +6,29 @@ public readonly record struct RealmProfile(
     RealmStage Stage,
     long MaximumLifespanYears)
 {
+    public const int CurrentRevision = 1;
+
+    public string StableId => Stage switch
+    {
+        RealmStage.QiRefining => "realm.qi_refining",
+        RealmStage.FoundationEstablishment => "realm.foundation_establishment",
+        RealmStage.GoldenCore => "realm.golden_core",
+        RealmStage.NascentSoul => "realm.nascent_soul",
+        RealmStage.SpiritTransformation => "realm.spirit_transformation",
+        RealmStage.VoidRefinement => "realm.void_refinement",
+        RealmStage.BodyIntegration => "realm.body_integration",
+        RealmStage.TribulationCrossing => "realm.tribulation_crossing",
+        RealmStage.Mahayana => "realm.mahayana",
+        RealmStage.HalfImmortal => "realm.half_immortal",
+        _ => throw new ArgumentOutOfRangeException(nameof(Stage)),
+    };
+
+    public int Revision => Stage is >= RealmStage.QiRefining and <= RealmStage.HalfImmortal
+        ? CurrentRevision
+        : throw new ArgumentOutOfRangeException(nameof(Stage));
+
+    public bool RequiresStabilization => Stage is >= RealmStage.QiRefining and <= RealmStage.HalfImmortal;
+
     public decimal TargetCultivationYears => MaximumLifespanYears / 3m;
 }
 
@@ -50,4 +73,10 @@ public static class RealmRules
 
     public static bool IsFinalStage(RealmStage stage, int minorStage) =>
         stage == RealmStage.HalfImmortal && minorStage == MinorStageCount;
+
+    public static bool IsValidMinorStage(RealmStage stage, int minorStage)
+    {
+        _ = GetProfile(stage);
+        return minorStage is >= 1 and <= MinorStageCount;
+    }
 }

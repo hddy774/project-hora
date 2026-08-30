@@ -120,7 +120,9 @@ public sealed partial class World
                 continue;
             }
 
+            var resolvedActivity = _agents.Activities[agentIndex];
             var alreadyScheduled = ResolveActivity(agentIndex);
+            TryResolveBottleneckAfterAction(agentIndex, resolvedActivity);
             if (alreadyScheduled)
             {
                 continue;
@@ -153,6 +155,8 @@ public sealed partial class World
             _agents.RealmLayers[index],
             _agents.CultivationProgress[index],
             GetCultivationRequirement(index),
+            _agents.CultivationStates[index],
+            _agents.CultivationBottleneckCauses[index],
             _agents.GetAptitudes(index),
             new QualityValue(_agents.TechniqueQualities[index]),
             _agents.TechniqueMasteries[index],
@@ -328,6 +332,8 @@ public sealed partial class World
             Add(ref hash, (byte)_agents.RealmStages[index]);
             Add(ref hash, _agents.RealmLayers[index]);
             Add(ref hash, (ulong)_agents.CultivationProgress[index]);
+            Add(ref hash, (byte)_agents.CultivationStates[index]);
+            Add(ref hash, (byte)_agents.CultivationBottleneckCauses[index]);
             Add(ref hash, _agents.TechniqueQualities[index]);
             Add(ref hash, _agents.TechniqueMasteries[index]);
             Add(ref hash, _agents.SpellQualities[index]);
@@ -438,12 +444,38 @@ public sealed partial class World
 
     private void ResolveCultivation(int index)
     {
-        if (RealmRules.IsFinalStage(_agents.RealmStages[index], _agents.RealmLayers[index]))
+        switch (_agents.CultivationStates[index])
         {
-            _agents.CultivationProgress[index] = GetCultivationRequirement(index);
-            return;
+            case CultivationState.Completed:
+                _agents.CultivationProgress[index] = GetCultivationRequirement(index);
+                return;
+            case CultivationState.Stabilizing:
+                _agents.CultivationStates[index] = RealmRules.IsFinalStage(
+                    _agents.RealmStages[index],
+                    _agents.RealmLayers[index])
+                    ? CultivationState.Completed
+                    : CultivationState.Progressing;
+                return;
+            case CultivationState.PreparingBreakthrough:
+                _agents.CultivationStates[index] = CultivationState.PreflightReady;
+                return;
+            case CultivationState.PreflightReady:
+                ResolveBreakthroughAttempt(index);
+                return;
+            case CultivationState.Bottleneck:
+                return;
+            case CultivationState.AttemptingBreakthrough:
+                throw new InvalidOperationException("돌파 시도 상태는 하나의 행동 안에서 종료되어야 합니다.");
+            case CultivationState.Progressing:
+                AccumulateCultivationWork(index);
+                return;
+            default:
+                throw new InvalidOperationException("알 수 없는 수행 상태입니다.");
         }
+    }
 
+    private void AccumulateCultivationWork(int index)
+    {
         var spiritualRoot = GetQualityEffect(_agents.SpiritualRoots[index]);
         var comprehension = GetQualityEffect(_agents.Comprehensions[index]);
         var mind = GetQualityEffect(_agents.Minds[index]);
@@ -466,14 +498,37 @@ public sealed partial class World
             gain = checked(gain + Math.Max(1, gain / 2));
         }
 
-        _agents.CultivationProgress[index] = checked(_agents.CultivationProgress[index] + gain);
-
         var requirement = GetCultivationRequirement(index);
+        _agents.CultivationProgress[index] = Math.Min(
+            requirement,
+            checked(_agents.CultivationProgress[index] + gain));
         if (_agents.CultivationProgress[index] < requirement)
         {
             return;
         }
 
+        _agents.CultivationStates[index] = RealmRules.IsFinalStage(
+            _agents.RealmStages[index],
+            _agents.RealmLayers[index])
+            ? CultivationState.Completed
+            : CultivationState.PreparingBreakthrough;
+    }
+
+    private void ResolveBreakthroughAttempt(int index)
+    {
+        var preflightFailure = EvaluateBreakthroughPreflight(index);
+        if (preflightFailure != CultivationBottleneckCause.None)
+        {
+            _agents.CultivationStates[index] = CultivationState.Bottleneck;
+            _agents.CultivationBottleneckCauses[index] = preflightFailure;
+            return;
+        }
+
+        _agents.CultivationStates[index] = CultivationState.AttemptingBreakthrough;
+        var spiritualRoot = GetQualityEffect(_agents.SpiritualRoots[index]);
+        var comprehension = GetQualityEffect(_agents.Comprehensions[index]);
+        var mind = GetQualityEffect(_agents.Minds[index]);
+        var soul = GetQualityEffect(_agents.Souls[index]);
         var stagePenalty = ((int)_agents.RealmStages[index] * 550) + (_agents.RealmLayers[index] * 80);
         var constitution = GetQualityEffect(_agents.Constitutions[index]);
         var breakthroughPillBonus = 0;
@@ -497,11 +552,13 @@ public sealed partial class World
 
         if (_random.Chance(chance))
         {
-            _agents.CultivationProgress[index] -= requirement;
+            _agents.CultivationProgress[index] = 0;
             var previousRealm = _agents.RealmStages[index];
             var previousMinorStage = (MinorStage)_agents.RealmLayers[index];
             var bottleneckFailures = _agents.BottleneckFailures[index];
             AdvanceRealm(index);
+            _agents.CultivationStates[index] = CultivationState.Stabilizing;
+            _agents.CultivationBottleneckCauses[index] = CultivationBottleneckCause.None;
             if (bottleneckFailures > 0)
             {
                 AddChronicle(index, ChronicleEventKind.BottleneckBreakthrough, bottleneckFailures);
@@ -535,10 +592,80 @@ public sealed partial class World
             AddChronicle(index, ChronicleEventKind.BreakthroughFailure, chance);
         }
 
-        _agents.BottleneckFailures[index]++;
+        _agents.BottleneckFailures[index] = checked((ushort)(_agents.BottleneckFailures[index] + 1));
+        _agents.CultivationStates[index] = CultivationState.Bottleneck;
+        _agents.CultivationBottleneckCauses[index] = SelectFailureBottleneckCause(index);
+        var requirement = GetCultivationRequirement(index);
         _agents.CultivationProgress[index] = requirement * 3 / 4;
         _agents.Health[index] = Math.Max(1, _agents.Health[index] - (_agents.MaximumHealth[index] / 8));
         AddEvent(WorldEventKind.BreakthroughFailed, index, chance);
+    }
+
+    private CultivationBottleneckCause EvaluateBreakthroughPreflight(int index)
+    {
+        if (_agents.CultivationProgress[index] < GetCultivationRequirement(index))
+        {
+            return CultivationBottleneckCause.Stability;
+        }
+
+        if (_agents.Health[index] * 2 < _agents.MaximumHealth[index])
+        {
+            return CultivationBottleneckCause.Body;
+        }
+
+        if (_agents.Qi[index] * 4 < _agents.MaximumQi[index])
+        {
+            return CultivationBottleneckCause.SpiritualRoot;
+        }
+
+        return CultivationBottleneckCause.None;
+    }
+
+    private CultivationBottleneckCause SelectFailureBottleneckCause(int index)
+    {
+        var cause = CultivationBottleneckCause.Knowledge;
+        var score = (GetQualityEffect(_agents.Comprehensions[index])
+            + GetQualityEffect(_agents.TechniqueQualities[index])) / 2;
+
+        ConsiderBottleneckCause(
+            CultivationBottleneckCause.Body,
+            (GetQualityEffect(_agents.Bones[index])
+                + GetQualityEffect(_agents.Constitutions[index])) / 2,
+            ref cause,
+            ref score);
+        ConsiderBottleneckCause(
+            CultivationBottleneckCause.SpiritualRoot,
+            GetQualityEffect(_agents.SpiritualRoots[index]),
+            ref cause,
+            ref score);
+        var breakthroughPillPrice = _market.GetPrice(EconomyRules.BreakthroughPillGoodId);
+        var resourceScore = _agents.BreakthroughPills[index] > 0
+            ? int.MaxValue
+            : _agents.SpiritStones[index] >= breakthroughPillPrice ? 60 : 20;
+        ConsiderBottleneckCause(
+            CultivationBottleneckCause.Resources,
+            resourceScore,
+            ref cause,
+            ref score);
+        ConsiderBottleneckCause(
+            CultivationBottleneckCause.Stability,
+            (GetQualityEffect(_agents.Minds[index]) + GetQualityEffect(_agents.Souls[index])) / 2,
+            ref cause,
+            ref score);
+        return cause;
+    }
+
+    private static void ConsiderBottleneckCause(
+        CultivationBottleneckCause candidate,
+        int candidateScore,
+        ref CultivationBottleneckCause selected,
+        ref int selectedScore)
+    {
+        if (candidateScore < selectedScore)
+        {
+            selected = candidate;
+            selectedScore = candidateScore;
+        }
     }
 
     private void ResolveTechniqueTraining(int index)
@@ -589,6 +716,40 @@ public sealed partial class World
         _agents.Qi[index] = Math.Min(_agents.MaximumQi[index], _agents.Qi[index] + qiGain);
     }
 
+    private void TryResolveBottleneckAfterAction(int index, AgentActivity resolvedActivity)
+    {
+        if (_agents.CultivationStates[index] != CultivationState.Bottleneck)
+        {
+            return;
+        }
+
+        var resolved = _agents.CultivationBottleneckCauses[index] switch
+        {
+            CultivationBottleneckCause.Knowledge =>
+                resolvedActivity is AgentActivity.TrainingTechnique or AgentActivity.TrainingSpell,
+            CultivationBottleneckCause.Body =>
+                resolvedActivity == AgentActivity.Recovering
+                && _agents.Health[index] * 100 >= _agents.MaximumHealth[index] * 80,
+            CultivationBottleneckCause.SpiritualRoot =>
+                resolvedActivity == AgentActivity.Recovering
+                && _agents.Qi[index] * 100 >= _agents.MaximumQi[index] * 80,
+            CultivationBottleneckCause.Resources => _agents.BreakthroughPills[index] > 0,
+            CultivationBottleneckCause.Stability =>
+                resolvedActivity == AgentActivity.Recovering
+                && _agents.Health[index] * 100 >= _agents.MaximumHealth[index] * 80
+                && _agents.Qi[index] * 100 >= _agents.MaximumQi[index] * 80,
+            _ => false,
+        };
+        if (!resolved)
+        {
+            return;
+        }
+
+        _agents.CultivationProgress[index] = GetCultivationRequirement(index);
+        _agents.CultivationStates[index] = CultivationState.PreparingBreakthrough;
+        _agents.CultivationBottleneckCauses[index] = CultivationBottleneckCause.None;
+    }
+
     private void SelectNextActivity(int index)
     {
         if (_agents.Activities[index] == AgentActivity.Fighting)
@@ -603,6 +764,32 @@ public sealed partial class World
             return;
         }
 
+        switch (_agents.CultivationStates[index])
+        {
+            case CultivationState.PreparingBreakthrough:
+            case CultivationState.PreflightReady:
+            case CultivationState.Stabilizing:
+                _agents.Activities[index] = AgentActivity.Cultivating;
+                return;
+            case CultivationState.Bottleneck:
+                _agents.Activities[index] = _agents.CultivationBottleneckCauses[index] switch
+                {
+                    CultivationBottleneckCause.Knowledge =>
+                        _agents.TechniqueMasteries[index] <= _agents.SpellMasteries[index]
+                            ? AgentActivity.TrainingTechnique
+                            : AgentActivity.TrainingSpell,
+                    CultivationBottleneckCause.Body => AgentActivity.Recovering,
+                    CultivationBottleneckCause.SpiritualRoot => AgentActivity.Recovering,
+                    CultivationBottleneckCause.Resources =>
+                        _agents.SpiritStones[index] >= _market.GetPrice(EconomyRules.BreakthroughPillGoodId)
+                            ? AgentActivity.TradingInCity
+                            : AgentActivity.DoingCityMission,
+                    CultivationBottleneckCause.Stability => AgentActivity.Recovering,
+                    _ => AgentActivity.Cultivating,
+                };
+                return;
+        }
+
         var rank = _rankByAgent[index];
         var sinceLastCombat = Tick.Value - _agents.LastCombatTicks[index];
         var challengeChance = sinceLastCombat > 700 ? 58 : 34;
@@ -613,7 +800,14 @@ public sealed partial class World
         }
 
         var roll = _random.NextInt(100);
-        _agents.Activities[index] = SelectNonCombatActivity(index, roll);
+        var activity = SelectNonCombatActivity(index, roll);
+        if (_agents.CultivationStates[index] == CultivationState.Completed
+            && activity == AgentActivity.Cultivating)
+        {
+            activity = AgentActivity.TrainingTechnique;
+        }
+
+        _agents.Activities[index] = activity;
     }
 
     private long CalculateActivityDuration(int index)

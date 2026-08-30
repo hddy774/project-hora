@@ -16,6 +16,8 @@ public sealed record AgentCheckpoint(
     RealmStage RealmStage,
     byte RealmLayer,
     int CultivationProgress,
+    CultivationState CultivationState,
+    CultivationBottleneckCause CultivationBottleneckCause,
     ushort TechniqueQuality,
     ushort TechniqueMastery,
     ushort SpellQuality,

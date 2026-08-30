@@ -13,6 +13,10 @@ public sealed partial class World
         _agents = new AgentStore(checkpoint.Agents.Length);
         _agentByRank = new int[checkpoint.Agents.Length];
         _rankByAgent = new int[checkpoint.Agents.Length];
+        _agentByRealmRank = new int[checkpoint.Agents.Length];
+        _realmRankByAgent = new int[checkpoint.Agents.Length];
+        _agentByAptitudeRank = new int[checkpoint.Agents.Length];
+        _aptitudeRankByAgent = new int[checkpoint.Agents.Length];
         _eventSequence = checkpoint.EventSequence;
         _chronicleSequence = checkpoint.ChronicleSequence;
         _totalBreakthroughs = checkpoint.TotalBreakthroughs;
@@ -27,6 +31,8 @@ public sealed partial class World
         {
             RestoreAgent(index, checkpoint.Agents[index]);
             _agentByRank[index] = index;
+            _agentByRealmRank[index] = index;
+            _agentByAptitudeRank[index] = index;
             _agents.RecalculatePower(index);
             ScheduleAgent(index, _agents.NextDecisionTicks[index]);
         }

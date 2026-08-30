@@ -7,6 +7,7 @@ var tests = new (string Name, Action Body)[]
 {
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
+    ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("동일 seed 결정론", DeterministicWorld),
@@ -143,13 +144,28 @@ static void BirthAptitudesChronicleAndReincarnation()
     True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.Rebirth), "환생 일대기");
 }
 
+static void KoreanLargeNumberFormatting()
+{
+    Equal("9,999", KoreanNumberFormatter.Format(9_999), "만 미만 표기");
+    Equal("2만", KoreanNumberFormatter.Format(20_000), "만 단위 표기");
+    Equal("10만", KoreanNumberFormatter.Format(100_000), "십만 단위 표기");
+    Equal("1억", KoreanNumberFormatter.Format(100_000_000), "억 단위 표기");
+    Equal("1.23억", KoreanNumberFormatter.Format(123_456_789), "억 소수 표기");
+    Equal("1조", KoreanNumberFormatter.Format(1_000_000_000_000), "조 단위 표기");
+}
+
 static void CombatPowerAndRanking()
 {
     var world = World.CreateDefault(77);
-    var snapshot = world.CreateSnapshot(world.Population, 0);
+    var snapshot = world.CreateSnapshot(1_000, 0);
+    Equal(1_000, snapshot.CombatPowerRankings.Count, "전투력 TOP 1000");
+    Equal(1_000, snapshot.RealmRankings.Count, "경지 TOP 1000");
+    Equal(1_000, snapshot.AptitudeRankings.Count, "자질 TOP 1000");
+
     var previousPower = int.MaxValue;
-    foreach (var entry in snapshot.Rankings)
+    foreach (var entry in snapshot.CombatPowerRankings)
     {
+        True(entry.Category == RankingCategory.CombatPower, "전투력 랭킹 범주");
         Equal(entry.CombatPower.Total, checked(
             entry.CombatPower.Realm
             + entry.CombatPower.Aptitude
@@ -158,6 +174,22 @@ static void CombatPowerAndRanking()
             + entry.CombatPower.Experience), "전투력 합계");
         True(entry.CombatPower.Total <= previousPower, "랭킹은 전투력 내림차순이어야 합니다.");
         previousPower = entry.CombatPower.Total;
+    }
+
+    var previousRealmScore = long.MaxValue;
+    foreach (var entry in snapshot.RealmRankings)
+    {
+        True(entry.Category == RankingCategory.Realm, "경지 랭킹 범주");
+        True(entry.Score <= previousRealmScore, "경지 랭킹은 대경지·소경지·진척 내림차순이어야 합니다.");
+        previousRealmScore = entry.Score;
+    }
+
+    var previousAptitude = int.MaxValue;
+    foreach (var entry in snapshot.AptitudeRankings)
+    {
+        True(entry.Category == RankingCategory.Aptitude, "자질 랭킹 범주");
+        True(entry.AptitudeScore <= previousAptitude, "자질 랭킹은 6대 자질 합계 내림차순이어야 합니다.");
+        previousAptitude = entry.AptitudeScore;
     }
 }
 
@@ -225,12 +257,18 @@ static void ObservationQueriesAreReadOnly()
     var leader = world.GetAgentSnapshot(world.LeaderId);
     var exactSearch = world.SearchAgents(leader.Id.ToString());
     var nameSearch = world.SearchAgents(leader.Name[..1], 25);
+    var firstPage = world.BrowseAgents(0, 500);
+    var finalPage = world.BrowseAgents(9_500, 500);
     var snapshot = world.CreateSnapshot(150, 150);
 
     Equal(1, exactSearch.Count, "정확한 Agent ID 검색 결과");
     Equal(leader.Id, exactSearch[0].Id, "정확한 Agent ID 검색 대상");
     True(nameSearch.Count > 0, "이름 검색 결과가 있어야 합니다.");
-    Equal(150, snapshot.Rankings.Count, "랭킹 조회 크기");
+    Equal(new AgentId(0), firstPage[0].Id, "전체 탐색 첫 ID");
+    Equal(new AgentId(9_999), finalPage[^1].Id, "전체 탐색 마지막 ID");
+    Equal(150, snapshot.CombatPowerRankings.Count, "전투력 랭킹 조회 크기");
+    Equal(150, snapshot.RealmRankings.Count, "경지 랭킹 조회 크기");
+    Equal(150, snapshot.AptitudeRankings.Count, "자질 랭킹 조회 크기");
     Equal(before, world.ComputeStateHash(), "관찰 조회는 세계 상태를 바꾸면 안 됩니다.");
 }
 

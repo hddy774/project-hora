@@ -10,7 +10,26 @@ public sealed partial class World
         return _agents.Chronicles[index].ToArray();
     }
 
-    public IReadOnlyList<AgentSnapshot> SearchAgents(string? query, int limit = 100)
+    public IReadOnlyList<AgentSnapshot> BrowseAgents(int offset, int limit = 500)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(offset);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(limit);
+        if (offset >= Population)
+        {
+            return Array.Empty<AgentSnapshot>();
+        }
+
+        var count = Math.Min(limit, Population - offset);
+        var results = new AgentSnapshot[count];
+        for (var resultIndex = 0; resultIndex < count; resultIndex++)
+        {
+            results[resultIndex] = GetAgentSnapshot(new AgentId(offset + resultIndex));
+        }
+
+        return results;
+    }
+
+    public IReadOnlyList<AgentSnapshot> SearchAgents(string? query, int limit = 1_000)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(limit);
         var normalized = query?.Trim() ?? string.Empty;
@@ -22,9 +41,8 @@ public sealed partial class World
             return results;
         }
 
-        for (var rankOffset = 0; rankOffset < Population && results.Count < limit; rankOffset++)
+        for (var index = 0; index < Population && results.Count < limit; index++)
         {
-            var index = _agentByRank[rankOffset];
             if (normalized.Length == 0
                 || _agents.Names[index].Contains(normalized, StringComparison.OrdinalIgnoreCase))
             {

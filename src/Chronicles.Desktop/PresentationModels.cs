@@ -8,7 +8,7 @@ internal sealed record RankingRow(
     AgentId AgentId,
     string Name,
     string Realm,
-    string Power,
+    string Score,
     string Activity);
 
 internal sealed record EventRow(

@@ -13,9 +13,12 @@ namespace Chronicles.Desktop;
 public partial class MainWindow : Window, IDisposable
 {
     private const ulong DefaultWorldSeed = 20260830UL;
+    private const int ExplorerPageSize = 500;
     private SimulationRunner? _runner;
     private WorldSnapshot? _latestSnapshot;
     private AgentId? _selectedAgent;
+    private RankingCategory? _rankingCategory = RankingCategory.CombatPower;
+    private int _explorerOffset;
     private int _speed = 1;
     private bool _disposed;
     private bool _applyingObservation;
@@ -106,12 +109,12 @@ public partial class MainWindow : Window, IDisposable
         _applyingObservation = true;
         var snapshot = observation.World;
         _latestSnapshot = snapshot;
-        WorldTickText.Text = $"{GameCalendar.GetYear(snapshot.Tick):N0}년";
-        PopulationText.Text = snapshot.Population.ToString("N0", CultureInfo.CurrentCulture);
-        ActiveCombatText.Text = snapshot.ActiveCombats.ToString("N0", CultureInfo.CurrentCulture);
-        CompletedCombatText.Text = snapshot.TotalCombatsCompleted.ToString("N0", CultureInfo.CurrentCulture);
-        ChallengeText.Text = snapshot.TotalChallenges.ToString("N0", CultureInfo.CurrentCulture);
-        BreakthroughText.Text = snapshot.TotalBreakthroughs.ToString("N0", CultureInfo.CurrentCulture);
+        WorldTickText.Text = $"{KoreanNumberFormatter.Format(GameCalendar.GetYear(snapshot.Tick))}년";
+        PopulationText.Text = KoreanNumberFormatter.Format(snapshot.Population);
+        ActiveCombatText.Text = KoreanNumberFormatter.Format(snapshot.ActiveCombats);
+        CompletedCombatText.Text = KoreanNumberFormatter.Format(snapshot.TotalCombatsCompleted);
+        ChallengeText.Text = KoreanNumberFormatter.Format(snapshot.TotalChallenges);
+        BreakthroughText.Text = KoreanNumberFormatter.Format(snapshot.TotalBreakthroughs);
         StatusText.Text = _runner?.IsPaused == true
             ? $"일시정지 · {_speed}× · seed {DefaultWorldSeed}"
             : $"실시간 진행 · {_speed}× · 게임 1년당 현실 {GameCalendar.GetRealSecondsPerGameYear(_speed):0.###}초";
@@ -133,17 +136,49 @@ public partial class MainWindow : Window, IDisposable
     {
         IReadOnlyList<RankingRow> rows;
         var search = SearchTextBox.Text.Trim();
-        if (search.Length == 0)
+        if (_rankingCategory is { } category)
         {
-            rows = snapshot.Rankings.Select(ToRankingRow).ToArray();
+            var rankings = category switch
+            {
+                RankingCategory.CombatPower => snapshot.CombatPowerRankings,
+                RankingCategory.Realm => snapshot.RealmRankings,
+                RankingCategory.Aptitude => snapshot.AptitudeRankings,
+                _ => throw new ArgumentOutOfRangeException(nameof(category)),
+            };
+            rows = rankings.Select(ToRankingRow).ToArray();
+            RankingScopeText.Text = $"TOP {rankings.Count:N0}";
+            ExplorerNavigationPanel.Visibility = Visibility.Collapsed;
         }
-        else if (_runner is not null)
+        else if (_runner is null)
         {
-            rows = _runner.SearchAgents(search).Select(ToRankingRow).ToArray();
+            rows = Array.Empty<RankingRow>();
         }
         else
         {
-            rows = Array.Empty<RankingRow>();
+            var maximumOffset = Math.Max(0, ((snapshot.Population - 1) / ExplorerPageSize) * ExplorerPageSize);
+            _explorerOffset = Math.Min(_explorerOffset, maximumOffset);
+            var agents = search.Length == 0
+                ? _runner.BrowseAgents(_explorerOffset, ExplorerPageSize)
+                : _runner.SearchAgents(search, 1_000);
+            rows = agents.Select(ToRankingRow).ToArray();
+
+            if (search.Length == 0)
+            {
+                var first = rows.Count == 0 ? 0 : _explorerOffset + 1;
+                var last = _explorerOffset + rows.Count;
+                RankingScopeText.Text = $"{first:N0}–{last:N0} / {snapshot.Population:N0}";
+                var currentPage = (_explorerOffset / ExplorerPageSize) + 1;
+                var pageCount = Math.Max(1, (snapshot.Population + ExplorerPageSize - 1) / ExplorerPageSize);
+                ExplorerPageText.Text = $"{currentPage:N0} / {pageCount:N0} 페이지";
+                ExplorerPreviousButton.IsEnabled = _explorerOffset > 0;
+                ExplorerNextButton.IsEnabled = _explorerOffset + ExplorerPageSize < snapshot.Population;
+                ExplorerNavigationPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                RankingScopeText.Text = $"검색 {rows.Count:N0}명";
+                ExplorerNavigationPanel.Visibility = Visibility.Collapsed;
+            }
         }
 
         RankingGrid.ItemsSource = rows;
@@ -168,9 +203,9 @@ public partial class MainWindow : Window, IDisposable
     {
         SelectedNameText.Text = agent.Name;
         SelectedIdText.Text = $"{agent.Id} · 최종 목표 #{agent.TargetRank}";
-        SelectedRankText.Text = $"RANK #{agent.Rank:N0}";
+        SelectedRankText.Text = $"전투력 #{agent.Rank:N0} · 경지 #{agent.RealmRank:N0} · 자질 #{agent.AptitudeRank:N0}";
         RealmText.Text = FormatRealm(agent.RealmStage, agent.RealmLayer);
-        AgeText.Text = $"{agent.AgeYears:N0} / {agent.MaximumLifespanYears:N0}세";
+        AgeText.Text = $"{KoreanNumberFormatter.Format(agent.AgeYears)} / {KoreanNumberFormatter.Format(agent.MaximumLifespanYears)}세";
         LifeText.Text = $"제 {agent.LifeNumber:N0}생";
         ActivityText.Text = FormatActivity(agent.Activity);
         OpponentText.Text = agent.OpponentId is { } opponent
@@ -178,18 +213,18 @@ public partial class MainWindow : Window, IDisposable
             : "없음";
         CultivationProgressBar.Maximum = Math.Max(1, agent.CultivationRequirement);
         CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
-        CultivationText.Text = $"{agent.CultivationProgress:N0} / {agent.CultivationRequirement:N0}";
+        CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
         RootText.Text = agent.Aptitudes.SpiritualRoot.ToString(CultureInfo.CurrentCulture);
         BoneText.Text = agent.Aptitudes.Bone.ToString(CultureInfo.CurrentCulture);
         ConstitutionText.Text = agent.Aptitudes.Constitution.ToString(CultureInfo.CurrentCulture);
         ComprehensionText.Text = agent.Aptitudes.Comprehension.ToString(CultureInfo.CurrentCulture);
         MindText.Text = agent.Aptitudes.Mind.ToString(CultureInfo.CurrentCulture);
         SoulText.Text = agent.Aptitudes.Soul.ToString(CultureInfo.CurrentCulture);
-        TechniqueText.Text = $"{agent.TechniqueGrade}품 · 숙련 {agent.TechniqueMastery:N0}";
-        SpellText.Text = $"{agent.SpellGrade}품 · 숙련 {agent.SpellMastery:N0}";
-        HealthText.Text = $"{Math.Max(0, agent.Health):N0} / {agent.MaximumHealth:N0}";
-        QiText.Text = $"{agent.Qi:N0} / {agent.MaximumQi:N0}";
-        RecordText.Text = $"{agent.Wins:N0}승 {agent.Losses:N0}패 · {agent.CombatExperience:N0}";
+        TechniqueText.Text = $"{agent.TechniqueGrade}품 · 숙련 {KoreanNumberFormatter.Format(agent.TechniqueMastery)}";
+        SpellText.Text = $"{agent.SpellGrade}품 · 숙련 {KoreanNumberFormatter.Format(agent.SpellMastery)}";
+        HealthText.Text = $"{KoreanNumberFormatter.Format(Math.Max(0, agent.Health))} / {KoreanNumberFormatter.Format(agent.MaximumHealth)}";
+        QiText.Text = $"{KoreanNumberFormatter.Format(agent.Qi)} / {KoreanNumberFormatter.Format(agent.MaximumQi)}";
+        RecordText.Text = $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · {KoreanNumberFormatter.Format(agent.CombatExperience)}";
         SetPowerBreakdown(agent.CombatPower);
         ChronicleList.ItemsSource = chronicle
             .Reverse()
@@ -200,7 +235,7 @@ public partial class MainWindow : Window, IDisposable
     private void SetPowerBreakdown(CombatPowerBreakdown power)
     {
         var maximum = Math.Max(1, power.Total);
-        TotalPowerText.Text = power.Total.ToString("N0", CultureInfo.CurrentCulture);
+        TotalPowerText.Text = KoreanNumberFormatter.Format(power.Total);
         SetPowerRow(RealmPowerBar, RealmPowerText, power.Realm, maximum);
         SetPowerRow(AptitudePowerBar, AptitudePowerText, power.Aptitude, maximum);
         SetPowerRow(TechniquePowerBar, TechniquePowerText, power.Technique, maximum);
@@ -212,7 +247,7 @@ public partial class MainWindow : Window, IDisposable
     {
         bar.Maximum = maximum;
         bar.Value = value;
-        label.Text = value.ToString("N0", CultureInfo.CurrentCulture);
+        label.Text = KoreanNumberFormatter.Format(value);
     }
 
     private RankingRow ToRankingRow(RankingEntry entry) => new(
@@ -220,7 +255,13 @@ public partial class MainWindow : Window, IDisposable
         entry.AgentId,
         entry.Name,
         FormatRealm(entry.RealmStage, entry.RealmLayer),
-        entry.CombatPower.Total.ToString("N0", CultureInfo.CurrentCulture),
+        entry.Category switch
+        {
+            RankingCategory.CombatPower => KoreanNumberFormatter.Format(entry.CombatPower.Total),
+            RankingCategory.Realm => KoreanNumberFormatter.Format(entry.Score % 1_000_000_000L),
+            RankingCategory.Aptitude => KoreanNumberFormatter.Format(entry.AptitudeScore),
+            _ => entry.Score.ToString(CultureInfo.CurrentCulture),
+        },
         FormatActivity(entry.Activity));
 
     private RankingRow ToRankingRow(AgentSnapshot agent) => new(
@@ -228,7 +269,7 @@ public partial class MainWindow : Window, IDisposable
         agent.Id,
         agent.Name,
         FormatRealm(agent.RealmStage, agent.RealmLayer),
-        agent.CombatPower.Total.ToString("N0", CultureInfo.CurrentCulture),
+        KoreanNumberFormatter.Format(agent.CombatPower.Total),
         FormatActivity(agent.Activity));
 
     private EventRow FormatEvent(WorldSnapshot snapshot, WorldEvent worldEvent)
@@ -380,6 +421,74 @@ public partial class MainWindow : Window, IDisposable
 
     private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
+        if (_rankingCategory is null && _latestSnapshot is not null)
+        {
+            _explorerOffset = 0;
+            UpdateRankingRows(_latestSnapshot);
+        }
+    }
+
+    private void CombatPowerRankingButton_Click(object sender, RoutedEventArgs e) =>
+        SetListMode(RankingCategory.CombatPower);
+
+    private void RealmRankingButton_Click(object sender, RoutedEventArgs e) =>
+        SetListMode(RankingCategory.Realm);
+
+    private void AptitudeRankingButton_Click(object sender, RoutedEventArgs e) =>
+        SetListMode(RankingCategory.Aptitude);
+
+    private void ExplorerButton_Click(object sender, RoutedEventArgs e) =>
+        SetListMode(null);
+
+    private void ExplorerPreviousButton_Click(object sender, RoutedEventArgs e)
+    {
+        _explorerOffset = Math.Max(0, _explorerOffset - ExplorerPageSize);
+        if (_latestSnapshot is not null)
+        {
+            UpdateRankingRows(_latestSnapshot);
+        }
+    }
+
+    private void ExplorerNextButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_latestSnapshot is null
+            || _explorerOffset + ExplorerPageSize >= _latestSnapshot.Population)
+        {
+            return;
+        }
+
+        _explorerOffset += ExplorerPageSize;
+        UpdateRankingRows(_latestSnapshot);
+    }
+
+    private void SetListMode(RankingCategory? category)
+    {
+        _rankingCategory = category;
+        _explorerOffset = 0;
+        var explorer = category is null;
+        SearchTextBox.IsEnabled = explorer;
+        if (!explorer && SearchTextBox.Text.Length > 0)
+        {
+            SearchTextBox.Clear();
+        }
+
+        RankingTitleText.Text = category switch
+        {
+            RankingCategory.CombatPower => "전투력 랭킹",
+            RankingCategory.Realm => "경지 랭킹",
+            RankingCategory.Aptitude => "자질 랭킹",
+            null => "전체 수선자 탐색",
+            _ => throw new ArgumentOutOfRangeException(nameof(category)),
+        };
+        RankingGrid.Columns[3].Header = category switch
+        {
+            RankingCategory.CombatPower => "전투력",
+            RankingCategory.Realm => "수행량",
+            RankingCategory.Aptitude => "자질 합계",
+            null => "전투력",
+            _ => throw new ArgumentOutOfRangeException(nameof(category)),
+        };
+
         if (_latestSnapshot is not null)
         {
             UpdateRankingRows(_latestSnapshot);

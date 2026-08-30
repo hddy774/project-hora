@@ -52,7 +52,7 @@ public sealed class SimulationRunner : IDisposable
         Volatile.Write(ref _speed, speed);
     }
 
-    public WorldSnapshot GetSnapshot(int rankingCount = 150, int eventCount = 150)
+    public WorldSnapshot GetSnapshot(int rankingCount = 1_000, int eventCount = 150)
     {
         lock (_worldGate)
         {
@@ -70,7 +70,7 @@ public sealed class SimulationRunner : IDisposable
 
     public WorldObservation GetObservation(
         AgentId? selectedAgent = null,
-        int rankingCount = 150,
+        int rankingCount = 1_000,
         int eventCount = 150)
     {
         lock (_worldGate)
@@ -82,7 +82,15 @@ public sealed class SimulationRunner : IDisposable
         }
     }
 
-    public IReadOnlyList<AgentSnapshot> SearchAgents(string? query, int limit = 150)
+    public IReadOnlyList<AgentSnapshot> BrowseAgents(int offset, int limit = 500)
+    {
+        lock (_worldGate)
+        {
+            return _world.BrowseAgents(offset, limit);
+        }
+    }
+
+    public IReadOnlyList<AgentSnapshot> SearchAgents(string? query, int limit = 1_000)
     {
         lock (_worldGate)
         {
@@ -160,7 +168,7 @@ public sealed class SimulationRunner : IDisposable
         WorldSnapshot snapshot;
         lock (_worldGate)
         {
-            snapshot = _world.CreateSnapshot(150, 150);
+            snapshot = _world.CreateSnapshot(1_000, 150);
         }
 
         handler(snapshot);

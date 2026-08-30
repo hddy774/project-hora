@@ -83,6 +83,13 @@ public enum ChronicleEventKind : byte
     Rebirth,
 }
 
+public enum RankingCategory : byte
+{
+    CombatPower,
+    Realm,
+    Aptitude,
+}
+
 public readonly record struct LifeChronicleEntry(
     long Sequence,
     SimulationTick Tick,
@@ -116,6 +123,8 @@ public sealed record AgentSnapshot(
     AgentId Id,
     string Name,
     int Rank,
+    int RealmRank,
+    int AptitudeRank,
     int TargetRank,
     long AgeYears,
     long MaximumLifespanYears,
@@ -144,18 +153,23 @@ public sealed record AgentSnapshot(
     CombatPowerBreakdown CombatPower);
 
 public sealed record RankingEntry(
+    RankingCategory Category,
     int Rank,
     AgentId AgentId,
     string Name,
     RealmStage RealmStage,
     int RealmLayer,
     AgentActivity Activity,
-    CombatPowerBreakdown CombatPower);
+    CombatPowerBreakdown CombatPower,
+    int AptitudeScore,
+    long Score);
 
 public sealed record WorldSnapshot(
     SimulationTick Tick,
     int Population,
-    IReadOnlyList<RankingEntry> Rankings,
+    IReadOnlyList<RankingEntry> CombatPowerRankings,
+    IReadOnlyList<RankingEntry> RealmRankings,
+    IReadOnlyList<RankingEntry> AptitudeRankings,
     IReadOnlyDictionary<int, string> AgentNames,
     IReadOnlyList<WorldEvent> RecentEvents,
     int TotalBreakthroughs,
@@ -165,7 +179,10 @@ public sealed record WorldSnapshot(
     int ActiveCombats,
     int TotalDeaths,
     int TotalReincarnations,
-    AgentId LeaderId);
+    AgentId LeaderId)
+{
+    public IReadOnlyList<RankingEntry> Rankings => CombatPowerRankings;
+}
 
 public sealed record WorldObservation(
     WorldSnapshot World,

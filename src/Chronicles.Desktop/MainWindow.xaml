@@ -109,26 +109,37 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid Margin="16,14,16,10">
-                        <TextBlock Text="전투력 랭킹"
+                        <TextBlock x:Name="RankingTitleText"
+                                   Text="전투력 랭킹"
                                    Foreground="{StaticResource PrimaryTextBrush}"
                                    FontSize="17"
                                    FontWeight="SemiBold" />
-                        <TextBlock Text="TOP 150"
+                        <TextBlock x:Name="RankingScopeText"
+                                   Text="TOP 1,000"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Foreground="{StaticResource AccentBrush}"
                                    FontSize="11" />
                     </Grid>
+                    <UniformGrid Grid.Row="1" Rows="1" Columns="4" Margin="16,0,16,10">
+                        <Button Margin="0,0,3,0" Click="CombatPowerRankingButton_Click">전투력</Button>
+                        <Button Margin="3,0" Click="RealmRankingButton_Click">경지</Button>
+                        <Button Margin="3,0" Click="AptitudeRankingButton_Click">자질</Button>
+                        <Button Margin="3,0,0,0" Click="ExplorerButton_Click">전체 탐색</Button>
+                    </UniformGrid>
                     <TextBox x:Name="SearchTextBox"
-                             Grid.Row="1"
+                             Grid.Row="2"
                              Margin="16,0,16,12"
                              TextChanged="SearchTextBox_TextChanged"
+                             IsEnabled="False"
                              ToolTip="이름 또는 A00001 형식으로 검색" />
                     <DataGrid x:Name="RankingGrid"
-                              Grid.Row="2"
+                              Grid.Row="3"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
                               SelectionMode="Single"
@@ -139,10 +150,28 @@
                             <DataGridTextColumn Header="#" Binding="{Binding Rank}" Width="44" />
                             <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="*" />
                             <DataGridTextColumn Header="경지" Binding="{Binding Realm}" Width="78" />
-                            <DataGridTextColumn Header="전투력" Binding="{Binding Power}" Width="78" />
+                            <DataGridTextColumn Header="전투력" Binding="{Binding Score}" Width="78" />
                             <DataGridTextColumn Header="상태" Binding="{Binding Activity}" Width="78" />
                         </DataGrid.Columns>
                     </DataGrid>
+                    <StackPanel x:Name="ExplorerNavigationPanel"
+                                Grid.Row="4"
+                                Margin="16,10,16,14"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Visibility="Collapsed">
+                        <Button x:Name="ExplorerPreviousButton"
+                                Width="58"
+                                Click="ExplorerPreviousButton_Click">이전</Button>
+                        <TextBlock x:Name="ExplorerPageText"
+                                   Width="130"
+                                   TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource SecondaryTextBrush}" />
+                        <Button x:Name="ExplorerNextButton"
+                                Width="58"
+                                Click="ExplorerNextButton_Click">다음</Button>
+                    </StackPanel>
                 </Grid>
             </Border>
 

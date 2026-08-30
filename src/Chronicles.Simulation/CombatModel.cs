@@ -35,6 +35,17 @@ public readonly record struct CombatAuthorityCheckpoint(
     int TurnOwner,
     ushort InjuryPoints);
 
+internal readonly record struct PowerInputSignature(
+    RealmStage Realm,
+    byte Floor,
+    ushort TechniqueQuality,
+    ushort TechniqueMastery,
+    ushort TechniqueUnderstanding,
+    ushort SpellQuality,
+    ushort SpellMastery,
+    ushort SpellUnderstanding,
+    int CombatExperience);
+
 public static class CombatAttributeFormula
 {
     public const int CurrentRevision = 1;

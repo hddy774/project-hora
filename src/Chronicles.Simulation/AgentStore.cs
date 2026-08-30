@@ -207,6 +207,17 @@ internal sealed class AgentStore
         new QualityValue(Minds[index]),
         new QualityValue(Souls[index]));
 
+    public PowerInputSignature GetPowerInputSignature(int index) => new(
+        RealmStages[index],
+        RealmLayers[index],
+        TechniqueQualities[index],
+        TechniqueMasteries[index],
+        TechniqueUnderstanding[index],
+        SpellQualities[index],
+        SpellMasteries[index],
+        SpellUnderstanding[index],
+        CombatExperience[index]);
+
     public void RecalculatePower(int index)
     {
         var previousMaximumHealth = MaximumHealth[index];

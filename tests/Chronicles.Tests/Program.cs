@@ -72,6 +72,20 @@ static void GameTimeAndRealmRules()
     Equal(2_000L, GameCalendar.TicksPerYear, "1게임년 tick 수");
     Equal(10L, GameCalendar.GetYear(new SimulationTick(20_000)), "tick의 게임년 변환");
     Equal(1d, GameCalendar.GetRealSecondsPerGameYear(10), "10배속 게임년 현실 초");
+    Equal(
+        200,
+        SimulationPacing.GetTicksPerPulse(1) * 1_000 / SimulationPacing.PulseMilliseconds,
+        "1배속 초당 tick");
+    True(
+        SimulationPacing.GetTicksPerPulse(100) % GameCalendar.TicksPerYear != 0,
+        "100배속 화면 갱신 보폭은 정확히 1년이면 안 됩니다.");
+    True(
+        Enumerable.Range(1, 10)
+            .Select(step => GameCalendar.GetDate(new SimulationTick(
+                (long)SimulationPacing.GetTicksPerPulse(100) * step)).Month)
+            .Distinct()
+            .Count() > 1,
+        "100배속 월 표시 변화");
 
     var expectedLifespans = new long[]
     {

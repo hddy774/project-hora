@@ -4,8 +4,6 @@ namespace Chronicles.Simulation;
 
 public sealed class SimulationRunner : IDisposable
 {
-    private const int BaseTicksPerPulse = 20;
-    private const int PulseMilliseconds = 100;
     private readonly object _worldGate = new();
     private World _world;
     private readonly ManualResetEventSlim _stop = new(initialState: false);
@@ -141,13 +139,13 @@ public sealed class SimulationRunner : IDisposable
         try
         {
             PublishSnapshot();
-            while (!_stop.Wait(PulseMilliseconds))
+            while (!_stop.Wait(SimulationPacing.PulseMilliseconds))
             {
                 lock (_worldGate)
                 {
                     if (!IsPaused)
                     {
-                        var ticks = checked(BaseTicksPerPulse * Speed);
+                        var ticks = SimulationPacing.GetTicksPerPulse(Speed);
                         _world.AdvanceTo(new SimulationTick(checked(_world.Tick.Value + ticks)));
                     }
                 }
@@ -176,5 +174,21 @@ public sealed class SimulationRunner : IDisposable
         }
 
         handler(snapshot);
+    }
+}
+
+public static class SimulationPacing
+{
+    public const int PulseMilliseconds = 80;
+    public const int BaseTicksPerPulse = 16;
+
+    public static int GetTicksPerPulse(int speed)
+    {
+        if (speed is not (1 or 10 or 25 or 50 or 100))
+        {
+            throw new ArgumentOutOfRangeException(nameof(speed));
+        }
+
+        return checked(BaseTicksPerPulse * speed);
     }
 }

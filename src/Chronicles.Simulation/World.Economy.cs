@@ -243,7 +243,6 @@ public sealed partial class World
             AddEvent(WorldEventKind.SpellBookPurchased, index, improved.Hundredths);
         }
 
-        _agents.RecalculatePower(index);
         return true;
     }
 

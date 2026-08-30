@@ -127,6 +127,7 @@ public sealed partial class World
             }
 
             var resolvedActivity = _agents.Activities[agentIndex];
+            var powerInputsBefore = _agents.GetPowerInputSignature(agentIndex);
             var alreadyScheduled = ResolveActivity(agentIndex);
             TryResolveBottleneckAfterAction(agentIndex, resolvedActivity);
             AddPersonalActionLog(agentIndex, resolvedActivity);
@@ -136,7 +137,10 @@ public sealed partial class World
             }
 
             SelectNextActivity(agentIndex);
-            _agents.RecalculatePower(agentIndex);
+            if (powerInputsBefore != _agents.GetPowerInputSignature(agentIndex))
+            {
+                _agents.RecalculatePower(agentIndex);
+            }
             var nextTick = checked(dueTick + CalculateActivityDuration(agentIndex));
             ScheduleAgent(agentIndex, nextTick);
         }

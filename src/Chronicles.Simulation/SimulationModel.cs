@@ -49,6 +49,8 @@ public enum WorldEventKind : byte
     GreatPerfectionAchieved,
     TechniqueAcquired,
     SpellAcquired,
+    CombatInjury,
+    CombatDeath,
 }
 
 public readonly record struct Aptitudes(
@@ -85,6 +87,7 @@ public enum ChronicleEventKind : byte
     GreatPerfectionAchieved,
     TechniqueAcquired,
     SpellAcquired,
+    CombatDeath,
 }
 
 public enum PersonalLogKind : byte
@@ -245,6 +248,9 @@ public sealed record AgentSnapshot(
     int MaximumHealth,
     int Qi,
     int MaximumQi,
+    CombatAttributes CombatAttributes,
+    int InjuryPoints,
+    InjurySeverity InjurySeverity,
     AgentActivity Activity,
     SimulationTick NextDecisionTick,
     AgentId? OpponentId,

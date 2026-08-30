@@ -29,6 +29,8 @@ var tests = new (string Name, Action Body)[]
     ("10,000명 로컬 실시간 성능 예산", DefaultWorldPerformanceBudget),
 };
 
+tests = [.. tests, ("교대 전투 속성과 누적 부상 사망", CombatAuthorityAndInjury)];
+
 var failures = 0;
 foreach (var test in tests)
 {
@@ -580,6 +582,56 @@ static void ActiveRankingCompetition()
 
     var events = world.CreateSnapshot(20, 512).RecentEvents;
     True(events.Any(item => item.Kind == WorldEventKind.CombatEnded), "관찰 사건에 전투 결과가 있어야 합니다.");
+}
+
+static void CombatAuthorityAndInjury()
+{
+    var neutral = QualityValue.FromWhole(50);
+    var neutralAptitudes = new Aptitudes(neutral, neutral, neutral, neutral, neutral, neutral);
+    var neutralStats = CombatAttributeFormula.Calculate(
+        RealmStage.QiRefining,
+        1,
+        neutralAptitudes,
+        neutral,
+        5_000,
+        0,
+        neutral,
+        5_000,
+        0,
+        0,
+        0);
+    Equal(10_000, neutralStats.CultivationEfficiencyBasisPoints, "선천 수행자질 50.00의 수행 효율 기준");
+    True(neutralStats.Attack > 0 && neutralStats.Defense > 0, "실전 공격·방어 속성");
+    True(CombatInjuryRules.GetSeverity(0) == InjurySeverity.None, "무부상 경계");
+    True(CombatInjuryRules.GetSeverity(5_000) == InjurySeverity.Severe, "중상 경계");
+    True(CombatInjuryRules.GetSeverity(10_000) == InjurySeverity.Fatal, "치명상 경계");
+    Equal(10_000, CombatInjuryRules.GetFatalChanceBasisPoints(InjurySeverity.Fatal), "치명상 사망 확률");
+
+    var world = World.Create(8128, 1_000);
+    world.AdvanceTo(new SimulationTick(20_000));
+    var checkpoint = world.CreateCheckpoint();
+    var activePairs = checkpoint.Agents
+        .Select((agent, index) => (Agent: agent, Index: index))
+        .Where(item => item.Agent.Opponent > item.Index)
+        .ToArray();
+    True(activePairs.Length > 0, "장기간 진행 중인 교대 전투");
+    foreach (var pair in activePairs)
+    {
+        var opponent = checkpoint.Agents[pair.Agent.Opponent];
+        Equal(
+            pair.Agent.CombatAuthority!.Value.TurnOwner,
+            opponent.CombatAuthority!.Value.TurnOwner,
+            "양측의 단일 턴 소유자");
+        var owner = pair.Agent.CombatAuthority.Value.TurnOwner;
+        True(owner == pair.Index || owner == pair.Agent.Opponent, "턴 소유자는 전투 당사자여야 합니다.");
+    }
+
+    True(world.TotalDeaths > 0, "부상에 의한 전투 사망 누계");
+    True(
+        Enumerable.Range(0, world.Population)
+            .Any(index => world.GetAgentChronicle(new AgentId(index))
+                .Any(entry => entry.Kind == ChronicleEventKind.CombatDeath)),
+        "전투 사망 영구 연대기");
 }
 
 static void ObservationQueriesAreReadOnly()

@@ -101,7 +101,7 @@ public sealed partial class World
                 _agents.LastOpponents[index],
                 _agents.LastCombatTicks[index],
                 _agents.CombatStartedTicks[index],
-                _agents.CombatActions[index],
+                checked((byte)Math.Min(byte.MaxValue, _agents.CombatActions[index])),
                 _agents.Guarding[index],
                 _agents.ChallengesIssued[index],
                 _agents.SpiritStones[index],
@@ -129,7 +129,11 @@ public sealed partial class World
                     _agents.TechniqueTrainingExperience[index],
                     _agents.TechniqueUnderstanding[index],
                     _agents.SpellTrainingExperience[index],
-                    _agents.SpellUnderstanding[index]));
+                    _agents.SpellUnderstanding[index]),
+                new CombatAuthorityCheckpoint(
+                    _agents.CombatActions[index],
+                    _agents.CombatTurnOwners[index],
+                    _agents.InjuryPoints[index]));
         }
 
         return new WorldCheckpoint(
@@ -255,7 +259,20 @@ public sealed partial class World
         _agents.LastOpponents[index] = checkpoint.LastOpponent;
         _agents.LastCombatTicks[index] = checkpoint.LastCombatTick;
         _agents.CombatStartedTicks[index] = checkpoint.CombatStartedTick;
-        _agents.CombatActions[index] = checkpoint.CombatActions;
+        if (checkpoint.CombatAuthority is { } combatAuthority)
+        {
+            _agents.CombatActions[index] = combatAuthority.ActionCount;
+            _agents.CombatTurnOwners[index] = combatAuthority.TurnOwner;
+            _agents.InjuryPoints[index] = combatAuthority.InjuryPoints;
+        }
+        else
+        {
+            _agents.CombatActions[index] = checkpoint.CombatActions;
+            _agents.CombatTurnOwners[index] = checkpoint.Activity == AgentActivity.Fighting
+                ? index
+                : -1;
+            _agents.InjuryPoints[index] = 0;
+        }
         _agents.Guarding[index] = checkpoint.Guarding;
         _agents.ChallengesIssued[index] = checkpoint.ChallengesIssued;
         _agents.SpiritStones[index] = checkpoint.SpiritStones;
@@ -430,6 +447,12 @@ public sealed partial class World
                 throw new InvalidDataException($"Agent {index}의 공법·법술 성장 체크포인트가 잘못되었습니다.");
             }
 
+            if (checkpoint.SchemaVersion >= 10
+                && !IsValidCombatAuthority(agent.CombatAuthority, checkpoint.Agents.Length))
+            {
+                throw new InvalidDataException($"Agent {index}의 전투 권위 체크포인트가 잘못되었습니다.");
+            }
+
             if (agent.PersonalLog.Any(entry =>
                     entry.Sequence < 1
                     || entry.Sequence > checkpoint.PersonalLogSequence
@@ -547,4 +570,11 @@ public sealed partial class World
         && value.SpellExperience is >= 0 and <= SkillProgressionRules.MaximumExperience
         && value.TechniqueUnderstanding <= SkillProgressionRules.MaximumHundredths
         && value.SpellUnderstanding <= SkillProgressionRules.MaximumHundredths;
+
+    private static bool IsValidCombatAuthority(CombatAuthorityCheckpoint? checkpoint, int population) =>
+        checkpoint is { } value
+        && value.ActionCount >= 0
+        && value.TurnOwner >= -1
+        && value.TurnOwner < population
+        && value.InjuryPoints <= CombatInjuryRules.MaximumInjuryPoints;
 }

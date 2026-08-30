@@ -120,7 +120,10 @@ public sealed partial class World
 
         var before = _agents.CultivationProgress[index];
         var aptitude = GetInnateAptitudeComposite(index);
-        var gain = CultivationRules.GetMonthlyRealmWorkGain(aptitude);
+        var gain = checked(
+            CultivationRules.GetMonthlyRealmWorkGain(aptitude)
+            * _agents.CombatAttributes[index].CultivationEfficiencyBasisPoints
+            / 10_000);
         if (_agents.GrowthPills[index] > 0)
         {
             _agents.GrowthPills[index]--;

@@ -71,7 +71,10 @@ internal sealed class AgentStore
         LastOpponents = new int[count];
         LastCombatTicks = new long[count];
         CombatStartedTicks = new long[count];
-        CombatActions = new byte[count];
+        CombatActions = new int[count];
+        CombatTurnOwners = new int[count];
+        InjuryPoints = new ushort[count];
+        CombatAttributes = new CombatAttributes[count];
         Guarding = new bool[count];
         ChallengesIssued = new int[count];
         SpiritStones = new long[count];
@@ -84,6 +87,7 @@ internal sealed class AgentStore
         Power = new CombatPowerBreakdown[count];
         Array.Fill(Opponents, -1);
         Array.Fill(LastOpponents, -1);
+        Array.Fill(CombatTurnOwners, -1);
         Array.Fill(ActiveMissionMaterials, byte.MaxValue);
         Array.Fill(EquippedTreasureQualities, EconomyRules.EmptyTreasureQuality);
         Array.Fill(LastActionMonths, -1);
@@ -148,7 +152,10 @@ internal sealed class AgentStore
     public int[] LastOpponents { get; }
     public long[] LastCombatTicks { get; }
     public long[] CombatStartedTicks { get; }
-    public byte[] CombatActions { get; }
+    public int[] CombatActions { get; }
+    public int[] CombatTurnOwners { get; }
+    public ushort[] InjuryPoints { get; }
+    public CombatAttributes[] CombatAttributes { get; }
     public bool[] Guarding { get; }
     public int[] ChallengesIssued { get; }
     public long[] SpiritStones { get; }
@@ -171,8 +178,13 @@ internal sealed class AgentStore
 
     public void Rebirth(int index, DeterministicRandom random, long birthTick)
     {
+        // 승패는 한 생의 육신 상태가 아니라 수선자 전체 일대기의 누계다.
+        var accumulatedWins = Wins[index];
+        var accumulatedLosses = Losses[index];
         LifeNumbers[index] = checked(LifeNumbers[index] + 1);
         InitializeBody(index, random, birthTick);
+        Wins[index] = accumulatedWins;
+        Losses[index] = accumulatedLosses;
     }
 
     public Aptitudes GetAptitudes(int index) => new(
@@ -185,6 +197,35 @@ internal sealed class AgentStore
 
     public void RecalculatePower(int index)
     {
+        var previousMaximumHealth = MaximumHealth[index];
+        var previousMaximumQi = MaximumQi[index];
+        var attributes = CombatAttributeFormula.Calculate(
+            RealmStages[index],
+            RealmLayers[index],
+            GetAptitudes(index),
+            new QualityValue(TechniqueQualities[index]),
+            TechniqueMasteries[index],
+            TechniqueUnderstanding[index],
+            new QualityValue(SpellQualities[index]),
+            SpellMasteries[index],
+            SpellUnderstanding[index],
+            GetTreasureCombatEffect(index, attack: true),
+            GetTreasureCombatEffect(index, attack: false));
+        CombatAttributes[index] = attributes;
+        MaximumHealth[index] = attributes.MaximumHealth;
+        MaximumQi[index] = attributes.MaximumQi;
+        Health[index] = Health[index] <= 0
+            ? 0
+            : Math.Clamp(
+                checked(Health[index] + attributes.MaximumHealth - previousMaximumHealth),
+                1,
+                attributes.MaximumHealth);
+        Qi[index] = Qi[index] <= 0
+            ? 0
+            : Math.Clamp(
+                checked(Qi[index] + attributes.MaximumQi - previousMaximumQi),
+                1,
+                attributes.MaximumQi);
         Power[index] = CombatPowerFormula.Calculate(
             RealmStages[index],
             RealmLayers[index],
@@ -261,6 +302,8 @@ internal sealed class AgentStore
         LastCombatTicks[index] = birthTick;
         CombatStartedTicks[index] = 0;
         CombatActions[index] = 0;
+        CombatTurnOwners[index] = -1;
+        InjuryPoints[index] = 0;
         Guarding[index] = false;
         ChallengesIssued[index] = 0;
         SpiritStones[index] = 0;

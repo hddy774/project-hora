@@ -176,6 +176,9 @@ public sealed partial class World
             _agents.MaximumHealth[index],
             _agents.Qi[index],
             _agents.MaximumQi[index],
+            _agents.CombatAttributes[index],
+            _agents.InjuryPoints[index],
+            CombatInjuryRules.GetSeverity(_agents.InjuryPoints[index]),
             _agents.Activities[index],
             new SimulationTick(_agents.NextDecisionTicks[index]),
             _agents.Opponents[index] < 0 ? null : new AgentId(_agents.Opponents[index]),
@@ -413,7 +416,9 @@ public sealed partial class World
             Add(ref hash, (ulong)(_agents.LastOpponents[index] + 1));
             Add(ref hash, (ulong)_agents.LastCombatTicks[index]);
             Add(ref hash, (ulong)_agents.CombatStartedTicks[index]);
-            Add(ref hash, _agents.CombatActions[index]);
+            Add(ref hash, (ulong)_agents.CombatActions[index]);
+            Add(ref hash, (ulong)(_agents.CombatTurnOwners[index] + 1));
+            Add(ref hash, _agents.InjuryPoints[index]);
             Add(ref hash, _agents.Guarding[index] ? 1UL : 0UL);
             Add(ref hash, (ulong)_agents.ChallengesIssued[index]);
             Add(ref hash, (ulong)_agents.SpiritStones[index]);
@@ -577,10 +582,18 @@ public sealed partial class World
 
     private void ResolveRecovery(int index)
     {
-        var healthGain = 20 + (GetQualityEffect(_agents.Constitutions[index]) * 4);
-        var qiGain = 15 + (GetQualityEffect(_agents.SpiritualRoots[index]) * 5);
+        var healthGain = Math.Max(
+            20 + (GetQualityEffect(_agents.Constitutions[index]) * 4),
+            _agents.MaximumHealth[index] / 20);
+        var qiGain = Math.Max(
+            15 + (GetQualityEffect(_agents.SpiritualRoots[index]) * 5),
+            _agents.MaximumQi[index] / 18);
         _agents.Health[index] = Math.Min(_agents.MaximumHealth[index], _agents.Health[index] + healthGain);
         _agents.Qi[index] = Math.Min(_agents.MaximumQi[index], _agents.Qi[index] + qiGain);
+        var injuryRecovery = 150 + (_agents.Constitutions[index] / 10);
+        _agents.InjuryPoints[index] = checked((ushort)Math.Max(
+            0,
+            _agents.InjuryPoints[index] - injuryRecovery));
     }
 
     private void SelectNextActivity(int index)
@@ -591,7 +604,8 @@ public sealed partial class World
         }
 
         if (_agents.Health[index] * 100 < _agents.MaximumHealth[index] * 70
-            || _agents.Qi[index] * 100 < _agents.MaximumQi[index] * 35)
+            || _agents.Qi[index] * 100 < _agents.MaximumQi[index] * 35
+            || _agents.InjuryPoints[index] >= 2_500)
         {
             _agents.Activities[index] = AgentActivity.Recovering;
             return;
@@ -802,6 +816,7 @@ public sealed partial class World
             or WorldEventKind.CultivationEntered
             or WorldEventKind.GreatPerfectionAchieved
             or WorldEventKind.Death
+            or WorldEventKind.CombatDeath
             or WorldEventKind.ReincarnationEntered
             or WorldEventKind.Rebirth => true,
         WorldEventKind.BottleneckBreakthrough => _rankByAgent[primaryAgent] <= 100,
@@ -811,9 +826,9 @@ public sealed partial class World
             or WorldEventKind.TreasurePurchased
             or WorldEventKind.TechniqueBookPurchased
             or WorldEventKind.SpellBookPurchased => value >= 9_000,
-        WorldEventKind.CombatEnded =>
-            _rankByAgent[primaryAgent] <= 10
-            || (secondaryAgent is { } secondary && _rankByAgent[secondary] <= 10),
+        // 전투 결과는 경쟁 관찰 게임의 핵심 세계 사건이므로 모두 유지하되,
+        // 고정 용량 세계 로그가 오래된 결과를 자동으로 밀어낸다.
+        WorldEventKind.CombatEnded => true,
         _ => false,
     };
 
@@ -829,6 +844,7 @@ public sealed partial class World
         or WorldEventKind.TechniqueEnlightenment
         or WorldEventKind.SpellEnlightenment
         or WorldEventKind.Death
+        or WorldEventKind.CombatDeath
         or WorldEventKind.ReincarnationEntered
         or WorldEventKind.Rebirth;
 
@@ -909,7 +925,7 @@ public sealed partial class World
     private bool HasReachedMaximumLifespan(int index) =>
         GetAgeYears(index) >= RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears;
 
-    private void BeginReincarnation(int index)
+    private void BeginReincarnation(int index, bool combatDeath = false)
     {
         var opponent = _agents.Opponents[index];
         if (opponent >= 0 && _agents.Opponents[opponent] == index)
@@ -919,8 +935,16 @@ public sealed partial class World
 
         var age = checked((int)Math.Min(int.MaxValue, GetAgeYears(index)));
         _totalDeaths++;
-        AddChronicle(index, ChronicleEventKind.Death, age);
-        AddEvent(WorldEventKind.Death, index, age);
+        if (combatDeath)
+        {
+            AddChronicle(index, ChronicleEventKind.CombatDeath, age);
+            AddEvent(WorldEventKind.CombatDeath, index, age);
+        }
+        else
+        {
+            AddChronicle(index, ChronicleEventKind.Death, age);
+            AddEvent(WorldEventKind.Death, index, age);
+        }
         AddChronicle(index, ChronicleEventKind.ReincarnationEntered);
         AddEvent(WorldEventKind.ReincarnationEntered, index, _agents.LifeNumbers[index]);
         _agents.Activities[index] = AgentActivity.Reincarnating;

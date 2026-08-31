@@ -681,10 +681,24 @@ public sealed partial class World
             return;
         }
 
+        // 모든 AI가 상위 경지를 목표로 한다는 핵심 의사결정 계약이다.
+        // 위치·시장·도전 RNG보다 먼저 최소 절반의 행동을 본경 수행에 확보한다.
+        if (_agents.CultivationStates[index] == CultivationState.RealmCultivation
+            && (_agents.ActionsTaken[index] & 1) == 0)
+        {
+            _agents.Activities[index] = AgentActivity.Cultivating;
+            return;
+        }
+
         var rank = _rankByAgent[index];
         var sinceLastCombat = Tick.Value - _agents.LastCombatTicks[index];
-        var challengeChance = sinceLastCombat > 700 ? 58 : 34;
+        var challengeChance = sinceLastCombat >= GameCalendar.TicksPerYear * 2
+            ? 24
+            : sinceLastCombat >= GameCalendar.TicksPerYear
+                ? 8
+                : 0;
         if (rank > 1
+            && challengeChance > 0
             && GetAgeYears(index) >= CultivationRules.EntryAgeYears
             && Tick.Value >= 60
             && WorldMapRules.IsCity(_agents.LocationIds[index])

@@ -139,9 +139,11 @@ public sealed partial class World
     {
         var injuryGain = checked((int)Math.Min(
             CombatInjuryRules.MaximumInjuryPoints,
-            (long)damage * CombatInjuryRules.MaximumInjuryPoints / Math.Max(1, _agents.MaximumHealth[index])));
+            (long)damage * CombatInjuryRules.MaximumInjuryPoints
+                / Math.Max(1, _agents.MaximumHealth[index])
+                / 2));
         var points = _agents.Health[index] <= 0
-            ? CombatInjuryRules.MaximumInjuryPoints
+            ? CombatInjuryRules.KnockoutInjuryPoints
             : Math.Min(
                 CombatInjuryRules.MaximumInjuryPoints,
                 _agents.InjuryPoints[index] + injuryGain);

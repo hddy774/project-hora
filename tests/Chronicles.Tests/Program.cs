@@ -21,6 +21,7 @@ var tests = new (string Name, Action Body)[]
     ("공법·법술·법보 전투 스케일 상한과 품질 격차", SkillCombatScaleRegression),
     ("동일 seed 결정론", DeterministicWorld),
     ("이벤트 기반 성장", EventDrivenGrowth),
+    ("180년 장기 수행·사냥·전투 참여 회귀", LongRunCultivationHuntingAndCombat),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
     ("도시 임무·영석·재료·단약·법보 경제 순환", EconomyLoop),
     ("전체 분포·랭킹 변동·승패·사망 통계", WorldStatisticsQuery),
@@ -701,8 +702,64 @@ static void EventDrivenGrowth()
     Equal(220_000L, world.Tick.Value, "도달 tick");
 }
 
+static void LongRunCultivationHuntingAndCombat()
+{
+    var world = World.Create(110011, 1_000);
+    world.AdvanceTo(GameCalendar.FromYears(180));
+    var entryBlocked = 0;
+    var higherRealm = 0;
+    var hunters = 0;
+    var combatants = 0;
+    var overLifespan = 0;
+    for (var index = 0; index < world.Population; index++)
+    {
+        var agent = world.GetAgentSnapshot(new AgentId(index));
+        if (agent.CultivationState is CultivationState.PreCultivation or CultivationState.EntryTraining
+            || (agent.CultivationState == CultivationState.Bottleneck
+                && agent.BottleneckCause == CultivationBottleneckCause.EntryGate))
+        {
+            entryBlocked++;
+        }
+
+        if (agent.RealmStage > RealmStage.QiRefining)
+        {
+            higherRealm++;
+        }
+
+        if (agent.MonsterHunts > 0)
+        {
+            hunters++;
+        }
+
+        if (agent.CombatExperience > 0)
+        {
+            combatants++;
+        }
+
+        if (agent.AgeYears > agent.MaximumLifespanYears)
+        {
+            overLifespan++;
+        }
+    }
+
+    Console.WriteLine(
+        $"SOAK: 입문 정체 {entryBlocked:N0} · 축기 이상 {higherRealm:N0} · 사냥 참여 {hunters:N0} · 전투 경험 {combatants:N0} · 사냥 {world.TotalMonsterHunts:N0} · 전투 {world.TotalCombatsCompleted:N0} · 사망 {world.TotalDeaths:N0}");
+    True(entryBlocked < world.Population / 2, "장기 세계의 과반이 입문 Gate에 영구 정체되면 안 됩니다.");
+    True(higherRealm > 0, "장기 수행에서 축기경 이상 수선자가 나와야 합니다.");
+    True(hunters >= world.Population / 5, "요수 사냥 경험이 전체 인구에 의미 있게 퍼져야 합니다.");
+    True(combatants >= world.Population / 2, "수선자 간 전투 경험이 전체 인구에 퍼져야 합니다.");
+    True(world.TotalMonsterHunts > 0, "장기 세계에서 요수 사냥이 발생해야 합니다.");
+    True(world.TotalCombatsCompleted > 0, "장기 세계에서 수선자 전투가 완료되어야 합니다.");
+    Equal(0, overLifespan, "현재 수명을 넘긴 생존자가 관찰되면 안 됩니다.");
+}
+
 static void ActiveRankingCompetition()
 {
+    var topDuel = World.Create(773, 2);
+    topDuel.AdvanceTo(GameCalendar.FromYears(30));
+    True(topDuel.TotalChallenges > 0, "2위도 1위에게 도전할 수 있어야 합니다.");
+    True(topDuel.TotalCombatsStarted > 0, "1·2위만 있는 세계에서도 실제 전투가 시작되어야 합니다.");
+
     var world = World.CreateDefault(774);
     world.AdvanceTo(new SimulationTick(20_000));
     True(world.TotalChallenges >= 1_000, "충분한 상위권 도전이 발생해야 합니다.");

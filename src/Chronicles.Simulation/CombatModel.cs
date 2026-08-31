@@ -141,8 +141,9 @@ public static class SkillCombatScaling
 
 public static class CombatInjuryRules
 {
-    public const int CurrentRevision = 1;
+    public const int CurrentRevision = 2;
     public const int MaximumInjuryPoints = 10_000;
+    public const int KnockoutInjuryPoints = 9_000;
 
     public static InjurySeverity GetSeverity(int injuryPoints) => injuryPoints switch
     {
@@ -156,8 +157,8 @@ public static class CombatInjuryRules
 
     public static int GetFatalChanceBasisPoints(InjurySeverity severity) => severity switch
     {
-        InjurySeverity.Severe => 200,
-        InjurySeverity.Critical => 1_500,
+        InjurySeverity.Severe => 25,
+        InjurySeverity.Critical => 250,
         InjurySeverity.Fatal => 10_000,
         _ => 0,
     };

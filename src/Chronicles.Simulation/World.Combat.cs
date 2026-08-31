@@ -143,9 +143,16 @@ public sealed partial class World
             damage = ResolvePhysicalAttack(actor, target);
         }
 
-        if (damage > 0 && ApplyCombatInjury(target, damage, targetSeverityBefore))
+        var fatal = damage > 0 && ApplyCombatInjury(target, damage, targetSeverityBefore);
+        if (fatal)
         {
             FinishCombat(actor, target, fatal: true);
+            return true;
+        }
+
+        if (_agents.Health[target] <= 0)
+        {
+            FinishCombat(actor, target);
             return true;
         }
 
@@ -159,7 +166,7 @@ public sealed partial class World
         var actorThreat = GetActualCombatThreat(actor);
         var targetThreat = GetActualCombatThreat(target);
         var threatDisadvantage = targetThreat * 100 / Math.Max(1L, actorThreat);
-        return healthPercent < 24 || (healthPercent < 40 && threatDisadvantage > 125);
+        return healthPercent < 35 || (healthPercent < 55 && threatDisadvantage > 115);
     }
 
     private bool TryRetreat(int actor, int target)
@@ -168,12 +175,12 @@ public sealed partial class World
         var targetStats = _agents.CombatAttributes[target];
         var experienceDifference = IntegerExperienceAdvantage(actor, target);
         var chance = Math.Clamp(
-            2_300
+            4_500
             + ((actorStats.Judgment - targetStats.Focus) / 4)
             + ((actorStats.AttackSpeedBasisPoints - targetStats.AttackSpeedBasisPoints) / 5)
             + experienceDifference,
-            800,
-            8_500);
+            2_000,
+            9_500);
         return _random.Chance(chance);
     }
 
@@ -301,12 +308,14 @@ public sealed partial class World
     {
         var damageRatio = checked((int)Math.Min(
             CombatInjuryRules.MaximumInjuryPoints,
-            (long)damage * CombatInjuryRules.MaximumInjuryPoints / Math.Max(1, _agents.MaximumHealth[target])));
+            (long)damage * CombatInjuryRules.MaximumInjuryPoints
+                / Math.Max(1, _agents.MaximumHealth[target])
+                / 2));
         var lowHealthBonus = _agents.Health[target] * 4 < _agents.MaximumHealth[target]
             ? 500
             : 0;
         var nextPoints = _agents.Health[target] <= 0
-            ? CombatInjuryRules.MaximumInjuryPoints
+            ? CombatInjuryRules.KnockoutInjuryPoints
             : Math.Min(
                 CombatInjuryRules.MaximumInjuryPoints,
                 _agents.InjuryPoints[target] + damageRatio + lowHealthBonus);

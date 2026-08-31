@@ -301,7 +301,7 @@ public partial class MainWindow
 
     private void WorldRecordsPanel_ObservationRequested(object? sender, EventArgs e)
     {
-        if (!_applyingObservation)
+        if (!_applyingObservation && !_applyingWorkspaceRoute)
         {
             RefreshVisibleObservation();
         }

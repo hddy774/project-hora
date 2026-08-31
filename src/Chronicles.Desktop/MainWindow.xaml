@@ -11,7 +11,12 @@
         Background="{StaticResource BackgroundBrush}"
         FontFamily="Malgun Gothic"
         TextOptions.TextFormattingMode="Display">
-    <Grid Margin="22">
+    <Grid Margin="14">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="148" />
+            <ColumnDefinition Width="14" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="14" />
@@ -22,7 +27,93 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid>
+        <Border Grid.RowSpan="7"
+                Grid.Column="0"
+                Style="{StaticResource PanelStyle}"
+                Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Margin="4,4,4,0">
+                    <TextBlock Text="관찰 작업공간"
+                               Foreground="{StaticResource PrimaryTextBrush}"
+                               FontSize="14"
+                               FontWeight="SemiBold" />
+                    <TextBlock Text="열린 경로만 갱신"
+                               Margin="0,3,0,0"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="10" />
+                </StackPanel>
+                <StackPanel Grid.Row="2">
+                    <RadioButton GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
+                                 IsChecked="True"
+                                 Tag="World"
+                                 Click="WorkspaceNavigation_Click">세계</RadioButton>
+                    <RadioButton GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
+                                 Tag="People"
+                                 Click="WorkspaceNavigation_Click">인물</RadioButton>
+                    <RadioButton GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
+                                 Tag="Relations"
+                                 Click="WorkspaceNavigation_Click">관계</RadioButton>
+                    <RadioButton GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
+                                 Tag="Map"
+                                 Click="WorkspaceNavigation_Click">지도</RadioButton>
+                    <RadioButton GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
+                                 Tag="Economy"
+                                 Click="WorkspaceNavigation_Click">경제</RadioButton>
+                    <RadioButton GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
+                                 Tag="Organizations"
+                                 Click="WorkspaceNavigation_Click">조직</RadioButton>
+                    <RadioButton GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
+                                 Tag="Content"
+                                 Click="WorkspaceNavigation_Click">콘텐츠</RadioButton>
+                    <RadioButton GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
+                                 Tag="Records"
+                                 Click="WorkspaceNavigation_Click">기록</RadioButton>
+                    <RadioButton GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 HorizontalContentAlignment="Left"
+                                 Tag="Diagnostics"
+                                 Click="WorkspaceNavigation_Click">진단</RadioButton>
+                </StackPanel>
+                <TextBlock Grid.Row="3"
+                           Text="관찰 전용 · 세계에 개입하지 않음"
+                           Margin="4,0,4,4"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="9"
+                           TextWrapping="Wrap" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -63,7 +154,7 @@
             </StackPanel>
         </Grid>
 
-        <UniformGrid Grid.Row="2" Rows="1" Columns="5">
+        <UniformGrid Grid.Row="2" Grid.Column="2" Rows="1" Columns="5">
             <Border Style="{StaticResource PanelStyle}" Margin="0,0,7,0">
                 <StackPanel>
                     <TextBlock Text="현재 인구" Foreground="{StaticResource SecondaryTextBrush}" FontSize="12" />
@@ -96,7 +187,7 @@
             </Border>
         </UniformGrid>
 
-        <Grid Grid.Row="4">
+        <Grid x:Name="DashboardWorkspaceGrid" Grid.Row="4" Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="430" />
                 <ColumnDefinition Width="14" />
@@ -956,7 +1047,45 @@
             </Border>
         </Grid>
 
-        <Grid Grid.Row="6">
+        <Border x:Name="WorkspaceUnavailablePanel"
+                Grid.Row="4"
+                Grid.Column="2"
+                Style="{StaticResource PanelStyle}"
+                Visibility="Collapsed">
+            <Grid>
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            MaxWidth="520">
+                    <TextBlock x:Name="WorkspaceUnavailableTitleText"
+                               Text="준비 중"
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource PrimaryTextBrush}"
+                               FontSize="24"
+                               FontWeight="SemiBold" />
+                    <TextBlock x:Name="WorkspaceUnavailableDescriptionText"
+                               Margin="0,12,0,0"
+                               Text="이 작업공간에는 아직 표시할 권위 데이터가 없습니다."
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="13"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap" />
+                    <Border Margin="0,18,0,0"
+                            Padding="12,9"
+                            Background="{StaticResource PanelAltBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6">
+                        <TextBlock Text="임시 통계나 추정값을 만들지 않고, 정식 이식 완료 후 실제 데이터만 표시합니다."
+                                   Foreground="{StaticResource AccentBrush}"
+                                   FontSize="11"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap" />
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="6" Grid.Column="2">
             <TextBlock x:Name="StatusText"
                        Text="세계 초기화 중…"
                        Foreground="{StaticResource SecondaryTextBrush}"

@@ -154,6 +154,17 @@ public partial class MainWindow : Window, IDisposable
             _selectedAgent = selected;
         }
 
+        if (!IsDashboardWorkspaceVisible)
+        {
+            var shellSnapshot = _runner.GetSnapshot(
+                rankingCount: 1,
+                eventCount: 0,
+                sections: ObservationSections.None,
+                worldChronicleCount: 0);
+            ApplyShellSnapshot(shellSnapshot);
+            return;
+        }
+
         var observation = _runner.GetObservation(
             _selectedAgent,
             sections: GetVisibleObservationSections(),
@@ -171,6 +182,11 @@ public partial class MainWindow : Window, IDisposable
 
     private ObservationSections GetVisibleObservationSections()
     {
+        if (!IsDashboardWorkspaceVisible)
+        {
+            return ObservationSections.None;
+        }
+
         var sections = WorldInfoTabControl.SelectedIndex switch
         {
             0 => ObservationSections.StatisticsSummary,
@@ -234,8 +250,27 @@ public partial class MainWindow : Window, IDisposable
     {
         _applyingObservation = true;
         var snapshot = observation.World;
-        _latestSnapshot = snapshot;
         _selectedAgent = observation.SelectedAgent.Id;
+        ApplyShellSnapshot(snapshot);
+        try
+        {
+            UpdateRankingRows(snapshot);
+            UpdateVisibleWorldPanel(snapshot);
+            UpdateSelectedAgent(
+                observation.SelectedAgent,
+                observation.SelectedPersonalLog,
+                observation.SelectedChronicle,
+                observation.SelectedReincarnation);
+        }
+        finally
+        {
+            _applyingObservation = false;
+        }
+    }
+
+    private void ApplyShellSnapshot(WorldSnapshot snapshot)
+    {
+        _latestSnapshot = snapshot;
         if (_runner is { } runner)
         {
             _logService.CaptureWorldFeed(
@@ -255,21 +290,6 @@ public partial class MainWindow : Window, IDisposable
             ? $"일시정지 · {_speed}× · seed {DefaultWorldSeed}"
             : $"실시간 진행 · {_speed}× · 게임 1년당 현실 {GameCalendar.GetRealSecondsPerGameYear(_speed):0.###}초";
         StatusText.Foreground = (Brush)FindResource("SecondaryTextBrush");
-
-        try
-        {
-            UpdateRankingRows(snapshot);
-            UpdateVisibleWorldPanel(snapshot);
-            UpdateSelectedAgent(
-                observation.SelectedAgent,
-                observation.SelectedPersonalLog,
-                observation.SelectedChronicle,
-                observation.SelectedReincarnation);
-        }
-        finally
-        {
-            _applyingObservation = false;
-        }
     }
 
     private void UpdateVisibleWorldPanel(WorldSnapshot snapshot)
@@ -707,7 +727,9 @@ public partial class MainWindow : Window, IDisposable
 
     private void VisibleSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_applyingObservation || !ReferenceEquals(e.Source, sender))
+        if (_applyingObservation
+            || _applyingWorkspaceRoute
+            || !ReferenceEquals(e.Source, sender))
         {
             return;
         }
@@ -717,7 +739,7 @@ public partial class MainWindow : Window, IDisposable
 
     private void VisibleExpander_Expanded(object sender, RoutedEventArgs e)
     {
-        if (!_applyingObservation)
+        if (!_applyingObservation && !_applyingWorkspaceRoute)
         {
             RefreshVisibleObservation();
         }

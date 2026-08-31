@@ -44,6 +44,16 @@ public partial class WorldRecordsView : UserControl
     public bool AutoWorldOutput => AutoWorldOutputCheckBox.IsChecked == true;
     public bool AutoDebugOutput => AutoDebugOutputCheckBox.IsChecked == true;
 
+    internal void SelectRecordTab(int index)
+    {
+        if (index < 0 || index >= RecordTabControl.Items.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        RecordTabControl.SelectedIndex = index;
+    }
+
     internal void ApplyRecent(IReadOnlyList<EventRow> rows, int sourceCount)
     {
         _applying = true;

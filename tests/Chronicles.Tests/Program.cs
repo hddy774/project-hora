@@ -42,6 +42,7 @@ var tests = new (string Name, Action Body)[]
     ("전체 분포·랭킹 변동·승패·사망 통계", WorldStatisticsQuery),
     ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
     ("활성 UI 구역 선택 조회 성능", SelectiveObservationPerformance),
+    ("지도 내부 탭 지연 투영 성능", LazyMapAgentProjectionPerformance),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
@@ -1248,6 +1249,55 @@ static void SelectiveObservationPerformance()
     Console.WriteLine(
         $"UI PERF: 이전 이중 전체 조회 {legacy.Elapsed.TotalMilliseconds:N1} ms · 선택 조회 {selective.Elapsed.TotalMilliseconds:N1} ms · 감소 {reduction:0.0}% ({iterations:N0}회)");
     True(selective.ElapsedTicks < legacy.ElapsedTicks, "활성 UI 선택 조회는 이전 이중 전체 조회보다 빨라야 합니다.");
+}
+
+static void LazyMapAgentProjectionPerformance()
+{
+    const int iterations = 200;
+    var world = World.CreateDefault(993);
+    _ = world.CreateSnapshot(25, 0, ObservationSections.Map);
+    _ = world.CreateSnapshot(
+        25,
+        0,
+        ObservationSections.Map,
+        WorldMapRules.CityLocationId);
+
+    WorldSnapshot? sink = null;
+    var overviewAllocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+    var overview = Stopwatch.StartNew();
+    for (var iteration = 0; iteration < iterations; iteration++)
+    {
+        sink = world.CreateSnapshot(25, 0, ObservationSections.Map);
+    }
+    overview.Stop();
+    var overviewAllocated = GC.GetAllocatedBytesForCurrentThread() - overviewAllocatedBefore;
+    var overviewRows = sink!.Map.Locations.Sum(location => location.Agents.Count);
+
+    var agentsAllocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+    var agents = Stopwatch.StartNew();
+    for (var iteration = 0; iteration < iterations; iteration++)
+    {
+        sink = world.CreateSnapshot(
+            25,
+            0,
+            ObservationSections.Map,
+            WorldMapRules.CityLocationId);
+    }
+    agents.Stop();
+    var agentsAllocated = GC.GetAllocatedBytesForCurrentThread() - agentsAllocatedBefore;
+    var agentRows = sink!.Map.Locations.Sum(location => location.Agents.Count);
+    GC.KeepAlive(sink);
+
+    var allocationReduction = agentsAllocated == 0
+        ? 0m
+        : (agentsAllocated - overviewAllocated) * 100m / agentsAllocated;
+    Console.WriteLine(
+        $"MAP UI PERF: 개요 {overview.Elapsed.TotalMilliseconds:N1} ms / {overviewAllocated:N0} B · " +
+        $"수선자 탭 {agents.Elapsed.TotalMilliseconds:N1} ms / {agentsAllocated:N0} B · " +
+        $"닫힌 탭 할당 감소 {allocationReduction:0.0}% ({iterations:N0}회)");
+    Equal(0, overviewRows, "지도 개요에서는 수선자 행을 투영하지 않음");
+    Equal(WorldMapRules.DetailedAgentPageSize, agentRows, "수선자 탭은 한 페이지만 투영");
+    True(overviewAllocated < agentsAllocated, "닫힌 수선자 탭은 열린 탭보다 적게 할당해야 합니다.");
 }
 
 static void WorldStatisticsQuery()

@@ -48,6 +48,8 @@ public sealed partial class World
     private readonly int[] _eliteCombatChangedCounts = new int[4];
     private readonly int[] _eliteRealmChangedCounts = new int[4];
 
+    internal event Action<WorldEventNotification>? ImportantWorldEventRecorded;
+
     private World(ulong seed, int population)
     {
         Seed = seed;
@@ -628,6 +630,8 @@ public sealed partial class World
             Add(ref hash, (ulong)worldEvent.PrimaryAgent.Value);
             Add(ref hash, (ulong)(worldEvent.SecondaryAgent?.Value + 1 ?? 0));
             Add(ref hash, unchecked((ulong)(long)worldEvent.Value));
+            AddString(ref hash, worldEvent.PrimaryName ?? string.Empty);
+            AddString(ref hash, worldEvent.SecondaryName ?? string.Empty);
         }
 
 
@@ -639,6 +643,8 @@ public sealed partial class World
             Add(ref hash, (ulong)worldEvent.PrimaryAgent.Value);
             Add(ref hash, (ulong)(worldEvent.SecondaryAgent?.Value + 1 ?? 0));
             Add(ref hash, unchecked((ulong)(long)worldEvent.Value));
+            AddString(ref hash, worldEvent.PrimaryName ?? string.Empty);
+            AddString(ref hash, worldEvent.SecondaryName ?? string.Empty);
         }
 
         return hash;
@@ -1047,12 +1053,21 @@ public sealed partial class World
             kind,
             new AgentId(primaryAgent),
             secondaryAgent is null ? null : new AgentId(secondaryAgent.Value),
-            value);
+            value,
+            _agents.Names[primaryAgent],
+            secondaryAgent is { } namedSecondary ? _agents.Names[namedSecondary] : null);
         _events.Enqueue(worldEvent);
-        if (IsPermanentWorldChronicleEvent(kind, primaryAgent, value))
+        var isPermanentChronicle = IsPermanentWorldChronicleEvent(kind, primaryAgent, value);
+        if (isPermanentChronicle)
         {
             _worldChronicle.Add(worldEvent);
         }
+
+        ImportantWorldEventRecorded?.Invoke(new WorldEventNotification(
+            worldEvent,
+            worldEvent.PrimaryName ?? _agents.Names[primaryAgent],
+            worldEvent.SecondaryName,
+            isPermanentChronicle));
     }
 
     private bool IsImportantWorldEvent(

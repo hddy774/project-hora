@@ -212,7 +212,19 @@ public readonly record struct WorldEvent(
     WorldEventKind Kind,
     AgentId PrimaryAgent,
     AgentId? SecondaryAgent,
-    long Value);
+    long Value,
+    string? PrimaryName = null,
+    string? SecondaryName = null);
+
+public readonly record struct WorldEventNotification(
+    WorldEvent Event,
+    string PrimaryName,
+    string? SecondaryName,
+    bool IsPermanentChronicle);
+
+public readonly record struct WorldEventFeed(
+    IReadOnlyList<WorldEventNotification> Events,
+    int DroppedCount);
 
 public readonly record struct ActiveMissionSnapshot(
     MaterialId Material,

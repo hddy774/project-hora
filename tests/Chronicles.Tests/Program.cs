@@ -715,6 +715,9 @@ static void WealthRankingHistoryAndWorldChronicle()
     True(
         snapshot.PermanentWorldChronicle.Any(entry => entry.Kind == WorldEventKind.NewLeader),
         "전투력 1위 변경은 영구 세계 연대기에 기록");
+    True(
+        snapshot.PermanentWorldChronicle.All(entry => !string.IsNullOrWhiteSpace(entry.PrimaryName)),
+        "영구 세계 연대기는 윤회 후에도 사건 당시 이름을 보존");
     var checkpoint = world.CreateCheckpoint();
     True(checkpoint.RankingHistory?.Frames is { Length: > 1 }, "기간별 랭킹 이력 저장");
     True(checkpoint.WorldChronicle?.Length == snapshot.PermanentWorldChronicle.Count, "세계 연대기 저장 수");

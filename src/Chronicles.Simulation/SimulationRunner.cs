@@ -1,9 +1,11 @@
+using System.Collections.Concurrent;
 using Chronicles.Core;
 
 namespace Chronicles.Simulation;
 
 public sealed class SimulationRunner : IDisposable
 {
+    private const int MaximumPendingWorldEvents = 10_000;
     private readonly object _worldGate = new();
     private World _world;
     private readonly ManualResetEventSlim _stop = new(initialState: false);
@@ -12,10 +14,14 @@ public sealed class SimulationRunner : IDisposable
     private int _paused;
     private int _started;
     private int _disposed;
+    private readonly ConcurrentQueue<WorldEventNotification> _pendingWorldEvents = new();
+    private int _pendingWorldEventCount;
+    private int _droppedWorldEventCount;
 
     public SimulationRunner(World world)
     {
         _world = world ?? throw new ArgumentNullException(nameof(world));
+        _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
         _worker = new Thread(Run)
         {
             IsBackground = true,
@@ -122,6 +128,21 @@ public sealed class SimulationRunner : IDisposable
         }
     }
 
+    public WorldEventFeed DrainWorldEventFeed()
+    {
+        var events = new List<WorldEventNotification>(
+            Math.Min(Volatile.Read(ref _pendingWorldEventCount), MaximumPendingWorldEvents));
+        while (_pendingWorldEvents.TryDequeue(out var notification))
+        {
+            Interlocked.Decrement(ref _pendingWorldEventCount);
+            events.Add(notification);
+        }
+
+        return new WorldEventFeed(
+            events,
+            Interlocked.Exchange(ref _droppedWorldEventCount, 0));
+    }
+
     public WorldCheckpoint CreateCheckpoint()
     {
         lock (_worldGate)
@@ -136,7 +157,14 @@ public sealed class SimulationRunner : IDisposable
         var restored = World.Restore(checkpoint);
         lock (_worldGate)
         {
+            _world.ImportantWorldEventRecorded -= World_ImportantWorldEventRecorded;
             _world = restored;
+            _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
+            while (_pendingWorldEvents.TryDequeue(out _))
+            {
+            }
+            Interlocked.Exchange(ref _pendingWorldEventCount, 0);
+            Interlocked.Exchange(ref _droppedWorldEventCount, 0);
         }
     }
 
@@ -151,6 +179,11 @@ public sealed class SimulationRunner : IDisposable
         if (_worker.IsAlive)
         {
             _worker.Join(TimeSpan.FromSeconds(5));
+        }
+
+        lock (_worldGate)
+        {
+            _world.ImportantWorldEventRecorded -= World_ImportantWorldEventRecorded;
         }
 
         _stop.Dispose();
@@ -184,6 +217,18 @@ public sealed class SimulationRunner : IDisposable
     private void PublishObservationInvalidated()
     {
         ObservationInvalidated?.Invoke();
+    }
+
+    private void World_ImportantWorldEventRecorded(WorldEventNotification notification)
+    {
+        _pendingWorldEvents.Enqueue(notification);
+        var pending = Interlocked.Increment(ref _pendingWorldEventCount);
+        while (pending > MaximumPendingWorldEvents
+            && _pendingWorldEvents.TryDequeue(out _))
+        {
+            pending = Interlocked.Decrement(ref _pendingWorldEventCount);
+            Interlocked.Increment(ref _droppedWorldEventCount);
+        }
     }
 }
 

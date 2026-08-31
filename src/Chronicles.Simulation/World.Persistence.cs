@@ -81,12 +81,20 @@ public sealed partial class World
 
         foreach (var worldEvent in checkpoint.Events.TakeLast(WorldLogCapacity))
         {
-            _events.Enqueue(worldEvent);
+            _events.Enqueue(checkpoint.SchemaVersion >= 15
+                ? worldEvent
+                : worldEvent with
+                {
+                    PrimaryName = _agents.Names[worldEvent.PrimaryAgent.Value],
+                    SecondaryName = worldEvent.SecondaryAgent is { } secondary
+                        ? _agents.Names[secondary.Value]
+                        : null,
+                });
         }
 
         _worldChronicle.AddRange(checkpoint.SchemaVersion >= 15
             ? checkpoint.WorldChronicle ?? Array.Empty<WorldEvent>()
-            : checkpoint.Events.Where(entry => entry.Kind == WorldEventKind.NewLeader));
+            : _events.Where(entry => entry.Kind == WorldEventKind.NewLeader));
 
         RefreshRankings(recordLeaderChange: false);
         if (checkpoint.SchemaVersion >= 15 && checkpoint.RankingHistory is { } rankingHistory)
@@ -484,11 +492,13 @@ public sealed partial class World
 
         if (checkpoint.SchemaVersion >= 15
             && (checkpoint.WorldChronicle is null
+                || checkpoint.Events.Any(entry => string.IsNullOrWhiteSpace(entry.PrimaryName))
                 || checkpoint.WorldChronicle.Any(entry => !IsValidWorldEvent(
                     entry,
                     checkpoint.EventSequence,
                     checkpoint.Tick,
                     checkpoint.Agents.Length))
+                || checkpoint.WorldChronicle.Any(entry => string.IsNullOrWhiteSpace(entry.PrimaryName))
                 || !IsStrictlyIncreasingSequence(checkpoint.WorldChronicle)
                 || !IsValidRankingHistory(
                     checkpoint.RankingHistory,

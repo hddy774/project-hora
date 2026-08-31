@@ -47,14 +47,18 @@ Chronicles.Tests ──> Core + Simulation
 `CultivationModel`은 저장/조회 계약 owner다. 9층 Work와 대원만은 서로 다른 상태다.
 
 `SkillProgressionRules`는 공법·법술의 누적 수련 경험, 0.00~100.00 숙련 곡선과
-깨달음 이해도를 계산한다. 품질은 기술 객체의 불변 입력이며 시장에서 새 서적을
+깨달음 이해도를 계산한다. `AptitudeCombatBonusFormula`는 역할별 원시 자질 조합을
+50%~200%로 제한해 공법·법술 효과/성장과 전투 숙련·이해·경험에 공급한다. 품질은
+기술 객체의 불변 입력이며 시장에서 새 서적을
 습득할 때만 교체한다. `PowerInputSignature`는 경지·기술·전투 경험 입력이 실제로
 바뀐 행동 뒤에만 전투 파생값을 갱신해 대규모 월 행동의 중복 계산을 막는다.
 `SkillCombatScaling`은 품질 경계 배율 계약과 표시/실전 기여 정규화를 함께 소유해
 공법·법술 품질 규칙과 전투 공식을 중복 구현하지 않게 한다.
 
-`CombatAttributeFormula`는 공격·방어·최대 생명/영력·속도·관통·치명타·회피·판단력·
-집중력·법술/수행 효율을 계산한다. `CombatPowerFormula`는 랭킹용 표시 점수만 계산한다.
+`CombatProgressionRules`는 경험에서 0.00~100.00 전투 숙련을 파생하고 별도 전투
+이해 성장과 표시 기여 상한을 소유한다. `CombatAttributeFormula`는 공격·방어·최대
+생명/영력·속도·관통·치명타·회피·판단력·집중력·법술/수행 효율을 계산한다.
+`CombatPowerFormula`는 자질 직접 기여를 항상 0으로 두고 랭킹용 표시 점수만 계산한다.
 `World.Combat`은 한 전투에 단 하나의 turn owner를 저장하고 다음 당사자만 예약한다.
 누적 부상과 장기 행동 간격도 전투 checkpoint/hash에 포함한다.
 
@@ -94,17 +98,18 @@ recycling virtualization을 사용한다.
 ### Chronicles.Persistence
 
 Simulation의 명시적 체크포인트를 Brotli 압축 payload와 SHA-256 checksum을 가진
-versioned `.cmip` container로 변환한다. 현재 schema 12는 수행 trace/구성요소와
-입문 Gate 단련 보정, 기술 경험/이해, 전투 turn owner/부상, 지도 위치/사냥 상태를
-저장하고 schema 7~11에 안전한 이전 기본값과 진행 전투 단일 turn owner 복구를
+versioned `.cmip` container로 변환한다. 현재 schema 13은 수행 trace/구성요소와
+입문 Gate 단련 보정, 기술 경험/이해, 전투 경험/이해·turn owner/부상, 지도 위치/사냥 상태를
+저장하고 schema 7~12에 안전한 이전 기본값과 진행 전투 단일 turn owner 복구를
 제공한다. 같은 폴더의 임시 파일을 flush한 뒤 원자적으로
 교체하며, 손상되거나 지원하지 않는 schema는 세계를 바꾸기 전에 거부한다.
 
 ### Chronicles.Tests
 
-외부 테스트 프레임워크 없이 실행 가능한 결정론적 계약 러너다. 29개 검사가 공식,
+외부 테스트 프레임워크 없이 실행 가능한 결정론적 계약 러너다. 31개 검사가 공식,
 9층 수행, 숙련/이해/품질 불변, 교대 전투/부상 사망, 지도/요수, 경제, 관찰 무영향,
-선택 UI 조회, 과거 저장 복구, 장기 성장·사냥·경쟁, 저장 왕복과 10,000명 성능 예산을
+자질 간접 보정 경계, 전투 성장, 선택 UI 조회, 과거 저장 복구, 장기 성장·사냥·경쟁,
+저장 왕복과 10,000명 성능 예산을
 자동 검증한다.
 
 ## 실행 모델

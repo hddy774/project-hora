@@ -4,9 +4,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Chronicles.Core;
-using Chronicles.Persistence;
+using Chronicles.Application;
 using Chronicles.Simulation;
-using static Chronicles.Desktop.PresentationText;
+using static Chronicles.Presentation.PresentationText;
 
 namespace Chronicles.Desktop;
 
@@ -15,7 +15,7 @@ public partial class MainWindow : Window, IDisposable
     private const ulong DefaultWorldSeed = 20260830UL;
     private const int ExplorerPageSize = 500;
     private const int WorldChronicleDisplayLimit = 1_000;
-    private SimulationRunner? _runner;
+    private GameApplicationSession? _runner;
     private WorldSnapshot? _latestSnapshot;
     private AgentId? _selectedAgent;
     private RankingCategory? _rankingCategory = RankingCategory.CombatPower;
@@ -49,8 +49,7 @@ public partial class MainWindow : Window, IDisposable
         InitializeComponent();
         Title = $"{ProductInfo.KoreanTitle} PC v{ProductInfo.Version}";
         VersionText.Text = $"VERSION {ProductInfo.Version}";
-        var world = World.CreateDefault(DefaultWorldSeed);
-        _runner = new SimulationRunner(world);
+        _runner = GameApplicationSession.CreateDefault(DefaultWorldSeed);
         _runner.ObservationInvalidated += Runner_ObservationInvalidated;
         _runner.Faulted += Runner_Faulted;
         _logService.FileWriteFailed += LogService_FileWriteFailed;
@@ -767,11 +766,10 @@ public partial class MainWindow : Window, IDisposable
         try
         {
             StatusText.Text = "세계 저장 중…";
-            var checkpoint = _runner.CreateCheckpoint();
-            await Task.Run(() => WorldSaveStore.Save(WorldSaveStore.DefaultPath, checkpoint));
-            StatusText.Text = $"저장 완료 · {WorldSaveStore.DefaultPath}";
+            await _runner.SaveDefaultAsync();
+            StatusText.Text = $"저장 완료 · {GameApplicationSession.DefaultSavePath}";
             StatusText.Foreground = (Brush)FindResource("PositiveBrush");
-            _logService.AddDebug(DebugLogLevel.Information, $"세계 저장 완료 · {WorldSaveStore.DefaultPath}");
+            _logService.AddDebug(DebugLogLevel.Information, $"세계 저장 완료 · {GameApplicationSession.DefaultSavePath}");
         }
         catch (IOException exception)
         {
@@ -801,8 +799,7 @@ public partial class MainWindow : Window, IDisposable
         try
         {
             StatusText.Text = "세계 불러오는 중…";
-            var checkpoint = await Task.Run(() => WorldSaveStore.Load(WorldSaveStore.DefaultPath));
-            _runner.RestoreCheckpoint(checkpoint);
+            var restoredSchemaVersion = await _runner.LoadDefaultAsync();
             _projectedRecentEventSequence = long.MinValue;
             _projectedRecentEventCount = -1;
             _projectedWorldLogCategory = null;
@@ -812,9 +809,9 @@ public partial class MainWindow : Window, IDisposable
             ClearReincarnationView();
             _selectedAgent = null;
             RefreshVisibleObservation();
-            StatusText.Text = $"불러오기 완료 · {WorldSaveStore.DefaultPath}";
+            StatusText.Text = $"불러오기 완료 · {GameApplicationSession.DefaultSavePath}";
             StatusText.Foreground = (Brush)FindResource("PositiveBrush");
-            _logService.AddDebug(DebugLogLevel.Information, $"세계 불러오기 완료 · schema {checkpoint.SchemaVersion}");
+            _logService.AddDebug(DebugLogLevel.Information, $"세계 불러오기 완료 · schema {restoredSchemaVersion}");
         }
         catch (FileNotFoundException exception)
         {

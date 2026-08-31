@@ -1,7 +1,9 @@
 using System.Collections.Concurrent;
 using Chronicles.Core;
+using Chronicles.Queries;
+using Chronicles.Simulation;
 
-namespace Chronicles.Simulation;
+namespace Chronicles.Runtime;
 
 public sealed class SimulationRunner : IDisposable
 {
@@ -9,6 +11,7 @@ public sealed class SimulationRunner : IDisposable
     private const int MaximumPendingWorldChronicles = 1_024;
     private readonly object _worldGate = new();
     private World _world;
+    private WorldObservationQueries _queries;
     private readonly ManualResetEventSlim _stop = new(initialState: false);
     private readonly Thread _worker;
     private int _speed = 1;
@@ -25,6 +28,7 @@ public sealed class SimulationRunner : IDisposable
     public SimulationRunner(World world)
     {
         _world = world ?? throw new ArgumentNullException(nameof(world));
+        _queries = new WorldObservationQueries(_world);
         _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
         _world.WorldCenturyChronicleRecorded += World_WorldCenturyChronicleRecorded;
         _worker = new Thread(Run)
@@ -71,7 +75,7 @@ public sealed class SimulationRunner : IDisposable
     {
         lock (_worldGate)
         {
-            return _world.CreateSnapshot(
+            return _queries.GetSnapshot(
                 rankingCount,
                 eventCount,
                 sections,
@@ -85,7 +89,7 @@ public sealed class SimulationRunner : IDisposable
     {
         lock (_worldGate)
         {
-            return _world.GetAgentSnapshot(agentId);
+            return _queries.GetAgent(agentId);
         }
     }
 
@@ -100,34 +104,14 @@ public sealed class SimulationRunner : IDisposable
     {
         lock (_worldGate)
         {
-            var world = _world.CreateSnapshot(
+            return _queries.GetObservation(new ObservationRequest(
+                selectedAgent,
                 rankingCount,
                 eventCount,
                 sections,
                 detailedMapLocationId,
                 detailedMapAgentOffset,
-                worldChronicleCount);
-            var agentId = selectedAgent ?? world.LeaderId;
-            var agent = _world.GetAgentSnapshot(
-                agentId,
-                includeAptitudeDetails:
-                    (sections & ObservationSections.AptitudeDetails) != 0,
-                includeRelations:
-                    (sections & ObservationSections.Relations) != 0,
-                includeTeaching:
-                    (sections & ObservationSections.Teaching) != 0);
-            return new WorldObservation(
-                world,
-                agent,
-                (sections & ObservationSections.PersonalLog) != 0
-                    ? _world.GetAgentPersonalLog(agentId)
-                    : Array.Empty<PersonalLogEntry>(),
-                (sections & ObservationSections.Chronicle) != 0
-                    ? _world.GetAgentChronicle(agentId)
-                    : Array.Empty<LifeChronicleEntry>(),
-                (sections & ObservationSections.Reincarnation) != 0
-                    ? _world.GetAgentReincarnationSnapshot(agentId)
-                    : null);
+                worldChronicleCount));
         }
     }
 
@@ -135,7 +119,7 @@ public sealed class SimulationRunner : IDisposable
     {
         lock (_worldGate)
         {
-            return _world.BrowseAgents(offset, limit);
+            return _queries.BrowseAgents(offset, limit);
         }
     }
 
@@ -143,7 +127,7 @@ public sealed class SimulationRunner : IDisposable
     {
         lock (_worldGate)
         {
-            return _world.SearchAgents(query, limit);
+            return _queries.SearchAgents(query, limit);
         }
     }
 
@@ -196,6 +180,7 @@ public sealed class SimulationRunner : IDisposable
             _world.ImportantWorldEventRecorded -= World_ImportantWorldEventRecorded;
             _world.WorldCenturyChronicleRecorded -= World_WorldCenturyChronicleRecorded;
             _world = restored;
+            _queries = new WorldObservationQueries(_world);
             _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
             _world.WorldCenturyChronicleRecorded += World_WorldCenturyChronicleRecorded;
             while (_pendingWorldEvents.TryDequeue(out _))

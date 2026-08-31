@@ -11,21 +11,27 @@
 ## 의존 방향
 
 ```text
-Chronicles.Core <- Chronicles.Simulation <- Chronicles.Persistence
-                          ^                    ^
-                          |                    |
-                  Chronicles.Tests       Chronicles.Desktop
+Core -> Simulation -> Queries -> Runtime
+                  \-> Persistence
+Queries -> Presentation
+Application = Runtime + Persistence + Queries 조정
+Desktop = Application + Presentation
 ```
 
 - `Core`: 안정 ID, 정수 시간, 결정론적 난수, 값 타입과 정의 ID.
 - `Simulation`: AI 상태, 수행, 경지, 공법, 법술, 전투, 전투력, 랭킹, 일대기·윤회와
   도시 시장 경제.
-- `Persistence`: versioned save container, 압축, checksum과 원자 저장.
-- `Desktop`: 읽기 전용 스냅샷 표시와 일시정지·배속·검색·추적 입력.
+- `Queries`: simulation을 읽는 불변 관찰 DTO와 revision 기반 투영.
+- `Runtime`: worker, 배속, 관찰 요청과 변경 section 통지.
+- `Persistence`: versioned save container, checksum과 원자 저장.
+- `Presentation`: 플랫폼 중립 표시 모델과 한국어 포맷.
+- `Application`: runtime·query·persistence 조정과 세션 생명주기.
+- `Desktop`: Application과 Presentation만 직접 참조하는 WPF 관찰 셸.
 - `Tests`: 공식, 결정론, 경쟁 활성도, 성능과 저장 회귀 검증.
 
 UI는 시뮬레이션의 가변 상태를 직접 소유하거나 수정하지 않는다. 관찰·검색·정렬은
-세계 상태와 난수 소비를 바꾸지 않아야 한다.
+세계 상태와 난수 소비를 바꾸지 않아야 한다. 현재 파일 owner와 허용 의존은
+`docs/architecture/repository_manifest.json`을 정본으로 사용한다.
 
 ## 시뮬레이션 규칙
 

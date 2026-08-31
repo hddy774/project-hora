@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Chronicles.Core;
 using Chronicles.Simulation;
-using static Chronicles.Desktop.PresentationText;
+using static Chronicles.Presentation.PresentationText;
 
 namespace Chronicles.Desktop;
 

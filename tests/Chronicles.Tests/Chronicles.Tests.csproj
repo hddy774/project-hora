@@ -6,6 +6,9 @@
   <ItemGroup>
     <ProjectReference Include="../../src/Chronicles.Core/Chronicles.Core.csproj" />
     <ProjectReference Include="../../src/Chronicles.Simulation/Chronicles.Simulation.csproj" />
+    <ProjectReference Include="../../src/Chronicles.Queries/Chronicles.Queries.csproj" />
+    <ProjectReference Include="../../src/Chronicles.Runtime/Chronicles.Runtime.csproj" />
+    <ProjectReference Include="../../src/Chronicles.Application/Chronicles.Application.csproj" />
     <ProjectReference Include="../../src/Chronicles.Persistence/Chronicles.Persistence.csproj" />
   </ItemGroup>
   <ItemGroup>

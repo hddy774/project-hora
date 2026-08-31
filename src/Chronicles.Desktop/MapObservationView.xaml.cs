@@ -5,7 +5,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Chronicles.Core;
 using Chronicles.Simulation;
-using static Chronicles.Desktop.PresentationText;
+using static Chronicles.Presentation.PresentationText;
 
 namespace Chronicles.Desktop;
 

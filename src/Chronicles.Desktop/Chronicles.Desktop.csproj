@@ -7,8 +7,7 @@
     <RootNamespace>Chronicles.Desktop</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Chronicles.Core/Chronicles.Core.csproj" />
-    <ProjectReference Include="../Chronicles.Simulation/Chronicles.Simulation.csproj" />
-    <ProjectReference Include="../Chronicles.Persistence/Chronicles.Persistence.csproj" />
+    <ProjectReference Include="../Chronicles.Application/Chronicles.Application.csproj" />
+    <ProjectReference Include="../Chronicles.Presentation/Chronicles.Presentation.csproj" />
   </ItemGroup>
 </Project>

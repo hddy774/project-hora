@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "contract": "CMIP_PC_REPOSITORY_MANIFEST_V1",
+  "dependency_direction": "Core -> Simulation; Simulation -> Queries -> Runtime; Simulation -> Persistence; Queries -> Presentation; Application aggregates Runtime, Persistence and Queries; Desktop consumes Application and Presentation",
+  "line_policy": {
+    "scope": "manual_csharp_and_xaml",
+    "recommended_max": 1000,
+    "hard_fail_on_line_count": false
+  },
+  "modules": [
+    {
+      "id": "Core",
+      "project": "src/Chronicles.Core/Chronicles.Core.csproj",
+      "roots": ["src/Chronicles.Core"],
+      "allowed_dependencies": [],
+      "responsibility": "Stable IDs, integer time, deterministic RNG and platform-independent value contracts."
+    },
+    {
+      "id": "Simulation",
+      "project": "src/Chronicles.Simulation/Chronicles.Simulation.csproj",
+      "roots": ["src/Chronicles.Simulation"],
+      "allowed_dependencies": ["Core"],
+      "responsibility": "Authoritative SoA world state and deterministic state transitions."
+    },
+    {
+      "id": "Queries",
+      "project": "src/Chronicles.Queries/Chronicles.Queries.csproj",
+      "roots": ["src/Chronicles.Queries"],
+      "allowed_dependencies": ["Core", "Simulation"],
+      "responsibility": "Read-only DTO projection, observation and ranking query boundaries."
+    },
+    {
+      "id": "Runtime",
+      "project": "src/Chronicles.Runtime/Chronicles.Runtime.csproj",
+      "roots": ["src/Chronicles.Runtime"],
+      "allowed_dependencies": ["Core", "Simulation", "Queries"],
+      "responsibility": "Worker, pacing, immutable publication and observation request orchestration."
+    },
+    {
+      "id": "Persistence",
+      "project": "src/Chronicles.Persistence/Chronicles.Persistence.csproj",
+      "roots": ["src/Chronicles.Persistence"],
+      "allowed_dependencies": ["Core", "Simulation"],
+      "responsibility": "Explicit save codec, validation and atomic file lifecycle."
+    },
+    {
+      "id": "Presentation",
+      "project": "src/Chronicles.Presentation/Chronicles.Presentation.csproj",
+      "roots": ["src/Chronicles.Presentation"],
+      "allowed_dependencies": ["Core", "Queries"],
+      "responsibility": "Platform-neutral display models and Korean formatting."
+    },
+    {
+      "id": "Application",
+      "project": "src/Chronicles.Application/Chronicles.Application.csproj",
+      "roots": ["src/Chronicles.Application"],
+      "allowed_dependencies": ["Core", "Simulation", "Queries", "Runtime", "Persistence"],
+      "responsibility": "Application session composition, commands and save/load coordination."
+    },
+    {
+      "id": "Desktop",
+      "project": "src/Chronicles.Desktop/Chronicles.Desktop.csproj",
+      "roots": ["src/Chronicles.Desktop"],
+      "allowed_dependencies": ["Application", "Presentation"],
+      "responsibility": "WPF shell, visible-view rendering and observer input forwarding."
+    }
+  ],
+  "forbidden_dependencies": [
+    "Core -> any higher module",
+    "Simulation -> Queries, Runtime, Persistence, Presentation, Application or Desktop",
+    "Queries -> Runtime, Persistence, Presentation, Application or Desktop",
+    "Persistence -> Queries, Runtime, Presentation, Application or Desktop",
+    "Desktop -> Simulation authority APIs"
+  ],
+  "traceability": {
+    "ledger": "docs/traceability/pc-port-ledger.json",
+    "source_requirement_contract": "ALPHA_1_1_0_REQUIREMENT_COVERAGE_V1",
+    "generator": "scripts/generate-port-ledger.ps1",
+    "validator": "scripts/validate-port-ledger.ps1"
+  }
+}

@@ -1,8 +1,8 @@
 using System.IO;
 using System.Text;
 using System.Threading.Channels;
+using Chronicles.Application;
 using Chronicles.Core;
-using Chronicles.Persistence;
 using Chronicles.Simulation;
 
 namespace Chronicles.Desktop;
@@ -46,8 +46,7 @@ internal sealed class GameLogService : IDisposable
     public long DebugVersion => Volatile.Read(ref _debugSequence);
 
     public static string OutputDirectory => Path.Combine(
-        Path.GetDirectoryName(WorldSaveStore.DefaultPath)
-            ?? throw new InvalidOperationException("게임 데이터 폴더를 확인할 수 없습니다."),
+        GameApplicationSession.DefaultDataDirectory,
         "logs");
 
     public static string EnsureOutputDirectory()

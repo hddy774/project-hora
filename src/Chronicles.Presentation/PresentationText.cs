@@ -2,9 +2,9 @@ using System.Globalization;
 using Chronicles.Core;
 using Chronicles.Simulation;
 
-namespace Chronicles.Desktop;
+namespace Chronicles.Presentation;
 
-internal static class PresentationText
+public static class PresentationText
 {
     public static string FormatRealm(
         RealmStage stage,

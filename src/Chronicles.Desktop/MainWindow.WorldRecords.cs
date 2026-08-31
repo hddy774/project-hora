@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows.Media;
 using Chronicles.Core;
 using Chronicles.Simulation;
-using static Chronicles.Desktop.PresentationText;
+using static Chronicles.Presentation.PresentationText;
 
 namespace Chronicles.Desktop;
 

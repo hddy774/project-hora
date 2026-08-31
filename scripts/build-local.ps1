@@ -119,6 +119,16 @@ if ($CreateDesktopShortcut) {
     $shortcut.Description = "선로만상록 PC $version"
     $shortcut.IconLocation = "$executablePath,0"
     $shortcut.Save()
+
+    $savedShortcut = $shell.CreateShortcut($shortcutPath)
+    $savedTargetPath = [IO.Path]::GetFullPath($savedShortcut.TargetPath)
+    $savedWorkingDirectory = [IO.Path]::GetFullPath($savedShortcut.WorkingDirectory)
+    if (-not [StringComparer]::OrdinalIgnoreCase.Equals($savedTargetPath, $executablePath) -or
+        -not [StringComparer]::OrdinalIgnoreCase.Equals($savedWorkingDirectory, $publishDirectory) -or
+        -not (Test-Path -LiteralPath $savedTargetPath -PathType Leaf)) {
+        throw "바탕화면 바로가기 검증에 실패했습니다: 대상=$savedTargetPath, 작업 폴더=$savedWorkingDirectory"
+    }
+
     Write-Host "바탕화면 바로가기: $shortcutPath"
 }
 

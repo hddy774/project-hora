@@ -85,13 +85,17 @@ $guide = @"
 게임은 자동으로 실시간 진행됩니다.
 - 일시정지, 1x, 10x, 25x, 50x, 100x 속도 조절
 - 이름 또는 A00001 형식으로 인물 검색
-- 전투력·경지·자질 TOP 1,000과 전체 10,000명 탐색
+- 전투력·경지·자질·부자 TOP 1,000과 전체 10,000명 탐색
 - 자질, 경지, 공법, 법술, 법보, 단약, 임무, 시장 거래와 개인 일대기 관찰
-- 경지·전투력 분포, 랭킹 변동률, 승패·사망 및 시장 공급·수요 통계
+- 경지·전투력 분포, 기간별 TOP 1,000 랭킹 변동률, 승패·사망 및 시장 공급·수요 통계
+- 세계 영구 연대기와 게임 디버그 로그, 자동·수동 로컬 파일 출력
 - 저장/불러오기 버튼으로 현재 세계 보존
 
 저장 위치:
 %LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip
+
+로그 위치:
+%LocalAppData%\ChroniclesOfMyriadImmortalPaths\logs
 "@
 [IO.File]::WriteAllText(
     (Join-Path $publishDirectory '실행 안내.txt'),

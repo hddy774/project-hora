@@ -360,9 +360,9 @@ public partial class MainWindow : Window, IDisposable
                     $"{FormatMarketGood(EconomyRules.GetMarketGood(item.GoodId), item.Quality)} · {item.CompletedMonths:N0}/{item.RequiredMonths:N0}개월 · 재료 {item.MaterialCost:N0} · 영석 {KoreanNumberFormatter.Format(item.SpiritStoneCost)}"))
             : "수요·재료·영석 조건을 모두 충족한 생산 대기열 없음";
         CityInventoryText.Text =
-            $"총 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Stock))}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind == MarketGoodKind.Material).Sum(item => item.Stock))}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind != MarketGoodKind.Material).Sum(item => item.Stock))}개";
+            $"총 {KoreanNumberFormatter.Format(snapshot.Market.TotalStock)}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.MaterialStock)}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.ProcessedStock)}개";
         CityFlowText.Text =
-            $"공급 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Supply))} · 수요 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Demand))}";
+            $"공급 {KoreanNumberFormatter.Format(snapshot.Market.TotalSupply)} · 수요 {KoreanNumberFormatter.Format(snapshot.Market.TotalDemand)} · 미충족 {KoreanNumberFormatter.Format(snapshot.Market.UnmetDemand)}";
     }
 
     private void UpdateSelectedAgent(

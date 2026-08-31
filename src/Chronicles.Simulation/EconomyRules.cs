@@ -72,6 +72,7 @@ public static class EconomyRules
     public const long SpellBookBasePrice = 20;
     public const int CityProductionTargetStock = 3;
     public const int CityProductionMonths = 3;
+    public const int MaximumConcurrentProduction = 4;
 
     private static readonly long[] RealmPriceScales =
     [

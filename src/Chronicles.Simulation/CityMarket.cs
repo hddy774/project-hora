@@ -4,7 +4,6 @@ namespace Chronicles.Simulation;
 
 internal sealed class CityMarket
 {
-    private const int MaximumConcurrentProduction = 4;
     private const ushort NoQuality = ushort.MaxValue;
 
     private readonly int[] _stock = new int[EconomyRules.MarketGoodCount];
@@ -12,7 +11,7 @@ internal sealed class CityMarket
     private readonly long[] _supply = new long[EconomyRules.MarketGoodCount];
     private readonly long[] _demand = new long[EconomyRules.MarketGoodCount];
     private readonly long[] _qualityHundredths = new long[EconomyRules.MarketGoodCount];
-    private readonly List<CityProductionOrder> _productionQueue = new(MaximumConcurrentProduction);
+    private readonly List<CityProductionOrder> _productionQueue = new(EconomyRules.MaximumConcurrentProduction);
     private long _lastIndustryMonth;
     private long _purchaseTransactions;
     private long _saleTransactions;
@@ -89,7 +88,7 @@ internal sealed class CityMarket
 
             if (checkpoint.ProductionQueue is { } queue)
             {
-                foreach (var order in queue.Take(MaximumConcurrentProduction))
+                foreach (var order in queue.Take(EconomyRules.MaximumConcurrentProduction))
                 {
                     _productionQueue.Add(new CityProductionOrder(
                         order.GoodId,
@@ -328,14 +327,29 @@ internal sealed class CityMarket
 
     public CityMarketSnapshot CreateSnapshot(bool includeGoods = true)
     {
-        IReadOnlyList<MarketGoodSnapshot> goods = Array.Empty<MarketGoodSnapshot>();
-        if (includeGoods)
+        var goods = includeGoods
+            ? new MarketGoodSnapshot[EconomyRules.MarketGoodCount]
+            : Array.Empty<MarketGoodSnapshot>();
+        long totalStock = 0;
+        long materialStock = 0;
+        long totalSupply = 0;
+        long totalDemand = 0;
+        long unmetDemand = 0;
+        for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
         {
-            var snapshots = new MarketGoodSnapshot[EconomyRules.MarketGoodCount];
-            for (var goodId = 0; goodId < snapshots.Length; goodId++)
+            var definition = EconomyRules.GetMarketGood(goodId);
+            totalStock = checked(totalStock + _stock[goodId]);
+            totalSupply = checked(totalSupply + _supply[goodId]);
+            totalDemand = checked(totalDemand + _demand[goodId]);
+            unmetDemand = checked(unmetDemand + Math.Max(0L, _demand[goodId] - _supply[goodId]));
+            if (definition.Kind == MarketGoodKind.Material)
             {
-                var definition = EconomyRules.GetMarketGood(goodId);
-                snapshots[goodId] = new MarketGoodSnapshot(
+                materialStock = checked(materialStock + _stock[goodId]);
+            }
+
+            if (includeGoods)
+            {
+                goods[goodId] = new MarketGoodSnapshot(
                     goodId,
                     definition.Kind,
                     definition.Material,
@@ -347,8 +361,6 @@ internal sealed class CityMarket
                     _demand[goodId],
                     GetAverageQuality(goodId));
             }
-
-            goods = snapshots;
         }
 
         var production = new CityProductionSnapshot[_productionQueue.Count];
@@ -384,7 +396,14 @@ internal sealed class CityMarket
             _spiritStonesMined,
             _remainingSpiritStoneOre,
             _miningMissionCount,
-            production);
+            production,
+            totalStock,
+            materialStock,
+            checked(totalStock - materialStock),
+            totalSupply,
+            totalDemand,
+            unmetDemand,
+            EconomyRules.MaximumConcurrentProduction);
     }
 
     public CityMarketCheckpoint CreateCheckpoint() => new(
@@ -434,7 +453,7 @@ internal sealed class CityMarket
 
     private void FillProductionQueue()
     {
-        while (_productionQueue.Count < MaximumConcurrentProduction)
+        while (_productionQueue.Count < EconomyRules.MaximumConcurrentProduction)
         {
             var goodId = SelectProductionGood();
             if (goodId < 0 || !TryStartProduction(goodId))

@@ -314,7 +314,14 @@ public sealed record CityMarketSnapshot(
     long SpiritStonesMined = 0,
     long RemainingSpiritStoneOre = 0,
     long MiningMissionCount = 0,
-    IReadOnlyList<CityProductionSnapshot>? ProductionQueue = null)
+    IReadOnlyList<CityProductionSnapshot>? ProductionQueue = null,
+    long TotalStock = 0,
+    long MaterialStock = 0,
+    long ProcessedStock = 0,
+    long TotalSupply = 0,
+    long TotalDemand = 0,
+    long UnmetDemand = 0,
+    int ProductionCapacity = EconomyRules.MaximumConcurrentProduction)
 {
     public static CityMarketSnapshot Empty { get; } = new(
         0,

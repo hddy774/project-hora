@@ -23,10 +23,10 @@ public partial class MarketObservationView : UserControl
         ArgumentNullException.ThrowIfNull(snapshot);
         _snapshot = snapshot;
         TreasuryText.Text = $"도시 영석 {KoreanNumberFormatter.Format(snapshot.TreasurySpiritStones)}";
-        TotalStockText.Text = KoreanNumberFormatter.Format(snapshot.Goods.Sum(item => (long)item.Stock));
-        UnmetDemandText.Text = KoreanNumberFormatter.Format(
-            snapshot.Goods.Sum(item => Math.Max(0L, item.Demand - item.Supply)));
-        ProductionCountText.Text = $"{snapshot.ProductionQueue?.Count ?? 0:N0} / 4";
+        TotalStockText.Text = KoreanNumberFormatter.Format(snapshot.TotalStock);
+        UnmetDemandText.Text = KoreanNumberFormatter.Format(snapshot.UnmetDemand);
+        ProductionCountText.Text =
+            $"{snapshot.ProductionQueue?.Count ?? 0:N0} / {snapshot.ProductionCapacity:N0}";
         RebuildRows();
     }
 

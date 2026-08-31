@@ -1170,6 +1170,15 @@ static void ObservationQueriesAreReadOnly()
     True(realmDistributionOnly.Statistics.RealmDistribution.Count > 0, "펼친 경지 분포만 계산");
     Equal(0, realmDistributionOnly.Statistics.CombatPowerDistribution.Count, "접힌 전투력 분포는 미계산");
     Equal(0, cityOnly.Market.Goods.Count, "도시 내부 탭에서 시장 상품 목록 계산 생략");
+    True(cityOnly.Market.TotalStock > 0, "도시 요약 재고는 상품 DTO 없이 집계");
+    Equal(
+        cityOnly.Market.TotalStock,
+        cityOnly.Market.MaterialStock + cityOnly.Market.ProcessedStock,
+        "도시 요약 재고 분류 보존");
+    Equal(
+        EconomyRules.MaximumConcurrentProduction,
+        cityOnly.Market.ProductionCapacity,
+        "도시 생산 동시 처리 용량 계약");
     True(personalLog.Count <= World.PersonalLogCapacity, "개인 로그 조회 크기");
     True(chronicle.Count > 0, "영구 연대기 조회");
     Equal(before, world.ComputeStateHash(), "관찰 조회는 세계 상태를 바꾸면 안 됩니다.");

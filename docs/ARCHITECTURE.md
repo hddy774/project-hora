@@ -73,8 +73,9 @@ checkpoint 복원은 양쪽 mirror bijection과 역할 방향을 검증한다. �
 `TeachingModel`과 `World.Teaching`은 같은 지역의 기존 관계와 지식 격차에서 후보를
 선택하고 사제 관계를 성립시킨 뒤 공법 또는 법술 지식을 전수하는 권위 owner다.
 대상 `KnowledgeRef`, 전수 출처, 결과와 효과,
-`관계+대상+KnowledgeRef`별 연속성, 중요 영구 전수 이력을 저장한다. Teaching 전용
-결정론 RNG stream을 사용하며 대경지 수행 Work 직접 보너스는 항상 0이다. 공법·법술
+`관계+대상+KnowledgeRef`별 연속성, 중요 영구 전수 이력을 저장한다. 세계 seed·
+provenance·tick·session에서 계산하는 Teaching 전용 무상태 결정론 roll을 사용하며
+대경지 수행 Work 직접 보너스는 항상 0이다. 공법·법술
 수련 경험·이해·오해/교정·접근만 바꾸고, 전투·사망·윤회 생명주기 경계에서는 양방향
 진행 문맥을 원자적으로 중단한다. 임시 확률·성장량은
 `PC-TEMP-TEACHING-BALANCE-113`으로 추적한다.
@@ -158,7 +159,9 @@ virtualization을 사용한다.
 세부 선천자질 Expander는 접혀 있으면 `ObservationSections.AptitudeDetails`를 요청하지
 않는다. 펼친 경우에도 선택 인물 하나의 60개 값만 DTO로 복사하고, 6개 내부 탭 중
 현재 탭의 Component와 파생 공식 문자열만 갱신한다.
-사제 Teaching Expander도 접혀 있으면 `ObservationSections.Teaching`을 요청하지 않는다.
+관계 Expander는 접혀 있으면 `ObservationSections.Relations`를 요청하지 않고,
+`사제·가르침·전승 추적` Expander도 접혀 있으면 `ObservationSections.Teaching`을
+요청하지 않는다.
 펼친 경우에만 선택 인물의 진행 Teaching과 최근 중요 전수 이력을 투영하며 교사·학습자
 이름/ID, 전생 당시 이름, 대상 KnowledgeRef·출처와 결과별 효과 문구를 지연 생성한다.
 `MapObservationView`, `MarketObservationView`, `PresentationText`와

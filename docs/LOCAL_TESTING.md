@@ -49,7 +49,9 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
 - 인물의 관계 목록이 최대 8개이고 상대 방향의 mirror가 존재하는지 확인. 호감/반감·
   신뢰/불신·존중/경시·은혜·원한·경계와 사제·우정·연애·실제 동료·지속 경쟁 역할,
   별도 MasterAgent가 방향에 맞게 표시되는지 확인
-- `사제 Teaching`을 펼쳤을 때만 Teaching DTO가 만들어지고 교사·학습자 이름/ID,
+- 관계 Expander를 펼쳤을 때만 관계 DTO가 만들어지고, 접힌 동안
+  `ObservationSections.Relations` 조회·할당이 발생하지 않는지 확인
+- `사제·가르침·전승 추적`을 펼쳤을 때만 Teaching DTO가 만들어지고 교사·학습자 이름/ID,
   시작일·결과·효과, 공법/법술 KnowledgeRef와 전수 출처가 표시되는지 확인. 접힌 동안
   Teaching 관찰 할당이 발생하지 않는지 성능 로그로 확인
 - Teaching 전후 대경지 수행 Work 직접 증가가 0인지 확인하고 공법·법술 경험·이해,

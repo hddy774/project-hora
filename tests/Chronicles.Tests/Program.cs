@@ -39,6 +39,7 @@ tests =
     .. tests,
     ("교대 전투 속성과 누적 부상 사망", CombatAuthorityAndInjury),
     ("schema 7~9 진행 전투 단일 turn owner 복구", LegacyCombatTurnMigration),
+    ("전투 숙련·이해 저장과 schema 12 기본값 이전", CombatProgressionSaveAndMigration),
     ("3×3 지도와 지형별 요수 생태", WorldMapAndBiomeMonsters),
 ];
 
@@ -653,12 +654,21 @@ static void AptitudeIndirectCombatBalance()
     var lowBonuses = AptitudeCombatBonusFormula.Calculate(lowAptitudes);
     var neutralBonuses = AptitudeCombatBonusFormula.Calculate(neutralAptitudes);
     var highBonuses = AptitudeCombatBonusFormula.Calculate(highAptitudes);
-    Equal(8_000, lowBonuses.TechniqueEffectBasisPoints, "최저 자질 공법 효과 하한");
-    Equal(8_000, lowBonuses.SpellEffectBasisPoints, "최저 자질 법술 효과 하한");
+    Equal(5_000, lowBonuses.TechniqueEffectBasisPoints, "최저 자질 공법 효과 하한");
+    Equal(5_000, lowBonuses.SpellEffectBasisPoints, "최저 자질 법술 효과 하한");
+    Equal(5_000, lowBonuses.CombatMasteryEffectBasisPoints, "최저 자질 전투 숙련 효과 하한");
+    Equal(5_000, lowBonuses.CombatUnderstandingEffectBasisPoints, "최저 자질 전투 이해 효과 하한");
+    Equal(5_000, lowBonuses.CombatExperienceGainBasisPoints, "최저 자질 전투 경험 획득 하한");
     Equal(10_000, neutralBonuses.TechniqueEffectBasisPoints, "자질 50.00 공법 효과 기준");
     Equal(10_000, neutralBonuses.SpellEffectBasisPoints, "자질 50.00 법술 효과 기준");
-    Equal(12_000, highBonuses.TechniqueEffectBasisPoints, "최고 자질 공법 효과 상한");
-    Equal(12_000, highBonuses.SpellEffectBasisPoints, "최고 자질 법술 효과 상한");
+    Equal(10_000, neutralBonuses.CombatMasteryEffectBasisPoints, "자질 50.00 전투 숙련 효과 기준");
+    Equal(10_000, neutralBonuses.CombatUnderstandingEffectBasisPoints, "자질 50.00 전투 이해 효과 기준");
+    Equal(10_000, neutralBonuses.CombatExperienceGainBasisPoints, "자질 50.00 전투 경험 획득 기준");
+    Equal(20_000, highBonuses.TechniqueEffectBasisPoints, "최고 자질 공법 효과 상한");
+    Equal(20_000, highBonuses.SpellEffectBasisPoints, "최고 자질 법술 효과 상한");
+    Equal(20_000, highBonuses.CombatMasteryEffectBasisPoints, "최고 자질 전투 숙련 효과 상한");
+    Equal(20_000, highBonuses.CombatUnderstandingEffectBasisPoints, "최고 자질 전투 이해 효과 상한");
+    Equal(20_000, highBonuses.CombatExperienceGainBasisPoints, "최고 자질 전투 경험 획득 상한");
 
     static CombatPowerBreakdown Power(Aptitudes aptitudes) => CombatPowerFormula.Calculate(
         RealmStage.QiRefining,
@@ -679,10 +689,24 @@ static void AptitudeIndirectCombatBalance()
     Equal(0L, lowPower.Aptitude, "최저 자질 직접 전투력");
     Equal(0L, neutralPower.Aptitude, "중립 자질 직접 전투력");
     Equal(0L, highPower.Aptitude, "최고 자질 직접 전투력");
-    True(highPower.Technique <= ((neutralPower.Technique * 12) / 10) + 1, "최고 자질 공법 전투력 보정 20% 상한");
-    True(highPower.Spell <= ((neutralPower.Spell * 12) / 10) + 1, "최고 자질 법술 전투력 보정 20% 상한");
-    True(lowPower.Technique >= (neutralPower.Technique * 8) / 10, "최저 자질 공법 전투력 보정 20% 하한");
-    True(lowPower.Spell >= (neutralPower.Spell * 8) / 10, "최저 자질 법술 전투력 보정 20% 하한");
+    True(highPower.Technique <= (neutralPower.Technique * 2) + 1, "최고 자질 공법 전투력 보정 200% 상한");
+    True(highPower.Spell <= (neutralPower.Spell * 2) + 1, "최고 자질 법술 전투력 보정 200% 상한");
+    True(lowPower.Technique >= neutralPower.Technique / 2, "최저 자질 공법 전투력 보정 50% 하한");
+    True(lowPower.Spell >= neutralPower.Spell / 2, "최저 자질 법술 전투력 보정 50% 하한");
+
+    Equal(1_000, CombatProgressionRules.GetMasteryHundredths(10_000), "전투 경험의 숙련도 변환");
+    Equal(50, CombatProgressionRules.ApplyExperienceGain(0, 100, 5_000), "최저 자질 전투 경험 50% 획득");
+    Equal(100, CombatProgressionRules.ApplyExperienceGain(0, 100, 10_000), "기준 자질 전투 경험 100% 획득");
+    Equal(200, CombatProgressionRules.ApplyExperienceGain(0, 100, 20_000), "최고 자질 전투 경험 200% 획득");
+    Equal((ushort)50, CombatProgressionRules.ApplyUnderstandingGain(0, 100, 5_000), "최저 자질 전투 이해 50% 획득");
+    Equal((ushort)100, CombatProgressionRules.ApplyUnderstandingGain(0, 100, 10_000), "기준 자질 전투 이해 100% 획득");
+    Equal((ushort)200, CombatProgressionRules.ApplyUnderstandingGain(0, 100, 20_000), "최고 자질 전투 이해 200% 획득");
+    Equal(50, SkillProgressionRules.ApplyExperienceBonus(100, 5_000), "최저 자질 공법·법술 경험 50% 획득");
+    Equal(100, SkillProgressionRules.ApplyExperienceBonus(100, 10_000), "기준 자질 공법·법술 경험 100% 획득");
+    Equal(200, SkillProgressionRules.ApplyExperienceBonus(100, 20_000), "최고 자질 공법·법술 경험 200% 획득");
+    Equal((ushort)75, SkillProgressionRules.ApplyUnderstandingGain(0, 10_000, 5_000), "최저 자질 공법·법술 이해 50% 성장");
+    Equal((ushort)150, SkillProgressionRules.ApplyUnderstandingGain(0, 10_000, 10_000), "기준 자질 공법·법술 이해 100% 성장");
+    Equal((ushort)300, SkillProgressionRules.ApplyUnderstandingGain(0, 10_000, 20_000), "최고 자질 공법·법술 이해 200% 성장");
 
     static CombatAttributes Attributes(Aptitudes aptitudes) => CombatAttributeFormula.Calculate(
         RealmStage.QiRefining,
@@ -694,6 +718,8 @@ static void AptitudeIndirectCombatBalance()
         QualityValue.FromWhole(50),
         5_000,
         5_000,
+        1_000,
+        1_000,
         0,
         0);
 
@@ -797,6 +823,7 @@ static void LongRunCultivationHuntingAndCombat()
     var higherRealm = 0;
     var hunters = 0;
     var combatants = 0;
+    var combatLearners = 0;
     var overLifespan = 0;
     for (var index = 0; index < world.Population; index++)
     {
@@ -823,6 +850,11 @@ static void LongRunCultivationHuntingAndCombat()
             combatants++;
         }
 
+        if (agent.CombatMastery > 0 && agent.CombatUnderstanding > 0)
+        {
+            combatLearners++;
+        }
+
         if (agent.AgeYears > agent.MaximumLifespanYears)
         {
             overLifespan++;
@@ -835,6 +867,7 @@ static void LongRunCultivationHuntingAndCombat()
     True(higherRealm > 0, "장기 수행에서 축기경 이상 수선자가 나와야 합니다.");
     True(hunters >= world.Population / 5, "요수 사냥 경험이 전체 인구에 의미 있게 퍼져야 합니다.");
     True(combatants >= world.Population / 2, "수선자 간 전투 경험이 전체 인구에 퍼져야 합니다.");
+    True(combatLearners >= world.Population / 2, "전투 숙련도와 이해도가 전체 인구에 퍼져야 합니다.");
     True(world.TotalMonsterHunts > 0, "장기 세계에서 요수 사냥이 발생해야 합니다.");
     True(world.TotalCombatsCompleted > 0, "장기 세계에서 수선자 전투가 완료되어야 합니다.");
     Equal(0, overLifespan, "현재 수명을 넘긴 생존자가 관찰되면 안 됩니다.");
@@ -973,6 +1006,44 @@ static void LegacyCombatTurnMigration()
         restored.TotalCombatsStarted,
         restored.TotalCombatsCompleted + restored.ActiveCombats,
         "구 저장 전투 복구 후 수 보존");
+}
+
+static void CombatProgressionSaveAndMigration()
+{
+    var world = World.Create(8130, 1_000);
+    world.AdvanceTo(new SimulationTick(20_000));
+    var checkpoint = world.CreateCheckpoint();
+    True(checkpoint.SchemaVersion == 13, "전투 성장 저장 schema 13");
+    True(
+        checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
+        "전투 이해도 저장 대상 발생");
+
+    var decoded = WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint));
+    True(
+        checkpoint.Agents
+            .Select(agent => agent.CombatProgress)
+            .SequenceEqual(decoded.Agents.Select(agent => agent.CombatProgress)),
+        "전투 이해도 codec 왕복");
+    var restored = World.Restore(decoded);
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "전투 성장 저장 상태 hash 왕복");
+
+    var legacy = checkpoint with
+    {
+        SchemaVersion = 12,
+        Agents = checkpoint.Agents
+            .Select(agent => agent with { CombatProgress = null })
+            .ToArray(),
+    };
+    var migrated = World.Restore(legacy);
+    for (var index = 0; index < migrated.Population; index++)
+    {
+        var agent = migrated.GetAgentSnapshot(new AgentId(index));
+        Equal(0, agent.CombatUnderstanding, "schema 12 전투 이해도 기본값");
+        Equal(
+            (int)CombatProgressionRules.GetMasteryHundredths(agent.CombatExperience),
+            agent.CombatMastery,
+            "schema 12 기존 경험에서 전투 숙련도 재구성");
+    }
 }
 
 static void WorldMapAndBiomeMonsters()
@@ -1214,6 +1285,9 @@ static void SaveCodecRoundTrip()
     True(checkpoint.Market.Prices.SequenceEqual(decoded.Market.Prices), "저장 왕복 시장 가격");
     Equal(checkpoint.Agents[0].Name, decoded.Agents[0].Name, "저장 왕복 첫 Agent 이름");
     Equal(checkpoint.Agents[0].Soul, decoded.Agents[0].Soul, "저장 왕복 첫 Agent 영혼");
+    True(
+        checkpoint.Agents[0].CombatProgress == decoded.Agents[0].CombatProgress,
+        "저장 왕복 첫 Agent 전투 성장");
     True(
         checkpoint.Agents[0].MaterialInventory.SequenceEqual(decoded.Agents[0].MaterialInventory),
         "저장 왕복 첫 Agent 재료");

@@ -178,6 +178,8 @@ public sealed partial class World
             _agents.SpellTrainingExperience[index],
             _agents.SpellUnderstanding[index],
             _agents.CombatExperience[index],
+            CombatProgressionRules.GetMasteryHundredths(_agents.CombatExperience[index]),
+            _agents.CombatUnderstanding[index],
             _agents.Wins[index],
             _agents.Losses[index],
             _agents.Health[index],
@@ -443,6 +445,7 @@ public sealed partial class World
             Add(ref hash, (ulong)_agents.SpellTrainingExperience[index]);
             Add(ref hash, _agents.SpellUnderstanding[index]);
             Add(ref hash, (ulong)_agents.CombatExperience[index]);
+            Add(ref hash, _agents.CombatUnderstanding[index]);
             Add(ref hash, (ulong)_agents.Wins[index]);
             Add(ref hash, (ulong)_agents.Losses[index]);
             Add(ref hash, (ulong)_agents.Health[index]);
@@ -573,9 +576,12 @@ public sealed partial class World
 
     private void ResolveTechniqueTraining(int index)
     {
-        var experienceGain = SkillProgressionRules.GetTechniqueExperienceGain(
-            _agents.Comprehensions[index],
-            _agents.Bones[index]);
+        var bonuses = _agents.GetCombatBonuses(index);
+        var experienceGain = SkillProgressionRules.ApplyExperienceBonus(
+            SkillProgressionRules.GetTechniqueExperienceGain(
+                _agents.Comprehensions[index],
+                _agents.Bones[index]),
+            bonuses.TechniqueEffectBasisPoints);
         _agents.TechniqueTrainingExperience[index] = Math.Min(
             SkillProgressionRules.MaximumExperience,
             checked(_agents.TechniqueTrainingExperience[index] + experienceGain));
@@ -589,7 +595,8 @@ public sealed partial class World
         {
             _agents.TechniqueUnderstanding[index] = SkillProgressionRules.ApplyUnderstandingGain(
                 _agents.TechniqueUnderstanding[index],
-                _agents.Comprehensions[index]);
+                _agents.Comprehensions[index],
+                bonuses.TechniqueEffectBasisPoints);
             AddChronicle(
                 index,
                 ChronicleEventKind.TechniqueEnlightenment,
@@ -603,9 +610,12 @@ public sealed partial class World
 
     private void ResolveSpellTraining(int index)
     {
-        var experienceGain = SkillProgressionRules.GetSpellExperienceGain(
-            _agents.Comprehensions[index],
-            _agents.SpiritualRoots[index]);
+        var bonuses = _agents.GetCombatBonuses(index);
+        var experienceGain = SkillProgressionRules.ApplyExperienceBonus(
+            SkillProgressionRules.GetSpellExperienceGain(
+                _agents.Comprehensions[index],
+                _agents.SpiritualRoots[index]),
+            bonuses.SpellEffectBasisPoints);
         _agents.SpellTrainingExperience[index] = Math.Min(
             SkillProgressionRules.MaximumExperience,
             checked(_agents.SpellTrainingExperience[index] + experienceGain));
@@ -619,7 +629,8 @@ public sealed partial class World
         {
             _agents.SpellUnderstanding[index] = SkillProgressionRules.ApplyUnderstandingGain(
                 _agents.SpellUnderstanding[index],
-                _agents.Comprehensions[index]);
+                _agents.Comprehensions[index],
+                bonuses.SpellEffectBasisPoints);
             AddChronicle(
                 index,
                 ChronicleEventKind.SpellEnlightenment,

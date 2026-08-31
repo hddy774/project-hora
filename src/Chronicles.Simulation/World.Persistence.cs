@@ -180,7 +180,9 @@ public sealed partial class World
                     _agents.LocationIds[index],
                     _agents.TravelDestinationIds[index],
                     _agents.MonsterHunts[index],
-                    _agents.MonsterVictories[index]));
+                    _agents.MonsterVictories[index]),
+                new CombatProgressCheckpoint(
+                    _agents.CombatUnderstanding[index]));
         }
 
         return new WorldCheckpoint(
@@ -294,6 +296,9 @@ public sealed partial class World
             _agents.SpellUnderstanding[index] = 0;
         }
         _agents.CombatExperience[index] = checkpoint.CombatExperience;
+        _agents.CombatUnderstanding[index] = schemaVersion >= 13
+            ? checkpoint.CombatProgress!.Value.UnderstandingHundredths
+            : (ushort)0;
         _agents.Wins[index] = checkpoint.Wins;
         _agents.Losses[index] = checkpoint.Losses;
         _agents.Health[index] = checkpoint.Health;
@@ -461,6 +466,7 @@ public sealed partial class World
                 || (checkpoint.SchemaVersion >= 9
                     && (agent.TechniqueMastery > SkillProgressionRules.MaximumHundredths
                         || agent.SpellMastery > SkillProgressionRules.MaximumHundredths))
+                || agent.CombatExperience < 0
                 || agent.SpiritStones < 0
                 || agent.GrowthPills < 0
                 || agent.BreakthroughPills < 0
@@ -530,6 +536,11 @@ public sealed partial class World
             if (checkpoint.SchemaVersion >= 11 && !IsValidMapAgent(agent.Map))
             {
                 throw new InvalidDataException($"Agent {index}의 지도 체크포인트가 잘못되었습니다.");
+            }
+
+            if (checkpoint.SchemaVersion >= 13 && !IsValidCombatProgress(agent.CombatProgress))
+            {
+                throw new InvalidDataException($"Agent {index}의 전투 성장 체크포인트가 잘못되었습니다.");
             }
 
             if (agent.PersonalLog.Any(entry =>
@@ -672,4 +683,8 @@ public sealed partial class World
         && value.MonsterHunts >= 0
         && value.MonsterVictories >= 0
         && value.MonsterVictories <= value.MonsterHunts;
+
+    private static bool IsValidCombatProgress(CombatProgressCheckpoint? checkpoint) =>
+        checkpoint is { } value
+        && value.UnderstandingHundredths <= CombatProgressionRules.MaximumHundredths;
 }

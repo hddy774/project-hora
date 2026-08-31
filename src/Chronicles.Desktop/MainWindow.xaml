@@ -363,8 +363,8 @@
                                 <TextBlock x:Name="QiText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="전적 / 경험" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                <TextBlock x:Name="RecordText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" />
+                                <TextBlock Text="전적 / 전투 성장" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="RecordText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
                             </StackPanel>
                         </Grid>
 
@@ -472,7 +472,9 @@
                         </Grid>
                         <Grid Margin="0,9,0,0">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="70" /><ColumnDefinition Width="*" /><ColumnDefinition Width="72" /></Grid.ColumnDefinitions>
-                            <TextBlock Text="경험" Foreground="{StaticResource SecondaryTextBrush}" />
+                            <TextBlock Text="전투 성장"
+                                       ToolTip="전투 경험, 경험에서 파생된 숙련도, 별도 이해도의 합산 기여입니다."
+                                       Foreground="{StaticResource SecondaryTextBrush}" />
                             <ProgressBar x:Name="ExperiencePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
                             <TextBlock x:Name="ExperiencePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
                         </Grid>
@@ -486,7 +488,7 @@
                                    Padding="10,8"
                                    Background="{StaticResource PanelAltBrush}"
                                    Foreground="{StaticResource SecondaryTextBrush}"
-                                   Text="자질은 직접 전투력으로 합산하지 않습니다. 근골·체질·정신·영혼은 공법 효과를, 영근·오성·정신·영혼은 법술 효과를 80~120% 범위에서 보정하며 생명력·영력·공격·방어·속도·관통·치명타·회피·판단·집중·수행 효율에도 각각 반영됩니다."
+                                   Text="자질은 직접 전투력으로 합산하지 않습니다. 자질 50.00은 100% 기준이며 역할별 조합에 따라 공법·법술의 효과·숙련 경험·이해 성장과 전투 숙련·이해·경험 획득을 최저 50%~최대 200%로 보정합니다. 생명력·영력·공격·방어·속도·관통·치명타·회피·판단·집중·수행 효율에도 각각 반영됩니다."
                                    TextWrapping="Wrap" />
 
                         <TabControl x:Name="AgentLogTabControl"

@@ -453,7 +453,8 @@ public partial class MainWindow : Window, IDisposable
             $"부상 {FormatInjurySeverity(agent.InjurySeverity)} · 누적 {agent.InjuryPoints / 100m:0.00}% · 중상부터 전투 사망 확률 발생";
         var battles = agent.Wins + agent.Losses;
         var winRate = battles == 0 ? 0m : agent.Wins * 100m / battles;
-        RecordText.Text = $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · 승률 {winRate:0.##}% · 경험 {KoreanNumberFormatter.Format(agent.CombatExperience)}";
+        RecordText.Text =
+            $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · 승률 {winRate:0.##}% · 전투 숙련 {agent.CombatMastery / 100m:0.00} · 이해 {agent.CombatUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.CombatExperience)}";
         SpiritStoneText.Text = $"{KoreanNumberFormatter.Format(agent.SpiritStones)}개";
         PillInventoryText.Text = $"수행단 {agent.GrowthPills:N0} · 돌파단 {agent.BreakthroughPills:N0}";
         MissionText.Text = agent.ActiveMission is { } mission
@@ -492,7 +493,9 @@ public partial class MainWindow : Window, IDisposable
         var maximum = Math.Max(1, power.Total);
         TotalPowerText.Text = KoreanNumberFormatter.Format(power.Total);
         SetPowerRow(RealmPowerBar, RealmPowerText, power.Realm, maximum);
-        SetPowerRow(AptitudePowerBar, AptitudePowerText, power.Aptitude, maximum);
+        AptitudePowerBar.Maximum = 1;
+        AptitudePowerBar.Value = 0;
+        AptitudePowerText.Text = "간접";
         SetPowerRow(TechniquePowerBar, TechniquePowerText, power.Technique, maximum);
         SetPowerRow(SpellPowerBar, SpellPowerText, power.Spell, maximum);
         SetPowerRow(ExperiencePowerBar, ExperiencePowerText, power.Experience, maximum);

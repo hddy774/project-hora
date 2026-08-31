@@ -54,7 +54,8 @@ public sealed record AgentCheckpoint(
     CultivationCheckpoint? Cultivation = null,
     SkillProgressCheckpoint? SkillProgress = null,
     CombatAuthorityCheckpoint? CombatAuthority = null,
-    MapAgentCheckpoint? Map = null);
+    MapAgentCheckpoint? Map = null,
+    CombatProgressCheckpoint? CombatProgress = null);
 
 public sealed record CityMarketCheckpoint(
     long TreasurySpiritStones,
@@ -102,5 +103,5 @@ public sealed record WorldCheckpoint(
     CityMarketCheckpoint Market,
     WorldMapCheckpoint? Map = null)
 {
-    public const int CurrentSchemaVersion = 12;
+    public const int CurrentSchemaVersion = 13;
 }

@@ -8,7 +8,7 @@ public readonly record struct SkillProgressCheckpoint(
 
 public static class SkillProgressionRules
 {
-    public const int CurrentRevision = 1;
+    public const int CurrentRevision = 2;
     public const int MaximumHundredths = 10_000;
     public const long MaximumExperience = 100_000_000;
 
@@ -17,6 +17,14 @@ public static class SkillProgressionRules
 
     public static int GetSpellExperienceGain(ushort comprehension, ushort spiritualRoot) =>
         500 + ((comprehension + spiritualRoot) / 20);
+
+    public static int ApplyExperienceBonus(int baseGain, int effectBasisPoints)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(baseGain);
+        return checked((int)Math.Max(
+            1L,
+            AptitudeCombatBonusFormula.Apply((long)baseGain, effectBasisPoints)));
+    }
 
     public static ushort GetMasteryHundredths(long experience)
     {
@@ -33,9 +41,15 @@ public static class SkillProgressionRules
         ushort understandingHundredths) =>
         Math.Clamp(100 + (comprehension / 20) - (understandingHundredths / 40), 25, 750);
 
-    public static ushort ApplyUnderstandingGain(ushort current, ushort comprehension)
+    public static ushort ApplyUnderstandingGain(
+        ushort current,
+        ushort comprehension,
+        int effectBasisPoints = AptitudeCombatBonusFormula.NeutralEffectBasisPoints)
     {
-        var gain = 50 + (comprehension / 100);
+        var baseGain = 50 + (comprehension / 100);
+        var gain = Math.Max(
+            1L,
+            AptitudeCombatBonusFormula.Apply((long)baseGain, effectBasisPoints));
         return checked((ushort)Math.Min(MaximumHundredths, current + gain));
     }
 

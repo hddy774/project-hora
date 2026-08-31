@@ -299,6 +299,8 @@ public sealed record AgentSnapshot(
     long SpellTrainingExperience,
     int SpellUnderstanding,
     int CombatExperience,
+    int CombatMastery,
+    int CombatUnderstanding,
     int Wins,
     int Losses,
     int Health,

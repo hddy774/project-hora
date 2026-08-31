@@ -107,7 +107,10 @@ public sealed partial class World
             _totalMonsterVictories++;
             _agents.MonsterVictories[index]++;
             var experienceGain = checked(40 + (int)Math.Min(600L, danger / 200));
-            _agents.CombatExperience[index] = checked(_agents.CombatExperience[index] + experienceGain);
+            ApplyCombatProgress(
+                index,
+                experienceGain,
+                2 + Math.Min(6, monster.BaseDanger / 500));
             _agents.AddMaterial(index, monster.DropMaterial, 1 + _random.NextInt(3));
             if (_random.NextInt(100) < 35)
             {

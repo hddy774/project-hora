@@ -347,14 +347,20 @@ public sealed partial class World
         _agents.Wins[winner]++;
         _agents.Losses[loser]++;
         var combinedActions = checked(_agents.CombatActions[winner] + _agents.CombatActions[loser]);
-        var winnerGain = 150
+        var winnerBaseGain = 150
             + Math.Min(500, _agents.CombatExperience[loser] / 1_000)
             + Math.Min(350, combinedActions * 3);
-        var loserGain = 70
+        var loserBaseGain = 70
             + Math.Min(220, _agents.CombatExperience[winner] / 2_000)
             + Math.Min(150, combinedActions);
-        _agents.CombatExperience[winner] = checked(_agents.CombatExperience[winner] + winnerGain);
-        _agents.CombatExperience[loser] = checked(_agents.CombatExperience[loser] + loserGain);
+        var winnerGain = ApplyCombatProgress(
+            winner,
+            winnerBaseGain,
+            8 + Math.Min(12, combinedActions / 10));
+        ApplyCombatProgress(
+            loser,
+            loserBaseGain,
+            4 + Math.Min(8, combinedActions / 15));
         _agents.LastOpponents[winner] = loser;
         _agents.LastOpponents[loser] = winner;
         _agents.LastCombatTicks[winner] = Tick.Value;
@@ -410,12 +416,31 @@ public sealed partial class World
             + stats.Defense
             + (stats.MaximumHealth / 4)
             + (stats.MaximumQi / 6)
-            + _agents.CombatExperience[index]);
+            + ((stats.Judgment + stats.Focus) / 2));
     }
 
     private int IntegerExperienceAdvantage(int actor, int target)
     {
-        var difference = _agents.CombatExperience[actor] - _agents.CombatExperience[target];
-        return Math.Clamp(difference / 20, -1_200, 1_200);
+        var actorStats = _agents.CombatAttributes[actor];
+        var targetStats = _agents.CombatAttributes[target];
+        var difference = checked(
+            actorStats.Judgment + actorStats.Focus
+            - targetStats.Judgment - targetStats.Focus);
+        return Math.Clamp(difference / 5, -1_200, 1_200);
+    }
+
+    private int ApplyCombatProgress(int index, int baseExperienceGain, int baseUnderstandingGain)
+    {
+        var bonuses = _agents.GetCombatBonuses(index);
+        var before = _agents.CombatExperience[index];
+        _agents.CombatExperience[index] = CombatProgressionRules.ApplyExperienceGain(
+            before,
+            baseExperienceGain,
+            bonuses.CombatExperienceGainBasisPoints);
+        _agents.CombatUnderstanding[index] = CombatProgressionRules.ApplyUnderstandingGain(
+            _agents.CombatUnderstanding[index],
+            baseUnderstandingGain,
+            bonuses.CombatUnderstandingEffectBasisPoints);
+        return checked(_agents.CombatExperience[index] - before);
     }
 }

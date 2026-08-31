@@ -53,6 +53,10 @@ public partial class MainWindow
         {
             UpdateRelationsView(agent.Relations ?? Array.Empty<RelationSnapshot>());
         }
+        if (TeachingExpander.IsExpanded && agent.Teaching is { } teaching)
+        {
+            UpdateTeachingView(teaching);
+        }
         CultivationProgressBar.Maximum = Math.Max(1, agent.CultivationRequirement);
         CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
         CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
@@ -217,6 +221,7 @@ public partial class MainWindow
         1 => entry.Activity is AgentActivity.Cultivating
             or AgentActivity.TrainingTechnique
             or AgentActivity.TrainingSpell
+            or AgentActivity.Teaching
             or AgentActivity.Recovering
             || entry.WorldEventKind is WorldEventKind.TechniqueEnlightenment
                 or WorldEventKind.SpellEnlightenment
@@ -316,6 +321,7 @@ public partial class MainWindow
         AgentGoalKind.SeekStrongerOpponent => "강자 도전",
         AgentGoalKind.ExploreWorld => "세계 탐색",
         AgentGoalKind.CompleteReincarnation => "윤회 완료",
+        AgentGoalKind.GuideDisciple => "제자 지도·전승",
         _ => goal.ToString(),
     };
 
@@ -334,6 +340,9 @@ public partial class MainWindow
         DecisionReasonCode.CombatResponse => "상대의 도전에 대응",
         DecisionReasonCode.CombatRecovery => "전투 종료 후 회복",
         DecisionReasonCode.ReincarnationHandoff => "죽음 이후 윤회 절차 진입",
+        DecisionReasonCode.TeachingOpportunity => "관계·지식 격차에 따른 가르침 기회",
+        DecisionReasonCode.TeachingContinuation => "진행 중인 가르침·전승 유지",
+        DecisionReasonCode.TeachingInterrupted => "전투·생애 경계로 가르침 중단",
         _ => reason.ToString(),
     };
 
@@ -367,7 +376,10 @@ public partial class MainWindow
                 var history = latestHistory.Sequence == 0
                     ? "중요 역사 없음"
                     : $"최근 역사 {FormatRelationHistory(latestHistory.Kind)} · " +
-                        $"{FormatGameDate(GameCalendar.GetDate(new SimulationTick(latestHistory.Tick)))}";
+                        $"{FormatGameDate(GameCalendar.GetDate(new SimulationTick(latestHistory.Tick)))}" +
+                        (latestHistory.TeachingTarget is { } target
+                            ? $" · {FormatTeachingTarget(target)} · {latestHistory.KnowledgeRef} · {latestHistory.ProvenanceId}"
+                            : string.Empty);
                 return
                     $"{relation.OtherName} · {relation.OtherAgentId} · {relation.OtherPersonId} · {relation.Id}\n" +
                     $"역할 {role}\n" +
@@ -417,7 +429,100 @@ public partial class MainWindow
         RelationHistoryKind.RelationCreated => "관계 인지 시작",
         RelationHistoryKind.RoleFormed => "관계 역할 성립",
         RelationHistoryKind.RoleEndedAtLifeBoundary => "생애 경계로 관계 역할 종료",
+        RelationHistoryKind.TeachingTransmissionEstablished => "중요 전승 성립",
+        RelationHistoryKind.TeachingTransmissionUpdated => "중요 전승 갱신",
         _ => kind.ToString(),
+    };
+
+    private void UpdateTeachingView(TeachingSnapshot teaching)
+    {
+        if (teaching.Latest.AuthorityRevision == 0
+            && teaching.LatestLearning.AuthorityRevision == 0)
+        {
+            TeachingText.Text =
+                $"{teaching.ContractId} r{teaching.ContractRevision} · 아직 사제 Teaching 기록 없음\n" +
+                $"일반 Teaching 직접 수행 속도 {teaching.DirectCultivationSpeedBonusBasisPoints / 100m:0.##}% · " +
+                $"{TeachingRules.ProvisionalReviewId} 다음 버전 검토";
+            return;
+        }
+
+        var traces = new List<string>(2);
+        if (teaching.Latest.AuthorityRevision > 0)
+        {
+            traces.Add(FormatTeachingTrace(
+                "가르친 기록",
+                teaching.Latest,
+                teaching.LatestParticipants));
+        }
+        if (teaching.LatestLearning.AuthorityRevision > 0)
+        {
+            traces.Add(FormatTeachingTrace(
+                "배운 기록",
+                teaching.LatestLearning,
+                teaching.LatestLearningParticipants));
+        }
+
+        TeachingText.Text =
+            $"{teaching.ContractId} r{teaching.ContractRevision}" +
+            (teaching.RequiresReview ? $" · {TeachingRules.ProvisionalReviewId} 다음 버전 검토" : string.Empty) +
+            $"\n오해 누적(공법/법술) {teaching.TechniqueMisunderstandingPoints / 100m:0.00}/{teaching.SpellMisunderstandingPoints / 100m:0.00}" +
+            $"\n일반 Teaching 직접 수행 속도 {teaching.DirectCultivationSpeedBonusBasisPoints / 100m:0.##}% — 숙련 경험·이해·오해 교정·전승 접근만 변경" +
+            $"\n\n{string.Join("\n\n", traces)}";
+    }
+
+    private static string FormatTeachingTrace(
+        string label,
+        TeachingTraceState trace,
+        TeachingParticipantSnapshot? participants)
+    {
+        var teacherText = participants is null
+            ? trace.TeacherPersonId.ToString()
+            : $"{participants.TeacherName} · {participants.TeacherId} · {trace.TeacherPersonId}";
+        var learnerText = participants is null
+            ? $"{new AgentId(trace.LearnerAgent)} · {trace.LearnerPersonId}"
+            : $"{participants.LearnerName} · {participants.LearnerId} · {trace.LearnerPersonId}";
+        var resultTime = trace.IsActive || trace.LastResult == TeachingResultKind.None
+            ? "판정 대기"
+            : FormatGameDate(GameCalendar.GetDate(new SimulationTick(trace.LastResultTick)));
+        var effect = trace.LastResult switch
+        {
+            TeachingResultKind.LearningProgress
+                or TeachingResultKind.TransmissionEstablished
+                or TeachingResultKind.TransmissionUpdated =>
+                $"이해 +{trace.LastGain / 100m:0.00}",
+            TeachingResultKind.Correction => $"오해 -{trace.LastGain / 100m:0.00}",
+            TeachingResultKind.Misunderstanding =>
+                $"오해 누적 {trace.MisunderstandingPoints / 100m:0.00}",
+            _ => "수치 변화 없음",
+        };
+        return
+            $"{label} · 권위 revision {trace.AuthorityRevision:N0}" +
+            $"\n교사 {teacherText} → 학습자 {learnerText}" +
+            $"\n대상 {FormatTeachingTarget(trace.TargetKind)} · 품질 {QualityRules.Format(QualityValue.FromHundredths(trace.SourceQuality))} · {trace.TargetKnowledgeRef}" +
+            $"\nprovenance {trace.ProvenanceId} · 관계 {trace.RelationId}" +
+            $"\n시작 {FormatGameDate(GameCalendar.GetDate(new SimulationTick(trace.StartedTick)))} · 상태 {(trace.IsActive ? "진행 중" : "정산 완료")}" +
+            $"\n최근 결과 {FormatTeachingResult(trace.LastResult)} · {effect} · 전승 진전 {trace.SessionsCompleted:N0}회 · {resultTime}" +
+            $"\n전승 {(trace.TransmissionEstablished ? "성립" : "미성립")}";
+    }
+
+    private static string FormatTeachingTarget(TeachingTargetKind target) => target switch
+    {
+        TeachingTargetKind.Technique => "공법",
+        TeachingTargetKind.Spell => "법술",
+        _ => target.ToString(),
+    };
+
+    private static string FormatTeachingResult(TeachingResultKind result) => result switch
+    {
+        TeachingResultKind.None => "판정 전",
+        TeachingResultKind.LearningProgress => "학습·이해 진전",
+        TeachingResultKind.Misunderstanding => "오해 발생",
+        TeachingResultKind.Correction => "오해 교정",
+        TeachingResultKind.TransmissionEstablished => "전승 성립",
+        TeachingResultKind.TransmissionUpdated => "전승 갱신",
+        TeachingResultKind.Interrupted => "중단",
+        TeachingResultKind.Refused => "거부",
+        _ => result.ToString(),
     };
 
     private void UpdateAptitudeDetailView(AgentSnapshot agent)

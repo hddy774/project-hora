@@ -35,6 +35,12 @@ internal sealed class AgentStore
         LifeStates = new PersonLifeState[count];
         DecisionTraces = new AgentDecisionTraceState[count];
         DecisionAuthorityRevisions = new long[count];
+        TeachingTraces = new TeachingTraceState[count];
+        TeachingAuthorityRevisions = new long[count];
+        LearningTraces = new TeachingTraceState[count];
+        LearningAuthorityRevisions = new long[count];
+        TechniqueMisunderstandingPoints = new ushort[count];
+        SpellMisunderstandingPoints = new ushort[count];
         BirthTicks = new long[count];
         LifeNumbers = new int[count];
         BottleneckFailures = new ushort[count];
@@ -108,6 +114,8 @@ internal sealed class AgentStore
         Array.Fill(ActiveMissionMaterials, byte.MaxValue);
         Array.Fill(EquippedTreasureQualities, EconomyRules.EmptyTreasureQuality);
         Array.Fill(LastActionMonths, -1);
+        Array.Fill(TeachingTraces, TeachingTraceState.Empty);
+        Array.Fill(LearningTraces, TeachingTraceState.Empty);
         for (var index = 0; index < count; index++)
         {
             Chronicles[index] = [];
@@ -133,6 +141,12 @@ internal sealed class AgentStore
     public PersonLifeState[] LifeStates { get; }
     public AgentDecisionTraceState[] DecisionTraces { get; }
     public long[] DecisionAuthorityRevisions { get; }
+    public TeachingTraceState[] TeachingTraces { get; }
+    public long[] TeachingAuthorityRevisions { get; }
+    public TeachingTraceState[] LearningTraces { get; }
+    public long[] LearningAuthorityRevisions { get; }
+    public ushort[] TechniqueMisunderstandingPoints { get; }
+    public ushort[] SpellMisunderstandingPoints { get; }
     public long[] BirthTicks { get; }
     public int[] LifeNumbers { get; }
     public ushort[] BottleneckFailures { get; }
@@ -245,6 +259,107 @@ internal sealed class AgentStore
         PersonCausalRules.DecisionContractRevision,
         RequiresReview: true,
         DecisionTraces[index]);
+
+    public void BeginTeaching(
+        int teacher,
+        int learner,
+        RelationId relationId,
+        TeachingTargetKind targetKind,
+        ushort sourceQuality,
+        TeachingKnowledgeRef targetKnowledgeRef,
+        TeachingProvenanceId provenanceId,
+        int sessionsCompleted,
+        bool transmissionEstablished,
+        long tick)
+    {
+        var revision = checked(TeachingAuthorityRevisions[teacher] + 1);
+        TeachingAuthorityRevisions[teacher] = revision;
+        TeachingTraces[teacher] = new TeachingTraceState(
+            revision,
+            IsActive: true,
+            learner,
+            PersonIdentityIds[teacher],
+            PersonIdentityIds[learner],
+            relationId,
+            targetKind,
+            sourceQuality,
+            targetKnowledgeRef,
+            provenanceId,
+            tick,
+            LastResultTick: 0,
+            TeachingResultKind.None,
+            LastGain: 0,
+            sessionsCompleted,
+            targetKind == TeachingTargetKind.Technique
+                ? TechniqueMisunderstandingPoints[learner]
+                : SpellMisunderstandingPoints[learner],
+            transmissionEstablished);
+        var learningRevision = checked(LearningAuthorityRevisions[learner] + 1);
+        LearningAuthorityRevisions[learner] = learningRevision;
+        LearningTraces[learner] = TeachingTraces[teacher] with
+        {
+            AuthorityRevision = learningRevision,
+        };
+    }
+
+    public void CompleteTeaching(
+        int teacher,
+        long tick,
+        TeachingResultKind result,
+        int gain,
+        ushort misunderstandingPoints,
+        bool transmissionEstablished)
+    {
+        var previous = TeachingTraces[teacher];
+        if (!previous.IsActive)
+        {
+            return;
+        }
+
+        var revision = checked(TeachingAuthorityRevisions[teacher] + 1);
+        TeachingAuthorityRevisions[teacher] = revision;
+        TeachingTraces[teacher] = previous with
+        {
+            AuthorityRevision = revision,
+            IsActive = false,
+            LastResultTick = tick,
+            LastResult = result,
+            LastGain = gain,
+            SessionsCompleted = TeachingRules.IsTransmissionProgress(result)
+                ? checked(previous.SessionsCompleted + 1)
+                : previous.SessionsCompleted,
+            MisunderstandingPoints = misunderstandingPoints,
+            TransmissionEstablished = transmissionEstablished,
+        };
+        var learner = previous.LearnerAgent;
+        if ((uint)learner < (uint)Count
+            && LearningTraces[learner].ProvenanceId == previous.ProvenanceId)
+        {
+            var learningRevision = checked(LearningAuthorityRevisions[learner] + 1);
+            LearningAuthorityRevisions[learner] = learningRevision;
+            LearningTraces[learner] = TeachingTraces[teacher] with
+            {
+                AuthorityRevision = learningRevision,
+            };
+        }
+    }
+
+    public void RestoreTeaching(
+        int index,
+        long authorityRevision,
+        TeachingTraceState latest,
+        long learningAuthorityRevision,
+        TeachingTraceState latestLearning,
+        ushort techniqueMisunderstanding,
+        ushort spellMisunderstanding)
+    {
+        TeachingAuthorityRevisions[index] = authorityRevision;
+        TeachingTraces[index] = latest;
+        LearningAuthorityRevisions[index] = learningAuthorityRevision;
+        LearningTraces[index] = latestLearning;
+        TechniqueMisunderstandingPoints[index] = techniqueMisunderstanding;
+        SpellMisunderstandingPoints[index] = spellMisunderstanding;
+    }
 
     public void RecordDecision(
         int index,
@@ -511,6 +626,12 @@ internal sealed class AgentStore
         SpellUnderstanding[index] = 0;
         CombatExperience[index] = 0;
         CombatUnderstanding[index] = 0;
+        TechniqueMisunderstandingPoints[index] = 0;
+        SpellMisunderstandingPoints[index] = 0;
+        TeachingAuthorityRevisions[index] = 0;
+        TeachingTraces[index] = TeachingTraceState.Empty;
+        LearningAuthorityRevisions[index] = 0;
+        LearningTraces[index] = TeachingTraceState.Empty;
         Wins[index] = 0;
         Losses[index] = 0;
         MaximumHealth[index] = 800

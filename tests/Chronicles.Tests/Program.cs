@@ -2,6 +2,10 @@ using Chronicles.Core;
 using Chronicles.Persistence;
 using Chronicles.Simulation;
 using System.Diagnostics;
+using System.IO.Compression;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json.Nodes;
 
 if (args.Contains("--verify-local-save", StringComparer.Ordinal))
 {
@@ -33,6 +37,7 @@ var tests = new (string Name, Action Body)[]
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("영혼·육신·현생 신원과 AI 행동 이유 권위", PersonIdentityAndDecisionAuthority),
     ("희소 방향 관계 6축·초기 Role·생애 경계", SparseDirectionalRelationsAndRoles),
+    ("사제 성립·Teaching 결과·전승 provenance·직접 수행 0%", TeachingVerticalFlow),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("부자 TOP 1000·기간별 상위권 변동·세계 연대기", WealthRankingHistoryAndWorldChronicle),
@@ -659,7 +664,7 @@ static void PersonIdentityAndDecisionAuthority()
     Equal(beforeObservation, world.ComputeStateHash(), "행동 이유 관찰은 권위 상태 무영향");
 
     var checkpoint = world.CreateCheckpoint();
-    Equal(21, checkpoint.SchemaVersion, "희소 관계 저장 schema");
+    Equal(22, checkpoint.SchemaVersion, "Teaching 저장 schema");
     var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
     Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "인물 신원·결정 codec·hash 왕복");
 
@@ -745,6 +750,230 @@ static void SparseDirectionalRelationsAndRoles()
     Console.WriteLine(
         $"RELATION PERF: 500명·160년 {stopwatch.Elapsed.TotalMilliseconds:N1} ms · " +
         $"관계 {relationStore.Relations.Length:N0}개 · 최대 degree {degree.Max():N0}");
+}
+
+static void TeachingVerticalFlow()
+{
+    Equal(0, RelationRules.DirectTeachingCultivationSpeedBonusBasisPoints, "일반 Teaching 직접 수행속도 0%");
+    Equal(
+        8,
+        Enum.GetValues<TeachingResultKind>().Distinct().Count(),
+        "Teaching Typed Result 8종");
+    var deterministicRoll = TeachingRules.GetDedicatedRollBasisPoints(
+        8804,
+        new TeachingProvenanceId(123456789),
+        55_000,
+        3);
+    Equal(
+        deterministicRoll,
+        TeachingRules.GetDedicatedRollBasisPoints(
+            8804,
+            new TeachingProvenanceId(123456789),
+            55_000,
+            3),
+        "Teaching 전용 roll 결정론");
+
+    var schema21Source = World.Create(88040, 8).CreateCheckpoint();
+    var schema21Agents = schema21Source.Agents
+        .Select(agent => agent with { Teaching = null })
+        .ToArray();
+    var schema21Relation = new RelationStateCheckpoint(
+        RelationRules.CreateId(0, 1),
+        0,
+        1,
+        schema21Agents[0].Identity!.Value.PersonId,
+        schema21Agents[1].Identity!.Value.PersonId,
+        default,
+        default,
+        RelationRole.None,
+        MasterAgent: -1,
+        CooperativeInteractions: 0,
+        JourneyInteractions: 0,
+        CombatInteractions: 0,
+        History:
+        [
+            new RelationHistoryEntry(
+                1,
+                0,
+                RelationHistoryKind.RelationCreated,
+                RelationRole.None,
+                schema21Agents[0].Identity!.Value.PersonId,
+                schema21Agents[1].Identity!.Value.PersonId),
+        ]);
+    var schema21Checkpoint = schema21Source with
+    {
+        SchemaVersion = 21,
+        Agents = schema21Agents,
+        Relations = new RelationStoreCheckpoint(1, [schema21Relation]),
+    };
+    var schema21Container = RemoveSchema22TeachingProperties(
+        WorldSaveCodec.Encode(schema21Checkpoint));
+    var schema21Restored = World.Restore(WorldSaveCodec.Decode(schema21Container));
+    True(
+        schema21Restored.CreateCheckpoint().Agents.All(agent =>
+            agent.Teaching is
+            {
+                AuthorityRevision: 0,
+                LearningAuthorityRevision: 0,
+                Latest.AuthorityRevision: 0,
+                LatestLearning.AuthorityRevision: 0,
+            }),
+        "schema 21은 빈 Teaching 권위로 이전");
+    Equal(1, schema21Restored.TotalRelations, "schema 21 관계 continuity 누락 필드 이전");
+
+    var world = World.Create(8804, 500);
+    WorldCheckpoint? checkpoint = null;
+    var activeTeacher = -1;
+    for (var year = 20; year <= 160 && activeTeacher < 0; year += 10)
+    {
+        world.AdvanceTo(GameCalendar.FromYears(year));
+        checkpoint = world.CreateCheckpoint();
+        activeTeacher = Array.FindIndex(
+            checkpoint.Agents,
+            agent => agent.Activity == AgentActivity.Teaching
+                && agent.Teaching is { Latest.IsActive: true });
+    }
+
+    True(checkpoint is not null && activeTeacher >= 0, "실제 AI Teaching 행동 예약");
+    var source = checkpoint!;
+    var teacher = source.Agents[activeTeacher];
+    var teaching = teacher.Teaching!.Value;
+    var trace = teaching.Latest;
+    var learnerIndex = trace.LearnerAgent;
+    var learner = source.Agents[learnerIndex];
+    True(
+        learner.Teaching is { } learning
+        && learning.LatestLearning.IsActive
+        && learning.LatestLearning.ProvenanceId == trace.ProvenanceId,
+        "교사·학습자 Teaching context provenance 연결");
+    True(trace.TargetKnowledgeRef.Value != 0 && trace.ProvenanceId.Value != 0, "지식 Ref·provenance 안정 ID");
+    True(
+        source.Relations!.Relations.Any(relation =>
+            relation.Id == trace.RelationId
+            && (relation.Roles & RelationRole.MasterDisciple) != 0
+            && relation.MasterAgent == activeTeacher),
+        "사제 Role 성립");
+
+    var missingMirrorAgents = source.Agents.ToArray();
+    var missingMirrorLearnerTeaching = learner.Teaching!.Value;
+    missingMirrorAgents[learnerIndex] = learner with
+    {
+        Teaching = missingMirrorLearnerTeaching with
+        {
+            LearningAuthorityRevision = 0,
+            LatestLearning = TeachingTraceState.Empty,
+        },
+    };
+    Throws<InvalidDataException>(
+        () => World.Restore(source with { Agents = missingMirrorAgents }),
+        "활성 Teaching 한쪽 mirror 누락 저장 거부");
+
+    var forgedProvenance = new TeachingProvenanceId(trace.ProvenanceId.Value ^ 1UL);
+    var forgedAgents = source.Agents.ToArray();
+    forgedAgents[activeTeacher] = teacher with
+    {
+        Teaching = teaching with
+        {
+            Latest = teaching.Latest with { ProvenanceId = forgedProvenance },
+        },
+    };
+    forgedAgents[learnerIndex] = learner with
+    {
+        Teaching = missingMirrorLearnerTeaching with
+        {
+            LatestLearning = missingMirrorLearnerTeaching.LatestLearning with
+            {
+                ProvenanceId = forgedProvenance,
+            },
+        },
+    };
+    Throws<InvalidDataException>(
+        () => World.Restore(source with { Agents = forgedAgents }),
+        "Teaching provenance 파생값 위조 저장 거부");
+
+    var agents = source.Agents.ToArray();
+    var teacherDueTick = teacher.NextDecisionTick;
+    var postponedTick = checked(teacherDueTick + GameCalendar.TicksPerYear);
+    for (var index = 0; index < agents.Length; index++)
+    {
+        if (index != activeTeacher && agents[index].NextDecisionTick != long.MaxValue)
+        {
+            agents[index] = agents[index] with
+            {
+                NextDecisionTick = Math.Max(agents[index].NextDecisionTick, postponedTick),
+            };
+        }
+    }
+    var isolated = World.Restore(source with { Agents = agents });
+    True(
+        isolated.GetAgentSnapshot(new AgentId(activeTeacher)).Teaching is null,
+        "접힌 Teaching UI는 상세 DTO를 생성하지 않음");
+    var teacherBefore = isolated.GetAgentSnapshot(
+        new AgentId(activeTeacher),
+        includeTeaching: true);
+    var learnerBefore = isolated.GetAgentSnapshot(
+        new AgentId(learnerIndex),
+        includeTeaching: true);
+    isolated.AdvanceTo(new SimulationTick(teacherDueTick));
+    var teacherAfter = isolated.GetAgentSnapshot(
+        new AgentId(activeTeacher),
+        includeTeaching: true);
+    var learnerAfter = isolated.GetAgentSnapshot(
+        new AgentId(learnerIndex),
+        includeTeaching: true);
+    True(!teacherAfter.Teaching!.Latest.IsActive, "Teaching 결과 정산 완료");
+    True(
+        teacherAfter.Teaching!.Latest.LastResult is not TeachingResultKind.None,
+        "Teaching Typed Result 발생");
+    True(
+        !string.IsNullOrWhiteSpace(
+            teacherAfter.Teaching.LatestParticipants?.TeacherName)
+        && !string.IsNullOrWhiteSpace(
+            teacherAfter.Teaching.LatestParticipants?.LearnerName),
+        "Teaching 상세 DTO 교사·학습자 이름 투영");
+    Equal(teacherBefore.CultivationProgress, teacherAfter.CultivationProgress, "교사의 직접 수행 Work 0");
+    Equal(learnerBefore.CultivationProgress, learnerAfter.CultivationProgress, "학습자의 직접 수행 Work 0");
+    True(
+        learnerAfter.TechniqueTrainingExperience != learnerBefore.TechniqueTrainingExperience
+        || learnerAfter.SpellTrainingExperience != learnerBefore.SpellTrainingExperience
+        || learnerAfter.TechniqueUnderstanding != learnerBefore.TechniqueUnderstanding
+        || learnerAfter.SpellUnderstanding != learnerBefore.SpellUnderstanding
+        || learnerAfter.Teaching!.TechniqueMisunderstandingPoints
+            != learnerBefore.Teaching!.TechniqueMisunderstandingPoints
+        || learnerAfter.Teaching!.SpellMisunderstandingPoints
+            != learnerBefore.Teaching!.SpellMisunderstandingPoints,
+        "Teaching은 숙련 경험·이해 또는 오해 상태를 변경");
+
+    var completedCheckpoint = isolated.CreateCheckpoint();
+    var completedTrace = teacherAfter.Teaching.Latest;
+    var completedRelation = completedCheckpoint.Relations!.Relations.Single(
+        relation => relation.Id == completedTrace.RelationId);
+    var persistedTeachingSessions = completedTrace.TargetKind == TeachingTargetKind.Technique
+        ? completedRelation.TechniqueTeachingSessions
+        : completedRelation.SpellTeachingSessions;
+    Equal(
+        completedTrace.SessionsCompleted,
+        persistedTeachingSessions,
+        "relation+knowledgeRef 전승 진전 회차 연속성");
+    var transmissionHistory = completedCheckpoint.Relations!.Relations
+        .SelectMany(relation => relation.History)
+        .FirstOrDefault(history => history.Kind is
+            RelationHistoryKind.TeachingTransmissionEstablished
+            or RelationHistoryKind.TeachingTransmissionUpdated);
+    True(
+        transmissionHistory.Sequence > 0
+        && transmissionHistory.TeachingTarget is not null
+        && transmissionHistory.KnowledgeRef.Value != 0
+        && transmissionHistory.ProvenanceId.Value != 0,
+        "중요 전승 관계 역사는 대상 Ref·provenance를 영구 보존");
+    var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(completedCheckpoint)));
+    Equal(isolated.ComputeStateHash(), restored.ComputeStateHash(), "Teaching codec·hash 왕복");
+    var beforeObservation = isolated.ComputeStateHash();
+    _ = isolated.GetAgentSnapshot(
+        new AgentId(activeTeacher),
+        includeRelations: true,
+        includeTeaching: true);
+    Equal(beforeObservation, isolated.ComputeStateHash(), "Teaching·관계 관찰 무영향");
 }
 
 static void WorldPersonalLogsAndPermanentChronicle()
@@ -872,7 +1101,7 @@ static void DetailedAptitudesAuthorityAndLazyProjection()
     var world = World.CreateDefault(741103);
     var checkpoint = world.CreateCheckpoint();
     stopwatch.Stop();
-    Equal(21, checkpoint.SchemaVersion, "세부 선천자질·희소 관계 저장 schema");
+    Equal(22, checkpoint.SchemaVersion, "세부 선천자질·Teaching 저장 schema");
 
     long summaryTotal = 0;
     var summaryMinimum = int.MaxValue;
@@ -1586,7 +1815,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 21, "희소 관계 저장 schema 21");
+    True(checkpoint.SchemaVersion == 22, "Teaching 저장 schema 22");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");
@@ -2124,6 +2353,67 @@ static void DefaultWorldPerformanceBudget()
     True(
         totalStopwatch.Elapsed < TimeSpan.FromSeconds(10),
         $"10,000명 시뮬레이션 성능 예산 10초를 초과했습니다: {totalStopwatch.Elapsed.TotalSeconds:N2}초");
+}
+
+static byte[] RemoveSchema22TeachingProperties(byte[] container)
+{
+    using var input = new MemoryStream(container, writable: false);
+    using var reader = new BinaryReader(input, Encoding.UTF8, leaveOpen: true);
+    var magic = reader.ReadBytes(4);
+    var containerVersion = reader.ReadInt32();
+    var payloadLength = reader.ReadInt32();
+    _ = reader.ReadBytes(32);
+    var payload = reader.ReadBytes(payloadLength);
+
+    using var compressed = new MemoryStream(payload, writable: false);
+    using var decompressor = new BrotliStream(compressed, CompressionMode.Decompress);
+    using var jsonBuffer = new MemoryStream();
+    decompressor.CopyTo(jsonBuffer);
+    var root = JsonNode.Parse(jsonBuffer.ToArray())!.AsObject();
+    foreach (var agentNode in root["agents"]!.AsArray())
+    {
+        agentNode!.AsObject().Remove("teaching");
+    }
+
+    foreach (var relationNode in root["relations"]!["relations"]!.AsArray())
+    {
+        var relation = relationNode!.AsObject();
+        relation.Remove("techniqueTeachingSessions");
+        relation.Remove("spellTeachingSessions");
+        relation.Remove("techniqueTransmissionEstablished");
+        relation.Remove("spellTransmissionEstablished");
+        relation.Remove("techniqueKnowledgeRef");
+        relation.Remove("spellKnowledgeRef");
+        foreach (var historyNode in relation["history"]!.AsArray())
+        {
+            var history = historyNode!.AsObject();
+            history.Remove("teachingTarget");
+            history.Remove("knowledgeRef");
+            history.Remove("provenanceId");
+        }
+    }
+
+    var migratedJson = Encoding.UTF8.GetBytes(root.ToJsonString());
+    using var payloadBuffer = new MemoryStream();
+    using (var compressor = new BrotliStream(
+        payloadBuffer,
+        CompressionLevel.Optimal,
+        leaveOpen: true))
+    {
+        compressor.Write(migratedJson);
+    }
+
+    var migratedPayload = payloadBuffer.ToArray();
+    var checksum = SHA256.HashData(migratedPayload);
+    using var output = new MemoryStream();
+    using var writer = new BinaryWriter(output, Encoding.UTF8, leaveOpen: true);
+    writer.Write(magic);
+    writer.Write(containerVersion);
+    writer.Write(migratedPayload.Length);
+    writer.Write(checksum);
+    writer.Write(migratedPayload);
+    writer.Flush();
+    return output.ToArray();
 }
 
 static AgentCheckpoint WithSynchronizedAptitudeDetails(AgentCheckpoint agent)

@@ -240,7 +240,14 @@ public sealed partial class World
                     _agents.LifeStates[index]),
                 new AgentDecisionCheckpoint(
                     _agents.DecisionAuthorityRevisions[index],
-                    _agents.DecisionTraces[index]));
+                    _agents.DecisionTraces[index]),
+                new TeachingCheckpoint(
+                    _agents.TeachingAuthorityRevisions[index],
+                    _agents.TeachingTraces[index],
+                    _agents.LearningAuthorityRevisions[index],
+                    _agents.LearningTraces[index],
+                    _agents.TechniqueMisunderstandingPoints[index],
+                    _agents.SpellMisunderstandingPoints[index]));
         }
 
         return new WorldCheckpoint(
@@ -438,6 +445,28 @@ public sealed partial class World
                     null,
                     DecisionResolutionKind.Selected));
         }
+        if (schemaVersion >= 22 && checkpoint.Teaching is { } teaching)
+        {
+            _agents.RestoreTeaching(
+                index,
+                teaching.AuthorityRevision,
+                teaching.Latest,
+                teaching.LearningAuthorityRevision,
+                teaching.LatestLearning,
+                teaching.TechniqueMisunderstandingPoints,
+                teaching.SpellMisunderstandingPoints);
+        }
+        else
+        {
+            _agents.RestoreTeaching(
+                index,
+                0,
+                TeachingTraceState.Empty,
+                0,
+                TeachingTraceState.Empty,
+                techniqueMisunderstanding: 0,
+                spellMisunderstanding: 0);
+        }
         _agents.NextDecisionTicks[index] = checkpoint.NextDecisionTick;
         _agents.LastActionMonths[index] = checkpoint.LastActionMonth;
         _agents.LastActionTicks[index] = checkpoint.LastActionTick;
@@ -552,6 +581,13 @@ public sealed partial class World
                 || relation.RightPersonId != rightIdentity.PersonId))
         {
             throw new InvalidDataException("희소 관계의 현재 생 Identity 연결이 잘못되었습니다.");
+        }
+
+        IReadOnlyDictionary<ulong, RelationStateCheckpoint>? relationById = null;
+        if (checkpoint.SchemaVersion >= 22)
+        {
+            relationById = checkpoint.Relations!.Relations.ToDictionary(
+                relation => relation.Id.Value);
         }
 
         if (checkpoint.TotalMissionsCompleted < 0
@@ -725,6 +761,7 @@ public sealed partial class World
                 || !RealmRules.IsValidMinorStage(agent.RealmStage, agent.RealmLayer)
                 || !Enum.IsDefined(agent.CultivationState)
                 || !Enum.IsDefined(agent.CultivationBottleneckCause)
+                || !Enum.IsDefined(agent.Activity)
                 || agent.CultivationProgress < 0
                 || agent.CultivationProgress > GetCheckpointCultivationRequirement(checkpoint.SchemaVersion, agent)
                 || (agent.CultivationState == CultivationState.Bottleneck
@@ -752,7 +789,9 @@ public sealed partial class World
                 || (agent.LastActionMonth < 0 && (agent.LastActionTick != 0 || agent.ActionsTaken != 0))
                 || (agent.LastActionMonth >= 0
                     && GameCalendar.GetMonthIndex(new SimulationTick(agent.LastActionTick)) != agent.LastActionMonth)
-                || GameCalendar.GetMonthIndex(new SimulationTick(agent.NextDecisionTick)) <= agent.LastActionMonth
+                || (GameCalendar.GetMonthIndex(new SimulationTick(agent.NextDecisionTick))
+                        <= agent.LastActionMonth
+                    && !IsLifecycleBoundarySchedule(index, agent, checkpoint))
                 || agent.Opponent < -1
                 || agent.Opponent >= checkpoint.Agents.Length)
             {
@@ -795,6 +834,18 @@ public sealed partial class World
                 && !IsValidPersonCausalCheckpoint(index, agent, checkpoint.Tick))
             {
                 throw new InvalidDataException($"Agent {index}의 인물 신원·결정 추적 체크포인트가 잘못되었습니다.");
+            }
+
+            if (checkpoint.SchemaVersion >= 22
+                && !IsValidTeachingCheckpoint(
+                    index,
+                    agent,
+                    checkpoint,
+                    relationById!))
+            {
+                throw new InvalidDataException(
+                    $"Agent {index}의 사제·Teaching 체크포인트가 잘못되었습니다. "
+                    + DescribeTeachingCheckpoint(agent));
             }
 
             if (agent.PersonalLog.Any(entry =>
@@ -850,6 +901,40 @@ public sealed partial class World
         4 => 9,
         _ => throw new InvalidDataException("기존 소경지 값이 잘못되었습니다."),
     };
+
+    private static bool IsLifecycleBoundarySchedule(
+        int index,
+        AgentCheckpoint agent,
+        WorldCheckpoint checkpoint)
+    {
+        var ownBoundary = checked(
+            agent.BirthTick
+            + ((long)RealmRules.GetProfile(agent.RealmStage).MaximumLifespanYears
+                * GameCalendar.TicksPerYear));
+        if (agent.NextDecisionTick == ownBoundary)
+        {
+            return true;
+        }
+
+        if (agent.Activity != AgentActivity.Fighting
+            || (uint)agent.Opponent >= (uint)checkpoint.Agents.Length
+            || agent.Opponent == index)
+        {
+            return false;
+        }
+
+        var opponent = checkpoint.Agents[agent.Opponent];
+        if (!RealmRules.IsValidMinorStage(opponent.RealmStage, opponent.RealmLayer))
+        {
+            return false;
+        }
+
+        var opponentBoundary = checked(
+            opponent.BirthTick
+            + ((long)RealmRules.GetProfile(opponent.RealmStage).MaximumLifespanYears
+                * GameCalendar.TicksPerYear));
+        return agent.NextDecisionTick == opponentBoundary;
+    }
 
     private static int MigrateLegacyCultivationWork(
         RealmStage realm,
@@ -1022,6 +1107,231 @@ public sealed partial class World
         }
 
         return true;
+    }
+
+    private static bool IsValidTeachingCheckpoint(
+        int owner,
+        AgentCheckpoint agent,
+        WorldCheckpoint checkpoint,
+        IReadOnlyDictionary<ulong, RelationStateCheckpoint> relationById)
+    {
+        if (agent.Teaching is not { } teaching
+            || teaching.AuthorityRevision < 0
+            || teaching.LearningAuthorityRevision < 0
+            || teaching.AuthorityRevision == long.MaxValue
+            || teaching.LearningAuthorityRevision == long.MaxValue
+            || teaching.Latest.AuthorityRevision != teaching.AuthorityRevision
+            || teaching.LatestLearning.AuthorityRevision != teaching.LearningAuthorityRevision
+            || !IsValidTeachingRevisionParity(
+                teaching.AuthorityRevision,
+                teaching.Latest.IsActive)
+            || !IsValidTeachingRevisionParity(
+                teaching.LearningAuthorityRevision,
+                teaching.LatestLearning.IsActive)
+            || (agent.Activity == AgentActivity.Teaching) != teaching.Latest.IsActive
+            || teaching.TechniqueMisunderstandingPoints > QualityValue.MaximumHundredths
+            || teaching.SpellMisunderstandingPoints > QualityValue.MaximumHundredths
+            || !TeachingRules.IsValidTrace(
+                teaching.Latest,
+                checkpoint.Agents.Length,
+                checkpoint.Tick)
+            || !TeachingRules.IsValidTrace(
+                teaching.LatestLearning,
+                checkpoint.Agents.Length,
+                checkpoint.Tick))
+        {
+            return false;
+        }
+
+        return IsValidTeachingTraceOwner(
+                owner,
+                agent,
+                teaching.Latest,
+                checkpoint,
+                relationById,
+                ownerIsTeacher: true)
+            && IsValidTeachingTraceOwner(
+                owner,
+                agent,
+                teaching.LatestLearning,
+                checkpoint,
+                relationById,
+                ownerIsTeacher: false);
+    }
+
+    private static bool IsValidTeachingRevisionParity(
+        long revision,
+        bool isActive) => revision == 0
+        ? !isActive
+        : isActive
+            ? (revision & 1L) == 1L
+            : (revision & 1L) == 0L;
+
+    private static string DescribeTeachingCheckpoint(AgentCheckpoint agent)
+    {
+        if (agent.Teaching is not { } teaching)
+        {
+            return "Teaching 없음";
+        }
+
+        var outgoing = teaching.Latest;
+        var incoming = teaching.LatestLearning;
+        return $"activity={agent.Activity}, person={agent.Identity?.PersonId.Value ?? 0}, "
+            + $"outRev={teaching.AuthorityRevision}/{outgoing.AuthorityRevision}, "
+            + $"outActive={outgoing.IsActive}, outLearner={outgoing.LearnerAgent}, "
+            + $"outTeacherPerson={outgoing.TeacherPersonId.Value}, "
+            + $"outLearnerPerson={outgoing.LearnerPersonId.Value}, "
+            + $"inRev={teaching.LearningAuthorityRevision}/{incoming.AuthorityRevision}, "
+            + $"inActive={incoming.IsActive}, inLearner={incoming.LearnerAgent}, "
+            + $"inTeacherPerson={incoming.TeacherPersonId.Value}, "
+            + $"inLearnerPerson={incoming.LearnerPersonId.Value}";
+    }
+
+    private static bool IsValidTeachingTraceOwner(
+        int owner,
+        AgentCheckpoint ownerCheckpoint,
+        TeachingTraceState trace,
+        WorldCheckpoint checkpoint,
+        IReadOnlyDictionary<ulong, RelationStateCheckpoint> relationById,
+        bool ownerIsTeacher)
+    {
+        if (trace.AuthorityRevision == 0)
+        {
+            return true;
+        }
+
+        var teacher = ownerIsTeacher
+            ? owner
+            : RelationRules.GetOtherAgent(trace.RelationId, trace.LearnerAgent);
+        relationById.TryGetValue(trace.RelationId.Value, out var relationState);
+        if (teacher < 0
+            || teacher >= checkpoint.Agents.Length
+            || trace.LearnerAgent == teacher
+            || trace.RelationId != RelationRules.CreateId(teacher, trace.LearnerAgent)
+            || trace.TargetKnowledgeRef != TeachingRules.CreateKnowledgeRef(
+                trace.TeacherPersonId,
+                trace.TargetKind,
+                trace.SourceQuality)
+            || trace.ProvenanceId != TeachingRules.CreateProvenanceId(
+                trace.RelationId,
+                trace.TargetKnowledgeRef,
+                trace.StartedTick)
+            || !IsValidHistoricalPersonId(
+                trace.TeacherPersonId,
+                teacher,
+                checkpoint.Agents[teacher].LifeNumber)
+            || !IsValidHistoricalPersonId(
+                trace.LearnerPersonId,
+                trace.LearnerAgent,
+                checkpoint.Agents[trace.LearnerAgent].LifeNumber)
+            || relationState is null
+            || (ownerIsTeacher
+                ? trace.TeacherPersonId != ownerCheckpoint.Identity!.Value.PersonId
+                : trace.LearnerAgent != owner
+                    || trace.LearnerPersonId != ownerCheckpoint.Identity!.Value.PersonId))
+        {
+            return false;
+        }
+
+        if (!trace.IsActive)
+        {
+            return true;
+        }
+
+        if (!IsValidActiveTeachingRuntimeState(
+                trace,
+                teacher,
+                relationState,
+                checkpoint))
+        {
+            return false;
+        }
+
+        var counterpart = ownerIsTeacher
+            ? checkpoint.Agents[trace.LearnerAgent].Teaching?.LatestLearning
+            : checkpoint.Agents[teacher].Teaching?.Latest;
+        return checkpoint.Agents[teacher].Activity == AgentActivity.Teaching
+            && checkpoint.Agents[teacher].Identity is { } teacherIdentity
+            && trace.TeacherPersonId == teacherIdentity.PersonId
+            && checkpoint.Agents[trace.LearnerAgent].Identity is { } learnerIdentity
+            && trace.LearnerPersonId == learnerIdentity.PersonId
+            && counterpart is { } matching
+            && AreMatchingTeachingContexts(trace, matching)
+            && (relationState.Roles & RelationRole.MasterDisciple) != 0
+            && relationState.MasterAgent == teacher;
+    }
+
+    private static bool IsValidActiveTeachingRuntimeState(
+        TeachingTraceState trace,
+        int teacher,
+        RelationStateCheckpoint relation,
+        WorldCheckpoint checkpoint)
+    {
+        if (trace.AuthorityRevision == long.MaxValue
+            || trace.SessionsCompleted == int.MaxValue
+            || trace.LastResult != TeachingResultKind.None
+            || trace.LastResultTick != 0
+            || trace.LastGain != 0
+            || checkpoint.Agents[trace.LearnerAgent].Teaching is not { } learnerTeaching)
+        {
+            return false;
+        }
+
+        var expectedQuality = trace.TargetKind == TeachingTargetKind.Technique
+            ? checkpoint.Agents[teacher].TechniqueQuality
+            : checkpoint.Agents[teacher].SpellQuality;
+        var expectedMisunderstanding = trace.TargetKind == TeachingTargetKind.Technique
+            ? learnerTeaching.TechniqueMisunderstandingPoints
+            : learnerTeaching.SpellMisunderstandingPoints;
+        var storedKnowledgeRef = trace.TargetKind == TeachingTargetKind.Technique
+            ? relation.TechniqueKnowledgeRef
+            : relation.SpellKnowledgeRef;
+        var expectedSessions = storedKnowledgeRef == trace.TargetKnowledgeRef
+            ? trace.TargetKind == TeachingTargetKind.Technique
+                ? relation.TechniqueTeachingSessions
+                : relation.SpellTeachingSessions
+            : 0;
+        var expectedTransmission = storedKnowledgeRef == trace.TargetKnowledgeRef
+            && (trace.TargetKind == TeachingTargetKind.Technique
+                ? relation.TechniqueTransmissionEstablished
+                : relation.SpellTransmissionEstablished);
+        return trace.SourceQuality == expectedQuality
+            && trace.MisunderstandingPoints == expectedMisunderstanding
+            && trace.SessionsCompleted == expectedSessions
+            && trace.TransmissionEstablished == expectedTransmission;
+    }
+
+    private static bool AreMatchingTeachingContexts(
+        TeachingTraceState left,
+        TeachingTraceState right) =>
+        left.IsActive
+        && right.IsActive
+        && left.LearnerAgent == right.LearnerAgent
+        && left.TeacherPersonId == right.TeacherPersonId
+        && left.LearnerPersonId == right.LearnerPersonId
+        && left.RelationId == right.RelationId
+        && left.TargetKind == right.TargetKind
+        && left.SourceQuality == right.SourceQuality
+        && left.TargetKnowledgeRef == right.TargetKnowledgeRef
+        && left.ProvenanceId == right.ProvenanceId
+        && left.StartedTick == right.StartedTick
+        && left.LastResultTick == right.LastResultTick
+        && left.LastResult == right.LastResult
+        && left.LastGain == right.LastGain
+        && left.SessionsCompleted == right.SessionsCompleted
+        && left.MisunderstandingPoints == right.MisunderstandingPoints
+        && left.TransmissionEstablished == right.TransmissionEstablished;
+
+    private static bool IsValidHistoricalPersonId(
+        PersonIdentityId personId,
+        int agent,
+        int currentLifeNumber)
+    {
+        var encodedAgent = (uint)personId.Value;
+        var lifeNumber = personId.Value >> 32;
+        return encodedAgent == checked((uint)agent + 1U)
+            && lifeNumber >= 1
+            && lifeNumber <= (ulong)currentLifeNumber;
     }
 
     private static bool IsValidWorldEvent(

@@ -113,7 +113,9 @@ public sealed class SimulationRunner : IDisposable
                 includeAptitudeDetails:
                     (sections & ObservationSections.AptitudeDetails) != 0,
                 includeRelations:
-                    (sections & ObservationSections.Relations) != 0);
+                    (sections & ObservationSections.Relations) != 0,
+                includeTeaching:
+                    (sections & ObservationSections.Teaching) != 0);
             return new WorldObservation(
                 world,
                 agent,

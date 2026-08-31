@@ -22,7 +22,7 @@ public sealed partial class World
         60_000, // 반선경
     ];
 
-    private void ResolveSeekingChallenge(int challenger)
+    private bool ResolveSeekingChallenge(int challenger)
     {
         _totalChallenges++;
         _agents.ChallengesIssued[challenger]++;
@@ -30,10 +30,11 @@ public sealed partial class World
         if (defender < 0)
         {
             _agents.Activities[challenger] = AgentActivity.Cultivating;
-            return;
+            return false;
         }
 
         StartCombat(challenger, defender);
+        return true;
     }
 
     private int FindChallengeTarget(int challenger)
@@ -77,6 +78,8 @@ public sealed partial class World
 
     private void StartCombat(int challenger, int defender)
     {
+        InterruptTeachingContexts(challenger);
+        InterruptTeachingContexts(defender);
         _totalCombatsStarted++;
         _activeCombats++;
         _agents.Opponents[challenger] = defender;
@@ -105,6 +108,7 @@ public sealed partial class World
         // 방어자의 기존 예약을 무효화한다. 도전자의 다음 예약은 현재 행동을 마친
         // 공통 스케줄러가 만들고, 이후부터는 전투 턴 소유자만 예약한다.
         ParkCombatant(defender);
+        ScheduleNextCombatEvent(challenger, defender);
         AddEvent(
             WorldEventKind.CombatStarted,
             challenger,
@@ -345,7 +349,20 @@ public sealed partial class World
         _agents.CombatTurnOwners[actor] = target;
         _agents.CombatTurnOwners[target] = target;
         ParkCombatant(actor);
-        ScheduleAgent(target, checked(Tick.Value + CalculateCombatActionDuration(target)));
+        ScheduleNextCombatEvent(target, actor);
+    }
+
+    private void ScheduleNextCombatEvent(int turnOwner, int waitingCombatant)
+    {
+        var actionTick = checked(Tick.Value + CalculateCombatActionDuration(turnOwner));
+        var lifecycleTick = Math.Min(
+            GetMaximumLifespanTick(turnOwner),
+            GetMaximumLifespanTick(waitingCombatant));
+        var nextTick = Math.Min(actionTick, lifecycleTick);
+        ScheduleAgent(
+            turnOwner,
+            nextTick,
+            lifecycleBoundary: nextTick == lifecycleTick);
     }
 
     private void ParkCombatant(int index) => _agents.NextDecisionTicks[index] = long.MaxValue;

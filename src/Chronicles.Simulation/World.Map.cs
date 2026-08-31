@@ -66,6 +66,7 @@ public sealed partial class World
                 case AgentActivity.Cultivating:
                 case AgentActivity.TrainingTechnique:
                 case AgentActivity.TrainingSpell:
+                case AgentActivity.Teaching:
                     cultivationByLocation[locationId]++;
                     break;
                 case AgentActivity.SeekingChallenge:

@@ -54,6 +54,7 @@ internal static class PresentationText
         AgentActivity.Traveling => "지역 이동",
         AgentActivity.HuntingMonster => "요수 사냥",
         AgentActivity.MiningSpiritStones => "영석 광맥 채굴",
+        AgentActivity.Teaching => "가르침",
         _ => activity.ToString(),
     };
 

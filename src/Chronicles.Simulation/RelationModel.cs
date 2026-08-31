@@ -32,6 +32,8 @@ public enum RelationHistoryKind : byte
     RelationCreated,
     RoleFormed,
     RoleEndedAtLifeBoundary,
+    TeachingTransmissionEstablished,
+    TeachingTransmissionUpdated,
 }
 
 public readonly record struct RelationMetrics(
@@ -48,7 +50,10 @@ public readonly record struct RelationHistoryEntry(
     RelationHistoryKind Kind,
     RelationRole ChangedRoles,
     PersonIdentityId LeftPersonId,
-    PersonIdentityId RightPersonId);
+    PersonIdentityId RightPersonId,
+    TeachingTargetKind? TeachingTarget = null,
+    TeachingKnowledgeRef KnowledgeRef = default,
+    TeachingProvenanceId ProvenanceId = default);
 
 public sealed record RelationStateCheckpoint(
     RelationId Id,
@@ -63,7 +68,13 @@ public sealed record RelationStateCheckpoint(
     ushort CooperativeInteractions,
     ushort JourneyInteractions,
     ushort CombatInteractions,
-    RelationHistoryEntry[] History);
+    RelationHistoryEntry[] History,
+    int TechniqueTeachingSessions = 0,
+    int SpellTeachingSessions = 0,
+    bool TechniqueTransmissionEstablished = false,
+    bool SpellTransmissionEstablished = false,
+    TeachingKnowledgeRef TechniqueKnowledgeRef = default,
+    TeachingKnowledgeRef SpellKnowledgeRef = default);
 
 public sealed record RelationStoreCheckpoint(
     long HistorySequence,
@@ -113,6 +124,29 @@ public static class RelationRules
         return new RelationId(
             ((ulong)checked((uint)left + 1U) << 32)
             | checked((uint)right + 1U));
+    }
+
+    internal static int GetOtherAgent(RelationId relationId, int agent)
+    {
+        var leftEncoded = (uint)(relationId.Value >> 32);
+        var rightEncoded = (uint)relationId.Value;
+        if (leftEncoded == 0 || rightEncoded == 0)
+        {
+            return -1;
+        }
+
+        var left = (long)leftEncoded - 1L;
+        var right = (long)rightEncoded - 1L;
+        if (left > int.MaxValue || right > int.MaxValue)
+        {
+            return -1;
+        }
+
+        return agent == (int)left
+            ? (int)right
+            : agent == (int)right
+                ? (int)left
+                : -1;
     }
 
     internal static RelationMetrics Apply(
@@ -183,6 +217,12 @@ internal sealed class SparseRelationStore
         public ushort CooperativeInteractions { get; set; }
         public ushort JourneyInteractions { get; set; }
         public ushort CombatInteractions { get; set; }
+        public int TechniqueTeachingSessions { get; set; }
+        public int SpellTeachingSessions { get; set; }
+        public bool TechniqueTransmissionEstablished { get; set; }
+        public bool SpellTransmissionEstablished { get; set; }
+        public TeachingKnowledgeRef TechniqueKnowledgeRef { get; set; }
+        public TeachingKnowledgeRef SpellKnowledgeRef { get; set; }
         public List<RelationHistoryEntry> History { get; } = new();
     }
 
@@ -280,6 +320,184 @@ internal sealed class SparseRelationStore
         return true;
     }
 
+    public bool TryEstablishMasterDisciple(
+        int teacher,
+        int learner,
+        PersonIdentityId teacherPersonId,
+        PersonIdentityId learnerPersonId,
+        long tick,
+        out RelationId relationId)
+    {
+        if (!TryGetOrCreate(
+                teacher,
+                learner,
+                teacherPersonId,
+                learnerPersonId,
+                tick,
+                out var relation))
+        {
+            relationId = default;
+            return false;
+        }
+
+        SynchronizePersonIdentities(
+            relation,
+            teacher,
+            teacherPersonId,
+            learner,
+            learnerPersonId);
+        if ((relation.Roles & RelationRole.MasterDisciple) != 0)
+        {
+            relationId = relation.Id;
+            return relation.MasterAgent == teacher;
+        }
+
+        var teacherDelta = new RelationMetricDelta(100, 100, 50, 0, -20, -20);
+        var learnerDelta = new RelationMetricDelta(100, 150, 300, 200, -20, -40);
+        if (relation.LeftAgent == teacher)
+        {
+            relation.LeftTowardRight = RelationRules.Apply(relation.LeftTowardRight, teacherDelta);
+            relation.RightTowardLeft = RelationRules.Apply(relation.RightTowardLeft, learnerDelta);
+        }
+        else
+        {
+            relation.LeftTowardRight = RelationRules.Apply(relation.LeftTowardRight, learnerDelta);
+            relation.RightTowardLeft = RelationRules.Apply(relation.RightTowardLeft, teacherDelta);
+        }
+
+        relation.Roles |= RelationRole.MasterDisciple;
+        relation.MasterAgent = teacher;
+        AddHistory(
+            relation,
+            tick,
+            RelationHistoryKind.RoleFormed,
+            RelationRole.MasterDisciple);
+        relationId = relation.Id;
+        return true;
+    }
+
+    public bool TryGetPerspective(
+        int agent,
+        int other,
+        out RelationMetrics towardOther,
+        out RelationRole roles,
+        out int masterAgent)
+    {
+        ValidateAgent(agent);
+        ValidateAgent(other);
+        var id = RelationRules.CreateId(agent, other);
+        if (!_indexById.TryGetValue(id.Value, out var relationIndex))
+        {
+            towardOther = default;
+            roles = RelationRole.None;
+            masterAgent = -1;
+            return false;
+        }
+
+        var relation = _relations[relationIndex];
+        towardOther = relation.LeftAgent == agent
+            ? relation.LeftTowardRight
+            : relation.RightTowardLeft;
+        roles = relation.Roles;
+        masterAgent = relation.MasterAgent;
+        return true;
+    }
+
+    public (int SessionsCompleted, bool TransmissionEstablished) GetTeachingContinuity(
+        RelationId relationId,
+        TeachingTargetKind targetKind,
+        TeachingKnowledgeRef knowledgeRef)
+    {
+        if (!_indexById.TryGetValue(relationId.Value, out var relationIndex))
+        {
+            throw new InvalidOperationException("Teaching 관계가 존재하지 않습니다.");
+        }
+
+        var relation = _relations[relationIndex];
+        return targetKind switch
+        {
+            TeachingTargetKind.Technique when relation.TechniqueKnowledgeRef == knowledgeRef => (
+                relation.TechniqueTeachingSessions,
+                relation.TechniqueTransmissionEstablished),
+            TeachingTargetKind.Spell when relation.SpellKnowledgeRef == knowledgeRef => (
+                relation.SpellTeachingSessions,
+                relation.SpellTransmissionEstablished),
+            TeachingTargetKind.Technique or TeachingTargetKind.Spell => (0, false),
+            _ => throw new ArgumentOutOfRangeException(nameof(targetKind)),
+        };
+    }
+
+    public void RecordTeachingResult(
+        RelationId relationId,
+        long tick,
+        TeachingTargetKind targetKind,
+        TeachingKnowledgeRef knowledgeRef,
+        TeachingProvenanceId provenanceId,
+        TeachingResultKind result)
+    {
+        if (!_indexById.TryGetValue(relationId.Value, out var relationIndex))
+        {
+            throw new InvalidOperationException("Teaching 관계가 존재하지 않습니다.");
+        }
+
+        if (result == TeachingResultKind.None)
+        {
+            throw new ArgumentOutOfRangeException(nameof(result));
+        }
+
+        if (!TeachingRules.IsTransmissionProgress(result))
+        {
+            return;
+        }
+
+        var relation = _relations[relationIndex];
+        switch (targetKind)
+        {
+            case TeachingTargetKind.Technique:
+                if (relation.TechniqueKnowledgeRef != knowledgeRef)
+                {
+                    relation.TechniqueTeachingSessions = 0;
+                    relation.TechniqueTransmissionEstablished = false;
+                    relation.TechniqueKnowledgeRef = knowledgeRef;
+                }
+                relation.TechniqueTeachingSessions = checked(
+                    relation.TechniqueTeachingSessions + 1);
+                relation.TechniqueTransmissionEstablished |=
+                    result == TeachingResultKind.TransmissionEstablished;
+                break;
+            case TeachingTargetKind.Spell:
+                if (relation.SpellKnowledgeRef != knowledgeRef)
+                {
+                    relation.SpellTeachingSessions = 0;
+                    relation.SpellTransmissionEstablished = false;
+                    relation.SpellKnowledgeRef = knowledgeRef;
+                }
+                relation.SpellTeachingSessions = checked(
+                    relation.SpellTeachingSessions + 1);
+                relation.SpellTransmissionEstablished |=
+                    result == TeachingResultKind.TransmissionEstablished;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(targetKind));
+        }
+
+        if (result is TeachingResultKind.TransmissionEstablished
+            or TeachingResultKind.TransmissionUpdated)
+        {
+            var kind = result == TeachingResultKind.TransmissionEstablished
+                ? RelationHistoryKind.TeachingTransmissionEstablished
+                : RelationHistoryKind.TeachingTransmissionUpdated;
+            AddHistory(
+                relation,
+                tick,
+                kind,
+                RelationRole.None,
+                targetKind,
+                knowledgeRef,
+                provenanceId);
+        }
+    }
+
     public void EndLife(int agent, long tick)
     {
         ValidateAgent(agent);
@@ -322,6 +540,12 @@ internal sealed class SparseRelationStore
             relation.CooperativeInteractions = 0;
             relation.JourneyInteractions = 0;
             relation.CombatInteractions = 0;
+            relation.TechniqueTeachingSessions = 0;
+            relation.SpellTeachingSessions = 0;
+            relation.TechniqueTransmissionEstablished = false;
+            relation.SpellTransmissionEstablished = false;
+            relation.TechniqueKnowledgeRef = default;
+            relation.SpellKnowledgeRef = default;
             relation.Roles = RelationRole.None;
             relation.MasterAgent = -1;
         }
@@ -372,7 +596,13 @@ internal sealed class SparseRelationStore
             relation.CooperativeInteractions,
             relation.JourneyInteractions,
             relation.CombatInteractions,
-            relation.History.ToArray())).ToArray());
+            relation.History.ToArray(),
+            relation.TechniqueTeachingSessions,
+            relation.SpellTeachingSessions,
+            relation.TechniqueTransmissionEstablished,
+            relation.SpellTransmissionEstablished,
+            relation.TechniqueKnowledgeRef,
+            relation.SpellKnowledgeRef)).ToArray());
 
     public static SparseRelationStore Restore(
         int population,
@@ -403,6 +633,12 @@ internal sealed class SparseRelationStore
                 CooperativeInteractions = source.CooperativeInteractions,
                 JourneyInteractions = source.JourneyInteractions,
                 CombatInteractions = source.CombatInteractions,
+                TechniqueTeachingSessions = source.TechniqueTeachingSessions,
+                SpellTeachingSessions = source.SpellTeachingSessions,
+                TechniqueTransmissionEstablished = source.TechniqueTransmissionEstablished,
+                SpellTransmissionEstablished = source.SpellTransmissionEstablished,
+                TechniqueKnowledgeRef = source.TechniqueKnowledgeRef,
+                SpellKnowledgeRef = source.SpellKnowledgeRef,
             };
             relation.History.AddRange(source.History);
             var relationIndex = store._relations.Count;
@@ -450,6 +686,26 @@ internal sealed class SparseRelationStore
                     && relation.MasterAgent != relation.RightAgent)
                 || ((relation.Roles & RelationRole.MasterDisciple) == 0
                     && relation.MasterAgent != -1)
+                || ((relation.Roles & RelationRole.MasterDisciple) != 0
+                    && relation.MasterAgent == -1)
+                || relation.TechniqueTeachingSessions < 0
+                || relation.SpellTeachingSessions < 0
+                || relation.TechniqueTeachingSessions == int.MaxValue
+                || relation.SpellTeachingSessions == int.MaxValue
+                || (relation.TechniqueTransmissionEstablished
+                    && relation.TechniqueTeachingSessions == 0)
+                || (relation.SpellTransmissionEstablished
+                    && relation.SpellTeachingSessions == 0)
+                || (relation.TechniqueTeachingSessions > 0
+                    && !relation.TechniqueTransmissionEstablished)
+                || (relation.SpellTeachingSessions > 0
+                    && !relation.SpellTransmissionEstablished)
+                || (relation.TechniqueTeachingSessions == 0
+                    ? relation.TechniqueKnowledgeRef.Value != 0
+                    : relation.TechniqueKnowledgeRef.Value == 0)
+                || (relation.SpellTeachingSessions == 0
+                    ? relation.SpellKnowledgeRef.Value != 0
+                    : relation.SpellKnowledgeRef.Value == 0)
                 || relation.History is null)
             {
                 return false;
@@ -466,7 +722,8 @@ internal sealed class SparseRelationStore
                     || !Enum.IsDefined(history.Kind)
                     || (history.ChangedRoles & ~AllRoles) != 0
                     || history.LeftPersonId.Value == 0
-                    || history.RightPersonId.Value == 0)
+                    || history.RightPersonId.Value == 0
+                    || !IsValidHistoryTeachingTrace(history))
                 {
                     return false;
                 }
@@ -598,7 +855,10 @@ internal sealed class SparseRelationStore
         RelationState relation,
         long tick,
         RelationHistoryKind kind,
-        RelationRole changedRoles)
+        RelationRole changedRoles,
+        TeachingTargetKind? teachingTarget = null,
+        TeachingKnowledgeRef knowledgeRef = default,
+        TeachingProvenanceId provenanceId = default)
     {
         relation.History.Add(new RelationHistoryEntry(
             ++_historySequence,
@@ -606,7 +866,25 @@ internal sealed class SparseRelationStore
             kind,
             changedRoles,
             relation.LeftPersonId,
-            relation.RightPersonId));
+            relation.RightPersonId,
+            teachingTarget,
+            knowledgeRef,
+            provenanceId));
+    }
+
+    private static bool IsValidHistoryTeachingTrace(RelationHistoryEntry history)
+    {
+        var isTeachingHistory = history.Kind is
+            RelationHistoryKind.TeachingTransmissionEstablished
+            or RelationHistoryKind.TeachingTransmissionUpdated;
+        return isTeachingHistory
+            ? history.TeachingTarget is { } target
+                && Enum.IsDefined(target)
+                && history.KnowledgeRef.Value != 0
+                && history.ProvenanceId.Value != 0
+            : history.TeachingTarget is null
+                && history.KnowledgeRef.Value == 0
+                && history.ProvenanceId.Value == 0;
     }
 
     private void AddAdjacency(int agent, int relationIndex)

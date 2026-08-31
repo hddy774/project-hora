@@ -129,6 +129,25 @@ public sealed partial class World
             Tick = new SimulationTick(dueTick);
             AdvanceCityIndustry(GameCalendar.GetMonthIndex(Tick));
             RegenerateMonsters(GameCalendar.GetMonthIndex(Tick));
+            if (_agents.LifeStates[agentIndex] == PersonLifeState.Living
+                && HasReachedMaximumLifespan(agentIndex))
+            {
+                BeginReincarnation(agentIndex);
+                continue;
+            }
+
+            if (_agents.Activities[agentIndex] == AgentActivity.Fighting)
+            {
+                var opponent = _agents.Opponents[agentIndex];
+                if ((uint)opponent < (uint)Population
+                    && _agents.LifeStates[opponent] == PersonLifeState.Living
+                    && HasReachedMaximumLifespan(opponent))
+                {
+                    BeginReincarnation(opponent);
+                    continue;
+                }
+            }
+
             var actionMonth = GameCalendar.GetMonthIndex(Tick);
             if (_agents.LastActionMonths[agentIndex] >= actionMonth)
             {
@@ -141,13 +160,6 @@ public sealed partial class World
             _agents.LastActionMonths[agentIndex] = actionMonth;
             _agents.LastActionTicks[agentIndex] = dueTick;
             _agents.ActionsTaken[agentIndex] = checked(_agents.ActionsTaken[agentIndex] + 1);
-            if (_agents.Activities[agentIndex] != AgentActivity.Reincarnating
-                && HasReachedMaximumLifespan(agentIndex))
-            {
-                BeginReincarnation(agentIndex);
-                continue;
-            }
-
             var resolvedActivity = _agents.Activities[agentIndex];
             var powerInputsBefore = _agents.GetPowerInputSignature(agentIndex);
             var alreadyScheduled = ResolveActivity(agentIndex);
@@ -189,7 +201,8 @@ public sealed partial class World
     public AgentSnapshot GetAgentSnapshot(
         AgentId agentId,
         bool includeAptitudeDetails = false,
-        bool includeRelations = false)
+        bool includeRelations = false,
+        bool includeTeaching = false)
     {
         var index = ValidateAgent(agentId);
         var combatAptitudes = _agents.GetContextAptitudes(index, combat: true);
@@ -273,6 +286,9 @@ public sealed partial class World
                 _agents.GetTreasurePower(index)),
             _agents.GetPersonIdentity(index),
             _agents.GetDecisionSnapshot(index),
+            includeTeaching
+                ? CreateTeachingSnapshot(index)
+                : null,
             includeAptitudeDetails
                 ? _agents.CreateAptitudeDetailSnapshot(index)
                 : null,
@@ -508,6 +524,12 @@ public sealed partial class World
             Add(ref hash, relation.CooperativeInteractions);
             Add(ref hash, relation.JourneyInteractions);
             Add(ref hash, relation.CombatInteractions);
+            Add(ref hash, (ulong)relation.TechniqueTeachingSessions);
+            Add(ref hash, (ulong)relation.SpellTeachingSessions);
+            Add(ref hash, relation.TechniqueTransmissionEstablished ? 1UL : 0UL);
+            Add(ref hash, relation.SpellTransmissionEstablished ? 1UL : 0UL);
+            Add(ref hash, relation.TechniqueKnowledgeRef.Value);
+            Add(ref hash, relation.SpellKnowledgeRef.Value);
             foreach (var history in relation.History)
             {
                 Add(ref hash, (ulong)history.Sequence);
@@ -516,6 +538,11 @@ public sealed partial class World
                 Add(ref hash, (byte)history.ChangedRoles);
                 Add(ref hash, history.LeftPersonId.Value);
                 Add(ref hash, history.RightPersonId.Value);
+                Add(ref hash, history.TeachingTarget is { } target
+                    ? checked((ulong)(byte)target + 1UL)
+                    : 0UL);
+                Add(ref hash, history.KnowledgeRef.Value);
+                Add(ref hash, history.ProvenanceId.Value);
             }
         }
         for (var index = 0; index < Population; index++)
@@ -551,6 +578,12 @@ public sealed partial class World
             Add(ref hash, (byte)decision.SelectedReason);
             Add(ref hash, (ulong)((int?)decision.AlternativeActivity + 1 ?? 0));
             Add(ref hash, (byte)decision.Resolution);
+            Add(ref hash, (ulong)_agents.TeachingAuthorityRevisions[index]);
+            AddTeachingTraceHash(ref hash, _agents.TeachingTraces[index]);
+            Add(ref hash, (ulong)_agents.LearningAuthorityRevisions[index]);
+            AddTeachingTraceHash(ref hash, _agents.LearningTraces[index]);
+            Add(ref hash, _agents.TechniqueMisunderstandingPoints[index]);
+            Add(ref hash, _agents.SpellMisunderstandingPoints[index]);
             Add(ref hash, _agents.BottleneckFailures[index]);
             Add(ref hash, (byte)_agents.RealmStages[index]);
             Add(ref hash, _agents.RealmLayers[index]);
@@ -717,8 +750,7 @@ public sealed partial class World
                 ResolveRecovery(index);
                 return false;
             case AgentActivity.SeekingChallenge:
-                ResolveSeekingChallenge(index);
-                return false;
+                return ResolveSeekingChallenge(index);
             case AgentActivity.Fighting:
                 return ResolveCombatAction(index);
             case AgentActivity.Reincarnating:
@@ -743,6 +775,9 @@ public sealed partial class World
                 return ResolveMonsterHunt(index);
             case AgentActivity.MiningSpiritStones:
                 ResolveSpiritStoneMining(index);
+                return false;
+            case AgentActivity.Teaching:
+                ResolveTeaching(index);
                 return false;
             default:
                 throw new InvalidOperationException("알 수 없는 AI 행동입니다.");
@@ -958,6 +993,18 @@ public sealed partial class World
             return;
         }
 
+        if (TryPrepareTeaching(index))
+        {
+            SetActivityDecision(
+                index,
+                AgentActivity.Teaching,
+                AgentGoalKind.GuideDisciple,
+                DecisionReasonCode.TeachingOpportunity,
+                DecisionResolutionKind.Selected,
+                AgentActivity.Cultivating);
+            return;
+        }
+
         AgentActivity activity;
         if (!TrySelectMapActivity(index, out activity))
         {
@@ -1018,6 +1065,7 @@ public sealed partial class World
                 or AgentActivity.MiningSpiritStones => AgentGoalKind.AcquireResources,
             AgentActivity.Traveling or AgentActivity.HuntingMonster => AgentGoalKind.ExploreWorld,
             AgentActivity.Reincarnating => AgentGoalKind.CompleteReincarnation,
+            AgentActivity.Teaching => AgentGoalKind.GuideDisciple,
             _ => AgentGoalKind.ReachRankOne,
         };
 
@@ -1042,6 +1090,7 @@ public sealed partial class World
             AgentActivity.Traveling => CalculateTravelDuration(index),
             AgentActivity.HuntingMonster => CalculateMonsterHuntDuration(index),
             AgentActivity.MiningSpiritStones => 90,
+            AgentActivity.Teaching => 120,
             _ => throw new InvalidOperationException("알 수 없는 AI 행동입니다."),
         };
     }
@@ -1380,6 +1429,11 @@ public sealed partial class World
     private bool HasReachedMaximumLifespan(int index) =>
         GetAgeYears(index) >= RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears;
 
+    private long GetMaximumLifespanTick(int index) => checked(
+        _agents.BirthTicks[index]
+        + ((long)RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears
+            * GameCalendar.TicksPerYear));
+
     private void BeginReincarnation(int index, bool combatDeath = false)
     {
         var opponent = _agents.Opponents[index];
@@ -1402,6 +1456,7 @@ public sealed partial class World
         }
         AddChronicle(index, ChronicleEventKind.ReincarnationEntered);
         AddEvent(WorldEventKind.ReincarnationEntered, index, _agents.LifeNumbers[index]);
+        InterruptTeachingContexts(index);
         _relations.EndLife(index, Tick.Value);
         _agents.LifeStates[index] = PersonLifeState.ReincarnationRiver;
         SetActivityDecision(
@@ -1444,10 +1499,21 @@ public sealed partial class World
     private static int EncodeRealm(RealmStage stage, int minorStage) =>
         ((int)stage * 10) + minorStage;
 
-    private void ScheduleAgent(int index, long tick)
+    private void ScheduleAgent(int index, long tick, bool lifecycleBoundary = false)
     {
+        if (_agents.LifeStates[index] == PersonLifeState.Living)
+        {
+            var maximumLifespanTick = GetMaximumLifespanTick(index);
+            if (maximumLifespanTick <= tick)
+            {
+                tick = maximumLifespanTick;
+                lifecycleBoundary = true;
+            }
+        }
+
         var scheduledTick = new SimulationTick(tick);
-        if (GameCalendar.GetMonthIndex(scheduledTick) <= _agents.LastActionMonths[index])
+        if (!lifecycleBoundary
+            && GameCalendar.GetMonthIndex(scheduledTick) <= _agents.LastActionMonths[index])
         {
             scheduledTick = GameCalendar.GetMonthStart(
                 checked(_agents.LastActionMonths[index] + 1));
@@ -1484,6 +1550,27 @@ public sealed partial class World
         Add(ref hash, (ulong)metrics.Gratitude);
         Add(ref hash, (ulong)metrics.Grievance);
         Add(ref hash, (ulong)metrics.Vigilance);
+    }
+
+    private static void AddTeachingTraceHash(ref ulong hash, TeachingTraceState teaching)
+    {
+        Add(ref hash, (ulong)teaching.AuthorityRevision);
+        Add(ref hash, teaching.IsActive ? 1UL : 0UL);
+        Add(ref hash, (ulong)(teaching.LearnerAgent + 1));
+        Add(ref hash, teaching.TeacherPersonId.Value);
+        Add(ref hash, teaching.LearnerPersonId.Value);
+        Add(ref hash, teaching.RelationId.Value);
+        Add(ref hash, (byte)teaching.TargetKind);
+        Add(ref hash, teaching.SourceQuality);
+        Add(ref hash, teaching.TargetKnowledgeRef.Value);
+        Add(ref hash, teaching.ProvenanceId.Value);
+        Add(ref hash, (ulong)teaching.StartedTick);
+        Add(ref hash, (ulong)teaching.LastResultTick);
+        Add(ref hash, (byte)teaching.LastResult);
+        Add(ref hash, (ulong)teaching.LastGain);
+        Add(ref hash, (ulong)teaching.SessionsCompleted);
+        Add(ref hash, teaching.MisunderstandingPoints);
+        Add(ref hash, teaching.TransmissionEstablished ? 1UL : 0UL);
     }
 
     private static void AddString(ref ulong hash, string value)

@@ -35,6 +35,7 @@ public enum AgentGoalKind : byte
     SeekStrongerOpponent,
     ExploreWorld,
     CompleteReincarnation,
+    GuideDisciple,
 }
 
 public enum DecisionReasonCode : byte
@@ -52,6 +53,9 @@ public enum DecisionReasonCode : byte
     CombatResponse,
     CombatRecovery,
     ReincarnationHandoff,
+    TeachingOpportunity,
+    TeachingContinuation,
+    TeachingInterrupted,
 }
 
 public enum DecisionResolutionKind : byte

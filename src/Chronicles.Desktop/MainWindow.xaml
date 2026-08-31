@@ -285,6 +285,19 @@
                                        FontSize="11"
                                        TextWrapping="Wrap" />
                         </Expander>
+                        <Expander x:Name="TeachingExpander"
+                                  Header="사제·가르침·전승 추적"
+                                  Margin="0,8,0,0"
+                                  IsExpanded="False"
+                                  Expanded="VisibleExpander_Expanded">
+                            <TextBlock x:Name="TeachingText"
+                                       Margin="0,7,0,0"
+                                       Padding="10"
+                                       Background="{StaticResource PanelAltBrush}"
+                                       Foreground="{StaticResource PrimaryTextBrush}"
+                                       FontSize="11"
+                                       TextWrapping="Wrap" />
+                        </Expander>
 
                         <TextBlock Text="수행 진척"
                                    Margin="0,24,0,0"

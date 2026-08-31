@@ -207,6 +207,10 @@ public partial class MainWindow : Window, IDisposable
         {
             sections |= ObservationSections.Relations;
         }
+        if (TeachingExpander.IsExpanded)
+        {
+            sections |= ObservationSections.Teaching;
+        }
 
         sections |= _rankingCategory switch
         {

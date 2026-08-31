@@ -3,7 +3,7 @@ using Chronicles.Core;
 namespace Chronicles.Simulation;
 
 [Flags]
-public enum ObservationSections : ushort
+public enum ObservationSections : uint
 {
     None = 0,
     StatisticsSummary = 1 << 0,
@@ -22,11 +22,12 @@ public enum ObservationSections : ushort
     WealthRanking = 1 << 13,
     AptitudeDetails = 1 << 14,
     Relations = 1 << 15,
+    Teaching = 1 << 16,
     Statistics = StatisticsSummary | RealmDistribution | CombatPowerDistribution,
     Market = MarketSummary | MarketGoods,
     AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking | WealthRanking,
     All = Statistics | Market | Map | WorldLog | WorldChronicle | PersonalLog | Chronicle
-        | AllRankings | AptitudeDetails | Relations,
+        | AllRankings | AptitudeDetails | Relations | Teaching,
 }
 
 public enum AgentActivity : byte
@@ -45,6 +46,7 @@ public enum AgentActivity : byte
     Traveling,
     HuntingMonster,
     MiningSpiritStones,
+    Teaching,
 }
 
 public enum WorldEventKind : byte
@@ -485,6 +487,7 @@ public sealed record AgentSnapshot(
     CombatPowerFormulaDetails CombatPowerDetails,
     PersonIdentitySnapshot Identity,
     AgentDecisionSnapshot Decision,
+    TeachingSnapshot? Teaching,
     AptitudeDetailSnapshot? AptitudeDetails = null,
     IReadOnlyList<RelationSnapshot>? Relations = null);
 

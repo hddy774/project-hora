@@ -18,6 +18,7 @@ var tests = new (string Name, Action Body)[]
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
+    ("자질 직접 전투력 제거·공법 법술·실전 속성 간접 보정", AptitudeIndirectCombatBalance),
     ("공법·법술·법보 전투 스케일 상한과 품질 격차", SkillCombatScaleRegression),
     ("동일 seed 결정론", DeterministicWorld),
     ("이벤트 기반 성장", EventDrivenGrowth),
@@ -609,6 +610,7 @@ static void CombatPowerAndRanking()
     foreach (var entry in snapshot.CombatPowerRankings)
     {
         True(entry.Category == RankingCategory.CombatPower, "전투력 랭킹 범주");
+        Equal(0L, entry.CombatPower.Aptitude, "자질은 직접 전투력에 합산하지 않아야 합니다.");
         Equal(entry.CombatPower.Total, checked(
             entry.CombatPower.Realm
             + entry.CombatPower.Aptitude
@@ -635,6 +637,77 @@ static void CombatPowerAndRanking()
         True(entry.AptitudeScore <= previousAptitude, "자질 랭킹은 6대 자질 합계 내림차순이어야 합니다.");
         previousAptitude = entry.AptitudeScore;
     }
+}
+
+static void AptitudeIndirectCombatBalance()
+{
+    static Aptitudes UniformAptitudes(int hundredths)
+    {
+        var value = new QualityValue(checked((ushort)hundredths));
+        return new Aptitudes(value, value, value, value, value, value);
+    }
+
+    var lowAptitudes = UniformAptitudes(0);
+    var neutralAptitudes = UniformAptitudes(5_000);
+    var highAptitudes = UniformAptitudes(10_000);
+    var lowBonuses = AptitudeCombatBonusFormula.Calculate(lowAptitudes);
+    var neutralBonuses = AptitudeCombatBonusFormula.Calculate(neutralAptitudes);
+    var highBonuses = AptitudeCombatBonusFormula.Calculate(highAptitudes);
+    Equal(8_000, lowBonuses.TechniqueEffectBasisPoints, "최저 자질 공법 효과 하한");
+    Equal(8_000, lowBonuses.SpellEffectBasisPoints, "최저 자질 법술 효과 하한");
+    Equal(10_000, neutralBonuses.TechniqueEffectBasisPoints, "자질 50.00 공법 효과 기준");
+    Equal(10_000, neutralBonuses.SpellEffectBasisPoints, "자질 50.00 법술 효과 기준");
+    Equal(12_000, highBonuses.TechniqueEffectBasisPoints, "최고 자질 공법 효과 상한");
+    Equal(12_000, highBonuses.SpellEffectBasisPoints, "최고 자질 법술 효과 상한");
+
+    static CombatPowerBreakdown Power(Aptitudes aptitudes) => CombatPowerFormula.Calculate(
+        RealmStage.QiRefining,
+        1,
+        aptitudes,
+        QualityValue.FromWhole(50),
+        5_000,
+        5_000,
+        QualityValue.FromWhole(50),
+        5_000,
+        5_000,
+        0,
+        0);
+
+    var lowPower = Power(lowAptitudes);
+    var neutralPower = Power(neutralAptitudes);
+    var highPower = Power(highAptitudes);
+    Equal(0L, lowPower.Aptitude, "최저 자질 직접 전투력");
+    Equal(0L, neutralPower.Aptitude, "중립 자질 직접 전투력");
+    Equal(0L, highPower.Aptitude, "최고 자질 직접 전투력");
+    True(highPower.Technique <= ((neutralPower.Technique * 12) / 10) + 1, "최고 자질 공법 전투력 보정 20% 상한");
+    True(highPower.Spell <= ((neutralPower.Spell * 12) / 10) + 1, "최고 자질 법술 전투력 보정 20% 상한");
+    True(lowPower.Technique >= (neutralPower.Technique * 8) / 10, "최저 자질 공법 전투력 보정 20% 하한");
+    True(lowPower.Spell >= (neutralPower.Spell * 8) / 10, "최저 자질 법술 전투력 보정 20% 하한");
+
+    static CombatAttributes Attributes(Aptitudes aptitudes) => CombatAttributeFormula.Calculate(
+        RealmStage.QiRefining,
+        1,
+        aptitudes,
+        QualityValue.FromWhole(50),
+        5_000,
+        5_000,
+        QualityValue.FromWhole(50),
+        5_000,
+        5_000,
+        0,
+        0);
+
+    var neutralAttributes = Attributes(neutralAptitudes);
+    var highAttributes = Attributes(highAptitudes);
+    True(highAttributes.Attack > neutralAttributes.Attack, "영근·오성 자질은 공격/법술 효과 보너스");
+    True(highAttributes.Defense > neutralAttributes.Defense, "근골·체질 자질은 방어/공법 효과 보너스");
+    True(highAttributes.MaximumHealth > neutralAttributes.MaximumHealth, "근골·체질 자질은 최대 생명력 보너스");
+    True(highAttributes.MaximumQi > neutralAttributes.MaximumQi, "영근·오성 자질은 최대 영력 보너스");
+    True(highAttributes.Judgment > neutralAttributes.Judgment, "오성·정신 자질은 판단력 보너스");
+    True(highAttributes.Focus > neutralAttributes.Focus, "오성·정신 자질은 집중력 보너스");
+    True(
+        highAttributes.CultivationEfficiencyBasisPoints > neutralAttributes.CultivationEfficiencyBasisPoints,
+        "영근·오성·정신 자질은 수행 효율 보너스");
 }
 
 static void SkillCombatScaleRegression()

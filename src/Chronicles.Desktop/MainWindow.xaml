@@ -452,7 +452,9 @@
                         </Grid>
                         <Grid Margin="0,9,0,0">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="70" /><ColumnDefinition Width="*" /><ColumnDefinition Width="72" /></Grid.ColumnDefinitions>
-                            <TextBlock Text="자질" Foreground="{StaticResource SecondaryTextBrush}" />
+                            <TextBlock Text="자질 (간접)"
+                                       ToolTip="자질은 직접 전투력에 더하지 않고 공법·법술 효과와 실전 속성에 반영됩니다."
+                                       Foreground="{StaticResource SecondaryTextBrush}" />
                             <ProgressBar x:Name="AptitudePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
                             <TextBlock x:Name="AptitudePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
                         </Grid>
@@ -480,6 +482,12 @@
                             <ProgressBar x:Name="TreasurePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
                             <TextBlock x:Name="TreasurePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
                         </Grid>
+                        <TextBlock Margin="0,10,0,0"
+                                   Padding="10,8"
+                                   Background="{StaticResource PanelAltBrush}"
+                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                   Text="자질은 직접 전투력으로 합산하지 않습니다. 근골·체질·정신·영혼은 공법 효과를, 영근·오성·정신·영혼은 법술 효과를 80~120% 범위에서 보정하며 생명력·영력·공격·방어·속도·관통·치명타·회피·판단·집중·수행 효율에도 각각 반영됩니다."
+                                   TextWrapping="Wrap" />
 
                         <TabControl x:Name="AgentLogTabControl"
                                     Margin="0,28,0,0"

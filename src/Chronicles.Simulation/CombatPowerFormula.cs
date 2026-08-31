@@ -4,7 +4,7 @@ namespace Chronicles.Simulation;
 
 public static class CombatPowerFormula
 {
-    public const int CurrentRevision = 2;
+    public const int CurrentRevision = 3;
 
     public static CombatPowerBreakdown Calculate(
         RealmStage realmStage,
@@ -29,19 +29,18 @@ public static class CombatPowerFormula
             100L
             + (((long)stage * stage * stage - 1L) * 2_000L)
             + (((long)realmLayer - 1L) * stage * stage * 250L));
-        var aptitude = checked(
-            ((QualityRules.GetEffectiveHundredths(aptitudes.SpiritualRoot) * 15)
-            + (QualityRules.GetEffectiveHundredths(aptitudes.Bone) * 14)
-            + (QualityRules.GetEffectiveHundredths(aptitudes.Constitution) * 13)
-            + (QualityRules.GetEffectiveHundredths(aptitudes.Comprehension) * 14)
-            + (QualityRules.GetEffectiveHundredths(aptitudes.Mind) * 10)
-            + (QualityRules.GetEffectiveHundredths(aptitudes.Soul) * 8)) / 100);
-        var technique = SkillCombatScaling.GetDisplayContribution(
-            techniqueQuality,
-            10_000L + (techniqueMastery * 2L) + (techniqueUnderstanding * 3L));
-        var spell = SkillCombatScaling.GetDisplayContribution(
-            spellQuality,
-            (10_000L + (spellMastery * 2L) + (spellUnderstanding * 3L)) * 5L / 6L);
+        var aptitudeBonuses = AptitudeCombatBonusFormula.Calculate(aptitudes);
+        const long aptitude = 0L;
+        var technique = AptitudeCombatBonusFormula.Apply(
+            SkillCombatScaling.GetDisplayContribution(
+                techniqueQuality,
+                10_000L + (techniqueMastery * 2L) + (techniqueUnderstanding * 3L)),
+            aptitudeBonuses.TechniqueEffectBasisPoints);
+        var spell = AptitudeCombatBonusFormula.Apply(
+            SkillCombatScaling.GetDisplayContribution(
+                spellQuality,
+                (10_000L + (spellMastery * 2L) + (spellUnderstanding * 3L)) * 5L / 6L),
+            aptitudeBonuses.SpellEffectBasisPoints);
         var experience = Math.Min(40_000L, IntegerSquareRoot(Math.Max(0, combatExperience)) * 80L);
         return new CombatPowerBreakdown(realm, aptitude, technique, spell, experience, treasurePower);
     }

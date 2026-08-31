@@ -30,6 +30,10 @@ public readonly record struct CombatAttributes(
     int SpellEfficiencyBasisPoints,
     int CultivationEfficiencyBasisPoints);
 
+public readonly record struct AptitudeCombatBonuses(
+    int TechniqueEffectBasisPoints,
+    int SpellEffectBasisPoints);
+
 public readonly record struct CombatAuthorityCheckpoint(
     int ActionCount,
     int TurnOwner,
@@ -48,7 +52,7 @@ internal readonly record struct PowerInputSignature(
 
 public static class CombatAttributeFormula
 {
-    public const int CurrentRevision = 2;
+    public const int CurrentRevision = 3;
 
     public static CombatAttributes Calculate(
         RealmStage realm,
@@ -63,14 +67,15 @@ public static class CombatAttributeFormula
         int weaponEffect,
         int armorEffect)
     {
+        var aptitudeBonuses = AptitudeCombatBonusFormula.Calculate(aptitudes);
         var techniqueFactor = 10_000 + techniqueMastery + techniqueUnderstanding;
         var spellFactor = 10_000 + spellMastery + spellUnderstanding;
-        var techniquePower = SkillCombatScaling.GetAttributeContribution(
-            techniqueQuality,
-            techniqueFactor);
-        var spellPower = SkillCombatScaling.GetAttributeContribution(
-            spellQuality,
-            spellFactor);
+        var techniquePower = AptitudeCombatBonusFormula.Apply(
+            SkillCombatScaling.GetAttributeContribution(techniqueQuality, techniqueFactor),
+            aptitudeBonuses.TechniqueEffectBasisPoints);
+        var spellPower = AptitudeCombatBonusFormula.Apply(
+            SkillCombatScaling.GetAttributeContribution(spellQuality, spellFactor),
+            aptitudeBonuses.SpellEffectBasisPoints);
         var stage = (int)realm + 1;
         var realmScale = checked((stage * stage * stage * 250) + (floor * stage * 30));
         var root = aptitudes.SpiritualRoot.Hundredths;
@@ -114,6 +119,78 @@ public static class CombatAttributeFormula
     }
 
     private static int ClampToInt(long value) => checked((int)Math.Clamp(value, 0, int.MaxValue));
+}
+
+public static class AptitudeCombatBonusFormula
+{
+    public const int CurrentRevision = 1;
+    public const int MinimumEffectBasisPoints = 8_000;
+    public const int NeutralEffectBasisPoints = 10_000;
+    public const int MaximumEffectBasisPoints = 12_000;
+
+    public static AptitudeCombatBonuses Calculate(Aptitudes aptitudes)
+    {
+        // 자질 품질의 큰 경계 배율은 직접 전투력에 사용하지 않는다. 원시 0.00~100.00을
+        // 역할별로 가중해 공법·법술 효과를 기준 80%~120% 안에서만 보정한다.
+        var techniqueComposite = WeightedAverage(
+            aptitudes.Bone.Hundredths, 35,
+            aptitudes.Constitution.Hundredths, 35,
+            aptitudes.Mind.Hundredths, 15,
+            aptitudes.Soul.Hundredths, 15);
+        var spellComposite = WeightedAverage(
+            aptitudes.SpiritualRoot.Hundredths, 40,
+            aptitudes.Comprehension.Hundredths, 35,
+            aptitudes.Mind.Hundredths, 15,
+            aptitudes.Soul.Hundredths, 10);
+        return new AptitudeCombatBonuses(
+            ToEffectBasisPoints(techniqueComposite),
+            ToEffectBasisPoints(spellComposite));
+    }
+
+    public static long Apply(long value, int effectBasisPoints)
+    {
+        ValidateEffectBasisPoints(effectBasisPoints);
+        return checked(value * effectBasisPoints / NeutralEffectBasisPoints);
+    }
+
+    public static int Apply(int value, int effectBasisPoints)
+    {
+        ValidateEffectBasisPoints(effectBasisPoints);
+        return checked((int)((long)value * effectBasisPoints / NeutralEffectBasisPoints));
+    }
+
+    private static int WeightedAverage(
+        int firstValue,
+        int firstWeight,
+        int secondValue,
+        int secondWeight,
+        int thirdValue,
+        int thirdWeight,
+        int fourthValue,
+        int fourthWeight) =>
+        checked((int)(
+            (((long)firstValue * firstWeight)
+            + ((long)secondValue * secondWeight)
+            + ((long)thirdValue * thirdWeight)
+            + ((long)fourthValue * fourthWeight))
+            / (firstWeight + secondWeight + thirdWeight + fourthWeight)));
+
+    private static int ToEffectBasisPoints(int aptitudeCompositeHundredths) =>
+        Math.Clamp(
+            MinimumEffectBasisPoints
+                + checked(aptitudeCompositeHundredths
+                    * (MaximumEffectBasisPoints - MinimumEffectBasisPoints)
+                    / QualityValue.MaximumHundredths),
+            MinimumEffectBasisPoints,
+            MaximumEffectBasisPoints);
+
+    private static void ValidateEffectBasisPoints(int value)
+    {
+        if (value is < MinimumEffectBasisPoints or > MaximumEffectBasisPoints)
+        {
+            throw new ArgumentOutOfRangeException(nameof(value));
+        }
+    }
 }
 
 public static class SkillCombatScaling

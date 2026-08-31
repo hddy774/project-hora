@@ -69,6 +69,10 @@
 - 열린 윤회 탭의 계보·흔적 projection은 authority revision별 읽기 전용 캐시를
   재사용한다. 배열 자체는 외부에 노출하지 않아 관찰 코드가 캐시를 바꿀 수 없고,
   작은 창에서는 상단 요약 높이를 제한해 가상화 계보 목록의 최소 높이를 보장한다.
+- 1,386줄로 결합돼 있던 윤회 코드를 규칙·DTO `ReincarnationModel.cs` 342줄,
+  런타임 상태 전이·projection `ReincarnationStore.cs` 387줄, checkpoint·검증·hash
+  `ReincarnationStore.Persistence.cs` 669줄로 분리했다. 저장 wire와 시뮬레이션
+  결과는 바꾸지 않고 변경 작업집합만 경계별로 줄였다.
 
 ### 로컬 검증·성능
 

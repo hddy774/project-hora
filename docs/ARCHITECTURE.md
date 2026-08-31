@@ -65,8 +65,12 @@ SoulId만 이어지고 육신과
 인물 ID는 새로 발급된다. 관찰 query는 이 인과 상태를 읽을 뿐 목표나 판단 revision을
 갱신하지 않는다. 임시 AI 효용 가중치는 `PC-TEMP-AI-UTILITY-113`으로 추적한다.
 
-`ReincarnationModel`은 안정 `LifeRecordId`·`JourneyId`, 인물별 추가 전용 생 계보,
-개인 역사적 최고점, 현재 여정과 6영역 전생 흔적의 권위 owner다. 생 계보는 직전
+`ReincarnationModel.cs`는 안정 `LifeRecordId`·`JourneyId`, DTO와 기간·단계·등급
+규칙을 소유한다. `ReincarnationStore.cs`는 인물별 추가 전용 생 계보, 개인 역사적
+최고점, 현재 여정과 6영역 전생 흔적의 상태 전이·revision별 읽기 전용 projection
+캐시를 소유한다. `ReincarnationStore.Persistence.cs`는 checkpoint·복원 검증·상태
+hash를, `World.Reincarnation.cs`는 사망부터 환생까지 다른 권위 시스템과의 조정을
+맡는다. 생 계보는 직전
 생 ID, Soul/Body/Person ID, 생 번호·당시 이름·탄생/사망 tick·사망 원인·최고점·
 여정 ID를 보존한다. 여정은 `Entering`, `Crossing`, `LateCrossing`,
 `CrossingComplete`, `PreparingRebirth`의 정해진 단계와 시작/단계 시작/완료 tick,

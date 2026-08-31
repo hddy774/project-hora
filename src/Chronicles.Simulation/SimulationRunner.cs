@@ -23,7 +23,7 @@ public sealed class SimulationRunner : IDisposable
         };
     }
 
-    public event Action<WorldSnapshot>? SnapshotPublished;
+    public event Action? ObservationInvalidated;
     public event Action<Exception>? Faulted;
 
     public int Speed => Volatile.Read(ref _speed);
@@ -50,11 +50,14 @@ public sealed class SimulationRunner : IDisposable
         Volatile.Write(ref _speed, speed);
     }
 
-    public WorldSnapshot GetSnapshot(int rankingCount = 1_000, int eventCount = 150)
+    public WorldSnapshot GetSnapshot(
+        int rankingCount = 1_000,
+        int eventCount = 150,
+        ObservationSections sections = ObservationSections.All)
     {
         lock (_worldGate)
         {
-            return _world.CreateSnapshot(rankingCount, eventCount);
+            return _world.CreateSnapshot(rankingCount, eventCount, sections);
         }
     }
 
@@ -69,18 +72,23 @@ public sealed class SimulationRunner : IDisposable
     public WorldObservation GetObservation(
         AgentId? selectedAgent = null,
         int rankingCount = 1_000,
-        int eventCount = 150)
+        int eventCount = 150,
+        ObservationSections sections = ObservationSections.All)
     {
         lock (_worldGate)
         {
-            var world = _world.CreateSnapshot(rankingCount, eventCount);
+            var world = _world.CreateSnapshot(rankingCount, eventCount, sections);
             var agentId = selectedAgent ?? world.LeaderId;
             var agent = _world.GetAgentSnapshot(agentId);
             return new WorldObservation(
                 world,
                 agent,
-                _world.GetAgentPersonalLog(agentId),
-                _world.GetAgentChronicle(agentId));
+                (sections & ObservationSections.PersonalLog) != 0
+                    ? _world.GetAgentPersonalLog(agentId)
+                    : Array.Empty<PersonalLogEntry>(),
+                (sections & ObservationSections.Chronicle) != 0
+                    ? _world.GetAgentChronicle(agentId)
+                    : Array.Empty<LifeChronicleEntry>());
         }
     }
 
@@ -138,7 +146,7 @@ public sealed class SimulationRunner : IDisposable
     {
         try
         {
-            PublishSnapshot();
+            PublishObservationInvalidated();
             while (!_stop.Wait(SimulationPacing.PulseMilliseconds))
             {
                 lock (_worldGate)
@@ -150,7 +158,7 @@ public sealed class SimulationRunner : IDisposable
                     }
                 }
 
-                PublishSnapshot();
+                PublishObservationInvalidated();
             }
         }
         catch (Exception exception)
@@ -159,21 +167,9 @@ public sealed class SimulationRunner : IDisposable
         }
     }
 
-    private void PublishSnapshot()
+    private void PublishObservationInvalidated()
     {
-        var handler = SnapshotPublished;
-        if (handler is null)
-        {
-            return;
-        }
-
-        WorldSnapshot snapshot;
-        lock (_worldGate)
-        {
-            snapshot = _world.CreateSnapshot(1_000, 150);
-        }
-
-        handler(snapshot);
+        ObservationInvalidated?.Invoke();
     }
 }
 

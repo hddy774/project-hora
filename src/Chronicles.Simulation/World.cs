@@ -212,7 +212,10 @@ public sealed partial class World
             CreateCultivationProjection(index));
     }
 
-    public WorldSnapshot CreateSnapshot(int rankingCount = 1_000, int eventCount = 100)
+    public WorldSnapshot CreateSnapshot(
+        int rankingCount = 1_000,
+        int eventCount = 100,
+        ObservationSections sections = ObservationSections.All)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rankingCount);
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
@@ -229,11 +232,19 @@ public sealed partial class World
             RankingCategory.Aptitude,
             _agentByAptitudeRank,
             actualRankingCount);
-        var statistics = CreateStatistics();
-        var market = _market.CreateSnapshot();
-        var map = CreateMapSnapshot();
+        var statistics = (sections & ObservationSections.Statistics) != 0
+            ? CreateStatistics()
+            : WorldStatistics.Empty;
+        var market = (sections & ObservationSections.Market) != 0
+            ? _market.CreateSnapshot()
+            : CityMarketSnapshot.Empty;
+        var map = (sections & ObservationSections.Map) != 0
+            ? CreateMapSnapshot()
+            : WorldMapSnapshot.Empty;
 
-        var recentEvents = _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray();
+        var recentEvents = (sections & ObservationSections.WorldLog) != 0
+            ? _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray()
+            : Array.Empty<WorldEvent>();
         var agentNames = new Dictionary<int, string>((actualRankingCount * 3) + (recentEvents.Length * 2));
         foreach (var ranking in combatPowerRankings.Concat(realmRankings).Concat(aptitudeRankings))
         {

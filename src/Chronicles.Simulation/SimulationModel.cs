@@ -2,6 +2,19 @@ using Chronicles.Core;
 
 namespace Chronicles.Simulation;
 
+[Flags]
+public enum ObservationSections : byte
+{
+    None = 0,
+    Statistics = 1 << 0,
+    Market = 1 << 1,
+    Map = 1 << 2,
+    WorldLog = 1 << 3,
+    PersonalLog = 1 << 4,
+    Chronicle = 1 << 5,
+    All = Statistics | Market | Map | WorldLog | PersonalLog | Chronicle,
+}
+
 public enum AgentActivity : byte
 {
     Cultivating,
@@ -197,7 +210,23 @@ public sealed record WorldStatistics(
     int TotalTreasuresCrafted,
     int TotalPillsCrafted,
     int TotalMaterialsSold,
-    long TotalSpiritStones);
+    long TotalSpiritStones)
+{
+    public static WorldStatistics Empty { get; } = new(
+        Array.Empty<RealmDistributionEntry>(),
+        Array.Empty<CombatPowerDistributionEntry>(),
+        new RankingMovementStatistics(default, default, 0, 0, 0, 0),
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0);
+}
 
 public readonly record struct MarketGoodSnapshot(
     int GoodId,
@@ -220,7 +249,20 @@ public sealed record CityMarketSnapshot(
     long TreasuresProduced,
     long TechniqueBooksProduced,
     long SpellBooksProduced,
-    IReadOnlyList<MarketGoodSnapshot> Goods);
+    IReadOnlyList<MarketGoodSnapshot> Goods)
+{
+    public static CityMarketSnapshot Empty { get; } = new(
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        Array.Empty<MarketGoodSnapshot>());
+}
 
 public sealed record AgentSnapshot(
     AgentId Id,

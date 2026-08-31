@@ -23,6 +23,7 @@ public partial class MainWindow : Window, IDisposable
     private int _speed = 1;
     private bool _disposed;
     private bool _applyingObservation;
+    private int _observationDispatchQueued;
 
     public MainWindow()
     {
@@ -31,7 +32,7 @@ public partial class MainWindow : Window, IDisposable
         VersionText.Text = $"VERSION {ProductInfo.Version}";
         var world = World.CreateDefault(DefaultWorldSeed);
         _runner = new SimulationRunner(world);
-        _runner.SnapshotPublished += Runner_SnapshotPublished;
+        _runner.ObservationInvalidated += Runner_ObservationInvalidated;
         _runner.Faulted += Runner_Faulted;
         Loaded += MainWindow_Loaded;
         Closed += MainWindow_Closed;
@@ -60,23 +61,32 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        _runner.SnapshotPublished -= Runner_SnapshotPublished;
+        _runner.ObservationInvalidated -= Runner_ObservationInvalidated;
         _runner.Faulted -= Runner_Faulted;
         _runner.Dispose();
         _runner = null;
         GC.SuppressFinalize(this);
     }
 
-    private void Runner_SnapshotPublished(WorldSnapshot snapshot)
+    private void Runner_ObservationInvalidated()
     {
         if (Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished)
         {
             return;
         }
 
+        if (Interlocked.Exchange(ref _observationDispatchQueued, 1) != 0)
+        {
+            return;
+        }
+
         _ = Dispatcher.BeginInvoke(
             DispatcherPriority.Background,
-            new Action(() => ApplySnapshot(snapshot)));
+            new Action(() =>
+            {
+                Interlocked.Exchange(ref _observationDispatchQueued, 0);
+                RefreshVisibleObservation();
+            }));
     }
 
     private void Runner_Faulted(Exception exception)
@@ -93,16 +103,38 @@ public partial class MainWindow : Window, IDisposable
         }));
     }
 
-    private void ApplySnapshot(WorldSnapshot snapshot)
+    private void RefreshVisibleObservation(AgentId? selectedAgent = null)
     {
         if (_runner is null)
         {
             return;
         }
 
-        _selectedAgent ??= snapshot.LeaderId;
-        var observation = _runner.GetObservation(_selectedAgent);
+        if (selectedAgent is { } selected)
+        {
+            _selectedAgent = selected;
+        }
+
+        var observation = _runner.GetObservation(
+            _selectedAgent,
+            sections: GetVisibleObservationSections());
         ApplyObservation(observation);
+    }
+
+    private ObservationSections GetVisibleObservationSections()
+    {
+        var sections = WorldInfoTabControl.SelectedIndex switch
+        {
+            0 => ObservationSections.Statistics,
+            1 or 2 => ObservationSections.Market,
+            3 => ObservationSections.Map,
+            4 => ObservationSections.WorldLog,
+            _ => ObservationSections.None,
+        };
+        sections |= AgentLogTabControl.SelectedIndex == 1
+            ? ObservationSections.Chronicle
+            : ObservationSections.PersonalLog;
+        return sections;
     }
 
     private void ApplyObservation(WorldObservation observation)
@@ -110,6 +142,7 @@ public partial class MainWindow : Window, IDisposable
         _applyingObservation = true;
         var snapshot = observation.World;
         _latestSnapshot = snapshot;
+        _selectedAgent = observation.SelectedAgent.Id;
         WorldTickText.Text = FormatGameDate(GameCalendar.GetDate(snapshot.Tick));
         PopulationText.Text = KoreanNumberFormatter.Format(snapshot.Population);
         ActiveCombatText.Text = KoreanNumberFormatter.Format(snapshot.ActiveCombats);
@@ -124,8 +157,7 @@ public partial class MainWindow : Window, IDisposable
         try
         {
             UpdateRankingRows(snapshot);
-            UpdateStatistics(snapshot);
-            UpdateEventRows(snapshot);
+            UpdateVisibleWorldPanel(snapshot);
             UpdateSelectedAgent(
                 observation.SelectedAgent,
                 observation.SelectedPersonalLog,
@@ -202,7 +234,29 @@ public partial class MainWindow : Window, IDisposable
         EventList.ItemsSource = rows;
     }
 
-    private void UpdateStatistics(WorldSnapshot snapshot)
+    private void UpdateVisibleWorldPanel(WorldSnapshot snapshot)
+    {
+        switch (WorldInfoTabControl.SelectedIndex)
+        {
+            case 0:
+                UpdateStatisticsPanel(snapshot);
+                break;
+            case 1:
+                UpdateCityPanel(snapshot);
+                break;
+            case 2:
+                UpdateMarketPanel(snapshot);
+                break;
+            case 3:
+                UpdateMapPanel(snapshot);
+                break;
+            case 4:
+                UpdateEventRows(snapshot);
+                break;
+        }
+    }
+
+    private void UpdateStatisticsPanel(WorldSnapshot snapshot)
     {
         var statistics = snapshot.Statistics;
         DeathStatText.Text = KoreanNumberFormatter.Format(statistics.TotalDeaths);
@@ -222,19 +276,29 @@ public partial class MainWindow : Window, IDisposable
         RankingMovementText.Text =
             $"변동 {changeRate:0.##}% · 상승 {movement.RisenCount:N0} · 하락 {movement.FallenCount:N0} · 유지 {movement.UnchangedCount:N0} · 평균 {averageMovement:0.##}위";
 
-        RealmDistributionGrid.ItemsSource = statistics.RealmDistribution
-            .Select(item => new DistributionRow(
-                item.Realm is { } realm ? FormatRealmStage(realm) : "미입문",
-                KoreanNumberFormatter.Format(item.Count),
-                FormatPopulationRatio(item.Count, snapshot.Population)))
-            .ToArray();
-        PowerDistributionGrid.ItemsSource = statistics.CombatPowerDistribution
-            .Select(item => new DistributionRow(
-                FormatPowerRange(item.MinimumInclusive, item.MaximumExclusive),
-                KoreanNumberFormatter.Format(item.Count),
-                FormatPopulationRatio(item.Count, snapshot.Population)))
-            .ToArray();
-        MarketTreasuryText.Text = $"도시 영석 {KoreanNumberFormatter.Format(snapshot.Market.TreasurySpiritStones)}";
+        if (RealmDistributionExpander.IsExpanded)
+        {
+            RealmDistributionGrid.ItemsSource = statistics.RealmDistribution
+                .Select(item => new DistributionRow(
+                    item.Realm is { } realm ? FormatRealmStage(realm) : "미입문",
+                    KoreanNumberFormatter.Format(item.Count),
+                    FormatPopulationRatio(item.Count, snapshot.Population)))
+                .ToArray();
+        }
+
+        if (PowerDistributionExpander.IsExpanded)
+        {
+            PowerDistributionGrid.ItemsSource = statistics.CombatPowerDistribution
+                .Select(item => new DistributionRow(
+                    FormatPowerRange(item.MinimumInclusive, item.MaximumExclusive),
+                    KoreanNumberFormatter.Format(item.Count),
+                    FormatPopulationRatio(item.Count, snapshot.Population)))
+                .ToArray();
+        }
+    }
+
+    private void UpdateCityPanel(WorldSnapshot snapshot)
+    {
         CityTreasuryText.Text = $"{KoreanNumberFormatter.Format(snapshot.Market.TreasurySpiritStones)} 영석";
         CityTransactionText.Text =
             $"구매 {KoreanNumberFormatter.Format(snapshot.Market.PurchaseTransactions)}건 · 판매 {KoreanNumberFormatter.Format(snapshot.Market.SaleTransactions)}건";
@@ -246,6 +310,11 @@ public partial class MainWindow : Window, IDisposable
             $"총 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Stock))}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind == MarketGoodKind.Material).Sum(item => item.Stock))}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind != MarketGoodKind.Material).Sum(item => item.Stock))}개";
         CityFlowText.Text =
             $"공급 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Supply))} · 수요 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Demand))}";
+    }
+
+    private void UpdateMarketPanel(WorldSnapshot snapshot)
+    {
+        MarketTreasuryText.Text = $"도시 영석 {KoreanNumberFormatter.Format(snapshot.Market.TreasurySpiritStones)}";
         var marketRows = snapshot.Market.Goods
             .Select(item => new MarketRow(
                 item.GoodId,
@@ -262,8 +331,14 @@ public partial class MainWindow : Window, IDisposable
             ?? marketRows[0];
         _selectedMarketGoodId = selectedMarketRow.GoodId;
         MarketGrid.SelectedItem = selectedMarketRow;
-        UpdateMarketDetail(snapshot.Market.Goods[_selectedMarketGoodId]);
+        if (MarketDetailExpander.IsExpanded)
+        {
+            UpdateMarketDetail(snapshot.Market.Goods[_selectedMarketGoodId]);
+        }
+    }
 
+    private void UpdateMapPanel(WorldSnapshot snapshot)
+    {
         MapSummaryText.Text =
             $"요수 사냥 {KoreanNumberFormatter.Format(snapshot.Map.TotalMonsterHunts)}회 · 승리 {KoreanNumberFormatter.Format(snapshot.Map.TotalMonsterVictories)}회 · 도시·숲·평야·산맥 실시간 인구";
         MapTileList.ItemsSource = snapshot.Map.Locations
@@ -276,16 +351,19 @@ public partial class MainWindow : Window, IDisposable
                 FormatMonsterList(item),
                 GetBiomeBrush(item.Biome)))
             .ToArray();
-        MapLocationGrid.ItemsSource = snapshot.Map.Locations
-            .OrderBy(item => item.Y)
-            .ThenBy(item => item.X)
-            .Select(item => new MapLocationRow(
-                item.Name,
-                FormatBiome(item.Biome),
-                $"{item.X},{item.Y}",
-                KoreanNumberFormatter.Format(item.Population),
-                FormatMonsterList(item)))
-            .ToArray();
+        if (MapLocationExpander.IsExpanded)
+        {
+            MapLocationGrid.ItemsSource = snapshot.Map.Locations
+                .OrderBy(item => item.Y)
+                .ThenBy(item => item.X)
+                .Select(item => new MapLocationRow(
+                    item.Name,
+                    FormatBiome(item.Biome),
+                    $"{item.X},{item.Y}",
+                    KoreanNumberFormatter.Format(item.Population),
+                    FormatMonsterList(item)))
+                .ToArray();
+        }
     }
 
     private void UpdateSelectedAgent(
@@ -371,14 +449,20 @@ public partial class MainWindow : Window, IDisposable
                 agent.Materials.Select(item =>
                     $"{EconomyRules.GetMaterial(item.Material).KoreanName} {KoreanNumberFormatter.Format(item.Count)}"));
         SetPowerBreakdown(agent.CombatPower);
-        PersonalLogList.ItemsSource = personalLog
-            .Reverse()
-            .Select(entry => FormatPersonalLog(agent, entry))
-            .ToArray();
-        ChronicleList.ItemsSource = chronicle
-            .Reverse()
-            .Select(FormatChronicle)
-            .ToArray();
+        if (AgentLogTabControl.SelectedIndex == 0)
+        {
+            PersonalLogList.ItemsSource = personalLog
+                .Reverse()
+                .Select(entry => FormatPersonalLog(agent, entry))
+                .ToArray();
+        }
+        else
+        {
+            ChronicleList.ItemsSource = chronicle
+                .Reverse()
+                .Select(FormatChronicle)
+                .ToArray();
+        }
     }
 
     private void SetPowerBreakdown(CombatPowerBreakdown power)
@@ -911,7 +995,10 @@ public partial class MainWindow : Window, IDisposable
         }
 
         _selectedMarketGoodId = row.GoodId;
-        UpdateMarketDetail(_latestSnapshot.Market.Goods[row.GoodId]);
+        if (MarketDetailExpander.IsExpanded)
+        {
+            UpdateMarketDetail(_latestSnapshot.Market.Goods[row.GoodId]);
+        }
     }
 
     private void RankingGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -923,8 +1010,25 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        _selectedAgent = row.AgentId;
-        ApplyObservation(_runner.GetObservation(row.AgentId));
+        RefreshVisibleObservation(row.AgentId);
+    }
+
+    private void VisibleSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_applyingObservation || !ReferenceEquals(e.OriginalSource, sender))
+        {
+            return;
+        }
+
+        RefreshVisibleObservation();
+    }
+
+    private void VisibleExpander_Expanded(object sender, RoutedEventArgs e)
+    {
+        if (!_applyingObservation)
+        {
+            RefreshVisibleObservation();
+        }
     }
 
     private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -1061,6 +1165,7 @@ public partial class MainWindow : Window, IDisposable
             var checkpoint = await Task.Run(() => WorldSaveStore.Load(WorldSaveStore.DefaultPath));
             _runner.RestoreCheckpoint(checkpoint);
             _selectedAgent = null;
+            RefreshVisibleObservation();
             StatusText.Text = $"불러오기 완료 · {WorldSaveStore.DefaultPath}";
             StatusText.Foreground = (Brush)FindResource("PositiveBrush");
         }

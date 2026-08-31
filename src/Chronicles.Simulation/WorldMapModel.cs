@@ -34,7 +34,13 @@ public sealed record MapLocationSnapshot(
 public sealed record WorldMapSnapshot(
     IReadOnlyList<MapLocationSnapshot> Locations,
     int TotalMonsterHunts,
-    int TotalMonsterVictories);
+    int TotalMonsterVictories)
+{
+    public static WorldMapSnapshot Empty { get; } = new(
+        Array.Empty<MapLocationSnapshot>(),
+        0,
+        0);
+}
 
 public readonly record struct MapAgentCheckpoint(
     ushort LocationId,

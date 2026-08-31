@@ -26,6 +26,7 @@ var tests = new (string Name, Action Body)[]
     ("도시 임무·영석·재료·단약·법보 경제 순환", EconomyLoop),
     ("전체 분포·랭킹 변동·승패·사망 통계", WorldStatisticsQuery),
     ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
+    ("활성 UI 구역 선택 조회 성능", SelectiveObservationPerformance),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
@@ -929,6 +930,8 @@ static void ObservationQueriesAreReadOnly()
     var personalLog = world.GetAgentPersonalLog(leader.Id);
     var chronicle = world.GetAgentChronicle(leader.Id);
     var snapshot = world.CreateSnapshot(150, 150);
+    var rankingOnly = world.CreateSnapshot(25, 25, ObservationSections.None);
+    var statisticsOnly = world.CreateSnapshot(25, 25, ObservationSections.Statistics);
 
     Equal(1, exactSearch.Count, "정확한 Agent ID 검색 결과");
     Equal(leader.Id, exactSearch[0].Id, "정확한 Agent ID 검색 대상");
@@ -938,9 +941,59 @@ static void ObservationQueriesAreReadOnly()
     Equal(150, snapshot.CombatPowerRankings.Count, "전투력 랭킹 조회 크기");
     Equal(150, snapshot.RealmRankings.Count, "경지 랭킹 조회 크기");
     Equal(150, snapshot.AptitudeRankings.Count, "자질 랭킹 조회 크기");
+    Equal(0, rankingOnly.Statistics.RealmDistribution.Count, "비활성 통계 조회 생략");
+    Equal(0, rankingOnly.Market.Goods.Count, "비활성 시장 조회 생략");
+    Equal(0, rankingOnly.Map.Locations.Count, "비활성 지도 조회 생략");
+    Equal(0, rankingOnly.RecentEvents.Count, "비활성 세계 로그 조회 생략");
+    True(statisticsOnly.Statistics.RealmDistribution.Count > 0, "활성 통계만 계산");
+    Equal(0, statisticsOnly.Market.Goods.Count, "통계 관찰 중 시장 계산 생략");
     True(personalLog.Count <= World.PersonalLogCapacity, "개인 로그 조회 크기");
     True(chronicle.Count > 0, "영구 연대기 조회");
     Equal(before, world.ComputeStateHash(), "관찰 조회는 세계 상태를 바꾸면 안 됩니다.");
+
+    using var runner = new SimulationRunner(world);
+    var personalOnly = runner.GetObservation(
+        leader.Id,
+        rankingCount: 25,
+        eventCount: 25,
+        sections: ObservationSections.PersonalLog);
+    True(personalOnly.SelectedPersonalLog.Count > 0, "활성 개인 로그 조회");
+    Equal(0, personalOnly.SelectedChronicle.Count, "비활성 연대기 조회 생략");
+}
+
+static void SelectiveObservationPerformance()
+{
+    const int iterations = 80;
+    var world = World.CreateDefault(992);
+    world.AdvanceTo(new SimulationTick(20_000));
+    _ = world.CreateSnapshot(1_000, 150, ObservationSections.All);
+    _ = world.CreateSnapshot(1_000, 150, ObservationSections.Statistics);
+
+    WorldSnapshot? sink = null;
+    var legacy = Stopwatch.StartNew();
+    for (var iteration = 0; iteration < iterations; iteration++)
+    {
+        // 이전 UI 경로: worker의 전체 snapshot 뒤 UI가 전체 observation을 다시 요청했다.
+        sink = world.CreateSnapshot(1_000, 150, ObservationSections.All);
+        sink = world.CreateSnapshot(1_000, 150, ObservationSections.All);
+    }
+    legacy.Stop();
+
+    var selective = Stopwatch.StartNew();
+    for (var iteration = 0; iteration < iterations; iteration++)
+    {
+        // 현재 통계 탭: 단일 snapshot에서 통계만 계산한다.
+        sink = world.CreateSnapshot(1_000, 150, ObservationSections.Statistics);
+    }
+    selective.Stop();
+    GC.KeepAlive(sink);
+
+    var reduction = legacy.ElapsedTicks == 0
+        ? 0m
+        : (legacy.ElapsedTicks - selective.ElapsedTicks) * 100m / legacy.ElapsedTicks;
+    Console.WriteLine(
+        $"UI PERF: 이전 이중 전체 조회 {legacy.Elapsed.TotalMilliseconds:N1} ms · 선택 조회 {selective.Elapsed.TotalMilliseconds:N1} ms · 감소 {reduction:0.0}% ({iterations:N0}회)");
+    True(selective.ElapsedTicks < legacy.ElapsedTicks, "활성 UI 선택 조회는 이전 이중 전체 조회보다 빨라야 합니다.");
 }
 
 static void WorldStatisticsQuery()

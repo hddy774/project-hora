@@ -548,8 +548,8 @@ public partial class MainWindow : Window, IDisposable
             WorldEventKind.MaterialSold => $"{primary}, {EconomyRules.GetMaterial((MaterialId)worldEvent.Value).KoreanName} 판매",
             WorldEventKind.MaterialPurchased => $"{primary}, 시장에서 {EconomyRules.GetMaterial((MaterialId)worldEvent.Value).KoreanName} 구매",
             WorldEventKind.TreasurePurchased => $"{primary}, 시장에서 {FormatQuality(worldEvent.Value)} 법보 구매",
-            WorldEventKind.TechniqueBookPurchased => $"{primary}, 공법서를 구매해 {FormatQuality(worldEvent.Value)} 공법 습득",
-            WorldEventKind.SpellBookPurchased => $"{primary}, 법술서를 구매해 {FormatQuality(worldEvent.Value)} 법술 습득",
+            WorldEventKind.TechniqueBookPurchased => $"{primary}, 시장에서 {FormatQuality(worldEvent.Value)} 공법서 구매",
+            WorldEventKind.SpellBookPurchased => $"{primary}, 시장에서 {FormatQuality(worldEvent.Value)} 법술서 구매",
             WorldEventKind.NewLeader => $"{primary}, {secondary}을 제치고 새로운 1위 등극",
             WorldEventKind.CombatStarted => $"{primary}, 상위권 {secondary}에게 도전",
             WorldEventKind.CombatPhysicalAttack => $"{primary} → {secondary}, 공법 공격 {worldEvent.Value:N0} 피해",
@@ -1023,7 +1023,7 @@ public partial class MainWindow : Window, IDisposable
 
     private void VisibleSection_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_applyingObservation || !ReferenceEquals(e.OriginalSource, sender))
+        if (_applyingObservation || !ReferenceEquals(e.Source, sender))
         {
             return;
         }

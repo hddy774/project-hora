@@ -47,8 +47,17 @@ Chronicles.Tests ──> Core + Simulation
 상태 전이 owner, `RealmRules`는 Work·Gate·확률·이월 공식 owner,
 `CultivationModel`은 저장/조회 계약 owner다. 9층 Work와 대원만은 서로 다른 상태다.
 
+`AptitudeModel`은 영근·근골·체질·오성·정신·영혼 6개 영역과 영역별 10개 Component,
+안정 ID, `F-TRAIT-002` 대표값 공식과 수행/전투 파생 능력을 소유한다. 권위값 60개는
+`AgentStore`의 `ushort[population × 60]` 평탄 SoA에 저장하고 대표값은 영역별 10개
+산술평균으로 파생한다. 실제 공식은 대표값이 아니라 핵심 Component 30%+30%, 보조
+Component 20%+20% 조합을 사용한다. 5개 역할 점수와 수행/전투 문맥별 자질은 탄생·
+환생·복원 시 캐시하며 월 행동 hot path와 관찰에서 60개를 반복 집계하지 않는다.
+영혼 Component 10개는 윤회에 보존하고 다른 50개는 새 육신에서 재생성한다.
+미확정 분포·역할 조합·영근 세분화는 안정 검토 ID와 `RequiresReview`로 추적한다.
+
 `SkillProgressionRules`는 공법·법술의 누적 수련 경험, 0.00~100.00 숙련 곡선과
-깨달음 이해도를 계산한다. `AptitudeCombatBonusFormula`는 역할별 원시 자질 조합을
+깨달음 이해도를 계산한다. `AptitudeCombatBonusFormula`는 Component 파생 역할 점수를
 50%~200%로 제한해 공법·법술 효과/성장과 전투 숙련·이해·경험에 공급한다. 품질은
 기술 객체의 불변 입력이며 시장에서 새 서적을
 습득할 때만 교체한다. `PowerInputSignature`는 경지·기술·전투 경험 입력이 실제로
@@ -98,6 +107,11 @@ Chronicles.Tests ──> Core + Simulation
 세계에는 별도의 무제한 영구 연대기를 두고 1위 교체·대경지 돌파·대원만·상위권
 죽음처럼 세계적으로 지속할 사건만 추가한다. 세계 사건은 안정 ID와 함께 사건 당시
 인물 이름을 보존해 영혼 슬롯이 환생해도 과거 기록의 이름이 변하지 않는다.
+`WorldCenturyChronicle`은 이 개별 사건 열과 분리된 100년 단위 세계 역사서 owner다.
+대경지별 돌파 횟수/고유 인원, 네 랭킹 TOP 1·3·5·10의 누적 자리 교체와 세기 말
+지도자, 사망·윤회·환생 횟수/고유 인원과 윤회의 강 체류 인원, 전투·사냥·경제 합계를
+작은 정수 배열과 agent bitset으로 집계한다. 100년이 닫힐 때만 한 권을 영구 확정하며
+역사서 문장은 현재 선택한 UI 세부 탭에서만 지연 생성한다.
 `SimulationRunner`는 UI 탭 상태와 무관하게 중요 사건을 파일 기록 계층에 전달하는
 최대 10,000건 feed만 소유하며 파일 I/O를 직접 수행하지 않는다.
 
@@ -117,6 +131,9 @@ virtualization을 사용한다.
 요청하며 인구 변동으로 페이지가 사라지면 마지막 유효 페이지로 자동 보정한다. 전투력
 상세 Expander는 공식 revision, 원시 기여, 자질 보정 후 기여와
 최종 `경지+공법+법술+전투 성장+법보` 합을 표시한다.
+세부 선천자질 Expander는 접혀 있으면 `ObservationSections.AptitudeDetails`를 요청하지
+않는다. 펼친 경우에도 선택 인물 하나의 60개 값만 DTO로 복사하고, 6개 내부 탭 중
+현재 탭의 Component와 파생 공식 문자열만 갱신한다.
 `MapObservationView`, `MarketObservationView`, `PresentationText`와
 `MainWindow.AgentObservation`, `MainWindow.Rankings`, `MainWindow.WorldRecords`가 지역,
 시장, 공통 문구, 인물, 랭킹과 기록 관찰 책임을 분리한다. `WorldRecordsView`는 세계
@@ -129,24 +146,27 @@ virtualization을 사용한다.
 ### Chronicles.Persistence
 
 Simulation의 명시적 체크포인트를 Brotli 압축 payload와 SHA-256 checksum을 가진
-versioned `.cmip` container로 변환한다. 현재 schema 15는 수행 trace/구성요소와
+versioned `.cmip` container로 변환한다. 현재 schema 18은 수행 trace/구성요소와
 입문 Gate 단련 보정, 기술 경험/이해, 전투 경험/이해·turn owner/부상, 지도 위치/사냥 상태를
 비롯해 간략화 시장·생산 대기열·유한 광맥·요수 개체수, TOP 1,000 부자 순위,
-기간별 랭킹 frame, 세계 연대기와 사건 당시 이름을 저장한다. schema 7~14에 안전한
+기간별 랭킹 frame·누적 자리 변동, 개별 세계 사건, 100년 세계 역사서와 60개 선천자질
+Component를 저장한다. schema 7~17에 안전한
 이전 기본값과 진행 전투 단일 turn owner 복구를
 제공하며, schema 13의 30종 재료·7칸 법보·35개 상품은 새 2종·3칸·44개 구조로
-명시적으로 합산 이전한다. 정상 10,000명 저장의 개인 로그/연대기가 압축 전 128MiB를
+명시적으로 합산 이전하고 schema 17 이하 자질 대표값은 그룹별 균일 Component로
+이전한다. 정상 10,000명 저장의 개인 로그/연대기가 압축 전 128MiB를
 넘을 수 있어 JSON 해제 상한은 512MiB로 두되 압축 payload 64MiB 상한과 checksum은
 유지한다. 같은 폴더의 임시 파일을 flush한 뒤 원자적으로
 교체하며, 손상되거나 지원하지 않는 schema는 세계를 바꾸기 전에 거부한다.
 
 ### Chronicles.Tests
 
-외부 테스트 프레임워크 없이 실행 가능한 결정론적 계약 러너다. 34개 검사가 공식,
+외부 테스트 프레임워크 없이 실행 가능한 결정론적 계약 러너다. 35개 검사가 공식,
 9층 수행, 숙련/이해/품질 불변, 교대 전투/부상 사망, 지도/요수, 경제, 관찰 무영향,
 자질 간접 보정 경계, 전투 성장, 선택 UI 조회, 과거 저장 복구, 장기 성장·사냥·경쟁,
 재료 부족 생산 건너뛰기, 지도 내부 탭 지연 투영의 시간·할당량, 부자 순위·기간별
-랭킹 이력·세계 연대기, 저장 왕복과 10,000명 성능 예산을
+랭킹 이력·누적 자리 변동·100년 세계 역사서, 60개 자질 Component·윤회 보존·schema
+18 이전·지연 관찰, 저장 왕복과 10,000명 성능 예산을
 자동 검증한다.
 
 ## 실행 모델

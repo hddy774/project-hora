@@ -206,27 +206,36 @@
 
                         <Grid Margin="0,22,0,0">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.55*" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="0.65*" />
+                                <ColumnDefinition Width="0.85*" />
+                                <ColumnDefinition Width="0.95*" />
                             </Grid.ColumnDefinitions>
-                            <StackPanel>
+                            <StackPanel Margin="0,0,12,0">
                                 <TextBlock Text="경지" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                <TextBlock x:Name="RealmText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
+                                <TextBlock x:Name="RealmText"
+                                           Margin="0,4,0,0"
+                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                           FontSize="15"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" />
                             </StackPanel>
-                            <StackPanel Grid.Column="1">
+                            <StackPanel Grid.Column="1" Margin="0,0,12,0">
                                 <TextBlock Text="나이 / 수명" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                <TextBlock x:Name="AgeText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
+                                <TextBlock x:Name="AgeText"
+                                           Margin="0,4,0,0"
+                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                           FontSize="15"
+                                           TextTrimming="CharacterEllipsis" />
                             </StackPanel>
-                            <StackPanel Grid.Column="2">
+                            <StackPanel Grid.Column="2" Margin="0,0,12,0">
                                 <TextBlock Text="생" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                <TextBlock x:Name="LifeText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
+                                <TextBlock x:Name="LifeText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
-                            <StackPanel Grid.Column="3">
+                            <StackPanel Grid.Column="3" Margin="0,0,12,0">
                                 <TextBlock Text="현재 행동" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                <TextBlock x:Name="ActivityText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" />
+                                <TextBlock x:Name="ActivityText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                             <StackPanel Grid.Column="4">
                                 <TextBlock Text="상대" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />

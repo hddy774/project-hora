@@ -49,6 +49,10 @@ public partial class MainWindow
         {
             UpdateDecisionReasonView(agent.Decision);
         }
+        if (RelationsExpander.IsExpanded)
+        {
+            UpdateRelationsView(agent.Relations ?? Array.Empty<RelationSnapshot>());
+        }
         CultivationProgressBar.Maximum = Math.Max(1, agent.CultivationRequirement);
         CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
         CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
@@ -340,6 +344,80 @@ public partial class MainWindow
         DecisionResolutionKind.Deferred => "보류",
         DecisionResolutionKind.Blocked => "차단",
         _ => resolution.ToString(),
+    };
+
+    private void UpdateRelationsView(IReadOnlyList<RelationSnapshot> relations)
+    {
+        if (relations.Count == 0)
+        {
+            RelationsText.Text =
+                $"현재 생의 희소 관계 없음 · 인물당 최대 {RelationRules.MaximumRelationsPerAgent:N0}개 · " +
+                $"{RelationRules.ProvisionalReviewId} 다음 버전 검토";
+            return;
+        }
+
+        RelationsText.Text = string.Join(
+            "\n\n",
+            relations.Select(relation =>
+            {
+                var role = FormatRelationRoles(relation);
+                var latestHistory = relation.ImportantHistory.Count == 0
+                    ? default
+                    : relation.ImportantHistory[^1];
+                var history = latestHistory.Sequence == 0
+                    ? "중요 역사 없음"
+                    : $"최근 역사 {FormatRelationHistory(latestHistory.Kind)} · " +
+                        $"{FormatGameDate(GameCalendar.GetDate(new SimulationTick(latestHistory.Tick)))}";
+                return
+                    $"{relation.OtherName} · {relation.OtherAgentId} · {relation.OtherPersonId} · {relation.Id}\n" +
+                    $"역할 {role}\n" +
+                    $"나→상대 {FormatRelationMetrics(relation.TowardOther)}\n" +
+                    $"상대→나 {FormatRelationMetrics(relation.OtherTowardSelf)}\n" +
+                    $"{history}";
+            })) +
+            $"\n\n희소 후보·축 변화·Role 임시 수치: {RelationRules.ProvisionalReviewId} 다음 버전 재검토";
+    }
+
+    private static string FormatRelationRoles(RelationSnapshot relation)
+    {
+        var roles = new List<string>(5);
+        if ((relation.Roles & RelationRole.MasterDisciple) != 0)
+        {
+            roles.Add(relation.IsMaster ? "스승" : relation.IsDisciple ? "제자" : "사제");
+        }
+        if ((relation.Roles & RelationRole.Friendship) != 0)
+        {
+            roles.Add("우정");
+        }
+        if ((relation.Roles & RelationRole.Romance) != 0)
+        {
+            roles.Add("연애");
+        }
+        if ((relation.Roles & RelationRole.Companion) != 0)
+        {
+            roles.Add("실제 동료");
+        }
+        if ((relation.Roles & RelationRole.PersistentRivalry) != 0)
+        {
+            roles.Add("지속 경쟁");
+        }
+
+        return roles.Count == 0 ? "아직 성립 전" : string.Join("·", roles);
+    }
+
+    private static string FormatRelationMetrics(RelationMetrics metrics) =>
+        $"호감/반감 {metrics.FavorDisfavor / 100m:+0.00;-0.00;0.00} · " +
+        $"신뢰/불신 {metrics.TrustDistrust / 100m:+0.00;-0.00;0.00} · " +
+        $"존중/경시 {metrics.RespectContempt / 100m:+0.00;-0.00;0.00} · " +
+        $"은혜 {metrics.Gratitude / 100m:0.00} · 원한 {metrics.Grievance / 100m:0.00} · " +
+        $"경계 {metrics.Vigilance / 100m:0.00}";
+
+    private static string FormatRelationHistory(RelationHistoryKind kind) => kind switch
+    {
+        RelationHistoryKind.RelationCreated => "관계 인지 시작",
+        RelationHistoryKind.RoleFormed => "관계 역할 성립",
+        RelationHistoryKind.RoleEndedAtLifeBoundary => "생애 경계로 관계 역할 종료",
+        _ => kind.ToString(),
     };
 
     private void UpdateAptitudeDetailView(AgentSnapshot agent)

@@ -8,6 +8,7 @@ public sealed partial class World
     public const int PersonalLogCapacity = 100;
     private readonly DeterministicRandom _random;
     private readonly AgentStore _agents;
+    private readonly SparseRelationStore _relations;
     private readonly CityMarket _market;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
     private readonly int[] _agentByRank;
@@ -56,6 +57,7 @@ public sealed partial class World
         Seed = seed;
         _random = new DeterministicRandom(seed);
         _agents = new AgentStore(population);
+        _relations = new SparseRelationStore(population);
         _market = new CityMarket(population);
         _agentByRank = new int[population];
         _rankByAgent = new int[population];
@@ -100,6 +102,7 @@ public sealed partial class World
     public int TotalMaterialsSold => _totalMaterialsSold;
     public int TotalMonsterHunts => _totalMonsterHunts;
     public int TotalMonsterVictories => _totalMonsterVictories;
+    public int TotalRelations => _relations.Count;
 
     public static World CreateDefault(ulong seed) =>
         new(seed, ProductInfo.DefaultPopulation);
@@ -149,6 +152,7 @@ public sealed partial class World
             var powerInputsBefore = _agents.GetPowerInputSignature(agentIndex);
             var alreadyScheduled = ResolveActivity(agentIndex);
             TryResolveBottleneckAfterAction(agentIndex, resolvedActivity);
+            ObserveSocialInteraction(agentIndex, resolvedActivity);
             AddPersonalActionLog(agentIndex, resolvedActivity);
             if (alreadyScheduled)
             {
@@ -184,7 +188,8 @@ public sealed partial class World
 
     public AgentSnapshot GetAgentSnapshot(
         AgentId agentId,
-        bool includeAptitudeDetails = false)
+        bool includeAptitudeDetails = false,
+        bool includeRelations = false)
     {
         var index = ValidateAgent(agentId);
         var combatAptitudes = _agents.GetContextAptitudes(index, combat: true);
@@ -270,6 +275,9 @@ public sealed partial class World
             _agents.GetDecisionSnapshot(index),
             includeAptitudeDetails
                 ? _agents.CreateAptitudeDetailSnapshot(index)
+                : null,
+            includeRelations
+                ? CreateRelationSnapshots(index)
                 : null);
     }
 
@@ -482,6 +490,33 @@ public sealed partial class World
         foreach (var population in _monsterPopulations)
         {
             Add(ref hash, (ulong)population);
+        }
+        var relations = _relations.CreateCheckpoint();
+        Add(ref hash, (ulong)relations.HistorySequence);
+        Add(ref hash, (ulong)relations.Relations.Length);
+        foreach (var relation in relations.Relations)
+        {
+            Add(ref hash, relation.Id.Value);
+            Add(ref hash, (ulong)relation.LeftAgent);
+            Add(ref hash, (ulong)relation.RightAgent);
+            Add(ref hash, relation.LeftPersonId.Value);
+            Add(ref hash, relation.RightPersonId.Value);
+            AddRelationMetricsHash(ref hash, relation.LeftTowardRight);
+            AddRelationMetricsHash(ref hash, relation.RightTowardLeft);
+            Add(ref hash, (byte)relation.Roles);
+            Add(ref hash, (ulong)(relation.MasterAgent + 1));
+            Add(ref hash, relation.CooperativeInteractions);
+            Add(ref hash, relation.JourneyInteractions);
+            Add(ref hash, relation.CombatInteractions);
+            foreach (var history in relation.History)
+            {
+                Add(ref hash, (ulong)history.Sequence);
+                Add(ref hash, (ulong)history.Tick);
+                Add(ref hash, (byte)history.Kind);
+                Add(ref hash, (byte)history.ChangedRoles);
+                Add(ref hash, history.LeftPersonId.Value);
+                Add(ref hash, history.RightPersonId.Value);
+            }
         }
         for (var index = 0; index < Population; index++)
         {
@@ -1367,6 +1402,7 @@ public sealed partial class World
         }
         AddChronicle(index, ChronicleEventKind.ReincarnationEntered);
         AddEvent(WorldEventKind.ReincarnationEntered, index, _agents.LifeNumbers[index]);
+        _relations.EndLife(index, Tick.Value);
         _agents.LifeStates[index] = PersonLifeState.ReincarnationRiver;
         SetActivityDecision(
             index,
@@ -1383,6 +1419,7 @@ public sealed partial class World
     private void CompleteRebirth(int index)
     {
         _agents.Rebirth(index, _random, Tick.Value);
+        _relations.StartNewLife(index, _agents.PersonIdentityIds[index]);
         _totalReincarnations++;
         AddChronicle(index, ChronicleEventKind.Rebirth);
         AddEvent(WorldEventKind.Rebirth, index, _agents.LifeNumbers[index]);
@@ -1437,6 +1474,16 @@ public sealed partial class World
             hash ^= (byte)(value >> shift);
             hash *= 1099511628211UL;
         }
+    }
+
+    private static void AddRelationMetricsHash(ref ulong hash, RelationMetrics metrics)
+    {
+        Add(ref hash, unchecked((ulong)(long)metrics.FavorDisfavor));
+        Add(ref hash, unchecked((ulong)(long)metrics.TrustDistrust));
+        Add(ref hash, unchecked((ulong)(long)metrics.RespectContempt));
+        Add(ref hash, (ulong)metrics.Gratitude);
+        Add(ref hash, (ulong)metrics.Grievance);
+        Add(ref hash, (ulong)metrics.Vigilance);
     }
 
     private static void AddString(ref ulong hash, string value)

@@ -180,7 +180,8 @@ public sealed record WorldCheckpoint(
     int[]? EliteRealmChangedCounts = null,
     WorldEvent[]? WorldChronicle = null,
     RankingHistoryCheckpoint? RankingHistory = null,
-    WorldCenturyChronicleCheckpoint? CenturyChronicle = null)
+    WorldCenturyChronicleCheckpoint? CenturyChronicle = null,
+    RelationStoreCheckpoint? Relations = null)
 {
-    public const int CurrentSchemaVersion = 20;
+    public const int CurrentSchemaVersion = 21;
 }

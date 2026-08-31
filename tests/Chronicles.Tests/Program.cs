@@ -32,6 +32,7 @@ var tests = new (string Name, Action Body)[]
     ("공법·법술 경험·숙련·이해·품질 불변", SkillMasteryUnderstandingAndImmutableQuality),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("영혼·육신·현생 신원과 AI 행동 이유 권위", PersonIdentityAndDecisionAuthority),
+    ("희소 방향 관계 6축·초기 Role·생애 경계", SparseDirectionalRelationsAndRoles),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("부자 TOP 1000·기간별 상위권 변동·세계 연대기", WealthRankingHistoryAndWorldChronicle),
@@ -658,7 +659,7 @@ static void PersonIdentityAndDecisionAuthority()
     Equal(beforeObservation, world.ComputeStateHash(), "행동 이유 관찰은 권위 상태 무영향");
 
     var checkpoint = world.CreateCheckpoint();
-    Equal(20, checkpoint.SchemaVersion, "인물 신원·결정 추적 저장 schema");
+    Equal(21, checkpoint.SchemaVersion, "희소 관계 저장 schema");
     var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
     Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "인물 신원·결정 codec·hash 왕복");
 
@@ -676,6 +677,74 @@ static void PersonIdentityAndDecisionAuthority()
     Equal(PersonCausalRules.CreateBodyId(0, migrated.LifeNumber), migrated.Identity.BodyId, "schema 19 육신 ID 이전");
     True(migrated.Decision.Latest.PrimaryGoal == AgentGoalKind.ReachRankOne, "schema 19 최종 목표 이전");
     True(migrated.Decision.Latest.AuthorityRevision >= 1, "schema 19 결정 revision 이전");
+}
+
+static void SparseDirectionalRelationsAndRoles()
+{
+    Equal(8, RelationRules.MaximumRelationsPerAgent, "인물당 희소 관계 슬롯 임시 상한");
+    Equal(0, RelationRules.DirectTeachingCultivationSpeedBonusBasisPoints, "일반 Teaching 직접 수행속도 0%");
+    var initialRoles = new[]
+    {
+        RelationRole.MasterDisciple,
+        RelationRole.Friendship,
+        RelationRole.Romance,
+        RelationRole.Companion,
+        RelationRole.PersistentRivalry,
+    };
+    Equal(5, initialRoles.Distinct().Count(), "초기 Relation Role 5종");
+
+    var stopwatch = Stopwatch.StartNew();
+    var world = World.Create(8803, 500);
+    world.AdvanceTo(GameCalendar.FromYears(160));
+    stopwatch.Stop();
+    var checkpoint = world.CreateCheckpoint();
+    var relationStore = checkpoint.Relations;
+    True(relationStore is not null, "schema 21 희소 관계 저장 존재");
+    True(relationStore!.Relations.Length > 0, "실제 공존·전투에서 관계 생성");
+    True(
+        relationStore.Relations.Length <= 500 * RelationRules.MaximumRelationsPerAgent / 2,
+        "희소 관계 총량 상한");
+    var degree = new int[world.Population];
+    foreach (var relation in relationStore.Relations)
+    {
+        degree[relation.LeftAgent]++;
+        degree[relation.RightAgent]++;
+        Equal(RelationRules.CreateId(relation.LeftAgent, relation.RightAgent), relation.Id, "관계 안정 ID");
+        True(RelationRules.IsValidMetrics(relation.LeftTowardRight), "정방향 6축 범위");
+        True(RelationRules.IsValidMetrics(relation.RightTowardLeft), "역방향 6축 범위");
+    }
+    True(degree.All(count => count <= RelationRules.MaximumRelationsPerAgent), "모든 인물 관계 adjacency 상한");
+    True(
+        relationStore.Relations.Any(relation => relation.Roles != RelationRole.None),
+        "실제 반복 상호작용에서 Role 성립");
+    True(
+        relationStore.Relations.Any(relation => relation.LeftTowardRight != relation.RightTowardLeft),
+        "승자·패자 관점의 방향별 6축 분리");
+    True(
+        relationStore.Relations.SelectMany(relation => relation.History)
+            .Any(history => history.Kind == RelationHistoryKind.RoleFormed),
+        "중요 Role 성립 역사");
+    True(
+        relationStore.Relations.SelectMany(relation => relation.History)
+            .Any(history => history.Kind == RelationHistoryKind.RoleEndedAtLifeBoundary),
+        "사망·윤회 생애 경계 Role 종료 역사");
+
+    var beforeObservation = world.ComputeStateHash();
+    var hidden = world.GetAgentSnapshot(new AgentId(0));
+    True(hidden.Relations is null, "접힌 관계 UI DTO 미생성");
+    var visible = Enumerable.Range(0, world.Population)
+        .Select(index => world.GetAgentSnapshot(new AgentId(index), includeRelations: true))
+        .First(agent => agent.Relations is { Count: > 0 });
+    True(visible.Relations!.Count <= RelationRules.MaximumRelationsPerAgent, "펼친 관계 UI 희소 DTO");
+    Equal(beforeObservation, world.ComputeStateHash(), "관계 관찰은 권위 상태 무영향");
+
+    var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "희소 관계 codec·hash 왕복");
+    var legacy = checkpoint with { SchemaVersion = 20, Relations = null };
+    Equal(0, World.Restore(legacy).TotalRelations, "schema 20은 빈 희소 관계로 이전");
+    Console.WriteLine(
+        $"RELATION PERF: 500명·160년 {stopwatch.Elapsed.TotalMilliseconds:N1} ms · " +
+        $"관계 {relationStore.Relations.Length:N0}개 · 최대 degree {degree.Max():N0}");
 }
 
 static void WorldPersonalLogsAndPermanentChronicle()
@@ -803,7 +872,7 @@ static void DetailedAptitudesAuthorityAndLazyProjection()
     var world = World.CreateDefault(741103);
     var checkpoint = world.CreateCheckpoint();
     stopwatch.Stop();
-    Equal(20, checkpoint.SchemaVersion, "세부 선천자질·인물 인과 저장 schema");
+    Equal(21, checkpoint.SchemaVersion, "세부 선천자질·희소 관계 저장 schema");
 
     long summaryTotal = 0;
     var summaryMinimum = int.MaxValue;
@@ -1517,7 +1586,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 20, "인물 신원·결정 추적 저장 schema 20");
+    True(checkpoint.SchemaVersion == 21, "희소 관계 저장 schema 21");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");

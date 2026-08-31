@@ -111,7 +111,9 @@ public sealed class SimulationRunner : IDisposable
             var agent = _world.GetAgentSnapshot(
                 agentId,
                 includeAptitudeDetails:
-                    (sections & ObservationSections.AptitudeDetails) != 0);
+                    (sections & ObservationSections.AptitudeDetails) != 0,
+                includeRelations:
+                    (sections & ObservationSections.Relations) != 0);
             return new WorldObservation(
                 world,
                 agent,

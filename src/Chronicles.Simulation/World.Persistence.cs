@@ -11,6 +11,9 @@ public sealed partial class World
         Tick = new SimulationTick(checkpoint.Tick);
         _random = new DeterministicRandom(checkpoint.RandomState);
         _agents = new AgentStore(checkpoint.Agents.Length);
+        _relations = checkpoint.SchemaVersion >= 21 && checkpoint.Relations is { } relations
+            ? SparseRelationStore.Restore(checkpoint.Agents.Length, relations)
+            : new SparseRelationStore(checkpoint.Agents.Length);
         _market = new CityMarket(checkpoint.Market, checkpoint.SchemaVersion);
         _agentByRank = new int[checkpoint.Agents.Length];
         _rankByAgent = new int[checkpoint.Agents.Length];
@@ -277,7 +280,8 @@ public sealed partial class World
             _eliteRealmChangedCounts.ToArray(),
             Array.Empty<WorldEvent>(),
             _rankingHistory.CreateCheckpoint(),
-            _worldChronicle.CreateCheckpoint());
+            _worldChronicle.CreateCheckpoint(),
+            _relations.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -529,6 +533,25 @@ public sealed partial class World
         if (checkpoint.TotalCombatsStarted != checkpoint.TotalCombatsCompleted + checkpoint.ActiveCombats)
         {
             throw new InvalidDataException("세계 체크포인트의 전투 수가 일치하지 않습니다.");
+        }
+
+        if (checkpoint.SchemaVersion >= 21
+            && !SparseRelationStore.IsValidCheckpoint(
+                checkpoint.Agents.Length,
+                checkpoint.Relations,
+                checkpoint.Tick))
+        {
+            throw new InvalidDataException("세계 체크포인트의 희소 관계 상태가 잘못되었습니다.");
+        }
+
+        if (checkpoint.SchemaVersion >= 21
+            && checkpoint.Relations!.Relations.Any(relation =>
+                checkpoint.Agents[relation.LeftAgent].Identity is not { } leftIdentity
+                || checkpoint.Agents[relation.RightAgent].Identity is not { } rightIdentity
+                || relation.LeftPersonId != leftIdentity.PersonId
+                || relation.RightPersonId != rightIdentity.PersonId))
+        {
+            throw new InvalidDataException("희소 관계의 현재 생 Identity 연결이 잘못되었습니다.");
         }
 
         if (checkpoint.TotalMissionsCompleted < 0

@@ -21,11 +21,12 @@ public enum ObservationSections : ushort
     WorldChronicle = 1 << 12,
     WealthRanking = 1 << 13,
     AptitudeDetails = 1 << 14,
+    Relations = 1 << 15,
     Statistics = StatisticsSummary | RealmDistribution | CombatPowerDistribution,
     Market = MarketSummary | MarketGoods,
     AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking | WealthRanking,
     All = Statistics | Market | Map | WorldLog | WorldChronicle | PersonalLog | Chronicle
-        | AllRankings | AptitudeDetails,
+        | AllRankings | AptitudeDetails | Relations,
 }
 
 public enum AgentActivity : byte
@@ -484,7 +485,8 @@ public sealed record AgentSnapshot(
     CombatPowerFormulaDetails CombatPowerDetails,
     PersonIdentitySnapshot Identity,
     AgentDecisionSnapshot Decision,
-    AptitudeDetailSnapshot? AptitudeDetails = null);
+    AptitudeDetailSnapshot? AptitudeDetails = null,
+    IReadOnlyList<RelationSnapshot>? Relations = null);
 
 public sealed record RankingEntry(
     RankingCategory Category,

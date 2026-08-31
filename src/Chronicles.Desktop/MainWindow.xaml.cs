@@ -203,6 +203,10 @@ public partial class MainWindow : Window, IDisposable
         {
             sections |= ObservationSections.AptitudeDetails;
         }
+        if (RelationsExpander.IsExpanded)
+        {
+            sections |= ObservationSections.Relations;
+        }
 
         sections |= _rankingCategory switch
         {

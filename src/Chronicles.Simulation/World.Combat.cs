@@ -381,6 +381,13 @@ public sealed partial class World
         _agents.CombatTurnOwners[loser] = -1;
         _agents.Guarding[winner] = false;
         _agents.Guarding[loser] = false;
+        _relations.ApplyMutualInteraction(
+            winner,
+            loser,
+            _agents.PersonIdentityIds[winner],
+            _agents.PersonIdentityIds[loser],
+            RelationInteractionKind.CombatOutcome,
+            Tick.Value);
         SetActivityDecision(
             winner,
             AgentActivity.Recovering,

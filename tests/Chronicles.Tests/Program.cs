@@ -643,6 +643,7 @@ static void SkillCombatScaleRegression()
         0,
         0,
         0);
+    Equal(100L, flawless.Realm, "연기경 1층 전투력 기준값");
     var heaven = CombatPowerFormula.Calculate(
         RealmStage.QiRefining,
         1,

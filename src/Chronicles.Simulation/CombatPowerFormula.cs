@@ -25,7 +25,10 @@ public static class CombatPowerFormula
         }
 
         var stage = (int)realmStage + 1;
-        var realm = checked((stage * stage * stage * 2_000) + (realmLayer * stage * stage * 250));
+        var realm = checked(
+            100L
+            + (((long)stage * stage * stage - 1L) * 2_000L)
+            + (((long)realmLayer - 1L) * stage * stage * 250L));
         var aptitude = checked(
             ((QualityRules.GetEffectiveHundredths(aptitudes.SpiritualRoot) * 15)
             + (QualityRules.GetEffectiveHundredths(aptitudes.Bone) * 14)

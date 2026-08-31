@@ -6,8 +6,8 @@ namespace Chronicles.Simulation;
 public enum ObservationSections : ushort
 {
     None = 0,
-    Statistics = 1 << 0,
-    Market = 1 << 1,
+    StatisticsSummary = 1 << 0,
+    MarketSummary = 1 << 1,
     Map = 1 << 2,
     WorldLog = 1 << 3,
     PersonalLog = 1 << 4,
@@ -15,6 +15,11 @@ public enum ObservationSections : ushort
     CombatPowerRanking = 1 << 6,
     RealmRanking = 1 << 7,
     AptitudeRanking = 1 << 8,
+    RealmDistribution = 1 << 9,
+    CombatPowerDistribution = 1 << 10,
+    MarketGoods = 1 << 11,
+    Statistics = StatisticsSummary | RealmDistribution | CombatPowerDistribution,
+    Market = MarketSummary | MarketGoods,
     AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking,
     All = Statistics | Market | Map | WorldLog | PersonalLog | Chronicle | AllRankings,
 }

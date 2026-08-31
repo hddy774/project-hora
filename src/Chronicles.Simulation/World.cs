@@ -238,11 +238,12 @@ public sealed partial class World
                 _agentByAptitudeRank,
                 actualRankingCount)
             : Array.Empty<RankingEntry>();
-        var statistics = (sections & ObservationSections.Statistics) != 0
-            ? CreateStatistics()
+        var requestedStatistics = sections & ObservationSections.Statistics;
+        var statistics = requestedStatistics != ObservationSections.None
+            ? CreateStatistics(requestedStatistics)
             : WorldStatistics.Empty;
         var market = (sections & ObservationSections.Market) != 0
-            ? _market.CreateSnapshot()
+            ? _market.CreateSnapshot((sections & ObservationSections.MarketGoods) != 0)
             : CityMarketSnapshot.Empty;
         var map = (sections & ObservationSections.Map) != 0
             ? CreateMapSnapshot()

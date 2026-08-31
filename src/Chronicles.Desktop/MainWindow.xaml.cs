@@ -125,12 +125,26 @@ public partial class MainWindow : Window, IDisposable
     {
         var sections = WorldInfoTabControl.SelectedIndex switch
         {
-            0 => ObservationSections.Statistics,
-            1 or 2 => ObservationSections.Market,
+            0 => ObservationSections.StatisticsSummary,
+            1 => ObservationSections.MarketSummary,
+            2 => ObservationSections.Market,
             3 => ObservationSections.Map,
             4 => ObservationSections.WorldLog,
             _ => ObservationSections.None,
         };
+        if (WorldInfoTabControl.SelectedIndex == 0)
+        {
+            if (RealmDistributionExpander.IsExpanded)
+            {
+                sections |= ObservationSections.RealmDistribution;
+            }
+
+            if (PowerDistributionExpander.IsExpanded)
+            {
+                sections |= ObservationSections.CombatPowerDistribution;
+            }
+        }
+
         sections |= AgentLogTabControl.SelectedIndex == 1
             ? ObservationSections.Chronicle
             : ObservationSections.PersonalLog;

@@ -197,27 +197,33 @@ internal sealed class CityMarket
         return true;
     }
 
-    public CityMarketSnapshot CreateSnapshot()
+    public CityMarketSnapshot CreateSnapshot(bool includeGoods = true)
     {
-        var goods = new MarketGoodSnapshot[EconomyRules.MarketGoodCount];
-        for (var goodId = 0; goodId < goods.Length; goodId++)
+        IReadOnlyList<MarketGoodSnapshot> goods = Array.Empty<MarketGoodSnapshot>();
+        if (includeGoods)
         {
-            var definition = EconomyRules.GetMarketGood(goodId);
-            goods[goodId] = new MarketGoodSnapshot(
-                goodId,
-                definition.Kind,
-                definition.Material,
-                definition.CityBasePrice,
-                _prices[goodId],
-                _stock[goodId],
-                _supply[goodId],
-                _demand[goodId],
-                goodId == EconomyRules.TreasureGoodId && _stock[goodId] > 0
-                    ? new QualityValue(checked((ushort)Math.Clamp(
-                        _treasureQualityHundredths / _stock[goodId],
-                        0,
-                        QualityValue.MaximumHundredths)))
-                    : null);
+            var snapshots = new MarketGoodSnapshot[EconomyRules.MarketGoodCount];
+            for (var goodId = 0; goodId < snapshots.Length; goodId++)
+            {
+                var definition = EconomyRules.GetMarketGood(goodId);
+                snapshots[goodId] = new MarketGoodSnapshot(
+                    goodId,
+                    definition.Kind,
+                    definition.Material,
+                    definition.CityBasePrice,
+                    _prices[goodId],
+                    _stock[goodId],
+                    _supply[goodId],
+                    _demand[goodId],
+                    goodId == EconomyRules.TreasureGoodId && _stock[goodId] > 0
+                        ? new QualityValue(checked((ushort)Math.Clamp(
+                            _treasureQualityHundredths / _stock[goodId],
+                            0,
+                            QualityValue.MaximumHundredths)))
+                        : null);
+            }
+
+            goods = snapshots;
         }
 
         return new CityMarketSnapshot(

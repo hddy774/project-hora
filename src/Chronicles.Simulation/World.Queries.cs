@@ -70,69 +70,103 @@ public sealed partial class World
         return results;
     }
 
-    public WorldStatistics CreateStatistics()
+    public WorldStatistics CreateStatistics() => CreateStatistics(ObservationSections.Statistics);
+
+    private WorldStatistics CreateStatistics(ObservationSections sections)
     {
-        var realmCounts = new int[RealmRules.All.Count + 1];
-        var powerCounts = new int[CombatPowerBucketBounds.Length + 1];
+        var includeSummary = (sections & ObservationSections.StatisticsSummary) != 0;
+        var includeRealmDistribution = (sections & ObservationSections.RealmDistribution) != 0;
+        var includePowerDistribution = (sections & ObservationSections.CombatPowerDistribution) != 0;
+        var realmCounts = includeRealmDistribution
+            ? new int[RealmRules.All.Count + 1]
+            : Array.Empty<int>();
+        var powerCounts = includePowerDistribution
+            ? new int[CombatPowerBucketBounds.Length + 1]
+            : Array.Empty<int>();
         long totalWins = 0;
         long totalLosses = 0;
         long totalSpiritStones = 0;
         for (var index = 0; index < Population; index++)
         {
-            var realmBucket = HasEnteredCultivation(index)
-                ? (int)_agents.RealmStages[index] + 1
-                : 0;
-            realmCounts[realmBucket]++;
-            var power = _agents.Power[index].Total;
-            var bucket = 0;
-            while (bucket < CombatPowerBucketBounds.Length
-                && power >= CombatPowerBucketBounds[bucket])
+            if (includeRealmDistribution)
             {
-                bucket++;
+                var realmBucket = HasEnteredCultivation(index)
+                    ? (int)_agents.RealmStages[index] + 1
+                    : 0;
+                realmCounts[realmBucket]++;
             }
 
-            powerCounts[bucket]++;
-            totalWins = checked(totalWins + _agents.Wins[index]);
-            totalLosses = checked(totalLosses + _agents.Losses[index]);
-            totalSpiritStones = checked(totalSpiritStones + _agents.SpiritStones[index]);
+            if (includePowerDistribution)
+            {
+                var power = _agents.Power[index].Total;
+                var bucket = 0;
+                while (bucket < CombatPowerBucketBounds.Length
+                    && power >= CombatPowerBucketBounds[bucket])
+                {
+                    bucket++;
+                }
+
+                powerCounts[bucket]++;
+            }
+
+            if (includeSummary)
+            {
+                totalWins = checked(totalWins + _agents.Wins[index]);
+                totalLosses = checked(totalLosses + _agents.Losses[index]);
+                totalSpiritStones = checked(totalSpiritStones + _agents.SpiritStones[index]);
+            }
         }
 
-        var realmDistribution = new RealmDistributionEntry[realmCounts.Length];
+        IReadOnlyList<RealmDistributionEntry> realmDistribution = Array.Empty<RealmDistributionEntry>();
+        var realmSnapshots = new RealmDistributionEntry[realmCounts.Length];
         for (var realm = 0; realm < realmCounts.Length; realm++)
         {
-            realmDistribution[realm] = new RealmDistributionEntry(
+            realmSnapshots[realm] = new RealmDistributionEntry(
                 realm == 0 ? null : (RealmStage)(realm - 1),
                 realmCounts[realm]);
         }
 
-        var powerDistribution = new CombatPowerDistributionEntry[powerCounts.Length];
+        if (realmSnapshots.Length > 0)
+        {
+            realmDistribution = realmSnapshots;
+        }
+
+        IReadOnlyList<CombatPowerDistributionEntry> powerDistribution = Array.Empty<CombatPowerDistributionEntry>();
+        var powerSnapshots = new CombatPowerDistributionEntry[powerCounts.Length];
         for (var bucket = 0; bucket < powerCounts.Length; bucket++)
         {
-            powerDistribution[bucket] = new CombatPowerDistributionEntry(
+            powerSnapshots[bucket] = new CombatPowerDistributionEntry(
                 bucket == 0 ? 0 : CombatPowerBucketBounds[bucket - 1],
                 bucket < CombatPowerBucketBounds.Length ? CombatPowerBucketBounds[bucket] : null,
                 powerCounts[bucket]);
         }
 
+        if (powerSnapshots.Length > 0)
+        {
+            powerDistribution = powerSnapshots;
+        }
+
         return new WorldStatistics(
             realmDistribution,
             powerDistribution,
-            new RankingMovementStatistics(
-                new SimulationTick(_rankingMovementFromTick),
-                new SimulationTick(_lastRankingRefreshTick),
-                _rankingRisenCount,
-                _rankingFallenCount,
-                _rankingUnchangedCount,
-                _rankingTotalAbsoluteMovement),
-            _totalDeaths,
+            includeSummary
+                ? new RankingMovementStatistics(
+                    new SimulationTick(_rankingMovementFromTick),
+                    new SimulationTick(_lastRankingRefreshTick),
+                    _rankingRisenCount,
+                    _rankingFallenCount,
+                    _rankingUnchangedCount,
+                    _rankingTotalAbsoluteMovement)
+                : default,
+            includeSummary ? _totalDeaths : 0,
             totalWins,
             totalLosses,
-            _totalReincarnations,
-            _totalBreakthroughs,
-            _totalMissionsCompleted,
-            _totalTreasuresCrafted,
-            _totalPillsCrafted,
-            _totalMaterialsSold,
+            includeSummary ? _totalReincarnations : 0,
+            includeSummary ? _totalBreakthroughs : 0,
+            includeSummary ? _totalMissionsCompleted : 0,
+            includeSummary ? _totalTreasuresCrafted : 0,
+            includeSummary ? _totalPillsCrafted : 0,
+            includeSummary ? _totalMaterialsSold : 0,
             totalSpiritStones);
     }
 

@@ -932,6 +932,9 @@ static void ObservationQueriesAreReadOnly()
     var snapshot = world.CreateSnapshot(150, 150);
     var rankingOnly = world.CreateSnapshot(25, 25, ObservationSections.None);
     var statisticsOnly = world.CreateSnapshot(25, 25, ObservationSections.Statistics);
+    var summaryOnly = world.CreateSnapshot(25, 25, ObservationSections.StatisticsSummary);
+    var realmDistributionOnly = world.CreateSnapshot(25, 25, ObservationSections.RealmDistribution);
+    var cityOnly = world.CreateSnapshot(25, 25, ObservationSections.MarketSummary);
 
     Equal(1, exactSearch.Count, "정확한 Agent ID 검색 결과");
     Equal(leader.Id, exactSearch[0].Id, "정확한 Agent ID 검색 대상");
@@ -947,6 +950,11 @@ static void ObservationQueriesAreReadOnly()
     Equal(0, rankingOnly.RecentEvents.Count, "비활성 세계 로그 조회 생략");
     True(statisticsOnly.Statistics.RealmDistribution.Count > 0, "활성 통계만 계산");
     Equal(0, statisticsOnly.Market.Goods.Count, "통계 관찰 중 시장 계산 생략");
+    Equal(0, summaryOnly.Statistics.RealmDistribution.Count, "접힌 경지 분포 계산 생략");
+    Equal(0, summaryOnly.Statistics.CombatPowerDistribution.Count, "접힌 전투력 분포 계산 생략");
+    True(realmDistributionOnly.Statistics.RealmDistribution.Count > 0, "펼친 경지 분포만 계산");
+    Equal(0, realmDistributionOnly.Statistics.CombatPowerDistribution.Count, "접힌 전투력 분포는 미계산");
+    Equal(0, cityOnly.Market.Goods.Count, "도시 내부 탭에서 시장 상품 목록 계산 생략");
     True(personalLog.Count <= World.PersonalLogCapacity, "개인 로그 조회 크기");
     True(chronicle.Count > 0, "영구 연대기 조회");
     Equal(before, world.ComputeStateHash(), "관찰 조회는 세계 상태를 바꾸면 안 됩니다.");
@@ -970,7 +978,9 @@ static void SelectiveObservationPerformance()
     _ = world.CreateSnapshot(
         1_000,
         150,
-        ObservationSections.Statistics | ObservationSections.CombatPowerRanking);
+        ObservationSections.StatisticsSummary
+            | ObservationSections.RealmDistribution
+            | ObservationSections.CombatPowerRanking);
 
     WorldSnapshot? sink = null;
     var legacy = Stopwatch.StartNew();
@@ -985,11 +995,13 @@ static void SelectiveObservationPerformance()
     var selective = Stopwatch.StartNew();
     for (var iteration = 0; iteration < iterations; iteration++)
     {
-        // 현재 통계 탭: 단일 snapshot에서 통계만 계산한다.
+        // 현재 통계 탭: 단일 snapshot에서 화면에 펼친 경지 분포만 계산한다.
         sink = world.CreateSnapshot(
             1_000,
             150,
-            ObservationSections.Statistics | ObservationSections.CombatPowerRanking);
+            ObservationSections.StatisticsSummary
+                | ObservationSections.RealmDistribution
+                | ObservationSections.CombatPowerRanking);
     }
     selective.Stop();
     GC.KeepAlive(sink);

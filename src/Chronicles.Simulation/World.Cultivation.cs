@@ -36,7 +36,11 @@ public sealed partial class World
                 ResolveBreakthroughAttempt(index);
                 return;
             case CultivationState.Bottleneck:
-                if (_agents.CultivationBottleneckCauses[index] == CultivationBottleneckCause.RealmComponent)
+                if (_agents.CultivationBottleneckCauses[index] == CultivationBottleneckCause.EntryGate)
+                {
+                    TemperEntryGates(index);
+                }
+                else if (_agents.CultivationBottleneckCauses[index] == CultivationBottleneckCause.RealmComponent)
                 {
                     GrowRealmComponents(index, CultivationRules.BaseMonthlyWork);
                 }
@@ -62,9 +66,10 @@ public sealed partial class World
             _agents.TechniqueQualities[index],
             body);
         var after = Math.Min(CultivationRules.RequiredEntryWork, checked(before + gain));
+        var appliedGain = after - before;
         _agents.CultivationProgress[index] = after;
         _agents.LastCultivationWorkBefore[index] = before;
-        _agents.LastCultivationWorkGain[index] = gain;
+        _agents.LastCultivationWorkGain[index] = appliedGain;
         var passMask = EvaluateEntryGatePassMask(index);
         _agents.EntryGatePassMasks[index] = passMask;
         var outcome = BreakthroughOutcome.None;
@@ -74,16 +79,13 @@ public sealed partial class World
         {
             if (passMask == 0b111)
             {
-                _agents.CultivationProgress[index] = 0;
-                _agents.PendingCultivationWork[index] = 0;
-                _agents.CultivationStates[index] = CultivationState.Stable;
-                _agents.CultivationBottleneckCauses[index] = CultivationBottleneckCause.None;
+                CompleteCultivationEntry(index, aptitude);
                 outcome = BreakthroughOutcome.Success;
-                AddChronicle(index, ChronicleEventKind.CultivationEntered);
-                AddEvent(WorldEventKind.CultivationEntered, index, aptitude);
             }
             else
             {
+                _agents.CultivationStates[index] = CultivationState.Bottleneck;
+                _agents.CultivationBottleneckCauses[index] = CultivationBottleneckCause.EntryGate;
                 outcome = BreakthroughOutcome.Blocked;
                 blocker = CultivationBottleneckCause.EntryGate;
             }
@@ -98,7 +100,7 @@ public sealed partial class World
             0,
             1,
             before,
-            gain,
+            appliedGain,
             after,
             CultivationRules.RequiredEntryWork,
             0,
@@ -107,6 +109,62 @@ public sealed partial class World
             10_000,
             -1,
             blocker);
+    }
+
+    private void TemperEntryGates(int index)
+    {
+        var previousMask = _agents.EntryGatePassMasks[index];
+        var temperingGain = CultivationRules.BaseEntryGateTemperingGainHundredths
+            + (_agents.Comprehensions[index] / 100);
+        for (var gateIndex = 0; gateIndex < CultivationRules.EntryGateSlotCount; gateIndex++)
+        {
+            if ((previousMask & (1 << gateIndex)) == 0)
+            {
+                _agents.AddEntryGateTempering(index, gateIndex, temperingGain);
+            }
+        }
+
+        var passMask = EvaluateEntryGatePassMask(index);
+        _agents.EntryGatePassMasks[index] = passMask;
+        _agents.LastCultivationWorkBefore[index] = CultivationRules.RequiredEntryWork;
+        _agents.LastCultivationWorkGain[index] = 0;
+        var outcome = BreakthroughOutcome.Blocked;
+        var blocker = CultivationBottleneckCause.EntryGate;
+        if (passMask == 0b111)
+        {
+            CompleteCultivationEntry(index, GetInnateAptitudeComposite(index));
+            outcome = BreakthroughOutcome.Success;
+            blocker = CultivationBottleneckCause.None;
+        }
+
+        _agents.CultivationTraces[index] = new CultivationTraceState(
+            Tick.Value,
+            CultivationRules.FormulaRevision,
+            BreakthroughClass.Entry,
+            outcome,
+            RealmStage.QiRefining,
+            0,
+            1,
+            CultivationRules.RequiredEntryWork,
+            0,
+            CultivationRules.RequiredEntryWork,
+            CultivationRules.RequiredEntryWork,
+            0,
+            10_000,
+            0,
+            10_000,
+            -1,
+            blocker);
+    }
+
+    private void CompleteCultivationEntry(int index, int aptitude)
+    {
+        _agents.CultivationProgress[index] = 0;
+        _agents.PendingCultivationWork[index] = 0;
+        _agents.CultivationStates[index] = CultivationState.Stable;
+        _agents.CultivationBottleneckCauses[index] = CultivationBottleneckCause.None;
+        AddChronicle(index, ChronicleEventKind.CultivationEntered);
+        AddEvent(WorldEventKind.CultivationEntered, index, aptitude);
     }
 
     private void AccumulateRealmWork(int index)
@@ -534,15 +592,18 @@ public sealed partial class World
         var gate1 = CultivationRules.EvaluateEntryGate(
             1,
             _agents.SpiritualRoots[index],
-            (_agents.Comprehensions[index] + _agents.Minds[index] + _agents.Souls[index]) / 3);
+            (_agents.Comprehensions[index] + _agents.Minds[index] + _agents.Souls[index]) / 3,
+            _agents.GetEntryGateTempering(index, 0));
         var gate2 = CultivationRules.EvaluateEntryGate(
             2,
             (_agents.Bones[index] + _agents.Constitutions[index]) / 2,
-            (_agents.SpiritualRoots[index] + _agents.Minds[index]) / 2);
+            (_agents.SpiritualRoots[index] + _agents.Minds[index]) / 2,
+            _agents.GetEntryGateTempering(index, 1));
         var gate3 = CultivationRules.EvaluateEntryGate(
             3,
             _agents.Comprehensions[index],
-            (_agents.SpiritualRoots[index] + _agents.Souls[index]) / 2);
+            (_agents.SpiritualRoots[index] + _agents.Souls[index]) / 2,
+            _agents.GetEntryGateTempering(index, 2));
         return checked((byte)((gate1.Passed ? 1 : 0)
             | (gate2.Passed ? 2 : 0)
             | (gate3.Passed ? 4 : 0)));
@@ -553,15 +614,18 @@ public sealed partial class World
         CultivationRules.EvaluateEntryGate(
             1,
             _agents.SpiritualRoots[index],
-            (_agents.Comprehensions[index] + _agents.Minds[index] + _agents.Souls[index]) / 3),
+            (_agents.Comprehensions[index] + _agents.Minds[index] + _agents.Souls[index]) / 3,
+            _agents.GetEntryGateTempering(index, 0)),
         CultivationRules.EvaluateEntryGate(
             2,
             (_agents.Bones[index] + _agents.Constitutions[index]) / 2,
-            (_agents.SpiritualRoots[index] + _agents.Minds[index]) / 2),
+            (_agents.SpiritualRoots[index] + _agents.Minds[index]) / 2,
+            _agents.GetEntryGateTempering(index, 1)),
         CultivationRules.EvaluateEntryGate(
             3,
             _agents.Comprehensions[index],
-            (_agents.SpiritualRoots[index] + _agents.Souls[index]) / 2),
+            (_agents.SpiritualRoots[index] + _agents.Souls[index]) / 2,
+            _agents.GetEntryGateTempering(index, 2)),
     ];
 
     private RealmComponentSnapshot[] CreateRealmComponentSnapshots(int index)
@@ -642,6 +706,11 @@ public sealed partial class World
             return;
         }
 
+        if (_agents.CultivationBottleneckCauses[index] == CultivationBottleneckCause.EntryGate)
+        {
+            return;
+        }
+
         var attemptClass = CultivationRules.GetAttemptClass(
             _agents.RealmLayers[index],
             _agents.GreatPerfectionAchieved[index]);
@@ -673,6 +742,8 @@ public sealed partial class World
 
     private int GetCultivationRequirement(int index) =>
         _agents.CultivationStates[index] is CultivationState.PreCultivation or CultivationState.EntryTraining
+            || (_agents.CultivationStates[index] == CultivationState.Bottleneck
+                && _agents.CultivationBottleneckCauses[index] == CultivationBottleneckCause.EntryGate)
             ? CultivationRules.RequiredEntryWork
             : RealmRules.GetMinorStageRequiredWork(
                 _agents.RealmStages[index],

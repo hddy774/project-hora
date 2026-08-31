@@ -126,7 +126,8 @@ public sealed partial class World
                     _agents.CopyCultivationComponentValues(index),
                     _agents.CopyCultivationComponentLimits(index),
                     _agents.CopyFormationValues(index),
-                    _agents.CultivationTraces[index]),
+                    _agents.CultivationTraces[index],
+                    _agents.CopyEntryGateTemperings(index)),
                 new SkillProgressCheckpoint(
                     _agents.TechniqueTrainingExperience[index],
                     _agents.TechniqueUnderstanding[index],
@@ -216,7 +217,8 @@ public sealed partial class World
                 index,
                 current.ComponentValues,
                 current.ComponentLimits,
-                current.FormationValues);
+                current.FormationValues,
+                current.EntryGateTempering);
             _agents.CultivationTraces[index] = current.LatestTrace;
         }
         else
@@ -470,7 +472,7 @@ public sealed partial class World
             }
 
             if (checkpoint.SchemaVersion >= 8
-                && !IsValidCultivationCheckpoint(agent.Cultivation))
+                && !IsValidCultivationCheckpoint(agent.Cultivation, checkpoint.SchemaVersion))
             {
                 throw new InvalidDataException($"Agent {index}의 수행 V2 체크포인트가 잘못되었습니다.");
             }
@@ -568,11 +570,15 @@ public sealed partial class World
         }
 
         return agent.CultivationState is CultivationState.PreCultivation or CultivationState.EntryTraining
+            || (agent.CultivationState == CultivationState.Bottleneck
+                && agent.CultivationBottleneckCause == CultivationBottleneckCause.EntryGate)
             ? CultivationRules.RequiredEntryWork
             : RealmRules.GetMinorStageRequiredWork(agent.RealmStage, agent.RealmLayer);
     }
 
-    private static bool IsValidCultivationCheckpoint(CultivationCheckpoint? checkpoint)
+    private static bool IsValidCultivationCheckpoint(
+        CultivationCheckpoint? checkpoint,
+        int schemaVersion)
     {
         if (checkpoint is not { } value
             || value.PendingCarryoverWork < 0
@@ -582,7 +588,12 @@ public sealed partial class World
             || !Enum.IsDefined(value.FoundationRoute)
             || value.ComponentValues is not { Length: CultivationRules.RealmComponentSlotCount }
             || value.ComponentLimits is not { Length: CultivationRules.RealmComponentSlotCount }
-            || value.FormationValues is not { Length: CultivationRules.FormationSlotCount })
+            || value.FormationValues is not { Length: CultivationRules.FormationSlotCount }
+            || (schemaVersion >= 12
+                && value.EntryGateTempering is not { Length: CultivationRules.EntryGateSlotCount })
+            || (value.EntryGateTempering is { } tempering
+                && (tempering.Length != CultivationRules.EntryGateSlotCount
+                    || tempering.Any(item => item > QualityValue.MaximumHundredths))))
         {
             return false;
         }

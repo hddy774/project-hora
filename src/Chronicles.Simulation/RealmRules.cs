@@ -47,6 +47,8 @@ public static class CultivationRules
     public const int EntryGateThresholdHundredths = 6_000;
     public const int EntryGateSupportWeightBasisPoints = 1_500;
     public const int EntryGateSupportCapHundredths = 1_500;
+    public const int EntryGateSlotCount = 3;
+    public const int BaseEntryGateTemperingGainHundredths = 100;
     public const int LimitedCarryoverPercent = 25;
     public const int RealmComponentSlotCount = 4;
     public const int FormationSlotCount = 10;
@@ -88,6 +90,7 @@ public static class CultivationRules
         new("cultivation.component_thresholds", FormulaRevision, "3→4 40.00, 6→7 60.00, 대원만 75.00", "Typed Component Gate 임시값", true),
         new("cultivation.method_mastery", FormulaRevision, "삼도축기요결 숙련도 25.00", "연기→축기 Method Preflight 임시값", true),
         new("cultivation.stabilization", FormulaRevision, "대경지 성공 후 1회 평가", "고정 연수 없이 최소 1회 commit", true),
+        new("cultivation.entry_gate_tempering", FormulaRevision, "실패 Gate당 월 1.00 + 오성/100", "고정 선천자질 때문에 생기는 영구 입문 정체 방지", true),
     ];
 
     public static int GetInnateAptitudeCompositeHundredths(Aptitudes aptitudes) =>
@@ -141,18 +144,28 @@ public static class CultivationRules
         int gateNumber,
         int coreChannelHundredths,
         int supportCompositeHundredths,
+        int temperingBonusHundredths = 0,
         bool explicitBlocker = false)
     {
+        if (gateNumber is < 1 or > EntryGateSlotCount)
+        {
+            throw new ArgumentOutOfRangeException(nameof(gateNumber));
+        }
+
+        var effectiveCore = Math.Min(
+            QualityValue.MaximumHundredths,
+            checked(coreChannelHundredths + temperingBonusHundredths));
         var support = Math.Min(
             supportCompositeHundredths * EntryGateSupportWeightBasisPoints / 10_000,
             EntryGateSupportCapHundredths);
-        var score = coreChannelHundredths + support;
-        var corePassed = coreChannelHundredths >= EntryGateCoreFloorHundredths;
+        var score = effectiveCore + support;
+        var corePassed = effectiveCore >= EntryGateCoreFloorHundredths;
         var scorePassed = score >= EntryGateThresholdHundredths;
         return new CultivationGateSnapshot(
             gateNumber,
             coreChannelHundredths,
             supportCompositeHundredths,
+            temperingBonusHundredths,
             score,
             corePassed,
             scorePassed,

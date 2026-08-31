@@ -8,6 +8,7 @@ var tests = new (string Name, Action Body)[]
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
     ("자질 50.00 기준 수행 기간·9층 Work", CultivationAuthorityRules),
+    ("입문 Gate 병목 단련·적용 Work·저장 왕복", EntryGateRecoveryAndAppliedWork),
     ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
     ("Notion 수행 Work·준비·Preflight·안착 상태", CultivationStateMachine),
     ("소경지·대경지 돌파 영구 연대기", CultivationBreakthroughChronicle),
@@ -168,6 +169,75 @@ static void CultivationAuthorityRules()
     Equal(6_250, gate.GateScoreHundredths, "입문 GateScore");
     True(gate.Passed, "Core 40.00 및 GateScore 60.00 통과");
     True(CultivationRules.ProvisionalBalances.All(item => item.RequiresReview), "임시 수치는 재검토 표시");
+}
+
+static void EntryGateRecoveryAndAppliedWork()
+{
+    var blockedWorld = World.Create(551120, 1);
+    var blockedCheckpoint = blockedWorld.CreateCheckpoint();
+    var blockedAgent = blockedCheckpoint.Agents[0] with
+    {
+        SpiritualRoot = 0,
+        Bone = 0,
+        Constitution = 0,
+        Comprehension = 0,
+        Mind = 0,
+        Soul = 0,
+        CultivationProgress = CultivationRules.RequiredEntryWork,
+        CultivationState = CultivationState.EntryTraining,
+        CultivationBottleneckCause = CultivationBottleneckCause.None,
+        Activity = AgentActivity.Cultivating,
+        NextDecisionTick = 1,
+    };
+    blockedWorld = World.Restore(blockedCheckpoint with { Agents = [blockedAgent] });
+    blockedWorld.AdvanceTo(new SimulationTick(1));
+    var blocked = blockedWorld.GetAgentSnapshot(new AgentId(0));
+    True(blocked.CultivationState == CultivationState.Bottleneck, "Gate 실패는 실제 병목 상태");
+    True(blocked.BottleneckCause == CultivationBottleneckCause.EntryGate, "입문 Gate 병목 원인");
+    Equal(0, blocked.Cultivation.LatestTrace.WorkGain, "이미 가득 찬 입문 Work의 실제 적용 증가량");
+
+    blockedWorld.AdvanceTo(GameCalendar.GetMonthStart(1));
+    var tempered = blockedWorld.GetAgentSnapshot(new AgentId(0));
+    True(
+        tempered.Cultivation.EntryGates.Any(gate => gate.TemperingBonusHundredths > 0),
+        "실패 Gate에 단련 보정이 누적되어야 합니다.");
+    var restored = World.Restore(blockedWorld.CreateCheckpoint());
+    Equal(blockedWorld.ComputeStateHash(), restored.ComputeStateHash(), "입문 Gate 단련 저장 왕복");
+
+    restored.AdvanceTo(GameCalendar.FromYears(10));
+    var entered = restored.GetAgentSnapshot(new AgentId(0));
+    True(
+        entered.CultivationState != CultivationState.EntryTraining
+            && !(entered.CultivationState == CultivationState.Bottleneck
+                && entered.BottleneckCause == CultivationBottleneckCause.EntryGate),
+        "고정 선천자질이 낮아도 Gate 단련으로 입문 정체를 해소해야 합니다.");
+    True(
+        restored.GetAgentChronicle(new AgentId(0))
+            .Any(entry => entry.Kind == ChronicleEventKind.CultivationEntered),
+        "Gate 단련 뒤 입문 연대기");
+
+    var cappedWorld = World.Create(551121, 1);
+    var cappedCheckpoint = cappedWorld.CreateCheckpoint();
+    var cappedAgent = cappedCheckpoint.Agents[0] with
+    {
+        SpiritualRoot = 10_000,
+        Bone = 10_000,
+        Constitution = 10_000,
+        Comprehension = 10_000,
+        Mind = 10_000,
+        Soul = 10_000,
+        CultivationProgress = CultivationRules.RequiredEntryWork - 1_000,
+        CultivationState = CultivationState.EntryTraining,
+        CultivationBottleneckCause = CultivationBottleneckCause.None,
+        Activity = AgentActivity.Cultivating,
+        NextDecisionTick = 1,
+    };
+    cappedWorld = World.Restore(cappedCheckpoint with { Agents = [cappedAgent] });
+    cappedWorld.AdvanceTo(new SimulationTick(1));
+    Equal(
+        1_000,
+        cappedWorld.GetAgentSnapshot(new AgentId(0)).Cultivation.LatestTrace.WorkGain,
+        "입문 Work 표시는 원시 gain이 아니라 cap 적용분이어야 합니다.");
 }
 
 static void CultivationStateMachine()

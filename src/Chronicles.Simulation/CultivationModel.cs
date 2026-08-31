@@ -114,6 +114,7 @@ public readonly record struct CultivationGateSnapshot(
     int GateNumber,
     int CoreChannelHundredths,
     int SupportCompositeHundredths,
+    int TemperingBonusHundredths,
     int GateScoreHundredths,
     bool CorePassed,
     bool ScorePassed,
@@ -192,7 +193,8 @@ public readonly record struct CultivationCheckpoint(
     ushort[] ComponentValues,
     ushort[] ComponentLimits,
     ushort[] FormationValues,
-    CultivationTraceState LatestTrace);
+    CultivationTraceState LatestTrace,
+    ushort[]? EntryGateTempering = null);
 
 public readonly record struct ProvisionalBalanceDefinition(
     string StableId,

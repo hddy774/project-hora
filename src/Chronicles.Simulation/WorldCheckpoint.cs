@@ -102,5 +102,5 @@ public sealed record WorldCheckpoint(
     CityMarketCheckpoint Market,
     WorldMapCheckpoint? Map = null)
 {
-    public const int CurrentSchemaVersion = 11;
+    public const int CurrentSchemaVersion = 12;
 }

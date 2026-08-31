@@ -378,6 +378,11 @@ public sealed partial class World
             Add(ref hash, _agents.FloorNineCompleted[index] ? 1UL : 0UL);
             Add(ref hash, _agents.GreatPerfectionAchieved[index] ? 1UL : 0UL);
             Add(ref hash, _agents.EntryGatePassMasks[index]);
+            for (var gate = 0; gate < CultivationRules.EntryGateSlotCount; gate++)
+            {
+                Add(ref hash, _agents.EntryGateTemperings[
+                    (index * CultivationRules.EntryGateSlotCount) + gate]);
+            }
             Add(ref hash, (byte)_agents.FoundationRoutes[index]);
             for (var component = 0; component < CultivationRules.RealmComponentSlotCount; component++)
             {

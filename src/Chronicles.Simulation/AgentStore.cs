@@ -41,6 +41,7 @@ internal sealed class AgentStore
         FloorNineCompleted = new bool[count];
         GreatPerfectionAchieved = new bool[count];
         EntryGatePassMasks = new byte[count];
+        EntryGateTemperings = new ushort[checked(count * CultivationRules.EntryGateSlotCount)];
         FoundationRoutes = new FoundationRoute[count];
         CultivationComponentValues = new ushort[checked(count * CultivationRules.RealmComponentSlotCount)];
         CultivationComponentLimits = new ushort[checked(count * CultivationRules.RealmComponentSlotCount)];
@@ -126,6 +127,7 @@ internal sealed class AgentStore
     public bool[] FloorNineCompleted { get; }
     public bool[] GreatPerfectionAchieved { get; }
     public byte[] EntryGatePassMasks { get; }
+    public ushort[] EntryGateTemperings { get; }
     public FoundationRoute[] FoundationRoutes { get; }
     public ushort[] CultivationComponentValues { get; }
     public ushort[] CultivationComponentLimits { get; }
@@ -284,6 +286,10 @@ internal sealed class AgentStore
         FloorNineCompleted[index] = false;
         GreatPerfectionAchieved[index] = false;
         EntryGatePassMasks[index] = 0;
+        Array.Clear(
+            EntryGateTemperings,
+            index * CultivationRules.EntryGateSlotCount,
+            CultivationRules.EntryGateSlotCount);
         FoundationRoutes[index] = FoundationRoute.None;
         CultivationTraces[index] = CultivationTraceState.Empty;
         Array.Clear(
@@ -402,11 +408,27 @@ internal sealed class AgentStore
     public ushort[] CopyFormationValues(int index) =>
         CopyCultivationArray(FormationValues, index, CultivationRules.FormationSlotCount);
 
+    public int GetEntryGateTempering(int index, int gateIndex) =>
+        EntryGateTemperings[GetEntryGateTemperingOffset(index, gateIndex)];
+
+    public void AddEntryGateTempering(int index, int gateIndex, int gain)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(gain);
+        var offset = GetEntryGateTemperingOffset(index, gateIndex);
+        EntryGateTemperings[offset] = checked((ushort)Math.Min(
+            QualityValue.MaximumHundredths,
+            EntryGateTemperings[offset] + gain));
+    }
+
+    public ushort[] CopyEntryGateTemperings(int index) =>
+        CopyCultivationArray(EntryGateTemperings, index, CultivationRules.EntryGateSlotCount);
+
     public void RestoreCultivationArrays(
         int index,
         ushort[] componentValues,
         ushort[] componentLimits,
-        ushort[] formationValues)
+        ushort[] formationValues,
+        ushort[]? entryGateTemperings = null)
     {
         Array.Copy(
             componentValues,
@@ -426,6 +448,15 @@ internal sealed class AgentStore
             FormationValues,
             index * CultivationRules.FormationSlotCount,
             CultivationRules.FormationSlotCount);
+        if (entryGateTemperings is not null)
+        {
+            Array.Copy(
+                entryGateTemperings,
+                0,
+                EntryGateTemperings,
+                index * CultivationRules.EntryGateSlotCount,
+                CultivationRules.EntryGateSlotCount);
+        }
     }
 
     public void AddMaterial(int index, MaterialId material, int count)
@@ -565,6 +596,16 @@ internal sealed class AgentStore
         }
 
         return checked((index * CultivationRules.RealmComponentSlotCount) + component);
+    }
+
+    private static int GetEntryGateTemperingOffset(int index, int gateIndex)
+    {
+        if (gateIndex is < 0 or >= CultivationRules.EntryGateSlotCount)
+        {
+            throw new ArgumentOutOfRangeException(nameof(gateIndex));
+        }
+
+        return checked((index * CultivationRules.EntryGateSlotCount) + gateIndex);
     }
 
     private static ushort[] CopyCultivationArray(ushort[] source, int index, int width)

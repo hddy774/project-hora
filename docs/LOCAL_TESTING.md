@@ -44,21 +44,26 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
 - 같은 대표값 50.00이라도 핵심 Component 배치가 다른 테스트 인물의 공법/법술 보정이
   달라지고, 임시 분포·역할 조합은 `다음 버전 재검토`로 표시되는지 확인
 - 선택 인물의 Soul/Body/Person ID가 표시되고 환생하면 SoulId는 유지되지만 BodyId와
-  PersonId가 바뀌는지 확인. 최종 목표·보조 목표·현재 행동·선택 이유와 판단 revision이
-  함께 갱신되며 상세창을 열고 닫아도 판단 결과와 RNG가 달라지지 않는지 확인
-- 인물의 관계 목록이 최대 8개이고 상대 방향의 mirror가 존재하는지 확인. 호감/반감·
+  PersonId가 바뀌는지 확인. 최종 목표·보조 목표·현재/차선 행동·선택 이유·typed
+  Resolution과 판단 revision이 함께 갱신되며 상세창을 열고 닫아도 판단 결과와 RNG가
+  달라지지 않는지 확인
+- 인물의 관계 목록이 최대 8개이고 관계 ID·양 끝점·중복·degree 검증 뒤 양쪽
+  adjacency가 재구성되는지 확인.
+  호감/반감·
   신뢰/불신·존중/경시·은혜·원한·경계와 사제·우정·연애·실제 동료·지속 경쟁 역할,
-  별도 MasterAgent가 방향에 맞게 표시되는지 확인
+  별도 MasterAgent에서 파생된 `스승/제자` 표기가 방향에 맞는지 확인
 - 관계 Expander를 펼쳤을 때만 관계 DTO가 만들어지고, 접힌 동안
-  `ObservationSections.Relations` 조회·할당이 발생하지 않는지 확인
+  `ObservationSections.Relations` 결과가 null이며 조회 전후 상태 hash가 같은지 확인
 - `사제·가르침·전승 추적`을 펼쳤을 때만 Teaching DTO가 만들어지고 교사·학습자 이름/ID,
   시작일·결과·효과, 공법/법술 KnowledgeRef와 전수 출처가 표시되는지 확인. 접힌 동안
-  Teaching 관찰 할당이 발생하지 않는지 성능 로그로 확인
+  Teaching DTO가 null이며 조회 전후 상태 hash가 같은지 확인
 - Teaching 전후 대경지 수행 Work 직접 증가가 0인지 확인하고 공법·법술 경험·이해,
   오해/교정 또는 접근 권한만 결과에 맞게 바뀌는지 확인. 다른 대상이나 새 서적을
   사이에 전수해도 기존 `관계+대상+KnowledgeRef` 연속성이 섞이지 않는지 확인
 - Teaching 중 전투가 시작되거나 교사/학습자가 사망·윤회하면 양쪽 진행 상태가 함께
-  해제되는지, 중요 전수 이력의 당시 이름·KnowledgeRef·출처가 환생 후에도 유지되는지 확인
+  해제되는지, 중요 전수 이력의 당시 PersonId·KnowledgeRef·출처가 유지되고 과거 이름은
+  생애 연대기에서 복원되는지 확인. 생애 경계 뒤 현재 관계 metrics·상호작용·Teaching
+  연속 상태는 초기화되지만 과거 중요 history는 유지되는지 확인
 - 수행 Work가 찬 뒤 준비→Preflight→시도→안착 또는 원인별 병목으로 월마다 진행되고,
   선천 수행자질 종합·기준 기간·입문 Gate·경지 구성요소가 상세 패널에 표시되는지 확인
 - 공법/법술 수련은 숙련도를, 깨달음은 이해도만 올리며 품질은 새 서적을 얻을 때만
@@ -122,10 +127,11 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
 - 저장 후 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip`이 생성되는지 확인
 - 진행한 뒤 불러오면 저장한 tick과 상태로 돌아가는지 확인
 - 기존 schema 7~21 저장을 불러오면 schema 22의 랭킹 기준점·부자 순위·누적 자리
-  변동·100년 세계 역사서, 60개 자질 Component, Soul/Body/Person ID와 AI 판단 trace,
-  희소 관계·Teaching 상태를 생성하는지 확인. schema 20은 인물 인과, schema 21은 관계,
-  schema 22는 Teaching 계약이며 실제 schema 21 JSON에 Teaching 속성이 없어도 복원된다.
-  schema 13은
+  변동·100년 세계 역사서와 60개 자질 Component를 복원하는지 확인. schema 20 미만은
+  Soul/Body/Person ID와 최소 AI 판단 trace를 결정론적으로 재구성하고, schema 21 미만은
+  빈 관계를 생성한다. schema 21은 관계를 보존하면서 Teaching을 빈값으로 이전하고,
+  schema 22는 Teaching 전체 계약을 보존한다. 실제 schema 21 JSON에 Teaching 속성이
+  없어도 복원되는지 확인. schema 13은
   2종 재료·3칸 법보·44개 시장으로, schema 17 이하 자질 대표값은 그룹별 동일
   Component 10개로 이전되며 10,000명 장기 저장도 크기 오류 없이 복원되는지 확인
 

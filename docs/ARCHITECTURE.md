@@ -59,7 +59,8 @@ Component 20%+20% 조합을 사용한다. 5개 역할 점수와 수행/전투 �
 미확정 분포·역할 조합·영근 세분화는 안정 검토 ID와 `RequiresReview`로 추적한다.
 
 `PersonCausalModel`은 Soul/Body/Person 안정 ID, 최종 목표 `랭킹 1위`, 현재 보조 목표,
-선택 행동·이유·판단 revision을 소유한다. 생의 경계에서는 SoulId만 이어지고 육신과
+선택 행동·차선 행동·이유·typed Resolution·판단 revision을 소유한다. 생의 경계에서는
+SoulId만 이어지고 육신과
 인물 ID는 새로 발급된다. 관찰 query는 이 인과 상태를 읽을 뿐 목표나 판단 revision을
 갱신하지 않는다. 임시 AI 효용 가중치는 `PC-TEMP-AI-UTILITY-113`으로 추적한다.
 
@@ -67,8 +68,10 @@ Component 20%+20% 조합을 사용한다. 5개 역할 점수와 수행/전투 �
 존중/경시·은혜·원한·경계의 6개 방향 축과 사제·우정·연애·실제 동료·지속 경쟁의
 5개 역할 flag를 소유한다. 사제 방향은 별도의 MasterAgent로 구분한다. 관계
 후보는 현재 위치의 제한된 인접 집합에서만 탐색하며 전 인구 쌍을 만들지 않는다.
-checkpoint 복원은 양쪽 mirror bijection과 역할 방향을 검증한다. 임시 변화량과 역할
-임계값은 `PC-TEMP-RELATION-BALANCE-113`으로 추적한다.
+checkpoint 복원은 관계 ID·양 끝점·중복·degree와 역할 방향을 검증한 뒤 양쪽
+adjacency를 재구성한다. 생애 경계에서는 양방향 metrics·상호작용 횟수·대상별 Teaching 연속 상태를
+초기화하고 과거 PersonId가 담긴 중요 history만 유지한다. 임시 변화량과 역할 임계값은
+`PC-TEMP-RELATION-BALANCE-113`으로 추적한다.
 
 `TeachingModel`과 `World.Teaching`은 같은 지역의 기존 관계와 지식 격차에서 후보를
 선택하고 사제 관계를 성립시킨 뒤 공법 또는 법술 지식을 전수하는 권위 owner다.
@@ -162,8 +165,10 @@ virtualization을 사용한다.
 관계 Expander는 접혀 있으면 `ObservationSections.Relations`를 요청하지 않고,
 `사제·가르침·전승 추적` Expander도 접혀 있으면 `ObservationSections.Teaching`을
 요청하지 않는다.
-펼친 경우에만 선택 인물의 진행 Teaching과 최근 중요 전수 이력을 투영하며 교사·학습자
-이름/ID, 전생 당시 이름, 대상 KnowledgeRef·출처와 결과별 효과 문구를 지연 생성한다.
+관계 Expander를 펼친 경우에만 선택 인물의 최근 중요 관계·전수 history를 투영한다.
+Teaching Expander는 선택 인물의 최신 교사 trace와 최신 학습자 trace만 투영하며,
+교사·학습자 이름/ID, PersonId로 생애 연대기에서 복원한 전생 당시 이름, 대상
+KnowledgeRef·출처와 결과별 효과 문구를 지연 생성한다.
 `MapObservationView`, `MarketObservationView`, `PresentationText`와
 `MainWindow.AgentObservation`, `MainWindow.Rankings`, `MainWindow.WorldRecords`가 지역,
 시장, 공통 문구, 인물, 랭킹과 기록 관찰 책임을 분리한다. `WorldRecordsView`는 세계
@@ -197,7 +202,7 @@ Component, Soul/Body/Person ID·AI 판단 인과, 희소 방향 관계, Teaching
 자질 간접 보정 경계, 전투 성장, 선택 UI 조회, 과거 저장 복구, 장기 성장·사냥·경쟁,
 재료 부족 생산 건너뛰기, 지도 내부 탭 지연 투영의 시간·할당량, 부자 순위·기간별
 랭킹 이력·누적 자리 변동·100년 세계 역사서, 60개 자질 Component·윤회 보존,
-Soul/Body/Person 인과 trace, 희소 관계 mirror·상한, Teaching 직접 Work 0·전수 이력·
+Soul/Body/Person 인과 trace, 희소 관계 양끝 연결·상한, Teaching 직접 Work 0·전수 이력·
 schema 22 이전·지연 관찰, 저장 왕복과 10,000명 성능 예산을
 자동 검증한다.
 

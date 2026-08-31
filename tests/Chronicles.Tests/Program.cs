@@ -7,7 +7,7 @@ var tests = new (string Name, Action Body)[]
 {
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
-    ("자질 50.00 기준 수행 기간·9층 Work", CultivationAuthorityRules),
+    ("자질 50.00 대경지 1층→9층 대원만 전체 기준", CultivationAuthorityRules),
     ("입문 Gate 병목 단련·적용 Work·저장 왕복", EntryGateRecoveryAndAppliedWork),
     ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
     ("Notion 수행 Work·준비·Preflight·안착 상태", CultivationStateMachine),
@@ -169,8 +169,20 @@ static void CultivationAuthorityRules()
     foreach (var profile in RealmRules.All)
     {
         var expected = checked(profile.MaximumLifespanYears * 4L * CultivationRules.BaseMonthlyWork);
-        Equal(expected, RealmRules.GetTotalRealmRequiredWork(profile.Stage), "9층 Work 합계");
-        Equal(profile.MaximumLifespanYears / 3m, profile.TargetCultivationYears, "50.00 기준 수행 기간");
+        var totalRealmWork = RealmRules.GetTotalRealmRequiredWork(profile.Stage);
+        var baselineMonths = totalRealmWork / (decimal)CultivationRules.BaseMonthlyWork;
+        Equal(expected, totalRealmWork, "대경지 1층→9층 Work 합계");
+        Equal(
+            profile.MaximumLifespanYears * 4m,
+            baselineMonths,
+            "자질 50.00에서 대경지 1층→9층 대원만 전체 기준 개월");
+        Equal(
+            profile.TargetCultivationYears,
+            baselineMonths / GameCalendar.MonthsPerYear,
+            "대경지 전체 기준 수행 기간은 수명의 3분의 1");
+        True(
+            RealmRules.GetMinorStageRequiredWork(profile.Stage, 1) < totalRealmWork,
+            "층 하나에 대경지 전체 기준 기간을 적용하면 안 됩니다.");
     }
 
     var gate = CultivationRules.EvaluateEntryGate(1, 5_500, 5_000);

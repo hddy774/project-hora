@@ -6,6 +6,7 @@ public sealed partial class World
 {
     private void BeginReincarnation(int index, bool combatDeath = false)
     {
+        MarkRealmRankingDirty();
         var opponent = _agents.Opponents[index];
         if (opponent >= 0 && _agents.Opponents[opponent] == index)
         {
@@ -77,6 +78,7 @@ public sealed partial class World
             Tick.Value,
             _agents.SoulIdentityIds[index]);
         _agents.Rebirth(index, _random, Tick.Value);
+        MarkAllRankingsDirty();
         _reincarnation.CompleteRebirth(
             index,
             Tick.Value,

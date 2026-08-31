@@ -40,6 +40,7 @@ var tests = new (string Name, Action Body)[]
     ("사제 성립·Teaching 결과·전승 provenance·직접 수행 0%", TeachingVerticalFlow),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
+    ("랭킹 범주별 revision cache·무변경 정렬 0회", RankingRevisionCacheAvoidsUnchangedSorts),
     ("부자 TOP 1000·기간별 상위권 변동·세계 연대기", WealthRankingHistoryAndWorldChronicle),
     ("자질 직접 전투력 제거·공법 법술·실전 속성 간접 보정", AptitudeIndirectCombatBalance),
     ("공법·법술·법보 전투 스케일 상한과 품질 격차", SkillCombatScaleRegression),
@@ -117,6 +118,118 @@ static void DefaultPopulationAndGoal()
     {
         Equal(1, world.GetAgentSnapshot(new AgentId(index)).TargetRank, "모든 AI의 목표 순위");
         Equal(0L, world.GetAgentSnapshot(new AgentId(index)).AgeYears, "모든 AI의 시작 나이");
+    }
+}
+
+static void RankingRevisionCacheAvoidsUnchangedSorts()
+{
+    const int population = 512;
+    var world = World.Create(0xCACE_0014UL, population);
+    var initial = world.GetRankingCacheDiagnostics();
+
+    Equal(1L, initial.CombatPower.SortCount, "초기 전투력 정렬 횟수");
+    Equal(1L, initial.Realm.SortCount, "초기 경지 정렬 횟수");
+    Equal(1L, initial.Aptitude.SortCount, "초기 자질 정렬 횟수");
+    Equal(1L, initial.Wealth.SortCount, "초기 부자 정렬 횟수");
+    True(!initial.CombatPower.IsDirty, "초기 전투력 cache 동기화");
+    True(!initial.Realm.IsDirty, "초기 경지 cache 동기화");
+    True(!initial.Aptitude.IsDirty, "초기 자질 cache 동기화");
+    True(!initial.Wealth.IsDirty, "초기 부자 cache 동기화");
+
+    for (var pulse = 0; pulse < 100; pulse++)
+    {
+        world.AdvanceTo(world.Tick);
+    }
+
+    var afterIdlePulses = world.GetRankingCacheDiagnostics();
+    Equal(initial.TotalSortCount, afterIdlePulses.TotalSortCount, "무변경 pulse 정렬 0회");
+    Equal(initial.CombatPower.DataRevision, afterIdlePulses.CombatPower.DataRevision, "무변경 전투력 revision");
+    Equal(initial.Realm.DataRevision, afterIdlePulses.Realm.DataRevision, "무변경 경지 revision");
+    Equal(initial.Aptitude.DataRevision, afterIdlePulses.Aptitude.DataRevision, "무변경 자질 revision");
+    Equal(initial.Wealth.DataRevision, afterIdlePulses.Wealth.DataRevision, "무변경 부자 revision");
+
+    world.AdvanceTo(new SimulationTick(10L * GameCalendar.TicksPerYear));
+    var afterTenYears = world.GetRankingCacheDiagnostics();
+    AssertAtMostOneSortForRevisionChange(initial.CombatPower, afterTenYears.CombatPower, "전투력");
+    AssertAtMostOneSortForRevisionChange(initial.Realm, afterTenYears.Realm, "경지");
+    AssertAtMostOneSortForRevisionChange(initial.Aptitude, afterTenYears.Aptitude, "자질");
+    AssertAtMostOneSortForRevisionChange(initial.Wealth, afterTenYears.Wealth, "부자");
+    Equal(
+        world.TotalReincarnations > 0,
+        initial.Aptitude.DataRevision != afterTenYears.Aptitude.DataRevision,
+        "자질 revision은 환생으로만 변경");
+    True(!afterTenYears.CombatPower.IsDirty, "전투력 cache 최신 revision");
+    True(!afterTenYears.Realm.IsDirty, "경지 cache 최신 revision");
+    True(!afterTenYears.Aptitude.IsDirty, "자질 cache 최신 revision");
+    True(!afterTenYears.Wealth.IsDirty, "부자 cache 최신 revision");
+
+    var hashBeforeObservation = world.ComputeStateHash();
+    var snapshot = world.CreateSnapshot(population, 0);
+    AssertStableRankingOrder(snapshot.CombatPowerRankings, "전투력");
+    AssertStableRankingOrder(snapshot.RealmRankings, "경지");
+    AssertStableRankingOrder(snapshot.AptitudeRankings, "자질");
+    AssertStableRankingOrder(snapshot.WealthRankings, "부자");
+    Equal(hashBeforeObservation, world.ComputeStateHash(), "랭킹 관찰은 권위 상태 불변");
+    Equal(
+        afterTenYears.TotalSortCount,
+        world.GetRankingCacheDiagnostics().TotalSortCount,
+        "랭킹 관찰 중 정렬 0회");
+
+    var checkpoint = world.CreateCheckpoint();
+    Equal(24, checkpoint.SchemaVersion, "0.0.14 구조 최적화 schema 24 유지");
+    var restored = World.Restore(checkpoint);
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "랭킹 cache 저장 제외·복원 상태 hash");
+    var restoredSnapshot = restored.CreateSnapshot(population, 0);
+    EqualSequence(
+        snapshot.CombatPowerRankings.Select(entry => entry.AgentId.Value).ToArray(),
+        restoredSnapshot.CombatPowerRankings.Select(entry => entry.AgentId.Value).ToArray(),
+        "복원 전투력 랭킹");
+    EqualSequence(
+        snapshot.RealmRankings.Select(entry => entry.AgentId.Value).ToArray(),
+        restoredSnapshot.RealmRankings.Select(entry => entry.AgentId.Value).ToArray(),
+        "복원 경지 랭킹");
+    EqualSequence(
+        snapshot.AptitudeRankings.Select(entry => entry.AgentId.Value).ToArray(),
+        restoredSnapshot.AptitudeRankings.Select(entry => entry.AgentId.Value).ToArray(),
+        "복원 자질 랭킹");
+    EqualSequence(
+        snapshot.WealthRankings.Select(entry => entry.AgentId.Value).ToArray(),
+        restoredSnapshot.WealthRankings.Select(entry => entry.AgentId.Value).ToArray(),
+        "복원 부자 랭킹");
+    var restoredInitial = restored.GetRankingCacheDiagnostics();
+    Equal(4L, restoredInitial.TotalSortCount, "복원 파생 랭킹 범주별 1회 재구축");
+    restored.AdvanceTo(restored.Tick);
+    Equal(
+        restoredInitial.TotalSortCount,
+        restored.GetRankingCacheDiagnostics().TotalSortCount,
+        "복원 직후 무변경 pulse 정렬 0회");
+}
+
+static void AssertAtMostOneSortForRevisionChange(
+    RankingCategoryCacheDiagnostics before,
+    RankingCategoryCacheDiagnostics after,
+    string category)
+{
+    var revisionChanged = before.DataRevision != after.DataRevision;
+    Equal(
+        before.SortCount + (revisionChanged ? 1 : 0),
+        after.SortCount,
+        $"{category} 변경 batch당 단일 정렬");
+}
+
+static void AssertStableRankingOrder(IReadOnlyList<RankingEntry> ranking, string category)
+{
+    for (var index = 1; index < ranking.Count; index++)
+    {
+        var previous = ranking[index - 1];
+        var current = ranking[index];
+        True(previous.Score >= current.Score, $"{category} 점수 내림차순 {index}");
+        if (previous.Score == current.Score)
+        {
+            True(
+                previous.AgentId.Value < current.AgentId.Value,
+                $"{category} 동점 안정 ID 오름차순 {index}");
+        }
     }
 }
 

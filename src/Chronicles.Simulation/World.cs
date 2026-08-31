@@ -20,6 +20,10 @@ public sealed partial class World
     private readonly int[] _aptitudeRankByAgent;
     private readonly int[] _agentByWealthRank;
     private readonly int[] _wealthRankByAgent;
+    private readonly RankingRevisionCache _combatPowerRankingCache = new();
+    private readonly RankingRevisionCache _realmRankingCache = new();
+    private readonly RankingRevisionCache _aptitudeRankingCache = new();
+    private readonly RankingRevisionCache _wealthRankingCache = new();
     private readonly int[] _monsterPopulations;
     private readonly Queue<WorldEvent> _events = new(WorldLogCapacity);
     private readonly WorldCenturyChronicle _worldChronicle;
@@ -179,11 +183,19 @@ public sealed partial class World
             _agents.LastActionTicks[agentIndex] = dueTick;
             _agents.ActionsTaken[agentIndex] = checked(_agents.ActionsTaken[agentIndex] + 1);
             var resolvedActivity = _agents.Activities[agentIndex];
+            var enteredCultivationBefore = HasEnteredCultivation(agentIndex);
+            var realmRankingScoreBefore = GetRealmRankingScore(agentIndex);
+            var spiritStonesBefore = _agents.SpiritStones[agentIndex];
             var powerInputsBefore = _agents.GetPowerInputSignature(agentIndex);
             var alreadyScheduled = ResolveActivity(agentIndex);
             TryResolveBottleneckAfterAction(agentIndex, resolvedActivity);
             ObserveSocialInteraction(agentIndex, resolvedActivity);
             AddPersonalActionLog(agentIndex, resolvedActivity);
+            MarkActionRankingChanges(
+                agentIndex,
+                enteredCultivationBefore,
+                realmRankingScoreBefore,
+                spiritStonesBefore);
             if (alreadyScheduled)
             {
                 continue;
@@ -1159,33 +1171,57 @@ public sealed partial class World
             _rankingTotalAbsoluteMovement = 0;
         }
 
-        Array.Sort(_agentByRank, CompareAgentsByPower);
-        Array.Sort(_agentByRealmRank, CompareAgentsByRealm);
-        Array.Sort(_agentByAptitudeRank, CompareAgentsByAptitude);
-        Array.Sort(_agentByWealthRank, CompareAgentsByWealth);
-        for (var offset = 0; offset < _agentByRank.Length; offset++)
+        var combatPowerDirty = _combatPowerRankingCache.IsDirty;
+        var realmDirty = _realmRankingCache.IsDirty;
+        var aptitudeDirty = _aptitudeRankingCache.IsDirty;
+        var wealthDirty = _wealthRankingCache.IsDirty;
+
+        if (combatPowerDirty)
         {
-            var agent = _agentByRank[offset];
-            var previousRank = _rankByAgent[agent];
-            var currentRank = offset + 1;
-            if (recordLeaderChange)
+            Array.Sort(_agentByRank, CompareAgentsByPower);
+            _combatPowerRankingCache.MarkSorted();
+            for (var offset = 0; offset < _agentByRank.Length; offset++)
             {
-                if (currentRank < previousRank)
+                var agent = _agentByRank[offset];
+                var previousRank = _rankByAgent[agent];
+                var currentRank = offset + 1;
+                if (recordLeaderChange)
                 {
-                    _rankingRisenCount++;
-                }
-                else if (currentRank > previousRank)
-                {
-                    _rankingFallenCount++;
+                    if (currentRank < previousRank)
+                    {
+                        _rankingRisenCount++;
+                    }
+                    else if (currentRank > previousRank)
+                    {
+                        _rankingFallenCount++;
+                    }
+
+                    _rankingTotalAbsoluteMovement += Math.Abs((long)currentRank - previousRank);
                 }
 
-                _rankingTotalAbsoluteMovement += Math.Abs((long)currentRank - previousRank);
+                _rankByAgent[agent] = currentRank;
             }
+        }
 
-            _rankByAgent[agent] = currentRank;
-            _realmRankByAgent[_agentByRealmRank[offset]] = offset + 1;
-            _aptitudeRankByAgent[_agentByAptitudeRank[offset]] = offset + 1;
-            _wealthRankByAgent[_agentByWealthRank[offset]] = offset + 1;
+        if (realmDirty)
+        {
+            Array.Sort(_agentByRealmRank, CompareAgentsByRealm);
+            _realmRankingCache.MarkSorted();
+            UpdateInverseRanking(_agentByRealmRank, _realmRankByAgent);
+        }
+
+        if (aptitudeDirty)
+        {
+            Array.Sort(_agentByAptitudeRank, CompareAgentsByAptitude);
+            _aptitudeRankingCache.MarkSorted();
+            UpdateInverseRanking(_agentByAptitudeRank, _aptitudeRankByAgent);
+        }
+
+        if (wealthDirty)
+        {
+            Array.Sort(_agentByWealthRank, CompareAgentsByWealth);
+            _wealthRankingCache.MarkSorted();
+            UpdateInverseRanking(_agentByWealthRank, _wealthRankByAgent);
         }
 
         if (recordLeaderChange)
@@ -1198,11 +1234,11 @@ public sealed partial class World
                 var realmChanged = 0;
                 for (var offset = 0; offset < count; offset++)
                 {
-                    if (_agentByRank[offset] != previousCombatTop[offset])
+                    if (combatPowerDirty && _agentByRank[offset] != previousCombatTop[offset])
                     {
                         combatChanged++;
                     }
-                    if (_agentByRealmRank[offset] != previousRealmTop[offset])
+                    if (realmDirty && _agentByRealmRank[offset] != previousRealmTop[offset])
                     {
                         realmChanged++;
                     }
@@ -1287,6 +1323,54 @@ public sealed partial class World
         var wealthComparison = _agents.SpiritStones[right].CompareTo(_agents.SpiritStones[left]);
         return wealthComparison != 0 ? wealthComparison : left.CompareTo(right);
     }
+
+    private static void UpdateInverseRanking(int[] orderedAgents, int[] rankByAgent)
+    {
+        for (var offset = 0; offset < orderedAgents.Length; offset++)
+        {
+            rankByAgent[orderedAgents[offset]] = offset + 1;
+        }
+    }
+
+    private void MarkActionRankingChanges(
+        int index,
+        bool enteredCultivationBefore,
+        long realmRankingScoreBefore,
+        long spiritStonesBefore)
+    {
+        if (enteredCultivationBefore != HasEnteredCultivation(index)
+            || realmRankingScoreBefore != GetRealmRankingScore(index))
+        {
+            MarkRealmRankingDirty();
+        }
+
+        if (spiritStonesBefore != _agents.SpiritStones[index])
+        {
+            MarkWealthRankingDirty();
+        }
+    }
+
+    private void MarkCombatPowerRankingDirty() => _combatPowerRankingCache.MarkDirty();
+
+    private void MarkRealmRankingDirty() => _realmRankingCache.MarkDirty();
+
+    private void MarkAptitudeRankingDirty() => _aptitudeRankingCache.MarkDirty();
+
+    private void MarkWealthRankingDirty() => _wealthRankingCache.MarkDirty();
+
+    private void MarkAllRankingsDirty()
+    {
+        MarkCombatPowerRankingDirty();
+        MarkRealmRankingDirty();
+        MarkAptitudeRankingDirty();
+        MarkWealthRankingDirty();
+    }
+
+    internal RankingCacheDiagnostics GetRankingCacheDiagnostics() => new(
+        _combatPowerRankingCache.GetDiagnostics(),
+        _realmRankingCache.GetDiagnostics(),
+        _aptitudeRankingCache.GetDiagnostics(),
+        _wealthRankingCache.GetDiagnostics());
 
     private void AddEvent(WorldEventKind kind, int primaryAgent, long value, int? secondaryAgent = null)
     {
@@ -1479,7 +1563,12 @@ public sealed partial class World
 
     private void RecalculatePowerAndUpdatePeak(int index)
     {
+        var previousPower = _agents.Power[index].Total;
         _agents.RecalculatePower(index);
+        if (previousPower != _agents.Power[index].Total)
+        {
+            MarkCombatPowerRankingDirty();
+        }
         if (_agents.LifeStates[index] == PersonLifeState.Living)
         {
             _reincarnation.UpdatePeak(

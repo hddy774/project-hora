@@ -49,8 +49,11 @@ Windows용 자율 관찰 시뮬레이션입니다. 플레이어는 세계를 조
 - 선택했을 때만 계보·여정·흔적을 만드는 가상화 `윤회 연속성` 인물 내부 탭
 - 전투력 구성요소와 입력·보정·합산값을 함께 공개하는 상세 계산식
 
-게임 내 **저장**과 **불러오기**는 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip`을
-사용합니다. 저장 파일은 압축되며 checksum 검증을 통과한 경우에만 복원됩니다.
+게임 내 **저장**과 **불러오기**는
+`%LocalAppData%\ChroniclesOfMyriadImmortalPaths\saves\default\world.db`의 SQLite
+기본 슬롯을 사용합니다. 슬롯은 primary/backup/temp 후보의 무결성·checksum·권위 상태
+hash를 통과한 경우에만 복원됩니다. 기존 `world.cmip`은 변경하지 않으며 새 버전에서는
+호환되지 않는 이전 저장으로 표시됩니다.
 자동·수동 로그 파일은 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\logs`에 저장됩니다.
 
 기획 정본은 [게임 디자인](docs/GAME_DESIGN.md), 코드 경계는

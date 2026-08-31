@@ -41,7 +41,7 @@
       "project": "src/Chronicles.Persistence/Chronicles.Persistence.csproj",
       "roots": ["src/Chronicles.Persistence"],
       "allowed_dependencies": ["Core", "Simulation"],
-      "responsibility": "Explicit save codec, validation and atomic file lifecycle."
+      "responsibility": "Schema 25 SQLite slots, explicit authority codec, candidate validation and atomic file lifecycle."
     },
     {
       "id": "Presentation",

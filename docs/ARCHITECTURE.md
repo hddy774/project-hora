@@ -214,8 +214,15 @@ KnowledgeRef·출처와 결과별 효과 문구를 지연 생성한다.
 
 ### Chronicles.Persistence
 
-Simulation의 명시적 체크포인트를 Brotli 압축 payload와 SHA-256 checksum을 가진
-versioned `.cmip` container로 변환한다. 현재 schema 24는 수행 trace/구성요소와
+새 세계는 슬롯별 실제 SQLite `world.db`와 `PRAGMA user_version=25`를 사용한다.
+Application은 Runtime의 safe boundary에서 `WorldAuthorityCheckpoint`의 checkpoint와
+state hash를 원자적으로 캡처한다. Persistence는 streaming JSON→Brotli payload와
+SHA-256을 단일 SQLite transaction으로 기록하고, manifest·primary·backup·temporary
+후보를 관리한다. 불러오기는 metadata/integrity를 먼저 검사하고 최신 후보 하나만
+detached `World`로 복원해 state hash를 검증한다. 검증 뒤에만 Application이 live world를
+교체하며 ranking/query/UI cache는 저장하지 않는다.
+
+외부 world schema 25 안의 authority payload는 현재 checkpoint schema 24다. schema 24는 수행 trace/구성요소와
 입문 Gate 단련 보정, 기술 경험/이해, 전투 경험/이해·turn owner/부상, 지도 위치/사냥 상태를
 비롯해 간략화 시장·생산 대기열·유한 광맥·요수 개체수, TOP 1,000 부자 순위,
 기간별 랭킹 frame·누적 자리 변동, 개별 세계 사건, 100년 세계 역사서와 60개 선천자질
@@ -226,9 +233,11 @@ Component, Soul/Body/Person ID·AI 판단 인과, 희소 방향 관계, Teaching
 이전 기본값과 진행 전투 단일 turn owner 복구를
 제공하며, schema 13의 30종 재료·7칸 법보·35개 상품은 새 2종·3칸·44개 구조로
 명시적으로 합산 이전하고 schema 17 이하 자질 대표값은 그룹별 균일 Component로
-이전한다. 정상 10,000명 저장의 개인 로그/연대기가 압축 전 128MiB를
+이전한다. 기존 `.cmip` codec은 결정론·손상·하위 schema 회귀 검사에만 유지하며 새 슬롯
+loader는 schema 7~24를 이식하지 않는다. 사용자가 가진 기존 `world.cmip`은 읽기·이동·
+삭제·수정하지 않고 호환되지 않는 이전 저장으로 분류한다. 정상 10,000명 저장의 개인 로그/연대기가 압축 전 128MiB를
 넘을 수 있어 JSON 해제 상한은 512MiB로 두되 압축 payload 64MiB 상한과 checksum은
-유지한다. 같은 폴더의 임시 파일을 flush한 뒤 원자적으로
+유지한다. 같은 슬롯의 SQLite 임시 후보를 flush한 뒤 원자적으로
 교체하며, 손상되거나 지원하지 않는 schema는 세계를 바꾸기 전에 거부한다.
 하위 schema는 증거가 있는 생 계보만 재구성하며 기존 저장에 없던 6영역 수치를
 조작하지 않고 `HasEvidence=false`로 표시한다. schema 24 복원은 여정 단계·예약 tick,

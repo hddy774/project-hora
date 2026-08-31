@@ -4,6 +4,46 @@
 사용자가 확인할 수 있는 기능뿐 아니라 저장 schema, 결정론, 성능과 내부 구조 변경까지
 버전별로 기록한다.
 
+## 0.0.15 — 권위 계약·Stable Registry·SQLite schema 25 슬롯
+
+### 권위 세션과 Registry
+
+- 배속·일시정지를 typed command/effect/result로 처리하는 권위 세션을 추가했다. command
+  sequence와 optimistic revision을 검증하고, effect 적용 중 실패하면 pause·speed·revision·
+  event journal을 모두 원래 상태로 되돌린다.
+- 성공 사건은 안정 Session/Command/Event/CausalThread ID와 parent/root를 보존한다.
+  Registry 기술 변경 이력은 세계 사건과 분리했다.
+- Stable Registry에 Domain·Target·Semantic State·Unit·Operation·Owner·Schema·Mapping·
+  Formula 종류를 등록했다. M01~M14는 각각 하나의 Primary Owner를 가지며 중복 ID, 고아
+  Ref, revision/retirement/replacement 오류, owner 중복을 실행 전 검증한다.
+- 미해결 Ref는 기본값으로 READY 처리하지 않고 `Undefined`, 잘못된 Registry는
+  `Blocked`로 반환한다. 조회는 numeric stable ID dictionary/binary search를 사용하며
+  등록 순서나 화면 순서에 의존하지 않는다.
+
+### schema 25 SQLite 다중 슬롯
+
+- 새 저장을 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\saves\<slot-id>\world.db`의
+  실제 SQLite DB로 전환했다. 기본 슬롯은 `default`이고 슬롯별 manifest와 primary,
+  backup, crash-left temporary 후보를 유지한다.
+- 저장은 단일 SQLite transaction, FULL synchronous, payload SHA-256과 authority state
+  hash를 사용한다. 불러오기는 후보 metadata/integrity를 먼저 검사한 뒤 가장 최신의
+  유효 후보 하나만 detached World로 복원하고 성공할 때만 live world를 교체한다.
+- 외부 world schema 25와 내부 authority checkpoint schema 24를 명시적으로 분리했다.
+  schema 7~24 migration은 제공하지 않는다. 기존 `world.cmip`은 열거나 바꾸지 않고
+  `호환되지 않는 이전 저장`으로 분류한다.
+- query/ranking/UI cache는 저장하지 않는다. safe boundary에서 checkpoint와 state hash를
+  한 번에 캡처해 저장 중 World 중복 복원을 없앴고, JSON을 Brotli에 직접 streaming한다.
+
+### 검증과 성능
+
+- Windows Release 빌드 경고 0·오류 0, 전체 자동 검사 48/48을 통과했다.
+- 10,000명 SQLite 5회 중앙값은 저장 392ms, 복원 415ms로 각각 1초 예산을 통과했다.
+- 저장 live managed peak는 기존 container 59.61MiB에서 SQLite 30.61MiB로 48.7%
+  줄어 30% 절감 예산을 통과했다.
+- 통합 실행은 초기화 30ms + 20,000 tick 623ms + 관찰 0.3ms = 654ms,
+  checkpoint 73ms, detached 복원 144ms였다.
+- 세부 조건과 원측정은 `docs/evidence/0.0.15/verification.md`에 보존한다.
+
 ## 0.0.14 — 계층 분리·랭킹 revision 캐시·PC 관찰 작업공간
 
 ### 저장소와 런타임 구조

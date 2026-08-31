@@ -92,7 +92,9 @@ $guide = @"
 - 저장/불러오기 버튼으로 현재 세계 보존
 
 저장 위치:
-%LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip
+%LocalAppData%\ChroniclesOfMyriadImmortalPaths\saves\default\world.db
+
+기존 world.cmip 파일은 변경하지 않으며 새 버전과 호환되지 않습니다.
 
 로그 위치:
 %LocalAppData%\ChroniclesOfMyriadImmortalPaths\logs

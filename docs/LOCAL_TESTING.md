@@ -146,9 +146,12 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
   `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\logs`에 날짜별 `.log`가 생성되는지 확인
 - `세계 기록 파일`과 `디버그 파일` 버튼이 별도 시각의 UTF-8 export 파일을 만들고,
   세계 수동 파일에는 최근 로그와 영구 연대기 전체가 함께 포함되는지 확인
-- 저장 후 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip`이 생성되는지 확인
+- 저장 후 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\saves\default\world.db`와
+  슬롯 manifest가 생성되고 SQLite `user_version=25`인지 확인
 - 진행한 뒤 불러오면 저장한 tick과 상태로 돌아가는지 확인
-- 기존 schema 7~23 저장을 불러오면 schema 24의 랭킹 기준점·부자 순위·누적 자리
+- 기존 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip`은 byte·timestamp가
+  바뀌지 않고 `호환되지 않는 이전 저장`으로 표시되는지 확인
+- 독립 codec 회귀에서 기존 schema 7~23 저장을 복원하면 schema 24의 랭킹 기준점·부자 순위·누적 자리
   변동·100년 세계 역사서와 60개 자질 Component를 복원하는지 확인. schema 20 미만은
   Soul/Body/Person ID와 최소 AI 판단 trace를 결정론적으로 재구성하고, schema 21 미만은
   빈 관계를 생성한다. schema 21은 관계를 보존하면서 Teaching을 빈값으로 이전하고,

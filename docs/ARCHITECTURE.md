@@ -27,13 +27,15 @@ Chronicles.Tests ──> Core + Simulation
 
 ### Chronicles.Simulation
 
-10,000명 권위 상태, AI 결정, 9층 수행·돌파, 공법·법술 품질·수련 경험·숙련·이해,
+10,000명 권위 상태, 영혼·육신·인물 식별, 목표→결정 인과 trace, 희소 방향 관계와
+사제 Teaching, AI 결정, 9층 수행·돌파, 공법·법술 품질·수련 경험·숙련·이해,
 도시 임무·재료·영석·법보·단약 경제, 지도 이동·지형별 요수, 교대 전투 타임라인,
 실제 전투 속성과 표시 전투력,
 전투력·경지·자질·부자 랭킹, 기간별 TOP 1,000 랭킹 이력, 전체 인물 탐색, 생애
 일대기, 수명 판정과 윤회를 소유한다. 렌더 프레임과 벽시계에 의존하지
-않는다. 안정 Agent ID는 영혼 슬롯으로 유지하고 생 번호·이름·탄생 tick으로 현생을
-구분한다.
+않는다. 안정 Agent ID는 영혼 슬롯으로 유지하고 별도의 `SoulId`는 생을 넘어
+연속된다. `BodyId`와 `PersonId`, 생 번호·이름·탄생 tick은 생마다 새로 발급해 현생과
+과거 생을 구분한다.
 
 달력의 권위는 계속 정수 tick 하나이며 년·월·일은 `GameCalendar`의 12개월×30일
 정수 비율 함수로 파생한다. 각 인물은 `lastActionMonth`, 마지막 행동 tick과 행동 누계를
@@ -56,6 +58,25 @@ Component 20%+20% 조합을 사용한다. 5개 역할 점수와 수행/전투 �
 영혼 Component 10개는 윤회에 보존하고 다른 50개는 새 육신에서 재생성한다.
 미확정 분포·역할 조합·영근 세분화는 안정 검토 ID와 `RequiresReview`로 추적한다.
 
+`PersonCausalModel`은 Soul/Body/Person 안정 ID, 최종 목표 `랭킹 1위`, 현재 보조 목표,
+선택 행동·이유·판단 revision을 소유한다. 생의 경계에서는 SoulId만 이어지고 육신과
+인물 ID는 새로 발급된다. 관찰 query는 이 인과 상태를 읽을 뿐 목표나 판단 revision을
+갱신하지 않는다. 임시 AI 효용 가중치는 `PC-TEMP-AI-UTILITY-113`으로 추적한다.
+
+`RelationModel`은 인물당 최대 8개 인접 관계, 안정 관계 ID, 호감·신뢰·존중·두려움·
+은혜·원한의 6개 방향 축과 지인·동료·스승·제자·적대의 5개 역할을 소유한다. 관계
+후보는 현재 위치의 제한된 인접 집합에서만 탐색하며 전 인구 쌍을 만들지 않는다.
+checkpoint 복원은 양쪽 mirror bijection과 역할 방향을 검증한다. 임시 변화량과 역할
+임계값은 `PC-TEMP-RELATION-BALANCE-113`으로 추적한다.
+
+`TeachingModel`과 `World.Teaching`은 기존 관계의 스승·제자 사이에서 공법 또는 법술
+지식을 전수하는 권위 owner다. 대상 `KnowledgeRef`, 전수 출처, 결과와 효과,
+`관계+대상+KnowledgeRef`별 연속성, 중요 영구 전수 이력을 저장한다. Teaching 전용
+결정론 RNG stream을 사용하며 대경지 수행 Work 직접 보너스는 항상 0이다. 공법·법술
+수련 경험·이해·오해/교정·접근만 바꾸고, 전투·사망·윤회 생명주기 경계에서는 양방향
+진행 문맥을 원자적으로 중단한다. 임시 확률·성장량은
+`PC-TEMP-TEACHING-BALANCE-113`으로 추적한다.
+
 `SkillProgressionRules`는 공법·법술의 누적 수련 경험, 0.00~100.00 숙련 곡선과
 깨달음 이해도를 계산한다. `AptitudeCombatBonusFormula`는 Component 파생 역할 점수를
 50%~200%로 제한해 공법·법술 효과/성장과 전투 숙련·이해·경험에 공급한다. 품질은
@@ -70,7 +91,8 @@ Component 20%+20% 조합을 사용한다. 5개 역할 점수와 수행/전투 �
 생명/영력·속도·관통·치명타·회피·판단력·집중력·법술/수행 효율을 계산한다.
 `CombatPowerFormula`는 자질 직접 기여를 항상 0으로 두고 랭킹용 표시 점수만 계산한다.
 `World.Combat`은 한 전투에 단 하나의 turn owner를 저장하고 다음 당사자만 예약한다.
-누적 부상과 장기 행동 간격도 전투 checkpoint/hash에 포함한다.
+누적 부상과 장기 행동 간격도 전투 checkpoint/hash에 포함한다. 다음 턴 예약은 공격자와
+방어자 양쪽의 남은 수명 경계보다 늦을 수 없어 장기 전투 중 자연사 판정을 건너뛰지 않는다.
 
 `WorldMapRules`는 3×3 위치·지형·요수 정의의 안정 ID owner이고 `World.Map`은 이동,
 사냥, 전리품, 부상과 읽기 전용 지도 스냅샷을 소유한다. 인물 위치·목적지·사냥 누계는
@@ -134,6 +156,9 @@ virtualization을 사용한다.
 세부 선천자질 Expander는 접혀 있으면 `ObservationSections.AptitudeDetails`를 요청하지
 않는다. 펼친 경우에도 선택 인물 하나의 60개 값만 DTO로 복사하고, 6개 내부 탭 중
 현재 탭의 Component와 파생 공식 문자열만 갱신한다.
+사제 Teaching Expander도 접혀 있으면 `ObservationSections.Teaching`을 요청하지 않는다.
+펼친 경우에만 선택 인물의 진행 Teaching과 최근 중요 전수 이력을 투영하며 교사·학습자
+이름/ID, 전생 당시 이름, 대상 KnowledgeRef·출처와 결과별 효과 문구를 지연 생성한다.
 `MapObservationView`, `MarketObservationView`, `PresentationText`와
 `MainWindow.AgentObservation`, `MainWindow.Rankings`, `MainWindow.WorldRecords`가 지역,
 시장, 공통 문구, 인물, 랭킹과 기록 관찰 책임을 분리한다. `WorldRecordsView`는 세계
@@ -146,11 +171,12 @@ virtualization을 사용한다.
 ### Chronicles.Persistence
 
 Simulation의 명시적 체크포인트를 Brotli 압축 payload와 SHA-256 checksum을 가진
-versioned `.cmip` container로 변환한다. 현재 schema 18은 수행 trace/구성요소와
+versioned `.cmip` container로 변환한다. 현재 schema 22는 수행 trace/구성요소와
 입문 Gate 단련 보정, 기술 경험/이해, 전투 경험/이해·turn owner/부상, 지도 위치/사냥 상태를
 비롯해 간략화 시장·생산 대기열·유한 광맥·요수 개체수, TOP 1,000 부자 순위,
 기간별 랭킹 frame·누적 자리 변동, 개별 세계 사건, 100년 세계 역사서와 60개 선천자질
-Component를 저장한다. schema 7~17에 안전한
+Component, Soul/Body/Person ID·AI 판단 인과, 희소 방향 관계, Teaching 진행·연속성·
+영구 전수 이력을 저장한다. schema 7~21에 안전한
 이전 기본값과 진행 전투 단일 turn owner 복구를
 제공하며, schema 13의 30종 재료·7칸 법보·35개 상품은 새 2종·3칸·44개 구조로
 명시적으로 합산 이전하고 schema 17 이하 자질 대표값은 그룹별 균일 Component로
@@ -161,12 +187,13 @@ Component를 저장한다. schema 7~17에 안전한
 
 ### Chronicles.Tests
 
-외부 테스트 프레임워크 없이 실행 가능한 결정론적 계약 러너다. 35개 검사가 공식,
+외부 테스트 프레임워크 없이 실행 가능한 결정론적 계약 러너다. 39개 검사가 공식,
 9층 수행, 숙련/이해/품질 불변, 교대 전투/부상 사망, 지도/요수, 경제, 관찰 무영향,
 자질 간접 보정 경계, 전투 성장, 선택 UI 조회, 과거 저장 복구, 장기 성장·사냥·경쟁,
 재료 부족 생산 건너뛰기, 지도 내부 탭 지연 투영의 시간·할당량, 부자 순위·기간별
-랭킹 이력·누적 자리 변동·100년 세계 역사서, 60개 자질 Component·윤회 보존·schema
-18 이전·지연 관찰, 저장 왕복과 10,000명 성능 예산을
+랭킹 이력·누적 자리 변동·100년 세계 역사서, 60개 자질 Component·윤회 보존,
+Soul/Body/Person 인과 trace, 희소 관계 mirror·상한, Teaching 직접 Work 0·전수 이력·
+schema 22 이전·지연 관찰, 저장 왕복과 10,000명 성능 예산을
 자동 검증한다.
 
 ## 실행 모델

@@ -2489,7 +2489,7 @@ static void ObservationQueriesAreReadOnly()
     var personalLog = world.GetAgentPersonalLog(leader.Id);
     var chronicle = world.GetAgentChronicle(leader.Id);
     var snapshot = world.CreateSnapshot(150, 150);
-    var rankingOnly = world.CreateSnapshot(25, 25, ObservationSections.None);
+    var closedWorkspace = world.CreateSnapshot(25, 25, ObservationSections.None);
     var statisticsOnly = world.CreateSnapshot(25, 25, ObservationSections.Statistics);
     var summaryOnly = world.CreateSnapshot(25, 25, ObservationSections.StatisticsSummary);
     var realmDistributionOnly = world.CreateSnapshot(25, 25, ObservationSections.RealmDistribution);
@@ -2503,10 +2503,15 @@ static void ObservationQueriesAreReadOnly()
     Equal(150, snapshot.CombatPowerRankings.Count, "전투력 랭킹 조회 크기");
     Equal(150, snapshot.RealmRankings.Count, "경지 랭킹 조회 크기");
     Equal(150, snapshot.AptitudeRankings.Count, "자질 랭킹 조회 크기");
-    Equal(0, rankingOnly.Statistics.RealmDistribution.Count, "비활성 통계 조회 생략");
-    Equal(0, rankingOnly.Market.Goods.Count, "비활성 시장 조회 생략");
-    Equal(0, rankingOnly.Map.Locations.Count, "비활성 지도 조회 생략");
-    Equal(0, rankingOnly.RecentEvents.Count, "비활성 세계 로그 조회 생략");
+    Equal(0, closedWorkspace.CombatPowerRankings.Count, "닫힌 화면 전투력 랭킹 DTO 생략");
+    Equal(0, closedWorkspace.RealmRankings.Count, "닫힌 화면 경지 랭킹 DTO 생략");
+    Equal(0, closedWorkspace.AptitudeRankings.Count, "닫힌 화면 자질 랭킹 DTO 생략");
+    Equal(0, closedWorkspace.WealthRankings.Count, "닫힌 화면 부자 랭킹 DTO 생략");
+    Equal(0, closedWorkspace.Statistics.RealmDistribution.Count, "비활성 통계 조회 생략");
+    Equal(0, closedWorkspace.Market.Goods.Count, "비활성 시장 조회 생략");
+    Equal(0, closedWorkspace.Map.Locations.Count, "비활성 지도 조회 생략");
+    Equal(0, closedWorkspace.RecentEvents.Count, "비활성 세계 로그 조회 생략");
+    Equal(0, closedWorkspace.PermanentWorldChronicle.Count, "비활성 세계 연대기 조회 생략");
     True(statisticsOnly.Statistics.RealmDistribution.Count > 0, "활성 통계만 계산");
     Equal(0, statisticsOnly.Market.Goods.Count, "통계 관찰 중 시장 계산 생략");
     Equal(0, summaryOnly.Statistics.RealmDistribution.Count, "접힌 경지 분포 계산 생략");
@@ -2540,6 +2545,8 @@ static void ObservationQueriesAreReadOnly()
 static void SelectiveObservationPerformance()
 {
     const int iterations = 80;
+    const double summaryQueryP95BudgetMilliseconds = 16.0;
+    const double thousandRowMaterializationP95BudgetMilliseconds = 50.0;
     var world = World.CreateDefault(992);
     world.AdvanceTo(new SimulationTick(20_000));
     _ = world.CreateSnapshot(1_000, 150, ObservationSections.All);
@@ -2560,26 +2567,53 @@ static void SelectiveObservationPerformance()
     }
     legacy.Stop();
 
+    var selectiveSamples = new double[iterations];
     var selective = Stopwatch.StartNew();
     for (var iteration = 0; iteration < iterations; iteration++)
     {
         // 현재 통계 탭: 단일 snapshot에서 화면에 펼친 경지 분포만 계산한다.
+        var startedAt = Stopwatch.GetTimestamp();
         sink = world.CreateSnapshot(
             1_000,
             150,
             ObservationSections.StatisticsSummary
                 | ObservationSections.RealmDistribution
                 | ObservationSections.CombatPowerRanking);
+        selectiveSamples[iteration] = Stopwatch.GetElapsedTime(startedAt).TotalMilliseconds;
     }
     selective.Stop();
+
+    var listSamples = new double[iterations];
+    for (var iteration = 0; iteration < iterations; iteration++)
+    {
+        var startedAt = Stopwatch.GetTimestamp();
+        sink = world.CreateSnapshot(
+            1_000,
+            0,
+            ObservationSections.CombatPowerRanking);
+        listSamples[iteration] = Stopwatch.GetElapsedTime(startedAt).TotalMilliseconds;
+        Equal(1_000, sink.CombatPowerRankings.Count, "1,000행 랭킹 materialization 크기");
+    }
     GC.KeepAlive(sink);
 
     var reduction = legacy.ElapsedTicks == 0
         ? 0m
         : (legacy.ElapsedTicks - selective.ElapsedTicks) * 100m / legacy.ElapsedTicks;
+    var summaryP95 = GetP95(selectiveSamples);
+    var listP95 = GetP95(listSamples);
     Console.WriteLine(
-        $"UI PERF: 이전 이중 전체 조회 {legacy.Elapsed.TotalMilliseconds:N1} ms · 선택 조회 {selective.Elapsed.TotalMilliseconds:N1} ms · 감소 {reduction:0.0}% ({iterations:N0}회)");
+        $"UI PERF: 이전 이중 전체 조회 {legacy.Elapsed.TotalMilliseconds:N1} ms · 선택 조회 {selective.Elapsed.TotalMilliseconds:N1} ms · 감소 {reduction:0.0}% ({iterations:N0}회) · " +
+        $"요약 query p95 {summaryP95:0.000} ms · 1,000행 materialization p95 {listP95:0.000} ms");
     True(selective.ElapsedTicks < legacy.ElapsedTicks, "활성 UI 선택 조회는 이전 이중 전체 조회보다 빨라야 합니다.");
+    True(summaryP95 <= summaryQueryP95BudgetMilliseconds, "요약 화면 query p95 16 ms 예산");
+    True(listP95 <= thousandRowMaterializationP95BudgetMilliseconds, "1,000행 materialization p95 50 ms 예산");
+}
+
+static double GetP95(double[] samples)
+{
+    Array.Sort(samples);
+    var index = Math.Min(samples.Length - 1, (int)Math.Ceiling(samples.Length * 0.95) - 1);
+    return samples[index];
 }
 
 static void LazyMapAgentProjectionPerformance()

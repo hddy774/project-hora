@@ -4,6 +4,55 @@
 사용자가 확인할 수 있는 기능뿐 아니라 저장 schema, 결정론, 성능과 내부 구조 변경까지
 버전별로 기록한다.
 
+## 0.0.14 — 계층 분리·랭킹 revision 캐시·PC 관찰 작업공간
+
+### 저장소와 런타임 구조
+
+- `Core → Simulation → Queries → Runtime`, `Simulation → Persistence`,
+  `Queries → Presentation`, `Application` 조정, `Desktop` 집계 방향으로 8개 프로젝트를
+  분리했다. WPF는 Application과 Presentation만 직접 참조하며 가변 `World`를 생성하거나
+  저장 codec을 직접 호출하지 않는다.
+- `SimulationRunner`를 Runtime으로, 화면 문자열 규칙을 Presentation으로 옮겼다.
+  `WorldObservationQueries`와 `ObservationRequest`가 열린 화면·탭·대상·페이지에 필요한
+  읽기 전용 section만 투영한다. schema 24와 권위 상태/RNG 순서는 바꾸지 않았다.
+- 기계 판독 `repository_manifest.json`과 의존 검증기를 추가했다. 실제 csproj DAG,
+  Desktop authority 접근 금지 패턴, solution 등록을 로컬에서 검사한다.
+
+### 238개 이식 원장
+
+- Alpha 1.1.0 M01~M14의 238행을 원문 SHA와 함께 PC 원장으로 생성했다. 0.0.14 기준
+  `Port 30 / PC Adapt 12 / PC_TEMP_REVIEW 12 / Platform Excluded 0 / Gap 184`다.
+- Android 혼합 절은 행 전체를 제외하지 않고 `excluded_platform_clauses`로 남겼다.
+  완료/임시 분류에는 실제 PC 파일 literal, 자동 테스트, review ID 근거를 강제한다.
+- 생성기와 검증기는 M01~M14별 V01~V17 완전성, 원본 manifest SHA, 상태 집계와 실제
+  근거를 대조한다. 이 원장은 후속 버전에서 Gap을 0으로 닫는 정본이다.
+
+### 랭킹 성능과 관찰 비용
+
+- 전투력·경지·자질·부자 랭킹마다 독립 data/sorted revision을 둔다. 실제 입력이 변한
+  범주만 한 번 정렬하며 무변경 pulse 100회와 관찰 조회에서는 정렬 0회를 보장한다.
+  캐시는 파생 상태라 저장과 상태 hash에 포함하지 않는다.
+- 10,000명·20,000 tick Release 5회 중앙값은 0.0.13의 2,212ms에서 1,095ms로
+  **50.5% 단축**됐다. checkpoint는 266→164ms, schema 24 복원은 965→419ms다.
+- 요약 query p95 0.249ms, 1,000행 materialization p95 0.194ms로 임시 예산
+  `16ms / 50ms`를 통과했다. 닫힌 작업공간은 네 랭킹·통계·시장·지도·세계 기록 DTO를
+  생성하지 않는다.
+
+### PC 좌측 탐색 셸
+
+- 세계·인물·관계·지도·경제·조직·콘텐츠·기록·진단 좌측 탐색을 추가했다. 지도·시장·
+  세계 기록은 기존 UserControl을 재사용하고 기록/진단은 각각 실제 세계 기록과 디버그
+  로그 내부 탭으로 연결했다.
+- 아직 권위 상태가 없는 조직·콘텐츠는 추정 통계를 만들지 않고 대상 이식 버전을 밝힌
+  준비 상태를 표시한다. 준비 화면에서는 `ObservationSections.None`만 요청한다.
+
+### 검증
+
+- 구조 커밋 `0e10312`, 랭킹 캐시 `6335790`, 추적 원장 `76d5b61`, UI 셸
+  `133d9e2`를 기능별로 분리했다.
+- Windows x64 Release 빌드는 경고 0·오류 0, 전체 자동 검사는 46/46을 통과했다.
+- 세부 원측정과 검증 조건은 `docs/evidence/0.0.14/verification.md`에 보존한다.
+
 ## 0.0.13 — 도시 시장 원자 정산·현재 수급·최근 거래 관찰
 
 ### 현재 경제를 반영하는 공급·수요와 생산

@@ -264,10 +264,12 @@ public sealed partial class World
         int eventCount = 100,
         ObservationSections sections = ObservationSections.All,
         ushort? detailedMapLocationId = null,
-        int detailedMapAgentOffset = 0)
+        int detailedMapAgentOffset = 0,
+        int worldChronicleCount = int.MaxValue)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rankingCount);
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
+        ArgumentOutOfRangeException.ThrowIfNegative(worldChronicleCount);
         var actualRankingCount = Math.Min(rankingCount, Population);
         var combatPowerRankings = (sections & ObservationSections.CombatPowerRanking) != 0
             ? CreateRankingEntries(
@@ -308,34 +310,17 @@ public sealed partial class World
             ? _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray()
             : Array.Empty<WorldEvent>();
         var permanentWorldChronicle = (sections & ObservationSections.WorldChronicle) != 0
-            ? _worldChronicle.ToArray()
+            ? _worldChronicle
+                .Skip(Math.Max(0, _worldChronicle.Count - worldChronicleCount))
+                .ToArray()
             : Array.Empty<WorldEvent>();
-        var agentNames = new Dictionary<int, string>(
-            (actualRankingCount * 4) + (recentEvents.Length * 2) + (permanentWorldChronicle.Length * 2));
+        var agentNames = new Dictionary<int, string>(actualRankingCount * 4);
         foreach (var ranking in combatPowerRankings
                      .Concat(realmRankings)
                      .Concat(aptitudeRankings)
                      .Concat(wealthRankings))
         {
             agentNames[ranking.AgentId.Value] = ranking.Name;
-        }
-
-        foreach (var worldEvent in recentEvents)
-        {
-            agentNames[worldEvent.PrimaryAgent.Value] = _agents.Names[worldEvent.PrimaryAgent.Value];
-            if (worldEvent.SecondaryAgent is { } secondaryAgent)
-            {
-                agentNames[secondaryAgent.Value] = _agents.Names[secondaryAgent.Value];
-            }
-        }
-
-        foreach (var worldEvent in permanentWorldChronicle)
-        {
-            agentNames[worldEvent.PrimaryAgent.Value] = _agents.Names[worldEvent.PrimaryAgent.Value];
-            if (worldEvent.SecondaryAgent is { } secondaryAgent)
-            {
-                agentNames[secondaryAgent.Value] = _agents.Names[secondaryAgent.Value];
-            }
         }
 
         return new WorldSnapshot(
@@ -351,6 +336,7 @@ public sealed partial class World
             agentNames,
             recentEvents,
             permanentWorldChronicle,
+            _worldChronicle.Count,
             _totalBreakthroughs,
             _totalChallenges,
             _totalCombatsStarted,

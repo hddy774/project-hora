@@ -468,6 +468,7 @@ public sealed record WorldSnapshot(
     IReadOnlyDictionary<int, string> AgentNames,
     IReadOnlyList<WorldEvent> RecentEvents,
     IReadOnlyList<WorldEvent> PermanentWorldChronicle,
+    int PermanentWorldChronicleCount,
     int TotalBreakthroughs,
     int TotalChallenges,
     int TotalCombatsStarted,

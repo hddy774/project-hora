@@ -718,6 +718,20 @@ static void WealthRankingHistoryAndWorldChronicle()
     True(
         snapshot.PermanentWorldChronicle.All(entry => !string.IsNullOrWhiteSpace(entry.PrimaryName)),
         "영구 세계 연대기는 윤회 후에도 사건 당시 이름을 보존");
+    var chronicleTail = world.CreateSnapshot(
+        rankingCount: 1,
+        eventCount: 0,
+        sections: ObservationSections.WorldChronicle,
+        worldChronicleCount: 5);
+    Equal(snapshot.PermanentWorldChronicle.Count, chronicleTail.PermanentWorldChronicleCount, "연대기 전체 저장 수");
+    Equal(Math.Min(5, snapshot.PermanentWorldChronicle.Count), chronicleTail.PermanentWorldChronicle.Count, "연대기 UI 꼬리 조회 크기");
+    if (chronicleTail.PermanentWorldChronicle.Count > 0)
+    {
+        Equal(
+            snapshot.PermanentWorldChronicle[^1].Sequence,
+            chronicleTail.PermanentWorldChronicle[^1].Sequence,
+            "연대기 UI 꼬리 조회 최신 사건");
+    }
     var checkpoint = world.CreateCheckpoint();
     True(checkpoint.RankingHistory?.Frames is { Length: > 1 }, "기간별 랭킹 이력 저장");
     True(checkpoint.WorldChronicle?.Length == snapshot.PermanentWorldChronicle.Count, "세계 연대기 저장 수");

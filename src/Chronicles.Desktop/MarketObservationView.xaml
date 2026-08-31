@@ -22,6 +22,11 @@
                            Foreground="{StaticResource SecondaryTextBrush}"
                            FontSize="10"
                            TextWrapping="Wrap" />
+                <TextBlock x:Name="RecentFlowText"
+                           Margin="0,3,0,0"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="9"
+                           TextWrapping="Wrap" />
             </StackPanel>
             <TextBlock x:Name="TreasuryText"
                        HorizontalAlignment="Right"
@@ -70,6 +75,7 @@
         <DataGrid x:Name="MarketGrid"
                   Grid.Row="3"
                   AutoGenerateColumns="False"
+                  CanUserSortColumns="False"
                   IsReadOnly="True"
                   HeadersVisibility="Column"
                   EnableRowVirtualization="True"
@@ -79,7 +85,7 @@
                 <DataGridTextColumn Header="상품" Binding="{Binding Name}" Width="*" />
                 <DataGridTextColumn Header="현재가" Binding="{Binding CurrentPrice}" Width="76" />
                 <DataGridTextColumn Header="재고" Binding="{Binding Stock}" Width="52" />
-                <DataGridTextColumn Header="수급" Binding="{Binding Flow}" Width="82" />
+                <DataGridTextColumn Header="12개월 수급" Binding="{Binding Flow}" Width="92" />
             </DataGrid.Columns>
         </DataGrid>
 
@@ -114,6 +120,40 @@
                         <TextBlock x:Name="DetailProductionText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
                     </StackPanel>
                 </ScrollViewer>
+            </TabItem>
+            <TabItem Header="최근 거래">
+                <Grid>
+                    <ListBox x:Name="RecentTradeList"
+                             Background="{StaticResource PanelBrush}"
+                             BorderThickness="0"
+                             AutomationProperties.Name="최근 100건 시장 거래">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="10,7">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Time}"
+                                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                                   FontSize="9" />
+                                        <TextBlock Text="{Binding Summary}"
+                                                   Margin="0,2,0,0"
+                                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                                   FontSize="10"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock x:Name="RecentTradeEmptyText"
+                               Text="최근 거래가 없습니다."
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="10"
+                               Visibility="Collapsed" />
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

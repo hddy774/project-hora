@@ -8,9 +8,14 @@ namespace Chronicles.Desktop;
 
 public partial class MarketObservationView : UserControl
 {
+    private const int RecentTradeTabIndex = 3;
     private CityMarketSnapshot _snapshot = CityMarketSnapshot.Empty;
     private MarketFilter _filter;
-    private int _selectedGoodId;
+    private int? _selectedGoodId;
+    private long _projectedAuthorityRevision = long.MinValue;
+    private MarketFilter? _projectedFilter;
+    private string? _projectedSearch;
+    private long _projectedTradeRevision = long.MinValue;
     private bool _applying;
 
     public MarketObservationView()
@@ -23,16 +28,30 @@ public partial class MarketObservationView : UserControl
         ArgumentNullException.ThrowIfNull(snapshot);
         _snapshot = snapshot;
         TreasuryText.Text = $"도시 영석 {KoreanNumberFormatter.Format(snapshot.TreasurySpiritStones)}";
+        RecentFlowText.Text =
+            $"최근 12개월 · 공급 {KoreanNumberFormatter.Format(snapshot.RecentSupply)} · " +
+            $"수요 {KoreanNumberFormatter.Format(snapshot.RecentDemand)}";
         TotalStockText.Text = KoreanNumberFormatter.Format(snapshot.TotalStock);
         UnmetDemandText.Text = KoreanNumberFormatter.Format(snapshot.UnmetDemand);
         ProductionCountText.Text =
             $"{snapshot.ProductionQueue?.Count ?? 0:N0} / {snapshot.ProductionCapacity:N0}";
         RebuildRows();
+        if (DetailTabControl.SelectedIndex == RecentTradeTabIndex)
+        {
+            UpdateRecentTradeView();
+        }
     }
 
     private void RebuildRows()
     {
         var search = SearchBox?.Text.Trim() ?? string.Empty;
+        if (_projectedAuthorityRevision == _snapshot.AuthorityRevision
+            && _projectedFilter == _filter
+            && string.Equals(_projectedSearch, search, StringComparison.Ordinal))
+        {
+            return;
+        }
+
         var rows = _snapshot.Goods
             .Where(item => MatchesFilter(item.Kind))
             .Select(item => new MarketListRow(
@@ -51,14 +70,28 @@ public partial class MarketObservationView : UserControl
             MarketGrid.ItemsSource = rows;
             if (rows.Length == 0)
             {
+                _selectedGoodId = null;
+                MarketGrid.SelectedItem = null;
                 ClearDetail();
-                return;
+                if (DetailTabControl.SelectedIndex == RecentTradeTabIndex)
+                {
+                    UpdateRecentTradeView();
+                }
+            }
+            else
+            {
+                var selected = _selectedGoodId is { } selectedGoodId
+                    ? rows.FirstOrDefault(item => item.GoodId == selectedGoodId)
+                    : null;
+                selected ??= rows[0];
+                _selectedGoodId = selected.GoodId;
+                MarketGrid.SelectedItem = selected;
+                UpdateDetail(FindGood(selected.GoodId));
             }
 
-            var selected = rows.FirstOrDefault(item => item.GoodId == _selectedGoodId) ?? rows[0];
-            _selectedGoodId = selected.GoodId;
-            MarketGrid.SelectedItem = selected;
-            UpdateDetail(FindGood(selected.GoodId));
+            _projectedAuthorityRevision = _snapshot.AuthorityRevision;
+            _projectedFilter = _filter;
+            _projectedSearch = search;
         }
         finally
         {
@@ -100,6 +133,9 @@ public partial class MarketObservationView : UserControl
             case 2:
                 UpdateProductionDetail(item);
                 break;
+            case RecentTradeTabIndex:
+                UpdateRecentTradeView();
+                break;
         }
     }
 
@@ -119,13 +155,17 @@ public partial class MarketObservationView : UserControl
         DetailPriceText.Text =
             $"현재 {KoreanNumberFormatter.Format(item.CurrentPrice)} 영석 · 기준 {KoreanNumberFormatter.Format(item.CityBasePrice)} · {FormatPriceChange(item.CityBasePrice, item.CurrentPrice)}";
         DetailFlowText.Text =
-            $"재고 {KoreanNumberFormatter.Format(item.Stock)} · 누적 공급 {KoreanNumberFormatter.Format(item.Supply)} · 누적 수요 {KoreanNumberFormatter.Format(item.Demand)}";
-        var unmet = Math.Max(0L, item.Demand - item.Supply);
-        DetailDemandText.Text = unmet > 0
-            ? $"미충족 수요 {KoreanNumberFormatter.Format(unmet)} · 공급 확대 필요"
-            : item.Supply > item.Demand
-                ? $"공급 여유 {KoreanNumberFormatter.Format(item.Supply - item.Demand)}"
-                : "공급과 수요가 균형입니다.";
+            $"최근 12개월 · 공급 {KoreanNumberFormatter.Format(item.RecentSupply)} · " +
+            $"수요 {KoreanNumberFormatter.Format(item.RecentDemand)}\n" +
+            $"누계 감사값 · 공급 {KoreanNumberFormatter.Format(item.Supply)} · " +
+            $"수요 {KoreanNumberFormatter.Format(item.Demand)} · 재고 {KoreanNumberFormatter.Format(item.Stock)}";
+        var recentImbalance = item.RecentDemand - item.RecentSupply;
+        DetailDemandText.Text = recentImbalance switch
+        {
+            > 0 => $"최근 12개월 수요 우위 {KoreanNumberFormatter.Format(recentImbalance)} · 공급 확대 필요",
+            < 0 => $"최근 12개월 공급 우위 {KoreanNumberFormatter.Format(-recentImbalance)}",
+            _ => "최근 12개월 공급과 수요가 균형입니다.",
+        };
     }
 
     private void UpdateProductionDetail(MarketGoodSnapshot item)
@@ -133,26 +173,103 @@ public partial class MarketObservationView : UserControl
         var activeOrders = _snapshot.ProductionQueue?
             .Where(order => order.GoodId == item.GoodId)
             .ToArray() ?? [];
-        var unmet = Math.Max(0L, item.Demand - item.Supply);
-        DetailProductionStateText.Text = activeOrders.Length > 0
-            ? $"현재 {activeOrders.Length:N0}건 제작 중 · " + string.Join(
-                ", ",
-                activeOrders.Select(order => $"{order.CompletedMonths:N0}/{order.RequiredMonths:N0}개월"))
-            : unmet > 0
-                ? "수요 있음 · 재료·영석·대기열 조건을 검토 중"
-                : "현재 추가 생산 수요 없음";
-        DetailProductionText.Text = Describe(item).Production;
+        DetailProductionStateText.Text = FormatProductionState(item, activeOrders);
+        if (item.ProductionState == MarketProductionState.NotProduced
+            && item.Kind == MarketGoodKind.Material)
+        {
+            DetailProductionText.Text = Describe(item).Production;
+            return;
+        }
+
+        var material = item.RequiredMaterial is { } requiredMaterial
+            ? $"{EconomyRules.GetMaterial(requiredMaterial).KoreanName} " +
+                $"{item.ProductionMaterialCost:N0}개"
+            : "필요 재료 없음";
+        DetailProductionText.Text =
+            $"생산 계약 · {material} · 도시 영석 " +
+            $"{KoreanNumberFormatter.Format(item.ProductionSpiritStoneCost)}\n" +
+            Describe(item).Production;
     }
 
     private static string FormatFlow(MarketGoodSnapshot item)
     {
-        var imbalance = item.Demand - item.Supply;
+        var imbalance = item.RecentDemand - item.RecentSupply;
         return imbalance switch
         {
             > 0 => $"수요 +{KoreanNumberFormatter.Format(imbalance)}",
             < 0 => $"공급 +{KoreanNumberFormatter.Format(-imbalance)}",
             _ => "균형",
         };
+    }
+
+    private string FormatProductionState(
+        MarketGoodSnapshot item,
+        CityProductionSnapshot[] activeOrders) => item.ProductionState switch
+    {
+        MarketProductionState.NotProduced when item.Kind == MarketGoodKind.Material =>
+            "도시 생산 대상 아님 · 임무·요수 사냥·수선자 판매로 공급",
+        MarketProductionState.NotProduced => "도시 생산 대상 아님",
+        MarketProductionState.NoDemand => "미충족 수요 없음 · 추가 생산 보류",
+        MarketProductionState.TargetStockReached => "목표 재고 도달 · 추가 생산 보류",
+        MarketProductionState.Queued => activeOrders.Length > 0
+            ? $"현재 {activeOrders.Length:N0}건 제작 중 · " + string.Join(
+                ", ",
+                activeOrders.Select(order =>
+                    $"{order.CompletedMonths:N0}/{order.RequiredMonths:N0}개월"))
+            : "생산 대기열 등록",
+        MarketProductionState.Ready => "생산 가능 · 도시 생산 우선순위 선정 대기",
+        MarketProductionState.BlockedByMaterial => item.RequiredMaterial is { } material
+            ? $"재료 부족 · {EconomyRules.GetMaterial(material).KoreanName} " +
+                $"{item.ProductionMaterialCost:N0}개 필요"
+            : "생산 재료 부족",
+        MarketProductionState.BlockedByTreasury =>
+            $"도시 영석 부족 · {KoreanNumberFormatter.Format(item.ProductionSpiritStoneCost)} 필요",
+        MarketProductionState.BlockedByCapacity =>
+            $"생산 대기열 포화 · {_snapshot.ProductionQueue?.Count ?? 0:N0} / " +
+            $"{_snapshot.ProductionCapacity:N0}",
+        _ => item.ProductionState.ToString(),
+    };
+
+    private void UpdateRecentTradeView()
+    {
+        if (DetailTabControl.SelectedIndex != RecentTradeTabIndex
+            || _projectedTradeRevision == _snapshot.AuthorityRevision)
+        {
+            return;
+        }
+
+        var rows = (_snapshot.RecentTrades ?? Array.Empty<MarketTradeSnapshot>())
+            .TakeLast(100)
+            .Reverse()
+            .Select(FormatMarketTrade)
+            .ToArray();
+        RecentTradeList.ItemsSource = rows;
+        RecentTradeEmptyText.Visibility = rows.Length == 0
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        _projectedTradeRevision = _snapshot.AuthorityRevision;
+    }
+
+    private static MarketTradeRow FormatMarketTrade(MarketTradeSnapshot trade)
+    {
+        var (kind, spiritStones) = trade.Kind switch
+        {
+            MarketTradeKind.Purchase => ("구매", "지불"),
+            MarketTradeKind.Sale => ("판매", "수령"),
+            MarketTradeKind.MissionDelivery => ("임무 납품", "보상"),
+            _ => (trade.Kind.ToString(), "정산"),
+        };
+        var good = FormatMarketGood(
+            EconomyRules.GetMarketGood(trade.GoodId),
+            trade.Quality);
+        var date = GameCalendar.GetDate(trade.Tick);
+        return new MarketTradeRow(
+            $"{KoreanNumberFormatter.Format(date.Year)}년 {date.Month:N0}월 {date.Day:N0}일 · " +
+            $"거래 #{trade.Sequence:N0}",
+            $"{kind} · 수선자 {trade.AgentId} · {good} " +
+            $"{KoreanNumberFormatter.Format(trade.Count)}개 · {spiritStones} " +
+            $"{KoreanNumberFormatter.Format(trade.TotalSpiritStones)} 영석 · 단가 " +
+            KoreanNumberFormatter.Format(trade.UnitPrice));
     }
 
     private static (string Type, string Description, string Production) Describe(
@@ -243,13 +360,26 @@ public partial class MarketObservationView : UserControl
     private void DetailTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_applying
-            || !ReferenceEquals(e.Source, sender)
-            || _snapshot.Goods.Count == 0)
+            || !ReferenceEquals(e.Source, sender))
         {
             return;
         }
 
-        UpdateDetail(FindGood(_selectedGoodId));
+        if (DetailTabControl.SelectedIndex == RecentTradeTabIndex)
+        {
+            UpdateRecentTradeView();
+            return;
+        }
+
+        if (_snapshot.Goods.Count == 0
+            || _selectedGoodId is not { } selectedGoodId
+            || MarketGrid.SelectedItem is not MarketListRow selectedRow
+            || selectedRow.GoodId != selectedGoodId)
+        {
+            return;
+        }
+
+        UpdateDetail(FindGood(selectedGoodId));
     }
 
     private enum MarketFilter : byte
@@ -267,4 +397,8 @@ public partial class MarketObservationView : UserControl
         string CurrentPrice,
         string Stock,
         string Flow);
+
+    private sealed record MarketTradeRow(
+        string Time,
+        string Summary);
 }

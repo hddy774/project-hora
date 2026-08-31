@@ -352,7 +352,14 @@ public partial class MainWindow : Window, IDisposable
             ? string.Join(
                 "\n",
                 queue.Select(item =>
-                    $"{FormatMarketGood(EconomyRules.GetMarketGood(item.GoodId), item.Quality)} · {item.CompletedMonths:N0}/{item.RequiredMonths:N0}개월 · 재료 {item.MaterialCost:N0} · 영석 {KoreanNumberFormatter.Format(item.SpiritStoneCost)}"))
+                {
+                    var material = item.RequiredMaterial is { } requiredMaterial
+                        ? $"{EconomyRules.GetMaterial(requiredMaterial).KoreanName} {item.MaterialCost:N0}"
+                        : "재료 없음";
+                    return $"{FormatMarketGood(EconomyRules.GetMarketGood(item.GoodId), item.Quality)} · " +
+                        $"{item.CompletedMonths:N0}/{item.RequiredMonths:N0}개월 · {material} · " +
+                        $"영석 {KoreanNumberFormatter.Format(item.SpiritStoneCost)}";
+                }))
             : "수요·재료·영석 조건을 모두 충족한 생산 대기열 없음";
         CityInventoryText.Text =
             $"총 {KoreanNumberFormatter.Format(snapshot.Market.TotalStock)}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.MaterialStock)}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.ProcessedStock)}개";

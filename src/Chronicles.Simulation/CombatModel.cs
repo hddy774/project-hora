@@ -59,7 +59,7 @@ internal readonly record struct PowerInputSignature(
 
 public static class CombatAttributeFormula
 {
-    public const int CurrentRevision = 4;
+    public const int CurrentRevision = 5;
 
     public static CombatAttributes Calculate(
         RealmStage realm,
@@ -201,7 +201,7 @@ public static class CombatAttributeFormula
 
 public static class AptitudeCombatBonusFormula
 {
-    public const int CurrentRevision = 2;
+    public const int CurrentRevision = 3;
     public const int MinimumEffectBasisPoints = 5_000;
     public const int NeutralEffectBasisPoints = 10_000;
     public const int MaximumEffectBasisPoints = 20_000;
@@ -212,6 +212,28 @@ public static class AptitudeCombatBonusFormula
         GetCombatMasteryEffectBasisPoints(aptitudes),
         GetCombatUnderstandingEffectBasisPoints(aptitudes),
         GetCombatExperienceGainBasisPoints(aptitudes));
+
+    public static AptitudeCombatBonuses Calculate(AptitudeRoleScores roleScores) => new(
+        GetTechniqueEffectBasisPoints(roleScores),
+        GetSpellEffectBasisPoints(roleScores),
+        GetCombatMasteryEffectBasisPoints(roleScores),
+        GetCombatUnderstandingEffectBasisPoints(roleScores),
+        GetCombatExperienceGainBasisPoints(roleScores));
+
+    public static int GetTechniqueEffectBasisPoints(AptitudeRoleScores roleScores) =>
+        ToEffectBasisPoints(roleScores.TechniqueEffectHundredths);
+
+    public static int GetSpellEffectBasisPoints(AptitudeRoleScores roleScores) =>
+        ToEffectBasisPoints(roleScores.SpellEffectHundredths);
+
+    public static int GetCombatMasteryEffectBasisPoints(AptitudeRoleScores roleScores) =>
+        ToEffectBasisPoints(roleScores.CombatMasteryHundredths);
+
+    public static int GetCombatUnderstandingEffectBasisPoints(AptitudeRoleScores roleScores) =>
+        ToEffectBasisPoints(roleScores.CombatUnderstandingHundredths);
+
+    public static int GetCombatExperienceGainBasisPoints(AptitudeRoleScores roleScores) =>
+        ToEffectBasisPoints(roleScores.CombatExperienceGainHundredths);
 
     // 자질 품질의 큰 경계 배율은 직접 전투력에 사용하지 않는다. 원시 0.00~100.00을
     // 역할별로 가중하고 50.00을 100% 기준으로 삼아 50%~200% 안에서 보정한다.

@@ -70,6 +70,11 @@ public partial class MainWindow
         ComprehensionText.Text = QualityRules.Format(agent.Aptitudes.Comprehension);
         MindText.Text = QualityRules.Format(agent.Aptitudes.Mind);
         SoulText.Text = QualityRules.Format(agent.Aptitudes.Soul);
+        if (AptitudeDetailsExpander.IsExpanded)
+        {
+            UpdateAptitudeDetailView(agent);
+        }
+
         TechniqueText.Text = $"{QualityRules.Format(agent.TechniqueQuality)} · 숙련 {agent.TechniqueMastery / 100m:0.00} · 이해 {agent.TechniqueUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.TechniqueTrainingExperience)}";
         SpellText.Text = $"{QualityRules.Format(agent.SpellQuality)} · 숙련 {agent.SpellMastery / 100m:0.00} · 이해 {agent.SpellUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.SpellTrainingExperience)}";
         HealthText.Text = $"{KoreanNumberFormatter.Format(Math.Max(0, agent.Health))} / {KoreanNumberFormatter.Format(agent.MaximumHealth)}";
@@ -102,13 +107,12 @@ public partial class MainWindow
                 "  ·  ",
                 agent.Materials.Select(item =>
                     $"{EconomyRules.GetMaterial(item.Material).KoreanName} {KoreanNumberFormatter.Format(item.Count)}"));
-        var aptitudeBonuses = AptitudeCombatBonusFormula.Calculate(agent.Aptitudes);
         AptitudeBonusText.Text =
-            $"자질 보정 · 공법 {FormatEffectPercent(aptitudeBonuses.TechniqueEffectBasisPoints)} · " +
-            $"법술 {FormatEffectPercent(aptitudeBonuses.SpellEffectBasisPoints)} · " +
-            $"전투 숙련 {FormatEffectPercent(aptitudeBonuses.CombatMasteryEffectBasisPoints)} · " +
-            $"전투 이해 {FormatEffectPercent(aptitudeBonuses.CombatUnderstandingEffectBasisPoints)} · " +
-            $"전투 경험 {FormatEffectPercent(aptitudeBonuses.CombatExperienceGainBasisPoints)}";
+            $"세부 자질 파생 보정 · 공법 {FormatEffectPercent(agent.CombatPowerDetails.TechniqueAptitudeBonusBasisPoints)} · " +
+            $"법술 {FormatEffectPercent(agent.CombatPowerDetails.SpellAptitudeBonusBasisPoints)} · " +
+            $"전투 숙련 {FormatEffectPercent(agent.CombatPowerDetails.CombatMasteryBonusBasisPoints)} · " +
+            $"전투 이해 {FormatEffectPercent(agent.CombatPowerDetails.CombatUnderstandingBonusBasisPoints)} · " +
+            $"전투 경험 {FormatEffectPercent(agent.CombatPowerDetails.CombatExperienceGainBonusBasisPoints)}";
         SetPowerBreakdown(agent.CombatPower);
         SetPowerFormulaDetails(agent.CombatPowerDetails);
         UpdateAgentLogViews();
@@ -261,5 +265,49 @@ public partial class MainWindow
     };
 
     private static string FormatEffectPercent(int basisPoints) => $"{basisPoints / 100m:0.##}%";
+
+    private void UpdateAptitudeDetailView(AgentSnapshot agent)
+    {
+        if (agent.AptitudeDetails is not { } details)
+        {
+            return;
+        }
+
+        var selectedIndex = Math.Clamp(
+            AptitudeDetailTabControl.SelectedIndex,
+            0,
+            details.Groups.Count - 1);
+        var group = details.Groups[selectedIndex];
+        var target = group.Domain switch
+        {
+            AptitudeDomain.SpiritualRoot => RootDetailText,
+            AptitudeDomain.Bone => BoneDetailText,
+            AptitudeDomain.Constitution => ConstitutionDetailText,
+            AptitudeDomain.Comprehension => ComprehensionDetailText,
+            AptitudeDomain.Mind => MindDetailText,
+            AptitudeDomain.Soul => SoulDetailText,
+            _ => throw new InvalidOperationException("알 수 없는 선천자질 영역입니다."),
+        };
+        var review = details.RequiresReview
+            ? " · 임시 분포·역할 조합/다음 버전 재검토"
+            : string.Empty;
+        var roles = details.RoleScores;
+        target.Text =
+            $"{group.KoreanName} 대표 {QualityRules.Format(group.Summary)} · {details.FormulaId} r{details.FormulaRevision}{review}\n" +
+            string.Join(
+                "\n",
+                group.Components.Select((component, index) =>
+                    $"{index + 1:N0}. {component.KoreanName} · {QualityRules.Format(component.InnateValue)}")) +
+            "\n파생 공식(핵심 30·30 / 보조 20·20)\n" +
+            string.Join(
+                "\n",
+                group.DerivedAbilities.Select(ability =>
+                    $"{ability.KoreanName} = {ability.FormulaText} = {ability.Value.Amount:0.00}")) +
+            $"\n역할 종합 · 공법 {roles.TechniqueEffectHundredths / 100m:0.00} · " +
+            $"법술 {roles.SpellEffectHundredths / 100m:0.00} · " +
+            $"전투 숙련 {roles.CombatMasteryHundredths / 100m:0.00} · " +
+            $"전투 이해 {roles.CombatUnderstandingHundredths / 100m:0.00} · " +
+            $"전투 경험 {roles.CombatExperienceGainHundredths / 100m:0.00}";
+    }
 
 }

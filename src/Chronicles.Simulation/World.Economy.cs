@@ -320,7 +320,9 @@ public sealed partial class World
 
         _agents.ConsumeMaterial(index, MaterialId.TreasureMaterial, materialCost);
         _agents.SpiritStones[index] -= spiritStoneCost;
-        var baseQuality = (_agents.Comprehensions[index] + _agents.Souls[index]) / 2;
+        var baseQuality = (
+            _agents.GetDerivedAptitude(index, AptitudeDerivedAbility.ComprehensionLearning)
+            + _agents.GetDerivedAptitude(index, AptitudeDerivedAbility.SoulGrowth)) / 2;
         var variance = _random.NextInt(1_001) - 500;
         var quality = checked((ushort)Math.Clamp(baseQuality + variance, 0, 10_000));
         var current = _agents.GetTreasureQuality(index, TreasureSlot.NatalTreasure);

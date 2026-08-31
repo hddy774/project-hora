@@ -431,16 +431,16 @@ public sealed partial class World
 
     private int ApplyCombatProgress(int index, int baseExperienceGain, int baseUnderstandingGain)
     {
-        var aptitudes = _agents.GetAptitudes(index);
+        var roleScores = _agents.GetAptitudeRoleScores(index);
         var before = _agents.CombatExperience[index];
         _agents.CombatExperience[index] = CombatProgressionRules.ApplyExperienceGain(
             before,
             baseExperienceGain,
-            AptitudeCombatBonusFormula.GetCombatExperienceGainBasisPoints(aptitudes));
+            AptitudeCombatBonusFormula.GetCombatExperienceGainBasisPoints(roleScores));
         _agents.CombatUnderstanding[index] = CombatProgressionRules.ApplyUnderstandingGain(
             _agents.CombatUnderstanding[index],
             baseUnderstandingGain,
-            AptitudeCombatBonusFormula.GetCombatUnderstandingEffectBasisPoints(aptitudes));
+            AptitudeCombatBonusFormula.GetCombatUnderstandingEffectBasisPoints(roleScores));
         return checked(_agents.CombatExperience[index] - before);
     }
 }

@@ -182,9 +182,14 @@ public sealed partial class World
             _totalTreasuresCrafted + (int)(_market.TreasuresProduced - treasuresBefore));
     }
 
-    public AgentSnapshot GetAgentSnapshot(AgentId agentId)
+    public AgentSnapshot GetAgentSnapshot(
+        AgentId agentId,
+        bool includeAptitudeDetails = false)
     {
         var index = ValidateAgent(agentId);
+        var combatAptitudes = _agents.GetContextAptitudes(index, combat: true);
+        var aptitudeBonuses = AptitudeCombatBonusFormula.Calculate(
+            _agents.GetAptitudeRoleScores(index));
         return new AgentSnapshot(
             agentId,
             _agents.Names[index],
@@ -249,8 +254,8 @@ public sealed partial class World
             CombatPowerFormula.CalculateDetailed(
                 _agents.RealmStages[index],
                 _agents.RealmLayers[index],
-                _agents.GetAptitudes(index),
-                AptitudeCombatBonusFormula.Calculate(_agents.GetAptitudes(index)),
+                combatAptitudes,
+                aptitudeBonuses,
                 new QualityValue(_agents.TechniqueQualities[index]),
                 _agents.TechniqueMasteries[index],
                 _agents.TechniqueUnderstanding[index],
@@ -260,7 +265,10 @@ public sealed partial class World
                 _agents.CombatExperience[index],
                 CombatProgressionRules.GetMasteryHundredths(_agents.CombatExperience[index]),
                 _agents.CombatUnderstanding[index],
-                _agents.GetTreasurePower(index)));
+                _agents.GetTreasurePower(index)),
+            includeAptitudeDetails
+                ? _agents.CreateAptitudeDetailSnapshot(index)
+                : null);
     }
 
     public WorldSnapshot CreateSnapshot(
@@ -487,6 +495,13 @@ public sealed partial class World
             Add(ref hash, _agents.Comprehensions[index]);
             Add(ref hash, _agents.Minds[index]);
             Add(ref hash, _agents.Souls[index]);
+            for (var component = 0; component < AptitudeRules.TotalComponentCount; component++)
+            {
+                Add(
+                    ref hash,
+                    _agents.AptitudeComponents[
+                        (index * AptitudeRules.TotalComponentCount) + component]);
+            }
             Add(ref hash, (ulong)_agents.BirthTicks[index]);
             Add(ref hash, (ulong)_agents.LifeNumbers[index]);
             Add(ref hash, _agents.BottleneckFailures[index]);
@@ -685,12 +700,17 @@ public sealed partial class World
 
     private void ResolveTechniqueTraining(int index)
     {
+        var roleScores = _agents.GetAptitudeRoleScores(index);
+        var comprehension = _agents.GetDerivedAptitude(
+            index,
+            AptitudeDerivedAbility.ComprehensionLearning);
+        var bone = _agents.GetDerivedAptitude(index, AptitudeDerivedAbility.BoneCultivation);
         var effectBasisPoints = AptitudeCombatBonusFormula.GetTechniqueEffectBasisPoints(
-            _agents.GetAptitudes(index));
+            roleScores);
         var experienceGain = SkillProgressionRules.ApplyExperienceBonus(
             SkillProgressionRules.GetTechniqueExperienceGain(
-                _agents.Comprehensions[index],
-                _agents.Bones[index]),
+                comprehension,
+                bone),
             effectBasisPoints);
         _agents.TechniqueTrainingExperience[index] = Math.Min(
             SkillProgressionRules.MaximumExperience,
@@ -698,14 +718,14 @@ public sealed partial class World
         _agents.TechniqueMasteries[index] = SkillProgressionRules.GetMasteryHundredths(
             _agents.TechniqueTrainingExperience[index]);
         var chance = SkillProgressionRules.GetEnlightenmentChanceBasisPoints(
-            _agents.Comprehensions[index],
+            comprehension,
             _agents.TechniqueUnderstanding[index]);
         if (_agents.TechniqueUnderstanding[index] < SkillProgressionRules.MaximumHundredths
             && _random.Chance(chance))
         {
             _agents.TechniqueUnderstanding[index] = SkillProgressionRules.ApplyUnderstandingGain(
                 _agents.TechniqueUnderstanding[index],
-                _agents.Comprehensions[index],
+                comprehension,
                 effectBasisPoints);
             AddEvent(
                 WorldEventKind.TechniqueEnlightenment,
@@ -716,12 +736,19 @@ public sealed partial class World
 
     private void ResolveSpellTraining(int index)
     {
+        var roleScores = _agents.GetAptitudeRoleScores(index);
+        var comprehension = _agents.GetDerivedAptitude(
+            index,
+            AptitudeDerivedAbility.ComprehensionLearning);
+        var spiritualRoot = _agents.GetDerivedAptitude(
+            index,
+            AptitudeDerivedAbility.SpiritualRootCultivation);
         var effectBasisPoints = AptitudeCombatBonusFormula.GetSpellEffectBasisPoints(
-            _agents.GetAptitudes(index));
+            roleScores);
         var experienceGain = SkillProgressionRules.ApplyExperienceBonus(
             SkillProgressionRules.GetSpellExperienceGain(
-                _agents.Comprehensions[index],
-                _agents.SpiritualRoots[index]),
+                comprehension,
+                spiritualRoot),
             effectBasisPoints);
         _agents.SpellTrainingExperience[index] = Math.Min(
             SkillProgressionRules.MaximumExperience,
@@ -729,14 +756,14 @@ public sealed partial class World
         _agents.SpellMasteries[index] = SkillProgressionRules.GetMasteryHundredths(
             _agents.SpellTrainingExperience[index]);
         var chance = SkillProgressionRules.GetEnlightenmentChanceBasisPoints(
-            _agents.Comprehensions[index],
+            comprehension,
             _agents.SpellUnderstanding[index]);
         if (_agents.SpellUnderstanding[index] < SkillProgressionRules.MaximumHundredths
             && _random.Chance(chance))
         {
             _agents.SpellUnderstanding[index] = SkillProgressionRules.ApplyUnderstandingGain(
                 _agents.SpellUnderstanding[index],
-                _agents.Comprehensions[index],
+                comprehension,
                 effectBasisPoints);
             AddEvent(
                 WorldEventKind.SpellEnlightenment,
@@ -747,15 +774,21 @@ public sealed partial class World
 
     private void ResolveRecovery(int index)
     {
+        var constitution = _agents.GetDerivedAptitude(
+            index,
+            AptitudeDerivedAbility.ConstitutionCultivation);
+        var spiritualRoot = _agents.GetDerivedAptitude(
+            index,
+            AptitudeDerivedAbility.SpiritualRootCultivation);
         var healthGain = Math.Max(
-            20 + (GetQualityEffect(_agents.Constitutions[index]) * 4),
+            20 + (GetQualityEffect(constitution) * 4),
             _agents.MaximumHealth[index] / 20);
         var qiGain = Math.Max(
-            15 + (GetQualityEffect(_agents.SpiritualRoots[index]) * 5),
+            15 + (GetQualityEffect(spiritualRoot) * 5),
             _agents.MaximumQi[index] / 18);
         _agents.Health[index] = Math.Min(_agents.MaximumHealth[index], _agents.Health[index] + healthGain);
         _agents.Qi[index] = Math.Min(_agents.MaximumQi[index], _agents.Qi[index] + qiGain);
-        var injuryRecovery = 150 + (_agents.Constitutions[index] / 10);
+        var injuryRecovery = 150 + (constitution / 10);
         _agents.InjuryPoints[index] = checked((ushort)Math.Max(
             0,
             _agents.InjuryPoints[index] - injuryRecovery));
@@ -861,10 +894,10 @@ public sealed partial class World
     {
         return _agents.Activities[index] switch
         {
-            AgentActivity.Cultivating => Math.Max(30, 145 - ((GetQualityEffect(_agents.SpiritualRoots[index]) + GetQualityEffect(_agents.Comprehensions[index])) / 2)),
-            AgentActivity.TrainingTechnique => Math.Max(34, 150 - ((GetQualityEffect(_agents.Bones[index]) + GetQualityEffect(_agents.Comprehensions[index])) / 2)),
-            AgentActivity.TrainingSpell => Math.Max(34, 150 - ((GetQualityEffect(_agents.SpiritualRoots[index]) + GetQualityEffect(_agents.Comprehensions[index])) / 2)),
-            AgentActivity.Recovering => Math.Max(24, 120 - GetQualityEffect(_agents.Constitutions[index])),
+            AgentActivity.Cultivating => Math.Max(30, 145 - ((GetDerivedQualityEffect(index, AptitudeDerivedAbility.SpiritualRootCultivation) + GetDerivedQualityEffect(index, AptitudeDerivedAbility.ComprehensionLearning)) / 2)),
+            AgentActivity.TrainingTechnique => Math.Max(34, 150 - ((GetDerivedQualityEffect(index, AptitudeDerivedAbility.BoneCultivation) + GetDerivedQualityEffect(index, AptitudeDerivedAbility.ComprehensionLearning)) / 2)),
+            AgentActivity.TrainingSpell => Math.Max(34, 150 - ((GetDerivedQualityEffect(index, AptitudeDerivedAbility.SpiritualRootCultivation) + GetDerivedQualityEffect(index, AptitudeDerivedAbility.ComprehensionLearning)) / 2)),
+            AgentActivity.Recovering => Math.Max(24, 120 - GetDerivedQualityEffect(index, AptitudeDerivedAbility.ConstitutionCultivation)),
             AgentActivity.SeekingChallenge => 20,
             AgentActivity.Fighting => CalculateCombatActionDuration(index),
             AgentActivity.Reincarnating => GameCalendar.TicksPerYear,
@@ -1200,8 +1233,11 @@ public sealed partial class World
         new SimulationTick(_agents.BirthTicks[index]),
         Tick);
 
-    private static int GetQualityEffect(ushort rawQuality) =>
-        QualityRules.GetEffectiveWhole(new QualityValue(rawQuality));
+    private static int GetQualityEffect(int rawQuality) =>
+        QualityRules.GetEffectiveWhole(QualityValue.FromHundredths(rawQuality));
+
+    private int GetDerivedQualityEffect(int index, AptitudeDerivedAbility ability) =>
+        GetQualityEffect(_agents.GetDerivedAptitude(index, ability));
 
     private bool HasReachedMaximumLifespan(int index) =>
         GetAgeYears(index) >= RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears;

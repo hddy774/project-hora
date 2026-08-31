@@ -25,6 +25,10 @@ internal sealed class AgentStore
         Comprehensions = new ushort[count];
         Minds = new ushort[count];
         Souls = new ushort[count];
+        AptitudeComponents = new ushort[checked(count * AptitudeRules.TotalComponentCount)];
+        AptitudeRoleScoreCache = new AptitudeRoleScores[count];
+        CultivationAptitudeCache = new Aptitudes[count];
+        CombatAptitudeCache = new Aptitudes[count];
         BirthTicks = new long[count];
         LifeNumbers = new int[count];
         BottleneckFailures = new ushort[count];
@@ -112,6 +116,10 @@ internal sealed class AgentStore
     public ushort[] Comprehensions { get; }
     public ushort[] Minds { get; }
     public ushort[] Souls { get; }
+    public ushort[] AptitudeComponents { get; }
+    private AptitudeRoleScores[] AptitudeRoleScoreCache { get; }
+    private Aptitudes[] CultivationAptitudeCache { get; }
+    private Aptitudes[] CombatAptitudeCache { get; }
     public long[] BirthTicks { get; }
     public int[] LifeNumbers { get; }
     public ushort[] BottleneckFailures { get; }
@@ -181,7 +189,7 @@ internal sealed class AgentStore
 
     public void Initialize(int index, DeterministicRandom random)
     {
-        Souls[index] = CreateAptitude(random);
+        GenerateAptitudeGroup(index, AptitudeDomain.Soul, random);
         LifeNumbers[index] = 1;
         LastActionMonths[index] = -1;
         ActionsTaken[index] = 0;
@@ -211,6 +219,120 @@ internal sealed class AgentStore
         new QualityValue(Minds[index]),
         new QualityValue(Souls[index]));
 
+    public AptitudeDetailSnapshot CreateAptitudeDetailSnapshot(int index)
+    {
+        var groups = new AptitudeGroupSnapshot[AptitudeRules.DomainCount];
+        var sourceStart = checked(index * AptitudeRules.TotalComponentCount);
+        var allComponents = AptitudeComponents.AsSpan(
+            sourceStart,
+            AptitudeRules.TotalComponentCount);
+        for (var domainIndex = 0; domainIndex < groups.Length; domainIndex++)
+        {
+            var domain = (AptitudeDomain)domainIndex;
+            var definition = AptitudeRules.GetGroup(domain);
+            var components = new AptitudeComponentSnapshot[AptitudeRules.ComponentCountPerDomain];
+            var groupStart = sourceStart + AptitudeRules.GetComponentOffset(domain);
+            for (var component = 0; component < components.Length; component++)
+            {
+                var componentDefinition = definition.Components[component];
+                components[component] = new AptitudeComponentSnapshot(
+                    componentDefinition.StableId,
+                    componentDefinition.KoreanName,
+                    new QualityValue(AptitudeComponents[groupStart + component]));
+            }
+
+            var derivedAbilities = new AptitudeDerivedAbilitySnapshot[2];
+            for (var abilityOffset = 0; abilityOffset < derivedAbilities.Length; abilityOffset++)
+            {
+                var ability = AptitudeRules.AllDerivedAbilities[(domainIndex * 2) + abilityOffset];
+                derivedAbilities[abilityOffset] = new AptitudeDerivedAbilitySnapshot(
+                    ability.StableId,
+                    ability.KoreanName,
+                    AptitudeRules.GetDerivedAbilityFormulaText(ability.Ability),
+                    QualityValue.FromHundredths(
+                        AptitudeRules.CalculateDerivedAbilityHundredths(
+                            allComponents,
+                            ability.Ability)));
+            }
+
+            groups[domainIndex] = new AptitudeGroupSnapshot(
+                domain,
+                definition.StableId,
+                definition.KoreanName,
+                GetAptitudeSummary(index, domain),
+                components,
+                derivedAbilities);
+        }
+
+        return new AptitudeDetailSnapshot(
+            AptitudeRules.SummaryFormulaId,
+            AptitudeRules.FormulaRevision,
+            RequiresReview: true,
+            AptitudeRoleScoreCache[index],
+            groups);
+    }
+
+    public AptitudeRoleScores GetAptitudeRoleScores(int index) =>
+        AptitudeRoleScoreCache[index];
+
+    public Aptitudes GetContextAptitudes(int index, bool combat) =>
+        combat ? CombatAptitudeCache[index] : CultivationAptitudeCache[index];
+
+    public int GetDerivedAptitude(int index, AptitudeDerivedAbility ability) => ability switch
+    {
+        AptitudeDerivedAbility.SpiritualRootCultivation =>
+            CultivationAptitudeCache[index].SpiritualRoot.Hundredths,
+        AptitudeDerivedAbility.SpiritualRootCombat =>
+            CombatAptitudeCache[index].SpiritualRoot.Hundredths,
+        AptitudeDerivedAbility.BoneCultivation => CultivationAptitudeCache[index].Bone.Hundredths,
+        AptitudeDerivedAbility.BoneCombat => CombatAptitudeCache[index].Bone.Hundredths,
+        AptitudeDerivedAbility.ConstitutionCultivation =>
+            CultivationAptitudeCache[index].Constitution.Hundredths,
+        AptitudeDerivedAbility.ConstitutionCombat =>
+            CombatAptitudeCache[index].Constitution.Hundredths,
+        AptitudeDerivedAbility.ComprehensionLearning =>
+            CultivationAptitudeCache[index].Comprehension.Hundredths,
+        AptitudeDerivedAbility.ComprehensionCombat =>
+            CombatAptitudeCache[index].Comprehension.Hundredths,
+        AptitudeDerivedAbility.MindCultivation => CultivationAptitudeCache[index].Mind.Hundredths,
+        AptitudeDerivedAbility.MindCombat => CombatAptitudeCache[index].Mind.Hundredths,
+        AptitudeDerivedAbility.SoulGrowth => CultivationAptitudeCache[index].Soul.Hundredths,
+        AptitudeDerivedAbility.SoulCombat => CombatAptitudeCache[index].Soul.Hundredths,
+        _ => throw new ArgumentOutOfRangeException(nameof(ability)),
+    };
+
+    public ushort[] CopyAptitudeComponents(int index)
+    {
+        var copy = new ushort[AptitudeRules.TotalComponentCount];
+        Array.Copy(
+            AptitudeComponents,
+            checked(index * AptitudeRules.TotalComponentCount),
+            copy,
+            0,
+            copy.Length);
+        return copy;
+    }
+
+    public void RestoreAptitudeComponents(int index, ushort[] components)
+    {
+        if (components.Length != AptitudeRules.TotalComponentCount)
+        {
+            throw new InvalidDataException("세부 자질 체크포인트 길이가 잘못되었습니다.");
+        }
+
+        Array.Copy(
+            components,
+            0,
+            AptitudeComponents,
+            checked(index * AptitudeRules.TotalComponentCount),
+            components.Length);
+        RefreshAptitudeSummaries(index);
+        RefreshAptitudeDerived(index);
+    }
+
+    public void RestoreLegacyAptitudeComponents(int index, Aptitudes aptitudes) =>
+        RestoreAptitudeComponents(index, AptitudeRules.CreateUniformComponents(aptitudes));
+
     public PowerInputSignature GetPowerInputSignature(int index) => new(
         RealmStages[index],
         RealmLayers[index],
@@ -227,13 +349,13 @@ internal sealed class AgentStore
     {
         var previousMaximumHealth = MaximumHealth[index];
         var previousMaximumQi = MaximumQi[index];
-        var aptitudes = GetAptitudes(index);
-        var aptitudeBonuses = AptitudeCombatBonusFormula.Calculate(aptitudes);
+        var combatAptitudes = GetContextAptitudes(index, combat: true);
+        var aptitudeBonuses = AptitudeCombatBonusFormula.Calculate(GetAptitudeRoleScores(index));
         var combatMastery = CombatProgressionRules.GetMasteryHundredths(CombatExperience[index]);
         var attributes = CombatAttributeFormula.Calculate(
             RealmStages[index],
             RealmLayers[index],
-            aptitudes,
+            combatAptitudes,
             aptitudeBonuses,
             new QualityValue(TechniqueQualities[index]),
             TechniqueMasteries[index],
@@ -263,7 +385,7 @@ internal sealed class AgentStore
         Power[index] = CombatPowerFormula.Calculate(
             RealmStages[index],
             RealmLayers[index],
-            aptitudes,
+            combatAptitudes,
             aptitudeBonuses,
             new QualityValue(TechniqueQualities[index]),
             TechniqueMasteries[index],
@@ -280,11 +402,12 @@ internal sealed class AgentStore
     private void InitializeBody(int index, DeterministicRandom random, long birthTick)
     {
         Names[index] = CreateName(index, random);
-        SpiritualRoots[index] = CreateAptitude(random);
-        Bones[index] = CreateAptitude(random);
-        Constitutions[index] = CreateAptitude(random);
-        Comprehensions[index] = CreateAptitude(random);
-        Minds[index] = CreateAptitude(random);
+        GenerateAptitudeGroup(index, AptitudeDomain.SpiritualRoot, random);
+        GenerateAptitudeGroup(index, AptitudeDomain.Bone, random);
+        GenerateAptitudeGroup(index, AptitudeDomain.Constitution, random);
+        GenerateAptitudeGroup(index, AptitudeDomain.Comprehension, random);
+        GenerateAptitudeGroup(index, AptitudeDomain.Mind, random);
+        RefreshAptitudeDerived(index);
         BirthTicks[index] = birthTick;
         BottleneckFailures[index] = 0;
         RealmStages[index] = RealmStage.QiRefining;
@@ -623,13 +746,92 @@ internal sealed class AgentStore
         return SkillCombatScaling.GetTreasureAttributeContribution(total);
     }
 
-    private static ushort CreateAptitude(DeterministicRandom random) => CreateQuality(random);
-
     private static ushort CreateSkillQuality(DeterministicRandom random) =>
         checked((ushort)random.NextInt(EconomyRules.InitialSkillMaximumHundredths + 1));
 
-    private static ushort CreateQuality(DeterministicRandom random) =>
-        checked((ushort)random.NextInt(QualityValue.MaximumHundredths + 1));
+    private void GenerateAptitudeGroup(
+        int index,
+        AptitudeDomain domain,
+        DeterministicRandom random)
+    {
+        var offset = checked(
+            (index * AptitudeRules.TotalComponentCount)
+            + AptitudeRules.GetComponentOffset(domain));
+        var summary = AptitudeRules.GenerateGroup(
+            AptitudeComponents.AsSpan(offset, AptitudeRules.ComponentCountPerDomain),
+            random);
+        SetAptitudeSummary(index, domain, summary);
+    }
+
+    private void RefreshAptitudeSummaries(int index)
+    {
+        var start = checked(index * AptitudeRules.TotalComponentCount);
+        var components = AptitudeComponents.AsSpan(start, AptitudeRules.TotalComponentCount);
+        for (var domainIndex = 0; domainIndex < AptitudeRules.DomainCount; domainIndex++)
+        {
+            var domain = (AptitudeDomain)domainIndex;
+            SetAptitudeSummary(
+                index,
+                domain,
+                checked((ushort)AptitudeRules.CalculateSummaryHundredths(components, domain)));
+        }
+    }
+
+    private void RefreshAptitudeDerived(int index)
+    {
+        var components = GetAptitudeComponents(index);
+        AptitudeRoleScoreCache[index] = AptitudeRules.CalculateRoleScores(components);
+        CultivationAptitudeCache[index] = AptitudeRules.CalculateContextAptitudes(
+            components,
+            combat: false);
+        CombatAptitudeCache[index] = AptitudeRules.CalculateContextAptitudes(
+            components,
+            combat: true);
+    }
+
+    private QualityValue GetAptitudeSummary(int index, AptitudeDomain domain) =>
+        new(domain switch
+        {
+            AptitudeDomain.SpiritualRoot => SpiritualRoots[index],
+            AptitudeDomain.Bone => Bones[index],
+            AptitudeDomain.Constitution => Constitutions[index],
+            AptitudeDomain.Comprehension => Comprehensions[index],
+            AptitudeDomain.Mind => Minds[index],
+            AptitudeDomain.Soul => Souls[index],
+            _ => throw new ArgumentOutOfRangeException(nameof(domain)),
+        });
+
+    private void SetAptitudeSummary(int index, AptitudeDomain domain, ushort value)
+    {
+        switch (domain)
+        {
+            case AptitudeDomain.SpiritualRoot:
+                SpiritualRoots[index] = value;
+                break;
+            case AptitudeDomain.Bone:
+                Bones[index] = value;
+                break;
+            case AptitudeDomain.Constitution:
+                Constitutions[index] = value;
+                break;
+            case AptitudeDomain.Comprehension:
+                Comprehensions[index] = value;
+                break;
+            case AptitudeDomain.Mind:
+                Minds[index] = value;
+                break;
+            case AptitudeDomain.Soul:
+                Souls[index] = value;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(domain));
+        }
+    }
+
+    private ReadOnlySpan<ushort> GetAptitudeComponents(int index) =>
+        AptitudeComponents.AsSpan(
+            checked(index * AptitudeRules.TotalComponentCount),
+            AptitudeRules.TotalComponentCount);
 
     private static ushort GetBestLegacyTreasure(ReadOnlySpan<ushort> qualities)
     {

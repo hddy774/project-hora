@@ -37,7 +37,7 @@ public readonly record struct RealmComponentDefinition(string StableId, string K
 
 public static class CultivationRules
 {
-    public const int FormulaRevision = 2;
+    public const int FormulaRevision = 3;
     public const int EntryAgeYears = 5;
     public const int RequiredEntryWork = 30_000;
     public const int BaseEntryGain = 10_000;

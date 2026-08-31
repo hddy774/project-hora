@@ -27,6 +27,7 @@ var tests = new (string Name, Action Body)[]
     ("소경지·대경지 돌파 영구 연대기", CultivationBreakthroughChronicle),
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
     ("8단계 품질 경계와 격차 배율", QualityTiersAndBoundaryMultipliers),
+    ("6대 자질 60개 Component·대표값·지연 조회·저장 이전", DetailedAptitudesAuthorityAndLazyProjection),
     ("공법·법술 경험·숙련·이해·품질 불변", SkillMasteryUnderstandingAndImmutableQuality),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
@@ -213,7 +214,7 @@ static void EntryGateRecoveryAndAppliedWork()
 {
     var blockedWorld = World.Create(551120, 1);
     var blockedCheckpoint = blockedWorld.CreateCheckpoint();
-    var blockedAgent = blockedCheckpoint.Agents[0] with
+    var blockedAgent = WithSynchronizedAptitudeDetails(blockedCheckpoint.Agents[0] with
     {
         SpiritualRoot = 0,
         Bone = 0,
@@ -226,7 +227,7 @@ static void EntryGateRecoveryAndAppliedWork()
         CultivationBottleneckCause = CultivationBottleneckCause.None,
         Activity = AgentActivity.Cultivating,
         NextDecisionTick = 1,
-    };
+    });
     blockedWorld = World.Restore(blockedCheckpoint with { Agents = [blockedAgent] });
     blockedWorld.AdvanceTo(new SimulationTick(1));
     var blocked = blockedWorld.GetAgentSnapshot(new AgentId(0));
@@ -256,7 +257,7 @@ static void EntryGateRecoveryAndAppliedWork()
 
     var cappedWorld = World.Create(551121, 1);
     var cappedCheckpoint = cappedWorld.CreateCheckpoint();
-    var cappedAgent = cappedCheckpoint.Agents[0] with
+    var cappedAgent = WithSynchronizedAptitudeDetails(cappedCheckpoint.Agents[0] with
     {
         SpiritualRoot = 10_000,
         Bone = 10_000,
@@ -269,7 +270,7 @@ static void EntryGateRecoveryAndAppliedWork()
         CultivationBottleneckCause = CultivationBottleneckCause.None,
         Activity = AgentActivity.Cultivating,
         NextDecisionTick = 1,
-    };
+    });
     cappedWorld = World.Restore(cappedCheckpoint with { Agents = [cappedAgent] });
     cappedWorld.AdvanceTo(new SimulationTick(1));
     Equal(
@@ -333,7 +334,7 @@ static void CultivationBreakthroughChronicle()
     var minorWorld = World.Create(444001, 1);
     var checkpoint = minorWorld.CreateCheckpoint();
     var requirement = RealmRules.GetMinorStageRequiredWork(RealmStage.QiRefining, 1);
-    var minorAgent = checkpoint.Agents[0] with
+    var minorAgent = WithSynchronizedAptitudeDetails(checkpoint.Agents[0] with
     {
         SpiritualRoot = 10_000,
         Bone = 10_000,
@@ -347,7 +348,7 @@ static void CultivationBreakthroughChronicle()
         Qi = checkpoint.Agents[0].MaximumQi,
         Activity = AgentActivity.Cultivating,
         NextDecisionTick = 1,
-    };
+    });
     minorWorld = World.Restore(checkpoint with { Agents = [minorAgent] });
     for (var month = 1; month <= 12
         && minorWorld.GetAgentSnapshot(new AgentId(0)).RealmLayer == 1; month++)
@@ -368,7 +369,7 @@ static void CultivationBreakthroughChronicle()
         FloorNineCompleted = true,
         GreatPerfectionAchieved = true,
     };
-    var majorAgent = majorCheckpoint.Agents[0] with
+    var majorAgent = WithSynchronizedAptitudeDetails(majorCheckpoint.Agents[0] with
     {
         SpiritualRoot = 10_000,
         Bone = 10_000,
@@ -385,7 +386,7 @@ static void CultivationBreakthroughChronicle()
         Activity = AgentActivity.Cultivating,
         NextDecisionTick = 1,
         Cultivation = majorCultivation,
-    };
+    });
     majorWorld = World.Restore(majorCheckpoint with { Agents = [majorAgent] });
     for (var month = 1; month <= 36
         && majorWorld.GetAgentSnapshot(new AgentId(0)).RealmStage == RealmStage.QiRefining; month++)
@@ -405,7 +406,7 @@ static void CultivationBreakthroughChronicle()
 static void BirthAptitudesChronicleAndReincarnation()
 {
     var initial = World.Create(8801, 1);
-    var initialAgent = initial.GetAgentSnapshot(new AgentId(0));
+    var initialAgent = initial.GetAgentSnapshot(new AgentId(0), includeAptitudeDetails: true);
     var initialSoul = initialAgent.Aptitudes.Soul;
     Equal(1, initialAgent.LifeNumber, "첫 생 번호");
     Equal(0L, initialAgent.AgeYears, "탄생 나이");
@@ -448,7 +449,7 @@ static void BirthAptitudesChronicleAndReincarnation()
     Equal(1, world.TotalDeaths, "사망 집계");
 
     world.AdvanceTo(new SimulationTick(deathTick + GameCalendar.TicksPerYear));
-    var reborn = world.GetAgentSnapshot(new AgentId(0));
+    var reborn = world.GetAgentSnapshot(new AgentId(0), includeAptitudeDetails: true);
     Equal(2, reborn.LifeNumber, "환생 후 생 번호");
     Equal(0L, reborn.AgeYears, "환생 나이");
     Equal(initialSoul, reborn.Aptitudes.Soul, "영혼 자질 윤회 연속성");
@@ -459,6 +460,17 @@ static void BirthAptitudesChronicleAndReincarnation()
         || reborn.Aptitudes.Comprehension != initialAgent.Aptitudes.Comprehension
         || reborn.Aptitudes.Mind != initialAgent.Aptitudes.Mind,
         "새 육신의 자질은 다시 형성되어야 합니다.");
+    var initialSoulComponents = initialAgent.AptitudeDetails!.Groups[(int)AptitudeDomain.Soul]
+        .Components.Select(component => component.InnateValue).ToArray();
+    var rebornSoulComponents = reborn.AptitudeDetails!.Groups[(int)AptitudeDomain.Soul]
+        .Components.Select(component => component.InnateValue).ToArray();
+    True(initialSoulComponents.SequenceEqual(rebornSoulComponents), "영혼 세부 자질 윤회 연속성");
+    True(
+        !initialAgent.AptitudeDetails.Groups[(int)AptitudeDomain.Bone].Components
+            .Select(component => component.InnateValue)
+            .SequenceEqual(reborn.AptitudeDetails.Groups[(int)AptitudeDomain.Bone].Components
+                .Select(component => component.InnateValue)),
+        "새 육신의 근골 세부 자질은 다시 형성되어야 합니다.");
     Equal(1, world.TotalReincarnations, "환생 집계");
 
     var chronicle = world.GetAgentChronicle(new AgentId(0));
@@ -570,6 +582,163 @@ static void QualityTiersAndBoundaryMultipliers()
     BoundaryRatio(9_999, 10_000, 10m, "천품→무결품");
 }
 
+static void DetailedAptitudesAuthorityAndLazyProjection()
+{
+    Equal(6, AptitudeRules.All.Count, "6대 자질 정의 수");
+    Equal(60, AptitudeRules.All.Sum(group => group.Components.Count), "세부 자질 총 60개");
+    Throws<ArgumentOutOfRangeException>(
+        () => AptitudeRules.GetComponentOffset((AptitudeDomain)byte.MaxValue),
+        "잘못된 자질 영역 거부");
+    Equal(
+        60,
+        AptitudeRules.All.SelectMany(group => group.Components)
+            .Select(component => component.StableId)
+            .Distinct(StringComparer.Ordinal)
+            .Count(),
+        "세부 자질 안정 ID 중복 금지");
+    True(
+        AptitudeRules.ProvisionalBalances.All(balance => balance.RequiresReview),
+        "미확정 세부 자질 분포는 재검토 표식");
+
+    var stopwatch = Stopwatch.StartNew();
+    var world = World.CreateDefault(741103);
+    var checkpoint = world.CreateCheckpoint();
+    stopwatch.Stop();
+    Equal(18, checkpoint.SchemaVersion, "세부 선천자질 저장 schema");
+
+    long summaryTotal = 0;
+    var summaryMinimum = int.MaxValue;
+    var summaryMaximum = int.MinValue;
+    foreach (var agent in checkpoint.Agents)
+    {
+        var details = agent.AptitudeDetails;
+        True(details is not null, "신규 저장 세부 자질 존재");
+        Equal(AptitudeRules.FormulaRevision, details!.FormulaRevision, "세부 자질 공식 revision");
+        True(details.RequiresReview, "분포 임시값 재검토 상태 저장");
+        Equal(AptitudeRules.TotalComponentCount, details.InnateComponents.Length, "Agent 세부 자질 길이");
+        for (var domainIndex = 0; domainIndex < AptitudeRules.DomainCount; domainIndex++)
+        {
+            var domain = (AptitudeDomain)domainIndex;
+            var summary = AptitudeRules.CalculateSummaryHundredths(
+                details.InnateComponents,
+                domain);
+            Equal(GetCheckpointAptitudeSummary(agent, domain), summary, "Component 평균과 Summary 일치");
+            summaryTotal += summary;
+            summaryMinimum = Math.Min(summaryMinimum, summary);
+            summaryMaximum = Math.Max(summaryMaximum, summary);
+        }
+    }
+
+    var summaryMean = summaryTotal / (decimal)(checkpoint.Agents.Length * AptitudeRules.DomainCount);
+    True(summaryMean is >= 4_800m and <= 5_200m, "10,000명 세부 자질 평균 중심 구간");
+    True(summaryMinimum < 2_000 && summaryMaximum > 8_000, "10,000명 자질 분포 범위");
+
+    var stateHash = world.ComputeStateHash();
+    using (var runner = new SimulationRunner(world))
+    {
+        var hidden = runner.GetObservation(
+            new AgentId(0),
+            sections: ObservationSections.None);
+        True(hidden.SelectedAgent.AptitudeDetails is null, "접힌 세부 자질 UI는 DTO 미생성");
+        var visible = runner.GetObservation(
+            new AgentId(0),
+            sections: ObservationSections.AptitudeDetails);
+        Equal(6, visible.SelectedAgent.AptitudeDetails!.Groups.Count, "펼친 세부 자질 UI 6개 내부 탭 DTO");
+        True(
+            visible.SelectedAgent.AptitudeDetails.Groups.All(group =>
+                group.DerivedAbilities.Count == 2
+                && group.DerivedAbilities.All(ability =>
+                    ability.FormulaText.Contains("30%", StringComparison.Ordinal)
+                    && ability.FormulaText.Contains("20%", StringComparison.Ordinal))),
+            "각 자질 내부 탭의 수행/전투 파생 능력");
+    }
+    Equal(stateHash, world.ComputeStateHash(), "세부 자질 관찰은 권위 상태 무영향");
+
+    var encoded = WorldSaveCodec.Encode(checkpoint);
+    True(encoded.Length < 64 * 1024 * 1024, "10,000명 세부 자질 저장은 압축 payload 예산 이내");
+    var restored = World.Restore(WorldSaveCodec.Decode(encoded));
+    Equal(stateHash, restored.ComputeStateHash(), "세부 자질 저장 codec·hash 왕복");
+
+    var legacySource = World.Create(741104, 10).CreateCheckpoint();
+    var legacy = legacySource with
+    {
+        SchemaVersion = 17,
+        Agents = legacySource.Agents
+            .Select(agent => agent with { AptitudeDetails = null })
+            .ToArray(),
+    };
+    var migrated = World.Restore(legacy);
+    var migratedAgent = migrated.GetAgentSnapshot(new AgentId(0), includeAptitudeDetails: true);
+    foreach (var group in migratedAgent.AptitudeDetails!.Groups)
+    {
+        True(
+            group.Components.All(component => component.InnateValue == group.Summary),
+            "schema 17 대표값은 손실 없이 균일 Component로 이전");
+    }
+
+    var componentAuthoritySource = World.Create(741105, 1).CreateCheckpoint();
+    var highCoreComponents = AptitudeRules.CreateUniformComponents(new Aptitudes(
+        QualityValue.FromWhole(50),
+        QualityValue.FromWhole(50),
+        QualityValue.FromWhole(50),
+        QualityValue.FromWhole(50),
+        QualityValue.FromWhole(50),
+        QualityValue.FromWhole(50)));
+    var lowCoreComponents = highCoreComponents.ToArray();
+    var boneStart = AptitudeRules.GetComponentOffset(AptitudeDomain.Bone);
+    highCoreComponents[boneStart + 1] = 10_000;
+    highCoreComponents[boneStart + 6] = 10_000;
+    highCoreComponents[boneStart + 2] = 0;
+    highCoreComponents[boneStart + 3] = 0;
+    lowCoreComponents[boneStart + 1] = 0;
+    lowCoreComponents[boneStart + 6] = 0;
+    lowCoreComponents[boneStart + 2] = 10_000;
+    lowCoreComponents[boneStart + 3] = 10_000;
+    var uniformSummaryAgent = WithSynchronizedAptitudeDetails(
+        componentAuthoritySource.Agents[0] with
+        {
+            SpiritualRoot = 5_000,
+            Bone = 5_000,
+            Constitution = 5_000,
+            Comprehension = 5_000,
+            Mind = 5_000,
+            Soul = 5_000,
+        });
+    var highCoreAgent = uniformSummaryAgent with
+    {
+        AptitudeDetails = new AptitudeDetailCheckpoint(
+            AptitudeRules.FormulaRevision,
+            RequiresReview: true,
+            highCoreComponents),
+    };
+    var lowCoreAgent = uniformSummaryAgent with
+    {
+        AptitudeDetails = new AptitudeDetailCheckpoint(
+            AptitudeRules.FormulaRevision,
+            RequiresReview: true,
+            lowCoreComponents),
+    };
+    var highCoreWorld = World.Restore(componentAuthoritySource with { Agents = [highCoreAgent] });
+    var lowCoreWorld = World.Restore(componentAuthoritySource with { Agents = [lowCoreAgent] });
+    var highCore = highCoreWorld.GetAgentSnapshot(new AgentId(0), includeAptitudeDetails: true);
+    var lowCore = lowCoreWorld.GetAgentSnapshot(new AgentId(0), includeAptitudeDetails: true);
+    Equal(highCore.Aptitudes.Bone, lowCore.Aptitudes.Bone, "같은 근골 Summary");
+    Console.WriteLine(
+        $"APTITUDE COMPONENT AUTHORITY: 공법 역할 " +
+        $"{highCore.AptitudeDetails!.RoleScores.TechniqueEffectHundredths}/" +
+        $"{lowCore.AptitudeDetails!.RoleScores.TechniqueEffectHundredths} · 보정 " +
+        $"{highCore.CombatPowerDetails.TechniqueAptitudeBonusBasisPoints}/" +
+        $"{lowCore.CombatPowerDetails.TechniqueAptitudeBonusBasisPoints}");
+    True(
+        highCore.CombatPowerDetails.TechniqueAptitudeBonusBasisPoints
+            > lowCore.CombatPowerDetails.TechniqueAptitudeBonusBasisPoints,
+        "실제 공법 보정은 Summary가 아니라 관련 Component 파생 능력을 사용");
+
+    Console.WriteLine(
+        $"APTITUDE PERF: 10,000명·60 Component 초기화+checkpoint {stopwatch.Elapsed.TotalMilliseconds:N1} ms · " +
+        $"압축 저장 {encoded.Length / 1024d / 1024d:N2} MiB · 평균 {summaryMean / 100m:0.00}");
+}
+
 static void SkillMasteryUnderstandingAndImmutableQuality()
 {
     Equal(100L, SkillProgressionRules.GetRequiredExperience(10), "숙련 0.10 요구 경험");
@@ -584,14 +753,15 @@ static void SkillMasteryUnderstandingAndImmutableQuality()
     var original = World.Create(991122, 500);
     var checkpoint = original.CreateCheckpoint();
     var originalQualities = checkpoint.Agents.Select(agent => agent.TechniqueQuality).ToArray();
-    var prepared = checkpoint.Agents.Select(agent => agent with
-    {
-        Comprehension = 10_000,
-        TechniqueMastery = 0,
-        Activity = AgentActivity.TrainingTechnique,
-        NextDecisionTick = 1,
-        SkillProgress = new SkillProgressCheckpoint(0, 0, 0, 0),
-    }).ToArray();
+    var prepared = checkpoint.Agents.Select(agent =>
+        WithSynchronizedAptitudeDetails(agent with
+        {
+            Comprehension = 10_000,
+            TechniqueMastery = 0,
+            Activity = AgentActivity.TrainingTechnique,
+            NextDecisionTick = 1,
+            SkillProgress = new SkillProgressCheckpoint(0, 0, 0, 0),
+        })).ToArray();
     var world = World.Restore(checkpoint with { Agents = prepared });
     world.AdvanceTo(new SimulationTick(1));
     var enlightenmentCount = 0;
@@ -1148,7 +1318,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 17, "100년 세계 역사서 저장 schema 17");
+    True(checkpoint.SchemaVersion == 18, "세부 선천자질 저장 schema 18");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");
@@ -1663,21 +1833,61 @@ static void AtomicSaveFileRoundTrip()
 static void DefaultWorldPerformanceBudget()
 {
     const long targetTick = 20_000;
-    var stopwatch = Stopwatch.StartNew();
+    var totalStopwatch = Stopwatch.StartNew();
+    var startupStopwatch = Stopwatch.StartNew();
     var world = World.CreateDefault(20260830);
+    startupStopwatch.Stop();
+    var simulationStopwatch = Stopwatch.StartNew();
     world.AdvanceTo(new SimulationTick(targetTick));
+    simulationStopwatch.Stop();
+    var projectionStopwatch = Stopwatch.StartNew();
     var snapshot = world.CreateSnapshot(150, 150);
-    stopwatch.Stop();
+    projectionStopwatch.Stop();
+    totalStopwatch.Stop();
 
     Console.WriteLine(
-        $"PERF: {world.Population:N0}명 · {targetTick:N0} tick · {stopwatch.Elapsed.TotalMilliseconds:N0} ms");
+        $"PERF: {world.Population:N0}명 · 초기화 {startupStopwatch.Elapsed.TotalMilliseconds:N0} ms + " +
+        $"{targetTick:N0} tick {simulationStopwatch.Elapsed.TotalMilliseconds:N0} ms + " +
+        $"관찰 {projectionStopwatch.Elapsed.TotalMilliseconds:N1} ms = " +
+        $"{totalStopwatch.Elapsed.TotalMilliseconds:N0} ms");
     Equal(targetTick, snapshot.Tick.Value, "성능 검증 도달 tick");
     Equal(10_000, snapshot.Population, "성능 검증 인구");
     True(snapshot.TotalCombatsCompleted > 0, "성능 검증 중 전투가 완료되어야 합니다.");
     True(
-        stopwatch.Elapsed < TimeSpan.FromSeconds(10),
-        $"10,000명 시뮬레이션 성능 예산 10초를 초과했습니다: {stopwatch.Elapsed.TotalSeconds:N2}초");
+        totalStopwatch.Elapsed < TimeSpan.FromSeconds(10),
+        $"10,000명 시뮬레이션 성능 예산 10초를 초과했습니다: {totalStopwatch.Elapsed.TotalSeconds:N2}초");
 }
+
+static AgentCheckpoint WithSynchronizedAptitudeDetails(AgentCheckpoint agent)
+{
+    var aptitudes = new Aptitudes(
+        new QualityValue(agent.SpiritualRoot),
+        new QualityValue(agent.Bone),
+        new QualityValue(agent.Constitution),
+        new QualityValue(agent.Comprehension),
+        new QualityValue(agent.Mind),
+        new QualityValue(agent.Soul));
+    return agent with
+    {
+        AptitudeDetails = new AptitudeDetailCheckpoint(
+            AptitudeRules.FormulaRevision,
+            RequiresReview: true,
+            AptitudeRules.CreateUniformComponents(aptitudes)),
+    };
+}
+
+static int GetCheckpointAptitudeSummary(
+    AgentCheckpoint agent,
+    AptitudeDomain domain) => domain switch
+{
+    AptitudeDomain.SpiritualRoot => agent.SpiritualRoot,
+    AptitudeDomain.Bone => agent.Bone,
+    AptitudeDomain.Constitution => agent.Constitution,
+    AptitudeDomain.Comprehension => agent.Comprehension,
+    AptitudeDomain.Mind => agent.Mind,
+    AptitudeDomain.Soul => agent.Soul,
+    _ => throw new InvalidOperationException("알 수 없는 선천자질 영역입니다."),
+};
 
 static void Equal<T>(T expected, T actual, string message)
     where T : IEquatable<T>

@@ -55,7 +55,13 @@ public sealed record AgentCheckpoint(
     SkillProgressCheckpoint? SkillProgress = null,
     CombatAuthorityCheckpoint? CombatAuthority = null,
     MapAgentCheckpoint? Map = null,
-    CombatProgressCheckpoint? CombatProgress = null);
+    CombatProgressCheckpoint? CombatProgress = null,
+    AptitudeDetailCheckpoint? AptitudeDetails = null);
+
+public sealed record AptitudeDetailCheckpoint(
+    int FormulaRevision,
+    bool RequiresReview,
+    ushort[] InnateComponents);
 
 public sealed record CityMarketCheckpoint(
     long TreasurySpiritStones,
@@ -174,5 +180,5 @@ public sealed record WorldCheckpoint(
     RankingHistoryCheckpoint? RankingHistory = null,
     WorldCenturyChronicleCheckpoint? CenturyChronicle = null)
 {
-    public const int CurrentSchemaVersion = 17;
+    public const int CurrentSchemaVersion = 18;
 }

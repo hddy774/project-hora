@@ -8,15 +8,23 @@ public readonly record struct SkillProgressCheckpoint(
 
 public static class SkillProgressionRules
 {
-    public const int CurrentRevision = 2;
+    public const int CurrentRevision = 3;
     public const int MaximumHundredths = 10_000;
     public const long MaximumExperience = 100_000_000;
 
-    public static int GetTechniqueExperienceGain(ushort comprehension, ushort bone) =>
-        500 + ((comprehension + bone) / 20);
+    public static int GetTechniqueExperienceGain(int comprehension, int bone)
+    {
+        ValidateAptitude(comprehension, nameof(comprehension));
+        ValidateAptitude(bone, nameof(bone));
+        return 500 + ((comprehension + bone) / 20);
+    }
 
-    public static int GetSpellExperienceGain(ushort comprehension, ushort spiritualRoot) =>
-        500 + ((comprehension + spiritualRoot) / 20);
+    public static int GetSpellExperienceGain(int comprehension, int spiritualRoot)
+    {
+        ValidateAptitude(comprehension, nameof(comprehension));
+        ValidateAptitude(spiritualRoot, nameof(spiritualRoot));
+        return 500 + ((comprehension + spiritualRoot) / 20);
+    }
 
     public static int ApplyExperienceBonus(int baseGain, int effectBasisPoints)
     {
@@ -37,15 +45,19 @@ public static class SkillProgressionRules
         checked((long)masteryHundredths * masteryHundredths);
 
     public static int GetEnlightenmentChanceBasisPoints(
-        ushort comprehension,
-        ushort understandingHundredths) =>
-        Math.Clamp(100 + (comprehension / 20) - (understandingHundredths / 40), 25, 750);
+        int comprehension,
+        ushort understandingHundredths)
+    {
+        ValidateAptitude(comprehension, nameof(comprehension));
+        return Math.Clamp(100 + (comprehension / 20) - (understandingHundredths / 40), 25, 750);
+    }
 
     public static ushort ApplyUnderstandingGain(
         ushort current,
-        ushort comprehension,
+        int comprehension,
         int effectBasisPoints = AptitudeCombatBonusFormula.NeutralEffectBasisPoints)
     {
+        ValidateAptitude(comprehension, nameof(comprehension));
         var baseGain = 50 + (comprehension / 100);
         var gain = Math.Max(
             1L,
@@ -72,5 +84,13 @@ public static class SkillProgressionRules
         }
 
         return result;
+    }
+
+    private static void ValidateAptitude(int value, string parameterName)
+    {
+        if (value is < 0 or > MaximumHundredths)
+        {
+            throw new ArgumentOutOfRangeException(parameterName);
+        }
     }
 }

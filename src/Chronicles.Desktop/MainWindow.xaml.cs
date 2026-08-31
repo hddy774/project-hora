@@ -199,6 +199,11 @@ public partial class MainWindow : Window, IDisposable
         sections |= AgentLogTabControl.SelectedIndex == 1
             ? ObservationSections.Chronicle
             : ObservationSections.PersonalLog;
+        if (AptitudeDetailsExpander.IsExpanded)
+        {
+            sections |= ObservationSections.AptitudeDetails;
+        }
+
         sections |= _rankingCategory switch
         {
             RankingCategory.CombatPower => ObservationSections.CombatPowerRanking,
@@ -684,6 +689,24 @@ public partial class MainWindow : Window, IDisposable
         {
             RefreshVisibleObservation();
         }
+    }
+
+    private void AptitudeDetailTabControl_SelectionChanged(
+        object sender,
+        SelectionChangedEventArgs e)
+    {
+        if (_applyingObservation || !ReferenceEquals(e.Source, sender))
+        {
+            return;
+        }
+
+        if (_latestAgent?.AptitudeDetails is null)
+        {
+            RefreshVisibleObservation();
+            return;
+        }
+
+        UpdateAptitudeDetailView(_latestAgent);
     }
 
     private void PauseButton_Click(object sender, RoutedEventArgs e)

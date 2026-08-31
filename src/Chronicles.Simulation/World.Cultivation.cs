@@ -60,7 +60,10 @@ public sealed partial class World
     {
         var before = _agents.CultivationProgress[index];
         var aptitude = GetInnateAptitudeComposite(index);
-        var body = (_agents.Bones[index] + _agents.Constitutions[index]) / 2;
+        var cultivationAptitudes = _agents.GetContextAptitudes(index, combat: false);
+        var body = (
+            cultivationAptitudes.Bone.Hundredths
+            + cultivationAptitudes.Constitution.Hundredths) / 2;
         var gain = CultivationRules.GetEntryWorkGain(
             aptitude,
             _agents.TechniqueQualities[index],
@@ -115,7 +118,9 @@ public sealed partial class World
     {
         var previousMask = _agents.EntryGatePassMasks[index];
         var temperingGain = CultivationRules.BaseEntryGateTemperingGainHundredths
-            + (_agents.Comprehensions[index] / 100);
+            + (_agents.GetDerivedAptitude(
+                index,
+                AptitudeDerivedAbility.ComprehensionLearning) / 100);
         for (var gateIndex = 0; gateIndex < CultivationRules.EntryGateSlotCount; gateIndex++)
         {
             if ((previousMask & (1 << gateIndex)) == 0)
@@ -583,17 +588,24 @@ public sealed partial class World
 
     private int GetComponentSourceAptitude(int index, int component) => component switch
     {
-        0 => _agents.SpiritualRoots[index],
-        1 => _agents.Comprehensions[index],
-        2 => (_agents.Minds[index] + _agents.Souls[index]) / 2,
-        _ => (_agents.Bones[index] + _agents.Constitutions[index]) / 2,
+        0 => _agents.GetDerivedAptitude(
+            index,
+            AptitudeDerivedAbility.SpiritualRootCultivation),
+        1 => _agents.GetDerivedAptitude(
+            index,
+            AptitudeDerivedAbility.ComprehensionLearning),
+        2 => (_agents.GetDerivedAptitude(index, AptitudeDerivedAbility.MindCultivation)
+            + _agents.GetDerivedAptitude(index, AptitudeDerivedAbility.SoulGrowth)) / 2,
+        _ => (_agents.GetDerivedAptitude(index, AptitudeDerivedAbility.BoneCultivation)
+            + _agents.GetDerivedAptitude(index, AptitudeDerivedAbility.ConstitutionCultivation)) / 2,
     };
 
     private FoundationRoute SelectFoundationRoute(int index)
     {
-        var human = (_agents.Bones[index] + _agents.Constitutions[index]) / 2;
-        var earth = (_agents.Minds[index] + _agents.Souls[index]) / 2;
-        var heaven = (_agents.SpiritualRoots[index] + _agents.Comprehensions[index]) / 2;
+        var aptitudes = _agents.GetContextAptitudes(index, combat: false);
+        var human = (aptitudes.Bone.Hundredths + aptitudes.Constitution.Hundredths) / 2;
+        var earth = (aptitudes.Mind.Hundredths + aptitudes.Soul.Hundredths) / 2;
+        var heaven = (aptitudes.SpiritualRoot.Hundredths + aptitudes.Comprehension.Hundredths) / 2;
         return human >= earth && human >= heaven
             ? FoundationRoute.Human
             : earth >= heaven ? FoundationRoute.Earth : FoundationRoute.Heaven;
@@ -601,44 +613,53 @@ public sealed partial class World
 
     private byte EvaluateEntryGatePassMask(int index)
     {
+        var aptitudes = _agents.GetContextAptitudes(index, combat: false);
         var gate1 = CultivationRules.EvaluateEntryGate(
             1,
-            _agents.SpiritualRoots[index],
-            (_agents.Comprehensions[index] + _agents.Minds[index] + _agents.Souls[index]) / 3,
+            aptitudes.SpiritualRoot.Hundredths,
+            (aptitudes.Comprehension.Hundredths
+                + aptitudes.Mind.Hundredths
+                + aptitudes.Soul.Hundredths) / 3,
             _agents.GetEntryGateTempering(index, 0));
         var gate2 = CultivationRules.EvaluateEntryGate(
             2,
-            (_agents.Bones[index] + _agents.Constitutions[index]) / 2,
-            (_agents.SpiritualRoots[index] + _agents.Minds[index]) / 2,
+            (aptitudes.Bone.Hundredths + aptitudes.Constitution.Hundredths) / 2,
+            (aptitudes.SpiritualRoot.Hundredths + aptitudes.Mind.Hundredths) / 2,
             _agents.GetEntryGateTempering(index, 1));
         var gate3 = CultivationRules.EvaluateEntryGate(
             3,
-            _agents.Comprehensions[index],
-            (_agents.SpiritualRoots[index] + _agents.Souls[index]) / 2,
+            aptitudes.Comprehension.Hundredths,
+            (aptitudes.SpiritualRoot.Hundredths + aptitudes.Soul.Hundredths) / 2,
             _agents.GetEntryGateTempering(index, 2));
         return checked((byte)((gate1.Passed ? 1 : 0)
             | (gate2.Passed ? 2 : 0)
             | (gate3.Passed ? 4 : 0)));
     }
 
-    private CultivationGateSnapshot[] CreateEntryGateSnapshots(int index) =>
-    [
-        CultivationRules.EvaluateEntryGate(
-            1,
-            _agents.SpiritualRoots[index],
-            (_agents.Comprehensions[index] + _agents.Minds[index] + _agents.Souls[index]) / 3,
-            _agents.GetEntryGateTempering(index, 0)),
-        CultivationRules.EvaluateEntryGate(
-            2,
-            (_agents.Bones[index] + _agents.Constitutions[index]) / 2,
-            (_agents.SpiritualRoots[index] + _agents.Minds[index]) / 2,
-            _agents.GetEntryGateTempering(index, 1)),
-        CultivationRules.EvaluateEntryGate(
-            3,
-            _agents.Comprehensions[index],
-            (_agents.SpiritualRoots[index] + _agents.Souls[index]) / 2,
-            _agents.GetEntryGateTempering(index, 2)),
-    ];
+    private CultivationGateSnapshot[] CreateEntryGateSnapshots(int index)
+    {
+        var aptitudes = _agents.GetContextAptitudes(index, combat: false);
+        return
+        [
+            CultivationRules.EvaluateEntryGate(
+                1,
+                aptitudes.SpiritualRoot.Hundredths,
+                (aptitudes.Comprehension.Hundredths
+                    + aptitudes.Mind.Hundredths
+                    + aptitudes.Soul.Hundredths) / 3,
+                _agents.GetEntryGateTempering(index, 0)),
+            CultivationRules.EvaluateEntryGate(
+                2,
+                (aptitudes.Bone.Hundredths + aptitudes.Constitution.Hundredths) / 2,
+                (aptitudes.SpiritualRoot.Hundredths + aptitudes.Mind.Hundredths) / 2,
+                _agents.GetEntryGateTempering(index, 1)),
+            CultivationRules.EvaluateEntryGate(
+                3,
+                aptitudes.Comprehension.Hundredths,
+                (aptitudes.SpiritualRoot.Hundredths + aptitudes.Soul.Hundredths) / 2,
+                _agents.GetEntryGateTempering(index, 2)),
+        ];
+    }
 
     private RealmComponentSnapshot[] CreateRealmComponentSnapshots(int index)
     {

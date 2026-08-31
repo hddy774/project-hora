@@ -108,7 +108,10 @@ public sealed class SimulationRunner : IDisposable
                 detailedMapAgentOffset,
                 worldChronicleCount);
             var agentId = selectedAgent ?? world.LeaderId;
-            var agent = _world.GetAgentSnapshot(agentId);
+            var agent = _world.GetAgentSnapshot(
+                agentId,
+                includeAptitudeDetails:
+                    (sections & ObservationSections.AptitudeDetails) != 0);
             return new WorldObservation(
                 world,
                 agent,

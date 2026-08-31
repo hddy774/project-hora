@@ -4,7 +4,7 @@ namespace Chronicles.Simulation;
 
 public static class CombatPowerFormula
 {
-    public const int CurrentRevision = 4;
+    public const int CurrentRevision = 5;
 
     public static CombatPowerBreakdown Calculate(
         RealmStage realmStage,

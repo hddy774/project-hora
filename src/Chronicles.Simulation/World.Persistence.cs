@@ -224,7 +224,11 @@ public sealed partial class World
                     _agents.MonsterHunts[index],
                     _agents.MonsterVictories[index]),
                 new CombatProgressCheckpoint(
-                    _agents.CombatUnderstanding[index]));
+                    _agents.CombatUnderstanding[index]),
+                new AptitudeDetailCheckpoint(
+                    AptitudeRules.FormulaRevision,
+                    RequiresReview: true,
+                    _agents.CopyAptitudeComponents(index)));
         }
 
         return new WorldCheckpoint(
@@ -276,6 +280,24 @@ public sealed partial class World
         _agents.Comprehensions[index] = checkpoint.Comprehension;
         _agents.Minds[index] = checkpoint.Mind;
         _agents.Souls[index] = checkpoint.Soul;
+        if (schemaVersion >= 18)
+        {
+            _agents.RestoreAptitudeComponents(
+                index,
+                checkpoint.AptitudeDetails!.InnateComponents);
+        }
+        else
+        {
+            _agents.RestoreLegacyAptitudeComponents(
+                index,
+                new Aptitudes(
+                    new QualityValue(checkpoint.SpiritualRoot),
+                    new QualityValue(checkpoint.Bone),
+                    new QualityValue(checkpoint.Constitution),
+                    new QualityValue(checkpoint.Comprehension),
+                    new QualityValue(checkpoint.Mind),
+                    new QualityValue(checkpoint.Soul)));
+        }
         _agents.BirthTicks[index] = checkpoint.BirthTick;
         _agents.LifeNumbers[index] = checkpoint.LifeNumber;
         _agents.BottleneckFailures[index] = checkpoint.BottleneckFailures;
@@ -684,6 +706,11 @@ public sealed partial class World
                 throw new InvalidDataException($"Agent {index}의 전투 성장 체크포인트가 잘못되었습니다.");
             }
 
+            if (checkpoint.SchemaVersion >= 18 && !IsValidAptitudeDetails(agent))
+            {
+                throw new InvalidDataException($"Agent {index}의 세부 선천자질 체크포인트가 잘못되었습니다.");
+            }
+
             if (agent.PersonalLog.Any(entry =>
                     entry.Sequence < 1
                     || entry.Sequence > checkpoint.PersonalLogSequence
@@ -828,6 +855,38 @@ public sealed partial class World
     private static bool IsValidCombatProgress(CombatProgressCheckpoint? checkpoint) =>
         checkpoint is { } value
         && value.UnderstandingHundredths <= CombatProgressionRules.MaximumHundredths;
+
+    private static bool IsValidAptitudeDetails(AgentCheckpoint agent)
+    {
+        if (agent.AptitudeDetails is not { } details
+            || details.FormulaRevision != AptitudeRules.FormulaRevision
+            || !details.RequiresReview
+            || details.InnateComponents is not { Length: AptitudeRules.TotalComponentCount }
+            || details.InnateComponents.Any(value => value > QualityValue.MaximumHundredths))
+        {
+            return false;
+        }
+
+        ReadOnlySpan<ushort> components = details.InnateComponents;
+        return AptitudeRules.CalculateSummaryHundredths(
+                components,
+                AptitudeDomain.SpiritualRoot) == agent.SpiritualRoot
+            && AptitudeRules.CalculateSummaryHundredths(
+                components,
+                AptitudeDomain.Bone) == agent.Bone
+            && AptitudeRules.CalculateSummaryHundredths(
+                components,
+                AptitudeDomain.Constitution) == agent.Constitution
+            && AptitudeRules.CalculateSummaryHundredths(
+                components,
+                AptitudeDomain.Comprehension) == agent.Comprehension
+            && AptitudeRules.CalculateSummaryHundredths(
+                components,
+                AptitudeDomain.Mind) == agent.Mind
+            && AptitudeRules.CalculateSummaryHundredths(
+                components,
+                AptitudeDomain.Soul) == agent.Soul;
+    }
 
     private static bool IsValidWorldEvent(
         WorldEvent entry,

@@ -57,19 +57,13 @@ internal sealed partial class CityMarket
         {
             var definition = EconomyRules.GetMarketGood(goodId);
             _prices[goodId] = definition.CityBasePrice;
-            _stock[goodId] = definition.Kind switch
-            {
-                MarketGoodKind.Material => 2,
-                MarketGoodKind.GrowthPill or MarketGoodKind.BreakthroughPill
-                    when definition.Realm == RealmStage.QiRefining => 3,
-                MarketGoodKind.TechniqueBook or MarketGoodKind.SpellBook => 2,
-                _ => 0,
-            };
+            _stock[goodId] = EconomyRules.GetInitialCityStock(definition);
             if (IsQualityGood(definition.Kind) && _stock[goodId] > 0)
             {
                 _qualityHundredths[goodId] = checked(
                     (long)EconomyRules.InitialSkillMaximumHundredths * _stock[goodId]);
             }
+            Reprice(goodId);
         }
     }
 
@@ -134,6 +128,7 @@ internal sealed partial class CityMarket
                 {
                     _recentTrades.Enqueue(new MarketTradeRecord(
                         trade.Sequence,
+                        trade.SourceResultId,
                         trade.Tick,
                         trade.AgentId,
                         trade.Kind,
@@ -219,8 +214,13 @@ internal sealed partial class CityMarket
         _remainingSpiritStoneOre > 0
         && (TreasurySpiritStones < _spiritStoneReserveTarget || IsProductionBlockedByTreasury());
 
-    public bool TryCompleteMining(RealmStage realm, out long workerReward, out long extracted)
+    public bool TryCompleteMining(
+        RealmStage realm,
+        long ownerSpiritStones,
+        out long workerReward,
+        out long extracted)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(ownerSpiritStones);
         workerReward = 0;
         extracted = 0;
         if (!NeedsSpiritStoneMining)
@@ -235,10 +235,19 @@ internal sealed partial class CityMarket
         }
 
         workerReward = Math.Max(10L, extracted / 2);
+        var treasuryIncome = extracted - workerReward;
+        if (ownerSpiritStones > long.MaxValue - workerReward
+            || TreasurySpiritStones > long.MaxValue - treasuryIncome)
+        {
+            workerReward = 0;
+            extracted = 0;
+            return false;
+        }
+
         _remainingSpiritStoneOre -= extracted;
-        _spiritStonesMined = checked(_spiritStonesMined + extracted);
-        _miningMissionCount = checked(_miningMissionCount + 1);
-        TreasurySpiritStones = checked(TreasurySpiritStones + extracted - workerReward);
+        _spiritStonesMined = SaturatingAdd(_spiritStonesMined, extracted);
+        _miningMissionCount = SaturatingAdd(_miningMissionCount, 1);
+        TreasurySpiritStones += treasuryIncome;
         TouchAuthority();
         return true;
     }
@@ -251,7 +260,12 @@ internal sealed partial class CityMarket
             return false;
         }
 
-        TreasurySpiritStones = checked(TreasurySpiritStones + fee);
+        if (TreasurySpiritStones > long.MaxValue - fee)
+        {
+            return false;
+        }
+
+        TreasurySpiritStones += fee;
         TouchAuthority();
         return true;
     }
@@ -377,6 +391,7 @@ internal sealed partial class CityMarket
         var trades = includeGoods
             ? _recentTrades.Select(trade => new MarketTradeSnapshot(
                 trade.Sequence,
+                trade.SourceResultId,
                 new SimulationTick(trade.Tick),
                 new AgentId(trade.AgentId),
                 trade.Kind,
@@ -454,6 +469,7 @@ internal sealed partial class CityMarket
         _lastSettlementSourceByAgent.ToArray(),
         _recentTrades.Select(trade => new MarketTradeCheckpoint(
             trade.Sequence,
+            trade.SourceResultId,
             trade.Tick,
             trade.AgentId,
             trade.Kind,
@@ -550,7 +566,7 @@ internal sealed partial class CityMarket
         {
             _stock[(int)consumed] -= materialCost;
             RegisterDemand((int)consumed, materialCost);
-            _materialsProcessed = checked(_materialsProcessed + materialCost);
+            _materialsProcessed = SaturatingAdd(_materialsProcessed, materialCost);
             Reprice((int)consumed);
         }
 
@@ -586,17 +602,17 @@ internal sealed partial class CityMarket
         {
             case MarketGoodKind.GrowthPill:
             case MarketGoodKind.BreakthroughPill:
-                _pillsProduced = checked(_pillsProduced + 1);
+                _pillsProduced = SaturatingAdd(_pillsProduced, 1);
                 break;
             case MarketGoodKind.DefenseTreasure:
             case MarketGoodKind.AttackTreasure:
-                _treasuresProduced = checked(_treasuresProduced + 1);
+                _treasuresProduced = SaturatingAdd(_treasuresProduced, 1);
                 break;
             case MarketGoodKind.TechniqueBook:
-                _techniqueBooksProduced = checked(_techniqueBooksProduced + 1);
+                _techniqueBooksProduced = SaturatingAdd(_techniqueBooksProduced, 1);
                 break;
             case MarketGoodKind.SpellBook:
-                _spellBooksProduced = checked(_spellBooksProduced + 1);
+                _spellBooksProduced = SaturatingAdd(_spellBooksProduced, 1);
                 break;
         }
 
@@ -752,17 +768,13 @@ internal sealed partial class CityMarket
 
     private void Reprice(int goodId)
     {
-        var definition = EconomyRules.GetMarketGood(goodId);
-        var targetStock = definition.Kind == MarketGoodKind.Material
-            ? 12
-            : EconomyRules.CityProductionTargetStock;
-        var tradeImbalance = Math.Clamp(
-            _recentDemand[goodId] - _recentSupply[goodId],
-            -100L,
-            100L);
-        var stockPressure = Math.Clamp(targetStock - _stock[goodId], -50, 100);
-        var percentage = Math.Clamp(100L + (tradeImbalance * 2) + (stockPressure * 3L), 25L, 400L);
-        _prices[goodId] = Math.Max(1L, checked(definition.CityBasePrice * percentage / 100L));
+        _prices[goodId] = EconomyRules.GetMarketPrice(
+            EconomyRules.GetMarketGood(goodId),
+            _stock[goodId],
+            _supply[goodId],
+            _demand[goodId],
+            _recentSupply[goodId],
+            _recentDemand[goodId]);
     }
 
     private void AddCurrentFlow(
@@ -975,6 +987,7 @@ internal sealed partial class CityMarket
 
     private readonly record struct MarketTradeRecord(
         long Sequence,
+        long SourceResultId,
         long Tick,
         int AgentId,
         MarketTradeKind Kind,

@@ -415,6 +415,7 @@ public enum MarketSettlementStatus : byte
     NotAnImprovement,
     CityTreasuryInsufficient,
     NoDemand,
+    CapacityExceeded,
 }
 
 public readonly record struct MarketSettlementReceipt(
@@ -427,6 +428,7 @@ public readonly record struct MarketSettlementReceipt(
 
 public readonly record struct MarketTradeSnapshot(
     long Sequence,
+    long SourceResultId,
     SimulationTick Tick,
     AgentId AgentId,
     MarketTradeKind Kind,

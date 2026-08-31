@@ -532,6 +532,7 @@ public sealed partial class World
         foreach (var trade in market.RecentTrades ?? Array.Empty<MarketTradeCheckpoint>())
         {
             Add(ref hash, (ulong)trade.Sequence);
+            Add(ref hash, (ulong)trade.SourceResultId);
             Add(ref hash, (ulong)trade.Tick);
             Add(ref hash, (ulong)trade.AgentId);
             Add(ref hash, (byte)trade.Kind);

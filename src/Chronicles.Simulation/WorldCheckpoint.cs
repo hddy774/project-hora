@@ -108,6 +108,7 @@ public readonly record struct CityProductionCheckpoint(
 
 public readonly record struct MarketTradeCheckpoint(
     long Sequence,
+    long SourceResultId,
     long Tick,
     int AgentId,
     MarketTradeKind Kind,

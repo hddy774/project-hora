@@ -252,6 +252,47 @@ public static class EconomyRules
         return checked((quotient * multiplier) + (remainder * multiplier / 10_000L));
     }
 
+    public static int GetInitialCityStock(MarketGoodDefinition definition) => definition.Kind switch
+    {
+        MarketGoodKind.Material => 2,
+        MarketGoodKind.GrowthPill or MarketGoodKind.BreakthroughPill
+            when definition.Realm == RealmStage.QiRefining => 3,
+        MarketGoodKind.TechniqueBook or MarketGoodKind.SpellBook => 2,
+        _ => 0,
+    };
+
+    public static long GetMarketPrice(
+        MarketGoodDefinition definition,
+        int stock,
+        long totalSupply,
+        long totalDemand,
+        long recentSupply,
+        long recentDemand)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(stock);
+        ArgumentOutOfRangeException.ThrowIfNegative(totalSupply);
+        ArgumentOutOfRangeException.ThrowIfNegative(totalDemand);
+        ArgumentOutOfRangeException.ThrowIfNegative(recentSupply);
+        ArgumentOutOfRangeException.ThrowIfNegative(recentDemand);
+        if (totalSupply == 0
+            && totalDemand == 0
+            && stock == GetInitialCityStock(definition))
+        {
+            return definition.CityBasePrice;
+        }
+
+        var targetStock = definition.Kind == MarketGoodKind.Material
+            ? 12
+            : CityProductionTargetStock;
+        var tradeImbalance = Math.Clamp(recentDemand - recentSupply, -100L, 100L);
+        var stockPressure = Math.Clamp(targetStock - stock, -50, 100);
+        var percentage = Math.Clamp(
+            100L + (tradeImbalance * 2L) + (stockPressure * 3L),
+            25L,
+            400L);
+        return Math.Max(1L, checked(definition.CityBasePrice * percentage / 100L));
+    }
+
     public static bool IsArmor(TreasureSlot slot) => slot == TreasureSlot.DefenseTreasure;
 
     public static bool IsWeapon(TreasureSlot slot) => slot == TreasureSlot.AttackTreasure;

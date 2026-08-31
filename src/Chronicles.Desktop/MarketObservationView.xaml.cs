@@ -265,7 +265,7 @@ public partial class MarketObservationView : UserControl
         var date = GameCalendar.GetDate(trade.Tick);
         return new MarketTradeRow(
             $"{KoreanNumberFormatter.Format(date.Year)}년 {date.Month:N0}월 {date.Day:N0}일 · " +
-            $"거래 #{trade.Sequence:N0}",
+            $"거래 #{trade.Sequence:N0} · 원천 #{trade.SourceResultId:N0}",
             $"{kind} · 수선자 {trade.AgentId} · {good} " +
             $"{KoreanNumberFormatter.Format(trade.Count)}개 · {spiritStones} " +
             $"{KoreanNumberFormatter.Format(trade.TotalSpiritStones)} 영석 · 단가 " +

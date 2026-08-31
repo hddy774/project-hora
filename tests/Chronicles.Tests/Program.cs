@@ -50,7 +50,9 @@ var tests = new (string Name, Action Body)[]
     ("도시 임무·영석·재료·단약·법보 경제 순환", EconomyLoop),
     ("재료 부족 상품이 다른 도시 생산을 막지 않음", ProductionSkipsGoodsWithoutResources),
     ("시장 원자 정산·중복 source·품질 개선 구매", MarketSettlementAtomicity),
+    ("시장 소유자 용량 초과 원자 거부", MarketOwnerCapacityGuard),
     ("최근 12개월 수급 창·관찰 snapshot 재사용", MarketFlowWindowAndSnapshotCache),
+    ("schema 24 시장 수급·원장 codec·source 재생 방지", MarketSchema24CodecAndSourceReplay),
     ("광맥 0 보존·손상 도시 생산 저장 거부", MarketCheckpointValidation),
     ("전체 분포·랭킹 변동·승패·사망 통계", WorldStatisticsQuery),
     ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
@@ -2654,11 +2656,23 @@ static void ProductionSkipsGoodsWithoutResources()
     var demandBuckets = new long[
         EconomyRules.MarketGoodCount * EconomyRules.MarketFlowWindowMonths];
     recentDemand.CopyTo(demandBuckets, 0);
+    var prices = new long[EconomyRules.MarketGoodCount];
+    for (var goodId = 0; goodId < prices.Length; goodId++)
+    {
+        prices[goodId] = EconomyRules.GetMarketPrice(
+            EconomyRules.GetMarketGood(goodId),
+            stock[goodId],
+            supply[goodId],
+            demand[goodId],
+            0,
+            recentDemand[goodId]);
+    }
 
     var market = checkpoint.Market with
     {
         TreasurySpiritStones = 10_000,
         Stock = stock,
+        Prices = prices,
         Demand = demand,
         Supply = supply,
         QualityHundredths = qualities,
@@ -2691,20 +2705,23 @@ static void MarketSettlementAtomicity()
     var materialId = (int)MaterialId.TreasureMaterial;
     var initialMaterial = initial.Goods[materialId];
 
+    Throws<ArgumentOutOfRangeException>(
+        () => market.SettlePurchase(0, 0, 0, materialId, 1, long.MaxValue),
+        "source result id 0 거부");
     var insufficient = market.SettlePurchase(0, 1, 0, materialId, 1, 0);
     True(insufficient.Status == MarketSettlementStatus.InsufficientFunds, "부족 자금 결과");
     var afterInsufficient = market.CreateSnapshot();
     Equal(initial.TreasurySpiritStones, afterInsufficient.TreasurySpiritStones, "실패 시 도시 영석 불변");
     Equal(initialMaterial.Stock, afterInsufficient.Goods[materialId].Stock, "실패 시 재고 불변");
     Equal(initialMaterial.Demand, afterInsufficient.Goods[materialId].Demand, "구매력 없는 시도는 수요가 아님");
+    Equal(-1L, market.CreateCheckpoint().LastSettlementSourceByAgent![0], "비변경 실패는 source를 소비하지 않음");
 
-    var duplicate = market.SettlePurchase(0, 1, 0, materialId, 1, long.MaxValue);
-    True(duplicate.Status == MarketSettlementStatus.DuplicateSource, "동일 source 중복 정산 거부");
-    Equal(initialMaterial.Stock, market.CreateSnapshot().Goods[materialId].Stock, "중복 정산 자산 이동 0회");
-
-    var settled = market.SettlePurchase(0, 2, 0, materialId, 1, long.MaxValue);
-    True(settled.IsSettled, "정상 재료 구매 정산");
+    var settled = market.SettlePurchase(0, 1, 0, materialId, 1, long.MaxValue);
+    True(settled.IsSettled, "같은 source의 자금 보충 재시도 정산");
     Equal(initialMaterial.Stock - 1, market.CreateSnapshot().Goods[materialId].Stock, "정상 구매 재고 1 이동");
+    var duplicate = market.SettlePurchase(0, 1, 0, materialId, 1, long.MaxValue);
+    True(duplicate.Status == MarketSettlementStatus.DuplicateSource, "정산된 동일 source 중복 거부");
+    Equal(initialMaterial.Stock - 1, market.CreateSnapshot().Goods[materialId].Stock, "중복 정산 자산 이동 0회");
 
     var bookId = EconomyRules.TechniqueBookGoodId;
     var beforeBook = market.CreateSnapshot().Goods[bookId];
@@ -2720,10 +2737,11 @@ static void MarketSettlementAtomicity()
     var afterRejectedBook = market.CreateSnapshot().Goods[bookId];
     Equal(beforeBook.Stock, afterRejectedBook.Stock, "개선 없는 서적은 사라지지 않음");
     Equal(beforeBook.Demand, afterRejectedBook.Demand, "개선 없는 서적은 인공 수요를 만들지 않음");
+    Equal(-1L, market.CreateCheckpoint().LastSettlementSourceByAgent![1], "개선 없는 서적은 source를 소비하지 않음");
 
     var betterBook = market.SettlePurchase(
         1,
-        2,
+        1,
         0,
         bookId,
         1,
@@ -2732,6 +2750,90 @@ static void MarketSettlementAtomicity()
     True(betterBook.IsSettled, "더 좋은 서적만 구매 정산");
     Equal(2L, market.CreateSnapshot().PurchaseTransactions, "실제 구매만 거래 누계에 포함");
     Equal(2, market.CreateSnapshot().RecentTrades?.Count ?? 0, "정산된 실물 거래 원장");
+
+    var emptyTreasuryMarket = new CityMarket(
+        new CityMarket(1).CreateCheckpoint() with { TreasurySpiritStones = 0 },
+        WorldCheckpoint.CurrentSchemaVersion,
+        1);
+    var treasuryDenied = emptyTreasuryMarket.SettleSale(
+        0,
+        1,
+        0,
+        materialId,
+        1,
+        0);
+    True(
+        treasuryDenied.Status == MarketSettlementStatus.CityTreasuryInsufficient,
+        "도시 자금 부족 판매 거부");
+    Equal(
+        -1L,
+        emptyTreasuryMarket.CreateCheckpoint().LastSettlementSourceByAgent![0],
+        "도시 자금 부족은 source를 소비하지 않음");
+    True(emptyTreasuryMarket.TryCollectCraftingFee(100, 100), "도시 자금 보충");
+    True(
+        emptyTreasuryMarket.SettleSale(0, 1, 0, materialId, 1, 0).IsSettled,
+        "같은 source의 도시 자금 보충 재시도 정산");
+}
+
+static void MarketOwnerCapacityGuard()
+{
+    var saleMarket = new CityMarket(1);
+    var saleBefore = saleMarket.CreateCheckpoint();
+    var sale = saleMarket.SettleSale(
+        0,
+        1,
+        0,
+        (int)MaterialId.TreasureMaterial,
+        1,
+        long.MaxValue);
+    True(sale.Status == MarketSettlementStatus.CapacityExceeded, "판매 대금 소유자 용량 초과 거부");
+    EqualMarketCheckpoint(saleBefore, saleMarket.CreateCheckpoint(), "판매 용량 실패 시장 불변");
+
+    var missionMarket = new CityMarket(2);
+    var missionDemand = missionMarket.SettlePurchase(
+        0,
+        1,
+        0,
+        (int)MaterialId.PillMaterial,
+        3,
+        long.MaxValue);
+    True(missionDemand.Status == MarketSettlementStatus.OutOfStock, "임무 용량 검사 준비 수요 기록");
+    var demandRecorded = missionMarket.CreateCheckpoint();
+    Equal(1L, demandRecorded.LastSettlementSourceByAgent![0], "재고 부족 수요 기록은 source 소비");
+    True(
+        missionMarket.SettlePurchase(
+            0,
+            1,
+            0,
+            (int)MaterialId.PillMaterial,
+            3,
+            long.MaxValue).Status == MarketSettlementStatus.DuplicateSource,
+        "재고 부족 수요의 동일 source 중복 거부");
+    EqualMarketCheckpoint(demandRecorded, missionMarket.CreateCheckpoint(), "중복 재고 부족 수요 불변");
+    var missionBefore = missionMarket.CreateCheckpoint();
+    var mission = missionMarket.SettleMissionDelivery(
+        1,
+        1,
+        0,
+        MaterialId.PillMaterial,
+        EconomyRules.MissionRequiredItems,
+        0,
+        long.MaxValue);
+    True(mission.Status == MarketSettlementStatus.CapacityExceeded, "임무 보상 소유자 용량 초과 거부");
+    EqualMarketCheckpoint(missionBefore, missionMarket.CreateCheckpoint(), "임무 용량 실패 시장 불변");
+
+    var miningMarket = new CityMarket(1);
+    var miningBefore = miningMarket.CreateCheckpoint();
+    True(
+        !miningMarket.TryCompleteMining(
+            RealmStage.QiRefining,
+            long.MaxValue,
+            out var miningReward,
+            out var extracted),
+        "채굴 보상 소유자 용량 초과 거부");
+    Equal(0L, miningReward, "용량 실패 채굴 보상 0");
+    Equal(0L, extracted, "용량 실패 채굴량 0");
+    EqualMarketCheckpoint(miningBefore, miningMarket.CreateCheckpoint(), "채굴 용량 실패 시장 불변");
 }
 
 static void MarketFlowWindowAndSnapshotCache()
@@ -2755,6 +2857,119 @@ static void MarketFlowWindowAndSnapshotCache()
     Equal(0L, material.RecentDemand, "12개월이 지난 수요는 현재 창에서 만료");
     True(material.Demand > 0, "감사·통계용 누적 수요는 보존");
     True(!ReferenceEquals(first, expired), "authority 변경 시 snapshot 갱신");
+}
+
+static void MarketSchema24CodecAndSourceReplay()
+{
+    const long purchaseSource = 1;
+    const long saleSource = 2;
+    var market = new CityMarket(1);
+    var purchase = market.SettlePurchase(
+        0,
+        purchaseSource,
+        0,
+        (int)MaterialId.PillMaterial,
+        1,
+        long.MaxValue);
+    True(purchase.IsSettled, "codec 준비 구매 정산");
+    var sale = market.SettleSale(
+        0,
+        saleSource,
+        0,
+        (int)MaterialId.TreasureMaterial,
+        1,
+        0);
+    True(sale.IsSettled, "codec 준비 판매 정산");
+    market.AdvanceIndustry(5);
+
+    var baseWorld = World.Create(710, 1);
+    baseWorld.AdvanceTo(GameCalendar.GetMonthStart(5));
+    var sourceWorld = World.Restore(baseWorld.CreateCheckpoint() with
+    {
+        Market = market.CreateCheckpoint(),
+    });
+    var sourceCheckpoint = sourceWorld.CreateCheckpoint();
+    var restored = World.Restore(WorldSaveCodec.Decode(
+        WorldSaveCodec.Encode(sourceCheckpoint)));
+    Equal(sourceWorld.ComputeStateHash(), restored.ComputeStateHash(), "schema 24 시장 codec 상태 hash");
+
+    var restoredMarketCheckpoint = restored.CreateCheckpoint().Market;
+    EqualMarketCheckpoint(
+        sourceCheckpoint.Market,
+        restoredMarketCheckpoint,
+        "schema 24 시장 codec 전체 필드");
+    Equal(
+        saleSource,
+        restoredMarketCheckpoint.LastSettlementSourceByAgent![0],
+        "마지막 source watermark 왕복");
+    Equal(3L, restoredMarketCheckpoint.NextTradeSequence, "다음 거래 sequence 왕복");
+    Equal(2, restoredMarketCheckpoint.RecentTrades!.Length, "최근 거래 원장 왕복");
+    Equal(
+        purchaseSource,
+        restoredMarketCheckpoint.RecentTrades[0].SourceResultId,
+        "구매 거래 source 원장 왕복");
+    Equal(
+        saleSource,
+        restoredMarketCheckpoint.RecentTrades[1].SourceResultId,
+        "판매 거래 source 원장 왕복");
+    True(
+        restoredMarketCheckpoint.RecentDemand!.Any(value => value > 0)
+        && restoredMarketCheckpoint.DemandWindowBuckets!.Any(value => value > 0),
+        "최근 수요와 bucket 왕복");
+    True(
+        restoredMarketCheckpoint.RecentSupply!.Any(value => value > 0)
+        && restoredMarketCheckpoint.SupplyWindowBuckets!.Any(value => value > 0),
+        "최근 공급과 bucket 왕복");
+
+    var replayMarket = new CityMarket(
+        restoredMarketCheckpoint,
+        WorldCheckpoint.CurrentSchemaVersion,
+        1);
+    var replayBefore = replayMarket.CreateCheckpoint();
+    var duplicate = replayMarket.SettleSale(
+        0,
+        saleSource,
+        0,
+        (int)MaterialId.TreasureMaterial,
+        1,
+        0);
+    True(duplicate.Status == MarketSettlementStatus.DuplicateSource, "복원 뒤 동일 source 재정산 거부");
+    EqualMarketCheckpoint(replayBefore, replayMarket.CreateCheckpoint(), "복원 뒤 중복 source 시장 불변");
+
+    replayMarket.AdvanceIndustry(EconomyRules.MarketFlowWindowMonths);
+    var expired = replayMarket.CreateCheckpoint();
+    Equal(0L, expired.RecentDemand!.Sum(), "복원한 수요 bucket 12개월 경계 만료");
+    Equal(0L, expired.RecentSupply!.Sum(), "복원한 공급 bucket 12개월 경계 만료");
+
+    var invalidTrades = restoredMarketCheckpoint.RecentTrades.ToArray();
+    invalidTrades[0] = invalidTrades[0] with { SourceResultId = 0 };
+    Throws<InvalidDataException>(
+        () => World.Restore(sourceCheckpoint with
+        {
+            Market = restoredMarketCheckpoint with { RecentTrades = invalidTrades },
+        }),
+        "0 source 거래 원장 거부");
+
+    var invalidWatermarks = restoredMarketCheckpoint.LastSettlementSourceByAgent.ToArray();
+    invalidWatermarks[0] = 0;
+    Throws<InvalidDataException>(
+        () => World.Restore(sourceCheckpoint with
+        {
+            Market = restoredMarketCheckpoint with
+            {
+                LastSettlementSourceByAgent = invalidWatermarks,
+            },
+        }),
+        "0 source watermark 거부");
+
+    var invalidPrices = restoredMarketCheckpoint.Prices.ToArray();
+    invalidPrices[(int)MaterialId.PillMaterial]++;
+    Throws<InvalidDataException>(
+        () => World.Restore(sourceCheckpoint with
+        {
+            Market = restoredMarketCheckpoint with { Prices = invalidPrices },
+        }),
+        "현재 수급 공식과 다른 저장 가격 거부");
 }
 
 static void MarketCheckpointValidation()
@@ -2821,6 +3036,13 @@ static void MarketCheckpointValidation()
             Market = checkpoint.Market with { LastIndustryMonth = 1 },
         }),
         "세계보다 미래인 도시 산업 월 거부");
+
+    Throws<InvalidDataException>(
+        () => World.Restore(checkpoint with
+        {
+            Market = checkpoint.Market with { NextTradeSequence = long.MaxValue },
+        }),
+        "overflow 직전 거래 sequence 거부");
 }
 
 static void SaveCodecRoundTrip()
@@ -3054,6 +3276,57 @@ static int GetCheckpointAptitudeSummary(
     AptitudeDomain.Soul => agent.Soul,
     _ => throw new InvalidOperationException("알 수 없는 선천자질 영역입니다."),
 };
+
+static void EqualMarketCheckpoint(
+    CityMarketCheckpoint expected,
+    CityMarketCheckpoint actual,
+    string message)
+{
+    Equal(expected.TreasurySpiritStones, actual.TreasurySpiritStones, $"{message}·도시 영석");
+    Equal(expected.PurchaseTransactions, actual.PurchaseTransactions, $"{message}·구매 누계");
+    Equal(expected.SaleTransactions, actual.SaleTransactions, $"{message}·판매 누계");
+    Equal(expected.MissionDeliveries, actual.MissionDeliveries, $"{message}·임무 누계");
+    Equal(expected.MaterialsProcessed, actual.MaterialsProcessed, $"{message}·가공 재료");
+    Equal(expected.PillsProduced, actual.PillsProduced, $"{message}·단약 생산");
+    Equal(expected.TreasuresProduced, actual.TreasuresProduced, $"{message}·법보 생산");
+    Equal(expected.TechniqueBooksProduced, actual.TechniqueBooksProduced, $"{message}·공법서 생산");
+    Equal(expected.SpellBooksProduced, actual.SpellBooksProduced, $"{message}·법술서 생산");
+    Equal(expected.TreasureQualityHundredths, actual.TreasureQualityHundredths, $"{message}·구형 품질");
+    Equal(expected.LastIndustryMonth, actual.LastIndustryMonth, $"{message}·산업 월");
+    Equal(expected.SpiritStonesMined, actual.SpiritStonesMined, $"{message}·채굴 영석");
+    Equal(expected.RemainingSpiritStoneOre, actual.RemainingSpiritStoneOre, $"{message}·남은 광맥");
+    Equal(expected.MiningMissionCount, actual.MiningMissionCount, $"{message}·채굴 임무");
+    Equal(expected.SpiritStoneReserveTarget, actual.SpiritStoneReserveTarget, $"{message}·비축 목표");
+    Equal(expected.CurrentFlowBucket, actual.CurrentFlowBucket, $"{message}·현재 수급 bucket");
+    Equal(expected.AuthorityRevision, actual.AuthorityRevision, $"{message}·권위 revision");
+    Equal(expected.NextTradeSequence, actual.NextTradeSequence, $"{message}·다음 거래 sequence");
+    EqualSequence(expected.Stock, actual.Stock, $"{message}·재고");
+    EqualSequence(expected.Prices, actual.Prices, $"{message}·가격");
+    EqualSequence(expected.Supply, actual.Supply, $"{message}·누적 공급");
+    EqualSequence(expected.Demand, actual.Demand, $"{message}·누적 수요");
+    EqualSequence(expected.QualityHundredths, actual.QualityHundredths, $"{message}·품질 합계");
+    EqualSequence(expected.ProductionQueue, actual.ProductionQueue, $"{message}·생산 대기열");
+    EqualSequence(expected.RecentSupply, actual.RecentSupply, $"{message}·최근 공급");
+    EqualSequence(expected.RecentDemand, actual.RecentDemand, $"{message}·최근 수요");
+    EqualSequence(expected.SupplyWindowBuckets, actual.SupplyWindowBuckets, $"{message}·공급 bucket");
+    EqualSequence(expected.DemandWindowBuckets, actual.DemandWindowBuckets, $"{message}·수요 bucket");
+    EqualSequence(
+        expected.LastSettlementSourceByAgent,
+        actual.LastSettlementSourceByAgent,
+        $"{message}·source watermark");
+    EqualSequence(expected.RecentTrades, actual.RecentTrades, $"{message}·최근 거래 원장");
+}
+
+static void EqualSequence<T>(T[]? expected, T[]? actual, string message)
+{
+    if (expected is null || actual is null)
+    {
+        True(expected is null && actual is null, message);
+        return;
+    }
+
+    True(expected.SequenceEqual(actual), message);
+}
 
 static void Equal<T>(T expected, T actual, string message)
     where T : IEquatable<T>

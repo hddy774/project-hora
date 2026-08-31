@@ -63,8 +63,19 @@ public sealed partial class World
         }
 
         var material = (MaterialId)_agents.ActiveMissionMaterials[index];
-        _agents.AddMaterial(index, material, 1 + _random.NextInt(3));
+        var gathered = 1 + _random.NextInt(3);
+        if (_agents.GetMaterialCount(index, material) > int.MaxValue - gathered)
+        {
+            return;
+        }
+
+        _agents.AddMaterial(index, material, gathered);
         if (_agents.GetMaterialCount(index, material) < EconomyRules.MissionRequiredItems)
+        {
+            return;
+        }
+        if (_agents.MissionsCompleted[index] == int.MaxValue
+            || _totalMissionsCompleted == int.MaxValue)
         {
             return;
         }
@@ -75,7 +86,8 @@ public sealed partial class World
                 Tick.Value,
                 material,
                 EconomyRules.MissionRequiredItems,
-                (int)_agents.RealmStages[index] * 10);
+                (int)_agents.RealmStages[index] * 10,
+                _agents.SpiritStones[index]);
         if (!settlement.IsSettled)
         {
             return;
@@ -92,8 +104,15 @@ public sealed partial class World
 
     private void ResolveSpiritStoneMining(int index)
     {
+        if (_agents.MissionsCompleted[index] == int.MaxValue
+            || _totalMissionsCompleted == int.MaxValue)
+        {
+            return;
+        }
+
         if (!_market.TryCompleteMining(
                 _agents.RealmStages[index],
+                _agents.SpiritStones[index],
                 out var reward,
                 out var extracted))
         {
@@ -129,6 +148,11 @@ public sealed partial class World
 
     private bool TrySellMaterialToMarket(int index)
     {
+        if (_totalMaterialsSold == int.MaxValue)
+        {
+            return false;
+        }
+
         var protectedMaterial = _agents.ActiveMissionMaterials[index];
         for (var materialIndex = 0; materialIndex < EconomyRules.MaterialCount; materialIndex++)
         {
@@ -145,7 +169,8 @@ public sealed partial class World
                 CreateMarketSourceResultId(10),
                 Tick.Value,
                 materialIndex,
-                1);
+                1,
+                _agents.SpiritStones[index]);
             if (!settlement.IsSettled)
             {
                 continue;
@@ -202,6 +227,10 @@ public sealed partial class World
         foreach (var definition in EconomyRules.AllMaterials)
         {
             if (definition.Category != category)
+            {
+                continue;
+            }
+            if (_agents.GetMaterialCount(index, definition.Id) == int.MaxValue)
             {
                 continue;
             }
@@ -323,7 +352,8 @@ public sealed partial class World
             CreateMarketSourceResultId(9),
             Tick.Value,
             goodId,
-            1);
+            1,
+            _agents.SpiritStones[index]);
         if (!settlement.IsSettled)
         {
             return false;

@@ -1236,12 +1236,12 @@ public sealed partial class World
             || market.AuthorityRevision <= 0
             || market.LastSettlementSourceByAgent is not { Length: var sourceLength }
             || sourceLength != population
-            || market.LastSettlementSourceByAgent.Any(source => source < -1)
+            || market.LastSettlementSourceByAgent.Any(source => source is < -1 or 0)
             || market.LastSettlementSourceByAgent.Any(source =>
                 source > maximumSourceResultId)
             || market.RecentTrades is not { Length: var tradeCount }
             || tradeCount > EconomyRules.RecentTradeCapacity
-            || market.NextTradeSequence < 1)
+            || market.NextTradeSequence is < 1 or >= long.MaxValue)
         {
             return false;
         }
@@ -1268,13 +1268,21 @@ public sealed partial class World
             if (supply != recentSupply[goodId]
                 || demand != recentDemand[goodId]
                 || supply > market.Supply[goodId]
-                || demand > market.Demand[goodId])
+                || demand > market.Demand[goodId]
+                || market.Prices[goodId] != EconomyRules.GetMarketPrice(
+                    EconomyRules.GetMarketGood(goodId),
+                    market.Stock[goodId],
+                    market.Supply[goodId],
+                    market.Demand[goodId],
+                    supply,
+                    demand))
             {
                 return false;
             }
         }
 
         var previousSequence = 0L;
+        var previousTick = -1L;
         foreach (var trade in market.RecentTrades)
         {
             var qualityGood = trade.GoodId >= 0
@@ -1284,21 +1292,43 @@ public sealed partial class World
                     or MarketGoodKind.AttackTreasure
                     or MarketGoodKind.TechniqueBook
                     or MarketGoodKind.SpellBook;
-            var totalOverflows = trade.Count > 0
-                && trade.UnitPrice > long.MaxValue / trade.Count;
-            if (trade.Sequence <= previousSequence
+            var validProduct = trade.Count > 0
+                && trade.UnitPrice > 0
+                && trade.UnitPrice <= long.MaxValue / trade.Count;
+            var itemTotal = validProduct ? trade.UnitPrice * trade.Count : 0L;
+            var missionBonus = trade.TotalSpiritStones >= itemTotal
+                ? trade.TotalSpiritStones - itemTotal
+                : -1L;
+            var validTotal = trade.Kind switch
+            {
+                MarketTradeKind.Purchase or MarketTradeKind.Sale =>
+                    validProduct && trade.TotalSpiritStones == itemTotal,
+                MarketTradeKind.MissionDelivery =>
+                    validProduct
+                    && missionBonus is >= 0L and <= 90L
+                    && missionBonus % 10L == 0L,
+                _ => false,
+            };
+            var validAgent = trade.AgentId >= 0 && trade.AgentId < population;
+            var validSource = validAgent
+                && trade.SourceResultId > 0
+                && trade.SourceResultId <= maximumSourceResultId
+                && trade.SourceResultId <= market.LastSettlementSourceByAgent[trade.AgentId]
+                && trade.SourceResultId / 16L == trade.Tick
+                && trade.SourceResultId % 16L is > 0 and < 16;
+            if (trade.Sequence <= 0
+                || (previousSequence > 0 && trade.Sequence != previousSequence + 1L)
                 || trade.Sequence >= market.NextTradeSequence
+                || !validSource
                 || trade.Tick < 0
                 || trade.Tick > maximumTick
-                || trade.AgentId < 0
-                || trade.AgentId >= population
+                || trade.Tick < previousTick
+                || !validAgent
                 || !Enum.IsDefined(trade.Kind)
                 || trade.GoodId < 0
                 || trade.GoodId >= EconomyRules.MarketGoodCount
-                || trade.Count <= 0
-                || trade.UnitPrice <= 0
-                || totalOverflows
-                || trade.TotalSpiritStones < trade.UnitPrice * trade.Count
+                || !validProduct
+                || !validTotal
                 || (qualityGood
                     ? trade.QualityHundredths > QualityValue.MaximumHundredths
                     : trade.QualityHundredths != EconomyRules.EmptyTreasureQuality))
@@ -1307,9 +1337,12 @@ public sealed partial class World
             }
 
             previousSequence = trade.Sequence;
+            previousTick = trade.Tick;
         }
 
-        return true;
+        return market.RecentTrades.Length == 0
+            ? market.NextTradeSequence == 1
+            : previousSequence + 1L == market.NextTradeSequence;
     }
 
     private static bool IsValidCombatAuthority(CombatAuthorityCheckpoint? checkpoint, int population) =>

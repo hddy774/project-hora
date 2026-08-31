@@ -16,7 +16,7 @@ internal sealed partial class CityMarket
         ValidateCount(count);
         goodId = ValidateGood(goodId);
         ArgumentOutOfRangeException.ThrowIfNegative(availableSpiritStones);
-        if (!TryBeginSettlement(agentIndex, sourceResultId))
+        if (!IsFreshSettlementSource(agentIndex, sourceResultId, tick))
         {
             return new MarketSettlementReceipt(MarketSettlementStatus.DuplicateSource);
         }
@@ -36,6 +36,7 @@ internal sealed partial class CityMarket
         }
         if (_stock[goodId] < count)
         {
+            CommitSettlementSource(agentIndex, sourceResultId);
             RegisterDemand(goodId, count);
             return new MarketSettlementReceipt(MarketSettlementStatus.OutOfStock, total);
         }
@@ -55,18 +56,31 @@ internal sealed partial class CityMarket
                     total,
                     purchasedQuality);
             }
-
-            _qualityHundredths[goodId] -= raw;
         }
 
+        if (!CanRecordTrade()
+            || TreasurySpiritStones > long.MaxValue - total)
+        {
+            return new MarketSettlementReceipt(
+                MarketSettlementStatus.CapacityExceeded,
+                total,
+                purchasedQuality);
+        }
+
+        CommitSettlementSource(agentIndex, sourceResultId);
+        if (purchasedQuality is { } quality)
+        {
+            _qualityHundredths[goodId] -= quality.Hundredths;
+        }
         RegisterDemand(goodId, count);
         _stock[goodId] -= count;
-        _purchaseTransactions = checked(_purchaseTransactions + 1);
-        TreasurySpiritStones = checked(TreasurySpiritStones + total);
+        _purchaseTransactions = SaturatingAdd(_purchaseTransactions, 1);
+        TreasurySpiritStones += total;
         Reprice(goodId);
         RecordTrade(
             tick,
             agentIndex,
+            sourceResultId,
             MarketTradeKind.Purchase,
             goodId,
             count,
@@ -82,11 +96,13 @@ internal sealed partial class CityMarket
         long tick,
         int goodId,
         int count,
+        long ownerSpiritStones,
         QualityValue? quality = null)
     {
         ValidateCount(count);
         goodId = ValidateGood(goodId);
-        if (!TryBeginSettlement(agentIndex, sourceResultId))
+        ArgumentOutOfRangeException.ThrowIfNegative(ownerSpiritStones);
+        if (!IsFreshSettlementSource(agentIndex, sourceResultId, tick))
         {
             return new MarketSettlementReceipt(MarketSettlementStatus.DuplicateSource);
         }
@@ -110,8 +126,21 @@ internal sealed partial class CityMarket
                 quality);
         }
 
+        if (!CanRecordTrade()
+            || ownerSpiritStones > long.MaxValue - proceeds
+            || _stock[goodId] > int.MaxValue - count
+            || (quality is { } supplied
+                && _qualityHundredths[goodId] > long.MaxValue - supplied.Hundredths))
+        {
+            return new MarketSettlementReceipt(
+                MarketSettlementStatus.CapacityExceeded,
+                proceeds,
+                quality);
+        }
+
+        CommitSettlementSource(agentIndex, sourceResultId);
         TreasurySpiritStones -= proceeds;
-        _saleTransactions = checked(_saleTransactions + 1);
+        _saleTransactions = SaturatingAdd(_saleTransactions, 1);
         if (quality is { } suppliedQuality)
         {
             _qualityHundredths[goodId] = checked(
@@ -121,6 +150,7 @@ internal sealed partial class CityMarket
         RecordTrade(
             tick,
             agentIndex,
+            sourceResultId,
             MarketTradeKind.Sale,
             goodId,
             count,
@@ -136,11 +166,14 @@ internal sealed partial class CityMarket
         long tick,
         MaterialId material,
         int count,
-        int realmBonus)
+        int realmBonus,
+        long ownerSpiritStones)
     {
         ValidateCount(count);
         var goodId = ValidateGood((int)material);
-        if (!TryBeginSettlement(agentIndex, sourceResultId))
+        ArgumentOutOfRangeException.ThrowIfNegative(realmBonus);
+        ArgumentOutOfRangeException.ThrowIfNegative(ownerSpiritStones);
+        if (!IsFreshSettlementSource(agentIndex, sourceResultId, tick))
         {
             return new MarketSettlementReceipt(MarketSettlementStatus.DuplicateSource);
         }
@@ -154,12 +187,21 @@ internal sealed partial class CityMarket
                 reward);
         }
 
+        if (!CanRecordTrade()
+            || ownerSpiritStones > long.MaxValue - reward
+            || _stock[goodId] > int.MaxValue - count)
+        {
+            return new MarketSettlementReceipt(MarketSettlementStatus.CapacityExceeded, reward);
+        }
+
+        CommitSettlementSource(agentIndex, sourceResultId);
         TreasurySpiritStones -= reward;
-        _missionDeliveries = checked(_missionDeliveries + 1);
+        _missionDeliveries = SaturatingAdd(_missionDeliveries, 1);
         AddSupply(goodId, count);
         RecordTrade(
             tick,
             agentIndex,
+            sourceResultId,
             MarketTradeKind.MissionDelivery,
             goodId,
             count,
@@ -169,25 +211,28 @@ internal sealed partial class CityMarket
         return new MarketSettlementReceipt(MarketSettlementStatus.Settled, reward);
     }
 
-    private bool TryBeginSettlement(int agentIndex, long sourceResultId)
+    private bool IsFreshSettlementSource(int agentIndex, long sourceResultId, long tick)
     {
         if ((uint)agentIndex >= (uint)_lastSettlementSourceByAgent.Length)
         {
             throw new ArgumentOutOfRangeException(nameof(agentIndex));
         }
-        ArgumentOutOfRangeException.ThrowIfNegative(sourceResultId);
-        if (sourceResultId <= _lastSettlementSourceByAgent[agentIndex])
-        {
-            return false;
-        }
-
-        _lastSettlementSourceByAgent[agentIndex] = sourceResultId;
-        return true;
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(sourceResultId);
+        ArgumentOutOfRangeException.ThrowIfNegative(tick);
+        return sourceResultId > _lastSettlementSourceByAgent[agentIndex];
     }
+
+    private void CommitSettlementSource(int agentIndex, long sourceResultId) =>
+        _lastSettlementSourceByAgent[agentIndex] = sourceResultId;
+
+    // NextTradeSequence == long.MaxValue인 저장 상태를 만들지 않도록 마지막 값 하나를
+    // 여유로 둔다. 모든 성공 정산은 거래 원장까지 기록되거나 아무것도 바꾸지 않는다.
+    private bool CanRecordTrade() => _nextTradeSequence < long.MaxValue - 1L;
 
     private void RecordTrade(
         long tick,
         int agentIndex,
+        long sourceResultId,
         MarketTradeKind kind,
         int goodId,
         int count,
@@ -202,7 +247,8 @@ internal sealed partial class CityMarket
         }
 
         _recentTrades.Enqueue(new MarketTradeRecord(
-            _nextTradeSequence++,
+            _nextTradeSequence,
+            sourceResultId,
             tick,
             agentIndex,
             kind,
@@ -211,6 +257,7 @@ internal sealed partial class CityMarket
             unitPrice,
             totalSpiritStones,
             quality?.Hundredths ?? NoQuality));
+        _nextTradeSequence = checked(_nextTradeSequence + 1L);
         TouchAuthority();
     }
 }

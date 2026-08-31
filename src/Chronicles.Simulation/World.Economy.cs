@@ -221,27 +221,31 @@ public sealed partial class World
         }
 
         _agents.SpiritStones[index] -= cost;
-        var improved = QualityRules.GetNextTierMinimum(current);
-        if (technique)
+        var offered = new QualityValue(checked((ushort)_random.NextInt(
+            QualityValue.MaximumHundredths + 1)));
+        if (technique && offered > current)
         {
-            _agents.TechniqueQualities[index] = improved.Hundredths;
+            _agents.TechniqueQualities[index] = offered.Hundredths;
             _agents.TechniqueMasteries[index] = 0;
             _agents.TechniqueTrainingExperience[index] = 0;
             _agents.TechniqueUnderstanding[index] = 0;
-            AddChronicle(index, ChronicleEventKind.TechniqueAcquired, improved.Hundredths);
-            AddEvent(WorldEventKind.TechniqueAcquired, index, improved.Hundredths);
-            AddEvent(WorldEventKind.TechniqueBookPurchased, index, improved.Hundredths);
+            AddChronicle(index, ChronicleEventKind.TechniqueAcquired, offered.Hundredths);
+            AddEvent(WorldEventKind.TechniqueAcquired, index, offered.Hundredths);
         }
-        else
+        else if (!technique && offered > current)
         {
-            _agents.SpellQualities[index] = improved.Hundredths;
+            _agents.SpellQualities[index] = offered.Hundredths;
             _agents.SpellMasteries[index] = 0;
             _agents.SpellTrainingExperience[index] = 0;
             _agents.SpellUnderstanding[index] = 0;
-            AddChronicle(index, ChronicleEventKind.SpellAcquired, improved.Hundredths);
-            AddEvent(WorldEventKind.SpellAcquired, index, improved.Hundredths);
-            AddEvent(WorldEventKind.SpellBookPurchased, index, improved.Hundredths);
+            AddChronicle(index, ChronicleEventKind.SpellAcquired, offered.Hundredths);
+            AddEvent(WorldEventKind.SpellAcquired, index, offered.Hundredths);
         }
+
+        AddEvent(
+            technique ? WorldEventKind.TechniqueBookPurchased : WorldEventKind.SpellBookPurchased,
+            index,
+            offered.Hundredths);
 
         return true;
     }

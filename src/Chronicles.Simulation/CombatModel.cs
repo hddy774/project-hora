@@ -48,7 +48,7 @@ internal readonly record struct PowerInputSignature(
 
 public static class CombatAttributeFormula
 {
-    public const int CurrentRevision = 1;
+    public const int CurrentRevision = 2;
 
     public static CombatAttributes Calculate(
         RealmStage realm,
@@ -63,12 +63,14 @@ public static class CombatAttributeFormula
         int weaponEffect,
         int armorEffect)
     {
-        var techniqueEffect = checked((int)Math.Min(1_000_000L, QualityRules.GetEffectiveWhole(techniqueQuality)));
-        var spellEffect = checked((int)Math.Min(1_000_000L, QualityRules.GetEffectiveWhole(spellQuality)));
         var techniqueFactor = 10_000 + techniqueMastery + techniqueUnderstanding;
         var spellFactor = 10_000 + spellMastery + spellUnderstanding;
-        var techniquePower = checked((int)Math.Min(int.MaxValue, (long)techniqueEffect * techniqueFactor / 10_000));
-        var spellPower = checked((int)Math.Min(int.MaxValue, (long)spellEffect * spellFactor / 10_000));
+        var techniquePower = SkillCombatScaling.GetAttributeContribution(
+            techniqueQuality,
+            techniqueFactor);
+        var spellPower = SkillCombatScaling.GetAttributeContribution(
+            spellQuality,
+            spellFactor);
         var stage = (int)realm + 1;
         var realmScale = checked((stage * stage * stage * 250) + (floor * stage * 30));
         var root = aptitudes.SpiritualRoot.Hundredths;
@@ -112,6 +114,29 @@ public static class CombatAttributeFormula
     }
 
     private static int ClampToInt(long value) => checked((int)Math.Clamp(value, 0, int.MaxValue));
+}
+
+public static class SkillCombatScaling
+{
+    public const int CurrentRevision = 2;
+    private const long DisplayDivisor = 10_000_000L;
+    private const long AttributeDivisor = 100_000_000L;
+    private const long TreasureDisplayDivisor = 10_000L;
+    private const long TreasureAttributeDivisor = 10_000L;
+
+    public static long GetDisplayContribution(QualityValue quality, long progressionFactor) =>
+        checked(QualityRules.GetEffectiveHundredths(quality) * progressionFactor / DisplayDivisor);
+
+    public static int GetAttributeContribution(QualityValue quality, int progressionFactor) =>
+        checked((int)Math.Min(
+            int.MaxValue,
+            QualityRules.GetEffectiveHundredths(quality) * progressionFactor / AttributeDivisor));
+
+    public static long GetTreasureDisplayContribution(long effectiveHundredths) =>
+        checked(effectiveHundredths * 250L / 100L / TreasureDisplayDivisor);
+
+    public static int GetTreasureAttributeContribution(long effectiveHundredths) =>
+        checked((int)Math.Min(int.MaxValue, effectiveHundredths / TreasureAttributeDivisor));
 }
 
 public static class CombatInjuryRules

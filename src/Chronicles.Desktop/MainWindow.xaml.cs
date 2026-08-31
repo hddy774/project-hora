@@ -603,8 +603,8 @@ public partial class MainWindow : Window, IDisposable
         WorldEventKind.MaterialSold => $"{EconomyRules.GetMaterial((MaterialId)entry.Value).KoreanName} 판매",
         WorldEventKind.MaterialPurchased => $"{EconomyRules.GetMaterial((MaterialId)entry.Value).KoreanName} 구매",
         WorldEventKind.TreasurePurchased => $"{FormatQuality(entry.Value)} 법보 구매",
-        WorldEventKind.TechniqueBookPurchased => $"공법서로 {FormatQuality(entry.Value)} 공법 습득",
-        WorldEventKind.SpellBookPurchased => $"법술서로 {FormatQuality(entry.Value)} 법술 습득",
+        WorldEventKind.TechniqueBookPurchased => $"{FormatQuality(entry.Value)} 공법서 구매",
+        WorldEventKind.SpellBookPurchased => $"{FormatQuality(entry.Value)} 법술서 구매",
         _ => kind.ToString(),
     };
 

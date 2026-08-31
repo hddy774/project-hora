@@ -549,7 +549,7 @@ internal sealed class AgentStore
             }
         }
 
-        return checked(effectiveHundredths * 250 / 100);
+        return SkillCombatScaling.GetTreasureDisplayContribution(effectiveHundredths);
     }
 
     public int GetTreasureCombatEffect(int index, bool attack)
@@ -567,11 +567,12 @@ internal sealed class AgentStore
             var raw = GetTreasureQuality(index, slot);
             if (raw != EconomyRules.EmptyTreasureQuality)
             {
-                total += QualityRules.GetEffectiveWhole(new QualityValue(raw));
+                total = checked(
+                    total + QualityRules.GetEffectiveHundredths(new QualityValue(raw)));
             }
         }
 
-        return checked((int)Math.Min(int.MaxValue, total));
+        return SkillCombatScaling.GetTreasureAttributeContribution(total);
     }
 
     private static ushort CreateAptitude(DeterministicRandom random) => CreateQuality(random);

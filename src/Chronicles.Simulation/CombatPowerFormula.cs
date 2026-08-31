@@ -4,6 +4,8 @@ namespace Chronicles.Simulation;
 
 public static class CombatPowerFormula
 {
+    public const int CurrentRevision = 2;
+
     public static CombatPowerBreakdown Calculate(
         RealmStage realmStage,
         int realmLayer,
@@ -31,12 +33,12 @@ public static class CombatPowerFormula
             + (QualityRules.GetEffectiveHundredths(aptitudes.Comprehension) * 14)
             + (QualityRules.GetEffectiveHundredths(aptitudes.Mind) * 10)
             + (QualityRules.GetEffectiveHundredths(aptitudes.Soul) * 8)) / 100);
-        var techniqueEffect = QualityRules.GetEffectiveHundredths(techniqueQuality);
-        var technique = checked(
-            techniqueEffect * (10_000L + (techniqueMastery * 2L) + (techniqueUnderstanding * 3L)) / 1_000);
-        var spellEffect = QualityRules.GetEffectiveHundredths(spellQuality);
-        var spell = checked(
-            spellEffect * (10_000L + (spellMastery * 2L) + (spellUnderstanding * 3L)) / 1_200);
+        var technique = SkillCombatScaling.GetDisplayContribution(
+            techniqueQuality,
+            10_000L + (techniqueMastery * 2L) + (techniqueUnderstanding * 3L));
+        var spell = SkillCombatScaling.GetDisplayContribution(
+            spellQuality,
+            (10_000L + (spellMastery * 2L) + (spellUnderstanding * 3L)) * 5L / 6L);
         var experience = Math.Min(40_000L, IntegerSquareRoot(Math.Max(0, combatExperience)) * 80L);
         return new CombatPowerBreakdown(realm, aptitude, technique, spell, experience, treasurePower);
     }

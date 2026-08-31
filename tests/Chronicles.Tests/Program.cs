@@ -18,6 +18,7 @@ var tests = new (string Name, Action Body)[]
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
+    ("공법·법술·법보 전투 스케일 상한과 품질 격차", SkillCombatScaleRegression),
     ("동일 seed 결정론", DeterministicWorld),
     ("이벤트 기반 성장", EventDrivenGrowth),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
@@ -619,6 +620,61 @@ static void CombatPowerAndRanking()
         True(entry.AptitudeScore <= previousAptitude, "자질 랭킹은 6대 자질 합계 내림차순이어야 합니다.");
         previousAptitude = entry.AptitudeScore;
     }
+}
+
+static void SkillCombatScaleRegression()
+{
+    var aptitudes = new Aptitudes(
+        new QualityValue(5_000),
+        new QualityValue(5_000),
+        new QualityValue(5_000),
+        new QualityValue(5_000),
+        new QualityValue(5_000),
+        new QualityValue(5_000));
+    var flawless = CombatPowerFormula.Calculate(
+        RealmStage.QiRefining,
+        1,
+        aptitudes,
+        new QualityValue(10_000),
+        1_901,
+        0,
+        new QualityValue(0),
+        0,
+        0,
+        0,
+        0);
+    var heaven = CombatPowerFormula.Calculate(
+        RealmStage.QiRefining,
+        1,
+        aptitudes,
+        new QualityValue(9_999),
+        1_901,
+        0,
+        new QualityValue(0),
+        0,
+        0,
+        0,
+        0);
+    True(flawless.Technique < 50_000, "무결품 공법 하나가 연기경에서 억 단위 전투력을 만들면 안 됩니다.");
+    True(
+        flawless.Technique >= heaven.Technique * 9
+            && flawless.Technique <= heaven.Technique * 11,
+        "천품→무결품의 약 10배 품질 격차는 축소된 전투 기여에서도 유지되어야 합니다.");
+
+    var attributes = CombatAttributeFormula.Calculate(
+        RealmStage.QiRefining,
+        1,
+        aptitudes,
+        new QualityValue(10_000),
+        10_000,
+        10_000,
+        new QualityValue(10_000),
+        10_000,
+        10_000,
+        0,
+        0);
+    True(attributes.MaximumHealth < 50_000, "무결품 공법의 연기경 최대 체력 폭증 방지");
+    True(attributes.Attack < 50_000, "무결품 법술의 연기경 실전 공격력 폭증 방지");
 }
 
 static void DeterministicWorld()

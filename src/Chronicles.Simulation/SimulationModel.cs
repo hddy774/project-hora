@@ -226,6 +226,43 @@ public readonly record struct WorldEventFeed(
     IReadOnlyList<WorldEventNotification> Events,
     int DroppedCount);
 
+public readonly record struct WorldCenturyChronicleFeed(
+    IReadOnlyList<WorldCenturyChronicleEntry> Entries,
+    int DroppedCount);
+
+public readonly record struct WorldChronicleLeader(
+    AgentId AgentId,
+    string Name);
+
+public sealed record WorldCenturyChronicleEntry(
+    long Sequence,
+    long CenturyNumber,
+    long StartYear,
+    long EndYear,
+    int[] RealmBreakthroughCounts,
+    int[] RealmBreakthroughUniqueCounts,
+    long[] CombatPowerPositionChanges,
+    long[] RealmPositionChanges,
+    long[] AptitudePositionChanges,
+    long[] WealthPositionChanges,
+    WorldChronicleLeader CombatPowerLeader,
+    WorldChronicleLeader RealmLeader,
+    WorldChronicleLeader AptitudeLeader,
+    WorldChronicleLeader WealthLeader,
+    int DeathCount,
+    int UniqueDeathCount,
+    int ReincarnationEntryCount,
+    int UniqueReincarnationEntryCount,
+    int RebirthCount,
+    int UniqueRebirthCount,
+    int ReincarnationRiverResidentsAtEnd,
+    long CombatsCompleted,
+    long MonsterHunts,
+    long MissionsCompleted,
+    long SpiritStonesMined,
+    long TreasuresCrafted,
+    long PillsCrafted);
+
 public readonly record struct ActiveMissionSnapshot(
     MaterialId Material,
     int RequiredCount,
@@ -468,7 +505,7 @@ public sealed record WorldSnapshot(
     WorldMapSnapshot Map,
     IReadOnlyDictionary<int, string> AgentNames,
     IReadOnlyList<WorldEvent> RecentEvents,
-    IReadOnlyList<WorldEvent> PermanentWorldChronicle,
+    IReadOnlyList<WorldCenturyChronicleEntry> PermanentWorldChronicle,
     int PermanentWorldChronicleCount,
     int TotalBreakthroughs,
     int TotalChallenges,

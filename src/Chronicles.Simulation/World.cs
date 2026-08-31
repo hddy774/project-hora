@@ -20,7 +20,7 @@ public sealed partial class World
     private readonly int[] _wealthRankByAgent;
     private readonly int[] _monsterPopulations;
     private readonly Queue<WorldEvent> _events = new(WorldLogCapacity);
-    private readonly List<WorldEvent> _worldChronicle = [];
+    private readonly WorldCenturyChronicle _worldChronicle;
     private readonly RankingHistory _rankingHistory = new();
     private long _eventSequence;
     private long _chronicleSequence;
@@ -49,6 +49,7 @@ public sealed partial class World
     private readonly int[] _eliteRealmChangedCounts = new int[4];
 
     internal event Action<WorldEventNotification>? ImportantWorldEventRecorded;
+    internal event Action<WorldCenturyChronicleEntry>? WorldCenturyChronicleRecorded;
 
     private World(ulong seed, int population)
     {
@@ -65,6 +66,8 @@ public sealed partial class World
         _agentByWealthRank = new int[population];
         _wealthRankByAgent = new int[population];
         _monsterPopulations = CreateInitialMonsterPopulations();
+        _worldChronicle = new WorldCenturyChronicle(population, currentYear: 0);
+        _worldChronicle.EntryRecorded += WorldChronicle_EntryRecorded;
 
         for (var index = 0; index < population; index++)
         {
@@ -165,6 +168,7 @@ public sealed partial class World
         AdvanceCityIndustry(GameCalendar.GetMonthIndex(Tick));
         RegenerateMonsters(GameCalendar.GetMonthIndex(Tick));
         RefreshRankings(recordLeaderChange: true);
+        _worldChronicle.AdvanceTo(Tick);
     }
 
     private void AdvanceCityIndustry(long currentMonth)
@@ -310,10 +314,8 @@ public sealed partial class World
             ? _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray()
             : Array.Empty<WorldEvent>();
         var permanentWorldChronicle = (sections & ObservationSections.WorldChronicle) != 0
-            ? _worldChronicle
-                .Skip(Math.Max(0, _worldChronicle.Count - worldChronicleCount))
-                .ToArray()
-            : Array.Empty<WorldEvent>();
+            ? _worldChronicle.GetTail(worldChronicleCount)
+            : Array.Empty<WorldCenturyChronicleEntry>();
         var agentNames = new Dictionary<int, string>(actualRankingCount * 4);
         foreach (var ranking in combatPowerRankings
                      .Concat(realmRankings)
@@ -627,17 +629,7 @@ public sealed partial class World
         }
 
 
-        foreach (var worldEvent in _worldChronicle)
-        {
-            Add(ref hash, (ulong)worldEvent.Sequence);
-            Add(ref hash, (ulong)worldEvent.Tick.Value);
-            Add(ref hash, (byte)worldEvent.Kind);
-            Add(ref hash, (ulong)worldEvent.PrimaryAgent.Value);
-            Add(ref hash, (ulong)(worldEvent.SecondaryAgent?.Value + 1 ?? 0));
-            Add(ref hash, unchecked((ulong)(long)worldEvent.Value));
-            AddString(ref hash, worldEvent.PrimaryName ?? string.Empty);
-            AddString(ref hash, worldEvent.SecondaryName ?? string.Empty);
-        }
+        AddWorldCenturyChronicleHash(ref hash, _worldChronicle.CreateCheckpoint());
 
         return hash;
     }
@@ -960,12 +952,22 @@ public sealed partial class World
             _rankingUnchangedCount = Population - _rankingRisenCount - _rankingFallenCount;
         }
 
-        _rankingHistory.Record(
+        var rankingSampleRecorded = _rankingHistory.Record(
             Tick,
             _agentByRank,
             _agentByRealmRank,
             _agentByWealthRank,
             force: !recordLeaderChange && _rankingHistory.Frames.Count == 0);
+        if (rankingSampleRecorded)
+        {
+            _worldChronicle.RecordRankingSample(
+                Tick,
+                _agentByRank,
+                _agentByRealmRank,
+                _agentByAptitudeRank,
+                _agentByWealthRank,
+                agent => _agents.Names[agent]);
+        }
 
         var leader = _agentByRank[0];
         if (recordLeaderChange && leader != previousLeader)
@@ -1029,6 +1031,8 @@ public sealed partial class World
             }
         }
 
+        _worldChronicle.RecordWorldEvent(Tick, kind, primaryAgent, value);
+
         if (!IsImportantWorldEvent(kind, primaryAgent, secondaryAgent, value))
         {
             return;
@@ -1049,11 +1053,7 @@ public sealed partial class World
             _agents.Names[primaryAgent],
             secondaryAgent is { } namedSecondary ? _agents.Names[namedSecondary] : null);
         _events.Enqueue(worldEvent);
-        var isPermanentChronicle = IsPermanentWorldChronicleEvent(kind, primaryAgent, value);
-        if (isPermanentChronicle)
-        {
-            _worldChronicle.Add(worldEvent);
-        }
+        const bool isPermanentChronicle = false;
 
         ImportantWorldEventRecorded?.Invoke(new WorldEventNotification(
             worldEvent,
@@ -1061,6 +1061,9 @@ public sealed partial class World
             worldEvent.SecondaryName,
             isPermanentChronicle));
     }
+
+    private void WorldChronicle_EntryRecorded(WorldCenturyChronicleEntry entry) =>
+        WorldCenturyChronicleRecorded?.Invoke(entry);
 
     private bool IsImportantWorldEvent(
         WorldEventKind kind,
@@ -1087,26 +1090,6 @@ public sealed partial class World
         // 전투 결과는 경쟁 관찰 게임의 핵심 세계 사건이므로 모두 유지하되,
         // 고정 용량 세계 로그가 오래된 결과를 자동으로 밀어낸다.
         WorldEventKind.CombatEnded => true,
-        _ => false,
-    };
-
-    private bool IsPermanentWorldChronicleEvent(
-        WorldEventKind kind,
-        int primaryAgent,
-        long value) => kind switch
-    {
-        WorldEventKind.NewLeader
-            or WorldEventKind.MajorRealmBreakthrough
-            or WorldEventKind.GreatPerfectionAchieved => true,
-        WorldEventKind.CultivationEntered => _rankByAgent[primaryAgent] <= 100,
-        WorldEventKind.Death
-            or WorldEventKind.CombatDeath => _rankByAgent[primaryAgent] <= 10,
-        WorldEventKind.TechniqueEnlightenment
-            or WorldEventKind.SpellEnlightenment
-            or WorldEventKind.TreasureCrafted
-            or WorldEventKind.TreasurePurchased
-            or WorldEventKind.TechniqueBookPurchased
-            or WorldEventKind.SpellBookPurchased => value >= 9_000 && _rankByAgent[primaryAgent] <= 100,
         _ => false,
     };
 
@@ -1319,5 +1302,110 @@ public sealed partial class World
         }
 
         Add(ref hash, 0xFFFFUL);
+    }
+
+    private static void AddWorldCenturyChronicleHash(
+        ref ulong hash,
+        WorldCenturyChronicleCheckpoint checkpoint)
+    {
+        Add(ref hash, (ulong)checkpoint.Sequence);
+        foreach (var entry in checkpoint.Entries)
+        {
+            Add(ref hash, (ulong)entry.Sequence);
+            Add(ref hash, (ulong)entry.CenturyNumber);
+            Add(ref hash, (ulong)entry.StartYear);
+            Add(ref hash, (ulong)entry.EndYear);
+            AddArray(ref hash, entry.RealmBreakthroughCounts);
+            AddArray(ref hash, entry.RealmBreakthroughUniqueCounts);
+            AddArray(ref hash, entry.CombatPowerPositionChanges);
+            AddArray(ref hash, entry.RealmPositionChanges);
+            AddArray(ref hash, entry.AptitudePositionChanges);
+            AddArray(ref hash, entry.WealthPositionChanges);
+            AddLeader(ref hash, entry.CombatPowerLeader);
+            AddLeader(ref hash, entry.RealmLeader);
+            AddLeader(ref hash, entry.AptitudeLeader);
+            AddLeader(ref hash, entry.WealthLeader);
+            Add(ref hash, (ulong)entry.DeathCount);
+            Add(ref hash, (ulong)entry.UniqueDeathCount);
+            Add(ref hash, (ulong)entry.ReincarnationEntryCount);
+            Add(ref hash, (ulong)entry.UniqueReincarnationEntryCount);
+            Add(ref hash, (ulong)entry.RebirthCount);
+            Add(ref hash, (ulong)entry.UniqueRebirthCount);
+            Add(ref hash, (ulong)entry.ReincarnationRiverResidentsAtEnd);
+            Add(ref hash, (ulong)entry.CombatsCompleted);
+            Add(ref hash, (ulong)entry.MonsterHunts);
+            Add(ref hash, (ulong)entry.MissionsCompleted);
+            Add(ref hash, (ulong)entry.SpiritStonesMined);
+            Add(ref hash, (ulong)entry.TreasuresCrafted);
+            Add(ref hash, (ulong)entry.PillsCrafted);
+        }
+
+        var current = checkpoint.Current;
+        Add(ref hash, (ulong)current.CenturyIndex);
+        AddArray(ref hash, current.RealmBreakthroughCounts);
+        AddArray(ref hash, current.RealmBreakthroughUniqueCounts);
+        foreach (var bits in current.RealmBreakthroughAgentBits)
+        {
+            AddArray(ref hash, bits);
+        }
+        AddArray(ref hash, current.CombatPowerPositionChanges);
+        AddArray(ref hash, current.RealmPositionChanges);
+        AddArray(ref hash, current.AptitudePositionChanges);
+        AddArray(ref hash, current.WealthPositionChanges);
+        AddArray(ref hash, current.PreviousCombatPowerTop);
+        AddArray(ref hash, current.PreviousRealmTop);
+        AddArray(ref hash, current.PreviousAptitudeTop);
+        AddArray(ref hash, current.PreviousWealthTop);
+        AddLeader(ref hash, current.CombatPowerLeader);
+        AddLeader(ref hash, current.RealmLeader);
+        AddLeader(ref hash, current.AptitudeLeader);
+        AddLeader(ref hash, current.WealthLeader);
+        Add(ref hash, unchecked((ulong)current.LastRankingSampleYear));
+        Add(ref hash, (ulong)current.DeathCount);
+        Add(ref hash, (ulong)current.UniqueDeathCount);
+        AddArray(ref hash, current.DeathAgentBits);
+        Add(ref hash, (ulong)current.ReincarnationEntryCount);
+        Add(ref hash, (ulong)current.UniqueReincarnationEntryCount);
+        AddArray(ref hash, current.ReincarnationEntryAgentBits);
+        Add(ref hash, (ulong)current.RebirthCount);
+        Add(ref hash, (ulong)current.UniqueRebirthCount);
+        AddArray(ref hash, current.RebirthAgentBits);
+        Add(ref hash, (ulong)current.ReincarnationRiverResidents);
+        Add(ref hash, (ulong)current.CombatsCompleted);
+        Add(ref hash, (ulong)current.MonsterHunts);
+        Add(ref hash, (ulong)current.MissionsCompleted);
+        Add(ref hash, (ulong)current.SpiritStonesMined);
+        Add(ref hash, (ulong)current.TreasuresCrafted);
+        Add(ref hash, (ulong)current.PillsCrafted);
+    }
+
+    private static void AddLeader(ref ulong hash, WorldChronicleLeader leader)
+    {
+        Add(ref hash, (ulong)(leader.AgentId.Value + 1));
+        AddString(ref hash, leader.Name ?? string.Empty);
+    }
+
+    private static void AddArray(ref ulong hash, IEnumerable<int> values)
+    {
+        foreach (var value in values)
+        {
+            Add(ref hash, unchecked((ulong)(long)value));
+        }
+    }
+
+    private static void AddArray(ref ulong hash, IEnumerable<long> values)
+    {
+        foreach (var value in values)
+        {
+            Add(ref hash, unchecked((ulong)value));
+        }
+    }
+
+    private static void AddArray(ref ulong hash, IEnumerable<ulong> values)
+    {
+        foreach (var value in values)
+        {
+            Add(ref hash, value);
+        }
     }
 }

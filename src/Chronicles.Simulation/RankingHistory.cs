@@ -33,7 +33,7 @@ internal sealed class RankingHistory
 
     public static IReadOnlyList<RankingMovementPeriod> AllPeriods => Periods;
 
-    public void Record(
+    public bool Record(
         SimulationTick tick,
         ReadOnlySpan<int> combatPowerRanking,
         ReadOnlySpan<int> realmRanking,
@@ -44,7 +44,7 @@ internal sealed class RankingHistory
             && _frames.Count > 0
             && GameCalendar.GetYear(_frames[^1].Tick) >= GameCalendar.GetYear(tick))
         {
-            return;
+            return false;
         }
 
         var count = Math.Min(MaximumTrackedRank, combatPowerRanking.Length);
@@ -72,6 +72,7 @@ internal sealed class RankingHistory
             realmChanges,
             wealthChanges));
         Prune(GameCalendar.GetYear(tick));
+        return true;
     }
 
     public RankingHistoryFrame GetBaseline(RankingMovementPeriod period, SimulationTick currentTick)

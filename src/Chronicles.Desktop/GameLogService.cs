@@ -126,6 +126,28 @@ internal sealed class GameLogService : IDisposable
             feed.Events.Select(formatter).ToArray());
     }
 
+    public void CaptureWorldChronicleFeed(
+        WorldCenturyChronicleFeed feed,
+        Func<WorldCenturyChronicleEntry, string> formatter)
+    {
+        ArgumentNullException.ThrowIfNull(formatter);
+        if (feed.DroppedCount > 0)
+        {
+            AddDebug(
+                DebugLogLevel.Warning,
+                $"자동 출력 대기열 포화로 100년 세계 역사서 {feed.DroppedCount:N0}권을 건너뜀");
+        }
+
+        if (!AutoWorldOutput || feed.Entries.Count == 0)
+        {
+            return;
+        }
+
+        QueueAutomaticWrite(
+            LogFileKind.World,
+            feed.Entries.Select(formatter).ToArray());
+    }
+
     public Task<string> ExportDebugAsync()
     {
         var entries = GetDebugEntries();
@@ -155,7 +177,7 @@ internal sealed class GameLogService : IDisposable
         };
         lines.AddRange(recentWorldLog);
         lines.Add(string.Empty);
-        lines.Add($"[영구 세계 연대기 · {permanentWorldChronicle.Count:N0}건]");
+        lines.Add($"[영구 세계 연대기 · 100년 역사서 {permanentWorldChronicle.Count:N0}권]");
         lines.AddRange(permanentWorldChronicle);
         return QueueManualWrite(LogFileKind.World, lines.ToArray());
     }

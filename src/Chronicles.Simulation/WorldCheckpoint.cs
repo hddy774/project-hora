@@ -99,6 +99,46 @@ public sealed record RankingHistoryFrameCheckpoint(
 
 public sealed record RankingHistoryCheckpoint(RankingHistoryFrameCheckpoint[] Frames);
 
+public sealed record WorldCenturyAccumulatorCheckpoint(
+    long CenturyIndex,
+    int[] RealmBreakthroughCounts,
+    int[] RealmBreakthroughUniqueCounts,
+    ulong[][] RealmBreakthroughAgentBits,
+    long[] CombatPowerPositionChanges,
+    long[] RealmPositionChanges,
+    long[] AptitudePositionChanges,
+    long[] WealthPositionChanges,
+    int[] PreviousCombatPowerTop,
+    int[] PreviousRealmTop,
+    int[] PreviousAptitudeTop,
+    int[] PreviousWealthTop,
+    WorldChronicleLeader CombatPowerLeader,
+    WorldChronicleLeader RealmLeader,
+    WorldChronicleLeader AptitudeLeader,
+    WorldChronicleLeader WealthLeader,
+    long LastRankingSampleYear,
+    int DeathCount,
+    int UniqueDeathCount,
+    ulong[] DeathAgentBits,
+    int ReincarnationEntryCount,
+    int UniqueReincarnationEntryCount,
+    ulong[] ReincarnationEntryAgentBits,
+    int RebirthCount,
+    int UniqueRebirthCount,
+    ulong[] RebirthAgentBits,
+    int ReincarnationRiverResidents,
+    long CombatsCompleted,
+    long MonsterHunts,
+    long MissionsCompleted,
+    long SpiritStonesMined,
+    long TreasuresCrafted,
+    long PillsCrafted);
+
+public sealed record WorldCenturyChronicleCheckpoint(
+    long Sequence,
+    WorldCenturyChronicleEntry[] Entries,
+    WorldCenturyAccumulatorCheckpoint Current);
+
 public sealed record WorldCheckpoint(
     int SchemaVersion,
     ulong Seed,
@@ -131,7 +171,8 @@ public sealed record WorldCheckpoint(
     int[]? EliteCombatChangedCounts = null,
     int[]? EliteRealmChangedCounts = null,
     WorldEvent[]? WorldChronicle = null,
-    RankingHistoryCheckpoint? RankingHistory = null)
+    RankingHistoryCheckpoint? RankingHistory = null,
+    WorldCenturyChronicleCheckpoint? CenturyChronicle = null)
 {
-    public const int CurrentSchemaVersion = 16;
+    public const int CurrentSchemaVersion = 17;
 }

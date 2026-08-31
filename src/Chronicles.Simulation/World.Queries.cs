@@ -27,7 +27,8 @@ public sealed partial class World
         return _agents.PersonalLogs[index].ToArray();
     }
 
-    public IReadOnlyList<WorldEvent> GetWorldChronicle() => _worldChronicle.ToArray();
+    public IReadOnlyList<WorldCenturyChronicleEntry> GetWorldChronicle() =>
+        _worldChronicle.GetAll();
 
     public IReadOnlyList<AgentSnapshot> BrowseAgents(int offset, int limit = 500)
     {

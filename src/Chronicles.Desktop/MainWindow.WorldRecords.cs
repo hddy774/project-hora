@@ -15,38 +15,45 @@ public partial class MainWindow
         switch (WorldRecordsPanel.SelectedRecordIndex)
         {
             case 0:
+                var worldLogCategory = WorldRecordsPanel.SelectedWorldLogCategory;
                 var recentSequence = snapshot.RecentEvents.Count > 0
                     ? snapshot.RecentEvents[^1].Sequence
                     : 0;
                 if (_projectedRecentEventSequence == recentSequence
-                    && _projectedRecentEventCount == snapshot.RecentEvents.Count)
+                    && _projectedRecentEventCount == snapshot.RecentEvents.Count
+                    && _projectedWorldLogCategory == worldLogCategory)
                 {
                     break;
                 }
 
                 WorldRecordsPanel.ApplyRecent(snapshot.RecentEvents
+                    .Where(item => MatchesWorldLogCategory(item.Kind, worldLogCategory))
                     .Reverse()
                     .Select(item => FormatEvent(snapshot, item))
-                    .ToArray());
+                    .ToArray(), snapshot.RecentEvents.Count);
                 _projectedRecentEventSequence = recentSequence;
                 _projectedRecentEventCount = snapshot.RecentEvents.Count;
+                _projectedWorldLogCategory = worldLogCategory;
                 break;
             case 1:
+                var worldChronicleCategory = WorldRecordsPanel.SelectedWorldChronicleCategory;
                 var chronicleSequence = snapshot.PermanentWorldChronicle.Count > 0
                     ? snapshot.PermanentWorldChronicle[^1].Sequence
                     : 0;
                 if (_projectedWorldChronicleSequence == chronicleSequence
-                    && _projectedWorldChronicleCount == snapshot.PermanentWorldChronicleCount)
+                    && _projectedWorldChronicleCount == snapshot.PermanentWorldChronicleCount
+                    && _projectedWorldChronicleCategory == worldChronicleCategory)
                 {
                     break;
                 }
 
                 WorldRecordsPanel.ApplyChronicle(snapshot.PermanentWorldChronicle
                     .Reverse()
-                    .Select(item => FormatEvent(snapshot, item))
+                    .Select(item => FormatWorldChronicle(item, worldChronicleCategory))
                     .ToArray(), snapshot.PermanentWorldChronicleCount);
                 _projectedWorldChronicleSequence = chronicleSequence;
                 _projectedWorldChronicleCount = snapshot.PermanentWorldChronicleCount;
+                _projectedWorldChronicleCategory = worldChronicleCategory;
                 break;
             case 2:
                 var debugVersion = _logService.DebugVersion;
@@ -94,6 +101,132 @@ public partial class MainWindow
         };
         return new EventRow(FormatGameDate(GameCalendar.GetDate(worldEvent.Tick)), summary, color);
     }
+
+    private EventRow FormatWorldChronicle(
+        WorldCenturyChronicleEntry entry,
+        WorldChronicleCategory category)
+    {
+        var summary = category switch
+        {
+            WorldChronicleCategory.History => FormatWorldHistorySummary(entry),
+            WorldChronicleCategory.Cultivation => FormatWorldCultivationHistory(entry),
+            WorldChronicleCategory.Ranking => FormatWorldRankingHistory(entry),
+            WorldChronicleCategory.LifeAndReincarnation => FormatWorldLifeHistory(entry),
+            _ => throw new ArgumentOutOfRangeException(nameof(category)),
+        };
+        return new EventRow(
+            $"제 {entry.CenturyNumber:N0}권 · 세계력 {entry.StartYear:N0}~{entry.EndYear:N0}년",
+            summary,
+            (Brush)FindResource("AccentBrush"));
+    }
+
+    private static bool MatchesWorldLogCategory(
+        WorldEventKind kind,
+        WorldLogCategory category) => category switch
+    {
+        WorldLogCategory.All => true,
+        WorldLogCategory.Competition => kind is WorldEventKind.NewLeader,
+        WorldLogCategory.Combat => kind is
+            WorldEventKind.CombatStarted
+            or WorldEventKind.CombatPhysicalAttack
+            or WorldEventKind.CombatSpellCast
+            or WorldEventKind.CombatGuarded
+            or WorldEventKind.CombatRetreated
+            or WorldEventKind.CombatEnded
+            or WorldEventKind.CombatInjury
+            or WorldEventKind.CombatDeath
+            or WorldEventKind.MonsterHuntWon
+            or WorldEventKind.MonsterHuntLost,
+        WorldLogCategory.Cultivation => kind is
+            WorldEventKind.BreakthroughSucceeded
+            or WorldEventKind.BreakthroughFailed
+            or WorldEventKind.MinorStageBreakthrough
+            or WorldEventKind.BottleneckBreakthrough
+            or WorldEventKind.MajorRealmBreakthrough
+            or WorldEventKind.CultivationEntered
+            or WorldEventKind.GreatPerfectionAchieved
+            or WorldEventKind.TechniqueEnlightenment
+            or WorldEventKind.SpellEnlightenment
+            or WorldEventKind.TechniqueAcquired
+            or WorldEventKind.SpellAcquired,
+        WorldLogCategory.Economy => kind is
+            WorldEventKind.MissionCompleted
+            or WorldEventKind.TreasureCrafted
+            or WorldEventKind.PillCrafted
+            or WorldEventKind.PillPurchased
+            or WorldEventKind.MaterialSold
+            or WorldEventKind.MaterialPurchased
+            or WorldEventKind.TreasurePurchased
+            or WorldEventKind.TechniqueBookPurchased
+            or WorldEventKind.SpellBookPurchased
+            or WorldEventKind.SpiritStoneMined,
+        WorldLogCategory.Reincarnation => kind is
+            WorldEventKind.Death
+            or WorldEventKind.CombatDeath
+            or WorldEventKind.ReincarnationEntered
+            or WorldEventKind.Rebirth,
+        _ => throw new ArgumentOutOfRangeException(nameof(category)),
+    };
+
+    private static string FormatWorldHistorySummary(WorldCenturyChronicleEntry entry)
+    {
+        var cultivation = FormatWorldCultivationHistory(entry);
+        var ranking = FormatWorldRankingHistory(entry);
+        var life = FormatWorldLifeHistory(entry);
+        return $"이 백 년의 수행사: {cultivation}  경쟁사: {ranking}  생사록: {life}  " +
+            $"세간에서는 전투 {KoreanNumberFormatter.Format(entry.CombatsCompleted)}회, " +
+            $"요수 사냥 {KoreanNumberFormatter.Format(entry.MonsterHunts)}회, " +
+            $"도시 임무 {KoreanNumberFormatter.Format(entry.MissionsCompleted)}회가 이루어졌다.";
+    }
+
+    private static string FormatWorldCultivationHistory(WorldCenturyChronicleEntry entry)
+    {
+        var realms = new List<string>(RealmRules.All.Count);
+        for (var realm = 0; realm < RealmRules.All.Count; realm++)
+        {
+            var count = entry.RealmBreakthroughCounts[realm];
+            if (count == 0)
+            {
+                continue;
+            }
+
+            realms.Add(
+                $"{FormatRealmStage((RealmStage)realm)} " +
+                $"{KoreanNumberFormatter.Format(entry.RealmBreakthroughUniqueCounts[realm])}명·" +
+                $"{KoreanNumberFormatter.Format(count)}회");
+        }
+
+        return realms.Count == 0
+            ? "대경지 돌파 기록이 없었다."
+            : $"{string.Join(", ", realms)}의 대경지 돌파가 기록되었다.";
+    }
+
+    private static string FormatWorldRankingHistory(WorldCenturyChronicleEntry entry)
+    {
+        static string FormatChanges(long[] values) =>
+            $"TOP 1 {KoreanNumberFormatter.Format(values[0])}회 · " +
+            $"TOP 3 {KoreanNumberFormatter.Format(values[1])}회 · " +
+            $"TOP 5 {KoreanNumberFormatter.Format(values[2])}회 · " +
+            $"TOP 10 {KoreanNumberFormatter.Format(values[3])}회";
+
+        return $"전투력 [{FormatChanges(entry.CombatPowerPositionChanges)}], " +
+            $"경지 [{FormatChanges(entry.RealmPositionChanges)}], " +
+            $"자질 [{FormatChanges(entry.AptitudePositionChanges)}], " +
+            $"부자 [{FormatChanges(entry.WealthPositionChanges)}]. " +
+            $"세기 말 1위는 전투력 {entry.CombatPowerLeader.Name}, " +
+            $"경지 {entry.RealmLeader.Name}, 자질 {entry.AptitudeLeader.Name}, " +
+            $"부자 {entry.WealthLeader.Name}였다.";
+    }
+
+    private static string FormatWorldLifeHistory(WorldCenturyChronicleEntry entry) =>
+        $"{KoreanNumberFormatter.Format(entry.UniqueDeathCount)}명이 " +
+        $"{KoreanNumberFormatter.Format(entry.DeathCount)}회 죽었고, " +
+        $"{KoreanNumberFormatter.Format(entry.UniqueReincarnationEntryCount)}명이 " +
+        $"{KoreanNumberFormatter.Format(entry.ReincarnationEntryCount)}회 윤회의 강에 들었다. " +
+        $"{KoreanNumberFormatter.Format(entry.UniqueRebirthCount)}명이 " +
+        $"{KoreanNumberFormatter.Format(entry.RebirthCount)}회 환생했으며, " +
+        $"세기 말 강에 남은 영혼은 " +
+        $"{KoreanNumberFormatter.Format(entry.ReincarnationRiverResidentsAtEnd)}명이었다.";
 
     private static string FormatWorldEventSummary(
         WorldEvent worldEvent,
@@ -207,7 +340,7 @@ public partial class MainWindow
                 .Select(item => FormatWorldEventFileLine(snapshot, item, isPermanent: false))
                 .ToArray();
             var chronicle = snapshot.PermanentWorldChronicle
-                .Select(item => FormatWorldEventFileLine(snapshot, item, isPermanent: true))
+                .Select(FormatWorldChronicleFileLine)
                 .ToArray();
             var path = await _logService.ExportWorldAsync(recent, chronicle);
             _logService.AddDebug(DebugLogLevel.Information, $"세계 기록 수동 출력 완료 · {path}");
@@ -278,4 +411,9 @@ public partial class MainWindow
             $"[{(isPermanent ? "영구 연대기" : "세계 로그")}] " +
             FormatWorldEventSummary(worldEvent, primary, secondary);
     }
+
+    private static string FormatWorldChronicleFileLine(WorldCenturyChronicleEntry entry) =>
+        $"[영구 세계 연대기 · 제 {entry.CenturyNumber:N0}권 · " +
+        $"세계력 {entry.StartYear:N0}~{entry.EndYear:N0}년] " +
+        FormatWorldHistorySummary(entry);
 }

@@ -20,6 +20,10 @@ public sealed partial class World
         _aptitudeRankByAgent = new int[checkpoint.Agents.Length];
         _agentByWealthRank = new int[checkpoint.Agents.Length];
         _wealthRankByAgent = new int[checkpoint.Agents.Length];
+        _worldChronicle = new WorldCenturyChronicle(
+            checkpoint.Agents.Length,
+            GameCalendar.GetYear(Tick));
+        _worldChronicle.EntryRecorded += WorldChronicle_EntryRecorded;
         _monsterPopulations = checkpoint.Map?.MonsterPopulations is
             { Length: WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome } populations
                 ? populations.ToArray()
@@ -92,14 +96,20 @@ public sealed partial class World
                 });
         }
 
-        _worldChronicle.AddRange(checkpoint.SchemaVersion >= 15
-            ? checkpoint.WorldChronicle ?? Array.Empty<WorldEvent>()
-            : _events.Where(entry => entry.Kind == WorldEventKind.NewLeader));
-
         RefreshRankings(recordLeaderChange: false);
         if (checkpoint.SchemaVersion >= 15 && checkpoint.RankingHistory is { } rankingHistory)
         {
             _rankingHistory.Restore(rankingHistory);
+        }
+        if (checkpoint.SchemaVersion >= 17 && checkpoint.CenturyChronicle is { } centuryChronicle)
+        {
+            _worldChronicle = WorldCenturyChronicle.Restore(Population, centuryChronicle);
+            _worldChronicle.EntryRecorded += WorldChronicle_EntryRecorded;
+        }
+        else
+        {
+            _worldChronicle.RestoreLegacyRiverResidents(
+                _agents.Activities.Count(activity => activity == AgentActivity.Reincarnating));
         }
     }
 
@@ -252,8 +262,9 @@ public sealed partial class World
                 _lastMonsterRegenerationMonth),
             _eliteCombatChangedCounts.ToArray(),
             _eliteRealmChangedCounts.ToArray(),
-            _worldChronicle.ToArray(),
-            _rankingHistory.CreateCheckpoint());
+            Array.Empty<WorldEvent>(),
+            _rankingHistory.CreateCheckpoint(),
+            _worldChronicle.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -491,20 +502,28 @@ public sealed partial class World
         }
 
         if (checkpoint.SchemaVersion >= 15
-            && (checkpoint.WorldChronicle is null
-                || checkpoint.Events.Any(entry => string.IsNullOrWhiteSpace(entry.PrimaryName))
-                || checkpoint.WorldChronicle.Any(entry => !IsValidWorldEvent(
-                    entry,
-                    checkpoint.EventSequence,
-                    checkpoint.Tick,
-                    checkpoint.Agents.Length))
-                || checkpoint.WorldChronicle.Any(entry => string.IsNullOrWhiteSpace(entry.PrimaryName))
-                || !IsStrictlyIncreasingSequence(checkpoint.WorldChronicle)
+            && (checkpoint.Events.Any(entry => string.IsNullOrWhiteSpace(entry.PrimaryName))
                 || !IsValidRankingHistory(
                     checkpoint.RankingHistory,
                     checkpoint.Tick,
                     checkpoint.Agents.Length,
-                    requirePositionChangeTotals: checkpoint.SchemaVersion >= 16)))
+                    requirePositionChangeTotals: checkpoint.SchemaVersion >= 16)
+                || (checkpoint.SchemaVersion < 17
+                    && (checkpoint.WorldChronicle is null
+                        || checkpoint.WorldChronicle.Any(entry => !IsValidWorldEvent(
+                            entry,
+                            checkpoint.EventSequence,
+                            checkpoint.Tick,
+                            checkpoint.Agents.Length))
+                        || checkpoint.WorldChronicle.Any(entry =>
+                            string.IsNullOrWhiteSpace(entry.PrimaryName))
+                        || !IsStrictlyIncreasingSequence(checkpoint.WorldChronicle)))
+                || (checkpoint.SchemaVersion >= 17
+                    && (checkpoint.WorldChronicle is not { Length: 0 }
+                        || !IsValidWorldCenturyChronicle(
+                            checkpoint.CenturyChronicle,
+                            checkpoint.Tick,
+                            checkpoint.Agents.Length)))))
         {
             throw new InvalidDataException("세계 연대기 또는 기간별 랭킹 이력이 잘못되었습니다.");
         }
@@ -836,6 +855,178 @@ public sealed partial class World
         }
 
         return true;
+    }
+
+    private static bool IsValidWorldCenturyChronicle(
+        WorldCenturyChronicleCheckpoint? checkpoint,
+        long maximumTick,
+        int population)
+    {
+        if (checkpoint is not { } value
+            || value.Sequence < 0
+            || value.Entries is null
+            || value.Current is null)
+        {
+            return false;
+        }
+
+        var currentYear = GameCalendar.GetYear(new SimulationTick(maximumTick));
+        var expectedCenturyIndex = currentYear / WorldCenturyChronicle.YearsPerVolume;
+        if (value.Sequence != value.Entries.Length
+            || value.Entries.LongLength != expectedCenturyIndex)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < value.Entries.Length; index++)
+        {
+            var entry = value.Entries[index];
+            var expectedStartYear = checked((long)index * WorldCenturyChronicle.YearsPerVolume);
+            if (entry is null
+                || entry.Sequence != index + 1L
+                || entry.CenturyNumber != index + 1L
+                || entry.StartYear != expectedStartYear
+                || entry.EndYear != expectedStartYear + WorldCenturyChronicle.YearsPerVolume - 1
+                || !IsValidCenturyRealmCounts(
+                    entry.RealmBreakthroughCounts,
+                    entry.RealmBreakthroughUniqueCounts,
+                    population)
+                || !IsValidPositionChangeTotals(entry.CombatPowerPositionChanges)
+                || !IsValidPositionChangeTotals(entry.RealmPositionChanges)
+                || !IsValidPositionChangeTotals(entry.AptitudePositionChanges)
+                || !IsValidPositionChangeTotals(entry.WealthPositionChanges)
+                || !IsValidChronicleLeader(entry.CombatPowerLeader, population)
+                || !IsValidChronicleLeader(entry.RealmLeader, population)
+                || !IsValidChronicleLeader(entry.AptitudeLeader, population)
+                || !IsValidChronicleLeader(entry.WealthLeader, population)
+                || entry.DeathCount < 0
+                || entry.UniqueDeathCount is < 0 || entry.UniqueDeathCount > entry.DeathCount
+                || entry.ReincarnationEntryCount < 0
+                || entry.UniqueReincarnationEntryCount is < 0
+                    || entry.UniqueReincarnationEntryCount > entry.ReincarnationEntryCount
+                || entry.RebirthCount < 0
+                || entry.UniqueRebirthCount is < 0 || entry.UniqueRebirthCount > entry.RebirthCount
+                || entry.UniqueDeathCount > population
+                || entry.UniqueReincarnationEntryCount > population
+                || entry.UniqueRebirthCount > population
+                || entry.ReincarnationRiverResidentsAtEnd is < 0
+                    || entry.ReincarnationRiverResidentsAtEnd > population
+                || entry.CombatsCompleted < 0
+                || entry.MonsterHunts < 0
+                || entry.MissionsCompleted < 0
+                || entry.SpiritStonesMined < 0
+                || entry.TreasuresCrafted < 0
+                || entry.PillsCrafted < 0)
+            {
+                return false;
+            }
+        }
+
+        var current = value.Current;
+        var wordCount = checked((population + 63) / 64);
+        if (current.CenturyIndex != expectedCenturyIndex
+            || !IsValidCenturyRealmCounts(
+                current.RealmBreakthroughCounts,
+                current.RealmBreakthroughUniqueCounts,
+                population)
+            || current.RealmBreakthroughAgentBits is not { Length: var realmBitCount }
+            || realmBitCount != RealmRules.All.Count
+            || current.RealmBreakthroughAgentBits.Any(bits =>
+                !IsValidAgentBits(bits, wordCount, population))
+            || !IsValidPositionChangeTotals(current.CombatPowerPositionChanges)
+            || !IsValidPositionChangeTotals(current.RealmPositionChanges)
+            || !IsValidPositionChangeTotals(current.AptitudePositionChanges)
+            || !IsValidPositionChangeTotals(current.WealthPositionChanges)
+            || !IsValidRankingCache(current.PreviousCombatPowerTop, population)
+            || !IsValidRankingCache(current.PreviousRealmTop, population)
+            || !IsValidRankingCache(current.PreviousAptitudeTop, population)
+            || !IsValidRankingCache(current.PreviousWealthTop, population)
+            || !IsValidChronicleLeader(current.CombatPowerLeader, population)
+            || !IsValidChronicleLeader(current.RealmLeader, population)
+            || !IsValidChronicleLeader(current.AptitudeLeader, population)
+            || !IsValidChronicleLeader(current.WealthLeader, population)
+            || current.LastRankingSampleYear is < 0
+            || current.LastRankingSampleYear > currentYear
+            || current.DeathCount < 0
+            || current.UniqueDeathCount is < 0 || current.UniqueDeathCount > current.DeathCount
+            || !IsValidAgentBits(current.DeathAgentBits, wordCount, population)
+            || current.ReincarnationEntryCount < 0
+            || current.UniqueReincarnationEntryCount is < 0
+                || current.UniqueReincarnationEntryCount > current.ReincarnationEntryCount
+            || !IsValidAgentBits(current.ReincarnationEntryAgentBits, wordCount, population)
+            || current.RebirthCount < 0
+            || current.UniqueRebirthCount is < 0 || current.UniqueRebirthCount > current.RebirthCount
+            || !IsValidAgentBits(current.RebirthAgentBits, wordCount, population)
+            || current.ReincarnationRiverResidents is < 0
+                || current.ReincarnationRiverResidents > population
+            || current.CombatsCompleted < 0
+            || current.MonsterHunts < 0
+            || current.MissionsCompleted < 0
+            || current.SpiritStonesMined < 0
+            || current.TreasuresCrafted < 0
+            || current.PillsCrafted < 0)
+        {
+            return false;
+        }
+
+        for (var realm = 0; realm < RealmRules.All.Count; realm++)
+        {
+            if (WorldCenturyChronicle.CountSetBits(current.RealmBreakthroughAgentBits[realm])
+                    != current.RealmBreakthroughUniqueCounts[realm])
+            {
+                return false;
+            }
+        }
+
+        return WorldCenturyChronicle.CountSetBits(current.DeathAgentBits)
+                == current.UniqueDeathCount
+            && WorldCenturyChronicle.CountSetBits(current.ReincarnationEntryAgentBits)
+                == current.UniqueReincarnationEntryCount
+            && WorldCenturyChronicle.CountSetBits(current.RebirthAgentBits)
+                == current.UniqueRebirthCount;
+    }
+
+    private static bool IsValidCenturyRealmCounts(
+        int[]? counts,
+        int[]? uniqueCounts,
+        int population) =>
+        counts is { Length: var countLength }
+        && countLength == RealmRules.All.Count
+        && uniqueCounts is { Length: var uniqueLength }
+        && uniqueLength == RealmRules.All.Count
+        && counts.All(value => value >= 0)
+        && uniqueCounts.All(value => value is >= 0 && value <= population)
+        && counts.Zip(uniqueCounts).All(pair => pair.First >= pair.Second);
+
+    private static bool IsValidPositionChangeTotals(long[]? values) =>
+        values is { Length: WorldCenturyChronicle.RankingTierCount }
+        && values.All(value => value >= 0);
+
+    private static bool IsValidChronicleLeader(WorldChronicleLeader leader, int population) =>
+        leader.AgentId.Value is >= 0
+        && leader.AgentId.Value < population
+        && !string.IsNullOrWhiteSpace(leader.Name);
+
+    private static bool IsValidRankingCache(int[]? agents, int population) =>
+        agents is { Length: > 0 and <= WorldCenturyChronicle.RankingCacheSize }
+        && agents.All(agent => agent is >= 0 && agent < population)
+        && agents.Distinct().Count() == agents.Length;
+
+    private static bool IsValidAgentBits(ulong[]? bits, int wordCount, int population)
+    {
+        if (bits is not { Length: var length } || length != wordCount)
+        {
+            return false;
+        }
+
+        var usedBits = population & 63;
+        if (usedBits == 0)
+        {
+            return true;
+        }
+
+        var validMask = (1UL << usedBits) - 1;
+        return (bits[^1] & ~validMask) == 0;
     }
 
     private static bool IsValidRankingHistory(

@@ -6,6 +6,7 @@ namespace Chronicles.Simulation;
 public sealed class SimulationRunner : IDisposable
 {
     private const int MaximumPendingWorldEvents = 10_000;
+    private const int MaximumPendingWorldChronicles = 1_024;
     private readonly object _worldGate = new();
     private World _world;
     private readonly ManualResetEventSlim _stop = new(initialState: false);
@@ -17,11 +18,15 @@ public sealed class SimulationRunner : IDisposable
     private readonly ConcurrentQueue<WorldEventNotification> _pendingWorldEvents = new();
     private int _pendingWorldEventCount;
     private int _droppedWorldEventCount;
+    private readonly ConcurrentQueue<WorldCenturyChronicleEntry> _pendingWorldChronicles = new();
+    private int _pendingWorldChronicleCount;
+    private int _droppedWorldChronicleCount;
 
     public SimulationRunner(World world)
     {
         _world = world ?? throw new ArgumentNullException(nameof(world));
         _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
+        _world.WorldCenturyChronicleRecorded += World_WorldCenturyChronicleRecorded;
         _worker = new Thread(Run)
         {
             IsBackground = true,
@@ -147,6 +152,23 @@ public sealed class SimulationRunner : IDisposable
             Interlocked.Exchange(ref _droppedWorldEventCount, 0));
     }
 
+    public WorldCenturyChronicleFeed DrainWorldCenturyChronicleFeed()
+    {
+        var entries = new List<WorldCenturyChronicleEntry>(
+            Math.Min(
+                Volatile.Read(ref _pendingWorldChronicleCount),
+                MaximumPendingWorldChronicles));
+        while (_pendingWorldChronicles.TryDequeue(out var entry))
+        {
+            Interlocked.Decrement(ref _pendingWorldChronicleCount);
+            entries.Add(entry);
+        }
+
+        return new WorldCenturyChronicleFeed(
+            entries,
+            Interlocked.Exchange(ref _droppedWorldChronicleCount, 0));
+    }
+
     public WorldCheckpoint CreateCheckpoint()
     {
         lock (_worldGate)
@@ -162,13 +184,20 @@ public sealed class SimulationRunner : IDisposable
         lock (_worldGate)
         {
             _world.ImportantWorldEventRecorded -= World_ImportantWorldEventRecorded;
+            _world.WorldCenturyChronicleRecorded -= World_WorldCenturyChronicleRecorded;
             _world = restored;
             _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
+            _world.WorldCenturyChronicleRecorded += World_WorldCenturyChronicleRecorded;
             while (_pendingWorldEvents.TryDequeue(out _))
             {
             }
             Interlocked.Exchange(ref _pendingWorldEventCount, 0);
             Interlocked.Exchange(ref _droppedWorldEventCount, 0);
+            while (_pendingWorldChronicles.TryDequeue(out _))
+            {
+            }
+            Interlocked.Exchange(ref _pendingWorldChronicleCount, 0);
+            Interlocked.Exchange(ref _droppedWorldChronicleCount, 0);
         }
     }
 
@@ -188,6 +217,7 @@ public sealed class SimulationRunner : IDisposable
         lock (_worldGate)
         {
             _world.ImportantWorldEventRecorded -= World_ImportantWorldEventRecorded;
+            _world.WorldCenturyChronicleRecorded -= World_WorldCenturyChronicleRecorded;
         }
 
         _stop.Dispose();
@@ -232,6 +262,18 @@ public sealed class SimulationRunner : IDisposable
         {
             pending = Interlocked.Decrement(ref _pendingWorldEventCount);
             Interlocked.Increment(ref _droppedWorldEventCount);
+        }
+    }
+
+    private void World_WorldCenturyChronicleRecorded(WorldCenturyChronicleEntry entry)
+    {
+        _pendingWorldChronicles.Enqueue(entry);
+        var pending = Interlocked.Increment(ref _pendingWorldChronicleCount);
+        while (pending > MaximumPendingWorldChronicles
+            && _pendingWorldChronicles.TryDequeue(out _))
+        {
+            pending = Interlocked.Decrement(ref _pendingWorldChronicleCount);
+            Interlocked.Increment(ref _droppedWorldChronicleCount);
         }
     }
 }

@@ -70,14 +70,29 @@
                 <Grid Background="{StaticResource PanelBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
+                    <TabControl x:Name="WorldLogCategoryTabControl"
+                                Height="34"
+                                Margin="12,8,12,0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                SelectionChanged="RecordCategoryTabControl_SelectionChanged">
+                        <TabItem Header="전체" />
+                        <TabItem Header="경쟁" />
+                        <TabItem Header="전투" />
+                        <TabItem Header="수행" />
+                        <TabItem Header="경제" />
+                        <TabItem Header="윤회" />
+                    </TabControl>
                     <TextBlock x:Name="RecentCountText"
-                               Margin="14,10,14,6"
+                               Grid.Row="1"
+                               Margin="14,8,14,6"
                                Foreground="{StaticResource SecondaryTextBrush}"
                                FontSize="10" />
                     <ListBox x:Name="RecentEventList"
-                             Grid.Row="1"
+                             Grid.Row="2"
                              Background="Transparent"
                              BorderThickness="0"
                              Foreground="{StaticResource PrimaryTextBrush}"
@@ -100,14 +115,27 @@
                 <Grid Background="{StaticResource PanelBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
+                    <TabControl x:Name="WorldChronicleCategoryTabControl"
+                                Height="34"
+                                Margin="12,8,12,0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                SelectionChanged="RecordCategoryTabControl_SelectionChanged">
+                        <TabItem Header="역사서" />
+                        <TabItem Header="수행" />
+                        <TabItem Header="순위" />
+                        <TabItem Header="생사·윤회" />
+                    </TabControl>
                     <TextBlock x:Name="ChronicleCountText"
-                               Margin="14,10,14,6"
+                               Grid.Row="1"
+                               Margin="14,8,14,6"
                                Foreground="{StaticResource AccentBrush}"
                                FontSize="10" />
                     <ListBox x:Name="WorldChronicleList"
-                             Grid.Row="1"
+                             Grid.Row="2"
                              Background="Transparent"
                              BorderThickness="0"
                              Foreground="{StaticResource PrimaryTextBrush}"

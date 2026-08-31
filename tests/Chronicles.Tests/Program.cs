@@ -423,8 +423,10 @@ static void BirthAptitudesChronicleAndReincarnation()
     True(initialChronicle[0].Kind == ChronicleEventKind.Birth, "탄생 기록");
 
     var deathTick = GameCalendar.FromYears(150).Value;
+    var birthCheckpoint = initial.CreateCheckpoint();
+    initial.AdvanceTo(new SimulationTick(deathTick - 1));
     var checkpoint = initial.CreateCheckpoint();
-    var preparedAgent = checkpoint.Agents[0] with
+    var preparedAgent = birthCheckpoint.Agents[0] with
     {
         BirthTick = 0,
         RealmStage = RealmStage.QiRefining,
@@ -436,7 +438,6 @@ static void BirthAptitudesChronicleAndReincarnation()
     };
     var prepared = checkpoint with
     {
-        Tick = deathTick - 1,
         Agents = [preparedAgent],
     };
     var world = World.Restore(prepared);
@@ -678,7 +679,7 @@ static void CombatPowerAndRanking()
 static void WealthRankingHistoryAndWorldChronicle()
 {
     var world = World.Create(7901, 1_000);
-    for (var year = 1; year <= 30; year++)
+    for (var year = 1; year <= 210; year++)
     {
         world.AdvanceTo(GameCalendar.FromYears(year));
     }
@@ -721,12 +722,35 @@ static void WealthRankingHistoryAndWorldChronicle()
                 || row.WealthChangedCount > row.ComparedCount)),
         "다년 기간 자리 변동은 현재와 기준점의 차이가 아니라 연간 실제 변경 횟수를 누적");
 
+    Equal(2, snapshot.PermanentWorldChronicle.Count, "완료된 100년마다 세계 역사서 한 권");
+    var firstCentury = snapshot.PermanentWorldChronicle[0];
+    Equal(0L, firstCentury.StartYear, "첫 세계 역사서 시작 연도");
+    Equal(99L, firstCentury.EndYear, "첫 세계 역사서 종료 연도");
     True(
-        snapshot.PermanentWorldChronicle.Any(entry => entry.Kind == WorldEventKind.NewLeader),
-        "전투력 1위 변경은 영구 세계 연대기에 기록");
+        firstCentury.RealmBreakthroughCounts.Sum() > 0,
+        "세계 역사서는 대경지별 돌파 횟수를 압축");
     True(
-        snapshot.PermanentWorldChronicle.All(entry => !string.IsNullOrWhiteSpace(entry.PrimaryName)),
-        "영구 세계 연대기는 윤회 후에도 사건 당시 이름을 보존");
+        firstCentury.RealmBreakthroughUniqueCounts
+            .Zip(firstCentury.RealmBreakthroughCounts)
+            .All(pair => pair.First <= pair.Second),
+        "대경지별 고유 돌파 인원은 돌파 횟수를 넘지 않음");
+    True(
+        firstCentury.CombatPowerPositionChanges.Any(value => value > 0)
+            || firstCentury.RealmPositionChanges.Any(value => value > 0)
+            || firstCentury.AptitudePositionChanges.Any(value => value > 0)
+            || firstCentury.WealthPositionChanges.Any(value => value > 0),
+        "세계 역사서는 TOP 1·3·5·10 실제 자리 변경을 압축");
+    True(
+        !string.IsNullOrWhiteSpace(firstCentury.CombatPowerLeader.Name)
+            && !string.IsNullOrWhiteSpace(firstCentury.RealmLeader.Name)
+            && !string.IsNullOrWhiteSpace(firstCentury.AptitudeLeader.Name)
+            && !string.IsNullOrWhiteSpace(firstCentury.WealthLeader.Name),
+        "세계 역사서는 세기 말 각 랭킹 1위를 보존");
+    True(
+        firstCentury.DeathCount >= firstCentury.UniqueDeathCount
+            && firstCentury.ReincarnationEntryCount >= firstCentury.UniqueReincarnationEntryCount
+            && firstCentury.RebirthCount >= firstCentury.UniqueRebirthCount,
+        "세계 역사서는 사망·윤회·환생 횟수와 고유 인원을 함께 보존");
     var chronicleTail = world.CreateSnapshot(
         rankingCount: 1,
         eventCount: 0,
@@ -743,7 +767,10 @@ static void WealthRankingHistoryAndWorldChronicle()
     }
     var checkpoint = world.CreateCheckpoint();
     True(checkpoint.RankingHistory?.Frames is { Length: > 1 }, "기간별 랭킹 이력 저장");
-    True(checkpoint.WorldChronicle?.Length == snapshot.PermanentWorldChronicle.Count, "세계 연대기 저장 수");
+    Equal(0, checkpoint.WorldChronicle?.Length ?? -1, "schema 17은 개인 사건형 구 세계 연대기를 비움");
+    True(
+        checkpoint.CenturyChronicle?.Entries.Length == snapshot.PermanentWorldChronicle.Count,
+        "100년 세계 역사서 저장 수");
     var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
     Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "랭킹 이력·세계 연대기 저장 상태 hash");
 }
@@ -1121,7 +1148,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 16, "누적 자리 변동 저장 schema 16");
+    True(checkpoint.SchemaVersion == 17, "100년 세계 역사서 저장 schema 17");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");
@@ -1574,7 +1601,15 @@ static void SaveCodecRoundTrip()
         checkpoint.Agents[^1].Chronicle.SequenceEqual(decoded.Agents[^1].Chronicle),
         "저장 왕복 마지막 Agent 일대기");
     Equal(checkpoint.Events.Length, decoded.Events.Length, "저장 왕복 사건 수");
-    Equal(checkpoint.WorldChronicle?.Length ?? 0, decoded.WorldChronicle?.Length ?? 0, "저장 왕복 세계 연대기 수");
+    Equal(checkpoint.WorldChronicle?.Length ?? 0, decoded.WorldChronicle?.Length ?? 0, "저장 왕복 구 세계 연대기 수");
+    Equal(
+        checkpoint.CenturyChronicle?.Entries.Length ?? 0,
+        decoded.CenturyChronicle?.Entries.Length ?? 0,
+        "저장 왕복 100년 세계 역사서 수");
+    Equal(
+        checkpoint.CenturyChronicle?.Current.CenturyIndex ?? -1,
+        decoded.CenturyChronicle?.Current.CenturyIndex ?? -1,
+        "저장 왕복 현재 세계 역사서 세기");
     Equal(checkpoint.RankingHistory?.Frames.Length ?? 0, decoded.RankingHistory?.Frames.Length ?? 0, "저장 왕복 랭킹 이력 수");
     if (checkpoint.Events.Length > 0)
     {

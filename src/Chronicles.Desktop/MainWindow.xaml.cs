@@ -34,8 +34,10 @@ public partial class MainWindow : Window, IDisposable
     private int _observationDispatchQueued;
     private long _projectedRecentEventSequence = long.MinValue;
     private int _projectedRecentEventCount = -1;
+    private WorldLogCategory? _projectedWorldLogCategory;
     private long _projectedWorldChronicleSequence = long.MinValue;
     private int _projectedWorldChronicleCount = -1;
+    private WorldChronicleCategory? _projectedWorldChronicleCategory;
     private long _projectedDebugVersion = long.MinValue;
     private readonly GameLogService _logService = new();
 
@@ -220,6 +222,9 @@ public partial class MainWindow : Window, IDisposable
             _logService.CaptureWorldFeed(
                 runner.DrainWorldEventFeed(),
                 FormatWorldEventNotification);
+            _logService.CaptureWorldChronicleFeed(
+                runner.DrainWorldCenturyChronicleFeed(),
+                FormatWorldChronicleFileLine);
         }
         WorldTickText.Text = FormatGameDate(GameCalendar.GetDate(snapshot.Tick));
         PopulationText.Text = KoreanNumberFormatter.Format(snapshot.Population);
@@ -744,8 +749,10 @@ public partial class MainWindow : Window, IDisposable
             _runner.RestoreCheckpoint(checkpoint);
             _projectedRecentEventSequence = long.MinValue;
             _projectedRecentEventCount = -1;
+            _projectedWorldLogCategory = null;
             _projectedWorldChronicleSequence = long.MinValue;
             _projectedWorldChronicleCount = -1;
+            _projectedWorldChronicleCategory = null;
             _selectedAgent = null;
             RefreshVisibleObservation();
             StatusText.Text = $"불러오기 완료 · {WorldSaveStore.DefaultPath}";

@@ -424,6 +424,18 @@ public sealed partial class World
         }
 
         _agents.RealmStages[index]++;
+        // 본명법보는 소유자와 함께 새 대경지 급으로 승급한다. 시장에서 산 법보와
+        // 단약은 이전 대경지 전용이므로 새 대경지에서는 다시 마련해야 한다.
+        _agents.SetTreasureQuality(
+            index,
+            TreasureSlot.DefenseTreasure,
+            EconomyRules.EmptyTreasureQuality);
+        _agents.SetTreasureQuality(
+            index,
+            TreasureSlot.AttackTreasure,
+            EconomyRules.EmptyTreasureQuality);
+        _agents.GrowthPills[index] = 0;
+        _agents.BreakthroughPills[index] = 0;
         _agents.RealmLayers[index] = 1;
         _agents.CultivationProgress[index] = 0;
         _agents.PendingCultivationWork[index] = 0;

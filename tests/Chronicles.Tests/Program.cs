@@ -456,11 +456,15 @@ static void WorldPersonalLogsAndPermanentChronicle()
     var endTick = GameCalendar.GetMonthStart(180).Value - 1;
     world.AdvanceTo(new SimulationTick(endTick));
     var personalLog = world.GetAgentPersonalLog(new AgentId(0));
-    Equal(World.PersonalLogCapacity, personalLog.Count, "개인 로그 최대 100줄");
+    True(personalLog.Count <= World.PersonalLogCapacity, "개인 로그 최대 100줄");
     True(
         personalLog.Zip(personalLog.Skip(1), (left, right) => left.Sequence < right.Sequence).All(value => value),
         "개인 로그는 발생 순서대로 유지되어야 합니다.");
     True(personalLog.Any(entry => entry.Kind == PersonalLogKind.ActionCompleted), "개인 행동 로그");
+    True(
+        personalLog.Any(entry =>
+            entry.Kind == PersonalLogKind.ActionCompleted && entry.Value > 1),
+        "같은 장기 행동은 로그 행 추가 대신 기간 수치를 갱신");
 
     var restoredLogWorld = World.Restore(world.CreateCheckpoint());
     True(
@@ -580,8 +584,13 @@ static void SkillMasteryUnderstandingAndImmutableQuality()
         Equal(originalQualities[index], agent.TechniqueQuality.Hundredths, "수련·깨달음은 공법 품질 불변");
         True(agent.TechniqueTrainingExperience > 0, "공법 수련 경험 누적");
         True(agent.TechniqueMastery > 0, "누적 경험으로 숙련도 상승");
-        if (world.GetAgentChronicle(new AgentId(index))
-            .Any(item => item.Kind == ChronicleEventKind.TechniqueEnlightenment))
+        True(
+            world.GetAgentChronicle(new AgentId(index)).All(item =>
+                item.Kind is not ChronicleEventKind.TechniqueEnlightenment
+                    and not ChronicleEventKind.SpellEnlightenment),
+            "깨달음은 영구 연대기에 기록하지 않아야 합니다.");
+        if (world.GetAgentPersonalLog(new AgentId(index))
+            .Any(item => item.WorldEventKind == WorldEventKind.TechniqueEnlightenment))
         {
             enlightenmentCount++;
             True(agent.TechniqueUnderstanding > 0, "깨달음은 이해도만 상승");
@@ -1013,7 +1022,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 13, "전투 성장 저장 schema 13");
+    True(checkpoint.SchemaVersion == 14, "경제·지도 상세 저장 schema 14");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");
@@ -1060,12 +1069,21 @@ static void WorldMapAndBiomeMonsters()
 
     var world = World.Create(9009, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
-    var snapshot = world.CreateSnapshot(25, 25);
+    var occupiedLocation = world.GetAgentSnapshot(world.LeaderId).LocationId;
+    var snapshot = world.CreateSnapshot(25, 25, ObservationSections.All, occupiedLocation);
     Equal(world.Population, snapshot.Map.Locations.Sum(location => location.Population), "지도 인구 보존");
     True(snapshot.Map.Locations.Count(location => location.Population > 0) > 1, "AI 지도 이동");
     True(world.TotalMonsterHunts > 0, "요수 사냥 누계");
     True(world.TotalMonsterVictories > 0, "요수 사냥 승리 누계");
     True(world.TotalMonsterVictories <= world.TotalMonsterHunts, "요수 사냥 집계 보존");
+    var detailedLocation = snapshot.Map.Locations[occupiedLocation];
+    True(detailedLocation.Agents.Count > 0, "선택 지도 칸 수선자 상세 조회");
+    True(
+        snapshot.Map.Locations
+            .Where(location => location.Biome != BiomeType.City)
+            .SelectMany(location => location.Monsters)
+            .All(monster => monster.Population is >= 0 and <= WorldMapRules.MaximumMonsterPopulation),
+        "요수 개체 수 범위");
     True(
         Enumerable.Range(0, world.Population)
             .Select(index => world.GetAgentSnapshot(new AgentId(index)))
@@ -1194,18 +1212,28 @@ static void WorldStatisticsQuery()
 
 static void EconomyLoop()
 {
-    Equal(30, EconomyRules.AllMaterials.Count, "전체 재료 수");
-    Equal(10, EconomyRules.AllMaterials.Count(item => item.Category == MaterialCategory.Treasure), "법보 재료 수");
-    Equal(10, EconomyRules.AllMaterials.Count(item => item.Category == MaterialCategory.Pill), "단약 재료 수");
-    Equal(10, EconomyRules.AllMaterials.Count(item => item.Category == MaterialCategory.Miscellaneous), "기타 재료 수");
-    Equal(7, EconomyRules.TreasureSlotCount, "법보 장착 슬롯 수");
+    Equal(2, EconomyRules.AllMaterials.Count, "간략화 재료 수");
+    Equal(1, EconomyRules.AllMaterials.Count(item => item.Category == MaterialCategory.Treasure), "법보 재료 수");
+    Equal(1, EconomyRules.AllMaterials.Count(item => item.Category == MaterialCategory.Pill), "단약 재료 수");
+    Equal(3, EconomyRules.TreasureSlotCount, "본명·방어·공격 법보 슬롯 수");
+    Equal(44, EconomyRules.MarketGoodCount, "대경지별 완제품 포함 시장 상품 수");
+    True(
+        EconomyRules.GetPillGoodId(PillKind.Growth, RealmStage.QiRefining)
+            != EconomyRules.GetPillGoodId(PillKind.Growth, RealmStage.FoundationEstablishment),
+        "성장 단약은 대경지별 별도 상품");
+    var high7999 = EconomyRules.GetQualityPriceMultiplierBasisPoints(new QualityValue(7_999));
+    var extreme8000 = EconomyRules.GetQualityPriceMultiplierBasisPoints(new QualityValue(8_000));
+    var extreme8100 = EconomyRules.GetQualityPriceMultiplierBasisPoints(new QualityValue(8_100));
+    Equal(high7999 * 2, extreme8000, "79.99→80.00 가격 격차는 품질 효과보다 2배 확대");
+    Equal(extreme8000 * 2, extreme8100, "80 이상 품질 1.00마다 가격 2배");
 
     var world = World.Create(707, 2_000);
     var initialMarket = world.CreateSnapshot(1, 0).Market;
     Equal(EconomyRules.MarketGoodCount, initialMarket.Goods.Count, "시장 상품 수");
     True(
-        initialMarket.Goods.All(item => item.CurrentPrice == item.CityBasePrice),
-        "시장 초기 가격은 도시 기준가여야 합니다.");
+        initialMarket.Goods.Where(item => item.AverageQuality is null)
+            .All(item => item.CurrentPrice == item.CityBasePrice),
+        "품질 없는 초기 상품 가격은 도시 기준가");
     world.AdvanceTo(new SimulationTick(24_000));
     True(world.TotalMissionsCompleted > 0, "도시 임무가 완료되어야 합니다.");
     True(world.TotalTreasuresCrafted > 0, "법보 제작이 발생해야 합니다.");
@@ -1227,12 +1255,16 @@ static void EconomyLoop()
         "도시는 영석으로 법술서를 생산해야 합니다.");
     True(market.PurchaseTransactions > 0, "도시 시장 구매 거래 누계");
     True(market.SaleTransactions > 0, "도시 시장 판매 거래 누계");
-    Equal((long)world.TotalMissionsCompleted, market.MissionDeliveries, "도시 임무 납품 누계");
+    Equal(
+        (long)world.TotalMissionsCompleted,
+        market.MissionDeliveries + market.MiningMissionCount,
+        "재료 납품·채굴 임무 누계");
     True(market.MaterialsProcessed > 0, "도시 가공 재료 누계");
     True(market.PillsProduced > 0, "도시 단약 생산 누계");
     True(market.TreasuresProduced > 0, "도시 법보 생산 누계");
     True(market.TechniqueBooksProduced > 0, "도시 공법서 생산 누계");
     True(market.SpellBooksProduced > 0, "도시 법술서 생산 누계");
+    True(market.SpiritStonesMined > 0, "도시 유한 광맥 채굴 누계");
 
     var agentsWithEquipment = 0;
     var agentsWithPills = 0;
@@ -1240,7 +1272,9 @@ static void EconomyLoop()
     for (var index = 0; index < world.Population; index++)
     {
         var agent = world.GetAgentSnapshot(new AgentId(index));
-        Equal(7, agent.EquippedTreasures.Count, "개별 법보 슬롯 수");
+        Equal(3, agent.EquippedTreasures.Count, "개별 법보 슬롯 수");
+        True(agent.TechniqueQuality.Hundredths <= 7_999, "시작 공법 품질 상한 79.99");
+        True(agent.SpellQuality.Hundredths <= 7_999, "시작 법술 품질 상한 79.99");
         Equal(agent.InventoryItemCount, agent.Materials.Sum(item => item.Count), "개별 재료 상세 합계");
         if (agent.EquippedTreasures.Any(item => item.Quality is not null))
         {

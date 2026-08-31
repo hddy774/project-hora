@@ -68,10 +68,25 @@ public sealed record CityMarketCheckpoint(
     long TechniqueBooksProduced,
     long SpellBooksProduced,
     int[] Stock,
-    int[] Prices,
+    long[] Prices,
     long[] Supply,
     long[] Demand,
-    long TreasureQualityHundredths);
+    long TreasureQualityHundredths,
+    long[]? QualityHundredths = null,
+    CityProductionCheckpoint[]? ProductionQueue = null,
+    long LastIndustryMonth = 0,
+    long SpiritStonesMined = 0,
+    long RemainingSpiritStoneOre = 0,
+    long MiningMissionCount = 0,
+    long SpiritStoneReserveTarget = 0);
+
+public readonly record struct CityProductionCheckpoint(
+    int GoodId,
+    ushort QualityHundredths,
+    int CompletedMonths,
+    int RequiredMonths,
+    int MaterialCost,
+    long SpiritStoneCost);
 
 public sealed record WorldCheckpoint(
     int SchemaVersion,
@@ -101,7 +116,9 @@ public sealed record WorldCheckpoint(
     int RankingUnchangedCount,
     long RankingTotalAbsoluteMovement,
     CityMarketCheckpoint Market,
-    WorldMapCheckpoint? Map = null)
+    WorldMapCheckpoint? Map = null,
+    int[]? EliteCombatChangedCounts = null,
+    int[]? EliteRealmChangedCounts = null)
 {
-    public const int CurrentSchemaVersion = 13;
+    public const int CurrentSchemaVersion = 14;
 }

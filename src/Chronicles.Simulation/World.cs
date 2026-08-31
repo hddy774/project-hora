@@ -16,6 +16,7 @@ public sealed partial class World
     private readonly int[] _realmRankByAgent;
     private readonly int[] _agentByAptitudeRank;
     private readonly int[] _aptitudeRankByAgent;
+    private readonly int[] _monsterPopulations;
     private readonly Queue<WorldEvent> _events = new(WorldLogCapacity);
     private long _eventSequence;
     private long _chronicleSequence;
@@ -33,12 +34,15 @@ public sealed partial class World
     private int _totalMaterialsSold;
     private int _totalMonsterHunts;
     private int _totalMonsterVictories;
+    private long _lastMonsterRegenerationMonth;
     private long _lastRankingRefreshTick;
     private long _rankingMovementFromTick;
     private int _rankingRisenCount;
     private int _rankingFallenCount;
     private int _rankingUnchangedCount;
     private long _rankingTotalAbsoluteMovement;
+    private readonly int[] _eliteCombatChangedCounts = new int[4];
+    private readonly int[] _eliteRealmChangedCounts = new int[4];
 
     private World(ulong seed, int population)
     {
@@ -52,6 +56,7 @@ public sealed partial class World
         _realmRankByAgent = new int[population];
         _agentByAptitudeRank = new int[population];
         _aptitudeRankByAgent = new int[population];
+        _monsterPopulations = CreateInitialMonsterPopulations();
 
         for (var index = 0; index < population; index++)
         {
@@ -107,6 +112,8 @@ public sealed partial class World
             }
 
             Tick = new SimulationTick(dueTick);
+            AdvanceCityIndustry(GameCalendar.GetMonthIndex(Tick));
+            RegenerateMonsters(GameCalendar.GetMonthIndex(Tick));
             var actionMonth = GameCalendar.GetMonthIndex(Tick);
             if (_agents.LastActionMonths[agentIndex] >= actionMonth)
             {
@@ -146,7 +153,20 @@ public sealed partial class World
         }
 
         Tick = targetTick;
+        AdvanceCityIndustry(GameCalendar.GetMonthIndex(Tick));
+        RegenerateMonsters(GameCalendar.GetMonthIndex(Tick));
         RefreshRankings(recordLeaderChange: true);
+    }
+
+    private void AdvanceCityIndustry(long currentMonth)
+    {
+        var pillsBefore = _market.PillsProduced;
+        var treasuresBefore = _market.TreasuresProduced;
+        _market.AdvanceIndustry(currentMonth);
+        _totalPillsCrafted = checked(
+            _totalPillsCrafted + (int)(_market.PillsProduced - pillsBefore));
+        _totalTreasuresCrafted = checked(
+            _totalTreasuresCrafted + (int)(_market.TreasuresProduced - treasuresBefore));
     }
 
     public AgentSnapshot GetAgentSnapshot(AgentId agentId)
@@ -211,13 +231,29 @@ public sealed partial class World
             GetMaterialHoldingSnapshots(index),
             GetEquippedTreasureSnapshots(index),
             _agents.Power[index],
-            CreateCultivationProjection(index));
+            CreateCultivationProjection(index),
+            CombatPowerFormula.CalculateDetailed(
+                _agents.RealmStages[index],
+                _agents.RealmLayers[index],
+                _agents.GetAptitudes(index),
+                AptitudeCombatBonusFormula.Calculate(_agents.GetAptitudes(index)),
+                new QualityValue(_agents.TechniqueQualities[index]),
+                _agents.TechniqueMasteries[index],
+                _agents.TechniqueUnderstanding[index],
+                new QualityValue(_agents.SpellQualities[index]),
+                _agents.SpellMasteries[index],
+                _agents.SpellUnderstanding[index],
+                _agents.CombatExperience[index],
+                CombatProgressionRules.GetMasteryHundredths(_agents.CombatExperience[index]),
+                _agents.CombatUnderstanding[index],
+                _agents.GetTreasurePower(index)));
     }
 
     public WorldSnapshot CreateSnapshot(
         int rankingCount = 1_000,
         int eventCount = 100,
-        ObservationSections sections = ObservationSections.All)
+        ObservationSections sections = ObservationSections.All,
+        ushort? detailedMapLocationId = null)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rankingCount);
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
@@ -248,7 +284,7 @@ public sealed partial class World
             ? _market.CreateSnapshot((sections & ObservationSections.MarketGoods) != 0)
             : CityMarketSnapshot.Empty;
         var map = (sections & ObservationSections.Map) != 0
-            ? CreateMapSnapshot()
+            ? CreateMapSnapshot(detailedMapLocationId)
             : WorldMapSnapshot.Empty;
 
         var recentEvents = (sections & ObservationSections.WorldLog) != 0
@@ -358,6 +394,11 @@ public sealed partial class World
         Add(ref hash, (ulong)_rankingFallenCount);
         Add(ref hash, (ulong)_rankingUnchangedCount);
         Add(ref hash, (ulong)_rankingTotalAbsoluteMovement);
+        for (var tier = 0; tier < _eliteCombatChangedCounts.Length; tier++)
+        {
+            Add(ref hash, (ulong)_eliteCombatChangedCounts[tier]);
+            Add(ref hash, (ulong)_eliteRealmChangedCounts[tier]);
+        }
         var market = _market.CreateCheckpoint();
         Add(ref hash, (ulong)market.TreasurySpiritStones);
         Add(ref hash, (ulong)market.PurchaseTransactions);
@@ -369,12 +410,32 @@ public sealed partial class World
         Add(ref hash, (ulong)market.TechniqueBooksProduced);
         Add(ref hash, (ulong)market.SpellBooksProduced);
         Add(ref hash, (ulong)market.TreasureQualityHundredths);
+        Add(ref hash, (ulong)market.LastIndustryMonth);
+        Add(ref hash, (ulong)market.SpiritStonesMined);
+        Add(ref hash, (ulong)market.RemainingSpiritStoneOre);
+        Add(ref hash, (ulong)market.MiningMissionCount);
+        Add(ref hash, (ulong)market.SpiritStoneReserveTarget);
         for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
         {
             Add(ref hash, (ulong)market.Stock[goodId]);
             Add(ref hash, (ulong)market.Prices[goodId]);
             Add(ref hash, (ulong)market.Supply[goodId]);
             Add(ref hash, (ulong)market.Demand[goodId]);
+            Add(ref hash, (ulong)(market.QualityHundredths?[goodId] ?? 0));
+        }
+        foreach (var order in market.ProductionQueue ?? Array.Empty<CityProductionCheckpoint>())
+        {
+            Add(ref hash, (ulong)order.GoodId);
+            Add(ref hash, order.QualityHundredths);
+            Add(ref hash, (ulong)order.CompletedMonths);
+            Add(ref hash, (ulong)order.RequiredMonths);
+            Add(ref hash, (ulong)order.MaterialCost);
+            Add(ref hash, (ulong)order.SpiritStoneCost);
+        }
+        Add(ref hash, (ulong)_lastMonsterRegenerationMonth);
+        foreach (var population in _monsterPopulations)
+        {
+            Add(ref hash, (ulong)population);
         }
         for (var index = 0; index < Population; index++)
         {
@@ -569,6 +630,9 @@ public sealed partial class World
                 return false;
             case AgentActivity.HuntingMonster:
                 return ResolveMonsterHunt(index);
+            case AgentActivity.MiningSpiritStones:
+                ResolveSpiritStoneMining(index);
+                return false;
             default:
                 throw new InvalidOperationException("알 수 없는 AI 행동입니다.");
         }
@@ -598,10 +662,6 @@ public sealed partial class World
                 _agents.TechniqueUnderstanding[index],
                 _agents.Comprehensions[index],
                 effectBasisPoints);
-            AddChronicle(
-                index,
-                ChronicleEventKind.TechniqueEnlightenment,
-                _agents.TechniqueUnderstanding[index]);
             AddEvent(
                 WorldEventKind.TechniqueEnlightenment,
                 index,
@@ -633,10 +693,6 @@ public sealed partial class World
                 _agents.SpellUnderstanding[index],
                 _agents.Comprehensions[index],
                 effectBasisPoints);
-            AddChronicle(
-                index,
-                ChronicleEventKind.SpellEnlightenment,
-                _agents.SpellUnderstanding[index]);
             AddEvent(
                 WorldEventKind.SpellEnlightenment,
                 index,
@@ -693,7 +749,9 @@ public sealed partial class World
                     CultivationBottleneckCause.Body => AgentActivity.Recovering,
                     CultivationBottleneckCause.SpiritualRoot => AgentActivity.Recovering,
                     CultivationBottleneckCause.Resources =>
-                        _agents.SpiritStones[index] >= _market.GetPrice(EconomyRules.BreakthroughPillGoodId)
+                        _agents.SpiritStones[index] >= _market.GetPrice(EconomyRules.GetPillGoodId(
+                            PillKind.Breakthrough,
+                            _agents.RealmStages[index]))
                             ? AgentActivity.TradingInCity
                             : AgentActivity.DoingCityMission,
                     CultivationBottleneckCause.Stability => AgentActivity.Recovering,
@@ -771,6 +829,7 @@ public sealed partial class World
             AgentActivity.CraftingPill => 90,
             AgentActivity.Traveling => CalculateTravelDuration(index),
             AgentActivity.HuntingMonster => CalculateMonsterHuntDuration(index),
+            AgentActivity.MiningSpiritStones => 90,
             _ => throw new InvalidOperationException("알 수 없는 AI 행동입니다."),
         };
     }
@@ -778,8 +837,12 @@ public sealed partial class World
     private void RefreshRankings(bool recordLeaderChange)
     {
         var previousLeader = _agentByRank[0];
+        Span<int> previousCombatTop = stackalloc int[Math.Min(10, Population)];
+        Span<int> previousRealmTop = stackalloc int[Math.Min(10, Population)];
         if (recordLeaderChange)
         {
+            _agentByRank.AsSpan(0, previousCombatTop.Length).CopyTo(previousCombatTop);
+            _agentByRealmRank.AsSpan(0, previousRealmTop.Length).CopyTo(previousRealmTop);
             _rankingRisenCount = 0;
             _rankingFallenCount = 0;
             _rankingUnchangedCount = 0;
@@ -815,6 +878,28 @@ public sealed partial class World
 
         if (recordLeaderChange)
         {
+            ReadOnlySpan<int> eliteLimits = [1, 3, 5, 10];
+            for (var tier = 0; tier < eliteLimits.Length; tier++)
+            {
+                var count = Math.Min(eliteLimits[tier], Population);
+                var combatChanged = 0;
+                var realmChanged = 0;
+                for (var offset = 0; offset < count; offset++)
+                {
+                    if (_agentByRank[offset] != previousCombatTop[offset])
+                    {
+                        combatChanged++;
+                    }
+                    if (_agentByRealmRank[offset] != previousRealmTop[offset])
+                    {
+                        realmChanged++;
+                    }
+                }
+
+                _eliteCombatChangedCounts[tier] = combatChanged;
+                _eliteRealmChangedCounts[tier] = realmChanged;
+            }
+
             _rankingMovementFromTick = _lastRankingRefreshTick;
             _lastRankingRefreshTick = Tick.Value;
             _rankingUnchangedCount = Population - _rankingRisenCount - _rankingFallenCount;
@@ -932,14 +1017,33 @@ public sealed partial class World
         or WorldEventKind.GreatPerfectionAchieved
         or WorldEventKind.TechniqueAcquired
         or WorldEventKind.SpellAcquired
-        or WorldEventKind.TechniqueEnlightenment
-        or WorldEventKind.SpellEnlightenment
         or WorldEventKind.Death
         or WorldEventKind.CombatDeath
         or WorldEventKind.ReincarnationEntered
         or WorldEventKind.Rebirth;
 
-    private void AddPersonalActionLog(int index, AgentActivity activity) =>
+    private void AddPersonalActionLog(int index, AgentActivity activity)
+    {
+        var log = _agents.PersonalLogs[index];
+        if (log.Count > 0)
+        {
+            var latest = log[^1];
+            if (latest.Kind == PersonalLogKind.ActionCompleted
+                && latest.Activity == activity
+                && latest.LifeNumber == _agents.LifeNumbers[index])
+            {
+                var elapsedMonths = Math.Max(
+                    1L,
+                    GameCalendar.GetMonthIndex(Tick) - GameCalendar.GetMonthIndex(latest.Tick));
+                log[^1] = latest with
+                {
+                    Tick = Tick,
+                    Value = checked(Math.Max(1L, latest.Value) + elapsedMonths),
+                };
+                return;
+            }
+        }
+
         AddPersonalLog(
             index,
             PersonalLogKind.ActionCompleted,
@@ -948,7 +1052,8 @@ public sealed partial class World
             chronicleEventKind: null,
             isPrimaryActor: true,
             relatedAgent: null,
-            value: 0);
+            value: 1);
+    }
 
     private void AddPersonalWorldEventLog(
         int index,

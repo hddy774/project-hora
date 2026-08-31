@@ -4,17 +4,58 @@ namespace Chronicles.Simulation;
 
 public sealed partial class World
 {
-    private WorldMapSnapshot CreateMapSnapshot()
+    private WorldMapSnapshot CreateMapSnapshot(ushort? detailedLocationId)
     {
+        if (detailedLocationId is { } selected
+            && selected >= WorldMapRules.LocationCount)
+        {
+            throw new ArgumentOutOfRangeException(nameof(detailedLocationId));
+        }
+
         var populationByLocation = new int[WorldMapRules.LocationCount];
+        List<MapAgentSummary>? detailedAgents = detailedLocationId is null
+            ? null
+            : new List<MapAgentSummary>(WorldMapRules.DetailedAgentLimit);
         for (var index = 0; index < Population; index++)
         {
-            populationByLocation[_agents.LocationIds[index]]++;
+            var locationId = _agents.LocationIds[index];
+            populationByLocation[locationId]++;
+            if (locationId == detailedLocationId
+                && detailedAgents!.Count < WorldMapRules.DetailedAgentLimit)
+            {
+                detailedAgents.Add(new MapAgentSummary(
+                    new AgentId(index),
+                    _agents.Names[index],
+                    _agents.RealmStages[index],
+                    _agents.RealmLayers[index],
+                    _agents.Activities[index],
+                    _agents.Power[index].Total));
+            }
         }
 
         var locations = new MapLocationSnapshot[WorldMapRules.LocationCount];
         foreach (var definition in WorldMapRules.AllLocations)
         {
+            IReadOnlyList<MonsterHabitatSnapshot> monsters;
+            if (definition.Biome == BiomeType.City)
+            {
+                monsters = Array.Empty<MonsterHabitatSnapshot>();
+            }
+            else
+            {
+                var habitats = new MonsterHabitatSnapshot[WorldMapRules.MonstersPerWildBiome];
+                for (var localIndex = 0; localIndex < habitats.Length; localIndex++)
+                {
+                    habitats[localIndex] = new MonsterHabitatSnapshot(
+                        WorldMapRules.GetMonster(definition.Biome, localIndex),
+                        _monsterPopulations[WorldMapRules.GetMonsterPopulationOffset(
+                            definition.Id,
+                            localIndex)]);
+                }
+
+                monsters = habitats;
+            }
+
             locations[definition.Id] = new MapLocationSnapshot(
                 definition.Id,
                 definition.KoreanName,
@@ -22,10 +63,70 @@ public sealed partial class World
                 definition.X,
                 definition.Y,
                 populationByLocation[definition.Id],
-                WorldMapRules.GetMonsters(definition.Biome));
+                monsters,
+                definition.Id == detailedLocationId
+                    ? detailedAgents!.ToArray()
+                    : Array.Empty<MapAgentSummary>());
         }
 
-        return new WorldMapSnapshot(locations, _totalMonsterHunts, _totalMonsterVictories);
+        return new WorldMapSnapshot(
+            locations,
+            _totalMonsterHunts,
+            _totalMonsterVictories,
+            detailedLocationId);
+    }
+
+    private static int[] CreateInitialMonsterPopulations()
+    {
+        var populations = new int[
+            WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome];
+        foreach (var location in WorldMapRules.AllLocations)
+        {
+            if (location.Biome == BiomeType.City)
+            {
+                continue;
+            }
+
+            for (var localIndex = 0; localIndex < WorldMapRules.MonstersPerWildBiome; localIndex++)
+            {
+                populations[WorldMapRules.GetMonsterPopulationOffset(location.Id, localIndex)] =
+                    WorldMapRules.InitialMonsterPopulation;
+            }
+        }
+
+        return populations;
+    }
+
+    private void RegenerateMonsters(long currentMonth)
+    {
+        if (currentMonth <= _lastMonsterRegenerationMonth)
+        {
+            return;
+        }
+
+        var monthCount = currentMonth - _lastMonsterRegenerationMonth;
+        var regeneration = Math.Min(
+            WorldMapRules.MaximumMonsterPopulation,
+            checked((int)Math.Min(
+                WorldMapRules.MaximumMonsterPopulation,
+                monthCount * WorldMapRules.MonthlyMonsterRegeneration)));
+        foreach (var location in WorldMapRules.AllLocations)
+        {
+            if (location.Biome == BiomeType.City)
+            {
+                continue;
+            }
+
+            for (var localIndex = 0; localIndex < WorldMapRules.MonstersPerWildBiome; localIndex++)
+            {
+                var offset = WorldMapRules.GetMonsterPopulationOffset(location.Id, localIndex);
+                _monsterPopulations[offset] = Math.Min(
+                    WorldMapRules.MaximumMonsterPopulation,
+                    _monsterPopulations[offset] + regeneration);
+            }
+        }
+
+        _lastMonsterRegenerationMonth = currentMonth;
     }
 
     private bool TrySelectMapActivity(int index, out AgentActivity activity)
@@ -91,9 +192,15 @@ public sealed partial class World
             return false;
         }
 
-        var monster = WorldMapRules.GetMonster(
-            location.Biome,
-            _random.NextInt(WorldMapRules.MonstersPerWildBiome));
+        var monsterIndex = SelectAvailableMonsterIndex(location.Id);
+        if (monsterIndex < 0)
+        {
+            PrepareTravel(index, preferCity: true);
+            _agents.Activities[index] = AgentActivity.Traveling;
+            return false;
+        }
+
+        var monster = WorldMapRules.GetMonster(location.Biome, monsterIndex);
         _totalMonsterHunts++;
         _agents.MonsterHunts[index]++;
 
@@ -104,6 +211,10 @@ public sealed partial class World
         var victoryChance = checked((int)Math.Clamp(5_000 + advantage, 800L, 9_500L));
         if (_random.Chance(victoryChance))
         {
+            var populationOffset = WorldMapRules.GetMonsterPopulationOffset(
+                location.Id,
+                monsterIndex);
+            _monsterPopulations[populationOffset]--;
             _totalMonsterVictories++;
             _agents.MonsterVictories[index]++;
             var experienceGain = checked(40 + (int)Math.Min(600L, danger / 200));
@@ -136,6 +247,23 @@ public sealed partial class World
 
         BeginReincarnation(index, combatDeath: true);
         return true;
+    }
+
+    private int SelectAvailableMonsterIndex(ushort locationId)
+    {
+        var start = _random.NextInt(WorldMapRules.MonstersPerWildBiome);
+        for (var offset = 0; offset < WorldMapRules.MonstersPerWildBiome; offset++)
+        {
+            var localIndex = (start + offset) % WorldMapRules.MonstersPerWildBiome;
+            if (_monsterPopulations[WorldMapRules.GetMonsterPopulationOffset(
+                    locationId,
+                    localIndex)] > 0)
+            {
+                return localIndex;
+            }
+        }
+
+        return -1;
     }
 
     private bool ApplyMonsterInjury(int index, int damage)

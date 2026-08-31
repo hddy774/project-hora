@@ -53,11 +53,16 @@ public sealed class SimulationRunner : IDisposable
     public WorldSnapshot GetSnapshot(
         int rankingCount = 1_000,
         int eventCount = 150,
-        ObservationSections sections = ObservationSections.All)
+        ObservationSections sections = ObservationSections.All,
+        ushort? detailedMapLocationId = null)
     {
         lock (_worldGate)
         {
-            return _world.CreateSnapshot(rankingCount, eventCount, sections);
+            return _world.CreateSnapshot(
+                rankingCount,
+                eventCount,
+                sections,
+                detailedMapLocationId);
         }
     }
 
@@ -73,11 +78,16 @@ public sealed class SimulationRunner : IDisposable
         AgentId? selectedAgent = null,
         int rankingCount = 1_000,
         int eventCount = 150,
-        ObservationSections sections = ObservationSections.All)
+        ObservationSections sections = ObservationSections.All,
+        ushort? detailedMapLocationId = null)
     {
         lock (_worldGate)
         {
-            var world = _world.CreateSnapshot(rankingCount, eventCount, sections);
+            var world = _world.CreateSnapshot(
+                rankingCount,
+                eventCount,
+                sections,
+                detailedMapLocationId);
             var agentId = selectedAgent ?? world.LeaderId;
             var agent = _world.GetAgentSnapshot(agentId);
             return new WorldObservation(

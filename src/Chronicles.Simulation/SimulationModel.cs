@@ -39,6 +39,7 @@ public enum AgentActivity : byte
     CraftingPill,
     Traveling,
     HuntingMonster,
+    MiningSpiritStones,
 }
 
 public enum WorldEventKind : byte
@@ -78,6 +79,7 @@ public enum WorldEventKind : byte
     TravelCompleted,
     MonsterHuntWon,
     MonsterHuntLost,
+    SpiritStoneMined,
 }
 
 public readonly record struct Aptitudes(
@@ -165,6 +167,32 @@ public readonly record struct CombatPowerBreakdown(
     public long Total => checked(Realm + Aptitude + Technique + Spell + Experience + Treasure);
 }
 
+public readonly record struct CombatPowerFormulaDetails(
+    int FormulaRevision,
+    int RealmStageFactor,
+    int RealmLayer,
+    long RealmContribution,
+    long DirectAptitudeContribution,
+    long TechniqueBeforeAptitudeBonus,
+    int TechniqueAptitudeBonusBasisPoints,
+    long TechniqueContribution,
+    int TechniqueMastery,
+    int TechniqueUnderstanding,
+    long SpellBeforeAptitudeBonus,
+    int SpellAptitudeBonusBasisPoints,
+    long SpellContribution,
+    int SpellMastery,
+    int SpellUnderstanding,
+    int CombatExperience,
+    int CombatMastery,
+    int CombatUnderstanding,
+    int CombatMasteryBonusBasisPoints,
+    int CombatUnderstandingBonusBasisPoints,
+    int CombatExperienceGainBonusBasisPoints,
+    long CombatExperienceContribution,
+    long TreasureContribution,
+    CombatPowerBreakdown Breakdown);
+
 public readonly record struct WorldEvent(
     long Sequence,
     SimulationTick Tick,
@@ -184,7 +212,8 @@ public readonly record struct MaterialHoldingSnapshot(
 
 public readonly record struct EquippedTreasureSnapshot(
     TreasureSlot Slot,
-    QualityValue? Quality);
+    QualityValue? Quality,
+    RealmStage? RealmGrade = null);
 
 public readonly record struct RealmDistributionEntry(
     RealmStage? Realm,
@@ -206,6 +235,16 @@ public readonly record struct RankingMovementStatistics(
     public int ChangedCount => checked(RisenCount + FallenCount);
 }
 
+public readonly record struct EliteRankingMovementSnapshot(
+    int TopCount,
+    long CombatPowerCutoff,
+    RealmStage RealmCutoff,
+    int RealmLayerCutoff,
+    int CombatPowerChangedCount,
+    int RealmChangedCount,
+    int CombatPowerChangeBasisPoints,
+    int RealmChangeBasisPoints);
+
 public sealed record WorldStatistics(
     IReadOnlyList<RealmDistributionEntry> RealmDistribution,
     IReadOnlyList<CombatPowerDistributionEntry> CombatPowerDistribution,
@@ -219,7 +258,8 @@ public sealed record WorldStatistics(
     int TotalTreasuresCrafted,
     int TotalPillsCrafted,
     int TotalMaterialsSold,
-    long TotalSpiritStones)
+    long TotalSpiritStones,
+    IReadOnlyList<EliteRankingMovementSnapshot>? EliteRankingMovements = null)
 {
     public static WorldStatistics Empty { get; } = new(
         Array.Empty<RealmDistributionEntry>(),
@@ -241,12 +281,24 @@ public readonly record struct MarketGoodSnapshot(
     int GoodId,
     MarketGoodKind Kind,
     MaterialId? Material,
-    int CityBasePrice,
-    int CurrentPrice,
+    RealmStage? Realm,
+    long CityBasePrice,
+    long CurrentPrice,
     int Stock,
     long Supply,
     long Demand,
     QualityValue? AverageQuality = null);
+
+public readonly record struct CityProductionSnapshot(
+    int GoodId,
+    MarketGoodKind Kind,
+    RealmStage? Realm,
+    int CompletedMonths,
+    int RequiredMonths,
+    MaterialId? RequiredMaterial,
+    int MaterialCost,
+    long SpiritStoneCost,
+    QualityValue? Quality);
 
 public sealed record CityMarketSnapshot(
     long TreasurySpiritStones,
@@ -258,7 +310,11 @@ public sealed record CityMarketSnapshot(
     long TreasuresProduced,
     long TechniqueBooksProduced,
     long SpellBooksProduced,
-    IReadOnlyList<MarketGoodSnapshot> Goods)
+    IReadOnlyList<MarketGoodSnapshot> Goods,
+    long SpiritStonesMined = 0,
+    long RemainingSpiritStoneOre = 0,
+    long MiningMissionCount = 0,
+    IReadOnlyList<CityProductionSnapshot>? ProductionQueue = null)
 {
     public static CityMarketSnapshot Empty { get; } = new(
         0,
@@ -330,7 +386,8 @@ public sealed record AgentSnapshot(
     IReadOnlyList<MaterialHoldingSnapshot> Materials,
     IReadOnlyList<EquippedTreasureSnapshot> EquippedTreasures,
     CombatPowerBreakdown CombatPower,
-    CultivationReadProjection Cultivation);
+    CultivationReadProjection Cultivation,
+    CombatPowerFormulaDetails CombatPowerDetails);
 
 public sealed record RankingEntry(
     RankingCategory Category,

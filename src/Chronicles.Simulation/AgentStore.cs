@@ -316,11 +316,11 @@ internal sealed class AgentStore
             FormationValues,
             index * CultivationRules.FormationSlotCount,
             CultivationRules.FormationSlotCount);
-        TechniqueQualities[index] = CreateQuality(random);
+        TechniqueQualities[index] = CreateSkillQuality(random);
         TechniqueMasteries[index] = checked((ushort)(500 + random.NextInt(2_501)));
         TechniqueTrainingExperience[index] = SkillProgressionRules.GetRequiredExperience(TechniqueMasteries[index]);
         TechniqueUnderstanding[index] = 0;
-        SpellQualities[index] = CreateQuality(random);
+        SpellQualities[index] = CreateSkillQuality(random);
         SpellMasteries[index] = checked((ushort)(400 + random.NextInt(2_201)));
         SpellTrainingExperience[index] = SkillProgressionRules.GetRequiredExperience(SpellMasteries[index]);
         SpellUnderstanding[index] = 0;
@@ -529,18 +529,53 @@ internal sealed class AgentStore
 
     public void RestoreEconomyState(int index, int[] materials, ushort[] treasures)
     {
-        Array.Copy(
-            materials,
-            0,
-            MaterialInventory,
-            index * EconomyRules.MaterialCount,
-            EconomyRules.MaterialCount);
-        Array.Copy(
-            treasures,
-            0,
-            EquippedTreasureQualities,
-            index * EconomyRules.TreasureSlotCount,
-            EconomyRules.TreasureSlotCount);
+        var materialStart = index * EconomyRules.MaterialCount;
+        if (materials.Length == EconomyRules.MaterialCount)
+        {
+            Array.Copy(materials, 0, MaterialInventory, materialStart, EconomyRules.MaterialCount);
+        }
+        else if (materials.Length == EconomyRules.LegacyMaterialCount)
+        {
+            MaterialInventory[materialStart + (int)MaterialId.TreasureMaterial] = checked(
+                Sum(materials.AsSpan(0, 10))
+                + Sum(materials.AsSpan(20, 5)));
+            MaterialInventory[materialStart + (int)MaterialId.PillMaterial] = checked(
+                Sum(materials.AsSpan(10, 10))
+                + Sum(materials.AsSpan(25, 5)));
+        }
+        else
+        {
+            throw new InvalidDataException("지원하지 않는 재료 인벤토리 형식입니다.");
+        }
+
+        var treasureStart = index * EconomyRules.TreasureSlotCount;
+        if (treasures.Length == EconomyRules.TreasureSlotCount)
+        {
+            Array.Copy(treasures, 0, EquippedTreasureQualities, treasureStart, EconomyRules.TreasureSlotCount);
+        }
+        else if (treasures.Length == EconomyRules.LegacyTreasureSlotCount)
+        {
+            EquippedTreasureQualities[treasureStart + (int)TreasureSlot.NatalTreasure] = treasures[0];
+            EquippedTreasureQualities[treasureStart + (int)TreasureSlot.DefenseTreasure] =
+                GetBestLegacyTreasure(treasures.AsSpan(1, 3));
+            EquippedTreasureQualities[treasureStart + (int)TreasureSlot.AttackTreasure] =
+                GetBestLegacyTreasure(treasures.AsSpan(4, 3));
+        }
+        else
+        {
+            throw new InvalidDataException("지원하지 않는 법보 장착 형식입니다.");
+        }
+    }
+
+    private static int Sum(ReadOnlySpan<int> values)
+    {
+        var total = 0;
+        foreach (var value in values)
+        {
+            total = checked(total + value);
+        }
+
+        return total;
     }
 
     public ushort GetTreasureQuality(int index, TreasureSlot slot) =>
@@ -590,8 +625,26 @@ internal sealed class AgentStore
 
     private static ushort CreateAptitude(DeterministicRandom random) => CreateQuality(random);
 
+    private static ushort CreateSkillQuality(DeterministicRandom random) =>
+        checked((ushort)random.NextInt(EconomyRules.InitialSkillMaximumHundredths + 1));
+
     private static ushort CreateQuality(DeterministicRandom random) =>
         checked((ushort)random.NextInt(QualityValue.MaximumHundredths + 1));
+
+    private static ushort GetBestLegacyTreasure(ReadOnlySpan<ushort> qualities)
+    {
+        var best = EconomyRules.EmptyTreasureQuality;
+        foreach (var quality in qualities)
+        {
+            if (quality != EconomyRules.EmptyTreasureQuality
+                && (best == EconomyRules.EmptyTreasureQuality || quality > best))
+            {
+                best = quality;
+            }
+        }
+
+        return best;
+    }
 
     private static int GetEffectiveWhole(ushort rawQuality) =>
         QualityRules.GetEffectiveWhole(new QualityValue(rawQuality));

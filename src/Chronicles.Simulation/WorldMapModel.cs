@@ -1,3 +1,5 @@
+using Chronicles.Core;
+
 namespace Chronicles.Simulation;
 
 public enum BiomeType : byte
@@ -22,6 +24,18 @@ public readonly record struct MonsterSpeciesDefinition(
     int BaseDanger,
     MaterialId DropMaterial);
 
+public readonly record struct MonsterHabitatSnapshot(
+    MonsterSpeciesDefinition Species,
+    int Population);
+
+public readonly record struct MapAgentSummary(
+    AgentId AgentId,
+    string Name,
+    RealmStage Realm,
+    int RealmLayer,
+    AgentActivity Activity,
+    long CombatPower);
+
 public sealed record MapLocationSnapshot(
     ushort Id,
     string Name,
@@ -29,12 +43,14 @@ public sealed record MapLocationSnapshot(
     int X,
     int Y,
     int Population,
-    IReadOnlyList<MonsterSpeciesDefinition> Monsters);
+    IReadOnlyList<MonsterHabitatSnapshot> Monsters,
+    IReadOnlyList<MapAgentSummary> Agents);
 
 public sealed record WorldMapSnapshot(
     IReadOnlyList<MapLocationSnapshot> Locations,
     int TotalMonsterHunts,
-    int TotalMonsterVictories)
+    int TotalMonsterVictories,
+    ushort? DetailedLocationId = null)
 {
     public static WorldMapSnapshot Empty { get; } = new(
         Array.Empty<MapLocationSnapshot>(),
@@ -50,7 +66,9 @@ public readonly record struct MapAgentCheckpoint(
 
 public readonly record struct WorldMapCheckpoint(
     int TotalMonsterHunts,
-    int TotalMonsterVictories);
+    int TotalMonsterVictories,
+    int[]? MonsterPopulations = null,
+    long LastRegenerationMonth = 0);
 
 public static class WorldMapRules
 {
@@ -58,6 +76,10 @@ public static class WorldMapRules
     public const ushort CityLocationId = 0;
     public const int LocationCount = 9;
     public const int MonstersPerWildBiome = 3;
+    public const int InitialMonsterPopulation = 300;
+    public const int MaximumMonsterPopulation = 500;
+    public const int MonthlyMonsterRegeneration = 3;
+    public const int DetailedAgentLimit = 500;
 
     private static readonly MapLocationDefinition[] Locations =
     [
@@ -74,15 +96,15 @@ public static class WorldMapRules
 
     private static readonly MonsterSpeciesDefinition[] Monsters =
     [
-        new(0, "청목요랑", BiomeType.Forest, 900, MaterialId.BeastHide),
-        new(1, "독안개사", BiomeType.Forest, 1_200, MaterialId.SpiritMushroom),
-        new(2, "철피웅", BiomeType.Forest, 1_600, MaterialId.Thunderwood),
-        new(3, "질풍영록", BiomeType.Plains, 800, MaterialId.VermilionFruit),
-        new(4, "적각우", BiomeType.Plains, 1_100, MaterialId.BeastCoreFragment),
-        new(5, "황사호", BiomeType.Plains, 1_500, MaterialId.WindSand),
-        new(6, "철갑암원", BiomeType.Mountains, 1_300, MaterialId.MysticIron),
-        new(7, "뇌익조", BiomeType.Mountains, 1_800, MaterialId.Stone),
-        new(8, "화린망", BiomeType.Mountains, 2_400, MaterialId.FlameStone),
+        new(0, "청목요랑", BiomeType.Forest, 900, MaterialId.PillMaterial),
+        new(1, "독안개사", BiomeType.Forest, 1_200, MaterialId.PillMaterial),
+        new(2, "철피웅", BiomeType.Forest, 1_600, MaterialId.TreasureMaterial),
+        new(3, "질풍영록", BiomeType.Plains, 800, MaterialId.PillMaterial),
+        new(4, "적각우", BiomeType.Plains, 1_100, MaterialId.TreasureMaterial),
+        new(5, "황사호", BiomeType.Plains, 1_500, MaterialId.TreasureMaterial),
+        new(6, "철갑암원", BiomeType.Mountains, 1_300, MaterialId.TreasureMaterial),
+        new(7, "뇌익조", BiomeType.Mountains, 1_800, MaterialId.TreasureMaterial),
+        new(8, "화린망", BiomeType.Mountains, 2_400, MaterialId.PillMaterial),
     ];
 
     public static IReadOnlyList<MapLocationDefinition> AllLocations => Locations;
@@ -127,6 +149,18 @@ public static class WorldMapRules
             _ => throw new ArgumentOutOfRangeException(nameof(biome)),
         };
         return Monsters.AsSpan(first, MonstersPerWildBiome).ToArray();
+    }
+
+    public static int GetMonsterPopulationOffset(ushort locationId, int localMonsterIndex)
+    {
+        var location = GetLocation(locationId);
+        if (location.Biome == BiomeType.City
+            || (uint)localMonsterIndex >= MonstersPerWildBiome)
+        {
+            throw new ArgumentOutOfRangeException(nameof(localMonsterIndex));
+        }
+
+        return checked((locationId * MonstersPerWildBiome) + localMonsterIndex);
     }
 
     public static int GetTravelMonths(ushort sourceId, ushort destinationId)

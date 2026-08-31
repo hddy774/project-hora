@@ -11,13 +11,17 @@ public sealed partial class World
         Tick = new SimulationTick(checkpoint.Tick);
         _random = new DeterministicRandom(checkpoint.RandomState);
         _agents = new AgentStore(checkpoint.Agents.Length);
-        _market = new CityMarket(checkpoint.Market);
+        _market = new CityMarket(checkpoint.Market, checkpoint.SchemaVersion);
         _agentByRank = new int[checkpoint.Agents.Length];
         _rankByAgent = new int[checkpoint.Agents.Length];
         _agentByRealmRank = new int[checkpoint.Agents.Length];
         _realmRankByAgent = new int[checkpoint.Agents.Length];
         _agentByAptitudeRank = new int[checkpoint.Agents.Length];
         _aptitudeRankByAgent = new int[checkpoint.Agents.Length];
+        _monsterPopulations = checkpoint.Map?.MonsterPopulations is
+            { Length: WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome } populations
+                ? populations.ToArray()
+                : CreateInitialMonsterPopulations();
         _eventSequence = checkpoint.EventSequence;
         _chronicleSequence = checkpoint.ChronicleSequence;
         _personalLogSequence = checkpoint.PersonalLogSequence;
@@ -34,12 +38,21 @@ public sealed partial class World
         _totalMaterialsSold = checkpoint.TotalMaterialsSold;
         _totalMonsterHunts = checkpoint.Map?.TotalMonsterHunts ?? 0;
         _totalMonsterVictories = checkpoint.Map?.TotalMonsterVictories ?? 0;
+        _lastMonsterRegenerationMonth = checkpoint.Map?.LastRegenerationMonth ?? 0;
         _lastRankingRefreshTick = checkpoint.LastRankingRefreshTick;
         _rankingMovementFromTick = checkpoint.RankingMovementFromTick;
         _rankingRisenCount = checkpoint.RankingRisenCount;
         _rankingFallenCount = checkpoint.RankingFallenCount;
         _rankingUnchangedCount = checkpoint.RankingUnchangedCount;
         _rankingTotalAbsoluteMovement = checkpoint.RankingTotalAbsoluteMovement;
+        if (checkpoint.EliteCombatChangedCounts is { Length: 4 } eliteCombat)
+        {
+            Array.Copy(eliteCombat, _eliteCombatChangedCounts, 4);
+        }
+        if (checkpoint.EliteRealmChangedCounts is { Length: 4 } eliteRealm)
+        {
+            Array.Copy(eliteRealm, _eliteRealmChangedCounts, 4);
+        }
 
         for (var index = 0; index < checkpoint.Agents.Length; index++)
         {
@@ -215,7 +228,11 @@ public sealed partial class World
             _market.CreateCheckpoint(),
             new WorldMapCheckpoint(
                 _totalMonsterHunts,
-                _totalMonsterVictories));
+                _totalMonsterVictories,
+                _monsterPopulations.ToArray(),
+                _lastMonsterRegenerationMonth),
+            _eliteCombatChangedCounts.ToArray(),
+            _eliteRealmChangedCounts.ToArray());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -335,7 +352,13 @@ public sealed partial class World
         _agents.GrowthPills[index] = checkpoint.GrowthPills;
         _agents.BreakthroughPills[index] = checkpoint.BreakthroughPills;
         _agents.MissionsCompleted[index] = checkpoint.MissionsCompleted;
-        _agents.ActiveMissionMaterials[index] = checkpoint.ActiveMissionMaterial;
+        _agents.ActiveMissionMaterials[index] = schemaVersion >= 14
+            || checkpoint.ActiveMissionMaterial == byte.MaxValue
+                ? checkpoint.ActiveMissionMaterial
+                : checkpoint.ActiveMissionMaterial < 10
+                    || checkpoint.ActiveMissionMaterial is >= 20 and < 25
+                        ? (byte)MaterialId.TreasureMaterial
+                        : (byte)MaterialId.PillMaterial;
         if (checkpoint.Map is { } map)
         {
             _agents.LocationIds[index] = map.LocationId;
@@ -354,8 +377,12 @@ public sealed partial class World
             index,
             checkpoint.MaterialInventory,
             checkpoint.EquippedTreasureQualities);
-        _agents.PersonalLogs[index].AddRange(checkpoint.PersonalLog);
-        _agents.Chronicles[index].AddRange(checkpoint.Chronicle);
+        _agents.PersonalLogs[index].AddRange(checkpoint.PersonalLog.Where(entry =>
+            entry.ChronicleEventKind is not ChronicleEventKind.TechniqueEnlightenment
+                and not ChronicleEventKind.SpellEnlightenment));
+        _agents.Chronicles[index].AddRange(checkpoint.Chronicle.Where(entry =>
+            entry.Kind is not ChronicleEventKind.TechniqueEnlightenment
+                and not ChronicleEventKind.SpellEnlightenment));
     }
 
     private static void ValidateCheckpoint(WorldCheckpoint checkpoint)
@@ -405,7 +432,15 @@ public sealed partial class World
             && (checkpoint.Map is not { } map
                 || map.TotalMonsterHunts < 0
                 || map.TotalMonsterVictories < 0
-                || map.TotalMonsterVictories > map.TotalMonsterHunts))
+                || map.TotalMonsterVictories > map.TotalMonsterHunts
+                || (checkpoint.SchemaVersion >= 14
+                    && (map.MonsterPopulations is not
+                            { Length: WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome }
+                        || map.MonsterPopulations.Any(value =>
+                            value is < 0 or > WorldMapRules.MaximumMonsterPopulation)
+                        || map.LastRegenerationMonth < 0
+                        || map.LastRegenerationMonth > GameCalendar.GetMonthIndex(
+                            new SimulationTick(checkpoint.Tick))))))
         {
             throw new InvalidDataException("세계 체크포인트의 지도 집계가 잘못되었습니다.");
         }
@@ -425,6 +460,19 @@ public sealed partial class World
             throw new InvalidDataException("세계 체크포인트의 순위 변동 통계가 잘못되었습니다.");
         }
 
+        if (checkpoint.SchemaVersion >= 14
+            && (checkpoint.EliteCombatChangedCounts is not { Length: 4 }
+                || checkpoint.EliteRealmChangedCounts is not { Length: 4 }
+                || checkpoint.EliteCombatChangedCounts.Any(value => value is < 0 or > 10)
+                || checkpoint.EliteRealmChangedCounts.Any(value => value is < 0 or > 10)))
+        {
+            throw new InvalidDataException("상위권 순위 변동 통계가 잘못되었습니다.");
+        }
+
+        var marketGoodCount = checkpoint.Market?.Stock?.Length ?? -1;
+        var validMarketGoodCount = marketGoodCount == EconomyRules.MarketGoodCount
+            || (checkpoint.SchemaVersion < 14
+                && marketGoodCount == EconomyRules.LegacyMarketGoodCount);
         if (checkpoint.Market is null
             || checkpoint.Market.TreasurySpiritStones < 0
             || checkpoint.Market.PurchaseTransactions < 0
@@ -435,18 +483,40 @@ public sealed partial class World
             || checkpoint.Market.TreasuresProduced < 0
             || checkpoint.Market.TechniqueBooksProduced < 0
             || checkpoint.Market.SpellBooksProduced < 0
-            || checkpoint.Market.Stock is not { Length: EconomyRules.MarketGoodCount }
-            || checkpoint.Market.Prices is not { Length: EconomyRules.MarketGoodCount }
-            || checkpoint.Market.Supply is not { Length: EconomyRules.MarketGoodCount }
-            || checkpoint.Market.Demand is not { Length: EconomyRules.MarketGoodCount }
+            || checkpoint.Market.Stock is not { Length: var stockLength }
+            || !validMarketGoodCount
+            || checkpoint.Market.Prices is not { Length: var priceLength }
+            || priceLength != stockLength
+            || checkpoint.Market.Supply is not { Length: var supplyLength }
+            || supplyLength != stockLength
+            || checkpoint.Market.Demand is not { Length: var demandLength }
+            || demandLength != stockLength
             || checkpoint.Market.Stock.Any(value => value < 0)
             || checkpoint.Market.Prices.Any(value => value < 1)
             || checkpoint.Market.Supply.Any(value => value < 0)
             || checkpoint.Market.Demand.Any(value => value < 0)
             || checkpoint.Market.TreasureQualityHundredths < 0
-            || checkpoint.Market.TreasureQualityHundredths
-                > (long)checkpoint.Market.Stock[EconomyRules.TreasureGoodId]
-                    * QualityValue.MaximumHundredths)
+            || (checkpoint.SchemaVersion < 14
+                && marketGoodCount == EconomyRules.LegacyMarketGoodCount
+                && checkpoint.Market.TreasureQualityHundredths
+                    > (long)checkpoint.Market.Stock[32] * QualityValue.MaximumHundredths)
+            || (checkpoint.SchemaVersion >= 14
+                && (checkpoint.Market.QualityHundredths is not { Length: EconomyRules.MarketGoodCount }
+                    || checkpoint.Market.QualityHundredths.Any(value => value < 0)
+                    || checkpoint.Market.RemainingSpiritStoneOre < 0
+                    || checkpoint.Market.SpiritStonesMined < 0
+                    || checkpoint.Market.MiningMissionCount < 0
+                    || checkpoint.Market.LastIndustryMonth < 0
+                    || checkpoint.Market.ProductionQueue is null
+                    || checkpoint.Market.ProductionQueue.Length > 4
+                    || checkpoint.Market.ProductionQueue.Any(order =>
+                        order.GoodId < EconomyRules.RealmGoodStartId
+                        || order.GoodId >= EconomyRules.MarketGoodCount
+                        || order.CompletedMonths < 0
+                        || order.RequiredMonths <= 0
+                        || order.CompletedMonths >= order.RequiredMonths
+                        || order.MaterialCost < 0
+                        || order.SpiritStoneCost <= 0))))
         {
             throw new InvalidDataException("세계 체크포인트의 도시 시장 상태가 잘못되었습니다.");
         }
@@ -454,6 +524,16 @@ public sealed partial class World
         for (var index = 0; index < checkpoint.Agents.Length; index++)
         {
             var agent = checkpoint.Agents[index];
+            var validMaterialCount = agent.MaterialInventory?.Length == EconomyRules.MaterialCount
+                || (checkpoint.SchemaVersion < 14
+                    && agent.MaterialInventory?.Length == EconomyRules.LegacyMaterialCount);
+            var validTreasureCount = agent.EquippedTreasureQualities?.Length
+                    == EconomyRules.TreasureSlotCount
+                || (checkpoint.SchemaVersion < 14
+                    && agent.EquippedTreasureQualities?.Length
+                        == EconomyRules.LegacyTreasureSlotCount);
+            var validMissionMaterialCount = agent.MaterialInventory?.Length
+                ?? EconomyRules.MaterialCount;
             if (string.IsNullOrWhiteSpace(agent.Name)
                 || agent.SpiritualRoot > QualityValue.MaximumHundredths
                 || agent.Bone > QualityValue.MaximumHundredths
@@ -472,10 +552,12 @@ public sealed partial class World
                 || agent.BreakthroughPills < 0
                 || agent.MissionsCompleted < 0
                 || (agent.ActiveMissionMaterial != byte.MaxValue
-                    && agent.ActiveMissionMaterial >= EconomyRules.MaterialCount)
-                || agent.MaterialInventory is not { Length: EconomyRules.MaterialCount }
+                    && agent.ActiveMissionMaterial >= validMissionMaterialCount)
+                || agent.MaterialInventory is not { Length: var materialLength }
+                || !validMaterialCount
                 || agent.MaterialInventory.Any(count => count < 0)
-                || agent.EquippedTreasureQualities is not { Length: EconomyRules.TreasureSlotCount }
+                || agent.EquippedTreasureQualities is not { Length: var treasureLength }
+                || !validTreasureCount
                 || agent.EquippedTreasureQualities.Any(quality =>
                     quality != EconomyRules.EmptyTreasureQuality
                     && quality > QualityValue.MaximumHundredths)

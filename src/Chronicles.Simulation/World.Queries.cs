@@ -146,6 +146,31 @@ public sealed partial class World
             powerDistribution = powerSnapshots;
         }
 
+        IReadOnlyList<EliteRankingMovementSnapshot> eliteMovements =
+            Array.Empty<EliteRankingMovementSnapshot>();
+        if (includeSummary)
+        {
+            int[] limits = [1, 3, 5, 10];
+            var entries = new EliteRankingMovementSnapshot[limits.Length];
+            for (var tier = 0; tier < limits.Length; tier++)
+            {
+                var count = Math.Min(limits[tier], Population);
+                var combatCutoffAgent = _agentByRank[count - 1];
+                var realmCutoffAgent = _agentByRealmRank[count - 1];
+                entries[tier] = new EliteRankingMovementSnapshot(
+                    limits[tier],
+                    _agents.Power[combatCutoffAgent].Total,
+                    _agents.RealmStages[realmCutoffAgent],
+                    _agents.RealmLayers[realmCutoffAgent],
+                    _eliteCombatChangedCounts[tier],
+                    _eliteRealmChangedCounts[tier],
+                    _eliteCombatChangedCounts[tier] * 10_000 / count,
+                    _eliteRealmChangedCounts[tier] * 10_000 / count);
+            }
+
+            eliteMovements = entries;
+        }
+
         return new WorldStatistics(
             realmDistribution,
             powerDistribution,
@@ -167,7 +192,8 @@ public sealed partial class World
             includeSummary ? _totalTreasuresCrafted : 0,
             includeSummary ? _totalPillsCrafted : 0,
             includeSummary ? _totalMaterialsSold : 0,
-            totalSpiritStones);
+            totalSpiritStones,
+            eliteMovements);
     }
 
     private bool TryParseAgentId(string query, out AgentId agentId)

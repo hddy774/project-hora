@@ -20,6 +20,13 @@ public partial class MainWindow : Window, IDisposable
     private RankingCategory? _rankingCategory = RankingCategory.CombatPower;
     private int _explorerOffset;
     private int _selectedMarketGoodId;
+    private ushort _selectedMapLocationId = WorldMapRules.CityLocationId;
+    private int _personalLogCategory;
+    private int _chronicleCategory;
+    private int? _selectedChronicleLife;
+    private AgentSnapshot? _latestAgent;
+    private IReadOnlyList<PersonalLogEntry> _latestPersonalLog = Array.Empty<PersonalLogEntry>();
+    private IReadOnlyList<LifeChronicleEntry> _latestChronicle = Array.Empty<LifeChronicleEntry>();
     private int _speed = 1;
     private bool _disposed;
     private bool _applyingObservation;
@@ -117,7 +124,10 @@ public partial class MainWindow : Window, IDisposable
 
         var observation = _runner.GetObservation(
             _selectedAgent,
-            sections: GetVisibleObservationSections());
+            sections: GetVisibleObservationSections(),
+            detailedMapLocationId: WorldInfoTabControl.SelectedIndex == 3
+                ? _selectedMapLocationId
+                : null);
         ApplyObservation(observation);
     }
 
@@ -297,6 +307,15 @@ public partial class MainWindow : Window, IDisposable
             : movement.TotalAbsoluteMovement / (decimal)movement.ChangedCount;
         RankingMovementText.Text =
             $"변동 {changeRate:0.##}% · 상승 {movement.RisenCount:N0} · 하락 {movement.FallenCount:N0} · 유지 {movement.UnchangedCount:N0} · 평균 {averageMovement:0.##}위";
+        EliteRankingGrid.ItemsSource = (statistics.EliteRankingMovements
+                ?? Array.Empty<EliteRankingMovementSnapshot>())
+            .Select(item => new EliteRankingRow(
+                $"상위 {item.TopCount:N0}위",
+                KoreanNumberFormatter.Format(item.CombatPowerCutoff),
+                FormatRealm(item.RealmCutoff, item.RealmLayerCutoff),
+                $"{item.CombatPowerChangedCount:N0}석 · {item.CombatPowerChangeBasisPoints / 100m:0.##}%",
+                $"{item.RealmChangedCount:N0}석 · {item.RealmChangeBasisPoints / 100m:0.##}%"))
+            .ToArray();
 
         if (RealmDistributionExpander.IsExpanded)
         {
@@ -328,6 +347,14 @@ public partial class MainWindow : Window, IDisposable
             $"임무 납품 {KoreanNumberFormatter.Format(snapshot.Market.MissionDeliveries)}건 · 가공 재료 {KoreanNumberFormatter.Format(snapshot.Market.MaterialsProcessed)}개";
         CityProductionText.Text =
             $"단약 {KoreanNumberFormatter.Format(snapshot.Market.PillsProduced)} · 법보 {KoreanNumberFormatter.Format(snapshot.Market.TreasuresProduced)} · 공법서 {KoreanNumberFormatter.Format(snapshot.Market.TechniqueBooksProduced)} · 법술서 {KoreanNumberFormatter.Format(snapshot.Market.SpellBooksProduced)}";
+        CityMiningText.Text =
+            $"누적 채굴 {KoreanNumberFormatter.Format(snapshot.Market.SpiritStonesMined)} · 남은 광맥 {KoreanNumberFormatter.Format(snapshot.Market.RemainingSpiritStoneOre)} · 채굴 임무 {KoreanNumberFormatter.Format(snapshot.Market.MiningMissionCount)}건";
+        CityProductionQueueText.Text = snapshot.Market.ProductionQueue is { Count: > 0 } queue
+            ? string.Join(
+                "\n",
+                queue.Select(item =>
+                    $"{FormatMarketGood(EconomyRules.GetMarketGood(item.GoodId), item.Quality)} · {item.CompletedMonths:N0}/{item.RequiredMonths:N0}개월 · 재료 {item.MaterialCost:N0} · 영석 {KoreanNumberFormatter.Format(item.SpiritStoneCost)}"))
+            : "수요·재료·영석 조건을 모두 충족한 생산 대기열 없음";
         CityInventoryText.Text =
             $"총 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Stock))}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind == MarketGoodKind.Material).Sum(item => item.Stock))}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind != MarketGoodKind.Material).Sum(item => item.Stock))}개";
         CityFlowText.Text =
@@ -349,6 +376,10 @@ public partial class MainWindow : Window, IDisposable
                 KoreanNumberFormatter.Format(item.Demand)))
             .ToArray();
         MarketGrid.ItemsSource = marketRows;
+        if (marketRows.Length == 0)
+        {
+            return;
+        }
         var selectedMarketRow = marketRows.FirstOrDefault(item => item.GoodId == _selectedMarketGoodId)
             ?? marketRows[0];
         _selectedMarketGoodId = selectedMarketRow.GoodId;
@@ -367,12 +398,39 @@ public partial class MainWindow : Window, IDisposable
             .OrderBy(item => item.Y)
             .ThenBy(item => item.X)
             .Select(item => new MapTileRow(
+                item.Id,
                 item.Name,
                 FormatBiome(item.Biome),
                 $"{KoreanNumberFormatter.Format(item.Population)}명",
                 FormatMonsterList(item),
-                GetBiomeBrush(item.Biome)))
+                GetBiomeBrush(item.Biome),
+                item.Id == _selectedMapLocationId
+                    ? (Brush)FindResource("AccentBrush")
+                    : (Brush)FindResource("BorderBrush")))
             .ToArray();
+        var selected = snapshot.Map.Locations.FirstOrDefault(item => item.Id == _selectedMapLocationId);
+        if (selected is not null)
+        {
+            MapSelectedLocationText.Text =
+                $"{selected.Name} · {FormatBiome(selected.Biome)} · 좌표 {selected.X},{selected.Y} · 수선자 {KoreanNumberFormatter.Format(selected.Population)}명";
+            MapSelectedMonsterText.Text = selected.Monsters.Count == 0
+                ? "안전지대 · 서식 요수 없음"
+                : string.Join(
+                    " · ",
+                    selected.Monsters.Select(item =>
+                        $"{item.Species.KoreanName} {KoreanNumberFormatter.Format(item.Population)}마리"));
+            MapAgentGrid.ItemsSource = selected.Agents
+                .Select(item => new MapAgentRow(
+                    item.AgentId,
+                    item.Name,
+                    FormatRealm(item.Realm, item.RealmLayer),
+                    KoreanNumberFormatter.Format(item.CombatPower),
+                    FormatActivity(item.Activity)))
+                .ToArray();
+            MapAgentLimitText.Text = selected.Population > WorldMapRules.DetailedAgentLimit
+                ? $"성능 보호를 위해 현재 {WorldMapRules.DetailedAgentLimit:N0}명 표시 · 전체 {selected.Population:N0}명"
+                : $"현재 지역 {selected.Population:N0}명 전체 표시";
+        }
         if (MapLocationExpander.IsExpanded)
         {
             MapLocationGrid.ItemsSource = snapshot.Map.Locations
@@ -393,6 +451,9 @@ public partial class MainWindow : Window, IDisposable
         IReadOnlyList<PersonalLogEntry> personalLog,
         IReadOnlyList<LifeChronicleEntry> chronicle)
     {
+        _latestAgent = agent;
+        _latestPersonalLog = personalLog;
+        _latestChronicle = chronicle;
         SelectedNameText.Text = agent.Name;
         SelectedIdText.Text = $"{agent.Id} · 최종 목표 #{agent.TargetRank}";
         SelectedRankText.Text = $"전투력 #{agent.Rank:N0} · 경지 #{agent.RealmRank:N0} · 자질 #{agent.AptitudeRank:N0}";
@@ -464,7 +525,8 @@ public partial class MainWindow : Window, IDisposable
         EquipmentText.Text = string.Join(
             "  ·  ",
             agent.EquippedTreasures.Select(item =>
-                $"{FormatTreasureSlot(item.Slot)} {(item.Quality is { } quality ? QualityRules.Format(quality) : "미장착")}"));
+                $"{FormatTreasureSlot(item.Slot)} {(item.Quality is { } quality ? QualityRules.Format(quality) : "미장착")}" +
+                (item.RealmGrade is { } grade ? $" · {FormatRealmStage(grade)}급" : string.Empty)));
         MaterialDetailText.Text = agent.Materials.Count == 0
             ? "보유 재료 없음"
             : string.Join(
@@ -479,20 +541,8 @@ public partial class MainWindow : Window, IDisposable
             $"전투 이해 {FormatEffectPercent(aptitudeBonuses.CombatUnderstandingEffectBasisPoints)} · " +
             $"전투 경험 {FormatEffectPercent(aptitudeBonuses.CombatExperienceGainBasisPoints)}";
         SetPowerBreakdown(agent.CombatPower);
-        if (AgentLogTabControl.SelectedIndex == 0)
-        {
-            PersonalLogList.ItemsSource = personalLog
-                .Reverse()
-                .Select(entry => FormatPersonalLog(agent, entry))
-                .ToArray();
-        }
-        else
-        {
-            ChronicleList.ItemsSource = chronicle
-                .Reverse()
-                .Select(FormatChronicle)
-                .ToArray();
-        }
+        SetPowerFormulaDetails(agent.CombatPowerDetails);
+        UpdateAgentLogViews();
     }
 
     private void SetPowerBreakdown(CombatPowerBreakdown power)
@@ -515,6 +565,131 @@ public partial class MainWindow : Window, IDisposable
         bar.Value = value;
         label.Text = KoreanNumberFormatter.Format(value);
     }
+
+    private void SetPowerFormulaDetails(CombatPowerFormulaDetails detail)
+    {
+        PowerFormulaText.Text =
+            $"공식 r{detail.FormulaRevision} · 총합 = 경지 + 공법 + 법술 + 전투 성장 + 법보 (자질 직접 합산 0)\n" +
+            $"경지: 기본 100 + 대경지({detail.RealmStageFactor})³ 보정 + {detail.RealmLayer}층 보정 = {KoreanNumberFormatter.Format(detail.RealmContribution)}\n" +
+            $"공법: 품질·숙련 {detail.TechniqueMastery / 100m:0.00}·이해 {detail.TechniqueUnderstanding / 100m:0.00} → {KoreanNumberFormatter.Format(detail.TechniqueBeforeAptitudeBonus)} × 자질 {detail.TechniqueAptitudeBonusBasisPoints / 100m:0.##}% = {KoreanNumberFormatter.Format(detail.TechniqueContribution)}\n" +
+            $"법술: 품질·숙련 {detail.SpellMastery / 100m:0.00}·이해 {detail.SpellUnderstanding / 100m:0.00} → {KoreanNumberFormatter.Format(detail.SpellBeforeAptitudeBonus)} × 자질 {detail.SpellAptitudeBonusBasisPoints / 100m:0.##}% = {KoreanNumberFormatter.Format(detail.SpellContribution)}\n" +
+            $"전투 성장: 경험 {KoreanNumberFormatter.Format(detail.CombatExperience)} · 숙련 {detail.CombatMastery / 100m:0.00}({detail.CombatMasteryBonusBasisPoints / 100m:0.##}%) · 이해 {detail.CombatUnderstanding / 100m:0.00}({detail.CombatUnderstandingBonusBasisPoints / 100m:0.##}%) = {KoreanNumberFormatter.Format(detail.CombatExperienceContribution)}\n" +
+            $"법보: 본명·방어·공격 법보 품질 효과 합계 = {KoreanNumberFormatter.Format(detail.TreasureContribution)}\n" +
+            $"표시 전투력 {KoreanNumberFormatter.Format(detail.Breakdown.Total)} · 실전 전투는 공격·방어·속도·관통·치명타·회피와 턴 진행을 별도 계산";
+    }
+
+    private void UpdateAgentLogViews()
+    {
+        if (_latestAgent is not { } agent)
+        {
+            return;
+        }
+
+        if (AgentLogTabControl.SelectedIndex == 0)
+        {
+            PersonalLogList.ItemsSource = _latestPersonalLog
+                .Where(entry => MatchesPersonalLogCategory(entry, _personalLogCategory))
+                .Reverse()
+                .Select(entry => FormatPersonalLog(agent, entry))
+                .ToArray();
+            return;
+        }
+
+        var lifeNumbers = _latestChronicle
+            .Select(entry => entry.LifeNumber)
+            .Distinct()
+            .OrderByDescending(value => value)
+            .ToArray();
+        if (_selectedChronicleLife is { } selectedLife
+            && !lifeNumbers.Contains(selectedLife))
+        {
+            _selectedChronicleLife = null;
+        }
+
+        ChronicleLifeToggleList.ItemsSource = new[]
+            {
+                new LifeToggleRow(null, "전체 생", _selectedChronicleLife is null),
+            }
+            .Concat(lifeNumbers.Select(life => new LifeToggleRow(
+                life,
+                $"제 {life:N0}생",
+                _selectedChronicleLife == life)))
+            .ToArray();
+        ChronicleList.ItemsSource = _latestChronicle
+            .Where(entry => _selectedChronicleLife is null
+                || entry.LifeNumber == _selectedChronicleLife)
+            .Where(entry => MatchesChronicleCategory(entry.Kind, _chronicleCategory))
+            .Reverse()
+            .Select(FormatChronicle)
+            .ToArray();
+    }
+
+    private static bool MatchesPersonalLogCategory(PersonalLogEntry entry, int category) => category switch
+    {
+        0 => true,
+        1 => entry.Activity is AgentActivity.Cultivating
+            or AgentActivity.TrainingTechnique
+            or AgentActivity.TrainingSpell
+            or AgentActivity.Recovering
+            || entry.WorldEventKind is WorldEventKind.TechniqueEnlightenment
+                or WorldEventKind.SpellEnlightenment
+                or WorldEventKind.BreakthroughSucceeded
+                or WorldEventKind.BreakthroughFailed,
+        2 => entry.Activity is AgentActivity.Fighting
+            or AgentActivity.SeekingChallenge
+            or AgentActivity.HuntingMonster
+            || entry.WorldEventKind is WorldEventKind.CombatStarted
+                or WorldEventKind.CombatPhysicalAttack
+                or WorldEventKind.CombatSpellCast
+                or WorldEventKind.CombatGuarded
+                or WorldEventKind.CombatRetreated
+                or WorldEventKind.CombatEnded
+                or WorldEventKind.CombatInjury
+                or WorldEventKind.CombatDeath
+                or WorldEventKind.MonsterHuntWon
+                or WorldEventKind.MonsterHuntLost,
+        3 => entry.Activity is AgentActivity.DoingCityMission
+            or AgentActivity.TradingInCity
+            or AgentActivity.CraftingTreasure
+            or AgentActivity.MiningSpiritStones
+            || entry.WorldEventKind is WorldEventKind.MissionCompleted
+                or WorldEventKind.MaterialSold
+                or WorldEventKind.MaterialPurchased
+                or WorldEventKind.PillPurchased
+                or WorldEventKind.TreasurePurchased
+                or WorldEventKind.TechniqueBookPurchased
+                or WorldEventKind.SpellBookPurchased
+                or WorldEventKind.SpiritStoneMined,
+        4 => entry.Activity == AgentActivity.Traveling
+            || entry.WorldEventKind == WorldEventKind.TravelCompleted,
+        5 => entry.Activity == AgentActivity.Reincarnating
+            || entry.WorldEventKind is WorldEventKind.Death
+                or WorldEventKind.CombatDeath
+                or WorldEventKind.ReincarnationEntered
+                or WorldEventKind.Rebirth,
+        _ => true,
+    };
+
+    private static bool MatchesChronicleCategory(ChronicleEventKind kind, int category) => category switch
+    {
+        0 => true,
+        1 => kind is ChronicleEventKind.MinorStageBreakthrough
+            or ChronicleEventKind.BottleneckBreakthrough
+            or ChronicleEventKind.MajorRealmBreakthrough
+            or ChronicleEventKind.BreakthroughFailure
+            or ChronicleEventKind.CultivationEntered
+            or ChronicleEventKind.GreatPerfectionAchieved,
+        2 => kind == ChronicleEventKind.CombatDeath,
+        3 => kind is ChronicleEventKind.Birth
+            or ChronicleEventKind.Death
+            or ChronicleEventKind.CombatDeath
+            or ChronicleEventKind.ReincarnationEntered
+            or ChronicleEventKind.Rebirth,
+        4 => kind is ChronicleEventKind.FortuitousEncounter
+            or ChronicleEventKind.TechniqueAcquired
+            or ChronicleEventKind.SpellAcquired,
+        _ => true,
+    };
 
     private static string FormatEffectPercent(int basisPoints) => $"{basisPoints / 100m:0.##}%";
 
@@ -588,6 +763,7 @@ public partial class MainWindow : Window, IDisposable
             WorldEventKind.TravelCompleted => $"{primary}, {WorldMapRules.GetLocation(checked((ushort)worldEvent.Value)).KoreanName}에 도착",
             WorldEventKind.MonsterHuntWon => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 승리",
             WorldEventKind.MonsterHuntLost => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 패배",
+            WorldEventKind.SpiritStoneMined => $"{primary}, 도시 광맥에서 영석 {KoreanNumberFormatter.Format(worldEvent.Value)} 채굴",
             _ => worldEvent.Kind.ToString(),
         };
         var color = worldEvent.Kind switch
@@ -661,7 +837,7 @@ public partial class MainWindow : Window, IDisposable
         var summary = entry.Kind switch
         {
             PersonalLogKind.ActionCompleted when entry.Activity is { } activity =>
-                $"{FormatActivity(activity)} 행동을 마침",
+                FormatActionDuration(activity, entry.Value),
             PersonalLogKind.WorldEvent when entry.WorldEventKind is { } eventKind =>
                 FormatPersonalWorldEvent(entry, eventKind, related),
             PersonalLogKind.Chronicle when entry.ChronicleEventKind is { } chronicleKind =>
@@ -723,6 +899,7 @@ public partial class MainWindow : Window, IDisposable
         WorldEventKind.TreasurePurchased => $"{FormatQuality(entry.Value)} 법보 구매",
         WorldEventKind.TechniqueBookPurchased => $"{FormatQuality(entry.Value)} 공법서 구매",
         WorldEventKind.SpellBookPurchased => $"{FormatQuality(entry.Value)} 법술서 구매",
+        WorldEventKind.SpiritStoneMined => $"도시 광맥 채굴 · 영석 {KoreanNumberFormatter.Format(entry.Value)} 생산",
         _ => kind.ToString(),
     };
 
@@ -749,7 +926,22 @@ public partial class MainWindow : Window, IDisposable
     private static string FormatOptionalGameDate(GameDate? date) =>
         date is { } value ? FormatGameDate(value) : "아직 없음";
 
-    private static string FormatPriceChange(int basePrice, int currentPrice)
+    private static string FormatActionDuration(AgentActivity activity, long elapsedMonths)
+    {
+        var months = Math.Max(1L, elapsedMonths);
+        if (months < GameCalendar.MonthsPerYear)
+        {
+            return $"{FormatActivity(activity)} · {months:N0}개월차";
+        }
+
+        var years = months / GameCalendar.MonthsPerYear;
+        var remainingMonths = months % GameCalendar.MonthsPerYear;
+        return remainingMonths == 0
+            ? $"{FormatActivity(activity)} · {years:N0}년차"
+            : $"{FormatActivity(activity)} · {years:N0}년 {remainingMonths:N0}개월차";
+    }
+
+    private static string FormatPriceChange(long basePrice, long currentPrice)
     {
         if (basePrice <= 0)
         {
@@ -891,6 +1083,7 @@ public partial class MainWindow : Window, IDisposable
         AgentActivity.CraftingPill => "단약 제작",
         AgentActivity.Traveling => "지역 이동",
         AgentActivity.HuntingMonster => "요수 사냥",
+        AgentActivity.MiningSpiritStones => "영석 광맥 채굴",
         _ => activity.ToString(),
     };
 
@@ -904,12 +1097,8 @@ public partial class MainWindow : Window, IDisposable
     private static string FormatTreasureSlot(TreasureSlot slot) => slot switch
     {
         TreasureSlot.NatalTreasure => "본명법보",
-        TreasureSlot.ArmorOne => "방어구 I",
-        TreasureSlot.ArmorTwo => "방어구 II",
-        TreasureSlot.ArmorThree => "방어구 III",
-        TreasureSlot.WeaponOne => "무기 I",
-        TreasureSlot.WeaponTwo => "무기 II",
-        TreasureSlot.WeaponThree => "무기 III",
+        TreasureSlot.DefenseTreasure => "방어 법보",
+        TreasureSlot.AttackTreasure => "공격 법보",
         _ => slot.ToString(),
     };
 
@@ -917,11 +1106,31 @@ public partial class MainWindow : Window, IDisposable
     {
         MarketGoodKind.Material when item.Material is { } material =>
             EconomyRules.GetMaterial(material).KoreanName,
-        MarketGoodKind.GrowthPill => "수행단",
-        MarketGoodKind.BreakthroughPill => "돌파단",
-        MarketGoodKind.Treasure => "도시 법보",
+        MarketGoodKind.GrowthPill => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 수행단",
+        MarketGoodKind.BreakthroughPill => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 돌파단",
+        MarketGoodKind.DefenseTreasure => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 방어 법보",
+        MarketGoodKind.AttackTreasure => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 공격 법보",
         MarketGoodKind.TechniqueBook => "공법서",
         MarketGoodKind.SpellBook => "법술서",
+        _ => item.Kind.ToString(),
+    };
+
+    private static string FormatMarketGood(
+        MarketGoodDefinition item,
+        QualityValue? quality) => item.Kind switch
+    {
+        MarketGoodKind.GrowthPill => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 수행단",
+        MarketGoodKind.BreakthroughPill => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 돌파단",
+        MarketGoodKind.DefenseTreasure =>
+            $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 방어 법보" +
+            (quality is { } defenseQuality ? $" · {QualityRules.Format(defenseQuality)}" : string.Empty),
+        MarketGoodKind.AttackTreasure =>
+            $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 공격 법보" +
+            (quality is { } attackQuality ? $" · {QualityRules.Format(attackQuality)}" : string.Empty),
+        MarketGoodKind.TechniqueBook => "공법서" +
+            (quality is { } techniqueQuality ? $" · {QualityRules.Format(techniqueQuality)}" : string.Empty),
+        MarketGoodKind.SpellBook => "법술서" +
+            (quality is { } spellQuality ? $" · {QualityRules.Format(spellQuality)}" : string.Empty),
         _ => item.Kind.ToString(),
     };
 
@@ -932,25 +1141,25 @@ public partial class MainWindow : Window, IDisposable
         {
             MarketGoodKind.Material when item.Material is { } material => FormatMaterialDetail(material),
             MarketGoodKind.GrowthPill => (
-                "단약 · 성장",
-                "복용한 수선자의 수행 Work 축적을 돕는 성장용 단약입니다.",
-                "도시는 단약 제작용 재료 2개를 가공해 수행단 또는 돌파단 1개를 생산합니다."),
+                $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)}급 단약 · 성장",
+                "현재 대경지에서만 수행 Work 축적을 돕습니다. 대경지 돌파 뒤에는 새 급을 구입해야 합니다.",
+                "완제품 수요가 있고 단약 재료와 영석이 모두 있을 때만 도시 생산 대기열에 들어갑니다."),
             MarketGoodKind.BreakthroughPill => (
-                "단약 · 돌파",
-                "대경지 돌파 준비와 자원 병목 해소에 사용하는 돌파용 단약입니다.",
-                "도시는 단약 제작용 재료 2개를 가공하며, 두 단약의 재고가 균형을 이루도록 생산합니다."),
-            MarketGoodKind.Treasure => (
-                $"법보 · 평균 품질 {(item.AverageQuality is { } quality ? QualityRules.Format(quality) : "재고 없음")}",
-                "무기 3칸·방어구 3칸·본명법보 1칸 중 약한 장비를 교체하며 실제 공격·방어 속성에 반영됩니다.",
-                "도시는 법보 제작용 재료 2개를 가공해 표준 법보를 만들고, 수선자도 제작품을 시장에 판매합니다."),
+                $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)}급 단약 · 돌파",
+                "현재 대경지의 돌파 자원 병목에 사용합니다. 대경지 돌파 뒤에는 새 급을 구입해야 합니다.",
+                "완제품 수요가 있고 단약 재료와 영석이 모두 있을 때만 도시 생산 대기열에 들어갑니다."),
+            MarketGoodKind.DefenseTreasure or MarketGoodKind.AttackTreasure => (
+                $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)}급 {(item.Kind == MarketGoodKind.DefenseTreasure ? "방어" : "공격")} 법보 · 평균 품질 {(item.AverageQuality is { } quality ? QualityRules.Format(quality) : "재고 없음")}",
+                "현재 대경지 전용 법보입니다. 본명법보는 시장 상품이 아니며 소유자가 직접 제작하고 대경지 돌파와 동기화됩니다.",
+                "완제품 수요가 있고 법보 재료와 영석이 모두 있을 때만 도시 생산 대기열에 들어갑니다."),
             MarketGoodKind.TechniqueBook => (
                 "서적 · 공법",
                 "0.00~100.00 품질의 새 공법서입니다. 현재 공법보다 품질이 높을 때만 교체되며 기존 공법 자체의 품질은 변하지 않습니다.",
-                $"도시는 영석 {KoreanNumberFormatter.Format(EconomyRules.TechniqueBookProductionCost)}개를 사용해 공법서 1권을 제작합니다."),
+                $"도시는 수요가 있을 때 영석 {KoreanNumberFormatter.Format(EconomyRules.GetProductionSpiritStoneCost(EconomyRules.GetMarketGood(EconomyRules.TechniqueBookGoodId)))}개로 공법서 1권을 제작합니다."),
             MarketGoodKind.SpellBook => (
                 "서적 · 법술",
                 "0.00~100.00 품질의 새 법술서입니다. 현재 법술보다 품질이 높을 때만 교체되며 기존 법술 자체의 품질은 변하지 않습니다.",
-                $"도시는 영석 {KoreanNumberFormatter.Format(EconomyRules.SpellBookProductionCost)}개를 사용해 법술서 1권을 제작합니다."),
+                $"도시는 수요가 있을 때 영석 {KoreanNumberFormatter.Format(EconomyRules.GetProductionSpiritStoneCost(EconomyRules.GetMarketGood(EconomyRules.SpellBookGoodId)))}개로 법술서 1권을 제작합니다."),
             _ => ("상품", "상세 정보가 아직 등록되지 않았습니다.", "생산 정보가 없습니다."),
         };
         MarketDetailTypeText.Text = type;
@@ -968,7 +1177,6 @@ public partial class MainWindow : Window, IDisposable
         {
             MaterialCategory.Treasure => ("법보 제작 재료", "법보 제작과 도시 법보 생산에 사용됩니다."),
             MaterialCategory.Pill => ("단약 제작 재료", "수행단·돌파단 제조와 도시 단약 생산에 사용됩니다."),
-            MaterialCategory.Miscellaneous => ("기타 재료", "도시 임무 납품·수선자 간 거래·후속 제작 확장에 사용됩니다."),
             _ => ("재료", "용도가 미확정입니다."),
         };
         return (
@@ -1008,7 +1216,10 @@ public partial class MainWindow : Window, IDisposable
     private static string FormatMonsterList(MapLocationSnapshot location) =>
         location.Monsters.Count == 0
             ? "안전지대"
-            : string.Join(" · ", location.Monsters.Select(monster => monster.KoreanName));
+            : string.Join(
+                " · ",
+                location.Monsters.Select(monster =>
+                    $"{monster.Species.KoreanName} {KoreanNumberFormatter.Format(monster.Population)}"));
 
     private Brush GetBiomeBrush(BiomeType biome) => (Brush)FindResource(biome switch
     {
@@ -1033,6 +1244,62 @@ public partial class MainWindow : Window, IDisposable
         {
             UpdateMarketDetail(_latestSnapshot.Market.Goods[row.GoodId]);
         }
+    }
+
+    private void MapTileButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: ushort locationId })
+        {
+            return;
+        }
+
+        _selectedMapLocationId = locationId;
+        RefreshVisibleObservation();
+    }
+
+    private void MapAgentGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_applyingObservation
+            || MapAgentGrid.SelectedItem is not MapAgentRow row)
+        {
+            return;
+        }
+
+        RefreshVisibleObservation(row.AgentId);
+    }
+
+    private void PersonalLogCategoryTabControl_SelectionChanged(
+        object sender,
+        SelectionChangedEventArgs e)
+    {
+        if (_applyingObservation || !ReferenceEquals(e.Source, sender))
+        {
+            return;
+        }
+
+        _personalLogCategory = PersonalLogCategoryTabControl.SelectedIndex;
+        UpdateAgentLogViews();
+    }
+
+    private void ChronicleCategoryTabControl_SelectionChanged(
+        object sender,
+        SelectionChangedEventArgs e)
+    {
+        if (_applyingObservation || !ReferenceEquals(e.Source, sender))
+        {
+            return;
+        }
+
+        _chronicleCategory = ChronicleCategoryTabControl.SelectedIndex;
+        UpdateAgentLogViews();
+    }
+
+    private void ChronicleLifeToggle_Click(object sender, RoutedEventArgs e)
+    {
+        _selectedChronicleLife = sender is RadioButton { Tag: int lifeNumber }
+            ? lifeNumber
+            : null;
+        UpdateAgentLogViews();
     }
 
     private void RankingGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

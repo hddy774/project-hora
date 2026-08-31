@@ -496,45 +496,119 @@
                                    Text="자질은 직접 전투력으로 합산하지 않습니다. 자질 50.00은 100% 기준이며 역할별 조합에 따라 공법·법술의 효과·숙련 경험·이해 성장과 전투 숙련·이해·경험 획득을 최저 50%~최대 200%로 보정합니다. 생명력·영력·공격·방어·속도·관통·치명타·회피·판단·집중·수행 효율에도 각각 반영됩니다."
                                    TextWrapping="Wrap" />
 
+                        <Expander x:Name="PowerFormulaExpander"
+                                  Header="전투력 세부 계산 공식"
+                                  Margin="0,12,0,0"
+                                  IsExpanded="False">
+                            <TextBlock x:Name="PowerFormulaText"
+                                       Margin="0,7,0,0"
+                                       Padding="10"
+                                       Background="{StaticResource PanelAltBrush}"
+                                       Foreground="{StaticResource PrimaryTextBrush}"
+                                       FontSize="11"
+                                       TextWrapping="Wrap" />
+                        </Expander>
+
                         <TabControl x:Name="AgentLogTabControl"
                                     Margin="0,28,0,0"
-                                    Height="300"
+                                    Height="360"
                                     Background="{StaticResource PanelAltBrush}"
                                     BorderThickness="0"
                                     SelectionChanged="VisibleSection_SelectionChanged">
                             <TabItem Header="최근 개인 로그 · 최대 100줄">
-                                <ListBox x:Name="PersonalLogList"
-                                         Background="{StaticResource PanelAltBrush}"
-                                         BorderThickness="0"
-                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="12,9">
-                                                <StackPanel>
-                                                    <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
-                                                    <TextBlock Text="{Binding Summary}" Margin="0,3,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TabControl x:Name="PersonalLogCategoryTabControl"
+                                                Height="31"
+                                                Background="{StaticResource PanelAltBrush}"
+                                                BorderThickness="0"
+                                                SelectionChanged="PersonalLogCategoryTabControl_SelectionChanged">
+                                        <TabItem Header="전체" />
+                                        <TabItem Header="수행" />
+                                        <TabItem Header="전투" />
+                                        <TabItem Header="경제" />
+                                        <TabItem Header="이동" />
+                                        <TabItem Header="생사" />
+                                    </TabControl>
+                                    <ListBox x:Name="PersonalLogList"
+                                             Grid.Row="1"
+                                             Background="{StaticResource PanelAltBrush}"
+                                             BorderThickness="0"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="12,9">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                                        <TextBlock Text="{Binding Summary}" Margin="0,3,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Grid>
                             </TabItem>
                             <TabItem Header="영구 연대기">
-                                <ListBox x:Name="ChronicleList"
-                                         Background="{StaticResource PanelAltBrush}"
-                                         BorderThickness="0"
-                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="12,9">
-                                                <StackPanel>
-                                                    <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
-                                                    <TextBlock Text="{Binding Summary}" Margin="0,3,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TabControl x:Name="ChronicleCategoryTabControl"
+                                                Height="31"
+                                                Background="{StaticResource PanelAltBrush}"
+                                                BorderThickness="0"
+                                                SelectionChanged="ChronicleCategoryTabControl_SelectionChanged">
+                                        <TabItem Header="전체" />
+                                        <TabItem Header="성장" />
+                                        <TabItem Header="전투" />
+                                        <TabItem Header="생사" />
+                                        <TabItem Header="획득" />
+                                    </TabControl>
+                                    <ScrollViewer Grid.Row="1"
+                                                  Margin="8,5,8,5"
+                                                  HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Disabled">
+                                        <ItemsControl x:Name="ChronicleLifeToggleList">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <RadioButton Content="{Binding Label}"
+                                                                 Tag="{Binding LifeNumber}"
+                                                                 IsChecked="{Binding IsSelected}"
+                                                                 GroupName="ChronicleLife"
+                                                                 Style="{StaticResource SegmentToggleStyle}"
+                                                                 Margin="0,0,4,0"
+                                                                 Click="ChronicleLifeToggle_Click" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                    <ListBox x:Name="ChronicleList"
+                                             Grid.Row="2"
+                                             Background="{StaticResource PanelAltBrush}"
+                                             BorderThickness="0"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="12,9">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                                        <TextBlock Text="{Binding Summary}" Margin="0,3,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Grid>
                             </TabItem>
                         </TabControl>
                     </StackPanel>
@@ -581,6 +655,21 @@
                                 </UniformGrid>
                                 <TextBlock Text="전투력 랭킹 변동" Margin="0,16,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
                                 <TextBlock x:Name="RankingMovementText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
+                                <DataGrid x:Name="EliteRankingGrid"
+                                          Height="132"
+                                          Margin="0,8,0,0"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="True"
+                                          HeadersVisibility="Column"
+                                          EnableRowVirtualization="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="구간" Binding="{Binding Scope}" Width="62" />
+                                        <DataGridTextColumn Header="전투력 기준" Binding="{Binding CombatCutoff}" Width="82" />
+                                        <DataGridTextColumn Header="경지 기준" Binding="{Binding RealmCutoff}" Width="*" />
+                                        <DataGridTextColumn Header="전투력 변동" Binding="{Binding CombatMovement}" Width="92" />
+                                        <DataGridTextColumn Header="경지 변동" Binding="{Binding RealmMovement}" Width="92" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
                                 <Expander x:Name="RealmDistributionExpander" Header="전체 경지 분포" Margin="0,16,0,0" IsExpanded="True" Expanded="VisibleExpander_Expanded">
                                     <DataGrid x:Name="RealmDistributionGrid" Height="250" Margin="0,6,0,0" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column">
                                         <DataGrid.Columns>
@@ -616,6 +705,15 @@
                                 <TextBlock x:Name="CityMissionText" Margin="0,4,0,14" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
                                 <TextBlock Text="도시 생산" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
                                 <TextBlock x:Name="CityProductionText" Margin="0,4,0,14" Foreground="{StaticResource PositiveBrush}" TextWrapping="Wrap" />
+                                <TextBlock Text="유한 영석 광맥" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="CityMiningText" Margin="0,4,0,14" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                                <TextBlock Text="수요 기반 제작 중" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock x:Name="CityProductionQueueText"
+                                           Margin="0,4,0,14"
+                                           Padding="9"
+                                           Background="{StaticResource PanelAltBrush}"
+                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                           TextWrapping="Wrap" />
                                 <TextBlock Text="공동 시장 재고" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
                                 <TextBlock x:Name="CityInventoryText" Margin="0,4,0,14" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
                                 <TextBlock Text="누적 공급·수요" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
@@ -631,7 +729,7 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Grid Margin="4,2,4,10">
-                                <TextBlock Text="35개 상품 공급·수요·가격" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" />
+                                <TextBlock Text="대경지별 44개 상품 · 공급·수요·품질 가격" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" />
                                 <TextBlock x:Name="MarketTreasuryText" HorizontalAlignment="Right" Foreground="{StaticResource AccentBrush}" />
                             </Grid>
                             <DataGrid x:Name="MarketGrid"
@@ -706,12 +804,21 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Margin="3"
-                                                    Padding="7"
-                                                    MinHeight="92"
-                                                    CornerRadius="6"
-                                                    Background="{Binding Background}">
-                                                <StackPanel>
+                                            <Button Tag="{Binding LocationId}"
+                                                    Click="MapTileButton_Click"
+                                                    Margin="0"
+                                                    Padding="0"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Cursor="Hand">
+                                                <Border Margin="3"
+                                                        Padding="7"
+                                                        MinHeight="92"
+                                                        CornerRadius="6"
+                                                        BorderBrush="{Binding Border}"
+                                                        BorderThickness="2"
+                                                        Background="{Binding Background}">
+                                                    <StackPanel>
                                                     <TextBlock Text="{Binding Name}"
                                                                Foreground="{StaticResource PrimaryTextBrush}"
                                                                FontSize="11"
@@ -733,11 +840,50 @@
                                                                FontSize="9"
                                                                TextAlignment="Center"
                                                                TextWrapping="Wrap" />
-                                                </StackPanel>
-                                            </Border>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Button>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
+                                <Border Margin="3,12,3,0"
+                                        Padding="11"
+                                        CornerRadius="7"
+                                        BorderBrush="{StaticResource AccentBrush}"
+                                        BorderThickness="1"
+                                        Background="{StaticResource PanelAltBrush}">
+                                    <StackPanel>
+                                        <TextBlock x:Name="MapSelectedLocationText"
+                                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock x:Name="MapSelectedMonsterText"
+                                                   Margin="0,5,0,0"
+                                                   Foreground="{StaticResource AccentBrush}"
+                                                   FontSize="11"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock x:Name="MapAgentLimitText"
+                                                   Margin="0,5,0,5"
+                                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                                   FontSize="10" />
+                                        <DataGrid x:Name="MapAgentGrid"
+                                                  Height="190"
+                                                  AutoGenerateColumns="False"
+                                                  IsReadOnly="True"
+                                                  HeadersVisibility="Column"
+                                                  EnableRowVirtualization="True"
+                                                  SelectionMode="Single"
+                                                  SelectionChanged="MapAgentGrid_SelectionChanged">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="*" />
+                                                <DataGridTextColumn Header="경지" Binding="{Binding Realm}" Width="120" />
+                                                <DataGridTextColumn Header="전투력" Binding="{Binding CombatPower}" Width="72" />
+                                                <DataGridTextColumn Header="행동" Binding="{Binding Activity}" Width="75" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                </Border>
                                 <Expander x:Name="MapLocationExpander" Header="지역 상세 목록" Margin="0,14,0,0" IsExpanded="False" Expanded="VisibleExpander_Expanded">
                                     <DataGrid x:Name="MapLocationGrid"
                                               Height="275"

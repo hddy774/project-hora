@@ -32,11 +32,13 @@ internal sealed record MarketRow(
     string Demand);
 
 internal sealed record MapTileRow(
+    ushort LocationId,
     string Name,
     string Biome,
     string Population,
     string Monsters,
-    Brush Background);
+    Brush Background,
+    Brush Border);
 
 internal sealed record MapLocationRow(
     string Name,
@@ -44,3 +46,22 @@ internal sealed record MapLocationRow(
     string Coordinates,
     string Population,
     string Monsters);
+
+internal sealed record MapAgentRow(
+    AgentId AgentId,
+    string Name,
+    string Realm,
+    string CombatPower,
+    string Activity);
+
+internal sealed record EliteRankingRow(
+    string Scope,
+    string CombatCutoff,
+    string RealmCutoff,
+    string CombatMovement,
+    string RealmMovement);
+
+internal sealed record LifeToggleRow(
+    int? LifeNumber,
+    string Label,
+    bool IsSelected);

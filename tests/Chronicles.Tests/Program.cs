@@ -9,12 +9,18 @@ using System.Text.Json.Nodes;
 
 if (args.Contains("--verify-local-save", StringComparer.Ordinal))
 {
-    var path = WorldSaveStore.DefaultPath;
-    var checkpoint = WorldSaveStore.Load(path);
+    var load = SlotSaveStore.Load(SlotSaveStore.DefaultRoot, SlotSaveStore.DefaultSlotId);
+    if (!load.IsSuccess)
+    {
+        Console.Error.WriteLine($"LOCAL SAVE ERROR: {load.Status} · {load.Message}");
+        return 1;
+    }
+
+    var checkpoint = load.Checkpoint!;
     var restored = World.Restore(checkpoint);
     var snapshot = restored.CreateSnapshot(10, 10);
     Console.WriteLine(
-        $"LOCAL SAVE OK: schema {checkpoint.SchemaVersion} -> {WorldCheckpoint.CurrentSchemaVersion} · " +
+        $"LOCAL SAVE OK: world schema {load.WorldSchema} · checkpoint schema {checkpoint.SchemaVersion} · " +
         $"{snapshot.Population:N0}명 · {GameCalendar.GetDate(snapshot.Tick)} · " +
         $"시장 {snapshot.Market.Goods.Count:N0}종");
     return 0;
@@ -63,6 +69,7 @@ var tests = new (string Name, Action Body)[]
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
+    ("schema 25 SQLite 다중 슬롯·후보 원자 복원", SqliteSlotPersistenceTests.Run),
     ("10,000명 로컬 실시간 성능 예산", DefaultWorldPerformanceBudget),
 };
 

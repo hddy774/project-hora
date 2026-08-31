@@ -208,3 +208,20 @@ public sealed record WorldCheckpoint(
 {
     public const int CurrentSchemaVersion = 24;
 }
+
+/// <summary>
+/// Safe-boundary authority bundle. Its constructor is internal so persistence callers
+/// cannot pair an arbitrary checkpoint with an unrelated logical state hash.
+/// </summary>
+public sealed class WorldAuthorityCheckpoint
+{
+    internal WorldAuthorityCheckpoint(WorldCheckpoint checkpoint, ulong stateHash)
+    {
+        Checkpoint = checkpoint;
+        StateHash = stateHash;
+    }
+
+    public WorldCheckpoint Checkpoint { get; }
+
+    public ulong StateHash { get; }
+}

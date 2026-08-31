@@ -129,6 +129,15 @@ public sealed partial class World
 
     public static World Restore(WorldCheckpoint checkpoint) => new(checkpoint);
 
+    public WorldAuthorityCheckpoint CreateAuthorityCheckpoint()
+    {
+        var checkpoint = CreateCheckpoint();
+        return new WorldAuthorityCheckpoint(checkpoint, ComputeStateHash());
+    }
+
+    public static void ValidateCheckpointForPersistence(WorldCheckpoint checkpoint) =>
+        ValidateCheckpoint(checkpoint);
+
     private ReincarnationStore MigrateLegacyReincarnationStore(WorldCheckpoint checkpoint)
     {
         var store = new ReincarnationStore(Population);

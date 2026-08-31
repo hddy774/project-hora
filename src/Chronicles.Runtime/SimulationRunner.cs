@@ -171,6 +171,14 @@ public sealed class SimulationRunner : IDisposable
         }
     }
 
+    public WorldAuthorityCheckpoint CreateAuthorityCheckpoint()
+    {
+        lock (_worldGate)
+        {
+            return _world.CreateAuthorityCheckpoint();
+        }
+    }
+
     public void RestoreCheckpoint(WorldCheckpoint checkpoint)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);

@@ -49,6 +49,47 @@ public static class WorldSaveCodec
         return container.ToArray();
     }
 
+    /// <summary>
+    /// Schema-25 SQLite writer path. JSON is fed directly into Brotli so the full
+    /// uncompressed authority graph is never materialized as one managed byte array.
+    /// The resulting bytes retain the existing checksummed CMIP payload contract and
+    /// are decoded by <see cref="Decode"/>.
+    /// </summary>
+    internal static byte[] EncodeStreaming(WorldCheckpoint checkpoint)
+    {
+        ArgumentNullException.ThrowIfNull(checkpoint);
+        using var payloadStream = new MemoryStream();
+        using (var compression = new BrotliStream(
+            payloadStream,
+            CompressionLevel.Optimal,
+            leaveOpen: true))
+        using (var bounded = new BoundedWriteStream(
+            compression,
+            MaximumJsonBytes,
+            leaveOpen: true))
+        {
+            JsonSerializer.Serialize(bounded, checkpoint, JsonOptions);
+            bounded.Flush();
+        }
+
+        var payload = payloadStream.ToArray();
+        if (payload.Length > MaximumPayloadBytes)
+        {
+            throw new InvalidDataException("저장 payload가 허용 크기를 초과했습니다.");
+        }
+
+        var checksum = SHA256.HashData(payload);
+        using var container = new MemoryStream(Magic.Length + 8 + ChecksumLength + payload.Length);
+        using var writer = new BinaryWriter(container);
+        writer.Write(Magic);
+        writer.Write(ContainerVersion);
+        writer.Write(payload.Length);
+        writer.Write(checksum);
+        writer.Write(payload);
+        writer.Flush();
+        return container.ToArray();
+    }
+
     public static WorldCheckpoint Decode(ReadOnlySpan<byte> container)
     {
         var minimumLength = Magic.Length + 8 + ChecksumLength;
@@ -132,5 +173,72 @@ public static class WorldSaveCodec
         options.Converters.Add(new AgentIdJsonConverter());
         options.Converters.Add(new SimulationTickJsonConverter());
         return options;
+    }
+
+    private sealed class BoundedWriteStream : Stream
+    {
+        private readonly Stream _inner;
+        private readonly long _maximumBytes;
+        private readonly bool _leaveOpen;
+        private long _written;
+
+        public BoundedWriteStream(Stream inner, long maximumBytes, bool leaveOpen)
+        {
+            _inner = inner;
+            _maximumBytes = maximumBytes;
+            _leaveOpen = leaveOpen;
+        }
+
+        public override bool CanRead => false;
+        public override bool CanSeek => false;
+        public override bool CanWrite => true;
+        public override long Length => _written;
+        public override long Position
+        {
+            get => _written;
+            set => throw new NotSupportedException();
+        }
+
+        public override void Flush() => _inner.Flush();
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            ValidateWrite(count);
+            _inner.Write(buffer, offset, count);
+            _written += count;
+        }
+
+        public override void Write(ReadOnlySpan<byte> buffer)
+        {
+            ValidateWrite(buffer.Length);
+            _inner.Write(buffer);
+            _written += buffer.Length;
+        }
+
+        public override int Read(byte[] buffer, int offset, int count) =>
+            throw new NotSupportedException();
+
+        public override long Seek(long offset, SeekOrigin origin) =>
+            throw new NotSupportedException();
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && !_leaveOpen)
+            {
+                _inner.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private void ValidateWrite(int count)
+        {
+            if (count < 0 || _written > _maximumBytes - count)
+            {
+                throw new InvalidDataException("저장 JSON이 허용 크기를 초과했습니다.");
+            }
+        }
     }
 }

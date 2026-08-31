@@ -18,11 +18,14 @@ public sealed class GameApplicationSession : IDisposable
         _runner = new SimulationRunner(world ?? throw new ArgumentNullException(nameof(world)));
     }
 
-    public static string DefaultSavePath => WorldSaveStore.DefaultPath;
+    public static string DefaultSaveRoot => SlotSaveStore.DefaultRoot;
 
-    public static string DefaultDataDirectory =>
-        Path.GetDirectoryName(DefaultSavePath)
-        ?? throw new InvalidOperationException("게임 데이터 폴더를 확인할 수 없습니다.");
+    public static string DefaultSavePath =>
+        SlotSaveStore.GetPaths(DefaultSaveRoot, SlotSaveStore.DefaultSlotId).PrimaryPath;
+
+    public static string LegacySavePath => WorldSaveStore.DefaultPath;
+
+    public static string DefaultDataDirectory => SlotSaveStore.DefaultDataDirectory;
 
     public static GameApplicationSession CreateDefault(ulong seed) =>
         new(World.CreateDefault(seed));
@@ -94,21 +97,45 @@ public sealed class GameApplicationSession : IDisposable
     public void RestoreCheckpoint(WorldCheckpoint checkpoint) =>
         _runner.RestoreCheckpoint(checkpoint);
 
-    public Task SaveDefaultAsync(CancellationToken cancellationToken = default)
+    public Task<SlotSaveResult> SaveSlotAsync(
+        string slotId,
+        CancellationToken cancellationToken = default)
     {
-        var checkpoint = _runner.CreateCheckpoint();
+        var authority = _runner.CreateAuthorityCheckpoint();
         return Task.Run(
-            () => WorldSaveStore.Save(DefaultSavePath, checkpoint),
+            () => SlotSaveStore.Save(DefaultSaveRoot, slotId, authority),
             cancellationToken);
+    }
+
+    public Task<SlotSaveResult> SaveDefaultAsync(CancellationToken cancellationToken = default) =>
+        SaveSlotAsync(SlotSaveStore.DefaultSlotId, cancellationToken);
+
+    public async Task<SlotLoadResult> LoadSlotAsync(
+        string slotId,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await Task.Run(
+            () => SlotSaveStore.Load(DefaultSaveRoot, slotId),
+            cancellationToken).ConfigureAwait(false);
+        if (result.IsSuccess)
+        {
+            _runner.RestoreCheckpoint(result.Checkpoint!);
+        }
+
+        return result;
     }
 
     public async Task<int> LoadDefaultAsync(CancellationToken cancellationToken = default)
     {
-        var checkpoint = await Task.Run(
-            () => WorldSaveStore.Load(DefaultSavePath),
+        var result = await LoadSlotAsync(
+            SlotSaveStore.DefaultSlotId,
             cancellationToken).ConfigureAwait(false);
-        _runner.RestoreCheckpoint(checkpoint);
-        return checkpoint.SchemaVersion;
+        if (!result.IsSuccess)
+        {
+            throw new InvalidDataException(result.Message);
+        }
+
+        return result.WorldSchema;
     }
 
     public void Dispose() => _runner.Dispose();

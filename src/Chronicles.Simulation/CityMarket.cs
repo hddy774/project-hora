@@ -466,6 +466,11 @@ internal sealed class CityMarket
                 continue;
             }
 
+            if (!CanStartProduction(definition))
+            {
+                continue;
+            }
+
             var score = checked((unmet * 100L) + Math.Max(0, 10 - (int)(definition.Realm ?? 0)));
             if (score > selectedScore)
             {
@@ -480,21 +485,17 @@ internal sealed class CityMarket
     private bool TryStartProduction(int goodId)
     {
         var definition = EconomyRules.GetMarketGood(goodId);
+        if (!CanStartProduction(definition))
+        {
+            return false;
+        }
+
         var materialCost = EconomyRules.GetProductionMaterialCost(definition.Kind, definition.Realm);
         var spiritStoneCost = EconomyRules.GetProductionSpiritStoneCost(definition);
         MaterialId? material = null;
         if (TryGetRequiredMaterial(definition.Kind, out var requiredMaterial))
         {
             material = requiredMaterial;
-            if (_stock[(int)requiredMaterial] < materialCost)
-            {
-                return false;
-            }
-        }
-
-        if (TreasurySpiritStones < spiritStoneCost)
-        {
-            return false;
         }
 
         if (material is { } consumed)
@@ -515,6 +516,18 @@ internal sealed class CityMarket
             materialCost,
             spiritStoneCost));
         return true;
+    }
+
+    private bool CanStartProduction(MarketGoodDefinition definition)
+    {
+        var materialCost = EconomyRules.GetProductionMaterialCost(definition.Kind, definition.Realm);
+        if (TryGetRequiredMaterial(definition.Kind, out var material)
+            && _stock[(int)material] < materialCost)
+        {
+            return false;
+        }
+
+        return TreasurySpiritStones >= EconomyRules.GetProductionSpiritStoneCost(definition);
     }
 
     private void CompleteProduction(CityProductionOrder order)

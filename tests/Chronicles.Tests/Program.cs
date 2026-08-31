@@ -3,6 +3,19 @@ using Chronicles.Persistence;
 using Chronicles.Simulation;
 using System.Diagnostics;
 
+if (args.Contains("--verify-local-save", StringComparer.Ordinal))
+{
+    var path = WorldSaveStore.DefaultPath;
+    var checkpoint = WorldSaveStore.Load(path);
+    var restored = World.Restore(checkpoint);
+    var snapshot = restored.CreateSnapshot(10, 10);
+    Console.WriteLine(
+        $"LOCAL SAVE OK: schema {checkpoint.SchemaVersion} -> {WorldCheckpoint.CurrentSchemaVersion} · " +
+        $"{snapshot.Population:N0}명 · {GameCalendar.GetDate(snapshot.Tick)} · " +
+        $"시장 {snapshot.Market.Goods.Count:N0}종");
+    return 0;
+}
+
 var tests = new (string Name, Action Body)[]
 {
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
@@ -25,6 +38,7 @@ var tests = new (string Name, Action Body)[]
     ("180년 장기 수행·사냥·전투 참여 회귀", LongRunCultivationHuntingAndCombat),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
     ("도시 임무·영석·재료·단약·법보 경제 순환", EconomyLoop),
+    ("재료 부족 상품이 다른 도시 생산을 막지 않음", ProductionSkipsGoodsWithoutResources),
     ("전체 분포·랭킹 변동·승패·사망 통계", WorldStatisticsQuery),
     ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
     ("활성 UI 구역 선택 조회 성능", SelectiveObservationPerformance),
@@ -1296,6 +1310,45 @@ static void EconomyLoop()
     True(agentsWithEquipment > 0, "법보를 장착한 AI가 있어야 합니다.");
     True(agentsWithPills > 0, "단약을 보유한 AI가 있어야 합니다.");
     True(agentsWithMissionHistory > 0, "임무 이력이 있는 AI가 있어야 합니다.");
+}
+
+static void ProductionSkipsGoodsWithoutResources()
+{
+    var world = World.Create(708, 1);
+    var checkpoint = world.CreateCheckpoint();
+    var stock = (int[])checkpoint.Market.Stock.Clone();
+    var demand = (long[])checkpoint.Market.Demand.Clone();
+    var supply = (long[])checkpoint.Market.Supply.Clone();
+    Array.Clear(stock);
+    Array.Clear(demand);
+    Array.Clear(supply);
+
+    var blockedTreasure = EconomyRules.GetTreasureGoodId(
+        TreasureSlot.AttackTreasure,
+        RealmStage.QiRefining);
+    demand[blockedTreasure] = 1_000;
+    demand[EconomyRules.TechniqueBookGoodId] = 10;
+
+    var market = checkpoint.Market with
+    {
+        TreasurySpiritStones = 10_000,
+        Stock = stock,
+        Demand = demand,
+        Supply = supply,
+        ProductionQueue = [],
+        LastIndustryMonth = 0,
+    };
+    world = World.Restore(checkpoint with { Market = market });
+    world.AdvanceTo(GameCalendar.GetMonthStart(1));
+
+    var production = world.CreateSnapshot(1, 0).Market.ProductionQueue ?? [];
+    True(production.Count > 0, "재료가 필요 없는 생산은 계속 시작되어야 합니다.");
+    True(
+        production.Any(item => item.Kind == MarketGoodKind.TechniqueBook),
+        "재료 부족 법보 수요가 공법서 생산을 굶기면 안 됩니다.");
+    True(
+        production.All(item => item.GoodId != blockedTreasure),
+        "재료가 없는 상품은 생산 대기열에 들어가면 안 됩니다.");
 }
 
 static void SaveCodecRoundTrip()

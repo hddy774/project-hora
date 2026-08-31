@@ -10,7 +10,10 @@ public static class WorldSaveCodec
     private const int ContainerVersion = 1;
     private const int ChecksumLength = 32;
     private const int MaximumPayloadBytes = 64 * 1024 * 1024;
-    private const int MaximumJsonBytes = 128 * 1024 * 1024;
+    // 10,000명 × 개인 로그 100줄과 영구 연대기를 포함한 정상 저장은 압축 전
+    // 128 MiB를 넘을 수 있다. 압축 payload 64 MiB와 별도로 해제 상한을 두어
+    // 기존 정상 저장은 허용하되 무제한 Brotli 확장은 계속 차단한다.
+    private const int MaximumJsonBytes = 512 * 1024 * 1024;
     private static readonly byte[] Magic = "CMIP"u8.ToArray();
     private static readonly JsonSerializerOptions JsonOptions = CreateJsonOptions();
 
@@ -18,6 +21,10 @@ public static class WorldSaveCodec
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
         var json = JsonSerializer.SerializeToUtf8Bytes(checkpoint, JsonOptions);
+        if (json.Length > MaximumJsonBytes)
+        {
+            throw new InvalidDataException("저장 JSON이 허용 크기를 초과했습니다.");
+        }
         using var payloadStream = new MemoryStream();
         using (var compression = new BrotliStream(payloadStream, CompressionLevel.Optimal, leaveOpen: true))
         {

@@ -31,6 +31,7 @@ var tests = new (string Name, Action Body)[]
     ("6대 자질 60개 Component·대표값·지연 조회·저장 이전", DetailedAptitudesAuthorityAndLazyProjection),
     ("공법·법술 경험·숙련·이해·품질 불변", SkillMasteryUnderstandingAndImmutableQuality),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
+    ("영혼·육신·현생 신원과 AI 행동 이유 권위", PersonIdentityAndDecisionAuthority),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("부자 TOP 1000·기간별 상위권 변동·세계 연대기", WealthRankingHistoryAndWorldChronicle),
@@ -550,6 +551,9 @@ static void BirthAptitudesChronicleAndReincarnation()
     var initial = World.Create(8801, 1);
     var initialAgent = initial.GetAgentSnapshot(new AgentId(0), includeAptitudeDetails: true);
     var initialSoul = initialAgent.Aptitudes.Soul;
+    var initialSoulId = initialAgent.Identity.SoulId;
+    var initialBodyId = initialAgent.Identity.BodyId;
+    var initialPersonId = initialAgent.Identity.PersonId;
     Equal(1, initialAgent.LifeNumber, "첫 생 번호");
     Equal(0L, initialAgent.AgeYears, "탄생 나이");
     Equal(6, new[]
@@ -588,6 +592,10 @@ static void BirthAptitudesChronicleAndReincarnation()
     var dead = world.GetAgentSnapshot(new AgentId(0));
     Equal(150L, dead.AgeYears, "연기경 최대 수명 도달");
     True(dead.Activity == AgentActivity.Reincarnating, "윤회의 강 상태");
+    True(dead.Identity.LifeState == PersonLifeState.ReincarnationRiver, "윤회의 강 신원 상태");
+    Equal(initialSoulId, dead.Identity.SoulId, "사망 후 영혼 ID 유지");
+    Equal(initialBodyId, dead.Identity.BodyId, "윤회의 강에서 직전 육신 ID 유지");
+    Equal(initialPersonId, dead.Identity.PersonId, "윤회의 강에서 직전 현생 ID 유지");
     Equal(1, world.TotalDeaths, "사망 집계");
 
     world.AdvanceTo(new SimulationTick(deathTick + GameCalendar.TicksPerYear));
@@ -595,6 +603,10 @@ static void BirthAptitudesChronicleAndReincarnation()
     Equal(2, reborn.LifeNumber, "환생 후 생 번호");
     Equal(0L, reborn.AgeYears, "환생 나이");
     Equal(initialSoul, reborn.Aptitudes.Soul, "영혼 자질 윤회 연속성");
+    Equal(initialSoulId, reborn.Identity.SoulId, "환생 후 영혼 ID 연속성");
+    True(reborn.Identity.BodyId != initialBodyId, "환생 후 새 육신 ID");
+    True(reborn.Identity.PersonId != initialPersonId, "환생 후 새 현생 ID");
+    True(reborn.Identity.LifeState == PersonLifeState.Living, "환생 후 생존 신원 상태");
     True(
         reborn.Aptitudes.SpiritualRoot != initialAgent.Aptitudes.SpiritualRoot
         || reborn.Aptitudes.Bone != initialAgent.Aptitudes.Bone
@@ -619,6 +631,51 @@ static void BirthAptitudesChronicleAndReincarnation()
     True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.Death), "사망 일대기");
     True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.ReincarnationEntered), "윤회의 강 일대기");
     True(chronicle.Any(entry => entry.Kind == ChronicleEventKind.Rebirth), "환생 일대기");
+}
+
+static void PersonIdentityAndDecisionAuthority()
+{
+    var world = World.Create(8802, 8);
+    var initial = world.GetAgentSnapshot(new AgentId(0));
+    Equal(PersonCausalRules.CreateSoulId(0), initial.Identity.SoulId, "안정 영혼 ID");
+    Equal(PersonCausalRules.CreateBodyId(0, 1), initial.Identity.BodyId, "첫 육신 ID");
+    Equal(PersonCausalRules.CreatePersonId(0, 1), initial.Identity.PersonId, "첫 현생 ID");
+    Equal(PersonCausalRules.DecisionContractId, initial.Decision.ContractId, "AI 결정 계약 ID");
+    Equal(PersonCausalRules.DecisionContractRevision, initial.Decision.ContractRevision, "AI 결정 계약 revision");
+    True(initial.Decision.RequiresReview, "미확정 Utility 다음 버전 재검토 표식");
+    True(initial.Decision.Latest.PrimaryGoal == AgentGoalKind.ReachRankOne, "모든 AI 최종 목표는 1위");
+    True(initial.Decision.Latest.SupportingGoal == AgentGoalKind.EnterCultivation, "첫 행동의 현재 목표");
+    True(initial.Decision.Latest.SelectedActivity == AgentActivity.Cultivating, "첫 행동 선택");
+
+    var beforeRevision = initial.Decision.Latest.AuthorityRevision;
+    world.AdvanceTo(initial.NextDecisionTick);
+    var decided = world.GetAgentSnapshot(new AgentId(0));
+    True(decided.Decision.Latest.AuthorityRevision > beforeRevision, "행동 판정 시 decision revision 증가");
+    True(decided.Decision.Latest.Tick <= world.Tick.Value, "결정 시점은 현재 세계 시간 이하");
+
+    var beforeObservation = world.ComputeStateHash();
+    _ = world.GetAgentSnapshot(new AgentId(0));
+    Equal(beforeObservation, world.ComputeStateHash(), "행동 이유 관찰은 권위 상태 무영향");
+
+    var checkpoint = world.CreateCheckpoint();
+    Equal(20, checkpoint.SchemaVersion, "인물 신원·결정 추적 저장 schema");
+    var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "인물 신원·결정 codec·hash 왕복");
+
+    var legacy = checkpoint with
+    {
+        SchemaVersion = 19,
+        Agents = checkpoint.Agents.Select(agent => agent with
+        {
+            Identity = null,
+            Decision = null,
+        }).ToArray(),
+    };
+    var migrated = World.Restore(legacy).GetAgentSnapshot(new AgentId(0));
+    Equal(PersonCausalRules.CreateSoulId(0), migrated.Identity.SoulId, "schema 19 영혼 ID 결정론 이전");
+    Equal(PersonCausalRules.CreateBodyId(0, migrated.LifeNumber), migrated.Identity.BodyId, "schema 19 육신 ID 이전");
+    True(migrated.Decision.Latest.PrimaryGoal == AgentGoalKind.ReachRankOne, "schema 19 최종 목표 이전");
+    True(migrated.Decision.Latest.AuthorityRevision >= 1, "schema 19 결정 revision 이전");
 }
 
 static void WorldPersonalLogsAndPermanentChronicle()
@@ -746,7 +803,7 @@ static void DetailedAptitudesAuthorityAndLazyProjection()
     var world = World.CreateDefault(741103);
     var checkpoint = world.CreateCheckpoint();
     stopwatch.Stop();
-    Equal(19, checkpoint.SchemaVersion, "세부 선천자질·수행 Trace 저장 schema");
+    Equal(20, checkpoint.SchemaVersion, "세부 선천자질·인물 인과 저장 schema");
 
     long summaryTotal = 0;
     var summaryMinimum = int.MaxValue;
@@ -1460,7 +1517,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 19, "수행 Formula Trace 저장 schema 19");
+    True(checkpoint.SchemaVersion == 20, "인물 신원·결정 추적 저장 schema 20");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");

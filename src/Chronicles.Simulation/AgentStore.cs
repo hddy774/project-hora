@@ -29,6 +29,12 @@ internal sealed class AgentStore
         AptitudeRoleScoreCache = new AptitudeRoleScores[count];
         CultivationAptitudeCache = new Aptitudes[count];
         CombatAptitudeCache = new Aptitudes[count];
+        SoulIdentityIds = new SoulIdentityId[count];
+        BodyIdentityIds = new BodyIdentityId[count];
+        PersonIdentityIds = new PersonIdentityId[count];
+        LifeStates = new PersonLifeState[count];
+        DecisionTraces = new AgentDecisionTraceState[count];
+        DecisionAuthorityRevisions = new long[count];
         BirthTicks = new long[count];
         LifeNumbers = new int[count];
         BottleneckFailures = new ushort[count];
@@ -121,6 +127,12 @@ internal sealed class AgentStore
     private AptitudeRoleScores[] AptitudeRoleScoreCache { get; }
     private Aptitudes[] CultivationAptitudeCache { get; }
     private Aptitudes[] CombatAptitudeCache { get; }
+    public SoulIdentityId[] SoulIdentityIds { get; }
+    public BodyIdentityId[] BodyIdentityIds { get; }
+    public PersonIdentityId[] PersonIdentityIds { get; }
+    public PersonLifeState[] LifeStates { get; }
+    public AgentDecisionTraceState[] DecisionTraces { get; }
+    public long[] DecisionAuthorityRevisions { get; }
     public long[] BirthTicks { get; }
     public int[] LifeNumbers { get; }
     public ushort[] BottleneckFailures { get; }
@@ -193,6 +205,7 @@ internal sealed class AgentStore
     {
         GenerateAptitudeGroup(index, AptitudeDomain.Soul, random);
         LifeNumbers[index] = 1;
+        SoulIdentityIds[index] = PersonCausalRules.CreateSoulId(index);
         LastActionMonths[index] = -1;
         ActionsTaken[index] = 0;
         InitializeBody(index, random, birthTick: 0);
@@ -220,6 +233,49 @@ internal sealed class AgentStore
         new QualityValue(Comprehensions[index]),
         new QualityValue(Minds[index]),
         new QualityValue(Souls[index]));
+
+    public PersonIdentitySnapshot GetPersonIdentity(int index) => new(
+        SoulIdentityIds[index],
+        BodyIdentityIds[index],
+        PersonIdentityIds[index],
+        LifeStates[index]);
+
+    public AgentDecisionSnapshot GetDecisionSnapshot(int index) => new(
+        PersonCausalRules.DecisionContractId,
+        PersonCausalRules.DecisionContractRevision,
+        RequiresReview: true,
+        DecisionTraces[index]);
+
+    public void RecordDecision(
+        int index,
+        long tick,
+        AgentGoalKind supportingGoal,
+        AgentActivity selectedActivity,
+        DecisionReasonCode selectedReason,
+        DecisionResolutionKind resolution,
+        AgentActivity? alternativeActivity = null)
+    {
+        var revision = checked(DecisionAuthorityRevisions[index] + 1);
+        DecisionAuthorityRevisions[index] = revision;
+        DecisionTraces[index] = new AgentDecisionTraceState(
+            tick,
+            revision,
+            AgentGoalKind.ReachRankOne,
+            supportingGoal,
+            selectedActivity,
+            selectedReason,
+            alternativeActivity,
+            resolution);
+    }
+
+    public void RestoreDecision(
+        int index,
+        long authorityRevision,
+        AgentDecisionTraceState latest)
+    {
+        DecisionAuthorityRevisions[index] = authorityRevision;
+        DecisionTraces[index] = latest;
+    }
 
     public AptitudeDetailSnapshot CreateAptitudeDetailSnapshot(int index)
     {
@@ -410,6 +466,9 @@ internal sealed class AgentStore
         GenerateAptitudeGroup(index, AptitudeDomain.Comprehension, random);
         GenerateAptitudeGroup(index, AptitudeDomain.Mind, random);
         RefreshAptitudeDerived(index);
+        BodyIdentityIds[index] = PersonCausalRules.CreateBodyId(index, LifeNumbers[index]);
+        PersonIdentityIds[index] = PersonCausalRules.CreatePersonId(index, LifeNumbers[index]);
+        LifeStates[index] = PersonLifeState.Living;
         BirthTicks[index] = birthTick;
         BottleneckFailures[index] = 0;
         RealmStages[index] = RealmStage.QiRefining;
@@ -463,6 +522,13 @@ internal sealed class AgentStore
             + (GetEffectiveWhole(Comprehensions[index]) * 2);
         Qi[index] = MaximumQi[index];
         Activities[index] = AgentActivity.Cultivating;
+        RecordDecision(
+            index,
+            birthTick,
+            AgentGoalKind.EnterCultivation,
+            AgentActivity.Cultivating,
+            DecisionReasonCode.InitialLifeCultivation,
+            DecisionResolutionKind.Forced);
         NextDecisionTicks[index] = checked(birthTick + 1 + random.NextInt(20));
         TargetRanks[index] = 1;
         Opponents[index] = -1;

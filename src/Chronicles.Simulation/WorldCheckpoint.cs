@@ -56,7 +56,9 @@ public sealed record AgentCheckpoint(
     CombatAuthorityCheckpoint? CombatAuthority = null,
     MapAgentCheckpoint? Map = null,
     CombatProgressCheckpoint? CombatProgress = null,
-    AptitudeDetailCheckpoint? AptitudeDetails = null);
+    AptitudeDetailCheckpoint? AptitudeDetails = null,
+    PersonIdentityCheckpoint? Identity = null,
+    AgentDecisionCheckpoint? Decision = null);
 
 public sealed record AptitudeDetailCheckpoint(
     int FormulaRevision,
@@ -180,5 +182,5 @@ public sealed record WorldCheckpoint(
     RankingHistoryCheckpoint? RankingHistory = null,
     WorldCenturyChronicleCheckpoint? CenturyChronicle = null)
 {
-    public const int CurrentSchemaVersion = 19;
+    public const int CurrentSchemaVersion = 20;
 }

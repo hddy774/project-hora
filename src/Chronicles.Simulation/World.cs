@@ -266,6 +266,8 @@ public sealed partial class World
                 CombatProgressionRules.GetMasteryHundredths(_agents.CombatExperience[index]),
                 _agents.CombatUnderstanding[index],
                 _agents.GetTreasurePower(index)),
+            _agents.GetPersonIdentity(index),
+            _agents.GetDecisionSnapshot(index),
             includeAptitudeDetails
                 ? _agents.CreateAptitudeDetailSnapshot(index)
                 : null);
@@ -500,6 +502,20 @@ public sealed partial class World
             }
             Add(ref hash, (ulong)_agents.BirthTicks[index]);
             Add(ref hash, (ulong)_agents.LifeNumbers[index]);
+            Add(ref hash, _agents.SoulIdentityIds[index].Value);
+            Add(ref hash, _agents.BodyIdentityIds[index].Value);
+            Add(ref hash, _agents.PersonIdentityIds[index].Value);
+            Add(ref hash, (byte)_agents.LifeStates[index]);
+            var decision = _agents.DecisionTraces[index];
+            Add(ref hash, (ulong)_agents.DecisionAuthorityRevisions[index]);
+            Add(ref hash, (ulong)decision.Tick);
+            Add(ref hash, (ulong)decision.AuthorityRevision);
+            Add(ref hash, (byte)decision.PrimaryGoal);
+            Add(ref hash, (byte)decision.SupportingGoal);
+            Add(ref hash, (byte)decision.SelectedActivity);
+            Add(ref hash, (byte)decision.SelectedReason);
+            Add(ref hash, (ulong)((int?)decision.AlternativeActivity + 1 ?? 0));
+            Add(ref hash, (byte)decision.Resolution);
             Add(ref hash, _agents.BottleneckFailures[index]);
             Add(ref hash, (byte)_agents.RealmStages[index]);
             Add(ref hash, _agents.RealmLayers[index]);
@@ -805,7 +821,12 @@ public sealed partial class World
             || _agents.Qi[index] * 100 < _agents.MaximumQi[index] * 35
             || _agents.InjuryPoints[index] >= 2_500)
         {
-            _agents.Activities[index] = AgentActivity.Recovering;
+            SetActivityDecision(
+                index,
+                AgentActivity.Recovering,
+                AgentGoalKind.RecoverBodyAndQi,
+                DecisionReasonCode.ForcedRecovery,
+                DecisionResolutionKind.Forced);
             return;
         }
 
@@ -815,10 +836,15 @@ public sealed partial class World
             case CultivationState.PreflightReady:
             case CultivationState.Stabilizing:
             case CultivationState.Stable:
-                _agents.Activities[index] = AgentActivity.Cultivating;
+                SetActivityDecision(
+                    index,
+                    AgentActivity.Cultivating,
+                    AgentGoalKind.CompleteBreakthrough,
+                    DecisionReasonCode.BreakthroughPipeline,
+                    DecisionResolutionKind.Forced);
                 return;
             case CultivationState.Bottleneck:
-                _agents.Activities[index] = _agents.CultivationBottleneckCauses[index] switch
+                var bottleneckActivity = _agents.CultivationBottleneckCauses[index] switch
                 {
                     CultivationBottleneckCause.Knowledge =>
                         _agents.TechniqueMasteries[index] <= _agents.SpellMasteries[index]
@@ -838,13 +864,24 @@ public sealed partial class World
                     CultivationBottleneckCause.Method => AgentActivity.TrainingTechnique,
                     _ => AgentActivity.Cultivating,
                 };
+                SetActivityDecision(
+                    index,
+                    bottleneckActivity,
+                    GetSupportingGoal(bottleneckActivity, bottleneck: true),
+                    DecisionReasonCode.BottleneckRemediation,
+                    DecisionResolutionKind.Forced);
                 return;
         }
 
         if (_agents.CultivationStates[index] is CultivationState.PreCultivation
             or CultivationState.EntryTraining)
         {
-            _agents.Activities[index] = AgentActivity.Cultivating;
+            SetActivityDecision(
+                index,
+                AgentActivity.Cultivating,
+                AgentGoalKind.EnterCultivation,
+                DecisionReasonCode.CultivationEntry,
+                DecisionResolutionKind.Forced);
             return;
         }
 
@@ -853,7 +890,12 @@ public sealed partial class World
         if (_agents.CultivationStates[index] == CultivationState.RealmCultivation
             && (_agents.ActionsTaken[index] & 1) == 0)
         {
-            _agents.Activities[index] = AgentActivity.Cultivating;
+            SetActivityDecision(
+                index,
+                AgentActivity.Cultivating,
+                AgentGoalKind.AdvanceRealm,
+                DecisionReasonCode.CultivationPriority,
+                DecisionResolutionKind.Selected);
             return;
         }
 
@@ -871,7 +913,13 @@ public sealed partial class World
             && WorldMapRules.IsCity(_agents.LocationIds[index])
             && _random.NextInt(100) < challengeChance)
         {
-            _agents.Activities[index] = AgentActivity.SeekingChallenge;
+            SetActivityDecision(
+                index,
+                AgentActivity.SeekingChallenge,
+                AgentGoalKind.SeekStrongerOpponent,
+                DecisionReasonCode.ChallengeOpportunity,
+                DecisionResolutionKind.Selected,
+                AgentActivity.Cultivating);
             return;
         }
 
@@ -887,8 +935,59 @@ public sealed partial class World
             activity = AgentActivity.TrainingTechnique;
         }
 
-        _agents.Activities[index] = activity;
+        SetActivityDecision(
+            index,
+            activity,
+            GetSupportingGoal(activity, bottleneck: false),
+            TryIsMapActivity(activity)
+                ? DecisionReasonCode.MapOpportunity
+                : DecisionReasonCode.GrowthBalance,
+            DecisionResolutionKind.Selected,
+            activity == AgentActivity.Cultivating ? null : AgentActivity.Cultivating);
     }
+
+    private void SetActivityDecision(
+        int index,
+        AgentActivity activity,
+        AgentGoalKind supportingGoal,
+        DecisionReasonCode reason,
+        DecisionResolutionKind resolution,
+        AgentActivity? alternativeActivity = null)
+    {
+        _agents.Activities[index] = activity;
+        _agents.RecordDecision(
+            index,
+            Tick.Value,
+            supportingGoal,
+            activity,
+            reason,
+            resolution,
+            alternativeActivity);
+    }
+
+    private static AgentGoalKind GetSupportingGoal(AgentActivity activity, bool bottleneck) =>
+        activity switch
+        {
+            AgentActivity.Cultivating => bottleneck
+                ? AgentGoalKind.ResolveBottleneck
+                : AgentGoalKind.AdvanceRealm,
+            AgentActivity.TrainingTechnique => AgentGoalKind.ImproveTechnique,
+            AgentActivity.TrainingSpell => AgentGoalKind.ImproveSpell,
+            AgentActivity.Recovering => AgentGoalKind.RecoverBodyAndQi,
+            AgentActivity.SeekingChallenge or AgentActivity.Fighting =>
+                AgentGoalKind.SeekStrongerOpponent,
+            AgentActivity.DoingCityMission
+                or AgentActivity.TradingInCity
+                or AgentActivity.CraftingTreasure
+                or AgentActivity.CraftingPill
+                or AgentActivity.MiningSpiritStones => AgentGoalKind.AcquireResources,
+            AgentActivity.Traveling or AgentActivity.HuntingMonster => AgentGoalKind.ExploreWorld,
+            AgentActivity.Reincarnating => AgentGoalKind.CompleteReincarnation,
+            _ => AgentGoalKind.ReachRankOne,
+        };
+
+    private static bool TryIsMapActivity(AgentActivity activity) => activity is
+        AgentActivity.Traveling or AgentActivity.HuntingMonster;
 
     private long CalculateActivityDuration(int index)
     {
@@ -1268,7 +1367,13 @@ public sealed partial class World
         }
         AddChronicle(index, ChronicleEventKind.ReincarnationEntered);
         AddEvent(WorldEventKind.ReincarnationEntered, index, _agents.LifeNumbers[index]);
-        _agents.Activities[index] = AgentActivity.Reincarnating;
+        _agents.LifeStates[index] = PersonLifeState.ReincarnationRiver;
+        SetActivityDecision(
+            index,
+            AgentActivity.Reincarnating,
+            AgentGoalKind.CompleteReincarnation,
+            DecisionReasonCode.ReincarnationHandoff,
+            DecisionResolutionKind.Forced);
         _agents.Opponents[index] = -1;
         _agents.Health[index] = 0;
         _agents.Qi[index] = 0;

@@ -482,6 +482,8 @@ public sealed record AgentSnapshot(
     CombatPowerBreakdown CombatPower,
     CultivationReadProjection Cultivation,
     CombatPowerFormulaDetails CombatPowerDetails,
+    PersonIdentitySnapshot Identity,
+    AgentDecisionSnapshot Decision,
     AptitudeDetailSnapshot? AptitudeDetails = null);
 
 public sealed record RankingEntry(

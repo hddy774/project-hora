@@ -194,6 +194,11 @@
                                 <TextBlock x:Name="SelectedIdText"
                                            Margin="0,4,0,0"
                                            Foreground="{StaticResource SecondaryTextBrush}" />
+                                <TextBlock x:Name="IdentityText"
+                                           Margin="0,3,0,0"
+                                           Foreground="{StaticResource SecondaryTextBrush}"
+                                           FontSize="10"
+                                           TextWrapping="Wrap" />
                             </StackPanel>
                             <Border Grid.Column="1"
                                     Padding="12,7"
@@ -254,6 +259,19 @@
                                    Foreground="{StaticResource PositiveBrush}"
                                    FontSize="11"
                                    TextWrapping="Wrap" />
+                        <Expander x:Name="DecisionReasonExpander"
+                                  Header="현재 목표·행동 선택 이유"
+                                  Margin="0,10,0,0"
+                                  IsExpanded="False"
+                                  Expanded="VisibleExpander_Expanded">
+                            <TextBlock x:Name="DecisionReasonText"
+                                       Margin="0,7,0,0"
+                                       Padding="10"
+                                       Background="{StaticResource PanelAltBrush}"
+                                       Foreground="{StaticResource PrimaryTextBrush}"
+                                       FontSize="11"
+                                       TextWrapping="Wrap" />
+                        </Expander>
 
                         <TextBlock Text="수행 진척"
                                    Margin="0,24,0,0"

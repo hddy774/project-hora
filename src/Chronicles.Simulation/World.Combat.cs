@@ -89,8 +89,18 @@ public sealed partial class World
         _agents.CombatTurnOwners[defender] = challenger;
         _agents.Guarding[challenger] = false;
         _agents.Guarding[defender] = false;
-        _agents.Activities[challenger] = AgentActivity.Fighting;
-        _agents.Activities[defender] = AgentActivity.Fighting;
+        SetActivityDecision(
+            challenger,
+            AgentActivity.Fighting,
+            AgentGoalKind.SeekStrongerOpponent,
+            DecisionReasonCode.CombatChallenge,
+            DecisionResolutionKind.Selected);
+        SetActivityDecision(
+            defender,
+            AgentActivity.Fighting,
+            AgentGoalKind.SeekStrongerOpponent,
+            DecisionReasonCode.CombatResponse,
+            DecisionResolutionKind.Forced);
 
         // 방어자의 기존 예약을 무효화한다. 도전자의 다음 예약은 현재 행동을 마친
         // 공통 스케줄러가 만들고, 이후부터는 전투 턴 소유자만 예약한다.
@@ -371,7 +381,12 @@ public sealed partial class World
         _agents.CombatTurnOwners[loser] = -1;
         _agents.Guarding[winner] = false;
         _agents.Guarding[loser] = false;
-        _agents.Activities[winner] = AgentActivity.Recovering;
+        SetActivityDecision(
+            winner,
+            AgentActivity.Recovering,
+            AgentGoalKind.RecoverBodyAndQi,
+            DecisionReasonCode.CombatRecovery,
+            DecisionResolutionKind.Forced);
         _agents.RecalculatePower(winner);
         ScheduleAgent(winner, checked(Tick.Value + CalculateActivityDuration(winner)));
 
@@ -384,7 +399,12 @@ public sealed partial class World
         }
 
         _agents.Health[loser] = Math.Max(1, _agents.Health[loser]);
-        _agents.Activities[loser] = AgentActivity.Recovering;
+        SetActivityDecision(
+            loser,
+            AgentActivity.Recovering,
+            AgentGoalKind.RecoverBodyAndQi,
+            DecisionReasonCode.CombatRecovery,
+            DecisionResolutionKind.Forced);
         _agents.RecalculatePower(loser);
         ScheduleAgent(loser, checked(Tick.Value + CalculateActivityDuration(loser)));
         AddEvent(WorldEventKind.CombatEnded, winner, winnerGain, loser);

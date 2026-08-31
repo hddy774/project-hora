@@ -17,6 +17,8 @@ public partial class MainWindow
         _latestChronicle = chronicle;
         SelectedNameText.Text = agent.Name;
         SelectedIdText.Text = $"{agent.Id} · 최종 목표 #{agent.TargetRank}";
+        IdentityText.Text =
+            $"영혼 {agent.Identity.SoulId} · 육신 {agent.Identity.BodyId} · 현생 {agent.Identity.PersonId} · {FormatLifeState(agent.Identity.LifeState)}";
         SelectedRankText.Text =
             $"전투력 #{agent.Rank:N0} · 경지 #{agent.RealmRank:N0} · " +
             $"자질 #{agent.AptitudeRank:N0} · 부자 #{agent.WealthRank:N0}";
@@ -43,6 +45,10 @@ public partial class MainWindow
         var location = WorldMapRules.GetLocation(agent.LocationId);
         LocationText.Text =
             $"현재 위치 {location.KoreanName} · {FormatBiome(location.Biome)} · 요수 사냥 {KoreanNumberFormatter.Format(agent.MonsterVictories)}/{KoreanNumberFormatter.Format(agent.MonsterHunts)}승";
+        if (DecisionReasonExpander.IsExpanded)
+        {
+            UpdateDecisionReasonView(agent.Decision);
+        }
         CultivationProgressBar.Maximum = Math.Max(1, agent.CultivationRequirement);
         CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
         CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
@@ -270,6 +276,71 @@ public partial class MainWindow
     };
 
     private static string FormatEffectPercent(int basisPoints) => $"{basisPoints / 100m:0.##}%";
+
+    private void UpdateDecisionReasonView(AgentDecisionSnapshot decision)
+    {
+        var latest = decision.Latest;
+        var alternative = latest.AlternativeActivity is { } alternativeActivity
+            ? $" · 차선 후보 {FormatActivity(alternativeActivity)}"
+            : string.Empty;
+        DecisionReasonText.Text =
+            $"{decision.ContractId} r{decision.ContractRevision} · 권위 revision {latest.AuthorityRevision:N0}" +
+            (decision.RequiresReview ? $" · {PersonCausalRules.ProvisionalDecisionReviewId} 다음 버전 검토" : string.Empty) +
+            $"\n최종 목표 {FormatGoal(latest.PrimaryGoal)} → 현재 목표 {FormatGoal(latest.SupportingGoal)}" +
+            $"\n선택 {FormatActivity(latest.SelectedActivity)} · 이유 {FormatDecisionReason(latest.SelectedReason)} · {FormatDecisionResolution(latest.Resolution)}{alternative}" +
+            $"\n판정 시점 {FormatGameDate(GameCalendar.GetDate(new SimulationTick(latest.Tick)))} · 정확한 Utility·전환 비용 수치는 아직 확정하지 않음";
+    }
+
+    private static string FormatLifeState(PersonLifeState state) => state switch
+    {
+        PersonLifeState.Living => "현생 생존",
+        PersonLifeState.ReincarnationRiver => "윤회의 강 체류",
+        _ => state.ToString(),
+    };
+
+    private static string FormatGoal(AgentGoalKind goal) => goal switch
+    {
+        AgentGoalKind.ReachRankOne => "상위권·1위 도달",
+        AgentGoalKind.EnterCultivation => "수행 입문",
+        AgentGoalKind.AdvanceRealm => "경지 성장",
+        AgentGoalKind.CompleteBreakthrough => "돌파 절차 완수",
+        AgentGoalKind.ResolveBottleneck => "병목 해소",
+        AgentGoalKind.RecoverBodyAndQi => "육신·영력 회복",
+        AgentGoalKind.ImproveTechnique => "공법 성장",
+        AgentGoalKind.ImproveSpell => "법술 성장",
+        AgentGoalKind.AcquireResources => "자원 확보",
+        AgentGoalKind.SeekStrongerOpponent => "강자 도전",
+        AgentGoalKind.ExploreWorld => "세계 탐색",
+        AgentGoalKind.CompleteReincarnation => "윤회 완료",
+        _ => goal.ToString(),
+    };
+
+    private static string FormatDecisionReason(DecisionReasonCode reason) => reason switch
+    {
+        DecisionReasonCode.InitialLifeCultivation => "새 생의 수행 기반 마련",
+        DecisionReasonCode.ForcedRecovery => "생명력·영력·부상 회복 우선",
+        DecisionReasonCode.BreakthroughPipeline => "진행 중인 돌파 절차 유지",
+        DecisionReasonCode.BottleneckRemediation => "현재 병목 원인 보완",
+        DecisionReasonCode.CultivationEntry => "입문 Gate 준비",
+        DecisionReasonCode.CultivationPriority => "경지 성장 우선순위",
+        DecisionReasonCode.ChallengeOpportunity => "상위권 경쟁 기회",
+        DecisionReasonCode.MapOpportunity => "지역 탐색·사냥 기회",
+        DecisionReasonCode.GrowthBalance => "공법·법술·경제·수행 균형 성장",
+        DecisionReasonCode.CombatChallenge => "선택한 상대에게 도전",
+        DecisionReasonCode.CombatResponse => "상대의 도전에 대응",
+        DecisionReasonCode.CombatRecovery => "전투 종료 후 회복",
+        DecisionReasonCode.ReincarnationHandoff => "죽음 이후 윤회 절차 진입",
+        _ => reason.ToString(),
+    };
+
+    private static string FormatDecisionResolution(DecisionResolutionKind resolution) => resolution switch
+    {
+        DecisionResolutionKind.Selected => "자율 선택",
+        DecisionResolutionKind.Forced => "필수 전이",
+        DecisionResolutionKind.Deferred => "보류",
+        DecisionResolutionKind.Blocked => "차단",
+        _ => resolution.ToString(),
+    };
 
     private void UpdateAptitudeDetailView(AgentSnapshot agent)
     {

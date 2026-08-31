@@ -229,7 +229,15 @@ public sealed partial class World
                 new AptitudeDetailCheckpoint(
                     AptitudeRules.FormulaRevision,
                     RequiresReview: true,
-                    _agents.CopyAptitudeComponents(index)));
+                    _agents.CopyAptitudeComponents(index)),
+                new PersonIdentityCheckpoint(
+                    _agents.SoulIdentityIds[index],
+                    _agents.BodyIdentityIds[index],
+                    _agents.PersonIdentityIds[index],
+                    _agents.LifeStates[index]),
+                new AgentDecisionCheckpoint(
+                    _agents.DecisionAuthorityRevisions[index],
+                    _agents.DecisionTraces[index]));
         }
 
         return new WorldCheckpoint(
@@ -301,6 +309,22 @@ public sealed partial class World
         }
         _agents.BirthTicks[index] = checkpoint.BirthTick;
         _agents.LifeNumbers[index] = checkpoint.LifeNumber;
+        if (schemaVersion >= 20 && checkpoint.Identity is { } identity)
+        {
+            _agents.SoulIdentityIds[index] = identity.SoulId;
+            _agents.BodyIdentityIds[index] = identity.BodyId;
+            _agents.PersonIdentityIds[index] = identity.PersonId;
+            _agents.LifeStates[index] = identity.LifeState;
+        }
+        else
+        {
+            _agents.SoulIdentityIds[index] = PersonCausalRules.CreateSoulId(index);
+            _agents.BodyIdentityIds[index] = PersonCausalRules.CreateBodyId(index, checkpoint.LifeNumber);
+            _agents.PersonIdentityIds[index] = PersonCausalRules.CreatePersonId(index, checkpoint.LifeNumber);
+            _agents.LifeStates[index] = checkpoint.Activity == AgentActivity.Reincarnating
+                ? PersonLifeState.ReincarnationRiver
+                : PersonLifeState.Living;
+        }
         _agents.BottleneckFailures[index] = checkpoint.BottleneckFailures;
         _agents.RealmStages[index] = checkpoint.RealmStage;
         var migratedFloor = schemaVersion == 7
@@ -382,6 +406,34 @@ public sealed partial class World
         _agents.Qi[index] = checkpoint.Qi;
         _agents.MaximumQi[index] = checkpoint.MaximumQi;
         _agents.Activities[index] = checkpoint.Activity;
+        if (schemaVersion >= 20 && checkpoint.Decision is { } decision)
+        {
+            _agents.RestoreDecision(index, decision.AuthorityRevision, decision.Latest);
+        }
+        else
+        {
+            var supportingGoal = GetSupportingGoal(
+                checkpoint.Activity,
+                checkpoint.CultivationState == CultivationState.Bottleneck);
+            var reason = checkpoint.Activity switch
+            {
+                AgentActivity.Reincarnating => DecisionReasonCode.ReincarnationHandoff,
+                AgentActivity.Recovering => DecisionReasonCode.ForcedRecovery,
+                _ => DecisionReasonCode.GrowthBalance,
+            };
+            _agents.RestoreDecision(
+                index,
+                1,
+                new AgentDecisionTraceState(
+                    checkpoint.LastActionTick,
+                    1,
+                    AgentGoalKind.ReachRankOne,
+                    supportingGoal,
+                    checkpoint.Activity,
+                    reason,
+                    null,
+                    DecisionResolutionKind.Selected));
+        }
         _agents.NextDecisionTicks[index] = checkpoint.NextDecisionTick;
         _agents.LastActionMonths[index] = checkpoint.LastActionMonth;
         _agents.LastActionTicks[index] = checkpoint.LastActionTick;
@@ -716,6 +768,12 @@ public sealed partial class World
                 throw new InvalidDataException($"Agent {index}의 세부 선천자질 체크포인트가 잘못되었습니다.");
             }
 
+            if (checkpoint.SchemaVersion >= 20
+                && !IsValidPersonCausalCheckpoint(index, agent, checkpoint.Tick))
+            {
+                throw new InvalidDataException($"Agent {index}의 인물 신원·결정 추적 체크포인트가 잘못되었습니다.");
+            }
+
             if (agent.PersonalLog.Any(entry =>
                     entry.Sequence < 1
                     || entry.Sequence > checkpoint.PersonalLogSequence
@@ -910,6 +968,37 @@ public sealed partial class World
             && AptitudeRules.CalculateSummaryHundredths(
                 components,
                 AptitudeDomain.Soul) == agent.Soul;
+    }
+
+    private static bool IsValidPersonCausalCheckpoint(
+        int agentIndex,
+        AgentCheckpoint agent,
+        long maximumTick)
+    {
+        if (agent.Identity is not { } identity
+            || agent.Decision is not { } decision
+            || identity.SoulId != PersonCausalRules.CreateSoulId(agentIndex)
+            || identity.BodyId != PersonCausalRules.CreateBodyId(agentIndex, agent.LifeNumber)
+            || identity.PersonId != PersonCausalRules.CreatePersonId(agentIndex, agent.LifeNumber)
+            || !Enum.IsDefined(identity.LifeState)
+            || (identity.LifeState == PersonLifeState.ReincarnationRiver)
+                != (agent.Activity == AgentActivity.Reincarnating)
+            || decision.AuthorityRevision < 1
+            || decision.Latest.AuthorityRevision != decision.AuthorityRevision
+            || decision.Latest.Tick < 0
+            || decision.Latest.Tick > maximumTick
+            || decision.Latest.PrimaryGoal != AgentGoalKind.ReachRankOne
+            || !Enum.IsDefined(decision.Latest.SupportingGoal)
+            || !Enum.IsDefined(decision.Latest.SelectedActivity)
+            || !Enum.IsDefined(decision.Latest.SelectedReason)
+            || !Enum.IsDefined(decision.Latest.Resolution)
+            || (decision.Latest.AlternativeActivity is { } alternative
+                && !Enum.IsDefined(alternative)))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private static bool IsValidWorldEvent(

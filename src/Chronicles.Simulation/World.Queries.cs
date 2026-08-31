@@ -27,6 +27,8 @@ public sealed partial class World
         return _agents.PersonalLogs[index].ToArray();
     }
 
+    public IReadOnlyList<WorldEvent> GetWorldChronicle() => _worldChronicle.ToArray();
+
     public IReadOnlyList<AgentSnapshot> BrowseAgents(int offset, int limit = 500)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(offset);
@@ -148,6 +150,8 @@ public sealed partial class World
 
         IReadOnlyList<EliteRankingMovementSnapshot> eliteMovements =
             Array.Empty<EliteRankingMovementSnapshot>();
+        IReadOnlyList<RankingMovementWindowSnapshot> movementWindows =
+            Array.Empty<RankingMovementWindowSnapshot>();
         if (includeSummary)
         {
             int[] limits = [1, 3, 5, 10];
@@ -169,6 +173,7 @@ public sealed partial class World
             }
 
             eliteMovements = entries;
+            movementWindows = CreateRankingMovementWindows();
         }
 
         return new WorldStatistics(
@@ -193,8 +198,65 @@ public sealed partial class World
             includeSummary ? _totalPillsCrafted : 0,
             includeSummary ? _totalMaterialsSold : 0,
             totalSpiritStones,
-            eliteMovements);
+            eliteMovements,
+            movementWindows);
     }
+
+    private RankingMovementWindowSnapshot[] CreateRankingMovementWindows()
+    {
+        ReadOnlySpan<int> tierLimits = [1, 3, 5, 10, 100, 500, 1_000];
+        var results = new RankingMovementWindowSnapshot[
+            RankingHistory.AllPeriods.Count * tierLimits.Length];
+        var resultIndex = 0;
+        foreach (var period in RankingHistory.AllPeriods)
+        {
+            var baseline = _rankingHistory.GetBaseline(period, Tick);
+            foreach (var tierLimit in tierLimits)
+            {
+                var comparedCount = Math.Min(
+                    tierLimit,
+                    Math.Min(Population, baseline.CombatPowerTop.Length));
+                var cutoffOffset = Math.Max(0, Math.Min(tierLimit, Population) - 1);
+                var combatCutoffAgent = _agentByRank[cutoffOffset];
+                var realmCutoffAgent = _agentByRealmRank[cutoffOffset];
+                var wealthCutoffAgent = _agentByWealthRank[cutoffOffset];
+                var combatChanged = RankingHistory.CountPositionalChanges(
+                    _agentByRank,
+                    baseline.CombatPowerTop,
+                    comparedCount);
+                var realmChanged = RankingHistory.CountPositionalChanges(
+                    _agentByRealmRank,
+                    baseline.RealmTop,
+                    comparedCount);
+                var wealthChanged = RankingHistory.CountPositionalChanges(
+                    _agentByWealthRank,
+                    baseline.WealthTop,
+                    comparedCount);
+                results[resultIndex++] = new RankingMovementWindowSnapshot(
+                    period,
+                    baseline.Tick,
+                    Tick,
+                    tierLimit,
+                    comparedCount,
+                    _agents.Power[combatCutoffAgent].Total,
+                    HasEnteredCultivation(realmCutoffAgent),
+                    _agents.RealmStages[realmCutoffAgent],
+                    _agents.RealmLayers[realmCutoffAgent],
+                    _agents.SpiritStones[wealthCutoffAgent],
+                    combatChanged,
+                    realmChanged,
+                    wealthChanged,
+                    GetChangeBasisPoints(combatChanged, comparedCount),
+                    GetChangeBasisPoints(realmChanged, comparedCount),
+                    GetChangeBasisPoints(wealthChanged, comparedCount));
+            }
+        }
+
+        return results;
+    }
+
+    private static int GetChangeBasisPoints(int changedCount, int comparedCount) =>
+        comparedCount == 0 ? 0 : checked(changedCount * 10_000 / comparedCount);
 
     private bool TryParseAgentId(string query, out AgentId agentId)
     {

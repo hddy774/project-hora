@@ -18,6 +18,8 @@ public sealed partial class World
         _realmRankByAgent = new int[checkpoint.Agents.Length];
         _agentByAptitudeRank = new int[checkpoint.Agents.Length];
         _aptitudeRankByAgent = new int[checkpoint.Agents.Length];
+        _agentByWealthRank = new int[checkpoint.Agents.Length];
+        _wealthRankByAgent = new int[checkpoint.Agents.Length];
         _monsterPopulations = checkpoint.Map?.MonsterPopulations is
             { Length: WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome } populations
                 ? populations.ToArray()
@@ -60,6 +62,7 @@ public sealed partial class World
             _agentByRank[index] = index;
             _agentByRealmRank[index] = index;
             _agentByAptitudeRank[index] = index;
+            _agentByWealthRank[index] = index;
             _agents.RecalculatePower(index);
         }
 
@@ -81,7 +84,15 @@ public sealed partial class World
             _events.Enqueue(worldEvent);
         }
 
+        _worldChronicle.AddRange(checkpoint.SchemaVersion >= 15
+            ? checkpoint.WorldChronicle ?? Array.Empty<WorldEvent>()
+            : checkpoint.Events.Where(entry => entry.Kind == WorldEventKind.NewLeader));
+
         RefreshRankings(recordLeaderChange: false);
+        if (checkpoint.SchemaVersion >= 15 && checkpoint.RankingHistory is { } rankingHistory)
+        {
+            _rankingHistory.Restore(rankingHistory);
+        }
     }
 
     public static World Restore(WorldCheckpoint checkpoint) => new(checkpoint);
@@ -232,7 +243,9 @@ public sealed partial class World
                 _monsterPopulations.ToArray(),
                 _lastMonsterRegenerationMonth),
             _eliteCombatChangedCounts.ToArray(),
-            _eliteRealmChangedCounts.ToArray());
+            _eliteRealmChangedCounts.ToArray(),
+            _worldChronicle.ToArray(),
+            _rankingHistory.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -467,6 +480,22 @@ public sealed partial class World
                 || checkpoint.EliteRealmChangedCounts.Any(value => value is < 0 or > 10)))
         {
             throw new InvalidDataException("상위권 순위 변동 통계가 잘못되었습니다.");
+        }
+
+        if (checkpoint.SchemaVersion >= 15
+            && (checkpoint.WorldChronicle is null
+                || checkpoint.WorldChronicle.Any(entry => !IsValidWorldEvent(
+                    entry,
+                    checkpoint.EventSequence,
+                    checkpoint.Tick,
+                    checkpoint.Agents.Length))
+                || !IsStrictlyIncreasingSequence(checkpoint.WorldChronicle)
+                || !IsValidRankingHistory(
+                    checkpoint.RankingHistory,
+                    checkpoint.Tick,
+                    checkpoint.Agents.Length)))
+        {
+            throw new InvalidDataException("세계 연대기 또는 기간별 랭킹 이력이 잘못되었습니다.");
         }
 
         var marketGoodCount = checkpoint.Market?.Stock?.Length ?? -1;
@@ -769,4 +798,73 @@ public sealed partial class World
     private static bool IsValidCombatProgress(CombatProgressCheckpoint? checkpoint) =>
         checkpoint is { } value
         && value.UnderstandingHundredths <= CombatProgressionRules.MaximumHundredths;
+
+    private static bool IsValidWorldEvent(
+        WorldEvent entry,
+        long maximumSequence,
+        long maximumTick,
+        int population) =>
+        entry.Sequence is >= 1
+        && entry.Sequence <= maximumSequence
+        && entry.Tick.Value >= 0
+        && entry.Tick.Value <= maximumTick
+        && Enum.IsDefined(entry.Kind)
+        && entry.PrimaryAgent.Value >= 0
+        && entry.PrimaryAgent.Value < population
+        && (entry.SecondaryAgent is not { } secondary
+            || (secondary.Value >= 0 && secondary.Value < population));
+
+    private static bool IsStrictlyIncreasingSequence(WorldEvent[] events)
+    {
+        for (var index = 1; index < events.Length; index++)
+        {
+            if (events[index - 1].Sequence >= events[index].Sequence)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool IsValidRankingHistory(
+        RankingHistoryCheckpoint? checkpoint,
+        long maximumTick,
+        int population)
+    {
+        if (checkpoint?.Frames is not { Length: > 0 and <= 64 } frames)
+        {
+            return false;
+        }
+
+        var expectedLength = Math.Min(RankingHistory.MaximumTrackedRank, population);
+        var previousTick = -1L;
+        foreach (var frame in frames)
+        {
+            if (frame.Tick <= previousTick
+                || frame.Tick > maximumTick
+                || frame.CombatPowerTop is not { Length: var combatLength }
+                || combatLength != expectedLength
+                || frame.RealmTop is not { Length: var realmLength }
+                || realmLength != expectedLength
+                || frame.WealthTop is not { Length: var wealthLength }
+                || wealthLength != expectedLength
+                || !IsValidRankingFrame(frame.CombatPowerTop, population)
+                || !IsValidRankingFrame(frame.RealmTop, population)
+                || !IsValidRankingFrame(frame.WealthTop, population))
+            {
+                return false;
+            }
+
+            previousTick = frame.Tick;
+        }
+
+        return true;
+    }
+
+    private static bool IsValidRankingFrame(int[] ranking, int population)
+    {
+        var seen = new HashSet<int>();
+        return ranking.All(agent => agent >= 0 && agent < population && seen.Add(agent));
+    }
 }

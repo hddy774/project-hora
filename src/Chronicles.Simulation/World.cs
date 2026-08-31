@@ -16,8 +16,12 @@ public sealed partial class World
     private readonly int[] _realmRankByAgent;
     private readonly int[] _agentByAptitudeRank;
     private readonly int[] _aptitudeRankByAgent;
+    private readonly int[] _agentByWealthRank;
+    private readonly int[] _wealthRankByAgent;
     private readonly int[] _monsterPopulations;
     private readonly Queue<WorldEvent> _events = new(WorldLogCapacity);
+    private readonly List<WorldEvent> _worldChronicle = [];
+    private readonly RankingHistory _rankingHistory = new();
     private long _eventSequence;
     private long _chronicleSequence;
     private long _personalLogSequence;
@@ -56,6 +60,8 @@ public sealed partial class World
         _realmRankByAgent = new int[population];
         _agentByAptitudeRank = new int[population];
         _aptitudeRankByAgent = new int[population];
+        _agentByWealthRank = new int[population];
+        _wealthRankByAgent = new int[population];
         _monsterPopulations = CreateInitialMonsterPopulations();
 
         for (var index = 0; index < population; index++)
@@ -65,6 +71,7 @@ public sealed partial class World
             _agentByRank[index] = index;
             _agentByRealmRank[index] = index;
             _agentByAptitudeRank[index] = index;
+            _agentByWealthRank[index] = index;
             _decisionSchedule.Enqueue(index, (_agents.NextDecisionTicks[index], index));
         }
 
@@ -178,6 +185,7 @@ public sealed partial class World
             _rankByAgent[index],
             _realmRankByAgent[index],
             _aptitudeRankByAgent[index],
+            _wealthRankByAgent[index],
             _agents.TargetRanks[index],
             GetAgeYears(index),
             RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears,
@@ -277,6 +285,12 @@ public sealed partial class World
                 _agentByAptitudeRank,
                 actualRankingCount)
             : Array.Empty<RankingEntry>();
+        var wealthRankings = (sections & ObservationSections.WealthRanking) != 0
+            ? CreateRankingEntries(
+                RankingCategory.Wealth,
+                _agentByWealthRank,
+                actualRankingCount)
+            : Array.Empty<RankingEntry>();
         var requestedStatistics = sections & ObservationSections.Statistics;
         var statistics = requestedStatistics != ObservationSections.None
             ? CreateStatistics(requestedStatistics)
@@ -291,13 +305,29 @@ public sealed partial class World
         var recentEvents = (sections & ObservationSections.WorldLog) != 0
             ? _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray()
             : Array.Empty<WorldEvent>();
-        var agentNames = new Dictionary<int, string>((actualRankingCount * 3) + (recentEvents.Length * 2));
-        foreach (var ranking in combatPowerRankings.Concat(realmRankings).Concat(aptitudeRankings))
+        var permanentWorldChronicle = (sections & ObservationSections.WorldChronicle) != 0
+            ? _worldChronicle.ToArray()
+            : Array.Empty<WorldEvent>();
+        var agentNames = new Dictionary<int, string>(
+            (actualRankingCount * 4) + (recentEvents.Length * 2) + (permanentWorldChronicle.Length * 2));
+        foreach (var ranking in combatPowerRankings
+                     .Concat(realmRankings)
+                     .Concat(aptitudeRankings)
+                     .Concat(wealthRankings))
         {
             agentNames[ranking.AgentId.Value] = ranking.Name;
         }
 
         foreach (var worldEvent in recentEvents)
+        {
+            agentNames[worldEvent.PrimaryAgent.Value] = _agents.Names[worldEvent.PrimaryAgent.Value];
+            if (worldEvent.SecondaryAgent is { } secondaryAgent)
+            {
+                agentNames[secondaryAgent.Value] = _agents.Names[secondaryAgent.Value];
+            }
+        }
+
+        foreach (var worldEvent in permanentWorldChronicle)
         {
             agentNames[worldEvent.PrimaryAgent.Value] = _agents.Names[worldEvent.PrimaryAgent.Value];
             if (worldEvent.SecondaryAgent is { } secondaryAgent)
@@ -312,11 +342,13 @@ public sealed partial class World
             combatPowerRankings,
             realmRankings,
             aptitudeRankings,
+            wealthRankings,
             statistics,
             market,
             map,
             agentNames,
             recentEvents,
+            permanentWorldChronicle,
             _totalBreakthroughs,
             _totalChallenges,
             _totalCombatsStarted,
@@ -346,6 +378,7 @@ public sealed partial class World
                     + _agents.CultivationProgress[agentIndex],
                 RankingCategory.Realm => _agents.CultivationProgress[agentIndex],
                 RankingCategory.Aptitude => aptitudeScore,
+                RankingCategory.Wealth => _agents.SpiritStones[agentIndex],
                 _ => throw new ArgumentOutOfRangeException(nameof(category)),
             };
 
@@ -399,6 +432,16 @@ public sealed partial class World
         {
             Add(ref hash, (ulong)_eliteCombatChangedCounts[tier]);
             Add(ref hash, (ulong)_eliteRealmChangedCounts[tier]);
+        }
+        foreach (var frame in _rankingHistory.Frames)
+        {
+            Add(ref hash, (ulong)frame.Tick.Value);
+            for (var index = 0; index < frame.CombatPowerTop.Length; index++)
+            {
+                Add(ref hash, (ulong)frame.CombatPowerTop[index]);
+                Add(ref hash, (ulong)frame.RealmTop[index]);
+                Add(ref hash, (ulong)frame.WealthTop[index]);
+            }
         }
         var market = _market.CreateCheckpoint();
         Add(ref hash, (ulong)market.TreasurySpiritStones);
@@ -578,6 +621,17 @@ public sealed partial class World
         }
 
         foreach (var worldEvent in _events)
+        {
+            Add(ref hash, (ulong)worldEvent.Sequence);
+            Add(ref hash, (ulong)worldEvent.Tick.Value);
+            Add(ref hash, (byte)worldEvent.Kind);
+            Add(ref hash, (ulong)worldEvent.PrimaryAgent.Value);
+            Add(ref hash, (ulong)(worldEvent.SecondaryAgent?.Value + 1 ?? 0));
+            Add(ref hash, unchecked((ulong)(long)worldEvent.Value));
+        }
+
+
+        foreach (var worldEvent in _worldChronicle)
         {
             Add(ref hash, (ulong)worldEvent.Sequence);
             Add(ref hash, (ulong)worldEvent.Tick.Value);
@@ -853,6 +907,7 @@ public sealed partial class World
         Array.Sort(_agentByRank, CompareAgentsByPower);
         Array.Sort(_agentByRealmRank, CompareAgentsByRealm);
         Array.Sort(_agentByAptitudeRank, CompareAgentsByAptitude);
+        Array.Sort(_agentByWealthRank, CompareAgentsByWealth);
         for (var offset = 0; offset < _agentByRank.Length; offset++)
         {
             var agent = _agentByRank[offset];
@@ -875,6 +930,7 @@ public sealed partial class World
             _rankByAgent[agent] = currentRank;
             _realmRankByAgent[_agentByRealmRank[offset]] = offset + 1;
             _aptitudeRankByAgent[_agentByAptitudeRank[offset]] = offset + 1;
+            _wealthRankByAgent[_agentByWealthRank[offset]] = offset + 1;
         }
 
         if (recordLeaderChange)
@@ -905,6 +961,13 @@ public sealed partial class World
             _lastRankingRefreshTick = Tick.Value;
             _rankingUnchangedCount = Population - _rankingRisenCount - _rankingFallenCount;
         }
+
+        _rankingHistory.Record(
+            Tick,
+            _agentByRank,
+            _agentByRealmRank,
+            _agentByWealthRank,
+            force: !recordLeaderChange && _rankingHistory.Frames.Count == 0);
 
         var leader = _agentByRank[0];
         if (recordLeaderChange && leader != previousLeader)
@@ -951,6 +1014,12 @@ public sealed partial class World
         return aptitudeComparison != 0 ? aptitudeComparison : left.CompareTo(right);
     }
 
+    private int CompareAgentsByWealth(int left, int right)
+    {
+        var wealthComparison = _agents.SpiritStones[right].CompareTo(_agents.SpiritStones[left]);
+        return wealthComparison != 0 ? wealthComparison : left.CompareTo(right);
+    }
+
     private void AddEvent(WorldEventKind kind, int primaryAgent, long value, int? secondaryAgent = null)
     {
         if (!IsChronicleMirroredWorldEvent(kind))
@@ -972,13 +1041,18 @@ public sealed partial class World
             _events.Dequeue();
         }
 
-        _events.Enqueue(new WorldEvent(
+        var worldEvent = new WorldEvent(
             ++_eventSequence,
             Tick,
             kind,
             new AgentId(primaryAgent),
             secondaryAgent is null ? null : new AgentId(secondaryAgent.Value),
-            value));
+            value);
+        _events.Enqueue(worldEvent);
+        if (IsPermanentWorldChronicleEvent(kind, primaryAgent, value))
+        {
+            _worldChronicle.Add(worldEvent);
+        }
     }
 
     private bool IsImportantWorldEvent(
@@ -1006,6 +1080,26 @@ public sealed partial class World
         // 전투 결과는 경쟁 관찰 게임의 핵심 세계 사건이므로 모두 유지하되,
         // 고정 용량 세계 로그가 오래된 결과를 자동으로 밀어낸다.
         WorldEventKind.CombatEnded => true,
+        _ => false,
+    };
+
+    private bool IsPermanentWorldChronicleEvent(
+        WorldEventKind kind,
+        int primaryAgent,
+        long value) => kind switch
+    {
+        WorldEventKind.NewLeader
+            or WorldEventKind.MajorRealmBreakthrough
+            or WorldEventKind.GreatPerfectionAchieved => true,
+        WorldEventKind.CultivationEntered => _rankByAgent[primaryAgent] <= 100,
+        WorldEventKind.Death
+            or WorldEventKind.CombatDeath => _rankByAgent[primaryAgent] <= 10,
+        WorldEventKind.TechniqueEnlightenment
+            or WorldEventKind.SpellEnlightenment
+            or WorldEventKind.TreasureCrafted
+            or WorldEventKind.TreasurePurchased
+            or WorldEventKind.TechniqueBookPurchased
+            or WorldEventKind.SpellBookPurchased => value >= 9_000 && _rankByAgent[primaryAgent] <= 100,
         _ => false,
     };
 

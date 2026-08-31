@@ -31,6 +31,7 @@ var tests = new (string Name, Action Body)[]
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
+    ("부자 TOP 1000·기간별 상위권 변동·세계 연대기", WealthRankingHistoryAndWorldChronicle),
     ("자질 직접 전투력 제거·공법 법술·실전 속성 간접 보정", AptitudeIndirectCombatBalance),
     ("공법·법술·법보 전투 스케일 상한과 품질 격차", SkillCombatScaleRegression),
     ("동일 seed 결정론", DeterministicWorld),
@@ -630,6 +631,7 @@ static void CombatPowerAndRanking()
     Equal(1_000, snapshot.CombatPowerRankings.Count, "전투력 TOP 1000");
     Equal(1_000, snapshot.RealmRankings.Count, "경지 TOP 1000");
     Equal(1_000, snapshot.AptitudeRankings.Count, "자질 TOP 1000");
+    Equal(1_000, snapshot.WealthRankings.Count, "부자 TOP 1000");
 
     var previousPower = long.MaxValue;
     foreach (var entry in snapshot.CombatPowerRankings)
@@ -662,6 +664,62 @@ static void CombatPowerAndRanking()
         True(entry.AptitudeScore <= previousAptitude, "자질 랭킹은 6대 자질 합계 내림차순이어야 합니다.");
         previousAptitude = entry.AptitudeScore;
     }
+
+    var previousWealth = long.MaxValue;
+    foreach (var entry in snapshot.WealthRankings)
+    {
+        True(entry.Category == RankingCategory.Wealth, "부자 랭킹 범주");
+        True(entry.Score <= previousWealth, "부자 랭킹은 보유 영석 내림차순이어야 합니다.");
+        Equal(entry.Rank, world.GetAgentSnapshot(entry.AgentId).WealthRank, "부자 공식 순위");
+        previousWealth = entry.Score;
+    }
+}
+
+static void WealthRankingHistoryAndWorldChronicle()
+{
+    var world = World.Create(7901, 1_000);
+    for (var year = 1; year <= 30; year++)
+    {
+        world.AdvanceTo(GameCalendar.FromYears(year));
+    }
+
+    var snapshot = world.CreateSnapshot(
+        1_000,
+        100,
+        ObservationSections.StatisticsSummary
+            | ObservationSections.WealthRanking
+            | ObservationSections.WorldChronicle);
+    Equal(1_000, snapshot.WealthRankings.Count, "부자 랭킹 조회 크기");
+    var windows = snapshot.Statistics.RankingMovementWindows
+        ?? Array.Empty<RankingMovementWindowSnapshot>();
+    Equal(6 * 7, windows.Count, "6개 기간 × 7개 상위권 구간");
+    int[] expectedTiers = [1, 3, 5, 10, 100, 500, 1_000];
+    foreach (var period in Enum.GetValues<RankingMovementPeriod>())
+    {
+        var periodRows = windows.Where(item => item.Period == period).ToArray();
+        Equal(expectedTiers.Length, periodRows.Length, $"{period} 구간 수");
+        True(periodRows.Select(item => item.TopCount).SequenceEqual(expectedTiers), $"{period} 구간 순서");
+        foreach (var row in periodRows)
+        {
+            True(row.FromTick.Value <= row.ToTick.Value, "랭킹 기간 순서");
+            True(row.ComparedCount is >= 1 and <= 1_000, "랭킹 비교 인원 범위");
+            True(row.CombatPowerChangedCount is >= 0 && row.CombatPowerChangedCount <= row.ComparedCount, "전투력 변동 범위");
+            True(row.RealmChangedCount is >= 0 && row.RealmChangedCount <= row.ComparedCount, "경지 변동 범위");
+            True(row.WealthChangedCount is >= 0 && row.WealthChangedCount <= row.ComparedCount, "부자 변동 범위");
+            True(row.CombatPowerChangeBasisPoints is >= 0 and <= 10_000, "전투력 변동률 범위");
+            True(row.RealmChangeBasisPoints is >= 0 and <= 10_000, "경지 변동률 범위");
+            True(row.WealthChangeBasisPoints is >= 0 and <= 10_000, "부자 변동률 범위");
+        }
+    }
+
+    True(
+        snapshot.PermanentWorldChronicle.Any(entry => entry.Kind == WorldEventKind.NewLeader),
+        "전투력 1위 변경은 영구 세계 연대기에 기록");
+    var checkpoint = world.CreateCheckpoint();
+    True(checkpoint.RankingHistory?.Frames is { Length: > 1 }, "기간별 랭킹 이력 저장");
+    True(checkpoint.WorldChronicle?.Length == snapshot.PermanentWorldChronicle.Count, "세계 연대기 저장 수");
+    var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "랭킹 이력·세계 연대기 저장 상태 hash");
 }
 
 static void AptitudeIndirectCombatBalance()
@@ -1037,7 +1095,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 14, "경제·지도 상세 저장 schema 14");
+    True(checkpoint.SchemaVersion == 15, "랭킹 이력·세계 연대기 저장 schema 15");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");
@@ -1490,6 +1548,8 @@ static void SaveCodecRoundTrip()
         checkpoint.Agents[^1].Chronicle.SequenceEqual(decoded.Agents[^1].Chronicle),
         "저장 왕복 마지막 Agent 일대기");
     Equal(checkpoint.Events.Length, decoded.Events.Length, "저장 왕복 사건 수");
+    Equal(checkpoint.WorldChronicle?.Length ?? 0, decoded.WorldChronicle?.Length ?? 0, "저장 왕복 세계 연대기 수");
+    Equal(checkpoint.RankingHistory?.Frames.Length ?? 0, decoded.RankingHistory?.Frames.Length ?? 0, "저장 왕복 랭킹 이력 수");
     if (checkpoint.Events.Length > 0)
     {
         Equal(checkpoint.Events[0], decoded.Events[0], "저장 왕복 첫 사건");

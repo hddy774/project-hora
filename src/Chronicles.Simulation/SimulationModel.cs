@@ -18,10 +18,12 @@ public enum ObservationSections : ushort
     RealmDistribution = 1 << 9,
     CombatPowerDistribution = 1 << 10,
     MarketGoods = 1 << 11,
+    WorldChronicle = 1 << 12,
+    WealthRanking = 1 << 13,
     Statistics = StatisticsSummary | RealmDistribution | CombatPowerDistribution,
     Market = MarketSummary | MarketGoods,
-    AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking,
-    All = Statistics | Market | Map | WorldLog | PersonalLog | Chronicle | AllRankings,
+    AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking | WealthRanking,
+    All = Statistics | Market | Map | WorldLog | WorldChronicle | PersonalLog | Chronicle | AllRankings,
 }
 
 public enum AgentActivity : byte
@@ -143,6 +145,17 @@ public enum RankingCategory : byte
     CombatPower,
     Realm,
     Aptitude,
+    Wealth,
+}
+
+public enum RankingMovementPeriod : byte
+{
+    OneYear,
+    TenYears,
+    HundredYears,
+    ThousandYears,
+    TenThousandYears,
+    All,
 }
 
 public readonly record struct LifeChronicleEntry(
@@ -245,6 +258,24 @@ public readonly record struct EliteRankingMovementSnapshot(
     int CombatPowerChangeBasisPoints,
     int RealmChangeBasisPoints);
 
+public readonly record struct RankingMovementWindowSnapshot(
+    RankingMovementPeriod Period,
+    SimulationTick FromTick,
+    SimulationTick ToTick,
+    int TopCount,
+    int ComparedCount,
+    long CombatPowerCutoff,
+    bool HasRealmCutoff,
+    RealmStage RealmCutoff,
+    int RealmLayerCutoff,
+    long WealthCutoff,
+    int CombatPowerChangedCount,
+    int RealmChangedCount,
+    int WealthChangedCount,
+    int CombatPowerChangeBasisPoints,
+    int RealmChangeBasisPoints,
+    int WealthChangeBasisPoints);
+
 public sealed record WorldStatistics(
     IReadOnlyList<RealmDistributionEntry> RealmDistribution,
     IReadOnlyList<CombatPowerDistributionEntry> CombatPowerDistribution,
@@ -259,7 +290,8 @@ public sealed record WorldStatistics(
     int TotalPillsCrafted,
     int TotalMaterialsSold,
     long TotalSpiritStones,
-    IReadOnlyList<EliteRankingMovementSnapshot>? EliteRankingMovements = null)
+    IReadOnlyList<EliteRankingMovementSnapshot>? EliteRankingMovements = null,
+    IReadOnlyList<RankingMovementWindowSnapshot>? RankingMovementWindows = null)
 {
     public static WorldStatistics Empty { get; } = new(
         Array.Empty<RealmDistributionEntry>(),
@@ -342,6 +374,7 @@ public sealed record AgentSnapshot(
     int Rank,
     int RealmRank,
     int AptitudeRank,
+    int WealthRank,
     int TargetRank,
     long AgeYears,
     long MaximumLifespanYears,
@@ -416,11 +449,13 @@ public sealed record WorldSnapshot(
     IReadOnlyList<RankingEntry> CombatPowerRankings,
     IReadOnlyList<RankingEntry> RealmRankings,
     IReadOnlyList<RankingEntry> AptitudeRankings,
+    IReadOnlyList<RankingEntry> WealthRankings,
     WorldStatistics Statistics,
     CityMarketSnapshot Market,
     WorldMapSnapshot Map,
     IReadOnlyDictionary<int, string> AgentNames,
     IReadOnlyList<WorldEvent> RecentEvents,
+    IReadOnlyList<WorldEvent> PermanentWorldChronicle,
     int TotalBreakthroughs,
     int TotalChallenges,
     int TotalCombatsStarted,

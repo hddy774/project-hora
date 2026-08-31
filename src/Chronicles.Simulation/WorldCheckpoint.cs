@@ -88,6 +88,14 @@ public readonly record struct CityProductionCheckpoint(
     int MaterialCost,
     long SpiritStoneCost);
 
+public sealed record RankingHistoryFrameCheckpoint(
+    long Tick,
+    int[] CombatPowerTop,
+    int[] RealmTop,
+    int[] WealthTop);
+
+public sealed record RankingHistoryCheckpoint(RankingHistoryFrameCheckpoint[] Frames);
+
 public sealed record WorldCheckpoint(
     int SchemaVersion,
     ulong Seed,
@@ -118,7 +126,9 @@ public sealed record WorldCheckpoint(
     CityMarketCheckpoint Market,
     WorldMapCheckpoint? Map = null,
     int[]? EliteCombatChangedCounts = null,
-    int[]? EliteRealmChangedCounts = null)
+    int[]? EliteRealmChangedCounts = null,
+    WorldEvent[]? WorldChronicle = null,
+    RankingHistoryCheckpoint? RankingHistory = null)
 {
-    public const int CurrentSchemaVersion = 14;
+    public const int CurrentSchemaVersion = 15;
 }

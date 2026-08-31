@@ -3,7 +3,7 @@ using Chronicles.Core;
 namespace Chronicles.Simulation;
 
 [Flags]
-public enum ObservationSections : byte
+public enum ObservationSections : ushort
 {
     None = 0,
     Statistics = 1 << 0,
@@ -12,7 +12,11 @@ public enum ObservationSections : byte
     WorldLog = 1 << 3,
     PersonalLog = 1 << 4,
     Chronicle = 1 << 5,
-    All = Statistics | Market | Map | WorldLog | PersonalLog | Chronicle,
+    CombatPowerRanking = 1 << 6,
+    RealmRanking = 1 << 7,
+    AptitudeRanking = 1 << 8,
+    AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking,
+    All = Statistics | Market | Map | WorldLog | PersonalLog | Chronicle | AllRankings,
 }
 
 public enum AgentActivity : byte

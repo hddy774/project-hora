@@ -134,6 +134,14 @@ public partial class MainWindow : Window, IDisposable
         sections |= AgentLogTabControl.SelectedIndex == 1
             ? ObservationSections.Chronicle
             : ObservationSections.PersonalLog;
+        sections |= _rankingCategory switch
+        {
+            RankingCategory.CombatPower => ObservationSections.CombatPowerRanking,
+            RankingCategory.Realm => ObservationSections.RealmRanking,
+            RankingCategory.Aptitude => ObservationSections.AptitudeRanking,
+            null => ObservationSections.None,
+            _ => ObservationSections.None,
+        };
         return sections;
     }
 
@@ -1101,10 +1109,7 @@ public partial class MainWindow : Window, IDisposable
             _ => throw new ArgumentOutOfRangeException(nameof(category)),
         };
 
-        if (_latestSnapshot is not null)
-        {
-            UpdateRankingRows(_latestSnapshot);
-        }
+        RefreshVisibleObservation();
     }
 
     private void PauseButton_Click(object sender, RoutedEventArgs e)

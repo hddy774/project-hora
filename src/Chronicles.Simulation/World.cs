@@ -220,18 +220,24 @@ public sealed partial class World
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rankingCount);
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
         var actualRankingCount = Math.Min(rankingCount, Population);
-        var combatPowerRankings = CreateRankingEntries(
-            RankingCategory.CombatPower,
-            _agentByRank,
-            actualRankingCount);
-        var realmRankings = CreateRankingEntries(
-            RankingCategory.Realm,
-            _agentByRealmRank,
-            actualRankingCount);
-        var aptitudeRankings = CreateRankingEntries(
-            RankingCategory.Aptitude,
-            _agentByAptitudeRank,
-            actualRankingCount);
+        var combatPowerRankings = (sections & ObservationSections.CombatPowerRanking) != 0
+            ? CreateRankingEntries(
+                RankingCategory.CombatPower,
+                _agentByRank,
+                actualRankingCount)
+            : Array.Empty<RankingEntry>();
+        var realmRankings = (sections & ObservationSections.RealmRanking) != 0
+            ? CreateRankingEntries(
+                RankingCategory.Realm,
+                _agentByRealmRank,
+                actualRankingCount)
+            : Array.Empty<RankingEntry>();
+        var aptitudeRankings = (sections & ObservationSections.AptitudeRanking) != 0
+            ? CreateRankingEntries(
+                RankingCategory.Aptitude,
+                _agentByAptitudeRank,
+                actualRankingCount)
+            : Array.Empty<RankingEntry>();
         var statistics = (sections & ObservationSections.Statistics) != 0
             ? CreateStatistics()
             : WorldStatistics.Empty;

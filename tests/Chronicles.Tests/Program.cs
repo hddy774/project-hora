@@ -967,7 +967,10 @@ static void SelectiveObservationPerformance()
     var world = World.CreateDefault(992);
     world.AdvanceTo(new SimulationTick(20_000));
     _ = world.CreateSnapshot(1_000, 150, ObservationSections.All);
-    _ = world.CreateSnapshot(1_000, 150, ObservationSections.Statistics);
+    _ = world.CreateSnapshot(
+        1_000,
+        150,
+        ObservationSections.Statistics | ObservationSections.CombatPowerRanking);
 
     WorldSnapshot? sink = null;
     var legacy = Stopwatch.StartNew();
@@ -983,7 +986,10 @@ static void SelectiveObservationPerformance()
     for (var iteration = 0; iteration < iterations; iteration++)
     {
         // 현재 통계 탭: 단일 snapshot에서 통계만 계산한다.
-        sink = world.CreateSnapshot(1_000, 150, ObservationSections.Statistics);
+        sink = world.CreateSnapshot(
+            1_000,
+            150,
+            ObservationSections.Statistics | ObservationSections.CombatPowerRanking);
     }
     selective.Stop();
     GC.KeepAlive(sink);

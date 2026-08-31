@@ -4,7 +4,9 @@ namespace Chronicles.Simulation;
 
 public sealed partial class World
 {
-    private WorldMapSnapshot CreateMapSnapshot(ushort? detailedLocationId)
+    private WorldMapSnapshot CreateMapSnapshot(
+        ushort? detailedLocationId,
+        int detailedAgentOffset)
     {
         if (detailedLocationId is { } selected
             && selected >= WorldMapRules.LocationCount)
@@ -12,24 +14,92 @@ public sealed partial class World
             throw new ArgumentOutOfRangeException(nameof(detailedLocationId));
         }
 
+        ArgumentOutOfRangeException.ThrowIfNegative(detailedAgentOffset);
+
         var populationByLocation = new int[WorldMapRules.LocationCount];
+        var totalPowerByLocation = new long[WorldMapRules.LocationCount];
+        var maximumPowerByLocation = new long[WorldMapRules.LocationCount];
+        var strongestAgentByLocation = new int[WorldMapRules.LocationCount];
+        var highestRealmByLocation = new RealmStage[WorldMapRules.LocationCount];
+        var highestLayerByLocation = new int[WorldMapRules.LocationCount];
+        var cultivationByLocation = new int[WorldMapRules.LocationCount];
+        var combatByLocation = new int[WorldMapRules.LocationCount];
+        var economyByLocation = new int[WorldMapRules.LocationCount];
+        var travelingByLocation = new int[WorldMapRules.LocationCount];
+        var recoveringByLocation = new int[WorldMapRules.LocationCount];
+        var reincarnatingByLocation = new int[WorldMapRules.LocationCount];
+        Array.Fill(strongestAgentByLocation, -1);
         List<MapAgentSummary>? detailedAgents = detailedLocationId is null
             ? null
-            : new List<MapAgentSummary>(WorldMapRules.DetailedAgentLimit);
+            : new List<MapAgentSummary>(WorldMapRules.DetailedAgentPageSize);
         for (var index = 0; index < Population; index++)
         {
             var locationId = _agents.LocationIds[index];
+            var locationPosition = populationByLocation[locationId];
             populationByLocation[locationId]++;
+            var power = _agents.Power[index].Total;
+            totalPowerByLocation[locationId] = checked(totalPowerByLocation[locationId] + power);
+            if (strongestAgentByLocation[locationId] < 0
+                || power > maximumPowerByLocation[locationId])
+            {
+                maximumPowerByLocation[locationId] = power;
+                strongestAgentByLocation[locationId] = index;
+            }
+
+            var realm = _agents.RealmStages[index];
+            var layer = _agents.RealmLayers[index];
+            if (realm > highestRealmByLocation[locationId]
+                || (realm == highestRealmByLocation[locationId]
+                    && layer > highestLayerByLocation[locationId]))
+            {
+                highestRealmByLocation[locationId] = realm;
+                highestLayerByLocation[locationId] = layer;
+            }
+
+            switch (_agents.Activities[index])
+            {
+                case AgentActivity.Cultivating:
+                case AgentActivity.TrainingTechnique:
+                case AgentActivity.TrainingSpell:
+                    cultivationByLocation[locationId]++;
+                    break;
+                case AgentActivity.SeekingChallenge:
+                case AgentActivity.Fighting:
+                case AgentActivity.HuntingMonster:
+                    combatByLocation[locationId]++;
+                    break;
+                case AgentActivity.DoingCityMission:
+                case AgentActivity.TradingInCity:
+                case AgentActivity.CraftingTreasure:
+                case AgentActivity.CraftingPill:
+                case AgentActivity.MiningSpiritStones:
+                    economyByLocation[locationId]++;
+                    break;
+                case AgentActivity.Traveling:
+                    travelingByLocation[locationId]++;
+                    break;
+                case AgentActivity.Recovering:
+                    recoveringByLocation[locationId]++;
+                    break;
+                case AgentActivity.Reincarnating:
+                    reincarnatingByLocation[locationId]++;
+                    break;
+                default:
+                    throw new InvalidOperationException("분류되지 않은 지역 행동입니다.");
+            }
+
             if (locationId == detailedLocationId
-                && detailedAgents!.Count < WorldMapRules.DetailedAgentLimit)
+                && locationPosition >= detailedAgentOffset
+                && detailedAgents!.Count < WorldMapRules.DetailedAgentPageSize)
             {
                 detailedAgents.Add(new MapAgentSummary(
                     new AgentId(index),
+                    _rankByAgent[index],
                     _agents.Names[index],
-                    _agents.RealmStages[index],
-                    _agents.RealmLayers[index],
+                    realm,
+                    layer,
                     _agents.Activities[index],
-                    _agents.Power[index].Total));
+                    power));
             }
         }
 
@@ -56,14 +126,40 @@ public sealed partial class World
                 monsters = habitats;
             }
 
+            var strongestIndex = strongestAgentByLocation[definition.Id];
+            MapAgentSummary? strongest = strongestIndex < 0
+                ? null
+                : new MapAgentSummary(
+                    new AgentId(strongestIndex),
+                    _rankByAgent[strongestIndex],
+                    _agents.Names[strongestIndex],
+                    _agents.RealmStages[strongestIndex],
+                    _agents.RealmLayers[strongestIndex],
+                    _agents.Activities[strongestIndex],
+                    _agents.Power[strongestIndex].Total);
+            var population = populationByLocation[definition.Id];
+
             locations[definition.Id] = new MapLocationSnapshot(
                 definition.Id,
                 definition.KoreanName,
                 definition.Biome,
                 definition.X,
                 definition.Y,
-                populationByLocation[definition.Id],
+                population,
                 monsters,
+                population == 0 ? 0 : totalPowerByLocation[definition.Id] / population,
+                maximumPowerByLocation[definition.Id],
+                strongest,
+                highestRealmByLocation[definition.Id],
+                highestLayerByLocation[definition.Id],
+                new MapRegionActivitySnapshot(
+                    cultivationByLocation[definition.Id],
+                    combatByLocation[definition.Id],
+                    economyByLocation[definition.Id],
+                    travelingByLocation[definition.Id],
+                    recoveringByLocation[definition.Id],
+                    reincarnatingByLocation[definition.Id]),
+                definition.Id == detailedLocationId ? detailedAgentOffset : 0,
                 definition.Id == detailedLocationId
                     ? detailedAgents!.ToArray()
                     : Array.Empty<MapAgentSummary>());
@@ -73,7 +169,8 @@ public sealed partial class World
             locations,
             _totalMonsterHunts,
             _totalMonsterVictories,
-            detailedLocationId);
+            detailedLocationId,
+            detailedLocationId is null ? 0 : detailedAgentOffset);
     }
 
     private static int[] CreateInitialMonsterPopulations()

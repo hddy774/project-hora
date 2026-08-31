@@ -21,39 +21,6 @@ internal sealed record DistributionRow(
     string Count,
     string Ratio);
 
-internal sealed record MarketRow(
-    int GoodId,
-    string Name,
-    string BasePrice,
-    string CurrentPrice,
-    string Change,
-    string Stock,
-    string Supply,
-    string Demand);
-
-internal sealed record MapTileRow(
-    ushort LocationId,
-    string Name,
-    string Biome,
-    string Population,
-    string Monsters,
-    Brush Background,
-    Brush Border);
-
-internal sealed record MapLocationRow(
-    string Name,
-    string Biome,
-    string Coordinates,
-    string Population,
-    string Monsters);
-
-internal sealed record MapAgentRow(
-    AgentId AgentId,
-    string Name,
-    string Realm,
-    string CombatPower,
-    string Activity);
-
 internal sealed record EliteRankingRow(
     string Scope,
     string CombatCutoff,

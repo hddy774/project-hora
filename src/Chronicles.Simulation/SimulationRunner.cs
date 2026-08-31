@@ -54,7 +54,8 @@ public sealed class SimulationRunner : IDisposable
         int rankingCount = 1_000,
         int eventCount = 150,
         ObservationSections sections = ObservationSections.All,
-        ushort? detailedMapLocationId = null)
+        ushort? detailedMapLocationId = null,
+        int detailedMapAgentOffset = 0)
     {
         lock (_worldGate)
         {
@@ -62,7 +63,8 @@ public sealed class SimulationRunner : IDisposable
                 rankingCount,
                 eventCount,
                 sections,
-                detailedMapLocationId);
+                detailedMapLocationId,
+                detailedMapAgentOffset);
         }
     }
 
@@ -79,7 +81,8 @@ public sealed class SimulationRunner : IDisposable
         int rankingCount = 1_000,
         int eventCount = 150,
         ObservationSections sections = ObservationSections.All,
-        ushort? detailedMapLocationId = null)
+        ushort? detailedMapLocationId = null,
+        int detailedMapAgentOffset = 0)
     {
         lock (_worldGate)
         {
@@ -87,7 +90,8 @@ public sealed class SimulationRunner : IDisposable
                 rankingCount,
                 eventCount,
                 sections,
-                detailedMapLocationId);
+                detailedMapLocationId,
+                detailedMapAgentOffset);
             var agentId = selectedAgent ?? world.LeaderId;
             var agent = _world.GetAgentSnapshot(agentId);
             return new WorldObservation(

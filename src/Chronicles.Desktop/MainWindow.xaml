@@ -1,6 +1,7 @@
 <Window x:Class="Chronicles.Desktop.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Chronicles.Desktop"
         Title="선로만상록 PC"
         Width="1500"
         Height="900"
@@ -722,187 +723,12 @@
                         </ScrollViewer>
                     </TabItem>
                     <TabItem Header="시장">
-                        <Grid Margin="12">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid Margin="4,2,4,10">
-                                <TextBlock Text="대경지별 44개 상품 · 공급·수요·품질 가격" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" />
-                                <TextBlock x:Name="MarketTreasuryText" HorizontalAlignment="Right" Foreground="{StaticResource AccentBrush}" />
-                            </Grid>
-                            <DataGrid x:Name="MarketGrid"
-                                      Grid.Row="1"
-                                      AutoGenerateColumns="False"
-                                      IsReadOnly="True"
-                                      HeadersVisibility="Column"
-                                      EnableRowVirtualization="True"
-                                      SelectionMode="Single"
-                                      SelectionChanged="MarketGrid_SelectionChanged">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="상품" Binding="{Binding Name}" Width="*" />
-                                    <DataGridTextColumn Header="기준" Binding="{Binding BasePrice}" Width="52" />
-                                    <DataGridTextColumn Header="현재" Binding="{Binding CurrentPrice}" Width="52" />
-                                    <DataGridTextColumn Header="변동" Binding="{Binding Change}" Width="54" />
-                                    <DataGridTextColumn Header="재고" Binding="{Binding Stock}" Width="46" />
-                                    <DataGridTextColumn Header="공급" Binding="{Binding Supply}" Width="52" />
-                                    <DataGridTextColumn Header="수요" Binding="{Binding Demand}" Width="52" />
-                                </DataGrid.Columns>
-                            </DataGrid>
-                            <Expander x:Name="MarketDetailExpander" Grid.Row="2" Header="선택 상품 상세" Margin="0,10,0,0" IsExpanded="True" Expanded="VisibleExpander_Expanded">
-                                <Border Margin="0,6,0,0"
-                                        Padding="12"
-                                        CornerRadius="7"
-                                        Background="{StaticResource PanelAltBrush}">
-                                    <StackPanel>
-                                    <TextBlock x:Name="MarketDetailNameText"
-                                               Foreground="{StaticResource PrimaryTextBrush}"
-                                               FontSize="15"
-                                               FontWeight="SemiBold" />
-                                    <TextBlock x:Name="MarketDetailTypeText"
-                                               Margin="0,3,0,0"
-                                               Foreground="{StaticResource AccentBrush}"
-                                               FontSize="11" />
-                                    <TextBlock x:Name="MarketDetailDescriptionText"
-                                               Margin="0,8,0,0"
-                                               Foreground="{StaticResource PrimaryTextBrush}"
-                                               FontSize="11"
-                                               TextWrapping="Wrap" />
-                                    <TextBlock x:Name="MarketDetailProductionText"
-                                               Margin="0,6,0,0"
-                                               Foreground="{StaticResource SecondaryTextBrush}"
-                                               FontSize="11"
-                                               TextWrapping="Wrap" />
-                                    <TextBlock x:Name="MarketDetailEconomyText"
-                                               Margin="0,6,0,0"
-                                               Foreground="{StaticResource PositiveBrush}"
-                                               FontSize="11"
-                                               TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </Border>
-                            </Expander>
-                        </Grid>
+                        <local:MarketObservationView x:Name="MarketObservationPanel" />
                     </TabItem>
                     <TabItem Header="지도">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="14,14,14,12">
-                                <TextBlock Text="만상경 3×3 세계 지도"
-                                           Foreground="{StaticResource PrimaryTextBrush}"
-                                           FontSize="17"
-                                           FontWeight="SemiBold" />
-                                <TextBlock x:Name="MapSummaryText"
-                                           Margin="0,5,0,12"
-                                           Foreground="{StaticResource SecondaryTextBrush}"
-                                           FontSize="11"
-                                           TextWrapping="Wrap" />
-                                <ItemsControl x:Name="MapTileList">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Rows="3" Columns="3" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Button Tag="{Binding LocationId}"
-                                                    Click="MapTileButton_Click"
-                                                    Margin="0"
-                                                    Padding="0"
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    Cursor="Hand">
-                                                <Border Margin="3"
-                                                        Padding="7"
-                                                        MinHeight="92"
-                                                        CornerRadius="6"
-                                                        BorderBrush="{Binding Border}"
-                                                        BorderThickness="2"
-                                                        Background="{Binding Background}">
-                                                    <StackPanel>
-                                                    <TextBlock Text="{Binding Name}"
-                                                               Foreground="{StaticResource PrimaryTextBrush}"
-                                                               FontSize="11"
-                                                               FontWeight="SemiBold"
-                                                               TextAlignment="Center" />
-                                                    <TextBlock Text="{Binding Biome}"
-                                                               Margin="0,3,0,0"
-                                                               Foreground="{StaticResource AccentBrush}"
-                                                               FontSize="10"
-                                                               TextAlignment="Center" />
-                                                    <TextBlock Text="{Binding Population}"
-                                                               Margin="0,4,0,0"
-                                                               Foreground="{StaticResource PrimaryTextBrush}"
-                                                               FontSize="10"
-                                                               TextAlignment="Center" />
-                                                    <TextBlock Text="{Binding Monsters}"
-                                                               Margin="0,3,0,0"
-                                                               Foreground="{StaticResource SecondaryTextBrush}"
-                                                               FontSize="9"
-                                                               TextAlignment="Center"
-                                                               TextWrapping="Wrap" />
-                                                    </StackPanel>
-                                                </Border>
-                                            </Button>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                                <Border Margin="3,12,3,0"
-                                        Padding="11"
-                                        CornerRadius="7"
-                                        BorderBrush="{StaticResource AccentBrush}"
-                                        BorderThickness="1"
-                                        Background="{StaticResource PanelAltBrush}">
-                                    <StackPanel>
-                                        <TextBlock x:Name="MapSelectedLocationText"
-                                                   Foreground="{StaticResource PrimaryTextBrush}"
-                                                   FontSize="14"
-                                                   FontWeight="SemiBold"
-                                                   TextWrapping="Wrap" />
-                                        <TextBlock x:Name="MapSelectedMonsterText"
-                                                   Margin="0,5,0,0"
-                                                   Foreground="{StaticResource AccentBrush}"
-                                                   FontSize="11"
-                                                   TextWrapping="Wrap" />
-                                        <TextBlock x:Name="MapAgentLimitText"
-                                                   Margin="0,5,0,5"
-                                                   Foreground="{StaticResource SecondaryTextBrush}"
-                                                   FontSize="10" />
-                                        <DataGrid x:Name="MapAgentGrid"
-                                                  Height="190"
-                                                  AutoGenerateColumns="False"
-                                                  IsReadOnly="True"
-                                                  HeadersVisibility="Column"
-                                                  EnableRowVirtualization="True"
-                                                  SelectionMode="Single"
-                                                  SelectionChanged="MapAgentGrid_SelectionChanged">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="*" />
-                                                <DataGridTextColumn Header="경지" Binding="{Binding Realm}" Width="120" />
-                                                <DataGridTextColumn Header="전투력" Binding="{Binding CombatPower}" Width="72" />
-                                                <DataGridTextColumn Header="행동" Binding="{Binding Activity}" Width="75" />
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                    </StackPanel>
-                                </Border>
-                                <Expander x:Name="MapLocationExpander" Header="지역 상세 목록" Margin="0,14,0,0" IsExpanded="False" Expanded="VisibleExpander_Expanded">
-                                    <DataGrid x:Name="MapLocationGrid"
-                                              Height="275"
-                                              Margin="0,6,0,0"
-                                              AutoGenerateColumns="False"
-                                              IsReadOnly="True"
-                                              HeadersVisibility="Column"
-                                              EnableRowVirtualization="True">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="지역" Binding="{Binding Name}" Width="78" />
-                                            <DataGridTextColumn Header="지형" Binding="{Binding Biome}" Width="55" />
-                                            <DataGridTextColumn Header="좌표" Binding="{Binding Coordinates}" Width="48" />
-                                            <DataGridTextColumn Header="인구" Binding="{Binding Population}" Width="58" />
-                                            <DataGridTextColumn Header="서식 요수" Binding="{Binding Monsters}" Width="*" />
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                </Expander>
-                            </StackPanel>
-                        </ScrollViewer>
+                        <local:MapObservationView x:Name="MapObservationPanel"
+                                                  ObservationRequested="MapObservationPanel_ObservationRequested"
+                                                  AgentSelected="MapObservationPanel_AgentSelected" />
                     </TabItem>
                     <TabItem Header="세계 로그">
                         <Grid>

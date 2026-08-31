@@ -30,11 +30,24 @@ public readonly record struct MonsterHabitatSnapshot(
 
 public readonly record struct MapAgentSummary(
     AgentId AgentId,
+    int CombatRank,
     string Name,
     RealmStage Realm,
     int RealmLayer,
     AgentActivity Activity,
     long CombatPower);
+
+public readonly record struct MapRegionActivitySnapshot(
+    int Cultivation,
+    int Combat,
+    int Economy,
+    int Traveling,
+    int Recovering,
+    int Reincarnating)
+{
+    public int Total => checked(
+        Cultivation + Combat + Economy + Traveling + Recovering + Reincarnating);
+}
 
 public sealed record MapLocationSnapshot(
     ushort Id,
@@ -44,13 +57,21 @@ public sealed record MapLocationSnapshot(
     int Y,
     int Population,
     IReadOnlyList<MonsterHabitatSnapshot> Monsters,
+    long AverageCombatPower,
+    long MaximumCombatPower,
+    MapAgentSummary? StrongestAgent,
+    RealmStage HighestRealm,
+    int HighestRealmLayer,
+    MapRegionActivitySnapshot Activities,
+    int AgentPageOffset,
     IReadOnlyList<MapAgentSummary> Agents);
 
 public sealed record WorldMapSnapshot(
     IReadOnlyList<MapLocationSnapshot> Locations,
     int TotalMonsterHunts,
     int TotalMonsterVictories,
-    ushort? DetailedLocationId = null)
+    ushort? DetailedLocationId = null,
+    int DetailedAgentOffset = 0)
 {
     public static WorldMapSnapshot Empty { get; } = new(
         Array.Empty<MapLocationSnapshot>(),
@@ -79,7 +100,7 @@ public static class WorldMapRules
     public const int InitialMonsterPopulation = 300;
     public const int MaximumMonsterPopulation = 500;
     public const int MonthlyMonsterRegeneration = 3;
-    public const int DetailedAgentLimit = 500;
+    public const int DetailedAgentPageSize = 100;
 
     private static readonly MapLocationDefinition[] Locations =
     [

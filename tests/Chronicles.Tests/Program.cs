@@ -1093,6 +1093,33 @@ static void WorldMapAndBiomeMonsters()
     var detailedLocation = snapshot.Map.Locations[occupiedLocation];
     True(detailedLocation.Agents.Count > 0, "선택 지도 칸 수선자 상세 조회");
     True(
+        detailedLocation.Agents.Count <= WorldMapRules.DetailedAgentPageSize,
+        "선택 지역 수선자 페이지 상한");
+    Equal(detailedLocation.Population, detailedLocation.Activities.Total, "지역 행동 분포 인구 보존");
+    True(detailedLocation.StrongestAgent is not null, "지역 최강 수선자 요약");
+    True(
+        detailedLocation.AverageCombatPower <= detailedLocation.MaximumCombatPower,
+        "지역 평균 전투력은 최고 전투력을 넘을 수 없음");
+    if (detailedLocation.Population > WorldMapRules.DetailedAgentPageSize)
+    {
+        var nextPage = world.CreateSnapshot(
+            25,
+            25,
+            ObservationSections.Map,
+            occupiedLocation,
+            WorldMapRules.DetailedAgentPageSize);
+        var nextLocation = nextPage.Map.Locations[occupiedLocation];
+        Equal(
+            WorldMapRules.DetailedAgentPageSize,
+            nextLocation.AgentPageOffset,
+            "지역 수선자 다음 페이지 offset");
+        True(
+            detailedLocation.Agents.Select(item => item.AgentId)
+                .Intersect(nextLocation.Agents.Select(item => item.AgentId))
+                .Any() == false,
+            "지역 수선자 페이지 중복 방지");
+    }
+    True(
         snapshot.Map.Locations
             .Where(location => location.Biome != BiomeType.City)
             .SelectMany(location => location.Monsters)

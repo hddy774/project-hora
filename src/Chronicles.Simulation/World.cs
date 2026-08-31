@@ -253,7 +253,8 @@ public sealed partial class World
         int rankingCount = 1_000,
         int eventCount = 100,
         ObservationSections sections = ObservationSections.All,
-        ushort? detailedMapLocationId = null)
+        ushort? detailedMapLocationId = null,
+        int detailedMapAgentOffset = 0)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rankingCount);
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
@@ -284,7 +285,7 @@ public sealed partial class World
             ? _market.CreateSnapshot((sections & ObservationSections.MarketGoods) != 0)
             : CityMarketSnapshot.Empty;
         var map = (sections & ObservationSections.Map) != 0
-            ? CreateMapSnapshot(detailedMapLocationId)
+            ? CreateMapSnapshot(detailedMapLocationId, detailedMapAgentOffset)
             : WorldMapSnapshot.Empty;
 
         var recentEvents = (sections & ObservationSections.WorldLog) != 0

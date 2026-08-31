@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Chronicles.Core;
 using Chronicles.Persistence;
 using Chronicles.Simulation;
+using static Chronicles.Desktop.PresentationText;
 
 namespace Chronicles.Desktop;
 
@@ -19,8 +20,6 @@ public partial class MainWindow : Window, IDisposable
     private AgentId? _selectedAgent;
     private RankingCategory? _rankingCategory = RankingCategory.CombatPower;
     private int _explorerOffset;
-    private int _selectedMarketGoodId;
-    private ushort _selectedMapLocationId = WorldMapRules.CityLocationId;
     private int _personalLogCategory;
     private int _chronicleCategory;
     private int? _selectedChronicleLife;
@@ -126,8 +125,13 @@ public partial class MainWindow : Window, IDisposable
             _selectedAgent,
             sections: GetVisibleObservationSections(),
             detailedMapLocationId: WorldInfoTabControl.SelectedIndex == 3
-                ? _selectedMapLocationId
-                : null);
+                && MapObservationPanel.ShouldLoadAgents
+                    ? MapObservationPanel.SelectedLocationId
+                    : null,
+            detailedMapAgentOffset: WorldInfoTabControl.SelectedIndex == 3
+                && MapObservationPanel.ShouldLoadAgents
+                    ? MapObservationPanel.AgentOffset
+                    : 0);
         ApplyObservation(observation);
     }
 
@@ -277,10 +281,10 @@ public partial class MainWindow : Window, IDisposable
                 UpdateCityPanel(snapshot);
                 break;
             case 2:
-                UpdateMarketPanel(snapshot);
+                MarketObservationPanel.Apply(snapshot.Market);
                 break;
             case 3:
-                UpdateMapPanel(snapshot);
+                MapObservationPanel.Apply(snapshot.Map);
                 break;
             case 4:
                 UpdateEventRows(snapshot);
@@ -359,91 +363,6 @@ public partial class MainWindow : Window, IDisposable
             $"총 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Stock))}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind == MarketGoodKind.Material).Sum(item => item.Stock))}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Where(item => item.Kind != MarketGoodKind.Material).Sum(item => item.Stock))}개";
         CityFlowText.Text =
             $"공급 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Supply))} · 수요 {KoreanNumberFormatter.Format(snapshot.Market.Goods.Sum(item => item.Demand))}";
-    }
-
-    private void UpdateMarketPanel(WorldSnapshot snapshot)
-    {
-        MarketTreasuryText.Text = $"도시 영석 {KoreanNumberFormatter.Format(snapshot.Market.TreasurySpiritStones)}";
-        var marketRows = snapshot.Market.Goods
-            .Select(item => new MarketRow(
-                item.GoodId,
-                FormatMarketGood(item),
-                KoreanNumberFormatter.Format(item.CityBasePrice),
-                KoreanNumberFormatter.Format(item.CurrentPrice),
-                FormatPriceChange(item.CityBasePrice, item.CurrentPrice),
-                KoreanNumberFormatter.Format(item.Stock),
-                KoreanNumberFormatter.Format(item.Supply),
-                KoreanNumberFormatter.Format(item.Demand)))
-            .ToArray();
-        MarketGrid.ItemsSource = marketRows;
-        if (marketRows.Length == 0)
-        {
-            return;
-        }
-        var selectedMarketRow = marketRows.FirstOrDefault(item => item.GoodId == _selectedMarketGoodId)
-            ?? marketRows[0];
-        _selectedMarketGoodId = selectedMarketRow.GoodId;
-        MarketGrid.SelectedItem = selectedMarketRow;
-        if (MarketDetailExpander.IsExpanded)
-        {
-            UpdateMarketDetail(snapshot.Market.Goods[_selectedMarketGoodId]);
-        }
-    }
-
-    private void UpdateMapPanel(WorldSnapshot snapshot)
-    {
-        MapSummaryText.Text =
-            $"요수 사냥 {KoreanNumberFormatter.Format(snapshot.Map.TotalMonsterHunts)}회 · 승리 {KoreanNumberFormatter.Format(snapshot.Map.TotalMonsterVictories)}회 · 도시·숲·평야·산맥 실시간 인구";
-        MapTileList.ItemsSource = snapshot.Map.Locations
-            .OrderBy(item => item.Y)
-            .ThenBy(item => item.X)
-            .Select(item => new MapTileRow(
-                item.Id,
-                item.Name,
-                FormatBiome(item.Biome),
-                $"{KoreanNumberFormatter.Format(item.Population)}명",
-                FormatMonsterList(item),
-                GetBiomeBrush(item.Biome),
-                item.Id == _selectedMapLocationId
-                    ? (Brush)FindResource("AccentBrush")
-                    : (Brush)FindResource("BorderBrush")))
-            .ToArray();
-        var selected = snapshot.Map.Locations.FirstOrDefault(item => item.Id == _selectedMapLocationId);
-        if (selected is not null)
-        {
-            MapSelectedLocationText.Text =
-                $"{selected.Name} · {FormatBiome(selected.Biome)} · 좌표 {selected.X},{selected.Y} · 수선자 {KoreanNumberFormatter.Format(selected.Population)}명";
-            MapSelectedMonsterText.Text = selected.Monsters.Count == 0
-                ? "안전지대 · 서식 요수 없음"
-                : string.Join(
-                    " · ",
-                    selected.Monsters.Select(item =>
-                        $"{item.Species.KoreanName} {KoreanNumberFormatter.Format(item.Population)}마리"));
-            MapAgentGrid.ItemsSource = selected.Agents
-                .Select(item => new MapAgentRow(
-                    item.AgentId,
-                    item.Name,
-                    FormatRealm(item.Realm, item.RealmLayer),
-                    KoreanNumberFormatter.Format(item.CombatPower),
-                    FormatActivity(item.Activity)))
-                .ToArray();
-            MapAgentLimitText.Text = selected.Population > WorldMapRules.DetailedAgentLimit
-                ? $"성능 보호를 위해 현재 {WorldMapRules.DetailedAgentLimit:N0}명 표시 · 전체 {selected.Population:N0}명"
-                : $"현재 지역 {selected.Population:N0}명 전체 표시";
-        }
-        if (MapLocationExpander.IsExpanded)
-        {
-            MapLocationGrid.ItemsSource = snapshot.Map.Locations
-                .OrderBy(item => item.Y)
-                .ThenBy(item => item.X)
-                .Select(item => new MapLocationRow(
-                    item.Name,
-                    FormatBiome(item.Biome),
-                    $"{item.X},{item.Y}",
-                    KoreanNumberFormatter.Format(item.Population),
-                    FormatMonsterList(item)))
-                .ToArray();
-        }
     }
 
     private void UpdateSelectedAgent(
@@ -941,22 +860,6 @@ public partial class MainWindow : Window, IDisposable
             : $"{FormatActivity(activity)} · {years:N0}년 {remainingMonths:N0}개월차";
     }
 
-    private static string FormatPriceChange(long basePrice, long currentPrice)
-    {
-        if (basePrice <= 0)
-        {
-            return "-";
-        }
-
-        var change = (currentPrice - basePrice) * 100m / basePrice;
-        return change switch
-        {
-            > 0 => $"+{change:0.##}%",
-            < 0 => $"{change:0.##}%",
-            _ => "0%",
-        };
-    }
-
     private static string FormatCultivationState(
         CultivationState state,
         CultivationBottleneckCause cause) => state switch
@@ -1018,38 +921,6 @@ public partial class MainWindow : Window, IDisposable
     private static string FormatQuality(long hundredths) =>
         QualityRules.Format(new QualityValue(checked((ushort)hundredths)));
 
-    private static string FormatRealm(
-        RealmStage stage,
-        int layer,
-        bool greatPerfection = false)
-    {
-        var boundedLayer = Math.Clamp(layer, 1, RealmRules.MinorStageCount);
-        var minorStage = greatPerfection && boundedLayer == RealmRules.MinorStageCount
-            ? "대원만"
-            : boundedLayer switch
-            {
-                <= 3 => "초기",
-                <= 6 => "중기",
-                _ => "후기",
-            };
-        return $"{FormatRealmStage(stage)} · {minorStage} · {boundedLayer.ToString(CultureInfo.InvariantCulture)}층";
-    }
-
-    private static string FormatRealmStage(RealmStage stage) => stage switch
-    {
-        RealmStage.QiRefining => "연기경",
-        RealmStage.FoundationEstablishment => "축기경",
-        RealmStage.GoldenCore => "금단경",
-        RealmStage.NascentSoul => "원영경",
-        RealmStage.SpiritTransformation => "화신경",
-        RealmStage.VoidRefinement => "연허경",
-        RealmStage.BodyIntegration => "합체경",
-        RealmStage.TribulationCrossing => "도겁경",
-        RealmStage.Mahayana => "대승경",
-        RealmStage.HalfImmortal => "반선경",
-        _ => stage.ToString(),
-    };
-
     private static string FormatPopulationRatio(int count, int population) =>
         population == 0 ? "0%" : $"{count * 100m / population:0.##}%";
 
@@ -1068,25 +939,6 @@ public partial class MainWindow : Window, IDisposable
         return $"{KoreanNumberFormatter.Format(minimum)}~{KoreanNumberFormatter.Format(maximum.Value)}";
     }
 
-    private static string FormatActivity(AgentActivity activity) => activity switch
-    {
-        AgentActivity.Cultivating => "수행",
-        AgentActivity.TrainingTechnique => "공법 수련",
-        AgentActivity.TrainingSpell => "법술 연마",
-        AgentActivity.Recovering => "회복",
-        AgentActivity.SeekingChallenge => "도전 탐색",
-        AgentActivity.Fighting => "전투 중",
-        AgentActivity.Reincarnating => "윤회 중",
-        AgentActivity.DoingCityMission => "도시 임무",
-        AgentActivity.TradingInCity => "도시 거래",
-        AgentActivity.CraftingTreasure => "법보 제작",
-        AgentActivity.CraftingPill => "단약 제작",
-        AgentActivity.Traveling => "지역 이동",
-        AgentActivity.HuntingMonster => "요수 사냥",
-        AgentActivity.MiningSpiritStones => "영석 광맥 채굴",
-        _ => activity.ToString(),
-    };
-
     private static string FormatPill(PillKind kind) => kind switch
     {
         PillKind.Growth => "수행단",
@@ -1100,98 +952,6 @@ public partial class MainWindow : Window, IDisposable
         TreasureSlot.DefenseTreasure => "방어 법보",
         TreasureSlot.AttackTreasure => "공격 법보",
         _ => slot.ToString(),
-    };
-
-    private static string FormatMarketGood(MarketGoodSnapshot item) => item.Kind switch
-    {
-        MarketGoodKind.Material when item.Material is { } material =>
-            EconomyRules.GetMaterial(material).KoreanName,
-        MarketGoodKind.GrowthPill => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 수행단",
-        MarketGoodKind.BreakthroughPill => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 돌파단",
-        MarketGoodKind.DefenseTreasure => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 방어 법보",
-        MarketGoodKind.AttackTreasure => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 공격 법보",
-        MarketGoodKind.TechniqueBook => "공법서",
-        MarketGoodKind.SpellBook => "법술서",
-        _ => item.Kind.ToString(),
-    };
-
-    private static string FormatMarketGood(
-        MarketGoodDefinition item,
-        QualityValue? quality) => item.Kind switch
-    {
-        MarketGoodKind.GrowthPill => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 수행단",
-        MarketGoodKind.BreakthroughPill => $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 돌파단",
-        MarketGoodKind.DefenseTreasure =>
-            $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 방어 법보" +
-            (quality is { } defenseQuality ? $" · {QualityRules.Format(defenseQuality)}" : string.Empty),
-        MarketGoodKind.AttackTreasure =>
-            $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)} 공격 법보" +
-            (quality is { } attackQuality ? $" · {QualityRules.Format(attackQuality)}" : string.Empty),
-        MarketGoodKind.TechniqueBook => "공법서" +
-            (quality is { } techniqueQuality ? $" · {QualityRules.Format(techniqueQuality)}" : string.Empty),
-        MarketGoodKind.SpellBook => "법술서" +
-            (quality is { } spellQuality ? $" · {QualityRules.Format(spellQuality)}" : string.Empty),
-        _ => item.Kind.ToString(),
-    };
-
-    private void UpdateMarketDetail(MarketGoodSnapshot item)
-    {
-        MarketDetailNameText.Text = FormatMarketGood(item);
-        var (type, description, production) = item.Kind switch
-        {
-            MarketGoodKind.Material when item.Material is { } material => FormatMaterialDetail(material),
-            MarketGoodKind.GrowthPill => (
-                $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)}급 단약 · 성장",
-                "현재 대경지에서만 수행 Work 축적을 돕습니다. 대경지 돌파 뒤에는 새 급을 구입해야 합니다.",
-                "완제품 수요가 있고 단약 재료와 영석이 모두 있을 때만 도시 생산 대기열에 들어갑니다."),
-            MarketGoodKind.BreakthroughPill => (
-                $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)}급 단약 · 돌파",
-                "현재 대경지의 돌파 자원 병목에 사용합니다. 대경지 돌파 뒤에는 새 급을 구입해야 합니다.",
-                "완제품 수요가 있고 단약 재료와 영석이 모두 있을 때만 도시 생산 대기열에 들어갑니다."),
-            MarketGoodKind.DefenseTreasure or MarketGoodKind.AttackTreasure => (
-                $"{FormatRealmStage(item.Realm ?? RealmStage.QiRefining)}급 {(item.Kind == MarketGoodKind.DefenseTreasure ? "방어" : "공격")} 법보 · 평균 품질 {(item.AverageQuality is { } quality ? QualityRules.Format(quality) : "재고 없음")}",
-                "현재 대경지 전용 법보입니다. 본명법보는 시장 상품이 아니며 소유자가 직접 제작하고 대경지 돌파와 동기화됩니다.",
-                "완제품 수요가 있고 법보 재료와 영석이 모두 있을 때만 도시 생산 대기열에 들어갑니다."),
-            MarketGoodKind.TechniqueBook => (
-                "서적 · 공법",
-                "0.00~100.00 품질의 새 공법서입니다. 현재 공법보다 품질이 높을 때만 교체되며 기존 공법 자체의 품질은 변하지 않습니다.",
-                $"도시는 수요가 있을 때 영석 {KoreanNumberFormatter.Format(EconomyRules.GetProductionSpiritStoneCost(EconomyRules.GetMarketGood(EconomyRules.TechniqueBookGoodId)))}개로 공법서 1권을 제작합니다."),
-            MarketGoodKind.SpellBook => (
-                "서적 · 법술",
-                "0.00~100.00 품질의 새 법술서입니다. 현재 법술보다 품질이 높을 때만 교체되며 기존 법술 자체의 품질은 변하지 않습니다.",
-                $"도시는 수요가 있을 때 영석 {KoreanNumberFormatter.Format(EconomyRules.GetProductionSpiritStoneCost(EconomyRules.GetMarketGood(EconomyRules.SpellBookGoodId)))}개로 법술서 1권을 제작합니다."),
-            _ => ("상품", "상세 정보가 아직 등록되지 않았습니다.", "생산 정보가 없습니다."),
-        };
-        MarketDetailTypeText.Text = type;
-        MarketDetailDescriptionText.Text = description;
-        MarketDetailProductionText.Text = production;
-        MarketDetailEconomyText.Text =
-            $"기준 {KoreanNumberFormatter.Format(item.CityBasePrice)} · 현재 {KoreanNumberFormatter.Format(item.CurrentPrice)} 영석 · 재고 {KoreanNumberFormatter.Format(item.Stock)} · 공급 {KoreanNumberFormatter.Format(item.Supply)} · 수요 {KoreanNumberFormatter.Format(item.Demand)}";
-    }
-
-    private static (string Type, string Description, string Production) FormatMaterialDetail(
-        MaterialId material)
-    {
-        var definition = EconomyRules.GetMaterial(material);
-        var (category, usage) = definition.Category switch
-        {
-            MaterialCategory.Treasure => ("법보 제작 재료", "법보 제작과 도시 법보 생산에 사용됩니다."),
-            MaterialCategory.Pill => ("단약 제작 재료", "수행단·돌파단 제조와 도시 단약 생산에 사용됩니다."),
-            _ => ("재료", "용도가 미확정입니다."),
-        };
-        return (
-            $"재료 · {category}",
-            $"{definition.KoreanName}. {usage}",
-            "수선자가 임무·요수 사냥으로 획득해 납품하거나 판매하면 도시의 실물 재고와 공급량이 증가합니다.");
-    }
-
-    private static string FormatBiome(BiomeType biome) => biome switch
-    {
-        BiomeType.City => "도시",
-        BiomeType.Forest => "숲",
-        BiomeType.Plains => "평야",
-        BiomeType.Mountains => "산맥",
-        _ => biome.ToString(),
     };
 
     private static string FormatInjurySeverity(InjurySeverity severity) => severity switch
@@ -1213,59 +973,22 @@ public partial class MainWindow : Window, IDisposable
             : $"미확인 요수 #{index}";
     }
 
-    private static string FormatMonsterList(MapLocationSnapshot location) =>
-        location.Monsters.Count == 0
-            ? "안전지대"
-            : string.Join(
-                " · ",
-                location.Monsters.Select(monster =>
-                    $"{monster.Species.KoreanName} {KoreanNumberFormatter.Format(monster.Population)}"));
-
-    private Brush GetBiomeBrush(BiomeType biome) => (Brush)FindResource(biome switch
+    private void MapObservationPanel_ObservationRequested(object? sender, EventArgs e)
     {
-        BiomeType.City => "CityBiomeBrush",
-        BiomeType.Forest => "ForestBiomeBrush",
-        BiomeType.Plains => "PlainsBiomeBrush",
-        BiomeType.Mountains => "MountainBiomeBrush",
-        _ => "PanelAltBrush",
-    });
-
-    private void MarketGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (_applyingObservation
-            || _latestSnapshot is null
-            || MarketGrid.SelectedItem is not MarketRow row)
+        if (!_applyingObservation)
         {
-            return;
-        }
-
-        _selectedMarketGoodId = row.GoodId;
-        if (MarketDetailExpander.IsExpanded)
-        {
-            UpdateMarketDetail(_latestSnapshot.Market.Goods[row.GoodId]);
+            RefreshVisibleObservation();
         }
     }
 
-    private void MapTileButton_Click(object sender, RoutedEventArgs e)
+    private void MapObservationPanel_AgentSelected(
+        object? sender,
+        MapAgentSelectedEventArgs e)
     {
-        if (sender is not Button { Tag: ushort locationId })
+        if (!_applyingObservation)
         {
-            return;
+            RefreshVisibleObservation(e.AgentId);
         }
-
-        _selectedMapLocationId = locationId;
-        RefreshVisibleObservation();
-    }
-
-    private void MapAgentGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (_applyingObservation
-            || MapAgentGrid.SelectedItem is not MapAgentRow row)
-        {
-            return;
-        }
-
-        RefreshVisibleObservation(row.AgentId);
     }
 
     private void PersonalLogCategoryTabControl_SelectionChanged(

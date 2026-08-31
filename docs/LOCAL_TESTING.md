@@ -162,5 +162,9 @@ Release 자동 검사는 기존 검사와 추가된 단계형 윤회·생 계보
 0.0.12 Debug 실측은 각각 145ms, 2,955ms, 2.3ms(합계 3,102ms)였고,
 schema 23 checkpoint 122ms·복원 567ms였다. 절대 시간은 실행 PC와 빌드 구성에
 따라 달라질 수 있으므로 이후 고정 SHA에서도 예산과 상대 회귀를 다시 확인한다.
+고정 커밋 `a09fcbb`의 Release 최종 검증은 `RESULT: 40/40 passed`, 초기화
+59ms + 20,000 tick 914ms + 관찰 0.3ms = 973ms, checkpoint 133ms,
+schema 23 복원 288ms였다. 같은 실행에서 선택 UI 조회는 94.5%, 닫힌 지도 탭
+할당량은 53.7% 감소했다.
 
 로컬 산출물과 저장 파일은 GitHub Release에 업로드되지 않습니다.

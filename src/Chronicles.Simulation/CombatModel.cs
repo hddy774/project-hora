@@ -206,42 +206,49 @@ public static class AptitudeCombatBonusFormula
     public const int NeutralEffectBasisPoints = 10_000;
     public const int MaximumEffectBasisPoints = 20_000;
 
-    public static AptitudeCombatBonuses Calculate(Aptitudes aptitudes)
-    {
-        // 자질 품질의 큰 경계 배율은 직접 전투력에 사용하지 않는다. 원시 0.00~100.00을
-        // 역할별로 가중하고 50.00을 100% 기준으로 삼아 50%~200% 안에서 보정한다.
-        var techniqueComposite = WeightedAverage(
+    public static AptitudeCombatBonuses Calculate(Aptitudes aptitudes) => new(
+        GetTechniqueEffectBasisPoints(aptitudes),
+        GetSpellEffectBasisPoints(aptitudes),
+        GetCombatMasteryEffectBasisPoints(aptitudes),
+        GetCombatUnderstandingEffectBasisPoints(aptitudes),
+        GetCombatExperienceGainBasisPoints(aptitudes));
+
+    // 자질 품질의 큰 경계 배율은 직접 전투력에 사용하지 않는다. 원시 0.00~100.00을
+    // 역할별로 가중하고 50.00을 100% 기준으로 삼아 50%~200% 안에서 보정한다.
+    public static int GetTechniqueEffectBasisPoints(Aptitudes aptitudes) =>
+        ToEffectBasisPoints(WeightedAverage(
             aptitudes.Bone.Hundredths, 35,
             aptitudes.Constitution.Hundredths, 35,
             aptitudes.Mind.Hundredths, 15,
-            aptitudes.Soul.Hundredths, 15);
-        var spellComposite = WeightedAverage(
+            aptitudes.Soul.Hundredths, 15));
+
+    public static int GetSpellEffectBasisPoints(Aptitudes aptitudes) =>
+        ToEffectBasisPoints(WeightedAverage(
             aptitudes.SpiritualRoot.Hundredths, 40,
             aptitudes.Comprehension.Hundredths, 35,
             aptitudes.Mind.Hundredths, 15,
-            aptitudes.Soul.Hundredths, 10);
-        var combatMasteryComposite = WeightedAverage(
+            aptitudes.Soul.Hundredths, 10));
+
+    public static int GetCombatMasteryEffectBasisPoints(Aptitudes aptitudes) =>
+        ToEffectBasisPoints(WeightedAverage(
             aptitudes.Bone.Hundredths, 20,
             aptitudes.Comprehension.Hundredths, 30,
             aptitudes.Mind.Hundredths, 30,
-            aptitudes.Soul.Hundredths, 20);
-        var combatUnderstandingComposite = WeightedAverage(
+            aptitudes.Soul.Hundredths, 20));
+
+    public static int GetCombatUnderstandingEffectBasisPoints(Aptitudes aptitudes) =>
+        ToEffectBasisPoints(WeightedAverage(
             aptitudes.Comprehension.Hundredths, 45,
             aptitudes.Mind.Hundredths, 35,
             aptitudes.Soul.Hundredths, 20,
-            aptitudes.SpiritualRoot.Hundredths, 0);
-        var combatExperienceComposite = WeightedAverage(
+            aptitudes.SpiritualRoot.Hundredths, 0));
+
+    public static int GetCombatExperienceGainBasisPoints(Aptitudes aptitudes) =>
+        ToEffectBasisPoints(WeightedAverage(
             aptitudes.Comprehension.Hundredths, 25,
             aptitudes.Mind.Hundredths, 35,
             aptitudes.Soul.Hundredths, 25,
-            aptitudes.Constitution.Hundredths, 15);
-        return new AptitudeCombatBonuses(
-            ToEffectBasisPoints(techniqueComposite),
-            ToEffectBasisPoints(spellComposite),
-            ToEffectBasisPoints(combatMasteryComposite),
-            ToEffectBasisPoints(combatUnderstandingComposite),
-            ToEffectBasisPoints(combatExperienceComposite));
-    }
+            aptitudes.Constitution.Hundredths, 15));
 
     public static long Apply(long value, int effectBasisPoints)
     {

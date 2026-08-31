@@ -471,6 +471,13 @@ public partial class MainWindow : Window, IDisposable
                 "  ·  ",
                 agent.Materials.Select(item =>
                     $"{EconomyRules.GetMaterial(item.Material).KoreanName} {KoreanNumberFormatter.Format(item.Count)}"));
+        var aptitudeBonuses = AptitudeCombatBonusFormula.Calculate(agent.Aptitudes);
+        AptitudeBonusText.Text =
+            $"자질 보정 · 공법 {FormatEffectPercent(aptitudeBonuses.TechniqueEffectBasisPoints)} · " +
+            $"법술 {FormatEffectPercent(aptitudeBonuses.SpellEffectBasisPoints)} · " +
+            $"전투 숙련 {FormatEffectPercent(aptitudeBonuses.CombatMasteryEffectBasisPoints)} · " +
+            $"전투 이해 {FormatEffectPercent(aptitudeBonuses.CombatUnderstandingEffectBasisPoints)} · " +
+            $"전투 경험 {FormatEffectPercent(aptitudeBonuses.CombatExperienceGainBasisPoints)}";
         SetPowerBreakdown(agent.CombatPower);
         if (AgentLogTabControl.SelectedIndex == 0)
         {
@@ -508,6 +515,8 @@ public partial class MainWindow : Window, IDisposable
         bar.Value = value;
         label.Text = KoreanNumberFormatter.Format(value);
     }
+
+    private static string FormatEffectPercent(int basisPoints) => $"{basisPoints / 100m:0.##}%";
 
     private RankingRow ToRankingRow(RankingEntry entry) => new(
         entry.Rank,

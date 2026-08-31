@@ -57,7 +57,6 @@ internal sealed class AgentStore
         SpellUnderstanding = new ushort[count];
         CombatExperience = new int[count];
         CombatUnderstanding = new ushort[count];
-        CombatBonuses = new AptitudeCombatBonuses[count];
         Wins = new int[count];
         Losses = new int[count];
         Health = new int[count];
@@ -145,7 +144,6 @@ internal sealed class AgentStore
     public ushort[] SpellUnderstanding { get; }
     public int[] CombatExperience { get; }
     public ushort[] CombatUnderstanding { get; }
-    public AptitudeCombatBonuses[] CombatBonuses { get; }
     public int[] Wins { get; }
     public int[] Losses { get; }
     public int[] Health { get; }
@@ -213,8 +211,6 @@ internal sealed class AgentStore
         new QualityValue(Minds[index]),
         new QualityValue(Souls[index]));
 
-    public AptitudeCombatBonuses GetCombatBonuses(int index) => CombatBonuses[index];
-
     public PowerInputSignature GetPowerInputSignature(int index) => new(
         RealmStages[index],
         RealmLayers[index],
@@ -233,7 +229,6 @@ internal sealed class AgentStore
         var previousMaximumQi = MaximumQi[index];
         var aptitudes = GetAptitudes(index);
         var aptitudeBonuses = AptitudeCombatBonusFormula.Calculate(aptitudes);
-        CombatBonuses[index] = aptitudeBonuses;
         var combatMastery = CombatProgressionRules.GetMasteryHundredths(CombatExperience[index]);
         var attributes = CombatAttributeFormula.Calculate(
             RealmStages[index],
@@ -277,6 +272,7 @@ internal sealed class AgentStore
             SpellMasteries[index],
             SpellUnderstanding[index],
             CombatExperience[index],
+            combatMastery,
             CombatUnderstanding[index],
             GetTreasurePower(index));
     }

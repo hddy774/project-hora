@@ -484,6 +484,11 @@
                             <ProgressBar x:Name="TreasurePowerBar" Grid.Column="1" Style="{StaticResource PowerBarStyle}" VerticalAlignment="Center" />
                             <TextBlock x:Name="TreasurePowerText" Grid.Column="2" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryTextBrush}" />
                         </Grid>
+                        <TextBlock x:Name="AptitudeBonusText"
+                                   Margin="0,12,0,0"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap" />
                         <TextBlock Margin="0,10,0,0"
                                    Padding="10,8"
                                    Background="{StaticResource PanelAltBrush}"

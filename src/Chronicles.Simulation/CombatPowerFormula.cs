@@ -55,6 +55,7 @@ public static class CombatPowerFormula
             spellMastery,
             spellUnderstanding,
             combatExperience,
+            CombatProgressionRules.GetMasteryHundredths(combatExperience),
             combatUnderstanding,
             treasurePower);
 
@@ -70,6 +71,7 @@ public static class CombatPowerFormula
         int spellMastery,
         int spellUnderstanding,
         int combatExperience,
+        int combatMastery,
         int combatUnderstanding,
         long treasurePower)
     {
@@ -94,7 +96,6 @@ public static class CombatPowerFormula
                 spellQuality,
                 (10_000L + (spellMastery * 2L) + (spellUnderstanding * 3L)) * 5L / 6L),
             aptitudeBonuses.SpellEffectBasisPoints);
-        var combatMastery = CombatProgressionRules.GetMasteryHundredths(combatExperience);
         var experience = CombatProgressionRules.GetDisplayContribution(
             combatExperience,
             combatMastery,

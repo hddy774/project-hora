@@ -83,6 +83,23 @@ public partial class MapObservationView : UserControl
             (region.Monsters.Count == 0
                 ? "안전지대"
                 : $"요수 {KoreanNumberFormatter.Format(region.Monsters.Sum(item => (long)item.Population))}마리");
+
+        switch (RegionTabControl.SelectedIndex)
+        {
+            case 0:
+                ApplyOverview(region);
+                break;
+            case 1:
+                ApplyMonsterEcology(region);
+                break;
+            case 2:
+                ApplyAgentPage(region);
+                break;
+        }
+    }
+
+    private void ApplyOverview(MapLocationSnapshot region)
+    {
         RegionPopulationText.Text = $"{KoreanNumberFormatter.Format(region.Population)}명";
         RegionHighestRealmText.Text = !region.HasCultivator
             ? "미입문"
@@ -96,7 +113,10 @@ public partial class MapObservationView : UserControl
         StrongestAgentButton.Content = region.StrongestAgent is { } strongest
             ? $"지역 최강 · #{strongest.CombatRank:N0} {strongest.Name} · {KoreanNumberFormatter.Format(strongest.CombatPower)}"
             : "지역 최강 · 인물 없음";
+    }
 
+    private void ApplyMonsterEcology(MapLocationSnapshot region)
+    {
         var monsters = region.Monsters.Select(monster => new MonsterRow(
             monster.Species.KoreanName,
             KoreanNumberFormatter.Format(monster.Population),
@@ -105,6 +125,18 @@ public partial class MapObservationView : UserControl
         SafeRegionText.Visibility = monsters.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
         MonsterGrid.Visibility = monsters.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         MonsterGrid.ItemsSource = monsters;
+    }
+
+    private void ApplyAgentPage(MapLocationSnapshot region)
+    {
+        if (_snapshot.DetailedLocationId != region.Id)
+        {
+            MapAgentGrid.ItemsSource = Array.Empty<MapAgentRow>();
+            AgentPageText.Text = "선택 지역 수선자를 불러오는 중";
+            PreviousAgentPageButton.IsEnabled = false;
+            NextAgentPageButton.IsEnabled = false;
+            return;
+        }
 
         _applying = true;
         try
@@ -196,13 +228,20 @@ public partial class MapObservationView : UserControl
 
     private void RegionTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_applying || !ReferenceEquals(e.Source, sender) || !ShouldLoadAgents)
+        if (_applying || !ReferenceEquals(e.Source, sender))
         {
             return;
         }
 
-        AgentOffset = 0;
-        ObservationRequested?.Invoke(this, EventArgs.Empty);
+        if (ShouldLoadAgents)
+        {
+            AgentOffset = 0;
+            ObservationRequested?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            Apply(_snapshot);
+        }
     }
 
     private void PreviousAgentPageButton_Click(object sender, RoutedEventArgs e)

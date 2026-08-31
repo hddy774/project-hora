@@ -89,14 +89,33 @@ public partial class MarketObservationView : UserControl
 
     private void UpdateDetail(MarketGoodSnapshot item)
     {
+        switch (DetailTabControl.SelectedIndex)
+        {
+            case 0:
+                UpdateOverviewDetail(item);
+                break;
+            case 1:
+                UpdatePriceDetail(item);
+                break;
+            case 2:
+                UpdateProductionDetail(item);
+                break;
+        }
+    }
+
+    private void UpdateOverviewDetail(MarketGoodSnapshot item)
+    {
+        var (type, description, _) = Describe(item);
         DetailNameText.Text = FormatMarketGood(item);
-        var (type, description, production) = Describe(item);
         DetailTypeText.Text = type;
         DetailDescriptionText.Text = description;
         DetailQualityText.Text = item.AverageQuality is { } quality
             ? $"평균 품질 {QualityRules.Format(quality)} · 품질이 실제 거래 가격에 반영됩니다."
             : "품질을 사용하지 않는 상품 또는 현재 품질 재고 없음";
+    }
 
+    private void UpdatePriceDetail(MarketGoodSnapshot item)
+    {
         DetailPriceText.Text =
             $"현재 {KoreanNumberFormatter.Format(item.CurrentPrice)} 영석 · 기준 {KoreanNumberFormatter.Format(item.CityBasePrice)} · {FormatPriceChange(item.CityBasePrice, item.CurrentPrice)}";
         DetailFlowText.Text =
@@ -107,10 +126,14 @@ public partial class MarketObservationView : UserControl
             : item.Supply > item.Demand
                 ? $"공급 여유 {KoreanNumberFormatter.Format(item.Supply - item.Demand)}"
                 : "공급과 수요가 균형입니다.";
+    }
 
+    private void UpdateProductionDetail(MarketGoodSnapshot item)
+    {
         var activeOrders = _snapshot.ProductionQueue?
             .Where(order => order.GoodId == item.GoodId)
             .ToArray() ?? [];
+        var unmet = Math.Max(0L, item.Demand - item.Supply);
         DetailProductionStateText.Text = activeOrders.Length > 0
             ? $"현재 {activeOrders.Length:N0}건 제작 중 · " + string.Join(
                 ", ",
@@ -118,7 +141,7 @@ public partial class MarketObservationView : UserControl
             : unmet > 0
                 ? "수요 있음 · 재료·영석·대기열 조건을 검토 중"
                 : "현재 추가 생산 수요 없음";
-        DetailProductionText.Text = production;
+        DetailProductionText.Text = Describe(item).Production;
     }
 
     private static string FormatFlow(MarketGoodSnapshot item)
@@ -215,6 +238,18 @@ public partial class MarketObservationView : UserControl
 
         _selectedGoodId = row.GoodId;
         UpdateDetail(FindGood(row.GoodId));
+    }
+
+    private void DetailTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_applying
+            || !ReferenceEquals(e.Source, sender)
+            || _snapshot.Goods.Count == 0)
+        {
+            return;
+        }
+
+        UpdateDetail(FindGood(_selectedGoodId));
     }
 
     private enum MarketFilter : byte

@@ -83,7 +83,10 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <TabControl Grid.Row="4" Margin="0,9,0,0">
+        <TabControl x:Name="DetailTabControl"
+                    Grid.Row="4"
+                    Margin="0,9,0,0"
+                    SelectionChanged="DetailTabControl_SelectionChanged">
             <TabItem Header="상품 개요">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="10,8">

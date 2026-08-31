@@ -17,7 +17,9 @@ public partial class MainWindow
         _latestChronicle = chronicle;
         SelectedNameText.Text = agent.Name;
         SelectedIdText.Text = $"{agent.Id} · 최종 목표 #{agent.TargetRank}";
-        SelectedRankText.Text = $"전투력 #{agent.Rank:N0} · 경지 #{agent.RealmRank:N0} · 자질 #{agent.AptitudeRank:N0}";
+        SelectedRankText.Text =
+            $"전투력 #{agent.Rank:N0} · 경지 #{agent.RealmRank:N0} · " +
+            $"자질 #{agent.AptitudeRank:N0} · 부자 #{agent.WealthRank:N0}";
         RealmText.Text = HasEnteredCultivation(agent.CultivationState, agent.BottleneckCause)
             ? FormatRealm(
                 agent.RealmStage,

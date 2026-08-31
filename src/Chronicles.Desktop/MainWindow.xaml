@@ -127,10 +127,11 @@
                                    Foreground="{StaticResource AccentBrush}"
                                    FontSize="11" />
                     </Grid>
-                    <UniformGrid Grid.Row="1" Rows="1" Columns="4" Margin="16,0,16,10">
+                    <UniformGrid Grid.Row="1" Rows="1" Columns="5" Margin="16,0,16,10">
                         <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,3,0" IsChecked="True" Click="CombatPowerRankingButton_Click">전투력</RadioButton>
                         <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0" Click="RealmRankingButton_Click">경지</RadioButton>
                         <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0" Click="AptitudeRankingButton_Click">자질</RadioButton>
+                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0" Click="WealthRankingButton_Click">부자</RadioButton>
                         <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,0,0" Click="ExplorerButton_Click">전체 탐색</RadioButton>
                     </UniformGrid>
                     <TextBox x:Name="SearchTextBox"
@@ -654,21 +655,33 @@
                                         <TextBlock x:Name="SpiritStoneStatText" Foreground="{StaticResource AccentBrush}" FontSize="15" />
                                     </StackPanel>
                                 </UniformGrid>
-                                <TextBlock Text="전투력 랭킹 변동" Margin="0,16,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
+                                <TextBlock Text="랭킹 변동" Margin="0,16,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
                                 <TextBlock x:Name="RankingMovementText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
-                                <DataGrid x:Name="EliteRankingGrid"
-                                          Height="132"
-                                          Margin="0,8,0,0"
+                                <UniformGrid Rows="2" Columns="3" Margin="0,10,0,0">
+                                    <RadioButton GroupName="RankingPeriod" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,3,3" IsChecked="True" Click="RankingPeriodButton_Click" Tag="OneYear">1년</RadioButton>
+                                    <RadioButton GroupName="RankingPeriod" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,3,3" Click="RankingPeriodButton_Click" Tag="TenYears">10년</RadioButton>
+                                    <RadioButton GroupName="RankingPeriod" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,0,3" Click="RankingPeriodButton_Click" Tag="HundredYears">100년</RadioButton>
+                                    <RadioButton GroupName="RankingPeriod" Style="{StaticResource SegmentToggleStyle}" Margin="0,3,3,0" Click="RankingPeriodButton_Click" Tag="ThousandYears">1,000년</RadioButton>
+                                    <RadioButton GroupName="RankingPeriod" Style="{StaticResource SegmentToggleStyle}" Margin="3" Click="RankingPeriodButton_Click" Tag="TenThousandYears">1만년</RadioButton>
+                                    <RadioButton GroupName="RankingPeriod" Style="{StaticResource SegmentToggleStyle}" Margin="3,3,0,0" Click="RankingPeriodButton_Click" Tag="All">전체</RadioButton>
+                                </UniformGrid>
+                                <UniformGrid Rows="1" Columns="3" Margin="0,8,0,0">
+                                    <RadioButton GroupName="MovementCategory" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,3,0" IsChecked="True" Click="MovementCategoryButton_Click" Tag="CombatPower">전투력</RadioButton>
+                                    <RadioButton GroupName="MovementCategory" Style="{StaticResource SegmentToggleStyle}" Margin="3,0" Click="MovementCategoryButton_Click" Tag="Realm">경지</RadioButton>
+                                    <RadioButton GroupName="MovementCategory" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,0,0" Click="MovementCategoryButton_Click" Tag="Wealth">부자</RadioButton>
+                                </UniformGrid>
+                                <TextBlock x:Name="RankingMovementPeriodText" Margin="0,8,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
+                                <DataGrid x:Name="RankingMovementGrid"
+                                          Height="280"
+                                          Margin="0,6,0,0"
                                           AutoGenerateColumns="False"
                                           IsReadOnly="True"
                                           HeadersVisibility="Column"
                                           EnableRowVirtualization="True">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="구간" Binding="{Binding Scope}" Width="62" />
-                                        <DataGridTextColumn Header="전투력 기준" Binding="{Binding CombatCutoff}" Width="82" />
-                                        <DataGridTextColumn Header="경지 기준" Binding="{Binding RealmCutoff}" Width="*" />
-                                        <DataGridTextColumn Header="전투력 변동" Binding="{Binding CombatMovement}" Width="92" />
-                                        <DataGridTextColumn Header="경지 변동" Binding="{Binding RealmMovement}" Width="92" />
+                                        <DataGridTextColumn Header="구간" Binding="{Binding Scope}" Width="82" />
+                                        <DataGridTextColumn Header="현재 기준" Binding="{Binding Cutoff}" Width="*" />
+                                        <DataGridTextColumn Header="자리 변동" Binding="{Binding Movement}" Width="94" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                                 <Expander x:Name="RealmDistributionExpander" Header="전체 경지 분포" Margin="0,16,0,0" IsExpanded="True" Expanded="VisibleExpander_Expanded">
@@ -730,29 +743,12 @@
                                                   ObservationRequested="MapObservationPanel_ObservationRequested"
                                                   AgentSelected="MapObservationPanel_AgentSelected" />
                     </TabItem>
-                    <TabItem Header="세계 로그">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid Margin="16,14,16,10">
-                                <TextBlock Text="중요 세계 로그" Foreground="{StaticResource PrimaryTextBrush}" FontSize="17" FontWeight="SemiBold" />
-                                <TextBlock Text="최대 100줄" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource DangerBrush}" FontSize="11" FontWeight="Bold" />
-                            </Grid>
-                            <ListBox x:Name="EventList" Grid.Row="1" Background="Transparent" BorderThickness="0" Foreground="{StaticResource PrimaryTextBrush}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="14,11">
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
-                                                <TextBlock Text="{Binding Summary}" Margin="0,4,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
-                                            </StackPanel>
-                                        </Border>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Grid>
+                    <TabItem Header="기록">
+                        <local:WorldRecordsView x:Name="WorldRecordsPanel"
+                                                ObservationRequested="WorldRecordsPanel_ObservationRequested"
+                                                AutoOutputChanged="WorldRecordsPanel_AutoOutputChanged"
+                                                WorldExportRequested="WorldRecordsPanel_WorldExportRequested"
+                                                DebugExportRequested="WorldRecordsPanel_DebugExportRequested" />
                     </TabItem>
                 </TabControl>
             </Border>

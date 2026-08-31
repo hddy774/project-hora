@@ -21,12 +21,10 @@ internal sealed record DistributionRow(
     string Count,
     string Ratio);
 
-internal sealed record EliteRankingRow(
+internal sealed record RankingMovementRow(
     string Scope,
-    string CombatCutoff,
-    string RealmCutoff,
-    string CombatMovement,
-    string RealmMovement);
+    string Cutoff,
+    string Movement);
 
 internal sealed record LifeToggleRow(
     int? LifeNumber,

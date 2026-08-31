@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,10 +14,13 @@ public partial class MainWindow : Window, IDisposable
 {
     private const ulong DefaultWorldSeed = 20260830UL;
     private const int ExplorerPageSize = 500;
+    private const int WorldChronicleDisplayLimit = 1_000;
     private SimulationRunner? _runner;
     private WorldSnapshot? _latestSnapshot;
     private AgentId? _selectedAgent;
     private RankingCategory? _rankingCategory = RankingCategory.CombatPower;
+    private RankingMovementPeriod _rankingMovementPeriod = RankingMovementPeriod.OneYear;
+    private RankingCategory _rankingMovementCategory = RankingCategory.CombatPower;
     private int _explorerOffset;
     private int _personalLogCategory;
     private int _chronicleCategory;
@@ -30,6 +32,12 @@ public partial class MainWindow : Window, IDisposable
     private bool _disposed;
     private bool _applyingObservation;
     private int _observationDispatchQueued;
+    private long _projectedRecentEventSequence = long.MinValue;
+    private int _projectedRecentEventCount = -1;
+    private long _projectedWorldChronicleSequence = long.MinValue;
+    private int _projectedWorldChronicleCount = -1;
+    private long _projectedDebugVersion = long.MinValue;
+    private readonly GameLogService _logService = new();
 
     public MainWindow()
     {
@@ -40,12 +48,15 @@ public partial class MainWindow : Window, IDisposable
         _runner = new SimulationRunner(world);
         _runner.ObservationInvalidated += Runner_ObservationInvalidated;
         _runner.Faulted += Runner_Faulted;
+        _logService.FileWriteFailed += LogService_FileWriteFailed;
+        _logService.AddDebug(DebugLogLevel.Information, $"게임 초기화 · VERSION {ProductInfo.Version}");
         Loaded += MainWindow_Loaded;
         Closed += MainWindow_Closed;
     }
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
+        _logService.AddDebug(DebugLogLevel.Information, "시뮬레이션 실행 시작");
         _runner?.Start();
     }
 
@@ -62,8 +73,10 @@ public partial class MainWindow : Window, IDisposable
         }
 
         _disposed = true;
+        _logService.AddDebug(DebugLogLevel.Information, "게임 종료");
         if (_runner is null)
         {
+            _logService.Dispose();
             return;
         }
 
@@ -71,6 +84,8 @@ public partial class MainWindow : Window, IDisposable
         _runner.Faulted -= Runner_Faulted;
         _runner.Dispose();
         _runner = null;
+        _logService.FileWriteFailed -= LogService_FileWriteFailed;
+        _logService.Dispose();
         GC.SuppressFinalize(this);
     }
 
@@ -104,8 +119,22 @@ public partial class MainWindow : Window, IDisposable
 
         _ = Dispatcher.BeginInvoke(new Action(() =>
         {
+            _logService.AddDebug(DebugLogLevel.Error, $"시뮬레이션 오류 · {exception}");
             StatusText.Text = $"시뮬레이션 오류: {exception.Message}";
             StatusText.Foreground = (Brush)FindResource("DangerBrush");
+        }));
+    }
+
+    private void LogService_FileWriteFailed(Exception exception)
+    {
+        if (Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished)
+        {
+            return;
+        }
+
+        _ = Dispatcher.BeginInvoke(new Action(() =>
+        {
+            WorldRecordsPanel.SetOutputStatus($"파일 오류 · {exception.Message}", isError: true);
         }));
     }
 
@@ -131,7 +160,8 @@ public partial class MainWindow : Window, IDisposable
             detailedMapAgentOffset: WorldInfoTabControl.SelectedIndex == 3
                 && MapObservationPanel.ShouldLoadAgents
                     ? MapObservationPanel.AgentOffset
-                    : 0);
+                    : 0,
+            worldChronicleCount: WorldChronicleDisplayLimit);
         ApplyObservation(observation);
     }
 
@@ -143,7 +173,12 @@ public partial class MainWindow : Window, IDisposable
             1 => ObservationSections.MarketSummary,
             2 => ObservationSections.Market,
             3 => ObservationSections.Map,
-            4 => ObservationSections.WorldLog,
+            4 => WorldRecordsPanel.SelectedRecordIndex switch
+            {
+                0 => ObservationSections.WorldLog,
+                1 => ObservationSections.WorldChronicle,
+                _ => ObservationSections.None,
+            },
             _ => ObservationSections.None,
         };
         if (WorldInfoTabControl.SelectedIndex == 0)
@@ -167,6 +202,7 @@ public partial class MainWindow : Window, IDisposable
             RankingCategory.CombatPower => ObservationSections.CombatPowerRanking,
             RankingCategory.Realm => ObservationSections.RealmRanking,
             RankingCategory.Aptitude => ObservationSections.AptitudeRanking,
+            RankingCategory.Wealth => ObservationSections.WealthRanking,
             null => ObservationSections.None,
             _ => ObservationSections.None,
         };
@@ -179,6 +215,12 @@ public partial class MainWindow : Window, IDisposable
         var snapshot = observation.World;
         _latestSnapshot = snapshot;
         _selectedAgent = observation.SelectedAgent.Id;
+        if (_runner is { } runner)
+        {
+            _logService.CaptureWorldFeed(
+                runner.DrainWorldEventFeed(),
+                FormatWorldEventNotification);
+        }
         WorldTickText.Text = FormatGameDate(GameCalendar.GetDate(snapshot.Tick));
         PopulationText.Text = KoreanNumberFormatter.Format(snapshot.Population);
         ActiveCombatText.Text = KoreanNumberFormatter.Format(snapshot.ActiveCombats);
@@ -205,71 +247,6 @@ public partial class MainWindow : Window, IDisposable
         }
     }
 
-    private void UpdateRankingRows(WorldSnapshot snapshot)
-    {
-        RankingRow[] rows;
-        var search = SearchTextBox.Text.Trim();
-        if (_rankingCategory is { } category)
-        {
-            var rankings = category switch
-            {
-                RankingCategory.CombatPower => snapshot.CombatPowerRankings,
-                RankingCategory.Realm => snapshot.RealmRankings,
-                RankingCategory.Aptitude => snapshot.AptitudeRankings,
-                _ => throw new InvalidOperationException($"지원하지 않는 랭킹 분류입니다: {category}"),
-            };
-            rows = rankings.Select(ToRankingRow).ToArray();
-            RankingScopeText.Text = $"TOP {rankings.Count:N0}";
-            ExplorerNavigationPanel.Visibility = Visibility.Collapsed;
-        }
-        else if (_runner is null)
-        {
-            rows = Array.Empty<RankingRow>();
-        }
-        else
-        {
-            var maximumOffset = Math.Max(0, ((snapshot.Population - 1) / ExplorerPageSize) * ExplorerPageSize);
-            _explorerOffset = Math.Min(_explorerOffset, maximumOffset);
-            var agents = search.Length == 0
-                ? _runner.BrowseAgents(_explorerOffset, ExplorerPageSize)
-                : _runner.SearchAgents(search, 1_000);
-            rows = agents.Select(ToRankingRow).ToArray();
-
-            if (search.Length == 0)
-            {
-                var first = rows.Length == 0 ? 0 : _explorerOffset + 1;
-                var last = _explorerOffset + rows.Length;
-                RankingScopeText.Text = $"{first:N0}–{last:N0} / {snapshot.Population:N0}";
-                var currentPage = (_explorerOffset / ExplorerPageSize) + 1;
-                var pageCount = Math.Max(1, (snapshot.Population + ExplorerPageSize - 1) / ExplorerPageSize);
-                ExplorerPageText.Text = $"{currentPage:N0} / {pageCount:N0} 페이지";
-                ExplorerPreviousButton.IsEnabled = _explorerOffset > 0;
-                ExplorerNextButton.IsEnabled = _explorerOffset + ExplorerPageSize < snapshot.Population;
-                ExplorerNavigationPanel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                RankingScopeText.Text = $"검색 {rows.Length:N0}명";
-                ExplorerNavigationPanel.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        RankingGrid.ItemsSource = rows;
-        if (_selectedAgent is { } selected)
-        {
-            RankingGrid.SelectedItem = rows.FirstOrDefault(item => item.AgentId == selected);
-        }
-    }
-
-    private void UpdateEventRows(WorldSnapshot snapshot)
-    {
-        var rows = snapshot.RecentEvents
-            .Reverse()
-            .Select(item => FormatEvent(snapshot, item))
-            .ToArray();
-        EventList.ItemsSource = rows;
-    }
-
     private void UpdateVisibleWorldPanel(WorldSnapshot snapshot)
     {
         switch (WorldInfoTabControl.SelectedIndex)
@@ -287,7 +264,7 @@ public partial class MainWindow : Window, IDisposable
                 MapObservationPanel.Apply(snapshot.Map);
                 break;
             case 4:
-                UpdateEventRows(snapshot);
+                UpdateWorldRecordsPanel(snapshot);
                 break;
         }
     }
@@ -311,15 +288,7 @@ public partial class MainWindow : Window, IDisposable
             : movement.TotalAbsoluteMovement / (decimal)movement.ChangedCount;
         RankingMovementText.Text =
             $"변동 {changeRate:0.##}% · 상승 {movement.RisenCount:N0} · 하락 {movement.FallenCount:N0} · 유지 {movement.UnchangedCount:N0} · 평균 {averageMovement:0.##}위";
-        EliteRankingGrid.ItemsSource = (statistics.EliteRankingMovements
-                ?? Array.Empty<EliteRankingMovementSnapshot>())
-            .Select(item => new EliteRankingRow(
-                $"상위 {item.TopCount:N0}위",
-                KoreanNumberFormatter.Format(item.CombatPowerCutoff),
-                FormatRealm(item.RealmCutoff, item.RealmLayerCutoff),
-                $"{item.CombatPowerChangedCount:N0}석 · {item.CombatPowerChangeBasisPoints / 100m:0.##}%",
-                $"{item.RealmChangedCount:N0}석 · {item.RealmChangeBasisPoints / 100m:0.##}%"))
-            .ToArray();
+        UpdateRankingMovementRows(snapshot);
 
         if (RealmDistributionExpander.IsExpanded)
         {
@@ -363,102 +332,6 @@ public partial class MainWindow : Window, IDisposable
             $"총 {KoreanNumberFormatter.Format(snapshot.Market.TotalStock)}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.MaterialStock)}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.ProcessedStock)}개";
         CityFlowText.Text =
             $"공급 {KoreanNumberFormatter.Format(snapshot.Market.TotalSupply)} · 수요 {KoreanNumberFormatter.Format(snapshot.Market.TotalDemand)} · 미충족 {KoreanNumberFormatter.Format(snapshot.Market.UnmetDemand)}";
-    }
-
-    private RankingRow ToRankingRow(RankingEntry entry) => new(
-        entry.Rank,
-        entry.AgentId,
-        entry.Name,
-        entry.HasEnteredCultivation
-            ? FormatRealm(entry.RealmStage, entry.RealmLayer, entry.GreatPerfectionAchieved)
-            : "미입문 · 입문 수련",
-        entry.Category switch
-        {
-            RankingCategory.CombatPower => KoreanNumberFormatter.Format(entry.CombatPower.Total),
-            RankingCategory.Realm => KoreanNumberFormatter.Format(entry.Score % 1_000_000_000L),
-            RankingCategory.Aptitude => (entry.AptitudeScore / 100m).ToString("0.##", CultureInfo.CurrentCulture),
-            _ => entry.Score.ToString(CultureInfo.CurrentCulture),
-        },
-        FormatActivity(entry.Activity));
-
-    private RankingRow ToRankingRow(AgentSnapshot agent) => new(
-        agent.Rank,
-        agent.Id,
-        agent.Name,
-        HasEnteredCultivation(agent.CultivationState, agent.BottleneckCause)
-            ? FormatRealm(
-                agent.RealmStage,
-                agent.RealmLayer,
-                agent.Cultivation.GreatPerfectionAchieved)
-            : "미입문 · 입문 수련",
-        KoreanNumberFormatter.Format(agent.CombatPower.Total),
-        FormatActivity(agent.Activity));
-
-    private EventRow FormatEvent(WorldSnapshot snapshot, WorldEvent worldEvent)
-    {
-        var primary = GetAgentName(snapshot, worldEvent.PrimaryAgent);
-        var secondary = worldEvent.SecondaryAgent is { } secondaryAgent
-            ? GetAgentName(snapshot, secondaryAgent)
-            : string.Empty;
-        var summary = worldEvent.Kind switch
-        {
-            WorldEventKind.BreakthroughSucceeded => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 돌파 성공",
-            WorldEventKind.BreakthroughFailed => $"{primary}, 돌파 시도 실패 · 재준비",
-            WorldEventKind.MinorStageBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 소경지 돌파",
-            WorldEventKind.BottleneckBreakthrough => $"{primary}, {worldEvent.Value:N0}번의 시도 끝에 병목 돌파",
-            WorldEventKind.MajorRealmBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 대경지 돌파",
-            WorldEventKind.TechniqueEnlightenment => $"{primary}, 공법 깨달음 · 이해도 {worldEvent.Value / 100m:0.00}",
-            WorldEventKind.SpellEnlightenment => $"{primary}, 법술 깨달음 · 이해도 {worldEvent.Value / 100m:0.00}",
-            WorldEventKind.CultivationEntered => $"{primary}, 입문 3 Gate를 통과해 연기경에 입문",
-            WorldEventKind.GreatPerfectionAchieved => $"{primary}, {FormatEncodedRealm(worldEvent.Value, greatPerfection: true)} 완성",
-            WorldEventKind.Death => $"{primary}, {worldEvent.Value:N0}세에 수명을 다함",
-            WorldEventKind.ReincarnationEntered => $"{primary}, 윤회의 강에 들어감",
-            WorldEventKind.Rebirth => $"{primary}, 제 {worldEvent.Value:N0}생으로 환생",
-            WorldEventKind.MissionCompleted => $"{primary}, 도시 임무 완료 · 영석 +{KoreanNumberFormatter.Format(worldEvent.Value)}",
-            WorldEventKind.TreasureCrafted => $"{primary}, {FormatQuality(worldEvent.Value)} 법보 제작",
-            WorldEventKind.PillCrafted => $"{primary}, {FormatPill((PillKind)worldEvent.Value)} 제작",
-            WorldEventKind.PillPurchased => $"{primary}, 영석으로 {FormatPill((PillKind)worldEvent.Value)} 구매",
-            WorldEventKind.MaterialSold => $"{primary}, {EconomyRules.GetMaterial((MaterialId)worldEvent.Value).KoreanName} 판매",
-            WorldEventKind.MaterialPurchased => $"{primary}, 시장에서 {EconomyRules.GetMaterial((MaterialId)worldEvent.Value).KoreanName} 구매",
-            WorldEventKind.TreasurePurchased => $"{primary}, 시장에서 {FormatQuality(worldEvent.Value)} 법보 구매",
-            WorldEventKind.TechniqueBookPurchased => $"{primary}, 시장에서 {FormatQuality(worldEvent.Value)} 공법서 구매",
-            WorldEventKind.SpellBookPurchased => $"{primary}, 시장에서 {FormatQuality(worldEvent.Value)} 법술서 구매",
-            WorldEventKind.NewLeader => $"{primary}, {secondary}을 제치고 새로운 1위 등극",
-            WorldEventKind.CombatStarted => $"{primary}, 상위권 {secondary}에게 도전",
-            WorldEventKind.CombatPhysicalAttack => $"{primary} → {secondary}, 공법 공격 {worldEvent.Value:N0} 피해",
-            WorldEventKind.CombatSpellCast => $"{primary} → {secondary}, 법술 {worldEvent.Value:N0} 피해",
-            WorldEventKind.CombatGuarded => $"{primary}, 다음 공격에 대비해 방어",
-            WorldEventKind.CombatRetreated => $"{primary}, {secondary}과의 전투에서 이탈",
-            WorldEventKind.CombatEnded => $"{primary}, {secondary}에게 승리 · 경험 +{worldEvent.Value:N0}",
-            WorldEventKind.CombatInjury => $"{primary}, 전투 중 {FormatInjurySeverity((InjurySeverity)worldEvent.Value)} 부상",
-            WorldEventKind.CombatDeath => $"{primary}, {worldEvent.Value:N0}세에 전투 부상으로 사망",
-            WorldEventKind.TravelCompleted => $"{primary}, {WorldMapRules.GetLocation(checked((ushort)worldEvent.Value)).KoreanName}에 도착",
-            WorldEventKind.MonsterHuntWon => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 승리",
-            WorldEventKind.MonsterHuntLost => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 패배",
-            WorldEventKind.SpiritStoneMined => $"{primary}, 도시 광맥에서 영석 {KoreanNumberFormatter.Format(worldEvent.Value)} 채굴",
-            _ => worldEvent.Kind.ToString(),
-        };
-        var color = worldEvent.Kind switch
-        {
-            WorldEventKind.NewLeader
-                or WorldEventKind.BreakthroughSucceeded
-                or WorldEventKind.MinorStageBreakthrough
-                or WorldEventKind.BottleneckBreakthrough
-                or WorldEventKind.MajorRealmBreakthrough
-                or WorldEventKind.Rebirth
-                or WorldEventKind.TreasureCrafted
-                or WorldEventKind.PillCrafted
-                or WorldEventKind.TechniqueBookPurchased
-                or WorldEventKind.SpellBookPurchased => (Brush)FindResource("AccentBrush"),
-            WorldEventKind.CombatEnded or WorldEventKind.MonsterHuntWon => (Brush)FindResource("PositiveBrush"),
-            WorldEventKind.BreakthroughFailed
-                or WorldEventKind.CombatRetreated
-                or WorldEventKind.CombatInjury
-                or WorldEventKind.CombatDeath
-                or WorldEventKind.MonsterHuntLost => (Brush)FindResource("DangerBrush"),
-            _ => (Brush)FindResource("PrimaryTextBrush"),
-        };
-        return new EventRow(FormatGameDate(GameCalendar.GetDate(worldEvent.Tick)), summary, color);
     }
 
     private EventRow FormatChronicle(LifeChronicleEntry entry)
@@ -808,79 +681,6 @@ public partial class MainWindow : Window, IDisposable
         }
     }
 
-    private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (_rankingCategory is null && _latestSnapshot is not null)
-        {
-            _explorerOffset = 0;
-            UpdateRankingRows(_latestSnapshot);
-        }
-    }
-
-    private void CombatPowerRankingButton_Click(object sender, RoutedEventArgs e) =>
-        SetListMode(RankingCategory.CombatPower);
-
-    private void RealmRankingButton_Click(object sender, RoutedEventArgs e) =>
-        SetListMode(RankingCategory.Realm);
-
-    private void AptitudeRankingButton_Click(object sender, RoutedEventArgs e) =>
-        SetListMode(RankingCategory.Aptitude);
-
-    private void ExplorerButton_Click(object sender, RoutedEventArgs e) =>
-        SetListMode(null);
-
-    private void ExplorerPreviousButton_Click(object sender, RoutedEventArgs e)
-    {
-        _explorerOffset = Math.Max(0, _explorerOffset - ExplorerPageSize);
-        if (_latestSnapshot is not null)
-        {
-            UpdateRankingRows(_latestSnapshot);
-        }
-    }
-
-    private void ExplorerNextButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (_latestSnapshot is null
-            || _explorerOffset + ExplorerPageSize >= _latestSnapshot.Population)
-        {
-            return;
-        }
-
-        _explorerOffset += ExplorerPageSize;
-        UpdateRankingRows(_latestSnapshot);
-    }
-
-    private void SetListMode(RankingCategory? category)
-    {
-        _rankingCategory = category;
-        _explorerOffset = 0;
-        var explorer = category is null;
-        SearchTextBox.IsEnabled = explorer;
-        if (!explorer && SearchTextBox.Text.Length > 0)
-        {
-            SearchTextBox.Clear();
-        }
-
-        RankingTitleText.Text = category switch
-        {
-            RankingCategory.CombatPower => "전투력 랭킹",
-            RankingCategory.Realm => "경지 랭킹",
-            RankingCategory.Aptitude => "자질 랭킹",
-            null => "전체 수선자 탐색",
-            _ => throw new ArgumentOutOfRangeException(nameof(category)),
-        };
-        RankingGrid.Columns[3].Header = category switch
-        {
-            RankingCategory.CombatPower => "전투력",
-            RankingCategory.Realm => "수행량",
-            RankingCategory.Aptitude => "자질 합계",
-            null => "전투력",
-            _ => throw new ArgumentOutOfRangeException(nameof(category)),
-        };
-
-        RefreshVisibleObservation();
-    }
-
     private void PauseButton_Click(object sender, RoutedEventArgs e)
     {
         if (_runner is null)
@@ -891,6 +691,9 @@ public partial class MainWindow : Window, IDisposable
         var paused = !_runner.IsPaused;
         _runner.SetPaused(paused);
         PauseButton.Content = paused ? "계속 진행" : "일시정지";
+        _logService.AddDebug(
+            DebugLogLevel.Information,
+            paused ? "시뮬레이션 일시정지" : "시뮬레이션 진행 재개");
     }
 
     private async void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -907,6 +710,7 @@ public partial class MainWindow : Window, IDisposable
             await Task.Run(() => WorldSaveStore.Save(WorldSaveStore.DefaultPath, checkpoint));
             StatusText.Text = $"저장 완료 · {WorldSaveStore.DefaultPath}";
             StatusText.Foreground = (Brush)FindResource("PositiveBrush");
+            _logService.AddDebug(DebugLogLevel.Information, $"세계 저장 완료 · {WorldSaveStore.DefaultPath}");
         }
         catch (IOException exception)
         {
@@ -938,10 +742,15 @@ public partial class MainWindow : Window, IDisposable
             StatusText.Text = "세계 불러오는 중…";
             var checkpoint = await Task.Run(() => WorldSaveStore.Load(WorldSaveStore.DefaultPath));
             _runner.RestoreCheckpoint(checkpoint);
+            _projectedRecentEventSequence = long.MinValue;
+            _projectedRecentEventCount = -1;
+            _projectedWorldChronicleSequence = long.MinValue;
+            _projectedWorldChronicleCount = -1;
             _selectedAgent = null;
             RefreshVisibleObservation();
             StatusText.Text = $"불러오기 완료 · {WorldSaveStore.DefaultPath}";
             StatusText.Foreground = (Brush)FindResource("PositiveBrush");
+            _logService.AddDebug(DebugLogLevel.Information, $"세계 불러오기 완료 · schema {checkpoint.SchemaVersion}");
         }
         catch (FileNotFoundException exception)
         {
@@ -963,6 +772,7 @@ public partial class MainWindow : Window, IDisposable
 
     private void ShowPersistenceError(Exception exception)
     {
+        _logService.AddDebug(DebugLogLevel.Error, $"저장 처리 실패 · {exception}");
         StatusText.Text = $"저장 오류: {exception.Message}";
         StatusText.Foreground = (Brush)FindResource("DangerBrush");
     }
@@ -981,5 +791,6 @@ public partial class MainWindow : Window, IDisposable
     {
         _speed = speed;
         _runner?.SetSpeed(speed);
+        _logService.AddDebug(DebugLogLevel.Information, $"게임 배속 변경 · {speed}×");
     }
 }

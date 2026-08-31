@@ -173,8 +173,8 @@ SimulationRunner가 알린 관찰 무효화 신호를 dispatcher에서 합친 �
 명령을 전달하고 WPF 화면을 그린다. 인물 상세는 최근 개인 로그와 영구 연대기를
 분리하고, 우측 외부 탭은 통계·도시·시장 상세·3×3 지도·세계 기록 DTO만 표시한다.
 통계 분포는 Expander 상태에 따라 투영하며, 외부 탭·인물 내부 탭·접힌 하위 표는
-simulation 조회 단계부터 계산하지 않는다. 시장은 분류 토글·검색·상품/가격·수급/생산
-내부 탭, 지도는 지역 개요·요수 생태·100명 수선자 페이지 내부 탭을 사용한다. 시장과
+simulation 조회 단계부터 계산하지 않는다. 시장은 분류 토글·검색·상품/가격·수급/생산·
+최근 거래 내부 탭, 지도는 지역 개요·요수 생태·100명 수선자 페이지 내부 탭을 사용한다. 시장과
 지도도 현재 열린 내부 탭의 행과 문구만 갱신하며 대형 표와 연대기는 WPF recycling
 virtualization을 사용한다.
 최근 로그는 사건 종류별 내부 탭, 영구 연대기는 사건 종류 탭과 생별 토글을 사용하며
@@ -205,16 +205,24 @@ KnowledgeRef·출처와 결과별 효과 문구를 지연 생성한다.
 대경지 표기는 조회 DTO의 층/대원만 flag로 `대경지 · 초기/중기/후기/대원만 · N층`을
 파생하며 simulation에 UI 문구를 저장하지 않는다.
 
+`CityMarket`은 권위 재고·가격·최근/누적 수급·생산을 소유하고,
+`CityMarket.Settlement`는 구매·판매·임무 납품의 source 중복 검사, 전체 preflight,
+자산 이전과 거래 기록만 소유한다. `AuthorityRevision`이 같은 summary/goods snapshot은
+불변 인스턴스를 재사용한다. 최근 12개월 원형 bucket은 한 달 전진 시 만료될 44개
+슬롯만 갱신하고, 최근 거래 최대 100건의 표시 projection은 시장 탭에서도 해당 내부
+탭을 선택한 경우에만 수행한다.
+
 ### Chronicles.Persistence
 
 Simulation의 명시적 체크포인트를 Brotli 압축 payload와 SHA-256 checksum을 가진
-versioned `.cmip` container로 변환한다. 현재 schema 23은 수행 trace/구성요소와
+versioned `.cmip` container로 변환한다. 현재 schema 24는 수행 trace/구성요소와
 입문 Gate 단련 보정, 기술 경험/이해, 전투 경험/이해·turn owner/부상, 지도 위치/사냥 상태를
 비롯해 간략화 시장·생산 대기열·유한 광맥·요수 개체수, TOP 1,000 부자 순위,
 기간별 랭킹 frame·누적 자리 변동, 개별 세계 사건, 100년 세계 역사서와 60개 선천자질
 Component, Soul/Body/Person ID·AI 판단 인과, 희소 방향 관계, Teaching 진행·연속성·
-영구 전수 이력, 생 계보·역사적 최고점·현재 윤회 여정·6영역 전생 흔적을
-저장한다. schema 7~22에 안전한
+영구 전수 이력, 생 계보·역사적 최고점·현재 윤회 여정·6영역 전생 흔적, 최근 12개월
+시장 수급·원형 bucket·시장 권위 revision·인물별 SourceResultId watermark·최근 거래
+원장과 다음 sequence를 저장한다. schema 7~23에 안전한
 이전 기본값과 진행 전투 단일 turn owner 복구를
 제공하며, schema 13의 30종 재료·7칸 법보·35개 상품은 새 2종·3칸·44개 구조로
 명시적으로 합산 이전하고 schema 17 이하 자질 대표값은 그룹별 균일 Component로
@@ -223,7 +231,7 @@ Component, Soul/Body/Person ID·AI 판단 인과, 희소 방향 관계, Teaching
 유지한다. 같은 폴더의 임시 파일을 flush한 뒤 원자적으로
 교체하며, 손상되거나 지원하지 않는 schema는 세계를 바꾸기 전에 거부한다.
 하위 schema는 증거가 있는 생 계보만 재구성하며 기존 저장에 없던 6영역 수치를
-조작하지 않고 `HasEvidence=false`로 표시한다. schema 23 복원은 여정 단계·예약 tick,
+조작하지 않고 `HasEvidence=false`로 표시한다. schema 24 복원은 여정 단계·예약 tick,
 생 계보의 선행자·ID 중복·현재 신원과의 일치, 6영역 수치의
 `integrated <= accessible <= preserved`를 검증한 뒤에만 세계를 교체한다.
 
@@ -238,10 +246,10 @@ Component, Soul/Body/Person ID·AI 판단 인과, 희소 방향 관계, Teaching
 Soul/Body/Person 인과 trace, 희소 관계 양끝 연결·상한, Teaching 직접 Work 0·전수 이력·
 schema 22 이전·지연 관찰, 윤회 총기간·단계 경계·3생 선행자 계보·Soul/Body/Person
 연속성·6영역 대소 관계·현생 자동 복구 금지·schema 23/하위 schema 이전·지연 관찰,
-여정 중간 저장 왕복과 10,000명 성능 예산을
-자동 검증한다. 0.0.12 개발 시점의 Debug 통합 검사는 40/40, 경고 0·오류 0이며,
-10,000명 초기화+20,000 tick+관찰은 3,102ms, schema 23 checkpoint/복원은
-각각 122/567ms였다.
+여정 중간 저장 왕복, 시장 원자 정산·source 재생 방지·현재 수급 만료·schema 24 전체
+필드 codec과 10,000명 성능 예산을 자동 검증한다. 0.0.13 Release 통합 검사는 45/45,
+경고 0·오류 0이며, 10,000명 초기화+20,000 tick+관찰은 891ms, schema 24
+checkpoint/복원은 각각 116/349ms였다.
 
 ## 실행 모델
 

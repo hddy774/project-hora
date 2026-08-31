@@ -109,8 +109,12 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
 - 우측 `통계·도시·시장·지도·기록` 탭이 각각 독립적으로 표시되는지 확인
 - 외부 탭과 인물의 `최근 개인 로그·영구 연대기` 내부 탭에서 선택 항목만 강조되고,
   통계 분포의 접기/펼치기가 정상 동작하는지 확인
-- 시장의 전체·재료·단약·법보·서적 토글과 검색, 상품 개요·가격/수급·도시 생산 내부
+- 시장의 전체·재료·단약·법보·서적 토글과 검색, 상품 개요·가격/수급·도시 생산·최근 거래 내부
   탭이 선택 상품에 맞게 바뀌는지 확인
+- 가격/수급에서 최근 12개월 공급·수요가 먼저 표시되고 전체 누계가 별도 감사값으로
+  보이는지 확인. 12개월이 지나면 현재 수급은 만료되지만 누계는 유지되는지 확인
+- 최근 거래 탭에서 거래 sequence/source, 시각, 수선자, 구매·판매·임무, 상품·수량·
+  품질·단가·총 영석이 최신순으로 보이며 다른 내부 탭에서는 거래 행을 갱신하지 않는지 확인
 - 스크롤바 장식이 보이지 않아도 마우스 휠·키보드로 TOP 1,000 랭킹과 긴 연대기를
   끝까지 이동할 수 있고 화면 밖 행이 재활용되어 UI가 멈추지 않는지 확인
 - 도시 탭의 거래·납품·가공·생산·채굴 누계, 남은 유한 광맥과 진행 중 생산 대기열이
@@ -144,7 +148,7 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
   세계 수동 파일에는 최근 로그와 영구 연대기 전체가 함께 포함되는지 확인
 - 저장 후 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip`이 생성되는지 확인
 - 진행한 뒤 불러오면 저장한 tick과 상태로 돌아가는지 확인
-- 기존 schema 7~22 저장을 불러오면 schema 23의 랭킹 기준점·부자 순위·누적 자리
+- 기존 schema 7~23 저장을 불러오면 schema 24의 랭킹 기준점·부자 순위·누적 자리
   변동·100년 세계 역사서와 60개 자질 Component를 복원하는지 확인. schema 20 미만은
   Soul/Body/Person ID와 최소 AI 판단 trace를 결정론적으로 재구성하고, schema 21 미만은
   빈 관계를 생성한다. schema 21은 관계를 보존하면서 Teaching을 빈값으로 이전하고,
@@ -155,16 +159,16 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
   2종 재료·3칸 법보·44개 시장으로, schema 17 이하 자질 대표값은 그룹별 동일
   Component 10개로 이전되며 10,000명 장기 저장도 크기 오류 없이 복원되는지 확인
 
-Release 자동 검사는 기존 검사와 추가된 단계형 윤회·생 계보·6영역 흔적 검사가
-모두 `passed`여야 한다. 0.0.12 개발 검증의 실제 출력은
-`RESULT: 40/40 passed`였다. 성능 출력은 초기화,
+Release 자동 검사는 기존 검사와 시장 원자 정산·최근 수급·source/codec 경계 검사가
+모두 `passed`여야 한다. 0.0.13 개발 검증의 실제 출력은
+`RESULT: 45/45 passed`였다. 성능 출력은 초기화,
 20,000 tick 진행, 현재 관찰 DTO 비용을 분리하며 세 값의 합이 10초 예산 이내여야 한다.
 0.0.12 Debug 실측은 각각 145ms, 2,955ms, 2.3ms(합계 3,102ms)였고,
 schema 23 checkpoint 122ms·복원 567ms였다. 절대 시간은 실행 PC와 빌드 구성에
 따라 달라질 수 있으므로 이후 고정 SHA에서도 예산과 상대 회귀를 다시 확인한다.
-고정 커밋 `a09fcbb`의 Release 최종 검증은 `RESULT: 40/40 passed`, 초기화
-59ms + 20,000 tick 914ms + 관찰 0.3ms = 973ms, checkpoint 133ms,
-schema 23 복원 288ms였다. 같은 실행에서 선택 UI 조회는 94.5%, 닫힌 지도 탭
-할당량은 53.7% 감소했다.
+0.0.13 Release 검증은 초기화 32ms + 20,000 tick 859ms + 관찰 0.4ms = 891ms,
+checkpoint 116ms, schema 24 복원 349ms였다. 작업 시작 기준선 1,239ms 대비 총
+28.1% 감소했고 선택 UI 조회는 기준선 12.7ms 대비 22.8%, 기존 이중 전체 조회 대비
+94.3% 감소했다. 닫힌 지도 탭 할당량은 53.7% 감소했다.
 
 로컬 산출물과 저장 파일은 GitHub Release에 업로드되지 않습니다.

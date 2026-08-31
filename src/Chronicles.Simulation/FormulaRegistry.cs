@@ -1,3 +1,5 @@
+using Chronicles.Core;
+
 namespace Chronicles.Simulation;
 
 public enum FormulaOwner : byte
@@ -15,7 +17,11 @@ public readonly record struct FormulaRegistryEntry(
     int Revision,
     FormulaOwner Owner,
     string Purpose,
-    bool RequiresReview);
+    bool RequiresReview)
+{
+    public RegistryStableId RegistryId =>
+        AuthorityRegistry.CreateStableId("cmip.formula", StableId);
+}
 
 public static class FormulaRegistry
 {

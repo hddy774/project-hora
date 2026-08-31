@@ -6,10 +6,64 @@ internal static class AuthorityFoundationTests
 {
     public static void Run()
     {
+        StableAuthorityRegistryIsClosedAndOrderIndependent();
         FormulaRegistryIsStableAndComplete();
         RuntimeCommandsAreAtomicAndCausal();
         RuntimeRollbackRestoresAllState();
         ApplicationAdapterUsesTheSameContract();
+    }
+
+    private static void StableAuthorityRegistryIsClosedAndOrderIndependent()
+    {
+        var registry = AuthorityRegistry.Current;
+        TestAssert.True(registry.Validation.IsValid, "권위 Registry 정적 무결성");
+        TestAssert.Equal(14, registry.OwnerBindings.Count, "M01~M14 단일 owner binding");
+        TestAssert.Equal(
+            registry.OwnerBindings.Count,
+            registry.OwnerBindings.Select(binding => binding.DomainId).Distinct().Count(),
+            "domain primary owner 중복 0");
+        TestAssert.True(
+            registry.ChangeSets.Count >= registry.Entries.Count,
+            "Registry revision change 계보 보존");
+
+        foreach (var owner in registry.OwnerBindings)
+        {
+            TestAssert.True(registry.TryGetOwner(owner.DomainId, out var resolved), "owner stable ID 조회");
+            TestAssert.Equal(owner, resolved, "owner mapping 결정론");
+            TestAssert.True(registry.Resolve(owner.OwnerId).IsUsable, "owner ref 고아 없음");
+            TestAssert.True(registry.Resolve(owner.SchemaId).IsUsable, "schema ref 고아 없음");
+            TestAssert.True(registry.Resolve(owner.MappingId).IsUsable, "mapping ref 고아 없음");
+        }
+
+        var unknown = registry.Resolve(new RegistryStableId(ulong.MaxValue));
+        TestAssert.Equal(RegistryResolveStatus.Undefined, unknown.Status, "미해결 ref 기본값 보충 금지");
+        TestAssert.True(!unknown.Resolved.IsValid, "미해결 ref는 stable ID 0으로 READY 위장 금지");
+
+        var reordered = new AuthorityRegistrySnapshot(
+            registry.RegistryRevision,
+            registry.ActiveSchemaId,
+            registry.ActiveMappingId,
+            registry.Entries.Reverse(),
+            registry.OwnerBindings.Reverse(),
+            registry.ChangeSets.Reverse());
+        TestAssert.True(reordered.Validation.IsValid, "등록 순서 비의존 Registry 검증");
+        TestAssert.True(
+            registry.Entries.Select(entry => entry.Id)
+                .SequenceEqual(reordered.Entries.Select(entry => entry.Id)),
+            "표시/등록 순서와 stable 해석 분리");
+
+        var duplicateOwner = registry.OwnerBindings.Concat([registry.OwnerBindings[0]]).ToArray();
+        var invalid = AuthorityRegistry.Validate(
+            registry.RegistryRevision,
+            registry.ActiveSchemaId,
+            registry.ActiveMappingId,
+            registry.Entries,
+            duplicateOwner,
+            registry.ChangeSets);
+        TestAssert.Equal(
+            RegistryValidationError.DuplicateDomainOwner,
+            invalid.Error,
+            "primary owner 중복 정적 거부");
     }
 
     private static void FormulaRegistryIsStableAndComplete()
@@ -20,6 +74,10 @@ internal static class AuthorityFoundationTests
             definitions.Count,
             definitions.Select(item => item.StableId).Distinct(StringComparer.Ordinal).Count(),
             "공식 stable ID 고유성");
+        TestAssert.Equal(
+            definitions.Count,
+            definitions.Select(item => item.RegistryId).Distinct().Count(),
+            "공식 numeric Registry ID 고유성");
         TestAssert.Equal(
             CombatPowerFormula.CurrentRevision,
             FormulaRegistry.Get("F-COMBAT-001").Revision,

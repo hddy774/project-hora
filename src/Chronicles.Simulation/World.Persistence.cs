@@ -48,7 +48,19 @@ public sealed partial class World
             _agentByRealmRank[index] = index;
             _agentByAptitudeRank[index] = index;
             _agents.RecalculatePower(index);
-            ScheduleAgent(index, _agents.NextDecisionTicks[index]);
+        }
+
+        if (checkpoint.SchemaVersion < 10)
+        {
+            RepairLegacyCombatTurnAuthority();
+        }
+
+        for (var index = 0; index < checkpoint.Agents.Length; index++)
+        {
+            if (_agents.NextDecisionTicks[index] != long.MaxValue)
+            {
+                ScheduleAgent(index, _agents.NextDecisionTicks[index]);
+            }
         }
 
         foreach (var worldEvent in checkpoint.Events.TakeLast(WorldLogCapacity))
@@ -60,6 +72,33 @@ public sealed partial class World
     }
 
     public static World Restore(WorldCheckpoint checkpoint) => new(checkpoint);
+
+    private void RepairLegacyCombatTurnAuthority()
+    {
+        for (var left = 0; left < Population; left++)
+        {
+            var right = _agents.Opponents[left];
+            if (_agents.Activities[left] != AgentActivity.Fighting
+                || right <= left
+                || right >= Population
+                || _agents.Activities[right] != AgentActivity.Fighting
+                || _agents.Opponents[right] != left)
+            {
+                continue;
+            }
+
+            var leftTick = _agents.NextDecisionTicks[left];
+            var rightTick = _agents.NextDecisionTicks[right];
+            var owner = leftTick < rightTick || (leftTick == rightTick && left < right)
+                ? left
+                : right;
+            var waiting = owner == left ? right : left;
+            _agents.CombatTurnOwners[left] = owner;
+            _agents.CombatTurnOwners[right] = owner;
+            _agents.NextDecisionTicks[owner] = Math.Min(leftTick, rightTick);
+            _agents.NextDecisionTicks[waiting] = long.MaxValue;
+        }
+    }
 
     public WorldCheckpoint CreateCheckpoint()
     {

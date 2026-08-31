@@ -36,6 +36,7 @@ tests =
 [
     .. tests,
     ("교대 전투 속성과 누적 부상 사망", CombatAuthorityAndInjury),
+    ("schema 7~9 진행 전투 단일 turn owner 복구", LegacyCombatTurnMigration),
     ("3×3 지도와 지형별 요수 생태", WorldMapAndBiomeMonsters),
 ];
 
@@ -839,6 +840,53 @@ static void CombatAuthorityAndInjury()
             .Any(index => world.GetAgentChronicle(new AgentId(index))
                 .Any(entry => entry.Kind == ChronicleEventKind.CombatDeath)),
         "전투 사망 영구 연대기");
+}
+
+static void LegacyCombatTurnMigration()
+{
+    var world = World.Create(8129, 1_000);
+    world.AdvanceTo(new SimulationTick(20_000));
+    var current = world.CreateCheckpoint();
+    True(current.ActiveCombats > 0, "migration fixture 진행 전투");
+    var legacyAgents = current.Agents
+        .Select(agent => agent with { CombatAuthority = null })
+        .ToArray();
+    var restored = World.Restore(current with
+    {
+        SchemaVersion = 9,
+        Agents = legacyAgents,
+    });
+    var migrated = restored.CreateCheckpoint();
+    var migratedPairs = migrated.Agents
+        .Select((agent, index) => (Agent: agent, Index: index))
+        .Where(item => item.Agent.Opponent > item.Index)
+        .ToArray();
+    True(migratedPairs.Length > 0, "구 저장 진행 전투 쌍 유지");
+    foreach (var pair in migratedPairs)
+    {
+        var opponent = migrated.Agents[pair.Agent.Opponent];
+        var owner = pair.Agent.CombatAuthority!.Value.TurnOwner;
+        Equal(owner, opponent.CombatAuthority!.Value.TurnOwner, "구 저장 쌍의 공통 turn owner");
+        True(owner == pair.Index || owner == pair.Agent.Opponent, "turn owner는 전투 당사자");
+        var scheduledCount = (pair.Agent.NextDecisionTick == long.MaxValue ? 0 : 1)
+            + (opponent.NextDecisionTick == long.MaxValue ? 0 : 1);
+        Equal(1, scheduledCount, "구 저장 전투는 turn owner 하나만 예약");
+        True(migrated.Agents[owner].NextDecisionTick != long.MaxValue, "turn owner 예약 유지");
+    }
+
+    var nextCombatTick = migratedPairs
+        .SelectMany(pair => new[]
+        {
+            pair.Agent.NextDecisionTick,
+            migrated.Agents[pair.Agent.Opponent].NextDecisionTick,
+        })
+        .Where(tick => tick != long.MaxValue)
+        .Min();
+    restored.AdvanceTo(new SimulationTick(nextCombatTick));
+    Equal(
+        restored.TotalCombatsStarted,
+        restored.TotalCombatsCompleted + restored.ActiveCombats,
+        "구 저장 전투 복구 후 수 보존");
 }
 
 static void WorldMapAndBiomeMonsters()

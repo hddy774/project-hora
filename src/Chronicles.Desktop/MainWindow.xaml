@@ -54,11 +54,11 @@
                 <Button x:Name="PauseButton" Margin="14,0,7,0" Click="PauseButton_Click">일시정지</Button>
                 <Button Margin="0,0,5,0" Click="SaveButton_Click">저장</Button>
                 <Button Margin="0,0,12,0" Click="LoadButton_Click">불러오기</Button>
-                <Button Margin="0,0,5,0" Click="Speed1Button_Click">1×</Button>
-                <Button Margin="0,0,5,0" Click="Speed10Button_Click">10×</Button>
-                <Button Margin="0,0,5,0" Click="Speed25Button_Click">25×</Button>
-                <Button Margin="0,0,5,0" Click="Speed50Button_Click">50×</Button>
-                <Button Click="Speed100Button_Click">100×</Button>
+                <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" IsChecked="True" Click="Speed1Button_Click">1×</RadioButton>
+                <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed10Button_Click">10×</RadioButton>
+                <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed25Button_Click">25×</RadioButton>
+                <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed50Button_Click">50×</RadioButton>
+                <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Click="Speed100Button_Click">100×</RadioButton>
             </StackPanel>
         </Grid>
 
@@ -127,10 +127,10 @@
                                    FontSize="11" />
                     </Grid>
                     <UniformGrid Grid.Row="1" Rows="1" Columns="4" Margin="16,0,16,10">
-                        <Button Margin="0,0,3,0" Click="CombatPowerRankingButton_Click">전투력</Button>
-                        <Button Margin="3,0" Click="RealmRankingButton_Click">경지</Button>
-                        <Button Margin="3,0" Click="AptitudeRankingButton_Click">자질</Button>
-                        <Button Margin="3,0,0,0" Click="ExplorerButton_Click">전체 탐색</Button>
+                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,3,0" IsChecked="True" Click="CombatPowerRankingButton_Click">전투력</RadioButton>
+                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0" Click="RealmRankingButton_Click">경지</RadioButton>
+                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0" Click="AptitudeRankingButton_Click">자질</RadioButton>
+                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,0,0" Click="ExplorerButton_Click">전체 탐색</RadioButton>
                     </UniformGrid>
                     <TextBox x:Name="SearchTextBox"
                              Grid.Row="2"

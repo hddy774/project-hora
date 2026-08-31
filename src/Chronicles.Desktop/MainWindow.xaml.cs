@@ -933,11 +933,11 @@ public partial class MainWindow : Window, IDisposable
                 "도시는 법보 제작용 재료 2개를 가공해 표준 법보를 만들고, 수선자도 제작품을 시장에 판매합니다."),
             MarketGoodKind.TechniqueBook => (
                 "서적 · 공법",
-                "현재 공법보다 높은 다음 품질 단계의 공법을 새로 습득합니다. 기존 공법 자체의 품질은 변하지 않습니다.",
+                "0.00~100.00 품질의 새 공법서입니다. 현재 공법보다 품질이 높을 때만 교체되며 기존 공법 자체의 품질은 변하지 않습니다.",
                 $"도시는 영석 {KoreanNumberFormatter.Format(EconomyRules.TechniqueBookProductionCost)}개를 사용해 공법서 1권을 제작합니다."),
             MarketGoodKind.SpellBook => (
                 "서적 · 법술",
-                "현재 법술보다 높은 다음 품질 단계의 법술을 새로 습득합니다. 기존 법술 자체의 품질은 변하지 않습니다.",
+                "0.00~100.00 품질의 새 법술서입니다. 현재 법술보다 품질이 높을 때만 교체되며 기존 법술 자체의 품질은 변하지 않습니다.",
                 $"도시는 영석 {KoreanNumberFormatter.Format(EconomyRules.SpellBookProductionCost)}개를 사용해 법술서 1권을 제작합니다."),
             _ => ("상품", "상세 정보가 아직 등록되지 않았습니다.", "생산 정보가 없습니다."),
         };

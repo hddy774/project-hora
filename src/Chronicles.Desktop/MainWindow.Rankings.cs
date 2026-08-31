@@ -84,6 +84,7 @@ public partial class MainWindow
             / (decimal)GameCalendar.TicksPerYear;
         RankingMovementPeriodText.Text =
             $"{FormatRankingPeriod(_rankingMovementPeriod)} · 실제 {elapsedYears:0.##}년 · " +
+            $"연간 표본 {first.ObservationIntervalCount:N0}회 · " +
             $"{FormatGameDate(GameCalendar.GetDate(first.FromTick))}부터";
         RankingMovementGrid.ItemsSource = windows.Select(item =>
         {
@@ -108,7 +109,7 @@ public partial class MainWindow
             return new RankingMovementRow(
                 $"상위 {item.TopCount:N0}위",
                 cutoff,
-                $"{changed:N0}자리 · {basisPoints / 100m:0.##}%");
+                $"{changed:N0}회 · 연간 {basisPoints / 100m:0.##}%");
         }).ToArray();
     }
 

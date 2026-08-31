@@ -50,6 +50,12 @@ internal sealed class GameLogService : IDisposable
             ?? throw new InvalidOperationException("게임 데이터 폴더를 확인할 수 없습니다."),
         "logs");
 
+    public static string EnsureOutputDirectory()
+    {
+        Directory.CreateDirectory(OutputDirectory);
+        return OutputDirectory;
+    }
+
     public IReadOnlyList<DebugLogEntry> GetDebugEntries()
     {
         lock (_entryGate)
@@ -210,7 +216,7 @@ internal sealed class GameLogService : IDisposable
         {
             try
             {
-                Directory.CreateDirectory(OutputDirectory);
+                EnsureOutputDirectory();
                 var path = request.IsManual
                     ? WriteManualFile(request.Kind, request.Lines)
                     : AppendAutomaticFile(request.Kind, request.Lines);

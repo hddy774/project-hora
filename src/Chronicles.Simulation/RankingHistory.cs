@@ -6,11 +6,16 @@ internal readonly record struct RankingHistoryFrame(
     SimulationTick Tick,
     int[] CombatPowerTop,
     int[] RealmTop,
-    int[] WealthTop);
+    int[] WealthTop,
+    long[] CombatPowerPositionChangeTotals,
+    long[] RealmPositionChangeTotals,
+    long[] WealthPositionChangeTotals);
 
 internal sealed class RankingHistory
 {
     public const int MaximumTrackedRank = 1_000;
+
+    private static readonly int[] TierLimits = [1, 3, 5, 10, 100, 500, 1_000];
 
     private static readonly RankingMovementPeriod[] Periods =
     [
@@ -43,11 +48,29 @@ internal sealed class RankingHistory
         }
 
         var count = Math.Min(MaximumTrackedRank, combatPowerRanking.Length);
+        var combatPowerTop = combatPowerRanking[..count].ToArray();
+        var realmTop = realmRanking[..count].ToArray();
+        var wealthTop = wealthRanking[..count].ToArray();
+        var combatPowerChanges = CreateNextPositionChangeTotals(
+            combatPowerTop,
+            _frames.Count == 0 ? null : _frames[^1].CombatPowerTop,
+            _frames.Count == 0 ? null : _frames[^1].CombatPowerPositionChangeTotals);
+        var realmChanges = CreateNextPositionChangeTotals(
+            realmTop,
+            _frames.Count == 0 ? null : _frames[^1].RealmTop,
+            _frames.Count == 0 ? null : _frames[^1].RealmPositionChangeTotals);
+        var wealthChanges = CreateNextPositionChangeTotals(
+            wealthTop,
+            _frames.Count == 0 ? null : _frames[^1].WealthTop,
+            _frames.Count == 0 ? null : _frames[^1].WealthPositionChangeTotals);
         _frames.Add(new RankingHistoryFrame(
             tick,
-            combatPowerRanking[..count].ToArray(),
-            realmRanking[..count].ToArray(),
-            wealthRanking[..count].ToArray()));
+            combatPowerTop,
+            realmTop,
+            wealthTop,
+            combatPowerChanges,
+            realmChanges,
+            wealthChanges));
         Prune(GameCalendar.GetYear(tick));
     }
 
@@ -80,17 +103,67 @@ internal sealed class RankingHistory
             frame.Tick.Value,
             frame.CombatPowerTop.ToArray(),
             frame.RealmTop.ToArray(),
-            frame.WealthTop.ToArray())).ToArray());
+            frame.WealthTop.ToArray(),
+            frame.CombatPowerPositionChangeTotals.ToArray(),
+            frame.RealmPositionChangeTotals.ToArray(),
+            frame.WealthPositionChangeTotals.ToArray())).ToArray());
 
     public void Restore(RankingHistoryCheckpoint checkpoint)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
         _frames.Clear();
-        _frames.AddRange(checkpoint.Frames.Select(frame => new RankingHistoryFrame(
-            new SimulationTick(frame.Tick),
-            frame.CombatPowerTop.ToArray(),
-            frame.RealmTop.ToArray(),
-            frame.WealthTop.ToArray())));
+        foreach (var frame in checkpoint.Frames)
+        {
+            var combatPowerTop = frame.CombatPowerTop.ToArray();
+            var realmTop = frame.RealmTop.ToArray();
+            var wealthTop = frame.WealthTop.ToArray();
+            _frames.Add(new RankingHistoryFrame(
+                new SimulationTick(frame.Tick),
+                combatPowerTop,
+                realmTop,
+                wealthTop,
+                RestoreOrRebuildPositionChangeTotals(
+                    frame.CombatPowerPositionChangeTotals,
+                    combatPowerTop,
+                    _frames.Count == 0 ? null : _frames[^1].CombatPowerTop,
+                    _frames.Count == 0 ? null : _frames[^1].CombatPowerPositionChangeTotals),
+                RestoreOrRebuildPositionChangeTotals(
+                    frame.RealmPositionChangeTotals,
+                    realmTop,
+                    _frames.Count == 0 ? null : _frames[^1].RealmTop,
+                    _frames.Count == 0 ? null : _frames[^1].RealmPositionChangeTotals),
+                RestoreOrRebuildPositionChangeTotals(
+                    frame.WealthPositionChangeTotals,
+                    wealthTop,
+                    _frames.Count == 0 ? null : _frames[^1].WealthTop,
+                    _frames.Count == 0 ? null : _frames[^1].WealthPositionChangeTotals)));
+        }
+    }
+
+    public long GetPositionChangeCount(
+        RankingMovementPeriod period,
+        RankingCategory category,
+        SimulationTick currentTick,
+        ReadOnlySpan<int> currentRanking,
+        int topCount)
+    {
+        var baseline = GetBaseline(period, currentTick);
+        var latest = _frames[^1];
+        var tierIndex = GetTierIndex(topCount);
+        var baselineTotal = GetPositionChangeTotals(baseline, category)[tierIndex];
+        var latestTotal = GetPositionChangeTotals(latest, category)[tierIndex];
+        var latestRanking = GetRanking(latest, category);
+        var liveChanges = CountPositionalChanges(currentRanking, latestRanking, topCount);
+        return checked(latestTotal - baselineTotal + liveChanges);
+    }
+
+    public static long GetObservationIntervalCount(
+        RankingHistoryFrame baseline,
+        SimulationTick currentTick)
+    {
+        var fromYear = GameCalendar.GetYear(baseline.Tick);
+        var toYear = GameCalendar.GetYear(currentTick);
+        return Math.Max(1, toYear - fromYear);
     }
 
     public static int CountPositionalChanges(
@@ -120,6 +193,64 @@ internal sealed class RankingHistory
         RankingMovementPeriod.TenThousandYears => 10_000 * GameCalendar.TicksPerYear,
         RankingMovementPeriod.All => long.MaxValue,
         _ => throw new ArgumentOutOfRangeException(nameof(period)),
+    };
+
+    private static long[] CreateNextPositionChangeTotals(
+        ReadOnlySpan<int> currentRanking,
+        int[]? previousRanking,
+        long[]? previousTotals)
+    {
+        var totals = previousTotals?.ToArray() ?? new long[TierLimits.Length];
+        if (previousRanking is null)
+        {
+            return totals;
+        }
+
+        for (var tier = 0; tier < TierLimits.Length; tier++)
+        {
+            totals[tier] = checked(
+                totals[tier] + CountPositionalChanges(
+                    currentRanking,
+                    previousRanking,
+                    TierLimits[tier]));
+        }
+
+        return totals;
+    }
+
+    private static long[] RestoreOrRebuildPositionChangeTotals(
+        long[]? persistedTotals,
+        ReadOnlySpan<int> currentRanking,
+        int[]? previousRanking,
+        long[]? previousTotals) =>
+        persistedTotals is { Length: 7 }
+            ? persistedTotals.ToArray()
+            : CreateNextPositionChangeTotals(currentRanking, previousRanking, previousTotals);
+
+    private static int GetTierIndex(int topCount)
+    {
+        var index = Array.IndexOf(TierLimits, topCount);
+        return index >= 0
+            ? index
+            : throw new ArgumentOutOfRangeException(nameof(topCount), topCount, "지원하지 않는 랭킹 구간입니다.");
+    }
+
+    private static int[] GetRanking(RankingHistoryFrame frame, RankingCategory category) => category switch
+    {
+        RankingCategory.CombatPower => frame.CombatPowerTop,
+        RankingCategory.Realm => frame.RealmTop,
+        RankingCategory.Wealth => frame.WealthTop,
+        _ => throw new ArgumentOutOfRangeException(nameof(category), category, "변동 이력을 제공하지 않는 랭킹입니다."),
+    };
+
+    private static long[] GetPositionChangeTotals(
+        RankingHistoryFrame frame,
+        RankingCategory category) => category switch
+    {
+        RankingCategory.CombatPower => frame.CombatPowerPositionChangeTotals,
+        RankingCategory.Realm => frame.RealmPositionChangeTotals,
+        RankingCategory.Wealth => frame.WealthPositionChangeTotals,
+        _ => throw new ArgumentOutOfRangeException(nameof(category), category, "변동 이력을 제공하지 않는 랭킹입니다."),
     };
 
     private void Prune(long currentYear)

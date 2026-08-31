@@ -503,7 +503,8 @@ public sealed partial class World
                 || !IsValidRankingHistory(
                     checkpoint.RankingHistory,
                     checkpoint.Tick,
-                    checkpoint.Agents.Length)))
+                    checkpoint.Agents.Length,
+                    requirePositionChangeTotals: checkpoint.SchemaVersion >= 16)))
         {
             throw new InvalidDataException("세계 연대기 또는 기간별 랭킹 이력이 잘못되었습니다.");
         }
@@ -840,7 +841,8 @@ public sealed partial class World
     private static bool IsValidRankingHistory(
         RankingHistoryCheckpoint? checkpoint,
         long maximumTick,
-        int population)
+        int population,
+        bool requirePositionChangeTotals)
     {
         if (checkpoint?.Frames is not { Length: > 0 and <= 64 } frames)
         {
@@ -849,6 +851,9 @@ public sealed partial class World
 
         var expectedLength = Math.Min(RankingHistory.MaximumTrackedRank, population);
         var previousTick = -1L;
+        long[]? previousCombatTotals = null;
+        long[]? previousRealmTotals = null;
+        long[]? previousWealthTotals = null;
         foreach (var frame in frames)
         {
             if (frame.Tick <= previousTick
@@ -861,12 +866,27 @@ public sealed partial class World
                 || wealthLength != expectedLength
                 || !IsValidRankingFrame(frame.CombatPowerTop, population)
                 || !IsValidRankingFrame(frame.RealmTop, population)
-                || !IsValidRankingFrame(frame.WealthTop, population))
+                || !IsValidRankingFrame(frame.WealthTop, population)
+                || !IsValidPositionChangeTotals(
+                    frame.CombatPowerPositionChangeTotals,
+                    previousCombatTotals,
+                    requirePositionChangeTotals)
+                || !IsValidPositionChangeTotals(
+                    frame.RealmPositionChangeTotals,
+                    previousRealmTotals,
+                    requirePositionChangeTotals)
+                || !IsValidPositionChangeTotals(
+                    frame.WealthPositionChangeTotals,
+                    previousWealthTotals,
+                    requirePositionChangeTotals))
             {
                 return false;
             }
 
             previousTick = frame.Tick;
+            previousCombatTotals = frame.CombatPowerPositionChangeTotals;
+            previousRealmTotals = frame.RealmPositionChangeTotals;
+            previousWealthTotals = frame.WealthPositionChangeTotals;
         }
 
         return true;
@@ -876,5 +896,23 @@ public sealed partial class World
     {
         var seen = new HashSet<int>();
         return ranking.All(agent => agent >= 0 && agent < population && seen.Add(agent));
+    }
+
+    private static bool IsValidPositionChangeTotals(
+        long[]? totals,
+        long[]? previousTotals,
+        bool required)
+    {
+        if (totals is null)
+        {
+            return !required;
+        }
+        if (totals.Length != 7 || totals.Any(value => value < 0))
+        {
+            return false;
+        }
+
+        return previousTotals is null
+            || totals.Zip(previousTotals).All(pair => pair.First >= pair.Second);
     }
 }

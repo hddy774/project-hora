@@ -681,7 +681,7 @@
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="구간" Binding="{Binding Scope}" Width="82" />
                                         <DataGridTextColumn Header="현재 기준" Binding="{Binding Cutoff}" Width="*" />
-                                        <DataGridTextColumn Header="자리 변동" Binding="{Binding Movement}" Width="94" />
+                                        <DataGridTextColumn Header="누적 자리 변경" Binding="{Binding Movement}" Width="112" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                                 <Expander x:Name="RealmDistributionExpander" Header="전체 경지 분포" Margin="0,16,0,0" IsExpanded="True" Expanded="VisibleExpander_Expanded">
@@ -748,7 +748,8 @@
                                                 ObservationRequested="WorldRecordsPanel_ObservationRequested"
                                                 AutoOutputChanged="WorldRecordsPanel_AutoOutputChanged"
                                                 WorldExportRequested="WorldRecordsPanel_WorldExportRequested"
-                                                DebugExportRequested="WorldRecordsPanel_DebugExportRequested" />
+                                                DebugExportRequested="WorldRecordsPanel_DebugExportRequested"
+                                                FolderOpenRequested="WorldRecordsPanel_FolderOpenRequested" />
                     </TabItem>
                 </TabControl>
             </Border>

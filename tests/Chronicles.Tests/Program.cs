@@ -703,14 +703,23 @@ static void WealthRankingHistoryAndWorldChronicle()
         {
             True(row.FromTick.Value <= row.ToTick.Value, "랭킹 기간 순서");
             True(row.ComparedCount is >= 1 and <= 1_000, "랭킹 비교 인원 범위");
-            True(row.CombatPowerChangedCount is >= 0 && row.CombatPowerChangedCount <= row.ComparedCount, "전투력 변동 범위");
-            True(row.RealmChangedCount is >= 0 && row.RealmChangedCount <= row.ComparedCount, "경지 변동 범위");
-            True(row.WealthChangedCount is >= 0 && row.WealthChangedCount <= row.ComparedCount, "부자 변동 범위");
+            True(row.ObservationIntervalCount >= 1, "랭킹 연간 관측 횟수");
+            var maximumPositionChanges = checked((long)row.ComparedCount * row.ObservationIntervalCount);
+            True(row.CombatPowerChangedCount is >= 0 && row.CombatPowerChangedCount <= maximumPositionChanges, "전투력 누적 자리 변동 범위");
+            True(row.RealmChangedCount is >= 0 && row.RealmChangedCount <= maximumPositionChanges, "경지 누적 자리 변동 범위");
+            True(row.WealthChangedCount is >= 0 && row.WealthChangedCount <= maximumPositionChanges, "부자 누적 자리 변동 범위");
             True(row.CombatPowerChangeBasisPoints is >= 0 and <= 10_000, "전투력 변동률 범위");
             True(row.RealmChangeBasisPoints is >= 0 and <= 10_000, "경지 변동률 범위");
             True(row.WealthChangeBasisPoints is >= 0 and <= 10_000, "부자 변동률 범위");
         }
     }
+
+    True(
+        windows.Any(row => row.ObservationIntervalCount > 1
+            && (row.CombatPowerChangedCount > row.ComparedCount
+                || row.RealmChangedCount > row.ComparedCount
+                || row.WealthChangedCount > row.ComparedCount)),
+        "다년 기간 자리 변동은 현재와 기준점의 차이가 아니라 연간 실제 변경 횟수를 누적");
 
     True(
         snapshot.PermanentWorldChronicle.Any(entry => entry.Kind == WorldEventKind.NewLeader),
@@ -1112,7 +1121,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 15, "랭킹 이력·세계 연대기 저장 schema 15");
+    True(checkpoint.SchemaVersion == 16, "누적 자리 변동 저장 schema 16");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");

@@ -430,6 +430,12 @@ public sealed partial class World
                 Add(ref hash, (ulong)frame.RealmTop[index]);
                 Add(ref hash, (ulong)frame.WealthTop[index]);
             }
+            for (var tier = 0; tier < frame.CombatPowerPositionChangeTotals.Length; tier++)
+            {
+                Add(ref hash, (ulong)frame.CombatPowerPositionChangeTotals[tier]);
+                Add(ref hash, (ulong)frame.RealmPositionChangeTotals[tier]);
+                Add(ref hash, (ulong)frame.WealthPositionChangeTotals[tier]);
+            }
         }
         var market = _market.CreateCheckpoint();
         Add(ref hash, (ulong)market.TreasurySpiritStones);

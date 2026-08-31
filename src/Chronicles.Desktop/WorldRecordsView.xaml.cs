@@ -16,6 +16,7 @@ public partial class WorldRecordsView : UserControl
     public event EventHandler? AutoOutputChanged;
     public event EventHandler? WorldExportRequested;
     public event EventHandler? DebugExportRequested;
+    public event EventHandler? FolderOpenRequested;
 
     public int SelectedRecordIndex => RecordTabControl.SelectedIndex;
     public bool AutoWorldOutput => AutoWorldOutputCheckBox.IsChecked == true;
@@ -93,4 +94,7 @@ public partial class WorldRecordsView : UserControl
 
     private void DebugExportButton_Click(object sender, RoutedEventArgs e) =>
         DebugExportRequested?.Invoke(this, EventArgs.Empty);
+
+    private void FolderOpenButton_Click(object sender, RoutedEventArgs e) =>
+        FolderOpenRequested?.Invoke(this, EventArgs.Empty);
 }

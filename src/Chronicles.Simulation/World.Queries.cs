@@ -211,6 +211,7 @@ public sealed partial class World
         foreach (var period in RankingHistory.AllPeriods)
         {
             var baseline = _rankingHistory.GetBaseline(period, Tick);
+            var observationIntervals = RankingHistory.GetObservationIntervalCount(baseline, Tick);
             foreach (var tierLimit in tierLimits)
             {
                 var comparedCount = Math.Min(
@@ -220,24 +221,31 @@ public sealed partial class World
                 var combatCutoffAgent = _agentByRank[cutoffOffset];
                 var realmCutoffAgent = _agentByRealmRank[cutoffOffset];
                 var wealthCutoffAgent = _agentByWealthRank[cutoffOffset];
-                var combatChanged = RankingHistory.CountPositionalChanges(
+                var combatChanged = _rankingHistory.GetPositionChangeCount(
+                    period,
+                    RankingCategory.CombatPower,
+                    Tick,
                     _agentByRank,
-                    baseline.CombatPowerTop,
-                    comparedCount);
-                var realmChanged = RankingHistory.CountPositionalChanges(
+                    tierLimit);
+                var realmChanged = _rankingHistory.GetPositionChangeCount(
+                    period,
+                    RankingCategory.Realm,
+                    Tick,
                     _agentByRealmRank,
-                    baseline.RealmTop,
-                    comparedCount);
-                var wealthChanged = RankingHistory.CountPositionalChanges(
+                    tierLimit);
+                var wealthChanged = _rankingHistory.GetPositionChangeCount(
+                    period,
+                    RankingCategory.Wealth,
+                    Tick,
                     _agentByWealthRank,
-                    baseline.WealthTop,
-                    comparedCount);
+                    tierLimit);
                 results[resultIndex++] = new RankingMovementWindowSnapshot(
                     period,
                     baseline.Tick,
                     Tick,
                     tierLimit,
                     comparedCount,
+                    observationIntervals,
                     _agents.Power[combatCutoffAgent].Total,
                     HasEnteredCultivation(realmCutoffAgent),
                     _agents.RealmStages[realmCutoffAgent],
@@ -246,17 +254,28 @@ public sealed partial class World
                     combatChanged,
                     realmChanged,
                     wealthChanged,
-                    GetChangeBasisPoints(combatChanged, comparedCount),
-                    GetChangeBasisPoints(realmChanged, comparedCount),
-                    GetChangeBasisPoints(wealthChanged, comparedCount));
+                    GetChangeBasisPoints(combatChanged, comparedCount, observationIntervals),
+                    GetChangeBasisPoints(realmChanged, comparedCount, observationIntervals),
+                    GetChangeBasisPoints(wealthChanged, comparedCount, observationIntervals));
             }
         }
 
         return results;
     }
 
-    private static int GetChangeBasisPoints(int changedCount, int comparedCount) =>
-        comparedCount == 0 ? 0 : checked(changedCount * 10_000 / comparedCount);
+    private static int GetChangeBasisPoints(
+        long changedCount,
+        int comparedCount,
+        long observationIntervals)
+    {
+        if (comparedCount == 0 || observationIntervals <= 0)
+        {
+            return 0;
+        }
+
+        var denominator = checked((long)comparedCount * observationIntervals);
+        return checked((int)(changedCount * 10_000 / denominator));
+    }
 
     private bool TryParseAgentId(string query, out AgentId agentId)
     {

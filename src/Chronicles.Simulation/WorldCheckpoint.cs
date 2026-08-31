@@ -92,7 +92,10 @@ public sealed record RankingHistoryFrameCheckpoint(
     long Tick,
     int[] CombatPowerTop,
     int[] RealmTop,
-    int[] WealthTop);
+    int[] WealthTop,
+    long[]? CombatPowerPositionChangeTotals = null,
+    long[]? RealmPositionChangeTotals = null,
+    long[]? WealthPositionChangeTotals = null);
 
 public sealed record RankingHistoryCheckpoint(RankingHistoryFrameCheckpoint[] Frames);
 
@@ -130,5 +133,5 @@ public sealed record WorldCheckpoint(
     WorldEvent[]? WorldChronicle = null,
     RankingHistoryCheckpoint? RankingHistory = null)
 {
-    public const int CurrentSchemaVersion = 15;
+    public const int CurrentSchemaVersion = 16;
 }

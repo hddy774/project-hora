@@ -53,9 +53,10 @@
                           Checked="AutoOutputCheckBox_Changed"
                           Unchecked="AutoOutputCheckBox_Changed" />
             </UniformGrid>
-            <UniformGrid Grid.Row="2" Rows="1" Columns="2">
-                <Button Margin="0,0,4,0" Click="WorldExportButton_Click">세계 기록 파일</Button>
-                <Button Margin="4,0,0,0" Click="DebugExportButton_Click">디버그 파일</Button>
+            <UniformGrid Grid.Row="2" Rows="1" Columns="3">
+                <Button Margin="0,0,3,0" Click="WorldExportButton_Click">세계 파일</Button>
+                <Button Margin="3,0" Click="DebugExportButton_Click">디버그 파일</Button>
+                <Button Margin="3,0,0,0" Click="FolderOpenButton_Click">폴더 열기</Button>
             </UniformGrid>
         </Grid>
 

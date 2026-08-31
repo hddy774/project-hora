@@ -283,10 +283,11 @@ public sealed partial class World
             var score = category switch
             {
                 RankingCategory.CombatPower => _agents.Power[agentIndex].Total,
-                RankingCategory.Realm =>
+                RankingCategory.Realm when HasEnteredCultivation(agentIndex) =>
                     ((((long)(int)_agents.RealmStages[agentIndex] * RealmRules.MinorStageCount)
                         + _agents.RealmLayers[agentIndex]) * 1_000_000_000L)
                     + _agents.CultivationProgress[agentIndex],
+                RankingCategory.Realm => _agents.CultivationProgress[agentIndex],
                 RankingCategory.Aptitude => aptitudeScore,
                 _ => throw new ArgumentOutOfRangeException(nameof(category)),
             };
@@ -296,6 +297,7 @@ public sealed partial class World
                 offset + 1,
                 new AgentId(agentIndex),
                 _agents.Names[agentIndex],
+                HasEnteredCultivation(agentIndex),
                 _agents.RealmStages[agentIndex],
                 _agents.RealmLayers[agentIndex],
                 _agents.GreatPerfectionAchieved[agentIndex],
@@ -788,6 +790,12 @@ public sealed partial class World
 
     private int CompareAgentsByRealm(int left, int right)
     {
+        var entryComparison = HasEnteredCultivation(right).CompareTo(HasEnteredCultivation(left));
+        if (entryComparison != 0)
+        {
+            return entryComparison;
+        }
+
         var realmComparison = _agents.RealmStages[right].CompareTo(_agents.RealmStages[left]);
         if (realmComparison != 0)
         {

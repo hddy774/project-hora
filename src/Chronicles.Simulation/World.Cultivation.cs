@@ -740,6 +740,12 @@ public sealed partial class World
             _agents.Minds[index],
             _agents.Souls[index]);
 
+    private bool HasEnteredCultivation(int index) =>
+        _agents.CultivationStates[index] is not (
+            CultivationState.PreCultivation or CultivationState.EntryTraining)
+        && !(_agents.CultivationStates[index] == CultivationState.Bottleneck
+            && _agents.CultivationBottleneckCauses[index] == CultivationBottleneckCause.EntryGate);
+
     private int GetCultivationRequirement(int index) =>
         _agents.CultivationStates[index] is CultivationState.PreCultivation or CultivationState.EntryTraining
             || (_agents.CultivationStates[index] == CultivationState.Bottleneck

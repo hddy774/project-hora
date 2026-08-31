@@ -165,7 +165,7 @@ public readonly record struct EquippedTreasureSnapshot(
     QualityValue? Quality);
 
 public readonly record struct RealmDistributionEntry(
-    RealmStage Realm,
+    RealmStage? Realm,
     int Count);
 
 public readonly record struct CombatPowerDistributionEntry(
@@ -284,6 +284,7 @@ public sealed record RankingEntry(
     int Rank,
     AgentId AgentId,
     string Name,
+    bool HasEnteredCultivation,
     RealmStage RealmStage,
     int RealmLayer,
     bool GreatPerfectionAchieved,

@@ -59,6 +59,10 @@ static void DefaultPopulationAndGoal()
 {
     var world = World.CreateDefault(42);
     Equal(10_000, world.Population, "기본 인구");
+    var initialSnapshot = world.CreateSnapshot(1, 0);
+    True(!initialSnapshot.RealmRankings[0].HasEnteredCultivation, "0세 경지 랭킹은 미입문 표시");
+    Equal(10_000, initialSnapshot.Statistics.RealmDistribution[0].Count, "0세 미입문 분포");
+    Equal(0, initialSnapshot.Statistics.RealmDistribution[1].Count, "0세 연기경 분포");
     for (var index = 0; index < world.Population; index++)
     {
         Equal(1, world.GetAgentSnapshot(new AgentId(index)).TargetRank, "모든 AI의 목표 순위");
@@ -784,7 +788,7 @@ static void WorldStatisticsQuery()
     var before = world.ComputeStateHash();
     var statistics = world.CreateStatistics();
 
-    Equal(10, statistics.RealmDistribution.Count, "경지 분포 구간 수");
+    Equal(11, statistics.RealmDistribution.Count, "미입문 포함 경지 분포 구간 수");
     Equal(world.Population, statistics.RealmDistribution.Sum(item => item.Count), "경지 분포 전체 인구");
     Equal(world.Population, statistics.CombatPowerDistribution.Sum(item => item.Count), "전투력 분포 전체 인구");
     Equal((long)world.TotalCombatsCompleted, statistics.TotalWins, "통계 승리 수");

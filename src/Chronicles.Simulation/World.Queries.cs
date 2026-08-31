@@ -72,14 +72,17 @@ public sealed partial class World
 
     public WorldStatistics CreateStatistics()
     {
-        var realmCounts = new int[RealmRules.All.Count];
+        var realmCounts = new int[RealmRules.All.Count + 1];
         var powerCounts = new int[CombatPowerBucketBounds.Length + 1];
         long totalWins = 0;
         long totalLosses = 0;
         long totalSpiritStones = 0;
         for (var index = 0; index < Population; index++)
         {
-            realmCounts[(int)_agents.RealmStages[index]]++;
+            var realmBucket = HasEnteredCultivation(index)
+                ? (int)_agents.RealmStages[index] + 1
+                : 0;
+            realmCounts[realmBucket]++;
             var power = _agents.Power[index].Total;
             var bucket = 0;
             while (bucket < CombatPowerBucketBounds.Length
@@ -98,7 +101,7 @@ public sealed partial class World
         for (var realm = 0; realm < realmCounts.Length; realm++)
         {
             realmDistribution[realm] = new RealmDistributionEntry(
-                (RealmStage)realm,
+                realm == 0 ? null : (RealmStage)(realm - 1),
                 realmCounts[realm]);
         }
 

@@ -224,7 +224,7 @@ public partial class MainWindow : Window, IDisposable
 
         RealmDistributionGrid.ItemsSource = statistics.RealmDistribution
             .Select(item => new DistributionRow(
-                FormatRealmStage(item.Realm),
+                item.Realm is { } realm ? FormatRealmStage(realm) : "미입문",
                 KoreanNumberFormatter.Format(item.Count),
                 FormatPopulationRatio(item.Count, snapshot.Population)))
             .ToArray();
@@ -296,10 +296,12 @@ public partial class MainWindow : Window, IDisposable
         SelectedNameText.Text = agent.Name;
         SelectedIdText.Text = $"{agent.Id} · 최종 목표 #{agent.TargetRank}";
         SelectedRankText.Text = $"전투력 #{agent.Rank:N0} · 경지 #{agent.RealmRank:N0} · 자질 #{agent.AptitudeRank:N0}";
-        RealmText.Text = FormatRealm(
-            agent.RealmStage,
-            agent.RealmLayer,
-            agent.Cultivation.GreatPerfectionAchieved);
+        RealmText.Text = HasEnteredCultivation(agent.CultivationState, agent.BottleneckCause)
+            ? FormatRealm(
+                agent.RealmStage,
+                agent.RealmLayer,
+                agent.Cultivation.GreatPerfectionAchieved)
+            : "미입문 · 입문 수련";
         AgeText.Text = $"{KoreanNumberFormatter.Format(agent.AgeYears)} / {KoreanNumberFormatter.Format(agent.MaximumLifespanYears)}세";
         LifeText.Text = $"제 {agent.LifeNumber:N0}생";
         ActivityText.Text = FormatActivity(agent.Activity);
@@ -323,7 +325,7 @@ public partial class MainWindow : Window, IDisposable
             : string.Join(
                 " · ",
                 cultivation.EntryGates.Select(gate =>
-                    $"G{gate.GateNumber} {(gate.Passed ? "통과" : "대기")} {gate.GateScoreHundredths / 100m:0.00}"));
+                    $"G{gate.GateNumber} {(gate.Passed ? "통과" : "대기")} {gate.GateScoreHundredths / 100m:0.00} (단련 +{gate.TemperingBonusHundredths / 100m:0.00})"));
         var componentText = cultivation.Components.Count == 0
             ? "경지 구성요소 준비 전"
             : string.Join(
@@ -402,7 +404,9 @@ public partial class MainWindow : Window, IDisposable
         entry.Rank,
         entry.AgentId,
         entry.Name,
-        FormatRealm(entry.RealmStage, entry.RealmLayer, entry.GreatPerfectionAchieved),
+        entry.HasEnteredCultivation
+            ? FormatRealm(entry.RealmStage, entry.RealmLayer, entry.GreatPerfectionAchieved)
+            : "미입문 · 입문 수련",
         entry.Category switch
         {
             RankingCategory.CombatPower => KoreanNumberFormatter.Format(entry.CombatPower.Total),
@@ -416,10 +420,12 @@ public partial class MainWindow : Window, IDisposable
         agent.Rank,
         agent.Id,
         agent.Name,
-        FormatRealm(
-            agent.RealmStage,
-            agent.RealmLayer,
-            agent.Cultivation.GreatPerfectionAchieved),
+        HasEnteredCultivation(agent.CultivationState, agent.BottleneckCause)
+            ? FormatRealm(
+                agent.RealmStage,
+                agent.RealmLayer,
+                agent.Cultivation.GreatPerfectionAchieved)
+            : "미입문 · 입문 수련",
         KoreanNumberFormatter.Format(agent.CombatPower.Total),
         FormatActivity(agent.Activity));
 
@@ -670,6 +676,12 @@ public partial class MainWindow : Window, IDisposable
         CultivationBottleneckCause.Method => "돌파 공법 지식·숙련",
         _ => "미확인",
     };
+
+    private static bool HasEnteredCultivation(
+        CultivationState state,
+        CultivationBottleneckCause cause) =>
+        state is not (CultivationState.PreCultivation or CultivationState.EntryTraining)
+        && !(state == CultivationState.Bottleneck && cause == CultivationBottleneckCause.EntryGate);
 
     private static string FormatFoundationRoute(FoundationRoute route) => route switch
     {

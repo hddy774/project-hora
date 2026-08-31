@@ -47,6 +47,24 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
   PersonId가 바뀌는지 확인. 최종 목표·보조 목표·현재/차선 행동·선택 이유·typed
   Resolution과 판단 revision이 함께 갱신되며 상세창을 열고 닫아도 판단 결과와 RNG가
   달라지지 않는지 확인
+- 사망 당시 개인 최고 경지에 따라 윤회의 강 총 체류 기간이 연기 3년·축기
+  5년·금단 8년·원영 13년·화신 21년인지 확인. 상위 경지는 PC 임시값
+  34·55·89·144·233년과 `PC-TEMP-REINCARNATION-UPPER-DURATION-113`을 표시하는지 확인
+- 윤회 여정이 `진입 → 도하 → 후반 도하 → 도하 완료 → 새 생 준비`로
+  진행하고 누적 전이가 총기간의 1/12·8/12·10/12·11/12·12/12에서 발생하는지 확인.
+  도하 완료 사건은 개인/세계 중요 기록에 정확히 1회만 남는지 확인
+- 환생 후 SoulId는 같고 BodyId·PersonId는 다르며, 3생 이상의 생 계보가 중복
+  LifeRecordId 없이 직전 생 선행자로 연결되는지 확인. 각 생의 당시 이름·탄생/사망·
+  사망 원인·역사적 최고점·JourneyId가 이후 환생에도 바뀌지 않는지 확인
+- `윤회 연속성` 내부 탭을 선택했을 때만 선택 인물의 계보·여정·6영역 DTO가
+  표시되는지 확인. 다른 탭에서 윤회 관찰 플래그를 요청하지 않고
+  `SelectedReincarnation`이 null이며 전후 상태
+  hash·RNG가 달라지지 않으며 대형 계보 행이 만들어지지 않는지 확인
+- 자서전적 기억·관계/사회·수행 원리/경지·공법/법술/단약/제작·세계/세력/환경·
+  육신/행동의 6영역이 모두 존재하고 `integrated ≤ accessible ≤ preserved`인지 확인.
+  보존 8,000/5,500/3,000과 접근 8,500/6,000/3,000 경계에서 등급 문구가 바뀌는지 확인
+- 전생 흔적의 accessible값이 높아도 환생 직후 integrated는 0이고, 현생 경지·공법·
+  법술·전투 경험이 전생값으로 자동 복구되지 않는지 확인
 - 인물의 관계 목록이 최대 8개이고 관계 ID·양 끝점·중복·degree 검증 뒤 양쪽
   adjacency가 재구성되는지 확인.
   호감/반감·
@@ -126,16 +144,23 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
   세계 수동 파일에는 최근 로그와 영구 연대기 전체가 함께 포함되는지 확인
 - 저장 후 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip`이 생성되는지 확인
 - 진행한 뒤 불러오면 저장한 tick과 상태로 돌아가는지 확인
-- 기존 schema 7~21 저장을 불러오면 schema 22의 랭킹 기준점·부자 순위·누적 자리
+- 기존 schema 7~22 저장을 불러오면 schema 23의 랭킹 기준점·부자 순위·누적 자리
   변동·100년 세계 역사서와 60개 자질 Component를 복원하는지 확인. schema 20 미만은
   Soul/Body/Person ID와 최소 AI 판단 trace를 결정론적으로 재구성하고, schema 21 미만은
   빈 관계를 생성한다. schema 21은 관계를 보존하면서 Teaching을 빈값으로 이전하고,
-  schema 22는 Teaching 전체 계약을 보존한다. 실제 schema 21 JSON에 Teaching 속성이
+  schema 22는 Teaching 전체 계약을 보존한 뒤 증거가 있는 생 계보만 재구성한다.
+  하위 schema에 없던 6영역 점수를 만들지 않고 `HasEvidence=false`로 실제 0·소실과
+  미기록을 구분하는지 확인. 실제 schema 21 JSON에 Teaching 속성이
   없어도 복원되는지 확인. schema 13은
   2종 재료·3칸 법보·44개 시장으로, schema 17 이하 자질 대표값은 그룹별 동일
   Component 10개로 이전되며 10,000명 장기 저장도 크기 오류 없이 복원되는지 확인
 
-Release 자동 검사의 현재 기대값은 `RESULT: 39/39 passed`다. 성능 출력은 초기화,
+Release 자동 검사는 기존 검사와 추가된 단계형 윤회·생 계보·6영역 흔적 검사가
+모두 `passed`여야 한다. 0.0.12 개발 검증의 실제 출력은
+`RESULT: 40/40 passed`였다. 성능 출력은 초기화,
 20,000 tick 진행, 현재 관찰 DTO 비용을 분리하며 세 값의 합이 10초 예산 이내여야 한다.
+0.0.12 Debug 실측은 각각 145ms, 2,955ms, 2.3ms(합계 3,102ms)였고,
+schema 23 checkpoint 122ms·복원 567ms였다. 절대 시간은 실행 PC와 빌드 구성에
+따라 달라질 수 있으므로 이후 고정 SHA에서도 예산과 상대 회귀를 다시 확인한다.
 
 로컬 산출물과 저장 파일은 GitHub Release에 업로드되지 않습니다.

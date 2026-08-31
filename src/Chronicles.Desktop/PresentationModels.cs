@@ -30,3 +30,10 @@ internal sealed record LifeToggleRow(
     int? LifeNumber,
     string Label,
     bool IsSelected);
+
+internal sealed record ReincarnationLineageRow(
+    string Header,
+    string Identity,
+    string Timeline,
+    string HistoricalPeak,
+    string Continuity);

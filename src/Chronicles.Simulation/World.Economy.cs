@@ -215,7 +215,7 @@ public sealed partial class World
         if (current == EconomyRules.EmptyTreasureQuality || quality.Hundredths > current)
         {
             _agents.SetTreasureQuality(index, slot, quality.Hundredths);
-            _agents.RecalculatePower(index);
+            RecalculatePowerAndUpdatePeak(index);
         }
         else if (_market.TrySellQualityGood(goodId, quality, out var proceeds))
         {
@@ -329,7 +329,7 @@ public sealed partial class World
         if (current == EconomyRules.EmptyTreasureQuality || quality > current)
         {
             _agents.SetTreasureQuality(index, TreasureSlot.NatalTreasure, quality);
-            _agents.RecalculatePower(index);
+            RecalculatePowerAndUpdatePeak(index);
         }
 
         _totalTreasuresCrafted++;

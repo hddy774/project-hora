@@ -27,6 +27,12 @@ public sealed partial class World
         return _agents.PersonalLogs[index].ToArray();
     }
 
+    public ReincarnationAgentSnapshot GetAgentReincarnationSnapshot(AgentId agentId)
+    {
+        var index = ValidateAgent(agentId);
+        return _reincarnation.GetSnapshot(index, Tick.Value);
+    }
+
     public IReadOnlyList<WorldCenturyChronicleEntry> GetWorldChronicle() =>
         _worldChronicle.GetAll();
 

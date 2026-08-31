@@ -271,7 +271,7 @@ public sealed partial class World
             gain,
             misunderstandingPoints: 0,
             transmissionEstablished);
-        _agents.RecalculatePower(learner);
+        RecalculatePowerAndUpdatePeak(learner);
     }
 
     private int ApplyTeachingGrowth(

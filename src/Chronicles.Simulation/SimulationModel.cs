@@ -23,11 +23,12 @@ public enum ObservationSections : uint
     AptitudeDetails = 1 << 14,
     Relations = 1 << 15,
     Teaching = 1 << 16,
+    Reincarnation = 1 << 17,
     Statistics = StatisticsSummary | RealmDistribution | CombatPowerDistribution,
     Market = MarketSummary | MarketGoods,
     AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking | WealthRanking,
     All = Statistics | Market | Map | WorldLog | WorldChronicle | PersonalLog | Chronicle
-        | AllRankings | AptitudeDetails | Relations | Teaching,
+        | AllRankings | AptitudeDetails | Relations | Teaching | Reincarnation,
 }
 
 public enum AgentActivity : byte
@@ -88,6 +89,7 @@ public enum WorldEventKind : byte
     MonsterHuntLost,
     SpiritStoneMined,
     FloorNineCompletion,
+    ReincarnationCrossingCompleted,
 }
 
 public readonly record struct Aptitudes(
@@ -126,6 +128,7 @@ public enum ChronicleEventKind : byte
     SpellAcquired,
     CombatDeath,
     FloorNineCompletion,
+    ReincarnationCrossingCompleted,
 }
 
 public enum PersonalLogKind : byte
@@ -535,4 +538,5 @@ public sealed record WorldObservation(
     WorldSnapshot World,
     AgentSnapshot SelectedAgent,
     IReadOnlyList<PersonalLogEntry> SelectedPersonalLog,
-    IReadOnlyList<LifeChronicleEntry> SelectedChronicle);
+    IReadOnlyList<LifeChronicleEntry> SelectedChronicle,
+    ReincarnationAgentSnapshot? SelectedReincarnation = null);

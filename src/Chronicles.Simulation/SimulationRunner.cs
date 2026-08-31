@@ -124,7 +124,10 @@ public sealed class SimulationRunner : IDisposable
                     : Array.Empty<PersonalLogEntry>(),
                 (sections & ObservationSections.Chronicle) != 0
                     ? _world.GetAgentChronicle(agentId)
-                    : Array.Empty<LifeChronicleEntry>());
+                    : Array.Empty<LifeChronicleEntry>(),
+                (sections & ObservationSections.Reincarnation) != 0
+                    ? _world.GetAgentReincarnationSnapshot(agentId)
+                    : null);
         }
     }
 

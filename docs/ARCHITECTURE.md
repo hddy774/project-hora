@@ -27,7 +27,8 @@ Chronicles.Tests ──> Core + Simulation
 
 ### Chronicles.Simulation
 
-10,000명 권위 상태, 영혼·육신·인물 식별, 목표→결정 인과 trace, 희소 방향 관계와
+10,000명 권위 상태, 영혼·육신·인물 식별, 목표→결정 인과 trace, 단계형 윤회·
+생 계보·6영역 전생 흔적, 희소 방향 관계와
 사제 Teaching, AI 결정, 9층 수행·돌파, 공법·법술 품질·수련 경험·숙련·이해,
 도시 임무·재료·영석·법보·단약 경제, 지도 이동·지형별 요수, 교대 전투 타임라인,
 실제 전투 속성과 표시 전투력,
@@ -63,6 +64,24 @@ Component 20%+20% 조합을 사용한다. 5개 역할 점수와 수행/전투 �
 SoulId만 이어지고 육신과
 인물 ID는 새로 발급된다. 관찰 query는 이 인과 상태를 읽을 뿐 목표나 판단 revision을
 갱신하지 않는다. 임시 AI 효용 가중치는 `PC-TEMP-AI-UTILITY-113`으로 추적한다.
+
+`ReincarnationModel`은 안정 `LifeRecordId`·`JourneyId`, 인물별 추가 전용 생 계보,
+개인 역사적 최고점, 현재 여정과 6영역 전생 흔적의 권위 owner다. 생 계보는 직전
+생 ID, Soul/Body/Person ID, 생 번호·당시 이름·탄생/사망 tick·사망 원인·최고점·
+여정 ID를 보존한다. 여정은 `Entering`, `Crossing`, `LateCrossing`,
+`CrossingComplete`, `PreparingRebirth`의 정해진 단계와 시작/단계 시작/완료 tick,
+revision을 가진다. 연기~화신의 총 3·5·8·13·21년은 정본이고 상위 경지
+34·55·89·144·233년은 `PC-TEMP-REINCARNATION-UPPER-DURATION-113`, 누적 단계 경계
+1/12·8/12·10/12·11/12·12/12는 `PC-TEMP-REINCARNATION-STAGES-113`으로 추적한다.
+
+전생 흔적은 자서전적 기억, 관계·사회 기억, 수행 원리·경지 지식,
+공법·법술·단약·제작 지식, 세계·세력·환경 지식, 육신·행동 흔적의 고정 6영역
+평탄 배열로 보관한다. 각 영역의 preserved/access/integrated는 0~10,000 정수고
+`integrated <= accessible <= preserved`를 강제한다. 보존 임계는 8,000/5,500/3,000,
+접근 임계는 8,500/6,000/3,000이다. 환생 시 integrated를 0으로 두고 현생 경지·
+기술·전투 상태에 전생 흔적을 자동 적용하지 않는다. 흔적 후보 가중치는
+`PC-TEMP-REINCARNATION-TRACE-113`으로 분리한다. 모바일 부모·환경·용량 출생 후보 계약은
+PC에서 제외하고 `PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113`으로 재검토한다.
 
 `RelationModel`은 인물당 최대 8개 인접 관계, 안정 관계 ID, 호감/반감·신뢰/불신·
 존중/경시·은혜·원한·경계의 6개 방향 축과 사제·우정·연애·실제 동료·지속 경쟁의
@@ -169,6 +188,10 @@ virtualization을 사용한다.
 Teaching Expander는 선택 인물의 최신 교사 trace와 최신 학습자 trace만 투영하며,
 교사·학습자 이름/ID, PersonId로 생애 연대기에서 복원한 전생 당시 이름, 대상
 KnowledgeRef·출처와 결과별 효과 문구를 지연 생성한다.
+인물 기록 영역의 세 번째 `윤회 연속성` 내부 탭은 선택한 때만
+`ObservationSections.Reincarnation`을 요청하고 선택 인물 하나의 생 계보·현재 여정·
+6영역 흔적만 투영한다. 다른 내부 탭을 보는 동안에는 이 DTO·표시 문구·행을
+만들지 않으며 관찰 조회는 권위 상태와 RNG를 바꾸지 않는다.
 `MapObservationView`, `MarketObservationView`, `PresentationText`와
 `MainWindow.AgentObservation`, `MainWindow.Rankings`, `MainWindow.WorldRecords`가 지역,
 시장, 공통 문구, 인물, 랭킹과 기록 관찰 책임을 분리한다. `WorldRecordsView`는 세계
@@ -181,12 +204,13 @@ KnowledgeRef·출처와 결과별 효과 문구를 지연 생성한다.
 ### Chronicles.Persistence
 
 Simulation의 명시적 체크포인트를 Brotli 압축 payload와 SHA-256 checksum을 가진
-versioned `.cmip` container로 변환한다. 현재 schema 22는 수행 trace/구성요소와
+versioned `.cmip` container로 변환한다. 현재 schema 23은 수행 trace/구성요소와
 입문 Gate 단련 보정, 기술 경험/이해, 전투 경험/이해·turn owner/부상, 지도 위치/사냥 상태를
 비롯해 간략화 시장·생산 대기열·유한 광맥·요수 개체수, TOP 1,000 부자 순위,
 기간별 랭킹 frame·누적 자리 변동, 개별 세계 사건, 100년 세계 역사서와 60개 선천자질
 Component, Soul/Body/Person ID·AI 판단 인과, 희소 방향 관계, Teaching 진행·연속성·
-영구 전수 이력을 저장한다. schema 7~21에 안전한
+영구 전수 이력, 생 계보·역사적 최고점·현재 윤회 여정·6영역 전생 흔적을
+저장한다. schema 7~22에 안전한
 이전 기본값과 진행 전투 단일 turn owner 복구를
 제공하며, schema 13의 30종 재료·7칸 법보·35개 상품은 새 2종·3칸·44개 구조로
 명시적으로 합산 이전하고 schema 17 이하 자질 대표값은 그룹별 균일 Component로
@@ -194,17 +218,26 @@ Component, Soul/Body/Person ID·AI 판단 인과, 희소 방향 관계, Teaching
 넘을 수 있어 JSON 해제 상한은 512MiB로 두되 압축 payload 64MiB 상한과 checksum은
 유지한다. 같은 폴더의 임시 파일을 flush한 뒤 원자적으로
 교체하며, 손상되거나 지원하지 않는 schema는 세계를 바꾸기 전에 거부한다.
+하위 schema는 증거가 있는 생 계보만 재구성하며 기존 저장에 없던 6영역 수치를
+조작하지 않고 `HasEvidence=false`로 표시한다. schema 23 복원은 여정 단계·예약 tick,
+생 계보의 선행자·ID 중복·현재 신원과의 일치, 6영역 수치의
+`integrated <= accessible <= preserved`를 검증한 뒤에만 세계를 교체한다.
 
 ### Chronicles.Tests
 
-외부 테스트 프레임워크 없이 실행 가능한 결정론적 계약 러너다. 39개 검사가 공식,
+외부 테스트 프레임워크 없이 실행 가능한 결정론적 계약 러너다. 기존 검사에 단계형
+윤회·생 계보·전생 흔적 전용 자동 검사를 추가했다. 전체 검사는 공식,
 9층 수행, 숙련/이해/품질 불변, 교대 전투/부상 사망, 지도/요수, 경제, 관찰 무영향,
 자질 간접 보정 경계, 전투 성장, 선택 UI 조회, 과거 저장 복구, 장기 성장·사냥·경쟁,
 재료 부족 생산 건너뛰기, 지도 내부 탭 지연 투영의 시간·할당량, 부자 순위·기간별
 랭킹 이력·누적 자리 변동·100년 세계 역사서, 60개 자질 Component·윤회 보존,
 Soul/Body/Person 인과 trace, 희소 관계 양끝 연결·상한, Teaching 직접 Work 0·전수 이력·
-schema 22 이전·지연 관찰, 저장 왕복과 10,000명 성능 예산을
-자동 검증한다.
+schema 22 이전·지연 관찰, 윤회 총기간·단계 경계·3생 선행자 계보·Soul/Body/Person
+연속성·6영역 대소 관계·현생 자동 복구 금지·schema 23/하위 schema 이전·지연 관찰,
+여정 중간 저장 왕복과 10,000명 성능 예산을
+자동 검증한다. 0.0.12 개발 시점의 Debug 통합 검사는 40/40, 경고 0·오류 0이며,
+10,000명 초기화+20,000 tick+관찰은 3,102ms, schema 23 checkpoint/복원은
+각각 122/567ms였다.
 
 ## 실행 모델
 

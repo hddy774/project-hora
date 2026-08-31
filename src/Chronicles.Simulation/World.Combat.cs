@@ -411,12 +411,12 @@ public sealed partial class World
             AgentGoalKind.RecoverBodyAndQi,
             DecisionReasonCode.CombatRecovery,
             DecisionResolutionKind.Forced);
-        _agents.RecalculatePower(winner);
+        RecalculatePowerAndUpdatePeak(winner);
         ScheduleAgent(winner, checked(Tick.Value + CalculateActivityDuration(winner)));
 
         if (fatal)
         {
-            _agents.RecalculatePower(loser);
+            RecalculatePowerAndUpdatePeak(loser);
             AddEvent(WorldEventKind.CombatEnded, winner, winnerGain, loser);
             BeginReincarnation(loser, combatDeath: true);
             return;
@@ -429,7 +429,7 @@ public sealed partial class World
             AgentGoalKind.RecoverBodyAndQi,
             DecisionReasonCode.CombatRecovery,
             DecisionResolutionKind.Forced);
-        _agents.RecalculatePower(loser);
+        RecalculatePowerAndUpdatePeak(loser);
         ScheduleAgent(loser, checked(Tick.Value + CalculateActivityDuration(loser)));
         AddEvent(WorldEventKind.CombatEnded, winner, winnerGain, loser);
     }

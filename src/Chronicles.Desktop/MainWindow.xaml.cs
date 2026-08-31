@@ -28,6 +28,9 @@ public partial class MainWindow : Window, IDisposable
     private AgentSnapshot? _latestAgent;
     private IReadOnlyList<PersonalLogEntry> _latestPersonalLog = Array.Empty<PersonalLogEntry>();
     private IReadOnlyList<LifeChronicleEntry> _latestChronicle = Array.Empty<LifeChronicleEntry>();
+    private ReincarnationAgentSnapshot? _latestReincarnation;
+    private AgentId? _projectedReincarnationAgent;
+    private long _projectedReincarnationRevision = long.MinValue;
     private int _speed = 1;
     private bool _disposed;
     private bool _applyingObservation;
@@ -196,9 +199,13 @@ public partial class MainWindow : Window, IDisposable
             }
         }
 
-        sections |= AgentLogTabControl.SelectedIndex == 1
-            ? ObservationSections.Chronicle
-            : ObservationSections.PersonalLog;
+        sections |= AgentLogTabControl.SelectedIndex switch
+        {
+            0 => ObservationSections.PersonalLog,
+            1 => ObservationSections.Chronicle,
+            2 => ObservationSections.Reincarnation,
+            _ => ObservationSections.None,
+        };
         if (AptitudeDetailsExpander.IsExpanded)
         {
             sections |= ObservationSections.AptitudeDetails;
@@ -257,7 +264,8 @@ public partial class MainWindow : Window, IDisposable
             UpdateSelectedAgent(
                 observation.SelectedAgent,
                 observation.SelectedPersonalLog,
-                observation.SelectedChronicle);
+                observation.SelectedChronicle,
+                observation.SelectedReincarnation);
         }
         finally
         {
@@ -372,13 +380,17 @@ public partial class MainWindow : Window, IDisposable
             ChronicleEventKind.Death => $"{entry.Value:N0}세에 수명을 다함",
             ChronicleEventKind.CombatDeath => $"{entry.Value:N0}세에 전투 부상으로 사망",
             ChronicleEventKind.ReincarnationEntered => "육신을 떠나 윤회의 강에 들어감",
+            ChronicleEventKind.ReincarnationCrossingCompleted =>
+                "윤회의 강 도하를 마치고 새 생을 준비함",
             ChronicleEventKind.Rebirth => $"{entry.PersonName}, 새로운 육신으로 환생",
             _ => entry.Kind.ToString(),
         };
         var color = entry.Kind switch
         {
             ChronicleEventKind.Death or ChronicleEventKind.CombatDeath => (Brush)FindResource("DangerBrush"),
-            ChronicleEventKind.Birth or ChronicleEventKind.Rebirth => (Brush)FindResource("PositiveBrush"),
+            ChronicleEventKind.Birth
+                or ChronicleEventKind.ReincarnationCrossingCompleted
+                or ChronicleEventKind.Rebirth => (Brush)FindResource("PositiveBrush"),
             ChronicleEventKind.MinorStageBreakthrough
                 or ChronicleEventKind.BottleneckBreakthrough
                 or ChronicleEventKind.MajorRealmBreakthrough
@@ -452,6 +464,7 @@ public partial class MainWindow : Window, IDisposable
             : $"{related}에게 패배",
         WorldEventKind.CombatInjury => $"{FormatInjurySeverity((InjurySeverity)entry.Value)} 부상",
         WorldEventKind.CombatDeath => $"{entry.Value:N0}세에 전투 부상으로 사망",
+        WorldEventKind.ReincarnationCrossingCompleted => "윤회의 강 도하 완료 · 새 생 준비",
         WorldEventKind.TravelCompleted => $"{WorldMapRules.GetLocation(checked((ushort)entry.Value)).KoreanName}에 도착",
         WorldEventKind.MonsterHuntWon => $"{FormatMonster(entry.Value)} 사냥 승리",
         WorldEventKind.MonsterHuntLost => $"{FormatMonster(entry.Value)} 사냥 패배",
@@ -483,6 +496,7 @@ public partial class MainWindow : Window, IDisposable
         ChronicleEventKind.Death => $"{value:N0}세에 수명을 다함",
         ChronicleEventKind.CombatDeath => $"{value:N0}세에 전투 부상으로 사망",
         ChronicleEventKind.ReincarnationEntered => "윤회의 강에 들어감",
+        ChronicleEventKind.ReincarnationCrossingCompleted => "윤회의 강 도하 완료",
         ChronicleEventKind.Rebirth => "새로운 육신으로 환생",
         _ => kind.ToString(),
     };
@@ -788,6 +802,7 @@ public partial class MainWindow : Window, IDisposable
             _projectedWorldChronicleSequence = long.MinValue;
             _projectedWorldChronicleCount = -1;
             _projectedWorldChronicleCategory = null;
+            ClearReincarnationView();
             _selectedAgent = null;
             RefreshVisibleObservation();
             StatusText.Text = $"불러오기 완료 · {WorldSaveStore.DefaultPath}";

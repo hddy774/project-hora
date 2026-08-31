@@ -73,6 +73,17 @@ public sealed partial class World
             _agents.RecalculatePower(index);
         }
 
+        if (checkpoint.SchemaVersion >= 23)
+        {
+            _reincarnation = ReincarnationStore.Restore(
+                checkpoint.Reincarnation!,
+                checkpoint.Tick);
+        }
+        else
+        {
+            _reincarnation = MigrateLegacyReincarnationStore(checkpoint);
+        }
+
         if (checkpoint.SchemaVersion < 10)
         {
             RepairLegacyCombatTurnAuthority();
@@ -117,6 +128,115 @@ public sealed partial class World
     }
 
     public static World Restore(WorldCheckpoint checkpoint) => new(checkpoint);
+
+    private ReincarnationStore MigrateLegacyReincarnationStore(WorldCheckpoint checkpoint)
+    {
+        var store = new ReincarnationStore(Population);
+        for (var index = 0; index < Population; index++)
+        {
+            var inRiver = _agents.Activities[index] == AgentActivity.Reincarnating;
+            var journeyStartedTick = inRiver
+                ? _agents.Chronicles[index]
+                    .Where(entry => entry.LifeNumber == _agents.LifeNumbers[index]
+                        && entry.Kind == ChronicleEventKind.ReincarnationEntered)
+                    .Select(entry => (long?)entry.Tick.Value)
+                    .LastOrDefault()
+                : null;
+            if (inRiver && journeyStartedTick is null)
+            {
+                throw new InvalidDataException(
+                    $"Agent {index}의 기존 윤회 시작 기록이 없습니다.");
+            }
+
+            var endKind = inRiver && _agents.Chronicles[index].Any(entry =>
+                entry.LifeNumber == _agents.LifeNumbers[index]
+                && entry.Kind == ChronicleEventKind.CombatDeath)
+                    ? LifeEndKind.Combat
+                    : LifeEndKind.Lifespan;
+            store.MigrateLegacyCurrentLife(
+                index,
+                _agents.LifeNumbers[index],
+                _agents.SoulIdentityIds[index],
+                _agents.BodyIdentityIds[index],
+                _agents.PersonIdentityIds[index],
+                _agents.Names[index],
+                _agents.BirthTicks[index],
+                _agents.RealmStages[index],
+                _agents.RealmLayers[index],
+                _agents.Power[index].Total,
+                Tick.Value,
+                inRiver,
+                journeyStartedTick,
+                endKind);
+            if (inRiver)
+            {
+                var journey = store.GetCurrentJourney(index)
+                    ?? throw new InvalidDataException("기존 윤회 여정 이전에 실패했습니다.");
+                _agents.NextDecisionTicks[index] = journey.NextTransitionTick;
+            }
+        }
+
+        return store;
+    }
+
+    private static bool IsValidReincarnationRuntimeLink(WorldCheckpoint checkpoint)
+    {
+        var reincarnation = checkpoint.Reincarnation!;
+        var completedJourneys = 0;
+        var allLineagesComplete = reincarnation.CompleteLineage.All(value => value);
+        var lineageByAgent = new List<LifeLineageEntry>?[checkpoint.Agents.Length];
+        var activeJourneyByAgent = new ReincarnationJourneyState?[checkpoint.Agents.Length];
+        var activeJourneyCounts = new byte[checkpoint.Agents.Length];
+        foreach (var entry in reincarnation.Lineage)
+        {
+            (lineageByAgent[entry.AgentIndex] ??= []).Add(entry);
+        }
+        foreach (var journey in reincarnation.Journeys)
+        {
+            if (journey.CompletedTick is null)
+            {
+                activeJourneyCounts[journey.AgentIndex]++;
+                activeJourneyByAgent[journey.AgentIndex] = journey;
+            }
+            else
+            {
+                completedJourneys = checked(completedJourneys + 1);
+            }
+        }
+
+        for (var index = 0; index < checkpoint.Agents.Length; index++)
+        {
+            var agent = checkpoint.Agents[index];
+            var lineage = lineageByAgent[index];
+            if (lineage is null || lineage.Count == 0)
+            {
+                return false;
+            }
+
+            var current = lineage[^1];
+            var activeJourney = activeJourneyByAgent[index];
+            var inRiver = agent.Activity == AgentActivity.Reincarnating;
+            if (current.LifeNumber != agent.LifeNumber
+                || current.SoulId != agent.Identity!.Value.SoulId
+                || current.BodyId != agent.Identity.Value.BodyId
+                || current.PersonId != agent.Identity.Value.PersonId
+                || current.PersonName != agent.Name
+                || current.BirthTick != agent.BirthTick
+                || (inRiver ? activeJourneyCounts[index] != 1 : activeJourneyCounts[index] != 0)
+                || (inRiver && activeJourney!.NextTransitionTick != agent.NextDecisionTick)
+                || (inRiver && current.DeathTick is null)
+                || (!inRiver && current.DeathTick is not null))
+            {
+                return false;
+            }
+        }
+
+        var expectedReincarnations = checkpoint.Agents.Sum(agent => agent.LifeNumber - 1);
+        return expectedReincarnations == checkpoint.TotalReincarnations
+            && checkpoint.TotalDeaths == checkpoint.TotalReincarnations
+                + activeJourneyCounts.Sum(count => count)
+            && (!allLineagesComplete || completedJourneys == checkpoint.TotalReincarnations);
+    }
 
     private void RepairLegacyCombatTurnAuthority()
     {
@@ -288,7 +408,8 @@ public sealed partial class World
             Array.Empty<WorldEvent>(),
             _rankingHistory.CreateCheckpoint(),
             _worldChronicle.CreateCheckpoint(),
-            _relations.CreateCheckpoint());
+            _relations.CreateCheckpoint(),
+            _reincarnation.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -581,6 +702,15 @@ public sealed partial class World
                 || relation.RightPersonId != rightIdentity.PersonId))
         {
             throw new InvalidDataException("희소 관계의 현재 생 Identity 연결이 잘못되었습니다.");
+        }
+
+        if (checkpoint.SchemaVersion >= 23
+            && (!ReincarnationStore.IsValidCheckpoint(
+                    checkpoint.Reincarnation,
+                    checkpoint.Tick)
+                || !IsValidReincarnationRuntimeLink(checkpoint)))
+        {
+            throw new InvalidDataException("세계 체크포인트의 윤회 계보·여정 상태가 잘못되었습니다.");
         }
 
         IReadOnlyDictionary<ulong, RelationStateCheckpoint>? relationById = null;

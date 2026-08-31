@@ -182,7 +182,8 @@ public sealed record WorldCheckpoint(
     WorldEvent[]? WorldChronicle = null,
     RankingHistoryCheckpoint? RankingHistory = null,
     WorldCenturyChronicleCheckpoint? CenturyChronicle = null,
-    RelationStoreCheckpoint? Relations = null)
+    RelationStoreCheckpoint? Relations = null,
+    ReincarnationStoreCheckpoint? Reincarnation = null)
 {
-    public const int CurrentSchemaVersion = 22;
+    public const int CurrentSchemaVersion = 23;
 }

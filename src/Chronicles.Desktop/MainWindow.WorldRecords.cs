@@ -87,6 +87,7 @@ public partial class MainWindow
                 or WorldEventKind.BottleneckBreakthrough
                 or WorldEventKind.MajorRealmBreakthrough
                 or WorldEventKind.FloorNineCompletion
+                or WorldEventKind.ReincarnationCrossingCompleted
                 or WorldEventKind.Rebirth
                 or WorldEventKind.TreasureCrafted
                 or WorldEventKind.PillCrafted
@@ -166,6 +167,7 @@ public partial class MainWindow
             WorldEventKind.Death
             or WorldEventKind.CombatDeath
             or WorldEventKind.ReincarnationEntered
+            or WorldEventKind.ReincarnationCrossingCompleted
             or WorldEventKind.Rebirth,
         _ => throw new ArgumentOutOfRangeException(nameof(category)),
     };
@@ -247,6 +249,8 @@ public partial class MainWindow
         WorldEventKind.GreatPerfectionAchieved => $"{primary}, {FormatEncodedRealm(worldEvent.Value, greatPerfection: true)} 완성",
         WorldEventKind.Death => $"{primary}, {worldEvent.Value:N0}세에 수명을 다함",
         WorldEventKind.ReincarnationEntered => $"{primary}, 윤회의 강에 들어감",
+        WorldEventKind.ReincarnationCrossingCompleted =>
+            $"{primary}, 윤회의 강 도하 완료 · 새 생 준비",
         WorldEventKind.Rebirth => $"{primary}, 제 {worldEvent.Value:N0}생으로 환생",
         WorldEventKind.MissionCompleted => $"{primary}, 도시 임무 완료 · 영석 +{KoreanNumberFormatter.Format(worldEvent.Value)}",
         WorldEventKind.TreasureCrafted => $"{primary}, {FormatQuality(worldEvent.Value)} 법보 제작",

@@ -9,6 +9,7 @@ public sealed partial class World
     private readonly DeterministicRandom _random;
     private readonly AgentStore _agents;
     private readonly SparseRelationStore _relations;
+    private readonly ReincarnationStore _reincarnation;
     private readonly CityMarket _market;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
     private readonly int[] _agentByRank;
@@ -58,6 +59,7 @@ public sealed partial class World
         _random = new DeterministicRandom(seed);
         _agents = new AgentStore(population);
         _relations = new SparseRelationStore(population);
+        _reincarnation = new ReincarnationStore(population);
         _market = new CityMarket(population);
         _agentByRank = new int[population];
         _rankByAgent = new int[population];
@@ -74,6 +76,16 @@ public sealed partial class World
         for (var index = 0; index < population; index++)
         {
             _agents.Initialize(index, _random);
+            _reincarnation.InitializeFirstLife(
+                index,
+                _agents.SoulIdentityIds[index],
+                _agents.BodyIdentityIds[index],
+                _agents.PersonIdentityIds[index],
+                _agents.Names[index],
+                _agents.BirthTicks[index],
+                _agents.RealmStages[index],
+                _agents.RealmLayers[index],
+                _agents.Power[index].Total);
             AddChronicle(index, ChronicleEventKind.Birth);
             _agentByRank[index] = index;
             _agentByRealmRank[index] = index;
@@ -148,6 +160,12 @@ public sealed partial class World
                 }
             }
 
+            if (_agents.Activities[agentIndex] == AgentActivity.Reincarnating)
+            {
+                ResolveReincarnationStage(agentIndex);
+                continue;
+            }
+
             var actionMonth = GameCalendar.GetMonthIndex(Tick);
             if (_agents.LastActionMonths[agentIndex] >= actionMonth)
             {
@@ -174,7 +192,7 @@ public sealed partial class World
             SelectNextActivity(agentIndex);
             if (powerInputsBefore != _agents.GetPowerInputSignature(agentIndex))
             {
-                _agents.RecalculatePower(agentIndex);
+                RecalculatePowerAndUpdatePeak(agentIndex);
             }
             var nextTick = checked(dueTick + CalculateActivityDuration(agentIndex));
             ScheduleAgent(agentIndex, nextTick);
@@ -436,6 +454,7 @@ public sealed partial class World
         Add(ref hash, (ulong)_activeCombats);
         Add(ref hash, (ulong)_totalDeaths);
         Add(ref hash, (ulong)_totalReincarnations);
+        Add(ref hash, _reincarnation.ComputeStateHash());
         Add(ref hash, (ulong)_totalMissionsCompleted);
         Add(ref hash, (ulong)_totalTreasuresCrafted);
         Add(ref hash, (ulong)_totalPillsCrafted);
@@ -754,7 +773,7 @@ public sealed partial class World
             case AgentActivity.Fighting:
                 return ResolveCombatAction(index);
             case AgentActivity.Reincarnating:
-                CompleteRebirth(index);
+                ResolveReincarnationStage(index);
                 return true;
             case AgentActivity.DoingCityMission:
                 ResolveCityMission(index);
@@ -1298,6 +1317,7 @@ public sealed partial class World
             or WorldEventKind.Death
             or WorldEventKind.CombatDeath
             or WorldEventKind.ReincarnationEntered
+            or WorldEventKind.ReincarnationCrossingCompleted
             or WorldEventKind.Rebirth => true,
         WorldEventKind.BottleneckBreakthrough => _rankByAgent[primaryAgent] <= 100,
         WorldEventKind.TechniqueEnlightenment
@@ -1325,6 +1345,7 @@ public sealed partial class World
         or WorldEventKind.Death
         or WorldEventKind.CombatDeath
         or WorldEventKind.ReincarnationEntered
+        or WorldEventKind.ReincarnationCrossingCompleted
         or WorldEventKind.Rebirth;
 
     private void AddPersonalActionLog(int index, AgentActivity activity)
@@ -1416,9 +1437,29 @@ public sealed partial class World
             value));
     }
 
-    private long GetAgeYears(int index) => GameCalendar.GetAgeYears(
-        new SimulationTick(_agents.BirthTicks[index]),
-        Tick);
+    private long GetAgeYears(int index)
+    {
+        var ageTick = _agents.LifeStates[index] == PersonLifeState.ReincarnationRiver
+            ? _reincarnation.GetCurrentJourney(index)?.StartedTick ?? Tick.Value
+            : Tick.Value;
+        return GameCalendar.GetAgeYears(
+            new SimulationTick(_agents.BirthTicks[index]),
+            new SimulationTick(ageTick));
+    }
+
+    private void RecalculatePowerAndUpdatePeak(int index)
+    {
+        _agents.RecalculatePower(index);
+        if (_agents.LifeStates[index] == PersonLifeState.Living)
+        {
+            _reincarnation.UpdatePeak(
+                index,
+                _agents.RealmStages[index],
+                _agents.RealmLayers[index],
+                _agents.Power[index].Total,
+                Tick.Value);
+        }
+    }
 
     private static int GetQualityEffect(int rawQuality) =>
         QualityRules.GetEffectiveWhole(QualityValue.FromHundredths(rawQuality));
@@ -1433,53 +1474,6 @@ public sealed partial class World
         _agents.BirthTicks[index]
         + ((long)RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears
             * GameCalendar.TicksPerYear));
-
-    private void BeginReincarnation(int index, bool combatDeath = false)
-    {
-        var opponent = _agents.Opponents[index];
-        if (opponent >= 0 && _agents.Opponents[opponent] == index)
-        {
-            FinishCombat(opponent, index);
-        }
-
-        var age = checked((int)Math.Min(int.MaxValue, GetAgeYears(index)));
-        _totalDeaths++;
-        if (combatDeath)
-        {
-            AddChronicle(index, ChronicleEventKind.CombatDeath, age);
-            AddEvent(WorldEventKind.CombatDeath, index, age);
-        }
-        else
-        {
-            AddChronicle(index, ChronicleEventKind.Death, age);
-            AddEvent(WorldEventKind.Death, index, age);
-        }
-        AddChronicle(index, ChronicleEventKind.ReincarnationEntered);
-        AddEvent(WorldEventKind.ReincarnationEntered, index, _agents.LifeNumbers[index]);
-        InterruptTeachingContexts(index);
-        _relations.EndLife(index, Tick.Value);
-        _agents.LifeStates[index] = PersonLifeState.ReincarnationRiver;
-        SetActivityDecision(
-            index,
-            AgentActivity.Reincarnating,
-            AgentGoalKind.CompleteReincarnation,
-            DecisionReasonCode.ReincarnationHandoff,
-            DecisionResolutionKind.Forced);
-        _agents.Opponents[index] = -1;
-        _agents.Health[index] = 0;
-        _agents.Qi[index] = 0;
-        ScheduleAgent(index, checked(Tick.Value + GameCalendar.TicksPerYear));
-    }
-
-    private void CompleteRebirth(int index)
-    {
-        _agents.Rebirth(index, _random, Tick.Value);
-        _relations.StartNewLife(index, _agents.PersonIdentityIds[index]);
-        _totalReincarnations++;
-        AddChronicle(index, ChronicleEventKind.Rebirth);
-        AddEvent(WorldEventKind.Rebirth, index, _agents.LifeNumbers[index]);
-        ScheduleAgent(index, _agents.NextDecisionTicks[index]);
-    }
 
     private void AddChronicle(int index, ChronicleEventKind kind, int value = 0)
     {

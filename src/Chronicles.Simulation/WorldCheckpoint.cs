@@ -180,5 +180,5 @@ public sealed record WorldCheckpoint(
     RankingHistoryCheckpoint? RankingHistory = null,
     WorldCenturyChronicleCheckpoint? CenturyChronicle = null)
 {
-    public const int CurrentSchemaVersion = 18;
+    public const int CurrentSchemaVersion = 19;
 }

@@ -86,6 +86,7 @@ public partial class MainWindow
                 or WorldEventKind.MinorStageBreakthrough
                 or WorldEventKind.BottleneckBreakthrough
                 or WorldEventKind.MajorRealmBreakthrough
+                or WorldEventKind.FloorNineCompletion
                 or WorldEventKind.Rebirth
                 or WorldEventKind.TreasureCrafted
                 or WorldEventKind.PillCrafted
@@ -143,6 +144,7 @@ public partial class MainWindow
             or WorldEventKind.MinorStageBreakthrough
             or WorldEventKind.BottleneckBreakthrough
             or WorldEventKind.MajorRealmBreakthrough
+            or WorldEventKind.FloorNineCompletion
             or WorldEventKind.CultivationEntered
             or WorldEventKind.GreatPerfectionAchieved
             or WorldEventKind.TechniqueEnlightenment
@@ -238,6 +240,7 @@ public partial class MainWindow
         WorldEventKind.MinorStageBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 소경지 돌파",
         WorldEventKind.BottleneckBreakthrough => $"{primary}, {worldEvent.Value:N0}번의 시도 끝에 병목 돌파",
         WorldEventKind.MajorRealmBreakthrough => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 대경지 돌파",
+        WorldEventKind.FloorNineCompletion => $"{primary}, {FormatEncodedRealm(worldEvent.Value)} 소경지 완성",
         WorldEventKind.TechniqueEnlightenment => $"{primary}, 공법 깨달음 · 이해도 {worldEvent.Value / 100m:0.00}",
         WorldEventKind.SpellEnlightenment => $"{primary}, 법술 깨달음 · 이해도 {worldEvent.Value / 100m:0.00}",
         WorldEventKind.CultivationEntered => $"{primary}, 입문 3 Gate를 통과해 연기경에 입문",

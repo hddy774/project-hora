@@ -179,6 +179,7 @@ public static class CultivationRules
             {
                 3 => BreakthroughClass.EarlyMiddleBottleneck,
                 6 => BreakthroughClass.MiddleLateBottleneck,
+                9 => BreakthroughClass.FloorNineCompletion,
                 _ => BreakthroughClass.NormalFloor,
             };
 
@@ -209,6 +210,7 @@ public static class CultivationRules
         switch (attemptClass)
         {
             case BreakthroughClass.NormalFloor:
+            case BreakthroughClass.FloorNineCompletion:
                 baseChance = 9_900;
                 minimum = 9_700;
                 maximum = 9_950;

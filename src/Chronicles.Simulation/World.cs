@@ -370,11 +370,7 @@ public sealed partial class World
             var score = category switch
             {
                 RankingCategory.CombatPower => _agents.Power[agentIndex].Total,
-                RankingCategory.Realm when HasEnteredCultivation(agentIndex) =>
-                    ((((long)(int)_agents.RealmStages[agentIndex] * RealmRules.MinorStageCount)
-                        + _agents.RealmLayers[agentIndex]) * 1_000_000_000L)
-                    + _agents.CultivationProgress[agentIndex],
-                RankingCategory.Realm => _agents.CultivationProgress[agentIndex],
+                RankingCategory.Realm => GetRealmRankingScore(agentIndex),
                 RankingCategory.Aptitude => aptitudeScore,
                 RankingCategory.Wealth => _agents.SpiritStones[agentIndex],
                 _ => throw new ArgumentOutOfRangeException(nameof(category)),
@@ -552,6 +548,10 @@ public sealed partial class World
             Add(ref hash, (ulong)trace.FinalChanceBasisPoints);
             Add(ref hash, unchecked((ulong)(long)trace.RollBasisPoints));
             Add(ref hash, (byte)trace.Blocker);
+            Add(ref hash, (byte)trace.FormulaKind);
+            Add(ref hash, (ulong)trace.AuthorityRevisionBefore);
+            Add(ref hash, (ulong)trace.AuthorityRevisionAfter);
+            Add(ref hash, (ulong)_agents.CultivationAuthorityRevisions[index]);
             Add(ref hash, _agents.TechniqueQualities[index]);
             Add(ref hash, _agents.TechniqueMasteries[index]);
             Add(ref hash, (ulong)_agents.TechniqueTrainingExperience[index]);
@@ -1023,21 +1023,24 @@ public sealed partial class World
             return entryComparison;
         }
 
-        var realmComparison = _agents.RealmStages[right].CompareTo(_agents.RealmStages[left]);
-        if (realmComparison != 0)
+        var scoreComparison = GetRealmRankingScore(right).CompareTo(GetRealmRankingScore(left));
+        return scoreComparison != 0 ? scoreComparison : left.CompareTo(right);
+    }
+
+    private long GetRealmRankingScore(int index)
+    {
+        if (!HasEnteredCultivation(index))
         {
-            return realmComparison;
+            return _agents.CultivationProgress[index];
         }
 
-        var minorStageComparison = _agents.RealmLayers[right].CompareTo(_agents.RealmLayers[left]);
-        if (minorStageComparison != 0)
-        {
-            return minorStageComparison;
-        }
-
-        var progressComparison = _agents.CultivationProgress[right].CompareTo(
-            _agents.CultivationProgress[left]);
-        return progressComparison != 0 ? progressComparison : left.CompareTo(right);
+        var stageAndFloor = ((long)(int)_agents.RealmStages[index] * RealmRules.MinorStageCount)
+            + _agents.RealmLayers[index];
+        var completionTier = _agents.GreatPerfectionAchieved[index]
+            ? 2
+            : _agents.FloorNineCompleted[index] ? 1 : 0;
+        return checked((((stageAndFloor * 3) + completionTier) * 1_000_000_000L)
+            + _agents.CultivationProgress[index]);
     }
 
     private int CompareAgentsByAptitude(int left, int right)
@@ -1132,6 +1135,7 @@ public sealed partial class World
         or WorldEventKind.BottleneckBreakthrough
         or WorldEventKind.MajorRealmBreakthrough
         or WorldEventKind.CultivationEntered
+        or WorldEventKind.FloorNineCompletion
         or WorldEventKind.GreatPerfectionAchieved
         or WorldEventKind.TechniqueAcquired
         or WorldEventKind.SpellAcquired

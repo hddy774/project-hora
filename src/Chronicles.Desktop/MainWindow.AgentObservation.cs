@@ -64,6 +64,10 @@ public partial class MainWindow
                     $"{component.KoreanName} {component.ValueHundredths / 100m:0.00}/{component.LimitHundredths / 100m:0.00}"));
         CultivationComponentText.Text =
             $"{gateText} · 축기 경로 {FormatFoundationRoute(cultivation.FoundationRoute)} · {componentText}";
+        if (CultivationTraceExpander.IsExpanded)
+        {
+            UpdateCultivationTraceView(cultivation);
+        }
         RootText.Text = QualityRules.Format(agent.Aptitudes.SpiritualRoot);
         BoneText.Text = QualityRules.Format(agent.Aptitudes.Bone);
         ConstitutionText.Text = QualityRules.Format(agent.Aptitudes.Constitution);
@@ -247,6 +251,7 @@ public partial class MainWindow
     {
         0 => true,
         1 => kind is ChronicleEventKind.MinorStageBreakthrough
+            or ChronicleEventKind.FloorNineCompletion
             or ChronicleEventKind.BottleneckBreakthrough
             or ChronicleEventKind.MajorRealmBreakthrough
             or ChronicleEventKind.BreakthroughFailure
@@ -309,5 +314,67 @@ public partial class MainWindow
             $"전투 이해 {roles.CombatUnderstandingHundredths / 100m:0.00} · " +
             $"전투 경험 {roles.CombatExperienceGainHundredths / 100m:0.00}";
     }
+
+    private void UpdateCultivationTraceView(CultivationReadProjection cultivation)
+    {
+        var trace = cultivation.LatestTrace;
+        if (trace.FormulaKind == CultivationFormulaKind.None)
+        {
+            CultivationTraceText.Text =
+                $"권위 revision {cultivation.AuthorityRevision:N0} · 아직 수행 정산 기록 없음";
+            return;
+        }
+
+        var formula = CultivationFormulaRegistry.Get(trace.FormulaKind);
+        var chance = trace.RollBasisPoints < 0
+            ? "RNG 미사용"
+            : $"기본 {trace.BaseChanceBasisPoints / 100m:0.00}% + 보정 {trace.ModifierBasisPoints / 100m:0.00}% = " +
+                $"최종 {trace.FinalChanceBasisPoints / 100m:0.00}% · roll {trace.RollBasisPoints / 100m:0.00}%";
+        CultivationTraceText.Text =
+            $"{formula.StableId} r{formula.Revision} · {formula.Purpose}" +
+            (formula.RequiresReview ? " · 다음 버전 검토값 포함" : string.Empty) +
+            $"\n권위 revision {trace.AuthorityRevisionBefore:N0} → {trace.AuthorityRevisionAfter:N0} · " +
+            $"{FormatBreakthroughClass(trace.AttemptClass)} · {FormatBreakthroughOutcome(trace.Outcome)}" +
+            $"\nWork {KoreanNumberFormatter.Format(trace.WorkBefore)} + {KoreanNumberFormatter.Format(trace.WorkGain)} = " +
+            $"{KoreanNumberFormatter.Format(trace.WorkAfter)} / {KoreanNumberFormatter.Format(trace.RequiredWork)} · " +
+            $"이월 {KoreanNumberFormatter.Format(trace.CarryoverWork)}" +
+            $"\n{chance} · 차단 {FormatCultivationBlocker(trace.Blocker)}";
+    }
+
+    private static string FormatBreakthroughClass(BreakthroughClass value) => value switch
+    {
+        BreakthroughClass.None => "진척 정산",
+        BreakthroughClass.Entry => "수행 입문",
+        BreakthroughClass.NormalFloor => "일반 소경지",
+        BreakthroughClass.EarlyMiddleBottleneck => "3→4층 병목",
+        BreakthroughClass.MiddleLateBottleneck => "6→7층 병목",
+        BreakthroughClass.FloorNineCompletion => "9층 소경지 완성",
+        BreakthroughClass.GreatPerfectionCompletion => "대원만 Gate",
+        BreakthroughClass.MajorRealm => "대경지 돌파",
+        _ => value.ToString(),
+    };
+
+    private static string FormatBreakthroughOutcome(BreakthroughOutcome value) => value switch
+    {
+        BreakthroughOutcome.None => "판정 전",
+        BreakthroughOutcome.Blocked => "차단",
+        BreakthroughOutcome.Success => "성공",
+        BreakthroughOutcome.Failure => "실패",
+        _ => value.ToString(),
+    };
+
+    private static string FormatCultivationBlocker(CultivationBottleneckCause value) => value switch
+    {
+        CultivationBottleneckCause.None => "없음",
+        CultivationBottleneckCause.Knowledge => "지식",
+        CultivationBottleneckCause.Body => "육신",
+        CultivationBottleneckCause.SpiritualRoot => "영근",
+        CultivationBottleneckCause.Resources => "자원",
+        CultivationBottleneckCause.Stability => "안정성",
+        CultivationBottleneckCause.EntryGate => "입문 Gate",
+        CultivationBottleneckCause.RealmComponent => "경지 구성요소",
+        CultivationBottleneckCause.Method => "공법",
+        _ => value.ToString(),
+    };
 
 }

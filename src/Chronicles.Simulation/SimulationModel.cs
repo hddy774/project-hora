@@ -84,6 +84,7 @@ public enum WorldEventKind : byte
     MonsterHuntWon,
     MonsterHuntLost,
     SpiritStoneMined,
+    FloorNineCompletion,
 }
 
 public readonly record struct Aptitudes(
@@ -121,6 +122,7 @@ public enum ChronicleEventKind : byte
     TechniqueAcquired,
     SpellAcquired,
     CombatDeath,
+    FloorNineCompletion,
 }
 
 public enum PersonalLogKind : byte

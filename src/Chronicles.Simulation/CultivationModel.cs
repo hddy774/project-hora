@@ -75,6 +75,8 @@ public enum BreakthroughClass : byte
     EarlyMiddleBottleneck,
     MiddleLateBottleneck,
     MajorRealm,
+    FloorNineCompletion,
+    GreatPerfectionCompletion,
 }
 
 public enum BreakthroughOutcome : byte
@@ -110,6 +112,61 @@ public enum CultivationValueAvailability : byte
     Blocked,
 }
 
+public enum CultivationFormulaKind : byte
+{
+    None,
+    BaselineDuration,
+    CultivationSpeed,
+    ProgressAccumulation,
+    BottleneckState,
+    BreakthroughReadiness,
+    BreakthroughResult,
+    LifespanIncrease,
+    InjuryRecovery,
+}
+
+public readonly record struct CultivationFormulaDefinition(
+    CultivationFormulaKind Kind,
+    string StableId,
+    int Revision,
+    string Purpose,
+    bool RequiresReview);
+
+public static class CultivationFormulaRegistry
+{
+    private static readonly CultivationFormulaDefinition[] Definitions =
+    [
+        new(CultivationFormulaKind.BaselineDuration, "F-CULT-001", 1,
+            "경지 기준 수행 기간", false),
+        new(CultivationFormulaKind.CultivationSpeed, "F-CULT-002", 1,
+            "수행 속도", true),
+        new(CultivationFormulaKind.ProgressAccumulation, "F-CULT-003", 1,
+            "수행 진행 누적", false),
+        new(CultivationFormulaKind.BottleneckState, "F-CULT-004", 1,
+            "병목 상태와 차단 원인", true),
+        new(CultivationFormulaKind.BreakthroughReadiness, "F-CULT-005", 1,
+            "돌파 준비도와 Preflight", true),
+        new(CultivationFormulaKind.BreakthroughResult, "F-CULT-006", 1,
+            "돌파 판정과 Typed Result", true),
+        new(CultivationFormulaKind.LifespanIncrease, "F-CULT-007", 1,
+            "경지 돌파 수명 증가", false),
+        new(CultivationFormulaKind.InjuryRecovery, "F-CULT-008", 1,
+            "부상과 회복 변화량", true),
+    ];
+
+    public static IReadOnlyList<CultivationFormulaDefinition> All => Definitions;
+
+    public static CultivationFormulaDefinition Get(CultivationFormulaKind kind)
+    {
+        if (kind == CultivationFormulaKind.None || !Enum.IsDefined(kind))
+        {
+            throw new ArgumentOutOfRangeException(nameof(kind));
+        }
+
+        return Definitions[(int)kind - 1];
+    }
+}
+
 public readonly record struct CultivationGateSnapshot(
     int GateNumber,
     int CoreChannelHundredths,
@@ -143,7 +200,10 @@ public readonly record struct CultivationTraceState(
     int ModifierBasisPoints,
     int FinalChanceBasisPoints,
     int RollBasisPoints,
-    CultivationBottleneckCause Blocker)
+    CultivationBottleneckCause Blocker,
+    CultivationFormulaKind FormulaKind = CultivationFormulaKind.None,
+    long AuthorityRevisionBefore = 0,
+    long AuthorityRevisionAfter = 0)
 {
     public static CultivationTraceState Empty => new(
         0,
@@ -180,7 +240,8 @@ public sealed record CultivationReadProjection(
     FoundationRoute FoundationRoute,
     IReadOnlyList<CultivationGateSnapshot> EntryGates,
     IReadOnlyList<RealmComponentSnapshot> Components,
-    CultivationTraceState LatestTrace);
+    CultivationTraceState LatestTrace,
+    long AuthorityRevision);
 
 public readonly record struct CultivationCheckpoint(
     int PendingCarryoverWork,
@@ -194,7 +255,8 @@ public readonly record struct CultivationCheckpoint(
     ushort[] ComponentLimits,
     ushort[] FormationValues,
     CultivationTraceState LatestTrace,
-    ushort[]? EntryGateTempering = null);
+    ushort[]? EntryGateTempering = null,
+    long AuthorityRevision = 0);
 
 public readonly record struct ProvisionalBalanceDefinition(
     string StableId,

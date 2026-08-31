@@ -352,6 +352,7 @@ public partial class MainWindow : Window, IDisposable
             ChronicleEventKind.MinorStageBreakthrough => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage)} 소경지 돌파",
             ChronicleEventKind.BottleneckBreakthrough => $"{entry.Value:N0}번의 시도 끝에 병목을 돌파",
             ChronicleEventKind.MajorRealmBreakthrough => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage)} 대경지 돌파",
+            ChronicleEventKind.FloorNineCompletion => $"{FormatRealm(entry.RealmStage, (int)entry.MinorStage)} 소경지 완성",
             ChronicleEventKind.BreakthroughFailure => "처음으로 현재 경지의 병목과 마주함",
             ChronicleEventKind.TechniqueEnlightenment => $"공법 깨달음으로 이해도 {entry.Value / 100m:0.00} 달성",
             ChronicleEventKind.SpellEnlightenment => $"법술 깨달음으로 이해도 {entry.Value / 100m:0.00} 달성",
@@ -373,6 +374,7 @@ public partial class MainWindow : Window, IDisposable
             ChronicleEventKind.MinorStageBreakthrough
                 or ChronicleEventKind.BottleneckBreakthrough
                 or ChronicleEventKind.MajorRealmBreakthrough
+                or ChronicleEventKind.FloorNineCompletion
                 or ChronicleEventKind.TechniqueEnlightenment
                 or ChronicleEventKind.SpellEnlightenment
                 or ChronicleEventKind.FortuitousEncounter => (Brush)FindResource("AccentBrush"),
@@ -455,6 +457,7 @@ public partial class MainWindow : Window, IDisposable
         WorldEventKind.TechniqueBookPurchased => $"{FormatQuality(entry.Value)} 공법서 구매",
         WorldEventKind.SpellBookPurchased => $"{FormatQuality(entry.Value)} 법술서 구매",
         WorldEventKind.SpiritStoneMined => $"도시 광맥 채굴 · 영석 {KoreanNumberFormatter.Format(entry.Value)} 생산",
+        WorldEventKind.FloorNineCompletion => "9층 소경지 완성",
         _ => kind.ToString(),
     };
 
@@ -464,6 +467,7 @@ public partial class MainWindow : Window, IDisposable
         ChronicleEventKind.MinorStageBreakthrough => "소경지 돌파",
         ChronicleEventKind.BottleneckBreakthrough => $"{value:N0}번의 실패 끝에 병목 돌파",
         ChronicleEventKind.MajorRealmBreakthrough => "대경지 돌파",
+        ChronicleEventKind.FloorNineCompletion => "9층 소경지 완성",
         ChronicleEventKind.BreakthroughFailure => "처음으로 현재 경지의 병목과 마주함",
         ChronicleEventKind.TechniqueEnlightenment => $"공법 {FormatQuality(value)}의 깨달음",
         ChronicleEventKind.SpellEnlightenment => $"법술 {FormatQuality(value)}의 깨달음",

@@ -208,7 +208,8 @@ public sealed partial class World
                     _agents.CopyCultivationComponentLimits(index),
                     _agents.CopyFormationValues(index),
                     _agents.CultivationTraces[index],
-                    _agents.CopyEntryGateTemperings(index)),
+                    _agents.CopyEntryGateTemperings(index),
+                    _agents.CultivationAuthorityRevisions[index]),
                 new SkillProgressCheckpoint(
                     _agents.TechniqueTrainingExperience[index],
                     _agents.TechniqueUnderstanding[index],
@@ -332,6 +333,9 @@ public sealed partial class World
                 current.FormationValues,
                 current.EntryGateTempering);
             _agents.CultivationTraces[index] = current.LatestTrace;
+            _agents.CultivationAuthorityRevisions[index] = schemaVersion >= 19
+                ? current.AuthorityRevision
+                : Math.Max(0, current.LatestTrace.AuthorityRevisionAfter);
         }
         else
         {
@@ -340,6 +344,7 @@ public sealed partial class World
             _agents.GreatPerfectionAchieved[index] = legacyCompleted;
             _agents.EntryGatePassMasks[index] = 0b111;
             _agents.CultivationTraces[index] = CultivationTraceState.Empty;
+            _agents.CultivationAuthorityRevisions[index] = 0;
             InitializeRealmComponents(index);
         }
         _agents.TechniqueQualities[index] = checkpoint.TechniqueQuality;
@@ -802,6 +807,7 @@ public sealed partial class World
             || value.PendingCarryoverWork < 0
             || value.LastWorkBefore < 0
             || value.LastWorkGain < 0
+            || value.AuthorityRevision < 0
             || value.EntryGatePassMask > 0b111
             || !Enum.IsDefined(value.FoundationRoute)
             || value.ComponentValues is not { Length: CultivationRules.RealmComponentSlotCount }
@@ -825,11 +831,29 @@ public sealed partial class World
             }
         }
 
-        return value.FormationValues.All(item => item <= QualityValue.MaximumHundredths)
-            && value.LatestTrace.FormulaRevision is >= 0 and <= CultivationRules.FormulaRevision
-            && Enum.IsDefined(value.LatestTrace.AttemptClass)
-            && Enum.IsDefined(value.LatestTrace.Outcome)
-            && Enum.IsDefined(value.LatestTrace.Blocker);
+        var trace = value.LatestTrace;
+        if (!value.FormationValues.All(item => item <= QualityValue.MaximumHundredths)
+            || trace.FormulaRevision is < 0 or > CultivationRules.FormulaRevision
+            || !Enum.IsDefined(trace.AttemptClass)
+            || !Enum.IsDefined(trace.Outcome)
+            || !Enum.IsDefined(trace.Blocker)
+            || !Enum.IsDefined(trace.FormulaKind)
+            || trace.AuthorityRevisionBefore < 0
+            || trace.AuthorityRevisionAfter < trace.AuthorityRevisionBefore)
+        {
+            return false;
+        }
+
+        if (schemaVersion < 19)
+        {
+            return true;
+        }
+
+        return trace.AuthorityRevisionAfter == value.AuthorityRevision
+            && (value.AuthorityRevision == 0
+                ? trace.FormulaKind == CultivationFormulaKind.None
+                : trace.FormulaKind != CultivationFormulaKind.None
+                    && trace.AuthorityRevisionAfter == trace.AuthorityRevisionBefore + 1);
     }
 
     private static bool IsValidSkillProgress(SkillProgressCheckpoint? checkpoint) => checkpoint is { } value

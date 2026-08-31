@@ -94,7 +94,10 @@ public sealed partial class World
             }
         }
 
-        _agents.CultivationTraces[index] = new CultivationTraceState(
+        CommitCultivationTrace(
+            index,
+            CultivationFormulaKind.ProgressAccumulation,
+            new CultivationTraceState(
             Tick.Value,
             CultivationRules.FormulaRevision,
             BreakthroughClass.Entry,
@@ -111,7 +114,7 @@ public sealed partial class World
             0,
             10_000,
             -1,
-            blocker);
+            blocker));
     }
 
     private void TemperEntryGates(int index)
@@ -142,7 +145,10 @@ public sealed partial class World
             blocker = CultivationBottleneckCause.None;
         }
 
-        _agents.CultivationTraces[index] = new CultivationTraceState(
+        CommitCultivationTrace(
+            index,
+            CultivationFormulaKind.BottleneckState,
+            new CultivationTraceState(
             Tick.Value,
             CultivationRules.FormulaRevision,
             BreakthroughClass.Entry,
@@ -159,7 +165,7 @@ public sealed partial class World
             0,
             10_000,
             -1,
-            blocker);
+            blocker));
     }
 
     private void CompleteCultivationEntry(int index, int aptitude)
@@ -202,7 +208,10 @@ public sealed partial class World
         _agents.LastCultivationWorkBefore[index] = before;
         _agents.LastCultivationWorkGain[index] = gain;
         GrowRealmComponents(index, gain);
-        _agents.CultivationTraces[index] = new CultivationTraceState(
+        CommitCultivationTrace(
+            index,
+            CultivationFormulaKind.ProgressAccumulation,
+            new CultivationTraceState(
             Tick.Value,
             CultivationRules.FormulaRevision,
             BreakthroughClass.None,
@@ -219,17 +228,9 @@ public sealed partial class World
             0,
             0,
             -1,
-            CultivationBottleneckCause.None);
+            CultivationBottleneckCause.None));
         if (after < requirement)
         {
-            return;
-        }
-
-        if (_agents.RealmLayers[index] == RealmRules.MinorStageCount)
-        {
-            _agents.FloorNineCompleted[index] = true;
-            _agents.PendingCultivationWork[index] = 0;
-            _agents.CultivationStates[index] = CultivationState.Stable;
             return;
         }
 
@@ -268,7 +269,7 @@ public sealed partial class World
         {
             _agents.CultivationStates[index] = CultivationState.Bottleneck;
             _agents.CultivationBottleneckCauses[index] = blocker;
-            RecordBlockedTrace(index, BreakthroughClass.MajorRealm, blocker);
+            RecordBlockedTrace(index, BreakthroughClass.GreatPerfectionCompletion, blocker);
             return;
         }
 
@@ -280,6 +281,27 @@ public sealed partial class World
             WorldEventKind.GreatPerfectionAchieved,
             index,
             EncodeRealm(_agents.RealmStages[index], _agents.RealmLayers[index]));
+        CommitCultivationTrace(
+            index,
+            CultivationFormulaKind.BottleneckState,
+            new CultivationTraceState(
+                Tick.Value,
+                CultivationRules.FormulaRevision,
+                BreakthroughClass.GreatPerfectionCompletion,
+                BreakthroughOutcome.Success,
+                _agents.RealmStages[index],
+                _agents.RealmLayers[index],
+                _agents.RealmLayers[index],
+                _agents.CultivationProgress[index],
+                0,
+                _agents.CultivationProgress[index],
+                GetCultivationRequirement(index),
+                _agents.PendingCultivationWork[index],
+                10_000,
+                0,
+                10_000,
+                -1,
+                CultivationBottleneckCause.None));
     }
 
     private void ResolveBreakthroughPreflight(int index)
@@ -292,6 +314,7 @@ public sealed partial class World
         {
             _agents.CultivationStates[index] = CultivationState.PreflightReady;
             _agents.CultivationBottleneckCauses[index] = CultivationBottleneckCause.None;
+            RecordPreflightReadyTrace(index, attemptClass);
             return;
         }
 
@@ -358,7 +381,10 @@ public sealed partial class World
             AddEvent(WorldEventKind.BreakthroughFailed, index, finalChance);
         }
 
-        _agents.CultivationTraces[index] = new CultivationTraceState(
+        CommitCultivationTrace(
+            index,
+            CultivationFormulaKind.BreakthroughResult,
+            new CultivationTraceState(
             Tick.Value,
             CultivationRules.FormulaRevision,
             attemptClass,
@@ -375,11 +401,26 @@ public sealed partial class World
             modifier,
             finalChance,
             roll,
-            CultivationBottleneckCause.None);
+            CultivationBottleneckCause.None));
     }
 
     private byte CompleteMinorStageBreakthrough(int index, byte sourceFloor)
     {
+        if (sourceFloor == RealmRules.MinorStageCount)
+        {
+            _agents.CultivationProgress[index] = GetCultivationRequirement(index);
+            _agents.PendingCultivationWork[index] = 0;
+            _agents.FloorNineCompleted[index] = true;
+            _agents.CultivationStates[index] = CultivationState.Stable;
+            _agents.CultivationBottleneckCauses[index] = CultivationBottleneckCause.None;
+            AddChronicle(index, ChronicleEventKind.FloorNineCompletion);
+            AddEvent(
+                WorldEventKind.FloorNineCompletion,
+                index,
+                EncodeRealm(_agents.RealmStages[index], sourceFloor));
+            return sourceFloor;
+        }
+
         var carryover = _agents.PendingCultivationWork[index];
         var policy = CultivationRules.GetCarryoverPolicy(sourceFloor);
         var destinationFloor = checked((byte)(sourceFloor + 1));
@@ -519,6 +560,27 @@ public sealed partial class World
         }
 
         _agents.CultivationStates[index] = CultivationState.Stable;
+        CommitCultivationTrace(
+            index,
+            CultivationFormulaKind.BreakthroughResult,
+            new CultivationTraceState(
+                Tick.Value,
+                CultivationRules.FormulaRevision,
+                BreakthroughClass.MajorRealm,
+                BreakthroughOutcome.Success,
+                _agents.RealmStages[index],
+                _agents.RealmLayers[index],
+                _agents.RealmLayers[index],
+                _agents.CultivationProgress[index],
+                0,
+                _agents.CultivationProgress[index],
+                GetCultivationRequirement(index),
+                _agents.PendingCultivationWork[index],
+                10_000,
+                0,
+                10_000,
+                -1,
+                CultivationBottleneckCause.None));
     }
 
     private void GrowRealmComponents(int index, int workGain)
@@ -692,7 +754,8 @@ public sealed partial class World
         _agents.FoundationRoutes[index],
         CreateEntryGateSnapshots(index),
         CreateRealmComponentSnapshots(index),
-        _agents.CultivationTraces[index]);
+        _agents.CultivationTraces[index],
+        _agents.CultivationAuthorityRevisions[index]);
 
     private static CultivationLifecyclePhase GetCultivationLifecyclePhase(CultivationState state) => state switch
     {
@@ -712,7 +775,10 @@ public sealed partial class World
         BreakthroughClass attemptClass,
         CultivationBottleneckCause blocker)
     {
-        _agents.CultivationTraces[index] = new CultivationTraceState(
+        CommitCultivationTrace(
+            index,
+            CultivationFormulaKind.BottleneckState,
+            new CultivationTraceState(
             Tick.Value,
             CultivationRules.FormulaRevision,
             attemptClass,
@@ -729,7 +795,48 @@ public sealed partial class World
             0,
             0,
             -1,
-            blocker);
+            blocker));
+    }
+
+    private void RecordPreflightReadyTrace(int index, BreakthroughClass attemptClass)
+    {
+        CommitCultivationTrace(
+            index,
+            CultivationFormulaKind.BreakthroughReadiness,
+            new CultivationTraceState(
+                Tick.Value,
+                CultivationRules.FormulaRevision,
+                attemptClass,
+                BreakthroughOutcome.None,
+                _agents.RealmStages[index],
+                _agents.RealmLayers[index],
+                _agents.RealmLayers[index],
+                _agents.CultivationProgress[index],
+                0,
+                _agents.CultivationProgress[index],
+                GetCultivationRequirement(index),
+                _agents.PendingCultivationWork[index],
+                0,
+                0,
+                0,
+                -1,
+                CultivationBottleneckCause.None));
+    }
+
+    private void CommitCultivationTrace(
+        int index,
+        CultivationFormulaKind formulaKind,
+        CultivationTraceState trace)
+    {
+        var revisionBefore = _agents.CultivationAuthorityRevisions[index];
+        var revisionAfter = checked(revisionBefore + 1);
+        _agents.CultivationAuthorityRevisions[index] = revisionAfter;
+        _agents.CultivationTraces[index] = trace with
+        {
+            FormulaKind = formulaKind,
+            AuthorityRevisionBefore = revisionBefore,
+            AuthorityRevisionAfter = revisionAfter,
+        };
     }
 
     private void TryResolveBottleneckAfterAction(int index, AgentActivity resolvedActivity)

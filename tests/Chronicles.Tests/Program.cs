@@ -24,6 +24,7 @@ var tests = new (string Name, Action Body)[]
     ("입문 Gate 병목 단련·적용 Work·저장 왕복", EntryGateRecoveryAndAppliedWork),
     ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
     ("Notion 수행 Work·준비·Preflight·안착 상태", CultivationStateMachine),
+    ("9층 소경지·대원만 분리와 수행 Formula Trace", FloorNineGreatPerfectionAndFormulaTrace),
     ("소경지·대경지 돌파 영구 연대기", CultivationBreakthroughChronicle),
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
     ("8단계 품질 경계와 격차 배율", QualityTiersAndBoundaryMultipliers),
@@ -208,6 +209,25 @@ static void CultivationAuthorityRules()
     Equal(6_250, gate.GateScoreHundredths, "입문 GateScore");
     True(gate.Passed, "Core 40.00 및 GateScore 60.00 통과");
     True(CultivationRules.ProvisionalBalances.All(item => item.RequiresReview), "임시 수치는 재검토 표시");
+    Equal(8, CultivationFormulaRegistry.All.Count, "F-CULT 공식 레지스트리 수");
+    Equal(
+        8,
+        CultivationFormulaRegistry.All
+            .Select(item => item.StableId)
+            .Distinct(StringComparer.Ordinal)
+            .Count(),
+        "F-CULT 안정 ID 중복 금지");
+    True(
+        CultivationRules.GetAttemptClass(9, greatPerfection: false)
+            == BreakthroughClass.FloorNineCompletion,
+        "9층 Work 완료 뒤 별도 소경지 돌파 분류");
+    True(
+        CultivationRules.GetAttemptClass(9, greatPerfection: true)
+            == BreakthroughClass.MajorRealm,
+        "대원만 뒤 대경지 돌파 분류");
+    Throws<ArgumentOutOfRangeException>(
+        () => CultivationFormulaRegistry.Get(CultivationFormulaKind.None),
+        "빈 수행 공식 ID 거부");
 }
 
 static void EntryGateRecoveryAndAppliedWork()
@@ -327,6 +347,128 @@ static void CultivationStateMachine()
             profile.RequiresStabilization,
             "대경지 진입 뒤에만 안착 상태");
     }
+}
+
+static void FloorNineGreatPerfectionAndFormulaTrace()
+{
+    var seedWorld = World.Create(551123, 1);
+    var checkpoint = seedWorld.CreateCheckpoint();
+    var requirement = RealmRules.GetMinorStageRequiredWork(RealmStage.QiRefining, 9);
+    var cultivation = checkpoint.Agents[0].Cultivation!.Value with
+    {
+        PendingCarryoverWork = 0,
+        LastWorkBefore = requirement - 1,
+        LastWorkGain = 0,
+        FloorNineCompleted = false,
+        GreatPerfectionAchieved = false,
+        LatestTrace = CultivationTraceState.Empty,
+        AuthorityRevision = 0,
+    };
+    var floorNineAgent = checkpoint.Agents[0] with
+    {
+        RealmStage = RealmStage.QiRefining,
+        RealmLayer = 9,
+        CultivationProgress = requirement - 1,
+        CultivationState = CultivationState.RealmCultivation,
+        CultivationBottleneckCause = CultivationBottleneckCause.None,
+        Activity = AgentActivity.Cultivating,
+        NextDecisionTick = 1,
+        LastActionMonth = -1,
+        LastActionTick = 0,
+        ActionsTaken = 0,
+        Cultivation = cultivation,
+    };
+    var world = World.Restore(checkpoint with { Agents = [floorNineAgent] });
+
+    world.AdvanceTo(new SimulationTick(1));
+    var preparing = world.GetAgentSnapshot(new AgentId(0));
+    True(!preparing.Cultivation.FloorNineCompleted, "Work 충족만으로 9층을 완성하면 안 됨");
+    True(preparing.CultivationState == CultivationState.PreparingBreakthrough, "9층 돌파 준비 상태");
+    True(
+        preparing.Cultivation.LatestTrace.FormulaKind == CultivationFormulaKind.ProgressAccumulation,
+        "Work Formula Trace");
+    Equal(1L, preparing.Cultivation.AuthorityRevision, "첫 수행 권위 revision");
+
+    var nextMonth = 1L;
+    world.AdvanceTo(GameCalendar.GetMonthStart(nextMonth++));
+    var preflight = world.GetAgentSnapshot(new AgentId(0));
+    True(preflight.CultivationState == CultivationState.PreflightReady, "9층 Preflight 준비");
+    True(
+        preflight.Cultivation.LatestTrace.FormulaKind == CultivationFormulaKind.BreakthroughReadiness,
+        "Preflight Formula Trace");
+
+    AgentSnapshot completed = preflight;
+    for (var attempt = 0; attempt < 24 && !completed.Cultivation.FloorNineCompleted; attempt++)
+    {
+        world.AdvanceTo(GameCalendar.GetMonthStart(nextMonth++));
+        completed = world.GetAgentSnapshot(new AgentId(0));
+    }
+
+    True(completed.Cultivation.FloorNineCompleted, "9층 소경지 돌파가 유한 시도 안에 완료되어야 함");
+    True(!completed.Cultivation.GreatPerfectionAchieved, "9층 완성과 대원만은 같은 commit이면 안 됨");
+    Equal(9, completed.RealmLayer, "9층 완성 뒤 층 유지");
+    True(
+        completed.Cultivation.LatestTrace.AttemptClass == BreakthroughClass.FloorNineCompletion,
+        "9층 Typed Result");
+    True(
+        completed.Cultivation.LatestTrace.FormulaKind == CultivationFormulaKind.BreakthroughResult,
+        "돌파 결과 Formula Trace");
+    Equal(
+        completed.Cultivation.AuthorityRevision,
+        completed.Cultivation.LatestTrace.AuthorityRevisionAfter,
+        "Trace와 수행 권위 revision 일치");
+    True(
+        world.GetAgentChronicle(new AgentId(0))
+            .Any(entry => entry.Kind == ChronicleEventKind.FloorNineCompletion),
+        "9층 소경지 완성 영구 연대기");
+
+    var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(world.CreateCheckpoint())));
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "수행 Formula Trace 저장·codec 왕복");
+    var restoredCompleted = restored.GetAgentSnapshot(new AgentId(0));
+    Equal(completed.Cultivation.AuthorityRevision, restoredCompleted.Cultivation.AuthorityRevision, "수행 권위 revision 복원");
+
+    restored.AdvanceTo(GameCalendar.GetMonthStart(nextMonth));
+    var greatPerfection = restored.GetAgentSnapshot(new AgentId(0));
+    True(greatPerfection.Cultivation.GreatPerfectionAchieved, "9층 완성 다음 별도 행동에서 대원만 완성");
+    True(
+        greatPerfection.Cultivation.LatestTrace.AttemptClass
+            == BreakthroughClass.GreatPerfectionCompletion,
+        "대원만 Typed Result");
+    True(
+        restored.GetAgentChronicle(new AgentId(0))
+            .Any(entry => entry.Kind == ChronicleEventKind.GreatPerfectionAchieved),
+        "대원만 영구 연대기");
+
+    var rankingSeed = World.Create(551124, 3);
+    var rankingCheckpoint = rankingSeed.CreateCheckpoint();
+    var rankedAgents = rankingCheckpoint.Agents
+        .Select((agent, index) => agent with
+        {
+            RealmStage = RealmStage.QiRefining,
+            RealmLayer = 9,
+            CultivationProgress = requirement,
+            CultivationState = CultivationState.Stable,
+            CultivationBottleneckCause = CultivationBottleneckCause.None,
+            Cultivation = agent.Cultivation!.Value with
+            {
+                PendingCarryoverWork = 0,
+                FloorNineCompleted = index <= 1,
+                GreatPerfectionAchieved = index == 0,
+                LatestTrace = CultivationTraceState.Empty,
+                AuthorityRevision = 0,
+            },
+        })
+        .ToArray();
+    var rankingWorld = World.Restore(rankingCheckpoint with { Agents = rankedAgents });
+    var realmRanking = rankingWorld.CreateSnapshot(
+        3,
+        0,
+        ObservationSections.RealmRanking).RealmRankings;
+    Equal(new AgentId(0), realmRanking[0].AgentId, "대원만이 같은 경지·층 1위");
+    Equal(new AgentId(1), realmRanking[1].AgentId, "9층 완성이 Work 충족보다 우선");
+    Equal(new AgentId(2), realmRanking[2].AgentId, "Work 충족 미돌파는 같은 층 최하위");
+    True(realmRanking[0].Score > realmRanking[1].Score, "대원만 경지 점수 분리");
+    True(realmRanking[1].Score > realmRanking[2].Score, "9층 완성 경지 점수 분리");
 }
 
 static void CultivationBreakthroughChronicle()
@@ -604,7 +746,7 @@ static void DetailedAptitudesAuthorityAndLazyProjection()
     var world = World.CreateDefault(741103);
     var checkpoint = world.CreateCheckpoint();
     stopwatch.Stop();
-    Equal(18, checkpoint.SchemaVersion, "세부 선천자질 저장 schema");
+    Equal(19, checkpoint.SchemaVersion, "세부 선천자질·수행 Trace 저장 schema");
 
     long summaryTotal = 0;
     var summaryMinimum = int.MaxValue;
@@ -1318,7 +1460,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 18, "세부 선천자질 저장 schema 18");
+    True(checkpoint.SchemaVersion == 19, "수행 Formula Trace 저장 schema 19");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");

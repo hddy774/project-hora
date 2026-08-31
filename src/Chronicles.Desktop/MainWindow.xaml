@@ -288,6 +288,17 @@
                                            Foreground="{StaticResource SecondaryTextBrush}"
                                            FontSize="10"
                                            TextWrapping="Wrap" />
+                                <Expander x:Name="CultivationTraceExpander"
+                                          Header="최근 수행 Formula Trace"
+                                          Margin="0,8,0,0"
+                                          IsExpanded="False"
+                                          Expanded="VisibleExpander_Expanded">
+                                    <TextBlock x:Name="CultivationTraceText"
+                                               Margin="4,6,4,2"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               FontSize="10"
+                                               TextWrapping="Wrap" />
+                                </Expander>
                             </StackPanel>
                         </Border>
 

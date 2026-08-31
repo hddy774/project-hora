@@ -51,6 +51,7 @@ internal sealed class AgentStore
         CultivationComponentLimits = new ushort[checked(count * CultivationRules.RealmComponentSlotCount)];
         FormationValues = new ushort[checked(count * CultivationRules.FormationSlotCount)];
         CultivationTraces = new CultivationTraceState[count];
+        CultivationAuthorityRevisions = new long[count];
         TechniqueQualities = new ushort[count];
         TechniqueMasteries = new ushort[count];
         TechniqueTrainingExperience = new long[count];
@@ -142,6 +143,7 @@ internal sealed class AgentStore
     public ushort[] CultivationComponentLimits { get; }
     public ushort[] FormationValues { get; }
     public CultivationTraceState[] CultivationTraces { get; }
+    public long[] CultivationAuthorityRevisions { get; }
     public ushort[] TechniqueQualities { get; }
     public ushort[] TechniqueMasteries { get; }
     public long[] TechniqueTrainingExperience { get; }
@@ -427,6 +429,7 @@ internal sealed class AgentStore
             CultivationRules.EntryGateSlotCount);
         FoundationRoutes[index] = FoundationRoute.None;
         CultivationTraces[index] = CultivationTraceState.Empty;
+        CultivationAuthorityRevisions[index] = 0;
         Array.Clear(
             CultivationComponentValues,
             index * CultivationRules.RealmComponentSlotCount,

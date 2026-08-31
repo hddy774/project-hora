@@ -23,6 +23,7 @@ if (args.Contains("--verify-local-save", StringComparer.Ordinal))
 var tests = new (string Name, Action Body)[]
 {
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
+    ("공식 Registry·typed command·원자 transaction·causal event", AuthorityFoundationTests.Run),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
     ("자질 50.00 대경지 1층→9층 대원만 전체 기준", CultivationAuthorityRules),
     ("입문 Gate 병목 단련·적용 Work·저장 왕복", EntryGateRecoveryAndAppliedWork),

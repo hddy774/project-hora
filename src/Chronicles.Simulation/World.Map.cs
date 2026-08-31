@@ -20,6 +20,7 @@ public sealed partial class World
         var totalPowerByLocation = new long[WorldMapRules.LocationCount];
         var maximumPowerByLocation = new long[WorldMapRules.LocationCount];
         var strongestAgentByLocation = new int[WorldMapRules.LocationCount];
+        var hasCultivatorByLocation = new bool[WorldMapRules.LocationCount];
         var highestRealmByLocation = new RealmStage[WorldMapRules.LocationCount];
         var highestLayerByLocation = new int[WorldMapRules.LocationCount];
         var cultivationByLocation = new int[WorldMapRules.LocationCount];
@@ -48,10 +49,14 @@ public sealed partial class World
 
             var realm = _agents.RealmStages[index];
             var layer = _agents.RealmLayers[index];
-            if (realm > highestRealmByLocation[locationId]
-                || (realm == highestRealmByLocation[locationId]
-                    && layer > highestLayerByLocation[locationId]))
+            var hasEnteredCultivation = HasEnteredCultivation(index);
+            if (hasEnteredCultivation
+                && (!hasCultivatorByLocation[locationId]
+                    || realm > highestRealmByLocation[locationId]
+                    || (realm == highestRealmByLocation[locationId]
+                        && layer > highestLayerByLocation[locationId])))
             {
+                hasCultivatorByLocation[locationId] = true;
                 highestRealmByLocation[locationId] = realm;
                 highestLayerByLocation[locationId] = layer;
             }
@@ -96,6 +101,7 @@ public sealed partial class World
                     new AgentId(index),
                     _rankByAgent[index],
                     _agents.Names[index],
+                    hasEnteredCultivation,
                     realm,
                     layer,
                     _agents.Activities[index],
@@ -133,6 +139,7 @@ public sealed partial class World
                     new AgentId(strongestIndex),
                     _rankByAgent[strongestIndex],
                     _agents.Names[strongestIndex],
+                    HasEnteredCultivation(strongestIndex),
                     _agents.RealmStages[strongestIndex],
                     _agents.RealmLayers[strongestIndex],
                     _agents.Activities[strongestIndex],
@@ -150,6 +157,7 @@ public sealed partial class World
                 population == 0 ? 0 : totalPowerByLocation[definition.Id] / population,
                 maximumPowerByLocation[definition.Id],
                 strongest,
+                hasCultivatorByLocation[definition.Id],
                 highestRealmByLocation[definition.Id],
                 highestLayerByLocation[definition.Id],
                 new MapRegionActivitySnapshot(

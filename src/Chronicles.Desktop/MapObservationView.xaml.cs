@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Chronicles.Core;
 using Chronicles.Simulation;
 using static Chronicles.Desktop.PresentationText;
@@ -83,8 +84,8 @@ public partial class MapObservationView : UserControl
                 ? "안전지대"
                 : $"요수 {KoreanNumberFormatter.Format(region.Monsters.Sum(item => (long)item.Population))}마리");
         RegionPopulationText.Text = $"{KoreanNumberFormatter.Format(region.Population)}명";
-        RegionHighestRealmText.Text = region.Population == 0
-            ? "인물 없음"
+        RegionHighestRealmText.Text = !region.HasCultivator
+            ? "미입문"
             : FormatRealm(region.HighestRealm, region.HighestRealmLayer);
         RegionAveragePowerText.Text = KoreanNumberFormatter.Format(region.AverageCombatPower);
         RegionMaximumPowerText.Text = KoreanNumberFormatter.Format(region.MaximumCombatPower);
@@ -112,7 +113,9 @@ public partial class MapObservationView : UserControl
                 agent.AgentId,
                 agent.CombatRank.ToString("N0", CultureInfo.CurrentCulture),
                 agent.Name,
-                FormatRealm(agent.Realm, agent.RealmLayer),
+                agent.HasEnteredCultivation
+                    ? FormatRealm(agent.Realm, agent.RealmLayer)
+                    : "미입문",
                 KoreanNumberFormatter.Format(agent.CombatPower))).ToArray();
         }
         finally
@@ -122,6 +125,22 @@ public partial class MapObservationView : UserControl
 
         var first = region.Population == 0 ? 0 : region.AgentPageOffset + 1;
         var last = Math.Min(region.Population, region.AgentPageOffset + region.Agents.Count);
+        var maximumOffset = region.Population == 0
+            ? 0
+            : ((region.Population - 1) / WorldMapRules.DetailedAgentPageSize)
+                * WorldMapRules.DetailedAgentPageSize;
+        if (ShouldLoadAgents && region.AgentPageOffset > maximumOffset)
+        {
+            AgentOffset = maximumOffset;
+            AgentPageText.Text = "인구 변동에 맞춰 페이지를 조정하는 중";
+            PreviousAgentPageButton.IsEnabled = false;
+            NextAgentPageButton.IsEnabled = false;
+            _ = Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(() => ObservationRequested?.Invoke(this, EventArgs.Empty)));
+            return;
+        }
+
         AgentPageText.Text = $"{first:N0}~{last:N0} / {region.Population:N0}명";
         PreviousAgentPageButton.IsEnabled = region.AgentPageOffset > 0;
         NextAgentPageButton.IsEnabled = last < region.Population;

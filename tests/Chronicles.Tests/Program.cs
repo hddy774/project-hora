@@ -1081,6 +1081,18 @@ static void WorldMapAndBiomeMonsters()
         True(monsters.All(monster => monster.Biome == location.Biome), "요수와 서식 지형 일치");
     }
 
+    var newbornWorld = World.Create(9008, 100);
+    var newbornMap = newbornWorld.CreateSnapshot(
+        1,
+        0,
+        ObservationSections.Map,
+        WorldMapRules.CityLocationId).Map;
+    var newbornCity = newbornMap.Locations[WorldMapRules.CityLocationId];
+    True(!newbornCity.HasCultivator, "0세 지도 최고 경지는 미입문");
+    True(
+        newbornCity.Agents.All(agent => !agent.HasEnteredCultivation),
+        "0세 지도 인물은 연기경으로 오표시하지 않음");
+
     var world = World.Create(9009, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var occupiedLocation = world.GetAgentSnapshot(world.LeaderId).LocationId;

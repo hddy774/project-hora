@@ -101,6 +101,9 @@
 
         <TabControl x:Name="RegionTabControl"
                     Grid.Row="3"
+                    Background="{StaticResource PanelBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    Foreground="{StaticResource PrimaryTextBrush}"
                     SelectionChanged="RegionTabControl_SelectionChanged">
             <TabItem Header="지역 개요">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">

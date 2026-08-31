@@ -86,6 +86,9 @@
         <TabControl x:Name="DetailTabControl"
                     Grid.Row="4"
                     Margin="0,9,0,0"
+                    Background="{StaticResource PanelBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    Foreground="{StaticResource PrimaryTextBrush}"
                     SelectionChanged="DetailTabControl_SelectionChanged">
             <TabItem Header="상품 개요">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">

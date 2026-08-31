@@ -32,8 +32,14 @@ public partial class MainWindow
         OpponentText.Text = agent.OpponentId is { } opponent
             ? GetAgentName(opponent)
             : "없음";
+        var nextActionText = agent.NextDecisionTick.Value == long.MaxValue
+            ? agent.OpponentId is not null
+                ? "상대 턴 대기"
+                : "예약 없음"
+            : FormatGameDate(GameCalendar.GetDate(agent.NextDecisionTick));
         ActionScheduleText.Text =
-            $"누적 행동 {KoreanNumberFormatter.Format(agent.ActionsTaken)}회 · 마지막 {FormatOptionalGameDate(agent.LastActionDate)} · 다음 {FormatGameDate(GameCalendar.GetDate(agent.NextDecisionTick))}";
+            $"누적 행동 {KoreanNumberFormatter.Format(agent.ActionsTaken)}회 · " +
+            $"마지막 {FormatOptionalGameDate(agent.LastActionDate)} · 다음 {nextActionText}";
         var location = WorldMapRules.GetLocation(agent.LocationId);
         LocationText.Text =
             $"현재 위치 {location.KoreanName} · {FormatBiome(location.Biome)} · 요수 사냥 {KoreanNumberFormatter.Format(agent.MonsterVictories)}/{KoreanNumberFormatter.Format(agent.MonsterHunts)}승";

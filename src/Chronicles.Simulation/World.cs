@@ -504,6 +504,9 @@ public sealed partial class World
         Add(ref hash, (ulong)market.RemainingSpiritStoneOre);
         Add(ref hash, (ulong)market.MiningMissionCount);
         Add(ref hash, (ulong)market.SpiritStoneReserveTarget);
+        Add(ref hash, (ulong)market.CurrentFlowBucket);
+        Add(ref hash, (ulong)market.AuthorityRevision);
+        Add(ref hash, (ulong)market.NextTradeSequence);
         for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
         {
             Add(ref hash, (ulong)market.Stock[goodId]);
@@ -511,6 +514,32 @@ public sealed partial class World
             Add(ref hash, (ulong)market.Supply[goodId]);
             Add(ref hash, (ulong)market.Demand[goodId]);
             Add(ref hash, (ulong)(market.QualityHundredths?[goodId] ?? 0));
+            Add(ref hash, (ulong)(market.RecentSupply?[goodId] ?? 0));
+            Add(ref hash, (ulong)(market.RecentDemand?[goodId] ?? 0));
+        }
+        foreach (var value in market.SupplyWindowBuckets ?? Array.Empty<long>())
+        {
+            Add(ref hash, (ulong)value);
+        }
+        foreach (var value in market.DemandWindowBuckets ?? Array.Empty<long>())
+        {
+            Add(ref hash, (ulong)value);
+        }
+        foreach (var source in market.LastSettlementSourceByAgent ?? Array.Empty<long>())
+        {
+            Add(ref hash, unchecked((ulong)source));
+        }
+        foreach (var trade in market.RecentTrades ?? Array.Empty<MarketTradeCheckpoint>())
+        {
+            Add(ref hash, (ulong)trade.Sequence);
+            Add(ref hash, (ulong)trade.Tick);
+            Add(ref hash, (ulong)trade.AgentId);
+            Add(ref hash, (byte)trade.Kind);
+            Add(ref hash, (ulong)trade.GoodId);
+            Add(ref hash, (ulong)trade.Count);
+            Add(ref hash, (ulong)trade.UnitPrice);
+            Add(ref hash, (ulong)trade.TotalSpiritStones);
+            Add(ref hash, trade.QualityHundredths);
         }
         foreach (var order in market.ProductionQueue ?? Array.Empty<CityProductionCheckpoint>())
         {

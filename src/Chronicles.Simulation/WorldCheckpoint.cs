@@ -87,7 +87,16 @@ public sealed record CityMarketCheckpoint(
     long SpiritStonesMined = 0,
     long RemainingSpiritStoneOre = 0,
     long MiningMissionCount = 0,
-    long SpiritStoneReserveTarget = 0);
+    long SpiritStoneReserveTarget = 0,
+    long[]? RecentSupply = null,
+    long[]? RecentDemand = null,
+    long[]? SupplyWindowBuckets = null,
+    long[]? DemandWindowBuckets = null,
+    int CurrentFlowBucket = 0,
+    long AuthorityRevision = 0,
+    long[]? LastSettlementSourceByAgent = null,
+    MarketTradeCheckpoint[]? RecentTrades = null,
+    long NextTradeSequence = 0);
 
 public readonly record struct CityProductionCheckpoint(
     int GoodId,
@@ -96,6 +105,17 @@ public readonly record struct CityProductionCheckpoint(
     int RequiredMonths,
     int MaterialCost,
     long SpiritStoneCost);
+
+public readonly record struct MarketTradeCheckpoint(
+    long Sequence,
+    long Tick,
+    int AgentId,
+    MarketTradeKind Kind,
+    int GoodId,
+    int Count,
+    long UnitPrice,
+    long TotalSpiritStones,
+    ushort QualityHundredths);
 
 public sealed record RankingHistoryFrameCheckpoint(
     long Tick,
@@ -185,5 +205,5 @@ public sealed record WorldCheckpoint(
     RelationStoreCheckpoint? Relations = null,
     ReincarnationStoreCheckpoint? Reincarnation = null)
 {
-    public const int CurrentSchemaVersion = 23;
+    public const int CurrentSchemaVersion = 24;
 }

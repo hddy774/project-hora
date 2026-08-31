@@ -49,6 +49,9 @@ var tests = new (string Name, Action Body)[]
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
     ("도시 임무·영석·재료·단약·법보 경제 순환", EconomyLoop),
     ("재료 부족 상품이 다른 도시 생산을 막지 않음", ProductionSkipsGoodsWithoutResources),
+    ("시장 원자 정산·중복 source·품질 개선 구매", MarketSettlementAtomicity),
+    ("최근 12개월 수급 창·관찰 snapshot 재사용", MarketFlowWindowAndSnapshotCache),
+    ("광맥 0 보존·손상 도시 생산 저장 거부", MarketCheckpointValidation),
     ("전체 분포·랭킹 변동·승패·사망 통계", WorldStatisticsQuery),
     ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
     ("활성 UI 구역 선택 조회 성능", SelectiveObservationPerformance),
@@ -68,6 +71,19 @@ tests =
     ("3×3 지도와 지형별 요수 생태", WorldMapAndBiomeMonsters),
     ("단계형 윤회·계보·6영역 흔적·schema 22 이전", StagedReincarnationLineageTraceAndMigration),
 ];
+
+var filterIndex = Array.IndexOf(args, "--filter");
+if (filterIndex >= 0 && filterIndex + 1 < args.Length)
+{
+    var filter = args[filterIndex + 1];
+    tests = tests.Where(test => test.Name.Contains(
+        filter,
+        StringComparison.CurrentCultureIgnoreCase)).ToArray();
+    if (tests.Length == 0)
+    {
+        throw new ArgumentException($"일치하는 테스트가 없습니다: {filter}", nameof(args));
+    }
+}
 
 var failures = 0;
 foreach (var test in tests)
@@ -892,7 +908,7 @@ static void StagedReincarnationLineageTraceAndMigration()
                     && trace.IntegratedHundredths == 0),
                 "schema 22에는 없던 전생 근거를 조작하지 않음");
             var migratedCheckpoint = migratedSchema22.CreateCheckpoint();
-            Equal(23, migratedCheckpoint.SchemaVersion, "schema 22는 재저장 시 schema 23");
+            Equal(24, migratedCheckpoint.SchemaVersion, "schema 22는 재저장 시 schema 24");
             True(migratedCheckpoint.Reincarnation is not null, "이전 후 윤회 권위 저장 생성");
 
             world = restored;
@@ -1084,7 +1100,7 @@ static void PersonIdentityAndDecisionAuthority()
     Equal(beforeObservation, world.ComputeStateHash(), "행동 이유 관찰은 권위 상태 무영향");
 
     var checkpoint = world.CreateCheckpoint();
-    Equal(23, checkpoint.SchemaVersion, "윤회 계보·Teaching 저장 schema");
+    Equal(24, checkpoint.SchemaVersion, "윤회 계보·Teaching 저장 schema");
     var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
     Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "인물 신원·결정 codec·hash 왕복");
 
@@ -1523,7 +1539,7 @@ static void DetailedAptitudesAuthorityAndLazyProjection()
     var world = World.CreateDefault(741103);
     var checkpoint = world.CreateCheckpoint();
     stopwatch.Stop();
-    Equal(23, checkpoint.SchemaVersion, "윤회 계보·Teaching 저장 schema");
+    Equal(24, checkpoint.SchemaVersion, "윤회 계보·Teaching 저장 schema");
 
     long summaryTotal = 0;
     var summaryMinimum = int.MaxValue;
@@ -2237,7 +2253,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 23, "윤회 계보 저장 schema 23");
+    True(checkpoint.SchemaVersion == 24, "윤회 계보 저장 schema 24");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");
@@ -2552,6 +2568,11 @@ static void EconomyLoop()
     True(world.TotalPillsCrafted > 0, "단약 제작이 발생해야 합니다.");
     True(world.TotalMaterialsSold > 0, "재료 판매가 발생해야 합니다.");
     var market = world.CreateSnapshot(1, 0).Market;
+    var techniqueMarket = market.Goods.Single(item => item.Kind == MarketGoodKind.TechniqueBook);
+    var spellMarket = market.Goods.Single(item => item.Kind == MarketGoodKind.SpellBook);
+    Console.WriteLine(
+        $"ECONOMY: 공법서 재고 {techniqueMarket.Stock:N0}·누적 {techniqueMarket.Supply:N0}/{techniqueMarket.Demand:N0}·최근 {techniqueMarket.RecentSupply:N0}/{techniqueMarket.RecentDemand:N0} · "
+        + $"법술서 재고 {spellMarket.Stock:N0}·누적 {spellMarket.Supply:N0}/{spellMarket.Demand:N0}·최근 {spellMarket.RecentSupply:N0}/{spellMarket.RecentDemand:N0}");
     True(market.TreasurySpiritStones >= 0, "도시 시장 영석은 음수가 될 수 없습니다.");
     True(market.Goods.All(item => item.Stock >= 0), "시장 재고는 음수가 될 수 없습니다.");
     True(market.Goods.Any(item => item.Supply > 0), "임무 납품·판매·도시 생산이 공급으로 기록되어야 합니다.");
@@ -2560,10 +2581,10 @@ static void EconomyLoop()
         market.Goods.Any(item => item.CurrentPrice != item.CityBasePrice),
         "공급과 수요에 따라 시장 가격이 변동해야 합니다.");
     True(
-        market.Goods.Single(item => item.Kind == MarketGoodKind.TechniqueBook).Supply > 0,
+        techniqueMarket.Supply > 0,
         "도시는 영석으로 공법서를 생산해야 합니다.");
     True(
-        market.Goods.Single(item => item.Kind == MarketGoodKind.SpellBook).Supply > 0,
+        spellMarket.Supply > 0,
         "도시는 영석으로 법술서를 생산해야 합니다.");
     True(market.PurchaseTransactions > 0, "도시 시장 구매 거래 누계");
     True(market.SaleTransactions > 0, "도시 시장 판매 거래 누계");
@@ -2617,6 +2638,7 @@ static void ProductionSkipsGoodsWithoutResources()
     var stock = (int[])checkpoint.Market.Stock.Clone();
     var demand = (long[])checkpoint.Market.Demand.Clone();
     var supply = (long[])checkpoint.Market.Supply.Clone();
+    var qualities = new long[EconomyRules.MarketGoodCount];
     Array.Clear(stock);
     Array.Clear(demand);
     Array.Clear(supply);
@@ -2626,6 +2648,12 @@ static void ProductionSkipsGoodsWithoutResources()
         RealmStage.QiRefining);
     demand[blockedTreasure] = 1_000;
     demand[EconomyRules.TechniqueBookGoodId] = 10;
+    var recentDemand = new long[EconomyRules.MarketGoodCount];
+    recentDemand[blockedTreasure] = 1_000;
+    recentDemand[EconomyRules.TechniqueBookGoodId] = 10;
+    var demandBuckets = new long[
+        EconomyRules.MarketGoodCount * EconomyRules.MarketFlowWindowMonths];
+    recentDemand.CopyTo(demandBuckets, 0);
 
     var market = checkpoint.Market with
     {
@@ -2633,6 +2661,13 @@ static void ProductionSkipsGoodsWithoutResources()
         Stock = stock,
         Demand = demand,
         Supply = supply,
+        QualityHundredths = qualities,
+        RecentSupply = new long[EconomyRules.MarketGoodCount],
+        RecentDemand = recentDemand,
+        SupplyWindowBuckets = new long[
+            EconomyRules.MarketGoodCount * EconomyRules.MarketFlowWindowMonths],
+        DemandWindowBuckets = demandBuckets,
+        CurrentFlowBucket = 0,
         ProductionQueue = [],
         LastIndustryMonth = 0,
     };
@@ -2647,6 +2682,145 @@ static void ProductionSkipsGoodsWithoutResources()
     True(
         production.All(item => item.GoodId != blockedTreasure),
         "재료가 없는 상품은 생산 대기열에 들어가면 안 됩니다.");
+}
+
+static void MarketSettlementAtomicity()
+{
+    var market = new CityMarket(2);
+    var initial = market.CreateSnapshot();
+    var materialId = (int)MaterialId.TreasureMaterial;
+    var initialMaterial = initial.Goods[materialId];
+
+    var insufficient = market.SettlePurchase(0, 1, 0, materialId, 1, 0);
+    True(insufficient.Status == MarketSettlementStatus.InsufficientFunds, "부족 자금 결과");
+    var afterInsufficient = market.CreateSnapshot();
+    Equal(initial.TreasurySpiritStones, afterInsufficient.TreasurySpiritStones, "실패 시 도시 영석 불변");
+    Equal(initialMaterial.Stock, afterInsufficient.Goods[materialId].Stock, "실패 시 재고 불변");
+    Equal(initialMaterial.Demand, afterInsufficient.Goods[materialId].Demand, "구매력 없는 시도는 수요가 아님");
+
+    var duplicate = market.SettlePurchase(0, 1, 0, materialId, 1, long.MaxValue);
+    True(duplicate.Status == MarketSettlementStatus.DuplicateSource, "동일 source 중복 정산 거부");
+    Equal(initialMaterial.Stock, market.CreateSnapshot().Goods[materialId].Stock, "중복 정산 자산 이동 0회");
+
+    var settled = market.SettlePurchase(0, 2, 0, materialId, 1, long.MaxValue);
+    True(settled.IsSettled, "정상 재료 구매 정산");
+    Equal(initialMaterial.Stock - 1, market.CreateSnapshot().Goods[materialId].Stock, "정상 구매 재고 1 이동");
+
+    var bookId = EconomyRules.TechniqueBookGoodId;
+    var beforeBook = market.CreateSnapshot().Goods[bookId];
+    var sameQuality = market.SettlePurchase(
+        1,
+        1,
+        0,
+        bookId,
+        1,
+        long.MaxValue,
+        new QualityValue(EconomyRules.InitialSkillMaximumHundredths));
+    True(sameQuality.Status == MarketSettlementStatus.NotAnImprovement, "동일 품질 서적 구매 거부");
+    var afterRejectedBook = market.CreateSnapshot().Goods[bookId];
+    Equal(beforeBook.Stock, afterRejectedBook.Stock, "개선 없는 서적은 사라지지 않음");
+    Equal(beforeBook.Demand, afterRejectedBook.Demand, "개선 없는 서적은 인공 수요를 만들지 않음");
+
+    var betterBook = market.SettlePurchase(
+        1,
+        2,
+        0,
+        bookId,
+        1,
+        long.MaxValue,
+        new QualityValue(7_000));
+    True(betterBook.IsSettled, "더 좋은 서적만 구매 정산");
+    Equal(2L, market.CreateSnapshot().PurchaseTransactions, "실제 구매만 거래 누계에 포함");
+    Equal(2, market.CreateSnapshot().RecentTrades?.Count ?? 0, "정산된 실물 거래 원장");
+}
+
+static void MarketFlowWindowAndSnapshotCache()
+{
+    var market = new CityMarket(1);
+    _ = market.SettlePurchase(
+        0,
+        1,
+        0,
+        (int)MaterialId.PillMaterial,
+        1,
+        long.MaxValue);
+    var first = market.CreateSnapshot();
+    var second = market.CreateSnapshot();
+    True(ReferenceEquals(first, second), "동일 authority revision은 시장 snapshot 재사용");
+    True(first.RecentDemand > 0, "최근 수요가 현재 관측 창에 기록됨");
+
+    market.AdvanceIndustry(EconomyRules.MarketFlowWindowMonths);
+    var expired = market.CreateSnapshot();
+    var material = expired.Goods[(int)MaterialId.PillMaterial];
+    Equal(0L, material.RecentDemand, "12개월이 지난 수요는 현재 창에서 만료");
+    True(material.Demand > 0, "감사·통계용 누적 수요는 보존");
+    True(!ReferenceEquals(first, expired), "authority 변경 시 snapshot 갱신");
+}
+
+static void MarketCheckpointValidation()
+{
+    var world = World.Create(709, 1);
+    var checkpoint = world.CreateCheckpoint();
+    var depleted = checkpoint with
+    {
+        Market = checkpoint.Market with { RemainingSpiritStoneOre = 0 },
+    };
+    var restored = World.Restore(depleted);
+    Equal(0L, restored.CreateSnapshot(1, 0).Market.RemainingSpiritStoneOre, "고갈 광맥 0 영구 보존");
+
+    var schema23Market = checkpoint.Market with
+    {
+        RecentSupply = null,
+        RecentDemand = null,
+        SupplyWindowBuckets = null,
+        DemandWindowBuckets = null,
+        CurrentFlowBucket = 0,
+        AuthorityRevision = 0,
+        LastSettlementSourceByAgent = null,
+        RecentTrades = null,
+        NextTradeSequence = 0,
+    };
+    var migrated = World.Restore(checkpoint with
+    {
+        SchemaVersion = 23,
+        Market = schema23Market,
+    }).CreateCheckpoint();
+    Equal(24, migrated.SchemaVersion, "schema 23 시장은 schema 24로 이전");
+    Equal(EconomyRules.MarketGoodCount, migrated.Market.RecentSupply?.Length ?? 0, "이전 후 최근 수급 생성");
+    Equal(checkpoint.Agents.Length, migrated.Market.LastSettlementSourceByAgent?.Length ?? 0, "이전 후 중복 정산 방지 슬롯 생성");
+
+    var invalidQuality = (long[])checkpoint.Market.QualityHundredths!.Clone();
+    invalidQuality[EconomyRules.TechniqueBookGoodId] = checked(
+        ((long)checkpoint.Market.Stock[EconomyRules.TechniqueBookGoodId]
+            * QualityValue.MaximumHundredths) + 1);
+    Throws<InvalidDataException>(
+        () => World.Restore(checkpoint with
+        {
+            Market = checkpoint.Market with { QualityHundredths = invalidQuality },
+        }),
+        "재고보다 큰 품질 합계 거부");
+
+    var definition = EconomyRules.GetMarketGood(EconomyRules.TechniqueBookGoodId);
+    var invalidOrder = new CityProductionCheckpoint(
+        definition.Id,
+        checked((ushort)(QualityValue.MaximumHundredths + 1)),
+        0,
+        EconomyRules.CityProductionMonths,
+        EconomyRules.GetProductionMaterialCost(definition.Kind, definition.Realm),
+        EconomyRules.GetProductionSpiritStoneCost(definition));
+    Throws<InvalidDataException>(
+        () => World.Restore(checkpoint with
+        {
+            Market = checkpoint.Market with { ProductionQueue = [invalidOrder] },
+        }),
+        "범위 밖 생산 품질 거부");
+
+    Throws<InvalidDataException>(
+        () => World.Restore(checkpoint with
+        {
+            Market = checkpoint.Market with { LastIndustryMonth = 1 },
+        }),
+        "세계보다 미래인 도시 산업 월 거부");
 }
 
 static void SaveCodecRoundTrip()
@@ -2775,7 +2949,7 @@ static void DefaultWorldPerformanceBudget()
         $"{targetTick:N0} tick {simulationStopwatch.Elapsed.TotalMilliseconds:N0} ms + " +
         $"관찰 {projectionStopwatch.Elapsed.TotalMilliseconds:N1} ms = " +
         $"{totalStopwatch.Elapsed.TotalMilliseconds:N0} ms · checkpoint " +
-        $"{checkpointStopwatch.Elapsed.TotalMilliseconds:N0} ms · schema 23 복원 " +
+        $"{checkpointStopwatch.Elapsed.TotalMilliseconds:N0} ms · schema 24 복원 " +
         $"{restoreStopwatch.Elapsed.TotalMilliseconds:N0} ms");
     Equal(targetTick, snapshot.Tick.Value, "성능 검증 도달 tick");
     Equal(10_000, snapshot.Population, "성능 검증 인구");
@@ -2785,8 +2959,8 @@ static void DefaultWorldPerformanceBudget()
         $"10,000명 시뮬레이션 성능 예산 10초를 초과했습니다: {totalStopwatch.Elapsed.TotalSeconds:N2}초");
     True(
         checkpointStopwatch.Elapsed + restoreStopwatch.Elapsed < TimeSpan.FromSeconds(5),
-        "10,000명 schema 23 checkpoint·복원 성능 예산 5초를 초과했습니다.");
-    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "10,000명 schema 23 복원 hash");
+        "10,000명 schema 24 checkpoint·복원 성능 예산 5초를 초과했습니다.");
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "10,000명 schema 24 복원 hash");
 }
 
 static byte[] RemoveSchema22TeachingProperties(byte[] container)

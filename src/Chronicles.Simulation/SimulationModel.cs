@@ -379,7 +379,62 @@ public readonly record struct MarketGoodSnapshot(
     int Stock,
     long Supply,
     long Demand,
-    QualityValue? AverageQuality = null);
+    QualityValue? AverageQuality = null,
+    long RecentSupply = 0,
+    long RecentDemand = 0,
+    MarketProductionState ProductionState = MarketProductionState.NotProduced,
+    MaterialId? RequiredMaterial = null,
+    int ProductionMaterialCost = 0,
+    long ProductionSpiritStoneCost = 0);
+
+public enum MarketProductionState : byte
+{
+    NotProduced,
+    NoDemand,
+    TargetStockReached,
+    Queued,
+    Ready,
+    BlockedByMaterial,
+    BlockedByTreasury,
+    BlockedByCapacity,
+}
+
+public enum MarketTradeKind : byte
+{
+    Purchase,
+    Sale,
+    MissionDelivery,
+}
+
+public enum MarketSettlementStatus : byte
+{
+    Settled,
+    DuplicateSource,
+    OutOfStock,
+    InsufficientFunds,
+    NotAnImprovement,
+    CityTreasuryInsufficient,
+    NoDemand,
+}
+
+public readonly record struct MarketSettlementReceipt(
+    MarketSettlementStatus Status,
+    long TotalSpiritStones = 0,
+    QualityValue? Quality = null)
+{
+    public bool IsSettled => Status == MarketSettlementStatus.Settled;
+}
+
+public readonly record struct MarketTradeSnapshot(
+    long Sequence,
+    SimulationTick Tick,
+    AgentId AgentId,
+    MarketTradeKind Kind,
+    int GoodId,
+    int Count,
+    long UnitPrice,
+    long TotalSpiritStones,
+    QualityValue? Quality);
 
 public readonly record struct CityProductionSnapshot(
     int GoodId,
@@ -413,7 +468,11 @@ public sealed record CityMarketSnapshot(
     long TotalSupply = 0,
     long TotalDemand = 0,
     long UnmetDemand = 0,
-    int ProductionCapacity = EconomyRules.MaximumConcurrentProduction)
+    int ProductionCapacity = EconomyRules.MaximumConcurrentProduction,
+    long AuthorityRevision = 0,
+    long RecentSupply = 0,
+    long RecentDemand = 0,
+    IReadOnlyList<MarketTradeSnapshot>? RecentTrades = null)
 {
     public static CityMarketSnapshot Empty { get; } = new(
         0,

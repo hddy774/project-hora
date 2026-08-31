@@ -2,7 +2,7 @@ using Chronicles.Core;
 
 namespace Chronicles.Simulation;
 
-internal sealed class CityMarket
+internal sealed partial class CityMarket
 {
     private const ushort NoQuality = ushort.MaxValue;
 
@@ -10,9 +10,27 @@ internal sealed class CityMarket
     private readonly long[] _prices = new long[EconomyRules.MarketGoodCount];
     private readonly long[] _supply = new long[EconomyRules.MarketGoodCount];
     private readonly long[] _demand = new long[EconomyRules.MarketGoodCount];
+    private readonly long[] _recentSupply = new long[EconomyRules.MarketGoodCount];
+    private readonly long[] _recentDemand = new long[EconomyRules.MarketGoodCount];
+    private readonly long[] _supplyWindowBuckets = new long[
+        EconomyRules.MarketGoodCount * EconomyRules.MarketFlowWindowMonths];
+    private readonly long[] _demandWindowBuckets = new long[
+        EconomyRules.MarketGoodCount * EconomyRules.MarketFlowWindowMonths];
     private readonly long[] _qualityHundredths = new long[EconomyRules.MarketGoodCount];
+    private readonly long[] _lastSettlementSourceByAgent;
     private readonly List<CityProductionOrder> _productionQueue = new(EconomyRules.MaximumConcurrentProduction);
+    private readonly Queue<MarketTradeRecord> _recentTrades = new(EconomyRules.RecentTradeCapacity);
+    private readonly long[] _materialMissionScoreCache = new long[EconomyRules.MaterialCount];
     private long _lastIndustryMonth;
+    private int _currentFlowBucket;
+    private long _authorityRevision = 1;
+    private long _nextTradeSequence = 1;
+    private long _derivedCacheRevision = -1;
+    private bool _productionBlockedByTreasuryCache;
+    private long _summaryCacheRevision = -1;
+    private long _goodsCacheRevision = -1;
+    private CityMarketSnapshot? _summaryCache;
+    private CityMarketSnapshot? _goodsCache;
     private long _purchaseTransactions;
     private long _saleTransactions;
     private long _missionDeliveries;
@@ -29,6 +47,8 @@ internal sealed class CityMarket
     public CityMarket(int population)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(population);
+        _lastSettlementSourceByAgent = new long[population];
+        Array.Fill(_lastSettlementSourceByAgent, -1L);
         TreasurySpiritStones = checked(Math.Max(100_000L, population * 100L));
         _spiritStoneReserveTarget = checked(Math.Max(500_000L, population * 500L));
         _remainingSpiritStoneOre = checked(Math.Max(10_000_000L, population * 100_000L));
@@ -53,9 +73,12 @@ internal sealed class CityMarket
         }
     }
 
-    public CityMarket(CityMarketCheckpoint checkpoint, int schemaVersion)
+    public CityMarket(CityMarketCheckpoint checkpoint, int schemaVersion, int population)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(population);
+        _lastSettlementSourceByAgent = new long[population];
+        Array.Fill(_lastSettlementSourceByAgent, -1L);
         TreasurySpiritStones = checkpoint.TreasurySpiritStones;
         _purchaseTransactions = checkpoint.PurchaseTransactions;
         _saleTransactions = checkpoint.SaleTransactions;
@@ -71,9 +94,11 @@ internal sealed class CityMarket
         _spiritStoneReserveTarget = checkpoint.SpiritStoneReserveTarget > 0
             ? checkpoint.SpiritStoneReserveTarget
             : Math.Max(500_000L, TreasurySpiritStones);
-        _remainingSpiritStoneOre = checkpoint.RemainingSpiritStoneOre > 0
+        _remainingSpiritStoneOre = schemaVersion >= 14
             ? checkpoint.RemainingSpiritStoneOre
-            : 100_000_000L;
+            : checkpoint.RemainingSpiritStoneOre > 0
+                ? checkpoint.RemainingSpiritStoneOre
+                : 100_000_000L;
 
         if (checkpoint.Stock.Length == EconomyRules.MarketGoodCount)
         {
@@ -84,6 +109,44 @@ internal sealed class CityMarket
             if (checkpoint.QualityHundredths is { Length: EconomyRules.MarketGoodCount } qualities)
             {
                 Array.Copy(qualities, _qualityHundredths, _qualityHundredths.Length);
+            }
+
+            if (schemaVersion >= 24)
+            {
+                Array.Copy(checkpoint.RecentSupply!, _recentSupply, _recentSupply.Length);
+                Array.Copy(checkpoint.RecentDemand!, _recentDemand, _recentDemand.Length);
+                Array.Copy(
+                    checkpoint.SupplyWindowBuckets!,
+                    _supplyWindowBuckets,
+                    _supplyWindowBuckets.Length);
+                Array.Copy(
+                    checkpoint.DemandWindowBuckets!,
+                    _demandWindowBuckets,
+                    _demandWindowBuckets.Length);
+                _currentFlowBucket = checkpoint.CurrentFlowBucket;
+                _authorityRevision = Math.Max(1L, checkpoint.AuthorityRevision);
+                Array.Copy(
+                    checkpoint.LastSettlementSourceByAgent!,
+                    _lastSettlementSourceByAgent,
+                    _lastSettlementSourceByAgent.Length);
+                _nextTradeSequence = Math.Max(1L, checkpoint.NextTradeSequence);
+                foreach (var trade in checkpoint.RecentTrades!)
+                {
+                    _recentTrades.Enqueue(new MarketTradeRecord(
+                        trade.Sequence,
+                        trade.Tick,
+                        trade.AgentId,
+                        trade.Kind,
+                        trade.GoodId,
+                        trade.Count,
+                        trade.UnitPrice,
+                        trade.TotalSpiritStones,
+                        trade.QualityHundredths));
+                }
+            }
+            else
+            {
+                SeedRecentFlowFromLegacyTotals();
             }
 
             if (checkpoint.ProductionQueue is { } queue)
@@ -103,6 +166,7 @@ internal sealed class CityMarket
         else
         {
             RestoreLegacyMarket(checkpoint);
+            SeedRecentFlowFromLegacyTotals();
         }
 
         for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
@@ -132,126 +196,7 @@ internal sealed class CityMarket
     public long GetUnmetDemand(int goodId)
     {
         goodId = ValidateGood(goodId);
-        return Math.Max(0L, _demand[goodId] - _supply[goodId]);
-    }
-
-    public bool TryBuy(int goodId, int count, long availableSpiritStones, out long cost)
-    {
-        ValidateCount(count);
-        goodId = ValidateGood(goodId);
-        if (IsQualityGood(EconomyRules.GetMarketGood(goodId).Kind))
-        {
-            throw new InvalidOperationException("품질 상품은 품질 포함 구매 API를 사용해야 합니다.");
-        }
-
-        RegisterDemand(goodId, count);
-        cost = checked(GetPrice(goodId) * count);
-        if (_stock[goodId] < count || availableSpiritStones < cost)
-        {
-            return false;
-        }
-
-        _stock[goodId] -= count;
-        _purchaseTransactions = checked(_purchaseTransactions + 1);
-        TreasurySpiritStones = checked(TreasurySpiritStones + cost);
-        Reprice(goodId);
-        return true;
-    }
-
-    public bool TryBuyQualityGood(
-        int goodId,
-        long availableSpiritStones,
-        out long cost,
-        out QualityValue quality)
-    {
-        goodId = ValidateGood(goodId);
-        if (!IsQualityGood(EconomyRules.GetMarketGood(goodId).Kind))
-        {
-            throw new InvalidOperationException("일반 상품은 일반 구매 API를 사용해야 합니다.");
-        }
-
-        RegisterDemand(goodId, 1);
-        cost = GetPrice(goodId);
-        if (_stock[goodId] <= 0 || availableSpiritStones < cost)
-        {
-            quality = default;
-            return false;
-        }
-
-        var raw = checked((ushort)Math.Clamp(
-            _qualityHundredths[goodId] / _stock[goodId],
-            0L,
-            QualityValue.MaximumHundredths));
-        _stock[goodId]--;
-        _qualityHundredths[goodId] -= raw;
-        _purchaseTransactions = checked(_purchaseTransactions + 1);
-        TreasurySpiritStones = checked(TreasurySpiritStones + cost);
-        quality = new QualityValue(raw);
-        Reprice(goodId);
-        return true;
-    }
-
-    public bool TrySell(int goodId, int count, out long proceeds)
-    {
-        ValidateCount(count);
-        goodId = ValidateGood(goodId);
-        if (IsQualityGood(EconomyRules.GetMarketGood(goodId).Kind))
-        {
-            throw new InvalidOperationException("품질 상품은 품질 포함 판매 API를 사용해야 합니다.");
-        }
-
-        proceeds = checked(GetPrice(goodId) * count * 4 / 5);
-        if (TreasurySpiritStones < proceeds)
-        {
-            return false;
-        }
-
-        TreasurySpiritStones -= proceeds;
-        _saleTransactions = checked(_saleTransactions + 1);
-        AddSupply(goodId, count);
-        return true;
-    }
-
-    public bool TrySellQualityGood(int goodId, QualityValue quality, out long proceeds)
-    {
-        goodId = ValidateGood(goodId);
-        if (!IsQualityGood(EconomyRules.GetMarketGood(goodId).Kind))
-        {
-            throw new InvalidOperationException("일반 상품은 일반 판매 API를 사용해야 합니다.");
-        }
-
-        proceeds = checked(EconomyRules.GetQualityAdjustedPrice(_prices[goodId], quality) * 4 / 5);
-        if (TreasurySpiritStones < proceeds)
-        {
-            return false;
-        }
-
-        TreasurySpiritStones -= proceeds;
-        _saleTransactions = checked(_saleTransactions + 1);
-        _qualityHundredths[goodId] = checked(_qualityHundredths[goodId] + quality.Hundredths);
-        AddSupply(goodId, 1);
-        return true;
-    }
-
-    public bool TryAcceptMissionDelivery(
-        MaterialId material,
-        int count,
-        int realmBonus,
-        out long reward)
-    {
-        ValidateCount(count);
-        var goodId = ValidateGood((int)material);
-        reward = checked((GetPrice(goodId) * count) + realmBonus);
-        if (!HasMaterialDemand(material) || TreasurySpiritStones < reward)
-        {
-            reward = 0;
-            return false;
-        }
-
-        TreasurySpiritStones -= reward;
-        _missionDeliveries = checked(_missionDeliveries + 1);
-        AddSupply(goodId, count);
-        return true;
+        return Math.Max(0L, _recentDemand[goodId] - _recentSupply[goodId]);
     }
 
     public bool TryGetRequestedMissionMaterial(out MaterialId material)
@@ -294,6 +239,7 @@ internal sealed class CityMarket
         _spiritStonesMined = checked(_spiritStonesMined + extracted);
         _miningMissionCount = checked(_miningMissionCount + 1);
         TreasurySpiritStones = checked(TreasurySpiritStones + extracted - workerReward);
+        TouchAuthority();
         return true;
     }
 
@@ -306,6 +252,7 @@ internal sealed class CityMarket
         }
 
         TreasurySpiritStones = checked(TreasurySpiritStones + fee);
+        TouchAuthority();
         return true;
     }
 
@@ -320,12 +267,40 @@ internal sealed class CityMarket
         while (_lastIndustryMonth < currentMonth)
         {
             _lastIndustryMonth++;
+            AdvanceFlowWindowOneMonth();
             AdvanceProductionOneMonth();
             FillProductionQueue();
+            TouchAuthority();
         }
     }
 
     public CityMarketSnapshot CreateSnapshot(bool includeGoods = true)
+    {
+        if (includeGoods && _goodsCacheRevision == _authorityRevision)
+        {
+            return _goodsCache!;
+        }
+        if (!includeGoods && _summaryCacheRevision == _authorityRevision)
+        {
+            return _summaryCache!;
+        }
+
+        var snapshot = BuildSnapshot(includeGoods);
+        if (includeGoods)
+        {
+            _goodsCache = snapshot;
+            _goodsCacheRevision = _authorityRevision;
+        }
+        else
+        {
+            _summaryCache = snapshot;
+            _summaryCacheRevision = _authorityRevision;
+        }
+
+        return snapshot;
+    }
+
+    private CityMarketSnapshot BuildSnapshot(bool includeGoods)
     {
         var goods = includeGoods
             ? new MarketGoodSnapshot[EconomyRules.MarketGoodCount]
@@ -335,13 +310,18 @@ internal sealed class CityMarket
         long totalSupply = 0;
         long totalDemand = 0;
         long unmetDemand = 0;
+        long recentSupply = 0;
+        long recentDemand = 0;
         for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
         {
             var definition = EconomyRules.GetMarketGood(goodId);
             totalStock = checked(totalStock + _stock[goodId]);
             totalSupply = checked(totalSupply + _supply[goodId]);
             totalDemand = checked(totalDemand + _demand[goodId]);
-            unmetDemand = checked(unmetDemand + Math.Max(0L, _demand[goodId] - _supply[goodId]));
+            recentSupply = checked(recentSupply + _recentSupply[goodId]);
+            recentDemand = checked(recentDemand + _recentDemand[goodId]);
+            unmetDemand = checked(
+                unmetDemand + Math.Max(0L, _recentDemand[goodId] - _recentSupply[goodId]));
             if (definition.Kind == MarketGoodKind.Material)
             {
                 materialStock = checked(materialStock + _stock[goodId]);
@@ -359,7 +339,19 @@ internal sealed class CityMarket
                     _stock[goodId],
                     _supply[goodId],
                     _demand[goodId],
-                    GetAverageQuality(goodId));
+                    GetAverageQuality(goodId),
+                    _recentSupply[goodId],
+                    _recentDemand[goodId],
+                    GetProductionState(goodId, definition),
+                    TryGetRequiredMaterial(definition.Kind, out var requiredMaterial)
+                        ? requiredMaterial
+                        : null,
+                    definition.Kind == MarketGoodKind.Material
+                        ? 0
+                        : EconomyRules.GetProductionMaterialCost(definition.Kind, definition.Realm),
+                    definition.Kind == MarketGoodKind.Material
+                        ? 0
+                        : EconomyRules.GetProductionSpiritStoneCost(definition));
             }
         }
 
@@ -382,6 +374,21 @@ internal sealed class CityMarket
                     : new QualityValue(order.QualityHundredths));
         }
 
+        var trades = includeGoods
+            ? _recentTrades.Select(trade => new MarketTradeSnapshot(
+                trade.Sequence,
+                new SimulationTick(trade.Tick),
+                new AgentId(trade.AgentId),
+                trade.Kind,
+                trade.GoodId,
+                trade.Count,
+                trade.UnitPrice,
+                trade.TotalSpiritStones,
+                trade.QualityHundredths == NoQuality
+                    ? null
+                    : new QualityValue(trade.QualityHundredths))).ToArray()
+            : Array.Empty<MarketTradeSnapshot>();
+
         return new CityMarketSnapshot(
             TreasurySpiritStones,
             _purchaseTransactions,
@@ -403,7 +410,11 @@ internal sealed class CityMarket
             totalSupply,
             totalDemand,
             unmetDemand,
-            EconomyRules.MaximumConcurrentProduction);
+            EconomyRules.MaximumConcurrentProduction,
+            _authorityRevision,
+            recentSupply,
+            recentDemand,
+            trades);
     }
 
     public CityMarketCheckpoint CreateCheckpoint() => new(
@@ -433,7 +444,25 @@ internal sealed class CityMarket
         _spiritStonesMined,
         _remainingSpiritStoneOre,
         _miningMissionCount,
-        _spiritStoneReserveTarget);
+        _spiritStoneReserveTarget,
+        _recentSupply.ToArray(),
+        _recentDemand.ToArray(),
+        _supplyWindowBuckets.ToArray(),
+        _demandWindowBuckets.ToArray(),
+        _currentFlowBucket,
+        _authorityRevision,
+        _lastSettlementSourceByAgent.ToArray(),
+        _recentTrades.Select(trade => new MarketTradeCheckpoint(
+            trade.Sequence,
+            trade.Tick,
+            trade.AgentId,
+            trade.Kind,
+            trade.GoodId,
+            trade.Count,
+            trade.UnitPrice,
+            trade.TotalSpiritStones,
+            trade.QualityHundredths)).ToArray(),
+        _nextTradeSequence);
 
     private void AdvanceProductionOneMonth()
     {
@@ -520,7 +549,7 @@ internal sealed class CityMarket
         if (material is { } consumed)
         {
             _stock[(int)consumed] -= materialCost;
-            _demand[(int)consumed] = checked(_demand[(int)consumed] + materialCost);
+            RegisterDemand((int)consumed, materialCost);
             _materialsProcessed = checked(_materialsProcessed + materialCost);
             Reprice((int)consumed);
         }
@@ -534,6 +563,7 @@ internal sealed class CityMarket
             EconomyRules.CityProductionMonths,
             materialCost,
             spiritStoneCost));
+        TouchAuthority();
         return true;
     }
 
@@ -579,6 +609,45 @@ internal sealed class CityMarket
         AddSupply(order.GoodId, 1);
     }
 
+    private MarketProductionState GetProductionState(
+        int goodId,
+        MarketGoodDefinition definition)
+    {
+        if (definition.Kind == MarketGoodKind.Material)
+        {
+            return MarketProductionState.NotProduced;
+        }
+        if (_productionQueue.Any(order => order.GoodId == goodId))
+        {
+            return MarketProductionState.Queued;
+        }
+        if (GetUnmetDemand(goodId) <= 0)
+        {
+            return MarketProductionState.NoDemand;
+        }
+        if (_stock[goodId] >= EconomyRules.CityProductionTargetStock)
+        {
+            return MarketProductionState.TargetStockReached;
+        }
+
+        var materialCost = EconomyRules.GetProductionMaterialCost(definition.Kind, definition.Realm);
+        if (TryGetRequiredMaterial(definition.Kind, out var material)
+            && _stock[(int)material] < materialCost)
+        {
+            return MarketProductionState.BlockedByMaterial;
+        }
+        if (TreasurySpiritStones < EconomyRules.GetProductionSpiritStoneCost(definition))
+        {
+            return MarketProductionState.BlockedByTreasury;
+        }
+        if (_productionQueue.Count >= EconomyRules.MaximumConcurrentProduction)
+        {
+            return MarketProductionState.BlockedByCapacity;
+        }
+
+        return MarketProductionState.Ready;
+    }
+
     private QualityValue? GetAverageQuality(int goodId)
     {
         if (_stock[goodId] <= 0 || !IsQualityGood(EconomyRules.GetMarketGood(goodId).Kind))
@@ -603,62 +672,82 @@ internal sealed class CityMarket
         _ => null,
     };
 
-    private bool HasMaterialDemand(MaterialId material) => GetMaterialMissionScore(material) > 0;
-
     private long GetMaterialMissionScore(MaterialId material)
     {
-        var materialId = (int)material;
-        var score = Math.Max(0L, _demand[materialId] - _supply[materialId]);
+        EnsureDerivedDemandCache();
+        return _materialMissionScoreCache[(int)material];
+    }
+
+    private void EnsureDerivedDemandCache()
+    {
+        if (_derivedCacheRevision == _authorityRevision)
+        {
+            return;
+        }
+
+        for (var materialId = 0; materialId < EconomyRules.MaterialCount; materialId++)
+        {
+            _materialMissionScoreCache[materialId] = Math.Max(
+                0L,
+                _recentDemand[materialId] - _recentSupply[materialId]);
+        }
+
+        _productionBlockedByTreasuryCache = false;
         for (var goodId = EconomyRules.RealmGoodStartId; goodId < EconomyRules.MarketGoodCount; goodId++)
         {
             var definition = EconomyRules.GetMarketGood(goodId);
-            if (!TryGetRequiredMaterial(definition.Kind, out var required) || required != material)
+            var unmet = GetUnmetDemand(goodId);
+            if (unmet <= 0)
             {
                 continue;
             }
 
-            var unmet = GetUnmetDemand(goodId);
-            if (unmet > 0)
+            if (TryGetRequiredMaterial(definition.Kind, out var required))
             {
-                score = checked(score + unmet * EconomyRules.GetProductionMaterialCost(
+                var materialId = (int)required;
+                _materialMissionScoreCache[materialId] = SaturatingAdd(
+                    _materialMissionScoreCache[materialId],
+                    checked(unmet * EconomyRules.GetProductionMaterialCost(
                     definition.Kind,
-                    definition.Realm));
+                    definition.Realm)));
+            }
+            if (TreasurySpiritStones < EconomyRules.GetProductionSpiritStoneCost(definition))
+            {
+                _productionBlockedByTreasuryCache = true;
             }
         }
 
-        return Math.Max(0L, score - _stock[materialId]);
+        for (var materialId = 0; materialId < EconomyRules.MaterialCount; materialId++)
+        {
+            _materialMissionScoreCache[materialId] = Math.Max(
+                0L,
+                _materialMissionScoreCache[materialId] - _stock[materialId]);
+        }
+
+        _derivedCacheRevision = _authorityRevision;
     }
 
     private bool IsProductionBlockedByTreasury()
     {
-        for (var goodId = EconomyRules.RealmGoodStartId; goodId < EconomyRules.MarketGoodCount; goodId++)
-        {
-            if (GetUnmetDemand(goodId) <= 0)
-            {
-                continue;
-            }
-
-            var definition = EconomyRules.GetMarketGood(goodId);
-            if (TreasurySpiritStones < EconomyRules.GetProductionSpiritStoneCost(definition))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        EnsureDerivedDemandCache();
+        return _productionBlockedByTreasuryCache;
     }
 
     private void RegisterDemand(int goodId, int count)
     {
-        _demand[goodId] = checked(_demand[goodId] + count);
+        _demand[goodId] = SaturatingAdd(_demand[goodId], count);
+        AddCurrentFlow(_recentDemand, _demandWindowBuckets, goodId, count);
         Reprice(goodId);
+        TouchAuthority();
     }
 
     private void AddSupply(int goodId, int count)
     {
         _stock[goodId] = checked(_stock[goodId] + count);
-        _supply[goodId] = checked(_supply[goodId] + count);
+        _supply[goodId] = SaturatingAdd(_supply[goodId], count);
+        AddCurrentFlow(_recentSupply, _supplyWindowBuckets, goodId, count);
         Reprice(goodId);
+        TouchAuthority();
     }
 
     private void Reprice(int goodId)
@@ -667,11 +756,79 @@ internal sealed class CityMarket
         var targetStock = definition.Kind == MarketGoodKind.Material
             ? 12
             : EconomyRules.CityProductionTargetStock;
-        var tradeImbalance = Math.Clamp(_demand[goodId] - _supply[goodId], -100L, 100L);
+        var tradeImbalance = Math.Clamp(
+            _recentDemand[goodId] - _recentSupply[goodId],
+            -100L,
+            100L);
         var stockPressure = Math.Clamp(targetStock - _stock[goodId], -50, 100);
         var percentage = Math.Clamp(100L + (tradeImbalance * 2) + (stockPressure * 3L), 25L, 400L);
         _prices[goodId] = Math.Max(1L, checked(definition.CityBasePrice * percentage / 100L));
     }
+
+    private void AddCurrentFlow(
+        long[] recent,
+        long[] buckets,
+        int goodId,
+        int count)
+    {
+        recent[goodId] = SaturatingAdd(recent[goodId], count);
+        var bucketIndex = (_currentFlowBucket * EconomyRules.MarketGoodCount) + goodId;
+        buckets[bucketIndex] = SaturatingAdd(buckets[bucketIndex], count);
+    }
+
+    private void AdvanceFlowWindowOneMonth()
+    {
+        _currentFlowBucket = (_currentFlowBucket + 1) % EconomyRules.MarketFlowWindowMonths;
+        var start = _currentFlowBucket * EconomyRules.MarketGoodCount;
+        var changed = false;
+        for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
+        {
+            var bucketIndex = start + goodId;
+            var expiredSupply = _supplyWindowBuckets[bucketIndex];
+            var expiredDemand = _demandWindowBuckets[bucketIndex];
+            if (expiredSupply == 0 && expiredDemand == 0)
+            {
+                continue;
+            }
+
+            _recentSupply[goodId] -= expiredSupply;
+            _recentDemand[goodId] -= expiredDemand;
+            _supplyWindowBuckets[bucketIndex] = 0;
+            _demandWindowBuckets[bucketIndex] = 0;
+            Reprice(goodId);
+            changed = true;
+        }
+
+        if (changed)
+        {
+            TouchAuthority();
+        }
+    }
+
+    private void SeedRecentFlowFromLegacyTotals()
+    {
+        const long maximumSeedPerGood = 100;
+        var start = _currentFlowBucket * EconomyRules.MarketGoodCount;
+        for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
+        {
+            _recentSupply[goodId] = Math.Min(_supply[goodId], maximumSeedPerGood);
+            _recentDemand[goodId] = Math.Min(_demand[goodId], maximumSeedPerGood);
+            _supplyWindowBuckets[start + goodId] = _recentSupply[goodId];
+            _demandWindowBuckets[start + goodId] = _recentDemand[goodId];
+            Reprice(goodId);
+        }
+    }
+
+    private void TouchAuthority()
+    {
+        _authorityRevision = _authorityRevision == long.MaxValue
+            ? 1
+            : _authorityRevision + 1;
+        _derivedCacheRevision = -1;
+    }
+
+    private static long SaturatingAdd(long left, long right) =>
+        left > long.MaxValue - right ? long.MaxValue : left + right;
 
     private void RestoreLegacyMarket(CityMarketCheckpoint checkpoint)
     {
@@ -815,4 +972,15 @@ internal sealed class CityMarket
         public int MaterialCost { get; } = materialCost;
         public long SpiritStoneCost { get; } = spiritStoneCost;
     }
+
+    private readonly record struct MarketTradeRecord(
+        long Sequence,
+        long Tick,
+        int AgentId,
+        MarketTradeKind Kind,
+        int GoodId,
+        int Count,
+        long UnitPrice,
+        long TotalSpiritStones,
+        ushort QualityHundredths);
 }

@@ -53,7 +53,7 @@ public readonly record struct MarketGoodDefinition(
 
 public static class EconomyRules
 {
-    public const int CurrentRevision = 3;
+    public const int CurrentRevision = 4;
     public const ushort EmptyTreasureQuality = ushort.MaxValue;
     public const int MaterialCount = 2;
     public const int TreasureSlotCount = 3;
@@ -68,11 +68,17 @@ public static class EconomyRules
     public const int LegacyTreasureSlotCount = 7;
     public const int LegacyMarketGoodCount = 35;
     public const int InitialSkillMaximumHundredths = 7_999;
-    public const long TechniqueBookBasePrice = 20;
-    public const long SpellBookBasePrice = 20;
+    // PC-TEMP-MARKET-BOOK-BASE-113: 0세 무자본 AI도 첫 채굴 보상 뒤 시장에
+    // 참여할 수 있게 한 PC 초기 유동성 값. 정식 세율·가격 공식 확정 때 재검토한다.
+    public const long TechniqueBookBasePrice = 4;
+    public const long SpellBookBasePrice = 4;
     public const int CityProductionTargetStock = 3;
     public const int CityProductionMonths = 3;
     public const int MaximumConcurrentProduction = 4;
+    // PC-TEMP-MARKET-WINDOW-113: 정식 Formula Registry 확정 전 최근 수급 관측 창.
+    public const int MarketFlowWindowMonths = 12;
+    // PC-TEMP-MARKET-LEDGER-113: 상세 UI와 저장에 유지하는 최근 실물 거래 수.
+    public const int RecentTradeCapacity = 100;
 
     private static readonly long[] RealmPriceScales =
     [

@@ -69,22 +69,25 @@ public sealed partial class World
             return;
         }
 
-        if (!_market.TryAcceptMissionDelivery(
+        var settlement = _market.SettleMissionDelivery(
+                index,
+                CreateMarketSourceResultId(11),
+                Tick.Value,
                 material,
                 EconomyRules.MissionRequiredItems,
-                (int)_agents.RealmStages[index] * 10,
-                out var reward))
+                (int)_agents.RealmStages[index] * 10);
+        if (!settlement.IsSettled)
         {
-            _agents.ActiveMissionMaterials[index] = byte.MaxValue;
             return;
         }
 
         _agents.ConsumeMaterial(index, material, EconomyRules.MissionRequiredItems);
-        _agents.SpiritStones[index] = checked(_agents.SpiritStones[index] + reward);
+        _agents.SpiritStones[index] = checked(
+            _agents.SpiritStones[index] + settlement.TotalSpiritStones);
         _agents.MissionsCompleted[index]++;
         _totalMissionsCompleted++;
         _agents.ActiveMissionMaterials[index] = byte.MaxValue;
-        AddEvent(WorldEventKind.MissionCompleted, index, reward);
+        AddEvent(WorldEventKind.MissionCompleted, index, settlement.TotalSpiritStones);
     }
 
     private void ResolveSpiritStoneMining(int index)
@@ -132,13 +135,25 @@ public sealed partial class World
             var material = (MaterialId)materialIndex;
             var count = _agents.GetMaterialCount(index, material);
             var reserved = materialIndex == protectedMaterial ? EconomyRules.MissionRequiredItems : 0;
-            if (count <= reserved || !_market.TrySell(materialIndex, 1, out var proceeds))
+            if (count <= reserved)
+            {
+                continue;
+            }
+
+            var settlement = _market.SettleSale(
+                index,
+                CreateMarketSourceResultId(10),
+                Tick.Value,
+                materialIndex,
+                1);
+            if (!settlement.IsSettled)
             {
                 continue;
             }
 
             _agents.ConsumeMaterial(index, material, 1);
-            _agents.SpiritStones[index] = checked(_agents.SpiritStones[index] + proceeds);
+            _agents.SpiritStones[index] = checked(
+                _agents.SpiritStones[index] + settlement.TotalSpiritStones);
             _totalMaterialsSold++;
             AddEvent(WorldEventKind.MaterialSold, index, materialIndex);
             return true;
@@ -156,12 +171,19 @@ public sealed partial class World
         }
 
         var goodId = EconomyRules.GetPillGoodId(kind, _agents.RealmStages[index]);
-        if (!_market.TryBuy(goodId, 1, _agents.SpiritStones[index], out var cost))
+        var settlement = _market.SettlePurchase(
+            index,
+            CreateMarketSourceResultId(kind == PillKind.Growth ? 1 : 2),
+            Tick.Value,
+            goodId,
+            1,
+            _agents.SpiritStones[index]);
+        if (!settlement.IsSettled)
         {
             return false;
         }
 
-        _agents.SpiritStones[index] -= cost;
+        _agents.SpiritStones[index] -= settlement.TotalSpiritStones;
         if (kind == PillKind.Growth)
         {
             _agents.GrowthPills[index]++;
@@ -179,17 +201,25 @@ public sealed partial class World
     {
         foreach (var definition in EconomyRules.AllMaterials)
         {
-            if (definition.Category != category
-                || !_market.TryBuy(
-                    (int)definition.Id,
-                    1,
-                    _agents.SpiritStones[index],
-                    out var cost))
+            if (definition.Category != category)
             {
                 continue;
             }
 
-            _agents.SpiritStones[index] -= cost;
+            var settlement = _market.SettlePurchase(
+                index,
+                CreateMarketSourceResultId(
+                    category == MaterialCategory.Treasure ? 7 : 8),
+                Tick.Value,
+                (int)definition.Id,
+                1,
+                _agents.SpiritStones[index]);
+            if (!settlement.IsSettled)
+            {
+                continue;
+            }
+
+            _agents.SpiritStones[index] -= settlement.TotalSpiritStones;
             _agents.AddMaterial(index, definition.Id, 1);
             AddEvent(WorldEventKind.MaterialPurchased, index, (int)definition.Id);
             return true;
@@ -201,26 +231,25 @@ public sealed partial class World
     private bool TryBuyTreasureFromMarket(int index, TreasureSlot slot)
     {
         var goodId = EconomyRules.GetTreasureGoodId(slot, _agents.RealmStages[index]);
-        if (!_market.TryBuyQualityGood(
-                goodId,
-                _agents.SpiritStones[index],
-                out var cost,
-                out var quality))
+        var current = _agents.GetTreasureQuality(index, slot);
+        var settlement = _market.SettlePurchase(
+            index,
+            CreateMarketSourceResultId(slot == TreasureSlot.DefenseTreasure ? 3 : 4),
+            Tick.Value,
+            goodId,
+            1,
+            _agents.SpiritStones[index],
+            current == EconomyRules.EmptyTreasureQuality
+                ? null
+                : new QualityValue(current));
+        if (!settlement.IsSettled || settlement.Quality is not { } quality)
         {
             return false;
         }
 
-        _agents.SpiritStones[index] -= cost;
-        var current = _agents.GetTreasureQuality(index, slot);
-        if (current == EconomyRules.EmptyTreasureQuality || quality.Hundredths > current)
-        {
-            _agents.SetTreasureQuality(index, slot, quality.Hundredths);
-            RecalculatePowerAndUpdatePeak(index);
-        }
-        else if (_market.TrySellQualityGood(goodId, quality, out var proceeds))
-        {
-            _agents.SpiritStones[index] = checked(_agents.SpiritStones[index] + proceeds);
-        }
+        _agents.SpiritStones[index] -= settlement.TotalSpiritStones;
+        _agents.SetTreasureQuality(index, slot, quality.Hundredths);
+        RecalculatePowerAndUpdatePeak(index);
 
         AddEvent(WorldEventKind.TreasurePurchased, index, quality.Hundredths);
         return true;
@@ -236,16 +265,20 @@ public sealed partial class World
         }
 
         var goodId = technique ? EconomyRules.TechniqueBookGoodId : EconomyRules.SpellBookGoodId;
-        if (!_market.TryBuyQualityGood(
-                goodId,
-                _agents.SpiritStones[index],
-                out var cost,
-                out var offered))
+        var settlement = _market.SettlePurchase(
+            index,
+            CreateMarketSourceResultId(technique ? 5 : 6),
+            Tick.Value,
+            goodId,
+            1,
+            _agents.SpiritStones[index],
+            current);
+        if (!settlement.IsSettled || settlement.Quality is not { } offered)
         {
             return false;
         }
 
-        _agents.SpiritStones[index] -= cost;
+        _agents.SpiritStones[index] -= settlement.TotalSpiritStones;
         if (technique && offered > current)
         {
             _agents.TechniqueQualities[index] = offered.Hundredths;
@@ -285,7 +318,13 @@ public sealed partial class World
         }
 
         var goodId = EconomyRules.GetPillGoodId(kind.Value, _agents.RealmStages[index]);
-        if (!_market.TrySell(goodId, 1, out var proceeds))
+        var settlement = _market.SettleSale(
+            index,
+            CreateMarketSourceResultId(9),
+            Tick.Value,
+            goodId,
+            1);
+        if (!settlement.IsSettled)
         {
             return false;
         }
@@ -299,8 +338,19 @@ public sealed partial class World
             _agents.BreakthroughPills[index]--;
         }
 
-        _agents.SpiritStones[index] = checked(_agents.SpiritStones[index] + proceeds);
+        _agents.SpiritStones[index] = checked(
+            _agents.SpiritStones[index] + settlement.TotalSpiritStones);
         return true;
+    }
+
+    private long CreateMarketSourceResultId(int phase)
+    {
+        if (phase is <= 0 or >= 16)
+        {
+            throw new ArgumentOutOfRangeException(nameof(phase));
+        }
+
+        return checked((Tick.Value * 16L) + phase);
     }
 
     private void ResolveTreasureCrafting(int index)

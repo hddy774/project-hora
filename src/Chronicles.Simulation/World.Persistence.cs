@@ -14,7 +14,7 @@ public sealed partial class World
         _relations = checkpoint.SchemaVersion >= 21 && checkpoint.Relations is { } relations
             ? SparseRelationStore.Restore(checkpoint.Agents.Length, relations)
             : new SparseRelationStore(checkpoint.Agents.Length);
-        _market = new CityMarket(checkpoint.Market, checkpoint.SchemaVersion);
+        _market = new CityMarket(checkpoint.Market, checkpoint.SchemaVersion, checkpoint.Agents.Length);
         _agentByRank = new int[checkpoint.Agents.Length];
         _rankByAgent = new int[checkpoint.Agents.Length];
         _agentByRealmRank = new int[checkpoint.Agents.Length];
@@ -830,20 +830,25 @@ public sealed partial class World
             || (checkpoint.SchemaVersion >= 14
                 && (checkpoint.Market.QualityHundredths is not { Length: EconomyRules.MarketGoodCount }
                     || checkpoint.Market.QualityHundredths.Any(value => value < 0)
+                    || !IsValidMarketQualityTotals(checkpoint.Market)
                     || checkpoint.Market.RemainingSpiritStoneOre < 0
                     || checkpoint.Market.SpiritStonesMined < 0
                     || checkpoint.Market.MiningMissionCount < 0
                     || checkpoint.Market.LastIndustryMonth < 0
+                    || checkpoint.Market.LastIndustryMonth > GameCalendar.GetMonthIndex(
+                        new SimulationTick(checkpoint.Tick))
+                    || (checkpoint.SchemaVersion >= 24
+                        && checkpoint.Market.SpiritStoneReserveTarget <= 0)
                     || checkpoint.Market.ProductionQueue is null
-                    || checkpoint.Market.ProductionQueue.Length > 4
+                    || checkpoint.Market.ProductionQueue.Length
+                        > EconomyRules.MaximumConcurrentProduction
                     || checkpoint.Market.ProductionQueue.Any(order =>
-                        order.GoodId < EconomyRules.RealmGoodStartId
-                        || order.GoodId >= EconomyRules.MarketGoodCount
-                        || order.CompletedMonths < 0
-                        || order.RequiredMonths <= 0
-                        || order.CompletedMonths >= order.RequiredMonths
-                        || order.MaterialCost < 0
-                        || order.SpiritStoneCost <= 0))))
+                        !IsValidCityProductionOrder(order))
+                    || (checkpoint.SchemaVersion >= 24
+                        && !IsValidMarketCheckpointV24(
+                            checkpoint.Market,
+                            checkpoint.Agents.Length,
+                            checkpoint.Tick)))))
         {
             throw new InvalidDataException("세계 체크포인트의 도시 시장 상태가 잘못되었습니다.");
         }
@@ -1157,6 +1162,155 @@ public sealed partial class World
         && value.SpellExperience is >= 0 and <= SkillProgressionRules.MaximumExperience
         && value.TechniqueUnderstanding <= SkillProgressionRules.MaximumHundredths
         && value.SpellUnderstanding <= SkillProgressionRules.MaximumHundredths;
+
+    private static bool IsValidMarketQualityTotals(CityMarketCheckpoint market)
+    {
+        var qualities = market.QualityHundredths!;
+        for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
+        {
+            var definition = EconomyRules.GetMarketGood(goodId);
+            var isQualityGood = definition.Kind is MarketGoodKind.DefenseTreasure
+                or MarketGoodKind.AttackTreasure
+                or MarketGoodKind.TechniqueBook
+                or MarketGoodKind.SpellBook;
+            var maximum = checked((long)market.Stock[goodId] * QualityValue.MaximumHundredths);
+            if (qualities[goodId] > maximum || (!isQualityGood && qualities[goodId] != 0))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool IsValidCityProductionOrder(CityProductionCheckpoint order)
+    {
+        if (order.GoodId < EconomyRules.RealmGoodStartId
+            || order.GoodId >= EconomyRules.MarketGoodCount
+            || order.CompletedMonths < 0
+            || order.RequiredMonths != EconomyRules.CityProductionMonths
+            || order.CompletedMonths >= order.RequiredMonths)
+        {
+            return false;
+        }
+
+        var definition = EconomyRules.GetMarketGood(order.GoodId);
+        var usesQuality = definition.Kind is MarketGoodKind.DefenseTreasure
+            or MarketGoodKind.AttackTreasure
+            or MarketGoodKind.TechniqueBook
+            or MarketGoodKind.SpellBook;
+        return order.MaterialCost == EconomyRules.GetProductionMaterialCost(
+                definition.Kind,
+                definition.Realm)
+            && order.SpiritStoneCost == EconomyRules.GetProductionSpiritStoneCost(definition)
+            && (usesQuality
+                ? order.QualityHundredths <= QualityValue.MaximumHundredths
+                : order.QualityHundredths == EconomyRules.EmptyTreasureQuality);
+    }
+
+    private static bool IsValidMarketCheckpointV24(
+        CityMarketCheckpoint market,
+        int population,
+        long maximumTick)
+    {
+        if (maximumTick > (long.MaxValue - 15L) / 16L)
+        {
+            return false;
+        }
+
+        var maximumSourceResultId = (maximumTick * 16L) + 15L;
+        var windowLength = checked(
+            EconomyRules.MarketGoodCount * EconomyRules.MarketFlowWindowMonths);
+        if (market.RecentSupply is not { Length: EconomyRules.MarketGoodCount } recentSupply
+            || market.RecentDemand is not { Length: EconomyRules.MarketGoodCount } recentDemand
+            || market.SupplyWindowBuckets is not { Length: var supplyBucketLength }
+            || supplyBucketLength != windowLength
+            || market.DemandWindowBuckets is not { Length: var demandBucketLength }
+            || demandBucketLength != windowLength
+            || recentSupply.Any(value => value < 0)
+            || recentDemand.Any(value => value < 0)
+            || market.SupplyWindowBuckets.Any(value => value < 0)
+            || market.DemandWindowBuckets.Any(value => value < 0)
+            || market.CurrentFlowBucket < 0
+            || market.CurrentFlowBucket >= EconomyRules.MarketFlowWindowMonths
+            || market.AuthorityRevision <= 0
+            || market.LastSettlementSourceByAgent is not { Length: var sourceLength }
+            || sourceLength != population
+            || market.LastSettlementSourceByAgent.Any(source => source < -1)
+            || market.LastSettlementSourceByAgent.Any(source =>
+                source > maximumSourceResultId)
+            || market.RecentTrades is not { Length: var tradeCount }
+            || tradeCount > EconomyRules.RecentTradeCapacity
+            || market.NextTradeSequence < 1)
+        {
+            return false;
+        }
+
+        for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
+        {
+            long supply = 0;
+            long demand = 0;
+            for (var bucket = 0; bucket < EconomyRules.MarketFlowWindowMonths; bucket++)
+            {
+                var index = (bucket * EconomyRules.MarketGoodCount) + goodId;
+                var supplyValue = market.SupplyWindowBuckets[index];
+                var demandValue = market.DemandWindowBuckets[index];
+                if (supply > long.MaxValue - supplyValue
+                    || demand > long.MaxValue - demandValue)
+                {
+                    return false;
+                }
+
+                supply += supplyValue;
+                demand += demandValue;
+            }
+
+            if (supply != recentSupply[goodId]
+                || demand != recentDemand[goodId]
+                || supply > market.Supply[goodId]
+                || demand > market.Demand[goodId])
+            {
+                return false;
+            }
+        }
+
+        var previousSequence = 0L;
+        foreach (var trade in market.RecentTrades)
+        {
+            var qualityGood = trade.GoodId >= 0
+                && trade.GoodId < EconomyRules.MarketGoodCount
+                && EconomyRules.GetMarketGood(trade.GoodId).Kind is
+                    MarketGoodKind.DefenseTreasure
+                    or MarketGoodKind.AttackTreasure
+                    or MarketGoodKind.TechniqueBook
+                    or MarketGoodKind.SpellBook;
+            var totalOverflows = trade.Count > 0
+                && trade.UnitPrice > long.MaxValue / trade.Count;
+            if (trade.Sequence <= previousSequence
+                || trade.Sequence >= market.NextTradeSequence
+                || trade.Tick < 0
+                || trade.Tick > maximumTick
+                || trade.AgentId < 0
+                || trade.AgentId >= population
+                || !Enum.IsDefined(trade.Kind)
+                || trade.GoodId < 0
+                || trade.GoodId >= EconomyRules.MarketGoodCount
+                || trade.Count <= 0
+                || trade.UnitPrice <= 0
+                || totalOverflows
+                || trade.TotalSpiritStones < trade.UnitPrice * trade.Count
+                || (qualityGood
+                    ? trade.QualityHundredths > QualityValue.MaximumHundredths
+                    : trade.QualityHundredths != EconomyRules.EmptyTreasureQuality))
+            {
+                return false;
+            }
+
+            previousSequence = trade.Sequence;
+        }
+
+        return true;
+    }
 
     private static bool IsValidCombatAuthority(CombatAuthorityCheckpoint? checkpoint, int population) =>
         checkpoint is { } value

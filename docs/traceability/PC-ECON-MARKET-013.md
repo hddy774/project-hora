@@ -46,6 +46,13 @@
 - 10,000명: 초기화 32ms + 20,000 tick 859ms + 관찰 0.4ms = 891ms.
 - checkpoint 116ms, schema 24 복원 349ms.
 - 활성 UI 조회: 기준선 12.7ms → 9.8ms, 22.8% 감소.
-
-로컬 패키지·바탕화면 바로가기·직접 실행 증거는 최종 고정 SHA 빌드 뒤 이 문서와
-`CHANGELOG.md`에 추가한다. GitHub Release는 만들지 않는다.
+- 최종 패키지 원본: `58d3801d26e54e8d65f320383209ac73216e4884`.
+- 최종 패키징 재검사: 45/45, 경고 0, 오류 0, 총 1,211ms, checkpoint/복원
+  182/421ms.
+- 실행본: `artifacts/Chronicles-0.0.13-win-x64/Chronicles.exe`, 140,533,960 bytes,
+  SHA-256 `0EB3C5E0E8FFA537A4BAED1D0D753D3FB4443237CE56C5D910E6807D82DC0CA2`.
+- 파일/제품 버전: `0.0.13.0` /
+  `0.0.13+58d3801d26e54e8d65f320383209ac73216e4884`.
+- 바탕화면 바로가기 target/workdir 검증과 직접 EXE의 제목·화면 버전·10,000명·날짜·
+  100× 진행을 확인했다. 추가 화면 자동화는 사용자 Esc 중단 뒤 즉시 멈췄다.
+- GitHub Release는 만들지 않았다.

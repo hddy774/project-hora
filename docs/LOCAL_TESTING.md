@@ -171,4 +171,12 @@ checkpoint 116ms, schema 24 복원 349ms였다. 작업 시작 기준선 1,239ms 
 28.1% 감소했고 선택 UI 조회는 기준선 12.7ms 대비 22.8%, 기존 이중 전체 조회 대비
 94.3% 감소했다. 닫힌 지도 탭 할당량은 53.7% 감소했다.
 
+고정 빌드 원본 `58d3801d26e54e8d65f320383209ac73216e4884`에서
+`scripts/build-local.ps1 -CreateDesktopShortcut -Launch`를 실행한 최종 검사는
+`RESULT: 45/45 passed`, 경고 0·오류 0이었다. 이 실행은 초기화 48ms + 20,000 tick
+1,162ms + 관찰 0.6ms = 1,211ms, checkpoint 182ms, schema 24 복원 421ms였다.
+`Chronicles.exe`는 140,533,960 bytes, SHA-256
+`0EB3C5E0E8FFA537A4BAED1D0D753D3FB4443237CE56C5D910E6807D82DC0CA2`, 파일/제품 버전
+`0.0.13.0` / `0.0.13+58d3801d26e54e8d65f320383209ac73216e4884`다.
+
 로컬 산출물과 저장 파일은 GitHub Release에 업로드되지 않습니다.

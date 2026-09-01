@@ -159,7 +159,18 @@ public sealed partial class World
                 });
         }
 
-        RefreshRankings(recordLeaderChange: false);
+        if (checkpoint.SchemaVersion >= 31)
+        {
+            RestoreDecisionRankings(checkpoint.DecisionRankings!);
+            _lastMonthlyBoundaryMonth = checkpoint.DecisionRankings!.LastProcessedMonth;
+        }
+        else
+        {
+            // schema 30까지는 호출 종료 때 현재 수치로 랭킹을 정렬했다. 기존 저장은
+            // 그 계약으로 한 번 재구성하고, 현재 월부터 새 월 경계 계약을 적용한다.
+            RefreshRankings(recordLeaderChange: false);
+            _lastMonthlyBoundaryMonth = GameCalendar.GetMonthIndex(Tick);
+        }
         if (checkpoint.SchemaVersion >= 15 && checkpoint.RankingHistory is { } rankingHistory)
         {
             _rankingHistory.Restore(rankingHistory);
@@ -177,6 +188,46 @@ public sealed partial class World
     }
 
     public static World Restore(WorldCheckpoint checkpoint) => new(checkpoint);
+
+    private void RestoreDecisionRankings(DecisionRankingCheckpoint checkpoint)
+    {
+        RestoreRanking(checkpoint.CombatRanksByAgent, _rankByAgent, _agentByRank);
+        RestoreRanking(checkpoint.RealmRanksByAgent, _realmRankByAgent, _agentByRealmRank);
+        RestoreRanking(checkpoint.AptitudeRanksByAgent, _aptitudeRankByAgent, _agentByAptitudeRank);
+        RestoreRanking(checkpoint.WealthRanksByAgent, _wealthRankByAgent, _agentByWealthRank);
+        _combatPowerRankingCache.MarkSorted();
+        _realmRankingCache.MarkSorted();
+        _aptitudeRankingCache.MarkSorted();
+        _wealthRankingCache.MarkSorted();
+        if (checkpoint.CombatDirty)
+        {
+            _combatPowerRankingCache.MarkDirty();
+        }
+        if (checkpoint.RealmDirty)
+        {
+            _realmRankingCache.MarkDirty();
+        }
+        if (checkpoint.AptitudeDirty)
+        {
+            _aptitudeRankingCache.MarkDirty();
+        }
+        if (checkpoint.WealthDirty)
+        {
+            _wealthRankingCache.MarkDirty();
+        }
+    }
+
+    private static void RestoreRanking(
+        int[] sourceRanksByAgent,
+        int[] ranksByAgent,
+        int[] agentsByRank)
+    {
+        Array.Copy(sourceRanksByAgent, ranksByAgent, sourceRanksByAgent.Length);
+        for (var agent = 0; agent < ranksByAgent.Length; agent++)
+        {
+            agentsByRank[ranksByAgent[agent] - 1] = agent;
+        }
+    }
 
     public WorldAuthorityCheckpoint CreateAuthorityCheckpoint()
     {
@@ -480,7 +531,17 @@ public sealed partial class World
             _content.CreateCheckpoint(),
             _knowledge.CreateCheckpoint(),
             _laws.CreateCheckpoint(),
-            _generation.CreateCheckpoint());
+            _generation.CreateCheckpoint(),
+            new DecisionRankingCheckpoint(
+                _lastMonthlyBoundaryMonth,
+                _rankByAgent.ToArray(),
+                _realmRankByAgent.ToArray(),
+                _aptitudeRankByAgent.ToArray(),
+                _wealthRankByAgent.ToArray(),
+                _combatPowerRankingCache.IsDirty,
+                _realmRankingCache.IsDirty,
+                _aptitudeRankingCache.IsDirty,
+                _wealthRankingCache.IsDirty));
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -764,6 +825,19 @@ public sealed partial class World
         if (checkpoint.Agents is not { Length: > 0 } || checkpoint.Tick < 0)
         {
             throw new InvalidDataException("세계 체크포인트의 인구 또는 시간이 잘못되었습니다.");
+        }
+
+        if (checkpoint.SchemaVersion >= 31
+            && (checkpoint.DecisionRankings is not { } decisionRankings
+                || !IsValidDecisionRanking(decisionRankings, checkpoint.Agents.Length)
+                || decisionRankings.LastProcessedMonth
+                    > GameCalendar.GetMonthIndex(new SimulationTick(checkpoint.Tick))
+                || (checkpoint.Tick == 0
+                    ? decisionRankings.LastProcessedMonth is not (-1 or 0)
+                    : decisionRankings.LastProcessedMonth
+                        != GameCalendar.GetMonthIndex(new SimulationTick(checkpoint.Tick)))))
+        {
+            throw new InvalidDataException("월 경계 의사결정 랭킹 체크포인트가 잘못되었습니다.");
         }
 
         if (checkpoint.Events is null
@@ -2270,6 +2344,21 @@ public sealed partial class World
         leader.AgentId.Value is >= 0
         && leader.AgentId.Value < population
         && !string.IsNullOrWhiteSpace(leader.Name);
+
+    private static bool IsValidDecisionRanking(
+        DecisionRankingCheckpoint checkpoint,
+        int population) =>
+        checkpoint.LastProcessedMonth >= -1
+        && IsValidRanksByAgent(checkpoint.CombatRanksByAgent, population)
+        && IsValidRanksByAgent(checkpoint.RealmRanksByAgent, population)
+        && IsValidRanksByAgent(checkpoint.AptitudeRanksByAgent, population)
+        && IsValidRanksByAgent(checkpoint.WealthRanksByAgent, population);
+
+    private static bool IsValidRanksByAgent(int[]? ranks, int population) =>
+        ranks is { Length: var length }
+        && length == population
+        && ranks.All(rank => rank is >= 1 && rank <= population)
+        && ranks.Distinct().Count() == population;
 
     private static bool IsValidRankingCache(int[]? agents, int population) =>
         agents is { Length: > 0 and <= WorldCenturyChronicle.RankingCacheSize }

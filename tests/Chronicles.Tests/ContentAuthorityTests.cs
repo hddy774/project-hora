@@ -257,8 +257,8 @@ internal static class ContentAuthorityTests
             "콘텐츠 관찰 무영향");
 
         var checkpoint = world.CreateCheckpoint();
-        TestAssert.Equal(30, checkpoint.SchemaVersion,
-            "콘텐츠·지식·법칙·세계 생성 checkpoint schema 30");
+        TestAssert.Equal(WorldCheckpoint.CurrentSchemaVersion, checkpoint.SchemaVersion,
+            "콘텐츠·지식·법칙·세계 생성·월 경계 랭킹 현재 checkpoint schema");
         TestAssert.True(checkpoint.Content is not null, "콘텐츠 checkpoint 연결");
         var restored = World.Restore(checkpoint);
         TestAssert.Equal(world.ComputeStateHash(), restored.ComputeStateHash(),

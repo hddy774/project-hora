@@ -174,6 +174,17 @@ public sealed record WorldCenturyChronicleCheckpoint(
     WorldCenturyChronicleEntry[] Entries,
     WorldCenturyAccumulatorCheckpoint Current);
 
+public sealed record DecisionRankingCheckpoint(
+    long LastProcessedMonth,
+    int[] CombatRanksByAgent,
+    int[] RealmRanksByAgent,
+    int[] AptitudeRanksByAgent,
+    int[] WealthRanksByAgent,
+    bool CombatDirty,
+    bool RealmDirty,
+    bool AptitudeDirty,
+    bool WealthDirty);
+
 public sealed record WorldCheckpoint(
     int SchemaVersion,
     ulong Seed,
@@ -217,9 +228,10 @@ public sealed record WorldCheckpoint(
     ContentAuthorityCheckpoint? Content = null,
     KnowledgeAuthorityCheckpoint? Knowledge = null,
     LawAuthorityCheckpoint? Laws = null,
-    WorldGenerationCheckpoint? Generation = null)
+    WorldGenerationCheckpoint? Generation = null,
+    DecisionRankingCheckpoint? DecisionRankings = null)
 {
-    public const int CurrentSchemaVersion = 30;
+    public const int CurrentSchemaVersion = 31;
 }
 
 /// <summary>

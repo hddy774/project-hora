@@ -60,6 +60,7 @@ var tests = new (string Name, Action Body)[]
     ("자질 직접 전투력 제거·공법 법술·실전 속성 간접 보정", AptitudeIndirectCombatBalance),
     ("공법·법술·법보 전투 스케일 상한과 품질 격차", SkillCombatScaleRegression),
     ("동일 seed 결정론", DeterministicWorld),
+    ("AdvanceTo 호출 분할·runtime pulse·checkpoint 결정론", AdvancePartitionInvarianceTests.Run),
     ("이벤트 기반 성장", EventDrivenGrowth),
     ("180년 장기 수행·사냥·전투 참여 회귀", LongRunCultivationHuntingAndCombat),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
@@ -177,25 +178,25 @@ static void RankingRevisionCacheAvoidsUnchangedSorts()
 
     world.AdvanceTo(new SimulationTick(10L * GameCalendar.TicksPerYear));
     var afterTenYears = world.GetRankingCacheDiagnostics();
-    AssertAtMostOneSortForRevisionChange(initial.CombatPower, afterTenYears.CombatPower, "전투력");
-    AssertAtMostOneSortForRevisionChange(initial.Realm, afterTenYears.Realm, "경지");
-    AssertAtMostOneSortForRevisionChange(initial.Aptitude, afterTenYears.Aptitude, "자질");
-    AssertAtMostOneSortForRevisionChange(initial.Wealth, afterTenYears.Wealth, "부자");
+    var elapsedMonthBoundaries = GameCalendar.GetMonthIndex(world.Tick);
+    AssertMonthlySortBound(initial.CombatPower, afterTenYears.CombatPower, elapsedMonthBoundaries, "전투력");
+    AssertMonthlySortBound(initial.Realm, afterTenYears.Realm, elapsedMonthBoundaries, "경지");
+    AssertMonthlySortBound(initial.Aptitude, afterTenYears.Aptitude, elapsedMonthBoundaries, "자질");
+    AssertMonthlySortBound(initial.Wealth, afterTenYears.Wealth, elapsedMonthBoundaries, "부자");
     Equal(
         world.TotalReincarnations > 0,
         initial.Aptitude.DataRevision != afterTenYears.Aptitude.DataRevision,
         "자질 revision은 환생으로만 변경");
-    True(!afterTenYears.CombatPower.IsDirty, "전투력 cache 최신 revision");
-    True(!afterTenYears.Realm.IsDirty, "경지 cache 최신 revision");
-    True(!afterTenYears.Aptitude.IsDirty, "자질 cache 최신 revision");
-    True(!afterTenYears.Wealth.IsDirty, "부자 cache 최신 revision");
+    // 새 월의 환경·행동은 다음 월 의사결정 스냅샷을 dirty로 만들 수 있다. 관찰은 이를
+    // 즉시 정렬하지 않고, 다음 결정론적 월 경계에서 범주별 한 번만 확정해야 한다.
 
     var hashBeforeObservation = world.ComputeStateHash();
     var snapshot = world.CreateSnapshot(population, 0);
-    AssertStableRankingOrder(snapshot.CombatPowerRankings, "전투력");
-    AssertStableRankingOrder(snapshot.RealmRankings, "경지");
-    AssertStableRankingOrder(snapshot.AptitudeRankings, "자질");
-    AssertStableRankingOrder(snapshot.WealthRankings, "부자");
+    var decisionRankings = world.CreateCheckpoint().DecisionRankings!;
+    AssertDecisionRankingOrder(snapshot.CombatPowerRankings, decisionRankings.CombatRanksByAgent, "전투력");
+    AssertDecisionRankingOrder(snapshot.RealmRankings, decisionRankings.RealmRanksByAgent, "경지");
+    AssertDecisionRankingOrder(snapshot.AptitudeRankings, decisionRankings.AptitudeRanksByAgent, "자질");
+    AssertDecisionRankingOrder(snapshot.WealthRankings, decisionRankings.WealthRanksByAgent, "부자");
     Equal(hashBeforeObservation, world.ComputeStateHash(), "랭킹 관찰은 권위 상태 불변");
     Equal(
         afterTenYears.TotalSortCount,
@@ -232,32 +233,35 @@ static void RankingRevisionCacheAvoidsUnchangedSorts()
         "복원 직후 무변경 pulse 정렬 0회");
 }
 
-static void AssertAtMostOneSortForRevisionChange(
+static void AssertMonthlySortBound(
     RankingCategoryCacheDiagnostics before,
     RankingCategoryCacheDiagnostics after,
+    long elapsedMonthBoundaries,
     string category)
 {
-    var revisionChanged = before.DataRevision != after.DataRevision;
-    Equal(
-        before.SortCount + (revisionChanged ? 1 : 0),
-        after.SortCount,
-        $"{category} 변경 batch당 단일 정렬");
+    var revisionDelta = checked(after.DataRevision - before.DataRevision);
+    var sortDelta = checked(after.SortCount - before.SortCount);
+    True(sortDelta <= elapsedMonthBoundaries, $"{category} 월 경계당 최대 한 번 정렬");
+    True((ulong)sortDelta <= revisionDelta, $"{category} dirty revision 없는 정렬 금지");
+    Equal(revisionDelta > 0, sortDelta > 0, $"{category} 변경 revision 월 경계 반영");
 }
 
-static void AssertStableRankingOrder(IReadOnlyList<RankingEntry> ranking, string category)
+static void AssertDecisionRankingOrder(
+    IReadOnlyList<RankingEntry> ranking,
+    IReadOnlyList<int> ranksByAgent,
+    string category)
 {
-    for (var index = 1; index < ranking.Count; index++)
-    {
-        var previous = ranking[index - 1];
-        var current = ranking[index];
-        True(previous.Score >= current.Score, $"{category} 점수 내림차순 {index}");
-        if (previous.Score == current.Score)
-        {
-            True(
-                previous.AgentId.Value < current.AgentId.Value,
-                $"{category} 동점 안정 ID 오름차순 {index}");
-        }
-    }
+    var expectedAgents = Enumerable.Range(0, ranksByAgent.Count)
+        .OrderBy(agent => ranksByAgent[agent])
+        .ToArray();
+    EqualSequence(
+        expectedAgents,
+        ranking.Select(entry => entry.AgentId.Value).ToArray(),
+        $"{category} 월 경계 의사결정 랭킹 순서");
+    EqualSequence(
+        Enumerable.Range(1, ranking.Count).ToArray(),
+        ranking.Select(entry => entry.Rank).ToArray(),
+        $"{category} 1-based 연속 순위");
 }
 
 static void GameTimeAndRealmRules()
@@ -2116,8 +2120,20 @@ static void TeachingVerticalFlow()
         else if (jointAgents[index].Activity != AgentActivity.Reincarnating
             && jointAgents[index].NextDecisionTick != long.MaxValue)
         {
+            // 월 경계 랭킹 계약으로 동일 seed에서 선택되는 교사가 자신의 스승도 가진
+            // 경우가 있다. 이 검증은 지정한 사제 두 명의 공동 수행만 보는 테스트이므로
+            // 다른 수선자의 대기 중 수행 상태를 함께 격리한다.
             jointAgents[index] = jointAgents[index] with
             {
+                Activity = jointAgents[index].Activity == AgentActivity.Cultivating
+                    ? AgentActivity.TrainingTechnique
+                    : jointAgents[index].Activity,
+                Cultivation = jointAgents[index].Activity == AgentActivity.Cultivating
+                    ? jointAgents[index].Cultivation!.Value with
+                    {
+                        ActionPlan = CultivationActionPlanState.Empty,
+                    }
+                    : jointAgents[index].Cultivation,
                 NextDecisionTick = Math.Max(
                     jointAgents[index].NextDecisionTick,
                     checked(jointCultivationTick + GameCalendar.TicksPerYear)),
@@ -2139,7 +2155,7 @@ static void TeachingVerticalFlow()
         ?? throw new InvalidOperationException("사제 공동 수행의 학습자 계획 누락");
     True(
         instructorPlan.TeachingRole == CultivationTeachingRole.Instructor,
-        "공동 수행 교사 역할");
+        $"공동 수행 교사 역할 · 실제 {instructorPlan.TeachingRole} · 상대 {instructorPlan.TeachingPartner}");
     True(
         instructorPlan.TeachingPartner == new AgentId(learnerIndex),
         "공동 수행 교사 대상");

@@ -193,8 +193,8 @@ internal static class LawAuthorityTests
             "법칙 내부 탭에서만 후보 행 투영");
 
         var worldCheckpoint = world.CreateCheckpoint();
-        TestAssert.Equal(30, worldCheckpoint.SchemaVersion,
-            "법칙·세계 생성 checkpoint schema 30");
+        TestAssert.Equal(WorldCheckpoint.CurrentSchemaVersion, worldCheckpoint.SchemaVersion,
+            "법칙·세계 생성·월 경계 랭킹 현재 checkpoint schema");
         TestAssert.True(worldCheckpoint.Laws is not null, "법칙 checkpoint 연결");
         var restoredWorld = World.Restore(worldCheckpoint);
         TestAssert.Equal(world.ComputeStateHash(), restoredWorld.ComputeStateHash(),

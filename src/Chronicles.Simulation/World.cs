@@ -53,6 +53,7 @@ public sealed partial class World
     private int _totalMonsterHunts;
     private int _totalMonsterVictories;
     private long _lastMonsterRegenerationMonth;
+    private long _lastMonthlyBoundaryMonth = -1;
     private long _lastRankingRefreshTick;
     private long _rankingMovementFromTick;
     private int _rankingRisenCount;
@@ -191,10 +192,6 @@ public sealed partial class World
             throw new ArgumentOutOfRangeException(nameof(targetTick), "세계 시간을 되돌릴 수 없습니다.");
         }
 
-        // 같은 월에 수십만 개의 인물 행동이 몰려도 도시 생산과 요수 재생은 한 번만
-        // 확인한다. 이 값은 호출 단위 파생 캐시이므로 권위 상태나 저장 wire에 영향을
-        // 주지 않는다.
-        var environmentMonth = long.MinValue;
         while (_decisionSchedule.TryPeek(out _, out var priority) && priority.Tick <= targetTick.Value)
         {
             var agentIndex = _decisionSchedule.Dequeue();
@@ -204,16 +201,10 @@ public sealed partial class World
                 continue;
             }
 
-            Tick = new SimulationTick(dueTick);
-            var actionMonth = GameCalendar.GetMonthIndex(Tick);
-            if (actionMonth != environmentMonth)
-            {
-                AdvanceCityIndustry(actionMonth);
-                RegenerateMonsters(actionMonth);
-                AdvanceOrganizationSystem(actionMonth);
-                AdvanceGeneratedWorldContent(actionMonth);
-                environmentMonth = actionMonth;
-            }
+            var due = new SimulationTick(dueTick);
+            var actionMonth = GameCalendar.GetMonthIndex(due);
+            AdvanceMonthlyBoundariesThrough(actionMonth);
+            Tick = due;
             if (_agents.LifeStates[agentIndex] == PersonLifeState.Living
                 && HasReachedMaximumLifespan(agentIndex))
             {
@@ -306,16 +297,37 @@ public sealed partial class World
             ScheduleAgent(agentIndex, nextTick);
         }
 
+        var targetMonth = GameCalendar.GetMonthIndex(targetTick);
+        AdvanceMonthlyBoundariesThrough(targetMonth);
         Tick = targetTick;
-        var targetMonth = GameCalendar.GetMonthIndex(Tick);
-        if (targetMonth != environmentMonth)
-        {
-            AdvanceCityIndustry(targetMonth);
-            RegenerateMonsters(targetMonth);
-            AdvanceGeneratedWorldContent(targetMonth);
-        }
-        RefreshRankings(recordLeaderChange: true);
         _worldChronicle.AdvanceTo(Tick);
+    }
+
+    /// <summary>
+    /// 호출을 몇 번으로 나눴는지와 무관하게 월별 권위 전이를 정확히 한 번씩 처리한다.
+    /// AI가 참조하는 랭킹은 새 달이 시작될 때 직전 달의 결과로 확정되며, 같은 달 안에서는
+    /// 고정된다. 따라서 관찰 query나 runtime pulse 경계가 다음 행동의 결과를 바꾸지 않는다.
+    /// </summary>
+    private void AdvanceMonthlyBoundariesThrough(long targetMonth)
+    {
+        while (_lastMonthlyBoundaryMonth < targetMonth)
+        {
+            var month = checked(_lastMonthlyBoundaryMonth + 1);
+            Tick = GameCalendar.GetMonthStart(month);
+
+            // 생성 직후의 0월 랭킹은 생성자에서 이미 확정했다. 이후에는 직전 월의
+            // dirty 입력을 새 월의 의사결정 스냅샷으로 한 번만 정렬한다.
+            if (month > 0)
+            {
+                RefreshRankings(recordLeaderChange: true);
+            }
+
+            AdvanceCityIndustry(month);
+            RegenerateMonsters(month);
+            AdvanceOrganizationSystem(month);
+            AdvanceGeneratedWorldContent(month);
+            _lastMonthlyBoundaryMonth = month;
+        }
     }
 
     private void AdvanceCityIndustry(long currentMonth)
@@ -604,7 +616,8 @@ public sealed partial class World
         includeContent: true,
         includeKnowledge: true,
         includeLaws: true,
-        includeGeneration: true);
+        includeGeneration: true,
+        includeDecisionRankings: true);
 
     /// <summary>
     /// 구 슬롯의 저장 당시 hash 계약을 검증할 때만 사용합니다. 복원된 세계의 현재
@@ -620,14 +633,16 @@ public sealed partial class World
             includeContent: checkpointSchema >= 27,
             includeKnowledge: checkpointSchema >= 28,
             includeLaws: checkpointSchema >= 29,
-            includeGeneration: checkpointSchema >= 30);
+            includeGeneration: checkpointSchema >= 30,
+            includeDecisionRankings: checkpointSchema >= 31);
     }
 
     private ulong ComputeStateHashCore(
         bool includeContent,
         bool includeKnowledge,
         bool includeLaws,
-        bool includeGeneration)
+        bool includeGeneration,
+        bool includeDecisionRankings)
     {
         var hash = 14695981039346656037UL;
         Add(ref hash, Seed);
@@ -656,6 +671,14 @@ public sealed partial class World
         Add(ref hash, (ulong)_totalMaterialsSold);
         Add(ref hash, (ulong)_totalMonsterHunts);
         Add(ref hash, (ulong)_totalMonsterVictories);
+        if (includeDecisionRankings)
+        {
+            Add(ref hash, unchecked((ulong)(_lastMonthlyBoundaryMonth + 1)));
+            Add(ref hash, _combatPowerRankingCache.IsDirty ? 1UL : 0UL);
+            Add(ref hash, _realmRankingCache.IsDirty ? 1UL : 0UL);
+            Add(ref hash, _aptitudeRankingCache.IsDirty ? 1UL : 0UL);
+            Add(ref hash, _wealthRankingCache.IsDirty ? 1UL : 0UL);
+        }
         _atlas.AddStateHash(ref hash);
         _organizations.AddStateHash(ref hash);
         if (includeContent)
@@ -1085,6 +1108,10 @@ public sealed partial class World
             Add(ref hash, (ulong)_rankByAgent[index]);
             Add(ref hash, (ulong)_realmRankByAgent[index]);
             Add(ref hash, (ulong)_aptitudeRankByAgent[index]);
+            if (includeDecisionRankings)
+            {
+                Add(ref hash, (ulong)_wealthRankByAgent[index]);
+            }
             foreach (var entry in _agents.PersonalLogs[index])
             {
                 Add(ref hash, (ulong)entry.Sequence);
@@ -1497,7 +1524,7 @@ public sealed partial class World
         _agents.MaximumHealth[index],
         _agents.CultivationStates[index],
         _agents.LocationIds[index],
-        initialRank ?? checked(_rankByAgent[index] + 1));
+        initialRank ?? _rankByAgent[index]);
 
     private static AgentGoalKind GetSupportingGoal(AgentActivity activity, bool bottleneck) =>
         activity switch

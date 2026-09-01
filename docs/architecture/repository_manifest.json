@@ -41,7 +41,7 @@
       "project": "src/Chronicles.Persistence/Chronicles.Persistence.csproj",
       "roots": ["src/Chronicles.Persistence"],
       "allowed_dependencies": ["Core", "Simulation"],
-      "responsibility": "Schema 25 world DB with checkpoint schema 30 SQLite slots, explicit authority codec, candidate validation and atomic file lifecycle."
+      "responsibility": "Schema 25 world DB with checkpoint schema 31 SQLite slots, explicit authority codec, candidate validation and atomic file lifecycle."
     },
     {
       "id": "Presentation",
@@ -90,6 +90,7 @@
     "market_contract_authority": "src/Chronicles.Simulation/MarketAuthorityModel.cs",
     "market_offer_reservation": "src/Chronicles.Simulation/CityMarket.Contracts.cs",
     "world_balance_authority": "src/Chronicles.Simulation/FormulaRegistry.cs",
+    "monthly_authority_boundary": "src/Chronicles.Simulation/World.cs",
     "cultivation_authority": "src/Chronicles.Simulation/World.Cultivation.cs",
     "cultivation_action_plan_authority": "src/Chronicles.Simulation/CultivationActionPlan.cs",
     "cultivation_action_plan_runtime": "src/Chronicles.Simulation/World.CultivationPlans.cs",

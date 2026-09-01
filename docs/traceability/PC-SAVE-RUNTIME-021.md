@@ -18,6 +18,17 @@
 - query cache와 UI 표시 DTO는 저장 정본이 아니며 복원 뒤 새 `WorldObservationQueries`로 재생성한다.
 - generation sequence, world/checkpoint schema, candidate kind, 실패 목록, state hash가 복구·migration 근거로 남는다.
 
+### checkpoint schema 31 월 경계 결정론 이전
+
+- 외부 SQLite `WorldSchema 25`는 유지하고 내부 checkpoint만 30에서 31로 올린다.
+- schema 31은 `DecisionRankingCheckpoint`에 마지막 처리 월, 전투력·경지·자질·부자
+  inverse rank, 범주별 dirty 상태를 저장한다. 이는 표시 cache가 아니라 다음 AI 행동의
+  입력이 되는 월간 의사결정 스냅샷이다.
+- schema 30 이하는 당시 계약대로 현재 수치에서 랭킹을 한 번 재구성하고 저장 시
+  schema 31로 승격한다. 구 schema hash 검증에는 schema 31 필드를 포함하지 않는다.
+- schema 31 복원은 rank 배열의 1-based 완전 순열, 처리 월과 세계 시각의 일치,
+  dirty 상태를 검사한다. query와 checkpoint 생성은 정렬이나 RNG를 발생시키지 않는다.
+
 ## 진행률·UI
 
 - Application은 Persistence 단계 enum을 Windows 표시 DTO로 변환한다.

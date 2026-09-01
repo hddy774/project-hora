@@ -22,6 +22,12 @@ public partial class MapObservationView : UserControl
     private AgentId? _strongestAgent;
     private bool _applying;
     private byte _selectedHeavenlyLayer = 1;
+    private byte _selectedGeographyLayer = 1;
+    private ushort _selectedProvinceId = WorldGeographyRules.OcheonProvinceId;
+    private ushort _selectedPointId = 44;
+    private int _projectedGeographyRevision = -1;
+    private byte _projectedGeographyLayer;
+    private ushort _projectedGeographyPointId = ushort.MaxValue;
 
     public MapObservationView()
     {
@@ -40,12 +46,19 @@ public partial class MapObservationView : UserControl
 
     public ushort SelectedLocationId { get; private set; } = WorldMapRules.CityLocationId;
     public int AgentOffset { get; private set; }
-    public bool ShouldLoadAgents => RegionTabControl.SelectedIndex == 2;
+    public bool ShouldLoadAgents =>
+        MapModeTabControl.SelectedIndex == 0 && RegionTabControl.SelectedIndex == 2;
 
     public void Apply(WorldMapSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         _snapshot = snapshot;
+        if (MapModeTabControl.SelectedIndex == 1)
+        {
+            ApplyGeography();
+            return;
+        }
+
         if (WorldMapRules.GetLocation(SelectedLocationId).HeavenlyLayer
             != _selectedHeavenlyLayer)
         {
@@ -146,7 +159,7 @@ public partial class MapObservationView : UserControl
     {
         RegionPopulationText.Text = $"{KoreanNumberFormatter.Format(region.Population)}명";
         RegionHighestRealmText.Text = !region.HasCultivator
-            ? "미입문"
+            ? "범인"
             : FormatRealm(region.HighestRealm, region.HighestRealmLayer);
         RegionAveragePowerText.Text = KoreanNumberFormatter.Format(region.AverageCombatPower);
         RegionMaximumPowerText.Text = KoreanNumberFormatter.Format(region.MaximumCombatPower);
@@ -191,7 +204,7 @@ public partial class MapObservationView : UserControl
                 agent.Name,
                 agent.HasEnteredCultivation
                     ? FormatRealm(agent.Realm, agent.RealmLayer)
-                    : "미입문",
+                    : "범인",
                 KoreanNumberFormatter.Format(agent.CombatPower))).ToArray();
         }
         finally
@@ -253,6 +266,146 @@ public partial class MapObservationView : UserControl
         _ => _fallbackBrush,
     };
 
+    private void ApplyGeography()
+    {
+        var geography = _snapshot.Geography ?? WorldGeographyBlueprint.Empty;
+        if (geography.Revision == 0)
+        {
+            GeographySummaryText.Text = "지리 기준선을 불러오지 못했습니다.";
+            ProvinceTileList.ItemsSource = Array.Empty<ProvinceTileRow>();
+            PointTileList.ItemsSource = Array.Empty<PointTileRow>();
+            return;
+        }
+
+        var activeProvince = geography.Provinces[geography.ActiveProvinceId];
+        GeographySummaryText.Text =
+            $"{geography.Continent.KoreanName} · 주 {geography.Provinces.Count:N0}칸 · " +
+            $"주 간 기준 거리 {KoreanNumberFormatter.Format(geography.Continent.ProvinceTileDistanceLi)}리 · " +
+            $"현재 상세 지역 {activeProvince.KoreanName} · 층천별 지점 {WorldGeographyRules.PointsPerProvince:N0}칸";
+
+        if (_projectedGeographyRevision != geography.Revision)
+        {
+            ProvinceTileList.ItemsSource = geography.Provinces.Select(province =>
+                new ProvinceTileRow(
+                    province.Id,
+                    province.HasPointDetail ? "오천" : $"{province.X + 1},{province.Y + 1}",
+                    province.KoreanName,
+                    province.HasPointDetail,
+                    province.HasPointDetail ? _cityBrush : _fallbackBrush,
+                    province.Id == _selectedProvinceId ? _accentBrush : _borderBrush))
+                .ToArray();
+        }
+
+        if (_projectedGeographyRevision != geography.Revision
+            || _projectedGeographyLayer != _selectedGeographyLayer
+            || _projectedGeographyPointId != _selectedPointId)
+        {
+            var points = _selectedGeographyLayer == 1
+                ? geography.FirstHeavenPoints
+                : geography.SecondHeavenPoints;
+            PointGridTitleText.Text =
+                $"{activeProvince.KoreanName} · 제{_selectedGeographyLayer:N0}층천 지점 10×10";
+            PointTileList.ItemsSource = points.Select(point => new PointTileRow(
+                point.PhysicalPointId,
+                $"{point.X + 1},{point.Y + 1}",
+                FormatPointMarker(point),
+                $"{point.KoreanName} · {FormatTerrain(point.Terrain)} · " +
+                $"{FormatSettlementSummary(point.Settlements)}",
+                GetTerrainBrush(point.Terrain),
+                point.PhysicalPointId == _selectedPointId ? _accentBrush : _borderBrush))
+                .ToArray();
+        }
+
+        var selected = WorldGeographyRules.GetPoint(
+            _selectedGeographyLayer,
+            _selectedPointId);
+        ApplyPointDetails(selected);
+        _projectedGeographyRevision = geography.Revision;
+        _projectedGeographyLayer = _selectedGeographyLayer;
+        _projectedGeographyPointId = _selectedPointId;
+    }
+
+    private void ApplyPointDetails(PointHeavenViewDefinition point)
+    {
+        PointTitleText.Text = point.KoreanName;
+        PointCoordinateText.Text =
+            $"{(_selectedGeographyLayer == 1 ? "제1층천 · 범인계" : "제2층천 · 수선계")} · " +
+            $"좌표 {point.X + 1},{point.Y + 1} · {point.NodeId}";
+        PointDescriptionText.Text = point.Description;
+        PointSocietyText.Text = point.Settlements.Society switch
+        {
+            PointSocietyKind.Mortal => string.IsNullOrEmpty(point.Settlements.PolityName)
+                ? "범인 사회"
+                : $"범인 · {point.Settlements.PolityName}",
+            PointSocietyKind.Cultivator => string.IsNullOrEmpty(point.Settlements.PolityName)
+                ? "수선 사회"
+                : $"수선 · {point.Settlements.PolityName}",
+            _ => "정착지 없음",
+        };
+        PointLargeCityText.Text = $"{point.Settlements.LargeCityCount:N0}개";
+        PointSmallCityText.Text = $"{point.Settlements.SmallCityCount:N0}개";
+        PointVillageText.Text = $"{point.Settlements.VillageCount:N0}개";
+        PointSectText.Text = $"{point.Settlements.SectCount:N0}개";
+        PointClanText.Text = $"{point.Settlements.ClanCount:N0}개";
+        PointTerrainText.Text = FormatTerrain(point.Terrain);
+        PointVeinText.Text = point.Resources.HasSpiritVein ? "자연 영맥 있음" : "확인된 영맥 없음";
+        PointMineText.Text = point.Resources.Mine switch
+        {
+            MineResourceKind.SpiritStone => "영석 광산",
+            MineResourceKind.TreasureMaterial => "법보 재료 광산",
+            MineResourceKind.Mixed => "혼합 광산",
+            _ => "확인된 광산 없음",
+        };
+        PointBeastText.Text =
+            $"{KoreanNumberFormatter.Format(point.Resources.EstimatedBeastPopulation)}마리 · " +
+            $"생령 다양성 {point.Resources.LivingSpeciesDiversity:N0}";
+        PointDistanceText.Text =
+            $"{KoreanNumberFormatter.Format(point.Resources.OrthogonalTravelDistanceLi)}리";
+    }
+
+    private Brush GetTerrainBrush(NaturalTerrainType terrain) => terrain switch
+    {
+        NaturalTerrainType.Forest => _forestBrush,
+        NaturalTerrainType.Plains => _plainsBrush,
+        NaturalTerrainType.Mountains => _mountainBrush,
+        NaturalTerrainType.River => _cityBrush,
+        _ => _fallbackBrush,
+    };
+
+    private static string FormatTerrain(NaturalTerrainType terrain) => terrain switch
+    {
+        NaturalTerrainType.Forest => "숲",
+        NaturalTerrainType.Plains => "평야",
+        NaturalTerrainType.Mountains => "산맥",
+        NaturalTerrainType.River => "하천",
+        _ => "미확인",
+    };
+
+    private static string FormatPointMarker(PointHeavenViewDefinition point) =>
+        point.Settlements.Stronghold switch
+        {
+            PointStrongholdKind.City => "성",
+            PointStrongholdKind.Sect => "종",
+            PointStrongholdKind.Clan => "가",
+            _ when point.Resources.HasSpiritVein => "맥",
+            _ when point.Resources.Mine != MineResourceKind.None => "광",
+            _ => string.Empty,
+        };
+
+    private static string FormatSettlementSummary(PointSettlementProfile settlements) =>
+        settlements.Society switch
+        {
+            PointSocietyKind.Mortal => "범인 정착지",
+            PointSocietyKind.Cultivator => settlements.Stronghold switch
+            {
+                PointStrongholdKind.City => "수선 도시",
+                PointStrongholdKind.Sect => "종문 거점",
+                PointStrongholdKind.Clan => "가문 거점",
+                _ => "수선 정착지",
+            },
+            _ => "자연 지역",
+        };
+
     private void MapTileButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { Tag: ushort locationId }
@@ -284,6 +437,70 @@ public partial class MapObservationView : UserControl
             ? WorldMapRules.CityLocationId
             : WorldMapRules.SecondHeavenCityLocationId;
         AgentOffset = 0;
+        Apply(_snapshot);
+        if (ShouldLoadAgents)
+        {
+            ObservationRequested?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void GeographyLayerButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not RadioButton { Tag: string raw }
+            || !byte.TryParse(raw, out var layer)
+            || layer == _selectedGeographyLayer)
+        {
+            return;
+        }
+
+        _selectedGeographyLayer = layer;
+        _projectedGeographyLayer = 0;
+        ApplyGeography();
+    }
+
+    private void ProvinceTileButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: ushort provinceId })
+        {
+            return;
+        }
+
+        var province = WorldGeographyRules.GetProvince(provinceId);
+        if (!province.HasPointDetail)
+        {
+            return;
+        }
+
+        _selectedProvinceId = provinceId;
+        ApplyGeography();
+    }
+
+    private void PointTileButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: ushort pointId }
+            || pointId == _selectedPointId)
+        {
+            return;
+        }
+
+        _selectedPointId = pointId;
+        _projectedGeographyPointId = ushort.MaxValue;
+        ApplyGeography();
+    }
+
+    private void MapModeTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_applying || !ReferenceEquals(e.Source, sender) || !IsInitialized)
+        {
+            return;
+        }
+
+        if (MapModeTabControl.SelectedIndex == 1)
+        {
+            ApplyGeography();
+            return;
+        }
+
         Apply(_snapshot);
         if (ShouldLoadAgents)
         {
@@ -365,6 +582,22 @@ public partial class MapObservationView : UserControl
         string Biome,
         string Population,
         string Summary,
+        Brush Background,
+        Brush Border);
+
+    private sealed record ProvinceTileRow(
+        ushort ProvinceId,
+        string Label,
+        string ToolTip,
+        bool IsEnabled,
+        Brush Background,
+        Brush Border);
+
+    private sealed record PointTileRow(
+        ushort PointId,
+        string Label,
+        string Marker,
+        string ToolTip,
         Brush Background,
         Brush Border);
 

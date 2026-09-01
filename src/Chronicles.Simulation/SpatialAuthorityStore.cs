@@ -253,25 +253,9 @@ internal sealed class SpatialAuthorityStore
         RealmStage realm)
     {
         ValidateAgent(agent);
-        var candidates = new List<ushort>(6);
-        foreach (var candidate in WorldMapRules.GetConnectedLocations(currentLocationId))
-        {
-            var layer = WorldMapRules.GetLocation(candidate).HeavenlyLayer;
-            if (!WorldAtlasRules.CanEnterLayer(realm, layer))
-            {
-                continue;
-            }
-
-            // AI는 실제 Atlas 전체를 훑지 않는다. 알고 있는 지점과 현재 지점에 직접
-            // 연결된 미발견 지점만 이동 후보로 본다.
-            if (IsKnown(agent, candidate)
-                || WorldMapRules.AreDirectlyConnected(currentLocationId, candidate))
-            {
-                candidates.Add(candidate);
-            }
-        }
-
-        return candidates;
+        // AI는 전체 Atlas를 훑지 않고 현재 지점에 직접 연결되며 경지상 진입 가능한
+        // 지점만 본다. 인접 배열은 불변 캐시이므로 행동마다 컬렉션을 만들지 않는다.
+        return WorldMapRules.GetAccessibleConnectedLocations(currentLocationId, realm);
     }
 
     public bool IsKnown(int agent, ushort locationId)

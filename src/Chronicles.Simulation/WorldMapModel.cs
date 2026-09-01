@@ -145,6 +145,12 @@ public static class WorldMapRules
         new(8, "화린망", BiomeType.Mountains, 2_400, MaterialId.PillMaterial),
     ];
 
+    // 이동 인접성은 불변 정의다. 행동을 고를 때마다 전체 지도를 다시 순회하고 List를
+    // 만들지 않도록 시작 시 한 번만 계산한다.
+    private static readonly ushort[][] ConnectedLocations = BuildConnectedLocations();
+    private static readonly ushort[][] FirstLayerAccessibleLocations =
+        BuildFirstLayerAccessibleLocations();
+
     public static IReadOnlyList<MapLocationDefinition> AllLocations => Locations;
     public static IReadOnlyList<MonsterSpeciesDefinition> AllMonsters => Monsters;
 
@@ -177,16 +183,47 @@ public static class WorldMapRules
     public static IReadOnlyList<ushort> GetConnectedLocations(ushort locationId)
     {
         _ = GetLocation(locationId);
-        var connected = new List<ushort>(5);
-        for (ushort candidate = 0; candidate < LocationCount; candidate++)
-        {
-            if (candidate != locationId && AreDirectlyConnected(locationId, candidate))
-            {
-                connected.Add(candidate);
-            }
-        }
+        return ConnectedLocations[locationId];
+    }
 
-        return connected;
+    public static IReadOnlyList<ushort> GetAccessibleConnectedLocations(
+        ushort locationId,
+        RealmStage realm)
+    {
+        _ = GetLocation(locationId);
+        return WorldAtlasRules.CanEnterLayer(realm, 2)
+            ? ConnectedLocations[locationId]
+            : FirstLayerAccessibleLocations[locationId];
+    }
+
+    private static ushort[][] BuildConnectedLocations()
+    {
+        var result = new ushort[LocationCount][];
+        for (ushort locationId = 0; locationId < LocationCount; locationId++)
+        {
+            var connected = new List<ushort>(5);
+            for (ushort candidate = 0; candidate < LocationCount; candidate++)
+            {
+                if (candidate != locationId && AreDirectlyConnected(locationId, candidate))
+                {
+                    connected.Add(candidate);
+                }
+            }
+            result[locationId] = connected.ToArray();
+        }
+        return result;
+    }
+
+    private static ushort[][] BuildFirstLayerAccessibleLocations()
+    {
+        var result = new ushort[LocationCount][];
+        for (ushort locationId = 0; locationId < LocationCount; locationId++)
+        {
+            result[locationId] = ConnectedLocations[locationId]
+                .Where(candidate => Locations[candidate].HeavenlyLayer == 1)
+                .ToArray();
+        }
+        return result;
     }
 
     public static MonsterSpeciesDefinition GetMonster(BiomeType biome, int selection)

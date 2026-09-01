@@ -54,6 +54,7 @@ internal static class SqliteSlotPersistenceTests
             Equal(9, SaveSlotRegistry.All.Count, "고정 세이브 카드 9개");
             Equal("default", SaveSlotRegistry.All[0].SlotId, "1번 기존 default 호환");
             Equal("slot-09", SaveSlotRegistry.All[^1].SlotId, "9번 슬롯 ID");
+            AssertCatalogBudget(root);
 
             AssertCandidateLoad(
                 root,
@@ -178,6 +179,35 @@ internal static class SqliteSlotPersistenceTests
             snapshot.TotalBreakthroughs,
             OrganizationCount: 0,
             authority.StateHash);
+    }
+
+    private static void AssertCatalogBudget(string root)
+    {
+        const int sampleCount = 80;
+        const double budgetMilliseconds = 50.0;
+        var samples = new double[sampleCount];
+
+        foreach (var slot in SaveSlotRegistry.All)
+        {
+            _ = SlotSaveStore.InspectCatalog(root, slot.SlotId);
+        }
+
+        for (var sample = 0; sample < samples.Length; sample++)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            foreach (var slot in SaveSlotRegistry.All)
+            {
+                _ = SlotSaveStore.InspectCatalog(root, slot.SlotId);
+            }
+            stopwatch.Stop();
+            samples[sample] = stopwatch.Elapsed.TotalMilliseconds;
+        }
+
+        Array.Sort(samples);
+        var p95 = samples[(int)Math.Ceiling(samples.Length * 0.95) - 1];
+        Console.WriteLine(
+            $"SAVE CATALOG PERF: 9개 카드 p95 {p95:N2} ms · 예산 {budgetMilliseconds:N0} ms");
+        True(p95 <= budgetMilliseconds, "9개 세이브 카드 목록 p95 50 ms 예산");
     }
 
     private static void Corrupt(string path)

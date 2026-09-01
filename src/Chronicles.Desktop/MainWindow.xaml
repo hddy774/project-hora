@@ -269,7 +269,7 @@
             </Border>
 
             <Border x:Name="WorkspaceDetailPanel" Grid.Column="2" Style="{StaticResource PanelStyle}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
                     <StackPanel>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -939,6 +939,7 @@
                 <TabControl x:Name="WorldInfoTabControl"
                             Background="Transparent"
                             BorderThickness="0"
+                            SelectedIndex="0"
                             SelectionChanged="VisibleSection_SelectionChanged">
                     <TabControl.Template>
                         <ControlTemplate TargetType="TabControl">
@@ -947,7 +948,7 @@
                         </ControlTemplate>
                     </TabControl.Template>
                     <TabItem Header="통계">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden">
                             <StackPanel Margin="16,14,16,12">
                                 <TextBlock Text="전체 세계 통계"
                                            Foreground="{StaticResource PrimaryTextBrush}"
@@ -1030,7 +1031,7 @@
                         </ScrollViewer>
                     </TabItem>
                     <TabItem Header="도시">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden">
                             <StackPanel Margin="16,14,16,12">
                                 <TextBlock Text="만상성 도시 상세" Foreground="{StaticResource PrimaryTextBrush}" FontSize="17" FontWeight="SemiBold" />
                                 <TextBlock Text="도시는 임무 납품 재료를 공동 시장에 공급하고 재료·영석으로 상품을 생산합니다."

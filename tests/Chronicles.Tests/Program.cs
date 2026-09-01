@@ -2819,6 +2819,16 @@ static void AtlasHierarchySpatialKnowledgeAndVeins()
     _ = world.CreateSnapshot(10, 10, ObservationSections.Map);
     Equal(hashBeforeObservation, world.ComputeStateHash(), "Atlas 관찰 무영향");
 
+    world.AdvanceTo(new SimulationTick(200L * GameCalendar.TicksPerYear));
+    var spread = world.CreateSnapshot(
+        10,
+        10,
+        ObservationSections.Map,
+        WorldMapRules.SecondHeavenCityLocationId).Map;
+    True(
+        spread.Atlas!.Layers[1].Population > 0,
+        "축기 이상 AI가 개인 공간 지식과 접근 조건으로 2층천에 확산");
+
     var worldCheckpoint = world.CreateCheckpoint();
     True(worldCheckpoint.Atlas is not null, "Atlas 권위 저장");
     var restoredWorld = World.Restore(worldCheckpoint);

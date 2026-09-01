@@ -53,8 +53,15 @@ public partial class MainWindow
             $"누적 행동 {KoreanNumberFormatter.Format(agent.ActionsTaken)}회 · " +
             $"마지막 {FormatOptionalGameDate(agent.LastActionDate)} · 다음 {nextActionText}";
         var location = WorldMapRules.GetLocation(agent.LocationId);
+        var layer = WorldAtlasRules.GetHeavenlyLayer(location.HeavenlyLayer);
+        var movement = agent.Movement.Status is MovementStatus.Idle or MovementStatus.Arrived
+            ? "이동 없음"
+            : $"{FormatMovementStatus(agent.Movement.Status)} → " +
+                WorldMapRules.GetLocation(agent.Movement.DestinationLocationId).KoreanName;
         LocationText.Text =
-            $"현재 위치 {location.KoreanName} · {FormatBiome(location.Biome)} · 요수 사냥 {KoreanNumberFormatter.Format(agent.MonsterVictories)}/{KoreanNumberFormatter.Format(agent.MonsterHunts)}승";
+            $"{layer.KoreanName} / {location.KoreanName} · {FormatBiome(location.Biome)} · " +
+            $"발견 {agent.SpatialKnowledge.KnownLocationCount:N0}/{agent.SpatialKnowledge.TotalProductionLocationCount:N0} · " +
+            $"{movement} · 요수 사냥 {KoreanNumberFormatter.Format(agent.MonsterVictories)}/{KoreanNumberFormatter.Format(agent.MonsterHunts)}승";
         if (DecisionReasonExpander.IsExpanded)
         {
             UpdateDecisionReasonView(agent.Decision);
@@ -1081,6 +1088,18 @@ public partial class MainWindow
         CultivationBottleneckCause.EntryGate => "입문 Gate",
         CultivationBottleneckCause.RealmComponent => "경지 구성요소",
         CultivationBottleneckCause.Method => "공법",
+        _ => value.ToString(),
+    };
+
+    private static string FormatMovementStatus(MovementStatus value) => value switch
+    {
+        MovementStatus.Idle => "대기",
+        MovementStatus.Planned => "경로 계획",
+        MovementStatus.InTransit => "이동 중",
+        MovementStatus.Arrived => "도착",
+        MovementStatus.Blocked => "차단",
+        MovementStatus.Rerouted => "재경로",
+        MovementStatus.Interrupted => "중단",
         _ => value.ToString(),
     };
 

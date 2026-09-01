@@ -40,6 +40,17 @@ Desktop = Application + Presentation
 이 파일들은 모두 Simulation 권위 owner다. Desktop은 `WorldObservationQueries`가 만든
 불변 DTO만 받아 펼친 인물 상세 구역을 그린다.
 
+## 0.0.17 Atlas·경제 진입점
+
+- 5층천 Definition·Production 1·2층천·계층·900 영맥: `WorldAtlasModel.cs`
+- 개인 공간 지식·이동·지역 index·유한 영맥 공급: `SpatialAuthorityStore.cs`
+- 경제 Owner/Holder·Offer/Reservation/Channel: `MarketAuthorityModel.cs`
+- 제안→예약→만료/취소/체결: `CityMarket.Contracts.cs`
+- 좌측 관찰 경로와 전체 작업공간 전환: `MainWindow.Workspace.cs`
+
+지도와 경제 화면은 열린 경로만 `ObservationSections`를 요청한다. 지도 내부의 수선자
+행과 시장의 제안·예약 행도 해당 내부 탭이 열릴 때만 materialize한다.
+
 ## 검증
 
 ```powershell

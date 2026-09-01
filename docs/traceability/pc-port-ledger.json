@@ -29,11 +29,11 @@
     "Gap/Deferred": "요구 문장 일부 또는 전부를 증명하지 못해 완료로 주장하지 않음."
   },
   "status_counts": {
-    "Port": 63,
-    "PC Adapt": 13,
-    "PC_TEMP_REVIEW": 20,
+    "Port": 82,
+    "PC Adapt": 14,
+    "PC_TEMP_REVIEW": 27,
     "Platform Excluded": 0,
-    "Gap/Deferred": 142
+    "Gap/Deferred": 115
   },
   "rows": [
     {
@@ -5396,22 +5396,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V02",
@@ -5439,22 +5444,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-ATLAS-NAMES-113",
+        "PC-TEMP-VEIN-PROFILES-113",
+        "PC-TEMP-LAYER-ACCESS-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V03",
@@ -5482,22 +5496,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V04",
@@ -5525,22 +5544,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V05",
@@ -5568,22 +5592,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-ATLAS-NAMES-113",
+        "PC-TEMP-VEIN-PROFILES-113",
+        "PC-TEMP-LAYER-ACCESS-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V06",
@@ -5611,22 +5644,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-ATLAS-NAMES-113",
+        "PC-TEMP-VEIN-PROFILES-113",
+        "PC-TEMP-LAYER-ACCESS-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V07",
@@ -5654,22 +5696,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V08",
@@ -5697,22 +5744,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-ATLAS-NAMES-113",
+        "PC-TEMP-VEIN-PROFILES-113",
+        "PC-TEMP-LAYER-ACCESS-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V09",
@@ -5740,22 +5796,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V10",
@@ -5783,22 +5844,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V11",
@@ -5826,22 +5892,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V12",
@@ -5869,22 +5940,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "PC Adapt",
       "target_port_mode": "PC Adapt",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": "Android/모바일 전달 표면을 제외하고 같은 관찰·조회 의미를 Windows WPF와 Windows x64 검증으로 제공한다.",
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V13",
@@ -5912,22 +5988,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V14",
@@ -5959,13 +6040,18 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -5998,22 +6084,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V16",
@@ -6041,22 +6132,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V17",
@@ -6084,22 +6180,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_spatial_authority_domain_tests.cpp::test_save_restore_topology_revision_and_reincarnation_rebind"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore",
         "FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules",
         "FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot",
-        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView"
+        "FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위"
       ],
       "pc_test_refs": [
+        "TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식",
         "TEST::3×3 지도와 지형별 요수 생태",
-        "TEST::지도 내부 탭 지연 투영 성능"
+        "TEST::지도 내부 탭 지연 투영 성능",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M09-V01",
@@ -6743,16 +6844,22 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -6785,25 +6892,37 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-MARKET-WINDOW-113",
+        "PC-TEMP-MARKET-LEDGER-113",
+        "PC-TEMP-MARKET-BOOK-BASE-113",
+        "PC-TEMP-MARKET-CONTRACT-LIFETIME-113",
+        "PC-TEMP-MARKET-ORGANIZATION-CHANNEL-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V03",
@@ -6831,25 +6950,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V04",
@@ -6877,25 +7002,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V05",
@@ -6923,25 +7054,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V06",
@@ -6969,25 +7106,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V07",
@@ -7019,21 +7162,29 @@
       "target_port_mode": "PC_TEMP_REVIEW",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-MARKET-WINDOW-113",
         "PC-TEMP-MARKET-LEDGER-113",
-        "PC-TEMP-MARKET-BOOK-BASE-113"
+        "PC-TEMP-MARKET-BOOK-BASE-113",
+        "PC-TEMP-MARKET-CONTRACT-LIFETIME-113",
+        "PC-TEMP-MARKET-ORGANIZATION-CHANNEL-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -7065,25 +7216,37 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-MARKET-WINDOW-113",
+        "PC-TEMP-MARKET-LEDGER-113",
+        "PC-TEMP-MARKET-BOOK-BASE-113",
+        "PC-TEMP-MARKET-CONTRACT-LIFETIME-113",
+        "PC-TEMP-MARKET-ORGANIZATION-CHANNEL-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V09",
@@ -7111,25 +7274,37 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-MARKET-WINDOW-113",
+        "PC-TEMP-MARKET-LEDGER-113",
+        "PC-TEMP-MARKET-BOOK-BASE-113",
+        "PC-TEMP-MARKET-CONTRACT-LIFETIME-113",
+        "PC-TEMP-MARKET-ORGANIZATION-CHANNEL-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V10",
@@ -7157,25 +7332,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V11",
@@ -7207,16 +7388,22 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -7253,16 +7440,22 @@
       "target_port_mode": "PC Adapt",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -7295,25 +7488,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V14",
@@ -7345,21 +7544,29 @@
       "target_port_mode": "PC_TEMP_REVIEW",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-MARKET-WINDOW-113",
         "PC-TEMP-MARKET-LEDGER-113",
-        "PC-TEMP-MARKET-BOOK-BASE-113"
+        "PC-TEMP-MARKET-BOOK-BASE-113",
+        "PC-TEMP-MARKET-CONTRACT-LIFETIME-113",
+        "PC-TEMP-MARKET-ORGANIZATION-CHANNEL-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -7395,16 +7602,22 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -7437,25 +7650,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M10-V17",
@@ -7483,25 +7702,31 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_economy_domain_tests.cpp::test_offer_reservation_and_atomic_settlement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.17",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef",
+        "FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer",
         "FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket",
         "FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase",
         "FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules",
-        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약"
+        "TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약",
+        "TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위"
       ],
       "pc_test_refs": [
         "TEST::도시 임무·영석·재료·단약·법보 경제 순환",
         "TEST::시장 원자 정산·중복 source·품질 개선 구매",
+        "TEST::시장 Offer→Reservation→만료·원자 체결",
         "TEST::시장 소유자 용량 초과 원자 거부",
-        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용"
+        "TEST::최근 12개월 수급 창·관찰 snapshot 재사용",
+        "TEST::schema 24 시장 수급·원장 codec·source 재생 방지",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M11-V01",

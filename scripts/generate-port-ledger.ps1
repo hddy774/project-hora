@@ -80,15 +80,21 @@ $masterEvidence = @{
         'FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules',
         'FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching')
     M08 = @(
+        'FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules',
+        'FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore',
         'FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules',
         'FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot',
-        'FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView')
+        'FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView',
+        'TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위')
     M09 = @()
     M10 = @(
+        'FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef',
+        'FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer',
         'FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket',
         'FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase',
         'FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules',
-        'TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약')
+        'TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약',
+        'TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위')
     M11 = @(
         'FILE::src/Chronicles.Simulation/EconomyRules.cs::MarketGoodKind',
         'FILE::src/Chronicles.Simulation/World.Map.cs::ResolveMonsterHunt')
@@ -132,14 +138,19 @@ $masterTests = @{
         'TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%',
         'TEST::관찰 조회 무영향')
     M08 = @(
+        'TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식',
         'TEST::3×3 지도와 지형별 요수 생태',
-        'TEST::지도 내부 탭 지연 투영 성능')
+        'TEST::지도 내부 탭 지연 투영 성능',
+        'TEST::관찰 조회 무영향')
     M09 = @()
     M10 = @(
         'TEST::도시 임무·영석·재료·단약·법보 경제 순환',
         'TEST::시장 원자 정산·중복 source·품질 개선 구매',
+        'TEST::시장 Offer→Reservation→만료·원자 체결',
         'TEST::시장 소유자 용량 초과 원자 거부',
-        'TEST::최근 12개월 수급 창·관찰 snapshot 재사용')
+        'TEST::최근 12개월 수급 창·관찰 snapshot 재사용',
+        'TEST::schema 24 시장 수급·원장 codec·source 재생 방지',
+        'TEST::관찰 조회 무영향')
     M11 = @()
     M12 = @('TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%')
     M13 = @()
@@ -167,14 +178,18 @@ $portIds = @(
     'A110-M07-V01', 'A110-M07-V03', 'A110-M07-V04', 'A110-M07-V06',
     'A110-M07-V09', 'A110-M07-V10', 'A110-M07-V11', 'A110-M07-V13',
     'A110-M07-V15', 'A110-M07-V16', 'A110-M07-V17',
-    'A110-M08-V14',
-    'A110-M10-V01', 'A110-M10-V11', 'A110-M10-V15'
+    'A110-M08-V01', 'A110-M08-V03', 'A110-M08-V04', 'A110-M08-V07',
+    'A110-M08-V09', 'A110-M08-V10', 'A110-M08-V11', 'A110-M08-V13',
+    'A110-M08-V14', 'A110-M08-V15', 'A110-M08-V16', 'A110-M08-V17',
+    'A110-M10-V01', 'A110-M10-V03', 'A110-M10-V04', 'A110-M10-V05',
+    'A110-M10-V06', 'A110-M10-V10', 'A110-M10-V11', 'A110-M10-V13',
+    'A110-M10-V15', 'A110-M10-V16', 'A110-M10-V17'
 )
 
 $pcAdaptIds = @(
     'A110-M03-V12',
     'A110-M04-V12', 'A110-M05-V12', 'A110-M06-V12', 'A110-M07-V12',
-    'A110-M10-V12',
+    'A110-M08-V12', 'A110-M10-V12',
     'A110-M14-V01', 'A110-M14-V06', 'A110-M14-V09', 'A110-M14-V10',
     'A110-M14-V12', 'A110-M14-V14', 'A110-M14-V15'
 )
@@ -187,7 +202,9 @@ $tempReviewIds = @(
     'A110-M06-V08', 'A110-M06-V14', 'A110-M06-V16',
     'A110-M07-V02', 'A110-M07-V05', 'A110-M07-V07', 'A110-M07-V08',
     'A110-M07-V14',
-    'A110-M10-V07', 'A110-M10-V14'
+    'A110-M08-V02', 'A110-M08-V05', 'A110-M08-V06', 'A110-M08-V08',
+    'A110-M10-V02', 'A110-M10-V07', 'A110-M10-V08', 'A110-M10-V09',
+    'A110-M10-V14'
 )
 
 $reviewIds = @{
@@ -204,10 +221,16 @@ $reviewIds = @{
         'PC-TEMP-RELATION-BALANCE-113',
         'PC-TEMP-TEACHING-BALANCE-113',
         'PC-TEMP-RELATION-EXTERNAL-CONTEXT-113')
+    M08 = @(
+        'PC-TEMP-ATLAS-NAMES-113',
+        'PC-TEMP-VEIN-PROFILES-113',
+        'PC-TEMP-LAYER-ACCESS-113')
     M10 = @(
         'PC-TEMP-MARKET-WINDOW-113',
         'PC-TEMP-MARKET-LEDGER-113',
-        'PC-TEMP-MARKET-BOOK-BASE-113')
+        'PC-TEMP-MARKET-BOOK-BASE-113',
+        'PC-TEMP-MARKET-CONTRACT-LIFETIME-113',
+        'PC-TEMP-MARKET-ORGANIZATION-CHANNEL-113')
 }
 
 $classification = @{}

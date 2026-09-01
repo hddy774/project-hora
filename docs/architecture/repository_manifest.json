@@ -83,7 +83,14 @@
     "agent_causal_runtime": "src/Chronicles.Simulation/AgentCausalRuntime.cs",
     "reincarnation_authority": "src/Chronicles.Simulation/ReincarnationModel.cs",
     "sparse_relations": "src/Chronicles.Simulation/RelationModel.cs",
+    "world_atlas_authority": "src/Chronicles.Simulation/WorldAtlasModel.cs",
+    "spatial_authority_store": "src/Chronicles.Simulation/SpatialAuthorityStore.cs",
+    "market_contract_authority": "src/Chronicles.Simulation/MarketAuthorityModel.cs",
+    "market_offer_reservation": "src/Chronicles.Simulation/CityMarket.Contracts.cs",
     "agent_observation_ui": "src/Chronicles.Desktop/MainWindow.AgentObservation.cs",
+    "workspace_navigation_ui": "src/Chronicles.Desktop/MainWindow.Workspace.cs",
+    "map_observation_ui": "src/Chronicles.Desktop/MapObservationView.xaml.cs",
+    "market_observation_ui": "src/Chronicles.Desktop/MarketObservationView.xaml.cs",
     "vertical_contract_test": "tests/Chronicles.Tests/Program.cs"
   }
 }

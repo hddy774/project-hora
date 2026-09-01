@@ -17,6 +17,7 @@ public partial class SaveWorkspaceView : UserControl
 {
     private IReadOnlyList<SaveSlotCatalogEntry> _entries = [];
     private string? _selectedSlotId;
+    private bool _operationActive;
 
     public SaveWorkspaceView()
     {
@@ -49,6 +50,8 @@ public partial class SaveWorkspaceView : UserControl
 
     public void SetBusy(bool busy, string message)
     {
+        _operationActive = false;
+        OperationProgressPanel.Visibility = Visibility.Collapsed;
         IsEnabled = !busy;
         StatusText.Text = message;
         StatusText.Foreground = (Brush)FindResource(
@@ -57,10 +60,35 @@ public partial class SaveWorkspaceView : UserControl
 
     public void SetStatus(string message, bool isError = false)
     {
+        _operationActive = false;
+        OperationProgressPanel.Visibility = Visibility.Collapsed;
         IsEnabled = true;
         StatusText.Text = message;
         StatusText.Foreground = (Brush)FindResource(
             isError ? "DangerBrush" : "PositiveBrush");
+    }
+
+    public void BeginOperation(string message)
+    {
+        _operationActive = true;
+        IsEnabled = false;
+        StatusText.Text = message;
+        StatusText.Foreground = (Brush)FindResource("AccentBrush");
+        OperationProgressBar.Value = 0;
+        OperationProgressText.Text = "0% · 준비";
+        OperationProgressPanel.Visibility = Visibility.Visible;
+    }
+
+    public void SetOperationProgress(SaveOperationProgress progress)
+    {
+        if (!_operationActive)
+        {
+            return;
+        }
+
+        var percent = Math.Clamp(progress.Percent, 0, 100);
+        OperationProgressBar.Value = percent;
+        OperationProgressText.Text = $"{percent}% · {progress.Stage}";
     }
 
     private SaveSlotCardViewModel CreateCard(SaveSlotCatalogEntry entry)

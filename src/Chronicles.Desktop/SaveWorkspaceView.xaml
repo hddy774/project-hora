@@ -121,6 +121,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TextBlock x:Name="SelectedSlotTitleText"
                            Text="슬롯을 선택해 주세요."
@@ -143,6 +144,25 @@
                            Text="저장 목록 대기"
                            Foreground="{StaticResource SecondaryTextBrush}"
                            FontSize="10" />
+                <Grid x:Name="OperationProgressPanel"
+                      Grid.Row="3"
+                      Margin="0,6,0,0"
+                      Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ProgressBar x:Name="OperationProgressBar"
+                                 Height="6"
+                                 Minimum="0"
+                                 Maximum="100"
+                                 VerticalAlignment="Center" />
+                    <TextBlock x:Name="OperationProgressText"
+                               Grid.Column="1"
+                               Margin="10,0,0,0"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="10" />
+                </Grid>
             </Grid>
         </Border>
     </Grid>

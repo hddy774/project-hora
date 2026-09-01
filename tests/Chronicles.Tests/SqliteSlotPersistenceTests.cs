@@ -24,11 +24,21 @@ internal static class SqliteSlotPersistenceTests
             var firstHash = firstAuthority.StateHash;
             var firstSummary = CreateSummary(world, firstAuthority);
 
-            var firstSave = SlotSaveStore.Save(root, slotId, firstAuthority, firstSummary);
+            var saveProgress = new List<SlotPersistenceProgress>();
+            var firstSave = SlotSaveStore.Save(
+                root,
+                slotId,
+                firstAuthority,
+                firstSummary,
+                saveProgress.Add);
 
             Equal(25, firstSave.WorldSchema, "SQLite world schema");
             Equal(WorldCheckpoint.CurrentSchemaVersion, firstSave.CheckpointSchema, "권위 payload schema");
             Equal(firstHash, firstSave.StateHash, "저장 state hash");
+            AssertProgress(saveProgress, 100, "SQLite save 진행률");
+            True(
+                saveProgress.Any(item => item.Phase == SlotPersistencePhase.VerifyingCandidate),
+                "SQLite save 후보 전체 검증 단계");
             True(File.Exists(paths.PrimaryPath), "primary world.db 생성");
             var header = new byte[16];
             using (var stream = File.OpenRead(paths.PrimaryPath))
@@ -226,8 +236,13 @@ internal static class SqliteSlotPersistenceTests
         int expectedPopulation,
         long? expectedSequence = null)
     {
-        var load = SlotSaveStore.Load(root, slotId);
+        var progress = new List<SlotPersistenceProgress>();
+        var load = SlotSaveStore.Load(root, slotId, progress.Add);
         True(load.IsSuccess, $"SQLite candidate load: {load.Status} · {load.Message}");
+        AssertProgress(progress, 90, "SQLite candidate load 진행률");
+        True(
+            progress.Any(item => item.Phase == SlotPersistencePhase.ValidatingWorld),
+            "SQLite load Candidate World hash 검증 단계");
         Equal(expectedKind, load.CandidateKind, "SQLite candidate 종류");
         Equal(expectedStateHash, load.StateHash, "SQLite candidate state hash");
         Equal(expectedPopulation, load.Checkpoint!.Agents.Length, "SQLite candidate 인구");
@@ -235,6 +250,21 @@ internal static class SqliteSlotPersistenceTests
         {
             Equal(sequence, load.CreatedSequence, "SQLite candidate 생성 sequence");
         }
+    }
+
+    private static void AssertProgress(
+        List<SlotPersistenceProgress> progress,
+        int expectedFinalPercent,
+        string message)
+    {
+        True(progress.Count > 0, $"{message} 표본 존재");
+        for (var index = 1; index < progress.Count; index++)
+        {
+            True(
+                progress[index].Percent >= progress[index - 1].Percent,
+                $"{message} 단조 증가 · {index}");
+        }
+        Equal(expectedFinalPercent, progress[^1].Percent, $"{message} 최종 값");
     }
 
     private static void RunFivePassBenchmark(

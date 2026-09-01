@@ -93,10 +93,12 @@ public partial class MainWindow
 
         var wasPaused = _runner.IsPaused;
         SetSimulationPausedForStorage(true);
-        SaveWorkspacePanel.SetBusy(true, $"{definition.DisplayName}에 저장하는 중…");
+        SaveWorkspacePanel.BeginOperation($"{definition.DisplayName}에 저장하는 중…");
         try
         {
-            var result = await _runner.SaveSlotAsync(e.SlotId);
+            var progress = new Progress<SaveOperationProgress>(
+                SaveWorkspacePanel.SetOperationProgress);
+            var result = await _runner.SaveSlotAsync(e.SlotId, progress: progress);
             _logService.AddDebug(
                 DebugLogLevel.Information,
                 $"세계 저장 완료 · {definition.DisplayName} · schema {result.WorldSchema}/{result.CheckpointSchema} · seq {result.CreatedSequence}");
@@ -142,10 +144,12 @@ public partial class MainWindow
 
         var wasPaused = _runner.IsPaused;
         SetSimulationPausedForStorage(true);
-        SaveWorkspacePanel.SetBusy(true, $"{definition.DisplayName}을(를) 복원하는 중…");
+        SaveWorkspacePanel.BeginOperation($"{definition.DisplayName}을(를) 복원하는 중…");
         try
         {
-            var result = await _runner.LoadSlotAsync(e.SlotId);
+            var progress = new Progress<SaveOperationProgress>(
+                SaveWorkspacePanel.SetOperationProgress);
+            var result = await _runner.LoadSlotAsync(e.SlotId, progress: progress);
             if (!result.IsSuccess)
             {
                 throw new InvalidDataException(result.Message);

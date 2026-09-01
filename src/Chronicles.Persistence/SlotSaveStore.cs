@@ -116,10 +116,30 @@ public sealed record SlotLoadResult(
     public bool IsSuccess => Status == SlotLoadStatus.Success && Checkpoint is not null;
 }
 
+public enum SlotPersistencePhase : byte
+{
+    Preparing,
+    EncodingAuthority,
+    WritingCandidate,
+    VerifyingCandidate,
+    ReplacingPrimary,
+    WritingManifest,
+    InspectingCandidates,
+    SelectingCandidate,
+    DecodingCandidate,
+    ValidatingWorld,
+    Complete,
+}
+
+public readonly record struct SlotPersistenceProgress(
+    int Percent,
+    SlotPersistencePhase Phase,
+    SlotCandidateKind? CandidateKind = null);
+
 /// <summary>
 /// Schema 25 PC slot storage. The database schema and canonical authority payload
-/// schema are deliberately independent during 0.0.15: SQLite user_version is 25,
-/// while the payload remains a current schema-24 checkpoint.
+/// schema are deliberately independent: SQLite user_version is 25 while the
+/// canonical payload uses the current checkpoint schema.
 /// </summary>
 public static class SlotSaveStore
 {
@@ -343,23 +363,27 @@ public static class SlotSaveStore
         string rootDirectory,
         string slotId,
         WorldCheckpoint checkpoint,
-        SlotManifestSummary? summary = null)
+        SlotManifestSummary? summary = null,
+        Action<SlotPersistenceProgress>? progress = null)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
+        Report(progress, 5, SlotPersistencePhase.Preparing);
         var restored = World.Restore(checkpoint);
         return SaveCore(
             rootDirectory,
             slotId,
             checkpoint,
             restored.ComputeStateHash(),
-            summary);
+            summary,
+            progress);
     }
 
     public static SlotSaveResult Save(
         string rootDirectory,
         string slotId,
         WorldAuthorityCheckpoint authority,
-        SlotManifestSummary? summary = null)
+        SlotManifestSummary? summary = null,
+        Action<SlotPersistenceProgress>? progress = null)
     {
         ArgumentNullException.ThrowIfNull(authority);
         World.ValidateCheckpointForPersistence(authority.Checkpoint);
@@ -368,7 +392,8 @@ public static class SlotSaveStore
             slotId,
             authority.Checkpoint,
             authority.StateHash,
-            summary);
+            summary,
+            progress);
     }
 
     private static SlotSaveResult SaveCore(
@@ -376,8 +401,10 @@ public static class SlotSaveStore
         string slotId,
         WorldCheckpoint checkpoint,
         ulong stateHash,
-        SlotManifestSummary? summary)
+        SlotManifestSummary? summary,
+        Action<SlotPersistenceProgress>? progress)
     {
+        Report(progress, 15, SlotPersistencePhase.Preparing);
         if (checkpoint.SchemaVersion != WorldCheckpoint.CurrentSchemaVersion)
         {
             throw new InvalidDataException(
@@ -394,10 +421,12 @@ public static class SlotSaveStore
             FileAccess.ReadWrite,
             FileShare.None);
 
+        Report(progress, 30, SlotPersistencePhase.EncodingAuthority);
         var payload = WorldSaveCodec.EncodeStreaming(checkpoint);
         var payloadHash = SHA256.HashData(payload);
         var createdSequence = checked(GetMaximumKnownSequence(paths) + 1);
 
+        Report(progress, 50, SlotPersistencePhase.WritingCandidate);
         WriteDatabase(
             paths.TemporaryPath,
             checkpoint,
@@ -408,6 +437,7 @@ public static class SlotSaveStore
 
         // Verify the complete temporary candidate through SQLite integrity, payload hash,
         // checkpoint decode, World restore and state hash before the atomic replacement.
+        Report(progress, 70, SlotPersistencePhase.VerifyingCandidate);
         ValidateWrittenCandidate(
             paths.TemporaryPath,
             checkpoint,
@@ -416,8 +446,11 @@ public static class SlotSaveStore
             payloadHash,
             createdSequence);
 
+        Report(progress, 86, SlotPersistencePhase.ReplacingPrimary);
         ReplacePrimary(paths);
+        Report(progress, 94, SlotPersistencePhase.WritingManifest);
         WriteManifest(paths, slotId, checkpoint.SchemaVersion, createdSequence, summary);
+        Report(progress, 100, SlotPersistencePhase.Complete);
 
         return new SlotSaveResult(
             slotId,
@@ -429,8 +462,12 @@ public static class SlotSaveStore
             payload.Length);
     }
 
-    public static SlotLoadResult Load(string rootDirectory, string slotId)
+    public static SlotLoadResult Load(
+        string rootDirectory,
+        string slotId,
+        Action<SlotPersistenceProgress>? progress = null)
     {
+        Report(progress, 5, SlotPersistencePhase.InspectingCandidates);
         var paths = GetPaths(rootDirectory, slotId);
         if (!Directory.Exists(paths.SlotDirectory))
         {
@@ -470,11 +507,18 @@ public static class SlotSaveStore
             .OrderByDescending(candidate => candidate.CreatedSequence)
             .ThenBy(candidate => CandidatePriority(candidate.Kind))
             .ToArray();
-        foreach (var stored in orderedCandidates)
+        Report(progress, 25, SlotPersistencePhase.SelectingCandidate);
+        for (var candidateIndex = 0; candidateIndex < orderedCandidates.Length; candidateIndex++)
         {
+            var stored = orderedCandidates[candidateIndex];
             try
             {
-                var selected = RestoreCandidate(stored);
+                var selected = RestoreCandidate(
+                    stored,
+                    progress,
+                    candidateIndex,
+                    orderedCandidates.Length);
+                Report(progress, 90, SlotPersistencePhase.Complete, selected.Kind);
                 return new SlotLoadResult(
                     SlotLoadStatus.Success,
                     $"SQLite {FormatCandidate(selected.Kind)} 후보를 복원했습니다.",
@@ -709,8 +753,19 @@ public static class SlotSaveStore
             payload);
     }
 
-    private static Candidate RestoreCandidate(StoredCandidate stored)
+    private static Candidate RestoreCandidate(
+        StoredCandidate stored,
+        Action<SlotPersistenceProgress>? progress,
+        int candidateIndex,
+        int candidateCount)
     {
+        var candidateBand = Math.Max(1, 60 / Math.Max(1, candidateCount));
+        var bandStart = 25 + (candidateBand * candidateIndex);
+        Report(
+            progress,
+            Math.Min(80, bandStart + 5),
+            SlotPersistencePhase.DecodingCandidate,
+            stored.Kind);
         var checkpoint = WorldSaveCodec.Decode(stored.Payload);
         if (checkpoint.SchemaVersion != stored.CheckpointSchema
             || checkpoint.Seed != stored.Seed
@@ -721,6 +776,11 @@ public static class SlotSaveStore
             throw new InvalidDataException("SQLite 메타데이터와 권위 checkpoint가 일치하지 않습니다.");
         }
 
+        Report(
+            progress,
+            Math.Min(85, bandStart + candidateBand - 3),
+            SlotPersistencePhase.ValidatingWorld,
+            stored.Kind);
         var restored = World.Restore(checkpoint);
         var actualStateHash = restored.ComputeStateHash();
         if (actualStateHash != stored.StateHash)
@@ -735,6 +795,16 @@ public static class SlotSaveStore
             stored.CreatedSequence,
             stored.StateHash);
     }
+
+    private static void Report(
+        Action<SlotPersistenceProgress>? progress,
+        int percent,
+        SlotPersistencePhase phase,
+        SlotCandidateKind? candidateKind = null) =>
+        progress?.Invoke(new SlotPersistenceProgress(
+            Math.Clamp(percent, 0, 100),
+            phase,
+            candidateKind));
 
     private static void TryInspectCandidate(
         string path,

@@ -100,6 +100,7 @@
     "organization_ai_runtime": "src/Chronicles.Simulation/World.Organizations.cs",
     "runtime_performance_diagnostics": "src/Chronicles.Runtime/SimulationRunner.cs",
     "bounded_log_file_writer": "src/Chronicles.Application/BoundedLogFileWriter.cs",
+    "save_operation_progress": "src/Chronicles.Application/SaveOperationProgress.cs",
     "personal_century_chronicle_projection": "src/Chronicles.Queries/PersonalCenturyChronicleProjection.cs",
     "performance_diagnostics_ui": "src/Chronicles.Desktop/PerformanceDiagnosticsModel.cs",
     "agent_observation_ui": "src/Chronicles.Desktop/MainWindow.AgentObservation.cs",

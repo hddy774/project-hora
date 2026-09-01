@@ -128,38 +128,55 @@ public sealed class GameApplicationSession : IDisposable
 
     public Task<SlotSaveResult> SaveSlotAsync(
         string slotId,
+        IProgress<SaveOperationProgress>? progress = null,
         CancellationToken cancellationToken = default)
     {
         var definition = SaveSlotRegistry.Get(slotId);
-        var capture = _runner.CreateSaveCapture();
-        var summary = CreateManifestSummary(
-            capture.SummarySnapshot,
-            capture.Authority.StateHash,
-            capture.Authority.Checkpoint.Seed,
-            organizationCount: capture.SummarySnapshot.Organizations?.Organizations.Count ?? 0);
         return Task.Run(
-            () => SlotSaveStore.Save(
-                DefaultSaveRoot,
-                definition.SlotId,
-                capture.Authority,
-                summary),
+            () =>
+            {
+                progress?.Report(new SaveOperationProgress(0, "안전 경계 대기"));
+                cancellationToken.ThrowIfCancellationRequested();
+                var capture = _runner.CreateSaveCapture();
+                progress?.Report(new SaveOperationProgress(10, "권위 스냅샷 고정"));
+                var summary = CreateManifestSummary(
+                    capture.SummarySnapshot,
+                    capture.Authority.StateHash,
+                    capture.Authority.Checkpoint.Seed,
+                    organizationCount: capture.SummarySnapshot.Organizations?.Organizations.Count ?? 0);
+                return SlotSaveStore.Save(
+                    DefaultSaveRoot,
+                    definition.SlotId,
+                    capture.Authority,
+                    summary,
+                    persistence => progress?.Report(
+                        SaveOperationProgressProjection.FromPersistence(persistence)));
+            },
             cancellationToken);
     }
 
     public Task<SlotSaveResult> SaveDefaultAsync(CancellationToken cancellationToken = default) =>
-        SaveSlotAsync(SlotSaveStore.DefaultSlotId, cancellationToken);
+        SaveSlotAsync(SlotSaveStore.DefaultSlotId, cancellationToken: cancellationToken);
 
     public async Task<SlotLoadResult> LoadSlotAsync(
         string slotId,
+        IProgress<SaveOperationProgress>? progress = null,
         CancellationToken cancellationToken = default)
     {
         var definition = SaveSlotRegistry.Get(slotId);
+        progress?.Report(new SaveOperationProgress(0, "불러오기 준비"));
         var result = await Task.Run(
-            () => SlotSaveStore.Load(DefaultSaveRoot, definition.SlotId),
+            () => SlotSaveStore.Load(
+                DefaultSaveRoot,
+                definition.SlotId,
+                persistence => progress?.Report(
+                    SaveOperationProgressProjection.FromPersistence(persistence))),
             cancellationToken).ConfigureAwait(false);
         if (result.IsSuccess)
         {
+            progress?.Report(new SaveOperationProgress(94, "Candidate World 원자 교체"));
             _runner.RestoreCheckpoint(result.Checkpoint!);
+            progress?.Report(new SaveOperationProgress(100, "권위 세계 복원 완료"));
         }
 
         return result;
@@ -222,7 +239,7 @@ public sealed class GameApplicationSession : IDisposable
     {
         var result = await LoadSlotAsync(
             SlotSaveStore.DefaultSlotId,
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken: cancellationToken).ConfigureAwait(false);
         if (!result.IsSuccess)
         {
             throw new InvalidDataException(result.Message);

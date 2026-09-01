@@ -89,6 +89,8 @@
     "market_offer_reservation": "src/Chronicles.Simulation/CityMarket.Contracts.cs",
     "world_balance_authority": "src/Chronicles.Simulation/FormulaRegistry.cs",
     "cultivation_authority": "src/Chronicles.Simulation/World.Cultivation.cs",
+    "cultivation_action_plan_authority": "src/Chronicles.Simulation/CultivationActionPlan.cs",
+    "cultivation_action_plan_runtime": "src/Chronicles.Simulation/World.CultivationPlans.cs",
     "foundation_formation_authority": "src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs",
     "runtime_performance_diagnostics": "src/Chronicles.Runtime/SimulationRunner.cs",
     "bounded_log_file_writer": "src/Chronicles.Application/BoundedLogFileWriter.cs",

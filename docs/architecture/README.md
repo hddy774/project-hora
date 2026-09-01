@@ -62,6 +62,20 @@ Desktop = Application + Presentation
 시장의 짧은 상세 탭에서는 중첩 `ScrollViewer`를 사용하지 않고, 기록·대형 표처럼
 목록 탐색에 효율적인 경우에만 가상화된 스크롤을 유지한다.
 
+## 0.0.19 장기 행동·수행 계획 진입점
+
+- 1개월~1만년 수행 계획과 조건 계약: `CultivationActionPlan.cs`
+- 기간·장소·강도·자원·진법·공동 수행 결정과 pulse 예약: `World.CultivationPlans.cs`
+- Work 일괄 축적과 경계 전이: `World.Cultivation.cs`
+- 권위 저장·손상 검증: `World.Persistence.cs`
+- 열린 수행 상세에서만 만드는 세 내부 탭: `MainWindow.AgentObservation.cs`
+
+수행 계획은 `Goal→Plan→Task→Action` 판단 결과를 여러 달 유지하는 권위 상태다. 계획
+경계 전에는 위치·목표·행동을 다시 선택하지 않으며, 여유/일반/폐관에 따라 6·12·24개월
+단위 pulse만 예약한다. pulse는 그 기간의 월 Work와 자원 소비를 동일한 정수 공식으로
+반영하되, 다음 병목·돌파·안착 경계를 넘지 않고 즉시 월 단위 전이로 돌아온다.
+UI는 수행 Expander와 현재 내부 탭이 열렸을 때만 계획 DTO 문구와 상대 이름을 갱신한다.
+
 ## 검증
 
 ```powershell

@@ -6,6 +6,15 @@ public sealed partial class World
 {
     private AgentActivity SelectNonCombatActivity(int index, int roll)
     {
+        var economyStart = _balance.DeveloperModeEnabled
+            ? Math.Clamp(
+                100 - (20 * _balance.EconomyActivityPercent / 100),
+                66,
+                95)
+            : 80;
+        var economyWidth = 100 - economyStart;
+        var missionEnd = economyStart + (economyWidth * 2 / 5);
+        var tradeEnd = economyStart + (economyWidth * 4 / 5);
         if (roll < 45)
         {
             return AgentActivity.Cultivating;
@@ -14,11 +23,11 @@ public sealed partial class World
         {
             return AgentActivity.TrainingTechnique;
         }
-        if (roll < 80)
+        if (roll < economyStart)
         {
             return AgentActivity.TrainingSpell;
         }
-        if (roll < 88)
+        if (roll < missionEnd)
         {
             if (_market.NeedsSpiritStoneMining)
             {
@@ -29,7 +38,7 @@ public sealed partial class World
                 return AgentActivity.DoingCityMission;
             }
         }
-        if (roll < 96)
+        if (roll < tradeEnd)
         {
             return AgentActivity.TradingInCity;
         }

@@ -69,6 +69,7 @@ var tests = new (string Name, Action Body)[]
     ("활성 UI 구역 선택 조회 성능", SelectiveObservationPerformance),
     ("지도 내부 탭 지연 투영 성능", LazyMapAgentProjectionPerformance),
     ("5층천 Atlas·1·2층천·900 영맥·개인 공간 지식", AtlasHierarchySpatialKnowledgeAndVeins),
+    ("설정용 AI 수·개발자 밸런스 권위·저장 왕복", DeveloperWorldSettingsAndBalancePersistence),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
@@ -2833,6 +2834,49 @@ static void AtlasHierarchySpatialKnowledgeAndVeins()
     True(worldCheckpoint.Atlas is not null, "Atlas 권위 저장");
     var restoredWorld = World.Restore(worldCheckpoint);
     Equal(world.ComputeStateHash(), restoredWorld.ComputeStateHash(), "Atlas 세계 결정론 복원");
+}
+
+static void DeveloperWorldSettingsAndBalancePersistence()
+{
+    var configured = new WorldBalanceConfiguration(
+        DeveloperModeEnabled: true,
+        CultivationWorkPercent: 200,
+        CombatAggressionPercent: 125,
+        EconomyActivityPercent: 75,
+        MonsterDangerPercent: 150);
+    WorldBalanceRules.Validate(configured);
+    Throws<ArgumentOutOfRangeException>(
+        () => WorldBalanceRules.Validate(configured with { MonsterDangerPercent = 401 }),
+        "개발자 배율 상한 검증");
+
+    var world = World.Create(20260901, 321, configured);
+    Equal(321, world.Population, "설정 AI 수");
+    Equal(configured, world.Balance, "세계 개발자 밸런스 권위");
+    world.AdvanceTo(new SimulationTick(8_000));
+    var checkpoint = world.CreateCheckpoint();
+    True(checkpoint.Balance == configured, "checkpoint 개발자 밸런스");
+    var restored = World.Restore(checkpoint);
+    Equal(configured, restored.Balance, "복원 개발자 밸런스");
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "개발자 세계 저장 hash");
+
+    var defaultWorld = World.Create(20260902, 1);
+    var fasterWorld = World.Create(
+        20260902,
+        1,
+        new WorldBalanceConfiguration(
+            DeveloperModeEnabled: true,
+            CultivationWorkPercent: 200));
+    var firstCultivationMonth = GameCalendar.GetMonthStart(
+        (CultivationRules.EntryAgeYears * GameCalendar.MonthsPerYear) + 1);
+    defaultWorld.AdvanceTo(firstCultivationMonth);
+    fasterWorld.AdvanceTo(firstCultivationMonth);
+    var baseline = defaultWorld.GetAgentSnapshot(new AgentId(0));
+    var faster = fasterWorld.GetAgentSnapshot(new AgentId(0));
+    True(baseline.Cultivation.LastGain > 0, "기준 수행 Work 발생");
+    Equal(
+        WorldBalanceRules.ApplyPercent(baseline.Cultivation.LastGain, 200),
+        faster.Cultivation.LastGain,
+        "수행 Work 개발자 배율 실제 적용");
 }
 
 static void ObservationQueriesAreReadOnly()

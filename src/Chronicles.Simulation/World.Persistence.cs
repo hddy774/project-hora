@@ -9,6 +9,8 @@ public sealed partial class World
         ValidateCheckpoint(checkpoint);
         Seed = checkpoint.Seed;
         Tick = new SimulationTick(checkpoint.Tick);
+        _balance = checkpoint.Balance ?? WorldBalanceConfiguration.Default;
+        WorldBalanceRules.Validate(_balance);
         _random = new DeterministicRandom(checkpoint.RandomState);
         _agents = new AgentStore(checkpoint.Agents.Length);
         _causal = checkpoint.SchemaVersion >= 25
@@ -438,7 +440,8 @@ public sealed partial class World
             _relations.CreateCheckpoint(),
             _reincarnation.CreateCheckpoint(),
             _causal.CreateCheckpoint(),
-            _atlas.CreateCheckpoint());
+            _atlas.CreateCheckpoint(),
+            _balance);
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -690,6 +693,7 @@ public sealed partial class World
     private static void ValidateCheckpoint(WorldCheckpoint checkpoint)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
+        WorldBalanceRules.Validate(checkpoint.Balance ?? WorldBalanceConfiguration.Default);
         if (checkpoint.SchemaVersion is < 7 or > WorldCheckpoint.CurrentSchemaVersion)
         {
             throw new InvalidDataException($"지원하지 않는 세계 schema {checkpoint.SchemaVersion}입니다.");

@@ -23,6 +23,51 @@ public readonly record struct FormulaRegistryEntry(
         AuthorityRegistry.CreateStableId("cmip.formula", StableId);
 }
 
+public sealed record WorldBalanceConfiguration(
+    bool DeveloperModeEnabled = false,
+    int CultivationWorkPercent = 100,
+    int CombatAggressionPercent = 100,
+    int EconomyActivityPercent = 100,
+    int MonsterDangerPercent = 100)
+{
+    public static WorldBalanceConfiguration Default { get; } = new();
+}
+
+public static class WorldBalanceRules
+{
+    public const string ReviewId = "PC-TEMP-DEVELOPER-BALANCE-017";
+    public const int MinimumPercent = 25;
+    public const int MaximumPercent = 400;
+
+    public static void Validate(WorldBalanceConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+        ValidatePercent(configuration.CultivationWorkPercent);
+        ValidatePercent(configuration.CombatAggressionPercent);
+        ValidatePercent(configuration.EconomyActivityPercent);
+        ValidatePercent(configuration.MonsterDangerPercent);
+    }
+
+    public static int ApplyPercent(int value, int percent) =>
+        checked((int)Math.Clamp(
+            checked((long)value * percent / 100),
+            1L,
+            int.MaxValue));
+
+    public static long ApplyPercent(long value, int percent) =>
+        Math.Max(1L, checked(value * percent / 100));
+
+    private static void ValidatePercent(int percent)
+    {
+        if (percent is < MinimumPercent or > MaximumPercent)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(percent),
+                $"개발자 밸런스 배율은 {MinimumPercent}%~{MaximumPercent}%여야 합니다.");
+        }
+    }
+}
+
 public static class FormulaRegistry
 {
     private static readonly FormulaRegistryEntry[] Entries = BuildEntries();
@@ -61,6 +106,8 @@ public static class FormulaRegistry
                 "공법·법술 숙련도와 이해도 진행", false),
             new("F-ECON-001", EconomyRules.CurrentRevision, FormulaOwner.Economy,
                 "도시 시장 가격·수급·생산", true),
+            new(WorldBalanceRules.ReviewId, 1, FormulaOwner.Cultivation,
+                "PC 개발자 모드의 다음 세계용 명시적 밸런스 배율", true),
         ]).ToArray();
     }
 }

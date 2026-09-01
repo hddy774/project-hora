@@ -13,6 +13,7 @@ public sealed partial class World
     private readonly ReincarnationStore _reincarnation;
     private readonly SpatialAuthorityStore _atlas;
     private readonly CityMarket _market;
+    private readonly WorldBalanceConfiguration _balance;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
     private readonly int[] _agentByRank;
     private readonly int[] _rankByAgent;
@@ -59,9 +60,11 @@ public sealed partial class World
     internal event Action<WorldEventNotification>? ImportantWorldEventRecorded;
     internal event Action<WorldCenturyChronicleEntry>? WorldCenturyChronicleRecorded;
 
-    private World(ulong seed, int population)
+    private World(ulong seed, int population, WorldBalanceConfiguration balance)
     {
+        WorldBalanceRules.Validate(balance);
         Seed = seed;
+        _balance = balance;
         _random = new DeterministicRandom(seed);
         _agents = new AgentStore(population);
         _causal = new AgentCausalStore(population);
@@ -128,12 +131,19 @@ public sealed partial class World
     public int TotalMonsterHunts => _totalMonsterHunts;
     public int TotalMonsterVictories => _totalMonsterVictories;
     public int TotalRelations => _relations.Count;
+    public WorldBalanceConfiguration Balance => _balance;
 
     public static World CreateDefault(ulong seed) =>
-        new(seed, ProductInfo.DefaultPopulation);
+        new(seed, ProductInfo.DefaultPopulation, WorldBalanceConfiguration.Default);
 
     public static World Create(ulong seed, int population) =>
-        new(seed, population);
+        new(seed, population, WorldBalanceConfiguration.Default);
+
+    public static World Create(
+        ulong seed,
+        int population,
+        WorldBalanceConfiguration balance) =>
+        new(seed, population, balance);
 
     public void AdvanceTo(SimulationTick targetTick)
     {
@@ -142,6 +152,10 @@ public sealed partial class World
             throw new ArgumentOutOfRangeException(nameof(targetTick), "세계 시간을 되돌릴 수 없습니다.");
         }
 
+        // 같은 월에 수십만 개의 인물 행동이 몰려도 도시 생산과 요수 재생은 한 번만
+        // 확인한다. 이 값은 호출 단위 파생 캐시이므로 권위 상태나 저장 wire에 영향을
+        // 주지 않는다.
+        var environmentMonth = long.MinValue;
         while (_decisionSchedule.TryPeek(out _, out var priority) && priority.Tick <= targetTick.Value)
         {
             var agentIndex = _decisionSchedule.Dequeue();
@@ -152,8 +166,13 @@ public sealed partial class World
             }
 
             Tick = new SimulationTick(dueTick);
-            AdvanceCityIndustry(GameCalendar.GetMonthIndex(Tick));
-            RegenerateMonsters(GameCalendar.GetMonthIndex(Tick));
+            var actionMonth = GameCalendar.GetMonthIndex(Tick);
+            if (actionMonth != environmentMonth)
+            {
+                AdvanceCityIndustry(actionMonth);
+                RegenerateMonsters(actionMonth);
+                environmentMonth = actionMonth;
+            }
             if (_agents.LifeStates[agentIndex] == PersonLifeState.Living
                 && HasReachedMaximumLifespan(agentIndex))
             {
@@ -179,7 +198,6 @@ public sealed partial class World
                 continue;
             }
 
-            var actionMonth = GameCalendar.GetMonthIndex(Tick);
             if (_agents.LastActionMonths[agentIndex] >= actionMonth)
             {
                 ScheduleAgent(
@@ -220,8 +238,12 @@ public sealed partial class World
         }
 
         Tick = targetTick;
-        AdvanceCityIndustry(GameCalendar.GetMonthIndex(Tick));
-        RegenerateMonsters(GameCalendar.GetMonthIndex(Tick));
+        var targetMonth = GameCalendar.GetMonthIndex(Tick);
+        if (targetMonth != environmentMonth)
+        {
+            AdvanceCityIndustry(targetMonth);
+            RegenerateMonsters(targetMonth);
+        }
         RefreshRankings(recordLeaderChange: true);
         _worldChronicle.AdvanceTo(Tick);
     }
@@ -472,6 +494,11 @@ public sealed partial class World
         Add(ref hash, Seed);
         Add(ref hash, (ulong)Tick.Value);
         Add(ref hash, _random.State);
+        Add(ref hash, _balance.DeveloperModeEnabled ? 1UL : 0UL);
+        Add(ref hash, checked((ulong)_balance.CultivationWorkPercent));
+        Add(ref hash, checked((ulong)_balance.CombatAggressionPercent));
+        Add(ref hash, checked((ulong)_balance.EconomyActivityPercent));
+        Add(ref hash, checked((ulong)_balance.MonsterDangerPercent));
         Add(ref hash, (ulong)_eventSequence);
         Add(ref hash, (ulong)_chronicleSequence);
         Add(ref hash, (ulong)_personalLogSequence);
@@ -1135,6 +1162,14 @@ public sealed partial class World
             : sinceLastCombat >= GameCalendar.TicksPerYear
                 ? 8
                 : 0;
+        if (_balance.DeveloperModeEnabled && challengeChance > 0)
+        {
+            challengeChance = Math.Min(
+                100,
+                WorldBalanceRules.ApplyPercent(
+                    challengeChance,
+                    _balance.CombatAggressionPercent));
+        }
         if (rank > 1
             && challengeChance > 0
             && GetAgeYears(index) >= CultivationRules.EntryAgeYears

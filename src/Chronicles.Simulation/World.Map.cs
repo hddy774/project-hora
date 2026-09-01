@@ -290,24 +290,29 @@ public sealed partial class World
                 ? WorldMapRules.CityLocationId
                 : WorldMapRules.SecondHeavenCityLocationId;
             var cityDefinition = WorldMapRules.GetLocation(city);
-            var bestDistance = perceived.Min(candidate =>
+            var bestDistance = int.MaxValue;
+            Span<ushort> best = stackalloc ushort[6];
+            var bestCount = 0;
+            for (var candidateIndex = 0; candidateIndex < perceived.Count; candidateIndex++)
             {
-                var definition = WorldMapRules.GetLocation(candidate);
-                return definition.HeavenlyLayer == cityDefinition.HeavenlyLayer
-                    ? Math.Abs(definition.X - cityDefinition.X)
-                        + Math.Abs(definition.Y - cityDefinition.Y)
-                    : int.MaxValue / 2;
-            });
-            var best = perceived.Where(candidate =>
-            {
+                var candidate = perceived[candidateIndex];
                 var definition = WorldMapRules.GetLocation(candidate);
                 var distance = definition.HeavenlyLayer == cityDefinition.HeavenlyLayer
                     ? Math.Abs(definition.X - cityDefinition.X)
                         + Math.Abs(definition.Y - cityDefinition.Y)
                     : int.MaxValue / 2;
-                return distance == bestDistance;
-            }).ToArray();
-            destination = best[_random.NextInt(best.Length)];
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestCount = 0;
+                    best[bestCount++] = candidate;
+                }
+                else if (distance == bestDistance)
+                {
+                    best[bestCount++] = candidate;
+                }
+            }
+            destination = best[_random.NextInt(bestCount)];
         }
         else
         {
@@ -386,6 +391,10 @@ public sealed partial class World
 
         var stage = (int)_agents.RealmStages[index] + 1;
         var danger = checked((long)monster.BaseDanger * stage * stage * stage);
+        if (_balance.DeveloperModeEnabled)
+        {
+            danger = WorldBalanceRules.ApplyPercent(danger, _balance.MonsterDangerPercent);
+        }
         var threat = Math.Max(1L, GetActualCombatThreat(index));
         var advantage = checked((threat - danger) * 5_000 / Math.Max(1L, threat + danger));
         var victoryChance = checked((int)Math.Clamp(5_000 + advantage, 800L, 9_500L));

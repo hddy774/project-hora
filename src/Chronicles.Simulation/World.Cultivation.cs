@@ -42,7 +42,13 @@ public sealed partial class World
                 }
                 else if (_agents.CultivationBottleneckCauses[index] == CultivationBottleneckCause.RealmComponent)
                 {
-                    GrowRealmComponents(index, CultivationRules.BaseMonthlyWork);
+                    GrowRealmComponents(
+                        index,
+                        _balance.DeveloperModeEnabled
+                            ? WorldBalanceRules.ApplyPercent(
+                                CultivationRules.BaseMonthlyWork,
+                                _balance.CultivationWorkPercent)
+                            : CultivationRules.BaseMonthlyWork);
                 }
 
                 return;
@@ -68,6 +74,10 @@ public sealed partial class World
             aptitude,
             _agents.TechniqueQualities[index],
             body);
+        if (_balance.DeveloperModeEnabled)
+        {
+            gain = WorldBalanceRules.ApplyPercent(gain, _balance.CultivationWorkPercent);
+        }
         var after = Math.Min(CultivationRules.RequiredEntryWork, checked(before + gain));
         var appliedGain = after - before;
         _agents.CultivationProgress[index] = after;
@@ -182,7 +192,13 @@ public sealed partial class World
     {
         if (_agents.FloorNineCompleted[index])
         {
-            GrowRealmComponents(index, CultivationRules.BaseMonthlyWork);
+            GrowRealmComponents(
+                index,
+                _balance.DeveloperModeEnabled
+                    ? WorldBalanceRules.ApplyPercent(
+                        CultivationRules.BaseMonthlyWork,
+                        _balance.CultivationWorkPercent)
+                    : CultivationRules.BaseMonthlyWork);
             TryCompleteGreatPerfection(index);
             return;
         }
@@ -193,6 +209,10 @@ public sealed partial class World
             CultivationRules.GetMonthlyRealmWorkGain(aptitude)
             * _agents.CombatAttributes[index].CultivationEfficiencyBasisPoints
             / 10_000);
+        if (_balance.DeveloperModeEnabled)
+        {
+            gain = WorldBalanceRules.ApplyPercent(gain, _balance.CultivationWorkPercent);
+        }
         if (_agents.GrowthPills[index] > 0)
         {
             _agents.GrowthPills[index]--;

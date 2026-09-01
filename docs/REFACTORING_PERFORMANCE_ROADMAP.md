@@ -136,10 +136,18 @@ cold history로 분리한다. summary/detail DTO와 keyset cursor를 사용해 �
 모바일 release `v1.1.2`는 PC와 별도 제품선이다. 현재 로컬 모바일 checkout은 release
 source SHA가 아니므로 다음 항목은 구현 요청이 아니라 release SHA 재감사 후보로만 남긴다.
 
-- `AppState → alpha110::LiveRuntimeFacade110` 활성 경로와 문서상 legacy DAG의 차이.
-- `alpha110` 내부 simulation·formula·runtime·codec·query 책임 재분류.
-- advance·render·전체 JSON observation이 같은 mutex를 사용하는 구간 측정.
-- summary/detail DTO, visible section 요청, revision snapshot으로 전체 JSON 빈도 축소.
+- **증거·CI·문서:** `A110-ARCH-002·009·010·017`의 실패 원인 분류, 문서 메타데이터,
+  `clang-tidy`/coverage 관측, 실제 `AppState → LiveRuntimeFacade110` 구조 동기화.
+- **계약·UI:** `A110-ARCH-004·011·015`의 versioned JSON DTO, 의미/표시 분리,
+  section별 payload·JNI·Java parsing/allocation 측정과 필요한 부분 frame.
+- **저장·중앙 조정:** `A110-ARCH-006·007·008`의 Alpha/legacy 저장 생명주기,
+  `AppState` coordinator, 대형 `LiveRuntimeFacade110`의 command/query port 분리.
+- **규모·실기기:** `A110-ARCH-012`의 fixed release SHA CPU·allocation·UI publish와
+  실기기 프레임·발열·배터리 측정 후 hot domain만 최적화.
+
+재판정 결과 `해결`인 `001·005·013·014·018`과 현재 활성 경로에 직접 적용되지 않는
+`003·016`은 backlog에 복사하지 않는다. 위 11개는 `부분 해결 9 + 미해결 2`이며,
+공개 release source `761aff4…`를 접근 가능한 checkout으로 확보한 뒤 상태를 다시 고정한다.
 
 ## Backlog 작성 규격
 

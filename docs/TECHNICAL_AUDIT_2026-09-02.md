@@ -405,6 +405,40 @@ JSON이 직접 참조하는 ID는 37개이고, 18개는 게임 디자인·기능
 이 감사 뒤 사용자는 전자의 `PC Adapt`를 확정했다. 현재 생성기는 해당 행을
 `PC Adapt`로 분류하며 53개 물리 테이블을 다시 완료 조건으로 사용하지 않는다.
 
+### 10.4 과거 `A110-ARCH-001~018`의 현재 재판정
+
+이 표는 과거 Notion 계획을 완료로 소급 표시하는 표가 아니다. 계획 원문과 현재 접근 가능한
+로컬 모바일 `VERSION 1.1.2`, `codex/alpha-1.1.2-implementation@2b035c4b`의
+`AppState → alpha110::LiveRuntimeFacade110` 활성 경로를 대조한 재감사다. 공개 릴리스
+source `761aff4…`와 로컬 checkout이 동일하다고 단정하지 않으며, private 저장소 최신
+`main`·PR·Issue는 권한으로 인해 라이브 미확인이다.
+
+| ID | 재판정 | 현재 근거 | 남은 조치 |
+|---|---|---|---|
+| `A110-ARCH-001` | 해결 | `architecture_contract.py`가 manifest·owner·DAG·CMake 등록을 직접 검사하고 1,000줄 초과는 정보성으로만 보고한다. | 없음 |
+| `A110-ARCH-002` | 부분 해결 | CI job과 same-SHA 결과는 분리됐지만 코드 실패와 runner·권한·무로그 인프라 실패의 기계 판독 분류 계약은 없다. | `code/build/test/infrastructure` 원인과 재실행 근거를 evidence로 남긴다. |
+| `A110-ARCH-003` | 현재 적용 안 됨 | 현재 활성 `alpha110`·`AppState` 경로는 legacy `AgentStore`를 사용하지 않는다. | 그대로 이전하지 않고 현행 DTO/schema 위험은 004에서 다룬다. |
+| `A110-ARCH-004` | 부분 해결 | command ID는 단일 schema에서 생성되지만 dashboard JSON 키는 C++ serializer와 Java `JSONObject.opt*`에 수동 중복된다. | versioned DTO/schema와 필수 필드 실패 계약을 둔다. |
+| `A110-ARCH-005` | 해결 | manifest·CMake source 목록과 architecture contract가 실제 engine/app/test/benchmark `.cpp`의 누락·중복·죽은 경로를 대조한다. | 없음 |
+| `A110-ARCH-006` | 부분 해결 | Alpha SQLite 구성요소는 나뉘었지만 legacy `StorageWorkflow`가 슬롯·checkpoint·복구·무결성 상태를 함께 소유한다. | Alpha/legacy 생명주기와 repository·catalog·policy owner를 분리한다. |
+| `A110-ARCH-007` | 부분 해결 | controller·health governor·저장 구성요소는 분리됐지만 `android_main`·`AppState`가 진행·렌더·관찰·저장을 중앙 조정한다. | lifecycle·advance·observation·storage owner를 고정하고 coordinator를 단계 분리한다. |
+| `A110-ARCH-008` | 미해결 | `LiveRuntimeFacade110`이 session·population·관계·세계·수식·사건·저장·hash·query forwarding을 함께 소유한다. | facade는 transaction·조립·원자 commit만 남기고 domain command/query port를 분리한다. |
+| `A110-ARCH-009` | 부분 해결 | fixed-SHA 문서와 manifest는 있으나 1.0.9 또는 `PENDING` 현재 상태 문구가 남아 Notion·코드·릴리스 드리프트가 실제 발생했다. | 활성 문서에 authority/status/replaced-by/verified-SHA/date를 넣고 릴리스에서 검사한다. |
+| `A110-ARCH-010` | 미해결 | ASan·UBSan은 있으나 production C++ `clang-tidy`와 핵심 상태·저장·query coverage 추세 gate는 확인되지 않는다. | 비차단 관측부터 시작해 기준선 안정 뒤 신규 경고·coverage 하락만 차단한다. |
+| `A110-ARCH-011` | 부분 해결 | reason ID·구조화 값은 있으나 한국어 사용자 문구 대부분이 Java renderer에 직접 있고 resource 경계가 완성되지 않았다. | 의미 DTO 검사와 표시 테스트를 분리하고 문구를 resource/formatter catalog로 이동한다. |
+| `A110-ARCH-012` | 부분 해결 | 10,000명·1,000년 자동 성능 검증은 있으나 반복 전체 순회와 실기기 발열·메모리 미측정이 남아 있다. | fixed release SHA를 실측한 뒤 hot domain에만 dirty revision·저빈도 갱신·사건 예약을 적용한다. |
+| `A110-ARCH-013` | 해결 | legacy simulation 검색 단위는 120→41로 재편됐고 `alpha110`도 manifest에 owner와 대표 검색 작업집합을 가진다. | 없음 |
+| `A110-ARCH-014` | 해결 | `dashboard_bridge_contract.json`에서 Java/C++ command를 생성하고 generator check가 이름·숫자·router case drift를 차단한다. | 없음 |
+| `A110-ARCH-015` | 부분 해결 | bridge schema·fixture는 있으나 mutex 안에서 전체 dashboard JSON을 만들고 Java가 `JSONObject`로 다시 파싱한다. | section별 payload·직렬화·JNI·파싱·할당을 측정한 뒤 필요한 부분 frame만 도입한다. |
+| `A110-ARCH-016` | 현재 적용 안 됨 | 활성 `AppState`는 legacy `SimulationRunner`를 소유하지 않고 단일 `alphaRuntimeMutex`로 전이를 직렬화한다. | 그대로 이전하지 않고 현행 중앙 조정·mutex 위험은 007·015에서 다룬다. |
+| `A110-ARCH-017` | 부분 해결 | manifest는 `alpha110`을 반영하지만 사람이 읽는 architecture 문서는 1.0.9 legacy DAG를 현재처럼 제시한다. | `AppState → LiveRuntimeFacade110 → Alpha 저장/UI` 기준으로 현재 구조 문서와 gate를 갱신한다. |
+| `A110-ARCH-018` | 해결 | 버전별 fixture 이름과 current architecture/release gate가 분리되고 legacy batch는 현재 버전에서 명시적으로 건너뛴다. | 없음 |
+
+집계는 `해결 5 / 부분 해결 9 / 미해결 2 / 현재 적용 안 됨 2`다. 새 모바일
+리팩터링 backlog에는 부분 해결 9개와 미해결 2개, 합계 11개만 넣는다. 해결된
+`001·005·013·014·018`과 현재 활성 경로에 직접 적용되지 않는 `003·016`은 다시
+구현 항목으로 복사하지 않는다.
+
 ## 11. 리팩터링 우선순위
 
 ### P0 — 증거와 기획 권위 정리

@@ -127,6 +127,12 @@ public static class WorldGeographyRules
     public const int PointGridHeight = 10;
     public const int PointsPerProvince = PointGridWidth * PointGridHeight;
     public const ushort OcheonProvinceId = 44;
+    public const int ProductionRegionGridWidth = 3;
+    public const int ProductionRegionGridHeight = 3;
+    public const int ProductionRegionOriginX =
+        (PointGridWidth - ProductionRegionGridWidth) / 2;
+    public const int ProductionRegionOriginY =
+        (PointGridHeight - ProductionRegionGridHeight) / 2;
 
     // PC_TEMP_REVIEW GEO-020-01: 축척과 정착지 밀도는 다음 버전 지리 균형 검토 대상이다.
     public const int ProvinceTileDistanceLi = 12_000;
@@ -206,6 +212,48 @@ public static class WorldGeographyRules
             2 => SecondHeavenPoints,
             _ => Array.Empty<PointHeavenViewDefinition>(),
         };
+
+    /// <summary>
+    /// Resolves the centered 3×3 Production activity region embedded in Ocheon Province.
+    /// The returned coordinates are the existing activity-region coordinates, not a new
+    /// geography authority. Points outside that compatibility region remain unconnected.
+    /// </summary>
+    public static bool TryGetProductionRegionCoordinates(
+        ushort physicalPointId,
+        out int regionX,
+        out int regionY)
+    {
+        if (physicalPointId >= PointsPerProvince)
+        {
+            regionX = 0;
+            regionY = 0;
+            return false;
+        }
+
+        var pointX = physicalPointId % PointGridWidth;
+        var pointY = physicalPointId / PointGridWidth;
+        regionX = pointX - ProductionRegionOriginX;
+        regionY = pointY - ProductionRegionOriginY;
+        return regionX is >= 0 and < ProductionRegionGridWidth
+            && regionY is >= 0 and < ProductionRegionGridHeight;
+    }
+
+    public static ushort GetProductionPointId(int regionX, int regionY)
+    {
+        if (regionX is < 0 or >= ProductionRegionGridWidth)
+        {
+            throw new ArgumentOutOfRangeException(nameof(regionX));
+        }
+        if (regionY is < 0 or >= ProductionRegionGridHeight)
+        {
+            throw new ArgumentOutOfRangeException(nameof(regionY));
+        }
+
+        return checked((ushort)(
+            ((regionY + ProductionRegionOriginY) * PointGridWidth)
+            + regionX
+            + ProductionRegionOriginX));
+    }
 
     public static bool AreAdjacentIncludingDiagonal(
         PointHeavenViewDefinition left,

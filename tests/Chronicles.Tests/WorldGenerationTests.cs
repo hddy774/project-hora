@@ -8,6 +8,7 @@ internal static class WorldGenerationTests
         SameSeedAndConfigurationAreReproducible();
         DomainSeedsAndFixedUniqueContentAreSeparated();
         DisabledMapRandomizationPreservesBaseline();
+        ProductionRegionsAreEmbeddedInOcheonPoints();
         ConfiguredPopulationAndVisibleProfilesAreConnected();
         OngoingGenerationAndCheckpointRoundTripAreDeterministic();
     }
@@ -38,6 +39,47 @@ internal static class WorldGenerationTests
             WorldGeographyRules.Blueprint,
             first.CreateSnapshot(1, 0, ObservationSections.Map).Map.Geography!,
             "지도 무작위 해제 시 하천대륙 기준 청사진 보존");
+    }
+
+    private static void ProductionRegionsAreEmbeddedInOcheonPoints()
+    {
+        var world = World.Create(
+            8251,
+            16,
+            WorldBalanceConfiguration.Default,
+            CreateCompactConfiguration());
+        var map = world.CreateSnapshot(1, 0, ObservationSections.Map).Map;
+        var mappedPointIds = new HashSet<(byte Layer, ushort PointId)>();
+
+        foreach (var region in map.Locations)
+        {
+            var pointId = WorldGeographyRules.GetProductionPointId(region.X, region.Y);
+            TestAssert.True(
+                WorldGeographyRules.TryGetProductionRegionCoordinates(
+                    pointId,
+                    out var mappedX,
+                    out var mappedY),
+                "기존 Production 지역은 오천주 중앙 지점에 대응");
+            TestAssert.Equal(region.X, mappedX, "오천주 지점에서 지역 X 복원");
+            TestAssert.Equal(region.Y, mappedY, "오천주 지점에서 지역 Y 복원");
+            TestAssert.True(
+                mappedPointIds.Add((region.Atlas.HeavenlyLayer, pointId)),
+                "층천별 Production 지역의 지점 대응은 중복되지 않음");
+
+            var points = region.Atlas.HeavenlyLayer == 1
+                ? map.Geography!.FirstHeavenPoints
+                : map.Geography!.SecondHeavenPoints;
+            var point = points[pointId];
+            TestAssert.Equal(pointId, point.PhysicalPointId, "지점 stable 물리 ID 유지");
+            TestAssert.Equal(region.Atlas.HeavenlyLayer, point.HeavenlyLayer,
+                "지역 활동과 지점 층천 일치");
+        }
+
+        TestAssert.Equal(WorldMapRules.LocationCount, mappedPointIds.Count,
+            "18개 Production 지역 활동을 대륙·주·지점 계층에 통합");
+        TestAssert.True(
+            !WorldGeographyRules.TryGetProductionRegionCoordinates(0, out _, out _),
+            "중앙 3×3 밖 지점은 활동 권위를 임의 연결하지 않음");
     }
 
     private static void SameSeedAndConfigurationAreReproducible()

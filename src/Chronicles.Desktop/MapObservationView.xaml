@@ -20,6 +20,36 @@
                        Foreground="{StaticResource SecondaryTextBrush}"
                        FontSize="10"
                        TextWrapping="Wrap" />
+            <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton GroupName="HeavenlyLayer"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 IsChecked="True"
+                                 Tag="1"
+                                 Click="HeavenlyLayerButton_Click">제1층천</RadioButton>
+                    <RadioButton GroupName="HeavenlyLayer"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="5,0,0,0"
+                                 Tag="2"
+                                 Click="HeavenlyLayerButton_Click">제2층천</RadioButton>
+                </StackPanel>
+                <TextBox x:Name="MapSearchBox"
+                         Grid.Column="2"
+                         TextChanged="MapSearchBox_TextChanged"
+                         ToolTip="현재 층천의 지점 이름 검색" />
+                <TextBlock Grid.Column="3"
+                           Text="제3~5층천 · 개발 중"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="9" />
+            </Grid>
         </StackPanel>
 
         <ItemsControl x:Name="MapTileList" Grid.Row="1">
@@ -106,7 +136,7 @@
                     Foreground="{StaticResource PrimaryTextBrush}"
                     SelectionChanged="RegionTabControl_SelectionChanged">
             <TabItem Header="지역 개요">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
                     <StackPanel Margin="8">
                         <UniformGrid Columns="2">
                             <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
@@ -196,6 +226,63 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
+            </TabItem>
+            <TabItem Header="계층·영맥">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Atlas 계층"
+                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                   FontSize="9" />
+                        <TextBlock x:Name="AtlasHierarchyText"
+                                   Margin="0,4,0,0"
+                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap" />
+                        <Border Margin="0,10,0,0"
+                                Padding="10"
+                                CornerRadius="6"
+                                Background="{StaticResource PanelAltBrush}">
+                            <StackPanel>
+                                <TextBlock Text="안정 Location Ref"
+                                           Foreground="{StaticResource SecondaryTextBrush}"
+                                           FontSize="9" />
+                                <TextBlock x:Name="AtlasLocationRefText"
+                                           Margin="0,3,0,0"
+                                           Foreground="{StaticResource AccentBrush}"
+                                           FontSize="11" />
+                                <TextBlock Text="영맥 Source / 잔여 공급 / 월 생산력"
+                                           Margin="0,9,0,0"
+                                           Foreground="{StaticResource SecondaryTextBrush}"
+                                           FontSize="9" />
+                                <TextBlock x:Name="SpiritVeinText"
+                                           Margin="0,3,0,0"
+                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                           FontSize="11"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                        <TextBlock Text="층천 구현 상태"
+                                   Margin="0,12,0,5"
+                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                   FontSize="9" />
+                        <DataGrid x:Name="AtlasLayerGrid"
+                                  Height="150"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  EnableRowVirtualization="True"
+                                  ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="층천" Binding="{Binding Name}" Width="*" />
+                                <DataGridTextColumn Header="상태" Binding="{Binding State}" Width="88" />
+                                <DataGridTextColumn Header="지점" Binding="{Binding Locations}" Width="58" />
+                                <DataGridTextColumn Header="인구" Binding="{Binding Population}" Width="78" />
+                                <DataGridTextColumn Header="영맥" Binding="{Binding Veins}" Width="68" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>

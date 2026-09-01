@@ -21,6 +21,7 @@ public partial class MapObservationView : UserControl
     private readonly Brush _fallbackBrush;
     private AgentId? _strongestAgent;
     private bool _applying;
+    private byte _selectedHeavenlyLayer = 1;
 
     public MapObservationView()
     {
@@ -45,11 +46,26 @@ public partial class MapObservationView : UserControl
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         _snapshot = snapshot;
+        if (WorldMapRules.GetLocation(SelectedLocationId).HeavenlyLayer
+            != _selectedHeavenlyLayer)
+        {
+            SelectedLocationId = _selectedHeavenlyLayer == 1
+                ? WorldMapRules.CityLocationId
+                : WorldMapRules.SecondHeavenCityLocationId;
+            AgentOffset = 0;
+        }
+        var atlas = snapshot.Atlas ?? WorldAtlasSnapshot.Empty;
         MapSummaryText.Text =
             $"요수 사냥 {KoreanNumberFormatter.Format(snapshot.TotalMonsterHunts)}회 · " +
             $"승리 {KoreanNumberFormatter.Format(snapshot.TotalMonsterVictories)}회 · " +
-            "지역을 선택해 개요·생태·수선자를 관찰합니다.";
+            $"Production 지점 {atlas.ProductionLocationCount:N0} · " +
+            $"영맥 Source {atlas.SpiritVeinSourceCount:N0} · " +
+            "현재 층천의 지역을 선택해 세부 권위를 관찰합니다.";
+        var search = MapSearchBox.Text.Trim();
         MapTileList.ItemsSource = snapshot.Locations
+            .Where(item => item.Atlas.HeavenlyLayer == _selectedHeavenlyLayer)
+            .Where(item => search.Length == 0
+                || item.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase))
             .OrderBy(item => item.Y)
             .ThenBy(item => item.X)
             .Select(item => new MapTileRow(
@@ -79,7 +95,7 @@ public partial class MapObservationView : UserControl
     {
         RegionTitleText.Text = region.Name;
         RegionSubtitleText.Text =
-            $"{FormatBiome(region.Biome)} · 좌표 {region.X},{region.Y} · " +
+            $"{region.Atlas.HeavenlyLayerName} · {FormatBiome(region.Biome)} · 좌표 {region.X},{region.Y} · " +
             (region.Monsters.Count == 0
                 ? "안전지대"
                 : $"요수 {KoreanNumberFormatter.Format(region.Monsters.Sum(item => (long)item.Population))}마리");
@@ -95,7 +111,35 @@ public partial class MapObservationView : UserControl
             case 2:
                 ApplyAgentPage(region);
                 break;
+            case 3:
+                ApplyAtlas(region);
+                break;
         }
+    }
+
+    private void ApplyAtlas(MapLocationSnapshot region)
+    {
+        AtlasHierarchyText.Text =
+            $"{region.Atlas.HeavenlyLayerName}  ›  {region.Atlas.ContinentName}  ›  " +
+            $"{region.Atlas.GrandRegionName}  ›  {region.Atlas.AreaName}  ›  {region.Name}";
+        AtlasLocationRefText.Text =
+            $"{region.Atlas.LocationNodeId} · Atlas revision " +
+            $"{_snapshot.Atlas?.Revision ?? 0:N0}";
+        SpiritVeinText.Text =
+            $"{region.Atlas.SpiritVeinSourceCount:N0}개 · " +
+            $"잔여 {KoreanNumberFormatter.Format(region.Atlas.RemainingSpiritVeinSupply)} · " +
+            $"월 생산력 {KoreanNumberFormatter.Format(region.Atlas.MonthlySpiritVeinYield)}";
+        AtlasLayerGrid.ItemsSource = (_snapshot.Atlas?.Layers
+                ?? Array.Empty<AtlasLayerSnapshot>())
+            .Select(layer => new AtlasLayerRow(
+                layer.Name,
+                layer.ImplementationState == AtlasImplementationState.Production
+                    ? "실구현"
+                    : "개발 중",
+                layer.LocationCount.ToString("N0", CultureInfo.CurrentCulture),
+                KoreanNumberFormatter.Format(layer.Population),
+                layer.SpiritVeinSourceCount.ToString("N0", CultureInfo.CurrentCulture)))
+            .ToArray();
     }
 
     private void ApplyOverview(MapLocationSnapshot region)
@@ -226,6 +270,35 @@ public partial class MapObservationView : UserControl
         }
     }
 
+    private void HeavenlyLayerButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not RadioButton { Tag: string raw }
+            || !byte.TryParse(raw, out var layer)
+            || layer == _selectedHeavenlyLayer)
+        {
+            return;
+        }
+
+        _selectedHeavenlyLayer = layer;
+        SelectedLocationId = layer == 1
+            ? WorldMapRules.CityLocationId
+            : WorldMapRules.SecondHeavenCityLocationId;
+        AgentOffset = 0;
+        Apply(_snapshot);
+        if (ShouldLoadAgents)
+        {
+            ObservationRequested?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void MapSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (IsInitialized)
+        {
+            Apply(_snapshot);
+        }
+    }
+
     private void RegionTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_applying || !ReferenceEquals(e.Source, sender))
@@ -307,6 +380,13 @@ public partial class MapObservationView : UserControl
         string Name,
         string Realm,
         string CombatPower);
+
+    private sealed record AtlasLayerRow(
+        string Name,
+        string State,
+        string Locations,
+        string Population,
+        string Veins);
 }
 
 public sealed class MapAgentSelectedEventArgs(AgentId agentId) : EventArgs

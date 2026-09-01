@@ -189,14 +189,14 @@
 
         <Grid x:Name="DashboardWorkspaceGrid" Grid.Row="4" Grid.Column="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="430" />
-                <ColumnDefinition Width="14" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="14" />
-                <ColumnDefinition Width="365" />
+                <ColumnDefinition x:Name="WorkspaceListColumn" Width="430" />
+                <ColumnDefinition x:Name="WorkspaceListGapColumn" Width="14" />
+                <ColumnDefinition x:Name="WorkspaceDetailColumn" Width="*" />
+                <ColumnDefinition x:Name="WorkspaceContextGapColumn" Width="14" />
+                <ColumnDefinition x:Name="WorkspaceContextColumn" Width="365" />
             </Grid.ColumnDefinitions>
 
-            <Border Style="{StaticResource PanelStyle}" Padding="0">
+            <Border x:Name="WorkspaceListPanel" Style="{StaticResource PanelStyle}" Padding="0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -268,7 +268,7 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="2" Style="{StaticResource PanelStyle}">
+            <Border x:Name="WorkspaceDetailPanel" Grid.Column="2" Style="{StaticResource PanelStyle}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <Grid>
@@ -935,11 +935,17 @@
                 </ScrollViewer>
             </Border>
 
-            <Border Grid.Column="4" Style="{StaticResource PanelStyle}" Padding="0">
+            <Border x:Name="WorkspaceContextPanel" Grid.Column="4" Style="{StaticResource PanelStyle}" Padding="0">
                 <TabControl x:Name="WorldInfoTabControl"
                             Background="Transparent"
                             BorderThickness="0"
                             SelectionChanged="VisibleSection_SelectionChanged">
+                    <TabControl.Template>
+                        <ControlTemplate TargetType="TabControl">
+                            <ContentPresenter ContentSource="SelectedContent"
+                                              SnapsToDevicePixels="True" />
+                        </ControlTemplate>
+                    </TabControl.Template>
                     <TabItem Header="통계">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="16,14,16,12">

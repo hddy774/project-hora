@@ -8,7 +8,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="205" />
+            <RowDefinition Height="240" />
         </Grid.RowDefinitions>
 
         <Grid Margin="4,2,4,10">
@@ -36,11 +36,17 @@
                        FontWeight="SemiBold" />
         </Grid>
 
-        <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,9">
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,9">
             <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
                 <StackPanel>
                     <TextBlock Text="전체 재고" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" />
                     <TextBlock x:Name="TotalStockText" Margin="0,2,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+            <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
+                <StackPanel>
+                    <TextBlock Text="활성 제안·예약" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" />
+                    <TextBlock x:Name="ContractCountText" Margin="0,2,0,0" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
                 </StackPanel>
             </Border>
             <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
@@ -97,7 +103,7 @@
                     Foreground="{StaticResource PrimaryTextBrush}"
                     SelectionChanged="DetailTabControl_SelectionChanged">
             <TabItem Header="상품 개요">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
                     <StackPanel Margin="10,8">
                         <TextBlock x:Name="DetailNameText" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" />
                         <TextBlock x:Name="DetailTypeText" Margin="0,3,0,0" Foreground="{StaticResource AccentBrush}" FontSize="10" />
@@ -114,12 +120,62 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="도시 생산">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
                     <StackPanel Margin="10,8">
                         <TextBlock x:Name="DetailProductionStateText" Foreground="{StaticResource PositiveBrush}" FontSize="11" FontWeight="SemiBold" TextWrapping="Wrap" />
                         <TextBlock x:Name="DetailProductionText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
                     </StackPanel>
                 </ScrollViewer>
+            </TabItem>
+            <TabItem Header="제안·예약">
+                <Grid Margin="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.25*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="도시 판매 Offer"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="9" />
+                    <TextBlock Grid.Column="2"
+                               Text="최근 Reservation"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="9" />
+                    <DataGrid x:Name="OfferGrid"
+                              Grid.Row="1"
+                              Margin="0,5,0,0"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              HeadersVisibility="Column"
+                              EnableRowVirtualization="True"
+                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Offer" Binding="{Binding Id}" Width="92" />
+                            <DataGridTextColumn Header="상품" Binding="{Binding Good}" Width="*" />
+                            <DataGridTextColumn Header="가용" Binding="{Binding Available}" Width="50" />
+                            <DataGridTextColumn Header="상태" Binding="{Binding Status}" Width="64" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid x:Name="ReservationGrid"
+                              Grid.Row="1"
+                              Grid.Column="2"
+                              Margin="0,5,0,0"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              HeadersVisibility="Column"
+                              EnableRowVirtualization="True"
+                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Reservation" Binding="{Binding Id}" Width="94" />
+                            <DataGridTextColumn Header="상품" Binding="{Binding Good}" Width="*" />
+                            <DataGridTextColumn Header="상태" Binding="{Binding Status}" Width="70" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
             </TabItem>
             <TabItem Header="최근 거래">
                 <Grid>

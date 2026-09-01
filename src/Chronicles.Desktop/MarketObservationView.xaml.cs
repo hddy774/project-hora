@@ -8,7 +8,8 @@ namespace Chronicles.Desktop;
 
 public partial class MarketObservationView : UserControl
 {
-    private const int RecentTradeTabIndex = 3;
+    private const int ContractTabIndex = 3;
+    private const int RecentTradeTabIndex = 4;
     private CityMarketSnapshot _snapshot = CityMarketSnapshot.Empty;
     private MarketFilter _filter;
     private int? _selectedGoodId;
@@ -16,6 +17,7 @@ public partial class MarketObservationView : UserControl
     private MarketFilter? _projectedFilter;
     private string? _projectedSearch;
     private long _projectedTradeRevision = long.MinValue;
+    private long _projectedContractRevision = long.MinValue;
     private bool _applying;
 
     public MarketObservationView()
@@ -35,7 +37,14 @@ public partial class MarketObservationView : UserControl
         UnmetDemandText.Text = KoreanNumberFormatter.Format(snapshot.UnmetDemand);
         ProductionCountText.Text =
             $"{snapshot.ProductionQueue?.Count ?? 0:N0} / {snapshot.ProductionCapacity:N0}";
+        ContractCountText.Text =
+            $"{snapshot.Offers?.Count(item => item.Status == MarketOfferStatus.Active) ?? 0:N0} · " +
+            $"{snapshot.Reservations?.Count(item => item.Status == MarketReservationStatus.Reserved) ?? 0:N0}";
         RebuildRows();
+        if (DetailTabControl.SelectedIndex == ContractTabIndex)
+        {
+            UpdateContractView();
+        }
         if (DetailTabControl.SelectedIndex == RecentTradeTabIndex)
         {
             UpdateRecentTradeView();
@@ -76,6 +85,10 @@ public partial class MarketObservationView : UserControl
                 if (DetailTabControl.SelectedIndex == RecentTradeTabIndex)
                 {
                     UpdateRecentTradeView();
+                }
+                else if (DetailTabControl.SelectedIndex == ContractTabIndex)
+                {
+                    UpdateContractView();
                 }
             }
             else
@@ -132,6 +145,9 @@ public partial class MarketObservationView : UserControl
                 break;
             case 2:
                 UpdateProductionDetail(item);
+                break;
+            case ContractTabIndex:
+                UpdateContractView();
                 break;
             case RecentTradeTabIndex:
                 UpdateRecentTradeView();
@@ -249,6 +265,53 @@ public partial class MarketObservationView : UserControl
             : Visibility.Collapsed;
         _projectedTradeRevision = _snapshot.AuthorityRevision;
     }
+
+    private void UpdateContractView()
+    {
+        if (DetailTabControl.SelectedIndex != ContractTabIndex
+            || _projectedContractRevision == _snapshot.AuthorityRevision)
+        {
+            return;
+        }
+
+        OfferGrid.ItemsSource = (_snapshot.Offers ?? Array.Empty<MarketOfferSnapshot>())
+            .Where(item => item.Status == MarketOfferStatus.Active)
+            .Select(item => new MarketOfferRow(
+                item.Id.ToString(),
+                FormatMarketGood(EconomyRules.GetMarketGood(item.GoodId), null),
+                KoreanNumberFormatter.Format(item.AvailableCount),
+                FormatOfferStatus(item.Status)))
+            .ToArray();
+        ReservationGrid.ItemsSource =
+            (_snapshot.Reservations ?? Array.Empty<MarketReservationSnapshot>())
+                .TakeLast(50)
+                .Reverse()
+                .Select(item => new MarketReservationRow(
+                    item.Id.ToString(),
+                    FormatMarketGood(EconomyRules.GetMarketGood(item.GoodId), null),
+                    FormatReservationStatus(item.Status)))
+                .ToArray();
+        _projectedContractRevision = _snapshot.AuthorityRevision;
+    }
+
+    private static string FormatOfferStatus(MarketOfferStatus status) => status switch
+    {
+        MarketOfferStatus.Active => "활성",
+        MarketOfferStatus.Filled => "소진",
+        MarketOfferStatus.Cancelled => "취소",
+        MarketOfferStatus.Expired => "만료",
+        _ => status.ToString(),
+    };
+
+    private static string FormatReservationStatus(MarketReservationStatus status) => status switch
+    {
+        MarketReservationStatus.Reserved => "예약",
+        MarketReservationStatus.Settled => "체결",
+        MarketReservationStatus.Cancelled => "취소",
+        MarketReservationStatus.Expired => "만료",
+        MarketReservationStatus.Revalidate => "재검증",
+        _ => status.ToString(),
+    };
 
     private static MarketTradeRow FormatMarketTrade(MarketTradeSnapshot trade)
     {
@@ -371,6 +434,12 @@ public partial class MarketObservationView : UserControl
             return;
         }
 
+        if (DetailTabControl.SelectedIndex == ContractTabIndex)
+        {
+            UpdateContractView();
+            return;
+        }
+
         if (_snapshot.Goods.Count == 0
             || _selectedGoodId is not { } selectedGoodId
             || MarketGrid.SelectedItem is not MarketListRow selectedRow
@@ -401,4 +470,15 @@ public partial class MarketObservationView : UserControl
     private sealed record MarketTradeRow(
         string Time,
         string Summary);
+
+    private sealed record MarketOfferRow(
+        string Id,
+        string Good,
+        string Available,
+        string Status);
+
+    private sealed record MarketReservationRow(
+        string Id,
+        string Good,
+        string Status);
 }

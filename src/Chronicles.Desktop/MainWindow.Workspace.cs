@@ -19,6 +19,7 @@ internal enum WorkspaceRoute : byte
 public partial class MainWindow
 {
     private bool _applyingWorkspaceRoute;
+    private WorkspaceRoute _workspaceRoute = WorkspaceRoute.World;
 
     private bool IsDashboardWorkspaceVisible =>
         DashboardWorkspaceGrid.Visibility == Visibility.Visible;
@@ -36,9 +37,11 @@ public partial class MainWindow
 
     private void ApplyWorkspaceRoute(WorkspaceRoute route)
     {
+        _workspaceRoute = route;
         var isAvailable = route is not (WorkspaceRoute.Organizations or WorkspaceRoute.Content);
         DashboardWorkspaceGrid.Visibility = isAvailable ? Visibility.Visible : Visibility.Collapsed;
         WorkspaceUnavailablePanel.Visibility = isAvailable ? Visibility.Collapsed : Visibility.Visible;
+        ConfigureWorkspaceLayout(route, isAvailable);
 
         _applyingWorkspaceRoute = true;
         try
@@ -89,6 +92,32 @@ public partial class MainWindow
         }
 
         RefreshVisibleObservation();
+    }
+
+    private void ConfigureWorkspaceLayout(WorkspaceRoute route, bool isAvailable)
+    {
+        if (!isAvailable)
+        {
+            return;
+        }
+
+        var personWorkspace = route is WorkspaceRoute.People or WorkspaceRoute.Relations;
+        WorkspaceListPanel.Visibility = personWorkspace ? Visibility.Visible : Visibility.Collapsed;
+        WorkspaceDetailPanel.Visibility = personWorkspace ? Visibility.Visible : Visibility.Collapsed;
+        WorkspaceContextPanel.Visibility = personWorkspace ? Visibility.Collapsed : Visibility.Visible;
+        WorkspaceListColumn.Width = personWorkspace
+            ? new GridLength(430)
+            : new GridLength(0);
+        WorkspaceListGapColumn.Width = personWorkspace
+            ? new GridLength(14)
+            : new GridLength(0);
+        WorkspaceDetailColumn.Width = personWorkspace
+            ? new GridLength(1, GridUnitType.Star)
+            : new GridLength(0);
+        WorkspaceContextGapColumn.Width = new GridLength(0);
+        WorkspaceContextColumn.Width = personWorkspace
+            ? new GridLength(0)
+            : new GridLength(1, GridUnitType.Star);
     }
 
     private void ShowUnavailableWorkspace(string title, string description)

@@ -47,6 +47,7 @@ public partial class MainWindow : Window, IDisposable
     public MainWindow()
     {
         InitializeComponent();
+        ConfigureWorkspaceLayout(WorkspaceRoute.World, isAvailable: true);
         Title = $"{ProductInfo.KoreanTitle} PC v{ProductInfo.Version}";
         VersionText.Text = $"VERSION {ProductInfo.Version}";
         _runner = GameApplicationSession.CreateDefault(DefaultWorldSeed);
@@ -168,11 +169,11 @@ public partial class MainWindow : Window, IDisposable
         var observation = _runner.GetObservation(
             _selectedAgent,
             sections: GetVisibleObservationSections(),
-            detailedMapLocationId: WorldInfoTabControl.SelectedIndex == 3
+            detailedMapLocationId: _workspaceRoute == WorkspaceRoute.Map
                 && MapObservationPanel.ShouldLoadAgents
                     ? MapObservationPanel.SelectedLocationId
                     : null,
-            detailedMapAgentOffset: WorldInfoTabControl.SelectedIndex == 3
+            detailedMapAgentOffset: _workspaceRoute == WorkspaceRoute.Map
                 && MapObservationPanel.ShouldLoadAgents
                     ? MapObservationPanel.AgentOffset
                     : 0,
@@ -187,13 +188,13 @@ public partial class MainWindow : Window, IDisposable
             return ObservationSections.None;
         }
 
-        var sections = WorldInfoTabControl.SelectedIndex switch
+        var sections = _workspaceRoute switch
         {
-            0 => ObservationSections.StatisticsSummary,
-            1 => ObservationSections.MarketSummary,
-            2 => ObservationSections.Market,
-            3 => ObservationSections.Map,
-            4 => WorldRecordsPanel.SelectedRecordIndex switch
+            WorkspaceRoute.World => ObservationSections.StatisticsSummary,
+            WorkspaceRoute.Economy => ObservationSections.Market,
+            WorkspaceRoute.Map => ObservationSections.Map,
+            WorkspaceRoute.Records or WorkspaceRoute.Diagnostics =>
+                WorldRecordsPanel.SelectedRecordIndex switch
             {
                 0 => ObservationSections.WorldLog,
                 1 => ObservationSections.WorldChronicle,
@@ -201,7 +202,7 @@ public partial class MainWindow : Window, IDisposable
             },
             _ => ObservationSections.None,
         };
-        if (WorldInfoTabControl.SelectedIndex == 0)
+        if (_workspaceRoute == WorkspaceRoute.World)
         {
             if (RealmDistributionExpander.IsExpanded)
             {
@@ -212,6 +213,11 @@ public partial class MainWindow : Window, IDisposable
             {
                 sections |= ObservationSections.CombatPowerDistribution;
             }
+        }
+
+        if (_workspaceRoute is not (WorkspaceRoute.People or WorkspaceRoute.Relations))
+        {
+            return sections;
         }
 
         sections |= AgentLogTabControl.SelectedIndex switch
@@ -258,13 +264,19 @@ public partial class MainWindow : Window, IDisposable
         ApplyShellSnapshot(snapshot);
         try
         {
-            UpdateRankingRows(snapshot);
-            UpdateVisibleWorldPanel(snapshot);
-            UpdateSelectedAgent(
-                observation.SelectedAgent,
-                observation.SelectedPersonalLog,
-                observation.SelectedChronicle,
-                observation.SelectedReincarnation);
+            if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
+            {
+                UpdateRankingRows(snapshot);
+                UpdateSelectedAgent(
+                    observation.SelectedAgent,
+                    observation.SelectedPersonalLog,
+                    observation.SelectedChronicle,
+                    observation.SelectedReincarnation);
+            }
+            else
+            {
+                UpdateVisibleWorldPanel(snapshot);
+            }
         }
         finally
         {

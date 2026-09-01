@@ -27,15 +27,15 @@ PC에서 구현할 부분은 계속 추적하고 Android 전용 절만 `excluded
 
 - PC 기준: `0.0.13`, Git `558a184d2cf88b0f1a2318eb028125257786d261`
 - 총 행: 238
-- `Port`: 92
-- `PC Adapt`: 14
-- `PC_TEMP_REVIEW`: 30
+- `Port`: 128
+- `PC Adapt`: 15
+- `PC_TEMP_REVIEW`: 31
 - `Platform Excluded`: 0
-- `Gap/Deferred`: 102
+- `Gap/Deferred`: 64
 
-이 숫자는 0.0.20의 Organization Core 6개 완료 행과 공식 임시 검토 1개 행, M05 장기
-수행 계획과 기존 M03·M04·M06·M07 인물, M08·M10 Atlas·경제 수직 기능 반영 상태다.
-남은 102개는 후속 버전에서 권위 상태,
+이 숫자는 0.0.21의 수행 세부 진척, Content·Knowledge·Law 후보 Gate와 절차 생성 세계,
+0.0.20 Organization Core, M05 장기 수행 계획과 기존 M03·M04·M06·M07 인물,
+M08·M10 Atlas·경제 수직 기능 반영 상태다. 남은 64개는 후속 버전에서 권위 상태,
 저장/hash, query, UI와 테스트 근거를 모두 연결한 다음 변경한다.
 
 ## 생성과 검증

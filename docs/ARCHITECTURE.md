@@ -183,6 +183,15 @@ provenance·tick·session에서 계산하는 Teaching 전용 무상태 결정론
 공급·수요·미충족 수요와 생산 용량을 파생 집계로 제공해 빈 상품 목록을 0으로 오인하지
 않는다.
 
+`WorldGenerationCatalog`는 지도·요수·아이템·서적의 설정과 ordinal 기반 profile을
+소유한다. 각 도메인은 게임플레이 `DeterministicRandom`과 다른 seed를 사용하므로 생성
+수량이나 UI 관찰이 인물 행동 RNG 순서를 바꾸지 않는다. 아이템과 서적 이름은 작은 token
+profile, 효과는 enum·정수 강도로 저장하며 화면 문자열은 관찰 시 파생한다. 고정 유니크는
+명시 생성 ID가 연결된 한 실물에만 표시한다. `World.GeneratedContent`는 설정 연도 경계에서
+신규 Definition/Content를 기존 `ContentAuthorityStore`·`KnowledgeAuthorityStore`의 typed
+command로 연결한다. 생성 설정·catalog·cursor는 checkpoint schema 30과 state hash에
+포함하고 query cache와 화면 행은 복원 뒤 재생성한다.
+
 세계 중요 로그는 고정 100줄 순환 버퍼, 인물별 최근 로그도 고정 100줄 리스트다.
 `LifeChronicleEntry`는 별도 무제한 목록으로 모든 생에 걸쳐 누적한다. 세 구조는 모두
 사건 enum·안정 ID·정수값을 중심으로 저장하고 Desktop에서 문구로 변환한다. 세계
@@ -266,7 +275,7 @@ SHA-256을 단일 SQLite transaction으로 기록하고, manifest·primary·back
 detached `World`로 복원해 state hash를 검증한다. 검증 뒤에만 Application이 live world를
 교체하며 ranking/query/UI cache는 저장하지 않는다.
 
-외부 world schema 25 안의 authority payload는 checkpoint schema 25다. schema 25는 수행 trace/구성요소와
+외부 world schema 25 안의 authority payload는 현재 checkpoint schema 30이다. schema 30은 수행 trace/구성요소와
 입문 Gate 단련 보정, 기술 경험/이해, 전투 경험/이해·turn owner/부상, 지도 위치/사냥 상태를
 비롯해 간략화 시장·생산 대기열·유한 광맥·요수 개체수, TOP 1,000 부자 순위,
 기간별 랭킹 frame·누적 자리 변동, 개별 세계 사건, 100년 세계 역사서와 60개 선천자질

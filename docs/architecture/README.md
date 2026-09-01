@@ -102,6 +102,20 @@ Content, Knowledge, Law는 각각 Simulation 권위 owner가 state hash와 check
 후보 ref만 보존하며 일반 UI와 세계 설정 진단 정보를 분리한다. 실제 Adapter와 Stable
 LawId는 증거가 생기기 전까지 생성하지 않는다.
 
+## 0.0.21 절차 생성 세계 진입점
+
+- 생성 설정·도메인 seed·고정 유니크 계약: `WorldGenerationModel.cs`
+- 아이템·서적·요수 카탈로그와 지도 파생: `WorldGenerationCatalog.cs`
+- 시간 경계의 신규 실물·판본 연결: `World.GeneratedContent.cs`
+- schema 30 검증·이전: `World.Persistence.cs`
+- 새 세계 설정과 지연 상세: `SettingsWorkspaceView.xaml.cs`,
+  `ContentWorkspaceView.xaml.cs`, `MapObservationView.xaml.cs`
+
+지도·요수·아이템·서적은 서로 분리된 결정론적 domain seed를 사용하며 게임플레이 RNG를
+소비하지 않는다. 생성 수량을 바꿔도 다른 생성 영역과 인물 RNG 순서는 변하지 않는다.
+카탈로그와 지속 생성 cursor만 권위 상태이며 이름 문자열·화면 행은 필요할 때 파생한다.
+콘텐츠 화면과 지도 화면이 닫혀 있으면 생성 상세 query·행 materialization은 0회다.
+
 ## 검증
 
 ```powershell

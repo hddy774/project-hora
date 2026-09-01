@@ -278,3 +278,32 @@ checkpoint 116ms, schema 24 복원 349ms였다. 작업 시작 기준선 1,239ms 
   85.8% 절감 PASS
 - 화면 자동 조작은 사용자의 이전 Esc 중단 이후 재개하지 않는다. 최종 self-contained
   산출물·바로가기 검증은 `docs/evidence/0.0.21/verification.md`에 기록한다.
+
+## 0.0.22 실행·월 경계·통합 지도 검증
+
+- 최종 코드 SHA: `ff20d38d00855c1cebd3b675cc13111179706adf`
+- Windows Release 전체 솔루션: 경고 0, 오류 0
+- 전체 자동 검사: `RESULT: 66/66 passed`
+- XAML 리소스: 9개 XAML, 참조 705개, 누락 0
+- 아키텍처: production module 8개, Desktop authority 우회 0건
+- 238개 이식 원장: Port 128 / PC Adapt 16 / PC_TEMP_REVIEW 31 /
+  Gap·Deferred 63
+- 외부 SQLite world schema 25, 내부 checkpoint schema 31
+- 10,000명·20,000 tick 별도 Release 프로세스 5회 중앙값: 초기화 42ms,
+  진행 524ms, 관찰 0.7ms, 합계 564ms, checkpoint 73ms, 복원 163ms
+- 합계는 0.0.21의 1,535ms보다 63.3%, 0.0.13의 2,212ms보다 74.5% 짧다.
+- SQLite 5회 중앙값은 저장 973ms, 복원 951ms다. 저장 904~1,106ms와 복원
+  875~1,114ms 범위에서 1초 권고를 넘은 회차는 후속 계측 대상으로 유지한다.
+- 화면 자동 조작: 정확한 `선로만상록 PC v0.0.22` 제목, 60초 이상 안정성,
+  최상위 `지역 활동` 제거, 오천주 중앙 3×3 권위 연결, 비연결 지점
+  `DataUnavailable`, 제1·2층천과 내부 탭, 수선자 탭 지연 조회를 확인했다.
+- 1720×1000과 1280×780 경계, UI 배율 90·100·140%를 직접 조작했다.
+  1280 폭·140%에서 발견한 제목·`100×` 잘림은 `ff20d38`에서 수정 후 재검증했다.
+- self-contained 실행 파일: `artifacts/Chronicles-0.0.22-win-x64/Chronicles.exe`,
+  141,712,223 bytes, SHA-256
+  `3FC5F88F284001D768F46CA696AFD8BC534F186863070C34C399576C8E7B9B47`
+- 파일/제품 버전: `0.0.22.0` /
+  `0.0.22+ff20d38d00855c1cebd3b675cc13111179706adf`
+- 바탕화면 바로가기는 `explorer.exe`를 target으로 하고 위 실제 실행 파일을 인수로
+  전달한다. 게시 실행 파일과 바로가기를 각각 실행한 시작 스모크를 통과했다.
+- 상세 원측정: `docs/evidence/0.0.22/verification.md`

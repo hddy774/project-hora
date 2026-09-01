@@ -69,9 +69,10 @@
 - 게시 실행 파일과 갱신한 바탕화면 바로가기는 실제 창 제목까지 확인하는 시작
   스모크 검사를 통과해야 한다.
 
-## 코드 고정 전 검증 상태
+## 고정 코드 검증 상태
 
-- 구현 커밋: `5279d5d`, `85fa54c`, `ff9b26e`, `d17628b`.
+- 구현 커밋: `5279d5d`, `85fa54c`, `ff9b26e`, `d17628b`, VERSION 완료
+  `9743286`, 좁은 창·고배율 UI 회귀 수정 `ff20d38`.
 - Release build: 경고 0·오류 0.
 - 정적 계약: XAML 9개·참조 705개·누락 0, architecture module 8개·Desktop 권위
   우회 0건, 238개 이식 원장 PASS.
@@ -80,9 +81,16 @@
   559ms, 중앙값 564ms. checkpoint 중앙값 73ms, schema 31 복원 163ms.
 - SQLite 5-process 중앙값: 저장 973ms·복원 951ms. 범위는 저장 904~1,106ms,
   복원 875~1,114ms이며 권고 1초 초과 회차를 포함한다.
-- 게시 실행 파일·바로가기 시작 스모크와 화면 자동 조작은 VERSION 완료 SHA에서
-  재게시한 뒤 `docs/evidence/0.0.22/verification.md`에 고정한다.
+- 최종 코드 SHA `ff20d38d00855c1cebd3b675cc13111179706adf`의 self-contained
+  실행 파일과 Explorer wrapper 바로가기를 각각 시작해 정확한 `선로만상록 PC
+  v0.0.22` 창을 확인했다.
+- 화면 자동 조작으로 60초 이상 안정성, 최상위 `지역 활동` 제거, 중앙 3×3 권위 연결,
+  비연결 지점 `DataUnavailable`, 제1·2층천 전환, 수선자 탭 지연 행, 1720×1000과
+  1280×780 경계 및 UI 배율 90·100·140%를 확인했다. 1280 폭·140%에서 발견한
+  헤더 잘림은 `ff20d38`에서 수정하고 같은 범위를 다시 확인했다.
+- 최종 실행 파일은 141,712,223 bytes이며 SHA-256은
+  `3FC5F88F284001D768F46CA696AFD8BC534F186863070C34C399576C8E7B9B47`이다.
+  상세 원측정과 화면 증거는 `docs/evidence/0.0.22/verification.md`에 고정한다.
 
-마지막 항목까지 고정 SHA에서 채워지기 전에는 `Packaged`로 표시하지 않는다.
-GitHub Actions와 GitHub Release는 실행하지 않으므로 이 PC 버전을 `Released`로
-표현하지 않는다.
+로컬 패키징과 직접 실행 검증까지 완료했으므로 상태는 `Packaged`다. GitHub Actions와
+GitHub Release는 실행하지 않았으므로 이 PC 버전을 `Released`로 표현하지 않는다.

@@ -78,7 +78,9 @@
 
 - GitHub 비공개 저장소 `hddy774/Chronicles-of-Myriad-Immortal-Paths`의 `main`은
   VERSION 완료 SHA `f837e4c`와 최종 로컬 검증 증거 SHA `c559063`을 포함한다.
-  로컬 `HEAD`, `origin/main`과 GitHub 커넥터가 같은 `c559063`을 반환함을 확인했다.
+  실행본을 고정한 시점에 로컬 `HEAD`, `origin/main`과 GitHub 커넥터가 같은
+  `c559063`을 반환함을 확인했다. 이후 문서 전용 동기화 커밋은 실행 파일을
+  재생성하거나 아래 해시를 변경하지 않는다.
 - Notion `0.0.21: 수행 진척·비경·콘텐츠·서적·지식·법칙·절차 생성` 작업 페이지를
   `완료`로 전환하고 구현 커밋, 전체 검사, 성능, 산출물, PC_TEMP_REVIEW와 후속 범위를
   기록했다.

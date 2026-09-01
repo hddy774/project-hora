@@ -27,10 +27,14 @@ public partial class MainWindow : Window, IDisposable
     private int _explorerOffset;
     private int _personalLogCategory;
     private int _chronicleCategory;
+    private int _personalCenturyCategory;
     private int? _selectedChronicleLife;
+    private int? _selectedPersonalCenturyLife;
     private AgentSnapshot? _latestAgent;
     private IReadOnlyList<PersonalLogEntry> _latestPersonalLog = Array.Empty<PersonalLogEntry>();
     private IReadOnlyList<LifeChronicleEntry> _latestChronicle = Array.Empty<LifeChronicleEntry>();
+    private IReadOnlyList<PersonalCenturyChronicleEntry> _latestPersonalCenturyChronicle =
+        Array.Empty<PersonalCenturyChronicleEntry>();
     private ReincarnationAgentSnapshot? _latestReincarnation;
     private AgentId? _projectedReincarnationAgent;
     private long _projectedReincarnationRevision = long.MinValue;
@@ -150,6 +154,7 @@ public partial class MainWindow : Window, IDisposable
             SettingsWorkspacePanel.SetPerformanceFileStatus(
                 $"파일 오류 · {exception.Message}",
                 isError: true);
+            SetPersonalRecordOutputStatus($"파일 오류 · {exception.Message}", isError: true);
         }));
     }
 
@@ -235,11 +240,19 @@ public partial class MainWindow : Window, IDisposable
 
         if (_agentDetailSection == AgentDetailSection.Records)
         {
-            sections |= AgentLogTabControl.SelectedIndex switch
+            sections |= _logService.AutoPersonalOutput
+                ? ObservationSections.PersonalLog
+                    | ObservationSections.Chronicle
+                    | ObservationSections.PersonalCenturyChronicle
+                : AgentLogTabControl.SelectedIndex switch
             {
                 0 => ObservationSections.PersonalLog,
                 1 => ObservationSections.Chronicle,
-                2 => ObservationSections.Reincarnation,
+                2 => ObservationSections.PersonalCenturyChronicle,
+                3 => ObservationSections.Reincarnation,
+                4 => ObservationSections.PersonalLog
+                    | ObservationSections.Chronicle
+                    | ObservationSections.PersonalCenturyChronicle,
                 _ => ObservationSections.None,
             };
         }
@@ -291,6 +304,7 @@ public partial class MainWindow : Window, IDisposable
                     observation.SelectedAgent,
                     observation.SelectedPersonalLog,
                     observation.SelectedChronicle,
+                    observation.SelectedPersonalCenturyChronicle,
                     observation.SelectedReincarnation);
             }
             else
@@ -771,6 +785,27 @@ public partial class MainWindow : Window, IDisposable
     private void ChronicleLifeToggle_Click(object sender, RoutedEventArgs e)
     {
         _selectedChronicleLife = sender is RadioButton { Tag: int lifeNumber }
+            ? lifeNumber
+            : null;
+        UpdateAgentLogViews();
+    }
+
+    private void PersonalCenturyCategoryTabControl_SelectionChanged(
+        object sender,
+        SelectionChangedEventArgs e)
+    {
+        if (_applyingObservation || !ReferenceEquals(e.Source, sender))
+        {
+            return;
+        }
+
+        _personalCenturyCategory = PersonalCenturyCategoryTabControl.SelectedIndex;
+        UpdateAgentLogViews();
+    }
+
+    private void PersonalCenturyLifeToggle_Click(object sender, RoutedEventArgs e)
+    {
+        _selectedPersonalCenturyLife = sender is RadioButton { Tag: int lifeNumber }
             ? lifeNumber
             : null;
         UpdateAgentLogViews();

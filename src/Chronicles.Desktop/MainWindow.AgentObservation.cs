@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Globalization;
 using Chronicles.Core;
 using Chronicles.Simulation;
@@ -62,6 +63,7 @@ public partial class MainWindow
         AgentSnapshot agent,
         IReadOnlyList<PersonalLogEntry> personalLog,
         IReadOnlyList<LifeChronicleEntry> chronicle,
+        IReadOnlyList<PersonalCenturyChronicleEntry> personalCenturyChronicle,
         ReincarnationAgentSnapshot? reincarnation)
     {
         var selectedAgentChanged = _latestAgent?.Id != agent.Id;
@@ -69,6 +71,7 @@ public partial class MainWindow
         _latestAgent = agent;
         _latestPersonalLog = personalLog;
         _latestChronicle = chronicle;
+        _latestPersonalCenturyChronicle = personalCenturyChronicle;
         _latestReincarnation = reincarnation;
         if (selectedAgentChanged || (reincarnation is null && hadReincarnation))
         {
@@ -232,6 +235,17 @@ public partial class MainWindow
         if (_agentDetailSection == AgentDetailSection.Records)
         {
             UpdateAgentLogViews();
+            if (_logService.AutoPersonalOutput)
+            {
+                _logService.CapturePersonalRecords(
+                    agent.Id,
+                    personalLog,
+                    entry => FormatEventRowFileLine(FormatPersonalLog(agent, entry)),
+                    chronicle,
+                    entry => FormatEventRowFileLine(FormatChronicle(entry)),
+                    personalCenturyChronicle,
+                    entry => FormatEventRowFileLine(FormatPersonalCenturyChronicle(entry)));
+            }
         }
     }
 
@@ -285,7 +299,13 @@ public partial class MainWindow
                     .ToArray();
                 return;
             case 2:
+                UpdatePersonalCenturyChronicleView();
+                return;
+            case 3:
                 UpdateReincarnationView(agent, _latestReincarnation);
+                return;
+            case 4:
+                UpdatePersonalRecordOutputView(agent);
                 return;
             case 1:
                 break;
@@ -321,6 +341,86 @@ public partial class MainWindow
             .Select(FormatChronicle)
             .ToArray();
     }
+
+    private void UpdatePersonalCenturyChronicleView()
+    {
+        var lifeNumbers = _latestPersonalCenturyChronicle
+            .Select(entry => entry.LifeNumber)
+            .Distinct()
+            .OrderByDescending(value => value)
+            .ToArray();
+        if (_selectedPersonalCenturyLife is { } selectedLife
+            && !lifeNumbers.Contains(selectedLife))
+        {
+            _selectedPersonalCenturyLife = null;
+        }
+
+        PersonalCenturyLifeToggleList.ItemsSource = new[]
+            {
+                new LifeToggleRow(null, "전체 생", _selectedPersonalCenturyLife is null),
+            }
+            .Concat(lifeNumbers.Select(life => new LifeToggleRow(
+                life,
+                $"제 {life:N0}생",
+                _selectedPersonalCenturyLife == life)))
+            .ToArray();
+        PersonalCenturyChronicleList.ItemsSource = _latestPersonalCenturyChronicle
+            .Where(entry => _selectedPersonalCenturyLife is null
+                || entry.LifeNumber == _selectedPersonalCenturyLife)
+            .Where(entry => MatchesPersonalCenturyCategory(entry, _personalCenturyCategory))
+            .Reverse()
+            .Select(FormatPersonalCenturyChronicle)
+            .ToArray();
+    }
+
+    private void UpdatePersonalRecordOutputView(AgentSnapshot agent)
+    {
+        PersonalRecordIdentityText.Text =
+            $"{agent.Name} · {agent.Id} · 현재 제 {agent.LifeNumber:N0}생";
+        var completedVolumes = _latestPersonalCenturyChronicle.Count(entry => entry.IsComplete);
+        PersonalRecordCountText.Text =
+            $"최근 로그 {_latestPersonalLog.Count:N0}/100 · 세부 연대기 {_latestChronicle.Count:N0}건 · " +
+            $"100년 종합 {_latestPersonalCenturyChronicle.Count:N0}권(완결 {completedVolumes:N0})";
+        if (_logService.AutoPersonalOutput)
+        {
+            SetPersonalRecordOutputStatus("선택 인물 자동 기록 중");
+        }
+    }
+
+    private EventRow FormatPersonalCenturyChronicle(PersonalCenturyChronicleEntry entry)
+    {
+        var status = entry.IsComplete
+            ? "완결"
+            : $"작성 중 · {entry.ObservedThroughAgeYears:N0}세까지";
+        var time =
+            $"제 {entry.LifeNumber:N0}생 · {entry.StartAgeYears:N0}~{entry.EndAgeYears:N0}세 · {status} · " +
+            $"세계 {FormatGameDate(GameCalendar.GetDate(entry.StartedTick))}~" +
+            FormatGameDate(GameCalendar.GetDate(entry.ObservedThroughTick));
+        var summary =
+            $"총 {entry.EventCount:N0}건 · 성장 {entry.GrowthEventCount:N0} · 전투 {entry.CombatEventCount:N0} · " +
+            $"생사 {entry.LifeEventCount:N0} · 획득 {entry.AcquisitionEventCount:N0} · " +
+            $"대경지 돌파 {entry.MajorRealmBreakthroughCount:N0} · 돌파 실패 {entry.BreakthroughFailureCount:N0}\n" +
+            $"권말 경지 {FormatRealm(entry.FinalRealmStage, (int)entry.FinalMinorStage)} · 당시 이름 {entry.PersonName}";
+        return new EventRow(
+            time,
+            summary,
+            (Brush)FindResource(entry.IsComplete ? "AccentBrush" : "PrimaryTextBrush"));
+    }
+
+    private static bool MatchesPersonalCenturyCategory(
+        PersonalCenturyChronicleEntry entry,
+        int category) => category switch
+    {
+        0 => true,
+        1 => entry.GrowthEventCount > 0,
+        2 => entry.CombatEventCount > 0,
+        3 => entry.LifeEventCount > 0,
+        4 => entry.AcquisitionEventCount > 0,
+        _ => true,
+    };
+
+    private static string FormatEventRowFileLine(EventRow row) =>
+        $"{row.Time} | {row.Summary.Replace('\n', ' ')}";
 
     private void ClearReincarnationView()
     {

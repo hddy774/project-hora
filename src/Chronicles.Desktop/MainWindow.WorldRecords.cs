@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Media;
 using Chronicles.Core;
@@ -382,27 +380,7 @@ public partial class MainWindow
     }
 
     private void WorldRecordsPanel_FolderOpenRequested(object? sender, EventArgs e)
-    {
-        try
-        {
-            var directory = GameLogService.EnsureOutputDirectory();
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = directory,
-                UseShellExecute = true,
-            });
-            _logService.AddDebug(DebugLogLevel.Information, $"로그 폴더 열기 · {directory}");
-            WorldRecordsPanel.SetOutputStatus("로그 폴더 열림");
-        }
-        catch (Exception exception) when (exception is IOException
-            or UnauthorizedAccessException
-            or Win32Exception
-            or InvalidOperationException)
-        {
-            _logService.AddDebug(DebugLogLevel.Error, $"로그 폴더 열기 실패 · {exception.Message}");
-            WorldRecordsPanel.SetOutputStatus($"폴더 열기 실패 · {exception.Message}", isError: true);
-        }
-    }
+        => OpenLogOutputFolder(WorldRecordsPanel.SetOutputStatus, "세계 기록");
 
     private static string FormatWorldEventFileLine(
         WorldSnapshot snapshot,

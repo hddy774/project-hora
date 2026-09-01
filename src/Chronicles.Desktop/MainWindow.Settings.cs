@@ -183,6 +183,11 @@ public partial class MainWindow
         _selectedAgent = null;
         _latestAgent = null;
         _latestSnapshot = null;
+        _latestPersonalLog = Array.Empty<Chronicles.Simulation.PersonalLogEntry>();
+        _latestChronicle = Array.Empty<Chronicles.Simulation.LifeChronicleEntry>();
+        _latestPersonalCenturyChronicle =
+            Array.Empty<Chronicles.Simulation.PersonalCenturyChronicleEntry>();
+        _logService.ResetPersonalCaptureState();
         _explorerOffset = 0;
         _projectedRecentEventSequence = long.MinValue;
         _projectedWorldChronicleSequence = long.MinValue;

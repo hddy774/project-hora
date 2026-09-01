@@ -90,7 +90,9 @@ public sealed class GameApplicationSession : IDisposable
         int knowledgeEditionOffset = 0,
         int knowledgeEditionLimit = 100,
         int lawCandidateOffset = 0,
-        int lawCandidateLimit = 54) =>
+        int lawCandidateLimit = 54,
+        int contentItemOffset = 0,
+        int contentItemLimit = 0) =>
         _runner.GetSnapshot(
             rankingCount,
             eventCount,
@@ -103,7 +105,9 @@ public sealed class GameApplicationSession : IDisposable
             knowledgeEditionOffset,
             knowledgeEditionLimit,
             lawCandidateOffset,
-            lawCandidateLimit);
+            lawCandidateLimit,
+            contentItemOffset,
+            contentItemLimit);
 
     public WorldObservation GetObservation(
         AgentId? selectedAgent = null,
@@ -118,7 +122,9 @@ public sealed class GameApplicationSession : IDisposable
         int knowledgeEditionOffset = 0,
         int knowledgeEditionLimit = 100,
         int lawCandidateOffset = 0,
-        int lawCandidateLimit = 54) =>
+        int lawCandidateLimit = 54,
+        int contentItemOffset = 0,
+        int contentItemLimit = 0) =>
         _runner.GetObservation(
             selectedAgent,
             rankingCount,
@@ -132,7 +138,9 @@ public sealed class GameApplicationSession : IDisposable
             knowledgeEditionOffset,
             knowledgeEditionLimit,
             lawCandidateOffset,
-            lawCandidateLimit);
+            lawCandidateLimit,
+            contentItemOffset,
+            contentItemLimit);
 
     public IReadOnlyList<AgentSnapshot> BrowseAgents(int offset, int limit = 500) =>
         _runner.BrowseAgents(offset, limit);

@@ -126,7 +126,9 @@ public sealed class SimulationRunner : IDisposable
         int knowledgeEditionOffset = 0,
         int knowledgeEditionLimit = 100,
         int lawCandidateOffset = 0,
-        int lawCandidateLimit = 54)
+        int lawCandidateLimit = 54,
+        int contentItemOffset = 0,
+        int contentItemLimit = 0)
     {
         var started = BeginPerformanceMeasurement();
         lock (_worldGate)
@@ -143,7 +145,9 @@ public sealed class SimulationRunner : IDisposable
                 knowledgeEditionOffset,
                 knowledgeEditionLimit,
                 lawCandidateOffset,
-                lawCandidateLimit);
+                lawCandidateLimit,
+                contentItemOffset,
+                contentItemLimit);
             RecordObservationMeasurement(started);
             return snapshot;
         }
@@ -170,7 +174,9 @@ public sealed class SimulationRunner : IDisposable
         int knowledgeEditionOffset = 0,
         int knowledgeEditionLimit = 100,
         int lawCandidateOffset = 0,
-        int lawCandidateLimit = 54)
+        int lawCandidateLimit = 54,
+        int contentItemOffset = 0,
+        int contentItemLimit = 0)
     {
         var started = BeginPerformanceMeasurement();
         lock (_worldGate)
@@ -188,7 +194,9 @@ public sealed class SimulationRunner : IDisposable
                 knowledgeEditionOffset,
                 knowledgeEditionLimit,
                 lawCandidateOffset,
-                lawCandidateLimit));
+                lawCandidateLimit,
+                contentItemOffset,
+                contentItemLimit));
             RecordObservationMeasurement(started);
             return observation;
         }

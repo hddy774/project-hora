@@ -41,10 +41,26 @@ internal static class ContentAuthorityTests
         TestAssert.Equal(ContentPopulationRules.ApprovedMaterialStackCount,
             diagnostic.MaterialStackCount, "승인 재료 stack 수");
         TestAssert.Equal(
-            ContentPopulationRules.ApprovedItemInstanceCount
-                + ContentPopulationRules.ApprovedIndependentInheritanceCount,
+            ContentPopulationRules.ApprovedItemInstanceCount,
             diagnostic.ItemInstanceCount,
-            "승인 아이템·독립 전승 실물 수");
+            "승인 아이템 실물 수");
+        TestAssert.Equal(ContentPopulationRules.ApprovedIndependentInheritanceCount,
+            diagnostic.CreatedWorkCount, "승인 독립 전승 실물 수");
+        TestAssert.Equal(0, diagnostic.ItemsAndMaterials.Count,
+            "아이템 내부 탭이 닫히면 행 materialization 0건");
+        var itemPage = first.CreateSnapshot(
+            ContentDiscovererRef.Observer,
+            includeHidden: false,
+            secretRealmLimit: 0,
+            itemLimit: 100);
+        TestAssert.Equal(100, itemPage.ItemsAndMaterials.Count,
+            "아이템 내부 탭에서만 첫 page 투영");
+        TestAssert.Equal(
+            ContentPopulationRules.ApprovedMaterialStackCount
+                + ContentPopulationRules.ApprovedItemInstanceCount
+                + ContentPopulationRules.ApprovedIndependentInheritanceCount,
+            itemPage.ItemResultTotal,
+            "재료·아이템·독립 전승 page 전체 수");
         TestAssert.Equal(0, publicView.SecretRealms.Count, "미발견 비경 관찰자 비공개");
         TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
             diagnostic.SecretRealmResultTotal, "개발 진단에서만 숨은 비경 투영");
@@ -225,6 +241,18 @@ internal static class ContentAuthorityTests
             opened.Content!.TotalInstances, "열린 콘텐츠 요약 투영");
         TestAssert.Equal(0, opened.Content.SecretRealms.Count,
             "일반 관찰에서 미발견 비경 행 비공개");
+        TestAssert.Equal(0, opened.Content.ItemsAndMaterials.Count,
+            "아이템 내부 탭이 닫히면 세계 DTO 행 0건");
+        var itemsOpened = world.CreateSnapshot(
+            rankingCount: 1,
+            eventCount: 0,
+            sections: ObservationSections.Content,
+            worldChronicleCount: 0,
+            contentSecretRealmLimit: 0,
+            contentItemLimit: ContentWorkspacePageSize);
+        TestAssert.Equal(ContentWorkspacePageSize,
+            itemsOpened.Content!.ItemsAndMaterials.Count,
+            "아이템 내부 탭에서만 100행 투영");
         TestAssert.Equal(hashBeforeObservation, world.ComputeStateHash(),
             "콘텐츠 관찰 무영향");
 
@@ -281,6 +309,8 @@ internal static class ContentAuthorityTests
             () => World.Restore(checkpoint with { Content = null }),
             "schema 29 콘텐츠 누락 거부");
     }
+
+    private const int ContentWorkspacePageSize = 100;
 
     private static void AiExplorationDiscoversAndChroniclesSecretRealms()
     {

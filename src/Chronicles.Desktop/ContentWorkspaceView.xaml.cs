@@ -9,22 +9,29 @@ namespace Chronicles.Desktop;
 public partial class ContentWorkspaceView : UserControl
 {
     public const int SecretRealmPageSize = 100;
+    public const int ItemPageSize = 100;
     public const int KnowledgeEditionPageSize = 100;
     public const int LawCandidatePageSize = LawAuthorityRules.CandidateCount;
 
     private WorldContentSnapshot _snapshot = WorldContentSnapshot.Empty;
     private long _projectedRevision = long.MinValue;
     private int _projectedOffset = -1;
+    private int _projectedSecretRealmCount = -1;
+    private int _projectedItemOffset = -1;
+    private int _projectedItemCount = -1;
     private long _projectedKnowledgeRevision = long.MinValue;
     private int _projectedKnowledgeOffset = -1;
+    private int _projectedKnowledgeCount = -1;
     private long _projectedLawRevision = long.MinValue;
     private int _projectedLawOffset = -1;
+    private int _projectedLawCount = -1;
     private SecretRealmNature? _natureFilter;
 
     public ContentWorkspaceView()
     {
         InitializeComponent();
         ClearDetails();
+        ClearItemDetails();
         ClearKnowledgeDetails();
         ClearLawDetails();
     }
@@ -35,7 +42,11 @@ public partial class ContentWorkspaceView : UserControl
 
     public int SecretRealmOffset { get; private set; }
 
+    public int ItemOffset { get; private set; }
+
     public bool ShouldLoadSecretRealmRows => ContentDetailTabControl.SelectedIndex == 0;
+
+    public bool ShouldLoadItemRows => ContentDetailTabControl.SelectedIndex == 1;
 
     public bool ShouldLoadKnowledgeRows => ContentDetailTabControl.SelectedIndex == 2;
 
@@ -46,15 +57,23 @@ public partial class ContentWorkspaceView : UserControl
         _snapshot = WorldContentSnapshot.Empty;
         _projectedRevision = long.MinValue;
         _projectedOffset = -1;
+        _projectedSecretRealmCount = -1;
+        _projectedItemOffset = -1;
+        _projectedItemCount = -1;
         _projectedKnowledgeRevision = long.MinValue;
         _projectedKnowledgeOffset = -1;
+        _projectedKnowledgeCount = -1;
         _projectedLawRevision = long.MinValue;
         _projectedLawOffset = -1;
+        _projectedLawCount = -1;
         SecretRealmOffset = 0;
+        ItemOffset = 0;
         SecretRealmGrid.ItemsSource = Array.Empty<SecretRealmRow>();
+        ItemInstanceGrid.ItemsSource = Array.Empty<ItemInstanceRow>();
         KnowledgeEditionGrid.ItemsSource = Array.Empty<KnowledgeEditionRow>();
         LawCandidateGrid.ItemsSource = Array.Empty<LawCandidateRow>();
         ClearDetails();
+        ClearItemDetails();
         ClearKnowledgeDetails();
         ClearLawDetails();
         ApplySummary();
@@ -67,13 +86,19 @@ public partial class ContentWorkspaceView : UserControl
         var laws = snapshot.Laws ?? WorldLawSnapshot.Empty;
         var unchanged = _projectedRevision == snapshot.AuthorityRevision
             && _projectedOffset == snapshot.SecretRealmResultOffset
+            && _projectedSecretRealmCount == snapshot.SecretRealms.Count
+            && _projectedItemOffset == snapshot.ItemResultOffset
+            && _projectedItemCount == snapshot.ItemsAndMaterials.Count
             && _projectedKnowledgeRevision == knowledge.AuthorityRevision
             && _projectedKnowledgeOffset == knowledge.EditionResultOffset
+            && _projectedKnowledgeCount == knowledge.Editions.Count
             && _projectedLawRevision == laws.AuthorityRevision
             && _projectedLawOffset == laws.CandidateResultOffset
+            && _projectedLawCount == laws.Candidates.Count
             && _snapshot.IncludesHidden == snapshot.IncludesHidden;
         _snapshot = snapshot;
         SecretRealmOffset = snapshot.SecretRealmResultOffset;
+        ItemOffset = snapshot.ItemResultOffset;
         if (unchanged)
         {
             return;
@@ -81,14 +106,23 @@ public partial class ContentWorkspaceView : UserControl
 
         _projectedRevision = snapshot.AuthorityRevision;
         _projectedOffset = snapshot.SecretRealmResultOffset;
+        _projectedSecretRealmCount = snapshot.SecretRealms.Count;
+        _projectedItemOffset = snapshot.ItemResultOffset;
+        _projectedItemCount = snapshot.ItemsAndMaterials.Count;
         _projectedKnowledgeRevision = knowledge.AuthorityRevision;
         _projectedKnowledgeOffset = knowledge.EditionResultOffset;
+        _projectedKnowledgeCount = knowledge.Editions.Count;
         _projectedLawRevision = laws.AuthorityRevision;
         _projectedLawOffset = laws.CandidateResultOffset;
+        _projectedLawCount = laws.Candidates.Count;
         ApplySummary();
         if (ShouldLoadSecretRealmRows)
         {
             RebuildSecretRealmRows();
+        }
+        if (ShouldLoadItemRows)
+        {
+            RebuildItemRows();
         }
         if (ShouldLoadKnowledgeRows)
         {
@@ -110,6 +144,7 @@ public partial class ContentWorkspaceView : UserControl
         KnownRealmCountText.Text = KoreanNumberFormatter.Format(_snapshot.ViewerKnownSecretRealms);
         MaterialStackCountText.Text = KoreanNumberFormatter.Format(_snapshot.MaterialStackCount);
         ItemInstanceCountText.Text = KoreanNumberFormatter.Format(_snapshot.ItemInstanceCount);
+        CreatedWorkCountText.Text = KoreanNumberFormatter.Format(_snapshot.CreatedWorkCount);
         PhysicalRecordCountText.Text = KoreanNumberFormatter.Format(_snapshot.PhysicalRecordCount);
         var knowledge = _snapshot.Knowledge ?? WorldKnowledgeSnapshot.Empty;
         KnowledgeContentCountText.Text = KoreanNumberFormatter.Format(knowledge.ContentCount);
@@ -150,6 +185,59 @@ public partial class ContentWorkspaceView : UserControl
             ? rows.FirstOrDefault(row => row.Snapshot.EditionId == id) ?? rows.FirstOrDefault()
             : rows.FirstOrDefault();
         RenderSelectedKnowledgeEdition();
+    }
+
+    private void RebuildItemRows()
+    {
+        var selectedId = ItemInstanceGrid.SelectedItem is ItemInstanceRow selected
+            ? selected.Instance.Id
+            : (ContentInstanceId?)null;
+        var rows = _snapshot.ItemsAndMaterials.Select(instance => new ItemInstanceRow(
+            instance,
+            instance.Id.ToString(),
+            instance.DefinitionName,
+            FormatInstanceKind(instance.Kind),
+            $"지점 {instance.LocationId + 1}",
+            FormatOwner(instance.Owner),
+            FormatStatus(instance.Status))).ToArray();
+        ItemInstanceGrid.ItemsSource = rows;
+        ItemInstanceGrid.SelectedItem = selectedId is { } id
+            ? rows.FirstOrDefault(row => row.Instance.Id == id) ?? rows.FirstOrDefault()
+            : rows.FirstOrDefault();
+
+        var first = _snapshot.ItemResultTotal == 0 ? 0 : _snapshot.ItemResultOffset + 1;
+        var last = Math.Min(
+            _snapshot.ItemResultTotal,
+            _snapshot.ItemResultOffset + _snapshot.ItemsAndMaterials.Count);
+        ItemListStatusText.Text = rows.Length == 0
+            ? "표시할 아이템·재료 Instance가 없습니다."
+            : $"현재 페이지 {rows.Length:N0}개";
+        ItemPageText.Text = $"{first:N0}–{last:N0} / {_snapshot.ItemResultTotal:N0}";
+        PreviousItemPageButton.IsEnabled = _snapshot.ItemResultOffset > 0;
+        NextItemPageButton.IsEnabled = last < _snapshot.ItemResultTotal;
+        RenderSelectedItem();
+    }
+
+    private void RenderSelectedItem()
+    {
+        if (ItemInstanceGrid.SelectedItem is not ItemInstanceRow row)
+        {
+            ClearItemDetails();
+            return;
+        }
+
+        var value = row.Instance;
+        ItemTitleText.Text = $"{value.DefinitionName} · {value.Id}";
+        ItemIdentityText.Text = $"{value.DefinitionId} · {FormatInstanceKind(value.Kind)}";
+        ItemOwnerText.Text =
+            $"소유 {FormatOwner(value.Owner)} · 보유 {value.Holder.Kind}:{value.Holder.Id:N0}\n" +
+            $"지점 {value.LocationId + 1:N0} · 수량 {value.Quantity:N0}";
+        ItemQualityText.Text = value.QualityAvailability == ContentQualityAvailability.Specified
+            ? $"품질 {value.QualityHundredths / 100d:0.00} · 내구 {value.ConditionHundredths / 100d:0.00}"
+            : $"품질 DataUnavailable · 내구 {value.ConditionHundredths / 100d:0.00}";
+        ItemAuthorityText.Text =
+            $"{FormatStatus(value.Status)} · revision {value.AuthorityRevision:N0}\n" +
+            $"최신 계보 {value.LatestProvenanceId}";
     }
 
     private void RenderSelectedKnowledgeEdition()
@@ -316,6 +404,15 @@ public partial class ContentWorkspaceView : UserControl
         KnowledgeEditionStateText.Text = "—";
     }
 
+    private void ClearItemDetails()
+    {
+        ItemTitleText.Text = "아이템·재료를 선택해 주세요.";
+        ItemIdentityText.Text = "Definition과 실제 Instance를 분리해 표시합니다.";
+        ItemOwnerText.Text = "—";
+        ItemQualityText.Text = "—";
+        ItemAuthorityText.Text = "—";
+    }
+
     private void ClearLawDetails()
     {
         LawCandidateTitleText.Text = "법칙 후보를 선택해 주세요.";
@@ -328,6 +425,9 @@ public partial class ContentWorkspaceView : UserControl
 
     private void SecretRealmGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
         RenderSelectedRealm();
+
+    private void ItemInstanceGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
+        RenderSelectedItem();
 
     private void KnowledgeEditionGrid_SelectionChanged(
         object sender,
@@ -366,6 +466,22 @@ public partial class ContentWorkspaceView : UserControl
         PageRequested?.Invoke(this, EventArgs.Empty);
     }
 
+    private void PreviousItemPageButton_Click(object sender, RoutedEventArgs e)
+    {
+        ItemOffset = Math.Max(0, ItemOffset - ItemPageSize);
+        PageRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void NextItemPageButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (ItemOffset + ItemPageSize >= _snapshot.ItemResultTotal)
+        {
+            return;
+        }
+        ItemOffset += ItemPageSize;
+        PageRequested?.Invoke(this, EventArgs.Empty);
+    }
+
     private void ContentDetailTabControl_SelectionChanged(
         object sender,
         SelectionChangedEventArgs e)
@@ -373,6 +489,10 @@ public partial class ContentWorkspaceView : UserControl
         if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 0)
         {
             RebuildSecretRealmRows();
+        }
+        if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 1)
+        {
+            RebuildItemRows();
         }
         if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 2)
         {
@@ -412,6 +532,25 @@ public partial class ContentWorkspaceView : UserControl
         ContentInstanceStatus.Destroyed => "파괴됨",
         ContentInstanceStatus.Collapsed => "붕괴됨",
         _ => status.ToString(),
+    };
+
+    private static string FormatInstanceKind(ContentInstanceKind kind) => kind switch
+    {
+        ContentInstanceKind.MaterialStack => "재료 stack",
+        ContentInstanceKind.Item => "법보·단약",
+        ContentInstanceKind.CreatedWork => "독립 전승",
+        ContentInstanceKind.PhysicalRecord => "물리 기록",
+        ContentInstanceKind.SecretRealm => "비경",
+        _ => kind.ToString(),
+    };
+
+    private static string FormatOwner(ContentOwnerRef owner) => owner.Kind switch
+    {
+        ContentOwnerKind.World => "세계",
+        ContentOwnerKind.Agent => $"인물 {owner.Id + 1:N0}",
+        ContentOwnerKind.City => $"도시 {owner.Id + 1:N0}",
+        ContentOwnerKind.Organization => $"조직 {owner.Id:N0}",
+        _ => $"{owner.Kind}:{owner.Id:N0}",
     };
 
     private static string FormatKnowledgeContent(KnowledgeEditionSnapshot value) =>
@@ -467,6 +606,15 @@ public partial class ContentWorkspaceView : UserControl
         string Nature,
         string Location,
         string Discovery,
+        string Status);
+
+    private sealed record ItemInstanceRow(
+        ContentInstanceSnapshot Instance,
+        string Id,
+        string Definition,
+        string Kind,
+        string Location,
+        string Owner,
         string Status);
 
     private sealed record KnowledgeEditionRow(

@@ -173,38 +173,93 @@
                     <TabItem Header="아이템 · 재료">
                         <Grid Margin="8">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="12" />
+                                <RowDefinition Height="76" />
+                                <RowDefinition Height="10" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Border Padding="14" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
-                                <TextBlock Text="PC 간략화 계약: 법보 재료, 단약 재료, 공격·방어 법보, 성장·돌파 단약만 정식 Definition으로 사용합니다. 실제 소유권이 생긴 Instance만 아래에 집계합니다."
-                                           Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
-                            </Border>
-                            <UniformGrid Grid.Row="2" Columns="3">
-                                <Border Margin="0,0,8,0" Padding="16" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" MinWidth="300" />
+                            </Grid.ColumnDefinitions>
+
+                            <UniformGrid Grid.ColumnSpan="3" Columns="3">
+                                <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
                                     <StackPanel>
-                                        <TextBlock Text="재료 stack" Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBlock x:Name="MaterialStackCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="24" FontWeight="SemiBold" />
-                                        <TextBlock Text="수량형 실물 · 소유자/위치 index 적용" Margin="0,8,0,0" Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap" />
+                                        <TextBlock Text="재료 stack" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="MaterialStackCountText" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" />
                                     </StackPanel>
                                 </Border>
-                                <Border Margin="0,0,8,0" Padding="16" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
                                     <StackPanel>
-                                        <TextBlock Text="법보·단약 Instance" Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBlock x:Name="ItemInstanceCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="24" FontWeight="SemiBold" />
-                                        <TextBlock Text="품질과 상태를 분리하며 소비·파괴 후 현재 index에서 제거" Margin="0,8,0,0" Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap" />
+                                        <TextBlock Text="법보·단약 Instance" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="ItemInstanceCountText" Margin="0,7,0,0" Foreground="{StaticResource AccentBrush}" FontSize="20" FontWeight="SemiBold" />
                                     </StackPanel>
                                 </Border>
-                                <Border Padding="16" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                <Border Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
                                     <StackPanel>
-                                        <TextBlock Text="승인 모집단" Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBlock Text="재료 90 · 아이템 120" Margin="0,8,0,0" Foreground="{StaticResource AccentBrush}" FontSize="20" FontWeight="SemiBold" />
-                                        <TextBlock Text="세부 배치·분포는 PC_TEMP_REVIEW이며 아직 실제 Instance를 임의 생성하지 않습니다."
-                                                   Margin="0,8,0,0" Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap" />
+                                        <TextBlock Text="독립 전승" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="CreatedWorkCountText" Margin="0,7,0,0" Foreground="{StaticResource PositiveBrush}" FontSize="20" FontWeight="SemiBold" />
                                     </StackPanel>
                                 </Border>
                             </UniformGrid>
+
+                            <DataGrid x:Name="ItemInstanceGrid"
+                                      Grid.Row="2"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      EnableRowVirtualization="True"
+                                      ScrollViewer.CanContentScroll="True"
+                                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                      SelectionChanged="ItemInstanceGrid_SelectionChanged">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Instance" Binding="{Binding Id}" Width="145" />
+                                    <DataGridTextColumn Header="Definition" Binding="{Binding Definition}" Width="*" />
+                                    <DataGridTextColumn Header="종류" Binding="{Binding Kind}" Width="100" />
+                                    <DataGridTextColumn Header="지점" Binding="{Binding Location}" Width="80" />
+                                    <DataGridTextColumn Header="소유" Binding="{Binding Owner}" Width="100" />
+                                    <DataGridTextColumn Header="상태" Binding="{Binding Status}" Width="80" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Border Grid.Row="2"
+                                    Grid.Column="2"
+                                    Padding="16"
+                                    Background="{StaticResource PanelAltBrush}"
+                                    CornerRadius="7">
+                                <StackPanel>
+                                    <TextBlock x:Name="ItemTitleText"
+                                               Text="아이템·재료를 선택해 주세요."
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               FontSize="19"
+                                               FontWeight="SemiBold" />
+                                    <TextBlock x:Name="ItemIdentityText"
+                                               Margin="0,6,0,0"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                    <Separator Margin="0,14" />
+                                    <TextBlock x:Name="ItemOwnerText"
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock x:Name="ItemQualityText"
+                                               Margin="0,12,0,0"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock x:Name="ItemAuthorityText"
+                                               Margin="0,12,0,0"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,8,0,0">
+                                <Button x:Name="PreviousItemPageButton" Content="이전 100개" Padding="9,4" Click="PreviousItemPageButton_Click" />
+                                <Button x:Name="NextItemPageButton" Content="다음 100개" Margin="6,0,0,0" Padding="9,4" Click="NextItemPageButton_Click" />
+                                <TextBlock x:Name="ItemPageText" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource SecondaryTextBrush}" />
+                                <TextBlock x:Name="ItemListStatusText" Margin="14,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource SecondaryTextBrush}" />
+                            </StackPanel>
                         </Grid>
                     </TabItem>
 

@@ -209,6 +209,13 @@ public partial class MainWindow : Window, IDisposable
             lawCandidateLimit: _workspaceRoute == WorkspaceRoute.Content
                 && ContentWorkspacePanel.ShouldLoadLawRows
                     ? ContentWorkspaceView.LawCandidatePageSize
+                    : 0,
+            contentItemOffset: _workspaceRoute == WorkspaceRoute.Content
+                ? ContentWorkspacePanel.ItemOffset
+                : 0,
+            contentItemLimit: _workspaceRoute == WorkspaceRoute.Content
+                && ContentWorkspacePanel.ShouldLoadItemRows
+                    ? ContentWorkspaceView.ItemPageSize
                     : 0);
         ApplyObservation(observation);
     }

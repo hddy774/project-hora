@@ -500,7 +500,9 @@ public sealed class ContentAuthorityStore
         ContentDiscovererRef viewer,
         bool includeHidden,
         int secretRealmOffset = 0,
-        int secretRealmLimit = 100)
+        int secretRealmLimit = 100,
+        int itemOffset = 0,
+        int itemLimit = 0)
     {
         if (!viewer.IsValid)
         {
@@ -508,6 +510,8 @@ public sealed class ContentAuthorityStore
         }
         ArgumentOutOfRangeException.ThrowIfNegative(secretRealmOffset);
         ArgumentOutOfRangeException.ThrowIfNegative(secretRealmLimit);
+        ArgumentOutOfRangeException.ThrowIfNegative(itemOffset);
+        ArgumentOutOfRangeException.ThrowIfNegative(itemLimit);
 
         var natural = 0;
         var artificial = 0;
@@ -516,10 +520,13 @@ public sealed class ContentAuthorityStore
         var viewerKnown = 0;
         var materialStacks = 0;
         var items = 0;
+        var createdWorks = 0;
         var records = 0;
         var visibleCount = 0;
+        var itemResultTotal = 0;
         List<(ContentInstanceCheckpoint Instance, ContentDiscoveryState State)>? visible =
             secretRealmLimit > 0 ? [] : null;
+        List<ContentInstanceCheckpoint>? itemRows = itemLimit > 0 ? [] : null;
         foreach (var instance in _instances)
         {
             if (instance.Status is ContentInstanceStatus.Active or ContentInstanceStatus.Reserved)
@@ -563,10 +570,18 @@ public sealed class ContentAuthorityStore
                 }
                 case ContentInstanceKind.MaterialStack:
                     materialStacks++;
+                    AddRequestedItemRow(instance, itemRows, itemResultTotal, itemOffset, itemLimit);
+                    itemResultTotal++;
                     break;
                 case ContentInstanceKind.Item:
-                case ContentInstanceKind.CreatedWork:
                     items++;
+                    AddRequestedItemRow(instance, itemRows, itemResultTotal, itemOffset, itemLimit);
+                    itemResultTotal++;
+                    break;
+                case ContentInstanceKind.CreatedWork:
+                    createdWorks++;
+                    AddRequestedItemRow(instance, itemRows, itemResultTotal, itemOffset, itemLimit);
+                    itemResultTotal++;
                     break;
                 case ContentInstanceKind.PhysicalRecord:
                     records++;
@@ -585,6 +600,11 @@ public sealed class ContentAuthorityStore
                 .Take(secretRealmLimit)
                 .Select(item => CreateSnapshot(item.Instance, item.State))
                 .ToArray();
+        var projectedItems = itemRows is null
+            ? Array.Empty<ContentInstanceSnapshot>()
+            : itemRows
+                .Select(item => CreateSnapshot(item, ContentDiscoveryState.Unknown))
+                .ToArray();
         return new WorldContentSnapshot(
             _provenanceSequence,
             ContentDefinitionRegistry.All.Count,
@@ -596,11 +616,30 @@ public sealed class ContentAuthorityStore
             viewerKnown,
             materialStacks,
             items,
+            createdWorks,
             records,
             rows,
             secretRealmOffset,
             visibleCount,
+            projectedItems,
+            itemOffset,
+            itemResultTotal,
             includeHidden);
+    }
+
+    private static void AddRequestedItemRow(
+        ContentInstanceCheckpoint instance,
+        List<ContentInstanceCheckpoint>? rows,
+        int resultIndex,
+        int offset,
+        int limit)
+    {
+        if (rows is not null
+            && resultIndex >= offset
+            && rows.Count < limit)
+        {
+            rows.Add(instance);
+        }
     }
 
     public ContentDiscoveryState GetDiscoveryState(

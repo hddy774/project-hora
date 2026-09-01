@@ -425,7 +425,9 @@ public sealed partial class World
         int knowledgeEditionOffset = 0,
         int knowledgeEditionLimit = 100,
         int lawCandidateOffset = 0,
-        int lawCandidateLimit = 54)
+        int lawCandidateLimit = 54,
+        int contentItemOffset = 0,
+        int contentItemLimit = 0)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rankingCount);
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
@@ -436,6 +438,8 @@ public sealed partial class World
         ArgumentOutOfRangeException.ThrowIfNegative(knowledgeEditionLimit);
         ArgumentOutOfRangeException.ThrowIfNegative(lawCandidateOffset);
         ArgumentOutOfRangeException.ThrowIfNegative(lawCandidateLimit);
+        ArgumentOutOfRangeException.ThrowIfNegative(contentItemOffset);
+        ArgumentOutOfRangeException.ThrowIfNegative(contentItemLimit);
         var actualRankingCount = Math.Min(rankingCount, Population);
         var combatPowerRankings = (sections & ObservationSections.CombatPowerRanking) != 0
             ? CreateRankingEntries(
@@ -479,7 +483,9 @@ public sealed partial class World
                 ContentDiscovererRef.Observer,
                 includeHidden: _balance.DeveloperModeEnabled,
                 contentSecretRealmOffset,
-                contentSecretRealmLimit) with
+                contentSecretRealmLimit,
+                contentItemOffset,
+                contentItemLimit) with
                 {
                     Knowledge = _knowledge.CreateSnapshot(
                         knowledgeEditionOffset,

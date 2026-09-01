@@ -281,19 +281,40 @@ public sealed record WorldContentSnapshot(
     int ViewerKnownSecretRealms,
     int MaterialStackCount,
     int ItemInstanceCount,
+    int CreatedWorkCount,
     int PhysicalRecordCount,
     IReadOnlyList<ContentInstanceSnapshot> SecretRealms,
     int SecretRealmResultOffset,
     int SecretRealmResultTotal,
+    IReadOnlyList<ContentInstanceSnapshot> ItemsAndMaterials,
+    int ItemResultOffset,
+    int ItemResultTotal,
     bool IncludesHidden,
     WorldKnowledgeSnapshot? Knowledge = null,
     WorldLawSnapshot? Laws = null)
 {
     public static WorldContentSnapshot Empty { get; } = new(
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        Array.Empty<ContentInstanceSnapshot>(), 0, 0, false,
-        WorldKnowledgeSnapshot.Empty,
-        WorldLawSnapshot.Empty);
+        AuthorityRevision: 0,
+        DefinitionCount: 0,
+        TotalInstances: 0,
+        ActiveInstances: 0,
+        NaturalSecretRealms: 0,
+        ArtificialSecretRealms: 0,
+        PubliclyLocatedSecretRealms: 0,
+        ViewerKnownSecretRealms: 0,
+        MaterialStackCount: 0,
+        ItemInstanceCount: 0,
+        CreatedWorkCount: 0,
+        PhysicalRecordCount: 0,
+        SecretRealms: Array.Empty<ContentInstanceSnapshot>(),
+        SecretRealmResultOffset: 0,
+        SecretRealmResultTotal: 0,
+        ItemsAndMaterials: Array.Empty<ContentInstanceSnapshot>(),
+        ItemResultOffset: 0,
+        ItemResultTotal: 0,
+        IncludesHidden: false,
+        Knowledge: WorldKnowledgeSnapshot.Empty,
+        Laws: WorldLawSnapshot.Empty);
 }
 
 public static class ContentPopulationRules

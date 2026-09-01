@@ -137,7 +137,7 @@ public sealed partial class World
                 : RelationContextAvailability.DataUnavailable,
             selfFamily,
             otherFamily,
-            OrganizationContext: RelationContextAvailability.DataUnavailable,
+            OrganizationContext: RelationContextAvailability.Available,
             ReputationContext: RelationContextAvailability.DataUnavailable,
             KnowledgeContext: latestClaim.Value == 0
                 ? RelationContextAvailability.DataUnavailable

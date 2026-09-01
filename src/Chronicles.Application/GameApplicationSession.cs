@@ -133,7 +133,7 @@ public sealed class GameApplicationSession : IDisposable
             capture.SummarySnapshot,
             capture.Authority.StateHash,
             capture.Authority.Checkpoint.Seed,
-            organizationCount: 0);
+            organizationCount: capture.SummarySnapshot.Organizations?.Organizations.Count ?? 0);
         return Task.Run(
             () => SlotSaveStore.Save(
                 DefaultSaveRoot,
@@ -199,7 +199,7 @@ public sealed class GameApplicationSession : IDisposable
                                     snapshot,
                                     load.StateHash,
                                     load.Checkpoint!.Seed,
-                                    organizationCount: 0);
+                                    organizationCount: snapshot.Organizations?.Organizations.Count ?? 0);
                                 lock (_legacyCatalogGate)
                                 {
                                     _legacyCatalogSummaries[key] = summary;

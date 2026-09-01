@@ -209,9 +209,10 @@ public sealed record WorldCheckpoint(
     ReincarnationStoreCheckpoint? Reincarnation = null,
     AgentCausalStoreCheckpoint? Causal = null,
     WorldAtlasCheckpoint? Atlas = null,
-    WorldBalanceConfiguration? Balance = null)
+    WorldBalanceConfiguration? Balance = null,
+    OrganizationStoreCheckpoint? Organizations = null)
 {
-    public const int CurrentSchemaVersion = 25;
+    public const int CurrentSchemaVersion = 26;
 }
 
 /// <summary>

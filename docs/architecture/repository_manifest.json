@@ -41,7 +41,7 @@
       "project": "src/Chronicles.Persistence/Chronicles.Persistence.csproj",
       "roots": ["src/Chronicles.Persistence"],
       "allowed_dependencies": ["Core", "Simulation"],
-      "responsibility": "Schema 25 SQLite slots, explicit authority codec, candidate validation and atomic file lifecycle."
+      "responsibility": "Schema 25 world DB with checkpoint schema 26 SQLite slots, explicit authority codec, candidate validation and atomic file lifecycle."
     },
     {
       "id": "Presentation",
@@ -92,6 +92,8 @@
     "cultivation_action_plan_authority": "src/Chronicles.Simulation/CultivationActionPlan.cs",
     "cultivation_action_plan_runtime": "src/Chronicles.Simulation/World.CultivationPlans.cs",
     "foundation_formation_authority": "src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs",
+    "organization_authority": "src/Chronicles.Simulation/OrganizationModel.cs",
+    "organization_ai_runtime": "src/Chronicles.Simulation/World.Organizations.cs",
     "runtime_performance_diagnostics": "src/Chronicles.Runtime/SimulationRunner.cs",
     "bounded_log_file_writer": "src/Chronicles.Application/BoundedLogFileWriter.cs",
     "personal_century_chronicle_projection": "src/Chronicles.Queries/PersonalCenturyChronicleProjection.cs",

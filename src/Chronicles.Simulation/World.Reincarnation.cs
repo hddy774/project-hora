@@ -43,6 +43,11 @@ public sealed partial class World
         AddEvent(WorldEventKind.ReincarnationEntered, index, _agents.LifeNumbers[index]);
         InterruptTeachingContexts(index);
         _relations.EndLife(index, Tick.Value);
+        _organizations.HandleLifeEnded(
+            index,
+            Tick.Value,
+            candidate => _agents.LifeStates[candidate] == PersonLifeState.Living,
+            GetRealmRankingScore);
         var deathTransition = _agents.ConfirmDeath(index, Tick.Value, combatDeath);
         if (deathTransition.Status != LifeTransitionStatus.Applied)
         {

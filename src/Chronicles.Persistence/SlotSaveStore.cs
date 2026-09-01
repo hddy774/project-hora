@@ -679,10 +679,10 @@ public static class SlotSaveStore
                 $"snapshot world schema {worldSchema}가 DB schema와 다릅니다.");
         }
 
-        if (checkpointSchema != WorldCheckpoint.CurrentSchemaVersion)
+        if (!IsSupportedCheckpointSchema(checkpointSchema))
         {
             throw new IncompatibleCheckpointSchemaException(
-                $"schema 7~24 이전은 지원하지 않습니다. 현재 checkpoint schema {WorldCheckpoint.CurrentSchemaVersion}, 저장 {checkpointSchema}.");
+                $"schema 7~24 이전은 지원하지 않습니다. 지원 checkpoint schema 25~{WorldCheckpoint.CurrentSchemaVersion}, 저장 {checkpointSchema}.");
         }
 
         if (createdSequence < 1)
@@ -803,10 +803,10 @@ public static class SlotSaveStore
                 throw new IncompatibleWorldSchemaException(
                     $"snapshot world schema {worldSchema}가 DB schema와 다릅니다.");
             }
-            if (checkpointSchema != WorldCheckpoint.CurrentSchemaVersion)
+            if (!IsSupportedCheckpointSchema(checkpointSchema))
             {
                 throw new IncompatibleCheckpointSchemaException(
-                    $"현재 checkpoint schema {WorldCheckpoint.CurrentSchemaVersion}, 저장 {checkpointSchema}.");
+                    $"지원 checkpoint schema 25~{WorldCheckpoint.CurrentSchemaVersion}, 저장 {checkpointSchema}.");
             }
             if (createdSequence < 1 || tick < 0 || eventSequence < 0 || chronicleSequence < 0)
             {
@@ -839,6 +839,9 @@ public static class SlotSaveStore
         IncompatibleCheckpointSchemaException => SlotLoadStatus.IncompatibleCheckpointSchema,
         _ => SlotLoadStatus.NoValidCandidate,
     };
+
+    private static bool IsSupportedCheckpointSchema(int schema) =>
+        schema is 25 or WorldCheckpoint.CurrentSchemaVersion;
 
     private static long GetMaximumKnownSequence(SlotPaths paths)
     {

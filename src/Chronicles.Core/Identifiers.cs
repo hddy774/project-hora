@@ -39,6 +39,19 @@ public readonly record struct AtlasNodeId
     public override string ToString() => $"ATLAS-{Value:000000}";
 }
 
+public readonly record struct OrganizationId
+{
+    public OrganizationId(long value)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+        Value = value;
+    }
+
+    public long Value { get; }
+
+    public override string ToString() => $"ORG-{Value:000000}";
+}
+
 public readonly record struct SpiritVeinSourceId
 {
     public SpiritVeinSourceId(int value)

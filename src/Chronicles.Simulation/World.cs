@@ -12,6 +12,7 @@ public sealed partial class World
     private readonly SparseRelationStore _relations;
     private readonly ReincarnationStore _reincarnation;
     private readonly SpatialAuthorityStore _atlas;
+    private readonly OrganizationStore _organizations;
     private readonly CityMarket _market;
     private readonly WorldBalanceConfiguration _balance;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
@@ -71,6 +72,7 @@ public sealed partial class World
         _relations = new SparseRelationStore(population);
         _reincarnation = new ReincarnationStore(population);
         _atlas = new SpatialAuthorityStore(population);
+        _organizations = new OrganizationStore(population);
         _market = new CityMarket(population);
         _agentByRank = new int[population];
         _rankByAgent = new int[population];
@@ -131,6 +133,7 @@ public sealed partial class World
     public int TotalMonsterHunts => _totalMonsterHunts;
     public int TotalMonsterVictories => _totalMonsterVictories;
     public int TotalRelations => _relations.Count;
+    public int TotalOrganizations => _organizations.Count;
     public WorldBalanceConfiguration Balance => _balance;
 
     public static World CreateDefault(ulong seed) =>
@@ -171,6 +174,7 @@ public sealed partial class World
             {
                 AdvanceCityIndustry(actionMonth);
                 RegenerateMonsters(actionMonth);
+                AdvanceOrganizationSystem(actionMonth);
                 environmentMonth = actionMonth;
             }
             if (_agents.LifeStates[agentIndex] == PersonLifeState.Living
@@ -442,6 +446,9 @@ public sealed partial class World
         var map = (sections & ObservationSections.Map) != 0
             ? CreateMapSnapshot(detailedMapLocationId, detailedMapAgentOffset)
             : WorldMapSnapshot.Empty;
+        var organizations = (sections & ObservationSections.Organization) != 0
+            ? _organizations.CreateSnapshot(_agents.Names)
+            : WorldOrganizationSnapshot.Empty;
 
         var recentEvents = (sections & ObservationSections.WorldLog) != 0
             ? _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray()
@@ -479,7 +486,8 @@ public sealed partial class World
             _activeCombats,
             _totalDeaths,
             _totalReincarnations,
-            LeaderId);
+            LeaderId,
+            organizations);
     }
 
     private RankingEntry[] CreateRankingEntries(
@@ -549,6 +557,7 @@ public sealed partial class World
         Add(ref hash, (ulong)_totalMonsterHunts);
         Add(ref hash, (ulong)_totalMonsterVictories);
         _atlas.AddStateHash(ref hash);
+        _organizations.AddStateHash(ref hash);
         Add(ref hash, (ulong)_lastRankingRefreshTick);
         Add(ref hash, (ulong)_rankingMovementFromTick);
         Add(ref hash, (ulong)_rankingRisenCount);

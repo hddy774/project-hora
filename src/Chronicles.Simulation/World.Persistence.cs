@@ -91,6 +91,11 @@ public sealed partial class World
             : SpatialAuthorityStore.CreateLegacy(
                 _agents.LocationIds,
                 GameCalendar.GetMonthIndex(Tick));
+        _organizations = checkpoint.SchemaVersion >= 26
+            ? OrganizationStore.Restore(
+                checkpoint.Agents.Length,
+                checkpoint.Organizations!)
+            : new OrganizationStore(checkpoint.Agents.Length);
 
         if (checkpoint.SchemaVersion >= 23)
         {
@@ -445,7 +450,8 @@ public sealed partial class World
             _reincarnation.CreateCheckpoint(),
             _causal.CreateCheckpoint(),
             _atlas.CreateCheckpoint(),
-            _balance);
+            _balance,
+            _organizations.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -775,6 +781,14 @@ public sealed partial class World
                 || !IsValidCausalRuntimeLink(checkpoint)))
         {
             throw new InvalidDataException("세계 체크포인트의 AI 인과·인지·기억 상태가 잘못되었습니다.");
+        }
+
+        if (checkpoint.SchemaVersion >= 26
+            && !OrganizationStore.IsValidCheckpoint(
+                checkpoint.Agents.Length,
+                checkpoint.Organizations!))
+        {
+            throw new InvalidDataException("세계 체크포인트의 조직 권위 상태가 잘못되었습니다.");
         }
 
         if (checkpoint.Atlas is { } atlas)

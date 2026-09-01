@@ -77,10 +77,11 @@ var tests = new (string Name, Action Body)[]
     ("5층천 Atlas·1·2층천·900 영맥·개인 공간 지식", AtlasHierarchySpatialKnowledgeAndVeins),
     ("하천대륙 10×10 주·오천주 1·2층천 10×10 지점", HacheonOcheonGeographyBlueprint),
     ("설정용 AI 수·개발자 밸런스 권위·저장 왕복", DeveloperWorldSettingsAndBalancePersistence),
+    ("조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26", OrganizationCoreTests.Run),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
-    ("schema 25 SQLite 다중 슬롯·후보 원자 복원", SqliteSlotPersistenceTests.Run),
+    ("schema 25→26 SQLite 다중 슬롯·후보 원자 복원", SqliteSlotPersistenceTests.Run),
     ("모든 로그 파일 5MiB 상한·기존 part 재검사·UTF-8 분할", BoundedLogFilesNeverExceedFiveMiB),
     ("로그 종류·자동 수동·인물별 출력 경로 계약", LogOutputDirectoryContract),
     ("10,000명 로컬 실시간 성능 예산", DefaultWorldPerformanceBudget),
@@ -197,7 +198,7 @@ static void RankingRevisionCacheAvoidsUnchangedSorts()
         "랭킹 관찰 중 정렬 0회");
 
     var checkpoint = world.CreateCheckpoint();
-    Equal(25, checkpoint.SchemaVersion, "0.0.16 인과·생애 권위 schema 25");
+    Equal(WorldCheckpoint.CurrentSchemaVersion, checkpoint.SchemaVersion, "현재 인과·생애·조직 권위 schema");
     var restored = World.Restore(checkpoint);
     Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "랭킹 cache 저장 제외·복원 상태 hash");
     var restoredSnapshot = restored.CreateSnapshot(population, 0);
@@ -1255,7 +1256,7 @@ static void StagedReincarnationLineageTraceAndMigration()
                     && trace.IntegratedHundredths == 0),
                 "schema 22에는 없던 전생 근거를 조작하지 않음");
             var migratedCheckpoint = migratedSchema22.CreateCheckpoint();
-            Equal(25, migratedCheckpoint.SchemaVersion, "schema 22는 재저장 시 schema 25");
+            Equal(WorldCheckpoint.CurrentSchemaVersion, migratedCheckpoint.SchemaVersion, "schema 22는 재저장 시 현재 schema");
             True(migratedCheckpoint.Reincarnation is not null, "이전 후 윤회 권위 저장 생성");
 
             world = restored;
@@ -1455,7 +1456,7 @@ static void PersonIdentityAndDecisionAuthority()
     Equal(beforeObservation, world.ComputeStateHash(), "행동 이유 관찰은 권위 상태 무영향");
 
     var checkpoint = world.CreateCheckpoint();
-    Equal(25, checkpoint.SchemaVersion, "윤회 계보·Teaching·인과 저장 schema");
+    Equal(WorldCheckpoint.CurrentSchemaVersion, checkpoint.SchemaVersion, "윤회 계보·Teaching·인과·조직 저장 schema");
     var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
     Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "인물 신원·결정 codec·hash 왕복");
 
@@ -1560,7 +1561,7 @@ static void AgentCausalLifeVerticalFlow()
         "모든 인물 성별 명시");
 
     var checkpoint = world.CreateCheckpoint();
-    Equal(25, checkpoint.SchemaVersion, "생애·인과 권위 schema 25");
+    Equal(WorldCheckpoint.CurrentSchemaVersion, checkpoint.SchemaVersion, "생애·인과·조직 권위 schema");
     True(checkpoint.Causal is not null, "인과 store 권위 저장");
     True(checkpoint.Agents.All(agent => agent.LifeAuthority is not null), "생애·외형 권위 저장");
     var restored = World.Restore(checkpoint);
@@ -1661,9 +1662,9 @@ static void SparseDirectionalRelationsAndRoles()
     True(visible.Relations!.Count <= RelationRules.MaximumRelationsPerAgent, "펼친 관계 UI 희소 DTO");
     True(
         visible.Relations.All(relation =>
-            relation.ExternalContext.OrganizationContext == RelationContextAvailability.DataUnavailable
+            relation.ExternalContext.OrganizationContext == RelationContextAvailability.Available
             && relation.ExternalContext.ReputationContext == RelationContextAvailability.DataUnavailable),
-        "미구현 조직·평판 맥락은 0값이 아니라 DataUnavailable");
+        "조직 맥락은 사용 가능하고 미구현 평판은 DataUnavailable");
     True(
         visible.Relations.All(relation =>
             relation.ExternalContext.FamilyContext is RelationContextAvailability.Available
@@ -2157,7 +2158,7 @@ static void DetailedAptitudesAuthorityAndLazyProjection()
     var world = World.CreateDefault(741103);
     var checkpoint = world.CreateCheckpoint();
     stopwatch.Stop();
-    Equal(25, checkpoint.SchemaVersion, "윤회 계보·Teaching·인과 저장 schema");
+    Equal(WorldCheckpoint.CurrentSchemaVersion, checkpoint.SchemaVersion, "윤회 계보·Teaching·인과·조직 저장 schema");
 
     long summaryTotal = 0;
     var summaryMinimum = int.MaxValue;
@@ -2871,7 +2872,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 25, "윤회 계보·인과 저장 schema 25");
+    True(checkpoint.SchemaVersion == WorldCheckpoint.CurrentSchemaVersion, "윤회 계보·인과·조직 저장 현재 schema");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");
@@ -3958,7 +3959,7 @@ static void MarketCheckpointValidation()
         SchemaVersion = 23,
         Market = schema23Market,
     }).CreateCheckpoint();
-    Equal(25, migrated.SchemaVersion, "schema 23 시장은 schema 25로 이전");
+    Equal(WorldCheckpoint.CurrentSchemaVersion, migrated.SchemaVersion, "schema 23 시장은 현재 schema로 이전");
     Equal(EconomyRules.MarketGoodCount, migrated.Market.RecentSupply?.Length ?? 0, "이전 후 최근 수급 생성");
     Equal(checkpoint.Agents.Length, migrated.Market.LastSettlementSourceByAgent?.Length ?? 0, "이전 후 중복 정산 방지 슬롯 생성");
 
@@ -4248,7 +4249,7 @@ static void DefaultWorldPerformanceBudget()
         $"{targetTick:N0} tick {simulationStopwatch.Elapsed.TotalMilliseconds:N0} ms + " +
         $"관찰 {projectionStopwatch.Elapsed.TotalMilliseconds:N1} ms = " +
         $"{totalStopwatch.Elapsed.TotalMilliseconds:N0} ms · checkpoint " +
-        $"{checkpointStopwatch.Elapsed.TotalMilliseconds:N0} ms · schema 25 복원 " +
+        $"{checkpointStopwatch.Elapsed.TotalMilliseconds:N0} ms · schema {WorldCheckpoint.CurrentSchemaVersion} 복원 " +
         $"{restoreStopwatch.Elapsed.TotalMilliseconds:N0} ms");
     Equal(targetTick, snapshot.Tick.Value, "성능 검증 도달 tick");
     Equal(10_000, snapshot.Population, "성능 검증 인구");
@@ -4258,8 +4259,8 @@ static void DefaultWorldPerformanceBudget()
         $"10,000명 시뮬레이션 성능 예산 10초를 초과했습니다: {totalStopwatch.Elapsed.TotalSeconds:N2}초");
     True(
         checkpointStopwatch.Elapsed + restoreStopwatch.Elapsed < TimeSpan.FromSeconds(5),
-        "10,000명 schema 25 checkpoint·복원 성능 예산 5초를 초과했습니다.");
-    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "10,000명 schema 25 복원 hash");
+        $"10,000명 schema {WorldCheckpoint.CurrentSchemaVersion} checkpoint·복원 성능 예산 5초를 초과했습니다.");
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "10,000명 현재 schema 복원 hash");
 }
 
 static byte[] RemoveSchema22TeachingProperties(byte[] container)

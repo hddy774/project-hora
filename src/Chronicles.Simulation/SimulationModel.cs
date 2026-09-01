@@ -26,12 +26,14 @@ public enum ObservationSections : uint
     Reincarnation = 1 << 17,
     CausalRuntime = 1 << 18,
     PersonalCenturyChronicle = 1 << 19,
+    Organization = 1 << 20,
     Statistics = StatisticsSummary | RealmDistribution | CombatPowerDistribution,
     Market = MarketSummary | MarketGoods,
     AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking | WealthRanking,
     All = Statistics | Market | Map | WorldLog | WorldChronicle | PersonalLog | Chronicle
         | PersonalCenturyChronicle
-        | AllRankings | AptitudeDetails | Relations | Teaching | Reincarnation | CausalRuntime,
+        | AllRankings | AptitudeDetails | Relations | Teaching | Reincarnation | CausalRuntime
+        | Organization,
 }
 
 public enum AgentActivity : byte
@@ -619,7 +621,8 @@ public sealed record WorldSnapshot(
     int ActiveCombats,
     int TotalDeaths,
     int TotalReincarnations,
-    AgentId LeaderId)
+    AgentId LeaderId,
+    WorldOrganizationSnapshot? Organizations = null)
 {
     public IReadOnlyList<RankingEntry> Rankings => CombatPowerRankings;
 }

@@ -241,10 +241,11 @@ public sealed class SimulationRunner : IDisposable
             return new RuntimeSaveCapture(
                 _world.CreateAuthorityCheckpoint(),
                 _world.CreateSnapshot(
-                    rankingCount: 1,
-                    eventCount: 0,
-                    sections: ObservationSections.StatisticsSummary
-                        | ObservationSections.CombatPowerRanking,
+                rankingCount: 1,
+                eventCount: 0,
+                sections: ObservationSections.StatisticsSummary
+                    | ObservationSections.CombatPowerRanking
+                    | ObservationSections.Organization,
                     worldChronicleCount: 0));
         }
     }

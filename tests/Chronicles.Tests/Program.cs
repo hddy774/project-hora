@@ -38,6 +38,7 @@ var tests = new (string Name, Action Body)[]
     ("입문 Gate 병목 단련·적용 Work·저장 왕복", EntryGateRecoveryAndAppliedWork),
     ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
     ("Notion 수행 Work·준비·Preflight·안착 상태", CultivationStateMachine),
+    ("장기 수행 계획·조건·경량 pulse·저장 왕복", LongCultivationPlanConditionsAndPersistence),
     ("9층 소경지·대원만 분리와 수행 Formula Trace", FloorNineGreatPerfectionAndFormulaTrace),
     ("소경지·대경지 돌파 영구 연대기", CultivationBreakthroughChronicle),
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
@@ -503,6 +504,53 @@ static void CultivationStateMachine()
             profile.RequiresStabilization,
             "대경지 진입 뒤에만 안착 상태");
     }
+}
+
+static void LongCultivationPlanConditionsAndPersistence()
+{
+    Equal(1, CultivationPlanRules.MinimumPlanMonths, "최소 행동 계획 1개월");
+    Equal(120_000, CultivationPlanRules.MaximumPlanMonths, "최대 행동 계획 1만년");
+
+    var world = World.Create(551129, 256);
+    var initial = world.GetAgentSnapshot(new AgentId(0));
+    var decisionRevision = initial.Decision.Latest.AuthorityRevision;
+    world.AdvanceTo(initial.NextDecisionTick);
+    var committed = world.GetAgentSnapshot(new AgentId(0));
+    var plan = committed.Cultivation.ActionPlan
+        ?? throw new InvalidOperationException("수행 행동 경계에서 장기 계획이 생성되어야 합니다.");
+
+    True(plan.IsActive, "현재 수행 계획 활성 상태");
+    True(
+        plan.PlannedMonths is >= CultivationPlanRules.MinimumPlanMonths
+            and <= CultivationPlanRules.MaximumPlanMonths,
+        "수행 계획 기간 범위");
+    True(plan.PlannedEndTick.Value > plan.StartedTick.Value, "수행 시작·종료 시점 순서");
+    Equal(committed.LocationId, plan.LocationId, "수행 장소 고정");
+    True(Enum.IsDefined(plan.Intensity), "수행 강도 typed 조건");
+    True(Enum.IsDefined(plan.ResourcePolicy), "소비 자원 typed 조건");
+    True(Enum.IsDefined(plan.FormationSupport), "수행 진법 typed 조건");
+    True(Enum.IsDefined(plan.TeachingRole), "가르침 역할 typed 조건");
+    True(plan.ConditionFactorBasisPoints is >= 5_000 and <= 20_000, "조건 종합 계수 범위");
+    True(plan.TeachingBonusBasisPoints is >= 10_000 and <= 13_000, "가르침 흡수 계수 범위");
+    True(plan.RequiresReview, "임의 수행 조건 PC_TEMP_REVIEW 표식");
+    Equal(
+        decisionRevision,
+        committed.Decision.Latest.AuthorityRevision,
+        "장기 계획 pulse는 목표·계획을 매번 다시 계산하지 않음");
+
+    var checkpoint = world.CreateCheckpoint();
+    var persistedPlan = checkpoint.Agents[0].Cultivation!.Value.ActionPlan
+        ?? throw new InvalidOperationException("수행 계획 권위 저장 누락");
+    Equal(plan.AuthorityRevision, persistedPlan.AuthorityRevision, "수행 계획 revision 저장");
+    Equal(plan.PlannedMonths, persistedPlan.PlannedMonths, "수행 계획 기간 저장");
+    var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "수행 계획 codec·hash 왕복");
+
+    restored.AdvanceTo(plan.PlannedEndTick);
+    var boundary = restored.GetAgentSnapshot(new AgentId(0));
+    True(
+        boundary.Decision.Latest.AuthorityRevision > decisionRevision,
+        "수행 계획 종료 경계에서만 다음 행동을 판단");
 }
 
 static void FloorNineGreatPerfectionAndFormulaTrace()
@@ -1368,8 +1416,16 @@ static void PersonIdentityAndDecisionAuthority()
 
     var beforeRevision = initial.Decision.Latest.AuthorityRevision;
     world.AdvanceTo(initial.NextDecisionTick);
+    var committed = world.GetAgentSnapshot(new AgentId(0));
+    Equal(
+        beforeRevision,
+        committed.Decision.Latest.AuthorityRevision,
+        "장기 행동 계획 진행 중 decision revision 유지");
+    var plan = committed.Cultivation.ActionPlan
+        ?? throw new InvalidOperationException("장기 수행 계획 누락");
+    world.AdvanceTo(plan.PlannedEndTick);
     var decided = world.GetAgentSnapshot(new AgentId(0));
-    True(decided.Decision.Latest.AuthorityRevision > beforeRevision, "행동 판정 시 decision revision 증가");
+    True(decided.Decision.Latest.AuthorityRevision > beforeRevision, "계획 경계에서 decision revision 증가");
     True(decided.Decision.Latest.Tick <= world.Tick.Value, "결정 시점은 현재 세계 시간 이하");
 
     var beforeObservation = world.ComputeStateHash();
@@ -1429,8 +1485,17 @@ static void AgentCausalLifeVerticalFlow()
     True(causal.CurrentPath.ParentRecordId is null, "첫 판정 parent 없음");
 
     world.AdvanceTo(visible.NextDecisionTick);
+    var committedSnapshot = world.GetAgentSnapshot(new AgentId(0), includeCausal: true);
+    var committedCausal = committedSnapshot.Causal!;
+    Equal(
+        causal.AuthorityRevision,
+        committedCausal.AuthorityRevision,
+        "같은 장기 행동 pulse에서 인과 revision 유지");
+    var plan = committedSnapshot.Cultivation.ActionPlan
+        ?? throw new InvalidOperationException("인과 경로의 수행 계획 누락");
+    world.AdvanceTo(plan.PlannedEndTick);
     var after = world.GetAgentSnapshot(new AgentId(0), includeCausal: true).Causal!;
-    True(after.AuthorityRevision > causal.AuthorityRevision, "월간 판정에서 인과 revision 증가");
+    True(after.AuthorityRevision > causal.AuthorityRevision, "계획 경계에서 인과 revision 증가");
     Equal(causal.CurrentPath.RootRecordId, after.CurrentPath.RootRecordId, "같은 생 causal root 유지");
     True(after.CurrentPath.ParentRecordId == causal.CurrentPath.EventRecordId, "직전 record가 parent");
     True(after.CurrentPath.EventRecordId != causal.CurrentPath.EventRecordId, "판정별 record ID 분리");
@@ -1820,6 +1885,68 @@ static void TeachingVerticalFlow()
         && transmissionHistory.KnowledgeRef.Value != 0
         && transmissionHistory.ProvenanceId.Value != 0,
         "중요 전승 관계 역사는 대상 Ref·provenance를 영구 보존");
+
+    var jointCultivationTick = GameCalendar.GetNextMonthStart(
+        new SimulationTick(completedCheckpoint.Tick)).Value;
+    var jointAgents = completedCheckpoint.Agents.ToArray();
+    for (var index = 0; index < jointAgents.Length; index++)
+    {
+        if (index == activeTeacher || index == learnerIndex)
+        {
+            jointAgents[index] = jointAgents[index] with
+            {
+                Activity = AgentActivity.Cultivating,
+                NextDecisionTick = jointCultivationTick,
+                Opponent = -1,
+                Cultivation = jointAgents[index].Cultivation!.Value with
+                {
+                    ActionPlan = CultivationActionPlanState.Empty,
+                },
+            };
+        }
+        else if (jointAgents[index].Activity != AgentActivity.Reincarnating
+            && jointAgents[index].NextDecisionTick != long.MaxValue)
+        {
+            jointAgents[index] = jointAgents[index] with
+            {
+                NextDecisionTick = Math.Max(
+                    jointAgents[index].NextDecisionTick,
+                    checked(jointCultivationTick + GameCalendar.TicksPerYear)),
+            };
+        }
+    }
+
+    var jointWorld = World.Restore(completedCheckpoint with { Agents = jointAgents });
+    var instructorExperienceBefore = jointWorld.GetAgentSnapshot(
+        new AgentId(activeTeacher)).Cultivation.CultivationExperience;
+    jointWorld.AdvanceTo(new SimulationTick(jointCultivationTick));
+    var instructorCultivation = jointWorld.GetAgentSnapshot(
+        new AgentId(activeTeacher)).Cultivation;
+    var learnerCultivation = jointWorld.GetAgentSnapshot(
+        new AgentId(learnerIndex)).Cultivation;
+    var instructorPlan = instructorCultivation.ActionPlan
+        ?? throw new InvalidOperationException("사제 공동 수행의 교사 계획 누락");
+    var learnerPlan = learnerCultivation.ActionPlan
+        ?? throw new InvalidOperationException("사제 공동 수행의 학습자 계획 누락");
+    True(
+        instructorPlan.TeachingRole == CultivationTeachingRole.Instructor,
+        "공동 수행 교사 역할");
+    True(
+        instructorPlan.TeachingPartner == new AgentId(learnerIndex),
+        "공동 수행 교사 대상");
+    True(
+        learnerPlan.TeachingRole == CultivationTeachingRole.Learner,
+        "공동 수행 학습자 역할");
+    True(
+        learnerPlan.TeachingPartner == new AgentId(activeTeacher),
+        "공동 수행 학습자 스승");
+    True(
+        learnerPlan.TeachingBonusBasisPoints > CultivationPlanRules.NeutralFactorBasisPoints,
+        "스승 지식·경험과 학습자 자질에 따른 수행 흡수 보너스");
+    True(
+        instructorCultivation.CultivationExperience > instructorExperienceBefore,
+        "가르치며 함께 수행한 경험은 교사에게 귀속");
+
     var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(completedCheckpoint)));
     Equal(isolated.ComputeStateHash(), restored.ComputeStateHash(), "Teaching codec·hash 왕복");
     var beforeObservation = isolated.ComputeStateHash();
@@ -3217,6 +3344,14 @@ static void EconomyLoop()
             .All(item => item.CurrentPrice == item.CityBasePrice),
         "품질 없는 초기 상품 가격은 도시 기준가");
     world.AdvanceTo(new SimulationTick(24_000));
+    var diagnosticMarket = world.CreateSnapshot(1, 0).Market;
+    Console.WriteLine(
+        $"ECONOMY PRODUCTION: 단약 {diagnosticMarket.PillsProduced:N0} · 법보 {diagnosticMarket.TreasuresProduced:N0} · " +
+        $"공법서 {diagnosticMarket.TechniqueBooksProduced:N0} · 법술서 {diagnosticMarket.SpellBooksProduced:N0} · " +
+        $"대기 {diagnosticMarket.ProductionQueue?.Count ?? 0:N0} · 재료 {diagnosticMarket.MaterialStock:N0} · " +
+        $"도시 영석 {diagnosticMarket.TreasurySpiritStones:N0} · " +
+        $"납품 {diagnosticMarket.MissionDeliveries:N0} · 판매 {diagnosticMarket.SaleTransactions:N0}/" +
+        $"{world.TotalMaterialsSold:N0}");
     True(world.TotalMissionsCompleted > 0, "도시 임무가 완료되어야 합니다.");
     True(world.TotalTreasuresCrafted > 0, "법보 제작이 발생해야 합니다.");
     True(world.TotalPillsCrafted > 0, "단약 제작이 발생해야 합니다.");

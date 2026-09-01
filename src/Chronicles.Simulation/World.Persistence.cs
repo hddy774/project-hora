@@ -361,7 +361,10 @@ public sealed partial class World
                     _agents.CultivationTraces[index],
                     _agents.CopyEntryGateTemperings(index),
                     _agents.CultivationAuthorityRevisions[index],
-                    _agents.FoundationFormations.CreateCheckpoint(index)),
+                    _agents.FoundationFormations.CreateCheckpoint(index),
+                    _agents.CultivationPlans[index],
+                    _agents.CultivationExperience[index],
+                    _agents.FormationInstallationExperience[index]),
                 new SkillProgressCheckpoint(
                     _agents.TechniqueTrainingExperience[index],
                     _agents.TechniqueUnderstanding[index],
@@ -531,6 +534,11 @@ public sealed partial class World
                 current.EntryGateTempering);
             _agents.CultivationTraces[index] = current.LatestTrace;
             _agents.FoundationFormations.Restore(index, current.FoundationFormation);
+            _agents.CultivationPlans[index] = current.ActionPlan
+                ?? CultivationActionPlanState.Empty;
+            _agents.CultivationExperience[index] = current.CultivationExperience;
+            _agents.FormationInstallationExperience[index] =
+                current.FormationInstallationExperience;
             _agents.CultivationAuthorityRevisions[index] = schemaVersion >= 19
                 ? current.AuthorityRevision
                 : Math.Max(0, current.LatestTrace.AuthorityRevisionAfter);
@@ -542,6 +550,9 @@ public sealed partial class World
             _agents.GreatPerfectionAchieved[index] = legacyCompleted;
             _agents.EntryGatePassMasks[index] = 0b111;
             _agents.FoundationFormations.Reset(index);
+            _agents.CultivationPlans[index] = CultivationActionPlanState.Empty;
+            _agents.CultivationExperience[index] = 0;
+            _agents.FormationInstallationExperience[index] = 0;
             _agents.CultivationTraces[index] = CultivationTraceState.Empty;
             _agents.CultivationAuthorityRevisions[index] = 0;
             InitializeRealmComponents(index);
@@ -1010,7 +1021,12 @@ public sealed partial class World
             }
 
             if (checkpoint.SchemaVersion >= 8
-                && !IsValidCultivationCheckpoint(agent.Cultivation, checkpoint.SchemaVersion))
+                && !IsValidCultivationCheckpoint(
+                    agent.Cultivation,
+                    checkpoint.SchemaVersion,
+                    checkpoint.Agents.Length,
+                    checkpoint.Tick,
+                    agent.Activity))
             {
                 throw new InvalidDataException($"Agent {index}의 수행 V2 체크포인트가 잘못되었습니다.");
             }
@@ -1186,13 +1202,18 @@ public sealed partial class World
 
     private static bool IsValidCultivationCheckpoint(
         CultivationCheckpoint? checkpoint,
-        int schemaVersion)
+        int schemaVersion,
+        int population,
+        long worldTick,
+        AgentActivity activity)
     {
         if (checkpoint is not { } value
             || value.PendingCarryoverWork < 0
             || value.LastWorkBefore < 0
             || value.LastWorkGain < 0
             || value.AuthorityRevision < 0
+            || value.CultivationExperience < 0
+            || value.FormationInstallationExperience > QualityValue.MaximumHundredths
             || value.EntryGatePassMask > 0b111
             || !Enum.IsDefined(value.FoundationRoute)
             || value.ComponentValues is not { Length: CultivationRules.RealmComponentSlotCount }
@@ -1203,6 +1224,12 @@ public sealed partial class World
             || (value.EntryGateTempering is { } tempering
                 && (tempering.Length != CultivationRules.EntryGateSlotCount
                     || tempering.Any(item => item > QualityValue.MaximumHundredths))))
+        {
+            return false;
+        }
+
+        if (value.ActionPlan is { } plan
+            && !IsValidCultivationActionPlan(plan, population, worldTick, activity))
         {
             return false;
         }
@@ -1274,6 +1301,54 @@ public sealed partial class World
                 ? trace.FormulaKind == CultivationFormulaKind.None
                 : trace.FormulaKind != CultivationFormulaKind.None
                     && trace.AuthorityRevisionAfter == trace.AuthorityRevisionBefore + 1);
+    }
+
+    private static bool IsValidCultivationActionPlan(
+        CultivationActionPlanState plan,
+        int population,
+        long worldTick,
+        AgentActivity activity)
+    {
+        if (plan.AuthorityRevision < 0
+            || plan.StartedTick < 0
+            || plan.StartedTick > worldTick
+            || plan.PlannedEndTick < plan.StartedTick
+            || plan.PlannedMonths < 0
+            || plan.PlannedMonths > CultivationPlanRules.MaximumPlanMonths
+            || plan.CompletedMonths < 0
+            || plan.CompletedMonths > plan.PlannedMonths
+            || plan.LocationId >= WorldMapRules.LocationCount
+            || !Enum.IsDefined(plan.Intensity)
+            || !Enum.IsDefined(plan.ResourcePolicy)
+            || plan.SpiritStoneBudget < 0
+            || plan.SpiritStonesConsumed < 0
+            || plan.SpiritStonesConsumed > plan.SpiritStoneBudget
+            || plan.GrowthPillBudget < 0
+            || plan.GrowthPillsConsumed < 0
+            || plan.GrowthPillsConsumed > plan.GrowthPillBudget
+            || !Enum.IsDefined(plan.FormationSupport)
+            || plan.FormationKnowledgeHundredths > QualityValue.MaximumHundredths
+            || plan.FormationInstallationExperienceHundredths
+                > QualityValue.MaximumHundredths
+            || !Enum.IsDefined(plan.TeachingRole)
+            || plan.TeachingPartnerAgent < -1
+            || plan.TeachingPartnerAgent >= population
+            || plan.FrozenTeachingBonusBasisPoints is < 10_000 or > 13_000
+            || plan.FrozenConditionFactorBasisPoints is < 5_000 or > 20_000)
+        {
+            return false;
+        }
+
+        if (plan.AuthorityRevision == 0)
+        {
+            return !plan.IsActive
+                && plan.PlannedMonths == 0
+                && plan.CompletedMonths == 0;
+        }
+
+        return !plan.IsActive
+            || (activity == AgentActivity.Cultivating
+                && plan.PlannedMonths >= CultivationPlanRules.MinimumPlanMonths);
     }
 
     private static bool IsValidSkillProgress(SkillProgressCheckpoint? checkpoint) => checkpoint is { } value

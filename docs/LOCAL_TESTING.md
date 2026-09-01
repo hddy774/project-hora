@@ -212,3 +212,13 @@ checkpoint 116ms, schema 24 복원 349ms였다. 작업 시작 기준선 1,239ms 
   전환과 준비 상태, 세계 복귀를 확인하고 정상 종료
 
 세부 5회 원측정과 이식 원장 집계는 `docs/evidence/0.0.14/verification.md`에 기록한다.
+
+## 0.0.16 인물·인과·윤회·관계 검증
+
+- 완료 SHA: `b15253b60e13b73f47be04944c08bda81971327f`
+- Release 빌드: 경고 0, 오류 0
+- 자동 검사: `RESULT: 49/49 passed`
+- 직접 실행: 생애·외형 권위와 Goal→Plan→Task→Action 인과·인지·기억 패널 확인 후
+  정상 종료
+- 상세 성능·SQLite 미달 budget·산출물 hash:
+  `docs/evidence/0.0.16/verification.md`

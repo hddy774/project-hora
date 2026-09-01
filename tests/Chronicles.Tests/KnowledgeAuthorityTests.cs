@@ -27,7 +27,7 @@ internal static class KnowledgeAuthorityTests
             snapshot.PhysicalRecordCount, "승인 물리 기록물 수");
         TestAssert.Equal(0, snapshot.AccessCount, "실물 소유와 자동 이해 분리");
         TestAssert.Equal(
-            ContentPopulationRules.InitialSecretRealmCount
+            ContentPopulationRules.InitialAuthorityInstanceCount
                 + KnowledgePopulationRules.InitialPhysicalRecordCount,
             content.InstanceCount,
             "비경과 물리 서적 Instance가 같은 Content 권위에 중복 없이 존재");

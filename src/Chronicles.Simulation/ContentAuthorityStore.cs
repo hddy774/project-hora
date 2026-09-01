@@ -5,7 +5,6 @@ namespace Chronicles.Simulation;
 public sealed class ContentAuthorityStore
 {
     public const int CurrentSchemaRevision = 1;
-    private const ulong InitialRealmSourcePrefix = 0xC011_0000_0000_0000UL;
 
     private readonly List<ContentInstanceCheckpoint> _instances = [];
     private readonly List<ContentProvenanceCheckpoint> _provenance = [];
@@ -24,37 +23,8 @@ public sealed class ContentAuthorityStore
     public int ProvenanceCount => _provenance.Count;
     public int DiscoveryCount => _discoveries.Count;
 
-    public static ContentAuthorityStore CreateInitial(ulong worldSeed)
-    {
-        var store = new ContentAuthorityStore();
-        var locationOffset = checked((int)(worldSeed
-            % (ulong)WorldAtlasRules.ProductionLocationCount));
-        for (var index = 0; index < ContentPopulationRules.InitialSecretRealmCount; index++)
-        {
-            var natural = index < ContentPopulationRules.InitialNaturalSecretRealmCount;
-            var definition = ContentDefinitionRegistry.Get(
-                natural ? "secret-realm.natural" : "secret-realm.artificial");
-            var result = store.TryCreate(new CreateContentInstanceCommand(
-                definition.Id,
-                ContentOwnerRef.World,
-                new ContentHolderRef(ContentHolderKind.WorldLocation, 0),
-                checked((ushort)((locationOffset + index)
-                    % WorldAtlasRules.ProductionLocationCount)),
-                Quantity: 1,
-                ContentQualityAvailability.DataUnavailable,
-                QualityHundredths: 0,
-                ConditionHundredths: 10_000,
-                new ContentSourceResultId(InitialRealmSourcePrefix + checked((ulong)index + 1UL)),
-                Tick: 0));
-            if (!result.Applied)
-            {
-                throw new InvalidOperationException(
-                    $"초기 비경 생성에 실패했습니다: {index} · {result.Status}");
-            }
-        }
-
-        return store;
-    }
+    public static ContentAuthorityStore CreateInitial(ulong worldSeed) =>
+        ContentAuthorityPopulation.Create(worldSeed);
 
     public static ContentAuthorityStore Restore(ContentAuthorityCheckpoint checkpoint)
     {

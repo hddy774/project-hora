@@ -310,6 +310,11 @@ public static class ContentPopulationRules
     public const int ApprovedPhysicalBookCount = 600;
     public const int ApprovedMaterialStackCount = 9_000;
     public const int ApprovedItemInstanceCount = 2_400;
+    public const int InitialAuthorityInstanceCount =
+        InitialSecretRealmCount
+        + ApprovedMaterialStackCount
+        + ApprovedItemInstanceCount
+        + ApprovedIndependentInheritanceCount;
 
     public const string PlacementReviewId = "PC-TEMP-CONTENT-PLACEMENT-021";
     public const string PcDefinitionAdaptationId = "PC-TEMP-CONTENT-PC-DEFINITIONS-021";
@@ -376,6 +381,8 @@ public static class ContentDefinitionRegistry
             ContentInstanceKind.PhysicalRecord, SecretRealmNature.None, false),
         Create("book.spell", "법술 서적", ContentDefinitionKind.Book,
             ContentInstanceKind.PhysicalRecord, SecretRealmNature.None, false),
+        Create("created-work.independent-inheritance", "독립 전승", ContentDefinitionKind.CreatedWork,
+            ContentInstanceKind.CreatedWork, SecretRealmNature.None, false),
     ];
 
     private static readonly Dictionary<ulong, ContentDefinition> ById =

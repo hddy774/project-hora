@@ -15,7 +15,7 @@ internal static class ContentAuthorityTests
 
     private static void DefinitionsAndInitialSecretRealmsAreStable()
     {
-        TestAssert.Equal(10, ContentDefinitionRegistry.All.Count, "PC 간략화 Definition 수");
+        TestAssert.Equal(11, ContentDefinitionRegistry.All.Count, "PC 간략화 Definition 수");
         TestAssert.Equal(
             ContentDefinitionRegistry.All.Count,
             ContentDefinitionRegistry.All.Select(definition => definition.Id).Distinct().Count(),
@@ -32,12 +32,19 @@ internal static class ContentAuthorityTests
         var publicView = first.CreateSnapshot(ContentDiscovererRef.Observer, includeHidden: false);
         var diagnostic = first.CreateSnapshot(ContentDiscovererRef.Observer, includeHidden: true);
 
-        TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount, first.InstanceCount,
-            "초기 비경 Instance 수");
+        TestAssert.Equal(ContentPopulationRules.InitialAuthorityInstanceCount, first.InstanceCount,
+            "초기 비경·재료·아이템·독립 전승 Instance 수");
         TestAssert.Equal(ContentPopulationRules.InitialNaturalSecretRealmCount,
             diagnostic.NaturalSecretRealms, "자연 비경 수");
         TestAssert.Equal(ContentPopulationRules.InitialArtificialSecretRealmCount,
             diagnostic.ArtificialSecretRealms, "인공 비경 수");
+        TestAssert.Equal(ContentPopulationRules.ApprovedMaterialStackCount,
+            diagnostic.MaterialStackCount, "승인 재료 stack 수");
+        TestAssert.Equal(
+            ContentPopulationRules.ApprovedItemInstanceCount
+                + ContentPopulationRules.ApprovedIndependentInheritanceCount,
+            diagnostic.ItemInstanceCount,
+            "승인 아이템·독립 전승 실물 수");
         TestAssert.Equal(0, publicView.SecretRealms.Count, "미발견 비경 관찰자 비공개");
         TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
             diagnostic.SecretRealmResultTotal, "개발 진단에서만 숨은 비경 투영");
@@ -197,7 +204,7 @@ internal static class ContentAuthorityTests
     {
         var world = World.Create(0xC021UL, 32);
         TestAssert.Equal(
-            ContentPopulationRules.InitialSecretRealmCount
+            ContentPopulationRules.InitialAuthorityInstanceCount
                 + KnowledgePopulationRules.InitialPhysicalRecordCount,
             world.TotalContentInstances, "세계 콘텐츠 store 연결");
         var hashBeforeObservation = world.ComputeStateHash();
@@ -213,7 +220,7 @@ internal static class ContentAuthorityTests
             sections: ObservationSections.Content,
             worldChronicleCount: 0);
         TestAssert.Equal(
-            ContentPopulationRules.InitialSecretRealmCount
+            ContentPopulationRules.InitialAuthorityInstanceCount
                 + KnowledgePopulationRules.InitialPhysicalRecordCount,
             opened.Content!.TotalInstances, "열린 콘텐츠 요약 투영");
         TestAssert.Equal(0, opened.Content.SecretRealms.Count,
@@ -240,7 +247,7 @@ internal static class ContentAuthorityTests
             migrated.ComputeStateHashForCheckpointSchema(26),
             "schema 26 저장 hash 호환");
         TestAssert.Equal(
-            ContentPopulationRules.InitialSecretRealmCount
+            ContentPopulationRules.InitialAuthorityInstanceCount
                 + KnowledgePopulationRules.InitialPhysicalRecordCount,
             migrated.CreateCheckpoint().Content!.Instances.Length,
             "schema 26은 seed 기반 콘텐츠·지식 실물로 이식");

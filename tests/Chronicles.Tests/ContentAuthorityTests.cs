@@ -222,7 +222,7 @@ internal static class ContentAuthorityTests
             "콘텐츠 관찰 무영향");
 
         var checkpoint = world.CreateCheckpoint();
-        TestAssert.Equal(28, checkpoint.SchemaVersion, "콘텐츠·지식 checkpoint schema 28");
+        TestAssert.Equal(29, checkpoint.SchemaVersion, "콘텐츠·지식·법칙 checkpoint schema 29");
         TestAssert.True(checkpoint.Content is not null, "콘텐츠 checkpoint 연결");
         var restored = World.Restore(checkpoint);
         TestAssert.Equal(world.ComputeStateHash(), restored.ComputeStateHash(),
@@ -272,7 +272,7 @@ internal static class ContentAuthorityTests
 
         TestAssert.Throws<InvalidDataException>(
             () => World.Restore(checkpoint with { Content = null }),
-            "schema 28 콘텐츠 누락 거부");
+            "schema 29 콘텐츠 누락 거부");
     }
 
     private static void AiExplorationDiscoversAndChroniclesSecretRealms()

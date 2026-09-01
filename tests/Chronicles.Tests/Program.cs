@@ -32,6 +32,7 @@ var tests = new (string Name, Action Body)[]
     ("공식 Registry·typed command·원자 transaction·causal event", AuthorityFoundationTests.Run),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
     ("자질 50.00 대경지 1층→9층 대원만 전체 기준", CultivationAuthorityRules),
+    ("승인 Effect 0개·Typed 실패·수행 외부 계수 계약", CultivationAttemptContractTests.Run),
     ("입문 Gate 병목 단련·적용 Work·저장 왕복", EntryGateRecoveryAndAppliedWork),
     ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
     ("Notion 수행 Work·준비·Preflight·안착 상태", CultivationStateMachine),

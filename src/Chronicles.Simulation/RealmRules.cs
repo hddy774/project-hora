@@ -37,7 +37,7 @@ public readonly record struct RealmComponentDefinition(string StableId, string K
 
 public static class CultivationRules
 {
-    public const int FormulaRevision = 3;
+    public const int FormulaRevision = 4;
     public const int EntryAgeYears = 5;
     public const int RequiredEntryWork = 30_000;
     public const int BaseEntryGain = 10_000;
@@ -52,6 +52,10 @@ public static class CultivationRules
     public const int LimitedCarryoverPercent = 25;
     public const int RealmComponentSlotCount = 4;
     public const int FormationSlotCount = 10;
+    public const int NeutralFactorBasisPoints = 10_000;
+    public const int MinimumEntryFactorBasisPoints = 2_500;
+    public const int MaximumEntryFactorBasisPoints = 20_000;
+    public const int ProvisionalStabilizationThresholdHundredths = 3_000;
 
     // Alpha 1.1.3에서 정확한 층별 배열은 미확정이다. 합계 1,000을 유지하는 임시 곡선이다.
     private static readonly int[] ProvisionalFloorWeights = [80, 90, 100, 105, 110, 115, 125, 135, 140];
@@ -89,7 +93,11 @@ public static class CultivationRules
         new("cultivation.aptitude_composite", FormulaRevision, "6대 선천 자질 산술평균", "50.00 기준 수행 기간 보존", true),
         new("cultivation.component_thresholds", FormulaRevision, "3→4 40.00, 6→7 60.00, 대원만 75.00", "Typed Component Gate 임시값", true),
         new("cultivation.method_mastery", FormulaRevision, "삼도축기요결 숙련도 25.00", "연기→축기 Method Preflight 임시값", true),
+        new("cultivation.method_understanding", FormulaRevision, "삼도축기요결 이해도 25.00", "Method content·이해·실행 숙련 Preflight 임시값", true),
         new("cultivation.stabilization", FormulaRevision, "대경지 성공 후 1회 평가", "고정 연수 없이 최소 1회 commit", true),
+        new("cultivation.stabilization_target", FormulaRevision, "Realm Component 평균 30.00", "Stabilization Target Set 임시값", true),
+        new("cultivation.environment_factor", FormulaRevision, "영맥 품질 0.80~1.20", "환경·영맥 일반 수행 계수 임시값", true),
+        new("cultivation.foundation_source", FormulaRevision, "인도 내부 기반·지도 영맥·천도 제2층천 현현", "지도·천도 Source 가용성 임시 PC 매핑", true),
         new("cultivation.entry_gate_tempering", FormulaRevision, "실패 Gate당 월 1.00 + 오성/100", "고정 선천자질 때문에 생기는 영구 입문 정체 방지", true),
     ];
 
@@ -119,26 +127,57 @@ public static class CultivationRules
         return checked(BaseMonthlyWork * rateBasisPoints / 10_000);
     }
 
+    public static int GetMonthlyRealmWorkGain(
+        int aptitudeCompositeHundredths,
+        int techniqueQualityHundredths,
+        int environmentQualityHundredths,
+        int bodyConditionBasisPoints,
+        int temporaryFactorBasisPoints = NeutralFactorBasisPoints)
+    {
+        var baseGain = GetMonthlyRealmWorkGain(aptitudeCompositeHundredths);
+        var methodFactor = 8_000 + (Math.Clamp(
+            techniqueQualityHundredths,
+            0,
+            QualityValue.MaximumHundredths) * 4 / 10);
+        var environmentFactor = GetEnvironmentFactorBasisPoints(environmentQualityHundredths);
+        var bodyFactor = Math.Clamp(5_000 + (bodyConditionBasisPoints / 2), 5_000, 10_000);
+        var temporaryFactor = Math.Clamp(temporaryFactorBasisPoints, 8_000, 12_500);
+        long gain = baseGain;
+        gain = gain * methodFactor / NeutralFactorBasisPoints;
+        gain = gain * environmentFactor / NeutralFactorBasisPoints;
+        gain = gain * bodyFactor / NeutralFactorBasisPoints;
+        gain = gain * temporaryFactor / NeutralFactorBasisPoints;
+        return checked((int)Math.Clamp(gain, 1, int.MaxValue));
+    }
+
     public static int GetEntryWorkGain(
         int aptitudeCompositeHundredths,
         int techniqueQualityHundredths,
-        int bodyCompositeHundredths)
+        int bodyCompositeHundredths,
+        int environmentFactorBasisPoints = NeutralFactorBasisPoints,
+        int temporaryFactorBasisPoints = NeutralFactorBasisPoints)
     {
         var aptitudeFactor = 5_000 + aptitudeCompositeHundredths;
         var methodFactor = 8_000 + (techniqueQualityHundredths * 4 / 10);
-        const int environmentFactor = 10_000;
+        var environmentFactor = Math.Clamp(environmentFactorBasisPoints, 8_000, 12_000);
         var bodyFactor = 5_000 + (bodyCompositeHundredths / 2);
-        const int temporaryFactor = 10_000;
+        var temporaryFactor = Math.Clamp(temporaryFactorBasisPoints, 8_000, 12_500);
         long raw = BaseEntryGain;
         raw = raw * aptitudeFactor / 10_000;
         raw = raw * methodFactor / 10_000;
         raw = raw * environmentFactor / 10_000;
         raw = raw * bodyFactor / 10_000;
         raw = raw * temporaryFactor / 10_000;
-        var minimum = BaseEntryGain / 4;
-        var maximum = BaseEntryGain * 2;
+        const int minimum = BaseEntryGain * MinimumEntryFactorBasisPoints / NeutralFactorBasisPoints;
+        const int maximum = BaseEntryGain * MaximumEntryFactorBasisPoints / NeutralFactorBasisPoints;
         return checked((int)Math.Clamp(raw, minimum, maximum));
     }
+
+    public static int GetEnvironmentFactorBasisPoints(int environmentQualityHundredths) =>
+        8_000 + (Math.Clamp(
+            environmentQualityHundredths,
+            0,
+            QualityValue.MaximumHundredths) * 4 / 10);
 
     public static CultivationGateSnapshot EvaluateEntryGate(
         int gateNumber,
@@ -193,16 +232,10 @@ public static class CultivationRules
     public static int GetBreakthroughChanceBasisPoints(
         BreakthroughClass attemptClass,
         RealmStage realm,
-        int aptitudeCompositeHundredths,
-        int componentAverageHundredths,
+        CultivationAttemptEffectResolution effectResolution,
         out int baseChance,
         out int modifier)
     {
-        var aptitudeDelta = aptitudeCompositeHundredths - BaselineAptitudeHundredths;
-        var componentDelta = componentAverageHundredths <= 0
-            ? 0
-            : componentAverageHundredths - BaselineAptitudeHundredths;
-        var rawModifier = (aptitudeDelta / 10) + (componentDelta / 20);
         int minimum;
         int maximum;
         int minimumModifier;
@@ -245,7 +278,13 @@ public static class CultivationRules
                 break;
         }
 
-        modifier = Math.Clamp(rawModifier, minimumModifier, maximumModifier);
+        modifier = effectResolution.Availability is CultivationValueAvailability.Actual
+            or CultivationValueAvailability.ActualZero
+                ? Math.Clamp(
+                    effectResolution.RawModifierBasisPoints,
+                    minimumModifier,
+                    maximumModifier)
+                : 0;
         return Math.Clamp(baseChance + modifier, minimum, maximum);
     }
 
@@ -273,6 +312,14 @@ public static class CultivationRules
         RealmStage.Mahayana => (2_500, 800, 5_500),
         _ => (10_000, 10_000, 10_000),
     };
+}
+
+public static class FoundationMethodRules
+{
+    public const string StableId = "method.foundation.three_paths";
+    public const int CurrentRevision = 1;
+    public const int ProvisionalMasteryThresholdHundredths = 2_500;
+    public const int ProvisionalUnderstandingThresholdHundredths = 2_500;
 }
 
 public static class RealmRules

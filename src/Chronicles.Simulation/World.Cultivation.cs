@@ -358,13 +358,13 @@ public sealed partial class World
         }
 
         _agents.CultivationStates[index] = CultivationState.AttemptingBreakthrough;
-        var componentCount = CultivationRules.GetComponents(_agents.RealmStages[index]).Count;
-        var componentAverage = _agents.GetCultivationComponentAverage(index, componentCount);
+        var effectResolution = CultivationAttemptEffectRegistry.Resolve(
+            attemptClass,
+            ReadOnlySpan<CultivationAttemptEffectCandidate>.Empty);
         var finalChance = CultivationRules.GetBreakthroughChanceBasisPoints(
             attemptClass,
             _agents.RealmStages[index],
-            GetInnateAptitudeComposite(index),
-            componentAverage,
+            effectResolution,
             out var baseChance,
             out var modifier);
         var roll = _random.NextInt(10_000);
@@ -390,6 +390,17 @@ public sealed partial class World
         }
         else
         {
+            var failure = CultivationFailureRiskRegistry.Resolve(attemptClass);
+            if (failure.Effect != CultivationFailureEffectKind.CleanFailure
+                || failure.WorkLost != 0
+                || failure.ComponentLostHundredths != 0
+                || failure.InjuryPoints != 0
+                || failure.FatalBodyLoss
+                || failure.RetryBlockMonths != 0)
+            {
+                throw new InvalidOperationException("승인되지 않은 수행 실패 효과를 적용할 수 없습니다.");
+            }
+
             if (_agents.BottleneckFailures[index] == 0)
             {
                 AddChronicle(index, ChronicleEventKind.BreakthroughFailure, finalChance);

@@ -184,6 +184,7 @@ public partial class SaveWorkspaceView : UserControl
             _selectedSlotId = slotId;
             SlotItemsControl.ItemsSource = _entries.Select(CreateCard).ToArray();
             RefreshSelectedDetails();
+            SaveWorkspaceTabControl.SelectedItem = SlotDetailsTab;
         }
     }
 
@@ -243,5 +244,12 @@ public partial class SaveWorkspaceView : UserControl
         string FileLine,
         string SaveLabel,
         bool CanLoad,
-        bool HasFiles);
+        bool HasFiles)
+    {
+        public string AccessibilityName => $"{Title}, {Status}, {SavedAt}";
+        public string SelectAccessibilityName => $"{Title} 상세 보기";
+        public string SaveAccessibilityName => $"{Title} {SaveLabel}";
+        public string LoadAccessibilityName => $"{Title} 불러오기";
+        public string FolderAccessibilityName => $"{Title} 폴더 열기";
+    }
 }

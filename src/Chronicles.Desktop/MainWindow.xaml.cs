@@ -62,6 +62,8 @@ public partial class MainWindow : Window, IDisposable
             DefaultWorldSeed,
             _runner.GetWorldMetadata().Population,
             WorldBalanceConfiguration.Default);
+        SettingsWorkspacePanel.SetAuthorityRegistryDiagnostics(
+            GameApplicationSession.AuthorityRegistryDiagnostics);
         _runner.ObservationInvalidated += Runner_ObservationInvalidated;
         _runner.Faulted += Runner_Faulted;
         _logService.FileWriteFailed += LogService_FileWriteFailed;

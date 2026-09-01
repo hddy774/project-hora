@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Chronicles.Application;
 using Chronicles.Runtime;
 using Chronicles.Simulation;
 
@@ -58,6 +59,28 @@ public partial class SettingsWorkspaceView : UserControl
 
     public bool IsPerformanceMeterEnabled => PerformanceMeterCheckBox.IsChecked == true;
     public bool AutoPerformanceOutput => PerformanceAutoOutputCheckBox.IsChecked == true;
+
+    public void SetAuthorityRegistryDiagnostics(
+        AuthorityRegistryDiagnosticsSnapshot diagnostics)
+    {
+        ArgumentNullException.ThrowIfNull(diagnostics);
+        AuthorityContractText.Text = $"{diagnostics.Contract} · revision {diagnostics.Revision}";
+        AuthorityValidationText.Text = diagnostics.ValidationStatus;
+        AuthorityValidationText.Foreground = (Brush)FindResource(
+            diagnostics.ValidationStatus == "READY"
+                ? "PositiveBrush"
+                : "DangerBrush");
+        AuthorityCountText.Text =
+            $"항목 {diagnostics.EntryCount:N0} · Owner {diagnostics.OwnerBindingCount:N0} · " +
+            $"ChangeSet {diagnostics.ChangeSetCount:N0}";
+        AuthoritySchemaText.Text = diagnostics.ActiveSchemaRef;
+        AuthorityMappingText.Text = diagnostics.ActiveMappingRef;
+        AuthorityOwnerRefsText.Text = string.Join(
+            Environment.NewLine,
+            diagnostics.OwnerBindings.Select(binding =>
+                $"{binding.DomainRef}  →  {binding.OwnerRef}"));
+        AuthorityFormulaRefsText.Text = string.Join("  ·  ", diagnostics.FormulaStableRefs);
+    }
 
     public void SetCurrentWorldSettings(
         ulong seed,

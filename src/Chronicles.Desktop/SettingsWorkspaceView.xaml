@@ -475,6 +475,92 @@
                             </Border>
                     </StackPanel>
                 </TabItem>
+
+                <TabItem Header="권위 진단">
+                    <Grid Margin="0,16,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="14" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="14" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Border Style="{StaticResource PanelStyle}"
+                                Background="{StaticResource PanelAltBrush}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="공통 Stable Registry"
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               FontSize="18"
+                                               FontWeight="SemiBold" />
+                                    <TextBlock x:Name="AuthorityContractText"
+                                               Margin="0,5,0,0"
+                                               Foreground="{StaticResource SecondaryTextBrush}" />
+                                    <TextBlock x:Name="AuthorityCountText"
+                                               Margin="0,5,0,0"
+                                               Foreground="{StaticResource SecondaryTextBrush}" />
+                                </StackPanel>
+                                <Border Grid.Column="1"
+                                        Padding="12,7"
+                                        CornerRadius="14"
+                                        Background="{StaticResource AccentDarkBrush}"
+                                        VerticalAlignment="Center">
+                                    <TextBlock x:Name="AuthorityValidationText"
+                                               Text="검증 대기"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               FontWeight="SemiBold" />
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <UniformGrid Grid.Row="2" Rows="1" Columns="2">
+                            <Border Style="{StaticResource PanelStyle}" Margin="0,0,7,0">
+                                <StackPanel>
+                                    <TextBlock Text="활성 Authority Schema"
+                                               Foreground="{StaticResource SecondaryTextBrush}" />
+                                    <TextBlock x:Name="AuthoritySchemaText"
+                                               Margin="0,7,0,0"
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource PanelStyle}" Margin="7,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="활성 Mapping"
+                                               Foreground="{StaticResource SecondaryTextBrush}" />
+                                    <TextBlock x:Name="AuthorityMappingText"
+                                               Margin="0,7,0,0"
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+
+                        <UniformGrid Grid.Row="4" Rows="1" Columns="2">
+                            <Expander Header="M01~M14 Primary Owner Stable Ref"
+                                      Margin="0,0,7,0">
+                                <Border Style="{StaticResource PanelStyle}" Margin="0,8,0,0">
+                                    <TextBlock x:Name="AuthorityOwnerRefsText"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                </Border>
+                            </Expander>
+                            <Expander Header="공식 Stable Ref"
+                                      Margin="7,0,0,0">
+                                <Border Style="{StaticResource PanelStyle}" Margin="0,8,0,0">
+                                    <TextBlock x:Name="AuthorityFormulaRefsText"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                </Border>
+                            </Expander>
+                        </UniformGrid>
+                    </Grid>
+                </TabItem>
             </TabControl>
         </Grid>
     </Border>

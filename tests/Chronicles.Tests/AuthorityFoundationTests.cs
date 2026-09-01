@@ -64,6 +64,17 @@ internal static class AuthorityFoundationTests
             RegistryValidationError.DuplicateDomainOwner,
             invalid.Error,
             "primary owner 중복 정적 거부");
+
+        var diagnostics = GameApplicationSession.AuthorityRegistryDiagnostics;
+        TestAssert.True(
+            ReferenceEquals(diagnostics, GameApplicationSession.AuthorityRegistryDiagnostics),
+            "권위 진단 projection 정적 재사용");
+        TestAssert.Equal(AuthorityRegistry.RegistryContract, diagnostics.Contract,
+            "권위 진단 contract");
+        TestAssert.Equal("READY", diagnostics.ValidationStatus, "권위 진단 READY");
+        TestAssert.Equal(14, diagnostics.OwnerBindingCount, "권위 진단 M01~M14 owner 수");
+        TestAssert.Equal(FormulaRegistry.All.Count, diagnostics.FormulaStableRefs.Count,
+            "권위 진단 공식 stable ref 수");
     }
 
     private static void FormulaRegistryIsStableAndComplete()

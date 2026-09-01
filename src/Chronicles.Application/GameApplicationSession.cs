@@ -30,6 +30,9 @@ public sealed class GameApplicationSession : IDisposable
 
     public static string DefaultDataDirectory => SlotSaveStore.DefaultDataDirectory;
 
+    public static AuthorityRegistryDiagnosticsSnapshot AuthorityRegistryDiagnostics =>
+        AuthorityRegistryDiagnosticsProjection.Current;
+
     public static string EnsureSaveRootDirectory() =>
         SlotSaveStore.EnsureRootDirectory(DefaultSaveRoot);
 

@@ -75,6 +75,7 @@ var tests = new (string Name, Action Body)[]
     ("활성 UI 구역 선택 조회 성능", SelectiveObservationPerformance),
     ("지도 내부 탭 지연 투영 성능", LazyMapAgentProjectionPerformance),
     ("5층천 Atlas·1·2층천·900 영맥·개인 공간 지식", AtlasHierarchySpatialKnowledgeAndVeins),
+    ("하천대륙 10×10 주·오천주 1·2층천 10×10 지점", HacheonOcheonGeographyBlueprint),
     ("설정용 AI 수·개발자 밸런스 권위·저장 왕복", DeveloperWorldSettingsAndBalancePersistence),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
@@ -2976,6 +2977,69 @@ static void WorldMapAndBiomeMonsters()
             .Select(index => world.GetAgentSnapshot(new AgentId(index)))
             .Any(agent => agent.MonsterVictories > 0 && agent.InventoryItemCount > 0),
         "지형 요수 전리품 획득");
+}
+
+static void HacheonOcheonGeographyBlueprint()
+{
+    var blueprint = WorldGeographyRules.Blueprint;
+    Equal("하천대륙", blueprint.Continent.KoreanName, "현재 대륙 이름");
+    Equal(10, blueprint.Continent.WidthInProvinceTiles, "대륙 주 가로 타일");
+    Equal(10, blueprint.Continent.HeightInProvinceTiles, "대륙 주 세로 타일");
+    Equal(100, blueprint.Provinces.Count, "대륙 아래 10×10 주");
+    var ocheon = blueprint.Provinces[WorldGeographyRules.OcheonProvinceId];
+    Equal("오천주", ocheon.KoreanName, "현재 상세 구현 주");
+    True(ocheon.HasPointDetail, "오천주 지점 상세 구현");
+    Equal(1, blueprint.Provinces.Count(province => province.HasPointDetail), "상세 구현 주 한 곳");
+    Equal(100, blueprint.FirstHeavenPoints.Count, "1층천 오천주 10×10 지점");
+    Equal(100, blueprint.SecondHeavenPoints.Count, "2층천 오천주 10×10 지점");
+
+    for (ushort pointId = 0; pointId < WorldGeographyRules.PointsPerProvince; pointId++)
+    {
+        var first = blueprint.FirstHeavenPoints[pointId];
+        var second = blueprint.SecondHeavenPoints[pointId];
+        Equal(first.PhysicalPointId, second.PhysicalPointId, "두 층천 물리 좌표 대응");
+        Equal(first.X, second.X, "두 층천 X 좌표 대응");
+        Equal(first.Y, second.Y, "두 층천 Y 좌표 대응");
+        True(first.NodeId != second.NodeId, "층천별 안정 위치 ID 분리");
+        True(first.Description != second.Description, "층천별 묘사 분리");
+        True(first.Settlements.LargeCityCount <= 1, "대도시 최대 하나");
+        True(first.Settlements.SmallCityCount <= 2, "소도시 최대 둘");
+        True(first.Settlements.VillageCount <= 4, "촌 최대 넷");
+        Equal(0, first.Settlements.SectCount, "1층천 종문 없음");
+        Equal(0, first.Settlements.ClanCount, "1층천 수선 가문 없음");
+        True(second.Settlements.Society != PointSocietyKind.Mortal, "2층천 범인 정착지 없음");
+    }
+
+    var firstSettlements = blueprint.FirstHeavenPoints.Count(point =>
+        point.Settlements.HasSettlement);
+    var secondSettlements = blueprint.SecondHeavenPoints.Count(point =>
+        point.Settlements.HasSettlement);
+    True(firstSettlements > secondSettlements, "상위 층천 정착지 밀도 감소");
+    True(blueprint.FirstHeavenPoints.Any(point => !point.Settlements.HasSettlement), "자연 전용 지점 존재");
+    True(blueprint.FirstHeavenPoints.Any(point =>
+        point.Settlements.HasSettlement && point.Resources.EstimatedBeastPopulation > 0), "도시 주변 영수 존재");
+    True(blueprint.FirstHeavenPoints.Any(point => point.Resources.HasSpiritVein), "자연 영맥 존재");
+    True(blueprint.FirstHeavenPoints.Any(point =>
+        point.Resources.Mine != MineResourceKind.None), "광산 존재");
+    AssertNoAdjacentStrongholds(blueprint.FirstHeavenPoints);
+    AssertNoAdjacentStrongholds(blueprint.SecondHeavenPoints);
+}
+
+static void AssertNoAdjacentStrongholds(
+    IReadOnlyList<PointHeavenViewDefinition> points)
+{
+    var strongholds = points.Where(point => point.Settlements.HasMajorStronghold).ToArray();
+    for (var left = 0; left < strongholds.Length; left++)
+    {
+        for (var right = left + 1; right < strongholds.Length; right++)
+        {
+            True(
+                !WorldGeographyRules.AreAdjacentIncludingDiagonal(
+                    strongholds[left],
+                    strongholds[right]),
+                "도시·종문·가문 주변 한 칸 이격");
+        }
+    }
 }
 
 static void AtlasHierarchySpatialKnowledgeAndVeins()

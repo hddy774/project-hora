@@ -77,13 +77,15 @@ public sealed record WorldMapSnapshot(
     int TotalMonsterVictories,
     ushort? DetailedLocationId = null,
     int DetailedAgentOffset = 0,
-    WorldAtlasSnapshot? Atlas = null)
+    WorldAtlasSnapshot? Atlas = null,
+    WorldGeographyBlueprint? Geography = null)
 {
     public static WorldMapSnapshot Empty { get; } = new(
         Array.Empty<MapLocationSnapshot>(),
         0,
         0,
-        Atlas: WorldAtlasSnapshot.Empty);
+        Atlas: WorldAtlasSnapshot.Empty,
+        Geography: WorldGeographyBlueprint.Empty);
 }
 
 public readonly record struct MapAgentCheckpoint(

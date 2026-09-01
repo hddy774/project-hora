@@ -181,7 +181,8 @@ public sealed partial class World
             _totalMonsterVictories,
             detailedLocationId,
             detailedLocationId is null ? 0 : detailedAgentOffset,
-            _atlas.CreateSnapshot());
+            _atlas.CreateSnapshot(),
+            WorldGeographyRules.Blueprint);
     }
 
     private static int[] CreateInitialMonsterPopulations()

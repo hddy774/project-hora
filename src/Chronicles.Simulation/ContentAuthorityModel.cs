@@ -286,12 +286,14 @@ public sealed record WorldContentSnapshot(
     int SecretRealmResultOffset,
     int SecretRealmResultTotal,
     bool IncludesHidden,
-    WorldKnowledgeSnapshot? Knowledge = null)
+    WorldKnowledgeSnapshot? Knowledge = null,
+    WorldLawSnapshot? Laws = null)
 {
     public static WorldContentSnapshot Empty { get; } = new(
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         Array.Empty<ContentInstanceSnapshot>(), 0, 0, false,
-        WorldKnowledgeSnapshot.Empty);
+        WorldKnowledgeSnapshot.Empty,
+        WorldLawSnapshot.Empty);
 }
 
 public static class ContentPopulationRules

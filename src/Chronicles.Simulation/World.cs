@@ -15,6 +15,7 @@ public sealed partial class World
     private readonly OrganizationStore _organizations;
     private readonly ContentAuthorityStore _content;
     private readonly KnowledgeAuthorityStore _knowledge;
+    private readonly LawAuthorityStore _laws;
     private readonly CityMarket _market;
     private readonly WorldBalanceConfiguration _balance;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
@@ -80,6 +81,7 @@ public sealed partial class World
             seed,
             population,
             _content);
+        _laws = LawAuthorityStore.CreateReviewCatalog(population);
         _market = new CityMarket(population);
         _agentByRank = new int[population];
         _rankByAgent = new int[population];
@@ -143,6 +145,7 @@ public sealed partial class World
     public int TotalOrganizations => _organizations.Count;
     public int TotalContentInstances => _content.InstanceCount;
     public int TotalKnowledgeEditions => _knowledge.EditionCount;
+    public int TotalLawCandidates => _laws.CandidateCount;
     public WorldBalanceConfiguration Balance => _balance;
 
     public static World CreateDefault(ulong seed) =>
@@ -420,7 +423,9 @@ public sealed partial class World
         int contentSecretRealmOffset = 0,
         int contentSecretRealmLimit = 100,
         int knowledgeEditionOffset = 0,
-        int knowledgeEditionLimit = 100)
+        int knowledgeEditionLimit = 100,
+        int lawCandidateOffset = 0,
+        int lawCandidateLimit = 54)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rankingCount);
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
@@ -429,6 +434,8 @@ public sealed partial class World
         ArgumentOutOfRangeException.ThrowIfNegative(contentSecretRealmLimit);
         ArgumentOutOfRangeException.ThrowIfNegative(knowledgeEditionOffset);
         ArgumentOutOfRangeException.ThrowIfNegative(knowledgeEditionLimit);
+        ArgumentOutOfRangeException.ThrowIfNegative(lawCandidateOffset);
+        ArgumentOutOfRangeException.ThrowIfNegative(lawCandidateLimit);
         var actualRankingCount = Math.Min(rankingCount, Population);
         var combatPowerRankings = (sections & ObservationSections.CombatPowerRanking) != 0
             ? CreateRankingEntries(
@@ -477,6 +484,9 @@ public sealed partial class World
                     Knowledge = _knowledge.CreateSnapshot(
                         knowledgeEditionOffset,
                         knowledgeEditionLimit),
+                    Laws = _laws.CreateSnapshot(
+                        lawCandidateOffset,
+                        lawCandidateLimit),
                 }
             : WorldContentSnapshot.Empty;
 
@@ -560,7 +570,8 @@ public sealed partial class World
 
     public ulong ComputeStateHash() => ComputeStateHashCore(
         includeContent: true,
-        includeKnowledge: true);
+        includeKnowledge: true,
+        includeLaws: true);
 
     /// <summary>
     /// 구 슬롯의 저장 당시 hash 계약을 검증할 때만 사용합니다. 복원된 세계의 현재
@@ -574,10 +585,14 @@ public sealed partial class World
         }
         return ComputeStateHashCore(
             includeContent: checkpointSchema >= 27,
-            includeKnowledge: checkpointSchema >= 28);
+            includeKnowledge: checkpointSchema >= 28,
+            includeLaws: checkpointSchema >= 29);
     }
 
-    private ulong ComputeStateHashCore(bool includeContent, bool includeKnowledge)
+    private ulong ComputeStateHashCore(
+        bool includeContent,
+        bool includeKnowledge,
+        bool includeLaws)
     {
         var hash = 14695981039346656037UL;
         Add(ref hash, Seed);
@@ -615,6 +630,10 @@ public sealed partial class World
         if (includeKnowledge)
         {
             Add(ref hash, _knowledge.ComputeStateHash());
+        }
+        if (includeLaws)
+        {
+            Add(ref hash, _laws.ComputeStateHash());
         }
         Add(ref hash, (ulong)_lastRankingRefreshTick);
         Add(ref hash, (ulong)_rankingMovementFromTick);

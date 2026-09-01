@@ -110,6 +110,9 @@ public sealed partial class World
                     checkpoint.Seed,
                     checkpoint.Agents.Length,
                     _content);
+        _laws = checkpoint.SchemaVersion >= 29
+            ? LawAuthorityStore.Restore(checkpoint.Laws!, checkpoint.Agents.Length)
+            : LawAuthorityStore.CreateReviewCatalog(checkpoint.Agents.Length);
 
         if (checkpoint.SchemaVersion >= 23)
         {
@@ -467,7 +470,8 @@ public sealed partial class World
             _balance,
             _organizations.CreateCheckpoint(),
             _content.CreateCheckpoint(),
-            _knowledge.CreateCheckpoint());
+            _knowledge.CreateCheckpoint(),
+            _laws.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -826,6 +830,15 @@ public sealed partial class World
                 checkpoint.Knowledge,
                 checkpoint.Agents.Length,
                 checkpoint.Content);
+        }
+
+        if (checkpoint.SchemaVersion >= 29)
+        {
+            if (checkpoint.Laws is null)
+            {
+                throw new InvalidDataException("세계 체크포인트의 법칙 권위 상태가 없습니다.");
+            }
+            LawAuthorityStore.ValidateCheckpoint(checkpoint.Laws, checkpoint.Agents.Length);
         }
 
         if (checkpoint.Atlas is { } atlas)

@@ -360,7 +360,8 @@ public sealed partial class World
                     _agents.CopyFormationValues(index),
                     _agents.CultivationTraces[index],
                     _agents.CopyEntryGateTemperings(index),
-                    _agents.CultivationAuthorityRevisions[index]),
+                    _agents.CultivationAuthorityRevisions[index],
+                    _agents.FoundationFormations.CreateCheckpoint(index)),
                 new SkillProgressCheckpoint(
                     _agents.TechniqueTrainingExperience[index],
                     _agents.TechniqueUnderstanding[index],
@@ -529,6 +530,7 @@ public sealed partial class World
                 current.FormationValues,
                 current.EntryGateTempering);
             _agents.CultivationTraces[index] = current.LatestTrace;
+            _agents.FoundationFormations.Restore(index, current.FoundationFormation);
             _agents.CultivationAuthorityRevisions[index] = schemaVersion >= 19
                 ? current.AuthorityRevision
                 : Math.Max(0, current.LatestTrace.AuthorityRevisionAfter);
@@ -539,6 +541,7 @@ public sealed partial class World
             _agents.FloorNineCompleted[index] = legacyCompleted;
             _agents.GreatPerfectionAchieved[index] = legacyCompleted;
             _agents.EntryGatePassMasks[index] = 0b111;
+            _agents.FoundationFormations.Reset(index);
             _agents.CultivationTraces[index] = CultivationTraceState.Empty;
             _agents.CultivationAuthorityRevisions[index] = 0;
             InitializeRealmComponents(index);
@@ -1220,10 +1223,45 @@ public sealed partial class World
             || !Enum.IsDefined(trace.Outcome)
             || !Enum.IsDefined(trace.Blocker)
             || !Enum.IsDefined(trace.FormulaKind)
+            || trace.AttemptEffectRegistryRevision < 0
+            || trace.CandidateEffectCount < 0
+            || trace.SelectedEffectCount < 0
+            || trace.SelectedEffectCount > trace.CandidateEffectCount
+            || !Enum.IsDefined(trace.AttemptEffectAvailability)
+            || !Enum.IsDefined(trace.FailureEffect)
+            || !Enum.IsDefined(trace.FailureEffectAvailability)
+            || !Enum.IsDefined(trace.RngDomain)
+            || (trace.FoundationProcedureSteps & ~FoundationProcedureStep.Complete) != 0
+            || trace.EnvironmentFactorBasisPoints is < 0 or > 20_000
+            || !Enum.IsDefined(trace.EnvironmentAvailability)
+            || !Enum.IsDefined(trace.LawUnderstandingAvailability)
+            || !Enum.IsDefined(trace.LuckFateAvailability)
             || trace.AuthorityRevisionBefore < 0
             || trace.AuthorityRevisionAfter < trace.AuthorityRevisionBefore)
         {
             return false;
+        }
+
+        if (value.FoundationFormation is { } formation)
+        {
+            try
+            {
+                FoundationFormationAuthorityStore.ValidateCheckpoint(formation);
+            }
+            catch (InvalidDataException)
+            {
+                return false;
+            }
+
+            if (formation.Source.Route != value.FoundationRoute
+                || value.FoundationRoute == FoundationRoute.None)
+            {
+                return false;
+            }
+        }
+        else if (value.FoundationRoute != FoundationRoute.None)
+        {
+            // schema 25 이전 PC 저장은 Route만 보유하므로 현재 구조에서도 읽는다.
         }
 
         if (schemaVersion < 19)

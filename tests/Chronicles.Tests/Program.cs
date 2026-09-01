@@ -675,6 +675,10 @@ static void CultivationBreakthroughChronicle()
         CultivationState = CultivationState.PreflightReady,
         CultivationBottleneckCause = CultivationBottleneckCause.None,
         TechniqueMastery = 5_000,
+        SkillProgress = majorCheckpoint.Agents[0].SkillProgress!.Value with
+        {
+            TechniqueUnderstanding = 5_000,
+        },
         Health = majorCheckpoint.Agents[0].MaximumHealth,
         Qi = majorCheckpoint.Agents[0].MaximumQi,
         Activity = AgentActivity.Cultivating,
@@ -688,9 +692,49 @@ static void CultivationBreakthroughChronicle()
         majorWorld.AdvanceTo(GameCalendar.GetMonthStart(month));
     }
 
+    var foundationAgent = majorWorld.GetAgentSnapshot(new AgentId(0));
     True(
-        majorWorld.GetAgentSnapshot(new AgentId(0)).RealmStage == RealmStage.FoundationEstablishment,
+        foundationAgent.RealmStage == RealmStage.FoundationEstablishment,
         "연기→축기 대경지 돌파");
+    var formation = foundationAgent.Cultivation.FoundationFormation
+        ?? throw new InvalidOperationException("축기 형성 결과가 없습니다.");
+    Equal(FoundationMethodRules.StableId, formation.MethodStableId, "삼도축기요결 Method Ref");
+    True(formation.CompletedSteps == FoundationProcedureStep.Complete,
+        "삼도축기요결 5단계 완료");
+    Equal(10, formation.QualityComponentsHundredths.Count, "축기 형성 품질 10요소");
+    True(formation.Source.Route != FoundationRoute.None, "축기 FormationRoute 권위");
+    True(
+        formation.Source.Availability is CultivationValueAvailability.Actual
+            or CultivationValueAvailability.ActualZero,
+        "축기 Source Snapshot 가용성");
+    var foundationCheckpoint = majorWorld.CreateCheckpoint();
+    True(
+        foundationCheckpoint.Agents[0].Cultivation!.Value.FoundationFormation is not null,
+        "축기 형성 결과 저장 연결");
+    var restoredFoundation = World.Restore(
+        WorldSaveCodec.Decode(WorldSaveCodec.Encode(foundationCheckpoint)));
+    Equal(majorWorld.ComputeStateHash(), restoredFoundation.ComputeStateHash(),
+        "축기 형성 결과 결정론 저장 왕복");
+    var corruptedCultivation = foundationCheckpoint.Agents[0].Cultivation!.Value;
+    var corruptedFormation = corruptedCultivation.FoundationFormation!.Value with
+    {
+        MethodRevision = FoundationMethodRules.CurrentRevision + 1,
+    };
+    Throws<InvalidDataException>(
+        () => World.Restore(foundationCheckpoint with
+        {
+            Agents =
+            [
+                foundationCheckpoint.Agents[0] with
+                {
+                    Cultivation = corruptedCultivation with
+                    {
+                        FoundationFormation = corruptedFormation,
+                    },
+                },
+            ],
+        }),
+        "축기 형성 Method revision 손상 저장 거부");
     True(
         majorWorld.GetAgentChronicle(new AgentId(0))
             .Any(item => item.Kind == ChronicleEventKind.MajorRealmBreakthrough),

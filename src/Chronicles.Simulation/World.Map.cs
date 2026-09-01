@@ -161,6 +161,7 @@ public sealed partial class World
                 hasCultivatorByLocation[definition.Id],
                 highestRealmByLocation[definition.Id],
                 highestLayerByLocation[definition.Id],
+                _atlas.GetLocationContext(definition.Id),
                 new MapRegionActivitySnapshot(
                     cultivationByLocation[definition.Id],
                     combatByLocation[definition.Id],
@@ -179,7 +180,8 @@ public sealed partial class World
             _totalMonsterHunts,
             _totalMonsterVictories,
             detailedLocationId,
-            detailedLocationId is null ? 0 : detailedAgentOffset);
+            detailedLocationId is null ? 0 : detailedAgentOffset,
+            _atlas.CreateSnapshot());
     }
 
     private static int[] CreateInitialMonsterPopulations()
@@ -246,46 +248,117 @@ public sealed partial class World
                 return true;
             }
 
-            PrepareTravel(index, preferCity: true);
-            activity = AgentActivity.Traveling;
+            if (PrepareTravel(index, preferCity: true))
+            {
+                activity = AgentActivity.Traveling;
+                return true;
+            }
+            activity = AgentActivity.Cultivating;
             return true;
         }
 
         if (_random.NextInt(100) < 8)
         {
-            PrepareTravel(index, preferCity: false);
-            activity = AgentActivity.Traveling;
-            return true;
+            if (PrepareTravel(index, preferCity: false))
+            {
+                activity = AgentActivity.Traveling;
+                return true;
+            }
         }
 
         activity = default;
         return false;
     }
 
-    private void PrepareTravel(int index, bool preferCity)
+    private bool PrepareTravel(int index, bool preferCity)
     {
         var current = _agents.LocationIds[index];
+        var perceived = _atlas.GetPerceivedDestinations(
+            index,
+            current,
+            _agents.RealmStages[index]);
+        if (perceived.Count == 0)
+        {
+            return false;
+        }
+
         ushort destination;
         if (preferCity && _random.NextInt(100) < 70)
         {
-            destination = WorldMapRules.CityLocationId;
+            var currentDefinition = WorldMapRules.GetLocation(current);
+            var city = currentDefinition.HeavenlyLayer == 1
+                ? WorldMapRules.CityLocationId
+                : WorldMapRules.SecondHeavenCityLocationId;
+            var cityDefinition = WorldMapRules.GetLocation(city);
+            var bestDistance = perceived.Min(candidate =>
+            {
+                var definition = WorldMapRules.GetLocation(candidate);
+                return definition.HeavenlyLayer == cityDefinition.HeavenlyLayer
+                    ? Math.Abs(definition.X - cityDefinition.X)
+                        + Math.Abs(definition.Y - cityDefinition.Y)
+                    : int.MaxValue / 2;
+            });
+            var best = perceived.Where(candidate =>
+            {
+                var definition = WorldMapRules.GetLocation(candidate);
+                var distance = definition.HeavenlyLayer == cityDefinition.HeavenlyLayer
+                    ? Math.Abs(definition.X - cityDefinition.X)
+                        + Math.Abs(definition.Y - cityDefinition.Y)
+                    : int.MaxValue / 2;
+                return distance == bestDistance;
+            }).ToArray();
+            destination = best[_random.NextInt(best.Length)];
         }
         else
         {
-            do
-            {
-                destination = checked((ushort)_random.NextInt(WorldMapRules.LocationCount));
-            }
-            while (destination == current || (preferCity && WorldMapRules.IsCity(destination)));
+            destination = perceived[_random.NextInt(perceived.Count)];
         }
 
         _agents.TravelDestinationIds[index] = destination;
+        var dueTick = checked(Tick.Value + GetTravelDurationTicks(current, destination));
+        return _atlas.PlanRoute(
+                index,
+                current,
+                destination,
+                _agents.RealmStages[index],
+                Tick.Value,
+                dueTick)
+            == MovementResolutionCode.Planned;
     }
 
     private void ResolveTravel(int index)
     {
-        var destination = _agents.TravelDestinationIds[index];
+        var origin = _agents.LocationIds[index];
+        var resolution = _atlas.CompleteRoute(
+            index,
+            origin,
+            _agents.RealmStages[index],
+            Tick.Value,
+            _agents.LifeStates[index] == PersonLifeState.Living,
+            out var destination);
+        if (resolution != MovementResolutionCode.Arrived)
+        {
+            var dueTick = checked(Tick.Value + GameCalendar.TicksPerYear / GameCalendar.MonthsPerYear);
+            if (_atlas.Reroute(
+                    index,
+                    origin,
+                    _agents.RealmStages[index],
+                    Tick.Value,
+                    dueTick,
+                    out destination) == MovementResolutionCode.Rerouted)
+            {
+                _agents.TravelDestinationIds[index] = destination;
+            }
+            return;
+        }
+
         _agents.LocationIds[index] = destination;
+        _agents.TravelDestinationIds[index] = destination;
+        _atlas.RecordArrival(
+            index,
+            origin,
+            destination,
+            GameCalendar.GetMonthIndex(Tick));
         AddEvent(WorldEventKind.TravelCompleted, index, destination);
     }
 
@@ -301,8 +374,9 @@ public sealed partial class World
         var monsterIndex = SelectAvailableMonsterIndex(location.Id);
         if (monsterIndex < 0)
         {
-            PrepareTravel(index, preferCity: true);
-            _agents.Activities[index] = AgentActivity.Traveling;
+            _agents.Activities[index] = PrepareTravel(index, preferCity: true)
+                ? AgentActivity.Traveling
+                : AgentActivity.Cultivating;
             return false;
         }
 
@@ -397,11 +471,16 @@ public sealed partial class World
 
     private long CalculateTravelDuration(int index)
     {
-        var months = WorldMapRules.GetTravelMonths(
+        return GetTravelDurationTicks(
             _agents.LocationIds[index],
             _agents.TravelDestinationIds[index]);
+    }
+
+    private static long GetTravelDurationTicks(ushort sourceId, ushort destinationId)
+    {
+        var months = WorldMapRules.GetTravelMonths(sourceId, destinationId);
         return Math.Max(
-            GameCalendar.GetNextMonthStart(Tick).Value - Tick.Value,
+            1,
             checked((long)months * GameCalendar.TicksPerYear / GameCalendar.MonthsPerYear));
     }
 

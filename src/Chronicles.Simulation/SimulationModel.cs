@@ -475,7 +475,9 @@ public sealed record CityMarketSnapshot(
     long AuthorityRevision = 0,
     long RecentSupply = 0,
     long RecentDemand = 0,
-    IReadOnlyList<MarketTradeSnapshot>? RecentTrades = null)
+    IReadOnlyList<MarketTradeSnapshot>? RecentTrades = null,
+    IReadOnlyList<MarketOfferSnapshot>? Offers = null,
+    IReadOnlyList<MarketReservationSnapshot>? Reservations = null)
 {
     public static CityMarketSnapshot Empty { get; } = new(
         0,
@@ -556,7 +558,9 @@ public sealed record AgentSnapshot(
     AptitudeDetailSnapshot? AptitudeDetails = null,
     IReadOnlyList<RelationSnapshot>? Relations = null,
     PersonLifeAuthoritySnapshot LifeAuthority = default,
-    AgentCausalSnapshot? Causal = null);
+    AgentCausalSnapshot? Causal = null,
+    SpatialKnowledgeSnapshot SpatialKnowledge = default,
+    MovementRouteState Movement = default);
 
 public sealed record RankingEntry(
     RankingCategory Category,

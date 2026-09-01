@@ -79,6 +79,9 @@ public static class EconomyRules
     public const int MarketFlowWindowMonths = 12;
     // PC-TEMP-MARKET-LEDGER-113: 상세 UI와 저장에 유지하는 최근 실물 거래 수.
     public const int RecentTradeCapacity = 100;
+    public const int OfferLifetimeMonths = 12;
+    public const int ReservationLifetimeMonths = 2;
+    public const int ReservationHistoryCapacity = 256;
 
     private static readonly long[] RealmPriceScales =
     [

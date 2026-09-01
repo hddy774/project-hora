@@ -6,6 +6,7 @@ public sealed partial class World
 {
     private void BeginReincarnation(int index, bool combatDeath = false)
     {
+        _atlas.InterruptMovement(index, MovementResolutionCode.TravelerDied);
         MarkRealmRankingDirty();
         var opponent = _agents.Opponents[index];
         if (opponent >= 0 && _agents.Opponents[opponent] == index)
@@ -121,7 +122,17 @@ public sealed partial class World
             index,
             Tick.Value,
             _agents.SoulIdentityIds[index]);
+        var previousLocation = _agents.LocationIds[index];
         _agents.Rebirth(index, _random, Tick.Value);
+        _atlas.RecordArrival(
+            index,
+            previousLocation,
+            _agents.LocationIds[index],
+            GameCalendar.GetMonthIndex(Tick));
+        _atlas.InitializeAgent(
+            index,
+            _agents.LocationIds[index],
+            GameCalendar.GetMonthIndex(Tick));
         _causal.StartLife(
             index,
             CreateCausalObservation(index),

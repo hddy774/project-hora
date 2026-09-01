@@ -59,6 +59,7 @@ var tests = new (string Name, Action Body)[]
     ("도시 임무·영석·재료·단약·법보 경제 순환", EconomyLoop),
     ("재료 부족 상품이 다른 도시 생산을 막지 않음", ProductionSkipsGoodsWithoutResources),
     ("시장 원자 정산·중복 source·품질 개선 구매", MarketSettlementAtomicity),
+    ("시장 Offer→Reservation→만료·원자 체결", MarketOfferReservationLifecycle),
     ("시장 소유자 용량 초과 원자 거부", MarketOwnerCapacityGuard),
     ("최근 12개월 수급 창·관찰 snapshot 재사용", MarketFlowWindowAndSnapshotCache),
     ("schema 24 시장 수급·원장 codec·source 재생 방지", MarketSchema24CodecAndSourceReplay),
@@ -67,6 +68,7 @@ var tests = new (string Name, Action Body)[]
     ("관찰 조회 무영향", ObservationQueriesAreReadOnly),
     ("활성 UI 구역 선택 조회 성능", SelectiveObservationPerformance),
     ("지도 내부 탭 지연 투영 성능", LazyMapAgentProjectionPerformance),
+    ("5층천 Atlas·1·2층천·900 영맥·개인 공간 지식", AtlasHierarchySpatialKnowledgeAndVeins),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
@@ -2652,9 +2654,9 @@ static void CombatProgressionSaveAndMigration()
 
 static void WorldMapAndBiomeMonsters()
 {
-    Equal(9, WorldMapRules.AllLocations.Count, "3×3 지도 위치 수");
+    Equal(18, WorldMapRules.AllLocations.Count, "1·2층천 3×3 호환 구역 위치 수");
     Equal(9, WorldMapRules.AllMonsters.Count, "지형별 요수 수");
-    Equal(1, WorldMapRules.AllLocations.Count(item => item.Biome == BiomeType.City), "중앙 도시 수");
+    Equal(2, WorldMapRules.AllLocations.Count(item => item.Biome == BiomeType.City), "층천별 중앙 도시 수");
     foreach (var location in WorldMapRules.AllLocations.Where(item => item.Biome != BiomeType.City))
     {
         var monsters = WorldMapRules.GetMonsters(location.Biome);
@@ -2723,6 +2725,104 @@ static void WorldMapAndBiomeMonsters()
             .Select(index => world.GetAgentSnapshot(new AgentId(index)))
             .Any(agent => agent.MonsterVictories > 0 && agent.InventoryItemCount > 0),
         "지형 요수 전리품 획득");
+}
+
+static void AtlasHierarchySpatialKnowledgeAndVeins()
+{
+    Equal(5, WorldAtlasRules.AllHeavenlyLayers.Count, "5층천 Definition");
+    Equal(
+        2,
+        WorldAtlasRules.AllHeavenlyLayers.Count(item =>
+            item.ImplementationState == AtlasImplementationState.Production),
+        "Production 1·2층천");
+    Equal(18, WorldAtlasRules.ProductionLocationCount, "실구현 지점 수");
+    Equal(900, WorldAtlasRules.AllSpiritVeins.Count, "영맥 Source 900개");
+    Equal(
+        50,
+        WorldAtlasRules.AllSpiritVeins.Count(item => item.LocationId == 0),
+        "지점별 영맥 Source 분배");
+
+    foreach (var node in WorldAtlasRules.AllNodes)
+    {
+        if (node.ParentId is { } parent)
+        {
+            True(
+                WorldAtlasRules.AllNodes.Any(candidate => candidate.Id == parent),
+                $"Atlas 부모 존재: {node.Id}");
+        }
+    }
+
+    var spatial = new SpatialAuthorityStore(2);
+    var qiDenied = spatial.PlanRoute(
+        0,
+        WorldMapRules.CityLocationId,
+        WorldMapRules.SecondHeavenCityLocationId,
+        RealmStage.QiRefining,
+        startedTick: 0,
+        dueTick: GameCalendar.TicksPerYear);
+    True(qiDenied == MovementResolutionCode.AccessDenied, "층천 접근 조건");
+    var foundationPlan = spatial.PlanRoute(
+        0,
+        WorldMapRules.CityLocationId,
+        WorldMapRules.SecondHeavenCityLocationId,
+        RealmStage.FoundationEstablishment,
+        startedTick: 0,
+        dueTick: GameCalendar.TicksPerYear);
+    True(foundationPlan == MovementResolutionCode.Planned, "축기경 2층천 경로 계획");
+    var arrival = spatial.CompleteRoute(
+        0,
+        WorldMapRules.CityLocationId,
+        RealmStage.FoundationEstablishment,
+        GameCalendar.TicksPerYear,
+        travelerAlive: true,
+        out var destination);
+    True(arrival == MovementResolutionCode.Arrived, "도착 Typed Result");
+    Equal(WorldMapRules.SecondHeavenCityLocationId, destination, "도착 지점");
+    spatial.RecordArrival(0, WorldMapRules.CityLocationId, destination, currentMonth: 12);
+    True(spatial.IsKnown(0, destination), "도착 발견 지식");
+    True(
+        spatial.GetKnowledgeSnapshot(0, destination).KnownLocationCount > 1,
+        "개인별 공간 지식 범위");
+
+    var beforeSupply = spatial.GetRemainingSpiritStoneSupply(destination);
+    True(spatial.TryExtractSpiritStones(destination, 123, out var extracted), "영맥 채굴");
+    Equal(123L, extracted, "영맥 추출량");
+    Equal(
+        beforeSupply - extracted,
+        spatial.GetRemainingSpiritStoneSupply(destination),
+        "유한 영맥 공급 보존");
+
+    var checkpoint = spatial.CreateCheckpoint();
+    var locations = new ushort[] { destination, WorldMapRules.CityLocationId };
+    var restored = SpatialAuthorityStore.Restore(checkpoint, locations);
+    Equal(
+        spatial.GetRemainingSpiritStoneSupply(destination),
+        restored.GetRemainingSpiritStoneSupply(destination),
+        "영맥 공급 저장 복원");
+    Equal(
+        spatial.GetRoute(0),
+        restored.GetRoute(0),
+        "이동 상태 저장 복원");
+
+    var world = World.Create(8_808, 300);
+    var initial = world.CreateSnapshot(
+        10,
+        10,
+        ObservationSections.Map,
+        WorldMapRules.CityLocationId).Map;
+    Equal(5, initial.Atlas!.Layers.Count, "지도 query 5층천");
+    Equal(900, initial.Atlas.SpiritVeinSourceCount, "지도 query 영맥 수");
+    Equal(300, initial.Atlas.Layers[0].Population, "기존 3×3 호환 구역 시작 인구");
+    Equal(0, initial.Atlas.Layers[1].Population, "2층천 초기 미진입");
+
+    var hashBeforeObservation = world.ComputeStateHash();
+    _ = world.CreateSnapshot(10, 10, ObservationSections.Map);
+    Equal(hashBeforeObservation, world.ComputeStateHash(), "Atlas 관찰 무영향");
+
+    var worldCheckpoint = world.CreateCheckpoint();
+    True(worldCheckpoint.Atlas is not null, "Atlas 권위 저장");
+    var restoredWorld = World.Restore(worldCheckpoint);
+    Equal(world.ComputeStateHash(), restoredWorld.ComputeStateHash(), "Atlas 세계 결정론 복원");
 }
 
 static void ObservationQueriesAreReadOnly()
@@ -3169,6 +3269,92 @@ static void MarketSettlementAtomicity()
     True(
         emptyTreasuryMarket.SettleSale(0, 1, 0, materialId, 1, 0).IsSettled,
         "같은 source의 도시 자금 보충 재시도 정산");
+}
+
+static void MarketOfferReservationLifecycle()
+{
+    var market = new CityMarket(2);
+    var goodId = (int)MaterialId.TreasureMaterial;
+    var initialStock = market.GetStock(goodId);
+    True(initialStock >= 2, "예약 테스트 초기 재고");
+
+    var unavailableChannel = market.ReserveCityOffer(
+        0,
+        goodId,
+        1,
+        long.MaxValue,
+        currentMonth: 0,
+        sourceResultId: 1,
+        MarketTradeChannel.SectInternal);
+    True(
+        unavailableChannel.Status == MarketContractStatus.ChannelUnavailable,
+        "조직 권리 없는 내부 시장은 명시적으로 비활성");
+
+    var reserved = market.ReserveCityOffer(
+        0,
+        goodId,
+        1,
+        long.MaxValue,
+        currentMonth: 0,
+        sourceResultId: 1);
+    True(reserved.IsReserved, "도시 판매 제안 예약");
+    True(reserved.OfferId is not null, "안정 Offer ID");
+    True(reserved.ReservationId is not null, "안정 Reservation ID");
+    Equal(initialStock, market.GetStock(goodId), "예약은 소유권을 아직 이전하지 않음");
+
+    var reservedSnapshot = market.CreateSnapshot();
+    True(
+        reservedSnapshot.Offers!.Any(item => item.Id == reserved.OfferId),
+        "실제 권위 Offer 조회");
+    True(
+        reservedSnapshot.Reservations!.Any(item =>
+            item.Id == reserved.ReservationId
+            && item.Status == MarketReservationStatus.Reserved),
+        "실제 권위 Reservation 조회");
+
+    market.AdvanceIndustry(EconomyRules.ReservationLifetimeMonths);
+    var expired = market.CreateSnapshot();
+    True(
+        expired.Reservations!.Any(item =>
+            item.Id == reserved.ReservationId
+            && item.Status == MarketReservationStatus.Expired),
+        "만료 월에 예약 해제");
+    Equal(
+        0,
+        market.CreateCheckpoint().Authority!.ReservedStock[goodId],
+        "만료 후 예약 재고 0");
+
+    var second = market.ReserveCityOffer(
+        1,
+        goodId,
+        1,
+        long.MaxValue,
+        currentMonth: EconomyRules.ReservationLifetimeMonths,
+        sourceResultId: 2);
+    True(second.IsReserved, "만료 뒤 새 예약");
+    var settlementTick = GameCalendar
+        .GetMonthStart(EconomyRules.ReservationLifetimeMonths)
+        .Value;
+    var settled = market.SettleReservedPurchase(
+        1,
+        second.ReservationId!.Value,
+        sourceResultId: 2,
+        settlementTick,
+        long.MaxValue);
+    True(settled.IsSettled, "예약 Preflight 뒤 원자 체결");
+    Equal(initialStock - 1, market.GetStock(goodId), "체결 시점 소유권 이전");
+    True(
+        market.CreateSnapshot().Reservations!.Any(item =>
+            item.Id == second.ReservationId
+            && item.Status == MarketReservationStatus.Settled),
+        "체결 provenance 보존");
+
+    var checkpoint = market.CreateCheckpoint();
+    var restored = new CityMarket(checkpoint, WorldCheckpoint.CurrentSchemaVersion, 2);
+    True(
+        restored.CreateCheckpoint().Authority!.Reservations
+            .Any(item => item.ReservationId == second.ReservationId.Value.Value),
+        "Offer/Reservation 저장 복원");
 }
 
 static void MarketOwnerCapacityGuard()

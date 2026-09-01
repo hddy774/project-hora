@@ -15,7 +15,9 @@ public readonly record struct MapLocationDefinition(
     string KoreanName,
     BiomeType Biome,
     int X,
-    int Y);
+    int Y,
+    byte HeavenlyLayer,
+    AtlasNodeId AtlasNodeId);
 
 public readonly record struct MonsterSpeciesDefinition(
     ushort Id,
@@ -64,6 +66,7 @@ public sealed record MapLocationSnapshot(
     bool HasCultivator,
     RealmStage HighestRealm,
     int HighestRealmLayer,
+    AtlasLocationContextSnapshot Atlas,
     MapRegionActivitySnapshot Activities,
     int AgentPageOffset,
     IReadOnlyList<MapAgentSummary> Agents);
@@ -73,12 +76,14 @@ public sealed record WorldMapSnapshot(
     int TotalMonsterHunts,
     int TotalMonsterVictories,
     ushort? DetailedLocationId = null,
-    int DetailedAgentOffset = 0)
+    int DetailedAgentOffset = 0,
+    WorldAtlasSnapshot? Atlas = null)
 {
     public static WorldMapSnapshot Empty { get; } = new(
         Array.Empty<MapLocationSnapshot>(),
         0,
-        0);
+        0,
+        Atlas: WorldAtlasSnapshot.Empty);
 }
 
 public readonly record struct MapAgentCheckpoint(
@@ -95,9 +100,10 @@ public readonly record struct WorldMapCheckpoint(
 
 public static class WorldMapRules
 {
-    public const int CurrentRevision = 1;
+    public const int CurrentRevision = 2;
     public const ushort CityLocationId = 0;
-    public const int LocationCount = 9;
+    public const ushort SecondHeavenCityLocationId = 9;
+    public const int LocationCount = WorldAtlasRules.ProductionLocationCount;
     public const int MonstersPerWildBiome = 3;
     public const int InitialMonsterPopulation = 300;
     public const int MaximumMonsterPopulation = 500;
@@ -106,15 +112,24 @@ public static class WorldMapRules
 
     private static readonly MapLocationDefinition[] Locations =
     [
-        new(CityLocationId, "만상성", BiomeType.City, 1, 1),
-        new(1, "북청림", BiomeType.Forest, 0, 0),
-        new(2, "천운림", BiomeType.Forest, 1, 0),
-        new(3, "동고림", BiomeType.Forest, 2, 0),
-        new(4, "백로평원", BiomeType.Plains, 0, 1),
-        new(5, "청풍평원", BiomeType.Plains, 2, 1),
-        new(6, "적운산맥", BiomeType.Mountains, 0, 2),
-        new(7, "천벽산맥", BiomeType.Mountains, 1, 2),
-        new(8, "뇌명산맥", BiomeType.Mountains, 2, 2),
+        new(CityLocationId, "만상성", BiomeType.City, 1, 1, 1, new AtlasNodeId(1_000)),
+        new(1, "북청림", BiomeType.Forest, 0, 0, 1, new AtlasNodeId(1_001)),
+        new(2, "천운림", BiomeType.Forest, 1, 0, 1, new AtlasNodeId(1_002)),
+        new(3, "동고림", BiomeType.Forest, 2, 0, 1, new AtlasNodeId(1_003)),
+        new(4, "백로평원", BiomeType.Plains, 0, 1, 1, new AtlasNodeId(1_004)),
+        new(5, "청풍평원", BiomeType.Plains, 2, 1, 1, new AtlasNodeId(1_005)),
+        new(6, "적운산맥", BiomeType.Mountains, 0, 2, 1, new AtlasNodeId(1_006)),
+        new(7, "천벽산맥", BiomeType.Mountains, 1, 2, 1, new AtlasNodeId(1_007)),
+        new(8, "뇌명산맥", BiomeType.Mountains, 2, 2, 1, new AtlasNodeId(1_008)),
+        new(SecondHeavenCityLocationId, "청명성", BiomeType.City, 1, 1, 2, new AtlasNodeId(1_009)),
+        new(10, "유광림", BiomeType.Forest, 0, 0, 2, new AtlasNodeId(1_010)),
+        new(11, "성진림", BiomeType.Forest, 1, 0, 2, new AtlasNodeId(1_011)),
+        new(12, "자하림", BiomeType.Forest, 2, 0, 2, new AtlasNodeId(1_012)),
+        new(13, "은하평원", BiomeType.Plains, 0, 1, 2, new AtlasNodeId(1_013)),
+        new(14, "운해평원", BiomeType.Plains, 2, 1, 2, new AtlasNodeId(1_014)),
+        new(15, "태허산맥", BiomeType.Mountains, 0, 2, 2, new AtlasNodeId(1_015)),
+        new(16, "천문산맥", BiomeType.Mountains, 1, 2, 2, new AtlasNodeId(1_016)),
+        new(17, "성락산맥", BiomeType.Mountains, 2, 2, 2, new AtlasNodeId(1_017)),
     ];
 
     private static readonly MonsterSpeciesDefinition[] Monsters =
@@ -144,6 +159,35 @@ public static class WorldMapRules
     }
 
     public static bool IsCity(ushort locationId) => GetLocation(locationId).Biome == BiomeType.City;
+
+    public static bool AreDirectlyConnected(ushort sourceId, ushort destinationId)
+    {
+        var source = GetLocation(sourceId);
+        var destination = GetLocation(destinationId);
+        if ((sourceId == CityLocationId && destinationId == SecondHeavenCityLocationId)
+            || (sourceId == SecondHeavenCityLocationId && destinationId == CityLocationId))
+        {
+            return true;
+        }
+
+        return source.HeavenlyLayer == destination.HeavenlyLayer
+            && Math.Abs(source.X - destination.X) + Math.Abs(source.Y - destination.Y) == 1;
+    }
+
+    public static IReadOnlyList<ushort> GetConnectedLocations(ushort locationId)
+    {
+        _ = GetLocation(locationId);
+        var connected = new List<ushort>(5);
+        for (ushort candidate = 0; candidate < LocationCount; candidate++)
+        {
+            if (candidate != locationId && AreDirectlyConnected(locationId, candidate))
+            {
+                connected.Add(candidate);
+            }
+        }
+
+        return connected;
+    }
 
     public static MonsterSpeciesDefinition GetMonster(BiomeType biome, int selection)
     {
@@ -190,6 +234,14 @@ public static class WorldMapRules
     {
         var source = GetLocation(sourceId);
         var destination = GetLocation(destinationId);
+        if (!AreDirectlyConnected(sourceId, destinationId))
+        {
+            throw new InvalidOperationException("이동 경로는 Atlas에서 직접 연결된 두 지점이어야 합니다.");
+        }
+        if (source.HeavenlyLayer != destination.HeavenlyLayer)
+        {
+            return 12;
+        }
         var distance = Math.Abs(source.X - destination.X) + Math.Abs(source.Y - destination.Y);
         return Math.Max(1, (distance * 2) + 1);
     }

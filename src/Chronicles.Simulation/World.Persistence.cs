@@ -84,6 +84,12 @@ public sealed partial class World
             _agents.RecalculatePower(index);
         }
 
+        _atlas = checkpoint.Atlas is { } atlas
+            ? SpatialAuthorityStore.Restore(atlas, _agents.LocationIds)
+            : SpatialAuthorityStore.CreateLegacy(
+                _agents.LocationIds,
+                GameCalendar.GetMonthIndex(Tick));
+
         if (checkpoint.SchemaVersion >= 23)
         {
             _reincarnation = ReincarnationStore.Restore(
@@ -431,7 +437,8 @@ public sealed partial class World
             _worldChronicle.CreateCheckpoint(),
             _relations.CreateCheckpoint(),
             _reincarnation.CreateCheckpoint(),
-            _causal.CreateCheckpoint());
+            _causal.CreateCheckpoint(),
+            _atlas.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -752,6 +759,11 @@ public sealed partial class World
             throw new InvalidDataException("세계 체크포인트의 AI 인과·인지·기억 상태가 잘못되었습니다.");
         }
 
+        if (checkpoint.Atlas is { } atlas)
+        {
+            SpatialAuthorityStore.ValidateCheckpoint(atlas, checkpoint.Agents.Length);
+        }
+
         IReadOnlyDictionary<ulong, RelationStateCheckpoint>? relationById = null;
         if (checkpoint.SchemaVersion >= 22)
         {
@@ -773,8 +785,12 @@ public sealed partial class World
                 || map.TotalMonsterVictories < 0
                 || map.TotalMonsterVictories > map.TotalMonsterHunts
                 || (checkpoint.SchemaVersion >= 14
-                    && (map.MonsterPopulations is not
-                            { Length: WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome }
+                    && (map.MonsterPopulations is not { } monsterPopulations
+                        || (monsterPopulations.Length
+                                != WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome
+                            && !(checkpoint.Atlas is null
+                                && monsterPopulations.Length
+                                    == 9 * WorldMapRules.MonstersPerWildBiome))
                         || map.MonsterPopulations.Any(value =>
                             value is < 0 or > WorldMapRules.MaximumMonsterPopulation)
                         || map.LastRegenerationMonth < 0
@@ -890,6 +906,20 @@ public sealed partial class World
                             checkpoint.Tick)))))
         {
             throw new InvalidDataException("세계 체크포인트의 도시 시장 상태가 잘못되었습니다.");
+        }
+
+        if (checkpoint.Market.Authority is { } marketAuthority)
+        {
+            CityMarket.ValidateMarketAuthorityCheckpoint(
+                marketAuthority,
+                checkpoint.Agents.Length);
+            for (var goodId = 0; goodId < EconomyRules.MarketGoodCount; goodId++)
+            {
+                if (marketAuthority.ReservedStock[goodId] > checkpoint.Market.Stock[goodId])
+                {
+                    throw new InvalidDataException("시장 예약량이 실제 재고를 초과했습니다.");
+                }
+            }
         }
 
         for (var index = 0; index < checkpoint.Agents.Length; index++)

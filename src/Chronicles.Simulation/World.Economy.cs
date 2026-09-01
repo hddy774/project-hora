@@ -110,13 +110,22 @@ public sealed partial class World
             return;
         }
 
+        var locationId = _agents.LocationIds[index];
+        var availableVeinSupply = _atlas.GetRemainingSpiritStoneSupply(locationId);
         if (!_market.TryCompleteMining(
                 _agents.RealmStages[index],
                 _agents.SpiritStones[index],
                 out var reward,
-                out var extracted))
+                out var extracted,
+                availableVeinSupply))
         {
             return;
+        }
+
+        if (!_atlas.TryExtractSpiritStones(locationId, extracted, out var atlasExtracted)
+            || atlasExtracted != extracted)
+        {
+            throw new InvalidOperationException("영맥 공급과 도시 채굴 정산이 일치하지 않습니다.");
         }
 
         _agents.SpiritStones[index] = checked(_agents.SpiritStones[index] + reward);

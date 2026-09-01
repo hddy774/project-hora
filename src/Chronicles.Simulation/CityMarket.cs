@@ -65,6 +65,7 @@ internal sealed partial class CityMarket
             }
             Reprice(goodId);
         }
+        InitializeMarketAuthority(currentMonth: 0);
     }
 
     public CityMarket(CityMarketCheckpoint checkpoint, int schemaVersion, int population)
@@ -171,6 +172,15 @@ internal sealed partial class CityMarket
                 _prices[goodId] = EconomyRules.GetMarketGood(goodId).CityBasePrice;
             }
         }
+
+        if (checkpoint.Authority is { } authority)
+        {
+            RestoreMarketAuthority(authority);
+        }
+        else
+        {
+            InitializeMarketAuthority(_lastIndustryMonth);
+        }
     }
 
     public long TreasurySpiritStones { get; private set; }
@@ -218,9 +228,11 @@ internal sealed partial class CityMarket
         RealmStage realm,
         long ownerSpiritStones,
         out long workerReward,
-        out long extracted)
+        out long extracted,
+        long maximumExtractable = long.MaxValue)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(ownerSpiritStones);
+        ArgumentOutOfRangeException.ThrowIfNegative(maximumExtractable);
         workerReward = 0;
         extracted = 0;
         if (!NeedsSpiritStoneMining)
@@ -228,7 +240,9 @@ internal sealed partial class CityMarket
             return false;
         }
 
-        extracted = Math.Min(_remainingSpiritStoneOre, EconomyRules.GetMiningOutput(realm));
+        extracted = Math.Min(
+            Math.Min(_remainingSpiritStoneOre, maximumExtractable),
+            EconomyRules.GetMiningOutput(realm));
         if (extracted <= 0)
         {
             return false;
@@ -284,6 +298,7 @@ internal sealed partial class CityMarket
             AdvanceFlowWindowOneMonth();
             AdvanceProductionOneMonth();
             FillProductionQueue();
+            AdvanceContractAuthority(_lastIndustryMonth);
             TouchAuthority();
         }
     }
@@ -429,7 +444,9 @@ internal sealed partial class CityMarket
             _authorityRevision,
             recentSupply,
             recentDemand,
-            trades);
+            trades,
+            includeGoods ? CreateOfferSnapshots() : Array.Empty<MarketOfferSnapshot>(),
+            includeGoods ? CreateReservationSnapshots() : Array.Empty<MarketReservationSnapshot>());
     }
 
     public CityMarketCheckpoint CreateCheckpoint() => new(
@@ -478,7 +495,8 @@ internal sealed partial class CityMarket
             trade.UnitPrice,
             trade.TotalSpiritStones,
             trade.QualityHundredths)).ToArray(),
-        _nextTradeSequence);
+        _nextTradeSequence,
+        CreateMarketAuthorityCheckpoint());
 
     private void AdvanceProductionOneMonth()
     {
@@ -763,6 +781,7 @@ internal sealed partial class CityMarket
         _supply[goodId] = SaturatingAdd(_supply[goodId], count);
         AddCurrentFlow(_recentSupply, _supplyWindowBuckets, goodId, count);
         Reprice(goodId);
+        RefreshOfferForGood(goodId, _lastIndustryMonth);
         TouchAuthority();
     }
 

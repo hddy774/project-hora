@@ -11,6 +11,7 @@ public sealed partial class World
     private readonly AgentCausalStore _causal;
     private readonly SparseRelationStore _relations;
     private readonly ReincarnationStore _reincarnation;
+    private readonly SpatialAuthorityStore _atlas;
     private readonly CityMarket _market;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
     private readonly int[] _agentByRank;
@@ -66,6 +67,7 @@ public sealed partial class World
         _causal = new AgentCausalStore(population);
         _relations = new SparseRelationStore(population);
         _reincarnation = new ReincarnationStore(population);
+        _atlas = new SpatialAuthorityStore(population);
         _market = new CityMarket(population);
         _agentByRank = new int[population];
         _rankByAgent = new int[population];
@@ -336,7 +338,9 @@ public sealed partial class World
             _agents.GetLifeAuthoritySnapshot(index),
             includeCausal
                 ? _causal.GetSnapshot(index)
-                : null);
+                : null,
+            _atlas.GetKnowledgeSnapshot(index, _agents.LocationIds[index]),
+            _atlas.GetRoute(index));
     }
 
     public WorldSnapshot CreateSnapshot(
@@ -486,6 +490,7 @@ public sealed partial class World
         Add(ref hash, (ulong)_totalMaterialsSold);
         Add(ref hash, (ulong)_totalMonsterHunts);
         Add(ref hash, (ulong)_totalMonsterVictories);
+        _atlas.AddStateHash(ref hash);
         Add(ref hash, (ulong)_lastRankingRefreshTick);
         Add(ref hash, (ulong)_rankingMovementFromTick);
         Add(ref hash, (ulong)_rankingRisenCount);
@@ -575,6 +580,40 @@ public sealed partial class World
             Add(ref hash, (ulong)order.RequiredMonths);
             Add(ref hash, (ulong)order.MaterialCost);
             Add(ref hash, (ulong)order.SpiritStoneCost);
+        }
+        if (market.Authority is { } marketAuthority)
+        {
+            Add(ref hash, (ulong)marketAuthority.NextOfferId);
+            Add(ref hash, (ulong)marketAuthority.NextReservationId);
+            Add(ref hash, (ulong)marketAuthority.LastExpiryMonth);
+            foreach (var reserved in marketAuthority.ReservedStock)
+            {
+                Add(ref hash, (ulong)reserved);
+            }
+            foreach (var offer in marketAuthority.Offers)
+            {
+                Add(ref hash, (ulong)offer.OfferId);
+                Add(ref hash, (ulong)offer.Revision);
+                Add(ref hash, (ulong)offer.GoodId);
+                Add(ref hash, (byte)offer.Channel);
+                Add(ref hash, (byte)offer.Side);
+                Add(ref hash, (ulong)offer.CreatedMonth);
+                Add(ref hash, (ulong)offer.ExpiresMonth);
+                Add(ref hash, (byte)offer.Status);
+            }
+            foreach (var reservation in marketAuthority.Reservations)
+            {
+                Add(ref hash, (ulong)reservation.ReservationId);
+                Add(ref hash, (ulong)reservation.OfferId);
+                Add(ref hash, (ulong)reservation.AgentIndex);
+                Add(ref hash, (ulong)reservation.GoodId);
+                Add(ref hash, (ulong)reservation.Count);
+                Add(ref hash, (ulong)reservation.UnitPrice);
+                Add(ref hash, (ulong)reservation.CreatedMonth);
+                Add(ref hash, (ulong)reservation.ExpiresMonth);
+                Add(ref hash, (byte)reservation.Status);
+                Add(ref hash, (ulong)reservation.SourceResultId);
+            }
         }
         Add(ref hash, (ulong)_lastMonsterRegenerationMonth);
         foreach (var population in _monsterPopulations)

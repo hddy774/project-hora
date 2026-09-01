@@ -97,7 +97,8 @@ public sealed record CityMarketCheckpoint(
     long AuthorityRevision = 0,
     long[]? LastSettlementSourceByAgent = null,
     MarketTradeCheckpoint[]? RecentTrades = null,
-    long NextTradeSequence = 0);
+    long NextTradeSequence = 0,
+    MarketAuthorityCheckpoint? Authority = null);
 
 public readonly record struct CityProductionCheckpoint(
     int GoodId,
@@ -206,7 +207,8 @@ public sealed record WorldCheckpoint(
     WorldCenturyChronicleCheckpoint? CenturyChronicle = null,
     RelationStoreCheckpoint? Relations = null,
     ReincarnationStoreCheckpoint? Reincarnation = null,
-    AgentCausalStoreCheckpoint? Causal = null)
+    AgentCausalStoreCheckpoint? Causal = null,
+    WorldAtlasCheckpoint? Atlas = null)
 {
     public const int CurrentSchemaVersion = 25;
 }

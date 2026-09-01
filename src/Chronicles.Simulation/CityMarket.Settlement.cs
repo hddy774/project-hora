@@ -34,7 +34,7 @@ internal sealed partial class CityMarket
         {
             return new MarketSettlementReceipt(MarketSettlementStatus.InsufficientFunds, total);
         }
-        if (_stock[goodId] < count)
+        if (_stock[goodId] - _reservedStock[goodId] < count)
         {
             CommitSettlementSource(agentIndex, sourceResultId);
             RegisterDemand(goodId, count);
@@ -59,7 +59,8 @@ internal sealed partial class CityMarket
         }
 
         if (!CanRecordTrade()
-            || TreasurySpiritStones > long.MaxValue - total)
+            || TreasurySpiritStones > long.MaxValue - total
+            || _nextReservationId >= long.MaxValue - 1L)
         {
             return new MarketSettlementReceipt(
                 MarketSettlementStatus.CapacityExceeded,
@@ -67,6 +68,13 @@ internal sealed partial class CityMarket
                 purchasedQuality);
         }
 
+        RecordImmediateSettlementContract(
+            agentIndex,
+            goodId,
+            count,
+            unitPrice,
+            tick,
+            sourceResultId);
         CommitSettlementSource(agentIndex, sourceResultId);
         if (purchasedQuality is { } quality)
         {
@@ -77,6 +85,9 @@ internal sealed partial class CityMarket
         _purchaseTransactions = SaturatingAdd(_purchaseTransactions, 1);
         TreasurySpiritStones += total;
         Reprice(goodId);
+        RefreshOfferForGood(
+            goodId,
+            GameCalendar.GetMonthIndex(new SimulationTick(tick)));
         RecordTrade(
             tick,
             agentIndex,

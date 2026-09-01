@@ -76,8 +76,11 @@
 
 ## 원격 기록
 
-- GitHub 비공개 저장소 `hddy774/Chronicles-of-Myriad-Immortal-Paths`의 `main`에
-  중간 검증 SHA `f1d9bb4`까지 푸시하고 GitHub 커넥터에서 같은 commit을 확인했다.
-- Notion `0.0.21: 수행 진척·비경·콘텐츠·서적·지식·법칙·절차 생성` 작업 페이지에
-  구현 커밋, 검사, 성능, PC_TEMP_REVIEW와 남은 검증을 기록했다. 최종 evidence SHA는
-  문서 커밋과 함께 다시 동기화한다.
+- GitHub 비공개 저장소 `hddy774/Chronicles-of-Myriad-Immortal-Paths`의 `main`은
+  VERSION 완료 SHA `f837e4c`와 최종 로컬 검증 증거 SHA `c559063`을 포함한다.
+  로컬 `HEAD`, `origin/main`과 GitHub 커넥터가 같은 `c559063`을 반환함을 확인했다.
+- Notion `0.0.21: 수행 진척·비경·콘텐츠·서적·지식·법칙·절차 생성` 작업 페이지를
+  `완료`로 전환하고 구현 커밋, 전체 검사, 성능, 산출물, PC_TEMP_REVIEW와 후속 범위를
+  기록했다.
+- Notion `PC C# 로컬 버전별 상세 변경 이력 — 0.0.x`의 현재 버전을 `0.0.21`로
+  갱신하고 0.0.14~0.0.21 요약 및 상세 변경 이력을 코드 `CHANGELOG.md`와 동기화했다.

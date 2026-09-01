@@ -56,7 +56,8 @@ function Invoke-DesktopLaunchSmoke {
         [Parameter(Mandatory)][string]$ExpectedExecutablePath,
         [Parameter(Mandatory)][string]$WorkingDirectory,
         [Parameter(Mandatory)][string]$ExpectedWindowTitle,
-        [Parameter(Mandatory)][string]$Label
+        [Parameter(Mandatory)][string]$Label,
+        [switch]$KeepOpen
     )
 
     $expectedExecutable = [IO.Path]::GetFullPath($ExpectedExecutablePath)
@@ -73,9 +74,11 @@ function Invoke-DesktopLaunchSmoke {
     else {
         Start-Process -FilePath $LaunchPath -WorkingDirectory $WorkingDirectory -PassThru
     }
+    $startedProcessId = if ($null -eq $startedProcess) { $null } else { $startedProcess.Id }
 
     $createdProcesses = @{}
     $verifiedProcess = $null
+    $launchSucceeded = $false
     $deadline = [DateTime]::UtcNow.AddSeconds(20)
     try {
         while ([DateTime]::UtcNow -lt $deadline) {
@@ -132,12 +135,14 @@ function Invoke-DesktopLaunchSmoke {
             throw "$Label 실행 스모크 검사 실패: $exitDescription · 예상 제목=$ExpectedWindowTitle"
         }
 
+        $launchSucceeded = $true
         Write-Host "$Label 실행 스모크: PASS · PID $($verifiedProcess.Id) · $($verifiedProcess.MainWindowTitle)"
     }
     finally {
         foreach ($process in $createdProcesses.Values) {
             try {
-                if (-not $process.HasExited) {
+                if ((-not $KeepOpen -or -not $launchSucceeded) -and
+                    -not $process.HasExited) {
                     [void]$process.CloseMainWindow()
                     if (-not $process.WaitForExit(3000)) {
                         $process.Kill($true)
@@ -152,8 +157,8 @@ function Invoke-DesktopLaunchSmoke {
                 $process.Dispose()
             }
         }
-        if ($null -ne $startedProcess -and
-            -not $createdProcesses.ContainsKey($startedProcess.Id)) {
+        if ($null -ne $startedProcessId -and
+            -not $createdProcesses.ContainsKey($startedProcessId)) {
             $startedProcess.Dispose()
         }
     }
@@ -243,7 +248,12 @@ $shortcutWorkingDirectory = $publishDirectory
 
 if ($CreateDesktopShortcut) {
     $desktopDirectory = [Environment]::GetFolderPath([Environment+SpecialFolder]::DesktopDirectory)
-    $hostProfileDirectory = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
+    $hostProfileDirectory = if ($desktopDirectory -match '^(?<profile>[A-Za-z]:\\Users\\[^\\]+)(?:\\|$)') {
+        $Matches['profile']
+    }
+    else {
+        [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
+    }
     $shortcutPath = Join-Path $desktopDirectory '선로만상록 PC.lnk'
     $shortcutExecutablePath = Resolve-HostArtifactPath $executablePath $hostProfileDirectory
     $shortcutWorkingDirectory = Split-Path -Parent $shortcutExecutablePath
@@ -261,7 +271,10 @@ if ($CreateDesktopShortcut) {
 
     $shell = New-Object -ComObject WScript.Shell
     $shortcut = $shell.CreateShortcut($shortcutPath)
-    $shortcut.TargetPath = $shortcutExecutablePath
+    $shortcutLauncherPath = Join-Path $env:SystemRoot 'explorer.exe'
+    $shortcutArguments = '"' + $shortcutExecutablePath + '"'
+    $shortcut.TargetPath = $shortcutLauncherPath
+    $shortcut.Arguments = $shortcutArguments
     $shortcut.WorkingDirectory = $shortcutWorkingDirectory
     $shortcut.Description = "선로만상록 PC $version"
     $shortcut.IconLocation = "$shortcutExecutablePath,0"
@@ -270,12 +283,14 @@ if ($CreateDesktopShortcut) {
     $savedShortcut = $shell.CreateShortcut($shortcutPath)
     $savedTargetPath = [IO.Path]::GetFullPath($savedShortcut.TargetPath)
     $savedWorkingDirectory = [IO.Path]::GetFullPath($savedShortcut.WorkingDirectory)
-    if (-not [StringComparer]::OrdinalIgnoreCase.Equals($savedTargetPath, $shortcutExecutablePath) -or
+    if (-not [StringComparer]::OrdinalIgnoreCase.Equals($savedTargetPath, $shortcutLauncherPath) -or
+        -not [StringComparer]::Ordinal.Equals($savedShortcut.Arguments, $shortcutArguments) -or
         -not [StringComparer]::OrdinalIgnoreCase.Equals($savedWorkingDirectory, $shortcutWorkingDirectory) -or
         -not (Test-Path -LiteralPath $savedTargetPath -PathType Leaf) -or
+        -not (Test-Path -LiteralPath $shortcutExecutablePath -PathType Leaf) -or
         -not (Test-Path -LiteralPath $savedWorkingDirectory -PathType Container) -or
-        $savedTargetPath -match '(?i)[\\/]CodexSandboxOffline([\\/]|$)') {
-        throw "바탕화면 바로가기 검증에 실패했습니다: 대상=$savedTargetPath, 작업 폴더=$savedWorkingDirectory"
+        $savedShortcut.Arguments -match '(?i)[\\/]CodexSandboxOffline([\\/]|$)') {
+        throw "바탕화면 바로가기 검증에 실패했습니다: 대상=$savedTargetPath, 인수=$($savedShortcut.Arguments), 작업 폴더=$savedWorkingDirectory"
     }
 
     Write-Host "바탕화면 바로가기: $shortcutPath"
@@ -307,5 +322,23 @@ Write-Host '로컬 실행 준비 완료'
 Write-Host "실행 파일: $executablePath"
 
 if ($Launch) {
-    Start-Process -FilePath $shortcutExecutablePath -WorkingDirectory $shortcutWorkingDirectory
+    $expectedWindowTitle = "선로만상록 PC v$version"
+    if ($null -ne $shortcutPath) {
+        Invoke-DesktopLaunchSmoke `
+            -LaunchPath $shortcutPath `
+            -ExpectedExecutablePath $shortcutExecutablePath `
+            -WorkingDirectory $shortcutWorkingDirectory `
+            -ExpectedWindowTitle $expectedWindowTitle `
+            -Label '최종 표시 창' `
+            -KeepOpen
+    }
+    else {
+        Invoke-DesktopLaunchSmoke `
+            -LaunchPath $executablePath `
+            -ExpectedExecutablePath $executablePath `
+            -WorkingDirectory $publishDirectory `
+            -ExpectedWindowTitle $expectedWindowTitle `
+            -Label '최종 표시 창' `
+            -KeepOpen
+    }
 }

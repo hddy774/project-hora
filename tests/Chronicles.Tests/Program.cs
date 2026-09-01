@@ -79,6 +79,7 @@ var tests = new (string Name, Action Body)[]
     ("5층천 Atlas·1·2층천·900 영맥·개인 공간 지식", AtlasHierarchySpatialKnowledgeAndVeins),
     ("하천대륙 10×10 주·오천주 1·2층천 10×10 지점", HacheonOcheonGeographyBlueprint),
     ("설정용 AI 수·개발자 밸런스 권위·저장 왕복", DeveloperWorldSettingsAndBalancePersistence),
+    ("관찰 UI 상태 분리·관심 목록 지연 조회", ObserverUiContractTests.Run),
     ("조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26", OrganizationCoreTests.Run),
     ("콘텐츠 Definition·Instance·Provenance·발견·원자 소유권", ContentAuthorityTests.Run),
     ("서적 Content·Edition·실물·접근·오해·교정 권위", KnowledgeAuthorityTests.Run),

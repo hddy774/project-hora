@@ -205,6 +205,10 @@ public partial class MainWindow : Window, IDisposable
             knowledgeEditionLimit: _workspaceRoute == WorkspaceRoute.Content
                 && ContentWorkspacePanel.ShouldLoadKnowledgeRows
                     ? ContentWorkspaceView.KnowledgeEditionPageSize
+                    : 0,
+            lawCandidateLimit: _workspaceRoute == WorkspaceRoute.Content
+                && ContentWorkspacePanel.ShouldLoadLawRows
+                    ? ContentWorkspaceView.LawCandidatePageSize
                     : 0);
         ApplyObservation(observation);
     }

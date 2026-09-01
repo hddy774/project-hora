@@ -299,11 +299,96 @@
 
                     <TabItem Header="법칙 · 천도">
                         <Grid Margin="8">
-                            <Border Padding="20" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
-                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="680">
-                                    <TextBlock Text="Stable LawId 발급 전" HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}" FontSize="22" FontWeight="SemiBold" />
-                                    <TextBlock Text="기본 10개와 파생 44개 법칙은 Adapter·Result·Metric·State I/O·SQLite·Save/Replay가 모두 검증된 뒤 안정 ID를 발급합니다. 현재는 준비 상태를 완료로 위장하지 않습니다."
-                                               Margin="0,12,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextAlignment="Center" TextWrapping="Wrap" />
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="72" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.35*" MinWidth="520" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" MinWidth="330" />
+                            </Grid.ColumnDefinitions>
+
+                            <UniformGrid Grid.ColumnSpan="3" Columns="5">
+                                <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="후보 Catalog" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="LawCandidateCountText" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="실행 READY" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="LawReadyCountText" Margin="0,7,0,0" Foreground="{StaticResource AccentBrush}" FontSize="18" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="Stable LawId" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="StableLawCountText" Margin="0,7,0,0" Foreground="{StaticResource NegativeBrush}" FontSize="18" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="개인 이해 상태" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="PersonalLawStateCountText" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="세계 AI · 천도 판단" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="LawJudgmentCountText" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+
+                            <DataGrid x:Name="LawCandidateGrid"
+                                      Grid.Row="2"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      EnableRowVirtualization="True"
+                                      ScrollViewer.CanContentScroll="True"
+                                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                      SelectionChanged="LawCandidateGrid_SelectionChanged">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="후보" Binding="{Binding Candidate}" Width="*" />
+                                    <DataGridTextColumn Header="종류" Binding="{Binding Kind}" Width="85" />
+                                    <DataGridTextColumn Header="준비" Binding="{Binding Readiness}" Width="105" />
+                                    <DataGridTextColumn Header="적용" Binding="{Binding Applications}" Width="60" />
+                                    <DataGridTextColumn Header="이해" Binding="{Binding Personal}" Width="60" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Border Grid.Row="2"
+                                    Grid.Column="2"
+                                    Padding="16"
+                                    Background="{StaticResource PanelAltBrush}"
+                                    CornerRadius="7">
+                                <StackPanel>
+                                    <TextBlock x:Name="LawCandidateTitleText"
+                                               Text="법칙 후보를 선택해 주세요."
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               FontSize="19"
+                                               FontWeight="SemiBold" />
+                                    <TextBlock x:Name="LawCandidateIdentityText"
+                                               Margin="0,6,0,0"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                    <Separator Margin="0,14" />
+                                    <TextBlock x:Name="LawCandidateContractText"
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock x:Name="LawCandidateEvidenceText"
+                                               Margin="0,12,0,0"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               TextWrapping="Wrap" />
+                                    <Border Margin="0,16,0,0" Padding="12" Background="#25171E" BorderBrush="{StaticResource NegativeBrush}" BorderThickness="1" CornerRadius="6">
+                                        <TextBlock x:Name="LawStatusText"
+                                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                                   TextWrapping="Wrap" />
+                                    </Border>
                                 </StackPanel>
                             </Border>
                         </Grid>

@@ -10,18 +10,23 @@ public partial class ContentWorkspaceView : UserControl
 {
     public const int SecretRealmPageSize = 100;
     public const int KnowledgeEditionPageSize = 100;
+    public const int LawCandidatePageSize = LawAuthorityRules.CandidateCount;
 
     private WorldContentSnapshot _snapshot = WorldContentSnapshot.Empty;
     private long _projectedRevision = long.MinValue;
     private int _projectedOffset = -1;
     private long _projectedKnowledgeRevision = long.MinValue;
     private int _projectedKnowledgeOffset = -1;
+    private long _projectedLawRevision = long.MinValue;
+    private int _projectedLawOffset = -1;
     private SecretRealmNature? _natureFilter;
 
     public ContentWorkspaceView()
     {
         InitializeComponent();
         ClearDetails();
+        ClearKnowledgeDetails();
+        ClearLawDetails();
     }
 
     public event EventHandler? PageRequested;
@@ -34,6 +39,8 @@ public partial class ContentWorkspaceView : UserControl
 
     public bool ShouldLoadKnowledgeRows => ContentDetailTabControl.SelectedIndex == 2;
 
+    public bool ShouldLoadLawRows => ContentDetailTabControl.SelectedIndex == 3;
+
     public void ResetProjection()
     {
         _snapshot = WorldContentSnapshot.Empty;
@@ -41,11 +48,15 @@ public partial class ContentWorkspaceView : UserControl
         _projectedOffset = -1;
         _projectedKnowledgeRevision = long.MinValue;
         _projectedKnowledgeOffset = -1;
+        _projectedLawRevision = long.MinValue;
+        _projectedLawOffset = -1;
         SecretRealmOffset = 0;
         SecretRealmGrid.ItemsSource = Array.Empty<SecretRealmRow>();
         KnowledgeEditionGrid.ItemsSource = Array.Empty<KnowledgeEditionRow>();
+        LawCandidateGrid.ItemsSource = Array.Empty<LawCandidateRow>();
         ClearDetails();
         ClearKnowledgeDetails();
+        ClearLawDetails();
         ApplySummary();
     }
 
@@ -53,10 +64,13 @@ public partial class ContentWorkspaceView : UserControl
     {
         snapshot ??= WorldContentSnapshot.Empty;
         var knowledge = snapshot.Knowledge ?? WorldKnowledgeSnapshot.Empty;
+        var laws = snapshot.Laws ?? WorldLawSnapshot.Empty;
         var unchanged = _projectedRevision == snapshot.AuthorityRevision
             && _projectedOffset == snapshot.SecretRealmResultOffset
             && _projectedKnowledgeRevision == knowledge.AuthorityRevision
             && _projectedKnowledgeOffset == knowledge.EditionResultOffset
+            && _projectedLawRevision == laws.AuthorityRevision
+            && _projectedLawOffset == laws.CandidateResultOffset
             && _snapshot.IncludesHidden == snapshot.IncludesHidden;
         _snapshot = snapshot;
         SecretRealmOffset = snapshot.SecretRealmResultOffset;
@@ -69,6 +83,8 @@ public partial class ContentWorkspaceView : UserControl
         _projectedOffset = snapshot.SecretRealmResultOffset;
         _projectedKnowledgeRevision = knowledge.AuthorityRevision;
         _projectedKnowledgeOffset = knowledge.EditionResultOffset;
+        _projectedLawRevision = laws.AuthorityRevision;
+        _projectedLawOffset = laws.CandidateResultOffset;
         ApplySummary();
         if (ShouldLoadSecretRealmRows)
         {
@@ -77,6 +93,10 @@ public partial class ContentWorkspaceView : UserControl
         if (ShouldLoadKnowledgeRows)
         {
             RebuildKnowledgeRows();
+        }
+        if (ShouldLoadLawRows)
+        {
+            RebuildLawRows();
         }
     }
 
@@ -99,6 +119,16 @@ public partial class ContentWorkspaceView : UserControl
             $"오해 {KoreanNumberFormatter.Format(knowledge.MisunderstoodAccessCount)}건 · " +
             $"복원 판본 {KoreanNumberFormatter.Format(knowledge.RestoredEditionCount)}개 · " +
             "미확정 신뢰도는 DataUnavailable로 유지합니다.";
+        var laws = _snapshot.Laws ?? WorldLawSnapshot.Empty;
+        LawCandidateCountText.Text =
+            $"{KoreanNumberFormatter.Format(laws.CandidateCount)} · " +
+            $"기초 {laws.BaseCandidateCount:N0} / 파생 {laws.DerivedCandidateCount:N0}";
+        LawReadyCountText.Text = KoreanNumberFormatter.Format(laws.ReadyCandidateCount);
+        StableLawCountText.Text = KoreanNumberFormatter.Format(laws.StableLawCount);
+        PersonalLawStateCountText.Text = KoreanNumberFormatter.Format(laws.PersonalStateCount);
+        LawJudgmentCountText.Text =
+            $"{KoreanNumberFormatter.Format(laws.WorldAiJudgmentCount)} · " +
+            $"{KoreanNumberFormatter.Format(laws.TiandaoJudgmentCount)}";
         VisibilityModeText.Text = _snapshot.IncludesHidden ? "세계 설정 진단" : "공개 지식";
     }
 
@@ -179,6 +209,52 @@ public partial class ContentWorkspaceView : UserControl
         RenderSelectedRealm();
     }
 
+    private void RebuildLawRows()
+    {
+        var laws = _snapshot.Laws ?? WorldLawSnapshot.Empty;
+        var selectedOrdinal = LawCandidateGrid.SelectedItem is LawCandidateRow selected
+            ? selected.Snapshot.Candidate.Ordinal
+            : (byte?)null;
+        var rows = laws.Candidates.Select(value => new LawCandidateRow(
+            value,
+            value.Candidate.ToString(),
+            value.Candidate.Kind == LawCandidateKind.Base ? "기초" : "파생",
+            value.MissingEvidence == LawEvidenceFacet.None ? "READY" : "REVIEW",
+            KoreanNumberFormatter.Format(value.ApplicationCount),
+            KoreanNumberFormatter.Format(value.PersonalStateCount))).ToArray();
+        LawCandidateGrid.ItemsSource = rows;
+        LawCandidateGrid.SelectedItem = selectedOrdinal is { } ordinal
+            ? rows.FirstOrDefault(row => row.Snapshot.Candidate.Ordinal == ordinal)
+                ?? rows.FirstOrDefault()
+            : rows.FirstOrDefault();
+        RenderSelectedLawCandidate();
+    }
+
+    private void RenderSelectedLawCandidate()
+    {
+        if (LawCandidateGrid.SelectedItem is not LawCandidateRow row)
+        {
+            ClearLawDetails();
+            return;
+        }
+
+        var value = row.Snapshot;
+        LawCandidateTitleText.Text = row.Candidate;
+        LawCandidateIdentityText.Text =
+            $"{row.Kind} 후보 ordinal {value.Candidate.Ordinal:N0} · Stable LawId 미발급";
+        LawCandidateContractText.Text =
+            $"Scope {FormatLawAvailability(value.ScopeAvailability)} · " +
+            $"Relation {FormatLawAvailability(value.RelationAvailability)}\n" +
+            $"실제 적용 {value.ApplicationCount:N0} · 개인 이해 {value.PersonalStateCount:N0} · " +
+            $"세계 판단 {value.WorldJudgmentCount:N0}";
+        LawCandidateEvidenceText.Text = value.MissingEvidence == LawEvidenceFacet.None
+            ? "Adapter·Result·Metric·State I/O·SQLite·Save/Replay 증거가 모두 준비되었습니다."
+            : $"부족 증거: {FormatMissingLawEvidence(value.MissingEvidence)}";
+        LawStatusText.Text =
+            "객관 Law, 개인의 주장·이해·체득·운용, 세계 AI 판단과 천도 판단은 서로 다른 " +
+            "권위입니다. 모든 실행 증거가 없으므로 현재 후보는 REVIEW이며 효과를 적용하지 않습니다.";
+    }
+
     private void RenderSelectedRealm()
     {
         if (SecretRealmGrid.SelectedItem is not SecretRealmRow row)
@@ -222,12 +298,26 @@ public partial class ContentWorkspaceView : UserControl
         KnowledgeEditionStateText.Text = "—";
     }
 
+    private void ClearLawDetails()
+    {
+        LawCandidateTitleText.Text = "법칙 후보를 선택해 주세요.";
+        LawCandidateIdentityText.Text = "Stable LawId는 실행 증거 Gate 이후에만 발급됩니다.";
+        LawCandidateContractText.Text = "Scope · Relation · 실제 Application을 분리해 표시합니다.";
+        LawCandidateEvidenceText.Text = "—";
+        LawStatusText.Text =
+            "기획 완료 상태를 실행 READY로 오표시하지 않습니다.";
+    }
+
     private void SecretRealmGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
         RenderSelectedRealm();
 
     private void KnowledgeEditionGrid_SelectionChanged(
         object sender,
         SelectionChangedEventArgs e) => RenderSelectedKnowledgeEdition();
+
+    private void LawCandidateGrid_SelectionChanged(
+        object sender,
+        SelectionChangedEventArgs e) => RenderSelectedLawCandidate();
 
     private void RealmFilter_Click(object sender, RoutedEventArgs e)
     {
@@ -269,6 +359,10 @@ public partial class ContentWorkspaceView : UserControl
         if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 2)
         {
             RebuildKnowledgeRows();
+        }
+        if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 3)
+        {
+            RebuildLawRows();
         }
         if (ReferenceEquals(e.Source, sender) && IsInitialized)
         {
@@ -331,6 +425,24 @@ public partial class ContentWorkspaceView : UserControl
             ? $"{hundredths / 100d:0.00}"
             : "DataUnavailable";
 
+    private static string FormatLawAvailability(LawContractAvailability availability) =>
+        availability == LawContractAvailability.Specified
+            ? "Specified"
+            : "DataUnavailable";
+
+    private static string FormatMissingLawEvidence(LawEvidenceFacet value)
+    {
+        var names = new List<string>(7);
+        if ((value & LawEvidenceFacet.Adapter) != 0) names.Add("Adapter");
+        if ((value & LawEvidenceFacet.ResultContract) != 0) names.Add("Result");
+        if ((value & LawEvidenceFacet.Metric) != 0) names.Add("Metric");
+        if ((value & LawEvidenceFacet.StateInput) != 0) names.Add("State Input");
+        if ((value & LawEvidenceFacet.StateOutput) != 0) names.Add("State Output");
+        if ((value & LawEvidenceFacet.SqliteRoundTrip) != 0) names.Add("SQLite");
+        if ((value & LawEvidenceFacet.SaveReplay) != 0) names.Add("Save/Replay");
+        return string.Join(" · ", names);
+    }
+
     private sealed record SecretRealmRow(
         ContentInstanceSnapshot Instance,
         string Id,
@@ -346,4 +458,12 @@ public partial class ContentWorkspaceView : UserControl
         string Relation,
         string Records,
         string Accessors);
+
+    private sealed record LawCandidateRow(
+        LawCandidateSnapshot Snapshot,
+        string Candidate,
+        string Kind,
+        string Readiness,
+        string Applications,
+        string Personal);
 }

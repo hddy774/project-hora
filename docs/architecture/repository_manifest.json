@@ -91,6 +91,7 @@
     "cultivation_authority": "src/Chronicles.Simulation/World.Cultivation.cs",
     "cultivation_action_plan_authority": "src/Chronicles.Simulation/CultivationActionPlan.cs",
     "cultivation_action_plan_runtime": "src/Chronicles.Simulation/World.CultivationPlans.cs",
+    "cultivation_detail_progress_projection": "src/Chronicles.Simulation/CultivationDetailProgress.cs",
     "foundation_formation_authority": "src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs",
     "organization_authority": "src/Chronicles.Simulation/OrganizationModel.cs",
     "organization_transition_authority": "src/Chronicles.Simulation/OrganizationTransitions.cs",

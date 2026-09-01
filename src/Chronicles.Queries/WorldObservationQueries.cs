@@ -65,7 +65,9 @@ public sealed class WorldObservationQueries
             includeTeaching:
                 (request.Sections & ObservationSections.Teaching) != 0,
             includeCausal:
-                (request.Sections & ObservationSections.CausalRuntime) != 0);
+                (request.Sections & ObservationSections.CausalRuntime) != 0,
+            includeCultivationDetail:
+                (request.Sections & ObservationSections.CultivationDetail) != 0);
         var needsChronicle = (request.Sections
             & (ObservationSections.Chronicle | ObservationSections.PersonalCenturyChronicle)) != 0;
         var chronicle = needsChronicle

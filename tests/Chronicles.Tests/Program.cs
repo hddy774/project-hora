@@ -34,6 +34,7 @@ var tests = new (string Name, Action Body)[]
     ("공식 Registry·typed command·원자 transaction·causal event", AuthorityFoundationTests.Run),
     ("게임 시간·배속·경지 수명", GameTimeAndRealmRules),
     ("자질 50.00 대경지 1층→9층 대원만 전체 기준", CultivationAuthorityRules),
+    ("대경지별 5단계 세부 수행 진척·지연 관찰", CultivationDetailProgressProjection),
     ("승인 Effect 0개·Typed 실패·수행 외부 계수 계약", CultivationAttemptContractTests.Run),
     ("입문 Gate 병목 단련·적용 Work·저장 왕복", EntryGateRecoveryAndAppliedWork),
     ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
@@ -389,6 +390,150 @@ static void CultivationAuthorityRules()
     Throws<ArgumentOutOfRangeException>(
         () => CultivationFormulaRegistry.Get(CultivationFormulaKind.None),
         "빈 수행 공식 ID 거부");
+}
+
+static void CultivationDetailProgressProjection()
+{
+    Equal(1, CultivationDetailProgressRules.CurrentRevision, "세부 수행 정의 revision");
+    True(
+        CultivationDetailProgressRules.ProvisionalBalance.RequiresReview,
+        "미확정 단계와 가중치는 PC_TEMP_REVIEW");
+
+    var allStableIds = new HashSet<string>(StringComparer.Ordinal);
+    var entryDefinitions = CultivationDetailProgressRules.GetDefinitions(
+        CultivationLifecyclePhase.EntryTraining,
+        RealmStage.QiRefining);
+    Equal(CultivationDetailProgressRules.StageCount, entryDefinitions.Count, "범인 입문 세부 단계 수");
+    foreach (var definition in entryDefinitions)
+    {
+        True(allStableIds.Add(definition.StableId), "범인 입문 세부 단계 안정 ID 고유");
+    }
+
+    foreach (var realm in RealmRules.All.Select(profile => profile.Stage))
+    {
+        var definitions = CultivationDetailProgressRules.GetDefinitions(
+            CultivationLifecyclePhase.RealmCultivation,
+            realm);
+        Equal(CultivationDetailProgressRules.StageCount, definitions.Count, $"{realm} 세부 단계 수");
+        Equal(
+            CultivationDetailProgressRules.BasisPointMaximum,
+            definitions.Sum(definition => definition.WeightBasisPoints),
+            $"{realm} 세부 단계 가중치 합");
+        True(definitions.All(definition => definition.RequiresReview), $"{realm} 임시 검토 표식");
+        foreach (var definition in definitions)
+        {
+            True(allStableIds.Add(definition.StableId), $"{realm} 세부 단계 안정 ID 고유");
+        }
+    }
+
+    Equal(
+        55,
+        allStableIds.Count,
+        "범인 입문 5개와 10대경지 50개 안정 ID");
+    var qiDefinitions = CultivationDetailProgressRules.GetDefinitions(
+        CultivationLifecyclePhase.RealmCultivation,
+        RealmStage.QiRefining);
+    Equal("영기 감지", qiDefinitions[0].KoreanName, "연기경 1단계 영기 감지");
+    Equal("천지 감응", qiDefinitions[1].KoreanName, "연기경 2단계 감응");
+    Equal("원리 이해·깨달음", qiDefinitions[2].KoreanName, "연기경 3단계 깨달음");
+    Equal("영기 인도", qiDefinitions[3].KoreanName, "연기경 4단계 영기 인도");
+    Equal("단전 축적", qiDefinitions[4].KoreanName, "연기경 5단계 단전 축적");
+
+    var totalWork = RealmRules.GetTotalRealmRequiredWork(RealmStage.QiRefining);
+    var checkpoints = new[] { 0, 1_000, 2_500, 4_500, 7_000, 10_000 };
+    var previousOverall = -1;
+    for (var index = 0; index < checkpoints.Length; index++)
+    {
+        var target = totalWork * checkpoints[index] / 10_000;
+        var snapshot = CreateQiDetailAtAccumulatedWork(target, totalWork);
+        Equal(checkpoints[index], snapshot.OverallProgressBasisPoints, "연기경 전체 세부 진척 경계");
+        True(snapshot.OverallProgressBasisPoints >= previousOverall, "세부 수행 진척 단조 증가");
+        previousOverall = snapshot.OverallProgressBasisPoints;
+        if (index < checkpoints.Length - 1)
+        {
+            Equal(index, snapshot.CurrentStageIndex, "가중치 경계의 현재 세부 단계");
+            True(
+                snapshot.Stages.Take(index).All(stage =>
+                    stage.State == CultivationDetailStageState.Completed),
+                "이전 세부 단계 완료");
+            True(
+                snapshot.Stages[index].State == CultivationDetailStageState.Active,
+                "현재 세부 단계 활성");
+        }
+        else
+        {
+            True(
+                snapshot.Stages.All(stage =>
+                    stage.State == CultivationDetailStageState.Completed),
+                "연기경 전체 Work 완료 시 모든 세부 단계 완료");
+        }
+    }
+
+    var world = World.Create(741105, 10);
+    var beforeHash = world.ComputeStateHash();
+    var beforeAgent = world.GetAgentSnapshot(new AgentId(0));
+    using (var runner = new SimulationRunner(world))
+    {
+        var hidden = runner.GetObservation(
+            new AgentId(0),
+            sections: ObservationSections.None);
+        True(hidden.SelectedAgent.Cultivation.DetailProgress is null, "접힌 세부 수행 UI는 DTO 미생성");
+        var visible = runner.GetObservation(
+            new AgentId(0),
+            sections: ObservationSections.CultivationDetail);
+        Equal(
+            CultivationDetailProgressRules.StageCount,
+            visible.SelectedAgent.Cultivation.DetailProgress!.Stages.Count,
+            "펼친 세부 수행 UI만 5개 DTO 생성");
+        Equal(
+            "범인 입문 준비",
+            visible.SelectedAgent.Cultivation.DetailProgress.ScopeKoreanName,
+            "미입문자는 연기경으로 위장하지 않음");
+    }
+
+    var afterAgent = world.GetAgentSnapshot(new AgentId(0));
+    Equal(beforeHash, world.ComputeStateHash(), "세부 수행 관찰은 권위 상태·RNG 무영향");
+    Equal(beforeAgent.CultivationProgress, afterAgent.CultivationProgress, "세부 수행 관찰은 Work 불변");
+    Equal(beforeAgent.TechniqueQuality, afterAgent.TechniqueQuality, "깨달음 표시는 공법 품질 불변");
+    Equal(beforeAgent.SpellQuality, afterAgent.SpellQuality, "깨달음 표시는 법술 품질 불변");
+
+    static CultivationDetailProgressSnapshot CreateQiDetailAtAccumulatedWork(
+        long accumulatedWork,
+        long totalWork)
+    {
+        if (accumulatedWork >= totalWork)
+        {
+            return CultivationDetailProgressRules.Create(
+                CultivationLifecyclePhase.RealmCultivation,
+                RealmStage.QiRefining,
+                RealmRules.MinorStageCount,
+                RealmRules.GetMinorStageRequiredWork(
+                    RealmStage.QiRefining,
+                    RealmRules.MinorStageCount),
+                floorNineCompleted: true,
+                greatPerfectionAchieved: false);
+        }
+
+        var remaining = accumulatedWork;
+        for (var floor = 1; floor <= RealmRules.MinorStageCount; floor++)
+        {
+            var requirement = RealmRules.GetMinorStageRequiredWork(RealmStage.QiRefining, floor);
+            if (remaining <= requirement)
+            {
+                return CultivationDetailProgressRules.Create(
+                    CultivationLifecyclePhase.RealmCultivation,
+                    RealmStage.QiRefining,
+                    floor,
+                    checked((int)remaining),
+                    floorNineCompleted: false,
+                    greatPerfectionAchieved: false);
+            }
+
+            remaining -= requirement;
+        }
+
+        throw new InvalidOperationException("연기경 누적 Work를 층에 매핑할 수 없습니다.");
+    }
 }
 
 static void EntryGateRecoveryAndAppliedWork()

@@ -27,13 +27,14 @@ public enum ObservationSections : uint
     CausalRuntime = 1 << 18,
     PersonalCenturyChronicle = 1 << 19,
     Organization = 1 << 20,
+    CultivationDetail = 1 << 21,
     Statistics = StatisticsSummary | RealmDistribution | CombatPowerDistribution,
     Market = MarketSummary | MarketGoods,
     AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking | WealthRanking,
     All = Statistics | Market | Map | WorldLog | WorldChronicle | PersonalLog | Chronicle
         | PersonalCenturyChronicle
         | AllRankings | AptitudeDetails | Relations | Teaching | Reincarnation | CausalRuntime
-        | Organization,
+        | Organization | CultivationDetail,
 }
 
 public enum AgentActivity : byte

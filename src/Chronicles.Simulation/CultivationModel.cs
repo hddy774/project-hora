@@ -549,7 +549,8 @@ public sealed record CultivationReadProjection(
     long AuthorityRevision,
     FoundationFormationSnapshot? FoundationFormation = null,
     long CultivationExperience = 0,
-    CultivationActionPlanSnapshot? ActionPlan = null);
+    CultivationActionPlanSnapshot? ActionPlan = null,
+    CultivationDetailProgressSnapshot? DetailProgress = null);
 
 public readonly record struct CultivationCheckpoint(
     int PendingCarryoverWork,

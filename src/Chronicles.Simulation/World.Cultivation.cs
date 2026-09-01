@@ -1061,26 +1061,41 @@ public sealed partial class World
         return result;
     }
 
-    private CultivationReadProjection CreateCultivationProjection(int index) => new(
-        GetCultivationLifecyclePhase(_agents.CultivationStates[index]),
-        _agents.RealmLayers[index],
-        _agents.LastCultivationWorkBefore[index],
-        _agents.LastCultivationWorkGain[index],
-        _agents.CultivationProgress[index],
-        GetCultivationRequirement(index),
-        _agents.PendingCultivationWork[index],
-        GetInnateAptitudeComposite(index),
-        RealmRules.GetProfile(_agents.RealmStages[index]).TargetCultivationYears,
-        _agents.FloorNineCompleted[index],
-        _agents.GreatPerfectionAchieved[index],
-        _agents.FoundationRoutes[index],
-        CreateEntryGateSnapshots(index),
-        CreateRealmComponentSnapshots(index),
-        _agents.CultivationTraces[index],
-        _agents.CultivationAuthorityRevisions[index],
-        CreateFoundationFormationProjection(index),
-        _agents.CultivationExperience[index],
-        CreateCultivationPlanSnapshot(index));
+    private CultivationReadProjection CreateCultivationProjection(
+        int index,
+        bool includeDetailProgress)
+    {
+        var phase = GetCultivationLifecyclePhase(_agents.CultivationStates[index]);
+        return new CultivationReadProjection(
+            phase,
+            _agents.RealmLayers[index],
+            _agents.LastCultivationWorkBefore[index],
+            _agents.LastCultivationWorkGain[index],
+            _agents.CultivationProgress[index],
+            GetCultivationRequirement(index),
+            _agents.PendingCultivationWork[index],
+            GetInnateAptitudeComposite(index),
+            RealmRules.GetProfile(_agents.RealmStages[index]).TargetCultivationYears,
+            _agents.FloorNineCompleted[index],
+            _agents.GreatPerfectionAchieved[index],
+            _agents.FoundationRoutes[index],
+            CreateEntryGateSnapshots(index),
+            CreateRealmComponentSnapshots(index),
+            _agents.CultivationTraces[index],
+            _agents.CultivationAuthorityRevisions[index],
+            CreateFoundationFormationProjection(index),
+            _agents.CultivationExperience[index],
+            CreateCultivationPlanSnapshot(index),
+            includeDetailProgress
+                ? CultivationDetailProgressRules.Create(
+                    phase,
+                    _agents.RealmStages[index],
+                    _agents.RealmLayers[index],
+                    _agents.CultivationProgress[index],
+                    _agents.FloorNineCompleted[index],
+                    _agents.GreatPerfectionAchieved[index])
+                : null);
+    }
 
     private FoundationFormationSnapshot? CreateFoundationFormationProjection(int index)
     {

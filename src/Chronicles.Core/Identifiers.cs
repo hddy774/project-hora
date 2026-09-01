@@ -90,3 +90,55 @@ public readonly record struct MarketReservationId
 
     public override string ToString() => $"RSV-{Value:0000000000}";
 }
+
+public readonly record struct ContentDefinitionId
+{
+    public ContentDefinitionId(ulong value)
+    {
+        ArgumentOutOfRangeException.ThrowIfZero(value);
+        Value = value;
+    }
+
+    public ulong Value { get; }
+
+    public override string ToString() => $"CDEF-{Value:X16}";
+}
+
+public readonly record struct ContentInstanceId
+{
+    public ContentInstanceId(long value)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+        Value = value;
+    }
+
+    public long Value { get; }
+
+    public override string ToString() => $"CINST-{Value:0000000000}";
+}
+
+public readonly record struct ContentProvenanceId
+{
+    public ContentProvenanceId(long value)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+        Value = value;
+    }
+
+    public long Value { get; }
+
+    public override string ToString() => $"CPROV-{Value:0000000000}";
+}
+
+public readonly record struct ContentSourceResultId
+{
+    public ContentSourceResultId(ulong value)
+    {
+        ArgumentOutOfRangeException.ThrowIfZero(value);
+        Value = value;
+    }
+
+    public ulong Value { get; }
+
+    public override string ToString() => $"CSRC-{Value:X16}";
+}

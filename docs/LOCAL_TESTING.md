@@ -272,8 +272,9 @@ checkpoint 116ms, schema 24 복원 349ms였다. 작업 시작 기준선 1,239ms 
 - 0.0.13 확정 중앙값 2,212ms 대비: 30.6% 감소 / 장기 30% 목표 PASS
 - 중앙값 세부: 초기화 275ms, 진행 1,189ms, 관찰 63.0ms, checkpoint 117ms,
   schema 30 복원 565ms
-- 선택 UI query 80회: 기존 이중 전체 조회 115.7ms → 선택 조회 7.9ms,
-  93.2% 감소; 요약 p95 0.110ms / 16ms, 1,000행 p95 0.078ms / 50ms PASS
-- SQLite 5회 중앙값: 저장 977ms, 복원 880ms, peak managed allocation 85.8% 절감 PASS
+- 최종 패키징 선택 UI query 80회: 기존 이중 전체 조회 136.3ms → 선택 조회 8.1ms,
+  94.1% 감소; 요약 p95 0.106ms / 16ms, 1,000행 p95 0.053ms / 50ms PASS
+- 최종 패키징 SQLite 5회 중앙값: 저장 973ms, 복원 869ms, peak managed allocation
+  85.8% 절감 PASS
 - 화면 자동 조작은 사용자의 이전 Esc 중단 이후 재개하지 않는다. 최종 self-contained
   산출물·바로가기 검증은 `docs/evidence/0.0.21/verification.md`에 기록한다.

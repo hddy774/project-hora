@@ -258,3 +258,22 @@ checkpoint 116ms, schema 24 복원 349ms였다. 작업 시작 기준선 1,239ms 
 - 요약 query p95 0.161ms / 16ms, 1,000행 materialization p95 0.054ms / 50ms PASS
 - 상세 성능·SQLite 미달 budget·산출물 hash:
   `docs/evidence/0.0.16/verification.md`
+
+## 0.0.21 절차 생성·콘텐츠·성능 검증
+
+- Windows Release 전체 자동 검사: `RESULT: 65/65 passed`
+- checkpoint schema: 30, 외부 SQLite world schema: 25
+- 같은 seed·설정의 아이템·서적·요수·지도와 지속 생성 결과·state hash 재현 PASS
+- 다른 생성 영역 수량 변경과 관찰 조회의 게임플레이 RNG 무영향 PASS
+- schema 29 기본 생성 설정 이전, 손상 cursor·중복 ID·잘못된 enum 복원 거부 PASS
+- 10,000명·20,000 tick 별도 프로세스 5회 중앙값: 1,535ms
+- 절차 생성 최적화 전 1,812ms 대비: 15.3% 감소
+- 0.0.20 중앙값 1,484ms 대비: 3.4% 회귀 / 허용 15% 이내
+- 0.0.13 확정 중앙값 2,212ms 대비: 30.6% 감소 / 장기 30% 목표 PASS
+- 중앙값 세부: 초기화 275ms, 진행 1,189ms, 관찰 63.0ms, checkpoint 117ms,
+  schema 30 복원 565ms
+- 선택 UI query 80회: 기존 이중 전체 조회 115.7ms → 선택 조회 7.9ms,
+  93.2% 감소; 요약 p95 0.110ms / 16ms, 1,000행 p95 0.078ms / 50ms PASS
+- SQLite 5회 중앙값: 저장 977ms, 복원 880ms, peak managed allocation 85.8% 절감 PASS
+- 화면 자동 조작은 사용자의 이전 Esc 중단 이후 재개하지 않는다. 최종 self-contained
+  산출물·바로가기 검증은 `docs/evidence/0.0.21/verification.md`에 기록한다.

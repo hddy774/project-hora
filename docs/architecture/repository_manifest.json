@@ -91,6 +91,7 @@
     "cultivation_authority": "src/Chronicles.Simulation/World.Cultivation.cs",
     "foundation_formation_authority": "src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs",
     "runtime_performance_diagnostics": "src/Chronicles.Runtime/SimulationRunner.cs",
+    "bounded_log_file_writer": "src/Chronicles.Application/BoundedLogFileWriter.cs",
     "agent_observation_ui": "src/Chronicles.Desktop/MainWindow.AgentObservation.cs",
     "workspace_navigation_ui": "src/Chronicles.Desktop/MainWindow.Workspace.cs",
     "settings_workspace_ui": "src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs",

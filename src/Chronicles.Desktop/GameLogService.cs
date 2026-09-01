@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text;
 using System.Threading.Channels;
 using Chronicles.Application;
 using Chronicles.Core;
@@ -23,6 +22,8 @@ internal readonly record struct DebugLogEntry(
 internal sealed class GameLogService : IDisposable
 {
     public const int DebugLogCapacity = 500;
+    public const int PerformanceLogCapacity = 100;
+    public const long MaximumLogFileBytes = BoundedLogFileWriter.MaximumFileBytes;
 
     private readonly object _entryGate = new();
     private readonly Queue<DebugLogEntry> _entries = new(DebugLogCapacity);
@@ -31,6 +32,7 @@ internal sealed class GameLogService : IDisposable
     private readonly Task _writerTask;
     private long _debugSequence;
     private int _autoDebugOutput;
+    private int _autoPerformanceOutput;
     private int _autoWorldOutput;
     private int _disposed;
 
@@ -42,6 +44,7 @@ internal sealed class GameLogService : IDisposable
     public event Action<Exception>? FileWriteFailed;
 
     public bool AutoDebugOutput => Volatile.Read(ref _autoDebugOutput) != 0;
+    public bool AutoPerformanceOutput => Volatile.Read(ref _autoPerformanceOutput) != 0;
     public bool AutoWorldOutput => Volatile.Read(ref _autoWorldOutput) != 0;
     public long DebugVersion => Volatile.Read(ref _debugSequence);
 
@@ -77,6 +80,14 @@ internal sealed class GameLogService : IDisposable
         AddDebug(
             DebugLogLevel.Information,
             enabled ? "세계 로그 자동 파일 기록 시작" : "세계 로그 자동 파일 기록 중지");
+    }
+
+    public void SetAutoPerformanceOutput(bool enabled)
+    {
+        Volatile.Write(ref _autoPerformanceOutput, enabled ? 1 : 0);
+        AddDebug(
+            DebugLogLevel.Information,
+            enabled ? "성능·상태 로그 자동 파일 기록 시작" : "성능·상태 로그 자동 파일 기록 중지");
     }
 
     public void AddDebug(DebugLogLevel level, string message)
@@ -147,6 +158,15 @@ internal sealed class GameLogService : IDisposable
             feed.Entries.Select(formatter).ToArray());
     }
 
+    public void CapturePerformance(string line)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(line);
+        if (AutoPerformanceOutput)
+        {
+            QueueAutomaticWrite(LogFileKind.Performance, [line.Trim()]);
+        }
+    }
+
     public Task<string> ExportDebugAsync()
     {
         var entries = GetDebugEntries();
@@ -179,6 +199,20 @@ internal sealed class GameLogService : IDisposable
         lines.Add($"[영구 세계 연대기 · 100년 역사서 {permanentWorldChronicle.Count:N0}권]");
         lines.AddRange(permanentWorldChronicle);
         return QueueManualWrite(LogFileKind.World, lines.ToArray());
+    }
+
+    public Task<string> ExportPerformanceAsync(IReadOnlyList<string> recentSamples)
+    {
+        ArgumentNullException.ThrowIfNull(recentSamples);
+        var lines = new List<string>(recentSamples.Count + 4)
+        {
+            $"선로만상록 PC {ProductInfo.Version} 성능·상태 로그",
+            $"출력 시각: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}",
+            $"파일 상한: {MaximumLogFileBytes / 1024 / 1024:N0} MiB · 최근 표본 {recentSamples.Count:N0}/{PerformanceLogCapacity:N0}",
+            string.Empty,
+        };
+        lines.AddRange(recentSamples);
+        return QueueManualWrite(LogFileKind.Performance, lines.ToArray());
     }
 
     public void Dispose()
@@ -253,40 +287,26 @@ internal sealed class GameLogService : IDisposable
 
     private static string AppendAutomaticFile(LogFileKind kind, string[] lines)
     {
-        var path = Path.Combine(
+        var result = BoundedLogFileWriter.AppendSeries(
             OutputDirectory,
-            $"{FormatKind(kind)}-auto-{DateTime.Now:yyyyMMdd}.log");
-        File.AppendAllLines(path, lines, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-        return path;
+            $"{FormatKind(kind)}-auto-{DateTime.Now:yyyyMMdd}",
+            lines);
+        return result.LastPath;
     }
 
     private static string WriteManualFile(LogFileKind kind, string[] lines)
     {
-        var path = Path.Combine(
+        var result = BoundedLogFileWriter.WriteNewSeries(
             OutputDirectory,
-            $"{FormatKind(kind)}-export-{DateTime.Now:yyyyMMdd-HHmmss-fff}.log");
-        var temporaryPath = path + ".tmp";
-        try
-        {
-            File.WriteAllLines(
-                temporaryPath,
-                lines,
-                new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
-            File.Move(temporaryPath, path, overwrite: true);
-            return path;
-        }
-        finally
-        {
-            if (File.Exists(temporaryPath))
-            {
-                File.Delete(temporaryPath);
-            }
-        }
+            $"{FormatKind(kind)}-export-{DateTime.Now:yyyyMMdd-HHmmss-fff}",
+            lines);
+        return result.PrimaryPath;
     }
 
     private static string FormatKind(LogFileKind kind) => kind switch
     {
         LogFileKind.Debug => "debug",
+        LogFileKind.Performance => "performance",
         LogFileKind.World => "world",
         _ => throw new ArgumentOutOfRangeException(nameof(kind)),
     };
@@ -294,6 +314,7 @@ internal sealed class GameLogService : IDisposable
     private enum LogFileKind : byte
     {
         Debug,
+        Performance,
         World,
     }
 

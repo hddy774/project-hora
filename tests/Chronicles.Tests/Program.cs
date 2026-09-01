@@ -1,3 +1,4 @@
+using Chronicles.Application;
 using Chronicles.Core;
 using Chronicles.Persistence;
 using Chronicles.Simulation;
@@ -75,6 +76,7 @@ var tests = new (string Name, Action Body)[]
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
     ("schema 25 SQLite 다중 슬롯·후보 원자 복원", SqliteSlotPersistenceTests.Run),
+    ("모든 로그 파일 10MiB 상한·자동 회전", BoundedLogFilesNeverExceedTenMiB),
     ("10,000명 로컬 실시간 성능 예산", DefaultWorldPerformanceBudget),
 };
 
@@ -3823,6 +3825,52 @@ static void AtomicSaveFileRoundTrip()
         {
             Directory.Delete(root, recursive: true);
         }
+    }
+}
+
+static void BoundedLogFilesNeverExceedTenMiB()
+{
+    var directory = Path.Combine(
+        Path.GetTempPath(),
+        $"cmip-bounded-log-{Guid.NewGuid():N}");
+    Directory.CreateDirectory(directory);
+    try
+    {
+        var lines = Enumerable.Range(0, 2_400)
+            .Select(index => $"{index:D4}|{new string('가', 2_200)}")
+            .ToArray();
+        var export = BoundedLogFileWriter.WriteNewSeries(directory, "manual", lines);
+        True(export.FileCount >= 2, "10MiB 초과 수동 로그 분할");
+        var exportPaths = Directory.GetFiles(directory, "manual-*.log");
+        Equal(export.FileCount, exportPaths.Length, "수동 로그 결과 파일 수");
+        True(
+            exportPaths.All(path => new FileInfo(path).Length
+                <= BoundedLogFileWriter.MaximumFileBytes),
+            "수동 로그 파일별 10MiB 상한");
+        Equal(
+            lines.Length,
+            exportPaths.Sum(path => File.ReadLines(path).Count()),
+            "수동 로그 행 보존");
+
+        var firstBatch = lines[..1_200];
+        var secondBatch = lines[1_200..];
+        _ = BoundedLogFileWriter.AppendSeries(directory, "automatic", firstBatch);
+        var automatic = BoundedLogFileWriter.AppendSeries(directory, "automatic", secondBatch);
+        True(automatic.FileCount >= 1, "자동 로그 append 결과");
+        var automaticPaths = Directory.GetFiles(directory, "automatic-*.log");
+        True(automaticPaths.Length >= 2, "자동 로그 용량 회전");
+        True(
+            automaticPaths.All(path => new FileInfo(path).Length
+                <= BoundedLogFileWriter.MaximumFileBytes),
+            "자동 로그 파일별 10MiB 상한");
+        Equal(
+            lines.Length,
+            automaticPaths.Sum(path => File.ReadLines(path).Count()),
+            "자동 로그 행 보존");
+    }
+    finally
+    {
+        Directory.Delete(directory, recursive: true);
     }
 }
 

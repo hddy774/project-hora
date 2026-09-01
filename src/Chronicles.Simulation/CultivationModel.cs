@@ -67,6 +67,7 @@ public enum CultivationBottleneckCause : byte
     EntryGate,
     RealmComponent,
     Method,
+    Environment,
 }
 
 public enum BreakthroughClass : byte
@@ -494,7 +495,20 @@ public readonly record struct CultivationTraceState(
     CultivationBottleneckCause Blocker,
     CultivationFormulaKind FormulaKind = CultivationFormulaKind.None,
     long AuthorityRevisionBefore = 0,
-    long AuthorityRevisionAfter = 0)
+    long AuthorityRevisionAfter = 0,
+    int AttemptEffectRegistryRevision = 0,
+    int CandidateEffectCount = 0,
+    int SelectedEffectCount = 0,
+    CultivationValueAvailability AttemptEffectAvailability = CultivationValueAvailability.NotCalculated,
+    CultivationFailureEffectKind FailureEffect = CultivationFailureEffectKind.CleanFailure,
+    CultivationValueAvailability FailureEffectAvailability = CultivationValueAvailability.NotApplicable,
+    CultivationRngDomain RngDomain = CultivationRngDomain.NotUsed,
+    bool AttemptSnapshotFrozen = false,
+    FoundationProcedureStep FoundationProcedureSteps = FoundationProcedureStep.None,
+    int EnvironmentFactorBasisPoints = 0,
+    CultivationValueAvailability EnvironmentAvailability = CultivationValueAvailability.NotCalculated,
+    CultivationValueAvailability LawUnderstandingAvailability = CultivationValueAvailability.Unavailable,
+    CultivationValueAvailability LuckFateAvailability = CultivationValueAvailability.Unavailable)
 {
     public static CultivationTraceState Empty => new(
         0,
@@ -532,7 +546,8 @@ public sealed record CultivationReadProjection(
     IReadOnlyList<CultivationGateSnapshot> EntryGates,
     IReadOnlyList<RealmComponentSnapshot> Components,
     CultivationTraceState LatestTrace,
-    long AuthorityRevision);
+    long AuthorityRevision,
+    FoundationFormationSnapshot? FoundationFormation = null);
 
 public readonly record struct CultivationCheckpoint(
     int PendingCarryoverWork,
@@ -547,7 +562,8 @@ public readonly record struct CultivationCheckpoint(
     ushort[] FormationValues,
     CultivationTraceState LatestTrace,
     ushort[]? EntryGateTempering = null,
-    long AuthorityRevision = 0);
+    long AuthorityRevision = 0,
+    FoundationFormationCheckpoint? FoundationFormation = null);
 
 public readonly record struct ProvisionalBalanceDefinition(
     string StableId,

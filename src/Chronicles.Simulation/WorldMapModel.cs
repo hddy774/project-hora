@@ -100,6 +100,9 @@ public readonly record struct WorldMapCheckpoint(
 
 public static class WorldMapRules
 {
+    // PC_TEMP_REVIEW: 제2층천 이동 선호 수치는 Production Atlas 확장 시 재보정한다.
+    public const int SecondHeavenMigrationChancePercent = 35;
+
     public const int CurrentRevision = 2;
     public const ushort CityLocationId = 0;
     public const ushort SecondHeavenCityLocationId = 9;

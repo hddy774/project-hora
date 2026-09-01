@@ -800,6 +800,25 @@ public sealed partial class World
                 Add(ref hash, _agents.FormationValues[(index * CultivationRules.FormationSlotCount) + formation]);
             }
 
+            if (_agents.FoundationFormations.CreateCheckpoint(index) is { } foundationFormation)
+            {
+                Add(ref hash, 1UL);
+                Add(ref hash, (ulong)foundationFormation.MethodRevision);
+                Add(ref hash, (byte)foundationFormation.CompletedSteps);
+                Add(ref hash, (byte)foundationFormation.Source.Route);
+                Add(ref hash, (byte)foundationFormation.Source.Kind);
+                Add(ref hash, foundationFormation.Source.LocationId);
+                Add(ref hash, (ulong)foundationFormation.Source.SourceRevision);
+                Add(ref hash, (ulong)foundationFormation.Source.FrozenTick);
+                Add(ref hash, (ulong)foundationFormation.Source.SourceCount);
+                Add(ref hash, (ulong)foundationFormation.Source.RemainingSupply);
+                Add(ref hash, (byte)foundationFormation.Source.Availability);
+            }
+            else
+            {
+                Add(ref hash, 0UL);
+            }
+
             var trace = _agents.CultivationTraces[index];
             Add(ref hash, (ulong)trace.Tick);
             Add(ref hash, (ulong)trace.FormulaRevision);
@@ -821,6 +840,19 @@ public sealed partial class World
             Add(ref hash, (byte)trace.FormulaKind);
             Add(ref hash, (ulong)trace.AuthorityRevisionBefore);
             Add(ref hash, (ulong)trace.AuthorityRevisionAfter);
+            Add(ref hash, (ulong)trace.AttemptEffectRegistryRevision);
+            Add(ref hash, (ulong)trace.CandidateEffectCount);
+            Add(ref hash, (ulong)trace.SelectedEffectCount);
+            Add(ref hash, (byte)trace.AttemptEffectAvailability);
+            Add(ref hash, (byte)trace.FailureEffect);
+            Add(ref hash, (byte)trace.FailureEffectAvailability);
+            Add(ref hash, (byte)trace.RngDomain);
+            Add(ref hash, trace.AttemptSnapshotFrozen ? 1UL : 0UL);
+            Add(ref hash, (byte)trace.FoundationProcedureSteps);
+            Add(ref hash, (ulong)trace.EnvironmentFactorBasisPoints);
+            Add(ref hash, (byte)trace.EnvironmentAvailability);
+            Add(ref hash, (byte)trace.LawUnderstandingAvailability);
+            Add(ref hash, (byte)trace.LuckFateAvailability);
             Add(ref hash, (ulong)_agents.CultivationAuthorityRevisions[index]);
             Add(ref hash, _agents.TechniqueQualities[index]);
             Add(ref hash, _agents.TechniqueMasteries[index]);

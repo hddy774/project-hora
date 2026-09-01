@@ -70,10 +70,13 @@ public sealed partial class World
         var body = (
             cultivationAptitudes.Bone.Hundredths
             + cultivationAptitudes.Constitution.Hundredths) / 2;
+        var environmentFactor = CultivationRules.GetEnvironmentFactorBasisPoints(
+            _atlas.GetCultivationEnvironmentQualityHundredths(_agents.LocationIds[index]));
         var gain = CultivationRules.GetEntryWorkGain(
             aptitude,
             _agents.TechniqueQualities[index],
-            body);
+            body,
+            environmentFactor);
         if (_balance.DeveloperModeEnabled)
         {
             gain = WorldBalanceRules.ApplyPercent(gain, _balance.CultivationWorkPercent);
@@ -124,7 +127,9 @@ public sealed partial class World
             0,
             10_000,
             -1,
-            blocker));
+            blocker,
+            EnvironmentFactorBasisPoints: environmentFactor,
+            EnvironmentAvailability: CultivationValueAvailability.Actual));
     }
 
     private void TemperEntryGates(int index)
@@ -205,10 +210,17 @@ public sealed partial class World
 
         var before = _agents.CultivationProgress[index];
         var aptitude = GetInnateAptitudeComposite(index);
-        var gain = checked(
-            CultivationRules.GetMonthlyRealmWorkGain(aptitude)
-            * _agents.CombatAttributes[index].CultivationEfficiencyBasisPoints
-            / 10_000);
+        var bodyCondition = checked(
+            _agents.Health[index] * 10_000 / Math.Max(1, _agents.MaximumHealth[index]));
+        var environmentQuality = _atlas.GetCultivationEnvironmentQualityHundredths(
+            _agents.LocationIds[index]);
+        var environmentFactor = CultivationRules.GetEnvironmentFactorBasisPoints(
+            environmentQuality);
+        var gain = CultivationRules.GetMonthlyRealmWorkGain(
+            aptitude,
+            _agents.TechniqueQualities[index],
+            environmentQuality,
+            bodyCondition);
         if (_balance.DeveloperModeEnabled)
         {
             gain = WorldBalanceRules.ApplyPercent(gain, _balance.CultivationWorkPercent);
@@ -248,7 +260,9 @@ public sealed partial class World
             0,
             0,
             -1,
-            CultivationBottleneckCause.None));
+            CultivationBottleneckCause.None,
+            EnvironmentFactorBasisPoints: environmentFactor,
+            EnvironmentAvailability: CultivationValueAvailability.Actual));
         if (after < requirement)
         {
             return;
@@ -329,6 +343,7 @@ public sealed partial class World
         var attemptClass = CultivationRules.GetAttemptClass(
             _agents.RealmLayers[index],
             _agents.GreatPerfectionAchieved[index]);
+        BindFoundationRouteIfNeeded(index, attemptClass);
         var blocker = EvaluateBreakthroughPreflight(index, attemptClass);
         if (blocker == CultivationBottleneckCause.None)
         {
@@ -348,6 +363,7 @@ public sealed partial class World
         var attemptClass = CultivationRules.GetAttemptClass(
             _agents.RealmLayers[index],
             _agents.GreatPerfectionAchieved[index]);
+        BindFoundationRouteIfNeeded(index, attemptClass);
         var blocker = EvaluateBreakthroughPreflight(index, attemptClass);
         if (blocker != CultivationBottleneckCause.None)
         {
@@ -372,12 +388,17 @@ public sealed partial class World
         var sourceRealm = _agents.RealmStages[index];
         var sourceFloor = _agents.RealmLayers[index];
         var destinationFloor = sourceFloor;
+        var foundationSource = attemptClass == BreakthroughClass.MajorRealm
+            && sourceRealm == RealmStage.QiRefining
+                ? CreateFoundationSourceSnapshot(index, _agents.FoundationRoutes[index])
+                : (FoundationSourceSnapshot?)null;
+        CultivationFailureResult? failureResult = null;
 
         if (succeeded)
         {
             if (attemptClass == BreakthroughClass.MajorRealm)
             {
-                CompleteMajorRealmBreakthrough(index);
+                CompleteMajorRealmBreakthrough(index, foundationSource);
                 destinationFloor = 1;
             }
             else
@@ -391,6 +412,7 @@ public sealed partial class World
         else
         {
             var failure = CultivationFailureRiskRegistry.Resolve(attemptClass);
+            failureResult = failure;
             if (failure.Effect != CultivationFailureEffectKind.CleanFailure
                 || failure.WorkLost != 0
                 || failure.ComponentLostHundredths != 0
@@ -432,7 +454,24 @@ public sealed partial class World
             modifier,
             finalChance,
             roll,
-            CultivationBottleneckCause.None));
+            CultivationBottleneckCause.None,
+            AttemptEffectRegistryRevision: effectResolution.RegistryRevision,
+            CandidateEffectCount: effectResolution.CandidateCount,
+            SelectedEffectCount: effectResolution.SelectedCount,
+            AttemptEffectAvailability: effectResolution.Availability,
+            FailureEffect: failureResult?.Effect ?? CultivationFailureEffectKind.CleanFailure,
+            FailureEffectAvailability: failureResult?.Availability
+                ?? CultivationValueAvailability.NotApplicable,
+            RngDomain: CultivationRngDomain.BreakthroughSuccess,
+            AttemptSnapshotFrozen: true,
+            FoundationProcedureSteps: foundationSource is null
+                ? FoundationProcedureStep.None
+                : succeeded
+                    ? FoundationProcedureStep.Complete
+                    : FoundationProcedureStep.AchievementConverged
+                        | FoundationProcedureStep.RouteBound
+                        | FoundationProcedureStep.SourceAligned
+                        | FoundationProcedureStep.FormationAttempted));
     }
 
     private byte CompleteMinorStageBreakthrough(int index, byte sourceFloor)
@@ -487,7 +526,9 @@ public sealed partial class World
         return destinationFloor;
     }
 
-    private void CompleteMajorRealmBreakthrough(int index)
+    private void CompleteMajorRealmBreakthrough(
+        int index,
+        FoundationSourceSnapshot? foundationSource)
     {
         if (_agents.RealmStages[index] >= RealmStage.HalfImmortal)
         {
@@ -495,9 +536,10 @@ public sealed partial class World
             return;
         }
 
-        if (_agents.RealmStages[index] == RealmStage.QiRefining)
+        var isFoundationFormation = _agents.RealmStages[index] == RealmStage.QiRefining;
+        if (isFoundationFormation && foundationSource is null)
         {
-            _agents.FoundationRoutes[index] = SelectFoundationRoute(index);
+            throw new InvalidOperationException("축기 형성 Source Snapshot이 없습니다.");
         }
 
         _agents.RealmStages[index]++;
@@ -521,6 +563,15 @@ public sealed partial class World
         _agents.CultivationStates[index] = CultivationState.Stabilizing;
         _agents.CultivationBottleneckCauses[index] = CultivationBottleneckCause.None;
         InitializeRealmComponents(index);
+        if (isFoundationFormation)
+        {
+            _agents.FoundationFormations.Commit(
+                index,
+                new FoundationFormationCheckpoint(
+                    FoundationMethodRules.CurrentRevision,
+                    FoundationProcedureStep.Complete,
+                    foundationSource!.Value));
+        }
         AddChronicle(index, ChronicleEventKind.MajorRealmBreakthrough);
         AddEvent(
             WorldEventKind.MajorRealmBreakthrough,
@@ -540,9 +591,19 @@ public sealed partial class World
             }
 
             if (_agents.RealmStages[index] == RealmStage.QiRefining
-                && _agents.TechniqueMasteries[index] < 2_500)
+                && (_agents.TechniqueQualities[index] == 0
+                    || _agents.TechniqueMasteries[index]
+                        < FoundationMethodRules.ProvisionalMasteryThresholdHundredths
+                    || _agents.TechniqueUnderstanding[index]
+                        < FoundationMethodRules.ProvisionalUnderstandingThresholdHundredths))
             {
                 return CultivationBottleneckCause.Method;
+            }
+
+            if (_agents.RealmStages[index] == RealmStage.QiRefining
+                && !IsFoundationSourceAvailable(index, _agents.FoundationRoutes[index]))
+            {
+                return CultivationBottleneckCause.Environment;
             }
         }
         else if (_agents.CultivationProgress[index] < GetCultivationRequirement(index))
@@ -590,7 +651,15 @@ public sealed partial class World
             _agents.SetCultivationComponent(index, component, Math.Min(limit, value + 50), limit);
         }
 
-        _agents.CultivationStates[index] = CultivationState.Stable;
+        var stabilized = componentCount == 0
+            || _agents.GetCultivationComponentAverage(index, componentCount)
+                >= CultivationRules.ProvisionalStabilizationThresholdHundredths;
+        _agents.CultivationStates[index] = stabilized
+            ? CultivationState.Stable
+            : CultivationState.Stabilizing;
+        _agents.CultivationBottleneckCauses[index] = stabilized
+            ? CultivationBottleneckCause.None
+            : CultivationBottleneckCause.Stability;
         CommitCultivationTrace(
             index,
             CultivationFormulaKind.BreakthroughResult,
@@ -598,7 +667,7 @@ public sealed partial class World
                 Tick.Value,
                 CultivationRules.FormulaRevision,
                 BreakthroughClass.MajorRealm,
-                BreakthroughOutcome.Success,
+                stabilized ? BreakthroughOutcome.Success : BreakthroughOutcome.Blocked,
                 _agents.RealmStages[index],
                 _agents.RealmLayers[index],
                 _agents.RealmLayers[index],
@@ -611,7 +680,9 @@ public sealed partial class World
                 0,
                 10_000,
                 -1,
-                CultivationBottleneckCause.None));
+                stabilized
+                    ? CultivationBottleneckCause.None
+                    : CultivationBottleneckCause.Stability));
     }
 
     private void GrowRealmComponents(int index, int workGain)
@@ -699,9 +770,82 @@ public sealed partial class World
         var human = (aptitudes.Bone.Hundredths + aptitudes.Constitution.Hundredths) / 2;
         var earth = (aptitudes.Mind.Hundredths + aptitudes.Soul.Hundredths) / 2;
         var heaven = (aptitudes.SpiritualRoot.Hundredths + aptitudes.Comprehension.Hundredths) / 2;
-        return human >= earth && human >= heaven
-            ? FoundationRoute.Human
-            : earth >= heaven ? FoundationRoute.Earth : FoundationRoute.Heaven;
+        var selected = FoundationRoute.Human;
+        var selectedScore = human;
+        if (IsFoundationSourceAvailable(index, FoundationRoute.Earth)
+            && earth > selectedScore)
+        {
+            selected = FoundationRoute.Earth;
+            selectedScore = earth;
+        }
+        if (IsFoundationSourceAvailable(index, FoundationRoute.Heaven)
+            && heaven > selectedScore)
+        {
+            selected = FoundationRoute.Heaven;
+        }
+
+        return selected;
+    }
+
+    private void BindFoundationRouteIfNeeded(int index, BreakthroughClass attemptClass)
+    {
+        if (attemptClass == BreakthroughClass.MajorRealm
+            && _agents.RealmStages[index] == RealmStage.QiRefining
+            && _agents.FoundationRoutes[index] == FoundationRoute.None)
+        {
+            _agents.FoundationRoutes[index] = SelectFoundationRoute(index);
+        }
+    }
+
+    private bool IsFoundationSourceAvailable(int index, FoundationRoute route)
+    {
+        var locationId = _agents.LocationIds[index];
+        return route switch
+        {
+            FoundationRoute.Human => true,
+            FoundationRoute.Earth => _atlas.GetRemainingSpiritStoneSupply(locationId) > 0,
+            FoundationRoute.Heaven =>
+                WorldMapRules.GetLocation(locationId).HeavenlyLayer >= 2
+                || (WorldMapRules.GetLocation(locationId).Biome == BiomeType.Mountains
+                    && _atlas.GetCultivationEnvironmentQualityHundredths(locationId) >= 5_500),
+            _ => false,
+        };
+    }
+
+    private FoundationSourceSnapshot CreateFoundationSourceSnapshot(
+        int index,
+        FoundationRoute route)
+    {
+        var locationId = _agents.LocationIds[index];
+        var available = IsFoundationSourceAvailable(index, route);
+        var kind = route switch
+        {
+            FoundationRoute.Human => FoundationSourceKind.InternalBodyAndSpiritualRoot,
+            FoundationRoute.Earth => FoundationSourceKind.LocationSpiritVeins,
+            FoundationRoute.Heaven => FoundationSourceKind.ManifestationEnvironmentWindow,
+            _ => FoundationSourceKind.None,
+        };
+        var sourceCount = route switch
+        {
+            FoundationRoute.Human => 2,
+            FoundationRoute.Earth => WorldAtlasRules.SpiritVeinsPerLocation,
+            FoundationRoute.Heaven => 1,
+            _ => 0,
+        };
+        var remainingSupply = route == FoundationRoute.Earth
+            ? _atlas.GetRemainingSpiritStoneSupply(locationId)
+            : 0;
+        return new FoundationSourceSnapshot(
+            route,
+            kind,
+            locationId,
+            WorldAtlasRules.CurrentRevision,
+            Tick.Value,
+            sourceCount,
+            remainingSupply,
+            available
+                ? CultivationValueAvailability.Actual
+                : CultivationValueAvailability.Unavailable);
     }
 
     private byte EvaluateEntryGatePassMask(int index)
@@ -786,7 +930,31 @@ public sealed partial class World
         CreateEntryGateSnapshots(index),
         CreateRealmComponentSnapshots(index),
         _agents.CultivationTraces[index],
-        _agents.CultivationAuthorityRevisions[index]);
+        _agents.CultivationAuthorityRevisions[index],
+        CreateFoundationFormationProjection(index));
+
+    private FoundationFormationSnapshot? CreateFoundationFormationProjection(int index)
+    {
+        if (_agents.FoundationFormations.CreateCheckpoint(index) is not { } formation)
+        {
+            return null;
+        }
+
+        var start = index * CultivationRules.FormationSlotCount;
+        var quality = new int[CultivationRules.FormationSlotCount];
+        for (var component = 0; component < quality.Length; component++)
+        {
+            quality[component] = _agents.FormationValues[start + component];
+        }
+
+        return new FoundationFormationSnapshot(
+            FoundationMethodRules.StableId,
+            formation.MethodRevision,
+            formation.CompletedSteps,
+            formation.Source,
+            quality,
+            RequiresStabilization: true);
+    }
 
     private static CultivationLifecyclePhase GetCultivationLifecyclePhase(CultivationState state) => state switch
     {

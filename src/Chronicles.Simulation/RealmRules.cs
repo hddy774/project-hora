@@ -92,12 +92,12 @@ public static class CultivationRules
         new("cultivation.floor_weights", FormulaRevision, "80/90/100/105/110/115/125/135/140", "9층 합계 1,000 임시 성장 곡선", true),
         new("cultivation.aptitude_composite", FormulaRevision, "6대 선천 자질 산술평균", "50.00 기준 수행 기간 보존", true),
         new("cultivation.component_thresholds", FormulaRevision, "3→4 40.00, 6→7 60.00, 대원만 75.00", "Typed Component Gate 임시값", true),
-        new("cultivation.method_mastery", FormulaRevision, "삼도축기요결 숙련도 25.00", "연기→축기 Method Preflight 임시값", true),
-        new("cultivation.method_understanding", FormulaRevision, "삼도축기요결 이해도 25.00", "Method content·이해·실행 숙련 Preflight 임시값", true),
+        new("cultivation.method_mastery", FormulaRevision, "삼도축기요결 숙련도 5.00", "연기→축기 Method Preflight 임시값", true),
+        new("cultivation.method_understanding", FormulaRevision, "삼도축기요결 이해도 5.00", "Method content·이해·실행 숙련 Preflight 임시값", true),
         new("cultivation.stabilization", FormulaRevision, "대경지 성공 후 1회 평가", "고정 연수 없이 최소 1회 commit", true),
         new("cultivation.stabilization_target", FormulaRevision, "Realm Component 평균 30.00", "Stabilization Target Set 임시값", true),
         new("cultivation.environment_factor", FormulaRevision, "영맥 품질 0.80~1.20", "환경·영맥 일반 수행 계수 임시값", true),
-        new("cultivation.foundation_source", FormulaRevision, "인도 내부 기반·지도 영맥·천도 제2층천 현현", "지도·천도 Source 가용성 임시 PC 매핑", true),
+        new("cultivation.foundation_source", FormulaRevision, "인도 내부 기반·지도 영맥·천도 고품질 산맥/제2층천 현현", "지도·천도 Source 가용성 임시 PC 매핑", true),
         new("cultivation.entry_gate_tempering", FormulaRevision, "실패 Gate당 월 1.00 + 오성/100", "고정 선천자질 때문에 생기는 영구 입문 정체 방지", true),
     ];
 
@@ -318,8 +318,8 @@ public static class FoundationMethodRules
 {
     public const string StableId = "method.foundation.three_paths";
     public const int CurrentRevision = 1;
-    public const int ProvisionalMasteryThresholdHundredths = 2_500;
-    public const int ProvisionalUnderstandingThresholdHundredths = 2_500;
+    public const int ProvisionalMasteryThresholdHundredths = 500;
+    public const int ProvisionalUnderstandingThresholdHundredths = 500;
 }
 
 public static class RealmRules

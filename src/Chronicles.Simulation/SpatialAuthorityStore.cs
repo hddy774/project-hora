@@ -9,6 +9,8 @@ internal sealed class SpatialAuthorityStore
     private readonly long[] _lastDiscoveryMonths;
     private readonly MovementRouteState[] _routes;
     private readonly long[] _spiritVeinRemainingSupply;
+    private readonly int[] _cultivationEnvironmentQualityHundredths =
+        new int[WorldAtlasRules.ProductionLocationCount];
     private readonly int[] _populationByLocation =
         new int[WorldAtlasRules.ProductionLocationCount];
 
@@ -28,6 +30,7 @@ internal sealed class SpatialAuthorityStore
                 .GetSpiritVeinProfile(definition.ProfileId)
                 .InitialSupply;
         }
+        RebuildCultivationEnvironmentCache();
 
         for (var agent = 0; agent < population; agent++)
         {
@@ -44,6 +47,7 @@ internal sealed class SpatialAuthorityStore
         _lastDiscoveryMonths = checkpoint.LastDiscoveryMonths.ToArray();
         _routes = checkpoint.Routes.ToArray();
         _spiritVeinRemainingSupply = checkpoint.SpiritVeinRemainingSupply.ToArray();
+        RebuildCultivationEnvironmentCache();
     }
 
     public static int Revision => WorldAtlasRules.CurrentRevision;
@@ -359,7 +363,22 @@ internal sealed class SpatialAuthorityStore
             }
         }
 
+        if (extracted > 0)
+        {
+            RebuildCultivationEnvironment(locationId);
+        }
+
         return extracted > 0;
+    }
+
+    public int GetCultivationEnvironmentQualityHundredths(ushort locationId)
+    {
+        if (!WorldAtlasRules.IsProductionLocation(locationId))
+        {
+            throw new ArgumentOutOfRangeException(nameof(locationId));
+        }
+
+        return _cultivationEnvironmentQualityHundredths[locationId];
     }
 
     public long GetRemainingSpiritStoneSupply(ushort locationId)
@@ -500,6 +519,37 @@ internal sealed class SpatialAuthorityStore
         _knownLocationBits[agent] |= mask;
         _lastDiscoveredLocationIds[agent] = locationId;
         _lastDiscoveryMonths[agent] = currentMonth;
+    }
+
+    private void RebuildCultivationEnvironmentCache()
+    {
+        for (ushort locationId = 0;
+             locationId < WorldAtlasRules.ProductionLocationCount;
+             locationId++)
+        {
+            RebuildCultivationEnvironment(locationId);
+        }
+    }
+
+    private void RebuildCultivationEnvironment(ushort locationId)
+    {
+        var qualityTotal = 0;
+        var activeCount = 0;
+        foreach (var source in WorldAtlasRules.GetSpiritVeins(locationId))
+        {
+            if (_spiritVeinRemainingSupply[source.Id.Value] <= 0)
+            {
+                continue;
+            }
+
+            qualityTotal += WorldAtlasRules.GetSpiritVeinProfile(source.ProfileId)
+                .QualityHundredths;
+            activeCount++;
+        }
+
+        _cultivationEnvironmentQualityHundredths[locationId] = activeCount == 0
+            ? 0
+            : qualityTotal / activeCount;
     }
 
     private void RebuildPopulationIndex(ReadOnlySpan<ushort> locations)

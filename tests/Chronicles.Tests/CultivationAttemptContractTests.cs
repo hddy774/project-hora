@@ -68,9 +68,19 @@ internal static class CultivationAttemptContractTests
             "환경 중립 계수");
         TestAssert.Equal(12_000, CultivationRules.GetEnvironmentFactorBasisPoints(10_000),
             "환경 최고 계수");
+        TestAssert.Equal(1_000, CultivationRules.GetMonthlyRealmWorkGain(
+            aptitudeCompositeHundredths: 5_000,
+            techniqueQualityHundredths: 5_000,
+            environmentQualityHundredths: 5_000,
+            bodyConditionBasisPoints: 10_000),
+            "자질·공법·환경 중립값의 기준 월 Work");
         TestAssert.Equal("method.foundation.three_paths", FoundationMethodRules.StableId,
             "삼도축기요결 안정 ID");
         TestAssert.Equal(1, FoundationMethodRules.CurrentRevision,
             "삼도축기요결 revision");
+        TestAssert.Equal(500, FoundationMethodRules.ProvisionalMasteryThresholdHundredths,
+            "축기법 임시 숙련 사전검증 5.00");
+        TestAssert.Equal(500, FoundationMethodRules.ProvisionalUnderstandingThresholdHundredths,
+            "축기법 임시 이해 사전검증 5.00");
     }
 }

@@ -257,6 +257,15 @@ public sealed partial class World
             return true;
         }
 
+        if (location.Id == WorldMapRules.CityLocationId
+            && _agents.RealmStages[index] >= RealmStage.FoundationEstablishment
+            && _random.NextInt(100) < WorldMapRules.SecondHeavenMigrationChancePercent
+            && PrepareTravelTo(index, WorldMapRules.SecondHeavenCityLocationId))
+        {
+            activity = AgentActivity.Traveling;
+            return true;
+        }
+
         if (_random.NextInt(100) < 8)
         {
             if (PrepareTravel(index, preferCity: false))
@@ -319,6 +328,12 @@ public sealed partial class World
             destination = perceived[_random.NextInt(perceived.Count)];
         }
 
+        return PrepareTravelTo(index, destination);
+    }
+
+    private bool PrepareTravelTo(int index, ushort destination)
+    {
+        var current = _agents.LocationIds[index];
         _agents.TravelDestinationIds[index] = destination;
         var dueTick = checked(Tick.Value + GetTravelDurationTicks(current, destination));
         return _atlas.PlanRoute(

@@ -100,9 +100,13 @@ public sealed partial class World
         int agentIndex,
         byte phase)
     {
-        if ((uint)agentIndex >= (uint)Population || phase is 0 or >= 16)
+        if ((uint)agentIndex >= (uint)Population)
         {
             throw new ArgumentOutOfRangeException(nameof(agentIndex));
+        }
+        if (phase is 0 or >= 16)
+        {
+            throw new ArgumentOutOfRangeException(nameof(phase));
         }
         const ulong prefix = 0xE021_0000_0000_0000UL;
         const ulong maximumPayload = 0x0000_FFFF_FFFF_FFFFUL;

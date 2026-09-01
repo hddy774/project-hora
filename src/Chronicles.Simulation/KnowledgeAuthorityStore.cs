@@ -382,36 +382,6 @@ public sealed class KnowledgeAuthorityStore
             provenanceId);
     }
 
-    public bool TrySelectEdition(
-        KnowledgeContentKind kind,
-        ulong selector,
-        out KnowledgeEditionId editionId)
-    {
-        if (!Enum.IsDefined(kind))
-        {
-            throw new ArgumentOutOfRangeException(nameof(kind));
-        }
-        if (_editions.Count == 0)
-        {
-            editionId = default;
-            return false;
-        }
-
-        var start = checked((int)(selector % (ulong)_editions.Count));
-        for (var offset = 0; offset < _editions.Count; offset++)
-        {
-            var edition = _editions[(start + offset) % _editions.Count];
-            if (_contents[_contentIndexById[edition.ContentId]].Kind == kind)
-            {
-                editionId = new KnowledgeEditionId(edition.EditionId);
-                return true;
-            }
-        }
-
-        editionId = default;
-        return false;
-    }
-
     public bool TrySelectUnaccessedEdition(
         KnowledgeAccessorRef accessor,
         KnowledgeContentKind kind,
@@ -433,32 +403,6 @@ public sealed class KnowledgeAuthorityStore
                     (accessor.Kind, accessor.Id, edition.ContentId)))
             {
                 editionId = new KnowledgeEditionId(edition.EditionId);
-                return true;
-            }
-        }
-
-        editionId = default;
-        return false;
-    }
-
-    public bool TryGetAccessEdition(
-        KnowledgeAccessorRef accessor,
-        KnowledgeContentKind kind,
-        out KnowledgeEditionId editionId)
-    {
-        if (!IsValidAccessor(accessor) || !Enum.IsDefined(kind))
-        {
-            editionId = default;
-            return false;
-        }
-        for (var index = _access.Count - 1; index >= 0; index--)
-        {
-            var access = _access[index];
-            if (access.AccessorKind == accessor.Kind
-                && access.AccessorId == accessor.Id
-                && _contents[_contentIndexById[access.ContentId]].Kind == kind)
-            {
-                editionId = new KnowledgeEditionId(access.EditionId);
                 return true;
             }
         }

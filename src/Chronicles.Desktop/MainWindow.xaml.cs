@@ -877,87 +877,9 @@ public partial class MainWindow : Window, IDisposable
             paused ? "시뮬레이션 일시정지" : "시뮬레이션 진행 재개");
     }
 
-    private async void SaveButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (_runner is null)
-        {
-            return;
-        }
+    private void SaveButton_Click(object sender, RoutedEventArgs e) => OpenSaveWorkspace();
 
-        try
-        {
-            StatusText.Text = "세계 저장 중…";
-            await _runner.SaveDefaultAsync();
-            StatusText.Text = $"저장 완료 · {GameApplicationSession.DefaultSavePath}";
-            StatusText.Foreground = (Brush)FindResource("PositiveBrush");
-            _logService.AddDebug(DebugLogLevel.Information, $"세계 저장 완료 · {GameApplicationSession.DefaultSavePath}");
-        }
-        catch (IOException exception)
-        {
-            ShowPersistenceError(exception);
-        }
-        catch (UnauthorizedAccessException exception)
-        {
-            ShowPersistenceError(exception);
-        }
-        catch (InvalidOperationException exception)
-        {
-            ShowPersistenceError(exception);
-        }
-        catch (InvalidDataException exception)
-        {
-            ShowPersistenceError(exception);
-        }
-    }
-
-    private async void LoadButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (_runner is null)
-        {
-            return;
-        }
-
-        try
-        {
-            StatusText.Text = "세계 불러오는 중…";
-            var restoredSchemaVersion = await _runner.LoadDefaultAsync();
-            var metadata = _runner.GetWorldMetadata();
-            _worldSeed = metadata.Seed;
-            _activeBalance = metadata.Balance;
-            SettingsWorkspacePanel.SetCurrentWorldSettings(
-                metadata.Seed,
-                metadata.Population,
-                metadata.Balance);
-            _projectedRecentEventSequence = long.MinValue;
-            _projectedRecentEventCount = -1;
-            _projectedWorldLogCategory = null;
-            _projectedWorldChronicleSequence = long.MinValue;
-            _projectedWorldChronicleCount = -1;
-            _projectedWorldChronicleCategory = null;
-            ClearReincarnationView();
-            _selectedAgent = null;
-            RefreshVisibleObservation();
-            StatusText.Text = $"불러오기 완료 · {GameApplicationSession.DefaultSavePath}";
-            StatusText.Foreground = (Brush)FindResource("PositiveBrush");
-            _logService.AddDebug(DebugLogLevel.Information, $"세계 불러오기 완료 · schema {restoredSchemaVersion}");
-        }
-        catch (FileNotFoundException exception)
-        {
-            ShowPersistenceError(exception);
-        }
-        catch (InvalidDataException exception)
-        {
-            ShowPersistenceError(exception);
-        }
-        catch (IOException exception)
-        {
-            ShowPersistenceError(exception);
-        }
-        catch (UnauthorizedAccessException exception)
-        {
-            ShowPersistenceError(exception);
-        }
-    }
+    private void LoadButton_Click(object sender, RoutedEventArgs e) => OpenSaveWorkspace();
 
     private void ShowPersistenceError(Exception exception)
     {

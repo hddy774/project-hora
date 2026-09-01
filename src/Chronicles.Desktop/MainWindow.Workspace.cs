@@ -14,6 +14,7 @@ internal enum WorkspaceRoute : byte
     Organizations,
     Content,
     Records,
+    Save,
     Diagnostics,
     Settings,
 }
@@ -42,11 +43,13 @@ public partial class MainWindow
         _workspaceRoute = route;
         var isAvailable = route is not (WorkspaceRoute.Organizations or WorkspaceRoute.Content);
         var isSettings = route == WorkspaceRoute.Settings;
-        DashboardWorkspaceGrid.Visibility = isAvailable && !isSettings
+        var isSave = route == WorkspaceRoute.Save;
+        DashboardWorkspaceGrid.Visibility = isAvailable && !isSettings && !isSave
             ? Visibility.Visible
             : Visibility.Collapsed;
         WorkspaceUnavailablePanel.Visibility = isAvailable ? Visibility.Collapsed : Visibility.Visible;
         SettingsWorkspacePanel.Visibility = isSettings ? Visibility.Visible : Visibility.Collapsed;
+        SaveWorkspacePanel.Visibility = isSave ? Visibility.Visible : Visibility.Collapsed;
         _runner?.SetPerformanceDiagnosticsEnabled(
             isSettings && SettingsWorkspacePanel.IsPerformanceMeterEnabled);
         ConfigureWorkspaceLayout(route, isAvailable);
@@ -81,6 +84,8 @@ public partial class MainWindow
                     WorldInfoTabControl.SelectedIndex = 4;
                     WorldRecordsPanel.SelectRecordTab(0);
                     break;
+                case WorkspaceRoute.Save:
+                    break;
                 case WorkspaceRoute.Diagnostics:
                     WorldInfoTabControl.SelectedIndex = 4;
                     WorldRecordsPanel.SelectRecordTab(2);
@@ -106,7 +111,14 @@ public partial class MainWindow
             _applyingWorkspaceRoute = false;
         }
 
-        RefreshVisibleObservation();
+        if (isSave)
+        {
+            _ = RefreshSaveCatalogAsync();
+        }
+        else
+        {
+            RefreshVisibleObservation();
+        }
     }
 
     private void ConfigureWorkspaceLayout(WorkspaceRoute route, bool isAvailable)

@@ -105,10 +105,17 @@
                                  HorizontalContentAlignment="Left"
                                  Tag="Records"
                                  Click="WorkspaceNavigation_Click">기록</RadioButton>
+                    <RadioButton x:Name="SaveWorkspaceToggle"
+                                 GroupName="WorkspaceRoute"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
+                                 Tag="Save"
+                                 Click="WorkspaceNavigation_Click">저장</RadioButton>
                     <RadioButton GroupName="WorkspaceRoute"
-                                  Style="{StaticResource SegmentToggleStyle}"
-                                  Margin="0,0,0,5"
-                                  HorizontalContentAlignment="Left"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,0,5"
+                                 HorizontalContentAlignment="Left"
                                   Tag="Diagnostics"
                                   Click="WorkspaceNavigation_Click">진단</RadioButton>
                     <RadioButton GroupName="WorkspaceRoute"
@@ -1401,6 +1408,16 @@
                                      PerformanceExportRequested="SettingsWorkspacePanel_PerformanceExportRequested"
                                      PerformanceFolderOpenRequested="SettingsWorkspacePanel_PerformanceFolderOpenRequested"
                                      NewWorldRequested="SettingsWorkspacePanel_NewWorldRequested" />
+
+        <local:SaveWorkspaceView x:Name="SaveWorkspacePanel"
+                                 Grid.Row="4"
+                                 Grid.Column="2"
+                                 Visibility="Collapsed"
+                                 RefreshRequested="SaveWorkspacePanel_RefreshRequested"
+                                 RootFolderRequested="SaveWorkspacePanel_RootFolderRequested"
+                                 SaveRequested="SaveWorkspacePanel_SaveRequested"
+                                 LoadRequested="SaveWorkspacePanel_LoadRequested"
+                                 FolderRequested="SaveWorkspacePanel_FolderRequested" />
 
         <Grid Grid.Row="6" Grid.Column="2">
             <TextBlock x:Name="StatusText"

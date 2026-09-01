@@ -134,37 +134,49 @@
         </Border>
 
         <Grid Grid.Column="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <StackPanel>
-                <TextBlock Text="선로만상록"
-                           Foreground="{StaticResource PrimaryTextBrush}"
-                            FontSize="32"
-                           FontWeight="SemiBold" />
-                <TextBlock x:Name="SubtitleText"
-                           Text="만상경 · 10,000명의 자율 경쟁 관찰"
-                           Margin="1,5,0,0"
-                           Foreground="{StaticResource SecondaryTextBrush}"
-                           FontSize="13" />
-                <TextBlock x:Name="VersionText"
-                           Margin="1,3,0,0"
-                           Foreground="{StaticResource AccentBrush}"
-                           FontSize="11" />
-            </StackPanel>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="세계 시간"
-                           Margin="0,0,9,0"
-                           VerticalAlignment="Center"
-                           Foreground="{StaticResource SecondaryTextBrush}" />
-                <TextBlock x:Name="WorldTickText"
-                           Width="150"
-                           VerticalAlignment="Center"
-                           Foreground="{StaticResource AccentBrush}"
-                           FontSize="18"
-                           FontWeight="SemiBold" />
-                <Button x:Name="PauseButton" Margin="14,0,7,0" Click="PauseButton_Click">일시정지</Button>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="선로만상록"
+                               Foreground="{StaticResource PrimaryTextBrush}"
+                               FontSize="32"
+                               FontWeight="SemiBold" />
+                    <TextBlock x:Name="SubtitleText"
+                               Text="만상경 · 10,000명의 자율 경쟁 관찰"
+                               Margin="1,5,0,0"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="13" />
+                    <TextBlock x:Name="VersionText"
+                               Margin="1,3,0,0"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="11" />
+                </StackPanel>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="세계 시간"
+                               Margin="0,0,9,0"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource SecondaryTextBrush}" />
+                    <TextBlock x:Name="WorldTickText"
+                               Width="150"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="18"
+                               FontWeight="SemiBold" />
+                </StackPanel>
+            </Grid>
+            <WrapPanel Grid.Row="1"
+                       Margin="0,8,0,0"
+                       HorizontalAlignment="Right">
+                <Button x:Name="PauseButton" Margin="0,0,7,0" Click="PauseButton_Click">일시정지</Button>
                 <Button Margin="0,0,5,0" Click="SaveButton_Click">저장</Button>
                 <Button Margin="0,0,12,0" Click="LoadButton_Click">불러오기</Button>
                 <RadioButton x:Name="Speed1Toggle" GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" IsChecked="True" Click="Speed1Button_Click">1×</RadioButton>
@@ -172,7 +184,7 @@
                 <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed25Button_Click">25×</RadioButton>
                 <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed50Button_Click">50×</RadioButton>
                 <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Click="Speed100Button_Click">100×</RadioButton>
-            </StackPanel>
+            </WrapPanel>
         </Grid>
 
         <UniformGrid Grid.Row="2" Grid.Column="2" Rows="1" Columns="5">

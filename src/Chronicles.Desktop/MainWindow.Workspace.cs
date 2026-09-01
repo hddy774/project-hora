@@ -29,7 +29,8 @@ public partial class MainWindow
 
     private bool IsObservationWorkspaceVisible =>
         IsDashboardWorkspaceVisible
-        || OrganizationWorkspacePanel.Visibility == Visibility.Visible;
+        || OrganizationWorkspacePanel.Visibility == Visibility.Visible
+        || ContentWorkspacePanel.Visibility == Visibility.Visible;
 
     private void WorkspaceNavigation_Click(object sender, RoutedEventArgs e)
     {
@@ -45,22 +46,24 @@ public partial class MainWindow
     private void ApplyWorkspaceRoute(WorkspaceRoute route)
     {
         _workspaceRoute = route;
-        var isAvailable = route != WorkspaceRoute.Content;
         var isSettings = route == WorkspaceRoute.Settings;
         var isSave = route == WorkspaceRoute.Save;
         var isOrganizations = route == WorkspaceRoute.Organizations;
-        DashboardWorkspaceGrid.Visibility = isAvailable && !isSettings && !isSave && !isOrganizations
+        var isContent = route == WorkspaceRoute.Content;
+        DashboardWorkspaceGrid.Visibility = !isSettings && !isSave && !isOrganizations && !isContent
             ? Visibility.Visible
             : Visibility.Collapsed;
-        WorkspaceUnavailablePanel.Visibility = isAvailable ? Visibility.Collapsed : Visibility.Visible;
         SettingsWorkspacePanel.Visibility = isSettings ? Visibility.Visible : Visibility.Collapsed;
         SaveWorkspacePanel.Visibility = isSave ? Visibility.Visible : Visibility.Collapsed;
         OrganizationWorkspacePanel.Visibility = isOrganizations
             ? Visibility.Visible
             : Visibility.Collapsed;
+        ContentWorkspacePanel.Visibility = isContent
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         _runner?.SetPerformanceDiagnosticsEnabled(
             isSettings && SettingsWorkspacePanel.IsPerformanceMeterEnabled);
-        ConfigureWorkspaceLayout(route, isAvailable);
+        ConfigureWorkspaceLayout(route);
 
         _applyingWorkspaceRoute = true;
         try
@@ -103,9 +106,6 @@ public partial class MainWindow
                 case WorkspaceRoute.Organizations:
                     break;
                 case WorkspaceRoute.Content:
-                    ShowUnavailableWorkspace(
-                        "콘텐츠 작업공간 · 준비 중",
-                        "비경·아이템 실물·서적 판본·지식·법칙 이해의 권위 상태는 0.0.21 이식 범위입니다. 현재 버전에는 표시할 실제 콘텐츠 데이터가 없습니다.");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(route), route, null);
@@ -134,13 +134,11 @@ public partial class MainWindow
         ApplyWorkspaceRoute(WorkspaceRoute.People);
     }
 
-    private void ConfigureWorkspaceLayout(WorkspaceRoute route, bool isAvailable)
-    {
-        if (!isAvailable)
-        {
-            return;
-        }
+    private void ContentWorkspacePanel_PageRequested(object? sender, EventArgs e) =>
+        RefreshVisibleObservation();
 
+    private void ConfigureWorkspaceLayout(WorkspaceRoute route)
+    {
         var personWorkspace = route is WorkspaceRoute.People or WorkspaceRoute.Relations;
         WorkspaceListPanel.Visibility = personWorkspace ? Visibility.Visible : Visibility.Collapsed;
         WorkspaceDetailPanel.Visibility = personWorkspace ? Visibility.Visible : Visibility.Collapsed;
@@ -160,9 +158,4 @@ public partial class MainWindow
             : new GridLength(1, GridUnitType.Star);
     }
 
-    private void ShowUnavailableWorkspace(string title, string description)
-    {
-        WorkspaceUnavailableTitleText.Text = title;
-        WorkspaceUnavailableDescriptionText.Text = description;
-    }
 }

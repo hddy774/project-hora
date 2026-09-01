@@ -418,7 +418,7 @@ public sealed partial class World
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
         ArgumentOutOfRangeException.ThrowIfNegative(worldChronicleCount);
         ArgumentOutOfRangeException.ThrowIfNegative(contentSecretRealmOffset);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(contentSecretRealmLimit);
+        ArgumentOutOfRangeException.ThrowIfNegative(contentSecretRealmLimit);
         var actualRankingCount = Math.Min(rankingCount, Population);
         var combatPowerRankings = (sections & ObservationSections.CombatPowerRanking) != 0
             ? CreateRankingEntries(
@@ -1773,7 +1773,8 @@ public sealed partial class World
             or WorldEventKind.CombatDeath
             or WorldEventKind.ReincarnationEntered
             or WorldEventKind.ReincarnationCrossingCompleted
-            or WorldEventKind.Rebirth => true,
+            or WorldEventKind.Rebirth
+            or WorldEventKind.SecretRealmDiscovered => true,
         WorldEventKind.BottleneckBreakthrough => _rankByAgent[primaryAgent] <= 100,
         WorldEventKind.TechniqueEnlightenment
             or WorldEventKind.SpellEnlightenment
@@ -2071,6 +2072,8 @@ public sealed partial class World
             Add(ref hash, (ulong)entry.SpiritStonesMined);
             Add(ref hash, (ulong)entry.TreasuresCrafted);
             Add(ref hash, (ulong)entry.PillsCrafted);
+            Add(ref hash, (ulong)entry.SecretRealmsDiscovered);
+            Add(ref hash, (ulong)entry.UniqueSecretRealmDiscoverers);
         }
 
         var current = checkpoint.Current;
@@ -2110,6 +2113,9 @@ public sealed partial class World
         Add(ref hash, (ulong)current.SpiritStonesMined);
         Add(ref hash, (ulong)current.TreasuresCrafted);
         Add(ref hash, (ulong)current.PillsCrafted);
+        Add(ref hash, (ulong)current.SecretRealmsDiscovered);
+        Add(ref hash, (ulong)current.UniqueSecretRealmDiscoverers);
+        AddArray(ref hash, current.SecretRealmDiscovererBits ?? []);
     }
 
     private static void AddLeader(ref ulong hash, WorldChronicleLeader leader)

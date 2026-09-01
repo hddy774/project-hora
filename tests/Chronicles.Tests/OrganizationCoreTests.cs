@@ -410,7 +410,10 @@ internal static class OrganizationCoreTests
             sections: ObservationSections.Organization,
             worldChronicleCount: 0);
         TestAssert.Equal(0, snapshot.Organizations!.Organizations.Count, "schema 25는 빈 조직 상태로 이식");
-        TestAssert.Equal(26, restored.CreateCheckpoint().SchemaVersion, "복원 후 schema 26 저장");
+        TestAssert.Equal(
+            WorldCheckpoint.CurrentSchemaVersion,
+            restored.CreateCheckpoint().SchemaVersion,
+            "복원 후 현재 checkpoint schema 저장");
     }
 
     private static OrganizationFoundingEvidence CreateSectEvidence(

@@ -85,6 +85,7 @@
                         <TabItem Header="수행" />
                         <TabItem Header="경제" />
                         <TabItem Header="윤회" />
+                        <TabItem Header="탐색" />
                     </TabControl>
                     <TextBlock x:Name="RecentCountText"
                                Grid.Row="1"

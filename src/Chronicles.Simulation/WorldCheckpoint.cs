@@ -164,7 +164,10 @@ public sealed record WorldCenturyAccumulatorCheckpoint(
     long MissionsCompleted,
     long SpiritStonesMined,
     long TreasuresCrafted,
-    long PillsCrafted);
+    long PillsCrafted,
+    int SecretRealmsDiscovered = 0,
+    int UniqueSecretRealmDiscoverers = 0,
+    ulong[]? SecretRealmDiscovererBits = null);
 
 public sealed record WorldCenturyChronicleCheckpoint(
     long Sequence,

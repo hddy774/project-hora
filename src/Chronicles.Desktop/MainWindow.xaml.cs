@@ -54,7 +54,7 @@ public partial class MainWindow : Window, IDisposable
     public MainWindow()
     {
         InitializeComponent();
-        ConfigureWorkspaceLayout(WorkspaceRoute.World, isAvailable: true);
+        ConfigureWorkspaceLayout(WorkspaceRoute.World);
         Title = $"{ProductInfo.KoreanTitle} PC v{ProductInfo.Version}";
         VersionText.Text = $"VERSION {ProductInfo.Version}";
         _runner = GameApplicationSession.CreateDefault(DefaultWorldSeed);
@@ -194,7 +194,14 @@ public partial class MainWindow : Window, IDisposable
                 && MapObservationPanel.ShouldLoadAgents
                     ? MapObservationPanel.AgentOffset
                     : 0,
-            worldChronicleCount: WorldChronicleDisplayLimit);
+            worldChronicleCount: WorldChronicleDisplayLimit,
+            contentSecretRealmOffset: _workspaceRoute == WorkspaceRoute.Content
+                ? ContentWorkspacePanel.SecretRealmOffset
+                : 0,
+            contentSecretRealmLimit: _workspaceRoute == WorkspaceRoute.Content
+                && ContentWorkspacePanel.ShouldLoadSecretRealmRows
+                    ? ContentWorkspaceView.SecretRealmPageSize
+                    : 0);
         ApplyObservation(observation);
     }
 
@@ -212,6 +219,7 @@ public partial class MainWindow : Window, IDisposable
             WorkspaceRoute.Economy => ObservationSections.Market,
             WorkspaceRoute.Map => ObservationSections.Map,
             WorkspaceRoute.Organizations => ObservationSections.Organization,
+            WorkspaceRoute.Content => ObservationSections.Content,
             WorkspaceRoute.Records or WorkspaceRoute.Diagnostics =>
                 WorldRecordsPanel.SelectedRecordIndex switch
             {
@@ -324,6 +332,10 @@ public partial class MainWindow : Window, IDisposable
             else if (_workspaceRoute == WorkspaceRoute.Organizations)
             {
                 OrganizationWorkspacePanel.Apply(snapshot.Organizations);
+            }
+            else if (_workspaceRoute == WorkspaceRoute.Content)
+            {
+                ContentWorkspacePanel.Apply(snapshot.Content);
             }
             else
             {
@@ -600,6 +612,8 @@ public partial class MainWindow : Window, IDisposable
         WorldEventKind.SpellBookPurchased => $"{FormatQuality(entry.Value)} 법술서 구매",
         WorldEventKind.SpiritStoneMined => $"도시 광맥 채굴 · 영석 {KoreanNumberFormatter.Format(entry.Value)} 생산",
         WorldEventKind.FloorNineCompletion => "9층 소경지 완성",
+        WorldEventKind.SecretRealmDiscovered =>
+            $"새로운 비경 {new ContentInstanceId(entry.Value)}의 위치 발견",
         _ => kind.ToString(),
     };
 

@@ -40,7 +40,7 @@ internal sealed class WorldCenturyChronicle
         _agentWordCount = checked((population + 63) / 64);
         _sequence = checkpoint.Sequence;
         _entries.AddRange(checkpoint.Entries.Select(CloneEntry));
-        _current = CenturyAccumulator.Restore(checkpoint.Current);
+        _current = CenturyAccumulator.Restore(checkpoint.Current, _agentWordCount);
     }
 
     public int Count => _entries.Count;
@@ -192,6 +192,14 @@ internal sealed class WorldCenturyChronicle
             case WorldEventKind.PillCrafted:
                 _current.PillsCrafted = checked(_current.PillsCrafted + 1);
                 break;
+            case WorldEventKind.SecretRealmDiscovered:
+                _current.SecretRealmsDiscovered = checked(
+                    _current.SecretRealmsDiscovered + 1);
+                MarkUnique(
+                    _current.SecretRealmDiscovererBits,
+                    primaryAgent,
+                    ref _current.UniqueSecretRealmDiscoverers);
+                break;
         }
     }
 
@@ -247,7 +255,9 @@ internal sealed class WorldCenturyChronicle
             source.MissionsCompleted,
             source.SpiritStonesMined,
             source.TreasuresCrafted,
-            source.PillsCrafted);
+            source.PillsCrafted,
+            source.SecretRealmsDiscovered,
+            source.UniqueSecretRealmDiscoverers);
     }
 
     private void RecordRealmBreakthrough(RealmStage realm, int agent)
@@ -374,6 +384,9 @@ internal sealed class WorldCenturyChronicle
         public long SpiritStonesMined { get; set; }
         public long TreasuresCrafted { get; set; }
         public long PillsCrafted { get; set; }
+        public int SecretRealmsDiscovered { get; set; }
+        public int UniqueSecretRealmDiscoverers;
+        public ulong[] SecretRealmDiscovererBits { get; private init; } = [];
 
         public static CenturyAccumulator Create(long centuryIndex, int wordCount) => new()
         {
@@ -390,6 +403,7 @@ internal sealed class WorldCenturyChronicle
             DeathAgentBits = new ulong[wordCount],
             ReincarnationEntryAgentBits = new ulong[wordCount],
             RebirthAgentBits = new ulong[wordCount],
+            SecretRealmDiscovererBits = new ulong[wordCount],
         };
 
         public CenturyAccumulator CreateNext(int wordCount)
@@ -441,9 +455,14 @@ internal sealed class WorldCenturyChronicle
             MissionsCompleted,
             SpiritStonesMined,
             TreasuresCrafted,
-            PillsCrafted);
+            PillsCrafted,
+            SecretRealmsDiscovered,
+            UniqueSecretRealmDiscoverers,
+            SecretRealmDiscovererBits.ToArray());
 
-        public static CenturyAccumulator Restore(WorldCenturyAccumulatorCheckpoint value) => new()
+        public static CenturyAccumulator Restore(
+            WorldCenturyAccumulatorCheckpoint value,
+            int wordCount) => new()
         {
             CenturyIndex = value.CenturyIndex,
             RealmBreakthroughCounts = value.RealmBreakthroughCounts.ToArray(),
@@ -480,6 +499,10 @@ internal sealed class WorldCenturyChronicle
             SpiritStonesMined = value.SpiritStonesMined,
             TreasuresCrafted = value.TreasuresCrafted,
             PillsCrafted = value.PillsCrafted,
+            SecretRealmsDiscovered = value.SecretRealmsDiscovered,
+            UniqueSecretRealmDiscoverers = value.UniqueSecretRealmDiscoverers,
+            SecretRealmDiscovererBits = value.SecretRealmDiscovererBits?.ToArray()
+                ?? new ulong[wordCount],
         };
     }
 }

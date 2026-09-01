@@ -206,6 +206,7 @@ public partial class MainWindow
         _projectedDebugVersion = long.MinValue;
         ClearReincarnationView();
         OrganizationWorkspacePanel.ResetProjection();
+        ContentWorkspacePanel.ResetProjection();
         _logService.ResetPersonalCaptureState();
         SettingsWorkspacePanel.ResetPerformanceHistory();
         RefreshVisibleObservation();

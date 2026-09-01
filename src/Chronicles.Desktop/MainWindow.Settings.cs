@@ -193,6 +193,7 @@ public partial class MainWindow
         _projectedWorldChronicleSequence = long.MinValue;
         _projectedReincarnationRevision = long.MinValue;
         OrganizationWorkspacePanel.ResetProjection();
+        ContentWorkspacePanel.ResetProjection();
         SettingsWorkspacePanel.ResetPerformanceHistory();
         Speed1Toggle.IsChecked = true;
         replacement.ObservationInvalidated += Runner_ObservationInvalidated;

@@ -11,6 +11,7 @@ internal enum WorldLogCategory : byte
     Cultivation,
     Economy,
     Reincarnation,
+    Exploration,
 }
 
 internal enum WorldChronicleCategory : byte
@@ -135,6 +136,7 @@ public partial class WorldRecordsView : UserControl
         WorldLogCategory.Cultivation => "수행",
         WorldLogCategory.Economy => "경제",
         WorldLogCategory.Reincarnation => "생사·윤회",
+        WorldLogCategory.Exploration => "탐색",
         _ => throw new ArgumentOutOfRangeException(nameof(category)),
     };
 

@@ -757,7 +757,8 @@ public partial class MainWindow
                 or WorldEventKind.SpellBookPurchased
                 or WorldEventKind.SpiritStoneMined,
         4 => entry.Activity == AgentActivity.Traveling
-            || entry.WorldEventKind == WorldEventKind.TravelCompleted,
+            || entry.WorldEventKind is WorldEventKind.TravelCompleted
+                or WorldEventKind.SecretRealmDiscovered,
         5 => entry.Activity == AgentActivity.Reincarnating
             || entry.WorldEventKind is WorldEventKind.Death
                 or WorldEventKind.CombatDeath

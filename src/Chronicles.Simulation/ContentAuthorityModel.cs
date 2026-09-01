@@ -271,6 +271,7 @@ public sealed record ContentInstanceSnapshot(
     ContentProvenanceId LatestProvenanceId);
 
 public sealed record WorldContentSnapshot(
+    long AuthorityRevision,
     int DefinitionCount,
     int TotalInstances,
     int ActiveInstances,
@@ -287,7 +288,7 @@ public sealed record WorldContentSnapshot(
     bool IncludesHidden)
 {
     public static WorldContentSnapshot Empty { get; } = new(
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         Array.Empty<ContentInstanceSnapshot>(), 0, 0, false);
 }
 
@@ -308,6 +309,41 @@ public static class ContentPopulationRules
 
     public const string PlacementReviewId = "PC-TEMP-CONTENT-PLACEMENT-021";
     public const string PcDefinitionAdaptationId = "PC-TEMP-CONTENT-PC-DEFINITIONS-021";
+}
+
+public static class ContentDiscoveryRules
+{
+    public const int TravelDiscoveryChanceBasisPoints = 500;
+    public const int HuntDiscoveryChanceBasisPoints = 1_000;
+    public const ulong SourceResultPrefix = 0xD021_0000_0000_0000UL;
+    public const string ChanceReviewId = "PC-TEMP-CONTENT-DISCOVERY-CHANCE-021";
+
+    public static ulong CreateDeterministicRoll(
+        ulong worldSeed,
+        long tick,
+        int agentIndex,
+        ushort locationId,
+        byte trigger)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(tick);
+        ArgumentOutOfRangeException.ThrowIfNegative(agentIndex);
+
+        // SplitMix 계열 혼합은 64비트 래핑 산술 자체가 공식의 일부다. 프로젝트의
+        // overflow 검사를 유지하면서도 이 좁은 해시 구간만 명시적으로 허용한다.
+        unchecked
+        {
+            var value = worldSeed
+                ^ ((ulong)tick * 0x9E37_79B9_7F4A_7C15UL)
+                ^ ((ulong)(agentIndex + 1) * 0xBF58_476D_1CE4_E5B9UL)
+                ^ ((ulong)(locationId + 1) * 0x94D0_49BB_1331_11EBUL)
+                ^ trigger;
+            value ^= value >> 30;
+            value *= 0xBF58_476D_1CE4_E5B9UL;
+            value ^= value >> 27;
+            value *= 0x94D0_49BB_1331_11EBUL;
+            return value ^ (value >> 31);
+        }
+    }
 }
 
 public static class ContentDefinitionRegistry

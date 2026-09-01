@@ -1420,44 +1420,6 @@
             </Border>
         </Grid>
 
-        <Border x:Name="WorkspaceUnavailablePanel"
-                Grid.Row="4"
-                Grid.Column="2"
-                Style="{StaticResource PanelStyle}"
-                Visibility="Collapsed">
-            <Grid>
-                <StackPanel HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            MaxWidth="520">
-                    <TextBlock x:Name="WorkspaceUnavailableTitleText"
-                               Text="준비 중"
-                               HorizontalAlignment="Center"
-                               Foreground="{StaticResource PrimaryTextBrush}"
-                               FontSize="24"
-                               FontWeight="SemiBold" />
-                    <TextBlock x:Name="WorkspaceUnavailableDescriptionText"
-                               Margin="0,12,0,0"
-                               Text="이 작업공간에는 아직 표시할 권위 데이터가 없습니다."
-                               Foreground="{StaticResource SecondaryTextBrush}"
-                               FontSize="13"
-                               TextAlignment="Center"
-                               TextWrapping="Wrap" />
-                    <Border Margin="0,18,0,0"
-                            Padding="12,9"
-                            Background="{StaticResource PanelAltBrush}"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="6">
-                        <TextBlock Text="임시 통계나 추정값을 만들지 않고, 정식 이식 완료 후 실제 데이터만 표시합니다."
-                                   Foreground="{StaticResource AccentBrush}"
-                                   FontSize="11"
-                                   TextAlignment="Center"
-                                   TextWrapping="Wrap" />
-                    </Border>
-                </StackPanel>
-            </Grid>
-        </Border>
-
         <local:SettingsWorkspaceView x:Name="SettingsWorkspacePanel"
                                      Grid.Row="4"
                                      Grid.Column="2"
@@ -1487,6 +1449,13 @@
                                          Grid.Column="2"
                                          Visibility="Collapsed"
                                          AgentSelected="OrganizationWorkspacePanel_AgentSelected" />
+
+        <local:ContentWorkspaceView x:Name="ContentWorkspacePanel"
+                                    Grid.Row="4"
+                                    Grid.Column="2"
+                                    Visibility="Collapsed"
+                                    PageRequested="ContentWorkspacePanel_PageRequested"
+                                    ProjectionChanged="ContentWorkspacePanel_PageRequested" />
 
         <Grid Grid.Row="6" Grid.Column="2">
             <TextBlock x:Name="StatusText"

@@ -14,7 +14,9 @@ public readonly record struct ObservationRequest(
     ObservationSections Sections = ObservationSections.All,
     ushort? DetailedMapLocationId = null,
     int DetailedMapAgentOffset = 0,
-    int WorldChronicleCount = int.MaxValue);
+    int WorldChronicleCount = int.MaxValue,
+    int ContentSecretRealmOffset = 0,
+    int ContentSecretRealmLimit = 100);
 
 /// <summary>
 /// Read-only projection boundary over the authoritative simulation world.
@@ -35,14 +37,18 @@ public sealed class WorldObservationQueries
         ObservationSections sections = ObservationSections.All,
         ushort? detailedMapLocationId = null,
         int detailedMapAgentOffset = 0,
-        int worldChronicleCount = int.MaxValue) =>
+        int worldChronicleCount = int.MaxValue,
+        int contentSecretRealmOffset = 0,
+        int contentSecretRealmLimit = 100) =>
         _world.CreateSnapshot(
             rankingCount,
             eventCount,
             sections,
             detailedMapLocationId,
             detailedMapAgentOffset,
-            worldChronicleCount);
+            worldChronicleCount,
+            contentSecretRealmOffset,
+            contentSecretRealmLimit);
 
     public AgentSnapshot GetAgent(AgentId agentId) => _world.GetAgentSnapshot(agentId);
 
@@ -54,7 +60,9 @@ public sealed class WorldObservationQueries
             request.Sections,
             request.DetailedMapLocationId,
             request.DetailedMapAgentOffset,
-            request.WorldChronicleCount);
+            request.WorldChronicleCount,
+            request.ContentSecretRealmOffset,
+            request.ContentSecretRealmLimit);
         var agentId = request.SelectedAgent ?? world.LeaderId;
         var cultivationSections = CultivationProjectionSections.None;
         if ((request.Sections & ObservationSections.Cultivation) != 0)

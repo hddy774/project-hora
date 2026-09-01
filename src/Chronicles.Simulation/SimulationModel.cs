@@ -98,6 +98,7 @@ public enum WorldEventKind : byte
     SpiritStoneMined,
     FloorNineCompletion,
     ReincarnationCrossingCompleted,
+    SecretRealmDiscovered,
 }
 
 public readonly record struct Aptitudes(
@@ -299,7 +300,9 @@ public sealed record WorldCenturyChronicleEntry(
     long MissionsCompleted,
     long SpiritStonesMined,
     long TreasuresCrafted,
-    long PillsCrafted);
+    long PillsCrafted,
+    int SecretRealmsDiscovered = 0,
+    int UniqueSecretRealmDiscoverers = 0);
 
 public readonly record struct ActiveMissionSnapshot(
     MaterialId Material,

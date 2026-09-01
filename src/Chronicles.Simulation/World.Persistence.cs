@@ -2096,7 +2096,11 @@ public sealed partial class World
                 || entry.MissionsCompleted < 0
                 || entry.SpiritStonesMined < 0
                 || entry.TreasuresCrafted < 0
-                || entry.PillsCrafted < 0)
+                || entry.PillsCrafted < 0
+                || entry.SecretRealmsDiscovered < 0
+                || entry.UniqueSecretRealmDiscoverers is < 0
+                    || entry.UniqueSecretRealmDiscoverers > entry.SecretRealmsDiscovered
+                || entry.UniqueSecretRealmDiscoverers > population)
             {
                 return false;
             }
@@ -2144,7 +2148,17 @@ public sealed partial class World
             || current.MissionsCompleted < 0
             || current.SpiritStonesMined < 0
             || current.TreasuresCrafted < 0
-            || current.PillsCrafted < 0)
+            || current.PillsCrafted < 0
+            || current.SecretRealmsDiscovered < 0
+            || current.UniqueSecretRealmDiscoverers is < 0
+                || current.UniqueSecretRealmDiscoverers > current.SecretRealmsDiscovered
+            || current.UniqueSecretRealmDiscoverers > population
+            || (current.SecretRealmDiscovererBits is null
+                ? current.UniqueSecretRealmDiscoverers != 0
+                : !IsValidAgentBits(
+                    current.SecretRealmDiscovererBits,
+                    wordCount,
+                    population)))
         {
             return false;
         }
@@ -2163,7 +2177,10 @@ public sealed partial class World
             && WorldCenturyChronicle.CountSetBits(current.ReincarnationEntryAgentBits)
                 == current.UniqueReincarnationEntryCount
             && WorldCenturyChronicle.CountSetBits(current.RebirthAgentBits)
-                == current.UniqueRebirthCount;
+                == current.UniqueRebirthCount
+            && (current.SecretRealmDiscovererBits is null
+                || WorldCenturyChronicle.CountSetBits(current.SecretRealmDiscovererBits)
+                    == current.UniqueSecretRealmDiscoverers);
     }
 
     private static bool IsValidCenturyRealmCounts(

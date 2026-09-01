@@ -1,0 +1,251 @@
+<UserControl x:Class="Chronicles.Desktop.ContentWorkspaceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="콘텐츠 · 비경과 실물 권위"
+                           Foreground="{StaticResource PrimaryTextBrush}"
+                           FontSize="24"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="Definition과 실제 Instance, 발견 권한, provenance를 분리하여 관찰합니다."
+                           Margin="0,5,0,0"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="12" />
+            </StackPanel>
+            <Border Grid.Column="1"
+                    Padding="12,7"
+                    Background="{StaticResource AccentDarkBrush}"
+                    CornerRadius="16"
+                    VerticalAlignment="Center">
+                <TextBlock x:Name="VisibilityModeText"
+                           Text="공개 지식"
+                           Foreground="{StaticResource AccentBrush}"
+                           FontWeight="SemiBold" />
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="2" Style="{StaticResource PanelStyle}" Padding="12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="92" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <UniformGrid Columns="6">
+                    <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                        <StackPanel>
+                            <TextBlock Text="Definition" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                            <TextBlock x:Name="DefinitionCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                        <StackPanel>
+                            <TextBlock Text="실제 Instance" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                            <TextBlock x:Name="InstanceCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                        <StackPanel>
+                            <TextBlock Text="자연 비경" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                            <TextBlock x:Name="NaturalRealmCountText" Margin="0,8,0,0" Foreground="{StaticResource PositiveBrush}" FontSize="20" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                        <StackPanel>
+                            <TextBlock Text="인공 비경" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                            <TextBlock x:Name="ArtificialRealmCountText" Margin="0,8,0,0" Foreground="{StaticResource AccentBrush}" FontSize="20" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                        <StackPanel>
+                            <TextBlock Text="공개 발견" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                            <TextBlock x:Name="PublicRealmCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+                    <Border Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                        <StackPanel>
+                            <TextBlock Text="관찰자 인지" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                            <TextBlock x:Name="KnownRealmCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+
+                <TabControl x:Name="ContentDetailTabControl"
+                            Grid.Row="2"
+                            SelectionChanged="ContentDetailTabControl_SelectionChanged">
+                    <TabItem Header="비경">
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" MinWidth="280" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="10" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton GroupName="RealmNatureFilter" Tag="All" Content="전체" IsChecked="True" Style="{StaticResource SegmentToggleStyle}" Click="RealmFilter_Click" />
+                                <RadioButton GroupName="RealmNatureFilter" Tag="Natural" Content="자연" Margin="6,0,0,0" Style="{StaticResource SegmentToggleStyle}" Click="RealmFilter_Click" />
+                                <RadioButton GroupName="RealmNatureFilter" Tag="Artificial" Content="인공" Margin="6,0,0,0" Style="{StaticResource SegmentToggleStyle}" Click="RealmFilter_Click" />
+                            </StackPanel>
+                            <TextBlock x:Name="RealmListStatusText"
+                                       Grid.Column="2"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource SecondaryTextBrush}" />
+
+                            <DataGrid x:Name="SecretRealmGrid"
+                                      Grid.Row="2"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      EnableRowVirtualization="True"
+                                      ScrollViewer.CanContentScroll="True"
+                                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                      SelectionChanged="SecretRealmGrid_SelectionChanged">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Instance" Binding="{Binding Id}" Width="150" />
+                                    <DataGridTextColumn Header="종류" Binding="{Binding Nature}" Width="100" />
+                                    <DataGridTextColumn Header="지점" Binding="{Binding Location}" Width="90" />
+                                    <DataGridTextColumn Header="발견 상태" Binding="{Binding Discovery}" Width="120" />
+                                    <DataGridTextColumn Header="상태" Binding="{Binding Status}" Width="*" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Border Grid.Row="2"
+                                    Grid.Column="2"
+                                    Padding="16"
+                                    Background="{StaticResource PanelAltBrush}"
+                                    CornerRadius="7">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock x:Name="RealmTitleText" Text="비경을 선택해 주세요." Foreground="{StaticResource PrimaryTextBrush}" FontSize="19" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="RealmIdentityText" Grid.Row="1" Margin="0,5,0,0" Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap" />
+                                    <UniformGrid Grid.Row="3" Columns="2">
+                                        <StackPanel Margin="0,0,8,0">
+                                            <TextBlock Text="소유·보유" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                            <TextBlock x:Name="RealmOwnerText" Margin="0,5,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <TextBlock Text="상태·수정" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                            <TextBlock x:Name="RealmAuthorityText" Margin="0,5,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </UniformGrid>
+                                    <TextBlock x:Name="RealmKnowledgeText"
+                                               Grid.Row="4"
+                                               Margin="0,16,0,0"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               TextWrapping="Wrap" />
+                                </Grid>
+                            </Border>
+
+                            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,8,0,0">
+                                <Button x:Name="PreviousRealmPageButton" Content="이전 100개" Padding="9,4" Click="PreviousRealmPageButton_Click" />
+                                <Button x:Name="NextRealmPageButton" Content="다음 100개" Margin="6,0,0,0" Padding="9,4" Click="NextRealmPageButton_Click" />
+                                <TextBlock x:Name="RealmPageText" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource SecondaryTextBrush}" />
+                            </StackPanel>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="아이템 · 재료">
+                        <Grid Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Border Padding="14" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                <TextBlock Text="PC 간략화 계약: 법보 재료, 단약 재료, 공격·방어 법보, 성장·돌파 단약만 정식 Definition으로 사용합니다. 실제 소유권이 생긴 Instance만 아래에 집계합니다."
+                                           Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
+                            </Border>
+                            <UniformGrid Grid.Row="2" Columns="3">
+                                <Border Margin="0,0,8,0" Padding="16" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="재료 stack" Foreground="{StaticResource SecondaryTextBrush}" />
+                                        <TextBlock x:Name="MaterialStackCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="24" FontWeight="SemiBold" />
+                                        <TextBlock Text="수량형 실물 · 소유자/위치 index 적용" Margin="0,8,0,0" Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Margin="0,0,8,0" Padding="16" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="법보·단약 Instance" Foreground="{StaticResource SecondaryTextBrush}" />
+                                        <TextBlock x:Name="ItemInstanceCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="24" FontWeight="SemiBold" />
+                                        <TextBlock Text="품질과 상태를 분리하며 소비·파괴 후 현재 index에서 제거" Margin="0,8,0,0" Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Padding="16" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="승인 모집단" Foreground="{StaticResource SecondaryTextBrush}" />
+                                        <TextBlock Text="재료 90 · 아이템 120" Margin="0,8,0,0" Foreground="{StaticResource AccentBrush}" FontSize="20" FontWeight="SemiBold" />
+                                        <TextBlock Text="세부 배치·분포는 PC_TEMP_REVIEW이며 아직 실제 Instance를 임의 생성하지 않습니다."
+                                                   Margin="0,8,0,0" Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="서적 · 지식">
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Padding="18" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                <StackPanel>
+                                    <TextBlock Text="물리 서적 Instance" Foreground="{StaticResource SecondaryTextBrush}" />
+                                    <TextBlock x:Name="PhysicalRecordCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="24" FontWeight="SemiBold" />
+                                    <TextBlock Text="공법·법술 서적 Definition은 준비되었으며, 내용·판본·훼손·변조·복원 수직 이식 뒤 실제 실물을 생성합니다."
+                                               Margin="0,10,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Padding="18" BorderBrush="{StaticResource DangerBrush}" BorderThickness="1" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                <StackPanel>
+                                    <TextBlock Text="DataUnavailable" Foreground="{StaticResource DangerBrush}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="지식 접근·오해·교정과 판본 provenance가 아직 권위 상태에 연결되지 않았습니다. 미승인 수치를 임의 표시하지 않습니다."
+                                               Margin="0,10,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="법칙 · 천도">
+                        <Grid Margin="8">
+                            <Border Padding="20" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="680">
+                                    <TextBlock Text="Stable LawId 발급 전" HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}" FontSize="22" FontWeight="SemiBold" />
+                                    <TextBlock Text="기본 10개와 파생 44개 법칙은 Adapter·Result·Metric·State I/O·SQLite·Save/Replay가 모두 검증된 뒤 안정 ID를 발급합니다. 현재는 준비 상태를 완료로 위장하지 않습니다."
+                                               Margin="0,12,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextAlignment="Center" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

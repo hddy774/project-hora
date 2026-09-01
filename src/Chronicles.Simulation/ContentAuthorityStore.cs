@@ -475,6 +475,45 @@ public sealed class ContentAuthorityStore
             : Array.Empty<ContentInstanceId>();
     }
 
+    public bool TryFindUndiscoveredSecretRealm(
+        ContentDiscovererRef discoverer,
+        ushort locationId,
+        ulong selector,
+        out ContentInstanceId instanceId)
+    {
+        if (!discoverer.IsValid)
+        {
+            throw new ArgumentOutOfRangeException(nameof(discoverer));
+        }
+        if (!WorldAtlasRules.IsProductionLocation(locationId))
+        {
+            throw new ArgumentOutOfRangeException(nameof(locationId));
+        }
+        if (!_instancesByLocation.TryGetValue(locationId, out var candidates)
+            || candidates.Count == 0)
+        {
+            instanceId = default;
+            return false;
+        }
+
+        var start = checked((int)(selector % (ulong)candidates.Count));
+        for (var offset = 0; offset < candidates.Count; offset++)
+        {
+            var candidateId = candidates[(start + offset) % candidates.Count];
+            var instance = _instances[_instanceIndexById[candidateId.Value]];
+            if (instance.Kind == ContentInstanceKind.SecretRealm
+                && instance.Status == ContentInstanceStatus.Active
+                && GetDiscoveryState(discoverer, candidateId) == ContentDiscoveryState.Unknown)
+            {
+                instanceId = candidateId;
+                return true;
+            }
+        }
+
+        instanceId = default;
+        return false;
+    }
+
     public WorldContentSnapshot CreateSnapshot(
         ContentDiscovererRef viewer,
         bool includeHidden,
@@ -486,7 +525,7 @@ public sealed class ContentAuthorityStore
             throw new ArgumentOutOfRangeException(nameof(viewer));
         }
         ArgumentOutOfRangeException.ThrowIfNegative(secretRealmOffset);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(secretRealmLimit);
+        ArgumentOutOfRangeException.ThrowIfNegative(secretRealmLimit);
 
         var natural = 0;
         var artificial = 0;
@@ -496,7 +535,9 @@ public sealed class ContentAuthorityStore
         var materialStacks = 0;
         var items = 0;
         var records = 0;
-        var visible = new List<(ContentInstanceCheckpoint Instance, ContentDiscoveryState State)>();
+        var visibleCount = 0;
+        List<(ContentInstanceCheckpoint Instance, ContentDiscoveryState State)>? visible =
+            secretRealmLimit > 0 ? [] : null;
         foreach (var instance in _instances)
         {
             if (instance.Status is ContentInstanceStatus.Active or ContentInstanceStatus.Reserved)
@@ -533,7 +574,8 @@ public sealed class ContentAuthorityStore
                     }
                     if (includeHidden || viewerState >= ContentDiscoveryState.Located)
                     {
-                        visible.Add((instance, viewerState));
+                        visibleCount++;
+                        visible?.Add((instance, viewerState));
                     }
                     break;
                 }
@@ -553,13 +595,16 @@ public sealed class ContentAuthorityStore
             }
         }
 
-        var rows = visible
-            .OrderBy(item => item.Instance.InstanceId)
-            .Skip(secretRealmOffset)
-            .Take(secretRealmLimit)
-            .Select(item => CreateSnapshot(item.Instance, item.State))
-            .ToArray();
+        var rows = visible is null
+            ? Array.Empty<ContentInstanceSnapshot>()
+            : visible
+                .OrderBy(item => item.Instance.InstanceId)
+                .Skip(secretRealmOffset)
+                .Take(secretRealmLimit)
+                .Select(item => CreateSnapshot(item.Instance, item.State))
+                .ToArray();
         return new WorldContentSnapshot(
+            _provenanceSequence,
             ContentDefinitionRegistry.All.Count,
             _instances.Count,
             active,
@@ -572,7 +617,7 @@ public sealed class ContentAuthorityStore
             records,
             rows,
             secretRealmOffset,
-            visible.Count,
+            visibleCount,
             includeHidden);
     }
 

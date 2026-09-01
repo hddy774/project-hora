@@ -10,6 +10,7 @@ internal static class ContentAuthorityTests
         DiscoveryAndCheckpointRoundTripPreserveAuthority();
         InvalidCheckpointGraphsAreRejected();
         WorldPersistenceAndSelectiveObservationAreConnected();
+        AiExplorationDiscoversAndChroniclesSecretRealms();
     }
 
     private static void DefinitionsAndInitialSecretRealmsAreStable()
@@ -250,10 +251,50 @@ internal static class ContentAuthorityTests
         TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
             diagnostics.Content!.SecretRealms.Count,
             "세계 설정 모드에서만 숨은 비경 진단");
+        var summaryOnly = developerWorld.CreateSnapshot(
+            rankingCount: 1,
+            eventCount: 0,
+            sections: ObservationSections.Content,
+            worldChronicleCount: 0,
+            contentSecretRealmLimit: 0);
+        TestAssert.Equal(0, summaryOnly.Content!.SecretRealms.Count,
+            "비경 내부 탭이 닫히면 행 materialization 0건");
+        TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
+            summaryOnly.Content.SecretRealmResultTotal,
+            "행 생략 중에도 콘텐츠 요약 유지");
 
         TestAssert.Throws<InvalidDataException>(
             () => World.Restore(checkpoint with { Content = null }),
             "schema 27 콘텐츠 누락 거부");
+    }
+
+    private static void AiExplorationDiscoversAndChroniclesSecretRealms()
+    {
+        var world = World.Create(0xD021UL, 64);
+        world.AdvanceTo(GameCalendar.FromYears(101));
+
+        var checkpoint = world.CreateCheckpoint();
+        var discoveries = checkpoint.Content!.Discoveries;
+        var publicDiscoveries = discoveries.Count(value =>
+            value.DiscovererKind == ContentDiscovererKind.Observer
+            && value.State >= ContentDiscoveryState.Located);
+        var agentDiscoveries = discoveries.Count(value =>
+            value.DiscovererKind == ContentDiscovererKind.Agent
+            && value.State >= ContentDiscoveryState.Located);
+        TestAssert.True(publicDiscoveries > 0, "AI 탐색 결과가 공개 비경 지식으로 연결");
+        TestAssert.Equal(publicDiscoveries, agentDiscoveries,
+            "각 공개 발견에는 발견자 개인 지식 provenance가 선행");
+
+        var century = checkpoint.CenturyChronicle!.Entries[0];
+        TestAssert.Equal(publicDiscoveries, century.SecretRealmsDiscovered,
+            "첫 100년 비경 발견이 세계 역사서에 압축");
+        TestAssert.True(
+            century.UniqueSecretRealmDiscoverers is > 0 and <= 64,
+            "세계 역사서에 고유 비경 발견자 수 보존");
+
+        var restored = World.Restore(checkpoint);
+        TestAssert.Equal(world.ComputeStateHash(), restored.ComputeStateHash(),
+            "AI 비경 발견·100년 역사서 저장 hash 왕복");
     }
 
     private static ContentSourceResultId Source(ulong sequence) =>

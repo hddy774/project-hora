@@ -90,7 +90,8 @@ public partial class MainWindow
                 or WorldEventKind.TreasureCrafted
                 or WorldEventKind.PillCrafted
                 or WorldEventKind.TechniqueBookPurchased
-                or WorldEventKind.SpellBookPurchased => (Brush)FindResource("AccentBrush"),
+                or WorldEventKind.SpellBookPurchased
+                or WorldEventKind.SecretRealmDiscovered => (Brush)FindResource("AccentBrush"),
             WorldEventKind.CombatEnded or WorldEventKind.MonsterHuntWon => (Brush)FindResource("PositiveBrush"),
             WorldEventKind.BreakthroughFailed
                 or WorldEventKind.CombatRetreated
@@ -167,6 +168,9 @@ public partial class MainWindow
             or WorldEventKind.ReincarnationEntered
             or WorldEventKind.ReincarnationCrossingCompleted
             or WorldEventKind.Rebirth,
+        WorldLogCategory.Exploration => kind is
+            WorldEventKind.TravelCompleted
+            or WorldEventKind.SecretRealmDiscovered,
         _ => throw new ArgumentOutOfRangeException(nameof(category)),
     };
 
@@ -175,10 +179,15 @@ public partial class MainWindow
         var cultivation = FormatWorldCultivationHistory(entry);
         var ranking = FormatWorldRankingHistory(entry);
         var life = FormatWorldLifeHistory(entry);
+        var exploration = entry.SecretRealmsDiscovered == 0
+            ? "비경 발견은 없었다."
+            : $"비경 {KoreanNumberFormatter.Format(entry.SecretRealmsDiscovered)}곳을 " +
+                $"{KoreanNumberFormatter.Format(entry.UniqueSecretRealmDiscoverers)}명이 발견했다.";
         return $"이 백 년의 수행사: {cultivation}  경쟁사: {ranking}  생사록: {life}  " +
             $"세간에서는 전투 {KoreanNumberFormatter.Format(entry.CombatsCompleted)}회, " +
             $"요수 사냥 {KoreanNumberFormatter.Format(entry.MonsterHunts)}회, " +
-            $"도시 임무 {KoreanNumberFormatter.Format(entry.MissionsCompleted)}회가 이루어졌다.";
+            $"도시 임무 {KoreanNumberFormatter.Format(entry.MissionsCompleted)}회가 이루어졌다. " +
+            $"탐험사: {exploration}";
     }
 
     private static string FormatWorldCultivationHistory(WorldCenturyChronicleEntry entry)
@@ -272,6 +281,8 @@ public partial class MainWindow
         WorldEventKind.MonsterHuntWon => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 승리",
         WorldEventKind.MonsterHuntLost => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 패배",
         WorldEventKind.SpiritStoneMined => $"{primary}, 도시 광맥에서 영석 {KoreanNumberFormatter.Format(worldEvent.Value)} 채굴",
+        WorldEventKind.SecretRealmDiscovered =>
+            $"{primary}, 새로운 비경 {new ContentInstanceId(worldEvent.Value)}의 위치를 발견",
         _ => worldEvent.Kind.ToString(),
     };
 

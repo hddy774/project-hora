@@ -387,6 +387,7 @@ public sealed partial class World
             destination,
             GameCalendar.GetMonthIndex(Tick));
         AddEvent(WorldEventKind.TravelCompleted, index, destination);
+        TryDiscoverSecretRealm(index, ContentDiscoveryTrigger.Travel);
     }
 
     private bool ResolveMonsterHunt(int index)
@@ -444,6 +445,7 @@ public sealed partial class World
             }
 
             AddEvent(WorldEventKind.MonsterHuntWon, index, monster.Id);
+            TryDiscoverSecretRealm(index, ContentDiscoveryTrigger.Hunt);
             return false;
         }
 
@@ -453,6 +455,7 @@ public sealed partial class World
         _agents.Health[index] = Math.Max(0, _agents.Health[index] - lossDamage);
         var fatal = ApplyMonsterInjury(index, lossDamage);
         AddEvent(WorldEventKind.MonsterHuntLost, index, monster.Id);
+        TryDiscoverSecretRealm(index, ContentDiscoveryTrigger.Hunt);
         if (!fatal)
         {
             _agents.ApplyPermanentScar(index, Tick.Value, _agents.InjuryPoints[index]);

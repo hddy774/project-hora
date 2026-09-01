@@ -49,7 +49,7 @@
                                Foreground="{StaticResource SecondaryTextBrush}"
                                FontSize="10" />
                 </StackPanel>
-                <StackPanel Grid.Row="2">
+                <StackPanel x:Name="WorkspaceNavigationPanel" Grid.Row="2">
                     <RadioButton GroupName="WorkspaceRoute"
                                  Style="{StaticResource SegmentToggleStyle}"
                                  Margin="0,0,0,5"
@@ -251,19 +251,21 @@
                                    Foreground="{StaticResource AccentBrush}"
                                    FontSize="11" />
                     </Grid>
-                    <UniformGrid Grid.Row="1" Rows="1" Columns="5" Margin="16,0,16,10">
-                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,3,0" IsChecked="True" Click="CombatPowerRankingButton_Click">전투력</RadioButton>
-                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0" Click="RealmRankingButton_Click">경지</RadioButton>
-                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0" Click="AptitudeRankingButton_Click">자질</RadioButton>
-                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0" Click="WealthRankingButton_Click">부자</RadioButton>
-                        <RadioButton GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,0,0" Click="ExplorerButton_Click">전체 탐색</RadioButton>
+                    <UniformGrid Grid.Row="1" Rows="2" Columns="3" Margin="16,0,16,10">
+                        <RadioButton x:Name="CombatPowerRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,3,3" IsChecked="True" Click="CombatPowerRankingButton_Click">전투력</RadioButton>
+                        <RadioButton x:Name="RealmRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,3,3" Click="RealmRankingButton_Click">경지</RadioButton>
+                        <RadioButton x:Name="AptitudeRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,0,3" Click="AptitudeRankingButton_Click">자질</RadioButton>
+                        <RadioButton x:Name="WealthRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="0,3,3,0" Click="WealthRankingButton_Click">부자</RadioButton>
+                        <RadioButton x:Name="ExplorerRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,3" Click="ExplorerButton_Click">전체 탐색</RadioButton>
+                        <RadioButton x:Name="WatchlistRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,3,0,0" Click="WatchlistButton_Click">관심 목록</RadioButton>
                     </UniformGrid>
                     <TextBox x:Name="SearchTextBox"
                              Grid.Row="2"
                              Margin="16,0,16,12"
                              TextChanged="SearchTextBox_TextChanged"
                              IsEnabled="False"
-                             ToolTip="이름 또는 A00001 형식으로 검색" />
+                             ToolTip="이름 또는 A00001 형식으로 검색"
+                             AutomationProperties.Name="인물 이름 또는 ID 검색" />
                     <DataGrid x:Name="RankingGrid"
                               Grid.Row="3"
                               AutoGenerateColumns="False"
@@ -324,15 +326,24 @@
                                            FontSize="10"
                                            TextWrapping="Wrap" />
                             </StackPanel>
-                            <Border Grid.Column="1"
-                                    Padding="12,7"
-                                    CornerRadius="16"
-                                    Background="{StaticResource AccentDarkBrush}"
-                                    VerticalAlignment="Top">
-                                <TextBlock x:Name="SelectedRankText"
-                                           Foreground="{StaticResource AccentBrush}"
-                                           FontWeight="Bold" />
-                            </Border>
+                            <StackPanel Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top">
+                                <Border Padding="12,7"
+                                        CornerRadius="16"
+                                        Background="{StaticResource AccentDarkBrush}">
+                                    <TextBlock x:Name="SelectedRankText"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               FontWeight="Bold" />
+                                </Border>
+                                <ToggleButton x:Name="SelectedAgentWatchlistToggle"
+                                              Margin="0,7,0,0"
+                                              HorizontalAlignment="Right"
+                                              MinWidth="92"
+                                              Click="SelectedAgentWatchlistToggle_Click"
+                                              AutomationProperties.Name="선택 인물 관심 목록 전환">☆ 관심 등록</ToggleButton>
+                            </StackPanel>
                         </Grid>
 
                         <Grid Margin="0,22,0,0">

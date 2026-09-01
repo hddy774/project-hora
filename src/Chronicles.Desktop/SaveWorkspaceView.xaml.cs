@@ -30,6 +30,21 @@ public partial class SaveWorkspaceView : UserControl
     public event EventHandler<SaveSlotActionEventArgs>? LoadRequested;
     public event EventHandler<SaveSlotActionEventArgs>? FolderRequested;
 
+    public string SelectedSlotId => _selectedSlotId ?? SaveSlotRegistry.All[0].SlotId;
+
+    public int SelectedWorkspaceTabIndex => SaveWorkspaceTabControl.SelectedIndex;
+
+    public void RestoreUiState(string? selectedSlotId, int selectedTabIndex)
+    {
+        _selectedSlotId = SaveSlotRegistry.All.Any(item => StringComparer.Ordinal.Equals(
+            item.SlotId,
+            selectedSlotId))
+                ? selectedSlotId
+                : SaveSlotRegistry.All[0].SlotId;
+        SaveWorkspaceTabControl.SelectedIndex = Math.Clamp(selectedTabIndex, 0, 1);
+        RefreshSelectedDetails();
+    }
+
     public void Apply(IReadOnlyList<SaveSlotCatalogEntry> entries)
     {
         ArgumentNullException.ThrowIfNull(entries);

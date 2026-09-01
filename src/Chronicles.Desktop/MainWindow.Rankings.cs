@@ -9,6 +9,8 @@ namespace Chronicles.Desktop;
 
 public partial class MainWindow
 {
+    private int _peopleListResultCount;
+
     private void UpdateRankingRows(WorldSnapshot snapshot)
     {
         RankingRow[] rows;
@@ -31,6 +33,46 @@ public partial class MainWindow
         {
             rows = Array.Empty<RankingRow>();
         }
+        else if (_watchlistMode)
+        {
+            var watchlistIds = _watchlistedAgentIds
+                .Order()
+                .Select(value => new AgentId(value))
+                .ToArray();
+            var page = _runner.BrowseAgentsById(
+                watchlistIds,
+                search,
+                _explorerOffset,
+                ExplorerPageSize);
+            if (_explorerOffset >= page.TotalCount && _explorerOffset > 0)
+            {
+                _explorerOffset = Math.Max(
+                    0,
+                    ((Math.Max(0, page.TotalCount - 1)) / ExplorerPageSize) * ExplorerPageSize);
+                page = _runner.BrowseAgentsById(
+                    watchlistIds,
+                    search,
+                    _explorerOffset,
+                    ExplorerPageSize);
+            }
+
+            rows = page.Agents.Select(ToRankingRow).ToArray();
+            _peopleListResultCount = page.TotalCount;
+            if (page.TotalCount == 0)
+            {
+                RankingScopeText.Text = search.Length == 0
+                    ? "관심 목록 비어 있음"
+                    : "관심 목록 검색 결과 없음";
+                ExplorerNavigationPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                var first = _explorerOffset + 1;
+                var last = _explorerOffset + rows.Length;
+                RankingScopeText.Text = $"관심 {first:N0}–{last:N0} / {page.TotalCount:N0}명";
+                UpdatePeopleListNavigation(page.TotalCount);
+            }
+        }
         else
         {
             var maximumOffset = Math.Max(0, ((snapshot.Population - 1) / ExplorerPageSize) * ExplorerPageSize);
@@ -42,19 +84,18 @@ public partial class MainWindow
 
             if (search.Length == 0)
             {
+                _peopleListResultCount = snapshot.Population;
                 var first = rows.Length == 0 ? 0 : _explorerOffset + 1;
                 var last = _explorerOffset + rows.Length;
                 RankingScopeText.Text = $"{first:N0}–{last:N0} / {snapshot.Population:N0}";
-                var currentPage = (_explorerOffset / ExplorerPageSize) + 1;
-                var pageCount = Math.Max(1, (snapshot.Population + ExplorerPageSize - 1) / ExplorerPageSize);
-                ExplorerPageText.Text = $"{currentPage:N0} / {pageCount:N0} 페이지";
-                ExplorerPreviousButton.IsEnabled = _explorerOffset > 0;
-                ExplorerNextButton.IsEnabled = _explorerOffset + ExplorerPageSize < snapshot.Population;
-                ExplorerNavigationPanel.Visibility = Visibility.Visible;
+                UpdatePeopleListNavigation(snapshot.Population);
             }
             else
             {
-                RankingScopeText.Text = $"검색 {rows.Length:N0}명";
+                _peopleListResultCount = rows.Length;
+                RankingScopeText.Text = rows.Length == 0
+                    ? "검색 결과 없음"
+                    : $"검색 {rows.Length:N0}명";
                 ExplorerNavigationPanel.Visibility = Visibility.Collapsed;
             }
         }
@@ -178,6 +219,9 @@ public partial class MainWindow
     private void ExplorerButton_Click(object sender, RoutedEventArgs e) =>
         SetListMode(null);
 
+    private void WatchlistButton_Click(object sender, RoutedEventArgs e) =>
+        SetWatchlistMode();
+
     private void RankingPeriodButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is RadioButton { Tag: string value }
@@ -217,7 +261,7 @@ public partial class MainWindow
     private void ExplorerNextButton_Click(object sender, RoutedEventArgs e)
     {
         if (_latestSnapshot is null
-            || _explorerOffset + ExplorerPageSize >= _latestSnapshot.Population)
+            || _explorerOffset + ExplorerPageSize >= _peopleListResultCount)
         {
             return;
         }
@@ -228,34 +272,98 @@ public partial class MainWindow
 
     private void SetListMode(RankingCategory? category)
     {
+        _watchlistMode = false;
         _rankingCategory = category;
         _explorerOffset = 0;
-        var explorer = category is null;
-        SearchTextBox.IsEnabled = explorer;
-        if (!explorer && SearchTextBox.Text.Length > 0)
+        if (category is not null && SearchTextBox.Text.Length > 0)
         {
             SearchTextBox.Clear();
         }
 
-        RankingTitleText.Text = category switch
+        ApplyPeopleListModeControls();
+        RefreshVisibleObservation();
+    }
+
+    private void SetWatchlistMode()
+    {
+        _watchlistMode = true;
+        _rankingCategory = null;
+        _explorerOffset = 0;
+        ApplyPeopleListModeControls();
+        RefreshVisibleObservation();
+    }
+
+    private void ApplyPeopleListModeControls()
+    {
+        CombatPowerRankingToggle.IsChecked = !_watchlistMode
+            && _rankingCategory == RankingCategory.CombatPower;
+        RealmRankingToggle.IsChecked = !_watchlistMode
+            && _rankingCategory == RankingCategory.Realm;
+        AptitudeRankingToggle.IsChecked = !_watchlistMode
+            && _rankingCategory == RankingCategory.Aptitude;
+        WealthRankingToggle.IsChecked = !_watchlistMode
+            && _rankingCategory == RankingCategory.Wealth;
+        ExplorerRankingToggle.IsChecked = !_watchlistMode && _rankingCategory is null;
+        WatchlistRankingToggle.IsChecked = _watchlistMode;
+        SearchTextBox.IsEnabled = _rankingCategory is null;
+
+        RankingTitleText.Text = _watchlistMode
+            ? "관심 인물 목록"
+            : _rankingCategory switch
         {
             RankingCategory.CombatPower => "전투력 랭킹",
             RankingCategory.Realm => "경지 랭킹",
             RankingCategory.Aptitude => "자질 랭킹",
             RankingCategory.Wealth => "부자 순위",
             null => "전체 수선자 탐색",
-            _ => throw new ArgumentOutOfRangeException(nameof(category)),
+            _ => throw new ArgumentOutOfRangeException(nameof(_rankingCategory)),
         };
-        RankingGrid.Columns[3].Header = category switch
+        RankingGrid.Columns[3].Header = _rankingCategory switch
         {
             RankingCategory.CombatPower => "전투력",
             RankingCategory.Realm => "수행량",
             RankingCategory.Aptitude => "자질 합계",
             RankingCategory.Wealth => "보유 영석",
             null => "전투력",
-            _ => throw new ArgumentOutOfRangeException(nameof(category)),
+            _ => throw new ArgumentOutOfRangeException(nameof(_rankingCategory)),
         };
+    }
 
-        RefreshVisibleObservation();
+    private void UpdatePeopleListNavigation(int totalCount)
+    {
+        var currentPage = (_explorerOffset / ExplorerPageSize) + 1;
+        var pageCount = Math.Max(1, (totalCount + ExplorerPageSize - 1) / ExplorerPageSize);
+        ExplorerPageText.Text = $"{currentPage:N0} / {pageCount:N0} 페이지";
+        ExplorerPreviousButton.IsEnabled = _explorerOffset > 0;
+        ExplorerNextButton.IsEnabled = _explorerOffset + ExplorerPageSize < totalCount;
+        ExplorerNavigationPanel.Visibility = Visibility.Visible;
+    }
+
+    private void SelectedAgentWatchlistToggle_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedAgent is not { } selected)
+        {
+            return;
+        }
+
+        if (!_watchlistedAgentIds.Add(selected.Value))
+        {
+            _watchlistedAgentIds.Remove(selected.Value);
+        }
+        UpdateWatchlistToggle(selected);
+        if (_watchlistMode && _latestSnapshot is { } snapshot)
+        {
+            UpdateRankingRows(snapshot);
+        }
+    }
+
+    private void UpdateWatchlistToggle(AgentId agentId)
+    {
+        var watched = _watchlistedAgentIds.Contains(agentId.Value);
+        SelectedAgentWatchlistToggle.IsChecked = watched;
+        SelectedAgentWatchlistToggle.Content = watched ? "★ 관심 등록됨" : "☆ 관심 등록";
+        SelectedAgentWatchlistToggle.ToolTip = watched
+            ? "이 인물을 관심 목록에서 제거합니다."
+            : "이 인물을 관심 목록에 추가합니다.";
     }
 }

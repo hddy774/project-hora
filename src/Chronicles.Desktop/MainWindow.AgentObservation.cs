@@ -85,6 +85,7 @@ public partial class MainWindow
         SelectedRankText.Text =
             $"전투력 #{agent.Rank:N0} · 경지 #{agent.RealmRank:N0} · " +
             $"자질 #{agent.AptitudeRank:N0} · 부자 #{agent.WealthRank:N0}";
+        UpdateWatchlistToggle(agent.Id);
         RealmText.Text = HasEnteredCultivation(agent.CultivationState, agent.BottleneckCause)
             ? FormatRealm(
                 agent.RealmStage,

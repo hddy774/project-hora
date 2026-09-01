@@ -55,7 +55,8 @@ public partial class MainWindow : Window, IDisposable
     public MainWindow()
     {
         InitializeComponent();
-        ConfigureWorkspaceLayout(WorkspaceRoute.World);
+        LoadObserverUiPreferences();
+        ConfigureWorkspaceLayout(_workspaceRoute);
         Title = $"{ProductInfo.KoreanTitle} PC v{ProductInfo.Version}";
         VersionText.Text = $"VERSION {ProductInfo.Version}";
         _runner = GameApplicationSession.CreateDefault(DefaultWorldSeed);
@@ -76,12 +77,14 @@ public partial class MainWindow : Window, IDisposable
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
+        ApplyRestoredObserverUiState();
         _logService.AddDebug(DebugLogLevel.Information, "시뮬레이션 실행 시작");
         _runner?.Start();
     }
 
     private void MainWindow_Closed(object? sender, EventArgs e)
     {
+        SaveObserverUiPreferences();
         Dispose();
     }
 

@@ -14,6 +14,7 @@ public partial class MainWindow
         UiScaleRequestedEventArgs e)
     {
         var scale = e.Scale;
+        _uiScale = scale;
         RootLayoutGrid.LayoutTransform = new ScaleTransform(scale, scale);
         _logService.AddDebug(DebugLogLevel.Information, $"UI 배율 변경 · {scale * 100:0}%");
     }
@@ -189,6 +190,7 @@ public partial class MainWindow
             metadata.Generation);
         _speed = 1;
         _selectedAgent = null;
+        _watchlistedAgentIds.Clear();
         _latestAgent = null;
         _latestSnapshot = null;
         _latestPersonalLog = Array.Empty<Chronicles.Simulation.PersonalLogEntry>();

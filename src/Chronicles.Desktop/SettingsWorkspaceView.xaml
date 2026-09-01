@@ -48,12 +48,19 @@
                                                Margin="0,5,0,12"
                                                Foreground="{StaticResource SecondaryTextBrush}" />
                                     <UniformGrid Rows="1" Columns="5">
-                                        <RadioButton GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,4,0" Tag="0.9" Click="UiScaleButton_Click">90%</RadioButton>
-                                        <RadioButton GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0" Tag="1.0" IsChecked="True" Click="UiScaleButton_Click">100%</RadioButton>
-                                        <RadioButton GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0" Tag="1.1" Click="UiScaleButton_Click">110%</RadioButton>
-                                        <RadioButton GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0" Tag="1.25" Click="UiScaleButton_Click">125%</RadioButton>
-                                        <RadioButton GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0,0,0" Tag="1.4" Click="UiScaleButton_Click">140%</RadioButton>
+                                        <RadioButton x:Name="UiScale90Toggle" GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,4,0" Tag="0.9" Click="UiScaleButton_Click">90%</RadioButton>
+                                        <RadioButton x:Name="UiScale100Toggle" GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0" Tag="1.0" IsChecked="True" Click="UiScaleButton_Click">100%</RadioButton>
+                                        <RadioButton x:Name="UiScale110Toggle" GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0" Tag="1.1" Click="UiScaleButton_Click">110%</RadioButton>
+                                        <RadioButton x:Name="UiScale125Toggle" GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0" Tag="1.25" Click="UiScaleButton_Click">125%</RadioButton>
+                                        <RadioButton x:Name="UiScale140Toggle" GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0,0,0" Tag="1.4" Click="UiScaleButton_Click">140%</RadioButton>
                                     </UniformGrid>
+                                    <TextBlock x:Name="ObserverUiStateText"
+                                               Margin="0,10,0,0"
+                                               Text="관찰 UI 상태: 기본값"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               FontSize="9"
+                                               TextWrapping="Wrap"
+                                               AutomationProperties.LiveSetting="Polite" />
                                 </StackPanel>
                             </Border>
 

@@ -53,6 +53,30 @@ public partial class SettingsWorkspaceView : UserControl
     public event EventHandler? MaximizeWindowRequested;
     public event EventHandler<PerformanceMeterChangedEventArgs>? PerformanceMeterChanged;
     public event EventHandler<PerformanceSampleRecordedEventArgs>? PerformanceSampleRecorded;
+
+    public void SetUiScale(double scale)
+    {
+        UiScale90Toggle.IsChecked = Math.Abs(scale - 0.9d) < 0.0001d;
+        UiScale100Toggle.IsChecked = Math.Abs(scale - 1d) < 0.0001d;
+        UiScale110Toggle.IsChecked = Math.Abs(scale - 1.1d) < 0.0001d;
+        UiScale125Toggle.IsChecked = Math.Abs(scale - 1.25d) < 0.0001d;
+        UiScale140Toggle.IsChecked = Math.Abs(scale - 1.4d) < 0.0001d;
+    }
+
+    public void SetObserverUiState(
+        ObserverUiPreferencesLoadStatus status,
+        string message,
+        string path)
+    {
+        ObserverUiStateText.Text = $"관찰 UI 상태 · {message}";
+        ObserverUiStateText.ToolTip = path;
+        ObserverUiStateText.Foreground = (Brush)FindResource(status switch
+        {
+            ObserverUiPreferencesLoadStatus.Loaded => "PositiveBrush",
+            ObserverUiPreferencesLoadStatus.Missing => "SecondaryTextBrush",
+            _ => "DangerBrush",
+        });
+    }
     public event EventHandler? PerformanceAutoOutputChanged;
     public event EventHandler? PerformanceExportRequested;
     public event EventHandler? PerformanceFolderOpenRequested;

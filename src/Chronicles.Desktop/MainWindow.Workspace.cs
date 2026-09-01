@@ -46,6 +46,7 @@ public partial class MainWindow
     private void ApplyWorkspaceRoute(WorkspaceRoute route)
     {
         _workspaceRoute = route;
+        SelectWorkspaceNavigationToggle(route);
         var isSettings = route == WorkspaceRoute.Settings;
         var isSave = route == WorkspaceRoute.Save;
         var isOrganizations = route == WorkspaceRoute.Organizations;
@@ -75,11 +76,17 @@ public partial class MainWindow
                     break;
                 case WorkspaceRoute.People:
                     WorldInfoTabControl.SelectedIndex = 0;
-                    SelectAgentDetailSection(AgentDetailSection.Overview);
+                    if (!_restoringObserverUi)
+                    {
+                        SelectAgentDetailSection(AgentDetailSection.Overview);
+                    }
                     break;
                 case WorkspaceRoute.Relations:
                     WorldInfoTabControl.SelectedIndex = 0;
-                    SelectAgentDetailSection(AgentDetailSection.Social);
+                    if (!_restoringObserverUi)
+                    {
+                        SelectAgentDetailSection(AgentDetailSection.Social);
+                    }
                     RelationsExpander.IsExpanded = true;
                     break;
                 case WorkspaceRoute.Map:

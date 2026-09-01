@@ -496,6 +496,18 @@
                                                FontSize="10"
                                                TextWrapping="Wrap" />
                                 </Expander>
+                                <Expander x:Name="FoundationFormationExpander"
+                                          Header="축기 형성 결과 · 삼도축기요결"
+                                          Margin="0,8,0,0"
+                                          IsExpanded="False"
+                                          Visibility="Collapsed"
+                                          Expanded="VisibleExpander_Expanded">
+                                    <TextBlock x:Name="FoundationFormationText"
+                                               Margin="4,6,4,2"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               FontSize="10"
+                                               TextWrapping="Wrap" />
+                                </Expander>
                             </StackPanel>
                         </Border>
 
@@ -820,29 +832,26 @@
                                         <TabItem Header="생사" />
                                         <TabItem Header="획득" />
                                     </TabControl>
-                                    <ScrollViewer Grid.Row="1"
-                                                  Margin="8,5,8,5"
-                                                  HorizontalScrollBarVisibility="Auto"
-                                                  VerticalScrollBarVisibility="Disabled">
-                                        <ItemsControl x:Name="ChronicleLifeToggleList">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel Orientation="Horizontal" />
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <RadioButton Content="{Binding Label}"
-                                                                 Tag="{Binding LifeNumber}"
-                                                                 IsChecked="{Binding IsSelected}"
-                                                                 GroupName="ChronicleLife"
-                                                                 Style="{StaticResource SegmentToggleStyle}"
-                                                                 Margin="0,0,4,0"
-                                                                 Click="ChronicleLifeToggle_Click" />
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </ScrollViewer>
+                                    <ItemsControl x:Name="ChronicleLifeToggleList"
+                                                  Grid.Row="1"
+                                                  Margin="8,5,8,5">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <RadioButton Content="{Binding Label}"
+                                                             Tag="{Binding LifeNumber}"
+                                                             IsChecked="{Binding IsSelected}"
+                                                             GroupName="ChronicleLife"
+                                                             Style="{StaticResource SegmentToggleStyle}"
+                                                             Margin="0,0,4,4"
+                                                             Click="ChronicleLifeToggle_Click" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                     <ListBox x:Name="ChronicleList"
                                              Grid.Row="2"
                                              Background="{StaticResource PanelAltBrush}"

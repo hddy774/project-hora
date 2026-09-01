@@ -136,8 +136,7 @@
                     Foreground="{StaticResource PrimaryTextBrush}"
                     SelectionChanged="RegionTabControl_SelectionChanged">
             <TabItem Header="지역 개요">
-                <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                    <StackPanel Margin="8">
+                <StackPanel Margin="8">
                         <UniformGrid Columns="2">
                             <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
                                 <StackPanel>
@@ -170,8 +169,7 @@
                                 Margin="3,7,3,0"
                                 HorizontalContentAlignment="Left"
                                 Click="StrongestAgentButton_Click" />
-                    </StackPanel>
-                </ScrollViewer>
+                </StackPanel>
             </TabItem>
             <TabItem Header="요수 생태">
                 <Grid Margin="8">
@@ -228,8 +226,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="계층·영맥">
-                <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                    <StackPanel Margin="10">
+                <StackPanel Margin="10">
                         <TextBlock Text="Atlas 계층"
                                    Foreground="{StaticResource SecondaryTextBrush}"
                                    FontSize="9" />
@@ -281,8 +278,7 @@
                                 <DataGridTextColumn Header="영맥" Binding="{Binding Veins}" Width="68" />
                             </DataGrid.Columns>
                         </DataGrid>
-                    </StackPanel>
-                </ScrollViewer>
+                </StackPanel>
             </TabItem>
         </TabControl>
     </Grid>

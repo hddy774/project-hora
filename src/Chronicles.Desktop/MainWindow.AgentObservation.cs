@@ -166,6 +166,14 @@ public partial class MainWindow
             {
                 UpdateCultivationTraceView(cultivation);
             }
+            FoundationFormationExpander.Visibility = cultivation.FoundationFormation is null
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+            if (FoundationFormationExpander.IsExpanded
+                && cultivation.FoundationFormation is { } formation)
+            {
+                UpdateFoundationFormationView(formation);
+            }
             RootText.Text = QualityRules.Format(agent.Aptitudes.SpiritualRoot);
             BoneText.Text = QualityRules.Format(agent.Aptitudes.Bone);
             ConstitutionText.Text = QualityRules.Format(agent.Aptitudes.Constitution);
@@ -1110,6 +1118,20 @@ public partial class MainWindow
             ? "RNG 미사용"
             : $"기본 {trace.BaseChanceBasisPoints / 100m:0.00}% + 보정 {trace.ModifierBasisPoints / 100m:0.00}% = " +
                 $"최종 {trace.FinalChanceBasisPoints / 100m:0.00}% · roll {trace.RollBasisPoints / 100m:0.00}%";
+        var attempt = trace.RollBasisPoints < 0
+            ? "Attempt Snapshot 해당 없음"
+            : $"Snapshot {(trace.AttemptSnapshotFrozen ? "동결" : "미동결")} · RNG {trace.RngDomain} · " +
+                $"Effect Registry r{trace.AttemptEffectRegistryRevision} · 후보 {trace.CandidateEffectCount:N0} · " +
+                $"선택 {trace.SelectedEffectCount:N0} · {FormatCultivationAvailability(trace.AttemptEffectAvailability)}";
+        var failure = trace.FailureEffectAvailability == CultivationValueAvailability.NotApplicable
+            ? "실패 효과 해당 없음"
+            : $"실패 효과 {FormatCultivationFailureEffect(trace.FailureEffect)} · " +
+                FormatCultivationAvailability(trace.FailureEffectAvailability);
+        var external = trace.EnvironmentAvailability == CultivationValueAvailability.NotCalculated
+            ? "외부 계수 미계산"
+            : $"환경 {trace.EnvironmentFactorBasisPoints / 100m:0.00}% · " +
+                $"법칙 이해 {FormatCultivationAvailability(trace.LawUnderstandingAvailability)} · " +
+                $"운명/행운 {FormatCultivationAvailability(trace.LuckFateAvailability)}";
         CultivationTraceText.Text =
             $"{formula.StableId} r{formula.Revision} · {formula.Purpose}" +
             (formula.RequiresReview ? " · 다음 버전 검토값 포함" : string.Empty) +
@@ -1118,8 +1140,59 @@ public partial class MainWindow
             $"\nWork {KoreanNumberFormatter.Format(trace.WorkBefore)} + {KoreanNumberFormatter.Format(trace.WorkGain)} = " +
             $"{KoreanNumberFormatter.Format(trace.WorkAfter)} / {KoreanNumberFormatter.Format(trace.RequiredWork)} · " +
             $"이월 {KoreanNumberFormatter.Format(trace.CarryoverWork)}" +
-            $"\n{chance} · 차단 {FormatCultivationBlocker(trace.Blocker)}";
+            $"\n{chance} · 차단 {FormatCultivationBlocker(trace.Blocker)}" +
+            $"\n{attempt} · {failure}" +
+            $"\n{external}";
     }
+
+    private void UpdateFoundationFormationView(FoundationFormationSnapshot formation)
+    {
+        var source = formation.Source;
+        FoundationFormationText.Text =
+            $"{formation.MethodStableId} r{formation.MethodRevision} · 5단계 {formation.CompletedSteps}" +
+            $"\n경로 {FormatFoundationRoute(source.Route)} · Source {FormatFoundationSource(source.Kind)} · " +
+            $"위치 {WorldMapRules.GetLocation(source.LocationId).KoreanName} · revision {source.SourceRevision} · " +
+            $"동결 {FormatGameDate(GameCalendar.GetDate(new SimulationTick(source.FrozenTick)))} · " +
+            $"가용성 {FormatCultivationAvailability(source.Availability)}" +
+            $"\nSource 수 {source.SourceCount:N0} · 남은 공급 {KoreanNumberFormatter.Format(source.RemainingSupply)} · " +
+            $"형성 품질 10요소 {string.Join(" / ", formation.QualityComponentsHundredths.Select(value => value / 100m).Select(value => value.ToString("0.00", CultureInfo.InvariantCulture)))} · " +
+            $"안착 필요 {(formation.RequiresStabilization ? "예" : "아니오")}";
+    }
+
+    private static string FormatCultivationAvailability(CultivationValueAvailability value) => value switch
+    {
+        CultivationValueAvailability.Actual => "실제값",
+        CultivationValueAvailability.ActualZero => "확정 0",
+        CultivationValueAvailability.NotCalculated => "미계산",
+        CultivationValueAvailability.NotApplicable => "해당 없음",
+        CultivationValueAvailability.Unavailable => "자료 없음",
+        CultivationValueAvailability.Unapproved => "미승인",
+        CultivationValueAvailability.Blocked => "차단",
+        _ => value.ToString(),
+    };
+
+    private static string FormatCultivationFailureEffect(CultivationFailureEffectKind value) => value switch
+    {
+        CultivationFailureEffectKind.CleanFailure => "무손실 실패",
+        CultivationFailureEffectKind.AttemptResourceConsumed => "시도 자원 소비",
+        CultivationFailureEffectKind.FailureResourceLoss => "실패 자원 손실",
+        CultivationFailureEffectKind.PreparationOrWorkDisturbance => "준비/Work 교란",
+        CultivationFailureEffectKind.RealmComponentDisturbance => "경지 구성요소 교란",
+        CultivationFailureEffectKind.Injury => "부상",
+        CultivationFailureEffectKind.SoulOrMentalBurden => "영혼/정신 부담",
+        CultivationFailureEffectKind.FatalBodyLoss => "육신 상실",
+        CultivationFailureEffectKind.RetryBlock => "재시도 차단",
+        _ => value.ToString(),
+    };
+
+    private static string FormatFoundationSource(FoundationSourceKind value) => value switch
+    {
+        FoundationSourceKind.None => "없음",
+        FoundationSourceKind.InternalBodyAndSpiritualRoot => "육신·영근 내부 기반",
+        FoundationSourceKind.LocationSpiritVeins => "지점 영맥 Snapshot",
+        FoundationSourceKind.ManifestationEnvironmentWindow => "현현·환경 유효창",
+        _ => value.ToString(),
+    };
 
     private static string FormatBreakthroughClass(BreakthroughClass value) => value switch
     {
@@ -1154,6 +1227,7 @@ public partial class MainWindow
         CultivationBottleneckCause.EntryGate => "입문 Gate",
         CultivationBottleneckCause.RealmComponent => "경지 구성요소",
         CultivationBottleneckCause.Method => "공법",
+        CultivationBottleneckCause.Environment => "환경·Source",
         _ => value.ToString(),
     };
 

@@ -103,14 +103,12 @@
                     Foreground="{StaticResource PrimaryTextBrush}"
                     SelectionChanged="DetailTabControl_SelectionChanged">
             <TabItem Header="상품 개요">
-                <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                    <StackPanel Margin="10,8">
-                        <TextBlock x:Name="DetailNameText" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" />
-                        <TextBlock x:Name="DetailTypeText" Margin="0,3,0,0" Foreground="{StaticResource AccentBrush}" FontSize="10" />
-                        <TextBlock x:Name="DetailDescriptionText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="11" TextWrapping="Wrap" />
-                        <TextBlock x:Name="DetailQualityText" Margin="0,7,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
-                    </StackPanel>
-                </ScrollViewer>
+                <StackPanel Margin="10,8">
+                    <TextBlock x:Name="DetailNameText" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" />
+                    <TextBlock x:Name="DetailTypeText" Margin="0,3,0,0" Foreground="{StaticResource AccentBrush}" FontSize="10" />
+                    <TextBlock x:Name="DetailDescriptionText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="11" TextWrapping="Wrap" />
+                    <TextBlock x:Name="DetailQualityText" Margin="0,7,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
+                </StackPanel>
             </TabItem>
             <TabItem Header="가격·수급">
                 <StackPanel Margin="10,8">
@@ -120,12 +118,10 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="도시 생산">
-                <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                    <StackPanel Margin="10,8">
-                        <TextBlock x:Name="DetailProductionStateText" Foreground="{StaticResource PositiveBrush}" FontSize="11" FontWeight="SemiBold" TextWrapping="Wrap" />
-                        <TextBlock x:Name="DetailProductionText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
-                    </StackPanel>
-                </ScrollViewer>
+                <StackPanel Margin="10,8">
+                    <TextBlock x:Name="DetailProductionStateText" Foreground="{StaticResource PositiveBrush}" FontSize="11" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock x:Name="DetailProductionText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
+                </StackPanel>
             </TabItem>
             <TabItem Header="제안·예약">
                 <Grid Margin="8">

@@ -29,11 +29,11 @@
     "Gap/Deferred": "요구 문장 일부 또는 전부를 증명하지 못해 완료로 주장하지 않음."
   },
   "status_counts": {
-    "Port": 92,
+    "Port": 109,
     "PC Adapt": 14,
     "PC_TEMP_REVIEW": 30,
     "Platform Excluded": 0,
-    "Gap/Deferred": 102
+    "Gap/Deferred": 85
   },
   "rows": [
     {
@@ -62,18 +62,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V02",
@@ -101,18 +107,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V03",
@@ -140,18 +152,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V04",
@@ -179,18 +197,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V05",
@@ -218,18 +242,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V06",
@@ -257,18 +287,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V07",
@@ -296,18 +332,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V08",
@@ -335,18 +377,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V09",
@@ -374,18 +422,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V10",
@@ -413,18 +467,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V11",
@@ -452,18 +512,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V12",
@@ -491,18 +557,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "PC Adapt",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": "Android/모바일 전달 표면을 제외하고 같은 관찰·조회 의미를 Windows WPF와 Windows x64 검증으로 제공한다.",
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V13",
@@ -530,18 +602,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V14",
@@ -569,18 +647,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V15",
@@ -608,18 +692,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V16",
@@ -647,18 +737,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M01-V17",
@@ -686,18 +782,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::measure_live_runtime_performance_110",
         "evidence_ref": "FILE::tests/alpha110_registry_contract_tests.cpp::validates_revision_and_replacement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Core/Identifiers.cs::AgentId",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId"
+        "FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry",
+        "FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry",
+        "FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection",
+        "FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics",
+        "TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::공식 Registry·typed command·원자 transaction·causal event",
+        "TEST::관찰 조회 무영향"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V01",
@@ -3036,15 +3138,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3103,15 +3208,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3158,15 +3266,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3213,15 +3324,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3268,15 +3382,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3323,15 +3440,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3378,15 +3498,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3433,15 +3556,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3500,15 +3626,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3567,15 +3696,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3622,15 +3754,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3677,15 +3812,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3732,15 +3870,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3787,15 +3928,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3854,15 +3998,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3909,15 +4056,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
@@ -3964,15 +4114,18 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
+        "FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
         "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
         "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
         "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
         "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
-        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약",
+        "TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::대경지별 5단계 세부 수행 진척·지연 관찰",
         "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
         "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",

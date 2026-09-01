@@ -32,7 +32,7 @@ $targetVersions = @{
 }
 
 $masterGap = @{
-    M01 = '공통 Stable Registry, Owner/Mutation Map, revision 계보와 정적 무결성 검사가 PC에 아직 없다.'
+    M01 = '공통 Stable Registry 수직 계약은 0.0.21에서 진단 UI까지 연결되어 이식 완료되었다.'
     M02 = '현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다.'
     M03 = '현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다.'
     M04 = 'Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다.'
@@ -50,8 +50,11 @@ $masterGap = @{
 
 $masterEvidence = @{
     M01 = @(
-        'FILE::src/Chronicles.Core/Identifiers.cs::AgentId',
-        'FILE::src/Chronicles.Simulation/PersonCausalModel.cs::SoulIdentityId')
+        'FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry',
+        'FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry',
+        'FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection',
+        'FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics',
+        'TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약')
     M02 = @(
         'FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner',
         'FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec',
@@ -67,12 +70,14 @@ $masterEvidence = @{
         'FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry')
     M05 = @(
         'FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry',
+        'FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules',
         'FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules',
         'FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules',
         'FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt',
         'FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore',
         'FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths',
-        'TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약')
+        'TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약',
+        'TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약')
     M06 = @(
         'FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules',
         'FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore',
@@ -120,7 +125,9 @@ $masterEvidence = @{
 }
 
 $masterTests = @{
-    M01 = @()
+    M01 = @(
+        'TEST::공식 Registry·typed command·원자 transaction·causal event',
+        'TEST::관찰 조회 무영향')
     M02 = @(
         'TEST::관찰 조회 무영향',
         'TEST::저장 codec 결정론 왕복',
@@ -137,6 +144,7 @@ $masterTests = @{
         'TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전')
     M05 = @(
         'TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준',
+        'TEST::대경지별 5단계 세부 수행 진척·지연 관찰',
         'TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약',
         'TEST::입문 Gate 병목 단련·적용 Work·저장 왕복',
         'TEST::Notion 수행 Work·준비·Preflight·안착 상태',
@@ -181,6 +189,11 @@ $masterTests = @{
 }
 
 $portIds = @(
+    'A110-M01-V01', 'A110-M01-V02', 'A110-M01-V03', 'A110-M01-V04',
+    'A110-M01-V05', 'A110-M01-V06', 'A110-M01-V07', 'A110-M01-V08',
+    'A110-M01-V09', 'A110-M01-V10', 'A110-M01-V11', 'A110-M01-V12',
+    'A110-M01-V13', 'A110-M01-V14', 'A110-M01-V15', 'A110-M01-V16',
+    'A110-M01-V17',
     'A110-M02-V09', 'A110-M02-V10', 'A110-M02-V14',
     'A110-M03-V01', 'A110-M03-V02', 'A110-M03-V03', 'A110-M03-V05',
     'A110-M03-V06', 'A110-M03-V07', 'A110-M03-V08', 'A110-M03-V10',

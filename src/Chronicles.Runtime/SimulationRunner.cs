@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using Chronicles.Core;
 using Chronicles.Queries;
 using Chronicles.Simulation;
@@ -24,6 +25,15 @@ public sealed class SimulationRunner : IDisposable
     private readonly ConcurrentQueue<WorldCenturyChronicleEntry> _pendingWorldChronicles = new();
     private int _pendingWorldChronicleCount;
     private int _droppedWorldChronicleCount;
+    private int _performanceDiagnosticsEnabled;
+    private long _simulationPulseCount;
+    private long _simulationTotalMicroseconds;
+    private long _simulationLastMicroseconds;
+    private long _simulationMaximumMicroseconds;
+    private long _observationCount;
+    private long _observationTotalMicroseconds;
+    private long _observationLastMicroseconds;
+    private long _observationMaximumMicroseconds;
 
     public SimulationRunner(World world)
     {
@@ -43,6 +53,45 @@ public sealed class SimulationRunner : IDisposable
 
     public int Speed => Volatile.Read(ref _speed);
     public bool IsPaused => Volatile.Read(ref _paused) != 0;
+
+    public void SetPerformanceDiagnosticsEnabled(bool enabled) =>
+        Volatile.Write(ref _performanceDiagnosticsEnabled, enabled ? 1 : 0);
+
+    public RuntimePerformanceSnapshot GetPerformanceSnapshot()
+    {
+        var simulationCount = Interlocked.Read(ref _simulationPulseCount);
+        var observationCount = Interlocked.Read(ref _observationCount);
+        var lastSimulation = Interlocked.Read(ref _simulationLastMicroseconds);
+        return new RuntimePerformanceSnapshot(
+            IsEnabled: Volatile.Read(ref _performanceDiagnosticsEnabled) != 0,
+            Speed,
+            IsPaused,
+            SimulationPacing.PulseMilliseconds,
+            simulationCount,
+            lastSimulation / 1_000d,
+            simulationCount == 0
+                ? 0d
+                : Interlocked.Read(ref _simulationTotalMicroseconds) / 1_000d / simulationCount,
+            Interlocked.Read(ref _simulationMaximumMicroseconds) / 1_000d,
+            Math.Max(0d, (lastSimulation / 1_000d) - SimulationPacing.PulseMilliseconds),
+            observationCount,
+            Interlocked.Read(ref _observationLastMicroseconds) / 1_000d,
+            observationCount == 0
+                ? 0d
+                : Interlocked.Read(ref _observationTotalMicroseconds) / 1_000d / observationCount,
+            Interlocked.Read(ref _observationMaximumMicroseconds) / 1_000d);
+    }
+
+    public WorldRuntimeMetadata GetWorldMetadata()
+    {
+        lock (_worldGate)
+        {
+            return new WorldRuntimeMetadata(
+                _world.Seed,
+                _world.Population,
+                _world.Balance);
+        }
+    }
 
     public void Start()
     {
@@ -73,15 +122,18 @@ public sealed class SimulationRunner : IDisposable
         int detailedMapAgentOffset = 0,
         int worldChronicleCount = int.MaxValue)
     {
+        var started = BeginPerformanceMeasurement();
         lock (_worldGate)
         {
-            return _queries.GetSnapshot(
+            var snapshot = _queries.GetSnapshot(
                 rankingCount,
                 eventCount,
                 sections,
                 detailedMapLocationId,
                 detailedMapAgentOffset,
                 worldChronicleCount);
+            RecordObservationMeasurement(started);
+            return snapshot;
         }
     }
 
@@ -102,9 +154,10 @@ public sealed class SimulationRunner : IDisposable
         int detailedMapAgentOffset = 0,
         int worldChronicleCount = int.MaxValue)
     {
+        var started = BeginPerformanceMeasurement();
         lock (_worldGate)
         {
-            return _queries.GetObservation(new ObservationRequest(
+            var observation = _queries.GetObservation(new ObservationRequest(
                 selectedAgent,
                 rankingCount,
                 eventCount,
@@ -112,6 +165,8 @@ public sealed class SimulationRunner : IDisposable
                 detailedMapLocationId,
                 detailedMapAgentOffset,
                 worldChronicleCount));
+            RecordObservationMeasurement(started);
+            return observation;
         }
     }
 
@@ -237,8 +292,10 @@ public sealed class SimulationRunner : IDisposable
                 {
                     if (!IsPaused)
                     {
+                        var started = BeginPerformanceMeasurement();
                         var ticks = SimulationPacing.GetTicksPerPulse(Speed);
                         _world.AdvanceTo(new SimulationTick(checked(_world.Tick.Value + ticks)));
+                        RecordSimulationMeasurement(started);
                     }
                 }
 
@@ -254,6 +311,71 @@ public sealed class SimulationRunner : IDisposable
     private void PublishObservationInvalidated()
     {
         ObservationInvalidated?.Invoke();
+    }
+
+    private long BeginPerformanceMeasurement() =>
+        Volatile.Read(ref _performanceDiagnosticsEnabled) != 0
+            ? Stopwatch.GetTimestamp()
+            : 0L;
+
+    private void RecordSimulationMeasurement(long started)
+    {
+        if (started == 0)
+        {
+            return;
+        }
+
+        RecordMeasurement(
+            GetElapsedMicroseconds(started),
+            ref _simulationPulseCount,
+            ref _simulationTotalMicroseconds,
+            ref _simulationLastMicroseconds,
+            ref _simulationMaximumMicroseconds);
+    }
+
+    private void RecordObservationMeasurement(long started)
+    {
+        if (started == 0)
+        {
+            return;
+        }
+
+        RecordMeasurement(
+            GetElapsedMicroseconds(started),
+            ref _observationCount,
+            ref _observationTotalMicroseconds,
+            ref _observationLastMicroseconds,
+            ref _observationMaximumMicroseconds);
+    }
+
+    private static long GetElapsedMicroseconds(long started) =>
+        Math.Max(1L, (long)Math.Round(
+            Stopwatch.GetElapsedTime(started).TotalMicroseconds,
+            MidpointRounding.AwayFromZero));
+
+    private static void RecordMeasurement(
+        long microseconds,
+        ref long count,
+        ref long total,
+        ref long last,
+        ref long maximum)
+    {
+        Interlocked.Exchange(ref last, microseconds);
+        Interlocked.Increment(ref count);
+        Interlocked.Add(ref total, microseconds);
+        var observedMaximum = Interlocked.Read(ref maximum);
+        while (microseconds > observedMaximum)
+        {
+            var previous = Interlocked.CompareExchange(
+                ref maximum,
+                microseconds,
+                observedMaximum);
+            if (previous == observedMaximum)
+            {
+                break;
+            }
+            observedMaximum = previous;
+        }
     }
 
     private void World_ImportantWorldEventRecorded(WorldEventNotification notification)
@@ -280,6 +402,26 @@ public sealed class SimulationRunner : IDisposable
         }
     }
 }
+
+public readonly record struct RuntimePerformanceSnapshot(
+    bool IsEnabled,
+    int Speed,
+    bool IsPaused,
+    int PulseBudgetMilliseconds,
+    long SimulationPulseCount,
+    double LastSimulationMilliseconds,
+    double AverageSimulationMilliseconds,
+    double MaximumSimulationMilliseconds,
+    double EstimatedBacklogMilliseconds,
+    long ObservationCount,
+    double LastObservationMilliseconds,
+    double AverageObservationMilliseconds,
+    double MaximumObservationMilliseconds);
+
+public readonly record struct WorldRuntimeMetadata(
+    ulong Seed,
+    int Population,
+    WorldBalanceConfiguration Balance);
 
 public static class SimulationPacing
 {

@@ -30,6 +30,15 @@ public sealed class GameApplicationSession : IDisposable
     public static GameApplicationSession CreateDefault(ulong seed) =>
         new(World.CreateDefault(seed));
 
+    public static GameApplicationSession Create(
+        ulong seed,
+        int population,
+        WorldBalanceConfiguration? balance = null) =>
+        new(World.Create(
+            seed,
+            population,
+            balance ?? WorldBalanceConfiguration.Default));
+
     public event Action? ObservationInvalidated
     {
         add => _runner.ObservationInvalidated += value;
@@ -48,6 +57,11 @@ public sealed class GameApplicationSession : IDisposable
     public void Start() => _runner.Start();
     public void SetPaused(bool paused) => _runner.SetPaused(paused);
     public void SetSpeed(int speed) => _runner.SetSpeed(speed);
+    public void SetPerformanceDiagnosticsEnabled(bool enabled) =>
+        _runner.SetPerformanceDiagnosticsEnabled(enabled);
+    public RuntimePerformanceSnapshot GetPerformanceSnapshot() =>
+        _runner.GetPerformanceSnapshot();
+    public WorldRuntimeMetadata GetWorldMetadata() => _runner.GetWorldMetadata();
 
     public WorldSnapshot GetSnapshot(
         int rankingCount = 1_000,

@@ -76,6 +76,16 @@ Desktop = Application + Presentation
 반영하되, 다음 병목·돌파·안착 경계를 넘지 않고 즉시 월 단위 전이로 돌아온다.
 UI는 수행 Expander와 현재 내부 탭이 열렸을 때만 계획 DTO 문구와 상대 이름을 갱신한다.
 
+## 0.0.21 세부 수행 진척 진입점
+
+- 대경지별 단계 정의·가중치·파생 투영: `CultivationDetailProgress.cs`
+- 선택 인물의 지연 DTO 생성: `World.Cultivation.cs`, `WorldObservationQueries.cs`
+- 토글·다섯 진행 막대 UI: `MainWindow.xaml`, `MainWindow.AgentObservation.cs`
+
+세부 수행 진척은 기존 권위 Work에서 계산하는 관찰 투영이다. 저장 wire·RNG·수행 공식은
+바꾸지 않으며 `CultivationDetail` section과 수행 토글이 열렸을 때만 단계 배열과 행을
+만든다. 토글 내부에는 중첩 스크롤을 두지 않는다.
+
 ## 검증
 
 ```powershell

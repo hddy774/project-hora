@@ -79,7 +79,8 @@ var tests = new (string Name, Action Body)[]
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
     ("schema 25 SQLite 다중 슬롯·후보 원자 복원", SqliteSlotPersistenceTests.Run),
-    ("모든 로그 파일 10MiB 상한·자동 회전", BoundedLogFilesNeverExceedTenMiB),
+    ("모든 로그 파일 5MiB 상한·기존 part 재검사·UTF-8 분할", BoundedLogFilesNeverExceedFiveMiB),
+    ("로그 종류·자동 수동·인물별 출력 경로 계약", LogOutputDirectoryContract),
     ("10,000명 로컬 실시간 성능 예산", DefaultWorldPerformanceBudget),
 };
 
@@ -4018,7 +4019,7 @@ static void AtomicSaveFileRoundTrip()
     }
 }
 
-static void BoundedLogFilesNeverExceedTenMiB()
+static void BoundedLogFilesNeverExceedFiveMiB()
 {
     var directory = Path.Combine(
         Path.GetTempPath(),
@@ -4030,13 +4031,13 @@ static void BoundedLogFilesNeverExceedTenMiB()
             .Select(index => $"{index:D4}|{new string('가', 2_200)}")
             .ToArray();
         var export = BoundedLogFileWriter.WriteNewSeries(directory, "manual", lines);
-        True(export.FileCount >= 2, "10MiB 초과 수동 로그 분할");
+        True(export.FileCount >= 2, "5MiB 초과 수동 로그 분할");
         var exportPaths = Directory.GetFiles(directory, "manual-*.log");
         Equal(export.FileCount, exportPaths.Length, "수동 로그 결과 파일 수");
         True(
             exportPaths.All(path => new FileInfo(path).Length
                 <= BoundedLogFileWriter.MaximumFileBytes),
-            "수동 로그 파일별 10MiB 상한");
+            "수동 로그 파일별 5MiB 상한");
         Equal(
             lines.Length,
             exportPaths.Sum(path => File.ReadLines(path).Count()),
@@ -4052,16 +4053,89 @@ static void BoundedLogFilesNeverExceedTenMiB()
         True(
             automaticPaths.All(path => new FileInfo(path).Length
                 <= BoundedLogFileWriter.MaximumFileBytes),
-            "자동 로그 파일별 10MiB 상한");
+            "자동 로그 파일별 5MiB 상한");
         Equal(
             lines.Length,
             automaticPaths.Sum(path => File.ReadLines(path).Count()),
             "자동 로그 행 보존");
+
+        using (var first = File.Create(Path.Combine(directory, "resume-001.log")))
+        {
+            first.SetLength(BoundedLogFileWriter.MaximumFileBytes - 50);
+        }
+        using (var second = File.Create(Path.Combine(directory, "resume-002.log")))
+        {
+            second.SetLength(BoundedLogFileWriter.MaximumFileBytes - 40);
+        }
+
+        _ = BoundedLogFileWriter.AppendSeries(
+            directory,
+            "resume",
+            [new string('x', 80)]);
+        var resumedPaths = Directory.GetFiles(directory, "resume-*.log");
+        True(resumedPaths.Length == 3, "기존의 부분 사용된 다음 part도 잔여 용량을 재검사");
+        True(
+            resumedPaths.All(path => new FileInfo(path).Length
+                <= BoundedLogFileWriter.MaximumFileBytes),
+            "재시작 append 뒤에도 파일별 5MiB 상한");
+
+        var oversized = new string('한', checked((int)(
+            BoundedLogFileWriter.MaximumFileBytes / 3 + 1_000)));
+        var oversizedExport = BoundedLogFileWriter.WriteNewSeries(
+            directory,
+            "oversized-utf8",
+            [oversized]);
+        True(oversizedExport.FileCount >= 2, "단일 UTF-8 기록도 rune 경계에서 분할");
+        var oversizedPaths = Directory.GetFiles(directory, "oversized-utf8-*.log");
+        True(
+            oversizedPaths.All(path => new FileInfo(path).Length
+                <= BoundedLogFileWriter.MaximumFileBytes),
+            "단일 UTF-8 기록 파일별 5MiB 상한");
+        True(
+            File.ReadLines(oversizedPaths[0]).First().StartsWith("[분할 기록 1] ", StringComparison.Ordinal),
+            "분할 기록 연속 표시");
     }
     finally
     {
         Directory.Delete(directory, recursive: true);
     }
+}
+
+static void LogOutputDirectoryContract()
+{
+    var worldAutomatic = LogOutputDirectories.GetDirectory(new LogOutputTarget(
+        LogOutputKind.World,
+        LogOutputMode.Automatic));
+    True(
+        worldAutomatic.EndsWith(
+            Path.Combine("logs", "world", "automatic"),
+            StringComparison.OrdinalIgnoreCase),
+        "세계 자동 로그 폴더");
+
+    var performanceManual = LogOutputDirectories.GetDirectory(new LogOutputTarget(
+        LogOutputKind.Performance,
+        LogOutputMode.Manual));
+    True(
+        performanceManual.EndsWith(
+            Path.Combine("logs", "performance", "manual"),
+            StringComparison.OrdinalIgnoreCase),
+        "성능 수동 로그 폴더");
+
+    var agentId = new AgentId(42);
+    var personalManual = LogOutputDirectories.GetDirectory(new LogOutputTarget(
+        LogOutputKind.Personal,
+        LogOutputMode.Manual,
+        agentId));
+    True(
+        personalManual.EndsWith(
+            Path.Combine("logs", "personal", agentId.ToString(), "manual"),
+            StringComparison.OrdinalIgnoreCase),
+        "개인별 수동 로그 폴더");
+    Throws<ArgumentException>(
+        () => LogOutputDirectories.GetDirectory(new LogOutputTarget(
+            LogOutputKind.Personal,
+            LogOutputMode.Automatic)),
+        "인물 ID 없는 개인 로그 경로 거부");
 }
 
 static void DefaultWorldPerformanceBudget()

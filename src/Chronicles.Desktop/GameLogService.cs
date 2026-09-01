@@ -30,6 +30,7 @@ internal sealed class GameLogService : IDisposable
     private readonly Queue<DebugLogEntry> _entries = new(DebugLogCapacity);
     private readonly Dictionary<AgentId, long> _personalLogSequences = [];
     private readonly Dictionary<AgentId, long> _personalChronicleSequences = [];
+    private readonly HashSet<AgentId> _automaticPersonalAgents = [];
     private readonly HashSet<(AgentId AgentId, int LifeNumber, long CenturyIndex)>
         _completedPersonalCenturyVolumes = [];
     private readonly Channel<LogWriteRequest> _writeRequests = Channel.CreateUnbounded<LogWriteRequest>(
@@ -37,7 +38,6 @@ internal sealed class GameLogService : IDisposable
     private readonly Task _writerTask;
     private long _debugSequence;
     private int _autoDebugOutput;
-    private int _autoPersonalOutput;
     private int _autoPerformanceOutput;
     private int _autoWorldOutput;
     private int _disposed;
@@ -50,14 +50,21 @@ internal sealed class GameLogService : IDisposable
     public event Action<Exception>? FileWriteFailed;
 
     public bool AutoDebugOutput => Volatile.Read(ref _autoDebugOutput) != 0;
-    public bool AutoPersonalOutput => Volatile.Read(ref _autoPersonalOutput) != 0;
+    public bool AutoPersonalOutput
+    {
+        get
+        {
+            lock (_personalGate)
+            {
+                return _automaticPersonalAgents.Count > 0;
+            }
+        }
+    }
     public bool AutoPerformanceOutput => Volatile.Read(ref _autoPerformanceOutput) != 0;
     public bool AutoWorldOutput => Volatile.Read(ref _autoWorldOutput) != 0;
     public long DebugVersion => Volatile.Read(ref _debugSequence);
 
-    public static string OutputDirectory => Path.Combine(
-        GameApplicationSession.DefaultDataDirectory,
-        "logs");
+    public static string OutputDirectory => LogOutputDirectories.RootDirectory;
 
     public static string EnsureOutputDirectory()
     {
@@ -97,14 +104,36 @@ internal sealed class GameLogService : IDisposable
             enabled ? "성능·상태 로그 자동 파일 기록 시작" : "성능·상태 로그 자동 파일 기록 중지");
     }
 
-    public void SetAutoPersonalOutput(bool enabled)
+    public bool IsAutoPersonalOutput(AgentId agentId)
     {
-        Volatile.Write(ref _autoPersonalOutput, enabled ? 1 : 0);
+        lock (_personalGate)
+        {
+            return _automaticPersonalAgents.Contains(agentId);
+        }
+    }
+
+    public void SetAutoPersonalOutput(AgentId agentId, bool enabled)
+    {
+        lock (_personalGate)
+        {
+            if (enabled)
+            {
+                _automaticPersonalAgents.Add(agentId);
+            }
+            else
+            {
+                _automaticPersonalAgents.Remove(agentId);
+                _personalLogSequences.Remove(agentId);
+                _personalChronicleSequences.Remove(agentId);
+                _completedPersonalCenturyVolumes.RemoveWhere(key => key.AgentId == agentId);
+            }
+        }
+
         AddDebug(
             DebugLogLevel.Information,
             enabled
-                ? "선택 인물 로그·연대기 자동 파일 기록 시작"
-                : "선택 인물 로그·연대기 자동 파일 기록 중지");
+                ? $"인물 {agentId} 로그·연대기 자동 파일 기록 시작"
+                : $"인물 {agentId} 로그·연대기 자동 파일 기록 중지");
     }
 
     public void ResetPersonalCaptureState()
@@ -114,6 +143,7 @@ internal sealed class GameLogService : IDisposable
             _personalLogSequences.Clear();
             _personalChronicleSequences.Clear();
             _completedPersonalCenturyVolumes.Clear();
+            _automaticPersonalAgents.Clear();
         }
     }
 
@@ -137,7 +167,7 @@ internal sealed class GameLogService : IDisposable
 
         if (AutoDebugOutput)
         {
-            QueueAutomaticWrite(LogFileKind.Debug, [FormatDebugEntry(entry)]);
+            QueueAutomaticWrite(LogOutputKind.Debug, [FormatDebugEntry(entry)]);
         }
     }
 
@@ -159,7 +189,7 @@ internal sealed class GameLogService : IDisposable
         }
 
         QueueAutomaticWrite(
-            LogFileKind.World,
+            LogOutputKind.World,
             feed.Events.Select(formatter).ToArray());
     }
 
@@ -181,7 +211,7 @@ internal sealed class GameLogService : IDisposable
         }
 
         QueueAutomaticWrite(
-            LogFileKind.World,
+            LogOutputKind.World,
             feed.Entries.Select(formatter).ToArray());
     }
 
@@ -190,7 +220,7 @@ internal sealed class GameLogService : IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(line);
         if (AutoPerformanceOutput)
         {
-            QueueAutomaticWrite(LogFileKind.Performance, [line.Trim()]);
+            QueueAutomaticWrite(LogOutputKind.Performance, [line.Trim()]);
         }
     }
 
@@ -209,7 +239,7 @@ internal sealed class GameLogService : IDisposable
         ArgumentNullException.ThrowIfNull(detailedChronicleFormatter);
         ArgumentNullException.ThrowIfNull(centuryChronicle);
         ArgumentNullException.ThrowIfNull(centuryChronicleFormatter);
-        if (!AutoPersonalOutput)
+        if (!IsAutoPersonalOutput(agentId))
         {
             return;
         }
@@ -251,7 +281,7 @@ internal sealed class GameLogService : IDisposable
 
         if (lines.Count > 0)
         {
-            QueueAutomaticWrite(LogFileKind.Personal, lines.ToArray(), agentId.ToString());
+            QueueAutomaticWrite(LogOutputKind.Personal, lines.ToArray(), agentId);
         }
     }
 
@@ -266,7 +296,7 @@ internal sealed class GameLogService : IDisposable
             lines[index + 2] = FormatDebugEntry(entries[index]);
         }
 
-        return QueueManualWrite(LogFileKind.Debug, lines);
+        return QueueManualWrite(LogOutputKind.Debug, lines);
     }
 
     public Task<string> ExportWorldAsync(
@@ -286,7 +316,7 @@ internal sealed class GameLogService : IDisposable
         lines.Add(string.Empty);
         lines.Add($"[영구 세계 연대기 · 100년 역사서 {permanentWorldChronicle.Count:N0}권]");
         lines.AddRange(permanentWorldChronicle);
-        return QueueManualWrite(LogFileKind.World, lines.ToArray());
+        return QueueManualWrite(LogOutputKind.World, lines.ToArray());
     }
 
     public Task<string> ExportPerformanceAsync(IReadOnlyList<string> recentSamples)
@@ -300,7 +330,7 @@ internal sealed class GameLogService : IDisposable
             string.Empty,
         };
         lines.AddRange(recentSamples);
-        return QueueManualWrite(LogFileKind.Performance, lines.ToArray());
+        return QueueManualWrite(LogOutputKind.Performance, lines.ToArray());
     }
 
     public Task<string> ExportPersonalAsync(
@@ -332,7 +362,30 @@ internal sealed class GameLogService : IDisposable
         lines.Add(string.Empty);
         lines.Add($"[생별 100년 종합 연대기 · {centuryChronicle.Count:N0}권]");
         lines.AddRange(centuryChronicle);
-        return QueueManualWrite(LogFileKind.Personal, lines.ToArray(), agentId.ToString());
+        return QueueManualWrite(LogOutputKind.Personal, lines.ToArray(), agentId);
+    }
+
+    public Task<string> ExportRecentPersonalAsync(
+        AgentId agentId,
+        string personName,
+        int lifeNumber,
+        string categoryName,
+        IReadOnlyList<string> recentPersonalLog)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(personName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(categoryName);
+        ArgumentNullException.ThrowIfNull(recentPersonalLog);
+        var lines = new List<string>(recentPersonalLog.Count + 6)
+        {
+            $"선로만상록 PC {ProductInfo.Version} 최근 개인 로그",
+            $"인물: {personName.Trim()} · {agentId} · 현재 제 {lifeNumber:N0}생",
+            $"분류: {categoryName.Trim()} · 최근 {recentPersonalLog.Count:N0}/100줄",
+            $"출력 시각: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}",
+            $"파일 상한: {MaximumLogFileBytes / 1024 / 1024:N0} MiB",
+            string.Empty,
+        };
+        lines.AddRange(recentPersonalLog);
+        return QueueManualWrite(LogOutputKind.Personal, lines.ToArray(), agentId);
     }
 
     public void Dispose()
@@ -379,27 +432,33 @@ internal sealed class GameLogService : IDisposable
     }
 
     private void QueueAutomaticWrite(
-        LogFileKind kind,
+        LogOutputKind kind,
         string[] lines,
-        string? scope = null)
+        AgentId? agentId = null)
     {
         if (Volatile.Read(ref _disposed) == 0)
         {
             _writeRequests.Writer.TryWrite(
-                new LogWriteRequest(kind, lines, IsManual: false, scope, null));
+                new LogWriteRequest(
+                    new LogOutputTarget(kind, LogOutputMode.Automatic, agentId),
+                    lines,
+                    null));
         }
     }
 
     private Task<string> QueueManualWrite(
-        LogFileKind kind,
+        LogOutputKind kind,
         string[] lines,
-        string? scope = null)
+        AgentId? agentId = null)
     {
         ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
         var completion = new TaskCompletionSource<string>(
             TaskCreationOptions.RunContinuationsAsynchronously);
         if (!_writeRequests.Writer.TryWrite(
-            new LogWriteRequest(kind, lines, IsManual: true, scope, completion)))
+            new LogWriteRequest(
+                new LogOutputTarget(kind, LogOutputMode.Manual, agentId),
+                lines,
+                completion)))
         {
             completion.SetException(new IOException("로그 출력 대기열을 사용할 수 없습니다."));
         }
@@ -413,10 +472,9 @@ internal sealed class GameLogService : IDisposable
         {
             try
             {
-                EnsureOutputDirectory();
-                var path = request.IsManual
-                    ? WriteManualFile(request.Kind, request.Scope, request.Lines)
-                    : AppendAutomaticFile(request.Kind, request.Scope, request.Lines);
+                var path = request.Target.Mode == LogOutputMode.Manual
+                    ? WriteManualFile(request.Target, request.Lines)
+                    : AppendAutomaticFile(request.Target, request.Lines);
                 request.Completion?.SetResult(path);
             }
             catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
@@ -428,63 +486,52 @@ internal sealed class GameLogService : IDisposable
     }
 
     private static string AppendAutomaticFile(
-        LogFileKind kind,
-        string? scope,
+        LogOutputTarget target,
         string[] lines)
     {
+        var directory = LogOutputDirectories.EnsureDirectory(target);
         var result = BoundedLogFileWriter.AppendSeries(
-            OutputDirectory,
-            $"{FormatKind(kind)}{FormatScope(scope)}-auto-{DateTime.Now:yyyyMMdd}",
+            directory,
+            $"{FormatKind(target.Kind)}-auto-{DateTime.Now:yyyyMMdd}",
             lines);
         return result.LastPath;
     }
 
     private static string WriteManualFile(
-        LogFileKind kind,
-        string? scope,
+        LogOutputTarget target,
         string[] lines)
     {
+        var directory = LogOutputDirectories.EnsureDirectory(target);
         var result = BoundedLogFileWriter.WriteNewSeries(
-            OutputDirectory,
-            $"{FormatKind(kind)}{FormatScope(scope)}-export-{DateTime.Now:yyyyMMdd-HHmmss-fff}",
+            directory,
+            $"{FormatKind(target.Kind)}-export-{DateTime.Now:yyyyMMdd-HHmmss-fff}",
             lines);
         return result.PrimaryPath;
     }
 
-    private static string FormatScope(string? scope)
-    {
-        if (string.IsNullOrWhiteSpace(scope))
-        {
-            return string.Empty;
-        }
+    public static string GetOutputDirectory(
+        LogOutputKind kind,
+        LogOutputMode mode,
+        AgentId? agentId = null) =>
+        LogOutputDirectories.GetDirectory(new LogOutputTarget(kind, mode, agentId));
 
-        var safe = new string(scope
-            .Where(character => char.IsLetterOrDigit(character) || character is '-' or '_')
-            .ToArray());
-        return safe.Length == 0 ? string.Empty : $"-{safe}";
-    }
+    public static string EnsureOutputDirectory(
+        LogOutputKind kind,
+        LogOutputMode mode,
+        AgentId? agentId = null) =>
+        LogOutputDirectories.EnsureDirectory(new LogOutputTarget(kind, mode, agentId));
 
-    private static string FormatKind(LogFileKind kind) => kind switch
+    private static string FormatKind(LogOutputKind kind) => kind switch
     {
-        LogFileKind.Debug => "debug",
-        LogFileKind.Personal => "personal",
-        LogFileKind.Performance => "performance",
-        LogFileKind.World => "world",
+        LogOutputKind.Debug => "debug",
+        LogOutputKind.Personal => "personal",
+        LogOutputKind.Performance => "performance",
+        LogOutputKind.World => "world",
         _ => throw new ArgumentOutOfRangeException(nameof(kind)),
     };
 
-    private enum LogFileKind : byte
-    {
-        Debug,
-        Personal,
-        Performance,
-        World,
-    }
-
     private sealed record LogWriteRequest(
-        LogFileKind Kind,
+        LogOutputTarget Target,
         string[] Lines,
-        bool IsManual,
-        string? Scope,
         TaskCompletionSource<string>? Completion);
 }

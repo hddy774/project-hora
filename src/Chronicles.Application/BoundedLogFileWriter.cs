@@ -10,11 +10,11 @@ public readonly record struct BoundedLogWriteResult(
 
 /// <summary>
 /// Writes UTF-8 log series without allowing an individual file to exceed the
-/// product-wide 10 MiB log limit. The writer is reusable by every local log kind.
+/// product-wide 5 MiB log limit. The writer is reusable by every local log kind.
 /// </summary>
 public static class BoundedLogFileWriter
 {
-    public const long MaximumFileBytes = 10L * 1024L * 1024L;
+    public const long MaximumFileBytes = 5L * 1024L * 1024L;
 
     private static readonly UTF8Encoding Utf8NoBom =
         new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
@@ -30,10 +30,6 @@ public static class BoundedLogFileWriter
 
         var part = 1;
         var path = GetPartPath(outputDirectory, fileStem, part);
-        while (File.Exists(path) && new FileInfo(path).Length >= MaximumFileBytes)
-        {
-            path = GetPartPath(outputDirectory, fileStem, ++part);
-        }
 
         string? primaryPath = null;
         string? lastPath = null;
@@ -44,17 +40,18 @@ public static class BoundedLogFileWriter
         {
             foreach (var segment in EncodeBoundedSegments(lines))
             {
-                stream ??= OpenAppend(path);
+                if (stream is null)
+                {
+                    path = FindAppendPath(outputDirectory, fileStem, ref part, segment.Length);
+                    stream = OpenAppend(path);
+                }
+
                 if (stream.Length + segment.Length > MaximumFileBytes)
                 {
                     stream.Dispose();
                     stream = null;
-                    path = GetPartPath(outputDirectory, fileStem, ++part);
-                    while (File.Exists(path)
-                        && new FileInfo(path).Length >= MaximumFileBytes)
-                    {
-                        path = GetPartPath(outputDirectory, fileStem, ++part);
-                    }
+                    part++;
+                    path = FindAppendPath(outputDirectory, fileStem, ref part, segment.Length);
                     stream = OpenAppend(path);
                 }
 
@@ -177,23 +174,49 @@ public static class BoundedLogFileWriter
 
             var builder = new StringBuilder();
             var byteCount = 0;
+            var part = 1;
             foreach (var rune in value.EnumerateRunes())
             {
+                var prefix = $"[분할 기록 {part:N0}] ";
+                var prefixBytes = Utf8NoBom.GetByteCount(prefix);
                 if (builder.Length > 0
-                    && byteCount + rune.Utf8SequenceLength + NewLineBytes.Length
+                    && prefixBytes + byteCount + rune.Utf8SequenceLength + NewLineBytes.Length
                         > MaximumFileBytes)
                 {
-                    yield return Utf8NoBom.GetBytes(builder + Environment.NewLine);
+                    yield return Utf8NoBom.GetBytes(prefix + builder + Environment.NewLine);
                     builder.Clear();
                     byteCount = 0;
+                    part++;
                 }
 
                 builder.Append(rune.ToString());
                 byteCount += rune.Utf8SequenceLength;
             }
 
-            yield return Utf8NoBom.GetBytes(builder + Environment.NewLine);
+            yield return Utf8NoBom.GetBytes(
+                $"[분할 기록 {part:N0}] {builder}{Environment.NewLine}");
         }
+    }
+
+    private static string FindAppendPath(
+        string outputDirectory,
+        string fileStem,
+        ref int part,
+        int requiredBytes)
+    {
+        while (part < int.MaxValue)
+        {
+            var candidate = GetPartPath(outputDirectory, fileStem, part);
+            if (!File.Exists(candidate)
+                || new FileInfo(candidate).Length + requiredBytes <= MaximumFileBytes)
+            {
+                return candidate;
+            }
+
+            part++;
+        }
+
+        throw new IOException("새 로그 파일 번호를 만들 수 없습니다.");
     }
 
     private static string GetUniqueStem(string directory, string requestedStem)

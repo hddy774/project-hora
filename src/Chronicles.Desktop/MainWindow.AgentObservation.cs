@@ -246,7 +246,7 @@ public partial class MainWindow
         if (_agentDetailSection == AgentDetailSection.Records)
         {
             UpdateAgentLogViews();
-            if (_logService.AutoPersonalOutput)
+            if (_logService.IsAutoPersonalOutput(agent.Id))
             {
                 _logService.CapturePersonalRecords(
                     agent.Id,
@@ -392,9 +392,15 @@ public partial class MainWindow
         PersonalRecordCountText.Text =
             $"최근 로그 {_latestPersonalLog.Count:N0}/100 · 세부 연대기 {_latestChronicle.Count:N0}건 · " +
             $"100년 종합 {_latestPersonalCenturyChronicle.Count:N0}권(완결 {completedVolumes:N0})";
-        if (_logService.AutoPersonalOutput)
+        var automatic = _logService.IsAutoPersonalOutput(agent.Id);
+        AutoPersonalOutputCheckBox.IsChecked = automatic;
+        if (automatic)
         {
-            SetPersonalRecordOutputStatus("선택 인물 자동 기록 중");
+            SetPersonalRecordOutputStatus($"{agent.Id} 자동 기록 중");
+        }
+        else
+        {
+            SetPersonalRecordOutputStatus("개인 자동 기록 꺼짐");
         }
     }
 

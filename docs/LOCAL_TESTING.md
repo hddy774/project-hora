@@ -173,9 +173,11 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
   TOP 1·3·5·10 자리 교체와 현재 1위, 사망·윤회·환생/윤회의 강 잔류, 전투·사냥·
   경제 합계가 포함되는지 확인
 - `세계 자동 기록`과 `디버그 자동 기록`을 각각 켠 뒤
-  `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\logs`에 날짜별 `.log`가 생성되는지 확인
+  `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\logs\<종류>\automatic`에 날짜별 `.log`가 생성되는지 확인
 - `세계 기록 파일`과 `디버그 파일` 버튼이 별도 시각의 UTF-8 export 파일을 만들고,
-  세계 수동 파일에는 최근 로그와 영구 연대기 전체가 함께 포함되는지 확인
+  `<종류>\manual` 아래 세계 수동 파일에는 최근 로그와 영구 연대기 전체가 함께 포함되는지 확인
+- 개인 기록에서 최근 100줄·전체 기록 출력과 AgentId별 자동/수동 폴더 버튼을 확인하고,
+  모든 신규 로그 파일이 5MiB 이하에서 다음 번호 파일로 회전하는지 확인
 - 저장 후 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\saves\default\world.db`와
   슬롯 manifest가 생성되고 SQLite `user_version=25`인지 확인
 - 진행한 뒤 불러오면 저장한 tick과 상태로 돌아가는지 확인

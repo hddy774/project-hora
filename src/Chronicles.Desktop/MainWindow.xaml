@@ -1118,30 +1118,35 @@
                                               Unchecked="AutoPersonalOutputCheckBox_Changed" />
                                     <TextBlock Grid.Row="2"
                                                Margin="2,10,2,0"
-                                               Text="최근 개인 로그와 새 세부 연대기는 중복 없이 이어 쓰고, 생별 100년 종합 연대기는 해당 권이 완결될 때 한 번 기록합니다. 수동 출력은 작성 중인 100년 권까지 포함합니다. 모든 파일은 10MB를 넘기기 전에 다음 번호 파일로 자동 분할됩니다."
+                                               Text="활성화한 인물만 AgentId별 자동 폴더에 기록합니다. 최근 로그와 세부 연대기는 중복 없이 이어 쓰고, 100년 종합 연대기는 완결 시 한 번 기록합니다. 자동·수동 파일은 5MiB를 넘기기 전에 다음 번호로 분할됩니다."
                                                Foreground="{StaticResource SecondaryTextBrush}"
                                                FontSize="10"
                                                TextWrapping="Wrap" />
                                     <Grid Grid.Row="3" Margin="0,10,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
                                         <TextBlock x:Name="PersonalRecordOutputStatusText"
                                                    VerticalAlignment="Center"
                                                    Text="개인 기록 출력 대기"
                                                    Foreground="{StaticResource SecondaryTextBrush}"
                                                    FontSize="10"
                                                    TextWrapping="Wrap" />
-                                        <Button Grid.Column="1"
-                                                MinWidth="92"
-                                                Margin="8,0,4,0"
-                                                Click="PersonalRecordExportButton_Click">전체 기록 출력</Button>
-                                        <Button Grid.Column="2"
-                                                MinWidth="82"
-                                                Margin="4,0,0,0"
-                                                Click="PersonalRecordFolderButton_Click">폴더 열기</Button>
+                                        <WrapPanel Grid.Row="1" Margin="0,8,0,0">
+                                            <Button MinWidth="108"
+                                                    Margin="0,0,4,4"
+                                                    Click="PersonalRecentLogExportButton_Click">최근 100줄 출력</Button>
+                                            <Button MinWidth="100"
+                                                    Margin="4,0,4,4"
+                                                    Click="PersonalRecordExportButton_Click">전체 기록 출력</Button>
+                                            <Button MinWidth="108"
+                                                    Margin="4,0,4,4"
+                                                    Click="PersonalAutomaticFolderButton_Click">자동 폴더</Button>
+                                            <Button MinWidth="108"
+                                                    Margin="4,0,0,4"
+                                                    Click="PersonalManualFolderButton_Click">수동 폴더</Button>
+                                        </WrapPanel>
                                     </Grid>
                                 </Grid>
                             </TabItem>

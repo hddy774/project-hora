@@ -240,7 +240,8 @@ public partial class MainWindow : Window, IDisposable
 
         if (_agentDetailSection == AgentDetailSection.Records)
         {
-            sections |= _logService.AutoPersonalOutput
+            sections |= _selectedAgent is { } automaticAgent
+                && _logService.IsAutoPersonalOutput(automaticAgent)
                 ? ObservationSections.PersonalLog
                     | ObservationSections.Chronicle
                     | ObservationSections.PersonalCenturyChronicle

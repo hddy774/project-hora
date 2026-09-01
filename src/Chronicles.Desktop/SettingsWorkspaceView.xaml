@@ -357,7 +357,7 @@
                                                            Foreground="{StaticResource PrimaryTextBrush}"
                                                            FontSize="18"
                                                            FontWeight="SemiBold" />
-                                                <TextBlock Text="자동 기록과 수동 출력 모두 파일당 10MiB에서 다음 번호 파일로 회전합니다."
+                                                <TextBlock Text="자동 기록과 수동 출력은 종류별 폴더에서 파일당 5MiB로 회전합니다."
                                                            Margin="0,5,0,0"
                                                            Foreground="{StaticResource SecondaryTextBrush}" />
                                             </StackPanel>

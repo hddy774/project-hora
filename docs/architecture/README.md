@@ -116,6 +116,25 @@ LawId는 증거가 생기기 전까지 생성하지 않는다.
 카탈로그와 지속 생성 cursor만 권위 상태이며 이름 문자열·화면 행은 필요할 때 파생한다.
 콘텐츠 화면과 지도 화면이 닫혀 있으면 생성 상세 query·행 materialization은 0회다.
 
+## 0.0.22 실행·월 경계·지도 통합 진입점
+
+- Desktop XAML 리소스 계약과 시작 진단: `validate-xaml-resources.ps1`,
+  `App.xaml.cs`
+- 월별 환경·조직·콘텐츠 전이와 의사결정 랭킹 경계: `World.cs`
+- schema 31 월 경계·랭킹 checkpoint와 검증: `WorldCheckpoint.cs`,
+  `World.Persistence.cs`
+- 하천대륙→주→지점 및 기존 3×3 activity 대응: `WorldGeographyModel.cs`
+- 통합 지도 작업공간: `MapObservationView.xaml`, `MapObservationView.xaml.cs`
+
+월별 권위 전이는 `AdvanceTo` 호출 횟수가 아니라 저장되는 마지막 처리 월을 기준으로
+각 달에 정확히 한 번 실행한다. AI가 읽는 네 랭킹도 새 달 경계에서만 확정하고 같은 달
+안에서는 고정한다. schema 31은 이 월 cursor, agent별 순위와 dirty 상태를 보존한다.
+
+지도 UI의 단일 경로는 `하천대륙 10×10 주 → 오천주 → 층천별 10×10 지점`이다.
+기존 Production 3×3 지역 활동은 오천주 중앙 3×3 지점의 내부 탭으로 대응한다. 그 밖의
+지점과 99개 주는 없는 권위를 생성하지 않고 `DataUnavailable`로 표시한다. 수선자 page는
+`수선자` 내부 탭과 대응 Production 지점이 모두 선택됐을 때만 요청한다.
+
 ## 검증
 
 ```powershell

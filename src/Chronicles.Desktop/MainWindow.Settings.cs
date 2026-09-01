@@ -141,8 +141,13 @@ public partial class MainWindow
             var replacement = await Task.Run(() => GameApplicationSession.Create(
                 request.Seed,
                 request.Population,
-                request.Balance));
-            ReplaceRunner(replacement, request.Seed, request.Balance);
+                request.Balance,
+                request.Generation));
+            ReplaceRunner(
+                replacement,
+                request.Seed,
+                request.Balance,
+                request.Generation);
             previous?.Dispose();
             SettingsWorkspacePanel.SetWorldCreationStatus(
                 $"AI {request.Population:N0}명 · seed {request.Seed} 세계 생성 완료",
@@ -163,7 +168,8 @@ public partial class MainWindow
     private void ReplaceRunner(
         GameApplicationSession replacement,
         ulong seed,
-        Chronicles.Simulation.WorldBalanceConfiguration balance)
+        Chronicles.Simulation.WorldBalanceConfiguration balance,
+        Chronicles.Simulation.WorldGenerationConfiguration generation)
     {
         if (_runner is { } current)
         {
@@ -174,11 +180,13 @@ public partial class MainWindow
         _runner = replacement;
         _worldSeed = seed;
         _activeBalance = balance;
+        _activeGeneration = generation;
         var metadata = replacement.GetWorldMetadata();
         SettingsWorkspacePanel.SetCurrentWorldSettings(
             metadata.Seed,
             metadata.Population,
-            metadata.Balance);
+            metadata.Balance,
+            metadata.Generation);
         _speed = 1;
         _selectedAgent = null;
         _latestAgent = null;

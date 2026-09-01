@@ -48,11 +48,13 @@ public sealed class GameApplicationSession : IDisposable
     public static GameApplicationSession Create(
         ulong seed,
         int population,
-        WorldBalanceConfiguration? balance = null) =>
+        WorldBalanceConfiguration? balance = null,
+        WorldGenerationConfiguration? generation = null) =>
         new(World.Create(
             seed,
             population,
-            balance ?? WorldBalanceConfiguration.Default));
+            balance ?? WorldBalanceConfiguration.Default,
+            generation ?? WorldGenerationConfiguration.Default));
 
     public event Action? ObservationInvalidated
     {

@@ -235,9 +235,22 @@ public partial class ContentWorkspaceView : UserControl
         ItemQualityText.Text = value.QualityAvailability == ContentQualityAvailability.Specified
             ? $"품질 {value.QualityHundredths / 100d:0.00} · 내구 {value.ConditionHundredths / 100d:0.00}"
             : $"품질 DataUnavailable · 내구 {value.ConditionHundredths / 100d:0.00}";
+        if (value.GeneratedDefinition is { } generated)
+        {
+            ItemQualityText.Text +=
+                $"\n{FormatItemEffect(generated.PrimaryEffect)} +{generated.PrimaryStrengthHundredths / 100d:0.00}% · " +
+                $"{FormatItemEffect(generated.SecondaryEffect)} +{generated.SecondaryStrengthHundredths / 100d:0.00}%";
+        }
         ItemAuthorityText.Text =
             $"{FormatStatus(value.Status)} · revision {value.AuthorityRevision:N0}\n" +
             $"최신 계보 {value.LatestProvenanceId}";
+        if (value.GeneratedDefinition is { } generatedAuthority)
+        {
+            ItemAuthorityText.Text +=
+                $"\n생성 ID {generatedAuthority.GeneratedId:X16} · " +
+                (generatedAuthority.IsFixedUnique ? "고정 유니크" : "절차 생성") +
+                $" · 생성 {generatedAuthority.CreatedMonth / 12:N0}년 차";
+        }
     }
 
     private void RenderSelectedKnowledgeEdition()
@@ -258,6 +271,13 @@ public partial class ContentWorkspaceView : UserControl
             $"실물 {KoreanNumberFormatter.Format(value.PhysicalRecordCount)}권 · " +
             $"접근 Owner {KoreanNumberFormatter.Format(value.AccessorCount)}명/조직 · " +
             $"신뢰 {FormatKnowledgeValue(value.ConfidenceAvailability, value.ConfidenceHundredths)}";
+        if (value.GeneratedDefinition is { } generated)
+        {
+            KnowledgeEditionStateText.Text +=
+                $"\n{FormatBookEffect(generated.PrimaryEffect)} +{generated.PrimaryStrengthHundredths / 100d:0.00}% · " +
+                $"{FormatBookEffect(generated.SecondaryEffect)} +{generated.SecondaryStrengthHundredths / 100d:0.00}% · " +
+                $"생성 {generated.CreatedMonth / 12:N0}년 차";
+        }
     }
 
     private void RebuildSecretRealmRows()
@@ -554,14 +574,38 @@ public partial class ContentWorkspaceView : UserControl
     };
 
     private static string FormatKnowledgeContent(KnowledgeEditionSnapshot value) =>
-        value.ContentKind switch
+        value.GeneratedDefinition?.DisplayName ?? (value.ContentKind switch
         {
             KnowledgeContentKind.Technique => $"공법 전승 {value.CatalogOrdinal:000}",
             KnowledgeContentKind.Spell => $"법술 전승 {value.CatalogOrdinal:000}",
             KnowledgeContentKind.CraftingMethod => $"제작법 {value.CatalogOrdinal:000}",
             KnowledgeContentKind.HistoricalRecord => $"역사 기록 {value.CatalogOrdinal:000}",
             _ => value.ContentId.ToString(),
-        };
+        });
+
+    private static string FormatItemEffect(GeneratedItemEffectKind value) => value switch
+    {
+        GeneratedItemEffectKind.Attack => "공격",
+        GeneratedItemEffectKind.Defense => "방어",
+        GeneratedItemEffectKind.MaximumHealth => "최대 생명",
+        GeneratedItemEffectKind.MaximumQi => "최대 영력",
+        GeneratedItemEffectKind.CultivationEfficiency => "수행 효율",
+        GeneratedItemEffectKind.BreakthroughStability => "돌파 안정",
+        GeneratedItemEffectKind.Penetration => "관통",
+        GeneratedItemEffectKind.Evasion => "회피",
+        _ => value.ToString(),
+    };
+
+    private static string FormatBookEffect(GeneratedBookEffectKind value) => value switch
+    {
+        GeneratedBookEffectKind.TechniqueTraining => "공법 숙련",
+        GeneratedBookEffectKind.SpellTraining => "법술 숙련",
+        GeneratedBookEffectKind.TechniqueUnderstanding => "공법 이해",
+        GeneratedBookEffectKind.SpellUnderstanding => "법술 이해",
+        GeneratedBookEffectKind.CultivationInsight => "수행 통찰",
+        GeneratedBookEffectKind.CombatInsight => "전투 통찰",
+        _ => value.ToString(),
+    };
 
     private static string FormatEditionRelation(KnowledgeEditionRelation relation) => relation switch
     {

@@ -59,8 +59,10 @@ public partial class MapObservationView : UserControl
             return;
         }
 
-        if (WorldMapRules.GetLocation(SelectedLocationId).HeavenlyLayer
-            != _selectedHeavenlyLayer)
+        var selectedLocation = snapshot.Locations.FirstOrDefault(
+            item => item.Id == SelectedLocationId);
+        if (selectedLocation is null
+            || selectedLocation.Atlas.HeavenlyLayer != _selectedHeavenlyLayer)
         {
             SelectedLocationId = _selectedHeavenlyLayer == 1
                 ? WorldMapRules.CityLocationId
@@ -178,6 +180,7 @@ public partial class MapObservationView : UserControl
             monster.Species.KoreanName,
             KoreanNumberFormatter.Format(monster.Population),
             KoreanNumberFormatter.Format(monster.Species.BaseDanger),
+            FormatMonsterTrait(monster.Species.Trait),
             EconomyRules.GetMaterial(monster.Species.DropMaterial).KoreanName)).ToArray();
         SafeRegionText.Visibility = monsters.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
         MonsterGrid.Visibility = monsters.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -256,6 +259,17 @@ public partial class MapObservationView : UserControl
             Item("회복", activities.Recovering, population),
             Item("윤회", activities.Reincarnating, population));
     }
+
+    private static string FormatMonsterTrait(GeneratedMonsterTrait trait) => trait switch
+    {
+        GeneratedMonsterTrait.Swift => "신속",
+        GeneratedMonsterTrait.Armored => "갑주",
+        GeneratedMonsterTrait.Venomous => "맹독",
+        GeneratedMonsterTrait.Regenerating => "재생",
+        GeneratedMonsterTrait.Piercing => "관통",
+        GeneratedMonsterTrait.SpiritDraining => "흡령",
+        _ => trait.ToString(),
+    };
 
     private Brush GetBiomeBrush(BiomeType biome) => biome switch
     {
@@ -605,6 +619,7 @@ public partial class MapObservationView : UserControl
         string Name,
         string Population,
         string Danger,
+        string Trait,
         string Drop);
 
     private sealed record MapAgentRow(

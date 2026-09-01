@@ -19,6 +19,7 @@ public partial class MainWindow : Window, IDisposable
     private GameApplicationSession? _runner;
     private ulong _worldSeed = DefaultWorldSeed;
     private WorldBalanceConfiguration _activeBalance = WorldBalanceConfiguration.Default;
+    private WorldGenerationConfiguration _activeGeneration = WorldGenerationConfiguration.Default;
     private WorldSnapshot? _latestSnapshot;
     private AgentId? _selectedAgent;
     private RankingCategory? _rankingCategory = RankingCategory.CombatPower;
@@ -61,7 +62,8 @@ public partial class MainWindow : Window, IDisposable
         SettingsWorkspacePanel.SetCurrentWorldSettings(
             DefaultWorldSeed,
             _runner.GetWorldMetadata().Population,
-            WorldBalanceConfiguration.Default);
+            WorldBalanceConfiguration.Default,
+            WorldGenerationConfiguration.Default);
         SettingsWorkspacePanel.SetAuthorityRegistryDiagnostics(
             GameApplicationSession.AuthorityRegistryDiagnostics);
         _runner.ObservationInvalidated += Runner_ObservationInvalidated;
@@ -592,7 +594,7 @@ public partial class MainWindow : Window, IDisposable
             color);
     }
 
-    private static string FormatPersonalWorldEvent(
+    private string FormatPersonalWorldEvent(
         PersonalLogEntry entry,
         WorldEventKind kind,
         string related) => kind switch
@@ -613,7 +615,8 @@ public partial class MainWindow : Window, IDisposable
         WorldEventKind.CombatInjury => $"{FormatInjurySeverity((InjurySeverity)entry.Value)} 부상",
         WorldEventKind.CombatDeath => $"{entry.Value:N0}세에 전투 부상으로 사망",
         WorldEventKind.ReincarnationCrossingCompleted => "윤회의 강 도하 완료 · 새 생 준비",
-        WorldEventKind.TravelCompleted => $"{WorldMapRules.GetLocation(checked((ushort)entry.Value)).KoreanName}에 도착",
+        WorldEventKind.TravelCompleted =>
+            $"{ResolveMapLocationName(checked((ushort)entry.Value))}에 도착",
         WorldEventKind.MonsterHuntWon => $"{FormatMonster(entry.Value)} 사냥 승리",
         WorldEventKind.MonsterHuntLost => $"{FormatMonster(entry.Value)} 사냥 패배",
         WorldEventKind.MissionCompleted => $"도시 임무 완료 · 영석 +{KoreanNumberFormatter.Format(entry.Value)}",
@@ -777,9 +780,39 @@ public partial class MainWindow : Window, IDisposable
         _ => severity.ToString(),
     };
 
-    private static string FormatMonster(long monsterId)
+    private string ResolveMapLocationName(ushort locationId)
+    {
+        if (_latestSnapshot is { } snapshot)
+        {
+            foreach (var location in snapshot.Map.Locations)
+            {
+                if (location.Id == locationId)
+                {
+                    return location.Name;
+                }
+            }
+        }
+
+        return WorldMapRules.GetLocation(locationId).KoreanName;
+    }
+
+    private string FormatMonster(long monsterId)
     {
         var index = checked((int)monsterId);
+        if (_latestSnapshot is { } snapshot)
+        {
+            foreach (var location in snapshot.Map.Locations)
+            {
+                foreach (var habitat in location.Monsters)
+                {
+                    if (habitat.Species.Id == index)
+                    {
+                        return habitat.Species.KoreanName;
+                    }
+                }
+            }
+        }
+
         return (uint)index < (uint)WorldMapRules.AllMonsters.Count
             ? WorldMapRules.AllMonsters[index].KoreanName
             : $"미확인 요수 #{index}";

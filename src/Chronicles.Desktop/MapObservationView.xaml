@@ -191,6 +191,7 @@
                             <DataGridTextColumn Header="요수" Binding="{Binding Name}" Width="*" />
                             <DataGridTextColumn Header="개체" Binding="{Binding Population}" Width="60" />
                             <DataGridTextColumn Header="위험" Binding="{Binding Danger}" Width="64" />
+                            <DataGridTextColumn Header="특성" Binding="{Binding Trait}" Width="76" />
                             <DataGridTextColumn Header="전리품" Binding="{Binding Drop}" Width="72" />
                         </DataGrid.Columns>
                     </DataGrid>

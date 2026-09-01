@@ -105,14 +105,20 @@ public partial class MainWindow
         ActionScheduleText.Text =
             $"누적 행동 {KoreanNumberFormatter.Format(agent.ActionsTaken)}회 · " +
             $"마지막 {FormatOptionalGameDate(agent.LastActionDate)} · 다음 {nextActionText}";
-        var location = WorldMapRules.GetLocation(agent.LocationId);
-        var layer = WorldAtlasRules.GetHeavenlyLayer(location.HeavenlyLayer);
+        var location = _latestSnapshot?.Map.Locations.FirstOrDefault(
+            item => item.Id == agent.LocationId);
+        var locationName = location?.Name ?? ResolveMapLocationName(agent.LocationId);
+        var locationLayer = location?.Atlas.HeavenlyLayer
+            ?? WorldMapRules.GetLocation(agent.LocationId).HeavenlyLayer;
+        var locationBiome = location?.Biome
+            ?? WorldMapRules.GetLocation(agent.LocationId).Biome;
+        var layer = WorldAtlasRules.GetHeavenlyLayer(locationLayer);
         var movement = agent.Movement.Status is MovementStatus.Idle or MovementStatus.Arrived
             ? "이동 없음"
             : $"{FormatMovementStatus(agent.Movement.Status)} → " +
-                WorldMapRules.GetLocation(agent.Movement.DestinationLocationId).KoreanName;
+                ResolveMapLocationName(agent.Movement.DestinationLocationId);
         LocationText.Text =
-            $"{layer.KoreanName} / {location.KoreanName} · {FormatBiome(location.Biome)} · " +
+            $"{layer.KoreanName} / {locationName} · {FormatBiome(locationBiome)} · " +
             $"발견 {agent.SpatialKnowledge.KnownLocationCount:N0}/{agent.SpatialKnowledge.TotalProductionLocationCount:N0} · " +
             $"{movement} · 요수 사냥 {KoreanNumberFormatter.Format(agent.MonsterVictories)}/{KoreanNumberFormatter.Format(agent.MonsterHunts)}승";
         if (_agentDetailSection == AgentDetailSection.Overview
@@ -1311,7 +1317,7 @@ public partial class MainWindow
             $"남음 {FormatPlanMonths(remainingMonths)}\n" +
             $"시작 {FormatGameDate(GameCalendar.GetDate(plan.StartedTick))} · " +
             $"종료 예정 {FormatGameDate(GameCalendar.GetDate(plan.PlannedEndTick))}\n" +
-            $"고정 장소 {WorldMapRules.GetLocation(plan.LocationId).KoreanName} · " +
+            $"고정 장소 {ResolveMapLocationName(plan.LocationId)} · " +
             "계획 중에는 위치·목표·행동을 다시 선택하지 않음";
 
         CultivationPlanResourceText.Text =
@@ -1394,7 +1400,7 @@ public partial class MainWindow
         FoundationFormationText.Text =
             $"{formation.MethodStableId} r{formation.MethodRevision} · 5단계 {formation.CompletedSteps}" +
             $"\n경로 {FormatFoundationRoute(source.Route)} · Source {FormatFoundationSource(source.Kind)} · " +
-            $"위치 {WorldMapRules.GetLocation(source.LocationId).KoreanName} · revision {source.SourceRevision} · " +
+            $"위치 {ResolveMapLocationName(source.LocationId)} · revision {source.SourceRevision} · " +
             $"동결 {FormatGameDate(GameCalendar.GetDate(new SimulationTick(source.FrozenTick)))} · " +
             $"가용성 {FormatCultivationAvailability(source.Availability)}" +
             $"\nSource 수 {source.SourceCount:N0} · 남은 공급 {KoreanNumberFormatter.Format(source.RemainingSupply)} · " +

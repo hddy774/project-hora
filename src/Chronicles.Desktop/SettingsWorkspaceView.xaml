@@ -82,72 +82,109 @@
                 </TabItem>
 
                 <TabItem Header="세계 생성">
-                    <StackPanel Margin="0,16,0,0">
-                            <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="18" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel>
-                                        <TextBlock Text="AI 수"
-                                                   Foreground="{StaticResource PrimaryTextBrush}"
-                                                   FontSize="18"
-                                                   FontWeight="SemiBold" />
-                                        <TextBlock Text="100~50,000명 · 다음 새 세계부터 적용"
-                                                   Margin="0,4,0,9"
-                                                   Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBox x:Name="PopulationInput" Text="10000" />
-                                        <UniformGrid Rows="1" Columns="4" Margin="0,9,0,0">
-                                            <Button Tag="1000" Margin="0,0,3,0" Click="PopulationPresetButton_Click">1천</Button>
-                                            <Button Tag="5000" Margin="3,0" Click="PopulationPresetButton_Click">5천</Button>
-                                            <Button Tag="10000" Margin="3,0" Click="PopulationPresetButton_Click">1만</Button>
-                                            <Button Tag="20000" Margin="3,0,0,0" Click="PopulationPresetButton_Click">2만</Button>
-                                        </UniformGrid>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="2">
-                                        <TextBlock Text="세계 Seed"
-                                                   Foreground="{StaticResource PrimaryTextBrush}"
-                                                   FontSize="18"
-                                                   FontWeight="SemiBold" />
-                                        <TextBlock Text="같은 설정과 seed는 같은 세계를 재현합니다."
-                                                   Margin="0,4,0,9"
-                                                   Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBox x:Name="SeedInput" Text="20260830" />
-                                    </StackPanel>
+                    <Grid Margin="0,16,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="12" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TabControl>
+                            <TabItem Header="기본">
+                                <Border Margin="0,12,0,0" Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="18" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="AI 수" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                            <TextBlock Text="100~50,000명 · 다음 새 세계부터 적용" Margin="0,4,0,9" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            <TextBox x:Name="PopulationInput" Text="10000" />
+                                            <UniformGrid Rows="1" Columns="4" Margin="0,9,0,0">
+                                                <Button Tag="1000" Margin="0,0,3,0" Click="PopulationPresetButton_Click">1천</Button>
+                                                <Button Tag="5000" Margin="3,0" Click="PopulationPresetButton_Click">5천</Button>
+                                                <Button Tag="10000" Margin="3,0" Click="PopulationPresetButton_Click">1만</Button>
+                                                <Button Tag="20000" Margin="3,0,0,0" Click="PopulationPresetButton_Click">2만</Button>
+                                            </UniformGrid>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="세계 Seed" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                            <TextBlock Text="같은 설정·seed는 생성 카탈로그와 AI 세계를 동일하게 재현합니다." Margin="0,4,0,9" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            <TextBox x:Name="SeedInput" Text="20260830" />
+                                            <TextBlock Margin="0,12,0,0" Text="아이템·서적·지도·요수는 게임플레이 RNG와 분리된 전용 seed를 사용합니다." TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </TabItem>
+                            <TabItem Header="아이템·서적">
+                                <Grid Margin="0,12,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox x:Name="RandomizeItemsCheckBox" IsChecked="True" Content="아이템 이름·효과 무작위" />
+                                            <CheckBox Grid.Column="1" x:Name="RandomizeBooksCheckBox" IsChecked="True" Content="서적 이름·효과 무작위" />
+                                            <CheckBox Grid.Column="2" x:Name="FixedUniqueItemsCheckBox" IsChecked="True" Content="고정 유니크 4종 포함" />
+                                        </Grid>
+                                    </Border>
+                                    <UniformGrid Grid.Row="2" Rows="2" Columns="3">
+                                        <StackPanel Margin="0,0,8,10"><TextBlock Text="무작위 아이템 종류" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="ItemDefinitionCountInput" Text="120" Margin="0,5,0,0" /></StackPanel>
+                                        <StackPanel Margin="8,0,8,10"><TextBlock Text="초기 아이템 실물" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="ItemInstanceCountInput" Text="2400" Margin="0,5,0,0" /></StackPanel>
+                                        <StackPanel Margin="8,0,0,10"><TextBlock Text="서적 내용" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="BookContentCountInput" Text="60" Margin="0,5,0,0" /></StackPanel>
+                                        <StackPanel Margin="0,0,8,0"><TextBlock Text="서적 판본" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="BookEditionCountInput" Text="90" Margin="0,5,0,0" /></StackPanel>
+                                        <StackPanel Margin="8,0,8,0"><TextBlock Text="실물 서적" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="PhysicalBookCountInput" Text="600" Margin="0,5,0,0" /></StackPanel>
+                                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="고정 유니크는 seed와 무관하게 동일하며, 무작위 정의와 별도 ID를 사용합니다." TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" />
+                                    </UniformGrid>
                                 </Grid>
-                            </Border>
+                            </TabItem>
+                            <TabItem Header="지도·생태·지속 생성">
+                                <Grid Margin="0,12,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                            <CheckBox x:Name="RandomizeMapCheckBox" IsChecked="True" Content="지도 지형·정착지 무작위" />
+                                            <CheckBox Grid.Column="1" x:Name="RandomizeMonstersCheckBox" IsChecked="True" Content="요수 이름·위험·특성 무작위" />
+                                            <CheckBox Grid.Column="2" x:Name="OngoingContentCheckBox" IsChecked="True" Content="세계 지속 생성 사용" />
+                                        </Grid>
+                                    </Border>
+                                    <UniformGrid Grid.Row="2" Rows="2" Columns="3">
+                                        <StackPanel Margin="0,0,8,10"><TextBlock Text="지형별 요수 종족" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="MonsterSpeciesCountInput" Text="3" Margin="0,5,0,0" /></StackPanel>
+                                        <StackPanel Margin="8,0,8,10"><TextBlock Text="서식지별 초기 개체" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="MonsterPopulationInput" Text="300" Margin="0,5,0,0" /></StackPanel>
+                                        <StackPanel Margin="8,0,0,10"><TextBlock Text="새 콘텐츠 생성 주기(년)" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="ContentIntervalYearsInput" Text="10" Margin="0,5,0,0" /></StackPanel>
+                                        <StackPanel Margin="0,0,8,0"><TextBlock Text="주기별 새 아이템 종류" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="ItemsPerIntervalInput" Text="4" Margin="0,5,0,0" /></StackPanel>
+                                        <StackPanel Margin="8,0,8,0"><TextBlock Text="주기별 새 서적 내용" Foreground="{StaticResource SecondaryTextBrush}" /><TextBox x:Name="BooksPerIntervalInput" Text="2" Margin="0,5,0,0" /></StackPanel>
+                                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="PC_TEMP_REVIEW · 생성 상한과 성장 주기는 다음 밸런스 검토 대상입니다." TextWrapping="Wrap" Foreground="{StaticResource DangerBrush}" />
+                                    </UniformGrid>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
 
-                            <Border Margin="0,14,0,0"
-                                    Padding="16"
-                                    CornerRadius="8"
-                                    BorderBrush="{StaticResource DangerBrush}"
-                                    BorderThickness="1"
-                                    Background="#251821">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel>
-                                        <TextBlock Text="새 세계 시작"
-                                                   Foreground="{StaticResource PrimaryTextBrush}"
-                                                   FontWeight="SemiBold" />
-                                        <TextBlock Text="현재 세계는 자동 저장되지 않습니다. 필요한 경우 먼저 저장하세요."
-                                                   Margin="0,4,0,0"
-                                                   Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBlock x:Name="WorldCreationStatusText"
-                                                   Margin="0,6,0,0"
-                                                   Foreground="{StaticResource AccentBrush}" />
-                                    </StackPanel>
-                                    <Button Grid.Column="1"
-                                            Margin="18,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Click="CreateWorldButton_Click">설정으로 새 세계 생성</Button>
-                                </Grid>
-                            </Border>
-                    </StackPanel>
+                        <Border Grid.Row="2" Padding="16" CornerRadius="8" BorderBrush="{StaticResource DangerBrush}" BorderThickness="1" Background="#251821">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="새 세계 시작" Foreground="{StaticResource PrimaryTextBrush}" FontWeight="SemiBold" />
+                                    <TextBlock Text="현재 세계는 자동 저장되지 않습니다. 필요한 경우 먼저 저장하세요." Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                                    <TextBlock x:Name="WorldCreationStatusText" Margin="0,6,0,0" Foreground="{StaticResource AccentBrush}" />
+                                </StackPanel>
+                                <Button Grid.Column="1" Margin="18,0,0,0" VerticalAlignment="Center" Click="CreateWorldButton_Click">설정으로 새 세계 생성</Button>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </TabItem>
 
                 <TabItem Header="성능">

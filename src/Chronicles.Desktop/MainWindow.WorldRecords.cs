@@ -239,7 +239,7 @@ public partial class MainWindow
         $"세기 말 강에 남은 영혼은 " +
         $"{KoreanNumberFormatter.Format(entry.ReincarnationRiverResidentsAtEnd)}명이었다.";
 
-    private static string FormatWorldEventSummary(
+    private string FormatWorldEventSummary(
         WorldEvent worldEvent,
         string primary,
         string secondary) => worldEvent.Kind switch
@@ -277,7 +277,8 @@ public partial class MainWindow
         WorldEventKind.CombatEnded => $"{primary}, {secondary}에게 승리 · 경험 +{worldEvent.Value:N0}",
         WorldEventKind.CombatInjury => $"{primary}, 전투 중 {FormatInjurySeverity((InjurySeverity)worldEvent.Value)} 부상",
         WorldEventKind.CombatDeath => $"{primary}, {worldEvent.Value:N0}세에 전투 부상으로 사망",
-        WorldEventKind.TravelCompleted => $"{primary}, {WorldMapRules.GetLocation(checked((ushort)worldEvent.Value)).KoreanName}에 도착",
+        WorldEventKind.TravelCompleted =>
+            $"{primary}, {ResolveMapLocationName(checked((ushort)worldEvent.Value))}에 도착",
         WorldEventKind.MonsterHuntWon => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 승리",
         WorldEventKind.MonsterHuntLost => $"{primary}, {FormatMonster(worldEvent.Value)} 사냥 패배",
         WorldEventKind.SpiritStoneMined => $"{primary}, 도시 광맥에서 영석 {KoreanNumberFormatter.Format(worldEvent.Value)} 채굴",
@@ -286,7 +287,7 @@ public partial class MainWindow
         _ => worldEvent.Kind.ToString(),
     };
 
-    private static string FormatWorldEventNotification(WorldEventNotification notification) =>
+    private string FormatWorldEventNotification(WorldEventNotification notification) =>
         $"{FormatGameDate(GameCalendar.GetDate(notification.Event.Tick))} " +
         $"[{(notification.IsPermanentChronicle ? "영구 연대기" : "세계 로그")}] " +
         FormatWorldEventSummary(
@@ -393,7 +394,7 @@ public partial class MainWindow
     private void WorldRecordsPanel_FolderOpenRequested(object? sender, EventArgs e)
         => OpenLogOutputFolder(WorldRecordsPanel.SetOutputStatus, "세계 기록");
 
-    private static string FormatWorldEventFileLine(
+    private string FormatWorldEventFileLine(
         WorldSnapshot snapshot,
         WorldEvent worldEvent,
         bool isPermanent)

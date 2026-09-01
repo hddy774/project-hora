@@ -186,10 +186,12 @@ public partial class MainWindow
         var metadata = _runner.GetWorldMetadata();
         _worldSeed = metadata.Seed;
         _activeBalance = metadata.Balance;
+        _activeGeneration = metadata.Generation;
         SettingsWorkspacePanel.SetCurrentWorldSettings(
             metadata.Seed,
             metadata.Population,
-            metadata.Balance);
+            metadata.Balance,
+            metadata.Generation);
         _selectedAgent = null;
         _latestAgent = null;
         _latestSnapshot = null;

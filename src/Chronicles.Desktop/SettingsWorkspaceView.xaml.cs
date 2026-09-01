@@ -11,7 +11,8 @@ namespace Chronicles.Desktop;
 public sealed record NewWorldSettingsRequest(
     int Population,
     ulong Seed,
-    WorldBalanceConfiguration Balance);
+    WorldBalanceConfiguration Balance,
+    WorldGenerationConfiguration Generation);
 
 public sealed class UiScaleRequestedEventArgs(double scale) : EventArgs
 {
@@ -85,7 +86,8 @@ public partial class SettingsWorkspaceView : UserControl
     public void SetCurrentWorldSettings(
         ulong seed,
         int population,
-        WorldBalanceConfiguration balance)
+        WorldBalanceConfiguration balance,
+        WorldGenerationConfiguration generation)
     {
         SeedInput.Text = seed.ToString(CultureInfo.InvariantCulture);
         PopulationInput.Text = population.ToString(CultureInfo.InvariantCulture);
@@ -94,6 +96,32 @@ public partial class SettingsWorkspaceView : UserControl
         CombatBalanceSlider.Value = balance.CombatAggressionPercent;
         EconomyBalanceSlider.Value = balance.EconomyActivityPercent;
         MonsterBalanceSlider.Value = balance.MonsterDangerPercent;
+        RandomizeMapCheckBox.IsChecked = generation.RandomizeMap;
+        RandomizeMonstersCheckBox.IsChecked = generation.RandomizeMonsters;
+        RandomizeItemsCheckBox.IsChecked = generation.RandomizeItems;
+        RandomizeBooksCheckBox.IsChecked = generation.RandomizeBooks;
+        FixedUniqueItemsCheckBox.IsChecked = generation.IncludeFixedUniqueItems;
+        ItemDefinitionCountInput.Text = generation.InitialRandomItemDefinitionCount
+            .ToString(CultureInfo.InvariantCulture);
+        ItemInstanceCountInput.Text = generation.InitialItemInstanceCount
+            .ToString(CultureInfo.InvariantCulture);
+        BookContentCountInput.Text = generation.InitialBookContentCount
+            .ToString(CultureInfo.InvariantCulture);
+        BookEditionCountInput.Text = generation.InitialBookEditionCount
+            .ToString(CultureInfo.InvariantCulture);
+        PhysicalBookCountInput.Text = generation.InitialPhysicalBookCount
+            .ToString(CultureInfo.InvariantCulture);
+        MonsterSpeciesCountInput.Text = generation.MonsterSpeciesPerBiome
+            .ToString(CultureInfo.InvariantCulture);
+        MonsterPopulationInput.Text = generation.InitialMonsterPopulationPerHabitat
+            .ToString(CultureInfo.InvariantCulture);
+        OngoingContentCheckBox.IsChecked = generation.EnableOngoingContentGeneration;
+        ContentIntervalYearsInput.Text = generation.ContentGenerationIntervalYears
+            .ToString(CultureInfo.InvariantCulture);
+        ItemsPerIntervalInput.Text = generation.ItemDefinitionsPerInterval
+            .ToString(CultureInfo.InvariantCulture);
+        BooksPerIntervalInput.Text = generation.BookContentsPerInterval
+            .ToString(CultureInfo.InvariantCulture);
     }
 
     public void UpdatePerformance(RuntimePerformanceSnapshot snapshot)
@@ -471,9 +499,77 @@ public partial class SettingsWorkspaceView : UserControl
             (int)EconomyBalanceSlider.Value,
             (int)MonsterBalanceSlider.Value);
         WorldBalanceRules.Validate(balance);
+        if (!TryReadGenerationConfiguration(out var generation, out var generationError))
+        {
+            SetWorldCreationStatus(generationError, isError: true);
+            return;
+        }
         NewWorldRequested?.Invoke(
             this,
             new NewWorldRequestedEventArgs(
-                new NewWorldSettingsRequest(population, seed, balance)));
+                new NewWorldSettingsRequest(population, seed, balance, generation!)));
+    }
+
+    private bool TryReadGenerationConfiguration(
+        out WorldGenerationConfiguration? configuration,
+        out string error)
+    {
+        configuration = null;
+        error = string.Empty;
+        TextBox[] inputs =
+        [
+            ItemDefinitionCountInput,
+            ItemInstanceCountInput,
+            BookContentCountInput,
+            BookEditionCountInput,
+            PhysicalBookCountInput,
+            MonsterSpeciesCountInput,
+            MonsterPopulationInput,
+            ContentIntervalYearsInput,
+            ItemsPerIntervalInput,
+            BooksPerIntervalInput,
+        ];
+        var values = new int[inputs.Length];
+        for (var index = 0; index < inputs.Length; index++)
+        {
+            if (!int.TryParse(
+                    inputs[index].Text,
+                    NumberStyles.Integer,
+                    CultureInfo.InvariantCulture,
+                    out values[index]))
+            {
+                error = "세계 생성 수량과 주기는 정수로 입력해야 합니다.";
+                return false;
+            }
+        }
+
+        try
+        {
+            configuration = new WorldGenerationConfiguration(
+                RandomizeMapCheckBox.IsChecked == true,
+                RandomizeMonstersCheckBox.IsChecked == true,
+                RandomizeItemsCheckBox.IsChecked == true,
+                RandomizeBooksCheckBox.IsChecked == true,
+                FixedUniqueItemsCheckBox.IsChecked == true,
+                values[0],
+                values[1],
+                values[2],
+                values[3],
+                values[4],
+                values[5],
+                values[6],
+                OngoingContentCheckBox.IsChecked == true,
+                values[7],
+                values[8],
+                values[9]);
+            WorldGenerationRules.Validate(configuration);
+            return true;
+        }
+        catch (ArgumentException exception)
+        {
+            error = exception.Message;
+            configuration = null;
+            return false;
+        }
     }
 }

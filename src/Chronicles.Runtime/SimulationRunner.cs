@@ -89,7 +89,8 @@ public sealed class SimulationRunner : IDisposable
             return new WorldRuntimeMetadata(
                 _world.Seed,
                 _world.Population,
-                _world.Balance);
+                _world.Balance,
+                _world.Generation);
         }
     }
 
@@ -469,7 +470,8 @@ public readonly record struct RuntimePerformanceSnapshot(
 public readonly record struct WorldRuntimeMetadata(
     ulong Seed,
     int Population,
-    WorldBalanceConfiguration Balance);
+    WorldBalanceConfiguration Balance,
+    WorldGenerationConfiguration Generation);
 
 public sealed record RuntimeSaveCapture(
     WorldAuthorityCheckpoint Authority,

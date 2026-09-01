@@ -27,7 +27,7 @@ if ($source.contract -ne 'ALPHA_1_1_0_REQUIREMENT_COVERAGE_V1' -or $source.requi
 $targetVersions = @{
     M01 = '0.0.15'; M02 = '0.0.15'; M03 = '0.0.16'; M04 = '0.0.16'
     M05 = '0.0.18'; M06 = '0.0.16'; M07 = '0.0.16'; M08 = '0.0.17'
-    M09 = '0.0.20'; M10 = '0.0.17'; M11 = '0.0.21'; M12 = '0.0.21'
+    M09 = '0.0.21'; M10 = '0.0.17'; M11 = '0.0.21'; M12 = '0.0.21'
     M13 = '0.0.21'; M14 = '0.0.22'
 }
 
@@ -40,7 +40,7 @@ $masterGap = @{
     M06 = '단계형 윤회는 존재하지만 부모·가문·출생 후보, 영혼 손상과 장기 대기 예외 등 전체 수직 계약이 미완성이다.'
     M07 = '희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다.'
     M08 = '현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다.'
-    M09 = 'Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다.'
+    M09 = 'Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다.'
     M10 = '도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다.'
     M11 = '간략 재료·법보는 존재하지만 비경과 Definition/Instance/Provenance, 고유 실물·창작 전승 authority가 없다.'
     M12 = 'Teaching의 지식 변화는 존재하지만 Content/Edition/Physical Copy, 손상·변조·복원과 Knowledge Claim authority가 없다.'
@@ -90,7 +90,14 @@ $masterEvidence = @{
         'FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot',
         'FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView',
         'TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위')
-    M09 = @()
+    M09 = @(
+        'FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore',
+        'FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin',
+        'FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem',
+        'FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint',
+        'FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot',
+        'FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView',
+        'TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약')
     M10 = @(
         'FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef',
         'FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer',
@@ -152,7 +159,10 @@ $masterTests = @{
         'TEST::3×3 지도와 지형별 요수 생태',
         'TEST::지도 내부 탭 지연 투영 성능',
         'TEST::관찰 조회 무영향')
-    M09 = @()
+    M09 = @(
+        'TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26',
+        'TEST::관찰 조회 무영향',
+        'TEST::활성 UI 구역 선택 조회 성능')
     M10 = @(
         'TEST::도시 임무·영석·재료·단약·법보 경제 순환',
         'TEST::시장 원자 정산·중복 source·품질 개선 구매',
@@ -192,6 +202,8 @@ $portIds = @(
     'A110-M08-V01', 'A110-M08-V03', 'A110-M08-V04', 'A110-M08-V07',
     'A110-M08-V09', 'A110-M08-V10', 'A110-M08-V11', 'A110-M08-V13',
     'A110-M08-V14', 'A110-M08-V15', 'A110-M08-V16', 'A110-M08-V17',
+    'A110-M09-V03', 'A110-M09-V05', 'A110-M09-V06', 'A110-M09-V10',
+    'A110-M09-V13', 'A110-M09-V15',
     'A110-M10-V01', 'A110-M10-V03', 'A110-M10-V04', 'A110-M10-V05',
     'A110-M10-V06', 'A110-M10-V10', 'A110-M10-V11', 'A110-M10-V13',
     'A110-M10-V15', 'A110-M10-V16', 'A110-M10-V17'
@@ -214,6 +226,7 @@ $tempReviewIds = @(
     'A110-M07-V02', 'A110-M07-V05', 'A110-M07-V07', 'A110-M07-V08',
     'A110-M07-V14',
     'A110-M08-V02', 'A110-M08-V05', 'A110-M08-V06', 'A110-M08-V08',
+    'A110-M09-V14',
     'A110-M10-V02', 'A110-M10-V07', 'A110-M10-V08', 'A110-M10-V09',
     'A110-M10-V14'
 )
@@ -247,6 +260,12 @@ $reviewIds = @{
         'PC-TEMP-ATLAS-NAMES-113',
         'PC-TEMP-VEIN-PROFILES-113',
         'PC-TEMP-LAYER-ACCESS-113')
+    M09 = @(
+        'PC-TEMP-ORG-APTITUDE-MAPPING-020',
+        'PC-TEMP-ORG-SUCCESSION-020',
+        'PC-TEMP-ORG-STRATEGY-020',
+        'PC-TEMP-ORG-AI-DECISION-020',
+        'PC-TEMP-ORG-CONTRIBUTION-020')
     M10 = @(
         'PC-TEMP-MARKET-WINDOW-113',
         'PC-TEMP-MARKET-LEDGER-113',

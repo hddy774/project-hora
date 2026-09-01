@@ -29,11 +29,11 @@
     "Gap/Deferred": "요구 문장 일부 또는 전부를 증명하지 못해 완료로 주장하지 않음."
   },
   "status_counts": {
-    "Port": 86,
+    "Port": 92,
     "PC Adapt": 14,
-    "PC_TEMP_REVIEW": 29,
+    "PC_TEMP_REVIEW": 30,
     "Platform Excluded": 0,
-    "Gap/Deferred": 109
+    "Gap/Deferred": 102
   },
   "rows": [
     {
@@ -6440,13 +6440,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M09-V02",
@@ -6476,13 +6488,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M09-V03",
@@ -6510,15 +6534,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_organization_lifecycle_domain_tests.cpp::test_atomic_merge_moves_authority_membership_and_finance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": null,
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M09-V04",
@@ -6548,13 +6584,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M09-V05",
@@ -6582,15 +6630,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_organization_lifecycle_domain_tests.cpp::test_atomic_merge_moves_authority_membership_and_finance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": null,
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M09-V06",
@@ -6618,15 +6678,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_organization_lifecycle_domain_tests.cpp::test_atomic_merge_moves_authority_membership_and_finance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": null,
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M09-V07",
@@ -6656,13 +6728,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M09-V08",
@@ -6692,13 +6776,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M09-V09",
@@ -6728,13 +6824,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M09-V10",
@@ -6762,15 +6870,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_organization_lifecycle_domain_tests.cpp::test_atomic_merge_moves_authority_membership_and_finance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": null,
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M09-V11",
@@ -6800,13 +6920,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M09-V12",
@@ -6836,13 +6968,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "PC Adapt",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": "Android/모바일 전달 표면을 제외하고 같은 관찰·조회 의미를 Windows WPF와 Windows x64 검증으로 제공한다.",
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M09-V13",
@@ -6870,15 +7014,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_organization_lifecycle_domain_tests.cpp::test_atomic_merge_moves_authority_membership_and_finance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": null,
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M09-V14",
@@ -6906,15 +7062,33 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_organization_lifecycle_domain_tests.cpp::test_atomic_merge_moves_authority_membership_and_finance"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
-      "review_ids": null,
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
+      "review_ids": [
+        "PC-TEMP-ORG-APTITUDE-MAPPING-020",
+        "PC-TEMP-ORG-SUCCESSION-020",
+        "PC-TEMP-ORG-STRATEGY-020",
+        "PC-TEMP-ORG-AI-DECISION-020",
+        "PC-TEMP-ORG-CONTRIBUTION-020"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M09-V15",
@@ -6942,15 +7116,27 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_organization_lifecycle_domain_tests.cpp::test_atomic_merge_moves_authority_membership_and_finance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": null,
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M09-V16",
@@ -6980,13 +7166,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M09-V17",
@@ -7016,13 +7214,25 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.20",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": "0.0.21",
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore",
+        "FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin",
+        "FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem",
+        "FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint",
+        "FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot",
+        "FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView",
+        "TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약"
+      ],
+      "pc_test_refs": [
+        "TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26",
+        "TEST::관찰 조회 무영향",
+        "TEST::활성 UI 구역 선택 조회 성능"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Organization Core와 종문·가문·왕조 authority가 PC에 아직 없다."
+      "gap_summary": "Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다."
     },
     {
       "requirement_id": "A110-M10-V01",

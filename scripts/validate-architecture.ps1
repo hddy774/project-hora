@@ -87,5 +87,7 @@ foreach ($source in $desktopSources) {
     }
 }
 
+& (Join-Path $PSScriptRoot 'validate-xaml-resources.ps1') -DesktopRoot $desktopRoot
+
 Write-Host 'PC architecture validation: PASS'
 Write-Host "Modules: $($moduleById.Count) / Desktop authority patterns: 0"

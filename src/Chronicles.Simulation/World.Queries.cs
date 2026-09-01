@@ -155,6 +155,12 @@ public sealed partial class World
             powerDistribution = powerSnapshots;
         }
 
+        if (includeSummary)
+        {
+            totalSpiritStones = checked(
+                totalSpiritStones + _organizations.TotalFoundingReserves);
+        }
+
         IReadOnlyList<EliteRankingMovementSnapshot> eliteMovements =
             Array.Empty<EliteRankingMovementSnapshot>();
         IReadOnlyList<RankingMovementWindowSnapshot> movementWindows =

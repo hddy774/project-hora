@@ -25,6 +25,8 @@ public enum OrganizationRole : byte
     Leader,
     Elder,
     VassalRepresentative,
+    Deputy,
+    Treasurer,
 }
 
 public enum OrganizationRightKind : byte
@@ -41,6 +43,7 @@ public enum OrganizationDiplomacyKind : byte
     Allied,
     Hostile,
     Vassal,
+    Overlord,
 }
 
 public enum OrganizationHistoryKind : byte
@@ -57,6 +60,10 @@ public enum OrganizationHistoryKind : byte
     AssetTransferred,
     DiplomacyChanged,
     SoulReconnected,
+    RoleChanged,
+    LoyaltyChanged,
+    TreasuryAdjusted,
+    RightTransferred,
 }
 
 public enum OrganizationCommandStatus : byte
@@ -71,6 +78,10 @@ public enum OrganizationCommandStatus : byte
     OrganizationInactive,
     InvalidTransition,
     InsufficientAssets,
+    PermissionDenied,
+    Duplicate,
+    LoyaltyBroken,
+    Overflow,
 }
 
 public readonly record struct OrganizationMembershipState(
@@ -91,6 +102,20 @@ public readonly record struct OrganizationDiplomacyState(
     OrganizationId OtherOrganizationId,
     OrganizationDiplomacyKind Kind,
     long ChangedTick);
+
+public readonly record struct OrganizationStrategyState(
+    int GrowthVsStabilityHundredths,
+    int CooperationVsDominanceHundredths,
+    int RiskToleranceHundredths);
+
+public readonly record struct OrganizationKindProfile(
+    int LivingGenealogyCount,
+    int ControlledProvinceCount,
+    int VassalOrganizationCount,
+    int AverageSupportHundredths,
+    bool HasFoundingClan,
+    bool HasValidRuler,
+    bool IsFormalized);
 
 public readonly record struct OrganizationHistoryEntry(
     long Sequence,
@@ -116,7 +141,9 @@ public sealed record OrganizationAuthorityCheckpoint(
     OrganizationMembershipState[] Members,
     OrganizationRightState[] Rights,
     OrganizationDiplomacyState[] Diplomacy,
-    OrganizationHistoryEntry[] History);
+    OrganizationHistoryEntry[] History,
+    OrganizationStrategyState Strategy = default,
+    OrganizationKindProfile Profile = default);
 
 public sealed record OrganizationStoreCheckpoint(
     long NextOrganizationId,
@@ -124,7 +151,9 @@ public sealed record OrganizationStoreCheckpoint(
     long AuthorityRevision,
     OrganizationAuthorityCheckpoint[] Organizations,
     long LastMaintenanceMonth = -1,
-    int EvaluationCursor = 0);
+    int EvaluationCursor = 0,
+    long[]? FoundingReserves = null,
+    int[]? PreparationSponsors = null);
 
 public sealed record OrganizationMemberSnapshot(
     AgentId AgentId,
@@ -148,7 +177,9 @@ public sealed record OrganizationSnapshot(
     IReadOnlyList<OrganizationMemberSnapshot> Members,
     IReadOnlyList<OrganizationRightState> Rights,
     IReadOnlyList<OrganizationDiplomacyState> Diplomacy,
-    IReadOnlyList<OrganizationHistoryEntry> History);
+    IReadOnlyList<OrganizationHistoryEntry> History,
+    OrganizationStrategyState Strategy = default,
+    OrganizationKindProfile Profile = default);
 
 public sealed record WorldOrganizationSnapshot(
     long AuthorityRevision,
@@ -157,7 +188,9 @@ public sealed record WorldOrganizationSnapshot(
     int ActiveClans,
     int ActiveDynasties,
     bool CompositePowerRankingAvailable,
-    string CompositePowerDataState)
+    string CompositePowerDataState,
+    int PreparingSectPlans = 0,
+    long TotalFoundingReserves = 0)
 {
     public static WorldOrganizationSnapshot Empty { get; } = new(
         0,
@@ -166,7 +199,9 @@ public sealed record WorldOrganizationSnapshot(
         0,
         0,
         false,
-        "DataUnavailable");
+        "DataUnavailable",
+        0,
+        0);
 }
 
 public sealed record OrganizationFoundingEvidence(
@@ -213,6 +248,12 @@ public static class OrganizationRules
     public const int MaximumActiveSects = 80;
     public const int MaximumSectMembers = 100;
     public const int MaximumDirectSubsects = 10;
+    public const int MaximumSectPreparationPlans = SectFounderMinimumPledgedMembers;
+    public const int LoyaltyMaximumHundredths = 10_000;
+    public const int LoyaltyActiveMinimumHundredths = 6_000;
+    public const int LoyaltyStrainedMinimumHundredths = 3_000;
+    // PC_TEMP_REVIEW ORG-020-02: 외부 인물 초청의 상호 신뢰 경계는 후속 밸런스 검토 대상이다.
+    public const int SectJoinMinimumMutualTrustHundredths = 3_000;
 
     public const int ClanMinimumLivingGenealogy = 8;
     public const int ClanMinimumLeadershipHundredths = 5_000;
@@ -224,11 +265,20 @@ public static class OrganizationRules
     public const int DynastyMinimumAverageSupportHundredths = 6_000;
 
     // PC_TEMP_REVIEW ORG-020-01: 평가 분산 주기와 공석 쇠퇴 경계는 다음 버전 검토안이다.
-    public const int MonthlyCandidateProbeCount = 1;
+    public const int MonthlyCandidateProbeCount = RelationRules.CandidateProbeCount;
     public const int VacantToDecliningYears = 10;
     public const int DecliningToDissolvedYears = 50;
     public const string TemporaryMappingReviewId = "PC-TEMP-ORG-APTITUDE-MAPPING-020";
     public const string SuccessionReviewId = "PC-TEMP-ORG-SUCCESSION-020";
+    public const string StrategyReviewId = "PC-TEMP-ORG-STRATEGY-020";
+    public const string AiDecisionReviewId = "PC-TEMP-ORG-AI-DECISION-020";
+    public const string FoundingContributionReviewId = "PC-TEMP-ORG-CONTRIBUTION-020";
+
+    public static int GetSectPreparationCapacity(int population)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(population);
+        return Math.Clamp(population / 1_000, 1, MaximumSectPreparationPlans);
+    }
 
     public static OrganizationCommandStatus ValidateFounding(
         OrganizationFoundingEvidence evidence,
@@ -305,11 +355,15 @@ public static class OrganizationRules
     };
 }
 
-internal sealed class OrganizationStore
+internal sealed partial class OrganizationStore
 {
     private readonly int _population;
     private readonly List<OrganizationAuthorityCheckpoint> _organizations = [];
     private readonly int[] _activeMembershipByKind;
+    private readonly long[] _foundingReserves;
+    private readonly int[] _preparationSponsors;
+    private readonly List<int> _preparationFounders = new(
+        OrganizationRules.MaximumSectPreparationPlans);
     private long _nextOrganizationId = 1;
     private long _historySequence;
     private long _authorityRevision;
@@ -321,13 +375,278 @@ internal sealed class OrganizationStore
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(population);
         _population = population;
         _activeMembershipByKind = new int[checked(population * 3)];
+        _foundingReserves = new long[population];
+        _preparationSponsors = new int[population];
         Array.Fill(_activeMembershipByKind, -1);
+        Array.Fill(_preparationSponsors, -1);
     }
 
     public int Count => _organizations.Count;
     public long AuthorityRevision => _authorityRevision;
     public int EvaluationCursor => _evaluationCursor;
     public long LastMaintenanceMonth => _lastMaintenanceMonth;
+    public long TotalFoundingReserves => _foundingReserves.Sum();
+    public int PreparationPlanCount => _preparationFounders.Count;
+
+    public int CopyPreparationFounders(Span<int> destination)
+    {
+        if (destination.Length < _preparationFounders.Count)
+        {
+            throw new ArgumentException("창설 준비자 출력 공간이 부족합니다.", nameof(destination));
+        }
+        for (var index = 0; index < _preparationFounders.Count; index++)
+        {
+            destination[index] = _preparationFounders[index];
+        }
+        return _preparationFounders.Count;
+    }
+
+    public int CopyActiveSectIds(Span<OrganizationId> destination)
+    {
+        var count = 0;
+        foreach (var organization in _organizations)
+        {
+            if (organization.Kind != OrganizationKind.Sect
+                || organization.Status != OrganizationStatus.Active)
+            {
+                continue;
+            }
+            if (count >= destination.Length)
+            {
+                throw new ArgumentException("활성 종문 출력 공간이 부족합니다.", nameof(destination));
+            }
+            destination[count++] = organization.Id;
+        }
+        return count;
+    }
+
+    public int CopyActiveMemberAgents(OrganizationId organizationId, Span<int> destination)
+    {
+        var index = FindIndex(organizationId);
+        if (index < 0)
+        {
+            return 0;
+        }
+        var count = 0;
+        foreach (var member in _organizations[index].Members)
+        {
+            if (!member.Active)
+            {
+                continue;
+            }
+            if (count >= destination.Length)
+            {
+                throw new ArgumentException("활성 구성원 출력 공간이 부족합니다.", nameof(destination));
+            }
+            destination[count++] = member.AgentIndex;
+        }
+        return count;
+    }
+
+    public bool CanPledgeForPreparation(int agent, int founder)
+    {
+        ValidateAgent(agent);
+        ValidateAgent(founder);
+        return _preparationSponsors[agent] is -1 || _preparationSponsors[agent] == founder;
+    }
+
+    public bool TryRegisterPreparationPlan(int founder, int[] pledgedAgents)
+    {
+        ValidateAgent(founder);
+        ArgumentNullException.ThrowIfNull(pledgedAgents);
+        if (pledgedAgents.Length != OrganizationRules.SectFounderMinimumPledgedMembers
+            || pledgedAgents.Distinct().Count() != pledgedAgents.Length
+            || pledgedAgents.Contains(founder)
+            || pledgedAgents.Any(agent => (uint)agent >= (uint)_population)
+            || pledgedAgents.Any(agent => !CanPledgeForPreparation(agent, founder))
+            || (_preparationSponsors[founder] >= 0
+                && _preparationSponsors[founder] != founder)
+            || (_preparationSponsors[founder] == -1
+                && PreparationPlanCount >= OrganizationRules.GetSectPreparationCapacity(_population)))
+        {
+            return false;
+        }
+
+        for (var agent = 0; agent < _population; agent++)
+        {
+            if (agent != founder && _preparationSponsors[agent] == founder)
+            {
+                _preparationSponsors[agent] = -1;
+            }
+        }
+        if (_preparationSponsors[founder] == -1)
+        {
+            _preparationFounders.Add(founder);
+            _preparationFounders.Sort();
+        }
+        _preparationSponsors[founder] = founder;
+        foreach (var pledged in pledgedAgents)
+        {
+            _preparationSponsors[pledged] = founder;
+        }
+        _authorityRevision++;
+        return true;
+    }
+
+    public bool TryGetPreparationSponsor(int agent, out int founder)
+    {
+        ValidateAgent(agent);
+        founder = _preparationSponsors[agent];
+        return founder >= 0
+            && _foundingReserves[founder] < OrganizationRules.SectFoundingSpiritStoneCost;
+    }
+
+    public bool HasPreparationPlan(int founder)
+    {
+        ValidateAgent(founder);
+        return _preparationSponsors[founder] == founder;
+    }
+
+    public long CancelPreparationParticipation(int agent)
+    {
+        ValidateAgent(agent);
+        var founder = _preparationSponsors[agent];
+        if (founder < 0)
+        {
+            return 0;
+        }
+        if (founder != agent)
+        {
+            _preparationSponsors[agent] = -1;
+            _authorityRevision++;
+            return 0;
+        }
+
+        return CompletePreparationPlan(founder);
+    }
+
+    public long CompletePreparationPlan(int founder)
+    {
+        ValidateAgent(founder);
+        if (_preparationSponsors[founder] != founder)
+        {
+            return 0;
+        }
+        for (var agent = 0; agent < _population; agent++)
+        {
+            if (_preparationSponsors[agent] == founder)
+            {
+                _preparationSponsors[agent] = -1;
+            }
+        }
+        var remainder = _foundingReserves[founder];
+        _foundingReserves[founder] = 0;
+        _preparationFounders.Remove(founder);
+        _authorityRevision++;
+        return remainder;
+    }
+
+    public void HandlePreparationLifeEnded(int agent, Func<int, bool> isLiving)
+    {
+        ValidateAgent(agent);
+        ArgumentNullException.ThrowIfNull(isLiving);
+        var founder = _preparationSponsors[agent];
+        if (founder < 0)
+        {
+            return;
+        }
+        if (founder != agent)
+        {
+            _preparationSponsors[agent] = -1;
+            _authorityRevision++;
+            return;
+        }
+
+        var replacement = -1;
+        for (var candidate = 0; candidate < _population; candidate++)
+        {
+            if (candidate != agent
+                && _preparationSponsors[candidate] == founder
+                && isLiving(candidate)
+                && GetMembershipIndex(candidate, OrganizationKind.Sect) < 0)
+            {
+                replacement = candidate;
+                break;
+            }
+        }
+
+        for (var candidate = 0; candidate < _population; candidate++)
+        {
+            if (_preparationSponsors[candidate] == founder)
+            {
+                _preparationSponsors[candidate] = replacement;
+            }
+        }
+        if (replacement >= 0)
+        {
+            _preparationSponsors[replacement] = replacement;
+            _foundingReserves[replacement] = _foundingReserves[founder];
+            var founderIndex = _preparationFounders.IndexOf(founder);
+            if (founderIndex >= 0)
+            {
+                _preparationFounders[founderIndex] = replacement;
+                _preparationFounders.Sort();
+            }
+        }
+        else
+        {
+            _preparationFounders.Remove(founder);
+        }
+        _foundingReserves[founder] = 0;
+        _authorityRevision++;
+    }
+
+    public long GetFoundingReserve(int agent)
+    {
+        ValidateAgent(agent);
+        return _foundingReserves[agent];
+    }
+
+    public bool TryDepositFoundingReserve(int agent, long amount)
+    {
+        ValidateAgent(agent);
+        if (_preparationSponsors[agent] != agent
+            || amount <= 0
+            || _foundingReserves[agent] > long.MaxValue - amount)
+        {
+            return false;
+        }
+
+        _foundingReserves[agent] += amount;
+        _authorityRevision++;
+        return true;
+    }
+
+    public long WithdrawFoundingReserve(int agent)
+    {
+        ValidateAgent(agent);
+        var amount = _foundingReserves[agent];
+        if (amount == 0)
+        {
+            return 0;
+        }
+
+        _foundingReserves[agent] = 0;
+        _authorityRevision++;
+        return amount;
+    }
+
+    public bool TryConsumeFoundingReserve(int agent, long amount)
+    {
+        ValidateAgent(agent);
+        if (amount < 0 || amount > _foundingReserves[agent])
+        {
+            return false;
+        }
+        if (amount == 0)
+        {
+            return true;
+        }
+
+        _foundingReserves[agent] -= amount;
+        _authorityRevision++;
+        return true;
+    }
 
     public OrganizationCommandResult TryFound(
         OrganizationFoundingEvidence evidence,
@@ -359,7 +678,7 @@ internal sealed class OrganizationStore
                             || _organizations[vassalIndex].Status != OrganizationStatus.Active
                             || _organizations[vassalIndex].Kind == OrganizationKind.Dynasty
                             || _organizations[vassalIndex].Diplomacy.Any(relation =>
-                                relation.Kind == OrganizationDiplomacyKind.Vassal);
+                                relation.Kind == OrganizationDiplomacyKind.Overlord);
                     }))))
         {
             return Failure(
@@ -442,7 +761,9 @@ internal sealed class OrganizationStore
             membership,
             rights,
             foundingDiplomacy,
-            history);
+            history,
+            CreateFoundingStrategy(evidence),
+            CreateFoundingProfile(evidence));
 
         // All checks are complete before this mutation block; no externally visible partial state.
         var organizationIndex = _organizations.Count;
@@ -462,7 +783,7 @@ internal sealed class OrganizationStore
                     Diplomacy = vassalState.Diplomacy.Append(
                         new OrganizationDiplomacyState(
                             id,
-                            OrganizationDiplomacyKind.Vassal,
+                            OrganizationDiplomacyKind.Overlord,
                             tick)).ToArray(),
                 };
             }
@@ -493,8 +814,9 @@ internal sealed class OrganizationStore
 
             var state = _organizations[organizationIndex];
             var members = state.Members.ToArray();
-            var memberIndex = Array.FindIndex(members, member => member.AgentIndex == agent);
-            if (memberIndex < 0 || !members[memberIndex].Active)
+            var memberIndex = Array.FindIndex(members, member =>
+                member.AgentIndex == agent && member.Active);
+            if (memberIndex < 0)
             {
                 throw new InvalidDataException("조직 소속 index와 권위 상태가 일치하지 않습니다.");
             }
@@ -586,6 +908,70 @@ internal sealed class OrganizationStore
         var mergedRights = primary.Rights.Concat(secondary.Rights)
             .DistinctBy(right => (right.Kind, right.LocationNodeId))
             .ToArray();
+        var mergedDiplomacy = primary.Diplomacy
+            .Concat(secondary.Diplomacy)
+            .Where(relation => relation.OtherOrganizationId != primary.Id
+                && relation.OtherOrganizationId != secondary.Id)
+            .GroupBy(relation => relation.OtherOrganizationId)
+            .Select(group => group.FirstOrDefault(relation =>
+                    primary.Diplomacy.Contains(relation)) is var preferred
+                && preferred.OtherOrganizationId.Value != 0
+                    ? preferred
+                    : group.First())
+            .OrderBy(relation => relation.OtherOrganizationId.Value)
+            .ToArray();
+        long mergedTreasury;
+        try
+        {
+            mergedTreasury = checked(
+                primary.TreasurySpiritStones + secondary.TreasurySpiritStones);
+        }
+        catch (OverflowException)
+        {
+            return Failure(OrganizationCommandStatus.Overflow, "병합 재정이 정수 범위를 넘습니다.");
+        }
+        var secondaryExternalDiplomacy = secondary.Diplomacy.Where(relation =>
+            relation.OtherOrganizationId != primary.Id).ToArray();
+        if (secondaryExternalDiplomacy.Any(relation =>
+            FindIndex(relation.OtherOrganizationId) < 0))
+        {
+            return Failure(OrganizationCommandStatus.InvalidTransition, "병합 외교 참조가 끊어져 있습니다.");
+        }
+        var counterpartUpdates = new List<(int Index, OrganizationAuthorityCheckpoint State)>();
+        foreach (var relation in secondaryExternalDiplomacy)
+        {
+            var counterpartIndex = FindIndex(relation.OtherOrganizationId);
+            var counterpart = _organizations[counterpartIndex];
+            var withoutSecondary = counterpart.Diplomacy
+                .Where(item => item.OtherOrganizationId != secondary.Id)
+                .ToArray();
+            var hasPrimary = withoutSecondary.Any(item =>
+                item.OtherOrganizationId == primary.Id);
+            var replacement = hasPrimary
+                ? withoutSecondary
+                : withoutSecondary.Append(relation with
+                {
+                    OtherOrganizationId = primary.Id,
+                    ChangedTick = tick,
+                }).ToArray();
+            counterpartUpdates.Add((
+                counterpartIndex,
+                counterpart with
+                {
+                    Diplomacy = replacement,
+                    Profile = counterpart.Profile with
+                    {
+                        VassalOrganizationCount = replacement.Count(item =>
+                            item.Kind == OrganizationDiplomacyKind.Vassal),
+                    },
+                    History = counterpart.History.Append(NewHistory(
+                        tick,
+                        OrganizationHistoryKind.DiplomacyChanged,
+                        counterpart.LeaderAgentIndex,
+                        primary.Id,
+                        (long)relation.Kind)).ToArray(),
+                }));
+        }
         var history = primary.History.Append(NewHistory(
             tick,
             OrganizationHistoryKind.Merged,
@@ -594,14 +980,25 @@ internal sealed class OrganizationStore
             secondary.TreasurySpiritStones)).ToArray();
         primary = primary with
         {
-            TreasurySpiritStones = checked(
-                primary.TreasurySpiritStones + secondary.TreasurySpiritStones),
+            TreasurySpiritStones = mergedTreasury,
             Members = mergedMembers,
             Rights = mergedRights,
+            Diplomacy = mergedDiplomacy,
+            Profile = primary.Profile with
+            {
+                VassalOrganizationCount = mergedDiplomacy.Count(relation =>
+                    relation.Kind == OrganizationDiplomacyKind.Vassal),
+            },
             History = history,
         };
         secondary = ChangeStatus(
-            secondary,
+            secondary with
+            {
+                LeaderAgentIndex = -1,
+                LeaderPersonId = default,
+                Members = secondary.Members.Select(member => member with { Active = false }).ToArray(),
+                Diplomacy = Array.Empty<OrganizationDiplomacyState>(),
+            },
             OrganizationStatus.Merged,
             tick,
             OrganizationHistoryKind.Merged,
@@ -609,6 +1006,10 @@ internal sealed class OrganizationStore
 
         _organizations[primaryIndex] = primary;
         _organizations[secondaryIndex] = secondary;
+        foreach (var update in counterpartUpdates)
+        {
+            _organizations[update.Index] = update.State;
+        }
         foreach (var member in incoming)
         {
             SetMembershipIndex(member.AgentIndex, primary.Kind, primaryIndex);
@@ -676,7 +1077,9 @@ internal sealed class OrganizationStore
                     member.Active)).ToArray(),
                 state.Rights,
                 state.Diplomacy,
-                state.History);
+                state.History,
+                state.Strategy,
+                state.Profile);
         }
 
         return new WorldOrganizationSnapshot(
@@ -686,7 +1089,9 @@ internal sealed class OrganizationStore
             CountActive(OrganizationKind.Clan),
             CountActive(OrganizationKind.Dynasty),
             false,
-            "DataUnavailable · 미승인 사회 자질과 종합 세력 순위 공식 없음");
+            "DataUnavailable · 미승인 사회 자질과 종합 세력 순위 공식 없음",
+            PreparationPlanCount,
+            TotalFoundingReserves);
     }
 
     public OrganizationStoreCheckpoint CreateCheckpoint() => new(
@@ -695,7 +1100,9 @@ internal sealed class OrganizationStore
         _authorityRevision,
         _organizations.ToArray(),
         _lastMaintenanceMonth,
-        _evaluationCursor);
+        _evaluationCursor,
+        _foundingReserves.ToArray(),
+        _preparationSponsors.ToArray());
 
     public void AddStateHash(ref ulong hash)
     {
@@ -716,6 +1123,16 @@ internal sealed class OrganizationStore
         Add(ref hash, unchecked((ulong)_authorityRevision));
         Add(ref hash, unchecked((ulong)_lastMaintenanceMonth));
         Add(ref hash, checked((ulong)_evaluationCursor));
+        Add(ref hash, checked((ulong)_foundingReserves.Length));
+        foreach (var reserve in _foundingReserves)
+        {
+            Add(ref hash, unchecked((ulong)reserve));
+        }
+        Add(ref hash, checked((ulong)_preparationSponsors.Length));
+        foreach (var sponsor in _preparationSponsors)
+        {
+            Add(ref hash, unchecked((ulong)sponsor));
+        }
         foreach (var organization in _organizations)
         {
             Add(ref hash, checked((ulong)organization.Id.Value));
@@ -730,6 +1147,7 @@ internal sealed class OrganizationStore
             Add(ref hash, unchecked((ulong)organization.StatusChangedTick));
             Add(ref hash, unchecked((ulong)organization.TreasurySpiritStones));
             Add(ref hash, unchecked((ulong)organization.ReputationHundredths));
+            Add(ref hash, checked((ulong)organization.Members.Length));
             foreach (var member in organization.Members)
             {
                 Add(ref hash, checked((ulong)member.AgentIndex));
@@ -740,18 +1158,21 @@ internal sealed class OrganizationStore
                 Add(ref hash, unchecked((ulong)member.LoyaltyHundredths));
                 Add(ref hash, member.Active ? 1UL : 0UL);
             }
+            Add(ref hash, checked((ulong)organization.Rights.Length));
             foreach (var right in organization.Rights)
             {
                 Add(ref hash, (ulong)right.Kind);
                 Add(ref hash, checked((ulong)right.LocationNodeId.Value));
                 Add(ref hash, unchecked((ulong)right.GrantedTick));
             }
+            Add(ref hash, checked((ulong)organization.Diplomacy.Length));
             foreach (var diplomacy in organization.Diplomacy)
             {
                 Add(ref hash, checked((ulong)diplomacy.OtherOrganizationId.Value));
                 Add(ref hash, (ulong)diplomacy.Kind);
                 Add(ref hash, unchecked((ulong)diplomacy.ChangedTick));
             }
+            Add(ref hash, checked((ulong)organization.History.Length));
             foreach (var history in organization.History)
             {
                 Add(ref hash, unchecked((ulong)history.Sequence));
@@ -761,6 +1182,16 @@ internal sealed class OrganizationStore
                 Add(ref hash, checked((ulong)(history.OtherOrganizationId?.Value ?? 0)));
                 Add(ref hash, unchecked((ulong)history.Value));
             }
+            Add(ref hash, unchecked((ulong)organization.Strategy.GrowthVsStabilityHundredths));
+            Add(ref hash, unchecked((ulong)organization.Strategy.CooperationVsDominanceHundredths));
+            Add(ref hash, unchecked((ulong)organization.Strategy.RiskToleranceHundredths));
+            Add(ref hash, unchecked((ulong)organization.Profile.LivingGenealogyCount));
+            Add(ref hash, unchecked((ulong)organization.Profile.ControlledProvinceCount));
+            Add(ref hash, unchecked((ulong)organization.Profile.VassalOrganizationCount));
+            Add(ref hash, unchecked((ulong)organization.Profile.AverageSupportHundredths));
+            Add(ref hash, organization.Profile.HasFoundingClan ? 1UL : 0UL);
+            Add(ref hash, organization.Profile.HasValidRuler ? 1UL : 0UL);
+            Add(ref hash, organization.Profile.IsFormalized ? 1UL : 0UL);
         }
     }
 
@@ -780,6 +1211,21 @@ internal sealed class OrganizationStore
             _evaluationCursor = checkpoint.EvaluationCursor,
         };
         store._organizations.AddRange(checkpoint.Organizations);
+        if (checkpoint.FoundingReserves is { } reserves)
+        {
+            Array.Copy(reserves, store._foundingReserves, reserves.Length);
+        }
+        if (checkpoint.PreparationSponsors is { } sponsors)
+        {
+            Array.Copy(sponsors, store._preparationSponsors, sponsors.Length);
+            for (var agent = 0; agent < sponsors.Length; agent++)
+            {
+                if (sponsors[agent] == agent)
+                {
+                    store._preparationFounders.Add(agent);
+                }
+            }
+        }
         for (var organizationIndex = 0;
              organizationIndex < checkpoint.Organizations.Length;
              organizationIndex++)
@@ -805,13 +1251,44 @@ internal sealed class OrganizationStore
             || checkpoint.LastMaintenanceMonth < -1
             || checkpoint.EvaluationCursor < 0
             || checkpoint.EvaluationCursor >= population
-            || checkpoint.Organizations is null)
+            || checkpoint.Organizations is null
+            || (checkpoint.FoundingReserves is { } reserves
+                && (reserves.Length != population || reserves.Any(amount => amount < 0)))
+            || (checkpoint.PreparationSponsors is { } sponsors
+                && (sponsors.Length != population
+                    || sponsors.Any(sponsor => sponsor < -1 || sponsor >= population))))
         {
             return false;
         }
 
+        if (checkpoint.PreparationSponsors is { } preparationSponsors)
+        {
+            var planCount = 0;
+            for (var agent = 0; agent < population; agent++)
+            {
+                var sponsor = preparationSponsors[agent];
+                if (sponsor < 0)
+                {
+                    continue;
+                }
+                if (preparationSponsors[sponsor] != sponsor)
+                {
+                    return false;
+                }
+                if (sponsor == agent)
+                {
+                    planCount++;
+                }
+            }
+            if (planCount > OrganizationRules.GetSectPreparationCapacity(population))
+            {
+                return false;
+            }
+        }
+
         var ids = new HashSet<long>();
         var memberships = new HashSet<(int Agent, OrganizationKind Kind)>();
+        var historySequences = new HashSet<long>();
         long maximumId = 0;
         long maximumHistory = 0;
         foreach (var organization in checkpoint.Organizations)
@@ -831,9 +1308,39 @@ internal sealed class OrganizationStore
                 || organization.Members is null
                 || organization.Rights is null
                 || organization.Diplomacy is null
-                || organization.History is null)
+                || organization.History is null
+                || organization.Strategy.GrowthVsStabilityHundredths is < -10_000 or > 10_000
+                || organization.Strategy.CooperationVsDominanceHundredths is < -10_000 or > 10_000
+                || organization.Strategy.RiskToleranceHundredths is < 0 or > 10_000
+                || organization.Profile.LivingGenealogyCount < 0
+                || organization.Profile.ControlledProvinceCount < 0
+                || organization.Profile.VassalOrganizationCount < 0
+                || organization.Profile.AverageSupportHundredths is < 0 or > 10_000
+                || (organization.Status == OrganizationStatus.Active
+                    && organization.LeaderAgentIndex < 0)
+                || (organization.Status is OrganizationStatus.Vacant
+                        or OrganizationStatus.Declining
+                        or OrganizationStatus.Dissolved
+                        or OrganizationStatus.Merged
+                    && organization.LeaderAgentIndex >= 0)
+                || (organization.Status is OrganizationStatus.Dissolved
+                        or OrganizationStatus.Merged
+                    && organization.Members.Any(member => member.Active)))
             {
                 return false;
+            }
+
+            if (organization.LeaderAgentIndex >= 0)
+            {
+                var leaders = organization.Members.Where(member =>
+                    member.Active
+                    && member.AgentIndex == organization.LeaderAgentIndex
+                    && member.PersonId == organization.LeaderPersonId
+                    && member.Role == OrganizationRole.Leader).Count();
+                if (leaders != 1)
+                {
+                    return false;
+                }
             }
 
             foreach (var member in organization.Members)
@@ -861,14 +1368,57 @@ internal sealed class OrganizationStore
                     return false;
                 }
             }
+            if (organization.Rights.Distinct().Count() != organization.Rights.Length
+                || organization.Diplomacy
+                    .Select(item => item.OtherOrganizationId)
+                    .Distinct()
+                    .Count() != organization.Diplomacy.Length)
+            {
+                return false;
+            }
+            foreach (var diplomacy in organization.Diplomacy)
+            {
+                if (!Enum.IsDefined(diplomacy.Kind)
+                    || diplomacy.OtherOrganizationId == organization.Id
+                    || diplomacy.ChangedTick < organization.FoundedTick)
+                {
+                    return false;
+                }
+            }
             foreach (var history in organization.History)
             {
                 maximumHistory = Math.Max(maximumHistory, history.Sequence);
                 if (history.Sequence <= 0
+                    || !historySequences.Add(history.Sequence)
                     || history.Tick < organization.FoundedTick
                     || !Enum.IsDefined(history.Kind)
                     || history.PrimaryAgentIndex < -1
                     || history.PrimaryAgentIndex >= population)
+                {
+                    return false;
+                }
+            }
+        }
+
+        foreach (var organization in checkpoint.Organizations)
+        {
+            foreach (var diplomacy in organization.Diplomacy)
+            {
+                var counterpart = checkpoint.Organizations.FirstOrDefault(candidate =>
+                    candidate.Id == diplomacy.OtherOrganizationId);
+                if (counterpart is null)
+                {
+                    return false;
+                }
+                var expectedReciprocal = diplomacy.Kind switch
+                {
+                    OrganizationDiplomacyKind.Vassal => OrganizationDiplomacyKind.Overlord,
+                    OrganizationDiplomacyKind.Overlord => OrganizationDiplomacyKind.Vassal,
+                    _ => diplomacy.Kind,
+                };
+                if (!counterpart.Diplomacy.Any(item =>
+                    item.OtherOrganizationId == organization.Id
+                    && item.Kind == expectedReciprocal))
                 {
                     return false;
                 }
@@ -902,7 +1452,7 @@ internal sealed class OrganizationStore
         var members = state.Members.ToArray();
         var successorIndex = Array.FindIndex(
             members,
-            member => member.AgentIndex == successor.AgentIndex);
+            member => member.AgentIndex == successor.AgentIndex && member.Active);
         members[successorIndex] = successor with { Role = OrganizationRole.Leader };
         return state with
         {
@@ -923,6 +1473,33 @@ internal sealed class OrganizationStore
     private void Dissolve(int index, long tick)
     {
         var state = _organizations[index];
+        foreach (var relation in state.Diplomacy)
+        {
+            var counterpartIndex = FindIndex(relation.OtherOrganizationId);
+            if (counterpartIndex < 0 || counterpartIndex == index)
+            {
+                continue;
+            }
+            var counterpart = _organizations[counterpartIndex];
+            var diplomacy = counterpart.Diplomacy
+                .Where(item => item.OtherOrganizationId != state.Id)
+                .ToArray();
+            _organizations[counterpartIndex] = counterpart with
+            {
+                Diplomacy = diplomacy,
+                Profile = counterpart.Profile with
+                {
+                    VassalOrganizationCount = diplomacy.Count(item =>
+                        item.Kind == OrganizationDiplomacyKind.Vassal),
+                },
+                History = counterpart.History.Append(NewHistory(
+                    tick,
+                    OrganizationHistoryKind.DiplomacyChanged,
+                    counterpart.LeaderAgentIndex,
+                    state.Id,
+                    (long)OrganizationDiplomacyKind.Neutral)).ToArray(),
+            };
+        }
         foreach (var member in state.Members.Where(member => member.Active))
         {
             SetMembershipIndex(member.AgentIndex, state.Kind, -1);
@@ -933,6 +1510,8 @@ internal sealed class OrganizationStore
                 LeaderAgentIndex = -1,
                 LeaderPersonId = default,
                 Members = state.Members.Select(member => member with { Active = false }).ToArray(),
+                Diplomacy = Array.Empty<OrganizationDiplomacyState>(),
+                Profile = state.Profile with { VassalOrganizationCount = 0 },
             },
             OrganizationStatus.Dissolved,
             tick,
@@ -973,6 +1552,25 @@ internal sealed class OrganizationStore
         _ => throw new ArgumentOutOfRangeException(nameof(evidence)),
     };
 
+    private static OrganizationStrategyState CreateFoundingStrategy(
+        OrganizationFoundingEvidence evidence) => new(
+        Math.Clamp(
+            evidence.FoundingAptitudeHundredths - evidence.OrganizationOperationAptitudeHundredths,
+            -10_000,
+            10_000),
+        Math.Clamp(evidence.AverageTrustHundredths - 5_000, -10_000, 10_000),
+        Math.Clamp(evidence.FoundingAptitudeHundredths, 0, 10_000));
+
+    private static OrganizationKindProfile CreateFoundingProfile(
+        OrganizationFoundingEvidence evidence) => new(
+        evidence.LivingGenealogyCount,
+        evidence.ControlledProvinceCount,
+        evidence.VassalOrganizationIds.Length,
+        Math.Clamp(evidence.AverageSupportHundredths, 0, 10_000),
+        evidence.HasFoundingClan,
+        evidence.HasValidRuler,
+        IsFormalized: true);
+
     private OrganizationHistoryEntry NewHistory(
         long tick,
         OrganizationHistoryKind kind,
@@ -1005,6 +1603,12 @@ internal sealed class OrganizationStore
                 == locationNodeId;
         }
 
+        if (kind == OrganizationKind.Sect)
+        {
+            return WorldGeographyRules.GetPoints(2).Any(point =>
+                point.NodeId == locationNodeId && point.Resources.HasSpiritVein);
+        }
+
         return WorldGeographyRules.GetPoints(1).Any(point => point.NodeId == locationNodeId)
             || WorldGeographyRules.GetPoints(2).Any(point => point.NodeId == locationNodeId);
     }
@@ -1035,6 +1639,7 @@ internal sealed class OrganizationStore
 
     private static void AddText(ref ulong hash, string value)
     {
+        Add(ref hash, checked((ulong)value.Length));
         foreach (var character in value)
         {
             Add(ref hash, character);

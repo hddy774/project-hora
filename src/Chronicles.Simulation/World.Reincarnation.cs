@@ -43,6 +43,10 @@ public sealed partial class World
         AddEvent(WorldEventKind.ReincarnationEntered, index, _agents.LifeNumbers[index]);
         InterruptTeachingContexts(index);
         _relations.EndLife(index, Tick.Value);
+        _organizations.HandlePreparationLifeEnded(
+            index,
+            candidate => candidate != index
+                && _agents.LifeStates[candidate] == PersonLifeState.Living);
         _organizations.HandleLifeEnded(
             index,
             Tick.Value,

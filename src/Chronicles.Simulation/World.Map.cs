@@ -240,6 +240,12 @@ public sealed partial class World
 
     private bool TrySelectMapActivity(int index, out AgentActivity activity)
     {
+        if (TryPrepareSectSiteTravel(index))
+        {
+            activity = AgentActivity.Traveling;
+            return true;
+        }
+
         var location = WorldMapRules.GetLocation(_agents.LocationIds[index]);
         if (location.Biome != BiomeType.City)
         {

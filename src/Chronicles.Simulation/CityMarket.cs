@@ -261,12 +261,42 @@ internal sealed partial class CityMarket
         out long workerReward,
         out long extracted,
         long maximumExtractable = long.MaxValue)
+        => TryCompleteMiningCore(
+            realm,
+            ownerSpiritStones,
+            out workerReward,
+            out extracted,
+            maximumExtractable,
+            requireCityDemand: true);
+
+    public bool TryCompleteOrganizationPreparationMining(
+        RealmStage realm,
+        long preparationReserve,
+        out long workerReward,
+        out long extracted,
+        long maximumExtractable = long.MaxValue)
+        => TryCompleteMiningCore(
+            realm,
+            preparationReserve,
+            out workerReward,
+            out extracted,
+            maximumExtractable,
+            requireCityDemand: false);
+
+    private bool TryCompleteMiningCore(
+        RealmStage realm,
+        long ownerSpiritStones,
+        out long workerReward,
+        out long extracted,
+        long maximumExtractable,
+        bool requireCityDemand)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(ownerSpiritStones);
         ArgumentOutOfRangeException.ThrowIfNegative(maximumExtractable);
         workerReward = 0;
         extracted = 0;
-        if (!NeedsSpiritStoneMining)
+        if (_remainingSpiritStoneOre <= 0
+            || (requireCityDemand && !NeedsSpiritStoneMining))
         {
             return false;
         }

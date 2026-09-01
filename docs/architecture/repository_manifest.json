@@ -93,6 +93,7 @@
     "cultivation_action_plan_runtime": "src/Chronicles.Simulation/World.CultivationPlans.cs",
     "foundation_formation_authority": "src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs",
     "organization_authority": "src/Chronicles.Simulation/OrganizationModel.cs",
+    "organization_transition_authority": "src/Chronicles.Simulation/OrganizationTransitions.cs",
     "organization_ai_runtime": "src/Chronicles.Simulation/World.Organizations.cs",
     "runtime_performance_diagnostics": "src/Chronicles.Runtime/SimulationRunner.cs",
     "bounded_log_file_writer": "src/Chronicles.Application/BoundedLogFileWriter.cs",

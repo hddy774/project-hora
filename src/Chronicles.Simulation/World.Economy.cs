@@ -6,6 +6,14 @@ public sealed partial class World
 {
     private AgentActivity SelectNonCombatActivity(int index, int roll)
     {
+        if (_organizations.TryGetPreparationSponsor(index, out _)
+            && _atlas.GetRemainingSpiritStoneSupply(_agents.LocationIds[index]) > 0)
+        {
+            // 조직 준비 참여자는 기존 행동이 끝난 다음 의사결정 경계에서만 채굴을
+            // 선택한다. 진행 중인 수행·가르침 같은 다년 행동은 중단하지 않는다.
+            return AgentActivity.MiningSpiritStones;
+        }
+
         var economyStart = _balance.DeveloperModeEnabled
             ? Math.Clamp(
                 100 - (20 * _balance.EconomyActivityPercent / 100),
@@ -142,14 +150,20 @@ public sealed partial class World
 
     private bool ResolveSpiritStoneMining(int index)
     {
+        var wasOrganizationPreparation =
+            _organizations.TryGetPreparationSponsor(index, out _);
         var completedBefore = _agents.MissionsCompleted[index];
         for (var month = 0; month < 6; month++)
         {
             ResolveSpiritStoneMiningMonth(index);
         }
 
-        return _agents.MissionsCompleted[index] != completedBefore
-            && SchedulePostMissionTrading(index);
+        if (_agents.MissionsCompleted[index] == completedBefore)
+        {
+            return false;
+        }
+
+        return !wasOrganizationPreparation && SchedulePostMissionTrading(index);
     }
 
     private bool SchedulePostMissionTrading(int index)
@@ -175,12 +189,22 @@ public sealed partial class World
 
         var locationId = _agents.LocationIds[index];
         var availableVeinSupply = _atlas.GetRemainingSpiritStoneSupply(locationId);
-        if (!_market.TryCompleteMining(
+        var isOrganizationPreparation =
+            _organizations.TryGetPreparationSponsor(index, out var founder);
+        var settled = isOrganizationPreparation
+            ? _market.TryCompleteOrganizationPreparationMining(
                 _agents.RealmStages[index],
-                _agents.SpiritStones[index],
+                _organizations.GetFoundingReserve(founder),
                 out var reward,
                 out var extracted,
-                availableVeinSupply))
+                availableVeinSupply)
+            : _market.TryCompleteMining(
+                _agents.RealmStages[index],
+                _agents.SpiritStones[index],
+                out reward,
+                out extracted,
+                availableVeinSupply);
+        if (!settled)
         {
             return;
         }
@@ -191,7 +215,17 @@ public sealed partial class World
             throw new InvalidOperationException("영맥 공급과 도시 채굴 정산이 일치하지 않습니다.");
         }
 
-        _agents.SpiritStones[index] = checked(_agents.SpiritStones[index] + reward);
+        if (isOrganizationPreparation)
+        {
+            if (!_organizations.TryDepositFoundingReserve(founder, reward))
+            {
+                throw new InvalidOperationException("조직 창설 준비 채굴 보상과 적립 상태가 일치하지 않습니다.");
+            }
+        }
+        else
+        {
+            _agents.SpiritStones[index] = checked(_agents.SpiritStones[index] + reward);
+        }
         _agents.MissionsCompleted[index]++;
         _totalMissionsCompleted++;
         AddEvent(WorldEventKind.SpiritStoneMined, index, extracted);

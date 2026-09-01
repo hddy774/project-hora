@@ -99,11 +99,15 @@ public partial class OrganizationWorkspaceView : UserControl
             _applying = false;
         }
 
-        ListStatusText.Text = rows.Length == 0
+        var preparationStatus = _snapshot.PreparingSectPlans > 0
+            ? $" · 종문 준비 {_snapshot.PreparingSectPlans:N0}건 · 적립 {KoreanNumberFormatter.Format(_snapshot.TotalFoundingReserves)} 영석"
+            : string.Empty;
+        ListStatusText.Text = (rows.Length == 0
             ? _snapshot.Organizations.Count == 0
                 ? "아직 창설된 조직이 없습니다. 승인 Gate를 충족한 AI만 실제 조직을 만듭니다."
                 : "현재 필터와 일치하는 조직이 없습니다."
-            : $"{rows.Length:N0}개 표시 · 전체 {_snapshot.Organizations.Count:N0}개";
+            : $"{rows.Length:N0}개 표시 · 전체 {_snapshot.Organizations.Count:N0}개")
+            + preparationStatus;
         RenderSelectedOrganization();
     }
 
@@ -164,6 +168,14 @@ public partial class OrganizationWorkspaceView : UserControl
                     ? "계산 가능"
                     : _snapshot.CompositePowerDataState;
                 TemporaryReviewText.Text =
+                    $"현재 임시 전략축 · 성장↔안정 {organization.Strategy.GrowthVsStabilityHundredths / 100m:+0.##;-0.##;0} · " +
+                    $"협력↔지배 {organization.Strategy.CooperationVsDominanceHundredths / 100m:+0.##;-0.##;0} · " +
+                    $"위험 감수 {organization.Strategy.RiskToleranceHundredths / 100m:0.##}\n" +
+                    $"종류별 공개 상태 · 계보 {organization.Profile.LivingGenealogyCount:N0} · " +
+                    $"지배 주 {organization.Profile.ControlledProvinceCount:N0} · 봉신 {organization.Profile.VassalOrganizationCount:N0} · " +
+                    $"정식화 {(organization.Profile.IsFormalized ? "완료" : "준비 중")}\n\n" +
+                    $"{OrganizationRules.StrategyReviewId}\n" +
+                    "전략축 분류 경계는 승인값이 아니며 다음 버전 검토 대상입니다.\n\n" +
                     $"{OrganizationRules.TemporaryMappingReviewId}\n" +
                     "조직운영·창설 자질의 PC 임시 매핑은 승인값이 아니며 다음 버전 검토 대상입니다.\n\n" +
                     $"{OrganizationRules.SuccessionReviewId}\n" +
@@ -348,6 +360,8 @@ public partial class OrganizationWorkspaceView : UserControl
         OrganizationRole.Leader => "지도자",
         OrganizationRole.Elder => "원로",
         OrganizationRole.VassalRepresentative => "봉신 대표",
+        OrganizationRole.Deputy => "부지도자",
+        OrganizationRole.Treasurer => "재정 담당",
         _ => "미확인",
     };
 
@@ -366,6 +380,7 @@ public partial class OrganizationWorkspaceView : UserControl
         OrganizationDiplomacyKind.Allied => "동맹",
         OrganizationDiplomacyKind.Hostile => "적대",
         OrganizationDiplomacyKind.Vassal => "봉신",
+        OrganizationDiplomacyKind.Overlord => "상위 지배 조직",
         _ => "미확인",
     };
 

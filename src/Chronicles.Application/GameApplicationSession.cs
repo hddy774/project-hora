@@ -12,6 +12,9 @@ namespace Chronicles.Application;
 public sealed class GameApplicationSession : IDisposable
 {
     private readonly SimulationRunner _runner;
+    private readonly object _legacyCatalogGate = new();
+    private readonly Dictionary<(string SlotId, long Sequence), SlotManifestSummary>
+        _legacyCatalogSummaries = [];
 
     public GameApplicationSession(World world)
     {
@@ -26,6 +29,15 @@ public sealed class GameApplicationSession : IDisposable
     public static string LegacySavePath => WorldSaveStore.DefaultPath;
 
     public static string DefaultDataDirectory => SlotSaveStore.DefaultDataDirectory;
+
+    public static string EnsureSaveRootDirectory() =>
+        SlotSaveStore.EnsureRootDirectory(DefaultSaveRoot);
+
+    public static string GetSaveSlotDirectory(string slotId) =>
+        SlotSaveStore.GetPaths(DefaultSaveRoot, SaveSlotRegistry.Get(slotId).SlotId).SlotDirectory;
+
+    public static string EnsureSaveSlotDirectory(string slotId) =>
+        SlotSaveStore.EnsureSlotDirectory(DefaultSaveRoot, SaveSlotRegistry.Get(slotId).SlotId);
 
     public static GameApplicationSession CreateDefault(ulong seed) =>
         new(World.CreateDefault(seed));
@@ -115,9 +127,19 @@ public sealed class GameApplicationSession : IDisposable
         string slotId,
         CancellationToken cancellationToken = default)
     {
-        var authority = _runner.CreateAuthorityCheckpoint();
+        var definition = SaveSlotRegistry.Get(slotId);
+        var capture = _runner.CreateSaveCapture();
+        var summary = CreateManifestSummary(
+            capture.SummarySnapshot,
+            capture.Authority.StateHash,
+            capture.Authority.Checkpoint.Seed,
+            organizationCount: 0);
         return Task.Run(
-            () => SlotSaveStore.Save(DefaultSaveRoot, slotId, authority),
+            () => SlotSaveStore.Save(
+                DefaultSaveRoot,
+                definition.SlotId,
+                capture.Authority,
+                summary),
             cancellationToken);
     }
 
@@ -128,8 +150,9 @@ public sealed class GameApplicationSession : IDisposable
         string slotId,
         CancellationToken cancellationToken = default)
     {
+        var definition = SaveSlotRegistry.Get(slotId);
         var result = await Task.Run(
-            () => SlotSaveStore.Load(DefaultSaveRoot, slotId),
+            () => SlotSaveStore.Load(DefaultSaveRoot, definition.SlotId),
             cancellationToken).ConfigureAwait(false);
         if (result.IsSuccess)
         {
@@ -138,6 +161,59 @@ public sealed class GameApplicationSession : IDisposable
 
         return result;
     }
+
+    public Task<IReadOnlyList<SaveSlotCatalogEntry>> ListSaveSlotsAsync(
+        CancellationToken cancellationToken = default) => Task.Run<IReadOnlyList<SaveSlotCatalogEntry>>(
+            () =>
+            {
+                var entries = new SaveSlotCatalogEntry[SaveSlotRegistry.All.Count];
+                for (var index = 0; index < entries.Length; index++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var definition = SaveSlotRegistry.All[index];
+                    var inspection = SlotSaveStore.InspectCatalog(
+                        DefaultSaveRoot,
+                        definition.SlotId);
+                    var summary = inspection.Summary;
+                    if (summary is null && inspection.CanLoad)
+                    {
+                        var key = (definition.SlotId, inspection.CreatedSequence);
+                        lock (_legacyCatalogGate)
+                        {
+                            _legacyCatalogSummaries.TryGetValue(key, out summary);
+                        }
+
+                        if (summary is null)
+                        {
+                            var load = SlotSaveStore.Load(DefaultSaveRoot, definition.SlotId);
+                            if (load.IsSuccess)
+                            {
+                                var restored = World.Restore(load.Checkpoint!);
+                                var snapshot = restored.CreateSnapshot(
+                                    rankingCount: 1,
+                                    eventCount: 0,
+                                    sections: ObservationSections.StatisticsSummary
+                                        | ObservationSections.CombatPowerRanking,
+                                    worldChronicleCount: 0);
+                                summary = CreateManifestSummary(
+                                    snapshot,
+                                    load.StateHash,
+                                    load.Checkpoint!.Seed,
+                                    organizationCount: 0);
+                                lock (_legacyCatalogGate)
+                                {
+                                    _legacyCatalogSummaries[key] = summary;
+                                }
+                            }
+                        }
+                    }
+
+                    entries[index] = CreateCatalogEntry(definition, inspection, summary);
+                }
+
+                return entries;
+            },
+            cancellationToken);
 
     public async Task<int> LoadDefaultAsync(CancellationToken cancellationToken = default)
     {
@@ -153,4 +229,80 @@ public sealed class GameApplicationSession : IDisposable
     }
 
     public void Dispose() => _runner.Dispose();
+
+    private static SlotManifestSummary CreateManifestSummary(
+        WorldSnapshot snapshot,
+        ulong stateHash,
+        ulong seed,
+        int organizationCount)
+    {
+        var leader = snapshot.CombatPowerRankings.Count > 0
+            ? snapshot.CombatPowerRankings[0]
+            : throw new InvalidDataException("세이브 요약에 전투력 1위가 없습니다.");
+        return new SlotManifestSummary(
+            snapshot.Tick.Value,
+            snapshot.Population,
+            seed,
+            leader.AgentId.Value,
+            leader.Name,
+            leader.HasEnteredCultivation,
+            leader.RealmStage,
+            leader.RealmLayer,
+            leader.GreatPerfectionAchieved,
+            leader.CombatPower.Total,
+            snapshot.TotalDeaths,
+            snapshot.TotalReincarnations,
+            snapshot.TotalCombatsCompleted,
+            snapshot.ActiveCombats,
+            snapshot.TotalBreakthroughs,
+            organizationCount,
+            stateHash);
+    }
+
+    private static SaveSlotCatalogEntry CreateCatalogEntry(
+        SaveSlotDefinition definition,
+        SlotCatalogInspection inspection,
+        SlotManifestSummary? summary)
+    {
+        var status = inspection.Health switch
+        {
+            SlotCatalogHealth.Empty => SaveSlotCatalogStatus.Empty,
+            SlotCatalogHealth.Ready => SaveSlotCatalogStatus.Ready,
+            SlotCatalogHealth.Recoverable => SaveSlotCatalogStatus.Recoverable,
+            SlotCatalogHealth.Corrupt => SaveSlotCatalogStatus.Corrupt,
+            SlotCatalogHealth.Incompatible => SaveSlotCatalogStatus.Incompatible,
+            _ => throw new ArgumentOutOfRangeException(nameof(inspection)),
+        };
+        return new SaveSlotCatalogEntry(
+            definition,
+            status,
+            inspection.Message,
+            inspection.CanLoad,
+            inspection.UpdatedAtUtc,
+            new SimulationTick(summary?.Tick ?? 0),
+            summary?.Population ?? 0,
+            summary?.Seed ?? 0,
+            summary is null ? null : new AgentId(summary.LeaderAgentId),
+            summary?.LeaderName ?? string.Empty,
+            summary?.LeaderHasEnteredCultivation ?? false,
+            summary?.LeaderRealmStage ?? RealmStage.QiRefining,
+            summary?.LeaderRealmLayer ?? 0,
+            summary?.LeaderGreatPerfectionAchieved ?? false,
+            summary?.LeaderCombatPower ?? 0,
+            summary?.TotalDeaths ?? 0,
+            summary?.TotalReincarnations ?? 0,
+            summary?.TotalCombatsCompleted ?? 0,
+            summary?.ActiveCombats ?? 0,
+            summary?.TotalBreakthroughs ?? 0,
+            summary?.OrganizationCount ?? 0,
+            inspection.DatabaseBytes,
+            inspection.WorldSchema,
+            inspection.CheckpointSchema,
+            inspection.CreatedSequence,
+            inspection.StateHash,
+            inspection.PrimaryReadable,
+            inspection.TemporaryReadable,
+            inspection.BackupReadable,
+            summary is not null);
+    }
 }

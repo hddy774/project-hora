@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
+using Chronicles.Application;
 using Chronicles.Core;
 using Chronicles.Persistence;
 using Chronicles.Simulation;
@@ -21,8 +22,9 @@ internal static class SqliteSlotPersistenceTests
             var world = World.CreateDefault(0x2500_0015UL);
             var firstAuthority = world.CreateAuthorityCheckpoint();
             var firstHash = firstAuthority.StateHash;
+            var firstSummary = CreateSummary(world, firstAuthority);
 
-            var firstSave = SlotSaveStore.Save(root, slotId, firstAuthority);
+            var firstSave = SlotSaveStore.Save(root, slotId, firstAuthority, firstSummary);
 
             Equal(25, firstSave.WorldSchema, "SQLite world schema");
             Equal(WorldCheckpoint.CurrentSchemaVersion, firstSave.CheckpointSchema, "권위 payload schema");
@@ -37,8 +39,21 @@ internal static class SqliteSlotPersistenceTests
 
             var manifest = JsonSerializer.Deserialize<SlotManifest>(File.ReadAllBytes(paths.ManifestPath));
             True(manifest is not null, "슬롯 manifest 역직렬화");
+            Equal(2, manifest!.ManifestVersion, "manifest v2");
             Equal(25, manifest!.WorldSchema, "manifest world schema");
             Equal(WorldCheckpoint.CurrentSchemaVersion, manifest.CheckpointSchema, "manifest checkpoint schema");
+            Equal(firstHash, manifest.Summary!.StateHash, "manifest 표시 요약 state hash");
+            Equal(10_000, manifest.Summary.Population, "manifest 표시 요약 인구");
+
+            var catalog = SlotSaveStore.InspectCatalog(root, slotId);
+            Equal(SlotCatalogHealth.Ready, catalog.Health, "payload 해제 없는 정상 catalog");
+            Equal(firstHash, catalog.StateHash, "catalog state hash");
+            True(catalog.Summary is not null, "catalog v2 상세 요약");
+            True(catalog.PrimaryReadable, "catalog primary header");
+
+            Equal(9, SaveSlotRegistry.All.Count, "고정 세이브 카드 9개");
+            Equal("default", SaveSlotRegistry.All[0].SlotId, "1번 기존 default 호환");
+            Equal("slot-09", SaveSlotRegistry.All[^1].SlotId, "9번 슬롯 ID");
 
             AssertCandidateLoad(
                 root,
@@ -61,6 +76,19 @@ internal static class SqliteSlotPersistenceTests
             True(
                 !string.Equals(firstSave.DatabasePath, secondarySave.DatabasePath, StringComparison.OrdinalIgnoreCase),
                 "슬롯별 world.db 경로 분리");
+            var secondaryPaths = SlotSaveStore.GetPaths(root, secondarySlotId);
+            var secondaryManifest = JsonSerializer.Deserialize<SlotManifest>(
+                File.ReadAllBytes(secondaryPaths.ManifestPath))!;
+            File.WriteAllBytes(
+                secondaryPaths.ManifestPath,
+                JsonSerializer.SerializeToUtf8Bytes(secondaryManifest with
+                {
+                    ManifestVersion = 1,
+                    Summary = null,
+                }));
+            var legacyManifestCatalog = SlotSaveStore.InspectCatalog(root, secondarySlotId);
+            Equal(SlotCatalogHealth.Ready, legacyManifestCatalog.Health, "manifest v1 읽기 호환");
+            True(legacyManifestCatalog.Summary is null, "manifest v1은 상세 요약 없음");
 
             // A legacy selected file is rejected by its typed result without any file read.
             // Keeping an exclusive handle open makes accidental reads fail deterministically.
@@ -119,6 +147,37 @@ internal static class SqliteSlotPersistenceTests
                 Directory.Delete(root, recursive: true);
             }
         }
+    }
+
+    private static SlotManifestSummary CreateSummary(
+        World world,
+        WorldAuthorityCheckpoint authority)
+    {
+        var snapshot = world.CreateSnapshot(
+            rankingCount: 1,
+            eventCount: 0,
+            sections: ObservationSections.StatisticsSummary
+                | ObservationSections.CombatPowerRanking,
+            worldChronicleCount: 0);
+        var leader = snapshot.CombatPowerRankings[0];
+        return new SlotManifestSummary(
+            snapshot.Tick.Value,
+            snapshot.Population,
+            authority.Checkpoint.Seed,
+            leader.AgentId.Value,
+            leader.Name,
+            leader.HasEnteredCultivation,
+            leader.RealmStage,
+            leader.RealmLayer,
+            leader.GreatPerfectionAchieved,
+            leader.CombatPower.Total,
+            snapshot.TotalDeaths,
+            snapshot.TotalReincarnations,
+            snapshot.TotalCombatsCompleted,
+            snapshot.ActiveCombats,
+            snapshot.TotalBreakthroughs,
+            OrganizationCount: 0,
+            authority.StateHash);
     }
 
     private static void Corrupt(string path)

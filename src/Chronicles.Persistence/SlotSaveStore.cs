@@ -36,7 +36,55 @@ public sealed record SlotManifest(
     int CheckpointSchema,
     long CreatedSequence,
     DateTimeOffset UpdatedAtUtc,
-    string DatabaseFile);
+    string DatabaseFile,
+    SlotManifestSummary? Summary = null);
+
+public sealed record SlotManifestSummary(
+    long Tick,
+    int Population,
+    ulong Seed,
+    int LeaderAgentId,
+    string LeaderName,
+    bool LeaderHasEnteredCultivation,
+    RealmStage LeaderRealmStage,
+    int LeaderRealmLayer,
+    bool LeaderGreatPerfectionAchieved,
+    long LeaderCombatPower,
+    int TotalDeaths,
+    int TotalReincarnations,
+    int TotalCombatsCompleted,
+    int ActiveCombats,
+    int TotalBreakthroughs,
+    int OrganizationCount,
+    ulong StateHash);
+
+public enum SlotCatalogHealth : byte
+{
+    Empty,
+    Ready,
+    Recoverable,
+    Corrupt,
+    Incompatible,
+}
+
+public sealed record SlotCatalogInspection(
+    string SlotId,
+    SlotCatalogHealth Health,
+    string Message,
+    SlotManifest? Manifest,
+    SlotManifestSummary? Summary,
+    long DatabaseBytes,
+    int WorldSchema,
+    int CheckpointSchema,
+    long CreatedSequence,
+    ulong StateHash,
+    bool PrimaryReadable,
+    bool TemporaryReadable,
+    bool BackupReadable,
+    DateTimeOffset? UpdatedAtUtc)
+{
+    public bool CanLoad => Health is SlotCatalogHealth.Ready or SlotCatalogHealth.Recoverable;
+}
 
 public sealed record SlotCandidateFailure(
     SlotCandidateKind Kind,
@@ -76,7 +124,7 @@ public sealed record SlotLoadResult(
 public static class SlotSaveStore
 {
     public const int WorldSchema = 25;
-    public const int ManifestVersion = 1;
+    public const int ManifestVersion = 2;
     public const string DefaultSlotId = "default";
     private const string DatabaseFileName = "world.db";
     private const string ManifestFileName = "slot.json";
@@ -107,6 +155,12 @@ public static class SlotSaveStore
           FROM authority_snapshot
          WHERE id = 1;
         """;
+    private const string SelectHeaderSql = """
+        SELECT world_schema, checkpoint_schema, seed, tick, state_hash,
+               created_sequence, event_sequence, chronicle_sequence
+          FROM authority_snapshot
+         WHERE id = 1;
+        """;
     private static readonly JsonSerializerOptions ManifestJsonOptions = new()
     {
         WriteIndented = true,
@@ -132,37 +186,205 @@ public static class SlotSaveStore
             Path.Combine(slotDirectory, DatabaseFileName + ".tmp"));
     }
 
-    public static SlotSaveResult Save(
-        string rootDirectory,
-        string slotId,
-        WorldCheckpoint checkpoint)
+    public static string EnsureRootDirectory(string rootDirectory)
     {
-        ArgumentNullException.ThrowIfNull(checkpoint);
-        var restored = World.Restore(checkpoint);
-        return SaveCore(rootDirectory, slotId, checkpoint, restored.ComputeStateHash());
+        ArgumentException.ThrowIfNullOrWhiteSpace(rootDirectory);
+        var root = Path.GetFullPath(rootDirectory);
+        Directory.CreateDirectory(root);
+        return root;
+    }
+
+    public static string EnsureSlotDirectory(string rootDirectory, string slotId)
+    {
+        var paths = GetPaths(rootDirectory, slotId);
+        Directory.CreateDirectory(paths.SlotDirectory);
+        return paths.SlotDirectory;
+    }
+
+    /// <summary>
+    /// Reads only the manifest and the fixed-width SQLite header row. The canonical
+    /// payload BLOB is deliberately excluded and remains validated by Load.
+    /// </summary>
+    public static SlotCatalogInspection InspectCatalog(string rootDirectory, string slotId)
+    {
+        var paths = GetPaths(rootDirectory, slotId);
+        var hasPrimary = File.Exists(paths.PrimaryPath);
+        var hasTemporary = File.Exists(paths.TemporaryPath);
+        var hasBackup = File.Exists(paths.BackupPath);
+        var hasManifest = File.Exists(paths.ManifestPath);
+        if (!hasPrimary && !hasTemporary && !hasBackup && !hasManifest)
+        {
+            return new SlotCatalogInspection(
+                slotId,
+                SlotCatalogHealth.Empty,
+                "비어 있는 저장 슬롯입니다.",
+                null,
+                null,
+                0,
+                0,
+                0,
+                0,
+                0,
+                false,
+                false,
+                false,
+                null);
+        }
+
+        SlotManifest? manifest = null;
+        string? manifestFailure = null;
+        if (hasManifest)
+        {
+            try
+            {
+                manifest = JsonSerializer.Deserialize<SlotManifest>(
+                    File.ReadAllBytes(paths.ManifestPath),
+                    ManifestJsonOptions);
+                if (manifest is null
+                    || manifest.ManifestVersion is < 1 or > ManifestVersion
+                    || !StringComparer.Ordinal.Equals(manifest.SlotId, slotId)
+                    || !StringComparer.Ordinal.Equals(manifest.DatabaseFile, DatabaseFileName))
+                {
+                    manifestFailure = "슬롯 manifest 형식 또는 슬롯 ID가 잘못되었습니다.";
+                    manifest = null;
+                }
+            }
+            catch (Exception exception) when (exception is IOException
+                or JsonException
+                or UnauthorizedAccessException)
+            {
+                manifestFailure = exception.Message;
+            }
+        }
+
+        var headers = new List<SlotCandidateHeader>(3);
+        var failures = new List<SlotCandidateFailure>(3);
+        TryInspectCandidateHeader(
+            paths.PrimaryPath,
+            SlotCandidateKind.Primary,
+            headers,
+            failures);
+        TryInspectCandidateHeader(
+            paths.TemporaryPath,
+            SlotCandidateKind.Temporary,
+            headers,
+            failures);
+        TryInspectCandidateHeader(
+            paths.BackupPath,
+            SlotCandidateKind.Backup,
+            headers,
+            failures);
+        if (headers.Count == 0)
+        {
+            var incompatible = failures.Any(failure => failure.Status is
+                SlotLoadStatus.IncompatibleWorldSchema
+                or SlotLoadStatus.IncompatibleCheckpointSchema);
+            return new SlotCatalogInspection(
+                slotId,
+                incompatible ? SlotCatalogHealth.Incompatible : SlotCatalogHealth.Corrupt,
+                incompatible
+                    ? "현재 버전과 호환되지 않는 저장입니다."
+                    : manifestFailure ?? "읽을 수 있는 SQLite 저장 후보가 없습니다.",
+                manifest,
+                null,
+                0,
+                manifest?.WorldSchema ?? 0,
+                manifest?.CheckpointSchema ?? 0,
+                manifest?.CreatedSequence ?? 0,
+                0,
+                false,
+                false,
+                false,
+                manifest?.UpdatedAtUtc);
+        }
+
+        var selected = headers
+            .OrderByDescending(header => header.CreatedSequence)
+            .ThenBy(header => CandidatePriority(header.Kind))
+            .First();
+        var manifestMatches = manifest is not null
+            && manifest.WorldSchema == selected.WorldSchema
+            && manifest.CheckpointSchema == selected.CheckpointSchema
+            && manifest.CreatedSequence == selected.CreatedSequence;
+        var summary = manifestMatches
+            && manifest!.ManifestVersion >= 2
+            && manifest.Summary is { } candidateSummary
+            && candidateSummary.Tick == selected.Tick
+            && candidateSummary.Seed == selected.Seed
+            && candidateSummary.StateHash == selected.StateHash
+                ? candidateSummary
+                : null;
+        var isReady = selected.Kind == SlotCandidateKind.Primary
+            && manifestMatches
+            && manifestFailure is null;
+        var updatedAt = manifestMatches
+            ? manifest!.UpdatedAtUtc
+            : new DateTimeOffset(File.GetLastWriteTimeUtc(selected.Path), TimeSpan.Zero);
+        return new SlotCatalogInspection(
+            slotId,
+            isReady ? SlotCatalogHealth.Ready : SlotCatalogHealth.Recoverable,
+            isReady
+                ? "정상 저장"
+                : "복구 후보가 있으며 불러올 때 전체 무결성을 검사합니다.",
+            manifest,
+            summary,
+            new FileInfo(selected.Path).Length,
+            selected.WorldSchema,
+            selected.CheckpointSchema,
+            selected.CreatedSequence,
+            selected.StateHash,
+            headers.Any(header => header.Kind == SlotCandidateKind.Primary),
+            headers.Any(header => header.Kind == SlotCandidateKind.Temporary),
+            headers.Any(header => header.Kind == SlotCandidateKind.Backup),
+            updatedAt);
     }
 
     public static SlotSaveResult Save(
         string rootDirectory,
         string slotId,
-        WorldAuthorityCheckpoint authority)
+        WorldCheckpoint checkpoint,
+        SlotManifestSummary? summary = null)
+    {
+        ArgumentNullException.ThrowIfNull(checkpoint);
+        var restored = World.Restore(checkpoint);
+        return SaveCore(
+            rootDirectory,
+            slotId,
+            checkpoint,
+            restored.ComputeStateHash(),
+            summary);
+    }
+
+    public static SlotSaveResult Save(
+        string rootDirectory,
+        string slotId,
+        WorldAuthorityCheckpoint authority,
+        SlotManifestSummary? summary = null)
     {
         ArgumentNullException.ThrowIfNull(authority);
         World.ValidateCheckpointForPersistence(authority.Checkpoint);
-        return SaveCore(rootDirectory, slotId, authority.Checkpoint, authority.StateHash);
+        return SaveCore(
+            rootDirectory,
+            slotId,
+            authority.Checkpoint,
+            authority.StateHash,
+            summary);
     }
 
     private static SlotSaveResult SaveCore(
         string rootDirectory,
         string slotId,
         WorldCheckpoint checkpoint,
-        ulong stateHash)
+        ulong stateHash,
+        SlotManifestSummary? summary)
     {
         if (checkpoint.SchemaVersion != WorldCheckpoint.CurrentSchemaVersion)
         {
             throw new InvalidDataException(
                 $"새 PC 슬롯에는 현재 권위 checkpoint schema {WorldCheckpoint.CurrentSchemaVersion}만 저장할 수 있습니다.");
         }
+
+        ValidateSummary(checkpoint, stateHash, summary);
 
         var paths = GetPaths(rootDirectory, slotId);
         Directory.CreateDirectory(paths.SlotDirectory);
@@ -195,7 +417,7 @@ public static class SlotSaveStore
             createdSequence);
 
         ReplacePrimary(paths);
-        WriteManifest(paths, slotId, checkpoint.SchemaVersion, createdSequence);
+        WriteManifest(paths, slotId, checkpoint.SchemaVersion, createdSequence, summary);
 
         return new SlotSaveResult(
             slotId,
@@ -536,6 +758,81 @@ public static class SlotSaveStore
         }
     }
 
+    private static void TryInspectCandidateHeader(
+        string path,
+        SlotCandidateKind kind,
+        List<SlotCandidateHeader> candidates,
+        List<SlotCandidateFailure> failures)
+    {
+        if (!File.Exists(path))
+        {
+            return;
+        }
+
+        try
+        {
+            using var database = WindowsSqlite.Open(path, readOnly: true);
+            var userVersion = checked((int)database.QueryScalarInt64("PRAGMA user_version;"));
+            if (userVersion != WorldSchema)
+            {
+                throw new IncompatibleWorldSchemaException(
+                    $"지원하지 않는 SQLite world schema {userVersion}입니다.");
+            }
+
+            using var select = database.Prepare(SelectHeaderSql);
+            if (!select.StepRow())
+            {
+                throw new InvalidDataException("SQLite 권위 snapshot header가 없습니다.");
+            }
+
+            var worldSchema = select.GetInt32(0);
+            var checkpointSchema = select.GetInt32(1);
+            var seed = DecodeUInt64(select.GetBlob(2), "seed");
+            var tick = select.GetInt64(3);
+            var stateHash = DecodeUInt64(select.GetBlob(4), "state hash");
+            var createdSequence = select.GetInt64(5);
+            var eventSequence = select.GetInt64(6);
+            var chronicleSequence = select.GetInt64(7);
+            if (select.StepRow())
+            {
+                throw new InvalidDataException("SQLite 권위 snapshot header가 둘 이상입니다.");
+            }
+
+            if (worldSchema != WorldSchema)
+            {
+                throw new IncompatibleWorldSchemaException(
+                    $"snapshot world schema {worldSchema}가 DB schema와 다릅니다.");
+            }
+            if (checkpointSchema != WorldCheckpoint.CurrentSchemaVersion)
+            {
+                throw new IncompatibleCheckpointSchemaException(
+                    $"현재 checkpoint schema {WorldCheckpoint.CurrentSchemaVersion}, 저장 {checkpointSchema}.");
+            }
+            if (createdSequence < 1 || tick < 0 || eventSequence < 0 || chronicleSequence < 0)
+            {
+                throw new InvalidDataException("SQLite snapshot header sequence가 잘못되었습니다.");
+            }
+
+            candidates.Add(new SlotCandidateHeader(
+                kind,
+                path,
+                worldSchema,
+                checkpointSchema,
+                seed,
+                tick,
+                stateHash,
+                createdSequence));
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException)
+        {
+            failures.Add(new SlotCandidateFailure(
+                kind,
+                path,
+                ClassifyFailure(exception),
+                exception.Message));
+        }
+    }
+
     private static SlotLoadStatus ClassifyFailure(Exception exception) => exception switch
     {
         IncompatibleWorldSchemaException => SlotLoadStatus.IncompatibleWorldSchema,
@@ -626,7 +923,8 @@ public static class SlotSaveStore
         SlotPaths paths,
         string slotId,
         int checkpointSchema,
-        long createdSequence)
+        long createdSequence,
+        SlotManifestSummary? summary)
     {
         var manifest = new SlotManifest(
             ManifestVersion,
@@ -635,7 +933,8 @@ public static class SlotSaveStore
             checkpointSchema,
             createdSequence,
             DateTimeOffset.UtcNow,
-            DatabaseFileName);
+            DatabaseFileName,
+            summary);
         var temporaryPath = paths.ManifestPath + ".tmp";
         var data = JsonSerializer.SerializeToUtf8Bytes(manifest, ManifestJsonOptions);
         using (var stream = new FileStream(
@@ -665,6 +964,29 @@ public static class SlotSaveStore
         var bytes = new byte[sizeof(ulong)];
         BinaryPrimitives.WriteUInt64LittleEndian(bytes, value);
         return bytes;
+    }
+
+    private static void ValidateSummary(
+        WorldCheckpoint checkpoint,
+        ulong stateHash,
+        SlotManifestSummary? summary)
+    {
+        if (summary is null)
+        {
+            return;
+        }
+
+        if (summary.Tick != checkpoint.Tick
+            || summary.Population != checkpoint.Agents.Length
+            || summary.Seed != checkpoint.Seed
+            || summary.StateHash != stateHash
+            || summary.LeaderAgentId < 0
+            || summary.LeaderAgentId >= checkpoint.Agents.Length
+            || summary.OrganizationCount < 0)
+        {
+            throw new InvalidDataException(
+                "슬롯 표시 요약이 같은 safe-boundary 권위 checkpoint와 일치하지 않습니다.");
+        }
     }
 
     private static ulong DecodeUInt64(byte[] value, string field)
@@ -721,6 +1043,16 @@ public static class SlotSaveStore
         long EventSequence,
         long ChronicleSequence,
         byte[] Payload);
+
+    private sealed record SlotCandidateHeader(
+        SlotCandidateKind Kind,
+        string Path,
+        int WorldSchema,
+        int CheckpointSchema,
+        ulong Seed,
+        long Tick,
+        ulong StateHash,
+        long CreatedSequence);
 
     private sealed class IncompatibleWorldSchemaException : IOException
     {

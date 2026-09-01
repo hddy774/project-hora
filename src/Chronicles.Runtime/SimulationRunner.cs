@@ -234,6 +234,21 @@ public sealed class SimulationRunner : IDisposable
         }
     }
 
+    public RuntimeSaveCapture CreateSaveCapture()
+    {
+        lock (_worldGate)
+        {
+            return new RuntimeSaveCapture(
+                _world.CreateAuthorityCheckpoint(),
+                _world.CreateSnapshot(
+                    rankingCount: 1,
+                    eventCount: 0,
+                    sections: ObservationSections.StatisticsSummary
+                        | ObservationSections.CombatPowerRanking,
+                    worldChronicleCount: 0));
+        }
+    }
+
     public void RestoreCheckpoint(WorldCheckpoint checkpoint)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
@@ -422,6 +437,10 @@ public readonly record struct WorldRuntimeMetadata(
     ulong Seed,
     int Population,
     WorldBalanceConfiguration Balance);
+
+public sealed record RuntimeSaveCapture(
+    WorldAuthorityCheckpoint Authority,
+    WorldSnapshot SummarySnapshot);
 
 public static class SimulationPacing
 {

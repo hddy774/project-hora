@@ -14,6 +14,7 @@ internal enum WorkspaceRoute : byte
     Content,
     Records,
     Diagnostics,
+    Settings,
 }
 
 public partial class MainWindow
@@ -39,8 +40,14 @@ public partial class MainWindow
     {
         _workspaceRoute = route;
         var isAvailable = route is not (WorkspaceRoute.Organizations or WorkspaceRoute.Content);
-        DashboardWorkspaceGrid.Visibility = isAvailable ? Visibility.Visible : Visibility.Collapsed;
+        var isSettings = route == WorkspaceRoute.Settings;
+        DashboardWorkspaceGrid.Visibility = isAvailable && !isSettings
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         WorkspaceUnavailablePanel.Visibility = isAvailable ? Visibility.Collapsed : Visibility.Visible;
+        SettingsWorkspacePanel.Visibility = isSettings ? Visibility.Visible : Visibility.Collapsed;
+        _runner?.SetPerformanceDiagnosticsEnabled(
+            isSettings && SettingsWorkspacePanel.IsPerformanceMeterEnabled);
         ConfigureWorkspaceLayout(route, isAvailable);
 
         _applyingWorkspaceRoute = true;
@@ -71,6 +78,8 @@ public partial class MainWindow
                 case WorkspaceRoute.Diagnostics:
                     WorldInfoTabControl.SelectedIndex = 4;
                     WorldRecordsPanel.SelectRecordTab(2);
+                    break;
+                case WorkspaceRoute.Settings:
                     break;
                 case WorkspaceRoute.Organizations:
                     ShowUnavailableWorkspace(
@@ -106,7 +115,7 @@ public partial class MainWindow
         WorkspaceDetailPanel.Visibility = personWorkspace ? Visibility.Visible : Visibility.Collapsed;
         WorkspaceContextPanel.Visibility = personWorkspace ? Visibility.Collapsed : Visibility.Visible;
         WorkspaceListColumn.Width = personWorkspace
-            ? new GridLength(430)
+            ? new GridLength(470)
             : new GridLength(0);
         WorkspaceListGapColumn.Width = personWorkspace
             ? new GridLength(14)

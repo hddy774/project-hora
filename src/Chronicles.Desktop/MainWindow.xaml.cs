@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Chronicles.Core;
 using Chronicles.Application;
+using Chronicles.Runtime;
 using Chronicles.Simulation;
 using static Chronicles.Presentation.PresentationText;
 
@@ -16,6 +17,8 @@ public partial class MainWindow : Window, IDisposable
     private const int ExplorerPageSize = 500;
     private const int WorldChronicleDisplayLimit = 1_000;
     private GameApplicationSession? _runner;
+    private ulong _worldSeed = DefaultWorldSeed;
+    private WorldBalanceConfiguration _activeBalance = WorldBalanceConfiguration.Default;
     private WorldSnapshot? _latestSnapshot;
     private AgentId? _selectedAgent;
     private RankingCategory? _rankingCategory = RankingCategory.CombatPower;
@@ -51,6 +54,10 @@ public partial class MainWindow : Window, IDisposable
         Title = $"{ProductInfo.KoreanTitle} PC v{ProductInfo.Version}";
         VersionText.Text = $"VERSION {ProductInfo.Version}";
         _runner = GameApplicationSession.CreateDefault(DefaultWorldSeed);
+        SettingsWorkspacePanel.SetCurrentWorldSettings(
+            DefaultWorldSeed,
+            _runner.GetWorldMetadata().Population,
+            WorldBalanceConfiguration.Default);
         _runner.ObservationInvalidated += Runner_ObservationInvalidated;
         _runner.Faulted += Runner_Faulted;
         _logService.FileWriteFailed += LogService_FileWriteFailed;
@@ -298,14 +305,23 @@ public partial class MainWindow : Window, IDisposable
         }
         WorldTickText.Text = FormatGameDate(GameCalendar.GetDate(snapshot.Tick));
         PopulationText.Text = KoreanNumberFormatter.Format(snapshot.Population);
+        SubtitleText.Text = $"만상경 · {snapshot.Population:N0}명의 자율 경쟁 관찰";
         ActiveCombatText.Text = KoreanNumberFormatter.Format(snapshot.ActiveCombats);
         CompletedCombatText.Text = KoreanNumberFormatter.Format(snapshot.TotalCombatsCompleted);
         ChallengeText.Text = KoreanNumberFormatter.Format(snapshot.TotalChallenges);
         BreakthroughText.Text = KoreanNumberFormatter.Format(snapshot.TotalBreakthroughs);
         StatusText.Text = _runner?.IsPaused == true
-            ? $"일시정지 · {_speed}× · seed {DefaultWorldSeed}"
+            ? $"일시정지 · {_speed}× · seed {_worldSeed}"
             : $"실시간 진행 · {_speed}× · 게임 1년당 현실 {GameCalendar.GetRealSecondsPerGameYear(_speed):0.###}초";
+        if (_activeBalance.DeveloperModeEnabled)
+        {
+            StatusText.Text += " · 개발자 밸런스";
+        }
         StatusText.Foreground = (Brush)FindResource("SecondaryTextBrush");
+        if (_workspaceRoute == WorkspaceRoute.Settings && _runner is { } settingsRunner)
+        {
+            SettingsWorkspacePanel.UpdatePerformance(settingsRunner.GetPerformanceSnapshot());
+        }
     }
 
     private void UpdateVisibleWorldPanel(WorldSnapshot snapshot)
@@ -838,6 +854,13 @@ public partial class MainWindow : Window, IDisposable
         {
             StatusText.Text = "세계 불러오는 중…";
             var restoredSchemaVersion = await _runner.LoadDefaultAsync();
+            var metadata = _runner.GetWorldMetadata();
+            _worldSeed = metadata.Seed;
+            _activeBalance = metadata.Balance;
+            SettingsWorkspacePanel.SetCurrentWorldSettings(
+                metadata.Seed,
+                metadata.Population,
+                metadata.Balance);
             _projectedRecentEventSequence = long.MinValue;
             _projectedRecentEventCount = -1;
             _projectedWorldLogCategory = null;

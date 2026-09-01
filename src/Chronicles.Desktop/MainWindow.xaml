@@ -3,24 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Chronicles.Desktop"
         Title="선로만상록 PC"
-        Width="1500"
-        Height="900"
-        MinWidth="1180"
-        MinHeight="720"
+        Width="1720"
+        Height="1000"
+        MinWidth="1280"
+        MinHeight="780"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource BackgroundBrush}"
         FontFamily="Malgun Gothic"
+        FontSize="14"
         TextOptions.TextFormattingMode="Display">
-    <Grid Margin="14">
+    <Grid x:Name="RootLayoutGrid" Margin="16">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="148" />
-            <ColumnDefinition Width="14" />
+            <ColumnDefinition Width="168" />
+            <ColumnDefinition Width="16" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="14" />
-            <RowDefinition Height="82" />
+            <RowDefinition Height="94" />
             <RowDefinition Height="14" />
             <RowDefinition Height="*" />
             <RowDefinition Height="12" />
@@ -99,13 +100,19 @@
                                  Tag="Records"
                                  Click="WorkspaceNavigation_Click">기록</RadioButton>
                     <RadioButton GroupName="WorkspaceRoute"
+                                  Style="{StaticResource SegmentToggleStyle}"
+                                  Margin="0,0,0,5"
+                                  HorizontalContentAlignment="Left"
+                                  Tag="Diagnostics"
+                                  Click="WorkspaceNavigation_Click">진단</RadioButton>
+                    <RadioButton GroupName="WorkspaceRoute"
                                  Style="{StaticResource SegmentToggleStyle}"
                                  HorizontalContentAlignment="Left"
-                                 Tag="Diagnostics"
-                                 Click="WorkspaceNavigation_Click">진단</RadioButton>
+                                 Tag="Settings"
+                                 Click="WorkspaceNavigation_Click">설정</RadioButton>
                 </StackPanel>
                 <TextBlock Grid.Row="3"
-                           Text="관찰 전용 · 세계에 개입하지 않음"
+                           Text="관찰 전용 · 개발자 조정은 새 세계에만 적용"
                            Margin="4,0,4,4"
                            Foreground="{StaticResource SecondaryTextBrush}"
                            FontSize="9"
@@ -121,9 +128,10 @@
             <StackPanel>
                 <TextBlock Text="선로만상록"
                            Foreground="{StaticResource PrimaryTextBrush}"
-                           FontSize="29"
+                            FontSize="32"
                            FontWeight="SemiBold" />
-                <TextBlock Text="만상경 · 10,000명의 자율 경쟁 관찰"
+                <TextBlock x:Name="SubtitleText"
+                           Text="만상경 · 10,000명의 자율 경쟁 관찰"
                            Margin="1,5,0,0"
                            Foreground="{StaticResource SecondaryTextBrush}"
                            FontSize="13" />
@@ -146,7 +154,7 @@
                 <Button x:Name="PauseButton" Margin="14,0,7,0" Click="PauseButton_Click">일시정지</Button>
                 <Button Margin="0,0,5,0" Click="SaveButton_Click">저장</Button>
                 <Button Margin="0,0,12,0" Click="LoadButton_Click">불러오기</Button>
-                <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" IsChecked="True" Click="Speed1Button_Click">1×</RadioButton>
+                <RadioButton x:Name="Speed1Toggle" GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" IsChecked="True" Click="Speed1Button_Click">1×</RadioButton>
                 <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed10Button_Click">10×</RadioButton>
                 <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed25Button_Click">25×</RadioButton>
                 <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed50Button_Click">50×</RadioButton>
@@ -1117,6 +1125,16 @@
                 </StackPanel>
             </Grid>
         </Border>
+
+        <local:SettingsWorkspaceView x:Name="SettingsWorkspacePanel"
+                                     Grid.Row="4"
+                                     Grid.Column="2"
+                                     Visibility="Collapsed"
+                                     UiScaleRequested="SettingsWorkspacePanel_UiScaleRequested"
+                                     RestoreWindowRequested="SettingsWorkspacePanel_RestoreWindowRequested"
+                                     MaximizeWindowRequested="SettingsWorkspacePanel_MaximizeWindowRequested"
+                                     PerformanceMeterChanged="SettingsWorkspacePanel_PerformanceMeterChanged"
+                                     NewWorldRequested="SettingsWorkspacePanel_NewWorldRequested" />
 
         <Grid Grid.Row="6" Grid.Column="2">
             <TextBlock x:Name="StatusText"

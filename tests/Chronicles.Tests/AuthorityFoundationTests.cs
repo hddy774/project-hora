@@ -25,6 +25,10 @@ internal static class AuthorityFoundationTests
         TestAssert.True(
             registry.ChangeSets.Count >= registry.Entries.Count,
             "Registry revision change 계보 보존");
+        TestAssert.Equal(
+            AuthorityRegistry.CreateStableId("cmip.numeric-test", "0123456789ABCDEF"),
+            AuthorityRegistry.CreateStableId("cmip.numeric-test", 0x0123_4567_89AB_CDEFUL),
+            "numeric stable ID는 기존 X16 문자열 계약과 동일");
 
         foreach (var owner in registry.OwnerBindings)
         {

@@ -16,6 +16,7 @@ public sealed class WorldGenerationCatalog
     private long _nextItemCatalogOrdinal;
     private long _nextBookCatalogOrdinal;
     private long _lastContentGenerationMonth;
+    private long _nextContentGenerationMonth;
 
     private WorldGenerationCatalog(
         ulong worldSeed,
@@ -32,6 +33,9 @@ public sealed class WorldGenerationCatalog
         _nextItemCatalogOrdinal = nextItemCatalogOrdinal;
         _nextBookCatalogOrdinal = nextBookCatalogOrdinal;
         _lastContentGenerationMonth = lastContentGenerationMonth;
+        _nextContentGenerationMonth = GetNextContentGenerationMonth(
+            configuration,
+            lastContentGenerationMonth);
         _items = items.ToList();
         _books = books.ToList();
         Monsters = monsters.ToArray();
@@ -216,22 +220,34 @@ public sealed class WorldGenerationCatalog
             return GeneratedWorldExpansion.Empty;
         }
 
-        var intervalMonths = checked(
-            (long)Configuration.ContentGenerationIntervalYears * GameCalendar.MonthsPerYear);
-        var due = checked((currentMonth - _lastContentGenerationMonth) / intervalMonths);
-        if (due <= 0)
+        if (_nextContentGenerationMonth <= _lastContentGenerationMonth
+            || currentMonth < _nextContentGenerationMonth)
         {
             return GeneratedWorldExpansion.Empty;
         }
 
-        var generatedItems = new List<GeneratedItemDefinitionCheckpoint>(
-            checked((int)Math.Min(
-                int.MaxValue,
-                due * Configuration.ItemDefinitionsPerInterval)));
-        var generatedBooks = new List<GeneratedBookDefinitionCheckpoint>(
-            checked((int)Math.Min(
-                int.MaxValue,
-                due * Configuration.BookContentsPerInterval)));
+        var intervalMonths = checked(
+            (long)Configuration.ContentGenerationIntervalYears * GameCalendar.MonthsPerYear);
+        var due = checked(
+            ((currentMonth - _nextContentGenerationMonth) / intervalMonths) + 1);
+        var itemCount = checked((int)Math.Min(
+            int.MaxValue,
+            due * Configuration.ItemDefinitionsPerInterval));
+        var bookCount = checked((int)Math.Min(
+            int.MaxValue,
+            due * Configuration.BookContentsPerInterval));
+        var generatedItems = itemCount == 0
+            ? Array.Empty<GeneratedItemDefinitionCheckpoint>()
+            : new GeneratedItemDefinitionCheckpoint[itemCount];
+        var generatedBooks = bookCount == 0
+            ? Array.Empty<GeneratedBookDefinitionCheckpoint>()
+            : new GeneratedBookDefinitionCheckpoint[bookCount];
+        _items.EnsureCapacity(checked(_items.Count + itemCount));
+        _books.EnsureCapacity(checked(_books.Count + bookCount));
+        _itemIndexById.EnsureCapacity(checked(_itemIndexById.Count + itemCount));
+        _bookIndexById.EnsureCapacity(checked(_bookIndexById.Count + bookCount));
+        var itemWrite = 0;
+        var bookWrite = 0;
         for (long cycle = 1; cycle <= due; cycle++)
         {
             var createdMonth = checked(_lastContentGenerationMonth + (cycle * intervalMonths));
@@ -244,7 +260,7 @@ public sealed class WorldGenerationCatalog
                     createdMonth);
                 _itemIndexById.Add(item.GeneratedId, _items.Count);
                 _items.Add(item);
-                generatedItems.Add(item);
+                generatedItems[itemWrite++] = item;
             }
             for (var index = 0; index < Configuration.BookContentsPerInterval; index++)
             {
@@ -255,11 +271,29 @@ public sealed class WorldGenerationCatalog
                     createdMonth);
                 _bookIndexById.Add(book.ContentId, _books.Count);
                 _books.Add(book);
-                generatedBooks.Add(book);
+                generatedBooks[bookWrite++] = book;
             }
         }
         _lastContentGenerationMonth = checked(_lastContentGenerationMonth + (due * intervalMonths));
+        _nextContentGenerationMonth = GetNextContentGenerationMonth(
+            Configuration,
+            _lastContentGenerationMonth);
         return new GeneratedWorldExpansion(generatedItems, generatedBooks);
+    }
+
+    private static long GetNextContentGenerationMonth(
+        WorldGenerationConfiguration configuration,
+        long lastContentGenerationMonth)
+    {
+        if (!configuration.EnableOngoingContentGeneration)
+        {
+            return long.MaxValue;
+        }
+        var intervalMonths = checked(
+            (long)configuration.ContentGenerationIntervalYears * GameCalendar.MonthsPerYear);
+        return lastContentGenerationMonth > long.MaxValue - intervalMonths
+            ? long.MaxValue
+            : lastContentGenerationMonth + intervalMonths;
     }
 
     public ulong ComputeStateHash()
@@ -623,15 +657,15 @@ public sealed class WorldGenerationCatalog
     ];
 }
 
-public sealed record GeneratedWorldExpansion(
-    IReadOnlyList<GeneratedItemDefinitionCheckpoint> Items,
-    IReadOnlyList<GeneratedBookDefinitionCheckpoint> Books)
+public readonly record struct GeneratedWorldExpansion(
+    GeneratedItemDefinitionCheckpoint[] Items,
+    GeneratedBookDefinitionCheckpoint[] Books)
 {
     public static GeneratedWorldExpansion Empty { get; } = new(
         Array.Empty<GeneratedItemDefinitionCheckpoint>(),
         Array.Empty<GeneratedBookDefinitionCheckpoint>());
 
-    public bool IsEmpty => Items.Count == 0 && Books.Count == 0;
+    public bool IsEmpty => Items.Length == 0 && Books.Length == 0;
 }
 
 public sealed class WorldMapCatalog
@@ -680,8 +714,9 @@ public sealed class WorldMapCatalog
 
     public int GetMonsterPopulationOffset(ushort locationId, int localMonsterIndex)
     {
-        var location = GetLocation(locationId);
-        if (location.Biome == BiomeType.City
+        if (locationId >= _locations.Length
+            || _locations[locationId].Id != locationId
+            || _locations[locationId].Biome == BiomeType.City
             || (uint)localMonsterIndex >= SpeciesPerWildBiome)
         {
             throw new ArgumentOutOfRangeException(nameof(localMonsterIndex));

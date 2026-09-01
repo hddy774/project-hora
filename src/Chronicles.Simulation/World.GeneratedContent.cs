@@ -107,10 +107,7 @@ public sealed partial class World
     private static ContentSourceResultId CreateGeneratedSource(
         string sourceNamespace,
         ulong stableValue) => new(
-            AuthorityRegistry.CreateStableId(
-                sourceNamespace,
-                stableValue.ToString("X16", System.Globalization.CultureInfo.InvariantCulture))
-            .Value);
+            AuthorityRegistry.CreateStableId(sourceNamespace, stableValue).Value);
 
     private static void EnsureGeneratedContentApplied<TStatus>(
         bool applied,

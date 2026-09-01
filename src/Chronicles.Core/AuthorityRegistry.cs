@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Text;
 
 namespace Chronicles.Core;
@@ -274,6 +275,33 @@ public static class AuthorityRegistry
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(registryRef);
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
+        return CreateStableId(registryRef, key.AsSpan());
+    }
+
+    /// <summary>
+    /// 16자리 대문자 16진수 key의 기존 문자열 계약을 할당 없이 계산한다.
+    /// 문자열 overload의 <c>value.ToString("X16", InvariantCulture)</c>와 같은 ID다.
+    /// </summary>
+    public static RegistryStableId CreateStableId(string registryRef, ulong numericKey)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(registryRef);
+        Span<char> key = stackalloc char[16];
+        if (!numericKey.TryFormat(
+                key,
+                out var written,
+                "X16",
+                CultureInfo.InvariantCulture)
+            || written != key.Length)
+        {
+            throw new InvalidOperationException("numeric stable key 형식화에 실패했습니다.");
+        }
+        return CreateStableId(registryRef, key);
+    }
+
+    private static RegistryStableId CreateStableId(
+        string registryRef,
+        ReadOnlySpan<char> key)
+    {
         const ulong offset = 14_695_981_039_346_656_037UL;
         const ulong prime = 1_099_511_628_211UL;
         var hash = offset;
@@ -527,7 +555,7 @@ public static class AuthorityRegistry
             changes);
     }
 
-    private static void HashUtf8(string value, ref ulong hash, ulong prime)
+    private static void HashUtf8(ReadOnlySpan<char> value, ref ulong hash, ulong prime)
     {
         var byteCount = Encoding.UTF8.GetByteCount(value);
         Span<byte> buffer = byteCount <= 256

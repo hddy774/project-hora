@@ -257,7 +257,8 @@ internal static class ContentAuthorityTests
             "콘텐츠 관찰 무영향");
 
         var checkpoint = world.CreateCheckpoint();
-        TestAssert.Equal(29, checkpoint.SchemaVersion, "콘텐츠·지식·법칙 checkpoint schema 29");
+        TestAssert.Equal(30, checkpoint.SchemaVersion,
+            "콘텐츠·지식·법칙·세계 생성 checkpoint schema 30");
         TestAssert.True(checkpoint.Content is not null, "콘텐츠 checkpoint 연결");
         var restored = World.Restore(checkpoint);
         TestAssert.Equal(world.ComputeStateHash(), restored.ComputeStateHash(),
@@ -307,7 +308,7 @@ internal static class ContentAuthorityTests
 
         TestAssert.Throws<InvalidDataException>(
             () => World.Restore(checkpoint with { Content = null }),
-            "schema 29 콘텐츠 누락 거부");
+            "schema 30 콘텐츠 누락 거부");
     }
 
     private const int ContentWorkspacePageSize = 100;
@@ -325,12 +326,17 @@ internal static class ContentAuthorityTests
         var agentDiscoveries = discoveries.Count(value =>
             value.DiscovererKind == ContentDiscovererKind.Agent
             && value.State >= ContentDiscoveryState.Located);
+        var firstCenturyEndTick = GameCalendar.FromYears(100).Value;
+        var firstCenturyPublicDiscoveries = discoveries.Count(value =>
+            value.DiscovererKind == ContentDiscovererKind.Observer
+            && value.State >= ContentDiscoveryState.Located
+            && value.UpdatedTick < firstCenturyEndTick);
         TestAssert.True(publicDiscoveries > 0, "AI 탐색 결과가 공개 비경 지식으로 연결");
         TestAssert.Equal(publicDiscoveries, agentDiscoveries,
             "각 공개 발견에는 발견자 개인 지식 provenance가 선행");
 
         var century = checkpoint.CenturyChronicle!.Entries[0];
-        TestAssert.Equal(publicDiscoveries, century.SecretRealmsDiscovered,
+        TestAssert.Equal(firstCenturyPublicDiscoveries, century.SecretRealmsDiscovered,
             "첫 100년 비경 발견이 세계 역사서에 압축");
         TestAssert.True(
             century.UniqueSecretRealmDiscoverers is > 0 and <= 64,

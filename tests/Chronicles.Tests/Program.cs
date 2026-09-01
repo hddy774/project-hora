@@ -82,6 +82,7 @@ var tests = new (string Name, Action Body)[]
     ("콘텐츠 Definition·Instance·Provenance·발견·원자 소유권", ContentAuthorityTests.Run),
     ("서적 Content·Edition·실물·접근·오해·교정 권위", KnowledgeAuthorityTests.Run),
     ("법칙 후보·개인 이해·세계 AI·천도 REVIEW 권위", LawAuthorityTests.Run),
+    ("절차 생성 아이템·서적·지도·요수·지속 세계 카탈로그", WorldGenerationTests.Run),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),

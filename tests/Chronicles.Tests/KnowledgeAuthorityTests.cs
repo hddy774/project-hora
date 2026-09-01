@@ -206,7 +206,7 @@ internal static class KnowledgeAuthorityTests
             "물리 서적은 실제 Content Instance 집계");
 
         var checkpoint = world.CreateCheckpoint();
-        TestAssert.Equal(28, checkpoint.SchemaVersion, "지식 checkpoint schema 28");
+        TestAssert.Equal(29, checkpoint.SchemaVersion, "지식·법칙 checkpoint schema 29");
         TestAssert.True(checkpoint.Knowledge is not null, "지식 checkpoint 연결");
         var restored = World.Restore(checkpoint);
         TestAssert.Equal(world.ComputeStateHash(), restored.ComputeStateHash(),

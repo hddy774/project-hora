@@ -23,13 +23,6 @@
 > **Notion 통합 보고서:**
 > [2026-09-02 선로만상록 전체 기술 감사·개발 가이드·리팩터링·성능 계획](https://app.notion.com/p/3ceacc9e6175816a9ba7e07d18626f24)
 
-> **감사 이후 사용자 확정 결정:** `A110-M02-V13`의 53개 물리 테이블 수는 PC의
-> 필수 저장 형식에서 제외한다. PC는 논리 권위 도메인을 canonical
-> `authority_snapshot`과 typed checkpoint로 보존하는 `PC Adapt`를 사용한다.
-> 재생성 가능한 현재 원장 집계는 `Port 128 / PC Adapt 16 / PC_TEMP_REVIEW 31 /
-> Gap·Deferred 63`이다. 아래 `main@7eb4d54` 수치와 당시 미결 문장은 결정 전 감사
-> 스냅샷으로 보존하며 현재 결정 상태로 읽지 않는다.
-
 ## 1. 결론부터 보기
 
 선로만상록 PC는 단순 화면 시제품이 아니라 다음 기반을 갖춘 결정론적 관찰

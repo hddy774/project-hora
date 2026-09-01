@@ -86,6 +86,3 @@
 - 코드·기능 trace에만 존재: **18**
 - 0.0.21 고정 SHA 당시 disposition: Port 128 / PC Adapt 15 /
   PC_TEMP_REVIEW 31 / Platform Excluded 0 / Gap·Deferred 64
-- 후속 사용자 결정으로 53-table 물리 저장 형태를 PC Adapt 처리한 현재 생성 작업본:
-  Port 128 / PC Adapt 16 / PC_TEMP_REVIEW 31 / Platform Excluded 0 /
-  Gap·Deferred 63. 이 집계는 새 고정 SHA의 검증 기준선으로 승격됐다는 뜻이 아니다.

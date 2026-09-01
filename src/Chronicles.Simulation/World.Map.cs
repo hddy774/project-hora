@@ -348,6 +348,7 @@ public sealed partial class World
         AddEvent(WorldEventKind.MonsterHuntLost, index, monster.Id);
         if (!fatal)
         {
+            _agents.ApplyPermanentScar(index, Tick.Value, _agents.InjuryPoints[index]);
             return false;
         }
 

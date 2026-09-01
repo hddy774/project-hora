@@ -59,7 +59,8 @@ public sealed record AgentCheckpoint(
     AptitudeDetailCheckpoint? AptitudeDetails = null,
     PersonIdentityCheckpoint? Identity = null,
     AgentDecisionCheckpoint? Decision = null,
-    TeachingCheckpoint? Teaching = null);
+    TeachingCheckpoint? Teaching = null,
+    PersonLifeAuthorityCheckpoint? LifeAuthority = null);
 
 public sealed record AptitudeDetailCheckpoint(
     int FormulaRevision,
@@ -204,9 +205,10 @@ public sealed record WorldCheckpoint(
     RankingHistoryCheckpoint? RankingHistory = null,
     WorldCenturyChronicleCheckpoint? CenturyChronicle = null,
     RelationStoreCheckpoint? Relations = null,
-    ReincarnationStoreCheckpoint? Reincarnation = null)
+    ReincarnationStoreCheckpoint? Reincarnation = null,
+    AgentCausalStoreCheckpoint? Causal = null)
 {
-    public const int CurrentSchemaVersion = 24;
+    public const int CurrentSchemaVersion = 25;
 }
 
 /// <summary>

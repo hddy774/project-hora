@@ -63,7 +63,9 @@ public sealed class WorldObservationQueries
             includeRelations:
                 (request.Sections & ObservationSections.Relations) != 0,
             includeTeaching:
-                (request.Sections & ObservationSections.Teaching) != 0);
+                (request.Sections & ObservationSections.Teaching) != 0,
+            includeCausal:
+                (request.Sections & ObservationSections.CausalRuntime) != 0);
         return new WorldObservation(
             world,
             agent,

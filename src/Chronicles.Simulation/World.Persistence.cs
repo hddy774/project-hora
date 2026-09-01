@@ -11,6 +11,9 @@ public sealed partial class World
         Tick = new SimulationTick(checkpoint.Tick);
         _random = new DeterministicRandom(checkpoint.RandomState);
         _agents = new AgentStore(checkpoint.Agents.Length);
+        _causal = checkpoint.SchemaVersion >= 25
+            ? AgentCausalStore.Restore(checkpoint.Agents.Length, checkpoint.Causal!)
+            : new AgentCausalStore(checkpoint.Agents.Length);
         _relations = checkpoint.SchemaVersion >= 21 && checkpoint.Relations is { } relations
             ? SparseRelationStore.Restore(checkpoint.Agents.Length, relations)
             : new SparseRelationStore(checkpoint.Agents.Length);
@@ -66,6 +69,14 @@ public sealed partial class World
         for (var index = 0; index < checkpoint.Agents.Length; index++)
         {
             RestoreAgent(index, checkpoint.Agents[index], checkpoint.SchemaVersion);
+            if (checkpoint.SchemaVersion < 25)
+            {
+                _causal.StartLife(
+                    index,
+                    CreateCausalObservation(index, initialRank: index + 1),
+                    _agents.DecisionTraces[index],
+                    AgentMemoryKind.Birth);
+            }
             _agentByRank[index] = index;
             _agentByRealmRank[index] = index;
             _agentByAptitudeRank[index] = index;
@@ -376,7 +387,8 @@ public sealed partial class World
                     _agents.LearningAuthorityRevisions[index],
                     _agents.LearningTraces[index],
                     _agents.TechniqueMisunderstandingPoints[index],
-                    _agents.SpellMisunderstandingPoints[index]));
+                    _agents.SpellMisunderstandingPoints[index]),
+                _agents.GetLifeAuthorityCheckpoint(index));
         }
 
         return new WorldCheckpoint(
@@ -418,7 +430,8 @@ public sealed partial class World
             _rankingHistory.CreateCheckpoint(),
             _worldChronicle.CreateCheckpoint(),
             _relations.CreateCheckpoint(),
-            _reincarnation.CreateCheckpoint());
+            _reincarnation.CreateCheckpoint(),
+            _causal.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -465,6 +478,14 @@ public sealed partial class World
             _agents.LifeStates[index] = checkpoint.Activity == AgentActivity.Reincarnating
                 ? PersonLifeState.ReincarnationRiver
                 : PersonLifeState.Living;
+        }
+        if (schemaVersion >= 25 && checkpoint.LifeAuthority is { } lifeAuthority)
+        {
+            _agents.RestoreLifeAuthority(index, lifeAuthority);
+        }
+        else
+        {
+            _agents.RestoreLegacyLifeAuthority(index, Tick.Value);
         }
         _agents.BottleneckFailures[index] = checkpoint.BottleneckFailures;
         _agents.RealmStages[index] = checkpoint.RealmStage;
@@ -720,6 +741,15 @@ public sealed partial class World
                 || !IsValidReincarnationRuntimeLink(checkpoint)))
         {
             throw new InvalidDataException("세계 체크포인트의 윤회 계보·여정 상태가 잘못되었습니다.");
+        }
+
+        if (checkpoint.SchemaVersion >= 25
+            && (!AgentCausalStore.IsValidCheckpoint(
+                    checkpoint.Agents.Length,
+                    checkpoint.Causal)
+                || !IsValidCausalRuntimeLink(checkpoint)))
+        {
+            throw new InvalidDataException("세계 체크포인트의 AI 인과·인지·기억 상태가 잘못되었습니다.");
         }
 
         IReadOnlyDictionary<ulong, RelationStateCheckpoint>? relationById = null;
@@ -978,6 +1008,14 @@ public sealed partial class World
                 && !IsValidPersonCausalCheckpoint(index, agent, checkpoint.Tick))
             {
                 throw new InvalidDataException($"Agent {index}의 인물 신원·결정 추적 체크포인트가 잘못되었습니다.");
+            }
+
+            if (checkpoint.SchemaVersion >= 25
+                && (agent.LifeAuthority is not { } lifeAuthority
+                    || !PersonLifeAuthorityRules.IsValid(lifeAuthority)
+                    || !IsValidLifeAuthorityLink(agent, lifeAuthority)))
+            {
+                throw new InvalidDataException($"Agent {index}의 생애·육신·외형 권위 체크포인트가 잘못되었습니다.");
             }
 
             if (checkpoint.SchemaVersion >= 22
@@ -1430,6 +1468,143 @@ public sealed partial class World
                 && !Enum.IsDefined(alternative)))
         {
             return false;
+        }
+
+        return true;
+    }
+
+    private static bool IsValidLifeAuthorityLink(
+        AgentCheckpoint agent,
+        PersonLifeAuthorityCheckpoint life)
+    {
+        if (agent.Identity is not { } identity
+            || life.LatestTransition.PersonId != identity.PersonId
+            || life.LatestTransition.BodyId != identity.BodyId
+            || life.LatestTransition.CurrentPhase != life.LifePhase
+            || life.LatestTransition.CurrentBodyState != life.BodyState
+            || life.LatestTransition.CurrentSoulState != life.SoulState)
+        {
+            return false;
+        }
+
+        return identity.LifeState switch
+        {
+            PersonLifeState.Living => life.LifePhase == CurrentLifePhase.Living
+                && life.BodyState == BodyLifeState.Living
+                && life.SoulState == SoulEmbodimentState.Embodied,
+            PersonLifeState.ReincarnationRiver =>
+                life.LifePhase == CurrentLifePhase.ReincarnationHandoff
+                && life.BodyState is BodyLifeState.Dead or BodyLifeState.Destroyed
+                && life.SoulState == SoulEmbodimentState.Crossing,
+            _ => false,
+        };
+    }
+
+    private static bool IsValidCausalRuntimeLink(WorldCheckpoint checkpoint)
+    {
+        var causal = checkpoint.Causal!;
+        for (var agentIndex = 0; agentIndex < checkpoint.Agents.Length; agentIndex++)
+        {
+            var agent = checkpoint.Agents[agentIndex];
+            if (agent.Identity is not { } identity || agent.Decision is not { } decision)
+            {
+                return false;
+            }
+
+            var path = causal.CurrentPaths[agentIndex];
+            if (path.AuthorityRevision != decision.Latest.AuthorityRevision
+                || path.Goal != decision.Latest.SupportingGoal
+                || path.Action != decision.Latest.SelectedActivity
+                || path.AlternativeAction != decision.Latest.AlternativeActivity
+                || path.Reason != decision.Latest.SelectedReason
+                || (path.Resolution != AgentCausalRules.MapResolution(decision.Latest.Resolution)
+                    && !path.IsWaiting
+                    && !path.WasInterrupted)
+                || path.StartedTick != decision.Latest.Tick
+                || path.StartedTick > checkpoint.Tick
+                || path.GoalId != AgentCausalRules.CreateGoalId(identity.PersonId, path.Goal)
+                || path.PlanId != AgentCausalRules.CreatePlanId(identity.PersonId, path.AuthorityRevision)
+                || path.TaskId != AgentCausalRules.CreateTaskId(identity.PersonId, path.AuthorityRevision)
+                || path.ActionId != AgentCausalRules.CreateActionId(identity.PersonId, path.AuthorityRevision)
+                || path.ThreadId != AgentCausalRules.CreateThreadId(identity.PersonId)
+                || path.EventDefinitionId != AgentCausalRules.CreateEventDefinitionId(path.Action)
+                || path.EventInstanceId != AgentCausalRules.CreateEventInstanceId(
+                    identity.PersonId,
+                    path.AuthorityRevision)
+                || path.ResultId != AgentCausalRules.CreateResultId(identity.PersonId, path.AuthorityRevision)
+                || path.EventRecordId != AgentCausalRules.CreateEventRecordId(
+                    identity.PersonId,
+                    path.AuthorityRevision)
+                || (path.Resolution == CausalResolutionCode.Committed
+                    ? path.FailureScope != CausalFailureScope.None
+                    : path.FailureScope == CausalFailureScope.None))
+            {
+                return false;
+            }
+
+            var factStart = agentIndex * AgentCausalRules.PerceivedFactCapacity;
+            if (causal.PerceivedFactCounts[agentIndex] != AgentCausalRules.PerceivedFactCapacity)
+            {
+                return false;
+            }
+
+            for (var offset = 0; offset < AgentCausalRules.PerceivedFactCapacity; offset++)
+            {
+                var fact = causal.PerceivedFacts[factStart + offset];
+                var expectedKind = (PerceivedFactKind)offset;
+                if (fact.Kind != expectedKind
+                    || fact.Id != AgentCausalRules.CreateFactId(identity.PersonId, expectedKind)
+                    || fact.ObserverPersonId != identity.PersonId
+                    || fact.SubjectPersonId != identity.PersonId
+                    || fact.ObservedTick < 0
+                    || fact.ObservedTick > checkpoint.Tick
+                    || fact.SourceRecordId != path.EventRecordId)
+                {
+                    return false;
+                }
+            }
+
+            var memoryStart = agentIndex * AgentCausalRules.MemoryCapacityPerAgent;
+            var populated = 0;
+            for (var offset = 0; offset < AgentCausalRules.MemoryCapacityPerAgent; offset++)
+            {
+                var memory = causal.Memories[memoryStart + offset];
+                if (memory.Id.Value == 0)
+                {
+                    continue;
+                }
+
+                populated++;
+                if (memory.LifeNumber != agent.LifeNumber
+                    || memory.FirstTick < agent.BirthTick
+                    || memory.LastReinforcedTick < memory.FirstTick
+                    || memory.LastReinforcedTick > checkpoint.Tick
+                    || memory.StrengthHundredths is 0 or > 10_000
+                    || memory.ReinforcementCount == 0
+                    || memory.SourceResultId.Value == 0
+                    || memory.SourceRecordId.Value == 0)
+                {
+                    return false;
+                }
+            }
+
+            if (populated != causal.MemoryCounts[agentIndex])
+            {
+                return false;
+            }
+
+            var claim = causal.LatestKnowledgeClaims[agentIndex];
+            if (claim.Id.Value != 0
+                && (claim.LifeNumber != agent.LifeNumber
+                    || claim.RecipientPersonId != identity.PersonId
+                    || claim.TeachingProvenanceId.Value == 0
+                    || claim.SourceResultId.Value == 0
+                    || claim.CreatedTick < agent.BirthTick
+                    || claim.CreatedTick > checkpoint.Tick
+                    || claim.AuthorityRevision <= 0))
+            {
+                return false;
+            }
         }
 
         return true;

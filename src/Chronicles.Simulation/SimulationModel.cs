@@ -24,11 +24,12 @@ public enum ObservationSections : uint
     Relations = 1 << 15,
     Teaching = 1 << 16,
     Reincarnation = 1 << 17,
+    CausalRuntime = 1 << 18,
     Statistics = StatisticsSummary | RealmDistribution | CombatPowerDistribution,
     Market = MarketSummary | MarketGoods,
     AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking | WealthRanking,
     All = Statistics | Market | Map | WorldLog | WorldChronicle | PersonalLog | Chronicle
-        | AllRankings | AptitudeDetails | Relations | Teaching | Reincarnation,
+        | AllRankings | AptitudeDetails | Relations | Teaching | Reincarnation | CausalRuntime,
 }
 
 public enum AgentActivity : byte
@@ -553,7 +554,9 @@ public sealed record AgentSnapshot(
     AgentDecisionSnapshot Decision,
     TeachingSnapshot? Teaching,
     AptitudeDetailSnapshot? AptitudeDetails = null,
-    IReadOnlyList<RelationSnapshot>? Relations = null);
+    IReadOnlyList<RelationSnapshot>? Relations = null,
+    PersonLifeAuthoritySnapshot LifeAuthority = default,
+    AgentCausalSnapshot? Causal = null);
 
 public sealed record RankingEntry(
     RankingCategory Category,

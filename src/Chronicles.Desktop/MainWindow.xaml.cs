@@ -233,6 +233,10 @@ public partial class MainWindow : Window, IDisposable
         {
             sections |= ObservationSections.Teaching;
         }
+        if (CausalRuntimeExpander.IsExpanded)
+        {
+            sections |= ObservationSections.CausalRuntime;
+        }
 
         sections |= _rankingCategory switch
         {

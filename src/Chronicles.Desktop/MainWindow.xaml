@@ -363,6 +363,32 @@
                                        FontSize="11"
                                        TextWrapping="Wrap" />
                         </Expander>
+                        <Expander x:Name="LifeAuthorityExpander"
+                                  Header="생애·육신·외형 권위"
+                                  Margin="0,8,0,0"
+                                  IsExpanded="False"
+                                  Expanded="VisibleExpander_Expanded">
+                            <TextBlock x:Name="LifeAuthorityText"
+                                       Margin="0,7,0,0"
+                                       Padding="10"
+                                       Background="{StaticResource PanelAltBrush}"
+                                       Foreground="{StaticResource PrimaryTextBrush}"
+                                       FontSize="11"
+                                       TextWrapping="Wrap" />
+                        </Expander>
+                        <Expander x:Name="CausalRuntimeExpander"
+                                  Header="인과선·인지 사실·현재 생 기억"
+                                  Margin="0,8,0,0"
+                                  IsExpanded="False"
+                                  Expanded="VisibleExpander_Expanded">
+                            <TextBlock x:Name="CausalRuntimeText"
+                                       Margin="0,7,0,0"
+                                       Padding="10"
+                                       Background="{StaticResource PanelAltBrush}"
+                                       Foreground="{StaticResource PrimaryTextBrush}"
+                                       FontSize="11"
+                                       TextWrapping="Wrap" />
+                        </Expander>
                         <Expander x:Name="RelationsExpander"
                                   Header="관계 6축·역할·중요 역사"
                                   Margin="0,8,0,0"

@@ -1,4 +1,5 @@
 using System.Windows.Controls;
+using System.Globalization;
 using Chronicles.Core;
 using Chronicles.Simulation;
 using static Chronicles.Presentation.PresentationText;
@@ -26,7 +27,8 @@ public partial class MainWindow
         SelectedNameText.Text = agent.Name;
         SelectedIdText.Text = $"{agent.Id} · 최종 목표 #{agent.TargetRank}";
         IdentityText.Text =
-            $"영혼 {agent.Identity.SoulId} · 육신 {agent.Identity.BodyId} · 현생 {agent.Identity.PersonId} · {FormatLifeState(agent.Identity.LifeState)}";
+            $"영혼 {agent.Identity.SoulId} · 육신 {agent.Identity.BodyId} · 현생 {agent.Identity.PersonId} · " +
+            $"{FormatGender(agent.LifeAuthority.Gender)} · {FormatLifeState(agent.Identity.LifeState)}";
         SelectedRankText.Text =
             $"전투력 #{agent.Rank:N0} · 경지 #{agent.RealmRank:N0} · " +
             $"자질 #{agent.AptitudeRank:N0} · 부자 #{agent.WealthRank:N0}";
@@ -56,6 +58,14 @@ public partial class MainWindow
         if (DecisionReasonExpander.IsExpanded)
         {
             UpdateDecisionReasonView(agent.Decision);
+        }
+        if (LifeAuthorityExpander.IsExpanded)
+        {
+            UpdateLifeAuthorityView(agent.LifeAuthority);
+        }
+        if (CausalRuntimeExpander.IsExpanded && agent.Causal is { } causal)
+        {
+            UpdateCausalRuntimeView(causal);
         }
         if (RelationsExpander.IsExpanded)
         {
@@ -283,7 +293,8 @@ public partial class MainWindow
             ReincarnationJourneyText.Text =
                 $"{FormatReincarnationStage(journey.Stage)} · {journey.Id} · " +
                 $"제 {journey.SourceLifeNumber:N0}생에서 출발 · " +
-                $"원천 {FormatRealmStage(journey.SourceRealm)} · 총 {journey.RequiredYears:N0}년" +
+                $"원천 {FormatRealmStage(journey.SourceRealm)} · 총 {journey.RequiredYears:N0}년 · " +
+                $"영혼 손상 {FormatSoulDamage(journey.SoulDamage)} · 출생 후보 {FormatBirthCandidateStatus(journey.BirthCandidateStatus)}" +
                 (journey.RequiresReview
                     ? $" · {ReincarnationRules.StageReviewId} 검토값"
                     : string.Empty);
@@ -292,7 +303,10 @@ public partial class MainWindow
                 $"단계 시작 {FormatReincarnationDate(journey.StageStartedTick)} · " +
                 $"다음 단계 {FormatReincarnationDate(journey.NextTransitionTick)} · " +
                 $"예정 완료 {FormatReincarnationDate(journey.RebirthReadyTick)} · " +
-                $"완료일 {FormatOptionalReincarnationDate(journey.CompletedTick, "미완료")}";
+                $"완료일 {FormatOptionalReincarnationDate(journey.CompletedTick, "미완료")} · " +
+                $"출생 대기 {journey.BirthCandidateWaitYears:N0}년 · 부모 {FormatParents(journey.ParentOnePersonId, journey.ParentTwoPersonId)}\n" +
+                $"causal root {FormatCausalRecord(journey.RootCausalRecordId)} · 진입 {FormatCausalRecord(journey.EntryCausalRecordId)} · " +
+                $"도하 완료 {FormatCausalRecord(journey.CrossingCausalRecordId)} · 환생 {FormatCausalRecord(journey.RebirthCausalRecordId)}";
         }
         else
         {
@@ -377,9 +391,10 @@ public partial class MainWindow
                 : "이 생에서 생성된 윤회 흔적 없음";
         return new ReincarnationLineageRow(
             $"제 {life.LifeNumber:N0}생 · {life.PersonName} · {end}",
-            $"{life.Id} · 이전 생 {predecessor} · 영혼 {life.SoulId} · 육신 {life.BodyId} · 인물 {life.PersonId}",
+            $"{life.Id} · 이전 생 {predecessor} · 영혼 {life.SoulId} · 육신 {life.BodyId} · 인물 {life.PersonId} · 가계 {life.FamilyId}",
             $"탄생 {FormatReincarnationDate(life.BirthTick)} · " +
-            $"사망 {FormatOptionalReincarnationDate(life.DeathTick, "—")} · 윤회 완료 {completion}",
+            $"사망 {FormatOptionalReincarnationDate(life.DeathTick, "—")} · 윤회 완료 {completion} · " +
+            $"출생 {FormatBirthCandidateStatus(life.BirthStatus)} · 부모 {FormatParents(life.ParentOnePersonId, life.ParentTwoPersonId)}",
             $"개인 최고 · {FormatHistoricalPeak(life.PersonalPeak)}",
             continuity);
     }
@@ -397,7 +412,7 @@ public partial class MainWindow
         var domain = FormatReincarnationTraceDomain(trace.Domain);
         if (!trace.HasEvidence)
         {
-            return $"{domain} · 권위 근거 없음";
+            return $"{domain} · 권위 근거 없음 · {trace.EvidenceStatus}";
         }
 
         return compact
@@ -408,7 +423,7 @@ public partial class MainWindow
                 $"({FormatTracePreservationLevel(trace.PreservationLevel)}) · " +
                 $"Accessible {trace.AccessibleHundredths / 100m:0.00} " +
                 $"({FormatTraceAccessLevel(trace.AccessLevel)}) · " +
-                $"Integrated {trace.IntegratedHundredths / 100m:0.00}";
+                $"Integrated {trace.IntegratedHundredths / 100m:0.00} · 근거 {trace.EvidenceStatus}";
     }
 
     private static string FormatReincarnationDate(SimulationTick tick) =>
@@ -430,6 +445,36 @@ public partial class MainWindow
         ReincarnationStage.PreparingRebirth => "환생 준비",
         _ => stage.ToString(),
     };
+
+    private static string FormatSoulDamage(SoulDamageLevel level) => level switch
+    {
+        SoulDamageLevel.None => "없음",
+        SoulDamageLevel.Minor => "경미",
+        SoulDamageLevel.Severe => "심각",
+        SoulDamageLevel.Critical => "치명",
+        _ => level.ToString(),
+    };
+
+    private static string FormatBirthCandidateStatus(BirthCandidateStatus status) => status switch
+    {
+        BirthCandidateStatus.Searching => "탐색 중",
+        BirthCandidateStatus.Located => "부모 후보 확정",
+        BirthCandidateStatus.UnavailableLongWait => "후보 없음·장기 대기",
+        BirthCandidateStatus.IndependentManifestation => "천지 독립 현현",
+        BirthCandidateStatus.Completed => "출생 완료",
+        _ => status.ToString(),
+    };
+
+    private static string FormatParents(
+        PersonIdentityId? parentOne,
+        PersonIdentityId? parentTwo) => parentOne is null
+            ? "없음"
+            : parentTwo is null
+                ? parentOne.Value.ToString()
+                : $"{parentOne.Value} · {parentTwo.Value}";
+
+    private static string FormatCausalRecord(SimulationEventRecordId recordId) =>
+        recordId.Value == 0 ? "DataUnavailable" : recordId.ToString();
 
     private static string FormatReincarnationTraceDomain(ReincarnationTraceDomain domain) => domain switch
     {
@@ -562,6 +607,115 @@ public partial class MainWindow
         _ => state.ToString(),
     };
 
+    private void UpdateLifeAuthorityView(PersonLifeAuthoritySnapshot life)
+    {
+        var appearance = life.Appearance;
+        var transition = life.LatestTransition;
+        LifeAuthorityText.Text =
+            $"{PersonLifeAuthorityRules.ContractId} r{PersonLifeAuthorityRules.ContractRevision} · 권위 revision {life.AuthorityRevision:N0}\n" +
+            $"성별 {FormatGender(life.Gender)} · 영혼 {FormatSoulState(life.SoulState)} · 육신 {FormatBodyState(life.BodyState)} · 현생 {FormatLifePhase(life.LifePhase)}\n" +
+            $"외형 {appearance.DefinitionId} · 선천 미도 {appearance.InnateBeautyHundredths / 100m:0.00} · 파생 미도 {appearance.DerivedBeautyHundredths / 100m:0.00} · 흉터 {appearance.ScarSeverityHundredths / 100m:0.00}\n" +
+            $"키 {appearance.HeightHundredths / 100m:0.00} · 체형 {appearance.BuildHundredths / 100m:0.00} · 이목구비 {appearance.FacialFeatureHundredths / 100m:0.00} · 피부 {appearance.ComplexionHundredths / 100m:0.00} · 모발 {appearance.HairHundredths / 100m:0.00} · 기품 {appearance.BearingHundredths / 100m:0.00}\n" +
+            $"최근 전이 {FormatLifeTransition(transition.Reason)} · {transition.Status} · {FormatGameDate(GameCalendar.GetDate(new SimulationTick(transition.Tick)))} · " +
+            $"{PersonLifeAuthorityRules.AppearanceDistributionReviewId} 다음 버전 검토";
+    }
+
+    private void UpdateCausalRuntimeView(AgentCausalSnapshot causal)
+    {
+        var path = causal.CurrentPath;
+        var facts = causal.PerceivedFacts.Count == 0
+            ? "인지 사실 없음"
+            : string.Join(" · ", causal.PerceivedFacts.Select(FormatPerceivedFact));
+        var memories = causal.CurrentLifeMemories.Count == 0
+            ? "현재 생 기억 없음"
+            : string.Join(
+                "\n",
+                causal.CurrentLifeMemories.Reverse().Select(memory =>
+                    $"{memory.Id} · {FormatMemoryKind(memory.Kind)} · 강도 {memory.StrengthHundredths / 100m:0.00} · 강화 {memory.ReinforcementCount:N0}회 · " +
+                    $"{FormatGameDate(GameCalendar.GetDate(new SimulationTick(memory.LastReinforcedTick)))}" +
+                    (memory.RelatedPersonId.Value == 0 ? string.Empty : $" · 상대 {memory.RelatedPersonId}") +
+                    (memory.RelationId.Value == 0 ? string.Empty : $" · {memory.RelationId}")));
+        var claim = causal.LatestKnowledgeClaim is { } knowledge
+            ? $"{knowledge.Id} · {knowledge.Kind}/{knowledge.Status} · 출처 {knowledge.SourcePersonId} · {knowledge.TeachingProvenanceId}"
+            : "지식 주장 없음";
+        CausalRuntimeText.Text =
+            $"{causal.ContractId} r{causal.ContractRevision} · 권위 revision {causal.AuthorityRevision:N0}\n" +
+            $"{path.GoalId} → {path.PlanId} → {path.TaskId} → {path.ActionId}\n" +
+            $"인과 {path.ThreadId} · 정의 {path.EventDefinitionId} · 사건 {path.EventInstanceId} · 결과 {path.ResultId} · 기록 {path.EventRecordId}\n" +
+            $"root {path.RootRecordId} · parent {(path.ParentRecordId?.ToString() ?? "없음")} · {path.Resolution} · 대기 {path.IsWaiting} · 중단 {path.WasInterrupted}\n" +
+            $"실패 범위 {path.FailureScope} · 행동 실패와 Task·Plan·Goal 실패는 별도 상태로 보존\n" +
+            $"인지: {facts}\n지식: {claim}\n현재 생 기억 {causal.CurrentLifeMemories.Count}/{AgentCausalRules.MemoryCapacityPerAgent}\n{memories}\n" +
+            $"{AgentCausalRules.MemoryPolicyReviewId} 다음 버전 검토";
+    }
+
+    private static string FormatGender(GenderIdentity gender) => gender switch
+    {
+        GenderIdentity.Female => "여성",
+        GenderIdentity.Male => "남성",
+        GenderIdentity.NonBinary => "비이분법",
+        _ => "미정",
+    };
+
+    private static string FormatSoulState(SoulEmbodimentState state) => state switch
+    {
+        SoulEmbodimentState.Embodied => "육신 안착",
+        SoulEmbodimentState.AwaitingReincarnation => "윤회 대기",
+        SoulEmbodimentState.Crossing => "윤회의 강 도하",
+        SoulEmbodimentState.Dissolved => "소멸",
+        _ => state.ToString(),
+    };
+
+    private static string FormatBodyState(BodyLifeState state) => state switch
+    {
+        BodyLifeState.Living => "생존",
+        BodyLifeState.Dead => "사망",
+        BodyLifeState.Destroyed => "소실",
+        _ => state.ToString(),
+    };
+
+    private static string FormatLifePhase(CurrentLifePhase phase) => phase switch
+    {
+        CurrentLifePhase.Living => "생존 중",
+        CurrentLifePhase.DeathConfirmed => "사망 확정",
+        CurrentLifePhase.ReincarnationHandoff => "윤회 인계",
+        CurrentLifePhase.Archived => "생 기록 보존",
+        _ => phase.ToString(),
+    };
+
+    private static string FormatLifeTransition(LifeTransitionReason reason) => reason switch
+    {
+        LifeTransitionReason.Birth => "탄생",
+        LifeTransitionReason.LifespanDeath => "수명 종료",
+        LifeTransitionReason.CombatDeath => "전투 사망",
+        LifeTransitionReason.BodyDestroyed => "육신 소실",
+        LifeTransitionReason.ReincarnationEntered => "윤회 진입",
+        LifeTransitionReason.Rebirth => "환생",
+        _ => reason.ToString(),
+    };
+
+    private static string FormatMemoryKind(AgentMemoryKind kind) => kind switch
+    {
+        AgentMemoryKind.Birth => "탄생",
+        AgentMemoryKind.Decision => "행동 선택",
+        AgentMemoryKind.Failure => "실패·보류",
+        AgentMemoryKind.Relationship => "관계 상호작용",
+        AgentMemoryKind.Teaching => "가르침·학습",
+        AgentMemoryKind.Combat => "전투",
+        AgentMemoryKind.Death => "죽음",
+        AgentMemoryKind.Rebirth => "환생",
+        _ => kind.ToString(),
+    };
+
+    private static string FormatPerceivedFact(PerceivedFactState fact) => fact.Kind switch
+    {
+        PerceivedFactKind.OwnLifeState => $"생 상태 {(PersonLifeState)fact.NumericValue}",
+        PerceivedFactKind.OwnHealthRatio => $"체력 {fact.NumericValue / 100m:0.##}%",
+        PerceivedFactKind.OwnCultivationState => $"수행 {(CultivationState)fact.NumericValue}",
+        PerceivedFactKind.CurrentLocation => $"위치 #{fact.NumericValue}",
+        PerceivedFactKind.ObservedCombatRank => $"관찰 순위 #{fact.NumericValue:N0}",
+        _ => fact.NumericValue.ToString("N0", CultureInfo.CurrentCulture),
+    };
+
     private static string FormatGoal(AgentGoalKind goal) => goal switch
     {
         AgentGoalKind.ReachRankOne => "상위권·1위 도달",
@@ -635,15 +789,48 @@ public partial class MainWindow
                         (latestHistory.TeachingTarget is { } target
                             ? $" · {FormatTeachingTarget(target)} · {latestHistory.KnowledgeRef} · {latestHistory.ProvenanceId}"
                             : string.Empty);
+                var latestResult = relation.LatestInteractionResult;
+                var resultText = latestResult.Id.Value == 0
+                    ? "최근 typed result 없음"
+                    : $"최근 결과 {latestResult.Id} · {FormatRelationResultStatus(latestResult.Status)} · " +
+                        $"{FormatGameDate(GameCalendar.GetDate(new SimulationTick(latestResult.Tick)))} · " +
+                        $"source {(latestResult.SourceEventRecordId.Value == 0 ? "생애 경계" : latestResult.SourceEventRecordId.ToString())}";
+                var context = relation.ExternalContext;
+                var contextText =
+                    $"맥락 · 같은 지역 {(context.IsCoLocated ? "예" : "아니오")} · " +
+                    $"가계 {FormatRelationContext(context.FamilyContext, context.SelfFamilyId, context.OtherFamilyId)} · " +
+                    $"조직 {FormatRelationContext(context.OrganizationContext)} · " +
+                    $"평판 {FormatRelationContext(context.ReputationContext)} · " +
+                    $"지식 {FormatRelationKnowledgeContext(context)}";
                 return
                     $"{relation.OtherName} · {relation.OtherAgentId} · {relation.OtherPersonId} · {relation.Id}\n" +
                     $"역할 {role}\n" +
                     $"나→상대 {FormatRelationMetrics(relation.TowardOther)}\n" +
                     $"상대→나 {FormatRelationMetrics(relation.OtherTowardSelf)}\n" +
-                    $"{history}";
+                    $"{history}\n{resultText}\n{contextText}";
             })) +
             $"\n\n희소 후보·축 변화·Role 임시 수치: {RelationRules.ProvisionalReviewId} 다음 버전 재검토";
     }
+
+    private static string FormatRelationContext(
+        RelationContextAvailability availability,
+        FamilyLineageId selfFamily = default,
+        FamilyLineageId otherFamily = default)
+    {
+        if (availability == RelationContextAvailability.DataUnavailable)
+        {
+            return "DataUnavailable";
+        }
+
+        return selfFamily.Value == 0
+            ? "Available"
+            : $"{selfFamily}/{otherFamily}";
+    }
+
+    private static string FormatRelationKnowledgeContext(RelationExternalContextSnapshot context) =>
+        context.KnowledgeContext == RelationContextAvailability.DataUnavailable
+            ? "DataUnavailable"
+            : context.LatestKnowledgeClaimId.ToString();
 
     private static string FormatRelationRoles(RelationSnapshot relation)
     {
@@ -671,6 +858,17 @@ public partial class MainWindow
 
         return roles.Count == 0 ? "아직 성립 전" : string.Join("·", roles);
     }
+
+    private static string FormatRelationResultStatus(RelationInteractionStatus status) => status switch
+    {
+        RelationInteractionStatus.Applied => "상호작용 적용",
+        RelationInteractionStatus.TeachingProgress => "가르침 진전",
+        RelationInteractionStatus.TeachingMisunderstood => "오해 발생",
+        RelationInteractionStatus.TeachingCorrected => "오해 교정",
+        RelationInteractionStatus.TeachingRefused => "거절·중단",
+        RelationInteractionStatus.InterruptedByLifeBoundary => "생애 경계 중단",
+        _ => status.ToString(),
+    };
 
     private static string FormatRelationMetrics(RelationMetrics metrics) =>
         $"호감/반감 {metrics.FavorDisfavor / 100m:+0.00;-0.00;0.00} · " +

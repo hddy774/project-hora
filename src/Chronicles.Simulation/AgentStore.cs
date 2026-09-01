@@ -2,7 +2,7 @@ using Chronicles.Core;
 
 namespace Chronicles.Simulation;
 
-internal sealed class AgentStore
+internal sealed partial class AgentStore
 {
     private static readonly string[] FamilyNames =
     [
@@ -33,6 +33,13 @@ internal sealed class AgentStore
         BodyIdentityIds = new BodyIdentityId[count];
         PersonIdentityIds = new PersonIdentityId[count];
         LifeStates = new PersonLifeState[count];
+        Genders = new GenderIdentity[count];
+        SoulEmbodimentStates = new SoulEmbodimentState[count];
+        BodyLifeStates = new BodyLifeState[count];
+        CurrentLifePhases = new CurrentLifePhase[count];
+        AppearanceStates = new BodyAppearanceState[count];
+        LifeAuthorityRevisions = new long[count];
+        LatestLifeTransitions = new LifeTransitionResult[count];
         DecisionTraces = new AgentDecisionTraceState[count];
         DecisionAuthorityRevisions = new long[count];
         TeachingTraces = new TeachingTraceState[count];
@@ -139,6 +146,13 @@ internal sealed class AgentStore
     public BodyIdentityId[] BodyIdentityIds { get; }
     public PersonIdentityId[] PersonIdentityIds { get; }
     public PersonLifeState[] LifeStates { get; }
+    public GenderIdentity[] Genders { get; }
+    public SoulEmbodimentState[] SoulEmbodimentStates { get; }
+    public BodyLifeState[] BodyLifeStates { get; }
+    public CurrentLifePhase[] CurrentLifePhases { get; }
+    public BodyAppearanceState[] AppearanceStates { get; }
+    public long[] LifeAuthorityRevisions { get; }
+    public LifeTransitionResult[] LatestLifeTransitions { get; }
     public AgentDecisionTraceState[] DecisionTraces { get; }
     public long[] DecisionAuthorityRevisions { get; }
     public TeachingTraceState[] TeachingTraces { get; }
@@ -584,6 +598,7 @@ internal sealed class AgentStore
         BodyIdentityIds[index] = PersonCausalRules.CreateBodyId(index, LifeNumbers[index]);
         PersonIdentityIds[index] = PersonCausalRules.CreatePersonId(index, LifeNumbers[index]);
         LifeStates[index] = PersonLifeState.Living;
+        InitializeLifeAuthority(index, birthTick);
         BirthTicks[index] = birthTick;
         BottleneckFailures[index] = 0;
         RealmStages[index] = RealmStage.QiRefining;

@@ -29,13 +29,17 @@ public sealed partial class World
                     continue;
                 }
 
-                _relations.ApplyMutualInteraction(
+                if (_relations.ApplyMutualInteraction(
                     agent,
                     existing,
                     _agents.PersonIdentityIds[agent],
                     _agents.PersonIdentityIds[existing],
                     kind,
-                    Tick.Value);
+                    Tick.Value,
+                    _causal.GetCurrentPath(agent).EventRecordId))
+                {
+                    RecordRelationInteractionMemories(agent, existing);
+                }
                 return;
             }
         }
@@ -65,11 +69,30 @@ public sealed partial class World
                     _agents.PersonIdentityIds[agent],
                     _agents.PersonIdentityIds[candidate],
                     kind,
-                    Tick.Value))
+                    Tick.Value,
+                    _causal.GetCurrentPath(agent).EventRecordId))
             {
+                RecordRelationInteractionMemories(agent, candidate);
                 return;
             }
         }
+    }
+
+    private void RecordRelationInteractionMemories(int left, int right)
+    {
+        var relationId = RelationRules.CreateId(left, right);
+        _causal.RecordInteractionMemory(
+            left,
+            CreateCausalObservation(left),
+            AgentMemoryKind.Relationship,
+            _agents.PersonIdentityIds[right],
+            relationId);
+        _causal.RecordInteractionMemory(
+            right,
+            CreateCausalObservation(right),
+            AgentMemoryKind.Relationship,
+            _agents.PersonIdentityIds[left],
+            relationId);
     }
 
     private RelationSnapshot[] CreateRelationSnapshots(int agent)
@@ -94,10 +117,32 @@ public sealed partial class World
                 state.Roles,
                 IsMaster: state.MasterAgent == agent,
                 IsDisciple: state.MasterAgent == state.OtherAgent,
-                state.History);
+                state.History,
+                state.LatestInteractionResult,
+                CreateRelationExternalContext(agent, state.OtherAgent));
         }
 
         return snapshots;
+    }
+
+    private RelationExternalContextSnapshot CreateRelationExternalContext(int agent, int otherAgent)
+    {
+        var selfFamily = _reincarnation.GetCurrentFamilyId(agent);
+        var otherFamily = _reincarnation.GetCurrentFamilyId(otherAgent);
+        var latestClaim = _causal.GetLatestKnowledgeClaimId(agent);
+        return new RelationExternalContextSnapshot(
+            IsCoLocated: _agents.LocationIds[agent] == _agents.LocationIds[otherAgent],
+            FamilyContext: selfFamily.Value != 0 && otherFamily.Value != 0
+                ? RelationContextAvailability.Available
+                : RelationContextAvailability.DataUnavailable,
+            selfFamily,
+            otherFamily,
+            OrganizationContext: RelationContextAvailability.DataUnavailable,
+            ReputationContext: RelationContextAvailability.DataUnavailable,
+            KnowledgeContext: latestClaim.Value == 0
+                ? RelationContextAvailability.DataUnavailable
+                : RelationContextAvailability.Available,
+            latestClaim);
     }
 
     private static bool TryGetRelationInteractionKind(
@@ -106,6 +151,10 @@ public sealed partial class World
     {
         switch (activity)
         {
+            case AgentActivity.TradingInCity:
+            case AgentActivity.Recovering:
+                kind = RelationInteractionKind.Dialogue;
+                return true;
             case AgentActivity.Cultivating:
             case AgentActivity.TrainingTechnique:
             case AgentActivity.TrainingSpell:
@@ -131,6 +180,8 @@ public sealed partial class World
         RelationInteractionKind kind,
         AgentActivity candidateActivity) => kind switch
     {
+        RelationInteractionKind.Dialogue => candidateActivity is
+            AgentActivity.TradingInCity or AgentActivity.Recovering,
         RelationInteractionKind.SharedCultivation => candidateActivity is
             AgentActivity.Cultivating
             or AgentActivity.TrainingTechnique

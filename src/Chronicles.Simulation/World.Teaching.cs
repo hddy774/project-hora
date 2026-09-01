@@ -353,7 +353,31 @@ public sealed partial class World
             trace.TargetKind,
             trace.TargetKnowledgeRef,
             trace.ProvenanceId,
-            result);
+            result,
+            _causal.GetCurrentPath(teacher).EventRecordId);
+        _causal.RecordKnowledgeClaim(
+            trace.LearnerAgent,
+            _agents.LifeNumbers[trace.LearnerAgent],
+            trace.TeacherPersonId,
+            trace.LearnerPersonId,
+            trace.TargetKind,
+            result,
+            trace.ProvenanceId,
+            Tick.Value);
+        _causal.RecordInteractionMemory(
+            teacher,
+            CreateCausalObservation(teacher),
+            AgentMemoryKind.Teaching,
+            trace.LearnerPersonId,
+            trace.RelationId,
+            isImportant: TeachingRules.IsTransmissionProgress(result));
+        _causal.RecordInteractionMemory(
+            trace.LearnerAgent,
+            CreateCausalObservation(trace.LearnerAgent),
+            AgentMemoryKind.Teaching,
+            trace.TeacherPersonId,
+            trace.RelationId,
+            isImportant: TeachingRules.IsTransmissionProgress(result));
     }
 
     private void InterruptTeachingContexts(int agent)

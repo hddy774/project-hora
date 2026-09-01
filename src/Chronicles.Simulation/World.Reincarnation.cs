@@ -20,7 +20,11 @@ public sealed partial class World
             Tick.Value,
             combatDeath ? LifeEndKind.Combat : LifeEndKind.Lifespan,
             _agents.RealmStages[index],
-            traceCandidates);
+            traceCandidates,
+            ReincarnationRules.GetSoulDamageLevel(
+                combatDeath,
+                _agents.InjuryPoints[index]),
+            _causal.GetCurrentPath(index).EventRecordId);
 
         var age = checked((int)Math.Min(int.MaxValue, GetAgeYears(index)));
         _totalDeaths++;
@@ -38,7 +42,24 @@ public sealed partial class World
         AddEvent(WorldEventKind.ReincarnationEntered, index, _agents.LifeNumbers[index]);
         InterruptTeachingContexts(index);
         _relations.EndLife(index, Tick.Value);
-        _agents.LifeStates[index] = PersonLifeState.ReincarnationRiver;
+        var deathTransition = _agents.ConfirmDeath(index, Tick.Value, combatDeath);
+        if (deathTransition.Status != LifeTransitionStatus.Applied)
+        {
+            throw new InvalidOperationException("생애 권위가 육신 사망 전이를 거부했습니다.");
+        }
+
+        var riverTransition = _agents.EnterReincarnationRiver(index, Tick.Value);
+        if (riverTransition.Status != LifeTransitionStatus.Applied)
+        {
+            throw new InvalidOperationException("생애 권위가 윤회 인계를 거부했습니다.");
+        }
+
+        _causal.RecordResolution(
+            index,
+            CreateCausalObservation(index),
+            CausalResolutionCode.AlternativeResult,
+            AgentMemoryKind.Death,
+            interrupted: true);
         SetActivityDecision(
             index,
             AgentActivity.Reincarnating,
@@ -53,7 +74,10 @@ public sealed partial class World
 
     private void ResolveReincarnationStage(int index)
     {
-        var result = _reincarnation.AdvanceStage(index, Tick.Value);
+        var result = _reincarnation.AdvanceStage(
+            index,
+            Tick.Value,
+            _causal.GetCurrentPath(index).EventRecordId);
         if (result.ReadyForRebirth)
         {
             CompleteRebirth(index);
@@ -73,11 +97,36 @@ public sealed partial class World
 
     private void CompleteRebirth(int index)
     {
+        var (parentOne, parentTwo) = FindRebirthParents(index);
+        var birthStatus = _reincarnation.PrepareBirthCandidate(
+            index,
+            Tick.Value,
+            parentOne,
+            parentTwo,
+            allowIndependentManifestation: Population == 1);
+        if (birthStatus == BirthCandidateStatus.UnavailableLongWait)
+        {
+            var nextTick = _reincarnation.DeferForBirthCandidate(index, Tick.Value);
+            _causal.RecordResolution(
+                index,
+                CreateCausalObservation(index),
+                CausalResolutionCode.Defer,
+                AgentMemoryKind.Rebirth,
+                interrupted: false);
+            ScheduleAgent(index, nextTick);
+            return;
+        }
+
         _reincarnation.EnsureReadyForRebirth(
             index,
             Tick.Value,
             _agents.SoulIdentityIds[index]);
         _agents.Rebirth(index, _random, Tick.Value);
+        _causal.StartLife(
+            index,
+            CreateCausalObservation(index),
+            _agents.DecisionTraces[index],
+            AgentMemoryKind.Rebirth);
         MarkAllRankingsDirty();
         _reincarnation.CompleteRebirth(
             index,
@@ -88,12 +137,52 @@ public sealed partial class World
             _agents.Names[index],
             _agents.RealmStages[index],
             _agents.RealmLayers[index],
-            _agents.Power[index].Total);
+            _agents.Power[index].Total,
+            _causal.GetCurrentPath(index).EventRecordId);
         _relations.StartNewLife(index, _agents.PersonIdentityIds[index]);
         _totalReincarnations++;
         AddChronicle(index, ChronicleEventKind.Rebirth);
         AddEvent(WorldEventKind.Rebirth, index, _agents.LifeNumbers[index]);
         ScheduleAgent(index, _agents.NextDecisionTicks[index]);
+    }
+
+    private (PersonIdentityId? ParentOne, PersonIdentityId? ParentTwo) FindRebirthParents(
+        int agentIndex)
+    {
+        if (Population <= 1)
+        {
+            return (null, null);
+        }
+
+        PersonIdentityId? first = null;
+        PersonIdentityId? second = null;
+        var start = (int)(((ulong)(uint)agentIndex * 2_654_435_761UL
+            + (ulong)Tick.Value) % (ulong)Population);
+        var probes = Math.Min(Population, 64);
+        for (var offset = 0; offset < probes; offset++)
+        {
+            var candidate = (start + (offset * 7_919)) % Population;
+            if (candidate == agentIndex
+                || _agents.LifeStates[candidate] != PersonLifeState.Living
+                || _agents.LocationIds[candidate] != _agents.LocationIds[agentIndex])
+            {
+                continue;
+            }
+
+            if (first is null)
+            {
+                first = _agents.PersonIdentityIds[candidate];
+                continue;
+            }
+
+            if (_agents.PersonIdentityIds[candidate] != first)
+            {
+                second = _agents.PersonIdentityIds[candidate];
+                break;
+            }
+        }
+
+        return (first, second);
     }
 
     private ReincarnationTraceCandidate[] CreateReincarnationTraceCandidates(int index)

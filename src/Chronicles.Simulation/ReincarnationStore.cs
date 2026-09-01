@@ -109,7 +109,9 @@ public sealed partial class ReincarnationStore
             realm,
             candidates: default,
             hasEvidence: false,
-            migrationTick: currentTick);
+            migrationTick: currentTick,
+            soulDamage: SoulDamageLevel.None,
+            causalRecordId: default);
     }
 
     public void UpdatePeak(
@@ -159,16 +161,83 @@ public sealed partial class ReincarnationStore
         long deathTick,
         LifeEndKind deathKind,
         RealmStage sourceRealm,
-        ReadOnlySpan<ReincarnationTraceCandidate> candidates) => BeginJourneyCore(
+        ReadOnlySpan<ReincarnationTraceCandidate> candidates,
+        SoulDamageLevel soulDamage = SoulDamageLevel.None,
+        SimulationEventRecordId causalRecordId = default) => BeginJourneyCore(
             agentIndex,
             deathTick,
             deathKind,
             sourceRealm,
             candidates,
             hasEvidence: true,
-            migrationTick: null);
+            migrationTick: null,
+            soulDamage: soulDamage,
+            causalRecordId: causalRecordId);
 
-    public ReincarnationStageAdvanceResult AdvanceStage(int agentIndex, long tick)
+    public BirthCandidateStatus PrepareBirthCandidate(
+        int agentIndex,
+        long tick,
+        PersonIdentityId? parentOnePersonId,
+        PersonIdentityId? parentTwoPersonId,
+        bool allowIndependentManifestation)
+    {
+        ValidateAgent(agentIndex);
+        var journeyIndex = GetActiveJourneyIndex(agentIndex);
+        var journey = _journeys[agentIndex][journeyIndex];
+        if (journey.Stage != ReincarnationStage.PreparingRebirth
+            || tick != journey.RebirthReadyTick)
+        {
+            throw new InvalidOperationException("환생 준비 경계에서만 출생 후보를 확정할 수 있습니다.");
+        }
+
+        var hasParent = parentOnePersonId is { Value: not 0 };
+        var status = hasParent
+            ? BirthCandidateStatus.Located
+            : allowIndependentManifestation
+                ? BirthCandidateStatus.IndependentManifestation
+                : BirthCandidateStatus.UnavailableLongWait;
+        var revision = checked(_authorityRevisions[agentIndex] + 1);
+        _authorityRevisions[agentIndex] = revision;
+        _journeys[agentIndex][journeyIndex] = journey with
+        {
+            BirthCandidateStatus = status,
+            ParentOnePersonId = hasParent ? parentOnePersonId : null,
+            ParentTwoPersonId = hasParent ? parentTwoPersonId : null,
+            AuthorityRevision = revision,
+        };
+        return status;
+    }
+
+    public long DeferForBirthCandidate(int agentIndex, long tick)
+    {
+        ValidateAgent(agentIndex);
+        var journeyIndex = GetActiveJourneyIndex(agentIndex);
+        var journey = _journeys[agentIndex][journeyIndex];
+        if (journey.Stage != ReincarnationStage.PreparingRebirth
+            || tick != journey.RebirthReadyTick
+            || journey.BirthCandidateStatus != BirthCandidateStatus.UnavailableLongWait)
+        {
+            throw new InvalidOperationException("출생 후보 부재 상태에서만 환생을 연기할 수 있습니다.");
+        }
+
+        var nextTick = checked(tick + GameCalendar.TicksPerYear);
+        var revision = checked(_authorityRevisions[agentIndex] + 1);
+        _authorityRevisions[agentIndex] = revision;
+        _journeys[agentIndex][journeyIndex] = journey with
+        {
+            NextTransitionTick = nextTick,
+            RebirthReadyTick = nextTick,
+            BirthCandidateWaitYears = checked(journey.BirthCandidateWaitYears + 1),
+            BirthCandidateStatus = BirthCandidateStatus.Searching,
+            AuthorityRevision = revision,
+        };
+        return nextTick;
+    }
+
+    public ReincarnationStageAdvanceResult AdvanceStage(
+        int agentIndex,
+        long tick,
+        SimulationEventRecordId causalRecordId = default)
     {
         ValidateAgent(agentIndex);
         var journeyIndex = GetActiveJourneyIndex(agentIndex);
@@ -200,6 +269,9 @@ public sealed partial class ReincarnationStore
             Stage = nextStage,
             StageStartedTick = tick,
             NextTransitionTick = nextTick,
+            CrossingCausalRecordId = nextStage == ReincarnationStage.CrossingComplete
+                ? causalRecordId
+                : current.CrossingCausalRecordId,
             AuthorityRevision = revision,
         };
         _journeys[agentIndex][journeyIndex] = updated;
@@ -220,7 +292,8 @@ public sealed partial class ReincarnationStore
         string newPersonName,
         RealmStage initialRealm,
         byte initialRealmLayer,
-        long initialCombatPower)
+        long initialCombatPower,
+        SimulationEventRecordId rebirthCausalRecordId = default)
     {
         EnsureReadyForRebirth(agentIndex, tick, soulId);
         var journeyIndex = GetActiveJourneyIndex(agentIndex);
@@ -233,6 +306,8 @@ public sealed partial class ReincarnationStore
         _journeys[agentIndex][journeyIndex] = journey with
         {
             CompletedTick = tick,
+            BirthCandidateStatus = BirthCandidateStatus.Completed,
+            RebirthCausalRecordId = rebirthCausalRecordId,
             AuthorityRevision = revision,
         };
         for (var traceIndex = 0; traceIndex < _traces[agentIndex].Count; traceIndex++)
@@ -275,7 +350,13 @@ public sealed partial class ReincarnationStore
             DeathTick: null,
             LifeEndKind.None,
             peak,
-            JourneyId: null));
+            JourneyId: null,
+            ParentOnePersonId: journey.ParentOnePersonId,
+            ParentTwoPersonId: journey.ParentTwoPersonId,
+            BirthStatus: journey.BirthCandidateStatus,
+            FamilyId: ReincarnationRules.CreateFamilyId(
+                journey.ParentOnePersonId,
+                journey.ParentTwoPersonId)));
         if (IsHigherPeak(peak, _historicalPeaks[agentIndex]))
         {
             _historicalPeaks[agentIndex] = peak;
@@ -293,6 +374,8 @@ public sealed partial class ReincarnationStore
         if (journey.Stage != ReincarnationStage.PreparingRebirth
             || tick != journey.RebirthReadyTick
             || journey.SoulId != soulId
+            || journey.BirthCandidateStatus is not (BirthCandidateStatus.Located
+                or BirthCandidateStatus.IndependentManifestation)
             || traceCount != ReincarnationRules.TraceDomainCount)
         {
             throw new InvalidOperationException("새 생을 시작할 준비가 완료되지 않았습니다.");
@@ -303,6 +386,14 @@ public sealed partial class ReincarnationStore
     {
         ValidateAgent(agentIndex);
         return _journeys[agentIndex].LastOrDefault(journey => journey.CompletedTick is null);
+    }
+
+    public FamilyLineageId GetCurrentFamilyId(int agentIndex)
+    {
+        ValidateAgent(agentIndex);
+        return _lineage[agentIndex].Count == 0
+            ? default
+            : _lineage[agentIndex][^1].FamilyId;
     }
 
     public ReincarnationAgentSnapshot GetSnapshot(int agentIndex, long currentTick)
@@ -330,7 +421,11 @@ public sealed partial class ReincarnationStore
                     entry.DeathTick is { } death ? new SimulationTick(death) : null,
                     entry.EndKind,
                     ToSnapshot(entry.PersonalPeak),
-                    entry.JourneyId))
+                    entry.JourneyId,
+                    entry.ParentOnePersonId,
+                    entry.ParentTwoPersonId,
+                    entry.BirthStatus,
+                    entry.FamilyId))
                 .ToArray());
             _traceSnapshotCache[agentIndex] = Array.AsReadOnly(_traces[agentIndex]
                 .Select(trace => new ReincarnationTraceSnapshot(
@@ -344,7 +439,8 @@ public sealed partial class ReincarnationStore
                     trace.PreservationLevel,
                     trace.AccessLevel,
                     trace.HasEvidence,
-                    trace.AuthorityRevision))
+                    trace.AuthorityRevision,
+                    trace.EvidenceStatus))
                 .ToArray());
             _snapshotCacheRevisions[agentIndex] = _authorityRevisions[agentIndex];
         }
@@ -371,7 +467,16 @@ public sealed partial class ReincarnationStore
                     current.SourceRealm),
                 current.CompletedTick is { } completed ? new SimulationTick(completed) : null,
                 current.AuthorityRevision,
-                current.RequiresReview);
+                current.RequiresReview,
+                current.SoulDamage,
+                current.BirthCandidateStatus,
+                current.BirthCandidateWaitYears,
+                current.ParentOnePersonId,
+                current.ParentTwoPersonId,
+                current.RootCausalRecordId,
+                current.EntryCausalRecordId,
+                current.CrossingCausalRecordId,
+                current.RebirthCausalRecordId);
         return new ReincarnationAgentSnapshot(
             _lineage[agentIndex][^1].SoulId,
             _authorityRevisions[agentIndex],

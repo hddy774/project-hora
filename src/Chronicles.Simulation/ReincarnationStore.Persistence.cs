@@ -157,6 +157,10 @@ public sealed partial class ReincarnationStore
                 Add(ref hash, (byte)entry.EndKind);
                 AddPeakHash(ref hash, entry.PersonalPeak);
                 Add(ref hash, entry.JourneyId?.Value ?? 0);
+                Add(ref hash, entry.ParentOnePersonId?.Value ?? 0);
+                Add(ref hash, entry.ParentTwoPersonId?.Value ?? 0);
+                Add(ref hash, (byte)entry.BirthStatus);
+                Add(ref hash, entry.FamilyId.Value);
             }
             foreach (var journey in _journeys[agent])
             {
@@ -176,6 +180,15 @@ public sealed partial class ReincarnationStore
                 Add(ref hash, unchecked((ulong)(journey.CompletedTick ?? -1) + 1));
                 Add(ref hash, unchecked((ulong)journey.AuthorityRevision));
                 Add(ref hash, journey.RequiresReview ? 1UL : 0UL);
+                Add(ref hash, (byte)journey.SoulDamage);
+                Add(ref hash, (byte)journey.BirthCandidateStatus);
+                Add(ref hash, unchecked((ulong)journey.BirthCandidateWaitYears));
+                Add(ref hash, journey.ParentOnePersonId?.Value ?? 0);
+                Add(ref hash, journey.ParentTwoPersonId?.Value ?? 0);
+                Add(ref hash, journey.RootCausalRecordId.Value);
+                Add(ref hash, journey.EntryCausalRecordId.Value);
+                Add(ref hash, journey.CrossingCausalRecordId.Value);
+                Add(ref hash, journey.RebirthCausalRecordId.Value);
             }
             foreach (var trace in _traces[agent])
             {
@@ -190,6 +203,7 @@ public sealed partial class ReincarnationStore
                 Add(ref hash, (byte)trace.AccessLevel);
                 Add(ref hash, trace.HasEvidence ? 1UL : 0UL);
                 Add(ref hash, unchecked((ulong)trace.AuthorityRevision));
+                Add(ref hash, (byte)trace.EvidenceStatus);
             }
         }
         return hash;
@@ -255,7 +269,9 @@ public sealed partial class ReincarnationStore
         RealmStage sourceRealm,
         ReadOnlySpan<ReincarnationTraceCandidate> candidates,
         bool hasEvidence,
-        long? migrationTick)
+        long? migrationTick,
+        SoulDamageLevel soulDamage,
+        SimulationEventRecordId causalRecordId)
     {
         ValidateAgent(agentIndex);
         var lineage = _lineage[agentIndex];
@@ -306,7 +322,11 @@ public sealed partial class ReincarnationStore
             ReincarnationRules.GetTotalDurationYears(sourceRealm),
             CompletedTick: null,
             revision,
-            RequiresReview: true);
+            RequiresReview: true,
+            SoulDamage: soulDamage,
+            BirthCandidateStatus: BirthCandidateStatus.Searching,
+            RootCausalRecordId: causalRecordId,
+            EntryCausalRecordId: causalRecordId);
         _journeys[agentIndex].Add(journey);
         foreach (var domain in ReincarnationRules.AllTraceDomains)
         {
@@ -331,7 +351,10 @@ public sealed partial class ReincarnationStore
                     : TracePreservationLevel.Lost,
                 TraceAccessLevel.Sealed,
                 hasEvidence,
-                revision));
+                revision,
+                hasEvidence
+                    ? PreservationEvidenceStatus.Available
+                    : PreservationEvidenceStatus.UnavailableMigration));
         }
         return journey;
     }
@@ -464,6 +487,11 @@ public sealed partial class ReincarnationStore
                 || (entry.DeathTick is null) != (entry.EndKind == LifeEndKind.None)
                 || (entry.DeathTick is null) != (entry.JourneyId is null)
                 || !Enum.IsDefined(entry.EndKind)
+                || !Enum.IsDefined(entry.BirthStatus)
+                || (entry.ParentTwoPersonId is not null && entry.ParentOnePersonId is null)
+                || entry.FamilyId != ReincarnationRules.CreateFamilyId(
+                    entry.ParentOnePersonId,
+                    entry.ParentTwoPersonId)
                 || (entry.DeathTick is { } death && death < entry.BirthTick)
                 || !lineageById.TryAdd(entry.Id, entry)
                 || !lineageByLifeNumber.TryAdd(entry.LifeNumber, entry))
@@ -515,16 +543,41 @@ public sealed partial class ReincarnationStore
                 || !Enum.IsDefined(journey.Stage)
                 || journey.StartedTick != source.DeathTick
                 || journey.StageStartedTick < journey.StartedTick
-                || journey.RebirthReadyTick != ReincarnationRules.GetRebirthReadyTick(
-                    journey.StartedTick, journey.SourceRealm)
+                || journey.BirthCandidateWaitYears < 0
+                || journey.RebirthReadyTick != checked(
+                    ReincarnationRules.GetRebirthReadyTick(
+                        journey.StartedTick,
+                        journey.SourceRealm)
+                    + ((long)journey.BirthCandidateWaitYears * GameCalendar.TicksPerYear))
                 || journey.RequiredYears != ReincarnationRules.GetTotalDurationYears(journey.SourceRealm)
                 || journey.StageStartedTick != ReincarnationRules.GetStageStartedTick(
                     journey.StartedTick, journey.SourceRealm, journey.Stage)
-                || journey.NextTransitionTick != ReincarnationRules.GetStageBoundaryTick(
-                    journey.StartedTick, journey.SourceRealm, journey.Stage)
+                || journey.NextTransitionTick != (journey.Stage == ReincarnationStage.PreparingRebirth
+                    ? journey.RebirthReadyTick
+                    : ReincarnationRules.GetStageBoundaryTick(
+                        journey.StartedTick,
+                        journey.SourceRealm,
+                        journey.Stage))
                 || journey.AuthorityRevision < 1
                 || journey.AuthorityRevision > revision
                 || !journey.RequiresReview
+                || !Enum.IsDefined(journey.SoulDamage)
+                || !Enum.IsDefined(journey.BirthCandidateStatus)
+                || (journey.ParentTwoPersonId is not null && journey.ParentOnePersonId is null)
+                || (journey.BirthCandidateStatus == BirthCandidateStatus.Located
+                    && journey.ParentOnePersonId is null)
+                || (journey.BirthCandidateStatus != BirthCandidateStatus.Located
+                    && journey.BirthCandidateStatus != BirthCandidateStatus.Completed
+                    && (journey.ParentOnePersonId is not null
+                        || journey.ParentTwoPersonId is not null))
+                || ((journey.RootCausalRecordId.Value == 0)
+                    != (journey.EntryCausalRecordId.Value == 0))
+                || (journey.RootCausalRecordId.Value != 0
+                    && journey.RootCausalRecordId != journey.EntryCausalRecordId)
+                || (journey.CrossingCausalRecordId.Value != 0
+                    && journey.Stage < ReincarnationStage.CrossingComplete)
+                || (journey.RebirthCausalRecordId.Value != 0
+                    && journey.CompletedTick is null)
                 || !journeyById.TryAdd(journey.Id, journey)
                 || (maximumTick is { } journeyWorldTick
                     && (journey.StartedTick > journeyWorldTick
@@ -548,7 +601,8 @@ public sealed partial class ReincarnationStore
                 }
             }
             else if (journey.CompletedTick != journey.RebirthReadyTick
-                || journey.Stage != ReincarnationStage.PreparingRebirth)
+                || journey.Stage != ReincarnationStage.PreparingRebirth
+                || journey.BirthCandidateStatus != BirthCandidateStatus.Completed)
             {
                 return false;
             }
@@ -558,7 +612,9 @@ public sealed partial class ReincarnationStore
                         journey.SourceLifeNumber + 1,
                         out var nextLife)
                     || nextLife.PredecessorId != source.Id
-                    || nextLife.BirthTick != journey.CompletedTick)
+                    || nextLife.BirthTick != journey.CompletedTick
+                    || nextLife.ParentOnePersonId != journey.ParentOnePersonId
+                    || nextLife.ParentTwoPersonId != journey.ParentTwoPersonId)
                 {
                     return false;
                 }
@@ -587,6 +643,13 @@ public sealed partial class ReincarnationStore
             if (trace.AgentIndex != agent
                 || trace.SourceLifeNumber != journey.SourceLifeNumber
                 || !Enum.IsDefined(trace.Domain)
+                || !Enum.IsDefined(trace.EvidenceStatus)
+                || (trace.HasEvidence
+                    && trace.EvidenceStatus is not (PreservationEvidenceStatus.Available
+                        or PreservationEvidenceStatus.Unknown))
+                || (!trace.HasEvidence
+                    && trace.EvidenceStatus is not (PreservationEvidenceStatus.UnavailableMigration
+                        or PreservationEvidenceStatus.Unknown))
                 || (domainMask & domainBit) != 0
                 || trace.PreservedHundredths > QualityValue.MaximumHundredths
                 || trace.PendingAccessibleHundredths > trace.PreservedHundredths
@@ -666,4 +729,3 @@ public sealed partial class ReincarnationStore
         }
     }
 }
-

@@ -404,7 +404,8 @@ public sealed partial class World
             _agents.PersonIdentityIds[winner],
             _agents.PersonIdentityIds[loser],
             RelationInteractionKind.CombatOutcome,
-            Tick.Value);
+            Tick.Value,
+            _causal.GetCurrentPath(winner).EventRecordId);
         SetActivityDecision(
             winner,
             AgentActivity.Recovering,
@@ -423,6 +424,7 @@ public sealed partial class World
         }
 
         _agents.Health[loser] = Math.Max(1, _agents.Health[loser]);
+        _agents.ApplyPermanentScar(loser, Tick.Value, _agents.InjuryPoints[loser]);
         SetActivityDecision(
             loser,
             AgentActivity.Recovering,

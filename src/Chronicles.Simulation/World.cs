@@ -8,6 +8,7 @@ public sealed partial class World
     public const int PersonalLogCapacity = 100;
     private readonly DeterministicRandom _random;
     private readonly AgentStore _agents;
+    private readonly AgentCausalStore _causal;
     private readonly SparseRelationStore _relations;
     private readonly ReincarnationStore _reincarnation;
     private readonly CityMarket _market;
@@ -62,6 +63,7 @@ public sealed partial class World
         Seed = seed;
         _random = new DeterministicRandom(seed);
         _agents = new AgentStore(population);
+        _causal = new AgentCausalStore(population);
         _relations = new SparseRelationStore(population);
         _reincarnation = new ReincarnationStore(population);
         _market = new CityMarket(population);
@@ -80,6 +82,11 @@ public sealed partial class World
         for (var index = 0; index < population; index++)
         {
             _agents.Initialize(index, _random);
+            _causal.StartLife(
+                index,
+                CreateCausalObservation(index, initialRank: index + 1),
+                _agents.DecisionTraces[index],
+                AgentMemoryKind.Birth);
             _reincarnation.InitializeFirstLife(
                 index,
                 _agents.SoulIdentityIds[index],
@@ -232,7 +239,8 @@ public sealed partial class World
         AgentId agentId,
         bool includeAptitudeDetails = false,
         bool includeRelations = false,
-        bool includeTeaching = false)
+        bool includeTeaching = false,
+        bool includeCausal = false)
     {
         var index = ValidateAgent(agentId);
         var combatAptitudes = _agents.GetContextAptitudes(index, combat: true);
@@ -324,6 +332,10 @@ public sealed partial class World
                 : null,
             includeRelations
                 ? CreateRelationSnapshots(index)
+                : null,
+            _agents.GetLifeAuthoritySnapshot(index),
+            includeCausal
+                ? _causal.GetSnapshot(index)
                 : null);
     }
 
@@ -467,6 +479,7 @@ public sealed partial class World
         Add(ref hash, (ulong)_totalDeaths);
         Add(ref hash, (ulong)_totalReincarnations);
         Add(ref hash, _reincarnation.ComputeStateHash());
+        Add(ref hash, _causal.ComputeStateHash());
         Add(ref hash, (ulong)_totalMissionsCompleted);
         Add(ref hash, (ulong)_totalTreasuresCrafted);
         Add(ref hash, (ulong)_totalPillsCrafted);
@@ -570,6 +583,7 @@ public sealed partial class World
         }
         var relations = _relations.CreateCheckpoint();
         Add(ref hash, (ulong)relations.HistorySequence);
+        Add(ref hash, (ulong)relations.ResultSequence);
         Add(ref hash, (ulong)relations.Relations.Length);
         foreach (var relation in relations.Relations)
         {
@@ -591,6 +605,21 @@ public sealed partial class World
             Add(ref hash, relation.SpellTransmissionEstablished ? 1UL : 0UL);
             Add(ref hash, relation.TechniqueKnowledgeRef.Value);
             Add(ref hash, relation.SpellKnowledgeRef.Value);
+            var relationResult = relation.LatestInteractionResult;
+            Add(ref hash, relationResult.Id.Value);
+            Add(ref hash, (ulong)relationResult.Sequence);
+            Add(ref hash, (ulong)relationResult.Tick);
+            Add(ref hash, relationResult.RelationId.Value);
+            Add(ref hash, (byte)relationResult.Status);
+            Add(ref hash, relationResult.InteractionKind is { } interactionKind
+                ? checked((ulong)(byte)interactionKind + 1UL)
+                : 0UL);
+            Add(ref hash, relationResult.TeachingResult is { } teachingResult
+                ? checked((ulong)(byte)teachingResult + 1UL)
+                : 0UL);
+            Add(ref hash, relationResult.LeftPersonId.Value);
+            Add(ref hash, relationResult.RightPersonId.Value);
+            Add(ref hash, relationResult.SourceEventRecordId.Value);
             foreach (var history in relation.History)
             {
                 Add(ref hash, (ulong)history.Sequence);
@@ -629,6 +658,36 @@ public sealed partial class World
             Add(ref hash, _agents.BodyIdentityIds[index].Value);
             Add(ref hash, _agents.PersonIdentityIds[index].Value);
             Add(ref hash, (byte)_agents.LifeStates[index]);
+            Add(ref hash, (byte)_agents.Genders[index]);
+            Add(ref hash, (byte)_agents.SoulEmbodimentStates[index]);
+            Add(ref hash, (byte)_agents.BodyLifeStates[index]);
+            Add(ref hash, (byte)_agents.CurrentLifePhases[index]);
+            Add(ref hash, (ulong)_agents.LifeAuthorityRevisions[index]);
+            var appearance = _agents.AppearanceStates[index];
+            Add(ref hash, appearance.DefinitionId.Value);
+            Add(ref hash, appearance.InnateBeautyHundredths);
+            Add(ref hash, appearance.HeightHundredths);
+            Add(ref hash, appearance.BuildHundredths);
+            Add(ref hash, appearance.FacialFeatureHundredths);
+            Add(ref hash, appearance.ComplexionHundredths);
+            Add(ref hash, appearance.HairHundredths);
+            Add(ref hash, appearance.BearingHundredths);
+            Add(ref hash, unchecked((ulong)(long)appearance.PermanentModifierHundredths));
+            Add(ref hash, appearance.ScarSeverityHundredths);
+            Add(ref hash, (ulong)appearance.AuthorityRevision);
+            var lifeTransition = _agents.LatestLifeTransitions[index];
+            Add(ref hash, (byte)lifeTransition.Status);
+            Add(ref hash, (byte)lifeTransition.Reason);
+            Add(ref hash, lifeTransition.PersonId.Value);
+            Add(ref hash, lifeTransition.BodyId.Value);
+            Add(ref hash, (byte)lifeTransition.PreviousPhase);
+            Add(ref hash, (byte)lifeTransition.CurrentPhase);
+            Add(ref hash, (byte)lifeTransition.PreviousBodyState);
+            Add(ref hash, (byte)lifeTransition.CurrentBodyState);
+            Add(ref hash, (byte)lifeTransition.PreviousSoulState);
+            Add(ref hash, (byte)lifeTransition.CurrentSoulState);
+            Add(ref hash, (ulong)lifeTransition.Tick);
+            Add(ref hash, (ulong)lifeTransition.AuthorityRevision);
             var decision = _agents.DecisionTraces[index];
             Add(ref hash, (ulong)_agents.DecisionAuthorityRevisions[index]);
             Add(ref hash, (ulong)decision.Tick);
@@ -1106,7 +1165,22 @@ public sealed partial class World
             reason,
             resolution,
             alternativeActivity);
+        _causal.RecordDecision(
+            index,
+            CreateCausalObservation(index),
+            _agents.DecisionTraces[index]);
     }
+
+    private CausalObservationInput CreateCausalObservation(int index, int? initialRank = null) => new(
+        Tick.Value,
+        _agents.PersonIdentityIds[index],
+        _agents.LifeNumbers[index],
+        _agents.LifeStates[index],
+        _agents.Health[index],
+        _agents.MaximumHealth[index],
+        _agents.CultivationStates[index],
+        _agents.LocationIds[index],
+        initialRank ?? checked(_rankByAgent[index] + 1));
 
     private static AgentGoalKind GetSupportingGoal(AgentActivity activity, bool bottleneck) =>
         activity switch

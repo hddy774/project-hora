@@ -43,6 +43,7 @@ var tests = new (string Name, Action Body)[]
     ("공법·법술 경험·숙련·이해·품질 불변", SkillMasteryUnderstandingAndImmutableQuality),
     ("0세 탄생·6대 자질·일대기·윤회", BirthAptitudesChronicleAndReincarnation),
     ("영혼·육신·현생 신원과 AI 행동 이유 권위", PersonIdentityAndDecisionAuthority),
+    ("Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위", AgentCausalLifeVerticalFlow),
     ("희소 방향 관계 6축·초기 Role·생애 경계", SparseDirectionalRelationsAndRoles),
     ("사제 성립·Teaching 결과·전승 provenance·직접 수행 0%", TeachingVerticalFlow),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
@@ -184,7 +185,7 @@ static void RankingRevisionCacheAvoidsUnchangedSorts()
         "랭킹 관찰 중 정렬 0회");
 
     var checkpoint = world.CreateCheckpoint();
-    Equal(24, checkpoint.SchemaVersion, "0.0.14 구조 최적화 schema 24 유지");
+    Equal(25, checkpoint.SchemaVersion, "0.0.16 인과·생애 권위 schema 25");
     var restored = World.Restore(checkpoint);
     Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "랭킹 cache 저장 제외·복원 상태 hash");
     var restoredSnapshot = restored.CreateSnapshot(population, 0);
@@ -731,7 +732,9 @@ static void BirthAptitudesChronicleAndReincarnation()
     };
     var prepared = checkpoint with
     {
+        SchemaVersion = 24,
         Agents = [preparedAgent],
+        Causal = null,
     };
     var world = World.Restore(prepared);
     world.AdvanceTo(new SimulationTick(deathTick));
@@ -746,7 +749,10 @@ static void BirthAptitudesChronicleAndReincarnation()
 
     world.AdvanceTo(new SimulationTick(
         deathTick + ReincarnationRules.GetTotalDurationTicks(RealmStage.QiRefining)));
-    var reborn = world.GetAgentSnapshot(new AgentId(0), includeAptitudeDetails: true);
+    var reborn = world.GetAgentSnapshot(
+        new AgentId(0),
+        includeAptitudeDetails: true,
+        includeCausal: true);
     Equal(2, reborn.LifeNumber, "환생 후 생 번호");
     Equal(0L, reborn.AgeYears, "환생 나이");
     Equal(initialSoul, reborn.Aptitudes.Soul, "영혼 자질 윤회 연속성");
@@ -754,6 +760,12 @@ static void BirthAptitudesChronicleAndReincarnation()
     True(reborn.Identity.BodyId != initialBodyId, "환생 후 새 육신 ID");
     True(reborn.Identity.PersonId != initialPersonId, "환생 후 새 현생 ID");
     True(reborn.Identity.LifeState == PersonLifeState.Living, "환생 후 생존 신원 상태");
+    True(
+        reborn.Causal!.CurrentLifeMemories.All(memory => memory.LifeNumber == 2),
+        "전생 기억을 새 생 기억으로 자동 복사하지 않음");
+    True(
+        reborn.Causal.CurrentLifeMemories.Any(memory => memory.Kind == AgentMemoryKind.Rebirth),
+        "새 생 환생 경계 기억");
     True(
         reborn.Aptitudes.SpiritualRoot != initialAgent.Aptitudes.SpiritualRoot
         || reborn.Aptitudes.Bone != initialAgent.Aptitudes.Bone
@@ -854,6 +866,91 @@ static void StagedReincarnationLineageTraceAndMigration()
             tick: checked(stageContractJourney.NextTransitionTick + 1)),
         "윤회 단계의 지연 전이는 유효하지 않은 저장 상태를 만들 수 없어야 함");
 
+    var birthContextStore = new ReincarnationStore(1);
+    birthContextStore.InitializeFirstLife(
+        0,
+        PersonCausalRules.CreateSoulId(0),
+        PersonCausalRules.CreateBodyId(0, 1),
+        PersonCausalRules.CreatePersonId(0, 1),
+        "출생후보검증",
+        birthTick: 0,
+        RealmStage.QiRefining,
+        realmLayer: 1,
+        combatPower: 100);
+    var birthJourney = birthContextStore.BeginJourney(
+        0,
+        deathTick: GameCalendar.TicksPerYear,
+        LifeEndKind.Combat,
+        RealmStage.QiRefining,
+        stageCandidates,
+        SoulDamageLevel.Severe,
+        new SimulationEventRecordId(0xC001));
+    while (birthJourney.Stage != ReincarnationStage.PreparingRebirth)
+    {
+        birthContextStore.AdvanceStage(
+            0,
+            birthJourney.NextTransitionTick,
+            new SimulationEventRecordId(0xC002));
+        birthJourney = birthContextStore.GetCurrentJourney(0)!;
+    }
+    var noCandidate = birthContextStore.PrepareBirthCandidate(
+        0,
+        birthJourney.RebirthReadyTick,
+        parentOnePersonId: null,
+        parentTwoPersonId: null,
+        allowIndependentManifestation: false);
+    True(noCandidate == BirthCandidateStatus.UnavailableLongWait, "출생 후보 부재 명시");
+    var deferredTick = birthContextStore.DeferForBirthCandidate(
+        0,
+        birthJourney.RebirthReadyTick);
+    var deferred = birthContextStore.GetCurrentJourney(0)!;
+    Equal(1, deferred.BirthCandidateWaitYears, "출생 후보 부재 1년 장기 대기");
+    True(deferred.BirthCandidateStatus == BirthCandidateStatus.Searching, "출생 후보 재탐색 상태");
+    Equal(deferredTick, deferred.RebirthReadyTick, "연기된 환생 준비 경계");
+    True(
+        ReincarnationStore.IsValidCheckpoint(
+            birthContextStore.CreateCheckpoint(),
+            maximumTick: deferredTick - 1),
+        "장기 출생 대기 저장 검증");
+    True(birthContextStore.AdvanceStage(0, deferredTick).ReadyForRebirth, "연기 경계 재도달");
+    var parentOne = new PersonIdentityId(0xAA01);
+    var parentTwo = new PersonIdentityId(0xAA02);
+    True(
+        birthContextStore.PrepareBirthCandidate(
+            0,
+            deferredTick,
+            parentOne,
+            parentTwo,
+            allowIndependentManifestation: false) == BirthCandidateStatus.Located,
+        "출생 부모 후보 확정");
+    birthContextStore.CompleteRebirth(
+        0,
+        deferredTick,
+        PersonCausalRules.CreateSoulId(0),
+        PersonCausalRules.CreateBodyId(0, 2),
+        PersonCausalRules.CreatePersonId(0, 2),
+        "출생후보검증2",
+        RealmStage.QiRefining,
+        initialRealmLayer: 1,
+        initialCombatPower: 100,
+        rebirthCausalRecordId: new SimulationEventRecordId(0xC003));
+    var birthContext = birthContextStore.GetSnapshot(0, deferredTick);
+    True(birthContext.CurrentJourney is null, "부모 연결 뒤 환생 완료");
+    Equal(parentOne, birthContext.Lineage[^1].ParentOnePersonId!.Value, "첫 부모 현생 ID");
+    Equal(parentTwo, birthContext.Lineage[^1].ParentTwoPersonId!.Value, "둘째 부모 현생 ID");
+    True(birthContext.Lineage[^1].FamilyId.Value != 0, "부모 조합의 안정 가계 ID");
+    True(
+        birthContext.Lineage[^1].BirthStatus == BirthCandidateStatus.Located,
+        "새 생 출생 후보 상태");
+    True(
+        birthContext.Traces.All(trace =>
+            trace.EvidenceStatus == PreservationEvidenceStatus.Available),
+        "새 윤회 흔적 provenance 근거 상태");
+    var completedBirthJourney = birthContextStore.CreateCheckpoint().Journeys.Single();
+    Equal(new SimulationEventRecordId(0xC001), completedBirthJourney.RootCausalRecordId, "윤회 root causal record");
+    Equal(new SimulationEventRecordId(0xC002), completedBirthJourney.CrossingCausalRecordId, "도하 완료 causal record");
+    Equal(new SimulationEventRecordId(0xC003), completedBirthJourney.RebirthCausalRecordId, "환생 causal record");
+
     var initial = World.Create(8810, 1);
     var firstLife = initial.GetAgentSnapshot(new AgentId(0));
     var birthCheckpoint = initial.CreateCheckpoint();
@@ -882,7 +979,12 @@ static void StagedReincarnationLineageTraceAndMigration()
         NextDecisionTick = deathTick,
         Opponent = -1,
     };
-    var world = World.Restore(nearDeathCheckpoint with { Agents = [preparedAgent] });
+    var world = World.Restore(nearDeathCheckpoint with
+    {
+        SchemaVersion = 24,
+        Agents = [preparedAgent],
+        Causal = null,
+    });
     var actionsAtDeath = preparedAgent.ActionsTaken;
     world.AdvanceTo(new SimulationTick(deathTick));
 
@@ -1031,7 +1133,7 @@ static void StagedReincarnationLineageTraceAndMigration()
                     && trace.IntegratedHundredths == 0),
                 "schema 22에는 없던 전생 근거를 조작하지 않음");
             var migratedCheckpoint = migratedSchema22.CreateCheckpoint();
-            Equal(24, migratedCheckpoint.SchemaVersion, "schema 22는 재저장 시 schema 24");
+            Equal(25, migratedCheckpoint.SchemaVersion, "schema 22는 재저장 시 schema 25");
             True(migratedCheckpoint.Reincarnation is not null, "이전 후 윤회 권위 저장 생성");
 
             world = restored;
@@ -1223,7 +1325,7 @@ static void PersonIdentityAndDecisionAuthority()
     Equal(beforeObservation, world.ComputeStateHash(), "행동 이유 관찰은 권위 상태 무영향");
 
     var checkpoint = world.CreateCheckpoint();
-    Equal(24, checkpoint.SchemaVersion, "윤회 계보·Teaching 저장 schema");
+    Equal(25, checkpoint.SchemaVersion, "윤회 계보·Teaching·인과 저장 schema");
     var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
     Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "인물 신원·결정 codec·hash 왕복");
 
@@ -1241,6 +1343,108 @@ static void PersonIdentityAndDecisionAuthority()
     Equal(PersonCausalRules.CreateBodyId(0, migrated.LifeNumber), migrated.Identity.BodyId, "schema 19 육신 ID 이전");
     True(migrated.Decision.Latest.PrimaryGoal == AgentGoalKind.ReachRankOne, "schema 19 최종 목표 이전");
     True(migrated.Decision.Latest.AuthorityRevision >= 1, "schema 19 결정 revision 이전");
+}
+
+static void AgentCausalLifeVerticalFlow()
+{
+    var world = World.Create(0xCA05_A116UL, 256);
+    var hidden = world.GetAgentSnapshot(new AgentId(0));
+    True(hidden.Causal is null, "접힌 인과 UI는 상세 DTO를 만들지 않음");
+    True(hidden.LifeAuthority.Gender != GenderIdentity.Undefined, "생별 성별 권위");
+    True(hidden.LifeAuthority.SoulState == SoulEmbodimentState.Embodied, "영혼은 육신에 깃듦");
+    True(hidden.LifeAuthority.BodyState == BodyLifeState.Living, "현재 육신 생존");
+    True(hidden.LifeAuthority.LifePhase == CurrentLifePhase.Living, "현재 생 상태");
+    True(hidden.LifeAuthority.Appearance.DefinitionId.Value != 0, "외형 안정 정의 ID");
+    True(hidden.LifeAuthority.Appearance.DerivedBeautyHundredths is >= 0 and <= 10_000, "외형 파생값 범위");
+
+    var beforeHash = world.ComputeStateHash();
+    var visible = world.GetAgentSnapshot(new AgentId(0), includeCausal: true);
+    Equal(beforeHash, world.ComputeStateHash(), "인과·외형 관찰은 권위 상태 불변");
+    var causal = visible.Causal!;
+    Equal(AgentCausalRules.ContractId, causal.ContractId, "인과 계약 ID");
+    Equal(AgentCausalRules.PerceivedFactCapacity, causal.PerceivedFacts.Count, "인지 가능한 사실만 고정 투영");
+    Equal(1, causal.CurrentLifeMemories.Count, "탄생 중요 기억");
+    True(causal.CurrentLifeMemories[0].Kind == AgentMemoryKind.Birth, "탄생 기억 종류");
+    True(causal.CurrentPath.GoalId.Value != 0, "Goal 안정 ID");
+    True(causal.CurrentPath.PlanId.Value != 0, "Plan 안정 ID");
+    True(causal.CurrentPath.TaskId.Value != 0, "Task 안정 ID");
+    True(causal.CurrentPath.ActionId.Value != 0, "Action 안정 ID");
+    True(causal.CurrentPath.EventDefinitionId.Value != 0, "Event Definition 안정 ID");
+    True(causal.CurrentPath.EventInstanceId.Value != 0, "Event Instance 안정 ID");
+    True(causal.CurrentPath.ResultId.Value != 0, "Result 안정 ID");
+    True(causal.CurrentPath.EventRecordId.Value != 0, "Event Record 안정 ID");
+    Equal(causal.CurrentPath.EventRecordId, causal.CurrentPath.RootRecordId, "첫 판정은 인과 root");
+    True(causal.CurrentPath.ParentRecordId is null, "첫 판정 parent 없음");
+
+    world.AdvanceTo(visible.NextDecisionTick);
+    var after = world.GetAgentSnapshot(new AgentId(0), includeCausal: true).Causal!;
+    True(after.AuthorityRevision > causal.AuthorityRevision, "월간 판정에서 인과 revision 증가");
+    Equal(causal.CurrentPath.RootRecordId, after.CurrentPath.RootRecordId, "같은 생 causal root 유지");
+    True(after.CurrentPath.ParentRecordId == causal.CurrentPath.EventRecordId, "직전 record가 parent");
+    True(after.CurrentPath.EventRecordId != causal.CurrentPath.EventRecordId, "판정별 record ID 분리");
+
+    world.AdvanceTo(new SimulationTick(80L * GameCalendar.TicksPerYear));
+    var bounded = world.GetAgentSnapshot(new AgentId(0), includeCausal: true).Causal!;
+    True(
+        bounded.CurrentLifeMemories.Count <= AgentCausalRules.MemoryCapacityPerAgent,
+        "생별 기억 고정 상한");
+    True(
+        bounded.CurrentLifeMemories.All(memory => memory.ReinforcementCount > 0),
+        "반복 경험은 새 로그 대신 기억 강화");
+
+    var requiredResolutions = new[]
+    {
+        CausalResolutionCode.Committed,
+        CausalResolutionCode.Reject,
+        CausalResolutionCode.Revalidate,
+        CausalResolutionCode.Retry,
+        CausalResolutionCode.Defer,
+        CausalResolutionCode.AlternativeResult,
+        CausalResolutionCode.Compensate,
+        CausalResolutionCode.Blocked,
+    };
+    Equal(8, requiredResolutions.Distinct().Count(), "공통 실패·회복 결과 8종");
+    Equal(
+        4,
+        new[]
+        {
+            CausalFailureScope.Action,
+            CausalFailureScope.Task,
+            CausalFailureScope.Plan,
+            CausalFailureScope.Goal,
+        }.Distinct().Count(),
+        "행동·Task·Plan·Goal 실패 범위 분리");
+    True(
+        world.BrowseAgents(0, 256)
+            .Select(agent => agent.LifeAuthority.Gender)
+            .All(gender => gender != GenderIdentity.Undefined),
+        "모든 인물 성별 명시");
+
+    var checkpoint = world.CreateCheckpoint();
+    Equal(25, checkpoint.SchemaVersion, "생애·인과 권위 schema 25");
+    True(checkpoint.Causal is not null, "인과 store 권위 저장");
+    True(checkpoint.Agents.All(agent => agent.LifeAuthority is not null), "생애·외형 권위 저장");
+    var restored = World.Restore(checkpoint);
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "생애·인과 hash 왕복");
+    var restoredCausal = restored.GetAgentSnapshot(new AgentId(0), includeCausal: true).Causal!;
+    Equal(bounded.CurrentPath, restoredCausal.CurrentPath, "현재 인과 경로 왕복");
+    EqualSequence(
+        bounded.PerceivedFacts.ToArray(),
+        restoredCausal.PerceivedFacts.ToArray(),
+        "인지 사실 왕복");
+    EqualSequence(
+        bounded.CurrentLifeMemories.ToArray(),
+        restoredCausal.CurrentLifeMemories.ToArray(),
+        "생별 기억 왕복");
+
+    var forgedPaths = checkpoint.Causal!.CurrentPaths.ToArray();
+    forgedPaths[0] = forgedPaths[0] with { ActionId = new ActionId(forgedPaths[0].ActionId.Value ^ 1UL) };
+    Throws<InvalidDataException>(
+        () => World.Restore(checkpoint with
+        {
+            Causal = checkpoint.Causal with { CurrentPaths = forgedPaths },
+        }),
+        "위조된 Action 안정 ID 저장 거부");
 }
 
 static void SparseDirectionalRelationsAndRoles()
@@ -1292,6 +1496,22 @@ static void SparseDirectionalRelationsAndRoles()
         relationStore.Relations.SelectMany(relation => relation.History)
             .Any(history => history.Kind == RelationHistoryKind.RoleEndedAtLifeBoundary),
         "사망·윤회 생애 경계 Role 종료 역사");
+    True(relationStore.ResultSequence > 0, "관계 typed result 전역 sequence");
+    True(
+        relationStore.Relations.Any(relation =>
+            relation.LatestInteractionResult.InteractionKind == RelationInteractionKind.Dialogue),
+        "일반 대화 상호작용 typed result");
+    True(
+        relationStore.Relations.Any(relation =>
+            relation.LatestInteractionResult.Id.Value != 0
+            && relation.LatestInteractionResult.Id == RelationRules.CreateResultId(
+                relation.Id,
+                relation.LatestInteractionResult.Sequence)),
+        "관계 결과 안정 ID");
+    True(
+        relationStore.Relations.Any(relation =>
+            relation.LatestInteractionResult.SourceEventRecordId.Value != 0),
+        "관계 결과가 AI causal event record를 참조");
 
     var beforeObservation = world.ComputeStateHash();
     var hidden = world.GetAgentSnapshot(new AgentId(0));
@@ -1300,6 +1520,16 @@ static void SparseDirectionalRelationsAndRoles()
         .Select(index => world.GetAgentSnapshot(new AgentId(index), includeRelations: true))
         .First(agent => agent.Relations is { Count: > 0 });
     True(visible.Relations!.Count <= RelationRules.MaximumRelationsPerAgent, "펼친 관계 UI 희소 DTO");
+    True(
+        visible.Relations.All(relation =>
+            relation.ExternalContext.OrganizationContext == RelationContextAvailability.DataUnavailable
+            && relation.ExternalContext.ReputationContext == RelationContextAvailability.DataUnavailable),
+        "미구현 조직·평판 맥락은 0값이 아니라 DataUnavailable");
+    True(
+        visible.Relations.All(relation =>
+            relation.ExternalContext.FamilyContext is RelationContextAvailability.Available
+                or RelationContextAvailability.DataUnavailable),
+        "가계 맥락 availability 명시");
     Equal(beforeObservation, world.ComputeStateHash(), "관계 관찰은 권위 상태 무영향");
 
     var restored = World.Restore(WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
@@ -1481,7 +1711,8 @@ static void TeachingVerticalFlow()
         includeTeaching: true);
     var learnerAfter = isolated.GetAgentSnapshot(
         new AgentId(learnerIndex),
-        includeTeaching: true);
+        includeTeaching: true,
+        includeCausal: true);
     True(!teacherAfter.Teaching!.Latest.IsActive, "Teaching 결과 정산 완료");
     True(
         teacherAfter.Teaching!.Latest.LastResult is not TeachingResultKind.None,
@@ -1504,6 +1735,16 @@ static void TeachingVerticalFlow()
         || learnerAfter.Teaching!.SpellMisunderstandingPoints
             != learnerBefore.Teaching!.SpellMisunderstandingPoints,
         "Teaching은 숙련 경험·이해 또는 오해 상태를 변경");
+    True(
+        learnerAfter.Causal!.LatestKnowledgeClaim is { } claim
+        && claim.TeachingProvenanceId == trace.ProvenanceId
+        && claim.RecipientPersonId == learnerAfter.Identity.PersonId,
+        "학습 결과 KnowledgeClaim·provenance·현생 연결");
+    True(
+        learnerAfter.Causal.CurrentLifeMemories.Any(memory =>
+            memory.Kind == AgentMemoryKind.Teaching
+            && memory.RelationId == trace.RelationId),
+        "Teaching 결과가 관계 provenance를 가진 생별 기억으로 승격");
 
     var completedCheckpoint = isolated.CreateCheckpoint();
     var completedTrace = teacherAfter.Teaching.Latest;
@@ -1662,7 +1903,7 @@ static void DetailedAptitudesAuthorityAndLazyProjection()
     var world = World.CreateDefault(741103);
     var checkpoint = world.CreateCheckpoint();
     stopwatch.Stop();
-    Equal(24, checkpoint.SchemaVersion, "윤회 계보·Teaching 저장 schema");
+    Equal(25, checkpoint.SchemaVersion, "윤회 계보·Teaching·인과 저장 schema");
 
     long summaryTotal = 0;
     var summaryMinimum = int.MaxValue;
@@ -2376,7 +2617,7 @@ static void CombatProgressionSaveAndMigration()
     var world = World.Create(8130, 1_000);
     world.AdvanceTo(new SimulationTick(20_000));
     var checkpoint = world.CreateCheckpoint();
-    True(checkpoint.SchemaVersion == 24, "윤회 계보 저장 schema 24");
+    True(checkpoint.SchemaVersion == 25, "윤회 계보·인과 저장 schema 25");
     True(
         checkpoint.Agents.Any(agent => agent.CombatProgress is { UnderstandingHundredths: > 0 }),
         "전투 이해도 저장 대상 발생");
@@ -3155,7 +3396,7 @@ static void MarketCheckpointValidation()
         SchemaVersion = 23,
         Market = schema23Market,
     }).CreateCheckpoint();
-    Equal(24, migrated.SchemaVersion, "schema 23 시장은 schema 24로 이전");
+    Equal(25, migrated.SchemaVersion, "schema 23 시장은 schema 25로 이전");
     Equal(EconomyRules.MarketGoodCount, migrated.Market.RecentSupply?.Length ?? 0, "이전 후 최근 수급 생성");
     Equal(checkpoint.Agents.Length, migrated.Market.LastSettlementSourceByAgent?.Length ?? 0, "이전 후 중복 정산 방지 슬롯 생성");
 
@@ -3326,7 +3567,7 @@ static void DefaultWorldPerformanceBudget()
         $"{targetTick:N0} tick {simulationStopwatch.Elapsed.TotalMilliseconds:N0} ms + " +
         $"관찰 {projectionStopwatch.Elapsed.TotalMilliseconds:N1} ms = " +
         $"{totalStopwatch.Elapsed.TotalMilliseconds:N0} ms · checkpoint " +
-        $"{checkpointStopwatch.Elapsed.TotalMilliseconds:N0} ms · schema 24 복원 " +
+        $"{checkpointStopwatch.Elapsed.TotalMilliseconds:N0} ms · schema 25 복원 " +
         $"{restoreStopwatch.Elapsed.TotalMilliseconds:N0} ms");
     Equal(targetTick, snapshot.Tick.Value, "성능 검증 도달 tick");
     Equal(10_000, snapshot.Population, "성능 검증 인구");
@@ -3336,8 +3577,8 @@ static void DefaultWorldPerformanceBudget()
         $"10,000명 시뮬레이션 성능 예산 10초를 초과했습니다: {totalStopwatch.Elapsed.TotalSeconds:N2}초");
     True(
         checkpointStopwatch.Elapsed + restoreStopwatch.Elapsed < TimeSpan.FromSeconds(5),
-        "10,000명 schema 24 checkpoint·복원 성능 예산 5초를 초과했습니다.");
-    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "10,000명 schema 24 복원 hash");
+        "10,000명 schema 25 checkpoint·복원 성능 예산 5초를 초과했습니다.");
+    Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "10,000명 schema 25 복원 hash");
 }
 
 static byte[] RemoveSchema22TeachingProperties(byte[] container)

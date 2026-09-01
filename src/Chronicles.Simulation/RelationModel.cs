@@ -7,6 +7,11 @@ public readonly record struct RelationId(ulong Value)
     public override string ToString() => $"R{Value:X16}";
 }
 
+public readonly record struct RelationInteractionResultId(ulong Value)
+{
+    public override string ToString() => $"RR{Value:X16}";
+}
+
 [Flags]
 public enum RelationRole : byte
 {
@@ -20,12 +25,29 @@ public enum RelationRole : byte
 
 public enum RelationInteractionKind : byte
 {
+    Dialogue,
     SharedCultivation,
     SharedMission,
     SharedJourney,
     SharedHunt,
     CombatOutcome,
 }
+
+public enum RelationContextAvailability : byte
+{
+    Available,
+    DataUnavailable,
+}
+
+public readonly record struct RelationExternalContextSnapshot(
+    bool IsCoLocated,
+    RelationContextAvailability FamilyContext,
+    FamilyLineageId SelfFamilyId,
+    FamilyLineageId OtherFamilyId,
+    RelationContextAvailability OrganizationContext,
+    RelationContextAvailability ReputationContext,
+    RelationContextAvailability KnowledgeContext,
+    KnowledgeClaimId LatestKnowledgeClaimId);
 
 public enum RelationHistoryKind : byte
 {
@@ -35,6 +57,28 @@ public enum RelationHistoryKind : byte
     TeachingTransmissionEstablished,
     TeachingTransmissionUpdated,
 }
+
+public enum RelationInteractionStatus : byte
+{
+    Applied,
+    TeachingProgress,
+    TeachingMisunderstood,
+    TeachingCorrected,
+    TeachingRefused,
+    InterruptedByLifeBoundary,
+}
+
+public readonly record struct RelationInteractionResult(
+    RelationInteractionResultId Id,
+    long Sequence,
+    long Tick,
+    RelationId RelationId,
+    RelationInteractionStatus Status,
+    RelationInteractionKind? InteractionKind,
+    TeachingResultKind? TeachingResult,
+    PersonIdentityId LeftPersonId,
+    PersonIdentityId RightPersonId,
+    SimulationEventRecordId SourceEventRecordId);
 
 public readonly record struct RelationMetrics(
     int FavorDisfavor,
@@ -74,11 +118,13 @@ public sealed record RelationStateCheckpoint(
     bool TechniqueTransmissionEstablished = false,
     bool SpellTransmissionEstablished = false,
     TeachingKnowledgeRef TechniqueKnowledgeRef = default,
-    TeachingKnowledgeRef SpellKnowledgeRef = default);
+    TeachingKnowledgeRef SpellKnowledgeRef = default,
+    RelationInteractionResult LatestInteractionResult = default);
 
 public sealed record RelationStoreCheckpoint(
     long HistorySequence,
-    RelationStateCheckpoint[] Relations);
+    RelationStateCheckpoint[] Relations,
+    long ResultSequence = 0);
 
 public sealed record RelationSnapshot(
     RelationId Id,
@@ -90,7 +136,9 @@ public sealed record RelationSnapshot(
     RelationRole Roles,
     bool IsMaster,
     bool IsDisciple,
-    IReadOnlyList<RelationHistoryEntry> ImportantHistory);
+    IReadOnlyList<RelationHistoryEntry> ImportantHistory,
+    RelationInteractionResult LatestInteractionResult = default,
+    RelationExternalContextSnapshot ExternalContext = default);
 
 public static class RelationRules
 {
@@ -102,6 +150,7 @@ public static class RelationRules
     public const int SocialInteractionActionInterval = 4;
     public const int DirectTeachingCultivationSpeedBonusBasisPoints = 0;
     public const string ProvisionalReviewId = "PC-TEMP-RELATION-BALANCE-113";
+    public const string ExternalContextReviewId = "PC-TEMP-RELATION-EXTERNAL-CONTEXT-113";
 
     internal const int FriendshipInteractionThreshold = 4;
     internal const int CompanionInteractionThreshold = 3;
@@ -124,6 +173,18 @@ public static class RelationRules
         return new RelationId(
             ((ulong)checked((uint)left + 1U) << 32)
             | checked((uint)right + 1U));
+    }
+
+    public static RelationInteractionResultId CreateResultId(
+        RelationId relationId,
+        long sequence)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(sequence);
+        var value = relationId.Value ^ unchecked((ulong)sequence * 0x9E37_79B1_85EB_CA87UL);
+        value ^= value >> 33;
+        value *= 0xFF51_AFD7_ED55_8CCDUL;
+        value ^= value >> 33;
+        return new RelationInteractionResultId(value == 0 ? 1UL : value);
     }
 
     internal static int GetOtherAgent(RelationId relationId, int agent)
@@ -161,6 +222,7 @@ public static class RelationRules
 
     internal static RelationMetricDelta GetMutualDelta(RelationInteractionKind kind) => kind switch
     {
+        RelationInteractionKind.Dialogue => new(90, 70, 30, 0, -5, -5),
         RelationInteractionKind.SharedCultivation => new(180, 140, 90, 20, -10, -15),
         RelationInteractionKind.SharedMission => new(220, 180, 110, 40, -15, -20),
         RelationInteractionKind.SharedJourney => new(240, 170, 120, 30, -10, 10),
@@ -199,7 +261,8 @@ internal readonly record struct RelationReadState(
     RelationMetrics OtherTowardSelf,
     RelationRole Roles,
     int MasterAgent,
-    RelationHistoryEntry[] History);
+    RelationHistoryEntry[] History,
+    RelationInteractionResult LatestInteractionResult);
 
 internal sealed class SparseRelationStore
 {
@@ -223,6 +286,7 @@ internal sealed class SparseRelationStore
         public bool SpellTransmissionEstablished { get; set; }
         public TeachingKnowledgeRef TechniqueKnowledgeRef { get; set; }
         public TeachingKnowledgeRef SpellKnowledgeRef { get; set; }
+        public RelationInteractionResult LatestInteractionResult { get; set; }
         public List<RelationHistoryEntry> History { get; } = new();
     }
 
@@ -232,6 +296,7 @@ internal sealed class SparseRelationStore
     private readonly int[] _adjacency;
     private readonly byte[] _adjacencyCounts;
     private long _historySequence;
+    private long _resultSequence;
 
     public SparseRelationStore(int population)
     {
@@ -272,7 +337,8 @@ internal sealed class SparseRelationStore
         PersonIdentityId leftPersonId,
         PersonIdentityId rightPersonId,
         RelationInteractionKind kind,
-        long tick)
+        long tick,
+        SimulationEventRecordId sourceEventRecordId = default)
     {
         if (!TryGetOrCreate(
                 leftAgent,
@@ -300,6 +366,8 @@ internal sealed class SparseRelationStore
         }
         switch (kind)
         {
+            case RelationInteractionKind.Dialogue:
+                break;
             case RelationInteractionKind.SharedCultivation:
             case RelationInteractionKind.SharedMission:
                 relation.CooperativeInteractions = Increment(relation.CooperativeInteractions);
@@ -317,6 +385,13 @@ internal sealed class SparseRelationStore
         }
 
         EvaluateRoles(relation, tick);
+        SetLatestResult(
+            relation,
+            tick,
+            RelationInteractionStatus.Applied,
+            kind,
+            teachingResult: null,
+            sourceEventRecordId);
         return true;
     }
 
@@ -433,7 +508,8 @@ internal sealed class SparseRelationStore
         TeachingTargetKind targetKind,
         TeachingKnowledgeRef knowledgeRef,
         TeachingProvenanceId provenanceId,
-        TeachingResultKind result)
+        TeachingResultKind result,
+        SimulationEventRecordId sourceEventRecordId = default)
     {
         if (!_indexById.TryGetValue(relationId.Value, out var relationIndex))
         {
@@ -445,12 +521,26 @@ internal sealed class SparseRelationStore
             throw new ArgumentOutOfRangeException(nameof(result));
         }
 
+        var relation = _relations[relationIndex];
+        SetLatestResult(
+            relation,
+            tick,
+            result switch
+            {
+                TeachingResultKind.Misunderstanding => RelationInteractionStatus.TeachingMisunderstood,
+                TeachingResultKind.Correction => RelationInteractionStatus.TeachingCorrected,
+                TeachingResultKind.Refused or TeachingResultKind.Interrupted =>
+                    RelationInteractionStatus.TeachingRefused,
+                _ => RelationInteractionStatus.TeachingProgress,
+            },
+            interactionKind: null,
+            result,
+            sourceEventRecordId);
         if (!TeachingRules.IsTransmissionProgress(result))
         {
             return;
         }
 
-        var relation = _relations[relationIndex];
         switch (targetKind)
         {
             case TeachingTargetKind.Technique:
@@ -515,6 +605,13 @@ internal sealed class SparseRelationStore
             relation.Roles = RelationRole.None;
             relation.MasterAgent = -1;
             AddHistory(relation, tick, RelationHistoryKind.RoleEndedAtLifeBoundary, ended);
+            SetLatestResult(
+                relation,
+                tick,
+                RelationInteractionStatus.InterruptedByLifeBoundary,
+                interactionKind: null,
+                TeachingResultKind.Interrupted,
+                sourceEventRecordId: default);
         }
     }
 
@@ -574,7 +671,8 @@ internal sealed class SparseRelationStore
                 isLeft ? relation.RightTowardLeft : relation.LeftTowardRight,
                 relation.Roles,
                 relation.MasterAgent,
-                relation.History.ToArray());
+                relation.History.ToArray(),
+                relation.LatestInteractionResult);
         }
 
         Array.Sort(result, static (left, right) => left.OtherAgent.CompareTo(right.OtherAgent));
@@ -602,7 +700,9 @@ internal sealed class SparseRelationStore
             relation.TechniqueTransmissionEstablished,
             relation.SpellTransmissionEstablished,
             relation.TechniqueKnowledgeRef,
-            relation.SpellKnowledgeRef)).ToArray());
+            relation.SpellKnowledgeRef,
+            relation.LatestInteractionResult)).ToArray(),
+        _resultSequence);
 
     public static SparseRelationStore Restore(
         int population,
@@ -616,6 +716,7 @@ internal sealed class SparseRelationStore
         var store = new SparseRelationStore(population)
         {
             _historySequence = checkpoint.HistorySequence,
+            _resultSequence = checkpoint.ResultSequence,
         };
         foreach (var source in checkpoint.Relations)
         {
@@ -639,6 +740,7 @@ internal sealed class SparseRelationStore
                 SpellTransmissionEstablished = source.SpellTransmissionEstablished,
                 TechniqueKnowledgeRef = source.TechniqueKnowledgeRef,
                 SpellKnowledgeRef = source.SpellKnowledgeRef,
+                LatestInteractionResult = source.LatestInteractionResult,
             };
             relation.History.AddRange(source.History);
             var relationIndex = store._relations.Count;
@@ -656,7 +758,7 @@ internal sealed class SparseRelationStore
         RelationStoreCheckpoint? checkpoint,
         long maximumTick = long.MaxValue)
     {
-        if (checkpoint is not { HistorySequence: >= 0, Relations: not null } value
+        if (checkpoint is not { HistorySequence: >= 0, ResultSequence: >= 0, Relations: not null } value
             || value.Relations.Length > checked(population * RelationRules.MaximumRelationsPerAgent / 2))
         {
             return false;
@@ -666,6 +768,7 @@ internal sealed class SparseRelationStore
         var ids = new HashSet<ulong>();
         var historySequences = new HashSet<long>();
         long maximumHistorySequence = 0;
+        long maximumResultSequence = 0;
         foreach (var relation in value.Relations)
         {
             if (relation.LeftAgent < 0
@@ -711,6 +814,28 @@ internal sealed class SparseRelationStore
                 return false;
             }
 
+            var latestResult = relation.LatestInteractionResult;
+            if (latestResult.Id.Value != 0
+                && (latestResult.Sequence <= 0
+                    || latestResult.Sequence > value.ResultSequence
+                    || latestResult.Id != RelationRules.CreateResultId(
+                        relation.Id,
+                        latestResult.Sequence)
+                    || latestResult.RelationId != relation.Id
+                    || latestResult.Tick < 0
+                    || latestResult.Tick > maximumTick
+                    || !Enum.IsDefined(latestResult.Status)
+                    || (latestResult.InteractionKind is { } interactionKind
+                        && !Enum.IsDefined(interactionKind))
+                    || (latestResult.TeachingResult is { } teachingResult
+                        && !Enum.IsDefined(teachingResult))
+                    || latestResult.LeftPersonId.Value == 0
+                    || latestResult.RightPersonId.Value == 0))
+            {
+                return false;
+            }
+            maximumResultSequence = Math.Max(maximumResultSequence, latestResult.Sequence);
+
             long previousSequence = 0;
             foreach (var history in relation.History)
             {
@@ -733,7 +858,8 @@ internal sealed class SparseRelationStore
             }
         }
 
-        return maximumHistorySequence == value.HistorySequence;
+        return maximumHistorySequence == value.HistorySequence
+            && maximumResultSequence == value.ResultSequence;
     }
 
     private const RelationRole AllRoles = RelationRole.MasterDisciple
@@ -870,6 +996,28 @@ internal sealed class SparseRelationStore
             teachingTarget,
             knowledgeRef,
             provenanceId));
+    }
+
+    private void SetLatestResult(
+        RelationState relation,
+        long tick,
+        RelationInteractionStatus status,
+        RelationInteractionKind? interactionKind,
+        TeachingResultKind? teachingResult,
+        SimulationEventRecordId sourceEventRecordId)
+    {
+        var sequence = checked(++_resultSequence);
+        relation.LatestInteractionResult = new RelationInteractionResult(
+            RelationRules.CreateResultId(relation.Id, sequence),
+            sequence,
+            tick,
+            relation.Id,
+            status,
+            interactionKind,
+            teachingResult,
+            relation.LeftPersonId,
+            relation.RightPersonId,
+            sourceEventRecordId);
     }
 
     private static bool IsValidHistoryTeachingTrace(RelationHistoryEntry history)

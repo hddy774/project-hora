@@ -45,9 +45,39 @@ public enum TraceAccessLevel : byte
     Immediate,
 }
 
+public enum PreservationEvidenceStatus : byte
+{
+    Unknown,
+    Available,
+    UnavailableMigration,
+    Insufficient,
+}
+
+public enum SoulDamageLevel : byte
+{
+    None,
+    Minor,
+    Severe,
+    Critical,
+}
+
+public enum BirthCandidateStatus : byte
+{
+    Searching,
+    Located,
+    UnavailableLongWait,
+    IndependentManifestation,
+    Completed,
+}
+
 public readonly record struct LifeRecordId(ulong Value)
 {
     public override string ToString() => $"L{Value:X16}";
+}
+
+public readonly record struct FamilyLineageId(ulong Value)
+{
+    public override string ToString() => Value == 0 ? "FAMILY-DATA-UNAVAILABLE" : $"FM{Value:X16}";
 }
 
 public readonly record struct ReincarnationJourneyId(ulong Value)
@@ -76,7 +106,11 @@ public readonly record struct LifeLineageEntry(
     long? DeathTick,
     LifeEndKind EndKind,
     HistoricalPeakState PersonalPeak,
-    ReincarnationJourneyId? JourneyId);
+    ReincarnationJourneyId? JourneyId,
+    PersonIdentityId? ParentOnePersonId = null,
+    PersonIdentityId? ParentTwoPersonId = null,
+    BirthCandidateStatus BirthStatus = BirthCandidateStatus.IndependentManifestation,
+    FamilyLineageId FamilyId = default);
 
 public readonly record struct ReincarnationTraceCandidate(
     ReincarnationTraceDomain Domain,
@@ -95,7 +129,8 @@ public readonly record struct ReincarnationTraceState(
     TracePreservationLevel PreservationLevel,
     TraceAccessLevel AccessLevel,
     bool HasEvidence,
-    long AuthorityRevision);
+    long AuthorityRevision,
+    PreservationEvidenceStatus EvidenceStatus = PreservationEvidenceStatus.Unknown);
 
 public sealed record ReincarnationJourneyState(
     int AgentIndex,
@@ -114,7 +149,16 @@ public sealed record ReincarnationJourneyState(
     int RequiredYears,
     long? CompletedTick,
     long AuthorityRevision,
-    bool RequiresReview);
+    bool RequiresReview,
+    SoulDamageLevel SoulDamage = SoulDamageLevel.None,
+    BirthCandidateStatus BirthCandidateStatus = BirthCandidateStatus.Searching,
+    int BirthCandidateWaitYears = 0,
+    PersonIdentityId? ParentOnePersonId = null,
+    PersonIdentityId? ParentTwoPersonId = null,
+    SimulationEventRecordId RootCausalRecordId = default,
+    SimulationEventRecordId EntryCausalRecordId = default,
+    SimulationEventRecordId CrossingCausalRecordId = default,
+    SimulationEventRecordId RebirthCausalRecordId = default);
 
 public readonly record struct ReincarnationStageAdvanceResult(
     ReincarnationStage PreviousStage,
@@ -155,7 +199,11 @@ public sealed record LifeLineageSnapshot(
     SimulationTick? DeathTick,
     LifeEndKind EndKind,
     HistoricalPeakSnapshot PersonalPeak,
-    ReincarnationJourneyId? JourneyId);
+    ReincarnationJourneyId? JourneyId,
+    PersonIdentityId? ParentOnePersonId = null,
+    PersonIdentityId? ParentTwoPersonId = null,
+    BirthCandidateStatus BirthStatus = BirthCandidateStatus.IndependentManifestation,
+    FamilyLineageId FamilyId = default);
 
 public readonly record struct ReincarnationTraceSnapshot(
     ReincarnationJourneyId JourneyId,
@@ -168,7 +216,8 @@ public readonly record struct ReincarnationTraceSnapshot(
     TracePreservationLevel PreservationLevel,
     TraceAccessLevel AccessLevel,
     bool HasEvidence,
-    long AuthorityRevision);
+    long AuthorityRevision,
+    PreservationEvidenceStatus EvidenceStatus = PreservationEvidenceStatus.Unknown);
 
 public sealed record ReincarnationJourneySnapshot(
     ReincarnationJourneyId Id,
@@ -185,7 +234,16 @@ public sealed record ReincarnationJourneySnapshot(
     int ProgressBasisPoints,
     SimulationTick? CompletedTick,
     long AuthorityRevision,
-    bool RequiresReview);
+    bool RequiresReview,
+    SoulDamageLevel SoulDamage = SoulDamageLevel.None,
+    BirthCandidateStatus BirthCandidateStatus = BirthCandidateStatus.Searching,
+    int BirthCandidateWaitYears = 0,
+    PersonIdentityId? ParentOnePersonId = null,
+    PersonIdentityId? ParentTwoPersonId = null,
+    SimulationEventRecordId RootCausalRecordId = default,
+    SimulationEventRecordId EntryCausalRecordId = default,
+    SimulationEventRecordId CrossingCausalRecordId = default,
+    SimulationEventRecordId RebirthCausalRecordId = default);
 
 public sealed record ReincarnationAgentSnapshot(
     SoulIdentityId SoulId,
@@ -207,6 +265,7 @@ public static class ReincarnationRules
     public const string UpperRealmDurationReviewId = "PC-TEMP-REINCARNATION-UPPER-DURATION-113";
     public const string TraceFormulaReviewId = "PC-TEMP-REINCARNATION-TRACE-113";
     public const string BirthCandidateReviewId = "PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113";
+    public const string SoulDamageReviewId = "PC-TEMP-REINCARNATION-SOUL-DAMAGE-113";
 
     public static IReadOnlyList<ReincarnationTraceDomain> AllTraceDomains { get; } =
         Array.AsReadOnly(Enum.GetValues<ReincarnationTraceDomain>());
@@ -225,6 +284,42 @@ public static class ReincarnationRules
         RealmStage.HalfImmortal => 233,
         _ => throw new ArgumentOutOfRangeException(nameof(realm)),
     };
+
+    public static SoulDamageLevel GetSoulDamageLevel(bool combatDeath, int injuryPoints)
+    {
+        if (!combatDeath)
+        {
+            return SoulDamageLevel.None;
+        }
+
+        // PC-TEMP-REINCARNATION-SOUL-DAMAGE-113: 부상 누적과 전투 사망의 임시 구간.
+        return injuryPoints switch
+        {
+            >= 8_500 => SoulDamageLevel.Critical,
+            >= 6_000 => SoulDamageLevel.Severe,
+            _ => SoulDamageLevel.Minor,
+        };
+    }
+
+    public static FamilyLineageId CreateFamilyId(
+        PersonIdentityId? parentOne,
+        PersonIdentityId? parentTwo)
+    {
+        if (parentOne is not { Value: not 0 } first)
+        {
+            return default;
+        }
+
+        var left = first.Value;
+        var right = parentTwo is { Value: not 0 } second ? second.Value : 0UL;
+        if (right != 0 && right < left)
+        {
+            (left, right) = (right, left);
+        }
+        var value = left ^ unchecked(right * 0x9E37_79B1_85EB_CA87UL) ^ 0x4641_4D49_4C59UL;
+        value ^= value >> 31;
+        return new FamilyLineageId(value == 0 ? 1UL : value);
+    }
 
     public static long GetTotalDurationTicks(RealmStage realm) => checked(
         (long)GetTotalDurationYears(realm) * GameCalendar.TicksPerYear);

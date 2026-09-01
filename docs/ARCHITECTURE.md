@@ -11,13 +11,11 @@
 ## 모듈
 
 ```text
-Chronicles.Core
-    └── Chronicles.Simulation
-            ├── Chronicles.Persistence
-            │       └── Chronicles.Desktop
-            └──────────── Chronicles.Desktop
-
-Chronicles.Tests ──> Core + Simulation
+Core -> Simulation -> Queries -> Runtime
+                  \-> Persistence
+Queries -> Presentation
+Application = Runtime + Persistence + Queries 조정
+Desktop = Application + Presentation
 ```
 
 ### Chronicles.Core
@@ -65,6 +63,19 @@ SoulId만 이어지고 육신과
 인물 ID는 새로 발급된다. 관찰 query는 이 인과 상태를 읽을 뿐 목표나 판단 revision을
 갱신하지 않는다. 임시 AI 효용 가중치는 `PC-TEMP-AI-UTILITY-113`으로 추적한다.
 
+`PersonLifeAuthority`는 성별, 영혼의 육신 결합 상태, 육신 생존 상태, 현생 단계,
+외형 정의와 6개 특징, 선천/후천 미모, 흉터, 생애 전이 Result를 평탄 SoA로 관리한다.
+사망·윤회의 강·환생은 이 owner의 전이를 거치며 단순 노화는 사건을 생성하지 않는다.
+외형 분포는 `PC-TEMP-APPEARANCE-DISTRIBUTION-113`으로 추적한다.
+
+`AgentCausalRuntime`은 Goal/Plan/Task/Action과 Event Definition/Instance/Record,
+Result, Causal Thread의 안정 ID를 한 인과선으로 연결한다. 현생별로 자기 생존·체력·
+수행·위치·관찰 랭킹의 인지 사실만 저장하고, 의미 있는 결정·실패·관계·Teaching·죽음·
+환생 기억을 인물당 8개 ring에 강화 방식으로 유지한다. `REJECT`, `REVALIDATE`,
+`RETRY`, `DEFER`, `ALTERNATIVE_RESULT`, `COMPENSATE`, `BLOCKED`와 행동/Task/Plan/Goal
+실패 범위를 공통 계약으로 둔다. 기억 상한·강화량은
+`PC-TEMP-MEMORY-POLICY-113`으로 추적한다.
+
 `ReincarnationModel.cs`는 안정 `LifeRecordId`·`JourneyId`, DTO와 기간·단계·등급
 규칙을 소유한다. `ReincarnationStore.cs`는 인물별 추가 전용 생 계보, 개인 역사적
 최고점, 현재 여정과 6영역 전생 흔적의 상태 전이·revision별 읽기 전용 projection
@@ -85,12 +96,20 @@ revision을 가진다. 연기~화신의 총 3·5·8·13·21년은 정본이고 �
 접근 임계는 8,500/6,000/3,000이다. 환생 시 integrated를 0으로 두고 현생 경지·
 기술·전투 상태에 전생 흔적을 자동 적용하지 않는다. 흔적 후보 가중치는
 `PC-TEMP-REINCARNATION-TRACE-113`으로 분리한다. 모바일 부모·환경·용량 출생 후보 계약은
-PC에서 제외하고 `PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113`으로 재검토한다.
+PC에서 실제 부모 후보 탐색·안정 FamilyId·후보 부재 장기 대기·1인 세계의 독립 현현으로
+적응했으며 `PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113`으로 재검토한다. 전투 사망의
+영혼 손상 구간은 `PC-TEMP-REINCARNATION-SOUL-DAMAGE-113`이다. 사망, 윤회 진입,
+도하 완료, 환생은 root/parent Event Record로 이어지고 계보에 부모·가계·출생 근거를
+저장한다.
 
 `RelationModel`은 인물당 최대 8개 인접 관계, 안정 관계 ID, 호감/반감·신뢰/불신·
 존중/경시·은혜·원한·경계의 6개 방향 축과 사제·우정·연애·실제 동료·지속 경쟁의
 5개 역할 flag를 소유한다. 사제 방향은 별도의 MasterAgent로 구분한다. 관계
 후보는 현재 위치의 제한된 인접 집합에서만 탐색하며 전 인구 쌍을 만들지 않는다.
+공동 수행·임무·여행·사냥·전투 외에 도시 거래/회복 중 일반 대화를 typed interaction으로
+처리한다. 관계 DTO는 같은 위치, 가계, 최신 Knowledge Claim을 명시하고 아직 권위가 없는
+조직·평판은 0값 대신 `DataUnavailable`로 제공한다. 이 임시 연결은
+`PC-TEMP-RELATION-EXTERNAL-CONTEXT-113`으로 추적한다.
 checkpoint 복원은 관계 ID·양 끝점·중복·degree와 역할 방향을 검증한 뒤 양쪽
 adjacency를 재구성한다. 생애 경계에서는 양방향 metrics·상호작용 횟수·대상별 Teaching 연속 상태를
 초기화하고 과거 PersonId가 담긴 중요 history만 유지한다. 임시 변화량과 역할 임계값은
@@ -222,14 +241,15 @@ SHA-256을 단일 SQLite transaction으로 기록하고, manifest·primary·back
 detached `World`로 복원해 state hash를 검증한다. 검증 뒤에만 Application이 live world를
 교체하며 ranking/query/UI cache는 저장하지 않는다.
 
-외부 world schema 25 안의 authority payload는 현재 checkpoint schema 24다. schema 24는 수행 trace/구성요소와
+외부 world schema 25 안의 authority payload는 checkpoint schema 25다. schema 25는 수행 trace/구성요소와
 입문 Gate 단련 보정, 기술 경험/이해, 전투 경험/이해·turn owner/부상, 지도 위치/사냥 상태를
 비롯해 간략화 시장·생산 대기열·유한 광맥·요수 개체수, TOP 1,000 부자 순위,
 기간별 랭킹 frame·누적 자리 변동, 개별 세계 사건, 100년 세계 역사서와 60개 선천자질
 Component, Soul/Body/Person ID·AI 판단 인과, 희소 방향 관계, Teaching 진행·연속성·
 영구 전수 이력, 생 계보·역사적 최고점·현재 윤회 여정·6영역 전생 흔적, 최근 12개월
 시장 수급·원형 bucket·시장 권위 revision·인물별 SourceResultId watermark·최근 거래
-원장과 다음 sequence를 저장한다. schema 7~23에 안전한
+원장과 다음 sequence뿐 아니라 생명/외형 권위, 인과 store, 관계 typed result,
+윤회 부모·가계·영혼 손상·출생 후보·사건 계보를 저장한다. schema 7~24에 안전한
 이전 기본값과 진행 전투 단일 turn owner 복구를
 제공하며, schema 13의 30종 재료·7칸 법보·35개 상품은 새 2종·3칸·44개 구조로
 명시적으로 합산 이전하고 schema 17 이하 자질 대표값은 그룹별 균일 Component로
@@ -240,7 +260,7 @@ loader는 schema 7~24를 이식하지 않는다. 사용자가 가진 기존 `wor
 유지한다. 같은 슬롯의 SQLite 임시 후보를 flush한 뒤 원자적으로
 교체하며, 손상되거나 지원하지 않는 schema는 세계를 바꾸기 전에 거부한다.
 하위 schema는 증거가 있는 생 계보만 재구성하며 기존 저장에 없던 6영역 수치를
-조작하지 않고 `HasEvidence=false`로 표시한다. schema 24 복원은 여정 단계·예약 tick,
+조작하지 않고 `HasEvidence=false`로 표시한다. schema 25 복원은 여정 단계·예약 tick,
 생 계보의 선행자·ID 중복·현재 신원과의 일치, 6영역 수치의
 `integrated <= accessible <= preserved`를 검증한 뒤에만 세계를 교체한다.
 
@@ -252,10 +272,13 @@ loader는 schema 7~24를 이식하지 않는다. 사용자가 가진 기존 `wor
 자질 간접 보정 경계, 전투 성장, 선택 UI 조회, 과거 저장 복구, 장기 성장·사냥·경쟁,
 재료 부족 생산 건너뛰기, 지도 내부 탭 지연 투영의 시간·할당량, 부자 순위·기간별
 랭킹 이력·누적 자리 변동·100년 세계 역사서, 60개 자질 Component·윤회 보존,
-Soul/Body/Person 인과 trace, 희소 관계 양끝 연결·상한, Teaching 직접 Work 0·전수 이력·
+Soul/Body/Person 인과 trace, Goal→Plan→Task→Action·인지·기억·외형 권위,
+희소 관계 양끝 연결·상한·일반 대화·typed result·외부 맥락 availability,
+Teaching 직접 Work 0·Knowledge Claim·전수 이력·
 schema 22 이전·지연 관찰, 윤회 총기간·단계 경계·3생 선행자 계보·Soul/Body/Person
 연속성·6영역 대소 관계·현생 자동 복구 금지·schema 23/하위 schema 이전·지연 관찰,
-여정 중간 저장 왕복, 시장 원자 정산·source 재생 방지·현재 수급 만료·schema 24 전체
+여정 중간 저장 왕복·부모/가계·영혼 손상·장기 출생 대기·causal refs,
+시장 원자 정산·source 재생 방지·현재 수급 만료·schema 25 전체
 필드 codec과 10,000명 성능 예산을 자동 검증한다. 0.0.13 Release 통합 검사는 45/45,
 경고 0·오류 0이며, 10,000명 초기화+20,000 tick+관찰은 891ms, schema 24
 checkpoint/복원은 각각 116/349ms였다.

@@ -29,11 +29,11 @@
     "Gap/Deferred": "요구 문장 일부 또는 전부를 증명하지 못해 완료로 주장하지 않음."
   },
   "status_counts": {
-    "Port": 30,
-    "PC Adapt": 12,
-    "PC_TEMP_REVIEW": 12,
+    "Port": 63,
+    "PC Adapt": 13,
+    "PC_TEMP_REVIEW": 20,
     "Platform Excluded": 0,
-    "Gap/Deferred": 184
+    "Gap/Deferred": 142
   },
   "rows": [
     {
@@ -1492,20 +1492,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V02",
@@ -1533,20 +1536,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V03",
@@ -1574,20 +1580,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V04",
@@ -1615,20 +1624,26 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-AI-UTILITY-113",
+        "PC-TEMP-MEMORY-POLICY-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V05",
@@ -1656,20 +1671,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V06",
@@ -1697,20 +1715,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V07",
@@ -1738,20 +1759,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V08",
@@ -1779,20 +1803,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V09",
@@ -1820,20 +1847,26 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-AI-UTILITY-113",
+        "PC-TEMP-MEMORY-POLICY-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V10",
@@ -1861,20 +1894,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V11",
@@ -1902,20 +1938,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V12",
@@ -1943,20 +1982,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "PC Adapt",
       "target_port_mode": "PC Adapt",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": "Android/모바일 전달 표면을 제외하고 같은 관찰·조회 의미를 Windows WPF와 Windows x64 검증으로 제공한다.",
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V13",
@@ -1984,20 +2026,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V14",
@@ -2025,20 +2070,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V15",
@@ -2066,20 +2114,26 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-AI-UTILITY-113",
+        "PC-TEMP-MEMORY-POLICY-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V16",
@@ -2107,20 +2161,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V17",
@@ -2148,20 +2205,23 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_person_relation_domain_tests.cpp::test_event_lineage_thread_budget_and_memory_provenance"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState",
-        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind"
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState",
+        "FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode",
+        "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState"
       ],
       "pc_test_refs": [
-        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위"
+        "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V01",
@@ -2193,6 +2253,7 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2200,6 +2261,7 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
@@ -2233,10 +2295,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2244,12 +2307,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V03",
@@ -2277,10 +2341,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2288,12 +2353,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V04",
@@ -2321,10 +2387,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2332,12 +2399,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
-      "review_ids": null,
+      "review_ids": "PC-TEMP-APPEARANCE-DISTRIBUTION-113",
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V05",
@@ -2365,10 +2433,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2376,12 +2445,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V06",
@@ -2409,10 +2479,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2420,12 +2491,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V07",
@@ -2453,10 +2525,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2464,12 +2537,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V08",
@@ -2497,10 +2571,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2508,12 +2583,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V09",
@@ -2541,10 +2617,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2552,12 +2629,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V10",
@@ -2589,6 +2667,7 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2596,6 +2675,7 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
@@ -2633,6 +2713,7 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2640,6 +2721,7 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
@@ -2677,6 +2759,7 @@
       "target_port_mode": "PC Adapt",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2684,6 +2767,7 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
@@ -2721,6 +2805,7 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2728,6 +2813,7 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
@@ -2765,6 +2851,7 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2772,6 +2859,7 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
@@ -2805,10 +2893,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2816,12 +2905,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V16",
@@ -2849,10 +2939,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2860,12 +2951,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M04-V17",
@@ -2893,10 +2985,11 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidencePopulation110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_body_owned_appearance_and_query_noninterference"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules",
         "FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry"
@@ -2904,12 +2997,13 @@
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
         "TEST::영혼·육신·현생 신원과 AI 행동 이유 권위",
+        "TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위",
         "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M05-V01",
@@ -3716,16 +3810,20 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-REINCARNATION-UPPER-DURATION-113",
         "PC-TEMP-REINCARNATION-STAGES-113",
-        "PC-TEMP-REINCARNATION-TRACE-113"
+        "PC-TEMP-REINCARNATION-TRACE-113",
+        "PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113",
+        "PC-TEMP-REINCARNATION-SOUL-DAMAGE-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -3763,11 +3861,13 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3806,11 +3906,13 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3843,22 +3945,30 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_multiple_reincarnations_preserve_lineage_peak_and_trace_layers"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-REINCARNATION-UPPER-DURATION-113",
+        "PC-TEMP-REINCARNATION-STAGES-113",
+        "PC-TEMP-REINCARNATION-TRACE-113",
+        "PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113",
+        "PC-TEMP-REINCARNATION-SOUL-DAMAGE-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "단계형 윤회는 존재하지만 부모·가문·출생 후보, 영혼 손상과 장기 대기 예외 등 전체 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M06-V05",
@@ -3892,16 +4002,20 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-REINCARNATION-UPPER-DURATION-113",
         "PC-TEMP-REINCARNATION-STAGES-113",
-        "PC-TEMP-REINCARNATION-TRACE-113"
+        "PC-TEMP-REINCARNATION-TRACE-113",
+        "PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113",
+        "PC-TEMP-REINCARNATION-SOUL-DAMAGE-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -3939,11 +4053,13 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3982,16 +4098,20 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-REINCARNATION-UPPER-DURATION-113",
         "PC-TEMP-REINCARNATION-STAGES-113",
-        "PC-TEMP-REINCARNATION-TRACE-113"
+        "PC-TEMP-REINCARNATION-TRACE-113",
+        "PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113",
+        "PC-TEMP-REINCARNATION-SOUL-DAMAGE-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -4023,22 +4143,30 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_multiple_reincarnations_preserve_lineage_peak_and_trace_layers"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-REINCARNATION-UPPER-DURATION-113",
+        "PC-TEMP-REINCARNATION-STAGES-113",
+        "PC-TEMP-REINCARNATION-TRACE-113",
+        "PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113",
+        "PC-TEMP-REINCARNATION-SOUL-DAMAGE-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "단계형 윤회는 존재하지만 부모·가문·출생 후보, 영혼 손상과 장기 대기 예외 등 전체 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M06-V09",
@@ -4072,11 +4200,13 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -4109,22 +4239,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_multiple_reincarnations_preserve_lineage_peak_and_trace_layers"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "단계형 윤회는 존재하지만 부모·가문·출생 후보, 영혼 손상과 장기 대기 예외 등 전체 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M06-V11",
@@ -4158,11 +4290,13 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -4201,11 +4335,13 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -4244,11 +4380,13 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -4287,16 +4425,20 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-REINCARNATION-UPPER-DURATION-113",
         "PC-TEMP-REINCARNATION-STAGES-113",
-        "PC-TEMP-REINCARNATION-TRACE-113"
+        "PC-TEMP-REINCARNATION-TRACE-113",
+        "PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113",
+        "PC-TEMP-REINCARNATION-SOUL-DAMAGE-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -4334,11 +4476,13 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -4371,22 +4515,30 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_multiple_reincarnations_preserve_lineage_peak_and_trace_layers"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-REINCARNATION-UPPER-DURATION-113",
+        "PC-TEMP-REINCARNATION-STAGES-113",
+        "PC-TEMP-REINCARNATION-TRACE-113",
+        "PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113",
+        "PC-TEMP-REINCARNATION-SOUL-DAMAGE-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "단계형 윤회는 존재하지만 부모·가문·출생 후보, 영혼 손상과 장기 대기 예외 등 전체 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M06-V17",
@@ -4414,22 +4566,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_life_identity_domain_tests.cpp::test_multiple_reincarnations_preserve_lineage_peak_and_trace_layers"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules",
         "FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore",
-        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint"
+        "FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage"
       ],
       "pc_test_refs": [
         "TEST::0세 탄생·6대 자질·일대기·윤회",
-        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전"
+        "TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "단계형 윤회는 존재하지만 부모·가문·출생 후보, 영혼 손상과 장기 대기 예외 등 전체 수직 계약이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M07-V01",
@@ -4457,22 +4611,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_initial_authoritative_records_and_typed_movement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M07-V02",
@@ -4505,16 +4661,19 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-RELATION-BALANCE-113",
-        "PC-TEMP-TEACHING-BALANCE-113"
+        "PC-TEMP-TEACHING-BALANCE-113",
+        "PC-TEMP-RELATION-EXTERNAL-CONTEXT-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -4546,22 +4705,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_initial_authoritative_records_and_typed_movement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M07-V04",
@@ -4589,22 +4750,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_initial_authoritative_records_and_typed_movement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M07-V05",
@@ -4637,16 +4800,19 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-RELATION-BALANCE-113",
-        "PC-TEMP-TEACHING-BALANCE-113"
+        "PC-TEMP-TEACHING-BALANCE-113",
+        "PC-TEMP-RELATION-EXTERNAL-CONTEXT-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -4678,22 +4844,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_initial_authoritative_records_and_typed_movement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M07-V07",
@@ -4726,16 +4894,19 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-RELATION-BALANCE-113",
-        "PC-TEMP-TEACHING-BALANCE-113"
+        "PC-TEMP-TEACHING-BALANCE-113",
+        "PC-TEMP-RELATION-EXTERNAL-CONTEXT-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -4767,22 +4938,28 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_initial_authoritative_records_and_typed_movement"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-RELATION-BALANCE-113",
+        "PC-TEMP-TEACHING-BALANCE-113",
+        "PC-TEMP-RELATION-EXTERNAL-CONTEXT-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M07-V09",
@@ -4815,12 +4992,14 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -4853,22 +5032,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_initial_authoritative_records_and_typed_movement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M07-V11",
@@ -4896,22 +5077,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_initial_authoritative_records_and_typed_movement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M07-V12",
@@ -4944,12 +5127,14 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -4987,12 +5172,14 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -5030,16 +5217,19 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-RELATION-BALANCE-113",
-        "PC-TEMP-TEACHING-BALANCE-113"
+        "PC-TEMP-TEACHING-BALANCE-113",
+        "PC-TEMP-RELATION-EXTERNAL-CONTEXT-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -5076,12 +5266,14 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -5114,22 +5306,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_initial_authoritative_records_and_typed_movement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M07-V17",
@@ -5157,22 +5351,24 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_initial_authoritative_records_and_typed_movement"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.16",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore",
+        "FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot",
         "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules",
         "FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching"
       ],
       "pc_test_refs": [
         "TEST::희소 방향 관계 6축·초기 Role·생애 경계",
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M08-V01",

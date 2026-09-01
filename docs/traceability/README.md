@@ -27,14 +27,15 @@ PC에서 구현할 부분은 계속 추적하고 Android 전용 절만 `excluded
 
 - PC 기준: `0.0.13`, Git `558a184d2cf88b0f1a2318eb028125257786d261`
 - 총 행: 238
-- `Port`: 30
-- `PC Adapt`: 12
-- `PC_TEMP_REVIEW`: 12
+- `Port`: 63
+- `PC Adapt`: 13
+- `PC_TEMP_REVIEW`: 20
 - `Platform Excluded`: 0
-- `Gap/Deferred`: 184
+- `Gap/Deferred`: 142
 
-이 숫자는 0.0.14 추적 기반 생성 시점의 보수적 판정이다. 기능 구현 시 관련 행의
-권위 상태, 저장/hash, query, UI와 테스트 근거를 모두 연결한 다음 변경한다.
+이 숫자는 0.0.16의 M03·M04·M06·M07 수직 기능 반영 상태다. 네 Master의 68개 행은
+모두 완료 계열로 분류되어 Gap이 0이며, 남은 142개는 후속 버전에서 권위 상태,
+저장/hash, query, UI와 테스트 근거를 모두 연결한 다음 변경한다.
 
 ## 생성과 검증
 

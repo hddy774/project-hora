@@ -24,10 +24,21 @@ Desktop = Application + Presentation
 
 ## 0.0.14 전환 메모
 
-기존 snapshot 값 형식 중 일부의 CLR namespace는 결정론과 schema 24를 보존하기 위해
+기존 snapshot 값 형식 중 일부의 CLR namespace는 결정론과 authority schema를 보존하기 위해
 아직 `Chronicles.Simulation`에 남아 있다. Desktop은 이 형식을 transitively 표시할 수
 있지만 가변 `World`나 store에는 접근하지 않는다. DTO 물리 이동은 저장/RNG 변경과
 섞지 않고 후속 수직 기능에서 query-owned projection으로 교체한다.
+
+## 0.0.16 수직 기능 진입점
+
+- 인물 생명 권위: `PersonLifeAuthority.cs`
+- Goal→Plan→Task→Action·인지·현생 기억: `AgentCausalRuntime.cs`
+- 윤회·부모·가계·영혼 손상·사건 계보: `ReincarnationModel.cs`와
+  `ReincarnationStore*.cs`
+- 희소 관계·일반 대화·Teaching·외부 맥락 availability: `RelationModel.cs`
+
+이 파일들은 모두 Simulation 권위 owner다. Desktop은 `WorldObservationQueries`가 만든
+불변 DTO만 받아 펼친 인물 상세 구역을 그린다.
 
 ## 검증
 

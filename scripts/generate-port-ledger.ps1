@@ -57,9 +57,11 @@ $masterEvidence = @{
         'FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec',
         'FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore')
     M03 = @(
-        'FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState',
-        'FILE::src/Chronicles.Simulation/PersonCausalModel.cs::DecisionResolutionKind')
+        'FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState',
+        'FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode',
+        'FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState')
     M04 = @(
+        'FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules',
         'FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot',
         'FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore',
         'FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry')
@@ -70,9 +72,11 @@ $masterEvidence = @{
     M06 = @(
         'FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules',
         'FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore',
-        'FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint')
+        'FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint',
+        'FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage')
     M07 = @(
         'FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore',
+        'FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot',
         'FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules',
         'FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching')
     M08 = @(
@@ -105,10 +109,14 @@ $masterTests = @{
         'TEST::저장 codec 결정론 왕복',
         'TEST::손상 저장 거부',
         'TEST::원자 저장 파일 왕복')
-    M03 = @('TEST::영혼·육신·현생 신원과 AI 행동 이유 권위')
+    M03 = @(
+        'TEST::영혼·육신·현생 신원과 AI 행동 이유 권위',
+        'TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위',
+        'TEST::관찰 조회 무영향')
     M04 = @(
         'TEST::0세 탄생·6대 자질·일대기·윤회',
         'TEST::영혼·육신·현생 신원과 AI 행동 이유 권위',
+        'TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위',
         'TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전')
     M05 = @(
         'TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준',
@@ -117,10 +125,12 @@ $masterTests = @{
         'TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전')
     M06 = @(
         'TEST::0세 탄생·6대 자질·일대기·윤회',
-        'TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전')
+        'TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전',
+        'TEST::관찰 조회 무영향')
     M07 = @(
         'TEST::희소 방향 관계 6축·초기 Role·생애 경계',
-        'TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%')
+        'TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%',
+        'TEST::관찰 조회 무영향')
     M08 = @(
         'TEST::3×3 지도와 지형별 요수 생태',
         'TEST::지도 내부 탭 지연 투영 성능')
@@ -141,18 +151,28 @@ $masterTests = @{
 
 $portIds = @(
     'A110-M02-V09', 'A110-M02-V10', 'A110-M02-V14',
-    'A110-M04-V01', 'A110-M04-V10', 'A110-M04-V11', 'A110-M04-V13',
-    'A110-M04-V14',
+    'A110-M03-V01', 'A110-M03-V02', 'A110-M03-V03', 'A110-M03-V05',
+    'A110-M03-V06', 'A110-M03-V07', 'A110-M03-V08', 'A110-M03-V10',
+    'A110-M03-V11', 'A110-M03-V13', 'A110-M03-V14', 'A110-M03-V16',
+    'A110-M03-V17',
+    'A110-M04-V01', 'A110-M04-V02', 'A110-M04-V03', 'A110-M04-V05',
+    'A110-M04-V06', 'A110-M04-V07', 'A110-M04-V08', 'A110-M04-V09',
+    'A110-M04-V10', 'A110-M04-V11', 'A110-M04-V13', 'A110-M04-V14',
+    'A110-M04-V15', 'A110-M04-V16', 'A110-M04-V17',
     'A110-M05-V02', 'A110-M05-V03', 'A110-M05-V05', 'A110-M05-V06',
     'A110-M05-V10', 'A110-M05-V11', 'A110-M05-V13', 'A110-M05-V15',
     'A110-M06-V02', 'A110-M06-V03', 'A110-M06-V06', 'A110-M06-V09',
-    'A110-M06-V11', 'A110-M06-V13', 'A110-M06-V15',
-    'A110-M07-V09', 'A110-M07-V13', 'A110-M07-V15',
+    'A110-M06-V10', 'A110-M06-V11', 'A110-M06-V13', 'A110-M06-V15',
+    'A110-M06-V17',
+    'A110-M07-V01', 'A110-M07-V03', 'A110-M07-V04', 'A110-M07-V06',
+    'A110-M07-V09', 'A110-M07-V10', 'A110-M07-V11', 'A110-M07-V13',
+    'A110-M07-V15', 'A110-M07-V16', 'A110-M07-V17',
     'A110-M08-V14',
     'A110-M10-V01', 'A110-M10-V11', 'A110-M10-V15'
 )
 
 $pcAdaptIds = @(
+    'A110-M03-V12',
     'A110-M04-V12', 'A110-M05-V12', 'A110-M06-V12', 'A110-M07-V12',
     'A110-M10-V12',
     'A110-M14-V01', 'A110-M14-V06', 'A110-M14-V09', 'A110-M14-V10',
@@ -160,20 +180,30 @@ $pcAdaptIds = @(
 )
 
 $tempReviewIds = @(
+    'A110-M03-V04', 'A110-M03-V09', 'A110-M03-V15',
+    'A110-M04-V04',
     'A110-M05-V09', 'A110-M05-V14',
-    'A110-M06-V01', 'A110-M06-V05', 'A110-M06-V07',
-    'A110-M06-V14',
-    'A110-M07-V02', 'A110-M07-V05', 'A110-M07-V07', 'A110-M07-V14',
+    'A110-M06-V01', 'A110-M06-V04', 'A110-M06-V05', 'A110-M06-V07',
+    'A110-M06-V08', 'A110-M06-V14', 'A110-M06-V16',
+    'A110-M07-V02', 'A110-M07-V05', 'A110-M07-V07', 'A110-M07-V08',
+    'A110-M07-V14',
     'A110-M10-V07', 'A110-M10-V14'
 )
 
 $reviewIds = @{
+    M03 = @('PC-TEMP-AI-UTILITY-113', 'PC-TEMP-MEMORY-POLICY-113')
+    M04 = @('PC-TEMP-APPEARANCE-DISTRIBUTION-113')
     M05 = @('PC-TEMP-TRAIT-DIST-113', 'PC-TEMP-TRAIT-ROLE-113', 'PC-TEMP-SPIRIT-ROOT-113')
     M06 = @(
         'PC-TEMP-REINCARNATION-UPPER-DURATION-113',
         'PC-TEMP-REINCARNATION-STAGES-113',
-        'PC-TEMP-REINCARNATION-TRACE-113')
-    M07 = @('PC-TEMP-RELATION-BALANCE-113', 'PC-TEMP-TEACHING-BALANCE-113')
+        'PC-TEMP-REINCARNATION-TRACE-113',
+        'PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113',
+        'PC-TEMP-REINCARNATION-SOUL-DAMAGE-113')
+    M07 = @(
+        'PC-TEMP-RELATION-BALANCE-113',
+        'PC-TEMP-TEACHING-BALANCE-113',
+        'PC-TEMP-RELATION-EXTERNAL-CONTEXT-113')
     M10 = @(
         'PC-TEMP-MARKET-WINDOW-113',
         'PC-TEMP-MARKET-LEDGER-113',

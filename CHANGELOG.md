@@ -4,6 +4,70 @@
 사용자가 확인할 수 있는 기능뿐 아니라 저장 schema, 결정론, 성능과 내부 구조 변경까지
 버전별로 기록한다.
 
+## 0.0.16 — 인물 생명 권위·AI 인과·윤회 출생·관계 provenance
+
+### Soul/Life/Body/Person과 외형
+
+- Soul/Body/Person ID 외에 영혼 결합 상태, 육신 생존 상태, 현생 단계, 성별과 외형 정의를
+  권위 SoA로 분리했다. 외형은 6개 특징과 선천/후천 미모, 전투에서 생긴 흉터를 포함한다.
+- 출생, 육신 사망, 윤회의 강 진입, 새 육신 성립을 typed transition/result로 처리한다.
+  단순 월별 노화는 사건을 만들지 않고 나이는 세계 tick과 출생 tick에서 파생한다.
+- 외형 생성 분포는 `PC-TEMP-APPEARANCE-DISTRIBUTION-113`으로 남겨 확정값으로 위장하지
+  않는다.
+
+### Goal→Plan→Task→Action 인과 런타임
+
+- Goal, Plan, Task, Action, Event Definition/Instance/Record, Result, Causal Thread에 각각
+  안정 ID를 부여하고 최초 원인·부모·현재 record를 연결했다.
+- 각 AI는 자기 생존·체력·수행·위치·공개 랭킹처럼 인지 가능한 5개 사실을 별도 상태로
+  가진다. 객관 WorldState와 인지 사실, 현재 인과 경로, 생별 Memory, Teaching
+  Knowledge Claim을 서로 다른 타입으로 분리했다.
+- 성공뿐 아니라 Reject/Revalidate/Retry/Defer/Alternative/Compensate/Blocked와
+  Action/Task/Plan/Goal 실패 범위를 공통 계약으로 추가했다.
+- 현생 기억은 인물당 8개 고정 ring으로 제한하며 반복되는 장기 행동·관계 경험은 새 행을
+  계속 만들지 않고 강도와 강화 횟수를 갱신한다. 임시 정책은
+  `PC-TEMP-MEMORY-POLICY-113`이다.
+
+### 윤회·부모·가계와 사건 계보
+
+- 전투 부상과 사망 원인에서 영혼 손상 단계를 계산하고 윤회 여정에 보존한다.
+- 환생 준비 시 현재 생존 인물 중 결정론적 제한 탐색으로 부모 후보를 찾고 안정 FamilyId를
+  만든다. 후보가 없으면 장기 대기 후 재탐색하며, 인구 1명 세계는 명시적인 독립 현현을
+  사용한다.
+- 사망→윤회 진입→도하 완료→새 생의 Event Record를 root/parent 계보로 저장하고 UI에서
+  각 record를 확인할 수 있게 했다.
+- 부모 후보와 영혼 손상 수치는 각각 `PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113`,
+  `PC-TEMP-REINCARNATION-SOUL-DAMAGE-113`으로 다음 검토에 등록했다.
+
+### 관계·대화·Teaching provenance
+
+- 공동 수행·임무·여행·사냥·전투 외에 같은 지역의 거래/회복 중 일반 대화를 관계
+  상호작용으로 추가했다.
+- 관계와 Teaching 결과에 안정 Result ID, sequence, 상태, source causal Event Record를
+  연결했다. 학습 결과는 Knowledge Claim으로 분리되고 관계 기억이 PersonId·RelationId·
+  source result/event를 참조한다.
+- 관계 상세은 현재 같은 지역인지, 가계와 최신 Knowledge Claim이 무엇인지 표시한다.
+  아직 후속 버전 소유인 조직·평판은 가짜 0값 대신 `DataUnavailable`로 명시한다.
+
+### 저장·UI·이식 원장
+
+- authority checkpoint를 schema 25로 올려 생명/외형, causal store, 관계 typed result,
+  윤회 부모·가계·손상·후보·causal refs를 저장/hash/손상 검증에 포함했다.
+- 인물 상세에 `생애·육신·외형 권위`, `인과선·인지 사실·현재 생 기억` Expander를
+  추가했다. 접혀 있으면 해당 DTO를 생성하지 않는다.
+- M03/M04/M06/M07 총 68개 행의 `Gap/Deferred`를 0으로 닫았다. 전체 원장은
+  `Port 63 / PC Adapt 13 / PC_TEMP_REVIEW 20 / Gap 142`이며 세부 계약은
+  `docs/traceability/PC-PERSON-CAUSAL-016.md`에 기록한다.
+
+### 검증
+
+- Windows Release 전체 솔루션 빌드는 경고 0·오류 0이다.
+- 자동 검사 49/49와 아키텍처·238행 원장 검증을 통과했다.
+- 500명·160년 희소 관계 검사는 최대 degree 8을 지키며 약 1.39초였다.
+- 10,000명 SQLite 5회 중앙값에서 managed peak는 기존 container보다 86.4% 줄었지만,
+  저장/복원 1초 초기 예산 중 저장이 1.155초로 0.155초 초과했다. 이 미달은 숨기지 않고
+  normalized authority table·streaming codec 후속 최적화 항목으로 유지한다.
+
 ## 0.0.15 — 권위 계약·Stable Registry·SQLite schema 25 슬롯
 
 ### 권위 세션과 Registry

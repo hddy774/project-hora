@@ -47,6 +47,13 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
   PersonId가 바뀌는지 확인. 최종 목표·보조 목표·현재/차선 행동·선택 이유·typed
   Resolution과 판단 revision이 함께 갱신되며 상세창을 열고 닫아도 판단 결과와 RNG가
   달라지지 않는지 확인
+- `생애·육신·외형 권위`를 펼쳤을 때 성별, 영혼/육신/현생 상태, 외형 정의 ID,
+  6개 특징, 선천/후천 미모와 흉터가 표시되는지 확인. 전투 부상 생존 뒤 흉터가 생기고
+  새 육신에서는 새 외형 권위가 생성되는지 확인
+- `인과선·인지 사실·현재 생 기억`을 펼쳤을 때 Goal/Plan/Task/Action과 Event
+  Definition/Instance/Record, Result, Causal Thread root/parent가 표시되는지 확인.
+  인지 사실은 자기 생명·체력·수행·위치·관찰 랭킹으로 제한되고, 기억은 최대 8개이며
+  반복 행동에서 행 증가 대신 강화 횟수가 증가하는지 확인
 - 사망 당시 개인 최고 경지에 따라 윤회의 강 총 체류 기간이 연기 3년·축기
   5년·금단 8년·원영 13년·화신 21년인지 확인. 상위 경지는 PC 임시값
   34·55·89·144·233년과 `PC-TEMP-REINCARNATION-UPPER-DURATION-113`을 표시하는지 확인
@@ -56,6 +63,11 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
 - 환생 후 SoulId는 같고 BodyId·PersonId는 다르며, 3생 이상의 생 계보가 중복
   LifeRecordId 없이 직전 생 선행자로 연결되는지 확인. 각 생의 당시 이름·탄생/사망·
   사망 원인·역사적 최고점·JourneyId가 이후 환생에도 바뀌지 않는지 확인
+- 전투 사망 시 윤회 여정의 영혼 손상이 표시되고, 환생 준비에서 부모 후보·FamilyId가
+  생성되는지 확인. 후보가 없는 격리 세계에서는 `후보 없음·장기 대기`, 1인 세계에서는
+  `천지 독립 현현`으로 명시되는지 확인
+- 윤회 상세의 causal root·진입·도하 완료·환생 record가 0이 아닌 안정 ID로 연결되는지
+  확인. 이전 schema에서 근거가 없으면 값을 만들지 않고 `DataUnavailable`로 보이는지 확인
 - `윤회 연속성` 내부 탭을 선택했을 때만 선택 인물의 계보·여정·6영역 DTO가
   표시되는지 확인. 다른 탭에서 윤회 관찰 플래그를 요청하지 않고
   `SelectedReincarnation`이 null이며 전후 상태
@@ -72,6 +84,9 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
   별도 MasterAgent에서 파생된 `스승/제자` 표기가 방향에 맞는지 확인
 - 관계 Expander를 펼쳤을 때만 관계 DTO가 만들어지고, 접힌 동안
   `ObservationSections.Relations` 결과가 null이며 조회 전후 상태 hash가 같은지 확인
+- 관계 상세에서 일반 대화와 최신 typed result/source Event Record가 보이는지 확인.
+  같은 지역·가계·Knowledge Claim 맥락을 표시하고 아직 없는 조직·평판은 0이 아니라
+  `DataUnavailable`로 표시하는지 확인
 - `사제·가르침·전승 추적`을 펼쳤을 때만 Teaching DTO가 만들어지고 교사·학습자 이름/ID,
   시작일·결과·효과, 공법/법술 KnowledgeRef와 전수 출처가 표시되는지 확인. 접힌 동안
   Teaching DTO가 null이며 조회 전후 상태 hash가 같은지 확인
@@ -151,7 +166,7 @@ powershell -ExecutionPolicy Bypass -File scripts/build-local.ps1 -CreateDesktopS
 - 진행한 뒤 불러오면 저장한 tick과 상태로 돌아가는지 확인
 - 기존 `%LocalAppData%\ChroniclesOfMyriadImmortalPaths\world.cmip`은 byte·timestamp가
   바뀌지 않고 `호환되지 않는 이전 저장`으로 표시되는지 확인
-- 독립 codec 회귀에서 기존 schema 7~23 저장을 복원하면 schema 24의 랭킹 기준점·부자 순위·누적 자리
+- 독립 codec 회귀에서 기존 schema 7~24 저장을 복원하면 schema 25의 랭킹 기준점·부자 순위·누적 자리
   변동·100년 세계 역사서와 60개 자질 Component를 복원하는지 확인. schema 20 미만은
   Soul/Body/Person ID와 최소 AI 판단 trace를 결정론적으로 재구성하고, schema 21 미만은
   빈 관계를 생성한다. schema 21은 관계를 보존하면서 Teaching을 빈값으로 이전하고,

@@ -77,5 +77,13 @@
     "source_requirement_contract": "ALPHA_1_1_0_REQUIREMENT_COVERAGE_V1",
     "generator": "scripts/generate-port-ledger.ps1",
     "validator": "scripts/validate-port-ledger.ps1"
+  },
+  "feature_entrypoints": {
+    "person_life_authority": "src/Chronicles.Simulation/PersonLifeAuthority.cs",
+    "agent_causal_runtime": "src/Chronicles.Simulation/AgentCausalRuntime.cs",
+    "reincarnation_authority": "src/Chronicles.Simulation/ReincarnationModel.cs",
+    "sparse_relations": "src/Chronicles.Simulation/RelationModel.cs",
+    "agent_observation_ui": "src/Chronicles.Desktop/MainWindow.AgentObservation.cs",
+    "vertical_contract_test": "tests/Chronicles.Tests/Program.cs"
   }
 }

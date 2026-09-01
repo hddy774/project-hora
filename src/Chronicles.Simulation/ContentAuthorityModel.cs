@@ -168,7 +168,8 @@ public readonly record struct ContentInstanceCheckpoint(
     ushort ConditionHundredths,
     ContentInstanceStatus Status,
     long AuthorityRevision,
-    long LatestProvenanceId);
+    long LatestProvenanceId,
+    ulong GeneratedElementId = 0);
 
 public readonly record struct ContentProvenanceCheckpoint(
     long ProvenanceId,
@@ -212,7 +213,8 @@ public readonly record struct CreateContentInstanceCommand(
     ushort QualityHundredths,
     ushort ConditionHundredths,
     ContentSourceResultId SourceResultId,
-    long Tick);
+    long Tick,
+    ulong GeneratedElementId = 0);
 
 public readonly record struct TransferContentCommand(
     ContentInstanceId InstanceId,
@@ -268,7 +270,8 @@ public sealed record ContentInstanceSnapshot(
     ContentInstanceStatus Status,
     ContentDiscoveryState ViewerDiscovery,
     long AuthorityRevision,
-    ContentProvenanceId LatestProvenanceId);
+    ContentProvenanceId LatestProvenanceId,
+    GeneratedItemDefinitionSnapshot? GeneratedDefinition = null);
 
 public sealed record WorldContentSnapshot(
     long AuthorityRevision,

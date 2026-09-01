@@ -19,18 +19,11 @@ internal static class ContentAuthorityPopulation
         "material.pill",
     ];
 
-    private static readonly string[] ItemDefinitions =
-    [
-        "item.artifact.offense",
-        "item.artifact.defense",
-        "item.pill.growth",
-        "item.pill.breakthrough",
-    ];
-
-    public static ContentAuthorityStore Create(ulong worldSeed)
+    public static ContentAuthorityStore Create(WorldGenerationCatalog generation)
     {
-        var store = new ContentAuthorityStore();
-        var locationOffset = checked((int)(worldSeed
+        ArgumentNullException.ThrowIfNull(generation);
+        var store = new ContentAuthorityStore(generation);
+        var locationOffset = checked((int)(generation.WorldSeed
             % (ulong)WorldAtlasRules.ProductionLocationCount));
         AddSecretRealms(store, locationOffset);
         AddWorldInstances(
@@ -40,13 +33,7 @@ internal static class ContentAuthorityPopulation
             MaterialSourcePrefix,
             locationOffset,
             locationStride: 17);
-        AddWorldInstances(
-            store,
-            ItemDefinitions,
-            ContentPopulationRules.ApprovedItemInstanceCount,
-            ItemSourcePrefix,
-            locationOffset,
-            locationStride: 31);
+        AddGeneratedItems(store, generation, locationOffset);
         AddWorldInstances(
             store,
             ["created-work.independent-inheritance"],
@@ -55,6 +42,44 @@ internal static class ContentAuthorityPopulation
             locationOffset,
             locationStride: 47);
         return store;
+    }
+
+    private static void AddGeneratedItems(
+        ContentAuthorityStore store,
+        WorldGenerationCatalog generation,
+        int locationOffset)
+    {
+        var fixedItems = generation.Items.Where(value => value.IsFixedUnique).ToArray();
+        var randomItems = generation.Items.Where(value => !value.IsFixedUnique).ToArray();
+        if (randomItems.Length == 0)
+        {
+            throw new InvalidDataException("초기 무작위 아이템 Definition이 없습니다.");
+        }
+        for (var index = 0;
+            index < generation.Configuration.InitialItemInstanceCount;
+            index++)
+        {
+            var generated = index < fixedItems.Length
+                ? fixedItems[index]
+                : randomItems[(index - fixedItems.Length) % randomItems.Length];
+            if (!ContentDefinitionRegistry.TryGet(
+                    new ContentDefinitionId(generated.BaseDefinitionId),
+                    out var definition))
+            {
+                throw new InvalidDataException(
+                    $"생성 아이템 기본 Definition이 없습니다: {generated.BaseDefinitionId:X16}");
+            }
+            AddWorldInstance(
+                store,
+                definition,
+                ItemSourcePrefix,
+                index,
+                checked((ushort)((locationOffset + (index * 31))
+                    % WorldAtlasRules.ProductionLocationCount)),
+                generated.GeneratedId,
+                ContentQualityAvailability.Specified,
+                generated.QualityHundredths);
+        }
     }
 
     private static void AddSecretRealms(ContentAuthorityStore store, int locationOffset)
@@ -100,21 +125,43 @@ internal static class ContentAuthorityPopulation
         ushort locationId)
     {
         var definition = ContentDefinitionRegistry.Get(definitionRef);
+        AddWorldInstance(
+            store,
+            definition,
+            sourcePrefix,
+            index,
+            locationId,
+            generatedElementId: 0,
+            qualityAvailability: ContentQualityAvailability.DataUnavailable,
+            qualityHundredths: 0);
+    }
+
+    private static void AddWorldInstance(
+        ContentAuthorityStore store,
+        ContentDefinition definition,
+        ulong sourcePrefix,
+        int index,
+        ushort locationId,
+        ulong generatedElementId,
+        ContentQualityAvailability qualityAvailability,
+        ushort qualityHundredths)
+    {
         var result = store.TryCreate(new CreateContentInstanceCommand(
             definition.Id,
             ContentOwnerRef.World,
             new ContentHolderRef(ContentHolderKind.WorldLocation, 0),
             locationId,
             Quantity: 1,
-            ContentQualityAvailability.DataUnavailable,
-            QualityHundredths: 0,
+            qualityAvailability,
+            qualityHundredths,
             ConditionHundredths: QualityValue.MaximumHundredths,
             new ContentSourceResultId(sourcePrefix + checked((ulong)index + 1UL)),
-            Tick: 0));
+            Tick: 0,
+            GeneratedElementId: generatedElementId));
         if (!result.Applied)
         {
             throw new InvalidOperationException(
-                $"초기 콘텐츠 생성에 실패했습니다: {definitionRef} #{index + 1} · {result.Status}");
+                $"초기 콘텐츠 생성에 실패했습니다: {definition.StableRef} #{index + 1} · {result.Status}");
         }
     }
 }

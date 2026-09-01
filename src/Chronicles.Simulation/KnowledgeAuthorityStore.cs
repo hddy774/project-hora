@@ -11,6 +11,7 @@ public sealed class KnowledgeAuthorityStore
     public const int CurrentSchemaRevision = 1;
 
     private readonly int _population;
+    private readonly WorldGenerationCatalog? _generationCatalog;
     private readonly List<KnowledgeContentCheckpoint> _contents = [];
     private readonly List<KnowledgeEditionCheckpoint> _editions = [];
     private readonly List<KnowledgeRecordBindingCheckpoint> _recordBindings = [];
@@ -28,10 +29,13 @@ public sealed class KnowledgeAuthorityStore
     private long _nextProvenanceId = 1;
     private long _provenanceSequence;
 
-    public KnowledgeAuthorityStore(int population)
+    public KnowledgeAuthorityStore(
+        int population,
+        WorldGenerationCatalog? generationCatalog = null)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(population);
         _population = population;
+        _generationCatalog = generationCatalog;
     }
 
     public int ContentCount => _contents.Count;
@@ -46,32 +50,41 @@ public sealed class KnowledgeAuthorityStore
         int population,
         ContentAuthorityStore contentStore)
     {
+        var generation = WorldGenerationCatalog.Create(
+            worldSeed,
+            WorldGenerationConfiguration.Default);
+        return CreateInitial(worldSeed, population, contentStore, generation);
+    }
+
+    public static KnowledgeAuthorityStore CreateInitial(
+        ulong worldSeed,
+        int population,
+        ContentAuthorityStore contentStore,
+        WorldGenerationCatalog generation)
+    {
         ArgumentNullException.ThrowIfNull(contentStore);
-        var store = new KnowledgeAuthorityStore(population);
-        for (var ordinal = 0; ordinal < KnowledgePopulationRules.InitialContentCount; ordinal++)
+        ArgumentNullException.ThrowIfNull(generation);
+        var store = new KnowledgeAuthorityStore(population, generation);
+        for (var ordinal = 0; ordinal < generation.Books.Count; ordinal++)
         {
-            var kind = ordinal < KnowledgePopulationRules.TechniqueContentCount
-                ? KnowledgeContentKind.Technique
-                : KnowledgeContentKind.Spell;
-            var contentId = new KnowledgeContentId(AuthorityRegistry.CreateStableId(
-                "cmip.knowledge-content.initial",
-                $"{worldSeed:X16}.{ordinal + 1:000}").Value);
+            var generated = generation.Books[ordinal];
+            var contentId = new KnowledgeContentId(generated.ContentId);
             store.AddInitialContent(
                 contentId,
-                kind,
-                ordinal + 1,
+                generated.Kind,
+                generated.CatalogOrdinal,
                 new ContentSourceResultId(
                     KnowledgePopulationRules.InitialContentSourcePrefix
                     + checked((ulong)ordinal + 1UL)));
         }
 
-        for (var index = 0; index < KnowledgePopulationRules.InitialEditionCount; index++)
+        for (var index = 0;
+            index < generation.Configuration.InitialBookEditionCount;
+            index++)
         {
-            var contentIndex = index < KnowledgePopulationRules.InitialContentCount
-                ? index
-                : index - KnowledgePopulationRules.InitialContentCount;
+            var contentIndex = index % store._contents.Count;
             var contentId = new KnowledgeContentId(store._contents[contentIndex].ContentId);
-            var parent = index < KnowledgePopulationRules.InitialContentCount
+            var parent = index < store._contents.Count
                 ? (KnowledgeEditionId?)null
                 : new KnowledgeEditionId(contentIndex + 1L);
             var relation = parent is null
@@ -97,7 +110,9 @@ public sealed class KnowledgeAuthorityStore
 
         var locationOffset = checked((int)(worldSeed
             % (ulong)WorldAtlasRules.ProductionLocationCount));
-        for (var index = 0; index < KnowledgePopulationRules.InitialPhysicalRecordCount; index++)
+        for (var index = 0;
+            index < generation.Configuration.InitialPhysicalBookCount;
+            index++)
         {
             var edition = store._editions[index % store._editions.Count];
             var knowledge = store._contents[store._contentIndexById[edition.ContentId]];
@@ -147,12 +162,13 @@ public sealed class KnowledgeAuthorityStore
     public static KnowledgeAuthorityStore Restore(
         KnowledgeAuthorityCheckpoint checkpoint,
         int population,
-        ContentAuthorityStore contentStore)
+        ContentAuthorityStore contentStore,
+        WorldGenerationCatalog? generationCatalog = null)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
         ArgumentNullException.ThrowIfNull(contentStore);
         ValidateCheckpoint(checkpoint, population, contentStore);
-        var store = new KnowledgeAuthorityStore(population)
+        var store = new KnowledgeAuthorityStore(population, generationCatalog)
         {
             _nextEditionId = checkpoint.NextEditionId,
             _nextProvenanceId = checkpoint.NextProvenanceId,
@@ -687,13 +703,36 @@ public sealed class KnowledgeAuthorityStore
         int catalogOrdinal,
         ContentSourceResultId source)
     {
-        var sourceStatus = ValidateNewSource(source);
-        if (sourceStatus != KnowledgeCommandStatus.Applied)
+        var result = TryRegisterGeneratedContent(
+            contentId,
+            kind,
+            catalogOrdinal,
+            source,
+            tick: 0);
+        if (!result.Applied)
         {
             throw new InvalidOperationException("초기 지식 Content source가 중복되었습니다.");
         }
+    }
+
+    internal KnowledgeCommandResult TryRegisterGeneratedContent(
+        KnowledgeContentId contentId,
+        KnowledgeContentKind kind,
+        int catalogOrdinal,
+        ContentSourceResultId source,
+        long tick)
+    {
+        if (catalogOrdinal <= 0 || tick < 0 || _contentIndexById.ContainsKey(contentId.Value))
+        {
+            return new KnowledgeCommandResult(KnowledgeCommandStatus.InvalidContent);
+        }
+        var sourceStatus = ValidateNewSource(source);
+        if (sourceStatus != KnowledgeCommandStatus.Applied)
+        {
+            return new KnowledgeCommandResult(sourceStatus);
+        }
         var provenanceId = AppendProvenance(
-            tick: 0,
+            tick,
             source,
             KnowledgeProvenanceKind.ContentAuthored,
             contentId,
@@ -707,15 +746,35 @@ public sealed class KnowledgeAuthorityStore
             kind,
             catalogOrdinal,
             OriginatorAgent: -1,
-            CreatedTick: 0,
+            CreatedTick: tick,
             provenanceId.Value);
         _contentIndexById.Add(contentId.Value, _contents.Count);
         _contents.Add(value);
+        return new KnowledgeCommandResult(
+            KnowledgeCommandStatus.Applied,
+            contentId,
+            ProvenanceId: provenanceId);
     }
 
     private KnowledgeEditionSnapshot CreateEditionSnapshot(KnowledgeEditionCheckpoint edition)
     {
         var content = _contents[_contentIndexById[edition.ContentId]];
+        GeneratedBookDefinitionSnapshot? generatedSnapshot = null;
+        if (_generationCatalog is not null
+            && _generationCatalog.TryGetBook(
+                new KnowledgeContentId(content.ContentId),
+                out var generated))
+        {
+            generatedSnapshot = new GeneratedBookDefinitionSnapshot(
+                new KnowledgeContentId(generated.ContentId),
+                generated.CatalogOrdinal,
+                GeneratedWorldNameFormatter.FormatBook(generated.Name),
+                generated.PrimaryEffect,
+                generated.PrimaryStrengthHundredths,
+                generated.SecondaryEffect,
+                generated.SecondaryStrengthHundredths,
+                generated.CreatedMonth);
+        }
         return new KnowledgeEditionSnapshot(
             new KnowledgeEditionId(edition.EditionId),
             new KnowledgeContentId(edition.ContentId),
@@ -728,7 +787,8 @@ public sealed class KnowledgeAuthorityStore
             edition.ConfidenceAvailability,
             edition.ConfidenceHundredths,
             _physicalRecordCountByEdition.GetValueOrDefault(edition.EditionId),
-            _accessCountByEdition.GetValueOrDefault(edition.EditionId));
+            _accessCountByEdition.GetValueOrDefault(edition.EditionId),
+            generatedSnapshot);
     }
 
     private KnowledgeCommandStatus ValidateNewSource(ContentSourceResultId source)

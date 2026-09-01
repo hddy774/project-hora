@@ -290,7 +290,7 @@ public sealed partial class World
 
     private bool TryFoundSectFromLocalRelations(int founder)
     {
-        var location = WorldMapRules.GetLocation(_agents.LocationIds[founder]);
+        var location = _generation.Map.GetLocation(_agents.LocationIds[founder]);
         var point = GetSecondHeavenPointForLocation(location);
         if (_agents.LifeStates[founder] != PersonLifeState.Living
             || _agents.RealmStages[founder] < RealmStage.GoldenCore
@@ -431,7 +431,7 @@ public sealed partial class World
             return false;
         }
 
-        var current = WorldMapRules.GetLocation(_agents.LocationIds[agent]);
+        var current = _generation.Map.GetLocation(_agents.LocationIds[agent]);
         if (current.HeavenlyLayer != 2
             || GetSecondHeavenPointForLocation(current).Resources.HasSpiritVein)
         {
@@ -444,7 +444,7 @@ public sealed partial class World
             _agents.RealmStages[agent]);
         for (var index = 0; index < perceived.Count; index++)
         {
-            var destination = WorldMapRules.GetLocation(perceived[index]);
+            var destination = _generation.Map.GetLocation(perceived[index]);
             if (destination.HeavenlyLayer == 2
                 && GetSecondHeavenPointForLocation(destination).Resources.HasSpiritVein
                 && PrepareTravelTo(agent, destination.Id))

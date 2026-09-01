@@ -216,9 +216,10 @@ public sealed record WorldCheckpoint(
     OrganizationStoreCheckpoint? Organizations = null,
     ContentAuthorityCheckpoint? Content = null,
     KnowledgeAuthorityCheckpoint? Knowledge = null,
-    LawAuthorityCheckpoint? Laws = null)
+    LawAuthorityCheckpoint? Laws = null,
+    WorldGenerationCheckpoint? Generation = null)
 {
-    public const int CurrentSchemaVersion = 29;
+    public const int CurrentSchemaVersion = 30;
 }
 
 /// <summary>

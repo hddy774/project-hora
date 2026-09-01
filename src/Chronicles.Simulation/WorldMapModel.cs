@@ -24,7 +24,8 @@ public readonly record struct MonsterSpeciesDefinition(
     string KoreanName,
     BiomeType Biome,
     int BaseDanger,
-    MaterialId DropMaterial);
+    MaterialId DropMaterial,
+    GeneratedMonsterTrait Trait = GeneratedMonsterTrait.Swift);
 
 public readonly record struct MonsterHabitatSnapshot(
     MonsterSpeciesDefinition Species,

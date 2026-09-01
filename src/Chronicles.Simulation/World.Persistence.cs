@@ -11,6 +11,11 @@ public sealed partial class World
         Tick = new SimulationTick(checkpoint.Tick);
         _balance = checkpoint.Balance ?? WorldBalanceConfiguration.Default;
         WorldBalanceRules.Validate(_balance);
+        _generation = checkpoint.SchemaVersion >= 30
+            ? WorldGenerationCatalog.Restore(checkpoint.Seed, checkpoint.Generation!)
+            : WorldGenerationCatalog.Create(
+                checkpoint.Seed,
+                WorldGenerationConfiguration.Default);
         _random = new DeterministicRandom(checkpoint.RandomState);
         _agents = new AgentStore(checkpoint.Agents.Length);
         _causal = checkpoint.SchemaVersion >= 25
@@ -32,8 +37,9 @@ public sealed partial class World
             checkpoint.Agents.Length,
             GameCalendar.GetYear(Tick));
         _worldChronicle.EntryRecorded += WorldChronicle_EntryRecorded;
-        _monsterPopulations = checkpoint.Map?.MonsterPopulations is
-            { Length: WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome } populations
+        _monsterPopulations = checkpoint.Map?.MonsterPopulations is { } populations
+            && populations.Length
+                == WorldMapRules.LocationCount * _generation.Map.SpeciesPerWildBiome
                 ? populations.ToArray()
                 : CreateInitialMonsterPopulations();
         _eventSequence = checkpoint.EventSequence;
@@ -97,19 +103,21 @@ public sealed partial class World
                 checkpoint.Organizations!)
             : new OrganizationStore(checkpoint.Agents.Length);
         _content = checkpoint.SchemaVersion >= 27
-            ? ContentAuthorityStore.Restore(checkpoint.Content!)
-            : ContentAuthorityStore.CreateInitial(checkpoint.Seed);
+            ? ContentAuthorityStore.Restore(checkpoint.Content!, _generation)
+            : ContentAuthorityStore.CreateInitial(_generation);
         _knowledge = checkpoint.SchemaVersion >= 28
             ? KnowledgeAuthorityStore.Restore(
                 checkpoint.Knowledge!,
                 checkpoint.Agents.Length,
-                _content)
+                _content,
+                _generation)
             : checkpoint.SchemaVersion == 27
                 ? new KnowledgeAuthorityStore(checkpoint.Agents.Length)
                 : KnowledgeAuthorityStore.CreateInitial(
                     checkpoint.Seed,
                     checkpoint.Agents.Length,
-                    _content);
+                    _content,
+                    _generation);
         _laws = checkpoint.SchemaVersion >= 29
             ? LawAuthorityStore.Restore(checkpoint.Laws!, checkpoint.Agents.Length)
             : LawAuthorityStore.CreateReviewCatalog(checkpoint.Agents.Length);
@@ -471,7 +479,8 @@ public sealed partial class World
             _organizations.CreateCheckpoint(),
             _content.CreateCheckpoint(),
             _knowledge.CreateCheckpoint(),
-            _laws.CreateCheckpoint());
+            _laws.CreateCheckpoint(),
+            _generation.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -734,6 +743,19 @@ public sealed partial class World
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
         WorldBalanceRules.Validate(checkpoint.Balance ?? WorldBalanceConfiguration.Default);
+        if (checkpoint.SchemaVersion >= 30)
+        {
+            if (checkpoint.Generation is null)
+            {
+                throw new InvalidDataException("세계 생성 카탈로그 권위 상태가 없습니다.");
+            }
+            _ = WorldGenerationCatalog.Restore(checkpoint.Seed, checkpoint.Generation);
+            if (checkpoint.Generation.LastContentGenerationMonth
+                > GameCalendar.GetMonthIndex(new SimulationTick(checkpoint.Tick)))
+            {
+                throw new InvalidDataException("세계 생성 cursor가 현재 세계 시간보다 앞서 있습니다.");
+            }
+        }
         if (checkpoint.SchemaVersion is < 7 or > WorldCheckpoint.CurrentSchemaVersion)
         {
             throw new InvalidDataException($"지원하지 않는 세계 schema {checkpoint.SchemaVersion}입니다.");
@@ -861,6 +883,14 @@ public sealed partial class World
             throw new InvalidDataException("세계 체크포인트의 경제 집계가 잘못되었습니다.");
         }
 
+        var monsterSpeciesPerBiome = checkpoint.SchemaVersion >= 30
+            ? checkpoint.Generation!.Configuration.MonsterSpeciesPerBiome
+            : WorldMapRules.MonstersPerWildBiome;
+        var maximumMonsterPopulation = checkpoint.SchemaVersion >= 30
+            ? Math.Max(
+                WorldMapRules.MaximumMonsterPopulation,
+                checkpoint.Generation!.Configuration.InitialMonsterPopulationPerHabitat)
+            : WorldMapRules.MaximumMonsterPopulation;
         if (checkpoint.SchemaVersion >= 11
             && (checkpoint.Map is not { } map
                 || map.TotalMonsterHunts < 0
@@ -869,12 +899,12 @@ public sealed partial class World
                 || (checkpoint.SchemaVersion >= 14
                     && (map.MonsterPopulations is not { } monsterPopulations
                         || (monsterPopulations.Length
-                                != WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome
+                                != WorldMapRules.LocationCount * monsterSpeciesPerBiome
                             && !(checkpoint.Atlas is null
                                 && monsterPopulations.Length
-                                    == 9 * WorldMapRules.MonstersPerWildBiome))
+                                    == 9 * monsterSpeciesPerBiome))
                         || map.MonsterPopulations.Any(value =>
-                            value is < 0 or > WorldMapRules.MaximumMonsterPopulation)
+                            value < 0 || value > maximumMonsterPopulation)
                         || map.LastRegenerationMonth < 0
                         || map.LastRegenerationMonth > GameCalendar.GetMonthIndex(
                             new SimulationTick(checkpoint.Tick))))))

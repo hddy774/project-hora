@@ -16,6 +16,7 @@ public sealed partial class World
     private readonly ContentAuthorityStore _content;
     private readonly KnowledgeAuthorityStore _knowledge;
     private readonly LawAuthorityStore _laws;
+    private readonly WorldGenerationCatalog _generation;
     private readonly CityMarket _market;
     private readonly WorldBalanceConfiguration _balance;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
@@ -64,11 +65,17 @@ public sealed partial class World
     internal event Action<WorldEventNotification>? ImportantWorldEventRecorded;
     internal event Action<WorldCenturyChronicleEntry>? WorldCenturyChronicleRecorded;
 
-    private World(ulong seed, int population, WorldBalanceConfiguration balance)
+    private World(
+        ulong seed,
+        int population,
+        WorldBalanceConfiguration balance,
+        WorldGenerationConfiguration generation)
     {
         WorldBalanceRules.Validate(balance);
+        WorldGenerationRules.Validate(generation);
         Seed = seed;
         _balance = balance;
+        _generation = WorldGenerationCatalog.Create(seed, generation);
         _random = new DeterministicRandom(seed);
         _agents = new AgentStore(population);
         _causal = new AgentCausalStore(population);
@@ -76,11 +83,12 @@ public sealed partial class World
         _reincarnation = new ReincarnationStore(population);
         _atlas = new SpatialAuthorityStore(population);
         _organizations = new OrganizationStore(population);
-        _content = ContentAuthorityStore.CreateInitial(seed);
+        _content = ContentAuthorityStore.CreateInitial(_generation);
         _knowledge = KnowledgeAuthorityStore.CreateInitial(
             seed,
             population,
-            _content);
+            _content,
+            _generation);
         _laws = LawAuthorityStore.CreateReviewCatalog(population);
         _market = new CityMarket(population);
         _agentByRank = new int[population];
@@ -147,18 +155,34 @@ public sealed partial class World
     public int TotalKnowledgeEditions => _knowledge.EditionCount;
     public int TotalLawCandidates => _laws.CandidateCount;
     public WorldBalanceConfiguration Balance => _balance;
+    public WorldGenerationConfiguration Generation => _generation.Configuration;
 
     public static World CreateDefault(ulong seed) =>
-        new(seed, ProductInfo.DefaultPopulation, WorldBalanceConfiguration.Default);
+        new(
+            seed,
+            ProductInfo.DefaultPopulation,
+            WorldBalanceConfiguration.Default,
+            WorldGenerationConfiguration.Default);
 
     public static World Create(ulong seed, int population) =>
-        new(seed, population, WorldBalanceConfiguration.Default);
+        new(
+            seed,
+            population,
+            WorldBalanceConfiguration.Default,
+            WorldGenerationConfiguration.Default);
 
     public static World Create(
         ulong seed,
         int population,
         WorldBalanceConfiguration balance) =>
-        new(seed, population, balance);
+        new(seed, population, balance, WorldGenerationConfiguration.Default);
+
+    public static World Create(
+        ulong seed,
+        int population,
+        WorldBalanceConfiguration balance,
+        WorldGenerationConfiguration generation) =>
+        new(seed, population, balance, generation);
 
     public void AdvanceTo(SimulationTick targetTick)
     {
@@ -187,6 +211,7 @@ public sealed partial class World
                 AdvanceCityIndustry(actionMonth);
                 RegenerateMonsters(actionMonth);
                 AdvanceOrganizationSystem(actionMonth);
+                AdvanceGeneratedWorldContent(actionMonth);
                 environmentMonth = actionMonth;
             }
             if (_agents.LifeStates[agentIndex] == PersonLifeState.Living
@@ -287,6 +312,7 @@ public sealed partial class World
         {
             AdvanceCityIndustry(targetMonth);
             RegenerateMonsters(targetMonth);
+            AdvanceGeneratedWorldContent(targetMonth);
         }
         RefreshRankings(recordLeaderChange: true);
         _worldChronicle.AdvanceTo(Tick);
@@ -577,7 +603,8 @@ public sealed partial class World
     public ulong ComputeStateHash() => ComputeStateHashCore(
         includeContent: true,
         includeKnowledge: true,
-        includeLaws: true);
+        includeLaws: true,
+        includeGeneration: true);
 
     /// <summary>
     /// 구 슬롯의 저장 당시 hash 계약을 검증할 때만 사용합니다. 복원된 세계의 현재
@@ -592,13 +619,15 @@ public sealed partial class World
         return ComputeStateHashCore(
             includeContent: checkpointSchema >= 27,
             includeKnowledge: checkpointSchema >= 28,
-            includeLaws: checkpointSchema >= 29);
+            includeLaws: checkpointSchema >= 29,
+            includeGeneration: checkpointSchema >= 30);
     }
 
     private ulong ComputeStateHashCore(
         bool includeContent,
         bool includeKnowledge,
-        bool includeLaws)
+        bool includeLaws,
+        bool includeGeneration)
     {
         var hash = 14695981039346656037UL;
         Add(ref hash, Seed);
@@ -640,6 +669,10 @@ public sealed partial class World
         if (includeLaws)
         {
             Add(ref hash, _laws.ComputeStateHash());
+        }
+        if (includeGeneration)
+        {
+            Add(ref hash, _generation.ComputeStateHash());
         }
         Add(ref hash, (ulong)_lastRankingRefreshTick);
         Add(ref hash, (ulong)_rankingMovementFromTick);

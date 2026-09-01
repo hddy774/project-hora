@@ -952,8 +952,8 @@ public sealed partial class World
             FoundationRoute.Human => true,
             FoundationRoute.Earth => _atlas.GetRemainingSpiritStoneSupply(locationId) > 0,
             FoundationRoute.Heaven =>
-                WorldMapRules.GetLocation(locationId).HeavenlyLayer >= 2
-                || (WorldMapRules.GetLocation(locationId).Biome == BiomeType.Mountains
+                _generation.Map.GetLocation(locationId).HeavenlyLayer >= 2
+                || (_generation.Map.GetLocation(locationId).Biome == BiomeType.Mountains
                     && _atlas.GetCultivationEnvironmentQualityHundredths(locationId) >= 5_500),
             _ => false,
         };

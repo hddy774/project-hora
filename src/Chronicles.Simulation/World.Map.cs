@@ -111,7 +111,7 @@ public sealed partial class World
         }
 
         var locations = new MapLocationSnapshot[WorldMapRules.LocationCount];
-        foreach (var definition in WorldMapRules.AllLocations)
+        foreach (var definition in _generation.Map.Locations)
         {
             IReadOnlyList<MonsterHabitatSnapshot> monsters;
             if (definition.Biome == BiomeType.City)
@@ -120,12 +120,12 @@ public sealed partial class World
             }
             else
             {
-                var habitats = new MonsterHabitatSnapshot[WorldMapRules.MonstersPerWildBiome];
+                var habitats = new MonsterHabitatSnapshot[_generation.Map.SpeciesPerWildBiome];
                 for (var localIndex = 0; localIndex < habitats.Length; localIndex++)
                 {
                     habitats[localIndex] = new MonsterHabitatSnapshot(
-                        WorldMapRules.GetMonster(definition.Biome, localIndex),
-                        _monsterPopulations[WorldMapRules.GetMonsterPopulationOffset(
+                        _generation.Map.GetMonster(definition.Biome, localIndex),
+                        _monsterPopulations[_generation.Map.GetMonsterPopulationOffset(
                             definition.Id,
                             localIndex)]);
                 }
@@ -182,24 +182,26 @@ public sealed partial class World
             detailedLocationId,
             detailedLocationId is null ? 0 : detailedAgentOffset,
             _atlas.CreateSnapshot(),
-            WorldGeographyRules.Blueprint);
+            _generation.Geography);
     }
 
-    private static int[] CreateInitialMonsterPopulations()
+    private int[] CreateInitialMonsterPopulations()
     {
         var populations = new int[
-            WorldMapRules.LocationCount * WorldMapRules.MonstersPerWildBiome];
-        foreach (var location in WorldMapRules.AllLocations)
+            WorldMapRules.LocationCount * _generation.Map.SpeciesPerWildBiome];
+        foreach (var location in _generation.Map.Locations)
         {
             if (location.Biome == BiomeType.City)
             {
                 continue;
             }
 
-            for (var localIndex = 0; localIndex < WorldMapRules.MonstersPerWildBiome; localIndex++)
+            for (var localIndex = 0;
+                localIndex < _generation.Map.SpeciesPerWildBiome;
+                localIndex++)
             {
-                populations[WorldMapRules.GetMonsterPopulationOffset(location.Id, localIndex)] =
-                    WorldMapRules.InitialMonsterPopulation;
+                populations[_generation.Map.GetMonsterPopulationOffset(location.Id, localIndex)] =
+                    _generation.Configuration.InitialMonsterPopulationPerHabitat;
             }
         }
 
@@ -214,23 +216,28 @@ public sealed partial class World
         }
 
         var monthCount = currentMonth - _lastMonsterRegenerationMonth;
-        var regeneration = Math.Min(
+        var maximumPopulation = Math.Max(
             WorldMapRules.MaximumMonsterPopulation,
+            _generation.Configuration.InitialMonsterPopulationPerHabitat);
+        var regeneration = Math.Min(
+            maximumPopulation,
             checked((int)Math.Min(
-                WorldMapRules.MaximumMonsterPopulation,
+                maximumPopulation,
                 monthCount * WorldMapRules.MonthlyMonsterRegeneration)));
-        foreach (var location in WorldMapRules.AllLocations)
+        foreach (var location in _generation.Map.Locations)
         {
             if (location.Biome == BiomeType.City)
             {
                 continue;
             }
 
-            for (var localIndex = 0; localIndex < WorldMapRules.MonstersPerWildBiome; localIndex++)
+            for (var localIndex = 0;
+                localIndex < _generation.Map.SpeciesPerWildBiome;
+                localIndex++)
             {
-                var offset = WorldMapRules.GetMonsterPopulationOffset(location.Id, localIndex);
+                var offset = _generation.Map.GetMonsterPopulationOffset(location.Id, localIndex);
                 _monsterPopulations[offset] = Math.Min(
-                    WorldMapRules.MaximumMonsterPopulation,
+                    maximumPopulation,
                     _monsterPopulations[offset] + regeneration);
             }
         }
@@ -246,7 +253,7 @@ public sealed partial class World
             return true;
         }
 
-        var location = WorldMapRules.GetLocation(_agents.LocationIds[index]);
+        var location = _generation.Map.GetLocation(_agents.LocationIds[index]);
         if (location.Biome != BiomeType.City)
         {
             if (_random.NextInt(100) < 68)
@@ -301,18 +308,18 @@ public sealed partial class World
         ushort destination;
         if (preferCity && _random.NextInt(100) < 70)
         {
-            var currentDefinition = WorldMapRules.GetLocation(current);
+            var currentDefinition = _generation.Map.GetLocation(current);
             var city = currentDefinition.HeavenlyLayer == 1
                 ? WorldMapRules.CityLocationId
                 : WorldMapRules.SecondHeavenCityLocationId;
-            var cityDefinition = WorldMapRules.GetLocation(city);
+            var cityDefinition = _generation.Map.GetLocation(city);
             var bestDistance = int.MaxValue;
             Span<ushort> best = stackalloc ushort[6];
             var bestCount = 0;
             for (var candidateIndex = 0; candidateIndex < perceived.Count; candidateIndex++)
             {
                 var candidate = perceived[candidateIndex];
-                var definition = WorldMapRules.GetLocation(candidate);
+                var definition = _generation.Map.GetLocation(candidate);
                 var distance = definition.HeavenlyLayer == cityDefinition.HeavenlyLayer
                     ? Math.Abs(definition.X - cityDefinition.X)
                         + Math.Abs(definition.Y - cityDefinition.Y)
@@ -392,7 +399,7 @@ public sealed partial class World
 
     private bool ResolveMonsterHunt(int index)
     {
-        var location = WorldMapRules.GetLocation(_agents.LocationIds[index]);
+        var location = _generation.Map.GetLocation(_agents.LocationIds[index]);
         if (location.Biome == BiomeType.City)
         {
             _agents.Activities[index] = AgentActivity.Cultivating;
@@ -408,7 +415,7 @@ public sealed partial class World
             return false;
         }
 
-        var monster = WorldMapRules.GetMonster(location.Biome, monsterIndex);
+        var monster = _generation.Map.GetMonster(location.Biome, monsterIndex);
         _totalMonsterHunts++;
         _agents.MonsterHunts[index]++;
 
@@ -423,7 +430,7 @@ public sealed partial class World
         var victoryChance = checked((int)Math.Clamp(5_000 + advantage, 800L, 9_500L));
         if (_random.Chance(victoryChance))
         {
-            var populationOffset = WorldMapRules.GetMonsterPopulationOffset(
+            var populationOffset = _generation.Map.GetMonsterPopulationOffset(
                 location.Id,
                 monsterIndex);
             _monsterPopulations[populationOffset]--;
@@ -468,11 +475,11 @@ public sealed partial class World
 
     private int SelectAvailableMonsterIndex(ushort locationId)
     {
-        var start = _random.NextInt(WorldMapRules.MonstersPerWildBiome);
-        for (var offset = 0; offset < WorldMapRules.MonstersPerWildBiome; offset++)
+        var start = _random.NextInt(_generation.Map.SpeciesPerWildBiome);
+        for (var offset = 0; offset < _generation.Map.SpeciesPerWildBiome; offset++)
         {
-            var localIndex = (start + offset) % WorldMapRules.MonstersPerWildBiome;
-            if (_monsterPopulations[WorldMapRules.GetMonsterPopulationOffset(
+            var localIndex = (start + offset) % _generation.Map.SpeciesPerWildBiome;
+            if (_monsterPopulations[_generation.Map.GetMonsterPopulationOffset(
                     locationId,
                     localIndex)] > 0)
             {
@@ -512,9 +519,9 @@ public sealed partial class World
             _agents.TravelDestinationIds[index]);
     }
 
-    private static long GetTravelDurationTicks(ushort sourceId, ushort destinationId)
+    private long GetTravelDurationTicks(ushort sourceId, ushort destinationId)
     {
-        var months = WorldMapRules.GetTravelMonths(sourceId, destinationId);
+        var months = _generation.Map.GetTravelMonths(sourceId, destinationId);
         return Math.Max(
             1,
             checked((long)months * GameCalendar.TicksPerYear / GameCalendar.MonthsPerYear));
@@ -522,7 +529,7 @@ public sealed partial class World
 
     private long CalculateMonsterHuntDuration(int index)
     {
-        var biome = WorldMapRules.GetLocation(_agents.LocationIds[index]).Biome;
+        var biome = _generation.Map.GetLocation(_agents.LocationIds[index]).Biome;
         var months = biome switch
         {
             BiomeType.Forest => 1,

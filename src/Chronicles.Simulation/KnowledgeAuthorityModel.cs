@@ -206,7 +206,8 @@ public readonly record struct KnowledgeEditionSnapshot(
     KnowledgeValueAvailability ConfidenceAvailability,
     ushort ConfidenceHundredths,
     int PhysicalRecordCount,
-    int AccessorCount);
+    int AccessorCount,
+    GeneratedBookDefinitionSnapshot? GeneratedDefinition = null);
 
 public sealed record WorldKnowledgeSnapshot(
     long AuthorityRevision,

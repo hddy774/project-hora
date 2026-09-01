@@ -15,6 +15,7 @@ public sealed class ContentAuthorityStore
     private readonly HashSet<ulong> _appliedSourceResults = [];
     private readonly Dictionary<ContentOwnerRef, List<ContentInstanceId>> _instancesByOwner = [];
     private readonly Dictionary<ushort, List<ContentInstanceId>> _instancesByLocation = [];
+    private readonly WorldGenerationCatalog? _generationCatalog;
     private long _nextInstanceId = 1;
     private long _nextProvenanceId = 1;
     private long _provenanceSequence;
@@ -23,13 +24,29 @@ public sealed class ContentAuthorityStore
     public int ProvenanceCount => _provenance.Count;
     public int DiscoveryCount => _discoveries.Count;
 
-    public static ContentAuthorityStore CreateInitial(ulong worldSeed) =>
-        ContentAuthorityPopulation.Create(worldSeed);
+    public ContentAuthorityStore(WorldGenerationCatalog? generationCatalog = null)
+    {
+        _generationCatalog = generationCatalog;
+    }
 
-    public static ContentAuthorityStore Restore(ContentAuthorityCheckpoint checkpoint)
+    public static ContentAuthorityStore CreateInitial(ulong worldSeed)
+    {
+        var generation = WorldGenerationCatalog.Create(
+            worldSeed,
+            WorldGenerationConfiguration.Default);
+        return ContentAuthorityPopulation.Create(generation);
+    }
+
+    public static ContentAuthorityStore CreateInitial(WorldGenerationCatalog generation) =>
+        ContentAuthorityPopulation.Create(
+            generation ?? throw new ArgumentNullException(nameof(generation)));
+
+    public static ContentAuthorityStore Restore(
+        ContentAuthorityCheckpoint checkpoint,
+        WorldGenerationCatalog? generationCatalog = null)
     {
         ValidateCheckpoint(checkpoint);
-        var store = new ContentAuthorityStore
+        var store = new ContentAuthorityStore(generationCatalog)
         {
             _nextInstanceId = checkpoint.NextInstanceId,
             _nextProvenanceId = checkpoint.NextProvenanceId,
@@ -55,6 +72,13 @@ public sealed class ContentAuthorityStore
     {
         if (!ContentDefinitionRegistry.TryGet(command.DefinitionId, out var definition)
             || definition.Revision != ContentDefinitionRegistry.CurrentRevision)
+        {
+            return new ContentCommandResult(ContentCommandStatus.InvalidDefinition);
+        }
+        if (command.GeneratedElementId != 0
+            && (_generationCatalog is null
+                || !_generationCatalog.TryGetItem(command.GeneratedElementId, out var generated)
+                || generated.BaseDefinitionId != definition.Id.Value))
         {
             return new ContentCommandResult(ContentCommandStatus.InvalidDefinition);
         }
@@ -117,7 +141,8 @@ public sealed class ContentAuthorityStore
             command.ConditionHundredths,
             ContentInstanceStatus.Active,
             AuthorityRevision: 1,
-            provenanceId.Value);
+            provenanceId.Value,
+            command.GeneratedElementId);
         _instanceIndexById.Add(instanceId.Value, _instances.Count);
         _instances.Add(instance);
         AddToIndexes(instance);
@@ -700,6 +725,12 @@ public sealed class ContentAuthorityStore
             Add(ref hash, (byte)instance.Status);
             Add(ref hash, checked((ulong)instance.AuthorityRevision));
             Add(ref hash, checked((ulong)instance.LatestProvenanceId));
+            // schema 27~29의 0 기본값 hash는 유지한다. schema 30부터 실제 생성 ID만
+            // 추가되어 과거 슬롯의 저장 당시 hash 검증을 방해하지 않는다.
+            if (instance.GeneratedElementId != 0)
+            {
+                Add(ref hash, instance.GeneratedElementId);
+            }
         }
         foreach (var provenance in checkpoint.Provenance)
         {
@@ -891,15 +922,38 @@ public sealed class ContentAuthorityStore
                 : throw new InvalidDataException(
                     $"콘텐츠 Definition이 없습니다: {instance.DefinitionId:X16}");
 
-    private static ContentInstanceSnapshot CreateSnapshot(
+    private ContentInstanceSnapshot CreateSnapshot(
         ContentInstanceCheckpoint instance,
         ContentDiscoveryState viewerState)
     {
         var definition = GetDefinition(instance);
+        GeneratedItemDefinitionSnapshot? generatedSnapshot = null;
+        if (instance.Kind == ContentInstanceKind.Item
+            && _generationCatalog is not null)
+        {
+            var generated = _generationCatalog.ResolveItem(
+                definition.Id,
+                instance.GeneratedElementId,
+                instance.InstanceId);
+            generatedSnapshot = new GeneratedItemDefinitionSnapshot(
+                generated.GeneratedId,
+                generated.CatalogOrdinal,
+                generated.IsFixedUnique,
+                generated.IsFixedUnique
+                    ? GeneratedWorldNameFormatter.FormatFixedUniqueItem(
+                        generated.FixedUniqueTemplateOrdinal)
+                    : GeneratedWorldNameFormatter.FormatItem(generated.Name),
+                generated.PrimaryEffect,
+                generated.PrimaryStrengthHundredths,
+                generated.SecondaryEffect,
+                generated.SecondaryStrengthHundredths,
+                generated.QualityHundredths,
+                generated.CreatedMonth);
+        }
         return new ContentInstanceSnapshot(
             new ContentInstanceId(instance.InstanceId),
             definition.Id,
-            definition.KoreanName,
+            generatedSnapshot?.DisplayName ?? definition.KoreanName,
             instance.Kind,
             definition.SecretRealmNature,
             GetOwner(instance),
@@ -912,7 +966,8 @@ public sealed class ContentAuthorityStore
             instance.Status,
             viewerState,
             instance.AuthorityRevision,
-            new ContentProvenanceId(instance.LatestProvenanceId));
+            new ContentProvenanceId(instance.LatestProvenanceId),
+            generatedSnapshot);
     }
 
     private static bool IsValidInitialQuantity(ContentDefinition definition, long quantity) =>

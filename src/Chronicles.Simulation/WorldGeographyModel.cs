@@ -140,8 +140,10 @@ public static class WorldGeographyRules
         ProvinceTileDistanceLi,
         GeographyImplementationState.Production);
     private static readonly ProvinceTileDefinition[] Provinces = BuildProvinces();
-    private static readonly PointHeavenViewDefinition[] FirstHeavenPoints = BuildPoints(1);
-    private static readonly PointHeavenViewDefinition[] SecondHeavenPoints = BuildPoints(2);
+    private static readonly PointHeavenViewDefinition[] FirstHeavenPoints =
+        BuildPoints(1, worldSeed: 0, randomized: false);
+    private static readonly PointHeavenViewDefinition[] SecondHeavenPoints =
+        BuildPoints(2, worldSeed: 0, randomized: false);
 
     public static WorldGeographyBlueprint Blueprint { get; } = new(
         CurrentRevision,
@@ -150,6 +152,25 @@ public static class WorldGeographyRules
         OcheonProvinceId,
         FirstHeavenPoints,
         SecondHeavenPoints);
+
+    public static WorldGeographyBlueprint CreateBlueprint(
+        ulong worldSeed,
+        WorldGenerationConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+        WorldGenerationRules.Validate(configuration);
+        if (!configuration.RandomizeMap)
+        {
+            return Blueprint;
+        }
+        return new WorldGeographyBlueprint(
+            CurrentRevision,
+            Continent,
+            Provinces,
+            OcheonProvinceId,
+            BuildPoints(1, worldSeed, randomized: true),
+            BuildPoints(2, worldSeed, randomized: true));
+    }
 
     public static ProvinceTileDefinition GetProvince(ushort provinceId)
     {
@@ -220,16 +241,31 @@ public static class WorldGeographyRules
         return result;
     }
 
-    private static PointHeavenViewDefinition[] BuildPoints(byte layer)
+    private static PointHeavenViewDefinition[] BuildPoints(
+        byte layer,
+        ulong worldSeed,
+        bool randomized)
     {
         var result = new PointHeavenViewDefinition[PointsPerProvince];
+        var mapSeed = WorldGenerationRules.DomainSeed(
+            worldSeed,
+            WorldGenerationDomain.Map,
+            randomized);
         for (ushort pointId = 0; pointId < result.Length; pointId++)
         {
             var x = pointId % PointGridWidth;
             var y = pointId / PointGridWidth;
-            var terrain = GetTerrain(x, y, layer);
-            var settlements = GetSettlements(x, y, layer);
-            var resources = GetResources(pointId, x, y, layer, terrain, settlements);
+            var terrain = GetTerrain(x, y, layer, mapSeed, randomized);
+            var settlements = GetSettlements(x, y, layer, mapSeed, randomized);
+            var resources = GetResources(
+                pointId,
+                x,
+                y,
+                layer,
+                terrain,
+                settlements,
+                mapSeed,
+                randomized);
             var layerName = layer == 1 ? "제1층천" : "제2층천";
             result[pointId] = new PointHeavenViewDefinition(
                 pointId,
@@ -239,7 +275,9 @@ public static class WorldGeographyRules
                 x,
                 y,
                 terrain,
-                $"오천 {x + 1}-{y + 1} 지점",
+                randomized
+                    ? CreatePointName(mapSeed, pointId, layer, terrain)
+                    : $"오천 {x + 1}-{y + 1} 지점",
                 CreateDescription(layerName, terrain, settlements, resources),
                 settlements,
                 resources);
@@ -248,15 +286,32 @@ public static class WorldGeographyRules
         return result;
     }
 
-    private static NaturalTerrainType GetTerrain(int x, int y, byte layer)
+    private static NaturalTerrainType GetTerrain(
+        int x,
+        int y,
+        byte layer,
+        ulong mapSeed,
+        bool randomized)
     {
-        if (x is 3 or 4 && y is >= 1 and <= 8)
+        var riverColumn = randomized
+            ? 2 + WorldGenerationRules.Select(
+                WorldGenerationRules.Value(mapSeed, layer, 0x5249_5645_52UL),
+                5)
+            : 3;
+        if (x >= riverColumn && x <= riverColumn + 1 && y is >= 1 and <= 8)
         {
             return NaturalTerrainType.River;
         }
 
-        var selector = (x * 17) + (y * 31) + (layer * 7);
-        return (selector % 5) switch
+        var selector = randomized
+            ? WorldGenerationRules.Select(
+                WorldGenerationRules.Value(
+                    mapSeed,
+                    checked((layer * PointsPerProvince) + (y * PointGridWidth) + x),
+                    0x5445_5252_4149_4EUL),
+                5)
+            : ((x * 17) + (y * 31) + (layer * 7)) % 5;
+        return selector switch
         {
             0 => NaturalTerrainType.Mountains,
             1 or 2 => NaturalTerrainType.Forest,
@@ -264,11 +319,25 @@ public static class WorldGeographyRules
         };
     }
 
-    private static PointSettlementProfile GetSettlements(int x, int y, byte layer)
+    private static PointSettlementProfile GetSettlements(
+        int x,
+        int y,
+        byte layer,
+        ulong mapSeed,
+        bool randomized)
     {
+        var originSelector = randomized
+            ? WorldGenerationRules.Value(
+                mapSeed,
+                layer,
+                0x5345_5454_4C45UL)
+            : 0UL;
         if (layer == 1)
         {
-            if (IsAnchor(x, y, spacing: 3, origin: 1))
+            var origin = randomized
+                ? 1 + WorldGenerationRules.Select(originSelector, 2)
+                : 1;
+            if (IsAnchor(x, y, spacing: 3, origin))
             {
                 var capital = x == 4 && y == 4;
                 return new PointSettlementProfile(
@@ -282,7 +351,10 @@ public static class WorldGeographyRules
                     "오천국");
             }
 
-            if ((x + (y * 2)) % 7 == 0)
+            var villageOffset = randomized
+                ? WorldGenerationRules.Select(originSelector >> 11, 7)
+                : 0;
+            if ((x + (y * 2) + villageOffset) % 7 == 0)
             {
                 return new PointSettlementProfile(
                     PointSocietyKind.Mortal,
@@ -298,7 +370,10 @@ public static class WorldGeographyRules
             return EmptySettlement;
         }
 
-        if (IsAnchor(x, y, spacing: 4, origin: 2))
+        var cultivatorOrigin = randomized
+            ? 1 + WorldGenerationRules.Select(originSelector, 3)
+            : 2;
+        if (IsAnchor(x, y, spacing: 4, cultivatorOrigin))
         {
             var selector = ((x / 4) + (y / 4)) % 3;
             return selector switch
@@ -342,11 +417,22 @@ public static class WorldGeographyRules
         int y,
         byte layer,
         NaturalTerrainType terrain,
-        PointSettlementProfile settlements)
+        PointSettlementProfile settlements,
+        ulong mapSeed,
+        bool randomized)
     {
-        var hasVein = (pointId + layer) % (layer == 1 ? 6 : 4) == 0
+        var resourceValue = randomized
+            ? WorldGenerationRules.Value(
+                mapSeed,
+                checked((layer * PointsPerProvince) + pointId),
+                0x5245_534F_5552_4345UL)
+            : checked((ulong)(pointId + layer));
+        var hasVein = resourceValue % (ulong)(layer == 1 ? 6 : 4) == 0
             || terrain == NaturalTerrainType.Mountains;
-        var mine = ((pointId + (layer * 3)) % 11) switch
+        var mineSelector = randomized
+            ? WorldGenerationRules.Select(resourceValue >> 13, 11)
+            : (pointId + (layer * 3)) % 11;
+        var mine = mineSelector switch
         {
             0 => MineResourceKind.Mixed,
             1 or 2 => MineResourceKind.SpiritStone,
@@ -361,8 +447,11 @@ public static class WorldGeographyRules
             _ => 70,
         };
         // 도시가 있어도 주변 자연에 영수가 남는다. 정착지는 개체 수만 줄인다.
+        var beastVariation = randomized
+            ? WorldGenerationRules.Select(resourceValue >> 29, 41)
+            : (x * 13 + y * 7 + layer) % 41;
         var beasts = Math.Max(12, baseBeasts - (settlements.HasSettlement ? 50 : 0)
-            + ((x * 13 + y * 7 + layer) % 41));
+            + beastVariation);
         var distance = BasePointDistanceLi + (terrain switch
         {
             NaturalTerrainType.Mountains => 160,
@@ -374,8 +463,37 @@ public static class WorldGeographyRules
             hasVein,
             mine,
             beasts,
-            checked((byte)(3 + ((x + y + layer) % 8))),
+            checked((byte)(3 + (randomized
+                ? WorldGenerationRules.Select(resourceValue >> 43, 8)
+                : ((x + y + layer) % 8)))),
             distance);
+    }
+
+    private static string CreatePointName(
+        ulong mapSeed,
+        ushort pointId,
+        byte layer,
+        NaturalTerrainType terrain)
+    {
+        var value = WorldGenerationRules.Value(
+            mapSeed,
+            checked((layer * PointsPerProvince) + pointId),
+            0x504F_494E_545FUL);
+        string[] prefixes = ["청", "적", "현", "백", "자", "유", "금", "은", "벽", "천", "운", "성"];
+        string[] cores = ["명", "하", "운", "천", "광", "령", "진", "월", "해", "풍", "뢰", "화"];
+        var suffix = terrain switch
+        {
+            NaturalTerrainType.Plains => "평",
+            NaturalTerrainType.Forest => "림",
+            NaturalTerrainType.Mountains => "산",
+            NaturalTerrainType.River => "천",
+            _ => "지",
+        };
+        return string.Concat(
+            prefixes[WorldGenerationRules.Select(value, prefixes.Length)],
+            cores[WorldGenerationRules.Select(value >> 17, cores.Length)],
+            suffix,
+            " 지점");
     }
 
     private static string CreateDescription(

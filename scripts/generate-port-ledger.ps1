@@ -36,7 +36,7 @@ $masterGap = @{
     M02 = '현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다.'
     M03 = '현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다.'
     M04 = 'Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다.'
-    M05 = '수행 핵심은 존재하지만 모든 상호 도메인 연결, 승인된 실패 효과, 상위 경지 수직 증거와 정식 Formula Registry coverage가 미완성이다.'
+    M05 = '0.0.18 수행 수직 계약으로 이식 완료되었으며 미확정 수치와 비활성 외부 연결은 PC_TEMP_REVIEW로 추적한다.'
     M06 = '단계형 윤회는 존재하지만 부모·가문·출생 후보, 영혼 손상과 장기 대기 예외 등 전체 수직 계약이 미완성이다.'
     M07 = '희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다.'
     M08 = '현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다.'
@@ -68,7 +68,11 @@ $masterEvidence = @{
     M05 = @(
         'FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry',
         'FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules',
-        'FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules')
+        'FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules',
+        'FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt',
+        'FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore',
+        'FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths',
+        'TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약')
     M06 = @(
         'FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules',
         'FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore',
@@ -126,9 +130,15 @@ $masterTests = @{
         'TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전')
     M05 = @(
         'TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준',
+        'TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약',
+        'TEST::입문 Gate 병목 단련·적용 Work·저장 왕복',
         'TEST::Notion 수행 Work·준비·Preflight·안착 상태',
         'TEST::9층 소경지·대원만 분리와 수행 Formula Trace',
-        'TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전')
+        'TEST::소경지·대경지 돌파 영구 연대기',
+        'TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전',
+        'TEST::180년 장기 수행·사냥·전투 참여 회귀',
+        'TEST::저장 codec 결정론 왕복',
+        'TEST::관찰 조회 무영향')
     M06 = @(
         'TEST::0세 탄생·6대 자질·일대기·윤회',
         'TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전',
@@ -170,8 +180,9 @@ $portIds = @(
     'A110-M04-V06', 'A110-M04-V07', 'A110-M04-V08', 'A110-M04-V09',
     'A110-M04-V10', 'A110-M04-V11', 'A110-M04-V13', 'A110-M04-V14',
     'A110-M04-V15', 'A110-M04-V16', 'A110-M04-V17',
-    'A110-M05-V02', 'A110-M05-V03', 'A110-M05-V05', 'A110-M05-V06',
-    'A110-M05-V10', 'A110-M05-V11', 'A110-M05-V13', 'A110-M05-V15',
+    'A110-M05-V02', 'A110-M05-V03', 'A110-M05-V04', 'A110-M05-V05',
+    'A110-M05-V06', 'A110-M05-V07', 'A110-M05-V10', 'A110-M05-V11',
+    'A110-M05-V13', 'A110-M05-V15', 'A110-M05-V16', 'A110-M05-V17',
     'A110-M06-V02', 'A110-M06-V03', 'A110-M06-V06', 'A110-M06-V09',
     'A110-M06-V10', 'A110-M06-V11', 'A110-M06-V13', 'A110-M06-V15',
     'A110-M06-V17',
@@ -197,7 +208,7 @@ $pcAdaptIds = @(
 $tempReviewIds = @(
     'A110-M03-V04', 'A110-M03-V09', 'A110-M03-V15',
     'A110-M04-V04',
-    'A110-M05-V09', 'A110-M05-V14',
+    'A110-M05-V01', 'A110-M05-V08', 'A110-M05-V09', 'A110-M05-V14',
     'A110-M06-V01', 'A110-M06-V04', 'A110-M06-V05', 'A110-M06-V07',
     'A110-M06-V08', 'A110-M06-V14', 'A110-M06-V16',
     'A110-M07-V02', 'A110-M07-V05', 'A110-M07-V07', 'A110-M07-V08',
@@ -210,7 +221,18 @@ $tempReviewIds = @(
 $reviewIds = @{
     M03 = @('PC-TEMP-AI-UTILITY-113', 'PC-TEMP-MEMORY-POLICY-113')
     M04 = @('PC-TEMP-APPEARANCE-DISTRIBUTION-113')
-    M05 = @('PC-TEMP-TRAIT-DIST-113', 'PC-TEMP-TRAIT-ROLE-113', 'PC-TEMP-SPIRIT-ROOT-113')
+    M05 = @(
+        'PC-TEMP-TRAIT-DIST-113',
+        'PC-TEMP-TRAIT-ROLE-113',
+        'PC-TEMP-SPIRIT-ROOT-113',
+        'PC-TEMP-CULT-FLOOR-WEIGHTS-113',
+        'PC-TEMP-CULT-COMPONENT-TARGETS-113',
+        'PC-TEMP-CULT-METHOD-PREFLIGHT-113',
+        'PC-TEMP-CULT-STABILIZATION-113',
+        'PC-TEMP-CULT-ENVIRONMENT-113',
+        'PC-TEMP-CULT-FOUNDATION-SOURCE-113',
+        'PC-TEMP-CULT-UPPER-REALM-113',
+        'PC-TEMP-CULT-LAW-LUCK-BRIDGE-113')
     M06 = @(
         'PC-TEMP-REINCARNATION-UPPER-DURATION-113',
         'PC-TEMP-REINCARNATION-STAGES-113',

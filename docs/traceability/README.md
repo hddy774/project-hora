@@ -27,15 +27,15 @@ PC에서 구현할 부분은 계속 추적하고 Android 전용 절만 `excluded
 
 - PC 기준: `0.0.13`, Git `558a184d2cf88b0f1a2318eb028125257786d261`
 - 총 행: 238
-- `Port`: 82
+- `Port`: 86
 - `PC Adapt`: 14
-- `PC_TEMP_REVIEW`: 27
+- `PC_TEMP_REVIEW`: 29
 - `Platform Excluded`: 0
-- `Gap/Deferred`: 115
+- `Gap/Deferred`: 109
 
-이 숫자는 0.0.17의 M03·M04·M06·M07 인물 수직 기능과 M08·M10의 Atlas·경제
-수직 기능 반영 상태다. 여섯 Master의 102개 행은 모두 완료 계열로 분류되어 Gap이 0이며,
-남은 115개는 후속 버전에서 권위 상태,
+이 숫자는 0.0.18의 M05 수행 수직 기능과 기존 M03·M04·M06·M07 인물, M08·M10
+Atlas·경제 수직 기능 반영 상태다. 일곱 Master의 119개 행은 모두 완료 계열로 분류되어
+Gap이 0이며, 남은 109개는 후속 버전에서 권위 상태,
 저장/hash, query, UI와 테스트 근거를 모두 연결한 다음 변경한다.
 
 ## 생성과 검증

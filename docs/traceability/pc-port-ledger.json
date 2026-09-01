@@ -29,11 +29,11 @@
     "Gap/Deferred": "요구 문장 일부 또는 전부를 증명하지 못해 완료로 주장하지 않음."
   },
   "status_counts": {
-    "Port": 82,
+    "Port": 86,
     "PC Adapt": 14,
-    "PC_TEMP_REVIEW": 27,
+    "PC_TEMP_REVIEW": 29,
     "Platform Excluded": 0,
-    "Gap/Deferred": 115
+    "Gap/Deferred": 109
   },
   "rows": [
     {
@@ -3031,24 +3031,46 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidenceYears110",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_breakthrough_result_is_typed_and_duplicate_is_atomic"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.18",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-TRAIT-DIST-113",
+        "PC-TEMP-TRAIT-ROLE-113",
+        "PC-TEMP-SPIRIT-ROOT-113",
+        "PC-TEMP-CULT-FLOOR-WEIGHTS-113",
+        "PC-TEMP-CULT-COMPONENT-TARGETS-113",
+        "PC-TEMP-CULT-METHOD-PREFLIGHT-113",
+        "PC-TEMP-CULT-STABILIZATION-113",
+        "PC-TEMP-CULT-ENVIRONMENT-113",
+        "PC-TEMP-CULT-FOUNDATION-SOURCE-113",
+        "PC-TEMP-CULT-UPPER-REALM-113",
+        "PC-TEMP-CULT-LAW-LUCK-BRIDGE-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "수행 핵심은 존재하지만 모든 상호 도메인 연결, 승인된 실패 효과, 상위 경지 수직 증거와 정식 Formula Registry coverage가 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M05-V02",
@@ -3082,13 +3104,23 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3127,13 +3159,23 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3166,24 +3208,34 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidenceYears110",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_breakthrough_result_is_typed_and_duplicate_is_atomic"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.18",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "수행 핵심은 존재하지만 모든 상호 도메인 연결, 승인된 실패 효과, 상위 경지 수직 증거와 정식 Formula Registry coverage가 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M05-V05",
@@ -3217,13 +3269,23 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3262,13 +3324,23 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3301,24 +3373,34 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidenceYears110",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_breakthrough_result_is_typed_and_duplicate_is_atomic"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.18",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "수행 핵심은 존재하지만 모든 상호 도메인 연결, 승인된 실패 효과, 상위 경지 수직 증거와 정식 Formula Registry coverage가 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M05-V08",
@@ -3346,24 +3428,46 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidenceYears110",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_breakthrough_result_is_typed_and_duplicate_is_atomic"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.18",
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
-      "review_ids": null,
+      "review_ids": [
+        "PC-TEMP-TRAIT-DIST-113",
+        "PC-TEMP-TRAIT-ROLE-113",
+        "PC-TEMP-SPIRIT-ROOT-113",
+        "PC-TEMP-CULT-FLOOR-WEIGHTS-113",
+        "PC-TEMP-CULT-COMPONENT-TARGETS-113",
+        "PC-TEMP-CULT-METHOD-PREFLIGHT-113",
+        "PC-TEMP-CULT-STABILIZATION-113",
+        "PC-TEMP-CULT-ENVIRONMENT-113",
+        "PC-TEMP-CULT-FOUNDATION-SOURCE-113",
+        "PC-TEMP-CULT-UPPER-REALM-113",
+        "PC-TEMP-CULT-LAW-LUCK-BRIDGE-113"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "수행 핵심은 존재하지만 모든 상호 도메인 연결, 승인된 실패 효과, 상위 경지 수직 증거와 정식 Formula Registry coverage가 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M05-V09",
@@ -3397,18 +3501,36 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-TRAIT-DIST-113",
         "PC-TEMP-TRAIT-ROLE-113",
-        "PC-TEMP-SPIRIT-ROOT-113"
+        "PC-TEMP-SPIRIT-ROOT-113",
+        "PC-TEMP-CULT-FLOOR-WEIGHTS-113",
+        "PC-TEMP-CULT-COMPONENT-TARGETS-113",
+        "PC-TEMP-CULT-METHOD-PREFLIGHT-113",
+        "PC-TEMP-CULT-STABILIZATION-113",
+        "PC-TEMP-CULT-ENVIRONMENT-113",
+        "PC-TEMP-CULT-FOUNDATION-SOURCE-113",
+        "PC-TEMP-CULT-UPPER-REALM-113",
+        "PC-TEMP-CULT-LAW-LUCK-BRIDGE-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -3446,13 +3568,23 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3491,13 +3623,23 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3536,13 +3678,23 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3581,13 +3733,23 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3626,18 +3788,36 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": [
         "PC-TEMP-TRAIT-DIST-113",
         "PC-TEMP-TRAIT-ROLE-113",
-        "PC-TEMP-SPIRIT-ROOT-113"
+        "PC-TEMP-SPIRIT-ROOT-113",
+        "PC-TEMP-CULT-FLOOR-WEIGHTS-113",
+        "PC-TEMP-CULT-COMPONENT-TARGETS-113",
+        "PC-TEMP-CULT-METHOD-PREFLIGHT-113",
+        "PC-TEMP-CULT-STABILIZATION-113",
+        "PC-TEMP-CULT-ENVIRONMENT-113",
+        "PC-TEMP-CULT-FOUNDATION-SOURCE-113",
+        "PC-TEMP-CULT-UPPER-REALM-113",
+        "PC-TEMP-CULT-LAW-LUCK-BRIDGE-113"
       ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
@@ -3675,13 +3855,23 @@
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
@@ -3714,24 +3904,34 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidenceYears110",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_breakthrough_result_is_typed_and_duplicate_is_atomic"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.18",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "수행 핵심은 존재하지만 모든 상호 도메인 연결, 승인된 실패 효과, 상위 경지 수직 증거와 정식 Formula Registry coverage가 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M05-V17",
@@ -3759,24 +3959,34 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::kLiveRuntimeEvidenceYears110",
         "evidence_ref": "FILE::tests/alpha110_vertical_event_runtime_tests.cpp::test_breakthrough_result_is_typed_and_duplicate_is_atomic"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.18",
+      "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry",
         "FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules",
-        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules"
+        "FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules",
+        "FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt",
+        "FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore",
+        "FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths",
+        "TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약"
       ],
       "pc_test_refs": [
         "TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준",
+        "TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약",
+        "TEST::입문 Gate 병목 단련·적용 Work·저장 왕복",
         "TEST::Notion 수행 Work·준비·Preflight·안착 상태",
         "TEST::9층 소경지·대원만 분리와 수행 Formula Trace",
-        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전"
+        "TEST::소경지·대경지 돌파 영구 연대기",
+        "TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전",
+        "TEST::180년 장기 수행·사냥·전투 참여 회귀",
+        "TEST::저장 codec 결정론 왕복",
+        "TEST::관찰 조회 무영향"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "수행 핵심은 존재하지만 모든 상호 도메인 연결, 승인된 실패 효과, 상위 경지 수직 증거와 정식 Formula Registry coverage가 미완성이다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M06-V01",

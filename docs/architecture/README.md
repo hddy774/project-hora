@@ -51,6 +51,17 @@ Desktop = Application + Presentation
 지도와 경제 화면은 열린 경로만 `ObservationSections`를 요청한다. 지도 내부의 수선자
 행과 시장의 제안·예약 행도 해당 내부 탭이 열릴 때만 materialize한다.
 
+## 0.0.18 수행 진입점
+
+- 수행 Work·준비·사전검증·시도·안착 전이: `World.Cultivation.cs`
+- 대경지 수명·기준 기간·공식·임시 검토값: `RealmRules.cs`
+- 승인 Effect 0개·Typed 실패·가용성 상태: `CultivationModel.cs`
+- 삼도축기요결 5단계 결과와 Source Snapshot: `FoundationFormationAuthorityStore.cs`
+
+인물 상세는 개요·수행·전투·관계·기록 내부 탭 중 선택한 한 구역만 갱신한다. 지도와
+시장의 짧은 상세 탭에서는 중첩 `ScrollViewer`를 사용하지 않고, 기록·대형 표처럼
+목록 탐색에 효율적인 경우에만 가상화된 스크롤을 유지한다.
+
 ## 검증
 
 ```powershell

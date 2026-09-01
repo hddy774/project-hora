@@ -88,6 +88,8 @@
     "market_contract_authority": "src/Chronicles.Simulation/MarketAuthorityModel.cs",
     "market_offer_reservation": "src/Chronicles.Simulation/CityMarket.Contracts.cs",
     "world_balance_authority": "src/Chronicles.Simulation/FormulaRegistry.cs",
+    "cultivation_authority": "src/Chronicles.Simulation/World.Cultivation.cs",
+    "foundation_formation_authority": "src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs",
     "runtime_performance_diagnostics": "src/Chronicles.Runtime/SimulationRunner.cs",
     "agent_observation_ui": "src/Chronicles.Desktop/MainWindow.AgentObservation.cs",
     "workspace_navigation_ui": "src/Chronicles.Desktop/MainWindow.Workspace.cs",

@@ -47,6 +47,13 @@ Desktop = Application + Presentation
 다른 월 행동 경계이며 돌파 시도 전에는 RNG를 소비하지 않는다. `World.Cultivation`은
 상태 전이 owner, `RealmRules`는 Work·Gate·확률·이월 공식 owner,
 `CultivationModel`은 저장/조회 계약 owner다. 9층 Work와 대원만은 서로 다른 상태다.
+승인된 Concrete Attempt Effect 정의는 현재 0개이고 미등록 후보는 `Unapproved`로
+표시해 확률을 바꾸지 않는다. 실패 효과도 `CleanFailure`와 확정 0 손실을 명시한다.
+영맥 환경 품질은 `SpatialAuthorityStore`의 지점별 파생 캐시를 읽으며 공급이 바뀐
+지점만 다시 계산한다. `FoundationFormationAuthorityStore`는 삼도축기요결의 완료된
+5단계, 경로와 동결 Source Snapshot을 평탄 SoA로 저장하고 state hash·schema 25·조회에
+연결한다. 법칙 이해와 운명/행운 bridge가 생기기 전에는 중립 보정이 아니라
+`Unavailable`로 표시한다.
 
 `AptitudeModel`은 영근·근골·체질·오성·정신·영혼 6개 영역과 영역별 10개 Component,
 안정 ID, `F-TRAIT-002` 대표값 공식과 수행/전투 파생 능력을 소유한다. 권위값 60개는
@@ -196,6 +203,10 @@ simulation 조회 단계부터 계산하지 않는다. 시장은 분류 토글·
 최근 거래 내부 탭, 지도는 지역 개요·요수 생태·100명 수선자 페이지 내부 탭을 사용한다. 시장과
 지도도 현재 열린 내부 탭의 행과 문구만 갱신하며 대형 표와 연대기는 WPF recycling
 virtualization을 사용한다.
+인물 상세는 개요·수행·전투·관계·기록의 다섯 내부 탭으로 나누고 선택할 때 맨 위로
+이동한다. 토글 내부와 시장·지도에서 높이가 작은 상세 탭에는 별도 `ScrollViewer`를
+두지 않는다. 긴 기록, 페이지 목록과 대형 표처럼 스크롤 탐색이 정보 구조에 맞는
+경우에만 숨김 스크롤바와 가상화를 유지한다.
 최근 로그는 사건 종류별 내부 탭, 영구 연대기는 사건 종류 탭과 생별 토글을 사용하며
 이미 받은 선택 인물 DTO만 필터링한다. 지도 수선자 내부 탭은 선택 지역의 현재 페이지만
 요청하며 인구 변동으로 페이지가 사라지면 마지막 유효 페이지로 자동 보정한다. 전투력

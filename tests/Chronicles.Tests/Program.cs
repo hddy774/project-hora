@@ -3212,6 +3212,7 @@ static void ObservationQueriesAreReadOnly()
     var summaryOnly = world.CreateSnapshot(25, 25, ObservationSections.StatisticsSummary);
     var realmDistributionOnly = world.CreateSnapshot(25, 25, ObservationSections.RealmDistribution);
     var cityOnly = world.CreateSnapshot(25, 25, ObservationSections.MarketSummary);
+    var organizationOnly = world.CreateSnapshot(25, 25, ObservationSections.Organization);
 
     Equal(1, exactSearch.Count, "정확한 Agent ID 검색 결과");
     Equal(leader.Id, exactSearch[0].Id, "정확한 Agent ID 검색 대상");
@@ -3230,6 +3231,12 @@ static void ObservationQueriesAreReadOnly()
     Equal(0, closedWorkspace.Map.Locations.Count, "비활성 지도 조회 생략");
     Equal(0, closedWorkspace.RecentEvents.Count, "비활성 세계 로그 조회 생략");
     Equal(0, closedWorkspace.PermanentWorldChronicle.Count, "비활성 세계 연대기 조회 생략");
+    True(
+        ReferenceEquals(WorldOrganizationSnapshot.Empty, closedWorkspace.Organizations),
+        "닫힌 조직 화면 DTO 생성 생략");
+    True(
+        !ReferenceEquals(WorldOrganizationSnapshot.Empty, organizationOnly.Organizations),
+        "열린 조직 화면만 조직 DTO 투영");
     True(statisticsOnly.Statistics.RealmDistribution.Count > 0, "활성 통계만 계산");
     Equal(0, statisticsOnly.Market.Goods.Count, "통계 관찰 중 시장 계산 생략");
     Equal(0, summaryOnly.Statistics.RealmDistribution.Count, "접힌 경지 분포 계산 생략");

@@ -1419,6 +1419,12 @@
                                  LoadRequested="SaveWorkspacePanel_LoadRequested"
                                  FolderRequested="SaveWorkspacePanel_FolderRequested" />
 
+        <local:OrganizationWorkspaceView x:Name="OrganizationWorkspacePanel"
+                                         Grid.Row="4"
+                                         Grid.Column="2"
+                                         Visibility="Collapsed"
+                                         AgentSelected="OrganizationWorkspacePanel_AgentSelected" />
+
         <Grid Grid.Row="6" Grid.Column="2">
             <TextBlock x:Name="StatusText"
                        Text="세계 초기화 중…"

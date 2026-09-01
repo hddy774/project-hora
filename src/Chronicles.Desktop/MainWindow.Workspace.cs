@@ -27,6 +27,10 @@ public partial class MainWindow
     private bool IsDashboardWorkspaceVisible =>
         DashboardWorkspaceGrid.Visibility == Visibility.Visible;
 
+    private bool IsObservationWorkspaceVisible =>
+        IsDashboardWorkspaceVisible
+        || OrganizationWorkspacePanel.Visibility == Visibility.Visible;
+
     private void WorkspaceNavigation_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not RadioButton { Tag: string tag }
@@ -41,15 +45,19 @@ public partial class MainWindow
     private void ApplyWorkspaceRoute(WorkspaceRoute route)
     {
         _workspaceRoute = route;
-        var isAvailable = route is not (WorkspaceRoute.Organizations or WorkspaceRoute.Content);
+        var isAvailable = route != WorkspaceRoute.Content;
         var isSettings = route == WorkspaceRoute.Settings;
         var isSave = route == WorkspaceRoute.Save;
-        DashboardWorkspaceGrid.Visibility = isAvailable && !isSettings && !isSave
+        var isOrganizations = route == WorkspaceRoute.Organizations;
+        DashboardWorkspaceGrid.Visibility = isAvailable && !isSettings && !isSave && !isOrganizations
             ? Visibility.Visible
             : Visibility.Collapsed;
         WorkspaceUnavailablePanel.Visibility = isAvailable ? Visibility.Collapsed : Visibility.Visible;
         SettingsWorkspacePanel.Visibility = isSettings ? Visibility.Visible : Visibility.Collapsed;
         SaveWorkspacePanel.Visibility = isSave ? Visibility.Visible : Visibility.Collapsed;
+        OrganizationWorkspacePanel.Visibility = isOrganizations
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         _runner?.SetPerformanceDiagnosticsEnabled(
             isSettings && SettingsWorkspacePanel.IsPerformanceMeterEnabled);
         ConfigureWorkspaceLayout(route, isAvailable);
@@ -93,9 +101,6 @@ public partial class MainWindow
                 case WorkspaceRoute.Settings:
                     break;
                 case WorkspaceRoute.Organizations:
-                    ShowUnavailableWorkspace(
-                        "조직 작업공간 · 준비 중",
-                        "Organization Core와 종문·가문·왕조의 권위 상태는 0.0.20 이식 범위입니다. 현재 버전에는 표시할 실제 조직 데이터가 없습니다.");
                     break;
                 case WorkspaceRoute.Content:
                     ShowUnavailableWorkspace(
@@ -119,6 +124,14 @@ public partial class MainWindow
         {
             RefreshVisibleObservation();
         }
+    }
+
+    private void OrganizationWorkspacePanel_AgentSelected(
+        object? sender,
+        OrganizationAgentSelectedEventArgs e)
+    {
+        _selectedAgent = e.AgentId;
+        ApplyWorkspaceRoute(WorkspaceRoute.People);
     }
 
     private void ConfigureWorkspaceLayout(WorkspaceRoute route, bool isAvailable)

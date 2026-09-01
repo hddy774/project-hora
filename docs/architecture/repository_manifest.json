@@ -103,6 +103,7 @@
     "workspace_navigation_ui": "src/Chronicles.Desktop/MainWindow.Workspace.cs",
     "settings_workspace_ui": "src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs",
     "map_observation_ui": "src/Chronicles.Desktop/MapObservationView.xaml.cs",
+    "organization_observation_ui": "src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs",
     "market_observation_ui": "src/Chronicles.Desktop/MarketObservationView.xaml.cs",
     "vertical_contract_test": "tests/Chronicles.Tests/Program.cs"
   }

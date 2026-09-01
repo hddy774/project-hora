@@ -170,7 +170,7 @@ public partial class MainWindow : Window, IDisposable
             _selectedAgent = selected;
         }
 
-        if (!IsDashboardWorkspaceVisible)
+        if (!IsObservationWorkspaceVisible)
         {
             var shellSnapshot = _runner.GetSnapshot(
                 rankingCount: 1,
@@ -198,7 +198,7 @@ public partial class MainWindow : Window, IDisposable
 
     private ObservationSections GetVisibleObservationSections()
     {
-        if (!IsDashboardWorkspaceVisible)
+        if (!IsObservationWorkspaceVisible)
         {
             return ObservationSections.None;
         }
@@ -209,6 +209,7 @@ public partial class MainWindow : Window, IDisposable
             WorkspaceRoute.City => ObservationSections.Market,
             WorkspaceRoute.Economy => ObservationSections.Market,
             WorkspaceRoute.Map => ObservationSections.Map,
+            WorkspaceRoute.Organizations => ObservationSections.Organization,
             WorkspaceRoute.Records or WorkspaceRoute.Diagnostics =>
                 WorldRecordsPanel.SelectedRecordIndex switch
             {
@@ -307,6 +308,10 @@ public partial class MainWindow : Window, IDisposable
                     observation.SelectedChronicle,
                     observation.SelectedPersonalCenturyChronicle,
                     observation.SelectedReincarnation);
+            }
+            else if (_workspaceRoute == WorkspaceRoute.Organizations)
+            {
+                OrganizationWorkspacePanel.Apply(snapshot.Organizations);
             }
             else
             {

@@ -9,6 +9,7 @@ internal enum WorkspaceRoute : byte
     People,
     Relations,
     Map,
+    City,
     Economy,
     Organizations,
     Content,
@@ -60,13 +61,18 @@ public partial class MainWindow
                     break;
                 case WorkspaceRoute.People:
                     WorldInfoTabControl.SelectedIndex = 0;
+                    SelectAgentDetailSection(AgentDetailSection.Overview);
                     break;
                 case WorkspaceRoute.Relations:
                     WorldInfoTabControl.SelectedIndex = 0;
+                    SelectAgentDetailSection(AgentDetailSection.Social);
                     RelationsExpander.IsExpanded = true;
                     break;
                 case WorkspaceRoute.Map:
                     WorldInfoTabControl.SelectedIndex = 3;
+                    break;
+                case WorkspaceRoute.City:
+                    WorldInfoTabControl.SelectedIndex = 1;
                     break;
                 case WorkspaceRoute.Economy:
                     WorldInfoTabControl.SelectedIndex = 2;

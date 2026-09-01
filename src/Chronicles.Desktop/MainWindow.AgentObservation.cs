@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using System.Globalization;
 using Chronicles.Core;
@@ -6,8 +7,57 @@ using static Chronicles.Presentation.PresentationText;
 
 namespace Chronicles.Desktop;
 
+internal enum AgentDetailSection : byte
+{
+    Overview,
+    Cultivation,
+    Combat,
+    Social,
+    Records,
+}
+
 public partial class MainWindow
 {
+    private AgentDetailSection _agentDetailSection = AgentDetailSection.Overview;
+
+    private void AgentDetailSectionButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not RadioButton { Tag: string tag }
+            || !Enum.TryParse<AgentDetailSection>(tag, ignoreCase: true, out var section))
+        {
+            return;
+        }
+
+        SelectAgentDetailSection(section);
+        RefreshVisibleObservation();
+    }
+
+    private void SelectAgentDetailSection(AgentDetailSection section)
+    {
+        _agentDetailSection = section;
+        AgentOverviewSection.Visibility = section == AgentDetailSection.Overview
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        AgentCultivationSection.Visibility = section == AgentDetailSection.Cultivation
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        AgentCombatSection.Visibility = section == AgentDetailSection.Combat
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        AgentSocialSection.Visibility = section == AgentDetailSection.Social
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        AgentRecordsSection.Visibility = section == AgentDetailSection.Records
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        AgentDetailScrollViewer.ScrollToTop();
+        AgentOverviewTab.IsChecked = section == AgentDetailSection.Overview;
+        AgentCultivationTab.IsChecked = section == AgentDetailSection.Cultivation;
+        AgentCombatTab.IsChecked = section == AgentDetailSection.Combat;
+        AgentSocialTab.IsChecked = section == AgentDetailSection.Social;
+        AgentRecordsTab.IsChecked = section == AgentDetailSection.Records;
+    }
+
     private void UpdateSelectedAgent(
         AgentSnapshot agent,
         IReadOnlyList<PersonalLogEntry> personalLog,
@@ -62,103 +112,119 @@ public partial class MainWindow
             $"{layer.KoreanName} / {location.KoreanName} · {FormatBiome(location.Biome)} · " +
             $"발견 {agent.SpatialKnowledge.KnownLocationCount:N0}/{agent.SpatialKnowledge.TotalProductionLocationCount:N0} · " +
             $"{movement} · 요수 사냥 {KoreanNumberFormatter.Format(agent.MonsterVictories)}/{KoreanNumberFormatter.Format(agent.MonsterHunts)}승";
-        if (DecisionReasonExpander.IsExpanded)
+        if (_agentDetailSection == AgentDetailSection.Overview
+            && DecisionReasonExpander.IsExpanded)
         {
             UpdateDecisionReasonView(agent.Decision);
         }
-        if (LifeAuthorityExpander.IsExpanded)
+        if (_agentDetailSection == AgentDetailSection.Overview
+            && LifeAuthorityExpander.IsExpanded)
         {
             UpdateLifeAuthorityView(agent.LifeAuthority);
         }
-        if (CausalRuntimeExpander.IsExpanded && agent.Causal is { } causal)
+        if (_agentDetailSection == AgentDetailSection.Social
+            && CausalRuntimeExpander.IsExpanded
+            && agent.Causal is { } causal)
         {
             UpdateCausalRuntimeView(causal);
         }
-        if (RelationsExpander.IsExpanded)
+        if (_agentDetailSection == AgentDetailSection.Social
+            && RelationsExpander.IsExpanded)
         {
             UpdateRelationsView(agent.Relations ?? Array.Empty<RelationSnapshot>());
         }
-        if (TeachingExpander.IsExpanded && agent.Teaching is { } teaching)
+        if (_agentDetailSection == AgentDetailSection.Social
+            && TeachingExpander.IsExpanded
+            && agent.Teaching is { } teaching)
         {
             UpdateTeachingView(teaching);
         }
-        CultivationProgressBar.Maximum = Math.Max(1, agent.CultivationRequirement);
-        CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
-        CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
-        CultivationStateText.Text = FormatCultivationState(agent.CultivationState, agent.BottleneckCause);
-        var cultivation = agent.Cultivation;
-        CultivationAuthorityText.Text =
-            $"선천 수행자질 종합 {cultivation.InnateAptitudeCompositeHundredths / 100m:0.00} · 50.00 기준 대경지 전체(1층→9층 대원만) {cultivation.BaselineCultivationYears:N2}년 · 직전 Work {KoreanNumberFormatter.Format(cultivation.WorkBefore)} + {KoreanNumberFormatter.Format(cultivation.LastGain)} = {KoreanNumberFormatter.Format(cultivation.WorkAfter)} · 이월 {KoreanNumberFormatter.Format(cultivation.PendingCarryoverWork)}";
-        var gateText = cultivation.EntryGates.Count == 0
-            ? "입문 Gate 해당 없음"
-            : string.Join(
-                " · ",
-                cultivation.EntryGates.Select(gate =>
-                    $"G{gate.GateNumber} {(gate.Passed ? "통과" : "대기")} {gate.GateScoreHundredths / 100m:0.00} (단련 +{gate.TemperingBonusHundredths / 100m:0.00})"));
-        var componentText = cultivation.Components.Count == 0
-            ? "경지 구성요소 준비 전"
-            : string.Join(
-                " · ",
-                cultivation.Components.Select(component =>
-                    $"{component.KoreanName} {component.ValueHundredths / 100m:0.00}/{component.LimitHundredths / 100m:0.00}"));
-        CultivationComponentText.Text =
-            $"{gateText} · 축기 경로 {FormatFoundationRoute(cultivation.FoundationRoute)} · {componentText}";
-        if (CultivationTraceExpander.IsExpanded)
+        if (_agentDetailSection == AgentDetailSection.Cultivation)
         {
-            UpdateCultivationTraceView(cultivation);
-        }
-        RootText.Text = QualityRules.Format(agent.Aptitudes.SpiritualRoot);
-        BoneText.Text = QualityRules.Format(agent.Aptitudes.Bone);
-        ConstitutionText.Text = QualityRules.Format(agent.Aptitudes.Constitution);
-        ComprehensionText.Text = QualityRules.Format(agent.Aptitudes.Comprehension);
-        MindText.Text = QualityRules.Format(agent.Aptitudes.Mind);
-        SoulText.Text = QualityRules.Format(agent.Aptitudes.Soul);
-        if (AptitudeDetailsExpander.IsExpanded)
-        {
-            UpdateAptitudeDetailView(agent);
+            CultivationProgressBar.Maximum = Math.Max(1, agent.CultivationRequirement);
+            CultivationProgressBar.Value = Math.Min(agent.CultivationProgress, agent.CultivationRequirement);
+            CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
+            CultivationStateText.Text = FormatCultivationState(agent.CultivationState, agent.BottleneckCause);
+            var cultivation = agent.Cultivation;
+            CultivationAuthorityText.Text =
+                $"선천 수행자질 종합 {cultivation.InnateAptitudeCompositeHundredths / 100m:0.00} · 50.00 기준 대경지 전체(1층→9층 대원만) {cultivation.BaselineCultivationYears:N2}년 · 직전 Work {KoreanNumberFormatter.Format(cultivation.WorkBefore)} + {KoreanNumberFormatter.Format(cultivation.LastGain)} = {KoreanNumberFormatter.Format(cultivation.WorkAfter)} · 이월 {KoreanNumberFormatter.Format(cultivation.PendingCarryoverWork)}";
+            var gateText = cultivation.EntryGates.Count == 0
+                ? "입문 Gate 해당 없음"
+                : string.Join(
+                    " · ",
+                    cultivation.EntryGates.Select(gate =>
+                        $"G{gate.GateNumber} {(gate.Passed ? "통과" : "대기")} {gate.GateScoreHundredths / 100m:0.00} (단련 +{gate.TemperingBonusHundredths / 100m:0.00})"));
+            var componentText = cultivation.Components.Count == 0
+                ? "경지 구성요소 준비 전"
+                : string.Join(
+                    " · ",
+                    cultivation.Components.Select(component =>
+                        $"{component.KoreanName} {component.ValueHundredths / 100m:0.00}/{component.LimitHundredths / 100m:0.00}"));
+            CultivationComponentText.Text =
+                $"{gateText} · 축기 경로 {FormatFoundationRoute(cultivation.FoundationRoute)} · {componentText}";
+            if (CultivationTraceExpander.IsExpanded)
+            {
+                UpdateCultivationTraceView(cultivation);
+            }
+            RootText.Text = QualityRules.Format(agent.Aptitudes.SpiritualRoot);
+            BoneText.Text = QualityRules.Format(agent.Aptitudes.Bone);
+            ConstitutionText.Text = QualityRules.Format(agent.Aptitudes.Constitution);
+            ComprehensionText.Text = QualityRules.Format(agent.Aptitudes.Comprehension);
+            MindText.Text = QualityRules.Format(agent.Aptitudes.Mind);
+            SoulText.Text = QualityRules.Format(agent.Aptitudes.Soul);
+            if (AptitudeDetailsExpander.IsExpanded)
+            {
+                UpdateAptitudeDetailView(agent);
+            }
         }
 
-        TechniqueText.Text = $"{QualityRules.Format(agent.TechniqueQuality)} · 숙련 {agent.TechniqueMastery / 100m:0.00} · 이해 {agent.TechniqueUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.TechniqueTrainingExperience)}";
-        SpellText.Text = $"{QualityRules.Format(agent.SpellQuality)} · 숙련 {agent.SpellMastery / 100m:0.00} · 이해 {agent.SpellUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.SpellTrainingExperience)}";
-        HealthText.Text = $"{KoreanNumberFormatter.Format(Math.Max(0, agent.Health))} / {KoreanNumberFormatter.Format(agent.MaximumHealth)}";
-        QiText.Text = $"{KoreanNumberFormatter.Format(agent.Qi)} / {KoreanNumberFormatter.Format(agent.MaximumQi)}";
-        var combat = agent.CombatAttributes;
-        CombatAttributeText.Text =
-            $"공격 {KoreanNumberFormatter.Format(combat.Attack)} · 방어 {KoreanNumberFormatter.Format(combat.Defense)} · 공격속도 {combat.AttackSpeedBasisPoints / 100m:0.00}% · 방어속도 {combat.DefenseSpeedBasisPoints / 100m:0.00}%\n" +
-            $"관통 {KoreanNumberFormatter.Format(combat.Penetration)} · 관통방어 {KoreanNumberFormatter.Format(combat.PenetrationDefense)} · 치명타 확률 {combat.CriticalChanceBasisPoints / 100m:0.00}% · 치명타 위력 {combat.CriticalPowerBasisPoints / 100m:0.00}% · 치명타 방어 {combat.CriticalDefenseBasisPoints / 100m:0.00}% · 회피 {combat.EvasionBasisPoints / 100m:0.00}%\n" +
-            $"판단력 {KoreanNumberFormatter.Format(combat.Judgment)} · 집중력 {KoreanNumberFormatter.Format(combat.Focus)} · 법술 효율 {combat.SpellEfficiencyBasisPoints / 100m:0.00}% · 수행 효율 {combat.CultivationEfficiencyBasisPoints / 100m:0.00}%";
-        InjuryText.Text =
-            $"부상 {FormatInjurySeverity(agent.InjurySeverity)} · 누적 {agent.InjuryPoints / 100m:0.00}% · 중상부터 전투 사망 확률 발생";
-        var battles = agent.Wins + agent.Losses;
-        var winRate = battles == 0 ? 0m : agent.Wins * 100m / battles;
-        RecordText.Text =
-            $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · 승률 {winRate:0.##}% · 전투 숙련 {agent.CombatMastery / 100m:0.00} · 이해 {agent.CombatUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.CombatExperience)}";
-        SpiritStoneText.Text = $"{KoreanNumberFormatter.Format(agent.SpiritStones)}개";
-        PillInventoryText.Text = $"수행단 {agent.GrowthPills:N0} · 돌파단 {agent.BreakthroughPills:N0}";
-        MissionText.Text = agent.ActiveMission is { } mission
-            ? $"{EconomyRules.GetMaterial(mission.Material).KoreanName} {mission.HeldCount:N0}/{mission.RequiredCount:N0} · 완료 {agent.MissionsCompleted:N0}"
-            : $"수주 대기 · 완료 {agent.MissionsCompleted:N0}";
-        MaterialText.Text = $"{KoreanNumberFormatter.Format(agent.InventoryItemCount)}개";
-        EquipmentText.Text = string.Join(
-            "  ·  ",
-            agent.EquippedTreasures.Select(item =>
-                $"{FormatTreasureSlot(item.Slot)} {(item.Quality is { } quality ? QualityRules.Format(quality) : "미장착")}" +
-                (item.RealmGrade is { } grade ? $" · {FormatRealmStage(grade)}급" : string.Empty)));
-        MaterialDetailText.Text = agent.Materials.Count == 0
-            ? "보유 재료 없음"
-            : string.Join(
+        if (_agentDetailSection == AgentDetailSection.Combat)
+        {
+            TechniqueText.Text = $"{QualityRules.Format(agent.TechniqueQuality)} · 숙련 {agent.TechniqueMastery / 100m:0.00} · 이해 {agent.TechniqueUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.TechniqueTrainingExperience)}";
+            SpellText.Text = $"{QualityRules.Format(agent.SpellQuality)} · 숙련 {agent.SpellMastery / 100m:0.00} · 이해 {agent.SpellUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.SpellTrainingExperience)}";
+            HealthText.Text = $"{KoreanNumberFormatter.Format(Math.Max(0, agent.Health))} / {KoreanNumberFormatter.Format(agent.MaximumHealth)}";
+            QiText.Text = $"{KoreanNumberFormatter.Format(agent.Qi)} / {KoreanNumberFormatter.Format(agent.MaximumQi)}";
+            var combat = agent.CombatAttributes;
+            CombatAttributeText.Text =
+                $"공격 {KoreanNumberFormatter.Format(combat.Attack)} · 방어 {KoreanNumberFormatter.Format(combat.Defense)} · 공격속도 {combat.AttackSpeedBasisPoints / 100m:0.00}% · 방어속도 {combat.DefenseSpeedBasisPoints / 100m:0.00}%\n" +
+                $"관통 {KoreanNumberFormatter.Format(combat.Penetration)} · 관통방어 {KoreanNumberFormatter.Format(combat.PenetrationDefense)} · 치명타 확률 {combat.CriticalChanceBasisPoints / 100m:0.00}% · 치명타 위력 {combat.CriticalPowerBasisPoints / 100m:0.00}% · 치명타 방어 {combat.CriticalDefenseBasisPoints / 100m:0.00}% · 회피 {combat.EvasionBasisPoints / 100m:0.00}%\n" +
+                $"판단력 {KoreanNumberFormatter.Format(combat.Judgment)} · 집중력 {KoreanNumberFormatter.Format(combat.Focus)} · 법술 효율 {combat.SpellEfficiencyBasisPoints / 100m:0.00}% · 수행 효율 {combat.CultivationEfficiencyBasisPoints / 100m:0.00}%";
+            InjuryText.Text =
+                $"부상 {FormatInjurySeverity(agent.InjurySeverity)} · 누적 {agent.InjuryPoints / 100m:0.00}% · 중상부터 전투 사망 확률 발생";
+            var battles = agent.Wins + agent.Losses;
+            var winRate = battles == 0 ? 0m : agent.Wins * 100m / battles;
+            RecordText.Text =
+                $"{KoreanNumberFormatter.Format(agent.Wins)}승 {KoreanNumberFormatter.Format(agent.Losses)}패 · 승률 {winRate:0.##}% · 전투 숙련 {agent.CombatMastery / 100m:0.00} · 이해 {agent.CombatUnderstanding / 100m:0.00} · 경험 {KoreanNumberFormatter.Format(agent.CombatExperience)}";
+            SpiritStoneText.Text = $"{KoreanNumberFormatter.Format(agent.SpiritStones)}개";
+            PillInventoryText.Text = $"수행단 {agent.GrowthPills:N0} · 돌파단 {agent.BreakthroughPills:N0}";
+            MissionText.Text = agent.ActiveMission is { } mission
+                ? $"{EconomyRules.GetMaterial(mission.Material).KoreanName} {mission.HeldCount:N0}/{mission.RequiredCount:N0} · 완료 {agent.MissionsCompleted:N0}"
+                : $"수주 대기 · 완료 {agent.MissionsCompleted:N0}";
+            MaterialText.Text = $"{KoreanNumberFormatter.Format(agent.InventoryItemCount)}개";
+            EquipmentText.Text = string.Join(
                 "  ·  ",
-                agent.Materials.Select(item =>
-                    $"{EconomyRules.GetMaterial(item.Material).KoreanName} {KoreanNumberFormatter.Format(item.Count)}"));
-        AptitudeBonusText.Text =
-            $"세부 자질 파생 보정 · 공법 {FormatEffectPercent(agent.CombatPowerDetails.TechniqueAptitudeBonusBasisPoints)} · " +
-            $"법술 {FormatEffectPercent(agent.CombatPowerDetails.SpellAptitudeBonusBasisPoints)} · " +
-            $"전투 숙련 {FormatEffectPercent(agent.CombatPowerDetails.CombatMasteryBonusBasisPoints)} · " +
-            $"전투 이해 {FormatEffectPercent(agent.CombatPowerDetails.CombatUnderstandingBonusBasisPoints)} · " +
-            $"전투 경험 {FormatEffectPercent(agent.CombatPowerDetails.CombatExperienceGainBonusBasisPoints)}";
-        SetPowerBreakdown(agent.CombatPower);
-        SetPowerFormulaDetails(agent.CombatPowerDetails);
-        UpdateAgentLogViews();
+                agent.EquippedTreasures.Select(item =>
+                    $"{FormatTreasureSlot(item.Slot)} {(item.Quality is { } quality ? QualityRules.Format(quality) : "미장착")}" +
+                    (item.RealmGrade is { } grade ? $" · {FormatRealmStage(grade)}급" : string.Empty)));
+            MaterialDetailText.Text = agent.Materials.Count == 0
+                ? "보유 재료 없음"
+                : string.Join(
+                    "  ·  ",
+                    agent.Materials.Select(item =>
+                        $"{EconomyRules.GetMaterial(item.Material).KoreanName} {KoreanNumberFormatter.Format(item.Count)}"));
+            AptitudeBonusText.Text =
+                $"세부 자질 파생 보정 · 공법 {FormatEffectPercent(agent.CombatPowerDetails.TechniqueAptitudeBonusBasisPoints)} · " +
+                $"법술 {FormatEffectPercent(agent.CombatPowerDetails.SpellAptitudeBonusBasisPoints)} · " +
+                $"전투 숙련 {FormatEffectPercent(agent.CombatPowerDetails.CombatMasteryBonusBasisPoints)} · " +
+                $"전투 이해 {FormatEffectPercent(agent.CombatPowerDetails.CombatUnderstandingBonusBasisPoints)} · " +
+                $"전투 경험 {FormatEffectPercent(agent.CombatPowerDetails.CombatExperienceGainBonusBasisPoints)}";
+            SetPowerBreakdown(agent.CombatPower);
+            SetPowerFormulaDetails(agent.CombatPowerDetails);
+        }
+        if (_agentDetailSection == AgentDetailSection.Records)
+        {
+            UpdateAgentLogViews();
+        }
     }
 
     private void SetPowerBreakdown(CombatPowerBreakdown power)

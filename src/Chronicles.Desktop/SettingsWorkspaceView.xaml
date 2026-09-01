@@ -37,8 +37,7 @@
 
             <TabControl Grid.Row="2" SelectedIndex="0">
                 <TabItem Header="화면">
-                    <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                        <StackPanel Margin="0,16,0,0">
+                    <StackPanel Margin="0,16,0,0">
                             <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
                                 <StackPanel>
                                     <TextBlock Text="인터페이스 배율"
@@ -79,13 +78,11 @@
                                     </StackPanel>
                                 </Grid>
                             </Border>
-                        </StackPanel>
-                    </ScrollViewer>
+                    </StackPanel>
                 </TabItem>
 
                 <TabItem Header="세계 생성">
-                    <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                        <StackPanel Margin="0,16,0,0">
+                    <StackPanel Margin="0,16,0,0">
                             <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -150,13 +147,11 @@
                                             Click="CreateWorldButton_Click">설정으로 새 세계 생성</Button>
                                 </Grid>
                             </Border>
-                        </StackPanel>
-                    </ScrollViewer>
+                    </StackPanel>
                 </TabItem>
 
                 <TabItem Header="성능">
-                    <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                        <StackPanel Margin="0,16,0,0">
+                    <StackPanel Margin="0,16,0,0">
                             <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -212,13 +207,11 @@
                                     </StackPanel>
                                 </Border>
                             </UniformGrid>
-                        </StackPanel>
-                    </ScrollViewer>
+                    </StackPanel>
                 </TabItem>
 
                 <TabItem Header="개발자">
-                    <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                        <StackPanel Margin="0,16,0,0">
+                    <StackPanel Margin="0,16,0,0">
                             <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -294,8 +287,7 @@
                                            Foreground="{StaticResource SecondaryTextBrush}"
                                            TextWrapping="Wrap" />
                             </Border>
-                        </StackPanel>
-                    </ScrollViewer>
+                    </StackPanel>
                 </TabItem>
             </TabControl>
         </Grid>

@@ -61,6 +61,11 @@ function Assert-EvidenceReference {
 }
 
 Assert-Condition (Test-Path -LiteralPath $LedgerPath -PathType Leaf) "PC 이식 원장이 없습니다: $LedgerPath"
+if (-not [string]::IsNullOrWhiteSpace($SourceManifestPath)) {
+    $generatorPath = Join-Path $PSScriptRoot 'generate-port-ledger.ps1'
+    Assert-Condition (Test-Path -LiteralPath $generatorPath -PathType Leaf) "PC 이식 원장 생성기가 없습니다: $generatorPath"
+    & $generatorPath -SourceManifestPath $SourceManifestPath -OutputPath $LedgerPath -Check
+}
 $ledger = Get-Content -LiteralPath $LedgerPath -Raw | ConvertFrom-Json
 
 Assert-Condition ($ledger.contract -eq 'CMIP_PC_PORT_LEDGER_V1') '원장 contract가 CMIP_PC_PORT_LEDGER_V1이 아닙니다.'
@@ -129,7 +134,7 @@ foreach ($row in @($ledger.rows)) {
 
     if ($disposition -eq 'Gap/Deferred') {
         Assert-Condition (-not [string]::IsNullOrWhiteSpace([string]$row.gap_summary)) "Gap 설명이 없습니다: $id"
-        Assert-Condition ([string]$row.target_version -match '^0\.0\.(1[5-9]|2[0-3])$') "Gap target_version 형식 오류: $id"
+        Assert-Condition ([string]$row.target_version -match '^0\.0\.(1[5-9]|2[0-6])$') "Gap target_version 형식 오류: $id"
     } else {
         Assert-Condition ($pcEvidence.Count -gt 0) "완료/임시 분류에 PC 파일 근거가 없습니다: $id"
         Assert-Condition ($pcTests.Count -gt 0) "완료/임시 분류에 PC 테스트 근거가 없습니다: $id"

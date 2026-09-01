@@ -1,6 +1,7 @@
 param(
     [string]$SourceManifestPath,
-    [string]$OutputPath
+    [string]$OutputPath,
+    [switch]$Check
 )
 
 $ErrorActionPreference = 'Stop'
@@ -25,10 +26,10 @@ if ($source.contract -ne 'ALPHA_1_1_0_REQUIREMENT_COVERAGE_V1' -or $source.requi
 }
 
 $targetVersions = @{
-    M01 = '0.0.15'; M02 = '0.0.23'; M03 = '0.0.16'; M04 = '0.0.16'
+    M01 = '0.0.15'; M02 = '0.0.22'; M03 = '0.0.16'; M04 = '0.0.16'
     M05 = '0.0.18'; M06 = '0.0.16'; M07 = '0.0.16'; M08 = '0.0.17'
-    M09 = '0.0.21'; M10 = '0.0.17'; M11 = '0.0.21'; M12 = '0.0.21'
-    M13 = '0.0.21'; M14 = '0.0.22'
+    M09 = '0.0.25'; M10 = '0.0.17'; M11 = '0.0.24'; M12 = '0.0.24'
+    M13 = '0.0.26'; M14 = '0.0.23'
 }
 
 $masterGap = @{
@@ -42,9 +43,9 @@ $masterGap = @{
     M08 = '현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다.'
     M09 = 'Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다.'
     M10 = '도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다.'
-    M11 = '간략 재료·법보는 존재하지만 비경과 Definition/Instance/Provenance, 고유 실물·창작 전승 authority가 없다.'
-    M12 = 'Teaching의 지식 변화는 존재하지만 Content/Edition/Physical Copy, 손상·변조·복원과 Knowledge Claim authority가 없다.'
-    M13 = '세계 AI·천도·법칙·대도 registry와 adapter authority가 PC에 아직 없다.'
+    M11 = 'Definition/Instance/Provenance·비경 발견·붕괴·저장·지연 UI는 구현했으나 창작·변형·사용의 원자 흐름, 시장·수행·조직·법칙 연결과 AI 획득·사용·창작이 후속이다.'
+    M12 = 'Content/Edition/실물 binding·접근·오해·교정·provenance는 구현했으나 조직 전승, Teaching의 실제 Edition 연결, 복원·재구성 공식과 AI 저술·필사·학습이 후속이다.'
+    M13 = '10+44개 후보·개인 이해·세계 AI·천도 REVIEW authority는 존재하지만 실제 Adapter·Metric·State I/O·Stable LawId는 사용자 결정에 따라 DataUnavailable/PC_TEMP_REVIEW로 보존한다.'
     M14 = '현재 WPF 관찰 화면은 존재하지만 독립 Queries/Presentation 계약, 전체 도메인 탐색, 관심 목록·설정 복원·접근성·오류 상태가 미완성이다.'
 }
 
@@ -118,12 +119,19 @@ $masterEvidence = @{
         'TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약',
         'TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위')
     M11 = @(
-        'FILE::src/Chronicles.Simulation/EconomyRules.cs::MarketGoodKind',
-        'FILE::src/Chronicles.Simulation/World.Map.cs::ResolveMonsterHunt')
+        'FILE::src/Chronicles.Simulation/ContentAuthorityStore.cs::ContentAuthorityStore',
+        'FILE::src/Chronicles.Simulation/World.Content.cs::TryDiscoverSecretRealm',
+        'FILE::src/Chronicles.Desktop/ContentWorkspaceView.xaml.cs::ShouldLoadSecretRealmRows',
+        'TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Content authority')
     M12 = @(
-        'FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingTargetKind',
-        'FILE::src/Chronicles.Simulation/SkillProgressionRules.cs::SkillProgressionRules')
-    M13 = @()
+        'FILE::src/Chronicles.Simulation/KnowledgeAuthorityModel.cs::KnowledgeAuthorityCheckpoint',
+        'FILE::src/Chronicles.Simulation/KnowledgeAuthorityStore.cs::KnowledgeAuthorityStore',
+        'FILE::src/Chronicles.Simulation/ContentAuthorityStore.cs::ContentAuthorityStore',
+        'TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Knowledge authority')
+    M13 = @(
+        'FILE::src/Chronicles.Simulation/LawAuthorityModel.cs::LawCandidateCheckpoint',
+        'FILE::src/Chronicles.Simulation/LawAuthorityStore.cs::TryRecordWorldJudgment',
+        'TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Law review authority')
     M14 = @(
         'FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections',
         'FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections',
@@ -186,9 +194,9 @@ $masterTests = @{
         'TEST::최근 12개월 수급 창·관찰 snapshot 재사용',
         'TEST::schema 24 시장 수급·원장 codec·source 재생 방지',
         'TEST::관찰 조회 무영향')
-    M11 = @()
-    M12 = @('TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%')
-    M13 = @()
+    M11 = @('TEST::콘텐츠 Definition·Instance·Provenance·발견·원자 소유권')
+    M12 = @('TEST::서적 Content·Edition·실물·접근·오해·교정 권위')
+    M13 = @('TEST::법칙 후보·개인 이해·세계 AI·천도 REVIEW 권위')
     M14 = @(
         'TEST::관찰 조회 무영향',
         'TEST::활성 UI 구역 선택 조회 성능',
@@ -229,11 +237,15 @@ $portIds = @(
     'A110-M09-V13', 'A110-M09-V15',
     'A110-M10-V01', 'A110-M10-V03', 'A110-M10-V04', 'A110-M10-V05',
     'A110-M10-V06', 'A110-M10-V10', 'A110-M10-V11', 'A110-M10-V13',
-    'A110-M10-V15', 'A110-M10-V16', 'A110-M10-V17'
+    'A110-M10-V15', 'A110-M10-V16', 'A110-M10-V17',
+    'A110-M11-V15',
+    'A110-M12-V01', 'A110-M12-V03', 'A110-M12-V11', 'A110-M12-V13',
+    'A110-M12-V15',
+    'A110-M13-V09'
 )
 
 $pcAdaptIds = @(
-    'A110-M02-V17',
+    'A110-M02-V13', 'A110-M02-V17',
     'A110-M03-V12',
     'A110-M04-V12', 'A110-M05-V12', 'A110-M06-V12', 'A110-M07-V12',
     'A110-M08-V12', 'A110-M10-V12',
@@ -252,7 +264,8 @@ $tempReviewIds = @(
     'A110-M08-V02', 'A110-M08-V05', 'A110-M08-V06', 'A110-M08-V08',
     'A110-M09-V14',
     'A110-M10-V02', 'A110-M10-V07', 'A110-M10-V08', 'A110-M10-V09',
-    'A110-M10-V14'
+    'A110-M10-V14',
+    'A110-M13-V05'
 )
 
 $reviewIds = @{
@@ -296,6 +309,13 @@ $reviewIds = @{
         'PC-TEMP-MARKET-BOOK-BASE-113',
         'PC-TEMP-MARKET-CONTRACT-LIFETIME-113',
         'PC-TEMP-MARKET-ORGANIZATION-CHANNEL-113')
+    M13 = @(
+        'PC-TEMP-LAW-CANDIDATE-CATALOG-021',
+        'PC-TEMP-LAW-READINESS-GATE-021')
+}
+
+$rowAdaptationOverrides = @{
+    'A110-M02-V13' = 'PC는 논리 도메인의 권위 상태를 schema 25 authority_snapshot과 typed checkpoint에 정규화하여 저장한다. 모바일 정본의 53개 물리 테이블 수는 플랫폼 구현 세부로 보며 동일한 저장·복구 의미를 PC 저장 계약으로 제공한다.'
 }
 
 $classification = @{}
@@ -371,7 +391,11 @@ $rows = foreach ($sourceRow in $source.rows) {
         review_ids = if ($disposition -eq 'PC_TEMP_REVIEW') { @($reviewIds[$master]) } else { @() }
         excluded_platform_clauses = $excludedClauses
         adaptation_note = if ($targetPortMode -eq 'PC Adapt') {
-            'Android/모바일 전달 표면을 제외하고 같은 관찰·조회 의미를 Windows WPF와 Windows x64 검증으로 제공한다.'
+            if ($rowAdaptationOverrides.ContainsKey($id)) {
+                [string]$rowAdaptationOverrides[$id]
+            } else {
+                'Android/모바일 전달 표면을 제외하고 같은 관찰·조회 의미를 Windows WPF와 Windows x64 검증으로 제공한다.'
+            }
         } else {
             $null
         }
@@ -380,10 +404,16 @@ $rows = foreach ($sourceRow in $source.rows) {
 }
 
 $sourceGitSha = $null
-try {
-    $sourceGitSha = (& git -C $workspaceRoot rev-parse HEAD 2>$null).Trim()
-} catch {
-    $sourceGitSha = $null
+if ($Check -and (Test-Path -LiteralPath $OutputPath -PathType Leaf)) {
+    $existingLedger = Get-Content -LiteralPath $OutputPath -Raw | ConvertFrom-Json
+    $existingSourceGitSha = [string]$existingLedger.source_git_sha
+    $sourceGitSha = if ([string]::IsNullOrWhiteSpace($existingSourceGitSha)) { $null } else { $existingSourceGitSha }
+} else {
+    try {
+        $sourceGitSha = (& git -C $workspaceRoot rev-parse HEAD 2>$null).Trim()
+    } catch {
+        $sourceGitSha = $null
+    }
 }
 
 $statusCounts = [ordered]@{}
@@ -419,6 +449,20 @@ $ledger = [ordered]@{
 }
 
 $json = $ledger | ConvertTo-Json -Depth 16
+if ($Check) {
+    if (-not (Test-Path -LiteralPath $OutputPath -PathType Leaf)) {
+        throw "검사할 PC port ledger가 없습니다: $OutputPath"
+    }
+
+    $expectedJson = (Get-Content -LiteralPath $OutputPath -Raw).TrimEnd()
+    if ($expectedJson -cne $json.TrimEnd()) {
+        throw 'PC port ledger가 생성기와 다릅니다. generate-port-ledger.ps1로 재생성해야 합니다.'
+    }
+
+    Write-Host "PC port ledger generator check: PASS ($OutputPath)"
+    return
+}
+
 [System.IO.File]::WriteAllText($OutputPath, $json + [Environment]::NewLine, [System.Text.UTF8Encoding]::new($false))
 Write-Host "PC port ledger generated: $OutputPath"
 Write-Host ($statusCounts | ConvertTo-Json -Compress)

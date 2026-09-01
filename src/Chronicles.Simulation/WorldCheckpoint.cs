@@ -210,9 +210,10 @@ public sealed record WorldCheckpoint(
     AgentCausalStoreCheckpoint? Causal = null,
     WorldAtlasCheckpoint? Atlas = null,
     WorldBalanceConfiguration? Balance = null,
-    OrganizationStoreCheckpoint? Organizations = null)
+    OrganizationStoreCheckpoint? Organizations = null,
+    ContentAuthorityCheckpoint? Content = null)
 {
-    public const int CurrentSchemaVersion = 26;
+    public const int CurrentSchemaVersion = 27;
 }
 
 /// <summary>

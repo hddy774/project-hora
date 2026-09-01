@@ -13,6 +13,7 @@ public sealed partial class World
     private readonly ReincarnationStore _reincarnation;
     private readonly SpatialAuthorityStore _atlas;
     private readonly OrganizationStore _organizations;
+    private readonly ContentAuthorityStore _content;
     private readonly CityMarket _market;
     private readonly WorldBalanceConfiguration _balance;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
@@ -73,6 +74,7 @@ public sealed partial class World
         _reincarnation = new ReincarnationStore(population);
         _atlas = new SpatialAuthorityStore(population);
         _organizations = new OrganizationStore(population);
+        _content = ContentAuthorityStore.CreateInitial(seed);
         _market = new CityMarket(population);
         _agentByRank = new int[population];
         _rankByAgent = new int[population];
@@ -134,6 +136,7 @@ public sealed partial class World
     public int TotalMonsterVictories => _totalMonsterVictories;
     public int TotalRelations => _relations.Count;
     public int TotalOrganizations => _organizations.Count;
+    public int TotalContentInstances => _content.InstanceCount;
     public WorldBalanceConfiguration Balance => _balance;
 
     public static World CreateDefault(ulong seed) =>
@@ -407,11 +410,15 @@ public sealed partial class World
         ObservationSections sections = ObservationSections.All,
         ushort? detailedMapLocationId = null,
         int detailedMapAgentOffset = 0,
-        int worldChronicleCount = int.MaxValue)
+        int worldChronicleCount = int.MaxValue,
+        int contentSecretRealmOffset = 0,
+        int contentSecretRealmLimit = 100)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rankingCount);
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
         ArgumentOutOfRangeException.ThrowIfNegative(worldChronicleCount);
+        ArgumentOutOfRangeException.ThrowIfNegative(contentSecretRealmOffset);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(contentSecretRealmLimit);
         var actualRankingCount = Math.Min(rankingCount, Population);
         var combatPowerRankings = (sections & ObservationSections.CombatPowerRanking) != 0
             ? CreateRankingEntries(
@@ -450,6 +457,13 @@ public sealed partial class World
         var organizations = (sections & ObservationSections.Organization) != 0
             ? _organizations.CreateSnapshot(_agents.Names)
             : WorldOrganizationSnapshot.Empty;
+        var content = (sections & ObservationSections.Content) != 0
+            ? _content.CreateSnapshot(
+                ContentDiscovererRef.Observer,
+                includeHidden: _balance.DeveloperModeEnabled,
+                contentSecretRealmOffset,
+                contentSecretRealmLimit)
+            : WorldContentSnapshot.Empty;
 
         var recentEvents = (sections & ObservationSections.WorldLog) != 0
             ? _events.Skip(Math.Max(0, _events.Count - eventCount)).ToArray()
@@ -488,7 +502,8 @@ public sealed partial class World
             _totalDeaths,
             _totalReincarnations,
             LeaderId,
-            organizations);
+            organizations,
+            content);
     }
 
     private RankingEntry[] CreateRankingEntries(
@@ -528,7 +543,22 @@ public sealed partial class World
         return entries;
     }
 
-    public ulong ComputeStateHash()
+    public ulong ComputeStateHash() => ComputeStateHashCore(includeContent: true);
+
+    /// <summary>
+    /// 구 슬롯의 저장 당시 hash 계약을 검증할 때만 사용합니다. 복원된 세계의 현재
+    /// canonical hash는 항상 <see cref="ComputeStateHash"/>를 사용합니다.
+    /// </summary>
+    public ulong ComputeStateHashForCheckpointSchema(int checkpointSchema)
+    {
+        if (checkpointSchema is < 7 or > WorldCheckpoint.CurrentSchemaVersion)
+        {
+            throw new ArgumentOutOfRangeException(nameof(checkpointSchema));
+        }
+        return ComputeStateHashCore(includeContent: checkpointSchema >= 27);
+    }
+
+    private ulong ComputeStateHashCore(bool includeContent)
     {
         var hash = 14695981039346656037UL;
         Add(ref hash, Seed);
@@ -559,6 +589,10 @@ public sealed partial class World
         Add(ref hash, (ulong)_totalMonsterVictories);
         _atlas.AddStateHash(ref hash);
         _organizations.AddStateHash(ref hash);
+        if (includeContent)
+        {
+            Add(ref hash, _content.ComputeStateHash());
+        }
         Add(ref hash, (ulong)_lastRankingRefreshTick);
         Add(ref hash, (ulong)_rankingMovementFromTick);
         Add(ref hash, (ulong)_rankingRisenCount);

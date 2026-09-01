@@ -9,6 +9,7 @@ internal static class ContentAuthorityTests
         ItemLifecycleIsAtomicAndIndexed();
         DiscoveryAndCheckpointRoundTripPreserveAuthority();
         InvalidCheckpointGraphsAreRejected();
+        WorldPersistenceAndSelectiveObservationAreConnected();
     }
 
     private static void DefinitionsAndInitialSecretRealmsAreStable()
@@ -189,6 +190,70 @@ internal static class ContentAuthorityTests
         TestAssert.Throws<InvalidDataException>(
             () => ContentAuthorityStore.Restore(crossInstanceParent),
             "다른 Instance provenance parent 거부");
+    }
+
+    private static void WorldPersistenceAndSelectiveObservationAreConnected()
+    {
+        var world = World.Create(0xC021UL, 32);
+        TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
+            world.TotalContentInstances, "세계 콘텐츠 store 연결");
+        var hashBeforeObservation = world.ComputeStateHash();
+        var closed = world.CreateSnapshot(
+            rankingCount: 1,
+            eventCount: 0,
+            sections: ObservationSections.None,
+            worldChronicleCount: 0);
+        TestAssert.Equal(0, closed.Content!.TotalInstances, "닫힌 콘텐츠 query 0건");
+        var opened = world.CreateSnapshot(
+            rankingCount: 1,
+            eventCount: 0,
+            sections: ObservationSections.Content,
+            worldChronicleCount: 0);
+        TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
+            opened.Content!.TotalInstances, "열린 콘텐츠 요약 투영");
+        TestAssert.Equal(0, opened.Content.SecretRealms.Count,
+            "일반 관찰에서 미발견 비경 행 비공개");
+        TestAssert.Equal(hashBeforeObservation, world.ComputeStateHash(),
+            "콘텐츠 관찰 무영향");
+
+        var checkpoint = world.CreateCheckpoint();
+        TestAssert.Equal(27, checkpoint.SchemaVersion, "콘텐츠 checkpoint schema 27");
+        TestAssert.True(checkpoint.Content is not null, "콘텐츠 checkpoint 연결");
+        var restored = World.Restore(checkpoint);
+        TestAssert.Equal(world.ComputeStateHash(), restored.ComputeStateHash(),
+            "세계 콘텐츠 저장 hash 왕복");
+
+        var schema26 = checkpoint with
+        {
+            SchemaVersion = 26,
+            Content = null,
+        };
+        var migrated = World.Restore(schema26);
+        TestAssert.Equal(
+            world.ComputeStateHashForCheckpointSchema(26),
+            migrated.ComputeStateHashForCheckpointSchema(26),
+            "schema 26 저장 hash 호환");
+        TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
+            migrated.CreateCheckpoint().Content!.Instances.Length,
+            "schema 26은 seed 기반 초기 콘텐츠로 이식");
+
+        var developerWorld = World.Create(
+            0xC022UL,
+            16,
+            WorldBalanceConfiguration.Default with { DeveloperModeEnabled = true });
+        var diagnostics = developerWorld.CreateSnapshot(
+            rankingCount: 1,
+            eventCount: 0,
+            sections: ObservationSections.Content,
+            worldChronicleCount: 0,
+            contentSecretRealmLimit: ContentPopulationRules.InitialSecretRealmCount);
+        TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
+            diagnostics.Content!.SecretRealms.Count,
+            "세계 설정 모드에서만 숨은 비경 진단");
+
+        TestAssert.Throws<InvalidDataException>(
+            () => World.Restore(checkpoint with { Content = null }),
+            "schema 27 콘텐츠 누락 거부");
     }
 
     private static ContentSourceResultId Source(ulong sequence) =>

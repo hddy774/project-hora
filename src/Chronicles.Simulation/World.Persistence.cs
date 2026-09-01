@@ -96,6 +96,9 @@ public sealed partial class World
                 checkpoint.Agents.Length,
                 checkpoint.Organizations!)
             : new OrganizationStore(checkpoint.Agents.Length);
+        _content = checkpoint.SchemaVersion >= 27
+            ? ContentAuthorityStore.Restore(checkpoint.Content!)
+            : ContentAuthorityStore.CreateInitial(checkpoint.Seed);
 
         if (checkpoint.SchemaVersion >= 23)
         {
@@ -451,7 +454,8 @@ public sealed partial class World
             _causal.CreateCheckpoint(),
             _atlas.CreateCheckpoint(),
             _balance,
-            _organizations.CreateCheckpoint());
+            _organizations.CreateCheckpoint(),
+            _content.CreateCheckpoint());
     }
 
     private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
@@ -789,6 +793,15 @@ public sealed partial class World
                 checkpoint.Organizations!))
         {
             throw new InvalidDataException("세계 체크포인트의 조직 권위 상태가 잘못되었습니다.");
+        }
+
+        if (checkpoint.SchemaVersion >= 27)
+        {
+            if (checkpoint.Content is null)
+            {
+                throw new InvalidDataException("세계 체크포인트의 콘텐츠 권위 상태가 없습니다.");
+            }
+            ContentAuthorityStore.ValidateCheckpoint(checkpoint.Content);
         }
 
         if (checkpoint.Atlas is { } atlas)

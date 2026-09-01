@@ -782,7 +782,8 @@ public static class SlotSaveStore
             SlotPersistencePhase.ValidatingWorld,
             stored.Kind);
         var restored = World.Restore(checkpoint);
-        var actualStateHash = restored.ComputeStateHash();
+        var actualStateHash = restored.ComputeStateHashForCheckpointSchema(
+            stored.CheckpointSchema);
         if (actualStateHash != stored.StateHash)
         {
             throw new InvalidDataException("복원된 권위 세계의 state hash가 일치하지 않습니다.");
@@ -911,7 +912,7 @@ public static class SlotSaveStore
     };
 
     private static bool IsSupportedCheckpointSchema(int schema) =>
-        schema is 25 or WorldCheckpoint.CurrentSchemaVersion;
+        schema is >= 25 and <= WorldCheckpoint.CurrentSchemaVersion;
 
     private static long GetMaximumKnownSequence(SlotPaths paths)
     {

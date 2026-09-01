@@ -25,7 +25,7 @@ if ($source.contract -ne 'ALPHA_1_1_0_REQUIREMENT_COVERAGE_V1' -or $source.requi
 }
 
 $targetVersions = @{
-    M01 = '0.0.15'; M02 = '0.0.15'; M03 = '0.0.16'; M04 = '0.0.16'
+    M01 = '0.0.15'; M02 = '0.0.23'; M03 = '0.0.16'; M04 = '0.0.16'
     M05 = '0.0.18'; M06 = '0.0.16'; M07 = '0.0.16'; M08 = '0.0.17'
     M09 = '0.0.21'; M10 = '0.0.17'; M11 = '0.0.21'; M12 = '0.0.21'
     M13 = '0.0.21'; M14 = '0.0.22'
@@ -33,7 +33,7 @@ $targetVersions = @{
 
 $masterGap = @{
     M01 = '공통 Stable Registry 수직 계약은 0.0.21에서 진단 UI까지 연결되어 이식 완료되었다.'
-    M02 = '현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다.'
+    M02 = 'M02 실행·후보 검증·복구·진행률 수직 계약은 연결되었으나 승인 정본의 53-table 논리 도메인 물리 스키마는 아직 단일 canonical authority_snapshot payload로 구현되어 있다.'
     M03 = '현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다.'
     M04 = 'Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다.'
     M05 = '0.0.18 수행 수직 계약으로 이식 완료되었으며 미확정 수치와 비활성 외부 연결은 PC_TEMP_REVIEW로 추적한다.'
@@ -56,9 +56,15 @@ $masterEvidence = @{
         'FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics',
         'TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약')
     M02 = @(
+        'FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture',
+        'FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint',
         'FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner',
         'FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec',
-        'FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore')
+        'FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore',
+        'FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync',
+        'FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress',
+        'FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress',
+        'TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약')
     M03 = @(
         'FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState',
         'FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode',
@@ -129,6 +135,7 @@ $masterTests = @{
         'TEST::공식 Registry·typed command·원자 transaction·causal event',
         'TEST::관찰 조회 무영향')
     M02 = @(
+        'TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원',
         'TEST::관찰 조회 무영향',
         'TEST::저장 codec 결정론 왕복',
         'TEST::손상 저장 거부',
@@ -194,7 +201,10 @@ $portIds = @(
     'A110-M01-V09', 'A110-M01-V10', 'A110-M01-V11', 'A110-M01-V12',
     'A110-M01-V13', 'A110-M01-V14', 'A110-M01-V15', 'A110-M01-V16',
     'A110-M01-V17',
-    'A110-M02-V09', 'A110-M02-V10', 'A110-M02-V14',
+    'A110-M02-V01', 'A110-M02-V02', 'A110-M02-V03', 'A110-M02-V04',
+    'A110-M02-V05', 'A110-M02-V06', 'A110-M02-V07', 'A110-M02-V08',
+    'A110-M02-V09', 'A110-M02-V10', 'A110-M02-V11', 'A110-M02-V12',
+    'A110-M02-V14', 'A110-M02-V15', 'A110-M02-V16',
     'A110-M03-V01', 'A110-M03-V02', 'A110-M03-V03', 'A110-M03-V05',
     'A110-M03-V06', 'A110-M03-V07', 'A110-M03-V08', 'A110-M03-V10',
     'A110-M03-V11', 'A110-M03-V13', 'A110-M03-V14', 'A110-M03-V16',
@@ -223,6 +233,7 @@ $portIds = @(
 )
 
 $pcAdaptIds = @(
+    'A110-M02-V17',
     'A110-M03-V12',
     'A110-M04-V12', 'A110-M05-V12', 'A110-M06-V12', 'A110-M07-V12',
     'A110-M08-V12', 'A110-M10-V12',

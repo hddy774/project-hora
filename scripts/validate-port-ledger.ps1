@@ -129,7 +129,7 @@ foreach ($row in @($ledger.rows)) {
 
     if ($disposition -eq 'Gap/Deferred') {
         Assert-Condition (-not [string]::IsNullOrWhiteSpace([string]$row.gap_summary)) "Gap 설명이 없습니다: $id"
-        Assert-Condition ([string]$row.target_version -match '^0\.0\.(1[5-9]|2[0-2])$') "Gap target_version 형식 오류: $id"
+        Assert-Condition ([string]$row.target_version -match '^0\.0\.(1[5-9]|2[0-3])$') "Gap target_version 형식 오류: $id"
     } else {
         Assert-Condition ($pcEvidence.Count -gt 0) "완료/임시 분류에 PC 파일 근거가 없습니다: $id"
         Assert-Condition ($pcTests.Count -gt 0) "완료/임시 분류에 PC 테스트 근거가 없습니다: $id"

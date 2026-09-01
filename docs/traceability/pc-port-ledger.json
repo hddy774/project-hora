@@ -29,11 +29,11 @@
     "Gap/Deferred": "요구 문장 일부 또는 전부를 증명하지 못해 완료로 주장하지 않음."
   },
   "status_counts": {
-    "Port": 109,
-    "PC Adapt": 14,
+    "Port": 121,
+    "PC Adapt": 15,
     "PC_TEMP_REVIEW": 30,
     "Platform Excluded": 0,
-    "Gap/Deferred": 85
+    "Gap/Deferred": 72
   },
   "rows": [
     {
@@ -827,15 +827,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -844,7 +851,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V02",
@@ -872,15 +879,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -889,7 +903,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V03",
@@ -917,15 +931,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -934,7 +955,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V04",
@@ -962,15 +983,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -979,7 +1007,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V05",
@@ -1007,15 +1035,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1024,7 +1059,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V06",
@@ -1052,15 +1087,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1069,7 +1111,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V07",
@@ -1097,15 +1139,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1114,7 +1163,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V08",
@@ -1142,15 +1191,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1159,7 +1215,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V09",
@@ -1191,11 +1247,18 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1236,11 +1299,18 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1277,15 +1347,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1294,7 +1371,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V12",
@@ -1322,15 +1399,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "PC Adapt",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1339,7 +1423,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": "Android/모바일 전달 표면을 제외하고 같은 관찰·조회 의미를 Windows WPF와 Windows x64 검증으로 제공한다.",
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V13",
@@ -1369,13 +1453,20 @@
       },
       "disposition": "Gap/Deferred",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": "0.0.23",
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1384,7 +1475,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": "M02 실행·후보 검증·복구·진행률 수직 계약은 연결되었으나 승인 정본의 53-table 논리 도메인 물리 스키마는 아직 단일 canonical authority_snapshot payload로 구현되어 있다."
     },
     {
       "requirement_id": "A110-M02-V14",
@@ -1416,11 +1507,18 @@
       "target_port_mode": "Port",
       "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1457,15 +1555,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1474,7 +1579,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V16",
@@ -1502,15 +1607,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1519,7 +1631,7 @@
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M02-V17",
@@ -1547,15 +1659,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::observe_queries_and_save_110",
         "evidence_ref": "FILE::tests/alpha110_live_runtime_codec_tests.cpp::test_full_8000_person_roundtrip_and_continuation"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "PC Adapt",
       "target_port_mode": "Port",
-      "target_version": "0.0.15",
+      "target_version": null,
       "pc_evidence_refs": [
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture",
+        "FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint",
         "FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner",
         "FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec",
-        "FILE::src/Chronicles.Persistence/WorldSaveStore.cs::WorldSaveStore"
+        "FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore",
+        "FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync",
+        "FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress",
+        "FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress",
+        "TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약"
       ],
       "pc_test_refs": [
+        "TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원",
         "TEST::관찰 조회 무영향",
         "TEST::저장 codec 결정론 왕복",
         "TEST::손상 저장 거부",
@@ -1566,7 +1685,7 @@
         "Android 실기기 검증은 PC 범위에서 제외하고 Windows x64 직접 실행 검증으로 대체한다."
       ],
       "adaptation_note": null,
-      "gap_summary": "현재 schema 24 Brotli/JSON 단일 파일은 존재하지만 schema 25 SQLite 슬롯, Candidate World, backup/recovery와 독립 Queries/Runtime 경계가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M03-V01",

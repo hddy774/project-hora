@@ -25,10 +25,12 @@ public enum ObservationSections : uint
     Teaching = 1 << 16,
     Reincarnation = 1 << 17,
     CausalRuntime = 1 << 18,
+    PersonalCenturyChronicle = 1 << 19,
     Statistics = StatisticsSummary | RealmDistribution | CombatPowerDistribution,
     Market = MarketSummary | MarketGoods,
     AllRankings = CombatPowerRanking | RealmRanking | AptitudeRanking | WealthRanking,
     All = Statistics | Market | Map | WorldLog | WorldChronicle | PersonalLog | Chronicle
+        | PersonalCenturyChronicle
         | AllRankings | AptitudeDetails | Relations | Teaching | Reincarnation | CausalRuntime,
 }
 
@@ -179,6 +181,26 @@ public readonly record struct LifeChronicleEntry(
     RealmStage RealmStage,
     MinorStage MinorStage,
     int Value);
+
+public sealed record PersonalCenturyChronicleEntry(
+    int LifeNumber,
+    long CenturyIndex,
+    long StartAgeYears,
+    long EndAgeYears,
+    long ObservedThroughAgeYears,
+    string PersonName,
+    bool IsComplete,
+    int EventCount,
+    int GrowthEventCount,
+    int CombatEventCount,
+    int LifeEventCount,
+    int AcquisitionEventCount,
+    int MajorRealmBreakthroughCount,
+    int BreakthroughFailureCount,
+    RealmStage FinalRealmStage,
+    MinorStage FinalMinorStage,
+    SimulationTick StartedTick,
+    SimulationTick ObservedThroughTick);
 
 public readonly record struct CombatPowerBreakdown(
     long Realm,
@@ -607,4 +629,5 @@ public sealed record WorldObservation(
     AgentSnapshot SelectedAgent,
     IReadOnlyList<PersonalLogEntry> SelectedPersonalLog,
     IReadOnlyList<LifeChronicleEntry> SelectedChronicle,
+    IReadOnlyList<PersonalCenturyChronicleEntry> SelectedPersonalCenturyChronicle,
     ReincarnationAgentSnapshot? SelectedReincarnation = null);

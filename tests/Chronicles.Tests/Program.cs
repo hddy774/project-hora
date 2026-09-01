@@ -1,6 +1,7 @@
 using Chronicles.Application;
 using Chronicles.Core;
 using Chronicles.Persistence;
+using Chronicles.Queries;
 using Chronicles.Simulation;
 using System.Diagnostics;
 using System.IO.Compression;
@@ -49,6 +50,7 @@ var tests = new (string Name, Action Body)[]
     ("희소 방향 관계 6축·초기 Role·생애 경계", SparseDirectionalRelationsAndRoles),
     ("사제 성립·Teaching 결과·전승 provenance·직접 수행 0%", TeachingVerticalFlow),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
+    ("개인 생별 100년 종합 연대기 투영", PersonalCenturyChronicleProjectionTest),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("랭킹 범주별 revision cache·무변경 정렬 0회", RankingRevisionCacheAvoidsUnchangedSorts),
     ("부자 TOP 1000·기간별 상위권 변동·세계 연대기", WealthRankingHistoryAndWorldChronicle),
@@ -1892,6 +1894,59 @@ static void WorldPersonalLogsAndPermanentChronicle()
     var encoded = WorldSaveCodec.Encode(permanent.CreateCheckpoint());
     var loaded = World.Restore(WorldSaveCodec.Decode(encoded));
     Equal(150, loaded.GetAgentChronicle(new AgentId(0)).Count, "영구 연대기 저장 왕복");
+}
+
+static void PersonalCenturyChronicleProjectionTest()
+{
+    var world = World.Create(772214, 1);
+    var current = world.GetAgentSnapshot(new AgentId(0)) with { AgeYears = 250 };
+    var detailed = new[]
+    {
+        new LifeChronicleEntry(
+            1, new SimulationTick(0), 1, 0, current.Name,
+            ChronicleEventKind.Birth, RealmStage.QiRefining, MinorStage.Floor1, 0),
+        new LifeChronicleEntry(
+            2, new SimulationTick(600), 1, 50, current.Name,
+            ChronicleEventKind.MinorStageBreakthrough,
+            RealmStage.QiRefining, MinorStage.Floor2, 0),
+        new LifeChronicleEntry(
+            3, new SimulationTick(1_200), 1, 100, current.Name,
+            ChronicleEventKind.MajorRealmBreakthrough,
+            RealmStage.FoundationEstablishment, MinorStage.Floor1, 0),
+        new LifeChronicleEntry(
+            4, new SimulationTick(2_388), 1, 199, current.Name,
+            ChronicleEventKind.BreakthroughFailure,
+            RealmStage.FoundationEstablishment, MinorStage.Floor5, 1),
+        new LifeChronicleEntry(
+            5, new SimulationTick(3_000), 1, 250, current.Name,
+            ChronicleEventKind.TechniqueAcquired,
+            RealmStage.FoundationEstablishment, MinorStage.Floor6, 7_999),
+    };
+
+    var volumes = PersonalCenturyChronicleProjection.Create(
+        detailed,
+        current,
+        new SimulationTick(3_000));
+    Equal(3, volumes.Count, "0~99·100~199·200~299세 3권");
+    True(volumes[0].IsComplete, "첫 100년 종합 연대기 완료");
+    Equal(1, volumes[0].GrowthEventCount, "첫 100년 성장 사건 집계");
+    True(volumes[1].IsComplete, "둘째 100년 종합 연대기 완료");
+    Equal(1, volumes[1].MajorRealmBreakthroughCount, "대경지 돌파 집계");
+    Equal(1, volumes[1].BreakthroughFailureCount, "돌파 실패 집계");
+    True(!volumes[2].IsComplete, "현재 100년 구간 작성 중");
+    Equal(1, volumes[2].AcquisitionEventCount, "획득 사건 집계");
+    Equal(5, detailed.Length, "세부 연대기 원본 보존");
+
+    var sparseCurrent = current with { AgeYears = 350 };
+    var sparse = PersonalCenturyChronicleProjection.Create(
+        [detailed[0], detailed[^1] with { AgeYears = 350 }],
+        sparseCurrent,
+        new SimulationTick(4_000));
+    Equal(4, sparse.Count, "사건이 없는 100년 구간도 역사서 권으로 유지");
+    Equal(0, sparse[1].EventCount, "100~199세 빈 권");
+    Equal(0, sparse[2].EventCount, "200~299세 빈 권");
+    Equal(199L, sparse[1].ObservedThroughAgeYears, "완료된 빈 권 관찰 종료 나이");
+    True(sparse[1].IsComplete && sparse[2].IsComplete, "생존한 빈 권 완결");
 }
 
 static void KoreanLargeNumberFormatting()

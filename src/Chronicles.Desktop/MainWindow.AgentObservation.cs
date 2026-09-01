@@ -149,6 +149,14 @@ public partial class MainWindow
             CultivationText.Text = $"{KoreanNumberFormatter.Format(agent.CultivationProgress)} / {KoreanNumberFormatter.Format(agent.CultivationRequirement)}";
             CultivationStateText.Text = FormatCultivationState(agent.CultivationState, agent.BottleneckCause);
             var cultivation = agent.Cultivation;
+            CultivationDetailProgressExpander.Header = cultivation.DetailProgress is { } detailHeader
+                ? $"대경지 세부 수행 진척 · {detailHeader.CurrentStageKoreanName}"
+                : "대경지 세부 수행 진척";
+            if (CultivationDetailProgressExpander.IsExpanded
+                && cultivation.DetailProgress is { } detailProgress)
+            {
+                UpdateCultivationDetailProgressView(detailProgress);
+            }
             CultivationAuthorityText.Text =
                 $"선천 수행자질 종합 {cultivation.InnateAptitudeCompositeHundredths / 100m:0.00} · 50.00 기준 대경지 전체(1층→9층 대원만) {cultivation.BaselineCultivationYears:N2}년 · 직전 Work {KoreanNumberFormatter.Format(cultivation.WorkBefore)} + {KoreanNumberFormatter.Format(cultivation.LastGain)} = {KoreanNumberFormatter.Format(cultivation.WorkAfter)} · 이월 {KoreanNumberFormatter.Format(cultivation.PendingCarryoverWork)}";
             var gateText = cultivation.EntryGates.Count == 0
@@ -1261,6 +1269,35 @@ public partial class MainWindow
             $"\n{attempt} · {failure}" +
             $"\n{external}";
     }
+
+    private void UpdateCultivationDetailProgressView(
+        CultivationDetailProgressSnapshot progress)
+    {
+        CultivationDetailProgressSummaryText.Text =
+            $"{progress.ScopeKoreanName} 전체 · " +
+            $"{KoreanNumberFormatter.Format(progress.AccumulatedWork)} / " +
+            $"{KoreanNumberFormatter.Format(progress.TotalRequiredWork)} Work " +
+            $"({progress.OverallProgressBasisPoints / 100m:0.00}%) · " +
+            $"현재 {progress.CurrentStageIndex + 1}/{progress.Stages.Count} " +
+            progress.CurrentStageKoreanName;
+        CultivationDetailProgressItems.ItemsSource = progress.Stages
+            .Select(stage => new CultivationDetailProgressRow(
+                stage.KoreanName,
+                $"{FormatCultivationDetailStageState(stage.State)} · {stage.Description}",
+                stage.ProgressBasisPoints / 100d,
+                $"{stage.ProgressBasisPoints / 100m:0.00}%",
+                FormatCultivationDetailStageState(stage.State)))
+            .ToArray();
+    }
+
+    private static string FormatCultivationDetailStageState(
+        CultivationDetailStageState state) => state switch
+    {
+        CultivationDetailStageState.Pending => "대기",
+        CultivationDetailStageState.Active => "진행 중",
+        CultivationDetailStageState.Completed => "완료",
+        _ => state.ToString(),
+    };
 
     private void UpdateCultivationPlanView(
         CultivationReadProjection cultivation,

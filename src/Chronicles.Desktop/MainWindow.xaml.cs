@@ -263,6 +263,11 @@ public partial class MainWindow : Window, IDisposable
         {
             sections |= ObservationSections.AptitudeDetails;
         }
+        if (_agentDetailSection == AgentDetailSection.Cultivation
+            && CultivationDetailProgressExpander.IsExpanded)
+        {
+            sections |= ObservationSections.CultivationDetail;
+        }
         if (_agentDetailSection == AgentDetailSection.Social
             && RelationsExpander.IsExpanded)
         {

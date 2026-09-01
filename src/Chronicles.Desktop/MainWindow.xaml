@@ -478,6 +478,69 @@
                                    Foreground="{StaticResource AccentBrush}"
                                    FontSize="11"
                                    TextWrapping="Wrap" />
+                        <Expander x:Name="CultivationDetailProgressExpander"
+                                  Header="대경지 세부 수행 진척"
+                                  Margin="0,8,0,0"
+                                  IsExpanded="False"
+                                  Expanded="VisibleExpander_Expanded">
+                            <Border Margin="0,7,0,0"
+                                    Padding="10"
+                                    CornerRadius="7"
+                                    Background="{StaticResource PanelAltBrush}">
+                                <StackPanel>
+                                    <TextBlock x:Name="CultivationDetailProgressSummaryText"
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               FontSize="11"
+                                               TextWrapping="Wrap" />
+                                    <ItemsControl x:Name="CultivationDetailProgressItems"
+                                                  Margin="0,7,0,0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,3">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="126" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="66" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0" Grid.Column="0"
+                                                               Text="{Binding Name}"
+                                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                                               FontSize="10"
+                                                               FontWeight="SemiBold"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <ProgressBar Grid.Row="0" Grid.Column="1"
+                                                                 Margin="7,2,7,0"
+                                                                 Maximum="100"
+                                                                 Value="{Binding ProgressPercent}"
+                                                                 Style="{StaticResource PowerBarStyle}" />
+                                                    <TextBlock Grid.Row="0" Grid.Column="2"
+                                                               Text="{Binding ProgressText}"
+                                                               HorizontalAlignment="Right"
+                                                               Foreground="{StaticResource AccentBrush}"
+                                                               FontSize="10" />
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                                               Margin="7,2,0,2"
+                                                               Text="{Binding Description}"
+                                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                                               FontSize="9"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               ToolTip="{Binding Description}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock Margin="0,7,0,0"
+                                               Text="PC_TEMP_REVIEW · 단계명과 10/15/20/25/30% 가중치는 다음 기획 검토 대상입니다. 이 투영은 수행 Work·돌파·공법/법술 품질·연대기를 변경하지 않습니다."
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               FontSize="9"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </Expander>
                         <Border Margin="0,8,0,0"
                                 Padding="10"
                                 CornerRadius="7"

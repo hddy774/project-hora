@@ -37,3 +37,10 @@ internal sealed record ReincarnationLineageRow(
     string Timeline,
     string HistoricalPeak,
     string Continuity);
+
+internal sealed record CultivationDetailProgressRow(
+    string Name,
+    string Description,
+    double ProgressPercent,
+    string ProgressText,
+    string State);

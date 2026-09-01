@@ -429,7 +429,9 @@ public sealed partial class World
             _agents.AddMaterial(index, monster.DropMaterial, 1 + _random.NextInt(3));
             if (_random.NextInt(100) < 35)
             {
-                var damage = Math.Max(1, _agents.MaximumHealth[index] * (2 + _random.NextInt(7)) / 100);
+                var damage = checked((int)Math.Max(
+                    1L,
+                    (long)_agents.MaximumHealth[index] * (2 + _random.NextInt(7)) / 100L));
                 _agents.Health[index] = Math.Max(1, _agents.Health[index] - damage);
                 ApplyMonsterInjury(index, damage);
             }
@@ -438,9 +440,9 @@ public sealed partial class World
             return false;
         }
 
-        var lossDamage = Math.Max(
-            1,
-            _agents.MaximumHealth[index] * (15 + _random.NextInt(26)) / 100);
+        var lossDamage = checked((int)Math.Max(
+            1L,
+            (long)_agents.MaximumHealth[index] * (15 + _random.NextInt(26)) / 100L));
         _agents.Health[index] = Math.Max(0, _agents.Health[index] - lossDamage);
         var fatal = ApplyMonsterInjury(index, lossDamage);
         AddEvent(WorldEventKind.MonsterHuntLost, index, monster.Id);

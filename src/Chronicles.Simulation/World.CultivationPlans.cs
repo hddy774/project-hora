@@ -115,8 +115,9 @@ public sealed partial class World
 
     private CultivationPlanIntensity SelectCultivationIntensity(int index)
     {
-        var healthBasisPoints = checked(
-            _agents.Health[index] * 10_000 / Math.Max(1, _agents.MaximumHealth[index]));
+        var healthBasisPoints = CultivationPlanRules.GetBodyConditionBasisPoints(
+            _agents.Health[index],
+            Math.Max(1, _agents.MaximumHealth[index]));
         if (healthBasisPoints < 8_000 || _agents.InjuryPoints[index] > 0)
         {
             return CultivationPlanIntensity.Leisurely;

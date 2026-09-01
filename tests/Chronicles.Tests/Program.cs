@@ -39,6 +39,7 @@ var tests = new (string Name, Action Body)[]
     ("년월일 달력과 월 1회 행동 제한", CalendarAndMonthlyActionLimit),
     ("Notion 수행 Work·준비·Preflight·안착 상태", CultivationStateMachine),
     ("장기 수행 계획·조건·경량 pulse·저장 왕복", LongCultivationPlanConditionsAndPersistence),
+    ("고경지 대형 체력 수행 조건 산술 안전성", HighRealmHealthRatioDoesNotOverflow),
     ("9층 소경지·대원만 분리와 수행 Formula Trace", FloorNineGreatPerfectionAndFormulaTrace),
     ("소경지·대경지 돌파 영구 연대기", CultivationBreakthroughChronicle),
     ("한국식 큰 수 단위 표기", KoreanLargeNumberFormatting),
@@ -552,6 +553,25 @@ static void LongCultivationPlanConditionsAndPersistence()
     True(
         boundary.Decision.Latest.AuthorityRevision > decisionRevision,
         "수행 계획 종료 경계에서만 다음 행동을 판단");
+}
+
+static void HighRealmHealthRatioDoesNotOverflow()
+{
+    Equal(
+        10_000,
+        CultivationPlanRules.GetBodyConditionBasisPoints(int.MaxValue, int.MaxValue),
+        "int 상한 최대 체력 비율");
+    Equal(
+        5_000,
+        CultivationPlanRules.GetBodyConditionBasisPoints(1_000_000_000, 2_000_000_000),
+        "대형 체력 50% 비율");
+    Equal(
+        10_000,
+        CultivationPlanRules.GetBodyConditionBasisPoints(int.MaxValue, 1),
+        "현재 체력이 최대값을 넘는 손상 입력 상한");
+    Throws<ArgumentOutOfRangeException>(
+        () => CultivationPlanRules.GetBodyConditionBasisPoints(1, 0),
+        "최대 체력 0 거부");
 }
 
 static void FloorNineGreatPerfectionAndFormulaTrace()

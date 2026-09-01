@@ -243,8 +243,9 @@ public sealed partial class World
 
         var before = _agents.CultivationProgress[index];
         var aptitude = GetInnateAptitudeComposite(index);
-        var bodyCondition = checked(
-            _agents.Health[index] * 10_000 / Math.Max(1, _agents.MaximumHealth[index]));
+        var bodyCondition = CultivationPlanRules.GetBodyConditionBasisPoints(
+            _agents.Health[index],
+            Math.Max(1, _agents.MaximumHealth[index]));
         var environmentQuality = _atlas.GetCultivationEnvironmentQualityHundredths(
             _agents.LocationIds[index]);
         var environmentFactor = CultivationRules.GetEnvironmentFactorBasisPoints(
@@ -324,8 +325,9 @@ public sealed partial class World
 
         var before = _agents.CultivationProgress[index];
         var aptitude = GetInnateAptitudeComposite(index);
-        var bodyCondition = checked(
-            _agents.Health[index] * 10_000 / Math.Max(1, _agents.MaximumHealth[index]));
+        var bodyCondition = CultivationPlanRules.GetBodyConditionBasisPoints(
+            _agents.Health[index],
+            Math.Max(1, _agents.MaximumHealth[index]));
         var environmentQuality = _atlas.GetCultivationEnvironmentQualityHundredths(
             _agents.LocationIds[index]);
         var environmentFactor = CultivationRules.GetEnvironmentFactorBasisPoints(
@@ -756,12 +758,12 @@ public sealed partial class World
             return CultivationBottleneckCause.Stability;
         }
 
-        if (_agents.Health[index] * 2 < _agents.MaximumHealth[index])
+        if ((long)_agents.Health[index] * 2L < _agents.MaximumHealth[index])
         {
             return CultivationBottleneckCause.Body;
         }
 
-        if (_agents.Qi[index] * 4 < _agents.MaximumQi[index])
+        if ((long)_agents.Qi[index] * 4L < _agents.MaximumQi[index])
         {
             return CultivationBottleneckCause.SpiritualRoot;
         }

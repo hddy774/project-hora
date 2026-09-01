@@ -1163,8 +1163,12 @@ public sealed partial class World
         var qiGain = Math.Max(
             15 + (GetQualityEffect(spiritualRoot) * 5),
             _agents.MaximumQi[index] / 18);
-        _agents.Health[index] = Math.Min(_agents.MaximumHealth[index], _agents.Health[index] + healthGain);
-        _agents.Qi[index] = Math.Min(_agents.MaximumQi[index], _agents.Qi[index] + qiGain);
+        _agents.Health[index] = checked((int)Math.Min(
+            _agents.MaximumHealth[index],
+            (long)_agents.Health[index] + healthGain));
+        _agents.Qi[index] = checked((int)Math.Min(
+            _agents.MaximumQi[index],
+            (long)_agents.Qi[index] + qiGain));
         var injuryRecovery = 150 + (constitution / 10);
         _agents.InjuryPoints[index] = checked((ushort)Math.Max(
             0,
@@ -1178,8 +1182,8 @@ public sealed partial class World
             return;
         }
 
-        if (_agents.Health[index] * 100 < _agents.MaximumHealth[index] * 70
-            || _agents.Qi[index] * 100 < _agents.MaximumQi[index] * 35
+        if ((long)_agents.Health[index] * 100L < (long)_agents.MaximumHealth[index] * 70L
+            || (long)_agents.Qi[index] * 100L < (long)_agents.MaximumQi[index] * 35L
             || _agents.InjuryPoints[index] >= 2_500)
         {
             SetActivityDecision(

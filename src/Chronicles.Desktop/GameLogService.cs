@@ -176,6 +176,11 @@ internal sealed class GameLogService : IDisposable
         Func<WorldEventNotification, string> formatter)
     {
         ArgumentNullException.ThrowIfNull(formatter);
+        if (!AutoWorldOutput)
+        {
+            return;
+        }
+
         if (feed.DroppedCount > 0)
         {
             AddDebug(
@@ -183,7 +188,7 @@ internal sealed class GameLogService : IDisposable
                 $"자동 출력 대기열 포화로 세계 로그 {feed.DroppedCount:N0}건을 건너뜀");
         }
 
-        if (!AutoWorldOutput || feed.Events.Count == 0)
+        if (feed.Events.Count == 0)
         {
             return;
         }
@@ -198,6 +203,11 @@ internal sealed class GameLogService : IDisposable
         Func<WorldCenturyChronicleEntry, string> formatter)
     {
         ArgumentNullException.ThrowIfNull(formatter);
+        if (!AutoWorldOutput)
+        {
+            return;
+        }
+
         if (feed.DroppedCount > 0)
         {
             AddDebug(
@@ -205,7 +215,7 @@ internal sealed class GameLogService : IDisposable
                 $"자동 출력 대기열 포화로 100년 세계 역사서 {feed.DroppedCount:N0}권을 건너뜀");
         }
 
-        if (!AutoWorldOutput || feed.Entries.Count == 0)
+        if (feed.Entries.Count == 0)
         {
             return;
         }

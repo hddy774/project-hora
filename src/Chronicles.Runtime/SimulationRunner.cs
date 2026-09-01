@@ -8,7 +8,7 @@ namespace Chronicles.Runtime;
 
 public sealed class SimulationRunner : IDisposable
 {
-    private const int MaximumPendingWorldEvents = 10_000;
+    private const int MaximumPendingWorldEvents = 100_000;
     private const int MaximumPendingWorldChronicles = 1_024;
     private readonly object _worldGate = new();
     private World _world;

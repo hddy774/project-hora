@@ -66,8 +66,10 @@ public sealed partial class World
             || _agents.Activities[defender] == AgentActivity.Fighting
             || _agents.Activities[defender] == AgentActivity.SeekingChallenge
             || _agents.LocationIds[challenger] != _agents.LocationIds[defender]
-            || _agents.Health[defender] * 100 < _agents.MaximumHealth[defender] * 60
-            || _agents.Qi[defender] * 100 < _agents.MaximumQi[defender] * 25)
+            || (long)_agents.Health[defender] * 100L
+                < (long)_agents.MaximumHealth[defender] * 60L
+            || (long)_agents.Qi[defender] * 100L
+                < (long)_agents.MaximumQi[defender] * 25L)
         {
             return false;
         }
@@ -176,7 +178,9 @@ public sealed partial class World
 
     private bool ShouldAttemptRetreat(int actor, int target)
     {
-        var healthPercent = _agents.Health[actor] * 100 / Math.Max(1, _agents.MaximumHealth[actor]);
+        var healthPercent = checked((int)(
+            (long)_agents.Health[actor] * 100L
+                / Math.Max(1, _agents.MaximumHealth[actor])));
         var actorThreat = GetActualCombatThreat(actor);
         var targetThreat = GetActualCombatThreat(target);
         var threatDisadvantage = targetThreat * 100 / Math.Max(1L, actorThreat);
@@ -200,7 +204,9 @@ public sealed partial class World
 
     private bool ShouldGuard(int actor, int target)
     {
-        var healthPercent = _agents.Health[actor] * 100 / Math.Max(1, _agents.MaximumHealth[actor]);
+        var healthPercent = checked((int)(
+            (long)_agents.Health[actor] * 100L
+                / Math.Max(1, _agents.MaximumHealth[actor])));
         var actorStats = _agents.CombatAttributes[actor];
         var targetStats = _agents.CombatAttributes[target];
         var baseChance = healthPercent < 45 ? 35 : 13;
@@ -325,7 +331,7 @@ public sealed partial class World
             (long)damage * CombatInjuryRules.MaximumInjuryPoints
                 / Math.Max(1, _agents.MaximumHealth[target])
                 / 2));
-        var lowHealthBonus = _agents.Health[target] * 4 < _agents.MaximumHealth[target]
+        var lowHealthBonus = (long)_agents.Health[target] * 4L < _agents.MaximumHealth[target]
             ? 500
             : 0;
         var nextPoints = _agents.Health[target] <= 0

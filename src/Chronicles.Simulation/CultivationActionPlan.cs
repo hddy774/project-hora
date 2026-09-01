@@ -183,4 +183,14 @@ public static class CultivationPlanRules
             + (Math.Max(0, experienceHundredths) / 4),
             0,
             9_500);
+
+    public static int GetBodyConditionBasisPoints(int health, int maximumHealth)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(health);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maximumHealth);
+        return checked((int)Math.Clamp(
+            (long)health * NeutralFactorBasisPoints / maximumHealth,
+            0L,
+            NeutralFactorBasisPoints));
+    }
 }

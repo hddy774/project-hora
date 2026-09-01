@@ -147,6 +147,9 @@ public partial class MainWindow : Window, IDisposable
         _ = Dispatcher.BeginInvoke(new Action(() =>
         {
             WorldRecordsPanel.SetOutputStatus($"파일 오류 · {exception.Message}", isError: true);
+            SettingsWorkspacePanel.SetPerformanceFileStatus(
+                $"파일 오류 · {exception.Message}",
+                isError: true);
         }));
     }
 
@@ -325,7 +328,7 @@ public partial class MainWindow : Window, IDisposable
             : $"실시간 진행 · {_speed}× · 게임 1년당 현실 {GameCalendar.GetRealSecondsPerGameYear(_speed):0.###}초";
         if (_activeBalance.DeveloperModeEnabled)
         {
-            StatusText.Text += " · 개발자 밸런스";
+            StatusText.Text += " · 세계 설정 배율";
         }
         StatusText.Foreground = (Brush)FindResource("SecondaryTextBrush");
         if (_workspaceRoute == WorkspaceRoute.Settings && _runner is { } settingsRunner)

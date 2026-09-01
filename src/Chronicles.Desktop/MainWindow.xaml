@@ -118,7 +118,7 @@
                                  Click="WorkspaceNavigation_Click">설정</RadioButton>
                 </StackPanel>
                 <TextBlock Grid.Row="3"
-                           Text="관찰 전용 · 개발자 조정은 새 세계에만 적용"
+                           Text="관찰 전용 · 세계 설정 배율은 새 세계에만 적용"
                            Margin="4,0,4,4"
                            Foreground="{StaticResource SecondaryTextBrush}"
                            FontSize="9"
@@ -1221,6 +1221,10 @@
                                      RestoreWindowRequested="SettingsWorkspacePanel_RestoreWindowRequested"
                                      MaximizeWindowRequested="SettingsWorkspacePanel_MaximizeWindowRequested"
                                      PerformanceMeterChanged="SettingsWorkspacePanel_PerformanceMeterChanged"
+                                     PerformanceSampleRecorded="SettingsWorkspacePanel_PerformanceSampleRecorded"
+                                     PerformanceAutoOutputChanged="SettingsWorkspacePanel_PerformanceAutoOutputChanged"
+                                     PerformanceExportRequested="SettingsWorkspacePanel_PerformanceExportRequested"
+                                     PerformanceFolderOpenRequested="SettingsWorkspacePanel_PerformanceFolderOpenRequested"
                                      NewWorldRequested="SettingsWorkspacePanel_NewWorldRequested" />
 
         <Grid Grid.Row="6" Grid.Column="2">

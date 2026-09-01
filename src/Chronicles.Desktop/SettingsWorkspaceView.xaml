@@ -19,7 +19,7 @@
                                Foreground="{StaticResource PrimaryTextBrush}"
                                FontSize="24"
                                FontWeight="SemiBold" />
-                    <TextBlock Text="화면, 다음 세계, 성능 계측과 개발자 밸런스를 서로 분리해 관리합니다."
+                    <TextBlock Text="화면, 다음 세계, 성능 계측과 세계 설정 배율을 서로 분리해 관리합니다."
                                Margin="0,5,0,0"
                                Foreground="{StaticResource SecondaryTextBrush}" />
                 </StackPanel>
@@ -29,7 +29,7 @@
                         Background="{StaticResource AccentDarkBrush}"
                         VerticalAlignment="Center">
                     <TextBlock x:Name="SettingsStateText"
-                               Text="일반 모드"
+                               Text="기본 세계"
                                Foreground="{StaticResource AccentBrush}"
                                FontWeight="SemiBold" />
                 </Border>
@@ -151,66 +151,252 @@
                 </TabItem>
 
                 <TabItem Header="성능">
-                    <StackPanel Margin="0,16,0,0">
-                            <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel>
-                                        <TextBlock Text="실시간 성능 측정기"
-                                                   Foreground="{StaticResource PrimaryTextBrush}"
-                                                   FontSize="18"
+                    <Grid Margin="0,16,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="12" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="실시간 성능 측정기"
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               FontSize="18"
+                                               FontWeight="SemiBold" />
+                                    <TextBlock Text="열린 설정 화면에서 1초마다 상태를 표본화하며 최근 100개만 메모리에 유지합니다."
+                                               Margin="0,5,0,0"
+                                               Foreground="{StaticResource SecondaryTextBrush}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Border Padding="10,6" Margin="0,0,14,0" CornerRadius="12" Background="{StaticResource AccentDarkBrush}">
+                                        <TextBlock x:Name="PerformanceHeaderStatusText"
+                                                   Text="측정 대기"
+                                                   Foreground="{StaticResource AccentBrush}"
                                                    FontWeight="SemiBold" />
-                                        <TextBlock Text="이 화면을 보는 동안에만 시뮬레이션 pulse와 관찰 query 시간을 계측합니다."
-                                                   Margin="0,5,0,0"
-                                                   Foreground="{StaticResource SecondaryTextBrush}" />
-                                    </StackPanel>
+                                    </Border>
                                     <CheckBox x:Name="PerformanceMeterCheckBox"
-                                              Grid.Column="1"
                                               Content="계측 사용"
                                               IsChecked="True"
-                                              VerticalAlignment="Center"
                                               Checked="PerformanceMeterCheckBox_Changed"
                                               Unchecked="PerformanceMeterCheckBox_Changed" />
-                                </Grid>
-                            </Border>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
 
-                            <UniformGrid Rows="1" Columns="4" Margin="0,14,0,0">
-                                <Border Style="{StaticResource PanelStyle}" Margin="0,0,5,0">
-                                    <StackPanel>
-                                        <TextBlock Text="시뮬레이션 pulse" Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBlock x:Name="SimulationTimingText" Text="대기 중" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
-                                        <TextBlock x:Name="SimulationAverageText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                        <TabControl x:Name="PerformanceDetailTabControl"
+                                    Grid.Row="2"
+                                    SelectionChanged="PerformanceDetailTabControl_SelectionChanged">
+                            <TabItem Header="현재 상태">
+                                <Grid Margin="0,14,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <UniformGrid Rows="1" Columns="4">
+                                        <Border Style="{StaticResource PanelStyle}" Margin="0,0,5,0">
+                                            <StackPanel>
+                                                <TextBlock Text="시뮬레이션 pulse" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock x:Name="SimulationTimingText" Text="대기 중" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                                <TextBlock x:Name="SimulationAverageText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource PanelStyle}" Margin="5,0">
+                                            <StackPanel>
+                                                <TextBlock Text="관찰 query" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock x:Name="ObservationTimingText" Text="대기 중" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                                <TextBlock x:Name="ObservationAverageText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource PanelStyle}" Margin="5,0">
+                                            <StackPanel>
+                                                <TextBlock Text="추정 backlog" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock x:Name="BacklogText" Text="0 ms" Margin="0,7,0,0" Foreground="{StaticResource PositiveBrush}" FontSize="18" FontWeight="SemiBold" />
+                                                <TextBlock x:Name="PulseBudgetText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource PanelStyle}" Margin="5,0,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="누적 표본" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock x:Name="PerformanceSampleText" Text="0회" Margin="0,7,0,0" Foreground="{StaticResource AccentBrush}" FontSize="18" FontWeight="SemiBold" />
+                                                <TextBlock Text="닫힌 관찰 화면은 query하지 않음" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </UniformGrid>
+
+                                    <UniformGrid Grid.Row="2" Rows="1" Columns="4">
+                                        <Border Style="{StaticResource PanelStyle}" Margin="0,0,5,0" Background="{StaticResource PanelAltBrush}">
+                                            <StackPanel>
+                                                <TextBlock Text="최근 성능 상태" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock x:Name="PerformanceHealthText" Text="측정 대기" Margin="0,7,0,0" Foreground="{StaticResource AccentBrush}" FontSize="18" FontWeight="SemiBold" />
+                                                <TextBlock x:Name="PerformanceHealthDetailText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource PanelStyle}" Margin="5,0" Background="{StaticResource PanelAltBrush}">
+                                            <StackPanel>
+                                                <TextBlock Text="프로세스 CPU" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock x:Name="ProcessCpuText" Text="0.0%" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                                <TextBlock x:Name="ProcessThreadText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource PanelStyle}" Margin="5,0" Background="{StaticResource PanelAltBrush}">
+                                            <StackPanel>
+                                                <TextBlock Text="메모리 상태" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock x:Name="WorkingSetText" Text="0.0 MiB" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                                <TextBlock x:Name="ManagedHeapText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Style="{StaticResource PanelStyle}" Margin="5,0,0,0" Background="{StaticResource PanelAltBrush}">
+                                            <StackPanel>
+                                                <TextBlock Text="최근 100개 p95" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock x:Name="RecentP95Text" Text="표본 대기" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
+                                                <TextBlock x:Name="RecentSampleWindowText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </UniformGrid>
+                                </Grid>
+                            </TabItem>
+
+                            <TabItem Header="최근 그래프">
+                                <Grid Margin="0,14,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="10" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="10" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="● pulse 예산 사용률" Foreground="{StaticResource AccentBrush}" Margin="0,0,18,0" />
+                                        <TextBlock Text="● query 16ms 사용률" Foreground="{StaticResource PositiveBrush}" Margin="0,0,18,0" />
+                                        <TextBlock Text="● backlog" Foreground="{StaticResource DangerBrush}" />
                                     </StackPanel>
-                                </Border>
-                                <Border Style="{StaticResource PanelStyle}" Margin="5,0">
-                                    <StackPanel>
-                                        <TextBlock Text="관찰 query" Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBlock x:Name="ObservationTimingText" Text="대기 중" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
-                                        <TextBlock x:Name="ObservationAverageText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
-                                    </StackPanel>
-                                </Border>
-                                <Border Style="{StaticResource PanelStyle}" Margin="5,0">
-                                    <StackPanel>
-                                        <TextBlock Text="추정 backlog" Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBlock x:Name="BacklogText" Text="0 ms" Margin="0,7,0,0" Foreground="{StaticResource PositiveBrush}" FontSize="18" FontWeight="SemiBold" />
-                                        <TextBlock x:Name="PulseBudgetText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
-                                    </StackPanel>
-                                </Border>
-                                <Border Style="{StaticResource PanelStyle}" Margin="5,0,0,0">
-                                    <StackPanel>
-                                        <TextBlock Text="표본" Foreground="{StaticResource SecondaryTextBrush}" />
-                                        <TextBlock x:Name="PerformanceSampleText" Text="0회" Margin="0,7,0,0" Foreground="{StaticResource AccentBrush}" FontSize="18" FontWeight="SemiBold" />
-                                        <TextBlock Text="닫힌 탭은 query하지 않음" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
-                                    </StackPanel>
-                                </Border>
-                            </UniformGrid>
-                    </StackPanel>
+                                    <Border Grid.Row="2"
+                                            Style="{StaticResource PanelStyle}"
+                                            Padding="12"
+                                            Background="{StaticResource PanelAltBrush}">
+                                        <Canvas x:Name="PerformanceGraphCanvas"
+                                                MinHeight="250"
+                                                ClipToBounds="True"
+                                                SizeChanged="PerformanceGraphCanvas_SizeChanged">
+                                            <Line x:Name="PerformanceBudgetLine"
+                                                  Stroke="{StaticResource SecondaryTextBrush}"
+                                                  StrokeThickness="1"
+                                                  StrokeDashArray="4,4"
+                                                  Opacity="0.55" />
+                                            <Polyline x:Name="SimulationGraphLine"
+                                                      Stroke="{StaticResource AccentBrush}"
+                                                      StrokeThickness="2" />
+                                            <Polyline x:Name="ObservationGraphLine"
+                                                      Stroke="{StaticResource PositiveBrush}"
+                                                      StrokeThickness="2" />
+                                            <Polyline x:Name="BacklogGraphLine"
+                                                      Stroke="{StaticResource DangerBrush}"
+                                                      StrokeThickness="2" />
+                                        </Canvas>
+                                    </Border>
+                                    <TextBlock x:Name="PerformanceGraphSummaryText"
+                                               Grid.Row="4"
+                                               Text="최근 표본이 쌓이면 100% 예산선을 기준으로 그래프를 표시합니다."
+                                               Foreground="{StaticResource SecondaryTextBrush}" />
+                                </Grid>
+                            </TabItem>
+
+                            <TabItem Header="최근 100개 로그">
+                                <Grid Margin="0,14,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="10" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock x:Name="PerformanceLogCountText"
+                                               Text="최근 0 / 최대 100개"
+                                               Foreground="{StaticResource SecondaryTextBrush}" />
+                                    <DataGrid x:Name="PerformanceLogGrid"
+                                              Grid.Row="2"
+                                              AutoGenerateColumns="False"
+                                              IsReadOnly="True"
+                                              CanUserAddRows="False"
+                                              SelectionUnit="FullRow">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="#" Binding="{Binding Sequence}" Width="60" />
+                                            <DataGridTextColumn Header="시각" Binding="{Binding RecordedAtText}" Width="90" />
+                                            <DataGridTextColumn Header="상태" Binding="{Binding HealthText}" Width="75" />
+                                            <DataGridTextColumn Header="pulse" Binding="{Binding SimulationText}" Width="95" />
+                                            <DataGridTextColumn Header="query" Binding="{Binding ObservationText}" Width="95" />
+                                            <DataGridTextColumn Header="backlog" Binding="{Binding BacklogText}" Width="95" />
+                                            <DataGridTextColumn Header="CPU" Binding="{Binding CpuText}" Width="80" />
+                                            <DataGridTextColumn Header="작업 집합" Binding="{Binding WorkingSetText}" Width="100" />
+                                            <DataGridTextColumn Header="실행 상태" Binding="{Binding RuntimeStateText}" Width="*" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </TabItem>
+
+                            <TabItem Header="파일 출력">
+                                <Grid Margin="0,14,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <TextBlock Text="성능·상태 로그 파일"
+                                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                                           FontSize="18"
+                                                           FontWeight="SemiBold" />
+                                                <TextBlock Text="자동 기록과 수동 출력 모두 파일당 10MiB에서 다음 번호 파일로 회전합니다."
+                                                           Margin="0,5,0,0"
+                                                           Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                            <CheckBox x:Name="PerformanceAutoOutputCheckBox"
+                                                      Grid.Column="1"
+                                                      Content="자동 파일 기록"
+                                                      VerticalAlignment="Center"
+                                                      Checked="PerformanceAutoOutputCheckBox_Changed"
+                                                      Unchecked="PerformanceAutoOutputCheckBox_Changed" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Grid.Row="2" Style="{StaticResource PanelStyle}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <TextBlock x:Name="PerformanceFileStatusText"
+                                                           Text="최근 표본 0개 · 자동 기록 꺼짐"
+                                                           Foreground="{StaticResource AccentBrush}"
+                                                           FontWeight="SemiBold" />
+                                                <TextBlock Text="저장 위치 · %LocalAppData%\ChroniclesOfMyriadImmortalPaths\logs"
+                                                           Margin="0,5,0,0"
+                                                           Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Button Margin="0,0,8,0" Click="PerformanceExportButton_Click">최근 100개 출력</Button>
+                                                <Button Click="PerformanceFolderButton_Click">로그 폴더 열기</Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
                 </TabItem>
 
-                <TabItem Header="개발자">
+                <TabItem Header="세계 설정">
                     <StackPanel Margin="0,16,0,0">
                             <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
                                 <Grid>
@@ -219,7 +405,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
-                                        <TextBlock Text="개발자 모드"
+                                        <TextBlock Text="세계 설정 모드"
                                                    Foreground="{StaticResource PrimaryTextBrush}"
                                                    FontSize="18"
                                                    FontWeight="SemiBold" />
@@ -227,16 +413,16 @@
                                                    Margin="0,5,0,0"
                                                    Foreground="{StaticResource SecondaryTextBrush}" />
                                     </StackPanel>
-                                    <CheckBox x:Name="DeveloperModeCheckBox"
+                                    <CheckBox x:Name="WorldSettingsModeCheckBox"
                                               Grid.Column="1"
-                                              Content="개발자 조정 사용"
+                                              Content="실험 배율 사용"
                                               VerticalAlignment="Center"
-                                              Checked="DeveloperModeCheckBox_Changed"
-                                              Unchecked="DeveloperModeCheckBox_Changed" />
+                                              Checked="WorldSettingsModeCheckBox_Changed"
+                                              Unchecked="WorldSettingsModeCheckBox_Changed" />
                                 </Grid>
                             </Border>
 
-                            <Grid x:Name="DeveloperBalancePanel" Margin="0,14,0,0" IsEnabled="False">
+                            <Grid x:Name="WorldBalancePanel" Margin="0,14,0,0" IsEnabled="False">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="14" />
@@ -283,7 +469,7 @@
                                     Background="#251821"
                                     BorderBrush="{StaticResource DangerBrush}"
                                     BorderThickness="1">
-                                <TextBlock Text="PC_TEMP_REVIEW · 이 배율은 기획 확정값이 아닌 검토용입니다. 일반 모드 100%가 정식 기준이며, 개발자 모드 세계는 화면과 저장 정보에 명시됩니다."
+                                <TextBlock Text="PC_TEMP_REVIEW · 이 배율은 기획 확정값이 아닌 검토용입니다. 기본 세계 100%가 정식 기준이며, 세계 설정 모드를 사용한 세계는 화면과 저장 정보에 명시됩니다."
                                            Foreground="{StaticResource SecondaryTextBrush}"
                                            TextWrapping="Wrap" />
                             </Border>

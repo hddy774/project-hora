@@ -63,7 +63,7 @@ public static class WorldBalanceRules
         {
             throw new ArgumentOutOfRangeException(
                 nameof(percent),
-                $"개발자 밸런스 배율은 {MinimumPercent}%~{MaximumPercent}%여야 합니다.");
+                $"세계 설정 배율은 {MinimumPercent}%~{MaximumPercent}%여야 합니다.");
         }
     }
 }
@@ -107,7 +107,7 @@ public static class FormulaRegistry
             new("F-ECON-001", EconomyRules.CurrentRevision, FormulaOwner.Economy,
                 "도시 시장 가격·수급·생산", true),
             new(WorldBalanceRules.ReviewId, 1, FormulaOwner.Cultivation,
-                "PC 개발자 모드의 다음 세계용 명시적 밸런스 배율", true),
+                "PC 세계 설정 모드의 다음 세계용 명시적 밸런스 배율", true),
         ]).ToArray();
     }
 }

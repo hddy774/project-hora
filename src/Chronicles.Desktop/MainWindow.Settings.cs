@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using Chronicles.Application;
@@ -34,6 +37,80 @@ public partial class MainWindow
         _runner?.SetPerformanceDiagnosticsEnabled(
             e.Enabled && _workspaceRoute == WorkspaceRoute.Settings);
         RefreshVisibleObservation();
+    }
+
+    private void SettingsWorkspacePanel_PerformanceSampleRecorded(
+        object? sender,
+        PerformanceSampleRecordedEventArgs e) =>
+        _logService.CapturePerformance(e.Line);
+
+    private void SettingsWorkspacePanel_PerformanceAutoOutputChanged(
+        object? sender,
+        EventArgs e)
+    {
+        if (_logService.AutoPerformanceOutput != SettingsWorkspacePanel.AutoPerformanceOutput)
+        {
+            _logService.SetAutoPerformanceOutput(SettingsWorkspacePanel.AutoPerformanceOutput);
+        }
+        SettingsWorkspacePanel.SetPerformanceFileStatus(
+            SettingsWorkspacePanel.AutoPerformanceOutput
+                ? "성능·상태 로그 자동 기록 중"
+                : "성능·상태 로그 자동 기록 꺼짐");
+    }
+
+    private async void SettingsWorkspacePanel_PerformanceExportRequested(
+        object? sender,
+        EventArgs e)
+    {
+        try
+        {
+            SettingsWorkspacePanel.SetPerformanceFileStatus("최근 성능·상태 로그 출력 중…");
+            var lines = SettingsWorkspacePanel.GetPerformanceLogLines();
+            var path = await _logService.ExportPerformanceAsync(lines);
+            _logService.AddDebug(
+                DebugLogLevel.Information,
+                $"성능·상태 로그 수동 출력 완료 · {path}");
+            SettingsWorkspacePanel.SetPerformanceFileStatus(
+                $"완료 · {Path.GetFileName(path)} · 표본 {lines.Length:N0}개");
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            _logService.AddDebug(
+                DebugLogLevel.Error,
+                $"성능·상태 로그 수동 출력 실패 · {exception.Message}");
+            SettingsWorkspacePanel.SetPerformanceFileStatus(
+                $"출력 실패 · {exception.Message}",
+                isError: true);
+        }
+    }
+
+    private void SettingsWorkspacePanel_PerformanceFolderOpenRequested(
+        object? sender,
+        EventArgs e)
+    {
+        try
+        {
+            var directory = GameLogService.EnsureOutputDirectory();
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = directory,
+                UseShellExecute = true,
+            });
+            _logService.AddDebug(DebugLogLevel.Information, $"성능 로그 폴더 열기 · {directory}");
+            SettingsWorkspacePanel.SetPerformanceFileStatus("로그 폴더 열림");
+        }
+        catch (Exception exception) when (exception is IOException
+            or UnauthorizedAccessException
+            or Win32Exception
+            or InvalidOperationException)
+        {
+            _logService.AddDebug(
+                DebugLogLevel.Error,
+                $"성능 로그 폴더 열기 실패 · {exception.Message}");
+            SettingsWorkspacePanel.SetPerformanceFileStatus(
+                $"폴더 열기 실패 · {exception.Message}",
+                isError: true);
+        }
     }
 
     private async void SettingsWorkspacePanel_NewWorldRequested(
@@ -110,6 +187,7 @@ public partial class MainWindow
         _projectedRecentEventSequence = long.MinValue;
         _projectedWorldChronicleSequence = long.MinValue;
         _projectedReincarnationRevision = long.MinValue;
+        SettingsWorkspacePanel.ResetPerformanceHistory();
         Speed1Toggle.IsChecked = true;
         replacement.ObservationInvalidated += Runner_ObservationInvalidated;
         replacement.Faulted += Runner_Faulted;
@@ -120,7 +198,7 @@ public partial class MainWindow
         _logService.AddDebug(
             DebugLogLevel.Information,
             $"새 세계 생성 · AI {metadata.Population:N0}명 · seed {seed} · " +
-            (balance.DeveloperModeEnabled ? "개발자 밸런스" : "일반 밸런스"));
+            (balance.DeveloperModeEnabled ? "세계 설정 배율" : "기본 배율"));
         RefreshVisibleObservation();
     }
 }

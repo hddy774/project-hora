@@ -1,5 +1,9 @@
 # PC 이식 추적 정본
 
+> **현재 감사 진입점:** [2026-09-02 기술 감사 보고서](../TECHNICAL_AUDIT_2026-09-02.md) ·
+> [PC 임시 규칙 검토 원장](PC_TEMP_REVIEW_LEDGER.md). 요구사항 원장의
+> `PC_TEMP_REVIEW 31행`과 repo 전체의 고유 `PC-TEMP-* 55개`는 서로 다른 집계 단위다.
+
 `pc-port-ledger.json`은 Alpha 1.1.0의 M01~M14 세로 요구사항 238개를 PC 저장소의
 현재 증거와 일대일로 연결하는 기계 판독 원장이다. 원본 요구사항은 상위 저장소의
 `data/alpha110/requirement_coverage_manifest.json`이며, 원문·Notion URL·SHA와 원본
@@ -25,7 +29,8 @@ PC에서 구현할 부분은 계속 추적하고 Android 전용 절만 `excluded
 
 ## 현재 기준선
 
-- PC 기준: `0.0.13`, Git `558a184d2cf88b0f1a2318eb028125257786d261`
+- PC 기준: `0.0.21`, GitHub/local `main`
+  `7eb4d540b328d4664778b3e494148db0cd36bee2`
 - 총 행: 238
 - `Port`: 128
 - `PC Adapt`: 15

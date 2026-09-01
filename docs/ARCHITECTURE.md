@@ -1,5 +1,12 @@
 # 기술 아키텍처
 
+> **현재 구조 진입점:** 날짜·SHA가 고정된 설명과 기술 수준 평가는
+> [2026-09-02 기술 감사 보고서](TECHNICAL_AUDIT_2026-09-02.md), 변경 규칙은
+> [개발 가이드](DEVELOPMENT_GUIDE.md), 분할 불변성·조회·저장·작업집합 개선 순서는
+> [리팩터링·성능 로드맵](REFACTORING_PERFORMANCE_ROADMAP.md)을 우선합니다. 이 문서는
+> 장기 구조 설명이며, 상태가 충돌하면 manifest·project reference·고정 SHA 검증을 함께
+> 확인합니다.
+
 ## 선택 기술
 
 - 언어: C#

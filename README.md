@@ -1,5 +1,14 @@
 # 선로만상록 PC · Chronicles of Myriad Immortal Paths
 
+> **2026-09-02 기술 감사 기준:** `VERSION 0.0.21`, GitHub/local
+> `main@7eb4d540b328d4664778b3e494148db0cd36bee2`. 구현·로컬 Release 검증은
+> 완료됐고 GitHub Actions/Release와 0.0.21 화면 직접 조작 검증은 미완료입니다.
+> 전체 구조·알고리즘·증거 수준은 [기술 감사 보고서](docs/TECHNICAL_AUDIT_2026-09-02.md),
+> 앞으로의 절차는 [개발 가이드](docs/DEVELOPMENT_GUIDE.md), 개선 순서는
+> [리팩터링·성능 로드맵](docs/REFACTORING_PERFORMANCE_ROADMAP.md), 임시 규칙 55개는
+> [PC 임시 규칙 검토 원장](docs/traceability/PC_TEMP_REVIEW_LEDGER.md)을 따릅니다.
+> [Notion 통합 보고서](https://app.notion.com/p/3ceacc9e6175816a9ba7e07d18626f24)
+
 현재 버전은 루트 `VERSION`에서 관리하며 `대표.중간.소규모` 형식을 사용합니다. 기능
 업데이트마다 `scripts/bump-patch-version.ps1`이 소규모 버전을 한 단계 올립니다.
 

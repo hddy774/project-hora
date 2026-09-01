@@ -485,6 +485,45 @@
                                            Foreground="{StaticResource SecondaryTextBrush}"
                                            FontSize="10"
                                            TextWrapping="Wrap" />
+                                <Expander x:Name="CultivationPlanExpander"
+                                          Header="현재 장기 수행 계획"
+                                          Margin="0,8,0,0"
+                                          IsExpanded="False"
+                                          Visibility="Collapsed"
+                                          Expanded="VisibleExpander_Expanded">
+                                    <TabControl Margin="0,7,0,0"
+                                                Height="142"
+                                                Background="{StaticResource PanelAltBrush}"
+                                                BorderThickness="0">
+                                        <TabItem Header="기간·장소">
+                                            <Border Padding="11,9"
+                                                    Background="{StaticResource PanelAltBrush}">
+                                                <TextBlock x:Name="CultivationPlanScheduleText"
+                                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                                           FontSize="10"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </TabItem>
+                                        <TabItem Header="자원·진법">
+                                            <Border Padding="11,9"
+                                                    Background="{StaticResource PanelAltBrush}">
+                                                <TextBlock x:Name="CultivationPlanResourceText"
+                                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                                           FontSize="10"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </TabItem>
+                                        <TabItem Header="가르침·효율">
+                                            <Border Padding="11,9"
+                                                    Background="{StaticResource PanelAltBrush}">
+                                                <TextBlock x:Name="CultivationPlanTeachingText"
+                                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                                           FontSize="10"
+                                                           TextWrapping="Wrap" />
+                                            </Border>
+                                        </TabItem>
+                                    </TabControl>
+                                </Expander>
                                 <Expander x:Name="CultivationTraceExpander"
                                           Header="최근 수행 Formula Trace"
                                           Margin="0,8,0,0"

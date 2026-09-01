@@ -165,6 +165,17 @@ public partial class MainWindow
                         $"{component.KoreanName} {component.ValueHundredths / 100m:0.00}/{component.LimitHundredths / 100m:0.00}"));
             CultivationComponentText.Text =
                 $"{gateText} · 축기 경로 {FormatFoundationRoute(cultivation.FoundationRoute)} · {componentText}";
+            CultivationPlanExpander.Visibility = cultivation.ActionPlan is null
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+            CultivationPlanExpander.Header = cultivation.ActionPlan is { IsActive: true }
+                ? "현재 장기 수행 계획"
+                : "최근 종료된 수행 계획";
+            if (CultivationPlanExpander.IsExpanded
+                && cultivation.ActionPlan is { } actionPlan)
+            {
+                UpdateCultivationPlanView(cultivation, actionPlan);
+            }
             if (CultivationTraceExpander.IsExpanded)
             {
                 UpdateCultivationTraceView(cultivation);
@@ -1244,6 +1255,95 @@ public partial class MainWindow
             $"\n{attempt} · {failure}" +
             $"\n{external}";
     }
+
+    private void UpdateCultivationPlanView(
+        CultivationReadProjection cultivation,
+        CultivationActionPlanSnapshot plan)
+    {
+        var completedMonths = Math.Min(plan.CompletedMonths, plan.PlannedMonths);
+        var remainingMonths = Math.Max(0, plan.PlannedMonths - completedMonths);
+        CultivationPlanScheduleText.Text =
+            $"상태 {(plan.IsActive ? "진행 중" : "종료")} · 강도 {FormatCultivationPlanIntensity(plan.Intensity)} · " +
+            $"계획 {FormatPlanMonths(plan.PlannedMonths)} · 진행 {FormatPlanMonths(completedMonths)} · " +
+            $"남음 {FormatPlanMonths(remainingMonths)}\n" +
+            $"시작 {FormatGameDate(GameCalendar.GetDate(plan.StartedTick))} · " +
+            $"종료 예정 {FormatGameDate(GameCalendar.GetDate(plan.PlannedEndTick))}\n" +
+            $"고정 장소 {WorldMapRules.GetLocation(plan.LocationId).KoreanName} · " +
+            "계획 중에는 위치·목표·행동을 다시 선택하지 않음";
+
+        CultivationPlanResourceText.Text =
+            $"소비 방침 {FormatCultivationResourcePolicy(plan.ResourcePolicy)}\n" +
+            $"영석 {KoreanNumberFormatter.Format(plan.SpiritStonesConsumed)} / " +
+            $"{KoreanNumberFormatter.Format(plan.SpiritStoneBudget)} · " +
+            $"성장 단약 {plan.GrowthPillsConsumed:N0} / {plan.GrowthPillBudget:N0}\n" +
+            $"수행 진법 {FormatCultivationFormationSupport(plan.FormationSupport)} · " +
+            $"지식 {plan.FormationKnowledgeHundredths / 100m:0.00} · " +
+            $"설치 경험 {plan.FormationInstallationExperienceHundredths / 100m:0.00} · " +
+            $"설치 결과 {(plan.FormationInstallationSucceeded ? "성공" : "해당 없음·실패")}";
+
+        var partner = plan.TeachingPartner is { } partnerId
+            ? GetAgentName(partnerId)
+            : "없음";
+        CultivationPlanTeachingText.Text =
+            $"공동 수행 역할 {FormatCultivationTeachingRole(plan.TeachingRole)} · 상대 {partner}\n" +
+            $"학습 흡수 보정 {plan.TeachingBonusBasisPoints / 100m:0.00}% · " +
+            $"전체 조건 계수 {plan.ConditionFactorBasisPoints / 100m:0.00}% · " +
+            $"누적 수행 경험 {KoreanNumberFormatter.Format(cultivation.CultivationExperience)}\n" +
+            "교사의 수행 진척을 이전하지 않습니다. 학습자는 교사 지식·경험과 양측 자질에 따른 별도 보너스를 얻습니다." +
+            (plan.RequiresReview ? " · PC_TEMP_REVIEW: 기간·진법·소비 계수는 다음 버전 검토" : string.Empty);
+    }
+
+    private static string FormatPlanMonths(long months)
+    {
+        var years = months / GameCalendar.MonthsPerYear;
+        var remainingMonths = months % GameCalendar.MonthsPerYear;
+        if (years == 0)
+        {
+            return $"{remainingMonths:N0}개월";
+        }
+
+        return remainingMonths == 0
+            ? $"{KoreanNumberFormatter.Format(years)}년"
+            : $"{KoreanNumberFormatter.Format(years)}년 {remainingMonths:N0}개월";
+    }
+
+    private static string FormatCultivationPlanIntensity(CultivationPlanIntensity intensity) =>
+        intensity switch
+        {
+            CultivationPlanIntensity.Leisurely => "여유 수행",
+            CultivationPlanIntensity.Steady => "일반 수행",
+            CultivationPlanIntensity.ClosedDoor => "폐관 수행",
+            _ => intensity.ToString(),
+        };
+
+    private static string FormatCultivationResourcePolicy(CultivationResourcePolicy policy) =>
+        policy switch
+        {
+            CultivationResourcePolicy.None => "무소비",
+            CultivationResourcePolicy.SpiritStones => "영석",
+            CultivationResourcePolicy.GrowthPills => "성장 단약",
+            CultivationResourcePolicy.Mixed => "단약 우선·영석 보조",
+            _ => policy.ToString(),
+        };
+
+    private static string FormatCultivationFormationSupport(
+        CultivationFormationSupport support) => support switch
+        {
+            CultivationFormationSupport.None => "미설치",
+            CultivationFormationSupport.ExistingAtLocation => "장소 기존 진법",
+            CultivationFormationSupport.SelfInstalled => "직접 설치",
+            CultivationFormationSupport.ExternalAssistance => "외부 도움 설치",
+            _ => support.ToString(),
+        };
+
+    private static string FormatCultivationTeachingRole(CultivationTeachingRole role) =>
+        role switch
+        {
+            CultivationTeachingRole.None => "단독 수행",
+            CultivationTeachingRole.Instructor => "가르치는 입장",
+            CultivationTeachingRole.Learner => "배우는 입장",
+            _ => role.ToString(),
+        };
 
     private void UpdateFoundationFormationView(FoundationFormationSnapshot formation)
     {

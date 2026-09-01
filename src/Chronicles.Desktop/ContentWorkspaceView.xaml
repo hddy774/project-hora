@@ -210,24 +210,88 @@
 
                     <TabItem Header="서적 · 지식">
                         <Grid Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="92" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" MinWidth="300" />
                             </Grid.ColumnDefinitions>
-                            <Border Padding="18" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                            <UniformGrid Grid.ColumnSpan="3" Columns="4">
+                                <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="의미 Content" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="KnowledgeContentCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="Edition" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="KnowledgeEditionCountText" Margin="0,8,0,0" Foreground="{StaticResource AccentBrush}" FontSize="20" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="물리 기록물" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="PhysicalRecordCountText" Margin="0,8,0,0" Foreground="{StaticResource PositiveBrush}" FontSize="20" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                    <StackPanel>
+                                        <TextBlock Text="접근·이해 Owner" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock x:Name="KnowledgeAccessCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+
+                            <DataGrid x:Name="KnowledgeEditionGrid"
+                                      Grid.Row="2"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      EnableRowVirtualization="True"
+                                      ScrollViewer.CanContentScroll="True"
+                                      ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                      SelectionChanged="KnowledgeEditionGrid_SelectionChanged">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="내용" Binding="{Binding Content}" Width="*" />
+                                    <DataGridTextColumn Header="판본" Binding="{Binding Edition}" Width="150" />
+                                    <DataGridTextColumn Header="관계" Binding="{Binding Relation}" Width="100" />
+                                    <DataGridTextColumn Header="실물" Binding="{Binding Records}" Width="70" />
+                                    <DataGridTextColumn Header="접근" Binding="{Binding Accessors}" Width="70" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Border Grid.Row="2"
+                                    Grid.Column="2"
+                                    Padding="16"
+                                    Background="{StaticResource PanelAltBrush}"
+                                    CornerRadius="7">
                                 <StackPanel>
-                                    <TextBlock Text="물리 서적 Instance" Foreground="{StaticResource SecondaryTextBrush}" />
-                                    <TextBlock x:Name="PhysicalRecordCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="24" FontWeight="SemiBold" />
-                                    <TextBlock Text="공법·법술 서적 Definition은 준비되었으며, 내용·판본·훼손·변조·복원 수직 이식 뒤 실제 실물을 생성합니다."
-                                               Margin="0,10,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
-                                </StackPanel>
-                            </Border>
-                            <Border Grid.Column="2" Padding="18" BorderBrush="{StaticResource DangerBrush}" BorderThickness="1" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
-                                <StackPanel>
-                                    <TextBlock Text="DataUnavailable" Foreground="{StaticResource DangerBrush}" FontSize="18" FontWeight="SemiBold" />
-                                    <TextBlock Text="지식 접근·오해·교정과 판본 provenance가 아직 권위 상태에 연결되지 않았습니다. 미승인 수치를 임의 표시하지 않습니다."
-                                               Margin="0,10,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
+                                    <TextBlock x:Name="KnowledgeEditionTitleText"
+                                               Text="판본을 선택해 주세요."
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               FontSize="19"
+                                               FontWeight="SemiBold" />
+                                    <TextBlock x:Name="KnowledgeEditionIdentityText"
+                                               Margin="0,6,0,0"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                    <Separator Margin="0,14" />
+                                    <TextBlock x:Name="KnowledgeEditionLineageText"
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock x:Name="KnowledgeEditionStateText"
+                                               Margin="0,12,0,0"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock x:Name="KnowledgeStatusText"
+                                               Margin="0,16,0,0"
+                                               Foreground="{StaticResource SecondaryTextBrush}"
+                                               TextWrapping="Wrap" />
                                 </StackPanel>
                             </Border>
                         </Grid>

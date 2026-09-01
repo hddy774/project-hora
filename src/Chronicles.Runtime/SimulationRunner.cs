@@ -122,7 +122,9 @@ public sealed class SimulationRunner : IDisposable
         int detailedMapAgentOffset = 0,
         int worldChronicleCount = int.MaxValue,
         int contentSecretRealmOffset = 0,
-        int contentSecretRealmLimit = 100)
+        int contentSecretRealmLimit = 100,
+        int knowledgeEditionOffset = 0,
+        int knowledgeEditionLimit = 100)
     {
         var started = BeginPerformanceMeasurement();
         lock (_worldGate)
@@ -135,7 +137,9 @@ public sealed class SimulationRunner : IDisposable
                 detailedMapAgentOffset,
                 worldChronicleCount,
                 contentSecretRealmOffset,
-                contentSecretRealmLimit);
+                contentSecretRealmLimit,
+                knowledgeEditionOffset,
+                knowledgeEditionLimit);
             RecordObservationMeasurement(started);
             return snapshot;
         }
@@ -158,7 +162,9 @@ public sealed class SimulationRunner : IDisposable
         int detailedMapAgentOffset = 0,
         int worldChronicleCount = int.MaxValue,
         int contentSecretRealmOffset = 0,
-        int contentSecretRealmLimit = 100)
+        int contentSecretRealmLimit = 100,
+        int knowledgeEditionOffset = 0,
+        int knowledgeEditionLimit = 100)
     {
         var started = BeginPerformanceMeasurement();
         lock (_worldGate)
@@ -172,7 +178,9 @@ public sealed class SimulationRunner : IDisposable
                 detailedMapAgentOffset,
                 worldChronicleCount,
                 contentSecretRealmOffset,
-                contentSecretRealmLimit));
+                contentSecretRealmLimit,
+                knowledgeEditionOffset,
+                knowledgeEditionLimit));
             RecordObservationMeasurement(started);
             return observation;
         }

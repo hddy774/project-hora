@@ -201,6 +201,10 @@ public partial class MainWindow : Window, IDisposable
             contentSecretRealmLimit: _workspaceRoute == WorkspaceRoute.Content
                 && ContentWorkspacePanel.ShouldLoadSecretRealmRows
                     ? ContentWorkspaceView.SecretRealmPageSize
+                    : 0,
+            knowledgeEditionLimit: _workspaceRoute == WorkspaceRoute.Content
+                && ContentWorkspacePanel.ShouldLoadKnowledgeRows
+                    ? ContentWorkspaceView.KnowledgeEditionPageSize
                     : 0);
         ApplyObservation(observation);
     }

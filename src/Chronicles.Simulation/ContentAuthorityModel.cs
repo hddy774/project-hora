@@ -285,11 +285,13 @@ public sealed record WorldContentSnapshot(
     IReadOnlyList<ContentInstanceSnapshot> SecretRealms,
     int SecretRealmResultOffset,
     int SecretRealmResultTotal,
-    bool IncludesHidden)
+    bool IncludesHidden,
+    WorldKnowledgeSnapshot? Knowledge = null)
 {
     public static WorldContentSnapshot Empty { get; } = new(
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        Array.Empty<ContentInstanceSnapshot>(), 0, 0, false);
+        Array.Empty<ContentInstanceSnapshot>(), 0, 0, false,
+        WorldKnowledgeSnapshot.Empty);
 }
 
 public static class ContentPopulationRules

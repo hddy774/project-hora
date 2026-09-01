@@ -142,3 +142,42 @@ public readonly record struct ContentSourceResultId
 
     public override string ToString() => $"CSRC-{Value:X16}";
 }
+
+public readonly record struct KnowledgeContentId
+{
+    public KnowledgeContentId(ulong value)
+    {
+        ArgumentOutOfRangeException.ThrowIfZero(value);
+        Value = value;
+    }
+
+    public ulong Value { get; }
+
+    public override string ToString() => $"KCONT-{Value:X16}";
+}
+
+public readonly record struct KnowledgeEditionId
+{
+    public KnowledgeEditionId(long value)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+        Value = value;
+    }
+
+    public long Value { get; }
+
+    public override string ToString() => $"KED-{Value:0000000000}";
+}
+
+public readonly record struct KnowledgeProvenanceId
+{
+    public KnowledgeProvenanceId(long value)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+        Value = value;
+    }
+
+    public long Value { get; }
+
+    public override string ToString() => $"KPROV-{Value:0000000000}";
+}

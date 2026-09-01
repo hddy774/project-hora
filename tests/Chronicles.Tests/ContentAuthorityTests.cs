@@ -196,7 +196,9 @@ internal static class ContentAuthorityTests
     private static void WorldPersistenceAndSelectiveObservationAreConnected()
     {
         var world = World.Create(0xC021UL, 32);
-        TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
+        TestAssert.Equal(
+            ContentPopulationRules.InitialSecretRealmCount
+                + KnowledgePopulationRules.InitialPhysicalRecordCount,
             world.TotalContentInstances, "세계 콘텐츠 store 연결");
         var hashBeforeObservation = world.ComputeStateHash();
         var closed = world.CreateSnapshot(
@@ -210,7 +212,9 @@ internal static class ContentAuthorityTests
             eventCount: 0,
             sections: ObservationSections.Content,
             worldChronicleCount: 0);
-        TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
+        TestAssert.Equal(
+            ContentPopulationRules.InitialSecretRealmCount
+                + KnowledgePopulationRules.InitialPhysicalRecordCount,
             opened.Content!.TotalInstances, "열린 콘텐츠 요약 투영");
         TestAssert.Equal(0, opened.Content.SecretRealms.Count,
             "일반 관찰에서 미발견 비경 행 비공개");
@@ -218,7 +222,7 @@ internal static class ContentAuthorityTests
             "콘텐츠 관찰 무영향");
 
         var checkpoint = world.CreateCheckpoint();
-        TestAssert.Equal(27, checkpoint.SchemaVersion, "콘텐츠 checkpoint schema 27");
+        TestAssert.Equal(28, checkpoint.SchemaVersion, "콘텐츠·지식 checkpoint schema 28");
         TestAssert.True(checkpoint.Content is not null, "콘텐츠 checkpoint 연결");
         var restored = World.Restore(checkpoint);
         TestAssert.Equal(world.ComputeStateHash(), restored.ComputeStateHash(),
@@ -228,15 +232,18 @@ internal static class ContentAuthorityTests
         {
             SchemaVersion = 26,
             Content = null,
+            Knowledge = null,
         };
         var migrated = World.Restore(schema26);
         TestAssert.Equal(
             world.ComputeStateHashForCheckpointSchema(26),
             migrated.ComputeStateHashForCheckpointSchema(26),
             "schema 26 저장 hash 호환");
-        TestAssert.Equal(ContentPopulationRules.InitialSecretRealmCount,
+        TestAssert.Equal(
+            ContentPopulationRules.InitialSecretRealmCount
+                + KnowledgePopulationRules.InitialPhysicalRecordCount,
             migrated.CreateCheckpoint().Content!.Instances.Length,
-            "schema 26은 seed 기반 초기 콘텐츠로 이식");
+            "schema 26은 seed 기반 콘텐츠·지식 실물로 이식");
 
         var developerWorld = World.Create(
             0xC022UL,
@@ -265,7 +272,7 @@ internal static class ContentAuthorityTests
 
         TestAssert.Throws<InvalidDataException>(
             () => World.Restore(checkpoint with { Content = null }),
-            "schema 27 콘텐츠 누락 거부");
+            "schema 28 콘텐츠 누락 거부");
     }
 
     private static void AiExplorationDiscoversAndChroniclesSecretRealms()
@@ -291,6 +298,8 @@ internal static class ContentAuthorityTests
         TestAssert.True(
             century.UniqueSecretRealmDiscoverers is > 0 and <= 64,
             "세계 역사서에 고유 비경 발견자 수 보존");
+        TestAssert.True(checkpoint.Knowledge!.Access.Length > 0,
+            "AI의 실제 서적 구매가 지식 접근 권위로 연결");
 
         var restored = World.Restore(checkpoint);
         TestAssert.Equal(world.ComputeStateHash(), restored.ComputeStateHash(),

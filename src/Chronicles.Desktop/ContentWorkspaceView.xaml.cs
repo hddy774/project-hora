@@ -9,10 +9,13 @@ namespace Chronicles.Desktop;
 public partial class ContentWorkspaceView : UserControl
 {
     public const int SecretRealmPageSize = 100;
+    public const int KnowledgeEditionPageSize = 100;
 
     private WorldContentSnapshot _snapshot = WorldContentSnapshot.Empty;
     private long _projectedRevision = long.MinValue;
     private int _projectedOffset = -1;
+    private long _projectedKnowledgeRevision = long.MinValue;
+    private int _projectedKnowledgeOffset = -1;
     private SecretRealmNature? _natureFilter;
 
     public ContentWorkspaceView()
@@ -29,22 +32,31 @@ public partial class ContentWorkspaceView : UserControl
 
     public bool ShouldLoadSecretRealmRows => ContentDetailTabControl.SelectedIndex == 0;
 
+    public bool ShouldLoadKnowledgeRows => ContentDetailTabControl.SelectedIndex == 2;
+
     public void ResetProjection()
     {
         _snapshot = WorldContentSnapshot.Empty;
         _projectedRevision = long.MinValue;
         _projectedOffset = -1;
+        _projectedKnowledgeRevision = long.MinValue;
+        _projectedKnowledgeOffset = -1;
         SecretRealmOffset = 0;
         SecretRealmGrid.ItemsSource = Array.Empty<SecretRealmRow>();
+        KnowledgeEditionGrid.ItemsSource = Array.Empty<KnowledgeEditionRow>();
         ClearDetails();
+        ClearKnowledgeDetails();
         ApplySummary();
     }
 
     public void Apply(WorldContentSnapshot? snapshot)
     {
         snapshot ??= WorldContentSnapshot.Empty;
+        var knowledge = snapshot.Knowledge ?? WorldKnowledgeSnapshot.Empty;
         var unchanged = _projectedRevision == snapshot.AuthorityRevision
             && _projectedOffset == snapshot.SecretRealmResultOffset
+            && _projectedKnowledgeRevision == knowledge.AuthorityRevision
+            && _projectedKnowledgeOffset == knowledge.EditionResultOffset
             && _snapshot.IncludesHidden == snapshot.IncludesHidden;
         _snapshot = snapshot;
         SecretRealmOffset = snapshot.SecretRealmResultOffset;
@@ -55,8 +67,17 @@ public partial class ContentWorkspaceView : UserControl
 
         _projectedRevision = snapshot.AuthorityRevision;
         _projectedOffset = snapshot.SecretRealmResultOffset;
+        _projectedKnowledgeRevision = knowledge.AuthorityRevision;
+        _projectedKnowledgeOffset = knowledge.EditionResultOffset;
         ApplySummary();
-        RebuildSecretRealmRows();
+        if (ShouldLoadSecretRealmRows)
+        {
+            RebuildSecretRealmRows();
+        }
+        if (ShouldLoadKnowledgeRows)
+        {
+            RebuildKnowledgeRows();
+        }
     }
 
     private void ApplySummary()
@@ -70,7 +91,55 @@ public partial class ContentWorkspaceView : UserControl
         MaterialStackCountText.Text = KoreanNumberFormatter.Format(_snapshot.MaterialStackCount);
         ItemInstanceCountText.Text = KoreanNumberFormatter.Format(_snapshot.ItemInstanceCount);
         PhysicalRecordCountText.Text = KoreanNumberFormatter.Format(_snapshot.PhysicalRecordCount);
+        var knowledge = _snapshot.Knowledge ?? WorldKnowledgeSnapshot.Empty;
+        KnowledgeContentCountText.Text = KoreanNumberFormatter.Format(knowledge.ContentCount);
+        KnowledgeEditionCountText.Text = KoreanNumberFormatter.Format(knowledge.EditionCount);
+        KnowledgeAccessCountText.Text = KoreanNumberFormatter.Format(knowledge.AccessCount);
+        KnowledgeStatusText.Text =
+            $"오해 {KoreanNumberFormatter.Format(knowledge.MisunderstoodAccessCount)}건 · " +
+            $"복원 판본 {KoreanNumberFormatter.Format(knowledge.RestoredEditionCount)}개 · " +
+            "미확정 신뢰도는 DataUnavailable로 유지합니다.";
         VisibilityModeText.Text = _snapshot.IncludesHidden ? "세계 설정 진단" : "공개 지식";
+    }
+
+    private void RebuildKnowledgeRows()
+    {
+        var knowledge = _snapshot.Knowledge ?? WorldKnowledgeSnapshot.Empty;
+        var selectedId = KnowledgeEditionGrid.SelectedItem is KnowledgeEditionRow selected
+            ? selected.Snapshot.EditionId
+            : (KnowledgeEditionId?)null;
+        var rows = knowledge.Editions.Select(value => new KnowledgeEditionRow(
+            value,
+            FormatKnowledgeContent(value),
+            value.EditionId.ToString(),
+            FormatEditionRelation(value.Relation),
+            KoreanNumberFormatter.Format(value.PhysicalRecordCount),
+            KoreanNumberFormatter.Format(value.AccessorCount))).ToArray();
+        KnowledgeEditionGrid.ItemsSource = rows;
+        KnowledgeEditionGrid.SelectedItem = selectedId is { } id
+            ? rows.FirstOrDefault(row => row.Snapshot.EditionId == id) ?? rows.FirstOrDefault()
+            : rows.FirstOrDefault();
+        RenderSelectedKnowledgeEdition();
+    }
+
+    private void RenderSelectedKnowledgeEdition()
+    {
+        if (KnowledgeEditionGrid.SelectedItem is not KnowledgeEditionRow row)
+        {
+            ClearKnowledgeDetails();
+            return;
+        }
+
+        var value = row.Snapshot;
+        KnowledgeEditionTitleText.Text = $"{row.Content} · {row.Edition}";
+        KnowledgeEditionIdentityText.Text = $"{value.ContentId} · {value.ContentKind}";
+        KnowledgeEditionLineageText.Text = value.ParentEditionId is { } parent
+            ? $"{FormatEditionRelation(value.Relation)} · 원본 계보 {parent}"
+            : "최초 원본 Edition · parent 없음";
+        KnowledgeEditionStateText.Text =
+            $"실물 {KoreanNumberFormatter.Format(value.PhysicalRecordCount)}권 · " +
+            $"접근 Owner {KoreanNumberFormatter.Format(value.AccessorCount)}명/조직 · " +
+            $"신뢰 {FormatKnowledgeValue(value.ConfidenceAvailability, value.ConfidenceHundredths)}";
     }
 
     private void RebuildSecretRealmRows()
@@ -145,8 +214,20 @@ public partial class ContentWorkspaceView : UserControl
         RealmKnowledgeText.Text = "세계 설정 모드에서는 검증 목적으로 숨은 비경을 확인할 수 있습니다.";
     }
 
+    private void ClearKnowledgeDetails()
+    {
+        KnowledgeEditionTitleText.Text = "판본을 선택해 주세요.";
+        KnowledgeEditionIdentityText.Text = "의미 내용과 물리 서적은 서로 다른 Stable Ref로 관리됩니다.";
+        KnowledgeEditionLineageText.Text = "판본 계보와 실물 binding을 선택한 경우에만 표시합니다.";
+        KnowledgeEditionStateText.Text = "—";
+    }
+
     private void SecretRealmGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
         RenderSelectedRealm();
+
+    private void KnowledgeEditionGrid_SelectionChanged(
+        object sender,
+        SelectionChangedEventArgs e) => RenderSelectedKnowledgeEdition();
 
     private void RealmFilter_Click(object sender, RoutedEventArgs e)
     {
@@ -185,6 +266,10 @@ public partial class ContentWorkspaceView : UserControl
         {
             RebuildSecretRealmRows();
         }
+        if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 2)
+        {
+            RebuildKnowledgeRows();
+        }
         if (ReferenceEquals(e.Source, sender) && IsInitialized)
         {
             ProjectionChanged?.Invoke(this, EventArgs.Empty);
@@ -217,6 +302,35 @@ public partial class ContentWorkspaceView : UserControl
         _ => status.ToString(),
     };
 
+    private static string FormatKnowledgeContent(KnowledgeEditionSnapshot value) =>
+        value.ContentKind switch
+        {
+            KnowledgeContentKind.Technique => $"공법 전승 {value.CatalogOrdinal:000}",
+            KnowledgeContentKind.Spell => $"법술 전승 {value.CatalogOrdinal:000}",
+            KnowledgeContentKind.CraftingMethod => $"제작법 {value.CatalogOrdinal:000}",
+            KnowledgeContentKind.HistoricalRecord => $"역사 기록 {value.CatalogOrdinal:000}",
+            _ => value.ContentId.ToString(),
+        };
+
+    private static string FormatEditionRelation(KnowledgeEditionRelation relation) => relation switch
+    {
+        KnowledgeEditionRelation.Original => "원본",
+        KnowledgeEditionRelation.Copy => "필사",
+        KnowledgeEditionRelation.Revision => "개정",
+        KnowledgeEditionRelation.Summary => "요약",
+        KnowledgeEditionRelation.Translation => "번역",
+        KnowledgeEditionRelation.Tampered => "변조",
+        KnowledgeEditionRelation.Restored => "복원",
+        KnowledgeEditionRelation.Reconstructed => "재구성",
+        _ => relation.ToString(),
+    };
+
+    private static string FormatKnowledgeValue(
+        KnowledgeValueAvailability availability,
+        ushort hundredths) => availability == KnowledgeValueAvailability.Specified
+            ? $"{hundredths / 100d:0.00}"
+            : "DataUnavailable";
+
     private sealed record SecretRealmRow(
         ContentInstanceSnapshot Instance,
         string Id,
@@ -224,4 +338,12 @@ public partial class ContentWorkspaceView : UserControl
         string Location,
         string Discovery,
         string Status);
+
+    private sealed record KnowledgeEditionRow(
+        KnowledgeEditionSnapshot Snapshot,
+        string Content,
+        string Edition,
+        string Relation,
+        string Records,
+        string Accessors);
 }

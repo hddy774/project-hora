@@ -80,6 +80,7 @@ var tests = new (string Name, Action Body)[]
     ("설정용 AI 수·개발자 밸런스 권위·저장 왕복", DeveloperWorldSettingsAndBalancePersistence),
     ("조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26", OrganizationCoreTests.Run),
     ("콘텐츠 Definition·Instance·Provenance·발견·원자 소유권", ContentAuthorityTests.Run),
+    ("서적 Content·Edition·실물·접근·오해·교정 권위", KnowledgeAuthorityTests.Run),
     ("저장 codec 결정론 왕복", SaveCodecRoundTrip),
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),

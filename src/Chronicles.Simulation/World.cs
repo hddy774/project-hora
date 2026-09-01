@@ -14,6 +14,7 @@ public sealed partial class World
     private readonly SpatialAuthorityStore _atlas;
     private readonly OrganizationStore _organizations;
     private readonly ContentAuthorityStore _content;
+    private readonly KnowledgeAuthorityStore _knowledge;
     private readonly CityMarket _market;
     private readonly WorldBalanceConfiguration _balance;
     private readonly PriorityQueue<int, (long Tick, int Agent)> _decisionSchedule = new();
@@ -75,6 +76,10 @@ public sealed partial class World
         _atlas = new SpatialAuthorityStore(population);
         _organizations = new OrganizationStore(population);
         _content = ContentAuthorityStore.CreateInitial(seed);
+        _knowledge = KnowledgeAuthorityStore.CreateInitial(
+            seed,
+            population,
+            _content);
         _market = new CityMarket(population);
         _agentByRank = new int[population];
         _rankByAgent = new int[population];
@@ -137,6 +142,7 @@ public sealed partial class World
     public int TotalRelations => _relations.Count;
     public int TotalOrganizations => _organizations.Count;
     public int TotalContentInstances => _content.InstanceCount;
+    public int TotalKnowledgeEditions => _knowledge.EditionCount;
     public WorldBalanceConfiguration Balance => _balance;
 
     public static World CreateDefault(ulong seed) =>
@@ -412,13 +418,17 @@ public sealed partial class World
         int detailedMapAgentOffset = 0,
         int worldChronicleCount = int.MaxValue,
         int contentSecretRealmOffset = 0,
-        int contentSecretRealmLimit = 100)
+        int contentSecretRealmLimit = 100,
+        int knowledgeEditionOffset = 0,
+        int knowledgeEditionLimit = 100)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(rankingCount);
         ArgumentOutOfRangeException.ThrowIfNegative(eventCount);
         ArgumentOutOfRangeException.ThrowIfNegative(worldChronicleCount);
         ArgumentOutOfRangeException.ThrowIfNegative(contentSecretRealmOffset);
         ArgumentOutOfRangeException.ThrowIfNegative(contentSecretRealmLimit);
+        ArgumentOutOfRangeException.ThrowIfNegative(knowledgeEditionOffset);
+        ArgumentOutOfRangeException.ThrowIfNegative(knowledgeEditionLimit);
         var actualRankingCount = Math.Min(rankingCount, Population);
         var combatPowerRankings = (sections & ObservationSections.CombatPowerRanking) != 0
             ? CreateRankingEntries(
@@ -462,7 +472,12 @@ public sealed partial class World
                 ContentDiscovererRef.Observer,
                 includeHidden: _balance.DeveloperModeEnabled,
                 contentSecretRealmOffset,
-                contentSecretRealmLimit)
+                contentSecretRealmLimit) with
+                {
+                    Knowledge = _knowledge.CreateSnapshot(
+                        knowledgeEditionOffset,
+                        knowledgeEditionLimit),
+                }
             : WorldContentSnapshot.Empty;
 
         var recentEvents = (sections & ObservationSections.WorldLog) != 0
@@ -543,7 +558,9 @@ public sealed partial class World
         return entries;
     }
 
-    public ulong ComputeStateHash() => ComputeStateHashCore(includeContent: true);
+    public ulong ComputeStateHash() => ComputeStateHashCore(
+        includeContent: true,
+        includeKnowledge: true);
 
     /// <summary>
     /// 구 슬롯의 저장 당시 hash 계약을 검증할 때만 사용합니다. 복원된 세계의 현재
@@ -555,10 +572,12 @@ public sealed partial class World
         {
             throw new ArgumentOutOfRangeException(nameof(checkpointSchema));
         }
-        return ComputeStateHashCore(includeContent: checkpointSchema >= 27);
+        return ComputeStateHashCore(
+            includeContent: checkpointSchema >= 27,
+            includeKnowledge: checkpointSchema >= 28);
     }
 
-    private ulong ComputeStateHashCore(bool includeContent)
+    private ulong ComputeStateHashCore(bool includeContent, bool includeKnowledge)
     {
         var hash = 14695981039346656037UL;
         Add(ref hash, Seed);
@@ -592,6 +611,10 @@ public sealed partial class World
         if (includeContent)
         {
             Add(ref hash, _content.ComputeStateHash());
+        }
+        if (includeKnowledge)
+        {
+            Add(ref hash, _knowledge.ComputeStateHash());
         }
         Add(ref hash, (ulong)_lastRankingRefreshTick);
         Add(ref hash, (ulong)_rankingMovementFromTick);

@@ -459,6 +459,18 @@ public sealed class ContentAuthorityStore
         return _instances[index];
     }
 
+    public bool TryGetInstance(ContentInstanceId id, out ContentInstanceCheckpoint instance)
+    {
+        if (_instanceIndexById.TryGetValue(id.Value, out var index))
+        {
+            instance = _instances[index];
+            return true;
+        }
+
+        instance = default;
+        return false;
+    }
+
     public IReadOnlyList<ContentInstanceId> GetByOwner(ContentOwnerRef owner) =>
         _instancesByOwner.TryGetValue(owner, out var values)
             ? values.AsReadOnly()

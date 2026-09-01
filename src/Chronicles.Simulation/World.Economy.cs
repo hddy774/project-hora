@@ -444,6 +444,7 @@ public sealed partial class World
             technique ? WorldEventKind.TechniqueBookPurchased : WorldEventKind.SpellBookPurchased,
             index,
             offered.Hundredths);
+        RecordPurchasedKnowledgeAccess(index, technique);
         return true;
     }
 

@@ -86,7 +86,9 @@ public sealed class GameApplicationSession : IDisposable
         int detailedMapAgentOffset = 0,
         int worldChronicleCount = int.MaxValue,
         int contentSecretRealmOffset = 0,
-        int contentSecretRealmLimit = 100) =>
+        int contentSecretRealmLimit = 100,
+        int knowledgeEditionOffset = 0,
+        int knowledgeEditionLimit = 100) =>
         _runner.GetSnapshot(
             rankingCount,
             eventCount,
@@ -95,7 +97,9 @@ public sealed class GameApplicationSession : IDisposable
             detailedMapAgentOffset,
             worldChronicleCount,
             contentSecretRealmOffset,
-            contentSecretRealmLimit);
+            contentSecretRealmLimit,
+            knowledgeEditionOffset,
+            knowledgeEditionLimit);
 
     public WorldObservation GetObservation(
         AgentId? selectedAgent = null,
@@ -106,7 +110,9 @@ public sealed class GameApplicationSession : IDisposable
         int detailedMapAgentOffset = 0,
         int worldChronicleCount = int.MaxValue,
         int contentSecretRealmOffset = 0,
-        int contentSecretRealmLimit = 100) =>
+        int contentSecretRealmLimit = 100,
+        int knowledgeEditionOffset = 0,
+        int knowledgeEditionLimit = 100) =>
         _runner.GetObservation(
             selectedAgent,
             rankingCount,
@@ -116,7 +122,9 @@ public sealed class GameApplicationSession : IDisposable
             detailedMapAgentOffset,
             worldChronicleCount,
             contentSecretRealmOffset,
-            contentSecretRealmLimit);
+            contentSecretRealmLimit,
+            knowledgeEditionOffset,
+            knowledgeEditionLimit);
 
     public IReadOnlyList<AgentSnapshot> BrowseAgents(int offset, int limit = 500) =>
         _runner.BrowseAgents(offset, limit);

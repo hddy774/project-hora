@@ -16,7 +16,9 @@ public readonly record struct ObservationRequest(
     int DetailedMapAgentOffset = 0,
     int WorldChronicleCount = int.MaxValue,
     int ContentSecretRealmOffset = 0,
-    int ContentSecretRealmLimit = 100);
+    int ContentSecretRealmLimit = 100,
+    int KnowledgeEditionOffset = 0,
+    int KnowledgeEditionLimit = 100);
 
 /// <summary>
 /// Read-only projection boundary over the authoritative simulation world.
@@ -39,7 +41,9 @@ public sealed class WorldObservationQueries
         int detailedMapAgentOffset = 0,
         int worldChronicleCount = int.MaxValue,
         int contentSecretRealmOffset = 0,
-        int contentSecretRealmLimit = 100) =>
+        int contentSecretRealmLimit = 100,
+        int knowledgeEditionOffset = 0,
+        int knowledgeEditionLimit = 100) =>
         _world.CreateSnapshot(
             rankingCount,
             eventCount,
@@ -48,7 +52,9 @@ public sealed class WorldObservationQueries
             detailedMapAgentOffset,
             worldChronicleCount,
             contentSecretRealmOffset,
-            contentSecretRealmLimit);
+            contentSecretRealmLimit,
+            knowledgeEditionOffset,
+            knowledgeEditionLimit);
 
     public AgentSnapshot GetAgent(AgentId agentId) => _world.GetAgentSnapshot(agentId);
 
@@ -62,7 +68,9 @@ public sealed class WorldObservationQueries
             request.DetailedMapAgentOffset,
             request.WorldChronicleCount,
             request.ContentSecretRealmOffset,
-            request.ContentSecretRealmLimit);
+            request.ContentSecretRealmLimit,
+            request.KnowledgeEditionOffset,
+            request.KnowledgeEditionLimit);
         var agentId = request.SelectedAgent ?? world.LeaderId;
         var cultivationSections = CultivationProjectionSections.None;
         if ((request.Sections & ObservationSections.Cultivation) != 0)

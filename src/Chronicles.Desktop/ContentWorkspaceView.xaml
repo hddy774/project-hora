@@ -319,13 +319,13 @@
                                 </Border>
                                 <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
                                     <StackPanel>
-                                        <TextBlock Text="실행 READY" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock Text="실행 준비" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
                                         <TextBlock x:Name="LawReadyCountText" Margin="0,7,0,0" Foreground="{StaticResource AccentBrush}" FontSize="18" FontWeight="SemiBold" />
                                     </StackPanel>
                                 </Border>
                                 <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
                                     <StackPanel>
-                                        <TextBlock Text="Stable LawId" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock Text="안정 법칙 ID" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
                                         <TextBlock x:Name="StableLawCountText" Margin="0,7,0,0" Foreground="{StaticResource NegativeBrush}" FontSize="18" FontWeight="SemiBold" />
                                     </StackPanel>
                                 </Border>

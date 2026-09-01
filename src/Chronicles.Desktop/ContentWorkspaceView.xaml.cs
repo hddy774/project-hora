@@ -217,9 +217,12 @@ public partial class ContentWorkspaceView : UserControl
             : (byte?)null;
         var rows = laws.Candidates.Select(value => new LawCandidateRow(
             value,
-            value.Candidate.ToString(),
+            value.Candidate.Kind == LawCandidateKind.Base
+                ? $"기초 법칙 후보 {value.Candidate.Ordinal + 1:00}"
+                : $"파생 법칙 후보 " +
+                    $"{value.Candidate.Ordinal - LawAuthorityRules.BaseCandidateCount + 1:00}",
             value.Candidate.Kind == LawCandidateKind.Base ? "기초" : "파생",
-            value.MissingEvidence == LawEvidenceFacet.None ? "READY" : "REVIEW",
+            value.MissingEvidence == LawEvidenceFacet.None ? "준비 완료" : "검토 중",
             KoreanNumberFormatter.Format(value.ApplicationCount),
             KoreanNumberFormatter.Format(value.PersonalStateCount))).ToArray();
         LawCandidateGrid.ItemsSource = rows;
@@ -240,19 +243,34 @@ public partial class ContentWorkspaceView : UserControl
 
         var value = row.Snapshot;
         LawCandidateTitleText.Text = row.Candidate;
-        LawCandidateIdentityText.Text =
-            $"{row.Kind} 후보 ordinal {value.Candidate.Ordinal:N0} · Stable LawId 미발급";
+        if (_snapshot.IncludesHidden)
+        {
+            LawCandidateIdentityText.Text =
+                $"{value.Candidate} · {row.Kind} ordinal {value.Candidate.Ordinal:N0} · " +
+                "Stable LawId 미발급";
+            LawCandidateContractText.Text =
+                $"Scope {FormatLawAvailability(value.ScopeAvailability)} · " +
+                $"Relation {FormatLawAvailability(value.RelationAvailability)}\n" +
+                $"실제 적용 {value.ApplicationCount:N0} · 개인 이해 {value.PersonalStateCount:N0} · " +
+                $"세계 판단 {value.WorldJudgmentCount:N0}";
+            LawCandidateEvidenceText.Text = value.MissingEvidence == LawEvidenceFacet.None
+                ? "Adapter·Result·Metric·State I/O·SQLite·Save/Replay 증거가 모두 준비되었습니다."
+                : $"부족 증거: {FormatMissingLawEvidence(value.MissingEvidence)}";
+            LawStatusText.Text =
+                "개발 진단: 객관 Law, 개인 이해, 세계 AI, 천도는 별도 권위입니다. " +
+                "실행 증거 Gate 전에는 후보 효과를 적용하지 않습니다.";
+            return;
+        }
+
+        LawCandidateIdentityText.Text = "객관 법칙 후보 · 안정 법칙 ID는 아직 발급되지 않았습니다.";
         LawCandidateContractText.Text =
-            $"Scope {FormatLawAvailability(value.ScopeAvailability)} · " +
-            $"Relation {FormatLawAvailability(value.RelationAvailability)}\n" +
-            $"실제 적용 {value.ApplicationCount:N0} · 개인 이해 {value.PersonalStateCount:N0} · " +
-            $"세계 판단 {value.WorldJudgmentCount:N0}";
+            $"관찰된 실제 작용 {value.ApplicationCount:N0}회 · " +
+            $"개인 이해 기록 {value.PersonalStateCount:N0}건";
         LawCandidateEvidenceText.Text = value.MissingEvidence == LawEvidenceFacet.None
-            ? "Adapter·Result·Metric·State I/O·SQLite·Save/Replay 증거가 모두 준비되었습니다."
-            : $"부족 증거: {FormatMissingLawEvidence(value.MissingEvidence)}";
+            ? "실행 준비가 검증되었습니다."
+            : "실행 검증 중이며 공개적으로 확정된 작용 범위와 관계가 없습니다.";
         LawStatusText.Text =
-            "객관 Law, 개인의 주장·이해·체득·운용, 세계 AI 판단과 천도 판단은 서로 다른 " +
-            "권위입니다. 모든 실행 증거가 없으므로 현재 후보는 REVIEW이며 효과를 적용하지 않습니다.";
+            "개인의 이론이나 오해가 세계의 객관 법칙으로 자동 승격되지 않습니다.";
     }
 
     private void RenderSelectedRealm()

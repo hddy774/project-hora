@@ -24,6 +24,12 @@ public readonly record struct ObservationRequest(
     int ContentItemOffset = 0,
     int ContentItemLimit = 0);
 
+public sealed record AgentListPage(
+    IReadOnlyList<AgentSnapshot> Agents,
+    int TotalCount,
+    int Offset,
+    int Limit);
+
 /// <summary>
 /// Read-only projection boundary over the authoritative simulation world.
 /// The runtime supplies synchronization; this type never advances or mutates the world.
@@ -135,4 +141,53 @@ public sealed class WorldObservationQueries
 
     public IReadOnlyList<AgentSnapshot> SearchAgents(string? query, int limit = 1_000) =>
         _world.SearchAgents(query, limit);
+
+    public AgentListPage BrowseAgentsById(
+        IReadOnlyList<AgentId> agentIds,
+        string? query,
+        int offset,
+        int limit)
+    {
+        ArgumentNullException.ThrowIfNull(agentIds);
+        ArgumentOutOfRangeException.ThrowIfNegative(offset);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(limit);
+        var normalized = query?.Trim() ?? string.Empty;
+        var validIds = agentIds
+            .Where(item => (uint)item.Value < (uint)_world.Population)
+            .Distinct()
+            .OrderBy(item => item.Value)
+            .ToArray();
+        if (normalized.Length == 0)
+        {
+            var pageAgents = offset >= validIds.Length
+                ? Array.Empty<AgentSnapshot>()
+                : validIds
+                    .Skip(offset)
+                    .Take(limit)
+                    .Select(item => _world.GetAgentSnapshot(
+                        item,
+                        cultivationSections: CultivationProjectionSections.None))
+                    .ToArray();
+            return new AgentListPage(pageAgents, validIds.Length, offset, limit);
+        }
+
+        var matching = new List<AgentSnapshot>(validIds.Length);
+        foreach (var agentId in validIds)
+        {
+            var agent = _world.GetAgentSnapshot(
+                agentId,
+                cultivationSections: CultivationProjectionSections.None);
+            if (normalized.Length == 0
+                || agent.Name.Contains(normalized, StringComparison.OrdinalIgnoreCase)
+                || agent.Id.ToString().Contains(normalized, StringComparison.OrdinalIgnoreCase))
+            {
+                matching.Add(agent);
+            }
+        }
+
+        var page = offset >= matching.Count
+            ? Array.Empty<AgentSnapshot>()
+            : matching.Skip(offset).Take(limit).ToArray();
+        return new AgentListPage(page, matching.Count, offset, limit);
+    }
 }

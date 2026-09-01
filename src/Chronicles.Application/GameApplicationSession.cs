@@ -1,5 +1,6 @@
 using Chronicles.Core;
 using Chronicles.Persistence;
+using Chronicles.Queries;
 using Chronicles.Runtime;
 using Chronicles.Simulation;
 
@@ -149,6 +150,13 @@ public sealed class GameApplicationSession : IDisposable
 
     public IReadOnlyList<AgentSnapshot> SearchAgents(string? query, int limit = 1_000) =>
         _runner.SearchAgents(query, limit);
+
+    public AgentListPage BrowseAgentsById(
+        IReadOnlyList<AgentId> agentIds,
+        string? query,
+        int offset,
+        int limit = 500) =>
+        _runner.BrowseAgentsById(agentIds, query, offset, limit);
 
     public WorldEventFeed DrainWorldEventFeed() => _runner.DrainWorldEventFeed();
 

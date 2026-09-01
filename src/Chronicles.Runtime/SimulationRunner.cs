@@ -219,6 +219,21 @@ public sealed class SimulationRunner : IDisposable
         }
     }
 
+    public AgentListPage BrowseAgentsById(
+        IReadOnlyList<AgentId> agentIds,
+        string? query,
+        int offset,
+        int limit)
+    {
+        var started = BeginPerformanceMeasurement();
+        lock (_worldGate)
+        {
+            var page = _queries.BrowseAgentsById(agentIds, query, offset, limit);
+            RecordObservationMeasurement(started);
+            return page;
+        }
+    }
+
     public WorldEventFeed DrainWorldEventFeed()
     {
         var events = new List<WorldEventNotification>(

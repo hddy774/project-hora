@@ -300,7 +300,7 @@ public sealed partial class World
         bool includeRelations = false,
         bool includeTeaching = false,
         bool includeCausal = false,
-        bool includeCultivationDetail = false)
+        CultivationProjectionSections cultivationSections = CultivationProjectionSections.Pipeline)
     {
         var index = ValidateAgent(agentId);
         var combatAptitudes = _agents.GetContextAptitudes(index, combat: true);
@@ -366,7 +366,7 @@ public sealed partial class World
             GetMaterialHoldingSnapshots(index),
             GetEquippedTreasureSnapshots(index),
             _agents.Power[index],
-            CreateCultivationProjection(index, includeCultivationDetail),
+            CreateCultivationProjection(index, cultivationSections),
             CombatPowerFormula.CalculateDetailed(
                 _agents.RealmStages[index],
                 _agents.RealmLayers[index],

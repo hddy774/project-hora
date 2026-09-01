@@ -56,6 +56,15 @@ public sealed class WorldObservationQueries
             request.DetailedMapAgentOffset,
             request.WorldChronicleCount);
         var agentId = request.SelectedAgent ?? world.LeaderId;
+        var cultivationSections = CultivationProjectionSections.None;
+        if ((request.Sections & ObservationSections.Cultivation) != 0)
+        {
+            cultivationSections |= CultivationProjectionSections.Pipeline;
+        }
+        if ((request.Sections & ObservationSections.CultivationDetail) != 0)
+        {
+            cultivationSections |= CultivationProjectionSections.DetailProgress;
+        }
         var agent = _world.GetAgentSnapshot(
             agentId,
             includeAptitudeDetails:
@@ -66,8 +75,7 @@ public sealed class WorldObservationQueries
                 (request.Sections & ObservationSections.Teaching) != 0,
             includeCausal:
                 (request.Sections & ObservationSections.CausalRuntime) != 0,
-            includeCultivationDetail:
-                (request.Sections & ObservationSections.CultivationDetail) != 0);
+            cultivationSections: cultivationSections);
         var needsChronicle = (request.Sections
             & (ObservationSections.Chronicle | ObservationSections.PersonalCenturyChronicle)) != 0;
         var chronicle = needsChronicle

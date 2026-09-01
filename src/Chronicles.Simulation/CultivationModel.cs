@@ -56,6 +56,15 @@ public enum CultivationLifecyclePhase : byte
     Stable,
 }
 
+[Flags]
+public enum CultivationProjectionSections : byte
+{
+    None = 0,
+    Pipeline = 1 << 0,
+    DetailProgress = 1 << 1,
+    All = Pipeline | DetailProgress,
+}
+
 public enum CultivationBottleneckCause : byte
 {
     None,

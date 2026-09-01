@@ -49,7 +49,9 @@ public sealed partial class World
         var results = new AgentSnapshot[count];
         for (var resultIndex = 0; resultIndex < count; resultIndex++)
         {
-            results[resultIndex] = GetAgentSnapshot(new AgentId(offset + resultIndex));
+            results[resultIndex] = GetAgentSnapshot(
+                new AgentId(offset + resultIndex),
+                cultivationSections: CultivationProjectionSections.None);
         }
 
         return results;
@@ -63,7 +65,9 @@ public sealed partial class World
 
         if (TryParseAgentId(normalized, out var exactAgent))
         {
-            results.Add(GetAgentSnapshot(exactAgent));
+            results.Add(GetAgentSnapshot(
+                exactAgent,
+                cultivationSections: CultivationProjectionSections.None));
             return results;
         }
 
@@ -72,7 +76,9 @@ public sealed partial class World
             if (normalized.Length == 0
                 || _agents.Names[index].Contains(normalized, StringComparison.OrdinalIgnoreCase))
             {
-                results.Add(GetAgentSnapshot(new AgentId(index)));
+                results.Add(GetAgentSnapshot(
+                    new AgentId(index),
+                    cultivationSections: CultivationProjectionSections.None));
             }
         }
 

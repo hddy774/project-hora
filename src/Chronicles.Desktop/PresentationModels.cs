@@ -42,5 +42,4 @@ internal sealed record CultivationDetailProgressRow(
     string Name,
     string Description,
     double ProgressPercent,
-    string ProgressText,
-    string State);
+    string ProgressText);

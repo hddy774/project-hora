@@ -478,9 +478,22 @@ static void CultivationDetailProgressProjection()
             new AgentId(0),
             sections: ObservationSections.None);
         True(hidden.SelectedAgent.Cultivation.DetailProgress is null, "접힌 세부 수행 UI는 DTO 미생성");
+        Equal(0, hidden.SelectedAgent.Cultivation.EntryGates.Count, "수행 탭이 닫히면 입문 Gate DTO 0개");
+        Equal(0, hidden.SelectedAgent.Cultivation.Components.Count, "수행 탭이 닫히면 경지 구성요소 DTO 0개");
+        True(hidden.SelectedAgent.Cultivation.ActionPlan is null, "수행 탭이 닫히면 계획 DTO 미생성");
+        True(
+            hidden.SelectedAgent.Cultivation.FoundationFormation is null,
+            "수행 탭이 닫히면 축기 형성 DTO 미생성");
+        var cultivationVisible = runner.GetObservation(
+            new AgentId(0),
+            sections: ObservationSections.Cultivation);
+        Equal(3, cultivationVisible.SelectedAgent.Cultivation.EntryGates.Count, "수행 탭이 열리면 입문 Gate DTO 생성");
+        True(
+            cultivationVisible.SelectedAgent.Cultivation.DetailProgress is null,
+            "세부 토글이 닫히면 수행 단계 DTO는 계속 미생성");
         var visible = runner.GetObservation(
             new AgentId(0),
-            sections: ObservationSections.CultivationDetail);
+            sections: ObservationSections.Cultivation | ObservationSections.CultivationDetail);
         Equal(
             CultivationDetailProgressRules.StageCount,
             visible.SelectedAgent.Cultivation.DetailProgress!.Stages.Count,
@@ -489,6 +502,30 @@ static void CultivationDetailProgressProjection()
             "범인 입문 준비",
             visible.SelectedAgent.Cultivation.DetailProgress.ScopeKoreanName,
             "미입문자는 연기경으로 위장하지 않음");
+
+        for (var warmup = 0; warmup < 10; warmup++)
+        {
+            _ = runner.GetObservation(new AgentId(0), sections: ObservationSections.None);
+            _ = runner.GetObservation(new AgentId(0), sections: ObservationSections.Cultivation);
+        }
+
+        var hiddenStart = GC.GetAllocatedBytesForCurrentThread();
+        for (var sample = 0; sample < 500; sample++)
+        {
+            _ = runner.GetObservation(new AgentId(0), sections: ObservationSections.None);
+        }
+        var hiddenAllocated = GC.GetAllocatedBytesForCurrentThread() - hiddenStart;
+        var visibleStart = GC.GetAllocatedBytesForCurrentThread();
+        for (var sample = 0; sample < 500; sample++)
+        {
+            _ = runner.GetObservation(new AgentId(0), sections: ObservationSections.Cultivation);
+        }
+        var visibleAllocated = GC.GetAllocatedBytesForCurrentThread() - visibleStart;
+        True(hiddenAllocated < visibleAllocated, "닫힌 수행 탭은 열린 탭보다 적게 할당");
+        Console.WriteLine(
+            $"CULTIVATION DETAIL UI PERF: 닫힘 {hiddenAllocated:N0} B / " +
+            $"수행 탭 {visibleAllocated:N0} B · " +
+            $"할당 감소 {(1m - (hiddenAllocated / (decimal)visibleAllocated)) * 100m:0.0}% (500회)");
     }
 
     var afterAgent = world.GetAgentSnapshot(new AgentId(0));

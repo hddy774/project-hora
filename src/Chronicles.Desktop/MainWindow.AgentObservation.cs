@@ -1285,8 +1285,7 @@ public partial class MainWindow
                 stage.KoreanName,
                 $"{FormatCultivationDetailStageState(stage.State)} · {stage.Description}",
                 stage.ProgressBasisPoints / 100d,
-                $"{stage.ProgressBasisPoints / 100m:0.00}%",
-                FormatCultivationDetailStageState(stage.State)))
+                $"{stage.ProgressBasisPoints / 100m:0.00}%"))
             .ToArray();
     }
 

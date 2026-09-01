@@ -239,6 +239,11 @@ public partial class MainWindow : Window, IDisposable
             return sections;
         }
 
+        if (_agentDetailSection == AgentDetailSection.Cultivation)
+        {
+            sections |= ObservationSections.Cultivation;
+        }
+
         if (_agentDetailSection == AgentDetailSection.Records)
         {
             sections |= _selectedAgent is { } automaticAgent

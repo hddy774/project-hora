@@ -1063,9 +1063,10 @@ public sealed partial class World
 
     private CultivationReadProjection CreateCultivationProjection(
         int index,
-        bool includeDetailProgress)
+        CultivationProjectionSections sections)
     {
         var phase = GetCultivationLifecyclePhase(_agents.CultivationStates[index]);
+        var includePipeline = (sections & CultivationProjectionSections.Pipeline) != 0;
         return new CultivationReadProjection(
             phase,
             _agents.RealmLayers[index],
@@ -1079,14 +1080,14 @@ public sealed partial class World
             _agents.FloorNineCompleted[index],
             _agents.GreatPerfectionAchieved[index],
             _agents.FoundationRoutes[index],
-            CreateEntryGateSnapshots(index),
-            CreateRealmComponentSnapshots(index),
+            includePipeline ? CreateEntryGateSnapshots(index) : [],
+            includePipeline ? CreateRealmComponentSnapshots(index) : [],
             _agents.CultivationTraces[index],
             _agents.CultivationAuthorityRevisions[index],
-            CreateFoundationFormationProjection(index),
+            includePipeline ? CreateFoundationFormationProjection(index) : null,
             _agents.CultivationExperience[index],
-            CreateCultivationPlanSnapshot(index),
-            includeDetailProgress
+            includePipeline ? CreateCultivationPlanSnapshot(index) : null,
+            (sections & CultivationProjectionSections.DetailProgress) != 0
                 ? CultivationDetailProgressRules.Create(
                     phase,
                     _agents.RealmStages[index],

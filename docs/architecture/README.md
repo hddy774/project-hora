@@ -86,6 +86,22 @@ UI는 수행 Expander와 현재 내부 탭이 열렸을 때만 계획 DTO 문구
 바꾸지 않으며 `CultivationDetail` section과 수행 토글이 열렸을 때만 단계 배열과 행을
 만든다. 토글 내부에는 중첩 스크롤을 두지 않는다.
 
+## 0.0.21 콘텐츠·지식·법칙 진입점
+
+- Definition/Instance/Owner/Holder/Provenance: `ContentAuthorityModel.cs`,
+  `ContentAuthorityStore.cs`
+- 판본·물리 기록·접근·Claim·복원 계보: `KnowledgeAuthorityModel.cs`,
+  `KnowledgeAuthorityStore.cs`
+- 객관 후보·개인 이해·세계 AI·천도 분리: `LawAuthorityModel.cs`,
+  `LawAuthorityStore.cs`
+- schema 27~29 codec와 migration: `World.Persistence.cs`
+- 내부 탭별 지연 projection: `WorldObservationQueries.cs`, `ContentWorkspaceView.xaml.cs`
+
+Content, Knowledge, Law는 각각 Simulation 권위 owner가 state hash와 checkpoint를
+소유한다. 콘텐츠 화면은 선택한 내부 탭의 page만 투영한다. 법칙은 실행 증거가 없는
+후보 ref만 보존하며 일반 UI와 세계 설정 진단 정보를 분리한다. 실제 Adapter와 Stable
+LawId는 증거가 생기기 전까지 생성하지 않는다.
+
 ## 검증
 
 ```powershell

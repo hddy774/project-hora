@@ -41,7 +41,7 @@
       "project": "src/Chronicles.Persistence/Chronicles.Persistence.csproj",
       "roots": ["src/Chronicles.Persistence"],
       "allowed_dependencies": ["Core", "Simulation"],
-      "responsibility": "Schema 25 world DB with checkpoint schema 26 SQLite slots, explicit authority codec, candidate validation and atomic file lifecycle."
+      "responsibility": "Schema 25 world DB with checkpoint schema 29 SQLite slots, explicit authority codec, candidate validation and atomic file lifecycle."
     },
     {
       "id": "Presentation",
@@ -95,6 +95,9 @@
     "cultivation_action_plan_runtime": "src/Chronicles.Simulation/World.CultivationPlans.cs",
     "cultivation_detail_progress_projection": "src/Chronicles.Simulation/CultivationDetailProgress.cs",
     "foundation_formation_authority": "src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs",
+    "content_authority": "src/Chronicles.Simulation/ContentAuthorityStore.cs",
+    "knowledge_authority": "src/Chronicles.Simulation/KnowledgeAuthorityStore.cs",
+    "law_candidate_authority": "src/Chronicles.Simulation/LawAuthorityStore.cs",
     "organization_authority": "src/Chronicles.Simulation/OrganizationModel.cs",
     "organization_transition_authority": "src/Chronicles.Simulation/OrganizationTransitions.cs",
     "organization_ai_runtime": "src/Chronicles.Simulation/World.Organizations.cs",
@@ -109,6 +112,7 @@
     "settings_workspace_ui": "src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs",
     "map_observation_ui": "src/Chronicles.Desktop/MapObservationView.xaml.cs",
     "organization_observation_ui": "src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs",
+    "content_observation_ui": "src/Chronicles.Desktop/ContentWorkspaceView.xaml.cs",
     "market_observation_ui": "src/Chronicles.Desktop/MarketObservationView.xaml.cs",
     "vertical_contract_test": "tests/Chronicles.Tests/Program.cs"
   }

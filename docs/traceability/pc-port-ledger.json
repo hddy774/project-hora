@@ -29,11 +29,11 @@
     "Gap/Deferred": "요구 문장 일부 또는 전부를 증명하지 못해 완료로 주장하지 않음."
   },
   "status_counts": {
-    "Port": 121,
+    "Port": 128,
     "PC Adapt": 15,
-    "PC_TEMP_REVIEW": 30,
+    "PC_TEMP_REVIEW": 31,
     "Platform Excluded": 0,
-    "Gap/Deferred": 72
+    "Gap/Deferred": 64
   },
   "rows": [
     {
@@ -8992,18 +8992,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::estimatedSaveDtoBytes",
         "evidence_ref": "FILE::tests/alpha110_content_lifecycle_domain_tests.cpp::test_discover_acquire_consume_craft_and_use"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.21",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/EconomyRules.cs::MarketGoodKind",
-        "FILE::src/Chronicles.Simulation/World.Map.cs::ResolveMonsterHunt"
+        "FILE::src/Chronicles.Simulation/ContentAuthorityStore.cs::ContentAuthorityStore",
+        "FILE::src/Chronicles.Simulation/World.Content.cs::TryDiscoverSecretRealm",
+        "FILE::src/Chronicles.Desktop/ContentWorkspaceView.xaml.cs::ShouldLoadSecretRealmRows",
+        "TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Content authority"
       ],
-      "pc_test_refs": [],
+      "pc_test_refs": [
+        "TEST::콘텐츠 Definition·Instance·Provenance·발견·원자 소유권"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "간략 재료·법보는 존재하지만 비경과 Definition/Instance/Provenance, 고유 실물·창작 전승 authority가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M11-V16",
@@ -9109,20 +9113,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_book_history_domain_tests.cpp::test_copy_damage_alter_read_correct_restore_and_reconstruct"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.21",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingTargetKind",
-        "FILE::src/Chronicles.Simulation/SkillProgressionRules.cs::SkillProgressionRules"
+        "FILE::src/Chronicles.Simulation/KnowledgeAuthorityModel.cs::KnowledgeAuthorityCheckpoint",
+        "FILE::src/Chronicles.Simulation/KnowledgeAuthorityStore.cs::KnowledgeAuthorityStore",
+        "FILE::src/Chronicles.Simulation/ContentAuthorityStore.cs::ContentAuthorityStore",
+        "TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Knowledge authority"
       ],
       "pc_test_refs": [
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::서적 Content·Edition·실물·접근·오해·교정 권위"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Teaching의 지식 변화는 존재하지만 Content/Edition/Physical Copy, 손상·변조·복원과 Knowledge Claim authority가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M12-V02",
@@ -9191,20 +9197,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_book_history_domain_tests.cpp::test_copy_damage_alter_read_correct_restore_and_reconstruct"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.21",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingTargetKind",
-        "FILE::src/Chronicles.Simulation/SkillProgressionRules.cs::SkillProgressionRules"
+        "FILE::src/Chronicles.Simulation/KnowledgeAuthorityModel.cs::KnowledgeEditionRelation",
+        "FILE::src/Chronicles.Simulation/KnowledgeAuthorityModel.cs::KnowledgeRecordBindingCheckpoint",
+        "FILE::src/Chronicles.Simulation/KnowledgeAuthorityModel.cs::KnowledgeAccessCheckpoint",
+        "TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Knowledge authority"
       ],
       "pc_test_refs": [
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::서적 Content·Edition·실물·접근·오해·교정 권위"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Teaching의 지식 변화는 존재하지만 Content/Edition/Physical Copy, 손상·변조·복원과 Knowledge Claim authority가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M12-V04",
@@ -9519,20 +9527,21 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_book_history_domain_tests.cpp::test_copy_damage_alter_read_correct_restore_and_reconstruct"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.21",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingTargetKind",
-        "FILE::src/Chronicles.Simulation/SkillProgressionRules.cs::SkillProgressionRules"
+        "FILE::src/Chronicles.Simulation/KnowledgeAuthorityModel.cs::KnowledgeProvenanceCheckpoint",
+        "FILE::src/Chronicles.Simulation/KnowledgeAuthorityStore.cs::KnowledgeAuthorityStore",
+        "TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Knowledge authority"
       ],
       "pc_test_refs": [
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::서적 Content·Edition·실물·접근·오해·교정 권위"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Teaching의 지식 변화는 존재하지만 Content/Edition/Physical Copy, 손상·변조·복원과 Knowledge Claim authority가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M12-V12",
@@ -9601,20 +9610,21 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_book_history_domain_tests.cpp::test_copy_damage_alter_read_correct_restore_and_reconstruct"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.21",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingTargetKind",
-        "FILE::src/Chronicles.Simulation/SkillProgressionRules.cs::SkillProgressionRules"
+        "FILE::src/Chronicles.Simulation/KnowledgeAuthorityModel.cs::KnowledgeAuthorityCheckpoint",
+        "FILE::src/Chronicles.Simulation/World.Persistence.cs::WorldCheckpoint",
+        "TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::저장·조회·UI"
       ],
       "pc_test_refs": [
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::서적 Content·Edition·실물·접근·오해·교정 권위"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Teaching의 지식 변화는 존재하지만 Content/Edition/Physical Copy, 손상·변조·복원과 Knowledge Claim authority가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M12-V14",
@@ -9683,20 +9693,22 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::causalSnapshotUs",
         "evidence_ref": "FILE::tests/alpha110_book_history_domain_tests.cpp::test_copy_damage_alter_read_correct_restore_and_reconstruct"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.21",
+      "target_version": null,
       "pc_evidence_refs": [
-        "FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingTargetKind",
-        "FILE::src/Chronicles.Simulation/SkillProgressionRules.cs::SkillProgressionRules"
+        "FILE::src/Chronicles.Simulation/KnowledgeAuthorityStore.cs::KnowledgeAuthorityStore",
+        "FILE::src/Chronicles.Core/Identifiers.cs::KnowledgeContentId",
+        "FILE::src/Chronicles.Core/Identifiers.cs::KnowledgeEditionId",
+        "TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Knowledge authority"
       ],
       "pc_test_refs": [
-        "TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%"
+        "TEST::서적 Content·Edition·실물·접근·오해·교정 권위"
       ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "Teaching의 지식 변화는 존재하지만 Content/Edition/Physical Copy, 손상·변조·복원과 Knowledge Claim authority가 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M12-V16",
@@ -9950,15 +9962,25 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_authoritative_world_domains_tests.cpp::test_law_catalog_promotion_requires_all_round_trips_and_is_atomic"
       },
-      "disposition": "Gap/Deferred",
-      "target_port_mode": "Port",
-      "target_version": "0.0.21",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
-      "review_ids": null,
+      "disposition": "PC_TEMP_REVIEW",
+      "target_port_mode": "PC_TEMP_REVIEW",
+      "target_version": null,
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/LawAuthorityModel.cs::LawCandidateCheckpoint",
+        "FILE::src/Chronicles.Simulation/LawAuthorityModel.cs::PersonalLawStateCheckpoint",
+        "FILE::src/Chronicles.Simulation/LawAuthorityModel.cs::LawWorldJudgmentCheckpoint",
+        "TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Law review authority"
+      ],
+      "pc_test_refs": [
+        "TEST::법칙 후보·개인 이해·세계 AI·천도 REVIEW 권위"
+      ],
+      "review_ids": [
+        "PC-TEMP-LAW-CANDIDATE-CATALOG-021",
+        "PC-TEMP-LAW-READINESS-GATE-021"
+      ],
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "세계 AI·천도·법칙·대도 registry와 adapter authority가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M13-V06",
@@ -10094,15 +10116,21 @@
         "benchmark_ref": "BENCHMARK::alpha110_live_runtime_benchmark::benchmarks/alpha110_live_runtime_evidence.hpp::execute_one_year_run_110",
         "evidence_ref": "FILE::tests/alpha110_authoritative_world_domains_tests.cpp::test_law_catalog_promotion_requires_all_round_trips_and_is_atomic"
       },
-      "disposition": "Gap/Deferred",
+      "disposition": "Port",
       "target_port_mode": "Port",
-      "target_version": "0.0.21",
-      "pc_evidence_refs": [],
-      "pc_test_refs": [],
+      "target_version": null,
+      "pc_evidence_refs": [
+        "FILE::src/Chronicles.Simulation/LawAuthorityModel.cs::LawWorldActor",
+        "FILE::src/Chronicles.Simulation/LawAuthorityStore.cs::TryRecordWorldJudgment",
+        "TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Law review authority"
+      ],
+      "pc_test_refs": [
+        "TEST::법칙 후보·개인 이해·세계 AI·천도 REVIEW 권위"
+      ],
       "review_ids": null,
       "excluded_platform_clauses": [],
       "adaptation_note": null,
-      "gap_summary": "세계 AI·천도·법칙·대도 registry와 adapter authority가 PC에 아직 없다."
+      "gap_summary": null
     },
     {
       "requirement_id": "A110-M13-V10",

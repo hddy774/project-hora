@@ -547,7 +547,9 @@ public sealed record CultivationReadProjection(
     IReadOnlyList<RealmComponentSnapshot> Components,
     CultivationTraceState LatestTrace,
     long AuthorityRevision,
-    FoundationFormationSnapshot? FoundationFormation = null);
+    FoundationFormationSnapshot? FoundationFormation = null,
+    long CultivationExperience = 0,
+    CultivationActionPlanSnapshot? ActionPlan = null);
 
 public readonly record struct CultivationCheckpoint(
     int PendingCarryoverWork,
@@ -563,7 +565,10 @@ public readonly record struct CultivationCheckpoint(
     CultivationTraceState LatestTrace,
     ushort[]? EntryGateTempering = null,
     long AuthorityRevision = 0,
-    FoundationFormationCheckpoint? FoundationFormation = null);
+    FoundationFormationCheckpoint? FoundationFormation = null,
+    CultivationActionPlanState? ActionPlan = null,
+    long CultivationExperience = 0,
+    ushort FormationInstallationExperience = 0);
 
 public readonly record struct ProvisionalBalanceDefinition(
     string StableId,

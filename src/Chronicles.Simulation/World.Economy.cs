@@ -29,11 +29,19 @@ public sealed partial class World
         }
         if (roll < missionEnd)
         {
-            if (_market.NeedsSpiritStoneMining)
+            var needsMining = _market.NeedsSpiritStoneMining;
+            var needsMaterials = _market.TryGetRequestedMissionMaterial(out _);
+            if (needsMining && needsMaterials)
+            {
+                return ((index + _agents.ActionsTaken[index]) & 1) == 0
+                    ? AgentActivity.MiningSpiritStones
+                    : AgentActivity.DoingCityMission;
+            }
+            if (needsMining)
             {
                 return AgentActivity.MiningSpiritStones;
             }
-            if (_market.TryGetRequestedMissionMaterial(out _))
+            if (needsMaterials)
             {
                 return AgentActivity.DoingCityMission;
             }
@@ -59,7 +67,23 @@ public sealed partial class World
             : AgentActivity.TradingInCity;
     }
 
-    private void ResolveCityMission(int index)
+    private bool ResolveCityMission(int index)
+    {
+        var completedBefore = _agents.MissionsCompleted[index];
+        for (var month = 0; month < 6; month++)
+        {
+            ResolveCityMissionMonth(index);
+            if (_agents.MissionsCompleted[index] != completedBefore)
+            {
+                break;
+            }
+        }
+
+        return _agents.MissionsCompleted[index] != completedBefore
+            && SchedulePostMissionTrading(index);
+    }
+
+    private void ResolveCityMissionMonth(int index)
     {
         if (_agents.ActiveMissionMaterials[index] == byte.MaxValue)
         {
@@ -72,7 +96,9 @@ public sealed partial class World
         }
 
         var material = (MaterialId)_agents.ActiveMissionMaterials[index];
-        var gathered = 1 + _random.NextInt(3);
+        // PC_TEMP_REVIEW: 6개월 임무 행동은 계약량과 최소 1개의 자유 처분분을
+        // 함께 채집한다. 임무 납품 외 수선자 시장 판매 경로가 실제로 유지된다.
+        var gathered = EconomyRules.MissionRequiredItems + 1 + _random.NextInt(2);
         if (_agents.GetMaterialCount(index, material) > int.MaxValue - gathered)
         {
             return;
@@ -109,9 +135,37 @@ public sealed partial class World
         _totalMissionsCompleted++;
         _agents.ActiveMissionMaterials[index] = byte.MaxValue;
         AddEvent(WorldEventKind.MissionCompleted, index, settlement.TotalSpiritStones);
+        // 계약 요구량을 넘겨 채집한 실물은 같은 도시 방문에서 시장에 별도 판매한다.
+        // 임무 납품과 일반 판매는 source result를 분리해 각각 원자 정산한다.
+        _ = TrySellMaterialToMarket(index, sourcePhase: 12);
     }
 
-    private void ResolveSpiritStoneMining(int index)
+    private bool ResolveSpiritStoneMining(int index)
+    {
+        var completedBefore = _agents.MissionsCompleted[index];
+        for (var month = 0; month < 6; month++)
+        {
+            ResolveSpiritStoneMiningMonth(index);
+        }
+
+        return _agents.MissionsCompleted[index] != completedBefore
+            && SchedulePostMissionTrading(index);
+    }
+
+    private bool SchedulePostMissionTrading(int index)
+    {
+        SetActivityDecision(
+            index,
+            AgentActivity.TradingInCity,
+            AgentGoalKind.AcquireResources,
+            DecisionReasonCode.GrowthBalance,
+            DecisionResolutionKind.Selected,
+            AgentActivity.Cultivating);
+        ScheduleAgent(index, GameCalendar.GetNextMonthStart(Tick).Value);
+        return true;
+    }
+
+    private void ResolveSpiritStoneMiningMonth(int index)
     {
         if (_agents.MissionsCompleted[index] == int.MaxValue
             || _totalMissionsCompleted == int.MaxValue)
@@ -145,6 +199,13 @@ public sealed partial class World
 
     private void ResolveCityTrading(int index)
     {
+        // 임무 예약분을 제외한 잉여 실물은 먼저 시장에 공급한다. 구매만 반복되어
+        // 수선자 간 공급 경로가 멈추는 것을 방지한다.
+        if (TrySellMaterialToMarket(index))
+        {
+            return;
+        }
+
         var choice = _random.NextInt(8);
         var traded = choice switch
         {
@@ -164,7 +225,7 @@ public sealed partial class World
         }
     }
 
-    private bool TrySellMaterialToMarket(int index)
+    private bool TrySellMaterialToMarket(int index, int sourcePhase = 10)
     {
         if (_totalMaterialsSold == int.MaxValue)
         {
@@ -184,7 +245,7 @@ public sealed partial class World
 
             var settlement = _market.SettleSale(
                 index,
-                CreateMarketSourceResultId(10),
+                CreateMarketSourceResultId(sourcePhase),
                 Tick.Value,
                 materialIndex,
                 1,

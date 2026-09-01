@@ -72,6 +72,9 @@ internal sealed partial class AgentStore
         FoundationFormations = new FoundationFormationAuthorityStore(count);
         CultivationTraces = new CultivationTraceState[count];
         CultivationAuthorityRevisions = new long[count];
+        CultivationPlans = new CultivationActionPlanState[count];
+        CultivationExperience = new long[count];
+        FormationInstallationExperience = new ushort[count];
         TechniqueQualities = new ushort[count];
         TechniqueMasteries = new ushort[count];
         TechniqueTrainingExperience = new long[count];
@@ -124,6 +127,7 @@ internal sealed partial class AgentStore
         Array.Fill(LastActionMonths, -1);
         Array.Fill(TeachingTraces, TeachingTraceState.Empty);
         Array.Fill(LearningTraces, TeachingTraceState.Empty);
+        Array.Fill(CultivationPlans, CultivationActionPlanState.Empty);
         for (var index = 0; index < count; index++)
         {
             Chronicles[index] = [];
@@ -186,6 +190,9 @@ internal sealed partial class AgentStore
     public FoundationFormationAuthorityStore FoundationFormations { get; }
     public CultivationTraceState[] CultivationTraces { get; }
     public long[] CultivationAuthorityRevisions { get; }
+    public CultivationActionPlanState[] CultivationPlans { get; }
+    public long[] CultivationExperience { get; }
+    public ushort[] FormationInstallationExperience { get; }
     public ushort[] TechniqueQualities { get; }
     public ushort[] TechniqueMasteries { get; }
     public long[] TechniqueTrainingExperience { get; }
@@ -622,6 +629,9 @@ internal sealed partial class AgentStore
         FoundationFormations.Reset(index);
         CultivationTraces[index] = CultivationTraceState.Empty;
         CultivationAuthorityRevisions[index] = 0;
+        CultivationPlans[index] = CultivationActionPlanState.Empty;
+        CultivationExperience[index] = 0;
+        FormationInstallationExperience[index] = 0;
         Array.Clear(
             CultivationComponentValues,
             index * CultivationRules.RealmComponentSlotCount,

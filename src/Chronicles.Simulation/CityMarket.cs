@@ -183,6 +183,37 @@ internal sealed partial class CityMarket
         }
     }
 
+    public void SeedInitialCultivatorDemand()
+    {
+        var starterDemand = Math.Clamp(_lastSettlementSourceByAgent.Length / 500, 1, 20);
+        Span<int> starterGoods =
+        [
+            EconomyRules.GetPillGoodId(
+                PillKind.Growth,
+                RealmStage.QiRefining),
+            EconomyRules.GetPillGoodId(
+                PillKind.Breakthrough,
+                RealmStage.QiRefining),
+            EconomyRules.GetTreasureGoodId(
+                TreasureSlot.DefenseTreasure,
+                RealmStage.QiRefining),
+            EconomyRules.GetTreasureGoodId(
+                TreasureSlot.AttackTreasure,
+                RealmStage.QiRefining),
+            EconomyRules.TechniqueBookGoodId,
+            EconomyRules.SpellBookGoodId,
+        ];
+        foreach (var goodId in starterGoods)
+        {
+            // 첫 실물 공급 전까지는 12개월 수급 창이 만료되어도 입문 수요가 사라지지
+            // 않게 한다. 첫 생산 뒤에는 일반 수선자의 실제 주문만 가격·생산을 움직인다.
+            if (_supply[goodId] == 0 && _recentDemand[goodId] == 0)
+            {
+                RegisterDemand(goodId, starterDemand);
+            }
+        }
+    }
+
     public long TreasurySpiritStones { get; private set; }
     public long PillsProduced => _pillsProduced;
     public long TreasuresProduced => _treasuresProduced;
@@ -543,7 +574,10 @@ internal sealed partial class CityMarket
             }
 
             var unmet = GetUnmetDemand(goodId) - queued;
-            if (unmet <= 0 || _stock[goodId] + queued >= EconomyRules.CityProductionTargetStock)
+            var projectedStock = _stock[goodId] + queued;
+            if (unmet <= 0
+                || (projectedStock >= EconomyRules.CityProductionTargetStock
+                    && projectedStock >= unmet))
             {
                 continue;
             }
@@ -659,7 +693,8 @@ internal sealed partial class CityMarket
         {
             return MarketProductionState.NoDemand;
         }
-        if (_stock[goodId] >= EconomyRules.CityProductionTargetStock)
+        if (_stock[goodId] >= EconomyRules.CityProductionTargetStock
+            && _stock[goodId] >= GetUnmetDemand(goodId))
         {
             return MarketProductionState.TargetStockReached;
         }

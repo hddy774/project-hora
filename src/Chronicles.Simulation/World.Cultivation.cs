@@ -6,6 +6,37 @@ public sealed partial class World
 {
     private void ResolveCultivation(int index)
     {
+        var pulseMonths = GetCultivationPulseMonths(index);
+        if (pulseMonths > 1
+            && TryAccumulateRealmWorkBulk(index, pulseMonths, out var processedMonths))
+        {
+            AdvanceCultivationPlanProgress(index, processedMonths);
+            return;
+        }
+
+        for (var month = 0; month < pulseMonths; month++)
+        {
+            ResolveCultivationMonth(index);
+            if (_agents.CultivationStates[index] == CultivationState.PreCultivation
+                && GetAgeYears(index) < CultivationRules.EntryAgeYears)
+            {
+                break;
+            }
+
+            AdvanceCultivationPlanProgress(index, 1);
+            if (_agents.CultivationStates[index] is CultivationState.PreparingBreakthrough
+                or CultivationState.PreflightReady
+                or CultivationState.AttemptingBreakthrough
+                or CultivationState.Stabilizing
+                or CultivationState.Completed)
+            {
+                break;
+            }
+        }
+    }
+
+    private void ResolveCultivationMonth(int index)
+    {
         switch (_agents.CultivationStates[index])
         {
             case CultivationState.PreCultivation:
@@ -72,11 +103,13 @@ public sealed partial class World
             + cultivationAptitudes.Constitution.Hundredths) / 2;
         var environmentFactor = CultivationRules.GetEnvironmentFactorBasisPoints(
             _atlas.GetCultivationEnvironmentQualityHundredths(_agents.LocationIds[index]));
+        var planFactor = ConsumeCultivationPlanResourcesAndGetFactor(index);
         var gain = CultivationRules.GetEntryWorkGain(
             aptitude,
             _agents.TechniqueQualities[index],
             body,
-            environmentFactor);
+            environmentFactor,
+            planFactor);
         if (_balance.DeveloperModeEnabled)
         {
             gain = WorldBalanceRules.ApplyPercent(gain, _balance.CultivationWorkPercent);
@@ -216,16 +249,19 @@ public sealed partial class World
             _agents.LocationIds[index]);
         var environmentFactor = CultivationRules.GetEnvironmentFactorBasisPoints(
             environmentQuality);
+        var planFactor = ConsumeCultivationPlanResourcesAndGetFactor(index);
         var gain = CultivationRules.GetMonthlyRealmWorkGain(
             aptitude,
             _agents.TechniqueQualities[index],
             environmentQuality,
-            bodyCondition);
+            bodyCondition,
+            planFactor);
         if (_balance.DeveloperModeEnabled)
         {
             gain = WorldBalanceRules.ApplyPercent(gain, _balance.CultivationWorkPercent);
         }
-        if (_agents.GrowthPills[index] > 0)
+        if (!_agents.CultivationPlans[index].IsActive
+            && _agents.GrowthPills[index] > 0)
         {
             _agents.GrowthPills[index]--;
             gain = checked(gain + Math.Max(1, gain / 2));
@@ -269,6 +305,115 @@ public sealed partial class World
         }
 
         _agents.CultivationStates[index] = CultivationState.PreparingBreakthrough;
+    }
+
+    private bool TryAccumulateRealmWorkBulk(
+        int index,
+        int requestedMonths,
+        out int processedMonths)
+    {
+        processedMonths = 0;
+        var plan = _agents.CultivationPlans[index];
+        if (_agents.CultivationStates[index] != CultivationState.RealmCultivation
+            || _agents.FloorNineCompleted[index]
+            || !plan.IsActive
+            || plan.ResourcePolicy != CultivationResourcePolicy.None)
+        {
+            return false;
+        }
+
+        var before = _agents.CultivationProgress[index];
+        var aptitude = GetInnateAptitudeComposite(index);
+        var bodyCondition = checked(
+            _agents.Health[index] * 10_000 / Math.Max(1, _agents.MaximumHealth[index]));
+        var environmentQuality = _atlas.GetCultivationEnvironmentQualityHundredths(
+            _agents.LocationIds[index]);
+        var environmentFactor = CultivationRules.GetEnvironmentFactorBasisPoints(
+            environmentQuality);
+        var monthlyGain = CultivationRules.GetMonthlyRealmWorkGain(
+            aptitude,
+            _agents.TechniqueQualities[index],
+            environmentQuality,
+            bodyCondition,
+            plan.FrozenConditionFactorBasisPoints);
+        if (_balance.DeveloperModeEnabled)
+        {
+            monthlyGain = WorldBalanceRules.ApplyPercent(
+                monthlyGain,
+                _balance.CultivationWorkPercent);
+        }
+
+        var requirement = GetCultivationRequirement(index);
+        var remaining = Math.Max(1, requirement - before);
+        var monthsToBoundary = checked((remaining + monthlyGain - 1) / monthlyGain);
+        processedMonths = Math.Min(requestedMonths, monthsToBoundary);
+        var totalGain = checked(monthlyGain * processedMonths);
+        var rawAfter = checked(before + totalGain);
+        var after = Math.Min(requirement, rawAfter);
+        var carryover = Math.Max(0, rawAfter - requirement);
+        _agents.CultivationProgress[index] = after;
+        _agents.PendingCultivationWork[index] = carryover;
+        _agents.LastCultivationWorkBefore[index] = before;
+        _agents.LastCultivationWorkGain[index] = totalGain;
+        GrowRealmComponentsBulk(index, monthlyGain, processedMonths, requirement);
+        CommitCultivationTrace(
+            index,
+            CultivationFormulaKind.ProgressAccumulation,
+            new CultivationTraceState(
+                Tick.Value,
+                CultivationRules.FormulaRevision,
+                BreakthroughClass.None,
+                BreakthroughOutcome.None,
+                _agents.RealmStages[index],
+                _agents.RealmLayers[index],
+                _agents.RealmLayers[index],
+                before,
+                totalGain,
+                after,
+                requirement,
+                carryover,
+                0,
+                0,
+                0,
+                -1,
+                CultivationBottleneckCause.None,
+                EnvironmentFactorBasisPoints: environmentFactor,
+                EnvironmentAvailability: CultivationValueAvailability.Actual));
+        if (after >= requirement)
+        {
+            _agents.CultivationStates[index] = CultivationState.PreparingBreakthrough;
+        }
+
+        return true;
+    }
+
+    private void GrowRealmComponentsBulk(
+        int index,
+        int monthlyWorkGain,
+        int months,
+        int requirement)
+    {
+        var components = CultivationRules.GetComponents(_agents.RealmStages[index]);
+        if (components.Count == 0)
+        {
+            return;
+        }
+
+        var monthlyGrowth = Math.Max(
+            1,
+            checked(monthlyWorkGain * 1_200 / Math.Max(1, requirement)));
+        var growth = checked(monthlyGrowth * months);
+        for (var component = 0; component < components.Count; component++)
+        {
+            var current = _agents.GetCultivationComponentValue(index, component);
+            var recomputedLimit = CalculateComponentLimit(index, component);
+            var effectiveLimit = Math.Max(current, recomputedLimit);
+            _agents.SetCultivationComponent(
+                index,
+                component,
+                Math.Min(effectiveLimit, checked(current + growth)),
+                effectiveLimit);
+        }
     }
 
     private void ResolveStableState(int index)
@@ -931,7 +1076,9 @@ public sealed partial class World
         CreateRealmComponentSnapshots(index),
         _agents.CultivationTraces[index],
         _agents.CultivationAuthorityRevisions[index],
-        CreateFoundationFormationProjection(index));
+        CreateFoundationFormationProjection(index),
+        _agents.CultivationExperience[index],
+        CreateCultivationPlanSnapshot(index));
 
     private FoundationFormationSnapshot? CreateFoundationFormationProjection(int index)
     {

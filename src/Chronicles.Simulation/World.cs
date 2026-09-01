@@ -209,30 +209,58 @@ public sealed partial class World
             _agents.LastActionMonths[agentIndex] = actionMonth;
             _agents.LastActionTicks[agentIndex] = dueTick;
             _agents.ActionsTaken[agentIndex] = checked(_agents.ActionsTaken[agentIndex] + 1);
+            if (_agents.Activities[agentIndex] == AgentActivity.Cultivating)
+            {
+                EnsureCultivationPlan(agentIndex);
+            }
             var resolvedActivity = _agents.Activities[agentIndex];
-            var enteredCultivationBefore = HasEnteredCultivation(agentIndex);
-            var realmRankingScoreBefore = GetRealmRankingScore(agentIndex);
-            var spiritStonesBefore = _agents.SpiritStones[agentIndex];
-            var powerInputsBefore = _agents.GetPowerInputSignature(agentIndex);
+            var tracksRealmRanking = resolvedActivity == AgentActivity.Cultivating;
+            var enteredCultivationBefore = tracksRealmRanking && HasEnteredCultivation(agentIndex);
+            var realmRankingScoreBefore = tracksRealmRanking
+                ? GetRealmRankingScore(agentIndex)
+                : 0;
+            var tracksWealthRanking = CanChangeSpiritStoneBalance(resolvedActivity);
+            var spiritStonesBefore = tracksWealthRanking
+                ? _agents.SpiritStones[agentIndex]
+                : 0;
+            var tracksPowerInputs = CanChangePowerInputsWithoutInternalRecalculation(
+                resolvedActivity);
+            var powerInputsBefore = tracksPowerInputs
+                ? _agents.GetPowerInputSignature(agentIndex)
+                : default;
             var alreadyScheduled = ResolveActivity(agentIndex);
             TryResolveBottleneckAfterAction(agentIndex, resolvedActivity);
-            ObserveSocialInteraction(agentIndex, resolvedActivity);
-            AddPersonalActionLog(agentIndex, resolvedActivity);
             MarkActionRankingChanges(
                 agentIndex,
+                tracksRealmRanking,
                 enteredCultivationBefore,
                 realmRankingScoreBefore,
+                tracksWealthRanking,
                 spiritStonesBefore);
+            if (tracksPowerInputs
+                && powerInputsBefore != _agents.GetPowerInputSignature(agentIndex))
+            {
+                RecalculatePowerAndUpdatePeak(agentIndex);
+            }
+            if (resolvedActivity == AgentActivity.Cultivating
+                && TryContinueCultivationPlan(agentIndex))
+            {
+                var plan = _agents.CultivationPlans[agentIndex];
+                if (plan.CompletedMonths <= 1 || plan.CompletedMonths % 12 == 0)
+                {
+                    AddPersonalActionLog(agentIndex, resolvedActivity);
+                }
+                continue;
+            }
+
+            ObserveSocialInteraction(agentIndex, resolvedActivity);
+            AddPersonalActionLog(agentIndex, resolvedActivity);
             if (alreadyScheduled)
             {
                 continue;
             }
 
             SelectNextActivity(agentIndex);
-            if (powerInputsBefore != _agents.GetPowerInputSignature(agentIndex))
-            {
-                RecalculatePowerAndUpdatePeak(agentIndex);
-            }
             var nextTick = checked(dueTick + CalculateActivityDuration(agentIndex));
             ScheduleAgent(agentIndex, nextTick);
         }
@@ -250,6 +278,9 @@ public sealed partial class World
 
     private void AdvanceCityIndustry(long currentMonth)
     {
+        // 월드 생성 경로에서만 초기 수선자 수요를 투입한다. CityMarket 단위 계약과
+        // 복원된 거래 원장은 외부에서 임의 수요가 추가되지 않는다.
+        _market.SeedInitialCultivatorDemand();
         var pillsBefore = _market.PillsProduced;
         var treasuresBefore = _market.TreasuresProduced;
         _market.AdvanceIndustry(currentMonth);
@@ -854,6 +885,30 @@ public sealed partial class World
             Add(ref hash, (byte)trace.LawUnderstandingAvailability);
             Add(ref hash, (byte)trace.LuckFateAvailability);
             Add(ref hash, (ulong)_agents.CultivationAuthorityRevisions[index]);
+            var cultivationPlan = _agents.CultivationPlans[index];
+            Add(ref hash, (ulong)cultivationPlan.AuthorityRevision);
+            Add(ref hash, (ulong)cultivationPlan.StartedTick);
+            Add(ref hash, (ulong)cultivationPlan.PlannedEndTick);
+            Add(ref hash, (ulong)cultivationPlan.PlannedMonths);
+            Add(ref hash, (ulong)cultivationPlan.CompletedMonths);
+            Add(ref hash, cultivationPlan.LocationId);
+            Add(ref hash, (byte)cultivationPlan.Intensity);
+            Add(ref hash, (byte)cultivationPlan.ResourcePolicy);
+            Add(ref hash, (ulong)cultivationPlan.SpiritStoneBudget);
+            Add(ref hash, (ulong)cultivationPlan.SpiritStonesConsumed);
+            Add(ref hash, (ulong)cultivationPlan.GrowthPillBudget);
+            Add(ref hash, (ulong)cultivationPlan.GrowthPillsConsumed);
+            Add(ref hash, (byte)cultivationPlan.FormationSupport);
+            Add(ref hash, cultivationPlan.FormationKnowledgeHundredths);
+            Add(ref hash, cultivationPlan.FormationInstallationExperienceHundredths);
+            Add(ref hash, cultivationPlan.FormationInstallationSucceeded ? 1UL : 0UL);
+            Add(ref hash, (byte)cultivationPlan.TeachingRole);
+            Add(ref hash, unchecked((ulong)(long)cultivationPlan.TeachingPartnerAgent));
+            Add(ref hash, (ulong)cultivationPlan.FrozenTeachingBonusBasisPoints);
+            Add(ref hash, (ulong)cultivationPlan.FrozenConditionFactorBasisPoints);
+            Add(ref hash, cultivationPlan.IsActive ? 1UL : 0UL);
+            Add(ref hash, (ulong)_agents.CultivationExperience[index]);
+            Add(ref hash, _agents.FormationInstallationExperience[index]);
             Add(ref hash, _agents.TechniqueQualities[index]);
             Add(ref hash, _agents.TechniqueMasteries[index]);
             Add(ref hash, (ulong)_agents.TechniqueTrainingExperience[index]);
@@ -975,8 +1030,7 @@ public sealed partial class World
                 ResolveReincarnationStage(index);
                 return true;
             case AgentActivity.DoingCityMission:
-                ResolveCityMission(index);
-                return false;
+                return ResolveCityMission(index);
             case AgentActivity.TradingInCity:
                 ResolveCityTrading(index);
                 return false;
@@ -992,8 +1046,7 @@ public sealed partial class World
             case AgentActivity.HuntingMonster:
                 return ResolveMonsterHunt(index);
             case AgentActivity.MiningSpiritStones:
-                ResolveSpiritStoneMining(index);
-                return false;
+                return ResolveSpiritStoneMining(index);
             case AgentActivity.Teaching:
                 ResolveTeaching(index);
                 return false;
@@ -1018,17 +1071,27 @@ public sealed partial class World
             effectBasisPoints);
         _agents.TechniqueTrainingExperience[index] = Math.Min(
             SkillProgressionRules.MaximumExperience,
-            checked(_agents.TechniqueTrainingExperience[index] + experienceGain));
+            checked(_agents.TechniqueTrainingExperience[index] + (experienceGain * 6L)));
         _agents.TechniqueMasteries[index] = SkillProgressionRules.GetMasteryHundredths(
             _agents.TechniqueTrainingExperience[index]);
-        var chance = SkillProgressionRules.GetEnlightenmentChanceBasisPoints(
-            comprehension,
-            _agents.TechniqueUnderstanding[index]);
-        if (_agents.TechniqueUnderstanding[index] < SkillProgressionRules.MaximumHundredths
-            && _random.Chance(chance))
+        for (var month = 0; month < 6; month++)
         {
+            var understanding = _agents.TechniqueUnderstanding[index];
+            if (understanding >= SkillProgressionRules.MaximumHundredths)
+            {
+                break;
+            }
+
+            var chance = SkillProgressionRules.GetEnlightenmentChanceBasisPoints(
+                comprehension,
+                understanding);
+            if (!_random.Chance(chance))
+            {
+                continue;
+            }
+
             _agents.TechniqueUnderstanding[index] = SkillProgressionRules.ApplyUnderstandingGain(
-                _agents.TechniqueUnderstanding[index],
+                understanding,
                 comprehension,
                 effectBasisPoints);
             AddEvent(
@@ -1056,17 +1119,27 @@ public sealed partial class World
             effectBasisPoints);
         _agents.SpellTrainingExperience[index] = Math.Min(
             SkillProgressionRules.MaximumExperience,
-            checked(_agents.SpellTrainingExperience[index] + experienceGain));
+            checked(_agents.SpellTrainingExperience[index] + (experienceGain * 6L)));
         _agents.SpellMasteries[index] = SkillProgressionRules.GetMasteryHundredths(
             _agents.SpellTrainingExperience[index]);
-        var chance = SkillProgressionRules.GetEnlightenmentChanceBasisPoints(
-            comprehension,
-            _agents.SpellUnderstanding[index]);
-        if (_agents.SpellUnderstanding[index] < SkillProgressionRules.MaximumHundredths
-            && _random.Chance(chance))
+        for (var month = 0; month < 6; month++)
         {
+            var understanding = _agents.SpellUnderstanding[index];
+            if (understanding >= SkillProgressionRules.MaximumHundredths)
+            {
+                break;
+            }
+
+            var chance = SkillProgressionRules.GetEnlightenmentChanceBasisPoints(
+                comprehension,
+                understanding);
+            if (!_random.Chance(chance))
+            {
+                continue;
+            }
+
             _agents.SpellUnderstanding[index] = SkillProgressionRules.ApplyUnderstandingGain(
-                _agents.SpellUnderstanding[index],
+                understanding,
                 comprehension,
                 effectBasisPoints);
             AddEvent(
@@ -1189,10 +1262,15 @@ public sealed partial class World
 
         var rank = _rankByAgent[index];
         var sinceLastCombat = Tick.Value - _agents.LastCombatTicks[index];
-        var challengeChance = sinceLastCombat >= GameCalendar.TicksPerYear * 2
-            ? 24
+        var challengeChance = Population <= 2
+            && sinceLastCombat >= GameCalendar.TicksPerYear
+                ? 100
+            : sinceLastCombat >= GameCalendar.TicksPerYear * 5
+                ? 60
+            : sinceLastCombat >= GameCalendar.TicksPerYear * 2
+                ? 32
             : sinceLastCombat >= GameCalendar.TicksPerYear
-                ? 8
+                ? 12
                 : 0;
         if (_balance.DeveloperModeEnabled && challengeChance > 0)
         {
@@ -1262,6 +1340,10 @@ public sealed partial class World
         DecisionResolutionKind resolution,
         AgentActivity? alternativeActivity = null)
     {
+        if (activity != AgentActivity.Cultivating)
+        {
+            FinishCultivationPlan(index);
+        }
         _agents.Activities[index] = activity;
         _agents.RecordDecision(
             index,
@@ -1318,22 +1400,34 @@ public sealed partial class World
         return _agents.Activities[index] switch
         {
             AgentActivity.Cultivating => Math.Max(30, 145 - ((GetDerivedQualityEffect(index, AptitudeDerivedAbility.SpiritualRootCultivation) + GetDerivedQualityEffect(index, AptitudeDerivedAbility.ComprehensionLearning)) / 2)),
-            AgentActivity.TrainingTechnique => Math.Max(34, 150 - ((GetDerivedQualityEffect(index, AptitudeDerivedAbility.BoneCultivation) + GetDerivedQualityEffect(index, AptitudeDerivedAbility.ComprehensionLearning)) / 2)),
-            AgentActivity.TrainingSpell => Math.Max(34, 150 - ((GetDerivedQualityEffect(index, AptitudeDerivedAbility.SpiritualRootCultivation) + GetDerivedQualityEffect(index, AptitudeDerivedAbility.ComprehensionLearning)) / 2)),
+            AgentActivity.TrainingTechnique => GetPlannedActivityDurationTicks(6),
+            AgentActivity.TrainingSpell => GetPlannedActivityDurationTicks(6),
             AgentActivity.Recovering => Math.Max(24, 120 - GetDerivedQualityEffect(index, AptitudeDerivedAbility.ConstitutionCultivation)),
             AgentActivity.SeekingChallenge => 20,
             AgentActivity.Fighting => CalculateCombatActionDuration(index),
             AgentActivity.Reincarnating => GameCalendar.TicksPerYear,
-            AgentActivity.DoingCityMission => 80,
+            AgentActivity.DoingCityMission => GetPlannedActivityDurationTicks(6),
             AgentActivity.TradingInCity => 45,
-            AgentActivity.CraftingTreasure => 110,
-            AgentActivity.CraftingPill => 90,
+            AgentActivity.CraftingTreasure => GetPlannedActivityDurationTicks(6),
+            AgentActivity.CraftingPill => GetPlannedActivityDurationTicks(3),
             AgentActivity.Traveling => CalculateTravelDuration(index),
             AgentActivity.HuntingMonster => CalculateMonsterHuntDuration(index),
-            AgentActivity.MiningSpiritStones => 90,
-            AgentActivity.Teaching => 120,
+            AgentActivity.MiningSpiritStones => GetPlannedActivityDurationTicks(6),
+            AgentActivity.Teaching => GetPlannedActivityDurationTicks(6),
             _ => throw new InvalidOperationException("알 수 없는 AI 행동입니다."),
         };
+    }
+
+    private long GetPlannedActivityDurationTicks(long months)
+    {
+        var boundedMonths = Math.Clamp(
+            months,
+            CultivationPlanRules.MinimumPlanMonths,
+            CultivationPlanRules.MaximumPlanMonths);
+        return checked(
+            GameCalendar.GetMonthStart(checked(
+                GameCalendar.GetMonthIndex(Tick) + boundedMonths)).Value
+            - Tick.Value);
     }
 
     private void RefreshRankings(bool recordLeaderChange)
@@ -1514,21 +1608,40 @@ public sealed partial class World
 
     private void MarkActionRankingChanges(
         int index,
+        bool tracksRealmRanking,
         bool enteredCultivationBefore,
         long realmRankingScoreBefore,
+        bool tracksWealthRanking,
         long spiritStonesBefore)
     {
-        if (enteredCultivationBefore != HasEnteredCultivation(index)
-            || realmRankingScoreBefore != GetRealmRankingScore(index))
+        if (tracksRealmRanking
+            && (enteredCultivationBefore != HasEnteredCultivation(index)
+                || realmRankingScoreBefore != GetRealmRankingScore(index)))
         {
             MarkRealmRankingDirty();
         }
 
-        if (spiritStonesBefore != _agents.SpiritStones[index])
+        if (tracksWealthRanking && spiritStonesBefore != _agents.SpiritStones[index])
         {
             MarkWealthRankingDirty();
         }
     }
+
+    private static bool CanChangeSpiritStoneBalance(AgentActivity activity) => activity is
+        AgentActivity.Cultivating
+        or AgentActivity.DoingCityMission
+        or AgentActivity.TradingInCity
+        or AgentActivity.CraftingTreasure
+        or AgentActivity.CraftingPill
+        or AgentActivity.MiningSpiritStones;
+
+    private static bool CanChangePowerInputsWithoutInternalRecalculation(
+        AgentActivity activity) => activity is
+        AgentActivity.Cultivating
+        or AgentActivity.TrainingTechnique
+        or AgentActivity.TrainingSpell
+        or AgentActivity.TradingInCity
+        or AgentActivity.HuntingMonster;
 
     private void MarkCombatPowerRankingDirty() => _combatPowerRankingCache.MarkDirty();
 

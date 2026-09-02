@@ -230,7 +230,9 @@ $guide = @"
 - 저장/불러오기 버튼으로 현재 세계 보존
 
 저장 위치:
-%LocalAppData%\ChroniclesOfMyriadImmortalPaths\saves\default\world.db
+%LocalAppData%\ChroniclesOfMyriadImmortalPaths\saves\<slot-id>\world.db
+
+저장 작업공간에서 default와 slot-02~slot-09의 9개 독립 슬롯을 사용할 수 있습니다.
 
 기존 world.cmip 파일은 변경하지 않으며 새 버전과 호환되지 않습니다.
 

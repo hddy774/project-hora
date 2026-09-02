@@ -86,6 +86,7 @@
     "agent_progression_asset_store": "src/Chronicles.Simulation/AgentStore.ProgressionAssets.cs",
     "reincarnation_authority": "src/Chronicles.Simulation/ReincarnationModel.cs",
     "sparse_relations": "src/Chronicles.Simulation/RelationModel.cs",
+    "relation_checkpoint_authority": "src/Chronicles.Simulation/RelationStore.Persistence.cs",
     "world_atlas_authority": "src/Chronicles.Simulation/WorldAtlasModel.cs",
     "spatial_authority_store": "src/Chronicles.Simulation/SpatialAuthorityStore.cs",
     "market_contract_authority": "src/Chronicles.Simulation/MarketAuthorityModel.cs",

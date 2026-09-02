@@ -15,6 +15,11 @@ internal static class RuntimeHundredSpeedSoakTests
         var samples = new ConcurrentQueue<PulseSample>();
         Exception? fault = null;
         using var runner = new SimulationRunner(World.CreateDefault(0x23_00_23UL));
+        var initialTick = runner.GetSnapshot(
+            rankingCount: 1,
+            eventCount: 0,
+            sections: ObservationSections.None,
+            worldChronicleCount: 0).Tick.Value;
         runner.SetPerformanceDiagnosticsEnabled(true);
         runner.SetSpeed(100);
         long lastPulse = 0;
@@ -45,6 +50,11 @@ internal static class RuntimeHundredSpeedSoakTests
             Thread.Sleep(50);
         }
         runner.SetPaused(true);
+        var finalTick = runner.GetSnapshot(
+            rankingCount: 1,
+            eventCount: 0,
+            sections: ObservationSections.None,
+            worldChronicleCount: 0).Tick.Value;
 
         var measured = samples
             .Where(sample => sample.ElapsedSeconds >= warmupSeconds)
@@ -62,13 +72,21 @@ internal static class RuntimeHundredSpeedSoakTests
             / measured.Length;
         var maximumBacklog = measured.Max(sample => sample.BacklogMilliseconds);
         var finalBacklog = measured[^1].BacklogMilliseconds;
+        var expectedTicks = checked(
+            (long)durationSeconds
+            * SimulationPacing.GetTicksPerPulse(100)
+            * 1_000L
+            / SimulationPacing.PulseMilliseconds);
+        var advancedTicks = checked(finalTick - initialTick);
+        var progressPercent = advancedTicks * 100d / expectedTicks;
 
         Console.WriteLine(
             $"100X {(enforceSustainedBudget ? "SOAK" : "SMOKE")}: " +
             $"{durationSeconds:N0}s · warm-up {warmupSeconds:N0}s · " +
             $"표본 {measured.Length:N0} · p95 {p95:N2} ms · p99 {p99:N2} ms · " +
             $"정상 {healthyPercent:N2}% · backlog 최대/최종 " +
-            $"{maximumBacklog:N2}/{finalBacklog:N2} ms");
+            $"{maximumBacklog:N2}/{finalBacklog:N2} ms · " +
+            $"진행 {advancedTicks:N0}/{expectedTicks:N0} ticks ({progressPercent:N2}%)");
         if (enforceSustainedBudget)
         {
             TestAssert.True(p95 <= 80d,
@@ -77,6 +95,8 @@ internal static class RuntimeHundredSpeedSoakTests
                 $"100배속 pulse p99 100ms 예산: {p99:N2}ms");
             TestAssert.True(healthyPercent >= 95d,
                 $"100배속 정상 상태 95% 예산: {healthyPercent:N2}%");
+            TestAssert.True(progressPercent >= 95d,
+                $"100배속 실제 진행률 95% 예산: {progressPercent:N2}%");
         }
         TestAssert.True(finalBacklog <= 1_000d,
             $"100배속 backlog 1초 이내 해소: {finalBacklog:N2}ms");

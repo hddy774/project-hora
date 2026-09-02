@@ -33,6 +33,13 @@ internal static class CultivationRulesTests
                 .Distinct()
                 .Count() > 1,
             "100배속 월 표시 변화");
+        Equal(3, SimulationPacing.GetPulsesPerObservationInvalidation(100),
+            "100배속 관찰 간격은 월 위상을 고정하지 않음");
+        True(
+            SimulationPacing.GetTicksPerPulse(100)
+                * SimulationPacing.GetPulsesPerObservationInvalidation(100)
+                % GameCalendar.TicksPerYear != 0,
+            "100배속 실제 UI 관찰 보폭은 정확히 1년이면 안 됨");
 
         var expectedLifespans = new long[]
         {
@@ -754,4 +761,3 @@ internal static class CultivationRulesTests
             "대경지 돌파 영구 연대기");
     }
 }
-

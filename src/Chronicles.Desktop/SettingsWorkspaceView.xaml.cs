@@ -272,14 +272,19 @@ public partial class SettingsWorkspaceView : UserControl
         SimulationTimingText.Text = $"최근 {snapshot.LastSimulationMilliseconds:0.00} ms";
         SimulationAverageText.Text =
             $"평균 {snapshot.AverageSimulationMilliseconds:0.00} · 최대 {snapshot.MaximumSimulationMilliseconds:0.00} ms";
-        ObservationTimingText.Text = $"최근 {snapshot.LastObservationMilliseconds:0.00} ms";
-        ObservationAverageText.Text =
-            $"평균 {snapshot.AverageObservationMilliseconds:0.00} · 최대 {snapshot.MaximumObservationMilliseconds:0.00} ms";
+        ObservationTimingText.Text = snapshot.ObservationCount == 0
+            ? "활성 조회 없음"
+            : $"최근 {snapshot.LastObservationMilliseconds:0.00} ms";
+        ObservationAverageText.Text = snapshot.ObservationCount == 0
+            ? "닫힌 관찰 화면 query 0회"
+            : $"평균 {snapshot.AverageObservationMilliseconds:0.00} · 최대 {snapshot.MaximumObservationMilliseconds:0.00} ms";
         BacklogText.Text = $"{snapshot.EstimatedBacklogMilliseconds:0.00} ms";
         BacklogText.Foreground = (Brush)FindResource(
-            snapshot.EstimatedBacklogMilliseconds > 0.01
+            snapshot.EstimatedBacklogMilliseconds > snapshot.PulseBudgetMilliseconds
                 ? "DangerBrush"
-                : "PositiveBrush");
+                : snapshot.EstimatedBacklogMilliseconds > 5d
+                    ? "AccentBrush"
+                    : "PositiveBrush");
         PulseBudgetText.Text =
             $"예산 {snapshot.PulseBudgetMilliseconds} ms · {snapshot.Speed}× · " +
             (snapshot.IsPaused ? "일시정지" : "진행");

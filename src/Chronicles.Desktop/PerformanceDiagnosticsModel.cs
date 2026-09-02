@@ -187,19 +187,21 @@ internal sealed class PerformanceDiagnosticsHistory
 
     public static PerformanceHealthLevel Evaluate(RuntimePerformanceSnapshot snapshot)
     {
-        if (snapshot.SimulationPulseCount == 0 || snapshot.ObservationCount == 0)
+        if (snapshot.SimulationPulseCount == 0)
         {
             return PerformanceHealthLevel.Measuring;
         }
+        var hasObservationSample = snapshot.ObservationCount != 0;
         if (snapshot.EstimatedBacklogMilliseconds > snapshot.PulseBudgetMilliseconds
             || snapshot.LastSimulationMilliseconds > snapshot.PulseBudgetMilliseconds * 1.25d
-            || snapshot.LastObservationMilliseconds > 50d)
+            || (hasObservationSample && snapshot.LastObservationMilliseconds > 50d))
         {
             return PerformanceHealthLevel.Overloaded;
         }
         if (snapshot.EstimatedBacklogMilliseconds > 5d
             || snapshot.LastSimulationMilliseconds > snapshot.PulseBudgetMilliseconds * 0.75d
-            || snapshot.LastObservationMilliseconds > ObservationBudgetMilliseconds)
+            || (hasObservationSample
+                && snapshot.LastObservationMilliseconds > ObservationBudgetMilliseconds))
         {
             return PerformanceHealthLevel.Warning;
         }

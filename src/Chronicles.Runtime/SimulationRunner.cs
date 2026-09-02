@@ -562,7 +562,8 @@ public sealed class SimulationRunner : IDisposable
                     nextPulse = checked(Stopwatch.GetTimestamp() + pulseStopwatchTicks);
                 }
 
-                if (++pulsesSinceInvalidation >= SimulationPacing.PulsesPerObservationInvalidation)
+                if (++pulsesSinceInvalidation
+                    >= SimulationPacing.GetPulsesPerObservationInvalidation(Speed))
                 {
                     pulsesSinceInvalidation = 0;
                     PublishObservationInvalidated();
@@ -779,5 +780,17 @@ public static class SimulationPacing
         }
 
         return checked(BaseTicksPerPulse * speed);
+    }
+
+    public static int GetPulsesPerObservationInvalidation(int speed)
+    {
+        if (!RuntimeSpeedRules.IsSupported(speed))
+        {
+            throw new ArgumentOutOfRangeException(nameof(speed));
+        }
+
+        // 100x에서 두 pulse는 정확히 1년이라 월/일이 같은 위상에 고정된다.
+        // 세 pulse(1.5년)는 UI 작업량도 줄이면서 월 변화를 계속 보여 준다.
+        return speed == 100 ? 3 : PulsesPerObservationInvalidation;
     }
 }

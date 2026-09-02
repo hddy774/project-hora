@@ -150,6 +150,7 @@ var tests = new (string Name, Action Body)[]
     ("손상 저장 거부", CorruptedSaveIsRejected),
     ("원자 저장 파일 왕복", AtomicSaveFileRoundTrip),
     ("schema 25→26 SQLite 다중 슬롯·후보 원자 복원", SqliteSlotPersistenceTests.Run),
+    ("저장 실패 뒤 world·일시정지 보존과 다른 슬롯 재저장", SaveFailureRecoveryTests.Run),
     ("모든 로그 파일 5MiB 상한·기존 part 재검사·UTF-8 분할", BoundedLogFilesNeverExceedFiveMiB),
     ("로그 종류·자동 수동·인물별 출력 경로 계약", LogOutputDirectoryContract),
     ("10,000명 로컬 실시간 성능 예산", DefaultWorldPerformanceBudget),

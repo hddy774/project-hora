@@ -13,13 +13,15 @@ namespace Chronicles.Application;
 public sealed class GameApplicationSession : IDisposable
 {
     private readonly SimulationRunner _runner;
+    private string _saveRoot;
     private readonly object _legacyCatalogGate = new();
     private readonly Dictionary<(string SlotId, long Sequence), SlotManifestSummary>
         _legacyCatalogSummaries = [];
 
-    public GameApplicationSession(World world)
+    public GameApplicationSession(World world, string? saveRoot = null)
     {
         _runner = new SimulationRunner(world ?? throw new ArgumentNullException(nameof(world)));
+        _saveRoot = NormalizeSaveRoot(saveRoot ?? SlotSaveStore.DefaultRoot);
     }
 
     public static string DefaultSaveRoot => SlotSaveStore.DefaultRoot;
@@ -71,6 +73,15 @@ public sealed class GameApplicationSession : IDisposable
 
     public int Speed => _runner.Speed;
     public bool IsPaused => _runner.IsPaused;
+
+    /// <summary>
+    /// Storage root captured at the beginning of each save, load, or catalog operation.
+    /// The default remains <see cref="SlotSaveStore.DefaultRoot"/>.
+    /// </summary>
+    public string SaveRoot => Volatile.Read(ref _saveRoot);
+
+    public void SetSaveRoot(string saveRoot) =>
+        Volatile.Write(ref _saveRoot, NormalizeSaveRoot(saveRoot));
 
     public void Start() => _runner.Start();
     public void SetPaused(bool paused) => _runner.SetPaused(paused);
@@ -174,6 +185,7 @@ public sealed class GameApplicationSession : IDisposable
         CancellationToken cancellationToken = default)
     {
         var definition = SaveSlotRegistry.Get(slotId);
+        var saveRoot = SaveRoot;
         var phase = (int)SaveOperationPhase.Preparing;
         try
         {
@@ -190,7 +202,7 @@ public sealed class GameApplicationSession : IDisposable
                     capture.Authority.Checkpoint.Seed,
                     organizationCount: capture.SummarySnapshot.Organizations?.Organizations.Count ?? 0);
                 return SlotSaveStore.Save(
-                    DefaultSaveRoot,
+                    saveRoot,
                     definition.SlotId,
                     capture.Authority,
                     summary,
@@ -222,6 +234,7 @@ public sealed class GameApplicationSession : IDisposable
         CancellationToken cancellationToken = default)
     {
         var definition = SaveSlotRegistry.Get(slotId);
+        var saveRoot = SaveRoot;
         var phase = (int)SaveOperationPhase.Preparing;
         try
         {
@@ -230,7 +243,7 @@ public sealed class GameApplicationSession : IDisposable
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 return SlotSaveStore.Load(
-                    DefaultSaveRoot,
+                    saveRoot,
                     definition.SlotId,
                     persistence =>
                     {
@@ -270,7 +283,10 @@ public sealed class GameApplicationSession : IDisposable
     }
 
     public Task<IReadOnlyList<SaveSlotCatalogEntry>> ListSaveSlotsAsync(
-        CancellationToken cancellationToken = default) => Task.Run<IReadOnlyList<SaveSlotCatalogEntry>>(
+        CancellationToken cancellationToken = default)
+    {
+        var saveRoot = SaveRoot;
+        return Task.Run<IReadOnlyList<SaveSlotCatalogEntry>>(
             () =>
             {
                 var entries = new SaveSlotCatalogEntry[SaveSlotRegistry.All.Count];
@@ -279,7 +295,7 @@ public sealed class GameApplicationSession : IDisposable
                     cancellationToken.ThrowIfCancellationRequested();
                     var definition = SaveSlotRegistry.All[index];
                     var inspection = SlotSaveStore.InspectCatalog(
-                        DefaultSaveRoot,
+                        saveRoot,
                         definition.SlotId);
                     var summary = inspection.Summary;
                     if (summary is null && inspection.CanLoad)
@@ -292,7 +308,7 @@ public sealed class GameApplicationSession : IDisposable
 
                         if (summary is null)
                         {
-                            var load = SlotSaveStore.Load(DefaultSaveRoot, definition.SlotId);
+                            var load = SlotSaveStore.Load(saveRoot, definition.SlotId);
                             if (load.IsSuccess)
                             {
                                 var restored = World.Restore(load.Checkpoint!);
@@ -321,6 +337,7 @@ public sealed class GameApplicationSession : IDisposable
                 return entries;
             },
             cancellationToken);
+    }
 
     public async Task<int> LoadDefaultAsync(CancellationToken cancellationToken = default)
     {
@@ -331,6 +348,12 @@ public sealed class GameApplicationSession : IDisposable
     }
 
     public void Dispose() => _runner.Dispose();
+
+    private static string NormalizeSaveRoot(string saveRoot)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(saveRoot);
+        return Path.GetFullPath(saveRoot);
+    }
 
     private static SlotManifestSummary CreateManifestSummary(
         WorldSnapshot snapshot,

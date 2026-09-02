@@ -172,6 +172,25 @@ checkpoint는 작업 수명 안에서만 보유하고, 수행 worker는 권위 �
 공식·schema 32 상태 hash에 영향을 주지 않지만 저장 보존 정책 자체는 checkpoint에
 명시한다. 외부 SQLite world schema는 25를 유지한다.
 
+## 0.0.25 분할 권위 저장·조직 역사 상한 진입점
+
+- 권위 header와 배열 section 분리: `WorldCheckpointSectionStore.cs`
+- section streaming codec·checksum: `WorldSaveCodec.cs`
+- SQLite incremental BLOB·후보 복구: `SlotSaveStore.cs`
+- 조직별 최근 100건 역사: `OrganizationModel.cs`, `OrganizationTransitions.cs`
+- 검증 완료 Candidate World 교체: `SimulationRunner.cs`, `GameApplicationSession.cs`
+
+한 슬롯은 계속 하나의 원자적 `world.db`지만, 권위 header와 인물·세계 이벤트·세계
+연대기 배열은 별도의 압축·checksum BLOB으로 저장한다. 인물은 512명, 이벤트와 세계
+연대기는 4,096건 단위로 나누며 불러오기는 metadata 검증 뒤 한 section씩 순서대로
+해제한다. 기존 단일 payload SQLite 슬롯도 그대로 읽는다. 외부 WorldSchema 25와 내부
+checkpoint schema 32는 유지한다.
+
+조직 역사는 창설·가입·탈퇴·직책·재정·외교·분열·합병·승계를 포함해 조직마다 최신
+100건만 권위 상태에 보존한다. 기존 세이브는 저장된 hash를 먼저 검증한 뒤 runtime에
+게시하기 전에 초과분을 정리한다. 전역 history sequence는 되감지 않으며 새 이벤트의
+인과 순서를 보존한다.
+
 ## 검증
 
 ```powershell

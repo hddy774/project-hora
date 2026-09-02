@@ -327,3 +327,20 @@ checkpoint 116ms, schema 24 복원 349ms였다. 작업 시작 기준선 1,239ms 
   당시 기존 0.0.23 실행본이 약 1GiB 작업집합으로 열린 호스트였으며, 무부하 600초
   재측정 전에는 지속 성능 완료로 판정하지 않는다.
 - 상세 증거: `docs/evidence/0.0.24/verification.md`
+
+## 0.0.25 분할 저장·조직 역사 보존 검증
+
+- Windows Release 전체 자동 검사: `RESULT: 74/74 passed`
+- 외부 SQLite world schema 25, 내부 checkpoint schema 32, 분할 저장 format 1
+- 10,000명 기본 세계: header와 인물 section을 포함한 21개 이상 데이터 조각 PASS
+- 실제 기본 슬롯의 읽기 전용 source를 GUID 임시 root에 저장·복원:
+  JSON 219,250,078 bytes, container 합계 26,690,196 bytes, 22개 조각,
+  저장/복원 5.63/3.56초, state hash `143672FD1CE0EA2E` 일치
+- 조직별 최근 역사 100건, 150건 연속 입력, 120건 legacy 이관, 장기 세계 상한 PASS
+- 구조 계약: production module 8개, Desktop authority 우회 0건
+- XAML 계약: 10개, 리소스 참조 746개, 누락 0
+- 이식 원장: 238행, Port 128 / PC Adapt 16 / PC_TEMP_REVIEW 31 /
+  Gap·Deferred 63
+- 60초 100배속: p95 61.26ms, p99 81.17ms, 정상 98.99%, 최종 backlog
+  212.28ms, 목표 tick 96.00%, 지속 검사 PASS
+- 상세 증거: `docs/evidence/0.0.25/verification.md`

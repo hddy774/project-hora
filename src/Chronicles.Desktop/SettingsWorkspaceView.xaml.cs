@@ -96,6 +96,20 @@ public partial class SettingsWorkspaceView : UserControl
     public bool IsPerformanceMeterEnabled => PerformanceMeterCheckBox.IsChecked == true;
     public bool AutoPerformanceOutput => PerformanceAutoOutputCheckBox.IsChecked == true;
 
+    public void SetWorkspaceActive(bool active)
+    {
+        if (active)
+        {
+            RefreshSelectedPerformanceTab(refreshSampleDerivedContent: true);
+            return;
+        }
+
+        PerformanceLogGrid.ItemsSource = null;
+        SimulationGraphLine.Points = [];
+        ObservationGraphLine.Points = [];
+        BacklogGraphLine.Points = [];
+    }
+
     public void SetAuthorityRegistryDiagnostics(
         AuthorityRegistryDiagnosticsSnapshot diagnostics)
     {
@@ -201,7 +215,12 @@ public partial class SettingsWorkspaceView : UserControl
             return;
         }
 
-        switch (PerformanceDetailTabControl.SelectedIndex)
+        var selectedIndex = PerformanceDetailTabControl.SelectedIndex;
+        if (selectedIndex != 2)
+        {
+            PerformanceLogGrid.ItemsSource = null;
+        }
+        switch (selectedIndex)
         {
             case 0:
                 RefreshCurrentPerformanceTab(refreshSampleDerivedContent);

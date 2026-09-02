@@ -51,6 +51,10 @@ public partial class MainWindow
         AgentRecordsSection.Visibility = section == AgentDetailSection.Records
             ? Visibility.Visible
             : Visibility.Collapsed;
+        if (section != AgentDetailSection.Records)
+        {
+            ReleaseHiddenAgentRecordViews(selectedIndex: -1);
+        }
         AgentDetailScrollViewer.ScrollToTop();
         AgentOverviewTab.IsChecked = section == AgentDetailSection.Overview;
         AgentCultivationTab.IsChecked = section == AgentDetailSection.Cultivation;
@@ -265,6 +269,13 @@ public partial class MainWindow
             {
                 _logService.CapturePersonalRecords(
                     agent.Id,
+                    AgentLogTabControl.SelectedIndex switch
+                    {
+                        0 => ObservationSections.PersonalLog,
+                        1 => ObservationSections.Chronicle,
+                        2 => ObservationSections.PersonalCenturyChronicle,
+                        _ => ObservationSections.None,
+                    },
                     personalLog,
                     entry => FormatEventRowFileLine(FormatPersonalLog(agent, entry)),
                     chronicle,
@@ -310,6 +321,7 @@ public partial class MainWindow
 
     private void UpdateAgentLogViews()
     {
+        ReleaseHiddenAgentRecordViews(AgentLogTabControl.SelectedIndex);
         if (_latestAgent is not { } agent)
         {
             return;
@@ -403,19 +415,43 @@ public partial class MainWindow
     {
         PersonalRecordIdentityText.Text =
             $"{agent.Name} · {agent.Id} · 현재 제 {agent.LifeNumber:N0}생";
-        var completedVolumes = _latestPersonalCenturyChronicle.Count(entry => entry.IsComplete);
         PersonalRecordCountText.Text =
-            $"최근 로그 {_latestPersonalLog.Count:N0}/100 · 세부 연대기 {_latestChronicle.Count:N0}건 · " +
-            $"100년 종합 {_latestPersonalCenturyChronicle.Count:N0}권(완결 {completedVolumes:N0})";
+            "기록은 각 탭을 열 때만 조회·표시합니다. 전체 파일 출력은 버튼을 누를 때 한 번 조회합니다.";
         var automatic = _logService.IsAutoPersonalOutput(agent.Id);
         AutoPersonalOutputCheckBox.IsChecked = automatic;
         if (automatic)
         {
-            SetPersonalRecordOutputStatus($"{agent.Id} 자동 기록 중");
+            SetPersonalRecordOutputStatus($"{agent.Id} · 현재 열린 기록 탭 자동 출력 중");
         }
         else
         {
             SetPersonalRecordOutputStatus("개인 자동 기록 꺼짐");
+        }
+    }
+
+    private void ReleaseHiddenAgentRecordViews(int selectedIndex)
+    {
+        if (selectedIndex != 0)
+        {
+            PersonalLogList.ItemsSource = null;
+            _latestPersonalLog = Array.Empty<PersonalLogEntry>();
+        }
+        if (selectedIndex != 1)
+        {
+            ChronicleLifeToggleList.ItemsSource = null;
+            ChronicleList.ItemsSource = null;
+            _latestChronicle = Array.Empty<LifeChronicleEntry>();
+        }
+        if (selectedIndex != 2)
+        {
+            PersonalCenturyLifeToggleList.ItemsSource = null;
+            PersonalCenturyChronicleList.ItemsSource = null;
+            _latestPersonalCenturyChronicle = Array.Empty<PersonalCenturyChronicleEntry>();
+        }
+        if (selectedIndex != 3)
+        {
+            ClearReincarnationView();
+            _latestReincarnation = null;
         }
     }
 

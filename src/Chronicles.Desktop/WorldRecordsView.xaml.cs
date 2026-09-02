@@ -55,6 +55,26 @@ public partial class WorldRecordsView : UserControl
         RecordTabControl.SelectedIndex = index;
     }
 
+    internal void ReleaseInactiveRows(bool workspaceVisible)
+    {
+        var selected = workspaceVisible ? SelectedRecordIndex : -1;
+        if (selected != 0)
+        {
+            RecentEventList.ItemsSource = null;
+            RecentCountText.Text = string.Empty;
+        }
+        if (selected != 1)
+        {
+            WorldChronicleList.ItemsSource = null;
+            ChronicleCountText.Text = string.Empty;
+        }
+        if (selected != 2)
+        {
+            DebugLogList.ItemsSource = null;
+            DebugCountText.Text = string.Empty;
+        }
+    }
+
     internal void ApplyRecent(IReadOnlyList<EventRow> rows, int sourceCount)
     {
         _applying = true;
@@ -114,6 +134,7 @@ public partial class WorldRecordsView : UserControl
     {
         if (!_applying && ReferenceEquals(e.Source, sender))
         {
+            ReleaseInactiveRows(workspaceVisible: true);
             ObservationRequested?.Invoke(this, EventArgs.Empty);
         }
     }

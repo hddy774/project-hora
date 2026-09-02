@@ -300,20 +300,12 @@ public partial class MainWindow : Window, IDisposable
 
         if (personDetailVisible && _agentDetailSection == AgentDetailSection.Records)
         {
-            sections |= _selectedAgent is { } automaticAgent
-                && _logService.IsAutoPersonalOutput(automaticAgent)
-                ? ObservationSections.PersonalLog
-                    | ObservationSections.Chronicle
-                    | ObservationSections.PersonalCenturyChronicle
-                : AgentLogTabControl.SelectedIndex switch
+            sections |= AgentLogTabControl.SelectedIndex switch
             {
                 0 => ObservationSections.PersonalLog,
                 1 => ObservationSections.Chronicle,
                 2 => ObservationSections.PersonalCenturyChronicle,
                 3 => ObservationSections.Reincarnation,
-                4 => ObservationSections.PersonalLog
-                    | ObservationSections.Chronicle
-                    | ObservationSections.PersonalCenturyChronicle,
                 _ => ObservationSections.None,
             };
         }
@@ -989,6 +981,10 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
+        if (ReferenceEquals(sender, AgentLogTabControl))
+        {
+            ReleaseHiddenAgentRecordViews(AgentLogTabControl.SelectedIndex);
+        }
         RefreshVisibleObservation();
     }
 

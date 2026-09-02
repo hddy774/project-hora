@@ -236,6 +236,7 @@ internal sealed class GameLogService : IDisposable
 
     public void CapturePersonalRecords(
         AgentId agentId,
+        ObservationSections capturedSections,
         IReadOnlyList<PersonalLogEntry> recentLog,
         Func<PersonalLogEntry, string> personalLogFormatter,
         IReadOnlyList<LifeChronicleEntry> detailedChronicle,
@@ -257,34 +258,43 @@ internal sealed class GameLogService : IDisposable
         List<string> lines = [];
         lock (_personalGate)
         {
-            var lastPersonalSequence = GetOrResetSequence(
-                _personalLogSequences,
-                agentId,
-                recentLog.Count == 0 ? 0 : recentLog.Max(entry => entry.Sequence));
-            foreach (var entry in recentLog.Where(entry => entry.Sequence > lastPersonalSequence))
+            if ((capturedSections & ObservationSections.PersonalLog) != 0)
             {
-                lines.Add($"[최근 개인 로그] {personalLogFormatter(entry)}");
-                lastPersonalSequence = Math.Max(lastPersonalSequence, entry.Sequence);
-            }
-            _personalLogSequences[agentId] = lastPersonalSequence;
-
-            var lastChronicleSequence = GetOrResetSequence(
-                _personalChronicleSequences,
-                agentId,
-                detailedChronicle.Count == 0 ? 0 : detailedChronicle.Max(entry => entry.Sequence));
-            foreach (var entry in detailedChronicle.Where(entry => entry.Sequence > lastChronicleSequence))
-            {
-                lines.Add($"[세부 연대기] {detailedChronicleFormatter(entry)}");
-                lastChronicleSequence = Math.Max(lastChronicleSequence, entry.Sequence);
-            }
-            _personalChronicleSequences[agentId] = lastChronicleSequence;
-
-            foreach (var entry in centuryChronicle.Where(entry => entry.IsComplete))
-            {
-                var key = (agentId, entry.LifeNumber, entry.CenturyIndex);
-                if (_completedPersonalCenturyVolumes.Add(key))
+                var lastPersonalSequence = GetOrResetSequence(
+                    _personalLogSequences,
+                    agentId,
+                    recentLog.Count == 0 ? 0 : recentLog.Max(entry => entry.Sequence));
+                foreach (var entry in recentLog.Where(entry => entry.Sequence > lastPersonalSequence))
                 {
-                    lines.Add($"[100년 종합 연대기] {centuryChronicleFormatter(entry)}");
+                    lines.Add($"[최근 개인 로그] {personalLogFormatter(entry)}");
+                    lastPersonalSequence = Math.Max(lastPersonalSequence, entry.Sequence);
+                }
+                _personalLogSequences[agentId] = lastPersonalSequence;
+            }
+
+            if ((capturedSections & ObservationSections.Chronicle) != 0)
+            {
+                var lastChronicleSequence = GetOrResetSequence(
+                    _personalChronicleSequences,
+                    agentId,
+                    detailedChronicle.Count == 0 ? 0 : detailedChronicle.Max(entry => entry.Sequence));
+                foreach (var entry in detailedChronicle.Where(entry => entry.Sequence > lastChronicleSequence))
+                {
+                    lines.Add($"[세부 연대기] {detailedChronicleFormatter(entry)}");
+                    lastChronicleSequence = Math.Max(lastChronicleSequence, entry.Sequence);
+                }
+                _personalChronicleSequences[agentId] = lastChronicleSequence;
+            }
+
+            if ((capturedSections & ObservationSections.PersonalCenturyChronicle) != 0)
+            {
+                foreach (var entry in centuryChronicle.Where(entry => entry.IsComplete))
+                {
+                    var key = (agentId, entry.LifeNumber, entry.CenturyIndex);
+                    if (_completedPersonalCenturyVolumes.Add(key))
+                    {
+                        lines.Add($"[100년 종합 연대기] {centuryChronicleFormatter(entry)}");
+                    }
                 }
             }
         }

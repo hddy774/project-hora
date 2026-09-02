@@ -72,6 +72,13 @@ public partial class MainWindow
         ContentWorkspacePanel.Visibility = isContent
             ? Visibility.Visible
             : Visibility.Collapsed;
+        SettingsWorkspacePanel.SetWorkspaceActive(isSettings);
+        WorldRecordsPanel.ReleaseInactiveRows(
+            route is WorkspaceRoute.Records or WorkspaceRoute.Diagnostics);
+        if (route is not (WorkspaceRoute.People or WorkspaceRoute.Relations))
+        {
+            ReleaseHiddenAgentRecordViews(selectedIndex: -1);
+        }
         _runner?.SetPerformanceDiagnosticsEnabled(
             isSettings && SettingsWorkspacePanel.IsPerformanceMeterEnabled);
         ConfigureWorkspaceLayout(route);

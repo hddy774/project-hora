@@ -83,6 +83,7 @@
     "authority_registry_diagnostics": "src/Chronicles.Application/AuthorityRegistryDiagnostics.cs",
     "person_life_authority": "src/Chronicles.Simulation/PersonLifeAuthority.cs",
     "agent_causal_runtime": "src/Chronicles.Simulation/AgentCausalRuntime.cs",
+    "agent_progression_asset_store": "src/Chronicles.Simulation/AgentStore.ProgressionAssets.cs",
     "reincarnation_authority": "src/Chronicles.Simulation/ReincarnationModel.cs",
     "sparse_relations": "src/Chronicles.Simulation/RelationModel.cs",
     "world_atlas_authority": "src/Chronicles.Simulation/WorldAtlasModel.cs",

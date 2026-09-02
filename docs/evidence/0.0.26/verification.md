@@ -70,6 +70,13 @@ SQLite 저장·복원 1초는 권고 예산을 아직 넘는다. 수치를 완�
 
 ## 로컬 실행본
 
-- VERSION 완료 커밋: 빌드 완료 후 기록
+- VERSION 완료 커밋: `cd701a0fea1783d4556241540cd3b0ea8e0abb59`
 - 실행 파일: `artifacts/Chronicles-0.0.26-win-x64/Chronicles.exe`
-- self-contained win-x64 크기·SHA-256·실행 및 바로가기 검증: 빌드 완료 후 기록
+- 크기: 141,945,695 bytes (135.37MiB)
+- SHA-256: `D940DF74565A4DFE4C961EAFE0E398742AED3EF9084C08A913EE2A18B57D550A`
+- 파일 버전 `0.0.26.0`, 제품 버전
+  `0.0.26+cd701a0fea1783d4556241540cd3b0ea8e0abb59`
+- 게시 실행 파일과 `C:\Users\jungh\Desktop\선로만상록 PC.lnk` 모두 창 제목
+  `선로만상록 PC v0.0.26`으로 시작 검사 PASS
+- 단독 실행 PID 47540은 5초 간격 12회, 총 60초 동안 같은 창 핸들과 `Responding=True`를
+  유지했다. 작업 집합 관측 범위는 187.8~196.0MiB였다.

@@ -91,6 +91,7 @@
     "spatial_authority_store": "src/Chronicles.Simulation/SpatialAuthorityStore.cs",
     "market_contract_authority": "src/Chronicles.Simulation/MarketAuthorityModel.cs",
     "market_offer_reservation": "src/Chronicles.Simulation/CityMarket.Contracts.cs",
+    "city_market_industry": "src/Chronicles.Simulation/CityMarket.Industry.cs",
     "world_balance_authority": "src/Chronicles.Simulation/FormulaRegistry.cs",
     "monthly_authority_boundary": "src/Chronicles.Simulation/World.Scheduling.cs",
     "agent_decision_schedule": "src/Chronicles.Simulation/AgentDecisionSchedule.cs",

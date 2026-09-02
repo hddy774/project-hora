@@ -46,6 +46,7 @@ Desktop = Application + Presentation
 - 개인 공간 지식·이동·지역 index·유한 영맥 공급: `SpatialAuthorityStore.cs`
 - 경제 Owner/Holder·Offer/Reservation/Channel: `MarketAuthorityModel.cs`
 - 제안→예약→만료/취소/체결: `CityMarket.Contracts.cs`
+- 수요 기반 생산·가격·12개월 수급 창: `CityMarket.Industry.cs`
 - 좌측 관찰 경로와 전체 작업공간 전환: `MainWindow.Workspace.cs`
 
 지도와 경제 화면은 열린 경로만 `ObservationSections`를 요청한다. 지도 내부의 수선자

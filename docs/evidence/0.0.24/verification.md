@@ -6,6 +6,7 @@
 - 개인 연대기 구현: `3c347cf`
 - 관심 목록·저장 경계 메모리 복구: `1b8826d`
 - 종합본 지연 용량 최적화: `ce97e4a`
+- VERSION 완료: `a03789b6543cbb210adb71b042ccca2029b9a768`
 - 외부 SQLite WorldSchema: 25 유지
 - 내부 checkpoint schema: 32
 - GitHub Actions / GitHub Release: 실행하지 않음
@@ -82,5 +83,13 @@
 
 ## 로컬 산출물
 
-- self-contained win-x64 실행본과 바로가기 정보는 최종 게시 뒤 이 절에 추가한다.
+- 경로: `artifacts/Chronicles-0.0.24-win-x64/Chronicles.exe`
+- 크기: **141,897,055 bytes**
+- SHA-256: **`97496850305B535D31014288013643744FAD3488DC8D56A2002558EBA7C7BC92`**
+- 파일 버전: **0.0.24.0**
+- 제품 버전: **0.0.24+a03789b6543cbb210adb71b042ccca2029b9a768**
+- 게시 실행 파일 시작 스모크: `선로만상록 PC v0.0.24` **PASS**
+- 바탕화면 바로가기 시작 스모크: `선로만상록 PC v0.0.24` **PASS**
+- 바로가기 target은 `C:\Windows\explorer.exe`, 인수와 작업 폴더는 위 0.0.24
+  실행 파일과 게시 폴더로 검증했다.
 - 기존 0.0.23 산출물·세이브·로그는 수정하거나 삭제하지 않는다.

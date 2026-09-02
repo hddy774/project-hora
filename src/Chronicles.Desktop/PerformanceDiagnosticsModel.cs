@@ -191,13 +191,14 @@ internal sealed class PerformanceDiagnosticsHistory
         {
             return PerformanceHealthLevel.Measuring;
         }
-        if (snapshot.EstimatedBacklogMilliseconds > 0.01
-            || snapshot.LastSimulationMilliseconds > snapshot.PulseBudgetMilliseconds
+        if (snapshot.EstimatedBacklogMilliseconds > snapshot.PulseBudgetMilliseconds
+            || snapshot.LastSimulationMilliseconds > snapshot.PulseBudgetMilliseconds * 1.25d
             || snapshot.LastObservationMilliseconds > 50d)
         {
             return PerformanceHealthLevel.Overloaded;
         }
-        if (snapshot.LastSimulationMilliseconds > snapshot.PulseBudgetMilliseconds * 0.75d
+        if (snapshot.EstimatedBacklogMilliseconds > 5d
+            || snapshot.LastSimulationMilliseconds > snapshot.PulseBudgetMilliseconds * 0.75d
             || snapshot.LastObservationMilliseconds > ObservationBudgetMilliseconds)
         {
             return PerformanceHealthLevel.Warning;

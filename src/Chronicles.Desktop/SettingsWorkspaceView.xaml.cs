@@ -163,7 +163,8 @@ public partial class SettingsWorkspaceView : UserControl
     {
         _latestPerformance = snapshot;
         _hasLatestPerformance = true;
-        if (_performanceHistory.TryCapture(snapshot, out var sample) && sample is not null)
+        var sampleCaptured = _performanceHistory.TryCapture(snapshot, out var sample);
+        if (sampleCaptured && sample is not null)
         {
             _latestPerformanceSample = sample;
             PerformanceSampleRecorded?.Invoke(
@@ -171,7 +172,7 @@ public partial class SettingsWorkspaceView : UserControl
                 new PerformanceSampleRecordedEventArgs(sample.ToLogLine()));
         }
 
-        RefreshSelectedPerformanceTab();
+        RefreshSelectedPerformanceTab(sampleCaptured);
     }
 
     public string[] GetPerformanceLogLines() => _performanceHistory.GetLogLines();
@@ -183,7 +184,7 @@ public partial class SettingsWorkspaceView : UserControl
         _hasLatestPerformance = false;
         _performanceFileStatus = null;
         PerformanceLogGrid.ItemsSource = null;
-        RefreshSelectedPerformanceTab();
+        RefreshSelectedPerformanceTab(refreshSampleDerivedContent: true);
     }
 
     public void SetPerformanceFileStatus(string text, bool isError = false)
@@ -193,7 +194,7 @@ public partial class SettingsWorkspaceView : UserControl
         RefreshPerformanceFileTab();
     }
 
-    private void RefreshSelectedPerformanceTab()
+    private void RefreshSelectedPerformanceTab(bool refreshSampleDerivedContent)
     {
         if (!IsInitialized || PerformanceDetailTabControl is null)
         {
@@ -203,21 +204,21 @@ public partial class SettingsWorkspaceView : UserControl
         switch (PerformanceDetailTabControl.SelectedIndex)
         {
             case 0:
-                RefreshCurrentPerformanceTab();
+                RefreshCurrentPerformanceTab(refreshSampleDerivedContent);
                 break;
-            case 1:
+            case 1 when refreshSampleDerivedContent:
                 RefreshPerformanceGraph();
                 break;
-            case 2:
+            case 2 when refreshSampleDerivedContent:
                 RefreshPerformanceLogTab();
                 break;
-            case 3:
+            case 3 when refreshSampleDerivedContent:
                 RefreshPerformanceFileTab();
                 break;
         }
     }
 
-    private void RefreshCurrentPerformanceTab()
+    private void RefreshCurrentPerformanceTab(bool refreshSampleDerivedContent)
     {
         if (!_hasLatestPerformance || !_latestPerformance.IsEnabled)
         {
@@ -232,7 +233,10 @@ public partial class SettingsWorkspaceView : UserControl
             PerformanceHealthDetailText.Text = "기존 최근 표본은 유지됩니다.";
             PerformanceHeaderStatusText.Text = "계측 중지";
             ApplyHealthBrush(PerformanceHealthLevel.Measuring);
-            RefreshProcessAndPercentileCards();
+            if (refreshSampleDerivedContent)
+            {
+                RefreshProcessAndPercentileCards();
+            }
             return;
         }
 
@@ -268,13 +272,16 @@ public partial class SettingsWorkspaceView : UserControl
         PerformanceHealthDetailText.Text = health switch
         {
             PerformanceHealthLevel.Measuring => "pulse와 query 표본을 기다리고 있습니다.",
-            PerformanceHealthLevel.Healthy => "backlog 0 · pulse/query 예산 이내",
+            PerformanceHealthLevel.Healthy => "backlog 허용 범위 · pulse/query 예산 이내",
             PerformanceHealthLevel.Warning => "예산에 접근한 최근 표본이 있습니다.",
             PerformanceHealthLevel.Overloaded => "backlog 또는 예산 초과 표본을 확인하세요.",
             _ => string.Empty,
         };
         ApplyHealthBrush(health);
-        RefreshProcessAndPercentileCards();
+        if (refreshSampleDerivedContent)
+        {
+            RefreshProcessAndPercentileCards();
+        }
     }
 
     private void RefreshProcessAndPercentileCards()
@@ -479,7 +486,7 @@ public partial class SettingsWorkspaceView : UserControl
     {
         if (ReferenceEquals(e.Source, sender))
         {
-            RefreshSelectedPerformanceTab();
+            RefreshSelectedPerformanceTab(refreshSampleDerivedContent: true);
         }
     }
 

@@ -170,6 +170,7 @@ var tests = new (string Name, Action Body)[]
     ("로그 종류·자동 수동·인물별 출력 경로 계약", WorldPersistenceTests.LogOutputDirectoryContract),
     ("10,000명 로컬 실시간 성능 예산", WorldPersistenceTests.DefaultWorldPerformanceBudget),
     ("100배속 runtime pulse SOAK", RuntimeHundredSpeedSoakTests.Run),
+    ("runtime lock-free shell·busy 관찰 프레임 생략", RuntimeObservationSchedulingTests.Run),
 };
 
 tests =

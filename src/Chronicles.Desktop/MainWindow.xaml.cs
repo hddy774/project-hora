@@ -133,7 +133,7 @@ public partial class MainWindow : Window, IDisposable
             new Action(() =>
             {
                 Interlocked.Exchange(ref _observationDispatchQueued, 0);
-                RefreshVisibleObservation();
+                RefreshVisibleObservation(skipIfSimulationBusy: true);
             }));
     }
 
@@ -176,6 +176,17 @@ public partial class MainWindow : Window, IDisposable
     private void ApplyShellSnapshot(WorldSnapshot snapshot)
     {
         _latestSnapshot = snapshot;
+        ApplyRuntimeShellSnapshot(new RuntimeShellSnapshot(
+            snapshot.Tick,
+            snapshot.Population,
+            snapshot.ActiveCombats,
+            snapshot.TotalCombatsCompleted,
+            snapshot.TotalChallenges,
+            snapshot.TotalBreakthroughs));
+    }
+
+    private void ApplyRuntimeShellSnapshot(RuntimeShellSnapshot snapshot)
+    {
         if (_runner is { } runner && _logService.AutoWorldOutput)
         {
             _logService.CaptureWorldFeed(

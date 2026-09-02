@@ -92,6 +92,7 @@ public sealed class GameApplicationSession : IDisposable
         _runner.SetWorldFeedCaptureEnabled(enabled);
     public RuntimePerformanceSnapshot GetPerformanceSnapshot() =>
         _runner.GetPerformanceSnapshot();
+    public RuntimeShellSnapshot GetShellSnapshot() => _runner.GetShellSnapshot();
     public WorldRuntimeMetadata GetWorldMetadata() => _runner.GetWorldMetadata();
     public void SetDetailedChronicleProtection(AgentId agentId, bool isProtected) =>
         _runner.SetDetailedChronicleProtection(agentId, isProtected);
@@ -132,6 +133,9 @@ public sealed class GameApplicationSession : IDisposable
     public WorldSnapshot GetSnapshot(ObservationRequest request) =>
         _runner.GetSnapshot(request);
 
+    public bool TryGetSnapshot(ObservationRequest request, out WorldSnapshot? snapshot) =>
+        _runner.TryGetSnapshot(request, out snapshot);
+
     public WorldObservation GetObservation(
         AgentId? selectedAgent = null,
         int rankingCount = 1_000,
@@ -167,6 +171,9 @@ public sealed class GameApplicationSession : IDisposable
 
     public WorldObservation GetObservation(ObservationRequest request) =>
         _runner.GetObservation(request);
+
+    public bool TryGetObservation(ObservationRequest request, out WorldObservation? observation) =>
+        _runner.TryGetObservation(request, out observation);
 
     public IReadOnlyList<AgentSnapshot> BrowseAgents(int offset, int limit = 500) =>
         _runner.BrowseAgents(offset, limit);

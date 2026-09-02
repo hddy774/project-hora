@@ -36,11 +36,13 @@ public sealed class SimulationRunner : IDisposable
     private long _observationTotalMicroseconds;
     private long _observationLastMicroseconds;
     private long _observationMaximumMicroseconds;
+    private RuntimeShellSnapshot _shellSnapshot;
 
     public SimulationRunner(World world)
     {
         _world = world ?? throw new ArgumentNullException(nameof(world));
         _queries = new WorldObservationQueries(_world);
+        _shellSnapshot = CreateShellSnapshot(_world);
         _worker = new Thread(Run)
         {
             IsBackground = true,
@@ -92,6 +94,13 @@ public sealed class SimulationRunner : IDisposable
                 : Interlocked.Read(ref _observationTotalMicroseconds) / 1_000d / observationCount,
             Interlocked.Read(ref _observationMaximumMicroseconds) / 1_000d);
     }
+
+    /// <summary>
+    /// UI shell counters published by the simulation worker. Reading this snapshot never
+    /// waits for the authoritative world lock and does not materialize query DTOs.
+    /// </summary>
+    public RuntimeShellSnapshot GetShellSnapshot() =>
+        Volatile.Read(ref _shellSnapshot);
 
     public WorldRuntimeMetadata GetWorldMetadata()
     {
@@ -222,12 +231,37 @@ public sealed class SimulationRunner : IDisposable
 
     public WorldSnapshot GetSnapshot(ObservationRequest request)
     {
-        var started = BeginPerformanceMeasurement();
         lock (_worldGate)
         {
+            var started = BeginPerformanceMeasurement();
             var snapshot = _queries.GetSnapshot(request);
             RecordObservationMeasurement(started);
             return snapshot;
+        }
+    }
+
+    /// <summary>
+    /// Passive UI refreshes skip a frame while a simulation pulse owns the world instead
+    /// of making the dispatcher wait and then delaying the next pulse.
+    /// </summary>
+    public bool TryGetSnapshot(ObservationRequest request, out WorldSnapshot? snapshot)
+    {
+        if (!Monitor.TryEnter(_worldGate))
+        {
+            snapshot = null;
+            return false;
+        }
+
+        try
+        {
+            var started = BeginPerformanceMeasurement();
+            snapshot = _queries.GetSnapshot(request);
+            RecordObservationMeasurement(started);
+            return true;
+        }
+        finally
+        {
+            Monitor.Exit(_worldGate);
         }
     }
 
@@ -273,12 +307,33 @@ public sealed class SimulationRunner : IDisposable
 
     public WorldObservation GetObservation(ObservationRequest request)
     {
-        var started = BeginPerformanceMeasurement();
         lock (_worldGate)
         {
+            var started = BeginPerformanceMeasurement();
             var observation = _queries.GetObservation(request);
             RecordObservationMeasurement(started);
             return observation;
+        }
+    }
+
+    public bool TryGetObservation(ObservationRequest request, out WorldObservation? observation)
+    {
+        if (!Monitor.TryEnter(_worldGate))
+        {
+            observation = null;
+            return false;
+        }
+
+        try
+        {
+            var started = BeginPerformanceMeasurement();
+            observation = _queries.GetObservation(request);
+            RecordObservationMeasurement(started);
+            return true;
+        }
+        finally
+        {
+            Monitor.Exit(_worldGate);
         }
     }
 
@@ -439,6 +494,7 @@ public sealed class SimulationRunner : IDisposable
             _world.WorldCenturyChronicleRecorded -= World_WorldCenturyChronicleRecorded;
             _world = restored;
             _queries = new WorldObservationQueries(_world);
+            Volatile.Write(ref _shellSnapshot, CreateShellSnapshot(_world));
             _chronicleRetentionWatchlist.Clear();
             foreach (var agentId in _world.GetDetailedChronicleProtectionList())
             {
@@ -495,6 +551,7 @@ public sealed class SimulationRunner : IDisposable
                         var started = BeginPerformanceMeasurement();
                         var ticks = SimulationPacing.GetTicksPerPulse(Speed);
                         _world.AdvanceTo(new SimulationTick(checked(_world.Tick.Value + ticks)));
+                        Volatile.Write(ref _shellSnapshot, CreateShellSnapshot(_world));
                         RecordSimulationMeasurement(started, nextPulse);
                     }
                 }
@@ -660,6 +717,14 @@ public sealed class SimulationRunner : IDisposable
             _pendingWorldChronicles.Enqueue(entry);
         }
     }
+
+    private static RuntimeShellSnapshot CreateShellSnapshot(World world) => new(
+        world.Tick,
+        world.Population,
+        world.ActiveCombats,
+        world.TotalCombatsCompleted,
+        world.TotalChallenges,
+        world.TotalBreakthroughs);
 }
 
 public readonly record struct RuntimePerformanceSnapshot(
@@ -676,6 +741,14 @@ public readonly record struct RuntimePerformanceSnapshot(
     double LastObservationMilliseconds,
     double AverageObservationMilliseconds,
     double MaximumObservationMilliseconds);
+
+public sealed record RuntimeShellSnapshot(
+    SimulationTick Tick,
+    int Population,
+    int ActiveCombats,
+    int TotalCombatsCompleted,
+    int TotalChallenges,
+    int TotalBreakthroughs);
 
 public readonly record struct WorldRuntimeMetadata(
     ulong Seed,

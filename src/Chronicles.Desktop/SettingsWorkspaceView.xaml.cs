@@ -175,6 +175,10 @@ public partial class SettingsWorkspaceView : UserControl
 
     public void UpdatePerformance(RuntimePerformanceSnapshot snapshot)
     {
+        var stateChanged = !_hasLatestPerformance
+            || _latestPerformance.IsEnabled != snapshot.IsEnabled
+            || _latestPerformance.IsPaused != snapshot.IsPaused
+            || _latestPerformance.Speed != snapshot.Speed;
         _latestPerformance = snapshot;
         _hasLatestPerformance = true;
         var sampleCaptured = _performanceHistory.TryCapture(snapshot, out var sample);
@@ -186,7 +190,12 @@ public partial class SettingsWorkspaceView : UserControl
                 new PerformanceSampleRecordedEventArgs(sample.ToLogLine()));
         }
 
-        RefreshSelectedPerformanceTab(sampleCaptured);
+        // The meter promises one sample per second. Avoid rebinding the same cards at the
+        // 10 Hz observation invalidation rate when no new sample or runtime state exists.
+        if (sampleCaptured || stateChanged)
+        {
+            RefreshSelectedPerformanceTab(sampleCaptured);
+        }
     }
 
     public string[] GetPerformanceLogLines() => _performanceHistory.GetLogLines();

@@ -7,7 +7,9 @@ namespace Chronicles.Desktop;
 
 public partial class MainWindow
 {
-    private void RefreshVisibleObservation(AgentId? selectedAgent = null)
+    private void RefreshVisibleObservation(
+        AgentId? selectedAgent = null,
+        bool skipIfSimulationBusy = false)
     {
         if (_runner is null)
         {
@@ -19,14 +21,34 @@ public partial class MainWindow
             _selectedAgent = selected;
         }
 
-        var request = CreateVisibleObservationRequest();
-        if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
+        if (!IsObservationWorkspaceVisible)
         {
-            ApplyPersonObservation(_runner.GetObservation(request));
+            ApplyRuntimeShellSnapshot(_runner.GetShellSnapshot());
             return;
         }
 
-        ApplyWorldSnapshot(_runner.GetSnapshot(request));
+        var request = CreateVisibleObservationRequest();
+        if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
+        {
+            if (!skipIfSimulationBusy)
+            {
+                ApplyPersonObservation(_runner.GetObservation(request));
+            }
+            else if (_runner.TryGetObservation(request, out var observation))
+            {
+                ApplyPersonObservation(observation!);
+            }
+            return;
+        }
+
+        if (!skipIfSimulationBusy)
+        {
+            ApplyWorldSnapshot(_runner.GetSnapshot(request));
+        }
+        else if (_runner.TryGetSnapshot(request, out var snapshot))
+        {
+            ApplyWorldSnapshot(snapshot!);
+        }
     }
 
     private ObservationRequest CreateVisibleObservationRequest()

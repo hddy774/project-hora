@@ -191,12 +191,15 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <UniformGrid Columns="4">
+                        <local:ResponsiveCardPanel MinimumCardWidth="145"
+                                                   MaximumColumns="4"
+                                                   ColumnGap="0"
+                                                   RowGap="4">
                             <StackPanel Margin="4"><TextBlock Text="현재 수선자" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointRegionPopulationText" Margin="0,3,0,0" FontWeight="SemiBold" /></StackPanel>
                             <StackPanel Margin="4"><TextBlock Text="최고 경지" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointRegionHighestRealmText" Margin="0,3,0,0" FontWeight="SemiBold" /></StackPanel>
                             <StackPanel Margin="4"><TextBlock Text="평균 전투력" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointRegionAveragePowerText" Margin="0,3,0,0" FontWeight="SemiBold" /></StackPanel>
                             <StackPanel Margin="4"><TextBlock Text="최고 전투력" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointRegionMaximumPowerText" Margin="0,3,0,0" FontWeight="SemiBold" /></StackPanel>
-                        </UniformGrid>
+                        </local:ResponsiveCardPanel>
                         <TextBlock x:Name="PointRegionActivityText"
                                    Grid.Row="1"
                                    Margin="4,8,4,0"
@@ -278,14 +281,17 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <UniformGrid Columns="6">
+                        <local:ResponsiveCardPanel MinimumCardWidth="112"
+                                                   MaximumColumns="6"
+                                                   ColumnGap="0"
+                                                   RowGap="6">
                             <StackPanel><TextBlock Text="사회" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointSocietyText" Margin="0,3,0,0" /></StackPanel>
                             <StackPanel><TextBlock Text="대도시" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointLargeCityText" Margin="0,3,0,0" /></StackPanel>
                             <StackPanel><TextBlock Text="소도시" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointSmallCityText" Margin="0,3,0,0" /></StackPanel>
                             <StackPanel><TextBlock Text="촌" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointVillageText" Margin="0,3,0,0" /></StackPanel>
                             <StackPanel><TextBlock Text="종문" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointSectText" Margin="0,3,0,0" /></StackPanel>
                             <StackPanel><TextBlock Text="가문" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointClanText" Margin="0,3,0,0" /></StackPanel>
-                        </UniformGrid>
+                        </local:ResponsiveCardPanel>
                         <TextBlock x:Name="PointSettlementAuthorityText"
                                    Grid.Row="1"
                                    Margin="0,10,0,0"
@@ -300,13 +306,16 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <UniformGrid Columns="5">
+                        <local:ResponsiveCardPanel MinimumCardWidth="130"
+                                                   MaximumColumns="5"
+                                                   ColumnGap="0"
+                                                   RowGap="6">
                             <StackPanel><TextBlock Text="자연 환경" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointTerrainText" Margin="0,3,0,0" /></StackPanel>
                             <StackPanel><TextBlock Text="지리 영맥" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointVeinText" Margin="0,3,0,0" /></StackPanel>
                             <StackPanel><TextBlock Text="지리 광산" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointMineText" Margin="0,3,0,0" /></StackPanel>
                             <StackPanel><TextBlock Text="생령 기준선" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointBeastText" Margin="0,3,0,0" /></StackPanel>
                             <StackPanel><TextBlock Text="인접 이동 거리" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointDistanceText" Margin="0,3,0,0" /></StackPanel>
-                        </UniformGrid>
+                        </local:ResponsiveCardPanel>
                         <TextBlock x:Name="PointProductionVeinText"
                                    Grid.Row="1"
                                    Margin="0,10,0,0"

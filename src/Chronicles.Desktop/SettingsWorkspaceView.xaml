@@ -1,6 +1,7 @@
 <UserControl x:Class="Chronicles.Desktop.SettingsWorkspaceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Chronicles.Desktop">
     <Border Style="{StaticResource PanelStyle}" Padding="22">
         <Grid>
             <Grid.RowDefinitions>
@@ -266,7 +267,10 @@
                                         <RowDefinition Height="12" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <UniformGrid Rows="1" Columns="4">
+                                    <local:ResponsiveCardPanel MinimumCardWidth="210"
+                                                               MaximumColumns="4"
+                                                               ColumnGap="0"
+                                                               RowGap="8">
                                         <Border Style="{StaticResource PanelStyle}" Margin="0,0,5,0">
                                             <StackPanel>
                                                 <TextBlock Text="시뮬레이션 pulse" Foreground="{StaticResource SecondaryTextBrush}" />
@@ -295,9 +299,13 @@
                                                 <TextBlock Text="닫힌 관찰 화면은 query하지 않음" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
                                             </StackPanel>
                                         </Border>
-                                    </UniformGrid>
+                                    </local:ResponsiveCardPanel>
 
-                                    <UniformGrid Grid.Row="2" Rows="1" Columns="4">
+                                    <local:ResponsiveCardPanel Grid.Row="2"
+                                                               MinimumCardWidth="210"
+                                                               MaximumColumns="4"
+                                                               ColumnGap="0"
+                                                               RowGap="8">
                                         <Border Style="{StaticResource PanelStyle}" Margin="0,0,5,0" Background="{StaticResource PanelAltBrush}">
                                             <StackPanel>
                                                 <TextBlock Text="최근 성능 상태" Foreground="{StaticResource SecondaryTextBrush}" />
@@ -326,7 +334,7 @@
                                                 <TextBlock x:Name="RecentSampleWindowText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
                                             </StackPanel>
                                         </Border>
-                                    </UniformGrid>
+                                    </local:ResponsiveCardPanel>
                                 </Grid>
                             </TabItem>
 

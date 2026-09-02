@@ -1,6 +1,7 @@
 <UserControl x:Class="Chronicles.Desktop.SaveWorkspaceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Chronicles.Desktop"
              Background="Transparent">
     <Grid>
         <Grid.RowDefinitions>
@@ -51,7 +52,10 @@
                     <ItemsControl x:Name="SlotItemsControl" Margin="-4,0,2,0">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid Rows="3" Columns="3" />
+                                <local:ResponsiveCardPanel MinimumCardWidth="330"
+                                                           MaximumColumns="3"
+                                                           ColumnGap="0"
+                                                           RowGap="0" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>

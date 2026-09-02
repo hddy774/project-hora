@@ -24,6 +24,7 @@ internal static class ObserverUiContractTests
             VerifyPreferenceRoundTrip(root);
             VerifyWatchlistProjection();
             VerifyAdaptiveScalePolicy();
+            VerifyResponsiveCardLayoutPolicy();
         }
         finally
         {
@@ -139,6 +140,18 @@ internal static class ObserverUiContractTests
             "요청 배율보다 확대하지 않음");
         Equal(1.25d, AdaptiveUiScalePolicy.CalculateEffectiveScale(1.25d, 0d, 0d),
             "레이아웃 전 요청 배율 유지");
+    }
+
+    private static void VerifyResponsiveCardLayoutPolicy()
+    {
+        Equal(6, ResponsiveCardLayoutPolicy.CalculateColumns(1_000d, 150d, 8d, 6, 6),
+            "넓은 화면 카드 6열");
+        Equal(3, ResponsiveCardLayoutPolicy.CalculateColumns(520d, 150d, 8d, 6, 6),
+            "좁은 화면 카드 줄바꿈");
+        Equal(1, ResponsiveCardLayoutPolicy.CalculateColumns(120d, 150d, 8d, 6, 6),
+            "최소 폭 미만 단일 열");
+        Equal(0, ResponsiveCardLayoutPolicy.CalculateColumns(520d, 150d, 8d, 0, 6),
+            "빈 카드 집합");
     }
 
     private static void Equal<T>(T expected, T actual, string label)

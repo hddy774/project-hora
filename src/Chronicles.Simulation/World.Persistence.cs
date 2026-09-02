@@ -239,6 +239,12 @@ public sealed partial class World
         return new WorldAuthorityCheckpoint(checkpoint, ComputeStateHash());
     }
 
+    internal WorldAuthorityCheckpoint CreateStreamingAuthorityCheckpoint()
+    {
+        var checkpoint = CreateCheckpoint(materializeHistories: false);
+        return new WorldAuthorityCheckpoint(checkpoint, ComputeStateHash());
+    }
+
     public static void ValidateCheckpointForPersistence(WorldCheckpoint checkpoint) =>
         ValidateCheckpoint(checkpoint);
 
@@ -378,7 +384,9 @@ public sealed partial class World
         }
     }
 
-    public WorldCheckpoint CreateCheckpoint()
+    public WorldCheckpoint CreateCheckpoint() => CreateCheckpoint(materializeHistories: true);
+
+    private WorldCheckpoint CreateCheckpoint(bool materializeHistories)
     {
         var agents = new AgentCheckpoint[Population];
         for (var index = 0; index < Population; index++)
@@ -430,8 +438,12 @@ public sealed partial class World
                 _agents.ActiveMissionMaterials[index],
                 _agents.CopyMaterialInventory(index),
                 _agents.CopyEquippedTreasureQualities(index),
-                _agents.PersonalLogs[index].ToArray(),
-                _agents.Chronicles[index].ToArray(),
+                materializeHistories
+                    ? _agents.PersonalLogs[index].ToArray()
+                    : _agents.PersonalLogs[index],
+                materializeHistories
+                    ? _agents.Chronicles[index].ToArray()
+                    : _agents.Chronicles[index],
                 new CultivationCheckpoint(
                     _agents.PendingCultivationWork[index],
                     _agents.LastCultivationWorkBefore[index],
@@ -1171,8 +1183,8 @@ public sealed partial class World
                 || agent.BirthTick > checkpoint.Tick
                 || agent.LifeNumber < 1
                 || agent.PersonalLog is null
-                || agent.PersonalLog.Length > PersonalLogCapacity
-                || agent.Chronicle is not { Length: > 0 }
+                || agent.PersonalLog.Count > PersonalLogCapacity
+                || agent.Chronicle.Count == 0
                 || agent.TargetRank != 1
                 || agent.NextDecisionTick <= checkpoint.Tick
                 || agent.LastActionMonth < -1

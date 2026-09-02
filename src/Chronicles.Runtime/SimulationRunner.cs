@@ -347,6 +347,28 @@ public sealed class SimulationRunner : IDisposable
         }
     }
 
+    /// <summary>
+    /// 영구 기록을 배열로 복제하지 않은 checkpoint view를 안전 경계 안에서만 사용한다.
+    /// callback이 반환된 뒤 capture를 보관하면 안 된다.
+    /// </summary>
+    public TResult ExecuteSaveAtSafeBoundary<TResult>(
+        Func<RuntimeSaveCapture, TResult> operation)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+        lock (_worldGate)
+        {
+            return operation(new RuntimeSaveCapture(
+                _world.CreateStreamingAuthorityCheckpoint(),
+                _world.CreateSnapshot(
+                    rankingCount: 1,
+                    eventCount: 0,
+                    sections: ObservationSections.StatisticsSummary
+                        | ObservationSections.CombatPowerRanking
+                        | ObservationSections.Organization,
+                    worldChronicleCount: 0)));
+        }
+    }
+
     public void RestoreCheckpoint(WorldCheckpoint checkpoint)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);

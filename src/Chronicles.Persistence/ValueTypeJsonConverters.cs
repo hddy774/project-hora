@@ -42,9 +42,10 @@ internal sealed class SimulationTickJsonConverter : JsonConverter<SimulationTick
 /// 체크포인트의 인물별 최근 로그를 속성명 없는 고정 tuple로 기록한다.
 /// 기존 object-array도 계속 읽어 schema 25~31 저장 호환을 유지한다.
 /// </summary>
-internal sealed class PersonalLogEntryArrayJsonConverter : JsonConverter<PersonalLogEntry[]>
+internal sealed class PersonalLogEntryArrayJsonConverter :
+    JsonConverter<IReadOnlyList<PersonalLogEntry>>
 {
-    public override PersonalLogEntry[] Read(
+    public override IReadOnlyList<PersonalLogEntry> Read(
         ref Utf8JsonReader reader,
         Type typeToConvert,
         JsonSerializerOptions options)
@@ -78,7 +79,7 @@ internal sealed class PersonalLogEntryArrayJsonConverter : JsonConverter<Persona
 
     public override void Write(
         Utf8JsonWriter writer,
-        PersonalLogEntry[] value,
+        IReadOnlyList<PersonalLogEntry> value,
         JsonSerializerOptions options)
     {
         writer.WriteStartArray();
@@ -110,9 +111,10 @@ internal sealed class PersonalLogEntryArrayJsonConverter : JsonConverter<Persona
 /// <summary>
 /// 영구 연대기는 tuple과 생별 이름 변경점만 저장한다. 같은 이름을 항목마다 반복하지 않는다.
 /// </summary>
-internal sealed class LifeChronicleEntryArrayJsonConverter : JsonConverter<LifeChronicleEntry[]>
+internal sealed class LifeChronicleEntryArrayJsonConverter :
+    JsonConverter<IReadOnlyList<LifeChronicleEntry>>
 {
-    public override LifeChronicleEntry[] Read(
+    public override IReadOnlyList<LifeChronicleEntry> Read(
         ref Utf8JsonReader reader,
         Type typeToConvert,
         JsonSerializerOptions options)
@@ -154,7 +156,7 @@ internal sealed class LifeChronicleEntryArrayJsonConverter : JsonConverter<LifeC
 
     public override void Write(
         Utf8JsonWriter writer,
-        LifeChronicleEntry[] value,
+        IReadOnlyList<LifeChronicleEntry> value,
         JsonSerializerOptions options)
     {
         writer.WriteStartArray();

@@ -196,26 +196,28 @@ public sealed class GameApplicationSession : IDisposable
                 progress?.Report(new SaveOperationProgress(0, "안전 경계 대기"));
                 cancellationToken.ThrowIfCancellationRequested();
                 Volatile.Write(ref phase, (int)SaveOperationPhase.CapturingAuthority);
-                var capture = _runner.CreateSaveCapture();
-                progress?.Report(new SaveOperationProgress(10, "권위 스냅샷 고정"));
-                var summary = CreateManifestSummary(
-                    capture.SummarySnapshot,
-                    capture.Authority.StateHash,
-                    capture.Authority.Checkpoint.Seed,
-                    organizationCount: capture.SummarySnapshot.Organizations?.Organizations.Count ?? 0);
-                return SlotSaveStore.Save(
-                    saveRoot,
-                    definition.SlotId,
-                    capture.Authority,
-                    summary,
-                    persistence =>
-                    {
-                        Volatile.Write(
-                            ref phase,
-                            (int)SaveOperationProgressProjection.GetPhase(persistence.Phase));
-                        progress?.Report(
-                            SaveOperationProgressProjection.FromPersistence(persistence));
-                    });
+                return _runner.ExecuteSaveAtSafeBoundary(capture =>
+                {
+                    progress?.Report(new SaveOperationProgress(10, "권위 스냅샷 고정"));
+                    var summary = CreateManifestSummary(
+                        capture.SummarySnapshot,
+                        capture.Authority.StateHash,
+                        capture.Authority.Checkpoint.Seed,
+                        organizationCount: capture.SummarySnapshot.Organizations?.Organizations.Count ?? 0);
+                    return SlotSaveStore.Save(
+                        saveRoot,
+                        definition.SlotId,
+                        capture.Authority,
+                        summary,
+                        persistence =>
+                        {
+                            Volatile.Write(
+                                ref phase,
+                                (int)SaveOperationProgressProjection.GetPhase(persistence.Phase));
+                            progress?.Report(
+                                SaveOperationProgressProjection.FromPersistence(persistence));
+                        });
+                });
             }).ConfigureAwait(false);
         }
         catch (Exception exception)

@@ -371,7 +371,11 @@ public sealed partial class World
             lifecycleBoundary: nextTick == lifecycleTick);
     }
 
-    private void ParkCombatant(int index) => _agents.NextDecisionTicks[index] = long.MaxValue;
+    private void ParkCombatant(int index)
+    {
+        _agents.NextDecisionTicks[index] = long.MaxValue;
+        _decisionSchedule.Remove(index);
+    }
 
     private void FinishCombat(int winner, int loser, bool fatal = false)
     {

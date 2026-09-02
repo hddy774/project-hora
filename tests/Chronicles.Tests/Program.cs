@@ -152,6 +152,25 @@ static void DefaultPopulationAndGoal()
 
 static void RankingRevisionCacheAvoidsUnchangedSorts()
 {
+    var scores = new[]
+    {
+        12L,
+        long.MaxValue,
+        12L,
+        -4L,
+        long.MinValue,
+        999L,
+        -4L,
+    };
+    var radixOrder = new int[scores.Length];
+    var radixScratch = new int[scores.Length];
+    RankingRadixSorter.SortDescending(radixOrder, scores, radixScratch);
+    var comparisonOrder = Enumerable.Range(0, scores.Length)
+        .OrderByDescending(agent => scores[agent])
+        .ThenBy(agent => agent)
+        .ToArray();
+    EqualSequence(comparisonOrder, radixOrder, "64비트 랭킹 radix 순서·동점 AgentId 계약");
+
     const int population = 512;
     var world = World.Create(0xCACE_0014UL, population);
     var initial = world.GetRankingCacheDiagnostics();

@@ -18,6 +18,7 @@ public sealed partial class World
                 WorldGenerationConfiguration.Default);
         _random = new DeterministicRandom(checkpoint.RandomState);
         _agents = new AgentStore(checkpoint.Agents.Length);
+        _decisionSchedule = new AgentDecisionSchedule(checkpoint.Agents.Length);
         _causal = checkpoint.SchemaVersion >= 25
             ? AgentCausalStore.Restore(checkpoint.Agents.Length, checkpoint.Causal!)
             : new AgentCausalStore(checkpoint.Agents.Length);
@@ -33,6 +34,8 @@ public sealed partial class World
         _aptitudeRankByAgent = new int[checkpoint.Agents.Length];
         _agentByWealthRank = new int[checkpoint.Agents.Length];
         _wealthRankByAgent = new int[checkpoint.Agents.Length];
+        _rankingScoreByAgent = new long[checkpoint.Agents.Length];
+        _rankingScratchAgents = new int[checkpoint.Agents.Length];
         _worldChronicle = new WorldCenturyChronicle(
             checkpoint.Agents.Length,
             GameCalendar.GetYear(Tick));

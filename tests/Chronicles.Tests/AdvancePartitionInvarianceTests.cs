@@ -11,6 +11,7 @@ internal static class AdvancePartitionInvarianceTests
 
     public static void Run()
     {
+        AssertIndexedDecisionSchedule();
         AssertCausalRankHasNoSecondOneBasedOffset();
         AssertSchema30MigrationAndSchema31Validation();
         var baseline = AdvanceSingleCall();
@@ -27,6 +28,37 @@ internal static class AdvancePartitionInvarianceTests
         }
 
         AssertEquivalent(baseline, AdvanceAcrossCheckpoint(), "중간 checkpoint 복원 분할");
+    }
+
+    private static void AssertIndexedDecisionSchedule()
+    {
+        var schedule = new AgentDecisionSchedule(6);
+        schedule.Schedule(4, 30);
+        schedule.Schedule(1, 20);
+        schedule.Schedule(3, 20);
+        schedule.Schedule(0, 10);
+        schedule.Schedule(5, 40);
+        schedule.Schedule(2, 50);
+        schedule.Schedule(2, 5);
+        schedule.Schedule(4, 60);
+        TestAssert.True(schedule.Remove(3), "대기 일정 제거");
+        TestAssert.True(!schedule.Remove(3), "이미 제거된 일정 중복 제거 거부");
+
+        var order = new List<(int Agent, long Tick)>();
+        while (schedule.TryPeek(out var agent, out var tick))
+        {
+            TestAssert.Equal(agent, schedule.Dequeue(), "peek/dequeue 인물 일치");
+            order.Add((agent, tick));
+        }
+
+        TestAssert.True(order.SequenceEqual(new[]
+        {
+            (Agent: 2, Tick: 5L),
+            (Agent: 0, Tick: 10L),
+            (Agent: 1, Tick: 20L),
+            (Agent: 5, Tick: 40L),
+            (Agent: 4, Tick: 60L),
+        }), "indexed 일정 변경·제거·동점 순서");
     }
 
     private static void AssertSchema30MigrationAndSchema31Validation()

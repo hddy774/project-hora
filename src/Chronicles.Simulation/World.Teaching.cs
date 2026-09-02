@@ -347,7 +347,7 @@ public sealed partial class World
             trace.TargetKnowledgeRef,
             trace.ProvenanceId,
             result,
-            _causal.GetCurrentPath(teacher).EventRecordId);
+            _causal.GetCurrentEventRecordId(teacher));
         _causal.RecordKnowledgeClaim(
             trace.LearnerAgent,
             _agents.LifeNumbers[trace.LearnerAgent],

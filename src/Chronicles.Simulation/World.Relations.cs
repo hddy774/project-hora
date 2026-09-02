@@ -36,7 +36,7 @@ public sealed partial class World
                     _agents.PersonIdentityIds[existing],
                     kind,
                     Tick.Value,
-                    _causal.GetCurrentPath(agent).EventRecordId))
+                    _causal.GetCurrentEventRecordId(agent)))
                 {
                     RecordRelationInteractionMemories(agent, existing);
                 }
@@ -70,7 +70,7 @@ public sealed partial class World
                     _agents.PersonIdentityIds[candidate],
                     kind,
                     Tick.Value,
-                    _causal.GetCurrentPath(agent).EventRecordId))
+                    _causal.GetCurrentEventRecordId(agent)))
             {
                 RecordRelationInteractionMemories(agent, candidate);
                 return;

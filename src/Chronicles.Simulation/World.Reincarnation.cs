@@ -25,7 +25,7 @@ public sealed partial class World
             ReincarnationRules.GetSoulDamageLevel(
                 combatDeath,
                 _agents.InjuryPoints[index]),
-            _causal.GetCurrentPath(index).EventRecordId);
+            _causal.GetCurrentEventRecordId(index));
 
         var age = checked((int)Math.Min(int.MaxValue, GetAgeYears(index)));
         _totalDeaths++;
@@ -87,7 +87,7 @@ public sealed partial class World
         var result = _reincarnation.AdvanceStage(
             index,
             Tick.Value,
-            _causal.GetCurrentPath(index).EventRecordId);
+            _causal.GetCurrentEventRecordId(index));
         if (result.ReadyForRebirth)
         {
             CompleteRebirth(index);
@@ -158,7 +158,7 @@ public sealed partial class World
             _agents.RealmStages[index],
             _agents.RealmLayers[index],
             _agents.Power[index].Total,
-            _causal.GetCurrentPath(index).EventRecordId);
+            _causal.GetCurrentEventRecordId(index));
         _relations.StartNewLife(index, _agents.PersonIdentityIds[index]);
         _totalReincarnations++;
         AddChronicle(index, ChronicleEventKind.Rebirth);

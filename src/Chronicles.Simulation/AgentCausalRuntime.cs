@@ -320,6 +320,12 @@ internal sealed class AgentCausalStore
         return _currentPaths[agentIndex];
     }
 
+    public SimulationEventRecordId GetCurrentEventRecordId(int agentIndex)
+    {
+        ValidateAgent(agentIndex);
+        return _currentPaths[agentIndex].EventRecordId;
+    }
+
     public KnowledgeClaimId GetLatestKnowledgeClaimId(int agentIndex)
     {
         ValidateAgent(agentIndex);

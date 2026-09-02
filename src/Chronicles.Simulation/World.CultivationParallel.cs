@@ -15,6 +15,7 @@ internal sealed class CultivationParallelCoordinator
     private readonly int[] _resultSlotByAgent;
     private readonly CultivationWorkInput[] _inputs;
     private readonly CultivationWorkResult[] _results;
+    private readonly ParallelOptions _parallelOptions;
     private int _candidateCount;
 
     public CultivationParallelCoordinator(int population)
@@ -25,6 +26,12 @@ internal sealed class CultivationParallelCoordinator
         _resultSlotByAgent = new int[population];
         _inputs = new CultivationWorkInput[population];
         _results = new CultivationWorkResult[population];
+        _parallelOptions = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = Math.Min(
+                Math.Max(Environment.ProcessorCount - 1, 1),
+                4),
+        };
         Array.Fill(_resultSlotByAgent, -1);
     }
 
@@ -34,9 +41,7 @@ internal sealed class CultivationParallelCoordinator
 
     public int MinimumBatchSize { get; set; } = DefaultMinimumBatchSize;
 
-    public int WorkerCount { get; } = Math.Min(
-        Math.Max(Environment.ProcessorCount - 1, 1),
-        4);
+    public int WorkerCount => _parallelOptions.MaxDegreeOfParallelism;
 
     public long PreparedBatchCount { get; private set; }
 
@@ -87,7 +92,7 @@ internal sealed class CultivationParallelCoordinator
         Parallel.For(
             0,
             candidateCount,
-            new ParallelOptions { MaxDegreeOfParallelism = WorkerCount },
+            _parallelOptions,
             slot => _results[slot] = CultivationWorkCalculator.Calculate(_inputs[slot]));
         ParallelBatchCount++;
         ParallelCandidateCount = checked(ParallelCandidateCount + candidateCount);

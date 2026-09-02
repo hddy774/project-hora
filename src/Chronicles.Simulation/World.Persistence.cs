@@ -37,8 +37,7 @@ public sealed partial class World
         _aptitudeRankByAgent = new int[checkpoint.Agents.Length];
         _agentByWealthRank = new int[checkpoint.Agents.Length];
         _wealthRankByAgent = new int[checkpoint.Agents.Length];
-        _rankingScoreByAgent = new long[checkpoint.Agents.Length];
-        _rankingScratchAgents = new int[checkpoint.Agents.Length];
+        _rankingWorkspace = new RankingSortWorkspace(checkpoint.Agents.Length);
         _worldChronicle = new WorldCenturyChronicle(
             checkpoint.Agents.Length,
             GameCalendar.GetYear(Tick));

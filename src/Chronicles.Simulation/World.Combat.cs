@@ -415,7 +415,7 @@ public sealed partial class World
             _agents.PersonIdentityIds[loser],
             RelationInteractionKind.CombatOutcome,
             Tick.Value,
-            _causal.GetCurrentPath(winner).EventRecordId);
+            _causal.GetCurrentEventRecordId(winner));
         SetActivityDecision(
             winner,
             AgentActivity.Recovering,

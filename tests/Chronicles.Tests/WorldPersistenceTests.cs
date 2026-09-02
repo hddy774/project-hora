@@ -47,6 +47,17 @@ internal static class WorldPersistenceTests
             .ThenBy(agent => agent)
             .ToArray();
         EqualSequence(comparisonOrder, radixOrder, "64비트 랭킹 radix 순서·동점 AgentId 계약");
+        Equal(6, RankingRadixSorter.GetRequiredPassCount(scores), "signed 랭킹은 전체 64-bit 통과");
+
+        var nonNegativeScores = new[] { 0L, 1L, 12L, 2_047L, 2_048L, 50_000L, 50_000L };
+        RankingRadixSorter.SortDescending(radixOrder, nonNegativeScores, radixScratch);
+        comparisonOrder = Enumerable.Range(0, nonNegativeScores.Length)
+            .OrderByDescending(agent => nonNegativeScores[agent])
+            .ThenBy(agent => agent)
+            .ToArray();
+        EqualSequence(comparisonOrder, radixOrder, "비음수 가변 pass radix 순서·동점 AgentId 계약");
+        Equal(2, RankingRadixSorter.GetRequiredPassCount(nonNegativeScores),
+            "5만 이하 점수는 2-pass");
 
         const int population = 512;
         var world = World.Create(0xCACE_0014UL, population);
@@ -128,6 +139,7 @@ internal static class WorldPersistenceTests
             restoredInitial.TotalSortCount,
             restored.GetRankingCacheDiagnostics().TotalSortCount,
             "복원 직후 무변경 pulse 정렬 0회");
+
     }
 
     public static void DeterministicWorld()
@@ -522,6 +534,12 @@ internal static class WorldPersistenceTests
         var checkpointStopwatch = Stopwatch.StartNew();
         var checkpoint = world.CreateCheckpoint();
         checkpointStopwatch.Stop();
+        var totalActions = checkpoint.Agents.Sum(agent => (long)agent.ActionsTaken);
+        var minimumActions = checkpoint.Agents.Min(agent => agent.ActionsTaken);
+        var maximumActions = checkpoint.Agents.Max(agent => agent.ActionsTaken);
+        var maximumActionAgent = checkpoint.Agents
+            .Select((agent, index) => (Agent: agent, Index: index))
+            .MaxBy(candidate => candidate.Agent.ActionsTaken);
         var restoreStopwatch = Stopwatch.StartNew();
         var restored = World.Restore(checkpoint);
         restoreStopwatch.Stop();
@@ -536,11 +554,17 @@ internal static class WorldPersistenceTests
             $"{restoreStopwatch.Elapsed.TotalMilliseconds:N0} ms · 수행 후보 " +
             $"{cultivationParallel.EligibleCandidateCount:N0}명 / 병렬 " +
             $"{cultivationParallel.ParallelCandidateCount:N0}명·{cultivationParallel.ParallelBatchCount:N0}묶음 / " +
-            $"재검산 {cultivationParallel.FingerprintFallbackCount:N0}명");
+            $"재검산 {cultivationParallel.FingerprintFallbackCount:N0}명 · " +
+            $"행동 {totalActions:N0}회({minimumActions:N0}~{maximumActions:N0})");
         Console.WriteLine(
             $"PERF MEMORY: simulation 할당 {simulationAllocatedBytes / (1024d * 1024d):N2} MiB · " +
             $"tick당 {simulationAllocatedBytes / (double)targetTick:N0} B · " +
             $"강제 GC 후 live heap {liveHeapBytes / (1024d * 1024d):N2} MiB");
+        Console.WriteLine(
+            $"PERF ACTION MAX: A{maximumActionAgent.Index:D5} · " +
+            $"{maximumActionAgent.Agent.Activity} · last month {maximumActionAgent.Agent.LastActionMonth} · " +
+            $"next {maximumActionAgent.Agent.NextDecisionTick} · state " +
+            $"{maximumActionAgent.Agent.CultivationState}");
         Equal(targetTick, snapshot.Tick.Value, "성능 검증 도달 tick");
         Equal(10_000, snapshot.Population, "성능 검증 인구");
         True(snapshot.TotalCombatsCompleted > 0, "성능 검증 중 전투가 완료되어야 합니다.");

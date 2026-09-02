@@ -526,18 +526,6 @@ internal sealed partial class AgentStore
     public void RestoreLegacyAptitudeComponents(int index, Aptitudes aptitudes) =>
         RestoreAptitudeComponents(index, AptitudeRules.CreateUniformComponents(aptitudes));
 
-    public PowerInputSignature GetPowerInputSignature(int index) => new(
-        RealmStages[index],
-        RealmLayers[index],
-        TechniqueQualities[index],
-        TechniqueMasteries[index],
-        TechniqueUnderstanding[index],
-        SpellQualities[index],
-        SpellMasteries[index],
-        SpellUnderstanding[index],
-        CombatExperience[index],
-        CombatUnderstanding[index]);
-
     public void RecalculatePower(int index)
     {
         var previousMaximumHealth = MaximumHealth[index];

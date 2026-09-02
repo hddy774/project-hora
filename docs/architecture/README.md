@@ -179,6 +179,7 @@ checkpoint는 작업 수명 안에서만 보유하고, 수행 worker는 권위 �
 - SQLite incremental BLOB 쓰기: `SlotSaveStore.cs`
 - 후보 metadata·순차 decode·복구 선택: `SlotSaveStore.Load.cs`
 - 조직별 최근 100건 역사: `OrganizationModel.cs`, `OrganizationTransitions.cs`
+- 조직 종류·역할·명령·checkpoint DTO·창설 규칙: `OrganizationContracts.cs`
 - 조직 checkpoint·hash·복원·손상 검증: `OrganizationStore.Persistence.cs`
 - 검증 완료 Candidate World 교체: `SimulationRunner.cs`, `GameApplicationSession.cs`
 

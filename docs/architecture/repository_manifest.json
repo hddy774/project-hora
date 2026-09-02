@@ -110,6 +110,7 @@
     "law_candidate_authority": "src/Chronicles.Simulation/LawAuthorityStore.cs",
     "world_generation_authority": "src/Chronicles.Simulation/WorldGenerationCatalog.cs",
     "ongoing_generated_content": "src/Chronicles.Simulation/World.GeneratedContent.cs",
+    "organization_contracts": "src/Chronicles.Simulation/OrganizationContracts.cs",
     "organization_authority": "src/Chronicles.Simulation/OrganizationModel.cs",
     "organization_transition_authority": "src/Chronicles.Simulation/OrganizationTransitions.cs",
     "organization_checkpoint_authority": "src/Chronicles.Simulation/OrganizationStore.Persistence.cs",

@@ -37,8 +37,14 @@
 
             <TabControl Grid.Row="2" SelectedIndex="0">
                 <TabItem Header="화면">
-                    <StackPanel Margin="0,16,0,0">
-                            <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}">
+                    <Grid Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.25*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource PanelStyle}"
+                                    Background="{StaticResource PanelAltBrush}"
+                                    Margin="0,0,7,0">
                                 <StackPanel>
                                     <TextBlock Text="인터페이스 배율"
                                                Foreground="{StaticResource PrimaryTextBrush}"
@@ -64,7 +70,10 @@
                                 </StackPanel>
                             </Border>
 
-                            <Border Style="{StaticResource PanelStyle}" Background="{StaticResource PanelAltBrush}" Margin="0,14,0,0">
+                            <Border Grid.Column="1"
+                                    Style="{StaticResource PanelStyle}"
+                                    Background="{StaticResource PanelAltBrush}"
+                                    Margin="7,0,0,0">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -76,8 +85,9 @@
                                                    FontSize="18"
                                                    FontWeight="SemiBold" />
                                         <TextBlock Text="넓은 관찰을 위해 기본 창은 1,720×1,000으로 시작합니다."
-                                                   Margin="0,5,0,0"
-                                                   Foreground="{StaticResource SecondaryTextBrush}" />
+                                                   Margin="0,5,12,0"
+                                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                                   TextWrapping="Wrap" />
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                         <Button Margin="0,0,8,0" Click="RestoreWindowButton_Click">기본 크기</Button>
@@ -85,7 +95,7 @@
                                     </StackPanel>
                                 </Grid>
                             </Border>
-                    </StackPanel>
+                    </Grid>
                 </TabItem>
 
                 <TabItem Header="세계 생성">

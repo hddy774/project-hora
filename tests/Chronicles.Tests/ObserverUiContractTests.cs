@@ -44,6 +44,7 @@ internal static class ObserverUiContractTests
             "A00038",
             "Cultivation",
             123.5d,
+            true,
             "slot-04",
             1,
             new[] { 37, 8, 37, -1 });
@@ -57,6 +58,7 @@ internal static class ObserverUiContractTests
         Equal("Watchlist", loaded.Preferences.PeopleListMode, "관심 목록 모드 복원");
         Equal("Cultivation", loaded.Preferences.AgentDetailSection, "인물 내부 탭 복원");
         Equal(123.5d, loaded.Preferences.AgentDetailScrollOffset, "인물 스크롤 복원");
+        Equal(true, loaded.Preferences.CompactPersonShowsDetail, "좁은 화면 인물 내부 탭 복원");
         Equal("slot-04", loaded.Preferences.SelectedSaveSlotId, "선택 세이브 슬롯 복원");
         SequenceEqual(NormalizedWatchlist, loaded.Preferences.WatchlistedAgentIds, "관심 ID 정규화");
         True(!File.Exists(preferencePath + ".tmp"), "원자 임시 파일 정리");

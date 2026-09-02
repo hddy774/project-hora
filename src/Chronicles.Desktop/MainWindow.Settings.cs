@@ -16,6 +16,7 @@ public partial class MainWindow
         var scale = e.Scale;
         _uiScale = scale;
         RootLayoutGrid.LayoutTransform = new ScaleTransform(scale, scale);
+        ConfigureWorkspaceLayout(_workspaceRoute);
         _logService.AddDebug(DebugLogLevel.Information, $"UI 배율 변경 · {scale * 100:0}%");
     }
 

@@ -23,6 +23,8 @@ public partial class MainWindow
 {
     private bool _applyingWorkspaceRoute;
     private WorkspaceRoute _workspaceRoute = WorkspaceRoute.World;
+    private bool _compactPersonLayout;
+    private bool _compactPersonShowsDetail;
 
     private bool IsDashboardWorkspaceVisible =>
         DashboardWorkspaceGrid.Visibility == Visibility.Visible;
@@ -40,6 +42,14 @@ public partial class MainWindow
             return;
         }
 
+        if (route == WorkspaceRoute.People)
+        {
+            _compactPersonShowsDetail = false;
+        }
+        else if (route == WorkspaceRoute.Relations)
+        {
+            _compactPersonShowsDetail = true;
+        }
         ApplyWorkspaceRoute(route);
     }
 
@@ -138,6 +148,7 @@ public partial class MainWindow
         OrganizationAgentSelectedEventArgs e)
     {
         _selectedAgent = e.AgentId;
+        _compactPersonShowsDetail = true;
         ApplyWorkspaceRoute(WorkspaceRoute.People);
     }
 
@@ -147,22 +158,69 @@ public partial class MainWindow
     private void ConfigureWorkspaceLayout(WorkspaceRoute route)
     {
         var personWorkspace = route is WorkspaceRoute.People or WorkspaceRoute.Relations;
-        WorkspaceListPanel.Visibility = personWorkspace ? Visibility.Visible : Visibility.Collapsed;
-        WorkspaceDetailPanel.Visibility = personWorkspace ? Visibility.Visible : Visibility.Collapsed;
+        var windowWidth = ActualWidth > 0d ? ActualWidth : Width;
+        var personLogicalWidth = windowWidth / Math.Max(0.9d, _uiScale) - 184d;
+        _compactPersonLayout = personWorkspace && personLogicalWidth < 900d;
+        CompactPersonNavigationPanel.Visibility = _compactPersonLayout
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        Grid.SetColumn(WorkspaceListPanel, 0);
+        Grid.SetColumn(WorkspaceDetailPanel, _compactPersonLayout ? 0 : 2);
+        Grid.SetColumnSpan(WorkspaceListPanel, _compactPersonLayout ? 5 : 1);
+        Grid.SetColumnSpan(WorkspaceDetailPanel, _compactPersonLayout ? 5 : 1);
+        WorkspaceListPanel.Visibility = personWorkspace
+            && (!_compactPersonLayout || !_compactPersonShowsDetail)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        WorkspaceDetailPanel.Visibility = personWorkspace
+            && (!_compactPersonLayout || _compactPersonShowsDetail)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         WorkspaceContextPanel.Visibility = personWorkspace ? Visibility.Collapsed : Visibility.Visible;
-        WorkspaceListColumn.Width = personWorkspace
+        WorkspaceListColumn.Width = personWorkspace && !_compactPersonLayout
             ? new GridLength(470)
-            : new GridLength(0);
-        WorkspaceListGapColumn.Width = personWorkspace
+            : personWorkspace
+                ? new GridLength(1, GridUnitType.Star)
+                : new GridLength(0);
+        WorkspaceListGapColumn.Width = personWorkspace && !_compactPersonLayout
             ? new GridLength(14)
             : new GridLength(0);
-        WorkspaceDetailColumn.Width = personWorkspace
+        WorkspaceDetailColumn.Width = personWorkspace && !_compactPersonLayout
             ? new GridLength(1, GridUnitType.Star)
             : new GridLength(0);
         WorkspaceContextGapColumn.Width = new GridLength(0);
         WorkspaceContextColumn.Width = personWorkspace
             ? new GridLength(0)
             : new GridLength(1, GridUnitType.Star);
+        CompactPersonListToggle.IsChecked = !_compactPersonShowsDetail;
+        CompactPersonDetailToggle.IsChecked = _compactPersonShowsDetail;
+    }
+
+    private void CompactPersonListButton_Click(object sender, RoutedEventArgs e) =>
+        ShowCompactPersonPage(showDetail: false);
+
+    private void CompactPersonDetailButton_Click(object sender, RoutedEventArgs e) =>
+        ShowCompactPersonPage(showDetail: true);
+
+    private void ShowCompactPersonPage(bool showDetail)
+    {
+        _compactPersonShowsDetail = showDetail;
+        if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
+        {
+            ConfigureWorkspaceLayout(_workspaceRoute);
+            if (showDetail)
+            {
+                RefreshVisibleObservation();
+            }
+        }
+    }
+
+    private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
+        {
+            ConfigureWorkspaceLayout(_workspaceRoute);
+        }
     }
 
 }

@@ -221,6 +221,10 @@
         </UniformGrid>
 
         <Grid x:Name="DashboardWorkspaceGrid" Grid.Row="4" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="WorkspaceListColumn" Width="430" />
                 <ColumnDefinition x:Name="WorkspaceListGapColumn" Width="14" />
@@ -229,7 +233,29 @@
                 <ColumnDefinition x:Name="WorkspaceContextColumn" Width="365" />
             </Grid.ColumnDefinitions>
 
-            <Border x:Name="WorkspaceListPanel" Style="{StaticResource PanelStyle}" Padding="0">
+            <Border x:Name="CompactPersonNavigationPanel"
+                    Grid.Row="0"
+                    Grid.ColumnSpan="5"
+                    Margin="0,0,0,10"
+                    Padding="6"
+                    Style="{StaticResource PanelStyle}"
+                    Visibility="Collapsed">
+                <UniformGrid Rows="1" Columns="2">
+                    <RadioButton x:Name="CompactPersonListToggle"
+                                 GroupName="CompactPersonPage"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="0,0,4,0"
+                                 IsChecked="True"
+                                 Click="CompactPersonListButton_Click">인물 목록</RadioButton>
+                    <RadioButton x:Name="CompactPersonDetailToggle"
+                                 GroupName="CompactPersonPage"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Margin="4,0,0,0"
+                                 Click="CompactPersonDetailButton_Click">선택 상세</RadioButton>
+                </UniformGrid>
+            </Border>
+
+            <Border x:Name="WorkspaceListPanel" Grid.Row="1" Style="{StaticResource PanelStyle}" Padding="0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -303,7 +329,7 @@
                 </Grid>
             </Border>
 
-            <Border x:Name="WorkspaceDetailPanel" Grid.Column="2" Style="{StaticResource PanelStyle}">
+            <Border x:Name="WorkspaceDetailPanel" Grid.Row="1" Grid.Column="2" Style="{StaticResource PanelStyle}">
                 <ScrollViewer x:Name="AgentDetailScrollViewer" VerticalScrollBarVisibility="Hidden">
                     <StackPanel>
                         <Grid>
@@ -1249,7 +1275,7 @@
                 </ScrollViewer>
             </Border>
 
-            <Border x:Name="WorkspaceContextPanel" Grid.Column="4" Style="{StaticResource PanelStyle}" Padding="0">
+            <Border x:Name="WorkspaceContextPanel" Grid.Row="1" Grid.Column="4" Style="{StaticResource PanelStyle}" Padding="0">
                 <TabControl x:Name="WorldInfoTabControl"
                             Background="Transparent"
                             BorderThickness="0"

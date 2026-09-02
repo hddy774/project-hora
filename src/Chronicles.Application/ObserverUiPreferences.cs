@@ -20,6 +20,7 @@ public sealed record ObserverUiPreferences(
     string ExplorerSearch,
     string AgentDetailSection,
     double AgentDetailScrollOffset,
+    bool CompactPersonShowsDetail,
     string SelectedSaveSlotId,
     int SaveWorkspaceTabIndex,
     IReadOnlyList<int> WatchlistedAgentIds)
@@ -36,6 +37,7 @@ public sealed record ObserverUiPreferences(
         string.Empty,
         "Overview",
         0d,
+        false,
         SaveSlotRegistry.All[0].SlotId,
         0,
         Array.Empty<int>());

@@ -73,6 +73,7 @@ public partial class MainWindow : Window, IDisposable
         _logService.AddDebug(DebugLogLevel.Information, $"게임 초기화 · VERSION {ProductInfo.Version}");
         Loaded += MainWindow_Loaded;
         Closed += MainWindow_Closed;
+        SizeChanged += MainWindow_SizeChanged;
     }
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -269,12 +270,13 @@ public partial class MainWindow : Window, IDisposable
             return sections;
         }
 
-        if (_agentDetailSection == AgentDetailSection.Cultivation)
+        var personDetailVisible = !_compactPersonLayout || _compactPersonShowsDetail;
+        if (personDetailVisible && _agentDetailSection == AgentDetailSection.Cultivation)
         {
             sections |= ObservationSections.Cultivation;
         }
 
-        if (_agentDetailSection == AgentDetailSection.Records)
+        if (personDetailVisible && _agentDetailSection == AgentDetailSection.Records)
         {
             sections |= _selectedAgent is { } automaticAgent
                 && _logService.IsAutoPersonalOutput(automaticAgent)
@@ -293,27 +295,32 @@ public partial class MainWindow : Window, IDisposable
                 _ => ObservationSections.None,
             };
         }
-        if (_agentDetailSection == AgentDetailSection.Cultivation
+        if (personDetailVisible
+            && _agentDetailSection == AgentDetailSection.Cultivation
             && AptitudeDetailsExpander.IsExpanded)
         {
             sections |= ObservationSections.AptitudeDetails;
         }
-        if (_agentDetailSection == AgentDetailSection.Cultivation
+        if (personDetailVisible
+            && _agentDetailSection == AgentDetailSection.Cultivation
             && CultivationDetailProgressExpander.IsExpanded)
         {
             sections |= ObservationSections.CultivationDetail;
         }
-        if (_agentDetailSection == AgentDetailSection.Social
+        if (personDetailVisible
+            && _agentDetailSection == AgentDetailSection.Social
             && RelationsExpander.IsExpanded)
         {
             sections |= ObservationSections.Relations;
         }
-        if (_agentDetailSection == AgentDetailSection.Social
+        if (personDetailVisible
+            && _agentDetailSection == AgentDetailSection.Social
             && TeachingExpander.IsExpanded)
         {
             sections |= ObservationSections.Teaching;
         }
-        if (_agentDetailSection == AgentDetailSection.Social
+        if (personDetailVisible
+            && _agentDetailSection == AgentDetailSection.Social
             && CausalRuntimeExpander.IsExpanded)
         {
             sections |= ObservationSections.CausalRuntime;
@@ -342,12 +349,15 @@ public partial class MainWindow : Window, IDisposable
             if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
             {
                 UpdateRankingRows(snapshot);
-                UpdateSelectedAgent(
-                    observation.SelectedAgent,
-                    observation.SelectedPersonalLog,
-                    observation.SelectedChronicle,
-                    observation.SelectedPersonalCenturyChronicle,
-                    observation.SelectedReincarnation);
+                if (!_compactPersonLayout || _compactPersonShowsDetail)
+                {
+                    UpdateSelectedAgent(
+                        observation.SelectedAgent,
+                        observation.SelectedPersonalLog,
+                        observation.SelectedChronicle,
+                        observation.SelectedPersonalCenturyChronicle,
+                        observation.SelectedReincarnation);
+                }
             }
             else if (_workspaceRoute == WorkspaceRoute.Organizations)
             {
@@ -900,6 +910,13 @@ public partial class MainWindow : Window, IDisposable
             || _runner is null
             || RankingGrid.SelectedItem is not RankingRow row)
         {
+            return;
+        }
+
+        if (_compactPersonLayout)
+        {
+            _selectedAgent = row.AgentId;
+            ShowCompactPersonPage(showDetail: true);
             return;
         }
 

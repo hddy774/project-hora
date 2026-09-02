@@ -48,6 +48,7 @@ public partial class MainWindow
                 ? detailSection
                 : AgentDetailSection.Overview;
         _restoredAgentScrollOffset = preferences.AgentDetailScrollOffset;
+        _compactPersonShowsDetail = preferences.CompactPersonShowsDetail;
         RestorePeopleListMode(preferences.PeopleListMode);
         _watchlistedAgentIds.Clear();
         foreach (var agentId in preferences.WatchlistedAgentIds)
@@ -125,6 +126,7 @@ public partial class MainWindow
                 SearchTextBox.Text,
                 _agentDetailSection.ToString(),
                 AgentDetailScrollViewer.VerticalOffset,
+                _compactPersonShowsDetail,
                 SaveWorkspacePanel.SelectedSlotId,
                 SaveWorkspacePanel.SelectedWorkspaceTabIndex,
                 _watchlistedAgentIds.Order().ToArray());

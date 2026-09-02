@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Chronicles.Core;
 
 namespace Chronicles.Simulation;
@@ -12,9 +14,15 @@ internal sealed class PersonalLogRingStore
     public const int Capacity = 100;
 
     private const int AgentsPerSegment = 64;
+    private const int EntriesPerChunk = 10;
+    private const int ChunksPerAgent = Capacity / EntriesPerChunk;
+    private const int EagerChunksPerSegment = 3;
+
+    internal static int StoredEntrySizeBytes =>
+        Unsafe.SizeOf<CompactPersonalLogEntry>();
 
     private readonly int _population;
-    private readonly PersonalLogEntry[]?[] _segments;
+    private readonly Segment?[] _segments;
     private readonly byte[] _counts;
     private readonly byte[] _starts;
 
@@ -22,10 +30,48 @@ internal sealed class PersonalLogRingStore
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(population);
         _population = population;
-        _segments = new PersonalLogEntry[checked((population + AgentsPerSegment - 1)
-            / AgentsPerSegment)][];
+        _segments = new Segment[checked((population + AgentsPerSegment - 1)
+            / AgentsPerSegment)];
         _counts = new byte[population];
         _starts = new byte[population];
+    }
+
+    /// <summary>
+    /// 실제로 생성된 10행 청크 수다. 저장소 희소성 회귀 검증에만 사용한다.
+    /// </summary>
+    internal int AllocatedChunkCount
+    {
+        get
+        {
+            var count = 0;
+            foreach (var segment in _segments)
+            {
+                if (segment is not null)
+                {
+                    count += segment.AllocatedChunkCount;
+                }
+            }
+            return count;
+        }
+    }
+
+    /// <summary>
+    /// 현재 청크가 확보한 압축 entry 슬롯 수다.
+    /// </summary>
+    internal int AllocatedEntrySlotCount
+    {
+        get
+        {
+            var count = 0;
+            foreach (var segment in _segments)
+            {
+                if (segment is not null)
+                {
+                    count = checked(count + segment.AllocatedEntrySlotCount);
+                }
+            }
+            return count;
+        }
     }
 
     public AgentPersonalLog this[int agentIndex]
@@ -49,7 +95,9 @@ internal sealed class PersonalLogRingStore
 
         var segment = _segments[agentIndex / AgentsPerSegment]
             ?? throw new InvalidOperationException("개인 로그 분할 저장소가 초기화되지 않았습니다.");
-        return segment[GetPhysicalOffset(agentIndex, logicalIndex)];
+        return segment.Get(
+            agentIndex % AgentsPerSegment,
+            GetPhysicalIndex(agentIndex, logicalIndex));
     }
 
     private void Set(int agentIndex, int logicalIndex, PersonalLogEntry value)
@@ -62,7 +110,10 @@ internal sealed class PersonalLogRingStore
 
         var segment = _segments[agentIndex / AgentsPerSegment]
             ?? throw new InvalidOperationException("개인 로그 분할 저장소가 초기화되지 않았습니다.");
-        segment[GetPhysicalOffset(agentIndex, logicalIndex)] = value;
+        segment.SetExisting(
+            agentIndex % AgentsPerSegment,
+            GetPhysicalIndex(agentIndex, logicalIndex),
+            value);
     }
 
     private void Add(int agentIndex, PersonalLogEntry value)
@@ -71,17 +122,21 @@ internal sealed class PersonalLogRingStore
         var start = _starts[agentIndex];
         var logicalIndex = count < Capacity ? count : 0;
         var segmentIndex = agentIndex / AgentsPerSegment;
-        var segment = _segments[segmentIndex] ??= new PersonalLogEntry[
-            checked(GetSegmentAgentCount(segmentIndex) * Capacity)];
+        var segment = _segments[segmentIndex] ??= new Segment(
+            GetSegmentAgentCount(segmentIndex));
+        var segmentAgentIndex = agentIndex % AgentsPerSegment;
 
         if (count < Capacity)
         {
-            segment[GetPhysicalOffset(agentIndex, logicalIndex)] = value;
+            segment.Set(
+                segmentAgentIndex,
+                GetPhysicalIndex(agentIndex, logicalIndex),
+                value);
             _counts[agentIndex] = checked((byte)(count + 1));
             return;
         }
 
-        segment[GetSegmentAgentOffset(agentIndex) + start] = value;
+        segment.SetExisting(segmentAgentIndex, start, value);
         _starts[agentIndex] = checked((byte)((start + 1) % Capacity));
     }
 
@@ -112,22 +167,15 @@ internal sealed class PersonalLogRingStore
 
         var segment = _segments[agentIndex / AgentsPerSegment]
             ?? throw new InvalidOperationException("개인 로그 분할 저장소가 초기화되지 않았습니다.");
-        var agentOffset = GetSegmentAgentOffset(agentIndex);
-        var start = _starts[agentIndex];
-        var firstLength = Math.Min(count, Capacity - start);
-        segment.AsSpan(agentOffset + start, firstLength).CopyTo(destination);
-        if (firstLength < count)
-        {
-            segment.AsSpan(agentOffset, count - firstLength).CopyTo(destination[firstLength..]);
-        }
+        segment.CopyTo(
+            agentIndex % AgentsPerSegment,
+            _starts[agentIndex],
+            count,
+            destination);
     }
 
-    private int GetPhysicalOffset(int agentIndex, int logicalIndex) => checked(
-        GetSegmentAgentOffset(agentIndex)
-        + ((_starts[agentIndex] + logicalIndex) % Capacity));
-
-    private static int GetSegmentAgentOffset(int agentIndex) => checked(
-        (agentIndex % AgentsPerSegment) * Capacity);
+    private int GetPhysicalIndex(int agentIndex, int logicalIndex) =>
+        (_starts[agentIndex] + logicalIndex) % Capacity;
 
     private int GetSegmentAgentCount(int segmentIndex) => Math.Min(
         AgentsPerSegment,
@@ -139,6 +187,209 @@ internal sealed class PersonalLogRingStore
         {
             throw new ArgumentOutOfRangeException(nameof(agentIndex));
         }
+    }
+
+    /// <summary>
+    /// 한 segment의 64명을 10행 단위 slab으로 나눈다. 첫 로그에서 자주 사용하는
+    /// 30행만 함께 확보해 장기 tick 중의 할당을 초기화 경계로 옮기고, 나머지
+    /// 70행은 실제 사용 시점까지 지연한다. 100행에 도달하면 열 청크가 모두
+    /// 고정되어 이후 링 덮어쓰기에서는 managed allocation이 발생하지 않는다.
+    /// </summary>
+    private sealed class Segment
+    {
+        private readonly int _agentCount;
+        private readonly CompactPersonalLogEntry[]?[] _chunks =
+            new CompactPersonalLogEntry[ChunksPerAgent][];
+
+        public Segment(int agentCount)
+        {
+            _agentCount = agentCount;
+            for (var chunkIndex = 0;
+                chunkIndex < EagerChunksPerSegment;
+                chunkIndex++)
+            {
+                _chunks[chunkIndex] = new CompactPersonalLogEntry[checked(
+                    _agentCount * EntriesPerChunk)];
+            }
+            AllocatedChunkCount = EagerChunksPerSegment;
+        }
+
+        public int AllocatedChunkCount { get; private set; }
+        public int AllocatedEntrySlotCount => checked(
+            AllocatedChunkCount * _agentCount * EntriesPerChunk);
+
+        public PersonalLogEntry Get(int segmentAgentIndex, int physicalIndex)
+        {
+            var chunkIndex = physicalIndex / EntriesPerChunk;
+            var chunk = _chunks[chunkIndex]
+                ?? throw new InvalidOperationException("개인 로그 청크가 초기화되지 않았습니다.");
+            return chunk[GetChunkOffset(segmentAgentIndex, physicalIndex)].Expand();
+        }
+
+        public void Set(
+            int segmentAgentIndex,
+            int physicalIndex,
+            PersonalLogEntry value)
+        {
+            var chunkIndex = physicalIndex / EntriesPerChunk;
+            var chunk = _chunks[chunkIndex];
+            if (chunk is null)
+            {
+                chunk = new CompactPersonalLogEntry[checked(
+                    _agentCount * EntriesPerChunk)];
+                _chunks[chunkIndex] = chunk;
+                AllocatedChunkCount++;
+            }
+            chunk[GetChunkOffset(segmentAgentIndex, physicalIndex)] =
+                CompactPersonalLogEntry.Create(value);
+        }
+
+        public void SetExisting(
+            int segmentAgentIndex,
+            int physicalIndex,
+            PersonalLogEntry value)
+        {
+            var chunkIndex = physicalIndex / EntriesPerChunk;
+            var chunk = _chunks[chunkIndex]
+                ?? throw new InvalidOperationException("개인 로그 청크가 초기화되지 않았습니다.");
+            chunk[GetChunkOffset(segmentAgentIndex, physicalIndex)] =
+                CompactPersonalLogEntry.Create(value);
+        }
+
+        public void CopyTo(
+            int segmentAgentIndex,
+            int start,
+            int count,
+            Span<PersonalLogEntry> destination)
+        {
+            var copied = 0;
+            var physicalIndex = start;
+            while (copied < count)
+            {
+                var chunkIndex = physicalIndex / EntriesPerChunk;
+                var withinChunk = physicalIndex % EntriesPerChunk;
+                var copyLength = Math.Min(
+                    count - copied,
+                    EntriesPerChunk - withinChunk);
+                var chunk = _chunks[chunkIndex]
+                    ?? throw new InvalidOperationException("개인 로그 청크가 초기화되지 않았습니다.");
+                var sourceOffset = checked(
+                    (segmentAgentIndex * EntriesPerChunk) + withinChunk);
+                for (var index = 0; index < copyLength; index++)
+                {
+                    destination[copied + index] = chunk[sourceOffset + index].Expand();
+                }
+                copied += copyLength;
+                physicalIndex = (physicalIndex + copyLength) % Capacity;
+            }
+        }
+
+        private static int GetChunkOffset(int segmentAgentIndex, int physicalIndex) =>
+            checked((segmentAgentIndex * EntriesPerChunk)
+                + (physicalIndex % EntriesPerChunk));
+    }
+
+    /// <summary>
+    /// 공개 DTO의 nullable wrapper와 정렬 padding을 저장 배열에 반복하지 않는다.
+    /// 원래 값은 조회 경계에서만 복원되며 Pack=1 고정으로 entry당 36바이트를 사용한다.
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    private readonly struct CompactPersonalLogEntry
+    {
+        private const byte KindMask = 0b0000_0111;
+        private const byte PrimaryActorFlag = 0b0000_1000;
+        private const byte HasActivityFlag = 0b0001_0000;
+        private const byte HasWorldEventFlag = 0b0010_0000;
+        private const byte HasChronicleEventFlag = 0b0100_0000;
+        private const byte HasRelatedAgentFlag = 0b1000_0000;
+
+        private readonly long _sequence;
+        private readonly long _tick;
+        private readonly long _value;
+        private readonly int _lifeNumber;
+        private readonly int _relatedAgentValue;
+        private readonly byte _kindAndFlags;
+        private readonly byte _activity;
+        private readonly byte _worldEventKind;
+        private readonly byte _chronicleEventKind;
+
+        private CompactPersonalLogEntry(
+            long sequence,
+            long tick,
+            long value,
+            int lifeNumber,
+            int relatedAgentValue,
+            byte kindAndFlags,
+            byte activity,
+            byte worldEventKind,
+            byte chronicleEventKind)
+        {
+            _sequence = sequence;
+            _tick = tick;
+            _value = value;
+            _lifeNumber = lifeNumber;
+            _relatedAgentValue = relatedAgentValue;
+            _kindAndFlags = kindAndFlags;
+            _activity = activity;
+            _worldEventKind = worldEventKind;
+            _chronicleEventKind = chronicleEventKind;
+        }
+
+        public static CompactPersonalLogEntry Create(PersonalLogEntry value)
+        {
+            var kind = (byte)value.Kind;
+            if ((kind & ~KindMask) != 0)
+            {
+                throw new InvalidDataException("개인 로그 종류가 압축 범위를 벗어났습니다.");
+            }
+
+            var flags = kind;
+            if (value.IsPrimaryActor)
+            {
+                flags |= PrimaryActorFlag;
+            }
+            if (value.Activity.HasValue)
+            {
+                flags |= HasActivityFlag;
+            }
+            if (value.WorldEventKind.HasValue)
+            {
+                flags |= HasWorldEventFlag;
+            }
+            if (value.ChronicleEventKind.HasValue)
+            {
+                flags |= HasChronicleEventFlag;
+            }
+            if (value.RelatedAgent.HasValue)
+            {
+                flags |= HasRelatedAgentFlag;
+            }
+
+            return new CompactPersonalLogEntry(
+                value.Sequence,
+                value.Tick.Value,
+                value.Value,
+                value.LifeNumber,
+                value.RelatedAgent.GetValueOrDefault().Value,
+                flags,
+                (byte)value.Activity.GetValueOrDefault(),
+                (byte)value.WorldEventKind.GetValueOrDefault(),
+                (byte)value.ChronicleEventKind.GetValueOrDefault());
+        }
+
+        public PersonalLogEntry Expand() => new(
+            _sequence,
+            new SimulationTick(_tick),
+            _lifeNumber,
+            (PersonalLogKind)(_kindAndFlags & KindMask),
+            Has(HasActivityFlag) ? (AgentActivity)_activity : null,
+            Has(HasWorldEventFlag) ? (WorldEventKind)_worldEventKind : null,
+            Has(HasChronicleEventFlag) ? (ChronicleEventKind)_chronicleEventKind : null,
+            Has(PrimaryActorFlag),
+            Has(HasRelatedAgentFlag) ? new AgentId(_relatedAgentValue) : null,
+            _value);
+
+        private bool Has(byte flag) => (_kindAndFlags & flag) != 0;
     }
 
     internal readonly struct AgentPersonalLog : IReadOnlyList<PersonalLogEntry>

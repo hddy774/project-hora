@@ -129,8 +129,13 @@ public sealed partial class World
         _agents.CultivationProgress[index] = after;
         _agents.LastCultivationWorkBefore[index] = before;
         _agents.LastCultivationWorkGain[index] = appliedGain;
-        var passMask = EvaluateEntryGatePassMask(index);
-        _agents.EntryGatePassMasks[index] = passMask;
+        var passMask = before == 0
+            ? EvaluateEntryGatePassMask(index)
+            : _agents.EntryGatePassMasks[index];
+        if (before == 0)
+        {
+            _agents.EntryGatePassMasks[index] = passMask;
+        }
         var outcome = BreakthroughOutcome.None;
         var blocker = CultivationBottleneckCause.None;
 
@@ -182,13 +187,7 @@ public sealed partial class World
             + (_agents.GetDerivedAptitude(
                 index,
                 AptitudeDerivedAbility.ComprehensionLearning) / 100);
-        for (var gateIndex = 0; gateIndex < CultivationRules.EntryGateSlotCount; gateIndex++)
-        {
-            if ((previousMask & (1 << gateIndex)) == 0)
-            {
-                _agents.AddEntryGateTempering(index, gateIndex, temperingGain);
-            }
-        }
+        _agents.AddFailedEntryGateTemperings(index, previousMask, temperingGain);
 
         var passMask = EvaluateEntryGatePassMask(index);
         _agents.EntryGatePassMasks[index] = passMask;
@@ -1008,26 +1007,22 @@ public sealed partial class World
     private byte EvaluateEntryGatePassMask(int index)
     {
         var aptitudes = _agents.GetContextAptitudes(index, combat: false);
-        var gate1 = CultivationRules.EvaluateEntryGate(
-            1,
+        var temperings = _agents.GetEntryGateTemperings(index);
+        var gate1 = CultivationRules.IsEntryGatePassed(
             aptitudes.SpiritualRoot.Hundredths,
             (aptitudes.Comprehension.Hundredths
                 + aptitudes.Mind.Hundredths
                 + aptitudes.Soul.Hundredths) / 3,
-            _agents.GetEntryGateTempering(index, 0));
-        var gate2 = CultivationRules.EvaluateEntryGate(
-            2,
+            temperings[0]);
+        var gate2 = CultivationRules.IsEntryGatePassed(
             (aptitudes.Bone.Hundredths + aptitudes.Constitution.Hundredths) / 2,
             (aptitudes.SpiritualRoot.Hundredths + aptitudes.Mind.Hundredths) / 2,
-            _agents.GetEntryGateTempering(index, 1));
-        var gate3 = CultivationRules.EvaluateEntryGate(
-            3,
+            temperings[1]);
+        var gate3 = CultivationRules.IsEntryGatePassed(
             aptitudes.Comprehension.Hundredths,
             (aptitudes.SpiritualRoot.Hundredths + aptitudes.Soul.Hundredths) / 2,
-            _agents.GetEntryGateTempering(index, 2));
-        return checked((byte)((gate1.Passed ? 1 : 0)
-            | (gate2.Passed ? 2 : 0)
-            | (gate3.Passed ? 4 : 0)));
+            temperings[2]);
+        return checked((byte)((gate1 ? 1 : 0) | (gate2 ? 2 : 0) | (gate3 ? 4 : 0)));
     }
 
     private CultivationGateSnapshot[] CreateEntryGateSnapshots(int index)

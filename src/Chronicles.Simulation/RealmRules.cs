@@ -211,6 +211,21 @@ public static class CultivationRules
             corePassed && scorePassed && !explicitBlocker);
     }
 
+    internal static bool IsEntryGatePassed(
+        int coreChannelHundredths,
+        int supportCompositeHundredths,
+        int temperingBonusHundredths = 0)
+    {
+        var effectiveCore = Math.Min(
+            QualityValue.MaximumHundredths,
+            checked(coreChannelHundredths + temperingBonusHundredths));
+        var support = Math.Min(
+            supportCompositeHundredths * EntryGateSupportWeightBasisPoints / 10_000,
+            EntryGateSupportCapHundredths);
+        return effectiveCore >= EntryGateCoreFloorHundredths
+            && effectiveCore + support >= EntryGateThresholdHundredths;
+    }
+
     public static BreakthroughClass GetAttemptClass(int floor, bool greatPerfection) =>
         greatPerfection
             ? BreakthroughClass.MajorRealm

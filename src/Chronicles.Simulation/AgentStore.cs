@@ -750,6 +750,38 @@ internal sealed partial class AgentStore
     public int GetEntryGateTempering(int index, int gateIndex) =>
         EntryGateTemperings[GetEntryGateTemperingOffset(index, gateIndex)];
 
+    public ReadOnlySpan<ushort> GetEntryGateTemperings(int index)
+    {
+        if ((uint)index >= (uint)Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+        return EntryGateTemperings.AsSpan(
+            index * CultivationRules.EntryGateSlotCount,
+            CultivationRules.EntryGateSlotCount);
+    }
+
+    public void AddFailedEntryGateTemperings(int index, byte passedMask, int gain)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(gain);
+        if ((uint)index >= (uint)Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        var start = index * CultivationRules.EntryGateSlotCount;
+        for (var gate = 0; gate < CultivationRules.EntryGateSlotCount; gate++)
+        {
+            if ((passedMask & (1 << gate)) != 0)
+            {
+                continue;
+            }
+            EntryGateTemperings[start + gate] = checked((ushort)Math.Min(
+                QualityValue.MaximumHundredths,
+                EntryGateTemperings[start + gate] + gain));
+        }
+    }
+
     public void AddEntryGateTempering(int index, int gateIndex, int gain)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(gain);

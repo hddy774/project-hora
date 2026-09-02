@@ -23,6 +23,12 @@
 > **Notion 통합 보고서:**
 > [2026-09-02 선로만상록 전체 기술 감사·개발 가이드·리팩터링·성능 계획](https://app.notion.com/p/3ceacc9e6175816a9ba7e07d18626f24)
 
+> **감사 이후 실행 계획:** 이 문서의 `0.0.21 / main@7eb4d54`는 감사 스냅샷으로
+> 보존한다. 현재 `0.0.22 / main@9b0fda8`과 진행 중인 `0.0.23` 이후 구현 순서는
+> [다음 버전 통합 기획서](NEXT_VERSION_PLAN_2026-09-02.md)와
+> [Notion 순차 구현 작업 43개](https://app.notion.com/p/e70c78a6fca1440988f9e224c3be1be4)를
+> 따른다.
+
 > **감사 이후 사용자 확정 결정:** `A110-M02-V13`의 53개 물리 테이블 수는 PC의
 > 필수 저장 형식에서 제외한다. PC는 논리 권위 도메인을 canonical
 > `authority_snapshot`과 typed checkpoint로 보존하는 `PC Adapt`를 사용한다.

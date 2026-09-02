@@ -5,9 +5,11 @@
 아니며, 기존 `PC_TEMP_REVIEW`를 자동으로 확정하지 않는다.
 
 현재 상태와 근거는 [2026-09-02 기술 감사 보고서](TECHNICAL_AUDIT_2026-09-02.md),
-우선순위는 [리팩터링·성능 로드맵](REFACTORING_PERFORMANCE_ROADMAP.md), 기획·승인
-상태는 [Notion 통합 보고서](https://app.notion.com/p/3ceacc9e6175816a9ba7e07d18626f24)를
-함께 확인한다.
+순차 실행은 [다음 버전 통합 기획서](NEXT_VERSION_PLAN_2026-09-02.md), 세부 개선은
+[리팩터링·성능 로드맵](REFACTORING_PERFORMANCE_ROADMAP.md), 기획·승인 상태는
+[Notion 다음 버전 기획](https://app.notion.com/p/3cfacc9e6175812e8494ea08c2dad6fb)과
+[순차 구현 작업 DB](https://app.notion.com/p/e70c78a6fca1440988f9e224c3be1be4)를 함께
+확인한다.
 
 ## 1. 개발을 시작하기 전 읽을 순서
 
@@ -20,7 +22,8 @@
    [`PC_TEMP_REVIEW_LEDGER.md`](traceability/PC_TEMP_REVIEW_LEDGER.md)
 6. 실제 `*.csproj`, owner 코드와 관련 테스트
 7. 현재 버전의 `docs/evidence/<VERSION>/verification.md`
-8. README·GAME_DESIGN·CHANGELOG의 설명과 과거 기록
+8. [`NEXT_VERSION_PLAN_2026-09-02.md`](NEXT_VERSION_PLAN_2026-09-02.md)의 현재 Task ID
+9. README·GAME_DESIGN·CHANGELOG의 설명과 과거 기록
 
 충돌이 있으면 manifest·실제 project reference·코드·테스트를 함께 확인한다. 과거
 README 문장이나 예전 benchmark만으로 현재 구조와 완료 상태를 판정하지 않는다.

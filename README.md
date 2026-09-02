@@ -1,13 +1,18 @@
 # 선로만상록 PC · Chronicles of Myriad Immortal Paths
 
-> **2026-09-02 기술 감사 기준:** `VERSION 0.0.21`, GitHub/local
-> `main@7eb4d540b328d4664778b3e494148db0cd36bee2`. 구현·로컬 Release 검증은
-> 완료됐고 GitHub Actions/Release와 0.0.21 화면 직접 조작 검증은 미완료입니다.
+> **2026-09-02 현재 공식 기준:** `VERSION 0.0.22`, GitHub
+> `main@9b0fda8134c01b387bdef28caf281d99a7095190`. 로컬 Release `66/66`,
+> 화면 조작과 self-contained package를 완료했고 GitHub Actions/Release는 없습니다.
+> 다음 `0.0.23`은 로컬 구현 중이며 SOAK·최종 화면·VERSION·package evidence가
+> 끝나기 전에는 완료가 아닙니다.
 > 전체 구조·알고리즘·증거 수준은 [기술 감사 보고서](docs/TECHNICAL_AUDIT_2026-09-02.md),
 > 앞으로의 절차는 [개발 가이드](docs/DEVELOPMENT_GUIDE.md), 개선 순서는
+> [다음 버전 통합 기획서](docs/NEXT_VERSION_PLAN_2026-09-02.md)와
 > [리팩터링·성능 로드맵](docs/REFACTORING_PERFORMANCE_ROADMAP.md), 임시 규칙 55개는
 > [PC 임시 규칙 검토 원장](docs/traceability/PC_TEMP_REVIEW_LEDGER.md)을 따릅니다.
-> [Notion 통합 보고서](https://app.notion.com/p/3ceacc9e6175816a9ba7e07d18626f24)
+> [Notion 통합 감사](https://app.notion.com/p/3ceacc9e6175816a9ba7e07d18626f24) ·
+> [Notion 다음 버전 기획](https://app.notion.com/p/3cfacc9e6175812e8494ea08c2dad6fb) ·
+> [순차 구현 작업 43개](https://app.notion.com/p/e70c78a6fca1440988f9e224c3be1be4)
 
 현재 버전은 루트 `VERSION`에서 관리하며 `대표.중간.소규모` 형식을 사용합니다. 기능
 업데이트마다 `scripts/bump-patch-version.ps1`이 소규모 버전을 한 단계 올립니다.

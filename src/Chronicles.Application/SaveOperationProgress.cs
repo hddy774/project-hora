@@ -1,4 +1,5 @@
 using Chronicles.Persistence;
+using System.Runtime;
 
 namespace Chronicles.Application;
 
@@ -63,4 +64,32 @@ internal static class SaveOperationProgressProjection
         };
         return new SaveOperationProgress(progress.Percent, stage);
     }
+}
+
+/// <summary>
+/// 저장 직렬화와 후보 세계 검증에서 생긴 대형 임시 객체가 실제 메모리 압박으로
+/// 이어진 경우에만 저장 작업 경계에서 LOH를 한 번 정리한다.
+/// </summary>
+internal static class StorageMemoryRecovery
+{
+    // PC_TEMP_REVIEW-024: 실제 장기 SOAK 표본으로 재조정할 초기 경계다.
+    internal const long HeapThresholdBytes = 768L * 1024 * 1024;
+    internal const long FragmentationThresholdBytes = 256L * 1024 * 1024;
+
+    public static bool CollectIfNeeded()
+    {
+        var memory = GC.GetGCMemoryInfo();
+        if (!ShouldCollect(memory.HeapSizeBytes, memory.FragmentedBytes))
+        {
+            return false;
+        }
+
+        GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized, blocking: true, compacting: true);
+        return true;
+    }
+
+    internal static bool ShouldCollect(long heapBytes, long fragmentedBytes) =>
+        heapBytes >= HeapThresholdBytes
+        || fragmentedBytes >= FragmentationThresholdBytes;
 }

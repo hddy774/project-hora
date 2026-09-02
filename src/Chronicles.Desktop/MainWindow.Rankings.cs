@@ -391,10 +391,12 @@ public partial class MainWindow
             return;
         }
 
-        if (!_watchlistedAgentIds.Add(selected.Value))
+        var isProtected = _watchlistedAgentIds.Add(selected.Value);
+        if (!isProtected)
         {
             _watchlistedAgentIds.Remove(selected.Value);
         }
+        _runner?.SetDetailedChronicleProtection(selected, isProtected);
         UpdateWatchlistToggle(selected);
         if (_watchlistMode && _latestSnapshot is { } snapshot)
         {

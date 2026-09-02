@@ -93,6 +93,10 @@ public sealed class GameApplicationSession : IDisposable
     public RuntimePerformanceSnapshot GetPerformanceSnapshot() =>
         _runner.GetPerformanceSnapshot();
     public WorldRuntimeMetadata GetWorldMetadata() => _runner.GetWorldMetadata();
+    public void SetDetailedChronicleProtection(AgentId agentId, bool isProtected) =>
+        _runner.SetDetailedChronicleProtection(agentId, isProtected);
+    public IReadOnlyList<AgentId> GetDetailedChronicleProtectionList() =>
+        _runner.GetDetailedChronicleProtectionList();
 
     public WorldSnapshot GetSnapshot(
         int rankingCount = 1_000,
@@ -227,6 +231,10 @@ public sealed class GameApplicationSession : IDisposable
                 (SaveOperationPhase)Volatile.Read(ref phase),
                 exception);
         }
+        finally
+        {
+            StorageMemoryRecovery.CollectIfNeeded();
+        }
     }
 
     public Task<SlotSaveResult> SaveDefaultAsync(CancellationToken cancellationToken = default) =>
@@ -283,6 +291,10 @@ public sealed class GameApplicationSession : IDisposable
                 "불러오기",
                 (SaveOperationPhase)Volatile.Read(ref phase),
                 exception);
+        }
+        finally
+        {
+            StorageMemoryRecovery.CollectIfNeeded();
         }
     }
 

@@ -60,6 +60,7 @@ public partial class MainWindow : Window, IDisposable
         Title = $"{ProductInfo.KoreanTitle} PC v{ProductInfo.Version}";
         VersionText.Text = $"VERSION {ProductInfo.Version}";
         _runner = GameApplicationSession.CreateDefault(DefaultWorldSeed);
+        ApplyChronicleRetentionWatchlist(_runner);
         SettingsWorkspacePanel.SetCurrentWorldSettings(
             DefaultWorldSeed,
             _runner.GetWorldMetadata().Population,

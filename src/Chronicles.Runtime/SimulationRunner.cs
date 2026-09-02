@@ -10,6 +10,7 @@ public sealed class SimulationRunner : IDisposable
     private const int MaximumPendingWorldEvents = 100_000;
     private const int MaximumPendingWorldChronicles = 1_024;
     private readonly object _worldGate = new();
+    private readonly HashSet<int> _chronicleRetentionWatchlist = [];
     private World _world;
     private WorldObservationQueries _queries;
     private readonly ManualResetEventSlim _stop = new(initialState: false);
@@ -101,6 +102,30 @@ public sealed class SimulationRunner : IDisposable
                 _world.Population,
                 _world.Balance,
                 _world.Generation);
+        }
+    }
+
+    public void SetDetailedChronicleProtection(AgentId agentId, bool isProtected)
+    {
+        lock (_worldGate)
+        {
+            _world.SetDetailedChronicleProtection(agentId, isProtected);
+            if (isProtected)
+            {
+                _chronicleRetentionWatchlist.Add(agentId.Value);
+            }
+            else
+            {
+                _chronicleRetentionWatchlist.Remove(agentId.Value);
+            }
+        }
+    }
+
+    public IReadOnlyList<AgentId> GetDetailedChronicleProtectionList()
+    {
+        lock (_worldGate)
+        {
+            return _world.GetDetailedChronicleProtectionList();
         }
     }
 
@@ -372,13 +397,25 @@ public sealed class SimulationRunner : IDisposable
     public void RestoreCheckpoint(WorldCheckpoint checkpoint)
     {
         ArgumentNullException.ThrowIfNull(checkpoint);
-        var restored = World.Restore(checkpoint);
+        AgentId[] protectedAgents;
+        lock (_worldGate)
+        {
+            protectedAgents = _chronicleRetentionWatchlist
+                .Select(value => new AgentId(value))
+                .ToArray();
+        }
+        var restored = World.Restore(checkpoint, protectedAgents);
         lock (_worldGate)
         {
             _world.ImportantWorldEventRecorded -= World_ImportantWorldEventRecorded;
             _world.WorldCenturyChronicleRecorded -= World_WorldCenturyChronicleRecorded;
             _world = restored;
             _queries = new WorldObservationQueries(_world);
+            _chronicleRetentionWatchlist.Clear();
+            foreach (var agentId in _world.GetDetailedChronicleProtectionList())
+            {
+                _chronicleRetentionWatchlist.Add(agentId.Value);
+            }
             if (IsWorldFeedCaptureEnabled)
             {
                 _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;

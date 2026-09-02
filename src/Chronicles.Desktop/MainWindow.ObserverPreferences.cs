@@ -65,6 +65,27 @@ public partial class MainWindow
             preferences.SaveWorkspaceTabIndex);
     }
 
+    private void ApplyChronicleRetentionWatchlist(GameApplicationSession session)
+    {
+        var population = session.GetWorldMetadata().Population;
+        foreach (var value in _watchlistedAgentIds)
+        {
+            if ((uint)value < (uint)population)
+            {
+                session.SetDetailedChronicleProtection(new AgentId(value), isProtected: true);
+            }
+        }
+    }
+
+    private void RestoreChronicleRetentionWatchlist(GameApplicationSession session)
+    {
+        _watchlistedAgentIds.Clear();
+        foreach (var agentId in session.GetDetailedChronicleProtectionList())
+        {
+            _watchlistedAgentIds.Add(agentId.Value);
+        }
+    }
+
     private void ApplyRestoredObserverUiState()
     {
         if (_observerPreferencesLoad is null)

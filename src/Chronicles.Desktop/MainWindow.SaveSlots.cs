@@ -208,7 +208,7 @@ public partial class MainWindow
             metadata.Balance,
             metadata.Generation);
         _selectedAgent = null;
-        _watchlistedAgentIds.Clear();
+        RestoreChronicleRetentionWatchlist(_runner);
         _latestAgent = null;
         _latestSnapshot = null;
         _latestPersonalLog = [];

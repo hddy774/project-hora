@@ -1,6 +1,7 @@
 using Chronicles.Application;
 using Chronicles.Core;
 using Chronicles.Queries;
+using Chronicles.Persistence;
 using Chronicles.Simulation;
 using System.Text.Json.Nodes;
 
@@ -111,6 +112,21 @@ internal static class ObserverUiContractTests
         var exactSearch = queries.BrowseAgentsById(ids, new AgentId(12).ToString(), 0, 10);
         SequenceEqual(SearchedWatchlistPage, exactSearch.Agents.Select(item => item.Id.Value), "관심 ID 검색");
         Equal(hashBefore, world.ComputeStateHash(), "관심 목록 관찰 무영향");
+
+        world.SetDetailedChronicleProtection(new AgentId(12), isProtected: true);
+        Equal(hashBefore, world.ComputeStateHash(), "관심 기록 보존 정책은 게임 상태 hash에 무영향");
+        var checkpoint = world.CreateCheckpoint();
+        True(checkpoint.Agents[12].PreserveDetailedChronicle,
+            "관심 인물 세부 연대기 보존 상태 checkpoint");
+        var restored = World.Restore(
+            WorldSaveCodec.Decode(WorldSaveCodec.Encode(checkpoint)));
+        SequenceEqual(
+            [12],
+            restored.GetDetailedChronicleProtectionList().Select(item => item.Value),
+            "관심 인물 보존 상태 저장 왕복");
+        Equal(hashBefore, restored.ComputeStateHash(), "관심 보존 저장 왕복 hash 무영향");
+        restored.SetDetailedChronicleProtection(new AgentId(12), isProtected: false);
+        Equal(hashBefore, restored.ComputeStateHash(), "관심 해제 hash 무영향");
     }
 
     private static void VerifyAdaptiveScalePolicy()

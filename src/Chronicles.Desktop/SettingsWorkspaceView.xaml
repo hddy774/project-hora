@@ -316,12 +316,12 @@
                                             <StackPanel>
                                                 <TextBlock Text="메모리 상태" Foreground="{StaticResource SecondaryTextBrush}" />
                                                 <TextBlock x:Name="WorkingSetText" Text="0.0 MiB" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
-                                                <TextBlock x:Name="ManagedHeapText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock x:Name="ManagedHeapText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" TextWrapping="Wrap" />
                                             </StackPanel>
                                         </Border>
                                         <Border Style="{StaticResource PanelStyle}" Margin="5,0,0,0" Background="{StaticResource PanelAltBrush}">
                                             <StackPanel>
-                                                <TextBlock Text="최근 100개 p95" Foreground="{StaticResource SecondaryTextBrush}" />
+                                                <TextBlock Text="최근 100개 p95 / p99" Foreground="{StaticResource SecondaryTextBrush}" />
                                                 <TextBlock x:Name="RecentP95Text" Text="표본 대기" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" />
                                                 <TextBlock x:Name="RecentSampleWindowText" Margin="0,4,0,0" Foreground="{StaticResource SecondaryTextBrush}" />
                                             </StackPanel>
@@ -400,6 +400,9 @@
                                             <DataGridTextColumn Header="backlog" Binding="{Binding BacklogText}" Width="95" />
                                             <DataGridTextColumn Header="CPU" Binding="{Binding CpuText}" Width="80" />
                                             <DataGridTextColumn Header="작업 집합" Binding="{Binding WorkingSetText}" Width="100" />
+                                            <DataGridTextColumn Header="GC heap" Binding="{Binding HeapText}" Width="90" />
+                                            <DataGridTextColumn Header="할당/초" Binding="{Binding AllocationText}" Width="95" />
+                                            <DataGridTextColumn Header="GC 0/1/2" Binding="{Binding CollectionText}" Width="85" />
                                             <DataGridTextColumn Header="실행 상태" Binding="{Binding RuntimeStateText}" Width="*" />
                                         </DataGrid.Columns>
                                     </DataGrid>

@@ -284,7 +284,10 @@ public partial class SettingsWorkspaceView : UserControl
             ProcessCpuText.Text = $"{latest.ProcessCpuPercent:0.0}%";
             ProcessThreadText.Text = $"프로세스 스레드 {latest.ProcessThreadCount:N0}개";
             WorkingSetText.Text = $"{latest.WorkingSetMegabytes:0.0} MiB";
-            ManagedHeapText.Text = $"관리 힙 {latest.ManagedHeapMegabytes:0.0} MiB";
+            ManagedHeapText.Text =
+                $"GC heap {latest.GcHeapMegabytes:0.0} · commit {latest.CommittedMegabytes:0.0} · " +
+                $"조각 {latest.FragmentedMegabytes:0.0} MiB · " +
+                $"할당 {latest.AllocationMegabytesPerSecond:0.0} MiB/s · GC {latest.CollectionText}";
         }
         else
         {
@@ -306,8 +309,16 @@ public partial class SettingsWorkspaceView : UserControl
             samples.Select(item => item.Runtime.LastSimulationMilliseconds));
         var queryP95 = PerformanceDiagnosticsHistory.Percentile95(
             samples.Select(item => item.Runtime.LastObservationMilliseconds));
-        RecentP95Text.Text = $"pulse {pulseP95:0.00} · query {queryP95:0.00} ms";
-        RecentSampleWindowText.Text = $"최근 {samples.Length:N0} / 최대 100개 · 1초 간격";
+        var pulseP99 = PerformanceDiagnosticsHistory.Percentile99(
+            samples.Select(item => item.Runtime.LastSimulationMilliseconds));
+        var queryP99 = PerformanceDiagnosticsHistory.Percentile99(
+            samples.Select(item => item.Runtime.LastObservationMilliseconds));
+        var healthyPercent = samples.Count(item => item.Health == PerformanceHealthLevel.Healthy)
+            * 100d / samples.Length;
+        RecentP95Text.Text =
+            $"pulse {pulseP95:0.00}/{pulseP99:0.00} · query {queryP95:0.00}/{queryP99:0.00} ms";
+        RecentSampleWindowText.Text =
+            $"최근 {samples.Length:N0} / 최대 100개 · 정상 {healthyPercent:0.0}% · 1초 간격";
     }
 
     private void ApplyHealthBrush(PerformanceHealthLevel health)
@@ -394,8 +405,10 @@ public partial class SettingsWorkspaceView : UserControl
         PerformanceBudgetLine.Y2 = budgetY;
         PerformanceGraphSummaryText.Text =
             $"최근 {samples.Length:N0}개 · 세로축 0~{graphMaximumPercent:0}% · " +
-            $"pulse p95 {PerformanceDiagnosticsHistory.Percentile95(samples.Select(item => item.Runtime.LastSimulationMilliseconds)):0.00} ms · " +
-            $"query p95 {PerformanceDiagnosticsHistory.Percentile95(samples.Select(item => item.Runtime.LastObservationMilliseconds)):0.00} ms";
+            $"pulse p95/p99 {PerformanceDiagnosticsHistory.Percentile95(samples.Select(item => item.Runtime.LastSimulationMilliseconds)):0.00}/" +
+            $"{PerformanceDiagnosticsHistory.Percentile99(samples.Select(item => item.Runtime.LastSimulationMilliseconds)):0.00} ms · " +
+            $"query p95/p99 {PerformanceDiagnosticsHistory.Percentile95(samples.Select(item => item.Runtime.LastObservationMilliseconds)):0.00}/" +
+            $"{PerformanceDiagnosticsHistory.Percentile99(samples.Select(item => item.Runtime.LastObservationMilliseconds)):0.00} ms";
     }
 
     private static double ToGraphY(double percent, double maximumPercent, double height) =>

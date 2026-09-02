@@ -20,6 +20,13 @@ internal sealed record PerformanceDiagnosticSample(
     double ProcessCpuPercent,
     double WorkingSetMegabytes,
     double ManagedHeapMegabytes,
+    double GcHeapMegabytes,
+    double FragmentedMegabytes,
+    double CommittedMegabytes,
+    double AllocationMegabytesPerSecond,
+    int Gen0Collections,
+    int Gen1Collections,
+    int Gen2Collections,
     int ProcessThreadCount)
 {
     public string RecordedAtText => RecordedAt.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
@@ -36,6 +43,9 @@ internal sealed record PerformanceDiagnosticSample(
     public string BacklogText => $"{Runtime.EstimatedBacklogMilliseconds:0.00} ms";
     public string CpuText => $"{ProcessCpuPercent:0.0}%";
     public string WorkingSetText => $"{WorkingSetMegabytes:0.0} MiB";
+    public string HeapText => $"{GcHeapMegabytes:0.0} MiB";
+    public string AllocationText => $"{AllocationMegabytesPerSecond:0.0} MiB/s";
+    public string CollectionText => $"{Gen0Collections}/{Gen1Collections}/{Gen2Collections}";
     public string RuntimeStateText => Runtime.IsPaused
         ? $"일시정지 · {Runtime.Speed}×"
         : $"진행 · {Runtime.Speed}×";
@@ -51,7 +61,11 @@ internal sealed record PerformanceDiagnosticSample(
         $"queryMax={Runtime.MaximumObservationMilliseconds:0.000}ms " +
         $"backlog={Runtime.EstimatedBacklogMilliseconds:0.000}ms " +
         $"cpu={ProcessCpuPercent:0.0}% workingSet={WorkingSetMegabytes:0.0}MiB " +
-        $"managedHeap={ManagedHeapMegabytes:0.0}MiB threads={ProcessThreadCount:N0} " +
+        $"managedEstimate={ManagedHeapMegabytes:0.0}MiB gcHeap={GcHeapMegabytes:0.0}MiB " +
+        $"committed={CommittedMegabytes:0.0}MiB fragmented={FragmentedMegabytes:0.0}MiB " +
+        $"allocationRate={AllocationMegabytesPerSecond:0.0}MiB/s " +
+        $"gcDelta={Gen0Collections}/{Gen1Collections}/{Gen2Collections} " +
+        $"threads={ProcessThreadCount:N0} " +
         $"pulseSamples={Runtime.SimulationPulseCount:N0} querySamples={Runtime.ObservationCount:N0}";
 }
 
@@ -66,6 +80,10 @@ internal sealed class PerformanceDiagnosticsHistory
     private long _nextSampleTimestamp;
     private long _previousCpuTimestamp;
     private TimeSpan _previousTotalProcessorTime;
+    private long _previousAllocatedBytes;
+    private int _previousGen0Collections;
+    private int _previousGen1Collections;
+    private int _previousGen2Collections;
 
     public int Count => _samples.Count;
 
@@ -76,6 +94,10 @@ internal sealed class PerformanceDiagnosticsHistory
         _nextSampleTimestamp = 0;
         _previousCpuTimestamp = 0;
         _previousTotalProcessorTime = TimeSpan.Zero;
+        _previousAllocatedBytes = 0;
+        _previousGen0Collections = 0;
+        _previousGen1Collections = 0;
+        _previousGen2Collections = 0;
     }
 
     public bool TryCapture(
@@ -100,9 +122,10 @@ internal sealed class PerformanceDiagnosticsHistory
         process.Refresh();
         var processorTime = process.TotalProcessorTime;
         var cpuPercent = 0d;
+        var wallSeconds = 0d;
         if (_previousCpuTimestamp != 0 && timestamp > _previousCpuTimestamp)
         {
-            var wallSeconds = (timestamp - _previousCpuTimestamp) / (double)Stopwatch.Frequency;
+            wallSeconds = (timestamp - _previousCpuTimestamp) / (double)Stopwatch.Frequency;
             var cpuSeconds = (processorTime - _previousTotalProcessorTime).TotalSeconds;
             cpuPercent = Math.Clamp(
                 cpuSeconds / wallSeconds / Environment.ProcessorCount * 100d,
@@ -112,6 +135,23 @@ internal sealed class PerformanceDiagnosticsHistory
         _previousCpuTimestamp = timestamp;
         _previousTotalProcessorTime = processorTime;
 
+        var allocatedBytes = GC.GetTotalAllocatedBytes(precise: false);
+        var allocationRate = _previousAllocatedBytes == 0 || wallSeconds <= 0d
+            ? 0d
+            : Math.Max(0d, allocatedBytes - _previousAllocatedBytes)
+                / 1024d / 1024d / wallSeconds;
+        _previousAllocatedBytes = allocatedBytes;
+        var gen0 = GC.CollectionCount(0);
+        var gen1 = GC.CollectionCount(1);
+        var gen2 = GC.CollectionCount(2);
+        var gen0Delta = _sequence == 0 ? 0 : Math.Max(0, gen0 - _previousGen0Collections);
+        var gen1Delta = _sequence == 0 ? 0 : Math.Max(0, gen1 - _previousGen1Collections);
+        var gen2Delta = _sequence == 0 ? 0 : Math.Max(0, gen2 - _previousGen2Collections);
+        _previousGen0Collections = gen0;
+        _previousGen1Collections = gen1;
+        _previousGen2Collections = gen2;
+        var memory = GC.GetGCMemoryInfo();
+
         sample = new PerformanceDiagnosticSample(
             ++_sequence,
             DateTimeOffset.Now,
@@ -120,6 +160,13 @@ internal sealed class PerformanceDiagnosticsHistory
             cpuPercent,
             process.WorkingSet64 / 1024d / 1024d,
             GC.GetTotalMemory(forceFullCollection: false) / 1024d / 1024d,
+            memory.HeapSizeBytes / 1024d / 1024d,
+            memory.FragmentedBytes / 1024d / 1024d,
+            memory.TotalCommittedBytes / 1024d / 1024d,
+            allocationRate,
+            gen0Delta,
+            gen1Delta,
+            gen2Delta,
             process.Threads.Count);
         if (_samples.Count == GameLogService.PerformanceLogCapacity)
         {
@@ -159,6 +206,12 @@ internal sealed class PerformanceDiagnosticsHistory
     }
 
     public static double Percentile95(IEnumerable<double> values)
+        => Percentile(values, 0.95d);
+
+    public static double Percentile99(IEnumerable<double> values)
+        => Percentile(values, 0.99d);
+
+    private static double Percentile(IEnumerable<double> values, double percentile)
     {
         var sorted = values.OrderBy(value => value).ToArray();
         if (sorted.Length == 0)
@@ -167,7 +220,7 @@ internal sealed class PerformanceDiagnosticsHistory
         }
 
         var index = Math.Clamp(
-            (int)Math.Ceiling(sorted.Length * 0.95d) - 1,
+            (int)Math.Ceiling(sorted.Length * percentile) - 1,
             0,
             sorted.Length - 1);
         return sorted[index];

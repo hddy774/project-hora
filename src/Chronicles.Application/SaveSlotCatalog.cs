@@ -45,7 +45,9 @@ public sealed record SaveSlotCatalogEntry(
     bool PrimaryReadable,
     bool TemporaryReadable,
     bool BackupReadable,
-    bool HasDetailedSummary);
+    bool HasDetailedSummary,
+    int StorageFormatVersion,
+    int DataPartCount);
 
 public static class SaveSlotRegistry
 {

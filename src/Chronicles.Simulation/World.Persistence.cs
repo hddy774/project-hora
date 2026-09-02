@@ -113,7 +113,8 @@ public sealed partial class World
         _organizations = checkpoint.SchemaVersion >= 26
             ? OrganizationStore.Restore(
                 checkpoint.Agents.Length,
-                checkpoint.Organizations!)
+                checkpoint.Organizations!,
+                trimHistory: chronicleRetentionWatchlist is not null)
             : new OrganizationStore(checkpoint.Agents.Length);
         _content = checkpoint.SchemaVersion >= 27
             ? ContentAuthorityStore.Restore(checkpoint.Content!, _generation)
@@ -204,6 +205,9 @@ public sealed partial class World
         WorldCheckpoint checkpoint,
         IReadOnlyCollection<AgentId>? chronicleRetentionWatchlist = null) =>
         new(checkpoint, chronicleRetentionWatchlist);
+
+    internal void TrimOrganizationHistoriesForLoadedSession() =>
+        _organizations.TrimHistoriesToLimit();
 
     private void RestoreDecisionRankings(DecisionRankingCheckpoint checkpoint)
     {

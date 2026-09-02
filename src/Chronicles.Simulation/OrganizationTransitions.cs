@@ -95,12 +95,12 @@ internal sealed partial class OrganizationStore
         _organizations[index] = state with
         {
             Members = state.Members.Append(member).ToArray(),
-            History = state.History.Append(NewHistory(
+            History = AppendHistory(state.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.MemberJoined,
                 joiningAgent,
                 null,
-                loyaltyHundredths)).ToArray(),
+                loyaltyHundredths)),
         };
         SetMembershipIndex(joiningAgent, state.Kind, index);
         _authorityRevision++;
@@ -140,12 +140,12 @@ internal sealed partial class OrganizationStore
         state = state with
         {
             Members = members,
-            History = state.History.Append(NewHistory(
+            History = AppendHistory(state.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.MemberDeparted,
                 leavingAgent,
                 null,
-                loyaltyBroken ? 1 : 0)).ToArray(),
+                loyaltyBroken ? 1 : 0)),
         };
         SetMembershipIndex(leavingAgent, state.Kind, -1);
         if (state.LeaderAgentIndex == leavingAgent)
@@ -211,12 +211,12 @@ internal sealed partial class OrganizationStore
         _organizations[index] = state with
         {
             Members = members,
-            History = state.History.Append(NewHistory(
+            History = AppendHistory(state.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.RoleChanged,
                 memberAgent,
                 null,
-                (long)replacementRole)).ToArray(),
+                (long)replacementRole)),
         };
         _authorityRevision++;
         return new OrganizationCommandResult(
@@ -271,12 +271,12 @@ internal sealed partial class OrganizationStore
         _organizations[index] = state with
         {
             Members = members,
-            History = state.History.Append(NewHistory(
+            History = AppendHistory(state.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.LoyaltyChanged,
                 memberAgent,
                 null,
-                replacementLoyaltyHundredths)).ToArray(),
+                replacementLoyaltyHundredths)),
         };
         _authorityRevision++;
         if (replacementLoyaltyHundredths < OrganizationRules.LoyaltyStrainedMinimumHundredths)
@@ -337,12 +337,12 @@ internal sealed partial class OrganizationStore
         _organizations[index] = state with
         {
             TreasurySpiritStones = replacement,
-            History = state.History.Append(NewHistory(
+            History = AppendHistory(state.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.TreasuryAdjusted,
                 authorizedByAgent,
                 null,
-                delta)).ToArray(),
+                delta)),
         };
         _authorityRevision++;
         return new OrganizationCommandResult(
@@ -407,12 +407,12 @@ internal sealed partial class OrganizationStore
                 VassalOrganizationCount = firstDiplomacy.Count(item =>
                     item.Kind == OrganizationDiplomacyKind.Vassal),
             },
-            History = first.History.Append(NewHistory(
+            History = AppendHistory(first.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.DiplomacyChanged,
                 authorizedByAgent,
                 second.Id,
-                (long)kind)).ToArray(),
+                (long)kind)),
         };
         _organizations[secondIndex] = second with
         {
@@ -422,12 +422,12 @@ internal sealed partial class OrganizationStore
                 VassalOrganizationCount = secondDiplomacy.Count(item =>
                     item.Kind == OrganizationDiplomacyKind.Vassal),
             },
-            History = second.History.Append(NewHistory(
+            History = AppendHistory(second.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.DiplomacyChanged,
                 second.LeaderAgentIndex,
                 first.Id,
-                (long)reciprocalKind)).ToArray(),
+                (long)reciprocalKind)),
         };
         _authorityRevision++;
         return new OrganizationCommandResult(
@@ -505,12 +505,12 @@ internal sealed partial class OrganizationStore
             GrantedTick = tick,
         }).ToArray();
         var newLeader = newMembers.First(member => member.AgentIndex == newLeaderAgent);
-        var sourceHistory = source.History.Append(NewHistory(
+        var sourceHistory = AppendHistory(source.History, NewHistory(
             tick,
             OrganizationHistoryKind.Split,
             authorizedByAgent,
             newId,
-            transferredSpiritStones)).ToArray();
+            transferredSpiritStones));
         var splitHistory = new[]
         {
             NewHistory(
@@ -598,22 +598,22 @@ internal sealed partial class OrganizationStore
         _organizations[sourceIndex] = source with
         {
             Rights = source.Rights.Where(item => item != right).ToArray(),
-            History = source.History.Append(NewHistory(
+            History = AppendHistory(source.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.RightTransferred,
                 authorizedByAgent,
                 target.Id,
-                right.LocationNodeId.Value)).ToArray(),
+                right.LocationNodeId.Value)),
         };
         _organizations[targetIndex] = target with
         {
             Rights = target.Rights.Append(transferred).ToArray(),
-            History = target.History.Append(NewHistory(
+            History = AppendHistory(target.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.RightTransferred,
                 target.LeaderAgentIndex,
                 source.Id,
-                right.LocationNodeId.Value)).ToArray(),
+                right.LocationNodeId.Value)),
         };
         _authorityRevision++;
         return new OrganizationCommandResult(
@@ -674,12 +674,12 @@ internal sealed partial class OrganizationStore
         _organizations[index] = state with
         {
             Members = members.Append(reconnectedMembership).ToArray(),
-            History = state.History.Append(NewHistory(
+            History = AppendHistory(state.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.SoulReconnected,
                 agent,
                 null,
-                unchecked((long)soulId.Value))).ToArray(),
+                unchecked((long)soulId.Value))),
         };
         SetMembershipIndex(agent, state.Kind, index);
         _authorityRevision++;

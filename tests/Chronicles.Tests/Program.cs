@@ -15,6 +15,7 @@ if (args.Contains("--verify-local-save", StringComparer.Ordinal))
     if (!load.IsSuccess)
     {
         Console.Error.WriteLine($"LOCAL SAVE ERROR: {load.Status} · {load.Message}");
+        WriteCandidateFailures(load.Failures);
         return 1;
     }
 
@@ -34,10 +35,11 @@ if (args.Contains("--verify-large-local-save", StringComparer.Ordinal))
     if (!source.IsSuccess)
     {
         Console.Error.WriteLine($"LARGE SAVE SOURCE ERROR: {source.Status} · {source.Message}");
+        WriteCandidateFailures(source.Failures);
         return 1;
     }
 
-    var checkpoint = source.Checkpoint!;
+    var expanded = World.Restore(source.Checkpoint!, Array.Empty<AgentId>());
     var advanceRaw = Environment.GetEnvironmentVariable("CMIP_LARGE_SAVE_ADVANCE_YEARS");
     var advanceYears = 0;
     if (!string.IsNullOrWhiteSpace(advanceRaw)
@@ -48,11 +50,10 @@ if (args.Contains("--verify-large-local-save", StringComparer.Ordinal))
     }
     if (advanceYears > 0)
     {
-        var expanded = World.Restore(checkpoint);
         expanded.AdvanceTo(new SimulationTick(checked(
             expanded.Tick.Value + GameCalendar.FromYears(advanceYears).Value)));
-        checkpoint = expanded.CreateCheckpoint();
     }
+    var checkpoint = expanded.CreateCheckpoint();
 
     var probeRoot = Path.Combine(Path.GetTempPath(), $"cmip-large-save-{Guid.NewGuid():N}");
     try
@@ -72,7 +73,7 @@ if (args.Contains("--verify-large-local-save", StringComparer.Ordinal))
 
         Console.WriteLine(
             $"LARGE SAVE OK: advance {advanceYears:N0}년 · JSON {saved.JsonBytes:N0} bytes · container " +
-            $"{saved.PayloadBytes:N0} bytes · save/load " +
+            $"{saved.PayloadBytes:N0} bytes · split v{saved.StorageFormatVersion} {saved.DataPartCount:N0} parts · save/load " +
             $"{saveTimer.Elapsed.TotalSeconds:N2}/{loadTimer.Elapsed.TotalSeconds:N2}s · " +
             $"hash {saved.StateHash:X16}");
         return 0;
@@ -83,6 +84,18 @@ if (args.Contains("--verify-large-local-save", StringComparer.Ordinal))
         {
             Directory.Delete(probeRoot, recursive: true);
         }
+    }
+}
+
+static void WriteCandidateFailures(IReadOnlyList<SlotCandidateFailure>? failures)
+{
+    if (failures is null)
+    {
+        return;
+    }
+    foreach (var failure in failures)
+    {
+        Console.Error.WriteLine($"  {failure.Kind}: {failure.Status} · {failure.Reason}");
     }
 }
 

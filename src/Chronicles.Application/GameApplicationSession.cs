@@ -280,7 +280,15 @@ public sealed class GameApplicationSession : IDisposable
             cancellationToken.ThrowIfCancellationRequested();
             Volatile.Write(ref phase, (int)SaveOperationPhase.SwappingAuthority);
             progress?.Report(new SaveOperationProgress(94, "Candidate World 원자 교체"));
-            _runner.RestoreCheckpoint(result.Checkpoint!);
+            if (result.CheckpointSchema == WorldCheckpoint.CurrentSchemaVersion
+                && result.CandidateWorld is { } candidateWorld)
+            {
+                _runner.RestoreValidatedWorld(candidateWorld);
+            }
+            else
+            {
+                _runner.RestoreCheckpoint(result.Checkpoint!);
+            }
             Volatile.Write(ref phase, (int)SaveOperationPhase.Complete);
             progress?.Report(new SaveOperationProgress(100, "권위 세계 복원 완료"));
             return new SlotLoadCompletion(
@@ -450,6 +458,8 @@ public sealed class GameApplicationSession : IDisposable
             inspection.PrimaryReadable,
             inspection.TemporaryReadable,
             inspection.BackupReadable,
-            summary is not null);
+            summary is not null,
+            inspection.StorageFormatVersion,
+            inspection.DataPartCount);
     }
 }

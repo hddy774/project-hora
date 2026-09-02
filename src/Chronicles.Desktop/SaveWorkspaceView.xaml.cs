@@ -187,10 +187,18 @@ public partial class SaveWorkspaceView : UserControl
             : "상세 누계가 없습니다.";
         SelectedFileText.Text =
             $"상태  {entry.StatusMessage}\nDB 크기  {FormatBytes(entry.DatabaseBytes)}\n" +
+            $"저장 구조  {FormatStorageLayout(entry)}\n" +
             $"world/checkpoint schema  {entry.WorldSchema}/{entry.CheckpointSchema}\n" +
             $"생성 sequence  {entry.CreatedSequence:N0}\nstate hash  {entry.StateHash:X16}\n" +
             $"primary  {FormatHealth(entry.PrimaryReadable)} · temp  {FormatHealth(entry.TemporaryReadable)} · backup  {FormatHealth(entry.BackupReadable)}";
     }
+
+    private static string FormatStorageLayout(SaveSlotCatalogEntry entry) =>
+        entry.StorageFormatVersion > 0
+            ? $"분할 v{entry.StorageFormatVersion} · {entry.DataPartCount:N0}개 순차 데이터 조각"
+            : entry.DataPartCount > 0
+                ? "단일 payload · 이전 저장 호환"
+                : "확인 불가";
 
     private void SelectButton_Click(object sender, RoutedEventArgs e)
     {

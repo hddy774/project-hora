@@ -18,6 +18,7 @@ public static class WorldSaveCodec
     // 슬롯 저장은 전체 JSON 배열을 만들지 않는 streaming 경로이므로 더 큰 권위 그래프를
     // 허용하되, 손상 파일의 무한 압축 해제는 1.5 GiB에서 계속 차단한다.
     internal const long MaximumStreamingJsonBytes = 1_536L * 1024 * 1024;
+    internal const long MaximumSectionJsonBytes = 512L * 1024 * 1024;
     private static readonly byte[] Magic = "CMIP"u8.ToArray();
     private static readonly JsonSerializerOptions JsonOptions = CreateJsonOptions();
 
@@ -76,10 +77,21 @@ public static class WorldSaveCodec
     /// </summary>
     internal static StreamingEncodeResult EncodeStreamingToFile(
         WorldCheckpoint checkpoint,
-        string path)
+        string path) => EncodeValueStreamingToFile(
+            checkpoint,
+            path,
+            MaximumStreamingJsonBytes,
+            "저장 JSON");
+
+    internal static StreamingEncodeResult EncodeValueStreamingToFile<T>(
+        T value,
+        string path,
+        long maximumJsonBytes = MaximumSectionJsonBytes,
+        string subject = "분할 저장 JSON")
     {
-        ArgumentNullException.ThrowIfNull(checkpoint);
+        ArgumentNullException.ThrowIfNull(value);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maximumJsonBytes);
 
         using var file = new FileStream(
             path,
@@ -111,10 +123,11 @@ public static class WorldSaveCodec
                 leaveOpen: true))
             using (var bounded = new BoundedWriteStream(
                 compression,
-                MaximumStreamingJsonBytes,
-                leaveOpen: true))
+                maximumJsonBytes,
+                leaveOpen: true,
+                subject))
             {
-                JsonSerializer.Serialize(bounded, checkpoint, JsonOptions);
+                JsonSerializer.Serialize(bounded, value, JsonOptions);
                 bounded.Flush();
                 jsonBytes = bounded.BytesWritten;
             }
@@ -214,21 +227,49 @@ public static class WorldSaveCodec
 
     /// <summary>
     /// Reads one CMIP-v1 container without materializing either the compressed
-    /// payload or the decompressed JSON in managed memory. A checksum pass is
-    /// followed by a decode pass into a short-lived memory-mapped scratch file.
+    /// payload or the decompressed JSON in managed memory. Checksum validation
+    /// and Brotli decompression share one sequential payload pass.
     /// </summary>
     internal static WorldCheckpoint Decode(
         Stream container,
         long containerBytes,
-        string? scratchDirectory = null)
+        string? scratchDirectory = null,
+        byte[]? expectedContainerHash = null) => DecodeValue<WorldCheckpoint>(
+            container,
+            containerBytes,
+            scratchDirectory,
+            MaximumStreamingJsonBytes,
+            "세계 체크포인트",
+            expectedContainerHash);
+
+    internal static T DecodeValue<T>(
+        Stream container,
+        long containerBytes,
+        string? scratchDirectory = null,
+        long maximumJsonBytes = MaximumSectionJsonBytes,
+        string subject = "분할 저장 section",
+        byte[]? expectedContainerHash = null)
     {
         ArgumentNullException.ThrowIfNull(container);
-        if (!container.CanRead || !container.CanSeek)
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maximumJsonBytes);
+        if (!container.CanRead)
         {
             throw new ArgumentException(
-                "저장 container는 읽기와 위치 이동을 지원해야 합니다.",
+                "저장 container는 읽기를 지원해야 합니다.",
                 nameof(container));
         }
+        if (expectedContainerHash is { Length: not SHA256.HashSizeInBytes })
+        {
+            throw new InvalidDataException($"{subject} SQLite SHA-256 길이가 잘못되었습니다.");
+        }
+
+        using var containerHash = expectedContainerHash is null
+            ? null
+            : IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        using var checkedContainer = containerHash is null
+            ? null
+            : new HashingReadStream(container, containerHash, leaveOpen: true);
+        var input = checkedContainer ?? container;
 
         var minimumLength = Magic.Length + 8 + ChecksumLength;
         if (containerBytes < minimumLength)
@@ -237,7 +278,7 @@ public static class WorldSaveCodec
         }
 
         using var reader = new BinaryReader(
-            container,
+            input,
             System.Text.Encoding.UTF8,
             leaveOpen: true);
         if (!reader.ReadBytes(Magic.Length).AsSpan().SequenceEqual(Magic))
@@ -269,43 +310,12 @@ public static class WorldSaveCodec
         string? jsonPath = null;
         try
         {
-            var payloadStart = container.Position;
-            using (var payloadHash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256))
-            using (var checksumPayload = new LimitedReadStream(container, payloadLength, leaveOpen: true))
-            {
-                var buffer = ArrayPool<byte>.Shared.Rent(256 * 1024);
-                try
-                {
-                    while (true)
-                    {
-                        var count = checksumPayload.Read(buffer, 0, buffer.Length);
-                        if (count == 0)
-                        {
-                            break;
-                        }
-                        payloadHash.AppendData(buffer, 0, count);
-                    }
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(buffer);
-                }
-
-                if (checksumPayload.Remaining != 0)
-                {
-                    throw new EndOfStreamException(
-                        $"저장 payload가 header 길이보다 짧습니다. (부족 {checksumPayload.Remaining:N0} bytes)");
-                }
-
-                var actualChecksum = payloadHash.GetHashAndReset();
-                if (!CryptographicOperations.FixedTimeEquals(expectedChecksum, actualChecksum))
-                {
-                    throw new InvalidDataException("저장 파일 checksum이 일치하지 않습니다.");
-                }
-            }
-
-            container.Position = payloadStart;
-            using var payload = new LimitedReadStream(container, payloadLength, leaveOpen: true);
+            using var payload = new LimitedReadStream(input, payloadLength, leaveOpen: true);
+            using var payloadHash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+            using var checkedPayload = new HashingReadStream(
+                payload,
+                payloadHash,
+                leaveOpen: true);
             var scratchRoot = string.IsNullOrWhiteSpace(scratchDirectory)
                 ? Path.GetTempPath()
                 : Path.GetFullPath(scratchDirectory);
@@ -314,7 +324,7 @@ public static class WorldSaveCodec
                 scratchRoot,
                 $".authority-read-{Guid.NewGuid():N}.json.tmp");
             using (var compression = new BrotliStream(
-                payload,
+                checkedPayload,
                 CompressionMode.Decompress,
                 leaveOpen: true))
             using (var jsonFile = new FileStream(
@@ -326,9 +336,9 @@ public static class WorldSaveCodec
                 FileOptions.SequentialScan))
             using (var boundedJson = new BoundedWriteStream(
                 jsonFile,
-                MaximumStreamingJsonBytes,
+                maximumJsonBytes,
                 leaveOpen: true,
-                subject: "압축 해제된 저장 JSON"))
+                subject: $"압축 해제된 {subject} JSON"))
             {
                 compression.CopyTo(boundedJson, 256 * 1024);
                 boundedJson.Flush();
@@ -340,13 +350,26 @@ public static class WorldSaveCodec
                 throw new InvalidDataException(
                     $"Brotli payload 뒤에 읽히지 않은 데이터가 있습니다. ({payload.Remaining:N0} bytes)");
             }
+            if (!CryptographicOperations.FixedTimeEquals(
+                    expectedChecksum,
+                    payloadHash.GetHashAndReset()))
+            {
+                throw new InvalidDataException("저장 파일 checksum이 일치하지 않습니다.");
+            }
+            if (expectedContainerHash is not null
+                && !CryptographicOperations.FixedTimeEquals(
+                    expectedContainerHash,
+                    containerHash!.GetHashAndReset()))
+            {
+                throw new InvalidDataException($"{subject} SQLite SHA-256이 일치하지 않습니다.");
+            }
 
             var jsonBytes = new FileInfo(jsonPath).Length;
-            return DeserializeMappedJson(jsonPath, jsonBytes);
+            return DeserializeMappedJson<T>(jsonPath, jsonBytes, maximumJsonBytes, subject);
         }
         catch (JsonException exception)
         {
-            throw new InvalidDataException("세계 체크포인트 JSON이 잘못되었습니다.", exception);
+            throw new InvalidDataException($"{subject} JSON이 잘못되었습니다.", exception);
         }
         finally
         {
@@ -368,14 +391,18 @@ public static class WorldSaveCodec
         }
     }
 
-    private static unsafe WorldCheckpoint DeserializeMappedJson(string path, long jsonBytes)
+    private static unsafe T DeserializeMappedJson<T>(
+        string path,
+        long jsonBytes,
+        long maximumJsonBytes,
+        string subject)
     {
-        if (jsonBytes <= 0 || jsonBytes > MaximumStreamingJsonBytes || jsonBytes > int.MaxValue)
+        if (jsonBytes <= 0 || jsonBytes > maximumJsonBytes || jsonBytes > int.MaxValue)
         {
             throw new SaveCapacityExceededException(
-                "압축 해제된 저장 JSON",
+                $"압축 해제된 {subject} JSON",
                 jsonBytes,
-                MaximumStreamingJsonBytes);
+                maximumJsonBytes);
         }
 
         using var mapped = MemoryMappedFile.CreateFromFile(
@@ -390,10 +417,10 @@ public static class WorldSaveCodec
         try
         {
             pointer += view.PointerOffset;
-            return JsonSerializer.Deserialize<WorldCheckpoint>(
-                    new ReadOnlySpan<byte>(pointer, checked((int)jsonBytes)),
-                    JsonOptions)
-                ?? throw new InvalidDataException("세계 체크포인트를 읽을 수 없습니다.");
+            var value = JsonSerializer.Deserialize<T>(
+                new ReadOnlySpan<byte>(pointer, checked((int)jsonBytes)),
+                JsonOptions);
+            return value ?? throw new InvalidDataException($"{subject}를 읽을 수 없습니다.");
         }
         finally
         {
@@ -617,6 +644,64 @@ public static class WorldSaveCodec
 
             var read = _inner.Read(buffer[..(int)Math.Min(buffer.Length, _remaining)]);
             _remaining -= read;
+            return read;
+        }
+
+        public override void Flush() { }
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+        public override void SetLength(long value) => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && !_leaveOpen)
+            {
+                _inner.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+
+    private sealed class HashingReadStream : Stream
+    {
+        private readonly Stream _inner;
+        private readonly IncrementalHash _hash;
+        private readonly bool _leaveOpen;
+
+        public HashingReadStream(Stream inner, IncrementalHash hash, bool leaveOpen)
+        {
+            _inner = inner;
+            _hash = hash;
+            _leaveOpen = leaveOpen;
+        }
+
+        public override bool CanRead => true;
+        public override bool CanSeek => false;
+        public override bool CanWrite => false;
+        public override long Length => throw new NotSupportedException();
+        public override long Position
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            var read = _inner.Read(buffer, offset, count);
+            if (read > 0)
+            {
+                _hash.AppendData(buffer, offset, read);
+            }
+            return read;
+        }
+
+        public override int Read(Span<byte> buffer)
+        {
+            var read = _inner.Read(buffer);
+            if (read > 0)
+            {
+                _hash.AppendData(buffer[..read]);
+            }
             return read;
         }
 

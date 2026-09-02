@@ -9,8 +9,61 @@ internal static class OrganizationCoreTests
         PreparationPlansPersistAndUseFiniteOre();
         MembershipEconomyDiplomacySplitAndReconnection();
         SuccessionMergeAtomicityAndPersistence();
+        OrganizationHistoryIsBounded();
         LongRunWorldProducesOrganizations();
         Schema25MigratesToEmptyOrganizationCore();
+    }
+
+    private static void OrganizationHistoryIsBounded()
+    {
+        var store = new OrganizationStore(80);
+        var organizationId = store.TryFound(
+            CreateSectEvidence(0, 1, RealmStage.GoldenCore),
+            tick: 100).OrganizationId!.Value;
+        for (var index = 0; index < 150; index++)
+        {
+            TestAssert.True(
+                store.TryAdjustTreasury(organizationId, 0, 1, 101 + index).IsApplied,
+                $"조직 역사 상한 입력 {index}");
+        }
+
+        var checkpoint = store.CreateCheckpoint();
+        var history = checkpoint.Organizations.Single().History;
+        TestAssert.Equal(
+            OrganizationRules.HistoryRetentionLimit,
+            history.Length,
+            "조직별 최근 역사 100건 상한");
+        TestAssert.Equal(
+            checkpoint.HistorySequence,
+            history[^1].Sequence,
+            "조직 역사 최신 sequence 보존");
+        TestAssert.Equal(
+            checkpoint.HistorySequence - OrganizationRules.HistoryRetentionLimit + 1,
+            history[0].Sequence,
+            "조직 역사 오래된 항목 제거");
+
+        var oversizedHistory = Enumerable.Range(1, 120)
+            .Select(sequence => new OrganizationHistoryEntry(
+                sequence,
+                100 + sequence,
+                OrganizationHistoryKind.TreasuryAdjusted,
+                0,
+                null,
+                1))
+            .ToArray();
+        var legacy = checkpoint with
+        {
+            HistorySequence = oversizedHistory[^1].Sequence,
+            Organizations =
+            [checkpoint.Organizations[0] with { History = oversizedHistory }],
+        };
+        var migrated = OrganizationStore.Restore(80, legacy, trimHistory: true).CreateCheckpoint();
+        TestAssert.Equal(
+            OrganizationRules.HistoryRetentionLimit,
+            migrated.Organizations[0].History.Length,
+            "기존 무제한 조직 역사 복원 시 최근 100건 이관");
+        TestAssert.Equal(21L, migrated.Organizations[0].History[0].Sequence, "이관 최초 sequence");
+        TestAssert.Equal(120L, migrated.Organizations[0].History[^1].Sequence, "이관 최신 sequence");
     }
 
     private static void PreparationPlansPersistAndUseFiniteOre()
@@ -140,9 +193,10 @@ internal static class OrganizationCoreTests
                 .Take(OrganizationRules.SectFounderMinimumPledgedMembers)
                 .Sum(relation => agents[relation.OtherAgentId.Value].SpiritStones);
         });
+        var organizationAuthority = world.CreateCheckpoint().Organizations!;
         Console.WriteLine(
             $"ORGANIZATION SOAK: 1,000명·1,200년 · 조직 {snapshot.Organizations.Count:N0} · " +
-            $"종문 {snapshot.ActiveSects:N0} · 가입 역사 {snapshot.Organizations.Sum(item => item.History.Count(history => history.Kind == OrganizationHistoryKind.MemberJoined)):N0} · " +
+            $"종문 {snapshot.ActiveSects:N0} · 최근 가입 역사 {snapshot.Organizations.Sum(item => item.History.Count(history => history.Kind == OrganizationHistoryKind.MemberJoined)):N0} · " +
             $"준비 {snapshot.PreparingSectPlans:N0}/{snapshot.TotalFoundingReserves:N0}석 · " +
             $"금단 {goldenCore:N0}(자질 {goldenCoreWithAptitudes:N0}·영맥 {goldenCoreWithSite:N0}) · 최대 {maximumRealm} · 역사 금단 돌파 {historicalGoldenCoreBreakthroughs:N0} · " +
             $"자금 {funded:N0} · 동시 충족 {realmAndFunds:N0} · 서약 관계 {pledgedReady:N0} · " +
@@ -152,11 +206,13 @@ internal static class OrganizationCoreTests
             snapshot.Organizations.Any(item => item.Kind == OrganizationKind.Sect),
             "장기 세계에서 실제 종문 창설 및 생명주기 보존");
         TestAssert.True(
-            snapshot.Organizations.Any(item =>
-                item.History.Count(history =>
-                    history.Kind == OrganizationHistoryKind.MemberJoined)
-                > OrganizationRules.SectFounderMinimumPledgedMembers),
+            organizationAuthority.Organizations.Any(item =>
+                item.Members.Length > OrganizationRules.SectFounderMinimumPledgedMembers + 1),
             "장기 세계에서 창설 후 AI 가입");
+        TestAssert.True(
+            organizationAuthority.Organizations.All(item =>
+                item.History.Length <= OrganizationRules.HistoryRetentionLimit),
+            "장기 세계 조직별 최근 역사 100건 상한");
     }
 
     private static void MembershipEconomyDiplomacySplitAndReconnection()

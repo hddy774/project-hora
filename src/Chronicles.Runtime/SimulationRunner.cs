@@ -410,6 +410,29 @@ public sealed class SimulationRunner : IDisposable
                 .ToArray();
         }
         var restored = World.Restore(checkpoint, protectedAgents);
+        ReplaceWorld(restored);
+    }
+
+    public void RestoreValidatedWorld(World restored)
+    {
+        ArgumentNullException.ThrowIfNull(restored);
+        AgentId[] protectedAgents;
+        lock (_worldGate)
+        {
+            protectedAgents = _chronicleRetentionWatchlist
+                .Select(value => new AgentId(value))
+                .ToArray();
+        }
+        foreach (var agentId in protectedAgents)
+        {
+            restored.SetDetailedChronicleProtection(agentId, isProtected: true);
+        }
+        restored.TrimOrganizationHistoriesForLoadedSession();
+        ReplaceWorld(restored);
+    }
+
+    private void ReplaceWorld(World restored)
+    {
         lock (_worldGate)
         {
             _world.ImportantWorldEventRecorded -= World_ImportantWorldEventRecorded;

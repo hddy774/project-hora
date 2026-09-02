@@ -103,7 +103,8 @@ public partial class MainWindow
             var result = await _runner.SaveSlotAsync(e.SlotId, progress: progress);
             _logService.AddDebug(
                 DebugLogLevel.Information,
-                $"세계 저장 완료 · {definition.DisplayName} · schema {result.WorldSchema}/{result.CheckpointSchema} · seq {result.CreatedSequence}");
+                $"세계 저장 완료 · {definition.DisplayName} · 분할 v{result.StorageFormatVersion} " +
+                $"{result.DataPartCount:N0}조각 · schema {result.WorldSchema}/{result.CheckpointSchema} · seq {result.CreatedSequence}");
         }
         catch (SaveOperationException exception) when (exception.IsRecoverable)
         {

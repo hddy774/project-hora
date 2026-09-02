@@ -35,6 +35,8 @@ internal static class SqliteSlotPersistenceTests
             Equal(25, firstSave.WorldSchema, "SQLite world schema");
             Equal(WorldCheckpoint.CurrentSchemaVersion, firstSave.CheckpointSchema, "권위 payload schema");
             Equal(firstHash, firstSave.StateHash, "저장 state hash");
+            Equal(1, firstSave.StorageFormatVersion, "분할 저장 format");
+            True(firstSave.DataPartCount >= 21, "10,000명 권위 상태가 20개 이상 인물 조각과 header로 분할");
             AssertProgress(saveProgress, 100, "SQLite save 진행률");
             True(
                 saveProgress.Any(item => item.Phase == SlotPersistencePhase.VerifyingCandidate),
@@ -60,6 +62,8 @@ internal static class SqliteSlotPersistenceTests
             Equal(firstHash, catalog.StateHash, "catalog state hash");
             True(catalog.Summary is not null, "catalog v2 상세 요약");
             True(catalog.PrimaryReadable, "catalog primary header");
+            Equal(firstSave.StorageFormatVersion, catalog.StorageFormatVersion, "catalog 분할 format");
+            Equal(firstSave.DataPartCount, catalog.DataPartCount, "catalog 데이터 조각 수");
 
             Equal(9, SaveSlotRegistry.All.Count, "고정 세이브 카드 9개");
             Equal("default", SaveSlotRegistry.All[0].SlotId, "1번 기존 default 호환");
@@ -248,6 +252,7 @@ internal static class SqliteSlotPersistenceTests
         Equal(expectedKind, load.CandidateKind, "SQLite candidate 종류");
         Equal(expectedStateHash, load.StateHash, "SQLite candidate state hash");
         Equal(expectedPopulation, load.Checkpoint!.Agents.Length, "SQLite candidate 인구");
+        True(load.CandidateWorld is not null, "검증 완료 Candidate World 재사용");
         if (expectedSequence is { } sequence)
         {
             Equal(sequence, load.CreatedSequence, "SQLite candidate 생성 sequence");
@@ -283,7 +288,7 @@ internal static class SqliteSlotPersistenceTests
     private static void RunFivePassBenchmark(
         string root,
         WorldAuthorityCheckpoint authority,
-        int payloadBytes)
+        long payloadBytes)
     {
         const int repetitions = 5;
         var legacyPath = Path.Combine(root, "benchmark-legacy", "world.cmip");

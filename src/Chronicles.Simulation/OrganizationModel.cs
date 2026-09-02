@@ -252,6 +252,7 @@ public static class OrganizationRules
     public const int LoyaltyMaximumHundredths = 10_000;
     public const int LoyaltyActiveMinimumHundredths = 6_000;
     public const int LoyaltyStrainedMinimumHundredths = 3_000;
+    public const int HistoryRetentionLimit = 100;
     // PC_TEMP_REVIEW ORG-020-02: 외부 인물 초청의 상호 신뢰 경계는 후속 밸런스 검토 대상이다.
     public const int SectJoinMinimumMutualTrustHundredths = 3_000;
 
@@ -823,12 +824,12 @@ internal sealed partial class OrganizationStore
 
             members[memberIndex] = members[memberIndex] with { Active = false };
             SetMembershipIndex(agent, state.Kind, -1);
-            var history = state.History.Append(NewHistory(
+            var history = AppendHistory(state.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.MemberDeparted,
                 agent,
                 null,
-                0)).ToArray();
+                0));
             state = state with { Members = members, History = history };
             if (state.LeaderAgentIndex == agent)
             {
@@ -964,20 +965,20 @@ internal sealed partial class OrganizationStore
                         VassalOrganizationCount = replacement.Count(item =>
                             item.Kind == OrganizationDiplomacyKind.Vassal),
                     },
-                    History = counterpart.History.Append(NewHistory(
+                    History = AppendHistory(counterpart.History, NewHistory(
                         tick,
                         OrganizationHistoryKind.DiplomacyChanged,
                         counterpart.LeaderAgentIndex,
                         primary.Id,
-                        (long)relation.Kind)).ToArray(),
+                        (long)relation.Kind)),
                 }));
         }
-        var history = primary.History.Append(NewHistory(
+        var history = AppendHistory(primary.History, NewHistory(
             tick,
             OrganizationHistoryKind.Merged,
             primary.LeaderAgentIndex,
             secondary.Id,
-            secondary.TreasurySpiritStones)).ToArray();
+            secondary.TreasurySpiritStones));
         primary = primary with
         {
             TreasurySpiritStones = mergedTreasury,
@@ -1195,7 +1196,10 @@ internal sealed partial class OrganizationStore
         }
     }
 
-    public static OrganizationStore Restore(int population, OrganizationStoreCheckpoint checkpoint)
+    public static OrganizationStore Restore(
+        int population,
+        OrganizationStoreCheckpoint checkpoint,
+        bool trimHistory = false)
     {
         if (!IsValidCheckpoint(population, checkpoint))
         {
@@ -1210,7 +1214,9 @@ internal sealed partial class OrganizationStore
             _lastMaintenanceMonth = checkpoint.LastMaintenanceMonth,
             _evaluationCursor = checkpoint.EvaluationCursor,
         };
-        store._organizations.AddRange(checkpoint.Organizations);
+        store._organizations.AddRange(trimHistory
+            ? checkpoint.Organizations.Select(TrimHistory)
+            : checkpoint.Organizations);
         if (checkpoint.FoundingReserves is { } reserves)
         {
             Array.Copy(reserves, store._foundingReserves, reserves.Length);
@@ -1461,12 +1467,12 @@ internal sealed partial class OrganizationStore
             LeaderAgentIndex = successor.AgentIndex,
             LeaderPersonId = successor.PersonId,
             Members = members,
-            History = state.History.Append(NewHistory(
+            History = AppendHistory(state.History, NewHistory(
                 tick,
                 OrganizationHistoryKind.LeaderSucceeded,
                 successor.AgentIndex,
                 null,
-                0)).ToArray(),
+                0)),
         };
     }
 
@@ -1492,12 +1498,12 @@ internal sealed partial class OrganizationStore
                     VassalOrganizationCount = diplomacy.Count(item =>
                         item.Kind == OrganizationDiplomacyKind.Vassal),
                 },
-                History = counterpart.History.Append(NewHistory(
+                History = AppendHistory(counterpart.History, NewHistory(
                     tick,
                     OrganizationHistoryKind.DiplomacyChanged,
                     counterpart.LeaderAgentIndex,
                     state.Id,
-                    (long)OrganizationDiplomacyKind.Neutral)).ToArray(),
+                    (long)OrganizationDiplomacyKind.Neutral)),
             };
         }
         foreach (var member in state.Members.Where(member => member.Active))
@@ -1528,12 +1534,12 @@ internal sealed partial class OrganizationStore
     {
         Status = status,
         StatusChangedTick = tick,
-        History = state.History.Append(NewHistory(
+        History = AppendHistory(state.History, NewHistory(
             tick,
             historyKind,
             state.LeaderAgentIndex,
             other,
-            0)).ToArray(),
+            0)),
     };
 
     private static OrganizationRightState[] CreateFoundingRights(
@@ -1583,6 +1589,38 @@ internal sealed partial class OrganizationStore
             primaryAgent,
             other,
             value);
+
+    private static OrganizationHistoryEntry[] AppendHistory(
+        OrganizationHistoryEntry[] history,
+        OrganizationHistoryEntry entry)
+    {
+        var count = Math.Min(history.Length + 1, OrganizationRules.HistoryRetentionLimit);
+        var retained = count - 1;
+        var result = new OrganizationHistoryEntry[count];
+        if (retained > 0)
+        {
+            Array.Copy(history, history.Length - retained, result, 0, retained);
+        }
+        result[^1] = entry;
+        return result;
+    }
+
+    private static OrganizationAuthorityCheckpoint TrimHistory(
+        OrganizationAuthorityCheckpoint organization) =>
+        organization.History.Length <= OrganizationRules.HistoryRetentionLimit
+            ? organization
+            : organization with
+            {
+                History = organization.History[^OrganizationRules.HistoryRetentionLimit..],
+            };
+
+    public void TrimHistoriesToLimit()
+    {
+        for (var index = 0; index < _organizations.Count; index++)
+        {
+            _organizations[index] = TrimHistory(_organizations[index]);
+        }
+    }
 
     private int CountActive(OrganizationKind kind) => _organizations.Count(organization =>
         organization.Kind == kind

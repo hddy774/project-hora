@@ -372,12 +372,13 @@ internal sealed class AgentCausalStore
             throw new ArgumentException("인과 판정 입력의 안정 ID와 revision이 유효해야 합니다.");
         }
 
-        var previous = _currentPaths[agentIndex];
+        ref readonly var previous = ref _currentPaths[agentIndex];
         var recordId = AgentCausalRules.CreateEventRecordId(
             observation.PersonId,
             decision.AuthorityRevision);
+        var threadId = AgentCausalRules.CreateThreadId(observation.PersonId);
         var rootRecordId = previous.ThreadId.Value != 0
-            && previous.ThreadId == AgentCausalRules.CreateThreadId(observation.PersonId)
+            && previous.ThreadId == threadId
             ? previous.RootRecordId
             : recordId;
         SimulationEventRecordId? parent =
@@ -390,7 +391,7 @@ internal sealed class AgentCausalStore
             AgentCausalRules.CreatePlanId(observation.PersonId, decision.AuthorityRevision),
             AgentCausalRules.CreateTaskId(observation.PersonId, decision.AuthorityRevision),
             AgentCausalRules.CreateActionId(observation.PersonId, decision.AuthorityRevision),
-            AgentCausalRules.CreateThreadId(observation.PersonId),
+            threadId,
             AgentCausalRules.CreateEventDefinitionId(decision.SelectedActivity),
             AgentCausalRules.CreateEventInstanceId(observation.PersonId, decision.AuthorityRevision),
             AgentCausalRules.CreateResultId(observation.PersonId, decision.AuthorityRevision),

@@ -478,6 +478,14 @@ internal sealed class CompactChronicleStore
     private Dictionary<PersonIdentityId, string>? _additionalPersonNames;
     private int _blockCount;
 
+    internal static int StoredEntrySizeBytes =>
+        Unsafe.SizeOf<CompactLifeChronicleEntry>();
+
+    internal int AllocatedEntrySlotCount => checked(
+        _entrySegments.Count * BlocksPerSegment * EntriesPerBlock);
+
+    internal int AllocatedBlockCount => _blockCount;
+
     public CompactChronicleStore(int population)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(population);
@@ -563,15 +571,10 @@ internal sealed class CompactChronicleStore
             _tails[agentIndex] = newBlock;
         }
 
-        SetCompactEntry(_tails[agentIndex], slot, new CompactLifeChronicleEntry(
-            value.Sequence,
-            value.Tick.Value,
-            value.AgeYears,
-            expectedPersonId,
-            value.Value,
-            value.Kind,
-            value.RealmStage,
-            value.MinorStage));
+        SetCompactEntry(
+            _tails[agentIndex],
+            slot,
+            CompactLifeChronicleEntry.Create(value));
         _counts[agentIndex] = checked(count + 1);
     }
 
@@ -600,7 +603,8 @@ internal sealed class CompactChronicleStore
 
     private LifeChronicleEntry Expand(int agentIndex, CompactLifeChronicleEntry entry)
     {
-        if (!TryGetPersonName(agentIndex, entry.PersonId, out var personName))
+        var personId = PersonCausalRules.CreatePersonId(agentIndex, entry.LifeNumber);
+        if (!TryGetPersonName(agentIndex, personId, out var personName))
         {
             throw new InvalidOperationException("연대기 인물 identity의 이름을 복원할 수 없습니다.");
         }
@@ -608,7 +612,7 @@ internal sealed class CompactChronicleStore
         return new LifeChronicleEntry(
             entry.Sequence,
             new SimulationTick(entry.Tick),
-            checked((int)(entry.PersonId.Value >> 32)),
+            entry.LifeNumber,
             entry.AgeYears,
             personName,
             entry.Kind,
@@ -692,15 +696,65 @@ internal sealed class CompactChronicleStore
         }
     }
 
-    private readonly record struct CompactLifeChronicleEntry(
-        long Sequence,
-        long Tick,
-        long AgeYears,
-        PersonIdentityId PersonId,
-        int Value,
-        ChronicleEventKind Kind,
-        RealmStage RealmStage,
-        MinorStage MinorStage);
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    private readonly struct CompactLifeChronicleEntry
+    {
+        private readonly long _sequence;
+        private readonly long _tick;
+        private readonly int _lifeNumber;
+        private readonly int _ageYears;
+        private readonly int _value;
+        private readonly byte _kind;
+        private readonly byte _realmStage;
+        private readonly byte _minorStage;
+
+        private CompactLifeChronicleEntry(
+            long sequence,
+            long tick,
+            int lifeNumber,
+            int ageYears,
+            int value,
+            byte kind,
+            byte realmStage,
+            byte minorStage)
+        {
+            _sequence = sequence;
+            _tick = tick;
+            _lifeNumber = lifeNumber;
+            _ageYears = ageYears;
+            _value = value;
+            _kind = kind;
+            _realmStage = realmStage;
+            _minorStage = minorStage;
+        }
+
+        public long Sequence => _sequence;
+        public long Tick => _tick;
+        public int LifeNumber => _lifeNumber;
+        public int AgeYears => _ageYears;
+        public int Value => _value;
+        public ChronicleEventKind Kind => (ChronicleEventKind)_kind;
+        public RealmStage RealmStage => (RealmStage)_realmStage;
+        public MinorStage MinorStage => (MinorStage)_minorStage;
+
+        public static CompactLifeChronicleEntry Create(LifeChronicleEntry value)
+        {
+            if (value.AgeYears is < 0 or > int.MaxValue)
+            {
+                throw new InvalidDataException("연대기 나이가 압축 저장 범위를 벗어났습니다.");
+            }
+
+            return new CompactLifeChronicleEntry(
+                value.Sequence,
+                value.Tick.Value,
+                value.LifeNumber,
+                checked((int)value.AgeYears),
+                value.Value,
+                checked((byte)value.Kind),
+                checked((byte)value.RealmStage),
+                checked((byte)value.MinorStage));
+        }
+    }
 
     internal readonly struct AgentChronicle : IReadOnlyList<LifeChronicleEntry>
     {
@@ -729,29 +783,65 @@ internal sealed class CompactChronicleStore
 
         public LifeChronicleEntry[] ToArray() => _owner.ToArray(_agentIndex);
 
-        public Enumerator GetEnumerator() => new(this);
+        public Enumerator GetEnumerator() => new(_owner, _agentIndex);
 
         IEnumerator<LifeChronicleEntry> IEnumerable<LifeChronicleEntry>.GetEnumerator() =>
-            new Enumerator(this);
+            new Enumerator(_owner, _agentIndex);
 
-        IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
+        IEnumerator IEnumerable.GetEnumerator() => new Enumerator(_owner, _agentIndex);
 
         internal struct Enumerator : IEnumerator<LifeChronicleEntry>
         {
-            private readonly AgentChronicle _chronicle;
-            private int _index;
+            private readonly CompactChronicleStore _owner;
+            private readonly int _agentIndex;
+            private int _remaining;
+            private int _block;
+            private int _slot;
+            private LifeChronicleEntry _current;
 
-            internal Enumerator(AgentChronicle chronicle)
+            internal Enumerator(CompactChronicleStore owner, int agentIndex)
             {
-                _chronicle = chronicle;
-                _index = -1;
+                _owner = owner;
+                _agentIndex = agentIndex;
+                _remaining = owner.GetCount(agentIndex);
+                _block = owner._heads[agentIndex];
+                _slot = 0;
+                _current = default;
             }
 
-            public LifeChronicleEntry Current => _chronicle[_index];
+            public LifeChronicleEntry Current => _current;
             object IEnumerator.Current => Current;
 
-            public bool MoveNext() => ++_index < _chronicle.Count;
-            public void Reset() => _index = -1;
+            public bool MoveNext()
+            {
+                if (_remaining == 0)
+                {
+                    return false;
+                }
+                if (_slot == EntriesPerBlock)
+                {
+                    _block = _owner.GetNextBlock(_block);
+                    _slot = 0;
+                }
+                if (_block < 0)
+                {
+                    throw new InvalidOperationException("연대기 블록 연결이 손상되었습니다.");
+                }
+
+                _current = _owner.Expand(
+                    _agentIndex,
+                    _owner.GetCompactEntry(_block, _slot++));
+                _remaining--;
+                return true;
+            }
+
+            public void Reset()
+            {
+                _remaining = _owner.GetCount(_agentIndex);
+                _block = _owner._heads[_agentIndex];
+                _slot = 0;
+                _current = default;
+            }
             public void Dispose() { }
         }
     }

@@ -7,6 +7,7 @@ internal static class AgentHistoryStoreTests
     {
         VerifySparseChunkAllocation();
         VerifyCompactNullableRoundTrip();
+        VerifyCompactChronicleRoundTrip();
 
         var store = new PersonalLogRingStore(population: 2);
         var log = store[0];
@@ -170,4 +171,46 @@ internal static class AgentHistoryStoreTests
         IsPrimaryActor: true,
         RelatedAgent: null,
         Value: sequence);
+
+    private static void VerifyCompactChronicleRoundTrip()
+    {
+        TestAssert.Equal(31, CompactChronicleStore.StoredEntrySizeBytes,
+            "영구 연대기 내부 entry는 중복 Person ID와 padding 없이 31바이트로 저장");
+        var store = new CompactChronicleStore(population: 2);
+        var chronicle = store[0];
+        var expected = Enumerable.Range(0, 11)
+            .Select(index => new LifeChronicleEntry(
+                Sequence: 10_000 + index,
+                Tick: new SimulationTick(20_000 + index),
+                LifeNumber: index < 6 ? 1 : 2,
+                AgeYears: 100 + index,
+                PersonName: index < 6 ? "첫생" : "둘째생",
+                Kind: (ChronicleEventKind)(index % 4),
+                RealmStage: (RealmStage)(index % 3),
+                MinorStage: (MinorStage)(index % 4),
+                Value: -30_000 - index))
+            .ToArray();
+        chronicle.AddRange(expected);
+
+        TestAssert.Equal(3, store.AllocatedBlockCount,
+            "11개 연대기는 4행 논리 블록 3개만 사용");
+        TestAssert.Equal(4_096, store.AllocatedEntrySlotCount,
+            "연대기 segment는 4,096행 단위로 연속 할당");
+        TestAssert.Equal(expected.Length, chronicle.Count,
+            "압축 연대기 행 수 유지");
+        for (var index = 0; index < expected.Length; index++)
+        {
+            TestAssert.Equal(expected[index], chronicle[index],
+                $"압축 연대기 인덱스 {index} 왕복");
+        }
+
+        var enumerated = chronicle.ToArray();
+        TestAssert.Equal(expected.Length, enumerated.Length,
+            "순방향 블록 열거 행 수 유지");
+        for (var index = 0; index < expected.Length; index++)
+        {
+            TestAssert.Equal(expected[index], enumerated[index],
+                $"순방향 블록 열거 {index} 왕복");
+        }
+    }
 }

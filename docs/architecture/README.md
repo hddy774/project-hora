@@ -156,6 +156,22 @@ Desktop과 Application은 저장 결과의 작은 값과 query DTO만 유지한�
 checkpoint는 작업 수명 안에서만 보유하고, 수행 worker는 권위 상태를 쓰지 않는다.
 모든 권위 commit은 안정된 AgentId 순서와 기존 RNG 소비 순서를 유지한다.
 
+## 0.0.24 개인 연대기 보존·저장 경계 진입점
+
+- 최근 개인 로그와 압축 세부 연대기: `AgentHistoryStores.cs`
+- 100년 누계·완결 종합본·관심 보존 정책: `PersonalChronicleArchiveStore.cs`
+- schema 32 checkpoint·이전·검증: `WorldCheckpoint.cs`, `World.Persistence.cs`
+- compact JSON wire: `ValueTypeJsonConverters.cs`, `WorldSaveCodec.cs`
+- 관심 목록 runtime 결합: `SimulationRunner.cs`, `GameApplicationSession.cs`,
+  `MainWindow.ObserverPreferences.cs`
+- 저장 경계 조건부 메모리 회수: `SaveOperationProgress.cs`
+
+세부 기록과 100년 종합본은 별도 권위 저장소다. 일반 인물의 세부 기록은 100건을 넘지
+않으며 완결 종합본과 중복되는 행을 제거한다. 관심 인물만 세부 기록을 계속 보존하고,
+종합본은 관심 여부와 무관하게 최근 100권으로 제한한다. UI 관심 목록 변경은 RNG·게임
+공식·schema 32 상태 hash에 영향을 주지 않지만 저장 보존 정책 자체는 checkpoint에
+명시한다. 외부 SQLite world schema는 25를 유지한다.
+
 ## 검증
 
 ```powershell

@@ -307,3 +307,23 @@ checkpoint 116ms, schema 24 복원 349ms였다. 작업 시작 기준선 1,239ms 
 - 바탕화면 바로가기는 `explorer.exe`를 target으로 하고 위 실제 실행 파일을 인수로
   전달한다. 게시 실행 파일과 바로가기를 각각 실행한 시작 스모크를 통과했다.
 - 상세 원측정: `docs/evidence/0.0.22/verification.md`
+
+## 0.0.24 개인 연대기·장기 메모리 검증
+
+- Windows Release 전체 자동 검사: `RESULT: 73/73 passed`
+- 외부 SQLite world schema 25, 내부 checkpoint schema 32
+- 비관심 인물: 상세 연대기 최근 100건 이하, 완결 100년 종합본과 중복 행 제거 PASS
+- 관심 인물: 상세 연대기 무제한 보존과 저장·복원 뒤 보존 상태 유지 PASS
+- 개인 100년 종합 연대기: 인물당 최근 100권, 오래된 전생 이름 참조 회수 PASS
+- schema 31 상세 기록에서 schema 32 종합본 재구성, 결정론·상태 hash·관찰 무영향 PASS
+- 독립 5회 10,000명·20,000 tick 중앙값: 초기화 121ms, 진행 741ms,
+  관찰 2.1ms, 합계 879ms, checkpoint 79ms, 복원 364ms
+- simulation 할당 14.29MiB, tick당 749B, 강제 GC 후 live heap 66.28MiB
+- 구조 계약: production module 8개, Desktop authority 우회 0건
+- XAML 계약: 10개, 리소스 참조 743개, 누락 0
+- 이식 원장: 238행, Port 128 / PC Adapt 16 / PC_TEMP_REVIEW 31 /
+  Gap·Deferred 63
+- 60초 100배속 부하 표본은 p95 85.34ms, p99 102.83ms, 정상 93.65%로 예산 미달이다.
+  당시 기존 0.0.23 실행본이 약 1GiB 작업집합으로 열린 호스트였으며, 무부하 600초
+  재측정 전에는 지속 성능 완료로 판정하지 않는다.
+- 상세 증거: `docs/evidence/0.0.24/verification.md`

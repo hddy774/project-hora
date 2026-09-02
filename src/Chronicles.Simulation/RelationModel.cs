@@ -264,6 +264,15 @@ internal readonly record struct RelationReadState(
     RelationHistoryEntry[] History,
     RelationInteractionResult LatestInteractionResult);
 
+/// <summary>
+/// Hot-path relation view backed by the fixed adjacency index. It deliberately omits
+/// history so AI decisions do not allocate and sort the observation DTO.
+/// </summary>
+internal readonly record struct RelationRoleAdjacencyState(
+    int OtherAgent,
+    RelationRole Roles,
+    int MasterAgent);
+
 internal sealed class SparseRelationStore
 {
     private sealed class RelationState
@@ -295,6 +304,7 @@ internal sealed class SparseRelationStore
     private readonly List<RelationState> _relations;
     private readonly int[] _adjacency;
     private readonly byte[] _adjacencyCounts;
+    private readonly byte[] _masterDiscipleCounts;
     private long _historySequence;
     private long _resultSequence;
 
@@ -307,6 +317,7 @@ internal sealed class SparseRelationStore
         _adjacency = new int[checked(population * RelationRules.MaximumRelationsPerAgent)];
         Array.Fill(_adjacency, -1);
         _adjacencyCounts = new byte[population];
+        _masterDiscipleCounts = new byte[population];
     }
 
     public int Count => _relations.Count;
@@ -317,7 +328,16 @@ internal sealed class SparseRelationStore
         return _adjacencyCounts[agent];
     }
 
+    public bool HasMasterDiscipleRelation(int agent)
+    {
+        ValidateAgent(agent);
+        return _masterDiscipleCounts[agent] != 0;
+    }
+
     public int GetRelatedAgent(int agent, int adjacencyIndex)
+        => GetRoleAdjacencyState(agent, adjacencyIndex).OtherAgent;
+
+    public RelationRoleAdjacencyState GetRoleAdjacencyState(int agent, int adjacencyIndex)
     {
         ValidateAgent(agent);
         if ((uint)adjacencyIndex >= _adjacencyCounts[agent])
@@ -328,7 +348,11 @@ internal sealed class SparseRelationStore
         var relationIndex = _adjacency[
             (agent * RelationRules.MaximumRelationsPerAgent) + adjacencyIndex];
         var relation = _relations[relationIndex];
-        return relation.LeftAgent == agent ? relation.RightAgent : relation.LeftAgent;
+        var isLeft = relation.LeftAgent == agent;
+        return new RelationRoleAdjacencyState(
+            isLeft ? relation.RightAgent : relation.LeftAgent,
+            relation.Roles,
+            relation.MasterAgent);
     }
 
     public bool ApplyMutualInteraction(
@@ -442,6 +466,8 @@ internal sealed class SparseRelationStore
 
         relation.Roles |= RelationRole.MasterDisciple;
         relation.MasterAgent = teacher;
+        IncrementMasterDiscipleCount(relation.LeftAgent);
+        IncrementMasterDiscipleCount(relation.RightAgent);
         AddHistory(
             relation,
             tick,
@@ -602,6 +628,7 @@ internal sealed class SparseRelationStore
             }
 
             var ended = relation.Roles;
+            RemoveMasterDiscipleCounts(relation);
             relation.Roles = RelationRole.None;
             relation.MasterAgent = -1;
             AddHistory(relation, tick, RelationHistoryKind.RoleEndedAtLifeBoundary, ended);
@@ -643,6 +670,7 @@ internal sealed class SparseRelationStore
             relation.SpellTransmissionEstablished = false;
             relation.TechniqueKnowledgeRef = default;
             relation.SpellKnowledgeRef = default;
+            RemoveMasterDiscipleCounts(relation);
             relation.Roles = RelationRole.None;
             relation.MasterAgent = -1;
         }
@@ -748,6 +776,11 @@ internal sealed class SparseRelationStore
             store._indexById.Add(relation.Id.Value, relationIndex);
             store.AddAdjacency(relation.LeftAgent, relationIndex);
             store.AddAdjacency(relation.RightAgent, relationIndex);
+            if ((relation.Roles & RelationRole.MasterDisciple) != 0)
+            {
+                store.IncrementMasterDiscipleCount(relation.LeftAgent);
+                store.IncrementMasterDiscipleCount(relation.RightAgent);
+            }
         }
 
         return store;
@@ -1040,6 +1073,20 @@ internal sealed class SparseRelationStore
         var count = _adjacencyCounts[agent];
         _adjacency[(agent * RelationRules.MaximumRelationsPerAgent) + count] = relationIndex;
         _adjacencyCounts[agent] = checked((byte)(count + 1));
+    }
+
+    private void IncrementMasterDiscipleCount(int agent) =>
+        _masterDiscipleCounts[agent] = checked((byte)(_masterDiscipleCounts[agent] + 1));
+
+    private void RemoveMasterDiscipleCounts(RelationState relation)
+    {
+        if ((relation.Roles & RelationRole.MasterDisciple) == 0)
+        {
+            return;
+        }
+
+        _masterDiscipleCounts[relation.LeftAgent]--;
+        _masterDiscipleCounts[relation.RightAgent]--;
     }
 
     private static ushort Increment(ushort value) => value == ushort.MaxValue

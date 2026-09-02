@@ -37,8 +37,12 @@ internal sealed class RankingRevisionCache
 /// </summary>
 internal static class RankingRadixSorter
 {
-    private const int Radix = 256;
-    private const int PassCount = sizeof(long);
+    // 11-bit digits reduce full-array passes from eight to six while the 2,048-entry
+    // count table remains small enough for stack allocation and cache-local clearing.
+    private const int RadixBits = 11;
+    private const int Radix = 1 << RadixBits;
+    private const int PassCount = (64 + RadixBits - 1) / RadixBits;
+    private const ulong RadixMask = Radix - 1;
     private const ulong SignedOrderMask = 1UL << 63;
 
     public static void SortDescending(
@@ -66,7 +70,7 @@ internal static class RankingRadixSorter
         for (var pass = 0; pass < PassCount; pass++)
         {
             offsets.Clear();
-            var shift = pass * 8;
+            var shift = pass * RadixBits;
             for (var index = 0; index < source.Length; index++)
             {
                 offsets[GetDigit(scoreByAgent[source[index]], shift)]++;
@@ -90,8 +94,7 @@ internal static class RankingRadixSorter
             (source, destination) = (destination, source);
         }
 
-        // 64비트는 8회의 짝수 pass이므로 최종 source가 orderedAgents여야 한다.
-        // 길이 0을 포함한 계약 변경에도 안전하도록 방어 복사를 유지한다.
+        // PassCount is even today, but retain the defensive copy if digit width changes.
         if (!ReferenceEquals(source, orderedAgents))
         {
             Array.Copy(source, orderedAgents, source.Length);
@@ -102,7 +105,7 @@ internal static class RankingRadixSorter
     {
         // signed 오름차순 key를 뒤집으면 signed 내림차순이 된다.
         var descendingKey = ~(unchecked((ulong)score) ^ SignedOrderMask);
-        return (int)((descendingKey >> shift) & 0xFFUL);
+        return (int)((descendingKey >> shift) & RadixMask);
     }
 }
 

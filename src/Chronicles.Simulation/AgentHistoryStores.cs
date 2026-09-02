@@ -116,6 +116,30 @@ internal sealed class PersonalLogRingStore
             value);
     }
 
+    private bool TryExtendLatestAction(
+        int agentIndex,
+        AgentActivity activity,
+        int lifeNumber,
+        SimulationTick tick,
+        long currentMonth)
+    {
+        var count = _counts[agentIndex];
+        if (count == 0)
+        {
+            return false;
+        }
+
+        var segment = _segments[agentIndex / AgentsPerSegment]
+            ?? throw new InvalidOperationException("개인 로그 분할 저장소가 초기화되지 않았습니다.");
+        return segment.TryExtendLatestAction(
+            agentIndex % AgentsPerSegment,
+            GetPhysicalIndex(agentIndex, count - 1),
+            activity,
+            lifeNumber,
+            tick,
+            currentMonth);
+    }
+
     private void Add(int agentIndex, PersonalLogEntry value)
     {
         var count = _counts[agentIndex];
@@ -256,6 +280,26 @@ internal sealed class PersonalLogRingStore
                 CompactPersonalLogEntry.Create(value);
         }
 
+        public bool TryExtendLatestAction(
+            int segmentAgentIndex,
+            int physicalIndex,
+            AgentActivity activity,
+            int lifeNumber,
+            SimulationTick tick,
+            long currentMonth)
+        {
+            var chunkIndex = physicalIndex / EntriesPerChunk;
+            var chunk = _chunks[chunkIndex]
+                ?? throw new InvalidOperationException("개인 로그 청크가 초기화되지 않았습니다.");
+            var offset = GetChunkOffset(segmentAgentIndex, physicalIndex);
+            return chunk[offset].TryExtendAction(
+                activity,
+                lifeNumber,
+                tick,
+                currentMonth,
+                out chunk[offset]);
+        }
+
         public void CopyTo(
             int segmentAgentIndex,
             int start,
@@ -389,6 +433,38 @@ internal sealed class PersonalLogRingStore
             Has(HasRelatedAgentFlag) ? new AgentId(_relatedAgentValue) : null,
             _value);
 
+        public bool TryExtendAction(
+            AgentActivity activity,
+            int lifeNumber,
+            SimulationTick tick,
+            long currentMonth,
+            out CompactPersonalLogEntry extended)
+        {
+            if ((_kindAndFlags & KindMask) != (byte)PersonalLogKind.ActionCompleted
+                || !Has(HasActivityFlag)
+                || _activity != (byte)activity
+                || _lifeNumber != lifeNumber)
+            {
+                extended = this;
+                return false;
+            }
+
+            var elapsedMonths = Math.Max(
+                1L,
+                currentMonth - GameCalendar.GetMonthIndex(new SimulationTick(_tick)));
+            extended = new CompactPersonalLogEntry(
+                _sequence,
+                tick.Value,
+                checked(Math.Max(1L, _value) + elapsedMonths),
+                _lifeNumber,
+                _relatedAgentValue,
+                _kindAndFlags,
+                _activity,
+                _worldEventKind,
+                _chronicleEventKind);
+            return true;
+        }
+
         private bool Has(byte flag) => (_kindAndFlags & flag) != 0;
     }
 
@@ -418,6 +494,17 @@ internal sealed class PersonalLogRingStore
         }
 
         public void Add(PersonalLogEntry value) => _owner.Add(_agentIndex, value);
+
+        public bool TryExtendLatestAction(
+            AgentActivity activity,
+            int lifeNumber,
+            SimulationTick tick,
+            long currentMonth) => _owner.TryExtendLatestAction(
+                _agentIndex,
+                activity,
+                lifeNumber,
+                tick,
+                currentMonth);
 
         public void AddRange(IEnumerable<PersonalLogEntry> values)
         {

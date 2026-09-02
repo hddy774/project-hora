@@ -4,12 +4,12 @@ namespace Chronicles.Simulation;
 
 public sealed partial class World
 {
-    private void EnsureCultivationPlan(int index)
+    private void EnsureCultivationPlan(int index, long currentMonth)
     {
         var existing = _agents.CultivationPlans[index];
         if (existing.IsActive
             && _agents.CultivationStates[index] == CultivationState.PreCultivation
-            && GetAgeYears(index) >= CultivationRules.EntryAgeYears)
+            && HasReachedAge(index, CultivationRules.EntryAgeYears))
         {
             FinishCultivationPlan(index);
             existing = _agents.CultivationPlans[index];
@@ -19,7 +19,6 @@ public sealed partial class World
             return;
         }
 
-        var currentMonth = GameCalendar.GetMonthIndex(Tick);
         var intensity = Population <= 2
             ? CultivationPlanIntensity.Leisurely
             : SelectCultivationIntensity(index);
@@ -27,16 +26,21 @@ public sealed partial class World
         var resourcePolicy = SelectCultivationResourcePolicy(index);
         var formationKnowledge = _agents.TechniqueUnderstanding[index];
         var formationExperience = _agents.FormationInstallationExperience[index];
+        var hasExistingFormation = WorldMapRules.IsCity(_agents.LocationIds[index]);
+        ResolveCultivationRelationContext(
+            index,
+            searchFormationAssistant: !hasExistingFormation,
+            out var hasFormationAssistant,
+            out var teachingRole,
+            out var teachingPartner,
+            out var teachingBonus);
         var formationSupport = SelectFormationSupport(
             index,
             formationKnowledge,
             formationExperience,
+            hasExistingFormation,
+            hasFormationAssistant,
             out var formationSucceeded);
-        ResolveCultivationTeachingContext(
-            index,
-            out var teachingRole,
-            out var teachingPartner,
-            out var teachingBonus);
         var conditionFactor = CultivationPlanRules.CombineConditionFactors(
             intensity,
             formationSupport,
@@ -152,15 +156,17 @@ public sealed partial class World
         int index,
         int knowledgeHundredths,
         int experienceHundredths,
+        bool hasExistingFormation,
+        bool hasAssistant,
         out bool installationSucceeded)
     {
         installationSucceeded = false;
-        if (WorldMapRules.IsCity(_agents.LocationIds[index]))
+        if (hasExistingFormation)
         {
             return CultivationFormationSupport.ExistingAtLocation;
         }
 
-        if (TryFindFormationAssistant(index))
+        if (hasAssistant)
         {
             installationSucceeded = true;
             return CultivationFormationSupport.ExternalAssistance;
@@ -183,52 +189,52 @@ public sealed partial class World
             : CultivationFormationSupport.None;
     }
 
-    private bool TryFindFormationAssistant(int index)
-    {
-        var relationCount = _relations.GetRelationCount(index);
-        for (var relationIndex = 0; relationIndex < relationCount; relationIndex++)
-        {
-            var related = _relations.GetRelatedAgent(index, relationIndex);
-            if (_agents.LifeStates[related] == PersonLifeState.Living
-                && _agents.LocationIds[related] == _agents.LocationIds[index]
-                && _agents.TechniqueUnderstanding[related]
-                    >= CultivationPlanRules.MinimumSelfInstallationKnowledgeHundredths)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void ResolveCultivationTeachingContext(
+    private void ResolveCultivationRelationContext(
         int index,
+        bool searchFormationAssistant,
+        out bool hasFormationAssistant,
         out CultivationTeachingRole role,
         out int partner,
         out int bonusBasisPoints)
     {
+        hasFormationAssistant = false;
         role = CultivationTeachingRole.None;
         partner = -1;
         bonusBasisPoints = CultivationPlanRules.NeutralFactorBasisPoints;
+        if (!searchFormationAssistant && !_relations.HasMasterDiscipleRelation(index))
+        {
+            return;
+        }
+
         var relationCount = _relations.GetRelationCount(index);
         for (var relationIndex = 0; relationIndex < relationCount; relationIndex++)
         {
-            var related = _relations.GetRelatedAgent(index, relationIndex);
-            if (_agents.LifeStates[related] != PersonLifeState.Living
-                || _agents.LocationIds[related] != _agents.LocationIds[index]
-                || _agents.Activities[related] != AgentActivity.Cultivating
-                || !_relations.TryGetPerspective(
-                    index,
-                    related,
-                    out _,
-                    out var roles,
-                    out var master)
-                || (roles & RelationRole.MasterDisciple) == 0)
+            var relation = _relations.GetRoleAdjacencyState(index, relationIndex);
+            var isTeachingRelation = (relation.Roles & RelationRole.MasterDisciple) != 0;
+            if (!searchFormationAssistant && !isTeachingRelation)
             {
                 continue;
             }
 
-            if (master == related)
+            var related = relation.OtherAgent;
+            if (_agents.LifeStates[related] != PersonLifeState.Living
+                || _agents.LocationIds[related] != _agents.LocationIds[index])
+            {
+                continue;
+            }
+
+            if (searchFormationAssistant && !hasFormationAssistant)
+            {
+                hasFormationAssistant = _agents.TechniqueUnderstanding[related]
+                    >= CultivationPlanRules.MinimumSelfInstallationKnowledgeHundredths;
+            }
+            if (!isTeachingRelation
+                || _agents.Activities[related] != AgentActivity.Cultivating)
+            {
+                continue;
+            }
+
+            if (relation.MasterAgent == related)
             {
                 role = CultivationTeachingRole.Learner;
                 partner = related;
@@ -249,7 +255,7 @@ public sealed partial class World
                 return;
             }
 
-            if (master == index && role == CultivationTeachingRole.None)
+            if (relation.MasterAgent == index && role == CultivationTeachingRole.None)
             {
                 role = CultivationTeachingRole.Instructor;
                 partner = related;
@@ -297,17 +303,16 @@ public sealed partial class World
         return Math.Clamp(factor, 5_000, 20_000);
     }
 
-    private int GetCultivationPulseMonths(int index)
+    private int GetCultivationPulseMonths(int index, long currentMonth)
     {
         var plan = _agents.CultivationPlans[index];
         if (!plan.IsActive
             || (_agents.CultivationStates[index] == CultivationState.PreCultivation
-                && GetAgeYears(index) < CultivationRules.EntryAgeYears))
+                && !HasReachedAge(index, CultivationRules.EntryAgeYears)))
         {
             return 1;
         }
 
-        var currentMonth = GameCalendar.GetMonthIndex(Tick);
         var startedMonth = GameCalendar.GetMonthIndex(new SimulationTick(plan.StartedTick));
         var elapsedMonths = Math.Max(1L, checked(currentMonth - startedMonth + 1));
         var newlyElapsed = Math.Max(1L, elapsedMonths - plan.CompletedMonths);
@@ -337,7 +342,7 @@ public sealed partial class World
         }
     }
 
-    private bool TryContinueCultivationPlan(int index)
+    private bool TryContinueCultivationPlan(int index, long currentMonth)
     {
         var plan = _agents.CultivationPlans[index];
         if (!plan.IsActive || _agents.Activities[index] != AgentActivity.Cultivating)
@@ -362,7 +367,7 @@ public sealed partial class World
 
         long nextTick;
         if (_agents.CultivationStates[index] == CultivationState.PreCultivation
-            && GetAgeYears(index) < CultivationRules.EntryAgeYears)
+            && !HasReachedAge(index, CultivationRules.EntryAgeYears))
         {
             nextTick = Math.Min(
                 plan.PlannedEndTick,
@@ -380,8 +385,7 @@ public sealed partial class World
             };
             var remainingMonths = Math.Max(1L, plan.PlannedMonths - plan.CompletedMonths);
             nextTick = GameCalendar.GetMonthStart(checked(
-                GameCalendar.GetMonthIndex(Tick)
-                + Math.Min(pulseIntervalMonths, remainingMonths))).Value;
+                currentMonth + Math.Min(pulseIntervalMonths, remainingMonths))).Value;
         }
 
         ScheduleAgent(index, nextTick);

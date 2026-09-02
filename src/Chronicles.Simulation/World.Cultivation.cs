@@ -6,6 +6,7 @@ public sealed partial class World
 {
     private void ResolveCultivation(
         int index,
+        long currentMonth,
         CultivationWorkResult? precomputedWork = null)
     {
         if (precomputedWork is { } result)
@@ -15,7 +16,7 @@ public sealed partial class World
             return;
         }
 
-        var pulseMonths = GetCultivationPulseMonths(index);
+        var pulseMonths = GetCultivationPulseMonths(index, currentMonth);
         if (pulseMonths > 1
             && TryAccumulateRealmWorkBulk(index, pulseMonths, out var processedMonths))
         {
@@ -27,7 +28,7 @@ public sealed partial class World
         {
             ResolveCultivationMonth(index);
             if (_agents.CultivationStates[index] == CultivationState.PreCultivation
-                && GetAgeYears(index) < CultivationRules.EntryAgeYears)
+                && !HasReachedAge(index, CultivationRules.EntryAgeYears))
             {
                 break;
             }
@@ -49,7 +50,7 @@ public sealed partial class World
         switch (_agents.CultivationStates[index])
         {
             case CultivationState.PreCultivation:
-                if (GetAgeYears(index) < CultivationRules.EntryAgeYears)
+                if (!HasReachedAge(index, CultivationRules.EntryAgeYears))
                 {
                     return;
                 }

@@ -215,7 +215,10 @@ public sealed partial class World
             var actionMonth = GameCalendar.GetMonthIndex(due);
             AdvanceMonthlyBoundariesThrough(actionMonth);
             Tick = due;
-            PrepareParallelCultivationWork(dueAgents.AsSpan(0, dueCount), dueTick);
+            PrepareParallelCultivationWork(
+                dueAgents.AsSpan(0, dueCount),
+                dueTick,
+                actionMonth);
             for (var dueIndex = 0; dueIndex < dueCount; dueIndex++)
             {
                 ProcessScheduledAgent(dueAgents[dueIndex], dueTick, actionMonth);
@@ -287,7 +290,7 @@ public sealed partial class World
         _agents.ActionsTaken[agentIndex] = checked(_agents.ActionsTaken[agentIndex] + 1);
         if (_agents.Activities[agentIndex] == AgentActivity.Cultivating)
         {
-            EnsureCultivationPlan(agentIndex);
+            EnsureCultivationPlan(agentIndex, actionMonth);
         }
         var resolvedActivity = _agents.Activities[agentIndex];
         var tracksRealmRanking = resolvedActivity == AgentActivity.Cultivating;
@@ -306,6 +309,7 @@ public sealed partial class World
             : default;
         var alreadyScheduled = ResolveActivity(
             agentIndex,
+            actionMonth,
             hasPrecomputedCultivation ? precomputedCultivation : null);
         TryResolveBottleneckAfterAction(agentIndex, resolvedActivity);
         MarkActionRankingChanges(
@@ -321,18 +325,18 @@ public sealed partial class World
             RecalculatePowerAndUpdatePeak(agentIndex);
         }
         if (resolvedActivity == AgentActivity.Cultivating
-            && TryContinueCultivationPlan(agentIndex))
+            && TryContinueCultivationPlan(agentIndex, actionMonth))
         {
             var plan = _agents.CultivationPlans[agentIndex];
             if (plan.CompletedMonths <= 1 || plan.CompletedMonths % 12 == 0)
             {
-                AddPersonalActionLog(agentIndex, resolvedActivity);
+                AddPersonalActionLog(agentIndex, resolvedActivity, actionMonth);
             }
             return;
         }
 
         ObserveSocialInteraction(agentIndex, resolvedActivity);
-        AddPersonalActionLog(agentIndex, resolvedActivity);
+        AddPersonalActionLog(agentIndex, resolvedActivity, actionMonth);
         if (alreadyScheduled)
         {
             return;
@@ -1204,12 +1208,15 @@ public sealed partial class World
         return hash;
     }
 
-    private bool ResolveActivity(int index, CultivationWorkResult? precomputedCultivation = null)
+    private bool ResolveActivity(
+        int index,
+        long actionMonth,
+        CultivationWorkResult? precomputedCultivation = null)
     {
         switch (_agents.Activities[index])
         {
             case AgentActivity.Cultivating:
-                ResolveCultivation(index, precomputedCultivation);
+                ResolveCultivation(index, actionMonth, precomputedCultivation);
                 return false;
             case AgentActivity.TrainingTechnique:
                 ResolveTechniqueTraining(index);
@@ -1484,7 +1491,7 @@ public sealed partial class World
         }
         if (rank > 1
             && challengeChance > 0
-            && GetAgeYears(index) >= CultivationRules.EntryAgeYears
+            && HasReachedAge(index, CultivationRules.EntryAgeYears)
             && Tick.Value >= 60
             && WorldMapRules.IsCity(_agents.LocationIds[index])
             && _random.NextInt(100) < challengeChance)
@@ -1955,26 +1962,16 @@ public sealed partial class World
         or WorldEventKind.ReincarnationCrossingCompleted
         or WorldEventKind.Rebirth;
 
-    private void AddPersonalActionLog(int index, AgentActivity activity)
+    private void AddPersonalActionLog(int index, AgentActivity activity, long currentMonth)
     {
         var log = _agents.PersonalLogs[index];
-        if (log.Count > 0)
+        if (log.TryExtendLatestAction(
+                activity,
+                _agents.LifeNumbers[index],
+                Tick,
+                currentMonth))
         {
-            var latest = log[^1];
-            if (latest.Kind == PersonalLogKind.ActionCompleted
-                && latest.Activity == activity
-                && latest.LifeNumber == _agents.LifeNumbers[index])
-            {
-                var elapsedMonths = Math.Max(
-                    1L,
-                    GameCalendar.GetMonthIndex(Tick) - GameCalendar.GetMonthIndex(latest.Tick));
-                log[^1] = latest with
-                {
-                    Tick = Tick,
-                    Value = checked(Math.Max(1L, latest.Value) + elapsedMonths),
-                };
-                return;
-            }
+            return;
         }
 
         AddPersonalLog(
@@ -2075,7 +2072,11 @@ public sealed partial class World
         GetQualityEffect(_agents.GetDerivedAptitude(index, ability));
 
     private bool HasReachedMaximumLifespan(int index) =>
-        GetAgeYears(index) >= RealmRules.GetProfile(_agents.RealmStages[index]).MaximumLifespanYears;
+        Tick.Value >= GetMaximumLifespanTick(index);
+
+    private bool HasReachedAge(int index, int ageYears) =>
+        Tick.Value >= checked(
+            _agents.BirthTicks[index] + ((long)ageYears * GameCalendar.TicksPerYear));
 
     private long GetMaximumLifespanTick(int index) => checked(
         _agents.BirthTicks[index]

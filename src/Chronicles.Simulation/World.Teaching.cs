@@ -66,7 +66,8 @@ public sealed partial class World
         var bestGap = TeachingRules.MinimumKnowledgeGap - 1;
         for (var relationIndex = 0; relationIndex < relationCount; relationIndex++)
         {
-            var learner = _relations.GetRelatedAgent(teacher, relationIndex);
+            var relation = _relations.GetRoleAdjacencyState(teacher, relationIndex);
+            var learner = relation.OtherAgent;
             if (_agents.LifeStates[learner] != PersonLifeState.Living
                 || _agents.LocationIds[learner] != _agents.LocationIds[teacher]
                 || _agents.LearningTraces[learner].IsActive
@@ -76,14 +77,8 @@ public sealed partial class World
                 continue;
             }
 
-            if (_relations.TryGetPerspective(
-                    teacher,
-                    learner,
-                    out _,
-                    out var existingRoles,
-                    out var existingMaster)
-                && (existingRoles & RelationRole.MasterDisciple) != 0
-                && existingMaster != teacher)
+            if ((relation.Roles & RelationRole.MasterDisciple) != 0
+                && relation.MasterAgent != teacher)
             {
                 continue;
             }

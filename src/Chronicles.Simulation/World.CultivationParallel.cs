@@ -267,7 +267,10 @@ internal static class CultivationWorkCalculator
 
 public sealed partial class World
 {
-    private void PrepareParallelCultivationWork(ReadOnlySpan<int> dueAgents, long dueTick)
+    private void PrepareParallelCultivationWork(
+        ReadOnlySpan<int> dueAgents,
+        long dueTick,
+        long currentMonth)
     {
         if (!_cultivationParallel.CanPrepareBatch(dueAgents.Length))
         {
@@ -277,7 +280,7 @@ public sealed partial class World
         _cultivationParallel.BeginBatch();
         foreach (var agent in dueAgents)
         {
-            if (TryCreateParallelCultivationInput(agent, dueTick) is { } input)
+            if (TryCreateParallelCultivationInput(agent, dueTick, currentMonth) is { } input)
             {
                 _cultivationParallel.AddCandidate(agent, input);
             }
@@ -286,7 +289,10 @@ public sealed partial class World
         _cultivationParallel.CompleteBatch();
     }
 
-    private CultivationWorkInput? TryCreateParallelCultivationInput(int index, long dueTick)
+    private CultivationWorkInput? TryCreateParallelCultivationInput(
+        int index,
+        long dueTick,
+        long currentMonth)
     {
         var plan = _agents.CultivationPlans[index];
         if (_agents.NextDecisionTicks[index] != dueTick
@@ -300,7 +306,7 @@ public sealed partial class World
             return null;
         }
 
-        var requestedMonths = GetCultivationPulseMonths(index);
+        var requestedMonths = GetCultivationPulseMonths(index, currentMonth);
         if (requestedMonths <= 1)
         {
             return null;

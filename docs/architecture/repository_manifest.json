@@ -101,6 +101,7 @@
     "agent_chronicle_storage": "src/Chronicles.Simulation/CompactChronicleStore.cs",
     "personal_century_chronicle_authority": "src/Chronicles.Simulation/PersonalChronicleArchiveStore.cs",
     "cultivation_authority": "src/Chronicles.Simulation/World.Cultivation.cs",
+    "cultivation_breakthrough_authority": "src/Chronicles.Simulation/World.Cultivation.Breakthroughs.cs",
     "cultivation_parallel_runtime": "src/Chronicles.Simulation/World.CultivationParallel.cs",
     "cultivation_action_plan_authority": "src/Chronicles.Simulation/CultivationActionPlan.cs",
     "cultivation_action_plan_runtime": "src/Chronicles.Simulation/World.CultivationPlans.cs",

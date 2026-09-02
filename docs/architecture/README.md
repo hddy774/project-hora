@@ -53,7 +53,8 @@ Desktop = Application + Presentation
 
 ## 0.0.18 수행 진입점
 
-- 수행 Work·준비·사전검증·시도·안착 전이: `World.Cultivation.cs`
+- 입문·수행 Work·관찰 투영: `World.Cultivation.cs`
+- 병목 사전검증·돌파·안착 전이: `World.Cultivation.Breakthroughs.cs`
 - 대경지 수명·기준 기간·공식·임시 검토값: `RealmRules.cs`
 - 승인 Effect 0개·Typed 실패·가용성 상태: `CultivationModel.cs`
 - 삼도축기요결 5단계 결과와 Source Snapshot: `FoundationFormationAuthorityStore.cs`

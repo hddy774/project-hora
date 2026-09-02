@@ -424,6 +424,51 @@ internal static class AtlasObservationTests
         True(listP95 <= thousandRowMaterializationP95BudgetMilliseconds, "1,000행 materialization p95 50 ms 예산");
     }
 
+    public static void NonPersonWorkspaceSkipsAgentProjection()
+    {
+        const int iterations = 200;
+        var world = World.CreateDefault(994);
+        var queries = new WorldObservationQueries(world);
+        var request = new ObservationRequest(
+            RankingCount: 1,
+            EventCount: 0,
+            Sections: ObservationSections.StatisticsSummary,
+            WorldChronicleCount: 0,
+            ContentSecretRealmLimit: 0,
+            KnowledgeEditionLimit: 0,
+            LawCandidateLimit: 0);
+        _ = queries.GetSnapshot(request);
+        _ = queries.GetObservation(request with { SelectedAgent = new AgentId(0) });
+
+        var hashBefore = world.ComputeStateHash();
+        var worldAllocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+        WorldSnapshot? worldSink = null;
+        for (var iteration = 0; iteration < iterations; iteration++)
+        {
+            worldSink = queries.GetSnapshot(request);
+        }
+        var worldAllocated = GC.GetAllocatedBytesForCurrentThread() - worldAllocatedBefore;
+
+        var personAllocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+        WorldObservation? personSink = null;
+        for (var iteration = 0; iteration < iterations; iteration++)
+        {
+            personSink = queries.GetObservation(request with { SelectedAgent = new AgentId(0) });
+        }
+        var personAllocated = GC.GetAllocatedBytesForCurrentThread() - personAllocatedBefore;
+        GC.KeepAlive(worldSink);
+        GC.KeepAlive(personSink);
+
+        var reduction = personAllocated == 0
+            ? 0m
+            : (personAllocated - worldAllocated) * 100m / personAllocated;
+        Console.WriteLine(
+            $"WORLD-ONLY UI PERF: world {worldAllocated:N0} B · person {personAllocated:N0} B · " +
+            $"숨은 인물 투영 제거 {reduction:0.0}% ({iterations:N0}회)");
+        True(worldAllocated < personAllocated, "비인물 화면은 선택 인물 DTO보다 적게 할당해야 합니다.");
+        Equal(hashBefore, world.ComputeStateHash(), "world-only 관찰은 권위 상태를 바꾸지 않음");
+    }
+
     public static void LazyMapAgentProjectionPerformance()
     {
         const int iterations = 200;
@@ -497,4 +542,3 @@ internal static class AtlasObservationTests
         return samples[index];
     }
 }
-

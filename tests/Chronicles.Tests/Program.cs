@@ -136,6 +136,7 @@ var tests = new (string Name, Action Body)[]
     ("전체 분포·랭킹 변동·승패·사망 통계", WorldPersistenceTests.WorldStatisticsQuery),
     ("관찰 조회 무영향", AtlasObservationTests.ObservationQueriesAreReadOnly),
     ("활성 UI 구역 선택 조회 성능", AtlasObservationTests.SelectiveObservationPerformance),
+    ("비인물 화면 선택 인물 투영 0회", AtlasObservationTests.NonPersonWorkspaceSkipsAgentProjection),
     ("지도 내부 탭 지연 투영 성능", AtlasObservationTests.LazyMapAgentProjectionPerformance),
     ("5층천 Atlas·1·2층천·900 영맥·개인 공간 지식", AtlasObservationTests.AtlasHierarchySpatialKnowledgeAndVeins),
     ("하천대륙 10×10 주·오천주 1·2층천 10×10 지점", AtlasObservationTests.HacheonOcheonGeographyBlueprint),

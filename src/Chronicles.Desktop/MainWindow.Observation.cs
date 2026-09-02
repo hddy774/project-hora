@@ -19,53 +19,67 @@ public partial class MainWindow
             _selectedAgent = selected;
         }
 
-        if (!IsObservationWorkspaceVisible)
+        var request = CreateVisibleObservationRequest();
+        if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
         {
-            var shellSnapshot = _runner.GetSnapshot(
-                rankingCount: 1,
-                eventCount: 0,
-                sections: ObservationSections.None,
-                worldChronicleCount: 0);
-            ApplyShellSnapshot(shellSnapshot);
+            ApplyPersonObservation(_runner.GetObservation(request));
             return;
         }
 
-        var observation = _runner.GetObservation(
-            _selectedAgent,
-            rankingCount: GetVisibleRankingCount(),
-            sections: GetVisibleObservationSections(),
-            detailedMapLocationId: _workspaceRoute == WorkspaceRoute.Map
-                && MapObservationPanel.ShouldLoadAgents
-                    ? MapObservationPanel.SelectedLocationId
-                    : null,
-            detailedMapAgentOffset: _workspaceRoute == WorkspaceRoute.Map
-                && MapObservationPanel.ShouldLoadAgents
-                    ? MapObservationPanel.AgentOffset
-                    : 0,
-            worldChronicleCount: WorldChronicleDisplayLimit,
-            contentSecretRealmOffset: _workspaceRoute == WorkspaceRoute.Content
+        ApplyWorldSnapshot(_runner.GetSnapshot(request));
+    }
+
+    private ObservationRequest CreateVisibleObservationRequest()
+    {
+        if (!IsObservationWorkspaceVisible)
+        {
+            return new ObservationRequest(
+                RankingCount: 1,
+                EventCount: 0,
+                Sections: ObservationSections.None,
+                WorldChronicleCount: 0,
+                ContentSecretRealmLimit: 0,
+                KnowledgeEditionLimit: 0,
+                LawCandidateLimit: 0);
+        }
+
+        var sections = GetVisibleObservationSections();
+        var mapAgentsVisible = _workspaceRoute == WorkspaceRoute.Map
+            && MapObservationPanel.ShouldLoadAgents;
+        var contentVisible = _workspaceRoute == WorkspaceRoute.Content;
+        return new ObservationRequest(
+            SelectedAgent: _workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations
+                ? _selectedAgent
+                : null,
+            RankingCount: GetVisibleRankingCount(),
+            EventCount: (sections & ObservationSections.WorldLog) != 0 ? 150 : 0,
+            Sections: sections,
+            DetailedMapLocationId: mapAgentsVisible
+                ? MapObservationPanel.SelectedLocationId
+                : null,
+            DetailedMapAgentOffset: mapAgentsVisible ? MapObservationPanel.AgentOffset : 0,
+            WorldChronicleCount: (sections & ObservationSections.WorldChronicle) != 0
+                ? WorldChronicleDisplayLimit
+                : 0,
+            ContentSecretRealmOffset: contentVisible
                 ? ContentWorkspacePanel.SecretRealmOffset
                 : 0,
-            contentSecretRealmLimit: _workspaceRoute == WorkspaceRoute.Content
+            ContentSecretRealmLimit: contentVisible
                 && ContentWorkspacePanel.ShouldLoadSecretRealmRows
                     ? ContentWorkspaceView.SecretRealmPageSize
                     : 0,
-            knowledgeEditionLimit: _workspaceRoute == WorkspaceRoute.Content
+            KnowledgeEditionLimit: contentVisible
                 && ContentWorkspacePanel.ShouldLoadKnowledgeRows
                     ? ContentWorkspaceView.KnowledgeEditionPageSize
                     : 0,
-            lawCandidateLimit: _workspaceRoute == WorkspaceRoute.Content
+            LawCandidateLimit: contentVisible
                 && ContentWorkspacePanel.ShouldLoadLawRows
                     ? ContentWorkspaceView.LawCandidatePageSize
                     : 0,
-            contentItemOffset: _workspaceRoute == WorkspaceRoute.Content
-                ? ContentWorkspacePanel.ItemOffset
-                : 0,
-            contentItemLimit: _workspaceRoute == WorkspaceRoute.Content
-                && ContentWorkspacePanel.ShouldLoadItemRows
-                    ? ContentWorkspaceView.ItemPageSize
-                    : 0);
-        ApplyObservation(observation);
+            ContentItemOffset: contentVisible ? ContentWorkspacePanel.ItemOffset : 0,
+            ContentItemLimit: contentVisible && ContentWorkspacePanel.ShouldLoadItemRows
+                ? ContentWorkspaceView.ItemPageSize
+                : 0);
     }
 
     private ObservationSections GetVisibleObservationSections()
@@ -197,7 +211,7 @@ public partial class MainWindow
                         ? 1_000
                         : 1;
 
-    private void ApplyObservation(WorldObservation observation)
+    private void ApplyPersonObservation(WorldObservation observation)
     {
         _applyingObservation = true;
         var snapshot = observation.World;
@@ -205,21 +219,31 @@ public partial class MainWindow
         ApplyShellSnapshot(snapshot);
         try
         {
-            if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
+            UpdateRankingRows(snapshot);
+            if (!_peopleStatisticsMode
+                && (!_compactPersonLayout || _compactPersonShowsDetail))
             {
-                UpdateRankingRows(snapshot);
-                if (!_peopleStatisticsMode
-                    && (!_compactPersonLayout || _compactPersonShowsDetail))
-                {
-                    UpdateSelectedAgent(
-                        observation.SelectedAgent,
-                        observation.SelectedPersonalLog,
-                        observation.SelectedChronicle,
-                        observation.SelectedPersonalCenturyChronicle,
-                        observation.SelectedReincarnation);
-                }
+                UpdateSelectedAgent(
+                    observation.SelectedAgent,
+                    observation.SelectedPersonalLog,
+                    observation.SelectedChronicle,
+                    observation.SelectedPersonalCenturyChronicle,
+                    observation.SelectedReincarnation);
             }
-            else if (_workspaceRoute == WorkspaceRoute.Organizations)
+        }
+        finally
+        {
+            _applyingObservation = false;
+        }
+    }
+
+    private void ApplyWorldSnapshot(WorldSnapshot snapshot)
+    {
+        _applyingObservation = true;
+        ApplyShellSnapshot(snapshot);
+        try
+        {
+            if (_workspaceRoute == WorkspaceRoute.Organizations)
             {
                 OrganizationWorkspacePanel.Apply(snapshot.Organizations);
             }
@@ -227,7 +251,7 @@ public partial class MainWindow
             {
                 ContentWorkspacePanel.Apply(snapshot.Content);
             }
-            else
+            else if (IsObservationWorkspaceVisible)
             {
                 UpdateVisibleWorldPanel(snapshot);
             }

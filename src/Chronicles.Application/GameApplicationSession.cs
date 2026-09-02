@@ -129,6 +129,9 @@ public sealed class GameApplicationSession : IDisposable
             contentItemOffset,
             contentItemLimit);
 
+    public WorldSnapshot GetSnapshot(ObservationRequest request) =>
+        _runner.GetSnapshot(request);
+
     public WorldObservation GetObservation(
         AgentId? selectedAgent = null,
         int rankingCount = 1_000,
@@ -161,6 +164,9 @@ public sealed class GameApplicationSession : IDisposable
             lawCandidateLimit,
             contentItemOffset,
             contentItemLimit);
+
+    public WorldObservation GetObservation(ObservationRequest request) =>
+        _runner.GetObservation(request);
 
     public IReadOnlyList<AgentSnapshot> BrowseAgents(int offset, int limit = 500) =>
         _runner.BrowseAgents(offset, limit);

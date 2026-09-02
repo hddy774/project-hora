@@ -57,8 +57,8 @@ public sealed class WorldObservationQueries
         int lawCandidateOffset = 0,
         int lawCandidateLimit = 54,
         int contentItemOffset = 0,
-        int contentItemLimit = 0) =>
-        _world.CreateSnapshot(
+        int contentItemLimit = 0) => GetSnapshot(new ObservationRequest(
+            null,
             rankingCount,
             eventCount,
             sections,
@@ -72,27 +72,29 @@ public sealed class WorldObservationQueries
             lawCandidateOffset,
             lawCandidateLimit,
             contentItemOffset,
-            contentItemLimit);
+            contentItemLimit));
+
+    public WorldSnapshot GetSnapshot(ObservationRequest request) => _world.CreateSnapshot(
+        request.RankingCount,
+        request.EventCount,
+        request.Sections,
+        request.DetailedMapLocationId,
+        request.DetailedMapAgentOffset,
+        request.WorldChronicleCount,
+        request.ContentSecretRealmOffset,
+        request.ContentSecretRealmLimit,
+        request.KnowledgeEditionOffset,
+        request.KnowledgeEditionLimit,
+        request.LawCandidateOffset,
+        request.LawCandidateLimit,
+        request.ContentItemOffset,
+        request.ContentItemLimit);
 
     public AgentSnapshot GetAgent(AgentId agentId) => _world.GetAgentSnapshot(agentId);
 
     public WorldObservation GetObservation(ObservationRequest request)
     {
-        var world = _world.CreateSnapshot(
-            request.RankingCount,
-            request.EventCount,
-            request.Sections,
-            request.DetailedMapLocationId,
-            request.DetailedMapAgentOffset,
-            request.WorldChronicleCount,
-            request.ContentSecretRealmOffset,
-            request.ContentSecretRealmLimit,
-            request.KnowledgeEditionOffset,
-            request.KnowledgeEditionLimit,
-            request.LawCandidateOffset,
-            request.LawCandidateLimit,
-            request.ContentItemOffset,
-            request.ContentItemLimit);
+        var world = GetSnapshot(request);
         var agentId = request.SelectedAgent ?? world.LeaderId;
         var cultivationSections = CultivationProjectionSections.None;
         if ((request.Sections & ObservationSections.Cultivation) != 0)

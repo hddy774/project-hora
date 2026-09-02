@@ -203,26 +203,29 @@ public sealed class SimulationRunner : IDisposable
         int lawCandidateOffset = 0,
         int lawCandidateLimit = 54,
         int contentItemOffset = 0,
-        int contentItemLimit = 0)
+        int contentItemLimit = 0) => GetSnapshot(new ObservationRequest(
+            null,
+            rankingCount,
+            eventCount,
+            sections,
+            detailedMapLocationId,
+            detailedMapAgentOffset,
+            worldChronicleCount,
+            contentSecretRealmOffset,
+            contentSecretRealmLimit,
+            knowledgeEditionOffset,
+            knowledgeEditionLimit,
+            lawCandidateOffset,
+            lawCandidateLimit,
+            contentItemOffset,
+            contentItemLimit));
+
+    public WorldSnapshot GetSnapshot(ObservationRequest request)
     {
         var started = BeginPerformanceMeasurement();
         lock (_worldGate)
         {
-            var snapshot = _queries.GetSnapshot(
-                rankingCount,
-                eventCount,
-                sections,
-                detailedMapLocationId,
-                detailedMapAgentOffset,
-                worldChronicleCount,
-                contentSecretRealmOffset,
-                contentSecretRealmLimit,
-                knowledgeEditionOffset,
-                knowledgeEditionLimit,
-                lawCandidateOffset,
-                lawCandidateLimit,
-                contentItemOffset,
-                contentItemLimit);
+            var snapshot = _queries.GetSnapshot(request);
             RecordObservationMeasurement(started);
             return snapshot;
         }
@@ -251,27 +254,29 @@ public sealed class SimulationRunner : IDisposable
         int lawCandidateOffset = 0,
         int lawCandidateLimit = 54,
         int contentItemOffset = 0,
-        int contentItemLimit = 0)
+        int contentItemLimit = 0) => GetObservation(new ObservationRequest(
+            selectedAgent,
+            rankingCount,
+            eventCount,
+            sections,
+            detailedMapLocationId,
+            detailedMapAgentOffset,
+            worldChronicleCount,
+            contentSecretRealmOffset,
+            contentSecretRealmLimit,
+            knowledgeEditionOffset,
+            knowledgeEditionLimit,
+            lawCandidateOffset,
+            lawCandidateLimit,
+            contentItemOffset,
+            contentItemLimit));
+
+    public WorldObservation GetObservation(ObservationRequest request)
     {
         var started = BeginPerformanceMeasurement();
         lock (_worldGate)
         {
-            var observation = _queries.GetObservation(new ObservationRequest(
-                selectedAgent,
-                rankingCount,
-                eventCount,
-                sections,
-                detailedMapLocationId,
-                detailedMapAgentOffset,
-                worldChronicleCount,
-                contentSecretRealmOffset,
-                contentSecretRealmLimit,
-                knowledgeEditionOffset,
-                knowledgeEditionLimit,
-                lawCandidateOffset,
-                lawCandidateLimit,
-                contentItemOffset,
-                contentItemLimit));
+            var observation = _queries.GetObservation(request);
             RecordObservationMeasurement(started);
             return observation;
         }

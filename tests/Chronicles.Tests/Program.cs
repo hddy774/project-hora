@@ -61,6 +61,7 @@ var tests = new (string Name, Action Body)[]
     ("공법·법술·법보 전투 스케일 상한과 품질 격차", SkillCombatScaleRegression),
     ("동일 seed 결정론", DeterministicWorld),
     ("AdvanceTo 호출 분할·runtime pulse·checkpoint 결정론", AdvancePartitionInvarianceTests.Run),
+    ("5 seed 장기 수행 직렬·2단계 병렬 결정론", CultivationParallelDeterminismTests.Run),
     ("이벤트 기반 성장", EventDrivenGrowth),
     ("180년 장기 수행·사냥·전투 참여 회귀", LongRunCultivationHuntingAndCombat),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
@@ -105,15 +106,31 @@ tests =
 ];
 
 var filterIndex = Array.IndexOf(args, "--filter");
-if (filterIndex >= 0 && filterIndex + 1 < args.Length)
+if (filterIndex >= 0)
 {
+    if (filterIndex + 1 >= args.Length
+        || string.IsNullOrWhiteSpace(args[filterIndex + 1]))
+    {
+        Console.Error.WriteLine("TEST FILTER ERROR: --filter 뒤에 테스트 이름 일부를 입력해야 합니다.");
+        Console.Error.WriteLine("사용법: Chronicles.Tests --filter \"저장 codec\"");
+        return 2;
+    }
+
     var filter = args[filterIndex + 1];
-    tests = tests.Where(test => test.Name.Contains(
+    var registeredTests = tests;
+    tests = registeredTests.Where(test => test.Name.Contains(
         filter,
         StringComparison.CurrentCultureIgnoreCase)).ToArray();
     if (tests.Length == 0)
     {
-        throw new ArgumentException($"일치하는 테스트가 없습니다: {filter}", nameof(args));
+        Console.Error.WriteLine($"TEST FILTER ERROR: 일치하는 테스트가 없습니다: {filter}");
+        Console.Error.WriteLine("가까운 테스트 후보:");
+        foreach (var suggestion in FindClosestTestNames(filter, registeredTests.Select(test => test.Name)))
+        {
+            Console.Error.WriteLine($"  - {suggestion}");
+        }
+
+        return 2;
     }
 }
 
@@ -134,6 +151,52 @@ foreach (var test in tests)
 
 Console.WriteLine($"RESULT: {tests.Length - failures}/{tests.Length} passed");
 return failures == 0 ? 0 : 1;
+
+static IEnumerable<string> FindClosestTestNames(
+    string filter,
+    IEnumerable<string> registeredNames)
+{
+    var normalizedFilter = filter.Trim();
+    return registeredNames
+        .Select(name => new
+        {
+            Name = name,
+            Distance = EditDistance(normalizedFilter, name),
+        })
+        .OrderBy(candidate => candidate.Distance)
+        .ThenBy(candidate => candidate.Name, StringComparer.CurrentCulture)
+        .Take(8)
+        .Select(candidate => candidate.Name);
+}
+
+static int EditDistance(string left, string right)
+{
+    var previous = new int[right.Length + 1];
+    var current = new int[right.Length + 1];
+    for (var rightIndex = 0; rightIndex <= right.Length; rightIndex++)
+    {
+        previous[rightIndex] = rightIndex;
+    }
+
+    for (var leftIndex = 1; leftIndex <= left.Length; leftIndex++)
+    {
+        current[0] = leftIndex;
+        for (var rightIndex = 1; rightIndex <= right.Length; rightIndex++)
+        {
+            var substitutionCost = char.ToUpperInvariant(left[leftIndex - 1])
+                == char.ToUpperInvariant(right[rightIndex - 1])
+                    ? 0
+                    : 1;
+            current[rightIndex] = Math.Min(
+                Math.Min(current[rightIndex - 1] + 1, previous[rightIndex] + 1),
+                previous[rightIndex - 1] + substitutionCost);
+        }
+
+        (previous, current) = (current, previous);
+    }
+
+    return previous[right.Length];
+}
 
 static void DefaultPopulationAndGoal()
 {

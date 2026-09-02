@@ -1,9 +1,13 @@
 # 선로만상록 PC · Chronicles of Myriad Immortal Paths
 
-> **2026-09-02 기술 감사 기준:** `VERSION 0.0.21`, GitHub/local
-> `main@7eb4d540b328d4664778b3e494148db0cd36bee2`. 구현·로컬 Release 검증은
-> 완료됐고 GitHub Actions/Release와 0.0.21 화면 직접 조작 검증은 미완료입니다.
-> 전체 구조·알고리즘·증거 수준은 [기술 감사 보고서](docs/TECHNICAL_AUDIT_2026-09-02.md),
+> **2026-09-02 PC 성능 기반 기준:** `VERSION 0.0.27`, 구현 완료
+> `21a7dc0da1cd627ff7a2f3061e71bc3a7efbc267`. Release 전체 검사 75/75와
+> 100배속 60초 SOAK, self-contained 실행본·바탕화면 바로가기·화면 자동 조작을
+> 로컬에서 검증했습니다. GitHub Actions/Release는 실행하지 않았습니다.
+> 전체 구조·알고리즘·성능 증거는
+> [0.0.27 성능 기반 감사](docs/architecture/PC_PERFORMANCE_FOUNDATION_0.0.27.md)와
+> [검증 증거](docs/evidence/0.0.27/verification.md), 이전 기준은
+> [기술 감사 보고서](docs/TECHNICAL_AUDIT_2026-09-02.md),
 > 앞으로의 절차는 [개발 가이드](docs/DEVELOPMENT_GUIDE.md), 개선 순서는
 > [리팩터링·성능 로드맵](docs/REFACTORING_PERFORMANCE_ROADMAP.md), 임시 규칙 55개는
 > [PC 임시 규칙 검토 원장](docs/traceability/PC_TEMP_REVIEW_LEDGER.md)을 따릅니다.

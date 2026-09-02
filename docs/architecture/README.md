@@ -135,6 +135,27 @@ LawId는 증거가 생기기 전까지 생성하지 않는다.
 지점과 99개 주는 없는 권위를 생성하지 않고 `DataUnavailable`로 표시한다. 수선자 page는
 `수선자` 내부 탭과 대응 Production 지점이 모두 선택됐을 때만 요청한다.
 
+## 0.0.23 저장·메모리·병렬 수행 진입점
+
+- 장기 JSON/Brotli streaming·SQLite incremental BLOB: `WorldSaveCodec.cs`,
+  `SlotSaveStore.cs`, `WindowsSqlite.cs`
+- typed 저장 오류·작업 복구: `SaveOperationException.cs`,
+  `GameApplicationSession.cs`, `MainWindow.SaveSlots.cs`
+- 최근 로그·연대기·윤회 희소 저장: `AgentHistoryStores.cs`,
+  `ReincarnationStore.cs`, `ReincarnationStore.Persistence.cs`
+- 고정 행동 일정·dirty ranking: `AgentDecisionSchedule.cs`,
+  `RankingRevisionCache.cs`
+- 결정론적 수행 입력 계산·직렬 commit: `World.CultivationParallel.cs`,
+  `World.Cultivation.cs`
+- runtime 계측과 100배속 SOAK: `SimulationRunner.cs`,
+  `PerformanceDiagnosticsModel.cs`, `RuntimeHundredSpeedSoakTests.cs`
+- 직렬·병렬 처리량과 장기 저장 probe: `CultivationParallelThroughputTests.cs`,
+  `Program.cs`
+
+Desktop과 Application은 저장 결과의 작은 값과 query DTO만 유지한다. 저장 scratch와
+checkpoint는 작업 수명 안에서만 보유하고, 수행 worker는 권위 상태를 쓰지 않는다.
+모든 권위 commit은 안정된 AgentId 순서와 기존 RNG 소비 순서를 유지한다.
+
 ## 검증
 
 ```powershell

@@ -138,7 +138,7 @@ LawId는 증거가 생기기 전까지 생성하지 않는다.
 ## 0.0.23 저장·메모리·병렬 수행 진입점
 
 - 장기 JSON/Brotli streaming·SQLite incremental BLOB: `WorldSaveCodec.cs`,
-  `SlotSaveStore.cs`, `WindowsSqlite.cs`
+  `SlotSaveStore.cs`, `SlotSaveStore.Load.cs`, `WindowsSqlite.cs`
 - typed 저장 오류·작업 복구: `SaveOperationException.cs`,
   `GameApplicationSession.cs`, `MainWindow.SaveSlots.cs`
 - 최근 로그·연대기·윤회 희소 저장: `AgentHistoryStores.cs`,
@@ -176,7 +176,8 @@ checkpoint는 작업 수명 안에서만 보유하고, 수행 worker는 권위 �
 
 - 권위 header와 배열 section 분리: `WorldCheckpointSectionStore.cs`
 - section streaming codec·checksum: `WorldSaveCodec.cs`
-- SQLite incremental BLOB·후보 복구: `SlotSaveStore.cs`
+- SQLite incremental BLOB 쓰기: `SlotSaveStore.cs`
+- 후보 metadata·순차 decode·복구 선택: `SlotSaveStore.Load.cs`
 - 조직별 최근 100건 역사: `OrganizationModel.cs`, `OrganizationTransitions.cs`
 - 조직 checkpoint·hash·복원·손상 검증: `OrganizationStore.Persistence.cs`
 - 검증 완료 Candidate World 교체: `SimulationRunner.cs`, `GameApplicationSession.cs`

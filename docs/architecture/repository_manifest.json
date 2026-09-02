@@ -115,6 +115,8 @@
     "runtime_performance_diagnostics": "src/Chronicles.Runtime/SimulationRunner.cs",
     "bounded_log_file_writer": "src/Chronicles.Application/BoundedLogFileWriter.cs",
     "segmented_authority_storage": "src/Chronicles.Persistence/WorldCheckpointSectionStore.cs",
+    "slot_save_writer": "src/Chronicles.Persistence/SlotSaveStore.cs",
+    "slot_load_recovery": "src/Chronicles.Persistence/SlotSaveStore.Load.cs",
     "checkpoint_validation": "src/Chronicles.Simulation/World.Persistence.Validation.cs",
     "causal_history_checkpoint_validation": "src/Chronicles.Simulation/World.Persistence.CausalHistoryValidation.cs",
     "save_operation_progress": "src/Chronicles.Application/SaveOperationProgress.cs",

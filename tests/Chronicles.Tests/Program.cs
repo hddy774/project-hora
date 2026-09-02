@@ -28,6 +28,64 @@ if (args.Contains("--verify-local-save", StringComparer.Ordinal))
     return 0;
 }
 
+if (args.Contains("--verify-large-local-save", StringComparer.Ordinal))
+{
+    var source = SlotSaveStore.Load(SlotSaveStore.DefaultRoot, SlotSaveStore.DefaultSlotId);
+    if (!source.IsSuccess)
+    {
+        Console.Error.WriteLine($"LARGE SAVE SOURCE ERROR: {source.Status} · {source.Message}");
+        return 1;
+    }
+
+    var checkpoint = source.Checkpoint!;
+    var advanceRaw = Environment.GetEnvironmentVariable("CMIP_LARGE_SAVE_ADVANCE_YEARS");
+    var advanceYears = 0;
+    if (!string.IsNullOrWhiteSpace(advanceRaw)
+        && (!int.TryParse(advanceRaw, out advanceYears) || advanceYears is < 0 or > 10_000))
+    {
+        Console.Error.WriteLine("CMIP_LARGE_SAVE_ADVANCE_YEARS는 0~10000 정수여야 합니다.");
+        return 2;
+    }
+    if (advanceYears > 0)
+    {
+        var expanded = World.Restore(checkpoint);
+        expanded.AdvanceTo(new SimulationTick(checked(
+            expanded.Tick.Value + GameCalendar.FromYears(advanceYears).Value)));
+        checkpoint = expanded.CreateCheckpoint();
+    }
+
+    var probeRoot = Path.Combine(Path.GetTempPath(), $"cmip-large-save-{Guid.NewGuid():N}");
+    try
+    {
+        var saveTimer = Stopwatch.StartNew();
+        var saved = SlotSaveStore.Save(probeRoot, "probe", checkpoint);
+        saveTimer.Stop();
+        var loadTimer = Stopwatch.StartNew();
+        var loaded = SlotSaveStore.Load(probeRoot, "probe");
+        loadTimer.Stop();
+        if (!loaded.IsSuccess || loaded.StateHash != saved.StateHash)
+        {
+            Console.Error.WriteLine(
+                $"LARGE SAVE ROUNDTRIP ERROR: {loaded.Status} · {loaded.Message}");
+            return 1;
+        }
+
+        Console.WriteLine(
+            $"LARGE SAVE OK: advance {advanceYears:N0}년 · JSON {saved.JsonBytes:N0} bytes · container " +
+            $"{saved.PayloadBytes:N0} bytes · save/load " +
+            $"{saveTimer.Elapsed.TotalSeconds:N2}/{loadTimer.Elapsed.TotalSeconds:N2}s · " +
+            $"hash {saved.StateHash:X16}");
+        return 0;
+    }
+    finally
+    {
+        if (Directory.Exists(probeRoot))
+        {
+            Directory.Delete(probeRoot, recursive: true);
+        }
+    }
+}
+
 var tests = new (string Name, Action Body)[]
 {
     ("기본 인구와 목표 순위", DefaultPopulationAndGoal),
@@ -63,6 +121,7 @@ var tests = new (string Name, Action Body)[]
     ("동일 seed 결정론", DeterministicWorld),
     ("AdvanceTo 호출 분할·runtime pulse·checkpoint 결정론", AdvancePartitionInvarianceTests.Run),
     ("5 seed 장기 수행 직렬·2단계 병렬 결정론", CultivationParallelDeterminismTests.Run),
+    ("10,000명 수행 직렬·2단계 병렬 처리량", CultivationParallelThroughputTests.Run),
     ("이벤트 기반 성장", EventDrivenGrowth),
     ("180년 장기 수행·사냥·전투 참여 회귀", LongRunCultivationHuntingAndCombat),
     ("활발한 랭킹 경쟁과 전투 경험", ActiveRankingCompetition),
@@ -94,6 +153,7 @@ var tests = new (string Name, Action Body)[]
     ("모든 로그 파일 5MiB 상한·기존 part 재검사·UTF-8 분할", BoundedLogFilesNeverExceedFiveMiB),
     ("로그 종류·자동 수동·인물별 출력 경로 계약", LogOutputDirectoryContract),
     ("10,000명 로컬 실시간 성능 예산", DefaultWorldPerformanceBudget),
+    ("100배속 runtime pulse SOAK", RuntimeHundredSpeedSoakTests.Run),
 };
 
 tests =
@@ -4522,13 +4582,25 @@ static void LogOutputDirectoryContract()
 static void DefaultWorldPerformanceBudget()
 {
     const long targetTick = 20_000;
+    WarmDefaultWorldPerformancePaths(targetTick);
+    GC.Collect(2, GCCollectionMode.Forced, blocking: true, compacting: true);
+    GC.WaitForPendingFinalizers();
+
     var totalStopwatch = Stopwatch.StartNew();
     var startupStopwatch = Stopwatch.StartNew();
     var world = World.CreateDefault(20260830);
     startupStopwatch.Stop();
+    var allocatedBeforeSimulation = GC.GetTotalAllocatedBytes(precise: true);
     var simulationStopwatch = Stopwatch.StartNew();
     world.AdvanceTo(new SimulationTick(targetTick));
     simulationStopwatch.Stop();
+    var simulationAllocatedBytes = checked(
+        GC.GetTotalAllocatedBytes(precise: true) - allocatedBeforeSimulation);
+    GC.Collect(2, GCCollectionMode.Forced, blocking: true, compacting: true);
+    GC.WaitForPendingFinalizers();
+    var liveHeapBytes = Math.Max(
+        0,
+        GC.GetGCMemoryInfo().HeapSizeBytes - GC.GetGCMemoryInfo().FragmentedBytes);
     var projectionStopwatch = Stopwatch.StartNew();
     var snapshot = world.CreateSnapshot(150, 150);
     projectionStopwatch.Stop();
@@ -4551,6 +4623,10 @@ static void DefaultWorldPerformanceBudget()
         $"{cultivationParallel.EligibleCandidateCount:N0}명 / 병렬 " +
         $"{cultivationParallel.ParallelCandidateCount:N0}명·{cultivationParallel.ParallelBatchCount:N0}묶음 / " +
         $"재검산 {cultivationParallel.FingerprintFallbackCount:N0}명");
+    Console.WriteLine(
+        $"PERF MEMORY: simulation 할당 {simulationAllocatedBytes / (1024d * 1024d):N2} MiB · " +
+        $"tick당 {simulationAllocatedBytes / (double)targetTick:N0} B · " +
+        $"강제 GC 후 live heap {liveHeapBytes / (1024d * 1024d):N2} MiB");
     Equal(targetTick, snapshot.Tick.Value, "성능 검증 도달 tick");
     Equal(10_000, snapshot.Population, "성능 검증 인구");
     True(snapshot.TotalCombatsCompleted > 0, "성능 검증 중 전투가 완료되어야 합니다.");
@@ -4561,6 +4637,18 @@ static void DefaultWorldPerformanceBudget()
         checkpointStopwatch.Elapsed + restoreStopwatch.Elapsed < TimeSpan.FromSeconds(5),
         $"10,000명 schema {WorldCheckpoint.CurrentSchemaVersion} checkpoint·복원 성능 예산 5초를 초과했습니다.");
     Equal(world.ComputeStateHash(), restored.ComputeStateHash(), "10,000명 현재 schema 복원 hash");
+}
+
+static void WarmDefaultWorldPerformancePaths(long targetTick)
+{
+    // 동일한 10,000명 작업집합을 한 번 통과시켜 tiered JIT/PGO가 정상 상태에
+    // 도달하게 한다. 이 시간은 별도 cold-start 비용이며 steady-state budget에
+    // 섞지 않는다.
+    var warmup = World.CreateDefault(0x23_00_23UL);
+    warmup.AdvanceTo(new SimulationTick(targetTick));
+    _ = warmup.CreateSnapshot(16, 16);
+    var checkpoint = warmup.CreateCheckpoint();
+    _ = World.Restore(checkpoint).ComputeStateHash();
 }
 
 static byte[] RemoveSchema22TeachingProperties(byte[] container)

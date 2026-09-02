@@ -100,7 +100,8 @@ public sealed record SlotSaveResult(
     int CheckpointSchema,
     long CreatedSequence,
     ulong StateHash,
-    int PayloadBytes);
+    int PayloadBytes,
+    long JsonBytes);
 
 public sealed record SlotLoadResult(
     SlotLoadStatus Status,
@@ -473,7 +474,8 @@ public static class SlotSaveStore
                 checkpoint.SchemaVersion,
                 createdSequence,
                 stateHash,
-                encoded.ContainerBytes);
+                encoded.ContainerBytes,
+                encoded.JsonBytes);
         }
         finally
         {

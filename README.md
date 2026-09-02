@@ -3,8 +3,8 @@
 > **2026-09-02 현재 공식 기준:** `VERSION 0.0.22`, GitHub
 > `main@9b0fda8134c01b387bdef28caf281d99a7095190`. 로컬 Release `66/66`,
 > 화면 조작과 self-contained package를 완료했고 GitHub Actions/Release는 없습니다.
-> 다음 `0.0.23`은 로컬 구현 중이며 SOAK·최종 화면·VERSION·package evidence가
-> 끝나기 전에는 완료가 아닙니다.
+> 다음 `0.0.23`은 로컬에서 VERSION 전환·Release `73/73`·600초 SOAK까지 통과했지만
+> 최종 화면 조작·M14 판정·package·evidence commit이 끝나기 전에는 완료가 아닙니다.
 > 전체 구조·알고리즘·증거 수준은 [기술 감사 보고서](docs/TECHNICAL_AUDIT_2026-09-02.md),
 > 앞으로의 절차는 [개발 가이드](docs/DEVELOPMENT_GUIDE.md), 개선 순서는
 > [다음 버전 통합 기획서](docs/NEXT_VERSION_PLAN_2026-09-02.md)와

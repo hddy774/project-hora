@@ -5,7 +5,8 @@
 > PC 공식 기준선: `VERSION 0.0.22`,
 > `main@9b0fda8134c01b387bdef28caf281d99a7095190`
 >
-> PC 진행 기준선: 로컬 `codex/pc-0.0.23-ui-migration`의
+> PC 진행 기준선: 로컬 `codex/pc-0.0.23-ui-migration`의 VERSION 완료
+> `6d3d8bdbdfa6e10ae860175483b1308083ebe186`, 구현 코드 종점
 > `615d19eda1fb72a851d50b6e79dfbb32095a8c1f`
 >
 > 모바일 공개 기준선: Alpha `v1.1.2`, source
@@ -28,14 +29,17 @@ PC 목표는 `0.0.23`이며, 이후 `0.0.24+`의 미충족 요구와 모바일 A
 - `0.0.22`는 `main@9b0fda8`에서 로컬 Release `66/66`, 구조·XAML·238행 원장,
   화면 자동 조작, self-contained package를 완료했다. GitHub Actions와 GitHub Release는
   만들지 않았다.
-- `0.0.23` 로컬 브랜치는 `origin/main` 이후 25개 커밋으로 관찰 UI, 대용량 저장,
+- `0.0.23` 로컬 브랜치는 `origin/main` 이후 27개 커밋으로 관찰 UI, 대용량 저장,
   저장 실패 복구, 기록 압축, 수행 병렬화, 진단, 100배속 cadence, 테스트 suite 1차
   분리를 구현했다.
-- `0.0.23`은 아직 `VERSION 0.0.22`다. 600초 SOAK, 화면 행렬, M14 10행 재판정,
-  self-contained package와 final evidence가 끝나기 전에는 검증·릴리스 완료가 아니다.
-- 작성 시점 사용자 미커밋 작업은 `scripts/build-local.ps1`과
-  `docs/evidence/0.0.23/verification.md`다. 후속 Codex는 이를 삭제·덮어쓰기·reset하지
+- `VERSION 0.0.23` 전환과 Release `73/73`, 결정론·장기 저장, 100배속 600초 SOAK는
+  완료됐다. 최종 SOAK는 11,401표본, p95 48.27ms, p99 57.77ms, 정상 99.89%, 최종
+  backlog 0ms, 12,000,000 tick 100%다.
+- 화면 행렬, M14 10행 재판정, self-contained package·직접 실행과 final evidence
+  commit은 아직 남았다. 따라서 커밋 메시지의 `complete 0.0.23`을 릴리스 완료로 읽지
   않는다.
+- 작성 시점 사용자 미커밋 작업은 `docs/evidence/0.0.23/verification.md`다. 후속
+  Codex는 이를 삭제·덮어쓰기·reset하지 않는다.
 
 ### 모바일
 
@@ -49,7 +53,7 @@ PC 목표는 `0.0.23`이며, 이후 `0.0.24+`의 미충족 요구와 모바일 A
 
 | 우선 | 범위 | 현재 증거 | 종료 조건 |
 |---|---|---|---|
-| P0 | PC 0.0.23 정확성·데이터 안전·완료 증거 | 로컬 25개 커밋, `71/71` evidence 초안 | final SHA, SOAK, GUI, package, M14 판정 |
+| P0 | PC 0.0.23 정확성·데이터 안전·완료 증거 | 로컬 27개 커밋, `73/73`, SOAK PASS | GUI, package, final evidence, M14 판정 |
 | P1 | 공통 query·UI·test·benchmark 작업집합 | 일부 구현·일부 감사 backlog | owner 경계와 전후 계약 증거 |
 | P1 | PC 0.0.24 콘텐츠·지식 | M11/M12 Gap 28행 | 행별 authority→save→query/UI→test |
 | P1 | PC 0.0.25 조직·사회 | M09 Gap 10행 | 승인 gate와 10,000명 증거 |

@@ -344,3 +344,22 @@ checkpoint 116ms, schema 24 복원 349ms였다. 작업 시작 기준선 1,239ms 
 - 60초 100배속: p95 61.26ms, p99 81.17ms, 정상 98.99%, 최종 backlog
   212.28ms, 목표 tick 96.00%, 지속 검사 PASS
 - 상세 증거: `docs/evidence/0.0.25/verification.md`
+
+## 0.0.26 100배속 runtime·관찰 경합 검증
+
+```powershell
+dotnet run --no-build -c Release --project tests/Chronicles.Tests/Chronicles.Tests.csproj
+$env:CMIP_SOAK_SECONDS = '60'
+dotnet run --no-build -c Release --project tests/Chronicles.Tests/Chronicles.Tests.csproj -- --filter '100배속 runtime pulse SOAK'
+Remove-Item Env:CMIP_SOAK_SECONDS
+& .\scripts\validate-architecture.ps1
+& .\scripts\validate-port-ledger.ps1
+```
+
+- Release 전체 자동 검사: `RESULT: 75/75 passed`
+- 60초 100배속: p95 52.16ms, p99 60.46ms, 정상 100%, 최종 backlog 0ms,
+  목표 tick 98.17% PASS
+- 활성 요약 query p95 0.205ms, 1,000행 materialization p95 0.055ms
+- 독립 5회 10,000명·20,000 tick 중앙값: 진행 540ms, 합계 670ms,
+  checkpoint 83ms, 복원 366ms
+- 상세 증거: `docs/evidence/0.0.26/verification.md`

@@ -191,6 +191,20 @@ checkpoint schema 32는 유지한다.
 게시하기 전에 초과분을 정리한다. 전역 history sequence는 되감지 않으며 새 이벤트의
 인과 순서를 보존한다.
 
+## 0.0.26 100배속 runtime·관찰 경합 진입점
+
+- lock-free 셸·busy-frame 생략·실제 query 계측: `SimulationRunner.cs`
+- 화면별 관찰 요청과 닫힌 화면 0-query: `MainWindow.Observation.cs`
+- 성능 표본 기반 선택 탭 갱신: `SettingsWorkspaceView.xaml.cs`
+- 월·수명·장기 수행 scheduled hot path: `World.cs`, `World.CultivationPlans.cs`
+- compact 반복 로그·관계 인접 index·radix ranking: `AgentHistoryStores.cs`,
+  `RelationModel.cs`, `RankingRevisionCache.cs`
+
+설정·저장 화면은 `RuntimeShellSnapshot`만 읽고, 상세 관찰 화면은 world lock을 즉시
+얻을 수 있을 때만 불변 DTO를 새로 만든다. 관찰 실패는 이전 DTO 유지일 뿐 권위 전이나
+RNG 소비가 아니다. 저장과 명시적 사용자 요청은 계속 blocking 안전 경계를 사용한다.
+100배속에서는 3 pulse마다 관찰을 무효화해 UI 작업과 월 위상 고정을 함께 줄인다.
+
 ## 검증
 
 ```powershell

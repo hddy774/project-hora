@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.IO.MemoryMappedFiles;
 using System.Security.Cryptography;
 using System.Text.Json;
+using Chronicles.Core;
 using Chronicles.Simulation;
 
 namespace Chronicles.Persistence;
@@ -436,6 +437,54 @@ public static class WorldSaveCodec
         };
         options.Converters.Add(new AgentIdJsonConverter());
         options.Converters.Add(new SimulationTickJsonConverter());
+        options.Converters.Add(new StableIdJsonConverter<AtlasNodeId>(
+            value => new AtlasNodeId(checked((int)value)),
+            value => checked((ulong)value.Value),
+            "Atlas node ID"));
+        options.Converters.Add(new StableIdJsonConverter<OrganizationId>(
+            value => new OrganizationId(checked((long)value)),
+            value => checked((ulong)value.Value),
+            "Organization ID"));
+        options.Converters.Add(new StableIdJsonConverter<SpiritVeinSourceId>(
+            value => new SpiritVeinSourceId(checked((int)value)),
+            value => checked((ulong)value.Value),
+            "Spirit vein source ID"));
+        options.Converters.Add(new StableIdJsonConverter<MarketOfferId>(
+            value => new MarketOfferId(checked((long)value)),
+            value => checked((ulong)value.Value),
+            "Market offer ID"));
+        options.Converters.Add(new StableIdJsonConverter<MarketReservationId>(
+            value => new MarketReservationId(checked((long)value)),
+            value => checked((ulong)value.Value),
+            "Market reservation ID"));
+        options.Converters.Add(new StableIdJsonConverter<ContentDefinitionId>(
+            value => new ContentDefinitionId(value),
+            value => value.Value,
+            "Content definition ID"));
+        options.Converters.Add(new StableIdJsonConverter<ContentInstanceId>(
+            value => new ContentInstanceId(checked((long)value)),
+            value => checked((ulong)value.Value),
+            "Content instance ID"));
+        options.Converters.Add(new StableIdJsonConverter<ContentProvenanceId>(
+            value => new ContentProvenanceId(checked((long)value)),
+            value => checked((ulong)value.Value),
+            "Content provenance ID"));
+        options.Converters.Add(new StableIdJsonConverter<ContentSourceResultId>(
+            value => new ContentSourceResultId(value),
+            value => value.Value,
+            "Content source result ID"));
+        options.Converters.Add(new StableIdJsonConverter<KnowledgeContentId>(
+            value => new KnowledgeContentId(value),
+            value => value.Value,
+            "Knowledge content ID"));
+        options.Converters.Add(new StableIdJsonConverter<KnowledgeEditionId>(
+            value => new KnowledgeEditionId(checked((long)value)),
+            value => checked((ulong)value.Value),
+            "Knowledge edition ID"));
+        options.Converters.Add(new StableIdJsonConverter<KnowledgeProvenanceId>(
+            value => new KnowledgeProvenanceId(checked((long)value)),
+            value => checked((ulong)value.Value),
+            "Knowledge provenance ID"));
         options.Converters.Add(new PersonalLogEntryArrayJsonConverter());
         options.Converters.Add(new LifeChronicleEntryArrayJsonConverter());
         options.Converters.Add(new PersonalCenturyChronicleArrayJsonConverter());

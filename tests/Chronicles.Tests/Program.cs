@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 if (args.Contains("--verify-local-save", StringComparer.Ordinal))
@@ -68,6 +69,8 @@ if (args.Contains("--verify-large-local-save", StringComparer.Ordinal))
         {
             Console.Error.WriteLine(
                 $"LARGE SAVE ROUNDTRIP ERROR: {loaded.Status} · {loaded.Message}");
+            WriteCandidateFailures(loaded.Failures);
+            DiagnoseOrganizationSection(saved.DatabasePath, checkpoint);
             return 1;
         }
 
@@ -85,6 +88,77 @@ if (args.Contains("--verify-large-local-save", StringComparer.Ordinal))
             Directory.Delete(probeRoot, recursive: true);
         }
     }
+}
+
+static void DiagnoseOrganizationSection(string databasePath, WorldCheckpoint original)
+{
+    using var database = WindowsSqlite.Open(databasePath, readOnly: true);
+    var layout = WorldCheckpointSectionStore.TryReadLayout(database);
+    var section = layout is null
+        ? null
+        : WorldCheckpointSectionStore.ReadSections(database, layout)
+            .FirstOrDefault(item => item.Kind == WorldCheckpointSectionKind.Organizations);
+    if (section is null)
+    {
+        Console.Error.WriteLine("  ORGANIZATION SECTION: 없음");
+        return;
+    }
+
+    using var blob = database.OpenBlob("authority_section", "payload", section.Id, writable: false);
+    var decoded = WorldSaveCodec.DecodeValue<OrganizationStoreCheckpoint>(
+        blob,
+        section.PayloadBytes,
+        Path.GetDirectoryName(databasePath),
+        WorldSaveCodec.MaximumStreamingJsonBytes,
+        "조직 진단 section",
+        section.PayloadHash);
+    Console.Error.WriteLine(
+        $"  ORGANIZATION SECTION: original/decoded " +
+        $"{original.Organizations?.Organizations.Length ?? -1}/{decoded.Organizations.Length}개 · " +
+        $"valid {OrganizationStore.IsValidCheckpoint(original.Agents.Length, original.Organizations!)}/" +
+        $"{OrganizationStore.IsValidCheckpoint(original.Agents.Length, decoded)} · " +
+        $"history {original.Organizations?.HistorySequence ?? -1}/{decoded.HistorySequence}");
+    Console.Error.WriteLine(
+        $"  ORGANIZATION FIRST DIFF: {FindFirstJsonDifference(
+            JsonSerializer.SerializeToNode(original.Organizations),
+            JsonSerializer.SerializeToNode(decoded),
+            "$") ?? "없음"}");
+}
+
+static string? FindFirstJsonDifference(JsonNode? expected, JsonNode? actual, string path)
+{
+    if (JsonNode.DeepEquals(expected, actual))
+    {
+        return null;
+    }
+    if (expected is JsonObject expectedObject && actual is JsonObject actualObject)
+    {
+        foreach (var key in expectedObject.Select(property => property.Key)
+                     .Union(actualObject.Select(property => property.Key), StringComparer.Ordinal))
+        {
+            var difference = FindFirstJsonDifference(expectedObject[key], actualObject[key], $"{path}.{key}");
+            if (difference is not null)
+            {
+                return difference;
+            }
+        }
+    }
+    else if (expected is JsonArray expectedArray && actual is JsonArray actualArray)
+    {
+        if (expectedArray.Count != actualArray.Count)
+        {
+            return $"{path}.Count {expectedArray.Count}/{actualArray.Count}";
+        }
+        for (var index = 0; index < expectedArray.Count; index++)
+        {
+            var difference = FindFirstJsonDifference(expectedArray[index], actualArray[index], $"{path}[{index}]");
+            if (difference is not null)
+            {
+                return difference;
+            }
+        }
+    }
+    return $"{path} {expected?.ToJsonString() ?? "null"}/{actual?.ToJsonString() ?? "null"}";
 }
 
 static void WriteCandidateFailures(IReadOnlyList<SlotCandidateFailure>? failures)

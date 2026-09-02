@@ -9,6 +9,18 @@ internal enum WorldCheckpointSectionKind : byte
     Agents = 1,
     Events = 2,
     WorldChronicle = 3,
+    RankingHistory = 4,
+    CenturyChronicle = 5,
+    Relations = 6,
+    Reincarnation = 7,
+    Causal = 8,
+    Atlas = 9,
+    Organizations = 10,
+    Content = 11,
+    Knowledge = 12,
+    Laws = 13,
+    Generation = 14,
+    DecisionRankings = 15,
 }
 
 internal sealed record EncodedCheckpointSection(
@@ -22,12 +34,14 @@ internal sealed record EncodedCheckpointSection(
 internal sealed class EncodedCheckpointLayout : IDisposable
 {
     public EncodedCheckpointLayout(
+        int formatVersion,
         WorldSaveCodec.StreamingEncodeResult header,
         IReadOnlyList<EncodedCheckpointSection> sections,
         int agentCount,
         int eventCount,
         int worldChronicleCount)
     {
+        FormatVersion = formatVersion;
         Header = header;
         Sections = sections;
         AgentCount = agentCount;
@@ -37,6 +51,7 @@ internal sealed class EncodedCheckpointLayout : IDisposable
         ContainerBytes = header.ContainerBytes + sections.Sum(section => (long)section.Encoding.ContainerBytes);
     }
 
+    public int FormatVersion { get; }
     public WorldSaveCodec.StreamingEncodeResult Header { get; }
     public IReadOnlyList<EncodedCheckpointSection> Sections { get; }
     public int AgentCount { get; }
@@ -80,7 +95,8 @@ internal sealed record StoredCheckpointSection(
 /// </summary>
 internal static class WorldCheckpointSectionStore
 {
-    public const int FormatVersion = 1;
+    public const int FormatVersion = 2;
+    private const int MinimumSupportedFormatVersion = 1;
     public const int AgentChunkSize = 512;
     private const int EventChunkSize = 4_096;
     private const int ChronicleChunkSize = 4_096;
@@ -137,6 +153,18 @@ internal static class WorldCheckpointSectionStore
                 Agents = [],
                 Events = [],
                 WorldChronicle = checkpoint.WorldChronicle is null ? null : [],
+                RankingHistory = null,
+                CenturyChronicle = null,
+                Relations = null,
+                Reincarnation = null,
+                Causal = null,
+                Atlas = null,
+                Organizations = null,
+                Content = null,
+                Knowledge = null,
+                Laws = null,
+                Generation = null,
+                DecisionRankings = null,
             };
             var headerEncoding = WorldSaveCodec.EncodeValueStreamingToFile(
                 header,
@@ -169,7 +197,24 @@ internal static class WorldCheckpointSectionStore
                     ref nextId);
             }
 
+            EncodeSingleton(checkpoint.RankingHistory, WorldCheckpointSectionKind.RankingHistory, scratchDirectory, sections, ref nextId);
+            EncodeSingleton(checkpoint.CenturyChronicle, WorldCheckpointSectionKind.CenturyChronicle, scratchDirectory, sections, ref nextId);
+            EncodeSingleton(checkpoint.Relations, WorldCheckpointSectionKind.Relations, scratchDirectory, sections, ref nextId);
+            EncodeSingleton(checkpoint.Reincarnation, WorldCheckpointSectionKind.Reincarnation, scratchDirectory, sections, ref nextId);
+            EncodeSingleton(checkpoint.Causal, WorldCheckpointSectionKind.Causal, scratchDirectory, sections, ref nextId);
+            if (checkpoint.Atlas is { } atlas)
+            {
+                EncodeValue(atlas, WorldCheckpointSectionKind.Atlas, scratchDirectory, sections, ref nextId);
+            }
+            EncodeSingleton(checkpoint.Organizations, WorldCheckpointSectionKind.Organizations, scratchDirectory, sections, ref nextId);
+            EncodeSingleton(checkpoint.Content, WorldCheckpointSectionKind.Content, scratchDirectory, sections, ref nextId);
+            EncodeSingleton(checkpoint.Knowledge, WorldCheckpointSectionKind.Knowledge, scratchDirectory, sections, ref nextId);
+            EncodeSingleton(checkpoint.Laws, WorldCheckpointSectionKind.Laws, scratchDirectory, sections, ref nextId);
+            EncodeSingleton(checkpoint.Generation, WorldCheckpointSectionKind.Generation, scratchDirectory, sections, ref nextId);
+            EncodeSingleton(checkpoint.DecisionRankings, WorldCheckpointSectionKind.DecisionRankings, scratchDirectory, sections, ref nextId);
+
             return new EncodedCheckpointLayout(
+                FormatVersion,
                 headerEncoding,
                 sections,
                 checkpoint.Agents.Length,
@@ -202,7 +247,7 @@ internal static class WorldCheckpointSectionStore
             VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6, ?7);
             """))
         {
-            insertLayout.BindInt32(1, FormatVersion);
+            insertLayout.BindInt32(1, layout.FormatVersion);
             insertLayout.BindInt32(2, layout.AgentCount);
             insertLayout.BindInt32(3, layout.EventCount);
             insertLayout.BindInt32(4, layout.WorldChronicleCount);
@@ -271,7 +316,7 @@ internal static class WorldCheckpointSectionStore
                 || payloadBytes > WorldSaveCodec.CompressedPayloadSizeLimitBytes + 44
                 || section.PayloadHash.Length != SHA256.HashSizeInBytes
                 || section.JsonBytes <= 0
-                || section.JsonBytes > WorldSaveCodec.MaximumSectionJsonBytes)
+                || section.JsonBytes > MaximumJsonBytes(section.Kind))
             {
                 throw new InvalidDataException($"분할 저장 section {section.Id} metadata가 잘못되었습니다.");
             }
@@ -309,9 +354,10 @@ internal static class WorldCheckpointSectionStore
     {
         if (header.Agents.Length != 0
             || header.Events.Length != 0
-            || header.WorldChronicle is { Length: > 0 })
+            || header.WorldChronicle is { Length: > 0 }
+            || layout.FormatVersion >= 2 && HasSeparatedPayload(header))
         {
-            throw new InvalidDataException("분할 저장 header에 분리 대상 배열이 포함되어 있습니다.");
+            throw new InvalidDataException("분할 저장 header에 분리 대상 권위 데이터가 포함되어 있습니다.");
         }
 
         var agents = new AgentCheckpoint[layout.AgentCount];
@@ -319,7 +365,8 @@ internal static class WorldCheckpointSectionStore
         var worldChronicle = layout.WorldChronicleCount < 0
             ? null
             : new WorldEvent[layout.WorldChronicleCount];
-        foreach (var section in ReadSections(database, layout))
+        var sections = ReadSections(database, layout);
+        foreach (var section in sections.Where(section => section.Kind <= WorldCheckpointSectionKind.WorldChronicle))
         {
             using var blob = database.OpenBlob(
                 "authority_section",
@@ -369,12 +416,33 @@ internal static class WorldCheckpointSectionStore
             }
         }
 
-        return header with
+        var restored = header with
         {
             Agents = agents,
             Events = events,
             WorldChronicle = worldChronicle,
         };
+        foreach (var section in sections.Where(section => section.Kind > WorldCheckpointSectionKind.WorldChronicle))
+        {
+            using var blob = database.OpenBlob("authority_section", "payload", section.Id, writable: false);
+            restored = section.Kind switch
+            {
+                WorldCheckpointSectionKind.RankingHistory => restored with { RankingHistory = DecodeSingleton<RankingHistoryCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.CenturyChronicle => restored with { CenturyChronicle = DecodeSingleton<WorldCenturyChronicleCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.Relations => restored with { Relations = DecodeSingleton<RelationStoreCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.Reincarnation => restored with { Reincarnation = DecodeSingleton<ReincarnationStoreCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.Causal => restored with { Causal = DecodeSingleton<AgentCausalStoreCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.Atlas => restored with { Atlas = DecodeSingleton<WorldAtlasCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.Organizations => restored with { Organizations = DecodeSingleton<OrganizationStoreCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.Content => restored with { Content = DecodeSingleton<ContentAuthorityCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.Knowledge => restored with { Knowledge = DecodeSingleton<KnowledgeAuthorityCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.Laws => restored with { Laws = DecodeSingleton<LawAuthorityCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.Generation => restored with { Generation = DecodeSingleton<WorldGenerationCheckpoint>(blob, section, scratchDirectory) },
+                WorldCheckpointSectionKind.DecisionRankings => restored with { DecisionRankings = DecodeSingleton<DecisionRankingCheckpoint>(blob, section, scratchDirectory) },
+                _ => throw new InvalidDataException($"지원하지 않는 분할 저장 section {section.Kind}입니다."),
+            };
+        }
+        return restored;
     }
 
     private static void EncodeChunks<T>(
@@ -405,6 +473,44 @@ internal static class WorldCheckpointSectionStore
                 count,
                 encoding));
         }
+    }
+
+    private static void EncodeSingleton<T>(
+        T? source,
+        WorldCheckpointSectionKind kind,
+        string scratchDirectory,
+        List<EncodedCheckpointSection> destination,
+        ref long nextId)
+        where T : class
+    {
+        if (source is null)
+        {
+            return;
+        }
+
+        var path = CreateScratchPath(scratchDirectory, kind.ToString());
+        var encoding = WorldSaveCodec.EncodeValueStreamingToFile(
+            source,
+            path,
+            WorldSaveCodec.MaximumStreamingJsonBytes,
+            $"{kind} section");
+        destination.Add(new EncodedCheckpointSection(nextId++, kind, 0, 0, 1, encoding));
+    }
+
+    private static void EncodeValue<T>(
+        T source,
+        WorldCheckpointSectionKind kind,
+        string scratchDirectory,
+        List<EncodedCheckpointSection> destination,
+        ref long nextId)
+    {
+        var path = CreateScratchPath(scratchDirectory, kind.ToString());
+        var encoding = WorldSaveCodec.EncodeValueStreamingToFile(
+            source,
+            path,
+            WorldSaveCodec.MaximumStreamingJsonBytes,
+            $"{kind} section");
+        destination.Add(new EncodedCheckpointSection(nextId++, kind, 0, 0, 1, encoding));
     }
 
     private static void WriteSection(
@@ -456,7 +562,7 @@ internal static class WorldCheckpointSectionStore
 
     private static void ValidateLayout(StoredCheckpointLayout layout)
     {
-        if (layout.FormatVersion != FormatVersion
+        if (layout.FormatVersion is < MinimumSupportedFormatVersion or > FormatVersion
             || layout.AgentCount < 0
             || layout.EventCount < 0
             || layout.WorldChronicleCount < -1
@@ -478,11 +584,32 @@ internal static class WorldCheckpointSectionStore
             sections,
             WorldCheckpointSectionKind.WorldChronicle,
             Math.Max(0, layout.WorldChronicleCount));
+        if (layout.FormatVersion >= 2)
+        {
+            foreach (var kind in Enum.GetValues<WorldCheckpointSectionKind>().Where(kind => kind > WorldCheckpointSectionKind.WorldChronicle))
+            {
+                ValidateSingletonCoverage(sections, kind);
+            }
+        }
         var totalJson = sections.Sum(section => section.JsonBytes);
         var totalContainers = sections.Sum(section => (long)section.PayloadBytes);
         if (totalJson >= layout.JsonBytes || totalContainers >= layout.ContainerBytes)
         {
             throw new InvalidDataException("분할 저장 header 크기 합계가 잘못되었습니다.");
+        }
+    }
+
+    private static void ValidateSingletonCoverage(
+        IReadOnlyList<StoredCheckpointSection> sections,
+        WorldCheckpointSectionKind kind)
+    {
+        var matches = sections.Where(section => section.Kind == kind).ToArray();
+        if (matches.Length > 1
+            || matches is [{ Ordinal: not 0 }]
+            || matches is [{ ItemOffset: not 0 }]
+            || matches is [{ ItemCount: not 1 }])
+        {
+            throw new InvalidDataException($"분할 저장 {kind} 단일 section metadata가 잘못되었습니다.");
         }
     }
 
@@ -516,8 +643,57 @@ internal static class WorldCheckpointSectionStore
         (int)WorldCheckpointSectionKind.Agents => WorldCheckpointSectionKind.Agents,
         (int)WorldCheckpointSectionKind.Events => WorldCheckpointSectionKind.Events,
         (int)WorldCheckpointSectionKind.WorldChronicle => WorldCheckpointSectionKind.WorldChronicle,
+        (int)WorldCheckpointSectionKind.RankingHistory => WorldCheckpointSectionKind.RankingHistory,
+        (int)WorldCheckpointSectionKind.CenturyChronicle => WorldCheckpointSectionKind.CenturyChronicle,
+        (int)WorldCheckpointSectionKind.Relations => WorldCheckpointSectionKind.Relations,
+        (int)WorldCheckpointSectionKind.Reincarnation => WorldCheckpointSectionKind.Reincarnation,
+        (int)WorldCheckpointSectionKind.Causal => WorldCheckpointSectionKind.Causal,
+        (int)WorldCheckpointSectionKind.Atlas => WorldCheckpointSectionKind.Atlas,
+        (int)WorldCheckpointSectionKind.Organizations => WorldCheckpointSectionKind.Organizations,
+        (int)WorldCheckpointSectionKind.Content => WorldCheckpointSectionKind.Content,
+        (int)WorldCheckpointSectionKind.Knowledge => WorldCheckpointSectionKind.Knowledge,
+        (int)WorldCheckpointSectionKind.Laws => WorldCheckpointSectionKind.Laws,
+        (int)WorldCheckpointSectionKind.Generation => WorldCheckpointSectionKind.Generation,
+        (int)WorldCheckpointSectionKind.DecisionRankings => WorldCheckpointSectionKind.DecisionRankings,
         _ => throw new InvalidDataException($"알 수 없는 분할 저장 section kind {value}입니다."),
     };
+
+    private static T DecodeSingleton<T>(
+        Stream blob,
+        StoredCheckpointSection section,
+        string scratchDirectory)
+    {
+        if (section is not { Ordinal: 0, ItemOffset: 0, ItemCount: 1 })
+        {
+            throw new InvalidDataException($"분할 저장 {section.Kind} 단일 section metadata가 잘못되었습니다.");
+        }
+        return WorldSaveCodec.DecodeValue<T>(
+            blob,
+            section.PayloadBytes,
+            scratchDirectory,
+            MaximumJsonBytes(section.Kind),
+            $"{section.Kind} section",
+            section.PayloadHash);
+    }
+
+    private static bool HasSeparatedPayload(WorldCheckpoint checkpoint) =>
+        checkpoint.RankingHistory is not null
+        || checkpoint.CenturyChronicle is not null
+        || checkpoint.Relations is not null
+        || checkpoint.Reincarnation is not null
+        || checkpoint.Causal is not null
+        || checkpoint.Atlas is not null
+        || checkpoint.Organizations is not null
+        || checkpoint.Content is not null
+        || checkpoint.Knowledge is not null
+        || checkpoint.Laws is not null
+        || checkpoint.Generation is not null
+        || checkpoint.DecisionRankings is not null;
+
+    private static long MaximumJsonBytes(WorldCheckpointSectionKind kind) =>
+        kind > WorldCheckpointSectionKind.WorldChronicle
+            ? WorldSaveCodec.MaximumStreamingJsonBytes
+            : WorldSaveCodec.MaximumSectionJsonBytes;
 
     private static void CopyDecoded<T>(
         T[] decoded,

@@ -7,4 +7,7 @@
     <ProjectReference Include="../Chronicles.Core/Chronicles.Core.csproj" />
     <ProjectReference Include="../Chronicles.Simulation/Chronicles.Simulation.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Chronicles.Tests" />
+  </ItemGroup>
 </Project>

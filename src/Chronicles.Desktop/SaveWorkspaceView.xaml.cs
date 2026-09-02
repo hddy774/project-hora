@@ -29,6 +29,7 @@ public partial class SaveWorkspaceView : UserControl
     public event EventHandler<SaveSlotActionEventArgs>? SaveRequested;
     public event EventHandler<SaveSlotActionEventArgs>? LoadRequested;
     public event EventHandler<SaveSlotActionEventArgs>? FolderRequested;
+    public event EventHandler<SaveSlotActionEventArgs>? DeleteRequested;
 
     public string SelectedSlotId => _selectedSlotId ?? SaveSlotRegistry.All[0].SlotId;
 
@@ -149,7 +150,7 @@ public partial class SaveWorkspaceView : UserControl
                 : string.Empty,
             empty
                 ? string.Empty
-                : $"DB {FormatBytes(entry.DatabaseBytes)} · schema {entry.WorldSchema}/{entry.CheckpointSchema} · seq {entry.CreatedSequence:N0}",
+                : $"DB {FormatBytes(entry.DatabaseBytes)} · {FormatStorageLayout(entry)} · seq {entry.CreatedSequence:N0}",
             empty ? "저장" : "덮어쓰기",
             entry.CanLoad,
             entry.Status != SaveSlotCatalogStatus.Empty);
@@ -195,7 +196,7 @@ public partial class SaveWorkspaceView : UserControl
 
     private static string FormatStorageLayout(SaveSlotCatalogEntry entry) =>
         entry.StorageFormatVersion > 0
-            ? $"분할 v{entry.StorageFormatVersion} · {entry.DataPartCount:N0}개 순차 데이터 조각"
+            ? $"분할 압축 v{entry.StorageFormatVersion} · {entry.DataPartCount:N0}개 순차 데이터 조각"
             : entry.DataPartCount > 0
                 ? "단일 payload · 이전 저장 호환"
                 : "확인 불가";
@@ -219,6 +220,9 @@ public partial class SaveWorkspaceView : UserControl
 
     private void FolderButton_Click(object sender, RoutedEventArgs e) =>
         RaiseSlotEvent(sender, FolderRequested);
+
+    private void DeleteButton_Click(object sender, RoutedEventArgs e) =>
+        RaiseSlotEvent(sender, DeleteRequested);
 
     private void RefreshButton_Click(object sender, RoutedEventArgs e) =>
         RefreshRequested?.Invoke(this, EventArgs.Empty);
@@ -274,5 +278,6 @@ public partial class SaveWorkspaceView : UserControl
         public string SaveAccessibilityName => $"{Title} {SaveLabel}";
         public string LoadAccessibilityName => $"{Title} 불러오기";
         public string FolderAccessibilityName => $"{Title} 폴더 열기";
+        public string DeleteAccessibilityName => $"{Title} 삭제";
     }
 }

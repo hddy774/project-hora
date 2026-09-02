@@ -259,6 +259,7 @@ public static partial class SlotSaveStore
             || layout.AgentCount != checkpoint.Agents.Length
             || layout.EventCount != checkpoint.Events.Length
             || layout.WorldChronicleCount != (checkpoint.WorldChronicle?.Length ?? -1)
+            || layout.FormatVersion != encoded.FormatVersion
             || layout.SectionCount != encoded.Sections.Count
             || layout.JsonBytes != encoded.JsonBytes
             || layout.ContainerBytes != encoded.ContainerBytes)

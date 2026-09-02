@@ -103,7 +103,7 @@ public partial class MainWindow
             var result = await _runner.SaveSlotAsync(e.SlotId, progress: progress);
             _logService.AddDebug(
                 DebugLogLevel.Information,
-                $"세계 저장 완료 · {definition.DisplayName} · 분할 v{result.StorageFormatVersion} " +
+                $"세계 저장 완료 · {definition.DisplayName} · 분할 압축 v{result.StorageFormatVersion} " +
                 $"{result.DataPartCount:N0}조각 · schema {result.WorldSchema}/{result.CheckpointSchema} · seq {result.CreatedSequence}");
         }
         catch (SaveOperationException exception) when (exception.IsRecoverable)
@@ -181,6 +181,61 @@ public partial class MainWindow
             else
             {
                 _logService.AddDebug(DebugLogLevel.Information, outcome);
+            }
+        }
+        finally
+        {
+            SetSimulationPausedForStorage(wasPaused);
+            Interlocked.Exchange(ref _saveSlotOperationInProgress, 0);
+            await RefreshSaveCatalogAsync();
+            SaveWorkspacePanel.SetStatus(outcome, outcomeIsError);
+        }
+    }
+
+    private async void SaveWorkspacePanel_DeleteRequested(
+        object? sender,
+        SaveSlotActionEventArgs e)
+    {
+        if (_runner is null || Interlocked.Exchange(ref _saveSlotOperationInProgress, 1) != 0)
+        {
+            return;
+        }
+
+        var definition = SaveSlotRegistry.Get(e.SlotId);
+        if (MessageBox.Show(
+                $"{definition.DisplayName}의 저장 파일을 삭제할까요?\n" +
+                "primary·temp·backup·슬롯 정보가 모두 삭제되며 복구할 수 없습니다.",
+                "세이브 슬롯 삭제",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning,
+                MessageBoxResult.No) != MessageBoxResult.Yes)
+        {
+            Interlocked.Exchange(ref _saveSlotOperationInProgress, 0);
+            SaveWorkspacePanel.SetStatus("세이브 삭제를 취소했습니다.");
+            return;
+        }
+
+        var wasPaused = _runner.IsPaused;
+        var outcome = $"{definition.DisplayName} 삭제 완료";
+        var outcomeIsError = false;
+        SetSimulationPausedForStorage(true);
+        SaveWorkspacePanel.BeginOperation($"{definition.DisplayName}을(를) 삭제하는 중…");
+        try
+        {
+            var result = await _runner.DeleteSaveSlotAsync(e.SlotId);
+            outcome = $"{definition.DisplayName} 삭제 완료 · {result.DeletedFileCount:N0}개 파일 · " +
+                      $"{result.DeletedBytes / 1024d / 1024d:N2} MiB";
+            _logService.AddDebug(DebugLogLevel.Information, outcome);
+        }
+        catch (SaveOperationException exception) when (exception.IsRecoverable)
+        {
+            outcome = exception.Kind == SaveOperationKind.Cancelled
+                ? $"{definition.DisplayName} 삭제를 취소했습니다."
+                : $"{definition.DisplayName} 삭제 실패 · {exception.Message}";
+            outcomeIsError = exception.Kind != SaveOperationKind.Cancelled;
+            if (outcomeIsError)
+            {
+                ShowPersistenceError(exception);
             }
         }
         finally

@@ -376,6 +376,41 @@ public sealed class GameApplicationSession : IDisposable
             cancellationToken);
     }
 
+    public async Task<SlotDeleteResult> DeleteSaveSlotAsync(
+        string slotId,
+        CancellationToken cancellationToken = default)
+    {
+        var definition = SaveSlotRegistry.Get(slotId);
+        var saveRoot = SaveRoot;
+        try
+        {
+            var result = await Task.Run(
+                () =>
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    return SlotSaveStore.Delete(saveRoot, definition.SlotId);
+                },
+                cancellationToken).ConfigureAwait(false);
+            lock (_legacyCatalogGate)
+            {
+                foreach (var key in _legacyCatalogSummaries.Keys
+                             .Where(key => StringComparer.Ordinal.Equals(key.SlotId, definition.SlotId))
+                             .ToArray())
+                {
+                    _legacyCatalogSummaries.Remove(key);
+                }
+            }
+            return result;
+        }
+        catch (Exception exception)
+        {
+            throw SaveOperationException.Normalize(
+                "삭제",
+                SaveOperationPhase.Preparing,
+                exception);
+        }
+    }
+
     public async Task<int> LoadDefaultAsync(CancellationToken cancellationToken = default)
     {
         var result = await LoadSlotAsync(

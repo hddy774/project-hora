@@ -39,6 +39,69 @@ internal sealed class SimulationTickJsonConverter : JsonConverter<SimulationTick
 }
 
 /// <summary>
+/// 기본 생성자가 있는 읽기 전용 안정 ID는 기본 JSON 복원 시 Value가 0이 될 수 있다.
+/// 기존 { "value": n } wire를 유지하면서 숫자형 진단 fixture도 읽는다.
+/// </summary>
+internal sealed class StableIdJsonConverter<T>(
+    Func<ulong, T> create,
+    Func<T, ulong> getValue,
+    string subject) : JsonConverter<T>
+    where T : struct
+{
+    public override T Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.Number && reader.TryGetUInt64(out var scalar))
+        {
+            return create(scalar);
+        }
+        if (reader.TokenType != JsonTokenType.StartObject)
+        {
+            throw new JsonException($"{subject} 형식이 잘못되었습니다.");
+        }
+
+        ulong? value = null;
+        while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+        {
+            if (reader.TokenType != JsonTokenType.PropertyName)
+            {
+                throw new JsonException($"{subject} 속성 형식이 잘못되었습니다.");
+            }
+            var isValue = string.Equals(reader.GetString(), "value", StringComparison.OrdinalIgnoreCase);
+            if (!reader.Read())
+            {
+                throw new JsonException($"{subject} 값이 없습니다.");
+            }
+            if (isValue)
+            {
+                value = reader.TokenType == JsonTokenType.Number && reader.TryGetUInt64(out var parsed)
+                    ? parsed
+                    : throw new JsonException($"{subject} 값은 음수가 아닌 64비트 정수여야 합니다.");
+            }
+            else
+            {
+                reader.Skip();
+            }
+        }
+        return value is { } identifier
+            ? create(identifier)
+            : throw new JsonException($"{subject} value가 없습니다.");
+    }
+
+    public override void Write(
+        Utf8JsonWriter writer,
+        T value,
+        JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WriteNumber("value", getValue(value));
+        writer.WriteEndObject();
+    }
+}
+
+/// <summary>
 /// 체크포인트의 인물별 최근 로그를 속성명 없는 고정 tuple로 기록한다.
 /// 기존 object-array도 계속 읽어 schema 25~31 저장 호환을 유지한다.
 /// </summary>

@@ -1,17 +1,52 @@
 using Chronicles.Core;
 using Chronicles.Simulation;
+using Chronicles.Persistence;
 
 internal static class OrganizationCoreTests
 {
     public static void Run()
     {
         FoundingGatesMembershipsAndRights();
+        OrganizationIdPersistenceRoundTrip();
         PreparationPlansPersistAndUseFiniteOre();
         MembershipEconomyDiplomacySplitAndReconnection();
         SuccessionMergeAtomicityAndPersistence();
         OrganizationHistoryIsBounded();
         LongRunWorldProducesOrganizations();
         Schema25MigratesToEmptyOrganizationCore();
+    }
+
+    private static void OrganizationIdPersistenceRoundTrip()
+    {
+        var store = new OrganizationStore(80);
+        var organizationId = store.TryFound(
+            CreateSectEvidence(0, 1, RealmStage.GoldenCore),
+            tick: 100).OrganizationId!.Value;
+        var checkpoint = store.CreateCheckpoint();
+        var path = Path.Combine(Path.GetTempPath(), $"organization-{Guid.NewGuid():N}.cmip.tmp");
+        try
+        {
+            var encoded = WorldSaveCodec.EncodeValueStreamingToFile(
+                checkpoint,
+                path,
+                WorldSaveCodec.MaximumSectionJsonBytes,
+                "조직 회귀 검사");
+            using var stream = File.OpenRead(path);
+            var decoded = WorldSaveCodec.DecodeValue<OrganizationStoreCheckpoint>(
+                stream,
+                encoded.ContainerBytes,
+                Path.GetTempPath(),
+                WorldSaveCodec.MaximumSectionJsonBytes,
+                "조직 회귀 검사");
+            TestAssert.Equal(organizationId, decoded.Organizations.Single().Id,
+                "조직 안정 ID JSON 왕복");
+            TestAssert.True(OrganizationStore.IsValidCheckpoint(80, decoded),
+                "조직 단독 section JSON 왕복 무결성");
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     private static void OrganizationHistoryIsBounded()

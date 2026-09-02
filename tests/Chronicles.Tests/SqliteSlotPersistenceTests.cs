@@ -35,7 +35,7 @@ internal static class SqliteSlotPersistenceTests
             Equal(25, firstSave.WorldSchema, "SQLite world schema");
             Equal(WorldCheckpoint.CurrentSchemaVersion, firstSave.CheckpointSchema, "권위 payload schema");
             Equal(firstHash, firstSave.StateHash, "저장 state hash");
-            Equal(1, firstSave.StorageFormatVersion, "분할 저장 format");
+            Equal(2, firstSave.StorageFormatVersion, "분할 압축 저장 format");
             True(firstSave.DataPartCount >= 21, "10,000명 권위 상태가 20개 이상 인물 조각과 header로 분할");
             AssertProgress(saveProgress, 100, "SQLite save 진행률");
             True(
@@ -155,6 +155,7 @@ internal static class SqliteSlotPersistenceTests
                 expectedPopulation: 10_000,
                 expectedSequence: thirdSave.CreatedSequence);
 
+            AssertSlotDeletion(root, secondaryAuthority);
             RunFivePassBenchmark(root, firstAuthority, firstSave.PayloadBytes);
         }
         finally
@@ -232,6 +233,35 @@ internal static class SqliteSlotPersistenceTests
         stream.Position = 0;
         stream.Write(new byte[128]);
         stream.Flush(flushToDisk: true);
+    }
+
+    private static void AssertSlotDeletion(
+        string root,
+        WorldAuthorityCheckpoint authority)
+    {
+        const string guardedSlot = "delete-guarded";
+        var guardedPaths = SlotSaveStore.GetPaths(root, guardedSlot);
+        SlotSaveStore.Save(root, guardedSlot, authority);
+        SlotSaveStore.Save(root, guardedSlot, authority);
+        File.Copy(guardedPaths.PrimaryPath, guardedPaths.TemporaryPath, overwrite: true);
+        var unrelatedPath = Path.Combine(guardedPaths.SlotDirectory, "사용자-메모.txt");
+        File.WriteAllText(unrelatedPath, "세이브 삭제 allowlist 밖의 파일");
+
+        var guarded = SlotSaveStore.Delete(root, guardedSlot);
+        True(guarded.DeletedFileCount >= 4, "primary/temp/backup/manifest 삭제");
+        True(guarded.DeletedBytes > 0, "삭제 용량 집계");
+        True(!guarded.SlotDirectoryRemoved, "무관 파일이 있는 슬롯 폴더 보존");
+        True(File.Exists(unrelatedPath), "무관 사용자 파일 보존");
+        Equal(SlotCatalogHealth.Empty, SlotSaveStore.InspectCatalog(root, guardedSlot).Health,
+            "삭제한 슬롯은 빈 카드로 전환");
+        Equal(0, SlotSaveStore.Delete(root, guardedSlot).DeletedFileCount, "빈 슬롯 재삭제 무해");
+
+        const string cleanSlot = "delete-clean";
+        SlotSaveStore.Save(root, cleanSlot, authority);
+        var clean = SlotSaveStore.Delete(root, cleanSlot);
+        True(clean.SlotDirectoryRemoved, "세이브 전용 슬롯 폴더 정리");
+        True(!Directory.Exists(SlotSaveStore.GetPaths(root, cleanSlot).SlotDirectory),
+            "삭제 뒤 빈 슬롯 폴더 없음");
     }
 
     private static void AssertCandidateLoad(

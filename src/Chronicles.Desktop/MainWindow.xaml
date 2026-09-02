@@ -1545,7 +1545,8 @@
                                  RootFolderRequested="SaveWorkspacePanel_RootFolderRequested"
                                  SaveRequested="SaveWorkspacePanel_SaveRequested"
                                  LoadRequested="SaveWorkspacePanel_LoadRequested"
-                                 FolderRequested="SaveWorkspacePanel_FolderRequested" />
+                                 FolderRequested="SaveWorkspacePanel_FolderRequested"
+                                 DeleteRequested="SaveWorkspacePanel_DeleteRequested" />
 
         <local:OrganizationWorkspaceView x:Name="OrganizationWorkspacePanel"
                                          Grid.Row="4"

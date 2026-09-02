@@ -107,6 +107,12 @@ public sealed record SlotSaveResult(
     int StorageFormatVersion,
     int DataPartCount);
 
+public sealed record SlotDeleteResult(
+    string SlotId,
+    int DeletedFileCount,
+    long DeletedBytes,
+    bool SlotDirectoryRemoved);
+
 public sealed record SlotLoadResult(
     SlotLoadStatus Status,
     string Message,
@@ -231,6 +237,57 @@ public static partial class SlotSaveStore
         var paths = GetPaths(rootDirectory, slotId);
         Directory.CreateDirectory(paths.SlotDirectory);
         return paths.SlotDirectory;
+    }
+
+    public static SlotDeleteResult Delete(string rootDirectory, string slotId)
+    {
+        var paths = GetPaths(rootDirectory, slotId);
+        if (!Directory.Exists(paths.SlotDirectory))
+        {
+            return new SlotDeleteResult(slotId, 0, 0, false);
+        }
+
+        var lockPath = Path.Combine(paths.SlotDirectory, "slot.lock");
+        var targets = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            paths.PrimaryPath,
+            paths.BackupPath,
+            paths.TemporaryPath,
+            paths.ManifestPath,
+            paths.ManifestPath + ".tmp",
+            paths.BackupPath + ".next",
+        };
+        foreach (var pattern in new[] { ".authority-*.cmip.tmp", ".authority-read-*.json.tmp" })
+        {
+            foreach (var path in Directory.EnumerateFiles(paths.SlotDirectory, pattern, SearchOption.TopDirectoryOnly))
+            {
+                targets.Add(path);
+            }
+        }
+
+        var deletedCount = 0;
+        long deletedBytes = 0;
+        using (new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+        {
+            foreach (var target in targets)
+            {
+                if (!File.Exists(target))
+                {
+                    continue;
+                }
+                deletedBytes = checked(deletedBytes + new FileInfo(target).Length);
+                File.Delete(target);
+                deletedCount++;
+            }
+        }
+
+        File.Delete(lockPath);
+        var removed = !Directory.EnumerateFileSystemEntries(paths.SlotDirectory).Any();
+        if (removed)
+        {
+            Directory.Delete(paths.SlotDirectory, recursive: false);
+        }
+        return new SlotDeleteResult(slotId, deletedCount, deletedBytes, removed);
     }
 
     /// <summary>
@@ -481,7 +538,7 @@ public static partial class SlotSaveStore
                 stateHash,
                 encoded.ContainerBytes,
                 encoded.JsonBytes,
-                WorldCheckpointSectionStore.FormatVersion,
+                encoded.FormatVersion,
                 encoded.Sections.Count + 1);
         }
         finally

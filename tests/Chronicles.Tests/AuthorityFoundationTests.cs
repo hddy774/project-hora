@@ -237,6 +237,17 @@ internal static class TestAssert
         }
     }
 
+    public static void EqualSequence<T>(T[]? expected, T[]? actual, string message)
+    {
+        if (expected is null || actual is null)
+        {
+            True(expected is null && actual is null, message);
+            return;
+        }
+
+        True(expected.SequenceEqual(actual), message);
+    }
+
     public static void Throws<TException>(Action action, string message)
         where TException : Exception
     {
@@ -251,4 +262,36 @@ internal static class TestAssert
 
         throw new InvalidOperationException($"{message}: {typeof(TException).Name}이 발생하지 않았습니다.");
     }
+}
+
+internal static class TestCheckpointFactory
+{
+    public static AgentCheckpoint WithSynchronizedAptitudeDetails(AgentCheckpoint agent)
+    {
+        var aptitudes = new Aptitudes(
+            new QualityValue(agent.SpiritualRoot),
+            new QualityValue(agent.Bone),
+            new QualityValue(agent.Constitution),
+            new QualityValue(agent.Comprehension),
+            new QualityValue(agent.Mind),
+            new QualityValue(agent.Soul));
+        return agent with
+        {
+            AptitudeDetails = new AptitudeDetailCheckpoint(
+                AptitudeRules.FormulaRevision,
+                RequiresReview: true,
+                AptitudeRules.CreateUniformComponents(aptitudes)),
+        };
+    }
+
+    public static int GetAptitudeSummary(AgentCheckpoint agent, AptitudeDomain domain) => domain switch
+    {
+        AptitudeDomain.SpiritualRoot => agent.SpiritualRoot,
+        AptitudeDomain.Bone => agent.Bone,
+        AptitudeDomain.Constitution => agent.Constitution,
+        AptitudeDomain.Comprehension => agent.Comprehension,
+        AptitudeDomain.Mind => agent.Mind,
+        AptitudeDomain.Soul => agent.Soul,
+        _ => throw new InvalidOperationException("알 수 없는 선천자질 영역입니다."),
+    };
 }

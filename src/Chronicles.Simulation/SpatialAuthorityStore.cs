@@ -11,6 +11,10 @@ internal sealed class SpatialAuthorityStore
     private readonly long[] _spiritVeinRemainingSupply;
     private readonly int[] _cultivationEnvironmentQualityHundredths =
         new int[WorldAtlasRules.ProductionLocationCount];
+    // 병렬 수행의 commit 검증에만 쓰는 런타임 cache revision이다. 저장 시점에는
+    // 진행 중인 계산 batch가 없으므로 checkpoint 권위나 상태 hash에 포함하지 않는다.
+    private readonly long[] _cultivationEnvironmentQualityRevisions =
+        new long[WorldAtlasRules.ProductionLocationCount];
     private readonly int[] _populationByLocation =
         new int[WorldAtlasRules.ProductionLocationCount];
 
@@ -365,7 +369,13 @@ internal sealed class SpatialAuthorityStore
 
         if (extracted > 0)
         {
+            var previousQuality = _cultivationEnvironmentQualityHundredths[locationId];
             RebuildCultivationEnvironment(locationId);
+            if (_cultivationEnvironmentQualityHundredths[locationId] != previousQuality)
+            {
+                _cultivationEnvironmentQualityRevisions[locationId] = checked(
+                    _cultivationEnvironmentQualityRevisions[locationId] + 1);
+            }
         }
 
         return extracted > 0;
@@ -379,6 +389,16 @@ internal sealed class SpatialAuthorityStore
         }
 
         return _cultivationEnvironmentQualityHundredths[locationId];
+    }
+
+    public long GetCultivationEnvironmentQualityRevision(ushort locationId)
+    {
+        if (!WorldAtlasRules.IsProductionLocation(locationId))
+        {
+            throw new ArgumentOutOfRangeException(nameof(locationId));
+        }
+
+        return _cultivationEnvironmentQualityRevisions[locationId];
     }
 
     public long GetRemainingSpiritStoneSupply(ushort locationId)

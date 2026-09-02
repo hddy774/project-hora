@@ -51,8 +51,8 @@ internal sealed partial class AgentStore
         BirthTicks = new long[count];
         LifeNumbers = new int[count];
         BottleneckFailures = new ushort[count];
-        Chronicles = new List<LifeChronicleEntry>[count];
-        PersonalLogs = new List<PersonalLogEntry>[count];
+        Chronicles = new CompactChronicleStore(count);
+        PersonalLogs = new PersonalLogRingStore(count);
         RealmStages = new RealmStage[count];
         RealmLayers = new byte[count];
         CultivationProgress = new int[count];
@@ -128,11 +128,6 @@ internal sealed partial class AgentStore
         Array.Fill(TeachingTraces, TeachingTraceState.Empty);
         Array.Fill(LearningTraces, TeachingTraceState.Empty);
         Array.Fill(CultivationPlans, CultivationActionPlanState.Empty);
-        for (var index = 0; index < count; index++)
-        {
-            Chronicles[index] = [];
-            PersonalLogs[index] = [];
-        }
     }
 
     public int Count { get; }
@@ -169,8 +164,8 @@ internal sealed partial class AgentStore
     public long[] BirthTicks { get; }
     public int[] LifeNumbers { get; }
     public ushort[] BottleneckFailures { get; }
-    public List<LifeChronicleEntry>[] Chronicles { get; }
-    public List<PersonalLogEntry>[] PersonalLogs { get; }
+    public CompactChronicleStore Chronicles { get; }
+    public PersonalLogRingStore PersonalLogs { get; }
     public RealmStage[] RealmStages { get; }
     public byte[] RealmLayers { get; }
     public int[] CultivationProgress { get; }

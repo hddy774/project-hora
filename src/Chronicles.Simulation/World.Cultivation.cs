@@ -4,8 +4,17 @@ namespace Chronicles.Simulation;
 
 public sealed partial class World
 {
-    private void ResolveCultivation(int index)
+    private void ResolveCultivation(
+        int index,
+        CultivationWorkResult? precomputedWork = null)
     {
+        if (precomputedWork is { } result)
+        {
+            ApplyParallelCultivationWork(index, result);
+            AdvanceCultivationPlanProgress(index, result.ProcessedMonths);
+            return;
+        }
+
         var pulseMonths = GetCultivationPulseMonths(index);
         if (pulseMonths > 1
             && TryAccumulateRealmWorkBulk(index, pulseMonths, out var processedMonths))

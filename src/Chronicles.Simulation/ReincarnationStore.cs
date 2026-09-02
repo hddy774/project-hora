@@ -5,8 +5,8 @@ namespace Chronicles.Simulation;
 public sealed partial class ReincarnationStore
 {
     private readonly List<LifeLineageEntry>[] _lineage;
-    private readonly List<ReincarnationJourneyState>[] _journeys;
-    private readonly List<ReincarnationTraceState>[] _traces;
+    private readonly List<ReincarnationJourneyState>?[] _journeys;
+    private readonly List<ReincarnationTraceState>?[] _traces;
     private readonly HistoricalPeakState[] _historicalPeaks;
     private readonly long[] _authorityRevisions;
     private readonly int[] _firstTrackedLifeNumbers;
@@ -20,8 +20,8 @@ public sealed partial class ReincarnationStore
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(population);
         Population = population;
         _lineage = new List<LifeLineageEntry>[population];
-        _journeys = new List<ReincarnationJourneyState>[population];
-        _traces = new List<ReincarnationTraceState>[population];
+        _journeys = new List<ReincarnationJourneyState>?[population];
+        _traces = new List<ReincarnationTraceState>?[population];
         _historicalPeaks = new HistoricalPeakState[population];
         _authorityRevisions = new long[population];
         _firstTrackedLifeNumbers = new int[population];
@@ -33,8 +33,6 @@ public sealed partial class ReincarnationStore
         for (var index = 0; index < population; index++)
         {
             _lineage[index] = [];
-            _journeys[index] = [];
-            _traces[index] = [];
         }
     }
 
@@ -183,7 +181,8 @@ public sealed partial class ReincarnationStore
     {
         ValidateAgent(agentIndex);
         var journeyIndex = GetActiveJourneyIndex(agentIndex);
-        var journey = _journeys[agentIndex][journeyIndex];
+        var journeys = GetJourneys(agentIndex);
+        var journey = journeys[journeyIndex];
         if (journey.Stage != ReincarnationStage.PreparingRebirth
             || tick != journey.RebirthReadyTick)
         {
@@ -198,7 +197,7 @@ public sealed partial class ReincarnationStore
                 : BirthCandidateStatus.UnavailableLongWait;
         var revision = checked(_authorityRevisions[agentIndex] + 1);
         _authorityRevisions[agentIndex] = revision;
-        _journeys[agentIndex][journeyIndex] = journey with
+        journeys[journeyIndex] = journey with
         {
             BirthCandidateStatus = status,
             ParentOnePersonId = hasParent ? parentOnePersonId : null,
@@ -212,7 +211,8 @@ public sealed partial class ReincarnationStore
     {
         ValidateAgent(agentIndex);
         var journeyIndex = GetActiveJourneyIndex(agentIndex);
-        var journey = _journeys[agentIndex][journeyIndex];
+        var journeys = GetJourneys(agentIndex);
+        var journey = journeys[journeyIndex];
         if (journey.Stage != ReincarnationStage.PreparingRebirth
             || tick != journey.RebirthReadyTick
             || journey.BirthCandidateStatus != BirthCandidateStatus.UnavailableLongWait)
@@ -223,7 +223,7 @@ public sealed partial class ReincarnationStore
         var nextTick = checked(tick + GameCalendar.TicksPerYear);
         var revision = checked(_authorityRevisions[agentIndex] + 1);
         _authorityRevisions[agentIndex] = revision;
-        _journeys[agentIndex][journeyIndex] = journey with
+        journeys[journeyIndex] = journey with
         {
             NextTransitionTick = nextTick,
             RebirthReadyTick = nextTick,
@@ -241,7 +241,8 @@ public sealed partial class ReincarnationStore
     {
         ValidateAgent(agentIndex);
         var journeyIndex = GetActiveJourneyIndex(agentIndex);
-        var current = _journeys[agentIndex][journeyIndex];
+        var journeys = GetJourneys(agentIndex);
+        var current = journeys[journeyIndex];
         if (tick != current.NextTransitionTick)
         {
             throw new InvalidOperationException("윤회 단계는 예정된 경계 tick에서만 전이할 수 있습니다.");
@@ -274,7 +275,7 @@ public sealed partial class ReincarnationStore
                 : current.CrossingCausalRecordId,
             AuthorityRevision = revision,
         };
-        _journeys[agentIndex][journeyIndex] = updated;
+        journeys[journeyIndex] = updated;
         return new ReincarnationStageAdvanceResult(
             current.Stage,
             nextStage,
@@ -297,22 +298,24 @@ public sealed partial class ReincarnationStore
     {
         EnsureReadyForRebirth(agentIndex, tick, soulId);
         var journeyIndex = GetActiveJourneyIndex(agentIndex);
-        var journey = _journeys[agentIndex][journeyIndex];
+        var journeys = GetJourneys(agentIndex);
+        var traces = GetTraces(agentIndex);
+        var journey = journeys[journeyIndex];
 
         var previous = _lineage[agentIndex][^1];
         var lifeNumber = checked(previous.LifeNumber + 1);
         var revision = checked(_authorityRevisions[agentIndex] + 1);
         _authorityRevisions[agentIndex] = revision;
-        _journeys[agentIndex][journeyIndex] = journey with
+        journeys[journeyIndex] = journey with
         {
             CompletedTick = tick,
             BirthCandidateStatus = BirthCandidateStatus.Completed,
             RebirthCausalRecordId = rebirthCausalRecordId,
             AuthorityRevision = revision,
         };
-        for (var traceIndex = 0; traceIndex < _traces[agentIndex].Count; traceIndex++)
+        for (var traceIndex = 0; traceIndex < traces.Count; traceIndex++)
         {
-            var trace = _traces[agentIndex][traceIndex];
+            var trace = traces[traceIndex];
             if (trace.JourneyId != journey.Id)
             {
                 continue;
@@ -321,7 +324,7 @@ public sealed partial class ReincarnationStore
             var accessible = trace.HasEvidence
                 ? Math.Min(trace.PreservedHundredths, trace.PendingAccessibleHundredths)
                 : 0;
-            _traces[agentIndex][traceIndex] = trace with
+            traces[traceIndex] = trace with
             {
                 AccessibleHundredths = checked((ushort)accessible),
                 IntegratedHundredths = 0,
@@ -369,8 +372,8 @@ public sealed partial class ReincarnationStore
         SoulIdentityId soulId)
     {
         ValidateAgent(agentIndex);
-        var journey = _journeys[agentIndex][GetActiveJourneyIndex(agentIndex)];
-        var traceCount = _traces[agentIndex].Count(trace => trace.JourneyId == journey.Id);
+        var journey = GetJourneys(agentIndex)[GetActiveJourneyIndex(agentIndex)];
+        var traceCount = GetTraces(agentIndex).Count(trace => trace.JourneyId == journey.Id);
         if (journey.Stage != ReincarnationStage.PreparingRebirth
             || tick != journey.RebirthReadyTick
             || journey.SoulId != soulId
@@ -385,7 +388,7 @@ public sealed partial class ReincarnationStore
     public ReincarnationJourneyState? GetCurrentJourney(int agentIndex)
     {
         ValidateAgent(agentIndex);
-        return _journeys[agentIndex].LastOrDefault(journey => journey.CompletedTick is null);
+        return _journeys[agentIndex]?.LastOrDefault(journey => journey.CompletedTick is null);
     }
 
     public FamilyLineageId GetCurrentFamilyId(int agentIndex)
@@ -427,8 +430,8 @@ public sealed partial class ReincarnationStore
                     entry.BirthStatus,
                     entry.FamilyId))
                 .ToArray());
-            _traceSnapshotCache[agentIndex] = Array.AsReadOnly(_traces[agentIndex]
-                .Select(trace => new ReincarnationTraceSnapshot(
+            var traceSnapshots = _traces[agentIndex] is { } traceStates
+                ? traceStates.Select(trace => new ReincarnationTraceSnapshot(
                     trace.JourneyId,
                     trace.SourceLifeNumber,
                     trace.Domain,
@@ -440,8 +443,9 @@ public sealed partial class ReincarnationStore
                     trace.AccessLevel,
                     trace.HasEvidence,
                     trace.AuthorityRevision,
-                    trace.EvidenceStatus))
-                .ToArray());
+                    trace.EvidenceStatus)).ToArray()
+                : [];
+            _traceSnapshotCache[agentIndex] = Array.AsReadOnly(traceSnapshots);
             _snapshotCacheRevisions[agentIndex] = _authorityRevisions[agentIndex];
         }
         var lineages = _lineageSnapshotCache[agentIndex]!;

@@ -53,6 +53,7 @@ var tests = new (string Name, Action Body)[]
     ("희소 방향 관계 6축·초기 Role·생애 경계", SparseDirectionalRelationsAndRoles),
     ("사제 성립·Teaching 결과·전승 provenance·직접 수행 0%", TeachingVerticalFlow),
     ("세계 중요 로그·개인 100줄 로그·영구 연대기", WorldPersonalLogsAndPermanentChronicle),
+    ("개인 최근 로그 고정 링·100행 이후 무할당", AgentHistoryStoreTests.Run),
     ("개인 생별 100년 종합 연대기 투영", PersonalCenturyChronicleProjectionTest),
     ("전투력 구성 요소와 랭킹", CombatPowerAndRanking),
     ("랭킹 범주별 revision cache·무변경 정렬 0회", RankingRevisionCacheAvoidsUnchangedSorts),
@@ -4524,7 +4525,6 @@ static void DefaultWorldPerformanceBudget()
     var totalStopwatch = Stopwatch.StartNew();
     var startupStopwatch = Stopwatch.StartNew();
     var world = World.CreateDefault(20260830);
-    world.ConfigureCultivationParallelismForTesting(enabled: false);
     startupStopwatch.Stop();
     var simulationStopwatch = Stopwatch.StartNew();
     world.AdvanceTo(new SimulationTick(targetTick));

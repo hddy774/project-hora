@@ -12,8 +12,10 @@ public sealed partial class ReincarnationStore
         _firstTrackedLifeNumbers.ToArray(),
         _completeLineage.ToArray(),
         _lineage.SelectMany(entries => entries).Select(Clone).ToArray(),
-        _journeys.SelectMany(entries => entries).Select(Clone).ToArray(),
-        _traces.SelectMany(entries => entries).ToArray(),
+        _journeys.SelectMany(entries => entries ?? Enumerable.Empty<ReincarnationJourneyState>())
+            .Select(Clone).ToArray(),
+        _traces.SelectMany(entries => entries ?? Enumerable.Empty<ReincarnationTraceState>())
+            .ToArray(),
         _historicalPeaks.ToArray());
 
     public static ReincarnationStore Restore(
@@ -36,11 +38,11 @@ public sealed partial class ReincarnationStore
         }
         foreach (var journey in checkpoint.Journeys)
         {
-            store._journeys[journey.AgentIndex].Add(Clone(journey));
+            (store._journeys[journey.AgentIndex] ??= []).Add(Clone(journey));
         }
         foreach (var trace in checkpoint.Traces)
         {
-            store._traces[trace.AgentIndex].Add(trace);
+            (store._traces[trace.AgentIndex] ??= []).Add(trace);
         }
         return store;
     }
@@ -162,48 +164,54 @@ public sealed partial class ReincarnationStore
                 Add(ref hash, (byte)entry.BirthStatus);
                 Add(ref hash, entry.FamilyId.Value);
             }
-            foreach (var journey in _journeys[agent])
+            if (_journeys[agent] is { } journeys)
             {
-                Add(ref hash, journey.Id.Value);
-                Add(ref hash, journey.SourceLifeRecordId.Value);
-                Add(ref hash, unchecked((ulong)journey.SourceLifeNumber));
-                Add(ref hash, journey.SoulId.Value);
-                Add(ref hash, journey.SourceBodyId.Value);
-                Add(ref hash, journey.SourcePersonId.Value);
-                Add(ref hash, (byte)journey.SourceRealm);
-                Add(ref hash, (byte)journey.Stage);
-                Add(ref hash, unchecked((ulong)journey.StartedTick));
-                Add(ref hash, unchecked((ulong)journey.StageStartedTick));
-                Add(ref hash, unchecked((ulong)journey.NextTransitionTick));
-                Add(ref hash, unchecked((ulong)journey.RebirthReadyTick));
-                Add(ref hash, unchecked((ulong)journey.RequiredYears));
-                Add(ref hash, unchecked((ulong)(journey.CompletedTick ?? -1) + 1));
-                Add(ref hash, unchecked((ulong)journey.AuthorityRevision));
-                Add(ref hash, journey.RequiresReview ? 1UL : 0UL);
-                Add(ref hash, (byte)journey.SoulDamage);
-                Add(ref hash, (byte)journey.BirthCandidateStatus);
-                Add(ref hash, unchecked((ulong)journey.BirthCandidateWaitYears));
-                Add(ref hash, journey.ParentOnePersonId?.Value ?? 0);
-                Add(ref hash, journey.ParentTwoPersonId?.Value ?? 0);
-                Add(ref hash, journey.RootCausalRecordId.Value);
-                Add(ref hash, journey.EntryCausalRecordId.Value);
-                Add(ref hash, journey.CrossingCausalRecordId.Value);
-                Add(ref hash, journey.RebirthCausalRecordId.Value);
+                foreach (var journey in journeys)
+                {
+                    Add(ref hash, journey.Id.Value);
+                    Add(ref hash, journey.SourceLifeRecordId.Value);
+                    Add(ref hash, unchecked((ulong)journey.SourceLifeNumber));
+                    Add(ref hash, journey.SoulId.Value);
+                    Add(ref hash, journey.SourceBodyId.Value);
+                    Add(ref hash, journey.SourcePersonId.Value);
+                    Add(ref hash, (byte)journey.SourceRealm);
+                    Add(ref hash, (byte)journey.Stage);
+                    Add(ref hash, unchecked((ulong)journey.StartedTick));
+                    Add(ref hash, unchecked((ulong)journey.StageStartedTick));
+                    Add(ref hash, unchecked((ulong)journey.NextTransitionTick));
+                    Add(ref hash, unchecked((ulong)journey.RebirthReadyTick));
+                    Add(ref hash, unchecked((ulong)journey.RequiredYears));
+                    Add(ref hash, unchecked((ulong)(journey.CompletedTick ?? -1) + 1));
+                    Add(ref hash, unchecked((ulong)journey.AuthorityRevision));
+                    Add(ref hash, journey.RequiresReview ? 1UL : 0UL);
+                    Add(ref hash, (byte)journey.SoulDamage);
+                    Add(ref hash, (byte)journey.BirthCandidateStatus);
+                    Add(ref hash, unchecked((ulong)journey.BirthCandidateWaitYears));
+                    Add(ref hash, journey.ParentOnePersonId?.Value ?? 0);
+                    Add(ref hash, journey.ParentTwoPersonId?.Value ?? 0);
+                    Add(ref hash, journey.RootCausalRecordId.Value);
+                    Add(ref hash, journey.EntryCausalRecordId.Value);
+                    Add(ref hash, journey.CrossingCausalRecordId.Value);
+                    Add(ref hash, journey.RebirthCausalRecordId.Value);
+                }
             }
-            foreach (var trace in _traces[agent])
+            if (_traces[agent] is { } traces)
             {
-                Add(ref hash, trace.JourneyId.Value);
-                Add(ref hash, unchecked((ulong)trace.SourceLifeNumber));
-                Add(ref hash, (byte)trace.Domain);
-                Add(ref hash, trace.PreservedHundredths);
-                Add(ref hash, trace.PendingAccessibleHundredths);
-                Add(ref hash, trace.AccessibleHundredths);
-                Add(ref hash, trace.IntegratedHundredths);
-                Add(ref hash, (byte)trace.PreservationLevel);
-                Add(ref hash, (byte)trace.AccessLevel);
-                Add(ref hash, trace.HasEvidence ? 1UL : 0UL);
-                Add(ref hash, unchecked((ulong)trace.AuthorityRevision));
-                Add(ref hash, (byte)trace.EvidenceStatus);
+                foreach (var trace in traces)
+                {
+                    Add(ref hash, trace.JourneyId.Value);
+                    Add(ref hash, unchecked((ulong)trace.SourceLifeNumber));
+                    Add(ref hash, (byte)trace.Domain);
+                    Add(ref hash, trace.PreservedHundredths);
+                    Add(ref hash, trace.PendingAccessibleHundredths);
+                    Add(ref hash, trace.AccessibleHundredths);
+                    Add(ref hash, trace.IntegratedHundredths);
+                    Add(ref hash, (byte)trace.PreservationLevel);
+                    Add(ref hash, (byte)trace.AccessLevel);
+                    Add(ref hash, trace.HasEvidence ? 1UL : 0UL);
+                    Add(ref hash, unchecked((ulong)trace.AuthorityRevision));
+                    Add(ref hash, (byte)trace.EvidenceStatus);
+                }
             }
         }
         return hash;
@@ -327,7 +335,9 @@ public sealed partial class ReincarnationStore
             BirthCandidateStatus: BirthCandidateStatus.Searching,
             RootCausalRecordId: causalRecordId,
             EntryCausalRecordId: causalRecordId);
-        _journeys[agentIndex].Add(journey);
+        var journeys = _journeys[agentIndex] ??= [];
+        var traces = _traces[agentIndex] ??= [];
+        journeys.Add(journey);
         foreach (var domain in ReincarnationRules.AllTraceDomains)
         {
             var candidate = hasEvidence
@@ -337,7 +347,7 @@ public sealed partial class ReincarnationStore
             var pendingAccessible = checked((ushort)Math.Min(
                 preserved,
                 candidate.AccessibleHundredths));
-            _traces[agentIndex].Add(new ReincarnationTraceState(
+            traces.Add(new ReincarnationTraceState(
                 agentIndex,
                 journeyId,
                 currentLife.LifeNumber,
@@ -397,15 +407,24 @@ public sealed partial class ReincarnationStore
 
     private int GetActiveJourneyIndex(int agentIndex)
     {
-        for (var index = _journeys[agentIndex].Count - 1; index >= 0; index--)
+        var journeys = GetJourneys(agentIndex);
+        for (var index = journeys.Count - 1; index >= 0; index--)
         {
-            if (_journeys[agentIndex][index].CompletedTick is null)
+            if (journeys[index].CompletedTick is null)
             {
                 return index;
             }
         }
         throw new InvalidOperationException("진행 중인 윤회 여정이 없습니다.");
     }
+
+    private List<ReincarnationJourneyState> GetJourneys(int agentIndex) =>
+        _journeys[agentIndex]
+        ?? throw new InvalidOperationException("윤회 여정 저장소가 초기화되지 않았습니다.");
+
+    private List<ReincarnationTraceState> GetTraces(int agentIndex) =>
+        _traces[agentIndex]
+        ?? throw new InvalidOperationException("윤회 흔적 저장소가 초기화되지 않았습니다.");
 
     private void ValidateAgent(int agentIndex)
     {

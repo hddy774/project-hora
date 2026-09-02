@@ -5,7 +5,7 @@ namespace Chronicles.Simulation;
 public sealed partial class World
 {
     public const int WorldLogCapacity = 100;
-    public const int PersonalLogCapacity = 100;
+    public const int PersonalLogCapacity = PersonalLogRingStore.Capacity;
     private readonly DeterministicRandom _random;
     private readonly AgentStore _agents;
     private readonly AgentCausalStore _causal;
@@ -20,6 +20,7 @@ public sealed partial class World
     private readonly CityMarket _market;
     private readonly WorldBalanceConfiguration _balance;
     private readonly AgentDecisionSchedule _decisionSchedule;
+    private readonly CultivationParallelCoordinator _cultivationParallel;
     private readonly int[] _agentByRank;
     private readonly int[] _rankByAgent;
     private readonly int[] _agentByRealmRank;
@@ -82,6 +83,7 @@ public sealed partial class World
         _random = new DeterministicRandom(seed);
         _agents = new AgentStore(population);
         _decisionSchedule = new AgentDecisionSchedule(population);
+        _cultivationParallel = new CultivationParallelCoordinator(population);
         _causal = new AgentCausalStore(population);
         _relations = new SparseRelationStore(population);
         _reincarnation = new ReincarnationStore(population);
@@ -200,113 +202,145 @@ public sealed partial class World
         while (_decisionSchedule.TryPeek(out _, out var priorityTick)
             && priorityTick <= targetTick.Value)
         {
-            var agentIndex = _decisionSchedule.Dequeue();
             var dueTick = priorityTick;
-            if (_agents.NextDecisionTicks[agentIndex] != dueTick)
+            var dueCount = 0;
+            var dueAgents = _cultivationParallel.DueAgents;
+            while (_decisionSchedule.TryPeek(out _, out var groupedTick)
+                && groupedTick == dueTick)
             {
-                continue;
+                dueAgents[dueCount++] = _decisionSchedule.Dequeue();
             }
 
             var due = new SimulationTick(dueTick);
             var actionMonth = GameCalendar.GetMonthIndex(due);
             AdvanceMonthlyBoundariesThrough(actionMonth);
             Tick = due;
-            if (_agents.LifeStates[agentIndex] == PersonLifeState.Living
-                && HasReachedMaximumLifespan(agentIndex))
+            PrepareParallelCultivationWork(dueAgents.AsSpan(0, dueCount), dueTick);
+            for (var dueIndex = 0; dueIndex < dueCount; dueIndex++)
             {
-                BeginReincarnation(agentIndex);
-                continue;
+                ProcessScheduledAgent(dueAgents[dueIndex], dueTick, actionMonth);
             }
-
-            if (_agents.Activities[agentIndex] == AgentActivity.Fighting)
-            {
-                var opponent = _agents.Opponents[agentIndex];
-                if ((uint)opponent < (uint)Population
-                    && _agents.LifeStates[opponent] == PersonLifeState.Living
-                    && HasReachedMaximumLifespan(opponent))
-                {
-                    BeginReincarnation(opponent);
-                    continue;
-                }
-            }
-
-            if (_agents.Activities[agentIndex] == AgentActivity.Reincarnating)
-            {
-                ResolveReincarnationStage(agentIndex);
-                continue;
-            }
-
-            if (_agents.LastActionMonths[agentIndex] >= actionMonth)
-            {
-                ScheduleAgent(
-                    agentIndex,
-                    GameCalendar.GetMonthStart(checked(_agents.LastActionMonths[agentIndex] + 1)).Value);
-                continue;
-            }
-
-            _agents.LastActionMonths[agentIndex] = actionMonth;
-            _agents.LastActionTicks[agentIndex] = dueTick;
-            _agents.ActionsTaken[agentIndex] = checked(_agents.ActionsTaken[agentIndex] + 1);
-            if (_agents.Activities[agentIndex] == AgentActivity.Cultivating)
-            {
-                EnsureCultivationPlan(agentIndex);
-            }
-            var resolvedActivity = _agents.Activities[agentIndex];
-            var tracksRealmRanking = resolvedActivity == AgentActivity.Cultivating;
-            var enteredCultivationBefore = tracksRealmRanking && HasEnteredCultivation(agentIndex);
-            var realmRankingScoreBefore = tracksRealmRanking
-                ? GetRealmRankingScore(agentIndex)
-                : 0;
-            var tracksWealthRanking = CanChangeSpiritStoneBalance(resolvedActivity);
-            var spiritStonesBefore = tracksWealthRanking
-                ? _agents.SpiritStones[agentIndex]
-                : 0;
-            var tracksPowerInputs = CanChangePowerInputsWithoutInternalRecalculation(
-                resolvedActivity);
-            var powerInputsBefore = tracksPowerInputs
-                ? _agents.GetPowerInputSignature(agentIndex)
-                : default;
-            var alreadyScheduled = ResolveActivity(agentIndex);
-            TryResolveBottleneckAfterAction(agentIndex, resolvedActivity);
-            MarkActionRankingChanges(
-                agentIndex,
-                tracksRealmRanking,
-                enteredCultivationBefore,
-                realmRankingScoreBefore,
-                tracksWealthRanking,
-                spiritStonesBefore);
-            if (tracksPowerInputs
-                && powerInputsBefore != _agents.GetPowerInputSignature(agentIndex))
-            {
-                RecalculatePowerAndUpdatePeak(agentIndex);
-            }
-            if (resolvedActivity == AgentActivity.Cultivating
-                && TryContinueCultivationPlan(agentIndex))
-            {
-                var plan = _agents.CultivationPlans[agentIndex];
-                if (plan.CompletedMonths <= 1 || plan.CompletedMonths % 12 == 0)
-                {
-                    AddPersonalActionLog(agentIndex, resolvedActivity);
-                }
-                continue;
-            }
-
-            ObserveSocialInteraction(agentIndex, resolvedActivity);
-            AddPersonalActionLog(agentIndex, resolvedActivity);
-            if (alreadyScheduled)
-            {
-                continue;
-            }
-
-            SelectNextActivity(agentIndex);
-            var nextTick = checked(dueTick + CalculateActivityDuration(agentIndex));
-            ScheduleAgent(agentIndex, nextTick);
         }
 
         var targetMonth = GameCalendar.GetMonthIndex(targetTick);
         AdvanceMonthlyBoundariesThrough(targetMonth);
         Tick = targetTick;
         _worldChronicle.AdvanceTo(Tick);
+    }
+
+    private void ProcessScheduledAgent(int agentIndex, long dueTick, long actionMonth)
+    {
+        if (_agents.NextDecisionTicks[agentIndex] != dueTick)
+        {
+            _cultivationParallel.Discard(agentIndex);
+            return;
+        }
+
+        if (_agents.LifeStates[agentIndex] == PersonLifeState.Living
+            && HasReachedMaximumLifespan(agentIndex))
+        {
+            _cultivationParallel.Discard(agentIndex);
+            BeginReincarnation(agentIndex);
+            return;
+        }
+
+        if (_agents.Activities[agentIndex] == AgentActivity.Fighting)
+        {
+            var opponent = _agents.Opponents[agentIndex];
+            if ((uint)opponent < (uint)Population
+                && _agents.LifeStates[opponent] == PersonLifeState.Living
+                && HasReachedMaximumLifespan(opponent))
+            {
+                _cultivationParallel.Discard(agentIndex);
+                BeginReincarnation(opponent);
+                return;
+            }
+        }
+
+        if (_agents.Activities[agentIndex] == AgentActivity.Reincarnating)
+        {
+            _cultivationParallel.Discard(agentIndex);
+            ResolveReincarnationStage(agentIndex);
+            return;
+        }
+
+        if (_agents.LastActionMonths[agentIndex] >= actionMonth)
+        {
+            _cultivationParallel.Discard(agentIndex);
+            ScheduleAgent(
+                agentIndex,
+                GameCalendar.GetMonthStart(checked(_agents.LastActionMonths[agentIndex] + 1)).Value);
+            return;
+        }
+
+        var precomputedCultivation = default(CultivationWorkResult);
+        var hasPrecomputedCultivation = false;
+        if (_cultivationParallel.HasCandidate(agentIndex))
+        {
+            hasPrecomputedCultivation = _cultivationParallel.TryAcquire(
+                agentIndex,
+                CreateCultivationWorkFingerprint(agentIndex, dueTick),
+                out precomputedCultivation);
+        }
+        _agents.LastActionMonths[agentIndex] = actionMonth;
+        _agents.LastActionTicks[agentIndex] = dueTick;
+        _agents.ActionsTaken[agentIndex] = checked(_agents.ActionsTaken[agentIndex] + 1);
+        if (_agents.Activities[agentIndex] == AgentActivity.Cultivating)
+        {
+            EnsureCultivationPlan(agentIndex);
+        }
+        var resolvedActivity = _agents.Activities[agentIndex];
+        var tracksRealmRanking = resolvedActivity == AgentActivity.Cultivating;
+        var enteredCultivationBefore = tracksRealmRanking && HasEnteredCultivation(agentIndex);
+        var realmRankingScoreBefore = tracksRealmRanking
+            ? GetRealmRankingScore(agentIndex)
+            : 0;
+        var tracksWealthRanking = CanChangeSpiritStoneBalance(resolvedActivity);
+        var spiritStonesBefore = tracksWealthRanking
+            ? _agents.SpiritStones[agentIndex]
+            : 0;
+        var tracksPowerInputs = CanChangePowerInputsWithoutInternalRecalculation(
+            resolvedActivity);
+        var powerInputsBefore = tracksPowerInputs
+            ? _agents.GetPowerInputSignature(agentIndex)
+            : default;
+        var alreadyScheduled = ResolveActivity(
+            agentIndex,
+            hasPrecomputedCultivation ? precomputedCultivation : null);
+        TryResolveBottleneckAfterAction(agentIndex, resolvedActivity);
+        MarkActionRankingChanges(
+            agentIndex,
+            tracksRealmRanking,
+            enteredCultivationBefore,
+            realmRankingScoreBefore,
+            tracksWealthRanking,
+            spiritStonesBefore);
+        if (tracksPowerInputs
+            && powerInputsBefore != _agents.GetPowerInputSignature(agentIndex))
+        {
+            RecalculatePowerAndUpdatePeak(agentIndex);
+        }
+        if (resolvedActivity == AgentActivity.Cultivating
+            && TryContinueCultivationPlan(agentIndex))
+        {
+            var plan = _agents.CultivationPlans[agentIndex];
+            if (plan.CompletedMonths <= 1 || plan.CompletedMonths % 12 == 0)
+            {
+                AddPersonalActionLog(agentIndex, resolvedActivity);
+            }
+            return;
+        }
+
+        ObserveSocialInteraction(agentIndex, resolvedActivity);
+        AddPersonalActionLog(agentIndex, resolvedActivity);
+        if (alreadyScheduled)
+        {
+            return;
+        }
+
+        SelectNextActivity(agentIndex);
+        var nextTick = checked(dueTick + CalculateActivityDuration(agentIndex));
+        ScheduleAgent(agentIndex, nextTick);
     }
 
     /// <summary>
@@ -1164,12 +1198,12 @@ public sealed partial class World
         return hash;
     }
 
-    private bool ResolveActivity(int index)
+    private bool ResolveActivity(int index, CultivationWorkResult? precomputedCultivation = null)
     {
         switch (_agents.Activities[index])
         {
             case AgentActivity.Cultivating:
-                ResolveCultivation(index);
+                ResolveCultivation(index, precomputedCultivation);
                 return false;
             case AgentActivity.TrainingTechnique:
                 ResolveTechniqueTraining(index);
@@ -1986,11 +2020,6 @@ public sealed partial class World
         long value)
     {
         var log = _agents.PersonalLogs[index];
-        if (log.Count == PersonalLogCapacity)
-        {
-            log.RemoveAt(0);
-        }
-
         log.Add(new PersonalLogEntry(
             ++_personalLogSequence,
             Tick,

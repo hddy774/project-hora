@@ -19,6 +19,7 @@ public sealed partial class World
         _random = new DeterministicRandom(checkpoint.RandomState);
         _agents = new AgentStore(checkpoint.Agents.Length);
         _decisionSchedule = new AgentDecisionSchedule(checkpoint.Agents.Length);
+        _cultivationParallel = new CultivationParallelCoordinator(checkpoint.Agents.Length);
         _causal = checkpoint.SchemaVersion >= 25
             ? AgentCausalStore.Restore(checkpoint.Agents.Length, checkpoint.Causal!)
             : new AgentCausalStore(checkpoint.Agents.Length);

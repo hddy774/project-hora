@@ -46,11 +46,9 @@ public sealed partial class World
         }
 
         var lifeNumber = checked((int)(personId.Value >> 32));
-        var historical = _agents.Chronicles[agent].FirstOrDefault(
-            entry => entry.LifeNumber == lifeNumber);
-        return string.IsNullOrWhiteSpace(historical.PersonName)
-            ? $"과거 제{lifeNumber:N0}생"
-            : historical.PersonName;
+        return _agents.Chronicles.TryGetPersonName(agent, personId, out var historicalName)
+            ? historicalName
+            : $"과거 제{lifeNumber:N0}생";
     }
 
     private bool TryPrepareTeaching(int teacher)

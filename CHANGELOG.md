@@ -4,6 +4,45 @@
 사용자가 확인할 수 있는 기능뿐 아니라 저장 schema, 결정론, 성능과 내부 구조 변경까지
 버전별로 기록한다.
 
+## 0.0.27 — 프로파일 기반 100배속 성능 기반·전체 작업집합 개편
+
+### 시뮬레이션 hot path
+
+- 랭킹 네 범주가 각자 dirty일 때만 정렬하며 하나의 score/scratch 작업공간을 공유한다.
+  실제 비음수 점수의 최고 유효 bit까지만 11-bit radix pass를 실행한다.
+- 행동 종류별로 변경될 수 있는 전투력 입력만 두 `ulong`에 packing해 비교한다. 수행,
+  공법, 법술, 거래, 사냥이 건드리지 않는 SoA 열을 매 행동마다 읽지 않는다.
+- 입문 Gate가 고정된 구간은 통과 mask를 재사용하고 실패 Gate 단련을 연속 span에서
+  일괄 갱신한다.
+- 인과 판단은 현재 경로의 큰 값 구조체를 복사하지 않고 readonly 참조와 안정 ID를
+  사용한다.
+- 순수 수행 Work 계산의 최대 4-worker 병렬 단계와 AgentId 순서 직렬 commit을 유지한다.
+  동일 5회 비교에서 직렬 중앙값 633ms, 병렬 475ms였다.
+
+### 구조와 유지관리
+
+- 2,065줄 `World`, 2,539줄 persistence, 조직, 슬롯 복구, 인물 SoA, 관계, 기록,
+  수행, 시장, 선택 인물 UI를 owner·생명주기·검증 경계에 맞춰 partial 작업집합으로
+  분리했다.
+- 초기 1,000줄 초과 핵심 수동 파일 10개 중 7개를 책임 단위로 분리했다. 남은
+  `MainWindow.xaml`, 선택 인물 활성 탭, Content 원자 store는 단순 줄 수 분리보다
+  결합도가 높아 manifest에 유지 사유를 기록했다.
+- 저장 write/manifest와 candidate metadata·순차 decode·복구 선택을 분리했다. 외부
+  WorldSchema 25, checkpoint schema 32, checksum·primary/temp/backup 계약은 그대로다.
+
+### 실측과 폐기한 실험
+
+- Release 전체 75/75와 architecture/XAML/238행 이식 원장을 통과했다.
+- 10,000명·20,000 tick 독립 5회 중앙값은 867ms다. 동일 머신 0.0.26 교차 A/B의
+  쌍별 비율 중앙값은 0.982로 약 1.8% 개선됐다.
+- 100배속 60초는 p95 54.30ms, p99 63.52ms, 정상 99.83%, 최종 backlog 0ms,
+  진행률 100%로 지속 예산을 통과했다.
+- 랭킹 범주 병렬화는 8.9%, 수행 고정 구간 partition은 1.3% 느려 제거했다. 일정표
+  calendar queue/timing wheel은 프로파일 비중이 낮아 도입하지 않았다.
+
+관련 문서: `docs/architecture/PC_PERFORMANCE_FOUNDATION_0.0.27.md`,
+`docs/traceability/PC-PERFORMANCE-FOUNDATION-027.md`.
+
 ## 0.0.26 — 100배속 관찰 경합 제거·시뮬레이션 hot path 최적화
 
 ### 관찰·성능 진단

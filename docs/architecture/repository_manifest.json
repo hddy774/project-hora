@@ -7,6 +7,26 @@
     "recommended_max": 1000,
     "hard_fail_on_line_count": false
   },
+  "large_manual_worksets": [
+    {
+      "path": "src/Chronicles.Desktop/MainWindow.xaml",
+      "owner": "Desktop",
+      "responsibility": "Root shell and selected-person visual tree with shared named resources and event bindings.",
+      "reason": "Extracting controls only to satisfy a line threshold would enlarge the WPF binding surface without reducing hidden-view materialization; workspace UserControls are already separate."
+    },
+    {
+      "path": "src/Chronicles.Desktop/MainWindow.AgentObservation.cs",
+      "owner": "Desktop",
+      "responsibility": "Selected-person overview, decision, relation, teaching and cultivation visible-tab binding.",
+      "reason": "Record and reincarnation rendering moved out; the remaining methods share one selected-agent and active-section lifecycle and are only marginally above the recommendation."
+    },
+    {
+      "path": "src/Chronicles.Simulation/ContentAuthorityStore.cs",
+      "owner": "Simulation",
+      "responsibility": "Atomic content instance, provenance and owner/location index authority.",
+      "reason": "The store is four lines above the recommendation and its command, index and provenance invariants form one authority workset."
+    }
+  ],
   "modules": [
     {
       "id": "Core",

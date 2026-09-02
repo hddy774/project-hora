@@ -211,6 +211,27 @@ checkpoint schema 32는 유지한다.
 RNG 소비가 아니다. 저장과 명시적 사용자 요청은 계속 blocking 안전 경계를 사용한다.
 100배속에서는 3 pulse마다 관찰을 무효화해 UI 작업과 월 위상 고정을 함께 줄인다.
 
+## 0.0.27 프로파일 기반 성능 기반·작업집합 진입점
+
+- due 일정·월 경계 조정: `World.Scheduling.cs`
+- 범주별 dirty·adaptive radix ranking: `World.Rankings.cs`,
+  `RankingRevisionCache.cs`
+- 입문·수행 Work와 돌파 경계: `World.Cultivation.cs`,
+  `World.Cultivation.Breakthroughs.cs`
+- 수행 순수 계산·직렬 commit: `World.CultivationParallel.cs`
+- 인물 SoA와 진행·자산 접근: `AgentStore.cs`, `AgentStore.ProgressionAssets.cs`
+- 최근 로그와 cold 연대기: `AgentHistoryStores.cs`, `CompactChronicleStore.cs`
+- 조직·관계 checkpoint 경계: `OrganizationStore.Persistence.cs`,
+  `RelationStore.Persistence.cs`
+- 슬롯 쓰기와 순차 복구: `SlotSaveStore.cs`, `SlotSaveStore.Load.cs`
+- 선택 인물 표시와 기록 표시: `MainWindow.AgentObservation.cs`,
+  `MainWindow.AgentRecordsView.cs`
+
+성능 변경은 EventPipe 프로파일과 동일 머신 A/B 뒤 채택한다. 일정표의 calendar queue·
+timing wheel 전환, 랭킹 범주 병렬화, 고정 구간 수행 partition은 실제 이득이 없어
+적용하지 않았다. 전체 판정과 남은 대형 작업집합 사유는
+`PC_PERFORMANCE_FOUNDATION_0.0.27.md`에 기록한다.
+
 ## 검증
 
 ```powershell

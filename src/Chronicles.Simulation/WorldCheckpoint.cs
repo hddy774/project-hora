@@ -60,7 +60,26 @@ public sealed record AgentCheckpoint(
     PersonIdentityCheckpoint? Identity = null,
     AgentDecisionCheckpoint? Decision = null,
     TeachingCheckpoint? Teaching = null,
-    PersonLifeAuthorityCheckpoint? LifeAuthority = null);
+    PersonLifeAuthorityCheckpoint? LifeAuthority = null,
+    bool PreserveDetailedChronicle = false,
+    IReadOnlyList<PersonalCenturyChronicleEntry>? PersonalCenturyChronicle = null,
+    PersonalCenturyAccumulatorCheckpoint? PersonalCenturyAccumulator = null);
+
+public sealed record PersonalCenturyAccumulatorCheckpoint(
+    int LifeNumber,
+    long CenturyIndex,
+    long LifeStartedTick,
+    long ObservedAgeYears,
+    long ObservedTick,
+    int EventCount,
+    int GrowthEventCount,
+    int CombatEventCount,
+    int LifeEventCount,
+    int AcquisitionEventCount,
+    int MajorRealmBreakthroughCount,
+    int BreakthroughFailureCount,
+    RealmStage FinalRealmStage,
+    MinorStage FinalMinorStage);
 
 public sealed record AptitudeDetailCheckpoint(
     int FormulaRevision,
@@ -231,7 +250,7 @@ public sealed record WorldCheckpoint(
     WorldGenerationCheckpoint? Generation = null,
     DecisionRankingCheckpoint? DecisionRankings = null)
 {
-    public const int CurrentSchemaVersion = 31;
+    public const int CurrentSchemaVersion = 32;
 }
 
 /// <summary>

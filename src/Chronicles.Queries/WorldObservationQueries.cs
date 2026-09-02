@@ -114,9 +114,7 @@ public sealed class WorldObservationQueries
             includeCausal:
                 (request.Sections & ObservationSections.CausalRuntime) != 0,
             cultivationSections: cultivationSections);
-        var needsChronicle = (request.Sections
-            & (ObservationSections.Chronicle | ObservationSections.PersonalCenturyChronicle)) != 0;
-        var chronicle = needsChronicle
+        var chronicle = (request.Sections & ObservationSections.Chronicle) != 0
             ? _world.GetAgentChronicle(agentId)
             : Array.Empty<LifeChronicleEntry>();
         return new WorldObservation(
@@ -129,7 +127,7 @@ public sealed class WorldObservationQueries
                 ? chronicle
                 : Array.Empty<LifeChronicleEntry>(),
             (request.Sections & ObservationSections.PersonalCenturyChronicle) != 0
-                ? PersonalCenturyChronicleProjection.Create(chronicle, agent, world.Tick)
+                ? _world.GetAgentPersonalCenturyChronicle(agentId)
                 : Array.Empty<PersonalCenturyChronicleEntry>(),
             (request.Sections & ObservationSections.Reincarnation) != 0
                 ? _world.GetAgentReincarnationSnapshot(agentId)

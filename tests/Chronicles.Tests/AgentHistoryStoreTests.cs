@@ -8,6 +8,7 @@ internal static class AgentHistoryStoreTests
         VerifySparseChunkAllocation();
         VerifyCompactNullableRoundTrip();
         VerifyCompactChronicleRoundTrip();
+        VerifyChronicleRetentionAndCenturyArchive();
 
         var store = new PersonalLogRingStore(population: 2);
         var log = store[0];
@@ -213,4 +214,86 @@ internal static class AgentHistoryStoreTests
                 $"순방향 블록 열거 {index} 왕복");
         }
     }
+
+    private static void VerifyChronicleRetentionAndCenturyArchive()
+    {
+        var details = new CompactChronicleStore(population: 1);
+        var archive = new PersonalChronicleArchiveStore(population: 1, details);
+        var chronicle = details[0];
+        for (var sequence = 1; sequence <= 150; sequence++)
+        {
+            var entry = CreateChronicleEntry(sequence, ageYears: sequence - 1);
+            chronicle.Add(entry);
+            archive.Record(0, entry);
+        }
+
+        TestAssert.Equal(50, chronicle.Count,
+            "완결 종합본과 중복 제거 후 미완결 구간 50건만 유지");
+        TestAssert.Equal(101L, chronicle[0].Sequence,
+            "100년 종합본에 포함된 상세 기록 제거");
+        var volumes = archive.Project(
+            0,
+            currentLifeNumber: 1,
+            currentAgeYears: 149,
+            currentTick: new SimulationTick(149 * GameCalendar.TicksPerYear),
+            currentName: "첫생",
+            currentRealm: RealmStage.FoundationEstablishment,
+            currentMinor: MinorStage.Floor2,
+            currentLifeEnded: false);
+        TestAssert.Equal(2, volumes.Count, "0~99·100~199세 종합 연대기");
+        TestAssert.Equal(100, volumes[0].EventCount,
+            "삭제된 상세 사건도 완결 종합본 집계에 보존");
+        TestAssert.Equal(50, volumes[1].EventCount,
+            "현재 작성 중 종합본 집계");
+
+        archive.SetProtected(0, isProtected: true);
+        for (var sequence = 151; sequence <= 250; sequence++)
+        {
+            var entry = CreateChronicleEntry(sequence, ageYears: sequence - 1);
+            chronicle.Add(entry);
+            archive.Record(0, entry);
+        }
+        TestAssert.Equal(150, chronicle.Count,
+            "관심등록 뒤에는 기존 50건과 신규 상세 기록을 모두 보존");
+
+        archive.SetProtected(0, isProtected: false);
+        TestAssert.True(chronicle.Count <= PersonalChronicleRules.DetailedRetentionLimit,
+            "관심 해제 시 세부 연대기 100건 상한 복원");
+        TestAssert.True(chronicle.All(entry => entry.AgeYears >= 200),
+            "완결 종합본과 중복되는 상세 연대기 제거");
+
+        var cappedDetails = new CompactChronicleStore(population: 1);
+        var cappedArchive = new PersonalChronicleArchiveStore(population: 1, cappedDetails);
+        for (var century = 0; century <= 102; century++)
+        {
+            var age = century * PersonalChronicleRules.YearsPerVolume;
+            var entry = CreateChronicleEntry(century + 1, age);
+            cappedDetails[0].Add(entry);
+            cappedArchive.Record(0, entry);
+        }
+        var capped = cappedArchive.Project(
+            0,
+            1,
+            10_200,
+            new SimulationTick(10_200L * GameCalendar.TicksPerYear),
+            "첫생",
+            RealmStage.HalfImmortal,
+            MinorStage.Floor9,
+            currentLifeEnded: false);
+        TestAssert.Equal(PersonalChronicleRules.VolumeRetentionLimit, capped.Count,
+            "100년 종합 연대기는 최근 100권만 유지");
+        TestAssert.Equal(3L, capped[0].CenturyIndex,
+            "100권을 넘으면 가장 오래된 종합본부터 제거");
+    }
+
+    private static LifeChronicleEntry CreateChronicleEntry(int sequence, int ageYears) => new(
+        sequence,
+        new SimulationTick((long)ageYears * GameCalendar.TicksPerYear),
+        LifeNumber: 1,
+        AgeYears: ageYears,
+        PersonName: "첫생",
+        ChronicleEventKind.FortuitousEncounter,
+        RealmStage.FoundationEstablishment,
+        MinorStage.Floor2,
+        Value: sequence);
 }

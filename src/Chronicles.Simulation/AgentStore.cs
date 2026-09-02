@@ -52,6 +52,7 @@ internal sealed partial class AgentStore
         LifeNumbers = new int[count];
         BottleneckFailures = new ushort[count];
         Chronicles = new CompactChronicleStore(count);
+        PersonalCenturyChronicles = new PersonalChronicleArchiveStore(count, Chronicles);
         PersonalLogs = new PersonalLogRingStore(count);
         RealmStages = new RealmStage[count];
         RealmLayers = new byte[count];
@@ -165,6 +166,7 @@ internal sealed partial class AgentStore
     public int[] LifeNumbers { get; }
     public ushort[] BottleneckFailures { get; }
     public CompactChronicleStore Chronicles { get; }
+    public PersonalChronicleArchiveStore PersonalCenturyChronicles { get; }
     public PersonalLogRingStore PersonalLogs { get; }
     public RealmStage[] RealmStages { get; }
     public byte[] RealmLayers { get; }

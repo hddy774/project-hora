@@ -657,7 +657,8 @@ public sealed partial class World
         includeKnowledge: true,
         includeLaws: true,
         includeGeneration: true,
-        includeDecisionRankings: true);
+        includeDecisionRankings: true,
+        includeDetailedChronicles: false);
 
     /// <summary>
     /// 구 슬롯의 저장 당시 hash 계약을 검증할 때만 사용합니다. 복원된 세계의 현재
@@ -674,7 +675,8 @@ public sealed partial class World
             includeKnowledge: checkpointSchema >= 28,
             includeLaws: checkpointSchema >= 29,
             includeGeneration: checkpointSchema >= 30,
-            includeDecisionRankings: checkpointSchema >= 31);
+            includeDecisionRankings: checkpointSchema >= 31,
+            includeDetailedChronicles: checkpointSchema < 32);
     }
 
     private ulong ComputeStateHashCore(
@@ -682,7 +684,8 @@ public sealed partial class World
         bool includeKnowledge,
         bool includeLaws,
         bool includeGeneration,
-        bool includeDecisionRankings)
+        bool includeDecisionRankings,
+        bool includeDetailedChronicles)
     {
         var hash = 14695981039346656037UL;
         Add(ref hash, Seed);
@@ -1166,17 +1169,20 @@ public sealed partial class World
                 Add(ref hash, unchecked((ulong)entry.Value));
             }
 
-            foreach (var entry in _agents.Chronicles[index])
+            if (includeDetailedChronicles)
             {
-                Add(ref hash, (ulong)entry.Sequence);
-                Add(ref hash, (ulong)entry.Tick.Value);
-                Add(ref hash, (ulong)entry.LifeNumber);
-                Add(ref hash, (ulong)entry.AgeYears);
-                AddString(ref hash, entry.PersonName);
-                Add(ref hash, (byte)entry.Kind);
-                Add(ref hash, (byte)entry.RealmStage);
-                Add(ref hash, (byte)entry.MinorStage);
-                Add(ref hash, unchecked((ulong)(long)entry.Value));
+                foreach (var entry in _agents.Chronicles[index])
+                {
+                    Add(ref hash, (ulong)entry.Sequence);
+                    Add(ref hash, (ulong)entry.Tick.Value);
+                    Add(ref hash, (ulong)entry.LifeNumber);
+                    Add(ref hash, (ulong)entry.AgeYears);
+                    AddString(ref hash, entry.PersonName);
+                    Add(ref hash, (byte)entry.Kind);
+                    Add(ref hash, (byte)entry.RealmStage);
+                    Add(ref hash, (byte)entry.MinorStage);
+                    Add(ref hash, unchecked((ulong)(long)entry.Value));
+                }
             }
         }
 
@@ -2078,7 +2084,7 @@ public sealed partial class World
 
     private void AddChronicle(int index, ChronicleEventKind kind, int value = 0)
     {
-        _agents.Chronicles[index].Add(new LifeChronicleEntry(
+        var entry = new LifeChronicleEntry(
             ++_chronicleSequence,
             Tick,
             _agents.LifeNumbers[index],
@@ -2087,7 +2093,9 @@ public sealed partial class World
             kind,
             _agents.RealmStages[index],
             (MinorStage)_agents.RealmLayers[index],
-            value));
+            value);
+        _agents.Chronicles[index].Add(entry);
+        _agents.PersonalCenturyChronicles.Record(index, entry);
         AddPersonalChronicleLog(index, kind, value);
     }
 

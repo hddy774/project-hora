@@ -4,7 +4,9 @@ namespace Chronicles.Simulation;
 
 public sealed partial class World
 {
-    private World(WorldCheckpoint checkpoint)
+    private World(
+        WorldCheckpoint checkpoint,
+        IReadOnlyCollection<AgentId>? chronicleRetentionWatchlist)
     {
         ValidateCheckpoint(checkpoint);
         Seed = checkpoint.Seed;
@@ -80,7 +82,14 @@ public sealed partial class World
 
         for (var index = 0; index < checkpoint.Agents.Length; index++)
         {
-            RestoreAgent(index, checkpoint.Agents[index], checkpoint.SchemaVersion);
+            var preserveLegacyForHashCompatibility = checkpoint.SchemaVersion < 32
+                && chronicleRetentionWatchlist is null;
+            RestoreAgent(
+                index,
+                checkpoint.Agents[index],
+                checkpoint.SchemaVersion,
+                preserveLegacyForHashCompatibility
+                    || chronicleRetentionWatchlist?.Contains(new AgentId(index)) == true);
             if (checkpoint.SchemaVersion < 25)
             {
                 _causal.StartLife(
@@ -191,7 +200,10 @@ public sealed partial class World
         }
     }
 
-    public static World Restore(WorldCheckpoint checkpoint) => new(checkpoint);
+    public static World Restore(
+        WorldCheckpoint checkpoint,
+        IReadOnlyCollection<AgentId>? chronicleRetentionWatchlist = null) =>
+        new(checkpoint, chronicleRetentionWatchlist);
 
     private void RestoreDecisionRankings(DecisionRankingCheckpoint checkpoint)
     {
@@ -497,7 +509,12 @@ public sealed partial class World
                     _agents.LearningTraces[index],
                     _agents.TechniqueMisunderstandingPoints[index],
                     _agents.SpellMisunderstandingPoints[index]),
-                _agents.GetLifeAuthorityCheckpoint(index));
+                _agents.GetLifeAuthorityCheckpoint(index),
+                _agents.PersonalCenturyChronicles.IsProtected(index),
+                _agents.PersonalCenturyChronicles.CreateCompletedCheckpoint(
+                    index,
+                    materializeHistories),
+                _agents.PersonalCenturyChronicles.CreateAccumulatorCheckpoint(index));
         }
 
         return new WorldCheckpoint(
@@ -560,7 +577,11 @@ public sealed partial class World
                 _wealthRankingCache.IsDirty));
     }
 
-    private void RestoreAgent(int index, AgentCheckpoint checkpoint, int schemaVersion)
+    private void RestoreAgent(
+        int index,
+        AgentCheckpoint checkpoint,
+        int schemaVersion,
+        bool requestedChronicleProtection)
     {
         _agents.Names[index] = checkpoint.Name;
         _agents.SpiritualRoots[index] = checkpoint.SpiritualRoot;
@@ -811,9 +832,39 @@ public sealed partial class World
         _agents.PersonalLogs[index].AddRange(checkpoint.PersonalLog.Where(entry =>
             entry.ChronicleEventKind is not ChronicleEventKind.TechniqueEnlightenment
                 and not ChronicleEventKind.SpellEnlightenment));
-        _agents.Chronicles[index].AddRange(checkpoint.Chronicle.Where(entry =>
-            entry.Kind is not ChronicleEventKind.TechniqueEnlightenment
-                and not ChronicleEventKind.SpellEnlightenment));
+
+        var preserveChronicle = requestedChronicleProtection
+            || (schemaVersion >= 32 && checkpoint.PreserveDetailedChronicle);
+        var rebuildingLegacyArchive = schemaVersion < 32;
+        _agents.PersonalCenturyChronicles.SetProtected(
+            index,
+            preserveChronicle || rebuildingLegacyArchive);
+        foreach (var entry in checkpoint.Chronicle)
+        {
+            if (entry.Kind is ChronicleEventKind.TechniqueEnlightenment
+                or ChronicleEventKind.SpellEnlightenment)
+            {
+                continue;
+            }
+
+            _agents.Chronicles[index].Add(entry);
+            if (rebuildingLegacyArchive)
+            {
+                _agents.PersonalCenturyChronicles.Record(index, entry);
+            }
+        }
+
+        if (rebuildingLegacyArchive)
+        {
+            _agents.PersonalCenturyChronicles.SetProtected(index, preserveChronicle);
+        }
+        else
+        {
+            _agents.PersonalCenturyChronicles.Restore(
+                index,
+                checkpoint.PersonalCenturyChronicle!,
+                checkpoint.PersonalCenturyAccumulator);
+        }
     }
 
     private static void ValidateCheckpoint(WorldCheckpoint checkpoint)
@@ -1184,7 +1235,7 @@ public sealed partial class World
                 || agent.LifeNumber < 1
                 || agent.PersonalLog is null
                 || agent.PersonalLog.Count > PersonalLogCapacity
-                || agent.Chronicle.Count == 0
+                || (checkpoint.SchemaVersion < 32 && agent.Chronicle.Count == 0)
                 || agent.TargetRank != 1
                 || agent.NextDecisionTick <= checkpoint.Tick
                 || agent.LastActionMonth < -1
@@ -1253,6 +1304,13 @@ public sealed partial class World
                     || !IsValidLifeAuthorityLink(agent, lifeAuthority)))
             {
                 throw new InvalidDataException($"Agent {index}의 생애·육신·외형 권위 체크포인트가 잘못되었습니다.");
+            }
+
+            if (checkpoint.SchemaVersion >= 32
+                && !PersonalChronicleArchiveStore.IsValidCheckpoint(agent, checkpoint.Tick))
+            {
+                throw new InvalidDataException(
+                    $"Agent {index}의 개인 100년 종합 연대기가 잘못되었습니다.");
             }
 
             if (checkpoint.SchemaVersion >= 22

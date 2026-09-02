@@ -472,15 +472,32 @@ internal static class RelationChronicleTests
                 MinorStage.Floor1,
                 sequence))
             .ToArray();
-        var permanent = World.Restore(checkpoint with
+        var legacy = checkpoint with
         {
+            SchemaVersion = 31,
             ChronicleSequence = permanentEntries.Length,
             Agents = [agent with { Chronicle = permanentEntries }],
-        });
-        Equal(150, permanent.GetAgentChronicle(new AgentId(0)).Count, "연대기는 100줄로 잘리지 않음");
-        var encoded = WorldSaveCodec.Encode(permanent.CreateCheckpoint());
-        var loaded = World.Restore(WorldSaveCodec.Decode(encoded));
-        Equal(150, loaded.GetAgentChronicle(new AgentId(0)).Count, "영구 연대기 저장 왕복");
+        };
+        var ordinary = World.Restore(legacy, Array.Empty<AgentId>());
+        Equal(100, ordinary.GetAgentChronicle(new AgentId(0)).Count,
+            "일반 인물 세부 연대기는 최근 100건");
+        Equal(150, ordinary.GetAgentPersonalCenturyChronicle(new AgentId(0))[0].EventCount,
+            "삭제된 상세 사건은 100년 종합 집계에 보존");
+        var ordinaryLoaded = World.Restore(
+            WorldSaveCodec.Decode(WorldSaveCodec.Encode(ordinary.CreateCheckpoint())));
+        Equal(100, ordinaryLoaded.GetAgentChronicle(new AgentId(0)).Count,
+            "일반 인물 세부 연대기 저장 왕복");
+
+        var watched = World.Restore(legacy, [new AgentId(0)]);
+        Equal(150, watched.GetAgentChronicle(new AgentId(0)).Count,
+            "관심등록 인물 세부 연대기는 제한 없이 보존");
+        var watchedLoaded = World.Restore(
+            WorldSaveCodec.Decode(WorldSaveCodec.Encode(watched.CreateCheckpoint())));
+        Equal(150, watchedLoaded.GetAgentChronicle(new AgentId(0)).Count,
+            "관심등록 보존 상태와 세부 연대기 저장 왕복");
+        watchedLoaded.SetDetailedChronicleProtection(new AgentId(0), isProtected: false);
+        Equal(100, watchedLoaded.GetAgentChronicle(new AgentId(0)).Count,
+            "관심 해제 시 최근 100건 상한 적용");
     }
 
     public static void PersonalCenturyChronicleProjectionTest()
@@ -522,7 +539,7 @@ internal static class RelationChronicleTests
         Equal(1, volumes[1].BreakthroughFailureCount, "돌파 실패 집계");
         True(!volumes[2].IsComplete, "현재 100년 구간 작성 중");
         Equal(1, volumes[2].AcquisitionEventCount, "획득 사건 집계");
-        Equal(5, detailed.Length, "세부 연대기 원본 보존");
+        Equal(5, detailed.Length, "legacy 투영 입력 불변");
 
         var sparseCurrent = current with { AgeYears = 350 };
         var sparse = PersonalCenturyChronicleProjection.Create(
@@ -597,4 +614,3 @@ internal static class RelationChronicleTests
         return output.ToArray();
     }
 }
-

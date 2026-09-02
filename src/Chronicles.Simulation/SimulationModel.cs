@@ -188,7 +188,7 @@ public readonly record struct LifeChronicleEntry(
     MinorStage MinorStage,
     int Value);
 
-public sealed record PersonalCenturyChronicleEntry(
+public readonly record struct PersonalCenturyChronicleEntry(
     int LifeNumber,
     long CenturyIndex,
     long StartAgeYears,

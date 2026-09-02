@@ -187,6 +187,103 @@ internal sealed class LifeChronicleEntryArrayJsonConverter :
     }
 }
 
+/// <summary>
+/// 인물별 100년 종합 연대기를 이름 반복과 파생 나이 경계 없이 기록한다.
+/// schema 32 이전의 object-array도 진단 fixture에서 계속 읽을 수 있다.
+/// </summary>
+internal sealed class PersonalCenturyChronicleArrayJsonConverter :
+    JsonConverter<IReadOnlyList<PersonalCenturyChronicleEntry>>
+{
+    public override IReadOnlyList<PersonalCenturyChronicleEntry> Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options)
+    {
+        CompactArrayJsonReader.Require(ref reader, JsonTokenType.StartArray, "100년 종합 연대기 배열");
+        List<PersonalCenturyChronicleEntry> entries = [];
+        string? previousName = null;
+        while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                var legacy = JsonSerializer.Deserialize<PersonalCenturyChronicleEntry>(ref reader, options);
+                previousName = legacy.PersonName;
+                entries.Add(legacy);
+                continue;
+            }
+
+            CompactArrayJsonReader.Require(ref reader, JsonTokenType.StartArray, "100년 종합 연대기 tuple");
+            var lifeNumber = CompactArrayJsonReader.Int32(ref reader);
+            var century = CompactArrayJsonReader.Int64(ref reader);
+            var observedAge = CompactArrayJsonReader.Int64(ref reader);
+            var personName = CompactArrayJsonReader.StringOrPrevious(ref reader, previousName);
+            previousName = personName;
+            var startAge = checked(century * PersonalChronicleRules.YearsPerVolume);
+            entries.Add(new PersonalCenturyChronicleEntry(
+                lifeNumber,
+                century,
+                startAge,
+                checked(startAge + PersonalChronicleRules.YearsPerVolume - 1),
+                observedAge,
+                personName,
+                CompactArrayJsonReader.Boolean(ref reader),
+                CompactArrayJsonReader.Int32(ref reader),
+                CompactArrayJsonReader.Int32(ref reader),
+                CompactArrayJsonReader.Int32(ref reader),
+                CompactArrayJsonReader.Int32(ref reader),
+                CompactArrayJsonReader.Int32(ref reader),
+                CompactArrayJsonReader.Int32(ref reader),
+                CompactArrayJsonReader.Int32(ref reader),
+                (RealmStage)CompactArrayJsonReader.Byte(ref reader),
+                (MinorStage)CompactArrayJsonReader.Byte(ref reader),
+                new SimulationTick(CompactArrayJsonReader.Int64(ref reader)),
+                new SimulationTick(CompactArrayJsonReader.Int64(ref reader))));
+            CompactArrayJsonReader.EndTuple(ref reader, "100년 종합 연대기 tuple");
+        }
+        CompactArrayJsonReader.Require(ref reader, JsonTokenType.EndArray, "100년 종합 연대기 배열");
+        return entries.ToArray();
+    }
+
+    public override void Write(
+        Utf8JsonWriter writer,
+        IReadOnlyList<PersonalCenturyChronicleEntry> value,
+        JsonSerializerOptions options)
+    {
+        writer.WriteStartArray();
+        string? previousName = null;
+        foreach (var entry in value)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(entry.LifeNumber);
+            writer.WriteNumberValue(entry.CenturyIndex);
+            writer.WriteNumberValue(entry.ObservedThroughAgeYears);
+            if (string.Equals(previousName, entry.PersonName, StringComparison.Ordinal))
+            {
+                writer.WriteNullValue();
+            }
+            else
+            {
+                writer.WriteStringValue(entry.PersonName);
+                previousName = entry.PersonName;
+            }
+            writer.WriteBooleanValue(entry.IsComplete);
+            writer.WriteNumberValue(entry.EventCount);
+            writer.WriteNumberValue(entry.GrowthEventCount);
+            writer.WriteNumberValue(entry.CombatEventCount);
+            writer.WriteNumberValue(entry.LifeEventCount);
+            writer.WriteNumberValue(entry.AcquisitionEventCount);
+            writer.WriteNumberValue(entry.MajorRealmBreakthroughCount);
+            writer.WriteNumberValue(entry.BreakthroughFailureCount);
+            writer.WriteNumberValue((byte)entry.FinalRealmStage);
+            writer.WriteNumberValue((byte)entry.FinalMinorStage);
+            writer.WriteNumberValue(entry.StartedTick.Value);
+            writer.WriteNumberValue(entry.ObservedThroughTick.Value);
+            writer.WriteEndArray();
+        }
+        writer.WriteEndArray();
+    }
+}
+
 internal static class CompactArrayJsonReader
 {
     public static long Int64(ref Utf8JsonReader reader)

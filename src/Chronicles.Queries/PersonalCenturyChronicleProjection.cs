@@ -4,12 +4,12 @@ using Chronicles.Simulation;
 namespace Chronicles.Queries;
 
 /// <summary>
-/// Builds a read-only, per-life 100-year history book from permanent detailed
-/// chronicle events. The detailed chronicle remains the canonical stored source.
+/// Legacy/schema-migration projection. Runtime observations use the compact archive
+/// maintained by the simulation and never rebuild all volumes from detailed rows.
 /// </summary>
 public static class PersonalCenturyChronicleProjection
 {
-    public const int YearsPerVolume = 100;
+    public const int YearsPerVolume = PersonalChronicleRules.YearsPerVolume;
 
     public static IReadOnlyList<PersonalCenturyChronicleEntry> Create(
         IReadOnlyList<LifeChronicleEntry> detailedChronicle,
@@ -56,7 +56,9 @@ public static class PersonalCenturyChronicleProjection
             }
         }
 
-        return results;
+        return results.Count <= PersonalChronicleRules.VolumeRetentionLimit
+            ? results
+            : results.TakeLast(PersonalChronicleRules.VolumeRetentionLimit).ToArray();
     }
 
     private static PersonalCenturyChronicleEntry CreateEntry(
@@ -104,10 +106,10 @@ public static class PersonalCenturyChronicleProjection
             personName,
             isComplete,
             entries.Length,
-            entries.Count(entry => IsGrowth(entry.Kind)),
-            entries.Count(entry => IsCombat(entry.Kind)),
-            entries.Count(entry => IsLife(entry.Kind)),
-            entries.Count(entry => IsAcquisition(entry.Kind)),
+            entries.Count(entry => PersonalChronicleRules.IsGrowth(entry.Kind)),
+            entries.Count(entry => PersonalChronicleRules.IsCombat(entry.Kind)),
+            entries.Count(entry => PersonalChronicleRules.IsLife(entry.Kind)),
+            entries.Count(entry => PersonalChronicleRules.IsAcquisition(entry.Kind)),
             entries.Count(entry => entry.Kind == ChronicleEventKind.MajorRealmBreakthrough),
             entries.Count(entry => entry.Kind == ChronicleEventKind.BreakthroughFailure),
             finalRealm,
@@ -125,28 +127,4 @@ public static class PersonalCenturyChronicleProjection
         return new SimulationTick(Math.Min(value, maximum.Value));
     }
 
-    public static bool IsGrowth(ChronicleEventKind kind) => kind is
-        ChronicleEventKind.CultivationEntered
-        or ChronicleEventKind.MinorStageBreakthrough
-        or ChronicleEventKind.FloorNineCompletion
-        or ChronicleEventKind.BottleneckBreakthrough
-        or ChronicleEventKind.MajorRealmBreakthrough
-        or ChronicleEventKind.GreatPerfectionAchieved
-        or ChronicleEventKind.BreakthroughFailure;
-
-    public static bool IsCombat(ChronicleEventKind kind) =>
-        kind == ChronicleEventKind.CombatDeath;
-
-    public static bool IsLife(ChronicleEventKind kind) => kind is
-        ChronicleEventKind.Birth
-        or ChronicleEventKind.Death
-        or ChronicleEventKind.CombatDeath
-        or ChronicleEventKind.ReincarnationEntered
-        or ChronicleEventKind.ReincarnationCrossingCompleted
-        or ChronicleEventKind.Rebirth;
-
-    public static bool IsAcquisition(ChronicleEventKind kind) => kind is
-        ChronicleEventKind.FortuitousEncounter
-        or ChronicleEventKind.TechniqueAcquired
-        or ChronicleEventKind.SpellAcquired;
 }

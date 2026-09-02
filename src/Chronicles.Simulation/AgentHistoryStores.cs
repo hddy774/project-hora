@@ -471,12 +471,17 @@ internal sealed class CompactChronicleStore
     private readonly int[] _heads;
     private readonly int[] _tails;
     private readonly int[] _counts;
+    private readonly byte[] _headSlots;
+    private readonly byte[] _tailCounts;
+    private readonly bool[] _protected;
     private readonly List<CompactLifeChronicleEntry[]> _entrySegments = [];
     private readonly List<int[]> _nextSegments = [];
+    private readonly Stack<int> _freeBlocks = [];
     private readonly PersonIdentityId[] _firstPersonIds;
     private readonly string?[] _firstPersonNames;
     private Dictionary<PersonIdentityId, string>? _additionalPersonNames;
     private int _blockCount;
+    private int _activeBlockCount;
 
     internal static int StoredEntrySizeBytes =>
         Unsafe.SizeOf<CompactLifeChronicleEntry>();
@@ -484,7 +489,7 @@ internal sealed class CompactChronicleStore
     internal int AllocatedEntrySlotCount => checked(
         _entrySegments.Count * BlocksPerSegment * EntriesPerBlock);
 
-    internal int AllocatedBlockCount => _blockCount;
+    internal int AllocatedBlockCount => _activeBlockCount;
 
     public CompactChronicleStore(int population)
     {
@@ -493,6 +498,9 @@ internal sealed class CompactChronicleStore
         _heads = new int[population];
         _tails = new int[population];
         _counts = new int[population];
+        _headSlots = new byte[population];
+        _tailCounts = new byte[population];
+        _protected = new bool[population];
         Array.Fill(_heads, -1);
         Array.Fill(_tails, -1);
         _firstPersonIds = new PersonIdentityId[population];
@@ -506,6 +514,22 @@ internal sealed class CompactChronicleStore
             ValidateAgent(agentIndex);
             return new AgentChronicle(this, agentIndex);
         }
+    }
+
+    public void SetProtected(int agentIndex, bool isProtected)
+    {
+        ValidateAgent(agentIndex);
+        _protected[agentIndex] = isProtected;
+        if (!isProtected)
+        {
+            TrimToLast(agentIndex, PersonalChronicleRules.DetailedRetentionLimit);
+        }
+    }
+
+    public bool IsProtected(int agentIndex)
+    {
+        ValidateAgent(agentIndex);
+        return _protected[agentIndex];
     }
 
     public bool TryGetPersonName(
@@ -531,7 +555,100 @@ internal sealed class CompactChronicleStore
         return false;
     }
 
+    public void RegisterPersonNameForLife(
+        int agentIndex,
+        int lifeNumber,
+        string personName)
+    {
+        ValidateAgent(agentIndex);
+        RegisterPersonName(
+            agentIndex,
+            PersonCausalRules.CreatePersonId(agentIndex, lifeNumber),
+            personName);
+    }
+
+    public void PrunePersonNameForLife(int agentIndex, int lifeNumber)
+    {
+        ValidateAgent(agentIndex);
+        if (ContainsLife(agentIndex, lifeNumber))
+        {
+            return;
+        }
+
+        var personId = PersonCausalRules.CreatePersonId(agentIndex, lifeNumber);
+        if (_firstPersonIds[agentIndex] == personId)
+        {
+            _firstPersonIds[agentIndex] = default;
+            _firstPersonNames[agentIndex] = null;
+        }
+        _additionalPersonNames?.Remove(personId);
+    }
+
+    public void PrunePersonNames(
+        int agentIndex,
+        Func<int, bool> retainArchivedLife)
+    {
+        ValidateAgent(agentIndex);
+        ArgumentNullException.ThrowIfNull(retainArchivedLife);
+        if (_firstPersonNames[agentIndex] is not null)
+        {
+            var lifeNumber = checked((int)(_firstPersonIds[agentIndex].Value >> 32));
+            if (!retainArchivedLife(lifeNumber) && !ContainsLife(agentIndex, lifeNumber))
+            {
+                _firstPersonIds[agentIndex] = default;
+                _firstPersonNames[agentIndex] = null;
+            }
+        }
+        if (_additionalPersonNames is null)
+        {
+            return;
+        }
+
+        List<PersonIdentityId>? removals = null;
+        var encodedAgent = checked((uint)agentIndex + 1U);
+        foreach (var (personId, _) in _additionalPersonNames)
+        {
+            if ((uint)personId.Value != encodedAgent)
+            {
+                continue;
+            }
+            var lifeNumber = checked((int)(personId.Value >> 32));
+            if (!retainArchivedLife(lifeNumber) && !ContainsLife(agentIndex, lifeNumber))
+            {
+                (removals ??= []).Add(personId);
+            }
+        }
+        if (removals is null)
+        {
+            return;
+        }
+        foreach (var personId in removals)
+        {
+            _additionalPersonNames.Remove(personId);
+        }
+    }
+
     private int GetCount(int agentIndex) => _counts[agentIndex];
+
+    private bool ContainsLife(int agentIndex, int lifeNumber)
+    {
+        var remaining = _counts[agentIndex];
+        var block = _heads[agentIndex];
+        var slot = (int)_headSlots[agentIndex];
+        while (remaining-- > 0)
+        {
+            if (slot == EntriesPerBlock)
+            {
+                block = GetNextBlock(block);
+                slot = 0;
+            }
+            if (GetCompactEntry(block, slot++).LifeNumber == lifeNumber)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private LifeChronicleEntry Get(int agentIndex, int logicalIndex)
     {
@@ -541,7 +658,7 @@ internal sealed class CompactChronicleStore
         }
 
         var block = _heads[agentIndex];
-        var remaining = logicalIndex;
+        var remaining = checked(_headSlots[agentIndex] + logicalIndex);
         while (remaining >= EntriesPerBlock)
         {
             block = GetNextBlock(block);
@@ -556,8 +673,7 @@ internal sealed class CompactChronicleStore
         RegisterPersonName(agentIndex, expectedPersonId, value.PersonName);
 
         var count = _counts[agentIndex];
-        var slot = count % EntriesPerBlock;
-        if (slot == 0)
+        if (_tails[agentIndex] < 0 || _tailCounts[agentIndex] == EntriesPerBlock)
         {
             var newBlock = AllocateBlock();
             if (_tails[agentIndex] < 0)
@@ -569,13 +685,18 @@ internal sealed class CompactChronicleStore
                 SetNextBlock(_tails[agentIndex], newBlock);
             }
             _tails[agentIndex] = newBlock;
+            _tailCounts[agentIndex] = 0;
         }
 
         SetCompactEntry(
             _tails[agentIndex],
-            slot,
+            _tailCounts[agentIndex]++,
             CompactLifeChronicleEntry.Create(value));
         _counts[agentIndex] = checked(count + 1);
+        if (!_protected[agentIndex])
+        {
+            TrimToLast(agentIndex, PersonalChronicleRules.DetailedRetentionLimit);
+        }
     }
 
     private LifeChronicleEntry[] ToArray(int agentIndex)
@@ -589,16 +710,78 @@ internal sealed class CompactChronicleStore
         var result = new LifeChronicleEntry[count];
         var resultIndex = 0;
         var block = _heads[agentIndex];
+        var slot = (int)_headSlots[agentIndex];
         while (block >= 0 && resultIndex < count)
         {
-            var entries = Math.Min(EntriesPerBlock, count - resultIndex);
-            for (var slot = 0; slot < entries; slot++)
+            var entries = Math.Min(EntriesPerBlock - slot, count - resultIndex);
+            for (var offset = 0; offset < entries; offset++)
             {
-                result[resultIndex++] = Expand(agentIndex, GetCompactEntry(block, slot));
+                result[resultIndex++] = Expand(
+                    agentIndex,
+                    GetCompactEntry(block, slot + offset));
             }
             block = GetNextBlock(block);
+            slot = 0;
         }
         return result;
+    }
+
+    public void RemoveArchivedThrough(int agentIndex, int lifeNumber, long ageYears)
+    {
+        ValidateAgent(agentIndex);
+        if (_protected[agentIndex])
+        {
+            return;
+        }
+
+        while (_counts[agentIndex] > 0)
+        {
+            var first = GetCompactEntry(_heads[agentIndex], _headSlots[agentIndex]);
+            if (first.LifeNumber > lifeNumber
+                || (first.LifeNumber == lifeNumber && first.AgeYears > ageYears))
+            {
+                break;
+            }
+            RemoveFirst(agentIndex);
+        }
+    }
+
+    private void TrimToLast(int agentIndex, int limit)
+    {
+        while (_counts[agentIndex] > limit)
+        {
+            RemoveFirst(agentIndex);
+        }
+    }
+
+    private void RemoveFirst(int agentIndex)
+    {
+        var block = _heads[agentIndex];
+        if (block < 0 || _counts[agentIndex] <= 0)
+        {
+            throw new InvalidOperationException("비어 있는 연대기에서 항목을 제거할 수 없습니다.");
+        }
+
+        _counts[agentIndex]--;
+        _headSlots[agentIndex]++;
+        if (_headSlots[agentIndex] == EntriesPerBlock)
+        {
+            var next = GetNextBlock(block);
+            _heads[agentIndex] = next;
+            _headSlots[agentIndex] = 0;
+            ReleaseBlock(block);
+        }
+        if (_counts[agentIndex] == 0)
+        {
+            if (_heads[agentIndex] >= 0)
+            {
+                ReleaseBlock(_heads[agentIndex]);
+            }
+            _heads[agentIndex] = -1;
+            _tails[agentIndex] = -1;
+            _headSlots[agentIndex] = 0;
+            _tailCounts[agentIndex] = 0;
+        }
     }
 
     private LifeChronicleEntry Expand(int agentIndex, CompactLifeChronicleEntry entry)
@@ -661,6 +844,12 @@ internal sealed class CompactChronicleStore
 
     private int AllocateBlock()
     {
+        if (_freeBlocks.TryPop(out var reused))
+        {
+            _activeBlockCount++;
+            return reused;
+        }
+
         var block = _blockCount++;
         var segmentIndex = block / BlocksPerSegment;
         if (segmentIndex == _entrySegments.Count)
@@ -671,7 +860,15 @@ internal sealed class CompactChronicleStore
             Array.Fill(next, -1);
             _nextSegments.Add(next);
         }
+        _activeBlockCount++;
         return block;
+    }
+
+    private void ReleaseBlock(int block)
+    {
+        SetNextBlock(block, -1);
+        _freeBlocks.Push(block);
+        _activeBlockCount--;
     }
 
     private CompactLifeChronicleEntry GetCompactEntry(int block, int slot) =>
@@ -805,7 +1002,7 @@ internal sealed class CompactChronicleStore
                 _agentIndex = agentIndex;
                 _remaining = owner.GetCount(agentIndex);
                 _block = owner._heads[agentIndex];
-                _slot = 0;
+                _slot = owner._headSlots[agentIndex];
                 _current = default;
             }
 
@@ -839,7 +1036,7 @@ internal sealed class CompactChronicleStore
             {
                 _remaining = _owner.GetCount(_agentIndex);
                 _block = _owner._heads[_agentIndex];
-                _slot = 0;
+                _slot = _owner._headSlots[_agentIndex];
                 _current = default;
             }
             public void Dispose() { }

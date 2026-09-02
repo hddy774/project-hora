@@ -2,6 +2,7 @@ using Chronicles.Application;
 using Chronicles.Core;
 using Chronicles.Queries;
 using Chronicles.Simulation;
+using System.Text.Json.Nodes;
 
 internal static class ObserverUiContractTests
 {
@@ -21,6 +22,7 @@ internal static class ObserverUiContractTests
         {
             VerifyPreferenceRoundTrip(root);
             VerifyWatchlistProjection();
+            VerifyAdaptiveScalePolicy();
         }
         finally
         {
@@ -47,7 +49,8 @@ internal static class ObserverUiContractTests
             true,
             "slot-04",
             1,
-            new[] { 37, 8, 37, -1 });
+            new[] { 37, 8, 37, -1 },
+            "FullScreen");
 
         ObserverUiPreferencesStore.Save(preferences, preferencePath);
         var loaded = ObserverUiPreferencesStore.Load(preferencePath);
@@ -60,9 +63,18 @@ internal static class ObserverUiContractTests
         Equal(123.5d, loaded.Preferences.AgentDetailScrollOffset, "인물 스크롤 복원");
         Equal(true, loaded.Preferences.CompactPersonShowsDetail, "좁은 화면 인물 내부 탭 복원");
         Equal("slot-04", loaded.Preferences.SelectedSaveSlotId, "선택 세이브 슬롯 복원");
+        Equal("FullScreen", loaded.Preferences.WindowDisplayMode, "전체화면 모드 복원");
         SequenceEqual(NormalizedWatchlist, loaded.Preferences.WatchlistedAgentIds, "관심 ID 정규화");
         True(!File.Exists(preferencePath + ".tmp"), "원자 임시 파일 정리");
         SequenceEqual(worldBytes, File.ReadAllBytes(worldPath), "세계 DB 비변경");
+
+        var legacyJson = JsonNode.Parse(File.ReadAllText(preferencePath))?.AsObject()
+            ?? throw new InvalidOperationException("관찰 UI JSON 파싱 실패");
+        legacyJson.Remove(nameof(ObserverUiPreferences.WindowDisplayMode));
+        File.WriteAllText(preferencePath, legacyJson.ToJsonString());
+        var legacy = ObserverUiPreferencesStore.Load(preferencePath);
+        Equal(ObserverUiPreferencesLoadStatus.Loaded, legacy.Status, "기존 UI 상태 호환");
+        Equal("Windowed", legacy.Preferences.WindowDisplayMode, "기존 상태 창 모드 기본값");
 
         File.WriteAllText(preferencePath, "{ invalid json");
         var invalid = ObserverUiPreferencesStore.Load(preferencePath);
@@ -99,6 +111,18 @@ internal static class ObserverUiContractTests
         var exactSearch = queries.BrowseAgentsById(ids, new AgentId(12).ToString(), 0, 10);
         SequenceEqual(SearchedWatchlistPage, exactSearch.Agents.Select(item => item.Id.Value), "관심 ID 검색");
         Equal(hashBefore, world.ComputeStateHash(), "관심 목록 관찰 무영향");
+    }
+
+    private static void VerifyAdaptiveScalePolicy()
+    {
+        Equal(1.4d, AdaptiveUiScalePolicy.CalculateEffectiveScale(1.4d, 1920d, 1040d),
+            "1920×1080 작업 영역 140% 유지");
+        Equal(0.975d, AdaptiveUiScalePolicy.CalculateEffectiveScale(1.4d, 1280d, 780d),
+            "좁은 화면 자동 안전 배율");
+        Equal(0.9d, AdaptiveUiScalePolicy.CalculateEffectiveScale(0.9d, 1280d, 780d),
+            "요청 배율보다 확대하지 않음");
+        Equal(1.25d, AdaptiveUiScalePolicy.CalculateEffectiveScale(1.25d, 0d, 0d),
+            "레이아웃 전 요청 배율 유지");
     }
 
     private static void Equal<T>(T expected, T actual, string label)

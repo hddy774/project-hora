@@ -1,6 +1,7 @@
 <UserControl x:Class="Chronicles.Desktop.ContentWorkspaceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Chronicles.Desktop"
              Background="Transparent">
     <Grid>
         <Grid.RowDefinitions>
@@ -15,11 +16,11 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="콘텐츠 · 비경과 실물 권위"
+                <TextBlock Text="비경 · 유물 · 서적 · 법칙"
                            Foreground="{StaticResource PrimaryTextBrush}"
                            FontSize="24"
                            FontWeight="SemiBold" />
-                <TextBlock Text="Definition과 실제 Instance, 발견 권한, provenance를 분리하여 관찰합니다."
+                <TextBlock Text="세계에 실재하는 비경과 유물, 전승 서적, 법칙 이해의 생성·소유·발견 계보를 관찰합니다."
                            Margin="0,5,0,0"
                            Foreground="{StaticResource SecondaryTextBrush}"
                            FontSize="12" />
@@ -47,13 +48,13 @@
                 <UniformGrid Columns="6">
                     <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
                         <StackPanel>
-                            <TextBlock Text="Definition" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                            <TextBlock Text="정의 원형" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
                             <TextBlock x:Name="DefinitionCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" />
                         </StackPanel>
                     </Border>
                     <Border Margin="0,0,8,0" Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
                         <StackPanel>
-                            <TextBlock Text="실제 Instance" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                            <TextBlock Text="실재 개체" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
                             <TextBlock x:Name="InstanceCountText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" />
                         </StackPanel>
                     </Border>
@@ -86,7 +87,11 @@
                 <TabControl x:Name="ContentDetailTabControl"
                             Grid.Row="2"
                             SelectionChanged="ContentDetailTabControl_SelectionChanged">
-                    <TabItem Header="비경">
+                    <TabItem Header="세계 현황">
+                        <local:StatisticsDashboardView x:Name="ContentStatisticsPanel"
+                                                       Margin="8" />
+                    </TabItem>
+                    <TabItem Header="비경 · 탐사">
                         <Grid Margin="8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*" />
@@ -170,7 +175,7 @@
                         </Grid>
                     </TabItem>
 
-                    <TabItem Header="아이템 · 재료">
+                    <TabItem Header="유물 · 재료">
                         <Grid Margin="8">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="76" />
@@ -263,7 +268,7 @@
                         </Grid>
                     </TabItem>
 
-                    <TabItem Header="서적 · 지식">
+                    <TabItem Header="서적 · 전승">
                         <Grid Margin="8">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="92" />
@@ -352,7 +357,7 @@
                         </Grid>
                     </TabItem>
 
-                    <TabItem Header="법칙 · 천도">
+                    <TabItem Header="법칙 · 천도 판단">
                         <Grid Margin="8">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="72" />

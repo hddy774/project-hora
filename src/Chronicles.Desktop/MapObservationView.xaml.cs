@@ -24,6 +24,7 @@ public partial class MapObservationView : UserControl
     private byte _selectedGeographyLayer = 1;
     private ushort _selectedProvinceId = WorldGeographyRules.OcheonProvinceId;
     private ushort _selectedPointId = 44;
+    private bool _statisticsMode;
     private int _projectedGeographyRevision = -1;
     private byte _projectedGeographyLayer;
     private ushort _projectedGeographyPointId = ushort.MaxValue;
@@ -48,13 +49,81 @@ public partial class MapObservationView : UserControl
     public ushort SelectedLocationId { get; private set; } = WorldMapRules.CityLocationId;
     public int AgentOffset { get; private set; }
     public bool ShouldLoadAgents =>
-        PointDetailTabControl.SelectedIndex == 2 && TryGetSelectedProductionRegion(out _);
+        !_statisticsMode
+        && PointDetailTabControl.SelectedIndex == 2
+        && TryGetSelectedProductionRegion(out _);
 
     public void Apply(WorldMapSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         _snapshot = snapshot;
+        ApplyVisibleMapMode();
+    }
+
+    private void ApplyVisibleMapMode()
+    {
+        ProvinceMapPanel.Visibility = _statisticsMode ? Visibility.Collapsed : Visibility.Visible;
+        PointMapPanel.Visibility = _statisticsMode ? Visibility.Collapsed : Visibility.Visible;
+        PointDetailsPanel.Visibility = _statisticsMode ? Visibility.Collapsed : Visibility.Visible;
+        MapStatisticsPanel.Visibility = _statisticsMode ? Visibility.Visible : Visibility.Collapsed;
+        if (_statisticsMode)
+        {
+            ApplyMapStatistics();
+            return;
+        }
+
         ApplyGeography();
+    }
+
+    private void ApplyMapStatistics()
+    {
+        var geography = _snapshot.Geography ?? WorldGeographyBlueprint.Empty;
+        var points = GetCurrentPointList(geography);
+        var locations = _snapshot.Locations
+            .Where(location => location.Atlas.HeavenlyLayer == _selectedGeographyLayer)
+            .ToArray();
+        var population = locations.Sum(location => (long)location.Population);
+        var monsterPopulation = locations.Sum(location =>
+            location.Monsters.Sum(monster => (long)monster.Population));
+        var cultivation = locations.Sum(location => (long)location.Activities.Cultivation);
+        var combat = locations.Sum(location => (long)location.Activities.Combat);
+        var economy = locations.Sum(location => (long)location.Activities.Economy);
+        var settlements = points.Select(point => point.Settlements).ToArray();
+        var veinPoints = points.Count(point => point.Resources.HasSpiritVein);
+        var minePoints = points.Count(point => point.Resources.Mine != MineResourceKind.None);
+        var settlementCount = settlements.Sum(item =>
+            (long)item.LargeCityCount + item.SmallCityCount + item.VillageCount
+            + item.SectCount + item.ClanCount);
+        var revision = unchecked(
+            ((long)geography.Revision << 48)
+            ^ ((long)_selectedGeographyLayer << 40)
+            ^ ((long)_snapshot.TotalMonsterHunts << 16)
+            ^ (uint)_snapshot.TotalMonsterVictories);
+        MapStatisticsPanel.Apply(
+            $"제{_selectedGeographyLayer:N0}층천 지도 통계",
+            "오천주 10×10 지리 기준선과 현재 연결된 Production 지역만 집계합니다. 미연결 지점의 현재 활동은 0으로 추정하지 않습니다.",
+            [
+                new("현재 인구", population, KoreanNumberFormatter.Format(population),
+                    $"권위 연결 지역 {locations.Length:N0}곳"),
+                new("요수 개체", monsterPopulation, KoreanNumberFormatter.Format(monsterPopulation),
+                    "현재 연결 서식지 합계"),
+                new("수행 중", cultivation, KoreanNumberFormatter.Format(cultivation),
+                    "현재 지역 활동"),
+                new("전투·사냥", combat, KoreanNumberFormatter.Format(combat),
+                    "현재 지역 활동"),
+                new("경제 활동", economy, KoreanNumberFormatter.Format(economy),
+                    "현재 지역 활동"),
+                new("정착지", settlementCount, KoreanNumberFormatter.Format(settlementCount),
+                    "대·소도시, 촌, 종문, 가문 기준선"),
+                new("영맥 지점", veinPoints, KoreanNumberFormatter.Format(veinPoints),
+                    $"전체 지점 {points.Count:N0}"),
+                new("광산 지점", minePoints, KoreanNumberFormatter.Format(minePoints),
+                    "영석·법보 재료·혼합 광산"),
+                new("누적 사냥", _snapshot.TotalMonsterHunts,
+                    KoreanNumberFormatter.Format(_snapshot.TotalMonsterHunts),
+                    $"승리 {_snapshot.TotalMonsterVictories:N0} · 세계 누계"),
+            ],
+            revision);
     }
 
     private void ApplyGeography()
@@ -546,7 +615,25 @@ public partial class MapObservationView : UserControl
         _selectedGeographyLayer = layer;
         _projectedGeographyLayer = 0;
         AgentOffset = 0;
-        ApplyGeography();
+        ApplyVisibleMapMode();
+        RequestAgentPageIfVisible();
+    }
+
+    private void MapViewModeButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not RadioButton { Tag: string mode })
+        {
+            return;
+        }
+
+        var statisticsMode = StringComparer.Ordinal.Equals(mode, "Statistics");
+        if (_statisticsMode == statisticsMode)
+        {
+            return;
+        }
+
+        _statisticsMode = statisticsMode;
+        ApplyVisibleMapMode();
         RequestAgentPageIfVisible();
     }
 

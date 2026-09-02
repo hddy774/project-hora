@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using System.Windows.Media;
 using Chronicles.Application;
 
 namespace Chronicles.Desktop;
@@ -15,22 +14,28 @@ public partial class MainWindow
     {
         var scale = e.Scale;
         _uiScale = scale;
-        RootLayoutGrid.LayoutTransform = new ScaleTransform(scale, scale);
+        ApplyAdaptiveUiScale();
         ConfigureWorkspaceLayout(_workspaceRoute);
-        _logService.AddDebug(DebugLogLevel.Information, $"UI 배율 변경 · {scale * 100:0}%");
+        _logService.AddDebug(
+            DebugLogLevel.Information,
+            $"UI 배율 변경 · 요청 {scale * 100:0}% · 적용 {_effectiveUiScale * 100:0}%");
     }
 
     private void SettingsWorkspacePanel_RestoreWindowRequested(object? sender, EventArgs e)
     {
+        ExitFullScreen();
         WindowState = WindowState.Normal;
-        Width = 1720;
-        Height = 1000;
+        Width = Math.Min(1920, SystemParameters.WorkArea.Width);
+        Height = Math.Min(1080, SystemParameters.WorkArea.Height);
         Left = Math.Max(0, (SystemParameters.WorkArea.Width - Width) / 2);
         Top = Math.Max(0, (SystemParameters.WorkArea.Height - Height) / 2);
     }
 
     private void SettingsWorkspacePanel_MaximizeWindowRequested(object? sender, EventArgs e) =>
-        WindowState = WindowState.Maximized;
+        ExitFullScreen();
+
+    private void SettingsWorkspacePanel_FullScreenRequested(object? sender, EventArgs e) =>
+        EnterFullScreen();
 
     private void SettingsWorkspacePanel_PerformanceMeterChanged(
         object? sender,

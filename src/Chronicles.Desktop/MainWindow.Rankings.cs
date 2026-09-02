@@ -13,6 +13,18 @@ public partial class MainWindow
 
     private void UpdateRankingRows(WorldSnapshot snapshot)
     {
+        if (_peopleStatisticsMode)
+        {
+            var metrics = ObservationStatistics.CreatePeople(snapshot);
+            RankingScopeText.Text = $"현재 {snapshot.Population:N0}명";
+            PeopleStatisticsPanel.Apply(
+                "세계 인물 통계",
+                "범인과 수선자 인구, 생애·전투·경제 누계를 함께 비교합니다. 이 화면에서는 랭킹 정렬과 인물 행을 만들지 않습니다.",
+                metrics,
+                ObservationStatistics.CreateRevision(metrics));
+            return;
+        }
+
         RankingRow[] rows;
         var search = SearchTextBox.Text.Trim();
         if (_rankingCategory is { } category)
@@ -272,6 +284,7 @@ public partial class MainWindow
 
     private void SetListMode(RankingCategory? category)
     {
+        _peopleStatisticsMode = false;
         _watchlistMode = false;
         _rankingCategory = category;
         _explorerOffset = 0;
@@ -281,33 +294,65 @@ public partial class MainWindow
         }
 
         ApplyPeopleListModeControls();
+        ConfigureWorkspaceLayout(_workspaceRoute);
         RefreshVisibleObservation();
     }
 
     private void SetWatchlistMode()
     {
+        _peopleStatisticsMode = false;
         _watchlistMode = true;
         _rankingCategory = null;
         _explorerOffset = 0;
         ApplyPeopleListModeControls();
+        ConfigureWorkspaceLayout(_workspaceRoute);
+        RefreshVisibleObservation();
+    }
+
+    private void PeopleStatisticsButton_Click(object sender, RoutedEventArgs e)
+    {
+        _peopleStatisticsMode = true;
+        _watchlistMode = false;
+        _rankingCategory = null;
+        _explorerOffset = 0;
+        ApplyPeopleListModeControls();
+        ConfigureWorkspaceLayout(_workspaceRoute);
         RefreshVisibleObservation();
     }
 
     private void ApplyPeopleListModeControls()
     {
-        CombatPowerRankingToggle.IsChecked = !_watchlistMode
+        CombatPowerRankingToggle.IsChecked = !_peopleStatisticsMode && !_watchlistMode
             && _rankingCategory == RankingCategory.CombatPower;
-        RealmRankingToggle.IsChecked = !_watchlistMode
+        RealmRankingToggle.IsChecked = !_peopleStatisticsMode && !_watchlistMode
             && _rankingCategory == RankingCategory.Realm;
-        AptitudeRankingToggle.IsChecked = !_watchlistMode
+        AptitudeRankingToggle.IsChecked = !_peopleStatisticsMode && !_watchlistMode
             && _rankingCategory == RankingCategory.Aptitude;
-        WealthRankingToggle.IsChecked = !_watchlistMode
+        WealthRankingToggle.IsChecked = !_peopleStatisticsMode && !_watchlistMode
             && _rankingCategory == RankingCategory.Wealth;
-        ExplorerRankingToggle.IsChecked = !_watchlistMode && _rankingCategory is null;
-        WatchlistRankingToggle.IsChecked = _watchlistMode;
-        SearchTextBox.IsEnabled = _rankingCategory is null;
+        ExplorerRankingToggle.IsChecked = !_peopleStatisticsMode
+            && !_watchlistMode
+            && _rankingCategory is null;
+        WatchlistRankingToggle.IsChecked = !_peopleStatisticsMode && _watchlistMode;
+        PeopleStatisticsToggle.IsChecked = _peopleStatisticsMode;
+        SearchTextBox.IsEnabled = !_peopleStatisticsMode && _rankingCategory is null;
+        SearchTextBox.Visibility = _peopleStatisticsMode
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+        RankingGrid.Visibility = _peopleStatisticsMode
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+        PeopleStatisticsPanel.Visibility = _peopleStatisticsMode
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        if (_peopleStatisticsMode)
+        {
+            ExplorerNavigationPanel.Visibility = Visibility.Collapsed;
+        }
 
-        RankingTitleText.Text = _watchlistMode
+        RankingTitleText.Text = _peopleStatisticsMode
+            ? "전체 인물 통계"
+            : _watchlistMode
             ? "관심 인물 목록"
             : _rankingCategory switch
         {

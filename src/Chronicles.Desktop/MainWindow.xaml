@@ -3,15 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Chronicles.Desktop"
         Title="선로만상록 PC"
-        Width="1720"
-        Height="1000"
+        Width="1920"
+        Height="1080"
         MinWidth="1280"
         MinHeight="780"
+        WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource BackgroundBrush}"
         FontFamily="Malgun Gothic"
         FontSize="14"
-        TextOptions.TextFormattingMode="Display">
+        TextOptions.TextFormattingMode="Display"
+        PreviewKeyDown="MainWindow_PreviewKeyDown">
     <Grid x:Name="RootLayoutGrid" Margin="16">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="168" />
@@ -98,7 +100,7 @@
                                  Margin="0,0,0,5"
                                  HorizontalContentAlignment="Left"
                                  Tag="Content"
-                                 Click="WorkspaceNavigation_Click">콘텐츠</RadioButton>
+                                 Click="WorkspaceNavigation_Click">비경·전승</RadioButton>
                     <RadioButton GroupName="WorkspaceRoute"
                                  Style="{StaticResource SegmentToggleStyle}"
                                  Margin="0,0,0,5"
@@ -183,7 +185,10 @@
                 <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed10Button_Click">10×</RadioButton>
                 <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed25Button_Click">25×</RadioButton>
                 <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,5,0" Click="Speed50Button_Click">50×</RadioButton>
-                <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Click="Speed100Button_Click">100×</RadioButton>
+                <RadioButton GroupName="SimulationSpeed" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,12,0" Click="Speed100Button_Click">100×</RadioButton>
+                <Button x:Name="WindowModeButton" Margin="0,0,5,0" Click="WindowModeButton_Click">창 모드</Button>
+                <Button x:Name="FullScreenButton" Margin="0,0,5,0" Click="FullScreenButton_Click">전체화면</Button>
+                <Button Foreground="{StaticResource DangerBrush}" Click="ExitButton_Click">종료</Button>
             </WrapPanel>
         </Grid>
 
@@ -277,13 +282,15 @@
                                    Foreground="{StaticResource AccentBrush}"
                                    FontSize="11" />
                     </Grid>
-                    <UniformGrid Grid.Row="1" Rows="2" Columns="3" Margin="16,0,16,10">
+                    <UniformGrid Grid.Row="1" Rows="2" Columns="4" Margin="16,0,16,10">
                         <RadioButton x:Name="CombatPowerRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="0,0,3,3" IsChecked="True" Click="CombatPowerRankingButton_Click">전투력</RadioButton>
                         <RadioButton x:Name="RealmRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,3,3" Click="RealmRankingButton_Click">경지</RadioButton>
-                        <RadioButton x:Name="AptitudeRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,0,3" Click="AptitudeRankingButton_Click">자질</RadioButton>
-                        <RadioButton x:Name="WealthRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="0,3,3,0" Click="WealthRankingButton_Click">부자</RadioButton>
+                        <RadioButton x:Name="AptitudeRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,3,3" Click="AptitudeRankingButton_Click">자질</RadioButton>
+                        <RadioButton x:Name="WealthRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,0,0,3" Click="WealthRankingButton_Click">부자</RadioButton>
                         <RadioButton x:Name="ExplorerRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,3" Click="ExplorerButton_Click">전체 탐색</RadioButton>
-                        <RadioButton x:Name="WatchlistRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,3,0,0" Click="WatchlistButton_Click">관심 목록</RadioButton>
+                        <RadioButton x:Name="WatchlistRankingToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,3" Click="WatchlistButton_Click">관심 목록</RadioButton>
+                        <RadioButton x:Name="PeopleStatisticsToggle" GroupName="RankingMode" Style="{StaticResource SegmentToggleStyle}" Margin="3,3" Click="PeopleStatisticsButton_Click">인물 통계</RadioButton>
+                        <Border />
                     </UniformGrid>
                     <TextBox x:Name="SearchTextBox"
                              Grid.Row="2"
@@ -308,6 +315,11 @@
                             <DataGridTextColumn Header="상태" Binding="{Binding Activity}" Width="78" />
                         </DataGrid.Columns>
                     </DataGrid>
+                    <local:StatisticsDashboardView x:Name="PeopleStatisticsPanel"
+                                                   Grid.Row="2"
+                                                   Grid.RowSpan="3"
+                                                   Margin="16,0,16,14"
+                                                   Visibility="Collapsed" />
                     <StackPanel x:Name="ExplorerNavigationPanel"
                                 Grid.Row="4"
                                 Margin="16,10,16,14"
@@ -1301,34 +1313,62 @@
                             <TabControl x:Name="StatisticsDetailTabControl"
                                         Grid.Row="2"
                                         SelectedIndex="0"
-                                        SelectionChanged="VisibleSection_SelectionChanged">
+                                SelectionChanged="VisibleSection_SelectionChanged">
                                 <TabItem Header="요약">
-                                    <UniformGrid Rows="2" Columns="3" Margin="0,14,0,0">
-                                        <StackPanel Margin="0,0,8,14">
-                                            <TextBlock Text="사망" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                            <TextBlock x:Name="DeathStatText" Margin="0,4,0,0" Foreground="{StaticResource DangerBrush}" FontSize="22" FontWeight="SemiBold" />
-                                        </StackPanel>
-                                        <StackPanel Margin="8,0,8,14">
-                                            <TextBlock Text="승리" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                            <TextBlock x:Name="WinStatText" Margin="0,4,0,0" Foreground="{StaticResource PositiveBrush}" FontSize="22" FontWeight="SemiBold" />
-                                        </StackPanel>
-                                        <StackPanel Margin="8,0,0,14">
-                                            <TextBlock Text="패배" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                            <TextBlock x:Name="LossStatText" Margin="0,4,0,0" Foreground="{StaticResource DangerBrush}" FontSize="22" FontWeight="SemiBold" />
-                                        </StackPanel>
-                                        <StackPanel Margin="0,0,8,0">
-                                            <TextBlock Text="윤회" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                            <TextBlock x:Name="ReincarnationStatText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="22" FontWeight="SemiBold" />
-                                        </StackPanel>
-                                        <StackPanel Margin="8,0">
-                                            <TextBlock Text="임무 완료" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                            <TextBlock x:Name="MissionStatText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="22" FontWeight="SemiBold" />
-                                        </StackPanel>
-                                        <StackPanel Margin="8,0,0,0">
-                                            <TextBlock Text="보유 영석" Foreground="{StaticResource SecondaryTextBrush}" FontSize="11" />
-                                            <TextBlock x:Name="SpiritStoneStatText" Margin="0,4,0,0" Foreground="{StaticResource AccentBrush}" FontSize="22" FontWeight="SemiBold" />
-                                        </StackPanel>
-                                    </UniformGrid>
+                                    <Grid Margin="0,12,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="10" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <UniformGrid Rows="2" Columns="3">
+                                            <Border Margin="3" Padding="10,7" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                                <StackPanel><TextBlock Text="사망" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="DeathStatText" Margin="0,3,0,0" Foreground="{StaticResource DangerBrush}" FontSize="18" FontWeight="SemiBold" /></StackPanel>
+                                            </Border>
+                                            <Border Margin="3" Padding="10,7" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                                <StackPanel><TextBlock Text="승리" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="WinStatText" Margin="0,3,0,0" Foreground="{StaticResource PositiveBrush}" FontSize="18" FontWeight="SemiBold" /></StackPanel>
+                                            </Border>
+                                            <Border Margin="3" Padding="10,7" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                                <StackPanel><TextBlock Text="패배" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="LossStatText" Margin="0,3,0,0" Foreground="{StaticResource DangerBrush}" FontSize="18" FontWeight="SemiBold" /></StackPanel>
+                                            </Border>
+                                            <Border Margin="3" Padding="10,7" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                                <StackPanel><TextBlock Text="윤회" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="ReincarnationStatText" Margin="0,3,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" /></StackPanel>
+                                            </Border>
+                                            <Border Margin="3" Padding="10,7" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                                <StackPanel><TextBlock Text="임무 완료" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="MissionStatText" Margin="0,3,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" /></StackPanel>
+                                            </Border>
+                                            <Border Margin="3" Padding="10,7" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                                <StackPanel><TextBlock Text="보유 영석" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="SpiritStoneStatText" Margin="0,3,0,0" Foreground="{StaticResource AccentBrush}" FontSize="18" FontWeight="SemiBold" /></StackPanel>
+                                            </Border>
+                                        </UniformGrid>
+                                        <Grid Grid.Row="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.1*" />
+                                                <ColumnDefinition Width="10" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border Padding="12" Background="{StaticResource PanelAltBrush}" CornerRadius="7">
+                                                <StackPanel>
+                                                    <TextBlock Text="현재 세계 상황" Foreground="{StaticResource AccentBrush}" FontSize="11" FontWeight="SemiBold" />
+                                                    <TextBlock x:Name="WorldSituationText" Margin="0,7,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </Border>
+                                            <UniformGrid Grid.Column="2" Rows="2" Columns="2">
+                                                <Button x:Name="CombatPowerLeaderButton" Margin="3" Padding="9,6" HorizontalContentAlignment="Left" Click="WorldLeaderButton_Click">
+                                                    <StackPanel><TextBlock Text="전투력 1위" Foreground="{StaticResource SecondaryTextBrush}" FontSize="8" /><TextBlock x:Name="CombatPowerLeaderText" Margin="0,3,0,0" TextWrapping="Wrap" /></StackPanel>
+                                                </Button>
+                                                <Button x:Name="RealmLeaderButton" Margin="3" Padding="9,6" HorizontalContentAlignment="Left" Click="WorldLeaderButton_Click">
+                                                    <StackPanel><TextBlock Text="경지 1위" Foreground="{StaticResource SecondaryTextBrush}" FontSize="8" /><TextBlock x:Name="RealmLeaderText" Margin="0,3,0,0" TextWrapping="Wrap" /></StackPanel>
+                                                </Button>
+                                                <Button x:Name="AptitudeLeaderButton" Margin="3" Padding="9,6" HorizontalContentAlignment="Left" Click="WorldLeaderButton_Click">
+                                                    <StackPanel><TextBlock Text="자질 1위" Foreground="{StaticResource SecondaryTextBrush}" FontSize="8" /><TextBlock x:Name="AptitudeLeaderText" Margin="0,3,0,0" TextWrapping="Wrap" /></StackPanel>
+                                                </Button>
+                                                <Button x:Name="WealthLeaderButton" Margin="3" Padding="9,6" HorizontalContentAlignment="Left" Click="WorldLeaderButton_Click">
+                                                    <StackPanel><TextBlock Text="부자 1위" Foreground="{StaticResource SecondaryTextBrush}" FontSize="8" /><TextBlock x:Name="WealthLeaderText" Margin="0,3,0,0" TextWrapping="Wrap" /></StackPanel>
+                                                </Button>
+                                            </UniformGrid>
+                                        </Grid>
+                                    </Grid>
                                 </TabItem>
                                 <TabItem Header="랭킹 변동">
                                     <Grid Margin="0,12,0,0">
@@ -1394,6 +1434,10 @@
                                         </TabItem>
                                     </TabControl>
                                 </TabItem>
+                                <TabItem Header="세계 그래프">
+                                    <local:StatisticsDashboardView x:Name="WorldStatisticsPanel"
+                                                                   Margin="0,12,0,0" />
+                                </TabItem>
                             </TabControl>
                         </Grid>
                     </TabItem>
@@ -1446,6 +1490,10 @@
                                         <TextBlock x:Name="CityInventoryText" Margin="0,4,0,0" Foreground="{StaticResource PrimaryTextBrush}" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </TabItem>
+                                <TabItem Header="도시 통계">
+                                    <local:StatisticsDashboardView x:Name="CityStatisticsPanel"
+                                                                   Margin="0,12,0,0" />
+                                </TabItem>
                             </TabControl>
                         </Grid>
                     </TabItem>
@@ -1476,6 +1524,7 @@
                                      UiScaleRequested="SettingsWorkspacePanel_UiScaleRequested"
                                      RestoreWindowRequested="SettingsWorkspacePanel_RestoreWindowRequested"
                                      MaximizeWindowRequested="SettingsWorkspacePanel_MaximizeWindowRequested"
+                                     FullScreenRequested="SettingsWorkspacePanel_FullScreenRequested"
                                      PerformanceMeterChanged="SettingsWorkspacePanel_PerformanceMeterChanged"
                                      PerformanceSampleRecorded="SettingsWorkspacePanel_PerformanceSampleRecorded"
                                      PerformanceAutoOutputChanged="SettingsWorkspacePanel_PerformanceAutoOutputChanged"

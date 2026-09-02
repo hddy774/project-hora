@@ -19,6 +19,9 @@ public partial class MarketObservationView : UserControl
     private long _projectedTradeRevision = long.MinValue;
     private long _projectedContractRevision = long.MinValue;
     private bool _applying;
+    private bool _statisticsMode;
+
+    public bool ShouldLoadGoods => !_statisticsMode;
 
     public MarketObservationView()
     {
@@ -40,6 +43,13 @@ public partial class MarketObservationView : UserControl
         ContractCountText.Text =
             $"{snapshot.Offers?.Count(item => item.Status == MarketOfferStatus.Active) ?? 0:N0} · " +
             $"{snapshot.Reservations?.Count(item => item.Status == MarketReservationStatus.Reserved) ?? 0:N0}";
+        ApplyViewModeVisibility();
+        if (_statisticsMode)
+        {
+            ApplyMarketStatistics();
+            return;
+        }
+
         RebuildRows();
         if (DetailTabControl.SelectedIndex == ContractTabIndex)
         {
@@ -49,6 +59,28 @@ public partial class MarketObservationView : UserControl
         {
             UpdateRecentTradeView();
         }
+    }
+
+    private void ApplyViewModeVisibility()
+    {
+        var browseVisibility = _statisticsMode ? Visibility.Collapsed : Visibility.Visible;
+        MarketSummaryCards.Visibility = browseVisibility;
+        MarketFilterPanel.Visibility = browseVisibility;
+        MarketGrid.Visibility = browseVisibility;
+        DetailTabControl.Visibility = browseVisibility;
+        MarketStatisticsPanel.Visibility = _statisticsMode
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+    }
+
+    private void ApplyMarketStatistics()
+    {
+        var metrics = ObservationStatistics.CreateMarket(_snapshot);
+        MarketStatisticsPanel.Apply(
+            "만상성 시장·경제 통계",
+            "최근 12개월 흐름과 누적 감사값을 분리합니다. 통계 탭을 닫으면 상품 행과 거래 행을 다시 만들지 않습니다.",
+            metrics,
+            ObservationStatistics.CreateRevision(metrics));
     }
 
     private void RebuildRows()
@@ -398,6 +430,35 @@ public partial class MarketObservationView : UserControl
         {
             _filter = filter;
             RebuildRows();
+        }
+    }
+
+    private void MarketViewModeButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not RadioButton { Tag: string mode })
+        {
+            return;
+        }
+
+        var statisticsMode = StringComparer.Ordinal.Equals(mode, "Statistics");
+        if (_statisticsMode == statisticsMode)
+        {
+            return;
+        }
+
+        _statisticsMode = statisticsMode;
+        ApplyViewModeVisibility();
+        if (_statisticsMode)
+        {
+            ApplyMarketStatistics();
+        }
+        else
+        {
+            RebuildRows();
+            if (_selectedGoodId is { } selected)
+            {
+                UpdateDetail(FindGood(selected));
+            }
         }
     }
 

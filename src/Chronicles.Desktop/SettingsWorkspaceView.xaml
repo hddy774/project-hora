@@ -60,6 +60,12 @@
                                         <RadioButton x:Name="UiScale125Toggle" GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0" Tag="1.25" Click="UiScaleButton_Click">125%</RadioButton>
                                         <RadioButton x:Name="UiScale140Toggle" GroupName="UiScale" Style="{StaticResource SegmentToggleStyle}" Margin="4,0,0,0" Tag="1.4" Click="UiScaleButton_Click">140%</RadioButton>
                                     </UniformGrid>
+                                    <TextBlock x:Name="EffectiveUiScaleText"
+                                               Margin="0,9,0,0"
+                                               Text="현재 적용 100% · 화면에 온전히 표시됩니다."
+                                               Foreground="{StaticResource AccentBrush}"
+                                               FontSize="9"
+                                               TextWrapping="Wrap" />
                                     <TextBlock x:Name="ObserverUiStateText"
                                                Margin="0,10,0,0"
                                                Text="관찰 UI 상태: 기본값"
@@ -84,15 +90,22 @@
                                                    Foreground="{StaticResource PrimaryTextBrush}"
                                                    FontSize="18"
                                                    FontWeight="SemiBold" />
-                                        <TextBlock Text="넓은 관찰을 위해 기본 창은 1,720×1,000으로 시작합니다."
+                                        <TextBlock Text="기본 창 기준은 1,920×1,080이며 시작 시 작업 영역을 채웁니다."
                                                    Margin="0,5,12,0"
                                                    Foreground="{StaticResource SecondaryTextBrush}"
                                                    TextWrapping="Wrap" />
+                                        <TextBlock x:Name="WindowModeStateText"
+                                                   Text="현재 창 모드 · F11로 전체화면"
+                                                   Margin="0,5,12,0"
+                                                   Foreground="{StaticResource AccentBrush}"
+                                                   FontSize="9"
+                                                   TextWrapping="Wrap" />
                                     </StackPanel>
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Button Margin="0,0,8,0" Click="RestoreWindowButton_Click">기본 크기</Button>
-                                        <Button Click="MaximizeWindowButton_Click">화면 채우기</Button>
-                                    </StackPanel>
+                                    <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <Button Margin="0,0,8,6" Click="RestoreWindowButton_Click">1920×1080</Button>
+                                        <Button Margin="0,0,8,6" Click="MaximizeWindowButton_Click">창 화면 채우기</Button>
+                                        <Button Margin="0,0,0,6" Click="FullScreenWindowButton_Click">전체화면</Button>
+                                    </WrapPanel>
                                 </Grid>
                             </Border>
                     </Grid>

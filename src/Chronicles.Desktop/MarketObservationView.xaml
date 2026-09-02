@@ -1,6 +1,7 @@
 <UserControl x:Class="Chronicles.Desktop.MarketObservationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Chronicles.Desktop"
              MinWidth="320">
     <Grid Margin="12">
         <Grid.RowDefinitions>
@@ -28,15 +29,30 @@
                            FontSize="9"
                            TextWrapping="Wrap" />
             </StackPanel>
-            <TextBlock x:Name="TreasuryText"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Top"
-                       Foreground="{StaticResource AccentBrush}"
-                       FontSize="12"
-                       FontWeight="SemiBold" />
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top">
+                <TextBlock x:Name="TreasuryText"
+                           HorizontalAlignment="Right"
+                           Foreground="{StaticResource AccentBrush}"
+                           FontSize="12"
+                           FontWeight="SemiBold" />
+                <StackPanel Margin="0,7,0,0" Orientation="Horizontal">
+                    <RadioButton GroupName="MarketViewMode"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Padding="8,4"
+                                 IsChecked="True"
+                                 Tag="Browse"
+                                 Click="MarketViewModeButton_Click">시장 관찰</RadioButton>
+                    <RadioButton GroupName="MarketViewMode"
+                                 Style="{StaticResource SegmentToggleStyle}"
+                                 Padding="8,4"
+                                 Margin="5,0,0,0"
+                                 Tag="Statistics"
+                                 Click="MarketViewModeButton_Click">경제 통계</RadioButton>
+                </StackPanel>
+            </StackPanel>
         </Grid>
 
-        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,9">
+        <UniformGrid x:Name="MarketSummaryCards" Grid.Row="1" Columns="4" Margin="0,0,0,9">
             <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
                 <StackPanel>
                     <TextBlock Text="전체 재고" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" />
@@ -63,7 +79,7 @@
             </Border>
         </UniformGrid>
 
-        <StackPanel Grid.Row="2" Margin="3,0,3,8">
+        <StackPanel x:Name="MarketFilterPanel" Grid.Row="2" Margin="3,0,3,8">
             <UniformGrid Columns="5">
                 <RadioButton GroupName="MarketFilter" Tag="All" Content="전체" IsChecked="True" Style="{StaticResource SegmentToggleStyle}" Padding="5" Click="MarketFilterButton_Click" />
                 <RadioButton GroupName="MarketFilter" Tag="Material" Content="재료" Style="{StaticResource SegmentToggleStyle}" Padding="5" Click="MarketFilterButton_Click" />
@@ -208,5 +224,11 @@
                 </Grid>
             </TabItem>
         </TabControl>
+
+        <local:StatisticsDashboardView x:Name="MarketStatisticsPanel"
+                                       Grid.Row="1"
+                                       Grid.RowSpan="4"
+                                       Margin="3,4,3,0"
+                                       Visibility="Collapsed" />
     </Grid>
 </UserControl>

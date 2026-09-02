@@ -16,6 +16,7 @@ public partial class MainWindow
     private double _uiScale = 1d;
     private double _restoredAgentScrollOffset;
     private bool _watchlistMode;
+    private bool _peopleStatisticsMode;
     private bool _restoringObserverUi;
     private bool _observerPreferencesSaved;
 
@@ -24,8 +25,12 @@ public partial class MainWindow
         _observerPreferencesLoad = ObserverUiPreferencesStore.Load();
         var preferences = _observerPreferencesLoad.Preferences;
         _uiScale = preferences.UiScale;
-        RootLayoutGrid.LayoutTransform = new ScaleTransform(_uiScale, _uiScale);
-        SettingsWorkspacePanel.SetUiScale(_uiScale);
+        _windowDisplayMode = StringComparer.OrdinalIgnoreCase.Equals(
+            preferences.WindowDisplayMode,
+            "FullScreen")
+                ? WindowDisplayMode.FullScreen
+                : WindowDisplayMode.Windowed;
+        SettingsWorkspacePanel.SetUiScale(_uiScale, _uiScale);
         SettingsWorkspacePanel.SetObserverUiState(
             _observerPreferencesLoad.Status,
             _observerPreferencesLoad.Message,
@@ -129,7 +134,8 @@ public partial class MainWindow
                 _compactPersonShowsDetail,
                 SaveWorkspacePanel.SelectedSlotId,
                 SaveWorkspacePanel.SelectedWorkspaceTabIndex,
-                _watchlistedAgentIds.Order().ToArray());
+                _watchlistedAgentIds.Order().ToArray(),
+                _windowDisplayMode.ToString());
             ObserverUiPreferencesStore.Save(preferences);
             _logService.AddDebug(
                 DebugLogLevel.Information,
@@ -157,6 +163,14 @@ public partial class MainWindow
 
     private void RestorePeopleListMode(string mode)
     {
+        _peopleStatisticsMode = StringComparer.OrdinalIgnoreCase.Equals(mode, "Statistics");
+        if (_peopleStatisticsMode)
+        {
+            _watchlistMode = false;
+            _rankingCategory = null;
+            return;
+        }
+
         _watchlistMode = StringComparer.OrdinalIgnoreCase.Equals(mode, "Watchlist");
         if (_watchlistMode)
         {
@@ -171,7 +185,9 @@ public partial class MainWindow
                 : RankingCategory.CombatPower;
     }
 
-    private string GetPeopleListModeName() => _watchlistMode
-        ? "Watchlist"
-        : _rankingCategory?.ToString() ?? "Explorer";
+    private string GetPeopleListModeName() => _peopleStatisticsMode
+        ? "Statistics"
+        : _watchlistMode
+            ? "Watchlist"
+            : _rankingCategory?.ToString() ?? "Explorer";
 }

@@ -23,7 +23,8 @@ public sealed record ObserverUiPreferences(
     bool CompactPersonShowsDetail,
     string SelectedSaveSlotId,
     int SaveWorkspaceTabIndex,
-    IReadOnlyList<int> WatchlistedAgentIds)
+    IReadOnlyList<int> WatchlistedAgentIds,
+    string WindowDisplayMode = "Windowed")
 {
     public const int CurrentSchemaVersion = 1;
 
@@ -40,7 +41,8 @@ public sealed record ObserverUiPreferences(
         false,
         SaveSlotRegistry.All[0].SlotId,
         0,
-        Array.Empty<int>());
+        Array.Empty<int>(),
+        "Windowed");
 }
 
 public sealed record ObserverUiPreferencesLoadResult(
@@ -187,6 +189,11 @@ public static class ObserverUiPreferencesStore
             SelectedSaveSlotId = selectedSlotId,
             SaveWorkspaceTabIndex = Math.Clamp(value.SaveWorkspaceTabIndex, 0, 1),
             WatchlistedAgentIds = watchlist,
+            WindowDisplayMode = StringComparer.OrdinalIgnoreCase.Equals(
+                value.WindowDisplayMode,
+                "FullScreen")
+                    ? "FullScreen"
+                    : "Windowed",
         };
     }
 

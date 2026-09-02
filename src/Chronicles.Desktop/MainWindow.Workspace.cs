@@ -159,33 +159,45 @@ public partial class MainWindow
     {
         var personWorkspace = route is WorkspaceRoute.People or WorkspaceRoute.Relations;
         var windowWidth = ActualWidth > 0d ? ActualWidth : Width;
-        var personLogicalWidth = windowWidth / Math.Max(0.9d, _uiScale) - 184d;
+        var personLogicalWidth = windowWidth / Math.Max(0.75d, _effectiveUiScale) - 184d;
         _compactPersonLayout = personWorkspace && personLogicalWidth < 900d;
+        var fullWidthPeopleStatistics = personWorkspace && _peopleStatisticsMode;
         CompactPersonNavigationPanel.Visibility = _compactPersonLayout
+            && !fullWidthPeopleStatistics
             ? Visibility.Visible
             : Visibility.Collapsed;
         Grid.SetColumn(WorkspaceListPanel, 0);
         Grid.SetColumn(WorkspaceDetailPanel, _compactPersonLayout ? 0 : 2);
-        Grid.SetColumnSpan(WorkspaceListPanel, _compactPersonLayout ? 5 : 1);
+        Grid.SetColumnSpan(WorkspaceListPanel,
+            _compactPersonLayout || fullWidthPeopleStatistics ? 5 : 1);
         Grid.SetColumnSpan(WorkspaceDetailPanel, _compactPersonLayout ? 5 : 1);
         WorkspaceListPanel.Visibility = personWorkspace
-            && (!_compactPersonLayout || !_compactPersonShowsDetail)
+            && (fullWidthPeopleStatistics
+                || !_compactPersonLayout
+                || !_compactPersonShowsDetail)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         WorkspaceDetailPanel.Visibility = personWorkspace
+            && !fullWidthPeopleStatistics
             && (!_compactPersonLayout || _compactPersonShowsDetail)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         WorkspaceContextPanel.Visibility = personWorkspace ? Visibility.Collapsed : Visibility.Visible;
-        WorkspaceListColumn.Width = personWorkspace && !_compactPersonLayout
+        WorkspaceListColumn.Width = fullWidthPeopleStatistics
+            ? new GridLength(1, GridUnitType.Star)
+            : personWorkspace && !_compactPersonLayout
             ? new GridLength(470)
             : personWorkspace
                 ? new GridLength(1, GridUnitType.Star)
                 : new GridLength(0);
-        WorkspaceListGapColumn.Width = personWorkspace && !_compactPersonLayout
+        WorkspaceListGapColumn.Width = personWorkspace
+            && !_compactPersonLayout
+            && !fullWidthPeopleStatistics
             ? new GridLength(14)
             : new GridLength(0);
-        WorkspaceDetailColumn.Width = personWorkspace && !_compactPersonLayout
+        WorkspaceDetailColumn.Width = personWorkspace
+            && !_compactPersonLayout
+            && !fullWidthPeopleStatistics
             ? new GridLength(1, GridUnitType.Star)
             : new GridLength(0);
         WorkspaceContextGapColumn.Width = new GridLength(0);
@@ -217,6 +229,7 @@ public partial class MainWindow
 
     private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
     {
+        ApplyAdaptiveUiScale();
         if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
         {
             ConfigureWorkspaceLayout(_workspaceRoute);

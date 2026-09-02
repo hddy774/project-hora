@@ -51,16 +51,27 @@ public partial class SettingsWorkspaceView : UserControl
     public event EventHandler<UiScaleRequestedEventArgs>? UiScaleRequested;
     public event EventHandler? RestoreWindowRequested;
     public event EventHandler? MaximizeWindowRequested;
+    public event EventHandler? FullScreenRequested;
     public event EventHandler<PerformanceMeterChangedEventArgs>? PerformanceMeterChanged;
     public event EventHandler<PerformanceSampleRecordedEventArgs>? PerformanceSampleRecorded;
 
-    public void SetUiScale(double scale)
+    public void SetUiScale(double scale, double effectiveScale)
     {
         UiScale90Toggle.IsChecked = Math.Abs(scale - 0.9d) < 0.0001d;
         UiScale100Toggle.IsChecked = Math.Abs(scale - 1d) < 0.0001d;
         UiScale110Toggle.IsChecked = Math.Abs(scale - 1.1d) < 0.0001d;
         UiScale125Toggle.IsChecked = Math.Abs(scale - 1.25d) < 0.0001d;
         UiScale140Toggle.IsChecked = Math.Abs(scale - 1.4d) < 0.0001d;
+        EffectiveUiScaleText.Text = Math.Abs(scale - effectiveScale) < 0.0001d
+            ? $"현재 적용 {effectiveScale * 100:0}% · 화면에 온전히 표시됩니다."
+            : $"요청 {scale * 100:0}% · 현재 화면 안전 적용 {effectiveScale * 100:0}%";
+    }
+
+    public void SetWindowDisplayMode(bool fullScreen)
+    {
+        WindowModeStateText.Text = fullScreen
+            ? "현재 전체화면 · Esc 또는 F11로 창 모드"
+            : "현재 창 모드 · F11로 전체화면";
     }
 
     public void SetObserverUiState(
@@ -432,6 +443,9 @@ public partial class SettingsWorkspaceView : UserControl
 
     private void MaximizeWindowButton_Click(object sender, RoutedEventArgs e) =>
         MaximizeWindowRequested?.Invoke(this, EventArgs.Empty);
+
+    private void FullScreenWindowButton_Click(object sender, RoutedEventArgs e) =>
+        FullScreenRequested?.Invoke(this, EventArgs.Empty);
 
     private void PopulationPresetButton_Click(object sender, RoutedEventArgs e)
     {

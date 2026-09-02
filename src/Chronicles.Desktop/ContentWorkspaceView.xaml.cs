@@ -44,13 +44,13 @@ public partial class ContentWorkspaceView : UserControl
 
     public int ItemOffset { get; private set; }
 
-    public bool ShouldLoadSecretRealmRows => ContentDetailTabControl.SelectedIndex == 0;
+    public bool ShouldLoadSecretRealmRows => ContentDetailTabControl.SelectedIndex == 1;
 
-    public bool ShouldLoadItemRows => ContentDetailTabControl.SelectedIndex == 1;
+    public bool ShouldLoadItemRows => ContentDetailTabControl.SelectedIndex == 2;
 
-    public bool ShouldLoadKnowledgeRows => ContentDetailTabControl.SelectedIndex == 2;
+    public bool ShouldLoadKnowledgeRows => ContentDetailTabControl.SelectedIndex == 3;
 
-    public bool ShouldLoadLawRows => ContentDetailTabControl.SelectedIndex == 3;
+    public bool ShouldLoadLawRows => ContentDetailTabControl.SelectedIndex == 4;
 
     public void ResetProjection()
     {
@@ -72,6 +72,7 @@ public partial class ContentWorkspaceView : UserControl
         ItemInstanceGrid.ItemsSource = Array.Empty<ItemInstanceRow>();
         KnowledgeEditionGrid.ItemsSource = Array.Empty<KnowledgeEditionRow>();
         LawCandidateGrid.ItemsSource = Array.Empty<LawCandidateRow>();
+        ContentStatisticsPanel.ResetProjection();
         ClearDetails();
         ClearItemDetails();
         ClearKnowledgeDetails();
@@ -165,7 +166,47 @@ public partial class ContentWorkspaceView : UserControl
             $"{KoreanNumberFormatter.Format(laws.WorldAiJudgmentCount)} · " +
             $"{KoreanNumberFormatter.Format(laws.TiandaoJudgmentCount)}";
         VisibilityModeText.Text = _snapshot.IncludesHidden ? "세계 설정 진단" : "공개 지식";
+        if (ContentDetailTabControl.SelectedIndex == 0)
+        {
+            ContentStatisticsPanel.Apply(
+                "세계 콘텐츠 현황",
+                "개별 목록을 만들지 않고 권위 저장소의 누계만 비교합니다. 그래프는 현재 최대 지표를 100%로 정규화합니다.",
+                CreateContentStatistics(knowledge, laws),
+                Math.Max(_snapshot.AuthorityRevision, Math.Max(
+                    knowledge.AuthorityRevision,
+                    laws.AuthorityRevision)));
+        }
     }
+
+    private IReadOnlyList<StatisticsMetric> CreateContentStatistics(
+        WorldKnowledgeSnapshot knowledge,
+        WorldLawSnapshot laws) =>
+    [
+        new("비경", _snapshot.NaturalSecretRealms + _snapshot.ArtificialSecretRealms,
+            KoreanNumberFormatter.Format(_snapshot.NaturalSecretRealms + _snapshot.ArtificialSecretRealms),
+            $"자연 {_snapshot.NaturalSecretRealms:N0} · 인공 {_snapshot.ArtificialSecretRealms:N0}"),
+        new("공개 발견", _snapshot.PubliclyLocatedSecretRealms,
+            KoreanNumberFormatter.Format(_snapshot.PubliclyLocatedSecretRealms),
+            $"관찰자 인지 {_snapshot.ViewerKnownSecretRealms:N0}"),
+        new("재료 묶음", _snapshot.MaterialStackCount,
+            KoreanNumberFormatter.Format(_snapshot.MaterialStackCount),
+            "실물 재료 stack"),
+        new("법보·단약", _snapshot.ItemInstanceCount,
+            KoreanNumberFormatter.Format(_snapshot.ItemInstanceCount),
+            "고유 Instance"),
+        new("창작 전승", _snapshot.CreatedWorkCount,
+            KoreanNumberFormatter.Format(_snapshot.CreatedWorkCount),
+            $"물리 기록 {_snapshot.PhysicalRecordCount:N0}"),
+        new("서적 판본", knowledge.EditionCount,
+            KoreanNumberFormatter.Format(knowledge.EditionCount),
+            $"내용 {knowledge.ContentCount:N0} · 접근 {knowledge.AccessCount:N0}"),
+        new("법칙 후보", laws.CandidateCount,
+            KoreanNumberFormatter.Format(laws.CandidateCount),
+            $"준비 {laws.ReadyCandidateCount:N0}"),
+        new("안정 법칙", laws.StableLawCount,
+            KoreanNumberFormatter.Format(laws.StableLawCount),
+            "승인되지 않은 후보는 DataUnavailable 유지"),
+    ];
 
     private void RebuildKnowledgeRows()
     {
@@ -508,17 +549,21 @@ public partial class ContentWorkspaceView : UserControl
     {
         if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 0)
         {
-            RebuildSecretRealmRows();
+            ApplySummary();
         }
         if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 1)
         {
-            RebuildItemRows();
+            RebuildSecretRealmRows();
         }
         if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 2)
         {
-            RebuildKnowledgeRows();
+            RebuildItemRows();
         }
         if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 3)
+        {
+            RebuildKnowledgeRows();
+        }
+        if (ReferenceEquals(e.Source, sender) && IsInitialized && ContentDetailTabControl.SelectedIndex == 4)
         {
             RebuildLawRows();
         }

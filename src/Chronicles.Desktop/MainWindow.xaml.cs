@@ -78,6 +78,7 @@ public partial class MainWindow : Window, IDisposable
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
+        ApplyRestoredWindowMode();
         ApplyRestoredObserverUiState();
         _logService.AddDebug(DebugLogLevel.Information, "시뮬레이션 실행 시작");
         _runner?.Start();
@@ -191,6 +192,7 @@ public partial class MainWindow : Window, IDisposable
 
         var observation = _runner.GetObservation(
             _selectedAgent,
+            rankingCount: GetVisibleRankingCount(),
             sections: GetVisibleObservationSections(),
             detailedMapLocationId: _workspaceRoute == WorkspaceRoute.Map
                 && MapObservationPanel.ShouldLoadAgents
@@ -236,8 +238,10 @@ public partial class MainWindow : Window, IDisposable
         var sections = _workspaceRoute switch
         {
             WorkspaceRoute.World => ObservationSections.StatisticsSummary,
-            WorkspaceRoute.City => ObservationSections.Market,
-            WorkspaceRoute.Economy => ObservationSections.Market,
+            WorkspaceRoute.City => ObservationSections.MarketSummary,
+            WorkspaceRoute.Economy => MarketObservationPanel.ShouldLoadGoods
+                ? ObservationSections.Market
+                : ObservationSections.MarketSummary,
             WorkspaceRoute.Map => ObservationSections.Map,
             WorkspaceRoute.Organizations => ObservationSections.Organization,
             WorkspaceRoute.Content => ObservationSections.Content,
@@ -252,6 +256,13 @@ public partial class MainWindow : Window, IDisposable
         };
         if (_workspaceRoute == WorkspaceRoute.World)
         {
+            if (StatisticsDetailTabControl.SelectedIndex == 0)
+            {
+                sections |= ObservationSections.RealmDistribution
+                    | ObservationSections.MarketSummary
+                    | ObservationSections.AllRankings;
+            }
+
             if (StatisticsDetailTabControl.SelectedIndex == 2
                 && StatisticsDistributionTabControl.SelectedIndex == 0)
             {
@@ -268,6 +279,12 @@ public partial class MainWindow : Window, IDisposable
         if (_workspaceRoute is not (WorkspaceRoute.People or WorkspaceRoute.Relations))
         {
             return sections;
+        }
+
+        if (_peopleStatisticsMode)
+        {
+            return sections | ObservationSections.StatisticsSummary
+                | ObservationSections.RealmDistribution;
         }
 
         var personDetailVisible = !_compactPersonLayout || _compactPersonShowsDetail;
@@ -338,6 +355,16 @@ public partial class MainWindow : Window, IDisposable
         return sections;
     }
 
+    private int GetVisibleRankingCount() =>
+        _workspaceRoute == WorkspaceRoute.World
+            && StatisticsDetailTabControl.SelectedIndex == 0
+                ? 1
+                : _workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations
+                    && !_peopleStatisticsMode
+                    && _rankingCategory is not null
+                        ? 1_000
+                        : 1;
+
     private void ApplyObservation(WorldObservation observation)
     {
         _applyingObservation = true;
@@ -349,7 +376,8 @@ public partial class MainWindow : Window, IDisposable
             if (_workspaceRoute is WorkspaceRoute.People or WorkspaceRoute.Relations)
             {
                 UpdateRankingRows(snapshot);
-                if (!_compactPersonLayout || _compactPersonShowsDetail)
+                if (!_peopleStatisticsMode
+                    && (!_compactPersonLayout || _compactPersonShowsDetail))
                 {
                     UpdateSelectedAgent(
                         observation.SelectedAgent,
@@ -444,6 +472,7 @@ public partial class MainWindow : Window, IDisposable
             ReincarnationStatText.Text = KoreanNumberFormatter.Format(statistics.TotalReincarnations);
             MissionStatText.Text = KoreanNumberFormatter.Format(statistics.TotalMissionsCompleted);
             SpiritStoneStatText.Text = KoreanNumberFormatter.Format(statistics.TotalSpiritStones);
+            UpdateWorldSituation(snapshot);
             return;
         }
 
@@ -462,7 +491,19 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        if (StatisticsDistributionTabControl.SelectedIndex == 0)
+        if (StatisticsDetailTabControl.SelectedIndex == 3)
+        {
+            var metrics = ObservationStatistics.CreateWorld(snapshot);
+            WorldStatisticsPanel.Apply(
+                "세계 변화 지표",
+                "현재 세계의 인구·전투·수행·생애·경제 누계를 동일 화면에서 비교합니다.",
+                metrics,
+                ObservationStatistics.CreateRevision(metrics));
+            return;
+        }
+
+        if (StatisticsDetailTabControl.SelectedIndex == 2
+            && StatisticsDistributionTabControl.SelectedIndex == 0)
         {
             RealmDistributionGrid.ItemsSource = statistics.RealmDistribution
                 .Select(item => new DistributionRow(
@@ -472,7 +513,7 @@ public partial class MainWindow : Window, IDisposable
                 .ToArray();
         }
 
-        else
+        else if (StatisticsDetailTabControl.SelectedIndex == 2)
         {
             PowerDistributionGrid.ItemsSource = statistics.CombatPowerDistribution
                 .Select(item => new DistributionRow(
@@ -517,10 +558,21 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        CityMiningText.Text =
-            $"누적 채굴 {KoreanNumberFormatter.Format(snapshot.Market.SpiritStonesMined)} · 남은 광맥 {KoreanNumberFormatter.Format(snapshot.Market.RemainingSpiritStoneOre)} · 채굴 임무 {KoreanNumberFormatter.Format(snapshot.Market.MiningMissionCount)}건";
-        CityInventoryText.Text =
-            $"총 {KoreanNumberFormatter.Format(snapshot.Market.TotalStock)}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.MaterialStock)}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.ProcessedStock)}개";
+        if (CityDetailTabControl.SelectedIndex == 2)
+        {
+            CityMiningText.Text =
+                $"누적 채굴 {KoreanNumberFormatter.Format(snapshot.Market.SpiritStonesMined)} · 남은 광맥 {KoreanNumberFormatter.Format(snapshot.Market.RemainingSpiritStoneOre)} · 채굴 임무 {KoreanNumberFormatter.Format(snapshot.Market.MiningMissionCount)}건";
+            CityInventoryText.Text =
+                $"총 {KoreanNumberFormatter.Format(snapshot.Market.TotalStock)}개 · 재료 {KoreanNumberFormatter.Format(snapshot.Market.MaterialStock)}개 · 가공품 {KoreanNumberFormatter.Format(snapshot.Market.ProcessedStock)}개";
+            return;
+        }
+
+        var metrics = ObservationStatistics.CreateMarket(snapshot.Market);
+        CityStatisticsPanel.Apply(
+            "만상성 도시 통계",
+            "도시 금고, 시장 수급, 재고, 계약과 생산 상태를 표와 그래프로 비교합니다.",
+            metrics,
+            ObservationStatistics.CreateRevision(metrics));
     }
 
     private EventRow FormatChronicle(LifeChronicleEntry entry)

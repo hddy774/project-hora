@@ -136,15 +136,15 @@ public partial class OrganizationWorkspaceView : UserControl
                 break;
             case 1:
                 MemberGrid.ItemsSource = organization.Members
-                    .OrderByDescending(member => member.Active)
-                    .ThenBy(member => member.Role)
+                    .Where(member => member.Active)
+                    .OrderBy(member => member.Role)
                     .ThenBy(member => member.AgentId.Value)
                     .Select(member => new OrganizationMemberRow(
                         member.AgentId,
                         member.Name,
                         FormatRole(member.Role),
                         $"{member.LoyaltyHundredths / 100m:0.##}",
-                        member.Active ? "활성" : "이탈"))
+                        "소속"))
                     .ToArray();
                 break;
             case 2:
@@ -204,8 +204,10 @@ public partial class OrganizationWorkspaceView : UserControl
             : organization.LeaderName;
         LeaderButton.Tag = organization.LeaderAgentId;
         LeaderButton.IsEnabled = organization.LeaderAgentId is not null;
-        OverviewMembersText.Text =
-            $"{organization.Members.Count(member => member.Active):N0} / {organization.Members.Count:N0}";
+        var activeMembers = organization.Members.Count(member => member.Active);
+        OverviewMembersText.Text = organization.Kind == OrganizationKind.Sect
+            ? $"{activeMembers:N0} / {OrganizationRules.MaximumSectMembers:N0}"
+            : $"{activeMembers:N0}";
         FoundedDateText.Text = FormatTick(organization.FoundedTick.Value);
         TreasuryText.Text = $"{KoreanNumberFormatter.Format(organization.TreasurySpiritStones)} 영석";
         ReputationText.Text = $"{organization.ReputationHundredths / 100m:0.##}";

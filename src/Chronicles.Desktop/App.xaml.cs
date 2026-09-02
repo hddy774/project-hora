@@ -90,7 +90,7 @@ public partial class App : System.Windows.Application
                 : "처리되지 않은 비동기 오류",
             (Exception?)saveError ?? e.Exception);
         e.SetObserved();
-        if (saveError is { IsRecoverable: true })
+        if (saveError is null or { IsRecoverable: true })
         {
             return;
         }

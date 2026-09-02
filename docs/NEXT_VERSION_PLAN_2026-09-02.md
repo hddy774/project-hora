@@ -38,8 +38,10 @@ PC 목표는 `0.0.23`이며, 이후 `0.0.24+`의 미충족 요구와 모바일 A
 - 화면 행렬, M14 10행 재판정, self-contained package·직접 실행과 final evidence
   commit은 아직 남았다. 따라서 커밋 메시지의 `complete 0.0.23`을 릴리스 완료로 읽지
   않는다.
-- 작성 시점 사용자 미커밋 작업은 `docs/evidence/0.0.23/verification.md`다. 후속
-  Codex는 이를 삭제·덮어쓰기·reset하지 않는다.
+- 최종 재확인 시 사용자 미커밋 작업은 `docs/evidence/0.0.23/`과
+  `tests/Chronicles.Tests/`의 기존 실행기·권위 테스트 수정 및 6개 기능별 suite 추가다.
+  이는 `6d3d8bd` 이후 작업 트리 전용 변경이며 고정 검증 증거가 아니다. 후속 Codex는
+  이를 삭제·덮어쓰기·reset하지 않고 `PC23-001`에서 먼저 검토한다.
 
 ### 모바일
 

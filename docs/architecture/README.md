@@ -158,7 +158,8 @@ checkpoint는 작업 수명 안에서만 보유하고, 수행 worker는 권위 �
 
 ## 0.0.24 개인 연대기 보존·저장 경계 진입점
 
-- 최근 개인 로그와 압축 세부 연대기: `AgentHistoryStores.cs`
+- 최근 개인 로그 링: `AgentHistoryStores.cs`
+- 압축 세부 연대기·생별 이름 참조: `CompactChronicleStore.cs`
 - 100년 누계·완결 종합본·관심 보존 정책: `PersonalChronicleArchiveStore.cs`
 - schema 32 checkpoint·이전·검증: `WorldCheckpoint.cs`, `World.Persistence.cs`
 - compact JSON wire: `ValueTypeJsonConverters.cs`, `WorldSaveCodec.cs`

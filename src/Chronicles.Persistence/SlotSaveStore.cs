@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -148,6 +149,8 @@ public static class SlotSaveStore
     public const string DefaultSlotId = "default";
     private const string DatabaseFileName = "world.db";
     private const string ManifestFileName = "slot.json";
+    private const int IncrementalBlobChunkBytes = 256 * 1024;
+    private const int MagicContainerHeaderBytes = 4 + sizeof(int) + sizeof(int) + SHA256.HashSizeInBytes;
     private const string CreateSchemaSql = """
         CREATE TABLE authority_snapshot (
             id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
@@ -167,11 +170,14 @@ public static class SlotSaveStore
         INSERT INTO authority_snapshot (
             id, world_schema, checkpoint_schema, seed, tick, state_hash,
             payload_sha256, created_sequence, event_sequence, chronicle_sequence, payload)
-        VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10);
+        VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, zeroblob(?10));
         """;
+    private const string UpdatePayloadHashSql =
+        "UPDATE authority_snapshot SET payload_sha256=?1 WHERE id=1;";
     private const string SelectSql = """
         SELECT world_schema, checkpoint_schema, seed, tick, state_hash,
-               payload_sha256, created_sequence, event_sequence, chronicle_sequence, payload
+               payload_sha256, created_sequence, event_sequence, chronicle_sequence,
+               length(payload)
           FROM authority_snapshot
          WHERE id = 1;
         """;
@@ -404,62 +410,75 @@ public static class SlotSaveStore
         SlotManifestSummary? summary,
         Action<SlotPersistenceProgress>? progress)
     {
-        Report(progress, 15, SlotPersistencePhase.Preparing);
-        if (checkpoint.SchemaVersion != WorldCheckpoint.CurrentSchemaVersion)
+        string? encodedPayloadPath = null;
+        try
         {
-            throw new InvalidDataException(
-                $"새 PC 슬롯에는 현재 권위 checkpoint schema {WorldCheckpoint.CurrentSchemaVersion}만 저장할 수 있습니다.");
+            Report(progress, 15, SlotPersistencePhase.Preparing);
+            if (checkpoint.SchemaVersion != WorldCheckpoint.CurrentSchemaVersion)
+            {
+                throw new InvalidDataException(
+                    $"새 PC 슬롯에는 현재 권위 checkpoint schema {WorldCheckpoint.CurrentSchemaVersion}만 저장할 수 있습니다.");
+            }
+
+            ValidateSummary(checkpoint, stateHash, summary);
+
+            var paths = GetPaths(rootDirectory, slotId);
+            Directory.CreateDirectory(paths.SlotDirectory);
+            using var slotLock = new FileStream(
+                Path.Combine(paths.SlotDirectory, "slot.lock"),
+                FileMode.OpenOrCreate,
+                FileAccess.ReadWrite,
+                FileShare.None);
+            DeleteStalePayloadFiles(paths.SlotDirectory);
+
+            Report(progress, 30, SlotPersistencePhase.EncodingAuthority);
+            encodedPayloadPath = Path.Combine(
+                paths.SlotDirectory,
+                $".authority-{Guid.NewGuid():N}.cmip.tmp");
+            var encoded = WorldSaveCodec.EncodeStreamingToFile(
+                checkpoint,
+                encodedPayloadPath);
+            var createdSequence = checked(GetMaximumKnownSequence(paths) + 1);
+
+            Report(progress, 50, SlotPersistencePhase.WritingCandidate);
+            var payloadHash = WriteDatabase(
+                paths.TemporaryPath,
+                checkpoint,
+                stateHash,
+                encoded,
+                createdSequence);
+
+            // The checkpoint was already validated at the safe boundary. Candidate
+            // verification therefore streams SQLite metadata, length and SHA only;
+            // decoding it here would retain a second authority graph during save.
+            Report(progress, 70, SlotPersistencePhase.VerifyingCandidate);
+            ValidateWrittenCandidate(
+                paths.TemporaryPath,
+                checkpoint,
+                stateHash,
+                encoded.ContainerBytes,
+                payloadHash,
+                createdSequence);
+
+            Report(progress, 86, SlotPersistencePhase.ReplacingPrimary);
+            ReplacePrimary(paths);
+            Report(progress, 94, SlotPersistencePhase.WritingManifest);
+            WriteManifest(paths, slotId, checkpoint.SchemaVersion, createdSequence, summary);
+            Report(progress, 100, SlotPersistencePhase.Complete);
+
+            return new SlotSaveResult(
+                slotId,
+                paths.PrimaryPath,
+                WorldSchema,
+                checkpoint.SchemaVersion,
+                createdSequence,
+                stateHash,
+                encoded.ContainerBytes);
         }
-
-        ValidateSummary(checkpoint, stateHash, summary);
-
-        var paths = GetPaths(rootDirectory, slotId);
-        Directory.CreateDirectory(paths.SlotDirectory);
-        using var slotLock = new FileStream(
-            Path.Combine(paths.SlotDirectory, "slot.lock"),
-            FileMode.OpenOrCreate,
-            FileAccess.ReadWrite,
-            FileShare.None);
-
-        Report(progress, 30, SlotPersistencePhase.EncodingAuthority);
-        var payload = WorldSaveCodec.EncodeStreaming(checkpoint);
-        var payloadHash = SHA256.HashData(payload);
-        var createdSequence = checked(GetMaximumKnownSequence(paths) + 1);
-
-        Report(progress, 50, SlotPersistencePhase.WritingCandidate);
-        WriteDatabase(
-            paths.TemporaryPath,
-            checkpoint,
-            stateHash,
-            payload,
-            payloadHash,
-            createdSequence);
-
-        // Verify the complete temporary candidate through SQLite integrity, payload hash,
-        // checkpoint decode, World restore and state hash before the atomic replacement.
-        Report(progress, 70, SlotPersistencePhase.VerifyingCandidate);
-        ValidateWrittenCandidate(
-            paths.TemporaryPath,
-            checkpoint,
-            stateHash,
-            payload,
-            payloadHash,
-            createdSequence);
-
-        Report(progress, 86, SlotPersistencePhase.ReplacingPrimary);
-        ReplacePrimary(paths);
-        Report(progress, 94, SlotPersistencePhase.WritingManifest);
-        WriteManifest(paths, slotId, checkpoint.SchemaVersion, createdSequence, summary);
-        Report(progress, 100, SlotPersistencePhase.Complete);
-
-        return new SlotSaveResult(
-            slotId,
-            paths.PrimaryPath,
-            WorldSchema,
-            checkpoint.SchemaVersion,
-            createdSequence,
-            stateHash,
-            payload.Length);
+        finally
+        {
+            TryDeleteTemporaryPayload(encodedPayloadPath);
+        }
     }
 
     public static SlotLoadResult Load(
@@ -575,12 +594,11 @@ public static class SlotSaveStore
         return Load(rootDirectory, slotId);
     }
 
-    private static void WriteDatabase(
+    private static byte[] WriteDatabase(
         string path,
         WorldCheckpoint checkpoint,
         ulong stateHash,
-        byte[] payload,
-        byte[] payloadHash,
+        WorldSaveCodec.StreamingEncodeResult encoded,
         long createdSequence)
     {
         // A previous crash candidate has already contributed to the next sequence.
@@ -606,19 +624,53 @@ public static class SlotSaveStore
             database.Execute("DROP TABLE IF EXISTS authority_snapshot;");
             database.Execute(CreateSchemaSql);
             database.Execute($"PRAGMA user_version={WorldSchema};");
-            using var insert = database.Prepare(InsertSql);
-            insert.BindInt32(1, WorldSchema);
-            insert.BindInt32(2, checkpoint.SchemaVersion);
-            insert.BindBlob(3, EncodeUInt64(checkpoint.Seed));
-            insert.BindInt64(4, checkpoint.Tick);
-            insert.BindBlob(5, EncodeUInt64(stateHash));
-            insert.BindBlob(6, payloadHash);
-            insert.BindInt64(7, createdSequence);
-            insert.BindInt64(8, checkpoint.EventSequence);
-            insert.BindInt64(9, checkpoint.ChronicleSequence);
-            insert.BindBlob(10, payload);
-            insert.Execute();
+            using (var insert = database.Prepare(InsertSql))
+            {
+                insert.BindInt32(1, WorldSchema);
+                insert.BindInt32(2, checkpoint.SchemaVersion);
+                insert.BindBlob(3, EncodeUInt64(checkpoint.Seed));
+                insert.BindInt64(4, checkpoint.Tick);
+                insert.BindBlob(5, EncodeUInt64(stateHash));
+                insert.BindBlob(6, new byte[SHA256.HashSizeInBytes]);
+                insert.BindInt64(7, createdSequence);
+                insert.BindInt64(8, checkpoint.EventSequence);
+                insert.BindInt64(9, checkpoint.ChronicleSequence);
+                insert.BindInt32(10, encoded.ContainerBytes);
+                insert.Execute();
+            }
+
+            byte[] payloadHash;
+            using (var source = new FileStream(
+                encoded.Path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 256 * 1024,
+                FileOptions.SequentialScan))
+            using (var destination = database.OpenBlob(
+                "authority_snapshot",
+                "payload",
+                rowId: 1,
+                writable: true))
+            {
+                if (source.Length != encoded.ContainerBytes
+                    || destination.Length != encoded.ContainerBytes)
+                {
+                    throw new InvalidDataException(
+                        "임시 CMIP container와 SQLite zeroblob 길이가 일치하지 않습니다.");
+                }
+
+                payloadHash = CopyAndHash(source, destination, encoded.ContainerBytes);
+            }
+
+            using (var updateHash = database.Prepare(UpdatePayloadHashSql))
+            {
+                updateHash.BindBlob(1, payloadHash);
+                updateHash.Execute();
+            }
+
             database.Execute("COMMIT;");
+            return payloadHash;
         }
         catch
         {
@@ -639,7 +691,7 @@ public static class SlotSaveStore
         string path,
         WorldCheckpoint checkpoint,
         ulong stateHash,
-        byte[] payload,
+        int payloadBytes,
         byte[] payloadHash,
         long createdSequence)
     {
@@ -655,26 +707,18 @@ public static class SlotSaveStore
             throw new InvalidDataException($"임시 SQLite 후보 무결성 검사 실패: {integrity}");
         }
 
-        using var select = database.Prepare(SelectSql);
-        if (!select.StepRow())
-        {
-            throw new InvalidDataException("임시 SQLite 후보에 권위 snapshot이 없습니다.");
-        }
-
-        var actualPayload = select.GetBlob(9);
-        var matches = select.GetInt32(0) == WorldSchema
-            && select.GetInt32(1) == checkpoint.SchemaVersion
-            && DecodeUInt64(select.GetBlob(2), "seed") == checkpoint.Seed
-            && select.GetInt64(3) == checkpoint.Tick
-            && DecodeUInt64(select.GetBlob(4), "state hash") == stateHash
-            && CryptographicOperations.FixedTimeEquals(select.GetBlob(5), payloadHash)
-            && select.GetInt64(6) == createdSequence
-            && select.GetInt64(7) == checkpoint.EventSequence
-            && select.GetInt64(8) == checkpoint.ChronicleSequence
-            && actualPayload.AsSpan().SequenceEqual(payload)
-            && CryptographicOperations.FixedTimeEquals(SHA256.HashData(actualPayload), payloadHash)
-            && !select.StepRow();
-        if (!matches)
+        var stored = ReadCandidateMetadata(database, path, SlotCandidateKind.Temporary);
+        var actualHash = ComputePayloadHash(database, stored.PayloadBytes);
+        if (stored.CheckpointSchema != checkpoint.SchemaVersion
+            || stored.Seed != checkpoint.Seed
+            || stored.Tick != checkpoint.Tick
+            || stored.StateHash != stateHash
+            || stored.CreatedSequence != createdSequence
+            || stored.EventSequence != checkpoint.EventSequence
+            || stored.ChronicleSequence != checkpoint.ChronicleSequence
+            || stored.PayloadBytes != payloadBytes
+            || !CryptographicOperations.FixedTimeEquals(stored.PayloadHash, payloadHash)
+            || !CryptographicOperations.FixedTimeEquals(actualHash, payloadHash))
         {
             throw new InvalidDataException("임시 SQLite 후보가 검증된 권위 checkpoint와 다릅니다.");
         }
@@ -696,61 +740,7 @@ public static class SlotSaveStore
             throw new InvalidDataException($"SQLite 무결성 검사 실패: {integrity}");
         }
 
-        using var select = database.Prepare(SelectSql);
-        if (!select.StepRow())
-        {
-            throw new InvalidDataException("SQLite 권위 snapshot이 없습니다.");
-        }
-
-        var worldSchema = select.GetInt32(0);
-        var checkpointSchema = select.GetInt32(1);
-        var seed = DecodeUInt64(select.GetBlob(2), "seed");
-        var tick = select.GetInt64(3);
-        var expectedStateHash = DecodeUInt64(select.GetBlob(4), "state hash");
-        var expectedPayloadHash = select.GetBlob(5);
-        var createdSequence = select.GetInt64(6);
-        var eventSequence = select.GetInt64(7);
-        var chronicleSequence = select.GetInt64(8);
-        var payload = select.GetBlob(9);
-        if (select.StepRow())
-        {
-            throw new InvalidDataException("SQLite 권위 snapshot이 둘 이상입니다.");
-        }
-
-        if (worldSchema != WorldSchema)
-        {
-            throw new IncompatibleWorldSchemaException(
-                $"snapshot world schema {worldSchema}가 DB schema와 다릅니다.");
-        }
-
-        if (!IsSupportedCheckpointSchema(checkpointSchema))
-        {
-            throw new IncompatibleCheckpointSchemaException(
-                $"schema 7~24 이전은 지원하지 않습니다. 지원 checkpoint schema 25~{WorldCheckpoint.CurrentSchemaVersion}, 저장 {checkpointSchema}.");
-        }
-
-        if (createdSequence < 1)
-        {
-            throw new InvalidDataException("SQLite 저장 생성 sequence가 잘못되었습니다.");
-        }
-
-        if (expectedPayloadHash.Length != SHA256.HashSizeInBytes
-            || !CryptographicOperations.FixedTimeEquals(expectedPayloadHash, SHA256.HashData(payload)))
-        {
-            throw new InvalidDataException("SQLite payload SHA-256이 일치하지 않습니다.");
-        }
-
-        return new StoredCandidate(
-            kind,
-            path,
-            checkpointSchema,
-            seed,
-            tick,
-            expectedStateHash,
-            createdSequence,
-            eventSequence,
-            chronicleSequence,
-            payload);
+        return ReadCandidateMetadata(database, path, kind);
     }
 
     private static Candidate RestoreCandidate(
@@ -766,7 +756,8 @@ public static class SlotSaveStore
             Math.Min(80, bandStart + 5),
             SlotPersistencePhase.DecodingCandidate,
             stored.Kind);
-        var checkpoint = WorldSaveCodec.Decode(stored.Payload);
+        ValidatePayloadHash(stored);
+        var checkpoint = DecodePayload(stored);
         if (checkpoint.SchemaVersion != stored.CheckpointSchema
             || checkpoint.Seed != stored.Seed
             || checkpoint.Tick != stored.Tick
@@ -795,6 +786,246 @@ public static class SlotSaveStore
             checkpoint,
             stored.CreatedSequence,
             stored.StateHash);
+    }
+
+    private static StoredCandidate ReadCandidateMetadata(
+        WindowsSqlite database,
+        string path,
+        SlotCandidateKind kind)
+    {
+        using var select = database.Prepare(SelectSql);
+        if (!select.StepRow())
+        {
+            throw new InvalidDataException("SQLite 권위 snapshot이 없습니다.");
+        }
+
+        var worldSchema = select.GetInt32(0);
+        var checkpointSchema = select.GetInt32(1);
+        var seed = DecodeUInt64(select.GetBlob(2), "seed");
+        var tick = select.GetInt64(3);
+        var stateHash = DecodeUInt64(select.GetBlob(4), "state hash");
+        var payloadHash = select.GetBlob(5);
+        var createdSequence = select.GetInt64(6);
+        var eventSequence = select.GetInt64(7);
+        var chronicleSequence = select.GetInt64(8);
+        var payloadBytes = checked((int)select.GetInt64(9));
+        if (select.StepRow())
+        {
+            throw new InvalidDataException("SQLite 권위 snapshot이 둘 이상입니다.");
+        }
+
+        if (worldSchema != WorldSchema)
+        {
+            throw new IncompatibleWorldSchemaException(
+                $"snapshot world schema {worldSchema}가 DB schema와 다릅니다.");
+        }
+        if (!IsSupportedCheckpointSchema(checkpointSchema))
+        {
+            throw new IncompatibleCheckpointSchemaException(
+                $"schema 7~24 이전은 지원하지 않습니다. 지원 checkpoint schema 25~{WorldCheckpoint.CurrentSchemaVersion}, 저장 {checkpointSchema}.");
+        }
+        if (createdSequence < 1 || tick < 0 || eventSequence < 0 || chronicleSequence < 0)
+        {
+            throw new InvalidDataException("SQLite 저장 sequence가 잘못되었습니다.");
+        }
+        if (payloadBytes < MagicContainerHeaderBytes
+            || payloadBytes > WorldSaveCodec.CompressedPayloadSizeLimitBytes + MagicContainerHeaderBytes)
+        {
+            throw new InvalidDataException(
+                $"SQLite payload 길이가 허용 범위를 벗어났습니다. ({payloadBytes:N0} bytes)");
+        }
+        if (payloadHash.Length != SHA256.HashSizeInBytes)
+        {
+            throw new InvalidDataException("SQLite payload SHA-256 길이가 잘못되었습니다.");
+        }
+
+        return new StoredCandidate(
+            kind,
+            path,
+            checkpointSchema,
+            seed,
+            tick,
+            stateHash,
+            createdSequence,
+            eventSequence,
+            chronicleSequence,
+            payloadBytes,
+            payloadHash);
+    }
+
+    private static void ValidatePayloadHash(StoredCandidate stored)
+    {
+        using var database = WindowsSqlite.Open(stored.Path, readOnly: true);
+        using var blob = database.OpenBlob(
+            "authority_snapshot",
+            "payload",
+            rowId: 1,
+            writable: false);
+        if (blob.Length != stored.PayloadBytes)
+        {
+            throw new InvalidDataException("SQLite payload 길이가 metadata와 다릅니다.");
+        }
+
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        var buffer = ArrayPool<byte>.Shared.Rent(IncrementalBlobChunkBytes);
+        try
+        {
+            var offset = 0;
+            while (offset < stored.PayloadBytes)
+            {
+                var count = blob.Read(
+                    buffer,
+                    0,
+                    Math.Min(IncrementalBlobChunkBytes, stored.PayloadBytes - offset));
+                if (count == 0)
+                {
+                    throw new EndOfStreamException("SQLite payload가 metadata 길이보다 짧습니다.");
+                }
+
+                hash.AppendData(buffer, 0, count);
+                offset += count;
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
+
+        var actualHash = hash.GetHashAndReset();
+        if (!CryptographicOperations.FixedTimeEquals(actualHash, stored.PayloadHash))
+        {
+            throw new InvalidDataException("SQLite payload SHA-256이 일치하지 않습니다.");
+        }
+    }
+
+    private static WorldCheckpoint DecodePayload(StoredCandidate stored)
+    {
+        using var database = WindowsSqlite.Open(stored.Path, readOnly: true);
+        using var blob = database.OpenBlob(
+            "authority_snapshot",
+            "payload",
+            rowId: 1,
+            writable: false);
+        if (blob.Length != stored.PayloadBytes)
+        {
+            throw new InvalidDataException("SQLite payload 길이가 metadata와 다릅니다.");
+        }
+
+        return WorldSaveCodec.Decode(
+            blob,
+            stored.PayloadBytes,
+            Path.GetDirectoryName(stored.Path));
+    }
+
+    private static byte[] ComputePayloadHash(WindowsSqlite database, int expectedBytes)
+    {
+        using var blob = database.OpenBlob(
+            "authority_snapshot",
+            "payload",
+            rowId: 1,
+            writable: false);
+        if (blob.Length != expectedBytes)
+        {
+            throw new InvalidDataException("SQLite payload 길이가 metadata와 다릅니다.");
+        }
+
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        var buffer = ArrayPool<byte>.Shared.Rent(IncrementalBlobChunkBytes);
+        try
+        {
+            var total = 0;
+            while (total < expectedBytes)
+            {
+                var count = blob.Read(
+                    buffer,
+                    0,
+                    Math.Min(IncrementalBlobChunkBytes, expectedBytes - total));
+                if (count == 0)
+                {
+                    throw new EndOfStreamException("SQLite payload가 metadata 길이보다 짧습니다.");
+                }
+
+                hash.AppendData(buffer, 0, count);
+                total += count;
+            }
+
+            return hash.GetHashAndReset();
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
+    }
+
+    private static byte[] CopyAndHash(Stream source, Stream destination, int expectedBytes)
+    {
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        var buffer = ArrayPool<byte>.Shared.Rent(IncrementalBlobChunkBytes);
+        try
+        {
+            var total = 0;
+            while (total < expectedBytes)
+            {
+                var count = source.Read(
+                    buffer,
+                    0,
+                    Math.Min(IncrementalBlobChunkBytes, expectedBytes - total));
+                if (count == 0)
+                {
+                    throw new EndOfStreamException("임시 CMIP container가 예상 길이보다 짧습니다.");
+                }
+
+                destination.Write(buffer, 0, count);
+                hash.AppendData(buffer, 0, count);
+                total += count;
+            }
+
+            if (source.ReadByte() != -1 || destination.Position != expectedBytes)
+            {
+                throw new InvalidDataException("임시 CMIP container 또는 SQLite BLOB 길이가 잘못되었습니다.");
+            }
+
+            return hash.GetHashAndReset();
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
+    }
+
+    private static void DeleteStalePayloadFiles(string slotDirectory)
+    {
+        foreach (var pattern in new[]
+        {
+            ".authority-*.cmip.tmp",
+            ".authority-read-*.json.tmp",
+        })
+        {
+            foreach (var path in Directory.EnumerateFiles(
+                slotDirectory,
+                pattern,
+                SearchOption.TopDirectoryOnly))
+            {
+                TryDeleteTemporaryPayload(path);
+            }
+        }
+    }
+
+    private static void TryDeleteTemporaryPayload(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        try
+        {
+            File.Delete(path);
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            // A later save removes stale payload files while holding the slot lock.
+        }
     }
 
     private static void Report(
@@ -1116,7 +1347,8 @@ public static class SlotSaveStore
         long CreatedSequence,
         long EventSequence,
         long ChronicleSequence,
-        byte[] Payload);
+        int PayloadBytes,
+        byte[] PayloadHash);
 
     private sealed record SlotCandidateHeader(
         SlotCandidateKind Kind,

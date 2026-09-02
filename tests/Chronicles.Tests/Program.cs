@@ -4303,6 +4303,9 @@ static void SaveCodecRoundTrip()
     var checkpoint = original.CreateCheckpoint();
     var encoded = WorldSaveCodec.Encode(checkpoint);
     var decoded = WorldSaveCodec.Decode(encoded);
+    True(
+        WorldSaveCodec.StreamingJsonSizeLimitBytes > 512L * 1024 * 1024,
+        "장기 세계 슬롯 저장은 기존 512 MiB JSON 상한을 초과해 지원");
     Equal(checkpoint.RandomState, decoded.RandomState, "저장 왕복 RNG 상태");
     Equal(checkpoint.EventSequence, decoded.EventSequence, "저장 왕복 사건 sequence");
     Equal(checkpoint.PersonalLogSequence, decoded.PersonalLogSequence, "저장 왕복 개인 로그 sequence");
@@ -4521,6 +4524,7 @@ static void DefaultWorldPerformanceBudget()
     var totalStopwatch = Stopwatch.StartNew();
     var startupStopwatch = Stopwatch.StartNew();
     var world = World.CreateDefault(20260830);
+    world.ConfigureCultivationParallelismForTesting(enabled: false);
     startupStopwatch.Stop();
     var simulationStopwatch = Stopwatch.StartNew();
     world.AdvanceTo(new SimulationTick(targetTick));
@@ -4535,6 +4539,7 @@ static void DefaultWorldPerformanceBudget()
     var restoreStopwatch = Stopwatch.StartNew();
     var restored = World.Restore(checkpoint);
     restoreStopwatch.Stop();
+    var cultivationParallel = world.GetCultivationParallelDiagnostics();
 
     Console.WriteLine(
         $"PERF: {world.Population:N0}명 · 초기화 {startupStopwatch.Elapsed.TotalMilliseconds:N0} ms + " +
@@ -4542,7 +4547,10 @@ static void DefaultWorldPerformanceBudget()
         $"관찰 {projectionStopwatch.Elapsed.TotalMilliseconds:N1} ms = " +
         $"{totalStopwatch.Elapsed.TotalMilliseconds:N0} ms · checkpoint " +
         $"{checkpointStopwatch.Elapsed.TotalMilliseconds:N0} ms · schema {WorldCheckpoint.CurrentSchemaVersion} 복원 " +
-        $"{restoreStopwatch.Elapsed.TotalMilliseconds:N0} ms");
+        $"{restoreStopwatch.Elapsed.TotalMilliseconds:N0} ms · 수행 후보 " +
+        $"{cultivationParallel.EligibleCandidateCount:N0}명 / 병렬 " +
+        $"{cultivationParallel.ParallelCandidateCount:N0}명·{cultivationParallel.ParallelBatchCount:N0}묶음 / " +
+        $"재검산 {cultivationParallel.FingerprintFallbackCount:N0}명");
     Equal(targetTick, snapshot.Tick.Value, "성능 검증 도달 tick");
     Equal(10_000, snapshot.Population, "성능 검증 인구");
     True(snapshot.TotalCombatsCompleted > 0, "성능 검증 중 전투가 완료되어야 합니다.");

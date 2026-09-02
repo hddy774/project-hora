@@ -72,6 +72,7 @@ internal static class SqliteSlotPersistenceTests
                 SlotCandidateKind.Primary,
                 firstHash,
                 expectedPopulation: 10_000);
+            AssertNoScratchPayloads(paths.SlotDirectory);
 
             const string secondarySlotId = "secondary";
             var secondary = World.Create(0x2500_0016UL, 16);
@@ -84,6 +85,7 @@ internal static class SqliteSlotPersistenceTests
                 SlotCandidateKind.Primary,
                 secondaryHash,
                 expectedPopulation: 16);
+            AssertNoScratchPayloads(SlotSaveStore.GetPaths(root, secondarySlotId).SlotDirectory);
             True(
                 !string.Equals(firstSave.DatabasePath, secondarySave.DatabasePath, StringComparison.OrdinalIgnoreCase),
                 "슬롯별 world.db 경로 분리");
@@ -250,6 +252,17 @@ internal static class SqliteSlotPersistenceTests
         {
             Equal(sequence, load.CreatedSequence, "SQLite candidate 생성 sequence");
         }
+    }
+
+    private static void AssertNoScratchPayloads(string slotDirectory)
+    {
+        True(
+            !Directory.EnumerateFiles(
+                    slotDirectory,
+                    ".authority-*.tmp",
+                    SearchOption.TopDirectoryOnly)
+                .Any(),
+            "저장·복원 뒤 authority scratch 파일 정리");
     }
 
     private static void AssertProgress(

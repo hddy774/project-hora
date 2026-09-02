@@ -25,7 +25,7 @@ internal static class RuntimeHundredSpeedSoakTests
         long lastPulse = 0;
         var started = Stopwatch.StartNew();
         runner.Faulted += exception => Volatile.Write(ref fault, exception);
-        runner.ObservationInvalidated += () =>
+        void CaptureNewPulse()
         {
             var snapshot = runner.GetPerformanceSnapshot();
             if (snapshot.SimulationPulseCount <= Interlocked.Read(ref lastPulse))
@@ -38,7 +38,7 @@ internal static class RuntimeHundredSpeedSoakTests
                 started.Elapsed.TotalSeconds,
                 snapshot.LastSimulationMilliseconds,
                 snapshot.EstimatedBacklogMilliseconds));
-        };
+        }
 
         runner.Start();
         while (started.Elapsed < TimeSpan.FromSeconds(durationSeconds))
@@ -47,8 +47,10 @@ internal static class RuntimeHundredSpeedSoakTests
             {
                 throw new InvalidOperationException("100배속 SOAK worker가 중단됐습니다.", runnerFault);
             }
-            Thread.Sleep(50);
+            CaptureNewPulse();
+            Thread.Sleep(10);
         }
+        CaptureNewPulse();
         runner.SetPaused(true);
         var finalTick = runner.GetSnapshot(
             rankingCount: 1,

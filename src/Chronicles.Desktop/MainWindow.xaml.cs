@@ -69,6 +69,7 @@ public partial class MainWindow : Window, IDisposable
             GameApplicationSession.AuthorityRegistryDiagnostics);
         _runner.ObservationInvalidated += Runner_ObservationInvalidated;
         _runner.Faulted += Runner_Faulted;
+        _runner.SetWorldFeedCaptureEnabled(_logService.AutoWorldOutput);
         _logService.FileWriteFailed += LogService_FileWriteFailed;
         _logService.AddDebug(DebugLogLevel.Information, $"게임 초기화 · VERSION {ProductInfo.Version}");
         Loaded += MainWindow_Loaded;
@@ -413,7 +414,7 @@ public partial class MainWindow : Window, IDisposable
     private void ApplyShellSnapshot(WorldSnapshot snapshot)
     {
         _latestSnapshot = snapshot;
-        if (_runner is { } runner)
+        if (_runner is { } runner && _logService.AutoWorldOutput)
         {
             _logService.CaptureWorldFeed(
                 runner.DrainWorldEventFeed(),

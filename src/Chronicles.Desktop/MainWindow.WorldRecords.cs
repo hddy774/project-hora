@@ -322,6 +322,7 @@ public partial class MainWindow
         if (_logService.AutoWorldOutput != WorldRecordsPanel.AutoWorldOutput)
         {
             _logService.SetAutoWorldOutput(WorldRecordsPanel.AutoWorldOutput);
+            _runner?.SetWorldFeedCaptureEnabled(WorldRecordsPanel.AutoWorldOutput);
         }
         if (_logService.AutoDebugOutput != WorldRecordsPanel.AutoDebugOutput)
         {

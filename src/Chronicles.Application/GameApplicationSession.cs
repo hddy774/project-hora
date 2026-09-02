@@ -88,6 +88,8 @@ public sealed class GameApplicationSession : IDisposable
     public void SetSpeed(int speed) => _runner.SetSpeed(speed);
     public void SetPerformanceDiagnosticsEnabled(bool enabled) =>
         _runner.SetPerformanceDiagnosticsEnabled(enabled);
+    public void SetWorldFeedCaptureEnabled(bool enabled) =>
+        _runner.SetWorldFeedCaptureEnabled(enabled);
     public RuntimePerformanceSnapshot GetPerformanceSnapshot() =>
         _runner.GetPerformanceSnapshot();
     public WorldRuntimeMetadata GetWorldMetadata() => _runner.GetWorldMetadata();

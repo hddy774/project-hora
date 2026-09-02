@@ -24,6 +24,7 @@ public sealed class SimulationRunner : IDisposable
     private readonly object _pendingWorldChroniclesGate = new();
     private readonly Queue<WorldCenturyChronicleEntry> _pendingWorldChronicles = new();
     private int _droppedWorldChronicleCount;
+    private int _worldFeedCaptureEnabled;
     private int _performanceDiagnosticsEnabled;
     private long _simulationPulseCount;
     private long _simulationTotalMicroseconds;
@@ -39,8 +40,6 @@ public sealed class SimulationRunner : IDisposable
     {
         _world = world ?? throw new ArgumentNullException(nameof(world));
         _queries = new WorldObservationQueries(_world);
-        _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
-        _world.WorldCenturyChronicleRecorded += World_WorldCenturyChronicleRecorded;
         _worker = new Thread(Run)
         {
             IsBackground = true,
@@ -53,6 +52,8 @@ public sealed class SimulationRunner : IDisposable
 
     public int Speed => Volatile.Read(ref _speed);
     public bool IsPaused => Volatile.Read(ref _paused) != 0;
+    public bool IsWorldFeedCaptureEnabled =>
+        Volatile.Read(ref _worldFeedCaptureEnabled) != 0;
 
     public void SetPerformanceDiagnosticsEnabled(bool enabled)
     {
@@ -75,7 +76,7 @@ public sealed class SimulationRunner : IDisposable
             IsEnabled: Volatile.Read(ref _performanceDiagnosticsEnabled) != 0,
             Speed,
             IsPaused,
-            SimulationPacing.PulseMilliseconds,
+            SimulationPacing.PerformanceBudgetMilliseconds,
             simulationCount,
             lastSimulation / 1_000d,
             simulationCount == 0
@@ -132,6 +133,35 @@ public sealed class SimulationRunner : IDisposable
         }
 
         Volatile.Write(ref _speed, speed);
+    }
+
+    public void SetWorldFeedCaptureEnabled(bool enabled)
+    {
+        lock (_worldGate)
+        {
+            if (enabled == IsWorldFeedCaptureEnabled)
+            {
+                return;
+            }
+
+            if (enabled)
+            {
+                Volatile.Write(ref _worldFeedCaptureEnabled, 1);
+                _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
+                _world.WorldCenturyChronicleRecorded += World_WorldCenturyChronicleRecorded;
+            }
+            else
+            {
+                _world.ImportantWorldEventRecorded -= World_ImportantWorldEventRecorded;
+                _world.WorldCenturyChronicleRecorded -= World_WorldCenturyChronicleRecorded;
+                Volatile.Write(ref _worldFeedCaptureEnabled, 0);
+            }
+        }
+
+        if (!enabled)
+        {
+            ClearPendingWorldFeeds();
+        }
     }
 
     public WorldSnapshot GetSnapshot(
@@ -327,18 +357,12 @@ public sealed class SimulationRunner : IDisposable
             _world.WorldCenturyChronicleRecorded -= World_WorldCenturyChronicleRecorded;
             _world = restored;
             _queries = new WorldObservationQueries(_world);
-            _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
-            _world.WorldCenturyChronicleRecorded += World_WorldCenturyChronicleRecorded;
-            lock (_pendingWorldEventsGate)
+            if (IsWorldFeedCaptureEnabled)
             {
-                _pendingWorldEvents.Clear();
-                Interlocked.Exchange(ref _droppedWorldEventCount, 0);
+                _world.ImportantWorldEventRecorded += World_ImportantWorldEventRecorded;
+                _world.WorldCenturyChronicleRecorded += World_WorldCenturyChronicleRecorded;
             }
-            lock (_pendingWorldChroniclesGate)
-            {
-                _pendingWorldChronicles.Clear();
-                Interlocked.Exchange(ref _droppedWorldChronicleCount, 0);
-            }
+            ClearPendingWorldFeeds();
             Interlocked.Exchange(ref _simulationBacklogMicroseconds, 0L);
         }
     }
@@ -373,6 +397,7 @@ public sealed class SimulationRunner : IDisposable
             var pulseStopwatchTicks = checked(
                 Stopwatch.Frequency * SimulationPacing.PulseMilliseconds / 1_000L);
             var nextPulse = checked(Stopwatch.GetTimestamp() + pulseStopwatchTicks);
+            var pulsesSinceInvalidation = 0;
             while (WaitUntil(nextPulse))
             {
                 nextPulse = checked(nextPulse + pulseStopwatchTicks);
@@ -393,7 +418,11 @@ public sealed class SimulationRunner : IDisposable
                     nextPulse = checked(Stopwatch.GetTimestamp() + pulseStopwatchTicks);
                 }
 
-                PublishObservationInvalidated();
+                if (++pulsesSinceInvalidation >= SimulationPacing.PulsesPerObservationInvalidation)
+                {
+                    pulsesSinceInvalidation = 0;
+                    PublishObservationInvalidated();
+                }
             }
         }
         catch (Exception exception)
@@ -501,6 +530,10 @@ public sealed class SimulationRunner : IDisposable
     {
         lock (_pendingWorldEventsGate)
         {
+            if (!IsWorldFeedCaptureEnabled)
+            {
+                return;
+            }
             if (_pendingWorldEvents.Count == MaximumPendingWorldEvents)
             {
                 _pendingWorldEvents.Dequeue();
@@ -510,10 +543,28 @@ public sealed class SimulationRunner : IDisposable
         }
     }
 
+    private void ClearPendingWorldFeeds()
+    {
+        lock (_pendingWorldEventsGate)
+        {
+            _pendingWorldEvents.Clear();
+            Interlocked.Exchange(ref _droppedWorldEventCount, 0);
+        }
+        lock (_pendingWorldChroniclesGate)
+        {
+            _pendingWorldChronicles.Clear();
+            Interlocked.Exchange(ref _droppedWorldChronicleCount, 0);
+        }
+    }
+
     private void World_WorldCenturyChronicleRecorded(WorldCenturyChronicleEntry entry)
     {
         lock (_pendingWorldChroniclesGate)
         {
+            if (!IsWorldFeedCaptureEnabled)
+            {
+                return;
+            }
             if (_pendingWorldChronicles.Count == MaximumPendingWorldChronicles)
             {
                 _pendingWorldChronicles.Dequeue();
@@ -551,8 +602,10 @@ public sealed record RuntimeSaveCapture(
 
 public static class SimulationPacing
 {
-    public const int PulseMilliseconds = 80;
-    public const int BaseTicksPerPulse = 16;
+    public const int PulseMilliseconds = 50;
+    public const int BaseTicksPerPulse = 10;
+    public const int PulsesPerObservationInvalidation = 2;
+    public const int PerformanceBudgetMilliseconds = 80;
     public const int MaximumCatchUpMilliseconds = 1_000;
 
     internal static long MaximumCatchUpStopwatchTicks { get; } = checked(

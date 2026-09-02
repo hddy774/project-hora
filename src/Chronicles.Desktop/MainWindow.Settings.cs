@@ -214,6 +214,7 @@ public partial class MainWindow
         Speed1Toggle.IsChecked = true;
         replacement.ObservationInvalidated += Runner_ObservationInvalidated;
         replacement.Faulted += Runner_Faulted;
+        replacement.SetWorldFeedCaptureEnabled(_logService.AutoWorldOutput);
         replacement.SetPerformanceDiagnosticsEnabled(
             _workspaceRoute == WorkspaceRoute.Settings
             && SettingsWorkspacePanel.IsPerformanceMeterEnabled);

@@ -178,6 +178,7 @@ checkpoint는 작업 수명 안에서만 보유하고, 수행 worker는 권위 �
 - section streaming codec·checksum: `WorldSaveCodec.cs`
 - SQLite incremental BLOB·후보 복구: `SlotSaveStore.cs`
 - 조직별 최근 100건 역사: `OrganizationModel.cs`, `OrganizationTransitions.cs`
+- 조직 checkpoint·hash·복원·손상 검증: `OrganizationStore.Persistence.cs`
 - 검증 완료 Candidate World 교체: `SimulationRunner.cs`, `GameApplicationSession.cs`
 
 한 슬롯은 계속 하나의 원자적 `world.db`지만, 권위 header와 인물·세계 이벤트·세계

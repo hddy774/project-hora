@@ -15,6 +15,8 @@
 
 - `OrganizationStore`가 안정 Organization ID, 종류·상태, 창시자·지도자, 구성원·역할·
   충심, 영석, 실제 Atlas 권리, 외교, 전략축과 조직 전용 역사를 소유한다.
+- 실시간 창설·운영·승계 전이와 저장 작업집합을 분리한다. checkpoint 생성, 상태 hash,
+  복원, 손상 검증의 대표 진입점은 `OrganizationStore.Persistence.cs`다.
 - 창설·가입·탈퇴·역할·충심·재정·외교·분열·병합·해산·윤회 재연결은 typed
   `OrganizationCommandResult`로 성공/거부를 반환한다. 실패 전이는 권위 상태를
   부분 변경하지 않는다.

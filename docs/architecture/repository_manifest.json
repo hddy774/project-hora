@@ -110,6 +110,7 @@
     "ongoing_generated_content": "src/Chronicles.Simulation/World.GeneratedContent.cs",
     "organization_authority": "src/Chronicles.Simulation/OrganizationModel.cs",
     "organization_transition_authority": "src/Chronicles.Simulation/OrganizationTransitions.cs",
+    "organization_checkpoint_authority": "src/Chronicles.Simulation/OrganizationStore.Persistence.cs",
     "organization_ai_runtime": "src/Chronicles.Simulation/World.Organizations.cs",
     "runtime_performance_diagnostics": "src/Chronicles.Runtime/SimulationRunner.cs",
     "bounded_log_file_writer": "src/Chronicles.Application/BoundedLogFileWriter.cs",

@@ -131,6 +131,7 @@
     "observation_statistics_ui": "src/Chronicles.Desktop/ObservationStatistics.cs",
     "statistics_dashboard_ui": "src/Chronicles.Desktop/StatisticsDashboardView.xaml.cs",
     "agent_observation_ui": "src/Chronicles.Desktop/MainWindow.AgentObservation.cs",
+    "agent_record_observation_ui": "src/Chronicles.Desktop/MainWindow.AgentRecordsView.cs",
     "personal_record_output_ui": "src/Chronicles.Desktop/MainWindow.PersonalRecords.cs",
     "workspace_navigation_ui": "src/Chronicles.Desktop/MainWindow.Workspace.cs",
     "settings_workspace_ui": "src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs",

@@ -42,6 +42,8 @@ public static class PersonalChronicleRules
 /// </summary>
 internal sealed class PersonalChronicleArchiveStore
 {
+    private const int InitialCompletedVolumeCapacity = 4;
+
     private readonly int _population;
     private readonly CompactChronicleStore _details;
     private readonly List<CompactPersonalCenturyEntry>?[] _completed;
@@ -318,7 +320,9 @@ internal sealed class PersonalChronicleArchiveStore
         if (completed.Count > 0)
         {
             var list = new List<CompactPersonalCenturyEntry>(
-                PersonalChronicleRules.VolumeRetentionLimit);
+                Math.Min(
+                    PersonalChronicleRules.VolumeRetentionLimit,
+                    Math.Max(InitialCompletedVolumeCapacity, completed.Count)));
             foreach (var entry in completed)
             {
                 _details.RegisterPersonNameForLife(
@@ -368,7 +372,7 @@ internal sealed class PersonalChronicleArchiveStore
     {
         var completed = _completed[agentIndex]
             ??= new List<CompactPersonalCenturyEntry>(
-                PersonalChronicleRules.VolumeRetentionLimit);
+                InitialCompletedVolumeCapacity);
         if (completed.Count == PersonalChronicleRules.VolumeRetentionLimit)
         {
             var evictedLife = completed[0].LifeNumber;
@@ -378,6 +382,12 @@ internal sealed class PersonalChronicleArchiveStore
             {
                 _details.PrunePersonNameForLife(agentIndex, evictedLife);
             }
+        }
+        else if (completed.Count == completed.Capacity)
+        {
+            completed.Capacity = Math.Min(
+                PersonalChronicleRules.VolumeRetentionLimit,
+                checked(completed.Capacity * 2));
         }
         completed.Add(current.Complete(observedThroughAge, observedThroughTick));
         _details.RemoveArchivedThrough(

@@ -125,6 +125,8 @@
     "organization_observation_ui": "src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs",
     "content_observation_ui": "src/Chronicles.Desktop/ContentWorkspaceView.xaml.cs",
     "market_observation_ui": "src/Chronicles.Desktop/MarketObservationView.xaml.cs",
-    "vertical_contract_test": "tests/Chronicles.Tests/Program.cs"
+    "vertical_contract_test": "tests/Chronicles.Tests/Program.cs",
+    "economy_market_tests": "tests/Chronicles.Tests/EconomyMarketTests.cs",
+    "runtime_soak_test": "tests/Chronicles.Tests/RuntimeHundredSpeedSoakTests.cs"
   }
 }

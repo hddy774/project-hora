@@ -56,6 +56,11 @@
 - 성능 진단은 pulse/query 시간 외에 할당량/초, GC0·1·2, heap, fragmentation,
   committed bytes, p95·p99, 정상 표본과 backlog를 제공한다. 강제 GC live bytes는
   benchmark 경로에서만 측정한다.
+- 권위 계산은 50ms마다 `10 × speed` tick을 처리하고 관찰 무효화는 두 pulse를 합쳐
+  100ms마다 보낸다. 1배속 10초/년과 모든 지원 배속의 tick 비율은 유지한다.
+- 세계 로그 자동 출력이 꺼져 있으면 runtime event/역사서 feed를 구독·보관·복사하지
+  않는다. 성능 UI의 percentile·그래프·로그 행은 새 1초 표본이나 탭/크기 변경 때만
+  다시 만든다.
 - 닫힌 화면은 query·DTO·행 materialization을 실행하지 않는다. observer preference는
   UI 선택만 보관하고 simulation 권위나 RNG를 바꾸지 않는다.
 - 10,000명·20,000 tick 독립 Release 5회 중앙값은 900ms 이하여야 한다.

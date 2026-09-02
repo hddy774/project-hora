@@ -24,7 +24,7 @@ internal static class AdvancePartitionInvarianceTests
             AssertEquivalent(
                 baseline,
                 AdvanceByRuntimePulse(speed),
-                $"80ms runtime pulse {speed}x 분할");
+                $"production runtime pulse {speed}x 분할");
         }
 
         AssertEquivalent(baseline, AdvanceAcrossCheckpoint(), "중간 checkpoint 복원 분할");

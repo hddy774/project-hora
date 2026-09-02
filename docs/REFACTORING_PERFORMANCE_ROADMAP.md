@@ -21,13 +21,14 @@
 
 **근거**: `World.AdvanceTo`는 호출 종료 경계에서 dirty 랭킹을 최대 네 번 전체 정렬하고,
 AI 판단은 그 랭킹을 읽는다. 현재 자동 검사는 한 번에 20,000 tick을 진행하지만 실제
-runtime은 80ms pulse와 `1/10/25/50/100x` 배속으로 여러 번 나누어 호출한다.
+runtime은 50ms 권위 계산 pulse와 `1/10/25/50/100x` 배속으로 여러 번 나누어 호출하고,
+관찰 무효화는 100ms로 합친다.
 
 **목표**: 동일 seed·설정·최종 tick이면 다음 진행 방식의 결과가 같아야 한다.
 
 - 단일 `AdvanceTo(finalTick)`.
 - 고정 크기와 임의 크기의 여러 chunk.
-- 80ms production pulse와 지원 배속별 tick 분할.
+- 50ms production pulse와 지원 배속별 tick 분할, 100ms 관찰 신호 병합.
 - checkpoint 저장·복원을 중간에 한 경우.
 
 **비교 항목**: state hash, RNG stream 상태, event heap, 현재·기간 랭킹, AI 판단 revision,

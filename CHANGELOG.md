@@ -53,6 +53,12 @@
   직렬 commit하고 revision fingerprint가 바뀐 인물만 직렬 재계산한다.
 - 성능 측정기에 할당량/초, GC 0·1·2, heap·fragmentation·committed bytes와
   p95·p99·정상 비율·backlog를 추가했다.
+- 100배속 권위 계산을 50ms·1,000 tick pulse로 잘게 나누고 관찰 신호는 100ms로
+  병합했다. 세계 자동 출력이 꺼져 있으면 runtime feed를 구독하지 않으며, 성능 화면의
+  percentile 정렬·그래프·로그 행은 새 1초 표본에서만 갱신한다.
+- 4천 줄을 넘긴 테스트 등록기에서 경제·시장 회귀 8개를 응집된 600줄대 suite로
+  분리했다. 앞으로 대형 파일은 변경 작업집합 기준으로 분리하고 hot path의 중복 순회와
+  임시 materialization을 억제하도록 개발 규칙을 고정했다.
 - Release 전체 검사 71/71, 구조·XAML·238개 이식 원장 검사를 통과했다. 독립 5회
   20,000 tick 중앙값은 842ms이며, 수행 계산 중앙값은 직렬 512ms에서 병렬 357ms로
   30.3% 줄었다. 시뮬레이션 할당은 14.30MiB·tick당 약 750바이트, 강제 GC 후 live

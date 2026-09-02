@@ -10630,7 +10630,7 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -10676,7 +10676,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -10720,7 +10720,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -10764,7 +10764,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -10808,7 +10808,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -10852,7 +10852,7 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -10896,7 +10896,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -10940,7 +10940,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -10984,7 +10984,7 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -11028,7 +11028,7 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -11072,7 +11072,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -11116,7 +11116,7 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -11160,7 +11160,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -11204,7 +11204,7 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -11248,7 +11248,7 @@
       "target_version": null,
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -11292,7 +11292,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [
@@ -11336,7 +11336,7 @@
       "target_version": "0.0.23",
       "pc_evidence_refs": [
         "FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections",
-        "FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections",
+        "FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections",
         "FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView"
       ],
       "pc_test_refs": [

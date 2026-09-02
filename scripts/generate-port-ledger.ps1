@@ -134,7 +134,7 @@ $masterEvidence = @{
         'TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Law review authority')
     M14 = @(
         'FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections',
-        'FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections',
+        'FILE::src/Chronicles.Desktop/MainWindow.Observation.cs::GetVisibleObservationSections',
         'FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView')
 }
 

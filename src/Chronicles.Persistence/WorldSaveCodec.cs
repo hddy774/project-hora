@@ -409,6 +409,8 @@ public static class WorldSaveCodec
         };
         options.Converters.Add(new AgentIdJsonConverter());
         options.Converters.Add(new SimulationTickJsonConverter());
+        options.Converters.Add(new PersonalLogEntryArrayJsonConverter());
+        options.Converters.Add(new LifeChronicleEntryArrayJsonConverter());
         return options;
     }
 

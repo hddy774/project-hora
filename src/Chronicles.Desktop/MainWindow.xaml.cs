@@ -147,6 +147,10 @@ public partial class MainWindow : Window, IDisposable
             _logService.AddDebug(DebugLogLevel.Error, $"시뮬레이션 오류 · {exception}");
             StatusText.Text = $"시뮬레이션 오류: {exception.Message}";
             StatusText.Foreground = (Brush)FindResource("DangerBrush");
+            if (System.Windows.Application.Current is App app)
+            {
+                app.ReportAuthorityFault(exception);
+            }
         }));
     }
 
@@ -1034,7 +1038,12 @@ public partial class MainWindow : Window, IDisposable
 
     private void ShowPersistenceError(Exception exception)
     {
-        _logService.AddDebug(DebugLogLevel.Error, $"저장 처리 실패 · {exception}");
+        var classification = exception is SaveOperationException operation
+            ? $" · 종류 {operation.Kind} · 단계 {operation.Phase}"
+            : string.Empty;
+        _logService.AddDebug(
+            DebugLogLevel.Error,
+            $"저장 처리 실패{classification} · {exception}");
         StatusText.Text = $"저장 오류: {exception.Message}";
         StatusText.Foreground = (Brush)FindResource("DangerBrush");
     }

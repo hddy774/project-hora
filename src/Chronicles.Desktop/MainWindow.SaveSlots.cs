@@ -52,8 +52,8 @@ public partial class MainWindow
         }
     }
 
-    private void SaveWorkspacePanel_RefreshRequested(object? sender, EventArgs e) =>
-        _ = RefreshSaveCatalogAsync();
+    private async void SaveWorkspacePanel_RefreshRequested(object? sender, EventArgs e) =>
+        await RefreshSaveCatalogAsync();
 
     private void SaveWorkspacePanel_RootFolderRequested(object? sender, EventArgs e) =>
         OpenSaveDirectory(GameApplicationSession.EnsureSaveRootDirectory(), "저장 루트");
@@ -92,6 +92,8 @@ public partial class MainWindow
         }
 
         var wasPaused = _runner.IsPaused;
+        var outcome = $"{definition.DisplayName} 저장 완료";
+        var outcomeIsError = false;
         SetSimulationPausedForStorage(true);
         SaveWorkspacePanel.BeginOperation($"{definition.DisplayName}에 저장하는 중…");
         try
@@ -102,20 +104,28 @@ public partial class MainWindow
             _logService.AddDebug(
                 DebugLogLevel.Information,
                 $"세계 저장 완료 · {definition.DisplayName} · schema {result.WorldSchema}/{result.CheckpointSchema} · seq {result.CreatedSequence}");
-            SaveWorkspacePanel.SetStatus($"{definition.DisplayName} 저장 완료");
         }
-        catch (Exception exception) when (IsPersistenceException(exception))
+        catch (SaveOperationException exception) when (exception.IsRecoverable)
         {
-            SaveWorkspacePanel.SetStatus(
-                $"{definition.DisplayName} 저장 실패 · {exception.Message}",
-                isError: true);
-            ShowPersistenceError(exception);
+            outcome = exception.Kind == SaveOperationKind.Cancelled
+                ? $"{definition.DisplayName} 저장을 취소했습니다."
+                : $"{definition.DisplayName} 저장 실패 · {exception.Message}";
+            outcomeIsError = exception.Kind != SaveOperationKind.Cancelled;
+            if (outcomeIsError)
+            {
+                ShowPersistenceError(exception);
+            }
+            else
+            {
+                _logService.AddDebug(DebugLogLevel.Information, outcome);
+            }
         }
         finally
         {
             SetSimulationPausedForStorage(wasPaused);
             Interlocked.Exchange(ref _saveSlotOperationInProgress, 0);
             await RefreshSaveCatalogAsync();
+            SaveWorkspacePanel.SetStatus(outcome, outcomeIsError);
         }
     }
 
@@ -143,6 +153,8 @@ public partial class MainWindow
         }
 
         var wasPaused = _runner.IsPaused;
+        var outcome = $"{definition.DisplayName} 불러오기 완료";
+        var outcomeIsError = false;
         SetSimulationPausedForStorage(true);
         SaveWorkspacePanel.BeginOperation($"{definition.DisplayName}을(를) 복원하는 중…");
         try
@@ -150,29 +162,32 @@ public partial class MainWindow
             var progress = new Progress<SaveOperationProgress>(
                 SaveWorkspacePanel.SetOperationProgress);
             var result = await _runner.LoadSlotAsync(e.SlotId, progress: progress);
-            if (!result.IsSuccess)
-            {
-                throw new InvalidDataException(result.Message);
-            }
-
             ResetObservationAfterLoad();
             _logService.AddDebug(
                 DebugLogLevel.Information,
                 $"세계 불러오기 완료 · {definition.DisplayName} · {result.CandidateKind} · schema {result.WorldSchema}/{result.CheckpointSchema}");
-            SaveWorkspacePanel.SetStatus($"{definition.DisplayName} 불러오기 완료");
         }
-        catch (Exception exception) when (IsPersistenceException(exception))
+        catch (SaveOperationException exception) when (exception.IsRecoverable)
         {
-            SaveWorkspacePanel.SetStatus(
-                $"{definition.DisplayName} 불러오기 실패 · {exception.Message}",
-                isError: true);
-            ShowPersistenceError(exception);
+            outcome = exception.Kind == SaveOperationKind.Cancelled
+                ? $"{definition.DisplayName} 불러오기를 취소했습니다."
+                : $"{definition.DisplayName} 불러오기 실패 · {exception.Message}";
+            outcomeIsError = exception.Kind != SaveOperationKind.Cancelled;
+            if (outcomeIsError)
+            {
+                ShowPersistenceError(exception);
+            }
+            else
+            {
+                _logService.AddDebug(DebugLogLevel.Information, outcome);
+            }
         }
         finally
         {
             SetSimulationPausedForStorage(wasPaused);
             Interlocked.Exchange(ref _saveSlotOperationInProgress, 0);
             await RefreshSaveCatalogAsync();
+            SaveWorkspacePanel.SetStatus(outcome, outcomeIsError);
         }
     }
 

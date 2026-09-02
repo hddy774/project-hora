@@ -168,17 +168,20 @@ public sealed class GameApplicationSession : IDisposable
     public void RestoreCheckpoint(WorldCheckpoint checkpoint) =>
         _runner.RestoreCheckpoint(checkpoint);
 
-    public Task<SlotSaveResult> SaveSlotAsync(
+    public async Task<SlotSaveResult> SaveSlotAsync(
         string slotId,
         IProgress<SaveOperationProgress>? progress = null,
         CancellationToken cancellationToken = default)
     {
         var definition = SaveSlotRegistry.Get(slotId);
-        return Task.Run(
-            () =>
+        var phase = (int)SaveOperationPhase.Preparing;
+        try
+        {
+            return await Task.Run(() =>
             {
                 progress?.Report(new SaveOperationProgress(0, "안전 경계 대기"));
                 cancellationToken.ThrowIfCancellationRequested();
+                Volatile.Write(ref phase, (int)SaveOperationPhase.CapturingAuthority);
                 var capture = _runner.CreateSaveCapture();
                 progress?.Report(new SaveOperationProgress(10, "권위 스냅샷 고정"));
                 var summary = CreateManifestSummary(
@@ -191,37 +194,79 @@ public sealed class GameApplicationSession : IDisposable
                     definition.SlotId,
                     capture.Authority,
                     summary,
-                    persistence => progress?.Report(
-                        SaveOperationProgressProjection.FromPersistence(persistence)));
-            },
-            cancellationToken);
+                    persistence =>
+                    {
+                        Volatile.Write(
+                            ref phase,
+                            (int)SaveOperationProgressProjection.GetPhase(persistence.Phase));
+                        progress?.Report(
+                            SaveOperationProgressProjection.FromPersistence(persistence));
+                    });
+            }).ConfigureAwait(false);
+        }
+        catch (Exception exception)
+        {
+            throw SaveOperationException.Normalize(
+                "저장",
+                (SaveOperationPhase)Volatile.Read(ref phase),
+                exception);
+        }
     }
 
     public Task<SlotSaveResult> SaveDefaultAsync(CancellationToken cancellationToken = default) =>
         SaveSlotAsync(SlotSaveStore.DefaultSlotId, cancellationToken: cancellationToken);
 
-    public async Task<SlotLoadResult> LoadSlotAsync(
+    public async Task<SlotLoadCompletion> LoadSlotAsync(
         string slotId,
         IProgress<SaveOperationProgress>? progress = null,
         CancellationToken cancellationToken = default)
     {
         var definition = SaveSlotRegistry.Get(slotId);
-        progress?.Report(new SaveOperationProgress(0, "불러오기 준비"));
-        var result = await Task.Run(
-            () => SlotSaveStore.Load(
-                DefaultSaveRoot,
-                definition.SlotId,
-                persistence => progress?.Report(
-                    SaveOperationProgressProjection.FromPersistence(persistence))),
-            cancellationToken).ConfigureAwait(false);
-        if (result.IsSuccess)
+        var phase = (int)SaveOperationPhase.Preparing;
+        try
         {
+            progress?.Report(new SaveOperationProgress(0, "불러오기 준비"));
+            var result = await Task.Run(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                return SlotSaveStore.Load(
+                    DefaultSaveRoot,
+                    definition.SlotId,
+                    persistence =>
+                    {
+                        Volatile.Write(
+                            ref phase,
+                            (int)SaveOperationProgressProjection.GetPhase(persistence.Phase));
+                        progress?.Report(
+                            SaveOperationProgressProjection.FromPersistence(persistence));
+                    });
+            }).ConfigureAwait(false);
+            if (!result.IsSuccess)
+            {
+                throw SaveOperationException.FromLoadResult(result);
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            Volatile.Write(ref phase, (int)SaveOperationPhase.SwappingAuthority);
             progress?.Report(new SaveOperationProgress(94, "Candidate World 원자 교체"));
             _runner.RestoreCheckpoint(result.Checkpoint!);
+            Volatile.Write(ref phase, (int)SaveOperationPhase.Complete);
             progress?.Report(new SaveOperationProgress(100, "권위 세계 복원 완료"));
+            return new SlotLoadCompletion(
+                result.CandidateKind,
+                result.CandidatePath,
+                result.WorldSchema,
+                result.CheckpointSchema,
+                result.CreatedSequence,
+                result.StateHash);
         }
-
-        return result;
+        catch (Exception exception)
+        {
+            throw SaveOperationException.Normalize(
+                "불러오기",
+                (SaveOperationPhase)Volatile.Read(ref phase),
+                exception);
+        }
     }
 
     public Task<IReadOnlyList<SaveSlotCatalogEntry>> ListSaveSlotsAsync(
@@ -282,11 +327,6 @@ public sealed class GameApplicationSession : IDisposable
         var result = await LoadSlotAsync(
             SlotSaveStore.DefaultSlotId,
             cancellationToken: cancellationToken).ConfigureAwait(false);
-        if (!result.IsSuccess)
-        {
-            throw new InvalidDataException(result.Message);
-        }
-
         return result.WorldSchema;
     }
 

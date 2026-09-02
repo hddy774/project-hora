@@ -4,8 +4,37 @@ namespace Chronicles.Application;
 
 public readonly record struct SaveOperationProgress(int Percent, string Stage);
 
+/// <summary>
+/// Lightweight result returned after the candidate checkpoint has been swapped
+/// into the runtime. It deliberately excludes the large authority checkpoint so
+/// a completed UI Task cannot retain a second world graph.
+/// </summary>
+public readonly record struct SlotLoadCompletion(
+    SlotCandidateKind? CandidateKind,
+    string? CandidatePath,
+    int WorldSchema,
+    int CheckpointSchema,
+    long CreatedSequence,
+    ulong StateHash);
+
 internal static class SaveOperationProgressProjection
 {
+    public static SaveOperationPhase GetPhase(SlotPersistencePhase phase) => phase switch
+    {
+        SlotPersistencePhase.Preparing => SaveOperationPhase.Preparing,
+        SlotPersistencePhase.EncodingAuthority => SaveOperationPhase.EncodingAuthority,
+        SlotPersistencePhase.WritingCandidate => SaveOperationPhase.WritingCandidate,
+        SlotPersistencePhase.VerifyingCandidate => SaveOperationPhase.VerifyingCandidate,
+        SlotPersistencePhase.ReplacingPrimary => SaveOperationPhase.ReplacingPrimary,
+        SlotPersistencePhase.WritingManifest => SaveOperationPhase.WritingManifest,
+        SlotPersistencePhase.InspectingCandidates => SaveOperationPhase.InspectingCandidates,
+        SlotPersistencePhase.SelectingCandidate => SaveOperationPhase.SelectingCandidate,
+        SlotPersistencePhase.DecodingCandidate => SaveOperationPhase.DecodingCandidate,
+        SlotPersistencePhase.ValidatingWorld => SaveOperationPhase.ValidatingAuthority,
+        SlotPersistencePhase.Complete => SaveOperationPhase.Complete,
+        _ => SaveOperationPhase.Preparing,
+    };
+
     public static SaveOperationProgress FromPersistence(SlotPersistenceProgress progress)
     {
         var candidate = progress.CandidateKind switch

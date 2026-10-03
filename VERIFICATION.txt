@@ -1,0 +1,44 @@
+ALPHA EXCHANGE 1.0.0 — verification record
+
+Core checks (Release): PASS
+- Exactly 100 AI investors; no human trader in state or ranking.
+- Six decision strategies with individual risk/patience values.
+- At 1x, 4.9 seconds does not advance an hour; the next 0.1 does.
+- Exactly 120 seconds advances 24 game hours (one day).
+- 1,200 fractional 0.1-second ticks advance exactly one game day.
+- 5x: 24 real seconds advances one day.
+- A speed change preserves fractional in-game hour progress.
+- Atomic trade validation, cash/holdings limits, exact commission checks.
+- Deterministic save/resume including clock fraction and RNG state.
+- 40 full 720-hour seasons; 2,405,603 AI trades simulated.
+- 8,697,867 assertions passed.
+- All 100 AI traders participate; rankings remain sorted by equity.
+- 30-day season ends after exactly 3,600 seconds at 1x.
+
+APK checks: PASS
+- Android package: com.alphaexchange.offline, version 1.0.0 (1).
+- Android minimum SDK 26 (Android 8.0), target 34, compile SDK 35.
+- arm64-v8a and x86_64 native runtimes embedded.
+- Release build, JIT runtime embedded; no companion runtime download.
+- Original generated arena.png present in APK assets.
+- No requested Android permissions, including no INTERNET permission.
+- ZIP alignment checked.
+- APK Signature Scheme v2 and v3 verified.
+- Dedicated self-signed app signing key; private key excluded from source archive.
+
+Android runtime checks: PASS
+- Installed the final signed Release APK on an Android 8.0 x86_64 emulator.
+- Launched the actual C# Activity and rendered Korean UI and generated art.
+- Observed autonomous trades, price changes, and the 100-AI leaderboard.
+- Paused the simulation and verified identical app pixels over six seconds.
+- Opened AI profile, followed AI 70, and inspected its portfolio.
+- Opened news and stock detail with actual AI trade records.
+- Force-stopped and relaunched the app; restored the 100 AI portfolios,
+  selected AI, clock, and accumulated trades from local storage.
+- Loaded a 719-hour test fixture in the emulator, resumed the actual app,
+  and verified the final hour reached 720 and displayed the winner/results.
+- Screenshots in dist are actual emulator captures, not mockups.
+
+Scope: emulator and automated engine checks; no physical handset test.
+The Android 11 software emulator was unstable during environment startup;
+validation was completed successfully on the Android 8.0 emulator instead.

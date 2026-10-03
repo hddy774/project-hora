@@ -1,0 +1,14 @@
+ALPHA EXCHANGE — original graphic resources
+
+Primary: midnight #0B111B, chartreuse #DCFF7D
+Secondary: teal #65DDC1, lavender #C2AFFA, coral #FF8996
+Cards: #141E2B, outlines #273446, text #F4F7F4
+
+arena.png was generated specifically for this project: a friendly 3D robot
+trader surrounded by a crowd of AI competitors and holographic stock charts.
+The original generated image is embedded unchanged in Android Assets.
+
+All robot portraits, line charts, navigation symbols, panels and controls are
+original vector geometry drawn with Android Canvas from C# in GameView.cs.
+alpha-mark.svg and Resources/drawable/app_icon.xml share the original brand mark.
+No external stock-image download, network image, or UI screenshot is used.

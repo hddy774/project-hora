@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+dist/
+*.keystore
+*.user
+.DS_Store
+
+*.apk
+*.jks

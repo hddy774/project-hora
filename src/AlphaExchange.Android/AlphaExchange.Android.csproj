@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>26.0</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AlphaExchange.App</RootNamespace>
+    <ApplicationId>com.alphaexchange.offline</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AndroidPackageFormats>apk</AndroidPackageFormats>
+    <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../AlphaExchange.Core/AlphaExchange.Core.csproj" />
+  </ItemGroup>
+</Project>

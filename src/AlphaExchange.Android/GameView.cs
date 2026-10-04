@@ -15,7 +15,13 @@ public sealed partial class GameView : View
     readonly Typeface display = Typeface.Create("sans-serif-black", TypefaceStyle.Normal)!;
     readonly Bitmap? arena;
     readonly List<(RectF Rect, Action Action)> targets = [];
-    readonly string savePath;
+    readonly GameStore store;
+    long lastSave;
+    readonly object saveGate = new();
+    SaveSnapshot? pendingSave;
+    bool saving;
+    int portfolioTab;
+    long historyPage, selectedSeason;
     Canvas c = null!;
     GameEngine? game;
     bool lobby = true, auto, showResult, help, confirmNew;
@@ -35,13 +41,11 @@ public sealed partial class GameView : View
         SetLayerType(LayerType.Hardware, null);
         Focusable = true;
         ContentDescription = "알파 익스체인지, 오프라인 주식 전략 게임";
-        savePath = System.IO.Path.Combine(context.FilesDir!.AbsolutePath, "season-v2.json");
+        store = new GameStore(context.FilesDir!.AbsolutePath);
         try { using var stream = context.Assets!.Open("arena.png"); arena = BitmapFactory.DecodeStream(stream); } catch { }
-        if (File.Exists(savePath))
-        {
-            try { game = GameEngine.Deserialize(File.ReadAllText(savePath)); }
-            catch { toast = "저장 데이터를 읽을 수 없어 새 시즌이 필요합니다."; toastUntil = Now + 7000; }
-        }
+        LoadPortraitManifest();
+        game = store.Load(out string message);
+        if (message.Length > 0) { toast = message; toastUntil = Now + 7000; }
         lastTick = Now;
         PostDelayed(Tick, 100);
     }
@@ -58,11 +62,12 @@ public sealed partial class GameView : View
         long now = Now;
         double elapsed = (now - lastTick) / 1000.0;
         lastTick = now;
-        if (auto && !lobby && game is not null && !S.Finished)
+        if (auto && !lobby && game is not null)
         {
-            int advanced = game.AdvanceTime(elapsed, speed);
-            if (advanced > 0) Save();
-            if (S.Finished) { auto = false; showResult = true; }
+            long previousSeason = S.Season;
+            game.AdvanceTime(Math.Min(elapsed, 3600), speed);
+            if (now - lastSave >= 15000 || S.Season != previousSeason) Save();
+            if (S.Season != previousSeason) Notify($"시즌 {previousSeason} 기록 완료 · 시즌 {S.Season} 시작");
             Invalidate();
         }
         if (toastUntil > 0 && now > toastUntil) { toastUntil = 0; Invalidate(); }
@@ -82,10 +87,34 @@ public sealed partial class GameView : View
         if (game is null) return;
         try
         {
-            File.WriteAllText(savePath + ".tmp", game.Serialize());
-            File.Move(savePath + ".tmp", savePath, true);
+            var snapshot = store.PrepareSave(game); lastSave = Now;
+            lock (saveGate)
+            {
+                pendingSave = snapshot;
+                if (saving) return;
+                saving = true;
+            }
+            _ = Task.Run(SaveWorker);
         }
-        catch { Notify("기기 저장 공간을 확인하세요. 저장하지 못했습니다."); }
+        catch { Notify("저장 데이터를 준비하지 못했습니다."); }
+    }
+    void SaveWorker()
+    {
+        while (true)
+        {
+            SaveSnapshot snapshot;
+            lock (saveGate)
+            {
+                if (pendingSave is null) { saving = false; return; }
+                snapshot = pendingSave; pendingSave = null;
+            }
+            try
+            {
+                store.WriteSnapshot(snapshot);
+                Post(() => { if (game is not null) GameStore.Acknowledge(game, snapshot); });
+            }
+            catch { Post(() => Notify("기기 저장 공간을 확인하세요. 저장하지 못했습니다.")); }
+        }
     }
 
     void Start()
@@ -93,19 +122,19 @@ public sealed partial class GameView : View
         game = new GameEngine((uint)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         lobby = false; auto = true; lastTick = Now; page = 0; scroll = 0; leagueFilter = -1;
         selectedStock = selectedTrader = -1; showResult = confirmNew = false;
+        portfolioTab = 0; historyPage = selectedSeason = 0; seasonCache.Clear();
         Save(); Invalidate();
     }
 
     void RequestNew()
     {
-        if (game is not null && !S.Finished) { confirmNew = true; Invalidate(); }
+        if (game is not null) { confirmNew = true; Invalidate(); }
         else Start();
     }
 
     void ToggleSimulation()
     {
         if (game is null) return;
-        if (S.Finished) { showResult = true; return; }
         lastTick = Now;
         auto = !auto;
         Save(); Invalidate();
@@ -138,7 +167,7 @@ public sealed partial class GameView : View
             DrawHeader();
             c.Save(); c.ClipRect(0, 101, 400, h - 145);
             clipTop = 101; clipBottom = h - 145;
-            float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), _ => DrawNews(112 - scroll) };
+            float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), _ => DrawNews(112 - scroll) };
             maxScroll = Math.Max(0, end + scroll - (h - 160));
             c.Restore(); clipTop = 0; clipBottom = h;
             DrawFooter();
@@ -238,20 +267,7 @@ public sealed partial class GameView : View
         if (fill) { Circle(lastX, lastY, 4, Bg); Circle(lastX, lastY, 3, color); }
     }
 
-    void Robot(int id, float x, float y, float size)
-    {
-        AColor accent = Hex(Palette[(Math.Max(1, id) - 1) % 6]);
-        c.Save(); c.Translate(x, y); c.Scale(size / 48, size / 48);
-        Box(0, 0, 48, 48, new AColor((int)accent.R, accent.G, accent.B, 22), 15);
-        Line(24, 9, 24, 13, accent, 2); Circle(24, 8, 2.5f, accent);
-        Box(8, 13, 32, 26, accent, id % 3 == 0 ? 8 : 12);
-        Box(11, 17, 26, 16, Bg, 7);
-        if (id % 4 == 0) { Line(16, 24, 21, 24, accent, 3); Line(28, 24, 32, 24, accent, 3); }
-        else { Circle(18, 24, 2.5f, accent); Circle(30, 24, 2.5f, accent); }
-        Line(21, 36, 27, 36, Bg, 1.5f);
-        Box(4, 22, 3, 10, accent, 2); Box(41, 22, 3, 10, accent, 2);
-        c.Restore();
-    }
+    void Robot(int id, float x, float y, float size) => Portrait(id, x, y, size, size);
 
     void Mark(float x, float y, float size, AColor color)
     {
@@ -265,6 +281,8 @@ public sealed partial class GameView : View
         if (type == 0) { Line(x, y + 17, x + 5, y + 10, color, 2); Line(x + 5, y + 10, x + 11, y + 13, color, 2); Line(x + 11, y + 13, x + 20, y + 2, color, 2); Line(x + 14, y + 2, x + 20, y + 2, color, 2); }
         else if (type == 1) { Box(x, y + 4, 22, 15, Bg, 4, color); Box(x + 13, y + 8, 11, 7, Bg, 2, color); Circle(x + 17, y + 11.5f, 1, color); }
         else if (type == 2) { Line(x + 3, y + 3, x + 19, y + 3, color, 2); Line(x + 3, y + 3, x + 6, y + 13, color, 2); Line(x + 19, y + 3, x + 16, y + 13, color, 2); Line(x + 6, y + 13, x + 16, y + 13, color, 2); Line(x + 11, y + 13, x + 11, y + 19, color, 2); Line(x + 6, y + 21, x + 16, y + 21, color, 2); }
+        else if (type == 3) { Box(x, y + 12, 5, 10, color, 1); Box(x + 8, y + 5, 5, 17, color, 1); Box(x + 16, y, 5, 22, color, 1); }
+        else if (type == 4) { Box(x, y + 3, 22, 20, Bg, 3, color); Line(x, y + 10, x + 22, y + 10, color); Line(x + 6, y, x + 6, y + 6, color, 2); Line(x + 16, y, x + 16, y + 6, color, 2); Circle(x + 7, y + 16, 1.5f, color); Circle(x + 15, y + 16, 1.5f, color); }
         else { Box(x, y + 1, 22, 21, Bg, 4, color); Line(x + 5, y + 7, x + 17, y + 7, color, 1.5f); Line(x + 5, y + 12, x + 17, y + 12, color, 1.5f); Line(x + 5, y + 17, x + 12, y + 17, color, 1.5f); }
     }
 

@@ -18,22 +18,22 @@ public sealed partial class GameView
         }
         Mark(25, 24, 22, Lime); Text("ALPHA EXCHANGE", 60, 42, 14, Ink, true);
         Pill("OFFLINE", 299, 23, Teal, 77);
-        Text("100개의 AI.", 24, 104, 34, Ink, true, headline: true);
-        Text("하나의 시장.", 24, 146, 34, Lime, true, headline: true);
+        Text("100개의 기관.", 24, 104, 34, Ink, true, headline: true);
+        Text("1만 명의 개인.", 24, 146, 34, Lime, true, headline: true);
         Text("THE AUTONOMOUS MARKET SIMULATOR", 26, 174, 10, Muted, true);
         float y = h - 294;
         Box(20, y, 360, 83, Card, 20, Stroke);
-        string[] values = ["100", "120초", "1,000만"], labels = ["AI 투자자", "1일 · 1배속", "AI별 시작 자금"];
+        string[] values = ["100", "10,000", "20×"], labels = ["기관 AI", "개인 AI", "최대 관찰 속도"];
         for (int i = 0; i < 3; i++)
         {
             Text(values[i], 80 + i * 120, y + 35, i == 2 ? 21 : 26, i == 0 ? Lime : Ink, true, Paint.Align.Center);
             Text(labels[i], 80 + i * 120, y + 59, 11, Muted, false, Paint.Align.Center);
             if (i < 2) Line(140 + i * 120, y + 20, 140 + i * 120, y + 62, Stroke);
         }
-        Text("매시간 거래하는 AI, 스스로 움직이는 시장.", 200, h - 188, 12, Muted, false, Paint.Align.Center);
+        Text("호가로 움직이는 시장 · 끝없이 이어지는 시즌", 200, h - 188, 12, Muted, false, Paint.Align.Center);
         if (game is not null)
         {
-            Button(S.Finished ? "지난 시즌 결과 보기  →" : $"DAY {S.Day:00}  ·  관찰 이어하기  →", 20, h - 166, 360, 52, () => { lobby = false; auto = !S.Finished; lastTick = Now; if (S.Finished) showResult = true; });
+            Button($"시즌 {S.Season} · DAY {S.Day:00}  이어하기  →", 20, h - 166, 360, 52, () => { lobby = false; auto = true; lastTick = Now; });
             Button("새 시뮬레이션 시작", 20, h - 103, 360, 45, RequestNew, false);
         }
         else
@@ -51,14 +51,14 @@ public sealed partial class GameView
         Text("ALPHA", 57, 29, 15, Ink, true, headline: true);
         Text("EXCHANGE", 58, 44, 9, Muted, true);
         Hit(14, 7, 151, 45, () => { lobby = true; auto = false; Save(); });
-        Pill("100 AI · OFFLINE", 207, 20, Teal, 128);
+        Pill("v1.1.0 · OFFLINE", 207, 20, Teal, 128);
         Circle(360, 32, 15, Card2); Text("?", 360, 37, 15, Ink, true, Paint.Align.Center);
         Hit(338, 9, 43, 45, () => { help = true; });
-        Text(S.Finished ? "시즌 종료" : $"DAY {S.Day:00}  /  30", 21, 77, 18, Ink, true);
-        Text(S.Finished ? "COMPLETE" : $"{S.Hour:00}:{Math.Min(59, (int)(S.HourProgress * 60)):00}", 379, 77, S.Finished ? 15 : 20, Lime, true, Paint.Align.Right);
+        Text($"S{S.Season} · DAY {S.Day:00}/30", 21, 77, 18, Ink, true);
+        Text($"{S.Hour:00}:{Math.Min(59, (int)(S.HourProgress * 60)):00}", 379, 77, 20, Lime, true, Paint.Align.Right);
         Text(auto ? "진행 중" : "일시정지", 234, 76, 11, auto ? Teal : Muted);
         Box(20, 90, 360, 3, Card2, 2);
-        Box(20, 90, S.Finished ? 360 : 360f * (float)((S.Hour + S.HourProgress) / 24), 3, Lime, 2);
+        Box(20, 90, 360f * (float)((S.Hour + S.HourProgress) / 24), 3, Lime, 2);
     }
 
     void DrawFooter()
@@ -67,16 +67,16 @@ public sealed partial class GameView
         Line(20, h - 146, 380, h - 146, Stroke);
         Text("1시간 = 5초", 21, h - 116, 10, Muted);
         Text("1일 = 120초 · 1×", 21, h - 96, 10, Muted);
-        Button($"{speed}×", 122, h - 132, 46, 49, () => { lastTick = Now; speed = speed == 1 ? 2 : speed == 2 ? 5 : 1; }, false, !S.Finished);
-        Button(S.Finished ? "시즌 결과 보기  →" : auto ? "Ⅱ   일시정지" : "▷   시뮬레이션 재개", 176, h - 132, 204, 49, ToggleSimulation);
-        string[] labels = ["시장", "관찰 자산", "AI 리그", "뉴스"];
-        for (int i = 0; i < 4; i++)
+        Button($"{speed}×", 122, h - 132, 46, 49, () => { lastTick = Now; speed = speed == 1 ? 2 : speed == 2 ? 5 : speed == 5 ? 20 : 1; }, false);
+        Button(auto ? "Ⅱ   일시정지" : "▷   관찰 재개", 176, h - 132, 204, 49, ToggleSimulation);
+        string[] labels = ["시장", "자산", "기관", "통계", "시즌", "뉴스"];
+        for (int i = 0; i < labels.Length; i++)
         {
-            int p = i; AColor color = page == i ? Lime : Muted;
-            if (page == i) Box(i * 100 + 29, h - 73, 42, 3, Lime, 2);
-            NavIcon(i, i * 100 + 39, h - 59, color);
-            Text(labels[i], i * 100 + 50, h - 17, 10, color, page == i, Paint.Align.Center);
-            Hit(i * 100, h - 73, 100, 73, () => SetPage(p));
+            int p = i; float left = i * (400f / 6), center = left + 400f / 12; AColor color = page == i ? Lime : Muted;
+            if (page == i) Box(center - 18, h - 73, 36, 3, Lime, 2);
+            NavIcon(i, center - 11, h - 59, color);
+            Text(labels[i], center, h - 17, 10, color, page == i, Paint.Align.Center);
+            Hit(left, h - 73, 400f / 6, 73, () => SetPage(p));
         }
     }
 
@@ -101,7 +101,7 @@ public sealed partial class GameView
         Circle(38, y + 26, 3, news.Impact > 0 ? Teal : Red);
         TextFit(news.Headline, 50, y + 23, 11, Ink, 298);
         Text($"DAY {news.Day:00}  ·  뉴스 보기  →", 50, y + 40, 9, Muted);
-        Hit(20, y, 360, 52, () => SetPage(3));
+        Hit(20, y, 360, 52, () => SetPage(5));
         y += 76;
         Text("오늘의 시장", 21, y, 19, Ink, true);
         Text("종목별 흐름 관찰", 379, y, 11, Muted, false, Paint.Align.Right);
@@ -122,70 +122,8 @@ public sealed partial class GameView
             Hit(20, y, 360, 80, () => { selectedStock = index; });
             y += 89;
         }
-        Text("등락률은 당일 기준 · 뉴스와 AI 수급이 가격에 반영됩니다.", 200, y + 17, 10, Muted, false, Paint.Align.Center);
+        Text("등락률은 당일 기준 · 기관·개인의 호가 체결이 가격을 결정합니다.", 200, y + 17, 10, Muted, false, Paint.Align.Center);
         return y + 35;
-    }
-
-    float DrawPortfolio(float y)
-    {
-        var trader = Focus;
-        {
-            Robot(trader.Id, 21, y, 44); Text(trader.Name, 78, y + 19, 17, Ink, true);
-            Text("AI 리그에서 다른 투자자를 선택할 수 있어요", 78, y + 38, 10, Muted);
-            y += 64;
-        }
-        Text("AI 포트폴리오", 20, y + 20, 24, Ink, true);
-        Text("투자의 흐름을 한눈에", 21, y + 43, 12, Muted); y += 62;
-        Box(20, y, 360, 189, Card, 20, Stroke);
-        Text("총 평가 자산", 38, y + 28, 12, Muted);
-        Text($"₩{Money(trader.Equity(S.Stocks))}", 38, y + 67, 29, Ink, true);
-        Text(Percent(trader.Return(S.Stocks)), 362, y + 28, 14, Direction(trader.Return(S.Stocks)), true, Paint.Align.Right);
-        Chart(trader.EquityHistory.Select(v => (double)v), 40, y + 86, 320, 69, Teal, true);
-        Text("START", 40, y + 175, 9, Muted); Text($"DAY {S.Day:00}", 360, y + 175, 9, Muted, false, Paint.Align.Right);
-        y += 201;
-        Metric("보유 현금", $"₩{ShortMoney(trader.Cash)}", 20, y, 174);
-        Metric("누적 거래 수수료", $"₩{Money(trader.Fees)}", 206, y, 174);
-        y += 82;
-        long equity = trader.Equity(S.Stocks);
-        float cashWidth = 360f * trader.Cash / equity;
-        Box(20, y, 360, 9, Card2, 4); Box(20, y, cashWidth, 9, Lime, 4);
-        Text($"현금  {(double)trader.Cash / equity:P0}", 20, y + 28, 11, Lime);
-        Text($"주식  {1 - (double)trader.Cash / equity:P0}", 380, y + 28, 11, Muted, false, Paint.Align.Right);
-        y += 60;
-        Text("보유 종목", 20, y, 18, Ink, true); y += 17;
-        bool any = false;
-        for (int i = 0; i < 8; i++)
-        {
-            if (trader.Shares[i] == 0) continue;
-            any = true; int index = i; var s = S.Stocks[i];
-            double profit = (s.Price / trader.AverageCost[i] - 1);
-            Box(20, y, 360, 79, Card, 15);
-            Text(s.Name, 36, y + 26, 14, Ink, true);
-            Text($"{trader.Shares[i]}주  ·  평균 {Money((long)trader.AverageCost[i])}원", 36, y + 49, 11, Muted);
-            Text($"₩{Money((long)s.Price * trader.Shares[i])}", 364, y + 28, 15, Ink, true, Paint.Align.Right);
-            Text(Percent(profit), 364, y + 52, 12, Direction(profit), true, Paint.Align.Right);
-            Hit(20, y, 360, 79, () => { selectedStock = index; });
-            y += 89;
-        }
-        if (!any)
-        {
-            Box(20, y, 360, 118, Card, 16);
-            Text("아직 보유한 주식이 없어요", 200, y + 42, 15, Ink, true, Paint.Align.Center);
-            Text("시뮬레이션이 진행되면 AI가 거래합니다.", 200, y + 69, 12, Muted, false, Paint.Align.Center);
-            Hit(20, y, 360, 118, () => SetPage(0)); y += 135;
-        }
-        y += 13; Text("최근 거래", 20, y, 18, Ink, true); y += 19;
-        var trades = S.Tape.Where(t => t.TraderId == trader.Id).Take(20).ToList();
-        if (trades.Count == 0) { Text("거래 내역이 여기에 기록됩니다.", 22, y + 22, 12, Muted); y += 56; }
-        foreach (var t in trades)
-        {
-            Pill(t.Buy ? "매수" : "매도", 22, y + 8, t.Buy ? Teal : Red, 42);
-            Text($"{S.Stocks[t.StockIndex].Name}  {t.Quantity}주", 77, y + 25, 12, Ink);
-            Text($"DAY {t.Day:00} · {t.Hour:00}:00", 77, y + 42, 9, Muted);
-            Text($"₩{Money((long)t.Quantity * t.Price)}", 377, y + 26, 12, Ink, true, Paint.Align.Right);
-            Line(22, y + 57, 378, y + 57, Stroke); y += 65;
-        }
-        return y + 10;
     }
 
     void Metric(string label, string value, float x, float y, float w)

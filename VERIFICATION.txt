@@ -1,44 +1,77 @@
-ALPHA EXCHANGE 1.0.0 — verification record
+ALPHA EXCHANGE v1.1.0 — verification, 2026-10-04 UTC
 
-Core checks (Release): PASS
-- Exactly 100 AI investors; no human trader in state or ranking.
-- Six decision strategies with individual risk/patience values.
-- At 1x, 4.9 seconds does not advance an hour; the next 0.1 does.
-- Exactly 120 seconds advances 24 game hours (one day).
-- 1,200 fractional 0.1-second ticks advance exactly one game day.
-- 5x: 24 real seconds advances one day.
-- A speed change preserves fractional in-game hour progress.
-- Atomic trade validation, cash/holdings limits, exact commission checks.
-- Deterministic save/resume including clock fraction and RNG state.
-- 40 full 720-hour seasons; 2,405,603 AI trades simulated.
-- 8,697,867 assertions passed.
-- All 100 AI traders participate; rankings remain sorted by equity.
-- 30-day season ends after exactly 3,600 seconds at 1x.
+AUTOMATED CORE CHECKS
+Command: dotnet run --project tests/AlphaExchange.Checks -c Release
+PASS: 11,012,217 assertions.
+16 complete continuous seasons plus save/restore continuation checks.
+1,586,081 matched trades in the final test state.
 
-APK checks: PASS
-- Android package: com.alphaexchange.offline, version 1.0.0 (1).
-- Android minimum SDK 26 (Android 8.0), target 34, compile SDK 35.
-- arm64-v8a and x86_64 native runtimes embedded.
-- Release build, JIT runtime embedded; no companion runtime download.
-- Original generated arena.png present in APK assets.
-- No requested Android permissions, including no INTERNET permission.
-- ZIP alignment checked.
-- APK Signature Scheme v2 and v3 verified.
-- Dedicated self-signed app signing key; private key excluded from source archive.
+Validated: 100 institutions / 10,000 individually modeled retail agents;
+initial assets 10,000,000 / 100,000 KRW; all retail participants execute trades;
+price/time priority, resting-order execution price, partial fills, expiry,
+reservation release, self-trade prevention, rejection of uncovered orders;
+no price change without a match; conservation of shares and cash + fee pool;
+nonnegative cash and shares; balance sheet/income/cash-flow reconciliation;
+1x 5 seconds/hour and 120 seconds/day, 20x 6 seconds/day, midnight statistics;
+automatic season rollover, complete 100-entry standings, historical archive,
+bounded chart/tape/news/recent-rank buffers; deterministic persistence;
+legacy save migration, six-sector migration, corruption backup recovery;
+immutable background-save snapshot and acknowledgement isolation between runs.
 
-Android runtime checks: PASS
-- Installed the final signed Release APK on an Android 8.0 x86_64 emulator.
-- Launched the actual C# Activity and rendered Korean UI and generated art.
-- Observed autonomous trades, price changes, and the 100-AI leaderboard.
-- Paused the simulation and verified identical app pixels over six seconds.
-- Opened AI profile, followed AI 70, and inspected its portfolio.
-- Opened news and stock detail with actual AI trade records.
-- Force-stopped and relaunched the app; restored the 100 AI portfolios,
-  selected AI, clock, and accumulated trades from local storage.
-- Loaded a 719-hour test fixture in the emulator, resumed the actual app,
-  and verified the final hour reached 720 and displayed the winner/results.
-- Screenshots in dist are actual emulator captures, not mockups.
+PERFORMANCE (Linux .NET 9 Release; not a physical phone benchmark)
+16-season verification wall time: 5.02 seconds.
+Simulated-hour p50 0.14 ms / p95 0.55 ms / p99 0.82 ms.
+20x requires one simulated hour every 250 ms.
+Final JSON snapshot: 5,888,131 bytes; serialize 24.0 ms.
+Android captures a snapshot on the simulation thread, then serializes file
+writes on a background worker; pending saves coalesce to the newest snapshot.
+Archives are written before checkpoint replacement; acknowledgements occur
+only after a successful write. Previous valid checkpoint is retained as .bak.
 
-Scope: emulator and automated engine checks; no physical handset test.
-The Android 11 software emulator was unstable during environment startup;
-validation was completed successfully on the Android 8.0 emulator instead.
+ARTWORK
+Command: python3 scripts/check-artwork.py
+PASS: 100 unique portrait regions; 70 women / 30 men; 100 unique names;
+10 newly generated original PNG atlases at 1536x1024; region bounds and
+original SHA-256 verified. Typical individual portrait approximately 307x512.
+Modern clothes and city backgrounds inspired by the supplied anime reference.
+
+ANDROID
+Release APK: AlphaExchange.apk
+Application ID: com.alphaexchange.offline
+Version name/code: 1.1.0 / 2
+Minimum API 26; target API 34; compile API 35.
+ABIs: arm64-v8a and x86_64. No requested permissions, including INTERNET.
+APK bytes: 71,384,087
+APK SHA-256: 629c569f1cb2b4d599fd66d5fe0a43fb798f13b847bda223c86cc3ec4e29566f
+APK Signature Scheme v2 and v3 verified with apksigner.
+Same signing certificate as v1.0.0:
+9fd5aa86793e26beec38948dfae79d1981581f8e54abe0047025a863cc64f722
+
+Runtime verification on Android 8.0 / API 26 x86_64 software emulator,
+480x960 portrait, SwiftShader, one CPU core, no hardware acceleration.
+- Installed over the existing v1.0.0 app with adb install -r.
+- Compared actual pre-upgrade and migrated saves: all 100 institution IDs,
+  cash, holdings, trade counts and historical fees retained; 10,000 retail added.
+- Ran 20x beyond season 1 into season 2 (917 simulated hours / 124,734 matches
+  at the captured checkpoint). Complete 100-entry season file and each
+  institution's season record were verified.
+- Installed the final APK revision and continued the same saved market;
+  verified persisted season 2 at hour 921 and its 100-entry historical file.
+- Inspected market, bid/ask book, representative portraits/ranking, portfolio,
+  all three financial statements, retail totals/averages, season standings,
+  individual season history, scrolling, pause and foreground resume.
+- No application fatal exception or application ANR found in the checked log.
+- Physical ARM64 devices and newer Android OS versions were not available
+  for runtime testing; their included binaries were checked in the APK.
+
+Build completes with known target-API/compile-API mismatch warnings and
+Android deprecation warnings for status/navigation-bar and back callbacks.
+Target API 34 is retained for the existing window/inset behavior.
+
+SOURCE AND RELEASE
+Plan was committed in Draft PR #1 before implementation.
+PR checks run matching/accounting/season/persistence and artwork validation.
+The released source ZIP is archived from the merged v1.1.0 Git tag, including
+C# sources, all graphics, tests, documentation and CI configuration.
+Signing keys, passwords and build outputs are excluded from the source.
+SHA256SUMS.txt in the release verifies APK, source ZIP and this report.

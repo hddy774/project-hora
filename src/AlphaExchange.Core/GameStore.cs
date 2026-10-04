@@ -62,6 +62,10 @@ public sealed partial class GameStore
         cmd.ExecuteNonQuery();
         cmd.CommandText = "SELECT value FROM meta WHERE key='version'";
         if ((string?)cmd.ExecuteScalar() != "5") throw new InvalidDataException("통계 파일 버전을 지원하지 않습니다.");
+        cmd.CommandText="PRAGMA table_info(hours)";
+        var columns=new HashSet<string>(); using(var reader=cmd.ExecuteReader()) while(reader.Read()) columns.Add(reader.GetString(1));
+        foreach(string name in new[] { "price_index","return_index","investor_cash","institution_equity","retail_equity" })
+            if(!columns.Contains(name)) { cmd.CommandText=$"ALTER TABLE hours ADD COLUMN {name} REAL"; cmd.ExecuteNonQuery(); }
     }
     static byte[] Compress(string json)
     {
@@ -133,7 +137,7 @@ public sealed partial class GameStore
                 snapshot.History.Any(r=>r.Hour<0 || r.Hour>snapshot.Hour || r.Resolution is not (1 or 24)) || snapshot.Events.Any(e=>e.Hour<0 || e.Hour>snapshot.Hour))
                 throw new InvalidDataException("체크포인트 기록 범위 불일치");
         var hours = snapshot.History.Select(r => (r, data:Compress(r.Json), hash:Hash(r.Json),
-            cap:JsonSerializer.Deserialize<DailySnapshot>(r.Json)!.Capitalization)).ToArray();
+            point:JsonSerializer.Deserialize<DailySnapshot>(r.Json)!)).ToArray();
         byte[] state = Compress(snapshot.Json);
         var seasons = snapshot.Seasons.Select(r => (r,data:Compress(r.Json))).ToArray();
         lock (writeGate)
@@ -143,7 +147,7 @@ public sealed partial class GameStore
             using var command = connection.CreateCommand(); command.Transaction = transaction;
             command.CommandText="SELECT hour FROM runs WHERE id=$run"; command.Parameters.AddWithValue("$run",snapshot.RunId);
             if(command.ExecuteScalar() is long committed && committed>snapshot.Hour) throw new InvalidDataException("과거 체크포인트로 되돌릴 수 없습니다.");
-            foreach (var (record,data,hash,cap) in hours)
+            foreach (var (record,data,hash,point) in hours)
             {
                 command.CommandText = "SELECT hash FROM hours WHERE run=$run AND hour=$hour AND resolution=$res";
                 command.Parameters.Clear(); command.Parameters.AddWithValue("$run",snapshot.RunId);
@@ -151,8 +155,11 @@ public sealed partial class GameStore
                 string? existing = (string?)command.ExecuteScalar();
                 if (existing is not null && existing != hash) throw new InvalidDataException("동일 시간 통계가 다른 값으로 재기록되었습니다.");
                 if (existing is not null) continue;
-                command.CommandText = "INSERT INTO hours(run,hour,resolution,cap,data,hash) VALUES($run,$hour,$res,$cap,$data,$hash)";
-                command.Parameters.AddWithValue("$cap",cap); command.Parameters.AddWithValue("$data",data); command.Parameters.AddWithValue("$hash",hash);
+                command.CommandText = "INSERT INTO hours(run,hour,resolution,cap,data,hash,price_index,return_index,investor_cash,institution_equity,retail_equity) VALUES($run,$hour,$res,$cap,$data,$hash,$price,$return,$cash,$institution,$retail)";
+                command.Parameters.AddWithValue("$cap",point.Capitalization); command.Parameters.AddWithValue("$price",point.PriceIndex);
+                command.Parameters.AddWithValue("$return",point.TotalReturnIndex); command.Parameters.AddWithValue("$cash",point.InstitutionCash+point.RetailCash);
+                command.Parameters.AddWithValue("$institution",point.InstitutionEquity); command.Parameters.AddWithValue("$retail",point.RetailEquity);
+                command.Parameters.AddWithValue("$data",data); command.Parameters.AddWithValue("$hash",hash);
                 command.ExecuteNonQuery();
             }
             foreach (var (record,data) in seasons)
@@ -364,9 +371,13 @@ public sealed partial class GameStore
             if (store.databaseReady && File.Exists(store.SavePath))
             {
                 using var connection = store.Open(store.SavePath,true);
-                long stride = Math.Max(1,(end-start)/Math.Max(1,maximumPoints/4));
+                using var schema=connection.CreateCommand(); schema.CommandText="PRAGMA table_info(hours)";
+                var available=new HashSet<string>(); using(var reader=schema.ExecuteReader()) while(reader.Read()) available.Add(reader.GetString(1));
+                var metrics=new[] { "cap","price_index","return_index","investor_cash","institution_equity","retail_equity" }.Where(available.Contains).ToArray();
+                int perBucket=2+metrics.Length*2;
+                long stride = end-start+1<=maximumPoints ? 1 : Math.Max(1,(long)Math.Ceiling((end-start+1.0)/Math.Max(1,maximumPoints/perBucket)));
                 var keys = new HashSet<long>();
-                foreach (string selection in new[] { "min(hour)","max(hour)","hour,min(cap)","hour,max(cap)" })
+                foreach (string selection in new[] { "min(hour)","max(hour)" }.Concat(metrics.SelectMany(metric=>new[] { $"hour,min({metric})",$"hour,max({metric})" })))
                 {
                     using var command = connection.CreateCommand();
                     command.CommandText = $"SELECT {selection} FROM hours WHERE run=$run AND hour BETWEEN $start AND $end GROUP BY (hour-$start)/$stride";

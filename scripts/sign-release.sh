@@ -27,7 +27,7 @@ case "${GENERATE_SIGNING_KEY:-false}" in
       -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -validity 10000 \
       -dname 'CN=Alpha Exchange, OU=GitHub Actions generated signature, O=Alpha Exchange, C=KR'
     mode='GitHub Actions generated one-time key'
-    notice='New signing identity: cannot update v1.1.0 in place. Uninstalling the old app can delete local saves. This temporary key is deleted and cannot sign another build.'
+    notice='New signing identity: cannot update previous releases in place. Uninstalling the old app can delete local saves. This temporary key is deleted and cannot sign another build.'
     ;;
   false)
     for setting in KEYSTORE_BASE64 STORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do

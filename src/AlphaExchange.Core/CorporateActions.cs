@@ -97,7 +97,7 @@ public sealed partial class GameEngine
         if (s.Reports.Contains(s.Report)) s.Report = CopyReport(s.Report);
         foreach (var t in Participants)
         {
-            long oldLong = t.Shares[i], oldShort = t.ShortShares[i];
+            long oldLong = t.Shares[i], oldShort = t.ShortShares[i]; double beforeProfit=t.RealizedProfit;
             long fractionCash = CashFraction(oldLong);
             double removedQuantity = (double)Remainder(oldLong) / numerator;
             if (fractionCash > 0)
@@ -115,6 +115,7 @@ public sealed partial class GameEngine
             t.Shares[i] = Convert(oldLong); t.ShortShares[i] = Convert(oldShort);
             t.AverageCost[i] = t.Shares[i] == 0 ? 0 : t.AverageCost[i] * denominator / numerator;
             t.ShortAveragePrice[i] = t.ShortShares[i] == 0 ? 0 : t.ShortAveragePrice[i] * denominator / numerator;
+            PayTradeTax(t,t.RealizedProfit-beforeProfit);
         }
         TransferCash(s.Report, State.Bank, CashFraction(State.Bank.ShareInventory[i]), "bank-fractional-share");
         TransferCash(s.Report, State.RealEconomy, CashFraction(s.FounderShares), "founder-fractional-share");
@@ -167,7 +168,7 @@ public sealed partial class GameEngine
         long before = State.Stocks.Sum(x => x.MarketCap);
         if (s.Reports.Contains(s.Report)) s.Report = CopyReport(s.Report);
         TransferCash(s.Report, t, amount, "buyback");
-        t.RealizedProfit += amount - quantity * t.AverageCost[i]; t.SellCashFlow += amount;
+        double profit=amount-quantity*t.AverageCost[i]; t.RealizedProfit += profit; t.SellCashFlow += amount; PayTradeTax(t,profit);
         t.Shares[i] -= quantity; if (t.Shares[i] == 0) t.AverageCost[i] = 0;
         s.TreasuryShares += quantity; s.Report.CapitalChange -= amount; s.Report.FinancingCashFlow -= amount;
         if (!closingBooks) { s.PendingCapitalChange -= amount; s.PendingFinancingFlow -= amount; }
@@ -207,7 +208,7 @@ public sealed partial class GameEngine
         source.Report = CopyReport(source.Report); target.Report = CopyReport(target.Report);
         foreach (var t in Participants)
         {
-            long longs = Convert(t.Shares[a]), shorts = Convert(t.ShortShares[a]);
+            long longs = Convert(t.Shares[a]), shorts = Convert(t.ShortShares[a]); double beforeProfit=t.RealizedProfit;
             long longCash = CashFraction(t.Shares[a]), shortCash = CashFraction(t.ShortShares[a]);
             double removed = (double)(t.Shares[a] * numerator % denominator) / numerator;
             if (longCash > 0)
@@ -218,6 +219,7 @@ public sealed partial class GameEngine
             t.ShortAveragePrice[b] = t.ShortShares[b] + shorts == 0 ? 0 : (t.ShortShares[b] * t.ShortAveragePrice[b] + shorts * t.ShortAveragePrice[a] * denominator / numerator) / (t.ShortShares[b] + shorts);
             t.Shares[b] += longs; t.ShortShares[b] += shorts; t.Shares[a] = t.ShortShares[a] = 0;
             t.AverageCost[a] = t.ShortAveragePrice[a] = 0;
+            PayTradeTax(t,t.RealizedProfit-beforeProfit);
         }
         TransferCash(source.Report, State.Bank, CashFraction(State.Bank.ShareInventory[a]), "merger-bank-fractional");
         TransferCash(source.Report, State.RealEconomy, CashFraction(source.FounderShares), "merger-founder-fractional");

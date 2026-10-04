@@ -11,7 +11,7 @@ static class StorageLoad
         var engine=new GameEngine(5); var store=new GameStore(directory); store.Save(engine);
         var point=engine.CaptureSnapshot(); int openingPrice=point.StockPrices[0]; long openingCap=point.Capitalization;
         const int hours=5*360*24;
-        var watch=Stopwatch.StartNew(); long maxManaged=0;
+        var watch=Stopwatch.StartNew(); long maxManaged=0, maxRetained=0;
         try
         {
             for(int month=1;month<=60;month++)
@@ -26,7 +26,7 @@ static class StorageLoad
                 engine.State.CompletedHours=month*720;
                 store.WriteSnapshot(new SaveSnapshot(engine.State.RunId,engine.State.CompletedHours,engine.Serialize(),[],rows.ToArray()));
                 maxManaged=Math.Max(maxManaged,GC.GetTotalMemory(false));
-                if(month%12==0) Console.WriteLine($"Synthetic storage year {month/12}: hours={month*720:N0}; bytes={new FileInfo(store.SavePath).Length:N0}");
+                if(month%12==0) { maxRetained=Math.Max(maxRetained,GC.GetTotalMemory(true)); Console.WriteLine($"Synthetic storage year {month/12}: hours={month*720:N0}; bytes={new FileInfo(store.SavePath).Length:N0}"); }
             }
             double writeSeconds=watch.Elapsed.TotalSeconds; watch.Restart();
             var points=engine.HistorySource!.Range(0,hours,500); double queryMs=watch.Elapsed.TotalMilliseconds;
@@ -40,7 +40,7 @@ static class StorageLoad
             }
             using var backup=File.Create(Path.Combine(directory,"five-year.zip")); watch.Restart(); store.Export(backup); double exportSeconds=watch.Elapsed.TotalSeconds;
             Console.WriteLine(JsonSerializer.Serialize(new { fixture="synthetic-storage-only",hours,originalRows=hours+1,chartPoints=points.Count,databaseBytes=new FileInfo(store.SavePath).Length,
-                maxManagedBytes=maxManaged,writeSeconds,queryMilliseconds=queryMs,exportSeconds },new JsonSerializerOptions { WriteIndented=true }));
+                maxManagedBytes=maxManaged,maxRetainedBytes=maxRetained,writeSeconds,queryMilliseconds=queryMs,exportSeconds },new JsonSerializerOptions { WriteIndented=true }));
             Console.WriteLine("PASS five-year synthetic storage; economic simulation is covered separately");
         }
         finally { Directory.Delete(directory,true); }

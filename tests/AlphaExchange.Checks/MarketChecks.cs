@@ -44,7 +44,7 @@ static class MarketChecks
         { var r=stock.Report; check(r.OpeningCash+r.OperatingCashFlow+r.InvestingCashFlow+r.FinancingCashFlow==r.Cash,"Post-action monthly cash flow"); check(r.OpeningEquity+r.NetIncome-r.Dividends+r.CapitalChange==r.Equity,"Post-action monthly equity"); }
         validate(g);
         var taxed=new GameEngine(19); int price=taxed.State.Stocks[0].Price;
-        long taxQuantity=Math.Min(3,taxed.Owner(1).Shares[0]);
+        long taxQuantity=1;
         check(taxed.SubmitOrder(1,0,false,price+1000,(int)taxQuantity) is null && taxed.SubmitOrder(2,0,true,price+1000,(int)taxQuantity) is null,"Taxable gain executes");
         long taxPaid=taxed.Owner(1).Taxes;
         check(taxPaid>0 && taxed.State.Government.TaxEscrow>=taxPaid,"Tax withheld into refundable escrow");
@@ -72,6 +72,8 @@ static class MarketChecks
             try { store.WriteSnapshot(bad); check(false,"Reject conflicting duplicate"); } catch(InvalidDataException) { check(true,"Conflicting duplicate rolls back"); }
             check(store.Load(out _)!.State.CompletedHours==g.State.CompletedHours,"Failed transaction preserves previous checkpoint");
             store.WriteSnapshot(latest);
+            check(CrashProbe.Run(store.SavePath,g.State.RunId)==23,"Process exits during unfinished SQLite transaction");
+            check(store.Load(out _)!.State.CompletedHours==g.State.CompletedHours && g.HistorySource.At(g.State.CompletedHours+1)?.Hour==g.State.CompletedHours,"Abrupt exit rolls back both world and new hourly row");
             try { store.WriteSnapshot(first); check(false,"Reject stale checkpoint"); } catch(InvalidDataException) { check(true,"Stale checkpoint cannot replace new world"); }
             using var backup=new MemoryStream(); store.Export(backup); backup.Position=0;
             using(var zip=new ZipArchive(backup,ZipArchiveMode.Read,true)) { using var reader=new StreamReader(zip.GetEntry("market.csv")!.Open()); check(reader.ReadToEnd().Split('\n',StringSplitOptions.RemoveEmptyEntries).Length==g.State.CompletedHours+2,"CSV contains header and every actual hour"); }
@@ -92,7 +94,19 @@ static class MarketChecks
             check(shortBefore==1 && migrated.Owner(3).ShortShares[ipoIndex]==0 && ipo.TotalVolume==ipoVolume,"Reverse split settles borrower fraction without fake trades"); validate(migrated);
             migrated.AdvanceHour(); migratedStore.Save(migrated);
             check(migratedStore.ReadEvents(migrated.State,ipo.SecurityId).Any(e=>e.Kind==CorporateEventKind.ReverseSplit),"Corporate events persist outside bounded world cache");
-            store.Save(loaded); File.WriteAllText(store.SavePath,"corrupt");
+            store.Save(loaded);
+            using(var connection=new SqliteConnection($"Data Source={store.SavePath};Pooling=False"))
+            { connection.Open(); using var command=connection.CreateCommand(); command.CommandText="CREATE TRIGGER fail_writes BEFORE INSERT ON hours BEGIN SELECT RAISE(FAIL,'simulated storage failure'); END"; command.ExecuteNonQuery(); }
+            loaded.AdvanceHour(); var failed=store.PrepareSave(loaded);
+            try { store.WriteSnapshot(failed); check(false,"Storage failure must surface"); } catch(SqliteException) { check(true,"Storage failure surfaces"); }
+            check(store.PendingCount>0 && store.Load(out _)!.State.CompletedHours==g.State.CompletedHours,"Failed write retains all pending records and old checkpoint");
+            using(var connection=new SqliteConnection($"Data Source={store.SavePath};Pooling=False"))
+            { connection.Open(); using var command=connection.CreateCommand(); command.CommandText="DROP TRIGGER fail_writes"; command.ExecuteNonQuery(); }
+            store.WriteSnapshot(failed); check(loaded.HistorySource!.Covers(0,loaded.State.CompletedHours),"Retry commits every preserved pending hour");
+            using(var connection=new SqliteConnection($"Data Source={store.SavePath};Pooling=False"))
+            { connection.Open(); using var command=connection.CreateCommand(); command.CommandText="DELETE FROM hours WHERE hour=80"; command.ExecuteNonQuery(); }
+            check(!loaded.HistorySource.Covers(0,loaded.State.CompletedHours) && loaded.HistorySource.Range(0,loaded.State.CompletedHours).Any(p=>p.GapBefore),"Missing records are marked as chart gaps");
+            File.WriteAllText(store.SavePath,"corrupt");
             check(store.Load(out message) is not null && message.Contains("복구") && Directory.GetFiles(folder,"*.corrupt-*").Length>0,"Healthy backup recovers without discarding damaged original");
             backup.Position=0; using var wrong=new MemoryStream(); using(var zip=new ZipArchive(wrong,ZipArchiveMode.Create,true)) { using var writer=new StreamWriter(zip.CreateEntry("../history-v5.sqlite").Open()); writer.Write("invalid"); }
             wrong.Position=0; try { freshStore.Import(wrong); check(false,"Invalid import"); } catch(InvalidDataException) { check(true,"Invalid import preserves existing database"); }

@@ -89,7 +89,7 @@ public sealed partial class GameStore
     public void Attach(GameEngine engine)
     {
         if (engine.HistorySource is RunQuery query && query.Store == this) return;
-        string run = engine.State.RunId; activeRun = run;
+        string run = engine.State.RunId; if(activeRun!=run) LastCommittedHour=0; activeRun = run;
         lock (pending) if (!pending.ContainsKey(run)) pending[run] = [];
         engine.HourRecorded += snapshot =>
         {
@@ -231,7 +231,6 @@ public sealed partial class GameStore
         if (!reader.Read()) throw new InvalidDataException("게임 체크포인트가 없습니다.");
         var game = GameEngine.Deserialize(CheckedDecode((byte[])reader[2],reader.GetString(3)));
         if (game.State.RunId != reader.GetString(0) || game.State.CompletedHours != reader.GetInt64(1)) throw new InvalidDataException("통계/상태 시간 불일치");
-        LastCommittedHour = game.State.CompletedHours; databaseReady = true;
         return game;
     }
     public GameEngine? Load(out string message)
@@ -239,7 +238,7 @@ public sealed partial class GameStore
         message = "";
         if (File.Exists(SavePath))
         {
-            try { var game = LoadDatabase(SavePath); Attach(game); return game; }
+            try { var game = LoadDatabase(SavePath); activeRun=game.State.RunId; LastCommittedHour=game.State.CompletedHours; databaseReady=true; Attach(game); return game; }
             catch (Exception e) when (StorageException(e)) { message = "저장 파일을 읽지 못했습니다. 원본을 보존합니다."; }
             if (File.Exists(BackupPath))
             {
@@ -253,7 +252,7 @@ public sealed partial class GameStore
                         foreach (string suffix in new[] { "-wal","-shm" }) if (File.Exists(SavePath+suffix)) File.Move(SavePath+suffix,preserved+suffix);
                         File.Copy(BackupPath,SavePath);
                     }
-                    Attach(game); message = "정상 통계 백업에서 복구했습니다. 손상 원본도 보존했습니다."; return game;
+                    activeRun=game.State.RunId; LastCommittedHour=game.State.CompletedHours; databaseReady=true; Attach(game); message = "정상 통계 백업에서 복구했습니다. 손상 원본도 보존했습니다."; return game;
                 }
                 catch (Exception e) when (StorageException(e)) { message = "저장과 백업을 읽지 못했습니다. 원본 보존 · 파일 가져오기로 복원할 수 있습니다."; }
             }
@@ -339,7 +338,7 @@ public sealed partial class GameStore
         string path = SeasonPath(state,season);
         return File.Exists(path) ? JsonSerializer.Deserialize<SeasonResult>(File.ReadAllText(path)) : null;
     }
-    public static bool StorageException(Exception e) => e is IOException or InvalidDataException or JsonException
+    public static bool StorageException(Exception e) => e is IOException or UnauthorizedAccessException or InvalidDataException or JsonException
         or InvalidOperationException or ArgumentException or NullReferenceException or OverflowException or SqliteException;
 
     sealed class RunQuery(GameStore store, string run) : IHistoryQuery

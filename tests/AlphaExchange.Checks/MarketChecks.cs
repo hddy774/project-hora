@@ -79,6 +79,10 @@ static class MarketChecks
             using(var zip=new ZipArchive(backup,ZipArchiveMode.Read,true)) { using var reader=new StreamReader(zip.GetEntry("market.csv")!.Open()); check(reader.ReadToEnd().Split('\n',StringSplitOptions.RemoveEmptyEntries).Length==g.State.CompletedHours+2,"CSV contains header and every actual hour"); }
             backup.Position=0; var freshStore=new GameStore(Path.Combine(folder,"reinstalled")); var imported=freshStore.Import(backup);
             check(imported.Serialize()==store.Load(out _)!.Serialize() && imported.HistorySource!.Covers(0,imported.State.CompletedHours),"Export/import restores game and full history across installations"); validate(imported);
+            check(File.Exists(freshStore.BackupPath) && freshStore.LastCommittedHour==imported.State.CompletedHours,"Imported world immediately has matching recovery backup");
+            var replacement=new GameEngine(898); freshStore.Attach(replacement);
+            check(freshStore.LastCommittedHour==0,"New market resets its committed-hour display");
+            backup.Position=0; imported=freshStore.Import(backup);
             var old=V4Fixture(); string original=old.Serialize(); string legacyFolder=Path.Combine(folder,"legacy"); Directory.CreateDirectory(legacyFolder); File.WriteAllText(Path.Combine(legacyFolder,"market-v4.json"),original);
             var migratedStore=new GameStore(legacyFolder); var migrated=migratedStore.Load(out var message)!;
             check(migrated.State.MigratedFromV4 && message.Contains("이전") && File.ReadAllText(Path.Combine(legacyFolder,"market-v4.json"))==original,"Legacy migration preserves original file");

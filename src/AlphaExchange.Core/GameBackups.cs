@@ -87,13 +87,27 @@ public sealed partial class GameStore
                 }
                 lock (writeGate)
                 {
+                    string? originalBackup=null;
                     if (File.Exists(SavePath))
                     {
-                        using var original = Open(SavePath,true);
-                        Backup(original,SavePath+".before-import-"+DateTime.UtcNow.ToString("yyyyMMddHHmmssfff"));
+                        using var original = Open(SavePath);
+                        using var checkpoint=original.CreateCommand(); checkpoint.CommandText="PRAGMA wal_checkpoint(TRUNCATE)";
+                        using(var result=checkpoint.ExecuteReader()) if(!result.Read() || result.GetInt32(0)!=0) throw new IOException("기존 기록 저장을 기다려야 합니다.");
+                        originalBackup=SavePath+".before-import-"+DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
+                        Backup(original,originalBackup);
                     }
-                    foreach (string suffix in new[] { "-wal","-shm" }) if (File.Exists(SavePath+suffix)) File.Delete(SavePath+suffix);
-                    File.Move(temp,SavePath,true);
+                    // Prepare a matching healthy backup before atomically replacing the active DB.
+                    using(var importedConnection=Open(temp,true)) Backup(importedConnection,BackupPath);
+                    try
+                    {
+                        foreach (string suffix in new[] { "-wal","-shm" }) if (File.Exists(SavePath+suffix)) File.Delete(SavePath+suffix);
+                        File.Move(temp,SavePath,true);
+                    }
+                    catch
+                    {
+                        if(originalBackup is not null) File.Copy(originalBackup,BackupPath,true);
+                        throw;
+                    }
                     lock (pending) { pending.Clear(); pendingEvents.Clear(); }
                     queuedDailyThrough.Clear(); databaseReady = true;
                     activeRun = game.State.RunId; LastCommittedHour = game.State.CompletedHours;

@@ -2,7 +2,7 @@ ALPHA EXCHANGE v1.3.0 — verification, 2026-10-04 UTC
 
 AUTOMATED ENGINE / ECONOMY / HISTORY
 Command: dotnet run --project tests/AlphaExchange.Checks -c Release
-GitHub Actions run 37192324408, implementation 2457f5451454071a291e69806bf78f22c380d203:
+GitHub Actions run 37193908099, implementation ab2798235734cf868aea5aa7597eca4453f670e0:
 PASS 41,787,838 assertions; 16 continuous seasons; 615,108 matched trades.
 Final release workflow reruns these checks and attaches its actual CORE-CHECKS.txt.
 
@@ -48,9 +48,9 @@ opening cash + cumulative cash flow = current cash. Company monthly cash-flow,
 equity-change and balance statements reconcile, including capital actions.
 
 PERFORMANCE (Linux .NET 9 Release, not physical-phone measurements)
-CI run above: 16-season simulation/test wall 100.37s;
-hour p50 7.46ms / p95 8.70ms / p99 10.06ms; 100x budget 50ms per hour.
-Final JSON 24,956,863 bytes; serialize 98.7ms. Capture/serialization runs on
+CI run above: 16-season simulation/test wall 83.03s;
+hour p50 5.57ms / p95 6.46ms / p99 8.12ms; 100x budget 50ms per hour.
+Final JSON 24,956,863 bytes; serialize 101.9ms. Capture/serialization runs on
 simulation/UI thread, disk/compression on a single background worker; save target
 one real second. Large snapshots and initial migration can briefly pause rendering.
 Pending >512 records or ongoing writes >15 seconds since known commit pause progress;
@@ -88,9 +88,10 @@ Microsoft.Data.Sqlite9.0.10 and SQLitePCLRaw2.1.10 licensing recorded and includ
 
 API26 x86_64 software emulator: development-signed APK installed; actual existing
 v4 save migrated and resumed with 30 companies. Lobby, paused market, navigation
-and statistical controls inspected. Emulator System UI ANR during boot/display
-resize was dismissed. Native file operations and remaining screen observations
-are recorded in docs/UI-VERIFICATION-v1.3.0.md. This is smoke coverage, not full UI
+and all nine statistical period buttons inspected. Native OpenDocument picker
+opened and cancelled. Emulator System UI ANR during boot/display resize was
+dismissed. File byte restoration was tested in core, rather than through the
+emulator picker. Details are in docs/UI-VERIFICATION-v1.3.0.md. This is smoke coverage, not full UI
 automation. Physical ARM64 devices and newer Android versions are untested.
 
 DEPLOYMENT / SIGNING

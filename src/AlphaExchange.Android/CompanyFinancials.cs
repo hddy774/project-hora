@@ -41,7 +41,7 @@ public sealed partial class GameView
         }
         y += (int)Math.Ceiling(S.Stocks.Count/5.0)*34+15;
         var reports = Reports(stock,companySeason==0 ? S.Season : companySeason);
-        CompanyReport? report = reports.LastOrDefault(r=>companySeason==0 || r.Season==companySeason);
+        CompanyReport? report = companySeason==0 ? reports.LastOrDefault(r=>r.AccountingBasis==5) ?? reports.LastOrDefault() : reports.LastOrDefault(r=>r.Season==companySeason);
         Button("← 이전 결산", 20, y, 105, 36, () => { companySeason = Math.Max(1, (companySeason == 0 ? stock.Report.Season : companySeason) - 1); scroll = 0; }, false, (companySeason == 0 ? stock.Report.Season : companySeason) > 1);
         Text(companySeason == 0 ? "최근 발표" : $"시즌 {companySeason}", 200, y + 24, 13, Lime, true, Paint.Align.Center);
         Button("최신 결산 →", 275, y, 105, 36, () => { companySeason = 0; scroll = 0; }, false, companySeason != 0); y += 55;

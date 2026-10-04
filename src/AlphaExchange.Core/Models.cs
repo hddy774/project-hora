@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using System.Runtime.InteropServices;
 
 namespace AlphaExchange.Core;
 
@@ -158,7 +159,20 @@ public sealed class Trader : ICashAccount
     [JsonIgnore] public int PortraitId => IsRetail ? 0 : Id;
     [JsonIgnore] public string Gender => Id <= 70 ? "여성" : "남성";
     public long Equity(IReadOnlyList<Stock> stocks)
-    { return GrossAssets(stocks) - ShortLiability(stocks) - LoanDebt - FineDebt - ShortDividendDebt; }
+    {
+        if(stocks is List<Stock> list) return Equity(CollectionsMarshal.AsSpan(list));
+        return GrossAssets(stocks)-ShortLiability(stocks)-LoanDebt-FineDebt-ShortDividendDebt;
+    }
+    long Equity(ReadOnlySpan<Stock> stocks)
+    {
+        long gross=Cash,shorts=0;
+        for(int i=0;i<Shares.Length;i++)
+        {
+            if(Shares[i]!=0) gross=checked(gross+stocks[i].Value(Shares[i]));
+            if(ShortShares[i]!=0) shorts=checked(shorts+stocks[i].Value(ShortShares[i]));
+        }
+        return gross-shorts-LoanDebt-FineDebt-ShortDividendDebt;
+    }
     public long GrossAssets(IReadOnlyList<Stock> stocks)
     { long value = Cash; for (int i = 0; i < Shares.Length; i++) if (Shares[i] != 0) value = checked(value + stocks[i].Value(Shares[i])); return value; }
     public long ShortLiability(IReadOnlyList<Stock> stocks)
@@ -167,17 +181,52 @@ public sealed class Trader : ICashAccount
     public double Return(IReadOnlyList<Stock> stocks) => ReturnIndex / Math.Max(1e-12, SeasonSnapshot.ReturnIndex) - 1;
     public FinancialStatement Financials(IReadOnlyList<Stock> stocks)
     {
-        double cost = 0; for (int i = 0; i < Shares.Length; i++) cost += Shares[i] * AverageCost[i];
-        long holdings = GrossAssets(stocks) - Cash;
-        double shortEntry = 0; for (int i = 0; i < ShortShares.Length; i++) shortEntry += ShortShares[i] * ShortAveragePrice[i];
-        return new FinancialStatement { Count = 1, Cash = Cash, Holdings = holdings, Cost = cost, OpeningCash = OpeningCash,
-            OpeningEquity = OpeningEquity, OpeningUnrealized = OpeningUnrealized, RealizedProfit = RealizedProfit,
-            Fees = Fees, Purchases = BuyCashFlow, Sales = SellCashFlow, ReservedCash = ReservedCash, Trades = Trades,
-            ShortDebt = ShortLiability(stocks), ShortEntry = shortEntry, LoanDebt = LoanDebt, FineDebt = FineDebt,
-            Borrowed = BorrowedCash, Repaid = RepaidCash, InterestExpense = InterestExpense, InterestPaid = InterestPaid,
-            BorrowFees = BorrowFees, Taxes = Taxes, Fines = Fines, FinesPaid = FinesPaid, Subsidies = Subsidies, DebtRelief = DebtRelief, DividendIncome = DividendIncome, DividendTax = DividendTax,
-            ShortDividendExpense = ShortDividendExpense, ShortDividendPaid = ShortDividendPaid, ShortDividendDebt = ShortDividendDebt,
-            WageIncome = WageIncome, Consumption = Consumption };
+        var result=new FinancialStatement(); AccumulateFinancials(result,stocks); return result;
+    }
+    public void AccumulateFinancials(FinancialStatement result,IReadOnlyList<Stock> stocks)
+    {
+        long gross=Cash,shortDebt=0; double cost=0,shortEntry=0;
+        for(int i=0;i<Shares.Length;i++)
+        {
+            long shares=Shares[i],shorts=ShortShares[i];
+            if(shares!=0) { gross=checked(gross+stocks[i].Value(shares)); cost+=shares*AverageCost[i]; }
+            if(shorts!=0) { shortDebt=checked(shortDebt+stocks[i].Value(shorts)); shortEntry+=shorts*ShortAveragePrice[i]; }
+        }
+        long holdings=gross-Cash;
+        result.Count += 1;
+        result.Cash += Cash;
+        result.Holdings += holdings;
+        result.Cost += cost;
+        result.OpeningCash += OpeningCash;
+        result.OpeningEquity += OpeningEquity;
+        result.OpeningUnrealized += OpeningUnrealized;
+        result.RealizedProfit += RealizedProfit;
+        result.Fees += Fees;
+        result.Purchases += BuyCashFlow;
+        result.Sales += SellCashFlow;
+        result.ReservedCash += ReservedCash;
+        result.Trades += Trades;
+        result.ShortDebt += shortDebt;
+        result.ShortEntry += shortEntry;
+        result.LoanDebt += LoanDebt;
+        result.FineDebt += FineDebt;
+        result.Borrowed += BorrowedCash;
+        result.Repaid += RepaidCash;
+        result.InterestExpense += InterestExpense;
+        result.InterestPaid += InterestPaid;
+        result.BorrowFees += BorrowFees;
+        result.Taxes += Taxes;
+        result.Fines += Fines;
+        result.FinesPaid += FinesPaid;
+        result.Subsidies += Subsidies;
+        result.DebtRelief += DebtRelief;
+        result.DividendIncome += DividendIncome;
+        result.DividendTax += DividendTax;
+        result.ShortDividendExpense += ShortDividendExpense;
+        result.ShortDividendPaid += ShortDividendPaid;
+        result.ShortDividendDebt += ShortDividendDebt;
+        result.WageIncome += WageIncome;
+        result.Consumption += Consumption;
     }
 }
 public sealed class FinancialStatement

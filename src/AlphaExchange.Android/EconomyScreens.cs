@@ -18,7 +18,7 @@ public sealed partial class GameView
             Hit(x, top, 114, 32, () => { if (period == ComparisonPeriod.Custom) CustomPeriod(); else { comparisonPeriod = period; scroll = 0; } });
         }
         y += 77;
-        var result = game!.Period(comparisonPeriod);
+        var result = game!.PeriodSummary(comparisonPeriod);
         Text($"{Moment(result.Start.Hour)} → {Moment(result.End.Hour)}", 21, y + 51, 10, Muted);
         if (result.Partial) { Text("기록이 없는 구간은 연결하지 않습니다.", 21, y + 70, 10, Red); return y + 89; }
         if(result.Points.Any(p=>p.LegacyNoFundamentals)) { Text("이전 버전 구간: 일별 기록 · 없는 시간/지표는 미기록",21,y+70,10,Muted); return y+89; }
@@ -26,6 +26,8 @@ public sealed partial class GameView
     }
     float Pie(string title, (string Label, double Value)[] rows, float y)
     {
+        float estimated=Math.Max(156,57+rows.Count(r=>double.IsFinite(r.Value) && r.Value>0)*23);
+        if(!Visible(y,estimated)) return y+Math.Max(160,estimated+15);
         rows = rows.Where(r => double.IsFinite(r.Value) && r.Value > 0).ToArray();
         float height = Math.Max(156, 57 + rows.Length * 23);
         Box(20, y, 360, height, Card, 17); Text(title, 36, y + 28, 14, Ink, true);
@@ -33,7 +35,7 @@ public sealed partial class GameView
         using var bounds = new RectF(38, y + 47, 134, y + 143);
         for (int i = 0; i < rows.Length; i++)
         {
-            var color = Hex(Palette[i % Palette.Length]); float sweep = (float)(rows[i].Value / total * 360);
+            var color = PaletteColors[i % Palette.Length]; float sweep = (float)(rows[i].Value / total * 360);
             paint.SetShader(null); paint.Color = color; paint.SetStyle(Paint.Style.Fill); c.DrawArc(bounds, angle, sweep, true, paint); angle += sweep;
             Circle(155, y + 59 + i * 23, 3, color);
             TextFit(rows[i].Label, 166, y + 63 + i * 23, 10, Muted, 132);
@@ -44,6 +46,7 @@ public sealed partial class GameView
     }
     float Graph(string title, IEnumerable<double> values, float y, string caption, bool bar = false)
     {
+        if(!Visible(y,150)) return y+166;
         var data = values.Where(double.IsFinite).ToArray();
         Box(20, y, 360, 150, Card, 17); Text(title, 36, y + 27, 14, Ink, true);
         if (!bar) Chart(data, 36, y + 48, 328, 69, Teal, true);
@@ -70,7 +73,7 @@ public sealed partial class GameView
             Box(20, y, 360, 51, Card, 12);
             Text(GameEngine.AbilityNames[i], 35, y + 21, 12, Ink, true);
             Text(values[i].ToString(), 364, y + 21, 12, Lime, true, Paint.Align.Right);
-            Box(35, y + 32, 329, 5, Card2, 2); Box(35, y + 32, 329 * values[i] / 100f, 5, Hex(Palette[i]), 2); y += 60;
+            Box(35, y + 32, 329, 5, Card2, 2); Box(35, y + 32, 329 * values[i] / 100f, 5, PaletteColors[i], 2); y += 60;
         }
         y = Wrap(t.Decision, 22, y + 14, 356, 12, Teal) + 12;
         var loan = game!.LoanTerms(t);

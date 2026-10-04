@@ -34,6 +34,7 @@ void Validate(GameEngine game)
 }
 if(args.Length==3 && args[0]=="--crash-write") { CrashProbe.AbruptWrite(args[1],args[2]); return; }
 if(args.Contains("--storage-load")) { StorageLoad.Run(); return; }
+if(args.Contains("--ownership-only")) { OwnershipChecks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} ownership assertions"); return; }
 if(args.Contains("--market-only")) { MarketChecks.Run(Check,Validate,Near); Console.WriteLine($"PASS {assertions:N0} market assertions"); return; }
 var match = new GameEngine(42);
 Check(match.State.Bots.All(t => t.Equity(match.State.Stocks) == 10000000), "Institution capital");
@@ -140,6 +141,7 @@ var saveWatch = Stopwatch.StartNew(); string json = game.Serialize(); saveWatch.
 times.Sort();
 EconomyChecks.Run(Check, Validate, Near);
 MarketChecks.Run(Check, Validate, Near);
+OwnershipChecks.Run(Check,Validate);
 Console.WriteLine($"PASS {assertions:N0} assertions; {seasons} seasons; {game.State.TotalMatches:N0} matched trades");
 Console.WriteLine($"Simulation wall time {watch.Elapsed.TotalSeconds:F2}s; hour p50={times[times.Count/2]:F2}ms p95={times[(int)(times.Count*.95)]:F2}ms p99={times[(int)(times.Count*.99)]:F2}ms (100x budget 50ms/hour)");
 Console.WriteLine($"Save bytes {System.Text.Encoding.UTF8.GetByteCount(json):N0}; serialize {saveWatch.Elapsed.TotalMilliseconds:F1}ms; pending={game.State.PendingSeasons.Count}; active orders={game.State.Orders.Count}");

@@ -9,10 +9,23 @@ namespace AlphaExchange.Core;
 public sealed record ArchivedSnapshot(long Season, string Path, string Json);
 public sealed record HistoryRecord(long Hour, int Resolution, string Json);
 public sealed record EventRecord(long Id,long Hour,string Json);
-public sealed record SaveSnapshot(string RunId, long Hour, string Json, ArchivedSnapshot[] Seasons, HistoryRecord[] History)
+public sealed record SaveSnapshot
 {
+    Lazy<string> json = null!;
+    public string RunId { get; init; }
+    public long Hour { get; init; }
+    public string Json { get => json.Value; init => json = new Lazy<string>(()=>value); }
+    public ArchivedSnapshot[] Seasons { get; init; }
+    public HistoryRecord[] History { get; init; }
     public EventRecord[] Events { get; init; } = [];
     public CompanyReport[] Reports { get; init; } = [];
+    public SaveSnapshot(string RunId,long Hour,string Json,ArchivedSnapshot[] Seasons,HistoryRecord[] History)
+    { this.RunId=RunId; this.Hour=Hour; this.Json=Json; this.Seasons=Seasons; this.History=History; }
+    internal SaveSnapshot(GameState state,ArchivedSnapshot[] seasons,HistoryRecord[] history)
+    {
+        RunId=state.RunId; Hour=state.CompletedHours; Seasons=seasons; History=history;
+        json=new Lazy<string>(()=>JsonSerializer.Serialize(state));
+    }
 }
 
 public sealed partial class GameStore
@@ -68,23 +81,28 @@ public sealed partial class GameStore
             if(!columns.Contains(name)) { cmd.CommandText=$"ALTER TABLE hours ADD COLUMN {name} REAL"; cmd.ExecuteNonQuery(); }
     }
     static byte[] Compress(string json)
+        => Compress(Encoding.UTF8.GetBytes(json));
+    static byte[] Compress(byte[] bytes)
     {
         using var destination = new MemoryStream();
         using (var compressor = new BrotliStream(destination, CompressionLevel.Fastest, true))
-        { byte[] bytes = Encoding.UTF8.GetBytes(json); compressor.Write(bytes); }
+        { compressor.Write(bytes); }
         return destination.ToArray();
     }
-    static string Decode(byte[] data, int maximum = 128 * 1024 * 1024)
+    static byte[] Inflate(byte[] data, int maximum = 128 * 1024 * 1024)
     {
         using var source = new MemoryStream(data); using var decompressor = new BrotliStream(source, CompressionMode.Decompress);
         using var destination = new MemoryStream(); byte[] buffer = new byte[32768]; int length;
         while ((length = decompressor.Read(buffer)) > 0)
         { if (destination.Length + length > maximum) throw new InvalidDataException("저장 데이터 크기 제한"); destination.Write(buffer,0,length); }
-        return Encoding.UTF8.GetString(destination.ToArray());
+        return destination.ToArray();
     }
-    static string Hash(string json) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(json)));
-    static string CheckedDecode(byte[] bytes, string hash, int limit = 128 * 1024 * 1024)
-    { string json = Decode(bytes,limit); if (Hash(json) != hash) throw new InvalidDataException("저장 체크섬 불일치"); return json; }
+    static string Decode(byte[] data,int maximum=128*1024*1024) => Encoding.UTF8.GetString(Inflate(data,maximum));
+    static string Hash(string json) => Hash(Encoding.UTF8.GetBytes(json));
+    static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
+    static byte[] CheckedInflate(byte[] bytes,string hash,int limit=128*1024*1024)
+    { byte[] json=Inflate(bytes,limit); if(Hash(json)!=hash) throw new InvalidDataException("저장 체크섬 불일치"); return json; }
+    static string CheckedDecode(byte[] bytes,string hash,int limit=128*1024*1024) => Encoding.UTF8.GetString(CheckedInflate(bytes,hash,limit));
 
     public void Attach(GameEngine engine)
     {
@@ -126,19 +144,35 @@ public sealed partial class GameStore
         lock (pending) records = pending[state.RunId].Where(r => r.Hour <= state.CompletedHours).ToArray();
         EventRecord[] events;
         lock (pending) events = pendingEvents[state.RunId].Where(e => e.Hour <= state.CompletedHours).ToArray();
-        return new SaveSnapshot(state.RunId,state.CompletedHours,engine.Serialize(),seasons,records)
-        { Events = events, Reports = state.Stocks.SelectMany(s => s.Reports).Select(r => JsonSerializer.Deserialize<CompanyReport>(JsonSerializer.Serialize(r))!).ToArray() };
+        return new SaveSnapshot(CheckpointCopy.Freeze(state),seasons,records)
+        { Events = events, Reports = state.Stocks.SelectMany(s => s.Reports).Select(CheckpointCopy.Scalar).ToArray() };
+    }
+    static void CheckCheckpoint(byte[] bytes,string run,long hour)
+    {
+        // Validate the whole JSON without allocating a DOM for every participant/position.
+        var reader=new Utf8JsonReader(bytes); string? actualRun=null; long? actualHour=null;
+        if(!reader.Read() || reader.TokenType!=JsonTokenType.StartObject) throw new InvalidDataException("체크포인트 JSON 오류");
+        while(reader.Read())
+        {
+            if(reader.TokenType==JsonTokenType.EndObject) break;
+            if(reader.TokenType!=JsonTokenType.PropertyName) throw new InvalidDataException("체크포인트 JSON 오류");
+            bool isRun=reader.ValueTextEquals("RunId"),isHour=reader.ValueTextEquals("CompletedHours");
+            if(!reader.Read()) throw new InvalidDataException("체크포인트 JSON 오류");
+            if(isRun) actualRun=reader.GetString(); else if(isHour) actualHour=reader.GetInt64();
+            reader.Skip();
+        }
+        if(reader.TokenType!=JsonTokenType.EndObject || reader.Read() || actualRun!=run || actualHour!=hour)
+            throw new InvalidDataException("체크포인트 기록 범위 불일치");
     }
     public void WriteSnapshot(SaveSnapshot snapshot)
     {
         // All payloads are immutable. Compression and I/O do not read the live engine.
-        using (var header=JsonDocument.Parse(snapshot.Json))
-            if(header.RootElement.GetProperty("RunId").GetString()!=snapshot.RunId || header.RootElement.GetProperty("CompletedHours").GetInt64()!=snapshot.Hour ||
-                snapshot.History.Any(r=>r.Hour<0 || r.Hour>snapshot.Hour || r.Resolution is not (1 or 24)) || snapshot.Events.Any(e=>e.Hour<0 || e.Hour>snapshot.Hour))
-                throw new InvalidDataException("체크포인트 기록 범위 불일치");
-        var hours = snapshot.History.Select(r => (r, data:Compress(r.Json), hash:Hash(r.Json),
-            point:JsonSerializer.Deserialize<DailySnapshot>(r.Json)!)).ToArray();
-        byte[] state = Compress(snapshot.Json);
+        byte[] stateBytes=Encoding.UTF8.GetBytes(snapshot.Json); CheckCheckpoint(stateBytes,snapshot.RunId,snapshot.Hour);
+        if(snapshot.History.Any(r=>r.Hour<0 || r.Hour>snapshot.Hour || r.Resolution is not (1 or 24)) || snapshot.Events.Any(e=>e.Hour<0 || e.Hour>snapshot.Hour))
+            throw new InvalidDataException("체크포인트 기록 범위 불일치");
+        var hours = snapshot.History.Select(r => { byte[] bytes=Encoding.UTF8.GetBytes(r.Json);
+            return (r,data:Compress(bytes),hash:Hash(bytes),point:JsonSerializer.Deserialize<DailySnapshot>(bytes)!); }).ToArray();
+        byte[] state = Compress(stateBytes); string stateHash=Hash(stateBytes);
         var seasons = snapshot.Seasons.Select(r => (r,data:Compress(r.Json))).ToArray();
         lock (writeGate)
         {
@@ -186,7 +220,7 @@ public sealed partial class GameStore
             foreach (var report in snapshot.Reports) WriteReport(command,snapshot.RunId,report);
             command.CommandText = "INSERT INTO runs(id,hour,state,hash) VALUES($run,$hour,$state,$hash) ON CONFLICT(id) DO UPDATE SET hour=excluded.hour,state=excluded.state,hash=excluded.hash WHERE excluded.hour>=runs.hour";
             command.Parameters.Clear(); command.Parameters.AddWithValue("$run",snapshot.RunId); command.Parameters.AddWithValue("$hour",snapshot.Hour);
-            command.Parameters.AddWithValue("$state",state); command.Parameters.AddWithValue("$hash",Hash(snapshot.Json)); command.ExecuteNonQuery();
+            command.Parameters.AddWithValue("$state",state); command.Parameters.AddWithValue("$hash",stateHash); command.ExecuteNonQuery();
             if (activeRun == "" || activeRun == snapshot.RunId)
             {
                 command.CommandText = "INSERT INTO meta(key,value) VALUES('current',$run) ON CONFLICT(key) DO UPDATE SET value=excluded.value";
@@ -346,12 +380,16 @@ public sealed partial class GameStore
         public GameStore Store => store;
         List<DailySnapshot> Pending(long start,long end)
         {
-            lock (store.pending) return store.pending.GetValueOrDefault(run,[]).Where(r => r.Hour >= start && r.Hour <= end)
-                .Select(r => JsonSerializer.Deserialize<DailySnapshot>(r.Json)!).ToList();
+            HistoryRecord[] records;
+            lock (store.pending) records=store.pending.GetValueOrDefault(run,[]).Where(r => r.Hour >= start && r.Hour <= end).ToArray();
+            return records.Select(r=>JsonSerializer.Deserialize<DailySnapshot>(r.Json)!).ToList();
         }
         public DailySnapshot? At(long hour)
         {
-            var memory = Pending(0,hour).OrderByDescending(s => s.Hour).ThenBy(s => s.Resolution).FirstOrDefault();
+            HistoryRecord? latest;
+            lock(store.pending) latest=store.pending.GetValueOrDefault(run,[]).Where(r=>r.Hour<=hour)
+                .OrderByDescending(r=>r.Hour).ThenBy(r=>r.Resolution).FirstOrDefault();
+            var memory=latest is null ? null : JsonSerializer.Deserialize<DailySnapshot>(latest.Json);
             DailySnapshot? disk = null;
             if (store.databaseReady && File.Exists(store.SavePath))
             {
@@ -359,7 +397,7 @@ public sealed partial class GameStore
                 command.CommandText = "SELECT data,hash FROM hours WHERE run=$run AND hour<=$hour ORDER BY hour DESC,resolution ASC LIMIT 1";
                 command.Parameters.AddWithValue("$run",run); command.Parameters.AddWithValue("$hour",hour);
                 using var reader = command.ExecuteReader();
-                if (reader.Read()) disk = JsonSerializer.Deserialize<DailySnapshot>(CheckedDecode((byte[])reader[0],reader.GetString(1),2*1024*1024));
+                if (reader.Read()) disk = JsonSerializer.Deserialize<DailySnapshot>(CheckedInflate((byte[])reader[0],reader.GetString(1),2*1024*1024));
             }
             return memory is not null && (disk is null || memory.Hour >= disk.Hour) ? memory : disk;
         }
@@ -376,13 +414,27 @@ public sealed partial class GameStore
                 int perBucket=2+metrics.Length*2;
                 long stride = end-start+1<=maximumPoints ? 1 : Math.Max(1,(long)Math.Ceiling((end-start+1.0)/Math.Max(1,maximumPoints/perBucket)));
                 var keys = new HashSet<long>();
-                foreach (string selection in new[] { "min(hour)","max(hour)" }.Concat(metrics.SelectMany(metric=>new[] { $"hour,min({metric})",$"hour,max({metric})" })))
+                // Aggregate all extrema in one pass, then choose the earliest row at
+                // each extremum in one joined pass. Do not scan the full range 14 times.
+                using(var command=connection.CreateCommand())
                 {
-                    using var command = connection.CreateCommand();
-                    command.CommandText = $"SELECT {selection} FROM hours WHERE run=$run AND hour BETWEEN $start AND $end GROUP BY (hour-$start)/$stride";
+                    string aggregates=string.Join(',',metrics.SelectMany(m=>new[] { $"min({m}) AS lo_{m}",$"max({m}) AS hi_{m}" }));
+                    string selections=string.Join(',',metrics.SelectMany(m=>new[] {
+                        $"min(CASE WHEN f.{m}=b.lo_{m} THEN f.hour END)",$"min(CASE WHEN f.{m}=b.hi_{m} THEN f.hour END)" }));
+                    command.CommandText=$"""
+                        WITH filtered AS MATERIALIZED (
+                            SELECT hour,{string.Join(',',metrics)},(hour-$start)/$stride AS bucket
+                            FROM hours WHERE run=$run AND hour BETWEEN $start AND $end),
+                        buckets AS (
+                            SELECT bucket,min(hour) AS first,max(hour) AS last,{aggregates}
+                            FROM filtered GROUP BY bucket)
+                        SELECT b.first,b.last,{selections} FROM filtered f JOIN buckets b ON f.bucket=b.bucket
+                        GROUP BY b.bucket ORDER BY b.bucket
+                        """;
                     command.Parameters.AddWithValue("$run",run); command.Parameters.AddWithValue("$start",start);
                     command.Parameters.AddWithValue("$end",end); command.Parameters.AddWithValue("$stride",stride);
-                    using var reader = command.ExecuteReader(); while (reader.Read()) keys.Add(reader.GetInt64(0));
+                    using var reader=command.ExecuteReader(); while(reader.Read())
+                        for(int i=0;i<reader.FieldCount;i++) if(!reader.IsDBNull(i)) keys.Add(reader.GetInt64(i));
                 }
                 if (keys.Count > 0)
                 {
@@ -392,7 +444,7 @@ public sealed partial class GameStore
                     command.Parameters.AddWithValue("$run",run);
                     foreach (var (key,i) in keys.Select((key,i) => (key,i))) command.Parameters.AddWithValue(names[i],key);
                     using var reader = command.ExecuteReader();
-                    while (reader.Read()) rows.Add(JsonSerializer.Deserialize<DailySnapshot>(CheckedDecode((byte[])reader[0],reader.GetString(1),2*1024*1024))!);
+                    while (reader.Read()) rows.Add(JsonSerializer.Deserialize<DailySnapshot>(CheckedInflate((byte[])reader[0],reader.GetString(1),2*1024*1024))!);
                 }
             }
             rows.AddRange(Pending(start,end));
@@ -403,6 +455,51 @@ public sealed partial class GameStore
             return sampled;
         }
         List<long> Gaps(long start,long end)
+        {
+            var segments=new List<(long Start,long End,int First,int Last)>();
+            if(store.databaseReady && File.Exists(store.SavePath))
+            {
+                using var connection=store.Open(store.SavePath,true); using var command=connection.CreateCommand();
+                command.CommandText="""
+                    WITH headers AS MATERIALIZED (
+                        SELECT hour,min(resolution) AS resolution FROM hours
+                        WHERE run=$run AND hour BETWEEN $start AND $end GROUP BY hour),
+                    adjacent AS (
+                        SELECT hour,resolution,lag(hour) OVER(ORDER BY hour) AS previous,
+                        lag(resolution) OVER(ORDER BY hour) AS previous_resolution FROM headers)
+                    SELECT hour,resolution,previous,previous_resolution,0 AS last_row FROM adjacent
+                    WHERE previous IS NULL OR hour-previous>max(resolution,previous_resolution)
+                    UNION ALL SELECT hour,resolution,NULL,NULL,1 FROM headers WHERE hour=(SELECT max(hour) FROM headers)
+                    ORDER BY hour,last_row
+                    """;
+                command.Parameters.AddWithValue("$run",run); command.Parameters.AddWithValue("$start",start); command.Parameters.AddWithValue("$end",end);
+                using var reader=command.ExecuteReader(); long first=0; int firstResolution=1;
+                while(reader.Read())
+                {
+                    long hour=reader.GetInt64(0); int resolution=reader.GetInt32(1);
+                    if(reader.GetInt32(4)==1) { segments.Add((first,hour,firstResolution,resolution)); continue; }
+                    if(!reader.IsDBNull(2)) segments.Add((first,reader.GetInt64(2),firstResolution,reader.GetInt32(3)));
+                    first=hour; firstResolution=resolution;
+                }
+            }
+            (long Hour,int Resolution)[] memory;
+            lock(store.pending) memory=store.pending.GetValueOrDefault(run,[]).Where(r=>r.Hour>=start && r.Hour<=end)
+                .Select(r=>(r.Hour,r.Resolution)).ToArray();
+            // Migration/retry can introduce old mixed-resolution records inside a
+            // disk segment. Resolve those using every original header, as before.
+            if(segments.Count>0 && memory.Any(r=>r.Hour<segments[^1].End)) return OriginalGaps(start,end);
+            segments.AddRange(memory.Select(r=>(r.Hour,r.Hour,r.Resolution,r.Resolution)));
+            var gaps=new List<long>(); long previous=start; int previousResolution=1; bool seen=false;
+            foreach(var segment in segments.OrderBy(s=>s.Start).ThenByDescending(s=>s.End))
+            {
+                if(!seen && segment.Start>start || seen && segment.Start>previous && segment.Start-previous>Math.Max(previousResolution,segment.First)) gaps.Add(segment.Start);
+                if(!seen || segment.End>previous) { previous=segment.End; previousResolution=segment.Last; }
+                else if(segment.End==previous) previousResolution=Math.Min(previousResolution,segment.Last);
+                seen=true;
+            }
+            if(!seen || previous<end) gaps.Add(end); return gaps;
+        }
+        List<long> OriginalGaps(long start,long end)
         {
             var headers = new List<(long Hour,int Resolution)>();
             if (store.databaseReady && File.Exists(store.SavePath))

@@ -1,10 +1,14 @@
 # ALPHA EXCHANGE · 알파 익스체인지
 
+v1.4.0은 회사별 **지분 구조**와 주요 기관 주주 화면을 추가하고, 재무 집계·저장 준비·장기 통계 조회·화면 밖 그래프 처리를 최적화합니다. 종목 상세 또는 기업 재무 화면에서 지분을 열 수 있습니다. 최신 릴리스 첨부 파일은 **AlphaExchange-v1.4.0.apk 하나**입니다.
+
+[개발 진행표](docs/DEVELOPMENT-v1.4.0.md) · [릴리스 안내](docs/RELEASE-v1.4.0.md) · [성능 측정 재현](tools/PerformanceAudit/README.md)
+
 완전 오프라인 C# Android 주식 관찰 시뮬레이터입니다. **100개 기관과 10,000명 개인이 6개 분야의 30개 가상 회사**에 투자합니다. 플레이어는 시장·기관·정부·은행을 관찰합니다.
 
 **[최신 릴리스](https://github.com/hddy774/project-hora/releases/latest)** · **[APK 다운로드](https://github.com/hddy774/project-hora/releases/latest/download/AlphaExchange.apk)** · **[배포 소스 ZIP](https://github.com/hddy774/project-hora/releases/latest/download/AlphaExchange-Source.zip)**
 
-v1.3.0은 [PR #5](https://github.com/hddy774/project-hora/pull/5)에서 조사·계획·구현·검증을 진행합니다. [개발 진행표](docs/DEVELOPMENT-v1.3.0.md), [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
+v1.4.0은 [PR #5](https://github.com/hddy774/project-hora/pull/5)에서 조사·계획·구현·검증을 진행합니다. [개발 진행표](docs/DEVELOPMENT-v1.3.0.md), [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
 
 **설치 안내:** 사용자의 기존 서명키 없는 배포 지시에 따라 GitHub Actions에서 새 일회용 키로 APK에 서명합니다. 이전 릴리스에 덮어쓸 수 없고 재설치가 필요합니다. 앱 삭제는 내부 기록을 지웁니다. v1.3부터 통계 화면에서 게임·전체 통계를 ZIP으로 내보내고 가져올 수 있습니다. **v1.2에는 내보내기 기능이 없으므로 새 버전 설치만으로 삭제한 이전 기록을 복구할 수 없습니다.** 별도로 확보한 기존 내부 JSON/시즌 파일의 자동 이전은 같은 앱 데이터 디렉터리가 남아 있을 때 동작합니다.
 

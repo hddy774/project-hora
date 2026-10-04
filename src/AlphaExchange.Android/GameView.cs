@@ -17,6 +17,8 @@ public sealed partial class GameView : View
     readonly List<(RectF Rect, Action Action)> targets = [];
     readonly GameStore store;
     long lastSave;
+    string preparedRun="";
+    long preparedHour=-1,preparedTransaction=-1,preparedEvent=-1;
     readonly object saveGate = new();
     SaveSnapshot? pendingSave;
     bool saving;
@@ -41,6 +43,7 @@ public sealed partial class GameView : View
     float clipTop = 0, clipBottom = 100000;
     static readonly AColor Bg = Hex("#0B111B"), Card = Hex("#141E2B"), Card2 = Hex("#1C2939"), Stroke = Hex("#273446"), Ink = Hex("#F4F7F4"), Muted = Hex("#8493A7"), Lime = Hex("#DCFF7D"), Teal = Hex("#65DDC1"), Red = Hex("#FF8996");
     static readonly string[] Palette = ["#DCFF7D", "#C2AFFA", "#65DDC1", "#FFA97D", "#91BCFF", "#FF95BA", "#ADE7AD", "#E5CD84", "#A0D9FF", "#D6B0FF"];
+    static readonly AColor[] PaletteColors=Palette.Select(Hex).ToArray();
     AlphaExchange.Core.GameState S => game!.State;
     Trader Focus => game!.FocusTrader;
 
@@ -77,7 +80,7 @@ public sealed partial class GameView : View
             catch (Exception e) when (GameStore.StorageException(e)) { auto = false; Notify("시장 진행을 멈췄습니다. 최근 정상 저장을 보존합니다."); }
             if (store.PendingCount > 512 || lastCommitTime > 0 && now-lastCommitTime > 15000 && saving)
             { auto = false; Notify("기록 저장을 기다리며 일시정지했습니다."); }
-            if (now - lastSave >= 1000 || S.Season != previousSeason) Save();
+            if (now - lastSave >= 1000 || S.Season != previousSeason) Save(false);
             if (S.Season != previousSeason) Notify($"시즌 {previousSeason} 기록 완료 · 시즌 {S.Season} 시작");
             Invalidate();
         }
@@ -102,12 +105,15 @@ public sealed partial class GameView : View
         }
         Invalidate();
     }
-    void Save()
+    void Save(bool force=true)
     {
         if (game is null || fileBusy) return;
+        lastSave=Now;
+        if(!force && preparedRun==S.RunId && preparedHour==S.CompletedHours && preparedTransaction==S.NextTransactionId && preparedEvent==S.NextCorporateEventId) return;
         try
         {
-            var snapshot = store.PrepareSave(game); lastSave = Now;
+            var snapshot = store.PrepareSave(game);
+            preparedRun=S.RunId; preparedHour=S.CompletedHours; preparedTransaction=S.NextTransactionId; preparedEvent=S.NextCorporateEventId;
             lock (saveGate)
             {
                 pendingSave = snapshot;
@@ -154,6 +160,7 @@ public sealed partial class GameView : View
         lastCommitTime = Now;
         lobby = false; auto = true; lastTick = Now; page = 0; scroll = 0; rankingMetric = RankingMetric.Return; comparisonPeriod = ComparisonPeriod.Season;
         companyStock = companyTab = 0; companySeason = 0; operationsTab = false;
+        ownershipStock=ownershipPage=0;
         selectedStock = selectedTrader = -1; showResult = confirmNew = false;
         portfolioTab = 0; historyPage = selectedSeason = 0; seasonCache.Clear();
         Save(); Invalidate();
@@ -209,7 +216,7 @@ public sealed partial class GameView : View
             clipTop = 101; clipBottom = h - 145;
             try
             {
-                float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), _ => DrawNews(112 - scroll) };
+                float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), 7 => DrawOwnership(112 - scroll), _ => DrawNews(112 - scroll) };
                 maxScroll = Math.Max(0, end + scroll - (h - 160));
             }
             catch(Exception e) when(GameStore.StorageException(e))
@@ -237,8 +244,10 @@ public sealed partial class GameView : View
         c.Restore();
     }
 
+    bool Visible(float y,float height) => y+height>=clipTop && y<=clipBottom;
     void Box(float x, float y, float w, float height, AColor color, float radius = 18, AColor? border = null)
     {
+        if(!Visible(y,height)) return;
         paint.SetShader(null); paint.Color = color; paint.SetStyle(Paint.Style.Fill);
         c.DrawRoundRect(x, y, x + w, y + height, radius, radius, paint);
         if (border.HasValue)
@@ -247,6 +256,7 @@ public sealed partial class GameView : View
 
     void Text(string value, float x, float y, float size, AColor color, bool heavy = false, Paint.Align? align = null, bool headline = false)
     {
+        if(!Visible(y-size*1.5f,size*2)) return;
         paint.SetShader(null); paint.Color = color; paint.TextSize = size; paint.SetStyle(Paint.Style.Fill);
         paint.SetTypeface(headline ? display : heavy ? bold : normal); paint.TextAlign = align ?? Paint.Align.Left;
         c.DrawText(value, x, y, paint);
@@ -254,6 +264,7 @@ public sealed partial class GameView : View
 
     void TextFit(string value, float x, float y, float size, AColor color, float width, bool heavy = false)
     {
+        if(!Visible(y-size*1.5f,size*2)) return;
         paint.TextSize = size; paint.SetTypeface(heavy ? bold : normal);
         if (paint.MeasureText(value) > width)
         { while (value.Length > 0 && paint.MeasureText(value + "…") > width) value = value[..^1]; value += "…"; }
@@ -296,6 +307,7 @@ public sealed partial class GameView : View
 
     void Chart(IEnumerable<double> values, float x, float y, float width, float height, AColor color, bool fill = false)
     {
+        if(!Visible(y,height)) return;
         var data = values.ToArray(); if (data.Length < 2) data = [data.FirstOrDefault(), data.FirstOrDefault()];
         double low = data.Min(), high = data.Max();
         if (Math.Abs(high - low) < 1) { low -= 1; high += 1; }

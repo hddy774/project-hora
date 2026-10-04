@@ -20,7 +20,7 @@ public sealed partial class GameView
             Hit(x, top, 114, 30, () => { rankingMetric = metric; scroll = 0; });
         }
         y += 83;
-        var period = game!.Period(comparisonPeriod);
+        var period = game!.PeriodSummary(comparisonPeriod);
         var ranking = game.Ranking(rankingMetric, comparisonPeriod);
         Text(rankingMetric is RankingMetric.Cash or RankingMetric.Assets ? "자산·현금은 현재 잔액으로 정렬합니다." : "선택한 기간의 누적 성과로 정렬합니다.", 21, y, 10, Muted); y += 22;
         string Value(Trader bot)
@@ -98,12 +98,12 @@ public sealed partial class GameView
     {
         int index = selectedStock; var s = S.Stocks[index];
         float y = Modal(Math.Min(664, h - 16), () => selectedStock = -1);
-        Text(s.Symbol + "  /  " + s.Sector, 27, y + 37, 11, Hex(Palette[index % Palette.Length]), true);
+        Text(s.Symbol + "  /  " + s.Sector, 27, y + 37, 11, PaletteColors[index % Palette.Length], true);
         Text(s.Name, 27, y + 67, 22, Ink, true);
         Text($"₩{Money(s.Price)}", 27, y + 106, 32, Ink, true);
         Text(Percent(s.Change), 373, y + 104, 14, Direction(s.Change), true, Paint.Align.Right);
         int levels = h - y < 620 ? 3 : 5;
-        Chart(s.History.Select(v => (double)v), 28, y + 124, 344, 64, Hex(Palette[index % Palette.Length]), true);
+        Chart(s.History.Select(v => (double)v), 28, y + 124, 344, 64, PaletteColors[index % Palette.Length], true);
         Text($"분할 조정 120시간 · 시총 {ShortMoney(s.MarketCap)}원", 28, y + 209, 10, Muted);
         y += 232;
         Text("실시간 호가", 28, y, 16, Ink, true);
@@ -140,7 +140,8 @@ public sealed partial class GameView
             Text($"{buyer} 매수 / {seller} 매도", 28, y, 11, Muted);
             Text($"{t.Quantity}주 · {Money(t.Price)}원", 373, y, 11, Ink, true, Paint.Align.Right); y += 23;
         }
-        Button("기업 재무제표 5종 · 시즌 실적  →", 27, h - 67, 346, 45, () => { companyStock = index; companyTab = 0; companySeason = 0; selectedStock = -1; SetPage(6); });
+        Button("기업 재무제표 →",27,h-67,170,45,()=>{ companyStock=index; companyTab=0; companySeason=0; selectedStock=-1; SetPage(6); });
+        Button("지분 구조 →",207,h-67,166,45,()=>OpenOwnership(index),false);
     }
 
     void DrawTraderSheet()

@@ -85,6 +85,7 @@ public sealed partial class GameView
     }
     float Statement(string title, float y, (string label, string value)[] rows)
     {
+        if(!Visible(y,58+rows.Length*32)) return y+74+rows.Length*32;
         Box(20, y, 360, 58 + rows.Length * 32, Card, 17);
         Text(title, 36, y + 31, 16, Ink, true); Line(36, y + 44, 364, y + 44, Stroke);
         for (int i = 0; i < rows.Length; i++)
@@ -113,7 +114,7 @@ public sealed partial class GameView
         y += 49;
         if (statsTab == 3) return DrawEconomy(y);
         y = PeriodPicker(y);
-        var period = game.Period(comparisonPeriod);
+        var period = game.PeriodSummary(comparisonPeriod);
         if (statsTab == 2)
         {
             Box(20, y, 360, 83, Card, 16);
@@ -148,7 +149,7 @@ public sealed partial class GameView
         Metric("기간 거래량", $"{Money(period.Volume)}주", 20, y, 174);
         Metric("기간 거래대금", $"{ShortMoney(period.Turnover)}원", 206, y, 174); y += 84;
         Metric("매수 / 매도 잔량", $"{Money(stats.BidQuantity)} / {Money(stats.AskQuantity)}", 20, y, 360); y += 92;
-        var chartPoints = period.Points.ToArray();
+        var chartPoints = ChartPeriodPoints();
         y = TimeGraph("시가총액 추이",chartPoints,d=>d.Capitalization,y,"발행 주식 − 자사주 · 가격 × 주식 수 · 원");
         y = TimeGraph("가격 지수 · 상장/증자 효과 조정",chartPoints,d=>d.PriceIndex,y,"시작 1,000 · 배당락 반영");
         y = TimeGraph("총수익 지수 · 배당 재투자",chartPoints,d=>d.TotalReturnIndex,y,"시작 1,000 · 세전 배당 포함");

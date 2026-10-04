@@ -28,8 +28,11 @@ true time axes, gap flags, extrema, chart bounds and save atomicity remain.
 
 AUTOMATED CHECKS
 Command: dotnet run --project tests/AlphaExchange.Checks -c Release
-The CI and tagged release rerun the complete matching/economy/market/storage suite
-and new OwnershipChecks, and keep the actual result in the Actions signed artifact.
+GitHub Actions 37200178588 (c558578aa4493657f341037e36c5f6b2436f9acd):
+PASS 43,162,517 assertions; 16 seasons; 615,108 matched trades; Android Release PASS.
+Wall 58.13s; hour p50 3.55ms / p95 4.65ms / p99 7.39ms (100x budget 50ms/hour);
+JSON 24,956,863 bytes; serialize 79.9ms. Tagged release reruns these checks and
+keeps its actual result in the Actions signed artifact.
 Targeted --ownership-only: PASS 1,374,677 assertions on the final implementation;
 --market-only: PASS 4,132,608 assertions during implementation.
 Includes owner counts and physical stock conservation, short reservations/cancel,
@@ -57,7 +60,11 @@ Version 1.4.0, code 5; app ID com.alphaexchange.offline; min API26, target API34
 ARM64/x86_64 native SQLite packaged. No INTERNET permission. Existing target/compile
 mismatch and deprecated OS API warnings remain. Artwork manifest/checksums and 100
 portraits are unchanged. Android Release is compiled in CI and the release job.
-UI smoke observations are recorded in docs/UI-VERIFICATION-v1.4.0.md before merge.
+API26 x86_64 native smoke verified the ownership pie, physical share counts,
+category/outstanding ratios, lending/short disclosure, major holder/representative
+link and company switching. Existing migrated save committed hour 33 on Android;
+SQLite integrity and checkpoint SHA-256 verified. Observations and limits are in
+docs/UI-VERIFICATION-v1.4.0.md.
 Software emulator UI coverage does not imply physical-device performance coverage.
 
 DEPLOYMENT

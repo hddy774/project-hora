@@ -6,9 +6,9 @@ v1.4.0은 회사별 **지분 구조**와 주요 기관 주주 화면을 추가�
 
 완전 오프라인 C# Android 주식 관찰 시뮬레이터입니다. **100개 기관과 10,000명 개인이 6개 분야의 30개 가상 회사**에 투자합니다. 플레이어는 시장·기관·정부·은행을 관찰합니다.
 
-**[최신 릴리스](https://github.com/hddy774/project-hora/releases/latest)** · **[APK 다운로드](https://github.com/hddy774/project-hora/releases/latest/download/AlphaExchange.apk)** · **[배포 소스 ZIP](https://github.com/hddy774/project-hora/releases/latest/download/AlphaExchange-Source.zip)**
+**[최신 릴리스](https://github.com/hddy774/project-hora/releases/latest)** · **[APK 다운로드](https://github.com/hddy774/project-hora/releases/download/v1.4.0/AlphaExchange-v1.4.0.apk)**
 
-v1.4.0은 [PR #5](https://github.com/hddy774/project-hora/pull/5)에서 조사·계획·구현·검증을 진행합니다. [개발 진행표](docs/DEVELOPMENT-v1.3.0.md), [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
+v1.4.0은 [PR #6](https://github.com/hddy774/project-hora/pull/6)에서 지분 구조·성능 개선을 구현하고 검증합니다. 시장 경제의 기존 [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
 
 **설치 안내:** 사용자의 기존 서명키 없는 배포 지시에 따라 GitHub Actions에서 새 일회용 키로 APK에 서명합니다. 이전 릴리스에 덮어쓸 수 없고 재설치가 필요합니다. 앱 삭제는 내부 기록을 지웁니다. v1.3부터 통계 화면에서 게임·전체 통계를 ZIP으로 내보내고 가져올 수 있습니다. **v1.2에는 내보내기 기능이 없으므로 새 버전 설치만으로 삭제한 이전 기록을 복구할 수 없습니다.** 별도로 확보한 기존 내부 JSON/시즌 파일의 자동 이전은 같은 앱 데이터 디렉터리가 남아 있을 때 동작합니다.
 
@@ -46,7 +46,7 @@ Android 8.0 이상 ARM64 기기와 x86_64 에뮬레이터를 지원합니다. �
 
 휴장 없이 하루 24시간 거래합니다. 시즌은 30일이며 자산과 성적이 이어집니다. 앱을 벗어나면 저장하고 일시정지합니다. 닫힌 실제 시간은 자동 진행하지 않습니다. 고배속의 실제 처리량은 기기 성능에 따라 달라집니다.
 
-앱 전용 **`history-v5.sqlite`**에 모든 완료 게임 시간의 시장·회사·100개 기관 기록을 보관합니다. 현재 복원 상태·통계·기업행동·결산·시즌을 같은 WAL 트랜잭션으로 확정합니다. 실시간 약 1초마다 저장을 준비하고 파일 쓰기는 단일 백그라운드 작업자가 처리합니다. 기록 대기가 커지거나 쓰기가 실패하면 진행을 일시정지하며 미확정 기록을 버리지 않습니다. 강제 종료 시 마지막 확정 이후의 진행과 기록은 함께 되돌아갈 수 있습니다.
+앱 전용 **`history-v5.sqlite`**에 모든 완료 게임 시간의 시장·회사·100개 기관 기록을 보관합니다. 현재 복원 상태·통계·기업행동·결산·시즌을 같은 WAL 트랜잭션으로 확정합니다. 시장 상태가 달라지면 약 1초 간격으로 저장용 분리 복사본을 준비하고 JSON 직렬화·파일 쓰기는 단일 백그라운드 작업자가 처리합니다. 변화가 없는 자동 저장은 생략하며 일시정지·내보내기는 현재 진행을 저장합니다. 기록 대기가 커지거나 쓰기가 실패하면 진행을 일시정지하며 미확정 기록을 버리지 않습니다. 강제 종료 시 마지막 확정 이후의 진행과 기록은 함께 되돌아갈 수 있습니다.
 
 자동 정상 백업, 손상 원본 보존, 체크섬 검증과 복구를 제공합니다. 기존 `market-v4.json`/v3/v2와 남은 시즌 파일은 원본을 보존하며 이전합니다. 구버전 일별 기록은 일별로 보관하고, 없던 시간·지표는 만들어 채우지 않습니다. 새 회사의 공모는 기존 투자자에게 무료 주식을 주지 않습니다.
 
@@ -80,6 +80,6 @@ python3 scripts/check-artwork.py
 dotnet run --project tests/AlphaExchange.Checks -c Release -- --storage-load
 ```
 
-`.github/workflows/checks.yml`은 엔진·회계·저장·그림과 Android Release 빌드를 검사합니다. `.github/workflows/release.yml`은 **병합된 v1.3.0 태그**로 APK 생성 → 서명 → 앱 ID/버전/인증서 검증 → 소스/보고서/체크섬 업로드 → 다운로드 재검증 → 최신 릴리스 공개를 수행합니다. 공개 릴리스를 덮어쓰지 않습니다.
+`.github/workflows/checks.yml`은 엔진·회계·저장·그림과 Android Release 빌드를 검사합니다. `.github/workflows/release.yml`은 **병합된 v1.4.0 태그**로 APK 생성 → 서명 → 앱 ID/버전/인증서 검증 → APK 하나 업로드 → 다운로드 재검증 → 최신 릴리스 공개를 수행합니다. 공개 릴리스를 덮어쓰지 않습니다.
 
-이번 배포는 `tag=v1.3.0`, `generate_signing_key=true`로 실행합니다. 생성 키·비밀번호는 저장소/아티팩트에 포함하지 않고 종료 시 제거합니다. `SIGNING-INFO.txt`에 공개 인증서 지문과 빌드 소스를 기록합니다. 키가 재사용되지 않으므로 다음 새 키 배포도 재설치가 필요합니다. 업로드 중단 시 `signed_run_id`로 이미 검증한 서명 APK 아티팩트를 복구할 수 있습니다.
+이번 배포는 `tag=v1.4.0`, `generate_signing_key=true`로 실행합니다. 생성 키·비밀번호는 저장소/아티팩트에 포함하지 않고 종료 시 제거합니다. 릴리스 본문에는 APK 체크섬·공개 인증서 지문·빌드 소스를, Actions 내부 아티팩트에는 검증 로그와 `SIGNING-INFO.txt`를 기록합니다. 키가 재사용되지 않으므로 다음 새 키 배포도 재설치가 필요합니다. 업로드 중단 시 `signed_run_id`로 이미 검증한 서명 APK 아티팩트를 복구할 수 있습니다.

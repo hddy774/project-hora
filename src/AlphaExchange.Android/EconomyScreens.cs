@@ -28,18 +28,19 @@ public sealed partial class GameView
     {
         float estimated=Math.Max(156,57+rows.Count(r=>double.IsFinite(r.Value) && r.Value>0)*23);
         if(!Visible(y,estimated)) return y+Math.Max(160,estimated+15);
-        rows = rows.Where(r => double.IsFinite(r.Value) && r.Value > 0).ToArray();
-        float height = Math.Max(156, 57 + rows.Length * 23);
+        var slices = rows.Select((row,index)=>(row.Label,row.Value,ColorIndex:index))
+            .Where(r => double.IsFinite(r.Value) && r.Value > 0).ToArray();
+        float height = Math.Max(156, 57 + slices.Length * 23);
         Box(20, y, 360, height, Card, 17); Text(title, 36, y + 28, 14, Ink, true);
-        double total = rows.Sum(r => r.Value); float angle = -90;
+        double total = slices.Sum(r => r.Value); float angle = -90;
         using var bounds = new RectF(38, y + 47, 134, y + 143);
-        for (int i = 0; i < rows.Length; i++)
+        for (int i = 0; i < slices.Length; i++)
         {
-            var color = PaletteColors[i % Palette.Length]; float sweep = (float)(rows[i].Value / total * 360);
+            var color = PaletteColors[slices[i].ColorIndex % Palette.Length]; float sweep = (float)(slices[i].Value / total * 360);
             paint.SetShader(null); paint.Color = color; paint.SetStyle(Paint.Style.Fill); c.DrawArc(bounds, angle, sweep, true, paint); angle += sweep;
             Circle(155, y + 59 + i * 23, 3, color);
-            TextFit(rows[i].Label, 166, y + 63 + i * 23, 10, Muted, 132);
-            Text($"{rows[i].Value / total:P1}", 364, y + 63 + i * 23, 10, Ink, true, Paint.Align.Right);
+            TextFit(slices[i].Label, 166, y + 63 + i * 23, 10, Muted, 132);
+            Text($"{slices[i].Value / total:P1}", 364, y + 63 + i * 23, 10, Ink, true, Paint.Align.Right);
         }
         Circle(86, y + 95, 28, Card); Text(total > 0 ? "구성" : "자료 없음", 86, y + 99, 10, Muted, false, Paint.Align.Center);
         return y + Math.Max(160, height + 15);

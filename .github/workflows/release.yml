@@ -9,6 +9,11 @@ on:
         required: true
         default: v1.2.0
         type: string
+      generate_signing_key:
+        description: Generate a new one-time signing key (requires reinstall)
+        required: true
+        default: false
+        type: boolean
 permissions:
   contents: write
 concurrency:
@@ -69,36 +74,32 @@ jobs:
             dist/CORE-CHECKS.txt
             dist/ARTWORK-CHECKS.txt
           retention-days: 30
-      - name: Load existing Android release signing identity
+      - name: Sign APK with selected Android identity
         env:
+          GENERATE_SIGNING_KEY: ${{ inputs.generate_signing_key || false }}
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 || secrets.RELEASE_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64 }}
           STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD }}
         run: |
-          for setting in KEYSTORE_BASE64 STORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
-            if [ -z "${!setting}" ]; then
-              echo "::error::Existing Android signing configuration is missing: $setting. Configure ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS and ANDROID_KEY_PASSWORD in repository Actions secrets. The unsigned APK remains in the workflow artifact."
-              exit 1
-            fi
-          done
-          umask 077
-          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/hora-release.keystore"
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign \
-            --ks "$RUNNER_TEMP/hora-release.keystore" --ks-key-alias "$KEY_ALIAS" \
-            --ks-pass env:STORE_PASSWORD --key-pass env:KEY_PASSWORD \
-            --out dist/AlphaExchange.apk dist/AlphaExchange-unsigned.apk
-          rm -f "$RUNNER_TEMP/hora-release.keystore"
-      - name: Verify original signing certificate and APK identity
+          bash scripts/sign-release.sh dist/AlphaExchange-unsigned.apk dist/AlphaExchange.apk dist/SIGNING-INFO.txt
+      - name: Verify APK identity and release checksums
         run: |
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs dist/AlphaExchange.apk > dist/APK-VERIFICATION.txt
-          grep -F 'Signer #1 certificate SHA-256 digest: 9fd5aa86793e26beec38948dfae79d1981581f8e54abe0047025a863cc64f722' dist/APK-VERIFICATION.txt
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging dist/AlphaExchange.apk > dist/APK-BADGING.txt
           grep -F "package: name='com.alphaexchange.offline'" dist/APK-BADGING.txt
           grep -F "versionName='${RELEASE_TAG#v}'" dist/APK-BADGING.txt
           cd dist
-          sha256sum AlphaExchange.apk AlphaExchange-Source.zip VERIFICATION.txt CORE-CHECKS.txt ARTWORK-CHECKS.txt APK-VERIFICATION.txt APK-BADGING.txt > SHA256SUMS.txt
+          sha256sum AlphaExchange.apk AlphaExchange-Source.zip VERIFICATION.txt CORE-CHECKS.txt ARTWORK-CHECKS.txt APK-VERIFICATION.txt APK-BADGING.txt SIGNING-INFO.txt > SHA256SUMS.txt
           sha256sum --check SHA256SUMS.txt
+      - name: Keep verified signed APK for recovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.RELEASE_TAG }}-signed-release
+          path: |
+            dist/AlphaExchange.apk
+            dist/AlphaExchange-Source.zip
+            dist/*.txt
+          retention-days: 30
       - name: Publish and verify latest GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -109,8 +110,8 @@ jobs:
           else
             gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 기관 판단과 시즌 경제" --notes-file "docs/RELEASE-${RELEASE_TAG}.md"
           fi
-          gh release upload "$RELEASE_TAG" --clobber dist/AlphaExchange.apk dist/AlphaExchange-Source.zip dist/VERIFICATION.txt dist/CORE-CHECKS.txt dist/ARTWORK-CHECKS.txt dist/APK-VERIFICATION.txt dist/APK-BADGING.txt dist/SHA256SUMS.txt
+          gh release upload "$RELEASE_TAG" --clobber dist/AlphaExchange.apk dist/AlphaExchange-Source.zip dist/VERIFICATION.txt dist/CORE-CHECKS.txt dist/ARTWORK-CHECKS.txt dist/APK-VERIFICATION.txt dist/APK-BADGING.txt dist/SIGNING-INFO.txt dist/SHA256SUMS.txt
           mkdir -p "$RUNNER_TEMP/hora-download"
           gh release download "$RELEASE_TAG" --dir "$RUNNER_TEMP/hora-download"
           (cd "$RUNNER_TEMP/hora-download" && sha256sum --check SHA256SUMS.txt)
-          gh release edit "$RELEASE_TAG" --draft=false --latest
+          gh release edit "$RELEASE_TAG" --notes-file "docs/RELEASE-${RELEASE_TAG}.md" --draft=false --latest

@@ -4,7 +4,9 @@
 
 **[최신 배포 릴리스](https://github.com/hddy774/project-hora/releases/latest)** · **[서명된 APK](https://github.com/hddy774/project-hora/releases/latest/download/AlphaExchange.apk)** · **[배포 소스 ZIP](https://github.com/hddy774/project-hora/releases/latest/download/AlphaExchange-Source.zip)**
 
-v1.2.0의 소스 구현과 검증은 [PR #2](https://github.com/hddy774/project-hora/pull/2)에 있습니다. 태그를 푸시하면 GitHub Actions가 APK를 생성·검증하고 최신 릴리스를 공개합니다. 기존 배포 서명키가 Actions Secrets에 등록되어야 하며, 서명 검증 전에는 기존 최신 배포를 유지합니다.
+v1.2.0의 게임 구현은 [PR #2](https://github.com/hddy774/project-hora/pull/2), 기존 키 없이 자동 서명하는 배포 변경은 [PR #3](https://github.com/hddy774/project-hora/pull/3)에 있습니다. GitHub Actions가 APK를 생성·서명·검증하고 최신 릴리스를 공개합니다. 사용자 요청에 따라 이번 v1.2.0은 새 일회용 서명키를 자동 생성합니다.
+
+**설치 주의:** 이번 APK는 v1.1.0과 서명이 달라 덮어쓰기할 수 없습니다. 기존 앱 삭제 후 설치해야 하며, 삭제 시 로컬 저장 데이터가 삭제될 수 있습니다. 이번 자동 생성 키는 실행 종료 시 삭제되므로 다른 빌드에서 같은 서명을 재사용할 수 없습니다.
 
 ## v1.2.0
 
@@ -85,6 +87,8 @@ python3 scripts/check-artwork.py
 
 ## GitHub Actions APK 생성과 배포
 
-`.github/workflows/release.yml`은 병합된 `v1.2.0` 같은 기능 태그로 엔진/그림 검사 → Release APK 생성 → 기존 키 서명 → 인증서/앱 ID 검사 → APK·소스·체크섬 업로드 → 다운로드 재검증 → 최신 릴리스 공개를 실행합니다. Actions 화면에서 기존 태그로 수동 재실행할 수도 있습니다.
+`.github/workflows/release.yml`은 병합된 `v1.2.0` 같은 기능 태그로 엔진/그림 검사 → Release APK 생성 → 서명 → 인증서/앱 ID 검사 → APK·소스·체크섬 업로드 → 다운로드 재검증 → 최신 릴리스 공개를 실행합니다. 공개된 릴리스는 덮어쓰지 않습니다.
 
-저장소 Actions Secrets에 `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`를 등록합니다. 서명 인증서 SHA-256은 기존 v1.1.0과 같아야 합니다. 키가 없거나 인증서가 다르면 배포 단계가 실패하며, 만들어진 unsigned APK와 정확한 태그의 소스 ZIP은 실행의 빌드 Artifact에 남습니다. 비밀번호와 키는 로그·저장소·릴리스에 포함하지 않습니다.
+기본 배포는 저장소 Actions Secrets의 `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`를 사용하고 기존 v1.1.0 인증서와 일치하는지 검사합니다. 기존 키 없이 진행하려면 Actions의 수동 실행에서 `tag=v1.2.0`, `generate_signing_key=true`를 선택합니다. `scripts/sign-release.sh`가 새 키를 생성하며 제공해야 하는 서명 설정은 없습니다. 이 모드는 앱 업데이트 호환성을 유지하지 못하므로 이번 배포처럼 서명 변경이 승인된 경우에만 사용합니다.
+
+서명 방식·공개 인증서 SHA-256·빌드 소스/실행 정보는 `SIGNING-INFO.txt`로 배포합니다. APK 서명은 실제 생성된 인증서와 비교하고, 기존 키 모드에서는 원래 인증서도 비교합니다. 키·비밀번호는 로그·저장소·캐시·Artifact·릴리스에 포함하지 않으며 실행 종료 시 제거합니다. 빌드 Artifact에는 unsigned APK/소스, 서명 검증 후 Artifact에는 APK/소스/검증 보고서만 남습니다. 업로드가 중단되면 보관된 서명 APK로 복구할 수 있습니다.

@@ -3,7 +3,7 @@ ALPHA EXCHANGE v1.4.0 — ownership and performance verification, 2026-10-04 UTC
 IMPLEMENTATION
 Company ownership reconciles institutions + retail + founders + physical bank stock
 + treasury with issued stock. Outstanding stock excludes treasury; float excludes
-founders as well. Borrowed/returned stock obligations and lending reservations are
+founders as well. Borrowed stock return obligations and lending reservations are
 shown separately and never added twice. Institution holders sort by actual shares
 and stable owner ID, with pagination and representative links. Merger tombstones
 remain distinct from active companies.
@@ -28,10 +28,10 @@ true time axes, gap flags, extrema, chart bounds and save atomicity remain.
 
 AUTOMATED CHECKS
 Command: dotnet run --project tests/AlphaExchange.Checks -c Release
-GitHub Actions 37200178588 (c558578aa4493657f341037e36c5f6b2436f9acd):
+Final PR GitHub Actions 37202075317 (48283ea8a8ed1603a957d50c714e421c5616ebb7):
 PASS 43,162,517 assertions; 16 seasons; 615,108 matched trades; Android Release PASS.
-Wall 58.13s; hour p50 3.55ms / p95 4.65ms / p99 7.39ms (100x budget 50ms/hour);
-JSON 24,956,863 bytes; serialize 79.9ms. Tagged release reruns these checks and
+Wall 59.09s; hour p50 3.47ms / p95 5.77ms / p99 8.42ms (100x budget 50ms/hour);
+JSON 24,956,863 bytes; serialize 58.3ms. Tagged release reruns these checks and
 keeps its actual result in the Actions signed artifact.
 Targeted --ownership-only: PASS 1,374,677 assertions on the final implementation;
 --market-only: PASS 4,132,608 assertions during implementation.
@@ -79,3 +79,17 @@ New identity requires reinstall: export v1.3 history ZIP before removing the old
 then import into v1.4. v1.2 has no export UI. Uninstall removes internal data.
 Successfully committed hourly history persists; abrupt termination may roll back
 uncommitted progress/records together. Closed app time is not simulated.
+
+PUBLIC RELEASE VERIFIED
+PR #6 merged; v1.4.0 source/tag ce164504ec003ffe379a73ef9f3d7ecfd299a9f9.
+Actions 37202263636 SUCCESS; tagged checks PASS 43,162,517 assertions, 16 seasons,
+615,108 matches; hour p50 5.24ms / p95 8.02ms / p99 9.85ms; wall 78.80s,
+serialize 99.8ms / 24,956,863 bytes. Latest stable public release is v1.4.0.
+One attached file: AlphaExchange-v1.4.0.apk, 73,616,810 bytes.
+Anonymous public download and release asset digest match:
+APK SHA-256: 189b9a30a402fdb2abf4692c2bdc5f03fcb41977fb005d3c168822c6223ca9ae
+Verified public certificate SHA-256:
+01659f790d21075383efa22c147c318798c26c814f3295e74bd380fa9993a627
+aapt identity/API/ABI/no INTERNET and both native SQLite libraries verified.
+Release: https://github.com/hddy774/project-hora/releases/tag/v1.4.0
+Progress: docs/DEVELOPMENT-v1.4.0.md (all stages complete).

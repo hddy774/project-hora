@@ -8,7 +8,7 @@ v1.4.0은 회사별 **지분 구조**와 주요 기관 주주 화면을 추가�
 
 **[최신 릴리스](https://github.com/hddy774/project-hora/releases/latest)** · **[APK 다운로드](https://github.com/hddy774/project-hora/releases/download/v1.4.0/AlphaExchange-v1.4.0.apk)**
 
-v1.4.0은 [PR #6](https://github.com/hddy774/project-hora/pull/6)에서 지분 구조·성능 개선을 구현하고 검증합니다. 시장 경제의 기존 [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
+v1.4.0은 [PR #6](https://github.com/hddy774/project-hora/pull/6)의 지분 구조·성능 개선을 병합하고 GitHub Actions에서 생성한 APK를 최신 릴리스로 배포했습니다. 시장 경제의 기존 [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
 
 **설치 안내:** 사용자의 기존 서명키 없는 배포 지시에 따라 GitHub Actions에서 새 일회용 키로 APK에 서명합니다. 이전 릴리스에 덮어쓸 수 없고 재설치가 필요합니다. 앱 삭제는 내부 기록을 지웁니다. v1.3부터 통계 화면에서 게임·전체 통계를 ZIP으로 내보내고 가져올 수 있습니다. **v1.2에는 내보내기 기능이 없으므로 새 버전 설치만으로 삭제한 이전 기록을 복구할 수 없습니다.** 별도로 확보한 기존 내부 JSON/시즌 파일의 자동 이전은 같은 앱 데이터 디렉터리가 남아 있을 때 동작합니다.
 

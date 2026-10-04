@@ -25,14 +25,19 @@ public sealed partial class GameView : View
     Canvas c = null!;
     GameEngine? game;
     bool lobby = true, auto, showResult, help, confirmNew;
-    int page, selectedStock = -1, selectedTrader = -1, leagueFilter = -1, speed = 1;
+    int page, selectedStock = -1, selectedTrader = -1, speed = 1;
+    RankingMetric rankingMetric;
+    ComparisonPeriod comparisonPeriod;
+    int companyStock, companyTab;
+    long companySeason;
+    bool operationsTab;
     float scale = 1, h = 800, scroll, maxScroll, downY, lastY, downX;
     bool dragging;
     string toast = "";
     long toastUntil, lastTick;
     float clipTop = 0, clipBottom = 100000;
     static readonly AColor Bg = Hex("#0B111B"), Card = Hex("#141E2B"), Card2 = Hex("#1C2939"), Stroke = Hex("#273446"), Ink = Hex("#F4F7F4"), Muted = Hex("#8493A7"), Lime = Hex("#DCFF7D"), Teal = Hex("#65DDC1"), Red = Hex("#FF8996");
-    static readonly string[] Palette = ["#DCFF7D", "#C2AFFA", "#65DDC1", "#FFA97D", "#91BCFF", "#FF95BA", "#ADE7AD", "#E5CD84"];
+    static readonly string[] Palette = ["#DCFF7D", "#C2AFFA", "#65DDC1", "#FFA97D", "#91BCFF", "#FF95BA", "#ADE7AD", "#E5CD84", "#A0D9FF", "#D6B0FF"];
     AlphaExchange.Core.GameState S => game!.State;
     Trader Focus => game!.FocusTrader;
 
@@ -120,7 +125,8 @@ public sealed partial class GameView : View
     void Start()
     {
         game = new GameEngine((uint)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-        lobby = false; auto = true; lastTick = Now; page = 0; scroll = 0; leagueFilter = -1;
+        lobby = false; auto = true; lastTick = Now; page = 0; scroll = 0; rankingMetric = RankingMetric.Return; comparisonPeriod = ComparisonPeriod.Season;
+        companyStock = companyTab = 0; companySeason = 0; operationsTab = false;
         selectedStock = selectedTrader = -1; showResult = confirmNew = false;
         portfolioTab = 0; historyPage = selectedSeason = 0; seasonCache.Clear();
         Save(); Invalidate();
@@ -167,7 +173,7 @@ public sealed partial class GameView : View
             DrawHeader();
             c.Save(); c.ClipRect(0, 101, 400, h - 145);
             clipTop = 101; clipBottom = h - 145;
-            float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), _ => DrawNews(112 - scroll) };
+            float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), _ => DrawNews(112 - scroll) };
             maxScroll = Math.Max(0, end + scroll - (h - 160));
             c.Restore(); clipTop = 0; clipBottom = h;
             DrawFooter();

@@ -92,3 +92,5 @@ python3 scripts/check-artwork.py
 기본 배포는 저장소 Actions Secrets의 `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`를 사용하고 기존 v1.1.0 인증서와 일치하는지 검사합니다. 기존 키 없이 진행하려면 Actions의 수동 실행에서 `tag=v1.2.0`, `generate_signing_key=true`를 선택합니다. `scripts/sign-release.sh`가 새 키를 생성하며 제공해야 하는 서명 설정은 없습니다. 이 모드는 앱 업데이트 호환성을 유지하지 못하므로 이번 배포처럼 서명 변경이 승인된 경우에만 사용합니다.
 
 서명 방식·공개 인증서 SHA-256·빌드 소스/실행 정보는 `SIGNING-INFO.txt`로 배포합니다. APK 서명은 실제 생성된 인증서와 비교하고, 기존 키 모드에서는 원래 인증서도 비교합니다. 키·비밀번호는 로그·저장소·캐시·Artifact·릴리스에 포함하지 않으며 실행 종료 시 제거합니다. 빌드 Artifact에는 unsigned APK/소스, 서명 검증 후 Artifact에는 APK/소스/검증 보고서만 남습니다. 업로드가 중단되면 보관된 서명 APK로 복구할 수 있습니다.
+
+공개 단계 복구: 수동 실행의 `signed_run_id`에 기존 성공한 서명 단계의 실행 ID를 입력하면 `v1.2.0-signed-release` Artifact를 재사용합니다. 키·APK·소스를 새로 만들지 않으며, 원본 파일 체크섬·병합된 워크플로·태그와 소스 ZIP 커밋·인증서·앱 ID/버전을 다시 확인합니다. 복구에서는 `generate_signing_key` 옵션을 사용하지 않습니다. 초안 상태는 `gh release view --json isDraft`로 확인하고 공개된 릴리스는 교체하지 않습니다.

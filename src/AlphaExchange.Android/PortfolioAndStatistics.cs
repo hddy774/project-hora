@@ -64,7 +64,8 @@ public sealed partial class GameView
         foreach (var trade in tape)
         {
             bool buy = trade.BuyerId == t.Id;
-            Pill(buy ? "매수" : "매도", 22, y, buy ? Teal : Red, 44);
+            string action = buy ? trade.ShortCover ? "상환" : "매수" : trade.ShortSale ? "공매도" : "매도";
+            Pill(action, 22, y, buy ? Teal : Red, 44);
             Text($"{S.Stocks[trade.StockIndex].Symbol} · {trade.Quantity}주", 81, y + 17, 12, Ink);
             Text($"{Money(trade.Price)}원", 375, y + 17, 12, Ink, true, Paint.Align.Right);
             Text($"S{trade.Season} D{trade.Day:00} {trade.Hour:00}:00 · 상대 {((buy ? trade.SellerId : trade.BuyerId) <= 100 ? "기관" : "개인")}", 81, y + 35, 10, Muted);

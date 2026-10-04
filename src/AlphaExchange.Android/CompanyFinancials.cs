@@ -43,7 +43,8 @@ public sealed partial class GameView
         var graphReports = reports.Where(x => x.Season <= r.Season).ToArray();
         if (graphReports.Length == 0) graphReports = [r];
         Text(stock.Name, 21, y + 15, 20, Ink, true);
-        Text($"결산 S{r.Season} · 반영 뉴스 {r.NewsCount}건 · 다음 갱신 S{S.Season + 1} 시작", 21, y + 40, 10, Muted); y += 58;
+        string reportLabel = r.Season == 0 ? "기초 재무" : $"결산 S{r.Season}";
+        Text($"{reportLabel} · 반영 뉴스 {r.NewsCount}건 · 다음 갱신 S{S.Season + 1} 시작", 21, y + 40, 10, Muted); y += 58;
         string[] tabs = ["재무상태", "손익", "현금흐름", "자본변동", "재무비율"];
         for (int i = 0; i < tabs.Length; i++)
         {

@@ -11,7 +11,7 @@ public sealed partial class GameEngine
     public static readonly string[] StrategyDescriptions = ["가격의 흐름을 따라 호가를 조절합니다.", "추정 가치와 가격의 차이로 주문합니다.", "과열을 매도하고 하락에 매수 호가를 냅니다.", "공개된 뉴스에 따라 호가를 수정합니다.", "현금과 보유 종목의 비중을 관리합니다.", "여러 종목의 가격 차이와 기회를 탐색합니다."];
     public static readonly string[] AbilityNames = ["가치 분석", "기술 분석", "뉴스 해석", "위험 관리", "분산 설계", "주문 집행", "단타", "초단타", "거시 판단", "협상"];
     public static readonly string[] DispositionNames = ["신중형", "분석형", "기회형", "공격형", "교류형"];
-    public static readonly string[] MetricNames = ["수익률", "순수익", "자산", "현금", "거래량", "거래금액"];
+    public static readonly string[] MetricNames = ["수익률", "순수익", "순자산", "현금", "거래량", "거래금액"];
     public static readonly string[] PeriodNames = ["현재 시즌", "전체", "10일 전 대비", "5일 전 대비", "전일 대비"];
     public static readonly int[] Speeds = [1, 2, 5, 20, 50, 100];
     static readonly string[] Names = ["노바", "볼트", "루멘", "아틀라스", "픽셀", "오닉스", "테라", "제니스", "코멧", "에코", "벡터", "오리온", "네온", "루나", "제로", "시그마", "펄스", "퀀트", "코어", "아스트로"];

@@ -84,7 +84,7 @@ public sealed partial class GameView
     {
         var focus = Focus; long equity = focus.Equity(S.Stocks); double ret = focus.Return(S.Stocks);
         Box(20, y, 360, 166, Card, 22, Stroke);
-        Text($"{focus.Name}의 총 자산", 38, y + 30, 12, Muted);
+        Text($"{focus.Name}의 순자산", 38, y + 30, 12, Muted);
         Pill($"{game!.RankOf(focus.Id)}위 / 100", 278, y + 15, Lime, 84);
         Text($"₩{Money(equity)}", 37, y + 72, 32, Ink, true, headline: true);
         Text(Percent(ret), 39, y + 99, 14, Direction(ret), true);

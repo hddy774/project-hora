@@ -34,7 +34,7 @@ public sealed partial class GameEngine
     public LoanOffer LoanTerms(Trader t)
     {
         int grade = (int)t.CreditRating;
-        double ratio = CreditLimits[grade] * State.Government.Policy.LoanLimitMultiplier;
+        double ratio = Math.Clamp(CreditLimits[grade] * State.Government.Policy.LoanLimitMultiplier, .3, 1);
         // Borrow against owned capital. Borrowing again cannot enlarge its own limit.
         long limit = (long)(Math.Max(0, t.Equity(State.Stocks)) * ratio);
         return new LoanOffer(t.CreditRating, ratio, State.Government.Policy.BaseRate + CreditSpreads[grade], limit,

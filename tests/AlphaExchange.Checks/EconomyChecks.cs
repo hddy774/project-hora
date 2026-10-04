@@ -15,6 +15,9 @@ static class EconomyChecks
             check((int)offer.Rating == i && offer.AssetRatio == GameEngine.CreditLimits[i], "Nine credit grades and asset limits");
             if (i > 0) check(offer.AnnualRate > g.State.Government.Policy.BaseRate + GameEngine.CreditSpreads[i - 1], "Lower credit pays more interest");
         }
+        g.State.Government.Policy.LoanLimitMultiplier = .8;
+        check(g.LoanTerms(t).AssetRatio == .3, "C grade keeps the required 30 percent minimum under regulation");
+        g.State.Government.Policy.LoanLimitMultiplier = 1;
         t.CreditScore = 95; long own = t.Equity(g.State.Stocks); long cash = t.Cash;
         check(g.BorrowCash(t.Id, own) is null && t.LoanDebt == own && t.Cash == cash + own, "AAA may borrow 100 percent of own assets");
         check(g.LoanTerms(t).Limit == own && g.BorrowCash(t.Id, 1) is not null, "Borrowing cannot recursively expand its limit");
@@ -49,6 +52,8 @@ static class EconomyChecks
         operationGame.State.Government.Policy.Enforcement = 1;
         var op = operationGame.State.Operations[0]; op.EndsHour = 1; operationGame.AdvanceHour();
         check(op.Status == OperationStatus.Failed && op.Fine > 0 && operationGame.Owner(1).Fines > 0, "Detection produces fines and visible failure"); validate(operationGame);
+        var penalized = operationGame.Owner(3); operationGame.AssessFine(penalized, penalized.Cash + 1000);
+        check(penalized.FineDebt == 1000 && penalized.Cash == 0, "Unpaid fines remain a liability without negative cash"); validate(operationGame);
         var loss = new GameEngine(4); var a = loss.Owner(1); a.Abilities.RiskManagement = 100;
         foreach (var s in loss.State.Stocks) s.History = Enumerable.Range(0, 24).Select(i => (int)(s.Price * (1.3 - i * .3 / 23))).ToList();
         loss.AdvanceHour();
@@ -61,6 +66,10 @@ static class EconomyChecks
         for (int i = 0; i < 240; i++) loss.AdvanceHour();
         check(loss.State.Bots.All(b => b.Equity(loss.State.Stocks) > 0) && loss.State.Bots.Sum(b => b.Cash) > 0, "Ten-day bear simulation preserves institutional solvency and liquidity"); validate(loss);
         Console.WriteLine($"Bear scenario: solvent institutions={loss.State.Bots.Count(b => b.Equity(loss.State.Stocks) > 0)}, cash={loss.State.Bots.Sum(b => b.Cash):N0}");
+        var recovery = new GameEngine(301);
+        foreach (var s in recovery.State.Stocks) { s.Price = s.PreviousPrice = s.DayOpenPrice = 100; s.History = Enumerable.Repeat(100, 24).ToList(); }
+        for (int i = 0; i < 120; i++) recovery.AdvanceHour();
+        check(recovery.State.Stocks.Any(s => s.Price > 100), "Value demand can recover from the price floor"); validate(recovery);
         var company = new GameEngine(85); var previous = company.State.Stocks[0].Report;
         company.ApplyNewsImpact(0, 1); company.ApplyNewsImpact(1, -1);
         for (int i = 0; i < 720; i++) company.AdvanceHour();

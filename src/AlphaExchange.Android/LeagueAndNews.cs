@@ -153,7 +153,7 @@ public sealed partial class GameView
         Text($"시즌 {S.Season} · {game!.RankOf(bot.Id)}위", 166, y + 190, 15, Ink, true);
         Wrap(bot.Decision, 29, y + 250, 342, 12, Muted, 20);
         Box(27, y + 286, 346, 105, Card, 18);
-        Text("총 평가 자산", 44, y + 315, 12, Muted);
+        Text("총 평가 순자산", 44, y + 315, 12, Muted);
         Text($"₩{Money(bot.Equity(S.Stocks))}", 44, y + 353, 28, Ink, true);
         Text(Percent(bot.Return(S.Stocks)), 355, y + 381, 14, Direction(bot.Return(S.Stocks)), true, Paint.Align.Right);
         Text($"위험 관리 {bot.Abilities.RiskManagement} · 분산 {bot.Abilities.Diversification} · 대출 {ShortMoney(bot.LoanDebt)}원", 29, y + 421, 11, Muted);

@@ -1,0 +1,116 @@
+name: Build and publish Android release
+on:
+  push:
+    tags: ['v*.*.0']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing merged release tag
+        required: true
+        default: v1.2.0
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check release tag and merged source
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.0$ ]]
+          git merge-base --is-ancestor HEAD origin/main
+          python3 - <<'PY'
+          import os, xml.etree.ElementTree as ET
+          version = ET.parse('src/AlphaExchange.Android/AlphaExchange.Android.csproj').findtext('.//ApplicationDisplayVersion')
+          assert os.environ['RELEASE_TAG'] == 'v' + version, 'Tag and application version differ'
+          PY
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.318'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-35 build-tools;35.0.0'
+      - name: Install Android workload
+        run: dotnet workload install android --skip-manifest-update
+      - name: Verify simulation and artwork
+        run: |
+          mkdir -p dist
+          set -o pipefail
+          dotnet run --project tests/AlphaExchange.Checks -c Release | tee dist/CORE-CHECKS.txt
+          python3 scripts/check-artwork.py | tee dist/ARTWORK-CHECKS.txt
+      - name: Build APK from merged release tag
+        run: |
+          dotnet publish src/AlphaExchange.Android -c Release -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME" -o dist/build
+          cp dist/build/com.alphaexchange.offline.apk dist/AlphaExchange-unsigned.apk
+          git archive --format=zip --output=dist/AlphaExchange-Source.zip "$RELEASE_TAG"
+          cp VERIFICATION.txt dist/VERIFICATION.txt
+      - name: Keep unsigned build available for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.RELEASE_TAG }}-build
+          path: |
+            dist/AlphaExchange-unsigned.apk
+            dist/AlphaExchange-Source.zip
+            dist/CORE-CHECKS.txt
+            dist/ARTWORK-CHECKS.txt
+          retention-days: 30
+      - name: Load existing Android release signing identity
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 || secrets.RELEASE_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD }}
+        run: |
+          for setting in KEYSTORE_BASE64 STORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!setting}" ]; then
+              echo "::error::Existing Android signing configuration is missing: $setting. Configure ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS and ANDROID_KEY_PASSWORD in repository Actions secrets. The unsigned APK remains in the workflow artifact."
+              exit 1
+            fi
+          done
+          umask 077
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/hora-release.keystore"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign \
+            --ks "$RUNNER_TEMP/hora-release.keystore" --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass env:STORE_PASSWORD --key-pass env:KEY_PASSWORD \
+            --out dist/AlphaExchange.apk dist/AlphaExchange-unsigned.apk
+          rm -f "$RUNNER_TEMP/hora-release.keystore"
+      - name: Verify original signing certificate and APK identity
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs dist/AlphaExchange.apk > dist/APK-VERIFICATION.txt
+          grep -F 'Signer #1 certificate SHA-256 digest: 9fd5aa86793e26beec38948dfae79d1981581f8e54abe0047025a863cc64f722' dist/APK-VERIFICATION.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging dist/AlphaExchange.apk > dist/APK-BADGING.txt
+          grep -F "package: name='com.alphaexchange.offline'" dist/APK-BADGING.txt
+          grep -F "versionName='${RELEASE_TAG#v}'" dist/APK-BADGING.txt
+          cd dist
+          sha256sum AlphaExchange.apk AlphaExchange-Source.zip VERIFICATION.txt CORE-CHECKS.txt ARTWORK-CHECKS.txt APK-VERIFICATION.txt APK-BADGING.txt > SHA256SUMS.txt
+          sha256sum --check SHA256SUMS.txt
+      - name: Publish and verify latest GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            test "$(gh api "repos/$GH_REPO/releases/tags/$RELEASE_TAG" --jq .draft)" = true
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 기관 판단과 시즌 경제" --notes-file "docs/RELEASE-${RELEASE_TAG}.md"
+          fi
+          gh release upload "$RELEASE_TAG" --clobber dist/AlphaExchange.apk dist/AlphaExchange-Source.zip dist/VERIFICATION.txt dist/CORE-CHECKS.txt dist/ARTWORK-CHECKS.txt dist/APK-VERIFICATION.txt dist/APK-BADGING.txt dist/SHA256SUMS.txt
+          mkdir -p "$RUNNER_TEMP/hora-download"
+          gh release download "$RELEASE_TAG" --dir "$RUNNER_TEMP/hora-download"
+          (cd "$RUNNER_TEMP/hora-download" && sha256sum --check SHA256SUMS.txt)
+          gh release edit "$RELEASE_TAG" --draft=false --latest

@@ -8,46 +8,28 @@ public sealed partial class GameView
 {
     float DrawLeague(float y)
     {
-        Text("100개의 기관, 100명의 대표", 20, y + 23, 24, Ink, true);
-        Text($"6가지 전략 · 시즌 수익률로 경쟁하는 기관 리그", 21, y + 47, 12, Muted);
-        y += 66;
-        var ranking = game!.Ranking();
-        var leaders = ranking.Where(t => t.Id > 0).Take(3).ToArray();
-        for (int i = 0; i < leaders.Length; i++)
+        Text("100개 기관의 성과", 20, y + 23, 24, Ink, true);
+        Text("10개 능력과 성향 · 다양한 투자 기법을 혼합", 21, y + 47, 12, Muted); y += 64;
+        y = PeriodPicker(y);
+        for (int i = 0; i < GameEngine.MetricNames.Length; i++)
         {
-            var bot = leaders[i]; float x = 20 + i * 123;
-            Box(x, y + (i == 0 ? 0 : 9), 114, 145 - (i == 0 ? 0 : 9), Card, 18, i == 0 ? Lime : Stroke);
-            Text($"0{i + 1}", x + 13, y + 25, 10, i == 0 ? Lime : Muted, true);
-            Robot(bot.Id, x + 34, y + 29, 46);
-            Text(Representatives.Name(bot.Id), x + 57, y + 96, 12, Ink, true, Paint.Align.Center);
-            Text(Percent(bot.Return(S.Stocks)), x + 57, y + 121, 13, Direction(bot.Return(S.Stocks)), true, Paint.Align.Center);
-            int id = bot.Id; Hit(x, y, 114, 145, () => { selectedTrader = id; });
+            var metric = (RankingMetric)i; bool active = rankingMetric == metric;
+            float x = 20 + i % 3 * 123, top = y + i / 3 * 37;
+            Box(x, top, 114, 30, active ? Lime : Card2, 9);
+            Text(GameEngine.MetricNames[i], x + 57, top + 20, 11, active ? Bg : Muted, active, Paint.Align.Center);
+            Hit(x, top, 114, 30, () => { rankingMetric = metric; scroll = 0; });
         }
-        y += 161;
-        var focus = Focus;
-        Box(20, y, 360, 67, Card2, 16, Stroke);
-        Text($"#{game.RankOf(focus.Id):00}", 36, y + 39, 20, Lime, true);
-        Text($"관찰 중 · {focus.Name}", 103, y + 27, 13, Ink, true);
-        Text($"₩{Money(focus.Equity(S.Stocks))}", 103, y + 47, 11, Muted);
-        Text(Percent(focus.Return(S.Stocks)), 362, y + 39, 13, Direction(focus.Return(S.Stocks)), true, Paint.Align.Right);
-        Hit(20, y, 360, 67, () => SetPage(1));
-        y += 85;
-        string[] filters = ["전체 100", "모멘텀", "가치", "역추세", "뉴스", "분산", "탐험가"];
-        for (int i = 0; i < 7; i++)
+        y += 83;
+        var period = game!.Period(comparisonPeriod);
+        var ranking = game.Ranking(rankingMetric, comparisonPeriod);
+        Text(rankingMetric is RankingMetric.Cash or RankingMetric.Assets ? "자산·현금은 현재 잔액으로 정렬합니다." : "선택한 기간의 누적 성과로 정렬합니다.", 21, y, 10, Muted); y += 22;
+        string Value(Trader bot)
         {
-            int filter = i - 1; float x = 20 + i % 4 * 92, fy = y + i / 4 * 37;
-            bool active = leagueFilter == filter;
-            Box(x, fy, 84, 30, active ? Lime : Card, 9);
-            Text(filters[i], x + 42, fy + 20, 11, active ? Bg : Muted, active, Paint.Align.Center);
-            Hit(x, fy, 84, 31, () => { leagueFilter = filter; });
+            double value = game.RankingValue(bot, rankingMetric, comparisonPeriod, period.Start);
+            return rankingMetric == RankingMetric.Return ? Percent(value) : rankingMetric == RankingMetric.Volume ? Money((long)value) + "주" : "₩" + ShortMoney((long)value);
         }
-        y += 85;
-        Text("RANK / TRADER", 22, y + 8, 9, Muted, true);
-        Text("ASSETS / SEASON RETURN", 378, y + 8, 9, Muted, true, Paint.Align.Right);
-        y += 19;
         foreach (var (bot, rank) in ranking.Select((bot, i) => (bot, i + 1)))
         {
-            if (bot.Id == 0 || (leagueFilter >= 0 && (int)bot.Strategy != leagueFilter)) continue;
             if (y + 82 >= clipTop && y <= clipBottom)
             {
                 bool follow = S.FollowedId == bot.Id;
@@ -55,24 +37,25 @@ public sealed partial class GameView
                 Text($"{rank:00}", 34, y + 43, 12, rank < 4 ? Lime : Muted, true);
                 Robot(bot.Id, 59, y + 17, 41);
                 Text(Representatives.Name(bot.Id), 111, y + 29, 12, Ink, true);
-                Text(GameEngine.StrategyNames[(int)bot.Strategy], 111, y + 48, 10, Hex(Palette[(int)bot.Strategy]));
-                TextFit(bot.LastAction, 111, y + 65, 9, Muted, 136);
-                Text($"₩{ShortMoney(bot.Equity(S.Stocks))}", 363, y + 29, 13, Ink, true, Paint.Align.Right);
-                Text(Percent(bot.Return(S.Stocks)), 363, y + 50, 11, Direction(bot.Return(S.Stocks)), true, Paint.Align.Right);
-                int id = bot.Id; Hit(20, y, 360, 77, () => { selectedTrader = id; });
+                Text(GameEngine.DispositionNames[(int)bot.Disposition] + " · " + bot.CreditRating, 111, y + 48, 10, Teal);
+                TextFit(bot.Decision, 111, y + 65, 9, Muted, 137);
+                Text(Value(bot), 363, y + 29, 14, Lime, true, Paint.Align.Right);
+                Text($"자산 {ShortMoney(bot.Equity(S.Stocks))}", 363, y + 50, 10, Muted, false, Paint.Align.Right);
+                int id = bot.Id; Hit(20, y, 360, 77, () => selectedTrader = id);
             }
             y += 85;
         }
-        Text("기관 초기 자산 1,000만 원 · 개인 1만 명은 별도 참여", 200, y + 16, 10, Muted, false, Paint.Align.Center);
-        return y + 34;
+        return y + 20;
     }
 
     float DrawNews(float y)
     {
         Text("시장의 시그널", 20, y + 23, 24, Ink, true);
-        Text("6시간마다 도착하는 뉴스와 AI의 반응.", 21, y + 47, 12, Muted); y += 67;
+        Text("시즌 실적에 반영되는 뉴스와 대표들의 상호작용", 21, y + 47, 11, Muted); y += 65;
+        Button(operationsTab ? "대표 상호작용 · 작전  ⇄  뉴스 보기" : "시장 뉴스  ⇄  대표 상호작용 · 작전", 20, y, 360, 39, () => { operationsTab = !operationsTab; scroll = 0; }, false); y += 56;
+        if (operationsTab) return DrawOperations(y);
         int up = S.Stocks.Count(s => s.Change >= 0);
-        Metric("오늘의 상승 / 하락", $"{up}  /  {8 - up}", 20, y, 174);
+        Metric("오늘의 상승 / 하락", $"{up}  /  {S.Stocks.Count - up}", 20, y, 174);
         Metric("AI 누적 체결", $"{Money(S.TotalAiTrades)}건", 206, y, 174); y += 88;
         Box(20, y, 360, 56, Card2, 13);
         Text("뉴스가 호가 판단에 반영되는 가상 시장", 36, y + 23, 12, Lime, true);
@@ -85,7 +68,7 @@ public sealed partial class GameView
             Pill(news.Impact > 0 ? "긍정 신호" : "주의 신호", 35, y + 14, news.Impact > 0 ? Teal : Red, 70);
             Text($"D{news.Day:00} {news.Hour:00}:00 · {S.Stocks[news.StockIndex].Symbol}", 363, y + 30, 10, Muted, false, Paint.Align.Right);
             float after = Wrap(news.Headline, 36, y + 62, 328, 14, Ink, 22);
-            Text("투자 심리에 영향을 주는 새로운 소식입니다.", 36, Math.Max(after + 4, y + 112), 11, Muted);
+            Text("월말 기업 실적과 기관 판단에 반영됩니다.", 36, Math.Max(after + 4, y + 112), 11, Muted);
             Text("종목 살펴보기  ↗", 362, y + 136, 10, news.Impact > 0 ? Teal : Red, true, Paint.Align.Right);
             int index = news.StockIndex;
             Hit(20, y, 360, 152, () => { selectedStock = index; });
@@ -155,7 +138,7 @@ public sealed partial class GameView
             Text($"{buyer} 매수 / {seller} 매도", 28, y, 11, Muted);
             Text($"{t.Quantity}주 · {Money(t.Price)}원", 373, y, 11, Ink, true, Paint.Align.Right); y += 23;
         }
-        Button("시장으로 돌아가기", 27, h - 67, 346, 45, () => selectedStock = -1);
+        Button("기업 재무제표 5종 · 시즌 실적  →", 27, h - 67, 346, 45, () => { companyStock = index; companyTab = 0; companySeason = 0; selectedStock = -1; SetPage(6); });
     }
 
     void DrawTraderSheet()
@@ -166,17 +149,17 @@ public sealed partial class GameView
         Text("INSTITUTION " + bot.Id.ToString("000"), 166, y + 62, 10, Lime, true);
         Text(Representatives.Name(bot.Id), 166, y + 98, 25, Ink, true);
         Text(bot.Name, 166, y + 124, 14, Muted);
-        Text(GameEngine.StrategyNames[(int)bot.Strategy], 166, y + 155, 14, Hex(Palette[(int)bot.Strategy]), true);
+        Text(GameEngine.DispositionNames[(int)bot.Disposition] + " · 신용 " + bot.CreditRating, 166, y + 155, 13, Teal, true);
         Text($"시즌 {S.Season} · {game!.RankOf(bot.Id)}위", 166, y + 190, 15, Ink, true);
-        Wrap(GameEngine.StrategyDescriptions[(int)bot.Strategy], 29, y + 255, 342, 12, Muted, 20);
+        Wrap(bot.Decision, 29, y + 250, 342, 12, Muted, 20);
         Box(27, y + 286, 346, 105, Card, 18);
-        Text("총 평가 자산", 44, y + 315, 12, Muted);
+        Text("총 평가 순자산", 44, y + 315, 12, Muted);
         Text($"₩{Money(bot.Equity(S.Stocks))}", 44, y + 353, 28, Ink, true);
         Text(Percent(bot.Return(S.Stocks)), 355, y + 381, 14, Direction(bot.Return(S.Stocks)), true, Paint.Align.Right);
-        Text($"위험 선호 {bot.Risk:P0} · 체결 {Money(bot.Trades)}회", 29, y + 421, 12, Muted);
+        Text($"위험 관리 {bot.Abilities.RiskManagement} · 분산 {bot.Abilities.Diversification} · 대출 {ShortMoney(bot.LoanDebt)}원", 29, y + 421, 11, Muted);
         TextFit(bot.LastAction, 29, y + 447, 12, Muted, 341);
-        Button("포트폴리오 · 재무제표 · 시즌 성적  →", 27, h - 80, 346, 52, () =>
-        { S.FollowedId = bot.Id; portfolioTab = 0; historyPage = 0; selectedTrader = -1; SetPage(1); Save(); });
+        Button("포트폴리오 · 대표 능력 · 신용/은행  →", 27, h - 80, 346, 52, () =>
+        { S.FollowedId = bot.Id; portfolioTab = 3; historyPage = 0; selectedTrader = -1; SetPage(1); Save(); });
     }
 
     void DrawResults() { showResult = false; SetPage(4); }
@@ -189,16 +172,16 @@ public sealed partial class GameView
         string[] titles = ["01  기관 100개, 개인 10,000명", "02  호가 경쟁으로 결정되는 주가", "03  현실 120초 = 게임 1일", "04  끝없이 이어지는 30일 시즌"];
         string[] body = [
             "기관은 1,000만 원, 개인은 10만 원의 현금과 주식으로 시작합니다. 플레이어는 시장을 관찰합니다.",
-            "서로의 매수·매도 호가가 가격과 시간 순서로 체결됩니다. 체결 때만 주가가 변하며 양쪽 수수료는 0.15%입니다.",
+            "서로의 매수·매도 호가가 가격과 시간 순서로 체결됩니다. 체결 때만 주가가 변합니다. 수수료·세금·금리·공매도 규칙은 정부 정책에 따라 바뀝니다.",
             "1배속에서 실제 5초마다 게임 시간 1시간이 지납니다. 24시간, 즉 실제 120초가 게임의 하루입니다.",
-            "시즌 시작 자산 대비 수익률로 기관 순위를 기록합니다. 시즌이 바뀌어도 자산과 시장은 이어집니다."
+            "시즌 시작 자산 대비 수익률로 기관 순위를 기록합니다. 시즌마다 기업 결산과 정부 정책이 바뀝니다. 자산과 시장은 이어집니다."
         ];
         float row = y + 123;
         for (int i = 0; i < titles.Length; i++)
         { Text(titles[i], 28, row, 15, Ink, true); row = Wrap(body[i], 28, row + 27, 340, 12, Muted, 20) + 22; }
         Box(27, y + 493, 346, 66, Card, 14);
         Text("자유로운 관찰 · 자동 저장", 41, y + 516, 12, Teal, true);
-        Text("1×·2×·5×·20× 지원 · 앱을 벗어나면 자동 일시정지", 41, y + 542, 10, Muted);
+        Text("1×·2×·5×·20×·50×·100× · 앱을 벗어나면 일시정지", 41, y + 542, 10, Muted);
         Button("준비됐어요", 27, y + 579, 346, 50, () => help = false);
     }
 

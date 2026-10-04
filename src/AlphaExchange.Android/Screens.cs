@@ -23,7 +23,7 @@ public sealed partial class GameView
         Text("THE AUTONOMOUS MARKET SIMULATOR", 26, 174, 10, Muted, true);
         float y = h - 294;
         Box(20, y, 360, 83, Card, 20, Stroke);
-        string[] values = ["100", "10,000", "20×"], labels = ["기관 AI", "개인 AI", "최대 관찰 속도"];
+        string[] values = ["100", "10,000", "100×"], labels = ["기관 AI", "개인 AI", "최대 관찰 속도"];
         for (int i = 0; i < 3; i++)
         {
             Text(values[i], 80 + i * 120, y + 35, i == 2 ? 21 : 26, i == 0 ? Lime : Ink, true, Paint.Align.Center);
@@ -39,7 +39,7 @@ public sealed partial class GameView
         else
         {
             Button("시뮬레이션 시작  →", 20, h - 166, 360, 52, Start);
-            Button("100 AI · 6가지 투자 전략", 20, h - 103, 360, 45, () => help = true, false);
+            Button("대표 능력 · 공매도 · 정부와 은행", 20, h - 103, 360, 45, () => help = true, false);
         }
         Text("시뮬레이션 안내", 200, h - 28, 12, Muted, false, Paint.Align.Center);
         Hit(110, h - 53, 180, 47, () => help = true);
@@ -51,7 +51,7 @@ public sealed partial class GameView
         Text("ALPHA", 57, 29, 15, Ink, true, headline: true);
         Text("EXCHANGE", 58, 44, 9, Muted, true);
         Hit(14, 7, 151, 45, () => { lobby = true; auto = false; Save(); });
-        Pill("v1.1.0 · OFFLINE", 207, 20, Teal, 128);
+        Pill("v1.2.0 · OFFLINE", 207, 20, Teal, 128);
         Circle(360, 32, 15, Card2); Text("?", 360, 37, 15, Ink, true, Paint.Align.Center);
         Hit(338, 9, 43, 45, () => { help = true; });
         Text($"S{S.Season} · DAY {S.Day:00}/30", 21, 77, 18, Ink, true);
@@ -67,7 +67,7 @@ public sealed partial class GameView
         Line(20, h - 146, 380, h - 146, Stroke);
         Text("1시간 = 5초", 21, h - 116, 10, Muted);
         Text("1일 = 120초 · 1×", 21, h - 96, 10, Muted);
-        Button($"{speed}×", 122, h - 132, 46, 49, () => { lastTick = Now; speed = speed == 1 ? 2 : speed == 2 ? 5 : speed == 5 ? 20 : 1; }, false);
+        Button($"{speed}×", 116, h - 132, 60, 49, () => { lastTick = Now; speed = GameEngine.Speeds[(Array.IndexOf(GameEngine.Speeds, speed) + 1) % GameEngine.Speeds.Length]; }, false);
         Button(auto ? "Ⅱ   일시정지" : "▷   관찰 재개", 176, h - 132, 204, 49, ToggleSimulation);
         string[] labels = ["시장", "자산", "기관", "통계", "시즌", "뉴스"];
         for (int i = 0; i < labels.Length; i++)
@@ -84,7 +84,7 @@ public sealed partial class GameView
     {
         var focus = Focus; long equity = focus.Equity(S.Stocks); double ret = focus.Return(S.Stocks);
         Box(20, y, 360, 166, Card, 22, Stroke);
-        Text($"{focus.Name}의 총 자산", 38, y + 30, 12, Muted);
+        Text($"{focus.Name}의 순자산", 38, y + 30, 12, Muted);
         Pill($"{game!.RankOf(focus.Id)}위 / 100", 278, y + 15, Lime, 84);
         Text($"₩{Money(equity)}", 37, y + 72, 32, Ink, true, headline: true);
         Text(Percent(ret), 39, y + 99, 14, Direction(ret), true);
@@ -94,7 +94,7 @@ public sealed partial class GameView
         Text($"₩{ShortMoney(focus.Cash)}", 358, y + 145, 15, Ink, true, Paint.Align.Right);
         y += 183;
         Text("MARKET PULSE", 22, y + 11, 10, Lime, true);
-        Text("8개 가상 종목", 379, y + 11, 10, Muted, false, Paint.Align.Right);
+        Text("10개 가상 종목", 379, y + 11, 10, Muted, false, Paint.Align.Right);
         y += 27;
         var news = S.News.First();
         Box(20, y, 360, 52, Card2, 13);

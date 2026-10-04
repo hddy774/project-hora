@@ -64,6 +64,15 @@ public sealed partial class GameView
         Button("다음 →", 288, y, 92, 39, () => { selectedSeason++; scroll = 0; }, false, selectedSeason < S.Season - 1); y += 54;
         var result = Season(selectedSeason);
         if (result is null) { Text("기록을 읽을 수 없습니다.", 22, y + 24, 13, Muted); return y + 70; }
+        if (result.Start is not null && result.End is not null)
+        {
+            y = Statement("시즌 시작 → 종료", y, [("시가총액", ShortMoney(result.Start.Capitalization) + " → " + ShortMoney(result.End.Capitalization)),
+                ("거래량", Money(result.End.Volume - result.Start.Volume) + "주"), ("거래금액", ShortMoney(result.End.Turnover - result.Start.Turnover) + "원"),
+                ("기관 순자산", ShortMoney(result.Start.InstitutionEquity) + " → " + ShortMoney(result.End.InstitutionEquity))]);
+            y = Graph("시즌 중 시장 추이", result.Days.Prepend(result.Start).Select(d => (double)d.Capitalization), y, $"시즌 {selectedSeason} · 일별 유통 시가총액 · 원");
+            y = Pie("시즌 종료 순자산 구성", [("기관", result.End.InstitutionEquity), ("개인", result.End.RetailEquity)], y);
+            Button("이 시즌의 기업 결산  →", 20, y, 360, 40, () => { companySeason = selectedSeason; companyStock = companyTab = 0; SetPage(6); }, false); y += 56;
+        }
         var winner = result.Standings[0];
         Box(20, y, 360, 150, Card, 18, Lime); Portrait(winner.TraderId, 30, y + 10, 82, 130);
         Text("SEASON CHAMPION", 132, y + 27, 10, Lime, true);

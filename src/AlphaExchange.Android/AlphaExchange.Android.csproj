@@ -5,8 +5,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>AlphaExchange.App</RootNamespace>
     <ApplicationId>com.alphaexchange.offline</ApplicationId>
-    <ApplicationVersion>3</ApplicationVersion>
-    <ApplicationDisplayVersion>1.2.0</ApplicationDisplayVersion>
+    <ApplicationVersion>4</ApplicationVersion>
+    <ApplicationDisplayVersion>1.3.0</ApplicationDisplayVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AndroidPackageFormats>apk</AndroidPackageFormats>
@@ -18,6 +18,8 @@
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   <ItemGroup>
+    <AndroidAsset Include="../../THIRD-PARTY-NOTICES.txt" Link="Assets/THIRD-PARTY-NOTICES.txt" />
+    <AndroidAsset Include="../../licenses/*.txt" Link="Assets/licenses/%(Filename)%(Extension)" />
     <ProjectReference Include="../AlphaExchange.Core/AlphaExchange.Core.csproj" />
   </ItemGroup>
 </Project>

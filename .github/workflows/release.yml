@@ -7,7 +7,7 @@ on:
       tag:
         description: Existing merged release tag
         required: true
-        default: v1.2.0
+        default: v1.3.0
         type: string
       generate_signing_key:
         description: Generate a new one-time signing key (requires reinstall)
@@ -145,7 +145,7 @@ jobs:
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true
           else
-            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 기관 판단과 시즌 경제" --notes-file "docs/RELEASE-${RELEASE_TAG}.md"
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 기업 가치와 이어지는 통계" --notes-file "docs/RELEASE-${RELEASE_TAG}.md"
           fi
           gh release upload "$RELEASE_TAG" --clobber dist/AlphaExchange.apk dist/AlphaExchange-Source.zip dist/VERIFICATION.txt dist/CORE-CHECKS.txt dist/ARTWORK-CHECKS.txt dist/APK-VERIFICATION.txt dist/APK-BADGING.txt dist/SIGNING-INFO.txt dist/SHA256SUMS.txt
           mkdir -p "$RUNNER_TEMP/hora-download"

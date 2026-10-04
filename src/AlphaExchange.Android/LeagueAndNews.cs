@@ -25,7 +25,7 @@ public sealed partial class GameView
         Text(rankingMetric is RankingMetric.Cash or RankingMetric.Assets ? "자산·현금은 현재 잔액으로 정렬합니다." : "선택한 기간의 누적 성과로 정렬합니다.", 21, y, 10, Muted); y += 22;
         string Value(Trader bot)
         {
-            double value = game.RankingValue(bot, rankingMetric, comparisonPeriod, period.Start);
+            double value = game.RankingValue(bot, rankingMetric, comparisonPeriod, period.Start, comparisonPeriod == ComparisonPeriod.Custom ? period.End : null);
             return rankingMetric == RankingMetric.Return ? Percent(value) : rankingMetric == RankingMetric.Volume ? Money((long)value) + "주" : "₩" + ShortMoney((long)value);
         }
         foreach (var (bot, rank) in ranking.Select((bot, i) => (bot, i + 1)))
@@ -53,9 +53,11 @@ public sealed partial class GameView
         Text("시장의 시그널", 20, y + 23, 24, Ink, true);
         Text("시즌 실적에 반영되는 뉴스와 대표들의 상호작용", 21, y + 47, 11, Muted); y += 65;
         Button(operationsTab ? "대표 상호작용 · 작전  ⇄  뉴스 보기" : "시장 뉴스  ⇄  대표 상호작용 · 작전", 20, y, 360, 39, () => { operationsTab = !operationsTab; scroll = 0; }, false); y += 56;
+        Button(corporateTab ? "기업행동 · 배당/분할/합병  ⇄  시장 보기" : "기업행동 · 배당/분할/합병 기록  →",20,y,360,39,()=>{ corporateTab=!corporateTab; scroll=0; },false); y+=56;
+        if(corporateTab) return DrawCorporateEvents(y);
         if (operationsTab) return DrawOperations(y);
-        int up = S.Stocks.Count(s => s.Change >= 0);
-        Metric("오늘의 상승 / 하락", $"{up}  /  {S.Stocks.Count - up}", 20, y, 174);
+        int up = S.Stocks.Count(s => s.Active && s.Change >= 0);
+        Metric("오늘의 상승 / 하락", $"{up}  /  {S.Stocks.Count(s=>s.Active) - up}", 20, y, 174);
         Metric("AI 누적 체결", $"{Money(S.TotalAiTrades)}건", 206, y, 174); y += 88;
         Box(20, y, 360, 56, Card2, 13);
         Text("뉴스가 호가 판단에 반영되는 가상 시장", 36, y + 23, 12, Lime, true);
@@ -96,13 +98,13 @@ public sealed partial class GameView
     {
         int index = selectedStock; var s = S.Stocks[index];
         float y = Modal(Math.Min(664, h - 16), () => selectedStock = -1);
-        Text(s.Symbol + "  /  " + s.Sector, 27, y + 37, 11, Hex(Palette[index]), true);
+        Text(s.Symbol + "  /  " + s.Sector, 27, y + 37, 11, Hex(Palette[index % Palette.Length]), true);
         Text(s.Name, 27, y + 67, 22, Ink, true);
         Text($"₩{Money(s.Price)}", 27, y + 106, 32, Ink, true);
         Text(Percent(s.Change), 373, y + 104, 14, Direction(s.Change), true, Paint.Align.Right);
         int levels = h - y < 620 ? 3 : 5;
-        Chart(s.History.Select(v => (double)v), 28, y + 124, 344, 64, Hex(Palette[index]), true);
-        Text($"최근 120시간 · 오늘 {Money(s.DayVolume)}주 체결", 28, y + 209, 10, Muted);
+        Chart(s.History.Select(v => (double)v), 28, y + 124, 344, 64, Hex(Palette[index % Palette.Length]), true);
+        Text($"분할 조정 120시간 · 시총 {ShortMoney(s.MarketCap)}원", 28, y + 209, 10, Muted);
         y += 232;
         Text("실시간 호가", 28, y, 16, Ink, true);
         Text("기 = 기관 · 개 = 개인", 373, y, 10, Muted, false, Paint.Align.Right);
@@ -172,9 +174,9 @@ public sealed partial class GameView
         string[] titles = ["01  기관 100개, 개인 10,000명", "02  호가 경쟁으로 결정되는 주가", "03  현실 120초 = 게임 1일", "04  끝없이 이어지는 30일 시즌"];
         string[] body = [
             "기관은 1,000만 원, 개인은 10만 원의 현금과 주식으로 시작합니다. 플레이어는 시장을 관찰합니다.",
-            "서로의 매수·매도 호가가 가격과 시간 순서로 체결됩니다. 체결 때만 주가가 변합니다. 수수료·세금·금리·공매도 규칙은 정부 정책에 따라 바뀝니다.",
+            "서로의 매수·매도 호가가 가격과 시간 순서로 체결됩니다. 배당락·분할 때 기준 가격도 조정됩니다. 수수료·세금·금리·공매도 규칙은 정부 정책에 따라 바뀝니다.",
             "1배속에서 실제 5초마다 게임 시간 1시간이 지납니다. 24시간, 즉 실제 120초가 게임의 하루입니다.",
-            "시즌 시작 자산 대비 수익률로 기관 순위를 기록합니다. 시즌마다 기업 결산과 정부 정책이 바뀝니다. 자산과 시장은 이어집니다."
+            "분야별 5개 회사가 생산하고 배당을 지급합니다. 임금·소비를 제외한 투자 수익률을 기록합니다. 시즌마다 기업 결산과 정부 정책이 바뀝니다. 자산과 시장은 이어집니다."
         ];
         float row = y + 123;
         for (int i = 0; i < titles.Length; i++)
@@ -189,7 +191,7 @@ public sealed partial class GameView
     {
         float y = Modal(286, () => confirmNew = false);
         Text("시장을 새로 시작할까요?", 27, y + 62, 23, Ink, true);
-        Wrap("현재 시장을 새 시뮬레이션으로 교체합니다. 시즌은 자동 갱신되므로 계속 관찰하면 자산과 성적이 이어집니다.", 28, y + 99, 339, 13, Muted, 23);
+        Wrap("새 시장을 시작합니다. 기존 기록은 파일에 보존됩니다. 현재 시장을 따로 다시 열려면 먼저 통계에서 기록을 내보내세요.", 28, y + 99, 339, 13, Muted, 23);
         Button("계속 관찰", 27, y + 204, 166, 51, () => confirmNew = false, false);
         Button("새 시장 시작", 207, y + 204, 166, 51, () => Start());
     }

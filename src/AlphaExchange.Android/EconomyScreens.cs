@@ -8,18 +8,20 @@ public sealed partial class GameView
     static string Moment(long hour) => $"S{hour / 720 + 1} D{hour % 720 / 24 + 1} {hour % 24:00}시";
     float PeriodPicker(float y)
     {
-        string[] labels = ["현재 시즌", "전체", "10일 전", "5일 전", "전일"];
+        string[] labels = ["현재 시즌", "전체", "10일", "5일", "전일", "30일", "90일", "1년", "기간 지정"];
         for (int i = 0; i < labels.Length; i++)
         {
             var period = (ComparisonPeriod)i; bool active = comparisonPeriod == period;
-            float x = 20 + i * 73;
-            Box(x, y, 68, 32, active ? Lime : Card2, 9);
-            Text(labels[i], x + 34, y + 21, 10, active ? Bg : Muted, active, Paint.Align.Center);
-            Hit(x, y, 68, 32, () => { comparisonPeriod = period; scroll = 0; });
+            float x = 20 + i % 3 * 123, top = y + i / 3 * 37;
+            Box(x, top, 114, 32, active ? Lime : Card2, 9);
+            Text(labels[i], x + 57, top + 21, 10, active ? Bg : Muted, active, Paint.Align.Center);
+            Hit(x, top, 114, 32, () => { if (period == ComparisonPeriod.Custom) CustomPeriod(); else { comparisonPeriod = period; scroll = 0; } });
         }
+        y += 77;
         var result = game!.Period(comparisonPeriod);
         Text($"{Moment(result.Start.Hour)} → {Moment(result.End.Hour)}", 21, y + 51, 10, Muted);
-        if (result.Partial) { Text("기록 부족: 가능한 기간 표시 · 전체 차트는 최근 120일", 21, y + 70, 10, Red); return y + 89; }
+        if (result.Partial) { Text("기록이 없는 구간은 연결하지 않습니다.", 21, y + 70, 10, Red); return y + 89; }
+        if(result.Points.Any(p=>p.LegacyNoFundamentals)) { Text("이전 버전 구간: 일별 기록 · 없는 시간/지표는 미기록",21,y+70,10,Muted); return y+89; }
         return y + 74;
     }
     float Pie(string title, (string Label, double Value)[] rows, float y)
@@ -84,14 +86,15 @@ public sealed partial class GameView
         y = Statement($"정부 · 시즌 {p.Season} · {p.Name}", y, [("매매 이익 세율", $"{p.TaxRate:P1}"), ("양쪽 거래 수수료", $"{p.FeeBasisPoints / 100.0:0.00}%"),
             ("기준금리 (연)", $"{p.BaseRate:P2}"), ("공매도 규제", p.ShortSellingAllowed ? $"허용 / 자기자산 {p.ShortExposureLimit:P0}" : "신규 공매도 금지"),
             ("대출 한도 조정", $"기본 한도의 {p.LoanLimitMultiplier:P0}"), ("주식 보조금 (일)", $"보유액 {p.SubsidyRate:P3}"), ("감독 적발 강도", $"{p.Enforcement:P0}")]);
-        y = Pie("은행 · 정부 · 거래소 현금 구성", [("은행", S.Bank.Cash), ("정부", S.Government.Cash), ("거래소", S.FeePool)], y);
+        y = Pie("경제 주체의 현금 구성", [("투자자", game!.Participants.Sum(t => t.Cash)), ("기업",S.Stocks.Sum(s => s.Report.Cash)), ("실물 경제",S.RealEconomy.Cash), ("은행", S.Bank.Cash), ("정부", S.Government.Cash), ("거래소", S.FeePool)], y);
         y = Statement("은행 대출 현황", y, [("은행 현금", ShortMoney(S.Bank.Cash) + "원"), ("참가자 대출 잔액", ShortMoney(game!.Participants.Sum(t => t.LoanDebt)) + "원"),
-            ("누적 이자 수익", ShortMoney(S.Bank.InterestIncome) + "원"), ("공매도 대여료 수익", ShortMoney(S.Bank.BorrowFeeIncome) + "원"), ("기관 공매도 부채", ShortMoney(S.Bots.Sum(t => t.ShortLiability(S.Stocks))) + "원")]);
+            ("누적 이자 수익", ShortMoney(S.Bank.InterestIncome) + "원"), ("기업 이자 수익", ShortMoney(S.Bank.CorporateInterest)+"원"), ("배당·대체배당 수익", ShortMoney(S.Bank.DividendIncome)+"원"), ("공매도 대여료 수익", ShortMoney(S.Bank.BorrowFeeIncome) + "원"), ("기관 공매도 부채", ShortMoney(S.Bots.Sum(t => t.ShortLiability(S.Stocks))) + "원")]);
         var rates = Enum.GetValues<CreditRating>().Select(r => (r.ToString(), $"{GameEngine.CreditLimits[(int)r]:P0} / {p.BaseRate + GameEngine.CreditSpreads[(int)r]:P2}")).ToArray();
         y = Statement("신용 등급 · 기본 한도 / 연 금리", y, rates);
         Text("AAA 100% → C 30% · 정책의 한도 조정이 추가 적용", 21, y + 4, 10, Muted); y += 28;
-        y = Statement("정부 누적 재정", y, [("세금 수입", ShortMoney(S.Government.Taxes) + "원"), ("부과 벌금", ShortMoney(S.Government.Fines) + "원"),
+        y = Statement("정부 누적 재정", y, [("매매 세금 (환급 차감)", ShortMoney(S.Government.Taxes) + "원"), ("법인세",ShortMoney(S.Government.CorporateTaxes)+"원"), ("배당세",ShortMoney(S.Government.DividendTaxes)+"원"), ("세금 환급",ShortMoney(S.Government.TaxRefunds)+"원"), ("재정 지출",ShortMoney(S.Government.Spending)+"원"), ("부과 벌금", ShortMoney(S.Government.Fines) + "원"),
             ("보조금 지출", ShortMoney(S.Government.Subsidies) + "원"), ("정부 현금", ShortMoney(S.Government.Cash) + "원")]);
+        y = Statement("기업과 실물 경제의 누적 흐름",y,[("기업 매출",ShortMoney(S.RealEconomy.CorporateSales)+"원"),("기업 비용",ShortMoney(S.RealEconomy.CorporateCosts)+"원"),("임금",ShortMoney(S.RealEconomy.Wages)+"원"),("소비",ShortMoney(S.RealEconomy.Consumption)+"원"),("투자",ShortMoney(S.RealEconomy.Investment)+"원"),("거래소 수수료 환류",ShortMoney(S.ExchangeSpending)+"원")]);
         Button("대표 상호작용 · 작전 보기  →", 20, y, 360, 42, () => { operationsTab = true; SetPage(5); }, false); y += 60;
         Text("최근 시즌 정책", 21, y + 14, 18, Ink, true); y += 32;
         foreach (var policy in S.Government.History.AsEnumerable().Reverse())

@@ -10,20 +10,20 @@ void Validate(GameEngine game)
 {
     var s = game.State;
     Check(s.Bots.Count == 100 && s.Retail.Count == 10000, "Participant counts");
-    Check(game.Participants.Sum(t => t.Cash) + s.FeePool + s.Bank.Cash + s.Government.Cash == s.InitialSystemCash, "Closed-system cash conservation");
-    long[] shares = new long[GameEngine.StockCount];
+    Check(game.SystemCash() == s.InitialSystemCash, "Closed-system cash conservation");
+    long[] shares = new long[s.Stocks.Count];
     foreach (var t in game.Participants)
     {
         Check(t.Cash >= 0 && t.ReservedCash >= 0 && t.ReservedCash <= t.Cash, "Cash collateral");
-        for (int i = 0; i < GameEngine.StockCount; i++) { Check(t.Shares[i] >= t.ReservedShares[i] && t.ReservedShares[i] >= 0, "Share collateral"); shares[i] += t.Shares[i]; }
+        for (int i = 0; i < s.Stocks.Count; i++) { Check(t.Shares[i] >= t.ReservedShares[i] && t.ReservedShares[i] >= 0, "Share collateral"); shares[i] += t.Shares[i]; }
         Check(t.LoanDebt >= 0 && t.FineDebt >= 0 && t.ShortShares.All(q => q >= 0) && t.ReservedCovers.Where((q, i) => q > t.ShortShares[i] || q < 0).Count() == 0, "Debt/cover invariants");
         var f = t.Financials(s.Stocks);
         Check(f.OpeningCash + f.NetCashFlow == t.Cash, "Cash-flow reconciliation");
         Near(f.OpeningEquity + f.NetIncome, f.Equity, "Income/equity reconciliation");
     }
-    for (int i = 0; i < GameEngine.StockCount; i++)
+    for (int i = 0; i < s.Stocks.Count; i++)
     {
-        Check(shares[i] + s.Bank.ShareInventory[i] == s.Stocks[i].TotalShares, "Share conservation");
+        Check(shares[i] + s.Bank.ShareInventory[i] + s.Stocks[i].FounderShares + s.Stocks[i].TreasuryShares == s.Stocks[i].TotalShares, "Share conservation");
         Check(s.Bank.ReservedLending[i] >= 0 && s.Bank.ReservedLending[i] <= s.Bank.ShareInventory[i], "Lending inventory reservation");
         var bids = game.Orders(i, true); var asks = game.Orders(i, false);
         Check(bids.Count == 0 || asks.Count == 0 || bids[0].Price < asks[0].Price, "No crossed resting book");
@@ -32,6 +32,9 @@ void Validate(GameEngine game)
     }
     Check(s.Tape.Count <= 160 && s.News.Count <= 40 && s.Stocks.All(x => x.History.Count <= 120) && s.Bots.All(t => t.EquityHistory.Count <= 120 && t.SeasonRanks.Count <= 12), "Bounded display buffers");
 }
+if(args.Length==3 && args[0]=="--crash-write") { CrashProbe.AbruptWrite(args[1],args[2]); return; }
+if(args.Contains("--storage-load")) { StorageLoad.Run(); return; }
+if(args.Contains("--market-only")) { MarketChecks.Run(Check,Validate,Near); Console.WriteLine($"PASS {assertions:N0} market assertions"); return; }
 var match = new GameEngine(42);
 Check(match.State.Bots.All(t => t.Equity(match.State.Stocks) == 10000000), "Institution capital");
 Check(match.State.Retail.All(t => t.Equity(match.State.Stocks) == 100000), "Retail capital 1/100");
@@ -106,12 +109,12 @@ JsonObject OldFixture(uint seed)
     var old = new GameEngine(seed); var stocks = old.State.Stocks;
     foreach (var t in old.Participants)
     {
-        for (int i = 8; i < GameEngine.StockCount; i++) t.Cash += (long)t.Shares[i] * stocks[i].Price;
+        for (int i = 8; i < old.State.Stocks.Count; i++) t.Cash += (long)t.Shares[i] * stocks[i].Price;
         t.Shares = t.Shares.Take(8).ToArray(); t.AverageCost = t.AverageCost.Take(8).ToArray(); t.ReservedShares = t.ReservedShares.Take(8).ToArray();
-        t.ShortShares = new int[8]; t.ShortAveragePrice = new double[8]; t.ReservedCovers = new int[8];
+        t.ShortShares = new long[8]; t.ShortAveragePrice = new double[8]; t.ReservedCovers = new long[8];
         t.OpeningCash = t.Cash;
     }
-    old.State.Stocks.RemoveRange(8, 2);
+    old.State.Stocks.RemoveRange(8, old.State.Stocks.Count - 8);
     old.State.News.RemoveAll(n => n.StockIndex >= 8);
     for (int i = 0; i < 8; i++) stocks[i].TotalShares = old.Participants.Sum(t => (long)t.Shares[i]);
     old.State.InitialSystemCash = old.Participants.Sum(t => t.Cash) + old.State.FeePool;
@@ -136,6 +139,7 @@ Check(otherRun.State.LastArchivedSeason == 0, "Do not acknowledge an old run int
 var saveWatch = Stopwatch.StartNew(); string json = game.Serialize(); saveWatch.Stop();
 times.Sort();
 EconomyChecks.Run(Check, Validate, Near);
+MarketChecks.Run(Check, Validate, Near);
 Console.WriteLine($"PASS {assertions:N0} assertions; {seasons} seasons; {game.State.TotalMatches:N0} matched trades");
 Console.WriteLine($"Simulation wall time {watch.Elapsed.TotalSeconds:F2}s; hour p50={times[times.Count/2]:F2}ms p95={times[(int)(times.Count*.95)]:F2}ms p99={times[(int)(times.Count*.99)]:F2}ms (100x budget 50ms/hour)");
 Console.WriteLine($"Save bytes {System.Text.Encoding.UTF8.GetByteCount(json):N0}; serialize {saveWatch.Elapsed.TotalMilliseconds:F1}ms; pending={game.State.PendingSeasons.Count}; active orders={game.State.Orders.Count}");

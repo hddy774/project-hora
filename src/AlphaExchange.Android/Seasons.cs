@@ -50,7 +50,7 @@ public sealed partial class GameView
         Text($"시즌 {S.Season} 진행 중 · 30일마다 자동 갱신", 21, y + 47, 12, Muted); y += 66;
         Box(20, y, 360, 76, Card2, 15);
         Text("시장과 자산은 다음 시즌으로 이어집니다.", 36, y + 28, 13, Ink, true);
-        Text("성적은 시즌 시작 자산 대비 수익률로 기록합니다.", 36, y + 51, 11, Muted); y += 94;
+        Text("성적은 배당을 포함하고 임금·소비를 제외합니다.", 36, y + 51, 11, Muted); y += 94;
         if (S.Season <= 1)
         {
             Box(20, y, 360, 130, Card, 18);
@@ -69,7 +69,8 @@ public sealed partial class GameView
             y = Statement("시즌 시작 → 종료", y, [("시가총액", ShortMoney(result.Start.Capitalization) + " → " + ShortMoney(result.End.Capitalization)),
                 ("거래량", Money(result.End.Volume - result.Start.Volume) + "주"), ("거래금액", ShortMoney(result.End.Turnover - result.Start.Turnover) + "원"),
                 ("기관 순자산", ShortMoney(result.Start.InstitutionEquity) + " → " + ShortMoney(result.End.InstitutionEquity))]);
-            y = Graph("시즌 중 시장 추이", result.Days.Prepend(result.Start).Select(d => (double)d.Capitalization), y, $"시즌 {selectedSeason} · 일별 유통 시가총액 · 원");
+            var fullSeason = game!.HistorySource?.Range(result.Start.Hour,result.End.Hour) ?? result.Days;
+            y = TimeGraph("시즌 중 시장 추이", fullSeason,d=>d.Capitalization,y,$"시즌 {selectedSeason} · 시가총액 · 원");
             y = Pie("시즌 종료 순자산 구성", [("기관", result.End.InstitutionEquity), ("개인", result.End.RetailEquity)], y);
             Button("이 시즌의 기업 결산  →", 20, y, 360, 40, () => { companySeason = selectedSeason; companyStock = companyTab = 0; SetPage(6); }, false); y += 56;
         }

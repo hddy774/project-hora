@@ -5,8 +5,13 @@ using APath = Android.Graphics.Path;
 namespace AlphaExchange.App;
 public sealed partial class GameView
 {
+    IEnumerable<DailySnapshot> ChartPeriodPoints()
+    {
+        foreach(var point in game!.Period(comparisonPeriod).Points) yield return point;
+    }
     float TimeGraph(string title,IEnumerable<(long Hour,double Value,bool Gap)> values,float y,string caption)
     {
+        if(!Visible(y,160)) return y+176;
         var points = values.Where(p=>double.IsFinite(p.Value)).OrderBy(p=>p.Hour).ToArray();
         Box(20,y,360,160,Card,17); Text(title,36,y+27,14,Ink,true);
         if (points.Length > 0)

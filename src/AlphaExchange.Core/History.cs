@@ -5,8 +5,12 @@ public sealed partial class GameEngine
     public IHistoryQuery? HistorySource { get; set; }
     public event Action<DailySnapshot>? HourRecorded;
     void RecordHour() { if (HourRecorded is not null) HourRecorded(CaptureSnapshot()); }
-    TraderSnapshot CaptureTrader(Trader t) => new() { Id = t.Id, Equity = t.Equity(State.Stocks), Cash = t.Cash,
-        NetIncome = t.Financials(State.Stocks).NetIncome - t.NetContribution, ReturnIndex = t.ReturnIndex, NetContribution = t.NetContribution, Volume = t.TradedVolume, Turnover = t.TradedTurnover };
+    TraderSnapshot CaptureTrader(Trader t)
+    {
+        var financials=t.Financials(State.Stocks);
+        return new TraderSnapshot { Id=t.Id,Equity=financials.Equity,Cash=t.Cash,NetIncome=financials.NetIncome-t.NetContribution,
+            ReturnIndex=t.ReturnIndex,NetContribution=t.NetContribution,Volume=t.TradedVolume,Turnover=t.TradedTurnover };
+    }
     void InitializeHistory()
     {
         foreach (var t in Participants) { t.OpeningSnapshot = CaptureTrader(t); t.SeasonSnapshot = CaptureTrader(t); }
@@ -30,11 +34,24 @@ public sealed partial class GameEngine
             StockTurnovers = State.Stocks.Select(s => s.TotalTurnover).ToArray(), StockPrices = State.Stocks.Select(s => s.Price).ToArray() };
     }
     PeriodStatistics? cachedPeriod;
-    (ComparisonPeriod Period,long Hour,long From,long To,long Transactions,long Events,IHistoryQuery? Source) periodKey;
+    PeriodStatistics? cachedSummary;
+    (GameState State,ComparisonPeriod Period,long Hour,long From,long To,long Transactions,long Events,IHistoryQuery? Source) periodKey,summaryKey;
+    public PeriodStatistics PeriodSummary(ComparisonPeriod period) => Period(period,false);
     public PeriodStatistics Period(ComparisonPeriod period)
+        => Period(period,true);
+    PeriodStatistics Period(ComparisonPeriod period,bool chart)
     {
-        var key=(period,State.CompletedHours,State.ComparisonFrom,State.ComparisonTo,State.NextTransactionId,State.NextCorporateEventId,HistorySource);
-        if(cachedPeriod is not null && periodKey==key) return cachedPeriod;
+        var key=(State,period,State.CompletedHours,State.ComparisonFrom,State.ComparisonTo,State.NextTransactionId,State.NextCorporateEventId,HistorySource);
+        if(chart && cachedPeriod is not null && periodKey==key) return cachedPeriod;
+        if(!chart && cachedSummary is not null && summaryKey==key) return cachedSummary;
+        if(chart)
+        {
+            var bounds=Period(period,false);
+            var records=HistorySource?.Range(bounds.Start.Hour,bounds.End.Hour,500) ?? State.DailyHistory;
+            if(records.LastOrDefault(r=>r.Hour==bounds.End.Hour) is {} recordedEnd) bounds.End.GapBefore=recordedEnd.GapBefore;
+            var points=records.Where(x=>x.Hour>bounds.Start.Hour && x.Hour<bounds.End.Hour).Prepend(bounds.Start).Append(bounds.End).ToList();
+            periodKey=key; return cachedPeriod=new PeriodStatistics(bounds.Start,bounds.End,points,bounds.Partial);
+        }
         var end = CaptureSnapshot(); DailySnapshot start; bool partial = false;
         if (period == ComparisonPeriod.Custom)
         {
@@ -53,19 +70,16 @@ public sealed partial class GameEngine
             start = HistorySource?.At(Math.Max(0, target)) ?? State.DailyHistory.LastOrDefault(x => x.Hour <= Math.Max(0, target)) ?? State.DailyHistory.FirstOrDefault() ?? end;
             partial |= Math.Max(0, target) != start.Hour;
         }
-        var records = HistorySource?.Range(start.Hour, end.Hour, 500) ?? State.DailyHistory;
-        if (records.LastOrDefault(r => r.Hour == end.Hour) is { } recordedEnd) end.GapBefore = recordedEnd.GapBefore;
-        var points = records.Where(x => x.Hour > start.Hour && x.Hour < end.Hour).Prepend(start).Append(end).ToList();
         // Lifetime totals use the original baseline; a bounded chart reports the gap.
         if (period == ComparisonPeriod.All && HistorySource is null && State.DailyHistory.Count > 0 && State.DailyHistory[0].Hour > start.Hour + 24) partial = true;
         if (HistorySource is not null && !HistorySource.Covers(start.Hour, end.Hour)) partial = true;
-        periodKey=key; return cachedPeriod=new PeriodStatistics(start, end, points, partial);
+        summaryKey=key; return cachedSummary=new PeriodStatistics(start,end,[start,end],partial);
     }
     public double RankingValue(Trader t, RankingMetric metric, ComparisonPeriod period, DailySnapshot? basis = null, DailySnapshot? finish = null)
     {
         var start = period == ComparisonPeriod.All ? t.OpeningSnapshot : period == ComparisonPeriod.Season ? t.SeasonSnapshot
-            : (basis ?? Period(period).Start).Institutions.FirstOrDefault(x => x.Id == t.Id) ?? t.OpeningSnapshot;
-        var end = period == ComparisonPeriod.Custom ? (finish ?? Period(period).End).Institutions.FirstOrDefault(x => x.Id == t.Id) ?? CaptureTrader(t) : CaptureTrader(t);
+            : (basis ?? PeriodSummary(period).Start).Institutions.FirstOrDefault(x => x.Id == t.Id) ?? t.OpeningSnapshot;
+        var end = period == ComparisonPeriod.Custom ? (finish ?? PeriodSummary(period).End).Institutions.FirstOrDefault(x => x.Id == t.Id) ?? CaptureTrader(t) : CaptureTrader(t);
         return metric switch { RankingMetric.Assets => t.Equity(State.Stocks), RankingMetric.Cash => t.Cash,
             RankingMetric.Volume => end.Volume - start.Volume, RankingMetric.Turnover => end.Turnover - start.Turnover,
             RankingMetric.NetIncome => end.NetIncome - start.NetIncome,

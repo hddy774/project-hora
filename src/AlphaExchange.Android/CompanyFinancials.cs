@@ -33,6 +33,7 @@ public sealed partial class GameView
         var stock = S.Stocks[companyStock];
         Text("기업의 재무 기록", 20, y + 23, 24, Ink, true);
         Text("월별 결산 · 뉴스와 정부 정책을 반영", 21, y + 47, 12, Muted); y += 65;
+        Button("이 회사의 지분 구조 →",20,y,360,36,()=>OpenOwnership(companyStock),false); y+=48;
         for (int i = 0; i < S.Stocks.Count; i++)
         {
             int index = i; bool active = companyStock == i; float x = 20 + i % 5 * 73, row = y + i / 5 * 34;

@@ -7,7 +7,7 @@ on:
       tag:
         description: Existing merged release tag
         required: true
-        default: v1.3.0
+        default: v1.4.0
         type: string
       generate_signing_key:
         description: Generate a new one-time signing key (requires reinstall)
@@ -31,6 +31,7 @@ jobs:
     timeout-minutes: 25
     env:
       RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+      APK_NAME: AlphaExchange-${{ inputs.tag || github.ref_name }}.apk
       SIGNED_RUN_ID: ${{ inputs.signed_run_id || '' }}
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +75,6 @@ jobs:
         run: |
           dotnet publish src/AlphaExchange.Android -c Release -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME" -o dist/build
           cp dist/build/com.alphaexchange.offline.apk dist/AlphaExchange-unsigned.apk
-          git archive --format=zip --output=dist/AlphaExchange-Source.zip "$RELEASE_TAG"
           cp VERIFICATION.txt dist/VERIFICATION.txt
       - name: Keep unsigned build available for inspection
         if: ${{ !inputs.signed_run_id }}
@@ -83,7 +83,6 @@ jobs:
           name: ${{ env.RELEASE_TAG }}-build
           path: |
             dist/AlphaExchange-unsigned.apk
-            dist/AlphaExchange-Source.zip
             dist/CORE-CHECKS.txt
             dist/ARTWORK-CHECKS.txt
           retention-days: 30
@@ -96,7 +95,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD }}
         run: |
-          bash scripts/sign-release.sh dist/AlphaExchange-unsigned.apk dist/AlphaExchange.apk dist/SIGNING-INFO.txt
+          bash scripts/sign-release.sh dist/AlphaExchange-unsigned.apk "dist/$APK_NAME" dist/SIGNING-INFO.txt
       - name: Recover previously verified signed APK
         if: ${{ inputs.signed_run_id }}
         uses: actions/download-artifact@v4
@@ -116,25 +115,25 @@ jobs:
             git merge-base --is-ancestor "$previous_workflow_commit" origin/main
             source_commit=$(git rev-parse HEAD)
             grep -Fx "Source commit: $source_commit" dist/SIGNING-INFO.txt
-            test "$(unzip -z dist/AlphaExchange-Source.zip | tail -n 1)" = "$source_commit"
           fi
           expected_certificate=$(sed -n 's/^Certificate SHA-256: //p' dist/SIGNING-INFO.txt)
           [[ "$expected_certificate" =~ ^[a-f0-9]{64}$ ]]
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs dist/AlphaExchange.apk > "$RUNNER_TEMP/hora-apk-verification.txt"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "dist/$APK_NAME" > "$RUNNER_TEMP/hora-apk-verification.txt"
           grep -F "Signer #1 certificate SHA-256 digest: $expected_certificate" "$RUNNER_TEMP/hora-apk-verification.txt"
-          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging dist/AlphaExchange.apk > dist/APK-BADGING.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "dist/$APK_NAME" > dist/APK-BADGING.txt
           grep -F "package: name='com.alphaexchange.offline'" dist/APK-BADGING.txt
           grep -F "versionName='${RELEASE_TAG#v}'" dist/APK-BADGING.txt
+          expected_code=$(python3 -c "import xml.etree.ElementTree as E; print(E.parse('src/AlphaExchange.Android/AlphaExchange.Android.csproj').findtext('.//ApplicationVersion'))")
+          grep -F "versionCode='$expected_code'" dist/APK-BADGING.txt
           cd dist
-          sha256sum AlphaExchange.apk AlphaExchange-Source.zip VERIFICATION.txt CORE-CHECKS.txt ARTWORK-CHECKS.txt APK-VERIFICATION.txt APK-BADGING.txt SIGNING-INFO.txt > SHA256SUMS.txt
+          sha256sum "$APK_NAME" > SHA256SUMS.txt
           sha256sum --check SHA256SUMS.txt
       - name: Keep verified signed APK for recovery
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.RELEASE_TAG }}-signed-release
           path: |
-            dist/AlphaExchange.apk
-            dist/AlphaExchange-Source.zip
+            dist/${{ env.APK_NAME }}
             dist/*.txt
           retention-days: 30
       - name: Publish and verify latest GitHub release
@@ -142,13 +141,23 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
+          notes="$RUNNER_TEMP/hora-release-notes.md"
+          cp "docs/RELEASE-${RELEASE_TAG}.md" "$notes"
+          apk_hash=$(cut -d ' ' -f 1 dist/SHA256SUMS.txt)
+          certificate=$(sed -n 's/^Certificate SHA-256: //p' dist/SIGNING-INFO.txt)
+          printf '\nAPK: %s\n\nSHA-256: `%s`\n\n서명 인증서 SHA-256: `%s`\n\n빌드 소스: `%s` · Actions: %s\n' "$APK_NAME" "$apk_hash" "$certificate" "$(git rev-parse HEAD)" "$GITHUB_RUN_ID" >> "$notes"
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true
           else
-            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 기업 가치와 이어지는 통계" --notes-file "docs/RELEASE-${RELEASE_TAG}.md"
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 지분 구조와 성능 개선" --notes-file "$notes"
           fi
-          gh release upload "$RELEASE_TAG" --clobber dist/AlphaExchange.apk dist/AlphaExchange-Source.zip dist/VERIFICATION.txt dist/CORE-CHECKS.txt dist/ARTWORK-CHECKS.txt dist/APK-VERIFICATION.txt dist/APK-BADGING.txt dist/SIGNING-INFO.txt dist/SHA256SUMS.txt
+          while IFS= read -r asset; do
+            if [[ "$asset" != "$APK_NAME" ]]; then gh release delete-asset "$RELEASE_TAG" "$asset" --yes; fi
+          done < <(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name')
+          gh release upload "$RELEASE_TAG" --clobber "dist/$APK_NAME"
+          test "$(gh release view "$RELEASE_TAG" --json assets --jq '.assets|length')" = 1
+          test "$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[0].name')" = "$APK_NAME"
           mkdir -p "$RUNNER_TEMP/hora-download"
-          gh release download "$RELEASE_TAG" --dir "$RUNNER_TEMP/hora-download"
-          (cd "$RUNNER_TEMP/hora-download" && sha256sum --check SHA256SUMS.txt)
-          gh release edit "$RELEASE_TAG" --notes-file "docs/RELEASE-${RELEASE_TAG}.md" --draft=false --latest
+          gh release download "$RELEASE_TAG" --pattern "$APK_NAME" --dir "$RUNNER_TEMP/hora-download"
+          (cd "$RUNNER_TEMP/hora-download" && sha256sum --check "$GITHUB_WORKSPACE/dist/SHA256SUMS.txt")
+          gh release edit "$RELEASE_TAG" --notes-file "$notes" --draft=false --latest

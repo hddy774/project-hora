@@ -1,110 +1,81 @@
-ALPHA EXCHANGE v1.3.0 — verification, 2026-10-04 UTC
+ALPHA EXCHANGE v1.4.0 — ownership and performance verification, 2026-10-04 UTC
 
-AUTOMATED ENGINE / ECONOMY / HISTORY
+IMPLEMENTATION
+Company ownership reconciles institutions + retail + founders + physical bank stock
++ treasury with issued stock. Outstanding stock excludes treasury; float excludes
+founders as well. Borrowed/returned stock obligations and lending reservations are
+shown separately and never added twice. Institution holders sort by actual shares
+and stable owner ID, with pagination and representative links. Merger tombstones
+remain distinct from active companies.
+
+PERFORMANCE CHANGES
+Financial rollups accumulate without 10,100 transient statement objects. Long/short
+position valuation and institution snapshots avoid repeated scans. Net equity
+uses one span-backed traversal for the engine's stock list, preserving per-position
+rounding and checked gross/short totals.
+PrepareSave deep-copies all mutable state; deferred thread-safe JSON encoding reads
+only that copy in the writer. Immutable history strings keep every uncommitted hour;
+coalescing world snapshots does not coalesce history. UTF-8 bytes are reused for
+compression/hash/header validation, and full JSON syntax is validated without a DOM.
+Changes-free automatic saves are skipped; explicit pause/export/back saves still
+capture fractional hour progress. JSON representation/database format v5 remains.
+The six-metric range extrema query uses two grouped passes rather than 14 scans;
+history decoding/hash validation uses UTF-8 directly. Coverage returns contiguous
+segments and handles pending/mixed-resolution legacy history with an exact fallback.
+Ranking/overview summaries avoid decoding chart rows. Visible charts load their
+full bounded range lazily, and offscreen charts/paths/text are skipped. Raw history,
+true time axes, gap flags, extrema, chart bounds and save atomicity remain.
+
+AUTOMATED CHECKS
 Command: dotnet run --project tests/AlphaExchange.Checks -c Release
-GitHub Actions run 37193908099, implementation ab2798235734cf868aea5aa7597eca4453f670e0:
-PASS 41,787,838 assertions; 16 continuous seasons; 615,108 matched trades.
-Final release workflow reruns these checks and attaches its actual CORE-CHECKS.txt.
+GitHub Actions 37200178588 (c558578aa4493657f341037e36c5f6b2436f9acd):
+PASS 43,162,517 assertions; 16 seasons; 615,108 matched trades; Android Release PASS.
+Wall 58.13s; hour p50 3.55ms / p95 4.65ms / p99 7.39ms (100x budget 50ms/hour);
+JSON 24,956,863 bytes; serialize 79.9ms. Tagged release reruns these checks and
+keeps its actual result in the Actions signed artifact.
+Targeted --ownership-only: PASS 1,374,677 assertions on the final implementation;
+--market-only: PASS 4,132,608 assertions during implementation.
+Includes owner counts and physical stock conservation, short reservations/cancel,
+borrower replacement rights, split/reverse split, paid issue/treasury/merger,
+immutable ownership caching, deferred capture concurrent with month close,
+mutable arrays/reports/policies/history/dictionaries isolation, malformed/truncated
+JSON rollback retaining queued records, extrema and mixed-resolution gap oracle,
+external deleted row detection, pending point lookup and lazy chart query counts.
+The existing full suite also verifies 16 seasons, deterministic JSON continuation,
+100x budgets, all grades/loans, bear-market survival, legacy v2/v3/v4/v5 migration,
+child-process abrupt SQLite exit, failed writes/retry, portable ZIP recovery,
+loan/short/reservation matching, cash/share and financial-statement reconciliation.
 
-100 institutions, 10,000 retail accounts, 30 companies / six sectors / five each;
-budgeted initial portfolios, distinct business cost/demand/dividend profiles;
-price/time priority, resting prices, partial fills, self-trade rejection, expiry,
-cancellation, crossed-book and reservation invariants;
-ten representative abilities, mixed signals, skill-sensitive defensive sizing,
-ten-day bear scenario (all 100 institutions solvent) and minimum-price recovery;
-AAA..C grades and owned-capital 100..30% limits, non-recursive loans, increasing
-credit spreads, repayment, daily interest, short bans and marked exposure limits;
-real bank-stock lending, partial shorts/covers, gains/losses, borrower reservations;
-representative interaction, detection/failure fines and unpaid liabilities;
-monthly news/policies, company balance/cash/equity reconciliation;
-real dividends funded once per outstanding share, purchaser dividend rights,
-lender replacement dividends paid by borrower, unpaid replacement liabilities;
-splits/reverse splits including paid odd lots, long/short cost bases, unchanged
-actual execution volume, invalid-action rollback, funded issuance/repurchase,
-treasury exclusion, retirement, same-sector merger, tombstone IDs, replacement
-IPO and subsequent monthly cash/equity statements; neutral price-index divisor;
-trade-profit netting/refunds, external contributions excluded from investment returns;
-six ranking metrics, 1/2/5/20/50/100x, season boundaries and bounded UI caches;
-exact JSON round trip and deterministic continuation, v2/v3/v4 migration preserving
-existing participant cash and shares; original legacy JSON retained; legacy daily
-resolution and missing metric flags; no fabricated old hours;
-all completed hourly records queued at all speeds, coalesced snapshots preserve
-all intermediate rows, immutable duplicate detection, stale checkpoint rejection;
-child process exits with uncommitted SQLite transaction: both world and row roll back;
-injected SQLite write failure retains pending history and old checkpoint; retry
-commits all records; deleted historical row detected as gap and chart break;
-checkpoint/hash/integrity validation, healthy backup recovery retaining corrupt file;
-consistent DB/manifest/CSV export, import into separate installation, all-hour
-coverage, full-state match, path/configuration rejection leaving original intact.
+MEASUREMENTS
+Reproduction: tools/PerformanceAudit; raw results and comparison under docs/performance/v1.4.0/.
+Same seed/input, warm-up, 9 time/allocation samples (5 for DB operations), Linux .NET9
+Release. Five-year storage is synthetic history: 43,201 rows, not five simulated years.
+All measured metrics, including unchanged serialization and full write cost, are
+reported; allocation bytes are current-thread allocation, not retained Android RAM.
+Background encoding still consumes CPU. Full state copies have allocation/GC cost;
+physical-device FPS/RAM/commit latency is not established by Linux measurements.
 
-FINANCIAL INVARIANTS
-Cash: participants + companies + bank + government + exchange + real economy
-      = initial system cash. Market-value change does not create cash.
-Shares: participant longs + bank inventory + founders + treasury = issued shares.
-Outstanding = issued - treasury. Float = outstanding - founder holdings.
-Short stock liability and unpaid replacement dividends are separate obligations.
-Participant opening equity + cumulative income = current net equity;
-opening cash + cumulative cash flow = current cash. Company monthly cash-flow,
-equity-change and balance statements reconcile, including capital actions.
+ANDROID / ART
+Version 1.4.0, code 5; app ID com.alphaexchange.offline; min API26, target API34;
+ARM64/x86_64 native SQLite packaged. No INTERNET permission. Existing target/compile
+mismatch and deprecated OS API warnings remain. Artwork manifest/checksums and 100
+portraits are unchanged. Android Release is compiled in CI and the release job.
+API26 x86_64 native smoke verified the ownership pie, physical share counts,
+category/outstanding ratios, lending/short disclosure, major holder/representative
+link and company switching. Existing migrated save committed hour 33 on Android;
+SQLite integrity and checkpoint SHA-256 verified. Observations and limits are in
+docs/UI-VERIFICATION-v1.4.0.md.
+Software emulator UI coverage does not imply physical-device performance coverage.
 
-PERFORMANCE (Linux .NET 9 Release, not physical-phone measurements)
-CI run above: 16-season simulation/test wall 83.03s;
-hour p50 5.57ms / p95 6.46ms / p99 8.12ms; 100x budget 50ms per hour.
-Final JSON 24,956,863 bytes; serialize 101.9ms. Capture/serialization runs on
-simulation/UI thread, disk/compression on a single background worker; save target
-one real second. Large snapshots and initial migration can briefly pause rendering.
-Pending >512 records or ongoing writes >15 seconds since known commit pause progress;
-this is a back-pressure rule, not a disk-latency durability guarantee.
-
-FIVE-YEAR STORAGE LOAD (synthetic history; not five years of economic simulation)
-Command: dotnet run --project tests/AlphaExchange.Checks -c Release -- --storage-load
-43,201 actual rows (initial + 43,200 hours = 5 x 360 game days), 60 batch checkpoints.
-DB 91,648,000 bytes; whole-range display 139 points, earliest hour still queryable;
-write 34.97s; range query 540.99ms; consistent DB + CSV export 6.86s.
-Managed heap observed before collection 1,071,250,808 bytes; retained after forced
-collection at yearly boundaries at most 255,897,040 bytes. These include 720-row
-synthetic batches and full state serialization; allocation heap is not retained
-chart history. UI chart limits ~500 points; ordinary pending queue pauses at 512.
-Memory figures are test-process observations, not Android RAM guarantees. Delta
-checkpoint optimization and physical-device FPS/memory/commit profiling remain future work.
-
-MARKET COMPARISON
-The original v1.2.0 audit (five seeds x36 seasons plus zero-fee control) remains
-unchanged under docs/analysis/v1.3.0/. New implementation measurements and plots
-are under docs/analysis/v1.3.0-implementation/. Every start/month-end checks cash
-and physical stock conservation. Seed paths change when economy/trading rules
-change, so version differences are not a controlled causal estimate or return
-promise. No monthly guaranteed appreciation is applied.
-
-ART / ANDROID / DEPENDENCIES
-python3 scripts/check-artwork.py: PASS 100 distinct portrait regions, 70 women /
-30 men, original atlas SHA-256 and bounds; existing portraits unchanged.
-.NET SDK 9.0.318 / Android workload 35.0.7 / JDK17 / SDK and Build Tools35;
-Android Release compilation PASS in the same CI run. Version name/code 1.3.0/4;
-app ID com.alphaexchange.offline, min API26, target API34, ARM64 and x86_64.
-No INTERNET permission. Existing target/compile mismatch and deprecation warnings
-remain. SQLite ARM64/x86_64 native libraries are packaged, no runtime download.
-Microsoft.Data.Sqlite9.0.10 and SQLitePCLRaw2.1.10 licensing recorded and included.
-
-API26 x86_64 software emulator: development-signed APK installed; actual existing
-v4 save migrated and resumed with 30 companies. Lobby, paused market, navigation
-and all nine statistical period buttons inspected. Native OpenDocument picker
-opened and cancelled. Emulator System UI ANR during boot/display resize was
-dismissed. File byte restoration was tested in core, rather than through the
-emulator picker. Details are in docs/UI-VERIFICATION-v1.3.0.md. This is smoke coverage, not full UI
-automation. Physical ARM64 devices and newer Android versions are untested.
-
-DEPLOYMENT / SIGNING
-GitHub Actions builds from a merged v1.3.0 tag, reruns engine/art checks, signs,
-verifies app ID/version/certificate, uploads nine release assets, downloads every
-asset and checks SHA-256 before publishing as latest. Source ZIP is git archive
-of tagged commit. Source/keys/build outputs stay out of development/main content.
-User explicitly requested deployment without existing signing key. Manual dispatch
-uses generate_signing_key=true; temporary RSA-2048 key is removed on exit and never
-included in artifacts, caches or repository. Public certificate/build source/run
-are recorded in SIGNING-INFO.txt. Recovery reuses the verified signed artifact.
-A fresh signing identity cannot update prior releases; uninstalling deletes private
-data. v1.3 exports portable DB/manifest/CSV ZIPs for future reinstallations. v1.2
-has no export UI; deleted previous saves cannot be recreated by the new app.
-Closed app time is not simulated. Abrupt termination can lose uncommitted tail
-progress and records together; successfully committed history remains continuous.
+DEPLOYMENT
+GitHub Actions builds from the merged release tag, reruns checks, signs and validates
+app ID, version/code and certificate. Only AlphaExchange-v1.4.0.apk is attached to
+the public GitHub release. Its SHA-256 and public certificate digest are recorded
+in release notes; internal test/signing evidence remains in Actions artifacts.
+The uploaded APK is downloaded and SHA-256 checked before publication as latest.
+Existing signing key is not supplied, per the earlier explicit user instruction;
+a new temporary key is generated and deleted on exit. No keys/build outputs in git.
+New identity requires reinstall: export v1.3 history ZIP before removing the old app,
+then import into v1.4. v1.2 has no export UI. Uninstall removes internal data.
+Successfully committed hourly history persists; abrupt termination may roll back
+uncommitted progress/records together. Closed app time is not simulated.

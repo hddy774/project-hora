@@ -24,8 +24,8 @@ public sealed partial class GameEngine
         var result = new MarketStatistics();
         long[] institutionShares = new long[State.Stocks.Count];
         foreach (var t in State.Bots)
-        { result.Institutions.Add(t.Financials(State.Stocks)); for (int i = 0; i < State.Stocks.Count; i++) institutionShares[i] += t.Shares[i]; }
-        foreach (var t in State.Retail) result.Retail.Add(t.Financials(State.Stocks));
+        { t.AccumulateFinancials(result.Institutions,State.Stocks); for (int i = 0; i < State.Stocks.Count; i++) institutionShares[i] += t.Shares[i]; }
+        foreach (var t in State.Retail) t.AccumulateFinancials(result.Retail,State.Stocks);
         foreach (var sector in State.Stocks.Select((s, i) => (s, i)).Where(x => x.s.Active).GroupBy(x => x.s.Sector))
         {
             long cap = sector.Sum(x => x.s.MarketCap), opening = sector.Sum(x => x.s.OutstandingShares * x.s.DayOpenPrice);

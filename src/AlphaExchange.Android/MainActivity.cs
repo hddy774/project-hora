@@ -1,5 +1,6 @@
 using Android.App;
 using Android.Content.PM;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 
@@ -18,6 +19,8 @@ public sealed class MainActivity : Activity
         game = new GameView(this);
         SetContentView(game);
     }
+    protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
+    { base.OnActivityResult(requestCode,resultCode,data); game?.HandleBackupResult(requestCode,resultCode,data); }
     protected override void OnPause() { game?.Pause(); base.OnPause(); }
     public override void OnBackPressed() { if (game?.GoBack() != true) base.OnBackPressed(); }
 }

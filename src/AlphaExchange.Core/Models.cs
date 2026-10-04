@@ -5,7 +5,7 @@ namespace AlphaExchange.Core;
 public enum Strategy { Momentum, Value, Contrarian, News, Balanced, Explorer }
 public enum Disposition { Cautious, Analytical, Opportunistic, Aggressive, Sociable }
 public enum RankingMetric { Return, NetIncome, Assets, Cash, Volume, Turnover }
-public enum ComparisonPeriod { Season, All, TenDays, FiveDays, PreviousDay }
+public enum ComparisonPeriod { Season, All, TenDays, FiveDays, PreviousDay, ThirtyDays, NinetyDays, Year, Custom }
 public enum CreditRating { AAA, AA, A, BBB, BB, B, CCC, CC, C }
 public sealed class Abilities
 {
@@ -23,6 +23,12 @@ public sealed class Abilities
 }
 public sealed class Stock
 {
+    public string SecurityId { get; set; } = "";
+    public bool Active { get; set; } = true;
+    public string Business { get; set; } = "";
+    public string Driver { get; set; } = "";
+    public string NewsExposure { get; set; } = "";
+    public string CapitalPolicy { get; set; } = "";
     public string Symbol { get; set; } = "";
     public string Name { get; set; } = "";
     public string Sector { get; set; } = "";
@@ -33,13 +39,47 @@ public sealed class Stock
     public double FairValue { get; set; }
     public double Volatility { get; set; }
     public double Sentiment { get; set; }
+    public decimal FractionalMark { get; set; }
+    [JsonIgnore] public decimal MarkPrice => Price + FractionalMark;
+    public long TreasuryShares { get; set; }
+    public long FounderShares { get; set; }
+    public long ParValue { get; set; } = 100;
+    public double SplitFactor { get; set; } = 1;
+    public double CostRatio { get; set; } = .78;
+    public double DemandSensitivity { get; set; } = 1;
+    public double DividendPayout { get; set; } = .33;
+    public bool FundedIpo { get; set; }
+    public long ListedSeason { get; set; } = 1;
+    public long BaseRevenue { get; set; }
+    public long InitialFixedAssets { get; set; }
+    public long PendingDividends { get; set; }
+    public long PendingDividendPerShare { get; set; }
+    public long PendingCapitalChange { get; set; }
+    public long PendingFinancingFlow { get; set; }
+    public long PendingInvestingFlow { get; set; }
+    public long ShareHourSum { get; set; }
+    public long ShareHours { get; set; }
+    public int LastTradePrice { get; set; }
+    public long LastDividendPerShare { get; set; }
+    public long TotalDividends { get; set; }
+    [JsonIgnore] public long OutstandingShares => TotalShares - TreasuryShares;
+    [JsonIgnore] public long FloatShares => Math.Max(0, OutstandingShares - FounderShares);
+    [JsonIgnore] public long MarketCap => Active ? Value(OutstandingShares) : 0;
+    [JsonIgnore] public long FloatMarketCap => Active ? Value(FloatShares) : 0;
+    public long Value(long quantity) => FractionalMark == 0 ? checked((long)Price * quantity)
+        : checked((long)decimal.Round(MarkPrice * quantity));
+    [JsonIgnore] public double DividendYield => (double)Reports.Where(r => r.AccountingBasis == 5).Sum(r => r.DividendsPerShare * r.SplitFactor / SplitFactor) / Math.Max(1, Price);
+    [JsonIgnore] public double TtmEps => Reports.Where(r => r.AccountingBasis == 5 && !r.IsOpening).Sum(r => (double)r.NetIncome / Math.Max(1, r.AverageShares) * r.SplitFactor / SplitFactor);
+    [JsonIgnore] public int EpsMonths => Reports.Count(r => r.AccountingBasis == 5 && !r.IsOpening);
+    [JsonIgnore] public double AnnualEps => EpsMonths == 0 ? (double)Report.NetIncome * 12 / Math.Max(1, OutstandingShares)
+        : EpsMonths < 12 ? TtmEps * 12 / EpsMonths : TtmEps;
     public long TotalShares { get; set; }
     public long Volume { get; set; }
     public long DayVolume { get; set; }
     public long DayTurnover { get; set; }
     public long TotalVolume { get; set; }
     public long TotalTurnover { get; set; }
-    public List<int> History { get; set; } = [];
+    public List<double> History { get; set; } = [];
     public CompanyReport Report { get; set; } = new();
     public List<CompanyReport> Reports { get; set; } = [];
     public double SeasonNewsImpact { get; set; }
@@ -47,7 +87,7 @@ public sealed class Stock
     [JsonIgnore] public double Change => (double)Price / DayOpenPrice - 1;
     [JsonIgnore] public double HourlyChange => (double)Price / PreviousPrice - 1;
 }
-public sealed class Trader
+public sealed class Trader : ICashAccount
 {
     public int Id { get; set; }
     public bool IsRetail { get; set; }
@@ -56,13 +96,13 @@ public sealed class Trader
     public double Risk { get; set; }
     public double Patience { get; set; }
     public long Cash { get; set; }
-    public int[] Shares { get; set; } = new int[GameEngine.StockCount];
+    public long[] Shares { get; set; } = new long[GameEngine.StockCount];
     public double[] AverageCost { get; set; } = new double[GameEngine.StockCount];
     public long ReservedCash { get; set; }
-    public int[] ReservedShares { get; set; } = new int[GameEngine.StockCount];
-    public int[] ShortShares { get; set; } = new int[GameEngine.StockCount];
+    public long[] ReservedShares { get; set; } = new long[GameEngine.StockCount];
+    public long[] ShortShares { get; set; } = new long[GameEngine.StockCount];
     public double[] ShortAveragePrice { get; set; } = new double[GameEngine.StockCount];
-    public int[] ReservedCovers { get; set; } = new int[GameEngine.StockCount];
+    public long[] ReservedCovers { get; set; } = new long[GameEngine.StockCount];
     public Abilities Abilities { get; set; } = new();
     public Disposition Disposition { get; set; }
     public double Integrity { get; set; } = .8;
@@ -79,6 +119,20 @@ public sealed class Trader
     public long Fines { get; set; }
     public long FinesPaid { get; set; }
     public long Subsidies { get; set; }
+    public long DividendIncome { get; set; }
+    public long DividendTax { get; set; }
+    public long ShortDividendExpense { get; set; }
+    public long ShortDividendDebt { get; set; }
+    public long ShortDividendPaid { get; set; }
+    public long WageIncome { get; set; }
+    public long Consumption { get; set; }
+    public double LossCarryForward { get; set; }
+    public double SeasonRealizedProfit { get; set; }
+    public long SeasonTaxPaid { get; set; }
+    public double ReturnIndex { get; set; } = 1;
+    public long LastReturnEquity { get; set; }
+    public long LastNetContribution { get; set; }
+    [JsonIgnore] public long NetContribution => WageIncome - Consumption;
     public long DebtRelief { get; set; }
     public long TradedVolume { get; set; }
     public long TradedTurnover { get; set; }
@@ -104,13 +158,13 @@ public sealed class Trader
     [JsonIgnore] public int PortraitId => IsRetail ? 0 : Id;
     [JsonIgnore] public string Gender => Id <= 70 ? "여성" : "남성";
     public long Equity(IReadOnlyList<Stock> stocks)
-    { return GrossAssets(stocks) - ShortLiability(stocks) - LoanDebt - FineDebt; }
+    { return GrossAssets(stocks) - ShortLiability(stocks) - LoanDebt - FineDebt - ShortDividendDebt; }
     public long GrossAssets(IReadOnlyList<Stock> stocks)
-    { long value = Cash; for (int i = 0; i < Shares.Length; i++) value += (long)stocks[i].Price * Shares[i]; return value; }
+    { long value = Cash; for (int i = 0; i < Shares.Length; i++) if (Shares[i] != 0) value = checked(value + stocks[i].Value(Shares[i])); return value; }
     public long ShortLiability(IReadOnlyList<Stock> stocks)
-    { long value = 0; for (int i = 0; i < ShortShares.Length; i++) value += (long)stocks[i].Price * ShortShares[i]; return value; }
+    { long value = 0; for (int i = 0; i < ShortShares.Length; i++) if (ShortShares[i] != 0) value = checked(value + stocks[i].Value(ShortShares[i])); return value; }
     public long ShortCollateral(IReadOnlyList<Stock> stocks) => (long)Math.Ceiling(ShortLiability(stocks) * 1.5);
-    public double Return(IReadOnlyList<Stock> stocks) => (double)(Equity(stocks) - SeasonOpeningEquity) / Math.Max(1, SeasonOpeningEquity);
+    public double Return(IReadOnlyList<Stock> stocks) => ReturnIndex / Math.Max(1e-12, SeasonSnapshot.ReturnIndex) - 1;
     public FinancialStatement Financials(IReadOnlyList<Stock> stocks)
     {
         double cost = 0; for (int i = 0; i < Shares.Length; i++) cost += Shares[i] * AverageCost[i];
@@ -121,7 +175,9 @@ public sealed class Trader
             Fees = Fees, Purchases = BuyCashFlow, Sales = SellCashFlow, ReservedCash = ReservedCash, Trades = Trades,
             ShortDebt = ShortLiability(stocks), ShortEntry = shortEntry, LoanDebt = LoanDebt, FineDebt = FineDebt,
             Borrowed = BorrowedCash, Repaid = RepaidCash, InterestExpense = InterestExpense, InterestPaid = InterestPaid,
-            BorrowFees = BorrowFees, Taxes = Taxes, Fines = Fines, FinesPaid = FinesPaid, Subsidies = Subsidies, DebtRelief = DebtRelief };
+            BorrowFees = BorrowFees, Taxes = Taxes, Fines = Fines, FinesPaid = FinesPaid, Subsidies = Subsidies, DebtRelief = DebtRelief, DividendIncome = DividendIncome, DividendTax = DividendTax,
+            ShortDividendExpense = ShortDividendExpense, ShortDividendPaid = ShortDividendPaid, ShortDividendDebt = ShortDividendDebt,
+            WageIncome = WageIncome, Consumption = Consumption };
     }
 }
 public sealed class FinancialStatement
@@ -152,14 +208,21 @@ public sealed class FinancialStatement
     public long Fines { get; set; }
     public long FinesPaid { get; set; }
     public long Subsidies { get; set; }
+    public long DividendIncome { get; set; }
+    public long DividendTax { get; set; }
+    public long ShortDividendExpense { get; set; }
+    public long ShortDividendPaid { get; set; }
+    public long ShortDividendDebt { get; set; }
+    public long WageIncome { get; set; }
+    public long Consumption { get; set; }
     public long DebtRelief { get; set; }
     public long Assets => Cash + Holdings;
-    public long Liabilities => ShortDebt + LoanDebt + FineDebt;
+    public long Liabilities => ShortDebt + LoanDebt + FineDebt + ShortDividendDebt;
     public long Equity => Assets - Liabilities;
     public double UnrealizedProfit => Holdings - Cost + ShortEntry - ShortDebt;
     public double ValuationChange => UnrealizedProfit - OpeningUnrealized;
-    public double NetIncome => RealizedProfit + ValuationChange - Fees - Taxes - InterestExpense - BorrowFees - Fines + Subsidies + DebtRelief;
-    public long NetCashFlow => Sales - Purchases - Fees - Taxes - InterestPaid - BorrowFees - FinesPaid + Subsidies + Borrowed - Repaid;
+    public double NetIncome => RealizedProfit + ValuationChange - Fees - Taxes - InterestExpense - BorrowFees - Fines + Subsidies + DebtRelief + DividendIncome - DividendTax - ShortDividendExpense + WageIncome - Consumption;
+    public long NetCashFlow => Sales - Purchases - Fees - Taxes - InterestPaid - BorrowFees - FinesPaid + Subsidies + Borrowed - Repaid + DividendIncome - DividendTax - ShortDividendPaid + WageIncome - Consumption;
     public void Add(FinancialStatement s)
     {
         Count += s.Count; Cash += s.Cash; Holdings += s.Holdings; Cost += s.Cost; OpeningCash += s.OpeningCash;
@@ -168,12 +231,16 @@ public sealed class FinancialStatement
         ShortDebt += s.ShortDebt; ShortEntry += s.ShortEntry; LoanDebt += s.LoanDebt; FineDebt += s.FineDebt;
         Borrowed += s.Borrowed; Repaid += s.Repaid; InterestExpense += s.InterestExpense; InterestPaid += s.InterestPaid;
         BorrowFees += s.BorrowFees; Taxes += s.Taxes; Fines += s.Fines; FinesPaid += s.FinesPaid; Subsidies += s.Subsidies; DebtRelief += s.DebtRelief;
+        DividendIncome += s.DividendIncome; DividendTax += s.DividendTax; ShortDividendExpense += s.ShortDividendExpense;
+        ShortDividendPaid += s.ShortDividendPaid; ShortDividendDebt += s.ShortDividendDebt;
+        WageIncome += s.WageIncome; Consumption += s.Consumption;
     }
 }
 public sealed class LimitOrder
 {
     public long Id { get; set; }
     public int OwnerId { get; set; }
+    public string SecurityId { get; set; } = "";
     public int StockIndex { get; set; }
     public bool Buy { get; set; }
     public bool Short { get; set; }
@@ -192,6 +259,7 @@ public sealed class TradeRecord
     public int Hour { get; set; }
     public int BuyerId { get; set; }
     public int SellerId { get; set; }
+    public string SecurityId { get; set; } = "";
     public int StockIndex { get; set; }
     public int Quantity { get; set; }
     public int Price { get; set; }
@@ -203,6 +271,7 @@ public sealed class MarketEvent
     public long Season { get; set; }
     public int Day { get; set; }
     public int Hour { get; set; }
+    public string SecurityId { get; set; } = "";
     public int StockIndex { get; set; }
     public string Headline { get; set; } = "";
     public string Detail { get; set; } = "";
@@ -222,15 +291,37 @@ public sealed class SeasonResult
     public GovernmentPolicy? Policy { get; set; }
     public List<CompanyReport> CompanyReports { get; set; } = [];
 }
-public sealed class GameState
+public sealed class GameState : ICashAccount
 {
-    public int Version { get; set; } = 4;
+    public int Version { get; set; } = 5;
     public string RunId { get; set; } = Guid.NewGuid().ToString("N");
     public bool MigratedFromV1 { get; set; }
+    public bool MigratedFromV4 { get; set; }
+    public List<string> SecurityIds { get; set; } = [];
+    public long[] LegacyShares { get; set; } = [];
+    public RealEconomyState RealEconomy { get; set; } = new();
+    public long ExchangeRevenue { get; set; }
+    public long ExchangeSpending { get; set; }
+    public long MarketDividends { get; set; }
+    public long NextCorporateEventId { get; set; } = 1;
+    public List<CorporateEvent> CorporateEvents { get; set; } = [];
+    public double IndexDivisor { get; set; } = 1;
+    public double PriceIndex { get; set; } = 1000;
+    public double TotalReturnIndex { get; set; } = 1000;
+    public double LastPriceIndex { get; set; } = 1000;
+    public double DividendIndexPoints { get; set; }
+    public double LastDividendIndexPoints { get; set; }
+    public long LastMarketDividends { get; set; }
+    public Dictionary<string, long> CashFlows { get; set; } = [];
+    public List<LedgerEntry> Journal { get; set; } = [];
+    public long NextTransactionId { get; set; } = 1;
+    [JsonIgnore] public long Cash { get => FeePool; set => FeePool = value; }
     public uint RandomState { get; set; }
     public uint Seed { get; set; }
     public long CompletedHours { get; set; }
     public double HourProgress { get; set; }
+    public long ComparisonFrom { get; set; }
+    public long ComparisonTo { get; set; }
     public int FollowedId { get; set; } = 1;
     public long TotalAiTrades { get; set; }
     public long TotalMatches { get; set; }

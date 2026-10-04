@@ -20,6 +20,9 @@ public sealed partial class GameView : View
     readonly object saveGate = new();
     SaveSnapshot? pendingSave;
     bool saving;
+    Task saveTask = Task.CompletedTask;
+    bool fileBusy;
+    long lastCommitTime;
     int portfolioTab;
     long historyPage, selectedSeason;
     Canvas c = null!;
@@ -67,11 +70,14 @@ public sealed partial class GameView : View
         long now = Now;
         double elapsed = (now - lastTick) / 1000.0;
         lastTick = now;
-        if (auto && !lobby && game is not null)
+        if (auto && !lobby && game is not null && !fileBusy)
         {
             long previousSeason = S.Season;
-            game.AdvanceTime(Math.Min(elapsed, 3600), speed);
-            if (now - lastSave >= 15000 || S.Season != previousSeason) Save();
+            try { game.AdvanceTime(Math.Min(elapsed, .5), speed); }
+            catch (Exception e) when (GameStore.StorageException(e)) { auto = false; Notify("시장 진행을 멈췄습니다. 최근 정상 저장을 보존합니다."); }
+            if (store.PendingCount > 512 || lastCommitTime > 0 && now-lastCommitTime > 15000 && saving)
+            { auto = false; Notify("기록 저장을 기다리며 일시정지했습니다."); }
+            if (now - lastSave >= 1000 || S.Season != previousSeason) Save();
             if (S.Season != previousSeason) Notify($"시즌 {previousSeason} 기록 완료 · 시즌 {S.Season} 시작");
             Invalidate();
         }
@@ -86,7 +92,16 @@ public sealed partial class GameView : View
         base.OnDetachedFromWindow();
     }
 
-    public void Pause() { auto = false; Save(); Invalidate(); }
+    public void Pause()
+    {
+        auto = false;
+        if (!fileBusy)
+        {
+            Save();
+            try { saveTask.GetAwaiter().GetResult(); } catch { Notify("최근 확정 기록을 보존했습니다. 저장을 다시 시도하세요."); }
+        }
+        Invalidate();
+    }
     void Save()
     {
         if (game is null) return;
@@ -99,7 +114,7 @@ public sealed partial class GameView : View
                 if (saving) return;
                 saving = true;
             }
-            _ = Task.Run(SaveWorker);
+            saveTask = Task.Run(SaveWorker);
         }
         catch { Notify("저장 데이터를 준비하지 못했습니다."); }
     }
@@ -116,15 +131,27 @@ public sealed partial class GameView : View
             try
             {
                 store.WriteSnapshot(snapshot);
-                Post(() => { if (game is not null) GameStore.Acknowledge(game, snapshot); });
+                Post(() => { if (game is not null) GameStore.Acknowledge(game, snapshot); lastCommitTime = Now; });
             }
-            catch { Post(() => Notify("기기 저장 공간을 확인하세요. 저장하지 못했습니다.")); }
+            catch
+            {
+                lock (saveGate) { pendingSave ??= snapshot; saving = false; }
+                Post(() => { auto = false; Notify("저장 실패 · 진행을 멈췄습니다. 공간 확보 후 재개하세요."); });
+                return;
+            }
         }
     }
 
     void Start()
     {
+        if (game is not null)
+        {
+            Pause();
+            if (pendingSave is not null) { Notify("기존 기록을 저장한 뒤 새 시장을 시작하세요."); return; }
+        }
         game = new GameEngine((uint)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+        store.Attach(game);
+        lastCommitTime = Now;
         lobby = false; auto = true; lastTick = Now; page = 0; scroll = 0; rankingMetric = RankingMetric.Return; comparisonPeriod = ComparisonPeriod.Season;
         companyStock = companyTab = 0; companySeason = 0; operationsTab = false;
         selectedStock = selectedTrader = -1; showResult = confirmNew = false;
@@ -167,6 +194,12 @@ public sealed partial class GameView : View
         c = canvas; scale = Width / 400f; h = Height / scale;
         c.Save(); c.Scale(scale, scale); c.DrawColor(Bg);
         targets.Clear(); clipTop = 0; clipBottom = h;
+        if (fileBusy)
+        {
+            Text("기록 파일을 처리하고 있습니다", 200, h/2, 20, Ink, true, Paint.Align.Center);
+            Text("시장은 일시정지합니다", 200, h/2+35, 12, Muted, false, Paint.Align.Center);
+            c.Restore(); return;
+        }
         if (lobby) DrawLobby();
         else if (game is not null)
         {

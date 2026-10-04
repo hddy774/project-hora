@@ -2,8 +2,8 @@ namespace AlphaExchange.Core;
 
 public sealed partial class GameEngine
 {
-    readonly List<LimitOrder>[] bids = Enumerable.Range(0, StockCount).Select(_ => new List<LimitOrder>()).ToArray();
-    readonly List<LimitOrder>[] asks = Enumerable.Range(0, StockCount).Select(_ => new List<LimitOrder>()).ToArray();
+    List<LimitOrder>[] bids = [];
+    List<LimitOrder>[] asks = [];
     readonly Dictionary<int, List<LimitOrder>> ownedOrders = [];
     public static long Fee(long notional) => checked((notional * 15 + 9999) / 10000);
     public long ExchangeFee(long notional) => checked((notional * State.Government.Policy.FeeBasisPoints + 9999) / 10000);
@@ -25,7 +25,9 @@ public sealed partial class GameEngine
             g.Where(o => o.OwnerId > AiCount).Sum(o => (long)o.Remaining))).ToList();
     void RebuildBooks()
     {
-        foreach (var b in bids.Concat(asks)) b.Clear(); ownedOrders.Clear();
+        bids = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
+        asks = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
+        ownedOrders.Clear();
         Array.Clear(State.Bank.ReservedLending);
         foreach (var t in Participants) { t.ReservedCash = 0; Array.Clear(t.ReservedShares); Array.Clear(t.ReservedCovers); }
         foreach (var o in State.Orders)
@@ -43,12 +45,13 @@ public sealed partial class GameEngine
     // the per-share rounded fee, which is safe even if it fills one share at a time.
     public string? SubmitOrder(int ownerId, int stockIndex, bool buy, int price, int quantity, int lifetime = 3, bool shortSale = false, bool cover = false)
     {
-        if (ownerId < 1 || ownerId > AiCount + RetailCount || stockIndex < 0 || stockIndex >= State.Stocks.Count || price is < 100 or > 10_000_000 || quantity is <= 0 or > 1_000_000 || lifetime is < 1 or > 24 ||
+        if (ownerId < 1 || ownerId > AiCount + RetailCount || stockIndex < 0 || stockIndex >= State.Stocks.Count || price is < 1 or > 10_000_000 || quantity is <= 0 or > 1_000_000 || lifetime is < 1 or > 24 ||
             (shortSale && buy) || (cover && !buy) || (shortSale && cover))
             return "주문 값이 올바르지 않습니다.";
+        if (!State.Stocks[stockIndex].Active) return "상장 종료 종목입니다.";
         var t = Owner(ownerId);
         var incoming = new LimitOrder { OwnerId = ownerId, StockIndex = stockIndex, Buy = buy, Short = shortSale, Cover = cover,
-            Price = price, Remaining = quantity, ExpiresAt = State.CompletedHours + lifetime };
+            SecurityId = State.Stocks[stockIndex].SecurityId, Price = price, Remaining = quantity, ExpiresAt = State.CompletedHours + lifetime };
         if ((shortSale || cover) && t.IsRetail) return "공매도는 기관만 가능합니다.";
         if (cover && quantity > t.ShortShares[stockIndex] - t.ReservedCovers[stockIndex]) return "상환 가능 수량이 부족합니다.";
         if (cover && ownedOrders.TryGetValue(t.Id, out var active) && active.Any(o => o.Short && o.StockIndex == stockIndex)) return "공매도 주문을 먼저 취소해야 합니다.";
@@ -139,8 +142,9 @@ public sealed partial class GameEngine
         }
         else
         { buyer.AverageCost[i] = (buyer.Shares[i] * buyer.AverageCost[i] + amount) / (buyer.Shares[i] + quantity); buyer.Shares[i] += quantity; }
-        buyer.Cash -= amount + fee; buyer.BuyCashFlow += amount; buyer.Fees += fee; buyer.Trades++;
-        seller.Cash += amount - fee; seller.SellCashFlow += amount;
+        TransferCash(buyer, seller, amount, "stock-trade"); TransferCash(buyer, State, fee, "exchange-fee");
+        buyer.BuyCashFlow += amount; buyer.Fees += fee; buyer.Trades++;
+        TransferCash(seller, State, fee, "exchange-fee"); seller.SellCashFlow += amount;
         if (ask.Short)
         {
             seller.ShortAveragePrice[i] = (seller.ShortShares[i] * seller.ShortAveragePrice[i] + amount) / (seller.ShortShares[i] + quantity);
@@ -153,17 +157,30 @@ public sealed partial class GameEngine
         }
         seller.Fees += fee; seller.Trades++;
         buyer.TradedVolume += quantity; seller.TradedVolume += quantity; buyer.TradedTurnover += amount; seller.TradedTurnover += amount;
-        State.FeePool += fee * 2; State.TotalMatches++;
+        State.ExchangeRevenue += fee * 2; State.TotalMatches++;
         State.TotalAiTrades += (buyer.IsRetail ? 0 : 1) + (seller.IsRetail ? 0 : 1);
-        var s = State.Stocks[i]; s.Price = price; s.Volume += quantity; s.DayVolume += quantity; s.TotalVolume += quantity;
+        var s = State.Stocks[i]; s.Price = s.LastTradePrice = price; s.FractionalMark = 0; s.Volume += quantity; s.DayVolume += quantity; s.TotalVolume += quantity;
         s.DayTurnover += amount; s.TotalTurnover += amount;
         State.Tape.Insert(0, new TradeRecord { Season = State.Season, Day = State.Day, Hour = State.Hour, BuyerId = buyer.Id,
-            SellerId = seller.Id, StockIndex = i, Quantity = quantity, Price = price, ShortSale = ask.Short, ShortCover = bid.Cover });
+            SellerId = seller.Id, StockIndex = i, SecurityId = s.SecurityId, Quantity = quantity, Price = price, ShortSale = ask.Short, ShortCover = bid.Cover });
         if (State.Tape.Count > TapeLimit) State.Tape.RemoveAt(State.Tape.Count - 1);
     }
     void PayTradeTax(Trader t, double profit)
     {
-        long tax = (long)Math.Ceiling(Math.Max(0, profit) * State.Government.Policy.TaxRate);
-        t.Cash -= tax; t.Taxes += tax; State.Government.Cash += tax; State.Government.Taxes += tax;
+        t.SeasonRealizedProfit += profit;
+        long target = (long)Math.Ceiling(Math.Max(0, t.SeasonRealizedProfit - t.LossCarryForward) * State.Government.Policy.TaxRate);
+        long delta = target - t.SeasonTaxPaid;
+        if (delta > 0)
+        {
+            // Cover reservations include tax; normal sales fund it with their proceeds.
+            TransferCash(t, State.Government, delta, "trade-tax");
+            t.Taxes += delta; t.SeasonTaxPaid += delta; State.Government.Taxes += delta; State.Government.TaxEscrow += delta;
+        }
+        else if (delta < 0)
+        {
+            TransferCash(State.Government, t, -delta, "tax-refund");
+            t.Taxes += delta; t.SeasonTaxPaid += delta; State.Government.Taxes += delta; State.Government.TaxEscrow += delta;
+            State.Government.TaxRefunds -= delta;
+        }
     }
 }

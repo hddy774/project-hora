@@ -41,8 +41,10 @@ public sealed partial class GameView
             Button("시뮬레이션 시작  →", 20, h - 166, 360, 52, Start);
             Button("대표 능력 · 공매도 · 정부와 은행", 20, h - 103, 360, 45, () => help = true, false);
         }
-        Text("시뮬레이션 안내", 200, h - 28, 12, Muted, false, Paint.Align.Center);
-        Hit(110, h - 53, 180, 47, () => help = true);
+        Text("파일 가져오기 · 기록 복원", 90, h - 28, 11, Teal, false, Paint.Align.Center);
+        Hit(10, h-50, 165, 40, () => PickBackup(false));
+        Text("시뮬레이션 안내", 280, h - 28, 12, Muted, false, Paint.Align.Center);
+        Hit(190, h - 53, 190, 47, () => help = true);
     }
 
     void DrawHeader()
@@ -51,7 +53,7 @@ public sealed partial class GameView
         Text("ALPHA", 57, 29, 15, Ink, true, headline: true);
         Text("EXCHANGE", 58, 44, 9, Muted, true);
         Hit(14, 7, 151, 45, () => { lobby = true; auto = false; Save(); });
-        Pill("v1.2.0 · OFFLINE", 207, 20, Teal, 128);
+        Pill("v1.3.0 · OFFLINE", 207, 20, Teal, 128);
         Circle(360, 32, 15, Card2); Text("?", 360, 37, 15, Ink, true, Paint.Align.Center);
         Hit(338, 9, 43, 45, () => { help = true; });
         Text($"S{S.Season} · DAY {S.Day:00}/30", 21, 77, 18, Ink, true);
@@ -94,7 +96,7 @@ public sealed partial class GameView
         Text($"₩{ShortMoney(focus.Cash)}", 358, y + 145, 15, Ink, true, Paint.Align.Right);
         y += 183;
         Text("MARKET PULSE", 22, y + 11, 10, Lime, true);
-        Text("10개 가상 종목", 379, y + 11, 10, Muted, false, Paint.Align.Right);
+        Text($"{S.Stocks.Count(s => s.Active)}개 회사 · 6분야", 379, y + 11, 10, Muted, false, Paint.Align.Right);
         y += 27;
         var news = S.News.First();
         Box(20, y, 360, 52, Card2, 13);
@@ -108,9 +110,9 @@ public sealed partial class GameView
         y += 16;
         for (int i = 0; i < S.Stocks.Count; i++)
         {
-            int index = i; var s = S.Stocks[i];
+            int index = i; var s = S.Stocks[i]; if (!s.Active) continue;
             Box(20, y, 360, 80, Card, 16);
-            AColor accent = Hex(Palette[i]);
+            AColor accent = Hex(Palette[i % Palette.Length]);
             Box(32, y + 17, 43, 43, new AColor((int)accent.R, accent.G, accent.B, 24), 13);
             Text(s.Symbol[..1], 53.5f, y + 46, 22, accent, true, Paint.Align.Center);
             Text(s.Name, 87, y + 30, 13, Ink, true);

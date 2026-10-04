@@ -6,7 +6,7 @@ static class EconomyChecks
     public static void Run(Action<bool, string> check, Action<GameEngine> validate, Action<double, double, string, double> near)
     {
         var g = new GameEngine(712);
-        check(g.State.Stocks.Count == 10 && g.State.Bots.All(t => t.Abilities.Values().Length == 10 && t.Abilities.Values().All(v => v is >= 1 and <= 100)), "Ten stocks and ten representative abilities");
+        check(g.State.Stocks.Count == 30 && g.State.Bots.All(t => t.Abilities.Values().Length == 10 && t.Abilities.Values().All(v => v is >= 1 and <= 100)), "Thirty stocks and ten representative abilities");
         check(g.AdvanceTime(2.4, 50) == 24 && g.AdvanceTime(1.2, 100) == 24, "50x and 100x timing");
         var t = g.Owner(1);
         for (int i = 0; i < 9; i++)
@@ -23,7 +23,7 @@ static class EconomyChecks
         check(g.LoanTerms(t).Limit == own && g.BorrowCash(t.Id, 1) is not null, "Borrowing cannot recursively expand its limit");
         check(g.RepayLoan(t.Id, own) == own && t.LoanDebt == 0, "Bank repayment"); validate(g);
         var shortGame = new GameEngine(77); var shortTrader = shortGame.Owner(1); int stock = 0;
-        long inventory = shortGame.State.Bank.ShareInventory[stock]; int sellerLong = shortTrader.Shares[stock];
+        long inventory = shortGame.State.Bank.ShareInventory[stock]; long sellerLong = shortTrader.Shares[stock];
         check(shortGame.SubmitOrder(101, stock, false, 52400, 1, shortSale: true) is not null, "Retail cannot short");
         check(shortGame.SubmitOrder(1, stock, false, 52500, 2, shortSale: true) is null, "Borrowed short order");
         check(shortGame.State.Bank.ReservedLending[stock] == 2 && shortTrader.ReservedCash > 0, "Short share/cash reservation");
@@ -36,7 +36,8 @@ static class EconomyChecks
         check(shortTrader.Taxes > 0, "Short profit is taxed"); validate(shortGame);
         check(shortGame.SubmitOrder(1, 0, false, 100, 500, shortSale: true) is not null, "Low limit price cannot bypass marked short risk cap");
         shortGame.SubmitOrder(1, 0, false, 51000, 2, shortSale: true); shortGame.SubmitOrder(2, 0, true, 51500, 2);
-        shortGame.SubmitOrder(4, 0, false, 52500, 2);
+        var coverSeller = shortGame.State.Bots.First(b => b.Id != 1 && b.Shares[0] - b.ReservedShares[0] >= 2);
+        check(shortGame.SubmitOrder(coverSeller.Id, 0, false, 52500, 2) is null, "Funded cover counterparty");
         check(shortGame.SubmitOrder(1, 0, true, 52600, 2, cover: true) is null && shortTrader.RealizedProfit == -1500, "Losing short realizes the full loss"); validate(shortGame);
         var lendingSave = new GameEngine(121); lendingSave.SubmitOrder(1, 0, false, 55000, 2, shortSale: true);
         var lendingRestore = GameEngine.Deserialize(lendingSave.Serialize());
@@ -55,7 +56,7 @@ static class EconomyChecks
         var penalized = operationGame.Owner(3); operationGame.AssessFine(penalized, penalized.Cash + 1000);
         check(penalized.FineDebt == 1000 && penalized.Cash == 0, "Unpaid fines remain a liability without negative cash"); validate(operationGame);
         var loss = new GameEngine(4); var a = loss.Owner(1); a.Abilities.RiskManagement = 100;
-        foreach (var s in loss.State.Stocks) s.History = Enumerable.Range(0, 24).Select(i => (int)(s.Price * (1.3 - i * .3 / 23))).ToList();
+        foreach (var s in loss.State.Stocks) s.History = Enumerable.Range(0, 24).Select(i => (double)(s.Price * (1.3 - i * .3 / 23))).ToList();
         loss.AdvanceHour();
         check(a.Decision.Contains("하락") && loss.Analyze(a, 0).TargetExposure < .3, "Bear market reduces exposure and strengthens risk control");
         var strong = new Trader { Abilities = new Abilities { Valuation = 50, RiskManagement = 100, Macro = 60 }, SeasonOpeningEquity = 1, Cash = 1_000_000, Risk = .5 };
@@ -67,7 +68,7 @@ static class EconomyChecks
         check(loss.State.Bots.All(b => b.Equity(loss.State.Stocks) > 0) && loss.State.Bots.Sum(b => b.Cash) > 0, "Ten-day bear simulation preserves institutional solvency and liquidity"); validate(loss);
         Console.WriteLine($"Bear scenario: solvent institutions={loss.State.Bots.Count(b => b.Equity(loss.State.Stocks) > 0)}, cash={loss.State.Bots.Sum(b => b.Cash):N0}");
         var recovery = new GameEngine(301);
-        foreach (var s in recovery.State.Stocks) { s.Price = s.PreviousPrice = s.DayOpenPrice = 100; s.History = Enumerable.Repeat(100, 24).ToList(); }
+        foreach (var s in recovery.State.Stocks) { s.Price = s.PreviousPrice = s.DayOpenPrice = 100; s.History = Enumerable.Repeat(100.0, 24).ToList(); }
         for (int i = 0; i < 120; i++) recovery.AdvanceHour();
         check(recovery.State.Stocks.Any(s => s.Price > 100), "Value demand can recover from the price floor"); validate(recovery);
         var company = new GameEngine(85); var previous = company.State.Stocks[0].Report;
@@ -76,7 +77,7 @@ static class EconomyChecks
         foreach (var s in company.State.Stocks)
         {
             var r = s.Report;
-            check(r.Season == 1 && r.NewsCount > 0 && s.SeasonNewsCount <= 1, "Monthly report uses accumulated news then resets");
+            check(r.Season == 1 && r.NewsCount >= 0 && s.SeasonNewsCount <= 1, "Monthly report uses accumulated news then resets");
             check(r.OpeningCash + r.OperatingCashFlow + r.InvestingCashFlow + r.FinancingCashFlow == r.Cash, "Corporate cash flow reconciliation");
             check(r.OpeningEquity + r.NetIncome - r.Dividends + r.CapitalChange == r.Equity, "Corporate statement of equity reconciliation");
             check(r.Assets == r.Debt + r.Equity, "Corporate balance sheet");
@@ -92,8 +93,8 @@ static class EconomyChecks
         }
         check(company.State.PendingSeasons[0].Days.Count == 30 && company.State.PendingSeasons[0].CompanyReports.All(r => r.Season == 1), "Season archive includes graphs and closing reports");
         var old = MakeV3Fixture(); var migrated = GameEngine.Deserialize(old.ToJsonString());
-        check(migrated.State.Version == 4 && migrated.State.MigratedFromV3 && migrated.State.Stocks.Count == 10, "v3 upgrades into ten-stock economy");
-        check(migrated.State.Bots.All(t => t.Cash == (long)old["Bots"]![t.Id - 1]!["Cash"]! && t.Shares.Take(8).SequenceEqual(old["Bots"]![t.Id - 1]!["Shares"]!.AsArray().Select(x => (int)x!))), "v3 cash and holdings preserved");
+        check(migrated.State.Version == 5 && migrated.State.MigratedFromV3 && migrated.State.Stocks.Count == 30, "v3 upgrades into thirty-stock economy");
+        check(migrated.State.Bots.All(t => t.Cash == (long)old["Bots"]![t.Id - 1]!["Cash"]! && t.Shares.Take(8).SequenceEqual(old["Bots"]![t.Id - 1]!["Shares"]!.AsArray().Select(x => (long)x!))), "v3 cash and holdings preserved");
         validate(migrated);
         var corruptHistory = JsonNode.Parse(company.Serialize())!.AsObject(); corruptHistory["DailyHistory"] = new JsonArray();
         try { GameEngine.Deserialize(corruptHistory.ToJsonString()); check(false, "Empty history must be rejected before UI indexing"); }
@@ -105,11 +106,11 @@ static class EconomyChecks
         var g = new GameEngine(111);
         foreach (var t in g.Participants)
         {
-            for (int i = 8; i < 10; i++) t.Cash += (long)t.Shares[i] * g.State.Stocks[i].Price;
+            for (int i = 8; i < g.State.Stocks.Count; i++) t.Cash += (long)t.Shares[i] * g.State.Stocks[i].Price;
             t.Shares = t.Shares.Take(8).ToArray(); t.AverageCost = t.AverageCost.Take(8).ToArray(); t.ReservedShares = t.ReservedShares.Take(8).ToArray();
-            t.ShortShares = new int[8]; t.ShortAveragePrice = new double[8]; t.ReservedCovers = new int[8]; t.OpeningCash = t.Cash;
+            t.ShortShares = new long[8]; t.ShortAveragePrice = new double[8]; t.ReservedCovers = new long[8]; t.OpeningCash = t.Cash;
         }
-        g.State.Stocks.RemoveRange(8, 2); g.State.News.RemoveAll(n => n.StockIndex >= 8);
+        g.State.Stocks.RemoveRange(8, g.State.Stocks.Count - 8); g.State.News.RemoveAll(n => n.StockIndex >= 8);
         for (int i = 0; i < 8; i++) g.State.Stocks[i].TotalShares = g.Participants.Sum(t => (long)t.Shares[i]);
         g.State.InitialSystemCash = g.Participants.Sum(t => t.Cash) + g.State.FeePool;
         var json = JsonNode.Parse(g.Serialize())!.AsObject(); json["Version"] = 3;

@@ -66,6 +66,8 @@ Android 8.0 이상 ARM64 기기와 x86_64 에뮬레이터를 지원합니다. AP
 
 [개발 계획](docs/PLAN-v1.2.0.md) · [검증 결과](VERIFICATION.txt)
 
+다음 개선은 [v1.3.0 계획 Draft PR #5](https://github.com/hddy774/project-hora/pull/5)에 정리합니다. [시장 축소 조사](docs/MARKET-AUDIT-v1.2.0.md), [개발 계획](docs/PLAN-v1.3.0-market.md), [분야별 5개 회사 제안](docs/COMPANIES-v1.3.0.csv), [통계 파일 저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md)는 구현 전 문서입니다. 현재 배포 앱의 종목 수와 저장 동작은 위 v1.2.0 설명을 따릅니다.
+
 ```text
 src/AlphaExchange.Core/       호가·회계·혼합 AI·경제·시즌·통계·저장
 src/AlphaExchange.Android/    네이티브 화면·그래프·인물·터치

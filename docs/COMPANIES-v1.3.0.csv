@@ -1,0 +1,31 @@
+company_id,symbol,name,sector,subsector,existing_v1_2,business_driver,main_news_exposure,capital_policy
+company-nova,NOVA,노바 테크,기술,반도체,true,설비 가동률과 반도체 수요,설비 투자와 공급망,성장 투자 우선
+company-aura,AURA,아우라 로보틱스,기술,로봇·자동화,true,자동화 수주와 생산 효율,산업 투자와 기술 인증,연구·설비 투자 우선
+company-clud,CLUD,클라우드 네트웍스,기술,클라우드,true,구독 유지율과 데이터센터 비용,기업 IT 지출과 전력비,현금 여력 기반 배당
+company-cybr,CYBR,사이버 쉴드,기술,보안,false,보안 구독과 사고 대응 비용,보안 사고와 규제,연구 투자 우선
+company-data,DATA,데이터 링크,기술,기업 소프트웨어,false,라이선스와 서비스 계약,기업 투자와 경쟁 제품,안정 배당과 연구 병행
+company-volt,VOLT,볼트 에너지,산업·에너지,재생에너지,true,발전량과 전력 판매 단가,날씨와 친환경 정책,설비 투자와 부채 관리
+company-orbt,ORBT,오비트 우주,산업·에너지,우주·항공,true,발사 수주와 프로젝트 비용,발사 성공과 정부 계약,프로젝트 투자 우선
+company-grid,GRID,그리드 전력,산업·에너지,전력·유틸리티,false,전력 수요와 규제 요금,금리와 요금 정책,유지보수 이후 배당
+company-stee,STEE,스틸 웍스,산업·에너지,철강·소재,false,산업 수요와 원재료 가격,건설 경기와 원자재,경기 대응 투자
+company-logi,LOGI,트랜스 물류,산업·에너지,운송·물류,false,운송량과 연료비,교역과 유가,현금 여력 기반 배당
+company-helx,HELX,헬릭스 바이오,바이오·헬스,신약 연구,true,연구 성과와 임상 비용,임상 승인과 특허,연구 투자 우선
+company-care,CARE,케어 메디컬,바이오·헬스,의료 서비스,true,진료 수요와 인력 비용,보험 수가와 인구 변화,시설 투자 이후 배당
+company-phar,PHAR,메디 파마,바이오·헬스,제약,false,의약품 판매와 생산 원가,특허 만료와 의약 규제,연구와 안정 배당 병행
+company-devc,DEVC,메디 디바이스,바이오·헬스,의료기기,false,기기 수주와 인증 비용,제품 승인과 리콜,제품 개발 우선
+company-diag,DIAG,바이오 진단,바이오·헬스,진단,false,검사 수요와 시약 비용,감염병과 보험 정책,수요 변동 대비 현금
+company-mint,MINT,민트 파이낸스,금융,결제·핀테크,true,결제 건수와 연체 비용,소비와 결제 규제,기술 투자 이후 배당
+company-bnkr,BNKR,브릭 은행,금융,상업은행,false,이자 마진과 신용 손실,금리와 신용 경기,자본 적정성 우선
+company-insr,INSR,세이프 보험,금융,보험,false,보험료와 보험금,재해와 보험 규제,지급 준비금 우선
+company-asst,ASST,오로라 자산운용,금융,자산운용,false,운용 보수와 수탁 자산,시장 수익과 자금 유출입,현금 여력 기반 배당
+company-leas,LEAS,플렉스 리스,금융,리스·여신,false,리스 계약과 조달 비용,금리와 설비 투자,부채 관리 우선
+company-wave,WAVE,웨이브 미디어,미디어,콘텐츠 제작,true,콘텐츠 매출과 제작비,흥행과 판권,콘텐츠 투자 우선
+company-game,GAME,루프 게임,미디어,게임,false,이용자 유지와 개발비,출시 성과와 게임 규제,개발 투자 우선
+company-advt,ADVT,애드 브릿지,미디어,광고,false,광고 집행과 매체 비용,소비 경기와 광고 규제,현금 여력 기반 배당
+company-stre,STRE,스트림 플러스,미디어,스트리밍,false,구독과 콘텐츠 확보 비용,구독 경쟁과 판권,성장 투자 우선
+company-publ,PUBL,페이지 퍼블리싱,미디어,출판·교육,false,출판 판매와 교육 수요,교육 정책과 저작권,안정 배당 지향
+company-food,FOOD,그린 푸드,소비재,식품,true,식품 수요와 원재료비,곡물 가격과 식품 안전,안정 배당 지향
+company-rtal,RTAL,데일리 리테일,소비재,유통,false,소비 지출과 재고 회전,물가와 소비 정책,운전자본 우선
+company-beau,BEAU,루미 뷰티,소비재,화장품,false,브랜드 수요와 수출,소비 트렌드와 교역,제품 개발과 배당 병행
+company-appl,APPL,라이프 가전,소비재,생활가전,false,교체 수요와 생산 원가,소비 경기와 원자재,설비 효율 투자
+company-trvl,TRVL,오션 트래블,소비재,여행·레저,false,관광 수요와 운영 비용,교통과 재난,현금 완충 우선

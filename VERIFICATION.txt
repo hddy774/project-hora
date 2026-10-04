@@ -2,7 +2,7 @@ ALPHA EXCHANGE v1.2.0 — verification, 2026-10-04 UTC
 
 AUTOMATED CORE CHECKS
 Command: dotnet run --project tests/AlphaExchange.Checks -c Release
-PASS: 15,432,621 assertions, 16 continuous seasons, 1,197,373 matched trades.
+PASS: 15,432,622 assertions, 16 continuous seasons, 1,197,373 matched trades.
 
 Validated: 100 institutions / 10,000 independent retail accounts / 10 stocks;
 ten ability scores (1..100), five dispositions, skill-sensitive mixed signals,
@@ -33,10 +33,10 @@ Participant balance sheet, income and cash-flow statements reconcile including
 loans, shorts, fees, tax, accrued interest, borrowing fees, fines and subsidies.
 
 PERFORMANCE (Linux .NET 9 Release; not a physical-phone benchmark)
-Measured with a software emulator also running: 16-season test wall 19.37s.
-Simulated-hour p50 0.44ms / p95 2.76ms / p99 6.51ms.
+Measured in GitHub Actions run 37177788666: 16-season test wall 14.07s.
+Simulated-hour p50 0.47ms / p95 2.30ms / p99 3.31ms.
 100x time budget: 50ms per simulated hour (two hours per 100ms UI callback).
-Final JSON snapshot: 17,109,715 bytes; serialization 86.4ms.
+Final JSON snapshot: 17,109,715 bytes; serialization 75.0ms.
 Snapshot capture/serialization occurs on the simulation thread every 15 seconds
 and at season transitions; checkpoint/archive disk writes run in a background
 worker, coalescing pending snapshots. Initial load and save capture can pause
@@ -56,24 +56,43 @@ Minimum API 26; target API 34; ARM64 and x86_64; no INTERNET permission.
 Known target/compile API mismatch and Android deprecation warnings remain.
 GitHub PR CI checks both the simulation/artwork and Android Release compilation.
 Local development-signed APK installed successfully on API 26 x86_64 using a
-software emulator. Reliable UI verification was initially obstructed by an
-emulator System UI ANR after display configuration changes; this does not count
-as a passed UI test. No application fatal exception appeared in the inspected
-log. Physical ARM64 and newer Android versions were not tested.
+software emulator. An initial emulator System UI ANR after display configuration
+changes was resolved. Subsequently the lobby, active market, pause control,
+statistics navigation, period selector and market-capitalization line chart were
+observed on screen. This is a limited smoke test; the remaining screens,
+physical ARM64 devices and newer Android versions were not tested. No application
+fatal exception appeared in the inspected log.
 
 GITHUB ACTIONS APK BUILD AND RELEASE
 .github/workflows/release.yml builds from a merged v*.minor.0 tag, reruns core
-and artwork checks, uploads an unsigned APK/source artifact, signs with existing
-repository Actions secrets, verifies the original certificate and app identity,
+and artwork checks, uploads an unsigned APK/source artifact, signs with the
+selected key, verifies that key's certificate and the app identity,
 creates a draft release, uploads APK/source/checksums, downloads and checks every
 asset, then publishes it as the latest release. The actual workflow run includes
-CORE-CHECKS.txt, ARTWORK-CHECKS.txt, APK-VERIFICATION.txt and APK-BADGING.txt.
+CORE-CHECKS.txt, ARTWORK-CHECKS.txt, APK-VERIFICATION.txt, APK-BADGING.txt and
+SIGNING-INFO.txt. The signed APK/source/reports are also kept in an Actions
+artifact for recovery; no key or password is included.
 
-Required Actions secrets: ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD,
-ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD (documented legacy aliases also work).
-Expected release certificate SHA-256, verified against downloaded v1.1.0 APK:
+The original-key mode requires ANDROID_KEYSTORE_BASE64,
+ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS and ANDROID_KEY_PASSWORD
+(documented legacy aliases also work). Its expected certificate SHA-256,
+verified against downloaded v1.1.0 APK, is:
 9fd5aa86793e26beec38948dfae79d1981581f8e54abe0047025a863cc64f722
-The local build uses a different development certificate and is not presented
-as an upgrade-compatible production APK. Missing or mismatched signing secrets
-stop publication; the completed unsigned APK/source artifact remains available.
+The first release attempt (37177788666) built successfully but stopped because
+all signing settings were empty. The user subsequently explicitly requested
+deployment without the existing key. This v1.2.0 uses the manual workflow input
+generate_signing_key=true: a fresh RSA-2048 key is generated in the runner temp
+directory, used to sign the APK and deleted on exit. The certificate reported in
+SIGNING-INFO.txt is compared with the APK certificate. The actual latest run's
+checks and signing report are attached to the release.
+
+This new identity cannot update v1.1.0 in place. Uninstalling the old application
+can delete local saves. The generated key cannot be reused for another build.
+The default mode still requires the original certificate and stops publication
+if signing settings are missing or mismatched. The local development signature
+is separate and is not used for the GitHub release.
+Local signing smoke check: generated mode signed the unsigned Release APK,
+matched the exported certificate to apksigner output, retained app ID/version
+and ARM64/x86_64 support, and removed both temporary key/certificate files.
+Default mode with missing signing settings failed before signing as expected.
 Signing keys/passwords and build outputs are excluded from source and main.

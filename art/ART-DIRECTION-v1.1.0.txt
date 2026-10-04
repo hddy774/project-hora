@@ -1,0 +1,23 @@
+v1.1.0 institutional representatives
+
+100 original anime-style adult character illustrations: women IDs 001–070,
+men IDs 071–100. Generated with the image generation tool using the user's
+reference illustration for painterly detail, hair, lighting and atmosphere.
+All characters wear modern clothing in modern urban settings.
+
+The 100 illustrations are packed as ten 5×2 PNG atlases, each 1536×1024.
+No portrait is reused for another institution. The manifest gives each
+individual's ID, name, gender, age, pixel rectangle and source SHA-256.
+Canvas draws the specified rectangle; small avatars use a face crop and
+profile cards display the full portrait. Original atlas files remain intact.
+Approximate individual resolution is 307×512 pixels; row boundaries in the
+manifest follow the generated compositions. No online resource is needed.
+
+Files: src/AlphaExchange.Android/Assets/portraits/portraits-01.png ... 10.png
+Manifest: src/AlphaExchange.Android/Assets/portraits/manifest.json
+Runtime: Portraits.cs and AlphaExchange.Core/Representatives.cs
+Validation: python3 scripts/check-artwork.py
+
+The v1.0 arena illustration is retained on the lobby. Old SVG robot avatars
+are retained as historical source art; institutional profiles now use the
+100 newly generated human representatives.

@@ -1,0 +1,20 @@
+name: Simulation and artwork checks
+on:
+  push:
+    branches: [main, 'feat/**']
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.318'
+      - name: Verify matching, accounting, timing, 16 seasons and persistence
+        run: dotnet run --project tests/AlphaExchange.Checks -c Release
+      - name: Verify 100 distinct portrait regions and checksums
+        run: python3 scripts/check-artwork.py

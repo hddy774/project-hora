@@ -94,6 +94,8 @@ public sealed partial class GameEngine
         foreach (int id in actors) Decide(Owner(id));
         State.Orders.RemoveAll(o => o.Remaining == 0);
         State.CompletedHours++;
+        if (State.Hour == 0)
+            foreach (var s in State.Stocks) { s.DayOpenPrice = s.Price; s.DayVolume = s.DayTurnover = 0; }
         foreach (var s in State.Stocks)
         {
             s.FairValue += (s.StartPrice - s.FairValue) * .002 + (Next() - .5) * s.StartPrice * .001;

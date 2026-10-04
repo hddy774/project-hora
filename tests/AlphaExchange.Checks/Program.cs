@@ -55,6 +55,7 @@ Validate(match);
 var timing = new GameEngine(8);
 Check(timing.AdvanceTime(4.99) == 0 && timing.AdvanceTime(.01) == 1, "5 seconds/hour");
 Check(timing.AdvanceTime(115) == 23 && timing.State.Day == 2 && timing.State.Hour == 0, "120 seconds/day");
+Check(timing.State.Stocks.All(s => s.DayVolume == 0 && s.DayTurnover == 0 && s.Change == 0), "Daily statistics roll over at midnight");
 Check(timing.AdvanceTime(6, 20) == 24, "20x: 6 seconds/day");
 try { timing.AdvanceTime(1, 10); Check(false, "Unsupported speed"); } catch (ArgumentOutOfRangeException) { }
 var expiry = new GameEngine(97);
@@ -105,8 +106,14 @@ var migration = GameEngine.Deserialize(legacy.ToJsonString());
 Check(migration.State.MigratedFromV1 && migration.State.Retail.Count == 10000 && migration.State.Season == 2, "v1 finished season migration");
 Check(migration.State.Bots.All(t => t.LegacyFees == 1234 && t.Fees == 0) && migration.State.PendingSeasons.Single().Season == 1, "Legacy fees and final ranks preserved");
 Validate(migration);
+Check(migration.Statistics().Sectors.Count == 6, "Legacy sector migration");
 var corrupt = JsonNode.Parse(saved)!; corrupt["Orders"] = new JsonArray(JsonSerializer.SerializeToNode(new LimitOrder { Id = 1, OwnerId = 1, StockIndex = 0, Buy = true, Price = 10000000, Remaining = 1000000, ExpiresAt = game.State.CompletedHours + 3 }));
 try { GameEngine.Deserialize(corrupt.ToJsonString()); Check(false, "Reject corrupt reserves"); } catch (InvalidDataException) { }
+var capture = store.PrepareSave(game); long captureHour = game.State.CompletedHours;
+game.AdvanceHour(); store.WriteSnapshot(capture);
+Check(store.Load(out _)!.State.CompletedHours == captureHour, "Background snapshot is isolated from live progression");
+var otherRun = new GameEngine(901); GameStore.Acknowledge(otherRun, capture);
+Check(otherRun.State.LastArchivedSeason == 0, "Do not acknowledge an old run into a new market");
 var saveWatch = Stopwatch.StartNew(); string json = game.Serialize(); saveWatch.Stop();
 times.Sort();
 Console.WriteLine($"PASS {assertions:N0} assertions; {seasons} seasons; {game.State.TotalMatches:N0} matched trades");

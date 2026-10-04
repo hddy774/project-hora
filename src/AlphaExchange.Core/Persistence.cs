@@ -32,7 +32,8 @@ public sealed partial class GameEngine
                 t.OpeningUnrealized = t.Financials(s.Stocks).UnrealizedProfit; t.BuyCashFlow = t.SellCashFlow = 0;
                 if (t.EquityHistory.Count > HistoryLimit) t.EquityHistory = t.EquityHistory.TakeLast(HistoryLimit).ToList();
             }
-            foreach (var stock in s.Stocks) stock.History = stock.History.TakeLast(HistoryLimit).ToList();
+            string[] sectors = ["기술", "산업·에너지", "바이오·헬스", "산업·에너지", "금융", "미디어", "소비재", "기술"];
+            for (int i = 0; i < 8; i++) { s.Stocks[i].Sector = sectors[i]; s.Stocks[i].History = s.Stocks[i].History.TakeLast(HistoryLimit).ToList(); }
             foreach (var news in s.News) news.Season = 1;
             s.News = s.News.Take(40).ToList(); migrated.CreateRetail(); migrated.InitializeTotals();
             if (s.CompletedHours == 720) migrated.FinishSeason(1);
@@ -92,24 +93,42 @@ public sealed class GameStore(string directory)
         }
         return null;
     }
-    public void Save(GameEngine engine)
+    public SaveSnapshot PrepareSave(GameEngine engine)
+    {
+        var state = engine.State;
+        var seasons = state.PendingSeasons.OrderBy(r => r.Season)
+            .Select(r => new ArchivedSnapshot(r.Season, SeasonPath(state, r.Season), JsonSerializer.Serialize(r))).ToArray();
+        // Capture on the simulation thread; all subsequent file I/O uses only
+        // these immutable strings, never the live mutable market.
+        return new SaveSnapshot(state.RunId, engine.Serialize(), seasons);
+    }
+    public void WriteSnapshot(SaveSnapshot snapshot)
     {
         Directory.CreateDirectory(directory);
-        var state = engine.State;
-        foreach (var season in state.PendingSeasons.OrderBy(r => r.Season))
+        foreach (var season in snapshot.Seasons)
         {
-            string path = SeasonPath(state, season.Season); Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            AtomicWrite(path, JsonSerializer.Serialize(season)); state.LastArchivedSeason = season.Season;
+            Directory.CreateDirectory(Path.GetDirectoryName(season.Path)!);
+            AtomicWrite(season.Path, season.Json);
         }
-        state.PendingSeasons.Clear();
-        string json = engine.Serialize();
         if (File.Exists(SavePath))
         {
-            // Never replace a valid backup with a known corrupt primary file.
             try { GameEngine.Deserialize(File.ReadAllText(SavePath)); File.Copy(SavePath, SavePath + ".bak", true); }
             catch (Exception e) when (e is IOException or InvalidDataException or JsonException or InvalidOperationException or ArgumentException or NullReferenceException or OverflowException) { }
         }
-        AtomicWrite(SavePath, json);
+        // The checkpoint retains pending records until a later checkpoint. This
+        // makes a crash between archive write and acknowledgement recoverable.
+        AtomicWrite(SavePath, snapshot.Json);
+    }
+    public static void Acknowledge(GameEngine engine, SaveSnapshot snapshot)
+    {
+        if (engine.State.RunId != snapshot.RunId || snapshot.Seasons.Length == 0) return;
+        long last = snapshot.Seasons.Max(s => s.Season);
+        engine.State.LastArchivedSeason = Math.Max(engine.State.LastArchivedSeason, last);
+        engine.State.PendingSeasons.RemoveAll(s => s.Season <= last);
+    }
+    public void Save(GameEngine engine)
+    {
+        var snapshot = PrepareSave(engine); WriteSnapshot(snapshot); Acknowledge(engine, snapshot);
     }
     public SeasonResult? ReadSeason(GameState state, long season)
     {
@@ -125,3 +144,6 @@ public sealed class GameStore(string directory)
         File.Move(path + ".tmp", path, true);
     }
 }
+
+public sealed record ArchivedSnapshot(long Season, string Path, string Json);
+public sealed record SaveSnapshot(string RunId, string Json, ArchivedSnapshot[] Seasons);

@@ -33,5 +33,6 @@
 - [x] Draft PR #1 등록
 - [x] 시장 엔진 및 회계/시즌 저장 구현
 - [x] 인물 그림 100개 생성 및 UI 통합
-- [ ] 자동 검증 및 APK 실행 확인
-- [ ] PR 병합 및 최신 릴리스 배포
+- [x] 자동 검증 및 APK 실행 확인
+
+최종 병합·배포 상태는 [PR #1](https://github.com/hddy774/project-hora/pull/1)과 [v1.1.0 릴리스](https://github.com/hddy774/project-hora/releases/tag/v1.1.0)에서 확인한다.

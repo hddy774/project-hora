@@ -17,6 +17,9 @@ public sealed partial class GameView : View
     readonly List<(RectF Rect, Action Action)> targets = [];
     readonly GameStore store;
     long lastSave;
+    readonly object saveGate = new();
+    SaveSnapshot? pendingSave;
+    bool saving;
     int portfolioTab;
     long historyPage, selectedSeason;
     Canvas c = null!;
@@ -82,8 +85,36 @@ public sealed partial class GameView : View
     void Save()
     {
         if (game is null) return;
-        try { store.Save(game); lastSave = Now; }
-        catch { Notify("기기 저장 공간을 확인하세요. 저장하지 못했습니다."); }
+        try
+        {
+            var snapshot = store.PrepareSave(game); lastSave = Now;
+            lock (saveGate)
+            {
+                pendingSave = snapshot;
+                if (saving) return;
+                saving = true;
+            }
+            _ = Task.Run(SaveWorker);
+        }
+        catch { Notify("저장 데이터를 준비하지 못했습니다."); }
+    }
+    void SaveWorker()
+    {
+        while (true)
+        {
+            SaveSnapshot snapshot;
+            lock (saveGate)
+            {
+                if (pendingSave is null) { saving = false; return; }
+                snapshot = pendingSave; pendingSave = null;
+            }
+            try
+            {
+                store.WriteSnapshot(snapshot);
+                Post(() => { if (game is not null) GameStore.Acknowledge(game, snapshot); });
+            }
+            catch { Post(() => Notify("기기 저장 공간을 확인하세요. 저장하지 못했습니다.")); }
+        }
     }
 
     void Start()
@@ -250,6 +281,8 @@ public sealed partial class GameView : View
         if (type == 0) { Line(x, y + 17, x + 5, y + 10, color, 2); Line(x + 5, y + 10, x + 11, y + 13, color, 2); Line(x + 11, y + 13, x + 20, y + 2, color, 2); Line(x + 14, y + 2, x + 20, y + 2, color, 2); }
         else if (type == 1) { Box(x, y + 4, 22, 15, Bg, 4, color); Box(x + 13, y + 8, 11, 7, Bg, 2, color); Circle(x + 17, y + 11.5f, 1, color); }
         else if (type == 2) { Line(x + 3, y + 3, x + 19, y + 3, color, 2); Line(x + 3, y + 3, x + 6, y + 13, color, 2); Line(x + 19, y + 3, x + 16, y + 13, color, 2); Line(x + 6, y + 13, x + 16, y + 13, color, 2); Line(x + 11, y + 13, x + 11, y + 19, color, 2); Line(x + 6, y + 21, x + 16, y + 21, color, 2); }
+        else if (type == 3) { Box(x, y + 12, 5, 10, color, 1); Box(x + 8, y + 5, 5, 17, color, 1); Box(x + 16, y, 5, 22, color, 1); }
+        else if (type == 4) { Box(x, y + 3, 22, 20, Bg, 3, color); Line(x, y + 10, x + 22, y + 10, color); Line(x + 6, y, x + 6, y + 6, color, 2); Line(x + 16, y, x + 16, y + 6, color, 2); Circle(x + 7, y + 16, 1.5f, color); Circle(x + 15, y + 16, 1.5f, color); }
         else { Box(x, y + 1, 22, 21, Bg, 4, color); Line(x + 5, y + 7, x + 17, y + 7, color, 1.5f); Line(x + 5, y + 12, x + 17, y + 12, color, 1.5f); Line(x + 5, y + 17, x + 12, y + 17, color, 1.5f); }
     }
 

@@ -95,6 +95,9 @@ static class EconomyChecks
         check(migrated.State.Version == 4 && migrated.State.MigratedFromV3 && migrated.State.Stocks.Count == 10, "v3 upgrades into ten-stock economy");
         check(migrated.State.Bots.All(t => t.Cash == (long)old["Bots"]![t.Id - 1]!["Cash"]! && t.Shares.Take(8).SequenceEqual(old["Bots"]![t.Id - 1]!["Shares"]!.AsArray().Select(x => (int)x!))), "v3 cash and holdings preserved");
         validate(migrated);
+        var corruptHistory = JsonNode.Parse(company.Serialize())!.AsObject(); corruptHistory["DailyHistory"] = new JsonArray();
+        try { GameEngine.Deserialize(corruptHistory.ToJsonString()); check(false, "Empty history must be rejected before UI indexing"); }
+        catch (InvalidDataException) { check(true, "Empty history rejected"); }
         Console.WriteLine("PASS economy: abilities, 50/100x, nine grades, loans, shorts, taxes, operations, bear risk, monthly reports/policies, comparisons and v3 migration");
     }
     static JsonObject MakeV3Fixture()

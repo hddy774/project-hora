@@ -85,7 +85,8 @@ public sealed partial class GameEngine
         foreach (var r in s.PendingSeasons)
             if (r.Season <= s.LastArchivedSeason || r.Season >= s.Season || r.Standings.Count != AiCount || r.Standings.Select(x => x.TraderId).Distinct().Count() != AiCount)
                 throw new InvalidDataException("시즌 기록 손상");
-        if (s.DailyHistory.Count > 121 || s.Operations.Count > 80 || s.Operations.Any(o => o.LeaderId is < 1 or > AiCount || o.PartnerId is < 1 or > AiCount ||
+        if (s.DailyHistory.Count is < 1 or > 121 || s.OpeningSnapshot is null || s.SeasonSnapshot is null ||
+            s.Stocks.Any(stock => stock.Reports.Count is < 1 or > 12) || s.Operations.Count > 80 || s.Operations.Any(o => o.LeaderId is < 1 or > AiCount || o.PartnerId is < 1 or > AiCount ||
             o.LeaderId == o.PartnerId || o.StockIndex is < 0 or >= StockCount || !Enum.IsDefined(o.Status))) throw new InvalidDataException("기록 데이터 손상");
         return engine;
     }

@@ -1,0 +1,21 @@
+ALPHA EXCHANGE v1.3.0 — added local storage dependencies
+
+Microsoft.Data.Sqlite / Microsoft.Data.Sqlite.Core 9.0.10
+Copyright (c) .NET Foundation and Contributors. MIT License.
+https://github.com/dotnet/efcore/blob/v9.0.10/LICENSE.txt
+
+SQLitePCLRaw.core / bundle_e_sqlite3 / provider.e_sqlite3 2.1.10
+Copyright 2014-2024 SourceGear, LLC. Apache License 2.0.
+https://github.com/ericsink/SQLitePCL.raw/blob/v2.1.10/LICENSE.TXT
+
+SQLitePCLRaw.lib.e_sqlite3 / lib.e_sqlite3.android 2.1.10 distributes SQLite.
+SQLite is in the public domain: https://sqlite.org/copyright.html
+Package metadata: https://www.nuget.org/packages/SQLitePCLRaw.lib.e_sqlite3.android/2.1.10
+
+The full MIT and Apache 2.0 texts are included under licenses/ in the source
+and assets/licenses/ inside the APK.
+
+These libraries operate on local files; the Android ARM64/x86_64 native SQLite
+libraries ship inside the APK. The application does not download libraries or
+require a server at runtime. .NET/Android runtime components are provided under
+their respective upstream licenses.

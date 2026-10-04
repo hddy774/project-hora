@@ -12,9 +12,9 @@ public sealed partial class GameView
     {
         if (fileBusy || Context is not Activity activity) return;
         if (export && game is null) { Notify("먼저 시장을 시작하세요."); return; }
-        auto = false; Save();
+        auto = false; Save(); fileBusy = true; Invalidate();
         await saveTask;
-        if (pendingSave is not null) { Notify("저장 실패를 해결한 뒤 파일을 처리하세요."); return; }
+        if (pendingSave is not null) { fileBusy = false; Notify("저장 실패를 해결한 뒤 파일을 처리하세요."); return; }
         fileBusy = true; Invalidate();
         try
         {
@@ -48,7 +48,7 @@ public sealed partial class GameView
                         using (var output = File.Create(temporary))
                         {
                             byte[] buffer = new byte[65536]; long copied = 0; int count;
-                            while ((count = input.Read(buffer)) > 0) { copied += count; if (copied > 2L*1024*1024*1024+1024*1024) throw new InvalidDataException(); output.Write(buffer,0,count); }
+                            while ((count = input.Read(buffer)) > 0) { copied += count; if (copied > 3L*1024*1024*1024) throw new InvalidDataException(); output.Write(buffer,0,count); }
                         }
                         using var selected = File.OpenRead(temporary); return store.Import(selected);
                     }
@@ -62,7 +62,7 @@ public sealed partial class GameView
                 Notify("게임과 통계를 복원했습니다. 재생하면 이어집니다.");
             }
         }
-        catch (Exception e) when (GameStore.StorageException(e) || e is Java.Lang.SecurityException)
+        catch (Exception e) when (GameStore.StorageException(e) || e is Java.Lang.SecurityException or Java.IO.IOException)
         { Notify("파일을 처리하지 못했습니다. 기존 기록은 보존합니다."); }
         finally { fileBusy = false; Invalidate(); }
     }

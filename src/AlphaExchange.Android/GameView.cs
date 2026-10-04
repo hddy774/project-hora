@@ -104,7 +104,7 @@ public sealed partial class GameView : View
     }
     void Save()
     {
-        if (game is null) return;
+        if (game is null || fileBusy) return;
         try
         {
             var snapshot = store.PrepareSave(game); lastSave = Now;
@@ -175,6 +175,7 @@ public sealed partial class GameView : View
 
     public bool GoBack()
     {
+        if(fileBusy) return true;
         if (help) help = false;
         else if (confirmNew) confirmNew = false;
         else if (selectedStock >= 0) selectedStock = -1;
@@ -206,8 +207,19 @@ public sealed partial class GameView : View
             DrawHeader();
             c.Save(); c.ClipRect(0, 101, 400, h - 145);
             clipTop = 101; clipBottom = h - 145;
-            float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), _ => DrawNews(112 - scroll) };
-            maxScroll = Math.Max(0, end + scroll - (h - 160));
+            try
+            {
+                float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), _ => DrawNews(112 - scroll) };
+                maxScroll = Math.Max(0, end + scroll - (h - 160));
+            }
+            catch(Exception e) when(GameStore.StorageException(e))
+            {
+                auto=false; maxScroll=scroll=0;
+                Box(20,112,360,155,Card,16);
+                Text("기록을 읽지 못했습니다",36,146,18,Ink,true);
+                Wrap("진행을 멈췄습니다. 원본을 보존하며 정상 내보내기 파일로 복원할 수 있습니다.",36,174,328,11,Muted,20);
+                Button("기록 파일 가져오기",36,217,328,36,()=>PickBackup(false),false);
+            }
             c.Restore(); clipTop = 0; clipBottom = h;
             DrawFooter();
             if (scroll > maxScroll + 1) { scroll = maxScroll; PostInvalidate(); }

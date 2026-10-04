@@ -21,6 +21,7 @@ public sealed partial class GameView
         var result = game!.Period(comparisonPeriod);
         Text($"{Moment(result.Start.Hour)} → {Moment(result.End.Hour)}", 21, y + 51, 10, Muted);
         if (result.Partial) { Text("기록이 없는 구간은 연결하지 않습니다.", 21, y + 70, 10, Red); return y + 89; }
+        if(result.Points.Any(p=>p.LegacyNoFundamentals)) { Text("이전 버전 구간: 일별 기록 · 없는 시간/지표는 미기록",21,y+70,10,Muted); return y+89; }
         return y + 74;
     }
     float Pie(string title, (string Label, double Value)[] rows, float y)

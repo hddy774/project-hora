@@ -17,6 +17,7 @@ public sealed partial class GameStore
         {
             lock (writeGate)
             { using var connection = Open(SavePath,true); Backup(connection,temp); }
+            if(new FileInfo(temp).Length>MaxBackupBytes) throw new InvalidDataException("백업 크기 제한을 초과했습니다.");
             var game = LoadDatabase(temp);
             string hash;
             using (var file = File.OpenRead(temp)) hash = Convert.ToHexString(SHA256.HashData(file));

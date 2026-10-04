@@ -118,7 +118,7 @@ public sealed partial class GameEngine
         s.SecurityIds = s.Stocks.Select(stock => stock.SecurityId).ToList();
         foreach (var order in s.Orders) if (order.StockIndex >= 0 && order.StockIndex < s.Stocks.Count) order.SecurityId = s.Stocks[order.StockIndex].SecurityId;
         engine.ResizeSecurities();
-        double legacyIndex = s.OpeningSnapshot is { Capitalization: > 0 } open ? 1000.0 * s.Stocks.Sum(x => x.MarketCap) / open.Capitalization : 1000;
+        double legacyIndex = s.OpeningSnapshot is { Capitalization: > 0 } open ? 1000.0 * s.Stocks.Select((stock,i)=>(double)stock.MarkPrice*s.LegacyShares[i]).Sum() / open.Capitalization : 1000;
         s.PriceIndex = s.TotalReturnIndex = s.LastPriceIndex = legacyIndex;
         s.IndexDivisor = s.Stocks.Sum(x => x.MarketCap) / legacyIndex;
         engine.RestoreSectorListings();

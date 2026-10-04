@@ -18,6 +18,8 @@
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   <ItemGroup>
+    <AndroidAsset Include="../../THIRD-PARTY-NOTICES.txt" Link="Assets/THIRD-PARTY-NOTICES.txt" />
+    <AndroidAsset Include="../../licenses/*.txt" Link="Assets/licenses/%(Filename)%(Extension)" />
     <ProjectReference Include="../AlphaExchange.Core/AlphaExchange.Core.csproj" />
   </ItemGroup>
 </Project>

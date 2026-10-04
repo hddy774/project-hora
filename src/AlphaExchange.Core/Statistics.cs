@@ -22,14 +22,14 @@ public sealed partial class GameEngine
     {
         if (cachedStats is not null) return cachedStats;
         var result = new MarketStatistics();
-        long[] institutionShares = new long[8];
+        long[] institutionShares = new long[State.Stocks.Count];
         foreach (var t in State.Bots)
-        { result.Institutions.Add(t.Financials(State.Stocks)); for (int i = 0; i < 8; i++) institutionShares[i] += t.Shares[i]; }
+        { result.Institutions.Add(t.Financials(State.Stocks)); for (int i = 0; i < State.Stocks.Count; i++) institutionShares[i] += t.Shares[i]; }
         foreach (var t in State.Retail) result.Retail.Add(t.Financials(State.Stocks));
         foreach (var sector in State.Stocks.Select((s, i) => (s, i)).GroupBy(x => x.s.Sector))
         {
             long cap = sector.Sum(x => x.s.TotalShares * x.s.Price), opening = sector.Sum(x => x.s.TotalShares * x.s.DayOpenPrice);
-            long inst = sector.Sum(x => institutionShares[x.i]), total = sector.Sum(x => x.s.TotalShares);
+            long inst = sector.Sum(x => institutionShares[x.i]), total = sector.Sum(x => x.s.TotalShares - State.Bank.ShareInventory[x.i]);
             result.Sectors.Add(new SectorStatistics(sector.Key, sector.Count(), cap, (double)cap / Math.Max(1, opening) - 1,
                 sector.Sum(x => x.s.DayVolume), sector.Sum(x => x.s.DayTurnover), inst, total - inst));
         }
@@ -38,7 +38,7 @@ public sealed partial class GameEngine
         result.DayVolume = State.Stocks.Sum(s => s.DayVolume); result.DayTurnover = State.Stocks.Sum(s => s.DayTurnover);
         result.BidQuantity = State.Orders.Where(o => o.Buy).Sum(o => (long)o.Remaining);
         result.AskQuantity = State.Orders.Where(o => !o.Buy).Sum(o => (long)o.Remaining);
-        result.Rising = State.Stocks.Count(s => s.Change > 0); result.Falling = State.Stocks.Count(s => s.Change < 0); result.Unchanged = 8 - result.Rising - result.Falling;
+        result.Rising = State.Stocks.Count(s => s.Change > 0); result.Falling = State.Stocks.Count(s => s.Change < 0); result.Unchanged = State.Stocks.Count - result.Rising - result.Falling;
         return cachedStats = result;
     }
 }

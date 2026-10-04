@@ -10,19 +10,21 @@ void Validate(GameEngine game)
 {
     var s = game.State;
     Check(s.Bots.Count == 100 && s.Retail.Count == 10000, "Participant counts");
-    Check(game.Participants.Sum(t => t.Cash) + s.FeePool == s.InitialSystemCash, "Closed-system cash conservation");
-    long[] shares = new long[8];
+    Check(game.Participants.Sum(t => t.Cash) + s.FeePool + s.Bank.Cash + s.Government.Cash == s.InitialSystemCash, "Closed-system cash conservation");
+    long[] shares = new long[GameEngine.StockCount];
     foreach (var t in game.Participants)
     {
         Check(t.Cash >= 0 && t.ReservedCash >= 0 && t.ReservedCash <= t.Cash, "Cash collateral");
-        for (int i = 0; i < 8; i++) { Check(t.Shares[i] >= t.ReservedShares[i] && t.ReservedShares[i] >= 0, "Share collateral"); shares[i] += t.Shares[i]; }
+        for (int i = 0; i < GameEngine.StockCount; i++) { Check(t.Shares[i] >= t.ReservedShares[i] && t.ReservedShares[i] >= 0, "Share collateral"); shares[i] += t.Shares[i]; }
+        Check(t.LoanDebt >= 0 && t.FineDebt >= 0 && t.ShortShares.All(q => q >= 0) && t.ReservedCovers.Where((q, i) => q > t.ShortShares[i] || q < 0).Count() == 0, "Debt/cover invariants");
         var f = t.Financials(s.Stocks);
         Check(f.OpeningCash + f.NetCashFlow == t.Cash, "Cash-flow reconciliation");
         Near(f.OpeningEquity + f.NetIncome, f.Equity, "Income/equity reconciliation");
     }
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < GameEngine.StockCount; i++)
     {
-        Check(shares[i] == s.Stocks[i].TotalShares, "Share conservation");
+        Check(shares[i] + s.Bank.ShareInventory[i] == s.Stocks[i].TotalShares, "Share conservation");
+        Check(s.Bank.ReservedLending[i] >= 0 && s.Bank.ReservedLending[i] <= s.Bank.ShareInventory[i], "Lending inventory reservation");
         var bids = game.Orders(i, true); var asks = game.Orders(i, false);
         Check(bids.Count == 0 || asks.Count == 0 || bids[0].Price < asks[0].Price, "No crossed resting book");
         foreach (var book in new[] { bids, asks })
@@ -99,9 +101,26 @@ Check(game.Serialize() == restored.Serialize(), "Deterministic continuation incl
 Validate(restored);
 store.Save(game); File.WriteAllText(store.SavePath, "{broken");
 Check(store.Load(out var recovery) is not null && recovery.Contains("복구"), "Corruption backup recovery");
-var legacy = JsonNode.Parse(new GameEngine(123).Serialize())!.AsObject();
+JsonObject OldFixture(uint seed)
+{
+    var old = new GameEngine(seed); var stocks = old.State.Stocks;
+    foreach (var t in old.Participants)
+    {
+        for (int i = 8; i < GameEngine.StockCount; i++) t.Cash += (long)t.Shares[i] * stocks[i].Price;
+        t.Shares = t.Shares.Take(8).ToArray(); t.AverageCost = t.AverageCost.Take(8).ToArray(); t.ReservedShares = t.ReservedShares.Take(8).ToArray();
+        t.ShortShares = new int[8]; t.ShortAveragePrice = new double[8]; t.ReservedCovers = new int[8];
+        t.OpeningCash = t.Cash;
+    }
+    old.State.Stocks.RemoveRange(8, 2);
+    old.State.News.RemoveAll(n => n.StockIndex >= 8);
+    for (int i = 0; i < 8; i++) stocks[i].TotalShares = old.Participants.Sum(t => (long)t.Shares[i]);
+    old.State.InitialSystemCash = old.Participants.Sum(t => t.Cash) + old.State.FeePool;
+    return JsonNode.Parse(old.Serialize())!.AsObject();
+}
+var legacy = OldFixture(123);
 legacy["Version"] = 2; legacy["CompletedHours"] = 720; legacy["Retail"] = new JsonArray(); legacy["Orders"] = new JsonArray();
 foreach (var node in legacy["Bots"]!.AsArray()) { node!["Fees"] = 1234; node["SeasonOpeningEquity"] = 0; }
+foreach (var node in legacy["Bots"]!.AsArray()) foreach (string key in new[] { "ShortShares", "ShortAveragePrice", "ReservedShares", "ReservedCovers", "Abilities" }) node!.AsObject().Remove(key);
 var migration = GameEngine.Deserialize(legacy.ToJsonString());
 Check(migration.State.MigratedFromV1 && migration.State.Retail.Count == 10000 && migration.State.Season == 2, "v1 finished season migration");
 Check(migration.State.Bots.All(t => t.LegacyFees == 1234 && t.Fees == 0) && migration.State.PendingSeasons.Single().Season == 1, "Legacy fees and final ranks preserved");
@@ -116,7 +135,8 @@ var otherRun = new GameEngine(901); GameStore.Acknowledge(otherRun, capture);
 Check(otherRun.State.LastArchivedSeason == 0, "Do not acknowledge an old run into a new market");
 var saveWatch = Stopwatch.StartNew(); string json = game.Serialize(); saveWatch.Stop();
 times.Sort();
+EconomyChecks.Run(Check, Validate, Near);
 Console.WriteLine($"PASS {assertions:N0} assertions; {seasons} seasons; {game.State.TotalMatches:N0} matched trades");
-Console.WriteLine($"Simulation wall time {watch.Elapsed.TotalSeconds:F2}s; hour p50={times[times.Count/2]:F2}ms p95={times[(int)(times.Count*.95)]:F2}ms p99={times[(int)(times.Count*.99)]:F2}ms (20x budget 250ms/hour)");
+Console.WriteLine($"Simulation wall time {watch.Elapsed.TotalSeconds:F2}s; hour p50={times[times.Count/2]:F2}ms p95={times[(int)(times.Count*.95)]:F2}ms p99={times[(int)(times.Count*.99)]:F2}ms (100x budget 50ms/hour)");
 Console.WriteLine($"Save bytes {System.Text.Encoding.UTF8.GetByteCount(json):N0}; serialize {saveWatch.Elapsed.TotalMilliseconds:F1}ms; pending={game.State.PendingSeasons.Count}; active orders={game.State.Orders.Count}");
 if (args.Contains("--keep-fixture")) Console.WriteLine($"Fixture directory: {folder}"); else Directory.Delete(folder, true);

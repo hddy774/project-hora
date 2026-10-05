@@ -1,5 +1,5 @@
 {
-  "Version": "institution-1.2",
+  "Version": "institution-1.3",
   "Representative": {
     "InitialAbility": 50,
     "AbilityMaximum": 100,
@@ -86,7 +86,7 @@
     "MaximumQuantity": 24,
     "RecentVolumeWeight": 1.5,
     "Spread": 0.005,
-    "OvervaluationRatio": 1.35,
+    "OvervaluationRatio": 1.10,
     "OvervaluedBidDiscount": 0.035,
     "OvervaluedAskDiscount": 0.015,
     "FallingBidSpread": 0.001,

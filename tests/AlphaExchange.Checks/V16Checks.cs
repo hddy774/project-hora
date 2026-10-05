@@ -9,6 +9,7 @@ static class V16Checks
         var rules=SimulationRules.Default();
         check(rules.Representative.InitialAbility==50 && rules.Representative.Weight==.5,"Equal 50-point representatives and half influence");
         check(rules.Employees.Grades.All(g=>g.Skill<50),"Every employee including S starts below a representative");
+        check(rules.Liquidity.OvervaluationRatio<=1/(1+rules.Investment.ThesisBreakValue),"Default stabilization band is inside institutional valuation safety, avoiding a persistent no-investment pricing gap");
         var flexible=new GameEngine(167); flexible.State.Stocks[0].FairValue=flexible.State.Stocks[0].Price*1.5;
         foreach(var disposition in Enum.GetValues<Disposition>())
         {

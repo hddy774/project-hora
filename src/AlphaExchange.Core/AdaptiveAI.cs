@@ -198,6 +198,8 @@ public sealed partial class GameEngine
                 double budget=Math.Min(selected.StockLimit-weight,Math.Min(selected.SectorLimit-sectorWeight,ratio-d.TargetCashRatio));
                 bool take=selected.Score>=r.TakeLiquidityScore || deploying;
                 int price=Quote(stock.Price*(1+offset+(take ? spread : -spread)),true);
+                if(take && asks[index].Count>0 && stock.FairValue/asks[index][0].Price-1>=r.ThesisBreakValue)
+                    price=asks[index][0].Price;
                 int q=Math.Min(desired,Math.Min(AiBuyCapacity(t,price,gross,shorts),Math.Max(0,(int)(gross*budget/price))));
                 if(q>0) SubmitOrder(t.Id,index,true,price,q,method.OrderHours);
             }

@@ -65,6 +65,9 @@ static class V16Checks
             }
         }
         check(twoSided>=25,"Normal liquid market displays both sides for most companies");
+        var executable=new GameEngine(168); executable.Rules.Liquidity.Spread=.02; executable.Rules.Liquidity.InventorySkew=0;
+        executable.PrepareMarketSignals(); executable.ReplenishLiquidity(true); executable.DecideInstitution(executable.Owner(1));
+        check(executable.Owner(1).Shares.Sum()>0,"Cash deployment takes observed affordable asks even when spread exceeds a guessed quote offset"); validate(executable);
         var valuationBank=new GameEngine(166); valuationBank.State.CompletedHours=1;
         var hotStock=valuationBank.State.Stocks[0]; hotStock.FairValue=hotStock.Price*.5;
         valuationBank.PrepareMarketSignals(); valuationBank.ReplenishLiquidity(true);

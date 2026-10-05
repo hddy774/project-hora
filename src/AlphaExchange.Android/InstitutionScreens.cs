@@ -58,7 +58,7 @@ public sealed partial class GameView
         var d=t.Development!; var rules=game!.Rules.Employees;
         y=Statement("실제 고용·운영 비용",y,[("고용 인원",$"{d.EmployeeCount} / {rules.MaximumCount}명"),
             ("월 급여 합계",ShortMoney(game.MonthlyPayroll(t))+"원"),("누적 급여·채용 비용",ShortMoney(t.StaffCosts)+"원"),
-            ("월 급여 예산",$"평가 총자산의 {rules.PayrollAssetRatio:P0}"),
+            ("월 급여 예산",$"평가 총자산의 {rules.PayrollAssetRatio:P1}"),
             ("다음 채용 판단",d.LastHireHour<0 ? "첫 거래일 이후" : Moment(d.LastHireHour+rules.HireIntervalHours))]);
         y=Wrap("기관 AI가 현금 완충·급여 예산과 부족한 역할을 보고 고용합니다. 같은 역할도 인원이 늘수록 기관 능력에 기여하며 효과는 점차 완만해집니다.",21,y+7,352,11,Muted,19)+20;
         Text("등급 · 기본 능력 · 인원 · 월 급여",21,y+15,16,Ink,true); y+=36;

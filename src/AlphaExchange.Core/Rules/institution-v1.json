@@ -1,5 +1,5 @@
 {
-  "Version": "institution-1.1",
+  "Version": "institution-1.2",
   "Representative": {
     "InitialAbility": 50,
     "AbilityMaximum": 100,
@@ -24,17 +24,17 @@
     "TeamBaseline": 20,
     "TeamMaximum": 100,
     "TeamSaturation": 120,
-    "PayrollAssetRatio": 0.03,
+    "PayrollAssetRatio": 0.003,
     "HireLimit": 2,
     "FirstHireHour": 24,
     "HireIntervalHours": 720,
     "OtherRoleWeight": 0.3,
     "Grades": [
-      { "Name": "S", "Skill": 45, "MonthlySalary": 180000, "HiringCost": 90000 },
-      { "Name": "A", "Skill": 38, "MonthlySalary": 100000, "HiringCost": 50000 },
-      { "Name": "B", "Skill": 30, "MonthlySalary": 60000, "HiringCost": 30000 },
-      { "Name": "C", "Skill": 22, "MonthlySalary": 36000, "HiringCost": 18000 },
-      { "Name": "D", "Skill": 14, "MonthlySalary": 24000, "HiringCost": 12000 }
+      { "Name": "S", "Skill": 45, "MonthlySalary": 18000, "HiringCost": 9000 },
+      { "Name": "A", "Skill": 38, "MonthlySalary": 10000, "HiringCost": 5000 },
+      { "Name": "B", "Skill": 30, "MonthlySalary": 6000, "HiringCost": 3000 },
+      { "Name": "C", "Skill": 22, "MonthlySalary": 3600, "HiringCost": 1800 },
+      { "Name": "D", "Skill": 14, "MonthlySalary": 2400, "HiringCost": 1200 }
     ]
   },
   "Horizons": [

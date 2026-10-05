@@ -103,7 +103,7 @@ public sealed partial class GameEngine
         long equity=gross-shorts-t.LoanDebt-t.FineDebt-t.TaxDebt-t.ShortDividendDebt;
         double ratio=(double)t.Cash/Math.Max(1,gross);
         bool margin=(long)Math.Ceiling(shorts*1.5)+t.ReservedCash>t.Cash;
-        bool cashBoundary=ratio<r.MinimumCash || ratio>r.MaximumCash+r.CashTolerance;
+        bool cashBoundary=ratio<r.MinimumCash || ratio>r.MaximumCash+r.CashTolerance && State.CompletedHours-d.LastDecisionHour>=r.EmergencyReviewHours;
         bool marketEmergency=marketTrend<r.FallingMarket && State.CompletedHours-d.LastDecisionHour>=r.EmergencyReviewHours;
         bool newsEmergency=false;
         for(int i=0;i<stocks.Count;i++) if((t.Shares[i]>0 || t.ShortShares[i]>0) &&
@@ -154,6 +154,7 @@ public sealed partial class GameEngine
             bool trim=t.Shares[i]>t.ReservedShares[i] && (initiallySelling || overweight ||
                 stocks[i].FairValue/stocks[i].Price-1<r.ThesisBreakValue || stocks[i].Report.Equity<=0 || signal.Score<Rules.Horizons[(int)signal.Horizon].ExitScore);
             bool buy=!margin && !initiallySelling && !overweight && ratio>d.TargetCashRatio &&
+                stocks[i].FairValue/stocks[i].Price-1>=r.ThesisBreakValue && stocks[i].Report.Equity>0 &&
                 (signal.Score>r.BuyScore || ratio>r.MaximumCash+r.CashTolerance && stocks[i].Report.Equity>0);
             bool hedge=!initiallySelling && t.Shares[i]==0 && signal.Score<r.ShortScore && trends[i]<0 && fastTrends[i]<=0;
             if(!cover && !trim && !buy && !hedge) continue;
@@ -190,6 +191,7 @@ public sealed partial class GameEngine
             double sectorWeight=portfolioSectors[signalSectors[index]]/gross;
             bool overweight=weight>=selected.StockLimit || sectorWeight>=selected.SectorLimit;
             bool buy=!margin && !sellForCash && !overweight && ratio>d.TargetCashRatio &&
+                stock.FairValue/stock.Price-1>=r.ThesisBreakValue && stock.Report.Equity>0 &&
                 (selected.Score>r.BuyScore || deploying && stock.Report.Equity>0);
             if(buy)
             {

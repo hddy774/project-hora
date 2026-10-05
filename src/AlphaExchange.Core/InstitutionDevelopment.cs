@@ -72,9 +72,12 @@ public sealed partial class GameEngine
             if(d.LastPayrollHour>=State.CompletedHours) continue;
             d.LastPayrollHour=State.CompletedHours;
             long daily=DailyPayroll(d);
+            long gross=t.GrossAssets(State.Stocks);
+            long cashBudget=Math.Max(0,AvailableCash(t)-(long)Math.Ceiling(gross*Rules.Investment.MinimumCash));
+            long payrollBudget=(long)(gross*Rules.Employees.PayrollAssetRatio);
             // Pay actual temporary service contracts. When funding runs out,
             // reduce headcount before committing an unaffordable new day's work.
-            while(daily>AvailableCash(t) && d.Employees.Count>0)
+            while((daily>cashBudget || MonthlyPayroll(t)>payrollBudget) && d.Employees.Count>0)
             {
                 var largest=d.Employees.OrderByDescending(c=>Rules.Employees.Grades[(int)c.Grade].MonthlySalary).First();
                 if(--largest.Count==0) d.Employees.Remove(largest);

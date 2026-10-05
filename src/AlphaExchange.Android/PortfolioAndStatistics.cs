@@ -13,7 +13,7 @@ public sealed partial class GameView
         Text(t.Name + " · " + GameEngine.DispositionNames[(int)t.Disposition], 146, y + 81, 11, Muted);
         Text($"₩{Money(t.Equity(S.Stocks))}", 146, y + 116, 23, Ink, true);
         Text(Percent(t.Return(S.Stocks)), 147, y + 144, 15, Direction(t.Return(S.Stocks)), true);
-        Text($"시즌 {S.Season} · {game!.RankOf(t.Id)}위", 364, y + 165, 10, Muted, false, Paint.Align.Right);
+        Text($"시즌 {S.Season} · {FrameRankOf(t.Id)}위", 364, y + 165, 10, Muted, false, Paint.Align.Right);
         y += 188;
         string[] tabs = ["보유 자산", "재무제표", "시즌 성적", "대표·은행"];
         for (int i = 0; i < tabs.Length; i++)

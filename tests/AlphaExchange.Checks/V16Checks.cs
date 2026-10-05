@@ -46,6 +46,7 @@ static class V16Checks
         validate(g);
         for(int hour=0;hour<48;hour++) g.AdvanceHour();
         check(t.StaffCosts>cost && g.State.CashFlows.GetValueOrDefault("staff-payroll")>0,"Daily actual payroll is recorded in persistent cash flows"); validate(g);
+        check(g.State.Bots.All(b=>g.MonthlyPayroll(b)<=b.GrossAssets(g.State.Stocks)*g.Rules.Employees.PayrollAssetRatio),"Recurring payroll respects current assets after changes, not only the hiring-day budget");
         check(g.State.Bots.All(b=>b.Development!.TargetCashRatio is >=.05 and <=.30),"Adaptive cash targets retain bounds after trading and hiring");
         int twoSided=0;
         for(int i=0;i<g.State.Stocks.Count;i++)
@@ -67,6 +68,8 @@ static class V16Checks
         var hotStock=valuationBank.State.Stocks[0]; hotStock.FairValue=hotStock.Price*.5;
         valuationBank.PrepareMarketSignals(); valuationBank.ReplenishLiquidity(true);
         check(valuationBank.Depth(0,true)[0].Price<hotStock.Price*.97 && valuationBank.Depth(0,false)[0].Price<hotStock.Price*.99,"Funded bank discounts bids and supplies offers during valuation excess without forcing the trade price");
+        valuationBank.DecideInstitution(valuationBank.Owner(1));
+        check(valuationBank.Owner(1).Shares[0]==0 && !valuationBank.Orders(0,true).Any(o=>o.OwnerId==1),"Cash deployment cannot buy a broken valuation thesis just to force a cash percentage");
         validate(valuationBank);
         var patient=new GameEngine(165); var longInvestor=patient.Owner(1);
         longInvestor.Disposition=Disposition.Analytical;

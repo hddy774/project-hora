@@ -53,7 +53,7 @@ public sealed partial class GameView
         Text("ALPHA", 57, 29, 15, Ink, true, headline: true);
         Text("EXCHANGE", 58, 44, 9, Muted, true);
         Hit(14, 7, 151, 45, () => { lobby = true; auto = false; Save(); });
-        Pill("v1.5.0 · OFFLINE", 207, 20, Teal, 128);
+        Pill($"v{BuildVersion} · OFFLINE", 207, 20, Teal, 128);
         Circle(360, 32, 15, Card2); Text("?", 360, 37, 15, Ink, true, Paint.Align.Center);
         Hit(338, 9, 43, 45, () => { help = true; });
         Text($"S{S.Season} · DAY {S.Day:00}/30", 21, 77, 18, Ink, true);
@@ -87,7 +87,7 @@ public sealed partial class GameView
         var focus = Focus; long equity = focus.Equity(S.Stocks); double ret = focus.Return(S.Stocks);
         Box(20, y, 360, 166, Card, 22, Stroke);
         Text($"{focus.Name}의 순자산", 38, y + 30, 12, Muted);
-        Pill($"{game!.RankOf(focus.Id)}위 / 100", 278, y + 15, Lime, 84);
+        Pill($"{FrameRankOf(focus.Id)}위 / 100", 278, y + 15, Lime, 84);
         Text($"₩{Money(equity)}", 37, y + 72, 32, Ink, true, headline: true);
         Text(Percent(ret), 39, y + 99, 14, Direction(ret), true);
         Text("시즌 누적 수익률", 122, y + 99, 10, Muted);

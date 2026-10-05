@@ -15,10 +15,11 @@ public sealed partial class GameEngine
     public static readonly string[] PeriodNames = ["현재 시즌", "전체", "10일 전 대비", "5일 전 대비", "전일 대비", "30일", "90일", "1년", "기간 지정"];
     public static readonly int[] Speeds = [1, 2, 5, 20, 50, 100];
     static readonly string[] Names = ["노바", "볼트", "루멘", "아틀라스", "픽셀", "오닉스", "테라", "제니스", "코멧", "에코", "벡터", "오리온", "네온", "루나", "제로", "시그마", "펄스", "퀀트", "코어", "아스트로"];
-    public GameEngine(uint seed)
+    readonly int[] actorBuffer=new int[AiCount+800];
+    public GameEngine(uint seed,SimulationRules? rules=null)
     {
         seed = seed == 0 ? 20261004 : seed;
-        State = new GameState { Seed = seed, RandomState = seed };
+        State = new GameState { Seed = seed, RandomState = seed,Rules=rules?.Copy() ?? SimulationRules.Default() };
         State.Stocks.AddRange(CompanyCatalog.Companies.Select(c => CompanyCatalog.Create(c)));
         State.SecurityIds = State.Stocks.Select(s => s.SecurityId).ToList();
         for (int i = 1; i <= AiCount; i++)
@@ -75,7 +76,7 @@ public sealed partial class GameEngine
         PrepareMarketSignals();
         MakeBankMarket();
         int count = 300 + (int)(Next() * 501); State.ActiveRetailLastHour = count;
-        var actors = new int[AiCount + count];
+        var actors = actorBuffer.AsSpan(0,AiCount+count);
         for (int i = 0; i < AiCount; i++) actors[i] = i + 1;
         for (int i = 0; i < count; i++)
         { State.RetailCursor = (State.RetailCursor + 7919) % RetailCount; actors[AiCount + i] = AiCount + State.RetailCursor + 1; }
@@ -93,7 +94,7 @@ public sealed partial class GameEngine
         foreach (var t in State.Bots) Append(t.EquityHistory, t.Equity(State.Stocks), HistoryLimit);
         foreach (var stock in State.Stocks.Where(s => s.Active)) { stock.ShareHourSum = checked(stock.ShareHourSum + stock.OutstandingShares); stock.ShareHours++; }
         UpdateOperations();
-        if (State.Hour == 0) ServiceFinance();
+        if (State.Hour == 0) { ServiceStaff(); ServiceFinance(); }
         bool monthEnd = State.CompletedHours % (SeasonLength * 24) == 0;
         if (monthEnd)
         {
@@ -105,6 +106,7 @@ public sealed partial class GameEngine
         UpdatePerformance();
         if (State.Hour == 0) Append(State.DailyHistory, CaptureSnapshot(), 121);
         if (monthEnd) { FinishSeason(State.Season - 1); RefreshEconomy(); }
+        ReplenishLiquidity();
         RecordHour();
         if (State.Hour % 6 == 0) PublishNews();
     }
@@ -112,7 +114,8 @@ public sealed partial class GameEngine
     {
         if (!double.IsFinite(seconds) || seconds < 0 || seconds > 3600 || !Speeds.Contains(speed)) throw new ArgumentOutOfRangeException(nameof(seconds));
         double hours = State.HourProgress + seconds * speed / SecondsPerGameHour;
-        int count = (int)Math.Floor(hours + 1e-9);
+        int count = checked(State.PendingClockHours+(int)Math.Floor(hours + 1e-9));
+        State.PendingClockHours=0;
         State.HourProgress = Math.Clamp(hours - count, 0, .999999999999);
         for (int i = 0; i < count; i++) AdvanceHour();
         return count;
@@ -146,6 +149,7 @@ public sealed partial class GameEngine
         {
             var row = new SeasonStanding(t.Id, index + 1, t.SeasonOpeningEquity, t.Equity(State.Stocks), t.Return(State.Stocks),t.Generation,t.Name);
             result.Standings.Add(row);
+            if(AwardSeasonGrowth(t,season,row.Rank) is {} reward) result.GrowthRewards.Add(reward);
             Append(t.SeasonRanks, new RankHistory(season, row.Rank, row.Return, row.Equity,t.Generation), 12);
         }
         State.PendingSeasons.Add(result);

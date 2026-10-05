@@ -1,13 +1,15 @@
 name: Build and publish Android release
 on:
   push:
+    branches: [main]
     tags: ['v*.*.0']
+    paths: ['src/AlphaExchange.Android/AlphaExchange.Android.csproj', '.github/workflows/release.yml']
   workflow_dispatch:
     inputs:
       tag:
         description: Existing merged release tag
         required: true
-        default: v1.5.0
+        default: v1.6.0
         type: string
       generate_signing_key:
         description: Generate a new one-time signing key (requires reinstall)
@@ -26,17 +28,57 @@ concurrency:
   group: release-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
 jobs:
-  release:
+  prepare:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    env:
-      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
-      APK_NAME: AlphaExchange-${{ inputs.tag || github.ref_name }}.apk
-      SIGNED_RUN_ID: ${{ inputs.signed_run_id || '' }}
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.source.outputs.tag }}
+      sha: ${{ steps.source.outputs.sha }}
+      publish: ${{ steps.source.outputs.publish }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Resolve merged version and create immutable release tag
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          REQUESTED_TAG: ${{ inputs.tag || '' }}
+        run: |
+          version=$(python3 -c "import xml.etree.ElementTree as E; print(E.parse('src/AlphaExchange.Android/AlphaExchange.Android.csproj').findtext('.//ApplicationDisplayVersion'))")
+          tag="${REQUESTED_TAG:-v$version}"
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.0$ ]]
+          test "$tag" = "v$version"
+          git merge-base --is-ancestor HEAD origin/main
+          source=$(git rev-parse HEAD)
+          if [[ "$GITHUB_EVENT_NAME" == push && "$GITHUB_REF" == refs/heads/main ]]; then
+            if gh api "repos/$GH_REPO/git/ref/tags/$tag" >/dev/null 2>&1; then
+              echo "publish=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            gh api --method POST "repos/$GH_REPO/git/refs" -f "ref=refs/tags/$tag" -f "sha=$source" >/dev/null
+          else
+            test "$(git rev-parse "refs/tags/$tag^{commit}")" = "$source"
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "sha=$source" >> "$GITHUB_OUTPUT"
+          echo "publish=true" >> "$GITHUB_OUTPUT"
+  release:
+    needs: prepare
+    if: needs.prepare.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+      APK_NAME: AlphaExchange-${{ needs.prepare.outputs.tag }}.apk
+      SIGNED_RUN_ID: ${{ inputs.signed_run_id || '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
           fetch-depth: 0
           persist-credentials: false
       - name: Check release tag and merged source
@@ -89,7 +131,7 @@ jobs:
       - name: Sign APK with selected Android identity
         if: ${{ !inputs.signed_run_id }}
         env:
-          GENERATE_SIGNING_KEY: ${{ inputs.generate_signing_key || false }}
+          GENERATE_SIGNING_KEY: ${{ inputs.generate_signing_key || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 || secrets.RELEASE_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64 }}
           STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
@@ -149,7 +191,7 @@ jobs:
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true
           else
-            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 주주 경영과 시장 반응 AI" --notes-file "$notes"
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 기관 성장과 투자 판단 개선" --notes-file "$notes"
           fi
           while IFS= read -r asset; do
             if [[ "$asset" != "$APK_NAME" ]]; then gh release delete-asset "$RELEASE_TAG" "$asset" --yes; fi

@@ -14,7 +14,8 @@ public sealed partial class GameView : View
     readonly Typeface bold = Typeface.Create("sans-serif-medium", TypefaceStyle.Normal)!;
     readonly Typeface display = Typeface.Create("sans-serif-black", TypefaceStyle.Normal)!;
     readonly Bitmap? arena;
-    readonly List<(RectF Rect, Action Action)> targets = [];
+    readonly List<(float Left,float Top,float Right,float Bottom,Action Action)> targets = [];
+    readonly PerformanceRules defaultPerformance=SimulationRules.Default().Performance;
     readonly GameStore store;
     long lastSave;
     string preparedRun="";
@@ -39,11 +40,12 @@ public sealed partial class GameView : View
     float scale = 1, h = 800, scroll, maxScroll, downY, lastY, downX;
     bool dragging;
     string toast = "";
-    long toastUntil, lastTick;
+    long toastUntil, lastTick,lastFrame;
     float clipTop = 0, clipBottom = 100000;
     static readonly AColor Bg = Hex("#0B111B"), Card = Hex("#141E2B"), Card2 = Hex("#1C2939"), Stroke = Hex("#273446"), Ink = Hex("#F4F7F4"), Muted = Hex("#8493A7"), Lime = Hex("#DCFF7D"), Teal = Hex("#65DDC1"), Red = Hex("#FF8996");
     static readonly string[] Palette = ["#DCFF7D", "#C2AFFA", "#65DDC1", "#FFA97D", "#91BCFF", "#FF95BA", "#ADE7AD", "#E5CD84", "#A0D9FF", "#D6B0FF"];
     static readonly AColor[] PaletteColors=Palette.Select(Hex).ToArray();
+    static readonly string BuildVersion=typeof(GameView).Assembly.GetName().Version!.ToString(3);
     AlphaExchange.Core.GameState S => game!.State;
     Trader Focus => game!.FocusTrader;
 
@@ -58,7 +60,7 @@ public sealed partial class GameView : View
         game = store.Load(out string message);
         if (message.Length > 0) { toast = message; toastUntil = Now + 7000; }
         lastTick = Now;
-        PostDelayed(Tick, 100);
+        PostDelayed(Tick, defaultPerformance.TickMilliseconds);
     }
 
     static long Now => System.Environment.TickCount64;
@@ -76,16 +78,16 @@ public sealed partial class GameView : View
         if (auto && !lobby && game is not null && !fileBusy)
         {
             long previousSeason = S.Season;
-            try { game.AdvanceTime(Math.Min(elapsed, .5), speed); }
+            try { game.AdvanceFrame(Math.Min(elapsed, .5), speed); }
             catch (Exception e) when (GameStore.StorageException(e)) { auto = false; Notify("시장 진행을 멈췄습니다. 최근 정상 저장을 보존합니다."); }
             if (store.PendingCount > 512 || lastCommitTime > 0 && now-lastCommitTime > 15000 && saving)
             { auto = false; Notify("기록 저장을 기다리며 일시정지했습니다."); }
             if (now - lastSave >= 1000 || S.Season != previousSeason) Save(false);
             if (S.Season != previousSeason) Notify($"시즌 {previousSeason} 기록 완료 · 시즌 {S.Season} 시작");
-            Invalidate();
+            if(now-lastFrame>=game.Rules.Performance.FrameMilliseconds || S.Season!=previousSeason) Invalidate();
         }
         if (toastUntil > 0 && now > toastUntil) { toastUntil = 0; Invalidate(); }
-        PostDelayed(Tick, 100);
+        PostDelayed(Tick,game?.Rules.Performance.TickMilliseconds ?? defaultPerformance.TickMilliseconds);
     }
 
     protected override void OnDetachedFromWindow()
@@ -199,6 +201,7 @@ public sealed partial class GameView : View
     protected override void OnDraw(Canvas canvas)
     {
         base.OnDraw(canvas);
+        lastFrame=Now;
         c = canvas; scale = Width / 400f; h = Height / scale;
         c.Save(); c.Scale(scale, scale); c.DrawColor(Bg);
         targets.Clear(); clipTop = 0; clipBottom = h;
@@ -267,19 +270,27 @@ public sealed partial class GameView : View
         if(!Visible(y-size*1.5f,size*2)) return;
         paint.TextSize = size; paint.SetTypeface(heavy ? bold : normal);
         if (paint.MeasureText(value) > width)
-        { while (value.Length > 0 && paint.MeasureText(value + "…") > width) value = value[..^1]; value += "…"; }
+        {
+            int length=paint.BreakText(value,true,Math.Max(0,width-paint.MeasureText("…")),null);
+            if(length>0 && char.IsHighSurrogate(value[length-1])) length--;
+            value=value[..length]+"…";
+        }
         Text(value, x, y, size, color, heavy);
     }
 
     float Wrap(string value, float x, float y, float width, float size, AColor color, float spacing = 21)
     {
-        string row = ""; paint.TextSize = size; paint.SetTypeface(normal);
-        foreach (char ch in value)
+        paint.TextSize=size; paint.SetTypeface(normal); int offset=0;
+        while(offset<value.Length)
         {
-            if (ch == '\n' || paint.MeasureText(row + ch) > width) { Text(row, x, y, size, color); y += spacing; row = ""; }
-            if (ch != '\n') row += ch;
+            int newline=value.IndexOf('\n',offset); if(newline<0) newline=value.Length;
+            if(newline==offset) { offset++; y+=spacing; continue; }
+            string remaining=value[offset..newline];
+            int length=Math.Max(1,paint.BreakText(remaining,true,width,null));
+            if(length<remaining.Length && char.IsHighSurrogate(remaining[length-1])) length=length==1 ? Math.Min(2,remaining.Length) : length-1;
+            Text(remaining[..Math.Min(length,remaining.Length)],x,y,size,color); y+=spacing; offset+=length;
+            if(offset==newline && offset<value.Length) offset++;
         }
-        if (row.Length > 0) { Text(row, x, y, size, color); y += spacing; }
         return y;
     }
 
@@ -292,7 +303,7 @@ public sealed partial class GameView : View
     void Hit(float x, float y, float w, float height, Action action)
     {
         float top = Math.Max(y, clipTop), bottom = Math.Min(y + height, clipBottom);
-        if (bottom > top) targets.Add((new RectF(x, top, x + w, bottom), action));
+        if (bottom > top) targets.Add((x,top,x+w,bottom,action));
     }
 
     void Button(string label, float x, float y, float w, float height, Action action, bool primary = true, bool enabled = true)
@@ -367,7 +378,8 @@ public sealed partial class GameView : View
                 if (!dragging && Math.Abs(x - downX) < 18 && Math.Abs(y - downY) < 18)
                 {
                     for (int i = targets.Count - 1; i >= 0; i--)
-                        if (targets[i].Rect.Contains(x, y)) { var action = targets[i].Action; PerformHapticFeedback(FeedbackConstants.VirtualKey); action(); Invalidate(); break; }
+                        if (x>=targets[i].Left && x<targets[i].Right && y>=targets[i].Top && y<targets[i].Bottom)
+                        { var action = targets[i].Action; PerformHapticFeedback(FeedbackConstants.VirtualKey); action(); Invalidate(); break; }
                     PerformClick();
                 }
                 return true;

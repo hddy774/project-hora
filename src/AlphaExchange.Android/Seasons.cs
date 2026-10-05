@@ -30,17 +30,20 @@ public sealed partial class GameView
         Button("이전 →", 272, y, 108, 37, () => { historyPage++; scroll = 0; }, false, historyPage < maxPage); y += 55;
         for (long number = completed - historyPage * 10; number > Math.Max(0, completed - (historyPage + 1) * 10); number--)
         {
-            var r = Season(number)?.Standings.FirstOrDefault(x => x.TraderId == t.Id);
-            Box(20, y, 360, 82, Card, 14);
+            var result=Season(number);
+            var r = result?.Standings.FirstOrDefault(x => x.TraderId == t.Id);
+            var reward=result?.GrowthRewards.FirstOrDefault(x=>x.TraderId==t.Id && x.Generation==r?.Generation);
+            Box(20, y, 360, 104, Card, 14);
             Text($"시즌 {number}"+(r is null ? "" : $" · {r.Generation}기"), 36, y + 28, 14, Ink, true);
             Text(r is null ? "기록을 읽을 수 없음" : $"최종 자산 ₩{Money(r.Equity)}", 36, y + 58, 11, Muted);
             if (r is not null)
             {
                 Text($"{r.Rank}위 / 100", 364, y + 29, 17, r.Rank <= 3 ? Lime : Ink, true, Paint.Align.Right);
                 Text(Percent(r.Return), 364, y + 58, 12, Direction(r.Return), true, Paint.Align.Right);
-                long target = number; Hit(20, y, 360, 82, () => { selectedSeason = target; SetPage(4); });
+                Text(reward is null ? "이전 시즌 · 성장 보상 기록 없음" : $"보상 +{reward.AbilityPoints}P · 신용 +{reward.CreditBonus}",36,y+84,11,reward?.AbilityPoints>0 ? Teal : Muted);
+                long target = number; Hit(20, y, 360, 104, () => { selectedSeason = target; SetPage(4); });
             }
-            y += 93;
+            y += 115;
         }
         return y + 10;
     }
@@ -75,28 +78,32 @@ public sealed partial class GameView
             Button("이 시즌의 기업 결산  →", 20, y, 360, 40, () => { companySeason = selectedSeason; companyStock = companyTab = 0; SetPage(6); }, false); y += 56;
         }
         var winner = result.Standings[0];
+        var championReward=result.GrowthRewards.FirstOrDefault(x=>x.TraderId==winner.TraderId && x.Generation==winner.Generation);
         int PastPortrait(int id,int generation)=>(id-1+(generation-1)*17)%GameEngine.AiCount+1;
-        Box(20, y, 360, 150, Card, 18, Lime); Portrait(PastPortrait(winner.TraderId,winner.Generation), 30, y + 10, 82, 130);
+        Box(20, y, 360, 173, Card, 18, Lime); Portrait(PastPortrait(winner.TraderId,winner.Generation), 30, y + 10, 82, 130);
         Text("SEASON CHAMPION", 132, y + 27, 10, Lime, true);
         Text(Representatives.Name(PastPortrait(winner.TraderId,winner.Generation)), 132, y + 59, 23, Ink, true);
         TextFit(winner.InstitutionName.Length>0 ? winner.InstitutionName : $"기관 {winner.TraderId:000} · {winner.Generation}기",132,y+82,12,Muted,228);
         Text(Percent(winner.Return), 132, y + 112, 23, Direction(winner.Return), true);
-        Text($"시즌 매칭 {Money(result.Matches)}건", 363, y + 136, 10, Muted, false, Paint.Align.Right); y += 168;
+        Text(championReward is null ? "이전 시즌 · 성장 보상 기록 없음" : $"성장 +{championReward.AbilityPoints}P · 신용 +{championReward.CreditBonus}",132,y+137,11,Teal);
+        Text($"시즌 매칭 {Money(result.Matches)}건", 363, y + 159, 10, Muted, false, Paint.Align.Right); y += 191;
         Text("최종 순위 · 기관 100개", 22, y + 12, 14, Ink, true); y += 28;
         foreach (var row in result.Standings)
         {
-            if (y + 70 >= clipTop && y <= clipBottom)
+            if (y + 88 >= clipTop && y <= clipBottom)
             {
-                Box(20, y, 360, 68, Card, 13);
+                Box(20, y, 360, 88, Card, 13);
                 Text($"{row.Rank:00}", 34, y + 40, 12, row.Rank <= 3 ? Lime : Muted, true);
                 Portrait(PastPortrait(row.TraderId,row.Generation), 62, y + 11, 45, 45);
                 Text(Representatives.Name(PastPortrait(row.TraderId,row.Generation)), 121, y + 27, 13, Ink, true);
                 TextFit(row.InstitutionName.Length>0 ? row.InstitutionName : $"기관 {row.TraderId:000} · {row.Generation}기",121,y+47,10,Muted,149);
                 Text(Percent(row.Return), 364, y + 28, 13, Direction(row.Return), true, Paint.Align.Right);
                 Text($"₩{ShortMoney(row.Equity)}", 364, y + 48, 11, Muted, false, Paint.Align.Right);
-                int id = row.TraderId; Hit(20, y, 360, 68, () => { S.FollowedId = id; portfolioTab = 2; historyPage = 0; SetPage(1); });
+                var reward=result.GrowthRewards.FirstOrDefault(x=>x.TraderId==row.TraderId && x.Generation==row.Generation);
+                Text(reward is null ? "이전 시즌 기록" : $"보상 +{reward.AbilityPoints}P · 신용 +{reward.CreditBonus}",121,y+70,10,reward?.AbilityPoints>0 ? Teal : Muted);
+                int id = row.TraderId; Hit(20, y, 360, 88, () => { S.FollowedId = id; portfolioTab = 2; historyPage = 0; SetPage(1); });
             }
-            y += 77;
+            y += 97;
         }
         return y + 15;
     }

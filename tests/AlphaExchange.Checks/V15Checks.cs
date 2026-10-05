@@ -42,6 +42,7 @@ static class V15Checks
         var vote=g.State.CompanyVotes.Last(); g.ResolveVote(vote,cheap);
         check(vote.Status==VoteStatus.Passed && vote.ForShares==600 && vote.AgainstShares==400 && vote.EligibleShares==1000,"Majority is weighted by actual shares; treasury excluded");
         check(company.CompanyStrategy==CompanyStrategy.Value && vote.Ballots.Sum(b=>b.Shares)==company.OutstandingShares,"Approved policy applied without duplicated voting rights");
+        check(g.HireEmployee(1,EmployeeGrade.A,AbilityKind.Valuation,2) is null && g.Capabilities(investor).Effective.Valuation>=45,"Funded analyst team supports cost-efficiency vote with combined ability");
         check(g.ProposeVote(company.SecurityId,VoteKind.Management,0) is null,"Expansion proposal");
         var rejected=g.State.CompanyVotes.Last(); g.ResolveVote(rejected,cheap);
         check(rejected.Status==VoteStatus.Rejected && company.Management==ManagementPolicy.Efficiency,"Rejected proposal preserves approved management");
@@ -175,7 +176,7 @@ static class V15Checks
                 while(reader.Read()) result.Add((reader.GetInt64(0),reader.GetInt32(1)),reader.GetString(2)); return result;
             }
             var original=HistoryHashes(); var upgradedStore=new GameStore(folder); var upgraded=upgradedStore.Load(out string message)!;
-            check(message.Length==0 && upgraded.State.Version==6 && upgraded.State.CompletedHours==48,"Real v5 SQLite checkpoint upgrades to v6 without recovering a newer backup");
+            check(message.Length==0 && upgraded.State.Version==7 && upgraded.State.CompletedHours==48,"Real v5 SQLite checkpoint upgrades to v7 without recovering a newer backup");
             check(upgradedStore.PrepareSave(upgraded).History.Length==0,"Upgrade queues no re-encoded committed hourly or daily snapshots");
             upgradedStore.Save(upgraded);
             var immediately=HistoryHashes();

@@ -21,6 +21,25 @@ public sealed class Abilities
     public int Macro { get; set; }
     public int Negotiation { get; set; }
     public int[] Values() => [Valuation, Technical, News, RiskManagement, Diversification, Execution, SwingTrading, Scalping, Macro, Negotiation];
+    public int Get(AbilityKind kind) => kind switch
+    { AbilityKind.Valuation=>Valuation, AbilityKind.Technical=>Technical, AbilityKind.News=>News,
+      AbilityKind.RiskManagement=>RiskManagement, AbilityKind.Diversification=>Diversification, AbilityKind.Execution=>Execution,
+      AbilityKind.SwingTrading=>SwingTrading, AbilityKind.Scalping=>Scalping, AbilityKind.Macro=>Macro, AbilityKind.Negotiation=>Negotiation,
+      _=>throw new ArgumentOutOfRangeException(nameof(kind)) };
+    public void Set(AbilityKind kind,int value)
+    {
+        switch(kind)
+        {
+            case AbilityKind.Valuation: Valuation=value; break; case AbilityKind.Technical: Technical=value; break;
+            case AbilityKind.News: News=value; break; case AbilityKind.RiskManagement: RiskManagement=value; break;
+            case AbilityKind.Diversification: Diversification=value; break; case AbilityKind.Execution: Execution=value; break;
+            case AbilityKind.SwingTrading: SwingTrading=value; break; case AbilityKind.Scalping: Scalping=value; break;
+            case AbilityKind.Macro: Macro=value; break; case AbilityKind.Negotiation: Negotiation=value; break;
+            default: throw new ArgumentOutOfRangeException(nameof(kind));
+        }
+    }
+    public static Abilities Uniform(int value)
+    { var result=new Abilities(); for(int i=0;i<10;i++) result.Set((AbilityKind)i,value); return result; }
 }
 public sealed class Stock
 {
@@ -116,6 +135,8 @@ public sealed class Trader : ICashAccount
     public double[] ShortAveragePrice { get; set; } = new double[GameEngine.StockCount];
     public long[] ReservedCovers { get; set; } = new long[GameEngine.StockCount];
     public Abilities Abilities { get; set; } = new();
+    public InstitutionDevelopment? Development { get; set; }
+    public long StaffCosts { get; set; }
     public Disposition Disposition { get; set; }
     public double Integrity { get; set; } = .8;
     public int CreditScore { get; set; } = 70;
@@ -179,7 +200,7 @@ public sealed class Trader : ICashAccount
     long Equity(ReadOnlySpan<Stock> stocks)
     {
         long gross=Cash,shorts=0;
-        for(int i=0;i<Shares.Length;i++)
+        if(Shares.AsSpan().ContainsAnyExcept(0L) || ShortShares.AsSpan().ContainsAnyExcept(0L)) for(int i=0;i<Shares.Length;i++)
         {
             if(Shares[i]!=0) gross=checked(gross+stocks[i].Value(Shares[i]));
             if(ShortShares[i]!=0) shorts=checked(shorts+stocks[i].Value(ShortShares[i]));
@@ -199,7 +220,7 @@ public sealed class Trader : ICashAccount
     public long AccumulateFinancials(FinancialStatement result,IReadOnlyList<Stock> stocks)
     {
         long gross=Cash,shortDebt=0; double cost=0,shortEntry=0;
-        for(int i=0;i<Shares.Length;i++)
+        if(Shares.AsSpan().ContainsAnyExcept(0L) || ShortShares.AsSpan().ContainsAnyExcept(0L)) for(int i=0;i<Shares.Length;i++)
         {
             long shares=Shares[i],shorts=ShortShares[i];
             if(shares!=0) { gross=checked(gross+stocks[i].Value(shares)); cost+=shares*AverageCost[i]; }
@@ -241,11 +262,13 @@ public sealed class Trader : ICashAccount
         result.ShortDividendDebt += ShortDividendDebt;
         result.WageIncome += WageIncome;
         result.Consumption += Consumption;
+        result.StaffCosts += StaffCosts;
         return gross-shortDebt-LoanDebt-FineDebt-ShortDividendDebt-TaxDebt;
     }
 }
 public sealed class FinancialStatement
 {
+    public long StaffCosts { get; set; }
     public long TaxDebt { get; set; }
     public long TaxesPaid { get; set; }
     public int Count { get; set; }
@@ -287,8 +310,8 @@ public sealed class FinancialStatement
     public long Equity => Assets - Liabilities;
     public double UnrealizedProfit => Holdings - Cost + ShortEntry - ShortDebt;
     public double ValuationChange => UnrealizedProfit - OpeningUnrealized;
-    public double NetIncome => RealizedProfit + ValuationChange - Fees - Taxes - InterestExpense - BorrowFees - Fines + Subsidies + DebtRelief + DividendIncome - DividendTax - ShortDividendExpense + WageIncome - Consumption;
-    public long NetCashFlow => Sales - Purchases - Fees - TaxesPaid - InterestPaid - BorrowFees - FinesPaid + Subsidies + Borrowed - Repaid + DividendIncome - DividendTax - ShortDividendPaid + WageIncome - Consumption;
+    public double NetIncome => RealizedProfit + ValuationChange - Fees - Taxes - InterestExpense - BorrowFees - Fines + Subsidies + DebtRelief + DividendIncome - DividendTax - ShortDividendExpense + WageIncome - Consumption - StaffCosts;
+    public long NetCashFlow => Sales - Purchases - Fees - TaxesPaid - InterestPaid - BorrowFees - FinesPaid + Subsidies + Borrowed - Repaid + DividendIncome - DividendTax - ShortDividendPaid + WageIncome - Consumption - StaffCosts;
     public void Add(FinancialStatement s)
     {
         TaxesPaid+=s.TaxesPaid; TaxDebt+=s.TaxDebt;
@@ -301,6 +324,7 @@ public sealed class FinancialStatement
         DividendIncome += s.DividendIncome; DividendTax += s.DividendTax; ShortDividendExpense += s.ShortDividendExpense;
         ShortDividendPaid += s.ShortDividendPaid; ShortDividendDebt += s.ShortDividendDebt;
         WageIncome += s.WageIncome; Consumption += s.Consumption;
+        StaffCosts += s.StaffCosts;
     }
 }
 public sealed class LimitOrder
@@ -348,6 +372,7 @@ public sealed record RankHistory(long Season, int Rank, double Return, long Equi
 public sealed record SeasonStanding(int TraderId, int Rank, long OpeningEquity, long Equity, double Return,int Generation=1,string InstitutionName="");
 public sealed class SeasonResult
 {
+    public List<SeasonGrowthReward> GrowthRewards { get; set; } = [];
     public long Season { get; set; }
     public List<SeasonStanding> Standings { get; set; } = [];
     public long Matches { get; set; }
@@ -360,7 +385,8 @@ public sealed class SeasonResult
 }
 public sealed class GameState : ICashAccount
 {
-    public int Version { get; set; } = 6;
+    public int Version { get; set; } = 7;
+    public SimulationRules? Rules { get; set; }
     public long NextVoteId { get; set; } = 1;
     public long NextBankruptcyId { get; set; } = 1;
     public List<CompanyVote> CompanyVotes { get; set; } = [];
@@ -392,6 +418,7 @@ public sealed class GameState : ICashAccount
     public uint Seed { get; set; }
     public long CompletedHours { get; set; }
     public double HourProgress { get; set; }
+    public int PendingClockHours { get; set; }
     public long ComparisonFrom { get; set; }
     public long ComparisonTo { get; set; }
     public int FollowedId { get; set; } = 1;

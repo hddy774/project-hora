@@ -36,6 +36,16 @@ internal static class CheckpointCopy
         copy.ReservedShares=ArrayCopy(value.ReservedShares,compact); copy.ShortShares=ArrayCopy(value.ShortShares,compact);
         copy.ShortAveragePrice=ArrayCopy(value.ShortAveragePrice,compact); copy.ReservedCovers=ArrayCopy(value.ReservedCovers,compact);
         copy.Abilities=Scalar(value.Abilities);
+        if(value.Development is {} d)
+        {
+            var development=Scalar(d);
+            development.Employees=d.Employees.Select(Scalar).ToList();
+            development.AllocatedPoints=(int[])d.AllocatedPoints.Clone(); development.LegacyAbilities=(int[])d.LegacyAbilities.Clone();
+            development.PositionOpenedHours=(long[])d.PositionOpenedHours.Clone(); development.ShortOpenedHours=(long[])d.ShortOpenedHours.Clone();
+            development.NextReviewHours=(long[])d.NextReviewHours.Clone(); development.PositionHorizons=(InvestmentHorizon[])d.PositionHorizons.Clone();
+            development.LastNewsSignals=(double[])d.LastNewsSignals.Clone();
+            copy.Development=development;
+        }
         if(!compact)
         { copy.OpeningSnapshot=Scalar(value.OpeningSnapshot); copy.SeasonSnapshot=Scalar(value.SeasonSnapshot);
           copy.EquityHistory=new(value.EquityHistory); copy.SeasonRanks=new(value.SeasonRanks); }
@@ -49,12 +59,14 @@ internal static class CheckpointCopy
     static SeasonResult Season(SeasonResult value)
     {
         var copy=Scalar(value); copy.Standings=new(value.Standings); copy.Days=value.Days.Select(Daily).ToList();
+        copy.GrowthRewards=value.GrowthRewards.Select(r=>r with { AllocatedPoints=(int[])r.AllocatedPoints.Clone() }).ToList();
         copy.Start=value.Start is null ? null : Daily(value.Start); copy.End=value.End is null ? null : Daily(value.End);
         copy.Policy=value.Policy is null ? null : Scalar(value.Policy); copy.CompanyReports=value.CompanyReports.Select(Scalar).ToList(); return copy;
     }
     public static GameState Freeze(GameState value,bool forStorage=false)
     {
         var copy=Scalar(value); copy.SecurityIds=new(value.SecurityIds); copy.LegacyShares=(long[])value.LegacyShares.Clone();
+        copy.Rules=value.Rules?.Copy();
         copy.RealEconomy=Scalar(value.RealEconomy); copy.CashFlows=new(value.CashFlows); copy.Journal=new(value.Journal);
         copy.SectorVolumes=new(value.SectorVolumes); copy.SectorTurnovers=new(value.SectorTurnovers);
         copy.CorporateEvents=value.CorporateEvents.Select(Scalar).ToList(); copy.Stocks=value.Stocks.Select(Stock).ToList();

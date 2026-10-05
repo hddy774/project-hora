@@ -13,7 +13,7 @@ public sealed partial class GameView
         Text(t.Name + " · " + GameEngine.DispositionNames[(int)t.Disposition], 146, y + 81, 11, Muted);
         Text($"₩{Money(t.Equity(S.Stocks))}", 146, y + 116, 23, Ink, true);
         Text(Percent(t.Return(S.Stocks)), 147, y + 144, 15, Direction(t.Return(S.Stocks)), true);
-        Text($"시즌 {S.Season} · {game!.RankOf(t.Id)}위", 364, y + 165, 10, Muted, false, Paint.Align.Right);
+        Text($"시즌 {S.Season} · {FrameRankOf(t.Id)}위", 364, y + 165, 10, Muted, false, Paint.Align.Right);
         y += 188;
         string[] tabs = ["보유 자산", "재무제표", "시즌 성적", "대표·은행"];
         for (int i = 0; i < tabs.Length; i++)
@@ -77,8 +77,8 @@ public sealed partial class GameView
     {
         string Amount(double amount) => divisor == 1 ? Money((long)Math.Round(amount)) : (amount / divisor).ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
         y = Statement("재무상태표", y, [ ("현금 및 예금", Amount(f.Cash)), ("주식 평가액", Amount(f.Holdings)), ("자산 총계", Amount(f.Assets)), ("공매도 부채", Amount(f.ShortDebt)), ("대출 잔액", Amount(f.LoanDebt)), ("미납 벌금", Amount(f.FineDebt)), ("공매도 미납 배당",Amount(f.ShortDividendDebt)), ("부채 총계", Amount(f.Liabilities)), ("자본 총계", Amount(f.Equity)) ]);
-        y = Statement("손익계산서", y, [ ("실현 매매손익", Amount(f.RealizedProfit)), ("평가손익 변동", Amount(f.ValuationChange)), ("거래 수수료", "−" + Amount(f.Fees)), ("세금", "−" + Amount(f.Taxes)), ("이자", "−" + Amount(f.InterestExpense)), ("공매도 대여료", "−" + Amount(f.BorrowFees)), ("벌금", "−" + Amount(f.Fines)), ("주식 보조금", Amount(f.Subsidies)), ("배당 / 배당세",$"{Amount(f.DividendIncome)} / {Amount(f.DividendTax)}"), ("공매도 배당 비용",Amount(f.ShortDividendExpense)), ("임금 / 소비",$"{Amount(f.WageIncome)} / {Amount(f.Consumption)}"), ("누적 순손익", Amount(f.NetIncome)) ]);
-        y = Statement("현금흐름표", y, [ ("기초 현금", Amount(f.OpeningCash)), ("주식 매도 유입", Amount(f.Sales)), ("주식 매수 유출", "−" + Amount(f.Purchases)), ("수수료 유출", "−" + Amount(f.Fees)), ("차입 / 상환", $"{Amount(f.Borrowed)} / {Amount(f.Repaid)}"), ("세금·이자·대여료·벌금 납부", "−" + Amount(f.Taxes + f.InterestPaid + f.BorrowFees + f.FinesPaid)), ("보조금", Amount(f.Subsidies)), ("배당 유입 (세후)",Amount(f.DividendIncome-f.DividendTax)), ("공매도 배당 납부",Amount(f.ShortDividendPaid)), ("임금 / 소비",$"{Amount(f.WageIncome)} / {Amount(f.Consumption)}"), ("순현금흐름", Amount(f.NetCashFlow)), ("기말 현금", Amount(f.Cash)) ]);
+        y = Statement("손익계산서", y, [ ("실현 매매손익", Amount(f.RealizedProfit)), ("평가손익 변동", Amount(f.ValuationChange)), ("거래 수수료", "−" + Amount(f.Fees)), ("세금", "−" + Amount(f.Taxes)), ("이자", "−" + Amount(f.InterestExpense)), ("공매도 대여료", "−" + Amount(f.BorrowFees)), ("벌금", "−" + Amount(f.Fines)), ("주식 보조금", Amount(f.Subsidies)), ("배당 / 배당세",$"{Amount(f.DividendIncome)} / {Amount(f.DividendTax)}"), ("공매도 배당 비용",Amount(f.ShortDividendExpense)), ("임금 / 소비",$"{Amount(f.WageIncome)} / {Amount(f.Consumption)}"), ("직원 급여·채용 비용", "−"+Amount(f.StaffCosts)), ("누적 순손익", Amount(f.NetIncome)) ]);
+        y = Statement("현금흐름표", y, [ ("기초 현금", Amount(f.OpeningCash)), ("주식 매도 유입", Amount(f.Sales)), ("주식 매수 유출", "−" + Amount(f.Purchases)), ("수수료 유출", "−" + Amount(f.Fees)), ("차입 / 상환", $"{Amount(f.Borrowed)} / {Amount(f.Repaid)}"), ("세금·이자·대여료·벌금 납부", "−" + Amount(f.Taxes + f.InterestPaid + f.BorrowFees + f.FinesPaid)), ("보조금", Amount(f.Subsidies)), ("배당 유입 (세후)",Amount(f.DividendIncome-f.DividendTax)), ("공매도 배당 납부",Amount(f.ShortDividendPaid)), ("임금 / 소비",$"{Amount(f.WageIncome)} / {Amount(f.Consumption)}"), ("직원 급여·채용 유출", "−"+Amount(f.StaffCosts)), ("순현금흐름", Amount(f.NetCashFlow)), ("기말 현금", Amount(f.Cash)) ]);
         Text("자산 = 부채 + 자본 · 수수료는 손익에 한 번 반영", 21, y + 10, 10, Muted);
         Text("수익률은 임금·소비 유출입을 제외한 투자 성과입니다.", 21, y + 30, 10, Muted);
         return y + 50;

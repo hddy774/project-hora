@@ -115,6 +115,7 @@ public sealed partial class GameEngine
             t.Shares[i] = Convert(oldLong); t.ShortShares[i] = Convert(oldShort);
             t.AverageCost[i] = t.Shares[i] == 0 ? 0 : t.AverageCost[i] * denominator / numerator;
             t.ShortAveragePrice[i] = t.ShortShares[i] == 0 ? 0 : t.ShortAveragePrice[i] * denominator / numerator;
+            RefreshPositionTiming(t,i);
             PayTradeTax(t,t.RealizedProfit-beforeProfit);
         }
         TransferCash(s.Report, State.Bank, CashFraction(State.Bank.ShareInventory[i]), "bank-fractional-share");
@@ -151,6 +152,7 @@ public sealed partial class GameEngine
         if (s.Reports.Contains(s.Report)) s.Report = CopyReport(s.Report);
         TransferCash(t, s.Report, amount, "subscription");
         t.AverageCost[i] = (t.Shares[i] * t.AverageCost[i] + amount) / (t.Shares[i] + quantity);
+        RecordPositionOpen(t,i,false,t.Shares[i]==0);
         t.Shares[i] += quantity; t.BuyCashFlow += amount;
         s.TotalShares += quantity; s.Report.CapitalChange += amount; s.Report.FinancingCashFlow += amount;
         if (!closingBooks) { s.PendingCapitalChange += amount; s.PendingFinancingFlow += amount; }
@@ -217,8 +219,14 @@ public sealed partial class GameEngine
             { TransferCash(t, State.Bank, shortCash, "merger-short-fractional"); t.BuyCashFlow += shortCash; t.RealizedProfit += (double)(t.ShortShares[a] * numerator % denominator) / numerator * t.ShortAveragePrice[a] - shortCash; }
             t.AverageCost[b] = t.Shares[b] + longs == 0 ? 0 : (t.Shares[b] * t.AverageCost[b] + longs * t.AverageCost[a] * denominator / numerator) / (t.Shares[b] + longs);
             t.ShortAveragePrice[b] = t.ShortShares[b] + shorts == 0 ? 0 : (t.ShortShares[b] * t.ShortAveragePrice[b] + shorts * t.ShortAveragePrice[a] * denominator / numerator) / (t.ShortShares[b] + shorts);
+            if(t.Development is {} timing)
+            {
+                if(longs>0 && t.Shares[b]==0) { timing.PositionOpenedHours[b]=timing.PositionOpenedHours[a]; timing.PositionHorizons[b]=timing.PositionHorizons[a]; }
+                if(shorts>0 && t.ShortShares[b]==0) timing.ShortOpenedHours[b]=timing.ShortOpenedHours[a];
+            }
             t.Shares[b] += longs; t.ShortShares[b] += shorts; t.Shares[a] = t.ShortShares[a] = 0;
             t.AverageCost[a] = t.ShortAveragePrice[a] = 0;
+            RefreshPositionTiming(t,a); RefreshPositionTiming(t,b);
             PayTradeTax(t,t.RealizedProfit-beforeProfit);
         }
         TransferCash(source.Report, State.Bank, CashFraction(State.Bank.ShareInventory[a]), "merger-bank-fractional");
@@ -257,6 +265,14 @@ public sealed partial class GameEngine
             t.Shares = Resize(t.Shares, count); t.AverageCost = Resize(t.AverageCost, count);
             t.ShortShares = Resize(t.ShortShares, count); t.ShortAveragePrice = Resize(t.ShortAveragePrice, count);
             t.ReservedShares = Resize(t.ReservedShares, count); t.ReservedCovers = Resize(t.ReservedCovers, count);
+            if(t.Development is {} d)
+            {
+                int old=d.PositionOpenedHours.Length;
+                d.PositionOpenedHours=Resize(d.PositionOpenedHours,count); d.ShortOpenedHours=Resize(d.ShortOpenedHours,count);
+                for(int i=old;i<count;i++) d.PositionOpenedHours[i]=d.ShortOpenedHours[i]=-1;
+                d.NextReviewHours=Resize(d.NextReviewHours,count); d.PositionHorizons=Resize(d.PositionHorizons,count);
+                d.LastNewsSignals=Resize(d.LastNewsSignals,count); d.NextDecisionHour=State.CompletedHours;
+            }
         }
         State.Bank.ShareInventory = Resize(State.Bank.ShareInventory, count); State.Bank.ReservedLending = Resize(State.Bank.ReservedLending, count);
         State.SecurityIds = State.Stocks.Select(s => s.SecurityId).ToList(); RebuildBooks();

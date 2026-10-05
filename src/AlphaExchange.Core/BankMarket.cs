@@ -25,25 +25,5 @@ public sealed partial class GameEngine
         }
         return t;
     }
-    void MakeBankMarket()
-    {
-        CancelOrders(0); var bank=BankAccount();
-        State.Bank.MarketDecision=marketTrend<-.04 ? "하락 충격 완화·유동성 매수" : marketTrend>.06 ? "과열 완화·보유 주식 공급" : "가격·시간 우선 호가로 유동성 공급";
-        for(int i=0;i<State.Stocks.Count;i++)
-        {
-            var s=State.Stocks[i]; if(!s.Active || s.WaitingForCapital) continue;
-            bool falling=trends[i]<-.04,overvalued=s.Price>s.FairValue*1.35;
-            bool hot=trends[i]>.06 || overvalued;
-            long reserve=Math.Max(10,s.TotalShares/20);
-            long available=State.Bank.ShareInventory[i]-State.Bank.ReservedLending[i]-reserve;
-            int sellPrice=Quote(s.PreviousPrice*(overvalued ? .985 : hot ? 1.003 : 1.008),false);
-            int sellQuantity=(int)Math.Min(Math.Max(0,available),hot ? 12 : 6);
-            if(sellQuantity>0) SubmitOrder(0,i,false,sellPrice,sellQuantity,1);
-            long budget=Math.Max(0,State.Bank.Cash-bank.ReservedCash-150_000_000);
-            if(budget<s.PreviousPrice || s.Report.Equity<=0) continue;
-            int buyPrice=Quote(s.PreviousPrice*(overvalued ? .965 : falling ? .999 : .990),true);
-            int buyQuantity=(int)Math.Min(budget/Math.Max(1,buyPrice+ExchangeFee(buyPrice)),falling ? 8 : 2);
-            if(buyQuantity>0) SubmitOrder(0,i,true,buyPrice,buyQuantity,1);
-        }
-    }
+    void MakeBankMarket() => ReplenishLiquidity(true);
 }

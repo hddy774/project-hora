@@ -6,11 +6,10 @@ public sealed partial class GameEngine
     public static readonly double[] CreditSpreads = [.005, .01, .018, .028, .045, .065, .09, .125, .17];
     void InitializeRepresentative(Trader t)
     {
-        int Skill() => 25 + (int)(Next() * 76);
-        t.Abilities = new Abilities { Valuation = Skill(), Technical = Skill(), News = Skill(), RiskManagement = Skill(),
-            Diversification = Skill(), Execution = Skill(), SwingTrading = Skill(), Scalping = Skill(), Macro = Skill(), Negotiation = Skill() };
+        t.Abilities = Abilities.Uniform(Rules.Representative.InitialAbility);
+        InitializeDevelopment(t);
         t.Disposition = (Disposition)((t.Id - 1) % 5); t.Integrity = .35 + Next() * .65;
-        t.CreditScore = 45 + (int)(Next() * 51);
+        t.CreditScore = 70;
     }
     void InitializeEconomy()
     {
@@ -46,7 +45,7 @@ public sealed partial class GameEngine
         var t = Owner(ownerId); long paid = Math.Min(amount, Math.Min(t.LoanDebt, AvailableCash(t)));
         TransferCash(t, State.Bank, paid, "repayment"); t.LoanDebt -= paid; t.RepaidCash += paid; cachedStats = null; return paid;
     }
-    public long AvailableCash(Trader t) => Math.Max(0, t.Cash - t.ReservedCash - t.ShortCollateral(State.Stocks));
+    public long AvailableCash(Trader t) => Math.Max(0, t.Cash - t.ReservedCash - (t.IsRetail || t.Id==0 ? 0 : t.ShortCollateral(State.Stocks)));
     public void ApplyNewsImpact(int stockIndex, double impact)
     {
         if (stockIndex < 0 || stockIndex >= State.Stocks.Count || !double.IsFinite(impact)) throw new ArgumentOutOfRangeException(nameof(stockIndex));
@@ -88,7 +87,8 @@ public sealed partial class GameEngine
             long grant = Math.Min(Math.Max(0, State.Government.Cash - State.Government.TaxEscrow), (long)((t.GrossAssets(State.Stocks) - t.Cash) * State.Government.Policy.SubsidyRate));
             if (grant > 0) { TransferCash(State.Government, t, grant, "subsidy"); t.Subsidies += grant; State.Government.Subsidies += grant; }
             double solvency = (double)t.Equity(State.Stocks) / Math.Max(1, t.OpeningEquity);
-            int target = (int)Math.Clamp(70 + (solvency - 1) * 35 - (double)t.LoanDebt / Math.Max(1, t.GrossAssets(State.Stocks)) * 35 + (t.IsRetail ? 0 : t.Abilities.RiskManagement * .12) - t.MarginCalls * 2, 0, 99);
+            int target = (int)Math.Clamp(70 + (solvency - 1) * 35 - (double)t.LoanDebt / Math.Max(1, t.GrossAssets(State.Stocks)) * 35 +
+                (t.IsRetail ? 0 : Capabilities(t).Effective.RiskManagement * .12 + (t.Development?.CreditBonus ?? 0)) - t.MarginCalls * 2, 0, 99);
             if (overdueInterest) target -= 4;
             t.CreditScore = Math.Clamp((int)Math.Round(t.CreditScore * .9 + target * .1), 0, 99);
         }
@@ -133,7 +133,7 @@ public sealed partial class GameEngine
         }
         if (State.CompletedHours % 12 != 0) return;
         var candidates = State.Bots.Where(t => t.Integrity < (t.Disposition == Disposition.Sociable ? .78 : .65) &&
-            t.Abilities.Negotiation > (t.Disposition == Disposition.Sociable ? 40 : 55) && t.Equity(State.Stocks) > 100_000 && !State.Operations.Any(o => (o.LeaderId == t.Id || o.PartnerId == t.Id) && o.EndsHour > State.CompletedHours - 240)).ToArray();
+            Capabilities(t).Effective.Negotiation > (t.Disposition == Disposition.Sociable ? 40 : 55) && t.Equity(State.Stocks) > 100_000 && !State.Operations.Any(o => (o.LeaderId == t.Id || o.PartnerId == t.Id) && o.EndsHour > State.CompletedHours - 240)).ToArray();
         if (candidates.Length > 1 && Next() < .3)
         { var a = candidates[(int)(Next() * candidates.Length)]; var b = candidates[(int)(Next() * candidates.Length)]; ProposeOperation(a.Id, b.Id, (int)(Next() * State.Stocks.Count)); }
     }

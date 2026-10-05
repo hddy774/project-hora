@@ -5,6 +5,7 @@ public sealed partial class GameEngine
     List<LimitOrder>[] bids = [];
     List<LimitOrder>[] asks = [];
     readonly Dictionary<int, List<LimitOrder>> ownedOrders = [];
+    public long BookRevision { get; private set; }
     public static long Fee(long notional) => checked((notional * 15 + 9999) / 10000);
     public long ExchangeFee(long notional) => checked((notional * State.Government.Policy.FeeBasisPoints + 9999) / 10000);
     long Reserve(Trader t, LimitOrder o, int quantity)
@@ -20,11 +21,29 @@ public sealed partial class GameEngine
         return (int)Math.Min(1_000_000, AvailableCash(t) / (price + ExchangeFee(price)));
     }
     public IReadOnlyList<LimitOrder> Orders(int index, bool buy) => buy ? bids[index] : asks[index];
-    public List<BookLevel> Depth(int index, bool buy, int levels = 5) => Orders(index, buy).GroupBy(o => o.Price).Take(levels)
-        .Select(g => new BookLevel(g.Key, g.Where(o => o.OwnerId is >0 and <=AiCount).Sum(o => (long)o.Remaining),
-            g.Where(o => o.OwnerId > AiCount).Sum(o => (long)o.Remaining),g.Where(o=>o.OwnerId==0).Sum(o=>(long)o.Remaining))).ToList();
+    public List<BookLevel> Depth(int index,bool buy,int levels=5)
+    {
+        if(index<0 || index>=State.Stocks.Count || levels is <1 or >100) throw new ArgumentOutOfRangeException(nameof(index));
+        var result=new List<BookLevel>(levels); var book=buy ? bids[index] : asks[index];
+        int price=0; long institutions=0,retail=0,bank=0;
+        foreach(var order in book)
+        {
+            if(order.Remaining<=0) continue;
+            if(order.Price!=price && price!=0)
+            {
+                result.Add(new BookLevel(price,institutions,retail,bank));
+                if(result.Count==levels) return result;
+                institutions=retail=bank=0;
+            }
+            price=order.Price;
+            if(order.OwnerId==0) bank+=order.Remaining; else if(order.OwnerId<=AiCount) institutions+=order.Remaining; else retail+=order.Remaining;
+        }
+        if(price!=0) result.Add(new BookLevel(price,institutions,retail,bank));
+        return result;
+    }
     void RebuildBooks()
     {
+        BookRevision++;
         State.Orders.RemoveAll(o=>o.Remaining<=0);
         bids = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
         asks = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
@@ -88,6 +107,7 @@ public sealed partial class GameEngine
         if (incoming.Remaining > 0) { State.Orders.Add(incoming); AddResting(incoming); }
         if (!t.IsRetail && ownerId!=0) t.LastAction = $"{State.Stocks[stockIndex].Symbol} {quantity}주 {(shortSale ? "공매도" : cover ? "공매도 상환" : buy ? "매수" : "매도")} 호가";
         cachedStats = null;
+        BookRevision++;
         return null;
     }
     void AddResting(LimitOrder o)
@@ -110,25 +130,25 @@ public sealed partial class GameEngine
         if (o is null) return false;
         SetReservation(Owner(o.OwnerId), o, -o.Remaining);
         (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o);
-        ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; cachedStats = null;
+        ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; cachedStats = null; BookRevision++;
         return true;
     }
     public void CancelOrders(int id)
     {
-        if (!ownedOrders.TryGetValue(id, out var owned)) return;
+        if (!ownedOrders.TryGetValue(id, out var owned) || owned.Count==0) return;
         foreach (var o in owned)
         {
             SetReservation(Owner(id), o, -o.Remaining);
             (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o); o.Remaining = 0;
         }
-        owned.Clear(); cachedStats = null;
+        owned.Clear(); cachedStats = null; BookRevision++;
     }
     public void CancelAllOrders()
     {
         foreach(var order in State.Orders)
             if(order.Remaining>0) { SetReservation(Owner(order.OwnerId),order,-order.Remaining); order.Remaining=0; }
         State.Orders.Clear(); ownedOrders.Clear();
-        foreach(var book in bids) book.Clear(); foreach(var book in asks) book.Clear(); cachedStats=null;
+        foreach(var book in bids) book.Clear(); foreach(var book in asks) book.Clear(); cachedStats=null; BookRevision++;
     }
     void ExpireOrders()
     {
@@ -136,7 +156,7 @@ public sealed partial class GameEngine
         {
             if (o.Remaining == 0 || o.ExpiresAt > State.CompletedHours) continue;
             SetReservation(Owner(o.OwnerId), o, -o.Remaining);
-            (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o); ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0;
+            (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o); ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; BookRevision++;
         }
         State.Orders.RemoveAll(o => o.Remaining == 0);
     }
@@ -149,15 +169,17 @@ public sealed partial class GameEngine
             double profit = quantity * buyer.ShortAveragePrice[i] - amount; buyer.RealizedProfit += profit;
             buyer.ShortShares[i] -= quantity; State.Bank.ShareInventory[i] += quantity;
             if (buyer.ShortShares[i] == 0) buyer.ShortAveragePrice[i] = 0;
+            if(buyer.ShortShares[i]==0 && buyer.Development is {} coverTiming) coverTiming.ShortOpenedHours[i]=-1;
             PayTradeTax(buyer, profit);
         }
         else
-        { buyer.AverageCost[i] = (buyer.Shares[i] * buyer.AverageCost[i] + amount) / (buyer.Shares[i] + quantity); buyer.Shares[i] += quantity; }
+        { RecordPositionOpen(buyer,i,false,buyer.Shares[i]==0); buyer.AverageCost[i] = (buyer.Shares[i] * buyer.AverageCost[i] + amount) / (buyer.Shares[i] + quantity); buyer.Shares[i] += quantity; }
         TransferCash(buyer, seller, amount, "stock-trade"); TransferCash(buyer, State, fee, "exchange-fee");
         buyer.BuyCashFlow += amount; buyer.Fees += fee; buyer.Trades++;
         TransferCash(seller, State, fee, "exchange-fee"); seller.SellCashFlow += amount;
         if (ask.Short)
         {
+            RecordPositionOpen(seller,i,true,seller.ShortShares[i]==0);
             seller.ShortAveragePrice[i] = (seller.ShortShares[i] * seller.ShortAveragePrice[i] + amount) / (seller.ShortShares[i] + quantity);
             seller.ShortShares[i] += quantity; State.Bank.ShareInventory[i] -= quantity;
         }
@@ -165,6 +187,7 @@ public sealed partial class GameEngine
         {
             double profit = amount - quantity * seller.AverageCost[i]; seller.RealizedProfit += profit;
             seller.Shares[i] -= quantity; if (seller.Shares[i] == 0) seller.AverageCost[i] = 0; PayTradeTax(seller, profit);
+            if(seller.Shares[i]==0 && seller.Development is {} soldTiming) soldTiming.PositionOpenedHours[i]=-1;
         }
         seller.Fees += fee; seller.Trades++;
         buyer.TradedVolume += quantity; seller.TradedVolume += quantity; buyer.TradedTurnover += amount; seller.TradedTurnover += amount;

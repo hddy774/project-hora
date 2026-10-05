@@ -38,6 +38,11 @@ object Measure(string name,Action action,int repeats=9)
 try
 {
     Measure("statistics",()=>{ statsField.SetValue(game,null); _=game.Statistics(); });
+    Measure("depthProjection6000",()=>
+    {
+        for(int frame=0;frame<100;frame++) for(int i=0;i<game.State.Stocks.Count;i++)
+        { _=game.Depth(i,true,5); _=game.Depth(i,false,5); }
+    });
     SaveSnapshot? prepared=null;
     Measure("prepareSave",()=>{ prepared=store.PrepareSave(game); });
     if(prepared!.Json!=game.Serialize()) throw new Exception("Checkpoint capture differs from current state");

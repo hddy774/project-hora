@@ -142,8 +142,24 @@ public sealed partial class GameStore
         engine.BankruptcyRecorded+=b=> { lock(pending) pendingBankruptcies[run].Add(new(b.Id,b.Hour,JsonSerializer.Serialize(b))); };
         engine.CompanyReportRecorded+=r=> { lock(pending) pendingReports[run].Add((++reportSequence,CheckpointCopy.Scalar(r))); };
         engine.HistorySource = new RunQuery(this,run);
-        // Initial or migrated state is part of the first atomic save.
-        AddPending(run, engine.CaptureSnapshot());
+        // A loaded v5 database contains immutable JSON without the fields added in v6.
+        // Never re-encode committed history at attach: defaults/new measurements would
+        // change its checksum. Queue only genuinely missing initial/daily records.
+        var committed=new HashSet<(long Hour,int Resolution)>();
+        if(databaseReady)
+        {
+            using var connection=Open(SavePath,true); using var command=connection.CreateCommand();
+            command.CommandText="SELECT hour,resolution FROM hours WHERE run=$run AND (resolution=24 AND hour BETWEEN $start AND $end OR hour=$end)";
+            command.Parameters.AddWithValue("$run",run);
+            command.Parameters.AddWithValue("$start",engine.State.DailyHistory.Min(d=>d.Hour));
+            command.Parameters.AddWithValue("$end",engine.State.CompletedHours);
+            using var reader=command.ExecuteReader();
+            while(reader.Read()) committed.Add((reader.GetInt64(0),reader.GetInt32(1)));
+        }
+        if(!committed.Contains((engine.State.CompletedHours,1))) AddPending(run,engine.CaptureSnapshot());
+        foreach(var daily in engine.State.DailyHistory)
+            if(!committed.Contains((daily.Hour,24))) AddPending(run,NormalizeLegacy(daily,engine));
+        queuedDailyThrough[run]=Math.Max(queuedDailyThrough.GetValueOrDefault(run,-1),engine.State.DailyHistory.Max(d=>d.Hour));
     }
     void AddPending(string run, DailySnapshot snapshot)
     {

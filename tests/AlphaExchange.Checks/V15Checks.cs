@@ -1,5 +1,9 @@
 using AlphaExchange.Core;
 using System.Text.Json.Nodes;
+using System.Text.Json;
+using System.IO.Compression;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.Data.Sqlite;
 
 static class TestFixtures
@@ -105,6 +109,88 @@ static class V15Checks
         string json=simulation.Serialize(); var resumed=GameEngine.Deserialize(json);
         for(int hour=0;hour<48;hour++) { simulation.AdvanceHour(); resumed.AdvanceHour(); }
         check(simulation.Serialize()==resumed.Serialize(),"Retail/bank/governance deterministic continuation");
+        LegacyDatabaseContinuation(check,validate);
         Console.WriteLine("PASS v1.5: reactive retail, 50/50 issuance, bank market, weighted governance, company/investor settlement, generations, atomic archive and compact saves");
+    }
+
+    static void LegacyDatabaseContinuation(Action<bool,string> check,Action<GameEngine> validate)
+    {
+        string folder=Path.Combine(Path.GetTempPath(),"hora-v5-db-"+Guid.NewGuid().ToString("N"));
+        try
+        {
+            var world=new GameEngine(157); var store=new GameStore(folder); store.Attach(world);
+            for(int hour=0;hour<48;hour++) world.AdvanceHour();
+            store.Save(world);
+            byte[] Encode(string json)
+            {
+                using var output=new MemoryStream();
+                using(var compressor=new BrotliStream(output,CompressionLevel.Fastest,true)) compressor.Write(Encoding.UTF8.GetBytes(json));
+                return output.ToArray();
+            }
+            string Decode(byte[] bytes)
+            {
+                using var input=new MemoryStream(bytes); using var z=new BrotliStream(input,CompressionMode.Decompress);
+                using var reader=new StreamReader(z); return reader.ReadToEnd();
+            }
+            string Hash(string json)=>Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(json)));
+            void OldPoint(JsonNode? node)
+            {
+                if(node is not JsonObject point) return;
+                foreach(string key in new[] { "SectorVolumes","SectorTurnovers","CohortTradingBasis","InstitutionTradingIncome","RetailTradingIncome",
+                    "CompanyBankruptcies","InstitutionBankruptcies","RetailBankruptcies" }) point.Remove(key);
+                foreach(var trader in point["Institutions"]!.AsArray()) trader!.AsObject().Remove("Generation");
+            }
+            using(var connection=new SqliteConnection($"Data Source={store.SavePath};Pooling=False"))
+            {
+                connection.Open(); using var command=connection.CreateCommand();
+                // Use expanded v5 participant arrays and actual old snapshot JSON, not
+                // a v6 round trip that hides the committed-history checksum conflict.
+                _=world.Serialize(); // discard cancelled order shells, as the v5 writer did
+                var state=JsonSerializer.SerializeToNode(world.State)!; state["Version"]=5;
+                OldPoint(state["OpeningSnapshot"]); OldPoint(state["SeasonSnapshot"]);
+                foreach(var point in state["DailyHistory"]!.AsArray()) OldPoint(point);
+                string oldState=state.ToJsonString();
+                _=GameEngine.Deserialize(oldState); // fixture must load without backup recovery
+                command.CommandText="UPDATE runs SET state=$state,hash=$hash";
+                command.Parameters.AddWithValue("$state",Encode(oldState));command.Parameters.AddWithValue("$hash",Hash(oldState));command.ExecuteNonQuery();
+                command.Parameters.Clear();command.CommandText="SELECT hour,resolution,data FROM hours";
+                var rows=new List<(long Hour,int Resolution,byte[] Data)>();
+                using(var reader=command.ExecuteReader()) while(reader.Read()) rows.Add((reader.GetInt64(0),reader.GetInt32(1),(byte[])reader[2]));
+                foreach(var row in rows)
+                {
+                    var point=JsonNode.Parse(Decode(row.Data))!; OldPoint(point); string json=point.ToJsonString();
+                    command.Parameters.Clear();command.CommandText="UPDATE hours SET data=$data,hash=$hash,institution_income=NULL,retail_income=NULL WHERE hour=$hour AND resolution=$resolution";
+                    command.Parameters.AddWithValue("$data",Encode(json));command.Parameters.AddWithValue("$hash",Hash(json));
+                    command.Parameters.AddWithValue("$hour",row.Hour);command.Parameters.AddWithValue("$resolution",row.Resolution);command.ExecuteNonQuery();
+                }
+            }
+            Dictionary<(long,int),string> HistoryHashes()
+            {
+                using var c=new SqliteConnection($"Data Source={store.SavePath};Pooling=False"); c.Open(); using var cmd=c.CreateCommand();
+                cmd.CommandText="SELECT hour,resolution,hash FROM hours";
+                var result=new Dictionary<(long,int),string>();using var reader=cmd.ExecuteReader();
+                while(reader.Read()) result.Add((reader.GetInt64(0),reader.GetInt32(1)),reader.GetString(2)); return result;
+            }
+            var original=HistoryHashes(); var upgradedStore=new GameStore(folder); var upgraded=upgradedStore.Load(out string message)!;
+            check(message.Length==0 && upgraded.State.Version==6 && upgraded.State.CompletedHours==48,"Real v5 SQLite checkpoint upgrades to v6 without recovering a newer backup");
+            check(upgradedStore.PrepareSave(upgraded).History.Length==0,"Upgrade queues no re-encoded committed hourly or daily snapshots");
+            upgradedStore.Save(upgraded);
+            var immediately=HistoryHashes();
+            check(immediately.Count==original.Count && original.All(p=>immediately[p.Key]==p.Value),"Saving immediately after upgrade preserves every historical checksum");
+            upgraded.AdvanceHour(); upgradedStore.Save(upgraded); validate(upgraded);
+            var continued=HistoryHashes();
+            check(continued.Count==original.Count+1 && original.All(p=>continued[p.Key]==p.Value) && upgraded.HistorySource!.Covers(0,49),"Upgrade continues hourly history without gaps or rewriting old daily records");
+            check(upgraded.HistorySource!.At(48)!.CohortTradingBasis==0 && upgraded.HistorySource.At(49)!.CohortTradingBasis==6,"New investment-income measurements begin after upgrade; old records are not invented");
+            using var zip=new MemoryStream(); upgradedStore.Export(zip); zip.Position=0;
+            var importedStore=new GameStore(Path.Combine(folder,"import"));var imported=importedStore.Import(zip); importedStore.Save(imported);
+            imported.AdvanceHour(); importedStore.Save(imported);
+            check(imported.State.CompletedHours==50 && imported.HistorySource!.Covers(0,50),"ZIP import of mixed v5/v6 history saves and continues after reattach");
+            var conflictPoint=upgraded.CaptureSnapshot();conflictPoint.Hour=48;conflictPoint.Capitalization++;
+            var bad=upgradedStore.PrepareSave(upgraded) with { History=[new(48,1,JsonSerializer.Serialize(conflictPoint))] };
+            try { upgradedStore.WriteSnapshot(bad); check(false,"Conflicting explicit history write still rejected"); } catch(InvalidDataException) { }
+            var protectedHashes=HistoryHashes();
+            check(original.All(p=>protectedHashes[p.Key]==p.Value) && upgradedStore.Load(out _)!.State.CompletedHours==49,"Conflict protection and atomic checkpoint remain intact after migration fix");
+        }
+        finally { Directory.Delete(folder,true); }
     }
 }

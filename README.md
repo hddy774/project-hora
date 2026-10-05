@@ -8,7 +8,7 @@ v1.6.0은 **양방향 실제 호가·기관 성장·직원·유연한 투자 기
 
 **[최신 릴리스](https://github.com/hddy774/project-hora/releases/latest)** · **[APK 다운로드](https://github.com/hddy774/project-hora/releases/download/v1.6.0/AlphaExchange-v1.6.0.apk)**
 
-[PR #8](https://github.com/hddy774/project-hora/pull/8)에서 계획·개발·검증을 진행하고 병합된 태그를 GitHub Actions로 빌드합니다. [금융 원문 조사와 개선 기록](docs/FINANCE-RESEARCH-v1.6.0.md), [12시즌 경제·유동성 분석과 후속 개선](docs/analysis/v1.6.0/README.md), [조정 가능한 규칙](src/AlphaExchange.Core/Rules/README.md)을 기록합니다. 시장 경제의 기존 [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
+[PR #8](https://github.com/hddy774/project-hora/pull/8)에서 계획·개발·검증 후 병합하고 [GitHub Actions](https://github.com/hddy774/project-hora/actions/runs/37271904294)로 최신 v1.6.0 APK를 배포했습니다. 공개 APK를 다시 내려받아 해시·서명·버전·최신 여부를 확인하고 계획표의 모든 단계를 완료했습니다. [금융 원문 조사와 개선 기록](docs/FINANCE-RESEARCH-v1.6.0.md), [12시즌 경제·유동성 분석과 후속 개선](docs/analysis/v1.6.0/README.md), [조정 가능한 규칙](src/AlphaExchange.Core/Rules/README.md)을 기록합니다. 시장 경제의 기존 [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
 
 **설치 안내:** 사용자의 기존 서명키 없는 배포 지시에 따라 GitHub Actions에서 새 일회용 키로 APK에 서명합니다. 이전 릴리스에 덮어쓸 수 없고 재설치가 필요합니다. 앱 삭제는 내부 기록을 지웁니다. v1.3부터 통계 화면에서 게임·전체 통계를 ZIP으로 내보내고 가져올 수 있습니다. **v1.2에는 내보내기 기능이 없으므로 새 버전 설치만으로 삭제한 이전 기록을 복구할 수 없습니다.** 별도로 확보한 기존 내부 JSON/시즌 파일의 자동 이전은 같은 앱 데이터 디렉터리가 남아 있을 때 동작합니다.
 

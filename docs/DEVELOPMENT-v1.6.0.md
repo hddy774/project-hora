@@ -9,7 +9,7 @@
 | 2 | 대표 능력·상대 순위 보상·신용·직원·기관 능력 | 완료 | 10개 각각 50점, 9개 순위 구간 중 하나·재시작 중복 방지·배분 상한·실제 고용비/일급. 대표 50%/조직 50%를 매매·금융·의결·상호작용 판단에 사용 |
 | 3 | 프로필/성장 화면·시뮬레이션/화면 성능 | 완료 | 프로필 누적 거래량·대금·수익률, 능력/직원/보상/기간 탭과 실제 시즌 지급. 분야 비중 단일 집계·후보 일괄 선택·정기 검토·호가/순위 캐시·문자열 일괄 측정·틱 시간 예산·프레임 제한 |
 | 4 | 저장 이전·회귀·장기 실행·성능 전후·Android | 완료 | [최종 코드 CI 37270021879](https://github.com/hddy774/project-hora/actions/runs/37270021879): PASS 51,885,220회·16시즌·1,586,308체결, Android/그림 통과. 전용 PASS 4,124,001회. [성능 원자료](performance/v1.6.0/README.md), [12시즌 경제/남은 한계](analysis/v1.6.0/README.md), [Android·391행 원기록 보존](UI-VERIFICATION-v1.6.0.md) |
-| 5 | 같은 PR 병합·GitHub Actions·최신 APK 공개 검증 | 진행 중 | main의 새 버전 병합 시 태그·APK·새 임시 키·최신 공개를 자동 실행. AlphaExchange-v1.6.0.apk 하나, 공개 재다운로드·버전·서명·해시·최신 여부 확인 후 갱신 |
+| 5 | 같은 PR 병합·GitHub Actions·최신 APK 공개 검증 | 완료 | [PR #8 병합](https://github.com/hddy774/project-hora/pull/8), 소스/태그 `09ac0a2`. [Actions 37271904294](https://github.com/hddy774/project-hora/actions/runs/37271904294) 성공·새 임시 키. [최신 v1.6.0](https://github.com/hddy774/project-hora/releases/tag/v1.6.0)에 AlphaExchange-v1.6.0.apk 하나(73,727,402바이트), 익명 공개 재다운로드·SHA-256·서명·앱 버전/코드7·태그 소스·최신 여부 검증 완료. [전체 근거](../VERIFICATION.txt) |
 
 ## 개발 기준
 

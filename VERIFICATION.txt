@@ -86,11 +86,31 @@ Desktop730h fixture: two runs/786rows,staff200/allocated334points, season1actual
 reward records/50positive awards,cash difference0. This is not native speed evidence.
 
 DEPLOYMENT
-PR #8 and release publication in progress; final identity/checksums/public evidence
-will be recorded after publication. Only AlphaExchange-v1.6.0.apk will be public.
-Merged main version creates immutable tag and runs checks/build/sign/verify/upload/
-re-download/latest. User requested no existing signing key; Actions generates
-and removes a new temporary key. No keys/passwords/APKs committed.
+COMPLETE 2026-10-05 UTC: PR #8 merged, immutable v1.6.0 tag/APK source:
+09ac0a2978ccd9863956c3d93c62f2fcc7934955.
+https://github.com/hddy774/project-hora/pull/8
+Final PR head cf2f3557dedad307b0fbca96350c219968045ba6 had checks/Android SUCCESS:
+https://github.com/hddy774/project-hora/actions/runs/37271585765
+Merged-main automatic release Actions37271904294 SUCCESS, prepare/release jobs:
+https://github.com/hddy774/project-hora/actions/runs/37271904294
+Generated/deleted a new temporary key per user's no-existing-key request.
+Release rerun PASS51,885,220assertions/16seasons/1,586,308matches; Android and
+100portraits PASS. CI wall48.25s; hour p50=2.78/p95=5.17/p99=7.32ms,
+JSON11,187,141bytes/serialize95.0ms. CI observations, not controlled benchmarks.
+Actions verified signed identity, uploaded one APK, downloaded/hash-verified,
+then published latest. Public API confirms v1.6.0,draft=false,prerelease=false,
+published2026-10-05T06:24:01Z, releaseID403421436; exactly one asset:
+AlphaExchange-v1.6.0.apk, assetID611714466,73,727,402bytes.
+https://github.com/hddy774/project-hora/releases/tag/v1.6.0
+https://github.com/hddy774/project-hora/releases/download/v1.6.0/AlphaExchange-v1.6.0.apk
+Independent anonymous public download PASS: size/SHA-256 match notes/asset digest:
+5b6959d62bf6146ca335328cf6e97f49ad141169437edf854aefe23459f44d79
+apksigner verify --verbose --print-certs PASS; certificate matches notes:
+23fc931eb41dfdcd986e63de76a0fb164fb8ce9520088400544bf4b8d228eb16
+aapt confirms appID,1.6.0/code7,min26/target34,ARM64/x86_64,no INTERNET permission;
+both native SQLite libraries present. Tag resolves to exact merged source above.
+Post-publication changes document deployment only; tag and APK are unchanged.
+No keys/passwords/APKs committed. New signing identity requires reinstall.
 ZIP export BEFORE uninstall, then install/import. v1.2 has no export UI.
 Committed history persists; abrupt exit may roll back uncommitted progress and
 its records together. Closed app time is not simulated.

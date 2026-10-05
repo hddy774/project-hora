@@ -57,6 +57,11 @@ static class V16Checks
             }
         }
         check(twoSided>=25,"Normal liquid market displays both sides for most companies");
+        var valuationBank=new GameEngine(166); valuationBank.State.CompletedHours=1;
+        var hotStock=valuationBank.State.Stocks[0]; hotStock.FairValue=hotStock.Price*.5;
+        valuationBank.PrepareMarketSignals(); valuationBank.ReplenishLiquidity(true);
+        check(valuationBank.Depth(0,true)[0].Price<hotStock.Price*.97 && valuationBank.Depth(0,false)[0].Price<hotStock.Price*.99,"Funded bank discounts bids and supplies offers during valuation excess without forcing the trade price");
+        validate(valuationBank);
         var patient=new GameEngine(165); var longInvestor=patient.Owner(1);
         longInvestor.Disposition=Disposition.Analytical;
         for(int i=0;i<patient.State.Stocks.Count;i++)

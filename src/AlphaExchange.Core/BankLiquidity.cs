@@ -13,14 +13,19 @@ public sealed partial class GameEngine
         for(int i=0;i<State.Stocks.Count;i++)
         {
             var s=State.Stocks[i]; if(!s.Active || s.WaitingForCapital || s.Report.Equity<=0) continue;
-            bool needAsk=asks[i].Count==0,needBid=bids[i].Count==0;
+            bool needAsk=refresh || asks[i].Count==0,needBid=refresh || bids[i].Count==0;
             if(!needAsk && !needBid) continue;
             double inventory=(double)State.Bank.ShareInventory[i]/Math.Max(1,s.TotalShares);
             double skew=Math.Clamp((inventory-r.InventoryTarget)*r.InventorySkew,-r.InventorySkew,r.InventorySkew);
-            int baseBid=Quote(s.Price*(1-r.Spread-skew),true),baseAsk=Quote(s.Price*(1+r.Spread-skew),false);
+            bool overvalued=s.Price>s.FairValue*r.OvervaluationRatio;
+            bool falling=i<trends.Length && trends[i]<Rules.Investment.FallingMarket;
+            int baseBid=Quote(s.Price*(1-(overvalued ? r.OvervaluedBidDiscount : falling ? r.FallingBidSpread : r.Spread)-skew),true);
+            int baseAsk=Quote(s.Price*(overvalued ? 1-r.OvervaluedAskDiscount : 1+r.Spread-skew),false);
             int tick=s.Price<1000 ? 1 : 10;
-            baseAsk=Math.Clamp(Math.Max(baseAsk,(needBid ? baseBid : bids[i][0].Price)+tick),1,10_000_000);
-            baseBid=Math.Clamp(Math.Min(baseBid,(needAsk ? baseAsk : asks[i][0].Price)-tick),1,10_000_000);
+            // An overpriced market may receive executable funded supply. Normal
+            // liquidity remains passive; the bank never bids up a speculative peak.
+            if(!overvalued) baseAsk=Math.Clamp(Math.Max(baseAsk,(bids[i].Count==0 ? baseBid : bids[i][0].Price)+tick),1,10_000_000);
+            baseBid=Math.Clamp(Math.Min(baseBid,(asks[i].Count==0 ? baseAsk : asks[i][0].Price)-tick),1,10_000_000);
             if(baseBid>=baseAsk) continue;
             int quantity=(int)Math.Clamp(Math.Ceiling(s.Volume*r.RecentVolumeWeight/r.Levels),r.MinimumQuantity,r.MaximumQuantity);
             for(int level=0;level<r.Levels;level++)

@@ -67,6 +67,7 @@ public sealed class SimulationRules
             !Finite(i.MaximumShortRatio,0,.15) || !Finite(i.ShortScore,-1,0) || !Finite(i.ShortExitReturn,0,1) || !Finite(i.SkillFloor,0,1) ||
             l.CashBuffer<0 || l.MinimumQuantity is <1 or >1000 || l.MaximumQuantity<l.MinimumQuantity || l.MaximumQuantity>1000 ||
             !Finite(l.RecentVolumeWeight,0,10) || !Finite(l.Spread,.0001,.05) || !Finite(l.InventoryTarget,0,1) || !Finite(l.InventorySkew,0,.05) ||
+            !Finite(l.OvervaluationRatio,1,3) || !Finite(l.OvervaluedAskDiscount,0,.1) || !Finite(l.OvervaluedBidDiscount,l.OvervaluedAskDiscount,.2) || !Finite(l.FallingBidSpread,0,l.Spread) ||
             l.Levels is <1 or >5 || p.TickMilliseconds is <16 or >1000 || p.FrameMilliseconds<p.TickMilliseconds || p.FrameMilliseconds>1000 ||
             p.MaximumCatchupHours is <1 or >100 || p.TickBudgetMilliseconds is <1 or >40)
             throw new InvalidDataException("투자·유동성·실행 규칙 손상");
@@ -157,6 +158,10 @@ public sealed class LiquidityRules
     public int MaximumQuantity { get; set; }
     public double RecentVolumeWeight { get; set; }
     public double Spread { get; set; }
+    public double OvervaluationRatio { get; set; }
+    public double OvervaluedBidDiscount { get; set; }
+    public double OvervaluedAskDiscount { get; set; }
+    public double FallingBidSpread { get; set; }
     public double InventoryTarget { get; set; }
     public double InventorySkew { get; set; }
     public int Levels { get; set; }

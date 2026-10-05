@@ -20,7 +20,7 @@ public sealed partial class GameView
         {
             var intent = new Intent(export ? Intent.ActionCreateDocument : Intent.ActionOpenDocument);
             intent.AddCategory(Intent.CategoryOpenable); intent.SetType("application/zip");
-            if (export) intent.PutExtra(Intent.ExtraTitle,"AlphaExchange-v1.4.0-history.zip");
+            if (export) intent.PutExtra(Intent.ExtraTitle,"AlphaExchange-v1.7.0-history.zip");
             activity.StartActivityForResult(intent,export ? ExportRequest : ImportRequest);
         }
         catch (ActivityNotFoundException) { fileBusy = false; Notify("기기의 파일 선택 앱을 사용할 수 없습니다."); }
@@ -54,12 +54,15 @@ public sealed partial class GameView
                     }
                     finally { if (File.Exists(temporary)) File.Delete(temporary); }
                 });
-                game = imported; lobby = false; page = 3; statsTab = 0; scroll = 0;
+                lock(simulationGate)
+                {
+                game = imported; loadFailed=false; lobby = false; page = 3; statsTab = 0; scroll = 0;
                 selectedStock = selectedTrader = -1; showResult = confirmNew = false;
                 companyStock = companyTab = 0; companySeason = selectedSeason = historyPage = 0;
                 ownershipStock=ownershipPage=0;
                 corporateBefore = long.MaxValue; companyReportCache.Clear(); seasonCache.Clear();
-                comparisonPeriod = ComparisonPeriod.All; lastCommitTime = Now;
+                comparisonPeriod = ComparisonPeriod.All;
+                }
                 Notify("게임과 통계를 복원했습니다. 재생하면 이어집니다.");
             }
         }
@@ -81,9 +84,12 @@ public sealed partial class GameView
         new AlertDialog.Builder(activity)!.SetTitle("비교 기간 지정")!.SetView(layout)!
             .SetNegativeButton("취소",(_,_) => {})!.SetPositiveButton("적용",(_,_) =>
             {
+                lock(simulationGate)
+                {
                 if (!long.TryParse(from.Text,out long a) || !long.TryParse(to.Text,out long b) || a < 0 || b < a || b > S.CompletedHours)
                 { Notify("시작 ≤ 종료 ≤ 현재 시간으로 입력하세요."); return; }
                 S.ComparisonFrom = a; S.ComparisonTo = b; comparisonPeriod = ComparisonPeriod.Custom; scroll = 0; Invalidate();
+                }
             })!.Show();
     }
     float DrawStorage(float y)

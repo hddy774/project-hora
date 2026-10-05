@@ -16,7 +16,7 @@ jobs:
           dotnet-version: '9.0.318'
       - name: Verify matching, economy, adaptive AI, 100x, 16 seasons and migrations
         run: dotnet run --project tests/AlphaExchange.Checks -c Release
-      - name: Verify 100 distinct portrait regions and checksums
+      - name: Verify 200 distinct portrait regions and checksums
         run: python3 scripts/check-artwork.py
   android:
     runs-on: ubuntu-latest
@@ -36,3 +36,31 @@ jobs:
         run: dotnet workload install android --skip-manifest-update
       - name: Compile Android Release
         run: dotnet build src/AlphaExchange.Android -c Release -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME"
+      - uses: actions/checkout@v4
+        with:
+          ref: v1.6.0
+          path: fixture-v16
+          persist-credentials: false
+      - name: Generate a true v7 native fixture from the previous release
+        run: dotnet run --project tools/NativeSmokeFixture -c Release -p:FixtureCoreProject="$GITHUB_WORKSPACE/fixture-v16/src/AlphaExchange.Core/AlphaExchange.Core.csproj" -- generate /tmp/hora-native-fixture
+      - name: Publish local APK and enable emulator acceleration
+        run: |
+          dotnet publish src/AlphaExchange.Android -c Release -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME" -o /tmp/hora-native-apk
+          pip install brotli
+          sudo chmod 666 /dev/kvm
+      - name: Native old-record,200-portrait and100x verification
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 26
+          arch: x86_64
+          target: default
+          disable-animations: true
+          emulator-options: -no-window -no-audio -no-snapshot -no-boot-anim -gpu swiftshader_indirect -memory 2048 -cores 2
+          script: python3 scripts/native-smoke.py /tmp/hora-native-apk/com.alphaexchange.offline-Signed.apk /tmp/hora-native-fixture artifacts/native-smoke
+      - name: Keep native screenshots and raw verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v170-native-smoke
+          path: artifacts/native-smoke
+          retention-days: 14

@@ -19,8 +19,12 @@ public sealed partial class GameEngine
             double skew=Math.Clamp((inventory-r.InventoryTarget)*r.InventorySkew,-r.InventorySkew,r.InventorySkew);
             bool overvalued=s.Price>s.FairValue*r.OvervaluationRatio;
             bool falling=i<trends.Length && trends[i]<Rules.Investment.FallingMarket;
-            int baseBid=Quote(s.Price*(1-(overvalued ? r.OvervaluedBidDiscount : falling ? r.FallingBidSpread : r.Spread)-skew),true);
-            int baseAsk=Quote(s.Price*(overvalued ? 1-r.OvervaluedAskDiscount : 1+r.Spread-skew),false);
+            // Public earnings/book valuation anchors funded intervention. A
+            // discount from the last speculative print alone still followed
+            // an unbounded bubble and exhausted all bank inventory.
+            double reference=overvalued ? s.FairValue*r.OvervaluationRatio : s.Price;
+            int baseBid=Quote(reference*(1-(overvalued ? r.OvervaluedBidDiscount : falling ? r.FallingBidSpread : r.Spread)-skew),true);
+            int baseAsk=Quote(reference*(overvalued ? 1-r.OvervaluedAskDiscount : 1+r.Spread-skew),false);
             int tick=s.Price<1000 ? 1 : 10;
             // An overpriced market may receive executable funded supply. Normal
             // liquidity remains passive; the bank never bids up a speculative peak.

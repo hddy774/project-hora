@@ -1,0 +1,40 @@
+{
+  "legacyVersion": 7,
+  "nativeVersion": 8,
+  "preservedRows": 177,
+  "newHour": 522,
+  "native100x": {
+    "elapsedSeconds": 19.013468687,
+    "completedMinutes": 21095,
+    "pendingMinutes": 265,
+    "boundaryAllowanceSeconds": 2,
+    "idleBeforeResumeSeconds": 41.30581111099997
+  },
+  "screenshots": 15,
+  "roles": 200,
+  "retail": 10000,
+  "viewport": {
+    "bounds": [
+      0,
+      24,
+      320,
+      640
+    ],
+    "scale": 0.8,
+    "canvasHeight": 770.0
+  },
+  "commit": "0b79cd5aaad9e172285c77cd3a82bb7b870dab65",
+  "actionsRun": 37312498876,
+  "androidJob": 111771084005,
+  "actionsUrl": "https://github.com/hddy774/project-hora/actions/runs/37312498876",
+  "fixtureSource": "v1.6.0",
+  "initialHour": 168,
+  "fixtureInvestorCapital": 10000000,
+  "nativeLedgerCashDifference": 0,
+  "fullHourlyCoverage": true,
+  "physicalPhoneFpsMeasured": false,
+  "artifactId": 11346493292,
+  "artifactSha256": "95c15079562b18abc84fb181d89c4ed7f9d55adcf22f7aa45b0b70d10cdff541",
+  "nativeRunId": "ac80daaa887b4e2dade49ae7ca2c4066",
+  "finalCompletedMinutes": 31329
+}

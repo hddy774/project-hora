@@ -11,7 +11,7 @@ public sealed partial class GameView
     readonly Dictionary<(int Index,bool Buy,int Levels),List<BookLevel>> frameBooks=[];
     void RefreshFrameData()
     {
-        var key=new FrameKey(S,S.CompletedHours,S.NextTransactionId,S.NextCorporateEventId,game!.BookRevision);
+        var key=new FrameKey(S,S.CompletedMinutes,S.NextTransactionId,S.NextCorporateEventId,game!.BookRevision);
         if(dataKey==key) return;
         dataKey=key; frameRanks.Clear(); frameBooks.Clear();
     }

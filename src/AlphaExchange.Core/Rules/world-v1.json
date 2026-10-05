@@ -1,0 +1,341 @@
+{
+  "Version": "world-1.7",
+  "MarketCapitalization": 1000000000000,
+  "InvestorCapital": 1000000000,
+  "RetailCapital": 500000000,
+  "BankCapital": 500000000000,
+  "GovernmentCapital": 150000000000,
+  "RealEconomyCapital": 5000000000000,
+  "PersonalCapital": 10000000,
+  "InitialRetailUnits": 1000,
+  "MaximumRetailUnits": 10000,
+  "PeoplePerRetailUnit": 1000,
+  "DailyRetailGrowth": 25,
+  "MinimumElectionDays": 10,
+  "MaximumElectionDays": 30,
+  "ReportIntervalHours": 24,
+  "ReportLifetimeHours": 48,
+  "AnalystWeight": 0.35,
+  "PlanBandMinimum": 0.015,
+  "PlanBandMaximum": 0.35,
+  "BusinessBudgetRatio": 0.012,
+  "BusinessDurationDays": [
+    5,
+    20
+  ],
+  "BusinessStages": [
+    "기획·수주",
+    "개발·생산",
+    "검증·납품"
+  ],
+  "SalaryRatio": 0.0001,
+  "DonationRatio": 0.02,
+  "FundingFineRatio": 0.08,
+  "CompositeWeights": [
+    0.4,
+    0.3,
+    0.2,
+    0.1
+  ],
+  "RewardRanks": [
+    1,
+    2,
+    3,
+    5,
+    10,
+    20,
+    30,
+    40,
+    50,
+    100
+  ],
+  "RewardPoints": [
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ],
+  "Jobs": [
+    {
+      "Name": "업종 애널리스트",
+      "Duty": "대표의 가치·뉴스 분석을 보조하며 업종 기밀 보고서를 작성",
+      "Weights": [
+        1,
+        0.4,
+        1,
+        0.3,
+        0.2,
+        0.1,
+        0.1,
+        0.1,
+        0.5,
+        0.1
+      ]
+    },
+    {
+      "Name": "집행 트레이더",
+      "Duty": "분 단위 주문 배치와 거래 비용을 관리",
+      "Weights": [
+        0.1,
+        0.5,
+        0.2,
+        0.3,
+        0.2,
+        1,
+        0.7,
+        1,
+        0.1,
+        0.2
+      ]
+    },
+    {
+      "Name": "포트폴리오 매니저",
+      "Duty": "종목·업종 비중과 장기 보유 계획을 관리",
+      "Weights": [
+        0.8,
+        0.3,
+        0.4,
+        0.7,
+        1,
+        0.3,
+        0.4,
+        0.2,
+        0.5,
+        0.3
+      ]
+    },
+    {
+      "Name": "리스크 매니저",
+      "Duty": "현금·손실 한도와 공매도 담보를 관리",
+      "Weights": [
+        0.4,
+        0.3,
+        0.4,
+        1,
+        0.8,
+        0.2,
+        0.3,
+        0.2,
+        0.8,
+        0.1
+      ]
+    },
+    {
+      "Name": "준법감시인",
+      "Duty": "정책·규제·공동 작전 위험을 관리",
+      "Weights": [
+        0.1,
+        0.1,
+        0.6,
+        1,
+        0.2,
+        0.3,
+        0.1,
+        0.1,
+        0.4,
+        0.6
+      ]
+    },
+    {
+      "Name": "재무·회계 담당",
+      "Duty": "대출·급여·법인 현금 흐름을 관리",
+      "Weights": [
+        0.8,
+        0.1,
+        0.2,
+        0.8,
+        0.3,
+        0.4,
+        0.1,
+        0.1,
+        0.5,
+        0.4
+      ]
+    },
+    {
+      "Name": "이코노미스트",
+      "Duty": "금리·물가·정부 정책과 경기 보고서를 분석",
+      "Weights": [
+        0.5,
+        0.3,
+        0.7,
+        0.7,
+        0.5,
+        0.1,
+        0.2,
+        0.1,
+        1,
+        0.3
+      ]
+    },
+    {
+      "Name": "퀀트·데이터 연구원",
+      "Duty": "가격·변동성·유동성 자료로 투자 가설을 보조",
+      "Weights": [
+        0.4,
+        1,
+        0.4,
+        0.7,
+        0.5,
+        0.7,
+        0.8,
+        0.8,
+        0.4,
+        0.1
+      ]
+    }
+  ],
+  "Policies": [
+    {
+      "Name": "성장·투자 지원",
+      "TaxRate": 0.08,
+      "FeeBasisPoints": 10,
+      "BaseRate": 0.015,
+      "SubsidyRate": 8e-05,
+      "SpendingRatio": 0.85,
+      "Enforcement": 0.4,
+      "ShortSellingAllowed": true
+    },
+    {
+      "Name": "균형 성장",
+      "TaxRate": 0.1,
+      "FeeBasisPoints": 15,
+      "BaseRate": 0.025,
+      "SubsidyRate": 4e-05,
+      "SpendingRatio": 0.65,
+      "Enforcement": 0.6,
+      "ShortSellingAllowed": true
+    },
+    {
+      "Name": "물가·금융 안정",
+      "TaxRate": 0.15,
+      "FeeBasisPoints": 20,
+      "BaseRate": 0.045,
+      "SubsidyRate": 0,
+      "SpendingRatio": 0.5,
+      "Enforcement": 0.85,
+      "ShortSellingAllowed": false
+    }
+  ],
+  "Roles": [
+    {
+      "Name": "투자자",
+      "Skills": [
+        "가치 분석",
+        "기술 분석",
+        "뉴스 해석",
+        "위험 관리",
+        "분산 설계",
+        "주문 집행",
+        "단타",
+        "초단타",
+        "거시 판단",
+        "협상"
+      ]
+    },
+    {
+      "Name": "경영자",
+      "Skills": [
+        "사업 기획",
+        "생산 관리",
+        "영업",
+        "재무 관리",
+        "인재 관리",
+        "혁신",
+        "품질 관리",
+        "위기 관리",
+        "산업 분석",
+        "협상"
+      ]
+    },
+    {
+      "Name": "정치인",
+      "Skills": [
+        "경제 정책",
+        "재정 운용",
+        "금융 이해",
+        "정무 판단",
+        "입법",
+        "행정 집행",
+        "공익 판단",
+        "감독",
+        "민생 분석",
+        "협상"
+      ]
+    },
+    {
+      "Name": "금융인",
+      "Skills": [
+        "신용 분석",
+        "유동성 관리",
+        "통화 정책",
+        "위험 관리",
+        "자본 관리",
+        "결제 운영",
+        "감독",
+        "위기 대응",
+        "거시 분석",
+        "협상"
+      ]
+    }
+  ],
+  "Surnames": [
+    "강",
+    "곽",
+    "권",
+    "김",
+    "남",
+    "노",
+    "도",
+    "류",
+    "문",
+    "민",
+    "박",
+    "백",
+    "서",
+    "성",
+    "송",
+    "신",
+    "안",
+    "오",
+    "윤",
+    "이"
+  ],
+  "GivenNames": [
+    "가온",
+    "규리",
+    "다은",
+    "도윤",
+    "민서",
+    "서준",
+    "소율",
+    "시우",
+    "유진",
+    "은재",
+    "지안",
+    "지호",
+    "채원",
+    "태린",
+    "하준",
+    "해인",
+    "현서",
+    "수빈",
+    "아린",
+    "정우"
+  ],
+  "LiquidityMinimumQuantity": 400,
+  "LiquidityMaximumQuantity": 1000,
+  "StaffCostScale": 100,
+  "RetailTradeDivisor": 250,
+  "RetailHerdWeight": 0.25,
+  "RetailProfitTakingWeight": 0.55,
+  "RetailProfitTakingReturn": 0.20,
+  "RetailProfitTakingAggression": 0.04,
+  "RetailTakeLiquidityProbability": 0.70
+}

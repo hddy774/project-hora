@@ -17,6 +17,8 @@ public sealed partial class GameView : View
     readonly List<(float Left,float Top,float Right,float Bottom,Action Action)> targets = [];
     readonly PerformanceRules defaultPerformance=SimulationRules.Default().Performance;
     readonly GameStore store;
+    readonly object simulationGate=new();
+    bool simulating,saveRequested;
     long lastSave;
     string preparedRun="";
     long preparedHour=-1,preparedTransaction=-1,preparedEvent=-1;
@@ -24,8 +26,8 @@ public sealed partial class GameView : View
     SaveSnapshot? pendingSave;
     bool saving;
     Task saveTask = Task.CompletedTask;
-    bool fileBusy;
-    long lastCommitTime;
+    bool fileBusy,loading=true,loadFailed;
+    readonly CheckpointWriteWatchdog writeWatchdog=new();
     int portfolioTab;
     long historyPage, selectedSeason;
     Canvas c = null!;
@@ -57,37 +59,72 @@ public sealed partial class GameView : View
         store = new GameStore(context.FilesDir!.AbsolutePath);
         try { using var stream = context.Assets!.Open("arena.png"); arena = BitmapFactory.DecodeStream(stream); } catch { }
         LoadPortraitManifest();
-        game = store.Load(out string message);
-        if (message.Length > 0) { toast = message; toastUntil = Now + 7000; }
         lastTick = Now;
+        fileBusy=true;
+        _=Task.Run(()=>
+        {
+            GameEngine? loaded=null; string message=""; bool failed=false;
+            try { loaded=store.Load(out message); }
+            catch(Exception e) when(GameStore.StorageException(e)) { failed=true; message="기록 불러오기 실패 · 앱을 다시 열어주세요. 기존 파일은 보존했습니다."; }
+            Post(()=> { lock(simulationGate) { game=loaded; loading=false; loadFailed=failed; fileBusy=false; lastTick=Now; if(message.Length>0) Notify(message); Invalidate(); } });
+        });
         PostDelayed(Tick, defaultPerformance.TickMilliseconds);
     }
 
     static long Now => System.Environment.TickCount64;
     static AColor Hex(string value) => AColor.ParseColor(value);
     static string Money(long amount) => amount.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
-    static string ShortMoney(long amount) => Math.Abs(amount) >= 100_000_000 ? $"{amount / 100_000_000.0:0.00}억" : Math.Abs(amount) >= 10000 ? $"{amount / 10000.0:0.0}만" : Money(amount);
+    string ShortMoney(long amount) => game?.State.World?.NumberFormat==1 ? KoreanNumber.Full(amount) : KoreanNumber.Compact(amount);
     static string Percent(double value) => $"{(value >= 0 ? "+" : "")}{value * 100:0.00}%";
     static AColor Direction(double value) => value >= 0 ? Teal : Red;
 
     void Tick()
+    {
+        lock(simulationGate) TickLocked();
+    }
+    void TickLocked()
     {
         long now = Now;
         double elapsed = (now - lastTick) / 1000.0;
         lastTick = now;
         if (auto && !lobby && game is not null && !fileBusy)
         {
-            long previousSeason = S.Season;
-            try { game.AdvanceFrame(Math.Min(elapsed, .5), speed); }
+            try { game.QueueTime(Math.Clamp(elapsed,0,3600), speed); StartSimulationWorker(); }
             catch (Exception e) when (GameStore.StorageException(e)) { auto = false; Notify("시장 진행을 멈췄습니다. 최근 정상 저장을 보존합니다."); }
-            if (store.PendingCount > 512 || lastCommitTime > 0 && now-lastCommitTime > 15000 && saving)
+            if (store.PendingCount > 512 || writeWatchdog.IsStalled(now,15000))
             { auto = false; Notify("기록 저장을 기다리며 일시정지했습니다."); }
-            if (now - lastSave >= 1000 || S.Season != previousSeason) Save(false);
-            if (S.Season != previousSeason) Notify($"시즌 {previousSeason} 기록 완료 · 시즌 {S.Season} 시작");
-            if(now-lastFrame>=game.Rules.Performance.FrameMilliseconds || S.Season!=previousSeason) Invalidate();
+            if (now - lastSave >= 1000) { saveRequested=true; lastSave=now; StartSimulationWorker(); }
+            if(now-lastFrame>=game.Rules.Performance.FrameMilliseconds) Invalidate();
         }
         if (toastUntil > 0 && now > toastUntil) { toastUntil = 0; Invalidate(); }
         PostDelayed(Tick,game?.Rules.Performance.TickMilliseconds ?? defaultPerformance.TickMilliseconds);
+    }
+    void StartSimulationWorker()
+    {
+        if(simulating) return;
+        simulating=true;
+        _=Task.Run(()=>
+        {
+            try
+            {
+                while(true)
+                {
+                    lock(simulationGate)
+                    {
+                        if(game is null || fileBusy) { simulating=false; return; }
+                        if(saveRequested) { saveRequested=false; Save(false); }
+                        if(!auto || lobby || !game.AdvanceQueuedMinute()) { simulating=false; return; }
+                    }
+                    // Give drawing/input a chance between minutes, including at 100x.
+                    Thread.Yield();
+                }
+            }
+            catch(Exception e) when(GameStore.StorageException(e))
+            {
+                lock(simulationGate) { auto=false; simulating=false; }
+                Post(()=>Notify("시장 진행을 멈췄습니다. 최근 정상 저장을 보존합니다."));
+            }
+        });
     }
 
     protected override void OnDetachedFromWindow()
@@ -98,6 +135,10 @@ public sealed partial class GameView : View
     }
 
     public void Pause()
+    {
+        lock(simulationGate) PauseLocked();
+    }
+    void PauseLocked()
     {
         auto = false;
         if (!fileBusy)
@@ -111,16 +152,17 @@ public sealed partial class GameView : View
     {
         if (game is null || fileBusy) return;
         lastSave=Now;
-        if(!force && preparedRun==S.RunId && preparedHour==S.CompletedHours && preparedTransaction==S.NextTransactionId && preparedEvent==S.NextCorporateEventId) return;
+        if(!force && preparedRun==S.RunId && preparedHour==S.CompletedMinutes && preparedTransaction==S.NextTransactionId && preparedEvent==S.NextCorporateEventId) return;
         try
         {
             var snapshot = store.PrepareSave(game);
-            preparedRun=S.RunId; preparedHour=S.CompletedHours; preparedTransaction=S.NextTransactionId; preparedEvent=S.NextCorporateEventId;
+            preparedRun=S.RunId; preparedHour=S.CompletedMinutes; preparedTransaction=S.NextTransactionId; preparedEvent=S.NextCorporateEventId;
             lock (saveGate)
             {
                 pendingSave = snapshot;
                 if (saving) return;
                 saving = true;
+                writeWatchdog.Begin(Now);
             }
             saveTask = Task.Run(SaveWorker);
         }
@@ -133,18 +175,19 @@ public sealed partial class GameView : View
             SaveSnapshot snapshot;
             lock (saveGate)
             {
-                if (pendingSave is null) { saving = false; return; }
+                if (pendingSave is null) { saving = false; writeWatchdog.Finish(); return; }
                 snapshot = pendingSave; pendingSave = null;
+                writeWatchdog.Begin(Now);
             }
             try
             {
                 store.WriteSnapshot(snapshot);
-                Post(() => { if (game is not null) GameStore.Acknowledge(game, snapshot); lastCommitTime = Now; });
+                Post(() => { lock(simulationGate) { if (game is not null) GameStore.Acknowledge(game, snapshot); } });
             }
             catch
             {
-                lock (saveGate) { pendingSave ??= snapshot; saving = false; }
-                Post(() => { auto = false; Notify("저장 실패 · 진행을 멈췄습니다. 공간 확보 후 재개하세요."); });
+                lock (saveGate) { pendingSave ??= snapshot; saving = false; writeWatchdog.Finish(); }
+                Post(() => { lock(simulationGate) { auto = false; Notify("저장 실패 · 진행을 멈췄습니다. 공간 확보 후 재개하세요."); } });
                 return;
             }
         }
@@ -152,6 +195,7 @@ public sealed partial class GameView : View
 
     void Start()
     {
+        if(fileBusy || loading || loadFailed) return;
         if (game is not null)
         {
             Pause();
@@ -159,7 +203,6 @@ public sealed partial class GameView : View
         }
         game = new GameEngine((uint)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         store.Attach(game);
-        lastCommitTime = Now;
         lobby = false; auto = true; lastTick = Now; page = 0; scroll = 0; rankingMetric = RankingMetric.Return; comparisonPeriod = ComparisonPeriod.Season;
         companyStock = companyTab = 0; companySeason = 0; operationsTab = false;
         ownershipStock=ownershipPage=0;
@@ -184,12 +227,21 @@ public sealed partial class GameView : View
 
     public bool GoBack()
     {
+        lock(simulationGate) return GoBackLocked();
+    }
+    bool GoBackLocked()
+    {
         if(fileBusy) return true;
         if (help) help = false;
         else if (confirmNew) confirmNew = false;
+        else if (portraitZoom >= 0) portraitZoom = -1;
         else if (selectedStock >= 0) selectedStock = -1;
         else if (selectedTrader >= 0) selectedTrader = -1;
         else if (showResult) showResult = false;
+        else if (!lobby && page is 11 or 12) SetPage(10);
+        else if (!lobby && page == 13) { companyStock=businessStock; SetPage(6); }
+        else if (!lobby && page is 6 or 7 or 8) SetPage(0);
+        else if (!lobby && page == 9) SetPage(3);
         else if (!lobby) { lobby = true; auto = false; Save(); }
         else return false;
         Invalidate(); return true;
@@ -200,12 +252,17 @@ public sealed partial class GameView : View
 
     protected override void OnDraw(Canvas canvas)
     {
+        lock(simulationGate) DrawLocked(canvas);
+    }
+    void DrawLocked(Canvas canvas)
+    {
         base.OnDraw(canvas);
         lastFrame=Now;
         c = canvas; scale = Width / 400f; h = Height / scale;
+        DescribeScreen();
         c.Save(); c.Scale(scale, scale); c.DrawColor(Bg);
         targets.Clear(); clipTop = 0; clipBottom = h;
-        if (fileBusy)
+        if (fileBusy && !loading)
         {
             Text("기록 파일을 처리하고 있습니다", 200, h/2, 20, Ink, true, Paint.Align.Center);
             Text("시장은 일시정지합니다", 200, h/2+35, 12, Muted, false, Paint.Align.Center);
@@ -219,7 +276,7 @@ public sealed partial class GameView : View
             clipTop = 101; clipBottom = h - 145;
             try
             {
-                float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), 7 => DrawOwnership(112 - scroll), 8=>DrawGovernance(112-scroll),9=>DrawBankruptcies(112-scroll), _ => DrawNews(112 - scroll) };
+                float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), 7 => DrawOwnership(112 - scroll), 8=>DrawGovernance(112-scroll),9=>DrawBankruptcies(112-scroll),10=>DrawPeople(112-scroll),11=>DrawPersonProfile(112-scroll),12=>DrawPolitics(112-scroll),13=>DrawBusiness(112-scroll), _ => DrawNews(112 - scroll) };
                 maxScroll = Math.Max(0, end + scroll - (h - 160));
             }
             catch(Exception e) when(GameStore.StorageException(e))
@@ -236,6 +293,7 @@ public sealed partial class GameView : View
             if (selectedStock >= 0) DrawStockSheet();
             if (selectedTrader >= 0) DrawTraderSheet();
             if (showResult) DrawResults();
+            if (portraitZoom>=0) DrawPortraitZoom();
         }
         if (help) DrawHelp();
         if (confirmNew) DrawConfirmation();
@@ -303,7 +361,7 @@ public sealed partial class GameView : View
     void Hit(float x, float y, float w, float height, Action action)
     {
         float top = Math.Max(y, clipTop), bottom = Math.Min(y + height, clipBottom);
-        if (bottom > top) targets.Add((x,top,x+w,bottom,action));
+        if (bottom > top) targets.Add((x,top,x+w,bottom,()=> { lock(simulationGate) action(); }));
     }
 
     void Button(string label, float x, float y, float w, float height, Action action, bool primary = true, bool enabled = true)
@@ -355,12 +413,17 @@ public sealed partial class GameView : View
         if (type == 0) { Line(x, y + 17, x + 5, y + 10, color, 2); Line(x + 5, y + 10, x + 11, y + 13, color, 2); Line(x + 11, y + 13, x + 20, y + 2, color, 2); Line(x + 14, y + 2, x + 20, y + 2, color, 2); }
         else if (type == 1) { Box(x, y + 4, 22, 15, Bg, 4, color); Box(x + 13, y + 8, 11, 7, Bg, 2, color); Circle(x + 17, y + 11.5f, 1, color); }
         else if (type == 2) { Line(x + 3, y + 3, x + 19, y + 3, color, 2); Line(x + 3, y + 3, x + 6, y + 13, color, 2); Line(x + 19, y + 3, x + 16, y + 13, color, 2); Line(x + 6, y + 13, x + 16, y + 13, color, 2); Line(x + 11, y + 13, x + 11, y + 19, color, 2); Line(x + 6, y + 21, x + 16, y + 21, color, 2); }
-        else if (type == 3) { Box(x, y + 12, 5, 10, color, 1); Box(x + 8, y + 5, 5, 17, color, 1); Box(x + 16, y, 5, 22, color, 1); }
-        else if (type == 4) { Box(x, y + 3, 22, 20, Bg, 3, color); Line(x, y + 10, x + 22, y + 10, color); Line(x + 6, y, x + 6, y + 6, color, 2); Line(x + 16, y, x + 16, y + 6, color, 2); Circle(x + 7, y + 16, 1.5f, color); Circle(x + 15, y + 16, 1.5f, color); }
+        else if (type == 3) { Circle(x+11,y+6,5,color); Line(x+3,y+22,x+3,y+16,color,2); Line(x+3,y+16,x+11,y+12,color,2); Line(x+11,y+12,x+19,y+16,color,2); Line(x+19,y+16,x+19,y+22,color,2); }
+        else if (type == 4) { Box(x, y + 12, 5, 10, color, 1); Box(x + 8, y + 5, 5, 17, color, 1); Box(x + 16, y, 5, 22, color, 1); }
+        else if (type == 5) { Box(x, y + 3, 22, 20, Bg, 3, color); Line(x, y + 10, x + 22, y + 10, color); Line(x + 6, y, x + 6, y + 6, color, 2); Line(x + 16, y, x + 16, y + 6, color, 2); Circle(x + 7, y + 16, 1.5f, color); Circle(x + 15, y + 16, 1.5f, color); }
         else { Box(x, y + 1, 22, 21, Bg, 4, color); Line(x + 5, y + 7, x + 17, y + 7, color, 1.5f); Line(x + 5, y + 12, x + 17, y + 12, color, 1.5f); Line(x + 5, y + 17, x + 12, y + 17, color, 1.5f); }
     }
 
     public override bool OnTouchEvent(MotionEvent? e)
+    {
+        lock(simulationGate) return TouchLocked(e);
+    }
+    bool TouchLocked(MotionEvent? e)
     {
         if (e is null) return false;
         float x = e.GetX() / scale, y = e.GetY() / scale;

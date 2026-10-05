@@ -20,7 +20,7 @@ public sealed partial class GameEngine
             var s=State.Stocks[i];
             if(s.WaitingForCapital)
             {
-                long capital=(long)s.Price*1000;
+                long capital=ListingCapital(s.Price);
                 if(Math.Max(0,capital-State.Bank.Cash)<=State.RealEconomy.Cash/2)
                     State.BankruptcyTotals.CompanyCapital+=FundListing(s,i,capital,State.Stocks.Sum(x=>x.MarketCap));
             }
@@ -45,7 +45,7 @@ public sealed partial class GameEngine
     }
     long FundReplacement(Trader t)
     {
-        long wanted=t.IsRetail ? RetailInitialCapital : InitialCash;
+        long wanted=t.IsRetail ? (State.World?.Rules?.RetailCapital ?? 100_000) : (State.World?.Rules?.InvestorCapital ?? 10_000_000);
         if(State.RealEconomy.Cash<wanted) { t.WaitingForCapital=true; return 0; }
         TransferCash(State.RealEconomy,t,wanted,"replacement-capital");
         t.OpeningCash+=wanted; t.OpeningEquity+=wanted; t.SeasonOpeningEquity=t.Equity(State.Stocks);

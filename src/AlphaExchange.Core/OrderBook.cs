@@ -5,6 +5,8 @@ public sealed partial class GameEngine
     List<LimitOrder>[] bids = [];
     List<LimitOrder>[] asks = [];
     readonly Dictionary<int, List<LimitOrder>> ownedOrders = [];
+    readonly Dictionary<long,LimitOrder> orderById=[];
+    readonly PriorityQueue<LimitOrder,(long Minute,long Id)> expirations=new();
     public long BookRevision { get; private set; }
     public static long Fee(long notional) => checked((notional * 15 + 9999) / 10000);
     public long ExchangeFee(long notional) => checked((notional * State.Government.Policy.FeeBasisPoints + 9999) / 10000);
@@ -47,7 +49,7 @@ public sealed partial class GameEngine
         State.Orders.RemoveAll(o=>o.Remaining<=0);
         bids = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
         asks = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
-        ownedOrders.Clear();
+        ownedOrders.Clear(); orderById.Clear(); expirations.Clear();
         Array.Clear(State.Bank.ReservedLending);
         var bank=BankAccount(); bank.ReservedCash=0; Array.Clear(bank.ReservedShares);
         foreach (var t in Participants) { t.ReservedCash = 0; Array.Clear(t.ReservedShares); Array.Clear(t.ReservedCovers); }
@@ -66,14 +68,15 @@ public sealed partial class GameEngine
     // the per-share rounded fee, which is safe even if it fills one share at a time.
     public string? SubmitOrder(int ownerId, int stockIndex, bool buy, int price, int quantity, int lifetime = 3, bool shortSale = false, bool cover = false)
     {
-        if (ownerId < 0 || ownerId > AiCount + RetailCount || stockIndex < 0 || stockIndex >= State.Stocks.Count || price is < 1 or > 10_000_000 || quantity is <= 0 or > 1_000_000 || lifetime is < 1 or > 24 ||
+        if (ownerId < 0 || ownerId > AiCount + State.Retail.Count || stockIndex < 0 || stockIndex >= State.Stocks.Count || price is < 1 or > 10_000_000 || quantity is <= 0 or > 1_000_000 || lifetime is < 1 or > 24 ||
             (shortSale && buy) || (cover && !buy) || (shortSale && cover))
             return "주문 값이 올바르지 않습니다.";
         if (!State.Stocks[stockIndex].Active) return "상장 종료 종목입니다.";
         var t = Owner(ownerId);
         if(t.WaitingForCapital) return "재등장 자금 대기 중입니다.";
         var incoming = new LimitOrder { OwnerId = ownerId, StockIndex = stockIndex, Buy = buy, Short = shortSale, Cover = cover,
-            SecurityId = State.Stocks[stockIndex].SecurityId, Price = price, Remaining = quantity, ExpiresAt = State.CompletedHours + lifetime };
+            SecurityId = State.Stocks[stockIndex].SecurityId, Price = price, Remaining = quantity, ExpiresAt = State.CompletedHours + lifetime,
+            CreatedMinute=State.CompletedMinutes,ExpiresMinute=State.CompletedMinutes+lifetime*60 };
         if ((shortSale || cover) && (t.IsRetail || ownerId==0)) return "공매도는 기관만 가능합니다.";
         if (cover && quantity > t.ShortShares[stockIndex] - t.ReservedCovers[stockIndex]) return "상환 가능 수량이 부족합니다.";
         if (cover && ownedOrders.TryGetValue(t.Id, out var active) && active.Any(o => o.Short && o.StockIndex == stockIndex)) return "공매도 주문을 먼저 취소해야 합니다.";
@@ -123,11 +126,11 @@ public sealed partial class GameEngine
         book.Insert(lo, o);
         if (!ownedOrders.TryGetValue(o.OwnerId, out var own)) ownedOrders[o.OwnerId] = own = [];
         own.Add(o);
+        orderById[o.Id]=o; expirations.Enqueue(o,(o.ExpiresMinute,o.Id));
     }
     public bool CancelOrder(long id)
     {
-        var o = State.Orders.Find(o => o.Id == id && o.Remaining > 0);
-        if (o is null) return false;
+        if(!orderById.TryGetValue(id,out var o) || o.Remaining<=0) return false;
         SetReservation(Owner(o.OwnerId), o, -o.Remaining);
         (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o);
         ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; cachedStats = null; BookRevision++;
@@ -147,14 +150,15 @@ public sealed partial class GameEngine
     {
         foreach(var order in State.Orders)
             if(order.Remaining>0) { SetReservation(Owner(order.OwnerId),order,-order.Remaining); order.Remaining=0; }
-        State.Orders.Clear(); ownedOrders.Clear();
+        State.Orders.Clear(); ownedOrders.Clear(); orderById.Clear(); expirations.Clear();
         foreach(var book in bids) book.Clear(); foreach(var book in asks) book.Clear(); cachedStats=null; BookRevision++;
     }
     void ExpireOrders()
     {
-        foreach (var o in State.Orders)
+        while(expirations.TryPeek(out var o,out var due) && due.Minute<=State.CompletedMinutes)
         {
-            if (o.Remaining == 0 || o.ExpiresAt > State.CompletedHours) continue;
+            expirations.Dequeue(); orderById.Remove(o.Id);
+            if (o.Remaining == 0) continue;
             SetReservation(Owner(o.OwnerId), o, -o.Remaining);
             (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o); ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; BookRevision++;
         }
@@ -200,7 +204,7 @@ public sealed partial class GameEngine
         State.SectorVolumes[s.Sector]=checked(State.SectorVolumes.GetValueOrDefault(s.Sector)+quantity);
         State.SectorTurnovers[s.Sector]=checked(State.SectorTurnovers.GetValueOrDefault(s.Sector)+amount);
         s.DayTurnover += amount; s.TotalTurnover += amount;
-        State.Tape.Insert(0, new TradeRecord { Season = State.Season, Day = State.Day, Hour = State.Hour, BuyerId = buyer.Id,
+        State.Tape.Insert(0, new TradeRecord { Minute=State.Minute,AbsoluteMinute=State.CompletedMinutes, Season = State.Season, Day = State.Day, Hour = State.Hour, BuyerId = buyer.Id,
             SellerId = seller.Id, StockIndex = i, SecurityId = s.SecurityId, Quantity = quantity, Price = price, ShortSale = ask.Short, ShortCover = bid.Cover });
         if (State.Tape.Count > TapeLimit) State.Tape.RemoveAt(State.Tape.Count - 1);
     }

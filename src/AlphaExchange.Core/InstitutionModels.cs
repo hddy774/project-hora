@@ -7,12 +7,19 @@ public enum AbilityKind { Valuation, Technical, News, RiskManagement, Diversific
 public enum InvestmentHorizon { UltraShort, Short, Long }
 public sealed class EmployeeCohort
 {
+    public StaffJob? Job { get; set; }
+    public string SectorSpecialty { get; set; } = "";
     public EmployeeGrade Grade { get; set; }
     public AbilityKind Role { get; set; }
     public int Count { get; set; }
 }
 public sealed class InstitutionDevelopment
 {
+    public List<AnalystReport> AnalystReports { get; set; } = [];
+    public List<InvestmentPlan> Plans { get; set; } = [];
+    public long NextExecutionMinute { get; set; }
+    public long LastReportMinute { get; set; } = -1;
+    public long PlanRevision { get; set; }
     public long PointsEarned { get; set; }
     public long PointsSpent { get; set; }
     public int AvailablePoints { get; set; }

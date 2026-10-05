@@ -7,7 +7,7 @@ public sealed partial class GameView
     float DrawPortfolio(float y)
     {
         var t = Focus;
-        Box(20, y, 360, 176, Card, 18, Stroke); Portrait(t.PortraitId, 30, y + 10, 99, 156);
+        Box(20, y, 360, 176, Card, 18, Stroke); Portrait(t.PortraitId, 30, y + 10, 99, 156); Hit(30,y+10,99,156,()=>portraitZoom=t.PortraitId);
         Text("INSTITUTION " + t.Id.ToString("000"), 146, y + 28, 10, Lime, true);
         Text(Representatives.Name(t.PortraitId), 146, y + 57, 24, Ink, true);
         Text(t.Name + " · " + GameEngine.DispositionNames[(int)t.Disposition], 146, y + 81, 11, Muted);
@@ -68,14 +68,14 @@ public sealed partial class GameView
             Pill(action, 22, y, buy ? Teal : Red, 44);
             Text($"{S.Stocks[trade.StockIndex].Symbol} · {trade.Quantity}주", 81, y + 17, 12, Ink);
             Text($"{Money(trade.Price)}원", 375, y + 17, 12, Ink, true, Paint.Align.Right);
-            Text($"S{trade.Season} D{trade.Day:00} {trade.Hour:00}:00 · 상대 {((buy ? trade.SellerId : trade.BuyerId) <= 100 ? "기관" : "개인")}", 81, y + 35, 10, Muted);
+            Text($"S{trade.Season} D{trade.Day:00} {trade.Hour:00}:{trade.Minute:00} · 상대 {((buy ? trade.SellerId : trade.BuyerId) <= 100 ? "기관" : "개인")}", 81, y + 35, 10, Muted);
             y += 51;
         }
         return y + 10;
     }
     float DrawFinancials(FinancialStatement f, float y, int divisor)
     {
-        string Amount(double amount) => divisor == 1 ? Money((long)Math.Round(amount)) : (amount / divisor).ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
+        string Amount(double amount) => divisor == 1 ? ShortMoney((long)Math.Round(amount)) : (amount / divisor).ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
         y = Statement("재무상태표", y, [ ("현금 및 예금", Amount(f.Cash)), ("주식 평가액", Amount(f.Holdings)), ("자산 총계", Amount(f.Assets)), ("공매도 부채", Amount(f.ShortDebt)), ("대출 잔액", Amount(f.LoanDebt)), ("미납 벌금", Amount(f.FineDebt)), ("공매도 미납 배당",Amount(f.ShortDividendDebt)), ("부채 총계", Amount(f.Liabilities)), ("자본 총계", Amount(f.Equity)) ]);
         y = Statement("손익계산서", y, [ ("실현 매매손익", Amount(f.RealizedProfit)), ("평가손익 변동", Amount(f.ValuationChange)), ("거래 수수료", "−" + Amount(f.Fees)), ("세금", "−" + Amount(f.Taxes)), ("이자", "−" + Amount(f.InterestExpense)), ("공매도 대여료", "−" + Amount(f.BorrowFees)), ("벌금", "−" + Amount(f.Fines)), ("주식 보조금", Amount(f.Subsidies)), ("배당 / 배당세",$"{Amount(f.DividendIncome)} / {Amount(f.DividendTax)}"), ("공매도 배당 비용",Amount(f.ShortDividendExpense)), ("임금 / 소비",$"{Amount(f.WageIncome)} / {Amount(f.Consumption)}"), ("직원 급여·채용 비용", "−"+Amount(f.StaffCosts)), ("누적 순손익", Amount(f.NetIncome)) ]);
         y = Statement("현금흐름표", y, [ ("기초 현금", Amount(f.OpeningCash)), ("주식 매도 유입", Amount(f.Sales)), ("주식 매수 유출", "−" + Amount(f.Purchases)), ("수수료 유출", "−" + Amount(f.Fees)), ("차입 / 상환", $"{Amount(f.Borrowed)} / {Amount(f.Repaid)}"), ("세금·이자·대여료·벌금 납부", "−" + Amount(f.Taxes + f.InterestPaid + f.BorrowFees + f.FinesPaid)), ("보조금", Amount(f.Subsidies)), ("배당 유입 (세후)",Amount(f.DividendIncome-f.DividendTax)), ("공매도 배당 납부",Amount(f.ShortDividendPaid)), ("임금 / 소비",$"{Amount(f.WageIncome)} / {Amount(f.Consumption)}"), ("직원 급여·채용 유출", "−"+Amount(f.StaffCosts)), ("순현금흐름", Amount(f.NetCashFlow)), ("기말 현금", Amount(f.Cash)) ]);
@@ -103,28 +103,34 @@ public sealed partial class GameView
     {
         var stats = game!.Statistics();
         Text("시장의 전체 그림", 20, y + 23, 24, Ink, true);
-        Text("100 기관 · 10,000 개인 · 분야별 5개 회사", 21, y + 47, 11, Muted); y += 66;
-        string[] tabs = ["전체 시장", "분야별", "개인 재무", "정부·은행"];
-        for (int i = 0; i < 4; i++)
+        Text($"100 투자사 · 개미 {S.Retail.Count:N0}집단 · 분야별 5개", 21, y + 47, 11, Muted); y += 66;
+        string[] tabs = ["전체 시장", "분야별", "개미 재무", "기관 재무", "정부·은행"];
+        for (int i = 0; i < tabs.Length; i++)
         {
             int tab = i; bool active = statsTab == i;
-            Box(20 + i * 92, y, 84, 34, active ? Lime : Card2, 10);
-            Text(tabs[i], 62 + i * 92, y + 23, 12, active ? Bg : Muted, active, Paint.Align.Center);
-            Hit(20 + i * 92, y, 84, 34, () => { statsTab = tab; scroll = 0; });
+            Box(20 + i * 73, y, 68, 34, active ? Lime : Card2, 10);
+            Text(tabs[i], 54 + i * 73, y + 23, 10, active ? Bg : Muted, active, Paint.Align.Center);
+            Hit(20 + i * 73, y, 68, 34, () => { statsTab = tab; scroll = 0; });
         }
         y += 49;
-        if (statsTab == 3) return DrawEconomy(y);
+        if (statsTab == 4) return DrawEconomy(y);
+        if (statsTab == 3)
+        {
+            y=Graph("100 투자사의 누적 순자산",S.DailyHistory.Select(d=>(double)d.InstitutionEquity),y,"임금·개인 지갑과 분리된 투자 법인 재무");
+            y=Pie("기관 법인 자산 구성",[("현금",(double)stats.Institutions.Cash),("주식 평가액",(double)stats.Institutions.Holdings)],y);
+            return DrawFinancials(stats.Institutions,y,1);
+        }
         y = PeriodPicker(y);
         var period = game.PeriodSummary(comparisonPeriod);
         if (statsTab == 2)
         {
             Box(20, y, 360, 83, Card, 16);
-            Text("개인 투자자 10,000명", 36, y + 27, 17, Ink, true);
+            Text($"개미 {S.Retail.Count:N0}집단 · {S.Retail.Count*(long)S.World!.RetailUnitPeople:N0}명", 36, y + 27, 17, Ink, true);
             Text($"이번 시간 참여 {S.ActiveRetailLastHour:N0}명 · 누적 체결 {stats.Retail.Trades:N0}회", 36, y + 51, 10, Muted);
-            Text("1인 초기 자산 10만 원 · 기관의 1/100", 36, y + 70, 10, Teal); y += 96;
+            Text($"집단 1개 = {S.World!.RetailUnitPeople:N0}명 · 시장 반응을 따라 거래", 36, y + 70, 10, Teal); y += 96;
             Button(retailAverage ? "표시: 1인 평균  ⇄  전체로 변경" : "표시: 개인 전체  ⇄  1인 평균으로 변경", 20, y, 360, 40, () => retailAverage = !retailAverage, false); y += 59;
-            Text(retailAverage ? "개인 10,000명으로 나눈 평균 · 원" : "개인 10,000명의 합계 · 원", 21, y, 11, Muted);
-            return DrawFinancials(stats.Retail, y + 15, retailAverage ? 10000 : 1);
+            Text(retailAverage ? "개미 집단당 평균 · 원" : "개미 전체 합계 · 원", 21, y, 11, Muted);
+            return DrawFinancials(stats.Retail, y + 15, retailAverage ? S.Retail.Count : 1);
         }
         if (statsTab == 1)
         {

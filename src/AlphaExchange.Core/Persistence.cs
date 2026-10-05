@@ -12,7 +12,7 @@ public sealed partial class GameEngine
     {
         var s = JsonSerializer.Deserialize<GameState>(json,StateJson) ?? throw new InvalidDataException("비어 있는 저장 데이터");
         int source = s.Version, count = source >= 5 ? s.Stocks.Count : source == 4 ? 10 : 8;
-        if (source is not (2 or 3 or 4 or 5 or 6 or 7) || count < 8 || count > 2048 || s.Stocks.Count != count ||
+        if (source is not (2 or 3 or 4 or 5 or 6 or 7 or 8) || count < 8 || count > 2048 || s.Stocks.Count != count ||
             s.RandomState == 0 || s.CompletedHours < 0 || !double.IsFinite(s.HourProgress) || s.HourProgress is < 0 or >= 1 ||
             s.Bots.Count != AiCount || s.FollowedId is < 1 or > AiCount || !Guid.TryParseExact(s.RunId, "N", out _))
             throw new InvalidDataException("지원하지 않는 저장 데이터");
@@ -37,7 +37,7 @@ public sealed partial class GameEngine
             foreach (var t in s.Bots)
             {
                 t.LegacyFees = t.Fees; t.LegacyRealizedProfit = t.RealizedProfit; t.Fees = 0; t.RealizedProfit = 0;
-                t.OpeningCash = t.Cash; t.OpeningEquity = t.Equity(s.Stocks); t.SeasonOpeningEquity = InitialCash;
+                t.OpeningCash = t.Cash; t.OpeningEquity = t.Equity(s.Stocks); t.SeasonOpeningEquity = 10_000_000;
                 t.OpeningUnrealized = t.Financials(s.Stocks).UnrealizedProfit; t.BuyCashFlow = t.SellCashFlow = 0;
                 t.EquityHistory = t.EquityHistory.TakeLast(HistoryLimit).ToList();
             }
@@ -46,8 +46,8 @@ public sealed partial class GameEngine
             s.InitialSystemCash = legacy.Participants.Sum(t => t.Cash) + s.FeePool;
             for (int i = 0; i < 8; i++) s.Stocks[i].TotalShares = legacy.Participants.Sum(t => t.Shares[i]);
         }
-        if (s.Retail.Count != RetailCount || s.Retail.Where((t,i) => t.Id != AiCount+i+1 || !t.IsRetail).Any() ||
-            s.RetailCursor is < 0 or >= RetailCount || s.FeePool < 0 || s.NextOrderId < 1 || s.LastArchivedSeason < 0 || s.LastArchivedSeason >= s.Season)
+        if (s.Retail.Count < 1 || s.Retail.Count > RetailCount || source<8 && s.Retail.Count!=RetailCount || s.Retail.Where((t,i) => t.Id != AiCount+i+1 || !t.IsRetail).Any() ||
+            (s.RetailCursor<0 || s.RetailCursor>=s.Retail.Count) || s.FeePool < 0 || s.NextOrderId < 1 || s.LastArchivedSeason < 0 || s.LastArchivedSeason >= s.Season)
             throw new InvalidDataException("참가자 데이터 손상");
         if (source < 5)
         {
@@ -86,11 +86,22 @@ public sealed partial class GameEngine
             s.Version=7;
         }
         ValidateDevelopment(s);
+        if(source<8)
+        {
+            s.CompletedMinutes=checked(s.CompletedHours*60);
+            double accepted=s.HourProgress*60;
+            s.PendingClockMinutes=checked(s.PendingClockHours*60+(int)Math.Floor(accepted+1e-9));
+            s.MinuteProgress=Math.Clamp(accepted-Math.Floor(accepted+1e-9),0,.999999999999);
+            s.HourProgress=s.MinuteProgress/60;
+            foreach(var o in s.Orders) { o.CreatedMinute=s.CompletedMinutes; o.ExpiresMinute=o.ExpiresAt*60; }
+            new GameEngine(s).InitializeWorld(true); s.Version=8;
+        }
+        ValidateWorld(s);
         if (s.SecurityIds.Count != count || !s.SecurityIds.SequenceEqual(s.Stocks.Select(x => x.SecurityId)) ||
             s.SecurityIds.Any(string.IsNullOrWhiteSpace) || s.SecurityIds.Distinct().Count() != count)
             throw new InvalidDataException("종목 ID 손상");
         if (s.Orders.Select(o => o.Id).Distinct().Count() != s.Orders.Count || s.Orders.Any(o => o.Id < 1 || o.Id >= s.NextOrderId ||
-            o.OwnerId is < 0 or > AiCount+RetailCount || o.StockIndex < 0 || o.StockIndex >= count ||
+            (o.OwnerId<0 || o.OwnerId>AiCount+s.Retail.Count) || o.StockIndex < 0 || o.StockIndex >= count ||
             o.SecurityId != s.Stocks[o.StockIndex].SecurityId || !s.Stocks[o.StockIndex].Active || o.Price is < 1 or > 10_000_000 ||
             o.Remaining is <= 0 or > 1_000_000 || o.ExpiresAt < s.CompletedHours || (o.Short && o.Buy) || (o.Cover && !o.Buy) ||
             (o.Short && o.Cover) || ((o.Short || o.Cover) && (o.OwnerId==0 || o.OwnerId > AiCount)))) throw new InvalidDataException("호가 데이터 손상");

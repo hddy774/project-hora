@@ -69,6 +69,7 @@ public sealed partial class GameView
     {
         var p = S.Government.Policy;
         var totals=game!.Statistics();
+        Button("경제 정부 · 인물 선거·표결 →",20,y,360,40,()=>SetPage(12),false); y+=55;
         y = Statement($"정부 · 시즌 {p.Season} · {p.Name}", y, [("매매 이익 세율", $"{p.TaxRate:P1}"), ("양쪽 거래 수수료", $"{p.FeeBasisPoints / 100.0:0.00}%"),
             ("기준금리 (연)", $"{p.BaseRate:P2}"), ("공매도 규제", p.ShortSellingAllowed ? $"허용 / 자기자산 {p.ShortExposureLimit:P0}" : "신규 공매도 금지"),
             ("대출 한도 조정", $"기본 한도의 {p.LoanLimitMultiplier:P0}"), ("주식 보조금 (일)", $"보유액 {p.SubsidyRate:P3}"), ("감독 적발 강도", $"{p.Enforcement:P0}")]);

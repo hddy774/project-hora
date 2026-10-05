@@ -7,5 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.10" />
     <EmbeddedResource Include="Rules/institution-v1.json" LogicalName="AlphaExchange.InstitutionRules" />
+    <EmbeddedResource Include="Rules/world-v1.json" LogicalName="AlphaExchange.Core.Rules.world-v1.json" />
   </ItemGroup>
 </Project>

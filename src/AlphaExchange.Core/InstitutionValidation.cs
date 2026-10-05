@@ -4,9 +4,9 @@ public sealed partial class GameEngine
 {
     static void ValidateDevelopment(GameState s)
     {
-        if(s.Version!=7 || s.Rules is null) throw new InvalidDataException("기관 실행 규칙이 없습니다.");
+        if(s.Version is not (7 or 8) || s.Rules is null) throw new InvalidDataException("기관 실행 규칙이 없습니다.");
         s.Rules.Validate();
-        if(s.PendingClockHours<0 || s.PendingClockHours>s.Rules.Performance.MaximumCatchupHours) throw new InvalidDataException("시계 대기 시간 손상");
+        if(s.PendingClockHours<0 || s.Version<8 && s.PendingClockHours>s.Rules.Performance.MaximumCatchupHours) throw new InvalidDataException("시계 대기 시간 손상");
         if(s.Retail.Any(t=>t.Development is not null || t.StaffCosts!=0)) throw new InvalidDataException("개인 기관 능력 손상");
         int count=s.Stocks.Count;
         foreach(var t in s.Bots)
@@ -21,7 +21,7 @@ public sealed partial class GameEngine
                 d.NextDecisionHour<0 || d.NextDecisionHour>s.CompletedHours+720 || d.PortfolioReviews<0 ||
                 !double.IsFinite(d.TargetCashRatio) || d.TargetCashRatio<s.Rules.Investment.MinimumCash || d.TargetCashRatio>s.Rules.Investment.MaximumCash ||
                 d.Employees is null || d.Employees.Count>50 || d.Employees.Any(c=>c is null || !Enum.IsDefined(c.Grade) || !Enum.IsDefined(c.Role) || c.Count<=0 || c.Count>s.Rules.Employees.MaximumCount) ||
-                d.EmployeeCount>s.Rules.Employees.MaximumCount || d.Employees.Select(c=>(c.Grade,c.Role)).Distinct().Count()!=d.Employees.Count ||
+                d.EmployeeCount>s.Rules.Employees.MaximumCount || d.Employees.Select(c=>(c.Grade,c.Role,c.Job,c.SectorSpecialty)).Distinct().Count()!=d.Employees.Count ||
                 d.PositionOpenedHours is null || d.ShortOpenedHours is null || d.NextReviewHours is null || d.PositionHorizons is null || d.LastNewsSignals is null ||
                 d.PositionOpenedHours.Length!=count || d.ShortOpenedHours.Length!=count || d.NextReviewHours.Length!=count || d.PositionHorizons.Length!=count || d.LastNewsSignals.Length!=count ||
                 d.LastNewsSignals.Any(x=>!double.IsFinite(x)) ||

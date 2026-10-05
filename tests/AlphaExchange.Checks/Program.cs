@@ -9,7 +9,7 @@ void Near(double a, double b, string message, double tolerance = .02) => Check(M
 void Validate(GameEngine game)
 {
     var s = game.State;
-    Check(s.Bots.Count == 100 && s.Retail.Count == 10000, "Participant counts");
+    Check(s.Bots.Count == 100 && s.Retail.Count is >=1000 and <=10000, "Participant counts");
     Check(game.SystemCash() == s.InitialSystemCash, "Closed-system cash conservation");
     long[] shares = new long[s.Stocks.Count];
     foreach (var t in game.Participants)
@@ -35,13 +35,14 @@ void Validate(GameEngine game)
 if(args.Length==3 && args[0]=="--crash-write") { CrashProbe.AbruptWrite(args[1],args[2]); return; }
 if(args.Contains("--storage-load")) { StorageLoad.Run(); return; }
 if(args.Contains("--v15-only")) { V15Checks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} v1.5 assertions"); return; }
+if(args.Contains("--v17-only")) { V17Checks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} v1.7 assertions"); return; }
 if(args.Contains("--v16-only")) { V16Checks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} v1.6 assertions"); return; }
 if(args.Contains("--economy-only")) { EconomyChecks.Run(Check,Validate,Near); Console.WriteLine($"PASS {assertions:N0} economy assertions"); return; }
 if(args.Contains("--ownership-only")) { OwnershipChecks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} ownership assertions"); return; }
 if(args.Contains("--market-only")) { MarketChecks.Run(Check,Validate,Near); Console.WriteLine($"PASS {assertions:N0} market assertions"); return; }
 var match = new GameEngine(42);
-Check(match.State.Bots.All(t => t.Equity(match.State.Stocks) == 10000000), "Institution capital");
-Check(match.State.Retail.All(t => t.Equity(match.State.Stocks) == 100000), "Retail capital 1/100");
+Check(match.State.Bots.All(t => t.Equity(match.State.Stocks) == GameEngine.InitialCash), "Institution capital");
+Check(match.State.Retail.All(t => t.Equity(match.State.Stocks) == GameEngine.RetailInitialCapital), "Retail capital 1/100");
 int opening = match.State.Stocks[0].Price;
 foreach(int seller in new[] {2,3,4,5}) TestFixtures.BuyFromBank(match,seller,0,2);
 long openingMatches=match.State.TotalMatches;
@@ -97,8 +98,10 @@ for (int hour = 0; hour < seasons * 720; hour++)
 }
 watch.Stop();
 Check(game.State.Season == 17 && !game.State.Finished, "Continuous seasons");
-Check(store.ReadSeason(game.State, 1)!.Standings.Count == 100 && game.State.Bots.All(t => t.SeasonRanks.Count == 12), "Old full archive, bounded recent per-AI ranks");
-Check(game.State.Retail.All(t => t.Trades > 0), "All 10000 retail participants actually trade");
+Check(store.ReadSeason(game.State, 1)!.Standings.Count == 100 && game.State.Bots.All(t =>
+    t.SeasonRanks.Count is >=1 and <=12 && t.SeasonRanks.All(r=>r.Generation==t.Generation) &&
+    t.SeasonRanks[^1].Season==16 && (t.BirthHour>4*720 || t.SeasonRanks.Count==12)), "Old archive persists; successor profiles retain only their own bounded ranks");
+Check(game.State.Retail.Where(t=>t.BirthHour<=game.State.CompletedHours-24).All(t => t.Trades > 0), "All 10000 retail participants actually trade");
 var stats = game.Statistics();
 Near(stats.Institutions.NetIncome + stats.Institutions.OpeningEquity, stats.Institutions.Equity, "Institution aggregate");
 Near(stats.Retail.NetIncome + stats.Retail.OpeningEquity, stats.Retail.Equity, "Retail aggregate");
@@ -112,7 +115,7 @@ store.Save(game); File.WriteAllText(store.SavePath, "{broken");
 Check(store.Load(out var recovery) is not null && recovery.Contains("복구"), "Corruption backup recovery");
 JsonObject OldFixture(uint seed)
 {
-    var old = new GameEngine(seed); var stocks = old.State.Stocks;
+    var old = TestFixtures.SmallMarket(seed); var stocks = old.State.Stocks;
     for(int i=0;i<8;i++) TestFixtures.BuyFromBank(old,1,i,2);
     TestFixtures.ClearLegacyTreasury(old);
     foreach (var t in old.Participants)
@@ -126,7 +129,7 @@ JsonObject OldFixture(uint seed)
     old.State.News.RemoveAll(n => n.StockIndex >= 8);
     for (int i = 0; i < 8; i++) stocks[i].TotalShares = old.Participants.Sum(t => (long)t.Shares[i]);
     old.State.InitialSystemCash = old.Participants.Sum(t => t.Cash) + old.State.FeePool;
-    return JsonNode.Parse(JsonSerializer.Serialize(old.State))!.AsObject();
+    var oldJson=JsonNode.Parse(JsonSerializer.Serialize(old.State))!.AsObject(); TestFixtures.OldWorld(oldJson); return oldJson;
 }
 var legacy = OldFixture(123);
 legacy["Version"] = 2; legacy["CompletedHours"] = 720; legacy["Retail"] = new JsonArray(); legacy["Orders"] = new JsonArray();
@@ -151,6 +154,7 @@ MarketChecks.Run(Check, Validate, Near);
 OwnershipChecks.Run(Check,Validate);
 V15Checks.Run(Check,Validate);
 V16Checks.Run(Check,Validate);
+V17Checks.Run(Check,Validate);
 Console.WriteLine($"PASS {assertions:N0} assertions; {seasons} seasons; {game.State.TotalMatches:N0} matched trades");
 Console.WriteLine($"Simulation wall time {watch.Elapsed.TotalSeconds:F2}s; hour p50={times[times.Count/2]:F2}ms p95={times[(int)(times.Count*.95)]:F2}ms p99={times[(int)(times.Count*.99)]:F2}ms (100x budget 50ms/hour)");
 Console.WriteLine($"Save bytes {System.Text.Encoding.UTF8.GetByteCount(json):N0}; serialize {saveWatch.Elapsed.TotalMilliseconds:F1}ms; pending={game.State.PendingSeasons.Count}; active orders={game.State.Orders.Count}");

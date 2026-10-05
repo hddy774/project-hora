@@ -281,7 +281,7 @@ public sealed partial class GameEngine
 
     long ListCompany(CompanyDefinition definition,int slot=-1,int generation=1)
     {
-        long capital = checked((long)definition.InitialPrice * 1000);
+        long capital = ListingCapital(definition.InitialPrice);
         if(slot<0) slot=State.Stocks.FindIndex(s=>!s.Active && !s.WaitingForCapital && s.Symbol==definition.Symbol);
         if(slot>=0) generation=Math.Max(generation,State.Stocks[slot].Generation+1);
         long before = State.Stocks.Sum(s => s.MarketCap);
@@ -305,8 +305,9 @@ public sealed partial class GameEngine
         long support=Math.Max(0,capital-State.Bank.Cash);
         if(support>State.RealEconomy.Cash/2) return 0;
         TransferCash(State.RealEconomy,State.Bank,support,"bank-recapitalization");
-        stock.Active=true; stock.WaitingForCapital=false; stock.TotalShares=2000; stock.TreasuryShares=1000;
-        State.Bank.ShareInventory[slot]=1000; BankAccount().AverageCost[slot]=stock.Price;
+        long floatShares=capital/stock.Price;
+        stock.Active=true; stock.WaitingForCapital=false; stock.TotalShares=checked(floatShares*2); stock.TreasuryShares=floatShares;
+        State.Bank.ShareInventory[slot]=floatShares; BankAccount().AverageCost[slot]=stock.Price;
         TransferCash(State.Bank, stock.Report, capital, "ipo-bank-subscription");
         stock.Report.CapitalChange += capital; stock.Report.FinancingCashFlow += capital;
         long equipment = capital * 3 / 5;
@@ -318,6 +319,12 @@ public sealed partial class GameEngine
         LogCorporate(stock, CorporateEventKind.Ipo, $"{stock.Name} 신규 상장 · 자사주 50%/은행 50% · 실제 납입", capital, shares: stock.TotalShares);
         OpenCompanyVotes(stock);
         return capital;
+    }
+    long ListingCapital(int price)
+    {
+        long shares=State.World is null ? 1000 : WorldRules.InitialFloatShares>0 ? WorldRules.InitialFloatShares :
+            Math.Max(1,WorldRules.MarketCapitalization/CompanyCatalog.Companies.Count()/price);
+        return checked(shares*price);
     }
     void RestoreSectorListings()
     {

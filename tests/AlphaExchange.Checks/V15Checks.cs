@@ -8,6 +8,26 @@ using Microsoft.Data.Sqlite;
 
 static class TestFixtures
 {
+    // Small lots exercise financial edge cases independently from the default
+    // trillion market. All v1.7 features still run; balances remain real.
+    public static GameEngine SmallMarket(uint seed)
+    {
+        var w=WorldRules.Default(); w.InitialFloatShares=1000; w.MarketCapitalization=CompanyCatalog.Companies.Sum(c=>(long)c.InitialPrice*1000);
+        w.InvestorCapital=10_000_000; w.RetailCapital=100_000; w.InitialRetailUnits=10000; w.DailyRetailGrowth=0;
+        w.BankCapital=1_000_000_000; w.GovernmentCapital=100_000_000; w.RealEconomyCapital=10_000_000_000;
+        w.PersonalCapital=0; w.SalaryRatio=0; w.BusinessBudgetRatio=0; w.LiquidityMinimumQuantity=4; w.LiquidityMaximumQuantity=24; w.StaffCostScale=1;
+        return new GameEngine(seed,worldRules:w);
+    }
+    public static void AtHour(GameEngine g,long hour)
+    {
+        g.State.CompletedHours=hour; g.State.CompletedMinutes=hour*60; g.State.MinuteActors.Clear();
+        g.World.NextGovernmentElectionHour=Math.Max(g.World.NextGovernmentElectionHour,hour+240);
+        g.World.NextGovernorElectionHour=Math.Max(g.World.NextGovernorElectionHour,hour+240);
+    }
+    public static void OldWorld(JsonObject json)
+    {
+        json.Remove("World"); json.Remove("CompletedMinutes"); json.Remove("MinuteActors"); json.Remove("MinuteProgress"); json.Remove("PendingClockMinutes");
+    }
     public static void BuyFromBank(GameEngine game,int owner,int stock,int quantity)
     {
         int price=game.State.Stocks[stock].Price;
@@ -25,7 +45,7 @@ static class V15Checks
 {
     public static void Run(Action<bool,string> check,Action<GameEngine> validate)
     {
-        var g=new GameEngine(150);
+        var g=TestFixtures.SmallMarket(150);
         check(g.State.Stocks.All(s=>s.TotalShares==2000 && s.TreasuryShares==1000 && s.FounderShares==0) && g.State.Bank.ShareInventory.All(q=>q==1000),"New market treasury/bank 50/50");
         check(g.Participants.All(t=>t.Shares.All(q=>q==0)),"Initial investors must acquire stock with cash");
         var retail=g.Owner(101); var reaction=g.RetailReaction(retail,0);
@@ -33,7 +53,7 @@ static class V15Checks
         check(g.RetailReaction(retail,0)==reaction,"Retail decisions do not use fundamentals or ability");
         g.State.Stocks[0].History=[60000,55000,52400];
         check(g.RetailReaction(retail,0).BuyProbability<reaction.BuyProbability,"Retail follows observed price declines");
-        g=new GameEngine(151);
+        g=TestFixtures.SmallMarket(151);
         int cheap=g.State.Stocks.FindIndex(s=>s.Symbol=="CLUD"); var company=g.State.Stocks[cheap];
         TestFixtures.BuyFromBank(g,1,cheap,600);
         var investor=g.Owner(1); investor.Disposition=Disposition.Analytical;
@@ -47,14 +67,14 @@ static class V15Checks
         var rejected=g.State.CompanyVotes.Last(); g.ResolveVote(rejected,cheap);
         check(rejected.Status==VoteStatus.Rejected && company.Management==ManagementPolicy.Efficiency,"Rejected proposal preserves approved management");
         validate(g);
-        var shortVote=new GameEngine(152); string id=shortVote.State.Stocks[0].SecurityId;
+        var shortVote=TestFixtures.SmallMarket(152); string id=shortVote.State.Stocks[0].SecurityId;
         shortVote.SubmitOrder(1,0,false,52400,3,shortSale:true); shortVote.SubmitOrder(2,0,true,52400,3);
         shortVote.ProposeVote(id,VoteKind.Management,1); var sv=shortVote.State.CompanyVotes.Last(); shortVote.ResolveVote(sv,0);
         check(sv.EligibleShares==1000 && sv.Ballots.Sum(b=>b.Shares)==1000 && !sv.Ballots.Any(b=>b.OwnerId==1),"Short borrower receives no duplicate voting right"); validate(shortVote);
-        var growth=new GameEngine(156); var defensive=GameEngine.Deserialize(growth.Serialize());
+        var growth=TestFixtures.SmallMarket(156); var defensive=GameEngine.Deserialize(growth.Serialize());
         growth.State.Stocks[0].CompanyStrategy=CompanyStrategy.Growth;
         defensive.State.Stocks[0].CompanyStrategy=CompanyStrategy.Defensive;
-        growth.State.CompletedHours=defensive.State.CompletedHours=719;
+        TestFixtures.AtHour(growth,719); TestFixtures.AtHour(defensive,719);
         growth.AdvanceHour(); defensive.AdvanceHour();
         check(growth.State.Stocks[0].Report.Revenue>defensive.State.Stocks[0].Report.Revenue &&
             growth.State.Stocks[0].Report.OperatingCosts>defensive.State.Stocks[0].Report.OperatingCosts,"Governance strategy changes actual monthly sales and operating commitments");
@@ -62,7 +82,7 @@ static class V15Checks
         string folder=Path.Combine(Path.GetTempPath(),"hora-v15-"+Guid.NewGuid().ToString("N"));
         try
         {
-            var store=new GameStore(folder); var world=new GameEngine(153); store.Attach(world);
+            var store=new GameStore(folder); var world=TestFixtures.SmallMarket(153); store.Attach(world);
             TestFixtures.BuyFromBank(world,2,0,2);
             world.SubmitOrder(1,0,false,52400,1,shortSale:true); world.SubmitOrder(3,0,true,52400,1);
             var doomed=world.State.Stocks[0]; string oldId=doomed.SecurityId;
@@ -80,7 +100,7 @@ static class V15Checks
             world.CancelOrders(5); // A daily cancellation exists when a different trader fails.
             world.AssessFine(world.Owner(1),world.Owner(1).Cash+1000); world.FailTrader(world.Owner(1),"회귀 테스트 지급 불능");
             check(Enumerable.Range(0,30).All(i=>world.Orders(i,true).Concat(world.Orders(i,false)).All(o=>o.Remaining>0)),"Bankruptcy book rebuild excludes cancelled zero-quantity orders");
-            check(world.Owner(1).Generation==2 && world.Owner(1).Cash==GameEngine.InitialCash && world.State.BankruptcyTotals.Institutions==1,"Institution replacement has funded capital and new generation");
+            check(world.Owner(1).Generation==2 && world.Owner(1).Cash==world.WorldRules.InvestorCapital && world.State.BankruptcyTotals.Institutions==1,"Institution replacement has funded capital and new generation");
             for(int i=101;i<171;i++) { world.AssessFine(world.Owner(i),world.Owner(i).Cash+1); world.FailTrader(world.Owner(i),"개인 자금 소진"); }
             check(world.State.Bankruptcies.Count==64 && world.State.BankruptcyTotals.Retail==70,"UI bankruptcy buffer bounded; cumulative counts retained");
             validate(world);
@@ -103,7 +123,7 @@ static class V15Checks
             check(imported.Serialize()==exact && importedStore.ReadBankruptcies(imported.State,1000).Count==72,"ZIP preserves complete bankruptcy archive");
         }
         finally { Directory.Delete(folder,true); }
-        var simulation=new GameEngine(154);
+        var simulation=TestFixtures.SmallMarket(154);
         for(int hour=0;hour<1440;hour++) { simulation.AdvanceHour(); if(hour%240==239) validate(simulation); }
         check(simulation.State.Bank.InterventionPurchases>0 && simulation.State.Bank.InterventionSales>0,"Stability bank trades actual bids and asks");
         check(simulation.State.CompanyVotes.Any(v=>v.Status==VoteStatus.Passed) && simulation.State.Stocks.Any(s=>s.TreasuryShares>1000),"Automatic monthly governance and funded treasury expansion");
@@ -119,7 +139,7 @@ static class V15Checks
         string folder=Path.Combine(Path.GetTempPath(),"hora-v5-db-"+Guid.NewGuid().ToString("N"));
         try
         {
-            var world=new GameEngine(157); var store=new GameStore(folder); store.Attach(world);
+            var world=TestFixtures.SmallMarket(157); var store=new GameStore(folder); store.Attach(world);
             for(int hour=0;hour<48;hour++) world.AdvanceHour();
             store.Save(world);
             byte[] Encode(string json)
@@ -147,7 +167,8 @@ static class V15Checks
                 // Use expanded v5 participant arrays and actual old snapshot JSON, not
                 // a v6 round trip that hides the committed-history checksum conflict.
                 _=world.Serialize(); // discard cancelled order shells, as the v5 writer did
-                var state=JsonSerializer.SerializeToNode(world.State)!; state["Version"]=5;
+                var state=JsonSerializer.SerializeToNode(world.State)!; TestFixtures.OldWorld(state.AsObject()); state["Version"]=5;
+                command.CommandText="DROP TABLE activities; DROP TABLE world_votes"; command.ExecuteNonQuery();
                 OldPoint(state["OpeningSnapshot"]); OldPoint(state["SeasonSnapshot"]);
                 foreach(var point in state["DailyHistory"]!.AsArray()) OldPoint(point);
                 string oldState=state.ToJsonString();
@@ -176,7 +197,7 @@ static class V15Checks
                 while(reader.Read()) result.Add((reader.GetInt64(0),reader.GetInt32(1)),reader.GetString(2)); return result;
             }
             var original=HistoryHashes(); var upgradedStore=new GameStore(folder); var upgraded=upgradedStore.Load(out string message)!;
-            check(message.Length==0 && upgraded.State.Version==7 && upgraded.State.CompletedHours==48,"Real v5 SQLite checkpoint upgrades to v7 without recovering a newer backup");
+            check(message.Length==0 && upgraded.State.Version==8 && upgraded.State.CompletedHours==48,"Real v5 SQLite checkpoint upgrades to v7 without recovering a newer backup");
             check(upgradedStore.PrepareSave(upgraded).History.Length==0,"Upgrade queues no re-encoded committed hourly or daily snapshots");
             upgradedStore.Save(upgraded);
             var immediately=HistoryHashes();

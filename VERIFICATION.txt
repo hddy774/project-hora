@@ -1,116 +1,43 @@
-ALPHA EXCHANGE v1.6.0 — institution growth, adaptive horizons and bilateral depth
+ALPHA EXCHANGE v1.7.0 — minute economy and200 people
 2026-10-05 UTC
 
-IMPLEMENTATION
-Real bid/ask columns align; actual funded bank orders replenish available sides
-within cash, inventory and lending reservations. Empty-resource reasons are shown.
-Final replenishment is passive to avoid post-midnight/month-close ledger changes.
-Institution cash targets stay5..30% of evaluated gross assets, protecting orders,
-short collateral, fees and liabilities. Actual ratios can exceed targets when
-physical stock or safe prices are unavailable. No fabricated fills/transfers.
-Observed affordable asks, valuation/news/dividend/trend/cost and sector limits
-guide execution. Excess-cash reviews are periodic; safety/news triggers immediate.
-Ultra<24h, short24..239h, long>=240h. Reviews are separate from maturity; actual
-opening hours persist and20/30-day or longer positions need no forced liquidation.
-Ten representative abilities start50; legacy abilities remain archived. Relative
-season-return tiers1/2/3/5/10/20/30/40/50 grant one point/credit reward once per
-season/generation. AI allocates up to100; unused points persist.
-S/A/B/C/D employees have funded hiring/payroll and role/count effects. Current
-asset monthly payroll budget0.3% and next-day cash buffers constrain staff.
-Single S skill45 is below initial representative50. Representative50% + team50%
-forms ten effective capabilities for trading/news/risk/credit/governance.
-Profiles show cumulative volume/turnover/returns. Growth tabs expose abilities,
-staff, actual reward/credit history and planned/actual holding periods.
-institution-v1.json validates weights, limits, rewards, costs, horizons, bank
-quotes and screen cadence. Saved rules/version preserve deterministic continuation.
-State JSON7, SQLite/ZIP5. Old financials, physical ownership and history persist.
+CORE: PASS41,245,057 assertions,16 seasons,5,058,975 trades.
+Cash/shares, personal/corporate ledgers, salaries/projects/donations, loans/shorts,
+splits/mergers/funded IPO, bankruptcy generations, ballots/rewards, minute restart,
+private access, ZIP/old SQLite hashes, frozen captures, malformed storage/gaps passed.
+Successor issuance matches new market size; old markets keep1000-share IPOs.
+Election history proves leader changes even when an earlier leader later returns.
 
-FINAL CODE / CHECKS
-Source c1d9e063b31a85bf376b2ef99e2fb5f0b2234f98, rules institution-1.3.
-https://github.com/hddy774/project-hora/actions/runs/37270021879
-Checks and Android Release SUCCESS.
-PASS51,885,220 assertions;16seasons;1,586,308 matched trades.
-Wall42.21s; hour p50=2.30/p95=4.06/p99=7.55ms. JSON11,187,141bytes,
-serialize84.5ms; active302orders. CI observations, not controlled speed claims.
-Artwork PASS100distinct/70women/30men. Targeted v1.6 PASS4,124,001.
-New checks cover all reward tiers/restart/credit/100 caps, actual staff costs/count
-effects/recurring budget,50/50composition, v6 migration, deeply frozen rules/arrays
-before first JSON access, SQLite/ZIP continuation,24/240h boundaries, stable long
-review cadence/news override/no30-day maturity, funded depth, safe observed-ask
-execution and saved clock backlog. Existing financial/matching/corporate actions,
-forced bankruptcies, legacy migrations/storage recovery remain checked.
-Final local Android Release PASS5existing warnings/0errors,54.68s. API35 build
-versus target34 and deprecated OS API warnings remain. actionlint workflows PASS.
+ART: PASS200 distinct regions,140 women/60 men,20 generated originals.
+Existing100 retained,100 added with zoom; bounds/SHA-256 passed. No keys/APKs in git.
 
-PERFORMANCE
-docs/performance/v1.6.0/ preserves same-input/warm-harness measurements and pilots.
-Depth6000 median8.862->1.427ms; current-thread allocation5,860,800->960,000bytes
-(approximately84% lower for both). Statistics1.501->1.395ms.
-New state fields increase prepare9.320->13.786ms, serialize103.536->165.895ms,
-write134.520->142.148ms; checkpoint5,880,808->5,970,102bytes.
-Synthetic five-year43,201row/500point query288.443->291.995ms, unchanged32,799,920
-allocation bytes. Measurements source8a13215; later valuation/observed-ask changes
-alter new-game trading paths. Its720h timings are explicitly prior-stage data.
-No physical-device FPS/RAM or global speedup claim.
-State/hour/ledger/corporate/book revision caches, BreakText and scalar touch bounds
-reduce redundant screen work. Tick100ms/frame250ms with bounded pending hours
-provides UI opportunities; completed hours remain atomic and records retained.
+PERFORMANCE: same10000 cohorts/200 people/30 companies168-hour input,720 more hours.
+Complete GameState agrees before/after optimization:
+FE9B1B62565B84924DEFDFF666248ED245D20E014AF212F6263D9F0AA901DC2F
+365185 matches,random350666115 agree. Engine9104 game-minutes/sec.
+With hourly records/checkpoints every20 game hours:2917 game-minutes/sec,
+43200 accepted/completed minutes,0 pending,full hourly coverage.100x minimum1200/sec.
+Repeated ranges210.42x,coverage30.56x,cold ranges2.50x,write1.77x.
+Entire10x target not attained; slower statistics/depth samples also recorded.
+Encoding39.4% smaller,serialization allocations63.6% lower.
+Linux throughput does not establish physical Android FPS or every-frame deadlines.
+See docs/performance/v1.7.0/README.md and all original JSON samples.
 
-ECONOMIC AUDIT
-Final code above,12seasons each: seeds20261004/42/17 and first-seed zero-fee.
-Every-hour finite guards and monthly all-participant financial/share/cash checks
-PASS; all system cash differences0. Raw stages: docs/analysis/v1.6.0/.
-Final cap changes-2.45%/-3.05%/-6.97%; institution income
--115,686,125/-120,780,870/-125,577,750; retail
--235,608,065/-216,832,253/-238,183,046.
-Zero-fee institution+104,338,539/retail-164,151,501, cap-1.56%.
-Fee changes also change trade paths; differences are not isolated fee effects.
-Employees581/574/631/562; longest holdings8592/8634/8478/8590h.
-No natural bankruptcies; forced settlement/archive checked separately.
-Known limits: all100 actual institution cash ratios exceed30% at final closes
-despite targets approximately9..28%. Initial investor cash2b versus float0.9795b,
-buybacks, long holders and safe-price filters restrict allocation. Final bilateral
-stocks0/0/0/1. Initial/native books are bilateral; depleted bank inventory cannot
-quote nonexistent shares. Follow-ups record funded capital supply, float/target
-reachability, quote-gap time and net trading friction. No profit/growth guarantee.
+ECONOMY: bank public-value quotes, retail profit taking/executable quotes;
+funded market-sized successor IPOs and immediate vacant-sector replacement.
+Before/after diagnostics and final36-season multi-seed status:
+docs/analysis/v1.7.0/README.md. No forced retail losses/profits or fabricated fills.
+Institution5..30% is a constrained cash target; actual ratios can exceed it without
+safe funded supply. Preserve collateral and real resources rather than force fills.
 
-ANDROID / CONTINUITY
-com.alphaexchange.offline,1.6.0/code7,min26/target34,ARM64/x86_64 native SQLite,
-no INTERNET permission. API26 software emulator confirms function, not device FPS.
-Old v1.5 DB has two runs50/351h and391 immutable records. Native408h continuation
-preserves all391 original hashes and adds60rows (57hours/3days); both checkpoint
-and all451record hashes verify, integrityok,cash difference0,75,339matches,
-staff200/paid1,586,800/points0. Additional native/UI observations and
-desktop reward fixture are recorded separately in docs/UI-VERIFICATION-v1.6.0.md.
-Desktop730h fixture: two runs/786rows,staff200/allocated334points, season1actual100
-reward records/50positive awards,cash difference0. This is not native speed evidence.
-
-DEPLOYMENT
-COMPLETE 2026-10-05 UTC: PR #8 merged, immutable v1.6.0 tag/APK source:
-09ac0a2978ccd9863956c3d93c62f2fcc7934955.
-https://github.com/hddy774/project-hora/pull/8
-Final PR head cf2f3557dedad307b0fbca96350c219968045ba6 had checks/Android SUCCESS:
-https://github.com/hddy774/project-hora/actions/runs/37271585765
-Merged-main automatic release Actions37271904294 SUCCESS, prepare/release jobs:
-https://github.com/hddy774/project-hora/actions/runs/37271904294
-Generated/deleted a new temporary key per user's no-existing-key request.
-Release rerun PASS51,885,220assertions/16seasons/1,586,308matches; Android and
-100portraits PASS. CI wall48.25s; hour p50=2.78/p95=5.17/p99=7.32ms,
-JSON11,187,141bytes/serialize95.0ms. CI observations, not controlled benchmarks.
-Actions verified signed identity, uploaded one APK, downloaded/hash-verified,
-then published latest. Public API confirms v1.6.0,draft=false,prerelease=false,
-published2026-10-05T06:24:01Z, releaseID403421436; exactly one asset:
-AlphaExchange-v1.6.0.apk, assetID611714466,73,727,402bytes.
-https://github.com/hddy774/project-hora/releases/tag/v1.6.0
-https://github.com/hddy774/project-hora/releases/download/v1.6.0/AlphaExchange-v1.6.0.apk
-Independent anonymous public download PASS: size/SHA-256 match notes/asset digest:
-5b6959d62bf6146ca335328cf6e97f49ad141169437edf854aefe23459f44d79
-apksigner verify --verbose --print-certs PASS; certificate matches notes:
-23fc931eb41dfdcd986e63de76a0fb164fb8ce9520088400544bf4b8d228eb16
-aapt confirms appID,1.6.0/code7,min26/target34,ARM64/x86_64,no INTERNET permission;
-both native SQLite libraries present. Tag resolves to exact merged source above.
-Post-publication changes document deployment only; tag and APK are unchanged.
-No keys/passwords/APKs committed. New signing identity requires reinstall.
-ZIP export BEFORE uninstall, then install/import. v1.2 has no export UI.
-Committed history persists; abrupt exit may roll back uncommitted progress and
-its records together. Closed app time is not simulated.
+ANDROID: Release compile/publish passed. Existing API35/target34 and OS API warnings.
+Offline,com.alphaexchange.offline,v1.7.0/code8,minAPI26,ARM64/x86_64,200 portraits.
+Native Android API26/AOSP/x86_64 PASS,Actions37312498876,commit0b79cd5aaad9e172285c77cd3a82bb7b870dab65.
+True v1.6 Version7/168hours/177rows migrated: immutable hashes/RunId preserved.
+200people/10000retail/old10000000 capital,cashdifference0,full hourly coverage.
+Native100x:21095 completed/265 pending over19.013s.
+New profiles/zoom,role lists,government,institution stats,two-column order book checked.
+Screenshots/raw proof: docs/UI-VERIFICATION-v1.7.0.md.
+CI/merge/deployment status: docs/DEVELOPMENT-v1.7.0.md.
+GitHub Actions builds merged immutable tag and publishes only AlphaExchange-v1.7.0.apk.
+New one-time key per user request: export ZIP before uninstall/reinstall/import.

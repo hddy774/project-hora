@@ -5,6 +5,8 @@ public sealed partial class GameEngine
     List<LimitOrder>[] bids = [];
     List<LimitOrder>[] asks = [];
     readonly Dictionary<int, List<LimitOrder>> ownedOrders = [];
+    readonly Dictionary<long,LimitOrder> orderById=[];
+    readonly PriorityQueue<LimitOrder,(long Minute,long Id)> expirations=new();
     public long BookRevision { get; private set; }
     public static long Fee(long notional) => checked((notional * 15 + 9999) / 10000);
     public long ExchangeFee(long notional) => checked((notional * State.Government.Policy.FeeBasisPoints + 9999) / 10000);
@@ -47,7 +49,7 @@ public sealed partial class GameEngine
         State.Orders.RemoveAll(o=>o.Remaining<=0);
         bids = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
         asks = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
-        ownedOrders.Clear();
+        ownedOrders.Clear(); orderById.Clear(); expirations.Clear();
         Array.Clear(State.Bank.ReservedLending);
         var bank=BankAccount(); bank.ReservedCash=0; Array.Clear(bank.ReservedShares);
         foreach (var t in Participants) { t.ReservedCash = 0; Array.Clear(t.ReservedShares); Array.Clear(t.ReservedCovers); }
@@ -124,11 +126,11 @@ public sealed partial class GameEngine
         book.Insert(lo, o);
         if (!ownedOrders.TryGetValue(o.OwnerId, out var own)) ownedOrders[o.OwnerId] = own = [];
         own.Add(o);
+        orderById[o.Id]=o; expirations.Enqueue(o,(o.ExpiresMinute,o.Id));
     }
     public bool CancelOrder(long id)
     {
-        var o = State.Orders.Find(o => o.Id == id && o.Remaining > 0);
-        if (o is null) return false;
+        if(!orderById.TryGetValue(id,out var o) || o.Remaining<=0) return false;
         SetReservation(Owner(o.OwnerId), o, -o.Remaining);
         (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o);
         ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; cachedStats = null; BookRevision++;
@@ -148,14 +150,15 @@ public sealed partial class GameEngine
     {
         foreach(var order in State.Orders)
             if(order.Remaining>0) { SetReservation(Owner(order.OwnerId),order,-order.Remaining); order.Remaining=0; }
-        State.Orders.Clear(); ownedOrders.Clear();
+        State.Orders.Clear(); ownedOrders.Clear(); orderById.Clear(); expirations.Clear();
         foreach(var book in bids) book.Clear(); foreach(var book in asks) book.Clear(); cachedStats=null; BookRevision++;
     }
     void ExpireOrders()
     {
-        foreach (var o in State.Orders)
+        while(expirations.TryPeek(out var o,out var due) && due.Minute<=State.CompletedMinutes)
         {
-            if (o.Remaining == 0 || o.ExpiresMinute > State.CompletedMinutes) continue;
+            expirations.Dequeue(); orderById.Remove(o.Id);
+            if (o.Remaining == 0) continue;
             SetReservation(Owner(o.OwnerId), o, -o.Remaining);
             (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o); ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; BookRevision++;
         }

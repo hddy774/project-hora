@@ -1,0 +1,28 @@
+v1.7.0 — 200 original adult character profiles
+
+The original 100 investor illustrations remain byte-for-byte unchanged.
+100 additional original character illustrations were generated for IDs101–200:
+30 corporate executives, 50 economic politicians and 20 financiers.
+Ten original 5-column × 2-row PNG atlases11–20 provide70 additional women
+and30 additional men. Total:200 regions,140 women and60 men.
+
+Art direction: detailed painterly anime/semi-realistic adult professionals,
+modern tailored clothing, distinct faces/hair/ages, and contemporary corporate,
+assembly or banking backgrounds. Each atlas contains10 separate characters.
+No text/logos, reused investor regions, or runtime/network image generation.
+Generated originals remain intact; the offline manifest records individual names,
+ages, genders, pixel rectangles and source SHA-256. Individual rectangles are
+unique. Atlas dimensions and region bounds are validated from PNG headers.
+
+Atlas12 is1774×887; other new atlases are1983×793. The original1536×1024
+atlases1–10 and arena illustration remain available. Profile cards crop to fit;
+the expanded viewer follows the individual region's aspect ratio.
+
+Runtime memory: RGB565 atlas decoding, a four-atlas least-recently-used cache,
+visibility checks before loading, and reusable drawing geometry. Eviction drops
+the app reference without recycling a bitmap used by an Android display list.
+
+Files: src/AlphaExchange.Android/Assets/portraits/portraits-01.png ... 20.png
+Manifest: src/AlphaExchange.Android/Assets/portraits/manifest.json
+Runtime: Portraits.cs / PeopleScreens.cs
+Validation: python3 scripts/check-artwork.py

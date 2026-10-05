@@ -140,6 +140,8 @@ static class V16Checks
             // Preserve actual recorded staff expense in this synthetic v6 shape;
             // the independent v1.5 checkpoint/native fixture has no new expenses.
             var migrated=GameEngine.Deserialize(old.ToJsonString());
+            check(migrated.WorldRules.InvestorCapital==10_000_000 && migrated.WorldRules.RetailCapital==100_000,
+                "Legacy successor endowments keep saved market capital scale");
             check(migrated.State.Version==8 && migrated.Owner(1).Cash==frozenWorld.Owner(1).Cash &&
                 migrated.Owner(1).Shares.SequenceEqual(frozenWorld.Owner(1).Shares) && migrated.Owner(1).Abilities.Values().All(a=>a==50) &&
                 migrated.Owner(1).Development!.LegacyAbilities[0]==73,"v6 shape preserves finance/ownership and records old abilities while starting fair growth"); validate(migrated);

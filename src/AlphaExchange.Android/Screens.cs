@@ -31,7 +31,12 @@ public sealed partial class GameView
             if (i < 2) Line(140 + i * 120, y + 20, 140 + i * 120, y + 62, Stroke);
         }
         Text("호가로 움직이는 시장 · 끝없이 이어지는 시즌", 200, h - 188, 12, Muted, false, Paint.Align.Center);
-        if (game is not null)
+        if(loading || loadFailed)
+        {
+            Button(loading ? "기록을 불러오는 중…" : "기록을 보호 중 · 앱을 다시 열어주세요",20,h-166,360,52,()=>{},false,false);
+            Button("시뮬레이션 안내",20,h-103,360,45,()=>help=true,false);
+        }
+        else if (game is not null)
         {
             Button($"시즌 {S.Season} · DAY {S.Day:00}  이어하기  →", 20, h - 166, 360, 52, () => { lobby = false; auto = true; lastTick = Now; });
             Button("새 시뮬레이션 시작", 20, h - 103, 360, 45, RequestNew, false);

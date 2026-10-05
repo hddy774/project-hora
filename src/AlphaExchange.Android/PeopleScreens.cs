@@ -166,7 +166,9 @@ public sealed partial class GameView
         int id=portraitZoom; float top=Modal(h-16,()=>portraitZoom=-1);
         var p=game!.World.People.FirstOrDefault(p=>p.PortraitId==id);
         Text((p?.Name ?? "대표")+" · 일러스트 확대",27,top+39,17,Ink,true);
-        float available=h-top-96,width=Math.Min(360,available*.64f),height=Math.Min(available,width*1.65f);
+        float available=h-top-96;
+        var region=portraitRegions[id-1]; float ratio=(float)region.width/region.height;
+        float width=Math.Min(360,available*ratio),height=width/ratio;
         Portrait(id,(400-width)/2,top+64,width,height);
     }
 }

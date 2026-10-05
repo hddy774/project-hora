@@ -12,6 +12,11 @@ public sealed class WorldRules
     public int LiquidityMaximumQuantity { get; set; }
     public int StaffCostScale { get; set; }
     public int RetailTradeDivisor { get; set; }
+    public double RetailHerdWeight { get; set; } = .25;
+    public double RetailProfitTakingWeight { get; set; } = .55;
+    public double RetailProfitTakingReturn { get; set; } = .20;
+    public double RetailProfitTakingAggression { get; set; } = .04;
+    public double RetailTakeLiquidityProbability { get; set; } = .70;
     public long InvestorCapital { get; set; }
     public long RetailCapital { get; set; }
     public long BankCapital { get; set; }
@@ -52,6 +57,12 @@ public sealed class WorldRules
     public WorldRules Copy() => JsonSerializer.Deserialize<WorldRules>(JsonSerializer.Serialize(this))!;
     public void Validate()
     {
+        if(!double.IsFinite(RetailHerdWeight) || RetailHerdWeight is <0 or >.4 ||
+            !double.IsFinite(RetailProfitTakingWeight) || RetailProfitTakingWeight is <0 or >.8 ||
+            !double.IsFinite(RetailProfitTakingReturn) || RetailProfitTakingReturn is <=0 or >1 ||
+            !double.IsFinite(RetailProfitTakingAggression) || RetailProfitTakingAggression is <0 or >.1 ||
+            !double.IsFinite(RetailTakeLiquidityProbability) || RetailTakeLiquidityProbability is <0 or >1)
+            throw new InvalidDataException("개미 시장 반응 규칙 손상");
         if(LiquidityMinimumQuantity<1 || LiquidityMaximumQuantity>1000 || LiquidityMaximumQuantity<LiquidityMinimumQuantity || StaffCostScale is <1 or >100 || RetailTradeDivisor<1 || Version!="world-1.7" || MarketCapitalization is <100000000 or >100000000000000 || InvestorCapital<=0 || RetailCapital<=0 ||
             BankCapital<0 || GovernmentCapital<0 || RealEconomyCapital<0 || PersonalCapital<0 || InitialRetailUnits<1 ||
             MaximumRetailUnits>GameEngine.RetailCount || InitialRetailUnits>MaximumRetailUnits || PeoplePerRetailUnit<1 || DailyRetailGrowth<0 ||

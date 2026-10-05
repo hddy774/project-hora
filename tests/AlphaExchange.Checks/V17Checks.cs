@@ -14,6 +14,29 @@ static class V17Checks
         check(w.People.Select(p=>p.Name).Distinct().Count()==200 && w.People.Select(p=>p.PortraitId).Distinct().Count()==200,"Unique identities and original art IDs");
         check(w.People.Where(p=>p.Role==PersonRole.Politician).GroupBy(p=>p.Party).All(p=>p.Count()==25),"Two equal economic parties");
         long cash=g.SystemCash(); validate(g);
+        var weakRetail=s.Retail[0]; var observed=s.Stocks[0];
+        var chasing=g.RetailReaction(weakRetail,0);
+        TestFixtures.BuyFromBank(g,weakRetail.Id,0,10);
+        double actualCost=weakRetail.AverageCost[0];
+        weakRetail.AverageCost[0]=observed.Price/1.5;
+        var taking=g.RetailReaction(weakRetail,0);
+        check(taking.BuyProbability<chasing.BuyProbability && taking.Aggression>chasing.Aggression,"Retail reacts to visible paper gains with executable profit taking, rather than endless chasing");
+        observed.FairValue*=3; observed.Sentiment=.12;
+        check(g.RetailReaction(weakRetail,0)==taking,"Simple retail reaction ignores fundamentals, private analysis and news sentiment");
+        observed.FairValue/=3; observed.Sentiment=0; weakRetail.AverageCost[0]=actualCost;
+        var gap=new GameEngine(172); gap.WorldRules.RetailTakeLiquidityProbability=1;
+        gap.State.Stocks[0].FairValue=gap.State.Stocks[0].Price*.5;
+        gap.ReplenishLiquidity(true);
+        check(gap.RetailLimitPrice(0,false,.01)==gap.Depth(0,true)[0].Price &&
+            gap.RetailLimitPrice(0,true,.01)==gap.Depth(0,false)[0].Price,"Retail can accept funded observed quotes across a large price gap instead of leaving liquidity stranded");
+        validate(gap);
+        var replacement=new GameEngine(173); long replacementCash=replacement.SystemCash();
+        replacement.FailCompany(0);
+        var successor=replacement.State.Stocks[0];
+        check(successor.Active && successor.Generation==2 && successor.TreasuryShares==replacement.State.Bank.ShareInventory[0] &&
+            successor.MarketCap>=replacement.WorldRules.MarketCapitalization/60,"Successor IPOs use funded current-market size instead of a legacy thousand-share micro-float");
+        check(replacement.SystemCash()==replacementCash,"Market-sized successor issuance transfers actual bank/economy cash without minting money");
+        validate(replacement);
         for(int minute=0;minute<37;minute++) g.AdvanceMinute();
         check(s.CompletedMinutes==37 && s.CompletedHours==0 && s.Tape.Any(t=>t.Minute!=0),"Executions occur throughout a partial hour");
         check(s.News.All(n=>n.ActorId>0 && n.ActivityId>0),"Every new headline refers to an actual person's activity");
@@ -44,7 +67,8 @@ static class V17Checks
             var store=new GameStore(folder); store.Attach(g); store.Save(g);
             while(s.CompletedHours<720) { g.AdvanceHour(); if(s.CompletedHours%120==0) { validate(g); store.Save(g); } }
             check(s.Retail.Count>initialRetail && s.Retail.Count<=10000 && s.CashFlows["retail-entry"]>0,"Retail population grows from real economy funding");
-            check(w.LeaderId!=leader && w.GovernorId!=governor,"Government leader and bank governor change by 10–30 day elections");
+            check(w.Votes.Any(v=>v.Kind==WorldVoteKind.GovernmentElection && v.Minute>0 && v.WinnerId!=leader) &&
+                w.Votes.Any(v=>v.Kind==WorldVoteKind.GovernorElection && v.Minute>0 && v.WinnerId!=governor),"Government/bank election history proves leadership changes, including a later return of an earlier leader");
             check(w.Votes.Any(v=>v.Kind==WorldVoteKind.EconomicPolicy) && w.Votes.All(v=>v.Ballots.Count==200 && v.Ballots.Select(b=>b.PersonId).Distinct().Count()==200),"All policy/law/election decisions retain every weighted ballot");
             check(w.Projects.Any(p=>p.Paid>0) && s.CashFlows["business-project-investment"]>0 && s.RealEconomy.CorporateSales>0,"Real business investment, delivery and monthly revenues circulate actual funds");
             check(s.Bots.All(b=>b.Development!.LastRewardPoints is >=1 and <=10) && s.Bots.Count(b=>b.Development!.LastRewardRank>=51 && b.Development.LastRewardPoints==1)==50,"Every ranked investor receives 1–10 points, including ranks 51–100");
@@ -69,6 +93,7 @@ static class V17Checks
         check(clock.State.CompletedMinutes+clock.State.PendingClockMinutes==600,"100x accepts all 600 minutes per half second without dropping time");
         var restored=GameEngine.Deserialize(clock.Serialize()); clock.AdvanceTime(0,100); restored.AdvanceTime(0,100);
         check(clock.Serialize()==restored.Serialize() && clock.State.CompletedMinutes==600,"Minute backlog survives save and drains once");
+        V17OptimizationChecks.Run(check);
         Console.WriteLine("PASS v1.7: trillion market, funded personal wallets, 200 roles, minute matching, confidential plans, staff professions, businesses, elections, 100-rank rewards and portable history");
     }
 }

@@ -6,7 +6,21 @@ public sealed partial class GameEngine
     public WorldRules WorldRules => World.Rules!;
     void InitializeWorld(bool migration=false)
     {
-        State.World=new EconomyWorld { Rules=State.World?.Rules ?? AlphaExchange.Core.WorldRules.Default() };
+        var rules=State.World?.Rules ?? AlphaExchange.Core.WorldRules.Default();
+        if(migration)
+        {
+            // Do not introduce billion-won successor endowments into an old
+            // ten-million-won market. Keep future replacement funding and order
+            // scale compatible with its saved capital and liquidity rules.
+            rules.InvestorCapital=Math.Max(1,State.Bots.Select(t=>t.OpeningEquity).Order().ElementAt(State.Bots.Count/2));
+            rules.RetailCapital=Math.Max(1,State.Retail.Select(t=>t.OpeningEquity).Order().ElementAt(State.Retail.Count/2));
+            rules.InitialRetailUnits=State.Retail.Count; rules.PersonalCapital=0; rules.StaffCostScale=1;
+            rules.InitialFloatShares=1000;
+            rules.MarketCapitalization=Math.Clamp(State.OpeningSnapshot?.Capitalization ?? State.Stocks.Sum(s=>s.MarketCap),100_000_000,100_000_000_000_000);
+            rules.LiquidityMinimumQuantity=Rules.Liquidity.MinimumQuantity;
+            rules.LiquidityMaximumQuantity=Rules.Liquidity.MaximumQuantity;
+        }
+        State.World=new EconomyWorld { Rules=rules };
         World.RetailUnitPeople=WorldRules.PeoplePerRetailUnit;
         var used=new HashSet<string>(StringComparer.Ordinal);
         for(int id=1;id<=200;id++)

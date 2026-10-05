@@ -332,5 +332,10 @@
   "LiquidityMinimumQuantity": 400,
   "LiquidityMaximumQuantity": 1000,
   "StaffCostScale": 100,
-  "RetailTradeDivisor": 250
+  "RetailTradeDivisor": 250,
+  "RetailHerdWeight": 0.25,
+  "RetailProfitTakingWeight": 0.55,
+  "RetailProfitTakingReturn": 0.20,
+  "RetailProfitTakingAggression": 0.04,
+  "RetailTakeLiquidityProbability": 0.70
 }

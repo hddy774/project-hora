@@ -16,7 +16,7 @@ jobs:
           dotnet-version: '9.0.318'
       - name: Verify matching, economy, adaptive AI, 100x, 16 seasons and migrations
         run: dotnet run --project tests/AlphaExchange.Checks -c Release
-      - name: Verify 100 distinct portrait regions and checksums
+      - name: Verify 200 distinct portrait regions and checksums
         run: python3 scripts/check-artwork.py
   android:
     runs-on: ubuntu-latest

@@ -1,0 +1,13 @@
+{
+  "file": "v170-max-input.json",
+  "sha256": "f3d45e58c4106311ab6eda1a26725a6ca55f0782fc59675be1238116c27c5855",
+  "sourceTree": "9a596cfc3f8aac4ec8675d93d6b520abaec20111",
+  "featureCommit": "c6fc0a600ba695c7051ad8d78a838e6cf3c7046c",
+  "seed": 20261004,
+  "hour": 168,
+  "retailUnits": 10000,
+  "people": 200,
+  "stocks": 30,
+  "initialRules": "world-1.7",
+  "generatedWith": "PerformanceAudit --max, final comparison reloads this same input"
+}

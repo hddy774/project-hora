@@ -20,7 +20,7 @@ public sealed partial class GameEngine
             var s=State.Stocks[i];
             if(s.WaitingForCapital)
             {
-                long capital=(long)s.Price*1000;
+                long capital=ListingCapital(s.Price);
                 if(Math.Max(0,capital-State.Bank.Cash)<=State.RealEconomy.Cash/2)
                     State.BankruptcyTotals.CompanyCapital+=FundListing(s,i,capital,State.Stocks.Sum(x=>x.MarketCap));
             }

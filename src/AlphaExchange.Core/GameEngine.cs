@@ -163,9 +163,9 @@ public sealed partial class GameEngine
         var stock=State.Stocks[index]; if(!stock.Active) return;
         var reaction=RetailReaction(t,index);
         bool buy=Next()<reaction.BuyProbability;
-        int limit=Quote(stock.PreviousPrice*(1+(buy ? reaction.Aggression : -reaction.Aggression)),buy);
+        int limit=RetailLimitPrice(index,buy,reaction.Aggression);
         long available=buy ? MaxBuy(t,index,limit) : t.Shares[index]-t.ReservedShares[index];
-        int lot=State.World is not null && t.OpeningEquity>=WorldRules.RetailCapital/2 ? Math.Clamp((int)(t.OpeningEquity/stock.Price/WorldRules.RetailTradeDivisor),1,1000) : 1;
+        int lot=State.World is not null && t.OpeningEquity>=WorldRules.RetailCapital/2 ? Math.Clamp((int)(t.OpeningEquity/limit/WorldRules.RetailTradeDivisor),1,1000) : 1;
         int quantity=(int)Math.Min(available,lot*(1+(Next()<t.Risk*.25 ? 1 : 0)));
         if(quantity>0) SubmitOrder(t.Id,index,buy,limit,quantity,1);
     }

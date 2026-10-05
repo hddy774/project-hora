@@ -9,7 +9,7 @@ on:
       tag:
         description: Existing merged release tag
         required: true
-        default: v1.6.0
+        default: v1.7.0
         type: string
       generate_signing_key:
         description: Generate a new one-time signing key (requires reinstall)
@@ -191,7 +191,7 @@ jobs:
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true
           else
-            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 기관 성장과 투자 판단 개선" --notes-file "$notes"
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 분 단위 경제와 200명의 인물" --notes-file "$notes"
           fi
           while IFS= read -r asset; do
             if [[ "$asset" != "$APK_NAME" ]]; then gh release delete-asset "$RELEASE_TAG" "$asset" --yes; fi

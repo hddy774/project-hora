@@ -98,7 +98,9 @@ for (int hour = 0; hour < seasons * 720; hour++)
 }
 watch.Stop();
 Check(game.State.Season == 17 && !game.State.Finished, "Continuous seasons");
-Check(store.ReadSeason(game.State, 1)!.Standings.Count == 100 && game.State.Bots.All(t => t.SeasonRanks.Count == 12), "Old full archive, bounded recent per-AI ranks");
+Check(store.ReadSeason(game.State, 1)!.Standings.Count == 100 && game.State.Bots.All(t =>
+    t.SeasonRanks.Count is >=1 and <=12 && t.SeasonRanks.All(r=>r.Generation==t.Generation) &&
+    t.SeasonRanks[^1].Season==16 && (t.BirthHour>4*720 || t.SeasonRanks.Count==12)), "Old archive persists; successor profiles retain only their own bounded ranks");
 Check(game.State.Retail.Where(t=>t.BirthHour<=game.State.CompletedHours-24).All(t => t.Trades > 0), "All 10000 retail participants actually trade");
 var stats = game.Statistics();
 Near(stats.Institutions.NetIncome + stats.Institutions.OpeningEquity, stats.Institutions.Equity, "Institution aggregate");

@@ -156,6 +156,7 @@ public sealed partial class GameEngine
         foreach(var stock in State.Stocks.Where(s=>s.Active)) CompanyReportRecorded?.Invoke(CopyReport(stock.Report));
         RestoreSectorListings();
         RunCorporatePolicy();
+        RestoreSectorListings(); // Mergers also replace their vacant sector slot now, rather than a month later.
         foreach (var stock in State.Stocks.Where(s => s.Active && !s.Report.IsOpening))
         {
             stock.Reports.RemoveAll(r => r.Season == stock.Report.Season && r.AccountingBasis == 5);

@@ -15,6 +15,11 @@ public sealed partial class GameEngine
         var resolver=new DefaultJsonTypeInfoResolver();
         resolver.Modifiers.Add(info=>
         {
+            if(info.Type==typeof(GameState))
+            {
+                info.Properties.Single(p=>p.Name==nameof(GameState.Retail)).CustomConverter=new RetailColumnsConverter();
+                return;
+            }
             if(info.Type!=typeof(Trader)) return;
             foreach(var property in info.Properties)
             {

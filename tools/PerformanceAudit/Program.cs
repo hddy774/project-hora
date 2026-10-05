@@ -51,10 +51,30 @@ try
     Measure("serialize",()=>{ _=game.Serialize(); });
     Measure("writeSnapshot",()=>store.WriteSnapshot(store.PrepareSave(game)),5);
     results["checkpoint"]=new { hour=game.State.CompletedHours,encodedBytes=System.Text.Encoding.UTF8.GetByteCount(game.Serialize()) };
-    var hourly = NewScenario(); var timings=new List<double>();
+    var hourly = input is not null && File.Exists(input) ? GameEngine.Deserialize(File.ReadAllText(input)) : NewScenario(); var timings=new List<double>();
     for(int i=0;i<720;i++) { long tick=Stopwatch.GetTimestamp(); hourly.AdvanceHour(); timings.Add(Stopwatch.GetElapsedTime(tick).TotalMilliseconds); }
-    timings.Sort(); results["simulation"]=new { hours=720, medianMs=timings[360],p95Ms=timings[(int)(720*.95)],p99Ms=timings[(int)(720*.99)],matches=hourly.State.TotalMatches };
+    double total=timings.Sum(); timings.Sort(); results["simulation"]=new { hours=720, retail=hourly.State.Retail.Count,totalMs=total,minutesPerSecond=43200/total*1000,medianMs=timings[360],p95Ms=timings[(int)(720*.95)],p99Ms=timings[(int)(720*.99)],matches=hourly.State.TotalMatches,random=hourly.State.RandomState };
+    results["decisionsSha256"]=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(hourly.State))));
     Console.WriteLine("simulation: "+JsonSerializer.Serialize(results["simulation"]));
+
+    // A virtual 100x clock accepts every minute. Include actual hourly encoding,
+    // state capture, checksum validation, compression and durable writes once
+    // per20 game hours (one real second at100x), rather than timing a bare engine.
+    var recorded=input is not null && File.Exists(input) ? GameEngine.Deserialize(File.ReadAllText(input)) : NewScenario();
+    var recordedStore=new GameStore(Path.Combine(folder,"recorded")); recordedStore.Attach(recorded); recordedStore.Save(recorded);
+    long initialHour=recorded.State.CompletedHours,lastSaved=initialHour,clockTick=Stopwatch.GetTimestamp();
+    for(int frame=0;frame<360;frame++)
+    {
+        recorded.AdvanceFrame(.1,100);
+        if(recorded.State.CompletedHours-lastSaved>=20) { recordedStore.Save(recorded); lastSaved=recorded.State.CompletedHours; }
+    }
+    while(recorded.State.PendingClockMinutes>0) recorded.AdvanceFrame(0,100);
+    recordedStore.Save(recorded);
+    double clockMs=Stopwatch.GetElapsedTime(clockTick).TotalMilliseconds;
+    if(recorded.State.CompletedMinutes!=(initialHour+720)*60 || !recorded.HistorySource!.Covers(initialHour,initialHour+720)) throw new Exception("100x clock lost minutes or hourly history");
+    results["recorded100x"]=new { acceptedMinutes=43200,completedMinutes=recorded.State.CompletedMinutes-initialHour*60,pendingMinutes=recorded.State.PendingClockMinutes,
+        durationMs=clockMs,minutesPerSecond=43200/clockMs*1000,virtualSeconds=36,retail=recorded.State.Retail.Count,writeEveryGameHours=20 };
+    Console.WriteLine("recorded100x: "+JsonSerializer.Serialize(results["recorded100x"]));
 
     // Storage-only synthetic history: five 360-day years, independent of simulation timings.
     var synthetic = new GameEngine(seed); var historyStore=new GameStore(Path.Combine(folder,"history"));
@@ -70,11 +90,14 @@ try
         historyStore.WriteSnapshot(new SaveSnapshot(synthetic.State.RunId,hour,synthetic.Serialize(),[],rows.ToArray())); rows.Clear();
     }
     historyStore.Attach(synthetic);
-    Measure("fiveYearRange",()=>
+    void Range()
     {
         var points=synthetic.HistorySource!.Range(0,last,500);
         if(points.Count>500 || points[0].Hour!=0 || points[^1].Hour!=last) throw new Exception("History boundaries or point limit");
-    },5);
+    }
+    var rangeCache=synthetic.HistorySource!.GetType().GetField("rangeCache",BindingFlags.Instance|BindingFlags.NonPublic);
+    Measure("fiveYearRangeCold",()=>{ (rangeCache?.GetValue(synthetic.HistorySource) as System.Collections.IDictionary)?.Clear(); Range(); },5);
+    Measure("fiveYearRangeCached",Range,5);
     Measure("coverage",()=>{ if(!synthetic.HistorySource!.Covers(0,last)) throw new Exception("History missing"); },5);
     Measure("pendingAt",()=>
     {

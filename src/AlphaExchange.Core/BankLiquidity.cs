@@ -24,7 +24,7 @@ public sealed partial class GameEngine
             int tick=s.Price<1000 ? 1 : 10;
             // An overpriced market may receive executable funded supply. Normal
             // liquidity remains passive; the bank never bids up a speculative peak.
-            if(!overvalued) baseAsk=Math.Clamp(Math.Max(baseAsk,(bids[i].Count==0 ? baseBid : bids[i][0].Price)+tick),1,10_000_000);
+            if(!overvalued || !refresh) baseAsk=Math.Clamp(Math.Max(baseAsk,(bids[i].Count==0 ? baseBid : bids[i][0].Price)+tick),1,10_000_000);
             baseBid=Math.Clamp(Math.Min(baseBid,(asks[i].Count==0 ? baseAsk : asks[i][0].Price)-tick),1,10_000_000);
             if(baseBid>=baseAsk) continue;
             int quantity=(int)Math.Clamp(Math.Ceiling(s.Volume*r.RecentVolumeWeight/r.Levels),r.MinimumQuantity,r.MaximumQuantity);

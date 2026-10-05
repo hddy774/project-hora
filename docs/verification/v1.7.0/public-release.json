@@ -1,0 +1,23 @@
+{
+  "tag": "v1.7.0",
+  "source": "44b7a079b33a4b2025da9fa3c756e026d30c1d5e",
+  "actionsRun": "37314412978",
+  "releaseId": 403727553,
+  "assetId": 612621678,
+  "assetName": "AlphaExchange-v1.7.0.apk",
+  "bytes": 101126336,
+  "sha256": "89eaeadf2202afa1d32f7a8733aa40e2dcd82e0d2f0c7525047aa65f91f1738b",
+  "certificateSha256": "066cee1837b8b72aba826ef848afbc6a6680327f7bfa1f4b6334ecbf6df6b60a",
+  "portraits": 200,
+  "additionalPortraits": 100,
+  "preservedOriginalPortraits": 100,
+  "appId": "com.alphaexchange.offline",
+  "versionCode": 8,
+  "versionName": "1.7.0",
+  "publishedAt": "2026-10-05T13:11:55Z",
+  "apkOnly": true,
+  "latest": true,
+  "verifiedPublicDownload": true,
+  "metadataSource": "GitHub connector GET releases/latest and git/ref/tags/v1.7.0",
+  "anonymousApkDownload": true
+}

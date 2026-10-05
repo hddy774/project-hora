@@ -41,3 +41,12 @@ Screenshots/raw proof: docs/UI-VERIFICATION-v1.7.0.md.
 CI/merge/deployment status: docs/DEVELOPMENT-v1.7.0.md.
 GitHub Actions builds merged immutable tag and publishes only AlphaExchange-v1.7.0.apk.
 New one-time key per user request: export ZIP before uninstall/reinstall/import.
+
+PUBLIC RELEASE: PASS v1.7.0,code8,latest/non-draft/non-prerelease,one APK only.
+Actions37314412978;source44b7a079b33a4b2025da9fa3c756e026d30c1d5e;immutable tag/source match.
+AlphaExchange-v1.7.0.apk,101126336bytes;public download reverified.
+SHA-256:89eaeadf2202afa1d32f7a8733aa40e2dcd82e0d2f0c7525047aa65f91f1738b
+Certificate:066cee1837b8b72aba826ef848afbc6a6680327f7bfa1f4b6334ecbf6df6b60a
+All20 PNG/checksums/bounds and200 portrait manifest entries match;old100 preserved.
+ARM64/x86_64 SQLite present,API26/34,no INTERNET permission or private keystore files.
+Raw public verification: docs/verification/v1.7.0/public-release.json.

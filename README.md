@@ -8,7 +8,7 @@ v1.7.0은 **분 단위 체결·200명의 인물·기밀 투자 계획·사업과
 
 **[최신 릴리스](https://github.com/hddy774/project-hora/releases/latest)** · **[APK 다운로드](https://github.com/hddy774/project-hora/releases/download/v1.7.0/AlphaExchange-v1.7.0.apk)**
 
-[PR #9](https://github.com/hddy774/project-hora/pull/9)에서 개발표를 갱신하며 구현·최적화·회귀 검증을 진행합니다. [금융 원문 조사와 개선 기록](docs/FINANCE-RESEARCH-v1.7.0.md), [조정 가능한 규칙](src/AlphaExchange.Core/Rules/README.md), [새 저장 설계](docs/STATISTICS-STORAGE-v1.7.0.md)를 기록합니다. 이전 [시장 문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [검증 기록](VERIFICATION.txt)도 보관합니다.
+[PR #9](https://github.com/hddy774/project-hora/pull/9)를 병합하고 GitHub Actions에서v1.7.0 최신 APK 배포와 공개 다운로드 검증을 완료했습니다. [개발 완료표](docs/DEVELOPMENT-v1.7.0.md)와 [APK 검증 원자료](docs/verification/v1.7.0/public-release.json)를 제공합니다. [금융 원문 조사와 개선 기록](docs/FINANCE-RESEARCH-v1.7.0.md), [조정 가능한 규칙](src/AlphaExchange.Core/Rules/README.md), [새 저장 설계](docs/STATISTICS-STORAGE-v1.7.0.md)를 기록합니다. 이전 [시장 문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [검증 기록](VERIFICATION.txt)도 보관합니다.
 
 **설치 안내:** 사용자의 기존 서명키 없는 배포 지시에 따라 GitHub Actions에서 새 일회용 키로 APK에 서명합니다. 이전 릴리스에 덮어쓸 수 없고 재설치가 필요합니다. 앱 삭제는 내부 기록을 지웁니다. v1.3부터 통계 화면에서 게임·전체 통계를 ZIP으로 내보내고 가져올 수 있습니다. **v1.2에는 내보내기 기능이 없으므로 새 버전 설치만으로 삭제한 이전 기록을 복구할 수 없습니다.** 별도로 확보한 기존 내부 JSON/시즌 파일의 자동 이전은 같은 앱 데이터 디렉터리가 남아 있을 때 동작합니다.
 

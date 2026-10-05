@@ -1,5 +1,5 @@
 """Actual Android app/legacy SQLite/UI/minute-clock smoke test on a rooted CI emulator."""
-import json, os, pathlib, re, sqlite3, subprocess, sys, time
+import contextlib, json, os, pathlib, re, sqlite3, subprocess, sys, time
 import brotli
 import xml.etree.ElementTree as ET
 
@@ -65,11 +65,21 @@ def swipe():
 
 def pull_state(name):
     folder=output/name; folder.mkdir(exist_ok=True)
-    adb("pull",device+"/history-v5.sqlite",str(folder/"history-v5.sqlite"))
-    for suffix in ("-wal","-shm"):
-        try: adb("pull",device+"/history-v5.sqlite"+suffix,str(folder/("history-v5.sqlite"+suffix)))
+    try: pid=adb("shell","pidof",package).strip()
+    except subprocess.CalledProcessError: pid=""  # Final capture follows force-stop.
+    if pid: adb("shell","kill","-STOP",pid)
+    try:
+        # Freeze only during evidence capture so a native WAL checkpoint cannot
+        # alter the main DB between the two pulls. Rebuild local SHM and never
+        # retain a stale sidecar from an earlier polling attempt.
+        for suffix in ("-wal","-shm"):
+            (folder/("history-v5.sqlite"+suffix)).unlink(missing_ok=True)
+        adb("pull",device+"/history-v5.sqlite",str(folder/"history-v5.sqlite"))
+        try: adb("pull",device+"/history-v5.sqlite-wal",str(folder/"history-v5.sqlite-wal"))
         except subprocess.CalledProcessError: pass
-    with sqlite3.connect(folder/"history-v5.sqlite") as db:
+    finally:
+        if pid: adb("shell","kill","-CONT",pid)
+    with contextlib.closing(sqlite3.connect(folder/"history-v5.sqlite")) as db:
         state=db.execute("select state from runs where id=(select value from meta where key='current')").fetchone()[0]
         return json.loads(brotli.decompress(state)),folder
 
@@ -90,7 +100,10 @@ while True:
         state,_=pull_state("running")
         if state["Version"]==8 and state["CompletedHours"]>=170: break
     except (sqlite3.Error,subprocess.CalledProcessError,IndexError): pass
-    if time.monotonic()>deadline: raise RuntimeError("App failed to load/advance/save the true v7 fixture")
+    if time.monotonic()>deadline:
+        screenshot("failure-startup")
+        (output/"failure-logcat.txt").write_text(adb("logcat","-d","-t","250"))
+        raise RuntimeError("App failed to load/advance/save the true v7 fixture")
 tap(278,h-108); require_screen("일시정지"); time.sleep(2); screenshot("02-paused-market")
 paused_at=time.monotonic()
 
@@ -136,7 +149,7 @@ if delta+pending < (elapsed-2)*1200 or pending>1200:
     (output/"native-clock-failure.json").write_text(json.dumps({"elapsedSeconds":elapsed,"completedMinutes":delta,"pendingMinutes":pending},indent=2))
     raise RuntimeError(f"Native100x failed: {delta} completed,{pending} pending over{elapsed:.3f}s")
 baseline=json.loads((fixture/"baseline.json").read_text())
-with sqlite3.connect(folder/"history-v5.sqlite") as db:
+with contextlib.closing(sqlite3.connect(folder/"history-v5.sqlite")) as db:
     actual={(hour,resolution):sha for hour,resolution,sha in db.execute("select hour,resolution,hash from hours where run=?",(baseline["run"],))}
     if any(actual.get((row["hour"],row["resolution"]))!=row["hash"] for row in baseline["rows"]):
         raise RuntimeError("Native migration changed or removed legacy raw-hour hashes")

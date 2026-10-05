@@ -258,6 +258,7 @@ public sealed partial class GameView : View
         base.OnDraw(canvas);
         lastFrame=Now;
         c = canvas; scale = Width / 400f; h = Height / scale;
+        DescribeScreen();
         c.Save(); c.Scale(scale, scale); c.DrawColor(Bg);
         targets.Clear(); clipTop = 0; clipBottom = h;
         if (fileBusy && !loading)

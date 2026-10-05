@@ -153,7 +153,10 @@ static class V15Checks
                 _=GameEngine.Deserialize(oldState); // fixture must load without backup recovery
                 command.CommandText="UPDATE runs SET state=$state,hash=$hash";
                 command.Parameters.AddWithValue("$state",Encode(oldState));command.Parameters.AddWithValue("$hash",Hash(oldState));command.ExecuteNonQuery();
-                command.Parameters.Clear();command.CommandText="SELECT hour,resolution,data FROM hours";
+                command.Parameters.Clear();command.CommandText="DELETE FROM hours WHERE hour=24 AND resolution=24";command.ExecuteNonQuery();
+                // Hour 24 already has a higher-resolution authoritative record;
+                // reattach must not queue a redundant derived daily version.
+                command.CommandText="SELECT hour,resolution,data FROM hours";
                 var rows=new List<(long Hour,int Resolution,byte[] Data)>();
                 using(var reader=command.ExecuteReader()) while(reader.Read()) rows.Add((reader.GetInt64(0),reader.GetInt32(1),(byte[])reader[2]));
                 foreach(var row in rows)

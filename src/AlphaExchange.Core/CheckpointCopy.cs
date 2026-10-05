@@ -24,8 +24,8 @@ internal static class CheckpointCopy
     { var copy=Scalar(value); copy.Ballots=new(value.Ballots); return copy; }
     public static BankruptcyRecord Bankruptcy(BankruptcyRecord value)
     { var copy=Scalar(value); copy.Report=value.Report is null ? null : Scalar(value.Report); return copy; }
-    static T[] ArrayCopy<T>(T[] value,bool compact) where T:struct
-        => compact && value.All(v=>EqualityComparer<T>.Default.Equals(v,default)) ? [] : (T[])value.Clone();
+    static T[] ArrayCopy<T>(T[] value,bool compact) where T:struct,IEquatable<T>
+        => compact && !value.AsSpan().ContainsAnyExcept(default(T)) ? [] : (T[])value.Clone();
     static Trader Trader(Trader value,bool storage=false)
     {
         bool compact=storage && value.IsRetail;

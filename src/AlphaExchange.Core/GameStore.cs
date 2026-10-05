@@ -149,16 +149,17 @@ public sealed partial class GameStore
         if(databaseReady)
         {
             using var connection=Open(SavePath,true); using var command=connection.CreateCommand();
-            command.CommandText="SELECT hour,resolution FROM hours WHERE run=$run AND (resolution=24 AND hour BETWEEN $start AND $end OR hour=$end)";
+            var hours=engine.State.DailyHistory.Select(d=>d.Hour).Append(engine.State.CompletedHours).Distinct().ToArray();
+            var names=hours.Select((_,i)=>"$h"+i).ToArray();
+            command.CommandText=$"SELECT hour,resolution FROM hours WHERE run=$run AND hour IN ({string.Join(',',names)})";
             command.Parameters.AddWithValue("$run",run);
-            command.Parameters.AddWithValue("$start",engine.State.DailyHistory.Min(d=>d.Hour));
-            command.Parameters.AddWithValue("$end",engine.State.CompletedHours);
+            for(int i=0;i<hours.Length;i++) command.Parameters.AddWithValue(names[i],hours[i]);
             using var reader=command.ExecuteReader();
             while(reader.Read()) committed.Add((reader.GetInt64(0),reader.GetInt32(1)));
         }
         if(!committed.Contains((engine.State.CompletedHours,1))) AddPending(run,engine.CaptureSnapshot());
         foreach(var daily in engine.State.DailyHistory)
-            if(!committed.Contains((daily.Hour,24))) AddPending(run,NormalizeLegacy(daily,engine));
+            if(!committed.Contains((daily.Hour,1)) && !committed.Contains((daily.Hour,24))) AddPending(run,NormalizeLegacy(daily,engine));
         queuedDailyThrough[run]=Math.Max(queuedDailyThrough.GetValueOrDefault(run,-1),engine.State.DailyHistory.Max(d=>d.Hour));
     }
     void AddPending(string run, DailySnapshot snapshot)

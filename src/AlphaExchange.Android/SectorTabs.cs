@@ -26,7 +26,7 @@ public sealed partial class GameView
             float x=20+i%4*92,top=y+i/4*36;
             Box(x,top,84,29,active ? Lime : Card2,9);
             Text(name,x+42,top+20,10,active ? Bg : Muted,active,Paint.Align.Center);
-            Hit(x,top,84,29,()=>{ marketSector=name; scroll=0; });
+            Hit(x,top,84,29,()=>marketSector=name);
         }
         return y+83;
     }

@@ -27,7 +27,7 @@ public sealed partial class GameView : View
     bool saving;
     Task saveTask = Task.CompletedTask;
     bool fileBusy,loading=true,loadFailed;
-    long lastCommitTime;
+    readonly CheckpointWriteWatchdog writeWatchdog=new();
     int portfolioTab;
     long historyPage, selectedSeason;
     Canvas c = null!;
@@ -91,7 +91,7 @@ public sealed partial class GameView : View
         {
             try { game.QueueTime(Math.Clamp(elapsed,0,3600), speed); StartSimulationWorker(); }
             catch (Exception e) when (GameStore.StorageException(e)) { auto = false; Notify("시장 진행을 멈췄습니다. 최근 정상 저장을 보존합니다."); }
-            if (store.PendingCount > 512 || lastCommitTime > 0 && now-lastCommitTime > 15000 && saving)
+            if (store.PendingCount > 512 || writeWatchdog.IsStalled(now,15000))
             { auto = false; Notify("기록 저장을 기다리며 일시정지했습니다."); }
             if (now - lastSave >= 1000) { saveRequested=true; lastSave=now; StartSimulationWorker(); }
             if(now-lastFrame>=game.Rules.Performance.FrameMilliseconds) Invalidate();
@@ -162,6 +162,7 @@ public sealed partial class GameView : View
                 pendingSave = snapshot;
                 if (saving) return;
                 saving = true;
+                writeWatchdog.Begin(Now);
             }
             saveTask = Task.Run(SaveWorker);
         }
@@ -174,17 +175,18 @@ public sealed partial class GameView : View
             SaveSnapshot snapshot;
             lock (saveGate)
             {
-                if (pendingSave is null) { saving = false; return; }
+                if (pendingSave is null) { saving = false; writeWatchdog.Finish(); return; }
                 snapshot = pendingSave; pendingSave = null;
+                writeWatchdog.Begin(Now);
             }
             try
             {
                 store.WriteSnapshot(snapshot);
-                Post(() => { lock(simulationGate) { if (game is not null) GameStore.Acknowledge(game, snapshot); lastCommitTime = Now; } });
+                Post(() => { lock(simulationGate) { if (game is not null) GameStore.Acknowledge(game, snapshot); } });
             }
             catch
             {
-                lock (saveGate) { pendingSave ??= snapshot; saving = false; }
+                lock (saveGate) { pendingSave ??= snapshot; saving = false; writeWatchdog.Finish(); }
                 Post(() => { lock(simulationGate) { auto = false; Notify("저장 실패 · 진행을 멈췄습니다. 공간 확보 후 재개하세요."); } });
                 return;
             }
@@ -201,7 +203,6 @@ public sealed partial class GameView : View
         }
         game = new GameEngine((uint)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         store.Attach(game);
-        lastCommitTime = Now;
         lobby = false; auto = true; lastTick = Now; page = 0; scroll = 0; rankingMetric = RankingMetric.Return; comparisonPeriod = ComparisonPeriod.Season;
         companyStock = companyTab = 0; companySeason = 0; operationsTab = false;
         ownershipStock=ownershipPage=0;
@@ -419,6 +420,10 @@ public sealed partial class GameView : View
     }
 
     public override bool OnTouchEvent(MotionEvent? e)
+    {
+        lock(simulationGate) return TouchLocked(e);
+    }
+    bool TouchLocked(MotionEvent? e)
     {
         if (e is null) return false;
         float x = e.GetX() / scale, y = e.GetY() / scale;

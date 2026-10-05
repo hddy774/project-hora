@@ -6,6 +6,20 @@ static class V17Checks
 {
     public static void Run(Action<bool,string> check,Action<GameEngine> validate)
     {
+        var writeClock=new CheckpointWriteWatchdog();
+        check(!writeClock.IsStalled(1_000_000,15_000),"Long idle time without an active write does not stop the market");
+        writeClock.Begin(60_000);
+        check(!writeClock.IsStalled(60_100,15_000),"Resume after a long pause measures the new write, not the last old commit");
+        check(!writeClock.IsStalled(75_000,15_000),"Checkpoint timeout boundary allows the configured duration");
+        check(writeClock.IsStalled(75_001,15_000),"An actually stalled checkpoint still pauses safely");
+        writeClock.Finish();
+        check(!writeClock.IsStalled(900_000,15_000),"A completed write is not timed during a later user pause");
+        writeClock.Begin(900_000);
+        check(!writeClock.IsStalled(900_100,15_000),"A subsequent save resumes after an arbitrarily long idle");
+        writeClock.Begin(910_000);
+        check(!writeClock.IsStalled(920_000,15_000),"Each queued checkpoint gets its own active write deadline");
+        writeClock.Finish();
+        check(!writeClock.IsStalled(999_999,15_000),"Failed or finished workers clear their active deadline");
         var g=new GameEngine(170); var s=g.State; var w=g.World;
         check(s.Version==8 && s.Stocks.Sum(x=>x.MarketCap)==1_000_000_000_000,"Exact initial trillion capitalization without repricing");
         check(s.Bots.All(t=>t.Cash==1_000_000_000) && s.Retail.Count==1000,"100 funded billion-won corporations and 1000 initial retail cohorts");

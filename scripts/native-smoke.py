@@ -92,6 +92,7 @@ while True:
     except (sqlite3.Error,subprocess.CalledProcessError,IndexError): pass
     if time.monotonic()>deadline: raise RuntimeError("App failed to load/advance/save the true v7 fixture")
 tap(278,h-108); require_screen("일시정지"); time.sleep(2); screenshot("02-paused-market")
+paused_at=time.monotonic()
 
 # All new role lists, actual additional portraits and uncropped profile zoom.
 tap(200,h-40); require_screen("종합 인물 목록"); screenshot("03-people")
@@ -119,14 +120,20 @@ before,_=pull_state("before100x")
 for _ in range(5): tap(146,h-108)
 require_screen("100배속")
 screenshot("13-speed100")
-started=time.monotonic(); tap(278,h-108); time.sleep(15); tap(278,h-108)
-elapsed=time.monotonic()-started; time.sleep(3)
+idle=time.monotonic()-paused_at
+if idle<16: time.sleep(16-idle)
+idle=time.monotonic()-paused_at
+started=time.monotonic(); tap(278,h-108); require_screen("진행 중"); time.sleep(15); tap(278,h-108)
+elapsed=time.monotonic()-started; require_screen("일시정지"); time.sleep(3); screenshot("14-after100x")
 adb("shell","input","keyevent","3"); time.sleep(3)
 adb("shell","am","force-stop",package)
 after,folder=pull_state("final")
 delta=after["CompletedMinutes"]-before["CompletedMinutes"]
 pending=after["PendingClockMinutes"]
 if delta+pending < (elapsed-2)*1200 or pending>1200:
+    screenshot("failure-100x")
+    (output/"failure-logcat.txt").write_text(adb("logcat","-d","-t","250"))
+    (output/"native-clock-failure.json").write_text(json.dumps({"elapsedSeconds":elapsed,"completedMinutes":delta,"pendingMinutes":pending},indent=2))
     raise RuntimeError(f"Native100x failed: {delta} completed,{pending} pending over{elapsed:.3f}s")
 baseline=json.loads((fixture/"baseline.json").read_text())
 with sqlite3.connect(folder/"history-v5.sqlite") as db:
@@ -136,7 +143,7 @@ with sqlite3.connect(folder/"history-v5.sqlite") as db:
 if after["RunId"]!=baseline["run"] or after["Version"]!=8 or len(after["World"]["People"])!=200:
     raise RuntimeError("Native run/person identity changed")
 summary={"legacyVersion":7,"nativeVersion":8,"preservedRows":len(baseline["rows"]),"newHour":after["CompletedHours"],
-    "native100x":{"elapsedSeconds":elapsed,"completedMinutes":delta,"pendingMinutes":pending,"boundaryAllowanceSeconds":2},
+    "native100x":{"elapsedSeconds":elapsed,"completedMinutes":delta,"pendingMinutes":pending,"boundaryAllowanceSeconds":2,"idleBeforeResumeSeconds":idle},
     "screenshots":len(list(output.glob("*.png"))),"roles":200,"retail":10000}
 (output/"summary.json").write_text(json.dumps(summary,indent=2))
 print("PASS native legacy migration, immutable hours,200 profiles/zoom and100x:",json.dumps(summary),flush=True)

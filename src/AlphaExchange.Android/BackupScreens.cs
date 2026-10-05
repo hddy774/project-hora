@@ -61,7 +61,7 @@ public sealed partial class GameView
                 companyStock = companyTab = 0; companySeason = selectedSeason = historyPage = 0;
                 ownershipStock=ownershipPage=0;
                 corporateBefore = long.MaxValue; companyReportCache.Clear(); seasonCache.Clear();
-                comparisonPeriod = ComparisonPeriod.All; lastCommitTime = Now;
+                comparisonPeriod = ComparisonPeriod.All;
                 }
                 Notify("게임과 통계를 복원했습니다. 재생하면 이어집니다.");
             }

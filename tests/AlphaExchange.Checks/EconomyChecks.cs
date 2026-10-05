@@ -30,6 +30,8 @@ static class EconomyChecks
         check(shortGame.SubmitOrder(2, stock, true, 52600, 1) is null, "Partial short fill");
         check(shortTrader.ShortShares[stock] == 1 && shortTrader.Shares[stock] == sellerLong && shortGame.State.Bank.ShareInventory[stock] == inventory - 1, "Actual borrowed shares settle at the resting price");
         shortGame.CancelOrders(1); check(shortGame.State.Bank.ReservedLending[stock] == 0, "Short cancellation releases lending inventory");
+        TestFixtures.BuyFromBank(shortGame,3,stock,1);
+        inventory--; // The funded long counterparty also acquired one bank share.
         shortGame.SubmitOrder(3, stock, false, 51000, 1);
         check(shortGame.SubmitOrder(1, stock, true, 51100, 1, cover: true) is null, "Cover trade");
         check(shortTrader.ShortShares[stock] == 0 && shortGame.State.Bank.ShareInventory[stock] == inventory && shortTrader.RealizedProfit == 1500, "Cover returns borrowed shares and realizes profit");
@@ -59,8 +61,8 @@ static class EconomyChecks
         foreach (var s in loss.State.Stocks) s.History = Enumerable.Range(0, 24).Select(i => (double)(s.Price * (1.3 - i * .3 / 23))).ToList();
         loss.AdvanceHour();
         check(a.Decision.Contains("하락") && loss.Analyze(a, 0).TargetExposure < .3, "Bear market reduces exposure and strengthens risk control");
-        var strong = new Trader { Abilities = new Abilities { Valuation = 50, RiskManagement = 100, Macro = 60 }, SeasonOpeningEquity = 1, Cash = 1_000_000, Risk = .5 };
-        var weak = new Trader { Abilities = new Abilities { Valuation = 50, RiskManagement = 20, Macro = 60 }, SeasonOpeningEquity = 1, Cash = 1_000_000, Risk = .5 };
+        var strong = new Trader { Id=1, Abilities = new Abilities { Valuation = 50, RiskManagement = 100, Macro = 60 }, SeasonOpeningEquity = 1, Cash = 1_000_000, Risk = .5 };
+        var weak = new Trader { Id=2, Abilities = new Abilities { Valuation = 50, RiskManagement = 20, Macro = 60 }, SeasonOpeningEquity = 1, Cash = 1_000_000, Risk = .5 };
         check(loss.Analyze(strong, 0).TargetExposure < loss.Analyze(weak, 0).TargetExposure, "Risk ability changes defensive position sizing");
         strong.Abilities.Valuation = 100; weak.Abilities.Valuation = 20; loss.State.Stocks[0].FairValue *= 1.4;
         check(loss.Analyze(strong, 0).Score > loss.Analyze(weak, 0).Score, "Valuation ability changes stock conviction");
@@ -80,7 +82,7 @@ static class EconomyChecks
             check(r.Season == 1 && r.NewsCount >= 0 && s.SeasonNewsCount <= 1, "Monthly report uses accumulated news then resets");
             check(r.OpeningCash + r.OperatingCashFlow + r.InvestingCashFlow + r.FinancingCashFlow == r.Cash, "Corporate cash flow reconciliation");
             check(r.OpeningEquity + r.NetIncome - r.Dividends + r.CapitalChange == r.Equity, "Corporate statement of equity reconciliation");
-            check(r.Assets == r.Debt + r.Equity, "Corporate balance sheet");
+            check(r.Assets == r.Liabilities + r.Equity, "Corporate balance sheet");
         }
         check(company.State.Government.Policy.Season == 2 && company.State.Government.History.Count == 2, "Monthly government policy rollover");
         var ten = company.Period(ComparisonPeriod.TenDays); var five = company.Period(ComparisonPeriod.FiveDays); var day = company.Period(ComparisonPeriod.PreviousDay);
@@ -93,7 +95,7 @@ static class EconomyChecks
         }
         check(company.State.PendingSeasons[0].Days.Count == 30 && company.State.PendingSeasons[0].CompanyReports.All(r => r.Season == 1), "Season archive includes graphs and closing reports");
         var old = MakeV3Fixture(); var migrated = GameEngine.Deserialize(old.ToJsonString());
-        check(migrated.State.Version == 5 && migrated.State.MigratedFromV3 && migrated.State.Stocks.Count == 30, "v3 upgrades into thirty-stock economy");
+        check(migrated.State.Version == 6 && migrated.State.MigratedFromV3 && migrated.State.Stocks.Count == 30, "v3 upgrades into current thirty-stock economy");
         check(migrated.State.Bots.All(t => t.Cash == (long)old["Bots"]![t.Id - 1]!["Cash"]! && t.Shares.Take(8).SequenceEqual(old["Bots"]![t.Id - 1]!["Shares"]!.AsArray().Select(x => (long)x!))), "v3 cash and holdings preserved");
         validate(migrated);
         var corruptHistory = JsonNode.Parse(company.Serialize())!.AsObject(); corruptHistory["DailyHistory"] = new JsonArray();
@@ -104,16 +106,19 @@ static class EconomyChecks
     static JsonObject MakeV3Fixture()
     {
         var g = new GameEngine(111);
+        for(int i=0;i<8;i++) TestFixtures.BuyFromBank(g,1,i,2);
+        TestFixtures.ClearLegacyTreasury(g);
         foreach (var t in g.Participants)
         {
             for (int i = 8; i < g.State.Stocks.Count; i++) t.Cash += (long)t.Shares[i] * g.State.Stocks[i].Price;
             t.Shares = t.Shares.Take(8).ToArray(); t.AverageCost = t.AverageCost.Take(8).ToArray(); t.ReservedShares = t.ReservedShares.Take(8).ToArray();
             t.ShortShares = new long[8]; t.ShortAveragePrice = new double[8]; t.ReservedCovers = new long[8]; t.OpeningCash = t.Cash;
+            t.BuyCashFlow=t.SellCashFlow=t.Fees=0; t.OpeningEquity=t.Cash+Enumerable.Range(0,8).Sum(i=>g.State.Stocks[i].Value(t.Shares[i]));
         }
         g.State.Stocks.RemoveRange(8, g.State.Stocks.Count - 8); g.State.News.RemoveAll(n => n.StockIndex >= 8);
         for (int i = 0; i < 8; i++) g.State.Stocks[i].TotalShares = g.Participants.Sum(t => (long)t.Shares[i]);
         g.State.InitialSystemCash = g.Participants.Sum(t => t.Cash) + g.State.FeePool;
-        var json = JsonNode.Parse(g.Serialize())!.AsObject(); json["Version"] = 3;
+        var json = JsonNode.Parse(System.Text.Json.JsonSerializer.Serialize(g.State))!.AsObject(); json["Version"] = 3;
         foreach (var participant in json["Bots"]!.AsArray().Concat(json["Retail"]!.AsArray()))
             foreach (string key in new[] { "ShortShares", "ShortAveragePrice", "ReservedCovers", "Abilities", "Disposition", "CreditScore", "LoanDebt", "FineDebt", "OpeningSnapshot", "SeasonSnapshot" })
                 participant!.AsObject().Remove(key);

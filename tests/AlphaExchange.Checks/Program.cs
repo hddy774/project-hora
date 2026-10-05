@@ -34,15 +34,19 @@ void Validate(GameEngine game)
 }
 if(args.Length==3 && args[0]=="--crash-write") { CrashProbe.AbruptWrite(args[1],args[2]); return; }
 if(args.Contains("--storage-load")) { StorageLoad.Run(); return; }
+if(args.Contains("--v15-only")) { V15Checks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} v1.5 assertions"); return; }
+if(args.Contains("--economy-only")) { EconomyChecks.Run(Check,Validate,Near); Console.WriteLine($"PASS {assertions:N0} economy assertions"); return; }
 if(args.Contains("--ownership-only")) { OwnershipChecks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} ownership assertions"); return; }
 if(args.Contains("--market-only")) { MarketChecks.Run(Check,Validate,Near); Console.WriteLine($"PASS {assertions:N0} market assertions"); return; }
 var match = new GameEngine(42);
 Check(match.State.Bots.All(t => t.Equity(match.State.Stocks) == 10000000), "Institution capital");
 Check(match.State.Retail.All(t => t.Equity(match.State.Stocks) == 100000), "Retail capital 1/100");
 int opening = match.State.Stocks[0].Price;
+foreach(int seller in new[] {2,3,4,5}) TestFixtures.BuyFromBank(match,seller,0,2);
+long openingMatches=match.State.TotalMatches;
 Check(match.SubmitOrder(2, 0, false, 51000, 2) is null, "First ask");
 Check(match.SubmitOrder(3, 0, false, 50500, 2) is null, "Better ask");
-Check(match.State.Stocks[0].Price == opening && match.State.TotalMatches == 0, "No price change without execution");
+Check(match.State.Stocks[0].Price == opening && match.State.TotalMatches == openingMatches, "No price change without execution");
 Check(match.SubmitOrder(1, 0, true, 52000, 3) is null, "Marketable bid");
 Check(match.State.Tape[1].SellerId == 3 && match.State.Tape[1].Quantity == 2 && match.State.Tape[1].Price == 50500, "Better price first");
 Check(match.State.Tape[0].SellerId == 2 && match.State.Tape[0].Quantity == 1 && match.State.Stocks[0].Price == 51000, "Partial fill/resting price");
@@ -108,6 +112,8 @@ Check(store.Load(out var recovery) is not null && recovery.Contains("복구"), "
 JsonObject OldFixture(uint seed)
 {
     var old = new GameEngine(seed); var stocks = old.State.Stocks;
+    for(int i=0;i<8;i++) TestFixtures.BuyFromBank(old,1,i,2);
+    TestFixtures.ClearLegacyTreasury(old);
     foreach (var t in old.Participants)
     {
         for (int i = 8; i < old.State.Stocks.Count; i++) t.Cash += (long)t.Shares[i] * stocks[i].Price;
@@ -119,7 +125,7 @@ JsonObject OldFixture(uint seed)
     old.State.News.RemoveAll(n => n.StockIndex >= 8);
     for (int i = 0; i < 8; i++) stocks[i].TotalShares = old.Participants.Sum(t => (long)t.Shares[i]);
     old.State.InitialSystemCash = old.Participants.Sum(t => t.Cash) + old.State.FeePool;
-    return JsonNode.Parse(old.Serialize())!.AsObject();
+    return JsonNode.Parse(JsonSerializer.Serialize(old.State))!.AsObject();
 }
 var legacy = OldFixture(123);
 legacy["Version"] = 2; legacy["CompletedHours"] = 720; legacy["Retail"] = new JsonArray(); legacy["Orders"] = new JsonArray();
@@ -142,6 +148,7 @@ times.Sort();
 EconomyChecks.Run(Check, Validate, Near);
 MarketChecks.Run(Check, Validate, Near);
 OwnershipChecks.Run(Check,Validate);
+V15Checks.Run(Check,Validate);
 Console.WriteLine($"PASS {assertions:N0} assertions; {seasons} seasons; {game.State.TotalMatches:N0} matched trades");
 Console.WriteLine($"Simulation wall time {watch.Elapsed.TotalSeconds:F2}s; hour p50={times[times.Count/2]:F2}ms p95={times[(int)(times.Count*.95)]:F2}ms p99={times[(int)(times.Count*.99)]:F2}ms (100x budget 50ms/hour)");
 Console.WriteLine($"Save bytes {System.Text.Encoding.UTF8.GetByteCount(json):N0}; serialize {saveWatch.Elapsed.TotalMilliseconds:F1}ms; pending={game.State.PendingSeasons.Count}; active orders={game.State.Orders.Count}");

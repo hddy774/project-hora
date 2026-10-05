@@ -216,7 +216,7 @@ public sealed partial class GameView : View
             clipTop = 101; clipBottom = h - 145;
             try
             {
-                float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), 7 => DrawOwnership(112 - scroll), _ => DrawNews(112 - scroll) };
+                float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), 7 => DrawOwnership(112 - scroll), 8=>DrawGovernance(112-scroll),9=>DrawBankruptcies(112-scroll), _ => DrawNews(112 - scroll) };
                 maxScroll = Math.Max(0, end + scroll - (h - 160));
             }
             catch(Exception e) when(GameStore.StorageException(e))
@@ -330,7 +330,7 @@ public sealed partial class GameView : View
         if (fill) { Circle(lastX, lastY, 4, Bg); Circle(lastX, lastY, 3, color); }
     }
 
-    void Robot(int id, float x, float y, float size) => Portrait(id, x, y, size, size);
+    void Robot(int id, float x, float y, float size) => Portrait(S.Bots[id-1].PortraitId, x, y, size, size);
 
     void Mark(float x, float y, float size, AColor color)
     {

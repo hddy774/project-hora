@@ -36,7 +36,7 @@ public sealed partial class GameView
                 Box(20, y, 360, 77, follow ? Card2 : Card, 14, follow ? Teal : null);
                 Text($"{rank:00}", 34, y + 43, 12, rank < 4 ? Lime : Muted, true);
                 Robot(bot.Id, 59, y + 17, 41);
-                Text(Representatives.Name(bot.Id), 111, y + 29, 12, Ink, true);
+                Text(Representatives.Name(bot.PortraitId), 111, y + 29, 12, Ink, true);
                 Text(GameEngine.DispositionNames[(int)bot.Disposition] + " · " + bot.CreditRating, 111, y + 48, 10, Teal);
                 TextFit(bot.Decision, 111, y + 65, 9, Muted, 137);
                 Text(Value(bot), 363, y + 29, 14, Lime, true, Paint.Align.Right);
@@ -107,7 +107,7 @@ public sealed partial class GameView
         Text($"분할 조정 120시간 · 시총 {ShortMoney(s.MarketCap)}원", 28, y + 209, 10, Muted);
         y += 232;
         Text("실시간 호가", 28, y, 16, Ink, true);
-        Text("기 = 기관 · 개 = 개인", 373, y, 10, Muted, false, Paint.Align.Right);
+        Text("기=기관 · 개=개인 · 은=은행", 373, y, 9, Muted, false, Paint.Align.Right);
         y += 23;
         Text("매수 잔량", 30, y, 10, Teal); Text("매수가", 179, y, 10, Teal, false, Paint.Align.Right);
         Text("매도가", 216, y, 10, Red); Text("매도 잔량", 372, y, 10, Red, false, Paint.Align.Right);
@@ -126,7 +126,7 @@ public sealed partial class GameView
                     Box(left, y, 166f * level.Quantity / max, 36, new AColor((int)color.R, color.G, color.B, 25), 2);
                     Text(Money(level.Quantity), left + 6, y + 15, 11, color, true);
                     Text(Money(level.Price), left + 159, y + 15, 12, Ink, true, Paint.Align.Right);
-                    Text($"기 {level.InstitutionQuantity} · 개 {level.RetailQuantity}", left + 6, y + 30, 9, Muted);
+                    Text($"기 {level.InstitutionQuantity} · 개 {level.RetailQuantity} · 은 {level.BankQuantity}", left + 6, y + 30, 9, Muted);
                 }
                 else Text("—", left + 83, y + 23, 12, Muted, false, Paint.Align.Center);
             }
@@ -136,7 +136,7 @@ public sealed partial class GameView
         Text("최근 매칭 체결", 28, y, 14, Ink, true); y += 24;
         foreach (var t in S.Tape.Where(t => t.StockIndex == index).Take(2))
         {
-            string buyer = t.BuyerId <= 100 ? "기관" : "개인", seller = t.SellerId <= 100 ? "기관" : "개인";
+            string buyer = t.BuyerId==0 ? "은행" : t.BuyerId <= 100 ? "기관" : "개인", seller = t.SellerId==0 ? "은행" : t.SellerId <= 100 ? "기관" : "개인";
             Text($"{buyer} 매수 / {seller} 매도", 28, y, 11, Muted);
             Text($"{t.Quantity}주 · {Money(t.Price)}원", 373, y, 11, Ink, true, Paint.Align.Right); y += 23;
         }
@@ -148,9 +148,9 @@ public sealed partial class GameView
     {
         var bot = S.Bots[selectedTrader - 1];
         float y = Modal(Math.Min(630, h - 16), () => selectedTrader = -1);
-        Portrait(bot.Id, 28, y + 29, 120, 195);
+        Portrait(bot.PortraitId, 28, y + 29, 120, 195);
         Text("INSTITUTION " + bot.Id.ToString("000"), 166, y + 62, 10, Lime, true);
-        Text(Representatives.Name(bot.Id), 166, y + 98, 25, Ink, true);
+        Text(Representatives.Name(bot.PortraitId), 166, y + 98, 25, Ink, true);
         Text(bot.Name, 166, y + 124, 14, Muted);
         Text(GameEngine.DispositionNames[(int)bot.Disposition] + " · 신용 " + bot.CreditRating, 166, y + 155, 13, Teal, true);
         Text($"시즌 {S.Season} · {game!.RankOf(bot.Id)}위", 166, y + 190, 15, Ink, true);
@@ -174,10 +174,10 @@ public sealed partial class GameView
         Text("HOW IT WORKS", 28, y + 86, 11, Lime, true);
         string[] titles = ["01  기관 100개, 개인 10,000명", "02  호가 경쟁으로 결정되는 주가", "03  현실 120초 = 게임 1일", "04  끝없이 이어지는 30일 시즌"];
         string[] body = [
-            "기관은 1,000만 원, 개인은 10만 원의 현금과 주식으로 시작합니다. 플레이어는 시장을 관찰합니다.",
+            "기관은 1,000만 원, 개인은 10만 원의 현금으로 시작합니다. 회사는 자사주 50%, 은행은 50%를 보유합니다. 개인은 시장 반응을 따라가고 기관은 가치를 분석합니다.",
             "서로의 매수·매도 호가가 가격과 시간 순서로 체결됩니다. 배당락·분할 때 기준 가격도 조정됩니다. 수수료·세금·금리·공매도 규칙은 정부 정책에 따라 바뀝니다.",
             "1배속에서 실제 5초마다 게임 시간 1시간이 지납니다. 24시간, 즉 실제 120초가 게임의 하루입니다.",
-            "분야별 5개 회사가 생산하고 배당을 지급합니다. 임금·소비를 제외한 투자 수익률을 기록합니다. 시즌마다 기업 결산과 정부 정책이 바뀝니다. 자산과 시장은 이어집니다."
+            "분야별 5개 회사가 생산하고 주총으로 경영을 결정합니다. 시즌마다 결산과 정책이 바뀝니다. 파산 시 새 세대가 등장하며, 손실과 파산 기록은 파일에 보존됩니다."
         ];
         float row = y + 123;
         for (int i = 0; i < titles.Length; i++)

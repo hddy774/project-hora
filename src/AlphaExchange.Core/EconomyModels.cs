@@ -18,6 +18,8 @@ public sealed class GovernmentPolicy
 }
 public sealed class GovernmentState : ICashAccount
 {
+    public long TaxWriteOffs { get; set; }
+    public long FineWriteOffs { get; set; }
     public long Cash { get; set; } = 100_000_000;
     public long Taxes { get; set; }
     public long Fines { get; set; }
@@ -32,6 +34,12 @@ public sealed class GovernmentState : ICashAccount
 }
 public sealed class BankState : ICashAccount
 {
+    public Trader MarketAccount { get; set; } = new() { Id=0, Name="시장안정은행" };
+    public long InterventionPurchases { get; set; }
+    public long InterventionSales { get; set; }
+    public long LoanWriteOffs { get; set; }
+    public long ShortWriteOffs { get; set; }
+    public string MarketDecision { get; set; } = "초기 유동성 공급";
     public long Cash { get; set; } = 1_000_000_000;
     public long InterestIncome { get; set; }
     public long OperatingSpending { get; set; }
@@ -44,6 +52,7 @@ public sealed class BankState : ICashAccount
 public sealed record LoanOffer(CreditRating Rating, double AssetRatio, double AnnualRate, long Limit, long Available);
 public sealed class CompanyReport : ICashAccount
 {
+    public long TradePayables { get; set; }
     public string SecurityId { get; set; } = "";
     public bool IsOpening { get; set; }
     public int AccountingBasis { get; set; } = 5;
@@ -74,14 +83,17 @@ public sealed class CompanyReport : ICashAccount
     public long OperatingProfit => Revenue - OperatingCosts - Depreciation;
     public long NetIncome => OperatingProfit - Interest - Tax;
     public long Assets => Cash + Receivables + Inventory + FixedAssets;
-    public long Equity => Assets - Debt;
+    public long Liabilities => Debt+TradePayables;
+    public long Equity => Assets - Liabilities;
     public double Margin => (double)NetIncome / Math.Max(1, Revenue);
-    public double DebtRatio => (double)Debt / Math.Max(1, Assets);
+    public double DebtRatio => (double)Liabilities / Math.Max(1, Assets);
     public double ReturnOnEquity => (double)NetIncome / Math.Max(1, OpeningEquity);
 }
 public enum OperationStatus { Active, Completed, Failed }
 public sealed class InstitutionOperation
 {
+    public string LeaderName { get; set; } = "";
+    public string PartnerName { get; set; } = "";
     public long Id { get; set; }
     public int LeaderId { get; set; }
     public int PartnerId { get; set; }
@@ -97,6 +109,7 @@ public sealed class InstitutionOperation
 }
 public sealed class TraderSnapshot
 {
+    public int Generation { get; set; } = 1;
     public int Id { get; set; }
     public double ReturnIndex { get; set; } = 1;
     public long NetContribution { get; set; }
@@ -108,6 +121,12 @@ public sealed class TraderSnapshot
 }
 public sealed class DailySnapshot
 {
+    public int CohortTradingBasis { get; set; }
+    public double InstitutionTradingIncome { get; set; }
+    public double RetailTradingIncome { get; set; }
+    public long CompanyBankruptcies { get; set; }
+    public long InstitutionBankruptcies { get; set; }
+    public long RetailBankruptcies { get; set; }
     public int Resolution { get; set; } = 1;
     public bool LegacyNoFundamentals { get; set; }
     [System.Text.Json.Serialization.JsonIgnore] public bool GapBefore { get; set; }

@@ -53,7 +53,7 @@ public sealed partial class GameView
         Text("ALPHA", 57, 29, 15, Ink, true, headline: true);
         Text("EXCHANGE", 58, 44, 9, Muted, true);
         Hit(14, 7, 151, 45, () => { lobby = true; auto = false; Save(); });
-        Pill("v1.4.0 · OFFLINE", 207, 20, Teal, 128);
+        Pill("v1.5.0 · OFFLINE", 207, 20, Teal, 128);
         Circle(360, 32, 15, Card2); Text("?", 360, 37, 15, Ink, true, Paint.Align.Center);
         Hit(338, 9, 43, 45, () => { help = true; });
         Text($"S{S.Season} · DAY {S.Day:00}/30", 21, 77, 18, Ink, true);
@@ -108,9 +108,11 @@ public sealed partial class GameView
         Text("오늘의 시장", 21, y, 19, Ink, true);
         Text("종목별 흐름 관찰", 379, y, 11, Muted, false, Paint.Align.Right);
         y += 16;
-        for (int i = 0; i < S.Stocks.Count; i++)
+        y=SectorTabs(y);
+        foreach(int i in FilteredCompanies(true))
         {
             int index = i; var s = S.Stocks[i]; if (!s.Active) continue;
+            if(!Visible(y,80)) { y+=89; continue; }
             Box(20, y, 360, 80, Card, 16);
             AColor accent = PaletteColors[i % Palette.Length];
             Box(32, y + 17, 43, 43, new AColor((int)accent.R, accent.G, accent.B, 24), 13);

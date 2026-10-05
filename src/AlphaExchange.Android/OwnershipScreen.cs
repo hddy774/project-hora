@@ -11,8 +11,9 @@ public sealed partial class GameView
     { ownershipStock=index; ownershipPage=0; selectedStock=-1; SetPage(7); }
     void PickOwnershipCompany()
     {
-        string[] names=S.Stocks.Select(s=>$"{s.Symbol} · {s.Name} · {s.Sector}"+(s.Active ? "" : " · 합병 완료")).ToArray();
-        new AlertDialog.Builder(Context)!.SetTitle("지분을 볼 회사")!.SetItems(names,(_,e)=>OpenOwnership(e.Which))!.Show();
+        var indices=FilteredCompanies();
+        string[] names=indices.Select(i=>$"{S.Stocks[i].Symbol} · {S.Stocks[i].Name} · {S.Stocks[i].Sector}").ToArray();
+        new AlertDialog.Builder(Context)!.SetTitle("지분을 볼 회사 · "+marketSector)!.SetItems(names,(_,e)=>OpenOwnership(indices[e.Which]))!.Show();
     }
     float DrawOwnership(float y)
     {
@@ -24,6 +25,8 @@ public sealed partial class GameView
         Text(stock.Symbol+" · "+stock.Sector+" · 회사 선택 ▾",90,y+39,10,Muted);
         Hit(74,y,252,48,PickOwnershipCompany);
         Button("→",335,y,45,48,()=>OpenOwnership((ownershipStock+1)%S.Stocks.Count),false); y+=63;
+        y=SectorTabs(y);
+        Button("주주총회 · 기업 전략과 의결권 →",20,y,360,42,()=>OpenGovernance(ownershipStock),false); y+=57;
         if(!stock.Active)
         {
             y=Statement("합병 완료 회사",y,[("현재 발행 주식",Money(structure.IssuedShares)+"주"),("현재 시가총액","상장 종료")]);
@@ -64,7 +67,7 @@ public sealed partial class GameView
             if(Visible(y,77))
             {
                 Box(20,y,360,77,Card,13); Robot(holder.TraderId,32,y+13,48);
-                TextFit(holder.Name,92,y+28,12,Ink,173,true); Text(Representatives.Name(holder.TraderId),92,y+50,10,Muted);
+                TextFit(holder.Name,92,y+28,12,Ink,173,true); Text(Representatives.Name(S.Bots[holder.TraderId-1].PortraitId),92,y+50,10,Muted);
                 Text(Money(holder.Shares)+"주",363,y+28,13,Ink,true,Paint.Align.Right);
                 Text(structure.OutstandingRatio(holder.Shares).ToString("P2"),363,y+52,12,Lime,true,Paint.Align.Right);
                 Hit(20,y,360,77,()=>selectedTrader=holder.TraderId);

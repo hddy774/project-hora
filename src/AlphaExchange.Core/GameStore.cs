@@ -18,13 +18,16 @@ public sealed record SaveSnapshot
     public ArchivedSnapshot[] Seasons { get; init; }
     public HistoryRecord[] History { get; init; }
     public EventRecord[] Events { get; init; } = [];
+    public EventRecord[] Votes { get; init; } = [];
+    public EventRecord[] Bankruptcies { get; init; } = [];
+    internal long ReportThrough { get; init; }
     public CompanyReport[] Reports { get; init; } = [];
     public SaveSnapshot(string RunId,long Hour,string Json,ArchivedSnapshot[] Seasons,HistoryRecord[] History)
     { this.RunId=RunId; this.Hour=Hour; this.Json=Json; this.Seasons=Seasons; this.History=History; }
     internal SaveSnapshot(GameState state,ArchivedSnapshot[] seasons,HistoryRecord[] history)
     {
         RunId=state.RunId; Hour=state.CompletedHours; Seasons=seasons; History=history;
-        json=new Lazy<string>(()=>JsonSerializer.Serialize(state));
+        json=new Lazy<string>(()=>JsonSerializer.Serialize(state,GameEngine.StateJson));
     }
 }
 
@@ -34,6 +37,10 @@ public sealed partial class GameStore
     readonly object writeGate = new();
     readonly Dictionary<string, List<HistoryRecord>> pending = [];
     readonly Dictionary<string, List<EventRecord>> pendingEvents = [];
+    readonly Dictionary<string,List<EventRecord>> pendingVotes=[];
+    readonly Dictionary<string,List<EventRecord>> pendingBankruptcies=[];
+    readonly Dictionary<string,List<(long Sequence,CompanyReport Report)>> pendingReports=[];
+    long reportSequence;
     readonly Dictionary<string,long> queuedDailyThrough = [];
     volatile bool databaseReady;
     long lastBackup;
@@ -67,6 +74,11 @@ public sealed partial class GameStore
             CREATE TABLE IF NOT EXISTS events(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,security TEXT NOT NULL,
                 other TEXT NOT NULL,kind INTEGER NOT NULL,data TEXT NOT NULL,PRIMARY KEY(run,id));
             CREATE INDEX IF NOT EXISTS event_security ON events(run,security,id);
+            CREATE TABLE IF NOT EXISTS votes(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,security TEXT NOT NULL,
+                data TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(run,id));
+            CREATE INDEX IF NOT EXISTS vote_security ON votes(run,security,id);
+            CREATE TABLE IF NOT EXISTS bankruptcies(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,kind INTEGER NOT NULL,
+                entity TEXT NOT NULL,data TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(run,id));
             CREATE TABLE IF NOT EXISTS reports(run TEXT NOT NULL,security TEXT NOT NULL,season INTEGER NOT NULL,basis INTEGER NOT NULL,
                 opening INTEGER NOT NULL,data BLOB NOT NULL,PRIMARY KEY(run,security,season,basis,opening));
             CREATE TABLE IF NOT EXISTS seasons(run TEXT NOT NULL,season INTEGER NOT NULL,data BLOB NOT NULL,PRIMARY KEY(run,season));
@@ -118,6 +130,17 @@ public sealed partial class GameStore
         engine.CorporateEventRecorded += e => { lock (pending) pendingEvents[run].Add(new EventRecord(e.Id,e.Hour,JsonSerializer.Serialize(e))); };
         lock (pending) foreach (var e in engine.State.CorporateEvents)
             if (!pendingEvents[run].Any(r => r.Id == e.Id)) pendingEvents[run].Add(new EventRecord(e.Id,e.Hour,JsonSerializer.Serialize(e)));
+        lock(pending)
+        {
+            pendingVotes.TryAdd(run,[]); pendingBankruptcies.TryAdd(run,[]); pendingReports.TryAdd(run,[]);
+            foreach(var v in engine.State.CompanyVotes.Where(v=>v.Status!=VoteStatus.Open))
+                if(!pendingVotes[run].Any(e=>e.Id==v.Id)) pendingVotes[run].Add(new(v.Id,v.CloseHour,JsonSerializer.Serialize(v)));
+            foreach(var b in engine.State.Bankruptcies)
+                if(!pendingBankruptcies[run].Any(e=>e.Id==b.Id)) pendingBankruptcies[run].Add(new(b.Id,b.Hour,JsonSerializer.Serialize(b)));
+        }
+        engine.VoteRecorded+=v=> { lock(pending) pendingVotes[run].Add(new(v.Id,v.CloseHour,JsonSerializer.Serialize(v))); };
+        engine.BankruptcyRecorded+=b=> { lock(pending) pendingBankruptcies[run].Add(new(b.Id,b.Hour,JsonSerializer.Serialize(b))); };
+        engine.CompanyReportRecorded+=r=> { lock(pending) pendingReports[run].Add((++reportSequence,CheckpointCopy.Scalar(r))); };
         engine.HistorySource = new RunQuery(this,run);
         // Initial or migrated state is part of the first atomic save.
         AddPending(run, engine.CaptureSnapshot());
@@ -144,8 +167,10 @@ public sealed partial class GameStore
         lock (pending) records = pending[state.RunId].Where(r => r.Hour <= state.CompletedHours).ToArray();
         EventRecord[] events;
         lock (pending) events = pendingEvents[state.RunId].Where(e => e.Hour <= state.CompletedHours).ToArray();
-        return new SaveSnapshot(CheckpointCopy.Freeze(state),seasons,records)
-        { Events = events, Reports = state.Stocks.SelectMany(s => s.Reports).Select(CheckpointCopy.Scalar).ToArray() };
+        lock(pending) return new SaveSnapshot(CheckpointCopy.Freeze(state,true),seasons,records)
+        { Events=events,Votes=pendingVotes[state.RunId].ToArray(),Bankruptcies=pendingBankruptcies[state.RunId].ToArray(),ReportThrough=reportSequence,
+          Reports=state.Stocks.SelectMany(s=>s.Reports).Concat(pendingReports[state.RunId].Select(p=>p.Report))
+            .GroupBy(r=>(r.SecurityId,r.Season,r.AccountingBasis,r.IsOpening)).Select(g=>CheckpointCopy.Scalar(g.Last())).ToArray() };
     }
     static void CheckCheckpoint(byte[] bytes,string run,long hour)
     {
@@ -168,7 +193,8 @@ public sealed partial class GameStore
     {
         // All payloads are immutable. Compression and I/O do not read the live engine.
         byte[] stateBytes=Encoding.UTF8.GetBytes(snapshot.Json); CheckCheckpoint(stateBytes,snapshot.RunId,snapshot.Hour);
-        if(snapshot.History.Any(r=>r.Hour<0 || r.Hour>snapshot.Hour || r.Resolution is not (1 or 24)) || snapshot.Events.Any(e=>e.Hour<0 || e.Hour>snapshot.Hour))
+        if(snapshot.History.Any(r=>r.Hour<0 || r.Hour>snapshot.Hour || r.Resolution is not (1 or 24)) ||
+            snapshot.Events.Concat(snapshot.Votes).Concat(snapshot.Bankruptcies).Any(e=>e.Hour<0 || e.Hour>snapshot.Hour))
             throw new InvalidDataException("체크포인트 기록 범위 불일치");
         var hours = snapshot.History.Select(r => { byte[] bytes=Encoding.UTF8.GetBytes(r.Json);
             return (r,data:Compress(bytes),hash:Hash(bytes),point:JsonSerializer.Deserialize<DailySnapshot>(bytes)!); }).ToArray();
@@ -217,6 +243,7 @@ public sealed partial class GameStore
                 command.Parameters.AddWithValue("$other",e.OtherSecurityId); command.Parameters.AddWithValue("$kind",(int)e.Kind);
                 command.Parameters.AddWithValue("$data",record.Json); command.ExecuteNonQuery();
             }
+            WriteLifecycle(command,snapshot);
             foreach (var report in snapshot.Reports) WriteReport(command,snapshot.RunId,report);
             command.CommandText = "INSERT INTO runs(id,hour,state,hash) VALUES($run,$hour,$state,$hash) ON CONFLICT(id) DO UPDATE SET hour=excluded.hour,state=excluded.state,hash=excluded.hash WHERE excluded.hour>=runs.hour";
             command.Parameters.Clear(); command.Parameters.AddWithValue("$run",snapshot.RunId); command.Parameters.AddWithValue("$hour",snapshot.Hour);
@@ -231,7 +258,10 @@ public sealed partial class GameStore
             lock (pending)
             {
                 if (pending.TryGetValue(snapshot.RunId,out var records)) records.RemoveAll(r => r.Hour <= snapshot.Hour);
-                if (pendingEvents.TryGetValue(snapshot.RunId,out var events)) events.RemoveAll(e => e.Hour <= snapshot.Hour);
+                if (pendingEvents.TryGetValue(snapshot.RunId,out var events)) events.RemoveAll(e => snapshot.Events.Any(saved=>saved.Id==e.Id));
+                if(pendingVotes.TryGetValue(snapshot.RunId,out var votes)) votes.RemoveAll(e=>snapshot.Votes.Any(saved=>saved.Id==e.Id));
+                if(pendingBankruptcies.TryGetValue(snapshot.RunId,out var bankruptcies)) bankruptcies.RemoveAll(e=>snapshot.Bankruptcies.Any(saved=>saved.Id==e.Id));
+                if(pendingReports.TryGetValue(snapshot.RunId,out var reports)) reports.RemoveAll(r=>r.Sequence<=snapshot.ReportThrough);
             }
             if (!File.Exists(BackupPath) || Environment.TickCount64 - lastBackup >= 60000 || snapshot.Hour % 720 == 0)
             { Backup(connection,BackupPath); lastBackup = Environment.TickCount64; }

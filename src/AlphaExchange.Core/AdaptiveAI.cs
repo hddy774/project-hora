@@ -1,19 +1,20 @@
 namespace AlphaExchange.Core;
 
-public sealed record InvestmentSignal(double Score, double TargetExposure, double StockLimit, double SectorLimit, bool Defensive, double Volatility);
+public readonly record struct InvestmentSignal(double Score, double TargetExposure, double StockLimit, double SectorLimit, bool Defensive, double Volatility);
 
 public sealed partial class GameEngine
 {
-    double[] trends = [], fastTrends = [], volatilities = [];
+    double[] trends = [], fastTrends = [], volatilities = [], dividendYields=[];
+    InvestmentSignal[] institutionSignals=[];
     double marketTrend;
     internal void PrepareMarketSignals()
     {
         if (trends.Length != State.Stocks.Count)
-        { trends = new double[State.Stocks.Count]; fastTrends = new double[State.Stocks.Count]; volatilities = new double[State.Stocks.Count]; }
+        { trends = new double[State.Stocks.Count]; fastTrends = new double[State.Stocks.Count]; volatilities = new double[State.Stocks.Count]; dividendYields=new double[State.Stocks.Count]; institutionSignals=new InvestmentSignal[State.Stocks.Count]; }
         marketTrend = 0;
         for (int i = 0; i < State.Stocks.Count; i++)
         {
-            var s = State.Stocks[i]; int n = s.History.Count;
+            var s = State.Stocks[i]; int n = s.History.Count; dividendYields[i]=s.DividendYield;
             trends[i] = (double)s.PreviousPrice / s.History[Math.Max(0, n - 24)] - 1;
             fastTrends[i] = (double)s.PreviousPrice / s.History[Math.Max(0, n - 3)] - 1;
             double sum = 0; int count = 0;
@@ -23,12 +24,17 @@ public sealed partial class GameEngine
     }
     public InvestmentSignal Analyze(Trader t, int index)
     {
+        if(t.IsRetail || t.Id==0) throw new ArgumentException("기관 전용 판단입니다.",nameof(t));
         if (index < 0 || index >= State.Stocks.Count) throw new ArgumentOutOfRangeException(nameof(index));
-        if (trends.Length != State.Stocks.Count) PrepareMarketSignals();
+        PrepareMarketSignals();
+        return Analyze(t,index,t.Equity(State.Stocks));
+    }
+    InvestmentSignal Analyze(Trader t,int index,long equity)
+    {
         var s = State.Stocks[index]; var a = t.Abilities;
         double trend = trends[index], fast = fastTrends[index], volatility = volatilities[index];
         double risk = a.RiskManagement / 100.0, macro = a.Macro / 100.0;
-        bool defensive = marketTrend < -.025 || trend < -.05 || volatility > .012 || t.Equity(State.Stocks) < t.SeasonOpeningEquity * .88;
+        bool defensive = marketTrend < -.025 || trend < -.05 || volatility > .012 || equity < t.SeasonOpeningEquity * .88;
         double exposure = .40 + t.Risk * .20 - State.Government.Policy.BaseRate * macro * 1.5;
         if (t.Disposition == Disposition.Cautious) exposure -= .12;
         if (t.Disposition == Disposition.Aggressive) exposure += .06;
@@ -45,7 +51,7 @@ public sealed partial class GameEngine
             exposure = Math.Max(exposure, .25 + a.RiskManagement * .001);
         score -= State.Government.Policy.BaseRate * macro * .08;
         double cost = State.Government.Policy.FeeBasisPoints / 10000.0 * 2 + .001;
-        score += s.DividendYield * (.02 + a.Valuation * .0003);
+        score += dividendYields[index] * (.02 + a.Valuation * .0003);
         score -= Math.Sign(score) * Math.Min(Math.Abs(score),cost * (1 - a.Execution / 200.0));
         return new InvestmentSignal(score, Math.Clamp(exposure, .06, .75), .20 - a.Diversification * .001,
             .48 - a.Diversification * .002, defensive, volatility);
@@ -53,15 +59,16 @@ public sealed partial class GameEngine
     void DecideInstitution(Trader t)
     {
         CancelOrders(t.Id); var stocks = State.Stocks;
+        if(t.WaitingForCapital) return;
         long equity = Math.Max(1, t.Equity(stocks));
-        var signals = new InvestmentSignal[stocks.Count];
-        for (int i = 0; i < stocks.Count; i++) signals[i] = Analyze(t, i);
-        bool defensive = signals.Any(s => s.Defensive);
+        var signals = institutionSignals; bool defensive=false; double bestScore=double.MinValue;
+        for (int i = 0; i < stocks.Count; i++)
+        { signals[i] = Analyze(t,i,equity); if(stocks[i].Active) { defensive|=signals[i].Defensive; bestScore=Math.Max(bestScore,signals[i].Score); } }
         t.Decision = defensive ? "하락·변동성 대응: 현금 확보 / 부채 축소 / 헤지" : "가치·추세·뉴스·단타·초단타 혼합 / 분산 비중 관리";
         var offer = LoanTerms(t);
         if (t.LoanDebt > 0 && (defensive || t.LoanDebt > offer.Limit || AvailableCash(t) > equity * .40))
             RepayLoan(t.Id, Math.Max(t.LoanDebt - offer.Limit, (long)(AvailableCash(t) * .15)));
-        else if (!defensive && t.CreditScore >= 70 && t.Abilities.Valuation > 60 && signals.Max(s => s.Score) > .025 && t.LoanDebt < equity * .1)
+        else if (!defensive && t.CreditScore >= 70 && t.Abilities.Valuation > 60 && bestScore > .025 && t.LoanDebt < equity * .1)
             BorrowCash(t.Id, Math.Min(offer.Available, Math.Max(0, (long)(equity * .08) - t.LoanDebt)));
         bool margin = t.ShortCollateral(stocks) + t.ReservedCash > t.Cash;
         if (margin) { t.MarginCalls++; t.Decision = "담보 부족: 공매도 상환·보유 주식 청산"; }
@@ -70,11 +77,18 @@ public sealed partial class GameEngine
         for (int j = 0; j < attempts; j++)
         {
             int index = (int)(Next() * stocks.Count);
-            if (j == 0 && sellForCash) index = Enumerable.Range(0, stocks.Count).OrderByDescending(i => (long)t.Shares[i] * stocks[i].Price).First();
+            if (j == 0 && sellForCash)
+            {
+                long largest=-1;
+                for(int i=0;i<stocks.Count;i++) if(stocks[i].Active && (long)t.Shares[i]*stocks[i].Price>largest)
+                { index=i; largest=(long)t.Shares[i]*stocks[i].Price; }
+            }
             var s = stocks[index]; if (!s.Active) continue; var signal = signals[index];
             double longExposure = (double)(t.GrossAssets(stocks) - t.Cash) / equity;
             double weight = (double)t.Shares[index] * s.Price / equity;
-            double sectorWeight = stocks.Select((stock, i) => (stock, i)).Where(x => x.stock.Sector == s.Sector).Sum(x => (double)t.Shares[x.i] * x.stock.Price) / equity;
+            double sectorValue=0;
+            for(int i=0;i<stocks.Count;i++) if(stocks[i].Sector==s.Sector) sectorValue+=(double)t.Shares[i]*stocks[i].Price;
+            double sectorWeight=sectorValue/equity;
             int desired = Math.Max(1, (int)(equity * (.003 + t.Abilities.Execution * .000035) / s.Price));
             double spread = .003 + (100 - t.Abilities.Execution) * .00004;
             double noise = (Next() - .5) * .006 * (1 - t.Abilities.Technical / 130.0);
@@ -113,7 +127,7 @@ public sealed partial class GameEngine
             }
         }
         if (margin)
-            foreach (int i in Enumerable.Range(0, stocks.Count).Where(i => t.ShortShares[i] > 0 && t.ReservedCovers[i] == 0))
+            for(int i=0;i<stocks.Count;i++) if(t.ShortShares[i]>0 && t.ReservedCovers[i]==0)
             { int price = Math.Clamp((int)(stocks[i].Price * 1.015), 1, 10_000_000); int q = (int)Math.Min(1_000_000, t.ShortShares[i]); while (q > 0 && SubmitOrder(t.Id, i, true, price, q, 1, cover: true) is not null) q /= 2; }
         var operation = State.Operations.FirstOrDefault(o => o.Status == OperationStatus.Active && (o.LeaderId == t.Id || o.PartnerId == t.Id));
         if (operation is not null && !sellForCash)

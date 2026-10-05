@@ -33,7 +33,8 @@ static class MarketChecks
         check(g.SubscribeIssue(3,id,3) is null && g.Owner(3).Cash==investorCash-3*s.Price && s.Report.Cash==companyCash+3*s.Price && s.TotalShares==issued+3,"Primary subscription is a funded capital transfer");
         near(g.State.Stocks.Sum(x=>x.MarketCap)/g.State.IndexDivisor,neutral,"Issuance is neutral in price index",.001); validate(g);
         long outstanding=s.OutstandingShares;
-        check(g.Buyback(id,3,1,false) is null && s.TreasuryShares==1 && s.OutstandingShares==outstanding-1,"Treasury stock excluded from capitalization"); validate(g);
+        long initialTreasury=s.TreasuryShares;
+        check(g.Buyback(id,3,1,false) is null && s.TreasuryShares==initialTreasury+1 && s.OutstandingShares==outstanding-1,"Treasury stock excluded from capitalization"); validate(g);
         check(g.Buyback(id,3,1,true) is null && s.TotalShares==issued+2,"Funded repurchase and retirement"); validate(g);
         int target=g.State.Stocks.FindIndex(x=>x.Sector==s.Sector && x.SecurityId!=id); string targetId=g.State.Stocks[target].SecurityId;
         check(g.MergeCompanies(id,targetId) is null,"Same-sector stock exchange merger");
@@ -44,6 +45,7 @@ static class MarketChecks
         { var r=stock.Report; check(r.OpeningCash+r.OperatingCashFlow+r.InvestingCashFlow+r.FinancingCashFlow==r.Cash,"Post-action monthly cash flow"); check(r.OpeningEquity+r.NetIncome-r.Dividends+r.CapitalChange==r.Equity,"Post-action monthly equity"); }
         validate(g);
         var taxed=new GameEngine(19); int price=taxed.State.Stocks[0].Price;
+        TestFixtures.BuyFromBank(taxed,1,0,2);
         long taxQuantity=1;
         check(taxed.SubmitOrder(1,0,false,price+1000,(int)taxQuantity) is null && taxed.SubmitOrder(2,0,true,price+1000,(int)taxQuantity) is null,"Taxable gain executes");
         long taxPaid=taxed.Owner(1).Taxes;
@@ -121,18 +123,21 @@ static class MarketChecks
     static GameEngine V4Fixture()
     {
         var g=new GameEngine(47);
+        for(int i=0;i<10;i++) TestFixtures.BuyFromBank(g,1,i,2);
+        TestFixtures.ClearLegacyTreasury(g);
         foreach(var t in g.Participants)
         {
             for(int i=10;i<g.State.Stocks.Count;i++) t.Cash+=g.State.Stocks[i].Value(t.Shares[i]);
             t.Shares=t.Shares.Take(10).ToArray(); t.AverageCost=t.AverageCost.Take(10).ToArray(); t.ReservedShares=new long[10]; t.ShortShares=new long[10]; t.ShortAveragePrice=new double[10]; t.ReservedCovers=new long[10];
             t.OpeningCash=t.Cash;
+            t.BuyCashFlow=t.SellCashFlow=t.Fees=0; t.OpeningEquity=t.Cash+Enumerable.Range(0,10).Sum(i=>g.State.Stocks[i].Value(t.Shares[i]));
         }
         g.State.Stocks.RemoveRange(10,20); g.State.SecurityIds=g.State.Stocks.Select(s=>s.SecurityId).ToList(); g.State.News.Clear();
         g.State.Bank.ShareInventory=g.State.Bank.ShareInventory.Take(10).ToArray(); g.State.Bank.ReservedLending=new long[10];
         for(int i=0;i<10;i++) g.State.Stocks[i].TotalShares=g.Participants.Sum(t=>t.Shares[i])+g.State.Bank.ShareInventory[i];
         // Original v4 book scope excluded companies and real-economy cash.
         g.State.InitialSystemCash=g.Participants.Sum(t=>t.Cash)+g.State.Bank.Cash+g.State.Government.Cash+g.State.FeePool;
-        var json=JsonNode.Parse(g.Serialize())!; json["Version"]=4; json["CompletedHours"]=48;
+        var json=JsonNode.Parse(JsonSerializer.Serialize(g.State))!; json["Version"]=4; json["CompletedHours"]=48;
         var opening=g.CaptureSnapshot(); opening.Capitalization=g.State.Stocks.Sum(s=>s.MarketCap); opening.SecurityIds=[]; opening.StockShares=[]; opening.StockSectors=[]; opening.MarkPrices=[];
         var day=JsonSerializer.Deserialize<DailySnapshot>(JsonSerializer.Serialize(opening))!; day.Hour=24;
         json["OpeningSnapshot"]=JsonSerializer.SerializeToNode(opening); json["SeasonSnapshot"]=JsonSerializer.SerializeToNode(opening);

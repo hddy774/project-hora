@@ -16,8 +16,8 @@ public sealed partial class GameEngine
     {
         for (int i = 0; i < State.Stocks.Count; i++)
         {
-            State.Bank.ShareInventory[i] = 500;
-            State.Stocks[i].TotalShares = Participants.Sum(t => t.Shares[i]) + State.Bank.ShareInventory[i];
+            State.Bank.ShareInventory[i] = 1000;
+            State.Stocks[i].TotalShares = 2000; State.Stocks[i].TreasuryShares=1000;
             InitializeCompany(State.Stocks[i], i);
         }
         State.Government.History.Add(State.Government.Policy);
@@ -30,7 +30,7 @@ public sealed partial class GameEngine
         // Borrow against owned capital. Borrowing again cannot enlarge its own limit.
         long limit = (long)(Math.Max(0, t.Equity(State.Stocks)) * ratio);
         return new LoanOffer(t.CreditRating, ratio, State.Government.Policy.BaseRate + CreditSpreads[grade], limit,
-            Math.Min(Math.Max(0, limit - t.LoanDebt), State.Bank.Cash));
+            Math.Min(Math.Max(0, limit - t.LoanDebt), Math.Max(0,State.Bank.Cash-State.Bank.MarketAccount.ReservedCash)));
     }
     public string? BorrowCash(int ownerId, long amount)
     {
@@ -55,8 +55,7 @@ public sealed partial class GameEngine
     void RefreshEconomy()
     {
         // Every resting order is cancelled before a fee/regulation change.
-        foreach (var t in Participants) CancelOrders(t.Id);
-        State.Orders.Clear();
+        CancelAllOrders();
         var p = State.Government.Policy;
         int mode = (int)(Next() * 3);
         var next = new GovernmentPolicy { Season = State.Season, Name = mode == 0 ? "성장 지원" : mode == 1 ? "균형 성장" : "안정·감독 강화",
@@ -69,7 +68,7 @@ public sealed partial class GameEngine
     }
     void ServiceFinance()
     {
-        foreach (var t in Participants.Where(t => !t.IsRetail || t.LoanDebt > 0 || t.FineDebt > 0 || t.ShortDividendDebt > 0))
+        foreach (var t in Participants.Where(t => !t.IsRetail || t.LoanDebt > 0 || t.FineDebt > 0 || t.ShortDividendDebt > 0 || t.TaxDebt>0))
         {
             CancelOrders(t.Id);
             long interest = t.LoanDebt == 0 ? 0 : (long)Math.Ceiling(t.LoanDebt * LoanTerms(t).AnnualRate / 360);
@@ -85,10 +84,11 @@ public sealed partial class GameEngine
             paid = Math.Min(t.FineDebt, AvailableCash(t)); TransferCash(t, State.Government, paid, "fine-payment"); t.FineDebt -= paid; t.FinesPaid += paid;
             paid = Math.Min(t.ShortDividendDebt, AvailableCash(t)); TransferCash(t, State.Bank, paid, "short-dividend-arrears");
             t.ShortDividendDebt -= paid; t.ShortDividendPaid += paid; State.Bank.DividendIncome += paid;
+            paid=Math.Min(t.TaxDebt,AvailableCash(t)); TransferCash(t,State.Government,paid,"tax-arrears"); t.TaxDebt-=paid; t.TaxesPaid+=paid; State.Government.TaxEscrow+=paid;
             long grant = Math.Min(Math.Max(0, State.Government.Cash - State.Government.TaxEscrow), (long)((t.GrossAssets(State.Stocks) - t.Cash) * State.Government.Policy.SubsidyRate));
             if (grant > 0) { TransferCash(State.Government, t, grant, "subsidy"); t.Subsidies += grant; State.Government.Subsidies += grant; }
             double solvency = (double)t.Equity(State.Stocks) / Math.Max(1, t.OpeningEquity);
-            int target = (int)Math.Clamp(70 + (solvency - 1) * 35 - (double)t.LoanDebt / Math.Max(1, t.GrossAssets(State.Stocks)) * 35 + t.Abilities.RiskManagement * .12 - t.MarginCalls * 2, 0, 99);
+            int target = (int)Math.Clamp(70 + (solvency - 1) * 35 - (double)t.LoanDebt / Math.Max(1, t.GrossAssets(State.Stocks)) * 35 + (t.IsRetail ? 0 : t.Abilities.RiskManagement * .12) - t.MarginCalls * 2, 0, 99);
             if (overdueInterest) target -= 4;
             t.CreditScore = Math.Clamp((int)Math.Round(t.CreditScore * .9 + target * .1), 0, 99);
         }
@@ -102,7 +102,8 @@ public sealed partial class GameEngine
             return "이미 공동 작전에 참여하고 있습니다.";
         State.Operations.Add(new InstitutionOperation { Id = State.NextOperationId++, LeaderId = leaderId, PartnerId = partnerId,
             StockIndex = stockIndex, SecurityId = State.Stocks[stockIndex].SecurityId, StartedHour = State.CompletedHours, EndsHour = State.CompletedHours + 12 + (int)(Next() * 13),
-            OpeningPrice = State.Stocks[stockIndex].Price, Detail = $"{Representatives.Name(leaderId)} ↔ {Representatives.Name(partnerId)} · 공동 매집 합의" });
+            OpeningPrice = State.Stocks[stockIndex].Price,LeaderName=Representatives.Name(Owner(leaderId).PortraitId),PartnerName=Representatives.Name(Owner(partnerId).PortraitId),
+            Detail = $"{Representatives.Name(Owner(leaderId).PortraitId)} ↔ {Representatives.Name(Owner(partnerId).PortraitId)} · 공동 매집 합의" });
         if (State.Operations.Count > 80) State.Operations.RemoveAll(o => o.Status != OperationStatus.Active && o.EndsHour < State.CompletedHours - 720);
         while (State.Operations.Count > 80)
         { int i = State.Operations.FindIndex(o => o.Status != OperationStatus.Active); if (i < 0) break; State.Operations.RemoveAt(i); }

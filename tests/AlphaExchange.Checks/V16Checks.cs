@@ -57,6 +57,25 @@ static class V16Checks
             }
         }
         check(twoSided>=25,"Normal liquid market displays both sides for most companies");
+        var patient=new GameEngine(165); var longInvestor=patient.Owner(1);
+        longInvestor.Disposition=Disposition.Analytical;
+        for(int i=0;i<patient.State.Stocks.Count;i++)
+        {
+            var stock=patient.State.Stocks[i];
+            TestFixtures.BuyFromBank(patient,1,i,Math.Max(1,(int)(8_000_000L/patient.State.Stocks.Count/stock.Price)));
+            stock.FairValue=stock.Price*1.4; stock.PreviousPrice=stock.Price; stock.History=Enumerable.Repeat((double)stock.Price,120).ToList();
+        }
+        patient.State.CompletedHours=1; patient.PrepareMarketSignals(); patient.DecideInstitution(longInvestor);
+        var longDevelopment=longInvestor.Development!;
+        check(longDevelopment.NextReviewHours.All(h=>h>=240) && longDevelopment.NextDecisionHour>=240,"Full portfolio review advances every held security including unselected order candidates: "+string.Join(",",longDevelopment.NextReviewHours));
+        long reviews=longDevelopment.PortfolioReviews;
+        patient.State.CompletedHours=2; patient.DecideInstitution(longInvestor);
+        check(longDevelopment.PortfolioReviews==reviews,"Stable long portfolio does not repeat full analysis every hour");
+        patient.State.Stocks[0].Sentiment=.1; patient.DecideInstitution(longInvestor);
+        check(longDevelopment.PortfolioReviews==reviews+1,"Material news immediately overrides a long review schedule");
+        patient.State.Stocks[0].Sentiment=0; patient.State.CompletedHours=721;
+        patient.PrepareMarketSignals(); patient.DecideInstitution(longInvestor);
+        check(longInvestor.Shares.All(q=>q>0) && patient.PositionTiming(longInvestor,0).Actual==InvestmentHorizon.Long,"Positive long theses can remain held over thirty days without forced maturity sale"); validate(patient);
         var empty=new GameEngine(161); empty.State.CompletedHours=1;
         for(int id=1;id<=10;id++) TestFixtures.BuyFromBank(empty,id,0,100);
         empty.ReplenishLiquidity();

@@ -90,7 +90,7 @@ public sealed partial class GameEngine
         return new(score,1-cash,r.StockLimit-a.Diversification/100.0*r.DiversificationStockEffect,
             r.SectorLimit-a.Diversification/100.0*r.DiversificationSectorEffect,defensive,volatilities[index],horizon);
     }
-    void DecideInstitution(Trader t)
+    internal void DecideInstitution(Trader t)
     {
         if(t.WaitingForCapital) return;
         var d=t.Development!; var r=Rules.Investment; var stocks=State.Stocks;
@@ -112,10 +112,17 @@ public sealed partial class GameEngine
         CancelOrders(t.Id); d.PortfolioReviews++; d.LastDecisionHour=State.CompletedHours;
         var a=Capabilities(t).Effective; bool defensive=false; double bestScore=double.MinValue;
         var signals=institutionSignals; double cashTarget=r.MinimumCash;
+        Span<bool> reviewDue=stackalloc bool[stocks.Count];
         for(int i=0;i<stocks.Count;i++)
         {
+            reviewDue[i]=d.NextReviewHours[i]<=State.CompletedHours;
             signals[i]=Analyze(t,i,equity,a);
             d.LastNewsSignals[i]=stocks[i].Sentiment;
+            if(t.Shares[i]>0 || t.ShortShares[i]>0)
+            {
+                d.PositionHorizons[i]=signals[i].Horizon;
+                d.NextReviewHours[i]=State.CompletedHours+Rules.Horizons[(int)signals[i].Horizon].ReviewHours;
+            }
             if(stocks[i].Active) { defensive|=signals[i].Defensive; bestScore=Math.Max(bestScore,signals[i].Score); cashTarget=Math.Max(cashTarget,1-signals[i].TargetExposure); }
         }
         d.TargetCashRatio=Math.Clamp(cashTarget,r.MinimumCash,r.MaximumCash);
@@ -138,11 +145,20 @@ public sealed partial class GameEngine
         for(int j=0;j<stocks.Count;j++)
         {
             int i=(first+j)%stocks.Count; if(!stocks[i].Active) continue;
-            bool due=d.NextReviewHours[i]<=State.CompletedHours || margin || cashBoundary || marketEmergency || newsEmergency;
+            bool due=reviewDue[i] || margin || cashBoundary || marketEmergency || newsEmergency;
             if(!due || initiallySelling && t.Shares[i]==0 && t.ShortShares[i]==0) continue;
             var signal=signals[i]; double weight=(double)stocks[i].Value(t.Shares[i])/gross;
+            bool overweight=weight>=signal.StockLimit || portfolioSectors[signalSectors[i]]/gross>=signal.SectorLimit;
+            bool cover=t.ShortShares[i]>0 && (margin || signal.Score>r.BuyScore || !State.Government.Policy.ShortSellingAllowed ||
+                Math.Abs((double)stocks[i].Price/Math.Max(1,t.ShortAveragePrice[i])-1)>r.ShortExitReturn);
+            bool trim=t.Shares[i]>t.ReservedShares[i] && (initiallySelling || overweight ||
+                stocks[i].FairValue/stocks[i].Price-1<r.ThesisBreakValue || stocks[i].Report.Equity<=0 || signal.Score<Rules.Horizons[(int)signal.Horizon].ExitScore);
+            bool buy=!margin && !initiallySelling && !overweight && ratio>d.TargetCashRatio &&
+                (signal.Score>r.BuyScore || ratio>r.MaximumCash+r.CashTolerance && stocks[i].Report.Equity>0);
+            bool hedge=!initiallySelling && t.Shares[i]==0 && signal.Score<r.ShortScore && trends[i]<0 && fastTrends[i]<=0;
+            if(!cover && !trim && !buy && !hedge) continue;
             double priority=initiallySelling && t.Shares[i]>t.ReservedShares[i] ? weight+1 :
-                t.ShortShares[i]>0 && (margin || signal.Score>r.BuyScore || !State.Government.Policy.ShortSellingAllowed) ? 2 :
+                cover ? 2 : overweight && trim ? weight+1 :
                 signal.Score-weight*r.DiversificationStockEffect;
             int place=candidateCount;
             while(place>0 && priority>priorities[place-1]) place--;

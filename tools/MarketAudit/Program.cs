@@ -11,7 +11,7 @@ int seasons = args.Length > 1 ? int.Parse(args[1]) : 36;
 if (seasons is < 1 or > 120 || seeds.Length is < 1 or > 20) throw new ArgumentOutOfRangeException(nameof(args));
 var summaries = new List<object>();
 using var csv = new StreamWriter(Path.Combine(destination, "monthly.csv"));
-csv.WriteLine("scenario,seed,season,hour,capitalization,investor_cash,investor_equity,exchange_fees,bank_cash,government_cash,loan_debt,short_liability,fine_debt,company_equity,company_profit,company_dividends,cumulative_declared_dividends,capitalization_return,investor_cash_change,investor_equity_return,system_cash_difference,initial_system_cash,initial_investor_cash,initial_investor_equity,initial_capitalization,fair_value_ratio,price_to_fair_value,price_floor_stocks,price_index,total_return_index,net_contributions,paid_dividends,institution_trading_income,retail_trading_income,company_bankruptcies,institution_bankruptcies,retail_bankruptcies,loan_writeoffs,short_writeoffs,bank_purchases,bank_sales");
+csv.WriteLine("scenario,seed,season,hour,capitalization,investor_cash,investor_equity,exchange_fees,bank_cash,government_cash,loan_debt,short_liability,fine_debt,company_equity,company_profit,company_dividends,cumulative_declared_dividends,capitalization_return,investor_cash_change,investor_equity_return,system_cash_difference,initial_system_cash,initial_investor_cash,initial_investor_equity,initial_capitalization,fair_value_ratio,price_to_fair_value,price_floor_stocks,price_index,total_return_index,net_contributions,paid_dividends,institution_trading_income,retail_trading_income,company_bankruptcies,institution_bankruptcies,retail_bankruptcies,loan_writeoffs,short_writeoffs,bank_purchases,bank_sales,cash_target_min,cash_target_max,actual_cash_in_band,actual_cash_below,actual_cash_above,employees,allocated_points,two_sided_stocks,long_held_positions,maximum_holding_hours,portfolio_reviews");
 foreach (var scenario in new[] { "baseline", "zero-fee" })
 foreach (uint seed in scenario == "baseline" ? seeds : seeds.Take(1))
 {
@@ -85,7 +85,15 @@ foreach (uint seed in scenario == "baseline" ? seeds : seeds.Take(1))
             (double)equity/initialEquity-1,difference,state.InitialSystemCash,initialInvestorCash,initialEquity,initialCap,fairRatio,priceToFair,
             state.Stocks.Count(s=>s.Active && s.Price==1),state.PriceIndex,state.TotalReturnIndex,game.Participants.Sum(t=>t.NetContribution),game.Participants.Sum(t=>t.DividendIncome),
             game.Statistics().InstitutionTradingIncome,game.Statistics().RetailTradingIncome,state.BankruptcyTotals.Companies,state.BankruptcyTotals.Institutions,state.BankruptcyTotals.Retail,
-            state.Bank.LoanWriteOffs,state.Bank.ShortWriteOffs,state.Bank.InterventionPurchases,state.Bank.InterventionSales));
+            state.Bank.LoanWriteOffs,state.Bank.ShortWriteOffs,state.Bank.InterventionPurchases,state.Bank.InterventionSales,
+            state.Bots.Min(t=>t.Development!.TargetCashRatio),state.Bots.Max(t=>t.Development!.TargetCashRatio),
+            state.Bots.Count(t=>game.CashRatio(t)>=.05 && game.CashRatio(t)<=.30),
+            state.Bots.Count(t=>game.CashRatio(t)<.05),state.Bots.Count(t=>game.CashRatio(t)>.30),
+            state.Bots.Sum(t=>t.Development!.EmployeeCount),state.Bots.Sum(t=>t.Development!.PointsSpent),
+            Enumerable.Range(0,state.Stocks.Count).Count(i=>game.Orders(i,true).Count>0 && game.Orders(i,false).Count>0),
+            state.Bots.Sum(t=>t.Development!.PositionOpenedHours.Count(h=>h>=0 && state.CompletedHours-h>=240)),
+            state.Bots.SelectMany(t=>t.Development!.PositionOpenedHours.Where(h=>h>=0).Select(h=>state.CompletedHours-h)).DefaultIfEmpty(0).Max(),
+            state.Bots.Sum(t=>t.Development!.PortfolioReviews)));
         csv.Flush();
     }
 }

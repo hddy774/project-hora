@@ -8,7 +8,7 @@ v1.6.0은 **양방향 실제 호가·기관 성장·직원·유연한 투자 기
 
 **[최신 릴리스](https://github.com/hddy774/project-hora/releases/latest)** · **[APK 다운로드](https://github.com/hddy774/project-hora/releases/download/v1.6.0/AlphaExchange-v1.6.0.apk)**
 
-[PR #8](https://github.com/hddy774/project-hora/pull/8)에서 계획·개발·검증을 진행하고 병합된 태그를 GitHub Actions로 빌드합니다. [금융 원문 조사와 개선 기록](docs/FINANCE-RESEARCH-v1.6.0.md), [조정 가능한 규칙](src/AlphaExchange.Core/Rules/README.md)을 기록합니다. 시장 경제의 기존 [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
+[PR #8](https://github.com/hddy774/project-hora/pull/8)에서 계획·개발·검증을 진행하고 병합된 태그를 GitHub Actions로 빌드합니다. [금융 원문 조사와 개선 기록](docs/FINANCE-RESEARCH-v1.6.0.md), [12시즌 경제·유동성 분석과 후속 개선](docs/analysis/v1.6.0/README.md), [조정 가능한 규칙](src/AlphaExchange.Core/Rules/README.md)을 기록합니다. 시장 경제의 기존 [문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [저장 설계](docs/STATISTICS-STORAGE-v1.3.0.md), [검증 기록](VERIFICATION.txt)을 보관합니다.
 
 **설치 안내:** 사용자의 기존 서명키 없는 배포 지시에 따라 GitHub Actions에서 새 일회용 키로 APK에 서명합니다. 이전 릴리스에 덮어쓸 수 없고 재설치가 필요합니다. 앱 삭제는 내부 기록을 지웁니다. v1.3부터 통계 화면에서 게임·전체 통계를 ZIP으로 내보내고 가져올 수 있습니다. **v1.2에는 내보내기 기능이 없으므로 새 버전 설치만으로 삭제한 이전 기록을 복구할 수 없습니다.** 별도로 확보한 기존 내부 JSON/시즌 파일의 자동 이전은 같은 앱 데이터 디렉터리가 남아 있을 때 동작합니다.
 
@@ -87,4 +87,4 @@ dotnet run --project tests/AlphaExchange.Checks -c Release -- --storage-load
 
 `.github/workflows/checks.yml`은 엔진·회계·저장·그림과 Android Release 빌드를 검사합니다. `.github/workflows/release.yml`은 **병합된 v1.6.0 태그**로 APK 생성 → 서명 → 앱 ID/버전/인증서 검증 → APK 하나 업로드 → 다운로드 재검증 → 최신 릴리스 공개를 수행합니다. 공개 릴리스를 덮어쓰지 않습니다.
 
-이번 배포는 `tag=v1.6.0`, `generate_signing_key=true`로 실행합니다. 생성 키·비밀번호는 저장소/아티팩트에 포함하지 않고 종료 시 제거합니다. 릴리스 본문에는 APK 체크섬·공개 인증서 지문·빌드 소스를, Actions 내부 아티팩트에는 검증 로그와 `SIGNING-INFO.txt`를 기록합니다. 키가 재사용되지 않으므로 다음 새 키 배포도 재설치가 필요합니다. 업로드 중단 시 `signed_run_id`로 이미 검증한 서명 APK 아티팩트를 복구할 수 있습니다.
+main에 새 앱 버전이 병합되면 Actions가 해당 병합 커밋의 버전 태그를 만들고 자동 배포합니다. 같은 버전 태그가 이미 있으면 다시 배포하지 않습니다. 사용자의 기존 키 없는 배포 요청에 따라 이 경로는 `generate_signing_key=true`와 같은 새 일회용 키 방식을 사용합니다. 생성 키·비밀번호는 저장소/아티팩트에 포함하지 않고 종료 시 제거합니다. 릴리스 본문에는 APK 체크섬·공개 인증서 지문·빌드 소스를, Actions 내부 아티팩트에는 검증 로그와 `SIGNING-INFO.txt`를 기록합니다. 키가 재사용되지 않으므로 다음 새 키 배포도 재설치가 필요합니다. 수동 재시도는 병합된 `tag=v1.6.0`과 `generate_signing_key=true`로 실행하며, 업로드 중단 시 `signed_run_id`로 이미 검증한 서명 APK 아티팩트를 복구할 수 있습니다.

@@ -1,0 +1,139 @@
+{
+  "label": "v1.6.0-fixed",
+  "seed": 20261004,
+  "framework": ".NET 9.0.20",
+  "processorCount": 4,
+  "results": {
+    "statistics": {
+      "medianMs": 1.3512,
+      "maximumMs": 1.6672,
+      "allocatedMedianBytes": 6072,
+      "samples": [
+        1.2765,
+        1.2794,
+        1.2988,
+        1.3312,
+        1.3512,
+        1.3613,
+        1.4261,
+        1.5786,
+        1.6672
+      ]
+    },
+    "depthProjection6000": {
+      "medianMs": 1.2771,
+      "maximumMs": 1.8216,
+      "allocatedMedianBytes": 960000,
+      "samples": [
+        1.0513,
+        1.082,
+        1.116,
+        1.2114,
+        1.2771,
+        1.3668,
+        1.3918,
+        1.5468,
+        1.8216
+      ]
+    },
+    "prepareSave": {
+      "medianMs": 24.7203,
+      "maximumMs": 31.1493,
+      "allocatedMedianBytes": 11725224,
+      "samples": [
+        18.0598,
+        18.8068,
+        19.8576,
+        23.0607,
+        24.7203,
+        25.6707,
+        26.0175,
+        28.9217,
+        31.1493
+      ]
+    },
+    "serialize": {
+      "medianMs": 80.6001,
+      "maximumMs": 387.1167,
+      "allocatedMedianBytes": 26156080,
+      "samples": [
+        64.6072,
+        65.9251,
+        66.2968,
+        73.8015,
+        80.6001,
+        117.9899,
+        193.0783,
+        217.7167,
+        387.1167
+      ]
+    },
+    "writeSnapshot": {
+      "medianMs": 165.8539,
+      "maximumMs": 247.9116,
+      "allocatedMedianBytes": 47037264,
+      "samples": [
+        127.6375,
+        132.8102,
+        165.8539,
+        228.0719,
+        247.9116
+      ]
+    },
+    "checkpoint": {
+      "hour": 168,
+      "encodedBytes": 5970000
+    },
+    "simulation": {
+      "hours": 720,
+      "medianMs": 2.3007,
+      "p95Ms": 4.2124,
+      "p99Ms": 6.0454,
+      "matches": 135277
+    },
+    "fiveYearRange": {
+      "medianMs": 278.7108,
+      "maximumMs": 302.5404,
+      "allocatedMedianBytes": 32799920,
+      "samples": [
+        274.7744,
+        276.7233,
+        278.7108,
+        294.4645,
+        302.5404
+      ]
+    },
+    "coverage": {
+      "medianMs": 70.3871,
+      "maximumMs": 71.0946,
+      "allocatedMedianBytes": 5792,
+      "samples": [
+        68.4507,
+        69.8613,
+        70.3871,
+        70.7983,
+        71.0946
+      ]
+    },
+    "pendingAt": {
+      "medianMs": 0.4954,
+      "maximumMs": 1.2662,
+      "allocatedMedianBytes": 93584,
+      "samples": [
+        0.3084,
+        0.3303,
+        0.4012,
+        0.4567,
+        0.4954,
+        0.5742,
+        0.6353,
+        1.1553,
+        1.2662
+      ]
+    },
+    "history": {
+      "rows": 43201,
+      "bytes": 61911040
+    }
+  }
+}

@@ -83,11 +83,37 @@ scroll reset was also corrected. Software emulator observations do not establish
 physical-device performance.
 
 DEPLOYMENT
-Requested final step: merge PR #7 and build the merged v1.5.0 tag through GitHub
-Actions, generate a new temporary signing key, validate APK identity/certificate,
-upload only AlphaExchange-v1.5.0.apk, re-download/hash-check and publish latest.
-Public artifact/certificate digests will be in release notes. No keys/build outputs
-are committed. New signing identity requires export ZIP before uninstall, reinstall,
+COMPLETE 2026-10-05 UTC: PR #7 merged at 02:42:40 UTC; v1.5.0 tag and APK source:
+7e4826a89ba59e691b8a989f764e03c51227d518.
+https://github.com/hddy774/project-hora/pull/7
+GitHub Actions 37256505447 SUCCESS: generated new temporary signing key, built
+merged tag, verified APK identity/checksums, uploaded one APK, downloaded it again,
+then published latest. Tag-triggered keyless run 37256490534 was cancelled;
+manual workflow_dispatch used generate_signing_key=true as explicitly requested.
+https://github.com/hddy774/project-hora/actions/runs/37256505447
+Release rerun PASS 47,751,016 assertions; 16 seasons; 1,774,525 matched trades.
+Android Release and 100 distinct portraits (70 women / 30 men) PASS.
+Release CI wall 27.89s; hour p50 1.01ms / p95 1.92ms / p99 4.40ms;
+JSON 10,716,714 bytes; serialize 53.6ms. These are CI observations, not a controlled
+before/after benchmark or physical Android performance measurement.
+
+Latest GitHub release API confirms v1.5.0, draft=false, prerelease=false,
+published 2026-10-05T02:46:23Z, release ID 403323354, exactly one public asset:
+AlphaExchange-v1.5.0.apk, asset ID 611289546, 73,665,962 bytes.
+https://github.com/hddy774/project-hora/releases/tag/v1.5.0
+https://github.com/hddy774/project-hora/releases/download/v1.5.0/AlphaExchange-v1.5.0.apk
+Independent anonymous public curl download PASS. Size and SHA-256 match release
+notes and GitHub asset digest:
+bfe1748330939a188c6cb0839371c7ad85b035fa03a1e55c38f872ca588fe47d
+apksigner verify --verbose --print-certs PASS; certificate SHA-256 matches notes:
+6ea466a7f7e70d4b4071c31a99fedac9f4ed35c3951ceb818767f8f381195c8f
+aapt confirms com.alphaexchange.offline, versionName 1.5.0/versionCode 6,
+min API26/target34, arm64-v8a/x86_64 and no INTERNET permission. Both native SQLite
+libraries are packaged. Tag points to the merged source above; post-publication
+changes only record deployment documentation and do not rewrite tag or APK.
+
+No keys/build outputs are committed. New signing identity requires export ZIP
+before uninstall, reinstall,
 then import. v1.2 lacks export UI. Uninstall removes internal files. Successfully
 committed history persists; abrupt exit may roll back uncommitted progress and its
 records together. Closed app time is not simulated.

@@ -12,7 +12,11 @@
 | 3 | 기업·기관·개인 파산·새 세대·영속 기록 | 완료 | 72건 파산의 현금/주식 정산·새 식별자/세대·실제 재출자·원장 보존·ZIP 이전 회귀 통과 |
 | 4 | 성능·중복 통계 정리·전후 측정 | 완료 | [동일 입력 전후 원자료](performance/v1.5.0/README.md): 준비 26.78→12.22ms, 전체 쓰기 340.35→137.86ms, 준비 할당 −51.0%. JSON −74.2%; 범위 조회 시간은 거의 동일 |
 | 5 | 회귀·장기 시장 분석·Android 실행 | 완료 | [CI](https://github.com/hddy774/project-hora/actions/runs/37255752172)·16시즌/177만 체결, [24시즌×4조건 회계 분석](analysis/v1.5.0/README.md), [Android 주총/그래프/파산/통계 389행 검증](UI-VERIFICATION-v1.5.0.md). v5 업그레이드 저장 충돌·음의 0/개인 배열 분리 회귀 포함 |
-| 6 | PR 병합·APK 생성·최신 릴리스·공개 검증 | 진행 중 | 개발과 검증 완료. 최종 문서 CI 후 PR #7 병합, v1.5.0 태그에서 임시 키 APK 생성·최신 공개·해시 확인 |
+| 6 | PR 병합·APK 생성·최신 릴리스·공개 검증 | 완료 | [PR #7 병합](https://github.com/hddy774/project-hora/pull/7), [Actions APK 생성·전체 검사 통과](https://github.com/hddy774/project-hora/actions/runs/37256505447), [최신 v1.5.0 공개](https://github.com/hddy774/project-hora/releases/tag/v1.5.0). APK 1개·익명 다운로드 SHA-256·서명·버전·오프라인 권한 확인 |
+
+2026-10-05 UTC 전체 단계를 완료했다. APK 빌드 소스와 `v1.5.0` 태그는 병합 커밋 `7e4826a89ba59e691b8a989f764e03c51227d518`이다. 릴리스 Actions에서도 **47,751,016개 검사/16시즌/1,774,525건 체결**과 Android Release·그림 검사를 통과했다. 배포 후 문서만 갱신하며 태그와 APK 소스는 유지한다.
+
+공개 첨부는 [AlphaExchange-v1.5.0.apk](https://github.com/hddy774/project-hora/releases/download/v1.5.0/AlphaExchange-v1.5.0.apk) **73,665,962바이트 하나**다. 최신 릴리스 API와 실제 공개 다운로드를 대조했고 APK SHA-256은 `bfe1748330939a188c6cb0839371c7ad85b035fa03a1e55c38f872ca588fe47d`이다. 서명 인증서·앱 ID·버전 1.5.0/코드 6·최소 API 26·ARM64/x86_64 SQLite·인터넷 권한 없음은 [검증 기록](../VERIFICATION.txt)에 남겼다. 기존 키 없이 새 임시 키로 서명했으므로 **기존 앱에서 ZIP 내보내기 → 앱 삭제 → 새 APK 설치 → ZIP 가져오기** 순서로 기록을 이전한다.
 
 ## 적용 기준
 

@@ -14,19 +14,22 @@ public sealed record SaveSnapshot
     Lazy<string> json = null!;
     public string RunId { get; init; }
     public long Hour { get; init; }
+    public long Minute { get; init; }
     public string Json { get => json.Value; init => json = new Lazy<string>(()=>value); }
     public ArchivedSnapshot[] Seasons { get; init; }
     public HistoryRecord[] History { get; init; }
     public EventRecord[] Events { get; init; } = [];
     public EventRecord[] Votes { get; init; } = [];
     public EventRecord[] Bankruptcies { get; init; } = [];
+    public EventRecord[] Activities { get; init; } = [];
+    public EventRecord[] WorldVotes { get; init; } = [];
     internal long ReportThrough { get; init; }
     public CompanyReport[] Reports { get; init; } = [];
     public SaveSnapshot(string RunId,long Hour,string Json,ArchivedSnapshot[] Seasons,HistoryRecord[] History)
-    { this.RunId=RunId; this.Hour=Hour; this.Json=Json; this.Seasons=Seasons; this.History=History; }
+    { this.RunId=RunId; this.Hour=Hour; this.Minute=Hour*60; this.Json=Json; this.Seasons=Seasons; this.History=History; }
     internal SaveSnapshot(GameState state,ArchivedSnapshot[] seasons,HistoryRecord[] history)
     {
-        RunId=state.RunId; Hour=state.CompletedHours; Seasons=seasons; History=history;
+        RunId=state.RunId; Hour=state.CompletedHours; Minute=state.CompletedMinutes; Seasons=seasons; History=history;
         json=new Lazy<string>(()=>JsonSerializer.Serialize(state,GameEngine.StateJson));
     }
 }
@@ -82,6 +85,8 @@ public sealed partial class GameStore
             CREATE TABLE IF NOT EXISTS reports(run TEXT NOT NULL,security TEXT NOT NULL,season INTEGER NOT NULL,basis INTEGER NOT NULL,
                 opening INTEGER NOT NULL,data BLOB NOT NULL,PRIMARY KEY(run,security,season,basis,opening));
             CREATE TABLE IF NOT EXISTS seasons(run TEXT NOT NULL,season INTEGER NOT NULL,data BLOB NOT NULL,PRIMARY KEY(run,season));
+            CREATE TABLE IF NOT EXISTS activities(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,data TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(run,id));
+            CREATE TABLE IF NOT EXISTS world_votes(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,data TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(run,id));
             INSERT OR IGNORE INTO meta(key,value) VALUES('version','5');
             """;
         cmd.ExecuteNonQuery();
@@ -91,6 +96,9 @@ public sealed partial class GameStore
         var columns=new HashSet<string>(); using(var reader=cmd.ExecuteReader()) while(reader.Read()) columns.Add(reader.GetString(1));
         foreach(string name in new[] { "price_index","return_index","investor_cash","institution_equity","retail_equity","institution_income","retail_income" })
             if(!columns.Contains(name)) { cmd.CommandText=$"ALTER TABLE hours ADD COLUMN {name} REAL"; cmd.ExecuteNonQuery(); }
+        cmd.CommandText="PRAGMA table_info(runs)";
+        bool minute=false; using(var reader=cmd.ExecuteReader()) while(reader.Read()) if(reader.GetString(1)=="minute") minute=true;
+        if(!minute) { cmd.CommandText="ALTER TABLE runs ADD COLUMN minute INTEGER NOT NULL DEFAULT 0"; cmd.ExecuteNonQuery(); }
     }
     static byte[] Compress(string json)
         => Compress(Encoding.UTF8.GetBytes(json));
@@ -142,6 +150,7 @@ public sealed partial class GameStore
         engine.BankruptcyRecorded+=b=> { lock(pending) pendingBankruptcies[run].Add(new(b.Id,b.Hour,JsonSerializer.Serialize(b))); };
         engine.CompanyReportRecorded+=r=> { lock(pending) pendingReports[run].Add((++reportSequence,CheckpointCopy.Scalar(r))); };
         engine.HistorySource = new RunQuery(this,run);
+        AttachWorld(engine,run);
         // A loaded v5 database contains immutable JSON without the fields added in v6.
         // Never re-encode committed history at attach: defaults/new measurements would
         // change its checksum. Queue only genuinely missing initial/daily records.
@@ -157,7 +166,7 @@ public sealed partial class GameStore
             using var reader=command.ExecuteReader();
             while(reader.Read()) committed.Add((reader.GetInt64(0),reader.GetInt32(1)));
         }
-        if(!committed.Contains((engine.State.CompletedHours,1))) AddPending(run,engine.CaptureSnapshot());
+        if(!committed.Contains((engine.State.CompletedHours,1)) && engine.State.Minute==0) AddPending(run,engine.CaptureSnapshot());
         foreach(var daily in engine.State.DailyHistory)
             if(!committed.Contains((daily.Hour,1)) && !committed.Contains((daily.Hour,24))) AddPending(run,NormalizeLegacy(daily,engine));
         queuedDailyThrough[run]=Math.Max(queuedDailyThrough.GetValueOrDefault(run,-1),engine.State.DailyHistory.Max(d=>d.Hour));
@@ -186,30 +195,32 @@ public sealed partial class GameStore
         lock (pending) events = pendingEvents[state.RunId].Where(e => e.Hour <= state.CompletedHours).ToArray();
         lock(pending) return new SaveSnapshot(CheckpointCopy.Freeze(state,true),seasons,records)
         { Events=events,Votes=pendingVotes[state.RunId].ToArray(),Bankruptcies=pendingBankruptcies[state.RunId].ToArray(),ReportThrough=reportSequence,
+          Activities=pendingActivities[state.RunId].ToArray(),WorldVotes=pendingWorldVotes[state.RunId].ToArray(),
           Reports=state.Stocks.SelectMany(s=>s.Reports).Concat(pendingReports[state.RunId].Select(p=>p.Report))
             .GroupBy(r=>(r.SecurityId,r.Season,r.AccountingBasis,r.IsOpening)).Select(g=>CheckpointCopy.Scalar(g.Last())).ToArray() };
     }
-    static void CheckCheckpoint(byte[] bytes,string run,long hour)
+    static void CheckCheckpoint(byte[] bytes,string run,long hour,long minute)
     {
         // Validate the whole JSON without allocating a DOM for every participant/position.
-        var reader=new Utf8JsonReader(bytes); string? actualRun=null; long? actualHour=null;
+        var reader=new Utf8JsonReader(bytes); string? actualRun=null; long? actualHour=null,actualMinute=null; int version=0;
         if(!reader.Read() || reader.TokenType!=JsonTokenType.StartObject) throw new InvalidDataException("체크포인트 JSON 오류");
         while(reader.Read())
         {
             if(reader.TokenType==JsonTokenType.EndObject) break;
             if(reader.TokenType!=JsonTokenType.PropertyName) throw new InvalidDataException("체크포인트 JSON 오류");
-            bool isRun=reader.ValueTextEquals("RunId"),isHour=reader.ValueTextEquals("CompletedHours");
+            bool isRun=reader.ValueTextEquals("RunId"),isHour=reader.ValueTextEquals("CompletedHours"),isMinute=reader.ValueTextEquals("CompletedMinutes"),isVersion=reader.ValueTextEquals("Version");
             if(!reader.Read()) throw new InvalidDataException("체크포인트 JSON 오류");
             if(isRun) actualRun=reader.GetString(); else if(isHour) actualHour=reader.GetInt64();
+            else if(isMinute) actualMinute=reader.GetInt64(); else if(isVersion) version=reader.GetInt32();
             reader.Skip();
         }
-        if(reader.TokenType!=JsonTokenType.EndObject || reader.Read() || actualRun!=run || actualHour!=hour)
+        if(reader.TokenType!=JsonTokenType.EndObject || reader.Read() || actualRun!=run || actualHour!=hour || version>=8 && actualMinute!=minute || minute/60!=hour)
             throw new InvalidDataException("체크포인트 기록 범위 불일치");
     }
     public void WriteSnapshot(SaveSnapshot snapshot)
     {
         // All payloads are immutable. Compression and I/O do not read the live engine.
-        byte[] stateBytes=Encoding.UTF8.GetBytes(snapshot.Json); CheckCheckpoint(stateBytes,snapshot.RunId,snapshot.Hour);
+        byte[] stateBytes=Encoding.UTF8.GetBytes(snapshot.Json); CheckCheckpoint(stateBytes,snapshot.RunId,snapshot.Hour,snapshot.Minute);
         if(snapshot.History.Any(r=>r.Hour<0 || r.Hour>snapshot.Hour || r.Resolution is not (1 or 24)) ||
             snapshot.Events.Concat(snapshot.Votes).Concat(snapshot.Bankruptcies).Any(e=>e.Hour<0 || e.Hour>snapshot.Hour))
             throw new InvalidDataException("체크포인트 기록 범위 불일치");
@@ -222,8 +233,8 @@ public sealed partial class GameStore
             using var connection = Open(SavePath); Schema(connection); databaseReady = true;
             using var transaction = connection.BeginTransaction();
             using var command = connection.CreateCommand(); command.Transaction = transaction;
-            command.CommandText="SELECT hour FROM runs WHERE id=$run"; command.Parameters.AddWithValue("$run",snapshot.RunId);
-            if(command.ExecuteScalar() is long committed && committed>snapshot.Hour) throw new InvalidDataException("과거 체크포인트로 되돌릴 수 없습니다.");
+            command.CommandText="SELECT minute FROM runs WHERE id=$run"; command.Parameters.AddWithValue("$run",snapshot.RunId);
+            if(command.ExecuteScalar() is long committed && committed>snapshot.Minute) throw new InvalidDataException("과거 체크포인트로 되돌릴 수 없습니다.");
             foreach (var (record,data,hash,point) in hours)
             {
                 command.CommandText = "SELECT hash FROM hours WHERE run=$run AND hour=$hour AND resolution=$res";
@@ -263,10 +274,11 @@ public sealed partial class GameStore
                 command.Parameters.AddWithValue("$data",record.Json); command.ExecuteNonQuery();
             }
             WriteLifecycle(command,snapshot);
+            WriteWorld(command,snapshot);
             foreach (var report in snapshot.Reports) WriteReport(command,snapshot.RunId,report);
-            command.CommandText = "INSERT INTO runs(id,hour,state,hash) VALUES($run,$hour,$state,$hash) ON CONFLICT(id) DO UPDATE SET hour=excluded.hour,state=excluded.state,hash=excluded.hash WHERE excluded.hour>=runs.hour";
+            command.CommandText = "INSERT INTO runs(id,hour,minute,state,hash) VALUES($run,$hour,$minute,$state,$hash) ON CONFLICT(id) DO UPDATE SET hour=excluded.hour,minute=excluded.minute,state=excluded.state,hash=excluded.hash WHERE excluded.minute>=runs.minute";
             command.Parameters.Clear(); command.Parameters.AddWithValue("$run",snapshot.RunId); command.Parameters.AddWithValue("$hour",snapshot.Hour);
-            command.Parameters.AddWithValue("$state",state); command.Parameters.AddWithValue("$hash",stateHash); command.ExecuteNonQuery();
+            command.Parameters.AddWithValue("$minute",snapshot.Minute); command.Parameters.AddWithValue("$state",state); command.Parameters.AddWithValue("$hash",stateHash); command.ExecuteNonQuery();
             if (activeRun == "" || activeRun == snapshot.RunId)
             {
                 command.CommandText = "INSERT INTO meta(key,value) VALUES('current',$run) ON CONFLICT(key) DO UPDATE SET value=excluded.value";
@@ -281,6 +293,8 @@ public sealed partial class GameStore
                 if(pendingVotes.TryGetValue(snapshot.RunId,out var votes)) votes.RemoveAll(e=>snapshot.Votes.Any(saved=>saved.Id==e.Id));
                 if(pendingBankruptcies.TryGetValue(snapshot.RunId,out var bankruptcies)) bankruptcies.RemoveAll(e=>snapshot.Bankruptcies.Any(saved=>saved.Id==e.Id));
                 if(pendingReports.TryGetValue(snapshot.RunId,out var reports)) reports.RemoveAll(r=>r.Sequence<=snapshot.ReportThrough);
+                if(pendingActivities.TryGetValue(snapshot.RunId,out var activities)) activities.RemoveAll(e=>snapshot.Activities.Any(saved=>saved.Id==e.Id));
+                if(pendingWorldVotes.TryGetValue(snapshot.RunId,out var worldVotes)) worldVotes.RemoveAll(e=>snapshot.WorldVotes.Any(saved=>saved.Id==e.Id));
             }
             if (!File.Exists(BackupPath) || Environment.TickCount64 - lastBackup >= 60000 || snapshot.Hour % 720 == 0)
             { Backup(connection,BackupPath); lastBackup = Environment.TickCount64; }

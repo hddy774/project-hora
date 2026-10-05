@@ -13,10 +13,9 @@ public sealed partial class GameEngine
     }
     void InitializeEconomy()
     {
+        CapitalizeMarket();
         for (int i = 0; i < State.Stocks.Count; i++)
         {
-            State.Bank.ShareInventory[i] = 1000;
-            State.Stocks[i].TotalShares = 2000; State.Stocks[i].TreasuryShares=1000;
             InitializeCompany(State.Stocks[i], i);
         }
         State.Government.History.Add(State.Government.Policy);
@@ -33,7 +32,7 @@ public sealed partial class GameEngine
     }
     public string? BorrowCash(int ownerId, long amount)
     {
-        if (ownerId is < 1 or > AiCount + RetailCount || amount <= 0) return "대출 금액이 올바르지 않습니다.";
+        if ((ownerId < 1 || ownerId > AiCount + State.Retail.Count) || amount <= 0) return "대출 금액이 올바르지 않습니다.";
         var t = Owner(ownerId); var offer = LoanTerms(t);
         if (amount > offer.Available) return "신용 한도 또는 은행 유동성이 부족합니다.";
         TransferCash(State.Bank, t, amount, "loan"); t.LoanDebt += amount; t.BorrowedCash += amount; cachedStats = null;
@@ -41,7 +40,7 @@ public sealed partial class GameEngine
     }
     public long RepayLoan(int ownerId, long amount)
     {
-        if (ownerId is < 1 or > AiCount + RetailCount || amount <= 0) return 0;
+        if ((ownerId < 1 || ownerId > AiCount + State.Retail.Count) || amount <= 0) return 0;
         var t = Owner(ownerId); long paid = Math.Min(amount, Math.Min(t.LoanDebt, AvailableCash(t)));
         TransferCash(t, State.Bank, paid, "repayment"); t.LoanDebt -= paid; t.RepaidCash += paid; cachedStats = null; return paid;
     }
@@ -53,6 +52,7 @@ public sealed partial class GameEngine
     }
     void RefreshEconomy()
     {
+        if(State.World is not null) { VoteEconomicPolicy(); return; }
         // Every resting order is cancelled before a fee/regulation change.
         CancelAllOrders();
         var p = State.Government.Policy;

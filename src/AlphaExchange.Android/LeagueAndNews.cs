@@ -8,8 +8,11 @@ public sealed partial class GameView
 {
     float DrawLeague(float y)
     {
-        Text("100개 기관의 성과", 20, y + 23, 24, Ink, true);
+        Text("분야별 랭킹과 투자 성과", 20, y + 23, 24, Ink, true);
         Text("10개 능력과 성향 · 다양한 투자 기법을 혼합", 21, y + 47, 12, Muted); y += 64;
+        y=PeopleRoleTabs(y,true);
+        if(rankingRole!=1) return DrawPeopleRanking(y,rankingRole==0 ? null : (PersonRole)(rankingRole-1));
+        y=DrawInvestorPodium(y);
         y = PeriodPicker(y);
         for (int i = 0; i < GameEngine.MetricNames.Length; i++)
         {
@@ -68,13 +71,13 @@ public sealed partial class GameView
         {
             if (y + 152 < clipTop || y > clipBottom) { y += 163; continue; }
             Box(20, y, 360, 152, Card, 17);
-            Pill(news.Impact > 0 ? "긍정 신호" : "주의 신호", 35, y + 14, news.Impact > 0 ? Teal : Red, 70);
-            Text($"D{news.Day:00} {news.Hour:00}:00 · {S.Stocks[news.StockIndex].Symbol}", 363, y + 30, 10, Muted, false, Paint.Align.Right);
+            Pill(news.Impact==0 ? "인물 활동" : news.Impact > 0 ? "긍정 신호" : "주의 신호", 35, y + 14, news.Impact > 0 ? Teal : Red, 70);
+            Text($"D{news.Day:00} {news.Hour:00}:{news.Minute:00} · {(news.StockIndex>=0 ? S.Stocks[news.StockIndex].Symbol : "경제")}", 363, y + 30, 10, Muted, false, Paint.Align.Right);
             float after = Wrap(news.Headline, 36, y + 62, 328, 14, Ink, 22);
-            Text("월말 기업 실적과 기관 판단에 반영됩니다.", 36, Math.Max(after + 4, y + 112), 11, Muted);
+            TextFit(news.ActorId>0 ? $"활동 #{news.ActivityId} · {game!.Person(news.ActorId).Name}" : "이전 버전 뉴스 기록", 36, Math.Max(after + 4, y + 112), 11, Muted,328);
             Text("종목 살펴보기  ↗", 362, y + 136, 10, news.Impact > 0 ? Teal : Red, true, Paint.Align.Right);
             int index = news.StockIndex;
-            Hit(20, y, 360, 152, () => { selectedStock = index; });
+            Hit(20,y,360,152,()=> { if(index>=0) selectedStock=index; else if(news.ActorId>0) OpenPerson(news.ActorId); });
             y += 163;
         }
         return y + 10;
@@ -154,12 +157,13 @@ public sealed partial class GameView
     {
         var bot = S.Bots[selectedTrader - 1];
         float y = Modal(Math.Min(630, h - 16), () => selectedTrader = -1);
-        Portrait(bot.PortraitId, 28, y + 29, 120, 195);
+        Portrait(bot.PortraitId, 28, y + 29, 120, 195); Hit(28,y+29,120,195,()=>portraitZoom=bot.PortraitId);
         Text("INSTITUTION " + bot.Id.ToString("000"), 166, y + 62, 10, Lime, true);
         Text(Representatives.Name(bot.PortraitId), 166, y + 98, 25, Ink, true);
         Text(bot.Name, 166, y + 124, 14, Muted);
         Text(GameEngine.DispositionNames[(int)bot.Disposition] + " · 신용 " + bot.CreditRating, 166, y + 155, 13, Teal, true);
         Text($"시즌 {S.Season} · {FrameRankOf(bot.Id)}위", 166, y + 190, 15, Ink, true);
+        Hit(166,y+68,203,71,()=>OpenPerson(bot.Id));
         Wrap(bot.Decision, 29, y + 250, 342, 12, Muted, 20);
         Box(27, y + 286, 346, 105, Card, 18);
         Text("총 평가 순자산", 44, y + 315, 12, Muted);
@@ -180,9 +184,9 @@ public sealed partial class GameView
         float y = Modal(654, () => help = false);
         Text("스스로 움직이는 주식 시장", 27, y + 60, 24, Ink, true);
         Text("HOW IT WORKS", 28, y + 86, 11, Lime, true);
-        string[] titles = ["01  기관 100개, 개인 10,000명", "02  호가 경쟁으로 결정되는 주가", "03  현실 120초 = 게임 1일", "04  끝없이 이어지는 30일 시즌"];
+        string[] titles = ["01  인물 200명, 개미 집단과 1조 시장", "02  호가 경쟁으로 결정되는 주가", "03  현실 120초 = 게임 1일", "04  끝없이 이어지는 30일 시즌"];
         string[] body = [
-            "대표 능력은 10개 모두 50점으로 시작합니다. 시즌 상위 50위부터 성장·신용 보상을 받습니다. 직원 등급·역할·인원이 대표와 함께 기관의 판단 능력을 만듭니다.",
+            "대표 능력은 10개 모두 50점으로 시작합니다. 시즌 1~100위 모두 1~10점의 성장·신용 보상을 받습니다. 직원 등급·역할·인원이 대표와 함께 기관의 판단 능력을 만듭니다.",
             "실제 양방향 주문이 가격·시간 순서로 체결됩니다. 기관의 현금 목표는 5~30%이며 가치·뉴스·비용을 봅니다. 개인은 시장 반응을 따라갑니다.",
             "1배속에서 실제 5초마다 게임 시간 1시간이 지납니다. 24시간, 즉 실제 120초가 게임의 하루입니다.",
             "초단기는 시간, 단기는 1~10일 미만, 장기는 10일 이상을 봅니다. 중요한 뉴스·위험 때 계획이 바뀝니다. 매월 결산·정책·보상과 통계가 파일에 보존됩니다."

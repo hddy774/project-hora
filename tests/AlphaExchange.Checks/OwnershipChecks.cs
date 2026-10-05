@@ -6,7 +6,7 @@ static class OwnershipChecks
 {
     public static void Run(Action<bool,string> check,Action<GameEngine> validate)
     {
-        var game=new GameEngine(140); CheckAll(game,check);
+        var game=TestFixtures.SmallMarket(140); CheckAll(game,check);
         var stock=game.State.Stocks[0]; string id=stock.SecurityId;
         var first=game.Ownership(0); check(ReferenceEquals(first,game.Ownership(0)),"Unchanged ownership uses immutable cached result");
         long bank=game.State.Bank.ShareInventory[0];
@@ -50,7 +50,7 @@ static class OwnershipChecks
         string folder=Path.Combine(Path.GetTempPath(),"hora-freeze-"+Guid.NewGuid().ToString("N"));
         try
         {
-            var game=new GameEngine(141); for(int i=0;i<719;i++) game.AdvanceHour();
+            var game=TestFixtures.SmallMarket(141); for(int i=0;i<719;i++) game.AdvanceHour();
             var store=new GameStore(folder); store.Attach(game);
             string original=game.Serialize(); var frozen=store.PrepareSave(game);
             var writer=Task.Run(()=>store.WriteSnapshot(frozen));
@@ -89,12 +89,12 @@ static class OwnershipChecks
         string folder=Path.Combine(Path.GetTempPath(),"hora-query-"+Guid.NewGuid().ToString("N"));
         try
         {
-            var game=new GameEngine(142); var store=new GameStore(folder);
+            var game=TestFixtures.SmallMarket(142); var store=new GameStore(folder);
             var headers=new[] { (0,24),(24,24),(48,24),(49,1),(50,1),(54,1),(55,1),(78,24),(102,24),(103,1),(105,1),(106,1),(130,24),(154,24),(155,1),(156,1),(180,1) };
             var rows=new List<HistoryRecord>();
             foreach(var (hour,resolution) in headers)
             {
-                game.State.CompletedHours=hour; var point=game.CaptureSnapshot(); point.Resolution=resolution;
+                TestFixtures.AtHour(game,hour); var point=game.CaptureSnapshot(); point.Resolution=resolution;
                 if(hour==49) point.PriceIndex=9000;
                 if(hour==105) point.TotalReturnIndex=7000;
                 if(hour==103) point.InstitutionTradingIncome=8_000_000;
@@ -136,7 +136,7 @@ static class OwnershipChecks
     }
     static void LazyPeriods(Action<bool,string> check)
     {
-        var game=new GameEngine(143); for(int i=0;i<10;i++) game.AdvanceHour();
+        var game=TestFixtures.SmallMarket(143); for(int i=0;i<10;i++) game.AdvanceHour();
         var query=new CountingQuery(game); game.HistorySource=query;
         var summary=game.PeriodSummary(ComparisonPeriod.All);
         check(query.RangeCalls==0 && summary.Start.Hour==0 && summary.End.Hour==10,"Ranking and overview summary avoid chart range loading");

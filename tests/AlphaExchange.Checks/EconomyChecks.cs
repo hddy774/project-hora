@@ -5,7 +5,7 @@ static class EconomyChecks
 {
     public static void Run(Action<bool, string> check, Action<GameEngine> validate, Action<double, double, string, double> near)
     {
-        var g = new GameEngine(712);
+        var g = TestFixtures.SmallMarket(712);
         check(g.State.Stocks.Count == 30 && g.State.Bots.All(t => t.Abilities.Values().Length == 10 && t.Abilities.Values().All(v => v is >= 1 and <= 100)), "Thirty stocks and ten representative abilities");
         check(g.AdvanceTime(2.4, 50) == 24 && g.AdvanceTime(1.2, 100) == 24, "50x and 100x timing");
         var t = g.Owner(1);
@@ -22,7 +22,7 @@ static class EconomyChecks
         check(g.BorrowCash(t.Id, own) is null && t.LoanDebt == own && t.Cash == cash + own, "AAA may borrow 100 percent of own assets");
         check(g.LoanTerms(t).Limit == own && g.BorrowCash(t.Id, 1) is not null, "Borrowing cannot recursively expand its limit");
         check(g.RepayLoan(t.Id, own) == own && t.LoanDebt == 0, "Bank repayment"); validate(g);
-        var shortGame = new GameEngine(77); var shortTrader = shortGame.Owner(1); int stock = 0;
+        var shortGame = TestFixtures.SmallMarket(77); var shortTrader = shortGame.Owner(1); int stock = 0;
         long inventory = shortGame.State.Bank.ShareInventory[stock]; long sellerLong = shortTrader.Shares[stock];
         check(shortGame.SubmitOrder(101, stock, false, 52400, 1, shortSale: true) is not null, "Retail cannot short");
         check(shortGame.SubmitOrder(1, stock, false, 52500, 2, shortSale: true) is null, "Borrowed short order");
@@ -41,23 +41,23 @@ static class EconomyChecks
         var coverSeller = shortGame.State.Bots.First(b => b.Id != 1 && b.Shares[0] - b.ReservedShares[0] >= 2);
         check(shortGame.SubmitOrder(coverSeller.Id, 0, false, 52500, 2) is null, "Funded cover counterparty");
         check(shortGame.SubmitOrder(1, 0, true, 52600, 2, cover: true) is null && shortTrader.RealizedProfit == -1500, "Losing short realizes the full loss"); validate(shortGame);
-        var lendingSave = new GameEngine(121); lendingSave.SubmitOrder(1, 0, false, 55000, 2, shortSale: true);
+        var lendingSave = TestFixtures.SmallMarket(121); lendingSave.SubmitOrder(1, 0, false, 55000, 2, shortSale: true);
         var lendingRestore = GameEngine.Deserialize(lendingSave.Serialize());
         check(lendingRestore.Serialize() == lendingSave.Serialize() && lendingRestore.State.Bank.ReservedLending[0] == 2, "Short reservations survive persistence");
         lendingRestore.CancelOrders(1); validate(lendingRestore);
-        var interestGame = new GameEngine(55); var debtor = interestGame.Owner(101); interestGame.BorrowCash(101, 20_000);
+        var interestGame = TestFixtures.SmallMarket(55); var debtor = interestGame.Owner(101); interestGame.BorrowCash(101, 20_000);
         for (int i = 0; i < 24; i++) interestGame.AdvanceHour();
         check(debtor.InterestExpense > 0 && interestGame.State.Bank.InterestIncome > 0, "Interest settles daily into bank ledger"); validate(interestGame);
         shortGame.State.Government.Policy.ShortSellingAllowed = false;
         check(shortGame.SubmitOrder(1, 0, false, 52400, 1, shortSale: true) is not null, "Government short ban");
-        var operationGame = new GameEngine(10);
+        var operationGame = TestFixtures.SmallMarket(10);
         check(operationGame.ProposeOperation(1, 2, 0) is null && operationGame.ProposeOperation(1, 3, 1) is not null, "Representative cooperation and exclusive participation");
         operationGame.State.Government.Policy.Enforcement = 1;
         var op = operationGame.State.Operations[0]; op.EndsHour = 1; operationGame.AdvanceHour();
         check(op.Status == OperationStatus.Failed && op.Fine > 0 && operationGame.Owner(1).Fines > 0, "Detection produces fines and visible failure"); validate(operationGame);
         var penalized = operationGame.Owner(3); operationGame.AssessFine(penalized, penalized.Cash + 1000);
         check(penalized.FineDebt == 1000 && penalized.Cash == 0, "Unpaid fines remain a liability without negative cash"); validate(operationGame);
-        var loss = new GameEngine(4); var a = loss.Owner(1); a.Abilities.RiskManagement = 100;
+        var loss = TestFixtures.SmallMarket(4); var a = loss.Owner(1); a.Abilities.RiskManagement = 100;
         double beforeBear=loss.Analyze(a,0).TargetExposure;
         foreach (var s in loss.State.Stocks) s.History = Enumerable.Range(0, 24).Select(i => (double)(s.Price * (1.3 - i * .3 / 23))).ToList();
         loss.AdvanceHour();
@@ -73,11 +73,11 @@ static class EconomyChecks
         for (int i = 0; i < 240; i++) loss.AdvanceHour();
         check(loss.State.Bots.All(b => b.Equity(loss.State.Stocks) > 0) && loss.State.Bots.Sum(b => b.Cash) > 0, "Ten-day bear simulation preserves institutional solvency and liquidity"); validate(loss);
         Console.WriteLine($"Bear scenario: solvent institutions={loss.State.Bots.Count(b => b.Equity(loss.State.Stocks) > 0)}, cash={loss.State.Bots.Sum(b => b.Cash):N0}");
-        var recovery = new GameEngine(301);
+        var recovery = TestFixtures.SmallMarket(301);
         foreach (var s in recovery.State.Stocks) { s.Price = s.PreviousPrice = s.DayOpenPrice = 100; s.History = Enumerable.Repeat(100.0, 24).ToList(); }
         for (int i = 0; i < 120; i++) recovery.AdvanceHour();
         check(recovery.State.Stocks.Any(s => s.Price > 100), "Value demand can recover from the price floor"); validate(recovery);
-        var company = new GameEngine(85); var previous = company.State.Stocks[0].Report;
+        var company = TestFixtures.SmallMarket(85); var previous = company.State.Stocks[0].Report;
         company.ApplyNewsImpact(0, 1); company.ApplyNewsImpact(1, -1);
         for (int i = 0; i < 720; i++) company.AdvanceHour();
         foreach (var s in company.State.Stocks)
@@ -88,7 +88,7 @@ static class EconomyChecks
             check(r.OpeningEquity + r.NetIncome - r.Dividends + r.CapitalChange == r.Equity, "Corporate statement of equity reconciliation");
             check(r.Assets == r.Liabilities + r.Equity, "Corporate balance sheet");
         }
-        check(company.State.Government.Policy.Season == 2 && company.State.Government.History.Count == 2, "Monthly government policy rollover");
+        check(company.State.Government.Policy.Season == 2 && company.State.Government.History.Count == 3, "Monthly government policy rollover");
         var ten = company.Period(ComparisonPeriod.TenDays); var five = company.Period(ComparisonPeriod.FiveDays); var day = company.Period(ComparisonPeriod.PreviousDay);
         check(ten.Start.Hour == 480 && five.Start.Hour == 600 && day.Start.Hour == 696, "Comparison periods cross season boundaries");
         check(ten.Volume == ten.End.Volume - ten.Start.Volume && ten.Volume >= five.Volume, "Period volume uses cumulative differences");
@@ -99,7 +99,7 @@ static class EconomyChecks
         }
         check(company.State.PendingSeasons[0].Days.Count == 30 && company.State.PendingSeasons[0].CompanyReports.All(r => r.Season == 1), "Season archive includes graphs and closing reports");
         var old = MakeV3Fixture(); var migrated = GameEngine.Deserialize(old.ToJsonString());
-        check(migrated.State.Version == 7 && migrated.State.MigratedFromV3 && migrated.State.Stocks.Count == 30, "v3 upgrades into current thirty-stock economy");
+        check(migrated.State.Version == 8 && migrated.State.MigratedFromV3 && migrated.State.Stocks.Count == 30, "v3 upgrades into current thirty-stock economy");
         check(migrated.State.Bots.All(t => t.Cash == (long)old["Bots"]![t.Id - 1]!["Cash"]! && t.Shares.Take(8).SequenceEqual(old["Bots"]![t.Id - 1]!["Shares"]!.AsArray().Select(x => (long)x!))), "v3 cash and holdings preserved");
         validate(migrated);
         var corruptHistory = JsonNode.Parse(company.Serialize())!.AsObject(); corruptHistory["DailyHistory"] = new JsonArray();
@@ -109,7 +109,7 @@ static class EconomyChecks
     }
     static JsonObject MakeV3Fixture()
     {
-        var g = new GameEngine(111);
+        var g = TestFixtures.SmallMarket(111);
         for(int i=0;i<8;i++) TestFixtures.BuyFromBank(g,1,i,2);
         TestFixtures.ClearLegacyTreasury(g);
         foreach (var t in g.Participants)
@@ -122,7 +122,7 @@ static class EconomyChecks
         g.State.Stocks.RemoveRange(8, g.State.Stocks.Count - 8); g.State.News.RemoveAll(n => n.StockIndex >= 8);
         for (int i = 0; i < 8; i++) g.State.Stocks[i].TotalShares = g.Participants.Sum(t => (long)t.Shares[i]);
         g.State.InitialSystemCash = g.Participants.Sum(t => t.Cash) + g.State.FeePool;
-        var json = JsonNode.Parse(System.Text.Json.JsonSerializer.Serialize(g.State))!.AsObject(); json["Version"] = 3;
+        var json = JsonNode.Parse(System.Text.Json.JsonSerializer.Serialize(g.State))!.AsObject(); TestFixtures.OldWorld(json); json["Version"] = 3;
         foreach (var participant in json["Bots"]!.AsArray().Concat(json["Retail"]!.AsArray()))
             foreach (string key in new[] { "ShortShares", "ShortAveragePrice", "ReservedCovers", "Abilities", "Disposition", "CreditScore", "LoanDebt", "FineDebt", "OpeningSnapshot", "SeasonSnapshot" })
                 participant!.AsObject().Remove(key);

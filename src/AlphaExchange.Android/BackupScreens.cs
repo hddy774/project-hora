@@ -20,7 +20,7 @@ public sealed partial class GameView
         {
             var intent = new Intent(export ? Intent.ActionCreateDocument : Intent.ActionOpenDocument);
             intent.AddCategory(Intent.CategoryOpenable); intent.SetType("application/zip");
-            if (export) intent.PutExtra(Intent.ExtraTitle,"AlphaExchange-v1.4.0-history.zip");
+            if (export) intent.PutExtra(Intent.ExtraTitle,"AlphaExchange-v1.7.0-history.zip");
             activity.StartActivityForResult(intent,export ? ExportRequest : ImportRequest);
         }
         catch (ActivityNotFoundException) { fileBusy = false; Notify("기기의 파일 선택 앱을 사용할 수 없습니다."); }

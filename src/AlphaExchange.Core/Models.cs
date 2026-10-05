@@ -43,6 +43,8 @@ public sealed class Abilities
 }
 public sealed class Stock
 {
+    public long PendingManagementPay { get; set; }
+    public double BusinessSalesFactor { get; set; } = 1;
     public int Generation { get; set; } = 1;
     public int InsolventMonths { get; set; }
     public bool WaitingForCapital { get; set; }
@@ -329,6 +331,8 @@ public sealed class FinancialStatement
 }
 public sealed class LimitOrder
 {
+    public long CreatedMinute { get; set; }
+    public long ExpiresMinute { get; set; }
     public long Id { get; set; }
     public int OwnerId { get; set; }
     public string SecurityId { get; set; } = "";
@@ -345,6 +349,8 @@ public sealed record BookLevel(int Price, long InstitutionQuantity, long RetailQ
 { public long Quantity => InstitutionQuantity + RetailQuantity+BankQuantity; }
 public sealed class TradeRecord
 {
+    public int Minute { get; set; }
+    public long AbsoluteMinute { get; set; }
     public long Season { get; set; }
     public int Day { get; set; }
     public int Hour { get; set; }
@@ -359,6 +365,9 @@ public sealed class TradeRecord
 }
 public sealed class MarketEvent
 {
+    public int Minute { get; set; }
+    public int ActorId { get; set; }
+    public long ActivityId { get; set; }
     public long Season { get; set; }
     public int Day { get; set; }
     public int Hour { get; set; }
@@ -372,6 +381,7 @@ public sealed record RankHistory(long Season, int Rank, double Return, long Equi
 public sealed record SeasonStanding(int TraderId, int Rank, long OpeningEquity, long Equity, double Return,int Generation=1,string InstitutionName="");
 public sealed class SeasonResult
 {
+    public List<PersonStanding> PersonStandings { get; set; } = [];
     public List<SeasonGrowthReward> GrowthRewards { get; set; } = [];
     public long Season { get; set; }
     public List<SeasonStanding> Standings { get; set; } = [];
@@ -385,7 +395,12 @@ public sealed class SeasonResult
 }
 public sealed class GameState : ICashAccount
 {
-    public int Version { get; set; } = 7;
+    public int Version { get; set; } = 8;
+    public EconomyWorld? World { get; set; }
+    public long CompletedMinutes { get; set; }
+    public double MinuteProgress { get; set; }
+    public int PendingClockMinutes { get; set; }
+    public List<int> MinuteActors { get; set; } = [];
     public SimulationRules? Rules { get; set; }
     public long NextVoteId { get; set; } = 1;
     public long NextBankruptcyId { get; set; } = 1;
@@ -453,5 +468,6 @@ public sealed class GameState : ICashAccount
     [JsonIgnore] public long Season => CompletedHours / (GameEngine.SeasonLength * 24) + 1;
     [JsonIgnore] public int Day => (int)(CompletedHours % (GameEngine.SeasonLength * 24) / 24) + 1;
     [JsonIgnore] public int Hour => (int)(CompletedHours % 24);
+    [JsonIgnore] public int Minute => (int)(CompletedMinutes % 60);
     [JsonIgnore] public bool Finished => false;
 }

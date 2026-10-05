@@ -3,7 +3,7 @@ namespace AlphaExchange.Core;
 public sealed partial class GameEngine
 {
     public const int AiCount = 100, RetailCount = 10_000, SeasonLength = 30, StockCount = 30;
-    public const long InitialCash = 10_000_000, RetailInitialCapital = InitialCash / 100;
+    public const long InitialCash = 1_000_000_000, RetailInitialCapital = 500_000_000;
     public const double FeeRate = .0015, SecondsPerGameHour = 5;
     public const int HistoryLimit = 120, TapeLimit = 160;
     public GameState State { get; private set; }
@@ -16,21 +16,22 @@ public sealed partial class GameEngine
     public static readonly int[] Speeds = [1, 2, 5, 20, 50, 100];
     static readonly string[] Names = ["노바", "볼트", "루멘", "아틀라스", "픽셀", "오닉스", "테라", "제니스", "코멧", "에코", "벡터", "오리온", "네온", "루나", "제로", "시그마", "펄스", "퀀트", "코어", "아스트로"];
     readonly int[] actorBuffer=new int[AiCount+800];
-    public GameEngine(uint seed,SimulationRules? rules=null)
+    public GameEngine(uint seed,SimulationRules? rules=null,WorldRules? worldRules=null)
     {
         seed = seed == 0 ? 20261004 : seed;
-        State = new GameState { Seed = seed, RandomState = seed,Rules=rules?.Copy() ?? SimulationRules.Default() };
+        State = new GameState { Seed = seed, RandomState = seed,Rules=rules?.Copy() ?? SimulationRules.Default(),World=new EconomyWorld { Rules=worldRules?.Copy() ?? AlphaExchange.Core.WorldRules.Default() } };
+        ConfigureNewCapital();
         State.Stocks.AddRange(CompanyCatalog.Companies.Select(c => CompanyCatalog.Create(c)));
         State.SecurityIds = State.Stocks.Select(s => s.SecurityId).ToList();
         for (int i = 1; i <= AiCount; i++)
         {
             var t = new Trader { Id = i, Name = $"{Names[(i - 1) % Names.Length]} {i:000}", Strategy = (Strategy)((i - 1) % 6), Risk = .25 + Next() * .7, Patience = .1 + Next() * .7 };
             InitializeRepresentative(t);
-            Endow(t, InitialCash); State.Bots.Add(t);
+            Endow(t, WorldRules.InvestorCapital); State.Bots.Add(t);
         }
-        CreateRetail(); InitializeEconomy(); InitializeTotals(); InitializeHistory(); PublishNews(); RebuildBooks(); OpenSeasonVotes();
+        CreateRetail(); InitializeEconomy(); InitializeWorld(); HoldElection(true); HoldElection(false); VoteEconomicPolicy(); InitializeTotals(); InitializeHistory(); PublishNews(); RebuildBooks(); OpenSeasonVotes();
     }
-    GameEngine(GameState state) { State = state; RebuildBooks(); }
+    GameEngine(GameState state) { State = state; RebuildBooks(); if(state.Minute!=0) PrepareMarketSignals(); }
     void Endow(Trader t, long capital)
     {
         t.Shares = new long[State.Stocks.Count]; t.AverageCost = new double[State.Stocks.Count]; t.ReservedShares = new long[State.Stocks.Count];
@@ -42,10 +43,11 @@ public sealed partial class GameEngine
     }
     void CreateRetail()
     {
-        for (int i = 0; i < RetailCount; i++)
+        int count=State.World?.Rules?.InitialRetailUnits ?? RetailCount;
+        for (int i = 0; i < count; i++)
         {
             var t = new Trader { Id = AiCount + i + 1, IsRetail = true, Risk = .15 + Next() * .8, Patience = .2 + Next() * .6 };
-            Endow(t, RetailInitialCapital); State.Retail.Add(t);
+            Endow(t,State.World?.Rules?.RetailCapital ?? 100_000); State.Retail.Add(t);
         }
     }
     void InitializeTotals()
@@ -67,6 +69,11 @@ public sealed partial class GameEngine
     }
     public void AdvanceHour()
     {
+        long target=State.CompletedHours+1;
+        while(State.CompletedHours<target) AdvanceMinute();
+    }
+    void BeginHour()
+    {
         ExpireOrders();
         foreach (var s in State.Stocks)
         {
@@ -75,16 +82,36 @@ public sealed partial class GameEngine
         }
         PrepareMarketSignals();
         MakeBankMarket();
-        int count = 300 + (int)(Next() * 501); State.ActiveRetailLastHour = count;
+        int count = Math.Min(State.Retail.Count,300 + (int)(Next() * 501)); State.ActiveRetailLastHour = count;
         var actors = actorBuffer.AsSpan(0,AiCount+count);
         for (int i = 0; i < AiCount; i++) actors[i] = i + 1;
         for (int i = 0; i < count; i++)
-        { State.RetailCursor = (State.RetailCursor + 7919) % RetailCount; actors[AiCount + i] = AiCount + State.RetailCursor + 1; }
+        { State.RetailCursor = (State.RetailCursor + 7919) % State.Retail.Count; actors[AiCount + i] = AiCount + State.RetailCursor + 1; }
         for (int i = actors.Length - 1; i > 0; i--)
         { int j = (int)(Next() * (i + 1)); (actors[i], actors[j]) = (actors[j], actors[i]); }
-        foreach (int id in actors) { var t = Owner(id); if (t.IsRetail) DecideRetail(t); else DecideInstitution(t); }
+        State.MinuteActors.Clear(); foreach(int id in actors) State.MinuteActors.Add(id);
+    }
+    public void AdvanceMinute()
+    {
+        if(State.Minute==0) BeginHour(); else ExpireOrders();
+        int minute=State.Minute,count=State.MinuteActors.Count;
+        int first=count*minute/60,end=count*(minute+1)/60;
+        for(int i=first;i<end;i++)
+        { var t=Owner(State.MinuteActors[i]); if(t.IsRetail) DecideRetail(t); else DecideInstitution(t); }
+        for(int id=minute+1;id<=AiCount;id+=60)
+        {
+            var t=Owner(id); var d=t.Development!;
+            if(d.NextExecutionMinute<=State.CompletedMinutes && d.Employees.Any(c=>c.Job==StaffJob.ExecutionTrader)) DecideInstitution(t);
+        }
+        if(minute%15==14) ReplenishLiquidity();
+        State.CompletedMinutes++;
+        if(State.Minute==0) EndHour();
+    }
+    void EndHour()
+    {
         State.Orders.RemoveAll(o => o.Remaining == 0);
         State.CompletedHours++;
+        State.MinuteActors.Clear();
         if (State.Hour == 0)
             foreach (var s in State.Stocks) { s.DayOpenPrice = s.Price; s.DayVolume = s.DayTurnover = 0; }
         foreach (var s in State.Stocks)
@@ -94,7 +121,7 @@ public sealed partial class GameEngine
         foreach (var t in State.Bots) Append(t.EquityHistory, t.Equity(State.Stocks), HistoryLimit);
         foreach (var stock in State.Stocks.Where(s => s.Active)) { stock.ShareHourSum = checked(stock.ShareHourSum + stock.OutstandingShares); stock.ShareHours++; }
         UpdateOperations();
-        if (State.Hour == 0) { ServiceStaff(); ServiceFinance(); }
+        if (State.Hour == 0) { ServiceStaff(); ServiceFinance(); UpdateWorldDay(); }
         bool monthEnd = State.CompletedHours % (SeasonLength * 24) == 0;
         if (monthEnd)
         {
@@ -113,12 +140,14 @@ public sealed partial class GameEngine
     public int AdvanceTime(double seconds, int speed = 1)
     {
         if (!double.IsFinite(seconds) || seconds < 0 || seconds > 3600 || !Speeds.Contains(speed)) throw new ArgumentOutOfRangeException(nameof(seconds));
-        double hours = State.HourProgress + seconds * speed / SecondsPerGameHour;
-        int count = checked(State.PendingClockHours+(int)Math.Floor(hours + 1e-9));
-        State.PendingClockHours=0;
-        State.HourProgress = Math.Clamp(hours - count, 0, .999999999999);
-        for (int i = 0; i < count; i++) AdvanceHour();
-        return count;
+        long before=State.CompletedHours;
+        double minutes=State.MinuteProgress+seconds*speed*60/SecondsPerGameHour;
+        int count=checked(State.PendingClockMinutes+(int)Math.Floor(minutes+1e-9));
+        State.PendingClockMinutes=State.PendingClockHours=0;
+        State.MinuteProgress=Math.Clamp(minutes-Math.Floor(minutes+1e-9),0,.999999999999);
+        State.HourProgress=State.MinuteProgress/60;
+        for(int i=0;i<count;i++) AdvanceMinute();
+        return checked((int)(State.CompletedHours-before));
     }
     void DecideRetail(Trader t)
     {
@@ -136,7 +165,8 @@ public sealed partial class GameEngine
         bool buy=Next()<reaction.BuyProbability;
         int limit=Quote(stock.PreviousPrice*(1+(buy ? reaction.Aggression : -reaction.Aggression)),buy);
         long available=buy ? MaxBuy(t,index,limit) : t.Shares[index]-t.ReservedShares[index];
-        int quantity=(int)Math.Min(available,1+(Next()<t.Risk*.25 ? 1 : 0));
+        int lot=State.World is not null && t.OpeningEquity>=WorldRules.RetailCapital/2 ? Math.Clamp((int)(t.OpeningEquity/stock.Price/WorldRules.RetailTradeDivisor),1,1000) : 1;
+        int quantity=(int)Math.Min(available,lot*(1+(Next()<t.Risk*.25 ? 1 : 0)));
         if(quantity>0) SubmitOrder(t.Id,index,buy,limit,quantity,1);
     }
     void FinishSeason(long season)
@@ -152,7 +182,7 @@ public sealed partial class GameEngine
             if(AwardSeasonGrowth(t,season,row.Rank) is {} reward) result.GrowthRewards.Add(reward);
             Append(t.SeasonRanks, new RankHistory(season, row.Rank, row.Return, row.Equity,t.Generation), 12);
         }
-        State.PendingSeasons.Add(result);
+        if(State.World is not null) AwardVotingPower(result); State.PendingSeasons.Add(result);
         foreach (var t in Participants)
         { t.SeasonOpeningEquity = t.Equity(State.Stocks); if(t.IsRetail) t.SeasonReturnBasis=t.ReturnIndex; else t.SeasonSnapshot = CaptureTrader(t); }
         State.SeasonSnapshot = result.End;
@@ -162,6 +192,16 @@ public sealed partial class GameEngine
     { values.Add(value); if (values.Count > maximum) values.RemoveRange(0, values.Count - maximum); }
     void PublishNews()
     {
+        if(State.World is not null && World.People.Count==200)
+        {
+            if(State.CompletedHours==0) Activity(World.GovernorId,World.LeaderId,"","market-open","시장안정은행 시장 개장 보고 · 실제 보유 주식으로 양방향 호가 공급");
+            else if(State.Hour%24==6)
+            {
+                int companyIndex=(int)(Next()*Math.Min(30,State.Stocks.Count)); var company=State.Stocks[companyIndex]; if(!company.Active) return;
+                Activity(101+companyIndex,0,company.SecurityId,"management-briefing",$"{company.Name} 대표 공개 브리핑 · {CompanyStrategyNames[(int)company.CompanyStrategy]} 경영 방향 확인");
+            }
+            return;
+        }
         int i = (int)(Next() * State.Stocks.Count); var s = State.Stocks[i]; bool up = Next() >= .5;
         double impact = (up ? 1 : -1) * (.02 + Next() * .05); s.Sentiment = Math.Clamp(s.Sentiment + impact, -.12, .12);
         if (!s.Active) return;

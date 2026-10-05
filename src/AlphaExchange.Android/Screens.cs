@@ -18,12 +18,12 @@ public sealed partial class GameView
         }
         Mark(25, 24, 22, Lime); Text("ALPHA EXCHANGE", 60, 42, 14, Ink, true);
         Pill("OFFLINE", 299, 23, Teal, 77);
-        Text("100개의 기관.", 24, 104, 34, Ink, true, headline: true);
-        Text("1만 명의 개인.", 24, 146, 34, Lime, true, headline: true);
+        Text("200명의 인물.", 24, 104, 34, Ink, true, headline: true);
+        Text("1조 원의 시장.", 24, 146, 34, Lime, true, headline: true);
         Text("THE AUTONOMOUS MARKET SIMULATOR", 26, 174, 10, Muted, true);
         float y = h - 294;
         Box(20, y, 360, 83, Card, 20, Stroke);
-        string[] values = ["100", "10,000", "100×"], labels = ["기관 AI", "개인 AI", "최대 관찰 속도"];
+        string[] values = ["200", "1,000", "100×"], labels = ["경제 인물", "개미 집단 시작", "최대 관찰 속도"];
         for (int i = 0; i < 3; i++)
         {
             Text(values[i], 80 + i * 120, y + 35, i == 2 ? 21 : 26, i == 0 ? Lime : Ink, true, Paint.Align.Center);
@@ -57,10 +57,10 @@ public sealed partial class GameView
         Circle(360, 32, 15, Card2); Text("?", 360, 37, 15, Ink, true, Paint.Align.Center);
         Hit(338, 9, 43, 45, () => { help = true; });
         Text($"S{S.Season} · DAY {S.Day:00}/30", 21, 77, 18, Ink, true);
-        Text($"{S.Hour:00}:{Math.Min(59, (int)(S.HourProgress * 60)):00}", 379, 77, 20, Lime, true, Paint.Align.Right);
+        Text($"{S.Hour:00}:{S.Minute:00}", 379, 77, 20, Lime, true, Paint.Align.Right);
         Text(auto ? "진행 중" : "일시정지", 234, 76, 11, auto ? Teal : Muted);
         Box(20, 90, 360, 3, Card2, 2);
-        Box(20, 90, 360f * (float)((S.Hour + S.HourProgress) / 24), 3, Lime, 2);
+        Box(20, 90, 360f * (float)((S.Hour + S.Minute/60.0 + S.MinuteProgress/60.0) / 24), 3, Lime, 2);
     }
 
     void DrawFooter()
@@ -71,14 +71,15 @@ public sealed partial class GameView
         Text("1일 = 120초 · 1×", 21, h - 96, 10, Muted);
         Button($"{speed}×", 116, h - 132, 60, 49, () => { lastTick = Now; speed = GameEngine.Speeds[(Array.IndexOf(GameEngine.Speeds, speed) + 1) % GameEngine.Speeds.Length]; }, false);
         Button(auto ? "Ⅱ   일시정지" : "▷   관찰 재개", 176, h - 132, 204, 49, ToggleSimulation);
-        string[] labels = ["시장", "자산", "기관", "통계", "시즌", "뉴스"];
+        string[] labels = ["시장", "자산", "랭킹", "인물", "통계", "시즌", "뉴스"];
+        int[] pages=[0,1,2,10,3,4,5];
         for (int i = 0; i < labels.Length; i++)
         {
-            int p = i; float left = i * (400f / 6), center = left + 400f / 12; AColor color = page == i ? Lime : Muted;
-            if (page == i) Box(center - 18, h - 73, 36, 3, Lime, 2);
+            int p = pages[i]; float left = i * (400f / 7), center = left + 400f / 14; AColor color = page == p ? Lime : Muted;
+            if (page == p) Box(center - 18, h - 73, 36, 3, Lime, 2);
             NavIcon(i, center - 11, h - 59, color);
-            Text(labels[i], center, h - 17, 10, color, page == i, Paint.Align.Center);
-            Hit(left, h - 73, 400f / 6, 73, () => SetPage(p));
+            Text(labels[i], center, h - 17, 10, color, page == p, Paint.Align.Center);
+            Hit(left, h - 73, 400f / 7, 73, () => SetPage(p));
         }
     }
 

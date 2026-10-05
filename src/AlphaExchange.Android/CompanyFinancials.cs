@@ -35,7 +35,8 @@ public sealed partial class GameView
         var stock = S.Stocks[companyStock];
         Text("기업의 재무 기록", 20, y + 23, 24, Ink, true);
         Text("월별 결산 · 뉴스와 정부 정책을 반영", 21, y + 47, 12, Muted); y += 65;
-        Button("이 회사의 지분 구조 →",20,y,360,36,()=>OpenOwnership(companyStock),false); y+=48;
+        Button("지분 구조 →",20,y,174,36,()=>OpenOwnership(companyStock),false);
+        Button("사업 과정 관찰 →",206,y,174,36,()=> { businessStock=companyStock; SetPage(13); },false); y+=48;
         y=CompanySelector(y,companyStock,i=>companyStock=i);
         var reports = Reports(stock,companySeason==0 ? S.Season : companySeason);
         CompanyReport? report = companySeason==0 ? reports.LastOrDefault(r=>r.AccountingBasis==5) ?? reports.LastOrDefault() : reports.LastOrDefault(r=>r.Season==companySeason);

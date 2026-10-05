@@ -5,7 +5,7 @@ public sealed partial class GameEngine
     public event Action<CompanyReport>? CompanyReportRecorded;
     bool closingBooks;
     public long SystemCash() => checked(Participants.Sum(t => t.Cash) + State.Bank.Cash + State.Government.Cash
-        + State.FeePool + State.RealEconomy.Cash + State.Stocks.Sum(s => s.Report.Cash));
+        + State.FeePool + State.RealEconomy.Cash + State.Stocks.Sum(s => s.Report.Cash) + (State.World?.People.Sum(p=>p.Cash) ?? 0));
 
     void TransferCash(ICashAccount from, ICashAccount to, long amount, string reason)
     {
@@ -31,7 +31,7 @@ public sealed partial class GameEngine
     static string AccountName(ICashAccount account) => account switch
     {
         Trader t => "investor:" + t.Id, CompanyReport r => "company:" + r.SecurityId,
-        BankState => "bank", GovernmentState => "government", GameState => "exchange", _ => "real-economy"
+        BankState => "bank", GovernmentState => "government", GameState => "exchange", Person p=>"person:"+p.Id, _ => "real-economy"
     };
 
     void InitializeBusiness(Stock s)
@@ -53,15 +53,15 @@ public sealed partial class GameEngine
     void PayWages(long budget, ICashAccount source, string reason)
     {
         budget = Math.Min(budget, source.Cash);
-        long each = budget / RetailCount;
+        long each = budget / State.Retail.Count;
         if (each == 0) { TransferCash(source, State.RealEconomy, budget, reason); return; }
-        long total=checked(each*RetailCount);
+        long total=checked(each*State.Retail.Count);
         foreach (var t in State.Retail)
         { t.Cash=checked(t.Cash+each); t.WageIncome=checked(t.WageIncome+each); }
         source.Cash-=total; State.Bank.MarketAccount.Cash=State.Bank.Cash;
         RecordTransfer(AccountName(source),"retail-group",total,reason);
         State.RealEconomy.Wages += total;
-        long remainder = budget - each * RetailCount;
+        long remainder = budget - each * State.Retail.Count;
         TransferCash(source, State.RealEconomy, remainder, reason);
     }
 
@@ -78,12 +78,13 @@ public sealed partial class GameEngine
         }
         State.RealEconomy.Cash=checked(State.RealEconomy.Cash+consumed); State.RealEconomy.Consumption+=consumed;
         RecordTransfer("retail-group","real-economy",consumed,"consumption");
-        State.RealEconomy.Demand = Math.Clamp(.98 + .12 * Math.Sin(State.Season * Math.PI / 6)
-            - p.BaseRate * 1.5, .65, 1.2);
+        State.RealEconomy.Demand = State.World is null ? Math.Clamp(.98 + .12 * Math.Sin(State.Season * Math.PI / 6)
+            - p.BaseRate * 1.5, .65, 1.2) : World.EconomicActivity;
         foreach (var s in State.Stocks.Where(s => s.Active && !s.WaitingForCapital))
         {
             var old = s.Report;
             ApplyCompanyPolicies(s,out double salesFactor,out double costFactor,out double investRatio,out double payout,out double reserve);
+            salesFactor*=s.BusinessSalesFactor;
             double capacity = Math.Clamp((double)old.FixedAssets / Math.Max(1, s.InitialFixedAssets), .4, 3);
             double demand = (1 + (State.RealEconomy.Demand - 1) * s.DemandSensitivity) * Math.Clamp(1 + s.SeasonNewsImpact * .35, .6, 1.4);
             long target = Math.Max(0, (long)(s.BaseRevenue * (.65 + .35 * capacity) * demand * salesFactor));
@@ -106,7 +107,7 @@ public sealed partial class GameEngine
             long costs=Math.Max(0,(long)((target*.55+s.BaseRevenue*.45)*costRatio));
             long costsPaid=Math.Min(r.Cash,costs),wages=costsPaid/3;
             PayWages(wages, r, "company-wages");
-            TransferCash(r, State.RealEconomy, costsPaid - wages, "company-costs"); r.OperatingCosts = costs;
+            TransferCash(r, State.RealEconomy, costsPaid - wages, "company-costs"); r.OperatingCosts = costs+s.PendingManagementPay;
             r.TradePayables+=costs-costsPaid; State.RealEconomy.CorporateCosts += costsPaid;
             r.Depreciation = Math.Min(r.FixedAssets, r.FixedAssets / 500); r.FixedAssets -= r.Depreciation;
             r.Interest = (long)Math.Ceiling(r.Debt * p.BaseRate / 12);
@@ -118,7 +119,7 @@ public sealed partial class GameEngine
             State.Government.CorporateTaxes += r.Tax;
             long arrears=Math.Min(r.TradePayables,Math.Max(0,r.Cash-(long)(s.BaseRevenue*reserve)));
             TransferCash(r,State.RealEconomy,arrears,"company-cost-arrears"); r.TradePayables-=arrears;
-            r.OperatingCashFlow = revenue - costsPaid - interestPaid - r.Tax-arrears;
+            r.OperatingCashFlow = revenue - costsPaid - interestPaid - r.Tax-arrears-s.PendingManagementPay;
             long repayment=s.Management==ManagementPolicy.Liquidity ? Math.Min(r.Debt,Math.Max(0,r.Cash-(long)(s.BaseRevenue*reserve))/4) : 0;
             TransferCash(r,State.Bank,repayment,"company-loan-repayment"); r.Debt-=repayment; r.FinancingCashFlow-=repayment;
             long investment = Math.Min(Math.Max(0,(long)(r.NetIncome*investRatio)), Math.Max(0,r.Cash-(long)(s.BaseRevenue*reserve)));
@@ -129,6 +130,7 @@ public sealed partial class GameEngine
             s.InsolventMonths=r.NetIncome<0 && (r.Cash<s.BaseRevenue/4 || r.TradePayables>0) ? s.InsolventMonths+1 : 0;
             Append(s.Reports, CopyReport(r), 12);
             s.PendingCapitalChange = s.PendingFinancingFlow = s.PendingInvestingFlow = s.PendingDividends = s.PendingDividendPerShare = 0;
+            s.PendingManagementPay=0;
             s.ShareHourSum = s.ShareHours = 0; s.SeasonNewsImpact = 0; s.SeasonNewsCount = 0;
             // Public per-share cash generation and book assets, never an initial-price multiplier.
             double annualEps = (double)r.NetIncome * 12 / Math.Max(1, s.OutstandingShares);

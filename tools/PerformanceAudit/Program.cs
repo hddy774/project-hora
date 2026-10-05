@@ -14,7 +14,9 @@ if(input is not null && File.Exists(input))
 {
     var warmup=new GameEngine(seed); for(int hour=0;hour<168;hour++) warmup.AdvanceHour();
 }
-var game = input is not null && File.Exists(input) ? GameEngine.Deserialize(File.ReadAllText(input)) : new GameEngine(seed);
+GameEngine NewScenario()
+{ var world=WorldRules.Default(); if(input=="--max") world.InitialRetailUnits=world.MaximumRetailUnits; return new GameEngine(seed,worldRules:world); }
+var game = input is not null && File.Exists(input) ? GameEngine.Deserialize(File.ReadAllText(input)) : NewScenario();
 if(input is null || !File.Exists(input)) for (int i=0;i<168;i++) game.AdvanceHour();
 if(args.ElementAtOrDefault(3) is { } checkpoint) File.WriteAllText(checkpoint,game.Serialize());
 var store = new GameStore(folder); store.Attach(game); store.Save(game);
@@ -49,7 +51,7 @@ try
     Measure("serialize",()=>{ _=game.Serialize(); });
     Measure("writeSnapshot",()=>store.WriteSnapshot(store.PrepareSave(game)),5);
     results["checkpoint"]=new { hour=game.State.CompletedHours,encodedBytes=System.Text.Encoding.UTF8.GetByteCount(game.Serialize()) };
-    var hourly = new GameEngine(seed); var timings=new List<double>();
+    var hourly = NewScenario(); var timings=new List<double>();
     for(int i=0;i<720;i++) { long tick=Stopwatch.GetTimestamp(); hourly.AdvanceHour(); timings.Add(Stopwatch.GetElapsedTime(tick).TotalMilliseconds); }
     timings.Sort(); results["simulation"]=new { hours=720, medianMs=timings[360],p95Ms=timings[(int)(720*.95)],p99Ms=timings[(int)(720*.99)],matches=hourly.State.TotalMatches };
     Console.WriteLine("simulation: "+JsonSerializer.Serialize(results["simulation"]));
@@ -59,7 +61,7 @@ try
     var rows=new List<HistoryRecord>(); long last=0;
     for(int hour=0;hour<=43200;hour++)
     {
-        synthetic.State.CompletedHours=hour; var point=synthetic.CaptureSnapshot();
+        synthetic.State.CompletedHours=hour; synthetic.State.CompletedMinutes=hour*60; synthetic.World.NextGovernmentElectionHour=hour+240; synthetic.World.NextGovernorElectionHour=hour+240; var point=synthetic.CaptureSnapshot();
         point.Capitalization+=hour%811*101; point.PriceIndex+=hour%97; point.TotalReturnIndex+=hour%137;
         point.InstitutionCash+=hour%173; point.RetailCash+=hour%193;
         point.InstitutionEquity+=hour%211; point.RetailEquity+=hour%223;

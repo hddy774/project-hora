@@ -11,13 +11,14 @@ public sealed partial class GameEngine
         if(!double.IsFinite(seconds) || seconds<0 || seconds>3600 || !Speeds.Contains(speed))
             throw new ArgumentOutOfRangeException(nameof(seconds));
         var r=Rules.Performance;
-        double hours=State.HourProgress+seconds*speed/SecondsPerGameHour;
-        int due=Math.Min(r.MaximumCatchupHours,checked(State.PendingClockHours+(int)Math.Floor(hours+1e-9)));
-        State.HourProgress=Math.Clamp(hours-Math.Floor(hours+1e-9),0,.999999999999);
-        State.PendingClockHours=due;
-        long start=Stopwatch.GetTimestamp(); int count=0;
-        while(State.PendingClockHours>0 && (count==0 || Stopwatch.GetElapsedTime(start).TotalMilliseconds<r.TickBudgetMilliseconds))
-        { AdvanceHour(); State.PendingClockHours--; count++; }
-        return count;
+        double minutes=State.MinuteProgress+seconds*speed*60/SecondsPerGameHour;
+        int due=checked(State.PendingClockMinutes+(int)Math.Floor(minutes+1e-9));
+        State.MinuteProgress=Math.Clamp(minutes-Math.Floor(minutes+1e-9),0,.999999999999);
+        State.HourProgress=State.MinuteProgress/60; State.PendingClockMinutes=due;
+        long start=Stopwatch.GetTimestamp(),before=State.CompletedHours; int count=0;
+        while(State.PendingClockMinutes>0 && count<r.MaximumCatchupHours*60 && (count==0 || Stopwatch.GetElapsedTime(start).TotalMilliseconds<r.TickBudgetMilliseconds))
+        { AdvanceMinute(); State.PendingClockMinutes--; count++; }
+        State.PendingClockHours=State.PendingClockMinutes/60;
+        return checked((int)(State.CompletedHours-before));
     }
 }

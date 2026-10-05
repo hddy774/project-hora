@@ -6,21 +6,21 @@ namespace AlphaExchange.App;
 public sealed partial class GameView
 {
     int institutionTab;
-    static readonly string[] institutionTabs=["기관·능력","직원","시즌 보상","투자 기간"];
+    static readonly string[] institutionTabs=["기관 능력","직원","시즌 보상","투자 기간","기밀 계획"];
     float DrawInstitutionDevelopment(float y,Trader t)
     {
         Text("대표와 기관의 성장",21,y+16,20,Ink,true);
         Text("대표 50% + 직원·조직 50% · AI가 보상 포인트를 배분",21,y+40,10,Muted); y+=57;
         for(int i=0;i<institutionTabs.Length;i++)
         {
-            int tab=i; float x=20+i*92;
-            Box(x,y,84,34,institutionTab==i ? Lime : Card2,10);
-            Text(institutionTabs[i],x+42,y+22,10,institutionTab==i ? Bg : Muted,true,Paint.Align.Center);
-            Hit(x,y,84,34,()=>{ institutionTab=tab; scroll=0; });
+            int tab=i; float x=20+i*73;
+            Box(x,y,68,34,institutionTab==i ? Lime : Card2,10);
+            Text(institutionTabs[i],x+34,y+22,10,institutionTab==i ? Bg : Muted,true,Paint.Align.Center);
+            Hit(x,y,68,34,()=>{ institutionTab=tab; scroll=0; });
         }
         y+=51;
         var d=t.Development!;
-        return institutionTab switch { 1=>DrawEmployees(y,t),2=>DrawGrowthRewards(y,t),3=>DrawInvestmentPeriods(y,t),_=>DrawInstitutionAbilities(y,t,d) };
+        return institutionTab switch { 1=>DrawEmployees(y,t),2=>DrawGrowthRewards(y,t),3=>DrawInvestmentPeriods(y,t),4=>DrawConfidentialPlans(y,t),_=>DrawInstitutionAbilities(y,t,d) };
     }
     float DrawInstitutionAbilities(float y,Trader t,InstitutionDevelopment d)
     {
@@ -76,12 +76,14 @@ public sealed partial class GameView
         {
             if(Visible(y,54))
             {
-                Box(20,y,360,54,Card2,12); Text(GameEngine.AbilityNames[(int)cohort.Role],36,y+23,12,Ink,true);
+                Box(20,y,360,54,Card2,12); Text(cohort.Job is {} job ? game.WorldRules.Jobs[(int)job].Name : GameEngine.AbilityNames[(int)cohort.Role],36,y+23,12,Ink,true);
                 Text($"{cohort.Grade}급 {cohort.Count}명",364,y+23,12,Lime,true,Paint.Align.Right);
-                Text($"월 {ShortMoney(rules.Grades[(int)cohort.Grade].MonthlySalary*cohort.Count)}원",36,y+43,10,Muted);
+                Text($"{cohort.SectorSpecialty} · 월 {ShortMoney(rules.Grades[(int)cohort.Grade].MonthlySalary*cohort.Count)}원",36,y+43,10,Muted);
             }
             y+=64;
         }
+        foreach(var job in game.WorldRules.Jobs)
+        { y=Wrap(job.Name+" · "+job.Duty,21,y+8,352,11,Muted,19)+10; }
         return y+10;
     }
     float DrawGrowthRewards(float y,Trader t)
@@ -94,7 +96,7 @@ public sealed partial class GameView
         y=Wrap("시즌 수익률의 상대 순위에서 해당되는 보상 하나를 받습니다. AI는 현재 능력의 부족한 부분과 위험 관리·집행 필요에 따라 포인트를 배분합니다. 거래량만 늘려 보상을 얻지 않습니다.",21,y+7,352,11,Muted,19)+18;
         Text("순위 구간 · 능력 포인트 · 신용 보너스",21,y+17,16,Ink,true); y+=39;
         int lower=1;
-        foreach(var reward in game.Rules.Rewards)
+        foreach(var reward in game.WorldRules.RewardRanks.Select((rank,i)=>new RewardRule(rank,game.WorldRules.RewardPoints[i],10-i)))
         {
             string range=lower==reward.MaximumRank ? $"{lower}위" : $"{lower}~{reward.MaximumRank}위";
             Box(20,y,360,46,Card,11); Text(range,36,y+29,12,Ink,true);

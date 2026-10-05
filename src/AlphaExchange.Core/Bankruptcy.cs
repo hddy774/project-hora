@@ -45,7 +45,7 @@ public sealed partial class GameEngine
     }
     long FundReplacement(Trader t)
     {
-        long wanted=t.IsRetail ? RetailInitialCapital : InitialCash;
+        long wanted=t.IsRetail ? (State.World?.Rules?.RetailCapital ?? 100_000) : (State.World?.Rules?.InvestorCapital ?? 10_000_000);
         if(State.RealEconomy.Cash<wanted) { t.WaitingForCapital=true; return 0; }
         TransferCash(State.RealEconomy,t,wanted,"replacement-capital");
         t.OpeningCash+=wanted; t.OpeningEquity+=wanted; t.SeasonOpeningEquity=t.Equity(State.Stocks);

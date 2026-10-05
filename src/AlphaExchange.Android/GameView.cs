@@ -66,7 +66,7 @@ public sealed partial class GameView : View
     static long Now => System.Environment.TickCount64;
     static AColor Hex(string value) => AColor.ParseColor(value);
     static string Money(long amount) => amount.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
-    static string ShortMoney(long amount) => Math.Abs(amount) >= 100_000_000 ? $"{amount / 100_000_000.0:0.00}억" : Math.Abs(amount) >= 10000 ? $"{amount / 10000.0:0.0}만" : Money(amount);
+    string ShortMoney(long amount) => game?.State.World?.NumberFormat==1 ? KoreanNumber.Full(amount) : KoreanNumber.Compact(amount);
     static string Percent(double value) => $"{(value >= 0 ? "+" : "")}{value * 100:0.00}%";
     static AColor Direction(double value) => value >= 0 ? Teal : Red;
 
@@ -111,11 +111,11 @@ public sealed partial class GameView : View
     {
         if (game is null || fileBusy) return;
         lastSave=Now;
-        if(!force && preparedRun==S.RunId && preparedHour==S.CompletedHours && preparedTransaction==S.NextTransactionId && preparedEvent==S.NextCorporateEventId) return;
+        if(!force && preparedRun==S.RunId && preparedHour==S.CompletedMinutes && preparedTransaction==S.NextTransactionId && preparedEvent==S.NextCorporateEventId) return;
         try
         {
             var snapshot = store.PrepareSave(game);
-            preparedRun=S.RunId; preparedHour=S.CompletedHours; preparedTransaction=S.NextTransactionId; preparedEvent=S.NextCorporateEventId;
+            preparedRun=S.RunId; preparedHour=S.CompletedMinutes; preparedTransaction=S.NextTransactionId; preparedEvent=S.NextCorporateEventId;
             lock (saveGate)
             {
                 pendingSave = snapshot;
@@ -187,6 +187,7 @@ public sealed partial class GameView : View
         if(fileBusy) return true;
         if (help) help = false;
         else if (confirmNew) confirmNew = false;
+        else if (portraitZoom >= 0) portraitZoom = -1;
         else if (selectedStock >= 0) selectedStock = -1;
         else if (selectedTrader >= 0) selectedTrader = -1;
         else if (showResult) showResult = false;
@@ -219,7 +220,7 @@ public sealed partial class GameView : View
             clipTop = 101; clipBottom = h - 145;
             try
             {
-                float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), 7 => DrawOwnership(112 - scroll), 8=>DrawGovernance(112-scroll),9=>DrawBankruptcies(112-scroll), _ => DrawNews(112 - scroll) };
+                float end = page switch { 0 => DrawMarket(112 - scroll), 1 => DrawPortfolio(112 - scroll), 2 => DrawLeague(112 - scroll), 3 => DrawStatistics(112 - scroll), 4 => DrawSeasons(112 - scroll), 6 => DrawCompanyFinancials(112 - scroll), 7 => DrawOwnership(112 - scroll), 8=>DrawGovernance(112-scroll),9=>DrawBankruptcies(112-scroll),10=>DrawPeople(112-scroll),11=>DrawPersonProfile(112-scroll),12=>DrawPolitics(112-scroll),13=>DrawBusiness(112-scroll), _ => DrawNews(112 - scroll) };
                 maxScroll = Math.Max(0, end + scroll - (h - 160));
             }
             catch(Exception e) when(GameStore.StorageException(e))
@@ -236,6 +237,7 @@ public sealed partial class GameView : View
             if (selectedStock >= 0) DrawStockSheet();
             if (selectedTrader >= 0) DrawTraderSheet();
             if (showResult) DrawResults();
+            if (portraitZoom>=0) DrawPortraitZoom();
         }
         if (help) DrawHelp();
         if (confirmNew) DrawConfirmation();

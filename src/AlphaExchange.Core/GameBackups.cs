@@ -108,7 +108,7 @@ public sealed partial class GameStore
                         if(originalBackup is not null) File.Copy(originalBackup,BackupPath,true);
                         throw;
                     }
-                    lock (pending) { pending.Clear(); pendingEvents.Clear(); pendingVotes.Clear(); pendingBankruptcies.Clear(); pendingReports.Clear(); }
+                    lock (pending) { pending.Clear(); pendingEvents.Clear(); pendingVotes.Clear(); pendingBankruptcies.Clear(); pendingReports.Clear(); pendingActivities.Clear(); pendingWorldVotes.Clear(); }
                     queuedDailyThrough.Clear(); databaseReady = true;
                     activeRun = game.State.RunId; LastCommittedHour = game.State.CompletedHours;
                 }

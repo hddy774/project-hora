@@ -22,7 +22,7 @@ public sealed partial class GameEngine
         foreach(var cohort in t.Development!.Employees)
         {
             double skill=e.Grades[(int)cohort.Grade].Skill*cohort.Count;
-            for(int i=0;i<labor.Length;i++) labor[i]+=skill*(i==(int)cohort.Role ? 1 : e.OtherRoleWeight);
+            for(int i=0;i<labor.Length;i++) labor[i]+=skill*(cohort.Job is {} job && State.World is not null ? WorldRules.Jobs[(int)job].Weights[i] : i==(int)cohort.Role ? 1 : e.OtherRoleWeight);
         }
         for(int i=0;i<10;i++)
         {
@@ -60,7 +60,7 @@ public sealed partial class GameEngine
         if(cost>budget || MonthlyPayroll(t)+rule.MonthlySalary*count>gross*Rules.Employees.PayrollAssetRatio)
             return "현금 완충 또는 급여 예산이 부족합니다.";
         TransferCash(t,State.RealEconomy,cost,"staff-hiring"); t.StaffCosts=checked(t.StaffCosts+cost);
-        var cohort=d.Employees.Find(c=>c.Grade==grade && c.Role==role);
+        var cohort=d.Employees.Find(c=>c.Grade==grade && c.Role==role && c.Job is null);
         if(cohort is null) d.Employees.Add(new EmployeeCohort { Grade=grade,Role=role,Count=count }); else cohort.Count+=count;
         d.NextDecisionHour=State.CompletedHours; cachedStats=null; return null;
     }
@@ -94,7 +94,8 @@ public sealed partial class GameEngine
                 for(int j=0;j<10;j++) { int index=(first+j)%10; if(skills.Get((AbilityKind)index)<skills.Get((AbilityKind)role)) role=index; }
                 bool hired=false;
                 for(int g=0;g<Rules.Employees.Grades.Length;g++)
-                    if(HireEmployee(t.Id,(EmployeeGrade)g,(AbilityKind)role) is null) { hired=true; break; }
+                    if(HireSpecialist(t.Id,(EmployeeGrade)g,(StaffJob)((d.EmployeeCount+t.Id-1)%WorldRules.Jobs.Length),
+                        State.Stocks[(t.Id+n)%State.Stocks.Count].Sector) is null) { hired=true; break; }
                 if(!hired) break;
             }
         }
@@ -109,6 +110,8 @@ public sealed partial class GameEngine
         d.LastRewardSeason=season; d.LastRewardRank=rank;
         var reward=!t.WaitingForCapital && t.BirthHour<=(season-1)*SeasonLength*24 ? Rules.Rewards.FirstOrDefault(r=>rank<=r.MaximumRank) : null;
         int points=reward?.AbilityPoints ?? 0,credit=reward?.CreditBonus ?? 0;
+        if(!t.WaitingForCapital && t.BirthHour<=(season-1)*SeasonLength*24 && State.World is not null)
+        { int tier=Array.FindIndex(WorldRules.RewardRanks,r=>rank<=r); points=WorldRules.RewardPoints[tier]; credit=Math.Max(1,10-tier); }
         d.LastRewardPoints=points; d.PointsEarned=checked(d.PointsEarned+points); d.AvailablePoints=checked(d.AvailablePoints+points);
         d.CreditBonus=Math.Min(Rules.Representative.MaximumCreditBonus,(int)Math.Round(d.CreditBonus*Rules.Representative.CreditRetention)+credit);
         t.CreditScore=Math.Min(99,t.CreditScore+credit);

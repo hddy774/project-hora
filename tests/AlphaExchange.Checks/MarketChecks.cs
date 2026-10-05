@@ -8,7 +8,7 @@ static class MarketChecks
 {
     public static void Run(Action<bool,string> check,Action<GameEngine> validate,Action<double,double,string,double> near)
     {
-        var g=new GameEngine(130);
+        var g=TestFixtures.SmallMarket(130);
         check(g.State.Stocks.Count==30 && g.State.Stocks.GroupBy(s=>s.Sector).All(sector=>sector.Count()==5) && g.State.SecurityIds.Distinct().Count()==30,"Six sectors, five distinct companies each");
         check(g.Participants.All(t=>t.Cash>=0) && g.State.Stocks.Any(s=>s.CostRatio!=g.State.Stocks[0].CostRatio),"Budgeted endowment and distinct business cost profiles");
         var s=g.State.Stocks[0]; string id=s.SecurityId;
@@ -44,7 +44,7 @@ static class MarketChecks
         foreach(var stock in g.State.Stocks.Where(x=>x.Active))
         { var r=stock.Report; check(r.OpeningCash+r.OperatingCashFlow+r.InvestingCashFlow+r.FinancingCashFlow==r.Cash,"Post-action monthly cash flow"); check(r.OpeningEquity+r.NetIncome-r.Dividends+r.CapitalChange==r.Equity,"Post-action monthly equity"); }
         validate(g);
-        var taxed=new GameEngine(19); int price=taxed.State.Stocks[0].Price;
+        var taxed=TestFixtures.SmallMarket(19); int price=taxed.State.Stocks[0].Price;
         TestFixtures.BuyFromBank(taxed,1,0,2);
         long taxQuantity=1;
         check(taxed.SubmitOrder(1,0,false,price+1000,(int)taxQuantity) is null && taxed.SubmitOrder(2,0,true,price+1000,(int)taxQuantity) is null,"Taxable gain executes");
@@ -60,7 +60,7 @@ static class MarketChecks
         string folder=Path.Combine(Path.GetTempPath(),"hora-storage-"+Guid.NewGuid().ToString("N"));
         try
         {
-            var store=new GameStore(folder); var g=new GameEngine(301); store.Attach(g); store.Save(g);
+            var store=new GameStore(folder); var g=TestFixtures.SmallMarket(301); store.Attach(g); store.Save(g);
             int elapsed=0;
             foreach(int speed in GameEngine.Speeds) elapsed+=g.AdvanceTime(5,speed);
             check(store.PendingCount==elapsed,"Every completed hour is queued at all six speeds");
@@ -82,7 +82,7 @@ static class MarketChecks
             backup.Position=0; var freshStore=new GameStore(Path.Combine(folder,"reinstalled")); var imported=freshStore.Import(backup);
             check(imported.Serialize()==store.Load(out _)!.Serialize() && imported.HistorySource!.Covers(0,imported.State.CompletedHours),"Export/import restores game and full history across installations"); validate(imported);
             check(File.Exists(freshStore.BackupPath) && freshStore.LastCommittedHour==imported.State.CompletedHours,"Imported world immediately has matching recovery backup");
-            var replacement=new GameEngine(898); freshStore.Attach(replacement);
+            var replacement=TestFixtures.SmallMarket(898); freshStore.Attach(replacement);
             check(freshStore.LastCommittedHour==0,"New market resets its committed-hour display");
             backup.Position=0; imported=freshStore.Import(backup);
             var old=V4Fixture(); string original=old.Serialize(); string legacyFolder=Path.Combine(folder,"legacy"); Directory.CreateDirectory(legacyFolder); File.WriteAllText(Path.Combine(legacyFolder,"market-v4.json"),original);
@@ -122,7 +122,7 @@ static class MarketChecks
     }
     static GameEngine V4Fixture()
     {
-        var g=new GameEngine(47);
+        var g=TestFixtures.SmallMarket(47);
         for(int i=0;i<10;i++) TestFixtures.BuyFromBank(g,1,i,2);
         TestFixtures.ClearLegacyTreasury(g);
         foreach(var t in g.Participants)
@@ -137,7 +137,7 @@ static class MarketChecks
         for(int i=0;i<10;i++) g.State.Stocks[i].TotalShares=g.Participants.Sum(t=>t.Shares[i])+g.State.Bank.ShareInventory[i];
         // Original v4 book scope excluded companies and real-economy cash.
         g.State.InitialSystemCash=g.Participants.Sum(t=>t.Cash)+g.State.Bank.Cash+g.State.Government.Cash+g.State.FeePool;
-        var json=JsonNode.Parse(JsonSerializer.Serialize(g.State))!; json["Version"]=4; json["CompletedHours"]=48;
+        var json=JsonNode.Parse(JsonSerializer.Serialize(g.State))!; TestFixtures.OldWorld(json.AsObject()); json["Version"]=4; json["CompletedHours"]=48;
         var opening=g.CaptureSnapshot(); opening.Capitalization=g.State.Stocks.Sum(s=>s.MarketCap); opening.SecurityIds=[]; opening.StockShares=[]; opening.StockSectors=[]; opening.MarkPrices=[];
         var day=JsonSerializer.Deserialize<DailySnapshot>(JsonSerializer.Serialize(opening))!; day.Hour=24;
         json["OpeningSnapshot"]=JsonSerializer.SerializeToNode(opening); json["SeasonSnapshot"]=JsonSerializer.SerializeToNode(opening);
@@ -148,7 +148,7 @@ static class MarketChecks
     static GameEngine LegacyEnvelope(string json)
     {
         // Keep the fixture in its unupgraded representation through the public state object.
-        var game=new GameEngine(47); var state=JsonSerializer.Deserialize<GameState>(json)!;
+        var game=TestFixtures.SmallMarket(47); var state=JsonSerializer.Deserialize<GameState>(json)!;
         typeof(GameEngine).GetProperty(nameof(GameEngine.State))!.SetValue(game,state); return game;
     }
 }

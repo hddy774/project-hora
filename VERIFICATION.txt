@@ -1,7 +1,7 @@
 ALPHA EXCHANGE v1.7.0 — minute economy and200 people
 2026-10-05 UTC
 
-CORE: PASS41,245,049 assertions,16 seasons,5,058,975 trades.
+CORE: PASS41,245,057 assertions,16 seasons,5,058,975 trades.
 Cash/shares, personal/corporate ledgers, salaries/projects/donations, loans/shorts,
 splits/mergers/funded IPO, bankruptcy generations, ballots/rewards, minute restart,
 private access, ZIP/old SQLite hashes, frozen captures, malformed storage/gaps passed.
@@ -32,7 +32,12 @@ safe funded supply. Preserve collateral and real resources rather than force fil
 
 ANDROID: Release compile/publish passed. Existing API35/target34 and OS API warnings.
 Offline,com.alphaexchange.offline,v1.7.0/code8,minAPI26,ARM64/x86_64,200 portraits.
-Device/native status: docs/UI-VERIFICATION-v1.7.0.md.
+Native Android API26/AOSP/x86_64 PASS,Actions37312498876,commit0b79cd5aaad9e172285c77cd3a82bb7b870dab65.
+True v1.6 Version7/168hours/177rows migrated: immutable hashes/RunId preserved.
+200people/10000retail/old10000000 capital,cashdifference0,full hourly coverage.
+Native100x:21095 completed/265 pending over19.013s.
+New profiles/zoom,role lists,government,institution stats,two-column order book checked.
+Screenshots/raw proof: docs/UI-VERIFICATION-v1.7.0.md.
 CI/merge/deployment status: docs/DEVELOPMENT-v1.7.0.md.
 GitHub Actions builds merged immutable tag and publishes only AlphaExchange-v1.7.0.apk.
 New one-time key per user request: export ZIP before uninstall/reinstall/import.

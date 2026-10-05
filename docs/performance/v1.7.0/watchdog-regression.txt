@@ -1,0 +1,30 @@
+Final active-write watchdog and locked-input regression,2026-10-05 UTC
+Android Release compilation ran concurrently on the same shared host.
+This regression is not the fixed-input isolated performance comparison.
+
+Season 1: matches=326,972, feePool=309,193,457, latest matches=326,972
+Season 2: matches=641,863, feePool=279,622,182, latest matches=314,891
+Season 3: matches=961,787, feePool=275,510,962, latest matches=319,924
+Season 4: matches=1,273,332, feePool=267,815,709, latest matches=311,545
+Season 5: matches=1,588,055, feePool=271,286,865, latest matches=314,723
+Season 6: matches=1,903,985, feePool=275,936,609, latest matches=315,930
+Season 7: matches=2,220,689, feePool=279,970,355, latest matches=316,704
+Season 8: matches=2,538,926, feePool=284,822,995, latest matches=318,237
+Season 9: matches=2,850,117, feePool=281,924,608, latest matches=311,191
+Season 10: matches=3,167,359, feePool=290,381,163, latest matches=317,242
+Season 11: matches=3,474,952, feePool=286,785,315, latest matches=307,593
+Season 12: matches=3,788,238, feePool=293,899,706, latest matches=313,286
+Season 13: matches=4,099,487, feePool=294,115,668, latest matches=311,249
+Season 14: matches=4,415,370, feePool=299,670,325, latest matches=315,883
+Season 15: matches=4,731,269, feePool=304,538,926, latest matches=315,899
+Season 16: matches=5,053,408, feePool=311,824,967, latest matches=322,139
+Bear scenario: solvent institutions=100, cash=512,097,537
+PASS economy: abilities, 50/100x, nine grades, loans, shorts, taxes, operations, bear risk, monthly reports/policies, comparisons and v3 migration
+PASS market: 30 companies, real dividends, lender compensation, share actions, funded capital, index neutrality, post-action statements, hourly storage, migration, recovery and file portability
+PASS ownership/performance: physical ownership, treasury denominators, lender obligations, cache invalidation, frozen checkpoints, full JSON validation, extrema and mixed-resolution gaps
+PASS v1.5: reactive retail, 50/50 issuance, bank market, weighted governance, company/investor settlement, generations, atomic archive and compact saves
+PASS v1.6: equal growth, relative rewards, credit, funded employees, 50/50 capabilities, flexible horizons, real bilateral depth and v7 continuation
+PASS v1.7: trillion market, funded personal wallets, 200 roles, minute matching, confidential plans, staff professions, businesses, elections, 100-rank rewards and portable history
+PASS 41,245,057 assertions; 16 seasons; 5,058,975 matched trades
+Simulation wall time 178.96s; hour p50=6.36ms p95=37.48ms p99=90.25ms (100x budget 50ms/hour)
+Save bytes 14,911,780; serialize 213.5ms; pending=0; active orders=253

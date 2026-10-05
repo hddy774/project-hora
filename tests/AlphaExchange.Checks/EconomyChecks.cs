@@ -58,9 +58,13 @@ static class EconomyChecks
         var penalized = operationGame.Owner(3); operationGame.AssessFine(penalized, penalized.Cash + 1000);
         check(penalized.FineDebt == 1000 && penalized.Cash == 0, "Unpaid fines remain a liability without negative cash"); validate(operationGame);
         var loss = new GameEngine(4); var a = loss.Owner(1); a.Abilities.RiskManagement = 100;
+        double beforeBear=loss.Analyze(a,0).TargetExposure;
         foreach (var s in loss.State.Stocks) s.History = Enumerable.Range(0, 24).Select(i => (double)(s.Price * (1.3 - i * .3 / 23))).ToList();
         loss.AdvanceHour();
-        check(a.Decision.Contains("하락") && loss.Analyze(a, 0).TargetExposure < .3, "Bear market reduces exposure and strengthens risk control");
+        // v1.6 user cash limit is 30%; retaining the old <30% stock exposure
+        // requirement would contradict the newly requested allocation bounds.
+        check(a.Decision.Contains("하락") && loss.Analyze(a,0).TargetExposure is >=.7 and <=.95 &&
+            loss.Analyze(a,0).TargetExposure<beforeBear,"Bear market raises cash target within the requested 5-30% band");
         var strong = new Trader { Id=1, Abilities = new Abilities { Valuation = 50, RiskManagement = 100, Macro = 60 }, SeasonOpeningEquity = 1, Cash = 1_000_000, Risk = .5 };
         var weak = new Trader { Id=2, Abilities = new Abilities { Valuation = 50, RiskManagement = 20, Macro = 60 }, SeasonOpeningEquity = 1, Cash = 1_000_000, Risk = .5 };
         check(loss.Analyze(strong, 0).TargetExposure < loss.Analyze(weak, 0).TargetExposure, "Risk ability changes defensive position sizing");
@@ -95,7 +99,7 @@ static class EconomyChecks
         }
         check(company.State.PendingSeasons[0].Days.Count == 30 && company.State.PendingSeasons[0].CompanyReports.All(r => r.Season == 1), "Season archive includes graphs and closing reports");
         var old = MakeV3Fixture(); var migrated = GameEngine.Deserialize(old.ToJsonString());
-        check(migrated.State.Version == 6 && migrated.State.MigratedFromV3 && migrated.State.Stocks.Count == 30, "v3 upgrades into current thirty-stock economy");
+        check(migrated.State.Version == 7 && migrated.State.MigratedFromV3 && migrated.State.Stocks.Count == 30, "v3 upgrades into current thirty-stock economy");
         check(migrated.State.Bots.All(t => t.Cash == (long)old["Bots"]![t.Id - 1]!["Cash"]! && t.Shares.Take(8).SequenceEqual(old["Bots"]![t.Id - 1]!["Shares"]!.AsArray().Select(x => (long)x!))), "v3 cash and holdings preserved");
         validate(migrated);
         var corruptHistory = JsonNode.Parse(company.Serialize())!.AsObject(); corruptHistory["DailyHistory"] = new JsonArray();

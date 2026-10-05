@@ -69,7 +69,7 @@ public sealed partial class GameEngine
             else if(choice==VoteChoice.Against) vote.AgainstShares+=shares;
             else vote.AbstainShares+=shares;
         }
-        foreach(var t in State.Bots)
+        foreach(var t in State.Bots) if(t.Shares[index]>0)
             Add(t.Id,t.Generation,t.Name,t.Shares[index],InstitutionVote(t,stock,vote));
         long retailFor=0,retailAgainst=0,retailAbstain=0;
         foreach(var t in State.Retail)
@@ -103,12 +103,13 @@ public sealed partial class GameEngine
     }
     VoteChoice InstitutionVote(Trader t,Stock stock,CompanyVote vote)
     {
+        var a=Capabilities(t).Effective;
         bool risk=stock.Report.DebtRatio>.5 || stock.Report.Equity<=0;
         int wanted=vote.Kind switch
         {
-            VoteKind.Strategy=>risk && t.Abilities.RiskManagement>=40 ? 2 : t.Disposition==Disposition.Aggressive && stock.Report.Margin>.1 ? 0 : 1,
-            VoteKind.Management=>risk ? 2 : t.Abilities.Valuation>=45 ? 1 : 0,
-            _=>risk ? 0 : t.Disposition==Disposition.Cautious ? 2 : stock.Price<stock.FairValue && t.Abilities.Valuation>=50 ? 1 : 0
+            VoteKind.Strategy=>risk && a.RiskManagement>=40 ? 2 : t.Disposition==Disposition.Aggressive && stock.Report.Margin>.1 ? 0 : 1,
+            VoteKind.Management=>risk ? 2 : a.Valuation>=45 ? 1 : 0,
+            _=>risk ? 0 : t.Disposition==Disposition.Cautious ? 2 : stock.Price<stock.FairValue && a.Valuation>=50 ? 1 : 0
         };
         return vote.Option==wanted ? VoteChoice.For : VoteChoice.Against;
     }

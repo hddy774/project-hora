@@ -127,6 +127,7 @@ public sealed partial class GameEngine
             t.ShortDividendExpense+=shortCompensation; t.ShortDividendPaid+=paid; t.ShortDividendDebt+=shortCompensation-paid;
             profit+=t.ShortShares[index]*t.ShortAveragePrice[index]; t.RealizedProfit+=t.ShortShares[index]*t.ShortAveragePrice[index];
             t.ShortShares[index]=0; t.ShortAveragePrice[index]=0; PayTradeTax(t,profit);
+            RefreshPositionTiming(t,index);
         }
         TransferCash(estate,State.Bank,checked(State.Bank.ShareInventory[index]*perShare),"company-liquidation-bank-share");
         TransferCash(estate,State.RealEconomy,estate.Cash,"company-liquidation-estate");

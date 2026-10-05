@@ -64,26 +64,7 @@ public sealed partial class GameView
         }
         TextFit(caption, 36, y + 138, 10, Muted, 328); return y + 166;
     }
-    float DrawRepresentative(float y, Trader t)
-    {
-        Text("대표의 판단 능력", 21, y + 15, 20, Ink, true);
-        Text(GameEngine.DispositionNames[(int)t.Disposition] + " · 능력 1~100 · 모든 기법을 상황에 맞춰 혼합", 21, y + 39, 10, Muted); y += 56;
-        var values = t.Abilities.Values();
-        for (int i = 0; i < values.Length; i++)
-        {
-            Box(20, y, 360, 51, Card, 12);
-            Text(GameEngine.AbilityNames[i], 35, y + 21, 12, Ink, true);
-            Text(values[i].ToString(), 364, y + 21, 12, Lime, true, Paint.Align.Right);
-            Box(35, y + 32, 329, 5, Card2, 2); Box(35, y + 32, 329 * values[i] / 100f, 5, PaletteColors[i], 2); y += 60;
-        }
-        y = Wrap(t.Decision, 22, y + 14, 356, 12, Teal) + 12;
-        var loan = game!.LoanTerms(t);
-        y = Statement("은행 · 신용 " + loan.Rating, y, [("신용 점수", $"{t.CreditScore} / 99"), ("자기자산 대비 한도", $"{loan.AssetRatio:P0}"),
-            ("연 이자율", $"{loan.AnnualRate:P2}"), ("대출 한도", Money(loan.Limit)), ("추가 대출 가능", Money(loan.Available)),
-            ("대출 잔액", Money(t.LoanDebt)), ("누적 이자 비용", Money(t.InterestExpense)), ("벌금 / 미납", $"{ShortMoney(t.Fines)} / {ShortMoney(t.FineDebt)}")]);
-        Text("한도는 부채를 뺀 자기자산 기준 · 이자는 매일 정산", 21, y + 5, 10, Muted); y += 28;
-        return y;
-    }
+    float DrawRepresentative(float y,Trader t) => DrawInstitutionDevelopment(y,t);
     float DrawEconomy(float y)
     {
         var p = S.Government.Policy;

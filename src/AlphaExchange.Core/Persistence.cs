@@ -12,7 +12,7 @@ public sealed partial class GameEngine
     {
         var s = JsonSerializer.Deserialize<GameState>(json,StateJson) ?? throw new InvalidDataException("비어 있는 저장 데이터");
         int source = s.Version, count = source >= 5 ? s.Stocks.Count : source == 4 ? 10 : 8;
-        if (source is not (2 or 3 or 4 or 5 or 6) || count < 8 || count > 2048 || s.Stocks.Count != count ||
+        if (source is not (2 or 3 or 4 or 5 or 6 or 7) || count < 8 || count > 2048 || s.Stocks.Count != count ||
             s.RandomState == 0 || s.CompletedHours < 0 || !double.IsFinite(s.HourProgress) || s.HourProgress is < 0 or >= 1 ||
             s.Bots.Count != AiCount || s.FollowedId is < 1 or > AiCount || !Guid.TryParseExact(s.RunId, "N", out _))
             throw new InvalidDataException("지원하지 않는 저장 데이터");
@@ -24,7 +24,7 @@ public sealed partial class GameEngine
             throw new InvalidDataException("시장 데이터 손상");
         foreach (var t in s.Bots.Concat(s.Retail))
         {
-            if(source==6) NormalizeCompactTrader(t,count);
+            if(source>=6) NormalizeCompactTrader(t,count);
             if (source < 4)
             { t.ReservedShares = new long[count]; t.ShortShares = new long[count]; t.ShortAveragePrice = new double[count]; t.ReservedCovers = new long[count]; }
             ValidateTrader(t, count, source >= 4);
@@ -69,6 +69,23 @@ public sealed partial class GameEngine
             s.Version=6;
         }
         ValidateLifecycle(s);
+        if(source<7)
+        {
+            s.Rules=SimulationRules.Default();
+            var upgrade=new GameEngine(s);
+            foreach(var t in s.Bots)
+            {
+                var old=t.Abilities.Values();
+                t.Abilities=Abilities.Uniform(upgrade.Rules.Representative.InitialAbility);
+                upgrade.InitializeDevelopment(t);
+                t.Development!.LegacyAbilities=old;
+                t.Development.LastRewardSeason=s.Season-1;
+                t.Development.LastPayrollHour=s.CompletedHours;
+                t.Development.NextDecisionHour=s.CompletedHours;
+            }
+            s.Version=7;
+        }
+        ValidateDevelopment(s);
         if (s.SecurityIds.Count != count || !s.SecurityIds.SequenceEqual(s.Stocks.Select(x => x.SecurityId)) ||
             s.SecurityIds.Any(string.IsNullOrWhiteSpace) || s.SecurityIds.Distinct().Count() != count)
             throw new InvalidDataException("종목 ID 손상");
@@ -173,7 +190,7 @@ public sealed partial class GameEngine
     {
         if (t.Cash < 0 || t.Shares.Length != count || t.AverageCost.Length != count || t.ReservedShares.Length != count ||
             t.Shares.Any(q => q < 0) || t.AverageCost.Any(c => c < 0 || !double.IsFinite(c)) || !double.IsFinite(t.RealizedProfit) ||
-            !double.IsFinite(t.OpeningUnrealized) || !double.IsFinite(t.Risk) || !double.IsFinite(t.Patience) || !Enum.IsDefined(t.Strategy) || t.Fees < 0)
+            !double.IsFinite(t.OpeningUnrealized) || !double.IsFinite(t.Risk) || !double.IsFinite(t.Patience) || !Enum.IsDefined(t.Strategy) || t.Fees < 0 || t.StaffCosts<0)
             throw new InvalidDataException("포트폴리오 데이터 손상");
         if (modern && (t.ShortShares.Length != count || t.ShortAveragePrice.Length != count || t.ReservedCovers.Length != count ||
             t.ShortShares.Any(q => q < 0) || t.ShortAveragePrice.Any(p => p < 0 || !double.IsFinite(p)) || t.LoanDebt < 0 || t.FineDebt < 0 ||

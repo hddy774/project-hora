@@ -24,29 +24,34 @@ adb("shell", "restorecon", "-RF", device)
 adb("shell", "svc", "wifi", "disable"); adb("shell", "svc", "data", "disable")
 adb("shell", "monkey", "-p", package, "-c", "android.intent.category.LAUNCHER", "1")
 
-size=adb("shell", "wm", "size"); density=adb("shell", "wm", "density")
-width,height=map(int,re.findall(r"(\d+)x(\d+)",size)[-1]); dpi=int(re.findall(r"(\d+)",density)[-1])
-top=round(24*dpi/160); bottom=round(48*dpi/160); scale=width/400; h=(height-top-bottom)/scale
-
 def tap(x,y):
-    adb("shell", "input", "tap", str(round(x*scale)), str(round(top+y*scale))); time.sleep(1)
+    adb("shell", "input", "tap", str(round(left+x*scale)), str(round(top+y*scale))); time.sleep(1)
 
 def screenshot(name):
     (output/(name+".png")).write_bytes(adb("exec-out", "screencap", "-p",binary=True))
 
-def description():
+def window_tree():
     adb("shell","uiautomator","dump","/sdcard/hora-window.xml")
-    tree=ET.fromstring(adb("exec-out","cat","/sdcard/hora-window.xml"))
-    return " ".join(n.attrib.get("content-desc","") for n in tree.iter("node"))
+    raw=adb("exec-out","cat","/sdcard/hora-window.xml")
+    (output/"window.xml").write_text(raw)
+    return ET.fromstring(raw)
+
+def description():
+    return " ".join(n.attrib.get("content-desc","") for n in window_tree().iter("node"))
 
 def require_screen(text,timeout=30):
     deadline=time.monotonic()+timeout
-    while text not in description():
-        if time.monotonic()>deadline: raise RuntimeError("Expected native screen: "+text)
+    while True:
+        actual=description()
+        if text in actual: return
+        if time.monotonic()>deadline:
+            screenshot("failure-screen")
+            (output/"failure-logcat.txt").write_text(adb("logcat","-d","-t","250"))
+            raise RuntimeError(f"Expected native screen: {text}; actual: {actual}")
         time.sleep(1)
 
 def swipe():
-    adb("shell", "input", "swipe", str(round(200*scale)),str(round(top+430*scale)),str(round(200*scale)),str(round(top+210*scale)),"450")
+    adb("shell", "input", "swipe", str(round(left+200*scale)),str(round(top+430*scale)),str(round(left+200*scale)),str(round(top+210*scale)),"450")
     time.sleep(1)
 
 def pull_state(name):
@@ -61,6 +66,12 @@ def pull_state(name):
 
 # Startup is asynchronous; wait for the first source8 checkpoint after resume.
 require_screen("시뮬레이션 시작 화면",60); screenshot("01-lobby")
+# Android can expose hardware keys instead of a navigation bar. Use the actual
+# GameView bounds, including status/navigation insets, rather than guessing them.
+view=next(n for n in window_tree().iter("node") if n.attrib.get("content-desc","").startswith("알파 익스체인지"))
+left,top,right,bottom=map(int,re.findall(r"\d+",view.attrib["bounds"]))
+scale=(right-left)/400; h=(bottom-top)/scale
+(output/"viewport.json").write_text(json.dumps({"bounds":[left,top,right,bottom],"scale":scale,"canvasHeight":h},indent=2))
 tap(200,h-140)
 require_screen("시장 화면")
 deadline=time.monotonic()+60
@@ -117,7 +128,7 @@ if after["RunId"]!=baseline["run"] or after["Version"]!=8 or len(after["World"][
     raise RuntimeError("Native run/person identity changed")
 summary={"legacyVersion":7,"nativeVersion":8,"preservedRows":len(baseline["rows"]),"newHour":after["CompletedHours"],
     "native100x":{"elapsedSeconds":elapsed,"completedMinutes":delta,"pendingMinutes":pending,"boundaryAllowanceSeconds":2},
-    "screenshots":15,"roles":200,"retail":10000}
+    "screenshots":len(list(output.glob("*.png"))),"roles":200,"retail":10000}
 (output/"summary.json").write_text(json.dumps(summary,indent=2))
 print("PASS native legacy migration, immutable hours,200 profiles/zoom and100x:",json.dumps(summary),flush=True)
 subprocess.run(["dotnet","run","--project","tools/NativeSmokeFixture","-c","Release","--","inspect",str(folder)],check=True)

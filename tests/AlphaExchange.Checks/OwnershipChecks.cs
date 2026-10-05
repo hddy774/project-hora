@@ -59,9 +59,14 @@ static class OwnershipChecks
             check(frozen.Json==original,"Deferred encoding is isolated from live month-end progression");
             var loaded=store.Load(out _)!;
             check(loaded.Serialize()==original && loaded.State.CompletedHours==719,"Writer checkpoint and history end remain atomic while simulation advances"); validate(loaded);
+            game.State.Retail[0].ShortAveragePrice[0]=-0.0;
             var detached=store.PrepareSave(game); string expected=game.Serialize();
             game.State.Bots[0].Abilities.Valuation++;
             game.State.Bots[0].AverageCost[0]++;
+            var retail=game.State.Retail.First(t=>t.Shares.Any(q=>q>0));
+            retail.Shares[Array.FindIndex(retail.Shares,q=>q>0)]++;
+            game.State.Retail[0].ShortAveragePrice[0]=10;
+            game.State.Retail[0].Abilities.Valuation++;
             game.State.Bank.ShareInventory[0]++;
             game.State.Stocks[0].Reports[0].Cash++;
             game.State.Government.History[0].Name="mutated";

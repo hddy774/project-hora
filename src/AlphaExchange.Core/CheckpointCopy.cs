@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace AlphaExchange.Core;
 
@@ -24,8 +25,10 @@ internal static class CheckpointCopy
     { var copy=Scalar(value); copy.Ballots=new(value.Ballots); return copy; }
     public static BankruptcyRecord Bankruptcy(BankruptcyRecord value)
     { var copy=Scalar(value); copy.Report=value.Report is null ? null : Scalar(value.Report); return copy; }
-    static T[] ArrayCopy<T>(T[] value,bool compact) where T:struct,IEquatable<T>
-        => compact && !value.AsSpan().ContainsAnyExcept(default(T)) ? [] : (T[])value.Clone();
+    // SIMD byte scan avoids per-element generic equality on 60,000 retail arrays.
+    // Nonzero bit patterns (including -0.0) retain an owned copy.
+    static T[] ArrayCopy<T>(T[] value,bool compact) where T:unmanaged
+        => compact && !MemoryMarshal.AsBytes(value.AsSpan()).ContainsAnyExcept((byte)0) ? [] : (T[])value.Clone();
     static Trader Trader(Trader value,bool storage=false)
     {
         bool compact=storage && value.IsRetail;

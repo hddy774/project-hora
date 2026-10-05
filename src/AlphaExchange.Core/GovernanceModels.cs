@@ -38,6 +38,7 @@ public sealed class BankruptcyRecord
     public long Liabilities { get; set; }
     public long Equity { get; set; }
     public long LoanWriteOff { get; set; }
+    public long TradeWriteOff { get; set; }
     public long ShortWriteOff { get; set; }
     public long FineWriteOff { get; set; }
     public long TaxWriteOff { get; set; }

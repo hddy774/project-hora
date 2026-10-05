@@ -103,12 +103,15 @@ public sealed partial class GameEngine
                 continue;
             }
             bool overweight = weight >= signal.StockLimit || sectorWeight >= signal.SectorLimit;
-            bool buy = !margin && !overweight && longExposure < signal.TargetExposure && (signal.Score > -.008 || Next() < .3);
+            bool buy = !margin && !overweight && longExposure < signal.TargetExposure &&
+                (signal.Score>.002 || signal.Score>-.02 && Next()<.12);
             if (buy)
             {
                 double budget = Math.Min(signal.StockLimit - weight, signal.SectorLimit - sectorWeight);
                 budget = Math.Min(budget, signal.TargetExposure - longExposure);
-                int price = Quote(s.PreviousPrice * (1 + offset + spread), true);
+                // Seek liquidity only for a strong discount; otherwise let reactive
+                // orders come to a bid that compensates spread, fees and uncertainty.
+                int price = Quote(s.PreviousPrice * (1 + offset + (signal.Score>.04 ? spread : -spread)), true);
                 int q = Math.Min(desired, Math.Min(MaxBuy(t, index, price), Math.Max(0, (int)(equity * budget / price))));
                 if (q > 0 && s.FundedIpo && s.TotalShares < 2000 && State.Season <= s.ListedSeason + 2 && asks[index].Count == 0)
                     SubscribeIssue(t.Id,s.SecurityId,Math.Min(2,q));
@@ -116,11 +119,12 @@ public sealed partial class GameEngine
             }
             else if (t.Shares[index] > 0 && (sellForCash || overweight || signal.Score < .004 || Next() < .3))
             {
-                int price = Quote(s.PreviousPrice * (1 + offset - spread), false);
+                int price = Quote(s.PreviousPrice * (1 + offset + (sellForCash || signal.Score<-.04 ? -spread : spread)), false);
                 int q = (int)Math.Min(t.Shares[index] - t.ReservedShares[index], desired * (sellForCash ? 3 : 1));
                 if (q > 0) SubmitOrder(t.Id, index, false, price, q, 2);
             }
-            else if (signal.Score < -.025 && t.Abilities.RiskManagement > 45 && t.Abilities.Technical > 45 && t.ShortLiability(stocks) < equity * .06)
+            else if (signal.Score < -.025 && trends[index]<-.015 && fastTrends[index]<=0 &&
+                t.Abilities.RiskManagement > 45 && t.Abilities.Technical > 45 && t.ShortLiability(stocks) < equity * .06)
             {
                 int price = Quote(s.PreviousPrice * (1 - spread), false);
                 SubmitOrder(t.Id, index, false, price, desired, 1, shortSale: true);

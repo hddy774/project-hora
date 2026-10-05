@@ -27,6 +27,8 @@ foreach (uint seed in scenario == "baseline" ? seeds : seeds.Take(1))
     for (int hour = 1; hour <= seasons * 720; hour++)
     {
         game.AdvanceHour();
+        if(!double.IsFinite(game.Statistics().InstitutionTradingIncome) || !double.IsFinite(game.Statistics().RetailTradingIncome))
+            throw new Exception($"Non-finite financial statistics at seed {seed}, hour {hour}");
         if (hour % 720 != 0) continue;
         reportedDividends += game.State.Stocks.Sum(s => s.Report.Dividends);
         long cap = Cap();
@@ -64,6 +66,13 @@ foreach (uint seed in scenario == "baseline" ? seeds : seeds.Take(1))
         long cash = Cash(), equity = Equity(), capitalization = Cap();
         long difference = game.SystemCash() - state.InitialSystemCash;
         if (difference != 0) throw new Exception("Cash reconciliation failed");
+        foreach(var trader in game.Participants)
+        {
+            var financials=trader.Financials(state.Stocks);
+            if(!double.IsFinite(financials.NetIncome) || financials.OpeningCash+financials.NetCashFlow!=trader.Cash ||
+                Math.Abs(financials.OpeningEquity+financials.NetIncome-financials.Equity)>.02)
+                throw new Exception($"Investor accounting failed: {trader.Id}:g{trader.Generation} at {state.CompletedHours}");
+        }
         for (int i=0;i<state.Stocks.Count;i++)
             if (game.Participants.Sum(t => t.Shares[i]) + state.Bank.ShareInventory[i] + state.Stocks[i].TreasuryShares + state.Stocks[i].FounderShares != state.Stocks[i].TotalShares)
                 throw new Exception("Share reconciliation failed");

@@ -6,6 +6,8 @@ public sealed partial class GameView
 {
     static long SectorTotal(string name,DailySnapshot snapshot,bool turnover)
     {
+        var totals=turnover ? snapshot.SectorTurnovers : snapshot.SectorVolumes;
+        if(totals.TryGetValue(name,out long total)) return total;
         var values=turnover ? snapshot.StockTurnovers : snapshot.StockVolumes;
         return values.Where((_,i)=>i<snapshot.StockSectors.Length && snapshot.StockSectors[i]==name).Sum();
     }

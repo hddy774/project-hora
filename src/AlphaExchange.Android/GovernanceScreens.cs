@@ -81,7 +81,7 @@ public sealed partial class GameView
                 TextFit(failure.Name+$" · {failure.Generation}기",36,y+58,14,Ink,328,true);
                 TextFit(failure.Reason,36,y+82,11,Muted,328);
                 Text($"당시 순자산 {ShortMoney(failure.Equity)}원",36,y+105,11,Red);
-                Text($"미회수 {ShortMoney(failure.LoanWriteOff+failure.ShortWriteOff+failure.FineWriteOff+failure.TaxWriteOff)}원 · 재출자 {ShortMoney(failure.ReplacementCapital)}원",36,y+129,10,Teal);
+                Text($"미회수 {ShortMoney(failure.LoanWriteOff+failure.TradeWriteOff+failure.ShortWriteOff+failure.FineWriteOff+failure.TaxWriteOff)}원 · 재출자 {ShortMoney(failure.ReplacementCapital)}원",36,y+129,10,Teal);
             }
             y+=162;
         }

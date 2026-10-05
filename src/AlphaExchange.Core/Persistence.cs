@@ -61,6 +61,9 @@ public sealed partial class GameEngine
         ValidateEconomy(s, count);
         if(source<6)
         {
+            s.MatchedVolume=s.Stocks.Sum(x=>x.TotalVolume); s.MatchedTurnover=s.Stocks.Sum(x=>x.TotalTurnover);
+            s.SectorVolumes=s.Stocks.GroupBy(x=>x.Sector).ToDictionary(g=>g.Key,g=>g.Sum(x=>x.TotalVolume));
+            s.SectorTurnovers=s.Stocks.GroupBy(x=>x.Sector).ToDictionary(g=>g.Key,g=>g.Sum(x=>x.TotalTurnover));
             foreach(var t in s.Bots.Concat(s.Retail)) t.TaxesPaid=t.Taxes;
             foreach(var t in s.Retail) t.SeasonReturnBasis=t.SeasonSnapshot.ReturnIndex;
             s.Version=6;
@@ -181,7 +184,9 @@ public sealed partial class GameEngine
     }
     static void ValidateLifecycle(GameState s)
     {
-        if(s.NextVoteId<1 || s.NextBankruptcyId<1 || s.CompanyVotes.Count>Math.Max(180,s.Stocks.Count*6) || s.Bankruptcies.Count>64 ||
+        if(s.MatchedVolume<0 || s.MatchedTurnover<0 || s.SectorVolumes.Values.Any(v=>v<0) || s.SectorTurnovers.Values.Any(v=>v<0) ||
+            s.SectorVolumes.Values.Sum()!=s.MatchedVolume || s.SectorTurnovers.Values.Sum()!=s.MatchedTurnover ||
+            s.NextVoteId<1 || s.NextBankruptcyId<1 || s.CompanyVotes.Count>Math.Max(180,s.Stocks.Count*6) || s.Bankruptcies.Count>64 ||
             s.Bots.Concat(s.Retail).Any(t=>t.Generation<1 || t.BirthHour<0 || t.BirthHour>s.CompletedHours || !double.IsFinite(t.SeasonReturnBasis) || t.SeasonReturnBasis<0) ||
             s.Stocks.Any(x=>x.Generation<1 || x.InsolventMonths<0 || !Enum.IsDefined(x.CompanyStrategy) || !Enum.IsDefined(x.Management) ||
                 !Enum.IsDefined(x.Allocation) || !double.IsFinite(x.TreasuryTarget) || x.TreasuryTarget is <0 or >1 || x.WaitingForCapital && x.Active) ||
@@ -192,7 +197,7 @@ public sealed partial class GameEngine
                 v.Ballots.Any(b=>b.Shares<=0 || !Enum.IsDefined(b.Choice)) || v.Ballots.Sum(b=>b.Shares)!=v.ForShares+v.AgainstShares+v.AbstainShares) ||
             s.Bankruptcies.Select(b=>b.Id).Distinct().Count()!=s.Bankruptcies.Count || s.Bankruptcies.Any(b=>b.Id<1 || b.Id>=s.NextBankruptcyId ||
                 b.Hour<0 || b.Hour>s.CompletedHours || b.Generation<1 || !Enum.IsDefined(b.Kind) || b.Assets<0 || b.Liabilities<0 || b.Equity!=b.Assets-b.Liabilities ||
-                b.LoanWriteOff<0 || b.ShortWriteOff<0 || b.TaxWriteOff<0 || b.FineWriteOff<0 || b.ReplacementCapital<0 || !double.IsFinite(b.TradingIncome)) ||
+                b.LoanWriteOff<0 || b.TradeWriteOff<0 || b.ShortWriteOff<0 || b.TaxWriteOff<0 || b.FineWriteOff<0 || b.ReplacementCapital<0 || !double.IsFinite(b.TradingIncome)) ||
             s.BankruptcyTotals.Companies<0 || s.BankruptcyTotals.Institutions<0 || s.BankruptcyTotals.Retail<0 ||
             s.BankruptcyTotals.Total!=s.NextBankruptcyId-1 || s.Bank.LoanWriteOffs<0 || s.Bank.ShortWriteOffs<0 || s.Government.TaxWriteOffs<0 || s.Government.FineWriteOffs<0)
             throw new InvalidDataException("주총·파산·세대 데이터 손상");

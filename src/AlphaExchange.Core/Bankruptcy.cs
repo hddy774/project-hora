@@ -114,6 +114,7 @@ public sealed partial class GameEngine
         long loanPaid=Math.Min(estate.Cash,estate.Debt); TransferCash(estate,State.Bank,loanPaid,"company-liquidation-loan");
         record.LoanWriteOff=estate.Debt-loanPaid; State.Bank.LoanWriteOffs+=record.LoanWriteOff;
         long tradePaid=Math.Min(estate.Cash,estate.TradePayables); TransferCash(estate,State.RealEconomy,tradePaid,"company-liquidation-costs");
+        record.TradeWriteOff=estate.TradePayables-tradePaid;
         long perShare=estate.Cash/Math.Max(1,stock.OutstandingShares);
         foreach(var t in Participants)
         {

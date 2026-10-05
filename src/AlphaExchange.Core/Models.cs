@@ -397,6 +397,10 @@ public sealed class GameState : ICashAccount
     public int FollowedId { get; set; } = 1;
     public long TotalAiTrades { get; set; }
     public long TotalMatches { get; set; }
+    public long MatchedVolume { get; set; }
+    public long MatchedTurnover { get; set; }
+    public Dictionary<string,long> SectorVolumes { get; set; } = [];
+    public Dictionary<string,long> SectorTurnovers { get; set; } = [];
     public long SeasonStartMatches { get; set; }
     public long FeePool { get; set; }
     public long InitialSystemCash { get; set; }

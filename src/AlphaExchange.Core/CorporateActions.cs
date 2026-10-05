@@ -267,6 +267,7 @@ public sealed partial class GameEngine
     {
         long capital = checked((long)definition.InitialPrice * 1000);
         if(slot<0) slot=State.Stocks.FindIndex(s=>!s.Active && !s.WaitingForCapital && s.Symbol==definition.Symbol);
+        if(slot>=0) generation=Math.Max(generation,State.Stocks[slot].Generation+1);
         long before = State.Stocks.Sum(s => s.MarketCap);
         string id = slot>=0 || State.Stocks.Any(s=>s.SecurityId==definition.SecurityId)
             ? definition.SecurityId+"-g"+generation+"-"+State.NextCorporateEventId : definition.SecurityId;

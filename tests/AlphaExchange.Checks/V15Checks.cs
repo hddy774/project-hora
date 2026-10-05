@@ -12,6 +12,7 @@ static class TestFixtures
     }
     public static void ClearLegacyTreasury(GameEngine game)
     {
+        game.CancelAllOrders();
         foreach(var s in game.State.Stocks) { s.TreasuryShares=s.FounderShares=0; }
         game.State.CompanyVotes.Clear(); game.State.NextVoteId=1;
     }
@@ -45,6 +46,14 @@ static class V15Checks
         shortVote.SubmitOrder(1,0,false,52400,3,shortSale:true); shortVote.SubmitOrder(2,0,true,52400,3);
         shortVote.ProposeVote(id,VoteKind.Management,1); var sv=shortVote.State.CompanyVotes.Last(); shortVote.ResolveVote(sv,0);
         check(sv.EligibleShares==1000 && sv.Ballots.Sum(b=>b.Shares)==1000 && !sv.Ballots.Any(b=>b.OwnerId==1),"Short borrower receives no duplicate voting right"); validate(shortVote);
+        var growth=new GameEngine(156); var defensive=GameEngine.Deserialize(growth.Serialize());
+        growth.State.Stocks[0].CompanyStrategy=CompanyStrategy.Growth;
+        defensive.State.Stocks[0].CompanyStrategy=CompanyStrategy.Defensive;
+        growth.State.CompletedHours=defensive.State.CompletedHours=719;
+        growth.AdvanceHour(); defensive.AdvanceHour();
+        check(growth.State.Stocks[0].Report.Revenue>defensive.State.Stocks[0].Report.Revenue &&
+            growth.State.Stocks[0].Report.OperatingCosts>defensive.State.Stocks[0].Report.OperatingCosts,"Governance strategy changes actual monthly sales and operating commitments");
+        validate(growth); validate(defensive);
         string folder=Path.Combine(Path.GetTempPath(),"hora-v15-"+Guid.NewGuid().ToString("N"));
         try
         {
@@ -52,13 +61,20 @@ static class V15Checks
             TestFixtures.BuyFromBank(world,2,0,2);
             world.SubmitOrder(1,0,false,52400,1,shortSale:true); world.SubmitOrder(3,0,true,52400,1);
             var doomed=world.State.Stocks[0]; string oldId=doomed.SecurityId;
+            long matchedVolume=world.CaptureSnapshot().Volume,matchedTurnover=world.CaptureSnapshot().Turnover;
             doomed.Report=CheckpointCopy.Scalar(doomed.Report); doomed.Report.Debt=doomed.Report.Assets+1000;
             world.FailCompany(0);
             var born=world.State.Stocks[0];
             check(born.Generation==2 && born.SecurityId!=oldId && born.TotalShares==2000 && born.TreasuryShares==1000 && world.State.Bank.ShareInventory[0]==1000,"Bankrupt company replaced in bounded slot with distinct identity and 50/50 ownership");
             check(world.State.Stocks.Count==30 && world.Owner(2).Shares[0]==0 && world.Owner(1).ShortShares[0]==0,"Old shareholder and stock loan rights are settled before replacement");
+            check(world.CaptureSnapshot().Volume==matchedVolume && world.CaptureSnapshot().Turnover==matchedTurnover &&
+                world.State.SectorVolumes.Values.Sum()==matchedVolume,"Company replacement cannot reset market or sector cumulative activity");
             validate(world);
+            world.SubmitOrder(1,1,true,1,2);
+            world.SubmitOrder(5,1,true,2,3);
+            world.CancelOrders(5); // A daily cancellation exists when a different trader fails.
             world.AssessFine(world.Owner(1),world.Owner(1).Cash+1000); world.FailTrader(world.Owner(1),"회귀 테스트 지급 불능");
+            check(Enumerable.Range(0,30).All(i=>world.Orders(i,true).Concat(world.Orders(i,false)).All(o=>o.Remaining>0)),"Bankruptcy book rebuild excludes cancelled zero-quantity orders");
             check(world.Owner(1).Generation==2 && world.Owner(1).Cash==GameEngine.InitialCash && world.State.BankruptcyTotals.Institutions==1,"Institution replacement has funded capital and new generation");
             for(int i=101;i<171;i++) { world.AssessFine(world.Owner(i),world.Owner(i).Cash+1); world.FailTrader(world.Owner(i),"개인 자금 소진"); }
             check(world.State.Bankruptcies.Count==64 && world.State.BankruptcyTotals.Retail==70,"UI bankruptcy buffer bounded; cumulative counts retained");

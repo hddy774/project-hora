@@ -121,6 +121,8 @@ public sealed class TraderSnapshot
 }
 public sealed class DailySnapshot
 {
+    public Dictionary<string,long> SectorVolumes { get; set; } = [];
+    public Dictionary<string,long> SectorTurnovers { get; set; } = [];
     public int CohortTradingBasis { get; set; }
     public double InstitutionTradingIncome { get; set; }
     public double RetailTradingIncome { get; set; }

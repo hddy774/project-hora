@@ -92,6 +92,8 @@ static class OwnershipChecks
                 game.State.CompletedHours=hour; var point=game.CaptureSnapshot(); point.Resolution=resolution;
                 if(hour==49) point.PriceIndex=9000;
                 if(hour==105) point.TotalReturnIndex=7000;
+                if(hour==103) point.InstitutionTradingIncome=8_000_000;
+                if(hour==106) point.RetailTradingIncome=-9_000_000;
                 rows.Add(new HistoryRecord(hour,resolution,JsonSerializer.Serialize(point)));
             }
             store.WriteSnapshot(new SaveSnapshot(game.State.RunId,180,game.Serialize(),[],rows.ToArray())); store.Attach(game);
@@ -107,6 +109,7 @@ static class OwnershipChecks
             }
             var range=game.HistorySource!.Range(0,180,16);
             check(range.Count<=16 && range[0].Hour==0 && range[^1].Hour==180 && range.Any(p=>p.PriceIndex==9000) && range.Any(p=>p.TotalReturnIndex==7000),"Joined extrema query retains boundaries, price and total-return extrema");
+            check(range.Any(p=>p.InstitutionTradingIncome==8_000_000) && range.Any(p=>p.RetailTradingIncome==-9_000_000),"New cohort charts retain investment income extrema within bounded historical query");
             for(int i=0;i<32;i++) game.AdvanceHour();
             check(game.HistorySource.At(205)!.Hour==205 && game.HistorySource.At(200)!.Hour==200,"Point lookup selects exact hour from multiple pending snapshots");
             using var connection=new SqliteConnection($"Data Source={store.SavePath};Pooling=False"); connection.Open();

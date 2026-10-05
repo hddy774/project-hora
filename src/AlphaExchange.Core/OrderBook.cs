@@ -25,6 +25,7 @@ public sealed partial class GameEngine
             g.Where(o => o.OwnerId > AiCount).Sum(o => (long)o.Remaining),g.Where(o=>o.OwnerId==0).Sum(o=>(long)o.Remaining))).ToList();
     void RebuildBooks()
     {
+        State.Orders.RemoveAll(o=>o.Remaining<=0);
         bids = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
         asks = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
         ownedOrders.Clear();
@@ -78,6 +79,7 @@ public sealed partial class GameEngine
             if (buy ? resting.Price > price : resting.Price < price) break;
             if (resting.OwnerId == ownerId) { CancelOrder(resting.Id); continue; }
             int q = Math.Min(incoming.Remaining, resting.Remaining);
+            if(q<=0) throw new InvalidDataException("체결 호가의 수량이 0입니다.");
             SetReservation(t, incoming, -q); SetReservation(Owner(resting.OwnerId), resting, -q);
             Execute(buy ? incoming : resting, buy ? resting : incoming, resting.Price, q);
             incoming.Remaining -= q; resting.Remaining -= q;
@@ -167,10 +169,13 @@ public sealed partial class GameEngine
         seller.Fees += fee; seller.Trades++;
         buyer.TradedVolume += quantity; seller.TradedVolume += quantity; buyer.TradedTurnover += amount; seller.TradedTurnover += amount;
         State.ExchangeRevenue += fee * 2; State.TotalMatches++;
+        State.MatchedVolume=checked(State.MatchedVolume+quantity); State.MatchedTurnover=checked(State.MatchedTurnover+amount);
         State.TotalAiTrades += (buyer.Id is >0 and <=AiCount ? 1 : 0) + (seller.Id is >0 and <=AiCount ? 1 : 0);
         if(buyer.Id==0) State.Bank.InterventionPurchases+=amount;
         if(seller.Id==0) State.Bank.InterventionSales+=amount;
         var s = State.Stocks[i]; s.Price = s.LastTradePrice = price; s.FractionalMark = 0; s.Volume += quantity; s.DayVolume += quantity; s.TotalVolume += quantity;
+        State.SectorVolumes[s.Sector]=checked(State.SectorVolumes.GetValueOrDefault(s.Sector)+quantity);
+        State.SectorTurnovers[s.Sector]=checked(State.SectorTurnovers.GetValueOrDefault(s.Sector)+amount);
         s.DayTurnover += amount; s.TotalTurnover += amount;
         State.Tape.Insert(0, new TradeRecord { Season = State.Season, Day = State.Day, Hour = State.Hour, BuyerId = buyer.Id,
             SellerId = seller.Id, StockIndex = i, SecurityId = s.SecurityId, Quantity = quantity, Price = price, ShortSale = ask.Short, ShortCover = bid.Cover });

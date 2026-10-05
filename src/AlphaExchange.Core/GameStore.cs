@@ -89,7 +89,7 @@ public sealed partial class GameStore
         if ((string?)cmd.ExecuteScalar() != "5") throw new InvalidDataException("통계 파일 버전을 지원하지 않습니다.");
         cmd.CommandText="PRAGMA table_info(hours)";
         var columns=new HashSet<string>(); using(var reader=cmd.ExecuteReader()) while(reader.Read()) columns.Add(reader.GetString(1));
-        foreach(string name in new[] { "price_index","return_index","investor_cash","institution_equity","retail_equity" })
+        foreach(string name in new[] { "price_index","return_index","investor_cash","institution_equity","retail_equity","institution_income","retail_income" })
             if(!columns.Contains(name)) { cmd.CommandText=$"ALTER TABLE hours ADD COLUMN {name} REAL"; cmd.ExecuteNonQuery(); }
     }
     static byte[] Compress(string json)
@@ -215,10 +215,12 @@ public sealed partial class GameStore
                 string? existing = (string?)command.ExecuteScalar();
                 if (existing is not null && existing != hash) throw new InvalidDataException("동일 시간 통계가 다른 값으로 재기록되었습니다.");
                 if (existing is not null) continue;
-                command.CommandText = "INSERT INTO hours(run,hour,resolution,cap,data,hash,price_index,return_index,investor_cash,institution_equity,retail_equity) VALUES($run,$hour,$res,$cap,$data,$hash,$price,$return,$cash,$institution,$retail)";
+                command.CommandText = "INSERT INTO hours(run,hour,resolution,cap,data,hash,price_index,return_index,investor_cash,institution_equity,retail_equity,institution_income,retail_income) VALUES($run,$hour,$res,$cap,$data,$hash,$price,$return,$cash,$institution,$retail,$institution_income,$retail_income)";
                 command.Parameters.AddWithValue("$cap",point.Capitalization); command.Parameters.AddWithValue("$price",point.PriceIndex);
                 command.Parameters.AddWithValue("$return",point.TotalReturnIndex); command.Parameters.AddWithValue("$cash",point.InstitutionCash+point.RetailCash);
                 command.Parameters.AddWithValue("$institution",point.InstitutionEquity); command.Parameters.AddWithValue("$retail",point.RetailEquity);
+                command.Parameters.AddWithValue("$institution_income",point.CohortTradingBasis==6 ? point.InstitutionTradingIncome : DBNull.Value);
+                command.Parameters.AddWithValue("$retail_income",point.CohortTradingBasis==6 ? point.RetailTradingIncome : DBNull.Value);
                 command.Parameters.AddWithValue("$data",data); command.Parameters.AddWithValue("$hash",hash);
                 command.ExecuteNonQuery();
             }
@@ -440,7 +442,7 @@ public sealed partial class GameStore
                 using var connection = store.Open(store.SavePath,true);
                 using var schema=connection.CreateCommand(); schema.CommandText="PRAGMA table_info(hours)";
                 var available=new HashSet<string>(); using(var reader=schema.ExecuteReader()) while(reader.Read()) available.Add(reader.GetString(1));
-                var metrics=new[] { "cap","price_index","return_index","investor_cash","institution_equity","retail_equity" }.Where(available.Contains).ToArray();
+                var metrics=new[] { "cap","price_index","return_index","investor_cash","institution_equity","retail_equity","institution_income","retail_income" }.Where(available.Contains).ToArray();
                 int perBucket=2+metrics.Length*2;
                 long stride = end-start+1<=maximumPoints ? 1 : Math.Max(1,(long)Math.Ceiling((end-start+1.0)/Math.Max(1,maximumPoints/perBucket)));
                 var keys = new HashSet<long>();
@@ -555,13 +557,16 @@ public sealed partial class GameStore
     static IReadOnlyList<DailySnapshot> Downsample(List<DailySnapshot> rows,int maximum)
     {
         if (rows.Count <= maximum) return rows;
-        int bucketSize = Math.Max(1,(int)Math.Ceiling((double)rows.Count / Math.Max(1,maximum/4)));
-        var result = new List<DailySnapshot>();
+        Func<DailySnapshot,double>[] metrics=[s=>s.Capitalization,s=>s.PriceIndex,s=>s.TotalReturnIndex,s=>s.InstitutionCash+s.RetailCash,
+            s=>s.InstitutionEquity,s=>s.RetailEquity,s=>s.InstitutionTradingIncome,s=>s.RetailTradingIncome];
+        int bucketSize=Math.Max(1,(int)Math.Ceiling((double)rows.Count/Math.Max(1,maximum/(2+metrics.Length*2))));
+        var result=new HashSet<DailySnapshot> { rows[0],rows[^1] };
+        void Add(DailySnapshot value) { if(result.Count<maximum) result.Add(value); }
         foreach (var bucket in rows.Chunk(bucketSize))
         {
-            result.Add(bucket[0]); result.Add(bucket.MinBy(s => s.Capitalization)!);
-            result.Add(bucket.MaxBy(s => s.Capitalization)!); result.Add(bucket[^1]);
+            Add(bucket[0]); Add(bucket[^1]);
+            foreach(var metric in metrics) { Add(bucket.MinBy(metric)!); Add(bucket.MaxBy(metric)!); }
         }
-        return result.DistinctBy(s => s.Hour).OrderBy(s => s.Hour).ToList();
+        return result.OrderBy(s=>s.Hour).ToList();
     }
 }

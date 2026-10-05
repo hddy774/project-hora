@@ -9,6 +9,12 @@ static class V16Checks
         var rules=SimulationRules.Default();
         check(rules.Representative.InitialAbility==50 && rules.Representative.Weight==.5,"Equal 50-point representatives and half influence");
         check(rules.Employees.Grades.All(g=>g.Skill<50),"Every employee including S starts below a representative");
+        var flexible=new GameEngine(167); flexible.State.Stocks[0].FairValue=flexible.State.Stocks[0].Price*1.5;
+        foreach(var disposition in Enum.GetValues<Disposition>())
+        {
+            flexible.Owner(1).Disposition=disposition;
+            check(flexible.Analyze(flexible.Owner(1),0).Horizon==InvestmentHorizon.Long,"Every disposition including aggressive can choose a profitable discounted long thesis");
+        }
         foreach(string invalid in new[]{"UnknownRule","bad grade","negative cost","invalid horizon"})
         {
             var node=JsonNode.Parse(JsonSerializer.Serialize(rules))!.AsObject();

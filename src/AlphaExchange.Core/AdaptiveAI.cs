@@ -65,7 +65,7 @@ public sealed partial class GameEngine
         double cash=r.BaseCash+r.DispositionCash[(int)t.Disposition]-t.Risk*r.RiskCashEffect+(defensive ? r.DefensiveCash*risk : 0);
         cash=Math.Clamp(cash,r.MinimumCash,r.MaximumCash);
         double value=Math.Clamp(s.FairValue/s.PreviousPrice-1,-1,2);
-        InvestmentHorizon horizon=value>r.LongDiscount && s.Report.NetIncome>0 && t.Disposition!=Disposition.Aggressive
+        InvestmentHorizon horizon=value>r.LongDiscount && s.Report.NetIncome>0
             ? InvestmentHorizon.Long : Math.Abs(fastTrends[index])>=r.FastMove &&
                 (a.Scalping>a.SwingTrading || t.Disposition is Disposition.Opportunistic or Disposition.Aggressive)
                 ? InvestmentHorizon.UltraShort : InvestmentHorizon.Short;

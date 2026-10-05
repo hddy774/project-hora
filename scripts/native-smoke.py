@@ -31,19 +31,28 @@ def screenshot(name):
     (output/(name+".png")).write_bytes(adb("exec-out", "screencap", "-p",binary=True))
 
 def window_tree():
-    adb("shell","uiautomator","dump","/sdcard/hora-window.xml")
+    adb("shell","rm","-f","/sdcard/hora-window.xml")
+    dump=adb("shell","uiautomator","dump","/sdcard/hora-window.xml")
+    (output/"hierarchy-dump.txt").write_text(dump)
     raw=adb("exec-out","cat","/sdcard/hora-window.xml")
     (output/"window.xml").write_text(raw)
-    return ET.fromstring(raw)
+    try: return ET.fromstring(raw)
+    except ET.ParseError:
+        # During activity startup, Android's dumper can report a null root and
+        # exit successfully without writing XML. The bounded screen wait retries.
+        return ET.Element("hierarchy")
+
+def screen_description(tree):
+    return " ".join(n.attrib.get("content-desc","") for n in tree.iter("node"))
 
 def description():
-    return " ".join(n.attrib.get("content-desc","") for n in window_tree().iter("node"))
+    return screen_description(window_tree())
 
 def require_screen(text,timeout=30):
     deadline=time.monotonic()+timeout
     while True:
-        actual=description()
-        if text in actual: return
+        tree=window_tree(); actual=screen_description(tree)
+        if text in actual: return tree
         if time.monotonic()>deadline:
             screenshot("failure-screen")
             (output/"failure-logcat.txt").write_text(adb("logcat","-d","-t","250"))
@@ -65,10 +74,10 @@ def pull_state(name):
         return json.loads(brotli.decompress(state)),folder
 
 # Startup is asynchronous; wait for the first source8 checkpoint after resume.
-require_screen("시뮬레이션 시작 화면",60); screenshot("01-lobby")
+lobby_tree=require_screen("시뮬레이션 시작 화면",60); screenshot("01-lobby")
 # Android can expose hardware keys instead of a navigation bar. Use the actual
 # GameView bounds, including status/navigation insets, rather than guessing them.
-view=next(n for n in window_tree().iter("node") if n.attrib.get("content-desc","").startswith("알파 익스체인지"))
+view=next(n for n in lobby_tree.iter("node") if n.attrib.get("content-desc","").startswith("알파 익스체인지"))
 left,top,right,bottom=map(int,re.findall(r"\d+",view.attrib["bounds"]))
 scale=(right-left)/400; h=(bottom-top)/scale
 (output/"viewport.json").write_text(json.dumps({"bounds":[left,top,right,bottom],"scale":scale,"canvasHeight":h},indent=2))

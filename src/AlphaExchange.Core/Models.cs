@@ -24,6 +24,13 @@ public sealed class Abilities
 }
 public sealed class Stock
 {
+    public int Generation { get; set; } = 1;
+    public int InsolventMonths { get; set; }
+    public bool WaitingForCapital { get; set; }
+    public CompanyStrategy CompanyStrategy { get; set; } = CompanyStrategy.Value;
+    public ManagementPolicy Management { get; set; } = ManagementPolicy.Efficiency;
+    public CapitalAllocation Allocation { get; set; } = CapitalAllocation.Buyback;
+    public double TreasuryTarget { get; set; } = .65;
     public string SecurityId { get; set; } = "";
     public bool Active { get; set; } = true;
     public string Business { get; set; } = "";
@@ -90,6 +97,10 @@ public sealed class Stock
 }
 public sealed class Trader : ICashAccount
 {
+    public int Generation { get; set; } = 1;
+    public long BirthHour { get; set; }
+    public bool WaitingForCapital { get; set; }
+    public double SeasonReturnBasis { get; set; } = 1;
     public int Id { get; set; }
     public bool IsRetail { get; set; }
     public string Name { get; set; } = "";
@@ -111,6 +122,8 @@ public sealed class Trader : ICashAccount
     [JsonIgnore] public CreditRating CreditRating => (CreditRating)Math.Clamp((99 - CreditScore) / 10, 0, 8);
     public long LoanDebt { get; set; }
     public long FineDebt { get; set; }
+    public long TaxDebt { get; set; }
+    public long TaxesPaid { get; set; }
     public long BorrowedCash { get; set; }
     public long RepaidCash { get; set; }
     public long InterestExpense { get; set; }
@@ -156,12 +169,12 @@ public sealed class Trader : ICashAccount
     public string LastAction { get; set; } = "호가 탐색 중";
     public List<long> EquityHistory { get; set; } = [];
     public List<RankHistory> SeasonRanks { get; set; } = [];
-    [JsonIgnore] public int PortraitId => IsRetail ? 0 : Id;
-    [JsonIgnore] public string Gender => Id <= 70 ? "여성" : "남성";
+    [JsonIgnore] public int PortraitId => IsRetail || Id==0 ? 0 : (Id-1+(Generation-1)*17)%GameEngine.AiCount+1;
+    [JsonIgnore] public string Gender => PortraitId <= 70 ? "여성" : "남성";
     public long Equity(IReadOnlyList<Stock> stocks)
     {
         if(stocks is List<Stock> list) return Equity(CollectionsMarshal.AsSpan(list));
-        return GrossAssets(stocks)-ShortLiability(stocks)-LoanDebt-FineDebt-ShortDividendDebt;
+        return GrossAssets(stocks)-ShortLiability(stocks)-LoanDebt-FineDebt-ShortDividendDebt-TaxDebt;
     }
     long Equity(ReadOnlySpan<Stock> stocks)
     {
@@ -171,19 +184,19 @@ public sealed class Trader : ICashAccount
             if(Shares[i]!=0) gross=checked(gross+stocks[i].Value(Shares[i]));
             if(ShortShares[i]!=0) shorts=checked(shorts+stocks[i].Value(ShortShares[i]));
         }
-        return gross-shorts-LoanDebt-FineDebt-ShortDividendDebt;
+        return gross-shorts-LoanDebt-FineDebt-ShortDividendDebt-TaxDebt;
     }
     public long GrossAssets(IReadOnlyList<Stock> stocks)
     { long value = Cash; for (int i = 0; i < Shares.Length; i++) if (Shares[i] != 0) value = checked(value + stocks[i].Value(Shares[i])); return value; }
     public long ShortLiability(IReadOnlyList<Stock> stocks)
     { long value = 0; for (int i = 0; i < ShortShares.Length; i++) if (ShortShares[i] != 0) value = checked(value + stocks[i].Value(ShortShares[i])); return value; }
     public long ShortCollateral(IReadOnlyList<Stock> stocks) => (long)Math.Ceiling(ShortLiability(stocks) * 1.5);
-    public double Return(IReadOnlyList<Stock> stocks) => ReturnIndex / Math.Max(1e-12, SeasonSnapshot.ReturnIndex) - 1;
+    public double Return(IReadOnlyList<Stock> stocks) => ReturnIndex / Math.Max(1e-12, IsRetail ? SeasonReturnBasis : SeasonSnapshot.ReturnIndex) - 1;
     public FinancialStatement Financials(IReadOnlyList<Stock> stocks)
     {
         var result=new FinancialStatement(); AccumulateFinancials(result,stocks); return result;
     }
-    public void AccumulateFinancials(FinancialStatement result,IReadOnlyList<Stock> stocks)
+    public long AccumulateFinancials(FinancialStatement result,IReadOnlyList<Stock> stocks)
     {
         long gross=Cash,shortDebt=0; double cost=0,shortEntry=0;
         for(int i=0;i<Shares.Length;i++)
@@ -216,6 +229,7 @@ public sealed class Trader : ICashAccount
         result.InterestPaid += InterestPaid;
         result.BorrowFees += BorrowFees;
         result.Taxes += Taxes;
+        result.TaxesPaid+=TaxesPaid; result.TaxDebt+=TaxDebt;
         result.Fines += Fines;
         result.FinesPaid += FinesPaid;
         result.Subsidies += Subsidies;
@@ -227,10 +241,13 @@ public sealed class Trader : ICashAccount
         result.ShortDividendDebt += ShortDividendDebt;
         result.WageIncome += WageIncome;
         result.Consumption += Consumption;
+        return gross-shortDebt-LoanDebt-FineDebt-ShortDividendDebt-TaxDebt;
     }
 }
 public sealed class FinancialStatement
 {
+    public long TaxDebt { get; set; }
+    public long TaxesPaid { get; set; }
     public int Count { get; set; }
     public long Cash { get; set; }
     public long Holdings { get; set; }
@@ -266,14 +283,15 @@ public sealed class FinancialStatement
     public long Consumption { get; set; }
     public long DebtRelief { get; set; }
     public long Assets => Cash + Holdings;
-    public long Liabilities => ShortDebt + LoanDebt + FineDebt + ShortDividendDebt;
+    public long Liabilities => ShortDebt + LoanDebt + FineDebt + ShortDividendDebt+TaxDebt;
     public long Equity => Assets - Liabilities;
     public double UnrealizedProfit => Holdings - Cost + ShortEntry - ShortDebt;
     public double ValuationChange => UnrealizedProfit - OpeningUnrealized;
     public double NetIncome => RealizedProfit + ValuationChange - Fees - Taxes - InterestExpense - BorrowFees - Fines + Subsidies + DebtRelief + DividendIncome - DividendTax - ShortDividendExpense + WageIncome - Consumption;
-    public long NetCashFlow => Sales - Purchases - Fees - Taxes - InterestPaid - BorrowFees - FinesPaid + Subsidies + Borrowed - Repaid + DividendIncome - DividendTax - ShortDividendPaid + WageIncome - Consumption;
+    public long NetCashFlow => Sales - Purchases - Fees - TaxesPaid - InterestPaid - BorrowFees - FinesPaid + Subsidies + Borrowed - Repaid + DividendIncome - DividendTax - ShortDividendPaid + WageIncome - Consumption;
     public void Add(FinancialStatement s)
     {
+        TaxesPaid+=s.TaxesPaid; TaxDebt+=s.TaxDebt;
         Count += s.Count; Cash += s.Cash; Holdings += s.Holdings; Cost += s.Cost; OpeningCash += s.OpeningCash;
         OpeningEquity += s.OpeningEquity; OpeningUnrealized += s.OpeningUnrealized; RealizedProfit += s.RealizedProfit;
         Fees += s.Fees; Purchases += s.Purchases; Sales += s.Sales; ReservedCash += s.ReservedCash; Trades += s.Trades;
@@ -299,8 +317,8 @@ public sealed class LimitOrder
     public int Remaining { get; set; }
     public long ExpiresAt { get; set; }
 }
-public sealed record BookLevel(int Price, long InstitutionQuantity, long RetailQuantity)
-{ public long Quantity => InstitutionQuantity + RetailQuantity; }
+public sealed record BookLevel(int Price, long InstitutionQuantity, long RetailQuantity,long BankQuantity=0)
+{ public long Quantity => InstitutionQuantity + RetailQuantity+BankQuantity; }
 public sealed class TradeRecord
 {
     public long Season { get; set; }
@@ -326,8 +344,8 @@ public sealed class MarketEvent
     public string Detail { get; set; } = "";
     public double Impact { get; set; }
 }
-public sealed record RankHistory(long Season, int Rank, double Return, long Equity);
-public sealed record SeasonStanding(int TraderId, int Rank, long OpeningEquity, long Equity, double Return);
+public sealed record RankHistory(long Season, int Rank, double Return, long Equity,int Generation=1);
+public sealed record SeasonStanding(int TraderId, int Rank, long OpeningEquity, long Equity, double Return,int Generation=1,string InstitutionName="");
 public sealed class SeasonResult
 {
     public long Season { get; set; }
@@ -342,7 +360,12 @@ public sealed class SeasonResult
 }
 public sealed class GameState : ICashAccount
 {
-    public int Version { get; set; } = 5;
+    public int Version { get; set; } = 6;
+    public long NextVoteId { get; set; } = 1;
+    public long NextBankruptcyId { get; set; } = 1;
+    public List<CompanyVote> CompanyVotes { get; set; } = [];
+    public List<BankruptcyRecord> Bankruptcies { get; set; } = [];
+    public BankruptcyTotals BankruptcyTotals { get; set; } = new();
     public string RunId { get; set; } = Guid.NewGuid().ToString("N");
     public bool MigratedFromV1 { get; set; }
     public bool MigratedFromV4 { get; set; }
@@ -374,6 +397,10 @@ public sealed class GameState : ICashAccount
     public int FollowedId { get; set; } = 1;
     public long TotalAiTrades { get; set; }
     public long TotalMatches { get; set; }
+    public long MatchedVolume { get; set; }
+    public long MatchedTurnover { get; set; }
+    public Dictionary<string,long> SectorVolumes { get; set; } = [];
+    public Dictionary<string,long> SectorTurnovers { get; set; } = [];
     public long SeasonStartMatches { get; set; }
     public long FeePool { get; set; }
     public long InitialSystemCash { get; set; }

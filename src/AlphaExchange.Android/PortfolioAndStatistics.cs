@@ -7,9 +7,9 @@ public sealed partial class GameView
     float DrawPortfolio(float y)
     {
         var t = Focus;
-        Box(20, y, 360, 176, Card, 18, Stroke); Portrait(t.Id, 30, y + 10, 99, 156);
+        Box(20, y, 360, 176, Card, 18, Stroke); Portrait(t.PortraitId, 30, y + 10, 99, 156);
         Text("INSTITUTION " + t.Id.ToString("000"), 146, y + 28, 10, Lime, true);
-        Text(Representatives.Name(t.Id), 146, y + 57, 24, Ink, true);
+        Text(Representatives.Name(t.PortraitId), 146, y + 57, 24, Ink, true);
         Text(t.Name + " · " + GameEngine.DispositionNames[(int)t.Disposition], 146, y + 81, 11, Muted);
         Text($"₩{Money(t.Equity(S.Stocks))}", 146, y + 116, 23, Ink, true);
         Text(Percent(t.Return(S.Stocks)), 147, y + 144, 15, Direction(t.Return(S.Stocks)), true);
@@ -98,6 +98,7 @@ public sealed partial class GameView
     }
     int statsTab;
     bool retailAverage;
+    int statsChart;
     float DrawStatistics(float y)
     {
         var stats = game!.Statistics();
@@ -148,25 +149,24 @@ public sealed partial class GameView
         Text($"상승 {stats.Rising}  ·  하락 {stats.Falling}  ·  보합 {stats.Unchanged}", 36, y + 96, 11, Muted); y += 132;
         Metric("기간 거래량", $"{Money(period.Volume)}주", 20, y, 174);
         Metric("기간 거래대금", $"{ShortMoney(period.Turnover)}원", 206, y, 174); y += 84;
-        Metric("매수 / 매도 잔량", $"{Money(stats.BidQuantity)} / {Money(stats.AskQuantity)}", 20, y, 360); y += 92;
-        var chartPoints = ChartPeriodPoints();
-        y = TimeGraph("시가총액 추이",chartPoints,d=>d.Capitalization,y,"발행 주식 − 자사주 · 가격 × 주식 수 · 원");
-        y = TimeGraph("가격 지수 · 상장/증자 효과 조정",chartPoints,d=>d.PriceIndex,y,"시작 1,000 · 배당락 반영");
-        y = TimeGraph("총수익 지수 · 배당 재투자",chartPoints,d=>d.TotalReturnIndex,y,"시작 1,000 · 세전 배당 포함");
-        y = TimeGraph("투자자 현금 추이",chartPoints,d=>d.InstitutionCash+d.RetailCash,y,"기업·정부·은행·거래소·실물 경제와 현금이 순환");
-        y = TimeGraph("누적 거래대금",chartPoints,d=>d.Turnover,y,"시간별 원기록 · 긴 기간은 극값을 포함하여 축약");
+        bool cohortPeriod=period.Start.CohortTradingBasis==6 && period.End.CohortTradingBasis==6;
+        string Income(double end,double start)=>ShortMoney((long)(end-(cohortPeriod ? start : 0)))+"원";
+        y=Statement(cohortPeriod ? "기간 투자 손익 · 임금/소비/재출자 제외" : "누적 투자 손익 · 이전 기간 기준 없음",y,
+            [("기관",Income(period.End.InstitutionTradingIncome,period.Start.InstitutionTradingIncome)),
+             ("개인",Income(period.End.RetailTradingIncome,period.Start.RetailTradingIncome))]);
+        string[] charts=["총수익 지수", "시가총액", "기관 투자 손익", "개인 투자 손익"];
+        Button("그래프: "+charts[statsChart]+"  ⇄",20,y,360,38,()=>statsChart=(statsChart+1)%charts.Length,false); y+=53;
+        Func<DailySnapshot,double> metric=statsChart switch { 1=>d=>d.Capitalization,2=>d=>d.InstitutionTradingIncome,3=>d=>d.RetailTradingIncome,_=>d=>d.TotalReturnIndex };
+        var chartPoints=ChartPeriodPoints();
+        if(statsChart>=2) chartPoints=chartPoints.Where(d=>d.CohortTradingBasis==6);
+        y=TimeGraph(charts[statsChart],chartPoints,metric,y,statsChart>=2 ? "임금·소비 제외 · 이전 세대 손실 포함 · 실제 기록부터 표시" : "기간 선택 · 실제 시간 축 · 파일의 원기록 보존");
         y = Pie("분야별 시가총액 구성", stats.Sectors.Select(s => (s.Name, (double)s.Capitalization)).ToArray(), y);
-        y = Pie("기관 · 개인 순자산 구성", [("기관", stats.Institutions.Equity), ("개인", stats.Retail.Equity)], y);
         y = Statement("기간 비교 · 시작 → 종료", y, [("시가총액", ShortMoney(period.Start.Capitalization) + " → " + ShortMoney(period.End.Capitalization)),
             ("기관 순자산", ShortMoney(period.Start.InstitutionEquity) + " → " + ShortMoney(period.End.InstitutionEquity)),
             ("개인 순자산", ShortMoney(period.Start.RetailEquity) + " → " + ShortMoney(period.End.RetailEquity)),
             ("기관 현금", ShortMoney(period.Start.InstitutionCash) + " → " + ShortMoney(period.End.InstitutionCash)),
             ("개인 현금", ShortMoney(period.Start.RetailCash) + " → " + ShortMoney(period.End.RetailCash))]);
-        y = Statement("기관 · 개인 비교", y, [ ("기관 총자산", ShortMoney(stats.Institutions.Assets) + "원"), ("개인 총자산", ShortMoney(stats.Retail.Assets) + "원"),
-            ("기관 평균 자산", Money(stats.Institutions.Assets / 100) + "원"), ("개인 평균 자산", Money(stats.Retail.Assets / 10000) + "원"), ("개인 시간 참여 인원", Money(S.ActiveRetailLastHour) + "명") ]);
-        y = Statement("거래소 누적 통계", y, [ ("실제 매칭 체결", Money(S.TotalMatches) + "건"), ("기관 체결 참여", Money(stats.Institutions.Trades) + "회"),
-            ("개인 체결 참여", Money(stats.Retail.Trades) + "회"), ("거래소 수수료 적립", ShortMoney(S.FeePool) + "원") ]);
-        Text("매칭 1건에는 매수자와 매도자가 각각 참여합니다.", 21, y + 10, 10, Muted);
-        return DrawStorage(y+35);
+        Button($"파산 기록 →  기업 {S.BankruptcyTotals.Companies} · 기관 {S.BankruptcyTotals.Institutions} · 개인 {S.BankruptcyTotals.Retail}",20,y,360,42,()=>SetPage(9),false); y+=58;
+        return DrawStorage(y);
     }
 }

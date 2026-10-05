@@ -6,6 +6,8 @@ public sealed partial class GameView
 {
     static long SectorTotal(string name,DailySnapshot snapshot,bool turnover)
     {
+        var totals=turnover ? snapshot.SectorTurnovers : snapshot.SectorVolumes;
+        if(totals.TryGetValue(name,out long total)) return total;
         var values=turnover ? snapshot.StockTurnovers : snapshot.StockVolumes;
         return values.Where((_,i)=>i<snapshot.StockSectors.Length && snapshot.StockSectors[i]==name).Sum();
     }
@@ -34,13 +36,7 @@ public sealed partial class GameView
         Text("기업의 재무 기록", 20, y + 23, 24, Ink, true);
         Text("월별 결산 · 뉴스와 정부 정책을 반영", 21, y + 47, 12, Muted); y += 65;
         Button("이 회사의 지분 구조 →",20,y,360,36,()=>OpenOwnership(companyStock),false); y+=48;
-        for (int i = 0; i < S.Stocks.Count; i++)
-        {
-            int index = i; bool active = companyStock == i; float x = 20 + i % 5 * 73, row = y + i / 5 * 34;
-            Box(x, row, 68, 28, active ? Lime : Card2, 8); Text(S.Stocks[i].Symbol, x + 34, row + 19, 10, active ? Bg : Muted, active, Paint.Align.Center);
-            Hit(x, row, 68, 28, () => { companyStock = index; scroll = 0; });
-        }
-        y += (int)Math.Ceiling(S.Stocks.Count/5.0)*34+15;
+        y=CompanySelector(y,companyStock,i=>companyStock=i);
         var reports = Reports(stock,companySeason==0 ? S.Season : companySeason);
         CompanyReport? report = companySeason==0 ? reports.LastOrDefault(r=>r.AccountingBasis==5) ?? reports.LastOrDefault() : reports.LastOrDefault(r=>r.Season==companySeason);
         Button("← 이전 결산", 20, y, 105, 36, () => { companySeason = Math.Max(1, (companySeason == 0 ? stock.Report.Season : companySeason) - 1); scroll = 0; }, false, (companySeason == 0 ? stock.Report.Season : companySeason) > 1);
@@ -70,7 +66,7 @@ public sealed partial class GameView
         if (companyTab == 0)
         {
             y = Statement("01 · 재무상태표", y, [("현금", Amount(r.Cash)), ("매출채권", Amount(r.Receivables)), ("재고자산", Amount(r.Inventory)),
-                ("유형자산", Amount(r.FixedAssets)), ("자산 총계", Amount(r.Assets)), ("부채", Amount(r.Debt)), ("자본", Amount(r.Equity))]);
+                ("유형자산", Amount(r.FixedAssets)), ("자산 총계", Amount(r.Assets)), ("은행 차입", Amount(r.Debt)),("미지급 운영비",Amount(r.TradePayables)),("부채 총계",Amount(r.Liabilities)), ("자본", Amount(r.Equity))]);
             y = Pie("자산 구성", [("현금", r.Cash), ("매출채권", r.Receivables), ("재고", r.Inventory), ("유형자산", r.FixedAssets)], y);
             y = TimeGraph("시즌별 자산",graphReports.Select(x=>(x.Season*720,(double)((double)x.Assets),false)),y,"선택 결산까지 파일 전체 기록 · 같은 회계 기준 · 원");
         }
@@ -106,7 +102,7 @@ public sealed partial class GameView
                 ("자기자본이익률",r.ReturnOnEquity.ToString("P2")),("결산 평균 주식 수",Money(r.AverageShares)+"주"),("월 EPS (분할 조정)",(eps/factor).ToString("N2")+"원"),
                 (actual.Length<12 ? "연 환산 PER (추정)" : "12개월 PER",annualEps>0 ? ((double)stock.MarkPrice/annualEps).ToString("N2")+"배" : "적자 / 기록 부족"),
                 ("BPS (분할 조정)",bps.ToString("N2")+"원"),("PBR",bps>0 ? ((double)stock.MarkPrice/bps).ToString("N2")+"배" : "자본 잠식")]);
-            y = Pie("자본과 부채 비중", [("자본", r.Equity), ("부채", r.Debt)], y);
+            y = Pie("자본과 부채 비중", [("자본", r.Equity), ("부채", r.Liabilities)], y);
             y = TimeGraph("시즌별 순이익률",graphReports.Select(x=>(x.Season*720,(double)(x.Margin * 100),false)),y,"선택 결산까지 파일 전체 기록 · 같은 회계 기준 · %");
         }
         if (previous is not null && previous.AccountingBasis==r.AccountingBasis && !r.IsOpening)

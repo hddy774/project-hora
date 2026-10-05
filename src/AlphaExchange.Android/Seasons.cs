@@ -32,7 +32,7 @@ public sealed partial class GameView
         {
             var r = Season(number)?.Standings.FirstOrDefault(x => x.TraderId == t.Id);
             Box(20, y, 360, 82, Card, 14);
-            Text($"시즌 {number}", 36, y + 28, 14, Ink, true);
+            Text($"시즌 {number}"+(r is null ? "" : $" · {r.Generation}기"), 36, y + 28, 14, Ink, true);
             Text(r is null ? "기록을 읽을 수 없음" : $"최종 자산 ₩{Money(r.Equity)}", 36, y + 58, 11, Muted);
             if (r is not null)
             {
@@ -75,10 +75,11 @@ public sealed partial class GameView
             Button("이 시즌의 기업 결산  →", 20, y, 360, 40, () => { companySeason = selectedSeason; companyStock = companyTab = 0; SetPage(6); }, false); y += 56;
         }
         var winner = result.Standings[0];
-        Box(20, y, 360, 150, Card, 18, Lime); Portrait(winner.TraderId, 30, y + 10, 82, 130);
+        int PastPortrait(int id,int generation)=>(id-1+(generation-1)*17)%GameEngine.AiCount+1;
+        Box(20, y, 360, 150, Card, 18, Lime); Portrait(PastPortrait(winner.TraderId,winner.Generation), 30, y + 10, 82, 130);
         Text("SEASON CHAMPION", 132, y + 27, 10, Lime, true);
-        Text(Representatives.Name(winner.TraderId), 132, y + 59, 23, Ink, true);
-        Text(S.Bots[winner.TraderId - 1].Name, 132, y + 82, 12, Muted);
+        Text(Representatives.Name(PastPortrait(winner.TraderId,winner.Generation)), 132, y + 59, 23, Ink, true);
+        TextFit(winner.InstitutionName.Length>0 ? winner.InstitutionName : $"기관 {winner.TraderId:000} · {winner.Generation}기",132,y+82,12,Muted,228);
         Text(Percent(winner.Return), 132, y + 112, 23, Direction(winner.Return), true);
         Text($"시즌 매칭 {Money(result.Matches)}건", 363, y + 136, 10, Muted, false, Paint.Align.Right); y += 168;
         Text("최종 순위 · 기관 100개", 22, y + 12, 14, Ink, true); y += 28;
@@ -88,9 +89,9 @@ public sealed partial class GameView
             {
                 Box(20, y, 360, 68, Card, 13);
                 Text($"{row.Rank:00}", 34, y + 40, 12, row.Rank <= 3 ? Lime : Muted, true);
-                Portrait(row.TraderId, 62, y + 11, 45, 45);
-                Text(Representatives.Name(row.TraderId), 121, y + 27, 13, Ink, true);
-                Text(S.Bots[row.TraderId - 1].Name, 121, y + 47, 10, Muted);
+                Portrait(PastPortrait(row.TraderId,row.Generation), 62, y + 11, 45, 45);
+                Text(Representatives.Name(PastPortrait(row.TraderId,row.Generation)), 121, y + 27, 13, Ink, true);
+                TextFit(row.InstitutionName.Length>0 ? row.InstitutionName : $"기관 {row.TraderId:000} · {row.Generation}기",121,y+47,10,Muted,149);
                 Text(Percent(row.Return), 364, y + 28, 13, Direction(row.Return), true, Paint.Align.Right);
                 Text($"₩{ShortMoney(row.Equity)}", 364, y + 48, 11, Muted, false, Paint.Align.Right);
                 int id = row.TraderId; Hit(20, y, 360, 68, () => { S.FollowedId = id; portfolioTab = 2; historyPage = 0; SetPage(1); });

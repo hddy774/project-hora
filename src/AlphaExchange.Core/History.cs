@@ -8,18 +8,20 @@ public sealed partial class GameEngine
     TraderSnapshot CaptureTrader(Trader t)
     {
         var financials=t.Financials(State.Stocks);
-        return new TraderSnapshot { Id=t.Id,Equity=financials.Equity,Cash=t.Cash,NetIncome=financials.NetIncome-t.NetContribution,
+        return new TraderSnapshot { Id=t.Id,Generation=t.Generation,Equity=financials.Equity,Cash=t.Cash,NetIncome=financials.NetIncome-t.NetContribution,
             ReturnIndex=t.ReturnIndex,NetContribution=t.NetContribution,Volume=t.TradedVolume,Turnover=t.TradedTurnover };
     }
     void InitializeHistory()
     {
-        foreach (var t in Participants) { t.OpeningSnapshot = CaptureTrader(t); t.SeasonSnapshot = CaptureTrader(t); }
+        foreach (var t in State.Bots) { t.OpeningSnapshot = CaptureTrader(t); t.SeasonSnapshot = CaptureTrader(t); }
         State.OpeningSnapshot = State.SeasonSnapshot = CaptureSnapshot(); State.DailyHistory = [State.OpeningSnapshot];
     }
     public DailySnapshot CaptureSnapshot()
     {
         var stats = Statistics();
-        return new DailySnapshot { CashFlows = new Dictionary<string, long>(State.CashFlows), SecurityIds = State.Stocks.Select(s => s.SecurityId).ToArray(),
+        return new DailySnapshot { CompanyBankruptcies=State.BankruptcyTotals.Companies,InstitutionBankruptcies=State.BankruptcyTotals.Institutions,RetailBankruptcies=State.BankruptcyTotals.Retail,
+            CohortTradingBasis=6,InstitutionTradingIncome=stats.InstitutionTradingIncome,RetailTradingIncome=stats.RetailTradingIncome,
+            CashFlows = new Dictionary<string, long>(State.CashFlows), SecurityIds = State.Stocks.Select(s => s.SecurityId).ToArray(),
             StockSectors = State.Stocks.Select(s => s.Sector).ToArray(), StockShares = State.Stocks.Select(s => s.Active ? s.OutstandingShares : 0).ToArray(),
             FloatShares = State.Stocks.Select(s => s.Active ? s.FloatShares : 0).ToArray(), SplitFactors = State.Stocks.Select(s => s.SplitFactor).ToArray(),
             MarkPrices = State.Stocks.Select(s => s.MarkPrice).ToArray(), PriceIndex = State.PriceIndex, TotalReturnIndex = State.TotalReturnIndex,
@@ -27,7 +29,8 @@ public sealed partial class GameEngine
             Dividends = State.MarketDividends, GovernmentCash = State.Government.Cash, BankCash = State.Bank.Cash,
             ExchangeCash = State.FeePool, RealEconomyCash = State.RealEconomy.Cash,
             Hour = State.CompletedHours, Capitalization = stats.Capitalization,
-            Volume = State.Stocks.Sum(s => s.TotalVolume), Turnover = State.Stocks.Sum(s => s.TotalTurnover),
+            Volume = State.MatchedVolume, Turnover = State.MatchedTurnover,
+            SectorVolumes=new(State.SectorVolumes),SectorTurnovers=new(State.SectorTurnovers),
             InstitutionEquity = stats.Institutions.Equity, RetailEquity = stats.Retail.Equity,
             InstitutionCash = stats.Institutions.Cash, RetailCash = stats.Retail.Cash,
             Institutions = State.Bots.Select(CaptureTrader).ToList(), StockVolumes = State.Stocks.Select(s => s.TotalVolume).ToArray(),
@@ -80,6 +83,9 @@ public sealed partial class GameEngine
         var start = period == ComparisonPeriod.All ? t.OpeningSnapshot : period == ComparisonPeriod.Season ? t.SeasonSnapshot
             : (basis ?? PeriodSummary(period).Start).Institutions.FirstOrDefault(x => x.Id == t.Id) ?? t.OpeningSnapshot;
         var end = period == ComparisonPeriod.Custom ? (finish ?? PeriodSummary(period).End).Institutions.FirstOrDefault(x => x.Id == t.Id) ?? CaptureTrader(t) : CaptureTrader(t);
+        // A slot's successor is a distinct institution. Period comparisons never
+        // subtract the old generation's trading totals from the new generation.
+        if(start.Generation!=end.Generation) start=end.Generation==t.Generation ? t.OpeningSnapshot : new TraderSnapshot { Id=end.Id,Generation=end.Generation,ReturnIndex=1 };
         return metric switch { RankingMetric.Assets => t.Equity(State.Stocks), RankingMetric.Cash => t.Cash,
             RankingMetric.Volume => end.Volume - start.Volume, RankingMetric.Turnover => end.Turnover - start.Turnover,
             RankingMetric.NetIncome => end.NetIncome - start.NetIncome,

@@ -21,14 +21,16 @@ public sealed partial class GameEngine
     }
     public IReadOnlyList<LimitOrder> Orders(int index, bool buy) => buy ? bids[index] : asks[index];
     public List<BookLevel> Depth(int index, bool buy, int levels = 5) => Orders(index, buy).GroupBy(o => o.Price).Take(levels)
-        .Select(g => new BookLevel(g.Key, g.Where(o => o.OwnerId <= AiCount).Sum(o => (long)o.Remaining),
-            g.Where(o => o.OwnerId > AiCount).Sum(o => (long)o.Remaining))).ToList();
+        .Select(g => new BookLevel(g.Key, g.Where(o => o.OwnerId is >0 and <=AiCount).Sum(o => (long)o.Remaining),
+            g.Where(o => o.OwnerId > AiCount).Sum(o => (long)o.Remaining),g.Where(o=>o.OwnerId==0).Sum(o=>(long)o.Remaining))).ToList();
     void RebuildBooks()
     {
+        State.Orders.RemoveAll(o=>o.Remaining<=0);
         bids = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
         asks = Enumerable.Range(0, State.Stocks.Count).Select(_ => new List<LimitOrder>()).ToArray();
         ownedOrders.Clear();
         Array.Clear(State.Bank.ReservedLending);
+        var bank=BankAccount(); bank.ReservedCash=0; Array.Clear(bank.ReservedShares);
         foreach (var t in Participants) { t.ReservedCash = 0; Array.Clear(t.ReservedShares); Array.Clear(t.ReservedCovers); }
         foreach (var o in State.Orders)
         {
@@ -45,14 +47,15 @@ public sealed partial class GameEngine
     // the per-share rounded fee, which is safe even if it fills one share at a time.
     public string? SubmitOrder(int ownerId, int stockIndex, bool buy, int price, int quantity, int lifetime = 3, bool shortSale = false, bool cover = false)
     {
-        if (ownerId < 1 || ownerId > AiCount + RetailCount || stockIndex < 0 || stockIndex >= State.Stocks.Count || price is < 1 or > 10_000_000 || quantity is <= 0 or > 1_000_000 || lifetime is < 1 or > 24 ||
+        if (ownerId < 0 || ownerId > AiCount + RetailCount || stockIndex < 0 || stockIndex >= State.Stocks.Count || price is < 1 or > 10_000_000 || quantity is <= 0 or > 1_000_000 || lifetime is < 1 or > 24 ||
             (shortSale && buy) || (cover && !buy) || (shortSale && cover))
             return "주문 값이 올바르지 않습니다.";
         if (!State.Stocks[stockIndex].Active) return "상장 종료 종목입니다.";
         var t = Owner(ownerId);
+        if(t.WaitingForCapital) return "재등장 자금 대기 중입니다.";
         var incoming = new LimitOrder { OwnerId = ownerId, StockIndex = stockIndex, Buy = buy, Short = shortSale, Cover = cover,
             SecurityId = State.Stocks[stockIndex].SecurityId, Price = price, Remaining = quantity, ExpiresAt = State.CompletedHours + lifetime };
-        if ((shortSale || cover) && t.IsRetail) return "공매도는 기관만 가능합니다.";
+        if ((shortSale || cover) && (t.IsRetail || ownerId==0)) return "공매도는 기관만 가능합니다.";
         if (cover && quantity > t.ShortShares[stockIndex] - t.ReservedCovers[stockIndex]) return "상환 가능 수량이 부족합니다.";
         if (cover && ownedOrders.TryGetValue(t.Id, out var active) && active.Any(o => o.Short && o.StockIndex == stockIndex)) return "공매도 주문을 먼저 취소해야 합니다.";
         if (shortSale)
@@ -63,10 +66,10 @@ public sealed partial class GameEngine
             long pending = ownedOrders.TryGetValue(t.Id, out var orders) ? orders.Where(o => o.Short).Sum(o => (long)o.CollateralPrice * o.Remaining) : 0;
             if (t.ShortLiability(State.Stocks) + pending + (long)incoming.CollateralPrice * quantity > Math.Max(0, t.Equity(State.Stocks)) * State.Government.Policy.ShortExposureLimit)
                 return "공매도 위험 한도를 초과합니다.";
-            if (quantity > State.Bank.ShareInventory[stockIndex] - State.Bank.ReservedLending[stockIndex]) return "대여 가능 주식이 부족합니다.";
+            if (quantity > State.Bank.ShareInventory[stockIndex] - State.Bank.ReservedLending[stockIndex]-State.Bank.MarketAccount.ReservedShares[stockIndex]) return "대여 가능 주식이 부족합니다.";
         }
         if ((buy || shortSale) && Reserve(t, incoming, quantity) > (cover ? t.Cash - t.ReservedCash : AvailableCash(t))) return "주문 가능 현금/담보가 부족합니다.";
-        if (!buy && !shortSale && quantity > t.Shares[stockIndex] - t.ReservedShares[stockIndex]) return "주문 가능 주식이 부족합니다.";
+        if (!buy && !shortSale && quantity > t.Shares[stockIndex] - t.ReservedShares[stockIndex]-(ownerId==0 ? State.Bank.ReservedLending[stockIndex] : 0)) return "주문 가능 주식이 부족합니다.";
         incoming.Id = State.NextOrderId++;
         SetReservation(t, incoming, quantity);
         var opposite = buy ? asks[stockIndex] : bids[stockIndex];
@@ -76,13 +79,14 @@ public sealed partial class GameEngine
             if (buy ? resting.Price > price : resting.Price < price) break;
             if (resting.OwnerId == ownerId) { CancelOrder(resting.Id); continue; }
             int q = Math.Min(incoming.Remaining, resting.Remaining);
+            if(q<=0) throw new InvalidDataException("체결 호가의 수량이 0입니다.");
             SetReservation(t, incoming, -q); SetReservation(Owner(resting.OwnerId), resting, -q);
             Execute(buy ? incoming : resting, buy ? resting : incoming, resting.Price, q);
             incoming.Remaining -= q; resting.Remaining -= q;
             if (resting.Remaining == 0) { opposite.RemoveAt(0); ownedOrders[resting.OwnerId].Remove(resting); }
         }
         if (incoming.Remaining > 0) { State.Orders.Add(incoming); AddResting(incoming); }
-        if (!t.IsRetail) t.LastAction = $"{State.Stocks[stockIndex].Symbol} {quantity}주 {(shortSale ? "공매도" : cover ? "공매도 상환" : buy ? "매수" : "매도")} 호가";
+        if (!t.IsRetail && ownerId!=0) t.LastAction = $"{State.Stocks[stockIndex].Symbol} {quantity}주 {(shortSale ? "공매도" : cover ? "공매도 상환" : buy ? "매수" : "매도")} 호가";
         cachedStats = null;
         return null;
     }
@@ -118,6 +122,13 @@ public sealed partial class GameEngine
             (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o); o.Remaining = 0;
         }
         owned.Clear(); cachedStats = null;
+    }
+    public void CancelAllOrders()
+    {
+        foreach(var order in State.Orders)
+            if(order.Remaining>0) { SetReservation(Owner(order.OwnerId),order,-order.Remaining); order.Remaining=0; }
+        State.Orders.Clear(); ownedOrders.Clear();
+        foreach(var book in bids) book.Clear(); foreach(var book in asks) book.Clear(); cachedStats=null;
     }
     void ExpireOrders()
     {
@@ -158,8 +169,13 @@ public sealed partial class GameEngine
         seller.Fees += fee; seller.Trades++;
         buyer.TradedVolume += quantity; seller.TradedVolume += quantity; buyer.TradedTurnover += amount; seller.TradedTurnover += amount;
         State.ExchangeRevenue += fee * 2; State.TotalMatches++;
-        State.TotalAiTrades += (buyer.IsRetail ? 0 : 1) + (seller.IsRetail ? 0 : 1);
+        State.MatchedVolume=checked(State.MatchedVolume+quantity); State.MatchedTurnover=checked(State.MatchedTurnover+amount);
+        State.TotalAiTrades += (buyer.Id is >0 and <=AiCount ? 1 : 0) + (seller.Id is >0 and <=AiCount ? 1 : 0);
+        if(buyer.Id==0) State.Bank.InterventionPurchases+=amount;
+        if(seller.Id==0) State.Bank.InterventionSales+=amount;
         var s = State.Stocks[i]; s.Price = s.LastTradePrice = price; s.FractionalMark = 0; s.Volume += quantity; s.DayVolume += quantity; s.TotalVolume += quantity;
+        State.SectorVolumes[s.Sector]=checked(State.SectorVolumes.GetValueOrDefault(s.Sector)+quantity);
+        State.SectorTurnovers[s.Sector]=checked(State.SectorTurnovers.GetValueOrDefault(s.Sector)+amount);
         s.DayTurnover += amount; s.TotalTurnover += amount;
         State.Tape.Insert(0, new TradeRecord { Season = State.Season, Day = State.Day, Hour = State.Hour, BuyerId = buyer.Id,
             SellerId = seller.Id, StockIndex = i, SecurityId = s.SecurityId, Quantity = quantity, Price = price, ShortSale = ask.Short, ShortCover = bid.Cover });
@@ -167,20 +183,25 @@ public sealed partial class GameEngine
     }
     void PayTradeTax(Trader t, double profit)
     {
+        if(t.Id==0) return;
         t.SeasonRealizedProfit += profit;
         long target = (long)Math.Ceiling(Math.Max(0, t.SeasonRealizedProfit - t.LossCarryForward) * State.Government.Policy.TaxRate);
         long delta = target - t.SeasonTaxPaid;
         if (delta > 0)
         {
-            // Cover reservations include tax; normal sales fund it with their proceeds.
-            TransferCash(t, State.Government, delta, "trade-tax");
-            t.Taxes += delta; t.SeasonTaxPaid += delta; State.Government.Taxes += delta; State.Government.TaxEscrow += delta;
+            // Delisting can realize short gains without creating cash. Recognize
+            // the bill and any arrears; ordinary covered trades still pay in full.
+            long paid=Math.Min(delta,Math.Max(0,t.Cash-t.ReservedCash));
+            TransferCash(t, State.Government, paid, "trade-tax");
+            t.TaxesPaid+=paid; t.TaxDebt+=delta-paid;
+            t.Taxes += delta; t.SeasonTaxPaid += delta; State.Government.Taxes += delta; State.Government.TaxEscrow += paid;
         }
         else if (delta < 0)
         {
-            TransferCash(State.Government, t, -delta, "tax-refund");
-            t.Taxes += delta; t.SeasonTaxPaid += delta; State.Government.Taxes += delta; State.Government.TaxEscrow += delta;
-            State.Government.TaxRefunds -= delta;
+            long waived=Math.Min(t.TaxDebt,-delta),refund=-delta-waived; t.TaxDebt-=waived;
+            TransferCash(State.Government, t, refund, "tax-refund"); t.TaxesPaid-=refund;
+            t.Taxes += delta; t.SeasonTaxPaid += delta; State.Government.Taxes += delta; State.Government.TaxEscrow -= refund;
+            State.Government.TaxRefunds +=refund;
         }
     }
 }

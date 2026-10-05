@@ -7,8 +7,16 @@ string label = args.ElementAtOrDefault(0) ?? "measurement";
 string output = args.ElementAtOrDefault(1) ?? Path.Combine(Path.GetTempPath(), "hora-performance-"+label+".json");
 const uint seed = 20261004;
 var folder = Path.Combine(Path.GetTempPath(), "hora-performance-"+Guid.NewGuid().ToString("N"));
-var game = new GameEngine(seed);
-for (int i=0;i<168;i++) game.AdvanceHour();
+string? input = args.ElementAtOrDefault(2);
+// Both fixed-input versions exercise the same hot paths before measuring; loading
+// a checkpoint alone does not warm tiered JIT like the original 168-hour creation.
+if(input is not null && File.Exists(input))
+{
+    var warmup=new GameEngine(seed); for(int hour=0;hour<168;hour++) warmup.AdvanceHour();
+}
+var game = input is not null && File.Exists(input) ? GameEngine.Deserialize(File.ReadAllText(input)) : new GameEngine(seed);
+if(input is null || !File.Exists(input)) for (int i=0;i<168;i++) game.AdvanceHour();
+if(args.ElementAtOrDefault(3) is { } checkpoint) File.WriteAllText(checkpoint,game.Serialize());
 var store = new GameStore(folder); store.Attach(game); store.Save(game);
 var statsField = typeof(GameEngine).GetField("cachedStats",BindingFlags.Instance|BindingFlags.NonPublic)!;
 Dictionary<string,object> results = new();
@@ -35,6 +43,7 @@ try
     if(prepared!.Json!=game.Serialize()) throw new Exception("Checkpoint capture differs from current state");
     Measure("serialize",()=>{ _=game.Serialize(); });
     Measure("writeSnapshot",()=>store.WriteSnapshot(store.PrepareSave(game)),5);
+    results["checkpoint"]=new { hour=game.State.CompletedHours,encodedBytes=System.Text.Encoding.UTF8.GetByteCount(game.Serialize()) };
     var hourly = new GameEngine(seed); var timings=new List<double>();
     for(int i=0;i<720;i++) { long tick=Stopwatch.GetTimestamp(); hourly.AdvanceHour(); timings.Add(Stopwatch.GetElapsedTime(tick).TotalMilliseconds); }
     timings.Sort(); results["simulation"]=new { hours=720, medianMs=timings[360],p95Ms=timings[(int)(720*.95)],p99Ms=timings[(int)(720*.99)],matches=hourly.State.TotalMatches };

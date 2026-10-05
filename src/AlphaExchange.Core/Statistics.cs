@@ -14,6 +14,8 @@ public sealed class MarketStatistics
     public int Rising { get; set; }
     public int Falling { get; set; }
     public int Unchanged { get; set; }
+    public double InstitutionTradingIncome { get; set; }
+    public double RetailTradingIncome { get; set; }
 }
 public sealed partial class GameEngine
 {
@@ -21,11 +23,18 @@ public sealed partial class GameEngine
     public MarketStatistics Statistics()
     {
         if (cachedStats is not null) return cachedStats;
+        return BuildStatistics(false);
+    }
+    MarketStatistics BuildStatistics(bool updateReturns)
+    {
         var result = new MarketStatistics();
         long[] institutionShares = new long[State.Stocks.Count];
         foreach (var t in State.Bots)
-        { t.AccumulateFinancials(result.Institutions,State.Stocks); for (int i = 0; i < State.Stocks.Count; i++) institutionShares[i] += t.Shares[i]; }
-        foreach (var t in State.Retail) t.AccumulateFinancials(result.Retail,State.Stocks);
+        { long equity=t.AccumulateFinancials(result.Institutions,State.Stocks); if(updateReturns) UpdateInvestorReturn(t,equity); for (int i = 0; i < State.Stocks.Count; i++) institutionShares[i] += t.Shares[i]; }
+        foreach (var t in State.Retail)
+        { long equity=t.AccumulateFinancials(result.Retail,State.Stocks); if(updateReturns) UpdateInvestorReturn(t,equity); }
+        result.InstitutionTradingIncome=result.Institutions.NetIncome-result.Institutions.WageIncome+result.Institutions.Consumption+State.BankruptcyTotals.ClosedInstitutionTradingIncome;
+        result.RetailTradingIncome=result.Retail.NetIncome-result.Retail.WageIncome+result.Retail.Consumption+State.BankruptcyTotals.ClosedRetailTradingIncome;
         foreach (var sector in State.Stocks.Select((s, i) => (s, i)).Where(x => x.s.Active).GroupBy(x => x.s.Sector))
         {
             long cap = sector.Sum(x => x.s.MarketCap), opening = sector.Sum(x => x.s.OutstandingShares * x.s.DayOpenPrice);

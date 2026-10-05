@@ -27,7 +27,7 @@ public sealed partial class GameEngine
             InitializeRepresentative(t);
             Endow(t, InitialCash); State.Bots.Add(t);
         }
-        CreateRetail(); InitializeEconomy(); InitializeTotals(); InitializeHistory(); PublishNews(); RebuildBooks();
+        CreateRetail(); InitializeEconomy(); InitializeTotals(); InitializeHistory(); PublishNews(); RebuildBooks(); OpenSeasonVotes();
     }
     GameEngine(GameState state) { State = state; RebuildBooks(); }
     void Endow(Trader t, long capital)
@@ -35,28 +35,6 @@ public sealed partial class GameEngine
         t.Shares = new long[State.Stocks.Count]; t.AverageCost = new double[State.Stocks.Count]; t.ReservedShares = new long[State.Stocks.Count];
         t.ShortShares = new long[State.Stocks.Count]; t.ShortAveragePrice = new double[State.Stocks.Count]; t.ReservedCovers = new long[State.Stocks.Count];
         t.Cash = capital;
-        if (!t.IsRetail)
-        {
-            long budget = (long)(capital * (.40 + Next() * .20));
-            double[] weights = State.Stocks.Select(_ => .5 + Next()).ToArray();
-            double total = weights.Sum();
-            for (int i = 0; i < State.Stocks.Count; i++)
-            {
-                long q = (long)(budget * weights[i] / total / State.Stocks[i].Price);
-                t.Shares[i] = q; t.AverageCost[i] = q == 0 ? 0 : State.Stocks[i].Price;
-                t.Cash -= checked(q * State.Stocks[i].Price);
-            }
-        }
-        else
-        {
-            long budget = (long)(capital * (.40 + Next() * .35));
-            for (int j = 0; j < 8; j++)
-            {
-                int i = (int)(Next() * State.Stocks.Count), price = State.Stocks[i].Price;
-                if (budget < price) continue;
-                t.Shares[i]++; t.AverageCost[i] = price; t.Cash -= price; budget -= price;
-            }
-        }
         t.LastReturnEquity = capital;
         t.OpeningCash = t.Cash; t.OpeningEquity = t.SeasonOpeningEquity = capital;
         if (!t.IsRetail) t.EquityHistory = [capital];
@@ -76,10 +54,10 @@ public sealed partial class GameEngine
         for (int i = 0; i < State.Stocks.Count; i++) State.Stocks[i].TotalShares = Participants.Sum(t => t.Shares[i]) + State.Bank.ShareInventory[i] + State.Stocks[i].FounderShares + State.Stocks[i].TreasuryShares;
     }
     public IEnumerable<Trader> Participants => State.Bots.Concat(State.Retail);
-    public Trader Owner(int id) => id is >= 1 and <= AiCount ? State.Bots[id - 1] : State.Retail[id - AiCount - 1];
+    public Trader Owner(int id) => id==0 ? BankAccount() : id is >= 1 and <= AiCount ? State.Bots[id - 1] : State.Retail[id - AiCount - 1];
     public Trader FocusTrader => State.Bots[State.FollowedId - 1];
     public List<Trader> Ranking(RankingMetric metric = RankingMetric.Return, ComparisonPeriod period = ComparisonPeriod.Season)
-    { var range = period is ComparisonPeriod.All or ComparisonPeriod.Season ? null : Period(period); return State.Bots.OrderByDescending(t => RankingValue(t, metric, period, range?.Start, period == ComparisonPeriod.Custom ? range?.End : null)).ThenBy(t => t.Id).ToList(); }
+    { var range = period is ComparisonPeriod.All or ComparisonPeriod.Season ? null : PeriodSummary(period); return State.Bots.OrderByDescending(t => RankingValue(t, metric, period, range?.Start, period == ComparisonPeriod.Custom ? range?.End : null)).ThenBy(t => t.Id).ToList(); }
     public int RankOf(int id) => Ranking().FindIndex(t => t.Id == id) + 1;
     double Next()
     {
@@ -95,6 +73,7 @@ public sealed partial class GameEngine
             if (State.Hour == 0) { s.DayOpenPrice = s.Price; s.DayVolume = s.DayTurnover = 0; }
         }
         PrepareMarketSignals();
+        MakeBankMarket();
         int count = 300 + (int)(Next() * 501); State.ActiveRetailLastHour = count;
         var actors = new int[AiCount + count];
         for (int i = 0; i < AiCount; i++) actors[i] = i + 1;
@@ -118,16 +97,16 @@ public sealed partial class GameEngine
         bool monthEnd = State.CompletedHours % (SeasonLength * 24) == 0;
         if (monthEnd)
         {
-            foreach (var t in Participants) CancelOrders(t.Id);
-            State.Orders.Clear(); closingBooks = true;
+            CancelAllOrders(); closingBooks = true;
             try { CloseBusinesses(); } finally { closingBooks = false; }
         }
-        UpdatePerformance(); cachedStats = null;
+        UpdateGovernance();
+        ProcessBankruptcies();
+        UpdatePerformance();
         if (State.Hour == 0) Append(State.DailyHistory, CaptureSnapshot(), 121);
         if (monthEnd) { FinishSeason(State.Season - 1); RefreshEconomy(); }
         RecordHour();
         if (State.Hour % 6 == 0) PublishNews();
-        cachedStats = null;
     }
     public int AdvanceTime(double seconds, int speed = 1)
     {
@@ -141,26 +120,21 @@ public sealed partial class GameEngine
     void DecideRetail(Trader t)
     {
         CancelOrders(t.Id);
+        if(t.WaitingForCapital) return;
         if (Next() < t.Patience * .15) return;
-        long equity = Math.Max(1, t.Equity(State.Stocks));
-        double exposure = 1 - (double)t.Cash / equity;
-        int attempts = 1;
-        for (int j = 0; j < attempts; j++)
-        {
-            int index = (int)(Next() * State.Stocks.Count); var s = State.Stocks[index];
-            if (!s.Active) continue;
-            double trend = (double)s.PreviousPrice / s.History[Math.Max(0, s.History.Count - 6)] - 1;
-            double value = s.FairValue / s.PreviousPrice - 1;
-            double score = Math.Clamp(value, -.8, 2) * (.025 + t.Risk * .045) + trend * .20 + s.Sentiment * .20 + s.DividendYield * .10;
-            score += (.48 + t.Risk * .15 - exposure) * .04;
-            bool buy = Next() < Math.Clamp(.5 + score * 5, .15, .85);
-            double offset = Math.Clamp(score * .18 + (Next() - .5) * (.014 + t.Risk * .01), -.025, .025);
-            int limit = Quote(s.PreviousPrice * (1 + offset), buy);
-            long available = buy ? MaxBuy(t, index, limit) : t.Shares[index] - t.ReservedShares[index];
-            int desired = t.IsRetail ? 1 : Math.Max(1, (int)(equity * (.004 + Next() * .013) / limit));
-            int quantity = (int)Math.Min(available, desired);
-            if (quantity > 0) SubmitOrder(t.Id, index, buy, limit, quantity);
-        }
+        int index=(int)(Next()*State.Stocks.Count);
+        // Follow whichever of two randomly observed quotes has attracted volume.
+        int other=(int)(Next()*State.Stocks.Count);
+        if(State.Stocks[other].DayVolume>State.Stocks[index].DayVolume && Next()<.65) index=other;
+        if(t.Shares[index]==0 && Next()<.35)
+            for(int i=0;i<t.Shares.Length;i++) if(t.Shares[i]>0) { index=i; break; }
+        var stock=State.Stocks[index]; if(!stock.Active) return;
+        var reaction=RetailReaction(t,index);
+        bool buy=Next()<reaction.BuyProbability;
+        int limit=Quote(stock.PreviousPrice*(1+(buy ? reaction.Aggression : -reaction.Aggression)),buy);
+        long available=buy ? MaxBuy(t,index,limit) : t.Shares[index]-t.ReservedShares[index];
+        int quantity=(int)Math.Min(available,1+(Next()<t.Risk*.25 ? 1 : 0));
+        if(quantity>0) SubmitOrder(t.Id,index,buy,limit,quantity,1);
     }
     void FinishSeason(long season)
     {
@@ -170,12 +144,13 @@ public sealed partial class GameEngine
             Policy = State.Government.Policy, CompanyReports = State.Stocks.Select(s => s.Active ? CopyReport(s.Report) : CopyReport(s.Reports.LastOrDefault() ?? s.Report)).ToList() };
         foreach (var (t, index) in Ranking().Select((t, i) => (t, i)))
         {
-            var row = new SeasonStanding(t.Id, index + 1, t.SeasonOpeningEquity, t.Equity(State.Stocks), t.Return(State.Stocks));
+            var row = new SeasonStanding(t.Id, index + 1, t.SeasonOpeningEquity, t.Equity(State.Stocks), t.Return(State.Stocks),t.Generation,t.Name);
             result.Standings.Add(row);
-            Append(t.SeasonRanks, new RankHistory(season, row.Rank, row.Return, row.Equity), 12);
+            Append(t.SeasonRanks, new RankHistory(season, row.Rank, row.Return, row.Equity,t.Generation), 12);
         }
         State.PendingSeasons.Add(result);
-        foreach (var t in Participants) { t.SeasonOpeningEquity = t.Equity(State.Stocks); t.SeasonSnapshot = CaptureTrader(t); }
+        foreach (var t in Participants)
+        { t.SeasonOpeningEquity = t.Equity(State.Stocks); if(t.IsRetail) t.SeasonReturnBasis=t.ReturnIndex; else t.SeasonSnapshot = CaptureTrader(t); }
         State.SeasonSnapshot = result.End;
         State.SeasonStartMatches = State.TotalMatches;
     }

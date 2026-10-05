@@ -6,7 +6,7 @@ public sealed partial class GameEngine
 {
     public event Action<CorporateEvent>? CorporateEventRecorded;
     public int SecurityIndex(string id) => State.Stocks.FindIndex(s => s.SecurityId == id);
-    static CompanyReport CopyReport(CompanyReport report) => JsonSerializer.Deserialize<CompanyReport>(JsonSerializer.Serialize(report))!;
+    static CompanyReport CopyReport(CompanyReport report) => CheckpointCopy.Scalar(report);
     void CancelSecurity(int index)
     {
         foreach (var order in State.Orders.Where(o => o.StockIndex == index && o.Remaining > 0).ToArray()) CancelOrder(order.Id);
@@ -62,15 +62,15 @@ public sealed partial class GameEngine
 
     string? AtomicAction(Func<string?> operation)
     {
-        string before = Serialize();
+        var before = CheckpointCopy.Freeze(State);
         try
         {
             string? error = operation();
-            if (error is not null) { State = JsonSerializer.Deserialize<GameState>(before)!; RebuildBooks(); cachedStats=null; cachedPeriod=null; }
+            if (error is not null) { State = before; RebuildBooks(); cachedStats=null; cachedPeriod=null; }
             return error;
         }
         catch (Exception e) when (e is OverflowException or InvalidOperationException or ArgumentException)
-        { State = JsonSerializer.Deserialize<GameState>(before)!; RebuildBooks(); cachedStats=null; cachedPeriod=null; return "기업행동을 적용하지 못했습니다: " + e.Message; }
+        { State = before; RebuildBooks(); cachedStats=null; cachedPeriod=null; return "기업행동을 적용하지 못했습니다: " + e.Message; }
     }
 
     public string? SplitShares(string id, int numerator, int denominator = 1)
@@ -161,10 +161,10 @@ public sealed partial class GameEngine
     public string? Buyback(string id, int ownerId, long quantity, bool retire = false)
     {
         int i = SecurityIndex(id);
-        if (i < 0 || !State.Stocks[i].Active || quantity <= 0 || ownerId < 1 || ownerId > AiCount + RetailCount) return "자사주 값이 올바르지 않습니다.";
+        if (i < 0 || !State.Stocks[i].Active || quantity <= 0 || ownerId < 0 || ownerId > AiCount + RetailCount) return "자사주 값이 올바르지 않습니다.";
         var s = State.Stocks[i]; var t = Owner(ownerId);
         long amount = checked(quantity * s.Price);
-        if (t.Shares[i] - t.ReservedShares[i] < quantity || s.Report.Cash < amount) return "자사주 매입 재원/주식이 부족합니다.";
+        if (t.Shares[i] - t.ReservedShares[i]-(ownerId==0 ? State.Bank.ReservedLending[i] : 0) < quantity || s.Report.Cash < amount) return "자사주 매입 재원/주식이 부족합니다.";
         long before = State.Stocks.Sum(x => x.MarketCap);
         if (s.Reports.Contains(s.Report)) s.Report = CopyReport(s.Report);
         TransferCash(s.Report, t, amount, "buyback");
@@ -263,40 +263,50 @@ public sealed partial class GameEngine
     }
     static T[] Resize<T>(T[] values, int count) { Array.Resize(ref values, count); return values; }
 
-    void ListCompany(CompanyDefinition definition)
+    long ListCompany(CompanyDefinition definition,int slot=-1,int generation=1)
     {
         long capital = checked((long)definition.InitialPrice * 1000);
-        if (capital > State.RealEconomy.Cash / 2) return;
+        if(slot<0) slot=State.Stocks.FindIndex(s=>!s.Active && !s.WaitingForCapital && s.Symbol==definition.Symbol);
+        if(slot>=0) generation=Math.Max(generation,State.Stocks[slot].Generation+1);
         long before = State.Stocks.Sum(s => s.MarketCap);
-        string id = State.Stocks.Any(s => s.SecurityId == definition.SecurityId) ? definition.SecurityId + "-" + State.NextCorporateEventId : definition.SecurityId;
+        string id = slot>=0 || State.Stocks.Any(s=>s.SecurityId==definition.SecurityId)
+            ? definition.SecurityId+"-g"+generation+"-"+State.NextCorporateEventId : definition.SecurityId;
         var stock = CompanyCatalog.Create(definition, id);
+        stock.Generation=generation; stock.Name+=generation>1 ? $" {generation}기" : "";
         stock.FundedIpo = true; stock.ListedSeason = State.Season;
-        stock.TotalShares = stock.FounderShares = 1000;
         stock.Report = new CompanyReport { IsOpening = true, SecurityId = id, Season = Math.Max(0, State.Season - 1),
-            OutstandingShares = 1000, AverageShares = 1000 };
-        State.Stocks.Add(stock); ResizeSecurities();
-        TransferCash(State.RealEconomy, stock.Report, capital, "ipo-founder-subscription");
+            OutstandingShares = 0, AverageShares = 0 };
+        stock.Reports=[CopyReport(stock.Report)];
+        if(slot<0) { slot=State.Stocks.Count; State.Stocks.Add(stock); ResizeSecurities(); }
+        else { State.Stocks[slot]=stock; State.SecurityIds[slot]=id; }
+        if(capital>State.Bank.Cash-State.Bank.MarketAccount.ReservedCash && capital-State.Bank.Cash>State.RealEconomy.Cash/2)
+        { stock.Active=false; stock.WaitingForCapital=true; return 0; }
+        return FundListing(stock,slot,capital,before);
+    }
+    long FundListing(Stock stock,int slot,long capital,long before)
+    {
+        CancelOrders(0);
+        long support=Math.Max(0,capital-State.Bank.Cash);
+        if(support>State.RealEconomy.Cash/2) return 0;
+        TransferCash(State.RealEconomy,State.Bank,support,"bank-recapitalization");
+        stock.Active=true; stock.WaitingForCapital=false; stock.TotalShares=2000; stock.TreasuryShares=1000;
+        State.Bank.ShareInventory[slot]=1000; BankAccount().AverageCost[slot]=stock.Price;
+        TransferCash(State.Bank, stock.Report, capital, "ipo-bank-subscription");
         stock.Report.CapitalChange += capital; stock.Report.FinancingCashFlow += capital;
         long equipment = capital * 3 / 5;
         TransferCash(stock.Report, State.RealEconomy, equipment, "ipo-equipment");
         stock.Report.FixedAssets += equipment; stock.Report.InvestingCashFlow -= equipment;
         stock.BaseRevenue = capital / 20; stock.InitialFixedAssets = equipment;
-        long bankShares = Math.Min(100, State.Bank.Cash / 100 / stock.Price);
-        if (bankShares > 0)
-        {
-            long amount = bankShares * stock.Price;
-            TransferCash(State.Bank, stock.Report, amount, "ipo-bank-subscription");
-            State.Bank.ShareInventory[^1] += bankShares; stock.TotalShares += bankShares;
-            stock.Report.CapitalChange += amount; stock.Report.FinancingCashFlow += amount;
-        }
         stock.Report.OutstandingShares = stock.Report.AverageShares = stock.OutstandingShares;
         stock.Reports = [CopyReport(stock.Report)]; AdjustDivisor(before);
-        LogCorporate(stock, CorporateEventKind.Ipo, $"{stock.Name} 신규 상장 · 공모 대금은 기업으로 납입", capital, shares: stock.TotalShares);
+        LogCorporate(stock, CorporateEventKind.Ipo, $"{stock.Name} 신규 상장 · 자사주 50%/은행 50% · 실제 납입", capital, shares: stock.TotalShares);
+        OpenCompanyVotes(stock);
+        return capital;
     }
     void RestoreSectorListings()
     {
         foreach (var definition in CompanyCatalog.Companies)
-            if (!State.Stocks.Any(s => s.Active && s.Symbol == definition.Symbol)) ListCompany(definition);
+            if (!State.Stocks.Any(s => (s.Active || s.WaitingForCapital) && s.Symbol == definition.Symbol)) ListCompany(definition);
     }
     void RunCorporatePolicy()
     {
@@ -314,11 +324,6 @@ public sealed partial class GameEngine
             var a = sector.OrderByDescending(s => s.Price).First(); var b = sector.OrderBy(s => s.Price).First();
             if (a != b) MergeCompanies(a.SecurityId, b.SecurityId);
         }
-        if (completedSeason % 6 == 0)
-        {
-            var company = State.Stocks.FirstOrDefault(s => s.Active && s.Report.Cash > s.Report.Revenue * 3);
-            var owner = company is null ? null : State.Bots.FirstOrDefault(t => t.Shares[SecurityIndex(company.SecurityId)] > 1);
-            if (company is not null && owner is not null) Buyback(company.SecurityId, owner.Id, 1, retire: completedSeason % 12 == 0);
-        }
+        foreach(var company in State.Stocks) SeekTreasuryOwnership(company);
     }
 }

@@ -87,12 +87,15 @@ public sealed partial class GameView
     float DrawEconomy(float y)
     {
         var p = S.Government.Policy;
+        var totals=game!.Statistics();
         y = Statement($"정부 · 시즌 {p.Season} · {p.Name}", y, [("매매 이익 세율", $"{p.TaxRate:P1}"), ("양쪽 거래 수수료", $"{p.FeeBasisPoints / 100.0:0.00}%"),
             ("기준금리 (연)", $"{p.BaseRate:P2}"), ("공매도 규제", p.ShortSellingAllowed ? $"허용 / 자기자산 {p.ShortExposureLimit:P0}" : "신규 공매도 금지"),
             ("대출 한도 조정", $"기본 한도의 {p.LoanLimitMultiplier:P0}"), ("주식 보조금 (일)", $"보유액 {p.SubsidyRate:P3}"), ("감독 적발 강도", $"{p.Enforcement:P0}")]);
-        y = Pie("경제 주체의 현금 구성", [("투자자", game!.Participants.Sum(t => t.Cash)), ("기업",S.Stocks.Sum(s => s.Report.Cash)), ("실물 경제",S.RealEconomy.Cash), ("은행", S.Bank.Cash), ("정부", S.Government.Cash), ("거래소", S.FeePool)], y);
-        y = Statement("은행 대출 현황", y, [("은행 현금", ShortMoney(S.Bank.Cash) + "원"), ("참가자 대출 잔액", ShortMoney(game!.Participants.Sum(t => t.LoanDebt)) + "원"),
-            ("누적 이자 수익", ShortMoney(S.Bank.InterestIncome) + "원"), ("기업 이자 수익", ShortMoney(S.Bank.CorporateInterest)+"원"), ("배당·대체배당 수익", ShortMoney(S.Bank.DividendIncome)+"원"), ("공매도 대여료 수익", ShortMoney(S.Bank.BorrowFeeIncome) + "원"), ("기관 공매도 부채", ShortMoney(S.Bots.Sum(t => t.ShortLiability(S.Stocks))) + "원")]);
+        y = Pie("경제 주체의 현금 구성", [("투자자",totals.Institutions.Cash+totals.Retail.Cash), ("기업",S.Stocks.Sum(s => s.Report.Cash)), ("실물 경제",S.RealEconomy.Cash), ("은행", S.Bank.Cash), ("정부", S.Government.Cash), ("거래소", S.FeePool)], y);
+        y=Statement("시장 안정 개입",y,[("현재 판단",S.Bank.MarketDecision),("누적 주식 매수",ShortMoney(S.Bank.InterventionPurchases)+"원"),("누적 주식 공급",ShortMoney(S.Bank.InterventionSales)+"원"),
+            ("파산 대출 미회수",ShortMoney(S.Bank.LoanWriteOffs)+"원"),("파산 공매도 미회수",ShortMoney(S.Bank.ShortWriteOffs)+"원")]);
+        y = Statement("은행 대출 현황", y, [("은행 현금", ShortMoney(S.Bank.Cash) + "원"), ("참가자 대출 잔액", ShortMoney(totals.Institutions.LoanDebt+totals.Retail.LoanDebt) + "원"),
+            ("누적 이자 수익", ShortMoney(S.Bank.InterestIncome) + "원"), ("기업 이자 수익", ShortMoney(S.Bank.CorporateInterest)+"원"), ("배당·대체배당 수익", ShortMoney(S.Bank.DividendIncome)+"원"), ("공매도 대여료 수익", ShortMoney(S.Bank.BorrowFeeIncome) + "원"), ("기관 공매도 부채", ShortMoney(totals.Institutions.ShortDebt) + "원")]);
         var rates = Enum.GetValues<CreditRating>().Select(r => (r.ToString(), $"{GameEngine.CreditLimits[(int)r]:P0} / {p.BaseRate + GameEngine.CreditSpreads[(int)r]:P2}")).ToArray();
         y = Statement("신용 등급 · 기본 한도 / 연 금리", y, rates);
         Text("AAA 100% → C 30% · 정책의 한도 조정이 추가 적용", 21, y + 4, 10, Muted); y += 28;
@@ -116,7 +119,7 @@ public sealed partial class GameView
             Box(20, y, 360, 171, Card, 17);
             Pill(o.Status == OperationStatus.Active ? "진행 중" : o.Status == OperationStatus.Failed ? "실패·벌금" : "완료", 35, y + 14, color, 79);
             Text(S.Stocks[o.StockIndex].Symbol + " · 공동 매집", 363, y + 31, 12, Ink, true, Paint.Align.Right);
-            Text(Representatives.Name(o.LeaderId) + " ↔ " + Representatives.Name(o.PartnerId), 36, y + 66, 17, Ink, true);
+            Text((o.LeaderName.Length>0 ? o.LeaderName : Representatives.Name(o.LeaderId)) + " ↔ " + (o.PartnerName.Length>0 ? o.PartnerName : Representatives.Name(o.PartnerId)), 36, y + 66, 17, Ink, true);
             Text($"{Moment(o.StartedHour)} → {Moment(o.EndsHour)}", 36, y + 90, 10, Muted);
             TextFit(o.Detail, 36, y + 115, 11, Muted, 328);
             Text($"벌금 {ShortMoney(o.Fine)}원 · 참여 {S.Bots[o.LeaderId - 1].Name} / {S.Bots[o.PartnerId - 1].Name}", 36, y + 144, 10, color);

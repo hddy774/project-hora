@@ -24,7 +24,7 @@ static class OwnershipChecks
         check(game.SubscribeIssue(3,id,3) is null,"Ownership funded subscription");
         check(game.Buyback(id,3,1) is null,"Ownership treasury repurchase");
         var treasury=game.Ownership(0);
-        check(treasury.IssuedShares-treasury.OutstandingShares==1 && treasury.Slices.Single(s=>s.Category==HolderCategory.Treasury).Shares==1,"Issued and outstanding denominators distinguish treasury");
+        check(treasury.IssuedShares-treasury.OutstandingShares==1001 && treasury.Slices.Single(s=>s.Category==HolderCategory.Treasury).Shares==1001,"Issued and outstanding denominators distinguish treasury");
         check(Math.Abs(treasury.Slices.Where(s=>s.Category!=HolderCategory.Treasury).Sum(s=>treasury.OutstandingRatio(s.Shares))-1)<1e-12,"Outstanding shareholder percentages sum to 100%");
         CheckAll(game,check); validate(game);
         int target=game.State.Stocks.FindIndex(s=>s.Sector==stock.Sector && s.SecurityId!=id);
@@ -59,9 +59,14 @@ static class OwnershipChecks
             check(frozen.Json==original,"Deferred encoding is isolated from live month-end progression");
             var loaded=store.Load(out _)!;
             check(loaded.Serialize()==original && loaded.State.CompletedHours==719,"Writer checkpoint and history end remain atomic while simulation advances"); validate(loaded);
+            game.State.Retail[0].ShortAveragePrice[0]=-0.0;
             var detached=store.PrepareSave(game); string expected=game.Serialize();
             game.State.Bots[0].Abilities.Valuation++;
             game.State.Bots[0].AverageCost[0]++;
+            var retail=game.State.Retail.First(t=>t.Shares.Any(q=>q>0));
+            retail.Shares[Array.FindIndex(retail.Shares,q=>q>0)]++;
+            game.State.Retail[0].ShortAveragePrice[0]=10;
+            game.State.Retail[0].Abilities.Valuation++;
             game.State.Bank.ShareInventory[0]++;
             game.State.Stocks[0].Reports[0].Cash++;
             game.State.Government.History[0].Name="mutated";
@@ -92,6 +97,8 @@ static class OwnershipChecks
                 game.State.CompletedHours=hour; var point=game.CaptureSnapshot(); point.Resolution=resolution;
                 if(hour==49) point.PriceIndex=9000;
                 if(hour==105) point.TotalReturnIndex=7000;
+                if(hour==103) point.InstitutionTradingIncome=8_000_000;
+                if(hour==106) point.RetailTradingIncome=-9_000_000;
                 rows.Add(new HistoryRecord(hour,resolution,JsonSerializer.Serialize(point)));
             }
             store.WriteSnapshot(new SaveSnapshot(game.State.RunId,180,game.Serialize(),[],rows.ToArray())); store.Attach(game);
@@ -107,6 +114,7 @@ static class OwnershipChecks
             }
             var range=game.HistorySource!.Range(0,180,16);
             check(range.Count<=16 && range[0].Hour==0 && range[^1].Hour==180 && range.Any(p=>p.PriceIndex==9000) && range.Any(p=>p.TotalReturnIndex==7000),"Joined extrema query retains boundaries, price and total-return extrema");
+            check(range.Any(p=>p.InstitutionTradingIncome==8_000_000) && range.Any(p=>p.RetailTradingIncome==-9_000_000),"New cohort charts retain investment income extrema within bounded historical query");
             for(int i=0;i<32;i++) game.AdvanceHour();
             check(game.HistorySource.At(205)!.Hour==205 && game.HistorySource.At(200)!.Hour==200,"Point lookup selects exact hour from multiple pending snapshots");
             using var connection=new SqliteConnection($"Data Source={store.SavePath};Pooling=False"); connection.Open();

@@ -19,6 +19,7 @@ jobs:
       - name: Validate game catalog and mobile smoke coordinates
         run: |
           python3 scripts/test_games.py
+          python3 scripts/test_android_signing.py
           python3 scripts/test_native_capture.py
           python3 scripts/games.py validate
       - id: games

@@ -11,6 +11,7 @@
   "legacyTagPrefix": "v",
   "signing": {
     "script": "scripts/sign-release.sh",
-    "secretPrefix": "ANDROID"
+    "secretPrefix": "ANDROID",
+    "certificateSha256": "9fd5aa86793e26beec38948dfae79d1981581f8e54abe0047025a863cc64f722"
   }
 }

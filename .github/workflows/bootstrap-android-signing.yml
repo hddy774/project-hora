@@ -1,0 +1,162 @@
+name: Owner bootstrap Android signing identity
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type CREATE_ALPHA_EXCHANGE_KEY to create and retain a new signing identity
+        required: true
+        type: string
+permissions: {}
+concurrency:
+  group: android-signing-identity-alpha-exchange
+  cancel-in-progress: false
+jobs:
+  initialize:
+    if: ${{ github.repository == 'hddy774/project-hora' && github.ref == 'refs/heads/main' && github.actor == 'hddy774' && github.triggering_actor == 'hddy774' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      # Deliberately no checkout, external action, build, cache, artifact, or workflow chaining.
+      - name: Generate once and retain only in Actions Secrets
+        env:
+          GH_TOKEN: ${{ secrets.SIGNING_BOOTSTRAP_TOKEN }}
+          GH_HOST: github.com
+          BOOTSTRAP_CONFIRMATION: ${{ inputs.confirmation }}
+        shell: bash
+        run: |
+          set +x
+          set -euo pipefail
+          python3 - <<'PY_BOOTSTRAP'
+          """Owner-operated one-time bootstrap. This file is embedded verbatim in the workflow."""
+          import base64
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import re
+          import secrets
+          import subprocess
+          import sys
+          import tempfile
+          
+          REPOSITORY = "hddy774/project-hora"
+          DESTINATION = "ANDROID_SIGNING_BUNDLE"
+          EXISTING_NAMES = {
+              DESTINATION, "ANDROID_KEYSTORE_BASE64", "ANDROID_KEYSTORE_PASSWORD", "ANDROID_KEY_ALIAS", "ANDROID_KEY_PASSWORD",
+              "RELEASE_KEYSTORE_BASE64", "RELEASE_STORE_PASSWORD", "RELEASE_KEY_ALIAS", "RELEASE_KEY_PASSWORD",
+              "KEYSTORE_BASE64", "KEYSTORE_PASSWORD", "KEY_ALIAS", "KEY_PASSWORD",
+          }
+          
+          
+          def mask(value):
+              escaped = value.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print("::add-mask::" + escaped, flush=True)
+          
+          
+          def command(arguments, *, data=None, token=False, extra_env=None):
+              env = dict(os.environ)
+              env.pop("GH_DEBUG", None)
+              if not token:
+                  env.pop("GH_TOKEN", None)
+                  env.pop("GITHUB_TOKEN", None)
+              if extra_env:
+                  env.update(extra_env)
+              result = subprocess.run(arguments, input=data, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+              if result.returncode:
+                  # API errors can reflect request bodies; do not print subprocess output.
+                  raise RuntimeError("Bootstrap command failed; inspect metadata before any retry")
+              return result.stdout
+          
+          
+          def api(path):
+              return command(["gh", "api", "-H", "Accept: application/vnd.github+json", "repos/" + REPOSITORY + path], token=True)
+          
+          
+          def absent():
+              data = command(["gh", "api", "--paginate", "repos/" + REPOSITORY + "/actions/secrets", "--jq", ".secrets[].name"], token=True)
+              if EXISTING_NAMES.intersection(data.decode("utf-8", errors="strict").splitlines()):
+                  raise RuntimeError("An existing or partial signing configuration exists; nothing will be replaced")
+          
+          
+          def guard():
+              wanted = {
+                  "GITHUB_ACTIONS": "true", "GITHUB_REPOSITORY": REPOSITORY,
+                  "GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_REF": "refs/heads/main",
+                  "GITHUB_ACTOR": "hddy774", "GITHUB_TRIGGERING_ACTOR": "hddy774", "GITHUB_RUN_ATTEMPT": "1",
+                  "BOOTSTRAP_CONFIRMATION": "CREATE_ALPHA_EXCHANGE_KEY",
+              }
+              if any(os.environ.get(key) != value for key, value in wanted.items()):
+                  raise RuntimeError("Bootstrap requires a fresh, explicitly confirmed owner dispatch from main")
+              if os.environ.get("RUNNER_DEBUG") == "1" or not os.environ.get("GH_TOKEN"):
+                  raise RuntimeError("Missing bootstrap grant or debug logging is enabled")
+              if not os.environ.get("RUNNER_TEMP") or not Path(os.environ["RUNNER_TEMP"]).is_dir():
+                  raise RuntimeError("Runner temporary directory is unavailable")
+          
+          
+          def bootstrap():
+              guard()
+              absent()
+              # This does not query the stored value of any signing secret.
+              public_key = json.loads(api("/actions/secrets/public-key"))
+              if not isinstance(public_key.get("key"), str) or not isinstance(public_key.get("key_id"), str):
+                  raise RuntimeError("Repository encryption key response was invalid")
+              os.umask(0o077)
+              with tempfile.TemporaryDirectory(prefix="hora-bootstrap-", dir=os.environ["RUNNER_TEMP"]) as temporary:
+                  keystore, certificate = Path(temporary) / "identity.p12", Path(temporary) / "public.der"
+                  password = secrets.token_hex(32)
+                  mask(password)
+                  alias = "alpha-exchange-release"
+                  local_env = {"STORE_PASSWORD": password, "KEY_PASSWORD": password}
+                  command(["keytool", "-genkeypair", "-noprompt", "-storetype", "PKCS12", "-keystore", str(keystore),
+                           "-alias", alias, "-storepass:env", "STORE_PASSWORD", "-keypass:env", "KEY_PASSWORD",
+                           "-keyalg", "RSA", "-keysize", "3072", "-sigalg", "SHA256withRSA", "-validity", "10000",
+                           "-dname", "CN=Alpha Exchange, OU=Android release signing, O=Project Hora, C=KR"], extra_env=local_env)
+                  command(["keytool", "-exportcert", "-keystore", str(keystore), "-alias", alias,
+                           "-storepass:env", "STORE_PASSWORD", "-file", str(certificate)], extra_env=local_env)
+                  key_bytes = keystore.read_bytes()
+                  if not 1 <= len(key_bytes) <= 32768:
+                      raise RuntimeError("Generated keystore exceeds the supported secret size")
+                  encoded = base64.b64encode(key_bytes).decode("ascii")
+                  mask(encoded)
+                  fingerprint = hashlib.sha256(certificate.read_bytes()).hexdigest()
+                  bundle = json.dumps({"schemaVersion": 1, "game": "alpha-exchange", "applicationId": "com.alphaexchange.offline",
+                                       "keystoreBase64": encoded, "storePassword": password, "keyAlias": alias,
+                                       "keyPassword": password, "certificateSha256": fingerprint}, separators=(",", ":"))
+                  mask(bundle)
+                  if len(bundle.encode("utf-8")) > 48000:
+                      raise RuntimeError("Signing bundle exceeds the supported secret size")
+                  # Official GitHub CLI encrypts locally. Plaintext is supplied via stdin, never an argument.
+                  encrypted = command(["gh", "secret", "set", DESTINATION, "--repo", REPOSITORY, "--app", "actions", "--no-store"],
+                                      data=bundle.encode("utf-8"), token=True).strip().decode("ascii")
+                  base64.b64decode(encrypted, validate=True)
+                  if json.loads(api("/actions/secrets/public-key")) != public_key:
+                      raise RuntimeError("Repository encryption key changed; no secret was written")
+                  absent()
+                  payload = json.dumps({"encrypted_value": encrypted, "key_id": public_key["key_id"]}).encode("utf-8")
+                  # GitHub provides upsert, not atomic create-only. Never retry this write automatically.
+                  response = command(["gh", "api", "--include", "--method", "PUT", "repos/" + REPOSITORY + "/actions/secrets/" + DESTINATION,
+                                      "--input", "-"], data=payload, token=True)
+                  status = re.search(rb"^HTTP/\S+\s+(\d{3})(?:\s|$)", response, flags=re.MULTILINE)
+                  if not status or status.group(1) != b"201":
+                      raise RuntimeError("Secret write was not confirmed as a new creation; stop and inspect metadata, do not rerun")
+                  metadata = json.loads(api("/actions/secrets/" + DESTINATION))
+                  if metadata.get("name") != DESTINATION:
+                      raise RuntimeError("Secret persistence metadata could not be confirmed; do not rerun")
+                  # Fingerprint is public and may be recorded even though secret content is never retrievable via REST.
+                  print("Stored new signing bundle. Certificate SHA-256: " + fingerprint)
+                  summary = os.environ.get("GITHUB_STEP_SUMMARY")
+                  if summary:
+                      with open(summary, "a", encoding="utf-8") as output:
+                          output.write("New signing identity stored in repository Actions Secrets.\n\nCertificate SHA-256: " + fingerprint +
+                                       "\n\nThe old public pin remains active. Approve this fingerprint before a release.\n"
+                                       "Revoke the one-time PAT and remove SIGNING_BOOTSTRAP_TOKEN.\n"
+                                       "A fresh verification run is required to prove the stored identity can be loaded.\n")
+          
+          
+          if __name__ == "__main__":
+              try:
+                  bootstrap()
+              except Exception:
+                  print("::error::Bootstrap stopped. No automatic retry or key replacement is permitted. Inspect the Actions secret names and public run status before proceeding.", file=sys.stderr)
+                  sys.exit(1)
+          PY_BOOTSTRAP

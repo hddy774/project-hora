@@ -16,7 +16,7 @@ class CatalogTests(unittest.TestCase):
         self.game = {"schemaVersion": 1, "id": "alpha-exchange", "name": "Alpha", "applicationId": "com.alphaexchange.offline",
                      "androidProject": "src/alpha.csproj", "checksProject": "tests/check.csproj", "artworkCheck": "scripts/art.py",
                      "apkPrefix": "AlphaExchange", "releaseNotes": "docs/v{version}.md", "legacyTagPrefix": "v",
-                     "signing": {"script": "scripts/sign.sh", "secretPrefix": "ANDROID"}}
+                     "signing": {"script": "scripts/sign.sh", "secretPrefix": "ANDROID", "certificateSha256": "a" * 64}}
         for name in ["tests/check.csproj", "scripts/art.py", "scripts/sign.sh", "docs/v1.7.0.md"]:
             self.write(name, "fixture")
         self.project("src/alpha.csproj", "com.alphaexchange.offline")
@@ -40,6 +40,15 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(game["output"], "dist/alpha-exchange")
         self.assertEqual(games.release_info(game, "v1.7.0", self.root)["artifact_prefix"], "v1.7.0")
         self.assertEqual(games.release_info(game, "alpha-exchange/v1.7.0", self.root)["artifact_prefix"], "alpha-exchange-v1.7.0")
+
+    def test_reviewed_signing_pin_is_required_and_exposed(self):
+        game = games.read_games(self.root)[0]
+        self.assertEqual(games.release_info(game, "v1.7.0", self.root)["signing_certificate"], "a" * 64)
+        for invalid in (None, "", "A" * 64, "a" * 63, "a" * 64 + "\n"):
+            self.game["signing"]["certificateSha256"] = invalid
+            self.manifest(self.game)
+            with self.assertRaisesRegex(ValueError, "reviewed public"):
+                games.read_games(self.root)
 
     def test_wrong_game_or_version_tags_rejected(self):
         game = games.read_games(self.root)[0]

@@ -1,0 +1,40 @@
+name: Verify retained Android signing identity
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    if: ${{ github.repository == 'hddy774/project-hora' && github.ref == 'refs/heads/main' && github.actor == 'hddy774' && github.triggering_actor == 'hddy774' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+      - name: Resolve reviewed public identity
+        id: identity
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import importlib.util, os
+          from pathlib import Path
+          spec = importlib.util.spec_from_file_location('games', 'scripts/games.py')
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          game = module.select(module.read_games(), 'alpha-exchange')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('certificate=' + game['signing']['certificateSha256'] + '\n')
+          PY
+      - name: Verify retained key without building or publishing
+        env:
+          GAME: alpha-exchange
+          APP_ID: com.alphaexchange.offline
+          EXPECTED_SIGNING_CERTIFICATE: ${{ steps.identity.outputs.certificate }}
+          SIGNING_BUNDLE: ${{ secrets.ANDROID_SIGNING_BUNDLE }}
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 || secrets.RELEASE_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD }}
+        run: python3 scripts/android_signing.py --verify-only

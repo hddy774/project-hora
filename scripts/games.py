@@ -83,6 +83,8 @@ def read_games(root=ROOT):
             if signing["secretPrefix"] in signing_prefixes:
                 raise ValueError(f"Duplicate signing secret prefix: {signing['secretPrefix']}")
             signing_prefixes.add(signing["secretPrefix"])
+            if not isinstance(signing.get("certificateSha256"), str) or not re.fullmatch(r"[a-f0-9]{64}", signing["certificateSha256"]):
+                raise ValueError(f"{slug}: a reviewed public signing certificate SHA-256 pin is required")
         games.append(dict(game, version=version, versionCode=code, output=f"dist/{slug}", tag=f"{slug}/v{version}", apkName=f"{prefix}-v{version}.apk"))
     if not games:
         raise ValueError("No games registered under games/*/game.json")
@@ -107,7 +109,7 @@ def release_info(game, tag, root=ROOT):
         raise ValueError(f"{game['id']}: signing route not configured; builds/checks are available")
     return {"game": game["id"], "tag": tag, "version": game["version"], "version_code": game["versionCode"],
             "app_id": game["applicationId"], "project": game["androidProject"], "apk_name": game["apkName"],
-            "artifact_prefix": tag.replace("/", "-"), "notes": notes, "signing_script": game["signing"]["script"], "signing_secret_prefix": game["signing"]["secretPrefix"]}
+            "artifact_prefix": tag.replace("/", "-"), "notes": notes, "signing_script": game["signing"]["script"], "signing_secret_prefix": game["signing"]["secretPrefix"], "signing_certificate": game["signing"]["certificateSha256"]}
 
 
 def run(command):

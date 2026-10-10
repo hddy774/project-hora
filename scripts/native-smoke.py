@@ -1,6 +1,7 @@
 """Actual Android app/legacy SQLite/UI/minute-clock smoke test on a rooted CI emulator."""
 import contextlib, io, json, os, pathlib, re, sqlite3, subprocess, sys, time
 from PIL import Image
+from native_capture import display_projection, logical_crop_bounds, logical_display_size
 import brotli
 import xml.etree.ElementTree as ET
 
@@ -29,12 +30,23 @@ def tap(x,y):
     adb("shell", "input", "tap", str(round(left+x*scale)), str(round(top+y*scale))); time.sleep(1)
 
 def screenshot(name):
+    logical_size=logical_display_size(adb("shell","wm","size"))
     raw=adb("exec-out", "screencap", "-p",binary=True)
     (output/(name+".png")).write_bytes(raw)
-    return Image.open(io.BytesIO(raw)).convert("RGB")
+    image=Image.open(io.BytesIO(raw)).convert("RGB")
+    image.info["logical_display_size"]=logical_size
+    projection=display_projection(logical_size,image.size)
+    view_bounds=[left,top,right,bottom] if "left" in globals() else None
+    (output/(name+".capture.json")).write_text(json.dumps({"logicalDisplaySize":logical_size,
+        "screenshotSize":image.size,"gameViewBounds":view_bounds,"projection":{"scale":projection[0],"offsetX":projection[1],"offsetY":projection[2]}},indent=2))
+    return image
 
 def crop(image,x1,y1,x2,y2):
-    return image.crop((round(left+x1*scale),round(top+y1*scale),round(left+x2*scale),round(top+y2*scale))).tobytes()
+    # Touch/UIAutomator coordinates are logical, while screencap can include
+    # physical letterboxing or downscale a WM override larger than the display.
+    logical=(left+x1*scale,top+y1*scale,left+x2*scale,top+y2*scale)
+    bounds=logical_crop_bounds(logical,image.info["logical_display_size"],image.size)
+    return image.crop(bounds).tobytes()
 
 def window_tree():
     adb("shell","rm","-f","/sdcard/hora-window.xml")
@@ -99,10 +111,10 @@ def pull_state(name):
         return json.loads(brotli.decompress(state)),folder
 
 # Startup is asynchronous; wait for the first source8 checkpoint after resume.
-lobby_tree=require_screen("시뮬레이션 시작 화면",60); screenshot("01-lobby")
+lobby_tree=require_screen("시뮬레이션 시작 화면",60)
 # Android can expose hardware keys instead of a navigation bar. Use the actual
 # GameView bounds, including status/navigation insets, rather than guessing them.
-measure_viewport(lobby_tree)
+measure_viewport(lobby_tree); screenshot("01-lobby")
 (output/"viewport.json").write_text(json.dumps({"bounds":[left,top,right,bottom],"scale":scale,"canvasHeight":h},indent=2))
 tap(200,h-140)
 require_screen("시장 화면")

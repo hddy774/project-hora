@@ -5,6 +5,7 @@ Draft implementation for [PR #11](https://github.com/hddy774/project-hora/pull/1
 ## Local results
 
 - `python3 scripts/test_games.py`: 12 contract tests passed, covering independent IDs/projects/APK names/signing namespaces, path bounds, selected build/check arguments, missing toolchain configuration, and scoped/legacy tag syntax.
+- `python3 scripts/test_native_capture.py`: 9 coordinate regressions passed for default, letterboxed, and downscaled emulator captures, including the recorded 480-height failure case.
 - `python3 scripts/games.py validate`: the single registered ALPHA EXCHANGE manifest passed.
 - `python3 scripts/games.py check alpha-exchange`: 41,247,119 assertions passed across 16 seasons and 5,058,975 matched trades, including accounting, matching, economy, storage/migrations/recovery, ownership, v1.5–v1.7, and the new mobile checks.
 - Focused `--mobile-only`: 2,062 assertions passed. Tests execute the production scheduler, asynchronous checkpoint ordering, and modal geometry/scroll helpers. They cover 50 resume/background cycles, late/duplicate callbacks, delayed/failing checkpoint ordering, suspension during load/migration, and repeated modal identity/dismissal/clip/scroll cases at logical heights 480/600/800.
@@ -19,7 +20,7 @@ The registry-driven Android job builds each game into its own directory. ALPHA E
 The native script additionally exercises:
 
 - Running → Home → settled checkpoint → 8-second background hold → return paused, comparing completed minutes, queued minutes, fractional progress, transaction ID, and run ID.
-- Real help-modal touch/Canvas behavior at measured logical heights 480, 600, and 800: body movement, pinned close/CTA, both dismissal paths, fresh scroll position on reopen, and an unchanged underlying page. Screenshots and raw JSON evidence are retained by CI. Emulator display settings are restored in a `finally` block.
+- Real help-modal touch/Canvas behavior at measured logical heights 480, 600, and 800: body movement, pinned close/CTA, both dismissal paths, fresh scroll position on reopen, and an unchanged underlying page. Screenshot crops are projected from logical input coordinates into the actual framebuffer; capture dimensions/projection metadata and raw JSON evidence are retained by CI. A test-only resize can recreate the Activity, so setup verifies and continues the same saved run, then pauses before comparing images. Emulator display settings are restored in a `finally` block.
 
 These scenarios were added here; see the exact-head Actions outcome before treating native execution as passed. Pure helper checks do not by themselves prove Android runtime wiring.
 

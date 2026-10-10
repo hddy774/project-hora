@@ -16,9 +16,10 @@ jobs:
       matrix: ${{ steps.games.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-      - name: Validate independent game identities and release routes
+      - name: Validate game catalog and mobile smoke coordinates
         run: |
           python3 scripts/test_games.py
+          python3 scripts/test_native_capture.py
           python3 scripts/games.py validate
       - id: games
         run: echo "matrix=$(python3 scripts/games.py matrix)" >> "$GITHUB_OUTPUT"
@@ -76,7 +77,7 @@ jobs:
         run: |
           pip install brotli pillow
           sudo chmod 666 /dev/kvm
-      - name: Native old-record,200-portrait and100x verification
+      - name: Verify native lifecycle, modals, legacy records, portraits, and 100x
         if: matrix.game == 'alpha-exchange'
         uses: reactivecircus/android-emulator-runner@v2
         with:

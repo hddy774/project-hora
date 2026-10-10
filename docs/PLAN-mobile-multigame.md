@@ -19,3 +19,7 @@
 ## Delivery
 
 Draft PR only. PC removal is a separate change. A production APK and on-device usability checks are not claimed by this implementation plan.
+
+## Implementation checkpoint
+
+The planned mobile and catalog changes are implemented. See [measured checks and limits](VALIDATION-mobile-multigame.md) and the draft PR's exact-head Actions status. The release workflow is manual-only and no app version bump or APK publication is part of this change. Existing release cleanup and durable signing-key preparation are separate user requests.

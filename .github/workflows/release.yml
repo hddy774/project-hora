@@ -1,15 +1,15 @@
-name: Build and publish Android release
+name: Manually publish one Android game
 on:
-  push:
-    branches: [main]
-    tags: ['v*.*.0']
-    paths: ['src/AlphaExchange.Android/AlphaExchange.Android.csproj', '.github/workflows/release.yml']
   workflow_dispatch:
     inputs:
-      tag:
-        description: Existing merged release tag
+      game:
+        description: Registered game slug
         required: true
-        default: v1.7.0
+        default: alpha-exchange
+        type: string
+      tag:
+        description: Existing registry-era game/vX.Y.0 tag (ALPHA EXCHANGE also accepts vX.Y.0)
+        required: true
         type: string
       generate_signing_key:
         description: Generate a new one-time signing key (requires reinstall)
@@ -25,7 +25,7 @@ permissions:
   contents: write
   actions: read
 concurrency:
-  group: release-${{ inputs.tag || github.ref_name }}
+  group: release-${{ inputs.game }}-${{ inputs.tag }}
   cancel-in-progress: false
 jobs:
   prepare:
@@ -34,46 +34,48 @@ jobs:
     outputs:
       tag: ${{ steps.source.outputs.tag }}
       sha: ${{ steps.source.outputs.sha }}
-      publish: ${{ steps.source.outputs.publish }}
+      game: ${{ steps.source.outputs.game }}
+      version: ${{ steps.source.outputs.version }}
+      version_code: ${{ steps.source.outputs.version_code }}
+      app_id: ${{ steps.source.outputs.app_id }}
+      apk_name: ${{ steps.source.outputs.apk_name }}
+      notes: ${{ steps.source.outputs.notes }}
+      artifact_prefix: ${{ steps.source.outputs.artifact_prefix }}
+      signing_script: ${{ steps.source.outputs.signing_script }}
+      signing_secret_prefix: ${{ steps.source.outputs.signing_secret_prefix }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag || github.ref }}
+          ref: ${{ inputs.tag }}
           fetch-depth: 0
           persist-credentials: false
-      - name: Resolve merged version and create immutable release tag
+      - name: Resolve explicitly selected game and immutable merged tag
         id: source
         env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          REQUESTED_TAG: ${{ inputs.tag || '' }}
+          GAME: ${{ inputs.game }}
+          REQUESTED_TAG: ${{ inputs.tag }}
         run: |
-          version=$(python3 -c "import xml.etree.ElementTree as E; print(E.parse('src/AlphaExchange.Android/AlphaExchange.Android.csproj').findtext('.//ApplicationDisplayVersion'))")
-          tag="${REQUESTED_TAG:-v$version}"
-          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.0$ ]]
-          test "$tag" = "v$version"
+          python3 scripts/games.py resolve-release "$GAME" --tag "$REQUESTED_TAG" --github-output >> "$GITHUB_OUTPUT"
+          # Feature releases use the minor version; never create or move tags here.
+          [[ "$REQUESTED_TAG" =~ (^|/)v[0-9]+\.[0-9]+\.0$ ]]
           git merge-base --is-ancestor HEAD origin/main
           source=$(git rev-parse HEAD)
-          if [[ "$GITHUB_EVENT_NAME" == push && "$GITHUB_REF" == refs/heads/main ]]; then
-            if gh api "repos/$GH_REPO/git/ref/tags/$tag" >/dev/null 2>&1; then
-              echo "publish=false" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-            gh api --method POST "repos/$GH_REPO/git/refs" -f "ref=refs/tags/$tag" -f "sha=$source" >/dev/null
-          else
-            test "$(git rev-parse "refs/tags/$tag^{commit}")" = "$source"
-          fi
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          test "$(git rev-parse "refs/tags/$REQUESTED_TAG^{commit}")" = "$source"
           echo "sha=$source" >> "$GITHUB_OUTPUT"
-          echo "publish=true" >> "$GITHUB_OUTPUT"
   release:
     needs: prepare
-    if: needs.prepare.outputs.publish == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
       RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
-      APK_NAME: AlphaExchange-${{ needs.prepare.outputs.tag }}.apk
+      GAME: ${{ needs.prepare.outputs.game }}
+      GAME_VERSION: ${{ needs.prepare.outputs.version }}
+      VERSION_CODE: ${{ needs.prepare.outputs.version_code }}
+      APP_ID: ${{ needs.prepare.outputs.app_id }}
+      APK_NAME: ${{ needs.prepare.outputs.apk_name }}
+      RELEASE_NOTES: ${{ needs.prepare.outputs.notes }}
+      ARTIFACT_PREFIX: ${{ needs.prepare.outputs.artifact_prefix }}
+      SIGNING_SCRIPT: ${{ needs.prepare.outputs.signing_script }}
       SIGNED_RUN_ID: ${{ inputs.signed_run_id || '' }}
     steps:
       - uses: actions/checkout@v4
@@ -81,16 +83,11 @@ jobs:
           ref: ${{ needs.prepare.outputs.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - name: Check release tag and merged source
+      - name: Recheck selected game and merged source
         run: |
-          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.0$ ]]
           if [[ -n "$SIGNED_RUN_ID" ]]; then [[ "$SIGNED_RUN_ID" =~ ^[0-9]+$ ]]; fi
           git merge-base --is-ancestor HEAD origin/main
-          python3 - <<'PY'
-          import os, xml.etree.ElementTree as ET
-          version = ET.parse('src/AlphaExchange.Android/AlphaExchange.Android.csproj').findtext('.//ApplicationDisplayVersion')
-          assert os.environ['RELEASE_TAG'] == 'v' + version, 'Tag and application version differ'
-          PY
+          python3 scripts/games.py resolve-release "$GAME" --tag "$RELEASE_TAG"
       - uses: actions/setup-dotnet@v4
         if: ${{ !inputs.signed_run_id }}
         with:
@@ -110,39 +107,36 @@ jobs:
         run: |
           mkdir -p dist
           set -o pipefail
-          dotnet run --project tests/AlphaExchange.Checks -c Release | tee dist/CORE-CHECKS.txt
-          python3 scripts/check-artwork.py | tee dist/ARTWORK-CHECKS.txt
+          python3 scripts/games.py check "$GAME" | tee dist/GAME-CHECKS.txt
       - name: Build APK from merged release tag
         if: ${{ !inputs.signed_run_id }}
         run: |
-          dotnet publish src/AlphaExchange.Android -c Release -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME" -o dist/build
-          cp dist/build/com.alphaexchange.offline.apk dist/AlphaExchange-unsigned.apk
-          cp VERIFICATION.txt dist/VERIFICATION.txt
+          python3 scripts/games.py build "$GAME"
+          cp "dist/$GAME/$APP_ID.apk" dist/unsigned.apk
       - name: Keep unsigned build available for inspection
         if: ${{ !inputs.signed_run_id }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.RELEASE_TAG }}-build
+          name: ${{ env.ARTIFACT_PREFIX }}-build
           path: |
-            dist/AlphaExchange-unsigned.apk
-            dist/CORE-CHECKS.txt
-            dist/ARTWORK-CHECKS.txt
+            dist/unsigned.apk
+            dist/GAME-CHECKS.txt
           retention-days: 30
       - name: Sign APK with selected Android identity
         if: ${{ !inputs.signed_run_id }}
         env:
-          GENERATE_SIGNING_KEY: ${{ inputs.generate_signing_key || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
-          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 || secrets.RELEASE_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64 }}
-          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD }}
+          GENERATE_SIGNING_KEY: ${{ inputs.generate_signing_key }}
+          KEYSTORE_BASE64: ${{ secrets[format('{0}_KEYSTORE_BASE64', needs.prepare.outputs.signing_secret_prefix)] || (needs.prepare.outputs.game == 'alpha-exchange' && (secrets.RELEASE_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64)) || '' }}
+          STORE_PASSWORD: ${{ secrets[format('{0}_KEYSTORE_PASSWORD', needs.prepare.outputs.signing_secret_prefix)] || (needs.prepare.outputs.game == 'alpha-exchange' && (secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD)) || '' }}
+          KEY_ALIAS: ${{ secrets[format('{0}_KEY_ALIAS', needs.prepare.outputs.signing_secret_prefix)] || (needs.prepare.outputs.game == 'alpha-exchange' && (secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS)) || '' }}
+          KEY_PASSWORD: ${{ secrets[format('{0}_KEY_PASSWORD', needs.prepare.outputs.signing_secret_prefix)] || (needs.prepare.outputs.game == 'alpha-exchange' && (secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD)) || '' }}
         run: |
-          bash scripts/sign-release.sh dist/AlphaExchange-unsigned.apk "dist/$APK_NAME" dist/SIGNING-INFO.txt
+          bash "$SIGNING_SCRIPT" dist/unsigned.apk "dist/$APK_NAME" dist/SIGNING-INFO.txt
       - name: Recover previously verified signed APK
         if: ${{ inputs.signed_run_id }}
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.RELEASE_TAG }}-signed-release
+          name: ${{ env.ARTIFACT_PREFIX }}-signed-release
           path: dist
           run-id: ${{ inputs.signed_run_id }}
           github-token: ${{ github.token }}
@@ -163,35 +157,34 @@ jobs:
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "dist/$APK_NAME" > "$RUNNER_TEMP/hora-apk-verification.txt"
           grep -F "Signer #1 certificate SHA-256 digest: $expected_certificate" "$RUNNER_TEMP/hora-apk-verification.txt"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "dist/$APK_NAME" > dist/APK-BADGING.txt
-          grep -F "package: name='com.alphaexchange.offline'" dist/APK-BADGING.txt
-          grep -F "versionName='${RELEASE_TAG#v}'" dist/APK-BADGING.txt
-          expected_code=$(python3 -c "import xml.etree.ElementTree as E; print(E.parse('src/AlphaExchange.Android/AlphaExchange.Android.csproj').findtext('.//ApplicationVersion'))")
-          grep -F "versionCode='$expected_code'" dist/APK-BADGING.txt
+          grep -F "package: name='$APP_ID'" dist/APK-BADGING.txt
+          grep -F "versionName='$GAME_VERSION'" dist/APK-BADGING.txt
+          grep -F "versionCode='$VERSION_CODE'" dist/APK-BADGING.txt
           cd dist
           sha256sum "$APK_NAME" > SHA256SUMS.txt
           sha256sum --check SHA256SUMS.txt
       - name: Keep verified signed APK for recovery
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.RELEASE_TAG }}-signed-release
+          name: ${{ env.ARTIFACT_PREFIX }}-signed-release
           path: |
             dist/${{ env.APK_NAME }}
             dist/*.txt
           retention-days: 30
-      - name: Publish and verify latest GitHub release
+      - name: Publish and verify selected game release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           notes="$RUNNER_TEMP/hora-release-notes.md"
-          cp "docs/RELEASE-${RELEASE_TAG}.md" "$notes"
+          cp "$RELEASE_NOTES" "$notes"
           apk_hash=$(cut -d ' ' -f 1 dist/SHA256SUMS.txt)
           certificate=$(sed -n 's/^Certificate SHA-256: //p' dist/SIGNING-INFO.txt)
           printf '\nAPK: %s\n\nSHA-256: `%s`\n\n서명 인증서 SHA-256: `%s`\n\n빌드 소스: `%s` · Actions: %s\n' "$APK_NAME" "$apk_hash" "$certificate" "$(git rev-parse HEAD)" "$GITHUB_RUN_ID" >> "$notes"
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true
           else
-            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG · 분 단위 경제와 200명의 인물" --notes-file "$notes"
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$GAME · v$GAME_VERSION" --notes-file "$notes"
           fi
           while IFS= read -r asset; do
             if [[ "$asset" != "$APK_NAME" ]]; then gh release delete-asset "$RELEASE_TAG" "$asset" --yes; fi
@@ -202,4 +195,4 @@ jobs:
           mkdir -p "$RUNNER_TEMP/hora-download"
           gh release download "$RELEASE_TAG" --pattern "$APK_NAME" --dir "$RUNNER_TEMP/hora-download"
           (cd "$RUNNER_TEMP/hora-download" && sha256sum --check "$GITHUB_WORKSPACE/dist/SHA256SUMS.txt")
-          gh release edit "$RELEASE_TAG" --notes-file "$notes" --draft=false --latest
+          gh release edit "$RELEASE_TAG" --notes-file "$notes" --draft=false --latest=false

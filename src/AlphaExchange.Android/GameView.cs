@@ -16,7 +16,11 @@ public sealed partial class GameView : View
     readonly Bitmap? arena;
     readonly List<(float Left,float Top,float Right,float Bottom,Action Action)> targets = [];
     readonly PerformanceRules defaultPerformance=SimulationRules.Default().Performance;
+    static readonly AsyncCheckpointBarrier sessionStorage = new();
     readonly GameStore store;
+    readonly Action tickCallback;
+    readonly ForegroundTickScheduler lifecycle;
+    readonly ModalScrollState modalScroll = new();
     readonly object simulationGate=new();
     bool simulating,saveRequested;
     long lastSave;
@@ -32,7 +36,8 @@ public sealed partial class GameView : View
     long historyPage, selectedSeason;
     Canvas c = null!;
     GameEngine? game;
-    bool lobby = true, auto, showResult, help, confirmNew;
+    bool lobby = true, showResult, help, confirmNew;
+    volatile bool auto;
     int page, selectedStock = -1, selectedTrader = -1, speed = 1;
     RankingMetric rankingMetric;
     ComparisonPeriod comparisonPeriod;
@@ -40,9 +45,10 @@ public sealed partial class GameView : View
     long companySeason;
     bool operationsTab;
     float scale = 1, h = 800, scroll, maxScroll, downY, lastY, downX;
-    bool dragging;
+    bool dragging, gestureActive, modalGesture;
+    string gestureModal = "";
     string toast = "";
-    long toastUntil, lastTick,lastFrame;
+    long toastUntil,lastFrame;
     float clipTop = 0, clipBottom = 100000;
     static readonly AColor Bg = Hex("#0B111B"), Card = Hex("#141E2B"), Card2 = Hex("#1C2939"), Stroke = Hex("#273446"), Ink = Hex("#F4F7F4"), Muted = Hex("#8493A7"), Lime = Hex("#DCFF7D"), Teal = Hex("#65DDC1"), Red = Hex("#FF8996");
     static readonly string[] Palette = ["#DCFF7D", "#C2AFFA", "#65DDC1", "#FFA97D", "#91BCFF", "#FF95BA", "#ADE7AD", "#E5CD84", "#A0D9FF", "#D6B0FF"];
@@ -53,22 +59,27 @@ public sealed partial class GameView : View
 
     public GameView(Context context) : base(context)
     {
+        tickCallback = Tick;
+        lifecycle = new ForegroundTickScheduler(
+            () => PostDelayed(tickCallback, game?.Rules.Performance.TickMilliseconds ?? defaultPerformance.TickMilliseconds),
+            () => RemoveCallbacks(tickCallback));
         SetLayerType(LayerType.Hardware, null);
         Focusable = true;
         ContentDescription = "알파 익스체인지, 오프라인 주식 전략 게임";
         store = new GameStore(context.FilesDir!.AbsolutePath);
         try { using var stream = context.Assets!.Open("arena.png"); arena = BitmapFactory.DecodeStream(stream); } catch { }
         LoadPortraitManifest();
-        lastTick = Now;
         fileBusy=true;
-        _=Task.Run(()=>
+        // Serialize initial load/migration too: a recreated Activity must not
+        // overlap an older Activity that was paused while it was still loading.
+        _=sessionStorage.Enqueue(()=>
         {
             GameEngine? loaded=null; string message=""; bool failed=false;
             try { loaded=store.Load(out message); }
             catch(Exception e) when(GameStore.StorageException(e)) { failed=true; message="기록 불러오기 실패 · 앱을 다시 열어주세요. 기존 파일은 보존했습니다."; }
-            Post(()=> { lock(simulationGate) { game=loaded; loading=false; loadFailed=failed; fileBusy=false; lastTick=Now; if(message.Length>0) Notify(message); Invalidate(); } });
+            Post(()=> { lock(simulationGate) { game=loaded; loading=false; loadFailed=failed; fileBusy=false; lifecycle.ResetClock(Now); if(message.Length>0) Notify(message); Invalidate(); } });
+            return Task.CompletedTask;
         });
-        PostDelayed(Tick, defaultPerformance.TickMilliseconds);
     }
 
     static long Now => System.Environment.TickCount64;
@@ -80,14 +91,14 @@ public sealed partial class GameView : View
 
     void Tick()
     {
-        lock(simulationGate) TickLocked();
+        if (!lifecycle.TryBeginTick(Now, out double elapsed)) return;
+        try { lock(simulationGate) TickLocked(elapsed); }
+        finally { lifecycle.ScheduleNext(); }
     }
-    void TickLocked()
+    void TickLocked(double elapsed)
     {
         long now = Now;
-        double elapsed = (now - lastTick) / 1000.0;
-        lastTick = now;
-        if (auto && !lobby && game is not null && !fileBusy)
+        if (lifecycle.IsRunning && auto && !lobby && game is not null && !fileBusy)
         {
             try { game.QueueTime(Math.Clamp(elapsed,0,3600), speed); StartSimulationWorker(); }
             catch (Exception e) when (GameStore.StorageException(e)) { auto = false; Notify("시장 진행을 멈췄습니다. 최근 정상 저장을 보존합니다."); }
@@ -97,7 +108,6 @@ public sealed partial class GameView : View
             if(now-lastFrame>=game.Rules.Performance.FrameMilliseconds) Invalidate();
         }
         if (toastUntil > 0 && now > toastUntil) { toastUntil = 0; Invalidate(); }
-        PostDelayed(Tick,game?.Rules.Performance.TickMilliseconds ?? defaultPerformance.TickMilliseconds);
     }
     void StartSimulationWorker()
     {
@@ -111,7 +121,7 @@ public sealed partial class GameView : View
                 {
                     lock(simulationGate)
                     {
-                        if(game is null || fileBusy) { simulating=false; return; }
+                        if(!lifecycle.IsRunning || game is null || fileBusy) { simulating=false; return; }
                         if(saveRequested) { saveRequested=false; Save(false); }
                         if(!auto || lobby || !game.AdvanceQueuedMinute()) { simulating=false; return; }
                     }
@@ -127,32 +137,72 @@ public sealed partial class GameView : View
         });
     }
 
+    protected override void OnAttachedToWindow()
+    {
+        base.OnAttachedToWindow();
+        lifecycle.SetAttached(true, Now);
+    }
+
     protected override void OnDetachedFromWindow()
     {
-        RemoveCallbacks(Tick);
-        auto = false;
+        bool wasRunning = lifecycle.IsRunning;
+        lifecycle.SetAttached(false, Now);
+        StopForLifecycle(wasRunning);
         base.OnDetachedFromWindow();
     }
 
-    public void Pause()
+    public void Resume()
     {
-        lock(simulationGate) PauseLocked();
-    }
-    void PauseLocked()
-    {
-        auto = false;
-        if (!fileBusy)
-        {
-            Save();
-            try { saveTask.GetAwaiter().GetResult(); } catch { Notify("최근 확정 기록을 보존했습니다. 저장을 다시 시도하세요."); }
-        }
+        ResetGesture();
+        lifecycle.SetResumed(true, Now);
         Invalidate();
     }
-    void Save(bool force=true)
+
+    public void Suspend()
     {
-        if (game is null || fileBusy) return;
+        // Android lifecycle callbacks must not wait for a minute, checkpoint copy,
+        // serialization, or disk I/O. An in-flight minute may finish; the worker
+        // checks this gate before starting another. Foreground queued time remains.
+        bool wasRunning = lifecycle.IsRunning;
+        lifecycle.SetResumed(false, Now);
+        StopForLifecycle(wasRunning);
+    }
+
+    void StopForLifecycle(bool wasRunning)
+    {
+        auto = false;
+        ResetGesture();
+        targets.Clear();
+        if (!wasRunning) return;
+        _ = sessionStorage.Enqueue(async () =>
+        {
+            Task write;
+            lock (simulationGate)
+            {
+                saveRequested = false;
+                Save();
+                write = saveTask;
+            }
+            // The next Activity must wait for disk completion, not just snapshot
+            // preparation, before it loads and starts its own writer.
+            await write.ConfigureAwait(false);
+        });
+    }
+
+    bool PauseForNewMarket()
+    {
+        // Switching runs still needs a save barrier; lifecycle suspension does not.
+        auto = false;
+        if (fileBusy || !Save()) return false;
+        try { saveTask.GetAwaiter().GetResult(); }
+        catch { return false; }
+        lock (saveGate) return pendingSave is null;
+    }
+    bool Save(bool force=true)
+    {
+        if (game is null || fileBusy) return false;
         lastSave=Now;
-        if(!force && preparedRun==S.RunId && preparedHour==S.CompletedMinutes && preparedTransaction==S.NextTransactionId && preparedEvent==S.NextCorporateEventId) return;
+        if(!force && preparedRun==S.RunId && preparedHour==S.CompletedMinutes && preparedTransaction==S.NextTransactionId && preparedEvent==S.NextCorporateEventId) return true;
         try
         {
             var snapshot = store.PrepareSave(game);
@@ -160,13 +210,14 @@ public sealed partial class GameView : View
             lock (saveGate)
             {
                 pendingSave = snapshot;
-                if (saving) return;
+                if (saving) return true;
                 saving = true;
                 writeWatchdog.Begin(Now);
             }
             saveTask = Task.Run(SaveWorker);
+            return true;
         }
-        catch { Notify("저장 데이터를 준비하지 못했습니다."); }
+        catch { Post(() => Notify("저장 데이터를 준비하지 못했습니다.")); return false; }
     }
     void SaveWorker()
     {
@@ -198,12 +249,11 @@ public sealed partial class GameView : View
         if(fileBusy || loading || loadFailed) return;
         if (game is not null)
         {
-            Pause();
-            if (pendingSave is not null) { Notify("기존 기록을 저장한 뒤 새 시장을 시작하세요."); return; }
+            if (!PauseForNewMarket()) { Notify("기존 기록을 저장한 뒤 새 시장을 시작하세요."); return; }
         }
         game = new GameEngine((uint)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
         store.Attach(game);
-        lobby = false; auto = true; lastTick = Now; page = 0; scroll = 0; rankingMetric = RankingMetric.Return; comparisonPeriod = ComparisonPeriod.Season;
+        lobby = false; auto = lifecycle.IsRunning; lifecycle.ResetClock(Now); page = 0; scroll = 0; rankingMetric = RankingMetric.Return; comparisonPeriod = ComparisonPeriod.Season;
         companyStock = companyTab = 0; companySeason = 0; operationsTab = false;
         ownershipStock=ownershipPage=0;
         selectedStock = selectedTrader = -1; showResult = confirmNew = false;
@@ -220,8 +270,8 @@ public sealed partial class GameView : View
     void ToggleSimulation()
     {
         if (game is null) return;
-        lastTick = Now;
-        auto = !auto;
+        lifecycle.ResetClock(Now);
+        auto = lifecycle.IsRunning && !auto;
         Save(); Invalidate();
     }
 
@@ -232,8 +282,8 @@ public sealed partial class GameView : View
     bool GoBackLocked()
     {
         if(fileBusy) return true;
-        if (help) help = false;
-        else if (confirmNew) confirmNew = false;
+        if (confirmNew) confirmNew = false;
+        else if (help) help = false;
         else if (portraitZoom >= 0) portraitZoom = -1;
         else if (selectedStock >= 0) selectedStock = -1;
         else if (selectedTrader >= 0) selectedTrader = -1;
@@ -244,6 +294,7 @@ public sealed partial class GameView : View
         else if (!lobby && page == 9) SetPage(3);
         else if (!lobby) { lobby = true; auto = false; Save(); }
         else return false;
+        ResetGesture(); targets.Clear(); modalScroll.Reset();
         Invalidate(); return true;
     }
 
@@ -290,13 +341,16 @@ public sealed partial class GameView : View
             c.Restore(); clipTop = 0; clipBottom = h;
             DrawFooter();
             if (scroll > maxScroll + 1) { scroll = maxScroll; PostInvalidate(); }
-            if (selectedStock >= 0) DrawStockSheet();
-            if (selectedTrader >= 0) DrawTraderSheet();
-            if (showResult) DrawResults();
-            if (portraitZoom>=0) DrawPortraitZoom();
         }
-        if (help) DrawHelp();
+        // Draw only the top overlay: its scroll state and hit targets must not
+        // be replaced by a covered modal, or leak through to the page below.
         if (confirmNew) DrawConfirmation();
+        else if (help) DrawHelp();
+        else if (!lobby && game is not null && portraitZoom >= 0) DrawPortraitZoom();
+        else if (!lobby && game is not null && showResult) DrawResults();
+        else if (!lobby && game is not null && selectedTrader >= 0) DrawTraderSheet();
+        else if (!lobby && game is not null && selectedStock >= 0) DrawStockSheet();
+        else modalScroll.Reset();
         if (toastUntil > Now)
         {
             Box(20, h - 194, 360, 46, Ink, 14);
@@ -360,8 +414,8 @@ public sealed partial class GameView : View
 
     void Hit(float x, float y, float w, float height, Action action)
     {
-        float top = Math.Max(y, clipTop), bottom = Math.Min(y + height, clipBottom);
-        if (bottom > top) targets.Add((x,top,x+w,bottom,()=> { lock(simulationGate) action(); }));
+        var clipped = ModalViewport.ClipTarget(y, y + height, clipTop, clipBottom);
+        if (clipped is { } bounds) targets.Add((x,bounds.Top,x+w,bounds.Bottom,()=> { lock(simulationGate) action(); }));
     }
 
     void Button(string label, float x, float y, float w, float height, Action action, bool primary = true, bool enabled = true)
@@ -419,34 +473,61 @@ public sealed partial class GameView : View
         else { Box(x, y + 1, 22, 21, Bg, 4, color); Line(x + 5, y + 7, x + 17, y + 7, color, 1.5f); Line(x + 5, y + 12, x + 17, y + 12, color, 1.5f); Line(x + 5, y + 17, x + 12, y + 17, color, 1.5f); }
     }
 
+    bool HasModal => help || confirmNew || portraitZoom >= 0 || selectedStock >= 0 || selectedTrader >= 0 || showResult;
+
+    void ResetGesture()
+    {
+        dragging = gestureActive = modalGesture = false;
+        gestureModal = "";
+        downX = downY = lastY = 0;
+    }
+
     public override bool OnTouchEvent(MotionEvent? e)
     {
+        if (!lifecycle.IsRunning) return false;
         lock(simulationGate) return TouchLocked(e);
     }
     bool TouchLocked(MotionEvent? e)
     {
         if (e is null) return false;
         float x = e.GetX() / scale, y = e.GetY() / scale;
-        switch (e.Action)
+        switch (e.ActionMasked)
         {
-            case MotionEventActions.Down: downX = x; downY = lastY = y; dragging = false; return true;
+            case MotionEventActions.Down:
+                downX = x; downY = lastY = y; dragging = false; gestureActive = true;
+                modalGesture = HasModal;
+                gestureModal = modalScroll.Key;
+                return true;
             case MotionEventActions.Move:
-                if (!lobby && selectedStock < 0 && selectedTrader < 0 && !showResult && !help && !confirmNew && downY > 102 && downY < h - 145)
+                if (!gestureActive) return true;
+                if (Math.Abs(y - downY) > 7 || Math.Abs(x - downX) > 7) dragging = true;
+                if (dragging)
                 {
-                    if (Math.Abs(y - downY) > 7) dragging = true;
-                    if (dragging) { scroll = Math.Clamp(scroll + lastY - y, 0, maxScroll); Invalidate(); }
+                    if (modalGesture && HasModal && gestureModal.Length > 0 && gestureModal == modalScroll.Key && modalScroll.Viewport.ContainsBody(downX, downY))
+                    { modalScroll.Drag(lastY - y); Invalidate(); }
+                    else if (!modalGesture && !HasModal && !lobby && downY > 102 && downY < h - 145)
+                    { scroll = Math.Clamp(scroll + lastY - y, 0, maxScroll); Invalidate(); }
                 }
                 lastY = y; return true;
             case MotionEventActions.Up:
-                if (!dragging && Math.Abs(x - downX) < 18 && Math.Abs(y - downY) < 18)
+                bool click = gestureActive && !dragging && modalGesture == HasModal && Math.Abs(x - downX) < 18 && Math.Abs(y - downY) < 18;
+                ResetGesture();
+                if (click)
                 {
                     for (int i = targets.Count - 1; i >= 0; i--)
                         if (x>=targets[i].Left && x<targets[i].Right && y>=targets[i].Top && y<targets[i].Bottom)
-                        { var action = targets[i].Action; PerformHapticFeedback(FeedbackConstants.VirtualKey); action(); Invalidate(); break; }
+                        {
+                            var action = targets[i].Action;
+                            // Do not let a second tap reuse a dismissed modal's targets
+                            // before Android draws the next frame.
+                            targets.Clear();
+                            PerformHapticFeedback(FeedbackConstants.VirtualKey); action(); Invalidate(); break;
+                        }
                     PerformClick();
                 }
                 return true;
-            case MotionEventActions.Cancel: dragging = false; return true;
+            case MotionEventActions.PointerDown:
+            case MotionEventActions.Cancel: ResetGesture(); return true;
         }
         return true;
     }

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "alpha-exchange",
+  "name": "ALPHA EXCHANGE · 알파 익스체인지",
+  "applicationId": "com.alphaexchange.offline",
+  "androidProject": "src/AlphaExchange.Android/AlphaExchange.Android.csproj",
+  "checksProject": "tests/AlphaExchange.Checks/AlphaExchange.Checks.csproj",
+  "artworkCheck": "scripts/check-artwork.py",
+  "apkPrefix": "AlphaExchange",
+  "releaseNotes": "docs/RELEASE-v{version}.md",
+  "legacyTagPrefix": "v",
+  "signing": {
+    "script": "scripts/sign-release.sh",
+    "secretPrefix": "ANDROID"
+  }
+}

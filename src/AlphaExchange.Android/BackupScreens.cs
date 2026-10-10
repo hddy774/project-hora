@@ -12,7 +12,9 @@ public sealed partial class GameView
     {
         if (fileBusy || Context is not Activity activity) return;
         if (export && game is null) { Notify("먼저 시장을 시작하세요."); return; }
-        auto = false; Save(); fileBusy = true; Invalidate();
+        auto = false;
+        if (game is not null && !Save()) return;
+        fileBusy = true; Invalidate();
         await saveTask;
         if (pendingSave is not null) { fileBusy = false; Notify("저장 실패를 해결한 뒤 파일을 처리하세요."); return; }
         fileBusy = true; Invalidate();

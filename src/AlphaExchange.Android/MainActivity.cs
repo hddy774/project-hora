@@ -21,6 +21,7 @@ public sealed class MainActivity : Activity
     }
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
     { base.OnActivityResult(requestCode,resultCode,data); game?.HandleBackupResult(requestCode,resultCode,data); }
-    protected override void OnPause() { game?.Pause(); base.OnPause(); }
+    protected override void OnResume() { base.OnResume(); game?.Resume(); }
+    protected override void OnPause() { game?.Suspend(); base.OnPause(); }
     public override void OnBackPressed() { if (game?.GoBack() != true) base.OnBackPressed(); }
 }

@@ -8,3 +8,5 @@ artifacts/
 
 *.apk
 *.jks
+
+__pycache__/

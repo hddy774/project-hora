@@ -156,6 +156,46 @@ lifecycle_evidence={"backgroundWaitSeconds":background_wait,"beforeHome":clock_s
     "settled":clock_state(background),"afterBackground":clock_state(background_later),"afterReturn":clock_state(returned)}
 (output/"lifecycle.json").write_text(json.dumps(lifecycle_evidence,indent=2))
 
+def paused_market_viewport(expected_height,name,expected_run,timeout=60):
+    # wm size can recreate this Activity rather than just resize its existing
+    # View. Wait for the new bounds AND async load, then use the existing-run
+    # Continue action if recreation restored the normal lobby screen.
+    deadline=time.monotonic()+timeout
+    while True:
+        tree=require_screen("알파 익스체인지",max(1,deadline-time.monotonic()))
+        measure_viewport(tree)
+        actual=screen_description(tree)
+        if abs(h-expected_height)<=2 and any(screen in actual for screen in ("시장 화면","시뮬레이션 시작 화면","시뮬레이션 안내")): break
+        if time.monotonic()>deadline:
+            raise RuntimeError(f"Expected loaded canvas {expected_height}, got {h}: {actual}")
+        time.sleep(1)
+    recreated="시뮬레이션 시작 화면" in actual
+    if recreated:
+        saved,_=pull_state(name+"-before-continue")
+        if saved["RunId"]!=expected_run:
+            raise RuntimeError("Viewport recreation changed the saved run before Continue")
+        tap(200,h-140)
+        tree=require_screen("시장 화면")
+        actual=screen_description(tree)
+    elif "시뮬레이션 안내" in actual:
+        # The finally path must also restore a usable market after a modal test
+        # failed before dismissal. Do not change runtime configuration to do so.
+        adb("shell","input","keyevent","4")
+        tree=require_screen("시장 화면")
+        actual=screen_description(tree)
+    if "시장 화면" not in actual:
+        raise RuntimeError(f"Unexpected screen after viewport change: {actual}")
+    if "진행 중" in actual:
+        tap(278,h-108)
+    tree=require_screen("시장 화면"); require_screen("일시정지")
+    measure_viewport(tree)
+    if abs(h-expected_height)>2:
+        raise RuntimeError(f"Canvas changed during test setup: expected {expected_height}, got {h}")
+    state=settled_checkpoint(name+"-paused")
+    if state["RunId"]!=expected_run:
+        raise RuntimeError("Viewport recreation or Continue changed the existing run")
+    return recreated
+
 # Exercise real Canvas/touch handling at short and tall logical viewports. Resize
 # only this disposable emulator and always restore its previous display setting.
 size_text=adb("shell","wm","size")
@@ -168,12 +208,7 @@ try:
     for requested_height in (480,600,800):
         pixel_height=round(requested_height*scale+insets)
         adb("shell","wm","size",f"{display_width}x{pixel_height}")
-        deadline=time.monotonic()+30
-        while True:
-            measure_viewport(require_screen("시장 화면"))
-            if abs(h-requested_height)<=2: break
-            if time.monotonic()>deadline: raise RuntimeError(f"Requested canvas {requested_height}, got {h}")
-            time.sleep(1)
+        recreated=paused_market_viewport(requested_height,f"modal-{requested_height}",returned["RunId"])
         page_before=screenshot(f"modal-{requested_height}-page-before")
         tap(360,32); require_screen("시뮬레이션 안내")
         modal_top=max(12,h-654)
@@ -198,16 +233,12 @@ try:
             raise RuntimeError("Reopened help retained a dismissed modal's scroll offset")
         tap(360,modal_top+34); require_screen("시장 화면")
         modal_evidence.append({"requestedCanvasHeight":requested_height,"actualCanvasHeight":h,
-            "bodyScrolled":True,"closePinned":True,"ctaPinned":True,"ctaDismissed":True,"closeDismissed":True,
+            "continuedAfterRecreation":recreated,"preservedRunId":returned["RunId"],"bodyScrolled":True,"closePinned":True,"ctaPinned":True,"ctaDismissed":True,"closeDismissed":True,
             "underlyingPageUnchanged":True,"reopenedAtTop":True})
 finally:
     adb("shell","wm","size",original_override.group(1) if original_override else "reset")
-    deadline=time.monotonic()+30
-    while True:
-        measure_viewport(require_screen("알파 익스체인지"))
-        if abs(h-original_canvas)<=2: break
-        if time.monotonic()>deadline: raise RuntimeError("Emulator display did not return to its original viewport")
-        time.sleep(1)
+    paused_market_viewport(original_canvas,"restored-viewport",returned["RunId"])
+paused_at=time.monotonic()
 (output/"modal-viewports.json").write_text(json.dumps(modal_evidence,indent=2))
 
 # All new role lists, actual additional portraits and uncropped profile zoom.

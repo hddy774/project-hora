@@ -33,6 +33,7 @@ void Validate(GameEngine game)
     Check(s.Tape.Count <= 160 && s.News.Count <= 40 && s.Stocks.All(x => x.History.Count <= 120) && s.Bots.All(t => t.EquityHistory.Count <= 120 && t.SeasonRanks.Count <= 12), "Bounded display buffers");
 }
 if(args.Length==3 && args[0]=="--crash-write") { CrashProbe.AbruptWrite(args[1],args[2]); return; }
+if(args.Contains("--mobile-only")) { MobileChecks.Run(Check); Console.WriteLine($"PASS {assertions:N0} mobile assertions"); return; }
 if(args.Contains("--storage-load")) { StorageLoad.Run(); return; }
 if(args.Contains("--v15-only")) { V15Checks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} v1.5 assertions"); return; }
 if(args.Contains("--v17-only")) { V17Checks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} v1.7 assertions"); return; }
@@ -40,6 +41,7 @@ if(args.Contains("--v16-only")) { V16Checks.Run(Check,Validate); Console.WriteLi
 if(args.Contains("--economy-only")) { EconomyChecks.Run(Check,Validate,Near); Console.WriteLine($"PASS {assertions:N0} economy assertions"); return; }
 if(args.Contains("--ownership-only")) { OwnershipChecks.Run(Check,Validate); Console.WriteLine($"PASS {assertions:N0} ownership assertions"); return; }
 if(args.Contains("--market-only")) { MarketChecks.Run(Check,Validate,Near); Console.WriteLine($"PASS {assertions:N0} market assertions"); return; }
+MobileChecks.Run(Check);
 var match = new GameEngine(42);
 Check(match.State.Bots.All(t => t.Equity(match.State.Stocks) == GameEngine.InitialCash), "Institution capital");
 Check(match.State.Retail.All(t => t.Equity(match.State.Stocks) == GameEngine.RetailInitialCapital), "Retail capital 1/100");

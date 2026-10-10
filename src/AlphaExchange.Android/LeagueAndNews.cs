@@ -85,31 +85,70 @@ public sealed partial class GameView
 
     float Modal(float desiredHeight, Action close)
     {
-        targets.Clear(); clipTop = 0; clipBottom = h;
-        Box(0, 0, 400, h, new AColor(0, 0, 0, 190), 0);
-        Hit(0, 0, 400, h, close);
+        modalScroll.Reset();
         float top = Math.Max(12, h - desiredHeight);
+        DrawModalChrome(top, close);
+        return top;
+    }
+
+    ModalViewport ScrollModal(string key, float desiredHeight, float footerHeight, Action close)
+    {
+        var viewport = ModalViewport.Create(h, desiredHeight, footerHeight);
+        modalScroll.Show(key, viewport);
+        DrawModalChrome(viewport.Top, close);
+        return viewport;
+    }
+
+    void DrawModalChrome(float top, Action close)
+    {
+        targets.Clear(); clipTop = 0; clipBottom = h;
+        void Dismiss() { modalScroll.Reset(); close(); }
+        Box(0, 0, 400, h, new AColor(0, 0, 0, 190), 0);
+        Hit(0, 0, 400, h, Dismiss);
         Box(8, top, 384, h - top + 24, Bg, 26, Stroke);
         Hit(8, top, 384, h - top, () => { });
         Box(179, top + 9, 42, 4, Stroke, 2);
         Circle(360, top + 34, 15, Card2);
         Text("×", 360, top + 40, 22, Muted, false, Paint.Align.Center);
-        Hit(336, top + 15, 46, 42, close);
-        return top;
+        Hit(336, top + 15, 46, 42, Dismiss);
+    }
+
+    float BeginModalBody()
+    {
+        var viewport = modalScroll.Viewport;
+        clipTop = viewport.BodyTop; clipBottom = viewport.BodyBottom;
+        c.Save(); c.ClipRect(8, clipTop, 392, clipBottom);
+        return viewport.BodyTop - modalScroll.Offset;
+    }
+
+    void EndModalBody(float bottom)
+    {
+        bool clamped = modalScroll.SetContentHeight(bottom + modalScroll.Offset - modalScroll.Viewport.BodyTop);
+        c.Restore(); clipTop = 0; clipBottom = h;
+        if (modalScroll.Maximum > 0)
+        {
+            var viewport = modalScroll.Viewport;
+            float track = viewport.BodyHeight;
+            float thumb = Math.Max(24, track * track / (track + modalScroll.Maximum));
+            float top = viewport.BodyTop + (track - thumb) * modalScroll.Offset / modalScroll.Maximum;
+            Box(385, top, 3, thumb, Stroke, 2);
+        }
+        if (clamped) PostInvalidate();
     }
 
     void DrawStockSheet()
     {
         int index = selectedStock; var s = S.Stocks[index];
-        float y = Modal(Math.Min(664, h - 16), () => selectedStock = -1);
-        Text(s.Symbol + "  /  " + s.Sector, 27, y + 37, 11, PaletteColors[index % Palette.Length], true);
-        Text(s.Name, 27, y + 67, 22, Ink, true);
-        Text($"₩{Money(s.Price)}", 27, y + 106, 32, Ink, true);
-        Text(Percent(s.Change), 373, y + 104, 14, Direction(s.Change), true, Paint.Align.Right);
-        int levels = h - y < 620 ? 3 : 5;
-        Chart(s.History.Select(v => (double)v), 28, y + 124, 344, 64, PaletteColors[index % Palette.Length], true);
-        Text($"분할 조정 120시간 · 시총 {ShortMoney(s.MarketCap)}원", 28, y + 209, 10, Muted);
-        y += 232;
+        var viewport = ScrollModal($"stock:{index}", Math.Min(664, h - 16), 45, () => selectedStock = -1);
+        TextFit(s.Symbol + "  /  " + s.Sector, 27, viewport.Top + 37, 11, PaletteColors[index % Palette.Length], 298, true);
+        float y = BeginModalBody();
+        Text(s.Name, 27, y + 28, 22, Ink, true);
+        Text($"₩{Money(s.Price)}", 27, y + 67, 32, Ink, true);
+        Text(Percent(s.Change), 373, y + 65, 14, Direction(s.Change), true, Paint.Align.Right);
+        const int levels = 5;
+        Chart(s.History.Select(v => (double)v), 28, y + 85, 344, 64, PaletteColors[index % Palette.Length], true);
+        Text($"분할 조정 120시간 · 시총 {ShortMoney(s.MarketCap)}원", 28, y + 170, 10, Muted);
+        y += 193;
         Text("실시간 호가", 28, y, 16, Ink, true);
         Text("기=기관 · 개=개인 · 은=은행", 373, y, 9, Muted, false, Paint.Align.Right);
         y += 23;
@@ -149,31 +188,35 @@ public sealed partial class GameView
             Text($"{buyer} 매수 / {seller} 매도", 28, y, 11, Muted);
             Text($"{t.Quantity}주 · {Money(t.Price)}원", 373, y, 11, Ink, true, Paint.Align.Right); y += 23;
         }
-        Button("기업 재무제표 →",27,h-67,170,45,()=>{ companyStock=index; companyTab=0; companySeason=0; selectedStock=-1; SetPage(6); });
-        Button("지분 구조 →",207,h-67,166,45,()=>OpenOwnership(index),false);
+        EndModalBody(y + 12);
+        Button("기업 재무제표 →",27,viewport.FooterTop,170,45,()=>{ companyStock=index; companyTab=0; companySeason=0; selectedStock=-1; SetPage(6); });
+        Button("지분 구조 →",207,viewport.FooterTop,166,45,()=>OpenOwnership(index),false);
     }
 
     void DrawTraderSheet()
     {
         var bot = S.Bots[selectedTrader - 1];
-        float y = Modal(Math.Min(630, h - 16), () => selectedTrader = -1);
-        Portrait(bot.PortraitId, 28, y + 29, 120, 195); Hit(28,y+29,120,195,()=>portraitZoom=bot.PortraitId);
-        Text("INSTITUTION " + bot.Id.ToString("000"), 166, y + 62, 10, Lime, true);
-        Text(Representatives.Name(bot.PortraitId), 166, y + 98, 25, Ink, true);
-        Text(bot.Name, 166, y + 124, 14, Muted);
-        Text(GameEngine.DispositionNames[(int)bot.Disposition] + " · 신용 " + bot.CreditRating, 166, y + 155, 13, Teal, true);
-        Text($"시즌 {S.Season} · {FrameRankOf(bot.Id)}위", 166, y + 190, 15, Ink, true);
-        Hit(166,y+68,203,71,()=>OpenPerson(bot.Id));
-        Wrap(bot.Decision, 29, y + 250, 342, 12, Muted, 20);
-        Box(27, y + 286, 346, 105, Card, 18);
-        Text("총 평가 순자산", 44, y + 315, 12, Muted);
-        Text($"₩{Money(bot.Equity(S.Stocks))}", 44, y + 353, 28, Ink, true);
-        Text(Percent(bot.Return(S.Stocks)), 355, y + 381, 14, Direction(bot.Return(S.Stocks)), true, Paint.Align.Right);
-        Text($"위험 관리 {bot.Abilities.RiskManagement} · 분산 {bot.Abilities.Diversification} · 대출 {ShortMoney(bot.LoanDebt)}원", 29, y + 421, 11, Muted);
-        Text($"누적 거래량 {Money(bot.TradedVolume)}주 · 거래금액 {ShortMoney(bot.TradedTurnover)}원",29,y+447,10,Ink);
-        Text($"전체 수익률 {Percent(bot.ReturnIndex/Math.Max(1e-12,bot.OpeningSnapshot.ReturnIndex)-1)} · 직원 {bot.Development!.EmployeeCount}명",29,y+470,11,Teal);
-        Text($"시즌 보상 {bot.Development.LastRewardPoints}P · 성장 {bot.Development.PointsSpent}P · 현금 {game!.CashRatio(bot):P1}",29,y+493,10,Muted);
-        Button("대표·기관 능력 / 직원·성장 / 신용  →", 27, h - 80, 346, 52, () =>
+        var viewport = ScrollModal($"trader:{bot.Id}", Math.Min(630, h - 16), 52, () => selectedTrader = -1);
+        Text("INSTITUTION " + bot.Id.ToString("000"), 27, viewport.Top + 38, 11, Lime, true);
+        float y = BeginModalBody();
+        Portrait(bot.PortraitId, 28, y + 8, 120, 195); Hit(28,y+8,120,195,()=>portraitZoom=bot.PortraitId);
+        TextFit(Representatives.Name(bot.PortraitId), 166, y + 47, 25, Ink, 207, true);
+        TextFit(bot.Name, 166, y + 73, 14, Muted, 207);
+        Text(GameEngine.DispositionNames[(int)bot.Disposition] + " · 신용 " + bot.CreditRating, 166, y + 104, 13, Teal, true);
+        Text($"시즌 {S.Season} · {FrameRankOf(bot.Id)}위", 166, y + 139, 15, Ink, true);
+        Hit(166,y+16,207,71,()=>OpenPerson(bot.Id));
+        float afterDecision = Wrap(bot.Decision, 29, y + 232, 342, 12, Muted, 20);
+        y = Math.Max(y + 255, afterDecision + 12);
+        Box(27, y, 346, 105, Card, 18);
+        Text("총 평가 순자산", 44, y + 29, 12, Muted);
+        Text($"₩{Money(bot.Equity(S.Stocks))}", 44, y + 67, 28, Ink, true);
+        Text(Percent(bot.Return(S.Stocks)), 355, y + 95, 14, Direction(bot.Return(S.Stocks)), true, Paint.Align.Right);
+        Text($"위험 관리 {bot.Abilities.RiskManagement} · 분산 {bot.Abilities.Diversification} · 대출 {ShortMoney(bot.LoanDebt)}원", 29, y + 135, 11, Muted);
+        Text($"누적 거래량 {Money(bot.TradedVolume)}주 · 거래금액 {ShortMoney(bot.TradedTurnover)}원",29,y+161,10,Ink);
+        Text($"전체 수익률 {Percent(bot.ReturnIndex/Math.Max(1e-12,bot.OpeningSnapshot.ReturnIndex)-1)} · 직원 {bot.Development!.EmployeeCount}명",29,y+184,11,Teal);
+        Text($"시즌 보상 {bot.Development.LastRewardPoints}P · 성장 {bot.Development.PointsSpent}P · 현금 {game!.CashRatio(bot):P1}",29,y+207,10,Muted);
+        EndModalBody(y + 225);
+        Button("대표·기관 능력 / 직원·성장 / 신용  →", 27, viewport.FooterTop, 346, 52, () =>
         { S.FollowedId = bot.Id; portfolioTab = 3; historyPage = 0; selectedTrader = -1; SetPage(1); Save(); });
     }
 
@@ -181,9 +224,10 @@ public sealed partial class GameView
 
     void DrawHelp()
     {
-        float y = Modal(654, () => help = false);
-        Text("스스로 움직이는 주식 시장", 27, y + 60, 24, Ink, true);
-        Text("HOW IT WORKS", 28, y + 86, 11, Lime, true);
+        var viewport = ScrollModal("help", 654, 50, () => help = false);
+        Text("HOW IT WORKS", 28, viewport.Top + 38, 11, Lime, true);
+        float y = BeginModalBody();
+        Text("스스로 움직이는 주식 시장", 27, y + 29, 24, Ink, true);
         string[] titles = ["01  인물 200명, 개미 집단과 1조 시장", "02  호가 경쟁으로 결정되는 주가", "03  현실 120초 = 게임 1일", "04  끝없이 이어지는 30일 시즌"];
         string[] body = [
             "대표 능력은 10개 모두 50점으로 시작합니다. 시즌 1~100위 모두 1~10점의 성장·신용 보상을 받습니다. 직원 등급·역할·인원이 대표와 함께 기관의 판단 능력을 만듭니다.",
@@ -191,13 +235,14 @@ public sealed partial class GameView
             "1배속에서 실제 5초마다 게임 시간 1시간이 지납니다. 24시간, 즉 실제 120초가 게임의 하루입니다.",
             "초단기는 시간, 단기는 1~10일 미만, 장기는 10일 이상을 봅니다. 중요한 뉴스·위험 때 계획이 바뀝니다. 매월 결산·정책·보상과 통계가 파일에 보존됩니다."
         ];
-        float row = y + 123;
+        float row = y + 66;
         for (int i = 0; i < titles.Length; i++)
         { Text(titles[i], 28, row, 15, Ink, true); row = Wrap(body[i], 28, row + 27, 340, 12, Muted, 20) + 22; }
-        Box(27, y + 493, 346, 66, Card, 14);
-        Text("자유로운 관찰 · 자동 저장", 41, y + 516, 12, Teal, true);
-        Text("1×·2×·5×·20×·50×·100× · 앱을 벗어나면 일시정지", 41, y + 542, 10, Muted);
-        Button("준비됐어요", 27, y + 579, 346, 50, () => help = false);
+        Box(27, row, 346, 66, Card, 14);
+        Text("자유로운 관찰 · 자동 저장", 41, row + 23, 12, Teal, true);
+        Text("1×·2×·5×·20×·50×·100× · 앱을 벗어나면 일시정지", 41, row + 49, 10, Muted);
+        EndModalBody(row + 78);
+        Button("준비됐어요", 27, viewport.FooterTop, 346, 50, () => { help = false; modalScroll.Reset(); });
     }
 
     void DrawConfirmation()

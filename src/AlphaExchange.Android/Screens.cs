@@ -38,7 +38,7 @@ public sealed partial class GameView
         }
         else if (game is not null)
         {
-            Button($"시즌 {S.Season} · DAY {S.Day:00}  이어하기  →", 20, h - 166, 360, 52, () => { lobby = false; auto = true; lastTick = Now; });
+            Button($"시즌 {S.Season} · DAY {S.Day:00}  이어하기  →", 20, h - 166, 360, 52, () => { lobby = false; auto = lifecycle.IsRunning; lifecycle.ResetClock(Now); });
             Button("새 시뮬레이션 시작", 20, h - 103, 360, 45, RequestNew, false);
         }
         else
@@ -74,7 +74,7 @@ public sealed partial class GameView
         Line(20, h - 146, 380, h - 146, Stroke);
         Text("1시간 = 5초", 21, h - 116, 10, Muted);
         Text("1일 = 120초 · 1×", 21, h - 96, 10, Muted);
-        Button($"{speed}×", 116, h - 132, 60, 49, () => { lastTick = Now; speed = GameEngine.Speeds[(Array.IndexOf(GameEngine.Speeds, speed) + 1) % GameEngine.Speeds.Length]; }, false);
+        Button($"{speed}×", 116, h - 132, 60, 49, () => { lifecycle.ResetClock(Now); speed = GameEngine.Speeds[(Array.IndexOf(GameEngine.Speeds, speed) + 1) % GameEngine.Speeds.Length]; }, false);
         Button(auto ? "Ⅱ   일시정지" : "▷   관찰 재개", 176, h - 132, 204, 49, ToggleSimulation);
         string[] labels = ["시장", "자산", "랭킹", "인물", "통계", "시즌", "뉴스"];
         int[] pages=[0,1,2,10,3,4,5];

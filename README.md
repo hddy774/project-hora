@@ -1,16 +1,20 @@
 # ALPHA EXCHANGE · 알파 익스체인지
 
-v1.7.0은 **분 단위 체결·200명의 인물·기밀 투자 계획·사업과 정책 투표**를 추가합니다. 투자자100명/경영자30명/정치인50명/금융인20명과 서로 다른 프로필 일러스트200개를 제공합니다. 새 시장은 시가총액1조, 투자사별10억으로 시작합니다. 최신 릴리스 첨부 파일은 **AlphaExchange-v1.7.0.apk 하나**입니다.
+[Project Hora 게임 목록](games/README.md): 게임마다 독립된 앱/APK를 관리합니다. 현재 등록된 게임은 ALPHA EXCHANGE입니다.
+
+v1.7.0은 **분 단위 체결·200명의 인물·기밀 투자 계획·사업과 정책 투표**를 추가합니다. 투자자100명/경영자30명/정치인50명/금융인20명과 서로 다른 프로필 일러스트200개를 제공합니다. 새 시장은 시가총액1조, 투자사별10억으로 시작합니다. 기존 APK 파일 이름 규칙은 **AlphaExchange-vX.Y.0.apk**입니다.
 
 [개발 진행표](docs/DEVELOPMENT-v1.7.0.md) · [릴리스 안내](docs/RELEASE-v1.7.0.md) · [성능 전후 결과](docs/performance/v1.7.0/README.md) · [Android 실행 확인](docs/UI-VERIFICATION-v1.7.0.md)
 
 완전 오프라인 C# Android 주식 관찰 시뮬레이터입니다. **100개 투자사와 1,000→10,000개 개미 집단이 6개 분야의 30개 가상 회사**에 투자합니다. 개미 한 집단은1,000명을 대표합니다. 플레이어는 시장·인물·기업·정부·은행을 관찰합니다.
 
-**[최신 릴리스](https://github.com/hddy774/project-hora/releases/latest)** · **[APK 다운로드](https://github.com/hddy774/project-hora/releases/download/v1.7.0/AlphaExchange-v1.7.0.apk)**
+**[ALPHA EXCHANGE 릴리스 검색](https://github.com/hddy774/project-hora/releases?q=alpha-exchange)** · [배포·서명 안내](games/README.md#게임별-릴리스)
 
-[PR #9](https://github.com/hddy774/project-hora/pull/9)를 병합하고 GitHub Actions에서v1.7.0 최신 APK 배포와 공개 다운로드 검증을 완료했습니다. [개발 완료표](docs/DEVELOPMENT-v1.7.0.md)와 [APK 검증 원자료](docs/verification/v1.7.0/public-release.json)를 제공합니다. [금융 원문 조사와 개선 기록](docs/FINANCE-RESEARCH-v1.7.0.md), [조정 가능한 규칙](src/AlphaExchange.Core/Rules/README.md), [새 저장 설계](docs/STATISTICS-STORAGE-v1.7.0.md)를 기록합니다. 이전 [시장 문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [검증 기록](VERIFICATION.txt)도 보관합니다.
+배포가 있을 때 게임별 태그와 APK를 확인하세요. 기존 배포 정리와 서명 체계 재정비는 별도 작업이며, 이 페이지는 현재 다운로드 가능한 APK가 있다고 보장하지 않습니다.
 
-**설치 안내:** 사용자의 기존 서명키 없는 배포 지시에 따라 GitHub Actions에서 새 일회용 키로 APK에 서명합니다. 이전 릴리스에 덮어쓸 수 없고 재설치가 필요합니다. 앱 삭제는 내부 기록을 지웁니다. v1.3부터 통계 화면에서 게임·전체 통계를 ZIP으로 내보내고 가져올 수 있습니다. **v1.2에는 내보내기 기능이 없으므로 새 버전 설치만으로 삭제한 이전 기록을 복구할 수 없습니다.** 별도로 확보한 기존 내부 JSON/시즌 파일의 자동 이전은 같은 앱 데이터 디렉터리가 남아 있을 때 동작합니다.
+[PR #9](https://github.com/hddy774/project-hora/pull/9)의 v1.7.0 당시 개발·배포 검증은 과거 이력으로 보관합니다. [개발 완료표](docs/DEVELOPMENT-v1.7.0.md)와 [APK 검증 원자료](docs/verification/v1.7.0/public-release.json)를 제공합니다. [금융 원문 조사와 개선 기록](docs/FINANCE-RESEARCH-v1.7.0.md), [조정 가능한 규칙](src/AlphaExchange.Core/Rules/README.md), [새 저장 설계](docs/STATISTICS-STORAGE-v1.7.0.md)를 기록합니다. 이전 [시장 문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [검증 기록](VERIFICATION.txt)도 보관합니다.
+
+**설치 안내:** 이전 APK 배포는 GitHub Actions의 새 일회용 키로 서명했습니다. 이전 릴리스에 덮어쓸 수 없고 재설치가 필요합니다. 앱 삭제는 내부 기록을 지웁니다. v1.3부터 통계 화면에서 게임·전체 통계를 ZIP으로 내보내고 가져올 수 있습니다. **v1.2에는 내보내기 기능이 없으므로 새 버전 설치만으로 삭제한 이전 기록을 복구할 수 없습니다.** 별도로 확보한 기존 내부 JSON/시즌 파일의 자동 이전은 같은 앱 데이터 디렉터리가 남아 있을 때 동작합니다.
 
 ## 시장과 주주 경영
 
@@ -91,6 +95,6 @@ python3 scripts/check-artwork.py
 dotnet run --project tests/AlphaExchange.Checks -c Release -- --storage-load
 ```
 
-`.github/workflows/checks.yml`은 엔진·회계·저장·그림과 Android Release 빌드를 검사하고 가속 에뮬레이터에서 실제 구형 기록·추가 인물/그림·100배속 재개를 대조합니다. `.github/workflows/release.yml`은 **병합된 v1.7.0 태그**로 APK 생성 → 서명 → 앱 ID/버전/인증서 검증 → APK 하나 업로드 → 다운로드 재검증 → 최신 릴리스 공개를 수행합니다. 공개 릴리스를 덮어쓰지 않습니다.
+`.github/workflows/checks.yml`은 등록된 게임별 엔진·저장·그림 검사와 Android 빌드를 실행합니다. ALPHA EXCHANGE에서는 가속 에뮬레이터로 실제 구형 기록·200명 그림·100배속 재개 검증도 수행합니다.
 
-main에 새 앱 버전이 병합되면 Actions가 해당 병합 커밋의 버전 태그를 만들고 자동 배포합니다. 같은 버전 태그가 이미 있으면 다시 배포하지 않습니다. 사용자의 기존 키 없는 배포 요청에 따라 이 경로는 `generate_signing_key=true`와 같은 새 일회용 키 방식을 사용합니다. 생성 키·비밀번호는 저장소/아티팩트에 포함하지 않고 종료 시 제거합니다. 릴리스 본문에는 APK 체크섬·공개 인증서 지문·빌드 소스를, Actions 내부 아티팩트에는 검증 로그와 `SIGNING-INFO.txt`를 기록합니다. 키가 재사용되지 않으므로 다음 새 키 배포도 재설치가 필요합니다. 수동 재시도는 병합된 `tag=v1.7.0`과 `generate_signing_key=true`로 실행하며, 업로드 중단 시 `signed_run_id`로 이미 검증한 서명 APK 아티팩트를 복구할 수 있습니다.
+빌드는 `./build.sh alpha-exchange`로 선택하고 결과를 `dist/alpha-exchange/`에 둡니다. [게임 등록·독립 버전·배포 절차](games/README.md)를 참고하세요. `.github/workflows/release.yml`은 권한 있는 사용자의 수동 실행에서 게임과 이미 병합된 태그를 검증한 뒤 해당 APK 하나를 배포합니다. main 변경이나 태그 push만으로 자동 서명/공개하지 않습니다. 이 변경에서는 새 키 생성·버전 변경·릴리스 공개를 하지 않습니다. 기존 앱 ID와 APK 파일 이름 규칙을 유지합니다. 공개 릴리스/자산 정리와 고정 서명키 준비는 이 PR의 새 APK 배포와 별개입니다.

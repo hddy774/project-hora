@@ -1,4 +1,4 @@
-name: Simulation and artwork checks
+name: Independent Android game checks
 on:
   push:
     branches: [main, 'feat/**']
@@ -6,19 +6,43 @@ on:
     branches: [main]
 permissions:
   contents: read
+concurrency:
+  group: checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.games.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate game catalog and mobile smoke coordinates
+        run: |
+          python3 scripts/test_games.py
+          python3 scripts/test_native_capture.py
+          python3 scripts/games.py validate
+      - id: games
+        run: echo "matrix=$(python3 scripts/games.py matrix)" >> "$GITHUB_OUTPUT"
   checks:
+    needs: catalog
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.catalog.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.318'
-      - name: Verify matching, economy, adaptive AI, 100x, 16 seasons and migrations
-        run: dotnet run --project tests/AlphaExchange.Checks -c Release
-      - name: Verify 200 distinct portrait regions and checksums
-        run: python3 scripts/check-artwork.py
+      - name: Verify selected game's rules, storage, and artwork
+        env:
+          GAME: ${{ matrix.game }}
+        run: python3 scripts/games.py check "$GAME"
   android:
+    needs: catalog
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.catalog.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,21 +58,27 @@ jobs:
           packages: 'platforms;android-35 build-tools;35.0.0'
       - name: Install Android workload
         run: dotnet workload install android --skip-manifest-update
-      - name: Compile Android Release
-        run: dotnet build src/AlphaExchange.Android -c Release -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME"
+      - name: Publish selected Android game
+        env:
+          GAME: ${{ matrix.game }}
+        run: python3 scripts/games.py build "$GAME"
+      # Legacy-save/financial evidence belongs to ALPHA EXCHANGE only.
       - uses: actions/checkout@v4
+        if: matrix.game == 'alpha-exchange'
         with:
           ref: v1.6.0
           path: fixture-v16
           persist-credentials: false
       - name: Generate a true v7 native fixture from the previous release
+        if: matrix.game == 'alpha-exchange'
         run: dotnet run --project tools/NativeSmokeFixture -c Release -p:FixtureCoreProject="$GITHUB_WORKSPACE/fixture-v16/src/AlphaExchange.Core/AlphaExchange.Core.csproj" -- generate /tmp/hora-native-fixture
-      - name: Publish local APK and enable emulator acceleration
+      - name: Enable emulator acceleration
+        if: matrix.game == 'alpha-exchange'
         run: |
-          dotnet publish src/AlphaExchange.Android -c Release -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME" -o /tmp/hora-native-apk
-          pip install brotli
+          pip install brotli pillow
           sudo chmod 666 /dev/kvm
-      - name: Native old-record,200-portrait and100x verification
+      - name: Verify native lifecycle, modals, legacy records, portraits, and 100x
+        if: matrix.game == 'alpha-exchange'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 26
@@ -56,11 +86,11 @@ jobs:
           target: default
           disable-animations: true
           emulator-options: -no-window -no-audio -no-snapshot -no-boot-anim -gpu swiftshader_indirect -memory 2048 -cores 2
-          script: python3 scripts/native-smoke.py /tmp/hora-native-apk/com.alphaexchange.offline-Signed.apk /tmp/hora-native-fixture artifacts/native-smoke
+          script: python3 scripts/native-smoke.py dist/alpha-exchange/com.alphaexchange.offline-Signed.apk /tmp/hora-native-fixture artifacts/native-smoke
       - name: Keep native screenshots and raw verification evidence
-        if: always()
+        if: always() && matrix.game == 'alpha-exchange'
         uses: actions/upload-artifact@v4
         with:
-          name: v170-native-smoke
+          name: alpha-exchange-native-smoke
           path: artifacts/native-smoke
           retention-days: 14

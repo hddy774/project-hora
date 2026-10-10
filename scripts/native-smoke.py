@@ -1,5 +1,7 @@
 """Actual Android app/legacy SQLite/UI/minute-clock smoke test on a rooted CI emulator."""
-import contextlib, json, os, pathlib, re, sqlite3, subprocess, sys, time
+import contextlib, io, json, os, pathlib, re, sqlite3, subprocess, sys, time
+from PIL import Image
+from native_capture import display_projection, logical_crop_bounds, logical_display_size
 import brotli
 import xml.etree.ElementTree as ET
 
@@ -28,7 +30,23 @@ def tap(x,y):
     adb("shell", "input", "tap", str(round(left+x*scale)), str(round(top+y*scale))); time.sleep(1)
 
 def screenshot(name):
-    (output/(name+".png")).write_bytes(adb("exec-out", "screencap", "-p",binary=True))
+    logical_size=logical_display_size(adb("shell","wm","size"))
+    raw=adb("exec-out", "screencap", "-p",binary=True)
+    (output/(name+".png")).write_bytes(raw)
+    image=Image.open(io.BytesIO(raw)).convert("RGB")
+    image.info["logical_display_size"]=logical_size
+    projection=display_projection(logical_size,image.size)
+    view_bounds=[left,top,right,bottom] if "left" in globals() else None
+    (output/(name+".capture.json")).write_text(json.dumps({"logicalDisplaySize":logical_size,
+        "screenshotSize":image.size,"gameViewBounds":view_bounds,"projection":{"scale":projection[0],"offsetX":projection[1],"offsetY":projection[2]}},indent=2))
+    return image
+
+def crop(image,x1,y1,x2,y2):
+    # Touch/UIAutomator coordinates are logical, while screencap can include
+    # physical letterboxing or downscale a WM override larger than the display.
+    logical=(left+x1*scale,top+y1*scale,left+x2*scale,top+y2*scale)
+    bounds=logical_crop_bounds(logical,image.info["logical_display_size"],image.size)
+    return image.crop(bounds).tobytes()
 
 def window_tree():
     adb("shell","rm","-f","/sdcard/hora-window.xml")
@@ -59,9 +77,18 @@ def require_screen(text,timeout=30):
             raise RuntimeError(f"Expected native screen: {text}; actual: {actual}")
         time.sleep(1)
 
-def swipe():
-    adb("shell", "input", "swipe", str(round(left+200*scale)),str(round(top+430*scale)),str(round(left+200*scale)),str(round(top+210*scale)),"450")
+def swipe_between(start,end):
+    adb("shell", "input", "swipe", str(round(left+200*scale)),str(round(top+start*scale)),str(round(left+200*scale)),str(round(top+end*scale)),"450")
     time.sleep(1)
+
+def swipe():
+    swipe_between(430,210)
+
+def measure_viewport(tree):
+    global left,top,right,bottom,scale,h
+    view=next(n for n in tree.iter("node") if n.attrib.get("content-desc","").startswith("알파 익스체인지"))
+    left,top,right,bottom=map(int,re.findall(r"\d+",view.attrib["bounds"]))
+    scale=(right-left)/400; h=(bottom-top)/scale
 
 def pull_state(name):
     folder=output/name; folder.mkdir(exist_ok=True)
@@ -84,12 +111,10 @@ def pull_state(name):
         return json.loads(brotli.decompress(state)),folder
 
 # Startup is asynchronous; wait for the first source8 checkpoint after resume.
-lobby_tree=require_screen("시뮬레이션 시작 화면",60); screenshot("01-lobby")
+lobby_tree=require_screen("시뮬레이션 시작 화면",60)
 # Android can expose hardware keys instead of a navigation bar. Use the actual
 # GameView bounds, including status/navigation insets, rather than guessing them.
-view=next(n for n in lobby_tree.iter("node") if n.attrib.get("content-desc","").startswith("알파 익스체인지"))
-left,top,right,bottom=map(int,re.findall(r"\d+",view.attrib["bounds"]))
-scale=(right-left)/400; h=(bottom-top)/scale
+measure_viewport(lobby_tree); screenshot("01-lobby")
 (output/"viewport.json").write_text(json.dumps({"bounds":[left,top,right,bottom],"scale":scale,"canvasHeight":h},indent=2))
 tap(200,h-140)
 require_screen("시장 화면")
@@ -104,8 +129,129 @@ while True:
         screenshot("failure-startup")
         (output/"failure-logcat.txt").write_text(adb("logcat","-d","-t","250"))
         raise RuntimeError("App failed to load/advance/save the true v7 fixture")
-tap(278,h-108); require_screen("일시정지"); time.sleep(2); screenshot("02-paused-market")
+# Lifecycle pause must preserve accepted foreground work, remain stopped while
+# backgrounded, and return paused without adding the elapsed wall-clock time.
+def clock_state(state):
+    return {key:state[key] for key in ("RunId","CompletedMinutes","PendingClockMinutes","MinuteProgress","NextTransactionId")}
+
+def settled_checkpoint(name,timeout=60):
+    deadline=time.monotonic()+timeout; previous=None; stable=0
+    while time.monotonic()<deadline:
+        state,_=pull_state(name)
+        current=clock_state(state)
+        stable=stable+1 if current==previous else 0
+        if stable>=3: return state
+        previous=current
+        time.sleep(1)
+    raise RuntimeError("Lifecycle checkpoint did not settle while backgrounded")
+
+before_home,_=pull_state("before-home")
+adb("shell","input","keyevent","3")
+background=settled_checkpoint("background-settled")
+if background["RunId"]!=before_home["RunId"] or background["CompletedMinutes"]<before_home["CompletedMinutes"] or \
+    background["CompletedMinutes"]+background["PendingClockMinutes"]<before_home["CompletedMinutes"]+before_home["PendingClockMinutes"]:
+    raise RuntimeError("Lifecycle pause discarded completed minutes or accepted foreground work")
+background_wait=8
+time.sleep(background_wait)
+background_later,_=pull_state("background-later")
+if clock_state(background_later)!=clock_state(background):
+    raise RuntimeError("Simulation clock changed after the background checkpoint settled")
+adb("shell","monkey","-p",package,"-c","android.intent.category.LAUNCHER","1")
+require_screen("시장 화면"); require_screen("일시정지")
+time.sleep(2)
+returned,_=pull_state("returned-paused")
+if clock_state(returned)!=clock_state(background):
+    raise RuntimeError("Returning to the Activity changed the paused simulation clock")
+screenshot("02-paused-market")
 paused_at=time.monotonic()
+lifecycle_evidence={"backgroundWaitSeconds":background_wait,"beforeHome":clock_state(before_home),
+    "settled":clock_state(background),"afterBackground":clock_state(background_later),"afterReturn":clock_state(returned)}
+(output/"lifecycle.json").write_text(json.dumps(lifecycle_evidence,indent=2))
+
+def paused_market_viewport(expected_height,name,expected_run,timeout=60):
+    # wm size can recreate this Activity rather than just resize its existing
+    # View. Wait for the new bounds AND async load, then use the existing-run
+    # Continue action if recreation restored the normal lobby screen.
+    deadline=time.monotonic()+timeout
+    while True:
+        tree=require_screen("알파 익스체인지",max(1,deadline-time.monotonic()))
+        measure_viewport(tree)
+        actual=screen_description(tree)
+        if abs(h-expected_height)<=2 and any(screen in actual for screen in ("시장 화면","시뮬레이션 시작 화면","시뮬레이션 안내")): break
+        if time.monotonic()>deadline:
+            raise RuntimeError(f"Expected loaded canvas {expected_height}, got {h}: {actual}")
+        time.sleep(1)
+    recreated="시뮬레이션 시작 화면" in actual
+    if recreated:
+        saved,_=pull_state(name+"-before-continue")
+        if saved["RunId"]!=expected_run:
+            raise RuntimeError("Viewport recreation changed the saved run before Continue")
+        tap(200,h-140)
+        tree=require_screen("시장 화면")
+        actual=screen_description(tree)
+    elif "시뮬레이션 안내" in actual:
+        # The finally path must also restore a usable market after a modal test
+        # failed before dismissal. Do not change runtime configuration to do so.
+        adb("shell","input","keyevent","4")
+        tree=require_screen("시장 화면")
+        actual=screen_description(tree)
+    if "시장 화면" not in actual:
+        raise RuntimeError(f"Unexpected screen after viewport change: {actual}")
+    if "진행 중" in actual:
+        tap(278,h-108)
+    tree=require_screen("시장 화면"); require_screen("일시정지")
+    measure_viewport(tree)
+    if abs(h-expected_height)>2:
+        raise RuntimeError(f"Canvas changed during test setup: expected {expected_height}, got {h}")
+    state=settled_checkpoint(name+"-paused")
+    if state["RunId"]!=expected_run:
+        raise RuntimeError("Viewport recreation or Continue changed the existing run")
+    return recreated
+
+# Exercise real Canvas/touch handling at short and tall logical viewports. Resize
+# only this disposable emulator and always restore its previous display setting.
+size_text=adb("shell","wm","size")
+original_override=re.search(r"Override size: (\d+x\d+)",size_text)
+display_width,display_height=map(int,re.findall(r"(?:Physical|Override) size: (\d+)x(\d+)",size_text)[-1])
+original_canvas=h
+insets=display_height-(bottom-top)
+modal_evidence=[]
+try:
+    for requested_height in (480,600,800):
+        pixel_height=round(requested_height*scale+insets)
+        adb("shell","wm","size",f"{display_width}x{pixel_height}")
+        recreated=paused_market_viewport(requested_height,f"modal-{requested_height}",returned["RunId"])
+        page_before=screenshot(f"modal-{requested_height}-page-before")
+        tap(360,32); require_screen("시뮬레이션 안내")
+        modal_top=max(12,h-654)
+        body_top=modal_top+58; body_bottom=h-84
+        before_scroll=screenshot(f"modal-{requested_height}-help-top")
+        swipe_between(body_bottom-24,body_top+24)
+        after_scroll=screenshot(f"modal-{requested_height}-help-scrolled")
+        if crop(before_scroll,18,body_top+4,382,body_bottom-4)==crop(after_scroll,18,body_top+4,382,body_bottom-4):
+            raise RuntimeError(f"Help body did not scroll at canvas {h}")
+        if crop(before_scroll,336,modal_top+15,382,modal_top+57)!=crop(after_scroll,336,modal_top+15,382,modal_top+57):
+            raise RuntimeError("Help close control moved while scrolling")
+        if crop(before_scroll,27,h-72,373,h-22)!=crop(after_scroll,27,h-72,373,h-22):
+            raise RuntimeError("Help CTA moved while scrolling")
+        tap(200,h-47); require_screen("시장 화면")
+        page_after=screenshot(f"modal-{requested_height}-page-after")
+        if crop(page_before,18,102,382,h-146)!=crop(page_after,18,102,382,h-146):
+            raise RuntimeError("Help gesture moved or activated the covered market page")
+        # Reopen the same modal, verify reset, and exercise the separate close hit.
+        tap(360,32); require_screen("시뮬레이션 안내")
+        reopened=screenshot(f"modal-{requested_height}-help-reopened")
+        if crop(before_scroll,18,body_top+4,382,body_bottom-4)!=crop(reopened,18,body_top+4,382,body_bottom-4):
+            raise RuntimeError("Reopened help retained a dismissed modal's scroll offset")
+        tap(360,modal_top+34); require_screen("시장 화면")
+        modal_evidence.append({"requestedCanvasHeight":requested_height,"actualCanvasHeight":h,
+            "continuedAfterRecreation":recreated,"preservedRunId":returned["RunId"],"bodyScrolled":True,"closePinned":True,"ctaPinned":True,"ctaDismissed":True,"closeDismissed":True,
+            "underlyingPageUnchanged":True,"reopenedAtTop":True})
+finally:
+    adb("shell","wm","size",original_override.group(1) if original_override else "reset")
+    paused_market_viewport(original_canvas,"restored-viewport",returned["RunId"])
+paused_at=time.monotonic()
+(output/"modal-viewports.json").write_text(json.dumps(modal_evidence,indent=2))
 
 # All new role lists, actual additional portraits and uncropped profile zoom.
 tap(200,h-40); require_screen("종합 인물 목록"); screenshot("03-people")
@@ -157,7 +303,8 @@ if after["RunId"]!=baseline["run"] or after["Version"]!=8 or len(after["World"][
     raise RuntimeError("Native run/person identity changed")
 summary={"legacyVersion":7,"nativeVersion":8,"preservedRows":len(baseline["rows"]),"newHour":after["CompletedHours"],
     "native100x":{"elapsedSeconds":elapsed,"completedMinutes":delta,"pendingMinutes":pending,"boundaryAllowanceSeconds":2,"idleBeforeResumeSeconds":idle},
+    "lifecycle":lifecycle_evidence,"modalViewports":modal_evidence,
     "screenshots":len(list(output.glob("*.png"))),"roles":200,"retail":10000}
 (output/"summary.json").write_text(json.dumps(summary,indent=2))
-print("PASS native legacy migration, immutable hours,200 profiles/zoom and100x:",json.dumps(summary),flush=True)
+print("PASS native lifecycle, modal viewports, legacy migration, immutable hours,200 profiles/zoom and100x:",json.dumps(summary),flush=True)
 subprocess.run(["dotnet","run","--project","tools/NativeSmokeFixture","-c","Release","--","inspect",str(folder)],check=True)

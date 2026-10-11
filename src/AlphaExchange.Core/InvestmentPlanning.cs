@@ -26,10 +26,11 @@ public sealed partial class GameEngine
         }
         d.LastReportMinute=State.CompletedMinutes;
     }
-    InvestmentPlan PlanInvestment(Trader t,int index,InvestmentSignal signal)
+    InvestmentPlan PlanInvestment(Trader t,int index,InvestmentSignal signal,InvestmentPlan? previous)
     {
-        var d=t.Development!; var stock=State.Stocks[index]; var report=d.AnalystReports.Find(r=>r.Sector==stock.Sector);
-        var previous=d.Plans.Find(p=>p.SecurityId==stock.SecurityId);
+        var d=t.Development!; var stock=State.Stocks[index]; AnalystReport? report=null;
+        foreach(var candidate in d.AnalystReports)
+            if(candidate.Sector==stock.Sector) { report=candidate; break; }
         bool breakBand=previous is not null && (stock.Price<previous.LowerPrice || stock.Price>previous.UpperPrice);
         if(previous is not null && previous.ReviewMinute>State.CompletedMinutes && previous.Horizon==signal.Horizon && !breakBand && !signal.Defensive) return previous;
         PortfolioStyle style=signal.Defensive || t.Disposition==Disposition.Cautious ? PortfolioStyle.Defensive :
@@ -66,7 +67,9 @@ public sealed partial class GameEngine
     }
     int ExecutionDelay(Trader t,Abilities skills)
     {
-        int execution=t.Development!.Employees.Where(c=>c.Job==StaffJob.ExecutionTrader).Sum(c=>c.Count);
+        int execution=0;
+        foreach(var cohort in t.Development!.Employees)
+            if(cohort.Job==StaffJob.ExecutionTrader) execution=checked(execution+cohort.Count);
         return Math.Clamp((int)Math.Ceiling(60/(1+execution*.3+skills.Execution/100.0)),1,60);
     }
 }

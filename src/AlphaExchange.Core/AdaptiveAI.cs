@@ -11,6 +11,8 @@ public sealed partial class GameEngine
     double[] portfolioSectors=[];
     string[] sectorNames=[];
     readonly Dictionary<string,int> sectorIds=new(StringComparer.Ordinal);
+    readonly Dictionary<string,int> decisionSecurities=new(StringComparer.Ordinal);
+    InvestmentPlan?[] decisionPlans=[];
     double marketTrend;
     internal void PrepareMarketSignals()
     {
@@ -80,8 +82,13 @@ public sealed partial class GameEngine
             fastTrends[index]*method.FastWeight*Skill(method.FastWeight<0 ? a.SwingTrading : a.Scalping)+
             s.Sentiment*method.NewsWeight*Skill(a.News)+dividendYields[index]*method.DividendWeight*Skill(a.Valuation);
         score-=volatilities[index]*risk+(s.Report.DebtRatio*State.Government.Policy.BaseRate)*macro;
-        if(State.World is not null && t.Development!.AnalystReports.Find(r=>r.OwnerId==t.Id && r.Sector==s.Sector && r.ExpiresMinute>State.CompletedMinutes) is {} report)
-            score=score*(1-WorldRules.AnalystWeight)+report.ExpectedReturn*report.Confidence*WorldRules.AnalystWeight;
+        if(State.World is not null)
+            foreach(var report in t.Development!.AnalystReports)
+                if(report.OwnerId==t.Id && report.Sector==s.Sector && report.ExpiresMinute>State.CompletedMinutes)
+                {
+                    score=score*(1-WorldRules.AnalystWeight)+report.ExpectedReturn*report.Confidence*WorldRules.AnalystWeight;
+                    break;
+                }
         double spread=bids[index].Count>0 && asks[index].Count>0 ?
             Math.Max(0,(asks[index][0].Price-bids[index][0].Price)/(double)s.PreviousPrice) : r.BaseSpread*2;
         double roundTrip=State.Government.Policy.FeeBasisPoints/10000.0*2+spread;
@@ -115,14 +122,22 @@ public sealed partial class GameEngine
         CancelOrders(t.Id); d.PortfolioReviews++; d.LastDecisionHour=State.CompletedHours;
         var a=Capabilities(t).Effective; bool defensive=false; double bestScore=double.MinValue;
         WriteAnalystReports(t,a); d.NextExecutionMinute=State.CompletedMinutes+ExecutionDelay(t,a);
-        d.Plans.RemoveAll(p=>!stocks.Any(s=>s.SecurityId==p.SecurityId));
+        // Rebuild from the live securities for this review, including replacement
+        // companies and IPOs. Reuse buffers without retaining another trader's
+        // confidential plans or changing the persisted plan ordering.
+        decisionSecurities.Clear();
+        for(int i=0;i<stocks.Count;i++) decisionSecurities.Add(stocks[i].SecurityId,i);
+        d.Plans.RemoveAll(p=>!decisionSecurities.ContainsKey(p.SecurityId));
+        if(decisionPlans.Length!=stocks.Count) decisionPlans=new InvestmentPlan?[stocks.Count];
+        else Array.Clear(decisionPlans);
+        foreach(var plan in d.Plans) decisionPlans[decisionSecurities[plan.SecurityId]]=plan;
         var signals=institutionSignals; double cashTarget=r.MinimumCash;
         Span<bool> reviewDue=stackalloc bool[stocks.Count];
         for(int i=0;i<stocks.Count;i++)
         {
             reviewDue[i]=d.NextReviewHours[i]<=State.CompletedHours;
             signals[i]=Analyze(t,i,equity,a);
-            var plan=PlanInvestment(t,i,signals[i]);
+            var plan=decisionPlans[i]=PlanInvestment(t,i,signals[i],decisionPlans[i]);
             signals[i]=signals[i] with { StockLimit=Math.Min(signals[i].StockLimit,plan.TargetWeight) };
             d.LastNewsSignals[i]=stocks[i].Sentiment;
             if(t.Shares[i]>0 || t.ShortShares[i]>0)
@@ -187,7 +202,7 @@ public sealed partial class GameEngine
             try
             {
             var method=Rules.Horizons[(int)selected.Horizon];
-            var plan=d.Plans.Find(p=>p.SecurityId==stock.SecurityId)!;
+            var plan=decisionPlans[index]!;
             d.PositionHorizons[index]=selected.Horizon; d.NextReviewHours[index]=State.CompletedHours+method.ReviewHours;
             int desired=Math.Max(1,(int)Math.Min(1_000_000,gross*(deploying ? r.DeployOrderRatio : r.OrderRatio+a.Execution/100.0*r.OrderSkillRatio)/stock.Price));
             double spread=r.BaseSpread+(1-a.Execution/100.0)*r.SkillSpread;

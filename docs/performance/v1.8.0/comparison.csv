@@ -1,0 +1,10 @@
+operation,beforeMedianMs,afterMedianMs,beforeAllocatedBytes,afterAllocatedBytes
+statistics,6.4119,7.4657,6072,6072
+depthProjection6000,1.5693,1.8584,1440000,1440000
+prepareSave,11.7359,12.64,12459672,12459840
+serialize,58.5578,56.9865,11781288,11141288
+writeSnapshot,164.9734,170.5476,35238112,23593896
+fiveYearRangeCold,171.1134,167.097,37644832,37644832
+fiveYearRangeCached,2.2011,2.3623,4375352,4375352
+coverage,2.9034,2.8679,5440,5440
+pendingAt,0.3395,0.3291,94904,94904

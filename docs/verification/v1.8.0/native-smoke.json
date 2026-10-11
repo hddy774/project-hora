@@ -1,0 +1,90 @@
+{
+  "legacyVersion": 7,
+  "nativeVersion": 8,
+  "preservedRows": 177,
+  "newHour": 524,
+  "native100x": {
+    "elapsedSeconds": 18.88133458599998,
+    "completedMinutes": 21144,
+    "pendingMinutes": 0,
+    "boundaryAllowanceSeconds": 2,
+    "idleBeforeResumeSeconds": 42.72551699799999
+  },
+  "lifecycle": {
+    "backgroundWaitSeconds": 8,
+    "beforeHome": {
+      "RunId": "7684a4ddd4bb495e8dcb3da610f69e1f",
+      "CompletedMinutes": 10228,
+      "PendingClockMinutes": 2,
+      "MinuteProgress": 0.04799999999999072,
+      "NextTransactionId": 154497
+    },
+    "settled": {
+      "RunId": "7684a4ddd4bb495e8dcb3da610f69e1f",
+      "CompletedMinutes": 10236,
+      "PendingClockMinutes": 0,
+      "MinuteProgress": 0.16799999999999038,
+      "NextTransactionId": 154575
+    },
+    "afterBackground": {
+      "RunId": "7684a4ddd4bb495e8dcb3da610f69e1f",
+      "CompletedMinutes": 10236,
+      "PendingClockMinutes": 0,
+      "MinuteProgress": 0.16799999999999038,
+      "NextTransactionId": 154575
+    },
+    "afterReturn": {
+      "RunId": "7684a4ddd4bb495e8dcb3da610f69e1f",
+      "CompletedMinutes": 10236,
+      "PendingClockMinutes": 0,
+      "MinuteProgress": 0.16799999999999038,
+      "NextTransactionId": 154575
+    }
+  },
+  "modalViewports": [
+    {
+      "requestedCanvasHeight": 480,
+      "actualCanvasHeight": 480,
+      "continuedAfterRecreation": true,
+      "preservedRunId": "7684a4ddd4bb495e8dcb3da610f69e1f",
+      "bodyScrolled": true,
+      "closePinned": true,
+      "ctaPinned": true,
+      "ctaDismissed": true,
+      "closeDismissed": true,
+      "underlyingPageUnchanged": true,
+      "reopenedAtTop": true
+    },
+    {
+      "requestedCanvasHeight": 600,
+      "actualCanvasHeight": 600,
+      "continuedAfterRecreation": true,
+      "preservedRunId": "7684a4ddd4bb495e8dcb3da610f69e1f",
+      "bodyScrolled": true,
+      "closePinned": true,
+      "ctaPinned": true,
+      "ctaDismissed": true,
+      "closeDismissed": true,
+      "underlyingPageUnchanged": true,
+      "reopenedAtTop": true
+    },
+    {
+      "requestedCanvasHeight": 800,
+      "actualCanvasHeight": 800,
+      "continuedAfterRecreation": true,
+      "preservedRunId": "7684a4ddd4bb495e8dcb3da610f69e1f",
+      "bodyScrolled": true,
+      "closePinned": true,
+      "ctaPinned": true,
+      "ctaDismissed": true,
+      "closeDismissed": true,
+      "underlyingPageUnchanged": true,
+      "reopenedAtTop": true
+    }
+  ],
+  "screenshots": 30,
+  "roles": 200,
+  "retail": 10000,
+  "workflowRun": "https://github.com/hddy774/project-hora/actions/runs/38128439828",
+  "sourceCommit": "437a1af60d0511acf6a1319691eafde1a597ad81"
+}

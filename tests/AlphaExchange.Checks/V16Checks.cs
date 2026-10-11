@@ -155,7 +155,11 @@ static class V16Checks
                 JsonSerializer.Serialize(b.Development)==JsonSerializer.Serialize(month.Owner(b.Id).Development)) &&
                 monthStore.ReadSeason(continuation.State,1)!.GrowthRewards.Count==100,"Archived reward and participant progression commit together"); validate(continuation);
             var clock=TestFixtures.SmallMarket(164); int processed=clock.AdvanceFrame(.5,100);
-            check(processed>0 && clock.State.CompletedMinutes+clock.State.PendingClockMinutes==600,"Frame work is bounded and carries every accepted pending hour");
+            // AdvanceFrame returns completed whole hours. A bounded minute-based
+            // frame can make progress without completing an hour on a busy host.
+            check(clock.State.CompletedMinutes>0 && clock.State.CompletedMinutes<=clock.Rules.Performance.MaximumCatchupHours*60 &&
+                processed==clock.State.CompletedHours && clock.State.CompletedMinutes+clock.State.PendingClockMinutes==600,
+                "Frame work advances bounded minutes and carries every accepted pending minute");
             var clockRestore=GameEngine.Deserialize(clock.Serialize());
             clock.AdvanceTime(0,100); clockRestore.AdvanceTime(0,100);
             check(clock.Serialize()==clockRestore.Serialize() && clock.State.CompletedHours==10,"Accepted clock backlog persists and drains exactly once"); validate(clockRestore);

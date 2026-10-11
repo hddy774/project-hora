@@ -6,6 +6,21 @@ This is an opt-in owner-operated setup. Adding these files does not generate a k
 
 A newly generated key is a different installation identity. Android cannot install it as an in-place update of an app signed with the old key. Uninstalling the old app can erase local saves. The owner must explicitly choose this transition before the recorded public pin is changed. An old private key cannot be reconstructed from an APK or public certificate.
 
+## Use the existing signing key
+
+For a release that preserves the recorded identity, use the original private keystore; do not run the new-key bootstrap below. Open [repository Actions Secrets](https://github.com/hddy774/project-hora/settings/secrets/actions) and register these values directly:
+
+| Secret | Value |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | Base64 encoding of the existing `.jks` or `.keystore` file, not an APK or public certificate |
+| `ANDROID_KEYSTORE_PASSWORD` | The existing keystore password |
+| `ANDROID_KEY_ALIAS` | The alias of the existing signing entry |
+| `ANDROID_KEY_PASSWORD` | The existing entry password; use the store password only if that entry actually uses it |
+
+Do not send these values in chat or commit them to a file in this repository. If a retained `ANDROID_SIGNING_BUNDLE` already exists, preserve it and verify it instead of adding a second configuration; combining the bundle and legacy values is rejected as ambiguous. Run **Verify retained Android signing identity** from `main` after registration. A successful run must match the public pin above before a release can be signed.
+
+If the original private key or password is unavailable, adding a newly generated keystore cannot restore the old installation identity. Recover the original from an owner-held backup before requesting a release with that identity.
+
 ## Owner steps from a mobile browser
 
 1. Review and approve the setup pull request. It must be merged into `main` before the manual workflows appear. Merging does not execute bootstrap.

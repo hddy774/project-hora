@@ -12,10 +12,22 @@ public sealed record EventRecord(long Id,long Hour,string Json);
 public sealed record SaveSnapshot
 {
     Lazy<string> json = null!;
+    Lazy<byte[]> encoded = null!;
     public string RunId { get; init; }
     public long Hour { get; init; }
     public long Minute { get; init; }
-    public string Json { get => json.Value; init => json = new Lazy<string>(()=>value); }
+    public string Json
+    {
+        get => json.Value;
+        init
+        {
+            json = new Lazy<string>(()=>value);
+            encoded = new Lazy<byte[]>(()=>Encoding.UTF8.GetBytes(value));
+        }
+    }
+    // The writer hashes, validates and compresses UTF-8 directly. Materialize the
+    // large UTF-16 string only for callers that explicitly request Json.
+    internal byte[] EncodedBytes => encoded.Value;
     public ArchivedSnapshot[] Seasons { get; init; }
     public HistoryRecord[] History { get; init; }
     public EventRecord[] Events { get; init; } = [];
@@ -30,7 +42,9 @@ public sealed record SaveSnapshot
     internal SaveSnapshot(GameState state,ArchivedSnapshot[] seasons,HistoryRecord[] history)
     {
         RunId=state.RunId; Hour=state.CompletedHours; Minute=state.CompletedMinutes; Seasons=seasons; History=history;
-        json=new Lazy<string>(()=>JsonSerializer.Serialize(state,GameEngine.StateJson));
+        var bytes=new Lazy<byte[]>(()=>JsonSerializer.SerializeToUtf8Bytes(state,GameEngine.StateJson));
+        encoded=bytes;
+        json=new Lazy<string>(()=>Encoding.UTF8.GetString(bytes.Value));
     }
 }
 
@@ -220,7 +234,7 @@ public sealed partial class GameStore
     public void WriteSnapshot(SaveSnapshot snapshot)
     {
         // All payloads are immutable. Compression and I/O do not read the live engine.
-        byte[] stateBytes=Encoding.UTF8.GetBytes(snapshot.Json); CheckCheckpoint(stateBytes,snapshot.RunId,snapshot.Hour,snapshot.Minute);
+        byte[] stateBytes=snapshot.EncodedBytes; CheckCheckpoint(stateBytes,snapshot.RunId,snapshot.Hour,snapshot.Minute);
         if(snapshot.History.Any(r=>r.Hour<0 || r.Hour>snapshot.Hour || r.Resolution is not (1 or 24)) ||
             snapshot.Events.Concat(snapshot.Votes).Concat(snapshot.Bankruptcies).Any(e=>e.Hour<0 || e.Hour>snapshot.Hour))
             throw new InvalidDataException("체크포인트 기록 범위 불일치");

@@ -2,7 +2,9 @@
 
 [Project Hora 게임 목록](games/README.md): 게임마다 독립된 앱/APK를 관리합니다. 현재 등록된 게임은 ALPHA EXCHANGE입니다.
 
-v1.7.0은 **분 단위 체결·200명의 인물·기밀 투자 계획·사업과 정책 투표**를 추가합니다. 투자자100명/경영자30명/정치인50명/금융인20명과 서로 다른 프로필 일러스트200개를 제공합니다. 새 시장은 시가총액1조, 투자사별10억으로 시작합니다. 기존 APK 파일 이름 규칙은 **AlphaExchange-vX.Y.0.apk**입니다.
+v1.8.0은 저장 시 메모리 할당을 약33% 줄이고 기관 투자 계획의 반복 탐색을 최적화합니다. 같은 최대 인구 입력에서 저장을 포함한100배속 처리량은 약9% 증가했습니다. [전후 측정과 한계](docs/performance/v1.8.0/README.md), [APK·설치 안내](docs/RELEASE-v1.8.0.md)를 제공합니다. APK 빌드와 Android 실행 검증을 완료했으며, 정식 배포는 [기존 서명키 설정](docs/ANDROID-SIGNING-SETUP.md#use-the-existing-signing-key)을 기다리고 있습니다.
+
+v1.7.0에서 추가한 **분 단위 체결·200명의 인물·기밀 투자 계획·사업과 정책 투표**를 유지합니다. 투자자100명/경영자30명/정치인50명/금융인20명과 서로 다른 프로필 일러스트200개를 제공합니다. 새 시장은 시가총액1조, 투자사별10억으로 시작합니다. 기존 APK 파일 이름 규칙은 **AlphaExchange-vX.Y.0.apk**입니다.
 
 [개발 진행표](docs/DEVELOPMENT-v1.7.0.md) · [릴리스 안내](docs/RELEASE-v1.7.0.md) · [성능 전후 결과](docs/performance/v1.7.0/README.md) · [Android 실행 확인](docs/UI-VERIFICATION-v1.7.0.md)
 

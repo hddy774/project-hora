@@ -1,0 +1,23 @@
+{
+  "fileName": "AlphaExchange-v1.8.0-test.apk",
+  "sourceCommit": "437a1af60d0511acf6a1319691eafde1a597ad81",
+  "applicationId": "com.alphaexchange.offline",
+  "versionName": "1.8.0",
+  "versionCode": 9,
+  "minimumApi": 26,
+  "targetApi": 34,
+  "architectures": [
+    "arm64-v8a",
+    "x86_64"
+  ],
+  "bytes": 101134528,
+  "sha256": "b1bc65ce587d8a54b20f27501273873d3d61c87567292b17594819f5957fa14b",
+  "signatureSchemes": [
+    "v2",
+    "v3"
+  ],
+  "certificateSha256": "dd1eba206c7e46a11be28bf6edb77c44fa6c06eeb45679b8f19065cca318c253",
+  "signingType": "Android SDK default debug (local test build)",
+  "releaseIdentityVerified": false,
+  "nativeValidation": "Same source commit validated in GitHub Actions; CI debug signature is separate from local debug signature."
+}

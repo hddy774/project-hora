@@ -24,6 +24,11 @@ static class StorageLoad
                     rows.Add(new HistoryRecord(h,1,JsonSerializer.Serialize(point)));
                 }
                 engine.State.CompletedHours=month*720;
+                engine.State.CompletedMinutes=engine.State.CompletedHours*60;
+                // This is storage-only synthetic time, so keep the minute clock
+                // and future elections valid without running economic decisions.
+                engine.World.NextGovernmentElectionHour=engine.State.CompletedHours+240;
+                engine.World.NextGovernorElectionHour=engine.State.CompletedHours+240;
                 store.WriteSnapshot(new SaveSnapshot(engine.State.RunId,engine.State.CompletedHours,engine.Serialize(),[],rows.ToArray()));
                 maxManaged=Math.Max(maxManaged,GC.GetTotalMemory(false));
                 if(month%12==0) { maxRetained=Math.Max(maxRetained,GC.GetTotalMemory(true)); Console.WriteLine($"Synthetic storage year {month/12}: hours={month*720:N0}; bytes={new FileInfo(store.SavePath).Length:N0}"); }

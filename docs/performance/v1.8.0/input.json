@@ -1,0 +1,11 @@
+{
+  "sourceCommit": "0ed09dc1d42572541d7c75668de4faa006009fe9",
+  "seed": 20261004,
+  "hour": 168,
+  "retail": 10000,
+  "institutions": 100,
+  "companies": 30,
+  "people": 200,
+  "encodedBytes": 5502180,
+  "sha256": "381c8982891c7321b3eaebfef950163dc8954b5c0e14d8949f04f4c799b914a7"
+}

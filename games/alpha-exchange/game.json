@@ -12,6 +12,6 @@
   "signing": {
     "script": "scripts/sign-release.sh",
     "secretPrefix": "ANDROID",
-    "certificateSha256": "9fd5aa86793e26beec38948dfae79d1981581f8e54abe0047025a863cc64f722"
+    "certificateSha256": "0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a"
   }
 }

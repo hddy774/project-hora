@@ -1,18 +1,22 @@
 # One-time retained Android signing setup
 
-This is an opt-in owner-operated setup. Adding these files does not generate a key, change an existing key, grant access, or publish a release. The existing ALPHA EXCHANGE v1.1 certificate pin remains:
+On 2026-10-11 the owner explicitly requested a new signing key and APK, confirmed that the previous private key was unavailable, and chose to start with the new APK. A new RSA3072/PKCS12 key was generated once and supplied in a private ZIP with its passwords and import bundle. The current reviewed ALPHA EXCHANGE certificate pin is:
 
-`9fd5aa86793e26beec38948dfae79d1981581f8e54abe0047025a863cc64f722`
+`0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a`
+
+See [public identity evidence](verification/v1.8.0/signing-identity.json). The old v1.1 pin was `9fd5aa86793e26beec38948dfae79d1981581f8e54abe0047025a863cc64f722`; it is no longer the release identity. The private key and passwords are not in this repository or any public release asset. Supplying the private ZIP does not register GitHub Secrets.
+
+For future releases, preserve the delivered key. To enable Actions signing, directly register the entire private ZIP's `ANDROID_SIGNING_BUNDLE.json` as the `ANDROID_SIGNING_BUNDLE` repository Actions Secret, then run **Verify retained Android signing identity** from `main`. Do not add the legacy fields as well. Do not run the new-key bootstrap below for this identity: it would generate another key. The new-key workflow is retained for a separately authorized future identity transition.
 
 A newly generated key is a different installation identity. Android cannot install it as an in-place update of an app signed with the old key. Uninstalling the old app can erase local saves. The owner must explicitly choose this transition before the recorded public pin is changed. An old private key cannot be reconstructed from an APK or public certificate.
 
 ## Use the existing signing key
 
-For a release that preserves the recorded identity, use the original private keystore; do not run the new-key bootstrap below. Open [repository Actions Secrets](https://github.com/hddy774/project-hora/settings/secrets/actions) and register these values directly:
+For a release that preserves the current recorded identity, use the delivered private keystore; do not run the new-key bootstrap below. Open [repository Actions Secrets](https://github.com/hddy774/project-hora/settings/secrets/actions) and register the bundle above, or these four values directly:
 
 | Secret | Value |
 |---|---|
-| `ANDROID_KEYSTORE_BASE64` | Base64 encoding of the existing `.jks` or `.keystore` file, not an APK or public certificate |
+| `ANDROID_KEYSTORE_BASE64` | Base64 encoding of the existing `.p12`, `.jks` or `.keystore` file, not an APK or public certificate |
 | `ANDROID_KEYSTORE_PASSWORD` | The existing keystore password |
 | `ANDROID_KEY_ALIAS` | The alias of the existing signing entry |
 | `ANDROID_KEY_PASSWORD` | The existing entry password; use the store password only if that entry actually uses it |
@@ -21,7 +25,7 @@ Do not send these values in chat or commit them to a file in this repository. If
 
 If the original private key or password is unavailable, adding a newly generated keystore cannot restore the old installation identity. Recover the original from an owner-held backup before requesting a release with that identity.
 
-## Owner steps from a mobile browser
+## Owner steps for a separately authorized new identity
 
 1. Review and approve the setup pull request. It must be merged into `main` before the manual workflows appear. Merging does not execute bootstrap.
 2. On GitHub, open Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token. Use resource owner `hddy774`, expiration **1 day**, repository access **Only select repositories → project-hora**, and repository permission **Secrets → Read and write**. Metadata read access is automatic. Leave all other optional permissions unset. Do not use a classic token or grant all repositories.

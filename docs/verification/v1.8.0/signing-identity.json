@@ -1,0 +1,13 @@
+{
+  "createdAt": "2026-10-11T10:26:58+00:00",
+  "applicationId": "com.alphaexchange.offline",
+  "keyAlias": "alpha-exchange-release",
+  "storeType": "PKCS12",
+  "algorithm": "RSA3072",
+  "signatureAlgorithm": "SHA256withRSA",
+  "certificateSha256": "0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a",
+  "validUntil": "2054-02-26T10:26:58+00:00",
+  "privateKeyProofVerified": true,
+  "gitHubSecretsConfigured": false,
+  "delivery": "Private key ZIP supplied directly to the owner"
+}

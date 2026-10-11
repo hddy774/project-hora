@@ -2,7 +2,7 @@
 
 [Project Hora 게임 목록](games/README.md): 게임마다 독립된 앱/APK를 관리합니다. 현재 등록된 게임은 ALPHA EXCHANGE입니다.
 
-v1.8.0은 저장 시 메모리 할당을 약33% 줄이고 기관 투자 계획의 반복 탐색을 최적화합니다. 같은 최대 인구 입력에서 저장을 포함한100배속 처리량은 약9% 증가했습니다. [전후 측정과 한계](docs/performance/v1.8.0/README.md), [APK·설치 안내](docs/RELEASE-v1.8.0.md)를 제공합니다. APK 빌드와 Android 실행 검증을 완료했으며, 정식 배포는 [기존 서명키 설정](docs/ANDROID-SIGNING-SETUP.md#use-the-existing-signing-key)을 기다리고 있습니다.
+v1.8.0은 저장 시 메모리 할당을 약33% 줄이고 기관 투자 계획의 반복 탐색을 최적화합니다. 같은 최대 인구 입력에서 저장을 포함한100배속 처리량은 약9% 증가했습니다. [전후 측정과 한계](docs/performance/v1.8.0/README.md), [APK·설치 안내](docs/RELEASE-v1.8.0.md)를 제공합니다. 사용자 요청에 따라 새 배포키로 APK를 서명하며, [v1.8.0 릴리스](https://github.com/hddy774/project-hora/releases/tag/alpha-exchange%2Fv1.8.0)에서 설치 파일을 확인할 수 있습니다.
 
 v1.7.0에서 추가한 **분 단위 체결·200명의 인물·기밀 투자 계획·사업과 정책 투표**를 유지합니다. 투자자100명/경영자30명/정치인50명/금융인20명과 서로 다른 프로필 일러스트200개를 제공합니다. 새 시장은 시가총액1조, 투자사별10억으로 시작합니다. 기존 APK 파일 이름 규칙은 **AlphaExchange-vX.Y.0.apk**입니다.
 
@@ -12,11 +12,11 @@ v1.7.0에서 추가한 **분 단위 체결·200명의 인물·기밀 투자 계�
 
 **[ALPHA EXCHANGE 릴리스 검색](https://github.com/hddy774/project-hora/releases?q=alpha-exchange)** · [배포·서명 안내](games/README.md#게임별-릴리스)
 
-배포가 있을 때 게임별 태그와 APK를 확인하세요. 기존 배포 정리와 서명 체계 재정비는 별도 작업이며, 이 페이지는 현재 다운로드 가능한 APK가 있다고 보장하지 않습니다.
+게임별 태그와 APK를 확인하세요. v1.8.0은 새 서명키를 사용하며 개인키와 비밀번호는 사용자에게 별도로 전달합니다. 공개 릴리스에 개인키를 올리지 않습니다.
 
 [PR #9](https://github.com/hddy774/project-hora/pull/9)의 v1.7.0 당시 개발·배포 검증은 과거 이력으로 보관합니다. [개발 완료표](docs/DEVELOPMENT-v1.7.0.md)와 [APK 검증 원자료](docs/verification/v1.7.0/public-release.json)를 제공합니다. [금융 원문 조사와 개선 기록](docs/FINANCE-RESEARCH-v1.7.0.md), [조정 가능한 규칙](src/AlphaExchange.Core/Rules/README.md), [새 저장 설계](docs/STATISTICS-STORAGE-v1.7.0.md)를 기록합니다. 이전 [시장 문제 조사](docs/MARKET-AUDIT-v1.2.0.md), [시장 설계](docs/MARKET-SYSTEM-v1.3.0.md), [검증 기록](VERIFICATION.txt)도 보관합니다.
 
-**설치 안내:** 이전 APK 배포는 GitHub Actions의 새 일회용 키로 서명했습니다. 이전 릴리스에 덮어쓸 수 없고 재설치가 필요합니다. 앱 삭제는 내부 기록을 지웁니다. v1.3부터 통계 화면에서 게임·전체 통계를 ZIP으로 내보내고 가져올 수 있습니다. **v1.2에는 내보내기 기능이 없으므로 새 버전 설치만으로 삭제한 이전 기록을 복구할 수 없습니다.** 별도로 확보한 기존 내부 JSON/시즌 파일의 자동 이전은 같은 앱 데이터 디렉터리가 남아 있을 때 동작합니다.
+**설치 안내:** v1.8.0부터 사용자에게 전달한 새 서명키를 사용합니다. 이전 앱이 있으면 삭제한 뒤 설치해 새 게임을 시작하세요. 이후 같은 키로 서명한 APK는 이 버전 위에 업데이트할 수 있습니다. 이전 기록을 유지하려는 사용자는 앱 삭제 전에 지원되는 버전에서 ZIP으로 내보내야 합니다. [서명키 보관·Actions 설정](docs/ANDROID-SIGNING-SETUP.md).
 
 ## 시장과 주주 경영
 

@@ -82,8 +82,13 @@ public sealed partial class GameEngine
             fastTrends[index]*method.FastWeight*Skill(method.FastWeight<0 ? a.SwingTrading : a.Scalping)+
             s.Sentiment*method.NewsWeight*Skill(a.News)+dividendYields[index]*method.DividendWeight*Skill(a.Valuation);
         score-=volatilities[index]*risk+(s.Report.DebtRatio*State.Government.Policy.BaseRate)*macro;
-        if(State.World is not null && t.Development!.AnalystReports.Find(r=>r.OwnerId==t.Id && r.Sector==s.Sector && r.ExpiresMinute>State.CompletedMinutes) is {} report)
-            score=score*(1-WorldRules.AnalystWeight)+report.ExpectedReturn*report.Confidence*WorldRules.AnalystWeight;
+        if(State.World is not null)
+            foreach(var report in t.Development!.AnalystReports)
+                if(report.OwnerId==t.Id && report.Sector==s.Sector && report.ExpiresMinute>State.CompletedMinutes)
+                {
+                    score=score*(1-WorldRules.AnalystWeight)+report.ExpectedReturn*report.Confidence*WorldRules.AnalystWeight;
+                    break;
+                }
         double spread=bids[index].Count>0 && asks[index].Count>0 ?
             Math.Max(0,(asks[index][0].Price-bids[index][0].Price)/(double)s.PreviousPrice) : r.BaseSpread*2;
         double roundTrip=State.Government.Policy.FeeBasisPoints/10000.0*2+spread;

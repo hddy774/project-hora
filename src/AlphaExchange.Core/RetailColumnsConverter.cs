@@ -36,9 +36,14 @@ internal sealed class RetailColumnsConverter : JsonConverter<List<Trader>>
         if(p.PropertyType==typeof(string)) return new Column<string>(p);
         if(p.PropertyType==typeof(Strategy)) return new Column<Strategy>(p);
         if(p.PropertyType==typeof(Disposition)) return new Column<Disposition>(p);
-        if(p.PropertyType==typeof(Abilities)) return new Objects<Abilities>(p,a=>a.Values().Any(v=>v!=0));
+        if(p.PropertyType==typeof(Abilities)) return new Objects<Abilities>(p,HasAbilities);
         if(p.PropertyType==typeof(InstitutionDevelopment)) return new Objects<InstitutionDevelopment>(p,a=>a is not null);
         throw new InvalidOperationException("Unregistered retail storage field: "+p.Name);
+    }
+    static bool HasAbilities(Abilities abilities)
+    {
+        for(int i=0;i<10;i++) if(abilities.Get((AbilityKind)i)!=0) return true;
+        return false;
     }
     static void Value<T>(Utf8JsonWriter writer,T value,JsonSerializerOptions options)
     {
@@ -88,7 +93,11 @@ internal sealed class RetailColumnsConverter : JsonConverter<List<Trader>>
             writer.WritePropertyName(Name); writer.WriteStartObject(); writer.WriteNumber("Length",length);
             writer.WritePropertyName("Values"); writer.WriteStartArray();
             for(int i=0;i<rows.Count;i++)
-            { var a=get(rows[i]); for(int j=0;j<a.Length;j++) if(Nonzero(a[j])) { writer.WriteNumberValue(i); writer.WriteNumberValue(j); Value(writer,a[j],options); } }
+            {
+                var a=get(rows[i]);
+                if(!MemoryMarshal.AsBytes(a.AsSpan()).ContainsAnyExcept((byte)0)) continue;
+                for(int j=0;j<a.Length;j++) if(Nonzero(a[j])) { writer.WriteNumberValue(i); writer.WriteNumberValue(j); Value(writer,a[j],options); }
+            }
             writer.WriteEndArray(); writer.WriteEndObject();
         }
         public void Read(JsonElement value,List<Trader> rows,JsonSerializerOptions options)

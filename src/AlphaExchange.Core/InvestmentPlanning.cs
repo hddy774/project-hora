@@ -26,10 +26,9 @@ public sealed partial class GameEngine
         }
         d.LastReportMinute=State.CompletedMinutes;
     }
-    InvestmentPlan PlanInvestment(Trader t,int index,InvestmentSignal signal)
+    InvestmentPlan PlanInvestment(Trader t,int index,InvestmentSignal signal,InvestmentPlan? previous)
     {
         var d=t.Development!; var stock=State.Stocks[index]; var report=d.AnalystReports.Find(r=>r.Sector==stock.Sector);
-        var previous=d.Plans.Find(p=>p.SecurityId==stock.SecurityId);
         bool breakBand=previous is not null && (stock.Price<previous.LowerPrice || stock.Price>previous.UpperPrice);
         if(previous is not null && previous.ReviewMinute>State.CompletedMinutes && previous.Horizon==signal.Horizon && !breakBand && !signal.Defensive) return previous;
         PortfolioStyle style=signal.Defensive || t.Disposition==Disposition.Cautious ? PortfolioStyle.Defensive :

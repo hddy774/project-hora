@@ -63,6 +63,15 @@ jobs:
         env:
           GAME: ${{ matrix.game }}
         run: python3 scripts/games.py build "$GAME"
+      - name: Keep unsigned APK for release signing
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.game }}-unsigned-apk
+          path: |
+            dist/${{ matrix.game }}/*.apk
+            !dist/${{ matrix.game }}/*-Signed.apk
+          if-no-files-found: error
+          retention-days: 14
       # Legacy-save/financial evidence belongs to ALPHA EXCHANGE only.
       - uses: actions/checkout@v4
         if: matrix.game == 'alpha-exchange'

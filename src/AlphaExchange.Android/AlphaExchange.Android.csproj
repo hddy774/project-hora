@@ -5,8 +5,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>AlphaExchange.App</RootNamespace>
     <ApplicationId>com.alphaexchange.offline</ApplicationId>
-    <ApplicationVersion>10</ApplicationVersion>
-    <ApplicationDisplayVersion>1.9.0</ApplicationDisplayVersion>
+    <ApplicationVersion>11</ApplicationVersion>
+    <ApplicationDisplayVersion>1.10.0</ApplicationDisplayVersion>
     <Version>$(ApplicationDisplayVersion)</Version>
     <AndroidPackageFormats>apk</AndroidPackageFormats>
     <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>

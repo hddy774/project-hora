@@ -20,17 +20,13 @@ public sealed partial class GameStore
                 if (!pendingEvents[run].Any(r => r.Id == e.Id)) pendingEvents[run].Add(new EventRecord(e.Id, e.Hour, JsonSerializer.Serialize(e)));
         lock (pending)
         {
-            pendingVotes.TryAdd(run, []); pendingBankruptcies.TryAdd(run, []); pendingReports.TryAdd(run, []);
-            foreach (var v in engine.State.CompanyVotes.Where(v => v.Status != VoteStatus.Open))
-                if (!pendingVotes[run].Any(e => e.Id == v.Id)) pendingVotes[run].Add(new(v.Id, v.CloseHour, JsonSerializer.Serialize(v)));
+            pendingBankruptcies.TryAdd(run, []); pendingReports.TryAdd(run, []);
             foreach (var b in engine.State.Bankruptcies)
                 if (!pendingBankruptcies[run].Any(e => e.Id == b.Id)) pendingBankruptcies[run].Add(new(b.Id, b.Hour, JsonSerializer.Serialize(b)));
         }
-        engine.VoteRecorded += v => { lock (pending) pendingVotes[run].Add(new(v.Id, v.CloseHour, JsonSerializer.Serialize(v))); };
         engine.BankruptcyRecorded += b => { lock (pending) pendingBankruptcies[run].Add(new(b.Id, b.Hour, JsonSerializer.Serialize(b))); };
         engine.CompanyReportRecorded += r => { lock (pending) pendingReports[run].Add((++reportSequence, CheckpointCopy.Scalar(r))); };
         engine.HistorySource = new RunQuery(this, run);
-        AttachWorld(engine, run);
         // A loaded v5 database contains immutable JSON without the fields added in v6.
         // Never re-encode committed history at attach: defaults/new measurements would
         // change its checksum. Queue only genuinely missing initial/daily records.
@@ -48,7 +44,7 @@ public sealed partial class GameStore
         }
         if (!committed.Contains((engine.State.CompletedHours, 1)) && engine.State.Minute == 0) AddPending(run, engine.CaptureSnapshot());
         foreach (var daily in engine.State.DailyHistory)
-            if (!committed.Contains((daily.Hour, 1)) && !committed.Contains((daily.Hour, 24))) AddPending(run, NormalizeLegacy(daily, engine));
+            if (!committed.Contains((daily.Hour, 1)) && !committed.Contains((daily.Hour, 24))) AddPending(run, DailyHistoryRow(daily));
         queuedDailyThrough[run] = Math.Max(queuedDailyThrough.GetValueOrDefault(run, -1), engine.State.DailyHistory.Max(d => d.Hour));
     }
     void AddPending(string run, DailySnapshot snapshot)
@@ -67,7 +63,7 @@ public sealed partial class GameStore
         var seasons = state.PendingSeasons.OrderBy(r => r.Season)
             .Select(r => new ArchivedSnapshot(r.Season, SeasonPath(state, r.Season), JsonSerializer.Serialize(r))).ToArray();
         long through = queuedDailyThrough.GetValueOrDefault(state.RunId, -1);
-        foreach (var daily in state.DailyHistory.Where(d => d.Hour > through)) AddPending(state.RunId, NormalizeLegacy(daily, engine));
+        foreach (var daily in state.DailyHistory.Where(d => d.Hour > through)) AddPending(state.RunId, DailyHistoryRow(daily));
         queuedDailyThrough[state.RunId] = state.DailyHistory.Max(d => d.Hour);
         HistoryRecord[] records;
         lock (pending) records = pending[state.RunId].Where(r => r.Hour <= state.CompletedHours).ToArray();
@@ -76,11 +72,8 @@ public sealed partial class GameStore
         lock (pending) return new SaveSnapshot(CheckpointCopy.Freeze(state, true), seasons, records)
         {
             Events = events,
-            Votes = pendingVotes[state.RunId].ToArray(),
             Bankruptcies = pendingBankruptcies[state.RunId].ToArray(),
             ReportThrough = reportSequence,
-            Activities = pendingActivities[state.RunId].ToArray(),
-            WorldVotes = pendingWorldVotes[state.RunId].ToArray(),
             Reports = state.Stocks.SelectMany(s => s.Reports).Concat(pendingReports[state.RunId].Select(p => p.Report))
             .GroupBy(r => (r.SecurityId, r.Season, r.AccountingBasis, r.IsOpening)).Select(g => CheckpointCopy.Scalar(g.Last())).ToArray()
         };

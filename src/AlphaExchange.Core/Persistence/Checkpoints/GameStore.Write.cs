@@ -10,7 +10,7 @@ public sealed partial class GameStore
         // All payloads are immutable. Compression and I/O do not read the live engine.
         byte[] stateBytes = snapshot.EncodedBytes; CheckCheckpoint(stateBytes, snapshot.RunId, snapshot.Hour, snapshot.Minute);
         if (snapshot.History.Any(r => r.Hour < 0 || r.Hour > snapshot.Hour || r.Resolution is not (1 or 24)) ||
-            snapshot.Events.Concat(snapshot.Votes).Concat(snapshot.Bankruptcies).Any(e => e.Hour < 0 || e.Hour > snapshot.Hour))
+            snapshot.Events.Concat(snapshot.Bankruptcies).Any(e => e.Hour < 0 || e.Hour > snapshot.Hour))
             throw new InvalidDataException("체크포인트 기록 범위 불일치");
         var hours = snapshot.History.Select(r =>
         {
@@ -30,7 +30,6 @@ public sealed partial class GameStore
             WriteSeasons(command, snapshot.RunId, seasons);
             WriteEvents(command, snapshot.RunId, snapshot.Events);
             WriteLifecycle(command, snapshot);
-            WriteWorld(command, snapshot);
             foreach (var report in snapshot.Reports) WriteReport(command, snapshot.RunId, report);
             command.CommandText = "INSERT INTO runs(id,hour,minute,state,hash) VALUES($run,$hour,$minute,$state,$hash) ON CONFLICT(id) DO UPDATE SET hour=excluded.hour,minute=excluded.minute,state=excluded.state,hash=excluded.hash WHERE excluded.minute>=runs.minute";
             command.Parameters.Clear(); command.Parameters.AddWithValue("$run", snapshot.RunId); command.Parameters.AddWithValue("$hour", snapshot.Hour);
@@ -46,11 +45,8 @@ public sealed partial class GameStore
             {
                 if (pending.TryGetValue(snapshot.RunId, out var records)) records.RemoveAll(r => r.Hour <= snapshot.Hour);
                 if (pendingEvents.TryGetValue(snapshot.RunId, out var events)) events.RemoveAll(e => snapshot.Events.Any(saved => saved.Id == e.Id));
-                if (pendingVotes.TryGetValue(snapshot.RunId, out var votes)) votes.RemoveAll(e => snapshot.Votes.Any(saved => saved.Id == e.Id));
                 if (pendingBankruptcies.TryGetValue(snapshot.RunId, out var bankruptcies)) bankruptcies.RemoveAll(e => snapshot.Bankruptcies.Any(saved => saved.Id == e.Id));
                 if (pendingReports.TryGetValue(snapshot.RunId, out var reports)) reports.RemoveAll(r => r.Sequence <= snapshot.ReportThrough);
-                if (pendingActivities.TryGetValue(snapshot.RunId, out var activities)) activities.RemoveAll(e => snapshot.Activities.Any(saved => saved.Id == e.Id));
-                if (pendingWorldVotes.TryGetValue(snapshot.RunId, out var worldVotes)) worldVotes.RemoveAll(e => snapshot.WorldVotes.Any(saved => saved.Id == e.Id));
             }
             if (!File.Exists(BackupPath) || Environment.TickCount64 - lastBackup >= 60000 || snapshot.Hour % 720 == 0)
             { Backup(connection, BackupPath); lastBackup = Environment.TickCount64; }

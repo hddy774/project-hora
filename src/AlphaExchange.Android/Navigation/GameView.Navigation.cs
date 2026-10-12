@@ -112,9 +112,7 @@ public sealed partial class GameView
         else if (selectedStock >= 0) selectedStock = -1;
         else if (selectedTrader >= 0) selectedTrader = -1;
         else if (showResult) showResult = false;
-        else if (!lobby && page is ScreenId.PersonProfile or ScreenId.Politics) SetPage(ScreenId.People);
-        else if (!lobby && page == ScreenId.Business) { companyStock = businessStock; SetPage(ScreenId.CompanyFinancials); }
-        else if (!lobby && page is ScreenId.CompanyFinancials or ScreenId.Ownership or ScreenId.Governance) SetPage(ScreenId.Market);
+        else if (!lobby && page is ScreenId.CompanyFinancials or ScreenId.Ownership) SetPage(ScreenId.Market);
         else if (!lobby && page == ScreenId.Bankruptcies) SetPage(ScreenId.Statistics);
         else if (!lobby) { lobby = true; auto = false; RequestSave(); }
         else return false;

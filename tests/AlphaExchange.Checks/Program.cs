@@ -30,27 +30,28 @@ void Validate(GameEngine game)
         foreach (var book in new[] { bids, asks })
             for (int j = 1; j < book.Count; j++) Check(book[j - 1].Price == book[j].Price ? book[j - 1].Id < book[j].Id : book[j].Buy ? book[j - 1].Price > book[j].Price : book[j - 1].Price < book[j].Price, "Price/time priority");
     }
-    Check(s.Tape.Count <= 160 && s.News.Count <= 40 && s.Stocks.All(x => x.History.Count <= 120) && s.Bots.All(t => t.EquityHistory.Count <= 120 && t.SeasonRanks.Count <= 12), "Bounded display buffers");
+    Check(s.Tape.Count <= 160 && s.News.Count <= 80 && s.Stocks.All(x => x.History.Count <= 120) && s.Bots.All(t => t.EquityHistory.Count <= 120 && t.SeasonRanks.Count <= 12), "Bounded display buffers");
 }
 if (args.Length == 3 && args[0] == "--crash-write") { CrashProbe.AbruptWrite(args[1], args[2]); return; }
 if (args.Contains("--client-only")) { RenderingChecks.Run(Check); CheckpointWriterChecks.Run(Check); ValuationAndRankingChecks.Run(Check); Console.WriteLine($"PASS {assertions:N0} client and valuation assertions"); return; }
 if (args.Contains("--mobile-only")) { MobileChecks.Run(Check); RenderingChecks.Run(Check); CheckpointWriterChecks.Run(Check); Console.WriteLine($"PASS {assertions:N0} mobile assertions"); return; }
-if (args.Contains("--optimization-only")) { V18OptimizationChecks.Run(Check); Console.WriteLine($"PASS {assertions:N0} v1.8 optimization assertions"); return; }
+if (args.Contains("--optimization-only")) { CheckpointEncodingChecks.Run(Check); Console.WriteLine($"PASS {assertions:N0} v1.8 optimization assertions"); return; }
 if (args.Contains("--storage-load")) { StorageLoad.Run(); return; }
-if (args.Contains("--v15-only")) { V15Checks.Run(Check, Validate); Console.WriteLine($"PASS {assertions:N0} v1.5 assertions"); return; }
-if (args.Contains("--v17-only")) { V17Checks.Run(Check, Validate); Console.WriteLine($"PASS {assertions:N0} v1.7 assertions"); return; }
-if (args.Contains("--v16-only")) { V16Checks.Run(Check, Validate); Console.WriteLine($"PASS {assertions:N0} v1.6 assertions"); return; }
+if (args.Contains("--design-only")) { MarketDesignChecks.Run(Check, Validate); Console.WriteLine($"PASS {assertions:N0} investor market assertions"); return; }
 if (args.Contains("--economy-only")) { EconomyChecks.Run(Check, Validate, Near); Console.WriteLine($"PASS {assertions:N0} economy assertions"); return; }
 if (args.Contains("--ownership-only")) { OwnershipChecks.Run(Check, Validate); Console.WriteLine($"PASS {assertions:N0} ownership assertions"); return; }
 if (args.Contains("--market-only")) { MarketChecks.Run(Check, Validate, Near); Console.WriteLine($"PASS {assertions:N0} market assertions"); return; }
+MarketDesignChecks.Run(Check, Validate);
+MinuteQueueChecks.Run(Check);
 MobileChecks.Run(Check);
 RenderingChecks.Run(Check);
 CheckpointWriterChecks.Run(Check);
 ValuationAndRankingChecks.Run(Check);
-V18OptimizationChecks.Run(Check);
+CheckpointEncodingChecks.Run(Check);
 var match = new GameEngine(42);
 Check(match.State.Bots.All(t => t.Equity(match.State.Stocks) == GameEngine.InitialCash), "Institution capital");
-Check(match.State.Retail.All(t => t.Equity(match.State.Stocks) == GameEngine.RetailInitialCapital), "Retail capital 1/100");
+match.State.Government.Policy.ShortSellingAllowed = true;
+Check(match.State.Retail.All(t => t.Equity(match.State.Stocks) == GameEngine.RetailInitialCapital), "Retail capital");
 int opening = match.State.Stocks[0].Price;
 foreach (int seller in new[] { 2, 3, 4, 5 }) TestFixtures.BuyFromBank(match, seller, 0, 2);
 long openingMatches = match.State.TotalMatches;
@@ -113,7 +114,7 @@ Check(game.State.Retail.Where(t => t.BirthHour <= game.State.CompletedHours - 24
 var stats = game.Statistics();
 Near(stats.Institutions.NetIncome + stats.Institutions.OpeningEquity, stats.Institutions.Equity, "Institution aggregate");
 Near(stats.Retail.NetIncome + stats.Retail.OpeningEquity, stats.Retail.Equity, "Retail aggregate");
-Check(stats.Sectors.Count == 6 && stats.Sectors.Sum(x => x.Capitalization) == stats.Capitalization && stats.Sectors.Sum(x => x.Volume) == stats.DayVolume, "Sector rollup");
+Check(stats.Sectors.Count == 5 && stats.Sectors.Sum(x => x.Capitalization) == stats.Capitalization && stats.Sectors.Sum(x => x.Volume) == stats.DayVolume, "Sector rollup");
 string saved = game.Serialize(); var restored = GameEngine.Deserialize(saved);
 Check(saved == restored.Serialize(), "Exact save round trip");
 for (int i = 0; i < 12; i++) { game.AdvanceHour(); restored.AdvanceHour(); }
@@ -121,33 +122,6 @@ Check(game.Serialize() == restored.Serialize(), "Deterministic continuation incl
 Validate(restored);
 store.Save(game); File.WriteAllText(store.SavePath, "{broken");
 Check(store.Load(out var recovery) is not null && recovery.Contains("복구"), "Corruption backup recovery");
-JsonObject OldFixture(uint seed)
-{
-    var old = TestFixtures.SmallMarket(seed); var stocks = old.State.Stocks;
-    for (int i = 0; i < 8; i++) TestFixtures.BuyFromBank(old, 1, i, 2);
-    TestFixtures.ClearLegacyTreasury(old);
-    foreach (var t in old.Participants)
-    {
-        for (int i = 8; i < old.State.Stocks.Count; i++) t.Cash += (long)t.Shares[i] * stocks[i].Price;
-        t.Shares = t.Shares.Take(8).ToArray(); t.AverageCost = t.AverageCost.Take(8).ToArray(); t.ReservedShares = t.ReservedShares.Take(8).ToArray();
-        t.ShortShares = new long[8]; t.ShortAveragePrice = new double[8]; t.ReservedCovers = new long[8];
-        t.OpeningCash = t.Cash;
-    }
-    old.State.Stocks.RemoveRange(8, old.State.Stocks.Count - 8);
-    old.State.News.RemoveAll(n => n.StockIndex >= 8);
-    for (int i = 0; i < 8; i++) stocks[i].TotalShares = old.Participants.Sum(t => (long)t.Shares[i]);
-    old.State.InitialSystemCash = old.Participants.Sum(t => t.Cash) + old.State.FeePool;
-    var oldJson = JsonNode.Parse(JsonSerializer.Serialize(old.State))!.AsObject(); TestFixtures.OldWorld(oldJson); return oldJson;
-}
-var legacy = OldFixture(123);
-legacy["Version"] = 2; legacy["CompletedHours"] = 720; legacy["Retail"] = new JsonArray(); legacy["Orders"] = new JsonArray();
-foreach (var node in legacy["Bots"]!.AsArray()) { node!["Fees"] = 1234; node["SeasonOpeningEquity"] = 0; }
-foreach (var node in legacy["Bots"]!.AsArray()) foreach (string key in new[] { "ShortShares", "ShortAveragePrice", "ReservedShares", "ReservedCovers", "Abilities" }) node!.AsObject().Remove(key);
-var migration = GameEngine.Deserialize(legacy.ToJsonString());
-Check(migration.State.MigratedFromV1 && migration.State.Retail.Count == 10000 && migration.State.Season == 2, "v1 finished season migration");
-Check(migration.State.Bots.All(t => t.LegacyFees == 1234 && t.Fees == 0) && migration.State.PendingSeasons.Single().Season == 1, "Legacy fees and final ranks preserved");
-Validate(migration);
-Check(migration.Statistics().Sectors.Count == 6, "Legacy sector migration");
 var corrupt = JsonNode.Parse(saved)!; corrupt["Orders"] = new JsonArray(JsonSerializer.SerializeToNode(new LimitOrder { Id = 1, OwnerId = 1, StockIndex = 0, Buy = true, Price = 10000000, Remaining = 1000000, ExpiresAt = game.State.CompletedHours + 3 }));
 try { GameEngine.Deserialize(corrupt.ToJsonString()); Check(false, "Reject corrupt reserves"); } catch (InvalidDataException) { }
 var capture = store.PrepareSave(game); long captureHour = game.State.CompletedHours;
@@ -160,9 +134,6 @@ times.Sort();
 EconomyChecks.Run(Check, Validate, Near);
 MarketChecks.Run(Check, Validate, Near);
 OwnershipChecks.Run(Check, Validate);
-V15Checks.Run(Check, Validate);
-V16Checks.Run(Check, Validate);
-V17Checks.Run(Check, Validate);
 Console.WriteLine($"PASS {assertions:N0} assertions; {seasons} seasons; {game.State.TotalMatches:N0} matched trades");
 Console.WriteLine($"Simulation wall time {watch.Elapsed.TotalSeconds:F2}s; hour p50={times[times.Count / 2]:F2}ms p95={times[(int)(times.Count * .95)]:F2}ms p99={times[(int)(times.Count * .99)]:F2}ms (100x budget 50ms/hour)");
 Console.WriteLine($"Save bytes {System.Text.Encoding.UTF8.GetByteCount(json):N0}; serialize {saveWatch.Elapsed.TotalMilliseconds:F1}ms; pending={game.State.PendingSeasons.Count}; active orders={game.State.Orders.Count}");

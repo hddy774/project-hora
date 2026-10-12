@@ -3,92 +3,139 @@ namespace AlphaExchange.Core;
 public sealed partial class GameEngine
 {
     public IReadOnlyList<AnalystReport> ConfidentialReports(int requesterId, int ownerId)
-        => requesterId == ownerId && ownerId is >= 1 and <= 100 ? Owner(ownerId).Development!.AnalystReports.AsReadOnly() : Array.Empty<AnalystReport>();
+        => requesterId == ownerId && ownerId is >= 1 and <= AiCount ? Owner(ownerId).Development!.AnalystReports.AsReadOnly() : Array.Empty<AnalystReport>();
     public IReadOnlyList<InvestmentPlan> ConfidentialPlans(int requesterId, int ownerId)
-        => requesterId == ownerId && ownerId is >= 1 and <= 100 ? Owner(ownerId).Development!.Plans.AsReadOnly() : Array.Empty<InvestmentPlan>();
-    void WriteAnalystReports(Trader t, Abilities chief)
+        => requesterId == ownerId && ownerId is >= 1 and <= AiCount ? Owner(ownerId).Development!.Plans.AsReadOnly() : Array.Empty<InvestmentPlan>();
+
+    void WriteAnalystReports(Trader trader, Abilities skills)
     {
-        var d = t.Development!;
-        if (d.LastReportMinute >= 0 && State.CompletedMinutes - d.LastReportMinute < WorldRules.ReportIntervalHours * 60 &&
-            !d.AnalystReports.Any(r => r.ExpiresMinute <= State.CompletedMinutes)) return;
+        var d = trader.Development!;
+        if (d.LastReportMinute >= 0 && State.CompletedMinutes - d.LastReportMinute < MarketRules.ReportIntervalHours * 60) return;
         d.AnalystReports.Clear();
-        foreach (var sector in State.Stocks.Select((s, i) => (s, i)).Where(x => x.s.Active).GroupBy(x => x.s.Sector))
+        foreach (var sector in sectorIds)
         {
-            int analysts = d.Employees.Where(c => c.Job == StaffJob.Analyst && (c.SectorSpecialty == sector.Key || c.SectorSpecialty == "전체")).Sum(c => c.Count);
-            double skill = (chief.Valuation + chief.News + chief.Macro) / 300.0;
-            double raw = sector.Average(x => Math.Clamp(x.s.FairValue / Math.Max(1, x.s.Price) - 1, -.5, .8) * .45 + trends[x.i] * .20 +
-                x.s.Sentiment * .25 + (World.EconomicActivity - 1) * .1 - State.Government.Policy.BaseRate * x.s.Report.DebtRatio * .1);
-            double noise = (Next() - .5) * .06 * (1 - skill) / (1 + analysts * .2);
-            double expected = Math.Clamp(raw * (.5 + skill * .5) + noise, -.5, .8), confidence = Math.Clamp(.35 + skill * .35 + analysts * .025, .1, .95);
+            double total = 0; int count = 0;
+            for (int i = 0; i < StockCount; i++)
+            {
+                var stock = State.Stocks[i];
+                if (!stock.Active || signalSectors[i] != sector.Value) continue;
+                total += Math.Clamp(stock.FairValue / stock.Price - 1, -.5, .8) * .45 + trends[i] * .2 +
+                    stock.Sentiment * .25 + (State.Environment.EconomicActivity - 1) * .1 - State.Government.Policy.BaseRate * stock.Report.DebtRatio * .1;
+                count++;
+            }
+            double skill = (skills.Valuation + skills.News + skills.Macro) / 300.0;
+            double expected = Math.Clamp(total / Math.Max(1, count) * (.6 + skill * .4), -.5, .8);
             d.AnalystReports.Add(new AnalystReport
             {
-                OwnerId = t.Id,
-                Sector = sector.Key,
-                WrittenMinute = State.CompletedMinutes,
-                ExpiresMinute = State.CompletedMinutes + WorldRules.ReportLifetimeHours * 60,
-                ExpectedReturn = expected,
-                Confidence = confidence,
-                SupportingAnalysts = analysts,
-                Thesis = $"{sector.Key} {(expected >= 0 ? "상승" : "하락")} 전망 · 가치·공개 공시·거시 수요 검토 · 대표 책임 분석"
+                OwnerId = trader.Id, Sector = sector.Key, WrittenMinute = State.CompletedMinutes,
+                ExpiresMinute = State.CompletedMinutes + MarketRules.ReportLifetimeHours * 60,
+                ExpectedReturn = expected, Confidence = Math.Clamp(.4 + skill * .5, .1, .95),
+                Thesis = $"{sector.Key} {(expected >= 0 ? "상승" : "하락")} 전망 · 실적·공개 뉴스·금리 분석"
             });
         }
         d.LastReportMinute = State.CompletedMinutes;
     }
-    InvestmentPlan PlanInvestment(Trader t, int index, InvestmentSignal signal, InvestmentPlan? previous)
+
+    void BuildPortfolioPlan(Trader trader, long equity, Abilities skills)
     {
-        var d = t.Development!; var stock = State.Stocks[index]; AnalystReport? report = null;
-        foreach (var candidate in d.AnalystReports)
-            if (candidate.Sector == stock.Sector) { report = candidate; break; }
-        bool breakBand = previous is not null && (stock.Price < previous.LowerPrice || stock.Price > previous.UpperPrice);
-        if (previous is not null && previous.ReviewMinute > State.CompletedMinutes && previous.Horizon == signal.Horizon && !breakBand && !signal.Defensive) return previous;
-        PortfolioStyle style = signal.Defensive || t.Disposition == Disposition.Cautious ? PortfolioStyle.Defensive :
-            t.Disposition == Disposition.Aggressive ? PortfolioStyle.Opportunistic : signal.Horizon == InvestmentHorizon.Long ? PortfolioStyle.Growth : PortfolioStyle.Balanced;
-        long min = Rules.Horizons[(int)signal.Horizon].MinimumHours * 60L;
-        long max = signal.Horizon == InvestmentHorizon.Long ? min * 3 : Rules.Horizons[(int)signal.Horizon].MaximumHours!.Value * 60L - 1;
-        long duration = min + (long)((max - min) * Math.Clamp(t.Patience * .65 + (report?.Confidence ?? .5) * .35, 0, 1));
-        double confidence = report?.Confidence ?? .5;
-        double band = Math.Clamp(WorldRules.PlanBandMinimum + signal.Volatility * Math.Sqrt(Math.Max(1, duration / 60.0)) * (style == PortfolioStyle.Opportunistic ? 3 : 1.5), WorldRules.PlanBandMinimum, WorldRules.PlanBandMaximum);
-        double estimate = Math.Clamp(signal.Score + (report?.ExpectedReturn ?? 0) * confidence, -band, band);
-        int lower = Math.Clamp((int)Math.Floor(stock.Price * (1 - band + Math.Min(0, estimate))), 1, 10_000_000);
-        int upper = Math.Clamp((int)Math.Ceiling(stock.Price * (1 + band + Math.Max(0, estimate))), lower, 10_000_000);
-        var plan = new InvestmentPlan
+        var d = trader.Development!;
+        Span<double> weights = stackalloc double[StockCount];
+        double cashTarget = Rules.Investment.MinimumCash;
+        decisionSecurities.Clear();
+        for (int i = 0; i < StockCount; i++) decisionSecurities.Add(State.Stocks[i].SecurityId, i);
+        d.Plans.RemoveAll(p => !decisionSecurities.ContainsKey(p.SecurityId));
+        if (decisionPlans.Length != StockCount) decisionPlans = new InvestmentPlan?[StockCount];
+        else Array.Clear(decisionPlans);
+        foreach (var plan in d.Plans) decisionPlans[decisionSecurities[plan.SecurityId]] = plan;
+        for (int i = 0; i < StockCount; i++)
         {
-            SecurityId = stock.SecurityId,
-            CreatedMinute = State.CompletedMinutes,
-            ReviewMinute = State.CompletedMinutes + Rules.Horizons[(int)signal.Horizon].ReviewHours * 60,
-            TargetMinute = State.CompletedMinutes + duration,
-            DurationMinutes = duration,
-            LowerPrice = lower,
-            UpperPrice = upper,
-            TargetWeight = signal.StockLimit * (style == PortfolioStyle.Defensive ? .65 : .9),
-            Style = style,
-            Horizon = signal.Horizon,
-            Thesis = $"{report?.Thesis ?? "가격·가치 검토"} · {duration / 1440.0:0.##}일 계획 · 범위 이탈 시 재검토"
-        };
-        if (previous is not null) d.Plans.Remove(previous); d.Plans.Add(plan); d.PlanRevision++;
+            var stock = State.Stocks[i];
+            var signal = institutionSignals[i] = Analyze(trader, i, equity, skills);
+            cashTarget = Math.Max(cashTarget, 1 - signal.TargetExposure);
+            double raw = Math.Max(0, signal.Score + .035) / (.02 + signal.Volatility * 2);
+            if (!stock.Active || stock.Report.Equity <= 0 || stock.Price > stock.FairValue * 1.45) raw = 0;
+            var existing = decisionPlans[i];
+            bool stopped = existing is not null && trader.Shares[i] > 0 && stock.Price <= existing.StopPrice;
+            bool takeProfit = existing is not null && trader.Shares[i] > 0 && stock.Price >= existing.TakeProfitPrice;
+            if (stopped || takeProfit) raw *= stopped ? 0 : .25;
+            if (i == d.CampaignIndex)
+            {
+                raw *= d.CampaignPhase switch { CampaignPhase.Accumulate => 1.5, CampaignPhase.AttractFollowers => 1.8, CampaignPhase.Distribute => .12, _ => 0 };
+                if (d.CampaignPhase == CampaignPhase.AttractFollowers && !stopped && raw > 0) raw += .2;
+            }
+            weights[i] = raw;
+            d.LastNewsSignals[i] = stock.Sentiment;
+        }
+        d.TargetCashRatio = Math.Clamp(cashTarget, Rules.Investment.MinimumCash, Rules.Investment.MaximumCash);
+        AllocatePortfolioWeights(weights, 1 - d.TargetCashRatio);
+        for (int i = 0; i < StockCount; i++)
+        {
+            var signal = institutionSignals[i];
+            var plan = PlanInvestment(trader, i, signal, decisionPlans[i], weights[i], equity);
+            decisionPlans[i] = plan;
+            d.PositionHorizons[i] = signal.Horizon;
+            d.NextReviewHours[i] = State.CompletedHours + 1;
+        }
+        d.PlanRevision++;
+    }
+
+    void AllocatePortfolioWeights(Span<double> weights, double budget)
+    {
+        // Bounded water-filling: a single cash budget, stock cap and sector cap.
+        // All targets together fit; fifteen independent maxima cannot overcommit.
+        Span<double> raw = stackalloc double[StockCount]; weights.CopyTo(raw); weights.Clear();
+        Span<double> sector = stackalloc double[MarketDefaults.SectorCount];
+        for (int pass = 0; pass < StockCount && budget > 1e-8; pass++)
+        {
+            double sum = 0;
+            for (int i = 0; i < StockCount; i++)
+                if (weights[i] < institutionSignals[i].StockLimit - 1e-8 && sector[signalSectors[i]] < institutionSignals[i].SectorLimit - 1e-8) sum += raw[i];
+            if (sum <= 0) break;
+            double available = budget;
+            for (int i = 0; i < StockCount; i++)
+            {
+                var signal = institutionSignals[i];
+                double add = Math.Min(available * raw[i] / sum,
+                    Math.Min(signal.StockLimit - weights[i], signal.SectorLimit - sector[signalSectors[i]]));
+                add = Math.Max(0, Math.Min(add, budget));
+                weights[i] += add; sector[signalSectors[i]] += add; budget -= add;
+            }
+        }
+    }
+
+    InvestmentPlan PlanInvestment(Trader trader, int index, InvestmentSignal signal, InvestmentPlan? previous, double target, long equity)
+    {
+        var stock = State.Stocks[index]; var d = trader.Development!;
+        bool renew = previous is null || previous.TargetMinute <= State.CompletedMinutes || previous.Horizon != signal.Horizon;
+        long duration = Rules.Horizons[(int)signal.Horizon].ExpectedHours * 60L;
+        double risk = Math.Clamp(.035 + signal.Volatility * 3 + trader.Risk * .04, .025, .14);
+        double reference = trader.Shares[index] > 0 && trader.AverageCost[index] > 0 ? trader.AverageCost[index] : stock.Price;
+        var plan = previous ?? new InvestmentPlan { SecurityId = stock.SecurityId };
+        if (renew)
+        {
+            plan.CreatedMinute = State.CompletedMinutes;
+            plan.DurationMinutes = duration;
+            plan.TargetMinute = plan.CreatedMinute + duration;
+            plan.StopPrice = Quote(reference * (1 - risk), false);
+            plan.TakeProfitPrice = Quote(reference * (1 + risk * 2), true);
+        }
+        plan.ReviewMinute = State.CompletedMinutes + ExecutionDelay(trader, trader.Abilities);
+        plan.LowerPrice = Quote(stock.Price * (1 - Math.Clamp(risk, MarketRules.PlanBandMinimum, MarketRules.PlanBandMaximum)), false);
+        plan.UpperPrice = Quote(stock.Price * (1 + Math.Clamp(risk, MarketRules.PlanBandMinimum, MarketRules.PlanBandMaximum)), true);
+        plan.TargetWeight = target;
+        plan.MaximumWeight = signal.StockLimit;
+        plan.ExpectedReturn = signal.Score;
+        plan.Confidence = Math.Clamp(.45 + trader.Abilities.Valuation / 250.0 - signal.Volatility * 3, .1, .9);
+        plan.EstimatedCost = State.Government.Policy.FeeBasisPoints * .0002 + SpreadRatio(index);
+        plan.LossBudget = (long)(Math.Max(0, equity) * target * risk);
+        plan.Style = signal.Defensive ? PortfolioStyle.Defensive : trader.Disposition == Disposition.Aggressive ? PortfolioStyle.Opportunistic : PortfolioStyle.Balanced;
+        plan.Horizon = signal.Horizon;
+        if (renew) plan.Thesis = $"가치 {stock.FairValue / stock.Price - 1:P1} · 개미 수요 {RetailPressure(index):+0.00;-0.00;0.00} · 호가 불균형 {BookImbalance(index):+0.00;-0.00;0.00}";
+        if (renew) plan.ExitCondition = $"손절 {KoreanNumber.Compact(plan.StopPrice)} / 익절 {KoreanNumber.Compact(plan.TakeProfitPrice)} · 기한·뉴스·비중 이탈 재평가";
+        if (previous is null) d.Plans.Add(plan);
         return plan;
     }
-    public string? HireSpecialist(int traderId, EmployeeGrade grade, StaffJob job, string sector = "전체", int count = 1)
-    {
-        if (traderId is < 1 or > 100 || !Enum.IsDefined(job) || sector != "전체" && !State.Stocks.Any(s => s.Sector == sector)) return "직무·업종 값이 올바르지 않습니다.";
-        var weights = WorldRules.Jobs[(int)job].Weights;
-        var role = (AbilityKind)Array.IndexOf(weights, weights.Max());
-        var t = Owner(traderId); var d = t.Development!; int before = d.EmployeeCount;
-        string? error = HireEmployee(traderId, grade, role, count); if (error is not null) return error;
-        // Separate contracts even when two professions share the same dominant ability.
-        var legacy = d.Employees.First(c => c.Grade == grade && c.Role == role && c.Job is null);
-        legacy.Count -= count; if (legacy.Count == 0) d.Employees.Remove(legacy);
-        var cohort = d.Employees.Find(c => c.Grade == grade && c.Job == job && c.SectorSpecialty == sector);
-        if (cohort is null) d.Employees.Add(new EmployeeCohort { Grade = grade, Role = role, Job = job, SectorSpecialty = sector, Count = count }); else cohort.Count += count;
-        d.LastReportMinute = -1; d.NextExecutionMinute = State.CompletedMinutes;
-        if (d.EmployeeCount != before + count) throw new InvalidOperationException("고용 수량 불일치");
-        return null;
-    }
-    int ExecutionDelay(Trader t, Abilities skills)
-    {
-        int execution = 0;
-        foreach (var cohort in t.Development!.Employees)
-            if (cohort.Job == StaffJob.ExecutionTrader) execution = checked(execution + cohort.Count);
-        return Math.Clamp((int)Math.Ceiling(60 / (1 + execution * .3 + skills.Execution / 100.0)), 1, 60);
-    }
+
+    int ExecutionDelay(Trader trader, Abilities skills)
+        => Math.Clamp(30 - skills.Execution / 10 - (int)(trader.Risk * 5), 15, 30);
 }

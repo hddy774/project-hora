@@ -26,7 +26,6 @@ public sealed partial class GameView
         Hit(74, y, 252, 48, PickOwnershipCompany);
         Button("→", 335, y, 45, 48, () => OpenOwnership((ownershipStock + 1) % S.Stocks.Count), false); y += 63;
         y = SectorTabs(y);
-        Button("주주총회 · 기업 전략과 의결권 →", 20, y, 360, 42, () => OpenGovernance(ownershipStock), false); y += 57;
         if (!stock.Active)
         {
             y = Statement("합병 완료 회사", y, [("현재 발행 주식", Money(structure.IssuedShares) + "주"), ("현재 시가총액", "상장 종료")]);

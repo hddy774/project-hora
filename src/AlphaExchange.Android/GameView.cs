@@ -101,7 +101,7 @@ public sealed partial class GameView : View
     static long Now => System.Environment.TickCount64;
     static AColor Hex(string value) => AColor.ParseColor(value);
     static string Money(long amount) => amount.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
-    string ShortMoney(long amount) => game?.State.World?.NumberFormat == 1 ? KoreanNumber.Full(amount) : KoreanNumber.Compact(amount);
+    string ShortMoney(long amount) => game?.State.Environment.NumberFormat == 1 ? KoreanNumber.Full(amount) : KoreanNumber.Compact(amount);
     static string Percent(double value) => $"{(value >= 0 ? "+" : "")}{value * 100:0.00}%";
     static AColor Direction(double value) => value >= 0 ? Teal : Red;
 }

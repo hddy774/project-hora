@@ -7,11 +7,11 @@ namespace AlphaExchange.App;
 
 public sealed partial class GameView
 {
-    const int ExportRequest = 420, ImportRequest = 421;
-    async void PickBackup(bool export)
+    const int ExportRequest = 420, ImportRequest = 421, LegacyExportRequest = 422;
+    async void PickBackup(bool export, bool legacy = false)
     {
         if (fileBusy || Context is not Activity activity) return;
-        if (export && game is null) { Notify("먼저 시장을 시작하세요."); return; }
+        if (export && !legacy && game is null) { Notify("먼저 시장을 시작하세요."); return; }
         auto = false;
         fileBusy = true; Invalidate();
         bool captured = true;
@@ -27,26 +27,27 @@ public sealed partial class GameView
         {
             var intent = new Intent(export ? Intent.ActionCreateDocument : Intent.ActionOpenDocument);
             intent.AddCategory(Intent.CategoryOpenable); intent.SetType("application/zip");
-            if (export) intent.PutExtra(Intent.ExtraTitle, $"AlphaExchange-v{BuildVersion}-history.zip");
-            activity.StartActivityForResult(intent, export ? ExportRequest : ImportRequest);
+            if (export) intent.PutExtra(Intent.ExtraTitle, legacy ? "AlphaExchange-previous-market-archive.zip" : $"AlphaExchange-v{BuildVersion}-history.zip");
+            activity.StartActivityForResult(intent, legacy ? LegacyExportRequest : export ? ExportRequest : ImportRequest);
         }
         catch (ActivityNotFoundException) { fileBusy = false; Notify("기기의 파일 선택 앱을 사용할 수 없습니다."); }
     }
     public async void HandleBackupResult(int requestCode, Result resultCode, Intent? intent)
     {
-        if (requestCode is not (ExportRequest or ImportRequest)) return;
+        if (requestCode is not (ExportRequest or ImportRequest or LegacyExportRequest)) return;
         if (resultCode != Result.Ok || intent?.Data is null) { fileBusy = false; Invalidate(); return; }
         var uri = intent.Data;
         try
         {
-            if (requestCode == ExportRequest)
+            if (requestCode is ExportRequest or LegacyExportRequest)
             {
                 await sessionStorage.Enqueue(() => Task.Run(() =>
                 {
                     using var output = Context!.ContentResolver!.OpenOutputStream(uri, "wt") ?? throw new IOException();
-                    store.Export(output);
+                    if (requestCode == LegacyExportRequest) store.ExportLegacy(output);
+                    else store.Export(output);
                 }));
-                Notify("게임과 전체 통계를 파일로 내보냈습니다.");
+                Notify(requestCode == LegacyExportRequest ? "이전 시장 원본을 보관 파일로 내보냈습니다." : "게임과 전체 통계를 파일로 내보냈습니다.");
             }
             else
             {
@@ -119,6 +120,11 @@ public sealed partial class GameView
         Text("모든 배속의 시간별 기록을 이어서 보관합니다.", 21, y + 6, 10, Muted); y += 24;
         Button("전체 기록 내보내기 · 게임 + 통계 CSV", 20, y, 360, 42, () => PickBackup(true), false); y += 54;
         Button("기록 파일 가져오기 · 게임 복원", 20, y, 360, 42, () => PickBackup(false), false); y += 54;
+        if (store.HasLegacyMarket)
+        {
+            Button("이전 30종목 시장 · 원본 보관본 내보내기", 20, y, 360, 42, () => PickBackup(true, true), false); y += 54;
+            y = Wrap("이전 시장은 원본 그대로 보관합니다. 15종목 시장과 규칙이 달라 현재 버전에서 이어갈 수 없습니다.", 21, y, 355, 11, Muted, 20) + 14;
+        }
         return Wrap("가져오기 전 현재 기록도 보존됩니다. 앱 삭제 전에는 기기 파일로 내보내세요.", 21, y + 8, 355, 11, Muted, 20) + 15;
     }
 }

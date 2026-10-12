@@ -25,7 +25,6 @@ public sealed class Trader : ICashAccount
     public long[] ReservedCovers { get; set; } = new long[MarketDefaults.StockCount];
     public Abilities Abilities { get; set; } = new();
     public InstitutionDevelopment? Development { get; set; }
-    public long StaffCosts { get; set; }
     public Disposition Disposition { get; set; }
     public double Integrity { get; set; } = .8;
     public int CreditScore { get; set; } = 70;
@@ -170,7 +169,6 @@ public sealed class Trader : ICashAccount
         result.ShortDividendDebt += ShortDividendDebt;
         result.WageIncome += WageIncome;
         result.Consumption += Consumption;
-        result.StaffCosts += StaffCosts;
         return gross - shortDebt - LoanDebt - FineDebt - ShortDividendDebt - TaxDebt;
     }
 }

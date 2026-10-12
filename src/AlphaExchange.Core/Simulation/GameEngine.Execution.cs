@@ -21,7 +21,6 @@ public sealed partial class GameEngine
             if (State.Hour == 0) { s.DayOpenPrice = s.Price; s.DayVolume = s.DayTurnover = 0; }
         }
         PrepareMarketSignals();
-        MakeBankMarket();
         int count = Math.Min(State.Retail.Count, 300 + (int)(Next() * 501)); State.ActiveRetailLastHour = count;
         var actors = actorBuffer.AsSpan(0, AiCount + count);
         for (int i = 0; i < AiCount; i++) actors[i] = i + 1;
@@ -34,16 +33,17 @@ public sealed partial class GameEngine
     public void AdvanceMinute()
     {
         if (State.Minute == 0) BeginHour(); else ExpireOrders();
+        PrepareMarketSignals();
+        if (State.CompletedMinutes >= State.Environment.NextEventMinute) PublishNews();
         int minute = State.Minute, count = State.MinuteActors.Count;
         int first = count * minute / 60, end = count * (minute + 1) / 60;
         for (int i = first; i < end; i++)
         { var t = Owner(State.MinuteActors[i]); if (t.IsRetail) DecideRetail(t); else DecideInstitution(t); }
-        for (int id = minute + 1; id <= AiCount; id += 60)
+        for (int id = minute % 5 + 1; id <= AiCount; id += 5)
         {
             var t = Owner(id); var d = t.Development!;
-            if (d.NextExecutionMinute <= State.CompletedMinutes && d.Employees.Any(c => c.Job == StaffJob.ExecutionTrader)) DecideInstitution(t);
+            if (d.NextExecutionMinute <= State.CompletedMinutes) DecideInstitution(t);
         }
-        if (minute % 15 == 14) ReplenishLiquidity();
         State.CompletedMinutes++;
         if (State.Minute == 0) EndHour();
     }
@@ -60,21 +60,17 @@ public sealed partial class GameEngine
         }
         foreach (var t in State.Bots) Append(t.EquityHistory, t.Equity(State.Stocks), HistoryLimit);
         foreach (var stock in State.Stocks.Where(s => s.Active)) { stock.ShareHourSum = checked(stock.ShareHourSum + stock.OutstandingShares); stock.ShareHours++; }
-        UpdateOperations();
-        if (State.Hour == 0) { ServiceStaff(); ServiceFinance(); UpdateWorldDay(); }
+        if (State.Hour == 0) ServiceFinance();
         bool monthEnd = State.CompletedHours % (SeasonLength * 24) == 0;
         if (monthEnd)
         {
             CancelAllOrders(); closingBooks = true;
             try { CloseBusinesses(); } finally { closingBooks = false; }
         }
-        UpdateGovernance();
         ProcessBankruptcies();
         UpdatePerformance();
         if (State.Hour == 0) Append(State.DailyHistory, CaptureSnapshot(), 121);
-        if (monthEnd) { FinishSeason(State.Season - 1); RefreshEconomy(); }
-        ReplenishLiquidity();
+        if (monthEnd) { FinishSeason(State.Season - 1); }
         RecordHour();
-        if (State.Hour % 6 == 0) PublishNews();
     }
 }

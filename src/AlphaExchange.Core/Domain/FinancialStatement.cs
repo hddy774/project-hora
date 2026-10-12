@@ -3,7 +3,6 @@ namespace AlphaExchange.Core;
 
 public sealed class FinancialStatement
 {
-    public long StaffCosts { get; set; }
     public long TaxDebt { get; set; }
     public long TaxesPaid { get; set; }
     public int Count { get; set; }
@@ -45,8 +44,8 @@ public sealed class FinancialStatement
     public long Equity => Assets - Liabilities;
     public double UnrealizedProfit => Holdings - Cost + ShortEntry - ShortDebt;
     public double ValuationChange => UnrealizedProfit - OpeningUnrealized;
-    public double NetIncome => RealizedProfit + ValuationChange - Fees - Taxes - InterestExpense - BorrowFees - Fines + Subsidies + DebtRelief + DividendIncome - DividendTax - ShortDividendExpense + WageIncome - Consumption - StaffCosts;
-    public long NetCashFlow => Sales - Purchases - Fees - TaxesPaid - InterestPaid - BorrowFees - FinesPaid + Subsidies + Borrowed - Repaid + DividendIncome - DividendTax - ShortDividendPaid + WageIncome - Consumption - StaffCosts;
+    public double NetIncome => RealizedProfit + ValuationChange - Fees - Taxes - InterestExpense - BorrowFees - Fines + Subsidies + DebtRelief + DividendIncome - DividendTax - ShortDividendExpense + WageIncome - Consumption;
+    public long NetCashFlow => Sales - Purchases - Fees - TaxesPaid - InterestPaid - BorrowFees - FinesPaid + Subsidies + Borrowed - Repaid + DividendIncome - DividendTax - ShortDividendPaid + WageIncome - Consumption;
     public void Add(FinancialStatement s)
     {
         TaxesPaid += s.TaxesPaid; TaxDebt += s.TaxDebt;
@@ -59,6 +58,5 @@ public sealed class FinancialStatement
         DividendIncome += s.DividendIncome; DividendTax += s.DividendTax; ShortDividendExpense += s.ShortDividendExpense;
         ShortDividendPaid += s.ShortDividendPaid; ShortDividendDebt += s.ShortDividendDebt;
         WageIncome += s.WageIncome; Consumption += s.Consumption;
-        StaffCosts += s.StaffCosts;
     }
 }

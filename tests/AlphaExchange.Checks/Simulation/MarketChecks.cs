@@ -9,7 +9,7 @@ static class MarketChecks
     public static void Run(Action<bool, string> check, Action<GameEngine> validate, Action<double, double, string, double> near)
     {
         var g = TestFixtures.SmallMarket(130);
-        check(g.State.Stocks.Count == 30 && g.State.Stocks.GroupBy(s => s.Sector).All(sector => sector.Count() == 5) && g.State.SecurityIds.Distinct().Count() == 30, "Six sectors, five distinct companies each");
+        check(g.State.Stocks.Count == 15 && g.State.Stocks.GroupBy(s => s.Sector).All(sector => sector.Count() == 3) && g.State.SecurityIds.Distinct().Count() == 15, "Five sectors, three distinct companies each");
         check(g.Participants.All(t => t.Cash >= 0) && g.State.Stocks.Any(s => s.CostRatio != g.State.Stocks[0].CostRatio), "Budgeted endowment and distinct business cost profiles");
         var s = g.State.Stocks[0]; string id = s.SecurityId;
         check(g.SubmitOrder(1, 0, false, s.Price, 2, shortSale: true) is null && g.SubmitOrder(2, 0, true, s.Price, 2) is null, "Dividend test borrows and sells two bank shares");
@@ -38,9 +38,9 @@ static class MarketChecks
         check(g.Buyback(id, 3, 1, true) is null && s.TotalShares == issued + 2, "Funded repurchase and retirement"); validate(g);
         int target = g.State.Stocks.FindIndex(x => x.Sector == s.Sector && x.SecurityId != id); string targetId = g.State.Stocks[target].SecurityId;
         check(g.MergeCompanies(id, targetId) is null, "Same-sector stock exchange merger");
-        check(!g.State.Stocks[0].Active && g.Participants.All(t => t.Shares[0] == 0 && t.ShortShares[0] == 0) && g.State.Stocks.Count == 30, "Merger keeps historical security ID as a tombstone"); validate(g);
+        check(!g.State.Stocks[0].Active && g.Participants.All(t => t.Shares[0] == 0 && t.ShortShares[0] == 0) && g.State.Stocks.Count == 15, "Merger keeps historical security ID as a tombstone"); validate(g);
         for (int i = 0; i < 720; i++) g.AdvanceHour();
-        check(g.State.Stocks.Count(x => x.Active) == 30 && g.State.Stocks.Where(x => x.Active).GroupBy(x => x.Sector).All(group => group.Count() == 5), "Paid IPO replenishes sector after merger");
+        check(g.State.Stocks.Count(x => x.Active) == 15 && g.State.Stocks.Where(x => x.Active).GroupBy(x => x.Sector).All(group => group.Count() == 3), "Paid IPO replenishes sector after merger");
         foreach (var stock in g.State.Stocks.Where(x => x.Active))
         { var r = stock.Report; check(r.OpeningCash + r.OperatingCashFlow + r.InvestingCashFlow + r.FinancingCashFlow == r.Cash, "Post-action monthly cash flow"); check(r.OpeningEquity + r.NetIncome - r.Dividends + r.CapitalChange == r.Equity, "Post-action monthly equity"); }
         validate(g);
@@ -53,7 +53,7 @@ static class MarketChecks
         check(taxed.SubmitOrder(1, 0, false, 1, 1) is null && taxed.SubmitOrder(3, 0, true, 1, 1) is null, "Loss offsets earlier gain");
         check(taxed.Owner(1).Taxes == 0 && taxed.State.Government.TaxRefunds == taxPaid, "Same-season net loss refunds earlier tax"); validate(taxed);
         StorageChecks(check, validate);
-        Console.WriteLine("PASS market: 30 companies, real dividends, lender compensation, share actions, funded capital, index neutrality, post-action statements, hourly storage, migration, recovery and file portability");
+        Console.WriteLine("PASS market: 15 companies, real dividends, lender compensation, share actions, funded capital, index neutrality, post-action statements, hourly storage, legacy preservation, recovery and file portability");
     }
     static void StorageChecks(Action<bool, string> check, Action<GameEngine> validate)
     {
@@ -85,21 +85,12 @@ static class MarketChecks
             var replacement = TestFixtures.SmallMarket(898); freshStore.Attach(replacement);
             check(freshStore.LastCommittedHour == 0, "New market resets its committed-hour display");
             backup.Position = 0; imported = freshStore.Import(backup);
-            var old = V4Fixture(); string original = old.Serialize(); string legacyFolder = Path.Combine(folder, "legacy"); Directory.CreateDirectory(legacyFolder); File.WriteAllText(Path.Combine(legacyFolder, "market-v4.json"), original);
-            var migratedStore = new GameStore(legacyFolder); var migrated = migratedStore.Load(out var message)!;
-            check(migrated.State.MigratedFromV4 && message.Contains("이전") && File.ReadAllText(Path.Combine(legacyFolder, "market-v4.json")) == original, "Legacy migration preserves original file");
-            check(old.Participants.Zip(migrated.Participants).All(pair => pair.First.Cash == pair.Second.Cash && pair.First.Shares.SequenceEqual(pair.Second.Shares.Take(10))), "v4 cash and all original ten holdings are unchanged");
-            check(migrated.State.Stocks.Count == 30 && migrated.State.Stocks.Skip(10).All(s => s.FundedIpo) && migrated.State.OpeningSnapshot!.PriceIndex == 1000, "Migration funds new IPOs and normalizes historical opening index"); validate(migrated);
-            var legacyPoints = migrated.HistorySource!.Range(0, old.State.CompletedHours);
-            check(legacyPoints.All(s => s.Hour == old.State.CompletedHours || s.Resolution == 24) && legacyPoints.Any(s => s.LegacyNoFundamentals), "Old daily data stays daily; missing hourly/financial data is not invented");
-            var ipo = migrated.State.Stocks[10]; int ipoIndex = 10;
-            check(migrated.SubscribeIssue(1, ipo.SecurityId, 2) is null, "Funded odd-lot IPO shares");
-            check(migrated.SubmitOrder(3, ipoIndex, false, ipo.Price, 1, shortSale: true) is null && migrated.SubmitOrder(2, ipoIndex, true, ipo.Price, 1) is null, "Odd-lot short shares");
-            long longCash = migrated.Owner(1).Cash, shortBefore = migrated.Owner(3).ShortShares[ipoIndex], ipoVolume = ipo.TotalVolume;
-            check(migrated.SplitShares(ipo.SecurityId, 1, 3) is null && migrated.Owner(1).Shares[ipoIndex] == 0 && migrated.Owner(1).Cash == longCash + 2 * ipo.Price / 3, "Reverse split pays long fractional rights");
-            check(shortBefore == 1 && migrated.Owner(3).ShortShares[ipoIndex] == 0 && ipo.TotalVolume == ipoVolume, "Reverse split settles borrower fraction without fake trades"); validate(migrated);
-            migrated.AdvanceHour(); migratedStore.Save(migrated);
-            check(migratedStore.ReadEvents(migrated.State, ipo.SecurityId).Any(e => e.Kind == CorporateEventKind.ReverseSplit), "Corporate events persist outside bounded world cache");
+            string legacyFolder = Path.Combine(folder, "legacy"); Directory.CreateDirectory(legacyFolder);
+            byte[] original = [1, 3, 5, 7, 9]; File.WriteAllBytes(Path.Combine(legacyFolder, "history-v5.sqlite"), original);
+            var legacyStore = new GameStore(legacyFolder);
+            check(legacyStore.Load(out var message) is null && message.Contains("보관") && legacyStore.HasLegacyMarket, "Old market is explicitly archived rather than mixed into fifteen securities");
+            var current = new GameEngine(991); legacyStore.Save(current);
+            check(File.ReadAllBytes(Path.Combine(legacyFolder, "history-v5.sqlite")).SequenceEqual(original) && legacyStore.Load(out _)!.State.Stocks.Count == 15, "Starting the new schema never overwrites the legacy source");
             store.Save(loaded);
             using (var connection = new SqliteConnection($"Data Source={store.SavePath};Pooling=False"))
             { connection.Open(); using var command = connection.CreateCommand(); command.CommandText = "CREATE TRIGGER fail_writes BEFORE INSERT ON hours BEGIN SELECT RAISE(FAIL,'simulated storage failure'); END"; command.ExecuteNonQuery(); }
@@ -119,36 +110,5 @@ static class MarketChecks
             check(freshStore.Load(out _)!.State.CompletedHours == imported.State.CompletedHours, "Failed import leaves game intact");
         }
         finally { Directory.Delete(folder, true); }
-    }
-    static GameEngine V4Fixture()
-    {
-        var g = TestFixtures.SmallMarket(47);
-        for (int i = 0; i < 10; i++) TestFixtures.BuyFromBank(g, 1, i, 2);
-        TestFixtures.ClearLegacyTreasury(g);
-        foreach (var t in g.Participants)
-        {
-            for (int i = 10; i < g.State.Stocks.Count; i++) t.Cash += g.State.Stocks[i].Value(t.Shares[i]);
-            t.Shares = t.Shares.Take(10).ToArray(); t.AverageCost = t.AverageCost.Take(10).ToArray(); t.ReservedShares = new long[10]; t.ShortShares = new long[10]; t.ShortAveragePrice = new double[10]; t.ReservedCovers = new long[10];
-            t.OpeningCash = t.Cash;
-            t.BuyCashFlow = t.SellCashFlow = t.Fees = 0; t.OpeningEquity = t.Cash + Enumerable.Range(0, 10).Sum(i => g.State.Stocks[i].Value(t.Shares[i]));
-        }
-        g.State.Stocks.RemoveRange(10, 20); g.State.SecurityIds = g.State.Stocks.Select(s => s.SecurityId).ToList(); g.State.News.Clear();
-        g.State.Bank.ShareInventory = g.State.Bank.ShareInventory.Take(10).ToArray(); g.State.Bank.ReservedLending = new long[10];
-        for (int i = 0; i < 10; i++) g.State.Stocks[i].TotalShares = g.Participants.Sum(t => t.Shares[i]) + g.State.Bank.ShareInventory[i];
-        // Original v4 book scope excluded companies and real-economy cash.
-        g.State.InitialSystemCash = g.Participants.Sum(t => t.Cash) + g.State.Bank.Cash + g.State.Government.Cash + g.State.FeePool;
-        var json = JsonNode.Parse(JsonSerializer.Serialize(g.State))!; TestFixtures.OldWorld(json.AsObject()); json["Version"] = 4; json["CompletedHours"] = 48;
-        var opening = g.CaptureSnapshot(); opening.Capitalization = g.State.Stocks.Sum(s => s.MarketCap); opening.SecurityIds = []; opening.StockShares = []; opening.StockSectors = []; opening.MarkPrices = [];
-        var day = JsonSerializer.Deserialize<DailySnapshot>(JsonSerializer.Serialize(opening))!; day.Hour = 24;
-        json["OpeningSnapshot"] = JsonSerializer.SerializeToNode(opening); json["SeasonSnapshot"] = JsonSerializer.SerializeToNode(opening);
-        json["DailyHistory"] = new JsonArray(JsonSerializer.SerializeToNode(opening), JsonSerializer.SerializeToNode(day));
-        // Do not deserialize before emitting an actual legacy fixture.
-        return LegacyEnvelope(json.ToJsonString());
-    }
-    static GameEngine LegacyEnvelope(string json)
-    {
-        // Keep the fixture in its unupgraded representation through the public state object.
-        var game = TestFixtures.SmallMarket(47); var state = JsonSerializer.Deserialize<GameState>(json)!;
-        typeof(GameEngine).GetProperty(nameof(GameEngine.State))!.SetValue(game, state); return game;
     }
 }

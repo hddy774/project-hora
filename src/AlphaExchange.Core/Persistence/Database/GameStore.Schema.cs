@@ -30,21 +30,16 @@ public sealed partial class GameStore
             CREATE TABLE IF NOT EXISTS events(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,security TEXT NOT NULL,
                 other TEXT NOT NULL,kind INTEGER NOT NULL,data TEXT NOT NULL,PRIMARY KEY(run,id));
             CREATE INDEX IF NOT EXISTS event_security ON events(run,security,id);
-            CREATE TABLE IF NOT EXISTS votes(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,security TEXT NOT NULL,
-                data TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(run,id));
-            CREATE INDEX IF NOT EXISTS vote_security ON votes(run,security,id);
             CREATE TABLE IF NOT EXISTS bankruptcies(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,kind INTEGER NOT NULL,
                 entity TEXT NOT NULL,data TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(run,id));
             CREATE TABLE IF NOT EXISTS reports(run TEXT NOT NULL,security TEXT NOT NULL,season INTEGER NOT NULL,basis INTEGER NOT NULL,
                 opening INTEGER NOT NULL,data BLOB NOT NULL,PRIMARY KEY(run,security,season,basis,opening));
             CREATE TABLE IF NOT EXISTS seasons(run TEXT NOT NULL,season INTEGER NOT NULL,data BLOB NOT NULL,PRIMARY KEY(run,season));
-            CREATE TABLE IF NOT EXISTS activities(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,data TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(run,id));
-            CREATE TABLE IF NOT EXISTS world_votes(run TEXT NOT NULL,id INTEGER NOT NULL,hour INTEGER NOT NULL,data TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(run,id));
-            INSERT OR IGNORE INTO meta(key,value) VALUES('version','5');
+            INSERT OR IGNORE INTO meta(key,value) VALUES('version','6');
             """;
         cmd.ExecuteNonQuery();
         cmd.CommandText = "SELECT value FROM meta WHERE key='version'";
-        if ((string?)cmd.ExecuteScalar() != "5") throw new InvalidDataException("통계 파일 버전을 지원하지 않습니다.");
+        if ((string?)cmd.ExecuteScalar() != "6") throw new InvalidDataException("통계 파일 버전을 지원하지 않습니다.");
         cmd.CommandText = "PRAGMA table_info(hours)";
         var columns = new HashSet<string>(); using (var reader = cmd.ExecuteReader()) while (reader.Read()) columns.Add(reader.GetString(1));
         foreach (string name in new[] { "price_index", "return_index", "investor_cash", "institution_equity", "retail_equity", "institution_income", "retail_income" })

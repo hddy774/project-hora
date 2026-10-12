@@ -10,8 +10,6 @@ public sealed partial class GameEngine
     {
         foreach (var order in State.Orders.Where(o => o.StockIndex == index && o.Remaining > 0).ToArray()) CancelOrder(order.Id);
         State.Orders.RemoveAll(o => o.Remaining == 0);
-        foreach (var op in State.Operations.Where(o => o.StockIndex == index && o.Status == OperationStatus.Active))
-        { op.Status = OperationStatus.Completed; op.Detail = "기업행동으로 공동 매집 종료"; }
     }
     void LogCorporate(Stock stock, CorporateEventKind kind, string detail, long amount = 0,
         long numerator = 1, long denominator = 1, string other = "", long shares = 0)
@@ -308,7 +306,7 @@ public sealed partial class GameEngine
             AverageShares = 0
         };
         stock.Reports = [CopyReport(stock.Report)];
-        if (slot < 0) { slot = State.Stocks.Count; State.Stocks.Add(stock); ResizeSecurities(); }
+        if (slot < 0) throw new InvalidOperationException("15개 종목의 기존 슬롯만 교체할 수 있습니다.");
         else { State.Stocks[slot] = stock; State.SecurityIds[slot] = id; }
         if (capital > State.Bank.Cash - State.Bank.MarketAccount.ReservedCash && capital - State.Bank.Cash > State.RealEconomy.Cash / 2)
         { stock.Active = false; stock.WaitingForCapital = true; return 0; }
@@ -330,15 +328,15 @@ public sealed partial class GameEngine
         stock.Report.FixedAssets += equipment; stock.Report.InvestingCashFlow -= equipment;
         stock.BaseRevenue = capital / 20; stock.InitialFixedAssets = equipment;
         stock.Report.OutstandingShares = stock.Report.AverageShares = stock.OutstandingShares;
-        stock.Reports = [CopyReport(stock.Report)]; AdjustDivisor(before);
-        LogCorporate(stock, CorporateEventKind.Ipo, $"{stock.Name} 신규 상장 · 자사주 50%/은행 50% · 실제 납입", capital, shares: stock.TotalShares);
-        OpenCompanyVotes(stock);
+        stock.Reports = [CopyReport(stock.Report)];
+        AllocateListingShares(slot);
+        AdjustDivisor(before);
+        LogCorporate(stock, CorporateEventKind.Ipo, $"{stock.Name} 신규 상장 · 실제 납입·투자자 공모 배정", capital, shares: stock.TotalShares);
         return capital;
     }
     long ListingCapital(int price)
     {
-        long shares = State.World is null ? 1000 : WorldRules.InitialFloatShares > 0 ? WorldRules.InitialFloatShares :
-            Math.Max(1, WorldRules.MarketCapitalization / CompanyCatalog.Companies.Count() / price);
+        long shares = Math.Max(1, MarketRules.MarketCapitalization / StockCount / price);
         return checked(shares * price);
     }
     void RestoreSectorListings()
@@ -346,22 +344,21 @@ public sealed partial class GameEngine
         foreach (var definition in CompanyCatalog.Companies)
             if (!State.Stocks.Any(s => (s.Active || s.WaitingForCapital) && s.Symbol == definition.Symbol)) ListCompany(definition);
     }
-    void RunCorporatePolicy()
+    void ApplyRandomCorporateEvent()
     {
-        long completedSeason = State.Season - 1;
-        if (completedSeason % 4 == 0)
+        // Monthly settlement is deterministic; corporate decisions are random
+        // events with explicit accounting, never decisions by removed roles.
+        var active = State.Stocks.Where(s => s.Active).ToArray();
+        if (active.Length == 0) return;
+        var company = active[(int)(Next() * active.Length)];
+        double eventRoll = Next();
+        if (eventRoll < .25) SeekTreasuryOwnership(company);
+        else if (eventRoll < .5 && company.Price > 60000) SplitShares(company.SecurityId, 2);
+        else if (eventRoll < .6 && company.Price < 300) SplitShares(company.SecurityId, 1, 5);
+        else if (eventRoll > .96)
         {
-            var candidate = State.Stocks.Where(s => s.Active && s.Price > 60000).OrderByDescending(s => s.Price).FirstOrDefault();
-            if (candidate is not null) SplitShares(candidate.SecurityId, 2);
-            var low = State.Stocks.Where(s => s.Active && s.Price < 300).OrderBy(s => s.Price).FirstOrDefault();
-            if (low is not null) SplitShares(low.SecurityId, 1, 5);
+            var partner = active.FirstOrDefault(s => s.Sector == company.Sector && s != company);
+            if (partner is not null) MergeCompanies(company.SecurityId, partner.SecurityId);
         }
-        if (completedSeason > 0 && completedSeason % 12 == 0)
-        {
-            var sector = State.Stocks.Where(s => s.Active).GroupBy(s => s.Sector).OrderBy(g => g.Key).ElementAt((int)(completedSeason / 12 - 1) % 6).ToArray();
-            var a = sector.OrderByDescending(s => s.Price).First(); var b = sector.OrderBy(s => s.Price).First();
-            if (a != b) MergeCompanies(a.SecurityId, b.SecurityId);
-        }
-        foreach (var company in State.Stocks) SeekTreasuryOwnership(company);
     }
 }

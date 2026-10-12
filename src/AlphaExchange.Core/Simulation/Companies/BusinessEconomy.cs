@@ -5,7 +5,7 @@ public sealed partial class GameEngine
     public event Action<CompanyReport>? CompanyReportRecorded;
     bool closingBooks;
     public long SystemCash() => checked(Participants.Sum(t => t.Cash) + State.Bank.Cash + State.Government.Cash
-        + State.FeePool + State.RealEconomy.Cash + State.Stocks.Sum(s => s.Report.Cash) + (State.World?.People.Sum(p => p.Cash) ?? 0));
+        + State.FeePool + State.RealEconomy.Cash + State.Stocks.Sum(s => s.Report.Cash));
 
     void TransferCash(ICashAccount from, ICashAccount to, long amount, string reason)
     {
@@ -35,7 +35,6 @@ public sealed partial class GameEngine
         BankState => "bank",
         GovernmentState => "government",
         GameState => "exchange",
-        Person p => "person:" + p.Id,
         _ => "real-economy"
     };
 
@@ -93,8 +92,7 @@ public sealed partial class GameEngine
         }
         State.RealEconomy.Cash = checked(State.RealEconomy.Cash + consumed); State.RealEconomy.Consumption += consumed;
         RecordTransfer("retail-group", "real-economy", consumed, "consumption");
-        State.RealEconomy.Demand = State.World is null ? Math.Clamp(.98 + .12 * Math.Sin(State.Season * Math.PI / 6)
-            - p.BaseRate * 1.5, .65, 1.2) : World.EconomicActivity;
+        State.RealEconomy.Demand = State.Environment.EconomicActivity;
         foreach (var s in State.Stocks.Where(s => s.Active && !s.WaitingForCapital))
         {
             var old = s.Report;
@@ -135,7 +133,7 @@ public sealed partial class GameEngine
             long costs = Math.Max(0, (long)((target * .55 + s.BaseRevenue * .45) * costRatio));
             long costsPaid = Math.Min(r.Cash, costs), wages = costsPaid / 3;
             PayWages(wages, r, "company-wages");
-            TransferCash(r, State.RealEconomy, costsPaid - wages, "company-costs"); r.OperatingCosts = costs + s.PendingManagementPay;
+            TransferCash(r, State.RealEconomy, costsPaid - wages, "company-costs"); r.OperatingCosts = costs;
             r.TradePayables += costs - costsPaid; State.RealEconomy.CorporateCosts += costsPaid;
             r.Depreciation = Math.Min(r.FixedAssets, r.FixedAssets / 500); r.FixedAssets -= r.Depreciation;
             r.Interest = (long)Math.Ceiling(r.Debt * p.BaseRate / 12);
@@ -147,7 +145,7 @@ public sealed partial class GameEngine
             State.Government.CorporateTaxes += r.Tax;
             long arrears = Math.Min(r.TradePayables, Math.Max(0, r.Cash - (long)(s.BaseRevenue * reserve)));
             TransferCash(r, State.RealEconomy, arrears, "company-cost-arrears"); r.TradePayables -= arrears;
-            r.OperatingCashFlow = revenue - costsPaid - interestPaid - r.Tax - arrears - s.PendingManagementPay;
+            r.OperatingCashFlow = revenue - costsPaid - interestPaid - r.Tax - arrears;
             long repayment = s.Management == ManagementPolicy.Liquidity ? Math.Min(r.Debt, Math.Max(0, r.Cash - (long)(s.BaseRevenue * reserve)) / 4) : 0;
             TransferCash(r, State.Bank, repayment, "company-loan-repayment"); r.Debt -= repayment; r.FinancingCashFlow -= repayment;
             long investment = Math.Min(Math.Max(0, (long)(r.NetIncome * investRatio)), Math.Max(0, r.Cash - (long)(s.BaseRevenue * reserve)));
@@ -158,7 +156,6 @@ public sealed partial class GameEngine
             s.InsolventMonths = r.NetIncome < 0 && (r.Cash < s.BaseRevenue / 4 || r.TradePayables > 0) ? s.InsolventMonths + 1 : 0;
             Append(s.Reports, CopyReport(r), 12);
             s.PendingCapitalChange = s.PendingFinancingFlow = s.PendingInvestingFlow = s.PendingDividends = s.PendingDividendPerShare = 0;
-            s.PendingManagementPay = 0;
             s.ShareHourSum = s.ShareHours = 0; s.SeasonNewsImpact = 0; s.SeasonNewsCount = 0;
             // Public per-share cash generation and book assets, never an initial-price multiplier.
             double annualEps = (double)r.NetIncome * 12 / Math.Max(1, s.OutstandingShares);
@@ -183,7 +180,7 @@ public sealed partial class GameEngine
         State.ExchangeSpending += exchangeBudget;
         foreach (var stock in State.Stocks.Where(s => s.Active)) CompanyReportRecorded?.Invoke(CopyReport(stock.Report));
         RestoreSectorListings();
-        RunCorporatePolicy();
+        ApplyRandomCorporateEvent();
         RestoreSectorListings(); // Mergers also replace their vacant sector slot now, rather than a month later.
         foreach (var stock in State.Stocks.Where(s => s.Active && !s.Report.IsOpening))
         {

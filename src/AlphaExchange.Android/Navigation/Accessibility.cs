@@ -12,17 +12,13 @@ public sealed partial class GameView
                 ScreenId.Market => "시장 화면",
                 ScreenId.Portfolio => "자산과 투자 계획",
                 ScreenId.Ranking => "랭킹 화면",
-                ScreenId.Statistics => "통계 화면",
+                ScreenId.Statistics => "통계 화면 · " + (statsTab switch { 1 => "업종별", 2 => "개미 재무", 3 => "기관 재무", 4 => "정책·금융", 5 => "호가·수급", 6 => "위험·전략", _ => "전체 시장" }),
                 ScreenId.Seasons => "시즌 기록",
                 ScreenId.News => "뉴스 화면",
-                ScreenId.CompanyFinancials => "기업 재무제표",
+                ScreenId.CompanyFinancials => "기업 재무제표 · " + (companyTab switch { 1 => "손익", 2 => "현금흐름", 3 => "자본변동", 4 => "재무비율", 5 => "현금·상환", 6 => "충격 분석", _ => "재무상태" }),
                 ScreenId.Ownership => "지분 구조",
-                ScreenId.Governance => "회사 투표",
                 ScreenId.Bankruptcies => "파산 기록",
-                ScreenId.People => peopleTabs[peopleRole] + " 인물 목록",
-                ScreenId.PersonProfile => "인물 프로필",
-                ScreenId.Politics => "경제 정부와 선거",
-                ScreenId.Business => "기업 사업 과정",
+                ScreenId.Investors => "투자자 목록",
                 _ => "경제 관찰"
             };
         string description = $"알파 익스체인지 · {screen} · {(auto ? "진행 중" : "일시정지")} · {speed}배속";

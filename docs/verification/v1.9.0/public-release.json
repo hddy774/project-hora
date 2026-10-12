@@ -1,0 +1,22 @@
+{
+  "releaseId": 410543140,
+  "releaseTag": "alpha-exchange/v1.9.0",
+  "releaseUrl": "https://github.com/hddy774/project-hora/releases/tag/alpha-exchange/v1.9.0",
+  "assetId": 633637062,
+  "apkUrl": "https://github.com/hddy774/project-hora/releases/download/alpha-exchange/v1.9.0/AlphaExchange-v1.9.0.apk",
+  "fileName": "AlphaExchange-v1.9.0.apk",
+  "bytes": 101155008,
+  "sha256": "8547b8b6db35937615009482828637a3357ac522de1c84f5be201835edd472a7",
+  "certificateSha256": "0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a",
+  "sourceCommit": "5ff7cb19a2668fdc563f79e62dd13c331bbad0f7",
+  "uploadWorkflowRun": 38244842226,
+  "workflowUrl": "https://github.com/hddy774/project-hora/actions/runs/38244842226",
+  "isDraft": false,
+  "exactlyOnePublicApk": true,
+  "sourceTagImmutableAndAncestorOfMain": true,
+  "apkHashVerifiedBeforeUpload": true,
+  "signerPackageVersionAbiPermissionVerifiedInWorkflow": true,
+  "publicAssetApiDigestMatches": true,
+  "workflowRedownloadedApkAndVerifiedHashBeforePublishing": true,
+  "temporaryArtifactBranchRemoved": true
+}

@@ -1,0 +1,41 @@
+[
+  {
+    "requestedCanvasHeight": 480,
+    "actualCanvasHeight": 480.0,
+    "continuedAfterRecreation": true,
+    "preservedRunId": "74fbb3b8dd46474490d55ac02191cc20",
+    "bodyScrolled": true,
+    "closePinned": true,
+    "ctaPinned": true,
+    "ctaDismissed": true,
+    "closeDismissed": true,
+    "underlyingPageUnchanged": true,
+    "reopenedAtTop": true
+  },
+  {
+    "requestedCanvasHeight": 600,
+    "actualCanvasHeight": 600.0,
+    "continuedAfterRecreation": true,
+    "preservedRunId": "74fbb3b8dd46474490d55ac02191cc20",
+    "bodyScrolled": true,
+    "closePinned": true,
+    "ctaPinned": true,
+    "ctaDismissed": true,
+    "closeDismissed": true,
+    "underlyingPageUnchanged": true,
+    "reopenedAtTop": true
+  },
+  {
+    "requestedCanvasHeight": 800,
+    "actualCanvasHeight": 800.0,
+    "continuedAfterRecreation": true,
+    "preservedRunId": "74fbb3b8dd46474490d55ac02191cc20",
+    "bodyScrolled": true,
+    "closePinned": true,
+    "ctaPinned": true,
+    "ctaDismissed": true,
+    "closeDismissed": true,
+    "underlyingPageUnchanged": true,
+    "reopenedAtTop": true
+  }
+]

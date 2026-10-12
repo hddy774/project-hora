@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=ALPHA EXCHANGE, OU=Android Release Signing, O=Project Hora, C=KR
+Signer #1 certificate SHA-256 digest: 0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a
+Signer #1 certificate SHA-1 digest: 84b2e7883153c182c7e85426033ed316532ac51a
+Signer #1 certificate MD5 digest: aef4202ee9f193eebb6ab4a8467d03a6
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 3072
+Signer #1 public key SHA-256 digest: 61283d6ed8f22e46389654cfceb16ed90f74d57090b781c84d751bf50d5ebca8
+Signer #1 public key SHA-1 digest: 2a6286ba0052e1e1547133860226bb469cb1f8e3
+Signer #1 public key MD5 digest: 03605de6c5755a493c9fbcb7728480fa

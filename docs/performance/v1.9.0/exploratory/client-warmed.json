@@ -1,0 +1,118 @@
+{
+  "label": "portable-client",
+  "referenceCommit": "7e81f9a8327eeef21734fc7c737f46cf6ab1ba0f",
+  "framework": ".NET 9.0.20",
+  "processorCount": 4,
+  "chartPoints": 500,
+  "results": {
+    "referenceChart1000": {
+      "medianMs": 1.6849,
+      "maximumMs": 2.0906,
+      "allocatedMedianBytes": 4024000,
+      "samples": [
+        1.5274,
+        1.5125,
+        1.5774,
+        1.9302,
+        1.3234,
+        1.7706,
+        2.0906,
+        1.7485,
+        1.6849,
+        1.8729,
+        1.5526
+      ]
+    },
+    "bufferChart1000": {
+      "medianMs": 3.7927,
+      "maximumMs": 6.3357,
+      "allocatedMedianBytes": 0,
+      "samples": [
+        5.2462,
+        3.5512,
+        3.5798,
+        3.5073,
+        3.2661,
+        3.5728,
+        3.7927,
+        5.0927,
+        4.0002,
+        6.3357,
+        4.7298
+      ]
+    },
+    "referenceUiRankings100": {
+      "medianMs": 0.8312,
+      "maximumMs": 1.1434,
+      "allocatedMedianBytes": 1001600,
+      "samples": [
+        0.8691,
+        1.1434,
+        0.7765,
+        1.1136,
+        0.5899,
+        0.7809,
+        0.8312,
+        0.626,
+        0.8677,
+        0.9047,
+        0.7814
+      ]
+    },
+    "coreUiRankings100": {
+      "medianMs": 0.4419,
+      "maximumMs": 1.4188,
+      "allocatedMedianBytes": 245600,
+      "samples": [
+        0.4419,
+        0.4039,
+        0.3985,
+        0.5102,
+        0.609,
+        0.3972,
+        0.4535,
+        0.5543,
+        0.4035,
+        0.4167,
+        1.4188
+      ]
+    },
+    "referenceCoreRankings100": {
+      "medianMs": 2.8568,
+      "maximumMs": 5.8523,
+      "allocatedMedianBytes": 3490400,
+      "samples": [
+        4.6618,
+        3.2812,
+        3.1157,
+        2.7492,
+        2.6869,
+        2.4978,
+        2.8568,
+        2.5745,
+        5.8523,
+        2.9924,
+        2.7536
+      ]
+    },
+    "coreRankings100": {
+      "medianMs": 0.6352,
+      "maximumMs": 2.8262,
+      "allocatedMedianBytes": 331200,
+      "samples": [
+        0.7146,
+        1.6303,
+        2.5361,
+        0.4502,
+        0.4314,
+        1.5691,
+        0.4417,
+        0.4686,
+        2.8262,
+        0.4575,
+        0.6352
+      ]
+    }
+  },
+  "limitations": "Algorithm CPU/managed allocation comparison on Linux. Excludes Android Canvas, native memory, physical FPS and battery."
+}

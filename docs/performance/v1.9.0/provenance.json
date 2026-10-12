@@ -1,0 +1,10 @@
+{
+  "baselineSourceCommit": "7e81f9a8327eeef21734fc7c737f46cf6ab1ba0f",
+  "optimizedSourceCommit": "5ff7cb19a2668fdc563f79e62dd13c331bbad0f7",
+  "auditAssemblySha256": "14df0ae938df5a8a6942fe80b09d75905ce2567543b1192272e84587ddd75706",
+  "baselineCoreAssemblySha256": "e7d8fcf5cedcb2a972b9cffef603d5625adf6dd4b952b2fd2b3e7d348291dfb8",
+  "optimizedCoreAssemblySha256": "5bd98f0cdd70727dc00378803a33ebfb6fcf35fd92703badf335e21f264c4678",
+  "inputSha256": "381c8982891c7321b3eaebfef950163dc8954b5c0e14d8949f04f4c799b914a7",
+  "inputBytes": 5502180,
+  "measurement": "Three separate processes per version, alternating baseline/optimized; same audit executable and dependency versions; baseline replaces Core with the retained v1.8 binary. Every measured path warms for at least500ms; no concurrent local builds/tests."
+}

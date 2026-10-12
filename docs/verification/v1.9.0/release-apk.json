@@ -1,0 +1,25 @@
+{
+  "fileName": "AlphaExchange-v1.9.0.apk",
+  "sourceCommit": "5ff7cb19a2668fdc563f79e62dd13c331bbad0f7",
+  "applicationId": "com.alphaexchange.offline",
+  "versionName": "1.9.0",
+  "versionCode": 10,
+  "minimumApi": 26,
+  "targetApi": 34,
+  "architectures": [
+    "arm64-v8a",
+    "x86_64"
+  ],
+  "bytes": 101155008,
+  "sha256": "8547b8b6db35937615009482828637a3357ac522de1c84f5be201835edd472a7",
+  "certificateSha256": "0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a",
+  "signatureSchemes": [
+    "v2",
+    "v3"
+  ],
+  "signingType": "Same owner production signing key as v1.8.0",
+  "releaseIdentityVerified": true,
+  "gitHubSecretsConfigured": false,
+  "debuggable": false,
+  "internetPermission": false
+}

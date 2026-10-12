@@ -20,7 +20,7 @@ public sealed partial class GameView
                 Text(Representatives.Name(trader.PortraitId), 103, y + 29, 16, Ink, true);
                 TextFit(trader.Name, 103, y + 51, 11, Muted, 258);
                 Text($"순자산 {ShortMoney(trader.Equity(S.Stocks))}원", 103, y + 75, 11, Teal);
-                Text(Percent(trader.Return(S.Stocks)), 364, y + 28, 10, Lime, false, Paint.Align.Right);
+                Text(Percent(trader.Return(S.Stocks)), 364, y + 28, 10, Direction(trader.Return(S.Stocks)), false, Paint.Align.Right);
                 int id = trader.Id;
                 Hit(20, y, 360, 96, () => selectedTrader = id);
             }

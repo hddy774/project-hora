@@ -24,7 +24,7 @@ static class OwnershipChecks
         check(game.SubscribeIssue(3, id, 3) is null, "Ownership funded subscription");
         check(game.Buyback(id, 3, 1) is null, "Ownership treasury repurchase");
         var treasury = game.Ownership(0);
-        check(treasury.IssuedShares - treasury.OutstandingShares == 1001 && treasury.Slices.Single(s => s.Category == HolderCategory.Treasury).Shares == 1001, "Issued and outstanding denominators distinguish treasury");
+        check(treasury.IssuedShares - treasury.OutstandingShares == first.Slices.Single(s => s.Category == HolderCategory.Treasury).Shares + 1 && treasury.Slices.Single(s => s.Category == HolderCategory.Treasury).Shares == first.Slices.Single(s => s.Category == HolderCategory.Treasury).Shares + 1, "Issued and outstanding denominators distinguish treasury");
         check(Math.Abs(treasury.Slices.Where(s => s.Category != HolderCategory.Treasury).Sum(s => treasury.OutstandingRatio(s.Shares)) - 1) < 1e-12, "Outstanding shareholder percentages sum to 100%");
         CheckAll(game, check); validate(game);
         int target = game.State.Stocks.FindIndex(s => s.Sector == stock.Sector && s.SecurityId != id);
@@ -50,7 +50,7 @@ static class OwnershipChecks
         string folder = Path.Combine(Path.GetTempPath(), "hora-freeze-" + Guid.NewGuid().ToString("N"));
         try
         {
-            var game = TestFixtures.SmallMarket(141); for (int i = 0; i < 719; i++) game.AdvanceHour();
+            var game = new GameEngine(141); for (int i = 0; i < 719; i++) game.AdvanceHour();
             var store = new GameStore(folder); store.Attach(game);
             string original = game.Serialize(); var frozen = store.PrepareSave(game);
             var writer = Task.Run(() => store.WriteSnapshot(frozen));

@@ -296,8 +296,12 @@ if "실시간 호가" not in description():
 require_screen("실시간 호가"); screenshot("12-order-book")
 tap(110,h-48); require_screen("기업 재무제표")
 screenshot("12b-company-financials")
+tap(154,417); require_screen("업종 소비·미디어 · 표시 종목 3")
+tap(54,466); require_screen("FOOD")
+screenshot("12b-consumer-sector")
 tap(154,234); require_screen("현금·상환"); screenshot("12c-company-cash-analysis")
 tap(246,234); require_screen("충격 분석"); screenshot("12d-company-stress-analysis")
+swipe(); swipe(); screenshot("12e-company-stress-values")
 tap(400/7*.5,h-40); require_screen("시장 화면")
 
 #100x on actual native worker. Allow one second for input/checkpoint boundaries.

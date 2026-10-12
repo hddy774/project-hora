@@ -22,6 +22,10 @@ public sealed partial class GameView
                 _ => "경제 관찰"
             };
         string description = $"알파 익스체인지 · {screen} · {(auto ? "진행 중" : "일시정지")} · {speed}배속";
+        if (game is not null && !lobby && page is ScreenId.Market or ScreenId.CompanyFinancials or ScreenId.Ownership)
+            description += $" · 업종 {marketSector} · 표시 종목 {FilteredCompanies().Length}";
+        if (game is not null && !lobby && page == ScreenId.CompanyFinancials)
+            description += " · " + S.Stocks[companyStock].Symbol;
         if (ContentDescription != description) ContentDescription = description;
     }
 }

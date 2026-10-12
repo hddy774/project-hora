@@ -9,4 +9,4 @@
 - [Android PSS 샘플](memory-samples.json)과 `*-meminfo.txt`: 단일 에뮬레이터 관측이며 물리 기기나 기준 APK와의 전후 메모리 비교가 아니다. [화면 샘플](screenshots)을 포함한다.
 - [서명·패키지](release-apk.json), [APK 서명 검사](apk-signature.txt), [공개 인증서](public-signing-certificate.pem): v1.8과 같은 인증서, 앱 ID·코드10·버전1.9.0·ARM64/x86_64·최소26/대상34·디버그/인터넷 권한 없음. 개인키는 포함하지 않는다.
 
-APK는 위 소스에서 직접 Release 빌드하고 기존 사용자 배포키로 서명했다. 공개 업로드·재다운로드 해시 검증은 릴리스 워크플로 결과로 확인한다. 물리 ARM64 기기·배터리·FPS 검증과 일부 첫 이력 조회의 비동기 전환은 남은 한계다. 기존 targetSdk34와 Android의 status/navigation bar·back API 관련 경고는 이전 버전에서 이어진 것으로 이번 작업에서 목표 SDK를 올리지 않았다.
+APK는 위 소스에서 직접 Release 빌드하고 기존 사용자 배포키로 서명했다. [공개 릴리스 검증](public-release.json)과 [업로드 실행](https://github.com/hddy774/project-hora/actions/runs/38244842226)에서 공개 APK 1개·실제 재다운로드 해시 일치를 확인했다. 임시 업로드 브랜치는 삭제했다. 물리 ARM64 기기·배터리·FPS 검증과 일부 첫 이력 조회의 비동기 전환은 남은 한계다. 기존 targetSdk34와 Android의 status/navigation bar·back API 관련 경고는 이전 버전에서 이어진 것으로 이번 작업에서 목표 SDK를 올리지 않았다.

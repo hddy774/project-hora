@@ -19,4 +19,4 @@
 dotnet run --project tools/MarketAudit -c Release -- /tmp/hora-v15-audit 24 20261004,42,17
 ```
 
-[월별 원자료](monthly.csv) · [최종 회사별 재무/가격·상세 요약](summary.json) · [시장 설계](../../MARKET-SYSTEM-v1.5.0.md)
+[월별 원자료](monthly.csv) · [최종 회사별 재무/가격·상세 요약](summary.json) · [시장 설계](../../history/v1.5.0/MARKET-SYSTEM-v1.5.0.md)

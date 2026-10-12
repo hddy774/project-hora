@@ -5,7 +5,7 @@
 - [monthly.csv](monthly.csv): 기본 시드 5개 + 수수료 0 시드 1개, 각각 시작과 36개 월말의 37행, 총 222행.
 - [summary.json](summary.json): 실행별 초기/종료 수치, 보고서 배당 누계, 종목별 최종 값, 최초 실행 소요 시간.
 - [market-decline.svg](market-decline.svg): 위 CSV에서 만든 시가총액/투자자 현금 지수. 모든 관측값 범위를 표시한다.
-- [분석 해석](../../MARKET-AUDIT-v1.2.0.md)과 [재현 명령](../../../tools/MarketAudit/README.md).
+- [분석 해석](../../history/v1.2.0/MARKET-AUDIT-v1.2.0.md)과 [재현 명령](../../../tools/MarketAudit/README.md).
 
 `monthly.csv` SHA-256: `2241dadb9c8ca5a8023ffcbf05862b2cf3a4bf9e66fec4dd91b7c95b44541b9f`.
 

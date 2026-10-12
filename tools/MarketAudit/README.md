@@ -24,6 +24,6 @@ dotnet run --project tools/MarketAudit -c Release -- artifacts/market-audit
 python3 tools/MarketAudit/plot.py docs/analysis/v1.3.0/monthly.csv artifacts/market-audit/market-decline.svg
 ```
 
-문제 해석은 [조사 문서](../../docs/MARKET-AUDIT-v1.2.0.md), 구현 순서는 [개발 계획](../../docs/PLAN-v1.3.0-market.md)을 참고한다.
+문제 해석은 [조사 문서](../../docs/history/v1.2.0/MARKET-AUDIT-v1.2.0.md), 구현 순서는 [개발 계획](../../docs/history/v1.3.0/PLAN-v1.3.0-market.md)을 참고한다.
 
 추가 인수: `출력폴더 시즌수(1~120) 선택적쉼표구분시드목록`. 현재 버전은 기업/실물 경제까지 포함한 현금 보존, 창업자/자사주를 포함한 실물 주식 보존을 대조한다. 가격/총수익 지수·순외부 유출입·실제 투자자 수취 배당 열도 기록한다. v1.3.0의 `reportedDividends` 누계는 기업의 실제 지급액이며 지급 계정과 수취 계정을 별도 대조한다.

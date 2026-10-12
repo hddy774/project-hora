@@ -7,3 +7,7 @@
 - Preserve the Android application ID and signing identity so installed games can upgrade.
 - Never commit signing keys, passwords or credentials. Keep build outputs out of development/main branches. Release APKs belong in GitHub Releases; a temporary artifact upload branch may be used when direct upload is unavailable, then removed after verification.
 - Keep financial ledger and matching invariants tested. Document measured validation and limitations accurately.
+- Follow [the development standard](docs/guides/development-standard.md) for every future change. Keep Core, shared Client, and Android responsibilities and dependency direction explicit; do not link Android source into checks.
+- Prefer feature folders, named navigation states and small functions with one responsibility. Remove duplicated calculations and unused layers; add abstractions only for demonstrated uses or execution/lifetime boundaries.
+- Prioritize Android responsiveness: prepare/write checkpoints off the UI thread, preserve the asynchronous Activity save/load barrier, release the simulation gate between minutes, bound and invalidate display caches, and decode images for actual screen density. Never discard accepted time or ledger/history to improve throughput.
+- Run `python3 scripts/check-architecture.py`, relevant regression checks, full game checks and Android Release/native validation before merging structural changes. Compare deterministic outcomes and fixed-input measurements for performance changes.

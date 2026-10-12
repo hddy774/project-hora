@@ -20,8 +20,9 @@ public sealed class MainActivity : Activity
         SetContentView(game);
     }
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
-    { base.OnActivityResult(requestCode,resultCode,data); game?.HandleBackupResult(requestCode,resultCode,data); }
+    { base.OnActivityResult(requestCode, resultCode, data); game?.HandleBackupResult(requestCode, resultCode, data); }
     protected override void OnResume() { base.OnResume(); game?.Resume(); }
     protected override void OnPause() { game?.Suspend(); base.OnPause(); }
+    protected override void OnDestroy() { game?.ReleaseGraphics(); game = null; base.OnDestroy(); }
     public override void OnBackPressed() { if (game?.GoBack() != true) base.OnBackPressed(); }
 }

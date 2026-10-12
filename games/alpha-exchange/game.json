@@ -7,7 +7,7 @@
   "checksProject": "tests/AlphaExchange.Checks/AlphaExchange.Checks.csproj",
   "artworkCheck": "scripts/check-artwork.py",
   "apkPrefix": "AlphaExchange",
-  "releaseNotes": "docs/RELEASE-v{version}.md",
+  "releaseNotes": "docs/releases/v{version}.md",
   "legacyTagPrefix": "v",
   "signing": {
     "script": "scripts/sign-release.sh",

@@ -3,7 +3,10 @@
 ```sh
 dotnet run --project tools/PerformanceAudit -c Release -- baseline /tmp/baseline.json
 dotnet run --project tools/PerformanceAudit -c Release -- optimized /tmp/optimized.json
+dotnet run --project tools/PerformanceAudit -c Release -- --client /tmp/client.json
 ```
+
+`--client`는 500점 차트 1,000회와 순위 계산 100회의 플랫폼 공통 CPU·관리 메모리 할당을 측정한다. v1.8 알고리즘을 측정 도구 내부의 참고 구현과 비교하며, 게임 코드에서는 Core의 단일 순위 계산을 사용한다. 실제 Android Canvas/Path·Bitmap 네이티브 메모리·FPS·배터리는 이 결과에 포함하지 않는다. 새 제네릭 정렬/버퍼의 계층 JIT도 준비되도록 각 경로를 최소500ms 워밍업하고 11개 시간·할당 표본을 기록한다.
 
 같은 Linux/.NET Release 환경, 시드 20261004, 168시간 진행한 30개 회사/100개 기관/최대10,000개 개미 집단으로 재무 집계·저장 준비·직렬화·쓰기 시간과 현재 스레드 할당량을 측정한다. 워밍업/강제 수집 후 9회(쓰기/범위/누락 검사는 5회)의 중앙값·최대값과 시간 원본 표본을 JSON으로 기록한다. 캐시 재조회가 아닌 실제 집계 비용을 재기 위해 측정 시 `cachedStats`만 비운다.
 

@@ -1,0 +1,18 @@
+Synthetic storage year 1: hours=8,640; bytes=18,440,192
+Synthetic storage year 2: hours=17,280; bytes=36,610,048
+Synthetic storage year 3: hours=25,920; bytes=54,784,000
+Synthetic storage year 4: hours=34,560; bytes=72,970,240
+Synthetic storage year 5: hours=43,200; bytes=91,164,672
+{
+  "fixture": "synthetic-storage-only",
+  "hours": 43200,
+  "originalRows": 43201,
+  "chartPoints": 107,
+  "databaseBytes": 91164672,
+  "maxManagedBytes": 215463504,
+  "maxRetainedBytes": 35117192,
+  "writeSeconds": 15.8821903,
+  "queryMilliseconds": 345.1653,
+  "exportSeconds": 6.8223493
+}
+PASS five-year synthetic storage; economic simulation is covered separately

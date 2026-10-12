@@ -1,0 +1,124 @@
+{
+  "legacyVersion": 7,
+  "nativeVersion": 8,
+  "preservedRows": 177,
+  "newHour": 515,
+  "native100x": {
+    "elapsedSeconds": 18.36538723299998,
+    "completedMinutes": 20604,
+    "pendingMinutes": 0,
+    "boundaryAllowanceSeconds": 2,
+    "idleBeforeResumeSeconds": 39.986290880999945
+  },
+  "lifecycle": {
+    "backgroundWaitSeconds": 8,
+    "beforeHome": {
+      "RunId": "74fbb3b8dd46474490d55ac02191cc20",
+      "CompletedMinutes": 10227,
+      "PendingClockMinutes": 1,
+      "MinuteProgress": 0.36799999999999744,
+      "NextTransactionId": 154479
+    },
+    "settled": {
+      "RunId": "74fbb3b8dd46474490d55ac02191cc20",
+      "CompletedMinutes": 10231,
+      "PendingClockMinutes": 0,
+      "MinuteProgress": 0.9679999999999973,
+      "NextTransactionId": 154526
+    },
+    "afterBackground": {
+      "RunId": "74fbb3b8dd46474490d55ac02191cc20",
+      "CompletedMinutes": 10231,
+      "PendingClockMinutes": 0,
+      "MinuteProgress": 0.9679999999999973,
+      "NextTransactionId": 154526
+    },
+    "afterReturn": {
+      "RunId": "74fbb3b8dd46474490d55ac02191cc20",
+      "CompletedMinutes": 10231,
+      "PendingClockMinutes": 0,
+      "MinuteProgress": 0.9679999999999973,
+      "NextTransactionId": 154526
+    }
+  },
+  "modalViewports": [
+    {
+      "requestedCanvasHeight": 480,
+      "actualCanvasHeight": 480,
+      "continuedAfterRecreation": true,
+      "preservedRunId": "74fbb3b8dd46474490d55ac02191cc20",
+      "bodyScrolled": true,
+      "closePinned": true,
+      "ctaPinned": true,
+      "ctaDismissed": true,
+      "closeDismissed": true,
+      "underlyingPageUnchanged": true,
+      "reopenedAtTop": true
+    },
+    {
+      "requestedCanvasHeight": 600,
+      "actualCanvasHeight": 600,
+      "continuedAfterRecreation": true,
+      "preservedRunId": "74fbb3b8dd46474490d55ac02191cc20",
+      "bodyScrolled": true,
+      "closePinned": true,
+      "ctaPinned": true,
+      "ctaDismissed": true,
+      "closeDismissed": true,
+      "underlyingPageUnchanged": true,
+      "reopenedAtTop": true
+    },
+    {
+      "requestedCanvasHeight": 800,
+      "actualCanvasHeight": 800,
+      "continuedAfterRecreation": true,
+      "preservedRunId": "74fbb3b8dd46474490d55ac02191cc20",
+      "bodyScrolled": true,
+      "closePinned": true,
+      "ctaPinned": true,
+      "ctaDismissed": true,
+      "closeDismissed": true,
+      "underlyingPageUnchanged": true,
+      "reopenedAtTop": true
+    }
+  ],
+  "newMarketTransition": {
+    "oldRun": "74fbb3b8dd46474490d55ac02191cc20",
+    "newRun": "2e7195d3fadd4c99b472c94747cded1d",
+    "oldCompletedMinutes": 30914,
+    "newCompletedMinutes": 27,
+    "oldImmutableRowsPreserved": 177
+  },
+  "memorySamples": [
+    {
+      "stage": "paused-legacy-market",
+      "totalPssKiB": 271498,
+      "rawFile": "paused-legacy-market-meminfo.txt",
+      "monotonicSeconds": 521.946406312
+    },
+    {
+      "stage": "after-role-portraits",
+      "totalPssKiB": 335553,
+      "rawFile": "after-role-portraits-meminfo.txt",
+      "monotonicSeconds": 611.824357367
+    },
+    {
+      "stage": "after-native100x",
+      "totalPssKiB": 270986,
+      "rawFile": "after-native100x-meminfo.txt",
+      "monotonicSeconds": 656.918309773
+    },
+    {
+      "stage": "new-market",
+      "totalPssKiB": 238122,
+      "rawFile": "new-market-meminfo.txt",
+      "monotonicSeconds": 680.409231549
+    }
+  ],
+  "screenshots": 32,
+  "roles": 200,
+  "retail": 10000,
+  "workflowRun": 38242845751,
+  "sourceCommit": "5ff7cb19a2668fdc563f79e62dd13c331bbad0f7",
+  "environment": "API26 x86_64 emulator, native Release app; physical ARM64 not measured"
+}

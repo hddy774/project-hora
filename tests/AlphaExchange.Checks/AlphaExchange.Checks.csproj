@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><TargetFramework>net9.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
-  <ItemGroup><ProjectReference Include="../../src/AlphaExchange.Core/AlphaExchange.Core.csproj" /></ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="../../src/AlphaExchange.Android/AsyncCheckpointBarrier.cs" Link="Mobile/AsyncCheckpointBarrier.cs" />
-    <Compile Include="../../src/AlphaExchange.Android/ForegroundTickScheduler.cs" Link="Mobile/ForegroundTickScheduler.cs" />
-    <Compile Include="../../src/AlphaExchange.Android/ModalViewport.cs" Link="Mobile/ModalViewport.cs" />
+    <ProjectReference Include="../../src/AlphaExchange.Core/AlphaExchange.Core.csproj" />
+    <ProjectReference Include="../../src/AlphaExchange.Client/AlphaExchange.Client.csproj" />
   </ItemGroup>
 </Project>

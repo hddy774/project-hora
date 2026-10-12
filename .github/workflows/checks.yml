@@ -21,6 +21,8 @@ jobs:
           python3 scripts/test_games.py
           python3 scripts/test_android_signing.py
           python3 scripts/test_native_capture.py
+          python3 scripts/check-architecture.py
+          python3 scripts/test_architecture.py
           python3 scripts/games.py validate
       - id: games
         run: echo "matrix=$(python3 scripts/games.py matrix)" >> "$GITHUB_OUTPUT"

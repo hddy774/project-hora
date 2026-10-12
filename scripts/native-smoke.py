@@ -9,6 +9,7 @@ apk, fixture, output = map(pathlib.Path, sys.argv[1:4])
 output.mkdir(parents=True, exist_ok=True)
 package = "com.alphaexchange.offline"
 device = f"/data/user/0/{package}/files"
+memory_samples=[]
 
 def adb(*args, binary=False):
     result = subprocess.run(["adb", *args], check=True, capture_output=True, timeout=120)
@@ -28,6 +29,13 @@ adb("shell", "monkey", "-p", package, "-c", "android.intent.category.LAUNCHER", 
 
 def tap(x,y):
     adb("shell", "input", "tap", str(round(left+x*scale)), str(round(top+y*scale))); time.sleep(1)
+
+def capture_memory(name):
+    raw=adb("shell","dumpsys","meminfo",package)
+    (output/(name+"-meminfo.txt")).write_text(raw)
+    total=re.search(r"^\s*TOTAL\s+(\d+)",raw,re.M)
+    memory_samples.append({"stage":name,"totalPssKiB":int(total.group(1)) if total else None,
+        "rawFile":name+"-meminfo.txt","monotonicSeconds":time.monotonic()})
 
 def screenshot(name):
     logical_size=logical_display_size(adb("shell","wm","size"))
@@ -167,6 +175,7 @@ paused_at=time.monotonic()
 lifecycle_evidence={"backgroundWaitSeconds":background_wait,"beforeHome":clock_state(before_home),
     "settled":clock_state(background),"afterBackground":clock_state(background_later),"afterReturn":clock_state(returned)}
 (output/"lifecycle.json").write_text(json.dumps(lifecycle_evidence,indent=2))
+capture_memory("paused-legacy-market")
 
 def paused_market_viewport(expected_height,name,expected_run,timeout=60):
     # wm size can recreate this Activity rather than just resize its existing
@@ -263,6 +272,7 @@ adb("shell","input","keyevent","4"); time.sleep(1)
 require_screen("경영자 인물 목록")
 tap(273,194); require_screen("정치인 인물 목록"); screenshot("07-politicians")
 tap(346,194); require_screen("금융인 인물 목록"); screenshot("08-financiers")
+capture_memory("after-role-portraits")
 tap(200,246); require_screen("경제 정부와 선거"); screenshot("09-economic-votes")
 tap(400/7*4.5,h-40); require_screen("통계 화면"); screenshot("10-statistics")
 tap(273,194); screenshot("10b-institution-financials")
@@ -284,6 +294,7 @@ if idle<16: time.sleep(16-idle)
 idle=time.monotonic()-paused_at
 started=time.monotonic(); tap(278,h-108); require_screen("진행 중"); time.sleep(15); tap(278,h-108)
 elapsed=time.monotonic()-started; require_screen("일시정지"); time.sleep(3); screenshot("14-after100x")
+capture_memory("after-native100x")
 adb("shell","input","keyevent","3"); time.sleep(3)
 adb("shell","am","force-stop",package)
 after,folder=pull_state("final")
@@ -301,9 +312,33 @@ with contextlib.closing(sqlite3.connect(folder/"history-v5.sqlite")) as db:
         raise RuntimeError("Native migration changed or removed legacy raw-hour hashes")
 if after["RunId"]!=baseline["run"] or after["Version"]!=8 or len(after["World"]["People"])!=200:
     raise RuntimeError("Native run/person identity changed")
+
+# Exercise the asynchronous new-market barrier after validating the old run.
+# The old run's completed checkpoint and immutable hours must remain durable.
+adb("shell","monkey","-p",package,"-c","android.intent.category.LAUNCHER","1")
+tree=require_screen("시뮬레이션 시작 화면"); measure_viewport(tree)
+tap(200,h-80); require_screen("새 시장 시작 확인"); screenshot("15-new-market-confirmation")
+tap(290,max(12,h-286)+229)
+require_screen("시장 화면",90)
+if "진행 중" in description(): tap(278,h-108)
+require_screen("일시정지"); time.sleep(3); screenshot("16-new-market")
+new_market=settled_checkpoint("new-market")
+if new_market["RunId"]==after["RunId"] or new_market["Retail"]["Count"]!=1000:
+    raise RuntimeError("New-market transition did not create an independent initial population")
+capture_memory("new-market")
+_,new_folder=pull_state("new-market-preserved")
+with contextlib.closing(sqlite3.connect(new_folder/"history-v5.sqlite")) as db:
+    old_minute=db.execute("select minute from runs where id=?",(after["RunId"],)).fetchone()
+    old_hashes={(hour,res):sha for hour,res,sha in db.execute("select hour,resolution,hash from hours where run=?",(baseline["run"],))}
+    if old_minute is None or old_minute[0]<after["CompletedMinutes"] or any(old_hashes.get((row["hour"],row["resolution"]))!=row["hash"] for row in baseline["rows"]):
+        raise RuntimeError("New-market transition lost the old checkpoint or changed immutable legacy hours")
+transition={"oldRun":after["RunId"],"newRun":new_market["RunId"],"oldCompletedMinutes":old_minute[0],
+    "newCompletedMinutes":new_market["CompletedMinutes"],"oldImmutableRowsPreserved":len(baseline["rows"])}
+(output/"new-market-transition.json").write_text(json.dumps(transition,indent=2))
+(output/"memory-samples.json").write_text(json.dumps(memory_samples,indent=2))
 summary={"legacyVersion":7,"nativeVersion":8,"preservedRows":len(baseline["rows"]),"newHour":after["CompletedHours"],
     "native100x":{"elapsedSeconds":elapsed,"completedMinutes":delta,"pendingMinutes":pending,"boundaryAllowanceSeconds":2,"idleBeforeResumeSeconds":idle},
-    "lifecycle":lifecycle_evidence,"modalViewports":modal_evidence,
+    "lifecycle":lifecycle_evidence,"modalViewports":modal_evidence,"newMarketTransition":transition,"memorySamples":memory_samples,
     "screenshots":len(list(output.glob("*.png"))),"roles":200,"retail":10000}
 (output/"summary.json").write_text(json.dumps(summary,indent=2))
 print("PASS native lifecycle, modal viewports, legacy migration, immutable hours,200 profiles/zoom and100x:",json.dumps(summary),flush=True)

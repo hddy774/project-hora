@@ -31,7 +31,9 @@ Dictionary<string, object> results = new();
 
 object Measure(string name, Action action, int repeats = 9)
 {
-    action(); GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+    long warmup = Stopwatch.GetTimestamp();
+    do { action(); } while (Stopwatch.GetElapsedTime(warmup).TotalMilliseconds < 500);
+    GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
     var time = new List<double>(); var allocations = new List<long>();
     for (int i = 0; i < repeats; i++)
     {

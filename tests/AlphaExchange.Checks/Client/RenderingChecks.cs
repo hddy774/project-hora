@@ -7,7 +7,7 @@ static class RenderingChecks
     {
         var buffer = new ChartSeriesBuffer();
         double[][] cases = [[], [12], [7, 7, 7], [-4, 11, 2, -1], [1, 1.01],
-            Enumerable.Range(0, 1000).Select(i => Math.Sin(i * .07) * 150).ToArray()];
+            Enumerable.Range(0, 1000).Select(i => Math.Sin(i * .07) * 150).ToArray(), [1, double.NaN, -2]];
         foreach (var source in cases)
         {
             var expected = source.Length < 2 ? new[] { source.FirstOrDefault(), source.FirstOrDefault() } : source;
@@ -16,11 +16,12 @@ static class RenderingChecks
             double padding = (high - low) * .15;
             buffer.Capture(source);
             check(buffer.Values.SequenceEqual(expected), "Chart preserves endpoints and all samples");
-            check(buffer.Low == low - padding && buffer.High == high + padding, "Chart preserves vertical bounds");
+            check(buffer.Low.Equals(low - padding) && buffer.High.Equals(high + padding), "Chart preserves vertical bounds");
         }
-        buffer.Capture(cases[^1]);
+        var repeated = cases[^2];
+        buffer.Capture(repeated);
         long allocated = GC.GetAllocatedBytesForCurrentThread();
-        for (int i = 0; i < 1000; i++) buffer.Capture(cases[^1]);
+        for (int i = 0; i < 1000; i++) buffer.Capture(repeated);
         check(GC.GetAllocatedBytesForCurrentThread() == allocated, "Warmed chart capture allocates no arrays");
         bool rejected = false;
         try { buffer.Capture(Enumerable.Repeat(1.0, ChartSeriesBuffer.MaximumPoints + 1)); }

@@ -18,7 +18,10 @@ static class ClientAudit
 
         void Measure(string name, Action action)
         {
-            for (int i = 0; i < 5; i++) action();
+            // New generic sort/buffer paths need time for tiered JIT, just like
+            // framework paths already warmed by the engine. Do not time tier 0.
+            long warmup = Stopwatch.GetTimestamp();
+            do { action(); } while (Stopwatch.GetElapsedTime(warmup).TotalMilliseconds < 500);
             GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
             var samples = new List<double>();
             var allocations = new List<long>();

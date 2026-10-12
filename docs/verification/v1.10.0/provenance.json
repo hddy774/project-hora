@@ -1,0 +1,17 @@
+{
+  "source": "a74d9a1b1891bf1d22dd0f4463b16f1944f93dbe",
+  "workflowRun": 38253948644,
+  "androidJob": 114827099588,
+  "checksJob": 114827099494,
+  "api": 26,
+  "arch": "x86_64",
+  "emulatorMemoryMiB": 2048,
+  "cores": 2,
+  "gpu": "swiftshader_indirect",
+  "wifi": false,
+  "mobileData": false,
+  "previousFixtureSource": "alpha-exchange/v1.9.0",
+  "previousStateVersion": 8,
+  "currentStateVersion": 9,
+  "artifact": 11749189708
+}

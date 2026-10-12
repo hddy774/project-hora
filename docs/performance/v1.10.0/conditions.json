@@ -1,0 +1,29 @@
+{
+  "baselineSource": "5ff7cb19a2668fdc563f79e62dd13c331bbad0f7",
+  "currentSource": "a74d9a1b1891bf1d22dd0f4463b16f1944f93dbe",
+  "order": [
+    "baseline",
+    "current",
+    "current-repeat",
+    "baseline-repeat"
+  ],
+  "seed": 20261004,
+  "retail": 10000,
+  "retailCapital": 50000000,
+  "institutionCapital": 1000000000,
+  "marketCapitalization": 1000000000000,
+  "fixedRunId": "00000000000000000000000020261004",
+  "baselineToolOverride": "WorldRules.Default(): InitialRetailUnits=10000, RetailCapital=50000000; runtime market engine unchanged",
+  "changesIntentional": [
+    "30 to 15 securities",
+    "200 to 100 people; removed world and employee AI",
+    "bank quotes removed; funded opening holdings",
+    "portfolio planning, news and retail order behavior"
+  ],
+  "notMeasured": [
+    "physical-device FPS",
+    "battery",
+    "profit improvement causality",
+    "intelligence multiplier"
+  ]
+}

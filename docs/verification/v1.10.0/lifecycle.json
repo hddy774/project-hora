@@ -1,0 +1,31 @@
+{
+  "backgroundWaitSeconds": 8,
+  "beforeHome": {
+    "RunId": "20c520f0895641ee988e2284f4602320",
+    "CompletedMinutes": 81,
+    "PendingClockMinutes": 1,
+    "MinuteProgress": 0.3199999999999992,
+    "NextTransactionId": 33072
+  },
+  "settled": {
+    "RunId": "20c520f0895641ee988e2284f4602320",
+    "CompletedMinutes": 96,
+    "PendingClockMinutes": 0,
+    "MinuteProgress": 0.7199999999999986,
+    "NextTransactionId": 33191
+  },
+  "afterBackground": {
+    "RunId": "20c520f0895641ee988e2284f4602320",
+    "CompletedMinutes": 96,
+    "PendingClockMinutes": 0,
+    "MinuteProgress": 0.7199999999999986,
+    "NextTransactionId": 33191
+  },
+  "afterReturn": {
+    "RunId": "20c520f0895641ee988e2284f4602320",
+    "CompletedMinutes": 96,
+    "PendingClockMinutes": 0,
+    "MinuteProgress": 0.7199999999999986,
+    "NextTransactionId": 33191
+  }
+}

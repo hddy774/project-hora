@@ -1,0 +1,2 @@
+PASS ownership/performance: physical ownership, treasury denominators, lender obligations, cache invalidation, frozen checkpoints, full JSON validation, extrema and mixed-resolution gaps
+PASS 768,652 ownership assertions

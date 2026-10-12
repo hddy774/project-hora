@@ -4,7 +4,7 @@ using AlphaExchange.Core;
 namespace AlphaExchange.App;
 public sealed partial class GameView
 {
-    static readonly string[] SectorNames = ["전체", "기술", "산업·에너지", "바이오·헬스", "금융", "미디어", "소비재"];
+    static readonly string[] SectorNames = CompanyCatalog.Companies.Select(c => c.Sector).Distinct().Prepend("전체").ToArray();
     string marketSector = "전체";
     (AlphaExchange.Core.GameState State, string Sector, long Corporate, long Failure)? companyFilterKey;
     int[] allFiltered = [], listedFiltered = [];

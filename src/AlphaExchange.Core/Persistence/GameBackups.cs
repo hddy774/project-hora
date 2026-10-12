@@ -21,9 +21,9 @@ public sealed partial class GameStore
             var game = LoadDatabase(temp);
             string hash;
             using (var file = File.OpenRead(temp)) hash = Convert.ToHexString(SHA256.HashData(file));
-            var manifest = new BackupManifest(5, "com.alphaexchange.offline", game.State.RunId, game.State.CompletedHours, new FileInfo(temp).Length, hash);
+            var manifest = new BackupManifest(6, "com.alphaexchange.offline", game.State.RunId, game.State.CompletedHours, new FileInfo(temp).Length, hash);
             using var zip = new ZipArchive(destination, ZipArchiveMode.Create, true);
-            using (var entry = zip.CreateEntry("history-v5.sqlite", CompressionLevel.NoCompression).Open())
+            using (var entry = zip.CreateEntry("history-v6.sqlite", CompressionLevel.NoCompression).Open())
             using (var file = File.OpenRead(temp)) file.CopyTo(entry);
             using (var writer = new StreamWriter(zip.CreateEntry("manifest.json").Open(), new UTF8Encoding(false)))
                 writer.Write(JsonSerializer.Serialize(manifest));
@@ -58,16 +58,16 @@ public sealed partial class GameStore
         {
             using (var zip = new ZipArchive(source, ZipArchiveMode.Read, true))
             {
-                if (zip.Entries.Count is < 2 or > 4 || zip.Entries.Any(e => e.FullName is not ("history-v5.sqlite" or "manifest.json" or "market.csv" or "companies.csv")) ||
+                if (zip.Entries.Count is < 2 or > 4 || zip.Entries.Any(e => e.FullName is not ("history-v6.sqlite" or "manifest.json" or "market.csv" or "companies.csv")) ||
                     zip.Entries.Select(e => e.FullName).Distinct().Count() != zip.Entries.Count)
                     throw new InvalidDataException("지원하지 않는 백업 파일 구성");
                 var manifestEntry = zip.GetEntry("manifest.json") ?? throw new InvalidDataException("백업 manifest 누락");
                 if (manifestEntry.Length > 4096) throw new InvalidDataException("백업 manifest 크기 오류");
                 BackupManifest manifest;
                 using (var stream = manifestEntry.Open()) manifest = JsonSerializer.Deserialize<BackupManifest>(stream) ?? throw new InvalidDataException("백업 manifest 오류");
-                if (manifest.Version != 5 || manifest.ApplicationId != "com.alphaexchange.offline" || manifest.Bytes <= 0 || manifest.Bytes > MaxBackupBytes ||
+                if (manifest.Version != 6 || manifest.ApplicationId != "com.alphaexchange.offline" || manifest.Bytes <= 0 || manifest.Bytes > MaxBackupBytes ||
                     !Guid.TryParseExact(manifest.RunId, "N", out _)) throw new InvalidDataException("백업 버전/시장 ID 오류");
-                var entry = zip.GetEntry("history-v5.sqlite") ?? throw new InvalidDataException("통계 파일 누락");
+                var entry = zip.GetEntry("history-v6.sqlite") ?? throw new InvalidDataException("통계 파일 누락");
                 if (entry.Length != manifest.Bytes) throw new InvalidDataException("백업 크기 불일치");
                 using (var input = entry.Open()) using (var output = File.Create(temp))
                 {
@@ -108,7 +108,7 @@ public sealed partial class GameStore
                         if (originalBackup is not null) File.Copy(originalBackup, BackupPath, true);
                         throw;
                     }
-                    lock (pending) { pending.Clear(); pendingEvents.Clear(); pendingVotes.Clear(); pendingBankruptcies.Clear(); pendingReports.Clear(); pendingActivities.Clear(); pendingWorldVotes.Clear(); }
+                    lock (pending) { pending.Clear(); pendingEvents.Clear(); pendingBankruptcies.Clear(); pendingReports.Clear(); }
                     queuedDailyThrough.Clear(); databaseReady = true;
                     activeRun = game.State.RunId; LastCommittedHour = game.State.CompletedHours;
                 }

@@ -103,6 +103,9 @@ public sealed partial class GameEngine
         }
         if ((buy || shortSale) && Reserve(t, incoming, quantity) > (cover ? t.Cash - t.ReservedCash : AvailableCash(t))) return "주문 가능 현금/담보가 부족합니다.";
         if (!buy && !shortSale && quantity > t.Shares[stockIndex] - t.ReservedShares[stockIndex] - (ownerId == 0 ? State.Bank.ReservedLending[stockIndex] : 0)) return "주문 가능 주식이 부족합니다.";
+        State.Activity.SubmittedOrders++;
+        var touch = buy ? asks[stockIndex] : bids[stockIndex];
+        if (touch.Count > 0 && touch[0].OwnerId != ownerId && (buy ? touch[0].Price <= price : touch[0].Price >= price)) State.Activity.AggressiveOrders++;
         incoming.Id = State.NextOrderId++;
         SetReservation(t, incoming, quantity);
         var opposite = buy ? asks[stockIndex] : bids[stockIndex];
@@ -142,6 +145,7 @@ public sealed partial class GameEngine
     public bool CancelOrder(long id)
     {
         if (!orderById.TryGetValue(id, out var o) || o.Remaining <= 0) return false;
+        State.Activity.CancelledOrders++;
         SetReservation(Owner(o.OwnerId), o, -o.Remaining);
         (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o);
         ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; cachedStats = null; BookRevision++;
@@ -152,6 +156,7 @@ public sealed partial class GameEngine
         if (!ownedOrders.TryGetValue(id, out var owned) || owned.Count == 0) return;
         foreach (var o in owned)
         {
+            State.Activity.CancelledOrders++;
             SetReservation(Owner(id), o, -o.Remaining);
             (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o); o.Remaining = 0;
         }
@@ -160,7 +165,7 @@ public sealed partial class GameEngine
     public void CancelAllOrders()
     {
         foreach (var order in State.Orders)
-            if (order.Remaining > 0) { SetReservation(Owner(order.OwnerId), order, -order.Remaining); order.Remaining = 0; }
+            if (order.Remaining > 0) { State.Activity.CancelledOrders++; SetReservation(Owner(order.OwnerId), order, -order.Remaining); order.Remaining = 0; }
         State.Orders.Clear(); ownedOrders.Clear(); orderById.Clear(); expirations.Clear();
         foreach (var book in bids) book.Clear(); foreach (var book in asks) book.Clear(); cachedStats = null; BookRevision++;
     }
@@ -171,7 +176,7 @@ public sealed partial class GameEngine
             expirations.Dequeue(); orderById.Remove(o.Id);
             if (o.Remaining == 0) continue;
             SetReservation(Owner(o.OwnerId), o, -o.Remaining);
-            (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o); ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; BookRevision++;
+            (o.Buy ? bids[o.StockIndex] : asks[o.StockIndex]).Remove(o); ownedOrders[o.OwnerId].Remove(o); o.Remaining = 0; BookRevision++; cachedStats = null;
         }
         State.Orders.RemoveAll(o => o.Remaining == 0);
     }
@@ -206,6 +211,18 @@ public sealed partial class GameEngine
         }
         seller.Fees += fee; seller.Trades++;
         buyer.TradedVolume += quantity; seller.TradedVolume += quantity; buyer.TradedTurnover += amount; seller.TradedTurnover += amount;
+        if (buyer.Id > 0 && seller.Id > 0)
+        {
+            if (buyer.IsRetail && seller.IsRetail) State.Activity.RetailMatches++;
+            else if (!buyer.IsRetail && !seller.IsRetail) State.Activity.InstitutionMatches++;
+            else
+            {
+                State.Activity.CrossGroupMatches++;
+                State.Activity.CrossGroupTurnover += amount;
+                if (buyer.IsRetail) State.Activity.CashToInstitutions += amount;
+                else State.Activity.CashToRetail += amount;
+            }
+        }
         State.ExchangeRevenue += fee * 2; State.TotalMatches++;
         State.MatchedVolume = checked(State.MatchedVolume + quantity); State.MatchedTurnover = checked(State.MatchedTurnover + amount);
         State.TotalAiTrades += (buyer.Id is > 0 and <= AiCount ? 1 : 0) + (seller.Id is > 0 and <= AiCount ? 1 : 0);

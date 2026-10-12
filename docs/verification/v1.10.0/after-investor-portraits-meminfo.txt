@@ -1,0 +1,49 @@
+Applications Memory Usage (in Kilobytes):
+Uptime: 126289 Realtime: 126289
+
+** MEMINFO in pid 2933 [com.alphaexchange.offline] **
+                   Pss  Private  Private  SwapPss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------
+  Native Heap    43036    42920        0        0    58368    47445    10922
+  Dalvik Heap     4096     4068        0        0     2195      659     1536
+ Dalvik Other      344      344        0        0                           
+        Stack      284      284        0        0                           
+       Ashmem        5        0        0        0                           
+    Other dev       14        0       12        0                           
+     .so mmap    27255      456    23572        0                           
+    .apk mmap      342        0       20        0                           
+    .ttf mmap      361        0      212        0                           
+    .dex mmap     1752        4      668        0                           
+    .oat mmap     1700        0       12        0                           
+    .art mmap     1040      544       12        0                           
+   Other mmap     1583        4      784        0                           
+      Unknown   195534   195504        0        0                           
+        TOTAL   277346   244128    25292        0    60563    48104    12458
+ 
+ App Summary
+                       Pss(KB)
+                        ------
+           Java Heap:     4624
+         Native Heap:    42920
+                Code:    24944
+               Stack:      284
+            Graphics:        0
+       Private Other:   196648
+              System:     7926
+ 
+               TOTAL:   277346       TOTAL SWAP PSS:        0
+ 
+ Objects
+               Views:        6         ViewRootImpl:        1
+         AppContexts:        5           Activities:        1
+              Assets:        2        AssetManagers:        5
+       Local Binders:       20        Proxy Binders:       29
+       Parcel memory:        4         Parcel count:       16
+    Death Recipients:        0      OpenSSL Sockets:        0
+            WebViews:        0
+ 
+ SQL
+         MEMORY_USED:        0
+  PAGECACHE_OVERFLOW:        0          MALLOC_SIZE:        0
+ 

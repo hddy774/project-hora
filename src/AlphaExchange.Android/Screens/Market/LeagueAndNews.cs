@@ -9,10 +9,8 @@ public sealed partial class GameView
 {
     float DrawLeague(float y)
     {
-        Text("분야별 랭킹과 투자 성과", 20, y + 23, 24, Ink, true);
+        Text("투자자 랭킹과 성과", 20, y + 23, 24, Ink, true);
         Text("10개 능력과 성향 · 다양한 투자 기법을 혼합", 21, y + 47, 12, Muted); y += 64;
-        y = PeopleRoleTabs(y, true);
-        if (rankingRole != 1) return DrawPeopleRanking(y, rankingRole == 0 ? null : (PersonRole)(rankingRole - 1));
         y = DrawInvestorPodium(y);
         y = PeriodPicker(y);
         for (int i = 0; i < GameEngine.MetricNames.Length; i++)
@@ -56,8 +54,8 @@ public sealed partial class GameView
     float DrawNews(float y)
     {
         Text("시장의 시그널", 20, y + 23, 24, Ink, true);
-        Text("시즌 실적에 반영되는 뉴스와 대표들의 상호작용", 21, y + 47, 11, Muted); y += 65;
-        Button(operationsTab ? "대표 상호작용 · 작전  ⇄  뉴스 보기" : "시장 뉴스  ⇄  대표 상호작용 · 작전", 20, y, 360, 39, () => { operationsTab = !operationsTab; scroll = 0; }, false); y += 56;
+        Text("기업·정책·금융 이벤트와 투자자의 시장 전략", 21, y + 47, 11, Muted); y += 65;
+        Button(operationsTab ? "기관 전략  ⇄  뉴스 보기" : "시장 뉴스  ⇄  기관 전략", 20, y, 360, 39, () => { operationsTab = !operationsTab; scroll = 0; }, false); y += 56;
         Button(corporateTab ? "기업행동 · 배당/분할/합병  ⇄  시장 보기" : "기업행동 · 배당/분할/합병 기록  →", 20, y, 360, 39, () => { corporateTab = !corporateTab; scroll = 0; }, false); y += 56;
         if (corporateTab) return DrawCorporateEvents(y);
         if (operationsTab) return DrawOperations(y);
@@ -72,13 +70,13 @@ public sealed partial class GameView
         {
             if (y + 152 < clipTop || y > clipBottom) { y += 163; continue; }
             Box(20, y, 360, 152, Card, 17);
-            Pill(news.Impact == 0 ? "인물 활동" : news.Impact > 0 ? "긍정 신호" : "주의 신호", 35, y + 14, news.Impact > 0 ? Teal : Red, 70);
+            Pill(news.Impact == 0 ? "시장 변화" : news.Impact > 0 ? "긍정 신호" : "주의 신호", 35, y + 14, news.Impact > 0 ? Teal : Red, 70);
             Text($"D{news.Day:00} {news.Hour:00}:{news.Minute:00} · {(news.StockIndex >= 0 ? S.Stocks[news.StockIndex].Symbol : "경제")}", 363, y + 30, 10, Muted, false, Paint.Align.Right);
             float after = Wrap(news.Headline, 36, y + 62, 328, 14, Ink, 22);
-            TextFit(news.ActorId > 0 ? $"활동 #{news.ActivityId} · {game!.Person(news.ActorId).Name}" : "이전 버전 뉴스 기록", 36, Math.Max(after + 4, y + 112), 11, Muted, 328);
+            TextFit(news.Detail, 36, Math.Max(after + 4, y + 112), 11, Muted, 328);
             Text("종목 살펴보기  ↗", 362, y + 136, 10, news.Impact > 0 ? Teal : Red, true, Paint.Align.Right);
             int index = news.StockIndex;
-            Hit(20, y, 360, 152, () => { if (index >= 0) selectedStock = index; else if (news.ActorId > 0) OpenPerson(news.ActorId); });
+            Hit(20, y, 360, 152, () => { if (index >= 0) selectedStock = index; });
             y += 163;
         }
         return y + 10;
@@ -205,7 +203,7 @@ public sealed partial class GameView
         TextFit(bot.Name, 166, y + 73, 14, Muted, 207);
         Text(GameEngine.DispositionNames[(int)bot.Disposition] + " · 신용 " + bot.CreditRating, 166, y + 104, 13, Teal, true);
         Text($"시즌 {S.Season} · {FrameRankOf(bot.Id)}위", 166, y + 139, 15, Ink, true);
-        Hit(166, y + 16, 207, 71, () => OpenPerson(bot.Id));
+        Hit(166, y + 16, 207, 71, () => { S.FollowedId = bot.Id; selectedTrader = -1; portfolioTab = 3; SetPage(ScreenId.Portfolio); });
         float afterDecision = Wrap(bot.Decision, 29, y + 232, 342, 12, Muted, 20);
         y = Math.Max(y + 255, afterDecision + 12);
         Box(27, y, 346, 105, Card, 18);
@@ -214,10 +212,10 @@ public sealed partial class GameView
         Text(Percent(bot.Return(S.Stocks)), 355, y + 95, 14, Direction(bot.Return(S.Stocks)), true, Paint.Align.Right);
         Text($"위험 관리 {bot.Abilities.RiskManagement} · 분산 {bot.Abilities.Diversification} · 대출 {ShortMoney(bot.LoanDebt)}원", 29, y + 135, 11, Muted);
         Text($"누적 거래량 {Money(bot.TradedVolume)}주 · 거래금액 {ShortMoney(bot.TradedTurnover)}원", 29, y + 161, 10, Ink);
-        Text($"전체 수익률 {Percent(bot.ReturnIndex / Math.Max(1e-12, bot.OpeningSnapshot.ReturnIndex) - 1)} · 직원 {bot.Development!.EmployeeCount}명", 29, y + 184, 11, Teal);
+        Text($"전체 수익률 {Percent(bot.ReturnIndex / Math.Max(1e-12, bot.OpeningSnapshot.ReturnIndex) - 1)} · 재평가 {bot.Development!.PortfolioReviews:N0}회", 29, y + 184, 11, Teal);
         Text($"시즌 보상 {bot.Development.LastRewardPoints}P · 성장 {bot.Development.PointsSpent}P · 현금 {game!.CashRatio(bot):P1}", 29, y + 207, 10, Muted);
         EndModalBody(y + 225);
-        Button("대표·기관 능력 / 직원·성장 / 신용  →", 27, viewport.FooterTop, 346, 52, () =>
+        Button("투자 계획 / 시장 전략 / 능력·신용  →", 27, viewport.FooterTop, 346, 52, () =>
         { S.FollowedId = bot.Id; portfolioTab = 3; historyPage = 0; selectedTrader = -1; SetPage(ScreenId.Portfolio); RequestSave(); });
     }
 
@@ -229,12 +227,12 @@ public sealed partial class GameView
         Text("HOW IT WORKS", 28, viewport.Top + 38, 11, Lime, true);
         float y = BeginModalBody();
         Text("스스로 움직이는 주식 시장", 27, y + 29, 24, Ink, true);
-        string[] titles = ["01  인물 200명, 개미 집단과 1조 시장", "02  호가 경쟁으로 결정되는 주가", "03  현실 120초 = 게임 1일", "04  끝없이 이어지는 30일 시즌"];
+        string[] titles = ["01  100명 투자자와 5개 업종·15개 종목", "02  호가 경쟁으로 결정되는 주가", "03  현실 120초 = 게임 1일", "04  끝없이 이어지는 30일 시즌"];
         string[] body = [
-            "대표 능력은 10개 모두 50점으로 시작합니다. 시즌 1~100위 모두 1~10점의 성장·신용 보상을 받습니다. 직원 등급·역할·인원이 대표와 함께 기관의 판단 능력을 만듭니다.",
-            "실제 양방향 주문이 가격·시간 순서로 체결됩니다. 기관의 현금 목표는 5~30%이며 가치·뉴스·비용을 봅니다. 개인은 시장 반응을 따라갑니다.",
+            "기관은 개미의 추세 추종을 이용해 수익을 노립니다. 개미 10,000명은 시장·주가·뉴스를 따릅니다. 기업·정책·금융은 랜덤 이벤트로 변합니다.",
+            "실제 양방향 주문이 가격·시간 순서로 체결됩니다. 기관은 포트폴리오 비중·현금·손실 한도를 계획하고 약 15~30분마다 호가를 재검토합니다. 투자 결과는 경쟁과 실제 체결에 따라 달라집니다.",
             "1배속에서 실제 5초마다 게임 시간 1시간이 지납니다. 24시간, 즉 실제 120초가 게임의 하루입니다.",
-            "초단기는 시간, 단기는 1~10일 미만, 장기는 10일 이상을 봅니다. 중요한 뉴스·위험 때 계획이 바뀝니다. 매월 결산·정책·보상과 통계가 파일에 보존됩니다."
+            "초단기는 시간, 단기는 1~10일 미만, 장기는 10일 이상을 봅니다. 중요한 뉴스·위험 때 계획이 바뀝니다. 매월 결산·보상과 통계가 파일에 보존되고, 정책은 랜덤 이벤트로 변합니다."
         ];
         float row = y + 66;
         for (int i = 0; i < titles.Length; i++)

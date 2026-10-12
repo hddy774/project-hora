@@ -21,8 +21,6 @@ internal static class CheckpointCopy
         copy.StockVolumes = (long[])value.StockVolumes.Clone(); copy.StockTurnovers = (long[])value.StockTurnovers.Clone();
         copy.StockPrices = (int[])value.StockPrices.Clone(); copy.Institutions = value.Institutions.Select(Scalar).ToList(); return copy;
     }
-    public static CompanyVote Vote(CompanyVote value)
-    { var copy = Scalar(value); copy.Ballots = new(value.Ballots); return copy; }
     public static BankruptcyRecord Bankruptcy(BankruptcyRecord value)
     { var copy = Scalar(value); copy.Report = value.Report is null ? null : Scalar(value.Report); return copy; }
     // SIMD byte scan avoids per-element generic equality on 60,000 retail arrays.
@@ -39,9 +37,8 @@ internal static class CheckpointCopy
         if (value.Development is { } d)
         {
             var development = Scalar(d);
-            development.Employees = d.Employees.Select(Scalar).ToList();
             development.AnalystReports = d.AnalystReports.Select(Scalar).ToList(); development.Plans = d.Plans.Select(Scalar).ToList();
-            development.AllocatedPoints = (int[])d.AllocatedPoints.Clone(); development.LegacyAbilities = (int[])d.LegacyAbilities.Clone();
+            development.AllocatedPoints = (int[])d.AllocatedPoints.Clone();
             development.PositionOpenedHours = (long[])d.PositionOpenedHours.Clone(); development.ShortOpenedHours = (long[])d.ShortOpenedHours.Clone();
             development.NextReviewHours = (long[])d.NextReviewHours.Clone(); development.PositionHorizons = (InvestmentHorizon[])d.PositionHorizons.Clone();
             development.LastNewsSignals = (double[])d.LastNewsSignals.Clone();
@@ -62,27 +59,22 @@ internal static class CheckpointCopy
     static SeasonResult Season(SeasonResult value)
     {
         var copy = Scalar(value); copy.Standings = new(value.Standings); copy.Days = value.Days.Select(Daily).ToList();
-        copy.PersonStandings = new(value.PersonStandings);
         copy.GrowthRewards = value.GrowthRewards.Select(r => r with { AllocatedPoints = (int[])r.AllocatedPoints.Clone() }).ToList();
         copy.Start = value.Start is null ? null : Daily(value.Start); copy.End = value.End is null ? null : Daily(value.End);
         copy.Policy = value.Policy is null ? null : Scalar(value.Policy); copy.CompanyReports = value.CompanyReports.Select(Scalar).ToList(); return copy;
     }
     public static GameState Freeze(GameState value, bool forStorage = false)
     {
-        var copy = Scalar(value); copy.SecurityIds = new(value.SecurityIds); copy.LegacyShares = (long[])value.LegacyShares.Clone();
+        var copy = Scalar(value); copy.SecurityIds = new(value.SecurityIds);
         copy.MinuteActors = new(value.MinuteActors);
-        if (value.World is { } world)
-        {
-            var w = Scalar(world); w.Rules = world.Rules?.Copy(); w.People = world.People.Select(p => { var person = Scalar(p); person.Skills = (int[])p.Skills.Clone(); return person; }).ToList();
-            w.Projects = world.Projects.Select(Scalar).ToList(); w.Activities = new(world.Activities);
-            w.Votes = world.Votes.Select(v => { var vote = Scalar(v); vote.Ballots = new(v.Ballots); return vote; }).ToList(); copy.World = w;
-        }
         copy.Rules = value.Rules?.Copy();
+        copy.Environment = Scalar(value.Environment); copy.Environment.Rules = value.Environment.Rules.Copy();
         copy.RealEconomy = Scalar(value.RealEconomy); copy.CashFlows = new(value.CashFlows); copy.Journal = new(value.Journal);
         copy.SectorVolumes = new(value.SectorVolumes); copy.SectorTurnovers = new(value.SectorTurnovers);
         copy.CorporateEvents = value.CorporateEvents.Select(Scalar).ToList(); copy.Stocks = value.Stocks.Select(Stock).ToList();
         copy.Bots = value.Bots.Select(t => Trader(t)).ToList(); copy.Retail = value.Retail.Select(t => Trader(t, forStorage)).ToList();
-        copy.CompanyVotes = value.CompanyVotes.Select(Vote).ToList(); copy.Bankruptcies = value.Bankruptcies.Select(Bankruptcy).ToList();
+        copy.Bankruptcies = value.Bankruptcies.Select(Bankruptcy).ToList();
+        copy.Activity = Scalar(value.Activity);
         copy.BankruptcyTotals = Scalar(value.BankruptcyTotals);
         copy.Orders = value.Orders.Where(o => o.Remaining > 0).Select(Scalar).ToList(); copy.News = value.News.Select(Scalar).ToList();
         copy.Tape = value.Tape.Select(Scalar).ToList(); copy.PendingSeasons = value.PendingSeasons.Select(Season).ToList();
@@ -93,6 +85,6 @@ internal static class CheckpointCopy
         copy.Government.History = value.Government.History.Select(Scalar).ToList(); copy.DailyHistory = value.DailyHistory.Select(Daily).ToList();
         copy.OpeningSnapshot = value.OpeningSnapshot is null ? null : Daily(value.OpeningSnapshot);
         copy.SeasonSnapshot = value.SeasonSnapshot is null ? null : Daily(value.SeasonSnapshot);
-        copy.Operations = value.Operations.Select(Scalar).ToList(); return copy;
+        return copy;
     }
 }

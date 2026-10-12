@@ -11,8 +11,8 @@ public sealed partial class GameEngine
     public static GameEngine Deserialize(string json)
     {
         var s = JsonSerializer.Deserialize<GameState>(json, StateJson) ?? throw new InvalidDataException("비어 있는 저장 데이터");
-        int source = s.Version, count = source >= 5 ? s.Stocks.Count : source == 4 ? 10 : 8;
-        if (source is not (2 or 3 or 4 or 5 or 6 or 7 or 8) || count < 8 || count > 2048 || s.Stocks.Count != count ||
+        int source = s.Version, count = s.Stocks.Count;
+        if (source != 9 || count != StockCount || s.Stocks.Count != count ||
             s.RandomState == 0 || s.CompletedHours < 0 || !double.IsFinite(s.HourProgress) || s.HourProgress is < 0 or >= 1 ||
             s.Bots.Count != AiCount || s.FollowedId is < 1 or > AiCount || !Guid.TryParseExact(s.RunId, "N", out _))
             throw new InvalidDataException("지원하지 않는 저장 데이터");
@@ -24,79 +24,14 @@ public sealed partial class GameEngine
             throw new InvalidDataException("시장 데이터 손상");
         foreach (var t in s.Bots.Concat(s.Retail))
         {
-            if (source >= 6) NormalizeCompactTrader(t, count);
-            if (source < 4)
-            { t.ReservedShares = new long[count]; t.ShortShares = new long[count]; t.ShortAveragePrice = new double[count]; t.ReservedCovers = new long[count]; }
-            ValidateTrader(t, count, source >= 4);
+            NormalizeCompactTrader(t, count);
+            ValidateTrader(t, count, true);
         }
-        if (source == 2)
-        {
-            if (s.CompletedHours > 720) throw new InvalidDataException("이전 시즌 시간 손상");
-            s.Orders.Clear(); s.Retail.Clear(); s.Tape.Clear(); s.PendingSeasons.Clear();
-            var legacy = new GameEngine(s); s.MigratedFromV1 = true;
-            foreach (var t in s.Bots)
-            {
-                t.LegacyFees = t.Fees; t.LegacyRealizedProfit = t.RealizedProfit; t.Fees = 0; t.RealizedProfit = 0;
-                t.OpeningCash = t.Cash; t.OpeningEquity = t.Equity(s.Stocks); t.SeasonOpeningEquity = 10_000_000;
-                t.OpeningUnrealized = t.Financials(s.Stocks).UnrealizedProfit; t.BuyCashFlow = t.SellCashFlow = 0;
-                t.EquityHistory = t.EquityHistory.TakeLast(HistoryLimit).ToList();
-            }
-            for (int i = 0; i < 8; i++) s.Stocks[i].Sector = CompanyCatalog.Companies[i].Sector;
-            legacy.CreateRetail();
-            s.InitialSystemCash = legacy.Participants.Sum(t => t.Cash) + s.FeePool;
-            for (int i = 0; i < 8; i++) s.Stocks[i].TotalShares = legacy.Participants.Sum(t => t.Shares[i]);
-        }
-        if (s.Retail.Count < 1 || s.Retail.Count > RetailCount || source < 8 && s.Retail.Count != RetailCount || s.Retail.Where((t, i) => t.Id != AiCount + i + 1 || !t.IsRetail).Any() ||
+        if (s.Retail.Count < 1 || s.Retail.Count > RetailCount || s.Retail.Where((t, i) => t.Id != AiCount + i + 1 || !t.IsRetail).Any() ||
             (s.RetailCursor < 0 || s.RetailCursor >= s.Retail.Count) || s.FeePool < 0 || s.NextOrderId < 1 || s.LastArchivedSeason < 0 || s.LastArchivedSeason >= s.Season)
             throw new InvalidDataException("참가자 데이터 손상");
-        if (source < 5)
-        {
-            long oldCash = s.Bots.Concat(s.Retail).Sum(t => t.Cash) + s.FeePool + (source == 4 ? s.Bank.Cash + s.Government.Cash : 0);
-            if (oldCash != s.InitialSystemCash || Enumerable.Range(0, count).Any(i =>
-                s.Bots.Concat(s.Retail).Sum(t => t.Shares[i]) + (source == 4 ? s.Bank.ShareInventory[i] : 0) != s.Stocks[i].TotalShares))
-                throw new InvalidDataException("기존 장부 손상");
-            UpgradeMarket(s, source);
-            count = s.Stocks.Count;
-        }
         ValidateEconomy(s, count);
-        if (source < 6)
-        {
-            s.MatchedVolume = s.Stocks.Sum(x => x.TotalVolume); s.MatchedTurnover = s.Stocks.Sum(x => x.TotalTurnover);
-            s.SectorVolumes = s.Stocks.GroupBy(x => x.Sector).ToDictionary(g => g.Key, g => g.Sum(x => x.TotalVolume));
-            s.SectorTurnovers = s.Stocks.GroupBy(x => x.Sector).ToDictionary(g => g.Key, g => g.Sum(x => x.TotalTurnover));
-            foreach (var t in s.Bots.Concat(s.Retail)) t.TaxesPaid = t.Taxes;
-            foreach (var t in s.Retail) t.SeasonReturnBasis = t.SeasonSnapshot.ReturnIndex;
-            s.Version = 6;
-        }
-        ValidateLifecycle(s);
-        if (source < 7)
-        {
-            s.Rules = SimulationRules.Default();
-            var upgrade = new GameEngine(s);
-            foreach (var t in s.Bots)
-            {
-                var old = t.Abilities.Values();
-                t.Abilities = Abilities.Uniform(upgrade.Rules.Representative.InitialAbility);
-                upgrade.InitializeDevelopment(t);
-                t.Development!.LegacyAbilities = old;
-                t.Development.LastRewardSeason = s.Season - 1;
-                t.Development.LastPayrollHour = s.CompletedHours;
-                t.Development.NextDecisionHour = s.CompletedHours;
-            }
-            s.Version = 7;
-        }
-        ValidateDevelopment(s);
-        if (source < 8)
-        {
-            s.CompletedMinutes = checked(s.CompletedHours * 60);
-            double accepted = s.HourProgress * 60;
-            s.PendingClockMinutes = checked(s.PendingClockHours * 60 + (int)Math.Floor(accepted + 1e-9));
-            s.MinuteProgress = Math.Clamp(accepted - Math.Floor(accepted + 1e-9), 0, .999999999999);
-            s.HourProgress = s.MinuteProgress / 60;
-            foreach (var o in s.Orders) { o.CreatedMinute = s.CompletedMinutes; o.ExpiresMinute = o.ExpiresAt * 60; }
-            new GameEngine(s).InitializeWorld(true); s.Version = 8;
-        }
-        ValidateWorld(s);
+        ValidateLifecycle(s); ValidateDevelopment(s); ValidateMarket(s);
         if (s.SecurityIds.Count != count || !s.SecurityIds.SequenceEqual(s.Stocks.Select(x => x.SecurityId)) ||
             s.SecurityIds.Any(string.IsNullOrWhiteSpace) || s.SecurityIds.Distinct().Count() != count)
             throw new InvalidDataException("종목 ID 손상");
@@ -125,60 +60,8 @@ public sealed partial class GameEngine
         if (s.PendingSeasons.Any(r => r.Season <= s.LastArchivedSeason || r.Season >= s.Season || r.Standings.Count != AiCount ||
             r.Standings.Select(x => x.TraderId).Distinct().Count() != AiCount)) throw new InvalidDataException("시즌 기록 손상");
         if (s.DailyHistory.Count is < 1 or > 121 || s.OpeningSnapshot is null || s.SeasonSnapshot is null ||
-            s.Stocks.Any(stock => stock.Reports.Count is < 1 or > 12) || s.Operations.Count > 80 || s.Operations.Any(o =>
-            o.LeaderId is < 1 or > AiCount || o.PartnerId is < 1 or > AiCount || o.LeaderId == o.PartnerId ||
-            o.StockIndex < 0 || o.StockIndex >= count || !Enum.IsDefined(o.Status))) throw new InvalidDataException("기록 데이터 손상");
+            s.Stocks.Any(stock => stock.Reports.Count is < 1 or > 12)) throw new InvalidDataException("기록 데이터 손상");
         return engine;
-    }
-    static void UpgradeMarket(GameState s, int source)
-    {
-        s.LegacyShares = s.Stocks.Select(stock => stock.TotalShares).ToArray();
-        var engine = new GameEngine(s);
-        if (source < 4)
-        {
-            s.Bank = new BankState { ShareInventory = new long[s.Stocks.Count], ReservedLending = new long[s.Stocks.Count] };
-            s.Government = new GovernmentState(); s.Government.Policy.Season = s.Season;
-            s.Government.History = [s.Government.Policy];
-            foreach (var t in engine.Participants) if (!t.IsRetail) engine.InitializeRepresentative(t);
-            for (int i = 0; i < s.Stocks.Count; i++) { s.Bank.ShareInventory[i] = 500; s.Stocks[i].TotalShares += 500; }
-        }
-        s.RealEconomy = new RealEconomyState();
-        for (int i = 0; i < s.Stocks.Count; i++)
-        {
-            var stock = s.Stocks[i]; var definition = CompanyCatalog.Companies.First(c => c.Symbol == stock.Symbol);
-            var profile = CompanyCatalog.Create(definition);
-            stock.CostRatio = profile.CostRatio; stock.DemandSensitivity = profile.DemandSensitivity; stock.DividendPayout = profile.DividendPayout;
-            stock.SecurityId = definition.SecurityId; stock.Business = definition.Business; stock.Driver = definition.Driver;
-            stock.NewsExposure = definition.NewsExposure; stock.CapitalPolicy = definition.CapitalPolicy; stock.LastTradePrice = stock.Price;
-            var oldReports = stock.Reports.Select(CopyReport).ToList();
-            foreach (var report in oldReports) { report.AccountingBasis = source; report.SecurityId = stock.SecurityId; report.AverageShares = report.OutstandingShares = stock.OutstandingShares; report.SplitFactor = 1; }
-            engine.InitializeBusiness(stock);
-            stock.Reports = oldReports.TakeLast(11).Append(CopyReport(stock.Report)).ToList();
-        }
-        s.SecurityIds = s.Stocks.Select(stock => stock.SecurityId).ToList();
-        foreach (var order in s.Orders) if (order.StockIndex >= 0 && order.StockIndex < s.Stocks.Count) order.SecurityId = s.Stocks[order.StockIndex].SecurityId;
-        engine.ResizeSecurities();
-        double legacyIndex = s.OpeningSnapshot is { Capitalization: > 0 } open ? 1000.0 * s.Stocks.Select((stock, i) => (double)stock.MarkPrice * s.LegacyShares[i]).Sum() / open.Capitalization : 1000;
-        s.PriceIndex = s.TotalReturnIndex = s.LastPriceIndex = legacyIndex;
-        s.IndexDivisor = s.Stocks.Sum(x => x.MarketCap) / legacyIndex;
-        engine.RestoreSectorListings();
-        if (s.DailyHistory.Count == 0) engine.InitializeHistory();
-        foreach (var t in engine.Participants)
-        {
-            t.ReturnIndex = (double)t.Equity(s.Stocks) / Math.Max(1, t.OpeningEquity);
-            t.LastReturnEquity = t.Equity(s.Stocks); t.LastNetContribution = t.NetContribution;
-            if (source < 4) { t.OpeningSnapshot = engine.CaptureTrader(t); t.OpeningSnapshot.Equity = t.OpeningEquity; t.OpeningSnapshot.Cash = t.OpeningCash; t.OpeningSnapshot.NetIncome = 0; }
-            t.OpeningSnapshot.ReturnIndex = 1;
-            t.SeasonSnapshot = engine.CaptureTrader(t); t.SeasonSnapshot.Equity = Math.Max(1, t.SeasonOpeningEquity);
-            t.SeasonSnapshot.ReturnIndex = (double)Math.Max(1, t.SeasonOpeningEquity) / Math.Max(1, t.OpeningEquity);
-        }
-        s.OpeningSnapshot = GameStore.NormalizeLegacy(s.OpeningSnapshot ?? engine.CaptureSnapshot(), engine);
-        s.SeasonSnapshot = GameStore.NormalizeLegacy(s.SeasonSnapshot ?? engine.CaptureSnapshot(), engine);
-        s.DailyHistory = s.DailyHistory.Select(day => GameStore.NormalizeLegacy(day, engine)).ToList();
-        s.InitialSystemCash = engine.SystemCash(); s.Version = 5;
-        s.MigratedFromV3 = source == 3; s.MigratedFromV4 = source == 4;
-        if (source == 2 && s.CompletedHours == 720) engine.FinishSeason(1);
-        if (s.News.Count == 0) engine.PublishNews();
     }
     static void ValidateEconomy(GameState s, int count)
     {
@@ -201,7 +84,7 @@ public sealed partial class GameEngine
     {
         if (t.Cash < 0 || t.Shares.Length != count || t.AverageCost.Length != count || t.ReservedShares.Length != count ||
             t.Shares.Any(q => q < 0) || t.AverageCost.Any(c => c < 0 || !double.IsFinite(c)) || !double.IsFinite(t.RealizedProfit) ||
-            !double.IsFinite(t.OpeningUnrealized) || !double.IsFinite(t.Risk) || !double.IsFinite(t.Patience) || !Enum.IsDefined(t.Strategy) || t.Fees < 0 || t.StaffCosts < 0)
+            !double.IsFinite(t.OpeningUnrealized) || !double.IsFinite(t.Risk) || !double.IsFinite(t.Patience) || !Enum.IsDefined(t.Strategy) || t.Fees < 0)
             throw new InvalidDataException("포트폴리오 데이터 손상");
         if (modern && (t.ShortShares.Length != count || t.ShortAveragePrice.Length != count || t.ReservedCovers.Length != count ||
             t.ShortShares.Any(q => q < 0) || t.ShortAveragePrice.Any(p => p < 0 || !double.IsFinite(p)) || t.LoanDebt < 0 || t.FineDebt < 0 ||
@@ -214,21 +97,16 @@ public sealed partial class GameEngine
     {
         if (s.MatchedVolume < 0 || s.MatchedTurnover < 0 || s.SectorVolumes.Values.Any(v => v < 0) || s.SectorTurnovers.Values.Any(v => v < 0) ||
             s.SectorVolumes.Values.Sum() != s.MatchedVolume || s.SectorTurnovers.Values.Sum() != s.MatchedTurnover ||
-            s.NextVoteId < 1 || s.NextBankruptcyId < 1 || s.CompanyVotes.Count > Math.Max(180, s.Stocks.Count * 6) || s.Bankruptcies.Count > 64 ||
+            s.NextBankruptcyId < 1 || s.Bankruptcies.Count > 64 ||
             s.Bots.Concat(s.Retail).Any(t => t.Generation < 1 || t.BirthHour < 0 || t.BirthHour > s.CompletedHours || !double.IsFinite(t.SeasonReturnBasis) || t.SeasonReturnBasis < 0) ||
             s.Stocks.Any(x => x.Generation < 1 || x.InsolventMonths < 0 || !Enum.IsDefined(x.CompanyStrategy) || !Enum.IsDefined(x.Management) ||
                 !Enum.IsDefined(x.Allocation) || !double.IsFinite(x.TreasuryTarget) || x.TreasuryTarget is < 0 or > 1 || x.WaitingForCapital && x.Active) ||
-            s.CompanyVotes.Select(v => v.Id).Distinct().Count() != s.CompanyVotes.Count || s.CompanyVotes.Any(v => v.Id < 1 || v.Id >= s.NextVoteId ||
-                v.OpenHour < 0 || v.OpenHour > s.CompletedHours || v.CloseHour < v.OpenHour || !Enum.IsDefined(v.Kind) || !Enum.IsDefined(v.Status) || v.Option is < 0 or > 2 ||
-                v.EligibleShares < 0 || v.ForShares < 0 || v.AgainstShares < 0 || v.AbstainShares < 0 ||
-                v.Status != VoteStatus.Open && (v.CloseHour > s.CompletedHours || v.ForShares + v.AgainstShares + v.AbstainShares != v.EligibleShares) ||
-                v.Ballots.Any(b => b.Shares <= 0 || !Enum.IsDefined(b.Choice)) || v.Ballots.Sum(b => b.Shares) != v.ForShares + v.AgainstShares + v.AbstainShares) ||
             s.Bankruptcies.Select(b => b.Id).Distinct().Count() != s.Bankruptcies.Count || s.Bankruptcies.Any(b => b.Id < 1 || b.Id >= s.NextBankruptcyId ||
                 b.Hour < 0 || b.Hour > s.CompletedHours || b.Generation < 1 || !Enum.IsDefined(b.Kind) || b.Assets < 0 || b.Liabilities < 0 || b.Equity != b.Assets - b.Liabilities ||
                 b.LoanWriteOff < 0 || b.TradeWriteOff < 0 || b.ShortWriteOff < 0 || b.TaxWriteOff < 0 || b.FineWriteOff < 0 || b.ReplacementCapital < 0 || !double.IsFinite(b.TradingIncome)) ||
             s.BankruptcyTotals.Companies < 0 || s.BankruptcyTotals.Institutions < 0 || s.BankruptcyTotals.Retail < 0 ||
             s.BankruptcyTotals.Total != s.NextBankruptcyId - 1 || s.Bank.LoanWriteOffs < 0 || s.Bank.ShortWriteOffs < 0 || s.Government.TaxWriteOffs < 0 || s.Government.FineWriteOffs < 0)
-            throw new InvalidDataException("주총·파산·세대 데이터 손상");
+            throw new InvalidDataException("파산·세대 데이터 손상");
         var dealer = s.Bank.MarketAccount;
         if (dealer.Id != 0 || dealer.IsRetail || dealer.LoanDebt != 0 || dealer.FineDebt != 0 || dealer.ShortShares.Any(q => q != 0) ||
             dealer.AverageCost.Any(p => p < 0 || !double.IsFinite(p))) throw new InvalidDataException("은행 시장 계정 손상");

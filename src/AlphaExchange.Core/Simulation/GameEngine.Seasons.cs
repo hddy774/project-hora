@@ -22,7 +22,7 @@ public sealed partial class GameEngine
             if (AwardSeasonGrowth(t, season, row.Rank) is { } reward) result.GrowthRewards.Add(reward);
             Append(t.SeasonRanks, new RankHistory(season, row.Rank, row.Return, row.Equity, t.Generation), 12);
         }
-        if (State.World is not null) AwardVotingPower(result); State.PendingSeasons.Add(result);
+        State.PendingSeasons.Add(result);
         foreach (var t in Participants)
         { t.SeasonOpeningEquity = t.Equity(State.Stocks); if (t.IsRetail) t.SeasonReturnBasis = t.ReturnIndex; else t.SeasonSnapshot = CaptureTrader(t); }
         State.SeasonSnapshot = result.End;

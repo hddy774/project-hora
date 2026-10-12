@@ -13,7 +13,7 @@ flowchart LR
 
 프로젝트 경로는 그대로 두고 프로젝트 안의 소유 책임을 나눈다. 여러 게임을 위한 금융 공통 프레임워크를 추가하지 않는다. `AlphaExchange.sln`은 `src`, `tests`, `tools`를 구분하고 실제 사용하는 Debug/Release Any CPU 설정만 제공한다. 모든 C# 프로젝트의 nullable·implicit usings는 `Directory.Build.props`에 한 번 선언한다.
 
-Core의 `Domain`에는 상태 타입과 값 계산을 둔다. `GameState`, `Trader`, `Stock`, `CompanyReport`, 과거 스냅샷은 각 파일에서 선언 순서를 유지한다. 초기 배열 크기 등 공통 값은 `MarketDefaults`를 사용하여 모델이 엔진에 의존하지 않게 한다. `Simulation`의 partial 엔진 파일은 같은 엔진 상태를 소유하며 거래·기관·기업·세계 기능별로 배치한다. `Reporting`은 순위와 통계의 계산 원본이다. `Persistence`는 고정 캡처, 트랜잭션 쓰기, 조회, 이관·복구를 구분한다. 데이터 버전 8과 SQLite 버전 5는 변경하지 않는다.
+Core의 `Domain`에는 상태 타입과 값 계산을 둔다. `GameState`, `Trader`, `Stock`, `CompanyReport`, 과거 스냅샷은 각 파일에서 선언 순서를 유지한다. 초기 배열 크기 등 공통 값은 `MarketDefaults`를 사용하여 모델이 엔진에 의존하지 않게 한다. `Simulation`의 partial 엔진 파일은 같은 엔진 상태를 소유하며 거래·기관·기업·이벤트 경제 기능별로 배치한다. `Reporting`은 순위와 통계의 계산 원본이다. `Persistence`는 고정 캡처, 트랜잭션 쓰기, 조회, 이관·복구를 구분한다. 상태 9와 SQLite 6을 사용한다. 이전 30종목 파일은 `LegacyArchive`가 원본과 WAL을 변경하지 않고 내보내며 현행 엔진에서 해석하지 않는다.
 
 Android의 `GameView.cs`는 뷰 구성과 세션 연결을 담당한다. `Runtime`은 분 워커·생명주기·저장 요청·파일 선택, `Navigation`은 `ScreenId`와 화면 이동, `Input`은 터치 상태, `Rendering`은 Canvas·이미지·표시 캐시, `Screens`는 기능별 화면이다. UI는 Core의 순위·회계 계산을 복제하지 않는다. 공통 Client 프로젝트를 Android와 검사 프로젝트가 참조하여 같은 코드를 한 번만 컴파일한다.
 
@@ -40,4 +40,12 @@ Android의 `GameView.cs`는 뷰 구성과 세션 연결을 담당한다. `Runtim
 
 일부 기존 기간·시즌·재무 화면의 최초 이력 조회는 아직 동기 경로다. 반복 쿼리는 캐시로 억제하며, [개발 규격](development-standard.md)에 따라 해당 화면을 확장할 때 로딩/실패 상태를 갖춘 비동기 조회로 옮긴다. v1.9의 완전한 UI 스냅샷 분리나 물리 기기 FPS·배터리 검증으로 해석하지 않는다.
 
-검사 코드는 `Client`, `Reporting`, `Simulation`, `Persistence`, `Compatibility`로 분류한다. 기존 버전 이름의 검사들은 이전 저장·규칙 변화의 근거이므로 보존한다. `scripts/check-architecture.py`는 역방향 프로젝트 의존성, Android 타입의 공통 코드 침투, 도메인의 엔진/저장 의존, 테스트의 앱 소스 링크, Android 동기 대기, 키/빌드 결과의 소스 포함을 차단한다.
+검사 코드는 `Client`, `Reporting`, `Simulation`, `Persistence`로 분류한다. 구형 세계·직원·투표 실행 검사는 Git 이력에 보관하고, 현행 시장 회귀와 원본 보관 검사로 대체한다. `scripts/check-architecture.py`는 역방향 프로젝트 의존성, Android 타입의 공통 코드 침투, 도메인의 엔진/저장 의존, 테스트의 앱 소스 링크, Android 동기 대기, 키/빌드 결과의 소스 포함을 차단한다.
+
+## 투자자 전용 구성
+
+`Domain/Companies`는 기업 정책 값·파산 기록, `Domain/Institutions`는 성장·계획·캠페인 상태, `Domain/Economy`는 랜덤 사건 환경을 보관한다. `Simulation/Economy`가 사건·개시 납입·결제 계정을 담당한다. 제거된 World/Governance/직원 계층을 빈 전달 계층으로 유지하지 않는다.
+
+기관의 공개 신호 분석, 전체 목표 비중 계산, 전략 단계, 거래 후보 선택, 위험 청산·주문 가격 계산을 각각 파일로 구분한다. 매 분 공통 시장 신호를 준비하고 기관 판단에는 재사용하는 배열과 고정 크기 임시 버퍼를 사용한다. 계획 설명 문자열은 계획 갱신 때 바꾸고 수치·예약은 매 재평가에 갱신한다.
+
+Android 재무 화면은 통계·포트폴리오·금액 표시·재무표 배치·투자자 재무·기업 분석·위험 보고로 분리한다. 긴 금액은 두 줄 행과 폭에 맞는 글자로 표시한다. 투자자 100명의 10개 아틀라스만 APK에 포함한다.

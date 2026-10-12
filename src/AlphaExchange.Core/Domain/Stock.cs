@@ -4,7 +4,6 @@ namespace AlphaExchange.Core;
 
 public sealed class Stock
 {
-    public long PendingManagementPay { get; set; }
     public double BusinessSalesFactor { get; set; } = 1;
     public int Generation { get; set; } = 1;
     public int InsolventMonths { get; set; }

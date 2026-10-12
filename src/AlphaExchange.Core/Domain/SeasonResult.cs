@@ -3,7 +3,6 @@ namespace AlphaExchange.Core;
 
 public sealed class SeasonResult
 {
-    public List<PersonStanding> PersonStandings { get; set; } = [];
     public List<SeasonGrowthReward> GrowthRewards { get; set; } = [];
     public long Season { get; set; }
     public List<SeasonStanding> Standings { get; set; } = [];

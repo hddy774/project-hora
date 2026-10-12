@@ -45,7 +45,7 @@ public sealed partial class GameEngine
     }
     long FundReplacement(Trader t)
     {
-        long wanted = t.IsRetail ? (State.World?.Rules?.RetailCapital ?? 100_000) : (State.World?.Rules?.InvestorCapital ?? 10_000_000);
+        long wanted = t.IsRetail ? MarketRules.RetailCapital : MarketRules.InvestorCapital;
         if (State.RealEconomy.Cash < wanted) { t.WaitingForCapital = true; return 0; }
         TransferCash(State.RealEconomy, t, wanted, "replacement-capital");
         t.OpeningCash += wanted; t.OpeningEquity += wanted; t.SeasonOpeningEquity = t.Equity(State.Stocks);
@@ -95,8 +95,6 @@ public sealed partial class GameEngine
         long taxPaid = Math.Min(t.Cash, t.TaxDebt); TransferCash(t, State.Government, taxPaid, "bankruptcy-tax-recovery");
         record.TaxWriteOff = t.TaxDebt - taxPaid; State.Government.TaxWriteOffs += record.TaxWriteOff;
         TransferCash(t, State.RealEconomy, t.Cash, "bankruptcy-estate");
-        foreach (var op in State.Operations.Where(o => o.Status == OperationStatus.Active && (o.LeaderId == t.Id || o.PartnerId == t.Id)))
-        { op.Status = OperationStatus.Failed; op.EndsHour = State.CompletedHours; op.Detail = "참여 기관 파산으로 종료"; }
         var next = new Trader
         {
             Id = t.Id,
@@ -119,8 +117,6 @@ public sealed partial class GameEngine
     {
         var stock = State.Stocks[index]; if (!stock.Active) return;
         CancelSecurity(index); CancelOrders(0);
-        foreach (var vote in State.CompanyVotes.Where(v => v.SecurityId == stock.SecurityId && v.Status == VoteStatus.Open))
-        { vote.Status = VoteStatus.Cancelled; vote.CloseHour = State.CompletedHours; RecordVote(vote); }
         var report = CopyReport(stock.Report); stock.Report = CopyReport(stock.Report);
         var estate = stock.Report;
         var record = new BankruptcyRecord

@@ -1,0 +1,27 @@
++ dotnet run --project tests/AlphaExchange.Checks/AlphaExchange.Checks.csproj -c Release --
+PASS investor market: removed roles, fixed catalog, public news/tape response, budgeted plans, aggressive matching, accounting and isolated checkpoints
+Season 1: matches=379,734, feePool=684,460,414, latest matches=379,734
+Season 2: matches=828,261, feePool=635,775,514, latest matches=448,527
+Season 3: matches=1,318,250, feePool=472,214,960, latest matches=489,989
+Season 4: matches=1,666,115, feePool=381,324,470, latest matches=347,865
+Season 5: matches=1,852,771, feePool=443,374,891, latest matches=186,656
+Season 6: matches=2,031,817, feePool=491,281,459, latest matches=179,046
+Season 7: matches=2,262,172, feePool=606,861,255, latest matches=230,355
+Season 8: matches=2,467,076, feePool=598,468,828, latest matches=204,904
+Season 9: matches=2,835,303, feePool=676,824,973, latest matches=368,227
+Season 10: matches=3,221,529, feePool=342,413,085, latest matches=386,226
+Season 11: matches=3,595,443, feePool=220,774,383, latest matches=373,914
+Season 12: matches=3,983,938, feePool=300,685,802, latest matches=388,495
+Season 13: matches=4,357,110, feePool=222,312,917, latest matches=373,172
+Season 14: matches=4,719,630, feePool=164,194,116, latest matches=362,520
+Season 15: matches=5,075,235, feePool=106,163,060, latest matches=355,605
+Season 16: matches=5,424,146, feePool=90,061,506, latest matches=348,911
+Bear scenario: solvent institutions=100, cash=1,003,457,342
+PASS economy: abilities, 50/100x, nine grades, loans, shorts, taxes, fines, bear risk, monthly reports, random policies and comparisons
+PASS market: 15 companies, real dividends, lender compensation, share actions, funded capital, index neutrality, post-action statements, hourly storage, legacy preservation, recovery and file portability
+PASS ownership/performance: physical ownership, treasury denominators, lender obligations, cache invalidation, frozen checkpoints, full JSON validation, extrema and mixed-resolution gaps
+PASS 23,679,512 assertions; 16 seasons; 5,430,915 matched trades
+Simulation wall time 100.44s; hour p50=6.44ms p95=13.69ms p99=23.06ms (100x budget 50ms/hour)
+Save bytes 10,779,663; serialize 93.2ms; pending=0; active orders=183
++ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 scripts/check-artwork.py
+PASS: 100 unique portrait regions, 70 women / 30 men, 10 generated originals, bounds and SHA-256 verified.

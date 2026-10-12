@@ -4,23 +4,18 @@ namespace AlphaExchange.Core;
 
 public sealed class GameState : ICashAccount
 {
-    public int Version { get; set; } = 8;
-    public EconomyWorld? World { get; set; }
+    public int Version { get; set; } = 9;
+    public MarketEnvironment Environment { get; set; } = new();
     public long CompletedMinutes { get; set; }
     public double MinuteProgress { get; set; }
     public int PendingClockMinutes { get; set; }
     public List<int> MinuteActors { get; set; } = [];
     public SimulationRules? Rules { get; set; }
-    public long NextVoteId { get; set; } = 1;
     public long NextBankruptcyId { get; set; } = 1;
-    public List<CompanyVote> CompanyVotes { get; set; } = [];
     public List<BankruptcyRecord> Bankruptcies { get; set; } = [];
     public BankruptcyTotals BankruptcyTotals { get; set; } = new();
     public string RunId { get; set; } = Guid.NewGuid().ToString("N");
-    public bool MigratedFromV1 { get; set; }
-    public bool MigratedFromV4 { get; set; }
     public List<string> SecurityIds { get; set; } = [];
-    public long[] LegacyShares { get; set; } = [];
     public RealEconomyState RealEconomy { get; set; } = new();
     public long ExchangeRevenue { get; set; }
     public long ExchangeSpending { get; set; }
@@ -46,6 +41,7 @@ public sealed class GameState : ICashAccount
     public long ComparisonFrom { get; set; }
     public long ComparisonTo { get; set; }
     public int FollowedId { get; set; } = 1;
+    public TradingActivity Activity { get; set; } = new();
     public long TotalAiTrades { get; set; }
     public long TotalMatches { get; set; }
     public long MatchedVolume { get; set; }
@@ -71,9 +67,6 @@ public sealed class GameState : ICashAccount
     public List<DailySnapshot> DailyHistory { get; set; } = [];
     public DailySnapshot? OpeningSnapshot { get; set; }
     public DailySnapshot? SeasonSnapshot { get; set; }
-    public List<InstitutionOperation> Operations { get; set; } = [];
-    public long NextOperationId { get; set; } = 1;
-    public bool MigratedFromV3 { get; set; }
     [JsonIgnore] public long Season => CompletedHours / (MarketDefaults.SeasonDays * 24) + 1;
     [JsonIgnore] public int Day => (int)(CompletedHours % (MarketDefaults.SeasonDays * 24) / 24) + 1;
     [JsonIgnore] public int Hour => (int)(CompletedHours % 24);

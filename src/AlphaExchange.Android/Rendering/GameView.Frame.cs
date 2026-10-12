@@ -75,12 +75,8 @@ public sealed partial class GameView
         ScreenId.Seasons => DrawSeasons(y),
         ScreenId.CompanyFinancials => DrawCompanyFinancials(y),
         ScreenId.Ownership => DrawOwnership(y),
-        ScreenId.Governance => DrawGovernance(y),
         ScreenId.Bankruptcies => DrawBankruptcies(y),
-        ScreenId.People => DrawPeople(y),
-        ScreenId.PersonProfile => DrawPersonProfile(y),
-        ScreenId.Politics => DrawPolitics(y),
-        ScreenId.Business => DrawBusiness(y),
+        ScreenId.Investors => DrawInvestors(y),
         _ => DrawNews(y)
     };
 }

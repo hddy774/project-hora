@@ -11,3 +11,6 @@
 - Prefer feature folders, named navigation states and small functions with one responsibility. Remove duplicated calculations and unused layers; add abstractions only for demonstrated uses or execution/lifetime boundaries.
 - Prioritize Android responsiveness: prepare/write checkpoints off the UI thread, preserve the asynchronous Activity save/load barrier, release the simulation gate between minutes, bound and invalidate display caches, and decode images for actual screen density. Never discard accepted time or ledger/history to improve throughput.
 - Run `python3 scripts/check-architecture.py`, relevant regression checks, full game checks and Android Release/native validation before merging structural changes. Compare deterministic outcomes and fixed-input measurements for performance changes.
+
+- Market AI is investor-only: 100 institutions and trend/news-following retail. Keep 15 security slots across five sectors; management, policy and finance change through seeded random events. Preserve order-book price discovery and funded ledger invariants. Do not reintroduce removed people, hiring, voting or business-project systems.
+- State 9/SQLite 6 starts a new market; preserve prior 30-stock databases and WAL bytes and provide legacy archive export. Never silently reinterpret legacy portfolios.

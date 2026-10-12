@@ -4,7 +4,7 @@ public sealed partial class GameEngine
 {
     public const int AiCount = MarketDefaults.InstitutionCount, RetailCount = 10_000,
         SeasonLength = MarketDefaults.SeasonDays, StockCount = MarketDefaults.StockCount;
-    public const long InitialCash = 1_000_000_000, RetailInitialCapital = 500_000_000;
+    public const long InitialCash = 1_000_000_000, RetailInitialCapital = 50_000_000;
     public const double FeeRate = .0015, SecondsPerGameHour = 5;
     public const int HistoryLimit = 120, TapeLimit = 160;
     public GameState State { get; private set; }
@@ -17,10 +17,10 @@ public sealed partial class GameEngine
     public static readonly int[] Speeds = [1, 2, 5, 20, 50, 100];
     static readonly string[] Names = ["노바", "볼트", "루멘", "아틀라스", "픽셀", "오닉스", "테라", "제니스", "코멧", "에코", "벡터", "오리온", "네온", "루나", "제로", "시그마", "펄스", "퀀트", "코어", "아스트로"];
     readonly int[] actorBuffer = new int[AiCount + 800];
-    public GameEngine(uint seed, SimulationRules? rules = null, WorldRules? worldRules = null)
+    public GameEngine(uint seed, SimulationRules? rules = null, MarketRules? marketRules = null)
     {
         seed = seed == 0 ? 20261004 : seed;
-        State = new GameState { Seed = seed, RandomState = seed, Rules = rules?.Copy() ?? SimulationRules.Default(), World = new EconomyWorld { Rules = worldRules?.Copy() ?? AlphaExchange.Core.WorldRules.Default() } };
+        State = new GameState { Seed = seed, RandomState = seed, Rules = rules?.Copy() ?? SimulationRules.Default(), Environment = new MarketEnvironment { Rules = marketRules?.Copy() ?? AlphaExchange.Core.MarketRules.Default() } };
         ConfigureNewCapital();
         State.Stocks.AddRange(CompanyCatalog.Companies.Select(c => CompanyCatalog.Create(c)));
         State.SecurityIds = State.Stocks.Select(s => s.SecurityId).ToList();
@@ -28,9 +28,16 @@ public sealed partial class GameEngine
         {
             var t = new Trader { Id = i, Name = $"{Names[(i - 1) % Names.Length]} {i:000}", Strategy = (Strategy)((i - 1) % 6), Risk = .25 + Next() * .7, Patience = .1 + Next() * .7 };
             InitializeRepresentative(t);
-            Endow(t, WorldRules.InvestorCapital); State.Bots.Add(t);
+            Endow(t, MarketRules.InvestorCapital); State.Bots.Add(t);
         }
-        CreateRetail(); InitializeEconomy(); InitializeWorld(); HoldElection(true); HoldElection(false); VoteEconomicPolicy(); InitializeTotals(); InitializeHistory(); PublishNews(); RebuildBooks(); OpenSeasonVotes();
+        CreateRetail();
+        InitializeEconomy();
+        AllocateOpeningShares();
+        InitializeTotals();
+        InitializeHistory();
+        RebuildBooks();
+        PublishNews();
+        PrepareMarketSignals();
     }
     GameEngine(GameState state) { State = state; RebuildBooks(); if (state.Minute != 0) PrepareMarketSignals(); }
     void Endow(Trader t, long capital)
@@ -44,11 +51,11 @@ public sealed partial class GameEngine
     }
     void CreateRetail()
     {
-        int count = State.World?.Rules?.InitialRetailUnits ?? RetailCount;
+        int count = MarketRules.InitialRetailUnits;
         for (int i = 0; i < count; i++)
         {
             var t = new Trader { Id = AiCount + i + 1, IsRetail = true, Risk = .15 + Next() * .8, Patience = .2 + Next() * .6 };
-            Endow(t, State.World?.Rules?.RetailCapital ?? 100_000); State.Retail.Add(t);
+            Endow(t, MarketRules.RetailCapital); State.Retail.Add(t);
         }
     }
     void InitializeTotals()

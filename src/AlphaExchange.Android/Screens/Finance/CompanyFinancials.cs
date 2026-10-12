@@ -35,8 +35,17 @@ public sealed partial class GameView
         var stock = S.Stocks[companyStock];
         Text("기업의 재무 기록", 20, y + 23, 24, Ink, true);
         Text("월별 결산 · 뉴스와 정부 정책을 반영", 21, y + 47, 12, Muted); y += 65;
+        string[] tabs = ["재무상태", "손익", "현금흐름", "자본변동", "재무비율", "현금·상환", "충격 분석"];
+        for (int i = 0; i < tabs.Length; i++)
+        {
+            int tab = i; float x = 20 + i % 4 * 92, top = y + i / 4 * 39; bool active = companyTab == i;
+            Box(x, top, 84, 32, active ? Lime : Card2, 8); Text(tabs[i], x + 42, top + 21, 10, active ? Bg : Muted, active, Paint.Align.Center);
+            Hit(x, top, 84, 32, () => { companyTab = tab; scroll = 0; });
+        }
+        y += 89;
         Button("지분 구조 →", 20, y, 174, 36, () => OpenOwnership(companyStock), false);
-        Button("사업 과정 관찰 →", 206, y, 174, 36, () => { businessStock = companyStock; SetPage(ScreenId.Business); }, false); y += 48;
+        Button("경영·정책 뉴스 →", 206, y, 174, 36, () => SetPage(ScreenId.News), false); y += 48;
+        y = NumberFormatPicker(y);
         y = CompanySelector(y, companyStock, i => companyStock = i);
         var reports = Reports(stock, companySeason == 0 ? S.Season : companySeason);
         CompanyReport? report = companySeason == 0 ? reports.LastOrDefault(r => r.AccountingBasis == 5) ?? reports.LastOrDefault() : reports.LastOrDefault(r => r.Season == companySeason);
@@ -51,44 +60,33 @@ public sealed partial class GameView
         string reportLabel = r.IsOpening ? "기초·변경 재무 (수익 추정치)" : $"결산 S{r.Season}";
         Text($"{reportLabel} · 반영 뉴스 {r.NewsCount}건", 21, y + 40, 10, Muted); y += 58;
         y = Wrap(stock.Business + " · " + stock.Driver, 21, y + 4, 354, 11, Muted, 19) + 8;
-        y = Statement("주식과 기업 가치 · 현재 기준", y, [("시가총액",ShortMoney(stock.MarketCap)+"원"),("발행 / 자사주",$"{Money(stock.TotalShares)} / {Money(stock.TreasuryShares)}주"),
-            ("상장 주식 (자사주 제외)",Money(stock.OutstandingShares)+"주"),("유동 주식 (창업자 제외)",Money(stock.FloatShares)+"주"),("액면가",Money(stock.ParValue)+"원"),
-            ("최근 주당 배당",Money(stock.LastDividendPerShare)+"원"),("최근 12결산 배당수익률",stock.DividendYield.ToString("P2"))]);
-        if (r.AccountingBasis < 5) { y = Wrap("이전 버전 결산입니다. 배당은 실제 지급되지 않았던 보고 금액이며, v1.3 결산과 회계 기준이 다릅니다.", 21, y + 3, 354, 11, Red, 20) + 12; }
-        string[] tabs = ["재무상태", "손익", "현금흐름", "자본변동", "재무비율"];
-        for (int i = 0; i < tabs.Length; i++)
-        {
-            int tab = i; float x = 20 + i * 73; bool active = companyTab == i;
-            Box(x, y, 68, 32, active ? Lime : Card2, 8); Text(tabs[i], x + 34, y + 21, 10, active ? Bg : Muted, active, Paint.Align.Center);
-            Hit(x, y, 68, 32, () => { companyTab = tab; scroll = 0; });
-        }
-        y += 48;
-        string Amount(long n) => Money(n) + "원";
+        if (companyTab >= 5) return DrawCompanyAnalysis(stock, report, y);
+        string Amount(long n) => ShortMoney(n) + "원";
         if (companyTab == 0)
         {
-            y = Statement("01 · 재무상태표", y, [("현금", Amount(r.Cash)), ("매출채권", Amount(r.Receivables)), ("재고자산", Amount(r.Inventory)),
-                ("유형자산", Amount(r.FixedAssets)), ("자산 총계", Amount(r.Assets)), ("은행 차입", Amount(r.Debt)),("미지급 운영비",Amount(r.TradePayables)),("부채 총계",Amount(r.Liabilities)), ("자본", Amount(r.Equity))]);
+            y = MoneyStatement("01 · 재무상태표", y, [("현금", r.Cash), ("매출채권", r.Receivables), ("재고자산", r.Inventory),
+                ("유형자산", r.FixedAssets), ("자산 총계", r.Assets), ("은행 차입", r.Debt),("미지급 운영비",r.TradePayables),("부채 총계",r.Liabilities), ("자본", r.Equity)]);
             y = Pie("자산 구성", [("현금", r.Cash), ("매출채권", r.Receivables), ("재고", r.Inventory), ("유형자산", r.FixedAssets)], y);
             y = TimeGraph("시즌별 자산", graphReports.Select(x => (x.Season * 720, (double)((double)x.Assets), false)), y, "선택 결산까지 파일 전체 기록 · 같은 회계 기준 · 원");
         }
         else if (companyTab == 1)
         {
-            y = Statement("02 · 손익계산서", y, [("매출", Amount(r.Revenue)), ("영업 비용", Amount(r.OperatingCosts)), ("감가상각",Amount(r.Depreciation)), ("영업 이익", Amount(r.OperatingProfit)),
-                ("이자", Amount(r.Interest)), ("법인세", Amount(r.Tax)), ("당기 순이익", Amount(r.NetIncome))]);
+            y = MoneyStatement("02 · 손익계산서", y, [("매출", r.Revenue), ("영업 비용", r.OperatingCosts), ("감가상각",r.Depreciation), ("영업 이익", r.OperatingProfit),
+                ("이자", r.Interest), ("법인세", r.Tax), ("당기 순이익", r.NetIncome)]);
             y = Pie("매출 배분 · 비용과 이익", [("영업 비용", r.OperatingCosts), ("이자", r.Interest), ("세금", r.Tax), ("순이익", r.NetIncome)], y);
             y = TimeGraph("시즌별 순이익", graphReports.Select(x => (x.Season * 720, (double)((double)x.NetIncome), false)), y, "선택 결산까지 파일 전체 기록 · 같은 회계 기준 · 원");
         }
         else if (companyTab == 2)
         {
-            y = Statement("03 · 현금흐름표", y, [("기초 현금", Amount(r.OpeningCash)), ("영업 현금흐름", Amount(r.OperatingCashFlow)),
-                ("투자 현금흐름", Amount(r.InvestingCashFlow)), ("재무 현금흐름", Amount(r.FinancingCashFlow)), ("순현금흐름", Amount(r.Cash - r.OpeningCash)), ("기말 현금", Amount(r.Cash))]);
+            y = MoneyStatement("03 · 현금흐름표", y, [("기초 현금", r.OpeningCash), ("영업 현금흐름", r.OperatingCashFlow),
+                ("투자 현금흐름", r.InvestingCashFlow), ("재무 현금흐름", r.FinancingCashFlow), ("순현금흐름", r.Cash - r.OpeningCash), ("기말 현금", r.Cash)]);
             y = Pie("현금흐름 규모 · 절댓값", [("영업", Math.Abs(r.OperatingCashFlow)), ("투자 유출", Math.Abs(r.InvestingCashFlow)), ("재무 유출", Math.Abs(r.FinancingCashFlow))], y);
             y = TimeGraph("시즌별 영업 현금흐름", graphReports.Select(x => (x.Season * 720, (double)((double)x.OperatingCashFlow), false)), y, "선택 결산까지 파일 전체 기록 · 같은 회계 기준 · 원");
         }
         else if (companyTab == 3)
         {
-            y = Statement("04 · 자본변동표", y, [("기초 자본", Amount(r.OpeningEquity)), ("당기 순이익", Amount(r.NetIncome)),
-                ("배당 지급", Amount(-r.Dividends)), ("자본 거래", Amount(r.CapitalChange)), ("기말 자본", Amount(r.Equity))]);
+            y = MoneyStatement("04 · 자본변동표", y, [("기초 자본", r.OpeningEquity), ("당기 순이익", r.NetIncome),
+                ("배당 지급", -r.Dividends), ("자본 거래", r.CapitalChange), ("기말 자본", r.Equity)]);
             y = Pie("자본 변화 규모 · 절댓값", [("순이익", Math.Abs(r.NetIncome)), ("배당", r.Dividends), ("자본 거래", Math.Abs(r.CapitalChange))], y);
             y = TimeGraph("시즌별 자본", graphReports.Select(x => (x.Season * 720, (double)((double)x.Equity), false)), y, "선택 결산까지 파일 전체 기록 · 같은 회계 기준 · 원");
         }
@@ -106,6 +104,9 @@ public sealed partial class GameView
             y = Pie("자본과 부채 비중", [("자본", r.Equity), ("부채", r.Liabilities)], y);
             y = TimeGraph("시즌별 순이익률", graphReports.Select(x => (x.Season * 720, (double)(x.Margin * 100), false)), y, "선택 결산까지 파일 전체 기록 · 같은 회계 기준 · %");
         }
+        y = Statement("주식과 기업 가치 · 현재 기준", y, [("시가총액",ShortMoney(stock.MarketCap)+"원"),("발행 / 자사주",$"{Money(stock.TotalShares)} / {Money(stock.TreasuryShares)}주"),
+            ("상장 주식 (자사주 제외)",Money(stock.OutstandingShares)+"주"),("유동 주식 (창업자 제외)",Money(stock.FloatShares)+"주"),("액면가",Money(stock.ParValue)+"원"),
+            ("최근 주당 배당",Money(stock.LastDividendPerShare)+"원"),("최근 12결산 배당수익률",stock.DividendYield.ToString("P2"))]);
         if (previous is not null && previous.AccountingBasis == r.AccountingBasis && !r.IsOpening)
             y = Statement("직전 결산 대비", y, [("매출", Percent((double)r.Revenue / Math.Max(1, previous.Revenue) - 1)),
                 ("순이익 증감", Amount(r.NetIncome - previous.NetIncome)), ("자산 증감", Amount(r.Assets - previous.Assets)), ("자본 증감", Amount(r.Equity - previous.Equity))]);

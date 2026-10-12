@@ -18,19 +18,19 @@ public sealed partial class GameView
         }
         Mark(25, 24, 22, Lime); Text("ALPHA EXCHANGE", 60, 42, 14, Ink, true);
         Pill("OFFLINE", 299, 23, Teal, 77);
-        Text("200명의 인물.", 24, 104, 34, Ink, true, headline: true);
-        Text("1조 원의 시장.", 24, 146, 34, Lime, true, headline: true);
+        Text("100명의 투자자.", 24, 104, 34, Ink, true, headline: true);
+        Text("15개 종목의 경쟁.", 24, 146, 34, Lime, true, headline: true);
         Text("THE AUTONOMOUS MARKET SIMULATOR", 26, 174, 10, Muted, true);
         float y = h - 294;
         Box(20, y, 360, 83, Card, 20, Stroke);
-        string[] values = ["200", "1,000", "100×"], labels = ["경제 인물", "개미 집단 시작", "최대 관찰 속도"];
+        string[] values = ["15 / 5", "10,000", "100×"], labels = ["종목 / 업종", "개미 참여자", "최대 관찰 속도"];
         for (int i = 0; i < 3; i++)
         {
             Text(values[i], 80 + i * 120, y + 35, i == 2 ? 21 : 26, i == 0 ? Lime : Ink, true, Paint.Align.Center);
             Text(labels[i], 80 + i * 120, y + 59, 11, Muted, false, Paint.Align.Center);
             if (i < 2) Line(140 + i * 120, y + 20, 140 + i * 120, y + 62, Stroke);
         }
-        Text("호가로 움직이는 시장 · 끝없이 이어지는 시즌", 200, h - 188, 12, Muted, false, Paint.Align.Center);
+        Text(store.HasLegacyMarket && game is null ? "이전 시장 보관됨 · 새 규칙으로 시작합니다" : "호가로 움직이는 시장 · 끝없이 이어지는 시즌", 200, h - 188, 12, Muted, false, Paint.Align.Center);
         if (loading || loadFailed)
         {
             Button(loading ? "기록을 불러오는 중…" : "기록을 보호 중 · 앱을 다시 열어주세요", 20, h - 166, 360, 52, () => { }, false, false);
@@ -44,7 +44,9 @@ public sealed partial class GameView
         else
         {
             Button("시뮬레이션 시작  →", 20, h - 166, 360, 52, Start);
-            Button("대표 능력 · 공매도 · 정부와 은행", 20, h - 103, 360, 45, () => help = true, false);
+            if (store.HasLegacyMarket)
+                Button("이전 시장 원본 내보내기", 20, h - 103, 360, 45, () => PickBackup(true, true), false);
+            else Button("투자 전략 · 공매도 · 랜덤 이벤트", 20, h - 103, 360, 45, () => help = true, false);
         }
         Text("파일 가져오기 · 기록 복원", 90, h - 28, 11, Teal, false, Paint.Align.Center);
         Hit(10, h - 50, 165, 40, () => PickBackup(false));
@@ -76,8 +78,8 @@ public sealed partial class GameView
         Text("1일 = 120초 · 1×", 21, h - 96, 10, Muted);
         Button($"{speed}×", 116, h - 132, 60, 49, () => { lifecycle.ResetClock(Now); speed = GameEngine.Speeds[(Array.IndexOf(GameEngine.Speeds, speed) + 1) % GameEngine.Speeds.Length]; }, false);
         Button(auto ? "Ⅱ   일시정지" : "▷   관찰 재개", 176, h - 132, 204, 49, ToggleSimulation);
-        string[] labels = ["시장", "자산", "랭킹", "인물", "통계", "시즌", "뉴스"];
-        ScreenId[] pages = [ScreenId.Market, ScreenId.Portfolio, ScreenId.Ranking, ScreenId.People, ScreenId.Statistics, ScreenId.Seasons, ScreenId.News];
+        string[] labels = ["시장", "자산", "랭킹", "투자자", "통계", "시즌", "뉴스"];
+        ScreenId[] pages = [ScreenId.Market, ScreenId.Portfolio, ScreenId.Ranking, ScreenId.Investors, ScreenId.Statistics, ScreenId.Seasons, ScreenId.News];
         for (int i = 0; i < labels.Length; i++)
         {
             ScreenId p = pages[i]; float left = i * (400f / 7), center = left + 400f / 14; AColor color = page == p ? Lime : Muted;
@@ -102,7 +104,7 @@ public sealed partial class GameView
         Text($"₩{ShortMoney(focus.Cash)}", 358, y + 145, 15, Ink, true, Paint.Align.Right);
         y += 183;
         Text("MARKET PULSE", 22, y + 11, 10, Lime, true);
-        Text($"{S.Stocks.Count(s => s.Active)}개 회사 · 6분야", 379, y + 11, 10, Muted, false, Paint.Align.Right);
+        Text($"{S.Stocks.Count(s => s.Active)}개 회사 · 5개 업종", 379, y + 11, 10, Muted, false, Paint.Align.Right);
         y += 27;
         var news = S.News.First();
         Box(20, y, 360, 52, Card2, 13);

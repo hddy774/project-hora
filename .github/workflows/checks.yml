@@ -78,12 +78,12 @@ jobs:
       - uses: actions/checkout@v4
         if: matrix.game == 'alpha-exchange'
         with:
-          ref: v1.6.0
-          path: fixture-v16
+          ref: alpha-exchange/v1.9.0
+          path: fixture-v19
           persist-credentials: false
-      - name: Generate a true v7 native fixture from the previous release
+      - name: Generate a true v8 native archive fixture from the previous release
         if: matrix.game == 'alpha-exchange'
-        run: dotnet run --project tools/NativeSmokeFixture -c Release -p:FixtureCoreProject="$GITHUB_WORKSPACE/fixture-v16/src/AlphaExchange.Core/AlphaExchange.Core.csproj" -- generate /tmp/hora-native-fixture
+        run: dotnet run --project tools/NativeSmokeFixture -c Release -p:FixtureCoreProject="$GITHUB_WORKSPACE/fixture-v19/src/AlphaExchange.Core/AlphaExchange.Core.csproj" -- generate /tmp/hora-native-fixture
       - name: Enable emulator acceleration
         if: matrix.game == 'alpha-exchange'
         run: |

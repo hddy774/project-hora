@@ -28,10 +28,7 @@ public sealed record SaveSnapshot
     public ArchivedSnapshot[] Seasons { get; init; }
     public HistoryRecord[] History { get; init; }
     public EventRecord[] Events { get; init; } = [];
-    public EventRecord[] Votes { get; init; } = [];
     public EventRecord[] Bankruptcies { get; init; } = [];
-    public EventRecord[] Activities { get; init; } = [];
-    public EventRecord[] WorldVotes { get; init; } = [];
     internal long ReportThrough { get; init; }
     public CompanyReport[] Reports { get; init; } = [];
     public SaveSnapshot(string RunId, long Hour, string Json, ArchivedSnapshot[] Seasons, HistoryRecord[] History)

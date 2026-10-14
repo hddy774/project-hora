@@ -1,0 +1,26 @@
+[
+  {
+    "stage": "paused-legacy-market",
+    "totalPssKiB": 201644,
+    "rawFile": "paused-legacy-market-meminfo.txt",
+    "monotonicSeconds": 297.46250484
+  },
+  {
+    "stage": "after-investor-portraits",
+    "totalPssKiB": 270926,
+    "rawFile": "after-investor-portraits-meminfo.txt",
+    "monotonicSeconds": 386.333773003
+  },
+  {
+    "stage": "after-native100x",
+    "totalPssKiB": 265551,
+    "rawFile": "after-native100x-meminfo.txt",
+    "monotonicSeconds": 479.42363642
+  },
+  {
+    "stage": "new-market",
+    "totalPssKiB": 224060,
+    "rawFile": "new-market-meminfo.txt",
+    "monotonicSeconds": 504.836930871
+  }
+]

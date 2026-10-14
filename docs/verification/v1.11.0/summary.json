@@ -1,0 +1,126 @@
+{
+  "legacyVersion": 8,
+  "nativeVersion": 10,
+  "preservedLegacyFiles": {
+    "history-v5.sqlite": "60d22625874a163d9d4642da3edefab2fb8c76de2832b23b4ed0ff96e5f53796",
+    "history-v5.sqlite.bak": "b16a52c6ed1af89d9420a24b5e9ebfb8cf94561ce76d91c05903b1db4e2cf8d7"
+  },
+  "newHour": 351,
+  "native100x": {
+    "elapsedSeconds": 18.81018902400001,
+    "completedMinutes": 20965,
+    "pendingMinutes": 71,
+    "boundaryAllowanceSeconds": 2,
+    "idleBeforeResumeSeconds": 81.17497447699998
+  },
+  "lifecycle": {
+    "backgroundWaitSeconds": 8,
+    "beforeHome": {
+      "RunId": "d93dd7e0a72f496eb37d6527d83b2927",
+      "CompletedMinutes": 61,
+      "PendingClockMinutes": 2,
+      "MinuteProgress": 0.25199999999999756,
+      "NextTransactionId": 32802
+    },
+    "settled": {
+      "RunId": "d93dd7e0a72f496eb37d6527d83b2927",
+      "CompletedMinutes": 70,
+      "PendingClockMinutes": 0,
+      "MinuteProgress": 0.6919999999999973,
+      "NextTransactionId": 33034
+    },
+    "afterBackground": {
+      "RunId": "d93dd7e0a72f496eb37d6527d83b2927",
+      "CompletedMinutes": 70,
+      "PendingClockMinutes": 0,
+      "MinuteProgress": 0.6919999999999973,
+      "NextTransactionId": 33034
+    },
+    "afterReturn": {
+      "RunId": "d93dd7e0a72f496eb37d6527d83b2927",
+      "CompletedMinutes": 70,
+      "PendingClockMinutes": 0,
+      "MinuteProgress": 0.6919999999999973,
+      "NextTransactionId": 33034
+    }
+  },
+  "modalViewports": [
+    {
+      "requestedCanvasHeight": 480,
+      "actualCanvasHeight": 480.0,
+      "continuedAfterRecreation": true,
+      "preservedRunId": "d93dd7e0a72f496eb37d6527d83b2927",
+      "bodyScrolled": true,
+      "closePinned": true,
+      "ctaPinned": true,
+      "ctaDismissed": true,
+      "closeDismissed": true,
+      "underlyingPageUnchanged": true,
+      "reopenedAtTop": true
+    },
+    {
+      "requestedCanvasHeight": 600,
+      "actualCanvasHeight": 600.0,
+      "continuedAfterRecreation": true,
+      "preservedRunId": "d93dd7e0a72f496eb37d6527d83b2927",
+      "bodyScrolled": true,
+      "closePinned": true,
+      "ctaPinned": true,
+      "ctaDismissed": true,
+      "closeDismissed": true,
+      "underlyingPageUnchanged": true,
+      "reopenedAtTop": true
+    },
+    {
+      "requestedCanvasHeight": 800,
+      "actualCanvasHeight": 800.0,
+      "continuedAfterRecreation": true,
+      "preservedRunId": "d93dd7e0a72f496eb37d6527d83b2927",
+      "bodyScrolled": true,
+      "closePinned": true,
+      "ctaPinned": true,
+      "ctaDismissed": true,
+      "closeDismissed": true,
+      "underlyingPageUnchanged": true,
+      "reopenedAtTop": true
+    }
+  ],
+  "newMarketTransition": {
+    "oldRun": "d93dd7e0a72f496eb37d6527d83b2927",
+    "newRun": "35ef44ad3e364298b2a20521f2819be2",
+    "oldCompletedMinutes": 21119,
+    "newCompletedMinutes": 28,
+    "oldImmutableRowsPreserved": 367
+  },
+  "memorySamples": [
+    {
+      "stage": "paused-legacy-market",
+      "totalPssKiB": 201644,
+      "rawFile": "paused-legacy-market-meminfo.txt",
+      "monotonicSeconds": 297.46250484
+    },
+    {
+      "stage": "after-investor-portraits",
+      "totalPssKiB": 270926,
+      "rawFile": "after-investor-portraits-meminfo.txt",
+      "monotonicSeconds": 386.333773003
+    },
+    {
+      "stage": "after-native100x",
+      "totalPssKiB": 265551,
+      "rawFile": "after-native100x-meminfo.txt",
+      "monotonicSeconds": 479.42363642
+    },
+    {
+      "stage": "new-market",
+      "totalPssKiB": 224060,
+      "rawFile": "new-market-meminfo.txt",
+      "monotonicSeconds": 504.836930871
+    }
+  ],
+  "screenshots": 44,
+  "investors": 100,
+  "stocks": 15,
+  "sectors": 5,
+  "retail": 10000
+}

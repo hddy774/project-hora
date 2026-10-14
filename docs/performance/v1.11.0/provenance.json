@@ -1,0 +1,16 @@
+{
+  "beforeBaseCommit": "0cd7a25c7af88693a1cb90cf92a915234b2e810f",
+  "beforeAdjustment": "Copy Simulation/Trading/PortfolioExposure.cs from b95120e to use identical cash-only recovery policy",
+  "beforeLocalCommit": "007eff4a4c3b233fde0c48e13c971cd0129cf506",
+  "afterCommit": "b95120e98c65877d236c69f11feb3e79cc5592f2",
+  "fixedCheckpointSha256": "9986c26ff8fe8a099a8f02962d8bf9c7f90dd8730937934423c57aa0dd16479e",
+  "fixedCheckpointHour": 168,
+  "finalStateSha256": "93D31C4D13D6CC291480908E0377DB8C93419A0BC11D3570DD8CCF68B5960743",
+  "runtime": ".NET 9.0.20",
+  "host": "Linux x64, 4 logical CPUs",
+  "gameParticipants": {
+    "institutions": 100,
+    "retail": 10000,
+    "stocks": 15
+  }
+}

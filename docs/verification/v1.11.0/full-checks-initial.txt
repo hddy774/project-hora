@@ -1,0 +1,24 @@
+PASS investor market: removed roles, fixed catalog, public news/tape response, budgeted plans, aggressive matching, accounting and isolated checkpoints
+Season 1: matches=314,569, feePool=363,283,697, latest matches=314,569
+Season 2: matches=698,234, feePool=738,938,475, latest matches=383,665
+Season 3: matches=1,081,483, feePool=465,370,792, latest matches=383,249
+Season 4: matches=1,488,243, feePool=862,844,155, latest matches=406,760
+Season 5: matches=1,910,311, feePool=1,193,426,613, latest matches=422,068
+Season 6: matches=2,346,837, feePool=1,140,407,416, latest matches=436,526
+Season 7: matches=2,763,334, feePool=1,185,644,107, latest matches=416,497
+Season 8: matches=3,231,295, feePool=977,044,655, latest matches=467,961
+Season 9: matches=3,674,751, feePool=938,467,923, latest matches=443,456
+Season 10: matches=4,110,267, feePool=864,826,362, latest matches=435,516
+Season 11: matches=4,528,317, feePool=904,549,355, latest matches=418,050
+Season 12: matches=4,946,605, feePool=899,224,259, latest matches=418,288
+Season 13: matches=5,376,243, feePool=836,084,356, latest matches=429,638
+Season 14: matches=5,836,575, feePool=780,531,884, latest matches=460,332
+Season 15: matches=6,268,635, feePool=640,195,607, latest matches=432,060
+Season 16: matches=6,711,378, feePool=659,447,011, latest matches=442,743
+Bear scenario: solvent institutions=100, cash=1,000,000,000
+PASS economy: abilities, 50/100x, nine grades, loans, shorts, taxes, fines, bear risk, monthly reports, random policies and comparisons
+PASS market: 15 companies, real dividends, lender compensation, share actions, funded capital, index neutrality, post-action statements, hourly storage, legacy preservation, recovery and file portability
+PASS ownership/performance: physical ownership, treasury denominators, lender obligations, cache invalidation, frozen checkpoints, full JSON validation, extrema and mixed-resolution gaps
+PASS 24,518,783 assertions; 16 seasons; 6,718,673 matched trades
+Simulation wall time 224.02s; hour p50=14.14ms p95=30.65ms p99=71.80ms (100x budget 50ms/hour)
+Save bytes 10,400,507; serialize 85.4ms; pending=0; active orders=674

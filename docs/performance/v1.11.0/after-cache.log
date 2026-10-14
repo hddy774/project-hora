@@ -1,0 +1,12 @@
+statistics: {"medianMs":1.41,"maximumMs":1.943,"allocatedMedianBytes":6016,"samples":[1.2258,1.2768,1.3554,1.4037,1.41,1.5163,1.5307,1.7176,1.943]}
+depthProjectionAllStocks: {"medianMs":0.2996,"maximumMs":0.429,"allocatedMedianBytes":662400,"samples":[0.2729,0.2734,0.2774,0.28,0.2996,0.3054,0.347,0.3477,0.429]}
+prepareSave: {"medianMs":9.5355,"maximumMs":31.3133,"allocatedMedianBytes":10027152,"samples":[8.3727,8.5732,8.8929,9.3698,9.5355,10.9056,20.2485,26.5938,31.3133]}
+serialize: {"medianMs":51.5323,"maximumMs":106.9286,"allocatedMedianBytes":9874872,"samples":[45.2859,47.8946,48.4738,51.0021,51.5323,62.5345,65.5414,68.2766,106.9286]}
+writeSnapshot: {"medianMs":96.0387,"maximumMs":98.5135,"allocatedMedianBytes":20556176,"samples":[95.673,95.7627,96.0387,96.2094,98.5135]}
+simulation: {"hours":720,"retail":10000,"totalMs":6632.850799999993,"minutesPerSecond":6513.036596571726,"medianMs":8.5482,"p95Ms":12.1124,"p99Ms":17.2114,"matches":401751,"portfolioReviews":215112,"stocks":15,"random":3987641985}
+recorded100x: {"acceptedMinutes":43200,"completedMinutes":43200,"pendingMinutes":0,"durationMs":10802.7433,"minutesPerSecond":3998.984220980239,"virtualSeconds":36,"retail":10000,"writeEveryGameHours":20}
+fiveYearRangeCold: {"medianMs":200.5769,"maximumMs":207.0394,"allocatedMedianBytes":35020840,"samples":[172.3834,176.1308,200.5769,201.3284,207.0394]}
+fiveYearRangeCached: {"medianMs":2.3053,"maximumMs":2.6065,"allocatedMedianBytes":4010352,"samples":[2.1866,2.2317,2.3053,2.4995,2.6065]}
+coverage: {"medianMs":3.229,"maximumMs":3.7486,"allocatedMedianBytes":5440,"samples":[3.1446,3.1757,3.229,3.3489,3.7486]}
+pendingAt: {"medianMs":0.4269,"maximumMs":0.863,"allocatedMedianBytes":88720,"samples":[0.3485,0.3721,0.3811,0.3828,0.4269,0.4406,0.4838,0.4899,0.863]}
+Saved /workspace/hora-v111/after-cache.json

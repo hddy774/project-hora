@@ -1,0 +1,7 @@
+{
+  "v110Source": "43c61d44df3a6085a8b85222e3f1f5d0b1dc3f3d",
+  "v111InitialSource": "0cd7a25c7af88693a1cb90cf92a915234b2e810f",
+  "v111FinalSource": "b95120e98c65877d236c69f11feb3e79cc5592f2",
+  "command": "dotnet run --project tools/MarketAudit -c Release -- OUTPUT 12 20261004,42,17 --standard-only",
+  "note": "The legacy baselineReferenceCommit field in raw reports is historical tool metadata, not the source of these runs. See these explicit source revisions."
+}

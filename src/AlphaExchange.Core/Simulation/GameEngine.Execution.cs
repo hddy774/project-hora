@@ -20,7 +20,7 @@ public sealed partial class GameEngine
             s.PreviousPrice = s.Price; s.Volume = 0;
 
         }
-        PrepareMarketSignals();
+        PrepareMarketSignals(refreshHistory: false);
         if (State.CompletedHours == 0) QuoteHourlyMarket();
         int count = Math.Min(State.Retail.Count, 300 + (int)(Next() * 501)); State.ActiveRetailLastHour = count;
         var actors = actorBuffer.AsSpan(0, AiCount + count);
@@ -34,7 +34,7 @@ public sealed partial class GameEngine
     public void AdvanceMinute()
     {
         if (State.Minute == 0) BeginHour(); else ExpireOrders();
-        PrepareMarketSignals();
+        PrepareMarketSignals(refreshHistory: false);
         if (State.CompletedMinutes >= State.Environment.NextEventMinute) PublishNews();
         PublishCompanyNews();
         int minute = State.Minute, count = State.MinuteActors.Count;

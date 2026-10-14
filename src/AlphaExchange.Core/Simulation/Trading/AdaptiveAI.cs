@@ -5,6 +5,9 @@ public readonly record struct InvestmentSignal(double Score, double TargetExposu
 
 public sealed partial class GameEngine
 {
+    GameState? signalHistoryState;
+    long signalHistoryHour = -1, signalHistoryCorporateEvent = -1;
+    double[] dailyReferences = [], fastReferences = [], longReferences = [];
     double[] trends = [], fastTrends = [], longTrends = [], volatilities = [], dividendYields = [];
     InvestmentSignal[] institutionSignals = [];
     int[] signalSectors = [];
@@ -14,7 +17,7 @@ public sealed partial class GameEngine
     readonly Dictionary<string, int> decisionSecurities = new(StringComparer.Ordinal);
     InvestmentPlan?[] decisionPlans = [];
     double marketTrend;
-    internal void PrepareMarketSignals()
+    internal void PrepareMarketSignals(bool refreshHistory = true)
     {
         int count = State.Stocks.Count;
         if (trends.Length != count)
@@ -22,6 +25,8 @@ public sealed partial class GameEngine
             trends = new double[count]; fastTrends = new double[count]; longTrends = new double[count]; volatilities = new double[count];
             dividendYields = new double[count]; institutionSignals = new InvestmentSignal[count]; signalSectors = new int[count];
             portfolioSectors = new double[count];
+            dailyReferences = new double[count]; fastReferences = new double[count]; longReferences = new double[count];
+            refreshHistory = true;
         }
         bool changed = sectorNames.Length != count;
         if (!changed) for (int i = 0; i < count; i++) if (sectorNames[i] != State.Stocks[i].Sector) { changed = true; break; }
@@ -35,21 +40,36 @@ public sealed partial class GameEngine
                 signalSectors[i] = sector;
             }
         }
-        var tenDays = State.DailyHistory.LastOrDefault(p => p.Hour <= State.CompletedHours - Rules.Horizons[2].MinimumHours);
+        refreshHistory |= !ReferenceEquals(signalHistoryState, State) || signalHistoryHour != State.CompletedHours ||
+            signalHistoryCorporateEvent != State.NextCorporateEventId;
+        var tenDays = refreshHistory ? State.DailyHistory.LastOrDefault(p => p.Hour <= State.CompletedHours - Rules.Horizons[2].MinimumHours) : null;
         marketTrend = 0; int active = 0;
         for (int i = 0; i < count; i++)
         {
-            var s = State.Stocks[i]; int n = s.History.Count; dividendYields[i] = s.DividendYield;
-            trends[i] = (double)s.Price / s.History[Math.Max(0, n - 24)] - 1;
-            fastTrends[i] = (double)s.Price / s.History[Math.Max(0, n - 3)] - 1;
-            longTrends[i] = trends[i];
-            if (tenDays is not null && i < tenDays.SecurityIds.Length && i < tenDays.SplitFactors.Length && tenDays.SplitFactors[i] > 0 && tenDays.SecurityIds[i] == s.SecurityId)
-                longTrends[i] = (double)s.Price / (tenDays.StockPrices[i] * tenDays.SplitFactors[i] / s.SplitFactor) - 1;
-            double sum = 0; int samples = 0;
-            for (int j = Math.Max(1, n - 12); j < n; j++) { sum += Math.Abs(s.History[j] / s.History[j - 1] - 1); samples++; }
-            volatilities[i] = s.Volatility = samples == 0 ? 0 : sum / samples;
-            if (s.Active) { marketTrend += trends[i]; active++; }
+            var stock = State.Stocks[i];
+            if (refreshHistory)
+            {
+                int n = stock.History.Count;
+                dividendYields[i] = stock.DividendYield;
+                dailyReferences[i] = stock.History[Math.Max(0, n - 24)];
+                fastReferences[i] = stock.History[Math.Max(0, n - 3)];
+                longReferences[i] = dailyReferences[i];
+                if (tenDays is not null && i < tenDays.SecurityIds.Length && i < tenDays.SplitFactors.Length &&
+                    tenDays.SplitFactors[i] > 0 && tenDays.SecurityIds[i] == stock.SecurityId)
+                    longReferences[i] = tenDays.StockPrices[i] * tenDays.SplitFactors[i] / stock.SplitFactor;
+                double sum = 0; int samples = 0;
+                for (int j = Math.Max(1, n - 12); j < n; j++) { sum += Math.Abs(stock.History[j] / stock.History[j - 1] - 1); samples++; }
+                volatilities[i] = samples == 0 ? 0 : sum / samples;
+            }
+            trends[i] = (double)stock.Price / dailyReferences[i] - 1;
+            fastTrends[i] = (double)stock.Price / fastReferences[i] - 1;
+            longTrends[i] = (double)stock.Price / longReferences[i] - 1;
+            stock.Volatility = volatilities[i];
+            if (stock.Active) { marketTrend += trends[i]; active++; }
         }
+        signalHistoryState = State;
+        signalHistoryHour = State.CompletedHours;
+        signalHistoryCorporateEvent = State.NextCorporateEventId;
         marketTrend /= Math.Max(1, active);
     }
     public InvestmentSignal Analyze(Trader t, int index)

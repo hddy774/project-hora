@@ -13,12 +13,14 @@ public static class DailyPriceLimits
     public static PriceBand For(Stock stock)
     {
         decimal reference = stock.LimitReferencePrice > 0 ? stock.LimitReferencePrice : stock.DayOpenPrice;
+        if (stock.CachedLimitReference == reference) return stock.CachedPriceBand;
         decimal lower = Math.Max(1, reference * (1 - Rate));
         decimal upper = Math.Min(10_000_000, reference * (1 + Rate));
         int lowerTick = lower < 1000 ? 1 : 10;
         int upperTick = upper < 1000 ? 1 : 10;
         int low = (int)(decimal.Ceiling(lower / lowerTick) * lowerTick);
         int high = (int)(decimal.Floor(upper / upperTick) * upperTick);
-        return new(low, Math.Max(low, high));
+        stock.CachedLimitReference = reference;
+        return stock.CachedPriceBand = new(low, Math.Max(low, high));
     }
 }

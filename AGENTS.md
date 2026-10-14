@@ -13,4 +13,4 @@
 - Run `python3 scripts/check-architecture.py`, relevant regression checks, full game checks and Android Release/native validation before merging structural changes. Compare deterministic outcomes and fixed-input measurements for performance changes.
 
 - Market AI is investor-only: 100 institutions and trend/news-following retail. Keep 15 security slots across five sectors; management, policy and finance change through seeded random events. Preserve order-book price discovery and funded ledger invariants. Do not reintroduce removed people, hiring, voting or business-project systems.
-- State 9/SQLite 6 starts a new market; preserve prior 30-stock databases and WAL bytes and provide legacy archive export. Never silently reinterpret legacy portfolios.
+- State 10/SQLite 6 preserves and upgrades the v1.10 state-9 ledger; daily price bands, AI allocation policy and outcome counts require regression checks. The earlier state-9 boundary starts a new market; preserve prior 30-stock databases and WAL bytes and provide legacy archive export. Never silently reinterpret legacy portfolios.

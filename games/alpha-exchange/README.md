@@ -9,6 +9,6 @@
 - 빌드: `./build.sh alpha-exchange` → `dist/alpha-exchange/`
 - [게임별 릴리스 검색](https://github.com/hddy774/project-hora/releases?q=alpha-exchange): 배포 시 `alpha-exchange/vX.Y.0` 태그와 `AlphaExchange-vX.Y.0.apk`를 확인합니다. 검색 링크는 공개 APK의 존재를 보장하지 않습니다.
 
-소스 폴더와 네임스페이스를 옮기지 않습니다. `history-v5.sqlite`, 기존 JSON/ZIP 이전 경로와 앱 저장 공간을 유지합니다. 앱 ID 보존은 저장 파일 호환성에 필요하지만, 이전의 버린 일회용 서명키 때문에 기존 APK에 새 APK를 덮어쓸 수 있다는 보장은 아닙니다. 삭제 전 전체 기록 ZIP 백업이 필요합니다.
+현재 v1.11.0은 같은 앱 ID·배포키를 사용합니다. v1.10의 상태 9를 상태 10으로 이관하며 SQLite 6의 현금·주식·완료 시간·원본 이력을 보존합니다. `history-v5.sqlite`와 이전 JSON/ZIP은 별도 보관본으로 유지합니다. 설치·정확한 호환 범위는 [현행 릴리스 안내](../../docs/releases/v1.11.0.md)를 확인합니다.
 
-새 기능 버전/릴리스 노트는 별도 배포 준비에서 작성합니다. 이 기반 PR에서는 앱 버전을 올리거나 새 태그/APK를 배포하지 않습니다. 기존 배포 정리와 서명키 준비는 별도 작업입니다.
+기능별 계획은 `docs/plans`와 Draft PR에서 시작하고, 검증 후 게임별 태그와 APK를 배포합니다. 다음 변경에도 [개발 규격](../../docs/guides/development-standard.md)을 적용합니다.

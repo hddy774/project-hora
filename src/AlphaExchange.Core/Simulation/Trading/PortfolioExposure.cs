@@ -49,7 +49,12 @@ public sealed partial class GameEngine
             foreach (var order in orders) pending += (long)order.Price * order.Remaining;
         double dailyRatio = .12 + trader.Risk * .18;
         long recovery = Math.Max(0, trader.Cash - (long)(gross * (trader.Development!.TargetCashRatio + .02)));
-        return Math.Max(0, Math.Max((long)(gross * dailyRatio), recovery) - spent - pending);
+        long allowance = Math.Max(0, Math.Max((long)(gross * dailyRatio), recovery) - spent - pending);
+        // Already completed recovery purchases must not be subtracted twice.
+        // The stock floor has priority over the discretionary turnover budget.
+        if (StockAllocationShortfall(trader) > 0)
+            allowance = Math.Max(allowance, trader.Cash - (long)(gross * .45) - pending);
+        return Math.Max(0, allowance);
     }
 
     void RecordInstitutionTurnover(Trader trader, long amount)

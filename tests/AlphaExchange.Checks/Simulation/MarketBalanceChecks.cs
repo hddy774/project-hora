@@ -8,7 +8,9 @@ static class MarketBalanceChecks
         PriceLimits(check, validate);
         ExposureAndCompetition(check, validate);
         InvestmentResults(check, validate);
+        CashOnlyRecovery(check, validate);
         CompatibleSave(check, validate);
+        CachedSignals(check);
     }
 
     static void PriceLimits(Action<bool, string> check, Action<GameEngine> validate)
@@ -142,4 +144,40 @@ static class MarketBalanceChecks
         for (int i = 0; i < 180; i++) { migrated.AdvanceMinute(); copy.AdvanceMinute(); }
         check(migrated.Serialize() == copy.Serialize(), "Migrated limit, news and liquidity schedules resume deterministically");
     }
+    static void CachedSignals(Action<bool, string> check)
+    {
+        var cached = new GameEngine(1115);
+        var fresh = GameEngine.Deserialize(cached.Serialize());
+        for (int minute = 0; minute < 1440; minute++)
+        {
+            fresh.PrepareMarketSignals();
+            cached.AdvanceMinute(); fresh.AdvanceMinute();
+        }
+        check(cached.Serialize() == fresh.Serialize(), "Hourly signal/band caches preserve every decision, RNG call and ledger entry");
+        cached.CancelAllOrders(); fresh.CancelAllOrders();
+        cached.SplitShares(cached.State.Stocks[0].SecurityId, 2); fresh.SplitShares(fresh.State.Stocks[0].SecurityId, 2);
+        for (int minute = 0; minute < 80; minute++)
+        {
+            fresh.PrepareMarketSignals(); cached.AdvanceMinute(); fresh.AdvanceMinute();
+        }
+        check(cached.Serialize() == fresh.Serialize(), "Corporate actions invalidate cached historical references without waiting for midnight");
+    }
+
+    static void CashOnlyRecovery(Action<bool, string> check, Action<GameEngine> validate)
+    {
+        var game = TestFixtures.SmallMarket(1116);
+        var trader = game.Owner(1);
+        for (int i = 0; i < GameEngine.StockCount; i++)
+            check(game.SubmitOrder(0, i, false, game.State.Stocks[i].Price, (int)Math.Min(1000, game.State.Bank.ShareInventory[i]), 24) is null,
+                "A cash-only recovery has genuine funded counterparties");
+        for (int round = 0; round < 4; round++)
+        {
+            TestFixtures.AtHour(game, round);
+            game.PrepareMarketSignals();
+            game.DecideInstitution(trader);
+        }
+        check(game.CashRatio(trader) <= .5, "A cash-only institution crosses the stock floor without waiting for tomorrow's turnover budget");
+        game.CancelAllOrders(); validate(game);
+    }
+
 }

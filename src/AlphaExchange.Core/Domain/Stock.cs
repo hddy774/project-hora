@@ -23,6 +23,8 @@ public sealed class Stock
     public string Sector { get; set; } = "";
     public int Price { get; set; }
     public int PreviousPrice { get; set; }
+    internal decimal CachedLimitReference;
+    internal PriceBand CachedPriceBand;
     public decimal LimitReferencePrice { get; set; }
     public long NextCompanyNewsMinute { get; set; }
     public long CompanyNewsCount { get; set; }

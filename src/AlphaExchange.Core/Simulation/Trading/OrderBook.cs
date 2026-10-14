@@ -66,17 +66,20 @@ public sealed partial class GameEngine
     }
     // Incoming orders reserve their full liability before matching. A buy reserves
     // the per-share rounded fee, which is safe even if it fills one share at a time.
-    public string? SubmitOrder(int ownerId, int stockIndex, bool buy, int price, int quantity, int lifetime = 3, bool shortSale = false, bool cover = false)
+    public string? SubmitOrder(int ownerId, int stockIndex, bool buy, int price, int quantity, int lifetime = 3, bool shortSale = false, bool cover = false, bool liquidity = false, bool enforceAllocation = false)
     {
         if (ownerId < 0 || ownerId > AiCount + State.Retail.Count || stockIndex < 0 || stockIndex >= State.Stocks.Count || price is < 1 or > 10_000_000 || quantity is <= 0 or > 1_000_000 || lifetime is < 1 or > 24 ||
             (shortSale && buy) || (cover && !buy) || (shortSale && cover))
             return "주문 값이 올바르지 않습니다.";
+        if (!DailyPriceLimits.For(State.Stocks[stockIndex]).Contains(price)) return "일일 가격 제한(기준가 ±30%)을 벗어났습니다.";
         if (!State.Stocks[stockIndex].Active) return "상장 종료 종목입니다.";
         var t = Owner(ownerId);
         if (t.WaitingForCapital) return "재등장 자금 대기 중입니다.";
         var incoming = new LimitOrder
         {
             OwnerId = ownerId,
+            Liquidity = liquidity,
+            EnforceAllocation = enforceAllocation,
             StockIndex = stockIndex,
             Buy = buy,
             Short = shortSale,
@@ -103,6 +106,7 @@ public sealed partial class GameEngine
         }
         if ((buy || shortSale) && Reserve(t, incoming, quantity) > (cover ? t.Cash - t.ReservedCash : AvailableCash(t))) return "주문 가능 현금/담보가 부족합니다.";
         if (!buy && !shortSale && quantity > t.Shares[stockIndex] - t.ReservedShares[stockIndex] - (ownerId == 0 ? State.Bank.ReservedLending[stockIndex] : 0)) return "주문 가능 주식이 부족합니다.";
+        if (enforceAllocation && !buy && !shortSale && quantity > ExposureSellCapacity(t, stockIndex, price)) return "주식 비중 50%를 유지해야 합니다.";
         State.Activity.SubmittedOrders++;
         var touch = buy ? asks[stockIndex] : bids[stockIndex];
         if (touch.Count > 0 && touch[0].OwnerId != ownerId && (buy ? touch[0].Price <= price : touch[0].Price >= price)) State.Activity.AggressiveOrders++;
@@ -114,7 +118,21 @@ public sealed partial class GameEngine
             var resting = opposite[0];
             if (buy ? resting.Price > price : resting.Price < price) break;
             if (resting.OwnerId == ownerId) { CancelOrder(resting.Id); continue; }
+            if (!DailyPriceLimits.For(State.Stocks[stockIndex]).Contains(resting.Price)) { CancelOrder(resting.Id); continue; }
+            var sale = buy ? resting : incoming;
+            var seller = Owner(sale.OwnerId);
             int q = Math.Min(incoming.Remaining, resting.Remaining);
+            if (sale.EnforceAllocation && !sale.Short && seller.Id > 0 && !seller.IsRetail)
+            {
+                long holdings = seller.GrossAssets(State.Stocks) - seller.Cash;
+                long permitted = (long)Math.Max(0, decimal.Floor((holdings - (decimal)seller.Cash) / (State.Stocks[stockIndex].MarkPrice + resting.Price)));
+                q = (int)Math.Min(q, permitted);
+                if (q == 0)
+                {
+                    if (buy) { CancelOrder(resting.Id); continue; }
+                    break;
+                }
+            }
             if (q <= 0) throw new InvalidDataException("체결 호가의 수량이 0입니다.");
             SetReservation(t, incoming, -q); SetReservation(Owner(resting.OwnerId), resting, -q);
             Execute(buy ? incoming : resting, buy ? resting : incoming, resting.Price, q);
@@ -182,6 +200,7 @@ public sealed partial class GameEngine
     }
     void Execute(LimitOrder bid, LimitOrder ask, int price, int quantity)
     {
+        if (!DailyPriceLimits.For(State.Stocks[bid.StockIndex]).Contains(price)) throw new InvalidOperationException("일일 가격 제한 체결 오류");
         var buyer = Owner(bid.OwnerId); var seller = Owner(ask.OwnerId); int i = bid.StockIndex;
         long amount = (long)price * quantity, fee = ExchangeFee(amount);
         if (bid.Cover)
@@ -190,10 +209,12 @@ public sealed partial class GameEngine
             buyer.ShortShares[i] -= quantity; State.Bank.ShareInventory[i] += quantity;
             if (buyer.ShortShares[i] == 0) buyer.ShortAveragePrice[i] = 0;
             if (buyer.ShortShares[i] == 0 && buyer.Development is { } coverTiming) coverTiming.ShortOpenedHours[i] = -1;
+            long taxBefore = buyer.Taxes;
             PayTradeTax(buyer, profit);
+            TrackInvestment(buyer, i, true, profit, fee, buyer.Taxes - taxBefore, buyer.ShortShares[i] == 0);
         }
         else
-        { RecordPositionOpen(buyer, i, false, buyer.Shares[i] == 0); buyer.AverageCost[i] = (buyer.Shares[i] * buyer.AverageCost[i] + amount) / (buyer.Shares[i] + quantity); buyer.Shares[i] += quantity; }
+        { RecordPositionOpen(buyer, i, false, buyer.Shares[i] == 0); buyer.AverageCost[i] = (buyer.Shares[i] * buyer.AverageCost[i] + amount) / (buyer.Shares[i] + quantity); buyer.Shares[i] += quantity; TrackInvestment(buyer, i, false, 0, fee, 0, false); }
         TransferCash(buyer, seller, amount, "stock-trade"); TransferCash(buyer, State, fee, "exchange-fee");
         buyer.BuyCashFlow += amount; buyer.Fees += fee; buyer.Trades++;
         TransferCash(seller, State, fee, "exchange-fee"); seller.SellCashFlow += amount;
@@ -201,15 +222,20 @@ public sealed partial class GameEngine
         {
             RecordPositionOpen(seller, i, true, seller.ShortShares[i] == 0);
             seller.ShortAveragePrice[i] = (seller.ShortShares[i] * seller.ShortAveragePrice[i] + amount) / (seller.ShortShares[i] + quantity);
+            TrackInvestment(seller, i, true, 0, fee, 0, false);
             seller.ShortShares[i] += quantity; State.Bank.ShareInventory[i] -= quantity;
         }
         else
         {
             double profit = amount - quantity * seller.AverageCost[i]; seller.RealizedProfit += profit;
-            seller.Shares[i] -= quantity; if (seller.Shares[i] == 0) seller.AverageCost[i] = 0; PayTradeTax(seller, profit);
+            seller.Shares[i] -= quantity; if (seller.Shares[i] == 0) seller.AverageCost[i] = 0;
+            long taxBefore = seller.Taxes;
+            PayTradeTax(seller, profit);
+            TrackInvestment(seller, i, false, profit, fee, seller.Taxes - taxBefore, seller.Shares[i] == 0);
             if (seller.Shares[i] == 0 && seller.Development is { } soldTiming) soldTiming.PositionOpenedHours[i] = -1;
         }
         seller.Fees += fee; seller.Trades++;
+        RecordInstitutionTurnover(buyer, amount); RecordInstitutionTurnover(seller, amount);
         buyer.TradedVolume += quantity; seller.TradedVolume += quantity; buyer.TradedTurnover += amount; seller.TradedTurnover += amount;
         if (buyer.Id > 0 && seller.Id > 0)
         {

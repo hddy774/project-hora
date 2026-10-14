@@ -1,6 +1,6 @@
 {
   "MarketCapitalization": 1000000000000,
-  "InvestorCapital": 1000000000,
+  "InvestorCapital": 10000000000,
   "RetailCapital": 50000000,
   "BankCapital": 500000000000,
   "GovernmentCapital": 150000000000,
@@ -13,6 +13,6 @@
   "PlanBandMaximum": 0.35,
   "RetailHerdWeight": 0.32,
   "RetailTakeLiquidityProbability": 0.9,
-  "Version": "market-1.10",
+  "Version": "market-1.11",
   "InitialRetailUnits": 10000
 }

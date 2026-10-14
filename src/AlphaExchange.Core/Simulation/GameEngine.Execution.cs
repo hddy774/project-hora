@@ -18,9 +18,10 @@ public sealed partial class GameEngine
         foreach (var s in State.Stocks)
         {
             s.PreviousPrice = s.Price; s.Volume = 0;
-            if (State.Hour == 0) { s.DayOpenPrice = s.Price; s.DayVolume = s.DayTurnover = 0; }
+
         }
         PrepareMarketSignals();
+        if (State.CompletedHours == 0) QuoteHourlyMarket();
         int count = Math.Min(State.Retail.Count, 300 + (int)(Next() * 501)); State.ActiveRetailLastHour = count;
         var actors = actorBuffer.AsSpan(0, AiCount + count);
         for (int i = 0; i < AiCount; i++) actors[i] = i + 1;
@@ -35,6 +36,7 @@ public sealed partial class GameEngine
         if (State.Minute == 0) BeginHour(); else ExpireOrders();
         PrepareMarketSignals();
         if (State.CompletedMinutes >= State.Environment.NextEventMinute) PublishNews();
+        PublishCompanyNews();
         int minute = State.Minute, count = State.MinuteActors.Count;
         int first = count * minute / 60, end = count * (minute + 1) / 60;
         for (int i = first; i < end; i++)
@@ -52,8 +54,7 @@ public sealed partial class GameEngine
         State.Orders.RemoveAll(o => o.Remaining == 0);
         State.CompletedHours++;
         State.MinuteActors.Clear();
-        if (State.Hour == 0)
-            foreach (var s in State.Stocks) { s.DayOpenPrice = s.Price; s.DayVolume = s.DayTurnover = 0; }
+        if (State.Hour == 0) ResetTradingDay();
         foreach (var s in State.Stocks)
         {
             s.Sentiment *= .94; Append(s.History, (double)s.MarkPrice, HistoryLimit);
@@ -68,6 +69,7 @@ public sealed partial class GameEngine
             try { CloseBusinesses(); } finally { closingBooks = false; }
         }
         ProcessBankruptcies();
+        QuoteHourlyMarket();
         UpdatePerformance();
         if (State.Hour == 0) Append(State.DailyHistory, CaptureSnapshot(), 121);
         if (monthEnd) { FinishSeason(State.Season - 1); }

@@ -5,11 +5,24 @@ public sealed partial class GameEngine
     void PublishNews()
     {
         var environment = State.Environment;
-        var kind = (MarketEventKind)(int)(Next() * 4);
+        var kind = (MarketEventKind)(1 + (int)(Next() * 3));
         int index = (int)(Next() * StockCount);
         double impact = (Next() < .5 ? -1 : 1) * (.015 + Next() * .055);
         ApplyMarketEvent(kind, index, impact);
         environment.NextEventMinute = State.CompletedMinutes + 90 + (int)(Next() * 271);
+    }
+
+    void PublishCompanyNews()
+    {
+        for (int index = 0; index < StockCount; index++)
+        {
+            var stock = State.Stocks[index];
+            if (!stock.Active || stock.NextCompanyNewsMinute > State.CompletedMinutes) continue;
+            double impact = (Next() < .5 ? -1 : 1) * (.01 + Next() * .055);
+            ApplyMarketEvent(MarketEventKind.Company, index, impact);
+            stock.CompanyNewsCount++;
+            stock.NextCompanyNewsMinute = State.CompletedMinutes + 720 + (int)(Next() * 721);
+        }
     }
 
     internal void ApplyMarketEvent(MarketEventKind kind, int index, double impact)
@@ -28,7 +41,7 @@ public sealed partial class GameEngine
             stock.Allocation = (CapitalAllocation)(int)(Next() * 3);
             stock.BusinessSalesFactor = Math.Clamp(stock.BusinessSalesFactor * (1 + impact), .6, 1.5);
             headline = $"{stock.Name} · {(positive ? "수주 확대·실적 기대" : "납품 차질·비용 부담")}";
-            detail = $"사업 환경 변화 · {CompanyStrategyNames[(int)stock.CompanyStrategy]} / {ManagementNames[(int)stock.Management]} / {AllocationNames[(int)stock.Allocation]}";
+            detail = $"{stock.Driver} · {stock.NewsExposure} · {CompanyStrategyNames[(int)stock.CompanyStrategy]} / {ManagementNames[(int)stock.Management]} / {AllocationNames[(int)stock.Allocation]}";
         }
         else if (kind == MarketEventKind.Policy)
         {
@@ -56,7 +69,16 @@ public sealed partial class GameEngine
         {
             var target = State.Stocks[i];
             if (kind == MarketEventKind.Company && i != index || kind == MarketEventKind.Sector && target.Sector != stock.Sector) continue;
-            double strength = kind is MarketEventKind.Policy or MarketEventKind.Finance ? impact * .65 : impact;
+            var exposure = CompanyEconomics.For(target.Symbol);
+            double strength = impact * (kind switch
+            {
+                MarketEventKind.Policy => exposure.Policy * .65,
+                MarketEventKind.Finance => exposure.Financing * .65,
+                MarketEventKind.Sector => exposure.Demand,
+                _ => 1
+            });
+            if (kind == MarketEventKind.Sector)
+                target.BusinessSalesFactor = Math.Clamp(target.BusinessSalesFactor * (1 + strength * .25), .6, 1.5);
             target.Sentiment = Math.Clamp(target.Sentiment + strength, -.2, .2);
             ApplyNewsImpact(i, strength);
         }
@@ -64,7 +86,7 @@ public sealed partial class GameEngine
         {
             Kind = kind, AbsoluteMinute = State.CompletedMinutes, Season = State.Season, Day = State.Day,
             Hour = State.Hour, Minute = State.Minute, StockIndex = index, SecurityId = stock.SecurityId,
-            Headline = headline, Detail = detail + " · 가격은 투자자의 주문 체결로 결정됩니다.", Impact = impact
+            Headline = headline, Detail = detail + " · 회사별 수요·정책·금리·원가 민감도 반영 · 주가는 주문 체결로 결정됩니다.", Impact = impact
         });
         if (State.News.Count > 80) State.News.RemoveRange(80, State.News.Count - 80);
         environment.EventsPublished++;

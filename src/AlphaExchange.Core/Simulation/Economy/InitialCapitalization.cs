@@ -35,25 +35,34 @@ public sealed partial class GameEngine
     {
         // Funded opening allocations supply the investor-only order book. Cash
         // moves to the underwriter; the bank never places autonomous quotes.
-        foreach (var trader in Participants)
+        foreach (var trader in Participants) AllocateInitialPortfolio(trader);
+    }
+
+    void AllocateInitialPortfolio(Trader trader)
+    {
+        double targetCash = trader.IsRetail ? .91 : DesiredCashRatio(trader);
+        if (trader.Development is { } d) d.TargetCashRatio = targetCash;
+        long budget = (long)Math.Ceiling(trader.Cash * (1 - targetCash));
+        int start = (trader.Id * 7) % StockCount;
+        int positions = trader.IsRetail ? 3 : StockCount;
+        long remaining = budget;
+        for (int n = 0; n < positions; n++)
         {
-            long budget = trader.Cash * (trader.IsRetail ? 9 : 45) / 100;
-            int start = (trader.Id * 7) % StockCount;
-            int positions = trader.IsRetail ? 3 : 6;
-            for (int n = 0; n < positions; n++)
-            {
-                int i = (start + n * 2) % StockCount;
-                var stock = State.Stocks[i];
-                long quantity = Math.Min(State.Bank.ShareInventory[i], budget / positions / stock.Price);
-                if (quantity == 0) continue;
-                long amount = checked(quantity * stock.Price);
-                TransferCash(trader, State.Bank, amount, "opening-subscription");
-                trader.Shares[i] += quantity;
-                trader.AverageCost[i] = stock.Price;
-                trader.BuyCashFlow += amount;
-                State.Bank.ShareInventory[i] -= quantity;
-                RecordPositionOpen(trader, i, false, true);
-            }
+            int i = (start + n * (trader.IsRetail ? 2 : 1)) % StockCount;
+            var stock = State.Stocks[i];
+            if (!stock.Active) continue;
+            long available = State.Bank.ShareInventory[i] - State.Bank.ReservedLending[i] - State.Bank.MarketAccount.ReservedShares[i];
+            long quantity = Math.Min(available, (remaining / (positions - n) + stock.Price - 1) / stock.Price);
+            quantity = Math.Min(quantity, AvailableCash(trader) / stock.Price);
+            if (quantity <= 0) continue;
+            long amount = checked(quantity * stock.Price);
+            RecordPositionOpen(trader, i, false, trader.Shares[i] == 0);
+            TransferCash(trader, State.Bank, amount, "opening-subscription");
+            trader.AverageCost[i] = (trader.AverageCost[i] * trader.Shares[i] + amount) / (trader.Shares[i] + quantity);
+            trader.Shares[i] += quantity;
+            trader.BuyCashFlow += amount;
+            State.Bank.ShareInventory[i] -= quantity;
+            remaining = Math.Max(0, remaining - amount);
         }
     }
     void AllocateListingShares(int index)

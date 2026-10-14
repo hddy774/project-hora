@@ -72,7 +72,7 @@ static class EconomyChecks
         Console.WriteLine($"Bear scenario: solvent institutions={loss.State.Bots.Count(b => b.Equity(loss.State.Stocks) > 0)}, cash={loss.State.Bots.Sum(b => b.Cash):N0}");
         // Recovery needs actual investor-held inventory; the bank no longer quotes.
         var recovery = new GameEngine(301);
-        foreach (var s in recovery.State.Stocks) { s.Price = s.PreviousPrice = s.DayOpenPrice = 100; s.History = Enumerable.Repeat(100.0, 24).ToList(); }
+        foreach (var s in recovery.State.Stocks) { s.Price = s.PreviousPrice = s.DayOpenPrice = 100; s.LimitReferencePrice = 100; s.History = Enumerable.Repeat(100.0, 24).ToList(); }
         for (int i = 0; i < 120; i++) recovery.AdvanceHour();
         check(recovery.State.Stocks.Any(s => s.Price > 100), "Value demand can recover from the price floor"); validate(recovery);
         var company = TestFixtures.SmallMarket(85); var previous = company.State.Stocks[0].Report;

@@ -38,6 +38,7 @@ public static class CompanyCatalog
         Price = c.InitialPrice,
         PreviousPrice = c.InitialPrice,
         DayOpenPrice = c.InitialPrice,
+        LimitReferencePrice = c.InitialPrice,
         StartPrice = c.InitialPrice,
         FairValue = c.InitialPrice,
         LastTradePrice = c.InitialPrice,

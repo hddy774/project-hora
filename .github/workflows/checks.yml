@@ -84,6 +84,15 @@ jobs:
       - name: Generate a true v8 native archive fixture from the previous release
         if: matrix.game == 'alpha-exchange'
         run: dotnet run --project tools/NativeSmokeFixture -c Release -p:FixtureCoreProject="$GITHUB_WORKSPACE/fixture-v19/src/AlphaExchange.Core/AlphaExchange.Core.csproj" -- generate /tmp/hora-native-fixture
+      - uses: actions/checkout@v4
+        if: matrix.game == 'alpha-exchange'
+        with:
+          ref: alpha-exchange/v1.10.0
+          path: fixture-v110
+          persist-credentials: false
+      - name: Generate a true v9 upgrade fixture from v1.10
+        if: matrix.game == 'alpha-exchange'
+        run: dotnet run --project tools/NativeSmokeFixture -c Release -p:FixtureCoreProject="$GITHUB_WORKSPACE/fixture-v110/src/AlphaExchange.Core/AlphaExchange.Core.csproj" -- generate-v9 /tmp/hora-upgrade-fixture
       - name: Enable emulator acceleration
         if: matrix.game == 'alpha-exchange'
         run: |
@@ -98,7 +107,7 @@ jobs:
           target: default
           disable-animations: true
           emulator-options: -no-window -no-audio -no-snapshot -no-boot-anim -gpu swiftshader_indirect -memory 2048 -cores 2
-          script: python3 scripts/native-smoke.py dist/alpha-exchange/com.alphaexchange.offline-Signed.apk /tmp/hora-native-fixture artifacts/native-smoke
+          script: python3 scripts/native-smoke.py dist/alpha-exchange/com.alphaexchange.offline-Signed.apk /tmp/hora-native-fixture artifacts/native-smoke /tmp/hora-upgrade-fixture
       - name: Keep native screenshots and raw verification evidence
         if: always() && matrix.game == 'alpha-exchange'
         uses: actions/upload-artifact@v4

@@ -27,13 +27,17 @@ public sealed partial class GameView
     float DrawMicrostructure(float y)
     {
         var flow = S.Activity;
-        int twoSided = 0; double spread = 0; long bids = 0, asks = 0;
-        for (int i = 0; i < S.Stocks.Count; i++)
-        {
-            var buy = game!.Orders(i, true); var sell = game.Orders(i, false);
-            bids += buy.Sum(o => (long)o.Remaining); asks += sell.Sum(o => (long)o.Remaining);
-            if (buy.Count > 0 && sell.Count > 0) { twoSided++; spread += (sell[0].Price - buy[0].Price) / (double)S.Stocks[i].Price; }
-        }
+        var stats = game!.Statistics();
+        int twoSided = stats.TwoSidedCompanies;
+        double spread = stats.AverageSpread * twoSided;
+        long bids = stats.BidQuantity, asks = stats.AskQuantity;
+        Button("누적 거래대금 " + ShortMoney(flow.CrossGroupTurnover) + "원 · 상세", 20, y, 360, 40,
+            () => ShowAmount("기관·개미 간 실제 매매 대금", flow.CrossGroupTurnover), false); y += 56;
+        y = Pie("실제 체결 상대 구성 · 누적", [("기관 간", flow.InstitutionMatches), ("개미 간", flow.RetailMatches), ("기관·개미", flow.CrossGroupMatches)], y);
+        y = HorizontalBars("종목별 매수 대기 수량", stats.CompanyBooks.Select(s => (s.Symbol, (double)s.Bids)).ToArray(), y, "주");
+        y = HorizontalBars("종목별 매도 대기 수량", stats.CompanyBooks.Select(s => (s.Symbol, (double)s.Asks)).ToArray(), y, "주");
+        y = StatisticsTable("이번 시간 호가 경쟁 · 기관 참여", ["종목", "매수 / 매도", "현재 양측"],
+            stats.CompanyBooks.Select(s => new[] { s.Symbol, $"{s.HourlyBidders} / {s.HourlySellers}", $"{s.BidInstitutions} / {s.AskInstitutions}" }).ToArray(), y);
         y = Statement("호가·체결 통계", y,
         [
             ("양방향 호가 종목", $"{twoSided} / 15"),
@@ -66,7 +70,9 @@ public sealed partial class GameView
             ("평균 최대 낙폭", $"{institutions.Average(t => t.Development!.MaximumDrawdown):P2}"),
             ("공개 랜덤 이벤트", $"{S.Environment.EventsPublished:N0}건")
         ]);
-        y = Statement("기관 전략 단계 분포", y, Enum.GetValues<CampaignPhase>()
+        y = HorizontalBars("기관 전략 단계 분포", Enum.GetValues<CampaignPhase>()
+            .Select(phase => (GameEngine.CampaignNames[(int)phase], (double)institutions.Count(t => t.Development!.CampaignPhase == phase))).ToArray(), y, "곳");
+        y = Statement("기관 전략 단계 상세", y, Enum.GetValues<CampaignPhase>()
             .Select(phase => (GameEngine.CampaignNames[(int)phase], $"{institutions.Count(t => t.Development!.CampaignPhase == phase)}곳")).ToArray());
         return DrawPortfolioRisk(Focus, y);
     }

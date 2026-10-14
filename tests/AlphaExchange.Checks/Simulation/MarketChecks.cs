@@ -50,7 +50,7 @@ static class MarketChecks
         check(taxed.SubmitOrder(1, 0, false, price + 1000, (int)taxQuantity) is null && taxed.SubmitOrder(2, 0, true, price + 1000, (int)taxQuantity) is null, "Taxable gain executes");
         long taxPaid = taxed.Owner(1).Taxes;
         check(taxPaid > 0 && taxed.State.Government.TaxEscrow >= taxPaid, "Tax withheld into refundable escrow");
-        check(taxed.SubmitOrder(1, 0, false, 1, 1) is null && taxed.SubmitOrder(3, 0, true, 1, 1) is null, "Loss offsets earlier gain");
+        check(taxed.SubmitOrder(1, 0, false, DailyPriceLimits.For(taxed.State.Stocks[0]).Lower, 1) is null && taxed.SubmitOrder(3, 0, true, DailyPriceLimits.For(taxed.State.Stocks[0]).Lower, 1) is null, "Loss offsets earlier gain");
         check(taxed.Owner(1).Taxes == 0 && taxed.State.Government.TaxRefunds == taxPaid, "Same-season net loss refunds earlier tax"); validate(taxed);
         StorageChecks(check, validate);
         Console.WriteLine("PASS market: 15 companies, real dividends, lender compensation, share actions, funded capital, index neutrality, post-action statements, hourly storage, legacy preservation, recovery and file portability");

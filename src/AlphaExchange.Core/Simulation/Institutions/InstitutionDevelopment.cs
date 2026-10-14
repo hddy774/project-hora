@@ -72,6 +72,8 @@ public sealed partial class GameEngine
     {
         if (!wasEmpty || t.Development is not { } d) return;
         (shortPosition ? d.ShortOpenedHours : d.PositionOpenedHours)[index] = State.CompletedHours;
+        (shortPosition ? d.TrackedShortInvestments : d.TrackedInvestments)[index] = true;
+        (shortPosition ? d.ShortInvestmentNet : d.InvestmentNet)[index] = 0;
         d.NextReviewHours[index] = State.CompletedHours + Rules.Horizons[(int)d.PositionHorizons[index]].ReviewHours;
     }
     void RefreshPositionTiming(Trader t, int index)

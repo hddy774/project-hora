@@ -3,6 +3,8 @@ namespace AlphaExchange.Core;
 
 public sealed class LimitOrder
 {
+    public bool EnforceAllocation { get; set; }
+    public bool Liquidity { get; set; }
     public long CreatedMinute { get; set; }
     public long ExpiresMinute { get; set; }
     public long Id { get; set; }

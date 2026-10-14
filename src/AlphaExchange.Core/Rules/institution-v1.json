@@ -1,5 +1,5 @@
 {
-  "Version": "institution-1.10",
+  "Version": "institution-1.11",
   "Representative": {
     "InitialAbility": 50,
     "AbilityMaximum": 100,
@@ -115,7 +115,7 @@
       -0.06,
       0.0
     ],
-    "DefensiveCash": 0.15,
+    "DefensiveCash": 0.05,
     "CashTolerance": 0.015,
     "StockLimit": 0.25,
     "DiversificationStockEffect": 0.1,

@@ -27,9 +27,10 @@ public sealed partial class GameEngine
     internal int RetailLimitPrice(int index, bool buy, double aggression)
     {
         var stock = State.Stocks[index];
-        int cap = Quote(stock.Price * (1 + (buy ? aggression : -aggression)), buy);
+        int cap = LimitedQuote(index, stock.Price * (1 + (buy ? aggression : -aggression)), buy);
         var book = buy ? asks[index] : bids[index];
-        if (book.Count > 0 && Next() < MarketRules.RetailTakeLiquidityProbability) return book[0].Price;
+        if (book.Count > 0 && Next() < MarketRules.RetailTakeLiquidityProbability &&
+            (buy ? book[0].Price <= cap : book[0].Price >= cap)) return book[0].Price;
         return cap;
     }
 

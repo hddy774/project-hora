@@ -10,19 +10,19 @@ public sealed partial class GameEngine
             Math.Abs(stock.Price / Math.Max(1, trader.ShortAveragePrice[index]) - 1) >= Rules.Investment.ShortExitReturn))
         {
             // Liability exits must be allowed above a valuation-based entry cap.
-            int price = asks[index].Count > 0 ? asks[index][0].Price : Quote(stock.Price * 1.035, true);
+            int price = LimitedQuote(index, asks[index].Count > 0 ? asks[index][0].Price : stock.Price * 1.035, true);
             int quantity = (int)Math.Min(trader.ShortShares[index] - trader.ReservedCovers[index], 1_000_000);
             while (quantity > 0)
             {
-                if (SubmitOrder(trader.Id, index, true, price, quantity, 1, cover: true) is null) return true;
+                if (SubmitInstitutionOrder(trader.Id, index, true, price, quantity, 1, cover: true) is null) return true;
                 quantity /= 2;
             }
         }
         if (margin && trader.Shares[index] > trader.ReservedShares[index])
         {
-            int price = CompetitivePrice(trader, index, false, true);
+            int price = LimitedQuote(index, bids[index].Count > 0 ? bids[index][0].Price : stock.Price * .98, false);
             int quantity = (int)Math.Min(trader.Shares[index] - trader.ReservedShares[index], 1_000_000);
-            return quantity > 0 && SubmitOrder(trader.Id, index, false, price, quantity, 1) is null;
+            return quantity > 0 && SubmitInstitutionOrder(trader.Id, index, false, price, quantity, 1) is null;
         }
         return false;
     }
@@ -34,17 +34,21 @@ public sealed partial class GameEngine
         double weight = (double)stock.Value(trader.Shares[index]) / gross;
         bool buy = plan.TargetWeight > weight;
         if (margin && buy) return false;
+        long age = trader.Development!.PositionOpenedHours[index];
+        if (!buy && age >= 0 && State.CompletedHours - age < 6 && !margin) return false;
         bool campaign = index == d.CampaignIndex;
         bool aggressive = Math.Abs(plan.TargetWeight - weight) > .035 || Math.Abs(institutionSignals[index].Score) > Rules.Investment.TakeLiquidityScore ||
             campaign && d.CampaignPhase is CampaignPhase.AttractFollowers or CampaignPhase.Distribute or CampaignPhase.Retreat;
         int price = CompetitivePrice(trader, index, buy, aggressive);
         long desiredValue = (long)(gross * Math.Min(Math.Abs(plan.TargetWeight - weight), Rules.Investment.OrderRatio + trader.Abilities.Execution / 100.0 * Rules.Investment.OrderSkillRatio));
+        desiredValue = Math.Min(desiredValue, RemainingTurnoverBudget(trader));
         int quantity = (int)Math.Min(1_000_000, desiredValue / price);
+        if (!buy && plan.TargetWeight == 0) quantity = (int)Math.Min(1_000_000, Math.Min(trader.Shares[index], RemainingTurnoverBudget(trader) / price));
         if (buy) quantity = Math.Min(quantity, PlannedBuyCapacity(trader, index, price));
-        else quantity = (int)Math.Min(quantity, trader.Shares[index] - trader.ReservedShares[index]);
+        else quantity = Math.Min(quantity, ExposureSellCapacity(trader, index, price));
         if (quantity > 0)
         {
-            if (SubmitOrder(trader.Id, index, buy, price, quantity, 1) is null)
+            if (SubmitInstitutionOrder(trader.Id, index, buy, price, quantity, 1) is null)
             {
                 if (aggressive) d.AggressiveOrders++;
                 return true;
@@ -99,29 +103,22 @@ public sealed partial class GameEngine
                 Quote(stock.Price * (1 + (buy ? -.001 : .001)), buy);
             limit = buy ? Math.Min(limit, improved) : Math.Max(limit, improved);
         }
-        if (buy) limit = Math.Min(limit, Quote(stock.FairValue * 1.18, true));
-        return Math.Clamp(buy ? Math.Min(limit, plan.UpperPrice) : Math.Max(limit, plan.LowerPrice), 1, 10_000_000);
+        // Ordinary sales have a valuation reservation price. Portfolio
+        // rebalancing alone is not a reason for every institution to chase a
+        // falling bid; collateral exits keep their separate marketable path.
+        if (!buy) limit = Math.Max(limit, Quote(stock.FairValue * (.90 + trader.Risk * .06), false));
+        return LimitedQuote(index, buy ? Math.Min(limit, plan.UpperPrice) : Math.Max(limit, plan.LowerPrice), buy);
     }
 
     bool PlaceHedge(Trader trader, int index, long gross)
     {
-        if (!State.Government.Policy.ShortSellingAllowed || trader.ShortShares[index] > 0) return false;
+        if (!State.Government.Policy.ShortSellingAllowed || trader.ShortShares[index] > 0 || CashRatio(trader) > .35 ||
+            RemainingTurnoverBudget(trader) <= 0 || institutionSignals[index].Score > -.12) return false;
         int price = CompetitivePrice(trader, index, false, true);
         long equity = Math.Max(0, trader.Equity(State.Stocks));
-        long budget = (long)Math.Max(0, equity * Rules.Investment.MaximumShortRatio - trader.ShortLiability(State.Stocks));
+        long budget = (long)Math.Max(0, equity * Math.Min(.02, Rules.Investment.MaximumShortRatio) - trader.ShortLiability(State.Stocks));
         int quantity = (int)Math.Min(1000, Math.Min(budget / price, Math.Max(0, AvailableCash(trader) - gross * Rules.Investment.MinimumCash) / price));
-        return quantity > 0 && SubmitOrder(trader.Id, index, false, price, quantity, 1, shortSale: true) is null;
+        return quantity > 0 && SubmitInstitutionOrder(trader.Id, index, false, price, quantity, 1, shortSale: true) is null;
     }
 
-    void PlaceLiquidityOrders(Trader trader, int index, bool margin)
-    {
-        var stock = State.Stocks[index];
-        if (!stock.Active || margin) return;
-        int buyPrice = CompetitivePrice(trader, index, true, false);
-        int buyQuantity = Math.Min(100, PlannedBuyCapacity(trader, index, buyPrice));
-        if (buyQuantity > 0) SubmitOrder(trader.Id, index, true, buyPrice, buyQuantity, 1);
-        int sellPrice = Math.Max(buyPrice + (stock.Price < 1000 ? 1 : 10), CompetitivePrice(trader, index, false, false));
-        int sellQuantity = (int)Math.Min(100, trader.Shares[index] - trader.ReservedShares[index]);
-        if (sellQuantity > 0 && sellPrice <= 10_000_000) SubmitOrder(trader.Id, index, false, sellPrice, sellQuantity, 1);
-    }
 }

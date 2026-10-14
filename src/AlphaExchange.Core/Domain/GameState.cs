@@ -4,7 +4,7 @@ namespace AlphaExchange.Core;
 
 public sealed class GameState : ICashAccount
 {
-    public int Version { get; set; } = 9;
+    public int Version { get; set; } = 10;
     public MarketEnvironment Environment { get; set; } = new();
     public long CompletedMinutes { get; set; }
     public double MinuteProgress { get; set; }

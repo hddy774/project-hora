@@ -12,7 +12,7 @@ public sealed partial class GameView
         var stats = game!.Statistics();
         Text("시장의 전체 그림", 20, y + 23, 24, Ink, true);
         Text($"100 투자사 · 개미 {S.Retail.Count:N0}명 · 업종별 3개", 21, y + 47, 11, Muted); y += 66;
-        string[] tabs = ["전체 시장", "업종별", "개미 재무", "기관 재무", "정책·금융", "호가·수급", "위험·전략"];
+        string[] tabs = ["전체 시장", "업종별", "개미 재무", "기관 재무", "정책·금융", "호가·수급", "위험·전략", "투자 성과"];
         for (int i = 0; i < tabs.Length; i++)
         {
             int tab = i; bool active = statsTab == i;
@@ -22,6 +22,8 @@ public sealed partial class GameView
         }
         y += 89;
         y = NumberFormatPicker(y);
+        Text($"S{S.Season} D{S.Day} {S.Hour:00}:{S.Minute:00} · 현황 → 분포 → 상세", 21, y + 12, 10, Muted); y += 30;
+        if (statsTab == 7) return DrawInvestmentResults(y);
         if (statsTab == 5) return DrawMicrostructure(y);
         if (statsTab == 6) return DrawMarketRisk(y);
         if (statsTab == 4) return DrawEconomy(y);
@@ -45,6 +47,8 @@ public sealed partial class GameView
         }
         if (statsTab == 1)
         {
+            y = HorizontalBars("업종별 기간 등락률", stats.Sectors.Select(s => (s.Name, SectorChange(s.Name, period))).ToArray(), y, "%", true);
+            y = HorizontalBars("업종별 시가총액 · 현재", stats.Sectors.Select(s => (s.Name, (double)s.Capitalization)).ToArray(), y, "원");
             foreach (var sector in stats.Sectors)
             {
                 Box(20, y, 360, 177, Card, 17);

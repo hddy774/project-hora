@@ -41,6 +41,11 @@ internal static class CheckpointCopy
             development.AllocatedPoints = (int[])d.AllocatedPoints.Clone();
             development.PositionOpenedHours = (long[])d.PositionOpenedHours.Clone(); development.ShortOpenedHours = (long[])d.ShortOpenedHours.Clone();
             development.NextReviewHours = (long[])d.NextReviewHours.Clone(); development.PositionHorizons = (InvestmentHorizon[])d.PositionHorizons.Clone();
+            development.LastExitMinutes = (long[])d.LastExitMinutes.Clone();
+            development.InvestmentNet = (decimal[])d.InvestmentNet.Clone();
+            development.ShortInvestmentNet = (decimal[])d.ShortInvestmentNet.Clone();
+            development.TrackedInvestments = (bool[])d.TrackedInvestments.Clone();
+            development.TrackedShortInvestments = (bool[])d.TrackedShortInvestments.Clone();
             development.LastNewsSignals = (double[])d.LastNewsSignals.Clone();
             copy.Development = development;
         }

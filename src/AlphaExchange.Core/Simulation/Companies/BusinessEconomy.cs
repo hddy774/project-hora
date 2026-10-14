@@ -98,8 +98,11 @@ public sealed partial class GameEngine
             var old = s.Report;
             ApplyCompanyPolicies(s, out double salesFactor, out double costFactor, out double investRatio, out double payout, out double reserve);
             salesFactor *= s.BusinessSalesFactor;
+            var exposure = CompanyEconomics.For(s.Symbol);
+            salesFactor *= Math.Clamp(1 + (.03 - p.BaseRate) * exposure.Financing * 2, .8, 1.2);
+            costFactor *= Math.Clamp(1 + State.Environment.Inflation * exposure.Inflation, .9, 1.3);
             double capacity = Math.Clamp((double)old.FixedAssets / Math.Max(1, s.InitialFixedAssets), .4, 3);
-            double demand = (1 + (State.RealEconomy.Demand - 1) * s.DemandSensitivity) * Math.Clamp(1 + s.SeasonNewsImpact * .35, .6, 1.4);
+            double demand = (1 + (State.RealEconomy.Demand - 1) * exposure.Demand) * Math.Clamp(1 + s.SeasonNewsImpact * .35, .6, 1.4);
             long target = Math.Max(0, (long)(s.BaseRevenue * (.65 + .35 * capacity) * demand * salesFactor));
             long revenue = Math.Min(target, Math.Max(0, State.RealEconomy.Cash / 20));
             var r = new CompanyReport

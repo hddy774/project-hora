@@ -64,8 +64,7 @@ public sealed partial class GameEngine
         double risk = a.RiskManagement / 100.0, macro = a.Macro / 100.0;
         bool defensive = marketTrend < r.FallingMarket || trends[index] < r.FallingStock || volatilities[index] > r.VolatilityRisk ||
             equity < t.SeasonOpeningEquity * (1 - r.DrawdownRisk);
-        double cash = r.BaseCash + r.DispositionCash[(int)t.Disposition] - t.Risk * r.RiskCashEffect + (defensive ? r.DefensiveCash * risk : 0);
-        cash = Math.Clamp(cash, r.MinimumCash, r.MaximumCash);
+        double cash = DesiredCashRatio(t, defensive);
         double value = Math.Clamp(s.FairValue / s.Price - 1, -1, 2);
         InvestmentHorizon horizon = value > r.LongDiscount && s.Report.NetIncome > 0
             ? InvestmentHorizon.Long : Math.Abs(fastTrends[index]) >= r.FastMove &&

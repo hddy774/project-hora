@@ -10,7 +10,7 @@ public sealed partial class GameEngine
         for (int i = 0; i < StockCount; i++)
             if (Math.Abs(State.Stocks[i].Sentiment - d.LastNewsSignals[i]) >= Rules.Investment.MaterialNews) { news = true; break; }
         if (State.CompletedMinutes < d.NextExecutionMinute && !(news && State.CompletedMinutes - d.LastDecisionMinute >= 5)) return;
-        CancelOrders(trader.Id);
+        CancelInstitutionOrders(trader.Id, false);
         long equity = trader.Equity(State.Stocks);
         var skills = Capabilities(trader).Effective;
         d.PortfolioReviews++;
@@ -26,35 +26,34 @@ public sealed partial class GameEngine
         if (margin) trader.MarginCalls++;
         // Risk exits and excess positions execute before new purchases.
         int attempts = 0;
-        bool maker = trader.Strategy is Strategy.Balanced or Strategy.Contrarian;
-        int orderBudget = Rules.Investment.OrderAttempts - (maker ? 2 : 0);
+        int orderBudget = Rules.Investment.OrderAttempts;
         for (int i = 0; i < StockCount && attempts < orderBudget; i++)
             if (ExecuteRiskExit(trader, i, margin)) attempts++;
-        if (!margin && attempts < orderBudget)
+        if (!margin && StockAllocationShortfall(trader) == 0 && attempts < orderBudget)
         {
             for (int i = 0; i < StockCount && attempts < 2; i++)
-                if (trader.Shares[i] == 0 && institutionSignals[i].Score < Rules.Investment.ShortScore &&
+                if (trader.Shares[i] == 0 && institutionSignals[i].Score < Math.Min(-.12, Rules.Investment.ShortScore) &&
                     PlaceHedge(trader, i, Math.Max(1, trader.GrossAssets(State.Stocks)))) attempts++;
         }
         Span<bool> visited = stackalloc bool[StockCount];
         while (attempts < orderBudget)
         {
             long gross = Math.Max(1, trader.GrossAssets(State.Stocks));
-            int selected = -1; double best = .02;
+            int selected = -1; double best = StockAllocationShortfall(trader) > 0 ? .001 : .025;
             for (int i = 0; i < StockCount; i++)
             {
                 if (visited[i] || !State.Stocks[i].Active) continue;
                 double weight = (double)State.Stocks[i].Value(trader.Shares[i]) / gross;
                 double delta = decisionPlans[i]!.TargetWeight - weight;
                 double priority = Math.Abs(delta) * (delta < 0 ? 1.5 : 1);
+                if (decisionPlans[i]!.TargetWeight == 0 && trader.Shares[i] > 0) priority = Math.Max(priority, .03);
                 if (priority > best) { best = priority; selected = i; }
             }
             if (selected < 0) break;
             visited[selected] = true;
             if (PlacePortfolioOrder(trader, selected, margin)) attempts++;
         }
-        if (maker)
-            PlaceLiquidityOrders(trader, (trader.Id + (int)(State.CompletedMinutes / 30)) % StockCount, margin);
+
         string campaign = d.CampaignIndex < 0 ? "분산 관찰" : State.Stocks[d.CampaignIndex].Symbol + " " + CampaignNames[(int)d.CampaignPhase];
         trader.Decision = margin ? "담보 부족 · 보유 청산·상환 우선" : $"{campaign} · 현금 목표 {d.TargetCashRatio:P0}";
         trader.ActiveMethods = $"가치·추세·뉴스·호가·개미 수요 · {ExecutionDelay(trader, skills)}분 재평가";

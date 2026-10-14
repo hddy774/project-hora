@@ -2,10 +2,10 @@ using System.Text.Json;
 
 namespace AlphaExchange.Core;
 
-// A copy travels with the market so future balance changes affect new runs only.
+// Capital already in an existing market is preserved by explicit state migrations.
 public sealed class MarketRules
 {
-    public string Version { get; set; } = "market-1.10";
+    public string Version { get; set; } = "market-1.11";
     public long MarketCapitalization { get; set; }
     public long InvestorCapital { get; set; }
     public long RetailCapital { get; set; }
@@ -33,7 +33,7 @@ public sealed class MarketRules
     public void Validate()
     {
         static bool Range(double x, double min, double max) => double.IsFinite(x) && x >= min && x <= max;
-        if (Version != "market-1.10" || MarketCapitalization is < 100_000_000 or > 100_000_000_000_000 ||
+        if (Version is not ("market-1.10" or "market-1.11") || MarketCapitalization is < 100_000_000 or > 100_000_000_000_000 ||
             InvestorCapital is <= 0 or > 1_000_000_000_000 || RetailCapital is <= 0 or > 1_000_000_000_000 ||
             BankCapital is < 0 or > 100_000_000_000_000 || GovernmentCapital is < 0 or > 100_000_000_000_000 || RealEconomyCapital is < 0 or > 100_000_000_000_000 ||
             InitialRetailUnits is < 1 or > GameEngine.RetailCount || RetailTradeDivisor is < 1 or > 10000 ||

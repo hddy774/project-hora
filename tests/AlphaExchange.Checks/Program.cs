@@ -37,10 +37,12 @@ if (args.Contains("--client-only")) { RenderingChecks.Run(Check); CheckpointWrit
 if (args.Contains("--mobile-only")) { MobileChecks.Run(Check); RenderingChecks.Run(Check); CheckpointWriterChecks.Run(Check); Console.WriteLine($"PASS {assertions:N0} mobile assertions"); return; }
 if (args.Contains("--optimization-only")) { CheckpointEncodingChecks.Run(Check); Console.WriteLine($"PASS {assertions:N0} v1.8 optimization assertions"); return; }
 if (args.Contains("--storage-load")) { StorageLoad.Run(); return; }
+if (args.Contains("--balance-only")) { MarketBalanceChecks.Run(Check, Validate); Console.WriteLine($"PASS {assertions:N0} market balance assertions"); return; }
 if (args.Contains("--design-only")) { MarketDesignChecks.Run(Check, Validate); Console.WriteLine($"PASS {assertions:N0} investor market assertions"); return; }
 if (args.Contains("--economy-only")) { EconomyChecks.Run(Check, Validate, Near); Console.WriteLine($"PASS {assertions:N0} economy assertions"); return; }
 if (args.Contains("--ownership-only")) { OwnershipChecks.Run(Check, Validate); Console.WriteLine($"PASS {assertions:N0} ownership assertions"); return; }
 if (args.Contains("--market-only")) { MarketChecks.Run(Check, Validate, Near); Console.WriteLine($"PASS {assertions:N0} market assertions"); return; }
+MarketBalanceChecks.Run(Check, Validate);
 MarketDesignChecks.Run(Check, Validate);
 MinuteQueueChecks.Run(Check);
 MobileChecks.Run(Check);

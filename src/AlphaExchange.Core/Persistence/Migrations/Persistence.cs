@@ -12,7 +12,7 @@ public sealed partial class GameEngine
     {
         var s = JsonSerializer.Deserialize<GameState>(json, StateJson) ?? throw new InvalidDataException("비어 있는 저장 데이터");
         int source = s.Version, count = s.Stocks.Count;
-        if (source != 9 || count != StockCount || s.Stocks.Count != count ||
+        if (source is not (9 or 10) || count != StockCount || s.Stocks.Count != count ||
             s.RandomState == 0 || s.CompletedHours < 0 || !double.IsFinite(s.HourProgress) || s.HourProgress is < 0 or >= 1 ||
             s.Bots.Count != AiCount || s.FollowedId is < 1 or > AiCount || !Guid.TryParseExact(s.RunId, "N", out _))
             throw new InvalidDataException("지원하지 않는 저장 데이터");
@@ -61,6 +61,7 @@ public sealed partial class GameEngine
             r.Standings.Select(x => x.TraderId).Distinct().Count() != AiCount)) throw new InvalidDataException("시즌 기록 손상");
         if (s.DailyHistory.Count is < 1 or > 121 || s.OpeningSnapshot is null || s.SeasonSnapshot is null ||
             s.Stocks.Any(stock => stock.Reports.Count is < 1 or > 12)) throw new InvalidDataException("기록 데이터 손상");
+        if (source == 9) engine.UpgradeMarketBalance();
         return engine;
     }
     static void ValidateEconomy(GameState s, int count)

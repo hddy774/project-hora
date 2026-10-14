@@ -36,6 +36,16 @@ public sealed class InstitutionDevelopment
     public double MaximumDrawdown { get; set; }
     public long AggressiveOrders { get; set; }
     public long PortfolioReviews { get; set; }
+    public long SuccessfulInvestments { get; set; }
+    public long CompletedInvestments { get; set; }
+    public long OutcomesSinceMinute { get; set; }
+    public long[] LastExitMinutes { get; set; } = Enumerable.Repeat(-1L, MarketDefaults.StockCount).ToArray();
+    public decimal[] InvestmentNet { get; set; } = new decimal[MarketDefaults.StockCount];
+    public decimal[] ShortInvestmentNet { get; set; } = new decimal[MarketDefaults.StockCount];
+    public bool[] TrackedInvestments { get; set; } = new bool[MarketDefaults.StockCount];
+    public bool[] TrackedShortInvestments { get; set; } = new bool[MarketDefaults.StockCount];
+    public long TurnoverDay { get; set; } = -1;
+    public long DayTurnover { get; set; }
 }
 public sealed record SeasonGrowthReward(int TraderId, int Generation, int Rank, int AbilityPoints, int CreditBonus, int[] AllocatedPoints);
 public sealed record InstitutionSkills(Abilities Representative, Abilities Effective);

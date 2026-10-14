@@ -34,6 +34,7 @@ public sealed partial class GameEngine
         result.BidQuantity = State.Orders.Where(o => o.Buy).Sum(o => (long)o.Remaining);
         result.AskQuantity = State.Orders.Where(o => !o.Buy).Sum(o => (long)o.Remaining);
         result.Rising = State.Stocks.Count(s => s.Active && s.Change > 0); result.Falling = State.Stocks.Count(s => s.Active && s.Change < 0); result.Unchanged = State.Stocks.Count(s => s.Active) - result.Rising - result.Falling;
+        AddParticipationStatistics(result);
         return cachedStats = result;
     }
 }

@@ -63,6 +63,8 @@ public sealed partial class GameEngine
         if (!closingBooks) { s.PendingDividends += total; s.PendingDividendPerShare += perShare; s.PendingFinancingFlow -= total; }
         s.LastDividendPerShare = perShare; s.TotalDividends += total; State.MarketDividends += total; State.DividendIndexPoints += total / State.IndexDivisor;
         s.Price -= (int)perShare;
+        s.LimitReferencePrice = Math.Max(1, s.LimitReferencePrice - perShare);
+        s.DayOpenPrice = Math.Max(1, s.DayOpenPrice - (int)perShare);
         LogCorporate(s, CorporateEventKind.Dividend, $"주당 {perShare:N0}원 현금 배당 · 배당락 기준 조정", total);
         return total;
     }
@@ -122,6 +124,7 @@ public sealed partial class GameEngine
             t.Shares[i] = Convert(oldLong); t.ShortShares[i] = Convert(oldShort);
             t.AverageCost[i] = t.Shares[i] == 0 ? 0 : t.AverageCost[i] * denominator / numerator;
             t.ShortAveragePrice[i] = t.ShortShares[i] == 0 ? 0 : t.ShortAveragePrice[i] * denominator / numerator;
+            if (Remainder(oldLong) > 0 || Remainder(oldShort) > 0) ExcludeCorporateInvestment(t, i);
             RefreshPositionTiming(t, i);
             PayTradeTax(t, t.RealizedProfit - beforeProfit);
         }
@@ -135,6 +138,7 @@ public sealed partial class GameEngine
         s.Price = (int)decimal.Floor(nextPrice); s.FractionalMark = nextPrice - s.Price;
         s.PreviousPrice = Math.Max(1, (int)(s.PreviousPrice * (double)denominator / numerator));
         s.DayOpenPrice = Math.Max(1, (int)(s.DayOpenPrice * (double)denominator / numerator));
+        s.LimitReferencePrice = Math.Clamp(s.LimitReferencePrice * denominator / numerator, 1, 10_000_000);
         s.StartPrice = Math.Max(1, (int)(s.StartPrice * (double)denominator / numerator));
         s.FairValue *= (double)denominator / numerator; s.SplitFactor *= (double)numerator / denominator;
         s.History = s.History.Select(p => p * denominator / numerator).ToList();
@@ -176,6 +180,7 @@ public sealed partial class GameEngine
         if (t.Shares[i] - t.ReservedShares[i] - (ownerId == 0 ? State.Bank.ReservedLending[i] : 0) < quantity || s.Report.Cash < amount) return "자사주 매입 재원/주식이 부족합니다.";
         long before = State.Stocks.Sum(x => x.MarketCap);
         if (s.Reports.Contains(s.Report)) s.Report = CopyReport(s.Report);
+        ExcludeCorporateInvestment(t, i);
         TransferCash(s.Report, t, amount, "buyback");
         double profit = amount - quantity * t.AverageCost[i]; t.RealizedProfit += profit; t.SellCashFlow += amount; PayTradeTax(t, profit);
         t.Shares[i] -= quantity; if (t.Shares[i] == 0) t.AverageCost[i] = 0;
@@ -217,6 +222,7 @@ public sealed partial class GameEngine
         source.Report = CopyReport(source.Report); target.Report = CopyReport(target.Report);
         foreach (var t in Participants)
         {
+            ExcludeCorporateInvestment(t, a); ExcludeCorporateInvestment(t, b);
             long longs = Convert(t.Shares[a]), shorts = Convert(t.ShortShares[a]); double beforeProfit = t.RealizedProfit;
             long longCash = CashFraction(t.Shares[a]), shortCash = CashFraction(t.ShortShares[a]);
             double removed = (double)(t.Shares[a] * numerator % denominator) / numerator;

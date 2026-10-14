@@ -32,7 +32,7 @@ public sealed partial class GameEngine
         foreach (var t in State.Bots)
         {
             if (quantity == 0) break;
-            long offered = Math.Min(quantity, Math.Max(0, t.Shares[index] - t.ReservedShares[index]));
+            long offered = Math.Min(quantity, ExposureSellCapacity(t, index, stock.Price));
             if (offered > 0 && t.AverageCost[index] <= stock.Price && Buyback(stock.SecurityId, t.Id, offered) is null) quantity -= offered;
         }
     }

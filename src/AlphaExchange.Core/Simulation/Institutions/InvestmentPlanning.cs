@@ -52,21 +52,31 @@ public sealed partial class GameEngine
             var stock = State.Stocks[i];
             var signal = institutionSignals[i] = Analyze(trader, i, equity, skills);
             cashTarget = Math.Max(cashTarget, 1 - signal.TargetExposure);
-            double raw = Math.Max(0, signal.Score + .035) / (.02 + signal.Volatility * 2);
-            if (!stock.Active || stock.Report.Equity <= 0 || stock.Price > stock.FairValue * 1.45) raw = 0;
+            double raw = Math.Clamp(1 + signal.Score * 4 + ((trader.Id * 7 + i * 11) % 13 - 6) * .025, .25, 3) / (1 + signal.Volatility * 8);
+            if (!stock.Active || stock.Report.Equity <= 0) raw = 0;
             var existing = decisionPlans[i];
             bool stopped = existing is not null && trader.Shares[i] > 0 && stock.Price <= existing.StopPrice;
             bool takeProfit = existing is not null && trader.Shares[i] > 0 && stock.Price >= existing.TakeProfitPrice;
-            if (stopped || takeProfit) raw *= stopped ? 0 : .25;
+            if (stopped || takeProfit || d.LastExitMinutes[i] >= 0 && State.CompletedMinutes - d.LastExitMinutes[i] < 1440) raw = 0;
             if (i == d.CampaignIndex)
             {
-                raw *= d.CampaignPhase switch { CampaignPhase.Accumulate => 1.5, CampaignPhase.AttractFollowers => 1.8, CampaignPhase.Distribute => .12, _ => 0 };
+                raw *= d.CampaignPhase switch { CampaignPhase.Accumulate => 1.25, CampaignPhase.AttractFollowers => 1.35, CampaignPhase.Distribute => 0, _ => 0 };
                 if (d.CampaignPhase == CampaignPhase.AttractFollowers && !stopped && raw > 0) raw += .2;
             }
+            // Each institution also retains a different long-horizon core name.
+            // This prevents a shared news signal from removing every bid at once.
+            if (stock.Active && i == (trader.Id - 1) % StockCount) raw = Math.Max(.75, raw);
             weights[i] = raw;
             d.LastNewsSignals[i] = stock.Sentiment;
         }
-        d.TargetCashRatio = Math.Clamp(cashTarget, Rules.Investment.MinimumCash, Rules.Investment.MaximumCash);
+        int eligible = 0;
+        for (int i = 0; i < StockCount; i++) if (weights[i] > 0) eligible++;
+        // If every thesis fails, retain a diversified core rather than abandon
+        // the mandatory allocation. A maximum five-name floor covers sectors.
+        if (eligible < 5)
+            for (int i = 0; i < StockCount; i++)
+                if (State.Stocks[i].Active && (eligible == 0 || weights[i] == 0)) weights[i] = Math.Max(.25, weights[i]);
+        d.TargetCashRatio = Math.Clamp(cashTarget, Rules.Investment.MinimumCash, Math.Min(.5, Rules.Investment.MaximumCash));
         AllocatePortfolioWeights(weights, 1 - d.TargetCashRatio);
         for (int i = 0; i < StockCount; i++)
         {
@@ -106,7 +116,8 @@ public sealed partial class GameEngine
     InvestmentPlan PlanInvestment(Trader trader, int index, InvestmentSignal signal, InvestmentPlan? previous, double target, long equity)
     {
         var stock = State.Stocks[index]; var d = trader.Development!;
-        bool renew = previous is null || previous.TargetMinute <= State.CompletedMinutes || previous.Horizon != signal.Horizon;
+        bool renew = previous is null || previous.TargetMinute <= State.CompletedMinutes || previous.Horizon != signal.Horizon ||
+            trader.Shares[index] > 0 && trader.Development!.PositionOpenedHours[index] * 60 > previous.CreatedMinute;
         long duration = Rules.Horizons[(int)signal.Horizon].ExpectedHours * 60L;
         double risk = Math.Clamp(.035 + signal.Volatility * 3 + trader.Risk * .04, .025, .14);
         double reference = trader.Shares[index] > 0 && trader.AverageCost[index] > 0 ? trader.AverageCost[index] : stock.Price;

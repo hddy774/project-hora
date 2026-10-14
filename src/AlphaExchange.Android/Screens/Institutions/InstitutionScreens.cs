@@ -27,6 +27,7 @@ public sealed partial class GameView
         var skills = game!.Capabilities(t);
         y = Statement("대표 프로필 · 실제 투자 성과", y, [("시즌 수익률",Percent(t.Return(S.Stocks))),
             ("전체 수익률",Percent(t.ReturnIndex/Math.Max(1e-12,t.OpeningSnapshot.ReturnIndex)-1)),
+            ("투자 성공 / 완료",$"{d.SuccessfulInvestments:N0} / {d.CompletedInvestments:N0}회"),
             ("누적 거래량",Money(t.TradedVolume)+"주"),("누적 거래금액",ShortMoney(t.TradedTurnover)+"원"),
             ("대표 성장 / 미배분",$"{d.PointsSpent}P / {d.AvailablePoints}P"),("계획 재평가",$"{d.PortfolioReviews:N0}회")]);
         Text("10개 기관 능력", 21, y + 15, 19, Ink, true);
@@ -81,7 +82,7 @@ public sealed partial class GameView
             ("매수/공매도 주문 예약",ShortMoney(t.ReservedCash)+"원"),("공매도 필요 담보",ShortMoney(t.ShortCollateral(S.Stocks))+"원"),
             ("다음 재평가",$"{Math.Max(0,d.NextExecutionMinute-S.CompletedMinutes)}분 후")]);
         y = Wrap("초단기: 1시간~1일 미만 · 단기: 1일~10일 미만 · 장기: 10일 이상. 계획과 실제 보유 기간을 구분합니다. 장기는 20일·30일 이상 이어질 수 있고 중요한 뉴스·위험 변화 때 일찍 다시 판단합니다.", 21, y + 8, 352, 11, Muted, 19) + 15;
-        y = Wrap("새 시장의 전액 현금, 주가 급변, 주식 공급 고갈, 거래 중단에서는 실제 비중이 목표 밖일 수 있습니다. AI는 실제 주문으로 조정하며 주문을 꾸며내지 않습니다.", 21, y, 352, 10, Muted, 18) + 22;
+        y = Wrap("초기 100억 중 성향별 목표만큼 주식을 실제 배정합니다. AI 매도는 주식 50% 하한을 지킵니다. 평가 하락·거래 중단으로 부족해진 비중은 매수 우선으로 회복하며 미체결 주문은 보유 주식으로 계산하지 않습니다.", 21, y, 352, 10, Muted, 18) + 22;
         Text(t.ActiveMethods, 21, y + 14, 15, Ink, true); y += 35;
         bool any = false;
         for (int i = 0; i < S.Stocks.Count; i++)

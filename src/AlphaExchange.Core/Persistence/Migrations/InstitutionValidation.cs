@@ -4,7 +4,7 @@ public sealed partial class GameEngine
 {
     static void ValidateDevelopment(GameState s)
     {
-        if (s.Version != 9 || s.Rules is null) throw new InvalidDataException("기관 실행 규칙이 없습니다.");
+        if (s.Version is not (9 or 10) || s.Rules is null) throw new InvalidDataException("기관 실행 규칙이 없습니다.");
         s.Rules.Validate();
         if (s.PendingClockHours != s.PendingClockMinutes / 60) throw new InvalidDataException("시계 대기 시간 손상");
         if (s.Retail.Any(t => t.Development is not null)) throw new InvalidDataException("개인 기관 능력 손상");
@@ -12,6 +12,13 @@ public sealed partial class GameEngine
         foreach (var t in s.Bots)
         {
             var d = t.Development;
+            if (d is not null && (d.SuccessfulInvestments < 0 || d.CompletedInvestments < d.SuccessfulInvestments ||
+                d.OutcomesSinceMinute < 0 || d.OutcomesSinceMinute > s.CompletedMinutes || d.TurnoverDay < -1 ||
+                d.TurnoverDay > s.CompletedHours / 24 || d.DayTurnover < 0 ||
+                d.LastExitMinutes is null || d.LastExitMinutes.Length != count || d.LastExitMinutes.Any(x => x < -1 || x > s.CompletedMinutes) ||
+                d.InvestmentNet is null || d.ShortInvestmentNet is null || d.TrackedInvestments is null || d.TrackedShortInvestments is null ||
+                d.InvestmentNet.Length != count || d.ShortInvestmentNet.Length != count || d.TrackedInvestments.Length != count || d.TrackedShortInvestments.Length != count))
+                throw new InvalidDataException("투자 성과 기록 손상");
             if (d is null || d.PointsEarned < 0 || d.PointsSpent < 0 || d.AvailablePoints < 0 || d.PointsEarned - d.PointsSpent != d.AvailablePoints ||
                 d.AllocatedPoints is null || d.AllocatedPoints.Length != 10 || d.AllocatedPoints.Any(x => x is < 0 or > 100) || d.AllocatedPoints.Sum() != (long)d.PointsSpent ||
                 d.CreditBonus < 0 || d.CreditBonus > s.Rules.Representative.MaximumCreditBonus || d.LastRewardSeason < 0 || d.LastRewardSeason >= s.Season ||

@@ -18,6 +18,11 @@ public sealed partial class GameEngine
             s.Stocks.GroupBy(x => x.Sector).Any(g => g.Count() != 3) ||
             !s.Stocks.Select(x => x.Symbol).Order().SequenceEqual(CompanyCatalog.Companies.Select(x => x.Symbol).Order()))
             throw new InvalidDataException("시간·시장 환경·15종목 구성 손상");
+        if (s.Version >= 10 && (s.Stocks.Any(stock => stock.LimitReferencePrice is < 1 or > 10_000_000 ||
+            stock.NextCompanyNewsMinute < 0 || stock.CompanyNewsCount < 0 || stock.HourlyBidParticipants is < 0 or > AiCount ||
+            stock.HourlyAskParticipants is < 0 or > AiCount || stock.LastCompetitionHour < -1 || stock.LastCompetitionHour > s.CompletedHours) ||
+            s.Orders.Any(order => order.StockIndex >= 0 && order.StockIndex < StockCount && !DailyPriceLimits.For(s.Stocks[order.StockIndex]).Contains(order.Price))))
+            throw new InvalidDataException("일일 가격 제한·회사 뉴스·시간별 참여 기록 손상");
         var activity = s.Activity ?? throw new InvalidDataException("거래 활동 기록 없음");
         if (activity.SubmittedOrders < 0 || activity.AggressiveOrders < 0 || activity.AggressiveOrders > activity.SubmittedOrders ||
             activity.CancelledOrders < 0 || activity.CancelledOrders > activity.SubmittedOrders ||

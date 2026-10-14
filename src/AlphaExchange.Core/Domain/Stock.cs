@@ -23,6 +23,9 @@ public sealed class Stock
     public string Sector { get; set; } = "";
     public int Price { get; set; }
     public int PreviousPrice { get; set; }
+    public decimal LimitReferencePrice { get; set; }
+    public long NextCompanyNewsMinute { get; set; }
+    public long CompanyNewsCount { get; set; }
     public int DayOpenPrice { get; set; }
     public int StartPrice { get; set; }
     public double FairValue { get; set; }
@@ -64,6 +67,9 @@ public sealed class Stock
     public double AnnualEps => EpsMonths == 0 ? (double)Report.NetIncome * 12 / Math.Max(1, OutstandingShares)
         : EpsMonths < 12 ? TtmEps * 12 / EpsMonths : TtmEps;
     public long TotalShares { get; set; }
+    public int HourlyBidParticipants { get; set; }
+    public int HourlyAskParticipants { get; set; }
+    public long LastCompetitionHour { get; set; } = -1;
     public long Volume { get; set; }
     public long DayVolume { get; set; }
     public long DayTurnover { get; set; }

@@ -51,6 +51,7 @@ public sealed partial class GameEngine
         t.OpeningCash += wanted; t.OpeningEquity += wanted; t.SeasonOpeningEquity = t.Equity(State.Stocks);
         t.LastReturnEquity = t.SeasonOpeningEquity; t.LastNetContribution = t.NetContribution;
         t.WaitingForCapital = false;
+        if (!t.IsRetail) AllocateInitialPortfolio(t);
         if (!t.IsRetail) { t.OpeningSnapshot = CaptureTrader(t); t.OpeningSnapshot.NetIncome = 0; t.SeasonSnapshot = CaptureTrader(t); }
         return wanted;
     }
@@ -152,6 +153,7 @@ public sealed partial class GameEngine
             t.ShortDividendExpense += shortCompensation; t.ShortDividendPaid += paid; t.ShortDividendDebt += shortCompensation - paid;
             profit += t.ShortShares[index] * t.ShortAveragePrice[index]; t.RealizedProfit += t.ShortShares[index] * t.ShortAveragePrice[index];
             t.ShortShares[index] = 0; t.ShortAveragePrice[index] = 0; PayTradeTax(t, profit);
+            ExcludeCorporateInvestment(t, index);
             RefreshPositionTiming(t, index);
         }
         TransferCash(estate, State.Bank, checked(State.Bank.ShareInventory[index] * perShare), "company-liquidation-bank-share");

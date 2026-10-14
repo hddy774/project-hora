@@ -4,7 +4,7 @@ public sealed partial class GameEngine
 {
     public const int AiCount = MarketDefaults.InstitutionCount, RetailCount = 10_000,
         SeasonLength = MarketDefaults.SeasonDays, StockCount = MarketDefaults.StockCount;
-    public const long InitialCash = 1_000_000_000, RetailInitialCapital = 50_000_000;
+    public const long InitialCash = 10_000_000_000, RetailInitialCapital = 50_000_000;
     public const double FeeRate = .0015, SecondsPerGameHour = 5;
     public const int HistoryLimit = 120, TapeLimit = 160;
     public GameState State { get; private set; }
@@ -23,6 +23,7 @@ public sealed partial class GameEngine
         State = new GameState { Seed = seed, RandomState = seed, Rules = rules?.Copy() ?? SimulationRules.Default(), Environment = new MarketEnvironment { Rules = marketRules?.Copy() ?? AlphaExchange.Core.MarketRules.Default() } };
         ConfigureNewCapital();
         State.Stocks.AddRange(CompanyCatalog.Companies.Select(c => CompanyCatalog.Create(c)));
+        for (int i = 0; i < StockCount; i++) State.Stocks[i].NextCompanyNewsMinute = 20 + i * 25 + (int)(Next() * 20);
         State.SecurityIds = State.Stocks.Select(s => s.SecurityId).ToList();
         for (int i = 1; i <= AiCount; i++)
         {
@@ -34,8 +35,8 @@ public sealed partial class GameEngine
         InitializeEconomy();
         AllocateOpeningShares();
         InitializeTotals();
-        InitializeHistory();
         RebuildBooks();
+        InitializeHistory();
         PublishNews();
         PrepareMarketSignals();
     }

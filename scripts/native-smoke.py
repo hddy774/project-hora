@@ -134,7 +134,7 @@ while True:
     time.sleep(2)
     try:
         state,_=pull_state("running")
-        if state["Version"]==9 and state["CompletedHours"]>=1: break
+        if state["Version"]==10 and state["CompletedHours"]>=1: break
     except (sqlite3.Error,subprocess.CalledProcessError,IndexError): pass
     if time.monotonic()>deadline:
         screenshot("failure-startup")
@@ -265,7 +265,7 @@ finally:
 paused_at=time.monotonic()
 (output/"modal-viewports.json").write_text(json.dumps(modal_evidence,indent=2))
 
-# Investor-only navigation, art zoom, seven statistics tabs and exact amounts.
+# Investor-only navigation, art zoom, eight statistics tabs and exact amounts.
 tap(200,h-40); require_screen("투자자 목록"); screenshot("03-investors")
 tap(200,300); require_screen("투자사 프로필"); screenshot("04-investor-profile")
 # The profile portrait is a fixed modal header; Android Back dismisses each layer.
@@ -277,7 +277,7 @@ require_screen("투자자 목록")
 capture_memory("after-investor-portraits")
 tap(400/7*4.5,h-40); require_screen("통계 화면"); screenshot("06-statistics")
 tap(154,235); require_screen("호가·수급"); screenshot("07-order-flow-statistics")
-swipe(); swipe(); tap(200,405)
+tap(200,365)
 amount_tree=window_tree()
 if not any("정확한 금액:" in n.attrib.get("text", "") for n in amount_tree.iter("node")):
     screenshot("failure-money-detail")
@@ -285,6 +285,14 @@ if not any("정확한 금액:" in n.attrib.get("text", "") for n in amount_tree.
 screenshot("07b-dual-money-detail")
 adb("shell","input","keyevent","4"); time.sleep(1)
 tap(400/7*4.5,h-40)
+tap(338,235); require_screen("투자 성과"); screenshot("08-investment-results")
+swipe(); screenshot("08b-cash-bars")
+swipe(); swipe(); screenshot("08c-investment-table")
+tap(400/7*4.5,h-40)
+tap(154,194); require_screen("업종별"); screenshot("08d-sector-statistics")
+swipe(); screenshot("08e-sector-bars")
+tap(400/7*4.5,h-40)
+tap(246,194); require_screen("개미 재무"); screenshot("08f-retail-financials")
 tap(246,235); require_screen("위험·전략"); screenshot("08-risk-statistics")
 tap(62,235); require_screen("정책·금융"); screenshot("09-policy-finance-events")
 tap(338,194); require_screen("기관 재무"); screenshot("10-institution-financials")
@@ -332,7 +340,7 @@ for name,digest in legacy_hashes.items():
     original=adb("exec-out","cat",device+"/"+name,binary=True)
     if hashlib.sha256(original).hexdigest()!=digest:
         raise RuntimeError("Previous-market original changed: "+name)
-if after["RunId"]==baseline["run"] or after["Version"]!=9 or "World" in after or len(after["Stocks"])!=15 or len(after["Bots"])!=100:
+if after["RunId"]==baseline["run"] or after["Version"]!=10 or "World" in after or len(after["Stocks"])!=15 or len(after["Bots"])!=100:
     raise RuntimeError("Native investor-only/new-run structure invalid")
 with contextlib.closing(sqlite3.connect(folder/"history-v6.sqlite")) as db:
     new_run_rows={(hour,res):sha for hour,res,sha in db.execute("select hour,resolution,hash from hours where run=?",(after["RunId"],))}
@@ -360,10 +368,33 @@ transition={"oldRun":after["RunId"],"newRun":new_market["RunId"],"oldCompletedMi
     "newCompletedMinutes":new_market["CompletedMinutes"],"oldImmutableRowsPreserved":len(new_run_rows)}
 (output/"new-market-transition.json").write_text(json.dumps(transition,indent=2))
 (output/"memory-samples.json").write_text(json.dumps(memory_samples,indent=2))
-summary={"legacyVersion":8,"nativeVersion":9,"preservedLegacyFiles":legacy_hashes,"newHour":after["CompletedHours"],
+summary={"legacyVersion":8,"nativeVersion":10,"preservedLegacyFiles":legacy_hashes,"newHour":after["CompletedHours"],
     "native100x":{"elapsedSeconds":elapsed,"completedMinutes":delta,"pendingMinutes":pending,"boundaryAllowanceSeconds":2,"idleBeforeResumeSeconds":idle},
     "lifecycle":lifecycle_evidence,"modalViewports":modal_evidence,"newMarketTransition":transition,"memorySamples":memory_samples,
     "screenshots":len(list(output.glob("*.png"))),"investors":100,"stocks":15,"sectors":5,"retail":10000}
 (output/"summary.json").write_text(json.dumps(summary,indent=2))
 print("PASS native lifecycle, modal viewports, legacy archive, immutable hours,investor profiles and100x:",json.dumps(summary),flush=True)
 subprocess.run(["dotnet","run","--project","tools/NativeSmokeFixture","-c","Release","--","inspect",str(folder)],check=True)
+
+# Upgrade a genuine v1.10 database on the native Activity without accepting time.
+if len(sys.argv) > 4:
+    upgrade_fixture = pathlib.Path(sys.argv[4])
+    adb("shell", "am", "force-stop", package)
+    for suffix in ("", "-wal", "-shm", ".bak"):
+        adb("shell", "rm", "-f", device + "/history-v6.sqlite" + suffix)
+    adb("push", str(upgrade_fixture / "history-v6.sqlite"), device + "/history-v6.sqlite")
+    adb("shell", "chown", "-R", f"{uid}:{uid}", device)
+    adb("shell", "restorecon", "-RF", device)
+    adb("shell", "monkey", "-p", package, "-c", "android.intent.category.LAUNCHER", "1")
+    tree = require_screen("시뮬레이션 시작 화면", 60); measure_viewport(tree)
+    screenshot("17-v110-upgrade-lobby")
+    adb("shell", "input", "keyevent", "3")
+    upgraded = settled_checkpoint("upgraded-v9")
+    _, upgrade_folder = pull_state("upgraded-v9")
+    original = json.loads((upgrade_fixture / "baseline.json").read_text())
+    with contextlib.closing(sqlite3.connect(upgrade_folder / "history-v6.sqlite")) as db:
+        rows = {(hour, res): digest for hour, res, digest in db.execute("select hour,resolution,hash from hours where run=?", (original["run"],))}
+    if upgraded["Version"] != 10 or any(rows.get((r["hour"], r["resolution"])) != r["hash"] for r in original["rows"]):
+        raise RuntimeError("v1.10 upgrade changed original hourly records")
+    subprocess.run(["dotnet", "run", "--project", "tools/NativeSmokeFixture", "-c", "Release", "--", "inspect-upgrade", str(upgrade_folder), str(upgrade_fixture / "baseline.json")], check=True)
+    (output / "v110-upgrade.json").write_text(json.dumps({"sourceVersion":9, "nativeVersion":10, "runPreserved":True, "ledgerPreserved":True, "clockPreserved":True, "immutableRowsPreserved":len(original["rows"])}, indent=2))

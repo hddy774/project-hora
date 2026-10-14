@@ -41,7 +41,7 @@ public sealed partial class GameView
                 Robot(bot.Id, 59, y + 17, 41);
                 Text(Representatives.Name(bot.PortraitId), 111, y + 29, 12, Ink, true);
                 Text(GameEngine.DispositionNames[(int)bot.Disposition] + " · " + bot.CreditRating, 111, y + 48, 10, Teal);
-                TextFit(bot.Decision, 111, y + 65, 9, Muted, 137);
+                Text($"투자 성공 {bot.Development!.SuccessfulInvestments:N0}회", 111, y + 65, 9, Muted);
                 Text(Value(row), 363, y + 29, 14, Lime, true, Paint.Align.Right);
                 Text($"자산 {ShortMoney(bot.Equity(S.Stocks))}", 363, y + 50, 10, Muted, false, Paint.Align.Right);
                 int id = bot.Id; Hit(20, y, 360, 77, () => selectedTrader = id);
@@ -147,7 +147,10 @@ public sealed partial class GameView
         const int levels = 5;
         Chart(s.History.Select(v => (double)v), 28, y + 85, 344, 64, PaletteColors[index % Palette.Length], true);
         Text($"분할 조정 120시간 · 시총 {ShortMoney(s.MarketCap)}원", 28, y + 170, 10, Muted);
-        y += 193;
+        var band = DailyPriceLimits.For(s);
+        Text($"하한 {Money(band.Lower)} · 상한 {Money(band.Upper)}원 (±30%)", 28, y + 191, 11, Lime);
+        Text($"이번 시간 참여 기관: 매수 {s.HourlyBidParticipants} / 매도 {s.HourlyAskParticipants}", 28, y + 211, 10, Muted);
+        y += 238;
         Text("실시간 호가", 28, y, 16, Ink, true);
         Text("기=기관 · 개=개인 · 은=은행", 373, y, 9, Muted, false, Paint.Align.Right);
         y += 23;
@@ -178,7 +181,7 @@ public sealed partial class GameView
         }
         string status = bids.Count == 0 || asks.Count == 0 ?
             string.Join(" · ", new[] { bids.Count == 0 ? "매수: " + game!.EmptyBookReason(index, true) : "", asks.Count == 0 ? "매도: " + game!.EmptyBookReason(index, false) : "" }.Where(s => s.Length > 0)) :
-            "가격·시간 우선 · 은행이 실제 잔량을 보충합니다";
+            "가격·시간 우선 · 매 시간 기관의 분산 호가 경쟁";
         TextFit(status, 28, y + 14, 10, Muted, 344); y += 35;
         Text("최근 매칭 체결", 28, y, 14, Ink, true); y += 24;
         foreach (var t in S.Tape.Where(t => t.StockIndex == index).Take(2))
@@ -186,6 +189,12 @@ public sealed partial class GameView
             string buyer = t.BuyerId == 0 ? "은행" : t.BuyerId <= 100 ? "기관" : "개인", seller = t.SellerId == 0 ? "은행" : t.SellerId <= 100 ? "기관" : "개인";
             Text($"{buyer} 매수 / {seller} 매도", 28, y, 11, Muted);
             Text($"{t.Quantity}주 · {Money(t.Price)}원", 373, y, 11, Ink, true, Paint.Align.Right); y += 23;
+        }
+        var latestNews = S.News.FirstOrDefault(n => n.Kind == MarketEventKind.Company && n.SecurityId == s.SecurityId);
+        if (latestNews is not null)
+        {
+            Text("최근 회사 뉴스", 28, y + 14, 13, Ink, true);
+            y = Wrap(latestNews.Headline, 28, y + 38, 344, 11, Muted, 19) + 10;
         }
         EndModalBody(y + 12);
         Button("기업 재무제표 →", 27, viewport.FooterTop, 170, 45, () => { companyStock = index; companyTab = 0; companySeason = 0; selectedStock = -1; SetPage(ScreenId.CompanyFinancials); });
@@ -214,7 +223,8 @@ public sealed partial class GameView
         Text($"누적 거래량 {Money(bot.TradedVolume)}주 · 거래금액 {ShortMoney(bot.TradedTurnover)}원", 29, y + 161, 10, Ink);
         Text($"전체 수익률 {Percent(bot.ReturnIndex / Math.Max(1e-12, bot.OpeningSnapshot.ReturnIndex) - 1)} · 재평가 {bot.Development!.PortfolioReviews:N0}회", 29, y + 184, 11, Teal);
         Text($"시즌 보상 {bot.Development.LastRewardPoints}P · 성장 {bot.Development.PointsSpent}P · 현금 {game!.CashRatio(bot):P1}", 29, y + 207, 10, Muted);
-        EndModalBody(y + 225);
+        Text($"투자 성공 {bot.Development.SuccessfulInvestments:N0}회 / 완료 {bot.Development.CompletedInvestments:N0}회", 29, y + 229, 11, Lime);
+        EndModalBody(y + 250);
         Button("투자 계획 / 시장 전략 / 능력·신용  →", 27, viewport.FooterTop, 346, 52, () =>
         { S.FollowedId = bot.Id; portfolioTab = 3; historyPage = 0; selectedTrader = -1; SetPage(ScreenId.Portfolio); RequestSave(); });
     }

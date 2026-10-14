@@ -8,7 +8,7 @@ static class MarketDesignChecks
     public static void Run(Action<bool, string> check, Action<GameEngine> validate)
     {
         var game = new GameEngine(110);
-        check(game.State.Version == 9 && game.State.Stocks.Count == 15 && game.State.Stocks.GroupBy(s => s.Sector).All(g => g.Count() == 3) &&
+        check(game.State.Version == 10 && game.State.Stocks.Count == 15 && game.State.Stocks.GroupBy(s => s.Sector).All(g => g.Count() == 3) &&
             game.State.Stocks.Select(s => s.Sector).Distinct().Count() == 5, "Exactly fifteen securities across five balanced sectors");
         check(game.State.Retail.Count == 10000 && game.State.Bots.Count == 100, "Only investor institutions and retail participate");
         check(typeof(GameState).GetProperty("World") is null && typeof(GameState).GetProperty("CompanyVotes") is null &&
@@ -168,7 +168,7 @@ static class MarketDesignChecks
             var trader = game.Owner(owner);
             game.FailTrader(trader, "회귀 검사: 강제 청산");
             check(game.Owner(owner).Generation == 2 && !game.Owner(owner).WaitingForCapital &&
-                game.Owner(owner).Cash == (owner == 1 ? GameEngine.InitialCash : GameEngine.RetailInitialCapital),
+                game.Owner(owner).Equity(game.State.Stocks) == (owner == 1 ? GameEngine.InitialCash : GameEngine.RetailInitialCapital),
                 "Investor replacement is funded by the real economy and clears former positions");
         }
         validate(game);

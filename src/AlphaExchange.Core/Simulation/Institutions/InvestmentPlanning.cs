@@ -72,7 +72,7 @@ public sealed partial class GameEngine
         int eligible = 0;
         for (int i = 0; i < StockCount; i++) if (weights[i] > 0) eligible++;
         // If every thesis fails, retain a diversified core rather than abandon
-        // the mandatory allocation. A maximum five-name floor covers sectors.
+        // the mandatory allocation. Restore a diversified set of eligible names.
         if (eligible < 5)
             for (int i = 0; i < StockCount; i++)
                 if (State.Stocks[i].Active && (eligible == 0 || weights[i] == 0)) weights[i] = Math.Max(.25, weights[i]);

@@ -12,8 +12,8 @@ public sealed partial class GameEngine
     void QuoteHourlyMarket()
     {
         foreach (var stock in State.Stocks) stock.HourlyBidParticipants = stock.HourlyAskParticipants = 0;
-        // Rotate both the first participant and stock assignment. Three assigned
-        // names per institution produce 20 independently funded participants/name.
+        // Rotate the first participant and two stock assignments, retaining one
+        // research specialty. Fifteen names share 300 funded participation slots.
         for (int n = 0; n < AiCount; n++)
         {
             var trader = State.Bots[(n + (int)(State.CompletedHours % AiCount)) % AiCount];
@@ -41,8 +41,8 @@ public sealed partial class GameEngine
         double spread = .002 + State.Government.Policy.FeeBasisPoints / 10000.0 + layer * .0015;
         int bid = LimitedQuote(index, center * (1 - spread), false);
         int ask = LimitedQuote(index, Math.Max(center * (1 + spread), stock.FairValue * (.91 + trader.Risk * .05)), true);
-        // Liquidity quotes rest in the book instead of consuming each other's
-        // inventory. Strategic orders and retail decide when to cross the spread.
+        // Liquidity normally rests in the book. At a daily limit the matching
+        // queue may consume a funded quote immediately; no fake depth is added.
         int tick = stock.Price < 1000 ? 1 : 10;
         var band = DailyPriceLimits.For(stock);
         if (asks[index].Count > 0) bid = Math.Min(bid, Math.Max(band.Lower, asks[index][0].Price - tick));

@@ -124,6 +124,9 @@ static class MarketDesignChecks
             game.State.Environment.Rules.RetailHerdWeight = .2;
             game.Owner(1).Development!.Plans[0].TargetWeight = .999;
             game.State.Activity.CashToInstitutions++;
+            game.Owner(1).Development!.InvestmentNet[0] += 999;
+            game.Owner(1).Development!.TrackedInvestments[0] = !game.Owner(1).Development!.TrackedInvestments[0];
+            game.Owner(1).Development!.LastExitMinutes[0] = game.State.CompletedMinutes;
             store.WriteSnapshot(snapshot);
             check(store.Load(out _)!.Serialize() == before, "New mutable rule/plan/activity objects are isolated from live state during asynchronous saving");
             var malformed = JsonNode.Parse(before)!; malformed["Version"] = 8;

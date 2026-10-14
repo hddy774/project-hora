@@ -147,6 +147,8 @@ static class MarketBalanceChecks
     static void CachedSignals(Action<bool, string> check)
     {
         var cached = new GameEngine(1115);
+        for (int hour = 0; hour < 720; hour++) cached.AdvanceHour();
+        check(cached.State.Stocks.Any(s => s.DividendYield > 0), "Signal cache test includes paid dividends and changing denominators");
         var fresh = GameEngine.Deserialize(cached.Serialize());
         for (int minute = 0; minute < 1440; minute++)
         {

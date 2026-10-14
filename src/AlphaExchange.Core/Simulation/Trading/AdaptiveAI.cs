@@ -7,11 +7,10 @@ public sealed partial class GameEngine
 {
     GameState? signalHistoryState;
     long signalHistoryHour = -1, signalHistoryCorporateEvent = -1;
-    double[] dailyReferences = [], fastReferences = [], longReferences = [];
+    double[] dailyReferences = [], fastReferences = [], longReferences = [], dividendPayments = [];
     double[] trends = [], fastTrends = [], longTrends = [], volatilities = [], dividendYields = [];
     InvestmentSignal[] institutionSignals = [];
     int[] signalSectors = [];
-    double[] portfolioSectors = [];
     string[] sectorNames = [];
     readonly Dictionary<string, int> sectorIds = new(StringComparer.Ordinal);
     readonly Dictionary<string, int> decisionSecurities = new(StringComparer.Ordinal);
@@ -24,8 +23,7 @@ public sealed partial class GameEngine
         {
             trends = new double[count]; fastTrends = new double[count]; longTrends = new double[count]; volatilities = new double[count];
             dividendYields = new double[count]; institutionSignals = new InvestmentSignal[count]; signalSectors = new int[count];
-            portfolioSectors = new double[count];
-            dailyReferences = new double[count]; fastReferences = new double[count]; longReferences = new double[count];
+            dailyReferences = new double[count]; fastReferences = new double[count]; longReferences = new double[count]; dividendPayments = new double[count];
             refreshHistory = true;
         }
         bool changed = sectorNames.Length != count;
@@ -50,7 +48,7 @@ public sealed partial class GameEngine
             if (refreshHistory)
             {
                 int n = stock.History.Count;
-                dividendYields[i] = stock.DividendYield;
+                dividendPayments[i] = stock.Reports.Where(r => r.AccountingBasis == 5).Sum(r => r.DividendsPerShare * r.SplitFactor / stock.SplitFactor);
                 dailyReferences[i] = stock.History[Math.Max(0, n - 24)];
                 fastReferences[i] = stock.History[Math.Max(0, n - 3)];
                 longReferences[i] = dailyReferences[i];
@@ -61,6 +59,7 @@ public sealed partial class GameEngine
                 for (int j = Math.Max(1, n - 12); j < n; j++) { sum += Math.Abs(stock.History[j] / stock.History[j - 1] - 1); samples++; }
                 volatilities[i] = samples == 0 ? 0 : sum / samples;
             }
+            dividendYields[i] = dividendPayments[i] / Math.Max(1, stock.Price);
             trends[i] = (double)stock.Price / dailyReferences[i] - 1;
             fastTrends[i] = (double)stock.Price / fastReferences[i] - 1;
             longTrends[i] = (double)stock.Price / longReferences[i] - 1;

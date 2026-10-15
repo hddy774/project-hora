@@ -14,4 +14,6 @@ Android 8.0 이상, ARM64/x86_64를 지원합니다. `AlphaExchange-vX.Y.0.apk`�
 
 개인키와 비밀번호는 공개하지 않습니다. 배포 자동화는 기존 `ANDROID_SIGNING_BUNDLE` Secret을 사용하고 인증서를 대조합니다. 테스트 서명 APK와 서명되지 않은 APK는 정식 릴리스로 배포하지 않습니다.
 
+배포 관리자는 `ANDROID_SIGNING_BUNDLE`에 기존 `ANDROID_SIGNING_BUNDLE.json`의 전체 내용을 등록할 수 있습니다. 이 Secret에 PKCS12 키 파일의 Base64 값을 등록한 경우에는 기존 키의 `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` Secret도 함께 필요합니다. 두 입력 방식 모두 실제 인증서와 최종 APK 서명자를 위 지문과 대조합니다. 비밀번호는 릴리스·문서·채팅에 기재하지 않습니다.
+
 릴리스별 변경 내용·파일 SHA-256은 [Releases](https://github.com/hddy774/project-hora/releases)에서 확인하세요. 사용된 오픈소스의 고지는 APK에 포함됩니다.

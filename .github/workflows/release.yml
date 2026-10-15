@@ -100,6 +100,9 @@ jobs:
         if: ${{ inputs.operation != 'stage' }}
         env:
           SIGNING_BUNDLE: ${{ secrets.ANDROID_SIGNING_BUNDLE }}
+          RAW_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
+          RAW_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
+          RAW_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD }}
         shell: bash
         run: |
           python3 - <<'PY'
@@ -150,15 +153,30 @@ jobs:
                   payload=fence[1].strip()
               if payload.startswith("'{") and payload.endswith("}'"):
                   payload=payload[1:-1]
+              raw_keystore=None
               if not payload.startswith(('{','"')):
                   phase='bundle transport base64 decoding'
                   decoded=base64.b64decode(''.join(payload.split()),validate=True)
-                  phase='bundle transport UTF-8 decoding'
-                  payload=decoded.decode('utf-8-sig').strip()
-              phase='bundle JSON parsing'
-              b=json.loads(payload,object_pairs_hook=unique)
-              if isinstance(b,str):
-                  b=json.loads(b.strip().lstrip('\ufeff').strip(),object_pairs_hook=unique)
+                  if decoded.startswith(b'\x30\x82'):
+                      raw_keystore=payload
+                  else:
+                      phase='bundle transport UTF-8 decoding'
+                      payload=decoded.decode('utf-8-sig').strip()
+              if raw_keystore is not None:
+                  phase='raw keystore companion Secrets'
+                  required={'ANDROID_KEYSTORE_PASSWORD':'RAW_STORE_PASSWORD','ANDROID_KEY_ALIAS':'RAW_KEY_ALIAS','ANDROID_KEY_PASSWORD':'RAW_KEY_PASSWORD'}
+                  missing=[name for name,variable in required.items() if not os.environ.get(variable)]
+                  if missing:
+                      print('::notice::Raw keystore requires companion Secrets: '+', '.join(missing),file=sys.stderr)
+                      raise ValueError('missing raw keystore companion Secrets')
+                  b={'schemaVersion':1,'game':'alpha-exchange','applicationId':'com.alphaexchange.offline',
+                     'certificateSha256':PIN,'keystoreBase64':raw_keystore,'storePassword':os.environ['RAW_STORE_PASSWORD'],
+                     'keyAlias':os.environ['RAW_KEY_ALIAS'],'keyPassword':os.environ['RAW_KEY_PASSWORD']}
+              else:
+                  phase='bundle JSON parsing'
+                  b=json.loads(payload,object_pairs_hook=unique)
+                  if isinstance(b,str):
+                      b=json.loads(b.strip().lstrip('\ufeff').strip(),object_pairs_hook=unique)
               phase='bundle field names and schema version'
               fields={'schemaVersion','game','applicationId','keystoreBase64','storePassword','keyAlias','keyPassword','certificateSha256'}
               if not isinstance(b,dict) or set(b)!=fields or type(b['schemaVersion']) is not int or b['schemaVersion']!=1: raise ValueError('schema')
@@ -175,7 +193,7 @@ jobs:
               data=base64.b64decode(''.join(b['keystoreBase64'].split()),validate=True)
               if not 1<=len(data)<=32768: raise ValueError('size')
               os.umask(0o077)
-              env={k:v for k,v in os.environ.items() if k not in ('SIGNING_BUNDLE','GITHUB_TOKEN','GH_TOKEN')}
+              env={k:v for k,v in os.environ.items() if k not in ('SIGNING_BUNDLE','GITHUB_TOKEN','GH_TOKEN','RAW_STORE_PASSWORD','RAW_KEY_ALIAS','RAW_KEY_PASSWORD')}
               env.update(STORE_PASSWORD=b['storePassword'],KEY_PASSWORD=b['keyPassword'])
               phase='temporary key preparation'
               with tempfile.TemporaryDirectory(prefix='alpha-key-',dir=os.environ['RUNNER_TEMP']) as tmp:

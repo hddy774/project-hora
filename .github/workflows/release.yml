@@ -5,7 +5,7 @@ on:
       operation:
         description: Verify retained identity, or sign an unsigned APK in an existing draft release
         type: choice
-        options: [verify, sign]
+        options: [verify, stage, sign]
         default: verify
         required: true
       tag:
@@ -19,6 +19,10 @@ on:
         required: false
       source_archive_sha256:
         description: Private source archive SHA-256 (required for sign)
+        type: string
+        required: false
+      artifact_commit:
+        description: Reviewed temporary artifact-upload commit (required for stage)
         type: string
         required: false
 permissions:
@@ -36,6 +40,7 @@ jobs:
       RELEASE_TAG: ${{ inputs.tag }}
       UNSIGNED_SHA256: ${{ inputs.unsigned_sha256 }}
       SOURCE_ARCHIVE_SHA256: ${{ inputs.source_archive_sha256 }}
+      ARTIFACT_COMMIT: ${{ inputs.artifact_commit }}
     steps:
       - name: Validate release inputs
         shell: bash
@@ -43,14 +48,37 @@ jobs:
           python3 - <<'PY'
           import os,re
           mode=os.environ['OPERATION']; tag=os.environ['RELEASE_TAG']
-          assert mode in ('verify','sign')
+          assert mode in ('verify','stage','sign')
           match=re.fullmatch(r'alpha-exchange/v(1\.(\d+)\.0)',tag)
           assert match, 'Invalid release tag'
           if mode=='sign':
               assert all(re.fullmatch(r'[a-f0-9]{64}',os.environ[k]) for k in ('UNSIGNED_SHA256','SOURCE_ARCHIVE_SHA256')), 'Reviewed checksums required'
+          if mode=='stage':
+              assert re.fullmatch(r'[a-f0-9]{64}',os.environ['UNSIGNED_SHA256']), 'Reviewed binary checksum required'
+              assert re.fullmatch(r'[a-f0-9]{40}',os.environ['ARTIFACT_COMMIT']), 'Immutable artifact commit required'
           with open(os.environ['GITHUB_ENV'],'a') as f:
               f.write('GAME_VERSION='+match[1]+'\nVERSION_CODE='+str(int(match[2])+1)+'\nAPK_NAME=AlphaExchange-v'+match[1]+'.apk\n')
           PY
+      - name: Stage reviewed unsigned binary through GitHub Actions
+        if: ${{ inputs.operation == 'stage' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true
+          mkdir -p "$RUNNER_TEMP/alpha-release"
+          cd "$RUNNER_TEMP/alpha-release"
+          gh api -H 'Accept: application/vnd.github.raw' "repos/$GH_REPO/contents/UNSIGNED-$APK_NAME?ref=$ARTIFACT_COMMIT" > "UNSIGNED-$APK_NAME"
+          python3 - <<'PY'
+          import hashlib,os,pathlib
+          p=pathlib.Path('UNSIGNED-'+os.environ['APK_NAME'])
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==os.environ['UNSIGNED_SHA256'], 'Artifact checksum mismatch'
+          PY
+          gh release upload "$RELEASE_TAG" "UNSIGNED-$APK_NAME" --clobber
+          mkdir downloaded
+          gh release download "$RELEASE_TAG" --pattern "UNSIGNED-$APK_NAME" --dir downloaded
+          cmp "UNSIGNED-$APK_NAME" "downloaded/UNSIGNED-$APK_NAME"
       - name: Fetch reviewed binary from draft release
         if: ${{ inputs.operation == 'sign' }}
         env:
@@ -63,6 +91,7 @@ jobs:
           gh release download "$RELEASE_TAG" --pattern "UNSIGNED-$APK_NAME" --dir "$RUNNER_TEMP/alpha-release"
           sdkmanager 'build-tools;35.0.0' >/dev/null
       - name: Verify retained private key and sign only the reviewed binary
+        if: ${{ inputs.operation != 'stage' }}
         env:
           SIGNING_BUNDLE: ${{ secrets.ANDROID_SIGNING_BUNDLE }}
         shell: bash

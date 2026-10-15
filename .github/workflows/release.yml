@@ -117,6 +117,27 @@ jobs:
               result=subprocess.run(args,env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
               if result.returncode: raise ValueError('command failed')
               return result.stdout
+          def format_kind(value):
+              value=value.strip().lstrip('\ufeff').strip()
+              if not value: return 'empty'
+              if value.startswith('```'): return 'Markdown fenced text'
+              if value.startswith('{'): return 'JSON object text'
+              if value.startswith('"'): return 'JSON string text'
+              if value.startswith("'"): return 'single-quoted text'
+              if re.fullmatch(r'[^\r\n{}]{1,512}\.(?:json|zip|p12|jks)',value,re.I): return 'file name or path text'
+              if value.startswith(('http://','https://')): return 'URL text'
+              try:
+                  decoded=base64.b64decode(''.join(value.split()),validate=True)
+              except Exception:
+                  return 'unrecognized non-JSON text (not valid base64)'
+              if decoded.startswith(b'PK\x03\x04'): return 'base64-encoded ZIP archive'
+              if decoded.startswith(b'\x30\x82'): return 'base64-encoded ASN.1 binary (possible key container)'
+              if decoded.startswith((b'\xff\xfe',b'\xfe\xff')): return 'base64-encoded UTF-16 text'
+              try:
+                  text=decoded.decode('utf-8-sig').strip()
+              except Exception:
+                  return 'base64-encoded non-UTF-8 binary'
+              return 'base64-encoded JSON text' if text.startswith(('{','"')) else 'base64-encoded non-JSON text'
           phase='bundle availability and size'
           try:
               raw=os.environ.get('SIGNING_BUNDLE','')
@@ -124,13 +145,16 @@ jobs:
               phase='bundle JSON parsing'
               mask(raw)
               payload=raw.strip().lstrip('\ufeff').strip()
-              if payload.startswith('```json\n') and payload.endswith('\n```'):
-                  payload=payload[8:-4].strip()
-              elif payload.startswith('```\n') and payload.endswith('\n```'):
-                  payload=payload[4:-4].strip()
+              fence=re.fullmatch(r'```(?:json)?[ \t]*\r?\n(.*)\r?\n```',payload,re.I|re.S)
+              if fence:
+                  payload=fence[1].strip()
+              if payload.startswith("'{") and payload.endswith("}'"):
+                  payload=payload[1:-1]
               if not payload.startswith(('{','"')):
-                  phase='bundle transport (expected JSON or base64-encoded JSON)'
-                  payload=base64.b64decode(''.join(payload.split()),validate=True).decode('utf-8-sig').strip()
+                  phase='bundle transport base64 decoding'
+                  decoded=base64.b64decode(''.join(payload.split()),validate=True)
+                  phase='bundle transport UTF-8 decoding'
+                  payload=decoded.decode('utf-8-sig').strip()
               phase='bundle JSON parsing'
               b=json.loads(payload,object_pairs_hook=unique)
               if isinstance(b,str):
@@ -188,6 +212,7 @@ jobs:
                       (root/'APK-VERIFICATION.json').write_text(json.dumps(info,indent=2)+'\n')
               print('Retained signing identity verified: '+PIN)
           except Exception:
+              print('::notice::Signing input format: '+format_kind(os.environ.get('SIGNING_BUNDLE','')),file=sys.stderr)
               print('::error::Retained identity or binary validation failed at: '+phase+'. Check the original ANDROID_SIGNING_BUNDLE and reviewed checksums. No secret values are reported; no new key was generated.',file=sys.stderr)
               sys.exit(1)
           PY

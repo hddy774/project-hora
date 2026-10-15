@@ -117,48 +117,66 @@ jobs:
               result=subprocess.run(args,env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
               if result.returncode: raise ValueError('command failed')
               return result.stdout
+          phase='bundle availability and size'
           try:
               raw=os.environ.get('SIGNING_BUNDLE','')
               if not raw or len(raw.encode())>48000: raise ValueError('missing bundle')
+              phase='bundle JSON parsing'
               mask(raw); b=json.loads(raw,object_pairs_hook=unique)
+              phase='bundle field names and schema version'
               fields={'schemaVersion','game','applicationId','keystoreBase64','storePassword','keyAlias','keyPassword','certificateSha256'}
               if not isinstance(b,dict) or set(b)!=fields or type(b['schemaVersion']) is not int or b['schemaVersion']!=1: raise ValueError('schema')
-              if b['game']!='alpha-exchange' or b['applicationId']!='com.alphaexchange.offline' or b['certificateSha256']!=PIN: raise ValueError('identity')
+              phase='bundle application identity'
+              if b['game']!='alpha-exchange' or b['applicationId']!='com.alphaexchange.offline': raise ValueError('identity')
+              phase='bundle certificate fingerprint'
+              if b['certificateSha256']!=PIN: raise ValueError('identity')
+              phase='bundle key and password field validation'
               for key in ('keystoreBase64','storePassword','keyAlias','keyPassword'):
                   value=b[key]
                   if not isinstance(value,str) or not 1<=len(value)<=44000 or '\x00' in value: raise ValueError('field')
                   mask(value)
+              phase='keystore base64 decoding and size'
               data=base64.b64decode(''.join(b['keystoreBase64'].split()),validate=True)
               if not 1<=len(data)<=32768: raise ValueError('size')
               os.umask(0o077)
               env={k:v for k,v in os.environ.items() if k not in ('SIGNING_BUNDLE','GITHUB_TOKEN','GH_TOKEN')}
               env.update(STORE_PASSWORD=b['storePassword'],KEY_PASSWORD=b['keyPassword'])
+              phase='temporary key preparation'
               with tempfile.TemporaryDirectory(prefix='alpha-key-',dir=os.environ['RUNNER_TEMP']) as tmp:
                   key=pathlib.Path(tmp)/'identity.p12'; cert=pathlib.Path(tmp)/'certificate.der'; key.write_bytes(data)
+                  phase='keystore certificate export (format, alias and store password)'
                   quiet(['keytool','-exportcert','-keystore',str(key),'-alias',b['keyAlias'],'-storepass:env','STORE_PASSWORD','-file',str(cert)],env)
+                  phase='exported certificate fingerprint'
                   if hashlib.sha256(cert.read_bytes()).hexdigest()!=PIN: raise ValueError('pin')
+                  phase='private key access (alias and key password)'
                   quiet(['keytool','-certreq','-keystore',str(key),'-alias',b['keyAlias'],'-storepass:env','STORE_PASSWORD','-keypass:env','KEY_PASSWORD'],env)
                   if os.environ['OPERATION']=='sign':
+                      phase='unsigned APK checksum'
                       root=pathlib.Path(os.environ['RUNNER_TEMP'])/'alpha-release'
                       apk=root/('UNSIGNED-'+os.environ['APK_NAME']); signed=root/os.environ['APK_NAME']
                       if hashlib.sha256(apk.read_bytes()).hexdigest()!=os.environ['UNSIGNED_SHA256']: raise ValueError('input checksum')
                       sdk=pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools/35.0.0'
+                      phase='Android APK manifest and permissions'
                       badging=quiet([str(sdk/'aapt'),'dump','badging',str(apk)],env).decode()
                       for expected in ("package: name='com.alphaexchange.offline'","versionName='"+os.environ['GAME_VERSION']+"'","versionCode='"+os.environ['VERSION_CODE']+"'","sdkVersion:'26'"):
                           if expected not in badging: raise ValueError('manifest')
                       if 'android.permission.INTERNET' in quiet([str(sdk/'aapt'),'dump','permissions',str(apk)],env).decode(): raise ValueError('network permission')
+                      phase='Android APK ABIs'
                       with zipfile.ZipFile(apk) as z:
                           if {n.split('/')[1] for n in z.namelist() if n.startswith('lib/')}!={'arm64-v8a','x86_64'}: raise ValueError('abi')
+                      phase='APK signing'
                       quiet([str(sdk/'apksigner'),'sign','--ks',str(key),'--ks-key-alias',b['keyAlias'],'--ks-pass','env:STORE_PASSWORD','--key-pass','env:KEY_PASSWORD','--out',str(signed),str(apk)],env)
+                      phase='signed APK verification'
                       verification=quiet([str(sdk/'apksigner'),'verify','--verbose','--print-certs',str(signed)],env).decode()
                       signers=[line for line in verification.splitlines() if re.fullmatch(r'Signer #[0-9]+ certificate SHA-256 digest: .*',line)]
                       if signers!=['Signer #1 certificate SHA-256 digest: '+PIN]: raise ValueError('signer')
+                      phase='public verification report generation'
                       (root/'SHA256SUMS.txt').write_text(hashlib.sha256(signed.read_bytes()).hexdigest()+'  '+signed.name+'\n')
                       info={'applicationId':'com.alphaexchange.offline','version':os.environ['GAME_VERSION'],'versionCode':int(os.environ['VERSION_CODE']),'certificateSha256':PIN,'unsignedApkSha256':os.environ['UNSIGNED_SHA256'],'privateSourceArchiveSha256':os.environ['SOURCE_ARCHIVE_SHA256'],'workflowRun':os.environ['GITHUB_RUN_ID'],'workflowCommit':os.environ['GITHUB_SHA']}
                       (root/'APK-VERIFICATION.json').write_text(json.dumps(info,indent=2)+'\n')
               print('Retained signing identity verified: '+PIN)
           except Exception:
-              print('::error::Retained identity or binary validation failed. Check the original ANDROID_SIGNING_BUNDLE and reviewed checksums. No new key was generated.',file=sys.stderr)
+              print('::error::Retained identity or binary validation failed at: '+phase+'. Check the original ANDROID_SIGNING_BUNDLE and reviewed checksums. No secret values are reported; no new key was generated.',file=sys.stderr)
               sys.exit(1)
           PY
       - name: Attach verified signed binary to the draft for final validation

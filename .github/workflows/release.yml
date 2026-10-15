@@ -89,7 +89,13 @@ jobs:
           test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true
           mkdir -p "$RUNNER_TEMP/alpha-release"
           gh release download "$RELEASE_TAG" --pattern "UNSIGNED-$APK_NAME" --dir "$RUNNER_TEMP/alpha-release"
-          sdkmanager 'build-tools;35.0.0' >/dev/null
+          sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          if [ ! -x "$sdk_root/build-tools/35.0.0/apksigner" ] || [ ! -x "$sdk_root/build-tools/35.0.0/aapt" ]; then
+            sdk_manager="$sdk_root/cmdline-tools/latest/bin/sdkmanager"
+            test -x "$sdk_manager"
+            "$sdk_manager" --sdk_root="$sdk_root" 'build-tools;35.0.0' >/dev/null
+          fi
+          printf 'ANDROID_HOME=%s\n' "$sdk_root" >> "$GITHUB_ENV"
       - name: Verify retained private key and sign only the reviewed binary
         if: ${{ inputs.operation != 'stage' }}
         env:

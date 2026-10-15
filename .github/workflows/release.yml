@@ -122,7 +122,19 @@ jobs:
               raw=os.environ.get('SIGNING_BUNDLE','')
               if not raw or len(raw.encode())>48000: raise ValueError('missing bundle')
               phase='bundle JSON parsing'
-              mask(raw); b=json.loads(raw,object_pairs_hook=unique)
+              mask(raw)
+              payload=raw.strip().lstrip('\ufeff').strip()
+              if payload.startswith('```json\n') and payload.endswith('\n```'):
+                  payload=payload[8:-4].strip()
+              elif payload.startswith('```\n') and payload.endswith('\n```'):
+                  payload=payload[4:-4].strip()
+              if not payload.startswith(('{','"')):
+                  phase='bundle transport (expected JSON or base64-encoded JSON)'
+                  payload=base64.b64decode(''.join(payload.split()),validate=True).decode('utf-8-sig').strip()
+              phase='bundle JSON parsing'
+              b=json.loads(payload,object_pairs_hook=unique)
+              if isinstance(b,str):
+                  b=json.loads(b.strip().lstrip('\ufeff').strip(),object_pairs_hook=unique)
               phase='bundle field names and schema version'
               fields={'schemaVersion','game','applicationId','keystoreBase64','storePassword','keyAlias','keyPassword','certificateSha256'}
               if not isinstance(b,dict) or set(b)!=fields or type(b['schemaVersion']) is not int or b['schemaVersion']!=1: raise ValueError('schema')

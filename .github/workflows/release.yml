@@ -11,7 +11,7 @@ on:
       tag:
         description: Existing draft release tag
         type: string
-        default: alpha-exchange/v1.13.0
+        default: alpha-exchange/v1.14.0
         required: true
       unsigned_sha256:
         description: Reviewed unsigned APK SHA-256 (required for sign)

@@ -1,0 +1,32 @@
+{
+  "status": "experimental",
+  "version": "0.2.0",
+  "parameters": {
+    "max_order_quantity": 10000,
+    "max_unit_price": 1000000,
+    "max_open_orders_per_owner": 100,
+    "default_order_months": 12,
+    "max_delivery_months": 120,
+    "max_quality_requirement": 1000,
+    "ai_order_period": 6,
+    "ai_order_months": 3,
+    "ai_cash_reserve": 1000,
+    "ai_stock_months": 2,
+    "ai_surplus_percent": 10,
+    "ai_price_ceiling_percent": 150
+  },
+  "decisions": [
+    "A buy limit includes producer price, actual freight and tariff in the existing common CR settlement currency.",
+    "Confirmed buy orders hold an escrow asset; confirmed sells reserve only the seller's identified lots.",
+    "The public call market matches lowest asks first. Competing eligible bids at each ask share scarce supply proportionally; seeded residual allocation is independent of UI submission order.",
+    "An order is an instruction, not a completed sale. Unfilled quantity persists until expiry or explicit cancellation.",
+    "One matched shipment transfers ownership at dispatch. Payment, freight, tariff and physical delivery are separate recorded events.",
+    "Public specifications are product and variant identifiers. This module never reveals private rival inventory or research."
+  ],
+  "units": {
+    "quantity": "product-defined-unit",
+    "limit_price": "CR per product unit delivered",
+    "time": "month index",
+    "quality": "experimental quality points"
+  }
+}

@@ -1,0 +1,2981 @@
+{
+  "status": "experimental",
+  "version": 1,
+  "units": {
+    "money": "integer minor currency units (100=1CR)",
+    "labor": "hours",
+    "process": "one batch",
+    "service": "capacity for current month only"
+  },
+  "products": [
+    {
+      "id": "vegetables",
+      "name": "채소",
+      "unit": "t",
+      "industry": "농업",
+      "price": 8,
+      "kind": "material",
+      "shelf_life_months": 3,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "fruit",
+      "name": "과일",
+      "unit": "t",
+      "industry": "농업",
+      "price": 10,
+      "kind": "material",
+      "shelf_life_months": 3,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "cotton",
+      "name": "면화",
+      "unit": "t",
+      "industry": "농업",
+      "price": 9,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "oilseed",
+      "name": "유지작물",
+      "unit": "t",
+      "industry": "농업",
+      "price": 7,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "fodder",
+      "name": "사료",
+      "unit": "t",
+      "industry": "농업",
+      "price": 4,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "livestock",
+      "name": "가축",
+      "unit": "마리",
+      "industry": "축산",
+      "price": 48,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "milk",
+      "name": "우유",
+      "unit": "상자",
+      "industry": "축산",
+      "price": 8,
+      "kind": "material",
+      "shelf_life_months": 2,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "eggs",
+      "name": "달걀",
+      "unit": "상자",
+      "industry": "축산",
+      "price": 7,
+      "kind": "material",
+      "shelf_life_months": 2,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "meat",
+      "name": "식육",
+      "unit": "상자",
+      "industry": "축산",
+      "price": 16,
+      "kind": "material",
+      "shelf_life_months": 2,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "hides",
+      "name": "원피",
+      "unit": "장",
+      "industry": "축산",
+      "price": 12,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "wool",
+      "name": "양모",
+      "unit": "t",
+      "industry": "축산",
+      "price": 14,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "fish",
+      "name": "수산물",
+      "unit": "상자",
+      "industry": "수산",
+      "price": 12,
+      "kind": "material",
+      "shelf_life_months": 2,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "rubber",
+      "name": "고무",
+      "unit": "t",
+      "industry": "임업",
+      "price": 14,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "crude_oil",
+      "name": "원유",
+      "unit": "t",
+      "industry": "에너지 원자원",
+      "price": 12,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "natural_gas",
+      "name": "천연가스",
+      "unit": "t",
+      "industry": "에너지 원자원",
+      "price": 10,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "coal",
+      "name": "석탄",
+      "unit": "t",
+      "industry": "에너지 원자원",
+      "price": 7,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "uranium",
+      "name": "원자력 연료자원",
+      "unit": "t",
+      "industry": "에너지 원자원",
+      "price": 60,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "iron_ore",
+      "name": "철광석",
+      "unit": "t",
+      "industry": "금속 광물",
+      "price": 8,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "copper_ore",
+      "name": "구리광석",
+      "unit": "t",
+      "industry": "금속 광물",
+      "price": 14,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "bauxite",
+      "name": "보크사이트",
+      "unit": "t",
+      "industry": "금속 광물",
+      "price": 10,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "lithium_ore",
+      "name": "리튬광물",
+      "unit": "t",
+      "industry": "금속 광물",
+      "price": 20,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "rare_ore",
+      "name": "희소금속광물",
+      "unit": "t",
+      "industry": "금속 광물",
+      "price": 32,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "gold_ore",
+      "name": "귀금속광물",
+      "unit": "t",
+      "industry": "금속 광물",
+      "price": 48,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "limestone",
+      "name": "석회석",
+      "unit": "t",
+      "industry": "비금속 광물",
+      "price": 5,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "sand",
+      "name": "규사",
+      "unit": "t",
+      "industry": "비금속 광물",
+      "price": 4,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "phosphate",
+      "name": "인산염",
+      "unit": "t",
+      "industry": "비금속 광물",
+      "price": 8,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "steel",
+      "name": "강철",
+      "unit": "t",
+      "industry": "기초소재",
+      "price": 28,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "copper",
+      "name": "구리",
+      "unit": "t",
+      "industry": "기초소재",
+      "price": 36,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "aluminium",
+      "name": "알루미늄",
+      "unit": "t",
+      "industry": "기초소재",
+      "price": 30,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "cement",
+      "name": "시멘트",
+      "unit": "t",
+      "industry": "기초소재",
+      "price": 14,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "glass",
+      "name": "유리",
+      "unit": "t",
+      "industry": "기초소재",
+      "price": 18,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "paper",
+      "name": "종이",
+      "unit": "t",
+      "industry": "기초소재",
+      "price": 12,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "textile",
+      "name": "직물",
+      "unit": "롤",
+      "industry": "기초소재",
+      "price": 22,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "leather",
+      "name": "피혁",
+      "unit": "장",
+      "industry": "기초소재",
+      "price": 24,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "fuel",
+      "name": "정제연료",
+      "unit": "t",
+      "industry": "화학과 정유",
+      "price": 24,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "plastic",
+      "name": "플라스틱",
+      "unit": "t",
+      "industry": "화학과 정유",
+      "price": 22,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "chemicals",
+      "name": "기초화학품",
+      "unit": "t",
+      "industry": "화학과 정유",
+      "price": 20,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "fertilizer",
+      "name": "비료",
+      "unit": "t",
+      "industry": "화학과 정유",
+      "price": 14,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "semiconductor",
+      "name": "반도체",
+      "unit": "개",
+      "industry": "부품과 산업용품",
+      "price": 46,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "circuit",
+      "name": "회로기판",
+      "unit": "개",
+      "industry": "부품과 산업용품",
+      "price": 36,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "battery",
+      "name": "배터리",
+      "unit": "개",
+      "industry": "부품과 산업용품",
+      "price": 44,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "motor",
+      "name": "모터",
+      "unit": "개",
+      "industry": "부품과 산업용품",
+      "price": 38,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "machine_parts",
+      "name": "기계부품",
+      "unit": "세트",
+      "industry": "부품과 산업용품",
+      "price": 30,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "packaging",
+      "name": "포장재",
+      "unit": "묶음",
+      "industry": "부품과 산업용품",
+      "price": 10,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "beverage",
+      "name": "음료",
+      "unit": "상자",
+      "industry": "생활 소비재",
+      "price": 10,
+      "kind": "material",
+      "shelf_life_months": 6,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "apparel",
+      "name": "의류",
+      "unit": "벌",
+      "industry": "생활 소비재",
+      "price": 32,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "medicine",
+      "name": "의약품",
+      "unit": "상자",
+      "industry": "생활 소비재",
+      "price": 34,
+      "kind": "material",
+      "shelf_life_months": 12,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "household_goods",
+      "name": "생활위생품",
+      "unit": "묶음",
+      "industry": "생활 소비재",
+      "price": 20,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "furniture",
+      "name": "가구",
+      "unit": "개",
+      "industry": "내구 소비재",
+      "price": 58,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 60
+    },
+    {
+      "id": "appliance",
+      "name": "가전제품",
+      "unit": "개",
+      "industry": "내구 소비재",
+      "price": 90,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 60
+    },
+    {
+      "id": "computer",
+      "name": "컴퓨터",
+      "unit": "대",
+      "industry": "내구 소비재",
+      "price": 140,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 60
+    },
+    {
+      "id": "vehicle",
+      "name": "자동차",
+      "unit": "대",
+      "industry": "내구 소비재",
+      "price": 300,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 60
+    },
+    {
+      "id": "machinery",
+      "name": "생산설비",
+      "unit": "대",
+      "industry": "자본재",
+      "price": 200,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 60
+    },
+    {
+      "id": "farm_equipment",
+      "name": "농기계",
+      "unit": "대",
+      "industry": "자본재",
+      "price": 150,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 60
+    },
+    {
+      "id": "mining_equipment",
+      "name": "채굴장비",
+      "unit": "대",
+      "industry": "자본재",
+      "price": 180,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 60
+    },
+    {
+      "id": "server",
+      "name": "서버장비",
+      "unit": "대",
+      "industry": "자본재",
+      "price": 180,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 60
+    },
+    {
+      "id": "telecom_equipment",
+      "name": "통신설비",
+      "unit": "대",
+      "industry": "자본재",
+      "price": 160,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 60
+    },
+    {
+      "id": "transport_vehicle",
+      "name": "운송장비",
+      "unit": "대",
+      "industry": "자본재",
+      "price": 240,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 60
+    },
+    {
+      "id": "defense_equipment",
+      "name": "국방 규격 장비",
+      "unit": "세트",
+      "industry": "군수",
+      "price": 260,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    },
+    {
+      "id": "recyclable_waste",
+      "name": "재활용물",
+      "unit": "t",
+      "industry": "폐기물",
+      "price": 2,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 3,
+      "durable_months": 0
+    },
+    {
+      "id": "telecom_access",
+      "name": "통신 접속",
+      "unit": "회선월",
+      "industry": "서비스",
+      "price": 12,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "medical_visit",
+      "name": "진료",
+      "unit": "회",
+      "industry": "서비스",
+      "price": 20,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "education_course",
+      "name": "교육",
+      "unit": "수강월",
+      "industry": "서비스",
+      "price": 18,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "freight_slot",
+      "name": "운송 처리",
+      "unit": "화물칸월",
+      "industry": "서비스",
+      "price": 8,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "warehouse_slot",
+      "name": "보관",
+      "unit": "공간월",
+      "industry": "서비스",
+      "price": 4,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "retail_service",
+      "name": "유통",
+      "unit": "거래회",
+      "industry": "서비스",
+      "price": 4,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "repair_hour",
+      "name": "정비",
+      "unit": "시간",
+      "industry": "서비스",
+      "price": 10,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "lodging_night",
+      "name": "숙박",
+      "unit": "박",
+      "industry": "서비스",
+      "price": 12,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "dining_meal",
+      "name": "외식",
+      "unit": "식",
+      "industry": "서비스",
+      "price": 14,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "waste_service",
+      "name": "폐기물 처리",
+      "unit": "t",
+      "industry": "서비스",
+      "price": 6,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "professional_hour",
+      "name": "전문 업무",
+      "unit": "시간",
+      "industry": "서비스",
+      "price": 12,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "development_hour",
+      "name": "개발 업무",
+      "unit": "시간",
+      "industry": "디지털 산업",
+      "price": 14,
+      "kind": "service",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "software_license",
+      "name": "소프트웨어 사용권",
+      "unit": "좌석",
+      "industry": "디지털 산업",
+      "price": 30,
+      "kind": "digital",
+      "shelf_life_months": 0,
+      "cargo_size": 0,
+      "durable_months": 0
+    },
+    {
+      "id": "organic_waste",
+      "name": "유기성 폐기물",
+      "unit": "처리단위",
+      "industry": "폐기물",
+      "price": 1,
+      "kind": "material",
+      "shelf_life_months": 0,
+      "cargo_size": 1,
+      "durable_months": 0
+    }
+  ],
+  "recipes": [
+    {
+      "id": "i_vegetable_farm",
+      "inputs": {
+        "grain": 1,
+        "water": 2,
+        "fertilizer": 1
+      },
+      "outputs": {
+        "vegetables": 5,
+        "fodder": 1
+      },
+      "labor": 8,
+      "process_kind": "agriculture",
+      "lead_months": 2,
+      "sow_months": [
+        2,
+        3,
+        4,
+        8,
+        9
+      ]
+    },
+    {
+      "id": "i_orchard",
+      "inputs": {
+        "water": 2,
+        "fertilizer": 1
+      },
+      "outputs": {
+        "fruit": 4
+      },
+      "labor": 8,
+      "process_kind": "agriculture",
+      "lead_months": 3,
+      "sow_months": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": "i_cotton_farm",
+      "inputs": {
+        "water": 2,
+        "fertilizer": 1
+      },
+      "outputs": {
+        "cotton": 4,
+        "fodder": 1
+      },
+      "labor": 8,
+      "process_kind": "agriculture",
+      "lead_months": 3,
+      "sow_months": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": "i_oilseed_farm",
+      "inputs": {
+        "grain": 1,
+        "water": 1
+      },
+      "outputs": {
+        "oilseed": 4,
+        "fodder": 2
+      },
+      "labor": 8,
+      "process_kind": "agriculture",
+      "lead_months": 2,
+      "sow_months": [
+        2,
+        3,
+        4,
+        9
+      ]
+    },
+    {
+      "id": "i_feed_mill",
+      "inputs": {
+        "grain": 2,
+        "vegetables": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "fodder": 6
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_livestock_ranch",
+      "inputs": {
+        "fodder": 3,
+        "water": 2
+      },
+      "outputs": {
+        "livestock": 2,
+        "wool": 1
+      },
+      "labor": 8,
+      "process_kind": "livestock",
+      "lead_months": 3,
+      "catalysts": {
+        "livestock": 1
+      }
+    },
+    {
+      "id": "i_dairy",
+      "inputs": {
+        "fodder": 2,
+        "water": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "milk": 4
+      },
+      "labor": 8,
+      "process_kind": "livestock",
+      "lead_months": 0,
+      "catalysts": {
+        "livestock": 1
+      }
+    },
+    {
+      "id": "i_poultry",
+      "inputs": {
+        "fodder": 2,
+        "water": 1
+      },
+      "outputs": {
+        "eggs": 5
+      },
+      "labor": 8,
+      "process_kind": "livestock",
+      "lead_months": 0,
+      "catalysts": {
+        "livestock": 1
+      }
+    },
+    {
+      "id": "i_meat_processor",
+      "inputs": {
+        "livestock": 1,
+        "energy": 1,
+        "water": 1
+      },
+      "outputs": {
+        "meat": 5,
+        "hides": 2
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_fishery",
+      "inputs": {
+        "fuel": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "fish": 5
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "fish_stock",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_rubber_plantation",
+      "inputs": {
+        "water": 1,
+        "tools": 1
+      },
+      "outputs": {
+        "rubber": 4
+      },
+      "labor": 8,
+      "process_kind": "agriculture",
+      "lead_months": 3
+    },
+    {
+      "id": "i_oil_well",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "crude_oil": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "oil_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_gas_well",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "natural_gas": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "gas_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_coal_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "coal": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "coal_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_uranium_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "uranium": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "uranium_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_iron_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "iron_ore": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "iron_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_copper_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "copper_ore": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "copper_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_bauxite_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "bauxite": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "bauxite_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_lithium_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "lithium_ore": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "lithium_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_rare_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "rare_ore": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "rare_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_gold_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "gold_ore": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "gold_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_limestone_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "limestone": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "limestone_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_sand_pit",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "sand": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "sand_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_phosphate_mine",
+      "inputs": {
+        "energy": 2,
+        "tools": 1
+      },
+      "outputs": {
+        "phosphate": 4
+      },
+      "labor": 8,
+      "process_kind": "extraction",
+      "lead_months": 0,
+      "resource": "phosphate_reserve",
+      "resource_per_batch": 1
+    },
+    {
+      "id": "i_steelworks",
+      "inputs": {
+        "iron_ore": 2,
+        "coal": 1,
+        "energy": 2
+      },
+      "outputs": {
+        "steel": 3,
+        "recyclable_waste": 1
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_copper_smelter",
+      "inputs": {
+        "copper_ore": 2,
+        "energy": 2
+      },
+      "outputs": {
+        "copper": 2
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_aluminium_smelter",
+      "inputs": {
+        "bauxite": 2,
+        "energy": 3
+      },
+      "outputs": {
+        "aluminium": 2
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_cement_works",
+      "inputs": {
+        "limestone": 2,
+        "coal": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "cement": 4
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_glassworks",
+      "inputs": {
+        "sand": 2,
+        "energy": 2
+      },
+      "outputs": {
+        "glass": 3
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_paper_mill",
+      "inputs": {
+        "wood": 2,
+        "water": 2,
+        "energy": 1
+      },
+      "outputs": {
+        "paper": 4
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_textile_mill",
+      "inputs": {
+        "cotton": 2,
+        "wool": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "textile": 4
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_tannery",
+      "inputs": {
+        "hides": 2,
+        "chemicals": 1,
+        "water": 1
+      },
+      "outputs": {
+        "leather": 3
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_refinery",
+      "inputs": {
+        "crude_oil": 2,
+        "energy": 1
+      },
+      "outputs": {
+        "fuel": 3,
+        "plastic": 1
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_chemical_plant",
+      "inputs": {
+        "crude_oil": 1,
+        "natural_gas": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "chemicals": 3,
+        "plastic": 1
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_fertilizer_works",
+      "inputs": {
+        "phosphate": 2,
+        "natural_gas": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "fertilizer": 4
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_chip_fab",
+      "inputs": {
+        "sand": 1,
+        "chemicals": 2,
+        "energy": 2,
+        "water": 2
+      },
+      "outputs": {
+        "semiconductor": 3
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_circuit_works",
+      "inputs": {
+        "copper": 1,
+        "plastic": 1,
+        "semiconductor": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "circuit": 3,
+        "recyclable_waste": 1
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_battery_works",
+      "inputs": {
+        "lithium_ore": 1,
+        "copper": 1,
+        "chemicals": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "battery": 3
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_motor_works",
+      "inputs": {
+        "steel": 1,
+        "copper": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "motor": 3
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_parts_works",
+      "inputs": {
+        "steel": 2,
+        "aluminium": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "machine_parts": 4
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_packaging_works",
+      "inputs": {
+        "paper": 1,
+        "plastic": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "packaging": 6
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_beverage_works",
+      "inputs": {
+        "fruit": 1,
+        "water": 2,
+        "packaging": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "beverage": 5
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_apparel_works",
+      "inputs": {
+        "textile": 2,
+        "leather": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "apparel": 4
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_pharma_works",
+      "inputs": {
+        "chemicals": 2,
+        "packaging": 1,
+        "water": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "medicine": 3
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_household_works",
+      "inputs": {
+        "chemicals": 1,
+        "plastic": 1,
+        "packaging": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "household_goods": 5
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_furniture_works",
+      "inputs": {
+        "wood": 2,
+        "textile": 1,
+        "machine_parts": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "furniture": 2
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_appliance_works",
+      "inputs": {
+        "steel": 1,
+        "motor": 1,
+        "circuit": 1,
+        "plastic": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "appliance": 2
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_computer_works",
+      "inputs": {
+        "semiconductor": 2,
+        "circuit": 1,
+        "glass": 1,
+        "plastic": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "computer": 2
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_vehicle_works",
+      "inputs": {
+        "steel": 3,
+        "motor": 1,
+        "battery": 1,
+        "rubber": 1,
+        "energy": 2
+      },
+      "outputs": {
+        "vehicle": 1
+      },
+      "labor": 12,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_machinery_works",
+      "inputs": {
+        "steel": 3,
+        "motor": 1,
+        "circuit": 1,
+        "energy": 2
+      },
+      "outputs": {
+        "machinery": 1
+      },
+      "labor": 12,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_farm_equipment_works",
+      "inputs": {
+        "steel": 2,
+        "motor": 1,
+        "machine_parts": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "farm_equipment": 1
+      },
+      "labor": 10,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_mining_equipment_works",
+      "inputs": {
+        "steel": 3,
+        "motor": 1,
+        "machine_parts": 2,
+        "energy": 2
+      },
+      "outputs": {
+        "mining_equipment": 1
+      },
+      "labor": 12,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_server_works",
+      "inputs": {
+        "computer": 1,
+        "circuit": 1,
+        "steel": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "server": 1
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_telecom_works",
+      "inputs": {
+        "circuit": 2,
+        "copper": 1,
+        "semiconductor": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "telecom_equipment": 1
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_transport_works",
+      "inputs": {
+        "vehicle": 1,
+        "steel": 1,
+        "machine_parts": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "transport_vehicle": 1
+      },
+      "labor": 8,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_defense_works",
+      "inputs": {
+        "steel": 2,
+        "circuit": 1,
+        "machine_parts": 2,
+        "energy": 2
+      },
+      "outputs": {
+        "defense_equipment": 1
+      },
+      "labor": 12,
+      "process_kind": "manufacturing",
+      "lead_months": 0
+    },
+    {
+      "id": "i_recycling_works",
+      "inputs": {
+        "recyclable_waste": 3,
+        "energy": 1
+      },
+      "outputs": {
+        "steel": 1,
+        "plastic": 1
+      },
+      "labor": 8,
+      "process_kind": "recycling",
+      "lead_months": 0
+    },
+    {
+      "id": "i_telecom_office",
+      "inputs": {
+        "energy": 1
+      },
+      "outputs": {
+        "telecom_access": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0,
+      "catalysts": {
+        "telecom_equipment": 1
+      }
+    },
+    {
+      "id": "i_clinic",
+      "inputs": {
+        "medicine": 1,
+        "water": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "medical_visit": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0
+    },
+    {
+      "id": "i_school",
+      "inputs": {
+        "paper": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "education_course": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0
+    },
+    {
+      "id": "i_logistics_hub",
+      "inputs": {
+        "fuel": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "freight_slot": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0,
+      "catalysts": {
+        "transport_vehicle": 1
+      }
+    },
+    {
+      "id": "i_warehouse",
+      "inputs": {
+        "energy": 1
+      },
+      "outputs": {
+        "warehouse_slot": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0
+    },
+    {
+      "id": "i_retail_store",
+      "inputs": {
+        "packaging": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "retail_service": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0
+    },
+    {
+      "id": "i_repair_shop",
+      "inputs": {
+        "machine_parts": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "repair_hour": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0
+    },
+    {
+      "id": "i_hotel",
+      "inputs": {
+        "water": 1,
+        "energy": 1,
+        "household_goods": 1
+      },
+      "outputs": {
+        "lodging_night": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0
+    },
+    {
+      "id": "i_restaurant",
+      "inputs": {
+        "food": 1,
+        "water": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "dining_meal": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0
+    },
+    {
+      "id": "i_waste_works",
+      "inputs": {
+        "energy": 1,
+        "tools": 1
+      },
+      "outputs": {
+        "waste_service": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0
+    },
+    {
+      "id": "i_research_lab",
+      "inputs": {
+        "paper": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "professional_hour": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0,
+      "catalysts": {
+        "computer": 1
+      }
+    },
+    {
+      "id": "i_software_studio",
+      "inputs": {
+        "paper": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "development_hour": 4
+      },
+      "labor": 6,
+      "process_kind": "service",
+      "lead_months": 0,
+      "catalysts": {
+        "computer": 1
+      }
+    },
+    {
+      "id": "i_compost_works",
+      "inputs": {
+        "organic_waste": 3,
+        "energy": 1
+      },
+      "outputs": {
+        "fertilizer": 1
+      },
+      "labor": 6,
+      "process_kind": "recycling",
+      "lead_months": 0
+    }
+  ],
+  "buildings": [
+    {
+      "id": "vegetable_farm",
+      "name": "원예 농장",
+      "recipe_id": "i_vegetable_farm",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "orchard",
+      "name": "과수원",
+      "recipe_id": "i_orchard",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "cotton_farm",
+      "name": "면화 농장",
+      "recipe_id": "i_cotton_farm",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "oilseed_farm",
+      "name": "유지작물 농장",
+      "recipe_id": "i_oilseed_farm",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "feed_mill",
+      "name": "사료 공장",
+      "recipe_id": "i_feed_mill",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "livestock_ranch",
+      "name": "축산 농장",
+      "recipe_id": "i_livestock_ranch",
+      "capacity": 3,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "dairy",
+      "name": "낙농장",
+      "recipe_id": "i_dairy",
+      "capacity": 5,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "poultry",
+      "name": "양계장",
+      "recipe_id": "i_poultry",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "meat_processor",
+      "name": "축산 가공장",
+      "recipe_id": "i_meat_processor",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "fishery",
+      "name": "어업 시설",
+      "recipe_id": "i_fishery",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "rubber_plantation",
+      "name": "고무 농장",
+      "recipe_id": "i_rubber_plantation",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "oil_well",
+      "name": "유전",
+      "recipe_id": "i_oil_well",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "gas_well",
+      "name": "가스전",
+      "recipe_id": "i_gas_well",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "coal_mine",
+      "name": "탄광",
+      "recipe_id": "i_coal_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "uranium_mine",
+      "name": "연료자원 광산",
+      "recipe_id": "i_uranium_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "iron_mine",
+      "name": "철광산",
+      "recipe_id": "i_iron_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "copper_mine",
+      "name": "구리광산",
+      "recipe_id": "i_copper_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "bauxite_mine",
+      "name": "보크사이트 광산",
+      "recipe_id": "i_bauxite_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "lithium_mine",
+      "name": "리튬 광산",
+      "recipe_id": "i_lithium_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "rare_mine",
+      "name": "희소금속 광산",
+      "recipe_id": "i_rare_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "gold_mine",
+      "name": "귀금속 광산",
+      "recipe_id": "i_gold_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "limestone_mine",
+      "name": "석회석 채굴장",
+      "recipe_id": "i_limestone_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "sand_pit",
+      "name": "규사 채굴장",
+      "recipe_id": "i_sand_pit",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "phosphate_mine",
+      "name": "인산염 광산",
+      "recipe_id": "i_phosphate_mine",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "steelworks",
+      "name": "제철소",
+      "recipe_id": "i_steelworks",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "copper_smelter",
+      "name": "구리 제련소",
+      "recipe_id": "i_copper_smelter",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "aluminium_smelter",
+      "name": "알루미늄 제련소",
+      "recipe_id": "i_aluminium_smelter",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "cement_works",
+      "name": "시멘트 공장",
+      "recipe_id": "i_cement_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "glassworks",
+      "name": "유리 공장",
+      "recipe_id": "i_glassworks",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "paper_mill",
+      "name": "제지 공장",
+      "recipe_id": "i_paper_mill",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "textile_mill",
+      "name": "방직 공장",
+      "recipe_id": "i_textile_mill",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "tannery",
+      "name": "피혁 공장",
+      "recipe_id": "i_tannery",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "refinery",
+      "name": "정유소",
+      "recipe_id": "i_refinery",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "chemical_plant",
+      "name": "화학 공장",
+      "recipe_id": "i_chemical_plant",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "fertilizer_works",
+      "name": "비료 공장",
+      "recipe_id": "i_fertilizer_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "chip_fab",
+      "name": "반도체 공장",
+      "recipe_id": "i_chip_fab",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "circuit_works",
+      "name": "기판 공장",
+      "recipe_id": "i_circuit_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "battery_works",
+      "name": "배터리 공장",
+      "recipe_id": "i_battery_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "motor_works",
+      "name": "모터 공장",
+      "recipe_id": "i_motor_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "parts_works",
+      "name": "기계부품 공장",
+      "recipe_id": "i_parts_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "packaging_works",
+      "name": "포장재 공장",
+      "recipe_id": "i_packaging_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "beverage_works",
+      "name": "음료 공장",
+      "recipe_id": "i_beverage_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "apparel_works",
+      "name": "의류 공장",
+      "recipe_id": "i_apparel_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "pharma_works",
+      "name": "제약 공장",
+      "recipe_id": "i_pharma_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "household_works",
+      "name": "생활용품 공장",
+      "recipe_id": "i_household_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "furniture_works",
+      "name": "가구 공장",
+      "recipe_id": "i_furniture_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "appliance_works",
+      "name": "가전 공장",
+      "recipe_id": "i_appliance_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "computer_works",
+      "name": "컴퓨터 공장",
+      "recipe_id": "i_computer_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "vehicle_works",
+      "name": "자동차 공장",
+      "recipe_id": "i_vehicle_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "machinery_works",
+      "name": "생산설비 공장",
+      "recipe_id": "i_machinery_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "farm_equipment_works",
+      "name": "농기계 공장",
+      "recipe_id": "i_farm_equipment_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "mining_equipment_works",
+      "name": "채굴장비 공장",
+      "recipe_id": "i_mining_equipment_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "server_works",
+      "name": "서버 공장",
+      "recipe_id": "i_server_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "telecom_works",
+      "name": "통신설비 공장",
+      "recipe_id": "i_telecom_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "transport_works",
+      "name": "운송장비 공장",
+      "recipe_id": "i_transport_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "defense_works",
+      "name": "국방 규격 공장",
+      "recipe_id": "i_defense_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "recycling_works",
+      "name": "재활용 시설",
+      "recipe_id": "i_recycling_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "telecom_office",
+      "name": "통신 사업장",
+      "recipe_id": "i_telecom_office",
+      "capacity": 8,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "clinic",
+      "name": "의료 시설",
+      "recipe_id": "i_clinic",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "school",
+      "name": "교육 시설",
+      "recipe_id": "i_school",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "logistics_hub",
+      "name": "물류 거점",
+      "recipe_id": "i_logistics_hub",
+      "capacity": 8,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "warehouse",
+      "name": "창고",
+      "recipe_id": "i_warehouse",
+      "capacity": 10,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2,
+      "storage_capacity": 5000
+    },
+    {
+      "id": "retail_store",
+      "name": "소매점",
+      "recipe_id": "i_retail_store",
+      "capacity": 10,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "repair_shop",
+      "name": "정비소",
+      "recipe_id": "i_repair_shop",
+      "capacity": 8,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "hotel",
+      "name": "숙박 시설",
+      "recipe_id": "i_hotel",
+      "capacity": 8,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "restaurant",
+      "name": "외식 시설",
+      "recipe_id": "i_restaurant",
+      "capacity": 10,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "waste_works",
+      "name": "폐기물 처리장",
+      "recipe_id": "i_waste_works",
+      "capacity": 8,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "research_lab",
+      "name": "연구소",
+      "recipe_id": "i_research_lab",
+      "capacity": 8,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "software_studio",
+      "name": "소프트웨어 개발사",
+      "recipe_id": "i_software_studio",
+      "capacity": 8,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "compost_works",
+      "name": "퇴비화 시설",
+      "recipe_id": "i_compost_works",
+      "capacity": 6,
+      "wood": 16,
+      "stone": 12,
+      "tools": 3,
+      "work": 36,
+      "min_months": 3,
+      "w": 2,
+      "h": 2
+    }
+  ],
+  "resources": [
+    "oil_reserve",
+    "gas_reserve",
+    "coal_reserve",
+    "uranium_reserve",
+    "iron_reserve",
+    "copper_reserve",
+    "bauxite_reserve",
+    "lithium_reserve",
+    "rare_reserve",
+    "gold_reserve",
+    "limestone_reserve",
+    "sand_reserve",
+    "phosphate_reserve",
+    "fish_stock",
+    "fresh_water"
+  ],
+  "parameters": {
+    "research_work": 36,
+    "research_min_months": 3,
+    "research_monthly_work": 12,
+    "research_setup_fee": 40,
+    "research_monthly_budget": 100,
+    "adoption_cost": 60,
+    "adoption_months": 1,
+    "software_work": 48,
+    "software_min_months": 3,
+    "software_monthly_work": 16,
+    "software_setup_fee": 30,
+    "software_default_price": 30,
+    "software_support_months": 12,
+    "license_max_seats": 100,
+    "server_seats": 40,
+    "network_seats_per_unit": 8,
+    "ads_per_seat": 2,
+    "ad_unit_price": 1,
+    "route_capacity": 120,
+    "domestic_lead": 1,
+    "foreign_lead": 2,
+    "domestic_fee": 2,
+    "foreign_fee": 4,
+    "freight_fuel_per_units": 12,
+    "freight_labor_per_units": 12,
+    "onsite_storage": 2000,
+    "warehouse_capacity_increment": 1000,
+    "warehouse_work": 12,
+    "warehouse_wood": 12,
+    "warehouse_steel": 4,
+    "warehouse_cost": 40,
+    "warehouse_cold_extra_energy": 2,
+    "recycle_work": 8,
+    "recycle_units_in": 3,
+    "recycle_units_out": 1,
+    "resource_base": 30000,
+    "resource_city_step": 2500,
+    "fish_capacity": 20000,
+    "fish_regrowth": 60,
+    "resource_city_multipliers": [
+      100,
+      125,
+      75
+    ],
+    "ai_research_reserve": 6000,
+    "ai_software_reserve": 7000,
+    "ai_action_period": 6,
+    "software_maintenance_energy": 2,
+    "software_maintenance_telecom": 2,
+    "agriculture_max_projects": 12,
+    "spoilage_waste_percent": 25,
+    "max_budget": 1000000,
+    "max_quantity": 10000,
+    "repair_work": 24,
+    "repair_monthly_work": 12,
+    "repair_tools": 2,
+    "repair_parts": 2,
+    "repair_min_months": 1,
+    "tech_step_percent": 5,
+    "tech_max_reduction": 25,
+    "durable_wear_period": 12,
+    "optional_consumption_period": 3,
+    "apparel_replacement_period": 12,
+    "cold_bonus_months": 2,
+    "digital_food_reserve": 120,
+    "software_base_quality": 50,
+    "software_quality_step": 10,
+    "initial_specialist_skill": 1,
+    "computer_hours": 80,
+    "quality_base": 50,
+    "quality_step": 5
+  },
+  "tech_topics": [
+    {
+      "id": "process_efficiency",
+      "name": "공정 효율",
+      "effect": "labor",
+      "level_cap": 5
+    },
+    {
+      "id": "product_quality",
+      "name": "제품 설계",
+      "effect": "quality",
+      "level_cap": 5
+    },
+    {
+      "id": "energy_efficiency",
+      "name": "에너지 절감",
+      "effect": "energy",
+      "level_cap": 5
+    },
+    {
+      "id": "software_platform",
+      "name": "소프트웨어 기반기술",
+      "effect": "software",
+      "level_cap": 5
+    },
+    {
+      "id": "software_automation",
+      "name": "업무 소프트웨어 도입",
+      "effect": "licensed_software",
+      "level_cap": 1,
+      "license_required": true
+    }
+  ],
+  "household_needs": [
+    {
+      "product_id": "household_goods",
+      "quantity": 1,
+      "period": 3,
+      "mode": "consumable"
+    },
+    {
+      "product_id": "apparel",
+      "quantity": 1,
+      "period": 12,
+      "mode": "durable"
+    },
+    {
+      "product_id": "furniture",
+      "quantity": 1,
+      "period": 12,
+      "mode": "durable"
+    },
+    {
+      "product_id": "appliance",
+      "quantity": 1,
+      "period": 24,
+      "mode": "durable"
+    },
+    {
+      "product_id": "computer",
+      "quantity": 1,
+      "period": 24,
+      "mode": "durable"
+    },
+    {
+      "product_id": "beverage",
+      "quantity": 1,
+      "period": 3,
+      "mode": "consumable"
+    },
+    {
+      "product_id": "dining_meal",
+      "quantity": 1,
+      "period": 3,
+      "mode": "service"
+    }
+  ],
+  "digital_categories": [
+    {
+      "id": "business",
+      "name": "업무 소프트웨어"
+    },
+    {
+      "id": "system",
+      "name": "시스템 소프트웨어"
+    },
+    {
+      "id": "development",
+      "name": "개발 도구"
+    },
+    {
+      "id": "game",
+      "name": "게임"
+    },
+    {
+      "id": "video",
+      "name": "영상"
+    },
+    {
+      "id": "music",
+      "name": "음악"
+    },
+    {
+      "id": "ebook",
+      "name": "전자책"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "status": "experimental",
-  "version": 1,
-  "rules_version": "experimental-0.1",
+  "version": 2,
+  "rules_version": "experimental-0.2",
   "purpose": "P0/P1 검증 전용. 출시 밸런스나 사용자 확정 수치가 아닙니다.",
   "units": {
     "money": "CR의 1/100 최소 화폐 단위 정수 (100최소단위 = 1 CR)",
@@ -142,11 +142,10 @@
     {
       "id": "energy",
       "inputs": {
-        "wood": 1,
-        "water": 1
+        "wood": 1
       },
       "outputs": {
-        "energy": 8
+        "energy": 20
       },
       "labor": 4
     },
@@ -156,9 +155,11 @@
         "energy": 1
       },
       "outputs": {
-        "water": 10
+        "water": 20
       },
-      "labor": 4
+      "labor": 4,
+      "resource": "fresh_water",
+      "resource_per_batch": 20
     }
   ],
   "buildings": [
@@ -166,7 +167,7 @@
       "id": "bakery",
       "name": "제빵소",
       "recipe_id": "bake",
-      "capacity": 18,
+      "capacity": 32,
       "wood": 12,
       "stone": 10,
       "tools": 2,
@@ -179,7 +180,7 @@
       "id": "mill",
       "name": "제분소",
       "recipe_id": "mill",
-      "capacity": 10,
+      "capacity": 20,
       "wood": 12,
       "stone": 10,
       "tools": 2,
@@ -244,7 +245,7 @@
       "id": "power",
       "name": "발전소",
       "recipe_id": "energy",
-      "capacity": 18,
+      "capacity": 36,
       "wood": 12,
       "stone": 10,
       "tools": 2,
@@ -257,7 +258,7 @@
       "id": "water",
       "name": "급수소",
       "recipe_id": "water",
-      "capacity": 24,
+      "capacity": 36,
       "wood": 12,
       "stone": 10,
       "tools": 2,
@@ -269,8 +270,8 @@
   ],
   "parameters": {
     "default_seed": 42,
-    "city_width": 12,
-    "city_height": 12,
+    "city_width": 24,
+    "city_height": 24,
     "road_y": 5,
     "company_kinds": [
       "bakery",
@@ -333,8 +334,11 @@
     ],
     "city_names": [
       "해솔",
+      "새빛",
       "들녘",
-      "먼바다"
+      "온누리",
+      "먼바다",
+      "솔가람"
     ],
     "director_names": [
       "민서",
@@ -362,8 +366,8 @@
       "price_percent": 100,
       "dividend_percent": 20
     },
-    "initial_input_stock": 32,
-    "initial_output_stock": 40,
+    "initial_input_stock": 64,
+    "initial_output_stock": 100,
     "initial_output_city_step": 3,
     "initial_maintenance_tools": 4,
     "starter_materials": {
@@ -414,6 +418,29 @@
       "food": 2,
       "water": 2,
       "energy": 2
-    }
+    },
+    "cities_per_nation": 2,
+    "road_rows": [
+      5,
+      11,
+      17,
+      23
+    ],
+    "initial_catalyst_stock": 8,
+    "extended_industries": true,
+    "service_reserve_percent": 25,
+    "optional_budget_percent": 30,
+    "asset_depreciation_months": 120,
+    "equipment_hours_per_work": 1,
+    "construction_equipment_capacity": 24,
+    "essential_forecast_buffer_percent": 10,
+    "initial_staff_adjustments": [
+      {
+        "kind": "bakery",
+        "additional_people": 1,
+        "hours": 64,
+        "wage": 2
+      }
+    ]
   }
 }

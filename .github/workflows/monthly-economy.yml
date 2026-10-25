@@ -1,16 +1,20 @@
-name: Monthly economy experimental checks and builds
+name: Hora Economic Lab checks, builds and verified release
 
 on:
   workflow_dispatch:
     inputs:
       operation:
-        description: Verify source, or publish artifacts from a successful source run
+        description: Verify source, or sign and publish a successful immutable source run
         type: choice
         options: [verify, publish]
         default: verify
         required: true
       source_run_id:
-        description: Successful main-branch source run ID (required for publish)
+        description: Successful main-branch source workflow run ID (publish only)
+        type: string
+        required: false
+      source_commit:
+        description: Exact 40-character source commit matching the run and prepared draft (publish only)
         type: string
         required: false
   push:
@@ -27,14 +31,18 @@ permissions:
   contents: read
 
 concurrency:
-  group: monthly-economy-${{ github.ref }}-${{ inputs.operation || 'verify' }}
-  cancel-in-progress: true
+  group: hora-economic-lab-${{ github.ref }}-${{ inputs.operation || 'verify' }}
+  cancel-in-progress: false
+
+env:
+  RELEASE_TAG: hora-economic-lab/v0.2.0
+  ARTIFACT_STEM: HoraEconomicLab-v0.2.0
 
 jobs:
-  experimental:
+  verify:
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.operation != 'publish' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 45
     defaults:
       run:
         working-directory: games/monthly-economy
@@ -45,25 +53,35 @@ jobs:
         run: |
           bash tools/install_godot.sh
           echo "GODOT_BIN=$HOME/.cache/hora-tools/Godot_v4.6.3-stable_linux.x86_64" >> "$GITHUB_ENV"
-      - name: Verify once and build the Linux and separate Android previews
+      - name: Select the preinstalled Java 21 toolchain
+        run: |
+          test -x "$JAVA_HOME_21_X64/bin/java"
+          echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
+          echo "$JAVA_HOME_21_X64/bin" >> "$GITHUB_PATH"
+      - name: Require pinned Android verifier tools
+        run: |
+          test -x "$ANDROID_HOME/build-tools/36.0.0/aapt"
+          test -x "$ANDROID_HOME/build-tools/36.0.0/apksigner"
+      - name: Test every suite, export Linux, and export an unsigned release-mode APK
         run: bash tools/build.sh all
-      - name: Upload experimental binaries and verification reports
+      - name: Upload immutable unsigned inputs and verification reports
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: monthly-economy-experimental-${{ github.sha }}
+          name: hora-economic-lab-${{ github.sha }}
           path: |
-            games/monthly-economy/build/*.apk
-            games/monthly-economy/build/*.zip
-            games/monthly-economy/build/*-VERIFICATION.json
+            games/monthly-economy/build/HoraEconomicLab-v0.2.0-UNSIGNED.apk
+            games/monthly-economy/build/HoraEconomicLab-v0.2.0-linux.zip
+            games/monthly-economy/build/UNSIGNED-APK-VERIFICATION.json
             games/monthly-economy/build/BUILD-MANIFEST.json
             games/monthly-economy/build/SHA256SUMS.txt
           if-no-files-found: error
           retention-days: 14
+          overwrite: true
 
   publish:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'publish' && github.repository == 'hddy774/project-hora' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
       actions: read
       contents: write
@@ -71,141 +89,204 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
       SOURCE_RUN_ID: ${{ inputs.source_run_id }}
-      RELEASE_TAG: monthly-economy/v0.1.0-experimental
-      RELEASE_ID: '423077960'
-      EXPECTED_SOURCE_SHA: aa9096a8c1617db56559739301619220c3a1d6fc
+      EXPECTED_SOURCE_SHA: ${{ inputs.source_commit }}
     steps:
-      - name: Require a successful immutable source run
+      - name: Require the intended successful immutable source run
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import os,re
           assert re.fullmatch(r'[1-9][0-9]{0,19}',os.environ['SOURCE_RUN_ID']), 'A numeric source run ID is required'
+          assert re.fullmatch(r'[a-f0-9]{40}',os.environ['EXPECTED_SOURCE_SHA']), 'An exact source commit is required'
           PY
           gh api "repos/$GH_REPO/actions/runs/$SOURCE_RUN_ID" > source-run.json
           python3 - <<'PY'
-          import json,os,pathlib,re
+          import json,os,pathlib
           run=json.loads(pathlib.Path('source-run.json').read_text())
-          assert run['status']=='completed' and run['conclusion']=='success', 'Source run must have completed successfully'
-          assert run['event']=='push' and run['id']==int(os.environ['SOURCE_RUN_ID']), 'Expected the original push workflow run'
+          assert run['status']=='completed' and run['conclusion']=='success', 'Source run must complete successfully'
+          assert run['event'] in ('push','workflow_dispatch') and run['id']==int(os.environ['SOURCE_RUN_ID'])
           assert run['path']=='.github/workflows/monthly-economy.yml', 'Unexpected source workflow'
-          assert run['head_branch']=='main', 'Source run must use main'
-          assert run['head_repository']['full_name']==os.environ['GH_REPO'], 'Source repository mismatch'
-          sha=run['head_sha']
-          assert re.fullmatch(r'[a-f0-9]{40}',sha) and sha==os.environ['EXPECTED_SOURCE_SHA'], 'Unexpected source commit'
+          assert run['head_branch']=='main' and run['head_repository']['full_name']==os.environ['GH_REPO']
+          assert run['head_sha']==os.environ['EXPECTED_SOURCE_SHA'], 'Source run and reviewed commit differ'
           with open(os.environ['GITHUB_ENV'],'a') as f:
-              f.write('SOURCE_SHA='+sha+'\nARTIFACT_NAME=monthly-economy-experimental-'+sha+'\n')
+              f.write('SOURCE_SHA='+run['head_sha']+'\nARTIFACT_NAME=hora-economic-lab-'+run['head_sha']+'\n')
           PY
-      - name: Download the exact source artifact
+          gh api "repos/$GH_REPO/actions/runs/$SOURCE_RUN_ID/artifacts" > artifacts.json
+          python3 - <<'PY'
+          import json,os,pathlib
+          artifacts=json.loads(pathlib.Path('artifacts.json').read_text())['artifacts']
+          matches=[a for a in artifacts if a['name']==os.environ['ARTIFACT_NAME'] and not a['expired']]
+          assert len(matches)==1, 'Expected one unexpired verified source artifact'
+          PY
+      - name: Check out the exact verified source without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.source_commit }}
+          path: source
+          persist-credentials: false
+      - name: Download verified source inputs
         shell: bash
         run: |
           set -euo pipefail
           mkdir downloaded
           gh run download "$SOURCE_RUN_ID" --repo "$GH_REPO" --name "$ARTIFACT_NAME" --dir downloaded
-      - name: Verify all artifact bytes, packaged licenses and the APK
+      - name: Validate source bytes, Linux executable and unsigned release proof
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import hashlib,json,os,pathlib,re,stat,subprocess,zipfile
-          root=pathlib.Path('downloaded')
-          names={'monthly-economy-experimental.apk','monthly-economy-linux-experimental.zip','monthly-economy-linux.x86_64'}
+          import hashlib,json,os,pathlib,re,stat,zipfile
+          root=pathlib.Path('downloaded'); stem=os.environ['ARTIFACT_STEM']
+          names={stem+'-UNSIGNED.apk',stem+'-linux.zip',stem+'-linux.x86_64'}
           manifest=json.loads((root/'BUILD-MANIFEST.json').read_text())
-          assert manifest['game']=='monthly-economy' and manifest['version']=='0.1.0-experimental'
-          assert manifest['experimental'] is True and manifest['source_dirty'] is False
+          assert manifest['game']=='hora-economic-lab' and manifest['version']=='0.2.0'
+          assert manifest['application_id']=='org.hora.economiclab' and manifest['source_dirty'] is False
           assert manifest['source_commit']==os.environ['SOURCE_SHA'] and manifest['godot']=='4.6.3.stable'
-          records=manifest['artifacts']
-          assert len(records)==3 and {a['file'] for a in records}==names, 'Unexpected artifact manifest'
-          records={a['file']:a for a in records}
+          assert manifest['signing_status']=='unsigned_release_input' and manifest['generated_graphics'] is True
+          assert manifest['balance_data_status']=='experimental'
+          assert len(manifest['artifacts'])==3 and {a['file'] for a in manifest['artifacts']}==names
+          records={a['file']:a for a in manifest['artifacts']}
           for item in records.values():
               assert type(item['bytes']) is int and 0<item['bytes']<=512*1024*1024
               assert re.fullmatch(r'[a-f0-9]{64}',item['sha256'])
-          for name in ('monthly-economy-experimental.apk','monthly-economy-linux-experimental.zip'):
+          for name in (stem+'-UNSIGNED.apk',stem+'-linux.zip'):
               path=root/name; item=records[name]
-              assert path.is_file() and path.stat().st_size==item['bytes'], 'Artifact size mismatch: '+name
-              assert hashlib.file_digest(path.open('rb'),'sha256').hexdigest()==item['sha256'], 'Artifact checksum mismatch: '+name
-          with zipfile.ZipFile(root/'monthly-economy-linux-experimental.zip') as archive:
+              assert path.is_file() and path.stat().st_size==item['bytes']
+              with path.open('rb') as stream:
+                  assert hashlib.file_digest(stream,'sha256').hexdigest()==item['sha256'], 'Artifact checksum mismatch: '+name
+          with zipfile.ZipFile(root/(stem+'-linux.zip')) as archive:
               entries=archive.infolist()
-              assert len(entries)==1 and entries[0].filename=='monthly-economy-linux.x86_64', 'Unexpected Linux archive entries'
+              assert len(entries)==1 and entries[0].filename==stem+'-linux.x86_64'
               entry=entries[0]
               assert not entry.is_dir() and not entry.flag_bits&1
-              assert stat.S_IFMT(entry.external_attr>>16) in (0,stat.S_IFREG), 'Linux executable must be a regular file'
-              raw=records[entry.filename]
-              assert entry.file_size==raw['bytes'], 'Embedded Linux size mismatch'
+              assert stat.S_IFMT(entry.external_attr>>16) in (0,stat.S_IFREG)
+              assert entry.file_size==records[entry.filename]['bytes']
               with archive.open(entry) as stream:
-                  assert hashlib.file_digest(stream,'sha256').hexdigest()==raw['sha256'], 'Embedded Linux checksum mismatch'
+                  assert hashlib.file_digest(stream,'sha256').hexdigest()==records[entry.filename]['sha256']
           sums={}
           for line in (root/'SHA256SUMS.txt').read_text().splitlines():
               parts=line.split()
-              assert len(parts)==2 and parts[1] in names and parts[1] not in sums, 'Invalid checksum list'
+              assert len(parts)==2 and parts[1] in names and parts[1] not in sums
               sums[parts[1]]=parts[0]
-          assert sums=={name:item['sha256'] for name,item in records.items()}, 'Checksums disagree with manifest'
-          proof=json.loads((root/'APK-VERIFICATION.json').read_text())
-          assert proof['application_id']=='org.hora.monthly.experimental' and proof['version']=='0.1.0-experimental'
-          assert proof['internet_permission'] is False and proof['orientation']=='portrait'
+          assert sums=={name:item['sha256'] for name,item in records.items()}
+          proof=json.loads((root/'UNSIGNED-APK-VERIFICATION.json').read_text())
+          assert proof['application_id']=='org.hora.economiclab' and proof['version']=='0.2.0' and proof['version_code']==2
+          assert proof['signing_status']=='unsigned_release_input' and proof['certificate_sha256'] is None
+          assert proof['apk_sha256']==records[stem+'-UNSIGNED.apk']['sha256']
+          assert proof['internet_permission'] is False and proof['debuggable'] is False and proof['orientation']=='portrait'
           assert proof['abis']==['arm64-v8a','x86_64'] and proof['min_sdk']==24 and proof['target_sdk']==36
-          assert proof['device_execution_tested'] is False
-          assert re.fullmatch(r'[a-f0-9]{64}',proof['certificate_sha256'])
-          if 'source_commit' in proof:
-              assert proof['source_commit']==os.environ['SOURCE_SHA']
-          if 'source_dirty' in proof:
-              assert proof['source_dirty'] is False
-          with zipfile.ZipFile(root/'monthly-economy-experimental.apk') as apk:
-              assert sorted({n.split('/')[1] for n in apk.namelist() if n.startswith('lib/') and n.endswith('.so')})==proof['abis']
-              assets=proof['packaged_asset_sha256']
-              assert set(assets)=={'data/experimental.json','assets/GODOT-NOTICES.txt','assets/FONT-LICENSE.txt'}
-              for name,digest in assets.items():
-                  assert hashlib.sha256(apk.read('assets/'+name)).hexdigest()==digest, 'Packaged asset checksum mismatch'
-          sdk=pathlib.Path(os.environ.get('ANDROID_HOME',os.environ.get('ANDROID_SDK_ROOT','')))
-          tools=sdk/'build-tools'/'36.0.0'
-          assert (tools/'apksigner').is_file() and (tools/'aapt').is_file(), 'Android build-tools 36.0.0 is required for verified preview publication'
-          def run(*args):
-              return subprocess.check_output([str(x) for x in args],text=True)
-          apk=root/'monthly-economy-experimental.apk'
-          signature=run(tools/'apksigner','verify','--verbose','--print-certs',apk)
-          assert 'Verifies' in signature.splitlines(), 'APK signature did not verify'
-          assert re.findall(r'(?m)^Number of signers:[ \t]*(\d+)[ \t]*$',signature)==['1'], 'Expected exactly one APK signer'
-          certs=[value.lower() for value in re.findall(r'(?m)^Signer #1 certificate SHA-256 digest:[ \t]*([a-fA-F0-9]{64})[ \t]*$',signature)]
-          assert certs==[proof['certificate_sha256']], 'APK signer differs from source verification report'
-          badging=run(tools/'aapt','dump','badging',apk)
-          assert "package: name='org.hora.monthly.experimental'" in badging and "versionName='0.1.0-experimental'" in badging
-          assert 'android.permission.INTERNET' not in run(tools/'aapt','dump','permissions',apk)
-          assert 'android:screenOrientation(0x0101001e)=(type 0x10)0x1' in run(tools/'aapt','dump','xmltree',apk,'AndroidManifest.xml')
-          promotion={'source_commit':os.environ['SOURCE_SHA'],'source_dirty':False,'source_run_id':int(os.environ['SOURCE_RUN_ID']),'source_run_conclusion':'success','artifact_name':os.environ['ARTIFACT_NAME'],'checks':['manifest and all three artifact checksums','Linux archive entry and embedded executable checksum','APK signer, identity, portrait orientation and offline permission','APK packaged fixture and engine/font license checksums'],'linux_boot_and_pack_checks':'passed in successful source workflow','android_device_execution_tested':False}
-          (root/'SOURCE-WORKFLOW-VERIFICATION.json').write_text(json.dumps(promotion,indent=2)+'\n')
-          print('Source provenance, all artifact bytes, Linux archive and APK checks passed.')
+          assert proof['verification_build_tools']=='36.0.0' and proof['device_execution_tested'] is False
+          assert proof['generated_texture_sha256'] and proof['packaged_asset_sha256']
+          with open(os.environ['GITHUB_ENV'],'a') as f:
+              f.write('UNSIGNED_SHA256='+records[stem+'-UNSIGNED.apk']['sha256']+'\n')
+          (root/'SOURCE-BUILD-MANIFEST.json').write_bytes((root/'BUILD-MANIFEST.json').read_bytes())
+          print('Exact source artifacts, unsigned identity proof and Linux executable checksum verified.')
           PY
-      - name: Require the intended draft and publish the verified preview
+          python3 source/games/monthly-economy/tools/verify_apk.py "downloaded/$ARTIFACT_STEM-UNSIGNED.apk" --unsigned --source-proof downloaded/UNSIGNED-APK-VERIFICATION.json
+      - name: Require the prepared draft and immutable tag target before signing
         shell: bash
         run: |
           set -euo pipefail
           gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" > releases.json
           python3 - <<'PY'
-          import json,os,pathlib
+          import json,os,pathlib,subprocess
           releases=[r for page in json.loads(pathlib.Path('releases.json').read_text()) for r in page]
           matches=[r for r in releases if r['tag_name']==os.environ['RELEASE_TAG']]
-          assert len(matches)==1, 'Expected one existing preview draft'
+          assert len(matches)==1, 'Prepare exactly one intended draft before publication'
           release=matches[0]
-          assert release['id']==int(os.environ['RELEASE_ID']) and release['draft'] is True, 'Unexpected or already published release'
-          assert release['target_commitish']==os.environ['SOURCE_SHA'], 'Draft target differs from verified source'
+          assert release['draft'] is True and release['target_commitish']==os.environ['SOURCE_SHA']
+          allowed={os.environ['ARTIFACT_STEM']+'.apk',os.environ['ARTIFACT_STEM']+'-linux.zip','BUILD-MANIFEST.json','APK-VERIFICATION.json','SIGNING-VERIFICATION.json','SOURCE-WORKFLOW-VERIFICATION.json','SHA256SUMS.txt'}
+          assert {a['name'] for a in release['assets']}<=allowed, 'Unexpected attachment on the prepared draft'
+          with open(os.environ['GITHUB_ENV'],'a') as f: f.write('RELEASE_ID='+str(release['id'])+'\n')
+          tag=subprocess.run(['gh','api','repos/'+os.environ['GH_REPO']+'/git/ref/tags/'+os.environ['RELEASE_TAG']],capture_output=True,text=True)
+          if tag.returncode==0:
+              obj=json.loads(tag.stdout)['object']
+              if obj['type']=='tag':
+                  obj=json.loads(subprocess.check_output(['gh','api',obj['url']],text=True))['object']
+              assert obj['type']=='commit' and obj['sha']==os.environ['SOURCE_SHA'], 'Existing tag differs from verified source'
+          else:
+              assert '404' in tag.stderr, 'Unable to verify the tag reference'
           PY
-          gh release upload "$RELEASE_TAG" \
-            downloaded/monthly-economy-experimental.apk \
-            downloaded/monthly-economy-linux-experimental.zip \
-            downloaded/BUILD-MANIFEST.json \
-            downloaded/APK-VERIFICATION.json \
-            downloaded/SOURCE-WORKFLOW-VERIFICATION.json \
-            downloaded/SHA256SUMS.txt --repo "$GH_REPO" --clobber
+      - name: Select the preinstalled Java 21 signing toolchain
+        run: |
+          test -x "$JAVA_HOME_21_X64/bin/java"
+          echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
+          echo "$JAVA_HOME_21_X64/bin" >> "$GITHUB_PATH"
+      - name: Sign verified Hora APK with the retained repository publisher
+        shell: bash
+        env:
+          SIGNING_BUNDLE: ${{ secrets.ANDROID_SIGNING_BUNDLE }}
+          RAW_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
+          RAW_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
+          RAW_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD }}
+        run: bash source/games/monthly-economy/tools/retained_sign.sh "downloaded/$ARTIFACT_STEM-UNSIGNED.apk" "downloaded/$ARTIFACT_STEM.apk"
+      - name: Verify signed release bytes and write source-run provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 source/games/monthly-economy/tools/verify_apk.py "downloaded/$ARTIFACT_STEM.apk" --source-proof downloaded/UNSIGNED-APK-VERIFICATION.json
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib
+          root=pathlib.Path('downloaded'); stem=os.environ['ARTIFACT_STEM']
+          manifest=json.loads((root/'SOURCE-BUILD-MANIFEST.json').read_text())
+          signing=json.loads((root/'SIGNING-VERIFICATION.json').read_text())
+          apk=json.loads((root/'APK-VERIFICATION.json').read_text())
+          assert signing['source_commit']==manifest['source_commit']==os.environ['SOURCE_SHA']
+          assert signing['unsigned_sha256']==os.environ['UNSIGNED_SHA256'] and signing['payload_matches_verified_unsigned'] is True
+          assert signing['certificate_sha256']==apk['certificate_sha256']=='0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a'
+          assert signing['signing_policy']=='retained_repository_publisher_for_hora_release_request'
+          assert signing['key_created'] is False and signing['original_bundle_modified'] is False
+          assert signing['signed_sha256']==apk['apk_sha256']
+          records=[a for a in manifest['artifacts'] if not a['file'].endswith('-UNSIGNED.apk')]
+          path=root/(stem+'.apk')
+          records.append({'file':path.name,'bytes':path.stat().st_size,'sha256':apk['apk_sha256']})
+          manifest.update(signing_status='retained_publisher_verified',certificate_sha256=apk['certificate_sha256'],artifacts=records,
+                          source_run_id=int(os.environ['SOURCE_RUN_ID']),unsigned_apk_sha256=os.environ['UNSIGNED_SHA256'])
+          (root/'BUILD-MANIFEST.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+          (root/'SHA256SUMS.txt').write_text(''.join(a['sha256']+'  '+a['file']+'\n' for a in records))
+          provenance={'source_commit':os.environ['SOURCE_SHA'],'source_dirty':False,'source_run_id':int(os.environ['SOURCE_RUN_ID']),
+                      'source_run_conclusion':'success','artifact_name':os.environ['ARTIFACT_NAME'],'release_tag':os.environ['RELEASE_TAG'],
+                      'checks':['all source suites including registered UI forms','Linux export boot and packaged core/data/graphics checks in successful source run',
+                                'source artifact and embedded executable SHA-256','unsigned release APK identity and resources reverified from exact source',
+                                'retained publisher certificate and unchanged APK payload','signed release identity, portrait, offline and non-debuggable flags'],
+                      'generated_graphics_packaged':True,'android_device_execution_tested':False,
+                      'signing_policy':signing['signing_policy'],'unsigned_apk_sha256':os.environ['UNSIGNED_SHA256']}
+          (root/'SOURCE-WORKFLOW-VERIFICATION.json').write_text(json.dumps(provenance,indent=2)+'\n')
+          PY
+      - name: Upload, read back and publish the verified stable latest release
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=("$ARTIFACT_STEM.apk" "$ARTIFACT_STEM-linux.zip" BUILD-MANIFEST.json APK-VERIFICATION.json SIGNING-VERIFICATION.json SOURCE-WORKFLOW-VERIFICATION.json SHA256SUMS.txt)
+          upload=()
+          for file in "${files[@]}"; do upload+=("downloaded/$file"); done
+          gh release upload "$RELEASE_TAG" "${upload[@]}" --repo "$GH_REPO" --clobber
           gh api "repos/$GH_REPO/releases/$RELEASE_ID" > checked-draft.json
           python3 - <<'PY'
           import json,os,pathlib
           release=json.loads(pathlib.Path('checked-draft.json').read_text())
           assert release['draft'] is True and release['target_commitish']==os.environ['SOURCE_SHA'] and release['tag_name']==os.environ['RELEASE_TAG']
-          expected={'monthly-economy-experimental.apk','monthly-economy-linux-experimental.zip','BUILD-MANIFEST.json','APK-VERIFICATION.json','SOURCE-WORKFLOW-VERIFICATION.json','SHA256SUMS.txt'}
+          expected={os.environ['ARTIFACT_STEM']+'.apk',os.environ['ARTIFACT_STEM']+'-linux.zip','BUILD-MANIFEST.json','APK-VERIFICATION.json','SIGNING-VERIFICATION.json','SOURCE-WORKFLOW-VERIFICATION.json','SHA256SUMS.txt'}
           assets={a['name']:a for a in release['assets']}
-          assert expected<=set(assets), 'A verified release attachment is missing'
-          for name in expected:
-              assert assets[name]['size']==pathlib.Path('downloaded',name).stat().st_size, 'Uploaded asset size mismatch'
+          assert set(assets)==expected
+          for name in expected: assert assets[name]['size']==pathlib.Path('downloaded',name).stat().st_size
           PY
-          gh release edit "$RELEASE_TAG" --repo "$GH_REPO" --draft=false --prerelease --latest=false
+          mkdir uploaded-readback
+          for file in "${files[@]}"; do gh release download "$RELEASE_TAG" --repo "$GH_REPO" --pattern "$file" --dir uploaded-readback; done
+          python3 - <<'PY'
+          import hashlib,pathlib
+          for path in pathlib.Path('uploaded-readback').iterdir():
+              with path.open('rb') as received, pathlib.Path('downloaded',path.name).open('rb') as expected:
+                  assert hashlib.file_digest(received,'sha256').digest()==hashlib.file_digest(expected,'sha256').digest(), 'Uploaded bytes changed: '+path.name
+          print('Every uploaded release attachment read back with matching SHA-256.')
+          PY
+          gh release edit "$RELEASE_TAG" --repo "$GH_REPO" --draft=false --prerelease=false --latest=true
+          gh api "repos/$GH_REPO/releases/latest" > checked-latest.json
+          python3 - <<'PY'
+          import json,os,pathlib
+          release=json.loads(pathlib.Path('checked-latest.json').read_text())
+          assert release['id']==int(os.environ['RELEASE_ID']) and release['tag_name']==os.environ['RELEASE_TAG']
+          assert release['draft'] is False and release['prerelease'] is False
+          print('Verified Hora Economic Lab v0.2.0 is the stable latest release.')
+          PY

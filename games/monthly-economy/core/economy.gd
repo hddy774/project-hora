@@ -1,10 +1,26 @@
 extends RefCounted
 ## Experimental, deterministic, offline monthly economy. No wall-clock callbacks.
 const Ledger = preload("res://core/ledger.gd")
-const RULES_VERSION = "experimental-0.1"
+const RULES_VERSION = "experimental-0.2"
+const Domain = preload("res://core/domain.gd")
+const Finance = preload("res://core/finance.gd")
+const Life = preload("res://core/lifecycle.gd")
+const Public = preload("res://core/public_sector.gd")
+const Industry = preload("res://core/industry.gd")
+const Market = preload("res://core/market.gd")
+const Land = preload("res://core/land.gd")
 const FIXTURE_PATH: String = "res://data/experimental.json"
 static var _fixture_cache: Dictionary = {}
 static var _fixture_error: String = ""
+static var _building_cache: Dictionary={}
+static var _content_hash_cache: String=""
+static var _command_module_cache: Dictionary={}
+static var _plan_cache_state: Dictionary={}
+static var _plan_cache_version: int=-1
+static var _plan_cache_count: int=-1
+static var _plan_cache_last: String=""
+static var _plan_cache_totals: Dictionary={}
+static var _plan_cache_definitions: Dictionary={}
 
 static func _fixture() -> Dictionary:
 	if not _fixture_cache.is_empty(): return _fixture_cache
@@ -49,7 +65,7 @@ static func validate_fixture(data: Dictionary) -> Array:
 	for key in ["status","version","rules_version","products","recipes","buildings","parameters"]:
 		if not data.has(key): errors.append("MISSING_FIXTURE_FIELD:"+key)
 	if not errors.is_empty(): return errors
-	if data.status!="experimental" or data.version!=1 or data.rules_version!=RULES_VERSION: errors.append("UNSUPPORTED_EXPERIMENTAL_FIXTURE")
+	if data.status!="experimental" or data.version!=2 or data.rules_version!=RULES_VERSION: errors.append("UNSUPPORTED_EXPERIMENTAL_FIXTURE")
 	for key in ["products","recipes","buildings"]:
 		if typeof(data[key])!=TYPE_ARRAY or data[key].is_empty(): errors.append("INVALID_FIXTURE_ARRAY:"+key)
 	if typeof(data.parameters)!=TYPE_DICTIONARY: errors.append("INVALID_FIXTURE_PARAMETERS")
@@ -79,7 +95,7 @@ static func validate_fixture(data: Dictionary) -> Array:
 			for product_id in recipe[key]:
 				if not product_ids.has(product_id): errors.append("UNKNOWN_RECIPE_PRODUCT")
 				if not _whole_number(recipe[key][product_id]) or int(recipe[key][product_id])<=0: errors.append("INVALID_RECIPE_QUANTITY")
-		if recipe.has("resource") and (recipe.resource not in ["forest","stone"] or not _whole_number(recipe.get("resource_per_batch")) or int(recipe.get("resource_per_batch",0))<=0): errors.append("INVALID_RECIPE_RESOURCE")
+		if recipe.has("resource") and (str(recipe.resource).is_empty() or not _whole_number(recipe.get("resource_per_batch")) or int(recipe.get("resource_per_batch",0))<=0): errors.append("INVALID_RECIPE_RESOURCE")
 		var id: String=str(recipe.get("id",""))
 		if recipe_ids.has(id): errors.append("DUPLICATE_RECIPE_ID")
 		recipe_ids[id]=true
@@ -97,7 +113,15 @@ static func validate_fixture(data: Dictionary) -> Array:
 		if building_ids.has(id): errors.append("DUPLICATE_BUILDING_ID")
 		building_ids[id]=true
 	var p: Dictionary=data.parameters
-	var numeric_keys: Array=["default_seed","city_width","city_height","road_y","employees_per_company","available_hours","hourly_wage","company_opening_cash","person_opening_cash","initial_input_stock","initial_output_stock","initial_output_city_step","initial_maintenance_tools","contractor_width","contractor_height","forest_opening","forest_city_step","stone_opening","stone_city_step","forest_capacity","forest_regrowth","construction_budget","construction_work_per_month","construction_hour_price","construction_stage_foundation","construction_stage_frame","director_hours","director_pay","freight_unit_cost","freight_lead_months","minimum_price","policy_minimum","policy_maximum","price_policy_minimum","price_policy_maximum","stock_target_default","stock_target_essentials","stock_excess_multiple","stock_slow_batches","ai_high_stock","ai_low_stock","ai_price_step","ai_price_minimum","ai_price_maximum","maintenance_period_months","maintenance_tools_per_facility","dividend_cash_floor"]
+	if not p.get("initial_staff_adjustments") is Array: errors.append("INITIAL_STAFF_ADJUSTMENTS_REQUIRED")
+	else:
+		for staffing in p.initial_staff_adjustments:
+			if not staffing is Dictionary or not staffing.get("kind") is String:
+				errors.append("INVALID_INITIAL_STAFFING")
+				continue
+			for key in ["additional_people","hours","wage"]:
+				if not _whole_number(staffing.get(key)) or int(staffing.get(key,0))<=0: errors.append("INVALID_INITIAL_STAFFING:"+key)
+	var numeric_keys: Array=["default_seed","city_width","city_height","road_y","employees_per_company","available_hours","hourly_wage","company_opening_cash","person_opening_cash","initial_input_stock","initial_output_stock","initial_output_city_step","initial_maintenance_tools","contractor_width","contractor_height","forest_opening","forest_city_step","stone_opening","stone_city_step","forest_capacity","forest_regrowth","construction_budget","construction_work_per_month","construction_hour_price","construction_stage_foundation","construction_stage_frame","director_hours","director_pay","freight_unit_cost","freight_lead_months","minimum_price","policy_minimum","policy_maximum","price_policy_minimum","price_policy_maximum","stock_target_default","stock_target_essentials","stock_excess_multiple","stock_slow_batches","ai_high_stock","ai_low_stock","ai_price_step","ai_price_minimum","ai_price_maximum","maintenance_period_months","maintenance_tools_per_facility","dividend_cash_floor","cities_per_nation","initial_catalyst_stock","service_reserve_percent","asset_depreciation_months","construction_equipment_capacity","equipment_hours_per_work","essential_forecast_buffer_percent"]
 	for key in numeric_keys:
 		if not _whole_number(p.get(key)): errors.append("INVALID_OR_MISSING_PARAMETER:"+key)
 		elif int(p[key])<0 or (key not in ["default_seed","road_y","initial_output_city_step","forest_city_step","stone_city_step","policy_minimum"] and int(p[key])==0): errors.append("NONPOSITIVE_PARAMETER:"+key)
@@ -107,7 +131,7 @@ static func validate_fixture(data: Dictionary) -> Array:
 		if typeof(p.get(key))!=TYPE_DICTIONARY or p.get(key,{}).is_empty(): errors.append("INVALID_PARAMETER_VECTOR:"+key)
 	if typeof(p.get("contractor_name"))!=TYPE_STRING or str(p.get("contractor_name","")).is_empty(): errors.append("INVALID_CONTRACTOR_NAME")
 	if not errors.is_empty(): return errors
-	if p.continent_names.size()!=3 or p.nation_names.size()!=3 or p.city_names.size()!=3: errors.append("FIXTURE_REQUIRES_THREE_GEOGRAPHIC_ENTRIES")
+	if p.continent_names.size()!=3 or p.nation_names.size()!=3 or p.city_names.size()<3: errors.append("FIXTURE_REQUIRES_THREE_GEOGRAPHIC_ENTRIES")
 	if p.company_kinds.size()!=p.facility_positions.size() or p.company_kinds.size()!=p.director_names.size(): errors.append("FIXTURE_COMPANY_LAYOUT_MISMATCH")
 	if p.employee_titles.size()!=int(p.employees_per_company): errors.append("FIXTURE_EMPLOYEE_LAYOUT_MISMATCH")
 	for key in ["continent_names","nation_names","city_names","director_names","employee_titles","company_kinds","essential_products"]:
@@ -142,80 +166,257 @@ static func policy_limits() -> Dictionary:
 	return {"production_min": int(p.policy_minimum), "production_max": int(p.policy_maximum), "price_min": int(p.price_policy_minimum), "price_max": int(p.price_policy_maximum)}
 
 static func _content_hash() -> String:
-	# Parameters affect outcomes just as recipes do. A changed balance fixture
-	# cannot silently resume a save created under a different economic contract.
-	return JSON.stringify({"products": _product_data(), "recipes": _recipe_data(), "buildings": building_types(), "parameters": _parameters()}, "", true).sha256_text()
+	if _content_hash_cache=="": _content_hash_cache=_canonical_json({"fixture":_fixture(),"industry":Industry.definitions(),"industry_parameters":Industry.parameters(),"finance":Finance.definition(),"lifecycle":Life.content_hash(),"public":Public.content_hash(),"market":Market.content_hash(),"land":Land.content_hash()}).sha256_text()
+	return _content_hash_cache
 
 static func building_types() -> Array:
-	var data: Dictionary=_fixture()
-	return data.buildings.duplicate(true) if not data.is_empty() else []
+	var data: Dictionary = _fixture()
+	return data.get("buildings",[]).duplicate(true) + Industry.definitions().get("buildings",[]).duplicate(true)
 
 static func _product_data() -> Array:
-	var data: Dictionary=_fixture()
-	return data.products.duplicate(true) if not data.is_empty() else []
+	var result: Array = _fixture().get("products",[]).duplicate(true)
+	var overrides: Dictionary = Industry.definitions().get("product_overrides",{})
+	for item in result:
+		item["kind"] = "material"
+		if overrides.has(item.id): item.merge(overrides[item.id],true)
+	result.append_array(Industry.definitions().get("products",[]).duplicate(true))
+	return result
 
 static func _recipe_data() -> Array:
-	var data: Dictionary=_fixture()
-	return data.recipes.duplicate(true) if not data.is_empty() else []
+	var result: Array = _fixture().get("recipes",[]).duplicate(true)
+	var overrides: Dictionary = Industry.definitions().get("recipe_overrides",{})
+	for item in result:
+		if overrides.has(item.id): item.merge(overrides[item.id],true)
+	result.append_array(Industry.definitions().get("recipes",[]).duplicate(true))
+	return result
 
-static func new_world(seed_value: Variant = null) -> Dictionary:
-	var fixture: Dictionary=_fixture()
+static func new_world(seed_value: Variant = null, options: Dictionary = {}) -> Dictionary:
+	var fixture: Dictionary = _fixture()
 	if fixture.is_empty(): return {}
-	var p: Dictionary=fixture.parameters
-	if seed_value==null: seed_value=int(p.default_seed)
-	else: seed_value=int(seed_value)
-	var kinds: Array=p.company_kinds
-	var products: Array = _product_data()
-	var recipes: Array = _recipe_data()
-	var s: Dictionary = {"schema_version":1,"rules_version":RULES_VERSION,"seed":seed_value,"version":0,"planning_month":1,"last_resolved_month":0,"phase":"Planning","report_pending":false,"player_id":"p-0","controlled_company_id":"co-0","continents":[],"nations":[],"cities":[],"people":[],"companies":[],"facilities":[],"inventory":[],"projects":[],"shipments":[],"products":products,"recipes":recipes,"commands":[],"journal":[],"accounts":{},"events":[],"reports":[],"last_report":{},"used_command_ids":[],"monthly_labor":{},"experimental":true}
+	var p: Dictionary = fixture.parameters
+	if seed_value == null: seed_value = int(p.default_seed)
+	if not _whole_number(seed_value) or int(seed_value)<0: return {}
+	var per_nation: int = int(options.get("cities_per_nation",p.cities_per_nation))
+	if per_nation not in [1,2]: return {}
+	var s: Dictionary = {"schema_version":2,"rules_version":RULES_VERSION,"seed":int(seed_value),"version":0,"planning_month":1,"last_resolved_month":0,"phase":"Planning","report_pending":false,"player_id":"p-0","controlled_company_id":"co-0","continents":[],"nations":[],"cities":[],"people":[],"companies":[],"facilities":[],"inventory":[],"projects":[],"shipments":[],"products":_product_data(),"recipes":_recipe_data(),"commands":[],"journal":[],"accounts":{},"events":[],"reports":[],"last_report":{},"used_command_ids":[],"monthly_labor":{},"experimental":true,"id_counters":{},"generation_options":options.duplicate(true)}
 	s.content_hash = _content_hash()
-	var positions: Array = p.facility_positions
-	var korean_names: Array = p.city_names
-	var directors: Array = p.director_names
-	for ci in range(3):
-		var continent_id: String = "continent-%d" % ci
-		var nation_id: String = "nation-%d" % ci
-		var city_id: String = "city-%d" % ci
-		s.continents.append({"id":continent_id,"name":p.continent_names[ci]})
-		s.nations.append({"id":nation_id,"name":p.nation_names[ci],"continent_id":continent_id,"currency":"CR"})
-		var roads: Array = []
-		for x in range(int(p.city_width)):
-			roads.append({"x":x,"y":int(p.road_y)})
-		s.cities.append({"id":city_id,"name":korean_names[ci],"nation_id":nation_id,"continent_id":continent_id,"width":int(p.city_width),"height":int(p.city_height),"roads":roads,"resources":{"forest":int(p.forest_opening) + ci * int(p.forest_city_step),"stone":int(p.stone_opening) + ci * int(p.stone_city_step)},"resource_capacity":{"forest":int(p.forest_capacity) + ci * int(p.forest_city_step)},"forest_regrowth":int(p.forest_regrowth)})
-		for ki in range(kinds.size()):
-			var index: int = ci * kinds.size() + ki
-			var company_id: String = "co-%d" % index
-			var person_id: String = "p-%d" % (index * int(p.employees_per_company))
-			var kind: String = kinds[ki]
-			var definition: Dictionary = _building(kind)
-			var building_name: String = str(p.contractor_name) if kind=="builders" else str(definition.name)
-			s.companies.append({"id":company_id,"name":"%s %s" % [korean_names[ci],building_name],"city_id":city_id,"director_id":person_id,"shareholder_id":person_id,"policy":p.default_policy.duplicate(true),"opening_cash":int(p.company_opening_cash),"revenue":0,"expenses":0,"last_profit":0,"status":"active"})
-			Ledger.opening(s, company_id, int(p.company_opening_cash), 0)
-			for pi in range(int(p.employees_per_company)):
-				var pid: String = "p-%d" % (index * int(p.employees_per_company) + pi)
-				s.people.append({"id":pid,"name":"%s %s" % [directors[ki], p.employee_titles[pi]],"city_id":city_id,"company_id":company_id,"role":"director" if pi == 0 else ("builder" if kind == "builders" else "operator"),"hours":int(p.available_hours),"wage":int(p.hourly_wage),"employment_status":"employed","last_income":0,"last_consumption":0})
-				Ledger.opening(s, pid, int(p.person_opening_cash), 0)
-			var facility: Dictionary = {"id":"f-%d" % index,"name":building_name,"company_id":company_id,"city_id":city_id,"kind":kind,"x":positions[ki][0],"y":positions[ki][1],"w":int(p.contractor_width) if kind=="builders" else int(definition.w),"h":int(p.contractor_height) if kind=="builders" else int(definition.h),"status":"operational","recipe_id":definition.get("recipe_id",""),"capacity":definition.get("capacity",0),"operational_month":1}
-			s.facilities.append(facility)
-			if kind != "builders":
-				var recipe: Dictionary = _find(s.recipes, facility.recipe_id)
-				for product_id in _keys(recipe.inputs):
-					_change_inventory(s, company_id, city_id, product_id, int(p.initial_input_stock), "opening", 0)
-				for product_id in _keys(recipe.outputs):
-					_change_inventory(s, company_id, city_id, product_id, int(p.initial_output_stock) + ci * int(p.initial_output_city_step), "opening", 0)
-			# Finite opening maintenance stock. These are not regenerated during play.
-			_change_inventory(s, company_id, city_id, "tools", int(p.initial_maintenance_tools), "opening", 0)
-		# The selected company can begin a genuine construction project immediately.
-		var selected_company: String = "co-%d" % (ci * kinds.size())
-		for product_id in ["wood","stone"]:
-			_change_inventory(s,selected_company,city_id,product_id,int(p.starter_materials[product_id]),"opening",0)
+	for continent in range(3):
+		var cid: String = "continent-%d" % continent
+		var nid: String = "nation-%d" % continent
+		s.continents.append({"id":cid,"name":p.continent_names[continent]})
+		s.nations.append({"id":nid,"name":p.nation_names[continent],"continent_id":cid,"currency":"CR"})
+		for local in range(per_nation):
+			var index: int = continent*per_nation+local
+			var city_id: String = "city-%d" % index
+			var roads: Array = []
+			for y in p.road_rows:
+				for x in range(int(p.city_width)): roads.append({"x":x,"y":int(y)})
+			var resources: Dictionary = Industry.initial_reserves(index)
+			resources["forest"] = int(p.forest_opening)+index*int(p.forest_city_step)
+			resources["stone"] = int(p.stone_opening)+index*int(p.stone_city_step)
+			s.cities.append({"id":city_id,"name":p.city_names[index],"nation_id":nid,"continent_id":cid,"width":int(p.city_width),"height":int(p.city_height),"roads":roads,"resources":resources,"resource_capacity":{"forest":int(p.forest_capacity)+index*int(p.forest_city_step)},"forest_regrowth":int(p.forest_regrowth)})
+			for ki in range(p.company_kinds.size()):
+				_seed_company(s,str(p.company_kinds[ki]),city_id,Vector2i(int(p.facility_positions[ki][0]),int(p.facility_positions[ki][1])),index*int(p.company_kinds.size())+ki)
+	if bool(options.get("expanded_industries",p.extended_industries)):
+		var extras: Array = Industry.definitions().get("buildings",[])
+		for i in range(extras.size()):
+			var city: Dictionary = s.cities[i%s.cities.size()]
+			var position: Vector2i = _seed_site(s,city)
+			if position.x>=0: _seed_company(s,str(extras[i].id),str(city.id),position,s.companies.size())
+	_seed_balancing_staff(s)
+	Public.initialize(s)
+	Life.initialize(s)
+	Industry.initialize(s)
+	Land.initialize(s)
+	Finance.initialize(s)
+	Market.initialize(s)
+	s["initial_metrics"] = {"people":s.people.size(),"companies":s.companies.size(),"products":s.products.size(),"cities":s.cities.size()}
 	return s
 
+static func _seed_balancing_staff(s: Dictionary) -> void:
+	# These are explicit opening people/contracts, never a runtime rescue.
+	# Append after the baseline roster so existing identities keep their IDs.
+	for adjustment in _parameters().initial_staff_adjustments:
+		for facility in s.facilities:
+			if facility.kind!=adjustment.kind: continue
+			var city: Dictionary=_find(s.cities,str(facility.city_id))
+			for n in range(int(adjustment.additional_people)):
+				var id: String="p-%d" % s.people.size()
+				s.people.append({"id":id,"name":str(city.name)+" 추가 운영자 "+str(n+1),"city_id":city.id,"nationality":city.nation_id,"company_id":facility.company_id,"role":"operator","hours":int(adjustment.hours),"wage":int(adjustment.wage),"employment_status":"employed","last_income":0,"last_consumption":0,"opening_assignment_reason":"필수 식품 생산의 실제 노동시간 충족"})
+				Ledger.opening(s,id,int(_parameters().person_opening_cash),0)
+
+static func _seed_company(s: Dictionary, kind: String, city_id: String, tile: Vector2i, index: int) -> void:
+	var p: Dictionary = _parameters()
+	var def: Dictionary = _building(kind)
+	var co: String = "co-%d" % index
+	var first_person: int = s.people.size()
+	var pid: String = "p-%d" % first_person
+	var city: Dictionary = _find(s.cities,city_id)
+	var label: String = str(p.contractor_name) if kind=="builders" else str(def.get("name",kind))
+	s.companies.append({"id":co,"name":str(city.name)+" "+label,"city_id":city_id,"director_id":pid,"shareholder_id":pid,"policy":p.default_policy.duplicate(true),"opening_cash":int(p.company_opening_cash),"revenue":0,"expenses":0,"last_profit":0,"status":"active"})
+	Ledger.opening(s,co,int(p.company_opening_cash),0)
+	for i in range(int(p.employees_per_company)):
+		var id: String = "p-%d" % (first_person+i)
+		s.people.append({"id":id,"name":"%s %s%d" % [p.director_names[index%p.director_names.size()],p.employee_titles[i],index+1],"city_id":city_id,"nationality":city.nation_id,"company_id":co,"role":"director" if i==0 else ("builder" if kind=="builders" else "operator"),"hours":int(p.available_hours),"wage":int(Life._p().executive_hourly_wage) if i==0 else int(p.hourly_wage),"employment_status":"employed","last_income":0,"last_consumption":0})
+		Ledger.opening(s,id,int(p.person_opening_cash),0)
+	s.facilities.append({"id":"f-%d" % index,"name":label,"company_id":co,"city_id":city_id,"kind":kind,"x":tile.x,"y":tile.y,"w":int(p.contractor_width) if kind=="builders" else int(def.w),"h":int(p.contractor_height) if kind=="builders" else int(def.h),"status":"operational","recipe_id":str(def.get("recipe_id","")),"capacity":int(def.get("capacity",0)),"operational_month":1,"condition":100})
+	if kind=="builders": _change_inventory(s,co,city_id,"machinery",1,"opening",0)
+	if kind!="builders":
+		var recipe: Dictionary = _find(s.recipes,str(def.recipe_id))
+		for product in _keys(recipe.get("inputs",{})):
+			if not Industry.is_service(s,product): _change_inventory(s,co,city_id,product,int(p.initial_input_stock),"opening",0)
+		for product in _keys(recipe.get("outputs",{})):
+			if not Industry.is_service(s,product) and _find(s.products,product).get("kind")!="digital": _change_inventory(s,co,city_id,product,int(p.initial_output_stock),"opening",0)
+		for product in _keys(recipe.get("catalysts",{})): _change_inventory(s,co,city_id,product,int(p.initial_catalyst_stock)*int(recipe.catalysts[product]),"opening",0)
+	_change_inventory(s,co,city_id,"tools",int(p.initial_maintenance_tools),"opening",0)
+	if kind=="bakery":
+		for product in _keys(p.starter_materials): _change_inventory(s,co,city_id,product,int(p.starter_materials[product]),"opening",0)
+
+static func _seed_site(s: Dictionary, city: Dictionary) -> Vector2i:
+	for y in range(int(city.height)-1):
+		for x in range(int(city.width)-1):
+			if x==6 and y==6: continue
+			var payload: Dictionary={"city_id":city.id,"x":x,"y":y,"kind":"bakery"}
+			var owner: String=""
+			for co in s.companies:
+				if co.city_id==city.id: owner=co.id; break
+			if _site_error(s,payload,owner,false)=="": return Vector2i(x,y)
+	return Vector2i(-1,-1)
+
+static func new_game_options() -> Dictionary:
+	return {"fields":[{"key":"cities_per_nation","label":"국가별 도시 수","kind":"choice","default":2,"options":[{"label":"2개 도시 · 국내/국제 교역","value":2},{"label":"1개 도시 · 작은 세계","value":1}]},{"key":"expanded_industries","label":"산업 구성","kind":"choice","default":true,"options":[{"label":"전체 산업 공급망","value":true},{"label":"핵심 산업 연습","value":false}]}]}
+
+static func construction_budget(kind: String) -> int:
+	var def: Dictionary=_building(kind)
+	var total: int=int(def.get("work",0))*int(_parameters().construction_hour_price)
+	for product in ["wood","stone","tools"]:
+		var item: Dictionary=_find(_product_data(),product)
+		total+=int(def.get(product,0))*(int(item.get("price",0))*2+int(_parameters().freight_unit_cost))
+	return maxi(int(_parameters().construction_budget),total)
+
+static func _command_module(type: String) -> Variant:
+	if _command_module_cache.is_empty():
+		for module in command_modules():
+			for command_type in module.command_types(): _command_module_cache[command_type]=module
+	return _command_module_cache.get(type)
+
+static func planning_reservations(s: Dictionary, c: Dictionary) -> Array:
+	var rows: Array=[]
+	var module: Variant=_command_module(str(c.get("type","")))
+	if module!=null: rows=module.planning_reservations(s,c)
+	elif c.get("type")=="build": rows=[{"owner_id":str(c.acting_company_id),"resource_type":"cash","quantity":construction_budget(str(c.payload.get("kind","")))}]
+	var company: Dictionary=_find(s.get("companies",[]),str(c.get("acting_company_id","")))
+	if not company.is_empty() and company.get("director_id","")!=c.get("actor_id",""):
+		var bound: int=0
+		for r in rows:
+			if r.owner_id==company.id and r.resource_type=="cash": bound+=int(r.quantity)
+		if bound>0:
+			var applicable: bool=false
+			var chosen: String=""
+			for grant in s.get("lifecycle",{}).get("delegations",[]):
+				if grant.get("status")!="active" or grant.get("person_id")!=c.actor_id or grant.get("company_id")!=company.id or c.type not in grant.get("permissions",[]): continue
+				applicable=true
+				if grant.get("grantor_id")==company.director_id and Life.delegated_budget_remaining(s,grant)>=bound:
+					chosen=str(grant.id)
+					break
+			if applicable: rows.append({"owner_id":str(c.actor_id),"resource_type":"delegation","resource_id":chosen,"quantity":bound})
+	return rows
+
+static func _reservation_key(r: Dictionary) -> String:
+	var kind: String=str(r.resource_type)
+	var resource: String=str(r.get("resource_id",r.get("currency","CR" if kind=="cash" else "")))
+	if kind=="labor": resource="hours"
+	return str(r.owner_id)+"|"+kind+"|"+resource+"|"+str(r.get("city_id",""))
+
+static func _cache_plan_rows(rows: Array) -> void:
+	for r in rows:
+		if r.get("existing_reservation",false): continue
+		var key: String=_reservation_key(r)
+		_plan_cache_totals[key]=int(_plan_cache_totals.get(key,0))+maxi(0,int(r.get("quantity",0)))
+		_plan_cache_definitions[key]=r
+
+static func _ensure_plan_cache(s: Dictionary) -> void:
+	var last: String=str(s.commands[-1].id) if not s.commands.is_empty() else ""
+	if is_same(_plan_cache_state,s) and _plan_cache_version==int(s.version) and _plan_cache_count==s.commands.size() and _plan_cache_last==last: return
+	# Only a transient planning accelerator. A fresh immutable clone rebuilds it
+	# during every turn's full command revalidation; no cache enters a save/hash.
+	_plan_cache_state=s
+	_plan_cache_version=int(s.version)
+	_plan_cache_count=s.commands.size()
+	_plan_cache_last=last
+	_plan_cache_totals={}
+	_plan_cache_definitions={}
+	for queued in s.commands: _cache_plan_rows(planning_reservations(s,queued))
+
+static func _reservation_error(s: Dictionary, c: Dictionary) -> String:
+	var rows: Array=planning_reservations(s,c)
+	if rows.is_empty(): return ""
+	_ensure_plan_cache(s)
+	var additions: Dictionary={}
+	var definitions: Dictionary={}
+	for r in rows:
+		if r.get("existing_reservation",false): continue
+		var key: String=_reservation_key(r)
+		additions[key]=int(additions.get(key,0))+maxi(0,int(r.get("quantity",0)))
+		definitions[key]=r
+	for key in additions:
+		var r: Dictionary=definitions[key]
+		var owner: String=str(r.owner_id)
+		var available: int=0
+		match str(r.resource_type):
+			"cash":
+				var currency: String=str(r.get("resource_id",r.get("currency","CR")))
+				available=Ledger.balance(s,owner+":cash" if currency=="CR" else owner+":cash:"+currency)
+				if currency=="CR": available-=Public.reserved_cash(s,owner)
+			"labor": available=int(_find(s.people,owner).get("hours",0))
+			"inventory": available=available_quantity(s,owner,str(r.get("resource_id","")),str(r.get("city_id","")))
+			"delegation": available=Life.delegated_budget_remaining(s,_find(s.get("lifecycle",{}).get("delegations",[]),str(r.get("resource_id",""))))
+			"shares": available=Finance.available_shares(s,owner,str(r.get("resource_id","")))
+		if int(_plan_cache_totals.get(key,0))+int(additions[key])>available: return "SELF_RESERVATION_EXCEEDS_"+str(r.resource_type).to_upper()+":"+owner
+	return ""
+
+static func _append_planned_command(s: Dictionary, c: Dictionary) -> void:
+	_ensure_plan_cache(s)
+	s.commands.append(c.duplicate(true))
+	_cache_plan_rows(planning_reservations(s,c))
+	_plan_cache_count=s.commands.size()
+	_plan_cache_last=str(c.id)
+
+static func preflight_summary(s: Dictionary, actor_id: String, company_id: String) -> Dictionary:
+	var owner: String=company_id if company_id!="" else actor_id
+	var reserved: int=0
+	var commands: Array=[]
+	for c in s.get("commands",[]):
+		if c.actor_id!=actor_id: continue
+		if str(c.get("acting_company_id",""))==company_id: commands.append(c)
+		for r in planning_reservations(s,c):
+			if r.owner_id==owner and r.resource_type=="cash" and not r.get("existing_reservation",false): reserved+=int(r.quantity)
+	var hours: int=0
+	var builders: int=0
+	for person in s.people:
+		if person.company_id==owner or person.id==owner: hours+=int(person.hours)
+		if person.city_id==Domain.owner_city(s,owner) and person.role=="builder": builders+=int(person.hours)
+	var cash_limit: int=maxi(0,cash(s,owner)-Public.reserved_cash(s,owner))
+	var company: Dictionary=_find(s.companies,company_id)
+	if not company.is_empty() and company.get("director_id","")!=actor_id:
+		var delegated: int=0
+		for grant in s.get("lifecycle",{}).get("delegations",[]):
+			if grant.get("person_id")==actor_id and grant.get("company_id")==owner and grant.get("status")=="active": delegated=maxi(delegated,Life.delegated_budget_remaining(s,grant))
+		cash_limit=mini(cash_limit,delegated)
+	return {"available_cash":maxi(0,cash_limit-reserved),"reserved_cash":reserved,"expected_spending":reserved,"confirmed_spending":0,"available_hours":hours,"construction_labor":builders,"issues":[],"commands":commands}
+
+static func command_modules() -> Array:
+	return [Life,Finance,Public,Industry,Market,Land]
+
+static func command_descriptors() -> Array:
+	var actions: Array=[]
+	for module in command_modules(): actions.append_array(module.ui_actions())
+	return actions
+
 static func _building(kind: String) -> Dictionary:
-	for definition in building_types():
-		if definition.id == kind:
-			return definition
-	return {}
+	if _building_cache.is_empty():
+		for definition in building_types(): _building_cache[str(definition.id)]=definition
+	return _building_cache.get(kind,{})
 
 static func _find(items: Array, id: String) -> Dictionary:
 	for item in items:
@@ -227,11 +428,7 @@ static func cash(s: Dictionary, owner_id: String) -> int:
 	return Ledger.balance(s, owner_id + ":cash")
 
 static func available_quantity(s: Dictionary, owner_id: String, product_id: String, city_id: String = "") -> int:
-	var total: int = 0
-	for lot in s.get("inventory", []):
-		if lot.owner_id == owner_id and lot.product_id == product_id and str(lot.location) != "shipment" and (city_id == "" or lot.city_id == city_id):
-			total += maxi(0, int(lot.quantity) - int(lot.get("reserved",0)))
-	return total
+	return Domain.available_quantity(s,owner_id,product_id,city_id)
 
 static func _available_lot(s: Dictionary, owner_id: String, city_id: String, product_id: String) -> Dictionary:
 	var lot_id: String = "lot:%s:%s:%s" % [owner_id, city_id, product_id]
@@ -247,10 +444,10 @@ static func _event(s: Dictionary, event_type: String, reason: String, month: int
 	event.merge(extra, true)
 	s.events.append(event)
 
-static func _change_inventory(s: Dictionary, owner_id: String, city_id: String, product_id: String, delta: int, reason: String, month: int, event_type: String = "inventory") -> void:
-	var lot: Dictionary = _available_lot(s, owner_id, city_id, product_id)
-	lot.quantity = int(lot.quantity) + delta
-	_event(s, event_type, reason, month, {"actor_id":owner_id,"city_id":city_id,"product_id":product_id,"quantity":absi(delta),"inventory_delta":delta,"lot_id":lot.id})
+static func _change_inventory(s: Dictionary, owner_id: String, city_id: String, product_id: String, delta: int, reason: String, month: int, event_type: String = "inventory") -> Dictionary:
+	var result: Dictionary = Domain.change_inventory(s,owner_id,city_id,product_id,delta,reason,month,event_type)
+	if not result.get("ok",false): _event(s,"inventory_failed",str(result.error),month,{"actor_id":owner_id,"city_id":city_id,"product_id":product_id,"quantity":absi(delta)})
+	return result
 
 static func adjust_inventory(s: Dictionary, owner_id: String, product_id: String, delta: int, city_id: String, reason: String = "experimental_shock") -> Dictionary:
 	if _find(s.products, product_id).is_empty() or _find(s.cities, city_id).is_empty():
@@ -278,17 +475,16 @@ static func _site_error(s: Dictionary, payload: Dictionary, company_id: String, 
 	if city.is_empty():
 		return "UNKNOWN_CITY"
 	var company: Dictionary = _find(s.companies, company_id)
-	if company.city_id != city.id:
-		return "REMOTE_CONSTRUCTION_NOT_SUPPORTED"
 	var x: int = int(payload.get("x",-1))
 	var y: int = int(payload.get("y",-1))
 	var definition: Dictionary=_building(str(payload.get("kind","")))
 	if definition.is_empty(): return "UNKNOWN_BUILDING"
 	var w: int=int(definition.w)
 	var h: int=int(definition.h)
-	var rect: Dictionary = {"x":x,"y":y,"w":w,"h":h}
+	var rect: Dictionary = {"x":x,"y":y,"w":w,"h":h,"kind":str(payload.get("kind",""))}
 	if x < 0 or y < 0 or x + w > int(city.width) or y + h > int(city.height):
 		return "OUT_OF_BOUNDS"
+	if s.has("land") and not Land.can_build(s,company_id,str(city.id),rect): return Land.rights_error(s,company_id,str(city.id),rect)
 	var adjacent: bool = false
 	for road in city.roads:
 		var rx: int = int(road.x)
@@ -331,11 +527,21 @@ static func queue_command(s: Dictionary, command: Dictionary) -> Dictionary:
 			return {"ok":false,"error":"DUPLICATE_COMMAND_ID"}
 	if command.id in s.get("used_command_ids",[]):
 		return {"ok":false,"error":"DUPLICATE_COMMAND_ID"}
+	if typeof(command.payload) != TYPE_DICTIONARY: return {"ok":false,"error":"INVALID_PAYLOAD"}
+	if _find(s.people,str(command.actor_id)).is_empty(): return {"ok":false,"error":"UNKNOWN_ACTOR"}
+	for module in command_modules():
+		if str(command.type) in module.command_types():
+			var message: String = module.validate_command(s,command)
+			if message!="": return {"ok":false,"error":message}
+			var reservation_error: String=_reservation_error(s,command)
+			if reservation_error!="": return {"ok":false,"error":reservation_error}
+			_append_planned_command(s,command)
+			return {"ok":true,"error":""}
 	var company: Dictionary = _find(s.companies, str(command.acting_company_id))
 	var actor: Dictionary = _find(s.people, str(command.actor_id))
 	if company.is_empty() or actor.is_empty():
 		return {"ok":false,"error":"UNKNOWN_ACTOR_OR_COMPANY"}
-	if company.director_id != actor.id:
+	if not Life.can_act(s,str(actor.id),str(company.id),str(command.type),command.payload):
 		return {"ok":false,"error":"AUTHORITY_REQUIRED"}
 	if company.get("status","active") != "active":
 		return {"ok":false,"error":"COMPANY_INACTIVE"}
@@ -344,6 +550,7 @@ static func queue_command(s: Dictionary, command: Dictionary) -> Dictionary:
 	var payload: Dictionary = command.payload
 	match str(command.type):
 		"set_policy":
+			if payload.has("dividend_percent") and not Finance.capital_authority(s,str(actor.id),str(company.id)): return {"ok":false,"error":"CONTROLLING_VOTE_REQUIRED"}
 			if payload.is_empty():
 				return {"ok":false,"error":"EMPTY_POLICY"}
 			for key in _keys(payload):
@@ -370,8 +577,8 @@ static func queue_command(s: Dictionary, command: Dictionary) -> Dictionary:
 			var reserved: int = 0
 			for queued in s.commands:
 				if queued.acting_company_id == company.id and queued.type == "build":
-					reserved += int(p.construction_budget)
-			if cash(s,company.id) - reserved < int(p.construction_budget):
+					reserved += construction_budget(str(queued.payload.get("kind","")))
+			if cash(s,company.id) - reserved < construction_budget(str(payload.kind)):
 				return {"ok":false,"error":"CONSTRUCTION_BUDGET_REQUIRED"}
 		"cancel_project", "pause_project", "resume_project":
 			var project: Dictionary = _find(s.projects, str(payload.get("project_id","")))
@@ -384,7 +591,9 @@ static func queue_command(s: Dictionary, command: Dictionary) -> Dictionary:
 					return {"ok":false,"error":"PROJECT_COMMAND_ALREADY_QUEUED"}
 		_:
 			return {"ok":false,"error":"UNSUPPORTED_COMMAND"}
-	s.commands.append(command.duplicate(true))
+	var reservation_error: String=_reservation_error(s,command)
+	if reservation_error!="": return {"ok":false,"error":reservation_error}
+	_append_planned_command(s,command)
 	return {"ok":true,"error":""}
 
 static func _stable_key(s: Dictionary, category: String, id: String) -> String:
@@ -429,17 +638,18 @@ static func _pay(s: Dictionary, payer: String, payee: String, amount: int, reaso
 
 static func _sellers(s: Dictionary, buyer: String, city_id: String, product_id: String) -> Array:
 	var sellers: Array = []
-	var supplier_ids: Dictionary = {}
-	for facility in s.facilities:
-		if str(facility.recipe_id).is_empty(): continue
-		var recipe: Dictionary = _find(s.recipes,facility.recipe_id)
-		if recipe.get("outputs",{}).has(product_id): supplier_ids[facility.company_id]=true
-	for company_id in supplier_ids:
-		var company: Dictionary = _find(s.companies,str(company_id))
-		if company.id == buyer or company.get("status","active") != "active":
-			continue
-		if available_quantity(s, company.id, product_id, company.city_id) > 0:
-			sellers.append({"id":company.id,"city_id":company.city_id,"price":_effective_price(s,company.id,product_id),"remote":company.city_id != city_id})
+	var sites: Dictionary={}
+	if s.has("_runtime"):
+		sites=s._runtime.suppliers.get(product_id,{})
+	else:
+		for facility in s.facilities:
+			var recipe: Dictionary=_find(s.recipes,str(facility.recipe_id))
+			if recipe.get("outputs",{}).has(product_id): sites[str(facility.company_id)+"|"+str(facility.city_id)]={"company_id":facility.company_id,"city_id":facility.city_id}
+	for site in sites.values():
+		var company: Dictionary=s._runtime.companies.get(str(site.company_id),{}) if s.has("_runtime") else _find(s.companies,str(site.company_id))
+		if company.id==buyer or company.get("status","active")!="active": continue
+		if available_quantity(s,str(company.id),product_id,str(site.city_id))>0:
+			sellers.append({"id":company.id,"city_id":site.city_id,"price":_effective_price(s,str(company.id),product_id),"remote":site.city_id!=city_id})
 	sellers.sort_custom(func(a,b):
 		var a_cost: int = int(a.price) + (int(_parameters().freight_unit_cost) if a.remote else 0)
 		var b_cost: int = int(b.price) + (int(_parameters().freight_unit_cost) if b.remote else 0)
@@ -450,152 +660,179 @@ static func _sellers(s: Dictionary, buyer: String, city_id: String, product_id: 
 	return sellers
 
 static func _contractor(s: Dictionary, city_id: String) -> Dictionary:
-	for company in s.companies:
-		if company.city_id == city_id:
-			for facility in s.facilities:
-				if facility.company_id == company.id and facility.kind == "builders":
-					return company
-	return {}
+	var candidates: Array=[]
+	for facility in s.facilities:
+		if facility.city_id!=city_id or facility.kind!="builders" or facility.get("status","") not in ["operational","ready"]: continue
+		var company: Dictionary=_find(s.companies,str(facility.company_id))
+		if not company.is_empty() and company.get("status","active")=="active" and company not in candidates: candidates.append(company)
+	if candidates.is_empty(): return {}
+	return _sorted(s,candidates,"contractor")[0]
 
-static func _purchase(s: Dictionary, buyer: String, city_id: String, product_id: String, desired: int, month: int, reason: String) -> int:
-	var acquired: int = 0
-	if desired <= 0:
-		return acquired
+static func _purchase(s: Dictionary, buyer: String, city_id: String, product_id: String, desired: int, month: int, reason: String, budget_limit: int = -1) -> int:
+	if desired<=0: return 0
+	if Industry.is_service(s,product_id): return int(Industry.purchase_service(s,buyer,city_id,product_id,desired,month,-1,reason=="생산 투입물",budget_limit).get("quantity",0))
+	var acquired: int=0
+	var spent: int=0
 	_event(s,"demand",reason,month,{"actor_id":buyer,"city_id":city_id,"product_id":product_id,"quantity":desired})
 	for seller in _sellers(s,buyer,city_id,product_id):
-		var remote: bool = bool(seller.remote)
-		var price: int = int(seller.price)
-		var unit_cost: int = price + (int(_parameters().freight_unit_cost) if remote else 0)
-		var quantity: int = mini(desired - acquired, available_quantity(s,seller.id,product_id,seller.city_id))
-		quantity = mini(quantity, int(cash(s,buyer) / unit_cost))
-		if quantity <= 0:
-			continue
-		if not _pay(s,buyer,seller.id,quantity * price,"상품 매입",month,{"city_id":city_id,"product_id":product_id,"quantity":quantity,"seller_city_id":seller.city_id}):
-			continue
-		_change_inventory(s,seller.id,seller.city_id,product_id,-quantity,"판매 출고",month,"trade_out")
+		var remote: bool=bool(seller.remote)
+		var price: int=int(seller.price)
+		var quantity: int=mini(desired-acquired,available_quantity(s,seller.id,product_id,seller.city_id))
+		var rule: Dictionary=Public.trade_rule(s,str(seller.city_id),city_id,product_id,month)
+		if not rule.get("allowed",true): continue
+		var quote: Dictionary={"allowed":true,"unit_fee":0,"eta":month,"quantity":quantity}
+		if remote: quote=Industry.route_quote(s,str(seller.city_id),city_id,product_id,quantity,month)
+		if not quote.get("allowed",false): continue
+		quantity=mini(quantity,int(quote.get("quantity",quantity)))
+		var tariff_bps: int=int(rule.get("tariff_bps",0))
+		var freight: int=int(quote.get("unit_fee",0))
+		var budget: int=cash(s,buyer) if budget_limit<0 else mini(cash(s,buyer),maxi(0,budget_limit-spent))
+		quantity=mini(quantity,int(budget/maxi(1,price+freight)))
+		var tariff: int=int(ceil(float(price*quantity)*tariff_bps/10000.0))
+		while quantity>0 and quantity*(price+freight)+tariff>budget:
+			quantity-=1
+			tariff=int(ceil(float(price*quantity)*tariff_bps/10000.0))
+		if quantity<=0: continue
+		var age: Dictionary=Industry.inventory_age(s,str(seller.id),str(seller.city_id),product_id,quantity)
 		if remote:
-			var contractor: Dictionary = _contractor(s,seller.city_id)
-			if not contractor.is_empty():
-				_pay(s,buyer,contractor.id,quantity * int(_parameters().freight_unit_cost),"도시 간 운송",month,{"city_id":city_id,"product_id":product_id,"quantity":quantity})
-			var shipment_id: String = "ship-%d-%d" % [month,s.shipments.size()]
-			var lot_id: String = "lot:" + shipment_id
-			s.inventory.append({"id":lot_id,"owner_id":buyer,"city_id":seller.city_id,"accounting_city_id":city_id,"location":"shipment","product_id":product_id,"quantity":quantity,"reserved":0,"shipment_id":shipment_id,"unit_cost":price})
-			_event(s,"shipment","운송 중 소유권 이전",month,{"actor_id":buyer,"city_id":city_id,"product_id":product_id,"quantity":quantity,"inventory_delta":quantity,"lot_id":lot_id})
-			s.shipments.append({"id":shipment_id,"owner_id":buyer,"product_id":product_id,"quantity":quantity,"from_city_id":seller.city_id,"to_city_id":city_id,"eta":month+int(_parameters().freight_lead_months),"status":"transit","lot_id":lot_id})
+			var booked: Dictionary=Industry.reserve_route(s,buyer,str(seller.city_id),city_id,product_id,quantity,month,quote)
+			if not booked.get("ok",false): continue
+		if not Finance.settle_trade(s,"trade-%d-%d" % [month,s.journal.size()],buyer,str(seller.id),quantity*price,product_id,quantity,month).get("ok",false): continue
+		if tariff>0 and str(rule.get("tariff_receiver",""))!="": _pay(s,buyer,str(rule.tariff_receiver),tariff,"관세 납부",month,{"city_id":city_id})
+		_change_inventory(s,str(seller.id),str(seller.city_id),product_id,-quantity,"판매 출고",month,"trade_out")
+		if remote:
+			var sid: String="ship-%d-%d" % [month,s.shipments.size()]
+			var lid: String="lot:"+sid
+			var lot: Dictionary={"id":lid,"owner_id":buyer,"city_id":seller.city_id,"accounting_city_id":city_id,"location":"shipment","product_id":product_id,"quantity":quantity,"reserved":0,"shipment_id":sid,"unit_cost":price,"born_month":int(age.born_month)}
+			if int(age.get("expires_month",0))>0: lot.expires_month=int(age.expires_month)
+			s.inventory.append(lot)
+			Domain.register_lot(s,lot)
+			_event(s,"shipment","운송 중 소유권 이전",month,{"actor_id":buyer,"city_id":city_id,"product_id":product_id,"quantity":quantity,"inventory_delta":quantity,"lot_id":lid})
+			s.shipments.append({"id":sid,"owner_id":buyer,"product_id":product_id,"quantity":quantity,"from_city_id":seller.city_id,"to_city_id":city_id,"eta":int(quote.get("eta",month+1))+int(rule.get("delay",0)),"status":"transit","lot_id":lid,"route_ids":quote.get("path",[]),"carrier_id":str(quote.get("carrier_id",""))})
 		else:
-			_change_inventory(s,buyer,city_id,product_id,quantity,"매입 입고",month,"trade_in")
-		_event(s,"trade",reason,month,{"actor_id":buyer,"seller_id":seller.id,"city_id":city_id,"seller_city_id":seller.city_id,"product_id":product_id,"quantity":quantity,"amount":quantity*price,"unit_price":price,"remote":remote})
-		acquired += quantity
-		if acquired >= desired:
-			break
-	if acquired < desired:
-		_event(s,"shortage", "구매 예산 또는 실제 공급 부족",month,{"actor_id":buyer,"city_id":city_id,"product_id":product_id,"quantity":desired-acquired,"requested_reason":reason})
+			var incoming: Dictionary=_change_inventory(s,buyer,city_id,product_id,quantity,"매입 입고",month,"trade_in")
+			for lot_id in incoming.get("lot_ids",[]):
+				var lot: Dictionary=_find(s.inventory,str(lot_id))
+				lot.born_month=int(age.born_month)
+				if int(age.get("expires_month",0))>0: lot.expires_month=mini(int(lot.get("expires_month",age.expires_month)),int(age.expires_month))
+		_event(s,"trade",reason,month,{"actor_id":buyer,"seller_id":seller.id,"city_id":city_id,"seller_city_id":seller.city_id,"product_id":product_id,"quantity":quantity,"amount":quantity*price,"unit_price":price,"remote":remote,"foreign":_find(s.cities,str(seller.city_id)).nation_id!=_find(s.cities,city_id).nation_id})
+		spent+=quantity*(price+freight)+tariff
+		acquired+=quantity
+		if acquired>=desired: break
+	if acquired<desired: _event(s,"shortage","예산·규격·가용 재고·운송 제약",month,{"actor_id":buyer,"city_id":city_id,"product_id":product_id,"quantity":desired-acquired})
 	return acquired
 
 static func _arrive_shipments(s: Dictionary, month: int) -> void:
-	for shipment in s.shipments:
-		if shipment.status == "transit" and int(shipment.eta) <= month:
-			var lot: Dictionary = _find(s.inventory,shipment.lot_id)
-			var quantity: int = int(lot.quantity)
-			lot.quantity = 0
-			_event(s,"shipment_arrival","운송 종료",month,{"actor_id":shipment.owner_id,"city_id":shipment.to_city_id,"product_id":shipment.product_id,"quantity":quantity,"lot_id":lot.id,"inventory_delta":-quantity})
-			_change_inventory(s,shipment.owner_id,shipment.to_city_id,shipment.product_id,quantity,"도착 인수",month,"shipment_arrival")
-			shipment.status = "delivered"
+	Industry.receive_due_shipments(s,month)
 
-static func _work_available(s: Dictionary, company_id: String, role: String = "operator") -> int:
+static func _work_available(s: Dictionary, company_id: String, role: String = "operator", city_id: String = "") -> int:
 	var total: int = 0
 	for person in s.people:
-		if person.company_id == company_id and person.role == role:
+		if person.company_id == company_id and person.role == role and (city_id=="" or person.city_id==city_id):
 			total += maxi(0,int(person.hours) - int(s.monthly_labor.get(person.id,0)))
 	return total
 
-static func _work(s: Dictionary, company_id: String, hours: int, month: int, role: String = "operator") -> bool:
-	if hours <= 0:
-		return true
-	if _work_available(s,company_id,role) < hours or cash(s,company_id) < hours * int(_parameters().hourly_wage):
-		return false
-	var remaining: int = hours
+static func _work(s: Dictionary, company_id: String, hours: int, month: int, role: String = "operator", city_id: String = "", fee_owner: String = "", fee_amount: int = 0) -> bool:
+	if hours<=0: return true
+	var assignments: Array=[]
+	var remaining: int=hours
+	var wages: int=0
 	for person in _sorted(s,s.people,"workers"):
-		if person.company_id != company_id or person.role != role:
-			continue
-		var free: int = maxi(0,int(person.hours) - int(s.monthly_labor.get(person.id,0)))
-		var used: int = mini(free,remaining)
-		if used > 0:
-			if not _pay(s,company_id,person.id,used * int(person.wage),"근로 임금",month,{"city_id":person.city_id,"hours":used}):
-				return false
-			s.monthly_labor[person.id] = int(s.monthly_labor.get(person.id,0)) + used
-			_event(s,"labor","건설 작업" if role == "builder" else "생산 작업",month,{"actor_id":person.id,"company_id":company_id,"city_id":person.city_id,"hours":used})
-			remaining -= used
-		if remaining <= 0:
-			break
-	return remaining == 0
+		if person.company_id!=company_id or person.role!=role or (city_id!="" and person.city_id!=city_id): continue
+		var used: int=mini(remaining,maxi(0,int(person.hours)-int(s.monthly_labor.get(person.id,0))))
+		if used>0:
+			assignments.append({"person":person,"hours":used,"wage":used*int(person.wage)})
+			wages+=used*int(person.wage)
+			remaining-=used
+		if remaining<=0: break
+	if remaining>0 or cash(s,company_id)+fee_amount<wages: return false
+	if fee_amount>0 and (fee_owner=="" or cash(s,fee_owner)<fee_amount): return false
+	var lines: Array=[]
+	if fee_amount>0:
+		lines.append_array([{"account":fee_owner+":expense","debit":fee_amount,"credit":0},{"account":fee_owner+":cash","debit":0,"credit":fee_amount},{"account":company_id+":cash","debit":fee_amount,"credit":0},{"account":company_id+":revenue","debit":0,"credit":fee_amount}])
+	for a in assignments:
+		if int(a.wage)>0: lines.append_array([{"account":company_id+":expense","debit":int(a.wage),"credit":0},{"account":company_id+":cash","debit":0,"credit":int(a.wage)},{"account":str(a.person.id)+":cash","debit":int(a.wage),"credit":0},{"account":str(a.person.id)+":revenue","debit":0,"credit":int(a.wage)}])
+	if not lines.is_empty():
+		var posted: Dictionary=Ledger.post(s,"work-%d-%d" % [month,s.journal.size()],lines,"공정대금·실제 작업 임금 동시 결제" if fee_amount>0 else "실제 작업 임금 동시 결제",month)
+		if not posted.get("ok",false): return false
+	var employer: Dictionary=_find(s.companies,company_id)
+	if not employer.is_empty(): employer.expenses=int(employer.expenses)+wages; employer.revenue=int(employer.revenue)+fee_amount
+	if fee_amount>0:
+		var owner: Dictionary=_find(s.companies,fee_owner)
+		if not owner.is_empty(): owner.expenses=int(owner.expenses)+fee_amount
+		_event(s,"payment","공정 도급 대금",month,{"actor_id":fee_owner,"payer_id":fee_owner,"payee_id":company_id,"city_id":city_id,"amount":fee_amount})
+	for a in assignments:
+		a.person.last_income=int(a.person.last_income)+int(a.wage)
+		s.monthly_labor[a.person.id]=int(s.monthly_labor.get(a.person.id,0))+int(a.hours)
+		_event(s,"payment","근로 임금",month,{"actor_id":company_id,"payer_id":company_id,"payee_id":a.person.id,"city_id":a.person.city_id,"amount":a.wage,"hours":a.hours})
+		_event(s,"labor","건설 작업" if role=="builder" else "생산 작업",month,{"actor_id":a.person.id,"company_id":company_id,"city_id":a.person.city_id,"hours":a.hours,"amount":int(a.wage),"wage_paid":true})
+	if role=="operator": Finance.record_labor(s,company_id,wages,month)
+	return true
 
 static func _produce(s: Dictionary, facility: Dictionary, month: int) -> void:
-	if facility.get("status","") not in ["operational","ready"] or int(facility.get("operational_month",1)) > month or str(facility.recipe_id).is_empty():
+	if facility.get("status","") not in ["operational","ready"] or int(facility.get("operational_month",1))>month or str(facility.recipe_id).is_empty(): return
+	var company: Dictionary=_find(s.companies,str(facility.company_id))
+	if company.is_empty() or company.get("status","active")!="active": return
+	if s.has("land") and not Land.can_operate(s,str(company.id),str(facility.city_id),facility):
+		_event(s,"production_limit","부지 소유·임대 사용권이 유효하지 않음",month,{"actor_id":company.id,"city_id":facility.city_id,"facility_id":facility.id})
 		return
-	facility.status = "operational"
-	var company: Dictionary = _find(s.companies, facility.company_id)
-	var recipe: Dictionary = _find(s.recipes, facility.recipe_id)
-	var target: int = int(int(facility.capacity) * int(company.policy.production_percent) / 100)
-	if target <= 0:
+	facility.status="operational"
+	var recipe: Dictionary=_find(s.recipes,str(facility.recipe_id))
+	var gate: Dictionary=Industry.process_gate(s,facility,recipe,month)
+	if not gate.get("allowed",false):
+		_event(s,"production_limit",str(gate.get("reason","공정 제약")),month,{"actor_id":company.id,"city_id":facility.city_id,"facility_id":facility.id})
 		return
-	# Stock policy is actor-visible own inventory, not omniscient future demand.
-	var output_id: String = str(recipe.outputs.keys()[0])
-	var p: Dictionary=_parameters()
-	var target_stock: int = int(p.stock_target_essentials) if output_id in p.essential_products else int(p.stock_target_default)
-	var existing: int = available_quantity(s,company.id,output_id,company.city_id)
-	if existing >= target_stock * int(p.stock_excess_multiple):
-		target = 0
-	elif existing >= target_stock:
-		target = mini(target,int(p.stock_slow_batches))
-	if target <= 0:
-		_event(s,"production_limit","목표 재고를 채워 감산",month,{"actor_id":company.id,"city_id":company.city_id,"facility_id":facility.id,"product_id":output_id})
-		return
-	for product_id in _keys(recipe.inputs):
-		var missing: int = target * int(recipe.inputs[product_id]) - available_quantity(s,company.id,product_id,company.city_id)
-		if missing > 0:
-			_purchase(s,company.id,company.city_id,product_id,missing,month,"생산 투입물")
-	var batches: int = target
-	var constraint: String = "설비 처리능력"
-	for product_id in _keys(recipe.inputs):
-		var possible: int = int(available_quantity(s,company.id,product_id,company.city_id) / int(recipe.inputs[product_id]))
-		if possible < batches:
-			batches = possible
-			constraint = "원료 부족: " + str(_find(s.products,product_id).name)
-	var work_batches: int = int(_work_available(s,company.id) / int(recipe.labor))
-	if work_batches < batches:
-		batches = work_batches
-		constraint = "운영 인력 시간 부족"
-	var money_batches: int = int(cash(s,company.id) / (int(recipe.labor)*int(p.hourly_wage)))
-	if money_batches < batches:
-		batches = money_batches
-		constraint = "임금 지급 예산 부족"
-	var city: Dictionary = _find(s.cities,company.city_id)
+	var target: int=mini(int(gate.get("batch_limit",facility.capacity)),int(int(facility.capacity)*int(company.policy.production_percent)/100))
+	var output: String=str(recipe.outputs.keys()[0])
+	if not Industry.is_service(s,output):
+		var stock_target: int=int(_parameters().stock_target_essentials) if output in _parameters().essential_products else int(_parameters().stock_target_default)
+		var held: int=available_quantity(s,str(company.id),output,str(facility.city_id))
+		if _parameters().household_demand.has(output):
+			var population: int=0
+			for person in s.people:
+				if person.city_id==facility.city_id: population+=1
+			var forecast: int=int(ceil(float(population*int(_parameters().household_demand[output]))*float(100+int(_parameters().essential_forecast_buffer_percent))/100.0))
+			var required: int=maxi(0,forecast+stock_target-held)
+			target=mini(target,int(ceil(float(required)/int(recipe.outputs[output]))))
+		elif held>=stock_target*int(_parameters().stock_excess_multiple): target=0
+		elif held>=stock_target: target=mini(target,int(_parameters().stock_slow_batches))
+	elif month>1:
+		var sold: int=0
+		for e in s.get("last_report",{}).get("events",[]):
+			if e.get("type")=="service_trade" and e.get("seller_id")==company.id and e.get("product_id")==output: sold+=int(e.quantity)
+		var forecast: int=int(ceil(float(sold)*float(100+int(_parameters().service_reserve_percent))/100.0))
+		if sold>0: target=mini(target,maxi(1,int(ceil(float(forecast)/int(recipe.outputs[output])))))
+	if target<=0: return
+	for product in _keys(recipe.inputs):
+		var needed: int=Industry.input_quantity(s,facility,recipe,product,target)
+		var available: int=Industry.service_available(s,str(company.id),product,str(facility.city_id)) if Industry.is_service(s,product) else available_quantity(s,str(company.id),product,str(facility.city_id))
+		if needed>available: _purchase(s,str(company.id),str(facility.city_id),product,needed-available,month,"생산 투입물")
+	var labor: int=Industry.labor_per_batch(s,facility,recipe)
+	var batches: int=mini(target,int(_work_available(s,str(company.id),"operator",str(facility.city_id))/maxi(1,labor)))
+	var constraint: String="운영 인력 시간 부족"
+	for product in _keys(recipe.inputs):
+		var available: int=Industry.service_available(s,str(company.id),product,str(facility.city_id)) if Industry.is_service(s,product) else available_quantity(s,str(company.id),product,str(facility.city_id))
+		while batches>0 and available<Industry.input_quantity(s,facility,recipe,product,batches): batches-=1; constraint="투입 부족: "+str(_find(s.products,product).name)
 	if recipe.has("resource"):
-		var resource_batches: int = int(int(city.resources[recipe.resource]) / int(recipe.resource_per_batch))
-		if resource_batches < batches:
-			batches = resource_batches
-			constraint = "현지 자연자원 부족"
-	if batches < target:
-		_event(s,"production_limit",constraint,month,{"actor_id":company.id,"city_id":company.city_id,"facility_id":facility.id,"product_id":output_id,"quantity":target-batches})
-	if batches <= 0:
-		return
-	if not _work(s,company.id,batches*int(recipe.labor),month):
-		return
-	for product_id in _keys(recipe.inputs):
-		_change_inventory(s,company.id,company.city_id,product_id,-batches*int(recipe.inputs[product_id]),"공정 투입",month,"production_input")
-	if recipe.has("resource"):
-		var amount: int = batches * int(recipe.resource_per_batch)
-		city.resources[recipe.resource] = int(city.resources[recipe.resource]) - amount
-		_event(s,"resource_extraction","자연자원 채취",month,{"actor_id":company.id,"city_id":company.city_id,"resource":recipe.resource,"quantity":amount})
-	for product_id in _keys(recipe.outputs):
-		_change_inventory(s,company.id,company.city_id,product_id,batches*int(recipe.outputs[product_id]),"공정 산출",month,"production_output")
-	_event(s,"production","실제 투입물과 노동으로 생산",month,{"actor_id":company.id,"city_id":company.city_id,"facility_id":facility.id,"recipe_id":recipe.id,"batches":batches,"hours":batches*int(recipe.labor)})
+		batches=mini(batches,int(Industry.resource_available(s,str(facility.city_id),str(recipe.resource))/int(recipe.resource_per_batch)))
+	var wage: int=int(_parameters().hourly_wage)
+	batches=mini(batches,int(cash(s,str(company.id))/maxi(1,labor*wage)))
+	if batches<target: _event(s,"production_limit",constraint,month,{"actor_id":company.id,"city_id":facility.city_id,"facility_id":facility.id,"product_id":output,"quantity":target-batches})
+	if batches<=0 or not _work(s,str(company.id),batches*labor,month,"operator",str(facility.city_id)): return
+	for product in _keys(recipe.inputs):
+		var used: int=Industry.input_quantity(s,facility,recipe,product,batches)
+		if Industry.is_service(s,product):
+			Industry.consume_service(s,str(company.id),str(facility.city_id),product,used,month)
+			_event(s,"service_input","공정 서비스 투입",month,{"actor_id":company.id,"city_id":facility.city_id,"product_id":product,"quantity":used})
+		else: _change_inventory(s,str(company.id),str(facility.city_id),product,-used,"공정 투입",month,"production_input")
+	if recipe.has("resource"): Industry.consume_resource(s,str(facility.city_id),str(recipe.resource),batches*int(recipe.resource_per_batch),month,str(company.id))
+	Industry.record_output(s,facility,recipe,batches,month)
+	_event(s,"production","실제 투입·설비·노동의 공정",month,{"actor_id":company.id,"city_id":facility.city_id,"facility_id":facility.id,"recipe_id":recipe.id,"batches":batches,"hours":batches*labor})
 
 static func _ai_commands(s: Dictionary) -> void:
 	var p: Dictionary=_parameters()
 	for company in s.companies:
-		if company.director_id == s.player_id or company.get("status","active") != "active":
+		if company.director_id == s.player_id or str(company.director_id)=="" or company.get("status","active") != "active":
 			continue
 		var has_policy: bool = false
 		for command in s.commands:
@@ -616,11 +853,53 @@ static func _ai_commands(s: Dictionary) -> void:
 			price_percent = mini(int(p.ai_price_maximum),price_percent + int(p.ai_price_step))
 		queue_command(s,{"id":"ai-policy-%d-%s" % [s.planning_month,company.id],"actor_id":company.director_id,"acting_company_id":company.id,"expected_version":s.version,"type":"set_policy","payload":{"price_percent":price_percent}})
 
+static func _charge_grant(s: Dictionary, grant_id: String, amount: int, month: int) -> void:
+	var grant: Dictionary=_find(s.get("lifecycle",{}).get("delegations",[]),grant_id)
+	if grant.is_empty(): return
+	if int(grant.get("month",0))!=month: grant.month=month; grant.spent=0
+	grant.spent=int(grant.spent)+amount
+
 static func _execute_commands(s: Dictionary, month: int) -> void:
 	for command in _sorted(s,s.commands,"commands"):
+		var grant_before: Dictionary={}
+		var delegation_applies: bool=false
+		var delegated_cost: int=0
+		for r in planning_reservations(s,command):
+			if r.owner_id==command.acting_company_id and r.resource_type=="cash": delegated_cost+=int(r.quantity)
+		for grant in s.get("lifecycle",{}).get("delegations",[]):
+			if grant.get("status")=="active" and grant.get("person_id")==command.actor_id and grant.get("company_id")==command.acting_company_id and command.type in grant.get("permissions",[]):
+				delegation_applies=true
+				if Life.delegated_budget_remaining(s,grant)<delegated_cost: continue
+				grant_before={"grant_id":str(grant.id),"spent":int(grant.spent)}
+				break
+		if delegation_applies and (grant_before.is_empty() or not Life.has_delegated_permission(s,str(command.actor_id),str(command.acting_company_id),str(command.type),delegated_cost)):
+			_event(s,"command_failed","DELEGATED_BUDGET_EXCEEDED",month,{"actor_id":command.actor_id,"command_id":command.id})
+			s.used_command_ids.append(command.id)
+			continue
+		var handled: bool=false
+		for module in command_modules():
+			if str(command.type) in module.command_types():
+				var result: Dictionary=module.apply(s,command,month)
+				if not result.get("ok",false):
+					_event(s,"command_failed",str(result.get("error","수행 조건 변경")),month,{"actor_id":command.actor_id,"city_id":Domain.owner_city(s,str(command.actor_id)),"command_id":command.id})
+				elif not grant_before.is_empty(): _charge_grant(s,str(grant_before.grant_id),delegated_cost,month)
+				handled=true
+				break
+		if handled:
+			s.used_command_ids.append(command.id)
+			continue
 		var company: Dictionary = _find(s.companies,command.acting_company_id)
+		if company.is_empty() or not Life.can_act(s,str(command.actor_id),str(command.acting_company_id),str(command.type),command.payload):
+			_event(s,"command_failed","AUTHORITY_LOST_AT_EXECUTION",month,{"actor_id":command.actor_id,"command_id":command.id})
+			s.used_command_ids.append(command.id)
+			continue
 		match str(command.type):
 			"set_policy":
+				if command.payload.has("dividend_percent") and not Finance.capital_authority(s,str(command.actor_id),str(company.id)):
+					_event(s,"command_failed","CAPITAL_AUTHORITY_LOST_AT_EXECUTION",month,{"actor_id":command.actor_id,"command_id":command.id})
+					s.used_command_ids.append(command.id)
+					continue
+				if not grant_before.is_empty(): _charge_grant(s,str(grant_before.grant_id),delegated_cost,month)
 				for key in _keys(command.payload):
 					company.policy[key] = int(command.payload[key])
 				_event(s,"policy","반복 운영정책 변경",month,{"actor_id":command.actor_id,"company_id":company.id,"city_id":company.city_id,"command_id":command.id})
@@ -630,13 +909,15 @@ static func _execute_commands(s: Dictionary, month: int) -> void:
 					_event(s,"command_failed",site_error,month,{"actor_id":command.actor_id,"command_id":command.id,"city_id":company.city_id})
 				else:
 					var definition: Dictionary = _building(command.payload.kind)
-					var project: Dictionary = {"id":"project-" + command.id,"company_id":company.id,"city_id":command.payload.city_id,"kind":definition.id,"name":definition.name,"x":int(command.payload.x),"y":int(command.payload.y),"w":int(definition.w),"h":int(definition.h),"stage":"기초","progress":0,"required_work":int(definition.work),"months_worked":0,"min_months":int(definition.min_months),"status":"active","materials_used":{"wood":0,"stone":0,"tools":0},"materials_required":{"wood":int(definition.wood),"stone":int(definition.stone),"tools":int(definition.tools)},"reason":"착공 준비","start_month":month,"budget":int(_parameters().construction_budget),"spent":0}
+					var project: Dictionary = {"id":"project-" + command.id,"company_id":company.id,"city_id":command.payload.city_id,"kind":definition.id,"name":definition.name,"x":int(command.payload.x),"y":int(command.payload.y),"w":int(definition.w),"h":int(definition.h),"stage":"기초","progress":0,"required_work":int(definition.work),"months_worked":0,"min_months":int(definition.min_months),"status":"active","materials_used":{"wood":0,"stone":0,"tools":0},"materials_required":{"wood":int(definition.wood),"stone":int(definition.stone),"tools":int(definition.tools)},"reason":"착공 준비","start_month":month,"budget":construction_budget(str(definition.id)),"spent":0}
+					if not grant_before.is_empty(): _charge_grant(s,str(grant_before.grant_id),delegated_cost,month)
 					s.projects.append(project)
 					_event(s,"construction_start","부지 확정·월별 자재와 시공 필요",month,{"actor_id":company.id,"city_id":project.city_id,"project_id":project.id,"command_id":command.id})
 			"cancel_project", "pause_project", "resume_project":
 				var project: Dictionary = _find(s.projects,command.payload.project_id)
 				project.status = {"cancel_project":"cancelled","pause_project":"paused","resume_project":"active"}[command.type]
 				project.reason = "사용자 공사 정책 변경"
+				if command.type=="cancel_project": Finance.cancel_construction(s,str(company.id),str(project.id),month)
 				_event(s,"construction_status","미사용 재고 유지·이미 사용한 자재는 환불하지 않음",month,{"actor_id":company.id,"city_id":project.city_id,"project_id":project.id,"status":project.status,"command_id":command.id})
 		s.used_command_ids.append(command.id)
 	s.commands = []
@@ -651,13 +932,21 @@ static func _construct(s: Dictionary, project: Dictionary, month: int) -> void:
 		return
 	var owner: String = str(project.company_id)
 	var target: int = mini(int(p.construction_work_per_month),int(project.required_work)-int(project.progress))
-	target = mini(target,_work_available(s,contractor.id,"builder"))
+	target = mini(target,_work_available(s,contractor.id,"builder",str(project.city_id)))
+	var equipment_id: String=str(contractor.id)+":"+str(project.city_id)
+	var equipment_hours: int=available_quantity(s,str(contractor.id),"machinery",str(project.city_id))*int(p.construction_equipment_capacity)-int(s.get("monthly_equipment",{}).get(equipment_id,0))
+	target=mini(target,maxi(0,int(equipment_hours/int(p.equipment_hours_per_work))))
+	target=mini(target,maxi(0,int((int(project.budget)-int(project.spent))/int(p.construction_hour_price))))
 	target = mini(target,int(cash(s,owner)/int(p.construction_hour_price)))
 	for product_id in _keys(project.materials_required):
 		var monthly_need: int = int(ceil(float(project.materials_required[product_id]) * float(int(project.progress)+target) / float(project.required_work))) - int(project.materials_used[product_id])
 		var shortage: int = monthly_need - available_quantity(s,owner,product_id,project.city_id)
 		if shortage > 0:
+			var before_cash: int=cash(s,owner)
+			var unit_budget: int=maxi(1,int(_find(s.products,product_id).price)*2+int(p.freight_unit_cost))
+			shortage=mini(shortage,maxi(0,int((int(project.budget)-int(project.spent))/unit_budget)))
 			_purchase(s,owner,project.city_id,product_id,shortage,month,"건설 자재")
+			project.spent=int(project.spent)+maxi(0,before_cash-cash(s,owner))
 	var feasible: int = target
 	while feasible > 0:
 		var has_materials: bool = true
@@ -672,50 +961,73 @@ static func _construct(s: Dictionary, project: Dictionary, month: int) -> void:
 	if feasible < target:
 		project.reason = "현장 자재 부족 또는 미도착"
 	elif target < mini(int(p.construction_work_per_month),int(project.required_work)-int(project.progress)):
-		project.reason = "시공 인력 또는 자금 부족"
+		project.reason = "시공 인력·장비시간 또는 예산 부족"
 	if feasible <= 0:
 		if cash(s,owner)<int(p.construction_hour_price):
 			project.reason = "시공대금 지급 예산 부족"
 		_event(s,"construction_delay",project.reason,month,{"actor_id":owner,"city_id":project.city_id,"project_id":project.id})
 		return
-	if not _pay(s,owner,contractor.id,feasible*int(p.construction_hour_price),"공정 도급 대금",month,{"city_id":project.city_id,"project_id":project.id}):
-		project.reason = "시공대금 미지급"
+	if not _work(s,str(contractor.id),feasible,month,"builder",str(project.city_id),owner,feasible*int(p.construction_hour_price)):
+		project.reason = "시공대금·실제 임금의 동시 결제 불가"
+		_event(s,"construction_delay",project.reason,month,{"actor_id":owner,"city_id":project.city_id,"project_id":project.id})
 		return
-	if not _work(s,contractor.id,feasible,month,"builder"):
-		project.reason = "시공업체 임금 지급 실패"
-		return
+	if not s.has("monthly_equipment"): s.monthly_equipment={}
+	s.monthly_equipment[equipment_id]=int(s.monthly_equipment.get(equipment_id,0))+feasible*int(p.equipment_hours_per_work)
+	s["cost_context"]={"project_id":project.id}
+	Finance.capitalize_construction_payment(s,owner,feasible*int(p.construction_hour_price),month,str(project.id))
 	for product_id in _keys(project.materials_required):
 		var need: int = int(ceil(float(project.materials_required[product_id]) * float(int(project.progress)+feasible) / float(project.required_work))) - int(project.materials_used[product_id])
 		if need > 0:
 			_change_inventory(s,owner,project.city_id,product_id,-need,"건설 공정 투입",month,"construction_input")
 			project.materials_used[product_id] = int(project.materials_used[product_id]) + need
+	s.erase("cost_context")
 	project.progress = int(project.progress) + feasible
 	project.months_worked = int(project.months_worked) + 1
 	project.spent = int(project.spent) + feasible*int(p.construction_hour_price)
 	project.stage = "기초" if int(project.progress)<int(p.construction_stage_foundation) else ("골조" if int(project.progress)<int(p.construction_stage_frame) else "설비·검수")
-	_event(s,"construction_work","자재·시공시간·공정대금 투입",month,{"actor_id":owner,"city_id":project.city_id,"project_id":project.id,"hours":feasible,"quantity":feasible})
+	_event(s,"construction_work","자재·시공시간·공정대금 투입",month,{"actor_id":owner,"city_id":project.city_id,"project_id":project.id,"hours":feasible,"equipment_hours":feasible*int(p.equipment_hours_per_work),"amount":feasible*int(p.construction_hour_price),"quantity":feasible})
 	if int(project.progress)>=int(project.required_work) and int(project.months_worked)>=int(project.min_months):
 		project.status = "completed"
 		project.stage = "준공"
 		project.reason = "월말 검수 완료·다음 달부터 가동 가능"
 		project.completed_month = month
+		Finance.finalize_construction(s,owner,str(project.id),month)
 		var definition: Dictionary = _building(project.kind)
 		s.facilities.append({"id":"facility-"+project.id,"name":definition.name,"company_id":owner,"city_id":project.city_id,"kind":project.kind,"x":project.x,"y":project.y,"w":project.w,"h":project.h,"status":"ready","recipe_id":definition.recipe_id,"capacity":definition.capacity,"operational_month":month+1,"project_id":project.id})
 		_event(s,"construction_complete",project.reason,month,{"actor_id":owner,"city_id":project.city_id,"project_id":project.id})
 
 static func _consume(s: Dictionary, person: Dictionary, month: int) -> void:
-	var wants: Dictionary = _parameters().household_demand.duplicate(true)
-	for product_id in wants:
-		var amount: int = int(wants[product_id])
-		var held: int = available_quantity(s,person.id,product_id,person.city_id)
-		if held < amount:
-			_purchase(s,person.id,person.city_id,product_id,amount-held,month,"가계 필수 수요")
-		var consumed: int = mini(amount,available_quantity(s,person.id,product_id,person.city_id))
-		if consumed > 0:
-			_change_inventory(s,person.id,person.city_id,product_id,-consumed,"가계 사용",month,"consumption")
-			person.last_consumption = int(person.last_consumption)+consumed
-		if consumed < amount:
-			_event(s,"unmet_need","현지 재고 또는 가계 구매력 부족",month,{"actor_id":person.id,"city_id":person.city_id,"product_id":product_id,"quantity":amount-consumed})
+	var wants: Dictionary=_parameters().household_demand.duplicate(true)
+	wants.merge(Industry.household_needs(s,person,month),true)
+	var ordered: Array=[]
+	for product in _keys(_parameters().household_demand): ordered.append(product)
+	for product in _keys(wants):
+		if product not in ordered: ordered.append(product)
+	var optional_budget: int=-1
+	for product in ordered:
+		var essential: bool=_parameters().household_demand.has(product)
+		if not essential and optional_budget<0: optional_budget=int(cash(s,str(person.id))*int(_parameters().optional_budget_percent)/100)
+		var before_cash: int=cash(s,str(person.id))
+		var amount: int=maxi(0,int(wants[product])-Public.provided_need(s,str(person.id),product,month))
+		var consumed: int=0
+		if Industry.is_service(s,product):
+			var held: int=Industry.service_available(s,str(person.id),product,str(person.city_id))
+			if held<amount: _purchase(s,str(person.id),str(person.city_id),product,amount-held,month,"가계 필수 수요",-1 if essential else optional_budget)
+			var used: int=mini(amount,Industry.service_available(s,str(person.id),product,str(person.city_id)))
+			if used>0: Industry.consume_service(s,str(person.id),str(person.city_id),product,used,month)
+			consumed=used
+			if used<amount and _parameters().household_demand.has(product): _event(s,"unmet_need","가계 서비스 접근·구매력 부족",month,{"actor_id":person.id,"city_id":person.city_id,"product_id":product,"quantity":amount-used})
+		else:
+			var held: int=available_quantity(s,str(person.id),product,str(person.city_id))
+			if held<amount: _purchase(s,str(person.id),str(person.city_id),product,amount-held,month,"가계 구매",-1 if essential else optional_budget)
+			var used: int=mini(amount,available_quantity(s,str(person.id),product,str(person.city_id)))
+			consumed=used
+			if used>0:
+				if _parameters().household_demand.has(product): _change_inventory(s,str(person.id),str(person.city_id),product,-used,"가계 사용",month,"consumption")
+				else: Industry.household_use(s,person,product,used,month)
+			if used<amount and _parameters().household_demand.has(product): _event(s,"unmet_need","현지 재고 또는 가계 구매력 부족",month,{"actor_id":person.id,"city_id":person.city_id,"product_id":product,"quantity":amount-used})
+		if not essential: optional_budget=maxi(0,optional_budget-maxi(0,before_cash-cash(s,str(person.id))))
+		person.last_consumption=int(person.last_consumption)+consumed
 
 static func resolve_month(s: Dictionary) -> Dictionary:
 	var errors: Array = validate(s)
@@ -729,6 +1041,7 @@ static func resolve_month(s: Dictionary) -> Dictionary:
 	var start_event: int = work.events.size()
 	work.phase = "Resolving"
 	work.monthly_labor = {}
+	work["monthly_equipment"]={}
 	for company in work.companies:
 		company.revenue = 0
 		company.expenses = 0
@@ -738,6 +1051,9 @@ static func resolve_month(s: Dictionary) -> Dictionary:
 	# Queue AI through the public validator while the snapshot is still planning.
 	work.phase = "Planning"
 	_ai_commands(work)
+	for module in [Life,Industry,Public,Finance,Market,Land]:
+		for candidate in module.ai_commands(work):
+			if candidate.get("actor_id","")!=work.player_id: queue_command(work,candidate)
 	# Revalidate every submitted command from the immutable planning snapshot.
 	var recheck: Dictionary = work.duplicate(true)
 	recheck.commands = []
@@ -745,22 +1061,41 @@ static func resolve_month(s: Dictionary) -> Dictionary:
 		var result: Dictionary = queue_command(recheck,command)
 		if not result.ok:
 			return {"ok":false,"errors":[result.error],"error":"INVALID_COMMAND","state":s,"report":{}}
+	recheck={}
+	_plan_cache_state={}
+	_plan_cache_count=-1
 	work.phase = "Resolving"
 	_arrive_shipments(work,month)
 	_execute_commands(work,month)
+	Land.before_turn(work,month)
+	Market.before_turn(work,month)
+	Industry.before_turn(work,month)
+	Industry.register_closure_claims(work,month)
+	Life.monthly(work,month)
+	Public.begin_month(work,month)
+	Market.monthly(work,month)
+	Industry.monthly(work,month)
 	for facility in work.facilities:
 		if int(facility.get("operational_month",1))<=month and facility.status=="ready":
 			facility.status="operational"
-	# Directors use actual compensated time; they do not duplicate operator time.
+	# All roles reserve the same person's finite monthly capacity.
 	for company in _sorted(work,work.companies,"management"):
-		if cash(work,company.id)>=int(p.director_pay):
-			_pay(work,company.id,company.director_id,int(p.director_pay),"대표 경영 보수",month,{"city_id":company.city_id,"hours":int(p.director_hours)})
-			work.monthly_labor[company.director_id]=int(p.director_hours)
-			_event(work,"labor","대표 경영 업무",month,{"actor_id":company.director_id,"company_id":company.id,"city_id":company.city_id,"hours":int(p.director_hours)})
-	for facility in _sorted(work,work.facilities,"production"):
-		_produce(work,facility,month)
+		var director: Dictionary=_find(work.people,str(company.director_id))
+		if director.is_empty() or company.get("status","active")!="active": continue
+		var hours: int=mini(int(p.director_hours),maxi(0,int(director.hours)-int(work.monthly_labor.get(director.id,0))))
+		var amount: int=hours*int(director.wage)
+		if hours>0 and cash(work,str(company.id))>=amount and _pay(work,str(company.id),str(director.id),amount,"대표 경영 보수",month,{"city_id":company.city_id,"hours":hours}):
+			work.monthly_labor[director.id]=int(work.monthly_labor.get(director.id,0))+hours
+			_event(work,"labor","대표 경영 업무",month,{"actor_id":director.id,"company_id":company.id,"city_id":company.city_id,"hours":hours,"amount":amount,"wage_paid":true})
+	_prepare_runtime(work)
+	var ordered: Array=_sorted(work,work.facilities,"production")
+	ordered.sort_custom(func(a,b): return _production_priority(work,a)<_production_priority(work,b))
+	for facility in ordered: _produce(work,facility,month)
+	Industry.deliver_digital(work,month)
 	for project in _sorted(work,work.projects,"construction"):
 		_construct(work,project,month)
+	var payroll: Dictionary=Life.pay_contractual_wages(work,month)
+	if not payroll.get("ok",false): return {"ok":false,"errors":[str(payroll.get("error","PAYROLL_FAILURE"))],"error":"PAYROLL_FAILURE","state":s,"report":{}}
 	# Buyers are batch collected, then seeded per-period order changes fairness.
 	for person in _sorted(work,work.people,"consumption"):
 		_consume(work,person,month)
@@ -774,12 +1109,16 @@ static func resolve_month(s: Dictionary) -> Dictionary:
 		if growth>0:
 			city.resources.forest=int(city.resources.forest)+growth
 			_event(work,"resource_regrowth","유한 산림의 자연 재생",month,{"city_id":city.id,"resource":"forest","quantity":growth})
+	Public.monthly(work,month)
+	Industry.after_turn(work,month)
+	Finance.monthly(work,month)
 	for company in work.companies:
-		company.last_profit = int(company.revenue)-int(company.expenses)
-		var dividend: int = maxi(0,int(int(company.last_profit)*int(company.policy.dividend_percent)/100))
-		dividend=mini(dividend,maxi(0,cash(work,company.id)-int(p.dividend_cash_floor)))
-		if dividend>0:
-			_pay(work,company.id,company.shareholder_id,dividend,"주주 배당",month,{"city_id":company.city_id})
+		company.last_profit=Finance.retained_earnings(work,str(company.id))
+		var amount: int=maxi(0,int(int(company.last_profit)*int(company.policy.dividend_percent)/100))
+		amount=mini(amount,maxi(0,cash(work,str(company.id))-int(p.dividend_cash_floor)))
+		if amount>0: Finance.distribute_dividend(work,str(company.id),amount,month)
+	Finance.reconcile_deposits(work,month)
+	work.erase("_runtime")
 	work.last_resolved_month=month
 	work.planning_month=month+1
 	work.version=int(work.version)+1
@@ -818,48 +1157,220 @@ static func _scope_cities(s: Dictionary, scope_id: String) -> Array:
 	return ids
 
 static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
-	var city_ids: Array = _scope_cities(s,scope_id)
-	var result: Dictionary={"cash":0,"revenue":0,"expenses":0,"population":0,"employed":0,"production":0,"consumption":0,"unmet":0,"price_index":100,"inventory_total":0,"trades":0,"per_product":[],"scope_id":scope_id,"month":int(s.last_resolved_month),"accounting":"experimental_cash_flow_not_GDP","unit_warning":"서로 다른 상품 단위의 합은 생산·소비 활동량 참고값이며 GDP가 아닙니다."}
-	var prices_total: int=0
-	var prices_count: int=0
-	for person in s.people:
-		if person.city_id in city_ids:
-			result.population+=1
-			result.cash+=cash(s,person.id)
-			if person.get("employment_status","")=="employed": result.employed+=1
-	for company in s.companies:
-		if company.city_id in city_ids:
-			result.cash+=cash(s,company.id)
-			result.revenue+=int(company.revenue)
-			result.expenses+=int(company.expenses)
-	for product in s.products:
-		var row: Dictionary={"product_id":product.id,"name":product.name,"unit":product.unit,"price":int(product.price),"supply":0,"demand":0,"unmet":0,"produced":0,"consumed":0,"trade_quantity":0,"trade_value":0}
-		for lot in s.inventory:
-			if lot.accounting_city_id in city_ids and lot.product_id==product.id:
-				row.supply+=int(lot.quantity)
-		for event in s.events:
-			if int(event.month)!=int(s.last_resolved_month) or event.city_id not in city_ids or event.product_id!=product.id:
-				continue
-			match str(event.type):
-				"demand": row.demand+=int(event.quantity)
-				"unmet_need": row.unmet+=int(event.quantity)
-				"production_output": row.produced+=int(event.quantity)
-				"consumption": row.consumed+=int(event.quantity)
-				"trade":
-					row.trade_quantity+=int(event.quantity)
-					row.trade_value+=int(event.amount)
-					result.trades+=1
-		if row.trade_quantity>0:
-			row.price=int(round(float(row.trade_value)/float(row.trade_quantity)))
-			prices_total+=int(round(float(row.price)*100.0/float(product.price)))
-			prices_count+=1
-		result.production+=row.produced
-		result.consumption+=row.consumed
-		result.unmet+=row.unmet
-		result.inventory_total+=row.supply
+	# Query only: physical activity is valued at immutable content base prices.
+	# Selling an existing good, issuing credit, or moving money adds no output.
+	var month: int=int(s.get("last_resolved_month",0))
+	var city_ids: Array=_scope_cities(s,scope_id)
+	var selected: Dictionary={}
+	var cities: Dictionary={}
+	var owners: Dictionary={}
+	var people: Dictionary={}
+	var products: Dictionary={}
+	var rows: Dictionary={}
+	var city_products: Dictionary={}
+	var household_prices: Dictionary={}
+	for id in city_ids: selected[str(id)]=true
+	for city in s.get("cities",[]): cities[str(city.id)]=_metric_empty_city(str(city.id))
+	for collection in [s.get("people",[]),s.get("companies",[]),s.get("households",[])]:
+		for entity in collection:
+			if entity.has("city_id"): owners[str(entity.id)]=str(entity.city_id)
+	for group_name in ["public","finance"]:
+		for collection in s.get(group_name,{}).values():
+			if not collection is Array: continue
+			for entity in collection:
+				if entity is Dictionary and entity.has("id") and cities.has(str(entity.get("city_id",""))): owners[str(entity.id)]=str(entity.city_id)
+	for person in s.get("people",[]):
+		people[str(person.id)]=true
+		if not cities.has(str(person.city_id)): continue
+		var local: Dictionary=cities[str(person.city_id)]
+		local.population+=1
+		if person.get("employment_status","")=="employed": local.employed+=1
+	for company in s.get("companies",[]):
+		if not cities.has(str(company.city_id)): continue
+		cities[str(company.city_id)].revenue+=int(company.get("revenue",0))
+		cities[str(company.city_id)].expenses+=int(company.get("expenses",0))
+	for product in s.get("products",[]):
+		var id: String=str(product.id)
+		products[id]=product
+		rows[id]={"product_id":id,"name":str(product.get("name",id)),"unit":str(product.get("unit","")),"price":int(product.price),"base_price":int(product.price),"supply":0,"demand":0,"unmet":0,"produced":0,"consumed":0,"trade_quantity":0,"trade_value":0,"priced_quantity":0,"trade_value_by_currency":{},"price_observed":false}
+	for account in s.get("accounts",{}).values():
+		if account.get("kind","")!="cash": continue
+		var city: String=str(owners.get(str(account.get("owner","")),""))
+		if not cities.has(city): continue
+		_metric_add_currency(cities[city].cash_by_currency,str(account.get("currency","CR")),int(account.get("balance",0)))
+	for lot in s.get("inventory",[]):
+		var city: String=str(lot.get("accounting_city_id",lot.get("city_id","")))
+		var product: String=str(lot.get("product_id",""))
+		if not cities.has(city) or not products.has(product): continue
+		var quantity: int=int(lot.get("quantity",0))
+		cities[city].inventory_value+=quantity*int(products[product].price)
+		if selected.has(city): rows[product].supply+=quantity
+	# One event scan serves activity, territorial trade, and carried-forward
+	# household price observations. No product-by-event nested search.
+	var exports_by_currency: Dictionary={}
+	var imports_by_currency: Dictionary={}
+	var exports: int=0
+	var imports: int=0
+	for event in s.get("events",[]):
+		var type: String=str(event.get("type",""))
+		var event_month: int=int(event.get("month",0))
+		var product: String=str(event.get("product_id",""))
+		var city: String=str(event.get("city_id",owners.get(str(event.get("actor_id","")),"")))
+		var quantity: int=maxi(0,int(event.get("quantity",0)))
+		var price: int=int(products.get(product,{}).get("price",0))
+		var value: int=quantity*price
+		var sector: String=str(event.get("sector",""))
+		var digital_sale: bool=type=="gdp_output" and sector=="digital" and not str(event.get("buyer_id","")).is_empty()
+		var is_trade: bool=type in ["trade","service_trade"] or digital_sale
+		if is_trade and event_month<=month and quantity>0 and people.has(str(event.get("buyer_id",event.get("actor_id","")))) and str(event.get("currency","CR"))=="CR":
+			var key: String=_metric_product_key(city,product)
+			if not household_prices.has(key) or int(household_prices[key].month)<event_month: household_prices[key]={"month":event_month,"quantity":0,"amount":0}
+			if int(household_prices[key].month)==event_month:
+				household_prices[key].quantity+=quantity
+				household_prices[key].amount+=int(event.get("amount",0))
+		if event_month!=month: continue
+		if is_trade:
+			var seller_city: String=str(event.get("seller_city_id",owners.get(str(event.get("seller_id","")),city)))
+			var buyer_city: String=str(event.get("buyer_city_id",city))
+			var currency: String=str(event.get("currency","CR"))
+			var amount: int=int(event.get("amount",0))
+			if selected.has(seller_city) and not selected.has(buyer_city):
+				exports+=(int(event.get("amount",0)) if currency=="CR" else 0) if digital_sale else value
+				_metric_add_currency(exports_by_currency,currency,amount)
+			if selected.has(buyer_city) and not selected.has(seller_city):
+				imports+=(int(event.get("amount",0)) if currency=="CR" else 0) if digital_sale else value
+				_metric_add_currency(imports_by_currency,currency,amount)
+			if cities.has(buyer_city): cities[buyer_city].trades+=1
+			if selected.has(buyer_city) and rows.has(product):
+				rows[product].trade_quantity+=quantity
+				_metric_add_currency(rows[product].trade_value_by_currency,currency,amount)
+				if currency=="CR":
+					rows[product].trade_value+=amount
+					rows[product].priced_quantity+=quantity
+			# Sold service units are actual output at the provider's location.
+			# Unused capacity is not storable production and is not GDP.
+			if type=="service_trade" and cities.has(seller_city):
+				cities[seller_city].gross_output+=value
+				cities[seller_city].production_value+=value
+				_metric_product_activity(city_products,seller_city,product,"produced",quantity)
+		if not cities.has(city): continue
+		match type:
+			"gdp_output","gdp_input":
+				if sector not in ["public_nonmarket","digital"]: continue
+				var measured: int=int(event.get("amount",0)) if str(event.get("currency","CR"))=="CR" else 0
+				var field: String="gross_output" if type=="gdp_output" else "intermediate_consumption"
+				var component: String=("public_" if sector=="public_nonmarket" else "digital_")+field
+				cities[city][field]+=measured
+				cities[city][component]+=measured
+			"production_output":
+				cities[city].gross_output+=value
+				cities[city].production_value+=value
+				_metric_product_activity(city_products,city,product,"produced",quantity)
+			"production_input","service_input": cities[city].intermediate_consumption+=value
+			"construction_input":
+				# Materials become part of work-in-progress output and are also
+				# intermediate inputs. Their producer's VA is counted once.
+				cities[city].gross_output+=value
+				cities[city].intermediate_consumption+=value
+				cities[city].construction_materials+=value
+			"construction_work","construction_progress":
+				var work_value: int=int(event.get("hours",quantity))*int(_parameters().construction_hour_price)
+				cities[city].gross_output+=work_value
+				cities[city].construction_work+=work_value
+			"demand":
+				cities[city].demand_value+=value
+				_metric_product_activity(city_products,city,product,"demand",quantity)
+			"unmet_need":
+				cities[city].unmet_value+=value
+				_metric_product_activity(city_products,city,product,"unmet",quantity)
+			"consumption":
+				cities[city].consumption_value+=value
+				_metric_product_activity(city_products,city,product,"consumed",quantity)
+	var result: Dictionary=_metric_empty_city(scope_id)
+	result.merge({"scope_id":scope_id,"month":month,"per_product":[],"gdp":0,"real_gdp":0,"value_added":0,"price_index":100,"price_index_bps":10000,"price_basket":[],"price_index_missing_weight_percent":0.0,"price_index_reference_weight_percent":0.0,"exports":exports,"imports":imports,"net_exports":exports-imports,"exports_by_currency":exports_by_currency,"imports_by_currency":imports_by_currency,"accounting":"experimental_mixed_basis_covered_sector_value_added","valuation_currency":"CR","price_basis":"goods_services_construction_at_content_base_prices;public_at_actual_cost;digital_at_earned_transaction_prices","nominal_gdp_available":false,"full_real_gdp_available":false,"real_gdp_scope":"fixed_base_price_goods_sold_services_and_construction_only","unit_warning":"통합 생산·소비·미충족·재고는 기준가격으로 환산한 최소 화폐 단위입니다. 품목별 물량은 per_product에서 확인합니다.","definition":"상품·판매 서비스·건설은 기준가격, 공공 비시장 서비스는 실제 비용, 디지털은 이행한 거래가격으로 평가한 부가가치입니다. 평가 기준별 구성요소를 분리하며 전 부문 명목·실질 GDP로 단정하지 않습니다."},true)
+	for city in cities:
+		if not selected.has(city): continue
+		for field in ["population","employed","revenue","expenses","trades","gross_output","intermediate_consumption","production_value","consumption_value","demand_value","unmet_value","inventory_value","construction_materials","construction_work","public_gross_output","public_intermediate_consumption","digital_gross_output","digital_intermediate_consumption"]: result[field]=int(result[field])+int(cities[city][field])
+		for currency in cities[city].cash_by_currency: _metric_add_currency(result.cash_by_currency,currency,int(cities[city].cash_by_currency[currency]))
+		for product in products:
+			var activity: Dictionary=city_products.get(_metric_product_key(city,product),{})
+			for field in ["demand","unmet","produced","consumed"]: rows[product][field]=int(rows[product][field])+int(activity.get(field,0))
+	for product in s.get("products",[]):
+		var row: Dictionary=rows[str(product.id)]
+		if int(row.priced_quantity)>0:
+			row.price=int(round(float(row.trade_value)/float(row.priced_quantity)))
+			row.price_observed=true
+		row.erase("priced_quantity")
 		result.per_product.append(row)
-	if prices_count>0: result.price_index=int(prices_total/prices_count)
+	result.gdp=int(result.gross_output)-int(result.intermediate_consumption)
+	result.public_nonmarket_value_added=int(result.public_gross_output)-int(result.public_intermediate_consumption)
+	result.digital_current_price_value_added=int(result.digital_gross_output)-int(result.digital_intermediate_consumption)
+	result.covered_fixed_price_value_added=int(result.gdp)-int(result.public_nonmarket_value_added)-int(result.digital_current_price_value_added)
+	result.real_gdp=result.covered_fixed_price_value_added
+	result.value_added=result.gdp
+	result.cash=int(result.cash_by_currency.get("CR",0))
+	# Legacy numeric UI keys retain their shape, with explicit monetary units.
+	result.production=result.production_value
+	result.consumption=result.consumption_value
+	result.unmet=result.unmet_value
+	result.inventory_total=result.inventory_value
+	result.shortage_rate_percent=100.0*float(result.unmet_value)/float(result.demand_value) if int(result.demand_value)>0 else 0.0
+	_metric_price_index(result,s,selected,cities,products,city_products,household_prices,month)
 	return result
+
+static func _metric_empty_city(id: String) -> Dictionary:
+	return {"city_id":id,"population":0,"employed":0,"revenue":0,"expenses":0,"trades":0,"cash_by_currency":{},"gross_output":0,"intermediate_consumption":0,"production_value":0,"consumption_value":0,"demand_value":0,"unmet_value":0,"inventory_value":0,"construction_materials":0,"construction_work":0,"public_gross_output":0,"public_intermediate_consumption":0,"digital_gross_output":0,"digital_intermediate_consumption":0}
+
+static func _metric_add_currency(amounts: Dictionary, currency: String, amount: int) -> void:
+	amounts[currency]=int(amounts.get(currency,0))+amount
+
+static func _metric_product_key(city: String, product: String) -> String:
+	return city+"\u001f"+product
+
+static func _metric_product_activity(index: Dictionary, city: String, product: String, field: String, quantity: int) -> void:
+	var key: String=_metric_product_key(city,product)
+	if not index.has(key): index[key]={}
+	index[key][field]=int(index[key].get(field,0))+quantity
+
+static func _metric_price_index(result: Dictionary, s: Dictionary, selected: Dictionary, cities: Dictionary, products: Dictionary, activity: Dictionary, observations: Dictionary, month: int) -> void:
+	# Fixed quantities are annualized from the content rules. A missing quote
+	# keeps its basket weight and last observed price, or its explicit base
+	# reference; missing goods never disappear from a seemingly stable CPI.
+	var basket: Dictionary={}
+	for product in _parameters().household_demand: basket[str(product)]=float(_parameters().household_demand[product])
+	for rule in Industry._data().get("household_needs",[]):
+		basket[str(rule.product_id)]=float(rule.quantity)/float(maxi(1,int(rule.period)))
+	var base_cost: float=0.0
+	var current_cost: float=0.0
+	var missing_weight: float=0.0
+	var reference_weight: float=0.0
+	for product in _keys(basket):
+		if not products.has(product): continue
+		var row: Dictionary={"product_id":product,"unit":str(products[product].get("unit","")),"monthly_quantity_per_person":float(basket[product]),"base_price":int(products[product].price),"base_cost":0.0,"current_cost":0.0,"missing_observation_cost":0.0,"reference_cost":0.0,"unmet_quantity":0,"price_observation":"actual_household_trade"}
+		for city in selected:
+			if not cities.has(city): continue
+			var count: int=int(cities[city].population)
+			var weight: float=float(basket[product])*count
+			var reference: float=weight*float(row.base_price)
+			var observed: Dictionary=observations.get(_metric_product_key(city,product),{})
+			var current_price: float=float(observed.amount)/float(observed.quantity) if int(observed.get("quantity",0))>0 else float(row.base_price)
+			row.base_cost+=reference
+			row.current_cost+=weight*current_price
+			row.unmet_quantity+=int(activity.get(_metric_product_key(city,product),{}).get("unmet",0))
+			if int(observed.get("month",-1))!=month: row.missing_observation_cost+=reference
+			if observed.is_empty(): row.reference_cost+=reference
+		if float(row.missing_observation_cost)>0.0: row.price_observation="partly_carried_forward_or_reference"
+		base_cost+=float(row.base_cost)
+		current_cost+=float(row.current_cost)
+		missing_weight+=float(row.missing_observation_cost)
+		reference_weight+=float(row.reference_cost)
+		result.price_basket.append(row)
+	if base_cost>0.0:
+		result.price_index=int(round(current_cost*100.0/base_cost))
+		result.price_index_bps=int(round(current_cost*10000.0/base_cost))
+		result.price_index_missing_weight_percent=missing_weight*100.0/base_cost
+		result.price_index_reference_weight_percent=reference_weight*100.0/base_cost
+	result.price_index_definition="고정 월 환산 가계 소비 묶음 · 기준 100 · 미관측 품목은 직전 실거래 또는 기준가격 유지"
 
 static func state_hash(s: Dictionary) -> String:
 	var normalized: Dictionary = s.duplicate(true)
@@ -872,24 +1383,9 @@ static func state_hash(s: Dictionary) -> String:
 	return _canonical_json(normalized).sha256_text()
 
 static func _canonical_json(value: Variant) -> String:
-	match typeof(value):
-		TYPE_DICTIONARY:
-			var keys: Array=value.keys()
-			keys.sort_custom(func(a,b): return str(a)<str(b))
-			var pairs: PackedStringArray=[]
-			for key in keys: pairs.append(JSON.stringify(str(key))+":"+_canonical_json(value[key]))
-			return "{"+",".join(pairs)+"}"
-		TYPE_ARRAY:
-			var items: PackedStringArray=[]
-			for item in value: items.append(_canonical_json(item))
-			return "["+",".join(items)+"]"
-		TYPE_FLOAT:
-			if is_finite(value) and value==floor(value) and abs(value)<=9007199254740991.0: return str(int(value))
-			return JSON.stringify(value,"",true,true)
-		TYPE_STRING_NAME:
-			return JSON.stringify(str(value))
-		_:
-			return JSON.stringify(value)
+	# Normalize restored whole-number floats, then use the engine's native
+	# recursive key sorting and full precision serializer for large histories.
+	return JSON.stringify(_normalize_fixture(value),"",true,true)
 
 static func validate(s: Dictionary) -> Array:
 	if _fixture().is_empty(): return ["EXPERIMENTAL_CONTENT_INVALID"]
@@ -968,7 +1464,7 @@ static func validate(s: Dictionary) -> Array:
 	for event in s.events:
 		if event.has("inventory_delta") and (not _whole_number(event.inventory_delta) or typeof(event.get("lot_id")) not in [TYPE_STRING,TYPE_STRING_NAME]): errors.append("INVALID_INVENTORY_EVENT")
 	if not errors.is_empty(): return errors
-	if int(s.schema_version)!=1 or s.rules_version!=RULES_VERSION: errors.append("UNSUPPORTED_SCHEMA_OR_RULES")
+	if int(s.schema_version)!=2 or s.rules_version!=RULES_VERSION: errors.append("UNSUPPORTED_SCHEMA_OR_RULES")
 	if s.continents.size()!=3: errors.append("WORLD_REQUIRES_THREE_CONTINENTS")
 	if int(s.planning_month)!=int(s.last_resolved_month)+1: errors.append("MONTH_COMMIT_MISMATCH")
 	if int(s.version)!=int(s.last_resolved_month): errors.append("VERSION_MONTH_MISMATCH")
@@ -994,12 +1490,12 @@ static func validate(s: Dictionary) -> Array:
 		for value in city.get("resources",{}).values():
 			if int(value)<0: errors.append("NEGATIVE_NATURAL_RESOURCE")
 	for company in s.companies:
-		if _find(s.people,company.get("director_id","")).is_empty() or _find(s.cities,company.get("city_id","")).is_empty(): errors.append("COMPANY_REFERENCE_INVALID")
+		if (str(company.get("director_id",""))!="" and _find(s.people,company.director_id).is_empty()) or _find(s.cities,company.get("city_id","")).is_empty(): errors.append("COMPANY_REFERENCE_INVALID")
 		if not s.accounts.has(str(company.id)+":cash"): errors.append("COMPANY_CASH_ACCOUNT_MISSING")
 		elif typeof(s.accounts[str(company.id)+":cash"])!=TYPE_DICTIONARY or s.accounts[str(company.id)+":cash"].get("owner")!=company.id: errors.append("COMPANY_CASH_OWNER_MISMATCH")
 	for person in s.people:
-		if _find(s.cities,person.get("city_id","")).is_empty() or _find(s.companies,person.get("company_id","")).is_empty(): errors.append("PERSON_REFERENCE_INVALID")
-		if int(s.get("monthly_labor",{}).get(person.id,0))>int(person.get("hours",0)): errors.append("LABOR_OVERALLOCATED:"+str(person.id))
+		if _find(s.cities,person.get("city_id","")).is_empty() or (str(person.get("company_id",""))!="" and _find(s.companies,person.company_id).is_empty()): errors.append("PERSON_REFERENCE_INVALID")
+		if int(s.get("monthly_labor",{}).get(person.id,0))>int(person.get("capacity_hours",person.get("hours",0))): errors.append("LABOR_OVERALLOCATED:"+str(person.id))
 		if int(person.get("hours",0))<0: errors.append("NEGATIVE_AVAILABLE_LABOR")
 		if int(person.get("wage",0))<0: errors.append("NEGATIVE_WAGE")
 		if not s.accounts.has(str(person.id)+":cash"): errors.append("PERSON_CASH_ACCOUNT_MISSING")
@@ -1014,7 +1510,7 @@ static func validate(s: Dictionary) -> Array:
 		if typeof(lot.get("quantity")) not in [TYPE_INT,TYPE_FLOAT] or float(lot.quantity)!=floor(float(lot.quantity)): errors.append("INVALID_INVENTORY_QUANTITY")
 		if int(lot.get("quantity",-1))<0 or int(lot.get("reserved",-1))<0 or int(lot.get("reserved",0))>int(lot.get("quantity",0)): errors.append("NEGATIVE_OR_OVERRESERVED_INVENTORY:"+str(lot.id))
 		if _find(s.products,lot.get("product_id","")).is_empty() or _find(s.cities,lot.get("city_id","")).is_empty() or _find(s.cities,lot.get("accounting_city_id","")).is_empty(): errors.append("INVENTORY_REFERENCE_INVALID")
-		if _find(s.people,lot.get("owner_id","")).is_empty() and _find(s.companies,lot.get("owner_id","")).is_empty(): errors.append("UNKNOWN_INVENTORY_OWNER")
+		if Domain.owner_city(s,str(lot.get("owner_id","")))=="": errors.append("UNKNOWN_INVENTORY_OWNER")
 		if int(inventory_sums.get(lot.id,0))!=int(lot.quantity): errors.append("INVENTORY_FLOW_MISMATCH:"+str(lot.id))
 	for lot_id in inventory_sums:
 		if _find(s.inventory,str(lot_id)).is_empty(): errors.append("ORPHAN_INVENTORY_EVENT")
@@ -1032,6 +1528,8 @@ static func validate(s: Dictionary) -> Array:
 		var lot: Dictionary=_find(s.inventory,shipment.get("lot_id",""))
 		if lot.is_empty(): errors.append("SHIPMENT_LOT_MISSING")
 		elif shipment.status=="transit" and (int(lot.quantity)!=int(shipment.quantity) or lot.location!="shipment"): errors.append("SHIPMENT_STOCK_MISMATCH")
+	for module in command_modules():
+		for issue in module.validate(s): errors.append(issue)
 	var ledger_errors: Array=Ledger.validate(s)
 	for error in ledger_errors: errors.append(error)
 	return errors
@@ -1061,3 +1559,26 @@ static func _record_tiles(s: Dictionary, item: Dictionary, occupied: Dictionary,
 			occupied[key]=item.id
 			for road in city.get("roads",[]):
 				if int(road.x)==xx and int(road.y)==yy: errors.append("FACILITY_ON_ROAD:"+str(item.id))
+
+static func _prepare_runtime(s: Dictionary) -> void:
+	var recipes: Dictionary={}
+	var companies: Dictionary={}
+	var suppliers: Dictionary={}
+	for recipe in s.recipes: recipes[str(recipe.id)]=recipe
+	for company in s.companies: companies[str(company.id)]=company
+	for facility in s.facilities:
+		var recipe: Dictionary=recipes.get(str(facility.recipe_id),{})
+		for product in recipe.get("outputs",{}):
+			if not suppliers.has(product): suppliers[product]={}
+			suppliers[product][str(facility.company_id)+"|"+str(facility.city_id)]={"company_id":facility.company_id,"city_id":facility.city_id}
+	s["_runtime"]={"companies":companies,"recipes":recipes,"suppliers":suppliers,"stock_groups":{}}
+	for lot in s.inventory: Domain.register_lot(s,lot)
+
+static func _production_priority(s: Dictionary, facility: Dictionary) -> int:
+	var recipe: Dictionary=_find(s.recipes,str(facility.get("recipe_id","")))
+	if recipe.get("outputs",{}).has("energy"): return 0
+	if recipe.get("outputs",{}).has("water"): return 1
+	if recipe.get("process_kind","")=="extraction": return 2
+	if recipe.get("process_kind","") in ["agriculture","livestock"]: return 3
+	if recipe.get("process_kind","")=="service": return 6
+	return 4

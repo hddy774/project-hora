@@ -25,7 +25,7 @@ func _run() -> void:
 	app = Main.instantiate()
 	root.add_child(app)
 	await process_frame
-	app.world = Economy.new_world(42)
+	app.world = Economy.new_world(42, {"cities_per_nation": 1, "expanded_industries": false})
 	app.screen = "game"
 	app._render()
 	await process_frame

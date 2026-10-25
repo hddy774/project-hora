@@ -3,7 +3,21 @@ extends SceneTree
 func _init() -> void:
 	var failures: Array = []
 	var quick: bool = OS.get_cmdline_user_args().has("--quick")
-	var suites: Array = ["res://tests/test_economy.gd", "res://tests/test_ledger_save.gd"]
+	var suites: Array = [
+		"res://tests/test_economy.gd",
+		"res://tests/test_ledger_save.gd",
+		"res://tests/tests_finance.gd",
+		"res://tests/test_lifecycle.gd",
+		"res://tests/test_public_sector.gd",
+		"res://tests/test_industry.gd",
+		"res://tests/test_market.gd",
+		"res://tests/test_land.gd",
+		"res://tests/test_metrics_v2.gd",
+		"res://tests/test_generation.gd",
+		"res://tests/test_map_v2.gd",
+		"res://tests/test_integration_v2.gd",
+		"res://tests/test_core_integration_review.gd",
+	]
 	for suite_path in suites:
 		if not ResourceLoader.exists(suite_path):
 			failures.append("Required test suite is missing: " + suite_path)

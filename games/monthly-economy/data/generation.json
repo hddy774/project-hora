@@ -1,0 +1,12 @@
+{
+  "status": "experimental",
+  "version": 1,
+  "purpose": "생성된 시작 상태의 공급 경로와 복사본 예비 정산을 검사한다. 출시 밸런스나 장기 안정성 보장이 아니다.",
+  "units": {"preview_months": "game months", "money": "integer CR minor units", "stock": "each product's declared unit"},
+  "preview_months": 3,
+  "maximum_preview_months": 120,
+  "buffer_warning_percent": 25,
+  "essential_products": ["food", "water", "energy"],
+  "support_products": ["tools", "wood", "stone", "machinery", "machine_parts", "transport_vehicle"],
+  "coverage": ["owner/currency double-entry", "stock/labor/authority invariants", "finite city supply paths", "bank deposit counterparts", "copied monthly observation"]
+}

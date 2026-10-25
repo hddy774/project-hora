@@ -1,0 +1,588 @@
+{
+  "status": "experimental",
+  "version": 1,
+  "parameters": {
+    "initial_shares": 1000,
+    "minimum_capital": 100,
+    "registration_fee": 10,
+    "maximum_name_length": 48,
+    "default_hours": 80,
+    "default_wage": 2,
+    "minimum_wage": 1,
+    "maximum_wage": 20,
+    "maximum_hours": 160,
+    "training_monthly_fee": 15,
+    "training_hours": 8,
+    "maximum_skill": 10,
+    "maximum_training_months": 24,
+    "migration_fee": 20,
+    "director_monthly_hours": 6,
+    "delegation_monthly_hours": 4,
+    "maximum_delegation_budget": 1000000,
+    "acquisition_valid_months": 3,
+    "liquidation_facility_price": 80,
+    "liquidation_stock_discount_percent": 70,
+    "retirement_notice_months": 1,
+    "ai_reconsider_period": 6,
+    "ai_startup_cash": 800,
+    "ai_startup_capital": 500,
+    "ai_training_cash": 350,
+    "ai_wage_improvement": 1,
+    "ai_hiring_wage_step": 1,
+    "ai_maximum_wage": 8,
+    "employees_per_facility": 2,
+    "allow_player_switch": true,
+    "initial_reputation": 50,
+    "initial_role_skill": 2,
+    "initial_operations_skill": 1,
+    "ai_training_months": 2,
+    "executive_hourly_wage": 6,
+    "minimum_executive_skill": 1,
+    "ai_liquidation_reserve": 1200,
+    "liquidation_notice_months": 1,
+    "guaranteed_hour_percent": 100,
+    "director_guaranteed_hours": 6
+  },
+  "skills": [
+    "operations",
+    "construction",
+    "management",
+    "software",
+    "research"
+  ],
+  "roles": [
+    "operator",
+    "builder",
+    "developer",
+    "researcher",
+    "service"
+  ],
+  "allowed_kinds": [
+    "bakery",
+    "mill",
+    "farm",
+    "forestry",
+    "quarry",
+    "workshop",
+    "power",
+    "water"
+  ],
+  "delegable_permissions": [
+    "set_policy",
+    "build",
+    "pause_project",
+    "resume_project",
+    "cancel_project",
+    "post_job",
+    "hire_person",
+    "fire_person",
+    "market_order",
+    "market_cancel",
+    "finance_borrow",
+    "finance_repay",
+    "finance_deposit",
+    "finance_withdraw",
+    "finance_offer_shares",
+    "finance_subscribe_equity",
+    "finance_trade_shares",
+    "finance_cancel_offer",
+    "finance_buy_bond",
+    "finance_insure",
+    "finance_claim",
+    "finance_exchange",
+    "land_offer_sale",
+    "land_offer_lease",
+    "land_buy",
+    "land_rent",
+    "land_cancel_offer",
+    "land_change_use",
+    "land_pay_rent",
+    "industry_research",
+    "industry_adopt",
+    "industry_software",
+    "industry_release",
+    "industry_license",
+    "industry_subscribe",
+    "industry_cancel_subscription",
+    "industry_advertise",
+    "industry_agriculture",
+    "industry_cancel_agriculture",
+    "industry_ship",
+    "industry_recycle",
+    "industry_warehouse",
+    "industry_repair"
+  ],
+  "ui_actions": [
+    {
+      "type": "create_company",
+      "label": "창업·법인 설립",
+      "scope": "personal",
+      "fields": [
+        {
+          "key": "name",
+          "label": "법인 이름",
+          "kind": "text",
+          "default": "새로운 기업"
+        },
+        {
+          "key": "city_id",
+          "label": "도시",
+          "kind": "choice",
+          "source": "cities"
+        },
+        {
+          "key": "capital",
+          "label": "출자금(최소화폐단위)",
+          "kind": "int",
+          "min": 100,
+          "max": 1000000,
+          "default": 150
+        },
+        {
+          "key": "kind",
+          "label": "사업 종류",
+          "kind": "choice",
+          "options": [
+            "bakery",
+            "mill",
+            "farm",
+            "forestry",
+            "quarry",
+            "workshop",
+            "power",
+            "water"
+          ],
+          "default": "bakery"
+        }
+      ]
+    },
+    {
+      "type": "post_job",
+      "label": "채용 공고",
+      "scope": "company",
+      "fields": [
+        {
+          "key": "role",
+          "label": "직무",
+          "kind": "choice",
+          "options": [
+            "operator",
+            "builder",
+            "developer",
+            "researcher",
+            "service"
+          ],
+          "default": "operator"
+        },
+        {
+          "key": "wage",
+          "label": "시급",
+          "kind": "int",
+          "min": 1,
+          "max": 20,
+          "default": 3
+        },
+        {
+          "key": "hours",
+          "label": "월 근로시간",
+          "kind": "int",
+          "min": 1,
+          "max": 160,
+          "default": 80
+        },
+        {
+          "key": "skill",
+          "label": "최소 숙련",
+          "kind": "int",
+          "min": 0,
+          "max": 10,
+          "default": 1
+        },
+        {
+          "key": "city_id",
+          "label": "근무 도시",
+          "kind": "choice",
+          "source": "cities",
+          "optional": true
+        },
+        {
+          "key": "guaranteed_hours",
+          "label": "월 보장 유급시간",
+          "kind": "int",
+          "min": 1,
+          "max": 160,
+          "default": 80
+        }
+      ]
+    },
+    {
+      "type": "apply_job",
+      "label": "공개 채용에 지원",
+      "scope": "personal",
+      "fields": [
+        {
+          "key": "offer_id",
+          "label": "채용 공고",
+          "kind": "choice",
+          "source": "jobs"
+        }
+      ]
+    },
+    {
+      "type": "hire_person",
+      "label": "직원 채용 제안",
+      "scope": "company",
+      "fields": [
+        {
+          "key": "person_id",
+          "label": "인물",
+          "kind": "choice",
+          "source": "people"
+        },
+        {
+          "key": "role",
+          "label": "직무",
+          "kind": "choice",
+          "options": [
+            "operator",
+            "builder",
+            "developer",
+            "researcher",
+            "service"
+          ],
+          "default": "operator"
+        },
+        {
+          "key": "wage",
+          "label": "시급",
+          "kind": "int",
+          "min": 1,
+          "max": 20,
+          "default": 3
+        },
+        {
+          "key": "hours",
+          "label": "월 근로시간",
+          "kind": "int",
+          "min": 1,
+          "max": 160,
+          "default": 80
+        },
+        {
+          "key": "city_id",
+          "label": "근무 도시",
+          "kind": "choice",
+          "source": "cities",
+          "optional": true
+        },
+        {
+          "key": "guaranteed_hours",
+          "label": "월 보장 유급시간",
+          "kind": "int",
+          "min": 1,
+          "max": 160,
+          "default": 80
+        }
+      ]
+    },
+    {
+      "type": "resign_job",
+      "label": "직장 사직",
+      "scope": "personal",
+      "fields": []
+    },
+    {
+      "type": "fire_person",
+      "label": "고용 계약 종료",
+      "scope": "company",
+      "fields": [
+        {
+          "key": "person_id",
+          "label": "직원",
+          "kind": "choice",
+          "source": "people"
+        }
+      ]
+    },
+    {
+      "type": "start_training",
+      "label": "직무 교육 신청",
+      "scope": "personal",
+      "fields": [
+        {
+          "key": "skill",
+          "label": "교육 분야",
+          "kind": "choice",
+          "options": [
+            "operations",
+            "construction",
+            "management",
+            "software",
+            "research"
+          ],
+          "default": "operations"
+        },
+        {
+          "key": "months",
+          "label": "교육 개월",
+          "kind": "int",
+          "min": 1,
+          "max": 24,
+          "default": 2
+        },
+        {
+          "key": "budget",
+          "label": "교육비 한도",
+          "kind": "int",
+          "min": 15,
+          "max": 100000,
+          "default": 30
+        }
+      ]
+    },
+    {
+      "type": "move_person",
+      "label": "다른 도시로 이주",
+      "scope": "personal",
+      "fields": [
+        {
+          "key": "city_id",
+          "label": "목적 도시",
+          "kind": "choice",
+          "source": "cities"
+        }
+      ]
+    },
+    {
+      "type": "apply_director",
+      "label": "대표 직위에 지원",
+      "scope": "personal",
+      "fields": [
+        {
+          "key": "company_id",
+          "label": "지원 법인",
+          "kind": "choice",
+          "source": "companies"
+        }
+      ]
+    },
+    {
+      "type": "appoint_director",
+      "label": "의결권으로 대표 선임",
+      "scope": "both",
+      "fields": [
+        {
+          "key": "company_id",
+          "label": "법인",
+          "kind": "choice",
+          "source": "companies"
+        },
+        {
+          "key": "person_id",
+          "label": "새 대표",
+          "kind": "choice",
+          "source": "people"
+        }
+      ]
+    },
+    {
+      "type": "dismiss_director",
+      "label": "대표 해임 의결",
+      "scope": "both",
+      "fields": [
+        {
+          "key": "company_id",
+          "label": "법인",
+          "kind": "choice",
+          "source": "companies"
+        }
+      ]
+    },
+    {
+      "type": "delegate_management",
+      "label": "경영 권한 위임",
+      "scope": "company",
+      "fields": [
+        {
+          "key": "person_id",
+          "label": "관리자",
+          "kind": "choice",
+          "source": "people"
+        },
+        {
+          "key": "permissions",
+          "label": "허용 명령(쉼표 구분)",
+          "kind": "text",
+          "default": "set_policy,post_job"
+        },
+        {
+          "key": "budget",
+          "label": "월 집행 한도",
+          "kind": "int",
+          "min": 1,
+          "max": 1000000,
+          "default": 100
+        }
+      ]
+    },
+    {
+      "type": "revoke_delegation",
+      "label": "위임 회수",
+      "scope": "company",
+      "fields": [
+        {
+          "key": "delegation_id",
+          "label": "위임 계약",
+          "kind": "choice",
+          "source": "delegations"
+        }
+      ]
+    },
+    {
+      "type": "create_subsidiary",
+      "label": "자회사 설립",
+      "scope": "company",
+      "fields": [
+        {
+          "key": "name",
+          "label": "자회사 이름",
+          "kind": "text",
+          "default": "새로운 자회사"
+        },
+        {
+          "key": "city_id",
+          "label": "도시",
+          "kind": "choice",
+          "source": "cities"
+        },
+        {
+          "key": "capital",
+          "label": "출자금",
+          "kind": "int",
+          "min": 100,
+          "max": 1000000,
+          "default": 200
+        },
+        {
+          "key": "kind",
+          "label": "사업 종류",
+          "kind": "choice",
+          "options": [
+            "bakery",
+            "mill",
+            "farm",
+            "forestry",
+            "quarry",
+            "workshop",
+            "power",
+            "water"
+          ],
+          "default": "bakery"
+        }
+      ]
+    },
+    {
+      "type": "offer_acquisition",
+      "label": "지분 인수 제안",
+      "scope": "both",
+      "fields": [
+        {
+          "key": "target_company_id",
+          "label": "대상 법인",
+          "kind": "choice",
+          "source": "companies"
+        },
+        {
+          "key": "amount",
+          "label": "제안 대금",
+          "kind": "int",
+          "min": 1,
+          "max": 10000000,
+          "default": 500
+        }
+      ]
+    },
+    {
+      "type": "accept_acquisition",
+      "label": "내 지분 인수 제안 수락",
+      "scope": "both",
+      "fields": [
+        {
+          "key": "offer_id",
+          "label": "인수 제안",
+          "kind": "choice",
+          "source": "acquisitions"
+        }
+      ]
+    },
+    {
+      "type": "declare_bankruptcy",
+      "label": "법인 청산 신청",
+      "scope": "company",
+      "fields": []
+    },
+    {
+      "type": "buy_liquidation_asset",
+      "label": "청산 자산 매입",
+      "scope": "company",
+      "fields": [
+        {
+          "key": "asset_id",
+          "label": "매각 자산",
+          "kind": "choice",
+          "source": "assets"
+        }
+      ]
+    },
+    {
+      "type": "change_player",
+      "label": "관찰·조작 인물 변경",
+      "scope": "personal",
+      "fields": [
+        {
+          "key": "person_id",
+          "label": "다음 인물",
+          "kind": "choice",
+          "source": "people"
+        }
+      ]
+    },
+    {
+      "type": "appoint_successor",
+      "label": "후계 인물 지정",
+      "scope": "personal",
+      "fields": [
+        {
+          "key": "person_id",
+          "label": "후계 인물",
+          "kind": "choice",
+          "source": "people"
+        }
+      ]
+    },
+    {
+      "type": "retire_person",
+      "label": "현재 인물 은퇴",
+      "scope": "personal",
+      "fields": []
+    }
+  ],
+  "default_company_policy": {
+    "production_percent": 100,
+    "price_percent": 100,
+    "dividend_percent": 20
+  },
+  "liquidation_priority": [
+    "wage_claims",
+    "public_claims",
+    "land_claims",
+    "financial_contracts",
+    "shareholders"
+  ],
+  "payroll_policy": {
+    "payment_rule": "pro_rata_by_amount",
+    "rounding_rule": "seeded_remainder",
+    "idle_hours_are_output": false,
+    "unpaid_wages_create_claims": true
+  }
+}

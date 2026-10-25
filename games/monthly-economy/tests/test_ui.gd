@@ -4,6 +4,10 @@ extends SceneTree
 
 const Economy = preload("res://core/economy.gd")
 const Main = preload("res://ui/main.tscn")
+const Art = preload("res://ui/art.gd")
+const CityMap = preload("res://ui/city_map.gd")
+const Domains = preload("res://ui/domain_views.gd")
+const Public = preload("res://core/public_sector.gd")
 var failures: Array = []
 var visited: int = 0
 var app: Control
@@ -19,11 +23,13 @@ func _run() -> void:
 	root.add_child(app)
 	await process_frame
 	print("UI smoke: first frame")
-	app.world = Economy.new_world(42)
+	app.world = Economy.new_world(42, {"cities_per_nation": 1, "expanded_industries": false})
 	app.screen = "game"
 	print("UI smoke: world ready")
 	var initial_hash: String = Economy.state_hash(app.world)
 	_check_tree(app.NAV, app.TREE)
+	_check_generated_resources()
+	_check_information_boundaries()
 	for scale_value: float in [1.0, 1.3]:
 		app.settings["text_scale"] = scale_value
 		app._apply_theme()
@@ -113,7 +119,7 @@ func _check_layout(context: String) -> void:
 
 func _check_footer(context: String) -> void:
 	var external_row: HBoxContainer = null
-	var next_month: Button = null
+	var next_month: Button = app.frame.find_child("NextMonthAction", true, false) as Button
 	for child: Node in app.frame.get_children():
 		if child is HBoxContainer and child.get_child_count() == 5:
 			var all_buttons: bool = true
@@ -122,8 +128,6 @@ func _check_footer(context: String) -> void:
 					all_buttons = false
 			if all_buttons:
 				external_row = child
-		elif child is Button and str(child.text).begins_with("다음 달"):
-			next_month = child
 	_expect(external_row != null, context + ": five-button external navigation row missing")
 	_expect(next_month != null, context + ": next-month button must be a separate action")
 	if external_row != null:
@@ -136,3 +140,37 @@ func _check_footer(context: String) -> void:
 func _expect(condition: bool, message: String) -> void:
 	if not condition:
 		failures.append(message)
+
+func _check_generated_resources() -> void:
+	var manifest: Dictionary = Art.manifest()
+	_expect(manifest.get("generated", false), "UI graphic registry identifies generated resources")
+	for group: String in ["textures", "icons"]:
+		_expect(not manifest.get(group, {}).is_empty(), "Generated image registry includes " + group)
+		for id: String in manifest.get(group, {}):
+			var graphic: Texture2D = Art.texture(id)
+			_expect(graphic != null, "Generated graphic loads from actual resource: " + id)
+			if graphic is AtlasTexture:
+				_expect(graphic.region.position.x >= 0 and graphic.region.position.y >= 0 and graphic.region.end.x <= graphic.atlas.get_width() + 1 and graphic.region.end.y <= graphic.atlas.get_height() + 1, "Atlas graphic stays within its generated source image: " + id)
+	for id: String in ["background", "panel", "button", "button_active", "button_primary", "modal", "home", "factory", "chart", "coins", "grid", "calendar", "construction", "plus", "minus", "save", "settings", "app_icon"]:
+		_expect(Art.texture(id) != null, "Required UI/image icon has a generated texture: " + id)
+	var map := CityMap.new()
+	map._load_art()
+	map.update_world(app.world, "city-0")
+	var status: Dictionary = map.art_status()
+	_expect(status.get("generated_atlas_loaded", false), "Map uses the generated building atlas")
+	_expect(status.get("ground_loaded", false), "Map uses generated ground images")
+	_expect(status.get("callout_loaded", false), "Map uses generated status-callout artwork")
+	map.free()
+
+func _check_information_boundaries() -> void:
+	_expect(app._visible_cash("co-1") == 0, "Personal UI does not disclose a rival company's private cash")
+	_expect(not Domains._field_filter(app, {"source": "loans"}, {"id": "rival-private-loan", "borrower_id": "co-1"}), "Loan chooser cannot expose another company's private credit contract")
+	_expect(Domains._field_filter(app, {"source": "loans"}, {"id": "own-loan", "borrower_id": "co-0"}), "Authorized company may select its own credit contract")
+	_expect(not Domains._field_filter(app, {"source": "software", "filter": "own_or_released"}, {"id": "rival-development", "owner_id": "co-1", "status": "developing"}), "Digital chooser hides rival unpublished development")
+	_expect(Domains._field_filter(app, {"source": "software", "filter": "own_or_released"}, {"id": "public-product", "owner_id": "co-1", "status": "released"}), "Released digital products can be selected by actual buyers")
+	var fixture: Dictionary = app.world.duplicate(true)
+	fixture.public.procurements.append({"id": "privacy-contract", "government_id": "gov-nation-nation-0"})
+	fixture.public.bids.append({"id": "privacy-bid", "contract_id": "privacy-contract", "company_id": "co-1", "status": "submitted", "unit_price": 987654})
+	var visible: Array = Domains.source_records(fixture, "bids", "p-0")
+	_expect(visible.filter(func(bid): return bid.id == "privacy-bid").is_empty(), "Actual UI record provider does not reveal sealed competitor bid price")
+	_expect(Domains.source_records(fixture, "bids").is_empty(), "Anonymous UI lookup does not default to privileged public-office access")

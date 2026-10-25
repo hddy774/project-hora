@@ -3,44 +3,15 @@ extends RefCounted
 ## Neither loading nor reading a report advances the simulation clock.
 
 const Ledger = preload("res://core/ledger.gd")
-const FORMAT_VERSION: int = 1
-const SCHEMA_VERSION: int = 1
-const RULES_VERSION: String = "experimental-0.1"
+const FORMAT_VERSION: int = 2
+const SCHEMA_VERSION: int = 2
+const RULES_VERSION: String = "experimental-0.2"
 const SAVE_DIR: String = "user://saves"
 const MAX_SAVE_BYTES: int = 64 * 1024 * 1024
 const MAX_INTEGER: int = 9007199254740991
 
 static func canonical(value: Variant) -> String:
-	match typeof(value):
-		TYPE_NIL:
-			return "null"
-		TYPE_BOOL:
-			return "true" if value else "false"
-		TYPE_INT:
-			return str(value)
-		TYPE_FLOAT:
-			if not is_finite(value):
-				return "!INVALID_NUMBER!"
-			if value == floor(value) and abs(value) <= MAX_INTEGER:
-				return str(int(value))
-			return JSON.stringify(value, "", true, true)
-		TYPE_STRING, TYPE_STRING_NAME:
-			return JSON.stringify(str(value))
-		TYPE_ARRAY:
-			var items: PackedStringArray = []
-			for item in value:
-				items.append(canonical(item))
-			return "[" + ",".join(items) + "]"
-		TYPE_DICTIONARY:
-			var keys: Array = value.keys()
-			# Dictionary dot assignments may create StringName keys. Sort by their
-			# serialized text so JSON restoration cannot alter the state checksum.
-			keys.sort_custom(func(a: Variant, b: Variant) -> bool: return str(a) < str(b))
-			var pairs: PackedStringArray = []
-			for key in keys:
-				pairs.append(JSON.stringify(str(key)) + ":" + canonical(value[key]))
-			return "{" + ",".join(pairs) + "}"
-	return "!UNSUPPORTED_TYPE!"
+	return JSON.stringify(_normalize(value),"",true,true)
 
 static func hash_state(state: Dictionary) -> String:
 	return canonical(state).sha256_text()
@@ -98,7 +69,7 @@ static func _validate_state(state: Dictionary) -> Array:
 	if not _json_safe(state):
 		return ["NON_JSON_OR_UNSAFE_STATE"]
 	if state.get("schema_version") != SCHEMA_VERSION:
-		return ["UNSUPPORTED_SCHEMA_VERSION"]
+		return ["UNSUPPORTED_SCHEMA_VERSION: use the matching original game version; the original file is preserved"]
 	if state.get("rules_version") != RULES_VERSION:
 		return ["UNSUPPORTED_RULES_VERSION"]
 	if state.get("phase") not in ["Planning", "Report", "Committed"]:
@@ -182,6 +153,13 @@ static func save_world(state: Dictionary, slot: String = "autosave") -> Dictiona
 		return _fail("SAVE_TEMP_VERIFY_FAILED: " + str(checked.error))
 	# Never replace a known-good backup with a corrupt or partial latest file.
 	var current: Dictionary = _read_path(path)
+	if not current.ok and FileAccess.file_exists(path):
+		var digest: String=FileAccess.get_sha256(path)
+		if digest.is_empty(): return _fail("PREVIOUS_FORMAT_UNREADABLE")
+		var preserved: String=path+".preserved-"+digest
+		if not FileAccess.file_exists(preserved):
+			var keep_error: Error=DirAccess.copy_absolute(ProjectSettings.globalize_path(path),ProjectSettings.globalize_path(preserved))
+			if keep_error!=OK or FileAccess.get_sha256(preserved)!=digest: return _fail("PREVIOUS_FORMAT_BACKUP_FAILED")
 	if current.ok:
 		var copied: Error = DirAccess.copy_absolute(ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(backup_temporary))
 		if copied != OK or not _read_path(backup_temporary).ok:

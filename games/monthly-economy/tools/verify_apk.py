@@ -32,7 +32,7 @@ badging = run(tools/'aapt', 'dump', 'badging', apk)
 permissions = run(tools/'aapt', 'dump', 'permissions', apk)
 manifest = run(tools/'aapt', 'dump', 'xmltree', apk, 'AndroidManifest.xml')
 assert "package: name='org.hora.economiclab'" in badging, 'Wrong application identity'
-assert "versionName='0.2.0'" in badging and "versionCode='2'" in badging, 'Wrong version'
+assert "versionName='0.2.1'" in badging and "versionCode='3'" in badging, 'Wrong version'
 assert 'android.permission.INTERNET' not in permissions, 'Offline game must not request Internet access'
 assert 'android:screenOrientation(0x0101001e)=(type 0x10)0x1' in manifest, 'Expected portrait orientation'
 assert 'android:debuggable(0x0101000f)=(type 0x12)0xffffffff' not in manifest, 'Release APK must not be debuggable'
@@ -94,7 +94,7 @@ else:
     assert len(certs) == 1, 'Missing publisher certificate digest'
     certificate = certs[0].lower()
     assert certificate == args.expected_certificate, 'Publisher certificate differs from the pinned identity'
-report = {'application_id': 'org.hora.economiclab', 'version': '0.2.0', 'version_code': 2,
+report = {'application_id': 'org.hora.economiclab', 'version': '0.2.1', 'version_code': 3,
           'signing_status': 'unsigned_release_input' if args.unsigned else 'retained_publisher_verified',
           'certificate_sha256': certificate, 'verification_build_tools': '36.0.0', 'abis': abis,
           'min_sdk': int(re.search(r"sdkVersion:'(\d+)'", badging).group(1)),

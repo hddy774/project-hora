@@ -4,7 +4,7 @@ project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 godot_bin="$(command -v "${GODOT_BIN:-godot}")"
 target="${1:-all}"
 build_dir="$project_dir/build"
-version=0.2.0
+version=0.2.1
 stem="HoraEconomicLab-v$version"
 mkdir -p "$build_dir"
 if [[ "$("$godot_bin" --version)" != 4.6.3.stable* ]]; then
@@ -22,10 +22,14 @@ checked() {
 }
 checked "$godot_bin" --headless --path "$project_dir" --editor --import --quit
 checked "$godot_bin" --headless --path "$project_dir" --script res://tests/run.gd
+checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_presentation.gd
+checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_ui_units.gd
 checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_ui.gd
 checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_ui_forms.gd
 checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_ui_input.gd
 checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_game_flow.gd
+# Linux remains an internal export/runtime verification input. Public releases
+# attach only the separately signed APK; the manifest inventories Actions files.
 build_linux() {
   checked "$godot_bin" --headless --path "$project_dir" --export-release "Hora Linux" "$build_dir/$stem-linux.x86_64"
   chmod +x "$build_dir/$stem-linux.x86_64"

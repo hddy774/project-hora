@@ -2,10 +2,13 @@
   "status": "experimental",
   "version": 1,
   "units": {
-    "money": "minimum CR unit; 100 units = 1 CR",
-    "time": "month",
-    "labor": "hour",
-    "rates": "basis points per 10000"
+    "money": "미국 달러(USD) 센트 정수. 100센트 = $1.00. 입력·표시는 달러, 내부 저장은 센트이며 기존 금액 숫자는 바꾸지 않음.",
+    "time": "개월",
+    "labor": "시간",
+    "rates": "저장은 bp(베이시스포인트), 100bp = 1%. 화면은 %로 표시·입력.",
+    "money_display_krw": "표시 전용 고정 환산: $1 = 1,000원. 실제 외환 거래·계좌 통화·장부 잔액은 바꾸지 않음.",
+    "procurement_quantity": "발주 품목의 kg·L·개 등 실제 단위",
+    "support": "게임 지지도 점수. 화폐·인원수와 구별."
   },
   "parameters": {
     "national_opening_cash": 25000,
@@ -96,5 +99,22 @@
     "생활과 일자리",
     "산업과 성장",
     "공공과 안전"
-  ]
+  ],
+  "term_labels": {
+    "tax_bps": "세율 (%)",
+    "tariff_bps": "수입 관세율 (%)",
+    "interest_bps": "기준 금리 (%)",
+    "services_budget": "공공서비스 예산 ($)",
+    "procurement_budget": "공공 구매 예산 ($)",
+    "import_ban": "수입 제한",
+    "export_ban": "수출 제한",
+    "mobilization": "동원 정책",
+    "procurement": "공공 구매(조달)",
+    "bid": "납품 제안(입찰)",
+    "inspection": "납품 확인(검수)",
+    "gdp": "부가가치 합계(GDP)",
+    "services": "생활·공공서비스",
+    "growth": "산업·일자리",
+    "security": "안보·공공안전"
+  }
 }

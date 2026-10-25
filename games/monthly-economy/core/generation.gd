@@ -1,6 +1,7 @@
 extends RefCounted
 ## Read-only readiness assessment. Preview months run on an isolated world copy.
 const Economy=preload("res://core/economy.gd")
+const Progress=preload("res://core/progress.gd")
 const Industry=preload("res://core/industry.gd")
 const Public=preload("res://core/public_sector.gd")
 const Ledger=preload("res://core/ledger.gd")
@@ -186,35 +187,50 @@ static func _check_graph(s: Dictionary, config: Dictionary, report: Dictionary) 
 static func _unique(items: Array, text: String) -> void:
 	if text not in items: items.append(text)
 
-static func validate(s: Dictionary, options: Dictionary = {}) -> Dictionary:
+static func progress_steps(months: int) -> int:
+	return 7+maxi(0,months)*(Economy.turn_progress_steps()+2)
+
+static func validate(s: Dictionary, options: Dictionary = {}, progress: Variant = null) -> Dictionary:
 	var config: Dictionary=configuration()
 	var report: Dictionary={"ok":false,"errors":[],"warnings":[],"observation":{"months":0,"unmet_value":0,"unmet_events":0,"essential_access":[],"turns":[],"opening_stock":{},"final_stock":{},"depleted_buffers":[],"production_by_product":{},"consumption_by_product":{},"coverage":config.get("coverage",[])},"fingerprint":"","assessment_hash":"","configuration_hash":JSON.stringify(config,"",true).sha256_text(),"status":"experimental"}
 	report.errors.append_array(validate_configuration(config))
 	var months: Variant=options.get("preview_months",config.get("preview_months",0))
+	var task: RefCounted=Progress.observer(progress)
+	task.begin(progress_steps(int(months) if _integer(months) else 0),"생성 규칙·예비 관찰 설정 검사")
 	if not _integer(months) or int(months)<0 or int(months)>int(config.get("maximum_preview_months",0)): report.errors.append("GENERATION_PREVIEW_MONTHS_RANGE")
-	if not report.errors.is_empty(): return report
+	if not report.errors.is_empty(): task.fail(str(report.errors[0]),"생성 검증 설정 오류"); return report
+	task.advance("생성 검증 설정 검사 완료")
 	var state_errors: Array=Economy.validate(s)
 	if not state_errors.is_empty():
 		for error in state_errors: report.errors.append("OPENING_INVARIANT:"+str(error))
+		task.fail("OPENING_INVARIANT","개시 장부·경제 불변식 검사 실패")
 		return report
+	task.advance("개시 장부·경제 불변식 검사 완료")
 	report.fingerprint=Economy.state_hash(s)
 	report.observation.opening_stock=_stocks(s)
+	task.advance("개시 상태 해시·재고 기록 완료")
 	_check_graph(s,config,report)
 	if not report.errors.is_empty():
 		report.assessment_hash=JSON.stringify(report,"",true).sha256_text()
+		task.fail("ESSENTIAL_SUPPLY_PATH_MISSING","필수 공급망 검사 실패")
 		return report
+	task.advance("도시·필수재·상위 공급망 검사 완료")
 	var copy: Dictionary=s.duplicate(true)
 	var start_events: int=copy.events.size()
+	task.advance("원본과 분리된 예비 관찰 복사본 준비 완료")
 	for step in range(int(months)):
-		var resolved: Dictionary=Economy.resolve_month(copy)
+		var offset: int=5+step*(Economy.turn_progress_steps()+2)
+		var resolved: Dictionary=Economy.resolve_month(copy,task.mapped(offset,Economy.turn_progress_steps(),"예비 관찰 "+str(step+1)+"/"+str(int(months))+"월 · "))
 		if not resolved.get("ok",false):
 			for error in resolved.get("errors",[resolved.get("error","UNKNOWN_PREVIEW_FAILURE")]): report.errors.append("PREVIEW_MONTH:"+str(copy.planning_month)+":"+str(error))
 			break
 		copy=resolved.state
+		task.advance("예비 관찰 월 결과 반영 완료: "+str(step+1)+"/"+str(int(months)))
 		var metrics: Dictionary=Economy.metrics(copy)
 		report.observation.months+=1
 		report.observation.unmet_value+=int(metrics.unmet_value)
 		report.observation.turns.append({"month":int(copy.last_resolved_month),"state_hash":Economy.state_hash(copy),"gdp":int(metrics.gdp),"covered_fixed_price_value_added":int(metrics.covered_fixed_price_value_added),"public_nonmarket_value_added":int(metrics.public_nonmarket_value_added),"digital_earned_value_added":int(metrics.digital_current_price_value_added),"accounting":str(metrics.accounting),"unmet_value":int(metrics.unmet_value),"shortage_rate_percent":float(metrics.shortage_rate_percent),"trades":int(metrics.trades),"cash_by_currency":metrics.cash_by_currency.duplicate(true)})
+		task.advance("예비 관찰 월 지표·해시 기록 완료: "+str(step+1)+"/"+str(int(months)))
 	for i in range(start_events,copy.events.size()):
 		var event: Dictionary=copy.events[i]
 		if event.type=="unmet_need": report.observation.unmet_events+=1
@@ -233,9 +249,12 @@ static func validate(s: Dictionary, options: Dictionary = {}) -> Dictionary:
 	if int(report.observation.unmet_events)>0: report.warnings.append("UNMET_HOUSEHOLD_NEEDS:"+str(report.observation.unmet_events))
 	if int(report.observation.months)<int(config.maximum_preview_months): report.warnings.append("SHORT_OBSERVATION_NOT_LONG_RUN_BALANCE")
 	if int(months)==0: report.warnings.append("STRUCTURAL_CHECK_ONLY_NO_PREVIEW_MONTHS")
+	task.advance("예비 관찰 사건·잔여 재고·경고 집계 완료")
 	if Economy.state_hash(s)!=report.fingerprint: report.errors.append("GENERATION_CHECK_MUTATED_REAL_START")
 	report.ok=report.errors.is_empty() and int(report.observation.months)==int(months)
 	report.assessment_hash=JSON.stringify(report,"",true).sha256_text()
+	if report.ok: task.finish("원본 보존 확인·생성 검증 완료")
+	else: task.fail(str(report.errors[0]) if not report.errors.is_empty() else "PREVIEW_INCOMPLETE","생성 검증 실패")
 	return report
 
 static func experiment(seeds: Array, months: int, world_options: Dictionary = {}) -> Dictionary:

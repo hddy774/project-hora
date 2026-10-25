@@ -4,11 +4,17 @@ extends RefCounted
 
 const Ledger = preload("res://core/ledger.gd")
 const FORMAT_VERSION: int = 2
-const SCHEMA_VERSION: int = 2
-const RULES_VERSION: String = "experimental-0.2"
+const SCHEMA_VERSION: int = 3
+const RULES_VERSION: String = "experimental-0.2-usd"
 const SAVE_DIR: String = "user://saves"
 const MAX_SAVE_BYTES: int = 64 * 1024 * 1024
 const MAX_INTEGER: int = 9007199254740991
+# This released content used virtual currencies and unrelated cargo dimensions.
+# Renaming its money while relabeling its inventory would change physical stock
+# and transport obligations, so no partial conversion is presented as a success.
+const LEGACY_SCHEMA_VERSION: int = 2
+const LEGACY_RULES_VERSION: String = "experimental-0.2"
+const LEGACY_CONTENT_HASHES: Array = ["8658e3c73aa23b5bb148777b99dde211ab8a52483c9ed7f46304e9839c96e00e"]
 
 static func canonical(value: Variant) -> String:
 	return JSON.stringify(_normalize(value),"",true,true)
@@ -69,9 +75,9 @@ static func _validate_state(state: Dictionary) -> Array:
 	if not _json_safe(state):
 		return ["NON_JSON_OR_UNSAFE_STATE"]
 	if state.get("schema_version") != SCHEMA_VERSION:
-		return ["UNSUPPORTED_SCHEMA_VERSION: use the matching original game version; the original file is preserved"]
+		return ["UNSUPPORTED_SCHEMA_VERSION: 지원하지 않는 저장 형식입니다. 원본은 유지됩니다."]
 	if state.get("rules_version") != RULES_VERSION:
-		return ["UNSUPPORTED_RULES_VERSION"]
+		return ["UNSUPPORTED_RULES_VERSION: 저장된 게임 규칙이 현재 버전과 다릅니다. 원본은 유지됩니다."]
 	if state.get("phase") not in ["Planning", "Report", "Committed"]:
 		return ["PARTIAL_TURN_NOT_SAVEABLE"]
 	var errors: Array = Ledger.validate(state)
@@ -82,6 +88,22 @@ static func _validate_state(state: Dictionary) -> Array:
 		return ["ECONOMY_VALIDATOR_UNAVAILABLE"]
 	errors.append_array(core.validate(state))
 	return errors
+
+static func _legacy_compatibility(state: Dictionary) -> Dictionary:
+	# Verify the original ledger with the original currency codes allowed. Never
+	# feed an old state to the current USD-only economic validator first.
+	if not _json_safe(state): return _fail("SAVE_VALIDATION: NON_JSON_OR_UNSAFE_STATE")
+	var errors: Array=Ledger.validate(state,true)
+	if not errors.is_empty(): return _fail("LEGACY_SAVE_LEDGER_INVALID: "+"; ".join(errors))
+	var known: bool=state.get("content_hash","") in LEGACY_CONTENT_HASHES
+	var notice: String="이전 저장은 달러·실제 물류 단위·생산식 변경으로 안전하게 자동 변환할 수 없습니다. 원본은 그대로 유지됩니다. 새 게임을 시작해 주세요."
+	var code: String="LEGACY_UNITS_REQUIRE_NEW_GAME"
+	if not known:
+		code="LEGACY_CONTENT_UNRECOGNIZED"
+		notice="현재 버전에서 확인할 수 없는 이전 콘텐츠의 저장입니다. 원본은 그대로 유지됩니다. 원래 버전으로 열거나 새 게임을 시작해 주세요."
+	var result: Dictionary=_fail(code+": "+notice)
+	result.merge({"legacy_save":true,"requires_new_game":true,"original_preserved":true,"compatibility_code":code,"compatibility_note":notice,"source_schema_version":state.schema_version,"source_rules_version":state.rules_version,"source_content_known":known},true)
+	return result
 
 static func _read_path(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
@@ -107,6 +129,10 @@ static func _read_path(path: String) -> Dictionary:
 		return _fail("SAVE_VERSION_MISMATCH")
 	if envelope.get("content_hash", "") != state.get("content_hash", ""):
 		return _fail("SAVE_CONTENT_MISMATCH")
+	if state.get("schema_version")==LEGACY_SCHEMA_VERSION and state.get("rules_version")==LEGACY_RULES_VERSION:
+		var legacy: Dictionary=_legacy_compatibility(state)
+		legacy["original_path"]=path
+		return legacy
 	var errors: Array = _validate_state(state)
 	if not errors.is_empty():
 		return _fail("SAVE_VALIDATION: " + "; ".join(errors))
@@ -184,7 +210,10 @@ static func load_world(slot: String = "autosave") -> Dictionary:
 		backup.recovered = true
 		backup["recovery_reason"] = current.error
 		return backup
-	return _fail(str(current.error) + " / BACKUP: " + str(backup.error))
+	var failure: Dictionary=_fail(str(current.error) + " / BACKUP: " + str(backup.error))
+	for key in ["legacy_save","requires_new_game","original_preserved","compatibility_code","compatibility_note","source_schema_version","source_rules_version","source_content_known","original_path"]:
+		if current.has(key): failure[key]=current[key]
+	return failure
 
 static func list_slots() -> Array:
 	var slots: Array = []
@@ -204,6 +233,8 @@ static func list_slots() -> Array:
 			continue
 		var result: Dictionary = load_world(str(slot))
 		var item: Dictionary = {"slot": slot, "ok": result.ok, "error": result.error, "recovered": result.recovered}
+		for key in ["legacy_save","requires_new_game","compatibility_code","compatibility_note","source_schema_version","source_rules_version"]:
+			if result.has(key): item[key]=result[key]
 		if result.ok:
 			item["planning_month"] = result.state.get("planning_month", 1)
 			item["last_resolved_month"] = result.state.get("last_resolved_month", 0)

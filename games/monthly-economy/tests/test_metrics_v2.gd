@@ -25,14 +25,14 @@ static func _world() -> Dictionary:
 		s.companies.append({"id":owner,"city_id":city,"revenue":0,"expenses":0})
 		Ledger.opening(s,owner,1000)
 		Ledger.opening(s,person,100)
-	for row in [["food","상자",14],["water","m³",1],["energy","MWh",3],["wood","t",3],["tools","세트",16]]:
+	for row in [["food","kg",14],["water","m³",1],["energy","kWh",3],["wood","kg",3],["tools","개",16]]:
 		s.products.append({"id":row[0],"name":row[0],"unit":row[1],"price":row[2],"kind":"service" if row[0] in ["water","energy"] else "material"})
 	s.public.governments.append({"id":"gov-a","city_id":"city-a"})
 	Ledger.opening(s,"gov-a",50)
 	s.finance.market_makers.append({"id":"fx-c","city_id":"city-c"})
-	Ledger.open_account(s,"fx-c:USD","fx-c","cash","USD")
-	Ledger.open_account(s,"fx-c:capital:USD","fx-c","equity","USD")
-	Ledger.post(s,"foreign-open",[{"account":"fx-c:USD","debit":500,"credit":0},{"account":"fx-c:capital:USD","debit":0,"credit":500}],"실험용 외화 개시",0)
+	Ledger.open_account(s,"fx-c:EUR","fx-c","cash","EUR")
+	Ledger.open_account(s,"fx-c:capital:EUR","fx-c","equity","EUR")
+	Ledger.post(s,"foreign-open",[{"account":"fx-c:EUR","debit":500,"credit":0},{"account":"fx-c:capital:EUR","debit":0,"credit":500}],"실험용 외화 개시",0)
 	s.inventory.append({"id":"transit-lot","owner_id":"co-a","city_id":"","accounting_city_id":"city-a","product_id":"food","quantity":7,"location":"shipment"})
 	_event(s,"production_output","city-a","food",10)
 	_event(s,"production_input","city-a","wood",2)
@@ -60,12 +60,12 @@ static func run() -> Array:
 	_check(int(world.gross_output)==217 and int(world.intermediate_consumption)==24,"Construction materials enter output and intermediates exactly once",failures)
 	_check(int(world.gdp)==int(world.real_gdp) and not world.nominal_gdp_available,"Fixed-price output is not misrepresented as nominal GDP",failures)
 	_check(world.exports==0 and world.imports==0,"Closed-world internal trade is not world imports or exports",failures)
-	_check(int(world.cash)==3350 and int(world.cash_by_currency.USD)==500,"Cash aggregation includes public wallets and preserves currencies separately",failures)
+	_check(int(world.cash)==3350 and int(world.cash_by_currency.EUR)==500 and int(world.cash_by_currency.USD)==3350,"Cash aggregation includes public wallets and preserves currencies separately",failures)
 	_check(int(world.inventory_total)==98,"Legacy inventory total is base-price money, not a sum of unlike units",failures)
 	_check(float(world.shortage_rate_percent)==50.0,"Observed unmet demand remains visible separately from CPI",failures)
 	var nation: Dictionary=Economy.metrics(s,"nation-ab")
 	_check(int(nation.exports)==28 and int(nation.imports)==2 and int(nation.net_exports)==26,"National boundary excludes domestic goods/services and includes foreign services",failures)
-	_check(int(nation.exports_by_currency.CR)==28 and int(nation.imports_by_currency.CR)==4,"Border cash values retain actual prices while real quantities use fixed base prices",failures)
+	_check(int(nation.exports_by_currency.USD)==28 and int(nation.imports_by_currency.USD)==4,"Border cash values retain actual prices while real quantities use fixed base prices",failures)
 	var total: Dictionary={"gdp":0,"gross_output":0,"intermediate_consumption":0,"cash":0,"population":0,"trades":0}
 	for city in s.cities:
 		var local: Dictionary=Economy.metrics(s,city.id)

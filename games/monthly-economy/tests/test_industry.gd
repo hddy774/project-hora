@@ -21,6 +21,13 @@ static func _world() -> Dictionary:
 		{"id":"energy","name":"전력","unit":"MWh","industry":"서비스","price":3,"kind":"service","cargo_size":0},
 		{"id":"water","name":"용수","unit":"m³","industry":"서비스","price":1,"kind":"service","cargo_size":0}
 	]
+	# Keep the compact fixture's financial prices while sharing actual SKU
+	# physical units/masses; abstract old cargo points must not survive here.
+	var base_data: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/experimental.json"))
+	for product in products:
+		var meta: Dictionary=Domain.find(base_data.products,str(product.id))
+		for key in ["unit","unit_dimension","cargo_size","cargo_mass_g_per_unit","quantity_note","measurement_status"]:
+			product[key]=meta[key]
 	products.append_array(defs.products)
 	var s: Dictionary = {"seed":42,"version":0,"planning_month":1,"last_resolved_month":0,"phase":"Resolving","player_id":"p-player","companies":[],"people":[],"facilities":[],"cities":[{"id":"c-a","nation_id":"n-a","continent_id":"k-a","resources":{}},{"id":"c-b","nation_id":"n-b","continent_id":"k-b","resources":{}}],"products":products,"recipes":defs.recipes,"inventory":[],"shipments":[],"events":[],"monthly_labor":{},"commands":[],"accounts":{},"journal":[]}
 	for suffix in ["a","b","c","d"]:

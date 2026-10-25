@@ -29,10 +29,41 @@
   "ai_share_price": 10,
   "ai_offer_term_months": 3,
   "ai_loan_months": 12,
-  "insurable_events": ["loss", "facility_damage", "disaster_damage"],
+  "insurable_events": [
+    "loss",
+    "facility_damage",
+    "disaster_damage"
+  ],
   "currencies": [
-    {"id": "CR", "numerator": 1, "denominator": 1},
-    {"id": "XR", "numerator": 6, "denominator": 5},
-    {"id": "YR", "numerator": 4, "denominator": 5}
-  ]
+    {
+      "id": "USD",
+      "numerator": 1,
+      "denominator": 1,
+      "name": "미국 달러",
+      "iso_numeric": "840",
+      "minor_digits": 2
+    },
+    {
+      "id": "EUR",
+      "numerator": 6,
+      "denominator": 5,
+      "name": "유로",
+      "iso_numeric": "978",
+      "minor_digits": 2
+    },
+    {
+      "id": "GBP",
+      "numerator": 4,
+      "denominator": 5,
+      "name": "영국 파운드",
+      "iso_numeric": "826",
+      "minor_digits": 2
+    }
+  ],
+  "base_currency": "USD",
+  "minor_unit": "cent",
+  "minor_units_per_major": 100,
+  "rate_status": "experimental_fixed_reference_not_live_exchange_rates",
+  "iso4217_source": "https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml",
+  "iso4217_publication": "2026-09-17"
 }

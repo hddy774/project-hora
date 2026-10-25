@@ -198,8 +198,12 @@ static func _quote(s: Dictionary, sell: Dictionary, buy: Dictionary, quantity: i
 	if not quote.get("allowed",false): return {"allowed":false}
 	var q: int=mini(quantity,int(quote.get("quantity",0)))
 	q=mini(q,maxi(0,int(quantity*int(rule.get("capacity_percent",100))/100)))
+	if q<=0: return {"allowed":false}
+	if int(quote.get("quantity",0))!=q:
+		quote=Industry.route_quote(s,str(sell.city_id),str(buy.city_id),str(sell.product_id),q,month)
+		if not quote.get("allowed",false) or int(quote.get("quantity",0))!=q: return {"allowed":false}
 	var tariff: int=int(ceil(float(int(sell.limit_price)*q)*int(rule.get("tariff_bps",0))/10000.0))
-	var delivered: int=(int(sell.limit_price)+int(quote.get("unit_fee",0)))*q+tariff
+	var delivered: int=int(sell.limit_price)*q+int(quote.get("fee",0))+tariff
 	if q<=0 or delivered>q*int(buy.limit_price) or int(quote.get("eta",month))+int(rule.get("delay",0))>int(buy.latest_delivery_month): return {"allowed":false}
 	return {"allowed":true,"quantity":q,"cost":delivered,"tariff":tariff,"tariff_receiver":str(rule.get("tariff_receiver","")),"delay":int(rule.get("delay",0)),"route":quote}
 
@@ -252,7 +256,7 @@ static func _execute_fill(s: Dictionary, sell: Dictionary, buy: Dictionary, requ
 		if int(age.expires_month)>0: lot.expires_month=int(age.expires_month)
 		s.inventory.append(lot)
 		Domain.register_lot(s, lot)
-		s.shipments.append({"id":shipment_id,"owner_id":buy.owner_id,"product_id":sell.product_id,"quantity":q,"from_city_id":sell.city_id,"to_city_id":buy.city_id,"eta":int(quote.route.eta)+int(quote.delay),"status":"transit","lot_id":lot_id,"route_ids":quote.route.get("path",[]),"carrier_id":str(quote.route.get("carrier_id",""))})
+		s.shipments.append({"id":shipment_id,"owner_id":buy.owner_id,"product_id":sell.product_id,"quantity":q,"from_city_id":sell.city_id,"to_city_id":buy.city_id,"start_month":month,"eta":int(quote.route.eta)+int(quote.delay),"status":"transit","lot_id":lot_id,"route_ids":quote.route.get("path",[]),"carrier_id":str(quote.route.get("carrier_id",""))})
 		Domain.event(s,"shipment","운송 중 소유권 이전",month,{"actor_id":buy.owner_id,"city_id":buy.city_id,"product_id":sell.product_id,"quantity":q,"inventory_delta":q,"lot_id":lot_id,"shipment_id":shipment_id})
 	else:
 		var incoming: Dictionary=Domain.change_inventory(s,str(buy.owner_id),str(buy.city_id),str(sell.product_id),q,"매입 입고",month,"trade_in")
@@ -390,11 +394,23 @@ static func ai_commands(s: Dictionary) -> Array:
 			var route: Dictionary = Industry.route_quote(s, str(offer.city_id), str(company.city_id), product, quantity, month)
 			var rule: Dictionary = _trade_rule(s, str(offer.city_id), str(company.city_id), product, month)
 			if not route.get("allowed", false) or not rule.get("allowed", true): continue
-			var price: int = int(offer.limit_price) + int(route.get("unit_fee", 0)) + int(ceil(float(offer.limit_price) * int(rule.get("tariff_bps", 0)) / 10000.0))
-			var reference: Dictionary = Domain.find(s.get("products", []), product)
-			if price > int(reference.get("price", 1)) * int(p.ai_price_ceiling_percent) / 100: continue
-			quantity = mini(quantity, mini(int(route.quantity), int(maxi(0, _cash(s, owner) - int(p.ai_cash_reserve)) / maxi(1, price))))
-			if quantity <= 0: continue
+			quantity=mini(quantity,int(route.quantity))
+			var price: int=0
+			var budget: int=maxi(0,_cash(s,owner)-int(p.ai_cash_reserve))
+			while quantity>0:
+				route=Industry.route_quote(s,str(offer.city_id),str(company.city_id),product,quantity,month)
+				if not route.get("allowed",false) or int(route.get("quantity",0))!=quantity:
+					quantity=0
+					break
+				var tariff: int=int(ceil(float(int(offer.limit_price)*quantity)*int(rule.get("tariff_bps",0))/10000.0))
+				var delivered_total: int=int(offer.limit_price)*quantity+int(route.get("fee",0))+tariff
+				price=int(delivered_total/quantity)+(1 if delivered_total%quantity>0 else 0)
+				var covered: int=int(budget/maxi(1,price))
+				if covered>=quantity: break
+				quantity=mini(quantity-1,covered)
+			if quantity<=0: continue
+			var reference: Dictionary=Domain.find(s.get("products",[]),product)
+			if price>int(reference.get("price",1))*int(p.ai_price_ceiling_percent)/100: continue
 			buy_command = {"id":"ai-market-buy-%d-%s-%s" % [month, owner, product],"actor_id":company.director_id,"acting_company_id":owner,"expected_version":int(s.get("version", 0)),"type":"market_order","payload":{"side":"buy","product_id":product,"quantity":quantity,"limit_price":price,"city_id":company.city_id,"specification":offer.specification,"expires_month":month+int(p.ai_order_months),"latest_delivery_month":month+int(p.ai_order_months)}}
 			if validate_command(s, buy_command).is_empty(): out.append(buy_command)
 			break

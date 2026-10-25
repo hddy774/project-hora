@@ -38,8 +38,8 @@ func _run():
 	await process_frame
 	var options=app.modal.find_children('*','OptionButton',true,false)
 	if options.size()>0: options[0].select(0)
-	var amount=app.modal.find_children('*','SpinBox',true,false)
-	if amount.size()>0: amount[0].value=100
+	var amount=app.modal.find_children('*','LineEdit',true,false)
+	if amount.size()>0: amount[0].text='1.00'
 	for button in app.modal.find_children('*','Button',true,false):
 		if button.text=='계획에 추가': button.pressed.emit();break
 	if app.world.commands.size()!=1: errors.append('Actual deposit form failed to queue')

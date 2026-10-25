@@ -1,6 +1,7 @@
 extends RefCounted
 ## Geometry and interaction contracts for the generated-art isometric map.
 const CityMap = preload("res://ui/city_map.gd")
+const HistoryChart = preload("res://ui/history_chart.gd")
 static var checks: int = 0
 
 static func run(require_generated_art: bool = true) -> Array:
@@ -51,6 +52,18 @@ static func run(require_generated_art: bool = true) -> Array:
 	_expect(state.facilities[0].status == "operational", "Selected-item query returns a copy of simulation data", failures)
 	map._activate(Vector2i(2, 6))
 	_expect(selected[-1] == "project-1", "Construction selection returns its actual project ID", failures)
+	var work: Dictionary = map.construction_progress({"progress":12,"required_work":24,"months_worked":3,"min_months":3})
+	_expect(work.known and is_equal_approx(float(work.ratio),0.5), "Map progress is measured physical work, even when minimum elapsed time is complete", failures)
+	_expect(work.label.contains("50%") and work.time_label == "최소 공기 3 / 3개월", "Map work percentage and elapsed minimum period remain separate", failures)
+	var unknown: Dictionary = map.construction_progress({"progress":12})
+	_expect(not unknown.known and unknown.ratio == 0.0 and not str(unknown.label).contains("%"), "Missing construction work denominator displays unknown, never fabricated completion", failures)
+	_expect(not map.construction_progress({"progress":12,"required_work":0}).known, "Zero required work cannot create a division or misleading progress", failures)
+	_expect(map.construction_progress({"progress":1,"required_work":3,"status":"paused"}).label == "공사 중단 · 작업 33%", "Paused work retains its actual completed fraction without rounding up", failures)
+	_expect(not map.plot_area(state.facilities[0]).known, "A city without a configured physical tile side does not invent a plot area", failures)
+	state.cities[0]["tile_side_m"] = 10
+	var area: Dictionary = map.plot_area(state.facilities[0])
+	_expect(area.known and area.area_m2 == 400.0 and area.label == "400 m²", "Physical plot area uses actual footprint and configured city tile side", failures)
+	state.cities[0].erase("tile_side_m")
 	var before_drag: int = selected.size()
 	map._pointer_down = true
 	map._pointer_start = Vector2.ZERO
@@ -75,6 +88,25 @@ static func run(require_generated_art: bool = true) -> Array:
 		_expect(map.art_status().ground_loaded, "Generated ground is an actual loaded resource", failures)
 		_expect(map.art_status().callout_loaded, "Construction callout uses the generated UI skin resource", failures)
 	map.free()
+	var chart = HistoryChart.new()
+	chart.value_key = "cash"
+	_expect(chart.display_value(123456) == "$1,234.56", "Chart money uses cents and readable dollars", failures)
+	_expect(chart.display_value(100000000) == "$1M", "Chart money supports the requested M scale", failures)
+	_expect(chart.display_value(-100000000000) == "-$1B", "Chart preserves negative values and B scale", failures)
+	chart.currency_view = "KRW"
+	_expect(chart.display_value(100000000) == "10억원", "Chart uses the selected fixed-rate won display", failures)
+	chart.value_key = "trades"
+	_expect(chart.display_value(1234) == "1,234건", "Transaction counts keep their count unit when currency view changes", failures)
+	chart.product_id = "grain"
+	chart.world = {"products":[{"id":"grain","unit":"kg"}]}
+	_expect(chart.display_value(1250) == "1,250 kg", "Physical chart quantities show the actual product unit", failures)
+	_expect(chart.display_value(null) == "자료 없음", "Unavailable chart observations are not shown as zero", failures)
+	var source: Array = [{"month":1,"trades":3},{"month":2},{"month":3,"trades":5}]
+	chart.set_observations(source)
+	_expect(chart._value(1) == null, "An absent committed observation creates a gap, not a synthetic zero", failures)
+	chart.observations[0].trades = 99
+	_expect(source[0].trades == 3, "Chart selection and formatting retain a copy of committed history", failures)
+	chart.free()
 	print("Isometric map checks: %d" % checks)
 	return failures
 

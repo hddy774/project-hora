@@ -6,6 +6,9 @@ func _init() -> void:
 	var suites: Array = [
 		"res://tests/test_economy.gd",
 		"res://tests/test_ledger_save.gd",
+		"res://tests/test_currency.gd",
+		"res://tests/test_progress.gd",
+		"res://tests/test_units.gd",
 		"res://tests/tests_finance.gd",
 		"res://tests/test_lifecycle.gd",
 		"res://tests/test_public_sector.gd",

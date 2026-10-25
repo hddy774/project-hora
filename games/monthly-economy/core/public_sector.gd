@@ -81,11 +81,11 @@ static func _event(s: Dictionary, type: String, reason: String, month: int, extr
 	s.events.append(e)
 
 static func _accounts(s: Dictionary, owner: String) -> void:
-	for kind in ["cash","equity","expense","revenue"]: Ledger.open_account(s, owner + ":" + kind, owner, kind, "CR")
+	for kind in ["cash","equity","expense","revenue"]: Ledger.open_account(s, owner + ":" + kind, owner, kind, "USD")
 
 static func _account(s: Dictionary, owner: String, suffix: String, kind: String) -> String:
 	var id: String = owner + ":" + suffix
-	Ledger.open_account(s, id, owner, kind, "CR")
+	Ledger.open_account(s, id, owner, kind, "USD")
 	return id
 
 static func _line(account: String, amount: int) -> Dictionary:
@@ -171,7 +171,7 @@ static func _make_government(s: Dictionary, kind: String, jurisdiction: String, 
 	for person in residents:
 		if council.size() >= 3: break
 		council.append(person.id)
-	var g: Dictionary = {"id":id,"kind":kind,"jurisdiction_id":jurisdiction,"nation_id":nation,"city_id":city,"name":name,"currency":"CR","office_id":"office-"+id,"tax_bps":tax_bps,"tariff_bps":int(_p().base_tariff_bps) if kind=="nation" else 0,"budget":budget.duplicate(true),"budget_used":{"services":0,"procurement":0,"military":0,"transfers":0},"budget_month":0,"reserved":0,"services":0,"arrears":0,"council":council,"last_tax_revenue":0,"last_service_cost":0,"last_election_month":0,"mobilization":false}
+	var g: Dictionary = {"id":id,"kind":kind,"jurisdiction_id":jurisdiction,"nation_id":nation,"city_id":city,"name":name,"currency":"USD","office_id":"office-"+id,"tax_bps":tax_bps,"tariff_bps":int(_p().base_tariff_bps) if kind=="nation" else 0,"budget":budget.duplicate(true),"budget_used":{"services":0,"procurement":0,"military":0,"transfers":0},"budget_month":0,"reserved":0,"services":0,"arrears":0,"council":council,"last_tax_revenue":0,"last_service_cost":0,"last_election_month":0,"mobilization":false}
 	s.public.governments.append(g)
 	s.public.offices.append({"id":g.office_id,"government_id":id,"person_id":holder,"term_start":0,"term_end":int(_p().initial_office_term_months),"authority":["budget","policy","procurement","services","military","diplomacy"] if kind=="nation" else ["budget","policy","procurement","services"]})
 	if not s.accounts.has(id + ":cash"): Ledger.opening(s,id,opening,0)
@@ -1526,10 +1526,10 @@ static func planning_reservations(s: Dictionary, c: Dictionary) -> Array:
 			var contract: Dictionary=_find(s.public.procurements,str(p.get("contract_id","")))
 			var bid: Dictionary=_find(s.public.bids,str(p.get("bid_id","")))
 			var advance: int=int(int(contract.get("quantity",0))*int(bid.get("unit_price",0))*int(p.get("advance_bps",0))/10000)
-			if advance>0: result.append({"owner_id":contract.get("government_id",government),"resource_type":"cash","quantity":advance,"currency":"CR","from_reservation":contract.get("id",""),"existing_reservation":true})
+			if advance>0: result.append({"owner_id":contract.get("government_id",government),"resource_type":"cash","quantity":advance,"currency":"USD","from_reservation":contract.get("id",""),"existing_reservation":true})
 		"public_pay":
 			var contract: Dictionary=_find(s.public.procurements,str(p.get("contract_id","")))
-			if int(contract.get("payable",0))>0: result.append({"owner_id":contract.get("government_id",government),"resource_type":"cash","quantity":int(contract.payable),"currency":"CR","from_reservation":contract.get("id",""),"existing_reservation":true})
+			if int(contract.get("payable",0))>0: result.append({"owner_id":contract.get("government_id",government),"resource_type":"cash","quantity":int(contract.payable),"currency":"USD","from_reservation":contract.get("id",""),"existing_reservation":true})
 		"public_deliver":
 			var contract: Dictionary=_find(s.public.procurements,str(p.get("contract_id","")))
 			owner=str(co.get("id",actor))
@@ -1541,7 +1541,7 @@ static func planning_reservations(s: Dictionary, c: Dictionary) -> Array:
 					var quote: Dictionary=load("res://core/industry.gd").route_quote(s,co.city_id,destination.city_id,contract.product_id,int(p.get("quantity",0)),int(s.planning_month))
 					amount+=int(quote.get("fee",0))
 			result.append({"owner_id":co.get("id",""),"resource_type":"inventory","resource_id":contract.get("product_id",""),"city_id":co.get("city_id",""),"quantity":int(p.get("quantity",0))})
-	if amount>0: result.append({"owner_id":owner,"resource_type":"cash","quantity":amount,"currency":"CR"})
+	if amount>0: result.append({"owner_id":owner,"resource_type":"cash","quantity":amount,"currency":"USD"})
 	return result
 
 static func _civil_stock(s: Dictionary, owner: String, city: String, product: String) -> int:
@@ -1603,7 +1603,7 @@ static func _spoil_locked_delivery(s: Dictionary, delivery: Dictionary, lot: Dic
 
 static func _nonmarket_output(s: Dictionary, government: String, city: String, cost: int, month: int, reason: String, intermediate: bool, product: String, quantity: int) -> void:
 	if cost<=0: return
-	var data: Dictionary={"actor_id":government,"government_id":government,"city_id":city,"sector":"public_nonmarket","valuation":"actual_cost","currency":"CR","amount":cost,"product_id":product,"quantity":quantity,"nonmarket_input_component":intermediate}
+	var data: Dictionary={"actor_id":government,"government_id":government,"city_id":city,"sector":"public_nonmarket","valuation":"actual_cost","currency":"USD","amount":cost,"product_id":product,"quantity":quantity,"nonmarket_input_component":intermediate}
 	if intermediate: _event(s,"gdp_input",reason,month,data)
 	# Nonmarket output is valued at its actually incurred production costs.
 	# Its intermediate part also appears above, leaving public labor as VA.

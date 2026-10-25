@@ -5,7 +5,7 @@ static var _serial: int=0
 static var _checks: int=0
 
 static func _world() -> Dictionary:
-	var s: Dictionary={"schema_version":2,"planning_month":1,"last_resolved_month":0,"version":0,"phase":"Planning","accounts":{},"journal":[],"events":[],"nations":[],"cities":[],"companies":[],"people":[],"products":[{"id":"food","name":"식품","unit":"상자","price":10}],"inventory":[],"facilities":[],"commands":[]}
+	var s: Dictionary={"schema_version":3,"planning_month":1,"last_resolved_month":0,"version":0,"phase":"Planning","accounts":{},"journal":[],"events":[],"nations":[],"cities":[],"companies":[],"people":[],"products":[{"id":"food","name":"식품","unit":"상자","price":10}],"inventory":[],"facilities":[],"commands":[]}
 	for i in range(3):
 		var city: String="city-%d"%i
 		var nation: String="nation-%d"%i
@@ -34,7 +34,7 @@ static func _valid(s: Dictionary, label: String, failures: Array) -> void:
 	_check(Ledger.validate(s).is_empty(),label+" balanced/reconstructed ledger "+str(Ledger.validate(s)),failures)
 	_check(Finance.validate(s).is_empty(),label+" financial contracts "+str(Finance.validate(s)),failures)
 
-static func _money(s: Dictionary, currency: String="CR") -> int:
+static func _money(s: Dictionary, currency: String="USD") -> int:
 	var total: int=0
 	for account in s.accounts.values():
 		if account.kind=="cash" and account.currency==currency: total+=int(account.balance)
@@ -61,14 +61,14 @@ static func run() -> Array:
 	_check(not bad.get("ok",false) and JSON.stringify(s,"",true,true)==before,"Fractional money rejected without mutation",failures)
 	bad=_command(s,"finance_borrow",{"bank_id":"bank-nation-0","amount":10,"term_months":12},"p-1","co-0")
 	_check(not bad.get("ok",false) and JSON.stringify(s,"",true,true)==before,"Other company's credit cannot be used",failures)
-	var primary_reserve: int=Ledger.balance(s,"bank-nation-0:reserve:CR")
-	var foreign_reserve: int=Ledger.balance(s,"bank-nation-1:reserve:CR")
+	var primary_reserve: int=Ledger.balance(s,"bank-nation-0:reserve:USD")
+	var foreign_reserve: int=Ledger.balance(s,"bank-nation-1:reserve:USD")
 	_check(_command(s,"finance_borrow",{"bank_id":"bank-nation-1","amount":400,"term_months":12}).get("ok",false),"Other-bank loan executes",failures)
 	_check(s.finance.owner_bank["co-0"]=="bank-nation-0","Loan does not silently move or duplicate existing deposits",failures)
-	_check(Ledger.balance(s,"bank-nation-1:reserve:CR")==foreign_reserve-400 and Ledger.balance(s,"bank-nation-0:reserve:CR")==primary_reserve+400,"Interbank loan remits actual reserves",failures)
+	_check(Ledger.balance(s,"bank-nation-1:reserve:USD")==foreign_reserve-400 and Ledger.balance(s,"bank-nation-0:reserve:USD")==primary_reserve+400,"Interbank loan remits actual reserves",failures)
 	loan_id=str(s.finance.loans[-1].id)
 	_check(_command(s,"finance_repay",{"loan_id":loan_id,"amount":400}).get("ok",false),"Other-bank loan can be repaid",failures)
-	_check(Ledger.balance(s,"bank-nation-1:reserve:CR")==foreign_reserve and Ledger.balance(s,"bank-nation-0:reserve:CR")==primary_reserve,"Cross-bank principal repayment restores actual settlement positions",failures)
+	_check(Ledger.balance(s,"bank-nation-1:reserve:USD")==foreign_reserve and Ledger.balance(s,"bank-nation-0:reserve:USD")==primary_reserve,"Cross-bank principal repayment restores actual settlement positions",failures)
 	_valid(s,"Cross-bank loan",failures)
 	_check(_command(s,"finance_deposit",{"bank_id":"bank-nation-1","amount":200}).get("ok",false),"Savings at another bank executes",failures)
 	_check(Ledger.balance(s,"co-0:savings:bank-nation-1")==200,"Savings is distinct owned asset, not new income",failures)
@@ -109,11 +109,11 @@ static func run() -> Array:
 	_check(Finance.cash(s,"insurer-nation-0")==insurer_cash-100,"Claim uses actual insurer funds",failures)
 	_check(not _command(s,"finance_claim",{"policy_id":policy,"loss_event_id":"actual-loss"}).get("ok",false),"One loss cannot be claimed twice",failures)
 	_valid(s,"Insurance claim",failures)
-	var xr_before: int=_money(s,"XR")
-	var cr_before: int=_money(s,"CR")
-	_check(_command(s,"finance_exchange",{"from_currency":"CR","to_currency":"XR","amount":120}).get("ok",false),"Foreign currency with finite market maker executes",failures)
-	_check(Finance.cash(s,"co-0","XR")==100,"Rational conversion delivers actual foreign wallet units",failures)
-	_check(_money(s,"XR")==xr_before and _money(s,"CR")==cr_before,"FX conserves each currency separately including paid fee",failures)
+	var xr_before: int=_money(s,"EUR")
+	var cr_before: int=_money(s,"USD")
+	_check(_command(s,"finance_exchange",{"from_currency":"USD","to_currency":"EUR","amount":120}).get("ok",false),"Foreign currency with finite market maker executes",failures)
+	_check(Finance.cash(s,"co-0","EUR")==100,"Rational conversion delivers actual foreign wallet units",failures)
+	_check(_money(s,"EUR")==xr_before and _money(s,"USD")==cr_before,"FX conserves each currency separately including paid fee",failures)
 	_valid(s,"FX trade",failures)
 	# Accrual goods settlement and COGS are distinct from cash expenses.
 	var purchase: Dictionary=Finance.settle_trade(s,"test-accrual-trade","p-0","co-0",20,"food",2,3)
@@ -206,8 +206,8 @@ static func _test_default_and_reservations(failures: Array) -> void:
 	loan=s.finance.loans[0]
 	_check(loan.status=="repaid" and int(loan.provision)==0,"Credit loss provision reverses only on genuine principal recovery",failures)
 	_valid(s,"Credit recovery",failures)
-	var reservation: Array=Finance.planning_reservations(s,{"type":"finance_exchange","actor_id":"p-0","acting_company_id":"co-0","payload":{"from_currency":"XR","to_currency":"CR","amount":100}})
-	_check(reservation.size()==1 and reservation[0].resource_id=="XR" and int(reservation[0].quantity)>100,"FX reserves its source currency and actual fee only",failures)
+	var reservation: Array=Finance.planning_reservations(s,{"type":"finance_exchange","actor_id":"p-0","acting_company_id":"co-0","payload":{"from_currency":"EUR","to_currency":"USD","amount":100}})
+	_check(reservation.size()==1 and reservation[0].resource_id=="EUR" and int(reservation[0].quantity)>100,"FX reserves its source currency and actual fee only",failures)
 	reservation=Finance.planning_reservations(s,{"type":"finance_borrow","actor_id":"p-0","acting_company_id":"co-0","payload":{"amount":100}})
 	_check(reservation.is_empty(),"Unfunded future loan proceeds are not treated as already owned cash",failures)
 	var actions: Dictionary={}
@@ -220,13 +220,13 @@ static func _test_default_and_reservations(failures: Array) -> void:
 static func _test_escrow(failures: Array) -> void:
 	var s: Dictionary=_world()
 	var before: Dictionary=Finance.monetary_summary(s)[0]
-	var deposit: int=Ledger.balance(s,"bank-nation-0:deposit:co-0:CR")
-	var reserve: int=Ledger.balance(s,"bank-nation-0:reserve:CR")
+	var deposit: int=Ledger.balance(s,"bank-nation-0:deposit:co-0:USD")
+	var reserve: int=Ledger.balance(s,"bank-nation-0:reserve:USD")
 	Ledger.open_account(s,"co-0:market-escrow:test","co-0","asset")
 	var result: Dictionary=Ledger.post(s,"escrow-funded",[{"account":"co-0:cash","debit":0,"credit":100},{"account":"co-0:market-escrow:test","debit":100,"credit":0}],"확정 매입 주문의 제한 예금",1)
 	_check(result.ok,"Escrow moves only owned cash into a restricted deposit",failures)
 	Finance.reconcile_deposits(s,1)
-	_check(Ledger.balance(s,"bank-nation-0:deposit:co-0:CR")==deposit and Ledger.balance(s,"bank-nation-0:reserve:CR")==reserve,"Escrow does not destroy client deposits or transfer bank reserves",failures)
+	_check(Ledger.balance(s,"bank-nation-0:deposit:co-0:USD")==deposit and Ledger.balance(s,"bank-nation-0:reserve:USD")==reserve,"Escrow does not destroy client deposits or transfer bank reserves",failures)
 	var after: Dictionary=Finance.monetary_summary(s)[0]
 	_check(after.broad_money==before.broad_money and after.restricted_deposits==100,"Broad money includes confirmed market escrow exactly once",failures)
 	_valid(s,"Restricted market deposits",failures)

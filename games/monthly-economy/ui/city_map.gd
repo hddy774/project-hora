@@ -5,6 +5,7 @@ extends Control
 signal tile_selected(x: int, y: int)
 signal facility_selected(id: String)
 
+const Presentation = preload("res://ui/presentation.gd")
 const ART_MANIFEST: String = "res://assets/map/atlas.json"
 const BACKGROUND: Color = Color("0a1c2b")
 const ACCENT: Color = Color("37c8ff")
@@ -15,6 +16,7 @@ const ROOF_CLEARANCE: float = 45.0
 
 var world: Dictionary = {}
 var city_id: String = "city-0"
+var currency_view: String = "USD"
 var show_header: bool = false:
 	set(value):
 		show_header = value
@@ -640,14 +642,42 @@ func _draw_construction(item: Dictionary) -> void:
 				draw_line(base, base - Vector2(0, height), Color("ad7961"), maxf(1.0, _zoom * 1.4), true)
 		for index: int in range(points.size()):
 			draw_line(points[index] - Vector2(0, height), points[(index + 1) % points.size()] - Vector2(0, height), Color("cead8d"), maxf(1.0, _zoom), true)
-	var total: int = maxi(1, int(item.get("required_work", 1)))
-	var ratio: float = clampf(float(item.get("progress", 0)) / total, 0.0, 1.0)
+	var progress: Dictionary = construction_progress(item)
 	var center: Vector2 = _point(position + footprint * 0.5)
 	var front: Vector2 = _point(position + footprint)
 	draw_line(front - Vector2(18, 2), front + Vector2(18, -2), Color("12334d"), 5, true)
-	draw_line(front - Vector2(18, 2), (front - Vector2(18, 2)).lerp(front + Vector2(18, -2), ratio), ACCENT, 3, true)
+	if progress.known:
+		draw_line(front - Vector2(18, 2), (front - Vector2(18, 2)).lerp(front + Vector2(18, -2), float(progress.ratio)), ACCENT, 3, true)
 	if _contains(item, selected_tile) or get_selected_item().is_empty():
-		_draw_callout(("중단됨  %d%%" if str(item.get("status", "")) == "paused" else "공사 중  %d%%") % int(round(ratio * 100.0)), center - Vector2(0, _half_width() * 2.0))
+		_draw_callout(str(progress.label), center - Vector2(0, _half_width() * 2.0))
+
+func construction_progress(item: Dictionary) -> Dictionary:
+	# Physical work and elapsed minimum time are separate constraints. Missing
+	# denominators stay unknown instead of turning a default value into 100%.
+	var total: int = int(item.get("required_work", 0))
+	var work: int = maxi(0, int(item.get("progress", 0)))
+	var known: bool = total > 0
+	var ratio: float = clampf(float(work) / float(total), 0.0, 1.0) if known else 0.0
+	var label: String = "공사 중단" if str(item.get("status", "")) == "paused" else "공사 중"
+	label += " · 작업 %d%%" % int(floor(ratio * 100.0)) if known else " · 작업량 확인 불가"
+	var minimum: int = int(item.get("min_months", 0))
+	var elapsed: int = maxi(0, int(item.get("months_worked", 0)))
+	return {"known":known,"ratio":ratio,"work":work,"required_work":total,"label":label,"minimum_months":minimum,"elapsed_months":elapsed,"time_label":"최소 공기 %d / %d개월" % [elapsed, minimum] if minimum > 0 else "최소 공기 확인 불가"}
+
+func plot_area(item: Dictionary) -> Dictionary:
+	var city: Dictionary = {}
+	for candidate: Dictionary in world.get("cities", []):
+		if str(candidate.get("id", "")) == str(item.get("city_id", city_id)):
+			city = candidate
+			break
+	var side: float = float(city.get("tile_side_m", 0))
+	var width: int = int(item.get("w", 0))
+	var height: int = int(item.get("h", 0))
+	if not is_finite(side) or side <= 0 or width <= 0 or height <= 0:
+		return {"known":false,"area_m2":0.0,"label":"부지 면적 확인 불가"}
+	var area: float = float(width * height) * side * side
+	var amount: String = Presentation.grouped(int(area)) if is_equal_approx(area, round(area)) else String.num(area, 2)
+	return {"known":true,"tile_count":width * height,"tile_side_m":side,"area_m2":area,"label":amount + " m²"}
 
 func _draw_plan(payload: Dictionary) -> void:
 	var points: PackedVector2Array = _diamond(Vector2(int(payload.get("x", 0)), int(payload.get("y", 0))), Vector2(int(payload.get("w", preview_size.x)), int(payload.get("h", preview_size.y))))
@@ -703,8 +733,11 @@ func _bubble_style() -> StyleBoxFlat:
 func _draw_header() -> void:
 	_draw_text("도시 지도", Vector2(12, 20), 12, MUTED)
 	var font: Font = get_theme_default_font()
-	var value: String = "%d%%" % int(round(_zoom * 100.0))
-	draw_string(font, Vector2(size.x - 48, 20), value, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, MUTED)
+	var area: Dictionary = plot_area({"w":1,"h":1})
+	if area.known:
+		draw_string(font, Vector2(12, 38), "한 칸 " + str(area.label), HORIZONTAL_ALIGNMENT_LEFT, maxf(size.x - 24, 20), 11, MUTED)
+	var value: String = "확대 %d%%" % int(round(_zoom * 100.0))
+	draw_string(font, Vector2(size.x - 82, 20), value, HORIZONTAL_ALIGNMENT_LEFT, 70, 11, MUTED)
 
 func _draw_text(value: String, position: Vector2, font_size: int, color: Color) -> void:
 	draw_string(get_theme_default_font(), position, value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)

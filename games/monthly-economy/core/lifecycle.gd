@@ -314,6 +314,15 @@ static func training_batches_used(s: Dictionary, facility_id: String, month: int
 	var usage: Dictionary=s.get("lifecycle",{}).get("teaching_usage",{})
 	return int(usage.get("facilities",{}).get(facility_id,0)) if int(usage.get("month",-1))==month else 0
 
+static func training_batches_required(s: Dictionary, facility_id: String, hours: int) -> int:
+	# School recipe output is measured in student-hours per batch. An 8-hour
+	# advanced lesson therefore consumes ceil(8 / 4) ordinary classroom batches.
+	var site: Dictionary=_find(s.facilities,facility_id)
+	var recipe: Dictionary=_find(s.recipes,str(site.get("recipe_id","")))
+	var hours_per_batch: int=int(recipe.get("outputs",{}).get("education_course",0))
+	if hours<=0 or hours_per_batch<=0:return 0
+	return int((hours+hours_per_batch-1)/hours_per_batch)
+
 static func _teacher(s: Dictionary, learner: Dictionary, skill: String, required_hours: int = 0) -> Dictionary:
 	for contract in s.lifecycle.employment:
 		if contract.status!="active" or not contract.get("teaching_authorized",false) or contract.role!="operator":continue
@@ -324,11 +333,13 @@ static func _teacher(s: Dictionary, learner: Dictionary, skill: String, required
 		if int(person.get("skills",{}).get(skill,0))<=int(learner.get("skills",{}).get(skill,0)):continue
 		var site: Dictionary=_education_site(s,str(company.id),str(person.city_id))
 		if site.is_empty():continue
+		var batches: int=training_batches_required(s,str(site.id),required_hours if required_hours>0 else int(_p().training_hours))
+		if batches<=0 or batches>int(site.capacity):continue
 		if required_hours<=0:return person
 		var used: int=int(s.monthly_labor.get(person.id,0))
 		var teaching: int=int(s.lifecycle.teaching_usage.teachers.get(person.id,0))
 		if int(person.hours)-used<required_hours or teaching+required_hours>int(company.teaching_policy.max_hours):continue
-		if training_batches_used(s,str(site.id),int(s.planning_month))>=int(site.capacity):continue
+		if training_batches_used(s,str(site.id),int(s.planning_month))+batches>int(site.capacity):continue
 		var material_ok: bool=true
 		for product in _cfg().teaching_policy.materials_per_lesson:
 			if Domain.available_quantity(s,str(company.id),str(product),str(person.city_id))<int(_cfg().teaching_policy.materials_per_lesson[product]):material_ok=false
@@ -516,7 +527,7 @@ static func apply(s: Dictionary, c: Dictionary, month: int) -> Dictionary:
 
 static func _account(s: Dictionary, owner: String, suffix: String, kind: String) -> String:
 	var id: String = owner + ":" + suffix
-	var currency: String = str(s.accounts.get(owner + ":cash", {}).get("currency", "CR"))
+	var currency: String = str(s.accounts.get(owner + ":cash", {}).get("currency", "USD"))
 	Ledger.open_account(s, id, owner, kind, currency)
 	return id
 
@@ -931,25 +942,26 @@ static func deliver_training(s: Dictionary, month: int) -> Dictionary:
 			var quantity: int=int(_cfg().teaching_policy.materials_per_lesson[product])
 			Domain.change_inventory(s,provider,str(site.city_id),str(product),-quantity,"실제 직무 교육 수업 자재",month,"training_input")
 			var definition: Dictionary=_find(s.products,str(product))
-			_event(s,"gdp_input","실제 직무 교육의 소모 자재",month,{"actor_id":provider,"seller_id":provider,"city_id":site.city_id,"sector":"education_current","valuation":"content_base_price","product_id":product,"quantity":quantity,"amount":quantity*int(definition.price),"currency":"CR"})
+			_event(s,"gdp_input","실제 직무 교육의 소모 자재",month,{"actor_id":provider,"seller_id":provider,"city_id":site.city_id,"sector":"education_current","valuation":"content_base_price","product_id":product,"quantity":quantity,"amount":quantity*int(definition.price),"currency":"USD"})
 		for product in _cfg().teaching_policy.services_per_lesson:
 			var quantity: int=int(_cfg().teaching_policy.services_per_lesson[product])
 			industry.consume_service(s,provider,str(site.city_id),str(product),quantity,month)
 			var definition: Dictionary=_find(s.products,str(product))
-			_event(s,"gdp_input","실제 직무 교육의 전력 서비스 투입",month,{"actor_id":provider,"seller_id":provider,"city_id":site.city_id,"sector":"education_current","valuation":"content_base_price","product_id":product,"quantity":quantity,"amount":quantity*int(definition.price),"currency":"CR"})
+			_event(s,"gdp_input","실제 직무 교육의 전력 서비스 투입",month,{"actor_id":provider,"seller_id":provider,"city_id":site.city_id,"sector":"education_current","valuation":"content_base_price","product_id":product,"quantity":quantity,"amount":quantity*int(definition.price),"currency":"USD"})
 		s.monthly_labor[person.id]=used+hours
 		s.monthly_labor[instructor.id]=int(s.monthly_labor.get(instructor.id,0))+hours
 		s.lifecycle.teaching_usage.teachers[instructor.id]=int(s.lifecycle.teaching_usage.teachers.get(instructor.id,0))+hours
-		s.lifecycle.teaching_usage.facilities[site.id]=int(s.lifecycle.teaching_usage.facilities.get(site.id,0))+1
+		s.lifecycle.teaching_usage.facilities[site.id]=int(s.lifecycle.teaching_usage.facilities.get(site.id,0))+training_batches_required(s,str(site.id),hours)
 		instructor.last_income=int(instructor.get("last_income",0))+teacher_pay
 		_event(s,"labor","교육 업무에 동의한 교육 시설 직원의 실제 유급 강의",month,{"actor_id":instructor.id,"company_id":provider,"facility_id":site.id,"city_id":site.city_id,"hours":hours,"amount":teacher_pay,"wage_paid":true})
-		_event(s,"gdp_output","실제 납품한 직무 교육 수업과 수강료",month,{"actor_id":provider,"seller_id":provider,"buyer_id":person.id,"city_id":site.city_id,"buyer_city_id":person.city_id,"sector":"education_current","valuation":"transaction_price","product_id":"education_course","quantity":1,"amount":fee,"currency":"CR"})
+		_event(s,"gdp_output","실제 납품한 직무 교육 수업과 수강료",month,{"actor_id":provider,"seller_id":provider,"buyer_id":person.id,"city_id":site.city_id,"buyer_city_id":person.city_id,"sector":"education_current","valuation":"transaction_price","product_id":"education_course","quantity":hours,"amount":fee,"currency":"USD"})
 		training.spent=int(training.spent)+fee
 		training.months_done=int(training.months_done)+1
 		training.reason="동의한 교육 시설·유급 강사·교실·종이·전력·수업 시간 투입"
 		training.provider_id=provider
 		training.instructor_id=instructor.id
 		training.facility_id=site.id
+		training.delivered_hours=int(training.get("delivered_hours",0))+hours
 		if int(training.months_done)>=int(training.months_required):
 			training.status="completed_pending"
 			training.effective_month=month+1

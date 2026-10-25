@@ -17,6 +17,7 @@ static func definition() -> Dictionary:
 			if not _integer(parsed.get(key)) or int(parsed[key]) <= 0:
 				push_error("FINANCE_PARAMETER_INVALID:" + key)
 				return {}
+		if parsed.get("base_currency")!=Ledger.BASE_CURRENCY or parsed.get("minor_unit")!="cent" or parsed.get("minor_units_per_major")!=Ledger.MINOR_UNITS_PER_MAJOR: return {}
 		if not parsed.get("currencies") is Array or parsed.currencies.is_empty(): return {}
 		if not parsed.get("insurable_events") is Array or parsed.insurable_events.is_empty(): return {}
 		var seen: Dictionary={}
@@ -28,8 +29,9 @@ static func definition() -> Dictionary:
 				if not _integer(currency.get(key)) or int(currency[key])<=0 or int(currency[key])>10000:
 					push_error("FINANCE_CURRENCY_RATE_INVALID")
 					return {}
+			if not Ledger.supported_currency(currency.id) or currency.get("minor_digits")!=2: return {}
 			seen[currency.id]=true
-		if not seen.has("CR"): return {}
+		if not seen.has("USD"): return {}
 		_definition = _normalize(parsed)
 	return _definition.duplicate(true)
 
@@ -66,10 +68,10 @@ static func _event(s: Dictionary, type: String, reason: String, month: int, extr
 	e.merge(extra, true)
 	s.events.append(e)
 
-static func _cash_id(owner: String, currency: String = "CR") -> String:
-	return owner + ":cash" + ("" if currency == "CR" else ":" + currency)
+static func _cash_id(owner: String, currency: String = "USD") -> String:
+	return owner + ":cash" + ("" if currency == "USD" else ":" + currency)
 
-static func _account(s: Dictionary, owner: String, suffix: String, kind: String, currency: String = "CR") -> String:
+static func _account(s: Dictionary, owner: String, suffix: String, kind: String, currency: String = "USD") -> String:
 	var id: String = owner + ":" + suffix
 	Ledger.open_account(s, id, owner, kind, currency)
 	return id
@@ -88,7 +90,7 @@ static func _id(s: Dictionary, prefix: String) -> String:
 static func _currency(s: Dictionary, id: String) -> Dictionary:
 	return _find(s.finance.currencies, id)
 
-static func cash(s: Dictionary, owner: String, currency: String = "CR") -> int:
+static func cash(s: Dictionary, owner: String, currency: String = "USD") -> int:
 	return Ledger.balance(s, _cash_id(owner,currency))
 
 static func _open_wallet(s: Dictionary, owner: String, currency: String) -> void:
@@ -129,7 +131,7 @@ static func _authorized(s: Dictionary, c: Dictionary, owner: String) -> bool:
 			var life: Variant=load("res://core/lifecycle.gd")
 			var amount: int=0
 			for reservation in planning_reservations(s,c):
-				if reservation.resource_type=="cash" and reservation.owner_id==owner and reservation.resource_id=="CR": amount+=int(reservation.quantity)
+				if reservation.resource_type=="cash" and reservation.owner_id==owner and reservation.resource_id=="USD": amount+=int(reservation.quantity)
 			if life!=null and life.has_method("has_delegated_permission") and life.has_delegated_permission(s,actor,owner,str(c.type),amount): return true
 		return false
 	for office in s.get("public",{}).get("offices",[]):
@@ -140,7 +142,7 @@ static func initialize(s: Dictionary) -> void:
 	if s.get("finance") is Dictionary and s.finance.get("initialized",false): return
 	var d: Dictionary = definition()
 	if d.is_empty(): return
-	s["finance"] = {"initialized":true,"version":2,"currencies":d.currencies.duplicate(true),"banks":[],"central_banks":[],"insurers":[],"market_makers":[],"owner_bank":{},"loans":[],"bonds":[],"policies":[],"claims":[],"share_offers":[],"equity_issues":[],"capital_mandates":[],"applied_commands":{},"last_serviced_month":0,"notices":[]}
+	s["finance"] = {"initialized":true,"version":2,"base_currency":Ledger.BASE_CURRENCY,"minor_units_per_major":Ledger.MINOR_UNITS_PER_MAJOR,"currencies":d.currencies.duplicate(true),"banks":[],"central_banks":[],"insurers":[],"market_makers":[],"owner_bank":{},"loans":[],"bonds":[],"policies":[],"claims":[],"share_offers":[],"equity_issues":[],"capital_mandates":[],"applied_commands":{},"last_serviced_month":0,"notices":[]}
 	if not s.has("ownership"): s.ownership = []
 	for company in s.companies:
 		var exists: bool = false
@@ -159,7 +161,7 @@ static func initialize(s: Dictionary) -> void:
 		var cb_id: String = "central-bank-" + str(nation.id)
 		var insurer_id: String = "insurer-" + str(nation.id)
 		var maker_id: String = "fx-" + str(nation.id)
-		var bank: Dictionary = {"id":bank_id,"name":str(nation.name)+" 은행","nation_id":nation.id,"city_id":city.id,"central_bank_id":cb_id,"currency":"CR","capital":int(d.bank_capital),"cb_borrowing":0,"status":"active"}
+		var bank: Dictionary = {"id":bank_id,"name":str(nation.name)+" 은행","nation_id":nation.id,"city_id":city.id,"central_bank_id":cb_id,"currency":"USD","capital":int(d.bank_capital),"cb_borrowing":0,"status":"active"}
 		s.finance.banks.append(bank)
 		s.finance.central_banks.append({"id":cb_id,"name":str(nation.name)+" 중앙은행","nation_id":nation.id,"city_id":city.id,"issued":{}})
 		s.finance.insurers.append({"id":insurer_id,"name":str(nation.name)+" 보험","nation_id":nation.id,"city_id":city.id})
@@ -171,7 +173,7 @@ static func initialize(s: Dictionary) -> void:
 			_account(s,bank_id,"reserve:"+str(currency.id),"asset",currency.id)
 			_account(s,cb_id,"issued:"+str(currency.id),"liability",currency.id)
 			_account(s,cb_id,"sovereign_backing:"+str(currency.id),"asset",currency.id)
-			if currency.id != "CR": _opening_wallet(s,maker_id,str(currency.id),int(d.foreign_float))
+			if currency.id != "USD": _opening_wallet(s,maker_id,str(currency.id),int(d.foreign_float))
 	var owners: Array = []
 	for key in ["people","companies"]:
 		for entity in s.get(key,[]): owners.append(str(entity.id))
@@ -197,7 +199,7 @@ static func initialize(s: Dictionary) -> void:
 		var gov: String = "gov-nation-"+str(bank.nation_id)
 		for currency in s.finance.currencies:
 			var cur: String = str(currency.id)
-			var backing: int = Ledger.balance(s,bank.id+":reserve:"+cur) + (cash(s,bank.id) if cur=="CR" else 0)
+			var backing: int = Ledger.balance(s,bank.id+":reserve:"+cur) + (cash(s,bank.id) if cur=="USD" else 0)
 			if backing <= 0: continue
 			var cb: Dictionary = _find(s.finance.central_banks,str(bank.central_bank_id))
 			var gov_debt: String = _account(s,gov,"opening_sovereign_debt:"+cur,"liability",cur)
@@ -263,7 +265,7 @@ static func planning_reservations(s: Dictionary, c: Dictionary) -> Array:
 	var price: int=int(p.get("unit_price",0)) if _integer(p.get("unit_price",0)) else 0
 	var cash_cost: int=0
 	var cash_owner: String=owner
-	var currency: String="CR"
+	var currency: String="USD"
 	var reservations: Array=[]
 	match type:
 		"finance_repay","finance_deposit","finance_dividend","finance_buy_bond": cash_cost=amount
@@ -277,7 +279,7 @@ static func planning_reservations(s: Dictionary, c: Dictionary) -> Array:
 		"finance_insure":
 			if _integer(p.get("coverage")) and _integer(p.get("term_months")): cash_cost=_premium(int(p.coverage),int(p.term_months))
 		"finance_exchange":
-			currency=str(p.get("from_currency","CR"))
+			currency=str(p.get("from_currency","USD"))
 			if amount>0: cash_cost=amount+_fx_fee(amount)
 		"finance_offer_shares":
 			if shares>0: reservations.append({"owner_id":owner,"resource_type":"shares","resource_id":str(p.get("company_id","")),"quantity":shares})
@@ -307,7 +309,7 @@ static func validate_command(s: Dictionary, c: Dictionary) -> String:
 			var principal: int = debt_total(s,owner)
 			if int(p.amount)+principal > _credit_capacity(s,owner): return "BORROWER_CREDIT_LIMIT"
 			if int(p.amount)+_bank_loans(s,bank.id) > int(bank.capital)*10000/int(d.capital_ratio_bps): return "BANK_CAPITAL_LIMIT"
-			if int(p.amount) > Ledger.balance(s,bank.id+":reserve:CR")+cash(s,bank.id)+int(d.cb_credit_limit)-int(bank.cb_borrowing): return "BANK_LIQUIDITY_LIMIT"
+			if int(p.amount) > Ledger.balance(s,bank.id+":reserve:USD")+cash(s,bank.id)+int(d.cb_credit_limit)-int(bank.cb_borrowing): return "BANK_LIQUIDITY_LIMIT"
 		"finance_repay":
 			var loan: Dictionary = _find(s.finance.loans,str(p.get("loan_id","")))
 			if loan.is_empty() or loan.borrower_id != owner or int(loan.principal)+int(loan.arrears)<=0: return "LOAN_NOT_OWNED"
@@ -441,16 +443,16 @@ static func _execute(s: Dictionary, c: Dictionary, month: int) -> Dictionary:
 			var amount: int = int(p.amount)
 			var bank_asset: String = _account(s,bank.id,"loan:"+loan_id,"asset")
 			var borrower_debt: String = _account(s,owner,"loan:"+loan_id,"liability")
-			var deposit: String = _account(s,bank.id,"deposit:"+owner+":CR","liability")
+			var deposit: String = _account(s,bank.id,"deposit:"+owner+":USD","liability")
 			result = _post(s,id,[_line(bank_asset,amount),_line(deposit,-amount),_line(owner+":cash",amount),_line(borrower_debt,-amount)],"대출 실행·대응 예금과 부채",month)
 			if result.ok:
-				s.finance.loans.append({"id":loan_id,"bank_id":bank.id,"borrower_id":owner,"currency":"CR","principal":amount,"original_principal":amount,"interest_bps":int(bank.get("loan_interest_bps",definition().loan_interest_bps)),"term_months":int(p.term_months),"start_month":month,"due_month":month+int(p.term_months)-1,"arrears":0,"missed_payments":0,"status":"active","provision":0})
-				_event(s,"money_creation","은행 대출의 대응 예금 발행",month,{"actor_id":owner,"city_id":_owner_city(s,owner),"currency":"CR","amount":amount,"loan_id":loan_id,"journal_id":id})
+				s.finance.loans.append({"id":loan_id,"bank_id":bank.id,"borrower_id":owner,"currency":"USD","principal":amount,"original_principal":amount,"interest_bps":int(bank.get("loan_interest_bps",definition().loan_interest_bps)),"term_months":int(p.term_months),"start_month":month,"due_month":month+int(p.term_months)-1,"arrears":0,"missed_payments":0,"status":"active","provision":0})
+				_event(s,"money_creation","은행 대출의 대응 예금 발행",month,{"actor_id":owner,"city_id":_owner_city(s,owner),"currency":"USD","amount":amount,"loan_id":loan_id,"journal_id":id})
 				# A foreign bank remits the created deposit to the customer's
 				# existing settlement bank; it does not duplicate that deposit.
 				var primary: String=str(s.finance.owner_bank.get(owner,bank.id))
 				if primary!=str(bank.id):
-					_post(s,id+"-interbank",[_line(deposit,amount),_line(bank.id+":reserve:CR",-amount),_line(primary+":reserve:CR",amount),_line(_account(s,primary,"deposit:"+owner+":CR","liability"),-amount)],"타행 대출 예금의 은행 간 결제",month)
+					_post(s,id+"-interbank",[_line(deposit,amount),_line(bank.id+":reserve:USD",-amount),_line(primary+":reserve:USD",amount),_line(_account(s,primary,"deposit:"+owner+":USD","liability"),-amount)],"타행 대출 예금의 은행 간 결제",month)
 		"finance_repay": result = _repay(s,_find(s.finance.loans,str(p.loan_id)),int(p.amount),month,id)
 		"finance_deposit": result = _savings(s,owner,str(p.bank_id),int(p.amount),false,month,id)
 		"finance_withdraw": result = _savings(s,owner,str(p.bank_id),int(p.amount),true,month,id)
@@ -479,7 +481,7 @@ static func _execute(s: Dictionary, c: Dictionary, month: int) -> Dictionary:
 		"finance_trade_shares": result = _share_trade(s,owner,str(p.seller_id),str(p.company_id),int(p.shares),int(p.unit_price),month,id)
 		"finance_dividend": result = distribute_dividend(s,owner,int(p.amount),month,id)
 		"finance_issue_bond":
-			s.finance.bonds.append({"id":"bond-"+str(c.id),"issuer_id":owner,"currency":"CR","face":int(p.amount),"subscribed":0,"outstanding":0,"interest_bps":int(p.interest_bps),"start_month":month,"due_month":month+int(p.term_months),"status":"offered","holders":[],"arrears":0})
+			s.finance.bonds.append({"id":"bond-"+str(c.id),"issuer_id":owner,"currency":"USD","face":int(p.amount),"subscribed":0,"outstanding":0,"interest_bps":int(p.interest_bps),"start_month":month,"due_month":month+int(p.term_months),"status":"offered","holders":[],"arrears":0})
 		"finance_buy_bond":
 			var bond: Dictionary = _find(s.finance.bonds,str(p.bond_id))
 			var amount: int = int(p.amount)
@@ -508,13 +510,13 @@ static func _credit_capacity(s: Dictionary, owner: String) -> int:
 	var assets: int=0
 	for account_id in s.accounts:
 		var account: Dictionary=s.accounts[account_id]
-		if account.owner==owner and account.kind=="asset" and account.currency=="CR": assets+=maxi(0,int(account.balance))
+		if account.owner==owner and account.kind=="asset" and account.currency=="USD": assets+=maxi(0,int(account.balance))
 	var person: Dictionary=_find(s.people,owner)
 	var income: int=int(person.get("last_income",0))
 	return mini(int(d.loan_limit),cash(s,owner)*int(d.credit_cash_multiplier)+int(assets*int(d.credit_asset_haircut_bps)/10000)+income*int(d.credit_income_multiple))
 
 static func _liquidity(s: Dictionary, bank_id: String) -> int:
-	return cash(s,bank_id)+Ledger.balance(s,bank_id+":reserve:CR")
+	return cash(s,bank_id)+Ledger.balance(s,bank_id+":reserve:USD")
 
 static func _savings_id(owner: String, bank: String) -> String:
 	return owner+":savings:"+bank
@@ -523,12 +525,12 @@ static func _savings(s: Dictionary, owner: String, bank_id: String, amount: int,
 	var primary: String = str(s.finance.owner_bank.get(owner,bank_id))
 	var saving: String = _account(s,owner,"savings:"+bank_id,"asset")
 	var liability: String = _account(s,bank_id,"savings:"+owner,"liability")
-	var primary_deposit: String = _account(s,primary,"deposit:"+owner+":CR","liability")
+	var primary_deposit: String = _account(s,primary,"deposit:"+owner+":USD","liability")
 	var direction: int = -1 if withdrawing else 1
 	var lines: Array = [_line(saving,direction*amount),_line(owner+":cash",-direction*amount),_line(liability,-direction*amount),_line(primary_deposit,direction*amount)]
 	if bank_id != primary:
-		lines.append(_line(bank_id+":reserve:CR",direction*amount))
-		lines.append(_line(primary+":reserve:CR",-direction*amount))
+		lines.append(_line(bank_id+":reserve:USD",direction*amount))
+		lines.append(_line(primary+":reserve:USD",-direction*amount))
 	return _post(s,id,lines,"정기예금 인출" if withdrawing else "정기예금 예치",month)
 
 static func _repay(s: Dictionary, loan: Dictionary, amount: int, month: int, id: String) -> Dictionary:
@@ -542,8 +544,8 @@ static func _repay(s: Dictionary, loan: Dictionary, amount: int, month: int, id:
 	if principal>0:
 		var primary: String=str(s.finance.owner_bank.get(owner,bank))
 		lines.append_array([_line(owner+":loan:"+str(loan.id),principal),_line(owner+":cash",-principal),_line(bank+":loan:"+str(loan.id),-principal)])
-		if primary==bank: lines.append(_line(_account(s,bank,"deposit:"+owner+":CR","liability"),principal))
-		else: lines.append_array([_line(bank+":reserve:CR",principal),_line(_account(s,primary,"deposit:"+owner+":CR","liability"),principal),_line(primary+":reserve:CR",-principal)])
+		if primary==bank: lines.append(_line(_account(s,bank,"deposit:"+owner+":USD","liability"),principal))
+		else: lines.append_array([_line(bank+":reserve:USD",principal),_line(_account(s,primary,"deposit:"+owner+":USD","liability"),principal),_line(primary+":reserve:USD",-principal)])
 	var recovery: int=mini(principal,int(loan.provision))
 	if recovery>0: lines.append_array([_line(bank+":provision:"+str(loan.id),recovery),_line(_account(s,bank,"credit_loss_recovery","revenue"),-recovery)])
 	var result: Dictionary = _post(s,id,lines,"대출 원금 소멸·연체이자 정산",month)
@@ -551,7 +553,7 @@ static func _repay(s: Dictionary, loan: Dictionary, amount: int, month: int, id:
 		loan.principal = int(loan.principal)-principal
 		loan.arrears = int(loan.arrears)-interest
 		loan.provision=int(loan.provision)-recovery
-		if principal>0: _event(s,"money_destruction","대출 원금과 대응 예금 소멸",month,{"actor_id":owner,"city_id":_owner_city(s,owner),"currency":"CR","amount":principal,"loan_id":loan.id,"journal_id":id})
+		if principal>0: _event(s,"money_destruction","대출 원금과 대응 예금 소멸",month,{"actor_id":owner,"city_id":_owner_city(s,owner),"currency":"USD","amount":principal,"loan_id":loan.id,"journal_id":id})
 		if int(loan.principal)==0 and int(loan.arrears)==0: loan.status="repaid"
 	return result
 
@@ -649,7 +651,7 @@ static func retained_earnings(s: Dictionary, owner: String) -> int:
 	var result: int = 0
 	for account_id in s.accounts:
 		var account: Dictionary = s.accounts[account_id]
-		if account.owner==owner and account.currency=="CR" and account.kind in ["expense","revenue"]: result-=int(account.balance)
+		if account.owner==owner and account.currency=="USD" and account.kind in ["expense","revenue"]: result-=int(account.balance)
 	result-=Ledger.balance(s,owner+":dividends")
 	return result
 
@@ -750,20 +752,20 @@ static func reconcile_deposits(s: Dictionary, month: int) -> void:
 			if delta!=0:
 				_post(s,_id(s,"deposit-settlement"),[_line(bank+":reserve:"+cur,delta),_line(deposit,-delta)],"예금 소유자 현금흐름과 은행 결제자산 정산",month)
 	for bank in s.finance.banks:
-		var reserve: int=Ledger.balance(s,bank.id+":reserve:CR")
+		var reserve: int=Ledger.balance(s,bank.id+":reserve:USD")
 		if reserve<0:
 			var own_cover: int=mini(-reserve,cash(s,bank.id))
-			if own_cover>0: _post(s,_id(s,"liquidity-cover"),[_line(bank.id+":reserve:CR",own_cover),_line(bank.id+":cash",-own_cover)],"은행 자기 유동성의 결제 투입",month)
-			reserve=Ledger.balance(s,bank.id+":reserve:CR")
+			if own_cover>0: _post(s,_id(s,"liquidity-cover"),[_line(bank.id+":reserve:USD",own_cover),_line(bank.id+":cash",-own_cover)],"은행 자기 유동성의 결제 투입",month)
+			reserve=Ledger.balance(s,bank.id+":reserve:USD")
 			if reserve<0:
 				var borrowing: int=mini(-reserve,int(definition().cb_credit_limit)-int(bank.cb_borrowing))
 				if borrowing>0:
 					var cb: String=str(bank.central_bank_id)
-					_post(s,_id(s,"cb-facility"),[_line(bank.id+":reserve:CR",borrowing),_line(_account(s,bank.id,"cb_borrowing","liability"),-borrowing),_line(_account(s,cb,"bank_loan:"+str(bank.id),"asset"),borrowing),_line(cb+":issued:CR",-borrowing)],"유한 담보 한도의 중앙은행 결제 대출",month)
+					_post(s,_id(s,"cb-facility"),[_line(bank.id+":reserve:USD",borrowing),_line(_account(s,bank.id,"cb_borrowing","liability"),-borrowing),_line(_account(s,cb,"bank_loan:"+str(bank.id),"asset"),borrowing),_line(cb+":issued:USD",-borrowing)],"유한 담보 한도의 중앙은행 결제 대출",month)
 					bank.cb_borrowing=int(bank.cb_borrowing)+borrowing
 					var central: Dictionary=_find(s.finance.central_banks,cb)
-					central.issued["CR"]=int(central.issued.get("CR",0))+borrowing
-					_event(s,"base_money_creation","중앙은행 결제 대출·대응 은행 부채",month,{"actor_id":bank.id,"city_id":bank.city_id,"currency":"CR","amount":borrowing})
+					central.issued["USD"]=int(central.issued.get("USD",0))+borrowing
+					_event(s,"base_money_creation","중앙은행 결제 대출·대응 은행 부채",month,{"actor_id":bank.id,"city_id":bank.city_id,"currency":"USD","amount":borrowing})
 
 static func register_owner(s: Dictionary, owner: String, city_id: String = "") -> void:
 	if not s.get("finance") is Dictionary or s.finance.owner_bank.has(owner): return
@@ -1003,7 +1005,7 @@ static func summary(s: Dictionary, owner: String) -> Dictionary:
 	for bank in s.get("finance",{}).get("banks",[]): savings+=Ledger.balance(s,_savings_id(owner,bank.id))
 	var wallets: Array=[]
 	for currency in s.get("finance",{}).get("currencies",[]): wallets.append({"currency":currency.id,"amount":cash(s,owner,currency.id)})
-	return {"cash":cash(s,owner),"restricted_deposits":int(_restricted_deposits(s).get(owner+"|CR",0)),"savings":savings,"debt":debt_total(s,owner),"retained_earnings":retained_earnings(s,owner),"wallets":wallets,"loans":s.get("finance",{}).get("loans",[]).filter(func(l): return l.borrower_id==owner),"holdings":s.get("ownership",[]).filter(func(h): return h.owner_id==owner),"bonds":s.get("finance",{}).get("bonds",[]).filter(func(b): return b.issuer_id==owner),"policies":s.get("finance",{}).get("policies",[]).filter(func(p): return p.owner_id==owner),"share_offers":s.get("finance",{}).get("share_offers",[]),"equity_issues":s.get("finance",{}).get("equity_issues",[])}.duplicate(true)
+	return {"currency":Ledger.BASE_CURRENCY,"minor_units_per_major":Ledger.MINOR_UNITS_PER_MAJOR,"cash":cash(s,owner),"restricted_deposits":int(_restricted_deposits(s).get(owner+"|USD",0)),"savings":savings,"debt":debt_total(s,owner),"retained_earnings":retained_earnings(s,owner),"wallets":wallets,"loans":s.get("finance",{}).get("loans",[]).filter(func(l): return l.borrower_id==owner),"holdings":s.get("ownership",[]).filter(func(h): return h.owner_id==owner),"bonds":s.get("finance",{}).get("bonds",[]).filter(func(b): return b.issuer_id==owner),"policies":s.get("finance",{}).get("policies",[]).filter(func(p): return p.owner_id==owner),"share_offers":s.get("finance",{}).get("share_offers",[]),"equity_issues":s.get("finance",{}).get("equity_issues",[])}.duplicate(true)
 
 static func _restricted_deposits(s: Dictionary) -> Dictionary:
 	var balances: Dictionary={}
@@ -1028,7 +1030,7 @@ static func monetary_summary(s: Dictionary) -> Array:
 		for owner in s.finance.owner_bank:
 			transaction+=cash(s,str(owner),cur)
 			held+=int(restricted.get(str(owner)+"|"+cur,0))
-		if cur=="CR":
+		if cur=="USD":
 			for account_id in s.accounts:
 				var account: Dictionary=s.accounts[account_id]
 				if account.kind=="asset" and account.currency==cur and ":savings:" in str(account_id): savings+=int(account.balance)
@@ -1113,6 +1115,7 @@ static func _ai_command(s: Dictionary, actor: String, company: String, type: Str
 
 static func validate(s: Dictionary) -> Array:
 	if not s.get("finance") is Dictionary: return ["FINANCE_STATE_MISSING"]
+	if s.finance.get("base_currency")!=Ledger.BASE_CURRENCY or s.finance.get("minor_units_per_major")!=Ledger.MINOR_UNITS_PER_MAJOR: return ["FINANCE_MONEY_UNIT_MISMATCH"]
 	var errors: Array=[]
 	for key in ["banks","central_banks","insurers","market_makers","loans","bonds","policies","claims","currencies","share_offers","equity_issues","capital_mandates"]:
 		if not s.finance.get(key) is Array: errors.append("FINANCE_ARRAY_MISSING:"+key)
@@ -1146,6 +1149,7 @@ static func validate(s: Dictionary) -> Array:
 	for currency in s.finance.currencies:
 		if not currency is Dictionary or not currency.get("id") is String or str(currency.get("id","")).is_empty() or not _integer(currency.get("numerator")) or not _integer(currency.get("denominator")): errors.append("FINANCE_CURRENCY_SCHEMA"); continue
 		if int(currency.numerator)<=0 or int(currency.denominator)<=0: errors.append("FINANCE_CURRENCY_RATE_INVALID")
+		if not Ledger.supported_currency(currency.id) or currency.get("minor_digits")!=2: errors.append("FINANCE_CURRENCY_UNIT_INVALID")
 	for key in ["owner_bank","applied_commands"]:
 		if not s.finance.get(key) is Dictionary: errors.append("FINANCE_DICTIONARY_MISSING:"+key)
 	if s.finance.get("owner_bank") is Dictionary:
@@ -1160,6 +1164,9 @@ static func validate(s: Dictionary) -> Array:
 		for account_id in s.accounts:
 			var account: Variant=s.accounts[account_id]
 			if not account is Dictionary or not account.get("kind") is String or not account.get("owner") is String or not account.get("currency") is String or not _integer(account.get("balance")): errors.append("FINANCE_ACCOUNT_SCHEMA")
+	for key in ["banks","loans","bonds"]:
+		for row in s.finance[key]:
+			if not row is Dictionary or row.get("currency")!=Ledger.BASE_CURRENCY: errors.append("FINANCE_BASE_CURRENCY_MISMATCH:"+key)
 	if not errors.is_empty(): return errors
 	for loan in s.finance.loans:
 		for key in ["principal","original_principal","interest_bps","term_months","start_month","due_month","arrears","missed_payments","provision"]:

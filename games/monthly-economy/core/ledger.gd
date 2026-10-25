@@ -3,7 +3,14 @@ extends RefCounted
 ## and currency; asset accounts use a debit-positive natural balance.
 
 const MAX_INTEGER: int = 9007199254740991
+const BASE_CURRENCY: String = "USD"
+const MINOR_UNITS_PER_MAJOR: int = 100
+# ISO 4217 currencies verified in the SIX maintenance list (2026-09-17).
+const SUPPORTED_CURRENCIES: Array = ["USD", "EUR", "GBP"]
 const ACCOUNT_KINDS: Array = ["cash", "equity", "expense", "revenue", "asset", "liability"]
+
+static func supported_currency(code: String) -> bool:
+	return code in SUPPORTED_CURRENCIES
 
 static func _integer(value: Variant) -> bool:
 	if typeof(value) == TYPE_INT:
@@ -15,9 +22,11 @@ static func _integer(value: Variant) -> bool:
 static func _fail(message: String) -> Dictionary:
 	return {"ok": false, "error": message}
 
-static func open_account(s: Dictionary, id: String, owner: String, kind: String, currency: String = "CR") -> Dictionary:
+static func open_account(s: Dictionary, id: String, owner: String, kind: String, currency: String = "USD") -> Dictionary:
 	if id.is_empty() or owner.is_empty() or currency.is_empty() or kind not in ACCOUNT_KINDS:
 		return _fail("INVALID_ACCOUNT")
+	if not supported_currency(currency):
+		return _fail("UNSUPPORTED_CURRENCY")
 	if not s.has("accounts"):
 		s["accounts"] = {}
 	if not s.accounts is Dictionary:
@@ -79,6 +88,8 @@ static func post(s: Dictionary, id: String, lines: Array, reason: String, month:
 		var info: Dictionary = s.accounts[account]
 		if not info.has("owner") or not info.has("currency") or info.get("kind") not in ACCOUNT_KINDS or not _integer(info.get("balance")):
 			return _fail("INVALID_ACCOUNT: " + account)
+		if not supported_currency(str(info.currency)):
+			return _fail("UNSUPPORTED_CURRENCY")
 		var group: String = str(info.owner) + "\u001f" + str(info.currency)
 		var amount: int = debit - credit
 		groups[group] = int(groups.get(group, 0)) + amount
@@ -113,7 +124,7 @@ static func post(s: Dictionary, id: String, lines: Array, reason: String, month:
 	s.journal.append({"id": id, "month": month, "reason": reason, "lines": normalized})
 	return {"ok": true, "error": ""}
 
-static func _owner_accounts(s: Dictionary, owner: String, currency: String = "CR") -> Dictionary:
+static func _owner_accounts(s: Dictionary, owner: String, currency: String = "USD") -> Dictionary:
 	for kind in ["cash", "equity", "expense", "revenue"]:
 		var result: Dictionary = open_account(s, owner + ":" + kind, owner, kind, currency)
 		if not result.ok:
@@ -193,7 +204,7 @@ static func transfer(s: Dictionary, id: String, from_owner: String, to_owner: St
 		s["journal_index"] = candidate.journal_index
 	return result
 
-static func validate(s: Dictionary) -> Array:
+static func validate(s: Dictionary, allow_legacy_currencies: bool = false) -> Array:
 	var errors: Array = []
 	if not s.get("accounts") is Dictionary or not s.get("journal") is Array:
 		return ["LEDGER_SCHEMA"]
@@ -205,6 +216,9 @@ static func validate(s: Dictionary) -> Array:
 			continue
 		if str(info.get("owner", "")).is_empty() or str(info.get("currency", "")).is_empty() or info.get("kind") not in ACCOUNT_KINDS:
 			errors.append("ACCOUNT_SCHEMA: " + str(id))
+		var code: String=str(info.get("currency", ""))
+		if not supported_currency(code) and not (allow_legacy_currencies and code in ["CR","XR","YR"]):
+			errors.append("UNSUPPORTED_ACCOUNT_CURRENCY: " + str(id))
 		if not _integer(info.get("balance")):
 			errors.append("ACCOUNT_UNSAFE_BALANCE: " + str(id))
 		elif info.get("kind") == "cash" and int(info.balance) < 0:

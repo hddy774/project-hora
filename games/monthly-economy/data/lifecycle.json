@@ -132,11 +132,13 @@
         },
         {
           "key": "capital",
-          "label": "출자금(최소화폐단위)",
-          "kind": "int",
+          "label": "출자금 ($)",
+          "kind": "money",
           "min": 100,
           "max": 1000000,
-          "default": 150
+          "default": 150,
+          "storage_unit": "USD_cent",
+          "display_unit": "USD"
         },
         {
           "key": "kind",
@@ -176,15 +178,17 @@
         },
         {
           "key": "wage",
-          "label": "시급",
-          "kind": "int",
+          "label": "시급 ($/시간)",
+          "kind": "money",
           "min": 1,
           "max": 20,
-          "default": 3
+          "default": 3,
+          "storage_unit": "USD_cent",
+          "display_unit": "USD/hour"
         },
         {
           "key": "hours",
-          "label": "월 근로시간",
+          "label": "월 근로시간 (시간)",
           "kind": "int",
           "min": 1,
           "max": 160,
@@ -192,7 +196,7 @@
         },
         {
           "key": "skill",
-          "label": "최소 숙련",
+          "label": "필요 숙련 단계",
           "kind": "int",
           "min": 0,
           "max": 10,
@@ -207,7 +211,7 @@
         },
         {
           "key": "guaranteed_hours",
-          "label": "월 보장 유급시간",
+          "label": "월 보장 유급시간 (시간)",
           "kind": "int",
           "min": 1,
           "max": 160,
@@ -270,15 +274,17 @@
         },
         {
           "key": "wage",
-          "label": "시급",
-          "kind": "int",
+          "label": "시급 ($/시간)",
+          "kind": "money",
           "min": 1,
           "max": 20,
-          "default": 3
+          "default": 3,
+          "storage_unit": "USD_cent",
+          "display_unit": "USD/hour"
         },
         {
           "key": "hours",
-          "label": "월 근로시간",
+          "label": "월 근로시간 (시간)",
           "kind": "int",
           "min": 1,
           "max": 160,
@@ -293,7 +299,7 @@
         },
         {
           "key": "guaranteed_hours",
-          "label": "월 보장 유급시간",
+          "label": "월 보장 유급시간 (시간)",
           "kind": "int",
           "min": 1,
           "max": 160,
@@ -356,7 +362,7 @@
         },
         {
           "key": "months",
-          "label": "교육 개월",
+          "label": "교육 기간 (개월)",
           "kind": "int",
           "min": 1,
           "max": 24,
@@ -364,11 +370,13 @@
         },
         {
           "key": "budget",
-          "label": "교육비 한도",
-          "kind": "int",
+          "label": "교육비 한도 ($)",
+          "kind": "money",
           "min": 100,
           "max": 100000,
-          "default": 100
+          "default": 100,
+          "storage_unit": "USD_cent",
+          "display_unit": "USD"
         }
       ]
     },
@@ -449,11 +457,13 @@
         },
         {
           "key": "budget",
-          "label": "월 집행 한도",
-          "kind": "int",
+          "label": "월 사용 한도 ($)",
+          "kind": "money",
           "min": 1,
           "max": 1000000,
-          "default": 100
+          "default": 100,
+          "storage_unit": "USD_cent",
+          "display_unit": "USD"
         }
       ]
     },
@@ -489,11 +499,13 @@
         },
         {
           "key": "capital",
-          "label": "출자금",
-          "kind": "int",
+          "label": "출자금 ($)",
+          "kind": "money",
           "min": 100,
           "max": 1000000,
-          "default": 200
+          "default": 200,
+          "storage_unit": "USD_cent",
+          "display_unit": "USD"
         },
         {
           "key": "kind",
@@ -526,11 +538,13 @@
         },
         {
           "key": "amount",
-          "label": "제안 대금",
-          "kind": "int",
+          "label": "제안 대금 ($)",
+          "kind": "money",
           "min": 1,
           "max": 10000000,
-          "default": 500
+          "default": 500,
+          "storage_unit": "USD_cent",
+          "display_unit": "USD"
         }
       ]
     },
@@ -621,7 +635,7 @@
         },
         {
           "key": "max_hours",
-          "label": "강사별 월 교육시간 상한",
+          "label": "강사별 월 교육시간 상한 (시간)",
           "kind": "int",
           "min": 1,
           "max": 16,
@@ -667,5 +681,31 @@
       "software": 4,
       "research": 4
     }
+  },
+  "units": {
+    "money": "미국 달러(USD) 센트 정수. 100센트 = $1.00. 입력·표시는 달러, 내부 저장은 센트이며 기존 금액 숫자는 바꾸지 않음.",
+    "money_display_krw": "표시 전용 고정 환산: $1 = 1,000원. 실제 외환 거래·계좌 통화·장부 잔액은 바꾸지 않음.",
+    "wage": "센트/시간. 표시·입력은 $/시간.",
+    "labor": "시간",
+    "time": "개월",
+    "shares": "주",
+    "skill": "게임 숙련 단계. 시간·자격증 수와 구별."
+  },
+  "term_labels": {
+    "operations": "생산 운영",
+    "construction": "건설",
+    "management": "경영",
+    "software": "소프트웨어 개발",
+    "research": "연구",
+    "operator": "생산 직원",
+    "builder": "건설 직원",
+    "developer": "개발자",
+    "researcher": "연구원",
+    "service": "서비스 직원",
+    "equity": "지분",
+    "retained_earnings": "누적 이익(이익잉여금)",
+    "liquidation": "회사 정리(청산)",
+    "wage_claims": "받지 못한 임금",
+    "delegation": "경영 위임"
   }
 }

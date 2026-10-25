@@ -1,70 +1,122 @@
 {
   "status": "experimental",
   "version": 2,
-  "rules_version": "experimental-0.2",
+  "rules_version": "experimental-0.2-usd",
   "purpose": "P0/P1 검증 전용. 출시 밸런스나 사용자 확정 수치가 아닙니다.",
   "units": {
-    "money": "CR의 1/100 최소 화폐 단위 정수 (100최소단위 = 1 CR)",
-    "labor": "시간",
-    "products": "품목별 unit 필드",
-    "turn": "월"
+    "money": "미국 달러(USD) 센트 정수. 100센트 = $1.00. 입력·표시는 달러, 내부 저장은 센트이며 기존 금액 숫자는 바꾸지 않음.",
+    "labor": "시간. 인원수와 작업시간을 직접 합산하지 않음.",
+    "products": "품목별 unit 필드. kg·L·m³·kWh·개 등 서로 다른 차원을 직접 합산하지 않음.",
+    "turn": "월. 다음 달 명령으로만 진행.",
+    "money_display_krw": "표시 전용 고정 환산: $1 = 1,000원. 실제 외환 거래·계좌 통화·장부 잔액은 바꾸지 않음.",
+    "cargo": "g. cargo_size = cargo_mass_g_per_unit = 품목 1단위당 대표 운송 질량. 서로 다른 품목 수량을 바로 더하지 않음.",
+    "storage": "g. 재고 수량 × 품목당 질량의 합. 부피·축중 한도는 현재 생략.",
+    "area": "m². 실험 기본 타일 한 변 10m, 한 칸 100m². 가격은 필지 총액이며 m²당 가격이 아님."
   },
   "products": [
     {
       "id": "grain",
       "name": "곡물",
-      "unit": "t",
+      "unit": "kg",
       "industry": "농업",
-      "price": 3
+      "price": 3,
+      "unit_dimension": "mass",
+      "cargo_size": 1000,
+      "cargo_mass_g_per_unit": 1000,
+      "quantity_note": "곡물의 질량. 작물별 품종은 아직 나누지 않은 대표 품목.",
+      "measurement_status": "experimental",
+      "kind": "material"
     },
     {
       "id": "flour",
       "name": "밀가루",
-      "unit": "t",
+      "unit": "kg",
       "industry": "가공재",
-      "price": 6
+      "price": 6,
+      "unit_dimension": "mass",
+      "cargo_size": 1000,
+      "cargo_mass_g_per_unit": 1000,
+      "quantity_note": "제분한 곡물 가루의 질량. 제분 손실은 레시피 메모에 명시.",
+      "measurement_status": "experimental",
+      "kind": "material"
     },
     {
       "id": "food",
-      "name": "식품",
-      "unit": "상자",
+      "name": "가공 식품",
+      "unit": "kg",
       "industry": "소비재",
-      "price": 14
+      "price": 14,
+      "unit_dimension": "mass",
+      "cargo_size": 1000,
+      "cargo_mass_g_per_unit": 1000,
+      "quantity_note": "포장 수와 무관한 식품 내용물 질량.",
+      "measurement_status": "experimental",
+      "kind": "material"
     },
     {
       "id": "wood",
       "name": "목재",
-      "unit": "t",
+      "unit": "kg",
       "industry": "임업",
-      "price": 3
+      "price": 3,
+      "unit_dimension": "mass",
+      "cargo_size": 1000,
+      "cargo_mass_g_per_unit": 1000,
+      "quantity_note": "운송·재고에서 수종과 함수율을 나누지 않은 대표 목재 질량.",
+      "measurement_status": "experimental",
+      "kind": "material"
     },
     {
       "id": "stone",
-      "name": "석재",
-      "unit": "t",
+      "name": "건설용 돌",
+      "unit": "kg",
       "industry": "기초자원",
-      "price": 2
+      "price": 2,
+      "unit_dimension": "mass",
+      "cargo_size": 1000,
+      "cargo_mass_g_per_unit": 1000,
+      "quantity_note": "건설용 석재 질량.",
+      "measurement_status": "experimental",
+      "kind": "material"
     },
     {
       "id": "tools",
-      "name": "공구",
-      "unit": "세트",
+      "name": "작업용 공구",
+      "unit": "개",
       "industry": "자본재",
-      "price": 16
+      "price": 16,
+      "unit_dimension": "count",
+      "cargo_size": 1000,
+      "cargo_mass_g_per_unit": 1000,
+      "quantity_note": "공구 1개. 실험 대표 규격은 1kg이며 공구 세트가 아님.",
+      "measurement_status": "experimental",
+      "kind": "material"
     },
     {
       "id": "energy",
-      "name": "전력",
-      "unit": "MWh",
+      "name": "전기",
+      "unit": "kWh",
       "industry": "서비스",
-      "price": 3
+      "price": 3,
+      "unit_dimension": "energy",
+      "cargo_size": 0,
+      "cargo_mass_g_per_unit": 0,
+      "quantity_note": "전기 사용량. 물리 재고가 아닌 당월 공급 능력과 사용권.",
+      "measurement_status": "experimental",
+      "kind": "service"
     },
     {
       "id": "water",
       "name": "용수",
       "unit": "m³",
       "industry": "서비스",
-      "price": 1
+      "price": 1,
+      "unit_dimension": "volume",
+      "cargo_size": 0,
+      "cargo_mass_g_per_unit": 0,
+      "quantity_note": "사용 가능한 물의 부피. 1m³ = 1,000L. 당월 서비스이므로 화물 재고가 아님.",
+      "measurement_status": "experimental",
+      "kind": "service"
     }
   ],
   "recipes": [
@@ -78,18 +130,42 @@
       "outputs": {
         "food": 5
       },
-      "labor": 6
+      "labor": 6,
+      "quantity_units": {
+        "inputs": {
+          "flour": "kg",
+          "water": "m³",
+          "energy": "kWh"
+        },
+        "outputs": {
+          "food": "kg"
+        },
+        "labor": "시간/공정 1회"
+      },
+      "physical_validation": "experimental_unverified"
     },
     {
       "id": "mill",
       "inputs": {
-        "grain": 2,
+        "grain": 4,
         "energy": 1
       },
       "outputs": {
         "flour": 3
       },
-      "labor": 6
+      "labor": 6,
+      "quantity_units": {
+        "inputs": {
+          "grain": "kg",
+          "energy": "kWh"
+        },
+        "outputs": {
+          "flour": "kg"
+        },
+        "labor": "시간/공정 1회"
+      },
+      "physical_validation": "experimental_unverified",
+      "mass_balance_note": "곡물 4kg에서 밀가루 3kg. 잔여 1kg은 껍질·수분 등 제분 손실로 간주하며 현재 개별 재고 품목으로 판매하지 않음."
     },
     {
       "id": "grow",
@@ -101,7 +177,19 @@
       "outputs": {
         "grain": 6
       },
-      "labor": 6
+      "labor": 6,
+      "quantity_units": {
+        "inputs": {
+          "grain": "kg",
+          "water": "m³",
+          "energy": "kWh"
+        },
+        "outputs": {
+          "grain": "kg"
+        },
+        "labor": "시간/공정 1회"
+      },
+      "physical_validation": "experimental_unverified"
     },
     {
       "id": "timber",
@@ -113,7 +201,17 @@
       },
       "labor": 6,
       "resource": "forest",
-      "resource_per_batch": 5
+      "resource_per_batch": 5,
+      "quantity_units": {
+        "inputs": {
+          "energy": "kWh"
+        },
+        "outputs": {
+          "wood": "kg"
+        },
+        "labor": "시간/공정 1회"
+      },
+      "physical_validation": "experimental_unverified"
     },
     {
       "id": "stone",
@@ -125,7 +223,17 @@
       },
       "labor": 6,
       "resource": "stone",
-      "resource_per_batch": 5
+      "resource_per_batch": 5,
+      "quantity_units": {
+        "inputs": {
+          "energy": "kWh"
+        },
+        "outputs": {
+          "stone": "kg"
+        },
+        "labor": "시간/공정 1회"
+      },
+      "physical_validation": "experimental_unverified"
     },
     {
       "id": "tools",
@@ -137,7 +245,19 @@
       "outputs": {
         "tools": 3
       },
-      "labor": 8
+      "labor": 8,
+      "quantity_units": {
+        "inputs": {
+          "wood": "kg",
+          "stone": "kg",
+          "energy": "kWh"
+        },
+        "outputs": {
+          "tools": "개"
+        },
+        "labor": "시간/공정 1회"
+      },
+      "physical_validation": "experimental_unverified"
     },
     {
       "id": "energy",
@@ -147,7 +267,17 @@
       "outputs": {
         "energy": 20
       },
-      "labor": 4
+      "labor": 4,
+      "quantity_units": {
+        "inputs": {
+          "wood": "kg"
+        },
+        "outputs": {
+          "energy": "kWh"
+        },
+        "labor": "시간/공정 1회"
+      },
+      "physical_validation": "experimental_unverified"
     },
     {
       "id": "water",
@@ -159,7 +289,17 @@
       },
       "labor": 4,
       "resource": "fresh_water",
-      "resource_per_batch": 20
+      "resource_per_batch": 20,
+      "quantity_units": {
+        "inputs": {
+          "energy": "kWh"
+        },
+        "outputs": {
+          "water": "m³"
+        },
+        "labor": "시간/공정 1회"
+      },
+      "physical_validation": "experimental_unverified"
     }
   ],
   "buildings": [
@@ -174,7 +314,16 @@
       "work": 24,
       "min_months": 2,
       "w": 2,
-      "h": 2
+      "h": 2,
+      "dimension_units": {
+        "w": "타일",
+        "h": "타일",
+        "work": "시간",
+        "min_months": "개월",
+        "wood": "kg",
+        "stone": "kg",
+        "tools": "개"
+      }
     },
     {
       "id": "mill",
@@ -187,7 +336,16 @@
       "work": 24,
       "min_months": 2,
       "w": 2,
-      "h": 2
+      "h": 2,
+      "dimension_units": {
+        "w": "타일",
+        "h": "타일",
+        "work": "시간",
+        "min_months": "개월",
+        "wood": "kg",
+        "stone": "kg",
+        "tools": "개"
+      }
     },
     {
       "id": "farm",
@@ -200,7 +358,16 @@
       "work": 24,
       "min_months": 2,
       "w": 2,
-      "h": 2
+      "h": 2,
+      "dimension_units": {
+        "w": "타일",
+        "h": "타일",
+        "work": "시간",
+        "min_months": "개월",
+        "wood": "kg",
+        "stone": "kg",
+        "tools": "개"
+      }
     },
     {
       "id": "forestry",
@@ -213,7 +380,16 @@
       "work": 24,
       "min_months": 2,
       "w": 2,
-      "h": 2
+      "h": 2,
+      "dimension_units": {
+        "w": "타일",
+        "h": "타일",
+        "work": "시간",
+        "min_months": "개월",
+        "wood": "kg",
+        "stone": "kg",
+        "tools": "개"
+      }
     },
     {
       "id": "quarry",
@@ -226,7 +402,16 @@
       "work": 24,
       "min_months": 2,
       "w": 2,
-      "h": 2
+      "h": 2,
+      "dimension_units": {
+        "w": "타일",
+        "h": "타일",
+        "work": "시간",
+        "min_months": "개월",
+        "wood": "kg",
+        "stone": "kg",
+        "tools": "개"
+      }
     },
     {
       "id": "workshop",
@@ -239,7 +424,16 @@
       "work": 24,
       "min_months": 2,
       "w": 2,
-      "h": 2
+      "h": 2,
+      "dimension_units": {
+        "w": "타일",
+        "h": "타일",
+        "work": "시간",
+        "min_months": "개월",
+        "wood": "kg",
+        "stone": "kg",
+        "tools": "개"
+      }
     },
     {
       "id": "power",
@@ -252,7 +446,16 @@
       "work": 24,
       "min_months": 2,
       "w": 2,
-      "h": 2
+      "h": 2,
+      "dimension_units": {
+        "w": "타일",
+        "h": "타일",
+        "work": "시간",
+        "min_months": "개월",
+        "wood": "kg",
+        "stone": "kg",
+        "tools": "개"
+      }
     },
     {
       "id": "water",
@@ -265,7 +468,16 @@
       "work": 24,
       "min_months": 2,
       "w": 2,
-      "h": 2
+      "h": 2,
+      "dimension_units": {
+        "w": "타일",
+        "h": "타일",
+        "work": "시간",
+        "min_months": "개월",
+        "wood": "kg",
+        "stone": "kg",
+        "tools": "개"
+      }
     }
   ],
   "parameters": {
@@ -444,6 +656,43 @@
     ],
     "required_initial_services": [
       "school"
-    ]
+    ],
+    "tile_side_m": 10
+  },
+  "measurement_system": {
+    "status": "experimental",
+    "money_currency": "USD",
+    "money_minor_unit": "cent",
+    "minor_units_per_dollar": 100,
+    "krw_per_usd_display": 1000,
+    "million_dollars": 1000000,
+    "billion_dollars": 1000000000,
+    "supported_product_units": [
+      "kg",
+      "L",
+      "m³",
+      "kWh",
+      "개",
+      "대",
+      "벌",
+      "마리",
+      "장",
+      "m²",
+      "정",
+      "회선",
+      "건",
+      "시간",
+      "박",
+      "인분",
+      "좌석"
+    ],
+    "cargo_basis": "mass_g",
+    "cargo_mass_field": "cargo_mass_g_per_unit",
+    "physical_accuracy": "대표 규격의 실제 측정 차원만 정한다. 모든 제조 공정의 질량수지·실제 시세·영양·기기 성능을 검증했다는 뜻은 아니다."
+  },
+  "spatial_units": {
+    "tile_side_m": 10,
+    "area_display": "m²",
+    "area_note": "실험 기본값: 타일 한 변 10m, 한 칸 100m². 사용자 확정값이 아니며 향후 교체 가능한 지도 물리 척도다. 필지 가격은 기존 필지 총액을 유지하며 m²당 가격으로 재해석하지 않는다."
   }
 }

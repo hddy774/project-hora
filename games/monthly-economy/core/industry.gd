@@ -56,6 +56,10 @@ static func validate_data(data: Dictionary) -> Array:
 		for key in ["price", "shelf_life_months", "cargo_size", "durable_months"]:
 			if not _whole(product.get(key)) or int(product.get(key, -1)) < 0: errors.append("INDUSTRY_PRODUCT_NUMBER:" + key)
 		if int(product.get("price", 0)) <= 0: errors.append("INDUSTRY_PRODUCT_PRICE")
+		var mass: Variant=product.get("cargo_mass_g_per_unit")
+		if not _whole(mass) or int(mass)<0: errors.append("INDUSTRY_PRODUCT_MASS:"+id)
+		elif int(product.get("cargo_size",-1))!=int(mass): errors.append("INDUSTRY_PRODUCT_MASS_ALIAS:"+id)
+		elif (product.get("kind")=="material" and int(mass)<=0) or (product.get("kind") in ["service","digital"] and int(mass)!=0): errors.append("INDUSTRY_PRODUCT_MASS_KIND:"+id)
 	var recipe_ids: Dictionary = {}
 	for recipe in data.recipes:
 		if not recipe is Dictionary:
@@ -96,7 +100,7 @@ static func validate_data(data: Dictionary) -> Array:
 static func definitions() -> Dictionary:
 	var data: Dictionary = _data()
 	if data.is_empty(): return {}
-	return {"products": data.products.duplicate(true), "recipes": data.recipes.duplicate(true), "buildings": data.buildings.duplicate(true), "resources": data.resources.duplicate(), "product_overrides": {"energy": {"kind": "service", "cargo_size": 0}, "water": {"kind": "service", "cargo_size": 0}, "food": {"shelf_life_months": 3, "cargo_size": 1}, "grain": {"cargo_size": 3}, "flour": {"cargo_size": 3}, "wood": {"cargo_size": 3}, "stone": {"cargo_size": 3}}}
+	return {"products": data.products.duplicate(true), "recipes": data.recipes.duplicate(true), "buildings": data.buildings.duplicate(true), "resources": data.resources.duplicate(), "product_overrides": {"energy": {"kind": "service", "cargo_size": 0, "cargo_mass_g_per_unit":0}, "water": {"kind": "service", "cargo_size": 0, "cargo_mass_g_per_unit":0}, "food": {"shelf_life_months": 3}}}
 
 static func content_hash() -> String:
 	return JSON.stringify(_data(), "", true).sha256_text()
@@ -662,7 +666,7 @@ static func apply(s: Dictionary, c: Dictionary, month: int) -> Dictionary:
 		lot.merge(age, true)
 		s.inventory.append(lot)
 		Domain.register_lot(s, lot)
-		s.shipments.append({"id": id, "owner_id": owner, "product_id": product, "quantity": quantity, "from_city_id": city, "to_city_id": str(p.to_city), "eta": int(quote.eta), "status": "transit", "lot_id": lot_id, "route_ids": quote.path, "carrier_id": quote.carrier_id})
+		s.shipments.append({"id": id, "owner_id": owner, "product_id": product, "quantity": quantity, "from_city_id": city, "to_city_id": str(p.to_city), "start_month":month,"eta": int(quote.eta), "status": "transit", "lot_id": lot_id, "route_ids": quote.path, "carrier_id": quote.carrier_id})
 		_event(s, "shipment", "운송 중에도 한 번만 포함하는 물량", month, {"actor_id": owner, "city_id": city, "product_id": product, "quantity": quantity, "inventory_delta": quantity, "lot_id": lot_id, "shipment_id": id})
 	elif type == "industry_recycle":
 		var batches: int = int(p.batches)
@@ -694,75 +698,102 @@ static func _carrier(s: Dictionary, from_city: String) -> Dictionary:
 	candidates.sort_custom(func(a, b): return str(a.id) < str(b.id) if bool(a.local) == bool(b.local) else bool(a.local))
 	return candidates[0] if not candidates.is_empty() else {}
 
-static func _path(s: Dictionary, from: String, to: String, units: int) -> Dictionary:
-	var distances: Dictionary = {from: 0}
-	var previous: Dictionary = {}
-	var open: Array = [from]
+static func cargo_mass_g(s: Dictionary, product_id: String) -> int:
+	var product: Dictionary=_find(s.get("products",[]),product_id)
+	if product.is_empty() or product.get("kind","") in ["service","digital"]: return 0
+	var mass: Variant=product.get("cargo_mass_g_per_unit")
+	if not _positive(mass): return 0
+	return int(mass)
+
+static func freight_fee_for_mass(mass_g: int, rate_minor_per_tonne: int) -> int:
+	# Whole-shipment currency rounding, never rounded per SKU then multiplied.
+	# Split the numerator to keep valid large integer quantities exact.
+	if mass_g<0 or rate_minor_per_tonne<0: return -1
+	if mass_g==0 or rate_minor_per_tonne==0: return 0
+	var tonnes: int=mass_g/1000000
+	var remainder: int=mass_g%1000000
+	if tonnes>Ledger.MAX_INTEGER/rate_minor_per_tonne or (remainder>0 and rate_minor_per_tonne>Ledger.MAX_INTEGER/remainder): return -1
+	var whole: int=tonnes*rate_minor_per_tonne
+	var partial: int=remainder*rate_minor_per_tonne
+	var fraction: int=partial/1000000+(1 if partial%1000000>0 else 0)
+	if whole>Ledger.MAX_INTEGER-fraction: return -1
+	return whole+fraction
+
+static func _path(s: Dictionary, from: String, to: String, mass_g: int) -> Dictionary:
+	# Route rates and transit months have different dimensions. Minimize the
+	# published monetary rate, then transit time, without adding unlike units.
+	var rates: Dictionary={from:0}
+	var leads: Dictionary={from:0}
+	var previous: Dictionary={}
+	var open: Array=[from]
 	while not open.is_empty():
-		open.sort_custom(func(a, b): return int(distances[a]) < int(distances[b]) if int(distances[a]) != int(distances[b]) else str(a) < str(b))
-		var current: String = str(open.pop_front())
-		if current == to: break
-		var edges: Array = s.get("industry", {}).get("routes", []).duplicate()
-		edges.sort_custom(func(a, b): return str(a.id) < str(b.id))
+		open.sort_custom(func(a,b): return (int(leads[a])<int(leads[b]) if int(leads[a])!=int(leads[b]) else str(a)<str(b)) if int(rates[a])==int(rates[b]) else int(rates[a])<int(rates[b]))
+		var current: String=str(open.pop_front())
+		if current==to: break
+		var edges: Array=s.get("industry",{}).get("routes",[]).duplicate()
+		edges.sort_custom(func(a,b): return str(a.id)<str(b.id))
 		for edge in edges:
-			if edge.get("blocked", false) or int(edge.capacity) - int(edge.used) < units: continue
-			var next: String = ""
-			if edge.from_city == current: next = str(edge.to_city)
-			elif edge.to_city == current: next = str(edge.from_city)
+			if edge.get("blocked",false) or int(edge.capacity)-int(edge.used)<mass_g: continue
+			var next: String=""
+			if edge.from_city==current: next=str(edge.to_city)
+			elif edge.to_city==current: next=str(edge.from_city)
 			if next.is_empty(): continue
-			var candidate: int = int(distances[current]) + int(edge.unit_fee) + int(edge.lead)
-			if not distances.has(next) or candidate < int(distances[next]):
-				distances[next] = candidate
-				previous[next] = {"city": current, "edge": edge.id}
+			var rate: int=int(rates[current])+int(edge.unit_fee)
+			var lead: int=int(leads[current])+int(edge.lead)
+			if not rates.has(next) or rate<int(rates[next]) or (rate==int(rates[next]) and lead<int(leads[next])):
+				rates[next]=rate
+				leads[next]=lead
+				previous[next]={"city":current,"edge":edge.id}
 				if next not in open: open.append(next)
-	if not distances.has(to): return {"ok": false, "path": [], "lead": 0, "unit_fee": 0}
-	var ids: Array = []
-	var cursor: String = to
-	var lead: int = 0
-	var fee: int = 0
-	while cursor != from:
-		var step: Dictionary = previous[cursor]
+	if not rates.has(to): return {"ok":false,"path":[],"lead":0,"unit_fee":0}
+	var ids: Array=[]
+	var cursor: String=to
+	while cursor!=from:
+		var step: Dictionary=previous[cursor]
 		ids.push_front(step.edge)
-		var edge: Dictionary = _find(s.industry.routes, str(step.edge))
-		lead += int(edge.lead)
-		fee += int(edge.unit_fee)
-		cursor = str(step.city)
-	return {"ok": true, "path": ids, "lead": lead, "unit_fee": fee}
+		cursor=str(step.city)
+	return {"ok":true,"path":ids,"lead":int(leads[to]),"unit_fee":int(rates[to]),"fee_rate_unit":"minor_currency_per_tonne","selection":"fee_rate_then_transit_months"}
 
 static func route_quote(s: Dictionary, from_city: String, to_city: String, product_id: String, quantity: int, month: int = -1) -> Dictionary:
-	if month < 0: month = int(s.get("planning_month", 1))
-	if _find(s.get("cities", []), from_city).is_empty() or _find(s.get("cities", []), to_city).is_empty(): return {"allowed": false, "error": "SHIPPING_CITY_UNKNOWN", "quantity": 0}
-	var product: Dictionary = _find(s.get("products", []), product_id)
-	if product.is_empty() or is_service(s, product_id) or product.get("kind", "") == "digital": return {"allowed": false, "error": "PHYSICAL_CARGO_REQUIRED", "quantity": 0}
-	if quantity <= 0: return {"allowed": false, "error": "SHIPPING_QUANTITY_INVALID", "quantity": 0}
-	if from_city == to_city: return {"allowed": true, "quantity": quantity, "carrier_id": "", "unit_fee": 0, "fee": 0, "eta": month, "path": [], "fuel": 0, "labor": 0, "error": ""}
-	var carrier: Dictionary = _carrier(s, from_city)
-	if carrier.is_empty(): return {"allowed": false, "error": "SHIPPING_CARRIER_REQUIRED", "quantity": 0}
-	var size: int = maxi(1, int(product.get("cargo_size", 1)))
-	var possible: int = quantity
-	var path: Dictionary = _path(s, from_city, to_city, size)
-	if not path.ok: return {"allowed": false, "error": "SHIPPING_ROUTE_BLOCKED_OR_FULL", "quantity": 0}
-	var all_edges: Array = path.path.duplicate()
-	var pickup_lead: int = 0
-	var pickup_fee: int = 0
-	if str(carrier.city_id) != from_city:
-		var pickup: Dictionary = _path(s, str(carrier.city_id), from_city, size)
-		if not pickup.ok: return {"allowed": false, "error": "SHIPPING_PICKUP_UNREACHABLE", "quantity": 0}
-		pickup_lead = int(pickup.lead)
-		pickup_fee = int(pickup.unit_fee)
+	if month<0: month=int(s.get("planning_month",1))
+	if _find(s.get("cities",[]),from_city).is_empty() or _find(s.get("cities",[]),to_city).is_empty(): return {"allowed":false,"error":"SHIPPING_CITY_UNKNOWN","quantity":0}
+	var product: Dictionary=_find(s.get("products",[]),product_id)
+	if product.is_empty() or is_service(s,product_id) or product.get("kind","")=="digital": return {"allowed":false,"error":"PHYSICAL_CARGO_REQUIRED","quantity":0}
+	if quantity<=0: return {"allowed":false,"error":"SHIPPING_QUANTITY_INVALID","quantity":0}
+	var mass: int=cargo_mass_g(s,product_id)
+	if mass<=0: return {"allowed":false,"error":"SHIPPING_MASS_DEFINITION_REQUIRED","quantity":0}
+	if from_city==to_city: return {"allowed":true,"quantity":quantity,"carrier_id":"","unit_fee":0,"unit_fee_is_estimate":true,"fee":0,"fee_quantity":quantity,"fee_rate_minor_per_tonne":0,"eta":month,"path":[],"fuel":0,"labor":0,"cargo_mass_g":0,"cargo_units":0,"capacity_unit":"g_per_month","error":""}
+	var carrier: Dictionary=_carrier(s,from_city)
+	if carrier.is_empty(): return {"allowed":false,"error":"SHIPPING_CARRIER_REQUIRED","quantity":0}
+	var possible: int=quantity
+	var path: Dictionary=_path(s,from_city,to_city,mass)
+	if not path.ok: return {"allowed":false,"error":"SHIPPING_ROUTE_BLOCKED_OR_FULL","quantity":0}
+	var all_edges: Array=path.path.duplicate()
+	var pickup_lead: int=0
+	var pickup_rate: int=0
+	if str(carrier.city_id)!=from_city:
+		var pickup: Dictionary=_path(s,str(carrier.city_id),from_city,mass)
+		if not pickup.ok: return {"allowed":false,"error":"SHIPPING_PICKUP_UNREACHABLE","quantity":0}
+		pickup_lead=int(pickup.lead)
+		pickup_rate=int(pickup.unit_fee)
 		for edge_id in pickup.path:
 			if edge_id not in all_edges: all_edges.append(edge_id)
 	for edge_id in all_edges:
-		var edge: Dictionary = _find(s.industry.routes, str(edge_id))
-		possible = mini(possible, int((int(edge.capacity) - int(edge.used)) / size))
-	var carrier_fuel: int = available_quantity(s, str(carrier.id), "fuel", str(carrier.city_id))
-	possible = mini(possible, int(carrier_fuel * int(_p().freight_fuel_per_units) / size))
-	var workforce: Dictionary = _work_plan(s, str(carrier.id), int(_p().max_quantity))
-	possible = mini(possible, int(int(workforce.hours) * int(_p().freight_labor_per_units) / size))
-	if possible <= 0: return {"allowed": false, "error": "SHIPPING_FUEL_OR_WORKFORCE", "quantity": 0}
-	var cargo_units: int = possible * size
-	var unit_fee: int = (int(path.unit_fee) + pickup_fee) * size
-	return {"allowed": true, "quantity": possible, "carrier_id": carrier.id, "carrier_city": carrier.city_id, "unit_fee": unit_fee, "fee": possible * unit_fee, "eta": month + int(path.lead) + pickup_lead, "path": all_edges, "fuel": int(ceil(float(cargo_units) / float(_p().freight_fuel_per_units))), "labor": int(ceil(float(cargo_units) / float(_p().freight_labor_per_units))), "cargo_units": cargo_units, "error": ""}
+		var edge: Dictionary=_find(s.industry.routes,str(edge_id))
+		possible=mini(possible,int((int(edge.capacity)-int(edge.used))/mass))
+	var fuel_available: int=available_quantity(s,str(carrier.id),"fuel",str(carrier.city_id))
+	possible=mini(possible,int(fuel_available*int(_p().freight_fuel_per_units)/mass))
+	var workforce: Dictionary=_work_plan(s,str(carrier.id),int(_p().max_quantity))
+	possible=mini(possible,int(int(workforce.hours)*int(_p().freight_labor_per_units)/mass))
+	if possible<=0: return {"allowed":false,"error":"SHIPPING_FUEL_OR_WORKFORCE","quantity":0}
+	if possible>Ledger.MAX_INTEGER/mass: return {"allowed":false,"error":"SHIPPING_MASS_OVERFLOW","quantity":0}
+	var cargo_g: int=possible*mass
+	var rate: int=int(path.unit_fee)+pickup_rate
+	var fee: int=freight_fee_for_mass(cargo_g,rate)
+	if fee<0: return {"allowed":false,"error":"SHIPPING_FEE_OVERFLOW","quantity":0}
+	var fuel_divisor: int=int(_p().freight_fuel_per_units)
+	var labor_divisor: int=int(_p().freight_labor_per_units)
+	return {"allowed":true,"quantity":possible,"carrier_id":carrier.id,"carrier_city":carrier.city_id,"unit_fee":int(fee/possible)+(1 if fee%possible>0 else 0),"unit_fee_is_estimate":true,"fee":fee,"fee_quantity":possible,"fee_rate_minor_per_tonne":rate,"eta":month+int(path.lead)+pickup_lead,"path":all_edges,"fuel":int(cargo_g/fuel_divisor)+(1 if cargo_g%fuel_divisor>0 else 0),"labor":int(cargo_g/labor_divisor)+(1 if cargo_g%labor_divisor>0 else 0),"cargo_mass_g":cargo_g,"cargo_units":cargo_g,"capacity_unit":"g_per_month","error":""}
 
 static func reserve_route(s: Dictionary, buyer: String, from_city: String, to_city: String, product_id: String, quantity: int, month: int, _quote: Dictionary = {}) -> Dictionary:
 	var quote: Dictionary = route_quote(s, from_city, to_city, product_id, quantity, month)
@@ -777,8 +808,8 @@ static func reserve_route(s: Dictionary, buyer: String, from_city: String, to_ci
 	_change(s, str(quote.carrier_id), str(quote.carrier_city), "fuel", -int(quote.fuel), "운송 연료 투입", month, "logistics_input")
 	for edge_id in quote.path:
 		var edge: Dictionary = _find(s.industry.routes, str(edge_id))
-		edge.used = int(edge.used) + int(quote.cargo_units)
-	_event(s, "logistics_service", "경로 용량·연료·인력과 납기 사용", month, {"actor_id": buyer, "city_id": from_city, "destination_city_id": to_city, "product_id": product_id, "quantity": quantity, "amount": quote.fee, "carrier_id": quote.carrier_id, "route_ids": quote.path, "eta": quote.eta})
+		edge.used = int(edge.used) + int(quote.cargo_mass_g)
+	_event(s, "logistics_service", "경로 용량·연료·인력과 납기 사용", month, {"actor_id": buyer, "city_id": from_city, "destination_city_id": to_city, "product_id": product_id, "quantity": quantity, "amount": quote.fee, "carrier_id": quote.carrier_id, "route_ids": quote.path, "eta": quote.eta, "cargo_mass_g":quote.cargo_mass_g, "capacity_unit":"g_per_month"})
 	return {"ok": true, "error": "", "quote": quote}
 
 static func transfer_age(s: Dictionary, seller: String, buyer: String, product: String, from_city: String, to_city: String, target_lot_id: String = "") -> void:
@@ -805,19 +836,27 @@ static func storage_capacity(s: Dictionary, owner: String, city: String) -> int:
 	return total
 
 static func storage_used(s: Dictionary, owner: String, city: String) -> int:
-	var total: int = 0
-	for lot in s.get("inventory", []):
-		if lot.owner_id == owner and lot.city_id == city and lot.location != "shipment":
-			var product: Dictionary = _find(s.get("products", []), str(lot.product_id))
-			total += int(lot.quantity) * maxi(1, int(product.get("cargo_size", 1)))
+	var total: int=0
+	for lot in s.get("inventory",[]):
+		if lot.owner_id!=owner or lot.city_id!=city or lot.location in ["shipment","public_transit"]: continue
+		var mass: int=cargo_mass_g(s,str(lot.product_id))
+		if mass<=0: continue
+		if int(lot.quantity)>Ledger.MAX_INTEGER/mass: return Ledger.MAX_INTEGER
+		var used: int=int(lot.quantity)*mass
+		if total>Ledger.MAX_INTEGER-used: return Ledger.MAX_INTEGER
+		total+=used
 	return total
 
 static func output_capacity(s: Dictionary, facility: Dictionary, recipe: Dictionary) -> int:
-	var units: int = 0
-	for product in recipe.get("outputs", {}):
-		if not is_service(s, product): units += int(recipe.outputs[product]) * maxi(1, int(_find(s.products, product).get("cargo_size", 1)))
-	if units <= 0: return int(facility.get("capacity", 0))
-	return maxi(0, int((storage_capacity(s, str(facility.company_id), str(facility.city_id)) - storage_used(s, str(facility.company_id), str(facility.city_id))) / units))
+	var output_g: int=0
+	for product in recipe.get("outputs",{}):
+		if _find(s.products,str(product)).get("kind","") in ["service","digital"]: continue
+		var mass: int=cargo_mass_g(s,str(product))
+		if mass<=0: return 0
+		output_g+=int(recipe.outputs[product])*mass
+	if output_g<=0: return int(facility.get("capacity",0))
+	var free_g: int=storage_capacity(s,str(facility.company_id),str(facility.city_id))-storage_used(s,str(facility.company_id),str(facility.city_id))
+	return maxi(0,int(free_g/output_g))
 
 static func _licensed_seats(s: Dictionary, software_id: String) -> int:
 	var total: int = 0
@@ -971,12 +1010,12 @@ static func _digital_charge(s: Dictionary, buyer: String, software: Dictionary, 
 
 static func _digital_output(s: Dictionary, software: Dictionary, buyer: String, quantity: int, amount: int, month: int, reason: String) -> void:
 	if amount <= 0 or quantity <= 0: return
-	_event(s, "gdp_output", reason, month, {"sector":"digital","valuation":"transaction_price","actor_id":software.owner_id,"seller_id":software.owner_id,"buyer_id":buyer,"city_id":software.city_id,"buyer_city_id":_city(s,buyer),"product_id":"software_license","software_id":software.id,"category":software.get("category","business"),"quantity":quantity,"amount":amount,"currency":"CR"})
+	_event(s, "gdp_output", reason, month, {"sector":"digital","valuation":"transaction_price","actor_id":software.owner_id,"seller_id":software.owner_id,"buyer_id":buyer,"city_id":software.city_id,"buyer_city_id":_city(s,buyer),"product_id":"software_license","software_id":software.id,"category":software.get("category","business"),"quantity":quantity,"amount":amount,"currency":"USD"})
 
 static func _digital_input(s: Dictionary, owner: String, city: String, product: String, quantity: int, month: int) -> void:
 	if quantity <= 0: return
 	var price: int = int(_find(s.products, product).get("price", 0))
-	_event(s, "gdp_input", "실제 소모한 디지털 운영 서비스", month, {"sector":"digital","valuation":"content_base_price","actor_id":owner,"city_id":city,"product_id":product,"quantity":quantity,"amount":quantity * price,"currency":"CR"})
+	_event(s, "gdp_input", "실제 소모한 디지털 운영 서비스", month, {"sector":"digital","valuation":"content_base_price","actor_id":owner,"city_id":city,"product_id":product,"quantity":quantity,"amount":quantity * price,"currency":"USD"})
 
 static func deliver_digital(s: Dictionary, month: int) -> void:
 	if not s.get("industry") is Dictionary or int(s.industry.get("delivered_month", -1)) == month: return
@@ -1143,7 +1182,7 @@ static func ai_commands(s: Dictionary) -> Array:
 	return result
 
 static func summary(s: Dictionary, owner: String) -> Dictionary:
-	var result: Dictionary = {"research_active": 0, "software_released": 0, "owned_licenses": 0, "active_seats": 0, "growing_projects": 0, "storage_capacity": storage_capacity(s, owner, _city(s, owner)), "storage_used": storage_used(s, owner, _city(s, owner)), "route_count": s.get("industry", {}).get("routes", []).size(), "technology": [], "services": []}
+	var result: Dictionary = {"research_active": 0, "software_released": 0, "owned_licenses": 0, "active_seats": 0, "growing_projects": 0, "storage_capacity": storage_capacity(s, owner, _city(s, owner)), "storage_used": storage_used(s, owner, _city(s, owner)), "storage_unit":"g", "route_capacity_unit":"g_per_month", "route_count": s.get("industry", {}).get("routes", []).size(), "technology": [], "services": []}
 	for project in s.get("industry", {}).get("research", []):
 		if project.owner_id == owner and project.status == "researching": result.research_active += 1
 	for software in s.get("industry", {}).get("software", []):
@@ -1265,20 +1304,34 @@ static func expire_inventory(s: Dictionary, month: int) -> void:
 	_spoil_inventory(s, month)
 
 static func _spoil_inventory(s: Dictionary, month: int) -> void:
-	for lot in s.get("inventory", []).duplicate():
-		if lot.get("location") == "shipment" or int(lot.get("quantity", 0)) <= 0: continue
-		var product: Dictionary = _find(s.get("products", []), str(lot.product_id))
-		var life: int = int(product.get("shelf_life_months", 0))
-		if life <= 0: continue
+	var ordered: Array=s.get("inventory",[]).duplicate()
+	ordered.sort_custom(func(a,b): return str(a.id)<str(b.id) if int(a.get("expires_month",2147483647))==int(b.get("expires_month",2147483647)) else int(a.get("expires_month",2147483647))<int(b.get("expires_month",2147483647)))
+	for lot in ordered:
+		if lot.get("location") in ["shipment","public_transit"] or int(lot.get("quantity",0))<=0: continue
+		var product: Dictionary=_find(s.get("products",[]),str(lot.product_id))
+		var life: int=int(product.get("shelf_life_months",0))
+		if life<=0: continue
 		if not lot.has("expires_month"):
-			lot.born_month = 0 if int(s.get("last_resolved_month", 0)) == 0 else month
-			lot.expires_month = int(lot.born_month) + life
-		if int(lot.expires_month) <= month:
-			var quantity: int = maxi(0, int(lot.quantity) - int(lot.get("reserved", 0)))
-			if quantity > 0:
-				_change(s, str(lot.owner_id), str(lot.city_id), str(lot.product_id), -quantity, "유통기간 경과·부패", month, "spoilage")
-				var waste: int = int(quantity * int(_p().spoilage_waste_percent) / 100)
-				if waste > 0: _change(s, str(lot.owner_id), str(lot.city_id), "organic_waste", waste, "회수 가능한 유기성 폐기물", month, "waste_recovery")
+			lot.born_month=0 if int(s.get("last_resolved_month",0))==0 else month
+			lot.expires_month=int(lot.born_month)+life
+		if int(lot.expires_month)>month: continue
+		var quantity: int=maxi(0,int(lot.quantity)-int(lot.get("reserved",0)))
+		if quantity<=0: continue
+		var mass: int=cargo_mass_g(s,str(lot.product_id))
+		var changed: Dictionary=_change(s,str(lot.owner_id),str(lot.city_id),str(lot.product_id),-quantity,"유통기간 경과·부패",month,"spoilage")
+		if not changed.get("ok",false): continue
+		if mass<=0 or quantity>Ledger.MAX_INTEGER/mass:
+			_event(s,"waste_mass_unavailable","원품목 질량을 안전하게 나타낼 수 없어 폐기물 생성 생략",month,{"actor_id":lot.owner_id,"city_id":lot.city_id,"product_id":lot.product_id,"quantity":quantity,"source_lot_id":lot.id})
+			continue
+		var lost_g: int=quantity*mass
+		var percent: int=int(_p().spoilage_waste_percent)
+		var recoverable_g: int=int(lost_g/100)*percent+int((lost_g%100)*percent/100)
+		var waste_mass: int=cargo_mass_g(s,"organic_waste")
+		var waste: int=int(recoverable_g/waste_mass) if waste_mass>0 else 0
+		var recovered_g: int=waste*waste_mass
+		if waste>0: _change(s,str(lot.owner_id),str(lot.city_id),"organic_waste",waste,"실제 원품목 질량에서 회수한 유기성 폐기물 kg",month,"waste_recovery")
+		_event(s,"waste_mass_balance","품목별 g 환산·정수 kg 회수와 미회수 질량 기록",month,{"actor_id":lot.owner_id,"city_id":lot.city_id,"product_id":lot.product_id,"source_lot_id":lot.id,"source_quantity":quantity,"source_mass_g":lost_g,"recovered_mass_g":recovered_g,"unrecovered_mass_g":lost_g-recovered_g,"recovery_rounding_loss_g":recoverable_g-recovered_g,"waste_quantity":waste,"waste_unit":"kg"})
+
 
 static func _reserve_stock(s: Dictionary, owner: String, city: String, product: String, quantity: int) -> Array:
 	if available_quantity(s, owner, product, city) < quantity: return []
@@ -1340,12 +1393,22 @@ static func _maintain_cold_storage(s: Dictionary, month: int) -> void:
 
 static func _wear_durables(s: Dictionary, month: int) -> void:
 	for durable in s.industry.durables:
-		if durable.status != "in_use" or int(durable.replacement_month) > month: continue
-		var quantity: int = mini(int(durable.quantity), available_quantity(s, str(durable.owner_id), str(durable.product_id), str(durable.city_id)))
-		if quantity > 0:
-			_change(s, str(durable.owner_id), str(durable.city_id), str(durable.product_id), -quantity, "내구재 수명·마모", month, "durable_wear")
-			_change(s, str(durable.owner_id), str(durable.city_id), "recyclable_waste", quantity, "폐내구재의 제한된 회수", month, "waste_recovery")
-		durable.status = "worn"
+		if durable.status!="in_use" or int(durable.replacement_month)>month: continue
+		var quantity: int=mini(int(durable.quantity),available_quantity(s,str(durable.owner_id),str(durable.product_id),str(durable.city_id)))
+		if quantity>0:
+			var mass: int=cargo_mass_g(s,str(durable.product_id))
+			var removed: Dictionary=_change(s,str(durable.owner_id),str(durable.city_id),str(durable.product_id),-quantity,"내구재 수명·마모",month,"durable_wear")
+			if not removed.get("ok",false): continue
+			if mass>0 and quantity<=Ledger.MAX_INTEGER/mass:
+				var source_g: int=quantity*mass
+				var waste_mass: int=cargo_mass_g(s,"recyclable_waste")
+				var waste: int=int(source_g/waste_mass) if waste_mass>0 else 0
+				var recovered_g: int=waste*waste_mass
+				if waste>0: _change(s,str(durable.owner_id),str(durable.city_id),"recyclable_waste",waste,"실제 내구재 질량에서 회수한 혼합 폐기물 kg",month,"waste_recovery")
+				_event(s,"durable_mass_balance","개·벌·대의 실제 g 환산·정수 kg 회수와 미회수 잔량 기록",month,{"actor_id":durable.owner_id,"city_id":durable.city_id,"product_id":durable.product_id,"durable_id":durable.id,"source_quantity":quantity,"source_mass_g":source_g,"recovered_mass_g":recovered_g,"unrecovered_mass_g":source_g-recovered_g,"recovery_rounding_loss_g":source_g-recovered_g,"waste_quantity":waste,"waste_unit":"kg"})
+			else: _event(s,"waste_mass_unavailable","내구재 질량을 안전하게 나타낼 수 없어 폐기물 생성 생략",month,{"actor_id":durable.owner_id,"city_id":durable.city_id,"product_id":durable.product_id,"quantity":quantity,"durable_id":durable.id})
+		durable.status="worn"
+
 
 static func _business_license(s: Dictionary, owner: String) -> bool:
 	for license in s.get("industry", {}).get("licenses", []):

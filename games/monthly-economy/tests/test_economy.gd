@@ -58,7 +58,7 @@ static func _check_money_changes(before: Dictionary, after: Dictionary, label: S
 	for index in range(before.events.size(), after.events.size()):
 		var event: Dictionary = after.events[index]
 		if event.type in ["money_creation", "money_destruction"]:
-			var currency: String = str(event.get("currency", "CR"))
+			var currency: String = str(event.get("currency", "USD"))
 			expected[currency] = int(expected.get(currency, 0)) + int(event.get("amount", 0)) * (1 if event.type == "money_creation" else -1)
 	_check(expected == _money_by_currency(after), label + ": deposits change only through recorded currency-specific credit issue/repayment", failures)
 	_check(Finance.validate(after).is_empty(), label + ": banking assets, deposits, liabilities, and settlement counterparts match", failures)

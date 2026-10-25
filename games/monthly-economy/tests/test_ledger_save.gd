@@ -37,9 +37,9 @@ static func run() -> Array:
 	tampered.journal.append(tampered.journal[0].duplicate(true))
 	_expect(failures, not Ledger.validate(tampered).is_empty(), "duplicate history detected")
 	var foreign: Dictionary = s.duplicate(true)
-	Ledger.open_account(foreign, "carol:cash", "carol", "cash", "USD")
-	Ledger.open_account(foreign, "carol:equity", "carol", "equity", "USD")
-	_expect(failures, Ledger.post(foreign, "usd-opening", [
+	Ledger.open_account(foreign, "carol:cash", "carol", "cash", "EUR")
+	Ledger.open_account(foreign, "carol:equity", "carol", "equity", "EUR")
+	_expect(failures, Ledger.post(foreign, "eur-opening", [
 		{"account": "carol:cash", "debit": 100, "credit": 0},
 		{"account": "carol:equity", "debit": 0, "credit": 100}
 	], "OPENING", 0).ok, "separate currency opening")

@@ -47,7 +47,7 @@ static func _world() -> Dictionary:
 		var nation: String="nation-"+str(i)
 		var company: String="co-"+str(i)
 		s.continents.append({"id":"continent-"+str(i),"name":"대륙"+str(i)})
-		s.nations.append({"id":nation,"name":"국가"+str(i),"continent_id":"continent-"+str(i),"currency":"CR"})
+		s.nations.append({"id":nation,"name":"국가"+str(i),"continent_id":"continent-"+str(i),"currency":"USD"})
 		s.cities.append({"id":city,"name":"도시"+str(i),"nation_id":nation,"continent_id":"continent-"+str(i)})
 		for j in range(5):
 			var person: String="p-"+str(i*5+j)

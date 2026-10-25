@@ -35,8 +35,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  RELEASE_TAG: hora-economic-lab/v0.2.0
-  ARTIFACT_STEM: HoraEconomicLab-v0.2.0
+  RELEASE_TAG: hora-economic-lab/v0.2.1
+  ARTIFACT_STEM: HoraEconomicLab-v0.2.1
 
 jobs:
   verify:
@@ -69,8 +69,8 @@ jobs:
         with:
           name: hora-economic-lab-${{ github.sha }}
           path: |
-            games/monthly-economy/build/HoraEconomicLab-v0.2.0-UNSIGNED.apk
-            games/monthly-economy/build/HoraEconomicLab-v0.2.0-linux.zip
+            games/monthly-economy/build/HoraEconomicLab-v0.2.1-UNSIGNED.apk
+            games/monthly-economy/build/HoraEconomicLab-v0.2.1-linux.zip
             games/monthly-economy/build/UNSIGNED-APK-VERIFICATION.json
             games/monthly-economy/build/BUILD-MANIFEST.json
             games/monthly-economy/build/SHA256SUMS.txt
@@ -142,11 +142,13 @@ jobs:
           root=pathlib.Path('downloaded'); stem=os.environ['ARTIFACT_STEM']
           names={stem+'-UNSIGNED.apk',stem+'-linux.zip',stem+'-linux.x86_64'}
           manifest=json.loads((root/'BUILD-MANIFEST.json').read_text())
-          assert manifest['game']=='hora-economic-lab' and manifest['version']=='0.2.0'
+          assert manifest['game']=='hora-economic-lab' and manifest['version']=='0.2.1'
           assert manifest['application_id']=='org.hora.economiclab' and manifest['source_dirty'] is False
           assert manifest['source_commit']==os.environ['SOURCE_SHA'] and manifest['godot']=='4.6.3.stable'
           assert manifest['signing_status']=='unsigned_release_input' and manifest['generated_graphics'] is True
           assert manifest['balance_data_status']=='experimental'
+          assert manifest['publication_policy']=='apk_only'
+          assert manifest['public_release_assets']==[stem+'.apk'], 'Source build must declare the APK-only release policy'
           assert len(manifest['artifacts'])==3 and {a['file'] for a in manifest['artifacts']}==names
           records={a['file']:a for a in manifest['artifacts']}
           for item in records.values():
@@ -173,7 +175,7 @@ jobs:
               sums[parts[1]]=parts[0]
           assert sums=={name:item['sha256'] for name,item in records.items()}
           proof=json.loads((root/'UNSIGNED-APK-VERIFICATION.json').read_text())
-          assert proof['application_id']=='org.hora.economiclab' and proof['version']=='0.2.0' and proof['version_code']==2
+          assert proof['application_id']=='org.hora.economiclab' and proof['version']=='0.2.1' and proof['version_code']==3
           assert proof['signing_status']=='unsigned_release_input' and proof['certificate_sha256'] is None
           assert proof['apk_sha256']==records[stem+'-UNSIGNED.apk']['sha256']
           assert proof['internet_permission'] is False and proof['debuggable'] is False and proof['orientation']=='portrait'
@@ -198,7 +200,7 @@ jobs:
           assert len(matches)==1, 'Prepare exactly one intended draft before publication'
           release=matches[0]
           assert release['draft'] is True and release['target_commitish']==os.environ['SOURCE_SHA']
-          allowed={os.environ['ARTIFACT_STEM']+'.apk',os.environ['ARTIFACT_STEM']+'-linux.zip','BUILD-MANIFEST.json','APK-VERIFICATION.json','SIGNING-VERIFICATION.json','SOURCE-WORKFLOW-VERIFICATION.json','SHA256SUMS.txt'}
+          allowed={os.environ['ARTIFACT_STEM']+'.apk'}
           assert {a['name'] for a in release['assets']}<=allowed, 'Unexpected attachment on the prepared draft'
           with open(os.environ['GITHUB_ENV'],'a') as f: f.write('RELEASE_ID='+str(release['id'])+'\n')
           tag=subprocess.run(['gh','api','repos/'+os.environ['GH_REPO']+'/git/ref/tags/'+os.environ['RELEASE_TAG']],capture_output=True,text=True)
@@ -244,6 +246,7 @@ jobs:
           path=root/(stem+'.apk')
           records.append({'file':path.name,'bytes':path.stat().st_size,'sha256':apk['apk_sha256']})
           manifest.update(signing_status='retained_publisher_verified',certificate_sha256=apk['certificate_sha256'],artifacts=records,
+                          publication_policy='apk_only',public_release_assets=[stem+'.apk'],
                           source_run_id=int(os.environ['SOURCE_RUN_ID']),unsigned_apk_sha256=os.environ['UNSIGNED_SHA256'])
           (root/'BUILD-MANIFEST.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
           (root/'SHA256SUMS.txt').write_text(''.join(a['sha256']+'  '+a['file']+'\n' for a in records))
@@ -253,42 +256,122 @@ jobs:
                                 'source artifact and embedded executable SHA-256','unsigned release APK identity and resources reverified from exact source',
                                 'retained publisher certificate and unchanged APK payload','signed release identity, portrait, offline and non-debuggable flags'],
                       'generated_graphics_packaged':True,'android_device_execution_tested':False,
+                      'publication_policy':'apk_only','public_release_assets':[stem+'.apk'],
                       'signing_policy':signing['signing_policy'],'unsigned_apk_sha256':os.environ['UNSIGNED_SHA256']}
           (root/'SOURCE-WORKFLOW-VERIFICATION.json').write_text(json.dumps(provenance,indent=2)+'\n')
           PY
-      - name: Upload, read back and publish the verified stable latest release
+      - name: Upload and read back the single verified release APK
         shell: bash
         run: |
           set -euo pipefail
-          files=("$ARTIFACT_STEM.apk" "$ARTIFACT_STEM-linux.zip" BUILD-MANIFEST.json APK-VERIFICATION.json SIGNING-VERIFICATION.json SOURCE-WORKFLOW-VERIFICATION.json SHA256SUMS.txt)
-          upload=()
-          for file in "${files[@]}"; do upload+=("downloaded/$file"); done
-          gh release upload "$RELEASE_TAG" "${upload[@]}" --repo "$GH_REPO" --clobber
+          gh release upload "$RELEASE_TAG" "downloaded/$ARTIFACT_STEM.apk" --repo "$GH_REPO" --clobber
           gh api "repos/$GH_REPO/releases/$RELEASE_ID" > checked-draft.json
           python3 - <<'PY'
           import json,os,pathlib
           release=json.loads(pathlib.Path('checked-draft.json').read_text())
+          name=os.environ['ARTIFACT_STEM']+'.apk'
           assert release['draft'] is True and release['target_commitish']==os.environ['SOURCE_SHA'] and release['tag_name']==os.environ['RELEASE_TAG']
-          expected={os.environ['ARTIFACT_STEM']+'.apk',os.environ['ARTIFACT_STEM']+'-linux.zip','BUILD-MANIFEST.json','APK-VERIFICATION.json','SIGNING-VERIFICATION.json','SOURCE-WORKFLOW-VERIFICATION.json','SHA256SUMS.txt'}
-          assets={a['name']:a for a in release['assets']}
-          assert set(assets)==expected
-          for name in expected: assert assets[name]['size']==pathlib.Path('downloaded',name).stat().st_size
+          assets=release['assets']
+          assert len(assets)==1 and assets[0]['name']==name, 'Release attachments must contain exactly the intended APK'
+          assert assets[0]['size']==pathlib.Path('downloaded',name).stat().st_size
           PY
           mkdir uploaded-readback
-          for file in "${files[@]}"; do gh release download "$RELEASE_TAG" --repo "$GH_REPO" --pattern "$file" --dir uploaded-readback; done
+          gh release download "$RELEASE_TAG" --repo "$GH_REPO" --pattern "$ARTIFACT_STEM.apk" --dir uploaded-readback
           python3 - <<'PY'
-          import hashlib,pathlib
-          for path in pathlib.Path('uploaded-readback').iterdir():
-              with path.open('rb') as received, pathlib.Path('downloaded',path.name).open('rb') as expected:
-                  assert hashlib.file_digest(received,'sha256').digest()==hashlib.file_digest(expected,'sha256').digest(), 'Uploaded bytes changed: '+path.name
-          print('Every uploaded release attachment read back with matching SHA-256.')
+          import hashlib,json,os,pathlib
+          name=os.environ['ARTIFACT_STEM']+'.apk'
+          received=pathlib.Path('uploaded-readback',name)
+          expected=pathlib.Path('downloaded',name)
+          assert {p.name for p in received.parent.iterdir()}=={name}
+          with received.open('rb') as stream: received_sha=hashlib.file_digest(stream,'sha256').hexdigest()
+          with expected.open('rb') as stream: expected_sha=hashlib.file_digest(stream,'sha256').hexdigest()
+          assert received_sha==expected_sha, 'Uploaded APK bytes changed'
+          assert received.stat().st_size==expected.stat().st_size
+          proof=json.loads(pathlib.Path('downloaded/APK-VERIFICATION.json').read_text())
+          assert received_sha==proof['apk_sha256']
+          report={'publication_policy':'apk_only','public_release_assets':[name],
+                  'source_commit':os.environ['SOURCE_SHA'],'source_run_id':int(os.environ['SOURCE_RUN_ID']),
+                  'release_tag':os.environ['RELEASE_TAG'],'release_id':int(os.environ['RELEASE_ID']),
+                  'file':name,'bytes':received.stat().st_size,'sha256':received_sha,'uploaded_bytes_match':True}
+          pathlib.Path('downloaded/RELEASE-DOWNLOAD-VERIFICATION.json').write_text(json.dumps(report,indent=2)+'\n')
+          print('The only release attachment was downloaded with matching size and SHA-256: '+name)
           PY
-          gh release edit "$RELEASE_TAG" --repo "$GH_REPO" --draft=false --prerelease=false --latest=true
+      - name: Preserve source, signing and APK readback evidence in Actions only
+        id: release_proof
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hora-economic-lab-release-proof-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            downloaded/SOURCE-BUILD-MANIFEST.json
+            downloaded/BUILD-MANIFEST.json
+            downloaded/UNSIGNED-APK-VERIFICATION.json
+            downloaded/APK-VERIFICATION.json
+            downloaded/SIGNING-VERIFICATION.json
+            downloaded/SOURCE-WORKFLOW-VERIFICATION.json
+            downloaded/RELEASE-DOWNLOAD-VERIFICATION.json
+            downloaded/SHA256SUMS.txt
+            source-run.json
+            artifacts.json
+            checked-draft.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish APK-only release notes and verify stable latest status
+        shell: bash
+        env:
+          PROOF_ARTIFACT_URL: ${{ steps.release_proof.outputs.artifact-url }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GH_REPO/releases/$RELEASE_ID" > reviewed-draft.json
+          python3 - <<'PY'
+          import json,os,pathlib,re,urllib.parse
+          release=json.loads(pathlib.Path('reviewed-draft.json').read_text())
+          proof=json.loads(pathlib.Path('downloaded/RELEASE-DOWNLOAD-VERIFICATION.json').read_text())
+          name=os.environ['ARTIFACT_STEM']+'.apk'
+          assert release['draft'] is True and release['target_commitish']==os.environ['SOURCE_SHA'] and release['tag_name']==os.environ['RELEASE_TAG']
+          assert len(release['assets'])==1 and release['assets'][0]['name']==name and release['assets'][0]['size']==proof['bytes']
+          artifact_url=os.environ['PROOF_ARTIFACT_URL']
+          url=urllib.parse.urlparse(artifact_url)
+          assert url.scheme=='https' and url.netloc=='github.com'
+          assert url.path.startswith('/'+os.environ['GH_REPO']+'/actions/runs/'+os.environ['GITHUB_RUN_ID']+'/artifacts/')
+          begin='<!-- hora-apk-proof:start -->'; end='<!-- hora-apk-proof:end -->'
+          body=release.get('body') or ''
+          assert body.count(begin)==body.count(end) and body.count(begin)<=1, 'Malformed verification block in reviewed draft'
+          body=re.sub(re.escape(begin)+r'.*?'+re.escape(end),'',body,flags=re.S).rstrip()
+          source_url='https://github.com/'+os.environ['GH_REPO']+'/actions/runs/'+os.environ['SOURCE_RUN_ID']
+          block=(begin+'\n### APK 검증\n\n'
+                 '공개 첨부: `'+name+'` 한 개.\n\n'
+                 '- 크기: `'+str(proof['bytes'])+'` 바이트\n'
+                 '- APK SHA-256: `'+proof['sha256']+'`\n'
+                 '- 소스 커밋: `'+os.environ['SOURCE_SHA']+'`\n'
+                 '- 게시자 인증서 SHA-256: `0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a`\n'
+                 '- [성공한 소스 검사·내부 Linux 검증]('+source_url+')\n'
+                 '- [소스·서명·APK 재다운로드 검증 자료]('+artifact_url+') (Actions 아티팩트·90일 보관)\n\n'
+                 'Linux ZIP·JSON 보고서·체크섬 파일은 Actions 검증 자료로 보존합니다.\n'+end)
+          pathlib.Path('verified-release-notes.md').write_text(body+'\n\n'+block+'\n')
+          PY
+          gh release edit "$RELEASE_TAG" --repo "$GH_REPO" --notes-file verified-release-notes.md --draft=false --prerelease=false --latest=true
           gh api "repos/$GH_REPO/releases/latest" > checked-latest.json
           python3 - <<'PY'
           import json,os,pathlib
           release=json.loads(pathlib.Path('checked-latest.json').read_text())
+          proof=json.loads(pathlib.Path('downloaded/RELEASE-DOWNLOAD-VERIFICATION.json').read_text())
+          name=os.environ['ARTIFACT_STEM']+'.apk'
           assert release['id']==int(os.environ['RELEASE_ID']) and release['tag_name']==os.environ['RELEASE_TAG']
-          assert release['draft'] is False and release['prerelease'] is False
-          print('Verified Hora Economic Lab v0.2.0 is the stable latest release.')
+          assert release['target_commitish']==os.environ['SOURCE_SHA'] and release['draft'] is False and release['prerelease'] is False
+          assert len(release['assets'])==1 and release['assets'][0]['name']==name and release['assets'][0]['size']==proof['bytes']
+          assert proof['sha256'] in release['body'] and os.environ['PROOF_ARTIFACT_URL'] in release['body']
+          digest=release['assets'][0].get('digest')
+          assert digest is None or digest=='sha256:'+proof['sha256']
+          print('Verified Hora Economic Lab v0.2.1 is stable latest with exactly one APK attachment.')
           PY
+      - name: Preserve the final publication check in Actions only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hora-economic-lab-publication-check-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            checked-latest.json
+            reviewed-draft.json
+            verified-release-notes.md
+            downloaded/RELEASE-DOWNLOAD-VERIFICATION.json
+          if-no-files-found: error
+          retention-days: 90

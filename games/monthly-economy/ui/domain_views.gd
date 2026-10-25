@@ -1,12 +1,16 @@
 extends RefCounted
 ## Forms are built from executable module command descriptors, never mock actions.
+const ProgressWidgets = preload("res://ui/progress_widgets.gd")
+const Presentation = preload("res://ui/presentation.gd")
+const MoneyInput = preload("res://ui/money_input.gd")
+const PolicyValueInput = preload("res://ui/policy_value_input.gd")
 const MODULE_PATHS: Dictionary = {"finance": "res://core/finance.gd", "lifecycle": "res://core/lifecycle.gd", "public": "res://core/public_sector.gd", "industry": "res://core/industry.gd", "market": "res://core/market.gd", "land": "res://core/land.gd"}
 const LABELS: Dictionary = {"finance": "금융과 자산", "lifecycle": "인물과 기업", "public": "정치·외교·공공조달", "industry": "산업·연구·디지털", "market": "상품 주문과 계약", "land": "토지·임대·용도"}
 const SOURCE_PATHS: Dictionary = {
 	"land_offers": ["land", "offers"], "land_leases": ["land", "leases"], "land_claims": ["land", "claims"], "own_orders": ["market", "orders"], "fx_rates": ["finance", "fx_rates"], "banks": ["finance", "banks"], "loans": ["finance", "loans"], "bonds": ["finance", "bonds"], "insurance": ["finance", "policies"], "insurance_policies": ["finance", "policies"], "loss_events": ["finance", "loss_events"], "share_offers": ["finance", "share_offers"], "equity_issues": ["finance", "equity_issues"],
 	"employment": ["lifecycle", "employment"], "wage_claims": ["lifecycle", "wage_claims"], "jobs": ["lifecycle", "job_offers"], "job_offers": ["lifecycle", "job_offers"], "training": ["lifecycle", "training"], "acquisitions": ["lifecycle", "acquisitions"], "assets": ["lifecycle", "liquidation_assets"], "delegations": ["lifecycle", "delegations"],
 	"governments": ["public", "governments"], "offices": ["public", "offices"], "parties": ["public", "parties"], "candidates": ["public", "candidates"], "policies": ["public", "policy_proposals"], "policy_proposals": ["public", "policy_proposals"], "procurements": ["public", "procurements"], "bids": ["public", "bids"], "deliveries": ["public", "deliveries"], "treaties": ["public", "treaties"], "armies": ["public", "armies"],
-	"research": ["industry", "research"], "software": ["industry", "software"], "licenses": ["industry", "licenses"], "subscriptions": ["industry", "subscriptions"], "routes": ["industry", "routes"], "warehouses": ["industry", "warehouses"], "agriculture": ["industry", "agriculture"]
+	"repairs":["industry","repairs"], "adoptions":["industry","adoptions"], "research": ["industry", "research"], "software": ["industry", "software"], "licenses": ["industry", "licenses"], "subscriptions": ["industry", "subscriptions"], "routes": ["industry", "routes"], "warehouses": ["industry", "warehouses"], "agriculture": ["industry", "agriculture"]
 }
 
 static func module_script(name: String) -> Variant:
@@ -53,21 +57,22 @@ static func _matches(type: String, filters: Array) -> bool:
 static func _summary(app: Control, parent: Node, summary: Dictionary) -> void:
 	var shown: int = 0
 	var labels: Dictionary = {
-		"cash": "현금", "savings": "예금", "debt": "채무 원금", "retained_earnings": "유보 이익", "loan_principal": "대출 원금", "principal": "원금", "arrears": "연체", "loans": "대출", "holdings": "보유 권리", "bonds": "채권", "policies": "보험 계약", "employment": "고용", "employed": "고용 인원", "projects": "프로젝트", "research": "연구", "software": "소프트웨어", "licenses": "사용권", "subscriptions": "구독", "budget": "예산", "treasury": "공공 자금", "procurements": "조달", "contracts": "계약", "office": "공직", "offices": "공직", "ownership": "소유 지분", "training": "교육", "routes": "운송 경로", "service_capacity": "서비스 처리능력", "research_active": "진행 중인 연구", "software_released": "출시 제품", "owned_licenses": "보유 사용권", "active_seats": "이용 좌석", "growing_projects": "생육 프로젝트", "storage_capacity": "창고 수용량", "storage_used": "창고 사용량", "route_count": "세계 운송 경로", "reserved": "예약 예산", "services": "제공 서비스", "tax_revenue": "당월 세수"
+		"currency":"기준 통화", "restricted_deposits":"보증금(계약 예치금)", "rent_debt":"미지급 임대료", "cash": "현금", "savings": "예금", "debt": "채무 원금", "retained_earnings": "유보 이익", "loan_principal": "대출 원금", "principal": "원금", "arrears": "연체", "loans": "대출", "holdings": "보유 권리", "bonds": "채권", "policies": "보험 계약", "employment": "고용", "employed": "고용 인원", "projects": "프로젝트", "research": "연구", "software": "소프트웨어", "licenses": "사용권", "subscriptions": "구독", "budget": "예산", "treasury": "공공 자금", "procurements": "조달", "contracts": "계약", "office": "공직", "offices": "공직", "ownership": "소유 지분", "training": "교육", "routes": "운송 경로", "service_capacity": "서비스 처리능력", "research_active": "진행 중인 연구", "software_released": "출시 제품", "owned_licenses": "보유 사용권", "active_seats": "이용 좌석", "growing_projects": "생육 프로젝트", "storage_capacity": "창고 수용량", "storage_used": "창고 사용량", "route_count": "세계 운송 경로", "reserved": "예약 예산", "services": "제공 서비스", "tax_revenue": "당월 세수"
 	}
 	for key in summary:
 		if shown >= 9: break
 		var value: Variant = summary[key]
 		if value is Dictionary or value is Array: continue
-		if str(key) in ["owner_id", "person_id", "company_id", "id", "private", "error", "ok"]: continue
+		if str(key) in ["owner_id", "person_id", "company_id", "id", "private", "error", "ok", "storage_unit", "route_capacity_unit", "minor_units_per_major"]: continue
 		var label: String = str(labels.get(str(key), _humanize(str(key))))
 		var text: String = str(value)
-		if str(key) in ["cash", "savings", "loan_principal", "principal", "arrears", "budget", "treasury", "debt", "retained_earnings"] and (value is int or value is float): text = app._money(int(value))
+		if str(key) in ["cash", "savings", "loan_principal", "principal", "arrears", "budget", "treasury", "debt", "retained_earnings", "restricted_deposits", "rent_debt", "reserved", "tax_revenue"] and (value is int or value is float): text = app._money(int(value))
+		if str(key) in ["storage_capacity","storage_used"]: text = Presentation.cargo_mass(int(value))
 		app._row(parent, label, text)
 		shown += 1
 
 	for wallet: Dictionary in summary.get("wallets", []):
-		app._row(parent, "보유 " + str(wallet.get("currency", "")), app._money(int(wallet.get("amount", 0))).trim_suffix(" CR") + " " + str(wallet.get("currency", "")))
+		app._row(parent, "보유 " + str(wallet.get("currency", "")), Presentation.money(int(wallet.get("amount", 0)), str(wallet.get("currency", "USD"))))
 
 static func all_actions(app: Control) -> void:
 	var box: VBoxContainer = app._open_modal("할 수 있는 행동")
@@ -107,6 +112,7 @@ static func form(app: Control, module_name: String, action: Dictionary) -> void:
 	context.select(maxi(owner_ids.find(selected_owner), 0))
 	box.add_child(context)
 	var editors: Dictionary = {}
+	var field_labels: Dictionary = {}
 	var fields: Array = action.get("fields", [])
 	for raw: Variant in fields:
 		if not raw is Dictionary: continue
@@ -114,9 +120,28 @@ static func form(app: Control, module_name: String, action: Dictionary) -> void:
 		if action.has("ui_owner_id"): field["ui_owner_id"] = action.ui_owner_id
 		var key: String = str(field.get("key", field.get("name", "")))
 		if key == "": continue
-		app._label(box, str(field.get("label", _humanize(key))) + (" · " + str(field["unit"]) if field.has("unit") else ""), 14)
+		var command_type: String = str(action.get("type", ""))
+		var label_text: String = str(field.get("label", _humanize(key))).replace("(최소단위)", "").replace("(최소 화폐 단위)", "").replace("(최소화폐단위)", "").replace("(세율은 10000분율)", "").replace("(10000분율)", "")
 		var kind: String = str(field.get("kind", field.get("type", "text")))
-		if kind in ["int", "integer", "number", "percent"]:
+		if Presentation.is_money_field(command_type, key, field): kind = "money"
+		elif key.ends_with("_bps"): kind = "bps"
+		elif command_type == "public_propose_policy" and key == "value": kind = "policy_value"
+		field_labels[key] = app._label(box, label_text + (" · 달러(USD)" if kind == "money" else (" · %" if kind == "bps" else "")), 14)
+		if kind in ["money", "bps"]:
+			var edit = MoneyInput.new()
+			edit.minimum_cents = int(field.get("min", 0))
+			edit.maximum_cents = int(field.get("max", Presentation.MAX_CENTS))
+			edit.set_cents(int(field.get("default", field.get("min", 0))))
+			if kind == "bps":
+				edit.prefix.text = "%"
+				edit.edit.tooltip_text = "퍼센트로 입력 · 0.01% = 1bp(베이시스포인트)"
+			else: edit.set_currency("USD")
+			box.add_child(edit)
+			editors[key] = {"node":edit,"kind":"money","field":field}
+		elif kind == "policy_value":
+			var edit = PolicyValueInput.new();box.add_child(edit)
+			editors[key] = {"node":edit,"kind":"money","field":field}
+		elif kind in ["int", "integer", "number", "percent"]:
 			var edit := SpinBox.new()
 			edit.custom_minimum_size = Vector2(0, 44)
 			edit.min_value = float(field.get("min", 0))
@@ -140,7 +165,7 @@ static func form(app: Control, module_name: String, action: Dictionary) -> void:
 			var options: Variant = field.get("options", field.get("choices", []))
 			if options is Dictionary:
 				for id in options:
-					edit.add_item(str(options[id])); values.append(id)
+					edit.add_item(_option_label(str(options[id]))); values.append(id)
 			elif options is Array and not options.is_empty():
 				for option in options:
 					if option is Dictionary:
@@ -167,7 +192,7 @@ static func form(app: Control, module_name: String, action: Dictionary) -> void:
 					var offer: Dictionary = choice_records.get(str(values[index]), {}) if index>=0 and index<values.size() else {}
 					if offer.is_empty(): terms.text = "현재 지원할 수 있는 유효한 고용 제안이 없습니다."
 					else:
-						terms.text = "지원 전 계약 조건\n직무: %s · 시간당 %s\n월 계약: %d h · 보장 유급시간: %d h\n교육 업무: %s" % [app._role(str(offer.get("role",""))), app._money(int(offer.get("wage",0))), int(offer.get("hours",0)), int(offer.get("guaranteed_hours",0)), "동의 조건 포함" if offer.get("teaching_authorized",false) else "동의 조건 없음"]
+						terms.text = "지원 전 계약 조건\n직무: %s · 시간당 %s\n월 계약: %d 시간 · 보장 유급시간: %d 시간\n교육 업무: %s" % [app._role(str(offer.get("role",""))), app._money(int(offer.get("wage",0))), int(offer.get("hours",0)), int(offer.get("guaranteed_hours",0)), "동의 조건 포함" if offer.get("teaching_authorized",false) else "동의 조건 없음"]
 				edit.item_selected.connect(update_terms)
 				update_terms.call(edit.selected)
 		elif kind in ["bool", "boolean"]:
@@ -184,12 +209,57 @@ static func form(app: Control, module_name: String, action: Dictionary) -> void:
 			edit.custom_minimum_size.y = 44
 			box.add_child(edit)
 			editors[key] = {"node": edit, "kind": "text", "array": kind in ["array", "csv"]}
-	app._label(box, "금액은 최소 화폐 단위입니다. 100최소단위 = 1 CR. 예상치는 체결·납품·지급을 보장하지 않습니다.", 12, app.MUTED)
+	for editor_key: String in editors:
+		editors[editor_key].node.set_meta("field_key",editor_key)
+		editors[editor_key].node.set_meta("editor_kind",str(editors[editor_key].kind))
+	if str(action.get("type", "")) == "public_propose_policy" and editors.has("key") and editors.has("value"):
+		var policy_choice: Dictionary = editors["key"]
+		var policy_value: Node = editors["value"].node
+		policy_choice.node.item_selected.connect(func(index: int): policy_value.set_policy(str(policy_choice["values"][index])))
+		policy_value.set_policy(str(policy_choice["values"][policy_choice.node.selected]))
+	if editors.has("from_currency") and editors.has("amount"):
+		var currency_choice: Dictionary = editors["from_currency"]
+		var amount_input: Node = editors["amount"].node
+		var update_currency: Callable = func(index: int):
+			var currency: String = str(currency_choice["values"][index])
+			amount_input.set_currency(currency)
+			field_labels["amount"].text="금액 · "+str({"USD":"미국 달러(USD)","EUR":"유로(EUR)","GBP":"영국 파운드(GBP)"}.get(currency,currency))
+		currency_choice.node.item_selected.connect(update_currency)
+		update_currency.call(currency_choice.node.selected)
+	if editors.has("contract_id"):
+		var contract_choice: Dictionary = editors["contract_id"]
+		var contract_units: Callable = func(index: int):
+			var contract_id: String = str(contract_choice["values"][index])
+			for contract: Dictionary in source_records(app.world,"procurements",str(app.world.get("player_id",""))):
+				if str(contract.get("id",""))!=contract_id: continue
+				var product_id: String = str(contract.get("product_id",""))
+				if field_labels.has("quantity"): field_labels["quantity"].text="납품 수량 · "+Presentation.unit(app.world,product_id)
+				if field_labels.has("unit_price"): field_labels["unit_price"].text="제안 단가 · 달러 / 1 "+Presentation.unit(app.world,product_id)
+				break
+		contract_choice.node.item_selected.connect(contract_units)
+		contract_units.call(contract_choice.node.selected)
+	if editors.has("product_id"):
+		var product_choice: Dictionary = editors["product_id"]
+		var update_units: Callable = func(index: int):
+			var product_id: String = str(product_choice["values"][index])
+			for quantity_key: String in ["quantity"]:
+				if field_labels.has(quantity_key): field_labels[quantity_key].text = "수량 · " + Presentation.unit(app.world,product_id)
+			for price_key: String in ["limit_price","unit_price","max_unit_price"]:
+				if field_labels.has(price_key): field_labels[price_key].text = "단가 · 달러 / 1 " + Presentation.unit(app.world,product_id)
+		product_choice.node.item_selected.connect(update_units)
+		update_units.call(product_choice.node.selected)
+	app._label(box, "기본 금액은 달러로 소수점 두 자리까지 입력합니다. 환전은 선택한 출발 통화로 입력합니다. 1M = 100만 달러 · 1B = 10억 달러. 원화 보기는 표시만 바꿉니다.", 12, app.MUTED)
 	app._button(box, "계획에 추가", func():
 		var payload: Dictionary = {}
 		for key in editors:
 			var editor: Dictionary = editors[key]
 			match str(editor.kind):
+				"money":
+					var parsed: Dictionary = editor.node.read_value()
+					if not parsed.get("ok", false):
+						app._toast(str(parsed.get("error", "금액을 확인하세요.")))
+						return
+					payload[key] = int(parsed.cents)
 				"int": payload[key] = int(editor.node.value)
 				"bool": payload[key] = editor.node.button_pressed
 				"choice":
@@ -255,7 +325,7 @@ static func source_records(world: Dictionary, source: String, observer: String =
 			var id: String = str(currency.get("id", ""))
 			if id != "" and not seen.has(id): result.append({"id": id, "name": id}); seen[id] = true
 		for nation: Dictionary in world.get("nations", []):
-			var id: String = str(nation.get("currency", "CR"))
+			var id: String = str(nation.get("currency", "USD"))
 			if not seen.has(id): result.append({"id": id, "name": id}); seen[id] = true
 		for rate: Dictionary in source_records(world, "fx_rates"):
 			for key: String in ["from_currency", "to_currency", "from", "to"]:
@@ -298,34 +368,74 @@ static func records(app: Control, module_name: String, source: String, title: St
 		if not public_record and not associated.is_empty() and player not in associated and own not in associated: continue
 		visible += 1
 		app._label(box, _record_name(app, item), 16, app.TEXT)
+		var item_product: String = str(item.get("product_id",""))
+		if item_product=="" and item.has("contract_id"):
+			for contract: Dictionary in source_records(app.world,"procurements",player):
+				if contract.get("id","")==item.contract_id: item_product=str(contract.get("product_id",""));break
+		_process_progress(app,box,item,source)
 		if item.get("rect") is Dictionary:
 			var rect: Dictionary = item.rect
 			app._row(box, "대상 부지", "(%s, %s) · %s × %s타일" % [rect.get("x",0),rect.get("y",0),rect.get("w",1),rect.get("h",1)])
-		for key: String in ["status", "stage", "role", "term_months", "months_remaining", "quantity", "shares", "principal", "arrears", "coverage", "remaining", "progress", "required_work", "deadline_month", "due_month", "effective_month", "budget", "amount", "specification", "side", "remaining_quantity", "limit_price", "expires_month", "fulfilled_quantity", "price", "rent", "duration_months", "guaranteed_hours", "hours", "wage", "month", "paid", "teaching_authorized"]:
+			app._row(box,"부지 면적",app._area(str(item.get("city_id","")),int(rect.get("w",0)),int(rect.get("h",0))))
+		for key: String in ["status", "stage", "role", "term_months", "months_remaining", "quantity", "shares", "principal", "arrears", "coverage", "remaining", "progress", "required_work", "deadline_month", "due_month", "effective_month", "budget", "amount", "specification", "side", "remaining_quantity", "limit_price", "expires_month", "fulfilled_quantity", "price", "rent", "duration_months", "guaranteed_hours", "hours", "wage", "month", "paid", "teaching_authorized", "work", "min_months", "ready_month", "eta", "capacity", "used", "max_unit_price", "unit_price", "delivered_quantity", "accepted_quantity", "interest_bps"]:
 			if not item.has(key): continue
 			if item[key] is Dictionary or item[key] is Array: continue
 			var value: String = str(item[key])
-			if key in ["principal", "arrears", "coverage", "budget", "amount", "price", "rent", "limit_price", "paid", "wage"] and (item[key] is int or item[key] is float): value = app._money(int(item[key]))
+			if key in ["principal", "arrears", "coverage", "budget", "amount", "price", "rent", "limit_price", "paid", "wage", "max_unit_price", "unit_price"] and (item[key] is int or item[key] is float): value = app._money(int(item[key]))
 			if key == "remaining" and source in ["wage_claims", "land_claims"]: value = app._money(int(item[key]))
 			if key == "teaching_authorized": value = "동의" if bool(item[key]) else "동의하지 않음"
+			if key == "interest_bps": value = Presentation.decimal_cents(int(item[key]))+"%"
 			if key == "role": value = app._role(value)
-			if key == "status": value = app._status(value)
+			if key in ["status","stage"]: value = app._status(value)
+			if key == "side": value = _option_label(value)
+			if key == "specification" and value == "standard": value = "표준 규격"
+			if key in ["hours","guaranteed_hours","progress","required_work"]: value += " 시간"
+			if key in ["quantity","remaining_quantity","fulfilled_quantity","delivered_quantity","accepted_quantity"]: value = Presentation.quantity(app.world,item_product,int(item[key]))
+			if key in ["price","limit_price","max_unit_price","unit_price"] and item_product!="": value = Presentation.unit_price(app.world,item_product,int(item[key]),str(app.settings.get("currency_view","USD")))
+			if key in ["capacity","used"] and source in ["routes","warehouses"]: value = Presentation.cargo_mass(int(item[key])) + (" / 월" if source == "routes" else "")
 			app._row(box, _humanize(key), value)
 	if visible == 0: app._label(box, "아직 해당하는 기록이 없습니다. 위 행동에서 자격과 비용을 확인해 계획을 시작할 수 있습니다.", 13, app.MUTED)
+
+static func _process_progress(app: Control, parent: Node, item: Dictionary, source: String) -> void:
+	var month: int = int(app.world.get("last_resolved_month",0))
+	if item.has("reason"): app._label(parent,app._reason(str(item.reason)),12,app.MUTED)
+	if item.has("required_work"):
+		var done: int = int(item.get("work",item.get("progress",0)))
+		ProgressWidgets.work(app,parent,"작업 진척",done,int(item.required_work))
+		if item.has("min_months"): app._label(parent,"최소 기간은 별도 조건: %d개월 · 작업 완료 뒤에도 설치·검수 조건이 필요할 수 있습니다."%int(item.min_months),12,app.MUTED)
+	elif source == "training": ProgressWidgets.work(app,parent,"교육 이수",int(item.get("months_done",0)),int(item.get("months_required",0)))
+	elif source in ["agriculture","shipments"]:
+		var start: int = int(item.get("start_month",item.get("departure_month",-1)))
+		var ready: int = int(item.get("ready_month",item.get("eta",-1)))
+		if start>=0 and ready>start:
+			ProgressWidgets.work(app,parent,"생육 경과 기간" if source == "agriculture" else "운송 경과 기간",maxi(0,month-start),ready-start)
+		else: ProgressWidgets.work(app,parent,"생육 중" if source=="agriculture" else "운송 중 · 도착 예정 %d개월차"%ready,0,0)
+	elif source == "procurements" and item.has("quantity"):
+		ProgressWidgets.work(app,parent,"검수한 납품",int(item.get("accepted_quantity",0)),int(item.quantity))
+	elif source == "deliveries" and item.has("quantity"):
+		var departed: int = int(item.get("shipped_month",-1))
+		var arrival: int = int(item.get("arrive_month",-1))
+		ProgressWidgets.work(app,parent,"납품 운송 경과 기간",maxi(0,month-departed),arrival-departed if departed>=0 else 0)
+		ProgressWidgets.work(app,parent,"납품 검수",int(item.quantity) if str(item.get("status","")) in ["accepted","paid"] else 0,int(item.quantity))
 
 static func _record_name(app: Control, item: Dictionary) -> String:
 	for key: String in ["name", "title", "label", "description"]:
 		if item.has(key) and str(item[key]) != "": return str(item[key])
 	var parts: Array = []
-	for key: String in ["product_id", "person_id", "company_id", "government_id", "city_id"]:
+	for key: String in ["product_id", "person_id", "company_id", "government_id", "facility_id", "city_id"]:
 		if not item.has(key): continue
-		var source: String = {"product_id": "products", "person_id": "people", "company_id": "companies", "government_id": "governments", "city_id": "cities"}[key]
+		var source: String = {"product_id": "products", "person_id": "people", "company_id": "companies", "government_id": "governments", "facility_id":"facilities", "city_id": "cities"}[key]
 		for candidate: Dictionary in source_records(app.world, source, str(app.world.get("player_id", ""))):
 			if candidate.get("id", "") == item[key]: parts.append(str(candidate.get("name", item[key]))); break
-	return " · ".join(parts) if not parts.is_empty() else str(item.get("id", "계약"))
+	if parts.is_empty() and item.has("topic"):
+		for topic: Dictionary in source_records(app.world,"tech_topics"):
+			if topic.get("id","")==item.topic: parts.append(str(topic.get("name","연구")));break
+	if not parts.is_empty(): return " · ".join(parts)
+	var serial: String = str(item.get("id","")).get_slice("-",str(item.get("id","")).count("-"))
+	return "계약·기록" + (" #"+serial if serial.is_valid_int() else "")
 
 static func _humanize(key: String) -> String:
-	return str({"status": "상태", "stage": "단계", "role": "직무", "term_months": "계약 기간", "months_remaining": "남은 개월", "quantity": "수량", "shares": "주식 수", "principal": "원금", "arrears": "연체", "coverage": "보장액", "remaining": "남은 의무", "progress": "진척", "required_work": "필요 공수", "deadline_month": "납기 월", "due_month": "지급 월", "effective_month": "발효 월", "budget": "예산", "amount": "금액", "specification": "규격", "side": "주문 구분", "remaining_quantity": "미체결 수량", "limit_price": "제한 단가", "expires_month": "만료 월", "fulfilled_quantity": "체결 물량", "price": "가격", "rent": "월 임대료", "duration_months": "사용 기간", "guaranteed_hours": "월 보장 유급시간", "hours": "계약 시간", "wage": "시간당 임금", "month": "발생 월", "paid": "지급액", "teaching_authorized": "교육 업무 동의"}.get(key, key.replace("_", " ")))
+	return str({"interest_bps":"금리", "work":"진행한 작업시간", "min_months":"최소 기간(개월)", "ready_month":"준비 예정 월", "eta":"도착 예정 월", "capacity":"수용량", "used":"사용량", "max_unit_price":"상한 단가", "unit_price":"계약 단가", "delivered_quantity":"납품 수량", "accepted_quantity":"검수 수량", "status": "상태", "stage": "단계", "role": "직무", "term_months": "계약 기간", "months_remaining": "남은 개월", "quantity": "수량", "shares": "주식 수", "principal": "원금", "arrears": "연체", "coverage": "보장액", "remaining": "남은 의무", "progress": "진척", "required_work": "필요 작업시간", "deadline_month": "납기 월", "due_month": "지급 월", "effective_month": "발효 월", "budget": "예산", "amount": "금액", "specification": "규격", "side": "주문 구분", "remaining_quantity": "미체결 수량", "limit_price": "제한 단가", "expires_month": "만료 월", "fulfilled_quantity": "체결 물량", "price": "가격", "rent": "월 임대료", "duration_months": "사용 기간", "guaranteed_hours": "월 보장 유급시간", "hours": "계약 시간", "wage": "시간당 임금", "month": "발생 월", "paid": "지급액", "teaching_authorized": "교육 업무 동의"}.get(key, key.replace("_", " ")))
 
 
 static func _observer_controls(world: Dictionary, observer: String, owner: String) -> bool:
@@ -338,4 +448,4 @@ static func _observer_controls(world: Dictionary, observer: String, owner: Strin
 
 
 static func _option_label(value: String) -> String:
-	return str({"agriculture":"농업", "industry":"산업", "residential":"주거", "commercial":"상업", "buy":"매입", "sell":"매도", "equity":"신주 발행", "dividend":"배당", "download":"다운로드", "online":"온라인 서비스", "no":"사용 안 함", "yes":"사용", "neutral":"중립", "cooperate":"협력", "tension":"긴장", "conflict":"분쟁", "free_trade":"자유무역", "transit":"통과 운송", "ceasefire":"휴전", "embargo":"통상 제한", "tax":"세율", "tariff":"관세", "service":"공공서비스", "corporation":"법인", "sole":"개인사업", "operator":"운영 인력", "builder":"건설 인력", "director":"대표"}.get(value, value))
+	return str({"agriculture":"농업", "industry":"산업", "residential":"주거", "commercial":"상업", "buy":"매입", "sell":"매도", "equity":"신주 발행", "dividend":"배당", "download":"다운로드", "online":"온라인 서비스", "no":"사용 안 함", "yes":"사용", "neutral":"중립", "cooperate":"협력", "tension":"긴장", "conflict":"분쟁", "free_trade":"자유무역", "transit":"통과 운송", "ceasefire":"휴전", "embargo":"통상 제한", "growth":"성장", "security":"안보", "operations":"운영", "construction":"건설", "management":"경영", "research":"연구", "software":"소프트웨어", "tax_bps":"세율", "tariff_bps":"관세율", "interest_bps":"금리", "services_budget":"공공서비스 예산", "procurement_budget":"조달 예산", "import_ban":"수입 제한", "export_ban":"수출 제한", "mobilization":"동원", "services":"공공서비스", "procurement":"조달", "military":"국방", "transfers":"이전지출(지원금)", "tax":"세율", "tariff":"관세", "service":"공공서비스", "corporation":"법인", "sole":"개인사업", "operator":"운영 인력", "builder":"건설 인력", "director":"대표"}.get(value, value))

@@ -257,7 +257,7 @@ static func planning_reservations(s: Dictionary,c: Dictionary) -> Array:
 		var offer: Dictionary=_find(s.get("land",{}).get("offers",[]),str(c.payload.get("offer_id","")))
 		amount=int(offer.get("price",0))
 	elif c.get("type")=="land_pay_rent" and _integer(c.payload.get("amount")): amount=int(c.payload.amount)
-	return [{"owner_id":_owner(c),"resource_type":"cash","resource_id":"CR","quantity":amount}] if amount>0 else []
+	return [{"owner_id":_owner(c),"resource_type":"cash","resource_id":"USD","quantity":amount}] if amount>0 else []
 
 static func _stage(s: Dictionary) -> Dictionary:
 	var work: Dictionary=s.duplicate()

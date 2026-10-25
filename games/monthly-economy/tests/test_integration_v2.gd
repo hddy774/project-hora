@@ -273,7 +273,7 @@ static func _test_neutral_benchmark(failures: Array, quick: bool) -> void:
 		s = result.state
 		_check(Economy.validate(s).is_empty(), "Neutral benchmark month %d satisfies all physical, financial, employment and authority invariants" % (step + 1), failures)
 		var actual: Dictionary = Economy.metrics(s)
-		_check(int(actual.unmet_value) <= threshold, "Neutral benchmark month %d meets the experimental essential-demand bound (%d <= %d CR-minor)" % [step + 1, int(actual.unmet_value), threshold], failures)
+		_check(int(actual.unmet_value) <= threshold, "Neutral benchmark month %d meets the experimental essential-demand bound (%d <= %d USD cents)" % [step + 1, int(actual.unmet_value), threshold], failures)
 		var new_openings: Array = []
 		for index: int in range(event_start, s.events.size()):
 			if s.events[index].type == "opening" and int(s.events[index].month) >= 1: new_openings.append(s.events[index].id)

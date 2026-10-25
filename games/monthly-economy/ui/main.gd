@@ -6,6 +6,11 @@ const Store = preload("res://core/save_store.gd")
 const CityMap = preload("res://ui/city_map.gd")
 const Art = preload("res://ui/art.gd")
 const Domains = preload("res://ui/domain_views.gd")
+const Progress = preload("res://core/progress.gd")
+const ProgressWidgets = preload("res://ui/progress_widgets.gd")
+const Generation = preload("res://core/generation.gd")
+const Presentation = preload("res://ui/presentation.gd")
+const MoneyInput = preload("res://ui/money_input.gd")
 const HistoryChart = preload("res://ui/history_chart.gd")
 const FONT = preload("res://assets/NotoSansKR.otf")
 const BG = Color("071724")
@@ -48,7 +53,7 @@ var build_kind: String = "bakery"
 var selected_tile: Vector2i = Vector2i(-1, -1)
 var build_mode: bool = false
 var full_map: bool = false
-var settings: Dictionary = {"text_scale": 1.0, "high_contrast": false, "reduce_motion": true}
+var settings: Dictionary = {"text_scale": 1.0, "high_contrast": false, "reduce_motion": true, "currency_view": "USD"}
 var scroll_positions: Dictionary = {}
 var last_screen_key: String = ""
 var saved_hash: String = ""
@@ -57,6 +62,10 @@ var context_company_id: String = "__default__"
 var context_government_id: String = ""
 var last_selected_id: String = ""
 var last_map: Control
+var operation_progress: RefCounted
+var progress_view: Dictionary = {}
+var operation_busy: bool = false
+var money_tooltips: Dictionary = {}
 var file_dialog: FileDialog
 
 
@@ -67,11 +76,21 @@ func _ready() -> void:
 	var saved_settings: Dictionary = _load_preferences()
 	settings.merge(saved_settings, true)
 	_apply_theme()
+	operation_busy = true
+	var init_progress: RefCounted = _show_progress("게임 시작 준비",3)
+	init_progress.advance("화면과 글꼴 준비 완료")
+	await get_tree().process_frame
 	var content_status: Dictionary = Economy.fixture_status()
+	init_progress.advance("상품·생산 데이터 검사 완료")
 	if not content_status.get("ok", false):
+		operation_busy=false
+		init_progress.fail("CONTENT_INVALID","게임 데이터 검사 실패")
 		fatal_error = str(content_status.get("error", "필수 데이터 없음"))
 		_render()
 		return
+	init_progress.finish("게임 시작 준비 완료")
+	operation_busy = false
+	_close_modal()
 	if "--demo" in OS.get_cmdline_user_args():
 		world = Economy.new_world(42)
 		screen = "game"
@@ -86,27 +105,43 @@ func _notification(what: int) -> void:
 
 
 func _process(_delta: float) -> void:
+	if operation_progress != null: ProgressWidgets.update(progress_view, operation_progress.get_snapshot())
 	if generator != null and not generator.is_alive():
-		var generated: Dictionary = generator.wait_to_finish()
+		var generated_raw: Variant = generator.wait_to_finish()
 		generator = null
-		if not generation_cancelled:
+		if not generation_cancelled and not (generated_raw is Dictionary and generated_raw.get("world") is Dictionary and generated_raw.get("assessment") is Dictionary):
+			if operation_progress != null: operation_progress.fail("GENERATION_WORKER_FAILED","세계 생성 작업 실패")
+			_message("새 세계를 적용하지 않았습니다","생성 작업의 결과가 유효하지 않습니다. 현재 세계와 저장은 보존했습니다.")
+		elif not generation_cancelled:
+			var generated: Dictionary = generated_raw
+			if operation_progress != null: operation_progress.finish("초기 검사 결과 준비 완료")
 			_generation_result_dialog(generated.get("world", {}), generated.get("assessment", {"ok":false,"errors":["생성 검사 결과가 없습니다."]}))
 	if resolving and worker != null and not worker.is_alive():
-		var result: Dictionary = worker.wait_to_finish()
+		var result_raw: Variant = worker.wait_to_finish()
 		worker = null
-		resolving = false
-		_close_modal()
+		var result: Dictionary = result_raw if result_raw is Dictionary else {"ok":false,"errors":["정산 작업이 유효한 결과를 반환하지 않았습니다."]}
+		if result.get("ok",false) and not result.get("state") is Dictionary: result={"ok":false,"errors":["검증 가능한 월 상태가 없어 확정하지 않았습니다."]}
 		if not result.get("ok", false):
+			resolving = false
+			if operation_progress != null: operation_progress.fail("MONTH_FAILED","월 정산 실패 · 이전 월 보존")
+			_close_modal()
 			_render()
 			_message("정산을 확정하지 않았습니다", "이전 월과 계획을 보존했습니다.\n" + str(result.get("errors", [])))
 			return
 		var candidate: Dictionary = result["state"]
+		if operation_progress != null: operation_progress.set_completed(Economy.turn_progress_steps()+1,"검증한 월 결과 저장")
+		ProgressWidgets.update(progress_view, operation_progress.get_snapshot())
 		var save_result: Dictionary = Store.save_world(candidate, _storage_slot("autosave"))
 		if not save_result.get("ok", false):
+			resolving = false
+			if operation_progress != null: operation_progress.fail("SAVE_FAILED","저장 실패 · 이전 월 보존")
 			_render()
 			_message("저장 공간을 확인하세요", "월 결과를 저장하지 못해 이전 월과 계획을 유지했습니다.\n" + str(save_result.get("error", "저장 실패")))
 			return
 		world = candidate
+		resolving = false
+		if operation_progress != null: operation_progress.finish("월 결과 확정·저장 완료")
+		_close_modal()
 		dirty = false
 		_save_view(_storage_slot("autosave"))
 		saved_hash = Economy.state_hash(world)
@@ -214,6 +249,8 @@ func _render() -> void:
 func _label(parent: Node, text: String, size_value: int = 16, color: Color = TEXT) -> Label:
 	var l := Label.new()
 	l.text = text
+	for formatted: String in money_tooltips:
+		if text.contains(formatted): l.tooltip_text = str(money_tooltips[formatted]); break
 	l.add_theme_font_size_override("font_size", int(size_value * float(settings.get("text_scale", 1.0))))
 	l.add_theme_color_override("font_color", color)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -239,6 +276,8 @@ func _display_margins() -> Dictionary:
 func _button(parent: Node, text: String, action: Callable, accent: bool = false) -> Button:
 	var b := Button.new()
 	b.text = text
+	for formatted: String in money_tooltips:
+		if text.contains(formatted): b.tooltip_text = str(money_tooltips[formatted]); break
 	b.custom_minimum_size.y = 43
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -247,7 +286,7 @@ func _button(parent: Node, text: String, action: Callable, accent: bool = false)
 		b.add_theme_color_override("font_color", Color.WHITE)
 		b.add_theme_color_override("font_hover_color", Color.WHITE)
 	b.pressed.connect(func():
-		if resolving: return
+		if resolving or operation_busy: return
 		if settings.get("haptics", false) and OS.get_name() == "Android": Input.vibrate_handheld(12)
 		action.call()
 	)
@@ -275,11 +314,64 @@ func _row(parent: Node, name_value: String, value: String, color: Color = TEXT) 
 	v.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
 
-func _money(amount: int) -> String:
-	var sign_value: String = "−" if amount < 0 else ""
-	var n: int = absi(amount)
-	# CR is the fixture currency. Values below are minor units, never a float balance.
-	return sign_value + str(n / 100) + "." + ("0" if n % 100 < 10 else "") + str(n % 100) + " CR"
+func _money(amount: int, compact: bool = false) -> String:
+	var formatted: String = Presentation.money(amount, "USD", compact, str(settings.get("currency_view", "USD")))
+	money_tooltips[formatted] = Presentation.money_detail(amount)
+	return formatted
+
+
+func _area(target_city: String, width: int, height: int) -> String:
+	var city: Dictionary = _find(world.get("cities",[]),target_city)
+	var side: int = int(city.get("tile_side_m",0))
+	if side<=0 or width<=0 or height<=0: return "면적 확인 불가"
+	return Presentation.grouped(width*height*side*side)+" m²"
+
+
+func _money_detail(amount: int) -> String:
+	return Presentation.money_detail(amount)
+
+
+func _toggle_currency() -> void:
+	settings["currency_view"] = "KRW" if settings.get("currency_view", "USD") == "USD" else "USD"
+	_save_preferences()
+	_render()
+
+
+func _currency_dialog() -> void:
+	var box: VBoxContainer = _open_modal("달러·원화 보기와 간단 환산")
+	_label(box, "표시용 고정 환산: 1달러 = 1,000원\n실제 환전이나 외환 시세가 아닙니다. 장부와 주문 입력은 달러를 사용합니다.", 14, MUTED)
+	_button(box, "현재 보기: " + ("달러(USD)" if settings.get("currency_view","USD") == "USD" else "원화 환산") + " · 전환", func(): _toggle_currency(); _currency_dialog())
+	_label(box, "달러 금액", 14)
+	var dollars = MoneyInput.new();dollars.allow_negative=true;dollars.minimum_cents=-Presentation.MAX_CENTS;dollars.set_cents(100);box.add_child(dollars)
+	_label(box,"원화 금액 · 표시용",14)
+	var won_input := LineEdit.new();won_input.custom_minimum_size.y=44;won_input.virtual_keyboard_type=LineEdit.KEYBOARD_TYPE_NUMBER;box.add_child(won_input)
+	var result: Label = _label(box, "", 16, MINT)
+	var changing: Dictionary = {"active":false}
+	var update: Callable = func(_text: String):
+		if changing.active: return
+		changing.active=true
+		var parsed: Dictionary = dollars.read_value()
+		if parsed.get("ok",false):
+			won_input.text = str(int(parsed.cents)*10)
+			result.text = Presentation.money_detail(int(parsed.cents))
+		else: result.text = str(parsed.get("error","금액을 확인하세요."))
+		changing.active=false
+	dollars.edit.text_changed.connect(update)
+	won_input.text_changed.connect(func(text: String):
+		if changing.active: return
+		var clean: String = text.strip_edges().replace(",","").trim_prefix("₩")
+		if not clean.is_valid_int() or clean.length()>17: result.text="원화는 정수로 입력하세요.";return
+		var won_value: int = int(clean)
+		if absi(won_value)>Presentation.MAX_CENTS*10: result.text="환산할 수 있는 범위를 넘었습니다.";return
+		@warning_ignore("integer_division")
+		var cents: int = (absi(won_value)+5)/10
+		if won_value<0: cents=-cents
+		changing.active=true;dollars.set_cents(cents);changing.active=false
+		result.text=Presentation.money_detail(cents)+("\n센트 아래 금액은 반올림했습니다." if absi(won_value)%10!=0 else "")
+	)
+	update.call("")
+	_label(box, "1M = 100만 달러 = 10억원\n1B = 10억 달러 = 1조원\n큰 금액의 짧은 표시는 소수 둘째 자리에서 버림합니다. 정확한 금액은 상세 설명을 확인하세요.", 13, MUTED)
+	_button(box,"닫기",_close_modal)
 
 
 func _month() -> String:
@@ -337,7 +429,7 @@ func _title() -> void:
 	_button(row, "설정", _settings_dialog)
 	_button(row, "게임 정보", _info_dialog)
 	_button(box, "종료", func(): get_tree().quit())
-	_label(box, str(ProjectSettings.get_setting("application/config/version", "0.2.0")) + " · 오프라인 싱글플레이 · 월 단위 수동 진행", 11, MUTED)
+	_label(box, str(ProjectSettings.get_setting("application/config/version", "0.2.1")) + " · 오프라인 싱글플레이 · 월 단위 수동 진행", 11, MUTED)
 
 
 func _header() -> void:
@@ -349,6 +441,10 @@ func _header() -> void:
 	title.custom_minimum_size.x = 60 * float(settings.get("text_scale", 1.0))
 	var date: Label = _label(top, _month(), 15, MUTED)
 	date.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var currency_button: Button = _button(top, "USD" if settings.get("currency_view","USD") == "USD" else "원화", _currency_dialog)
+	currency_button.custom_minimum_size = Vector2(47, 29)
+	currency_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	currency_button.add_theme_font_size_override("font_size", 11)
 	var status := HBoxContainer.new()
 	status.add_theme_constant_override("separation", 5)
 	top.add_child(status)
@@ -465,7 +561,7 @@ func _footer() -> void:
 	expense.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	budget_row.add_child(expense)
 	_label(expense, "계획에 예약한 지급", 11, MUTED)
-	_label(expense, _money(int(estimate.get("expected_spending", 0))), 16, GOLD)
+	_label(expense, _money(int(estimate.get("expected_spending", 0)),true), 16, GOLD)
 	var month_button: Button = _button(budget_row, "다음 달  ›", _preflight, true)
 	month_button.name = "NextMonthAction"
 	month_button.custom_minimum_size = Vector2(205, 48)
@@ -534,11 +630,15 @@ func _draw_page(path: Array) -> void:
 				else:
 					Domains.page(self, "industry", "연구·소프트웨어·개발", [], "research")
 					Domains.records(self, "industry", "software", "소프트웨어 프로젝트")
+					Domains.records(self,"industry","repairs","시설 수리")
+					Domains.records(self,"industry","adoptions","설비 개조·교육")
+					Domains.records(self,"industry","agriculture","농축산 생육")
 			elif first == "운영":
 				if leaf == "생산": _production_page()
 				elif leaf == "유통":
 					_inventory_page()
 					Domains.page(self, "industry", "물류·창고·재활용", ["ship", "warehouse", "recycle"], "routes")
+					Domains.records(self,"industry","shipments","운송 중인 내 화물")
 				else: _policy_page()
 			else:
 				if leaf == "법인": _company_page()
@@ -556,7 +656,9 @@ func _draw_page(path: Array) -> void:
 				elif leaf == "교역": _trade_page()
 				else: _market_page(leaf)
 			elif first == "인력":
-				if leaf == "구직": Domains.page(self, "lifecycle", "구직·교육·이주", ["apply_job", "resign_job", "training", "move_person"], "jobs")
+				if leaf == "구직":
+					Domains.page(self, "lifecycle", "구직·교육·이주", ["apply_job", "resign_job", "training", "move_person"], "jobs")
+					Domains.records(self,"lifecycle","training","진행 중인 내 교육",str(world.get("player_id","")))
 				elif leaf == "채용": Domains.page(self, "lifecycle", "채용·배치", ["post_job", "hire_person", "fire_person"], "jobs")
 				else:
 					_people_page("임금")
@@ -606,9 +708,9 @@ func _dashboard() -> void:
 	var metrics_row := HBoxContainer.new()
 	metrics_row.add_theme_constant_override("separation", 5)
 	hero.add_child(metrics_row)
-	_metric(metrics_row, "coins", "가용 자금", _money(int(estimate.get("available_cash", 0))))
-	_metric(metrics_row, "chart", "예약 지급", _money(int(estimate.get("expected_spending", 0))))
-	_metric(metrics_row, "people", "가용 시간", str(estimate.get("available_hours", 0)) + " h")
+	_metric(metrics_row, "coins", "가용 자금", _money(int(estimate.get("available_cash", 0)),true))
+	_metric(metrics_row, "chart", "예약 지급", _money(int(estimate.get("expected_spending", 0)),true))
+	_metric(metrics_row, "people", "가용 시간", str(estimate.get("available_hours", 0)) + " 시간")
 	var map_card: VBoxContainer = _card(content)
 	var map_heading := HBoxContainer.new()
 	map_card.add_child(map_heading)
@@ -638,7 +740,7 @@ func _dashboard() -> void:
 	_dashboard_construction()
 	var checks: VBoxContainer = _card(content, "월말 점검")
 	_dashboard_action(checks, "resources", "자재·재고 확인", str(_own_inventory_count()) + "품목", func(): _go(1, [1, 1, 0]))
-	_dashboard_action(checks, "people", "인력·업무시간", str(estimate.get("available_hours", 0)) + " h", func(): _go(1, [0, 1, 0]))
+	_dashboard_action(checks, "people", "인력·업무시간", str(estimate.get("available_hours", 0)) + " 시간", func(): _go(1, [0, 1, 0]))
 	_dashboard_action(checks, "clipboard", "미실행 계획", str(world.get("commands", []).size()) + "개", func(): _go(1, [2, 1, 0]))
 	var report: Dictionary = world.get("last_report", {})
 	if not report.is_empty():
@@ -649,6 +751,7 @@ func _dashboard() -> void:
 
 func _add_map(parent: Node, height: int) -> void:
 	var map = CityMap.new()
+	map.currency_view = str(settings.get("currency_view","USD"))
 	map.custom_minimum_size.y = height
 	map.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	map.build_mode = build_mode
@@ -691,7 +794,7 @@ func _map_page(construction: bool = false) -> void:
 		card.add_child(chooser)
 		var spec: Dictionary = _find(types, build_kind)
 		_row(card, "자재", "목재 %d · 석재 %d · 도구 %d" % [spec.get("wood", 0), spec.get("stone", 0), spec.get("tools", 0)])
-		_row(card, "시공", "%d공수 · 최소 %d개월" % [spec.get("work", 0), spec.get("min_months", 0)])
+		_row(card, "시공", "%d 작업시간(시간) · 최소 %d개월" % [spec.get("work", 0), spec.get("min_months", 0)])
 		_label(card, "빈 타일을 눌러 위치 선택 → 조건 확인 → 계획에 추가", 13, MINT)
 	_add_map(card, 400 if full_map else 290)
 	_button(card, "요약 크기로" if full_map else "지도 넓게 보기", func():
@@ -710,7 +813,8 @@ func _build_confirm(x: int, y: int) -> void:
 	_row(box, "시설", str(spec.get("name", build_kind)))
 	_row(box, "위치", "%s · (%d, %d)" % [str(_find(world["cities"], city_id).get("name", city_id)), x, y])
 	_row(box, "부지", "%d × %d 타일" % [spec.get("w", 2), spec.get("h", 2)])
-	_row(box, "시공", "%d공수 / 최소 %d개월" % [spec.get("work", 0), spec.get("min_months", 0)])
+	_row(box,"부지 면적",_area(city_id,int(spec.get("w",2)),int(spec.get("h",2))))
+	_row(box, "시공", "%d 작업시간(시간) / 최소 %d개월" % [spec.get("work", 0), spec.get("min_months", 0)])
 	_row(box, "예약 시공 예산", _money(Economy.construction_budget(build_kind)))
 	_label(box, "실제 자재와 건설 인력으로 공정이 진행됩니다. 당월 준공 시설은 다음 달부터 가동합니다. 부족하면 지연되며 원인이 기록됩니다.", 14, MUTED)
 	_button(box, "이 위치에 건설 예약", func():
@@ -843,12 +947,8 @@ func _projects_page(heading: bool = true) -> void:
 		found = true
 		var id: String = str(project.get("id", ""))
 		_label(card, str(project.get("name", project.get("kind", "시설"))), 18)
-		var bar := ProgressBar.new()
-		bar.max_value = maxi(int(project.get("required_work", 1)), 1)
-		bar.value = int(project.get("progress", 0))
-		bar.custom_minimum_size.y = 20
-		card.add_child(bar)
-		_row(card, "실제 공수", "%d / %d" % [project.get("progress", 0), project.get("required_work", 1)])
+		ProgressWidgets.work(self,card,"공사 작업 진척",int(project.get("progress",0)),int(project.get("required_work",0)))
+		_row(card, "진행한 작업시간", "%d / %d 시간" % [project.get("progress", 0), project.get("required_work", 1)])
 		_row(card, "상태", _status(str(project.get("status", "진행 중"))))
 		_row(card, "경과 / 최소 공기", "%d / %d개월" % [project.get("months_worked", 0), project.get("min_months", 0)])
 		if project.has("reason"): _label(card, _reason(str(project["reason"])), 13, GOLD)
@@ -888,6 +988,7 @@ func _facility_dialog(id: String) -> void:
 	_row(box, "소속 법인", str(co.get("name", "")))
 	_row(box, "위치", "%s · %s, %s" % [facility.get("city_id", ""), facility.get("x", 0), facility.get("y", 0)])
 	_row(box, "점유", "%s × %s 타일" % [facility.get("w", 1), facility.get("h", 1)])
+	_row(box,"부지 면적",_area(str(facility.get("city_id","")),int(facility.get("w",1)),int(facility.get("h",1))))
 	_row(box, "상태", _status(str(facility.get("status", ""))))
 	if facility.get("company_id", "") == _company().get("id", ""):
 		var recipe: Dictionary = _find(world.get("recipes", []), str(facility.get("recipe_id", "")))
@@ -902,16 +1003,16 @@ func _facility_dialog(id: String) -> void:
 
 
 func _market_page(mode: String) -> void:
-	var card: VBoxContainer = _card(content, "도시 상품 시장", "MARKET / " + (_scope_label(scope)))
+	var card: VBoxContainer = _card(content, "선택 범위의 상품 시장", "MARKET / " + (_scope_label(scope)))
 	_label(card, "품목별 단위를 따로 표시합니다. 재고·구매 요청·소비는 실제 상태와 직전 정산 기록에서 집계합니다.", 13, MUTED)
 	var statistics: Dictionary = Economy.metrics(world, scope)
 	for p in statistics.get("per_product", []):
 		var id: String = str(p.get("product_id", ""))
 		var box: VBoxContainer = _card(content, str(p.get("name", id)))
-		_row(box, "실거래 평균" if int(p.get("trade_quantity", 0)) > 0 else "실험 기준 단가", _money(int(p.get("price", 0))) + " / " + str(p.get("unit", "")))
+		_row(box, "실거래 평균" if int(p.get("trade_quantity", 0)) > 0 else "실험 기준 단가", Presentation.unit_price(world,id,int(p.get("price",0)),str(settings.get("currency_view","USD"))))
 		if mode == "수급":
-			_row(box, "도시 귀속 재고", str(p.get("supply", 0)) + " " + str(p.get("unit", "")))
-			_row(box, "구매 요청 / 필수 미충족", "%s / %s" % [p.get("demand", 0), p.get("unmet", 0)], GOLD)
+			_row(box, "귀속 재고", str(p.get("supply", 0)) + " " + str(p.get("unit", "")))
+			_row(box, "구매 요청 / 필수 미충족", Presentation.quantity(world,id,int(p.get("demand",0))) + " / " + Presentation.quantity(world,id,int(p.get("unmet",0))), GOLD)
 		else:
 			_row(box, "직전 생산 / 소비", "%s / %s %s" % [p.get("produced", 0), p.get("consumed", 0), p.get("unit", "")])
 		_button(box, "상품과 생산 연결", func(): _product_dialog(id))
@@ -924,7 +1025,7 @@ func _product_dialog(id: String) -> void:
 	var box: VBoxContainer = _open_modal(str(p.get("name", id)))
 	_row(box, "산업", str(p.get("industry", "")))
 	_row(box, "단위", str(p.get("unit", "")))
-	_row(box, "실험 기준가격", _money(int(p.get("price", 0))))
+	_row(box, "실험 기준 단가", Presentation.unit_price(world,id,int(p.get("price",0)),str(settings.get("currency_view","USD"))))
 	for recipe in world.get("recipes", []):
 		if recipe.get("outputs", {}).has(id):
 			_label(box, "공정 " + str(recipe.get("id", "")), 17, MINT)
@@ -960,7 +1061,7 @@ func _people_page(mode: String) -> void:
 			detail += " · 시간당 " + _money(int(p.get("wage", 0)))
 			for contract: Dictionary in world.get("lifecycle",{}).get("employment",[]):
 				if contract.person_id == p.id and contract.get("status","") == "active":
-					detail += " · 월 보장 " + str(contract.get("guaranteed_hours",0)) + " h"
+					detail += " · 월 보장 " + str(contract.get("guaranteed_hours",0)) + " 시간"
 					break
 		if mode == "시간": detail += " · 가용 " + str(p.get("hours", 0)) + "시간"
 		_label(card, detail, 12, MUTED)
@@ -1058,13 +1159,15 @@ func _aggregate_page() -> void:
 	_row(card, "인물", str(statistics.get("population", 0)) + "명")
 	_row(card, "고용", str(statistics.get("employed", 0)) + "명")
 	_row(card, "현금 잔액 합계", _money(int(statistics.get("cash", 0))))
-	if statistics.has("value_added"): _row(card, "실험 부가가치", _money(int(statistics.value_added)))
+	if statistics.has("value_added"): _row(card, "부가가치(새로 만든 가치)", _money(int(statistics.value_added)))
 	for item: Dictionary in [{"key":"covered_fixed_price_value_added","label":"기준가격 상품·서비스·건설"},{"key":"public_nonmarket_value_added","label":"공공 비시장 서비스 · 실제 비용"},{"key":"digital_current_price_value_added","label":"디지털 · 이행 거래가격"}]:
 		if statistics.has(item.key): _row(card,str(item.label),_money(int(statistics[item.key])))
 	if statistics.has("definition"): _label(card,str(statistics.definition),12,MUTED)
 	_label(card, "품목별 생산·소비는 해당 단위를 유지합니다. 서로 다른 단위의 물량을 GDP로 합산하지 않습니다.", 12, MUTED)
 	var chart_card: VBoxContainer = _card(content, "세계 · 월별 실제 상품 체결", "확정 기록 · 세계 기준")
 	var chart = HistoryChart.new()
+	chart.currency_view = str(settings.get("currency_view","USD"))
+	chart.world = world
 	chart_card.add_child(chart)
 	chart.set_observations(world.get("reports", []), "trades")
 
@@ -1078,7 +1181,7 @@ func _world_page(level: String) -> void:
 		var card: VBoxContainer = _card(content, str(entity.get("name", entity.id)))
 		_row(card, "인물 / 고용", "%s / %s명" % [statistics.get("population", 0), statistics.get("employed", 0)])
 		_row(card, "현금 계정 합계", _money(int(statistics.get("cash", 0))))
-		if statistics.has("value_added"): _row(card, "실험 부가가치", _money(int(statistics.value_added)))
+		if statistics.has("value_added"): _row(card, "부가가치(새로 만든 가치)", _money(int(statistics.value_added)))
 		var id: String = str(entity.id)
 		_button(card, "이 범위의 상품 수급", func(): scope=id; _go(2,[0,0,0]))
 		if level == "도시":
@@ -1114,7 +1217,7 @@ func _event_row(parent: Node, event: Dictionary) -> void:
 	_label(parent, "%d월  ·  %s" % [event.get("month", 0), reason], 14, GOLD if str(event.get("type", "")) in ["shortage", "delay", "unmet"] else TEXT)
 	var detail: Array = []
 	if event.has("product_id") and str(event["product_id"]) != "": detail.append(str(_find(world["products"], str(event["product_id"])).get("name", event["product_id"])))
-	if int(event.get("quantity", 0)) != 0: detail.append("수량 " + str(event["quantity"]))
+	if int(event.get("quantity", 0)) != 0: detail.append("수량 " + Presentation.quantity(world,str(event.get("product_id","")),int(event["quantity"])))
 	if int(event.get("amount", 0)) != 0 and event.get("actor_id", "") == _company().get("id", ""): detail.append(_money(int(event["amount"])))
 	if not detail.is_empty(): _label(parent, " · ".join(detail), 12, MUTED)
 
@@ -1124,7 +1227,7 @@ func _rules_page(leaf: String) -> void:
 	if leaf == "경제":
 		_label(card, "• 1턴은 1개월이며 계획·대기 중 시간이 흐르지 않습니다.\n• 생산·급여·매매·소비에 실제 소유자와 자금·재고가 있습니다.\n• 플레이어와 AI는 같은 명령 검증기를 사용합니다.\n• 무료 외부 구매자·자동 자금 보충은 없습니다.\n• 화면을 열지 않은 도시도 같은 규칙으로 정산합니다.", 15)
 	elif leaf == "공정":
-		_label(card, "• 타일 배치는 건설 계획이며 즉시 준공이 아닙니다.\n• 실제 목재·석재·도구와 시공 공수, 최소 기간을 사용합니다.\n• 부족하면 가능한 공정까지만 진행하고 이유를 남깁니다.\n• 공사 취소가 이미 사용한 자재를 복원하지 않습니다.\n• 월말 준공한 건물은 다음 월부터 가동합니다.", 15)
+		_label(card, "• 타일 배치는 건설 계획이며 즉시 준공이 아닙니다.\n• 실제 목재·석재·도구와 시공 작업시간, 최소 기간을 사용합니다.\n• 부족하면 가능한 공정까지만 진행하고 이유를 남깁니다.\n• 공사 취소가 이미 사용한 자재를 복원하지 않습니다.\n• 월말 준공한 건물은 다음 월부터 가동합니다.", 15)
 	else:
 		_label(card, "인물의 직업·창업·대표 취임, 기업 지분과 금융, 산업·소프트웨어, 도시 간 무역·운송, 정치·외교·공공조달이 실제 명령과 장부에 연결됩니다.\n\n운영 수치와 세계 규모는 실험 설정이며 각 행동은 자격·권한·예산·납기로 검증합니다.", 15)
 	_label(card, "세계 규모·가격·임금·레시피·공기 등 모든 실험 수치는 출시 밸런스가 아닙니다. 기획서의 미정값을 사용자 확정값으로 바꾸지 않습니다.", 13, GOLD)
@@ -1134,7 +1237,7 @@ func _save_page() -> void:
 	var card: VBoxContainer = _card(content, "저장과 복구")
 	_row(card, "현재 계획 월", _month())
 	_row(card, "미저장 변경", "있음" if dirty else "없음")
-	_button(card, "수동 저장", func(): _save("manual", true), true)
+	_button(card, "수동 저장", func(): _save_visible("manual", true), true)
 	_button(card, "다른 슬롯에 저장", _save_as_dialog)
 	_button(card, "불러오기·삭제", _load_dialog)
 	_button(card, "백업 파일 내보내기", _export_dialog)
@@ -1148,7 +1251,9 @@ func _save_page() -> void:
 
 
 func _settings_page(parent: Node) -> void:
-	var card: VBoxContainer = _card(parent, "읽기와 조작", "SETTINGS / 기기 설정")
+	var card: VBoxContainer = _card(parent, "읽기와 조작", "기기 설정")
+	_button(card, "금액 보기 · " + ("달러(USD)" if settings.get("currency_view","USD") == "USD" else "원화 환산"), _currency_dialog)
+	_label(card, "표시용 고정 환산: 1달러 = 1,000원 · 실제 환전 아님", 12, MUTED)
 	var text_size := OptionButton.new()
 	text_size.custom_minimum_size.y = 48
 	for text_value in ["글자 크기 · 기본", "글자 크기 · 크게", "글자 크기 · 더 크게"]: text_size.add_item(text_value)
@@ -1179,7 +1284,7 @@ func _settings_page(parent: Node) -> void:
 	card.add_child(haptics)
 	_label(card, "금액은 통화와 품목 단위를 함께 표시합니다. 움직이는 필수 연출과 시간 제한이 없으며, 중요한 상태는 문구로도 안내합니다. 계정·원격 수집 없이 기기에 저장합니다.", 14, MUTED)
 	_button(card, "표시 설정 초기화", func():
-		settings = {"text_scale": 1.0, "high_contrast": false, "reduce_motion": true}
+		settings = {"text_scale": 1.0, "high_contrast": false, "reduce_motion": true, "currency_view": "USD"}
 		_save_preferences()
 		_apply_theme()
 		_render()
@@ -1189,9 +1294,9 @@ func _settings_page(parent: Node) -> void:
 func _info_page(parent: Node) -> void:
 	var card: VBoxContainer = _card(parent, "호라경제연구실", "Hora Economic Lab")
 	_label(card, "Hora Economic Lab", 22, MINT)
-	_row(card, "게임 버전", str(ProjectSettings.get_setting("application/config/version", "0.2.0")))
+	_row(card, "게임 버전", str(ProjectSettings.get_setting("application/config/version", "0.2.1")))
 	_row(card, "세계 규칙", str(world.get("rules_version", "새 게임에서 확인")))
-	_row(card, "저장 형식", str(world.get("schema_version", "2")))
+	_row(card, "저장 형식", str(world.get("schema_version", "3")))
 	_label(card, "1턴은 1개월입니다. 계획을 정하고 다음 달을 눌러 실제 생산·노동·거래·정치·금융의 결과를 확인하세요. 기다리거나 앱을 닫아 둬도 경제 시간이 진행되지 않습니다.", 14, MUTED)
 	_button(card, "조작과 경제 규칙", _tutorial_dialog)
 	if not world.is_empty(): _button(card, "개인 목표 설정", _goal_dialog)
@@ -1201,10 +1306,60 @@ func _info_page(parent: Node) -> void:
 	_button(card, "자산·오픈소스 고지", func(): _message("고지와 라이선스", "게임용 생성 UI·아이콘·도시 이미지 리소스\n\n" + FileAccess.get_file_as_string("res://assets/FONT-LICENSE.txt") + "\n\n" + FileAccess.get_file_as_string("res://assets/GODOT-NOTICES.txt")))
 
 
+func _show_progress(title: String, total: int = 0) -> RefCounted:
+	var box: VBoxContainer = _open_modal(title)
+	var task: RefCounted = Progress.new()
+	if total > 0: task.begin(total,title)
+	operation_progress = task
+	progress_view = ProgressWidgets.create(self,box,title)
+	ProgressWidgets.update(progress_view,{"total":total,"completed":0,"stage":title})
+	_label(box,"처리 단계의 완료율입니다. 예상 소요시간이 아닙니다.",12,MUTED)
+	return task
+
+
+func _save_visible(slot: String, show_message: bool = true) -> bool:
+	if operation_busy or resolving or world.is_empty(): return false
+	operation_busy = true
+	var task: RefCounted = _show_progress("현재 월과 계획 저장",2)
+	await get_tree().process_frame
+	task.advance("장부·저장 파일 검사 후 기록")
+	ProgressWidgets.update(progress_view,task.get_snapshot())
+	var ok: bool = _save(slot,false)
+	var progress_modal: Control = modal
+	if ok:
+		task.finish("저장 완료");ProgressWidgets.update(progress_view,task.get_snapshot())
+		await get_tree().process_frame
+		if is_instance_valid(progress_modal) and modal==progress_modal: _close_modal()
+		if show_message: _render();_toast("월과 미실행 계획을 저장했습니다.")
+	else: task.fail("SAVE_FAILED","저장 실패");_message("저장 실패","현재 세계는 유지했습니다. 저장 공간과 슬롯 이름을 확인하세요.")
+	operation_busy = false
+	return ok
+
+
+func _load_visible(slot: String) -> void:
+	if operation_busy or resolving: return
+	operation_busy = true
+	var task: RefCounted = _show_progress("저장 파일 검사·불러오기",2)
+	await get_tree().process_frame
+	task.advance("파일·장부·버전 검사")
+	ProgressWidgets.update(progress_view,task.get_snapshot())
+	var ok: bool = _load(slot)
+	operation_busy = false
+	if ok: task.finish("불러오기 완료")
+	else: task.fail("LOAD_FAILED","불러오기 실패 · 현재 세계 보존")
+
+
 func _preflight() -> void:
 	if generator != null: _message("초기 검사 정리 중", "취소한 세계의 사전 계산을 안전하게 정리하고 있습니다. 현재 세계와 저장은 유지하며 완료 후 명령을 실행할 수 있습니다."); return
-	if resolving: return
+	if resolving or operation_busy: return
+	operation_busy = true
+	var task: RefCounted = _show_progress("다음 달 전 상태 검사",2)
+	await get_tree().process_frame
 	var problems: Array = Economy.validate(world)
+	task.advance("명령·예산·작업시간 점검")
+	ProgressWidgets.update(progress_view,task.get_snapshot())
+	operation_busy = false
+	task.finish("사전 점검 완료")
 	if not problems.is_empty():
 		_message("상태 검증 실패", "월을 진행하지 않았습니다.\n" + "\n".join(problems))
 		return
@@ -1224,22 +1379,26 @@ func _preflight() -> void:
 
 
 func _resolve() -> void:
-	if generator != null: return
-	if resolving: return
+	if generator != null or resolving or operation_busy: return
+	resolving = true
+	var task: RefCounted = _show_progress("한 달을 정산하고 있습니다",Economy.turn_progress_steps()+3)
+	_lock_plan_controls(frame)
+	await get_tree().process_frame
 	var saved: Dictionary = Store.save_world(world, _storage_slot("autosave"))
 	if not saved.get("ok", false):
+		resolving = false
+		task.fail("SAVE_FAILED","정산 전 저장 실패")
 		_message("정산 전 저장 실패", str(saved.get("error", "")))
 		return
-	resolving = true
-	var box: VBoxContainer = _open_modal("한 달을 정산하고 있습니다")
-	_label(box, "계획 검증 → 생산·거래·소비 → 공사 → 장부 검사 → 저장\n\n계획 변경은 다음 월에 할 수 있습니다. 중단하면 마지막으로 저장한 정상 월에서 복구합니다.", 14, MUTED)
+	task.advance("정산 전 정상 월 저장 완료")
 	worker = Thread.new()
 	var snapshot: Dictionary = world.duplicate(true)
-	_lock_plan_controls(frame)
-	var code: Error = worker.start(func(): return Economy.resolve_month(snapshot))
+	var observer: Callable = task.mapped(1,Economy.turn_progress_steps())
+	var code: Error = worker.start(func(): return Economy.resolve_month(snapshot,observer))
 	if code != OK:
 		worker = null
 		resolving = false
+		task.fail("THREAD_START_FAILED","정산 시작 실패")
 		_render()
 		_message("정산 시작 실패", "작업을 시작하지 못했습니다. 이전 상태를 보존했습니다.")
 
@@ -1291,6 +1450,7 @@ func _next_command_serial() -> int:
 
 
 func _go(tab: int, path: Array) -> void:
+	if operation_busy: return
 	if resolving: return
 	outer = tab
 	paths[tab] = path
@@ -1462,12 +1622,12 @@ func _save(slot: String, show_message: bool) -> bool:
 	return false
 
 
-func _load(slot: String) -> void:
-	if resolving: return
+func _load(slot: String) -> bool:
+	if resolving: return false
 	var result: Dictionary = Store.load_world(slot)
 	if not result.get("ok", false):
-		_message("불러올 수 없습니다", str(result.get("error", "정상 저장 없음")))
-		return
+		_message("불러올 수 없습니다", str(result.get("compatibility_note",result.get("error", "정상 저장 없음"))))
+		return false
 	world = result["state"]
 	practice_mode = world.get("session_kind", "") == "practice" or slot.begins_with("practice-")
 	practice_steps = {}
@@ -1485,11 +1645,18 @@ func _load(slot: String) -> void:
 		_message("이전 정상 저장으로 복구했습니다", "최신 파일의 검사가 실패해 정상 백업을 불러왔습니다. 마지막 정상 월과 미실행 계획을 확인하세요.")
 	elif world.get("report_pending", false): _show_report(world.get("last_report", {}))
 
+	return true
 
 func _load_dialog() -> void:
-	if resolving: return
-	var box: VBoxContainer = _open_modal("저장 불러오기")
+	if resolving or operation_busy: return
+	operation_busy = true
+	var task: RefCounted = _show_progress("저장 목록·파일 검사",2)
+	await get_tree().process_frame
+	task.advance("저장 파일의 버전·정상 여부 검사")
 	var slots: Array = Store.list_slots()
+	task.finish("저장 목록 준비 완료")
+	operation_busy = false
+	var box: VBoxContainer = _open_modal("저장 불러오기")
 	if slots.is_empty(): _label(box, "저장된 세계가 없습니다. 새 게임에서 세계를 생성하세요.", 14, MUTED)
 	for item: Dictionary in slots:
 		var slot: String = str(item.get("slot", ""))
@@ -1501,7 +1668,7 @@ func _load_dialog() -> void:
 			var load_button: Button = _button(row, caption, func(): _confirm_load_slot(slot))
 			load_button.add_theme_font_size_override("font_size", 13)
 		else:
-			_label(row, _slot_label(slot) + "\n" + _reason(str(item.get("error", "호환되지 않거나 손상된 파일"))), 12, GOLD)
+			_label(row, _slot_label(slot) + "\n" + str(item.get("compatibility_note",_reason(str(item.get("error", "호환되지 않거나 손상된 파일"))))), 12, GOLD)
 		var remove: Button = _button(row, "삭제", func(): _delete_save_dialog(slot))
 		remove.size_flags_horizontal = Control.SIZE_SHRINK_END
 		remove.custom_minimum_size.x = 58
@@ -1516,7 +1683,7 @@ func _leave_dialog(destination: String) -> void:
 	var box: VBoxContainer = _open_modal("미저장 계획이 있습니다")
 	_label(box, "마지막 저장 이후 바뀐 계획을 저장할 수 있습니다.", 14, MUTED)
 	_button(box, "저장 후 나가기", func():
-		if _save("autosave", false): _leave(destination)
+		if await _save_visible("autosave", false): _leave(destination)
 		else: _message("저장 실패", "저장 공간을 확인하세요. 현재 세션은 유지했습니다.")
 	, true)
 	_button(box, "저장 없이 나가기", func(): _leave(destination))
@@ -1524,6 +1691,7 @@ func _leave_dialog(destination: String) -> void:
 
 
 func _leave(destination: String) -> void:
+	if operation_busy: return
 	_close_modal()
 	if destination == "quit": get_tree().quit()
 	elif destination == "new": _new_game_dialog()
@@ -1538,6 +1706,7 @@ func _leave(destination: String) -> void:
 
 
 func _back() -> void:
+	if operation_busy: return
 	if generator != null and not generation_cancelled:
 		_cancel_generation()
 		return
@@ -1578,6 +1747,7 @@ func _load_preferences() -> Dictionary:
 	if value is Dictionary:
 		var scale: float = float(value.get("text_scale", 1.0))
 		if scale not in [1.0, 1.15, 1.3]: value["text_scale"] = 1.0
+		if str(value.get("currency_view","USD")) not in ["USD","KRW"]: value["currency_view"]="USD"
 		return value
 	return {}
 
@@ -1653,7 +1823,7 @@ func _reason(code: String) -> String:
 		"MARKET_ORDER_LIMIT":"현재 주체의 유효 주문 수 한도에 도달했습니다.",
 		"MARKET_OWN_STOCK_REQUIRED":"매도할 자기 소유의 미예약 재고가 부족합니다.",
 		"MARKET_PHYSICAL_PRODUCT_REQUIRED":"실물 품목을 선택하세요. 서비스·디지털은 해당 계약 화면에서 거래합니다.",
-		"MARKET_PRICE_INVALID":"거래 가능한 범위의 정수 단가를 입력하세요.",
+		"MARKET_PRICE_INVALID":"거래 가능한 범위의 달러 단가를 소수점 두 자리까지 입력하세요.",
 		"MARKET_QUALITY_INVALID":"유효한 품질·규격을 선택하세요.",
 		"MARKET_QUANTITY_INVALID":"거래 한도 안의 양수 수량을 입력하세요.",
 		"MARKET_SIDE_INVALID":"매입 또는 매도 구분을 선택하세요.",
@@ -1687,22 +1857,24 @@ func _reason(code: String) -> String:
 		return "자기 명령 사이에서 같은 " + str({"CASH":"현금","INVENTORY":"재고","LABOR":"업무시간","SHARES":"지분","DELEGATION":"위임 예산"}.get(kind,"자원")) + "을 중복 예약할 수 없습니다. 기존 계획을 철회하거나 수량을 줄이세요."
 	if descriptions.has(code): return str(descriptions[code])
 	if code == "": return "조건을 확인하세요."
-	if code.to_upper() != code or code.contains(" "): return code
-	if code.contains("AUTHORITY") or code.contains("DIRECTOR_REQUIRED"): return "선택한 주체에게 필요한 직위·소유권 또는 위임 권한이 없습니다. (" + code + ")"
-	if code.contains("FUNDS") or code.contains("CASH") or code.contains("BUDGET"): return "현금·예산·예약 지급액을 확인하세요. (" + code + ")"
-	if code.contains("CONSENT") or code.contains("OFFER"): return "상대방의 유효한 제안 또는 동의가 필요합니다. (" + code + ")"
-	if code.contains("REQUIRED"): return "이 행동의 자격·투입물·선행 조건이 충족되지 않았습니다. (" + code + ")"
-	if code.contains("INVALID"): return "입력한 값이나 대상의 조건을 확인하세요. (" + code + ")"
-	if code.contains("ALREADY") or code.contains("DUPLICATE"): return "이미 처리되었거나 진행 중인 요청과 중복됩니다. (" + code + ")"
-	return "요청 조건을 충족하지 못했습니다. 상세 코드: " + code
+	for index: int in range(code.length()):
+		if code.unicode_at(index)>127: return code
+	code=code.split(":")[0]
+	if code.contains("AUTHORITY") or code.contains("DIRECTOR_REQUIRED"): return "선택한 주체에게 필요한 직위·소유권 또는 위임 권한이 없습니다. ("
+	if code.contains("FUNDS") or code.contains("CASH") or code.contains("BUDGET"): return "현금·예산·예약 지급액을 확인하세요. ("
+	if code.contains("CONSENT") or code.contains("OFFER"): return "상대방의 유효한 제안 또는 동의가 필요합니다. ("
+	if code.contains("REQUIRED"): return "이 행동의 자격·투입물·선행 조건이 충족되지 않았습니다. ("
+	if code.contains("INVALID"): return "입력한 값이나 대상의 조건을 확인하세요. ("
+	if code.contains("ALREADY") or code.contains("DUPLICATE"): return "이미 처리되었거나 진행 중인 요청과 중복됩니다. ("
+	return "이 행동의 조건을 충족하지 못했습니다. 대상·자격·계약·예산을 확인하세요."
 
 
 func _status(value: String) -> String:
-	return str({"operational": "가동", "ready": "준공 · 가동 준비", "active": "진행 중", "paused": "중단", "completed": "준공", "cancelled": "취소", "researching": "연구 중", "released": "출시", "growing": "생육 중", "installing": "설치 중", "repairing": "수리 중", "open": "공개 모집", "submitted": "제출", "accepted": "승인·인수", "rejected": "거절", "transit": "운송 중", "awaiting_inspection": "검수 대기", "paid": "지급 완료", "awarded": "계약 체결", "defaulted": "채무 불이행", "bankrupt": "파산", "retired": "은퇴", "employed": "취업", "unemployed": "구직", "pending": "대기", "unpaid": "미지급", "partially_paid": "일부 지급", "expired": "만료", "settled": "정산", "proposed": "제안", "enacted": "시행", "elected": "선출", "matured": "만기", "estate_owned": "청산 재고"}.get(value, value))
+	return str({"applied":"적용", "appointed":"임명", "approved":"승인", "arrears":"연체", "campaigning":"선거 활동", "ceasefire":"휴전", "closed":"종료", "completed_pending":"완료 후 확인 대기", "damaged":"피해", "default":"채무 불이행", "developing":"개발 중", "due":"지급일 도래", "ended":"종료", "failed":"실패", "filled":"전량 체결", "fulfilled":"이행 완료", "harvested":"수확 완료", "idle":"대기", "in_use":"사용 중", "installed":"설치 완료", "late":"지연", "liquidating":"청산 중", "listed":"매각 공고", "lost":"손실", "nominated":"후보 추천", "offered":"제안", "partially_delivered":"일부 납품", "past_due":"기한 경과", "payable":"지급 의무", "repaid":"상환 완료", "resolution":"정리 절차", "returned_to_supplier_title":"공급자에게 반환", "revoked":"철회", "running":"처리 중", "scheduled":"시행 예정", "sold":"매각", "spoiled":"변질", "terminated":"계약 종료", "title_transferred":"소유권 이전", "unavailable":"이용 불가", "voting":"표결 중", "worn":"마모", "operational": "가동", "ready": "준공 · 가동 준비", "active": "진행 중", "paused": "중단", "completed": "완료", "cancelled": "취소", "researching": "연구 중", "released": "출시", "growing": "생육 중", "installing": "설치 중", "repairing": "수리 중", "open": "공개 모집", "submitted": "제출", "accepted": "승인·인수", "rejected": "거절", "transit": "운송 중", "awaiting_inspection": "검수 대기", "paid": "지급 완료", "awarded": "계약 체결", "defaulted": "채무 불이행", "bankrupt": "파산", "retired": "은퇴", "employed": "취업", "unemployed": "구직", "pending": "대기", "unpaid": "미지급", "partially_paid": "일부 지급", "expired": "만료", "settled": "정산", "proposed": "제안", "enacted": "시행", "elected": "선출", "matured": "만기", "estate_owned": "청산 재고"}.get(value, value))
 
 
 func _role(value: String) -> String:
-	return str({"director": "대표", "operator": "운영 인력", "builder": "건설 인력", "researcher": "연구자", "developer": "개발자", "public_worker": "공공 인력", "service": "서비스", "military": "군인", "mayor": "도시 책임자", "national_leader": "국가 책임자"}.get(value, value))
+	return str({"director": "대표", "operator": "운영 인력", "builder": "건설 인력", "researcher": "연구자", "developer": "개발자", "public_worker": "공공 인력", "service": "서비스", "military": "군인", "mayor": "도시 책임자", "national_leader": "국가 책임자", "resident":"주민", "investor":"투자자"}.get(value, value))
 
 func _represented_companies() -> Array:
 	var result: Array = []
@@ -1720,7 +1892,7 @@ func _represented_companies() -> Array:
 
 func _queue_as(type: String, payload: Dictionary, company_id: String) -> Dictionary:
 	if generator != null: return {"ok":false,"error":"GENERATION_CLEANUP"}
-	if resolving: return {"ok": false, "error": "NOT_PLANNING"}
+	if resolving or operation_busy: return {"ok": false, "error": "NOT_PLANNING"}
 	var command: Dictionary = {"id": "player-%d-%d" % [int(world.get("planning_month", 1)), _next_command_serial()], "actor_id": str(world.get("player_id", "")), "acting_company_id": company_id, "expected_version": int(world.get("version", 0)), "type": type, "payload": payload}
 	var result: Dictionary = Economy.queue_command(world, command)
 	if result.get("ok", false):
@@ -1838,11 +2010,12 @@ func _dashboard_construction() -> void:
 	var material_parts: Array = []
 	for id in required:
 		var product: Dictionary = _find(world.get("products", []), str(id))
-		material_parts.append("%s %d/%d" % [product.get("name", id), used.get(id, 0), required[id]])
+		material_parts.append("%s %d/%d %s" % [product.get("name", id), used.get(id, 0), required[id],product.get("unit", "")])
 	var details: VBoxContainer = VBoxContainer.new()
 	counts.add_child(details)
 	_label(details, "자재 투입 · " + " · ".join(material_parts), 12, GOLD)
-	_row(card, "건설 공수", "%d / %d h" % [progress, total])
+	ProgressWidgets.work(self,card,"공사 작업 진척",progress,total)
+	_row(card, "건설 작업시간", "%d / %d 시간" % [progress, total])
 	var remaining_work: int = maxi(total - progress, 0)
 	var elapsed: int = int(project.get("months_worked", 0))
 	var minimum: int = maxi(int(project.get("min_months", 0)) - elapsed, 1 if remaining_work > 0 else 0)
@@ -1867,9 +2040,11 @@ func _project_dialog(id: String) -> void:
 	var project: Dictionary = _find(world.get("projects", []), id)
 	if project.is_empty(): return
 	var box: VBoxContainer = _open_modal(str(project.get("name", "건설 프로젝트")))
+	_row(box,"부지 면적",_area(str(project.get("city_id","")),int(project.get("w",0)),int(project.get("h",0))))
 	_row(box, "시공 단계", str(project.get("stage", "기초")))
 	_row(box, "상태", _status(str(project.get("status", "active"))))
-	_row(box, "진척", "%s / %s h" % [project.get("progress", 0), project.get("required_work", 0)])
+	ProgressWidgets.work(self,box,"공사 작업 진척",int(project.get("progress",0)),int(project.get("required_work",0)))
+	_row(box, "진척", "%s / %s 시간" % [project.get("progress", 0), project.get("required_work", 0)])
 	_row(box, "최소 공기", str(project.get("min_months", 0)) + "개월")
 	var owner: String = str(project.get("company_id", ""))
 	var own: bool = false
@@ -1933,7 +2108,7 @@ func _start_character_dialog(candidate: Dictionary) -> void:
 				candidate.controlled_company_id = str(company.id); break
 		var errors: Array = Economy.validate(candidate)
 		if not errors.is_empty(): _message("인물 선택 검사 실패", "\n".join(errors)); return
-		if not _archive_before_new_game(): _message("이전 진행 보관 실패", "저장 공간을 확인하세요. 기존 세계와 파일을 유지했습니다."); return
+		if not await _archive_visible(): _message("이전 진행 보관 실패", "저장 공간을 확인하세요. 기존 세계와 파일을 유지했습니다."); return
 		world = candidate
 		practice_mode = false
 		practice_steps = {}
@@ -1947,6 +2122,19 @@ func _start_character_dialog(candidate: Dictionary) -> void:
 	, true)
 	_button(box, "설정으로 돌아가기", _new_game_dialog)
 	_button(box, "취소", _close_modal)
+
+
+func _archive_visible() -> bool:
+	if operation_busy or resolving: return false
+	operation_busy=true
+	var task: RefCounted = _show_progress("이전 세계 보관",2)
+	await get_tree().process_frame
+	task.advance("현재 계획·정상 저장을 별도 보관")
+	var ok: bool = _archive_before_new_game()
+	if ok: task.finish("이전 세계 보관 완료")
+	else: task.fail("ARCHIVE_FAILED","이전 세계 보관 실패")
+	operation_busy=false
+	return ok
 
 
 func _archive_before_new_game() -> bool:
@@ -1979,16 +2167,24 @@ func _slot_label(slot: String) -> String:
 
 
 func _confirm_load_slot(slot: String) -> void:
+	if resolving or operation_busy: return
+	operation_busy = true
+	var task: RefCounted = _show_progress("선택한 저장 파일 검사",2)
+	await get_tree().process_frame
+	task.advance("버전·체크섬·장부 검사")
 	var valid: Dictionary = Store.load_world(slot)
-	if not valid.get("ok", false): _message("불러올 수 없습니다", _reason(str(valid.get("error", "파일 검사 실패")))); return
-	if not dirty: _load(slot); return
+	operation_busy = false
+	if valid.get("ok",false): task.finish("파일 검사 완료")
+	else: task.fail("LOAD_FAILED","호환성 또는 무결성 검사 실패")
+	if not valid.get("ok", false): _message("불러올 수 없습니다", str(valid.get("compatibility_note",_reason(str(valid.get("error", "파일 검사 실패")))))); return
+	if not dirty: _load_visible(slot); return
 	var box: VBoxContainer = _open_modal("미저장 계획을 보관할까요?")
 	_label(box, "불러올 파일은 검사를 통과했습니다. 현재 계획은 별도 백업으로 보관할 수 있습니다.", 14, MUTED)
 	_button(box, "별도 백업 후 불러오기", func():
-		if _save(_unique_slot("before-load"), false): _load(slot)
+		if await _save_visible(_unique_slot("before-load"), false): _load_visible(slot)
 		else: _message("백업 실패", "현재 계획을 보존했습니다. 저장 공간을 확인하세요.")
 	, true)
-	_button(box, "저장 없이 불러오기", func(): _load(slot))
+	_button(box, "저장 없이 불러오기", func(): _load_visible(slot))
 	_button(box, "취소", _close_modal)
 
 
@@ -2003,7 +2199,7 @@ func _save_as_dialog() -> void:
 		var slot: String = name_input.text.strip_edges()
 		if FileAccess.file_exists("user://saves/" + slot + ".json"):
 			_message("기존 슬롯이 있습니다", "새 이름을 사용하세요. 기존 저장은 덮어쓰지 않았습니다."); return
-		if _save(slot, false): _close_modal(); _render(); _toast("새 슬롯에 저장했습니다.")
+		if await _save_visible(slot, false): _close_modal(); _render(); _toast("새 슬롯에 저장했습니다.")
 		else: _message("저장 실패", "슬롯 이름과 저장 공간을 확인하세요.")
 	, true)
 	_button(box, "취소", _close_modal)
@@ -2025,7 +2221,7 @@ func _delete_save_dialog(slot: String) -> void:
 
 func _export_dialog() -> void:
 	if world.is_empty() or resolving: return
-	if not _save("manual", false): _message("내보내기 준비 실패", "현재 세계를 저장하지 못했습니다."); return
+	if not await _save_visible("manual",false): return
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -2038,11 +2234,19 @@ func _export_dialog() -> void:
 	current_dialog.canceled.connect(func(): current_dialog.queue_free())
 	file_dialog.file_selected.connect(func(path: String):
 		current_dialog.queue_free()
+		if resolving or operation_busy: return
+		operation_busy=true
+		var task: RefCounted = _show_progress("백업 파일 내보내기",2)
+		await get_tree().process_frame
 		var bytes: PackedByteArray = FileAccess.get_file_as_bytes("user://saves/" + _storage_slot("manual") + ".json")
 		var target: FileAccess = FileAccess.open(path, FileAccess.WRITE)
-		if target == null: _message("내보내기 실패", "선택한 위치에 쓸 수 없습니다."); return
+		if target == null: task.fail("EXPORT_FAILED","파일 열기 실패");operation_busy=false;_message("내보내기 실패", "선택한 위치에 쓸 수 없습니다."); return
+		task.advance("현재 월·계획 백업 파일 기록")
 		target.store_buffer(bytes); target.flush()
 		var error: Error = target.get_error(); target.close()
+		if error == OK: task.finish("백업 파일 내보내기 완료")
+		else: task.fail("EXPORT_FAILED","파일 기록 실패")
+		operation_busy=false
 		if error != OK: _message("내보내기 실패", "파일 쓰기를 완료하지 못했습니다.")
 		else: _message("백업 내보내기 완료", "현재 월과 미실행 명령을 파일에 보관했습니다.")
 	)
@@ -2062,20 +2266,29 @@ func _import_dialog() -> void:
 	current_dialog.canceled.connect(func(): current_dialog.queue_free())
 	file_dialog.file_selected.connect(func(path: String):
 		current_dialog.queue_free()
+		if resolving or operation_busy: return
+		operation_busy=true
+		var task: RefCounted = _show_progress("백업 파일 가져오기·검사",3)
+		await get_tree().process_frame
 		var source: FileAccess = FileAccess.open(path, FileAccess.READ)
-		if source == null: _message("가져오기 실패", "파일을 읽을 수 없습니다."); return
-		if source.get_length() <= 0 or source.get_length() > Store.MAX_SAVE_BYTES: source.close(); _message("가져오기 실패", "지원하지 않는 파일 크기입니다."); return
+		if source == null: task.fail("IMPORT_FAILED","파일 읽기 실패");operation_busy=false;_message("가져오기 실패", "파일을 읽을 수 없습니다."); return
+		if source.get_length() <= 0 or source.get_length() > Store.MAX_SAVE_BYTES: source.close();task.fail("IMPORT_FAILED","파일 크기 검사 실패");operation_busy=false;_message("가져오기 실패", "지원하지 않는 파일 크기입니다."); return
 		var bytes: PackedByteArray = source.get_buffer(source.get_length()); source.close()
+		task.advance("백업 파일 읽기 완료")
 		var slot: String = _unique_slot("import")
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://saves"))
 		var target: FileAccess = FileAccess.open("user://saves/" + slot + ".json", FileAccess.WRITE)
-		if target == null: _message("가져오기 실패", "로컬 저장 위치에 쓸 수 없습니다."); return
+		if target == null: task.fail("IMPORT_FAILED","로컬 파일 기록 실패");operation_busy=false;_message("가져오기 실패", "로컬 저장 위치에 쓸 수 없습니다."); return
 		target.store_buffer(bytes); target.flush(); target.close()
+		task.advance("가져온 파일의 버전·장부 검사")
 		var checked: Dictionary = Store.load_world(slot)
 		if not checked.get("ok", false):
 			Store.delete_slot(slot)
-			_message("파일 검사 실패", _reason(str(checked.get("error", "형식·내용·체크섬을 확인하세요."))))
+			task.fail("IMPORT_FAILED","가져온 파일 검사 실패");operation_busy=false
+			_message("파일 검사 실패",str(checked.get("compatibility_note",_reason(str(checked.get("error", "형식·내용·체크섬을 확인하세요."))))))
 			return
+		task.finish("가져온 파일 검사 완료")
+		operation_busy=false
 		_confirm_load_slot(slot)
 	)
 	file_dialog.popup_centered_ratio(0.85)
@@ -2091,7 +2304,7 @@ func _tutorial_dialog() -> void:
 	_label(box, "② 생산과 시장", 18, MINT)
 	_label(box, "시장 수급에서 상품별 단위와 구매 요청·실제 체결을 구분합니다. 생산은 원료·노동·설비·자금 안에서 진행됩니다.", 14, MUTED)
 	_label(box, "③ 첫 건설", 18, MINT)
-	_label(box, "사업 → 프로젝트 → 건설에서 시설을 고르고 도로에 접한 빈 타일을 선택하세요. 자재와 공수·기간을 사용하며 월말 준공 뒤 다음 월부터 가동합니다.", 14, MUTED)
+	_label(box, "사업 → 프로젝트 → 건설에서 시설을 고르고 도로에 접한 빈 타일을 선택하세요. 자재와 작업시간·기간을 사용하며 월말 준공 뒤 다음 월부터 가동합니다.", 14, MUTED)
 	_label(box, "④ 한 달과 원인", 18, MINT)
 	_label(box, "다음 달 점검 후 1개월을 정산합니다. 월간 보고와 사건에서 실제 부족·지급·계약 이행 원인을 확인하세요. 보고 재열기와 앱 복귀로 월이 흐르지 않습니다.", 14, MUTED)
 	_label(box, "⑤ 자유로운 활동", 18, MINT)
@@ -2150,26 +2363,29 @@ func _visible_cash(owner: String) -> int:
 
 
 func _begin_generation(seed_value: int, options: Dictionary, for_practice: bool = false) -> void:
-	if resolving or generator != null: return
+	if resolving or generator != null or operation_busy: return
 	generation_cancelled = false
 	pending_practice = for_practice
-	var box: VBoxContainer = _open_modal("세계와 초기 경제를 준비하고 있습니다")
-	_label(box, "세 대륙·도시·인물·공급망·개시 장부를 생성합니다. 기존 세계와 저장은 그대로 보존합니다.", 14, MUTED)
-	_label(box, "작업을 취소해도 생성 중인 임시 세계는 현재 게임에 적용되지 않습니다.", 13, MUTED)
-	_button(box, "생성 취소", _cancel_generation)
+	var world_steps: int = Economy.world_progress_steps(options)
+	var preview_months: int = int(Generation.configuration().get("preview_months",3))
+	var validation_steps: int = Generation.progress_steps(preview_months)
+	var task: RefCounted = _show_progress("세계와 초기 경제를 준비하고 있습니다",world_steps+validation_steps+1)
+	var box: Node = progress_view.node.get_parent()
+	_label(box,"실제 생성·검사 단계와 복사한 세계의 예비 정산을 계산합니다. 현재 세계와 저장은 유지합니다.",13,MUTED)
+	_button(box,"생성 취소",_cancel_generation)
 	generator = Thread.new()
 	var copied: Dictionary = options.duplicate(true)
+	var world_observer: Callable = task.mapped(0,world_steps,"세계 생성 · ")
+	var validation_observer: Callable = task.mapped(world_steps,validation_steps,"초기 검사 · ")
 	var status: Error = generator.start(func():
-		var candidate: Dictionary = Economy.new_world(seed_value, copied)
-		var assessment: Dictionary = {"ok":false,"errors":["초기 공급망 검증기를 읽을 수 없습니다."],"warnings":[]}
-		if ResourceLoader.exists("res://core/generation.gd"):
-			var module: Variant = load("res://core/generation.gd")
-			if module != null and module.has_method("validate"): assessment = module.validate(candidate)
+		var candidate: Dictionary = Economy.new_world(seed_value,copied,world_observer)
+		var assessment: Dictionary = Generation.validate(candidate,{},validation_observer)
 		return {"world":candidate,"assessment":assessment}
 	)
 	if status != OK:
 		generator = null
-		_message("세계 생성 시작 실패", "작업을 시작하지 못했습니다. 기존 세계와 저장을 유지했습니다.")
+		task.fail("THREAD_START_FAILED","세계 생성 시작 실패")
+		_message("세계 생성 시작 실패","작업을 시작하지 못했습니다. 기존 세계와 저장을 유지했습니다.")
 
 
 func _cancel_generation() -> void:
@@ -2199,7 +2415,7 @@ func _market_order_book() -> void:
 	for index in range(mini(rows.size(), 24)):
 		var order: Dictionary = rows[index]
 		var product: Dictionary = _find(world.products, str(order.get("product_id", "")))
-		_row(card, ("매입 · " if order.get("side", "") == "buy" else "매도 · ") + str(product.get("name", "상품")), "%s %s · %s" % [order.get("remaining", order.get("quantity", 0)), product.get("unit", ""), _money(int(order.get("limit_price", 0)))])
+		_row(card, ("매입 · " if order.get("side", "") == "buy" else "매도 · ") + str(product.get("name", "상품")), Presentation.quantity(world,str(order.get("product_id","")),int(order.get("remaining",order.get("quantity",0))))+" · "+Presentation.unit_price(world,str(order.get("product_id","")),int(order.get("limit_price",0)),str(settings.get("currency_view","USD"))))
 	_label(card, "매입 제한가는 운임·관세를 포함한 최대 도착단가입니다. 주문은 매출이나 도착 재고가 아니며, 월 정산에서 조건이 맞는 상대와 체결합니다.", 12, MUTED)
 
 
@@ -2237,7 +2453,7 @@ func _start_practice_dialog() -> void:
 	_label(box, "생산 확인 → 유효한 명령 → 건설 예약 → 한 달 정산 → 실제 보고서 확인을 직접 수행합니다. 연습에도 정상 비용·시간·AI 경쟁이 적용됩니다.", 14, MUTED)
 	_label(box, "현재 세계의 미저장 계획은 별도 보관하고, 연습 저장은 practice- 슬롯만 사용합니다.", 13, GOLD)
 	_button(box, "연습 세계 생성", func():
-		if not world.is_empty() and not _archive_before_new_game(): _message("진행 보관 실패", "현재 세계를 보관하지 못해 연습으로 이동하지 않았습니다."); return
+		if not world.is_empty() and not await _archive_visible(): _message("진행 보관 실패", "현재 세계를 보관하지 못해 연습으로 이동하지 않았습니다."); return
 		_begin_generation(42, {"cities_per_nation":1,"expanded_industries":false}, true)
 	, true)
 	_button(box, "취소", _close_modal)
@@ -2266,6 +2482,7 @@ func _practice_panel() -> void:
 	var done: Array = [bool(practice_steps.get("inspect", false)), bool(practice_steps.get("command", false)), bool(practice_steps.get("build", false)), not world.get("last_report", {}).is_empty(), bool(practice_steps.get("report", false))]
 	var completed: int = done.count(true)
 	var card: VBoxContainer = _card(content, "연습 · %d / 5" % completed)
+	ProgressWidgets.work(self,card,"학습 단계",completed,5)
 	var labels: Array = ["생산과 원료·노동 상태를 확인하세요.", "권한과 비용을 통과한 명령을 추가하세요.", "빈 부지에 건설을 예약하세요.", "다음 달을 눌러 실제 한 달을 정산하세요.", "확정된 월간 보고서를 확인하세요."]
 	if completed >= 5:
 		_label(card, "학습을 마쳤습니다. 같은 규칙으로 계속 연습할 수 있습니다.", 13, MINT)

@@ -3,9 +3,12 @@
   "version": 1,
   "purpose": "유한 타일 소유권과 임대의 통합 검증용 수치이며 출시 밸런스가 아닙니다.",
   "units": {
-    "money": "CR 최소 화폐 단위 정수",
+    "money": "미국 달러(USD) 센트 정수. 100센트 = $1.00. 입력·표시는 달러, 내부 저장은 센트이며 기존 금액 숫자는 바꾸지 않음.",
     "time": "개월",
-    "area": "타일"
+    "area": "m². 실험 기본 타일 한 변 10m, 한 칸 100m². 확정된 사용자 수치가 아니며 향후 설정으로 교체할 수 있음.",
+    "money_display_krw": "표시 전용 고정 환산: $1 = 1,000원. 실제 외환 거래·계좌 통화·장부 잔액은 바꾸지 않음.",
+    "sale_price_per_tile": "센트/타일",
+    "monthly_rent_per_tile": "센트/타일·월"
   },
   "opening_tile_value": 20,
   "sale_price_per_tile": 25,
@@ -107,5 +110,7 @@
     "research_lab": "commercial",
     "software_studio": "commercial",
     "compost_works": "industry"
-  }
+  },
+  "tile_side_m": 10,
+  "area_conversion": "면적 m² = 타일 수 × tile_side_m². 실험 기본 tile_side_m=10. 기존 가격은 필지 총액이며 m²당 단가로 바꾸지 않음."
 }

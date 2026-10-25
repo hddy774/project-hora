@@ -176,7 +176,7 @@ static func _test_expiry_quality_finance(f:Array)->void:
 	var financed:Dictionary=_world()
 	financed.nations=[{"id":"n-a","name":"A"},{"id":"n-b","name":"B"}]
 	Finance.initialize(financed)
-	var deposit_id:String="bank-n-a:deposit:co-b:CR"
+	var deposit_id:String="bank-n-a:deposit:co-b:USD"
 	var initial_deposit:int=Ledger.balance(financed,deposit_id)
 	Market.apply(financed,_order("co-b","buy",10,30,"financed-buy"),1)
 	Finance.reconcile_deposits(financed,1)

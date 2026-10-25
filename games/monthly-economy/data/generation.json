@@ -3,9 +3,10 @@
   "version": 1,
   "purpose": "생성된 시작 상태의 공급 경로와 복사본 예비 정산을 검사한다. 출시 밸런스나 장기 안정성 보장이 아니다.",
   "units": {
-    "preview_months": "game months",
-    "money": "integer CR minor units",
-    "stock": "each product's declared unit"
+    "preview_months": "게임 속 개월 수",
+    "money": "미국 달러(USD) 센트 정수. 100센트 = $1.00. 입력·표시는 달러, 내부 저장은 센트이며 기존 금액 숫자는 바꾸지 않음.",
+    "stock": "각 상품에 적힌 kg·L·m³·kWh·개 등 품목 단위. 서로 다른 품목의 수량을 바로 더하지 않음.",
+    "money_display_krw": "표시 전용 고정 환산: $1 = 1,000원. 실제 외환 거래·계좌 통화·장부 잔액은 바꾸지 않음."
   },
   "preview_months": 3,
   "maximum_preview_months": 120,
@@ -24,11 +25,11 @@
     "transport_vehicle"
   ],
   "coverage": [
-    "owner/currency double-entry",
-    "stock/labor/authority invariants",
-    "finite city supply paths",
-    "bank deposit counterparts",
-    "copied monthly observation"
+    "통화별 차변·대변 일치(복식부기)",
+    "재고·시간·권한 검증",
+    "도시의 유한한 공급 경로",
+    "고객 예금과 은행의 대응 장부",
+    "복사본에서 월별 실제 정산 관찰"
   ],
   "neutral_benchmark": {
     "status": "experimental",
@@ -37,7 +38,7 @@
     "months": 6,
     "quick_months": 3,
     "maximum_essential_unmet_value": 0,
-    "unmet_value_unit": "CR minor units at content base prices",
+    "unmet_value_unit": "콘텐츠 기준가격으로 환산한 USD 센트. 물량의 단순 합이 아님.",
     "world_options": {
       "cities_per_nation": 2,
       "expanded_industries": true

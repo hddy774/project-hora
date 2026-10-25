@@ -1,7 +1,8 @@
 extends RefCounted
 ## Experimental, deterministic, offline monthly economy. No wall-clock callbacks.
 const Ledger = preload("res://core/ledger.gd")
-const RULES_VERSION = "experimental-0.2"
+const Progress = preload("res://core/progress.gd")
+const RULES_VERSION = "experimental-0.2-usd"
 const Domain = preload("res://core/domain.gd")
 const Finance = preload("res://core/finance.gd")
 const Life = preload("res://core/lifecycle.gd")
@@ -77,6 +78,15 @@ static func validate_fixture(data: Dictionary) -> Array:
 			continue
 		for key in ["id","name","unit","industry"]:
 			if typeof(product.get(key))!=TYPE_STRING or str(product.get(key,"")).is_empty(): errors.append("INVALID_PRODUCT_TEXT:"+key)
+		if product.get("unit","") not in ["kg","L","m³","kWh","개"]: errors.append("UNSUPPORTED_BASE_PRODUCT_UNIT")
+		if product.get("unit_dimension","") != {"kg":"mass","L":"volume","m³":"volume","kWh":"energy","개":"count"}.get(product.get("unit",""),"invalid"): errors.append("INVALID_PRODUCT_UNIT_DIMENSION")
+		if not product.get("quantity_note") is String or str(product.get("quantity_note","")).is_empty(): errors.append("MISSING_PRODUCT_QUANTITY_NOTE")
+		var mass: Variant=product.get("cargo_mass_g_per_unit")
+		if not _whole_number(mass) or not _whole_number(product.get("cargo_size")):
+			errors.append("INVALID_PRODUCT_CARGO_MASS")
+		elif int(mass)!=int(product.cargo_size) or int(mass)<0 or (str(product.get("kind","material"))=="service" and int(mass)!=0) or (str(product.get("kind","material"))!="service" and int(mass)<=0):
+			errors.append("INVALID_PRODUCT_CARGO_MASS")
+		if product.get("unit","")=="kg" and _whole_number(mass) and int(mass)!=1000: errors.append("KILOGRAM_PRODUCT_MASS_MISMATCH")
 		if not _whole_number(product.get("price")) or int(product.get("price",0))<=0: errors.append("INVALID_PRODUCT_PRICE")
 		var id: String=str(product.get("id",""))
 		if product_ids.has(id): errors.append("DUPLICATE_PRODUCT_ID")
@@ -121,7 +131,7 @@ static func validate_fixture(data: Dictionary) -> Array:
 				continue
 			for key in ["additional_people","hours","wage"]:
 				if not _whole_number(staffing.get(key)) or int(staffing.get(key,0))<=0: errors.append("INVALID_INITIAL_STAFFING:"+key)
-	var numeric_keys: Array=["default_seed","city_width","city_height","road_y","employees_per_company","available_hours","hourly_wage","company_opening_cash","person_opening_cash","initial_input_stock","initial_output_stock","initial_output_city_step","initial_maintenance_tools","contractor_width","contractor_height","forest_opening","forest_city_step","stone_opening","stone_city_step","forest_capacity","forest_regrowth","construction_budget","construction_work_per_month","construction_hour_price","construction_stage_foundation","construction_stage_frame","director_hours","director_pay","freight_unit_cost","freight_lead_months","minimum_price","policy_minimum","policy_maximum","price_policy_minimum","price_policy_maximum","stock_target_default","stock_target_essentials","stock_excess_multiple","stock_slow_batches","ai_high_stock","ai_low_stock","ai_price_step","ai_price_minimum","ai_price_maximum","maintenance_period_months","maintenance_tools_per_facility","dividend_cash_floor","cities_per_nation","initial_catalyst_stock","service_reserve_percent","asset_depreciation_months","construction_equipment_capacity","equipment_hours_per_work","essential_forecast_buffer_percent"]
+	var numeric_keys: Array=["default_seed","city_width","city_height","tile_side_m","road_y","employees_per_company","available_hours","hourly_wage","company_opening_cash","person_opening_cash","initial_input_stock","initial_output_stock","initial_output_city_step","initial_maintenance_tools","contractor_width","contractor_height","forest_opening","forest_city_step","stone_opening","stone_city_step","forest_capacity","forest_regrowth","construction_budget","construction_work_per_month","construction_hour_price","construction_stage_foundation","construction_stage_frame","director_hours","director_pay","freight_unit_cost","freight_lead_months","minimum_price","policy_minimum","policy_maximum","price_policy_minimum","price_policy_maximum","stock_target_default","stock_target_essentials","stock_excess_multiple","stock_slow_batches","ai_high_stock","ai_low_stock","ai_price_step","ai_price_minimum","ai_price_maximum","maintenance_period_months","maintenance_tools_per_facility","dividend_cash_floor","cities_per_nation","initial_catalyst_stock","service_reserve_percent","asset_depreciation_months","construction_equipment_capacity","equipment_hours_per_work","essential_forecast_buffer_percent"]
 	for key in numeric_keys:
 		if not _whole_number(p.get(key)): errors.append("INVALID_OR_MISSING_PARAMETER:"+key)
 		elif int(p[key])<0 or (key not in ["default_seed","road_y","initial_output_city_step","forest_city_step","stone_city_step","policy_minimum"] and int(p[key])==0): errors.append("NONPOSITIVE_PARAMETER:"+key)
@@ -190,21 +200,31 @@ static func _recipe_data() -> Array:
 	result.append_array(Industry.definitions().get("recipes",[]).duplicate(true))
 	return result
 
-static func new_world(seed_value: Variant = null, options: Dictionary = {}) -> Dictionary:
+static func world_progress_steps(options: Dictionary = {}) -> int:
+	var fixture: Dictionary=_fixture()
+	if fixture.is_empty():return 10
+	var per_nation: int=int(options.get("cities_per_nation",fixture.parameters.cities_per_nation))
+	var extra: int=Industry.definitions().get("buildings",[]).size() if bool(options.get("expanded_industries",fixture.parameters.extended_industries)) else 0
+	return 10+3*per_nation+extra
+
+static func new_world(seed_value: Variant = null, options: Dictionary = {}, progress: Variant = null) -> Dictionary:
+	var task: RefCounted=Progress.observer(progress)
+	task.begin(world_progress_steps(options),"세계 생성 규칙 읽기")
 	var fixture: Dictionary = _fixture()
-	if fixture.is_empty(): return {}
+	if fixture.is_empty(): task.fail("EXPERIMENTAL_CONTENT_INVALID","세계 생성 실패"); return {}
 	var p: Dictionary = fixture.parameters
 	if seed_value == null: seed_value = int(p.default_seed)
-	if not _whole_number(seed_value) or int(seed_value)<0: return {}
+	if not _whole_number(seed_value) or int(seed_value)<0: task.fail("INVALID_SEED","세계 생성 실패"); return {}
 	var per_nation: int = int(options.get("cities_per_nation",p.cities_per_nation))
-	if per_nation not in [1,2]: return {}
-	var s: Dictionary = {"schema_version":2,"rules_version":RULES_VERSION,"seed":int(seed_value),"version":0,"planning_month":1,"last_resolved_month":0,"phase":"Planning","report_pending":false,"player_id":"p-0","controlled_company_id":"co-0","continents":[],"nations":[],"cities":[],"people":[],"companies":[],"facilities":[],"inventory":[],"projects":[],"shipments":[],"products":_product_data(),"recipes":_recipe_data(),"commands":[],"journal":[],"accounts":{},"events":[],"reports":[],"last_report":{},"used_command_ids":[],"monthly_labor":{},"experimental":true,"id_counters":{},"generation_options":options.duplicate(true)}
+	if per_nation not in [1,2]: task.fail("INVALID_WORLD_SIZE","세계 생성 실패"); return {}
+	var s: Dictionary = {"schema_version":3,"rules_version":RULES_VERSION,"base_currency":Ledger.BASE_CURRENCY,"minor_units_per_major":Ledger.MINOR_UNITS_PER_MAJOR,"seed":int(seed_value),"version":0,"planning_month":1,"last_resolved_month":0,"phase":"Planning","report_pending":false,"player_id":"p-0","controlled_company_id":"co-0","continents":[],"nations":[],"cities":[],"people":[],"companies":[],"facilities":[],"inventory":[],"projects":[],"shipments":[],"products":_product_data(),"recipes":_recipe_data(),"commands":[],"journal":[],"accounts":{},"events":[],"reports":[],"last_report":{},"used_command_ids":[],"monthly_labor":{},"experimental":true,"id_counters":{},"generation_options":options.duplicate(true)}
 	s.content_hash = _content_hash()
+	task.advance("세계 설정 검사 완료")
 	for continent in range(3):
 		var cid: String = "continent-%d" % continent
 		var nid: String = "nation-%d" % continent
 		s.continents.append({"id":cid,"name":p.continent_names[continent]})
-		s.nations.append({"id":nid,"name":p.nation_names[continent],"continent_id":cid,"currency":"CR"})
+		s.nations.append({"id":nid,"name":p.nation_names[continent],"continent_id":cid,"currency":"USD"})
 		for local in range(per_nation):
 			var index: int = continent*per_nation+local
 			var city_id: String = "city-%d" % index
@@ -214,24 +234,35 @@ static func new_world(seed_value: Variant = null, options: Dictionary = {}) -> D
 			var resources: Dictionary = Industry.initial_reserves(index)
 			resources["forest"] = int(p.forest_opening)+index*int(p.forest_city_step)
 			resources["stone"] = int(p.stone_opening)+index*int(p.stone_city_step)
-			s.cities.append({"id":city_id,"name":p.city_names[index],"nation_id":nid,"continent_id":cid,"width":int(p.city_width),"height":int(p.city_height),"roads":roads,"resources":resources,"resource_capacity":{"forest":int(p.forest_capacity)+index*int(p.forest_city_step)},"forest_regrowth":int(p.forest_regrowth)})
+			s.cities.append({"id":city_id,"name":p.city_names[index],"nation_id":nid,"continent_id":cid,"width":int(p.city_width),"height":int(p.city_height),"tile_side_m":int(p.tile_side_m),"roads":roads,"resources":resources,"resource_capacity":{"forest":int(p.forest_capacity)+index*int(p.forest_city_step)},"forest_regrowth":int(p.forest_regrowth)})
 			for ki in range(p.company_kinds.size()):
 				_seed_company(s,str(p.company_kinds[ki]),city_id,Vector2i(int(p.facility_positions[ki][0]),int(p.facility_positions[ki][1])),index*int(p.company_kinds.size())+ki)
+			task.advance("도시·기초 산업 생성 완료: "+str(index+1)+"/"+str(3*per_nation))
 	if bool(options.get("expanded_industries",p.extended_industries)):
 		var extras: Array = Industry.definitions().get("buildings",[])
 		for i in range(extras.size()):
 			var city: Dictionary = s.cities[i%s.cities.size()]
 			var position: Vector2i = _seed_site(s,city)
 			if position.x>=0: _seed_company(s,str(extras[i].id),str(city.id),position,s.companies.size())
+			task.advance("확장 산업 배치 완료: "+str(i+1)+"/"+str(extras.size()))
 	_seed_required_services(s)
+	task.advance("교육 등 필수 서비스 배치 완료")
 	_seed_balancing_staff(s)
+	task.advance("초기 고용 배치 완료")
 	Public.initialize(s)
+	task.advance("공공기관 초기화 완료")
 	Life.initialize(s)
+	task.advance("인물·법인 초기화 완료")
 	Industry.initialize(s)
+	task.advance("산업·설비 초기화 완료")
 	Land.initialize(s)
+	task.advance("토지·권리 초기화 완료")
 	Finance.initialize(s)
+	task.advance("은행·개시 장부 초기화 완료")
 	Market.initialize(s)
+	task.advance("유한 시장 초기화 완료")
 	s["initial_metrics"] = {"people":s.people.size(),"companies":s.companies.size(),"products":s.products.size(),"cities":s.cities.size()}
+	task.finish("세계 생성 완료")
 	return s
 
 static func _seed_required_services(s: Dictionary) -> void:
@@ -339,7 +370,7 @@ static func planning_reservations(s: Dictionary, c: Dictionary) -> Array:
 
 static func _reservation_key(r: Dictionary) -> String:
 	var kind: String=str(r.resource_type)
-	var resource: String=str(r.get("resource_id",r.get("currency","CR" if kind=="cash" else "")))
+	var resource: String=str(r.get("resource_id",r.get("currency","USD" if kind=="cash" else "")))
 	if kind=="labor": resource="hours"
 	return str(r.owner_id)+"|"+kind+"|"+resource+"|"+str(r.get("city_id",""))
 
@@ -380,9 +411,9 @@ static func _reservation_error(s: Dictionary, c: Dictionary) -> String:
 		var available: int=0
 		match str(r.resource_type):
 			"cash":
-				var currency: String=str(r.get("resource_id",r.get("currency","CR")))
-				available=Ledger.balance(s,owner+":cash" if currency=="CR" else owner+":cash:"+currency)
-				if currency=="CR": available-=Public.reserved_cash(s,owner)
+				var currency: String=str(r.get("resource_id",r.get("currency","USD")))
+				available=Ledger.balance(s,owner+":cash" if currency=="USD" else owner+":cash:"+currency)
+				if currency=="USD": available-=Public.reserved_cash(s,owner)
 			"labor": available=int(_find(s.people,owner).get("hours",0))
 			"inventory": available=available_quantity(s,owner,str(r.get("resource_id","")),str(r.get("city_id","")))
 			"delegation": available=Life.delegated_budget_remaining(s,_find(s.get("lifecycle",{}).get("delegations",[]),str(r.get("resource_id",""))))
@@ -695,19 +726,33 @@ static func _purchase(s: Dictionary, buyer: String, city_id: String, product_id:
 		var quantity: int=mini(desired-acquired,available_quantity(s,seller.id,product_id,seller.city_id))
 		var rule: Dictionary=Public.trade_rule(s,str(seller.city_id),city_id,product_id,month)
 		if not rule.get("allowed",true): continue
-		var quote: Dictionary={"allowed":true,"unit_fee":0,"eta":month,"quantity":quantity}
+		var quote: Dictionary={"allowed":true,"unit_fee":0,"fee":0,"eta":month,"quantity":quantity}
 		if remote: quote=Industry.route_quote(s,str(seller.city_id),city_id,product_id,quantity,month)
 		if not quote.get("allowed",false): continue
 		quantity=mini(quantity,int(quote.get("quantity",quantity)))
 		var tariff_bps: int=int(rule.get("tariff_bps",0))
-		var freight: int=int(quote.get("unit_fee",0))
 		var budget: int=cash(s,buyer) if budget_limit<0 else mini(cash(s,buyer),maxi(0,budget_limit-spent))
-		quantity=mini(quantity,int(budget/maxi(1,price+freight)))
-		var tariff: int=int(ceil(float(price*quantity)*tariff_bps/10000.0))
-		while quantity>0 and quantity*(price+freight)+tariff>budget:
-			quantity-=1
-			tariff=int(ceil(float(price*quantity)*tariff_bps/10000.0))
+		var upper: int=mini(quantity,int(budget/maxi(1,price)))
+		var lower: int=1
+		var affordable: int=0
+		# Tonne freight rounds once for the whole shipment. Find the largest
+		# affordable actual quantity, re-quoting every candidate and the final
+		# reduced amount instead of multiplying an indicative unit fee.
+		while lower<=upper:
+			var candidate: int=int((lower+upper)/2)
+			var candidate_quote: Dictionary=Industry.route_quote(s,str(seller.city_id),city_id,product_id,candidate,month) if remote else {"allowed":true,"fee":0,"quantity":candidate,"eta":month}
+			var candidate_tariff: int=int(ceil(float(price*candidate)*tariff_bps/10000.0))
+			var candidate_cost: int=price*candidate+int(candidate_quote.get("fee",0))+candidate_tariff
+			if candidate_quote.get("allowed",false) and int(candidate_quote.get("quantity",0))==candidate and candidate_cost<=budget:
+				affordable=candidate
+				lower=candidate+1
+			else: upper=candidate-1
+		quantity=affordable
 		if quantity<=0: continue
+		quote=Industry.route_quote(s,str(seller.city_id),city_id,product_id,quantity,month) if remote else {"allowed":true,"fee":0,"quantity":quantity,"eta":month}
+		if not quote.get("allowed",false) or int(quote.get("quantity",0))!=quantity: continue
+		var freight_total: int=int(quote.get("fee",0))
+		var tariff: int=int(ceil(float(price*quantity)*tariff_bps/10000.0))
 		var age: Dictionary=Industry.inventory_age(s,str(seller.id),str(seller.city_id),product_id,quantity)
 		if remote:
 			var booked: Dictionary=Industry.reserve_route(s,buyer,str(seller.city_id),city_id,product_id,quantity,month,quote)
@@ -723,7 +768,7 @@ static func _purchase(s: Dictionary, buyer: String, city_id: String, product_id:
 			s.inventory.append(lot)
 			Domain.register_lot(s,lot)
 			_event(s,"shipment","운송 중 소유권 이전",month,{"actor_id":buyer,"city_id":city_id,"product_id":product_id,"quantity":quantity,"inventory_delta":quantity,"lot_id":lid})
-			s.shipments.append({"id":sid,"owner_id":buyer,"product_id":product_id,"quantity":quantity,"from_city_id":seller.city_id,"to_city_id":city_id,"eta":int(quote.get("eta",month+1))+int(rule.get("delay",0)),"status":"transit","lot_id":lid,"route_ids":quote.get("path",[]),"carrier_id":str(quote.get("carrier_id",""))})
+			s.shipments.append({"id":sid,"owner_id":buyer,"product_id":product_id,"quantity":quantity,"from_city_id":seller.city_id,"to_city_id":city_id,"start_month":month,"eta":int(quote.get("eta",month+1))+int(rule.get("delay",0)),"status":"transit","lot_id":lid,"route_ids":quote.get("path",[]),"carrier_id":str(quote.get("carrier_id",""))})
 		else:
 			var incoming: Dictionary=_change_inventory(s,buyer,city_id,product_id,quantity,"매입 입고",month,"trade_in")
 			for lot_id in incoming.get("lot_ids",[]):
@@ -731,7 +776,7 @@ static func _purchase(s: Dictionary, buyer: String, city_id: String, product_id:
 				lot.born_month=int(age.born_month)
 				if int(age.get("expires_month",0))>0: lot.expires_month=mini(int(lot.get("expires_month",age.expires_month)),int(age.expires_month))
 		_event(s,"trade",reason,month,{"actor_id":buyer,"seller_id":seller.id,"city_id":city_id,"seller_city_id":seller.city_id,"product_id":product_id,"quantity":quantity,"amount":quantity*price,"unit_price":price,"remote":remote,"foreign":_find(s.cities,str(seller.city_id)).nation_id!=_find(s.cities,city_id).nation_id})
-		spent+=quantity*(price+freight)+tariff
+		spent+=quantity*price+freight_total+tariff
 		acquired+=quantity
 		if acquired>=desired: break
 	if acquired<desired: _event(s,"shortage","예산·규격·가용 재고·운송 제약",month,{"actor_id":buyer,"city_id":city_id,"product_id":product_id,"quantity":desired-acquired})
@@ -1045,13 +1090,21 @@ static func _consume(s: Dictionary, person: Dictionary, month: int) -> void:
 		if not essential: optional_budget=maxi(0,optional_budget-maxi(0,before_cash-cash(s,str(person.id))))
 		person.last_consumption=int(person.last_consumption)+consumed
 
-static func resolve_month(s: Dictionary) -> Dictionary:
+static func turn_progress_steps() -> int:
+	return 28
+
+static func resolve_month(s: Dictionary, progress: Variant = null) -> Dictionary:
+	var task: RefCounted=Progress.observer(progress)
+	task.begin(turn_progress_steps(),"월 정산 입력·원장 검사")
 	var errors: Array = validate(s)
 	var p: Dictionary=_parameters()
 	if not errors.is_empty():
+		task.fail("INVALID_INPUT_STATE","입력 상태 검사 실패")
 		return {"ok":false,"errors":errors,"error":"INVALID_INPUT_STATE","state":s,"report":{}}
 	if s.phase != "Planning":
+		task.fail("NOT_PLANNING","계획 단계가 아님")
 		return {"ok":false,"errors":["NOT_PLANNING"],"error":"NOT_PLANNING","state":s,"report":{}}
+	task.advance("입력·원장 검사 완료")
 	var work: Dictionary = s.duplicate(true)
 	var month: int = int(work.planning_month)
 	var start_event: int = work.events.size()
@@ -1064,33 +1117,42 @@ static func resolve_month(s: Dictionary) -> Dictionary:
 	for person in work.people:
 		person.last_income = 0
 		person.last_consumption = 0
+	task.advance("월 계획 스냅샷 준비 완료")
 	# Queue AI through the public validator while the snapshot is still planning.
 	work.phase = "Planning"
 	_ai_commands(work)
 	for module in [Life,Industry,Public,Finance,Market,Land]:
 		for candidate in module.ai_commands(work):
 			if candidate.get("actor_id","")!=work.player_id: queue_command(work,candidate)
+	task.advance("인물·기업·공공 AI 계획 수집 완료")
 	# Revalidate every submitted command from the immutable planning snapshot.
 	var recheck: Dictionary = work.duplicate(true)
 	recheck.commands = []
 	for command in work.commands:
 		var result: Dictionary = queue_command(recheck,command)
 		if not result.ok:
+			task.fail(str(result.error),"확정 명령 검사 실패")
 			return {"ok":false,"errors":[result.error],"error":"INVALID_COMMAND","state":s,"report":{}}
 	recheck={}
 	_plan_cache_state={}
 	_plan_cache_count=-1
 	work.phase = "Resolving"
+	task.advance("공통 권한·예약·명령 검사 완료")
 	_arrive_shipments(work,month)
+	task.advance("예정 화물 도착 처리 완료")
 	_execute_commands(work,month)
+	task.advance("확정 명령 실행 완료")
 	Land.before_turn(work,month)
 	Market.before_turn(work,month)
 	Industry.before_turn(work,month)
 	Industry.register_closure_claims(work,month)
+	task.advance("시장·산업 월초 예약 준비 완료")
 	Life.monthly(work,month)
 	Public.begin_month(work,month)
+	task.advance("인물 계약·공공 월초 처리 완료")
 	Market.monthly(work,month)
 	Industry.monthly(work,month)
+	task.advance("시장 체결·산업 프로젝트 처리 완료")
 	for facility in work.facilities:
 		if int(facility.get("operational_month",1))<=month and facility.status=="ready":
 			facility.status="operational"
@@ -1103,22 +1165,33 @@ static func resolve_month(s: Dictionary) -> Dictionary:
 		if hours>0 and cash(work,str(company.id))>=amount and _pay(work,str(company.id),str(director.id),amount,"대표 경영 보수",month,{"city_id":company.city_id,"hours":hours}):
 			work.monthly_labor[director.id]=int(work.monthly_labor.get(director.id,0))+hours
 			_event(work,"labor","대표 경영 업무",month,{"actor_id":director.id,"company_id":company.id,"city_id":company.city_id,"hours":hours,"amount":amount,"wage_paid":true})
+	task.advance("시설 가동·대표 경영 처리 완료")
 	_prepare_runtime(work)
 	var ordered: Array=_sorted(work,work.facilities,"production")
 	ordered.sort_custom(func(a,b): return _production_priority(work,a)<_production_priority(work,b))
+	task.advance("생산 순서·조회 인덱스 준비 완료")
 	for facility in ordered:
 		if _production_priority(work,facility)<=1: _produce(work,facility,month)
+	task.advance("전력·용수 생산 완료")
 	Life.deliver_training(work,month)
+	task.advance("승인된 교육 제공 완료")
 	for facility in ordered:
 		if _production_priority(work,facility)>1: _produce(work,facility,month)
+	task.advance("나머지 산업 생산 완료")
 	Industry.deliver_digital(work,month)
+	task.advance("디지털 납품 처리 완료")
 	for project in _sorted(work,work.projects,"construction"):
 		_construct(work,project,month)
+	task.advance("건설 공정 처리 완료")
 	var payroll: Dictionary=Life.pay_contractual_wages(work,month)
-	if not payroll.get("ok",false): return {"ok":false,"errors":[str(payroll.get("error","PAYROLL_FAILURE"))],"error":"PAYROLL_FAILURE","state":s,"report":{}}
+	if not payroll.get("ok",false):
+		task.fail(str(payroll.get("error","PAYROLL_FAILURE")),"계약 임금 정산 실패")
+		return {"ok":false,"errors":[str(payroll.get("error","PAYROLL_FAILURE"))],"error":"PAYROLL_FAILURE","state":s,"report":{}}
+	task.advance("계약 임금·체불 처리 완료")
 	# Buyers are batch collected, then seeded per-period order changes fairness.
 	for person in _sorted(work,work.people,"consumption"):
 		_consume(work,person,month)
+	task.advance("가계 구매·소비 처리 완료")
 	# Wear is explicit: one maintenance tool per operating facility each year.
 	if month%int(p.maintenance_period_months)==0:
 		for facility in work.facilities:
@@ -1129,21 +1202,28 @@ static func resolve_month(s: Dictionary) -> Dictionary:
 		if growth>0:
 			city.resources.forest=int(city.resources.forest)+growth
 			_event(work,"resource_regrowth","유한 산림의 자연 재생",month,{"city_id":city.id,"resource":"forest","quantity":growth})
+	task.advance("정비·자원 재생 처리 완료")
 	Public.monthly(work,month)
+	task.advance("정부·정책·조달 월말 처리 완료")
 	Industry.after_turn(work,month)
+	task.advance("산업·재고 월말 처리 완료")
 	Finance.monthly(work,month)
+	task.advance("금융·채무 월말 처리 완료")
 	for company in work.companies:
 		company.last_profit=Finance.retained_earnings(work,str(company.id))
 		var amount: int=maxi(0,int(int(company.last_profit)*int(company.policy.dividend_percent)/100))
 		amount=mini(amount,maxi(0,cash(work,str(company.id))-int(p.dividend_cash_floor)))
 		if amount>0: Finance.distribute_dividend(work,str(company.id),amount,month)
+	task.advance("기업 손익·배당 처리 완료")
 	Finance.reconcile_deposits(work,month)
+	task.advance("예금·결제 대응 검사 완료")
 	work.erase("_runtime")
 	work.last_resolved_month=month
 	work.planning_month=month+1
 	work.version=int(work.version)+1
 	work.phase="Planning"
 	work.report_pending=true
+	task.advance("다음 계획 월 커밋 후보 준비 완료")
 	var report: Dictionary = {"month":month,"production":0,"consumption":0,"unmet":0,"unmet_events":0,"revenue":0,"expenses":0,"trades":0,"construction_completed":0,"events":[],"summary":"","state_hash":""}
 	for index in range(start_event,work.events.size()):
 		var event: Dictionary = work.events[index]
@@ -1163,10 +1243,14 @@ static func resolve_month(s: Dictionary) -> Dictionary:
 	report.summary="%d월 · 실제 체결 %d건 · 준공 %d곳 · 미충족 수요 발생 %d건" % [month,report.trades,report.construction_completed,report.unmet_events]
 	work.reports.append(report)
 	work.last_report=report
+	task.advance("월간 보고 생성 완료")
 	errors=validate(work)
 	if not errors.is_empty():
+		task.fail("INVARIANT_FAILURE","월말 경제 불변식 검사 실패")
 		return {"ok":false,"errors":errors,"error":"INVARIANT_FAILURE","state":s,"report":{}}
+	task.advance("월말 경제 불변식 검사 완료")
 	report.state_hash=state_hash(work)
+	task.finish("월 정산·확정 해시 완료")
 	return {"ok":true,"errors":[],"error":"","state":work,"report":report}
 
 static func _scope_cities(s: Dictionary, scope_id: String) -> Array:
@@ -1217,7 +1301,7 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 		if account.get("kind","")!="cash": continue
 		var city: String=str(owners.get(str(account.get("owner","")),""))
 		if not cities.has(city): continue
-		_metric_add_currency(cities[city].cash_by_currency,str(account.get("currency","CR")),int(account.get("balance",0)))
+		_metric_add_currency(cities[city].cash_by_currency,str(account.get("currency","USD")),int(account.get("balance",0)))
 	for lot in s.get("inventory",[]):
 		var city: String=str(lot.get("accounting_city_id",lot.get("city_id","")))
 		var product: String=str(lot.get("product_id",""))
@@ -1242,7 +1326,7 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 		var sector: String=str(event.get("sector",""))
 		var priced_sector_sale: bool=type=="gdp_output" and sector in ["digital","education_current"] and not str(event.get("buyer_id","")).is_empty()
 		var is_trade: bool=type in ["trade","service_trade"] or priced_sector_sale
-		if is_trade and event_month<=month and quantity>0 and people.has(str(event.get("buyer_id",event.get("actor_id","")))) and str(event.get("currency","CR"))=="CR":
+		if is_trade and event_month<=month and quantity>0 and people.has(str(event.get("buyer_id",event.get("actor_id","")))) and str(event.get("currency","USD"))=="USD":
 			var key: String=_metric_product_key(city,product)
 			if not household_prices.has(key) or int(household_prices[key].month)<event_month: household_prices[key]={"month":event_month,"quantity":0,"amount":0}
 			if int(household_prices[key].month)==event_month:
@@ -1252,19 +1336,19 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 		if is_trade:
 			var seller_city: String=str(event.get("seller_city_id",owners.get(str(event.get("seller_id","")),city)))
 			var buyer_city: String=str(event.get("buyer_city_id",city))
-			var currency: String=str(event.get("currency","CR"))
+			var currency: String=str(event.get("currency","USD"))
 			var amount: int=int(event.get("amount",0))
 			if selected.has(seller_city) and not selected.has(buyer_city):
-				exports+=(int(event.get("amount",0)) if currency=="CR" else 0) if priced_sector_sale else value
+				exports+=(int(event.get("amount",0)) if currency=="USD" else 0) if priced_sector_sale else value
 				_metric_add_currency(exports_by_currency,currency,amount)
 			if selected.has(buyer_city) and not selected.has(seller_city):
-				imports+=(int(event.get("amount",0)) if currency=="CR" else 0) if priced_sector_sale else value
+				imports+=(int(event.get("amount",0)) if currency=="USD" else 0) if priced_sector_sale else value
 				_metric_add_currency(imports_by_currency,currency,amount)
 			if cities.has(buyer_city): cities[buyer_city].trades+=1
 			if selected.has(buyer_city) and rows.has(product):
 				rows[product].trade_quantity+=quantity
 				_metric_add_currency(rows[product].trade_value_by_currency,currency,amount)
-				if currency=="CR":
+				if currency=="USD":
 					rows[product].trade_value+=amount
 					rows[product].priced_quantity+=quantity
 			# Sold service units are actual output at the provider's location.
@@ -1277,7 +1361,7 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 		match type:
 			"gdp_output","gdp_input":
 				if sector not in ["public_nonmarket","digital","education_current"]: continue
-				var measured: int=int(event.get("amount",0)) if str(event.get("currency","CR"))=="CR" else 0
+				var measured: int=int(event.get("amount",0)) if str(event.get("currency","USD"))=="USD" else 0
 				var field: String="gross_output" if type=="gdp_output" else "intermediate_consumption"
 				var prefix: String="public_" if sector=="public_nonmarket" else ("training_" if sector=="education_current" else "digital_")
 				var component: String=prefix+field
@@ -1308,7 +1392,7 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 				cities[city].consumption_value+=value
 				_metric_product_activity(city_products,city,product,"consumed",quantity)
 	var result: Dictionary=_metric_empty_city(scope_id)
-	result.merge({"scope_id":scope_id,"month":month,"per_product":[],"gdp":0,"real_gdp":0,"value_added":0,"price_index":100,"price_index_bps":10000,"price_basket":[],"price_index_missing_weight_percent":0.0,"price_index_reference_weight_percent":0.0,"exports":exports,"imports":imports,"net_exports":exports-imports,"exports_by_currency":exports_by_currency,"imports_by_currency":imports_by_currency,"accounting":"experimental_mixed_basis_covered_sector_value_added","valuation_currency":"CR","price_basis":"goods_services_construction_at_content_base_prices;public_at_actual_cost;digital_at_earned_transaction_prices;training_at_earned_tuition_and_declared_input_prices","nominal_gdp_available":false,"full_real_gdp_available":false,"real_gdp_scope":"fixed_base_price_goods_sold_services_and_construction_only","unit_warning":"통합 생산·소비·미충족·재고는 기준가격으로 환산한 최소 화폐 단위입니다. 품목별 물량은 per_product에서 확인합니다.","definition":"상품·판매 서비스·건설은 기준가격, 공공 비시장 서비스는 실제 비용, 디지털은 이행한 거래가격, 직업교육은 실제 제공한 수강료와 명시된 투입 평가로 계산한 부가가치입니다. 평가 기준별 구성요소를 분리하며 전 부문 명목·실질 GDP로 단정하지 않습니다."},true)
+	result.merge({"scope_id":scope_id,"month":month,"per_product":[],"gdp":0,"real_gdp":0,"value_added":0,"price_index":100,"price_index_bps":10000,"price_basket":[],"price_index_missing_weight_percent":0.0,"price_index_reference_weight_percent":0.0,"exports":exports,"imports":imports,"net_exports":exports-imports,"exports_by_currency":exports_by_currency,"imports_by_currency":imports_by_currency,"accounting":"experimental_mixed_basis_covered_sector_value_added","valuation_currency":"USD","price_basis":"goods_services_construction_at_content_base_prices;public_at_actual_cost;digital_at_earned_transaction_prices;training_at_earned_tuition_and_declared_input_prices","nominal_gdp_available":false,"full_real_gdp_available":false,"real_gdp_scope":"fixed_base_price_goods_sold_services_and_construction_only","unit_warning":"통합 생산·소비·미충족·재고는 기준가격으로 환산한 최소 화폐 단위입니다. 품목별 물량은 per_product에서 확인합니다.","definition":"상품·판매 서비스·건설은 기준가격, 공공 비시장 서비스는 실제 비용, 디지털은 이행한 거래가격, 직업교육은 실제 제공한 수강료와 명시된 투입 평가로 계산한 부가가치입니다. 평가 기준별 구성요소를 분리하며 전 부문 명목·실질 GDP로 단정하지 않습니다."},true)
 	for city in cities:
 		if not selected.has(city): continue
 		for field in ["population","employed","revenue","expenses","trades","gross_output","intermediate_consumption","production_value","consumption_value","demand_value","unmet_value","inventory_value","construction_materials","construction_work","public_gross_output","public_intermediate_consumption","digital_gross_output","digital_intermediate_consumption","training_gross_output","training_intermediate_consumption"]: result[field]=int(result[field])+int(cities[city][field])
@@ -1330,7 +1414,7 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 	result.covered_fixed_price_value_added=int(result.gdp)-int(result.public_nonmarket_value_added)-int(result.digital_current_price_value_added)-int(result.market_training_current_price_value_added)
 	result.real_gdp=result.covered_fixed_price_value_added
 	result.value_added=result.gdp
-	result.cash=int(result.cash_by_currency.get("CR",0))
+	result.cash=int(result.cash_by_currency.get("USD",0))
 	# Legacy numeric UI keys retain their shape, with explicit monetary units.
 	result.production=result.production_value
 	result.consumption=result.consumption_value
@@ -1438,7 +1522,7 @@ static func validate(s: Dictionary) -> Array:
 	if not errors.is_empty(): return errors
 	var field_contracts: Dictionary={
 		"continents":["id","name"],"nations":["id","name","continent_id"],
-		"cities":["id","name","nation_id","continent_id","width","height","roads","resources","resource_capacity","forest_regrowth"],
+		"cities":["id","name","nation_id","continent_id","width","height","tile_side_m","roads","resources","resource_capacity","forest_regrowth"],
 		"people":["id","name","city_id","company_id","role","hours","wage"],
 		"companies":["id","name","city_id","director_id","shareholder_id","policy","revenue","expenses"],
 		"facilities":["id","name","company_id","city_id","kind","x","y","w","h","status","recipe_id","capacity"],
@@ -1451,7 +1535,7 @@ static func validate(s: Dictionary) -> Array:
 				if not item.has(field): errors.append("MISSING_ENTITY_FIELD:"+collection+":"+field)
 	if not errors.is_empty(): return errors
 	var text_fields: Array=["id","name","city_id","nation_id","continent_id","company_id","director_id","shareholder_id","owner_id","accounting_city_id","location","product_id","role","kind","status","recipe_id","type","reason","actor_id"]
-	var number_fields: Array=["x","y","w","h","width","height","hours","wage","capacity","quantity","reserved","progress","required_work","months_worked","min_months","month","amount","revenue","expenses","forest_regrowth","operational_month","completed_month","start_month","budget","spent","last_profit"]
+	var number_fields: Array=["x","y","w","h","width","height","tile_side_m","hours","wage","capacity","quantity","reserved","progress","required_work","months_worked","min_months","month","amount","revenue","expenses","forest_regrowth","operational_month","completed_month","start_month","budget","spent","last_profit"]
 	for collection in field_contracts:
 		for item in s[collection]:
 			for field in item:
@@ -1486,7 +1570,10 @@ static func validate(s: Dictionary) -> Array:
 	for event in s.events:
 		if event.has("inventory_delta") and (not _whole_number(event.inventory_delta) or typeof(event.get("lot_id")) not in [TYPE_STRING,TYPE_STRING_NAME]): errors.append("INVALID_INVENTORY_EVENT")
 	if not errors.is_empty(): return errors
-	if int(s.schema_version)!=2 or s.rules_version!=RULES_VERSION: errors.append("UNSUPPORTED_SCHEMA_OR_RULES")
+	if int(s.schema_version)!=3 or s.rules_version!=RULES_VERSION: errors.append("UNSUPPORTED_SCHEMA_OR_RULES")
+	if s.get("base_currency")!=Ledger.BASE_CURRENCY or s.get("minor_units_per_major")!=Ledger.MINOR_UNITS_PER_MAJOR: errors.append("WORLD_MONEY_UNIT_MISMATCH")
+	for nation in s.nations:
+		if nation.get("currency")!=Ledger.BASE_CURRENCY: errors.append("NATION_BASE_CURRENCY_MISMATCH")
 	if s.continents.size()!=3: errors.append("WORLD_REQUIRES_THREE_CONTINENTS")
 	if int(s.planning_month)!=int(s.last_resolved_month)+1: errors.append("MONTH_COMMIT_MISMATCH")
 	if int(s.version)!=int(s.last_resolved_month): errors.append("VERSION_MONTH_MISMATCH")
@@ -1508,7 +1595,7 @@ static func validate(s: Dictionary) -> Array:
 	for city in s.cities:
 		var nation: Dictionary=_find(s.nations,city.get("nation_id",""))
 		if nation.is_empty() or nation.get("continent_id","")!=city.get("continent_id",""): errors.append("CITY_NATION_MISMATCH")
-		if int(city.get("width",0))<=0 or int(city.get("height",0))<=0: errors.append("INVALID_CITY_SIZE")
+		if int(city.get("width",0))<=0 or int(city.get("height",0))<=0 or int(city.get("tile_side_m",0))<=0: errors.append("INVALID_CITY_SIZE")
 		for value in city.get("resources",{}).values():
 			if int(value)<0: errors.append("NEGATIVE_NATURAL_RESOURCE")
 	for company in s.companies:

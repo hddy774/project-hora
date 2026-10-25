@@ -254,7 +254,7 @@ static func _test_estate_batch_stockloss(failures: Array) -> void:
 static func _cash_total(s: Dictionary) -> int:
 	var total: int=0
 	for account in s.accounts.values():
-		if account.kind=="cash" and account.currency=="CR":total+=int(account.balance)
+		if account.kind=="cash" and account.currency=="USD":total+=int(account.balance)
 	return total
 
 static func _test_contractual_payroll(failures: Array) -> void:
@@ -376,8 +376,8 @@ static func _test_authorized_training(failures: Array) -> void:
 	var money_before: int=_cash_total(s)
 	Life.monthly(s,1)
 	var delivered: Dictionary=Life.deliver_training(s,1)
-	_check(int(delivered.lessons)==4,"Two consenting instructors provide only their actual16-hour monthly limits",failures)
-	_check(Life.training_batches_used(s,str(school.id),1)==4 and int(delivered.lessons)<=int(school.capacity),"Actual lessons reserve shared classroom batch capacity",failures)
+	_check(int(delivered.lessons)==3,"Actual8-hour lessons share the school's six4-hour classroom batches",failures)
+	_check(Life.training_batches_used(s,str(school.id),1)==6 and Life.training_batches_required(s,str(school.id),8)==2,"Actual lessons reserve shared classroom batch capacity",failures)
 	_check(Domain.available_quantity(s,str(provider.id),"paper","city-0")==paper_before-int(delivered.lessons),"Each delivered course consumes actual paper once",failures)
 	_check(_cash_total(s)==money_before,"Tuition, power purchase and instructor wages conserve actual cash",failures)
 	_check(int(s.monthly_labor.get("p-0",0))==0,"Other people's training never commandeers the player director",failures)
@@ -389,6 +389,9 @@ static func _test_authorized_training(failures: Array) -> void:
 	for right in s.industry.service_entitlements:
 		if right.owner_id==provider.id and right.product_id=="energy" and int(right.month)==1:power_used+=int(right.used)
 	_check(power_used==int(delivered.lessons),"Training uses real purchased current-month power service",failures)
+	var outputs: Array=s.events.filter(func(e):return e.type=="gdp_output" and e.get("sector")=="education_current")
+	_check(outputs.size()==int(delivered.lessons) and outputs.all(func(e):return e.product_id=="education_course" and int(e.quantity)==int(Life._p().training_hours) and int(e.amount)==fee),"Delivered education reports actual eight student-hours while tuition remains the full lesson amount",failures)
+	_check(str(Domain.find(s.products,"education_course").get("unit",""))=="시간","Delivered education quantities use the declared hour unit",failures)
 	var before: String=Economy.state_hash(s)
 	Life.deliver_training(s,1)
 	_check(Economy.state_hash(s)==before,"Repeating course delivery in a month cannot charge or teach twice",failures)
@@ -401,7 +404,7 @@ static func _test_authorized_training(failures: Array) -> void:
 	_check(not Life.validate(corrupt).is_empty(),"Malformed teaching capacity fails validation before lesson execution",failures)
 	var limited: Dictionary=_world()
 	var limited_school: Dictionary=Domain.find(limited.facilities,str(school.id))
-	limited_school.capacity=1
+	limited_school.capacity=2
 	for actor in ["p-1","p-2"]:
 		_check(bool(Life.apply(limited,_command(limited,"start_training",{"skill":"management","months":1,"budget":fee},actor,""),1).ok),"Classroom-limited requests remain consented and funded",failures)
 	industry.before_turn(limited,1)
@@ -410,6 +413,11 @@ static func _test_authorized_training(failures: Array) -> void:
 			if Economy._production_priority(limited,facility)==priority:Economy._produce(limited,facility,1)
 	Life.monthly(limited,1)
 	_check(int(Life.deliver_training(limited,1).lessons)==1,"Physical classroom capacity limits delivery even with another available instructor",failures)
+	_check(Life.training_batches_used(limited,str(limited_school.id),1)==2,"A single8-hour advanced lesson uses two ordinary classroom batches",failures)
+	var too_small: Dictionary=_world()
+	Domain.find(too_small.facilities,str(school.id)).capacity=1
+	var rejected: Dictionary=Life.apply(too_small,_command(too_small,"start_training",{"skill":"management","months":1,"budget":fee},"p-1",""),1)
+	_check(not rejected.ok and rejected.error=="TRAINING_PROVIDER_UNAVAILABLE","A classroom smaller than one actual lesson cannot promise delivery",failures)
 
 static func _test_observed_workload_staffing(failures: Array) -> void:
 	var s: Dictionary=_world()

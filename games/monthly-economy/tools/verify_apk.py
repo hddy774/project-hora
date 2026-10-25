@@ -11,10 +11,10 @@ import zipfile
 
 apk = pathlib.Path(sys.argv[1]).resolve()
 sdk = pathlib.Path(os.environ.get("ANDROID_HOME", os.environ.get("ANDROID_SDK_ROOT", "")))
-tool_dirs = sorted((sdk / "build-tools").glob("*"), reverse=True)
-tools = next((p for p in tool_dirs if (p / "aapt").is_file() and (p / "apksigner").is_file()), None)
-if tools is None:
-    sys.exit("Android build-tools containing aapt and apksigner are required.")
+tools = sdk / "build-tools" / "36.0.0"
+if not (tools / "aapt").is_file() or not (tools / "apksigner").is_file():
+    sys.exit("Android build-tools 36.0.0 is required; install it with sdkmanager 'build-tools;36.0.0'.")
+print("APK verifier: Android build-tools 36.0.0")
 def run(*args):
     return subprocess.check_output([str(x) for x in args], text=True)
 badging = run(tools / "aapt", "dump", "badging", apk)
@@ -35,7 +35,12 @@ with zipfile.ZipFile(apk) as z:
         packaged_assets[asset] = hashlib.sha256(packed).hexdigest()
 assert abis == ["arm64-v8a", "x86_64"], "Unexpected ABIs"
 verification = run(tools / "apksigner", "verify", "--verbose", "--print-certs", apk)
-certificate = next(line.split(": ", 1)[1] for line in verification.splitlines() if line.startswith("Signer #1 certificate SHA-256 digest:"))
-report = {"application_id": "org.hora.monthly.experimental", "version": "0.1.0-experimental", "signing": "Godot local debug key; experimental only", "certificate_sha256": certificate, "abis": abis, "min_sdk": int(re.search(r"sdkVersion:'(\d+)'", badging).group(1)), "target_sdk": int(re.search(r"targetSdkVersion:'(\d+)'", badging).group(1)), "internet_permission": False, "orientation": "portrait", "packaged_asset_sha256": packaged_assets, "device_execution_tested": False}
+assert "Verifies" in verification.splitlines(), "Android build-tools 36.0.0 did not report a verified APK."
+signer_counts = re.findall(r"(?m)^Number of signers:[ \t]*(\d+)[ \t]*$", verification)
+assert signer_counts == ["1"], "Expected exactly one verified APK signer from Android build-tools 36.0.0."
+certificates = re.findall(r"(?m)^Signer #1 certificate SHA-256 digest:[ \t]*([a-fA-F0-9]{64})[ \t]*$", verification)
+assert len(certificates) == 1, "Expected one 64-character signer certificate SHA-256 from Android build-tools 36.0.0."
+certificate = certificates[0].lower()
+report = {"application_id": "org.hora.monthly.experimental", "version": "0.1.0-experimental", "signing": "Godot local debug key; experimental only", "certificate_sha256": certificate, "verification_build_tools": "36.0.0", "abis": abis, "min_sdk": int(re.search(r"sdkVersion:'(\d+)'", badging).group(1)), "target_sdk": int(re.search(r"targetSdkVersion:'(\d+)'", badging).group(1)), "internet_permission": False, "orientation": "portrait", "packaged_asset_sha256": packaged_assets, "device_execution_tested": False}
 (apk.parent / "APK-VERIFICATION.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
 print("Experimental APK manifest, offline permissions, ABIs, signature and packaged fixture/notices verified.")

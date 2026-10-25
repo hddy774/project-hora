@@ -53,7 +53,7 @@ bash tools/install_godot.sh
 bash tools/build.sh all
 ```
 
-Android 내보내기는 Java 21, Android SDK와 Godot export templates를 사용합니다. `tools/configure_android.py`가 표준 SDK 환경을 검사합니다. 바이너리 체크섬·앱 ID·권한·ABI·인증서 검증 결과는 `build/`에 기록합니다. 저장은 `user://saves`의 검사된 스냅샷과 이전 정상 백업을 사용합니다. 전원 차단·디스크 장애의 모든 조건에 대한 내구성 보장은 아닙니다.
+Android 내보내기는 Java 21, Android SDK **build-tools 36.0.0**, Godot export templates를 사용합니다. `tools/configure_android.py`가 표준 SDK 환경을 검사합니다. 검증 도구는 내보내기와 같은 Android 도구 버전을 사용하며 없으면 설치를 안내하고 중단합니다. 바이너리 체크섬·앱 ID·권한·ABI·인증서 검증 결과는 `build/`에 기록합니다. 저장은 `user://saves`의 검사된 스냅샷과 이전 정상 백업을 사용합니다. 전원 차단·디스크 장애의 모든 조건에 대한 내구성 보장은 아닙니다.
 
 CI는 기존 서명 자동화와 분리된 [monthly-economy.yml](../../.github/workflows/monthly-economy.yml)입니다. 세부 결과와 미검증 범위는 [검증 기록](docs/validation.md)을 참고하세요.
 

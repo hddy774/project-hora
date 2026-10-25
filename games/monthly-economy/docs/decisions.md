@@ -21,7 +21,7 @@ Godot 4.6.3과 GDScript로 UI와 독립된 월 정산 코어, 세로 화면, And
 | 항목 | 실험 설정 |
 |---|---|
 | 도구 | Godot 4.6.3 + 같은 버전 export templates, OpenJDK 21 |
-| 설치 SDK | Android command-line tools 11076708, platform-tools, build-tools 35.0.0, platform 35 |
+| 설치 SDK | Android command-line tools 11076708, platform-tools, 초기 build-tools 35.0.0/platform 35 실험 후 최종 APK 검증은 build-tools 36.0.0으로 고정 |
 | 내보내기 | Gradle 없는 Godot APK 템플릿. 템플릿의 minSdk 24 / targetSdk 36이며 설치 platform 35로 직접 네이티브 코드를 컴파일한 결과는 아니다. |
 | 앱 식별 | `org.hora.monthly.experimental`, `0.1.0-experimental` |
 | ABI / 표시 | `arm64-v8a` + `x86_64`, portrait |

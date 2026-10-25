@@ -24,6 +24,7 @@ checked "$godot_bin" --headless --path "$project_dir" --editor --import --quit
 checked "$godot_bin" --headless --path "$project_dir" --script res://tests/run.gd
 checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_ui.gd
 checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_ui_forms.gd
+checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_ui_input.gd
 checked "$godot_bin" --headless --path "$project_dir" --script res://tests/test_game_flow.gd
 build_linux() {
   checked "$godot_bin" --headless --path "$project_dir" --export-release "Hora Linux" "$build_dir/$stem-linux.x86_64"

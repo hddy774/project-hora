@@ -157,7 +157,9 @@ func _render() -> void:
 	if is_instance_valid(scroll) and last_screen_key != "":
 		scroll_positions[last_screen_key] = scroll.scroll_vertical
 	for c in get_children():
-		remove_child(c)
+		if c.is_queued_for_deletion(): continue
+		if c is CanvasItem: (c as CanvasItem).hide()
+		elif c is Window: (c as Window).hide()
 		c.queue_free()
 	modal = null
 	toast_label = null
@@ -1360,7 +1362,8 @@ func _open_modal(title: String) -> VBoxContainer:
 
 func _close_modal() -> void:
 	if is_instance_valid(modal):
-		remove_child(modal)
+		# A pressed callback can still be on the native GUI dispatch stack.
+		modal.hide()
 		modal.queue_free()
 	modal = null
 

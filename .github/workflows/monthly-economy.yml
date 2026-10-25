@@ -112,6 +112,8 @@ jobs:
           with open(os.environ['GITHUB_ENV'],'a') as f:
               f.write('SOURCE_SHA='+run['head_sha']+'\nARTIFACT_NAME=hora-economic-lab-'+run['head_sha']+'\n')
           PY
+          # GITHUB_ENV applies to following steps; this step also needs the name.
+          export ARTIFACT_NAME="hora-economic-lab-$EXPECTED_SOURCE_SHA"
           gh api "repos/$GH_REPO/actions/runs/$SOURCE_RUN_ID/artifacts" > artifacts.json
           python3 - <<'PY'
           import json,os,pathlib

@@ -1,6 +1,7 @@
 extends RefCounted
 const Economy = preload("res://core/economy.gd")
 const Life = preload("res://core/lifecycle.gd")
+const Industry = preload("res://core/industry.gd")
 const Ledger = preload("res://core/ledger.gd")
 static var checks: int = 0
 static var _baseline: Dictionary = {}
@@ -59,11 +60,27 @@ static func _test_initial(errors: Array) -> void:
 	bad.parameters.erase("registration_fee")
 	_check(not Life.validate_content(bad).is_empty(), "Missing lifecycle tuning fails content validation", errors)
 
+static func _utilities(s: Dictionary, month: int) -> void:
+	Industry.before_turn(s,month)
+	for priority in [0,1]:
+		for facility in s.facilities:
+			if Economy._production_priority(s,facility)==priority: Economy._produce(s,facility,month)
+
 static func _qualify(s: Dictionary, person: String, skill: String, errors: Array) -> void:
-	_check(Life.apply(s, _cmd(s, "lc-qualify-" + person + skill, person, "start_training", {"skill": skill, "months": 1, "budget": 15}), int(s.planning_month)).get("ok", false), "Founder can obtain management qualification through paid training", errors)
+	# Earn actual contractual wages in a real month before paying tuition and
+	# startup capital; the higher experimental tuition is never free funding.
+	var earned: Dictionary=Economy.resolve_month(s)
+	_check(bool(earned.ok),"Founder earns existing employer wages before tuition and startup",errors)
+	if not earned.ok:return
+	s.clear()
+	s.merge(earned.state,true)
+	var fee: int=int(Life._p().training_monthly_fee)
+	_check(Life.apply(s, _cmd(s, "lc-qualify-" + person + skill, person, "start_training", {"skill": skill, "months": 1, "budget": fee}), int(s.planning_month)).get("ok", false), "Founder can obtain management qualification through paid training", errors)
 	var month: int = int(s.planning_month)
 	s.monthly_labor = {}
+	_utilities(s,month)
 	Life.monthly(s, month)
+	Life.deliver_training(s,month)
 	s.monthly_labor = {}
 	Life.monthly(s, month + 1)
 	s.planning_month = month + 2
@@ -135,11 +152,13 @@ static func _test_training(errors: Array) -> void:
 	var s: Dictionary = _world()
 	var totals: Dictionary = _cash(s)
 	var original_skill: int = _find(s.people, "p-1").skills.operations
-	_check(Life.apply(s, _cmd(s, "lc-training", "p-1", "start_training", {"skill": "operations", "months": 1, "budget": 15}), 1).get("ok", false), "A person can fund real training", errors)
+	_check(Life.apply(s, _cmd(s, "lc-training", "p-1", "start_training", {"skill": "operations", "months": 1, "budget": int(Life._p().training_monthly_fee)}), 1).get("ok", false), "A person can fund real training", errors)
 	s.monthly_labor = {}
+	_utilities(s,1)
 	Life.monthly(s, 1)
+	Life.deliver_training(s,1)
 	var t: Dictionary = s.lifecycle.training[-1]
-	_check(t.months_done == 1 and t.spent == 15 and t.status == "completed_pending", "Training consumes actual tuition, time and a full period", errors)
+	_check(t.months_done == 1 and t.spent == int(Life._p().training_monthly_fee) and t.status == "completed_pending", "Training consumes actual tuition, time and a full period", errors)
 	_check(int(s.monthly_labor.get("p-1", 0)) > 0, "Learner time is reserved from workplace capacity", errors)
 	_check(_find(s.people, "p-1").skills.operations == original_skill, "Skill is not granted before its effective next month", errors)
 	s.monthly_labor = {}

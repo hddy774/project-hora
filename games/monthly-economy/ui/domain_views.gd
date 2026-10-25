@@ -133,6 +133,7 @@ static func form(app: Control, module_name: String, action: Dictionary) -> void:
 			edit.clip_text = true
 			edit.custom_minimum_size.y = 44
 			var values: Array = []
+			var choice_records: Dictionary = {}
 			if field.get("optional", false):
 				edit.add_item("선택하지 않음"); values.append("")
 			var source: String = str(field.get("source", ""))
@@ -152,6 +153,7 @@ static func form(app: Control, module_name: String, action: Dictionary) -> void:
 					if id == "": continue
 					edit.add_item(_record_name(app, item))
 					values.append(id)
+					choice_records[id] = item.duplicate(true)
 			if values.is_empty():
 				edit.add_item("해당 조건의 대상 없음")
 				values.append("")
@@ -159,6 +161,15 @@ static func form(app: Control, module_name: String, action: Dictionary) -> void:
 			edit.select(maxi(values.find(default_value), 0))
 			box.add_child(edit)
 			editors[key] = {"node": edit, "kind": "choice", "values": values, "optional": field.get("optional", false)}
+			if source in ["jobs", "job_offers"]:
+				var terms: Label = app._label(box, "", 13, app.GOLD)
+				var update_terms: Callable = func(index: int):
+					var offer: Dictionary = choice_records.get(str(values[index]), {}) if index>=0 and index<values.size() else {}
+					if offer.is_empty(): terms.text = "현재 지원할 수 있는 유효한 고용 제안이 없습니다."
+					else:
+						terms.text = "지원 전 계약 조건\n직무: %s · 시간당 %s\n월 계약: %d h · 보장 유급시간: %d h\n교육 업무: %s" % [app._role(str(offer.get("role",""))), app._money(int(offer.get("wage",0))), int(offer.get("hours",0)), int(offer.get("guaranteed_hours",0)), "동의 조건 포함" if offer.get("teaching_authorized",false) else "동의 조건 없음"]
+				edit.item_selected.connect(update_terms)
+				update_terms.call(edit.selected)
 		elif kind in ["bool", "boolean"]:
 			var edit := CheckButton.new()
 			edit.text = str(field.get("hint", "사용"))
@@ -290,12 +301,13 @@ static func records(app: Control, module_name: String, source: String, title: St
 		if item.get("rect") is Dictionary:
 			var rect: Dictionary = item.rect
 			app._row(box, "대상 부지", "(%s, %s) · %s × %s타일" % [rect.get("x",0),rect.get("y",0),rect.get("w",1),rect.get("h",1)])
-		for key: String in ["status", "stage", "role", "term_months", "months_remaining", "quantity", "shares", "principal", "arrears", "coverage", "remaining", "progress", "required_work", "deadline_month", "due_month", "effective_month", "budget", "amount", "specification", "side", "remaining_quantity", "limit_price", "expires_month", "fulfilled_quantity", "price", "rent", "duration_months", "guaranteed_hours", "hours", "wage", "month", "paid"]:
+		for key: String in ["status", "stage", "role", "term_months", "months_remaining", "quantity", "shares", "principal", "arrears", "coverage", "remaining", "progress", "required_work", "deadline_month", "due_month", "effective_month", "budget", "amount", "specification", "side", "remaining_quantity", "limit_price", "expires_month", "fulfilled_quantity", "price", "rent", "duration_months", "guaranteed_hours", "hours", "wage", "month", "paid", "teaching_authorized"]:
 			if not item.has(key): continue
 			if item[key] is Dictionary or item[key] is Array: continue
 			var value: String = str(item[key])
 			if key in ["principal", "arrears", "coverage", "budget", "amount", "price", "rent", "limit_price", "paid", "wage"] and (item[key] is int or item[key] is float): value = app._money(int(item[key]))
 			if key == "remaining" and source in ["wage_claims", "land_claims"]: value = app._money(int(item[key]))
+			if key == "teaching_authorized": value = "동의" if bool(item[key]) else "동의하지 않음"
 			if key == "role": value = app._role(value)
 			if key == "status": value = app._status(value)
 			app._row(box, _humanize(key), value)
@@ -313,7 +325,7 @@ static func _record_name(app: Control, item: Dictionary) -> String:
 	return " · ".join(parts) if not parts.is_empty() else str(item.get("id", "계약"))
 
 static func _humanize(key: String) -> String:
-	return str({"status": "상태", "stage": "단계", "role": "직무", "term_months": "계약 기간", "months_remaining": "남은 개월", "quantity": "수량", "shares": "주식 수", "principal": "원금", "arrears": "연체", "coverage": "보장액", "remaining": "남은 의무", "progress": "진척", "required_work": "필요 공수", "deadline_month": "납기 월", "due_month": "지급 월", "effective_month": "발효 월", "budget": "예산", "amount": "금액", "specification": "규격", "side": "주문 구분", "remaining_quantity": "미체결 수량", "limit_price": "제한 단가", "expires_month": "만료 월", "fulfilled_quantity": "체결 물량", "price": "가격", "rent": "월 임대료", "duration_months": "사용 기간", "guaranteed_hours": "월 보장 유급시간", "hours": "계약 시간", "wage": "시간당 임금", "month": "발생 월", "paid": "지급액"}.get(key, key.replace("_", " ")))
+	return str({"status": "상태", "stage": "단계", "role": "직무", "term_months": "계약 기간", "months_remaining": "남은 개월", "quantity": "수량", "shares": "주식 수", "principal": "원금", "arrears": "연체", "coverage": "보장액", "remaining": "남은 의무", "progress": "진척", "required_work": "필요 공수", "deadline_month": "납기 월", "due_month": "지급 월", "effective_month": "발효 월", "budget": "예산", "amount": "금액", "specification": "규격", "side": "주문 구분", "remaining_quantity": "미체결 수량", "limit_price": "제한 단가", "expires_month": "만료 월", "fulfilled_quantity": "체결 물량", "price": "가격", "rent": "월 임대료", "duration_months": "사용 기간", "guaranteed_hours": "월 보장 유급시간", "hours": "계약 시간", "wage": "시간당 임금", "month": "발생 월", "paid": "지급액", "teaching_authorized": "교육 업무 동의"}.get(key, key.replace("_", " ")))
 
 
 static func _observer_controls(world: Dictionary, observer: String, owner: String) -> bool:

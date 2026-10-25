@@ -1061,7 +1061,7 @@ func _aggregate_page() -> void:
 		if statistics.has(item.key): _row(card,str(item.label),_money(int(statistics[item.key])))
 	if statistics.has("definition"): _label(card,str(statistics.definition),12,MUTED)
 	_label(card, "품목별 생산·소비는 해당 단위를 유지합니다. 서로 다른 단위의 물량을 GDP로 합산하지 않습니다.", 12, MUTED)
-	var chart_card: VBoxContainer = _card(content, "월별 실제 상품 체결", "확정 기록 · 세계 기준")
+	var chart_card: VBoxContainer = _card(content, "세계 · 월별 실제 상품 체결", "확정 기록 · 세계 기준")
 	var chart = HistoryChart.new()
 	chart_card.add_child(chart)
 	chart.set_observations(world.get("reports", []), "trades")

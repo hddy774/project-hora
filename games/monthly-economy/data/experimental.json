@@ -441,6 +441,9 @@
         "hours": 64,
         "wage": 2
       }
+    ],
+    "required_initial_services": [
+      "school"
     ]
   }
 }

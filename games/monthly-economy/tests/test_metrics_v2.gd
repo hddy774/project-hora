@@ -112,5 +112,19 @@ static func run() -> Array:
 	var city_total: int=0
 	for city in s.cities: city_total+=int(Economy.metrics(s,city.id).gdp)
 	_check(city_total==int(digital.gdp),"Public and digital output stays assigned to exactly one actual city",failures)
+	_event(s,"training_enrolled","city-a","",1,{"actor_id":"p-a","provider_id":"co-c","amount":100})
+	_check(int(Economy.metrics(s).gdp)==int(digital.gdp),"Training enrollment and prepaid tuition alone are not delivered education output",failures)
+	_event(s,"gdp_output","city-c","",1,{"actor_id":"co-c","seller_id":"co-c","buyer_id":"p-a","buyer_city_id":"city-a","sector":"education_current","valuation":"transaction_price","amount":100})
+	_event(s,"gdp_input","city-c","paper",1,{"actor_id":"co-c","sector":"education_current","valuation":"content_base_price","amount":5})
+	_event(s,"gdp_input","city-c","energy",2,{"actor_id":"co-c","sector":"education_current","valuation":"content_base_price","amount":6})
+	var training: Dictionary=Economy.metrics(s)
+	_check(int(training.gdp)==int(digital.gdp)+89,"Delivered school tuition less actual training inputs adds education VA",failures)
+	_check(int(training.market_training_current_price_value_added)==89 and int(training.training_gross_output)==100 and int(training.training_intermediate_consumption)==11,"Training output and inputs have a distinct education component",failures)
+	_check(int(training.digital_current_price_value_added)==int(digital.digital_current_price_value_added),"Education cannot be mislabeled as digital output",failures)
+	_check(int(training.real_gdp)==int(world.real_gdp),"Earned current-price tuition is separate from covered fixed-price real output",failures)
+	_check(int(Economy.metrics(s,"nation-ab").imports)==202,"Delivered foreign training belongs to the actual provider/student boundary",failures)
+	var training_city_total: int=0
+	for city in s.cities: training_city_total+=int(Economy.metrics(s,city.id).gdp)
+	_check(training_city_total==int(training.gdp),"Education VA is attributed to one provider city without an upper-level duplicate",failures)
 	print("Fixed-price metrics checks: "+str(checks)+"; failures: "+str(failures.size()))
 	return failures

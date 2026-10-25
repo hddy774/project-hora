@@ -125,7 +125,7 @@ static func validate_fixture(data: Dictionary) -> Array:
 	for key in numeric_keys:
 		if not _whole_number(p.get(key)): errors.append("INVALID_OR_MISSING_PARAMETER:"+key)
 		elif int(p[key])<0 or (key not in ["default_seed","road_y","initial_output_city_step","forest_city_step","stone_city_step","policy_minimum"] and int(p[key])==0): errors.append("NONPOSITIVE_PARAMETER:"+key)
-	for key in ["company_kinds","facility_positions","continent_names","nation_names","city_names","director_names","employee_titles","essential_products"]:
+	for key in ["company_kinds","facility_positions","continent_names","nation_names","city_names","director_names","employee_titles","essential_products","required_initial_services"]:
 		if typeof(p.get(key))!=TYPE_ARRAY or p.get(key,[]).is_empty(): errors.append("INVALID_PARAMETER_ARRAY:"+key)
 	for key in ["default_policy","starter_materials","household_demand"]:
 		if typeof(p.get(key))!=TYPE_DICTIONARY or p.get(key,{}).is_empty(): errors.append("INVALID_PARAMETER_VECTOR:"+key)
@@ -134,7 +134,7 @@ static func validate_fixture(data: Dictionary) -> Array:
 	if p.continent_names.size()!=3 or p.nation_names.size()!=3 or p.city_names.size()<3: errors.append("FIXTURE_REQUIRES_THREE_GEOGRAPHIC_ENTRIES")
 	if p.company_kinds.size()!=p.facility_positions.size() or p.company_kinds.size()!=p.director_names.size(): errors.append("FIXTURE_COMPANY_LAYOUT_MISMATCH")
 	if p.employee_titles.size()!=int(p.employees_per_company): errors.append("FIXTURE_EMPLOYEE_LAYOUT_MISMATCH")
-	for key in ["continent_names","nation_names","city_names","director_names","employee_titles","company_kinds","essential_products"]:
+	for key in ["continent_names","nation_names","city_names","director_names","employee_titles","company_kinds","essential_products","required_initial_services"]:
 		for item in p[key]:
 			if typeof(item)!=TYPE_STRING or str(item).is_empty(): errors.append("INVALID_PARAMETER_TEXT:"+key)
 	for position in p.facility_positions:
@@ -166,7 +166,7 @@ static func policy_limits() -> Dictionary:
 	return {"production_min": int(p.policy_minimum), "production_max": int(p.policy_maximum), "price_min": int(p.price_policy_minimum), "price_max": int(p.price_policy_maximum)}
 
 static func _content_hash() -> String:
-	if _content_hash_cache=="": _content_hash_cache=_canonical_json({"fixture":_fixture(),"industry":Industry.definitions(),"industry_parameters":Industry.parameters(),"finance":Finance.definition(),"lifecycle":Life.content_hash(),"public":Public.content_hash(),"market":Market.content_hash(),"land":Land.content_hash()}).sha256_text()
+	if _content_hash_cache=="": _content_hash_cache=_canonical_json({"fixture":_fixture(),"industry":Industry.definitions(),"industry_full":Industry._data(),"industry_parameters":Industry.parameters(),"finance":Finance.definition(),"lifecycle":Life.content_hash(),"public":Public.content_hash(),"market":Market.content_hash(),"land":Land.content_hash()}).sha256_text()
 	return _content_hash_cache
 
 static func building_types() -> Array:
@@ -223,6 +223,7 @@ static func new_world(seed_value: Variant = null, options: Dictionary = {}) -> D
 			var city: Dictionary = s.cities[i%s.cities.size()]
 			var position: Vector2i = _seed_site(s,city)
 			if position.x>=0: _seed_company(s,str(extras[i].id),str(city.id),position,s.companies.size())
+	_seed_required_services(s)
 	_seed_balancing_staff(s)
 	Public.initialize(s)
 	Life.initialize(s)
@@ -232,6 +233,19 @@ static func new_world(seed_value: Variant = null, options: Dictionary = {}) -> D
 	Market.initialize(s)
 	s["initial_metrics"] = {"people":s.people.size(),"companies":s.companies.size(),"products":s.products.size(),"cities":s.cities.size()}
 	return s
+
+static func _seed_required_services(s: Dictionary) -> void:
+	for city in s.cities:
+		for kind in _parameters().required_initial_services:
+			var exists: bool=false
+			for facility in s.facilities:
+				if facility.city_id==city.id and facility.kind==kind: exists=true; break
+			if exists: continue
+			var position: Vector2i=_seed_site(s,city)
+			if position.x<0 or _building(str(kind)).is_empty():
+				push_error("INITIAL_SERVICE_SITE_REQUIRED:"+str(city.id)+":"+str(kind))
+				continue
+			_seed_company(s,str(kind),str(city.id),position,s.companies.size())
 
 static func _seed_balancing_staff(s: Dictionary) -> void:
 	# These are explicit opening people/contracts, never a runtime rescue.
@@ -273,9 +287,10 @@ static func _seed_company(s: Dictionary, kind: String, city_id: String, tile: Ve
 		for product in _keys(p.starter_materials): _change_inventory(s,co,city_id,product,int(p.starter_materials[product]),"opening",0)
 
 static func _seed_site(s: Dictionary, city: Dictionary) -> Vector2i:
+	var tutorial: Dictionary=Land.definition()
 	for y in range(int(city.height)-1):
 		for x in range(int(city.width)-1):
-			if x==6 and y==6: continue
+			if _rect_overlap({"x":x,"y":y,"w":2,"h":2},{"x":int(tutorial.tutorial_x),"y":int(tutorial.tutorial_y),"w":int(tutorial.plot_width),"h":int(tutorial.plot_height)}): continue
 			var payload: Dictionary={"city_id":city.id,"x":x,"y":y,"kind":"bakery"}
 			var owner: String=""
 			for co in s.companies:
@@ -783,6 +798,7 @@ static func _produce(s: Dictionary, facility: Dictionary, month: int) -> void:
 		_event(s,"production_limit",str(gate.get("reason","공정 제약")),month,{"actor_id":company.id,"city_id":facility.city_id,"facility_id":facility.id})
 		return
 	var target: int=mini(int(gate.get("batch_limit",facility.capacity)),int(int(facility.capacity)*int(company.policy.production_percent)/100))
+	if facility.kind=="school": target=mini(target,maxi(0,int(facility.capacity)-Life.training_batches_used(s,str(facility.id),month)))
 	var output: String=str(recipe.outputs.keys()[0])
 	if not Industry.is_service(s,output):
 		var stock_target: int=int(_parameters().stock_target_essentials) if output in _parameters().essential_products else int(_parameters().stock_target_default)
@@ -1090,7 +1106,11 @@ static func resolve_month(s: Dictionary) -> Dictionary:
 	_prepare_runtime(work)
 	var ordered: Array=_sorted(work,work.facilities,"production")
 	ordered.sort_custom(func(a,b): return _production_priority(work,a)<_production_priority(work,b))
-	for facility in ordered: _produce(work,facility,month)
+	for facility in ordered:
+		if _production_priority(work,facility)<=1: _produce(work,facility,month)
+	Life.deliver_training(work,month)
+	for facility in ordered:
+		if _production_priority(work,facility)>1: _produce(work,facility,month)
 	Industry.deliver_digital(work,month)
 	for project in _sorted(work,work.projects,"construction"):
 		_construct(work,project,month)
@@ -1220,8 +1240,8 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 		var price: int=int(products.get(product,{}).get("price",0))
 		var value: int=quantity*price
 		var sector: String=str(event.get("sector",""))
-		var digital_sale: bool=type=="gdp_output" and sector=="digital" and not str(event.get("buyer_id","")).is_empty()
-		var is_trade: bool=type in ["trade","service_trade"] or digital_sale
+		var priced_sector_sale: bool=type=="gdp_output" and sector in ["digital","education_current"] and not str(event.get("buyer_id","")).is_empty()
+		var is_trade: bool=type in ["trade","service_trade"] or priced_sector_sale
 		if is_trade and event_month<=month and quantity>0 and people.has(str(event.get("buyer_id",event.get("actor_id","")))) and str(event.get("currency","CR"))=="CR":
 			var key: String=_metric_product_key(city,product)
 			if not household_prices.has(key) or int(household_prices[key].month)<event_month: household_prices[key]={"month":event_month,"quantity":0,"amount":0}
@@ -1235,10 +1255,10 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 			var currency: String=str(event.get("currency","CR"))
 			var amount: int=int(event.get("amount",0))
 			if selected.has(seller_city) and not selected.has(buyer_city):
-				exports+=(int(event.get("amount",0)) if currency=="CR" else 0) if digital_sale else value
+				exports+=(int(event.get("amount",0)) if currency=="CR" else 0) if priced_sector_sale else value
 				_metric_add_currency(exports_by_currency,currency,amount)
 			if selected.has(buyer_city) and not selected.has(seller_city):
-				imports+=(int(event.get("amount",0)) if currency=="CR" else 0) if digital_sale else value
+				imports+=(int(event.get("amount",0)) if currency=="CR" else 0) if priced_sector_sale else value
 				_metric_add_currency(imports_by_currency,currency,amount)
 			if cities.has(buyer_city): cities[buyer_city].trades+=1
 			if selected.has(buyer_city) and rows.has(product):
@@ -1256,10 +1276,11 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 		if not cities.has(city): continue
 		match type:
 			"gdp_output","gdp_input":
-				if sector not in ["public_nonmarket","digital"]: continue
+				if sector not in ["public_nonmarket","digital","education_current"]: continue
 				var measured: int=int(event.get("amount",0)) if str(event.get("currency","CR"))=="CR" else 0
 				var field: String="gross_output" if type=="gdp_output" else "intermediate_consumption"
-				var component: String=("public_" if sector=="public_nonmarket" else "digital_")+field
+				var prefix: String="public_" if sector=="public_nonmarket" else ("training_" if sector=="education_current" else "digital_")
+				var component: String=prefix+field
 				cities[city][field]+=measured
 				cities[city][component]+=measured
 			"production_output":
@@ -1287,10 +1308,10 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 				cities[city].consumption_value+=value
 				_metric_product_activity(city_products,city,product,"consumed",quantity)
 	var result: Dictionary=_metric_empty_city(scope_id)
-	result.merge({"scope_id":scope_id,"month":month,"per_product":[],"gdp":0,"real_gdp":0,"value_added":0,"price_index":100,"price_index_bps":10000,"price_basket":[],"price_index_missing_weight_percent":0.0,"price_index_reference_weight_percent":0.0,"exports":exports,"imports":imports,"net_exports":exports-imports,"exports_by_currency":exports_by_currency,"imports_by_currency":imports_by_currency,"accounting":"experimental_mixed_basis_covered_sector_value_added","valuation_currency":"CR","price_basis":"goods_services_construction_at_content_base_prices;public_at_actual_cost;digital_at_earned_transaction_prices","nominal_gdp_available":false,"full_real_gdp_available":false,"real_gdp_scope":"fixed_base_price_goods_sold_services_and_construction_only","unit_warning":"통합 생산·소비·미충족·재고는 기준가격으로 환산한 최소 화폐 단위입니다. 품목별 물량은 per_product에서 확인합니다.","definition":"상품·판매 서비스·건설은 기준가격, 공공 비시장 서비스는 실제 비용, 디지털은 이행한 거래가격으로 평가한 부가가치입니다. 평가 기준별 구성요소를 분리하며 전 부문 명목·실질 GDP로 단정하지 않습니다."},true)
+	result.merge({"scope_id":scope_id,"month":month,"per_product":[],"gdp":0,"real_gdp":0,"value_added":0,"price_index":100,"price_index_bps":10000,"price_basket":[],"price_index_missing_weight_percent":0.0,"price_index_reference_weight_percent":0.0,"exports":exports,"imports":imports,"net_exports":exports-imports,"exports_by_currency":exports_by_currency,"imports_by_currency":imports_by_currency,"accounting":"experimental_mixed_basis_covered_sector_value_added","valuation_currency":"CR","price_basis":"goods_services_construction_at_content_base_prices;public_at_actual_cost;digital_at_earned_transaction_prices;training_at_earned_tuition_and_declared_input_prices","nominal_gdp_available":false,"full_real_gdp_available":false,"real_gdp_scope":"fixed_base_price_goods_sold_services_and_construction_only","unit_warning":"통합 생산·소비·미충족·재고는 기준가격으로 환산한 최소 화폐 단위입니다. 품목별 물량은 per_product에서 확인합니다.","definition":"상품·판매 서비스·건설은 기준가격, 공공 비시장 서비스는 실제 비용, 디지털은 이행한 거래가격, 직업교육은 실제 제공한 수강료와 명시된 투입 평가로 계산한 부가가치입니다. 평가 기준별 구성요소를 분리하며 전 부문 명목·실질 GDP로 단정하지 않습니다."},true)
 	for city in cities:
 		if not selected.has(city): continue
-		for field in ["population","employed","revenue","expenses","trades","gross_output","intermediate_consumption","production_value","consumption_value","demand_value","unmet_value","inventory_value","construction_materials","construction_work","public_gross_output","public_intermediate_consumption","digital_gross_output","digital_intermediate_consumption"]: result[field]=int(result[field])+int(cities[city][field])
+		for field in ["population","employed","revenue","expenses","trades","gross_output","intermediate_consumption","production_value","consumption_value","demand_value","unmet_value","inventory_value","construction_materials","construction_work","public_gross_output","public_intermediate_consumption","digital_gross_output","digital_intermediate_consumption","training_gross_output","training_intermediate_consumption"]: result[field]=int(result[field])+int(cities[city][field])
 		for currency in cities[city].cash_by_currency: _metric_add_currency(result.cash_by_currency,currency,int(cities[city].cash_by_currency[currency]))
 		for product in products:
 			var activity: Dictionary=city_products.get(_metric_product_key(city,product),{})
@@ -1305,7 +1326,8 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 	result.gdp=int(result.gross_output)-int(result.intermediate_consumption)
 	result.public_nonmarket_value_added=int(result.public_gross_output)-int(result.public_intermediate_consumption)
 	result.digital_current_price_value_added=int(result.digital_gross_output)-int(result.digital_intermediate_consumption)
-	result.covered_fixed_price_value_added=int(result.gdp)-int(result.public_nonmarket_value_added)-int(result.digital_current_price_value_added)
+	result.market_training_current_price_value_added=int(result.training_gross_output)-int(result.training_intermediate_consumption)
+	result.covered_fixed_price_value_added=int(result.gdp)-int(result.public_nonmarket_value_added)-int(result.digital_current_price_value_added)-int(result.market_training_current_price_value_added)
 	result.real_gdp=result.covered_fixed_price_value_added
 	result.value_added=result.gdp
 	result.cash=int(result.cash_by_currency.get("CR",0))
@@ -1319,7 +1341,7 @@ static func metrics(s: Dictionary, scope_id: String = "world") -> Dictionary:
 	return result
 
 static func _metric_empty_city(id: String) -> Dictionary:
-	return {"city_id":id,"population":0,"employed":0,"revenue":0,"expenses":0,"trades":0,"cash_by_currency":{},"gross_output":0,"intermediate_consumption":0,"production_value":0,"consumption_value":0,"demand_value":0,"unmet_value":0,"inventory_value":0,"construction_materials":0,"construction_work":0,"public_gross_output":0,"public_intermediate_consumption":0,"digital_gross_output":0,"digital_intermediate_consumption":0}
+	return {"city_id":id,"population":0,"employed":0,"revenue":0,"expenses":0,"trades":0,"cash_by_currency":{},"gross_output":0,"intermediate_consumption":0,"production_value":0,"consumption_value":0,"demand_value":0,"unmet_value":0,"inventory_value":0,"construction_materials":0,"construction_work":0,"public_gross_output":0,"public_intermediate_consumption":0,"digital_gross_output":0,"digital_intermediate_consumption":0,"training_gross_output":0,"training_intermediate_consumption":0}
 
 static func _metric_add_currency(amounts: Dictionary, currency: String, amount: int) -> void:
 	amounts[currency]=int(amounts.get(currency,0))+amount

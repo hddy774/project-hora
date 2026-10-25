@@ -23,6 +23,16 @@ static func validate_content(data: Dictionary) -> Array:
 	for key in ["initial_shares","minimum_capital","registration_fee","maximum_name_length","default_hours","default_wage","minimum_wage","maximum_wage","maximum_hours","training_monthly_fee","training_hours","maximum_skill","maximum_training_months","migration_fee","director_monthly_hours","delegation_monthly_hours","maximum_delegation_budget","acquisition_valid_months","liquidation_facility_price","liquidation_stock_discount_percent","retirement_notice_months","ai_reconsider_period","ai_startup_cash","ai_startup_capital","ai_training_cash","ai_wage_improvement","ai_hiring_wage_step","ai_maximum_wage","employees_per_facility","initial_reputation","initial_role_skill","initial_operations_skill","ai_training_months","executive_hourly_wage","minimum_executive_skill","ai_liquidation_reserve","liquidation_notice_months","guaranteed_hour_percent","director_guaranteed_hours"]:
 		if not _integer(data.parameters.get(key)) or int(data.parameters[key]) <= 0: errors.append("LIFECYCLE_PARAMETER:" + key)
 	if not data.get("payroll_policy") is Dictionary or data.payroll_policy.get("payment_rule") != "pro_rata_by_amount" or data.payroll_policy.get("rounding_rule") != "seeded_remainder" or data.payroll_policy.get("idle_hours_are_output") != false or data.payroll_policy.get("unpaid_wages_create_claims") != true: errors.append("LIFECYCLE_PAYROLL_POLICY")
+	if not data.get("teaching_policy") is Dictionary:
+		errors.append("TEACHING_POLICY_MISSING")
+	else:
+		var teaching: Dictionary=data.teaching_policy
+		if not teaching.get("building_kinds") is Array or teaching.building_kinds.is_empty() or not _integer(teaching.get("max_hours_per_instructor")) or int(teaching.get("max_hours_per_instructor",0))<int(data.parameters.training_hours): errors.append("TEACHING_CAPACITY_INVALID")
+		for vector in ["materials_per_lesson","services_per_lesson","initial_faculty_skills"]:
+			if not teaching.get(vector) is Dictionary or teaching[vector].is_empty():errors.append("TEACHING_INPUT_VECTOR:"+vector)
+			else:
+				for quantity in teaching[vector].values():
+					if not _integer(quantity) or int(quantity)<=0:errors.append("TEACHING_INPUT_QUANTITY")
 	if not data.get("default_company_policy") is Dictionary: errors.append("LIFECYCLE_COMPANY_POLICY_MISSING")
 	if not data.parameters.get("allow_player_switch") is bool: errors.append("LIFECYCLE_SWITCH_RULE_MISSING")
 	for key in ["skills","roles","allowed_kinds","delegable_permissions","ui_actions"]:
@@ -132,7 +142,7 @@ static func _role_skill(role: String) -> String:
 static func initialize(s: Dictionary) -> void:
 	if s.has("lifecycle"): return
 	var p: Dictionary = _p()
-	s.lifecycle = {"version": 1, "next_serial": 0, "employment": [], "job_offers": [], "director_applications": [], "training": [], "delegations": [], "acquisitions": [], "liquidations": [], "liquidation_assets": [], "successions": [], "applied_commands": {}, "wage_claims": [], "payroll_accruals": {}, "payroll_months": {}}
+	s.lifecycle = {"version": 1, "next_serial": 0, "employment": [], "job_offers": [], "director_applications": [], "training": [], "delegations": [], "acquisitions": [], "liquidations": [], "liquidation_assets": [], "successions": [], "applied_commands": {}, "wage_claims": [], "payroll_accruals": {}, "payroll_months": {}, "teaching_usage": {"month":0,"teachers":{},"facilities":{}}, "training_delivery_months": {}}
 	if not s.has("ownership"): s.ownership = []
 	if not s.has("households"): s.households = []
 	for company in s.companies:
@@ -141,7 +151,11 @@ static func initialize(s: Dictionary) -> void:
 			if record.company_id == company.id: has_owner = true
 		if not has_owner:
 			s.ownership.append({"company_id": company.id, "owner_id": company.shareholder_id, "shares": int(p.initial_shares), "voting_shares": int(p.initial_shares)})
-		company["business_kind"] = str(company.get("business_kind", "bakery"))
+		var actual_kind: String = ""
+		for site in s.facilities:
+			if site.company_id == company.id: actual_kind = str(site.kind); break
+		company["business_kind"] = str(company.get("business_kind", actual_kind))
+		company["teaching_policy"] = {"enabled":str(company.business_kind) in _cfg().teaching_policy.building_kinds,"max_hours":int(_cfg().teaching_policy.max_hours_per_instructor)}
 		company["incorporation_month"] = 0
 		company["parent_company_id"] = ""
 	for person in s.people:
@@ -157,7 +171,12 @@ static func initialize(s: Dictionary) -> void:
 		if _find(s.households, person.household_id).is_empty():
 			s.households.append({"id": person.household_id, "members": [person.id], "city_id": person.city_id, "joint_account_id": "", "consumption_policy": "essential_first"})
 		if not str(person.company_id).is_empty():
-			s.lifecycle.employment.append({"id": "employment-" + str(person.id), "person_id": person.id, "company_id": person.company_id, "city_id":person.city_id, "role": person.role, "wage": int(person.wage), "hours": int(person.hours), "guaranteed_hours": _default_guaranteed_hours(str(person.role), int(person.hours)), "start_month": 0, "end_month": 0, "status": "active"})
+			s.lifecycle.employment.append({"id": "employment-" + str(person.id), "person_id": person.id, "company_id": person.company_id, "city_id":person.city_id, "role": person.role, "wage": int(person.wage), "hours": int(person.hours), "guaranteed_hours": _default_guaranteed_hours(str(person.role), int(person.hours)), "teaching_authorized":_teaching_offer(s,str(person.company_id),str(person.role),str(person.city_id)), "start_month": 0, "end_month": 0, "status": "active"})
+
+	for contract in s.lifecycle.employment:
+		if contract.get("teaching_authorized",false):
+			var teacher: Dictionary = _find(s.people,str(contract.person_id))
+			for skill in _cfg().teaching_policy.initial_faculty_skills: teacher.skills[skill] = int(_cfg().teaching_policy.initial_faculty_skills[skill])
 
 static func shares_owned(s: Dictionary, owner: String, company: String, voting: bool = false) -> int:
 	var result: int = 0
@@ -277,14 +296,43 @@ static func _queued_person_action(s: Dictionary, c: Dictionary, types: Array) ->
 		if queued.get("id") != c.id and queued.get("actor_id") == c.actor_id and queued.get("type") in types: return true
 	return false
 
+static func _education_site(s: Dictionary, company: String, city: String) -> Dictionary:
+	for site in s.facilities:
+		if site.company_id != company or site.city_id != city or not site.kind in _cfg().teaching_policy.building_kinds: continue
+		if site.get("status","") not in ["operational","ready"] or int(site.get("operational_month",1))>int(s.planning_month): continue
+		if int(site.get("condition",100))<=0: continue
+		if s.has("land"):
+			var land: Variant=load("res://core/land.gd")
+			if not land.can_operate(s,company,city,site):continue
+		return site
+	return {}
+
+static func _teaching_offer(s: Dictionary, company: String, role: String, city: String) -> bool:
+	return role == "operator" and not _education_site(s,company,city).is_empty()
+
+static func training_batches_used(s: Dictionary, facility_id: String, month: int) -> int:
+	var usage: Dictionary=s.get("lifecycle",{}).get("teaching_usage",{})
+	return int(usage.get("facilities",{}).get(facility_id,0)) if int(usage.get("month",-1))==month else 0
+
 static func _teacher(s: Dictionary, learner: Dictionary, skill: String, required_hours: int = 0) -> Dictionary:
-	for person in s.people:
-		if person.id == learner.id or person.city_id != learner.city_id or person.get("career_status", "active") != "active": continue
-		if str(person.get("company_id", "")).is_empty(): continue
-		if _role_skill(str(person.role)) != skill: continue
-		if int(person.get("skills", {}).get(skill, 0)) < int(learner.get("skills", {}).get(skill, 0)): continue
-		var used: int = int(s.get("monthly_labor", {}).get(person.id, 0))
-		if int(person.hours) - used >= required_hours: return person
+	for contract in s.lifecycle.employment:
+		if contract.status!="active" or not contract.get("teaching_authorized",false) or contract.role!="operator":continue
+		var person: Dictionary=_find(s.people,str(contract.person_id))
+		if person.is_empty() or person.id==learner.id or person.city_id!=learner.city_id or person.get("career_status","active")!="active":continue
+		var company: Dictionary=_find(s.companies,str(contract.company_id))
+		if company.is_empty() or company.get("status","active")!="active" or not company.get("teaching_policy",{}).get("enabled",false):continue
+		if int(person.get("skills",{}).get(skill,0))<=int(learner.get("skills",{}).get(skill,0)):continue
+		var site: Dictionary=_education_site(s,str(company.id),str(person.city_id))
+		if site.is_empty():continue
+		if required_hours<=0:return person
+		var used: int=int(s.monthly_labor.get(person.id,0))
+		var teaching: int=int(s.lifecycle.teaching_usage.teachers.get(person.id,0))
+		if int(person.hours)-used<required_hours or teaching+required_hours>int(company.teaching_policy.max_hours):continue
+		if training_batches_used(s,str(site.id),int(s.planning_month))>=int(site.capacity):continue
+		var material_ok: bool=true
+		for product in _cfg().teaching_policy.materials_per_lesson:
+			if Domain.available_quantity(s,str(company.id),str(product),str(person.city_id))<int(_cfg().teaching_policy.materials_per_lesson[product]):material_ok=false
+		if material_ok:return person
 	return {}
 
 static func validate_command(s: Dictionary, c: Dictionary) -> String:
@@ -299,7 +347,7 @@ static func validate_command(s: Dictionary, c: Dictionary) -> String:
 	var payload: Dictionary = c.payload
 	var p: Dictionary = _p()
 	var type: String = str(c.type)
-	if type in ["post_job", "hire_person", "fire_person", "delegate_management", "revoke_delegation", "create_subsidiary", "declare_bankruptcy", "buy_liquidation_asset"] and not _corporate(s, c): return "COMPANY_AUTHORITY_REQUIRED"
+	if type in ["post_job", "hire_person", "fire_person", "delegate_management", "revoke_delegation", "create_subsidiary", "declare_bankruptcy", "buy_liquidation_asset", "set_teaching_policy"] and not _corporate(s, c): return "COMPANY_AUTHORITY_REQUIRED"
 	match type:
 		"create_company", "create_subsidiary":
 			if not _text(payload, "name") or str(payload.name).length() > int(p.maximum_name_length): return "INVALID_COMPANY_NAME"
@@ -314,12 +362,22 @@ static func validate_command(s: Dictionary, c: Dictionary) -> String:
 			if _cash(s, payer) - _reserved_cash(s, payer, str(c.id)) < int(payload.capital) + int(p.registration_fee): return "STARTUP_FUNDS_REQUIRED"
 			if _fee_recipient(s, str(payload.city_id), payer).is_empty(): return "REGISTRATION_SERVICE_UNAVAILABLE"
 			if type == "create_company" and _queued_person_action(s, c, ["create_company", "apply_job", "resign_job", "move_person"]): return "PERSONAL_TIME_RESERVED"
+		"set_teaching_policy":
+			if not _director(s,str(actor.id),str(c.acting_company_id)): return "ONLY_DIRECTOR_CAN_AUTHORIZE_TEACHING"
+			if not payload.get("enabled") is bool or not _number(payload,"max_hours",1,int(_cfg().teaching_policy.max_hours_per_instructor)): return "INVALID_TEACHING_POLICY"
+			var provider: Dictionary = _find(s.companies,str(c.acting_company_id))
+			var has_school: bool=str(provider.get("business_kind","")) in _cfg().teaching_policy.building_kinds
+			for site in s.facilities:
+				if site.company_id==provider.id and site.kind in _cfg().teaching_policy.building_kinds:has_school=true
+			if not has_school:return "EDUCATION_BUSINESS_REQUIRED"
 		"post_job", "hire_person":
 			var work_city: String=str(payload.get("city_id",_find(s.companies,str(c.acting_company_id)).get("city_id","")))
 			var site_exists: bool=_find(s.companies,str(c.acting_company_id)).get("city_id","")==work_city
 			for site in s.facilities+s.projects:
 				if site.company_id==c.acting_company_id and site.city_id==work_city: site_exists=true
 			if not site_exists: return "COMPANY_WORKSITE_REQUIRED"
+			if payload.has("teaching_authorized") and not payload.teaching_authorized is bool: return "INVALID_TEACHING_CONSENT"
+			if payload.get("teaching_authorized",false) and not _teaching_offer(s,str(c.acting_company_id),str(payload.get("role","")),work_city): return "EDUCATION_WORKSITE_REQUIRED"
 			if not str(payload.get("role", "")) in _cfg().roles: return "UNKNOWN_JOB_ROLE"
 			if not _number(payload, "wage", int(p.minimum_wage), int(p.maximum_wage)) or not _number(payload, "hours", 1, int(p.maximum_hours)): return "INVALID_EMPLOYMENT_TERMS"
 			if payload.has("guaranteed_hours") and (not _number(payload,"guaranteed_hours",1,int(payload.hours)) or (str(payload.role)=="director" and int(payload.guaranteed_hours)>int(_p().director_guaranteed_hours))): return "INVALID_GUARANTEED_HOURS"
@@ -481,14 +539,14 @@ static func _end_employment(s: Dictionary, person: Dictionary, month: int, reaso
 	person.employment_status = "unemployed"
 	_event(s, "employment_end", reason, month, {"actor_id": person.id, "company_id": old_company, "city_id": person.city_id})
 
-static func _employ(s: Dictionary, person: Dictionary, company: Dictionary, role: String, wage: int, hours: int, month: int, guaranteed_hours: int = -1) -> void:
+static func _employ(s: Dictionary, person: Dictionary, company: Dictionary, role: String, wage: int, hours: int, month: int, guaranteed_hours: int = -1, teaching_authorized: bool = false) -> void:
 	if not str(person.company_id).is_empty(): _end_employment(s, person, month, "이직으로 기존 근로 계약 종료")
 	person.company_id = company.id
 	person.role = role
 	person.hours = hours
 	person.wage = wage
 	person.employment_status = "employed"
-	s.lifecycle.employment.append({"id": _new_id(s, "employment"), "person_id": person.id, "company_id": company.id, "city_id":person.city_id, "role": role, "wage": wage, "hours": hours, "guaranteed_hours": _default_guaranteed_hours(role, hours) if guaranteed_hours < 0 else guaranteed_hours, "start_month": month, "end_month": 0, "status": "active"})
+	s.lifecycle.employment.append({"id": _new_id(s, "employment"), "person_id": person.id, "company_id": company.id, "city_id":person.city_id, "role": role, "wage": wage, "hours": hours, "guaranteed_hours": _default_guaranteed_hours(role, hours) if guaranteed_hours < 0 else guaranteed_hours, "teaching_authorized":teaching_authorized, "start_month": month, "end_month": 0, "status": "active"})
 	_event(s, "employment_start", "실제 인물과 근로 계약 체결", month, {"actor_id": person.id, "company_id": company.id, "city_id": person.city_id, "hours": hours, "amount": wage})
 
 static func _clear_office(s: Dictionary, company: Dictionary, month: int, reason: String) -> void:
@@ -520,6 +578,7 @@ static func _make_company(s: Dictionary, c: Dictionary, month: int, parent: bool
 	var recipient: String = _fee_recipient(s, str(payload.city_id), investor)
 	if not _pay(s, "lifecycle-register-" + str(c.id), investor, recipient, int(_p().registration_fee), "법인 등록 서비스", month): return {"ok": false, "error": "REGISTRATION_PAYMENT_FAILED"}
 	var co: Dictionary = {"id": company_id, "name": str(payload.name).strip_edges(), "city_id": payload.city_id, "director_id": "", "shareholder_id": investor, "policy": _cfg().default_company_policy.duplicate(true), "opening_cash": 0, "revenue": 0, "expenses": 0, "last_profit": 0, "status": "active", "business_kind": payload.kind, "incorporation_month": month, "parent_company_id": investor if parent else ""}
+	co["teaching_policy"] = {"enabled":str(payload.kind) in _cfg().teaching_policy.building_kinds,"max_hours":int(_cfg().teaching_policy.max_hours_per_instructor)}
 	s.companies.append(co)
 	s.ownership.append({"company_id": company_id, "owner_id": investor, "shares": int(_p().initial_shares), "voting_shares": int(_p().initial_shares)})
 	if not parent:
@@ -538,18 +597,19 @@ static func _apply_mutating(s: Dictionary, c: Dictionary, month: int) -> Diction
 	var co: Dictionary = _find(s.companies, str(c.acting_company_id))
 	match str(c.type):
 		"create_company", "create_subsidiary": return _make_company(s, c, month, c.type == "create_subsidiary")
+		"set_teaching_policy": co.teaching_policy = {"enabled":payload.enabled,"max_hours":int(payload.max_hours)}
 		"post_job":
-			s.lifecycle.job_offers.append({"id": _new_id(s, "vacancy"), "company_id": co.id, "city_id":str(payload.get("city_id",co.city_id)), "role": payload.role, "wage": int(payload.wage), "hours": int(payload.hours), "guaranteed_hours": int(payload.get("guaranteed_hours",_default_guaranteed_hours(str(payload.role),int(payload.hours)))), "skill": int(payload.skill), "status": "open", "candidate_id": "", "posted_month": month, "expires_month": month + int(_p().acquisition_valid_months)})
+			s.lifecycle.job_offers.append({"id": _new_id(s, "vacancy"), "company_id": co.id, "city_id":str(payload.get("city_id",co.city_id)), "role": payload.role, "wage": int(payload.wage), "hours": int(payload.hours), "guaranteed_hours": int(payload.get("guaranteed_hours",_default_guaranteed_hours(str(payload.role),int(payload.hours)))), "skill": int(payload.skill), "teaching_authorized":bool(payload.get("teaching_authorized",_teaching_offer(s,str(co.id),str(payload.role),str(payload.get("city_id",co.city_id))))), "status": "open", "candidate_id": "", "posted_month": month, "expires_month": month + int(_p().acquisition_valid_months)})
 			_event(s, "job_offer", "직종·시간·보수와 자금 한도가 있는 공개 채용", month, {"actor_id": actor.id, "company_id": co.id, "city_id": co.city_id})
 		"apply_job":
 			var offer: Dictionary = _find(s.lifecycle.job_offers, str(payload.offer_id))
 			var employer: Dictionary = _find(s.companies, str(offer.company_id))
 			if employer.is_empty() or employer.status != "active" or _cash(s, str(employer.id)) < int(offer.wage) * int(offer.hours): return {"ok": false, "error": "EMPLOYER_PAYROLL_UNAVAILABLE"}
-			_employ(s, actor, employer, str(offer.role), int(offer.wage), int(offer.hours), month, int(offer.get("guaranteed_hours",_default_guaranteed_hours(str(offer.role),int(offer.hours)))))
+			_employ(s, actor, employer, str(offer.role), int(offer.wage), int(offer.hours), month, int(offer.get("guaranteed_hours",_default_guaranteed_hours(str(offer.role),int(offer.hours)))), bool(offer.get("teaching_authorized",false)))
 			offer.status = "filled"
 			offer.person_id = actor.id
 		"hire_person":
-			s.lifecycle.job_offers.append({"id": _new_id(s, "vacancy"), "company_id": co.id, "city_id":str(payload.get("city_id",co.city_id)), "candidate_id": payload.person_id, "role": payload.role, "wage": int(payload.wage), "hours": int(payload.hours), "guaranteed_hours": int(payload.get("guaranteed_hours",_default_guaranteed_hours(str(payload.role),int(payload.hours)))), "skill": 0, "status": "open", "posted_month": month, "expires_month": month + int(_p().acquisition_valid_months)})
+			s.lifecycle.job_offers.append({"id": _new_id(s, "vacancy"), "company_id": co.id, "city_id":str(payload.get("city_id",co.city_id)), "candidate_id": payload.person_id, "role": payload.role, "wage": int(payload.wage), "hours": int(payload.hours), "guaranteed_hours": int(payload.get("guaranteed_hours",_default_guaranteed_hours(str(payload.role),int(payload.hours)))), "skill": 0, "teaching_authorized":bool(payload.get("teaching_authorized",_teaching_offer(s,str(co.id),str(payload.role),str(payload.get("city_id",co.city_id))))), "status": "open", "posted_month": month, "expires_month": month + int(_p().acquisition_valid_months)})
 			_event(s, "job_offer", "채용 제안·해당 인물이 동의해 지원해야 근로 계약 체결", month, {"actor_id": actor.id, "company_id": co.id, "city_id": co.city_id, "candidate_id": payload.person_id})
 		"resign_job":
 			if actor.role == "director": _clear_office(s, _find(s.companies, str(actor.company_id)), month, "대표 자진 사임")
@@ -754,34 +814,7 @@ static func monthly(s: Dictionary, month: int) -> void:
 			person.skills[training.skill] = mini(int(_p().maximum_skill), int(person.skills.get(training.skill, 0)) + 1)
 			training.status = "completed"
 			_event(s, "education_complete", "교육 기간·수강료·수업 시간을 충족해 다음 월 숙련 적용", month, {"actor_id": person.id, "city_id": person.city_id, "skill": training.skill})
-		if training.status != "active": continue
-		var hours: int = int(_p().training_hours)
-		var used: int = int(s.get("monthly_labor", {}).get(person.id, 0))
-		var instructor: Dictionary = _teacher(s, person, str(training.skill), hours)
-		if instructor.is_empty() or int(person.hours) - used < hours:
-			training.reason = "교육 인력 또는 가용 시간 부족"
-			continue
-		var fee: int = int(_p().training_monthly_fee)
-		if int(training.spent) + fee > int(training.budget) or _cash(s, str(person.id)) < fee:
-			training.reason = "수강료 예산 또는 현금 부족"
-			continue
-		var teacher_pay: int = hours * int(instructor.wage)
-		if _cash(s, str(instructor.company_id)) + fee < teacher_pay:
-			training.reason = "교육 제공자의 강사 보수 지급 능력 부족"
-			continue
-		if not _pay(s, "lifecycle-tuition-%d-%s" % [month, training.id], str(person.id), str(instructor.company_id), fee, "직무 교육 서비스", month): continue
-		if teacher_pay > 0 and not _pay(s, "lifecycle-teacher-%d-%s" % [month, training.id], str(instructor.company_id), str(instructor.id), teacher_pay, "실제 강의 시간의 계약 임금", month): continue
-		s.monthly_labor[person.id] = used + hours
-		s.monthly_labor[instructor.id] = int(s.monthly_labor.get(instructor.id, 0)) + hours
-		instructor.last_income = int(instructor.get("last_income", 0)) + teacher_pay
-		_event(s,"labor","실제 유급 강의 노동",month,{"actor_id":instructor.id,"company_id":instructor.company_id,"city_id":instructor.city_id,"hours":hours,"amount":teacher_pay,"wage_paid":true})
-		training.spent = int(training.spent) + fee
-		training.months_done = int(training.months_done) + 1
-		training.reason = "실제 강사·수업 시간과 수강료 투입"
-		if int(training.months_done) >= int(training.months_required):
-			training.status = "completed_pending"
-			training.effective_month = month + 1
-		_event(s, "education", training.reason, month, {"actor_id": person.id, "city_id": person.city_id, "hours": hours, "amount": fee})
+
 	for estate in s.lifecycle.liquidations:
 		if estate.status != "liquidating": continue
 		var owner: String = str(estate.company_id)
@@ -851,6 +884,81 @@ static func _refresh_estate_land(s: Dictionary, owner: String) -> void:
 			if int(a.x) < int(b.x)+int(b.w) and int(b.x) < int(a.x)+int(a.w) and int(a.y) < int(b.y)+int(b.h) and int(b.y) < int(a.y)+int(a.h): overlaps = true; break
 		if not overlaps:
 			s.lifecycle.liquidation_assets.append({"id":_new_id(s,"asset"),"estate_id":owner,"kind":"land","reference_id":"land:"+str(parcel.city_id)+":"+str(parcel.rect),"city_id":parcel.city_id,"rect":parcel.rect.duplicate(true),"name":parcel.name,"price":int(parcel.price),"status":"listed"})
+
+static func deliver_training(s: Dictionary, month: int) -> Dictionary:
+	if s.lifecycle.training_delivery_months.has(str(month)): return s.lifecycle.training_delivery_months[str(month)].duplicate(true)
+	var industry: Variant=load("res://core/industry.gd")
+	if int(s.lifecycle.teaching_usage.month)!=month: s.lifecycle.teaching_usage={"month":month,"teachers":{},"facilities":{}}
+	var lessons: int=0
+	var tuition: int=0
+	var ordered: Array=s.lifecycle.training.duplicate()
+	ordered.sort_custom(func(a,b):return (str(s.seed)+"|training|"+str(month)+"|"+str(a.id)).sha256_text()<(str(s.seed)+"|training|"+str(month)+"|"+str(b.id)).sha256_text())
+	for training in ordered:
+		if training.status!="active":continue
+		var person: Dictionary=_find(s.people,str(training.person_id))
+		if person.is_empty():continue
+		var hours: int=int(_p().training_hours)
+		var used: int=int(s.monthly_labor.get(person.id,0))
+		var instructor: Dictionary=_teacher(s,person,str(training.skill),hours)
+		if instructor.is_empty() or int(person.hours)-used<hours:
+			training.reason="동의한 교육 시설 강사·교실·자재 또는 본인 가용 시간 부족"
+			continue
+		var site: Dictionary=_education_site(s,str(instructor.company_id),str(person.city_id))
+		var provider: String=str(instructor.company_id)
+		var fee: int=int(_p().training_monthly_fee)
+		var teacher_pay: int=hours*int(instructor.wage)
+		if int(training.spent)+fee>int(training.budget) or _cash(s,str(person.id))<fee:
+			training.reason="수강료 예산 또는 현금 부족"
+			continue
+		var supplied: bool=true
+		for product in _cfg().teaching_policy.services_per_lesson:
+			var need: int=int(_cfg().teaching_policy.services_per_lesson[product])
+			var missing: int=maxi(0,need-int(industry.service_available(s,provider,str(product),str(site.city_id))))
+			if missing>0:
+				var bought: Dictionary=industry.purchase_service(s,provider,str(site.city_id),str(product),missing,month,-1,true,_cash(s,provider))
+				if int(bought.get("quantity",0))<missing:supplied=false
+		if not supplied or _cash(s,provider)+fee<teacher_pay:
+			training.reason="교육 제공자의 실제 전력 서비스 또는 임금 지급 재원 부족"
+			continue
+		var course_lines: Array=[{"account":str(person.id)+":expense","debit":fee,"credit":0},{"account":str(person.id)+":cash","debit":0,"credit":fee},{"account":provider+":cash","debit":fee,"credit":0},{"account":provider+":revenue","debit":0,"credit":fee}]
+		if teacher_pay>0:course_lines.append_array([{"account":provider+":expense","debit":teacher_pay,"credit":0},{"account":provider+":cash","debit":0,"credit":teacher_pay},{"account":str(instructor.id)+":cash","debit":teacher_pay,"credit":0},{"account":str(instructor.id)+":revenue","debit":0,"credit":teacher_pay}])
+		var settled: Dictionary=Ledger.post(s,"lifecycle-lesson-%d-%s"%[month,training.id],course_lines,"동의한 직무 교육 수강료와 실제 강사 임금 동시 정산",month)
+		if not settled.ok:continue
+		var provider_company: Dictionary=_find(s.companies,provider)
+		provider_company.revenue=int(provider_company.revenue)+fee
+		provider_company.expenses=int(provider_company.expenses)+teacher_pay
+		for product in _cfg().teaching_policy.materials_per_lesson:
+			var quantity: int=int(_cfg().teaching_policy.materials_per_lesson[product])
+			Domain.change_inventory(s,provider,str(site.city_id),str(product),-quantity,"실제 직무 교육 수업 자재",month,"training_input")
+			var definition: Dictionary=_find(s.products,str(product))
+			_event(s,"gdp_input","실제 직무 교육의 소모 자재",month,{"actor_id":provider,"seller_id":provider,"city_id":site.city_id,"sector":"education_current","valuation":"content_base_price","product_id":product,"quantity":quantity,"amount":quantity*int(definition.price),"currency":"CR"})
+		for product in _cfg().teaching_policy.services_per_lesson:
+			var quantity: int=int(_cfg().teaching_policy.services_per_lesson[product])
+			industry.consume_service(s,provider,str(site.city_id),str(product),quantity,month)
+			var definition: Dictionary=_find(s.products,str(product))
+			_event(s,"gdp_input","실제 직무 교육의 전력 서비스 투입",month,{"actor_id":provider,"seller_id":provider,"city_id":site.city_id,"sector":"education_current","valuation":"content_base_price","product_id":product,"quantity":quantity,"amount":quantity*int(definition.price),"currency":"CR"})
+		s.monthly_labor[person.id]=used+hours
+		s.monthly_labor[instructor.id]=int(s.monthly_labor.get(instructor.id,0))+hours
+		s.lifecycle.teaching_usage.teachers[instructor.id]=int(s.lifecycle.teaching_usage.teachers.get(instructor.id,0))+hours
+		s.lifecycle.teaching_usage.facilities[site.id]=int(s.lifecycle.teaching_usage.facilities.get(site.id,0))+1
+		instructor.last_income=int(instructor.get("last_income",0))+teacher_pay
+		_event(s,"labor","교육 업무에 동의한 교육 시설 직원의 실제 유급 강의",month,{"actor_id":instructor.id,"company_id":provider,"facility_id":site.id,"city_id":site.city_id,"hours":hours,"amount":teacher_pay,"wage_paid":true})
+		_event(s,"gdp_output","실제 납품한 직무 교육 수업과 수강료",month,{"actor_id":provider,"seller_id":provider,"buyer_id":person.id,"city_id":site.city_id,"buyer_city_id":person.city_id,"sector":"education_current","valuation":"transaction_price","product_id":"education_course","quantity":1,"amount":fee,"currency":"CR"})
+		training.spent=int(training.spent)+fee
+		training.months_done=int(training.months_done)+1
+		training.reason="동의한 교육 시설·유급 강사·교실·종이·전력·수업 시간 투입"
+		training.provider_id=provider
+		training.instructor_id=instructor.id
+		training.facility_id=site.id
+		if int(training.months_done)>=int(training.months_required):
+			training.status="completed_pending"
+			training.effective_month=month+1
+		_event(s,"education",training.reason,month,{"actor_id":person.id,"company_id":provider,"instructor_id":instructor.id,"facility_id":site.id,"city_id":person.city_id,"hours":hours,"amount":fee})
+		lessons+=1
+		tuition+=fee
+	var result: Dictionary={"ok":true,"lessons":lessons,"tuition":tuition,"month":month}
+	s.lifecycle.training_delivery_months[str(month)]=result.duplicate(true)
+	return result
 
 static func _default_guaranteed_hours(role: String, hours: int) -> int:
 	if role == "director": return mini(hours, int(_p().director_guaranteed_hours))
@@ -1064,6 +1172,41 @@ static func _free_site(s: Dictionary, city_id: String, owner: String = "") -> Di
 				if (int(road.x) >= x and int(road.x) < x + 2 and int(road.y) in [y - 1, y + 2]) or (int(road.y) >= y and int(road.y) < y + 2 and int(road.x) in [x - 1, x + 2]): return {"x": x, "y": y}
 	return {}
 
+static func staffing_targets(s: Dictionary, company_id: String) -> Array:
+	# Private capacity/contracts are inspected only for the represented company.
+	# An observed labor constraint is required before planning beyond the
+	# minimum crew; idle theoretical capacity alone never creates a vacancy.
+	var company: Dictionary=_find(s.companies,company_id)
+	if company.is_empty():return []
+	var labor_limited: Dictionary={}
+	for event in s.get("last_report",{}).get("events",[]):
+		if event.get("type")=="production_limit" and event.get("actor_id")==company_id and event.get("reason")=="운영 인력 시간 부족":labor_limited[str(event.get("facility_id",""))]=true
+	var groups: Dictionary={}
+	for facility in s.facilities:
+		if facility.company_id!=company_id or facility.get("status","") not in ["operational","ready"] or int(facility.get("operational_month",1))>int(s.planning_month):continue
+		if int(facility.get("condition",100))<=0:continue
+		var role: String="builder" if facility.kind=="builders" else "operator"
+		var key: String=str(facility.city_id)+"|"+role
+		if not groups.has(key):groups[key]={"city_id":facility.city_id,"role":role,"workload_hours":0,"labor_limited":false,"employee_heads":0,"required_heads":int(_p().employees_per_facility)}
+		var recipe: Dictionary=_find(s.recipes,str(facility.get("recipe_id","")))
+		var batches: int=int(int(facility.get("capacity",0))*int(company.get("policy",{}).get("production_percent",100))/100)
+		groups[key].workload_hours=int(groups[key].workload_hours)+batches*int(recipe.get("labor",0))
+		if labor_limited.has(str(facility.id)):groups[key].labor_limited=true
+	for person in s.people:
+		if person.company_id!=company_id or person.get("employment_status","")!="employed":continue
+		var key: String=str(person.city_id)+"|"+str(person.role)
+		if groups.has(key):groups[key].employee_heads=int(groups[key].employee_heads)+1
+	var keys: Array=groups.keys()
+	keys.sort()
+	var result: Array=[]
+	for key in keys:
+		var target: Dictionary=groups[key]
+		if target.labor_limited:
+			var hours: int=int(_p().default_hours)
+			target.required_heads=maxi(int(target.required_heads),int((int(target.workload_hours)+hours-1)/hours))
+		result.append(target)
+	return result
+
 static func ai_commands(s: Dictionary) -> Array:
 	var commands: Array = []
 	if not s.has("lifecycle"): return commands
@@ -1117,17 +1260,11 @@ static func ai_commands(s: Dictionary) -> Array:
 			if facilities.is_empty() and _cash(s, str(own.id)) >= int(p.ai_startup_capital) / 2:
 				var site: Dictionary = _free_site(s, str(own.city_id), str(own.id))
 				if not site.is_empty(): commands.append(_command(s, str(person.id), str(own.id), "build", {"kind": own.get("business_kind", "bakery"), "city_id": own.city_id, "x": site.x, "y": site.y}))
-			var employees: int = 0
-			for candidate in s.people:
-				if candidate.company_id == own.id and candidate.role != "director": employees += 1
-			var desired: int = facilities.size() * int(p.employees_per_facility)
-			if employees < desired:
-				var role: String = "operator"
-				for facility in facilities:
-					if facility.get("kind") == "builders": role = "builder"
-				var wage: int = mini(int(p.ai_maximum_wage), int(p.default_wage) + int(p.ai_hiring_wage_step))
-				var command: Dictionary = _command(s, str(person.id), str(own.id), "post_job", {"role": role, "wage": wage, "hours": int(p.default_hours), "skill": 0})
-				if validate_command(s, command).is_empty(): commands.append(command)
+			for staffing in staffing_targets(s,str(own.id)):
+				if int(staffing.employee_heads)>=int(staffing.required_heads):continue
+				var wage: int=mini(int(p.ai_maximum_wage),int(p.default_wage)+int(p.ai_hiring_wage_step))
+				var command: Dictionary=_command(s,str(person.id),str(own.id),"post_job",{"city_id":staffing.city_id,"role":staffing.role,"wage":wage,"hours":int(p.default_hours),"skill":0})
+				if validate_command(s,command).is_empty():commands.append(command);break
 			if _cash(s, str(own.id)) < int(p.registration_fee) and int(own.get("last_profit", 0)) < 0:
 				var command: Dictionary = _command(s, str(person.id), str(own.id), "declare_bankruptcy", {})
 				if validate_command(s, command).is_empty(): commands.append(command)
@@ -1160,12 +1297,13 @@ static func validate(s: Dictionary) -> Array:
 	if not s.get("lifecycle") is Dictionary: return ["LIFECYCLE_STATE_MISSING"]
 	for key in ["employment", "job_offers", "director_applications", "training", "delegations", "acquisitions", "liquidations", "liquidation_assets", "successions", "wage_claims"]:
 		if not s.lifecycle.get(key) is Array: errors.append("LIFECYCLE_STATE_ARRAY:" + key)
+	if not s.lifecycle.get("teaching_usage") is Dictionary or not s.lifecycle.get("training_delivery_months") is Dictionary: errors.append("TEACHING_STATE_SCHEMA")
 	if not s.lifecycle.get("payroll_accruals") is Dictionary or not s.lifecycle.get("payroll_months") is Dictionary: errors.append("PAYROLL_STATE_SCHEMA")
 	if not s.lifecycle.get("applied_commands") is Dictionary: errors.append("LIFECYCLE_COMMAND_INDEX")
 	if not errors.is_empty(): return errors
 	var employed: Dictionary = {}
 	for contract in s.lifecycle.employment:
-		if not contract is Dictionary or not _integer(contract.get("hours")) or not _integer(contract.get("wage")) or not _integer(contract.get("guaranteed_hours")) or int(contract.get("guaranteed_hours",-1))<0 or int(contract.get("guaranteed_hours",0))>int(contract.get("hours",0)): errors.append("EMPLOYMENT_SCHEMA")
+		if not contract is Dictionary or not _integer(contract.get("hours")) or not _integer(contract.get("wage")) or not _integer(contract.get("guaranteed_hours")) or not contract.get("teaching_authorized") is bool or int(contract.get("guaranteed_hours",-1))<0 or int(contract.get("guaranteed_hours",0))>int(contract.get("hours",0)): errors.append("EMPLOYMENT_SCHEMA")
 		elif contract.status == "active":
 			if employed.has(contract.person_id): errors.append("DUPLICATE_ACTIVE_EMPLOYMENT:" + str(contract.person_id))
 			employed[contract.person_id] = contract
@@ -1183,7 +1321,17 @@ static func validate(s: Dictionary) -> Array:
 	for holding in s.get("ownership", []):
 		if not holding is Dictionary or not _integer(holding.get("shares")) or not _integer(holding.get("voting_shares")) or int(holding.shares) < 0 or int(holding.voting_shares) < 0 or int(holding.voting_shares) > int(holding.shares): errors.append("OWNERSHIP_QUANTITY_INVALID")
 		elif _find(s.companies, str(holding.company_id)).is_empty(): errors.append("OWNERSHIP_COMPANY_MISSING")
+	var usage: Dictionary=s.lifecycle.teaching_usage
+	if not _integer(usage.get("month")) or not usage.get("teachers") is Dictionary or not usage.get("facilities") is Dictionary:
+		errors.append("TEACHING_USAGE_SCHEMA")
+	else:
+		for hours in usage.teachers.values():
+			if not _integer(hours) or int(hours)<0 or int(hours)>int(_cfg().teaching_policy.max_hours_per_instructor):errors.append("TEACHING_TIME_LIMIT")
+		for facility_id in usage.facilities:
+			var site: Dictionary=_find(s.facilities,str(facility_id))
+			if site.is_empty() or not _integer(usage.facilities[facility_id]) or int(usage.facilities[facility_id])<0 or int(usage.facilities[facility_id])>int(site.get("capacity",0)):errors.append("TEACHING_CLASSROOM_LIMIT")
 	for company in s.companies:
+		if not company.get("teaching_policy") is Dictionary or not company.teaching_policy.get("enabled") is bool or not _integer(company.teaching_policy.get("max_hours")) or int(company.teaching_policy.get("max_hours",0))<1 or int(company.teaching_policy.get("max_hours",0))>int(_cfg().teaching_policy.max_hours_per_instructor):errors.append("COMPANY_TEACHING_POLICY_SCHEMA")
 		if not str(company.get("director_id", "")).is_empty():
 			var director: Dictionary = _find(s.people, str(company.director_id))
 			if director.is_empty() or director.company_id != company.id or director.role != "director": errors.append("DIRECTOR_OFFICE_MISMATCH:" + str(company.id))

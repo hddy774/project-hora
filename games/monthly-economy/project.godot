@@ -7,6 +7,10 @@ config/version="0.2.0"
 run/main_scene="res://ui/main.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://assets/generated/app_icon.png"
+boot_splash/image="res://assets/generated/app_icon.png"
+boot_splash/fullsize=true
+boot_splash/use_filter=true
+boot_splash/bg_color=Color(0.035, 0.063, 0.09, 1)
 
 [display]
 window/size/viewport_width=480
@@ -19,7 +23,7 @@ window/handheld/orientation=1
 [rendering]
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-; 2D-only presentation: keep the unused 3D base shader within GLES3 uniform limits.
+; 2D-only presentation uses a small budget for unused 3D lights.
 limits/opengl/max_lights_per_object=2
 limits/opengl/max_renderable_lights=4
 textures/vram_compression/import_etc2_astc=true

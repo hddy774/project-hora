@@ -39,6 +39,8 @@ static func run() -> Array:
 	_test_estate_batch_stockloss(failures)
 	_test_contractual_payroll(failures)
 	_test_payroll_arrears(failures)
+	_test_authorized_training(failures)
+	_test_observed_workload_staffing(failures)
 	print("Independent core integration checks: %d" % checks)
 	return failures
 
@@ -340,3 +342,119 @@ static func _test_payroll_arrears(failures: Array) -> void:
 	_check(after==remaining-50,"Next-period estate cash pays the retained employee claims before other debt",failures)
 	_check(Life.settle_wage_claims(s,"co-0",50,2)==0,"A depleted estate cannot pay its employees a second time",failures)
 	_check(Ledger.validate(s).is_empty() and Life.validate(s).is_empty(),"Partial pay, retained arrears and later estate repayment all validate",failures)
+
+static func _test_authorized_training(failures: Array) -> void:
+	var s: Dictionary=_world()
+	var school: Dictionary={}
+	for facility in s.facilities:
+		if facility.kind=="school" and facility.city_id=="city-0":school=facility;break
+	_check(not school.is_empty(),"Opening compact world contains a real finite local school",failures)
+	if school.is_empty():return
+	var provider: Dictionary=Domain.find(s.companies,str(school.company_id))
+	var learner: Dictionary=Domain.find(s.people,"p-1")
+	var policy: Dictionary=_command(s,"set_teaching_policy",{"enabled":false,"max_hours":16},str(provider.director_id),str(provider.id))
+	_check(not Life.apply(s,_command(s,"set_teaching_policy",{"enabled":true,"max_hours":16},"p-0",str(provider.id)),1).ok,"A rival cannot authorize another school's instructors",failures)
+	_check(bool(Life.apply(s,policy,1).ok),"The real school director may suspend instructional service",failures)
+	var fee: int=int(Life._p().training_monthly_fee)
+	var blocked: Dictionary=Life.apply(s,_command(s,"start_training",{"skill":"management","months":1,"budget":fee},str(learner.id),""),1)
+	_check(not blocked.ok and blocked.error=="TRAINING_PROVIDER_UNAVAILABLE","Suspended school never falls back to bakery staff or player directors",failures)
+	_check(bool(Life.apply(s,_command(s,"set_teaching_policy",{"enabled":true,"max_hours":16},str(provider.director_id),str(provider.id)),1).ok),"School director explicitly authorizes bounded instruction",failures)
+	var enrolled: int=0
+	for person in s.people:
+		if person.city_id!="city-0" or person.id=="p-0" or person.company_id==provider.id or person.role=="director":continue
+		if enrolled>=8:break
+		var command: Dictionary=_command(s,"start_training",{"skill":"management","months":1,"budget":fee},str(person.id),"")
+		if Life.apply(s,command,1).ok:enrolled+=1
+	_check(enrolled==8,"Learners submit their own funded course requests",failures)
+	var industry: Variant=load("res://core/industry.gd")
+	industry.before_turn(s,1)
+	s.monthly_labor={}
+	for priority in [0,1]:
+		for facility in s.facilities:
+			if Economy._production_priority(s,facility)==priority:Economy._produce(s,facility,1)
+	var paper_before: int=Domain.available_quantity(s,str(provider.id),"paper","city-0")
+	var money_before: int=_cash_total(s)
+	Life.monthly(s,1)
+	var delivered: Dictionary=Life.deliver_training(s,1)
+	_check(int(delivered.lessons)==4,"Two consenting instructors provide only their actual16-hour monthly limits",failures)
+	_check(Life.training_batches_used(s,str(school.id),1)==4 and int(delivered.lessons)<=int(school.capacity),"Actual lessons reserve shared classroom batch capacity",failures)
+	_check(Domain.available_quantity(s,str(provider.id),"paper","city-0")==paper_before-int(delivered.lessons),"Each delivered course consumes actual paper once",failures)
+	_check(_cash_total(s)==money_before,"Tuition, power purchase and instructor wages conserve actual cash",failures)
+	_check(int(s.monthly_labor.get("p-0",0))==0,"Other people's training never commandeers the player director",failures)
+	_check(int(s.monthly_labor.get("p-1",0))<=int(Life._p().training_hours),"A bakery worker can spend only their own voluntary learner time",failures)
+	for person_id in s.lifecycle.teaching_usage.teachers:
+		var instructor: Dictionary=Domain.find(s.people,str(person_id))
+		_check(instructor.company_id==provider.id and int(s.lifecycle.teaching_usage.teachers[person_id])<=16,"Instruction is bounded to staff of the authorized actual school",failures)
+	var power_used: int=0
+	for right in s.industry.service_entitlements:
+		if right.owner_id==provider.id and right.product_id=="energy" and int(right.month)==1:power_used+=int(right.used)
+	_check(power_used==int(delivered.lessons),"Training uses real purchased current-month power service",failures)
+	var before: String=Economy.state_hash(s)
+	Life.deliver_training(s,1)
+	_check(Economy.state_hash(s)==before,"Repeating course delivery in a month cannot charge or teach twice",failures)
+	_check(Life.validate(s).is_empty() and Ledger.validate(s).is_empty(),"Authorized teaching preserves contracts, finite time and balanced accounts",failures)
+	var corrupt: Dictionary=s.duplicate(true)
+	Domain.find(corrupt.companies,str(provider.id)).teaching_policy.enabled="true"
+	_check(not Life.validate(corrupt).is_empty(),"Malformed teaching authorization is rejected before it can command a worker",failures)
+	corrupt=s.duplicate(true)
+	corrupt.lifecycle.teaching_usage.erase("teachers")
+	_check(not Life.validate(corrupt).is_empty(),"Malformed teaching capacity fails validation before lesson execution",failures)
+	var limited: Dictionary=_world()
+	var limited_school: Dictionary=Domain.find(limited.facilities,str(school.id))
+	limited_school.capacity=1
+	for actor in ["p-1","p-2"]:
+		_check(bool(Life.apply(limited,_command(limited,"start_training",{"skill":"management","months":1,"budget":fee},actor,""),1).ok),"Classroom-limited requests remain consented and funded",failures)
+	industry.before_turn(limited,1)
+	for priority in [0,1]:
+		for facility in limited.facilities:
+			if Economy._production_priority(limited,facility)==priority:Economy._produce(limited,facility,1)
+	Life.monthly(limited,1)
+	_check(int(Life.deliver_training(limited,1).lessons)==1,"Physical classroom capacity limits delivery even with another available instructor",failures)
+
+static func _test_observed_workload_staffing(failures: Array) -> void:
+	var s: Dictionary=_world()
+	s.player_id="p-3"
+	s.controlled_company_id="co-1"
+	var crew: Array=s.people.filter(func(p):return p.company_id=="co-0" and p.role=="operator")
+	for index in range(2,crew.size()):Life._end_employment(s,crew[index],1,"관측된 노동 부족 회귀 검사: 기존 직원 이직")
+	var targets: Array=Life.staffing_targets(s,"co-0")
+	_check(targets.size()==1 and int(targets[0].required_heads)==2,"No observed demand constraint keeps the existing minimum crew",failures)
+	var idle: Array=Life.ai_commands(s).filter(func(c):return c.actor_id=="p-0" and c.acting_company_id=="co-0" and c.type=="post_job")
+	_check(idle.is_empty(),"An idle two-person factory does not hire for theoretical capacity alone",failures)
+	var industry: Variant=load("res://core/industry.gd")
+	industry.before_turn(s,1)
+	for priority in [0,1]:
+		for facility in s.facilities:
+			if Economy._production_priority(s,facility)==priority:Economy._produce(s,facility,1)
+	var bakery: Dictionary={}
+	for facility in s.facilities:
+		if facility.company_id=="co-0" and facility.kind=="bakery":bakery=facility;break
+	var opening_stock: int=Economy.available_quantity(s,"co-0","food","city-0")
+	var bought: int=Economy._purchase(s,"co-1","city-0","food",opening_stock,1,"회귀 검사의 실제 유한 구매자 식량 비축")
+	_check(bought==opening_stock and Economy.available_quantity(s,"co-0","food","city-0")==0,"A real funded buyer purchases the opening food buffer before staffing demand is tested",failures)
+	Economy._produce(s,bakery,1)
+	var observed: Array=s.events.filter(func(e):return e.type=="production_limit" and e.get("actor_id")=="co-0" and e.reason=="운영 인력 시간 부족")
+	_check(not observed.is_empty(),"Two80-hour workers cause a real observed192-hour bakery workload limit",failures)
+	s.last_report={"events":observed.duplicate(true)}
+	targets=Life.staffing_targets(s,"co-0")
+	_check(int(targets[0].workload_hours)==192 and int(targets[0].required_heads)==3,"Observed bakery labor shortage raises desired staffing from two to three",failures)
+	var candidates: Array=Life.ai_commands(s).filter(func(c):return c.actor_id=="p-0" and c.acting_company_id=="co-0" and c.type=="post_job")
+	_check(candidates.size()==1,"The actual short employer proposes one funded legal vacancy",failures)
+	if candidates.is_empty():return
+	_check(candidates[0].payload.city_id==bakery.city_id and candidates[0].payload.role=="operator","Vacancy targets its actual city and operational role",failures)
+	if not _submit(s,candidates[0],failures):return
+	_execute(s)
+	var offer: Dictionary=s.lifecycle.job_offers[-1]
+	if not _submit(s,_command(s,"apply_job",{"offer_id":offer.id},"p-4",""),failures):return
+	_execute(s)
+	targets=Life.staffing_targets(s,"co-0")
+	_check(int(targets[0].employee_heads)==3,"A consenting third worker satisfies the observed labor requirement",failures)
+	_check(Life.ai_commands(s).filter(func(c):return c.actor_id=="p-0" and c.acting_company_id=="co-0" and c.type=="post_job").is_empty(),"A fulfilled workload crew does not keep posting redundant vacancies",failures)
+	var builder: Dictionary=Economy._contractor(s,"city-0")
+	var builder_targets: Array=Life.staffing_targets(s,str(builder.id))
+	_check(builder_targets.size()>0 and builder_targets[0].role=="builder" and int(builder_targets[0].required_heads)==2,"A builder facility without a production recipe preserves its two-person builder minimum",failures)
+	var school: Dictionary={}
+	for facility in s.facilities:
+		if facility.kind=="school" and facility.city_id=="city-0":school=facility;break
+	var school_targets: Array=Life.staffing_targets(s,str(school.company_id))
+	_check(school_targets.size()==1 and int(school_targets[0].required_heads)==2,"An operating school retains its bounded two-person minimum",failures)

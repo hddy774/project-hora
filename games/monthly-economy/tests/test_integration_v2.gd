@@ -43,6 +43,12 @@ static func _advance(s: Dictionary, failures: Array, label: String) -> Dictionar
 	return next
 
 static func run() -> Array:
+	return _run(false)
+
+static func run_quick() -> Array:
+	return _run(true)
+
+static func _run(quick: bool) -> Array:
 	checks = 0
 	serial = 0
 	var failures: Array = []
@@ -54,6 +60,7 @@ static func run() -> Array:
 	_test_credit_and_owner_separation(failures)
 	_test_career_and_startup(failures)
 	_test_public_contract_and_privacy(failures)
+	_test_neutral_benchmark(failures, quick)
 	print("Integrated v2 assertions: %d" % checks)
 	return failures
 
@@ -242,3 +249,33 @@ static func _test_public_contract_and_privacy(failures: Array) -> void:
 	contract = _find(s.public.procurements, id)
 	_check(int(contract.cash_paid) == 4 * int(contract.unit_price) and int(contract.payable) == 0, "Government budget and supplier receivable settle the same contract amount", failures)
 	_check(contract.status == "fulfilled", "Paid, accepted contract reaches its terminal fulfilled state", failures)
+
+static func _test_neutral_benchmark(failures: Array, quick: bool) -> void:
+	var config: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/generation.json"))
+	_check(config is Dictionary and config.get("neutral_benchmark") is Dictionary, "Neutral economic benchmark is an explicit versioned experimental data contract", failures)
+	if not config is Dictionary or not config.get("neutral_benchmark") is Dictionary: return
+	var benchmark: Dictionary = config.neutral_benchmark
+	var valid: bool = benchmark.get("status", "") == "experimental" and benchmark.get("world_options") is Dictionary
+	for key: String in ["seed", "months", "quick_months", "maximum_essential_unmet_value"]:
+		valid = valid and Economy._whole_number(benchmark.get(key)) and float(benchmark.get(key, -1)) >= 0.0
+	_check(valid, "Neutral benchmark declares bounded whole seed/horizon/essential-value threshold and world options", failures)
+	if not valid: return
+	var months: int = int(benchmark.quick_months if quick else benchmark.months)
+	_check(months > 0 and months <= int(benchmark.months) and months <= int(config.maximum_preview_months), "Neutral benchmark horizon stays within the declared simulation limit", failures)
+	if months <= 0 or months > int(benchmark.months) or months > int(config.maximum_preview_months): return
+	var s: Dictionary = Economy.new_world(int(benchmark.seed), benchmark.world_options)
+	var threshold: int = int(benchmark.maximum_essential_unmet_value)
+	for step: int in range(months):
+		var event_start: int = s.events.size()
+		var result: Dictionary = Economy.resolve_month(s)
+		_check(result.get("ok", false), "Neutral seed %d month %d resolves under actual finite accounts/resources: %s" % [int(benchmark.seed), step + 1, str(result.get("errors", []))], failures)
+		if not result.get("ok", false): return
+		s = result.state
+		_check(Economy.validate(s).is_empty(), "Neutral benchmark month %d satisfies all physical, financial, employment and authority invariants" % (step + 1), failures)
+		var actual: Dictionary = Economy.metrics(s)
+		_check(int(actual.unmet_value) <= threshold, "Neutral benchmark month %d meets the experimental essential-demand bound (%d <= %d CR-minor)" % [step + 1, int(actual.unmet_value), threshold], failures)
+		var new_openings: Array = []
+		for index: int in range(event_start, s.events.size()):
+			if s.events[index].type == "opening" and int(s.events[index].month) >= 1: new_openings.append(s.events[index].id)
+		_check(new_openings.is_empty(), "Neutral benchmark has no runtime opening-asset rescue: " + str(new_openings), failures)
+		print("Neutral benchmark seed=%d month=%d people=%d companies=%d essential_unmet_value=%d" % [int(benchmark.seed), step + 1, s.people.size(), s.companies.size(), int(actual.unmet_value)])

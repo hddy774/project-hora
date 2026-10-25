@@ -11,7 +11,7 @@
     "minimum_wage": 1,
     "maximum_wage": 20,
     "maximum_hours": 160,
-    "training_monthly_fee": 15,
+    "training_monthly_fee": 100,
     "training_hours": 8,
     "maximum_skill": 10,
     "maximum_training_months": 24,
@@ -212,6 +212,22 @@
           "min": 1,
           "max": 160,
           "default": 80
+        },
+        {
+          "key": "teaching_authorized",
+          "label": "교육 시설 강의 업무 동의",
+          "kind": "choice",
+          "options": [
+            {
+              "label": "강의 없음",
+              "value": false
+            },
+            {
+              "label": "교육 업무 포함",
+              "value": true
+            }
+          ],
+          "default": false
         }
       ]
     },
@@ -282,6 +298,22 @@
           "min": 1,
           "max": 160,
           "default": 80
+        },
+        {
+          "key": "teaching_authorized",
+          "label": "교육 시설 강의 업무 동의",
+          "kind": "choice",
+          "options": [
+            {
+              "label": "강의 없음",
+              "value": false
+            },
+            {
+              "label": "교육 업무 포함",
+              "value": true
+            }
+          ],
+          "default": false
         }
       ]
     },
@@ -334,9 +366,9 @@
           "key": "budget",
           "label": "교육비 한도",
           "kind": "int",
-          "min": 15,
+          "min": 100,
           "max": 100000,
-          "default": 30
+          "default": 100
         }
       ]
     },
@@ -565,6 +597,37 @@
       "label": "현재 인물 은퇴",
       "scope": "personal",
       "fields": []
+    },
+    {
+      "type": "set_teaching_policy",
+      "label": "교육 제공 정책",
+      "scope": "company",
+      "fields": [
+        {
+          "key": "enabled",
+          "label": "교육 업무 승인",
+          "kind": "choice",
+          "options": [
+            {
+              "label": "승인",
+              "value": true
+            },
+            {
+              "label": "중단",
+              "value": false
+            }
+          ],
+          "default": true
+        },
+        {
+          "key": "max_hours",
+          "label": "강사별 월 교육시간 상한",
+          "kind": "int",
+          "min": 1,
+          "max": 16,
+          "default": 16
+        }
+      ]
     }
   ],
   "default_company_policy": {
@@ -584,5 +647,25 @@
     "rounding_rule": "seeded_remainder",
     "idle_hours_are_output": false,
     "unpaid_wages_create_claims": true
+  },
+  "teaching_policy": {
+    "building_kinds": [
+      "school"
+    ],
+    "default_enabled": true,
+    "max_hours_per_instructor": 16,
+    "materials_per_lesson": {
+      "paper": 1
+    },
+    "services_per_lesson": {
+      "energy": 1
+    },
+    "initial_faculty_skills": {
+      "operations": 4,
+      "construction": 4,
+      "management": 4,
+      "software": 4,
+      "research": 4
+    }
   }
 }

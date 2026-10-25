@@ -4,6 +4,7 @@ builds/
 **/builds/
 **/build/
 **/__pycache__/
+**/docs/screenshots/*.import
 *.keystore
 *.jks
 *.p12

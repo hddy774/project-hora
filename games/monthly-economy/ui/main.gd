@@ -78,11 +78,13 @@ func _process(_delta: float) -> void:
 		resolving = false
 		_close_modal()
 		if not result.get("ok", false):
+			_render()
 			_message("정산을 확정하지 않았습니다", "이전 월과 계획을 보존했습니다.\n" + str(result.get("errors", [])))
 			return
 		var candidate: Dictionary = result["state"]
 		var save_result: Dictionary = Store.save_world(candidate, "autosave")
 		if not save_result.get("ok", false):
+			_render()
 			_message("저장 공간을 확인하세요", "월 결과를 저장하지 못해 이전 월과 계획을 유지했습니다.\n" + str(save_result.get("error", "저장 실패")))
 			return
 		world = candidate
@@ -219,7 +221,10 @@ func _button(parent: Node, text: String, action: Callable, accent: bool = false)
 		b.add_theme_stylebox_override("normal", _style(Color("80d9b5"), 10))
 		b.add_theme_color_override("font_color", BG)
 		b.add_theme_color_override("font_hover_color", TEXT)
-	b.pressed.connect(action)
+	b.pressed.connect(func():
+		if resolving: return
+		action.call()
+	)
 	parent.add_child(b)
 	return b
 
@@ -684,6 +689,7 @@ func _plans_page(heading: bool = true) -> void:
 		_label(line, caption + "\n" + description, 13, MUTED)
 		var id: String = str(command.get("id", ""))
 		var cancel: Button = _button(line, "철회", func():
+			if resolving: return
 			var kept: Array = []
 			for c in world["commands"]:
 				if str(c.get("id", "")) != id: kept.append(c)
@@ -1052,11 +1058,22 @@ func _resolve() -> void:
 	_label(box, "계획 검증 → 생산·거래·소비 → 공사 → 장부 검사 → 저장\n\n계획 변경은 다음 월에 할 수 있습니다. 중단하면 마지막으로 저장한 정상 월에서 복구합니다.", 14, MUTED)
 	worker = Thread.new()
 	var snapshot: Dictionary = world.duplicate(true)
+	_lock_plan_controls(frame)
 	var code: Error = worker.start(func(): return Economy.resolve_month(snapshot))
 	if code != OK:
 		worker = null
 		resolving = false
+		_render()
 		_message("정산 시작 실패", "작업을 시작하지 못했습니다. 이전 상태를 보존했습니다.")
+
+
+func _lock_plan_controls(node: Node) -> void:
+	for child in node.get_children():
+		if child is BaseButton: child.disabled = true
+		if child is Slider: child.editable = false
+		if child is LineEdit: child.editable = false
+		if child is Control: child.focus_mode = Control.FOCUS_NONE
+		_lock_plan_controls(child)
 
 
 func _show_report(report: Dictionary) -> void:
@@ -1084,6 +1101,8 @@ func _show_report(report: Dictionary) -> void:
 
 
 func _queue(type: String, payload: Dictionary) -> Dictionary:
+	if resolving:
+		return {"ok": false, "error": "NOT_PLANNING"}
 	var command: Dictionary = {
 		"id": "player-%d-%d" % [int(world.get("planning_month", 1)), _next_command_serial()],
 		"actor_id": str(world.get("player_id", "p-0")),
@@ -1105,6 +1124,7 @@ func _next_command_serial() -> int:
 
 
 func _go(tab: int, path: Array) -> void:
+	if resolving: return
 	outer = tab
 	paths[tab] = path
 	full_map = false
@@ -1186,6 +1206,7 @@ func _toast(message: String) -> void:
 
 
 func _new_game_dialog() -> void:
+	if resolving: return
 	var box: VBoxContainer = _open_modal("새 실험 세계")
 	_label(box, "세 대륙 · 도시의 실물 경제 · 월 단위 수동 진행", 17, MINT)
 	_label(box, "도시·기업·인물 수와 가격은 검증용 데이터입니다. 같은 시드와 명령은 같은 결과를 만듭니다. 기존 저장을 지우지 않습니다.", 14, MUTED)
@@ -1241,6 +1262,7 @@ func _save(slot: String, show_message: bool) -> bool:
 
 
 func _load(slot: String) -> void:
+	if resolving: return
 	var result: Dictionary = Store.load_world(slot)
 	if not result.get("ok", false):
 		_message("불러올 수 없습니다", str(result.get("error", "정상 저장 없음")))

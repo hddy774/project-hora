@@ -41,6 +41,11 @@ func _run() -> void:
 	if not app.world.commands.is_empty():
 		project_id = "project-" + str(app.world.commands[0].id)
 	var facility_id: String = "facility-" + project_id
+	# Keep a real pending-command withdrawal button behind the resolving modal.
+	app._go(1, [2, 1, 0])
+	await process_frame
+	await process_frame
+	_expect(_background_button("철회") != null, "Queued-build fixture exposes a real withdrawal callback")
 	var month_one_ok: bool = await _advance_using_modal()
 	if month_one_ok:
 		var project: Dictionary = _find(app.world.projects, project_id)
@@ -73,7 +78,7 @@ func _run() -> void:
 	for failure: Variant in failures:
 		push_error(str(failure))
 	if failures.is_empty():
-		print("PASS: real UI game flow (%d checks; queued build, three guarded monthly callbacks, report replay, autosave, pending-plan/manual-view restoration)" % checks)
+		print("PASS: real UI game flow (%d checks; queued build, locked planning/withdrawal/navigation, three guarded monthly callbacks, report replay, autosave, pending-plan/manual-view restoration)" % checks)
 	else:
 		print("FAIL: real UI game flow (%d failures in %d checks)" % [failures.size(), checks])
 	quit(0 if failures.is_empty() else 1)
@@ -82,6 +87,8 @@ func _advance_using_modal() -> bool:
 	var previous_month: int = int(app.world.planning_month)
 	var previous_version: int = int(app.world.version)
 	var immutable_hash: String = Economy.state_hash(app.world)
+	var command_count: int = app.world.commands.size()
+	var production_policy: int = int(_find(app.world.companies, str(app.world.controlled_company_id)).policy.production_percent)
 	app._preflight()
 	await process_frame
 	var start: Button = _modal_button("1개월 정산 시작")
@@ -93,6 +100,22 @@ func _advance_using_modal() -> bool:
 	if not app.resolving:
 		return false
 	var first_worker: Thread = app.worker
+	var blocked: Dictionary = app._queue("set_policy", {"production_percent": 80})
+	_expect(not blocked.get("ok", false) and blocked.get("error", "") == "NOT_PLANNING", "UI rejects new planning commands while a monthly worker is running")
+	_expect(app.world.commands.size() == command_count, "Rejected in-flight planning cannot add a command that would be lost at commit")
+	var withdrawal: Button = _background_button("철회")
+	if withdrawal != null:
+		withdrawal.pressed.emit()
+		_expect(app.world.commands.size() == command_count, "Even a programmatic background withdrawal signal cannot remove the locked build")
+	var previous_outer: int = int(app.outer)
+	var previous_paths: Array = app.paths.duplicate(true)
+	app._go((previous_outer + 1) % 5, [0, 0, 0])
+	_expect(int(app.outer) == previous_outer and app.paths == previous_paths, "Background navigation cannot replace the locked planning view")
+	var buttons: Array = app.frame.find_children("*", "BaseButton", true, false)
+	_expect(not buttons.is_empty(), "Resolving-lock fixture contains real background controls")
+	for button: BaseButton in buttons:
+		_expect(button.disabled, "Every background plan button is disabled while resolving")
+		_expect(button.focus_mode == Control.FOCUS_NONE, "Disabled plan buttons cannot be reached through keyboard focus")
 	app._resolve()
 	_expect(app.worker == first_worker, "Repeated next-month activation keeps the same worker")
 	_expect(Economy.state_hash(app.world) == immutable_hash, "Background resolution leaves the visible committed input immutable")
@@ -115,6 +138,7 @@ func _advance_using_modal() -> bool:
 	_expect(is_instance_valid(app.modal), "Successful monthly commit displays its report")
 	_expect(_modal_button("다음 계획 열기", true) != null, "Commit report exposes the next planning action")
 	_expect(Economy.validate(app.world).is_empty(), "Visible monthly result passes the economic invariants")
+	_expect(int(_find(app.world.companies, str(app.world.controlled_company_id)).policy.production_percent) == production_policy, "Rejected in-flight policy never appears in the committed company")
 	print("UI flow: committed month %d through modal callback" % previous_month)
 	return int(app.world.planning_month) == previous_month + 1
 
@@ -193,6 +217,14 @@ func _check_no_early_production(facility_id: String, eligible_month: int) -> voi
 	for event: Dictionary in app.world.events:
 		if str(event.get("facility_id", "")) == facility_id and str(event.get("type", "")) == "production":
 			_expect(int(event.get("month", 0)) >= eligible_month, "A newly completed building has no production before its eligible month")
+
+func _background_button(text: String) -> Button:
+	if not is_instance_valid(app.frame):
+		return null
+	for node: Node in app.frame.find_children("*", "Button", true, false):
+		if str(node.text) == text:
+			return node as Button
+	return null
 
 func _modal_button(text: String, prefix: bool = false) -> Button:
 	if not is_instance_valid(app.modal):

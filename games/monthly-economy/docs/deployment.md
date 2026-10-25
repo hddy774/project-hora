@@ -63,3 +63,21 @@ Android 기기/에뮬레이터 실행은 별도 증거다. 기본 APK 검증 보
 
 
 최종 소스84b10bc의 별도 디버그 서명 Android 프로브는 API24/x86_64/host Mesa에서 설치·부팅·네이티브 타이틀 렌더까지만 확인했다. 정확한 프로브 해시와 관측 한계는 [검증 기록](validation.md#최종-소스의-android-개발-프로브)에 따르며 공식 배포 APK 실측과 구별한다.
+
+
+## v0.2.1 APK 전용 공개 결과 — 2026-10-25
+
+최종 소스 **`86a2f7363ddbe8c8fda35f439083fbb1b1d0ba9d`**의 [전체 소스 CI40165742287](https://github.com/hddy774/project-hora/actions/runs/40165742287)가 성공했다. [게시40166437986](https://github.com/hddy774/project-hora/actions/runs/40166437986)은 같은 성공 실행의 변경 없는 미서명 입력만 서명하고, APK 한 개를 업로드·재다운로드한 뒤 [v0.2.1 최신 릴리스](https://github.com/hddy774/project-hora/releases/tag/hora-economic-lab/v0.2.1)를 공개했다. API의 `releases/latest`는 ID423167967, `draft=false`, `prerelease=false`이며 첨부는 아래 APK 한 개다.
+
+| 공개 파일 | 크기(바이트) | SHA-256 |
+|---|---:|---|
+| `HoraEconomicLab-v0.2.1.apk` | 66,453,908 | `0d45b3d7e54fbf049cef57379808d1a3bc596c9412c40bbf15ba2a9548cb5b2b` |
+
+게시 후 독립 작업 공간에서도 실제 공개 APK를 다시 내려받아 GitHub 파일 digest·릴리스 노트의 SHA·파일 크기·정확한 소스 태그/성공 main CI를 검사했다. build-tools36 `apksigner`와 APK 정의/라이선스/생성 텍스처 바이트 검사도 통과했다. 공식 앱 ID `org.hora.economiclab`, version0.2.1/code3, SDK24/36, 세로/오프라인/비디버그와 arm64-v8a/x86_64를 확인했다. 보관 게시자 인증서 핀은 이전과 같다.
+
+[Actions 서명·출처 증명 아티팩트](https://github.com/hddy774/project-hora/actions/runs/40166437986/artifacts/12588697142)의 ZIP SHA도 확인해, 원래 미서명 입력·서명 APK·재다운로드 파일·깨끗한 출처 커밋이 일치하고 실질 APK 페이로드가 바뀌지 않았음을 교차 검사했다. 이 자료는 Actions의90일 보관 정책이며 릴리스 첨부가 아니다. 영구적인 공개 다운로드 요약은 [JSON 기록](observations/public-release-v0.2.1.json), 해시·CI·증명 링크는 릴리스 노트에서 확인한다. JSON·체크섬·Linux 파일을 이 공개 릴리스에 첨부하지 않았다.
+
+Android 실제 실행 프로브는 별도 기록을 따른다. APK 정적·서명·바이트 검증을 전체 모바일 플레이나 ARM64 실기기 검수로 확대하지 않는다. 이전 릴리스의 파일과 역사 기록은 그대로 보존했다.
+
+
+공식 v0.2.1 공개 파일 그대로의 API24/x86_64 프로브는 설치·인증서·네이티브 엔진/GL 초기화·생성 로고 스플래시까지만 확인했다. 소프트웨어 에뮬레이터는 그 이후에 머물러 타이틀/입력/월 정산은 미검증이다. [단계별 기동 기록](observations/android-v0.2.1-official-boot-probe.json)을 전체 Android 플레이 검수와 구별한다.

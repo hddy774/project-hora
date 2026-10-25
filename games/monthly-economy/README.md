@@ -14,7 +14,7 @@ Godot **4.6.3 stable**에서 이 폴더의 `project.godot`을 열고 실행합�
 godot --path games/monthly-economy
 ```
 
-별도 Android 실험 APK와 Linux 실행 파일은 저장소의 `monthly-economy/…` 시험판 릴리스에서 제공합니다. Android 패키지는 `org.hora.monthly.experimental`, **디버그 서명**입니다. 알파 익스체인지 업데이트나 정식 배포키로 서명한 출시 APK가 아닙니다. 실기기 호환·배터리·성능 검증은 남아 있습니다.
+[Android 실험 APK](https://github.com/hddy774/project-hora/releases/download/monthly-economy/v0.1.0-experimental/monthly-economy-experimental.apk) · [Linux ZIP](https://github.com/hddy774/project-hora/releases/download/monthly-economy/v0.1.0-experimental/monthly-economy-linux-experimental.zip) · [시험판 및 체크섬](https://github.com/hddy774/project-hora/releases/tag/monthly-economy/v0.1.0-experimental) Android 패키지는 `org.hora.monthly.experimental`, **디버그 서명**입니다. 알파 익스체인지 업데이트나 정식 배포키로 서명한 출시 APK가 아닙니다. 실기기 호환·배터리·성능 검증은 남아 있습니다.
 
 ## 해볼 수 있는 일
 

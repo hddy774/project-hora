@@ -2,7 +2,7 @@
 
 > **새 프로젝트: HORA · 월간 경제 실험실**
 >
-> 월 단위 경제 생태계 기획서의 별도 Godot 검증 프로젝트를 [games/monthly-economy](games/monthly-economy)에 추가했습니다. [실행 안내·구현 범위](games/monthly-economy/README.md)와 [요구 추적표](games/monthly-economy/docs/requirements.md)를 참고하세요. `monthly-economy/…` 시험판은 아래 알파 익스체인지의 정식 업데이트와 구분합니다.
+> 월 단위 경제 생태계 기획서의 별도 Godot 검증 프로젝트를 [games/monthly-economy](games/monthly-economy)에 추가했습니다. [실행 안내·구현 범위](games/monthly-economy/README.md)와 [요구 추적표](games/monthly-economy/docs/requirements.md)를 참고하세요. [HORA 시험판 다운로드](https://github.com/hddy774/project-hora/releases/tag/monthly-economy/v0.1.0-experimental)는 아래 알파 익스체인지의 정식 업데이트와 구분합니다.
 
 투자자 100명이 5업종·15종목에서 경쟁하는 완전 오프라인 Android 경제 관찰 게임입니다. 새 투자자의 출자금/초기 순자산은 각각 1억원입니다. 개인 AI·개인 통계는 없으며 은행은 주식 투자·인수·대여·투자자 신용 공급을 하지 않습니다.
 

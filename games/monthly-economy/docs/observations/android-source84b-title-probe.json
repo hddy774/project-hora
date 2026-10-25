@@ -1,0 +1,29 @@
+{
+  "source_commit": "84b10bc0869a68f9a9c6e6363819c88336d73772",
+  "source_dirty": false,
+  "export_started_at_utc": "2026-10-25T04:31:21.159595+00:00",
+  "kind": "local release-template probe; disposable debug signing only; not official release artifact",
+  "source_commit_after_export": "84b10bc0869a68f9a9c6e6363819c88336d73772",
+  "source_dirty_after_export": false,
+  "unsigned_apk_sha256": "d018b172e2a34b93a65f2a035abc82201526e805a2d8239fd38d4583bc093e9d",
+  "disposable_signed_apk_sha256": "3dec2b9857b59cf29beed387271f5252a11dab05c873879de2b63f1cd470e323",
+  "unsigned_identity_assets_verification": "passed tools/verify_apk.py --unsigned before signing",
+  "environment": {
+    "android_api": 24,
+    "abi": "x86_64",
+    "hardware_acceleration": false,
+    "gpu": "host Mesa llvmpipe OpenGL ES 3.1"
+  },
+  "observed": {
+    "install": true,
+    "generated_boot_icon": true,
+    "native_title_render": true,
+    "modal_touch_verified": false,
+    "monthly_turn_verified": false,
+    "shader_cache_recompilation_warning": true,
+    "host_mesa_shader_link_error": false,
+    "script_error": false
+  },
+  "official_signed_apk_execution_tested": false,
+  "arm64_physical_device_tested": false
+}

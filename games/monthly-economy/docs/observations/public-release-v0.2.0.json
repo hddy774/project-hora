@@ -1,0 +1,51 @@
+{
+  "release_url": "https://github.com/hddy774/project-hora/releases/tag/hora-economic-lab/v0.2.0",
+  "release_id": 423127686,
+  "latest": true,
+  "prerelease": false,
+  "source_commit": "84b10bc0869a68f9a9c6e6363819c88336d73772",
+  "source_run_id": 40162017239,
+  "certificate_sha256": "0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a",
+  "downloaded_artifacts": [
+    {
+      "file": "HoraEconomicLab-v0.2.0-linux.x86_64",
+      "bytes": 85746896,
+      "sha256": "7c0d18ddbdc03e9f12129a06d10343a49ea6ad9d6b1b745b6845505abebf3f47"
+    },
+    {
+      "file": "HoraEconomicLab-v0.2.0-linux.zip",
+      "bytes": 41423481,
+      "sha256": "b5b15b10184adb5b8d72f42659318f33d00dcd4897eb8e7dc7a09030b45497e4"
+    },
+    {
+      "file": "HoraEconomicLab-v0.2.0.apk",
+      "bytes": 66395805,
+      "sha256": "1ccc7b3dfe0d177c78bd130a1912b7c679d03426779f302f7dc32d1aa2c903c3"
+    }
+  ],
+  "attachment_names": [
+    "APK-VERIFICATION.json",
+    "BUILD-MANIFEST.json",
+    "HoraEconomicLab-v0.2.0-linux.zip",
+    "HoraEconomicLab-v0.2.0.apk",
+    "SHA256SUMS.txt",
+    "SIGNING-VERIFICATION.json",
+    "SOURCE-WORKFLOW-VERIFICATION.json"
+  ],
+  "verified_at_utc": "2026-10-25T04:41:11Z",
+  "publish_run_id": 40162690007,
+  "source_workflow_url": "https://github.com/hddy774/project-hora/actions/runs/40162017239",
+  "publish_workflow_url": "https://github.com/hddy774/project-hora/actions/runs/40162690007",
+  "independent_download_checks": {
+    "all_seven_public_attachment_names": true,
+    "latest_release_id_matches": true,
+    "manifest_source_clean": true,
+    "all_artifact_sizes_and_sha256": true,
+    "zip_embedded_executable_sha256": true,
+    "retained_publisher_apksigner_verify": true,
+    "apk_identity_offline_flags_abis_and_packaged_definitions": true,
+    "generated_texture_source_proof": true,
+    "downloaded_linux_executable_headless_start_exit_0": true,
+    "official_apk_device_execution_tested": false
+  }
+}

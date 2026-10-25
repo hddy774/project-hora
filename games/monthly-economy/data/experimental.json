@@ -1,0 +1,419 @@
+{
+  "status": "experimental",
+  "version": 1,
+  "rules_version": "experimental-0.1",
+  "purpose": "P0/P1 검증 전용. 출시 밸런스나 사용자 확정 수치가 아닙니다.",
+  "units": {
+    "money": "CR의 1/100 최소 화폐 단위 정수 (100최소단위 = 1 CR)",
+    "labor": "시간",
+    "products": "품목별 unit 필드",
+    "turn": "월"
+  },
+  "products": [
+    {
+      "id": "grain",
+      "name": "곡물",
+      "unit": "t",
+      "industry": "농업",
+      "price": 3
+    },
+    {
+      "id": "flour",
+      "name": "밀가루",
+      "unit": "t",
+      "industry": "가공재",
+      "price": 6
+    },
+    {
+      "id": "food",
+      "name": "식품",
+      "unit": "상자",
+      "industry": "소비재",
+      "price": 14
+    },
+    {
+      "id": "wood",
+      "name": "목재",
+      "unit": "t",
+      "industry": "임업",
+      "price": 3
+    },
+    {
+      "id": "stone",
+      "name": "석재",
+      "unit": "t",
+      "industry": "기초자원",
+      "price": 2
+    },
+    {
+      "id": "tools",
+      "name": "공구",
+      "unit": "세트",
+      "industry": "자본재",
+      "price": 16
+    },
+    {
+      "id": "energy",
+      "name": "전력",
+      "unit": "MWh",
+      "industry": "서비스",
+      "price": 3
+    },
+    {
+      "id": "water",
+      "name": "용수",
+      "unit": "m³",
+      "industry": "서비스",
+      "price": 1
+    }
+  ],
+  "recipes": [
+    {
+      "id": "bake",
+      "inputs": {
+        "flour": 1,
+        "water": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "food": 5
+      },
+      "labor": 6
+    },
+    {
+      "id": "mill",
+      "inputs": {
+        "grain": 2,
+        "energy": 1
+      },
+      "outputs": {
+        "flour": 3
+      },
+      "labor": 6
+    },
+    {
+      "id": "grow",
+      "inputs": {
+        "grain": 1,
+        "water": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "grain": 6
+      },
+      "labor": 6
+    },
+    {
+      "id": "timber",
+      "inputs": {
+        "energy": 1
+      },
+      "outputs": {
+        "wood": 5
+      },
+      "labor": 6,
+      "resource": "forest",
+      "resource_per_batch": 5
+    },
+    {
+      "id": "stone",
+      "inputs": {
+        "energy": 1
+      },
+      "outputs": {
+        "stone": 5
+      },
+      "labor": 6,
+      "resource": "stone",
+      "resource_per_batch": 5
+    },
+    {
+      "id": "tools",
+      "inputs": {
+        "wood": 2,
+        "stone": 1,
+        "energy": 1
+      },
+      "outputs": {
+        "tools": 3
+      },
+      "labor": 8
+    },
+    {
+      "id": "energy",
+      "inputs": {
+        "wood": 1,
+        "water": 1
+      },
+      "outputs": {
+        "energy": 8
+      },
+      "labor": 4
+    },
+    {
+      "id": "water",
+      "inputs": {
+        "energy": 1
+      },
+      "outputs": {
+        "water": 10
+      },
+      "labor": 4
+    }
+  ],
+  "buildings": [
+    {
+      "id": "bakery",
+      "name": "제빵소",
+      "recipe_id": "bake",
+      "capacity": 18,
+      "wood": 12,
+      "stone": 10,
+      "tools": 2,
+      "work": 24,
+      "min_months": 2,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "mill",
+      "name": "제분소",
+      "recipe_id": "mill",
+      "capacity": 10,
+      "wood": 12,
+      "stone": 10,
+      "tools": 2,
+      "work": 24,
+      "min_months": 2,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "farm",
+      "name": "농장",
+      "recipe_id": "grow",
+      "capacity": 10,
+      "wood": 12,
+      "stone": 10,
+      "tools": 2,
+      "work": 24,
+      "min_months": 2,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "forestry",
+      "name": "임업소",
+      "recipe_id": "timber",
+      "capacity": 10,
+      "wood": 12,
+      "stone": 10,
+      "tools": 2,
+      "work": 24,
+      "min_months": 2,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "quarry",
+      "name": "채석장",
+      "recipe_id": "stone",
+      "capacity": 10,
+      "wood": 12,
+      "stone": 10,
+      "tools": 2,
+      "work": 24,
+      "min_months": 2,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "workshop",
+      "name": "공구 작업장",
+      "recipe_id": "tools",
+      "capacity": 6,
+      "wood": 12,
+      "stone": 10,
+      "tools": 2,
+      "work": 24,
+      "min_months": 2,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "power",
+      "name": "발전소",
+      "recipe_id": "energy",
+      "capacity": 18,
+      "wood": 12,
+      "stone": 10,
+      "tools": 2,
+      "work": 24,
+      "min_months": 2,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "id": "water",
+      "name": "급수소",
+      "recipe_id": "water",
+      "capacity": 24,
+      "wood": 12,
+      "stone": 10,
+      "tools": 2,
+      "work": 24,
+      "min_months": 2,
+      "w": 2,
+      "h": 2
+    }
+  ],
+  "parameters": {
+    "default_seed": 42,
+    "city_width": 12,
+    "city_height": 12,
+    "road_y": 5,
+    "company_kinds": [
+      "bakery",
+      "mill",
+      "farm",
+      "forestry",
+      "quarry",
+      "workshop",
+      "power",
+      "water",
+      "builders"
+    ],
+    "facility_positions": [
+      [
+        0,
+        3
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        8,
+        3
+      ],
+      [
+        10,
+        3
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        4,
+        6
+      ]
+    ],
+    "continent_names": [
+      "대륙 A",
+      "대륙 B",
+      "대륙 C"
+    ],
+    "nation_names": [
+      "실험 국가 1",
+      "실험 국가 2",
+      "실험 국가 3"
+    ],
+    "city_names": [
+      "해솔",
+      "들녘",
+      "먼바다"
+    ],
+    "director_names": [
+      "민서",
+      "서준",
+      "지우",
+      "하윤",
+      "도윤",
+      "수아",
+      "예준",
+      "지안",
+      "시우"
+    ],
+    "employee_titles": [
+      "대표",
+      "기사",
+      "직원"
+    ],
+    "employees_per_company": 3,
+    "available_hours": 80,
+    "hourly_wage": 2,
+    "company_opening_cash": 12000,
+    "person_opening_cash": 180,
+    "default_policy": {
+      "production_percent": 100,
+      "price_percent": 100,
+      "dividend_percent": 20
+    },
+    "initial_input_stock": 32,
+    "initial_output_stock": 40,
+    "initial_output_city_step": 3,
+    "initial_maintenance_tools": 4,
+    "starter_materials": {
+      "wood": 12,
+      "stone": 10
+    },
+    "contractor_name": "종합 건설",
+    "contractor_width": 2,
+    "contractor_height": 2,
+    "forest_opening": 10000,
+    "forest_city_step": 1000,
+    "stone_opening": 20000,
+    "stone_city_step": 2000,
+    "forest_capacity": 12000,
+    "forest_regrowth": 8,
+    "construction_budget": 120,
+    "construction_work_per_month": 12,
+    "construction_hour_price": 4,
+    "construction_stage_foundation": 8,
+    "construction_stage_frame": 16,
+    "director_hours": 6,
+    "director_pay": 12,
+    "freight_unit_cost": 2,
+    "freight_lead_months": 1,
+    "minimum_price": 1,
+    "policy_minimum": 0,
+    "policy_maximum": 100,
+    "price_policy_minimum": 50,
+    "price_policy_maximum": 200,
+    "stock_target_default": 40,
+    "stock_target_essentials": 72,
+    "essential_products": [
+      "food",
+      "energy",
+      "water"
+    ],
+    "stock_excess_multiple": 2,
+    "stock_slow_batches": 2,
+    "ai_high_stock": 100,
+    "ai_low_stock": 12,
+    "ai_price_step": 5,
+    "ai_price_minimum": 60,
+    "ai_price_maximum": 160,
+    "maintenance_period_months": 12,
+    "maintenance_tools_per_facility": 1,
+    "dividend_cash_floor": 1000,
+    "household_demand": {
+      "food": 2,
+      "water": 2,
+      "energy": 2
+    }
+  }
+}

@@ -1,0 +1,11 @@
+# New monthly-economy development project; retain existing distribution files.
+**/.godot/
+builds/
+**/builds/
+**/build/
+**/__pycache__/
+*.keystore
+*.jks
+*.p12
+.DS_Store
+*.log

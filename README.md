@@ -1,5 +1,9 @@
 # ALPHA EXCHANGE · 알파 익스체인지
 
+> **새 프로젝트: HORA · 월간 경제 실험실**
+>
+> 월 단위 경제 생태계 기획서의 별도 Godot 검증 프로젝트를 [games/monthly-economy](games/monthly-economy)에 추가했습니다. [실행 안내·구현 범위](games/monthly-economy/README.md)와 [요구 추적표](games/monthly-economy/docs/requirements.md)를 참고하세요. `monthly-economy/…` 시험판은 아래 알파 익스체인지의 정식 업데이트와 구분합니다.
+
 투자자 100명이 5업종·15종목에서 경쟁하는 완전 오프라인 Android 경제 관찰 게임입니다. 새 투자자의 출자금/초기 순자산은 각각 1억원입니다. 개인 AI·개인 통계는 없으며 은행은 주식 투자·인수·대여·투자자 신용 공급을 하지 않습니다.
 
 [최신 정식 APK 다운로드](https://github.com/hddy774/project-hora/releases/latest)
@@ -19,7 +23,7 @@ Android 8.0 이상, ARM64/x86_64를 지원합니다. `AlphaExchange-v1.14.0.apk`
 
 실제 배속은 최근 완료한 게임 시간의 추정치이며 목표 배속·계산 대기와 구분합니다. 호스트 동일 입력 계산은17.8% 단축했지만 소프트웨어 에뮬레이터100배속 기준은 미달입니다. 기기별 처리량이 다르며 실기기 FPS·배터리는 미측정입니다.
 
-이 저장소는 APK 배포·설치 안내·배포 서명 자동화에 사용합니다. 게임 개발 소스·전체 기획·설계·검증·복구 가능한 Git 이력은 소유자의 비공개 Notion 보관본에서 관리합니다. 일반 배포 브랜치·릴리스 태그로 GitHub가 자동 생성하는 Source code ZIP/TAR에는 게임 소스가 포함되지 않습니다. 과거 숨은 PR참조18개는 GitHub 삭제 제한으로 남아 있습니다.
+알파 익스체인지 관련 파일은 APK 배포·설치 안내·배포 서명 자동화에 사용합니다. **알파 익스체인지** 개발 소스·전체 기획·설계·검증·복구 가능한 Git 이력은 소유자의 비공개 Notion 보관본에서 관리합니다. 기존 알파 익스체인지 배포 태그로 GitHub가 자동 생성하는 Source code ZIP/TAR에는 해당 게임 소스가 포함되지 않습니다. 새 HORA 검증 프로젝트의 소스는 위 별도 폴더에 공개되어 있습니다. 과거 숨은 PR참조18개는 GitHub 삭제 제한으로 남아 있습니다.
 
 앱 ID: `com.alphaexchange.offline`
 

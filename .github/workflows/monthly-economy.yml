@@ -1,0 +1,49 @@
+name: Monthly economy experimental checks and builds
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, 'monthly-economy/**']
+    paths:
+      - 'games/monthly-economy/**'
+      - '.github/workflows/monthly-economy.yml'
+  pull_request:
+    paths:
+      - 'games/monthly-economy/**'
+      - '.github/workflows/monthly-economy.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: monthly-economy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  experimental:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: games/monthly-economy
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install checksum-pinned Godot and export templates
+        run: |
+          bash tools/install_godot.sh
+          echo "GODOT_BIN=$HOME/.cache/hora-tools/Godot_v4.6.3-stable_linux.x86_64" >> "$GITHUB_ENV"
+      - name: Verify once and build the Linux and separate Android previews
+        run: bash tools/build.sh all
+      - name: Upload experimental binaries and verification reports
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: monthly-economy-experimental-${{ github.sha }}
+          path: |
+            games/monthly-economy/build/*.apk
+            games/monthly-economy/build/*.zip
+            games/monthly-economy/build/*-VERIFICATION.json
+            games/monthly-economy/build/BUILD-MANIFEST.json
+            games/monthly-economy/build/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14

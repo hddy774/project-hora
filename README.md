@@ -1,5 +1,9 @@
 # Hora Economic Lab · 호라경제연구실
 
+> **🔧 C# 재설계 진행 중 (2026-10-28~)** — [현행 피드백](docs/redesign/01-feedback.md) · [새 기획서](docs/redesign/02-game-design.md) · [작업 명세](docs/tasks/README.md)
+> 규칙: [GitHub 사용](docs/standards/github-workflow.md) · [C# 코드](docs/standards/coding-conventions.md) · [개발 프로세스](docs/standards/development-process.md) · AI 지침 [AGENTS.md](AGENTS.md)
+> 아래 내용은 현재 공개된 Godot 버전(v0.2.1) 기준입니다.
+
 **한 달의 결정이 사람·기업·도시와 세계 경제로 이어지는 경제 생태계 시뮬레이션 게임입니다.**
 
 플레이어는 세계 안의 인물 한 명으로 취업·창업·투자·기업 경영·정치 활동을 선택합니다. 기업의 생산과 거래, 가계의 노동과 소비, 정부 예산과 국제 무역을 연결하고 그 결과와 원인을 관찰하는 게임을 개발하고 있습니다.

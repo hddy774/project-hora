@@ -4,6 +4,25 @@
 > 규칙: [GitHub 사용](docs/standards/github-workflow.md) · [C# 코드](docs/standards/coding-conventions.md) · [개발 프로세스](docs/standards/development-process.md) · AI 지침 [AGENTS.md](AGENTS.md)
 > 아래 내용은 현재 공개된 Godot 버전(v0.2.1) 기준입니다.
 
+## C# 코어 개발
+
+[PR #19](https://github.com/hddy774/project-hora/pull/19)의 M0 명세를 따라 `src/`에서 엔진 독립 코어를 개발합니다.
+`.NET Standard 2.1 / C# 9` 라이브러리 두 개와 `.NET 8` 테스트·개발 도구를 분리했습니다.
+현재 설치형 게임은 아래의 Godot v0.2.1이며, 새 코어의 진행 상황은 구현 PR별 수용 기준에서 확인할 수 있습니다.
+
+```bash
+dotnet restore --locked-mode
+dotnet format --verify-no-changes
+bash tools/check-code-rules.sh
+dotnet build -c Release -warnaserror
+dotnet test -c Release
+```
+
+SDK는 `global.json`, NuGet 버전은 `Directory.Packages.props`와 프로젝트별 잠금 파일에서 관리합니다.
+새 클라이언트의 엔진은 기획서 Q1에 따라 별도로 결정합니다.
+
+## 현재 공개 게임
+
 **한 달의 결정이 사람·기업·도시와 세계 경제로 이어지는 경제 생태계 시뮬레이션 게임입니다.**
 
 플레이어는 세계 안의 인물 한 명으로 취업·창업·투자·기업 경영·정치 활동을 선택합니다. 기업의 생산과 거래, 가계의 노동과 소비, 정부 예산과 국제 무역을 연결하고 그 결과와 원인을 관찰하는 게임을 개발하고 있습니다.

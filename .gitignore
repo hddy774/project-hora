@@ -10,3 +10,11 @@ builds/
 *.p12
 .DS_Store
 *.log
+
+# Engine-independent C# core and its verification artifacts.
+bin/
+obj/
+*.user
+.vs/
+BenchmarkDotNet.Artifacts/
+TestResults/

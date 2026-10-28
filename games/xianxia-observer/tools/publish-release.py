@@ -151,7 +151,7 @@ def prepare(source, apk, digest, run_id):
     verify_draft(release, source, apk, digest, False)
     PREPARED.write_text(json.dumps({'tag': TAG, 'id': release['id']}))
     # 확정된 태그/소스는 검증만 한다. 노트 수정에 workflow 변경 권한을 요구하지 않는다.
-    Path('notes-request.json').write_text(json.dumps({'body': notes}))
+    Path('notes-request.json').write_text(json.dumps({'tag_name': TAG, 'body': notes}))
     gh('api', '--method', 'PATCH', f'repos/{REPOSITORY}/releases/{release["id"]}',
        '--input', 'notes-request.json')
     shutil.copyfile(apk, ROOT / NAME)
@@ -184,7 +184,7 @@ def publish(source, apk, digest):
     verify_draft(release_or_none(), source, apk, digest, True)
     release = release_or_none()
     Path('publish-request.json').write_text(json.dumps(
-        {'draft': False, 'prerelease': False, 'make_latest': 'true'}))
+        {'tag_name': TAG, 'draft': False, 'prerelease': False, 'make_latest': 'true'}))
     gh('api', '--method', 'PATCH', f'repos/{REPOSITORY}/releases/{release["id"]}',
        '--input', 'publish-request.json')
     latest = api('releases/latest')

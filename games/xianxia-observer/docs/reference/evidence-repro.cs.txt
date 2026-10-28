@@ -1,0 +1,114 @@
+// 문서 작성용 읽기 전용 카탈로그 추출기. 게임 소스를 수정하지 않고 실제 공개 규칙과 모델을 읽는다.
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Encodings.Web;
+using System.Xml.Linq;
+using System.IO.Compression;
+using Xianxia.Simulation.Data;
+using Xianxia.Simulation.Model;
+using Xianxia.Simulation.Systems;
+using Xianxia.Simulation.Persistence;
+
+var assembly = typeof(World).Assembly;
+var xml = XDocument.Load(Path.ChangeExtension(assembly.Location, ".xml"));
+var comments = xml.Descendants("member").ToDictionary(x => (string)x.Attribute("name")!, x => x);
+string Description(string key, string? parameter = null)
+{
+    if (!comments.TryGetValue(key, out var item)) return "";
+    var value = parameter == null ? item.Element("summary") : item.Elements("param").FirstOrDefault(p => (string?)p.Attribute("name") == parameter);
+    return string.Join(" ", (value?.Value ?? "").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+}
+string TypeName(Type type) => type.IsGenericType ? type.Name.Split('`')[0] + "<" + string.Join(",", type.GetGenericArguments().Select(TypeName)) + ">" : type.Name;
+var models = assembly.GetTypes().Where(t => t.Namespace == "Xianxia.Simulation.Model" && t.IsPublic && !t.IsEnum)
+    .OrderBy(t => t.Name).Select(t => new
+    {
+        Name = t.Name,
+        Description = Description("T:" + t.FullName),
+        Properties = t.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
+            .OrderBy(p => p.MetadataToken).Select(p => new
+            {
+                Name = p.Name, Type = TypeName(p.PropertyType), Ignored = p.GetCustomAttribute<JsonIgnoreAttribute>() != null,
+                CanWrite = p.CanWrite, Description = Description("P:" + t.FullName + "." + p.Name) is { Length: > 0 } d
+                    ? d : Description("T:" + t.FullName, p.Name),
+            }).ToArray(),
+    }).ToArray();
+var enums = assembly.GetTypes().Where(t => t.IsEnum && t.IsPublic).OrderBy(t => t.FullName).Select(t => new
+{
+    Name = t.FullName, Values = Enum.GetValues(t).Cast<object>().Select(v => new
+    { Name = v.ToString(), Value = Convert.ToInt32(v), Description = Description("F:" + t.FullName + "." + v) }).ToArray(),
+});
+var data = new
+{
+    Baseline = "17b48ad1bfcb58a9d32a8def0e74caa2027cb7f0",
+    ApkSource = "f8838425f6a3303d11171605abba47008862491c",
+    Balance = typeof(Balance).GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.IsLiteral).Select(f => new
+    { f.Name, Value = f.GetRawConstantValue(), Description = Description("F:" + typeof(Balance).FullName + "." + f.Name) }),
+    Realms = Enumerable.Range(0, Realms.Count).Select(r => new
+    { Id = r, Name = Realms.Name(r), BaseLifespan = Realms.BaseLifespan(r), Requirements = Enumerable.Range(0,4).Select(s => Realms.Requirement(r,s)), BaseMajorChance = Realms.MajorBreakthroughBase(r), PowerBase = Realms.PowerBase(r,0) }),
+    Techniques = Enumerable.Range(0, Techniques.GradeCount).Select(g => new
+    { Grade = g, Name = Techniques.Name(g), RealmCap = Realms.Name(Techniques.RealmCap(g)), Gain = Techniques.GainMultiplier(g), PavilionCost = Techniques.PavilionCost(g), MarketPrice = Techniques.MarketPrice(g) }),
+    Facilities = Enum.GetValues<FacilityKind>().Select(f => new { Id = (int)f, Kind = f.ToString(), Name = SectRules.FacilityName(f), DisplayEffect = SectRules.FacilityEffect(f) }),
+    FacilityUpgradeCosts = Enumerable.Range(0,6).Select(l => new { CurrentLevel = l, NextLevelCost = SectRules.UpgradeCost(l) }),
+    Ranks = Enum.GetValues<SectRank>().Select(r => new { Id = (int)r, Name = Labels.Of(r), Capacity = SectRules.Capacity(r), Stipend = SectRules.Stipend(r), Growth = SectRules.GrowthMultiplier(r) }),
+    Regions = RegionCatalog.All, Borders = RegionCatalog.BorderIds, EventRegions = RegionCatalog.EventRegionIds,
+    Titles = TitleCatalog.All,
+    Personalities = Enum.GetValues<Personality>().Select(p => new { Id = (int)p, Name = Labels.Of(p), OrthodoxAffinity = Traits.SectAffinity(p,true), DemonicAffinity = Traits.SectAffinity(p,false), Weights = Enum.GetValues<CultivatorAction>().Select(a => new { Action = Labels.Of(a), Value = Traits.ActionWeight(p,a) }) }),
+    Models = models, Enums = enums,
+};
+var options = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+File.WriteAllText(args[0], JsonSerializer.Serialize(data, options) + "\n");
+World world = WorldFactory.Create(new WorldSettings { Seed = 7, Population = 100 });
+using var input = new MemoryStream(WorldSerializer.ToBytes(world));
+using var gzip = new GZipStream(input, CompressionMode.Decompress);
+using var document = JsonDocument.Parse(gzip);
+var root = document.RootElement;
+var sample = new Dictionary<string, object?>
+{
+    ["Notice"] = "세계 전체가 아닌 저장 JSON의 발췌 예제. 이 파일 자체를 world.sav로 불러올 수 없다.",
+    ["WorldKeys"] = root.EnumerateObject().Select(p => p.Name).ToArray(),
+    ["Settings"] = root.GetProperty("Settings").Clone(),
+    ["FormatVersion"] = root.GetProperty("FormatVersion").Clone(),
+    ["Year"] = root.GetProperty("Year").Clone(),
+    ["RandomState"] = root.GetProperty("RandomState").Clone(),
+    ["RandomIncrement"] = root.GetProperty("RandomIncrement").Clone(),
+    ["CultivatorExample"] = root.GetProperty("Cultivators")[0].Clone(),
+    ["SectExample"] = root.GetProperty("Sects")[0].Clone(),
+    ["RegionExample"] = root.GetProperty("Regions")[0].Clone(),
+};
+File.WriteAllText(args[1], JsonSerializer.Serialize(sample, options) + "\n");
+Console.WriteLine($"Exported {models.Length} model types and the live catalogs.");
+var high = new Cultivator { TechniqueGrade = 18 };
+typeof(ActionEffects).GetMethod("GainTechnique", BindingFlags.NonPublic | BindingFlags.Static)!
+    .Invoke(null, new object[] { high, 1 });
+var broken = WorldFactory.Create(new WorldSettings { Seed = 7, Population = 100 });
+broken.Cultivators[0].RegionId = 999;
+string invalidSave;
+try { WorldSerializer.FromBytes(WorldSerializer.ToBytes(broken)); invalidSave = "Accepted"; }
+catch (Exception ex) { invalidSave = ex.GetType().Name; }
+var observed = WorldFactory.Create(new WorldSettings { Seed = 7, Population = 100 });
+var control = WorldFactory.Create(new WorldSettings { Seed = 7, Population = 100 });
+observed.Followed.AddRange(observed.Cultivators.Select(c => c.Id));
+Xianxia.Simulation.WorldSimulator.Run(observed, 600);
+Xianxia.Simulation.WorldSimulator.Run(control, 600);
+string CoreFingerprint(World w) => JsonSerializer.Serialize(w.Cultivators.Select(c => new
+{ c.Id, c.Age, c.Realm, c.Stage, c.Qi, c.SpiritStones, c.Wins, c.Reincarnations }));
+var overlap = WorldFactory.Create(new WorldSettings { Seed = 7, Population = 100 });
+var secret = SecretRealmSystem.Open(overlap, 8, true);
+BeastTideSystem.Start(overlap, 8, true);
+double beforeClose = overlap.Regions[8].AuraModifier;
+typeof(SecretRealmSystem).GetMethod("Close", BindingFlags.NonPublic | BindingFlags.Static)!
+    .Invoke(null, new object[] { overlap, secret });
+var initial = WorldFactory.Create(new WorldSettings { Seed = 7, Population = 100 });
+File.WriteAllText(args[2], JsonSerializer.Serialize(new
+{
+    Baseline = "17b48ad1bfcb58a9d32a8def0e74caa2027cb7f0",
+    FortuneTechnique = new { Before = 18, Gain = 1, After = high.TechniqueGrade },
+    MalformedSave = new { RegionId = 999, Exception = invalidSave },
+    FollowExperiment = new { Seed = 7, Population = 100, Years = 600, ControlFollowed = 0, ObservedFollowed = 100,
+        RandomStateEqual = control.Random.State == observed.Random.State, CoreStateEqual = CoreFingerprint(control) == CoreFingerprint(observed) },
+    EventOverlap = new { Region = 8, ModifierBeforeSecretClose = beforeClose,
+        ModifierAfterSecretClose = overlap.Regions[8].AuraModifier, ActiveBeastTides = overlap.BeastTides.Count },
+    FounderRecord = new { Year = initial.Year, ExistingRealmTwoOrHigher = initial.Cultivators.Count(c => c.Realm >= 2),
+        FirstReachRealmTwo = initial.Records.FirstReach[2] },
+}, options) + "\n");

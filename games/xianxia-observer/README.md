@@ -6,6 +6,10 @@ Android·데스크톱에서 공유합니다. React 원본은 `legacy/original-ap
 일곱 탭(천하·종문·인물·사기·업적·현황·기록), 상세 시트, 천기 개입과 기기 내 저장을 제공합니다.
 범위와 수용 기준은 [XO-01](../../docs/tasks/XO-01-release-completion.md)을 참고하세요.
 
+전체 기획·규칙·밸런스·화면·아키텍처·저장·Android·검증·후속 제안은
+[기획·기술 문서 목차](docs/README.md)에 정리했습니다.
+클로드 피드백을 요청할 때는 [검토 요청문](docs/10-claude-review-request.md)을 함께 전달하세요.
+
 ## 실행과 검사
 
 이 디렉터리에서 .NET 10 SDK로 실행합니다.

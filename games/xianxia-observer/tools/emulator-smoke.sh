@@ -38,16 +38,16 @@ adb exec-out screencap -p > "$out/04-after-back.png"
 adb logcat -d > "$out/logcat.txt"
 grep -nE "FATAL EXCEPTION|AndroidRuntime|$package|mono-rt|DOTNET|Avalonia" "$out/logcat.txt" | tail -80 || true
 
-# 로그에서도 화면을 확인할 수 있도록 축소한 첫 화면을 base64로 남긴다.
+
+# 아티팩트를 내려받기 어려운 환경에서도 화면을 확인할 수 있게 축소 화면을 로그 맨 끝에 base64로 남긴다.
 if command -v convert > /dev/null; then
-    for name in 01-launch 02-after-taps; do
-        convert "$out/$name.png" -resize 360x -quality 70 "$out/$name-small.jpg"
+    for name in 01-launch 02-after-taps 03-center-tap; do
+        convert "$out/$name.png" -resize 300x -strip -quality 60 "$out/$name-small.jpg"
         echo "----- BEGIN $name-small.jpg (base64) -----"
-        base64 -w 120 "$out/$name-small.jpg"
+        base64 -w 150 "$out/$name-small.jpg"
         echo "----- END $name-small.jpg -----"
     done
 fi
-
 if grep -q "FATAL EXCEPTION" "$out/logcat.txt"; then
     echo "::error::앱에서 치명적 예외가 발생했습니다."
     exit 1

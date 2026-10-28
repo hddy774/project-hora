@@ -40,3 +40,12 @@ APK 한 개만 초안에 업로드 → 재다운로드 해시 검사 → 최신 
 
 키스토어는 CI의 임시 폴더에서만 사용하며 저장소나 개발 환경으로 가져오지 않습니다.
 스크린샷·로그·서명 보고서는 Actions 아티팩트에만 남고 릴리스 첨부는 APK 한 개입니다.
+
+게시 단계만 실패한 경우에는 워크플로의 `source_run_id`에 이전 실행 ID를 넣고 `publish=true`로
+실행하면 같은 실행의 검사·서명·Android 성공을 확인한 뒤 그 APK만 게시합니다. 재빌드하지 않습니다.
+CLI에서는 같은 실행의 검사·서명·Android 성공과 아티팩트 해시를 확인한 뒤,
+해당 실행의 APK와 서명 보고서를 작업 폴더의 `release-input/`에 두고
+`publish-release.py prepare --source-run <실행 ID>`로 게시만 재시도할 수 있습니다.
+`readback --source-run <실행 ID>`로 초안 APK의 다운로드를 검증한 다음
+`publish --source-run <실행 ID>`를 실행합니다.
+이 경로도 인증된 저장소 소유자와 동일 실행의 출처·검사·APK 해시를 요구합니다.

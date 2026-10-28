@@ -18,6 +18,11 @@ adb shell am start -W -n "$package/.MainActivity"
 sleep 25
 adb exec-out screencap -p > "$out/01-launch.png"
 
+# Google APIs 이미지의 Pixel Launcher ANR 창이 게임의 입력을 가리는 경우를 없앤다.
+# 게임 프로세스는 유지하고 에뮬레이터 런처만 정리한 뒤 다시 앞으로 가져온다.
+adb shell am force-stop com.google.android.apps.nexuslauncher
+adb shell am start -W -n "$package/.MainActivity"
+
 # 모든 하단 탭을 눌러 실제 화면과 입력 처리 결과를 남긴다.
 size=$(adb shell wm size | awk -F': ' '/Physical/ {print $2}' | tr -d '\r')
 width=${size%x*}
@@ -59,7 +64,7 @@ if command -v convert > /dev/null; then
     variation=$(convert "$out/06-relaunch.png" -format '%[fx:standard_deviation]' info:)
     awk -v value="$variation" 'BEGIN { exit !(value > 0.01) }'
 fi
-if grep -q "FATAL EXCEPTION" "$out/logcat.txt"; then
+if grep -q "FATAL EXCEPTION" "$out/logcat.txt" || grep -q "ANR in $package" "$out/logcat.txt"; then
     echo "::error::앱에서 치명적 예외가 발생했습니다."
     exit 1
 fi

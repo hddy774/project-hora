@@ -23,7 +23,8 @@ size=$(adb shell wm size | awk -F': ' '/Physical/ {print $2}' | tr -d '\r')
 width=${size%x*}
 height=${size#*x}
 for tab in 0 1 2 3 4 5 6; do
-    adb shell input tap $((width * (2 * tab + 1) / 14)) $((height * 94 / 100))
+    # Pixel 6의 제스처 안전 영역 위, 탭 글리프 중앙을 누른다. 하단 여백을 누르면 탭이 바뀌지 않는다.
+    adb shell input tap $((width * (2 * tab + 1) / 14)) $((height * 90 / 100))
     sleep 2
     adb exec-out screencap -p > "$out/tab-$tab.png"
 done

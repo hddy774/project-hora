@@ -18,13 +18,14 @@ adb shell am start -W -n "$package/.MainActivity"
 sleep 25
 adb exec-out screencap -p > "$out/01-launch.png"
 
-# 하단 탭과 화면 가운데를 차례로 눌러 입력 처리 중 예외가 없는지 본다.
+# 모든 하단 탭을 눌러 실제 화면과 입력 처리 결과를 남긴다.
 size=$(adb shell wm size | awk -F': ' '/Physical/ {print $2}' | tr -d '\r')
 width=${size%x*}
 height=${size#*x}
-for fraction in 25 42 58 75 92; do
-    adb shell input tap $((width * fraction / 100)) $((height * 97 / 100))
+for tab in 0 1 2 3 4 5 6; do
+    adb shell input tap $((width * (2 * tab + 1) / 14)) $((height * 94 / 100))
     sleep 2
+    adb exec-out screencap -p > "$out/tab-$tab.png"
 done
 adb exec-out screencap -p > "$out/02-after-taps.png"
 adb shell input tap $((width / 2)) $((height / 2))
@@ -35,18 +36,27 @@ adb shell input keyevent KEYCODE_BACK
 sleep 3
 adb exec-out screencap -p > "$out/04-after-back.png"
 
+# Android 수명 주기의 백그라운드 저장과 복귀, 종료 후 저장 불러오기를 실제 배포 APK로 확인한다.
+adb shell input keyevent KEYCODE_HOME
+sleep 3
+adb shell am start -W -n "$package/.MainActivity"
+sleep 4
+adb exec-out screencap -p > "$out/05-foreground.png"
+adb shell am force-stop "$package"
+adb shell am start -W -n "$package/.MainActivity"
+sleep 6
+adb exec-out screencap -p > "$out/06-relaunch.png"
+pid=$(adb shell pidof "$package" | tr -d '\r' || true)
+sha256sum "$apk" > "$out/tested-apk-sha256.txt"
+
 adb logcat -d > "$out/logcat.txt"
 grep -nE "FATAL EXCEPTION|AndroidRuntime|$package|mono-rt|DOTNET|Avalonia" "$out/logcat.txt" | tail -80 || true
 
 
-# 아티팩트를 내려받기 어려운 환경에서도 화면을 확인할 수 있게 축소 화면을 로그 맨 끝에 base64로 남긴다.
+# 화면 자체는 아티팩트에 보관한다. 빈 화면을 성공으로 처리하지 않는다.
 if command -v convert > /dev/null; then
-    for name in 01-launch 02-after-taps 03-center-tap; do
-        convert "$out/$name.png" -resize 300x -strip -quality 60 "$out/$name-small.jpg"
-        echo "----- BEGIN $name-small.jpg (base64) -----"
-        base64 -w 150 "$out/$name-small.jpg"
-        echo "----- END $name-small.jpg -----"
-    done
+    variation=$(convert "$out/06-relaunch.png" -format '%[fx:standard_deviation]' info:)
+    awk -v value="$variation" 'BEGIN { exit !(value > 0.01) }'
 fi
 if grep -q "FATAL EXCEPTION" "$out/logcat.txt"; then
     echo "::error::앱에서 치명적 예외가 발생했습니다."

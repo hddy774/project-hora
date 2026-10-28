@@ -4,7 +4,7 @@ name: Xianxia Observer
 
 on:
   push:
-    branches: [main, 'claude/**']
+    branches: [main, 'claude/**', 'codex/**']
     paths:
       - 'games/xianxia-observer/**'
       - '.github/workflows/xianxia-observer.yml'
@@ -34,6 +34,8 @@ env:
   APPLICATION_ID: org.hora.xianxiaobserver
   APP_VERSION: 0.1.0
   APP_VERSION_CODE: 1
+  RELEASE_TAG: xianxia-observer/v0.1.0
+  ARTIFACT_STEM: XianxiaObserver-v0.1.0
 
 jobs:
   check:
@@ -102,10 +104,31 @@ jobs:
         run: >
           dotnet publish src/Xianxia.Android/Xianxia.Android.csproj -c Release -f net10.0-android -o "$RUNNER_TEMP/apk"
           -p:AndroidSdkDirectory="$ANDROID_SDK" -p:JavaSdkDirectory="$JAVA_HOME"
+      - name: Sign the release APK with the retained publisher
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner }}
+        env:
+          SIGNING_BUNDLE: ${{ secrets.ANDROID_SIGNING_BUNDLE }}
+          RAW_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
+          RAW_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
+          RAW_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          unsigned="$RUNNER_TEMP/apk/$APPLICATION_ID.apk"
+          test -f "$unsigned"
+          export UNSIGNED_SHA256=$(sha256sum "$unsigned" | cut -d' ' -f1)
+          mkdir -p "$RUNNER_TEMP/release"
+          bash tools/retained-sign.sh "$unsigned" "$RUNNER_TEMP/release/$ARTIFACT_STEM.apk"
       - name: Verify package identity, offline policy and ABIs
+        env:
+          PUBLISH_RELEASE: ${{ github.event_name == 'workflow_dispatch' && inputs.publish }}
         run: |
           set -euo pipefail
           apk=$(ls "$RUNNER_TEMP"/apk/*-Signed.apk)
+          if [ "$PUBLISH_RELEASE" = true ]; then
+            apk="$RUNNER_TEMP/release/$ARTIFACT_STEM.apk"
+            test -f "$apk"
+          fi
           "$BUILD_TOOLS/aapt2" dump badging "$apk" > "$RUNNER_TEMP/badging.txt"
           cat "$RUNNER_TEMP/badging.txt" | head -20
           grep -q "package: name='$APPLICATION_ID' versionCode='$APP_VERSION_CODE' versionName='$APP_VERSION'" "$RUNNER_TEMP/badging.txt"
@@ -115,15 +138,48 @@ jobs:
           "$BUILD_TOOLS/apksigner" verify --verbose "$apk" | head -8
           mkdir -p "$RUNNER_TEMP/out"
           cp "$apk" "$RUNNER_TEMP/out/XianxiaObserver-ci.apk"
+          if [ "$PUBLISH_RELEASE" = true ]; then
+            cp "$RUNNER_TEMP/release/SIGNING-VERIFICATION.json" "$RUNNER_TEMP/out/"
+          fi
           ls -la "$RUNNER_TEMP/out"
           sha256sum "$RUNNER_TEMP/out/XianxiaObserver-ci.apk"
       - name: Preserve the CI APK
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: xianxia-apk-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/out/XianxiaObserver-ci.apk
+          path: ${{ runner.temp }}/out/
           if-no-files-found: error
           retention-days: 14
+
+  publish:
+    name: publish verified APK only as latest
+    needs: [check, android, emulator]
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: xianxia-apk-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release-input
+      - name: Verify provenance and prepare APK-only draft
+        run: python3 games/xianxia-observer/tools/publish-release.py prepare
+      - name: Download the draft attachment and verify exact bytes
+        run: |
+          set -euo pipefail
+          mkdir readback
+          gh release download "$RELEASE_TAG" --repo "$GH_REPO" --pattern "$ARTIFACT_STEM.apk" --dir readback
+          cmp "release-input/$ARTIFACT_STEM.apk" "readback/$ARTIFACT_STEM.apk"
+      - name: Publish as stable latest and verify the attachment set
+        run: python3 games/xianxia-observer/tools/publish-release.py publish
 
   emulator:
     name: run APK on Android emulator

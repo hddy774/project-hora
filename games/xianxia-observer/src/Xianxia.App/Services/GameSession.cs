@@ -54,13 +54,14 @@ namespace Xianxia.App.Services
             return new GameSession(store, WorldFactory.Create(new WorldSettings()), problem);
         }
 
-        /// <summary>지금 저장한다(잠금 안에서 직렬화하고 잠금 밖에서 파일을 쓴다).</summary>
+        /// <summary>캡처와 파일 쓰기 순서를 보장해 저장한다. 파일 쓰기 중에는 시뮬레이션 잠금을 놓는다.</summary>
         /// <returns>성공하면 true.</returns>
         internal bool Save()
         {
-            (byte[] bytes, int year) = Runner.Read(world => (WorldSerializer.ToBytes(world), world.Year));
             lock (_saveGate)
             {
+                // 동시에 요청된 자동·수동 저장도 캡처 순서대로 쓴다. 오래된 캡처가 새 저장을 덮지 못하게 한다.
+                (byte[] bytes, int year) = Runner.Read(world => (WorldSerializer.ToBytes(world), world.Year));
                 try
                 {
                     Store.Write(bytes);
@@ -86,17 +87,21 @@ namespace Xianxia.App.Services
         /// <returns>성공하면 true.</returns>
         internal bool LoadSaved(out string message)
         {
-            World? world = Store.TryLoad(out string? problem);
-            if (world is null)
+            lock (_saveGate)
             {
-                message = problem ?? "저장 파일이 없습니다.";
-                return false;
-            }
+                World? world = Store.TryLoad(out string? problem);
+                if (world is null)
+                {
+                    message = problem ?? "저장 파일이 없습니다.";
+                    return false;
+                }
 
-            Runner.Replace(world);
-            message = world.Year.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture)
-                + "년 저장을 불러왔습니다.";
-            return true;
+                Runner.Replace(world);
+                message = world.Year.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture)
+                    + "년 저장을 불러왔습니다.";
+                LastSaveMessage = message;
+                return true;
+            }
         }
 
         /// <summary>새 세계를 연다.</summary>

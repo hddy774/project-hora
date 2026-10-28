@@ -160,6 +160,7 @@ namespace Xianxia.App.Services
         {
             lock (_gate)
             {
+                _running = false;
                 _world = world;
                 Error = null;
                 Interlocked.Increment(ref _version);

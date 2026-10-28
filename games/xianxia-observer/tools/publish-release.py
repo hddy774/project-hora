@@ -46,14 +46,17 @@ def verify_input():
 
 
 def release_or_none():
-    """404만 초안이 없는 경우로 처리한다. 다른 API 오류는 그대로 실패시킨다."""
-    result = subprocess.run(['gh', 'api', f'repos/{REPOSITORY}/releases/tags/{TAG}'],
-                            text=True, capture_output=True)
-    if result.returncode == 0:
-        return json.loads(result.stdout)
-    if 'HTTP 404' not in result.stderr:
-        raise RuntimeError('Release lookup failed: ' + result.stderr)
-    return None
+    """태그 조회 API는 공개 릴리스만 돌려주므로, 인증된 목록에서 초안도 함께 찾는다."""
+    matches = []
+    page = 1
+    while True:
+        releases = api(f'releases?per_page=100&page={page}')
+        matches.extend(release for release in releases if release['tag_name'] == TAG)
+        if len(releases) < 100:
+            break
+        page += 1
+    assert len(matches) <= 1, 'Duplicate release tag'
+    return matches[0] if matches else None
 
 
 def verify_draft(release, source, apk, digest, require_asset):
@@ -89,6 +92,7 @@ def prepare(source, apk, digest):
            '--title', '선협 관찰 v0.1.0', '--notes-file', 'release-notes.md')
         release = release_or_none()
     verify_draft(release, source, apk, digest, False)
+    gh('release', 'edit', TAG, '--repo', REPOSITORY, '--notes-file', 'release-notes.md')
     shutil.copyfile(apk, ROOT / NAME)
     if not release['assets']:
         gh('release', 'upload', TAG, str(ROOT / NAME), '--repo', REPOSITORY)

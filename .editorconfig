@@ -117,3 +117,7 @@ dotnet_diagnostic.CS1591.severity = error
 # 사용하지 않는 using·변수
 dotnet_diagnostic.IDE0005.severity = warning
 dotnet_diagnostic.IDE0059.severity = warning
+
+# NUnit 테스트 이름은 명세의 대상_조건_기대결과 형식을 유지한다.
+[tests/**/*.cs]
+dotnet_diagnostic.CA1707.severity = none

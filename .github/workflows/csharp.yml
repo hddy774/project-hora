@@ -1,0 +1,92 @@
+# C# 재설계 코어의 서식·빌드·테스트를 각각 필수 검사로 제공한다.
+# 관련 명세: docs/tasks/M0-05-ci.md
+name: C# foundation
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'tools/**'
+      - 'data/**'
+      - '*.sln'
+      - 'Directory.*.props'
+      - 'global.json'
+      - '.editorconfig'
+      - '.github/workflows/csharp.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'tools/**'
+      - 'data/**'
+      - '*.sln'
+      - 'Directory.*.props'
+      - 'global.json'
+      - '.editorconfig'
+      - '.github/workflows/csharp.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: csharp-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  format:
+    name: format
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+      - run: dotnet restore --locked-mode
+      - run: dotnet format --verify-no-changes --no-restore
+      - run: bash tools/check-code-rules.sh
+      - run: bash tools/test-check-code-rules.sh
+
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+      - run: dotnet restore --locked-mode
+      - run: dotnet build -c Release -warnaserror --no-restore
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+      - run: dotnet restore --locked-mode
+      - run: dotnet test -c Release --no-restore --logger trx --results-directory TestResults
+      - name: Preserve test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: csharp-test-results-${{ github.run_id }}-${{ github.run_attempt }}
+          path: TestResults/**/*.trx
+          if-no-files-found: warn
+          retention-days: 14

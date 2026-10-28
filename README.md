@@ -21,6 +21,21 @@ dotnet test -c Release
 SDK는 `global.json`, NuGet 버전은 `Directory.Packages.props`와 프로젝트별 잠금 파일에서 관리합니다.
 새 클라이언트의 엔진은 기획서 Q1에 따라 별도로 결정합니다.
 
+M0 코어는 USD 센트 금액·최소 단위 수량, 고정 환율 표시, 정수 ID, PCG32 난수와 월 처리 골격을 제공합니다.
+금액 배분의 잔여 센트는 최대 나머지 순서로 배정하고, 같은 나머지는 입력 인덱스로 해소합니다.
+
+```bash
+dotnet run -c Release --project tools/Hora.Tools -- bench-pipeline
+dotnet run -c Release --project tools/Hora.Tools -- bench-money --job short --filter '*'
+```
+
+`bench-pipeline`은 **빈 시스템 10개 × 120개월**의 호출·단계 전환 비용을 측정합니다.
+실제 경제 시스템과 Android 성능은 후속 구현에서 별도로 측정합니다.
+정산 결과와 시간 목록은 다음 정산 시작 전까지 유효한 재사용 버퍼입니다.
+보고 화면은 결과를 읽은 후 `BeginPlanning()`을 호출하며, 정산 중인 세계를 다른 스레드에서 조회하지 않습니다.
+난수 스트림은 최대 1,000개의 고정 등록 인덱스를 사용하므로 기존 순서를 유지하고 끝에 시스템을 추가합니다.
+M0에는 실제 거래·저장·클라이언트가 아직 포함되지 않습니다.
+
 ## 현재 공개 게임
 
 **한 달의 결정이 사람·기업·도시와 세계 경제로 이어지는 경제 생태계 시뮬레이션 게임입니다.**

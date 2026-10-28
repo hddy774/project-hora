@@ -1,0 +1,161 @@
+# 선협 관찰(C# · Avalonia) 검사, Android APK 빌드, 에뮬레이터 실행 확인.
+# 소유자가 workflow_dispatch(publish=true)로 실행하면 보관된 배포 인증서로 서명해 APK 한 개만 최신 릴리스로 게시한다.
+name: Xianxia Observer
+
+on:
+  push:
+    branches: [main, 'claude/**']
+    paths:
+      - 'games/xianxia-observer/**'
+      - '.github/workflows/xianxia-observer.yml'
+  pull_request:
+    paths:
+      - 'games/xianxia-observer/**'
+      - '.github/workflows/xianxia-observer.yml'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Sign with the retained publisher certificate and publish the APK as the latest release
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: xianxia-observer-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  AVALONIA_TELEMETRY_OPTOUT: 1
+  GAME_DIR: games/xianxia-observer
+  APPLICATION_ID: org.hora.xianxiaobserver
+  APP_VERSION: 0.1.0
+  APP_VERSION_CODE: 1
+
+jobs:
+  check:
+    name: format, rules, build, test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: games/xianxia-observer
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Restore with lock files
+        run: dotnet restore XianxiaObserver.slnx --locked-mode
+      - name: Verify formatting
+        run: dotnet format XianxiaObserver.slnx --verify-no-changes --no-restore
+      - name: Check repository C# rules (header, length, determinism)
+        run: bash ../../tools/check-code-rules.sh .
+      - name: Build
+        run: dotnet build XianxiaObserver.slnx -c Release --no-restore
+      - name: Test simulation and headless UI
+        run: dotnet test XianxiaObserver.slnx -c Release --no-build --logger trx --results-directory TestResults
+      - name: Preserve test reports and rendered screens
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: xianxia-check-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            games/xianxia-observer/TestResults/**/*.trx
+            games/xianxia-observer/tests/Xianxia.App.Tests/bin/Release/net10.0/screens/*.png
+          if-no-files-found: warn
+          retention-days: 14
+
+  android:
+    name: build Android APK
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: games/xianxia-observer
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Select the preinstalled Java 17 toolchain
+        run: |
+          test -x "$JAVA_HOME_17_X64/bin/java"
+          echo "JAVA_HOME=$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+          echo "$JAVA_HOME_17_X64/bin" >> "$GITHUB_PATH"
+      - name: Ensure Android platform 36 and build tools
+        run: |
+          sdk="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          test -d "$sdk"
+          if [ ! -f "$sdk/platforms/android-36/android.jar" ] || [ ! -x "$sdk/build-tools/36.0.0/apksigner" ]; then
+            yes | "$sdk/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$sdk" 'platforms;android-36' 'build-tools;36.0.0' > /dev/null
+          fi
+          echo "ANDROID_SDK=$sdk" >> "$GITHUB_ENV"
+          echo "BUILD_TOOLS=$sdk/build-tools/36.0.0" >> "$GITHUB_ENV"
+      - name: Install the .NET Android workload
+        run: dotnet workload install android
+      - name: Publish the release-mode APK
+        run: >
+          dotnet publish src/Xianxia.Android/Xianxia.Android.csproj -c Release -f net10.0-android -o "$RUNNER_TEMP/apk"
+          -p:AndroidSdkDirectory="$ANDROID_SDK" -p:JavaSdkDirectory="$JAVA_HOME"
+      - name: Verify package identity, offline policy and ABIs
+        run: |
+          set -euo pipefail
+          apk=$(ls "$RUNNER_TEMP"/apk/*-Signed.apk)
+          "$BUILD_TOOLS/aapt2" dump badging "$apk" > "$RUNNER_TEMP/badging.txt"
+          cat "$RUNNER_TEMP/badging.txt" | head -20
+          grep -q "package: name='$APPLICATION_ID' versionCode='$APP_VERSION_CODE' versionName='$APP_VERSION'" "$RUNNER_TEMP/badging.txt"
+          ! grep -q 'android.permission.INTERNET' "$RUNNER_TEMP/badging.txt"
+          ! grep -q 'application-debuggable' "$RUNNER_TEMP/badging.txt"
+          grep -q "native-code: 'arm64-v8a' 'x86_64'" "$RUNNER_TEMP/badging.txt"
+          "$BUILD_TOOLS/apksigner" verify --verbose "$apk" | head -8
+          mkdir -p "$RUNNER_TEMP/out"
+          cp "$apk" "$RUNNER_TEMP/out/XianxiaObserver-ci.apk"
+          ls -la "$RUNNER_TEMP/out"
+          sha256sum "$RUNNER_TEMP/out/XianxiaObserver-ci.apk"
+      - name: Preserve the CI APK
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: xianxia-apk-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/out/XianxiaObserver-ci.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  emulator:
+    name: run APK on Android emulator
+    needs: android
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/download-artifact@v4
+        with:
+          name: xianxia-apk-${{ github.run_id }}-${{ github.run_attempt }}
+          path: apk
+      - name: Enable KVM for the emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install, launch, screenshot and check for crashes
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: bash games/xianxia-observer/tools/emulator-smoke.sh apk/XianxiaObserver-ci.apk emulator-out
+      - name: Preserve emulator screenshots and logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: xianxia-emulator-${{ github.run_id }}-${{ github.run_attempt }}
+          path: emulator-out
+          if-no-files-found: warn
+          retention-days: 14

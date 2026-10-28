@@ -1,0 +1,11 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Xianxia.App.Views.MainView"
+             Background="#F5EDE0">
+  <StackPanel Margin="16" Spacing="8">
+    <TextBlock Text="仙俠觀察 · 선협 관찰" FontSize="24" FontWeight="Bold" Foreground="#7A4800" />
+    <TextBlock Text="청운종 대 천마문 — 연기경 초기 ▶ 반선경 대원만" FontSize="14" Foreground="#1E0E00" />
+    <TextBlock Text="戰 門 人 史 錄 統 · ★☆ ※ → 1,234년" FontSize="18" />
+    <Button Content="재개" />
+  </StackPanel>
+</UserControl>

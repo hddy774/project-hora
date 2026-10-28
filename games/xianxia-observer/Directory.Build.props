@@ -1,0 +1,21 @@
+<Project>
+  <!--
+    선협 관찰 공통 빌드 설정.
+    MSBuild는 가장 가까운 Directory.Build.props만 읽으므로 저장소 루트(호라) 설정 대신 이 파일이 적용된다.
+    코드 서식·이름 규칙은 저장소 루트 .editorconfig를 그대로 따른다.
+  -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Deterministic>true</Deterministic>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <SatelliteResourceLanguages>ko</SatelliteResourceLanguages>
+    <Authors>hddy774</Authors>
+    <Product>선협 관찰</Product>
+  </PropertyGroup>
+</Project>

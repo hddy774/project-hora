@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- 첫 프레임 전에도 양피지 바탕이 보이도록 창 배경을 지정한다. -->
+  <style name="SeonhyeopTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <item name="android:windowBackground">@color/parchment</item>
+    <item name="android:statusBarColor">@color/parchment_deep</item>
+    <item name="android:navigationBarColor">@color/parchment_deep</item>
+    <item name="android:windowLightStatusBar">true</item>
+    <item name="colorPrimary">@color/bronze</item>
+    <item name="colorAccent">@color/bronze</item>
+  </style>
+</resources>

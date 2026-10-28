@@ -1,0 +1,10 @@
+# 선협 관찰 보충 규칙. 저장소 루트 .editorconfig(root = true)를 그대로 상속하고 아래 항목만 덧붙인다.
+
+[tests/**/*.cs]
+# NUnit 테스트 이름은 대상_조건_기대결과 형식을 쓴다.
+dotnet_diagnostic.CA1707.severity = none
+# 테스트 클래스·메서드는 이름이 설명이므로 XML 문서 주석을 강제하지 않는다.
+dotnet_diagnostic.CS1591.severity = none
+
+[tools/**/*.cs]
+dotnet_diagnostic.CS1591.severity = none

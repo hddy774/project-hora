@@ -1,0 +1,91 @@
+<!-- 선협 관찰 단추 테마. Fluent 단추 대신 원본 양피지 화면의 단추(.xb)·카드(.xc)·하단 탭(.xnt) 모양을 옮긴다.
+     같은 속성을 여러 분류가 바꾸면 뒤에 선언한 쪽이 이기므로 .active를 .nav.active보다 앞에 둔다. -->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ControlTheme x:Key="SeonhyeopButton" TargetType="Button">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="#40644114" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="7" />
+    <Setter Property="Padding" Value="10,6" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Foreground" Value="#1E0E00" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <ContentPresenter Name="PART_ContentPresenter"
+                          Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}"
+                          CornerRadius="{TemplateBinding CornerRadius}"
+                          Content="{TemplateBinding Content}"
+                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                          Padding="{TemplateBinding Padding}"
+                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+      </ControlTemplate>
+    </Setter>
+
+    <!-- 작은 칩: 정렬·필터 선택 -->
+    <Style Selector="^.small">
+      <Setter Property="Padding" Value="7,4" />
+      <Setter Property="FontSize" Value="11" />
+    </Style>
+
+    <!-- 선택된 칩: 원본 .xb.a -->
+    <Style Selector="^.active">
+      <Setter Property="Background" Value="#7A4800" />
+      <Setter Property="BorderBrush" Value="#7A4800" />
+      <Setter Property="Foreground" Value="#FDF0D8" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <!-- 목록 카드: 원본 .xc -->
+    <Style Selector="^.card">
+      <Setter Property="Background" Value="#E4D8BC" />
+      <Setter Property="BorderBrush" Value="#33644114" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Padding" Value="9,7" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <!-- 하단 탭: 원본 .xnt -->
+    <Style Selector="^.nav">
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Padding" Value="0,6,0,5" />
+      <Setter Property="Foreground" Value="#8A6840" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="^.nav.active">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#7A4800" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <!-- 테두리 없는 단추: 닫기·뒤로 -->
+    <Style Selector="^.ghost">
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="8,4" />
+    </Style>
+
+    <!-- 강조 단추: 실행·확인 -->
+    <Style Selector="^.primary">
+      <Setter Property="Background" Value="#7A4800" />
+      <Setter Property="BorderBrush" Value="#7A4800" />
+      <Setter Property="Foreground" Value="#FDF0D8" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="^:pressed">
+      <Setter Property="Opacity" Value="0.72" />
+    </Style>
+    <Style Selector="^:disabled">
+      <Setter Property="Opacity" Value="0.38" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

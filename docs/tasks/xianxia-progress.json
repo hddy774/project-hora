@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "repository": "hddy774/project-hora",
-  "tracking_pr": 29,
-  "updated_at": "2026-10-29T11:34:35Z",
+  "tracking_pr": 32,
+  "updated_at": "2026-10-29T12:00:59Z",
   "tasks": [
     {
       "id": "XO-01",
@@ -65,9 +65,9 @@
       "phase": "stability",
       "order": 2,
       "approval": "approved",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
+      "note": "저장 의미·크기 검증 코어90검사 통과, 손상 보존 App 구현 이어서 진행",
       "evidence": ""
     },
     {

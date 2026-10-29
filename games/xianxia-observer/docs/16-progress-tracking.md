@@ -1,7 +1,7 @@
 # 16. PR 진행표 갱신 방법
 
 사용자 요청의 실시간 갱신은 **작업 상태 변경 명령을 실행하면 PR 본문에 즉시 반영**하는 방식이다.
-상태 원본은 [xianxia-progress.json](../../../docs/tasks/xianxia-progress.json), 기본 게시 대상은 [PR #29](https://github.com/hddy774/project-hora/pull/29)다.
+상태 원본은 [xianxia-progress.json](../../../docs/tasks/xianxia-progress.json), 기본 게시 대상은 [대표 PR #32](https://github.com/hddy774/project-hora/pull/32)다.
 현재 계획은 [14](14-development-plan.md), UI 명세는 [15](15-ui-ux-improvement.md)를 따른다.
 
 ## 1. 상태와 갱신 시점
@@ -15,7 +15,7 @@
 | 차단 해제 | `planned` 또는 `in_progress` | 해소 근거 |
 | 완료 후 회귀 발견 | `in_progress` | 기존 근거와 새 문제 설명 |
 
-기반·기획 완료를 신규 게임 개발12건 완료율에 더하지 않는다. 기획 완료와 코드 완료를 구분한다.
+기반·기획 완료를 신규 게임 개발14건 완료율에 더하지 않는다. 기획 완료와 코드 완료를 구분한다.
 명세와 원본의 `approval`을 사용자 승인 근거로 함께 갱신한다. 이미 받은 승인을 다시 요청할 필요는 없다.
 승인 대기 작업의 착수, 미완료 선행이 있는 착수, 검증을 건너뛴 완료, 근거 없는 완료를 도구가 거부한다.
 

@@ -92,7 +92,9 @@ namespace Xianxia.Simulation.Systems
                 }
 
                 Growth.AddInsight(disciple, 20 * (0.5 + (master.Comprehension / 500.0)));
+                double previousQi = disciple.Qi;
                 disciple.Qi += disciple.QiRequirement * 0.05;
+                world.Diagnostics?.AddQi(disciple, QiSource.Teaching, disciple.Qi - previousQi);
                 taught++;
             }
 

@@ -170,7 +170,9 @@ namespace Xianxia.Simulation.Systems
                     value = 2;
                     break;
                 case 3:
+                    double previousQi = entrant.Qi;
                     entrant.Qi += entrant.QiRequirement * 0.3;
+                    world.Diagnostics?.AddQi(entrant, QiSource.SecretRealm, entrant.Qi - previousQi);
                     gain = "영천의 영기";
                     value = 1;
                     break;

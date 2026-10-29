@@ -20,7 +20,9 @@ namespace Xianxia.Simulation.Systems
         {
             ArgumentNullException.ThrowIfNull(world);
             ArgumentNullException.ThrowIfNull(cultivator);
+            double previousQi = cultivator.Qi;
             cultivator.Qi += Growth.QiPerYear(world, cultivator) * world.Random.Range(0.9, 1.5) * share;
+            world.Diagnostics?.AddQi(cultivator, QiSource.Cultivation, cultivator.Qi - previousQi);
             Growth.AddInsight(cultivator, Growth.InsightPerYear(cultivator) * world.Random.Range(0.5, 1.5) * share);
             cultivator.InnerPower += (0.3 + (0.1 * cultivator.Realm)) * share;
         }
@@ -88,7 +90,7 @@ namespace Xianxia.Simulation.Systems
                 0 => GainTechnique(cultivator, world.Random.Range(1, 2)),
                 1 => GainArtifact(cultivator),
                 2 => GainInsight(cultivator, world.Random.Range(200, 400)),
-                3 => GainQi(cultivator, 0.4),
+                3 => GainQi(world, cultivator, 0.4),
                 4 => GainPill(cultivator, PillKind.Breakthrough),
                 _ => GainStones(world, cultivator, world.Random.Range(100, 500) * (cultivator.Realm + 1)),
             };
@@ -326,9 +328,11 @@ namespace Xianxia.Simulation.Systems
             return "깨달음 " + amount + "을 얻었다";
         }
 
-        private static string GainQi(Cultivator cultivator, double ratio)
+        private static string GainQi(World world, Cultivator cultivator, double ratio)
         {
+            double previousQi = cultivator.Qi;
             cultivator.Qi += cultivator.QiRequirement * ratio;
+            world.Diagnostics?.AddQi(cultivator, QiSource.Fortune, cultivator.Qi - previousQi);
             return "천년 영약을 먹고 영기가 차올랐다";
         }
 

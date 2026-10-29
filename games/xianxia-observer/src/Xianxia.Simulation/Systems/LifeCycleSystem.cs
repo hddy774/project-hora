@@ -109,6 +109,7 @@ namespace Xianxia.Simulation.Systems
             cultivator.Reincarnations++;
             cultivator.SectId = sect?.Id ?? 0;
             CultivatorFactory.RollLife(world, cultivator, karma, previous);
+            world.Diagnostics?.BeginLife(world.Year, cultivator);
             cultivator.SectId = 0;
             cultivator.Rank = SectRank.None;
             int region;
@@ -247,6 +248,7 @@ namespace Xianxia.Simulation.Systems
             int sectId = world.Random.Chance(0.5) ? 0 : world.Random.Range(1, world.Sects.Count);
             int region = sectId == 0 ? world.Random.Pick(RegionCatalog.BorderIds) : RegionCatalog.HomeOf(sectId);
             Cultivator newcomer = CultivatorFactory.CreateSoul(world, 0, region, names);
+            world.Diagnostics?.BeginLife(world.Year, newcomer);
             world.Cultivators[slot] = newcomer;
             world.Register(newcomer);
             world.Regions[region].Residents.Add(newcomer);

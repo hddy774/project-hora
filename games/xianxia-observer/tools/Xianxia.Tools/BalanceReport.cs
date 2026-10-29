@@ -79,14 +79,20 @@ namespace Xianxia.Tools
 
             BalanceResult result = new()
             {
-                Seed = world.Settings.Seed, Years = world.Year, Population = world.Cultivators.Count,
+                Seed = world.Settings.Seed,
+                Years = world.Year,
+                Population = world.Cultivators.Count,
                 FirstReach = world.Records.FirstReach.Select(entry => entry?.Year).ToArray(),
-                RealmCounts = StatisticsSystem.Snapshot(world).RealmCounts.ToArray(), Snapshots = snapshots,
+                RealmCounts = StatisticsSystem.Snapshot(world).RealmCounts.ToArray(),
+                Snapshots = snapshots,
                 AscensionYears = world.Immortals.Select(entry => entry.Year).ToArray(),
                 OrthodoxWins = world.Wars.Count(war => war.VictorSectId == 1),
                 DemonicWins = world.Wars.Count(war => war.VictorSectId == 2),
-                OrthodoxLosingStreak = LosingStreak(world, 1), DemonicLosingStreak = LosingStreak(world, 2),
-                Stones = TotalStones(world), Souls = world.Souls.Count, Wars = world.Wars.Count,
+                OrthodoxLosingStreak = LosingStreak(world, 1),
+                DemonicLosingStreak = LosingStreak(world, 2),
+                Stones = TotalStones(world),
+                Souls = world.Souls.Count,
+                Wars = world.Wars.Count,
                 Tournaments = world.Tournaments.Count,
             };
             MeasureStorage(world, result);
@@ -179,7 +185,8 @@ namespace Xianxia.Tools
 
         private static BalanceSnapshot Snapshot(World world) => new()
         {
-            Year = world.Year, Realms = StatisticsSystem.Snapshot(world).RealmCounts.ToArray(),
+            Year = world.Year,
+            Realms = StatisticsSystem.Snapshot(world).RealmCounts.ToArray(),
             Stones = TotalStones(world),
         };
 

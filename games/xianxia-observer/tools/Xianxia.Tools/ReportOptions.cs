@@ -102,11 +102,20 @@ namespace Xianxia.Tools
         {
             switch (option)
             {
-                case "--seeds": Seeds = ParseSeeds(value); break;
-                case "--years": Years = int.Parse(value, CultureInfo.InvariantCulture); break;
-                case "--population": Population = int.Parse(value, CultureInfo.InvariantCulture); break;
-                case "--json": JsonPath = value; break;
-                default: throw new ArgumentException("알 수 없는 옵션: " + option, nameof(option));
+                case "--seeds":
+                    Seeds = ParseSeeds(value);
+                    break;
+                case "--years":
+                    Years = int.Parse(value, CultureInfo.InvariantCulture);
+                    break;
+                case "--population":
+                    Population = int.Parse(value, CultureInfo.InvariantCulture);
+                    break;
+                case "--json":
+                    JsonPath = value;
+                    break;
+                default:
+                    throw new ArgumentException("알 수 없는 옵션: " + option, nameof(option));
             }
         }
     }

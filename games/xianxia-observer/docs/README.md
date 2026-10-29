@@ -14,7 +14,7 @@
 | 릴리스 | [xianxia-observer/v0.1.0](https://github.com/hddy774/project-hora/releases/tag/xianxia-observer/v0.1.0) |
 | APK | XianxiaObserver-v0.1.0.apk, 42,653,254바이트, 버전 코드 1 |
 | APK SHA-256 | `c6e0bd9c499ea18d2cc9844250e3631e6ef6993f66b0f76a0c7d6aa252705761` |
-| 관련 PR | [#28](https://github.com/hddy774/project-hora/pull/28), 문서 작성 시점 미병합 |
+| 관련 PR | [#28](https://github.com/hddy774/project-hora/pull/28), 2026-10-29 병합(`137fbfa`) |
 
 이 문서의 상대 소스 링크는 `games/xianxia-observer/` 안의 코드로 연결된다.
 고정된 코드를 확인하려면 [검토 소스 스냅샷](https://github.com/hddy774/project-hora/tree/17b48ad1bfcb58a9d32a8def0e74caa2027cb7f0/games/xianxia-observer)을 사용한다.
@@ -36,6 +36,7 @@
 | [10 클로드 검토 요청문](10-claude-review-request.md) | 그대로 전달할 요청문과 피드백 출력 형식 | 검토 요청자 |
 | [11 원본 비교·설계 결정](11-legacy-and-decisions.md) | React 원본과 차이, 변경 근거, 구현 선택과 미승인 ADR | 기획·아키텍처 |
 | [12 문제·미결정 사항](12-open-questions.md) | 코드 근거와 격리 실험이 있는 검토 항목 | 우선 검토 |
+| [13 클로드 검토 결과](13-claude-review.md) | OQ 재검증, 상위 5개, 오너 결정 요청, 작업 명세 XO-03~10 | 오너·개발 |
 | [데이터 사전](reference/data-dictionary.md) | 모델 28종의 공개 속성·형식·저장 여부 | 데이터 검토 |
 | [소스·테스트 색인](reference/source-and-tests.md) | 전체 소스 파일 및 검증 사례 탐색 | 세부 확인 |
 

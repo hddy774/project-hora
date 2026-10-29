@@ -29,6 +29,7 @@ namespace Xianxia.Simulation.Systems
                 {
                     Close(world, realm);
                     world.SecretRealms.RemoveAt(index);
+                    RegionEvents.Refresh(world, realm.RegionId);
                 }
                 else
                 {
@@ -60,8 +61,7 @@ namespace Xianxia.Simulation.Systems
             };
             world.SecretRealms.Add(realm);
             Region region = world.Regions[regionId];
-            region.AuraModifier = 1.2;
-            region.Status = "비경 개방: " + realm.Name;
+            RegionEvents.Refresh(world, regionId);
             string text = "[" + region.Name + "] " + realm.Name + "이(가) 열렸다. (" + Realms.Name(realm.MinRealm) + "~"
                 + Realms.Name(realm.MaxRealm) + " 입장)";
             Narrator.Log(world, LogKind.SecretRealm, text);
@@ -210,9 +210,7 @@ namespace Xianxia.Simulation.Systems
 
         private static void Close(World world, SecretRealmState realm)
         {
-            Region region = world.Regions[realm.RegionId];
-            region.AuraModifier = 1.0;
-            region.Status = "평온";
+
             int best = -1;
             for (int index = 0; index < realm.Gains.Count; index++)
             {

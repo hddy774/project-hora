@@ -63,11 +63,12 @@ namespace Xianxia.Simulation.Systems
         {
             ArgumentNullException.ThrowIfNull(world);
             ArgumentNullException.ThrowIfNull(cultivator);
-            if (!Spend(world, InterventionKind.BestowFortune))
+            if (!CanBestowFortune(world, cultivator))
             {
                 return false;
             }
 
+            world.HeavenlyFavor -= Cost(InterventionKind.BestowFortune);
             Growth.AddInsight(cultivator, 400);
             cultivator.Qi += cultivator.QiRequirement * 0.5;
             cultivator.Injury = 0;
@@ -88,11 +89,12 @@ namespace Xianxia.Simulation.Systems
         public static bool OpenSecretRealm(World world, int regionId)
         {
             ArgumentNullException.ThrowIfNull(world);
-            if (!Spend(world, InterventionKind.OpenSecretRealm))
+            if (!CanOpenSecretRealm(world, regionId))
             {
                 return false;
             }
 
+            world.HeavenlyFavor -= Cost(InterventionKind.OpenSecretRealm);
             SecretRealmState realm = SecretRealmSystem.Open(world, regionId, summoned: true);
             Narrator.Log(world, LogKind.Intervention, "천기가 움직여 " + realm.Name + "이(가) 열렸다.");
             return true;
@@ -105,26 +107,62 @@ namespace Xianxia.Simulation.Systems
         public static bool SummonBeastTide(World world, int regionId)
         {
             ArgumentNullException.ThrowIfNull(world);
-            if (!Spend(world, InterventionKind.SummonBeastTide))
+            if (!CanSummonBeastTide(world, regionId))
             {
                 return false;
             }
 
+            world.HeavenlyFavor -= Cost(InterventionKind.SummonBeastTide);
             BeastTideState tide = BeastTideSystem.Start(world, regionId, summoned: true);
             Narrator.Log(world, LogKind.Intervention, "천기가 움직여 " + tide.BeastName + "이(가) 깨어났다.");
             return true;
         }
 
-        private static bool Spend(World world, InterventionKind kind)
+        /// <summary>본산·범위 밖·중복 비경·부족한 천기를 차감 전에 거부한다.</summary>
+        /// <param name="world">세계.</param>
+        /// <param name="regionId">대상 지역.</param>
+        /// <returns>현재 실행 가능 여부.</returns>
+        public static bool CanOpenSecretRealm(World world, int regionId)
         {
-            int cost = Cost(kind);
-            if (world.HeavenlyFavor < cost)
+            ArgumentNullException.ThrowIfNull(world);
+            return IsEventRegion(regionId) && world.HeavenlyFavor >= Cost(InterventionKind.OpenSecretRealm)
+                && !world.SecretRealms.Exists(entry => entry.RegionId == regionId);
+        }
+
+        /// <summary>본산·범위 밖·중복 수조·부족한 천기를 차감 전에 거부한다.</summary>
+        /// <param name="world">세계.</param>
+        /// <param name="regionId">대상 지역.</param>
+        /// <returns>현재 실행 가능 여부.</returns>
+        public static bool CanSummonBeastTide(World world, int regionId)
+        {
+            ArgumentNullException.ThrowIfNull(world);
+            return IsEventRegion(regionId) && world.HeavenlyFavor >= Cost(InterventionKind.SummonBeastTide)
+                && !world.BeastTides.Exists(entry => entry.RegionId == regionId);
+        }
+
+        /// <summary>세계에 현재 존재하는 동일 객체와 천기 잔액을 확인한다.</summary>
+        /// <param name="world">세계.</param>
+        /// <param name="cultivator">대상 인물.</param>
+        /// <returns>현재 실행 가능 여부.</returns>
+        public static bool CanBestowFortune(World world, Cultivator cultivator)
+        {
+            ArgumentNullException.ThrowIfNull(world);
+            ArgumentNullException.ThrowIfNull(cultivator);
+            return ReferenceEquals(world.Find(cultivator.Id), cultivator)
+                && world.HeavenlyFavor >= Cost(InterventionKind.BestowFortune);
+        }
+
+        private static bool IsEventRegion(int regionId)
+        {
+            foreach (int allowed in RegionCatalog.EventRegionIds)
             {
-                return false;
+                if (allowed == regionId)
+                {
+                    return true;
+                }
             }
 
-            world.HeavenlyFavor -= cost;
-            return true;
+            return false;
         }
     }
 }

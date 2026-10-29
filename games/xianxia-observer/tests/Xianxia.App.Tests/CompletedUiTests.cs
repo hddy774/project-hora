@@ -106,7 +106,7 @@ namespace Xianxia.App.Tests
                 Assert.That(session.Runner.Read(world => world.HeavenlyFavor), Is.EqualTo(8));
                 Assert.That(session.Runner.Read(world => world.Find(id)!.HasTitle(TitleId.Chosen)), Is.True);
                 view.Sheets.CloseAll();
-                view.Open(SheetLink.ToRegion(0));
+                view.Open(SheetLink.ToRegion(8));
                 Click(window, "비경 개방 · 천기 3");
                 Click(window, "비경 개방 · 천기 3");
                 view.RefreshNow(true);

@@ -1,4 +1,5 @@
 // Android 첫 화면(Activity). 세로 화면 고정, 화면 회전·크기 변경 시 Activity를 다시 만들지 않는다.
+using System.Globalization;
 using Android.App;
 using Android.Content.PM;
 using Android.Content.Res;
@@ -33,7 +34,16 @@ namespace Xianxia.Android
             }
 
             using MotionEvent? normalized = NormalizeUndefinedTouch(ev);
-            return base.DispatchTouchEvent(normalized ?? ev);
+            bool handled = base.DispatchTouchEvent(normalized ?? ev);
+            if (ev.ActionMasked is MotionEventActions.Down or MotionEventActions.Up)
+            {
+                global::Android.Util.Log.Info("XianxiaInput", "touch " + ev.ActionMasked
+                    + " tool=" + ev.GetToolType(0) + " handled=" + handled
+                    + " x=" + ev.GetX().ToString(CultureInfo.InvariantCulture)
+                    + " y=" + ev.GetY().ToString(CultureInfo.InvariantCulture));
+            }
+
+            return handled;
         }
 
         // Avalonia12.1.4는 Unknown을 TouchDevice로 보내면서 LeftButtonDown/Up으로 분류해 무시한다.

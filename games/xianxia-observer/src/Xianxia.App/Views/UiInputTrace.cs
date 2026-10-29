@@ -1,6 +1,7 @@
 // 입력 뒤 현재 보이는 조작의 실제 위치만 남긴다. 에뮬레이터가 고정 비율 좌표에 의존하지 않게 한다.
 using System;
 using System.Linq;
+using System.Text.Json;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
@@ -24,6 +25,7 @@ namespace Xianxia.App.Views
         {
             _root = root;
             _timer.Tick += Capture;
+            root.AddHandler(InputElement.PointerPressedEvent, OnPressed, RoutingStrategies.Tunnel, true);
             root.AddHandler(InputElement.PointerReleasedEvent, OnInput, RoutingStrategies.Tunnel);
             root.AddHandler(ScrollViewer.ScrollChangedEvent, OnScroll, RoutingStrategies.Bubble);
             root.AddHandler(InputElement.KeyUpEvent, OnKey, RoutingStrategies.Tunnel);
@@ -46,12 +48,24 @@ namespace Xianxia.App.Views
         internal void Detach()
         {
             _timer.Stop();
+            _root.RemoveHandler(InputElement.PointerPressedEvent, OnPressed);
             _root.RemoveHandler(InputElement.PointerReleasedEvent, OnInput);
             _root.RemoveHandler(ScrollViewer.ScrollChangedEvent, OnScroll);
             _root.RemoveHandler(InputElement.KeyUpEvent, OnKey);
         }
 
         private void OnInput(object? sender, PointerReleasedEventArgs args) => Queue();
+
+        private void OnPressed(object? sender, PointerPressedEventArgs args)
+        {
+            Point point = args.GetPosition(_root);
+            UiTrace.Sink?.Invoke("[xo-ui] input " + JsonSerializer.Serialize(new
+            {
+                x = point.X,
+                y = point.Y,
+                target = args.Source?.GetType().Name,
+            }));
+        }
 
         private void OnScroll(object? sender, ScrollChangedEventArgs args)
         {

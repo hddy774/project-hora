@@ -2,7 +2,7 @@
   "schema_version": 1,
   "repository": "hddy774/project-hora",
   "tracking_pr": 32,
-  "updated_at": "2026-10-29T14:54:41Z",
+  "updated_at": "2026-10-29T15:17:49Z",
   "tasks": [
     {
       "id": "XO-01",
@@ -124,7 +124,7 @@
       "phase": "validation",
       "order": 7,
       "approval": "approved",
-      "status": "in_progress",
+      "status": "verifying",
       "depends_on": [
         "XO-03",
         "XO-04",
@@ -132,8 +132,8 @@
         "XO-06",
         "XO-07"
       ],
-      "note": "별도 서브 브랜치에서 UI 경로 로그와 실제 포커스/새 로그 판정, API24/34 행렬 검사를 준비 중. 물리 ARM64 기기 없음은 사용자 확인.",
-      "evidence": ""
+      "note": "실제 입력 검사 #54/#56, 초기 연결 수정 #61 병합. 첫 API24/34는 초기 로그 누락으로 실패(통과 제외), 수정된0.2.0 서명 APK로 재실행 중.",
+      "evidence": "CI 40895054866 실패; 재검증 40899449239"
     },
     {
       "id": "XO-10",
@@ -186,13 +186,13 @@
       "phase": "ui",
       "order": 12,
       "approval": "approved",
-      "status": "in_progress",
+      "status": "verifying",
       "depends_on": [
         "XO-12",
         "XO-08"
       ],
-      "note": "실제 연도 차트/색상 범례, 관심0명 추천3명, 최신 알림 보류를 병렬 서브 PR로 구현·검증 중.",
-      "evidence": ""
+      "note": "관찰 추천/최신 알림 #59와 실제 연도 차트/범례 #58 병합·CI·9+8검사 통과. Android 입력 최종 수용 진행 중.",
+      "evidence": "PR #58,#59; CI 40896454817,40897098208"
     },
     {
       "id": "UI-QA",
@@ -200,14 +200,14 @@
       "phase": "validation",
       "order": 13,
       "approval": "approved",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "XO-11",
         "XO-12",
         "XO-13",
         "XO-09"
       ],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
+      "note": "API24/34 실입력·구 공개 저장 업데이트·IME·100/130/200%·재실행·런처 음성 대조와 큰 글자 상세 배치를 검증 중.",
       "evidence": ""
     },
     {
@@ -216,12 +216,12 @@
       "phase": "balance",
       "order": 9,
       "approval": "approved",
-      "status": "verifying",
+      "status": "done",
       "depends_on": [
         "XO-10"
       ],
-      "note": "동일10시드 재측정·기연40쌍·Simulation115검사 통과. #57에서 CI와 표본 편차/구 저장 이행 문서를 최종 확인.",
-      "evidence": "PR #57; docs/19-balance-v0.2.0.md"
+      "note": "밸런스 #57 병합·CI 통과, 동일10시드+기연40쌍+Simulation115검사,3천명10만년 저장 왕복도 통과. 전체 표본 편차/구 저장 이행 문서19 기록.",
+      "evidence": "PR #57; CI 40895942586; docs/19-balance-v0.2.0.md"
     },
     {
       "id": "RELEASE-02",

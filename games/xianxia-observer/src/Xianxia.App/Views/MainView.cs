@@ -180,6 +180,7 @@ namespace Xianxia.App.Views
             if (_topLevel is not null)
             {
                 _topLevel.BackRequested += OnBackRequested;
+                _topLevel.ScalingChanged += OnScalingChanged;
                 _insets = _topLevel.InsetsManager;
                 if (_insets is not null)
                 {
@@ -205,6 +206,7 @@ namespace Xianxia.App.Views
             if (_topLevel is not null)
             {
                 _topLevel.BackRequested -= OnBackRequested;
+                _topLevel.ScalingChanged -= OnScalingChanged;
             }
 
             if (_insets is not null)
@@ -273,6 +275,15 @@ namespace Xianxia.App.Views
             ApplyInsets(e.SafeAreaPadding);
         }
 
+        private void OnScalingChanged(object? sender, EventArgs e)
+        {
+            // Android는 첫 배치 뒤 실제 밀도를 확정할 수 있다. 초기 밀도1의 여백을 그대로 두지 않는다.
+            if (_insets is not null)
+            {
+                ApplyInsets(_insets.SafeAreaPadding);
+            }
+        }
+
         private void OnTypographyChanged() => RefreshNow(force: true);
 
         /// <summary>루트에서만 안전 영역을 적용해 헤더·본문·시트의 이중 여백을 피한다.</summary>
@@ -280,6 +291,7 @@ namespace Xianxia.App.Views
         internal void ApplyInsets(Thickness padding)
         {
             Padding = padding;
+            _inputTrace?.Queue();
         }
     }
 }

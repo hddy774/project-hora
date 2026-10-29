@@ -44,6 +44,7 @@ class Smoke:
                 return
             time.sleep(.1)
         self.shot('failed-transition')
+        self.clear()
         raise AssertionError('새 전환 로그 없음: ' + expression)
 
     def controls(self, timeout=6):
@@ -69,6 +70,7 @@ class Smoke:
                 return
             time.sleep(.15)
         self.shot('failed-controls')
+        self.clear()
         raise AssertionError('현재 화면 조작 좌표 없음')
 
     def shot(self, name):
@@ -251,4 +253,12 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except BaseException:
+        if len(sys.argv) > 2:
+            out = Path(sys.argv[2])
+            out.mkdir(parents=True, exist_ok=True)
+            (out / 'failure-logcat.txt').write_text(adb('logcat', '-d', '-v', 'threadtime'))
+            (out / 'failure-window.txt').write_text(adb('shell', 'dumpsys', 'window', 'windows'))
+        raise

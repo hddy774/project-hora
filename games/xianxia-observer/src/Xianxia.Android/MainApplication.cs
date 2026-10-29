@@ -23,6 +23,9 @@ namespace Xianxia.Android
         /// <inheritdoc />
         protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
         {
+            // 프레임워크 초기화에서 저장을 복구하므로 Activity.OnCreate보다 먼저 연결한다.
+            global::Xianxia.App.App.SetUiTraceSink(line => global::Android.Util.Log.Info("XianxiaUi", line));
+            global::Xianxia.App.App.SetDeviceFontScale(Resources?.Configuration?.FontScale ?? 1);
             return base.CustomizeAppBuilder(builder).WithSeonhyeopFonts();
         }
     }

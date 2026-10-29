@@ -2,11 +2,13 @@
 using System.IO;
 using System.Linq;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Headless;
 using Avalonia.Headless.NUnit;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using NUnit.Framework;
 using Xianxia.App.Services;
@@ -97,6 +99,36 @@ namespace Xianxia.App.Tests
                 window.Close();
                 Typography.SetScale(1);
             }
+        }
+
+        /// <summary>전면 배치 키보드에서도 진행 버튼이 실제 가림 영역 위에 남는다.</summary>
+        [AvaloniaTest]
+        public void OverlayKeyboard_ReservesOcclusionAndRestoresSafeArea()
+        {
+            MainView view = CreateView();
+            Window window = new() { Width = 360, Height = 640, Content = view };
+            window.Show();
+            try
+            {
+                view.Navigate(Destinations.People);
+                view.ApplyInsets(new Thickness(0, 24, 0, 16));
+                view.ApplyKeyboardState(true, new Rect(0, 340, 360, 300));
+                window.UpdateLayout();
+                Button transport = view.GetVisualDescendants().OfType<Button>()
+                    .Single(button => AutomationProperties.GetAutomationId(button) == "play-toggle");
+                Point bottom = transport.TranslatePoint(new Point(0, transport.Bounds.Height), view)!.Value;
+                Assert.That(bottom.Y, Is.LessThanOrEqualTo(340));
+                Assert.That(view.Padding.Bottom, Is.EqualTo(300));
+                window.Height = 340;
+                window.UpdateLayout();
+                Dispatcher.UIThread.RunJobs();
+                Assert.That(view.Padding.Bottom, Is.EqualTo(16), "줄어든 창에는 여백을 중복하지 않음");
+                view.ApplyKeyboardState(false);
+                window.Height = 640;
+                window.UpdateLayout();
+                Assert.That(view.Padding, Is.EqualTo(new Thickness(0, 24, 0, 16)));
+            }
+            finally { window.Close(); }
         }
 
         private static MainView CreateView()

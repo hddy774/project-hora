@@ -1,6 +1,6 @@
 # [XO-04] 선협 관찰 — 공법 보상 단조성
 
-상태: 승인 대기 · 우선순위 P1 · 검토 근거: [13 §2 R-02](../../games/xianxia-observer/docs/13-claude-review.md)
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 우선순위 P1 · 검토 근거: [13 §2 R-02](../../games/xianxia-observer/docs/13-claude-review.md)
 
 ## 배경 (왜)
 기연의 공법 보상 `ActionEffects.GainTechnique`는 `Math.Min(15, 기존 + 획득)`이다. 장경각(최대 18)·경매(최대 16)로

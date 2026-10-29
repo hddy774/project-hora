@@ -1,6 +1,6 @@
 # [XO-03] 선협 관찰 — 저장 의미 검증과 손상 저장 보존
 
-상태: 승인 대기 · 우선순위 P1 · 검토 근거: [13 §2 R-01·R-15](../../games/xianxia-observer/docs/13-claude-review.md)
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 우선순위 P1 · 검토 근거: [13 §2 R-01·R-15](../../games/xianxia-observer/docs/13-claude-review.md)
 
 ## 배경 (왜)
 유효한 gzip JSON이지만 의미가 틀린 저장(예: `RegionId=999`)을 불러오면 `World.RebuildIndexes`가

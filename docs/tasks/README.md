@@ -27,17 +27,19 @@ M0-02, M0-03, M0-05는 M0-01 이후 **병렬 진행 가능**하다.
 |---|---|---|---|---|
 | [XO-01](XO-01-release-completion.md) | 선협 관찰 완성·APK 배포 | — | — | 완료(PR #28) |
 | [XO-02](XO-02-documentation-review.md) | 기획·기술 문서와 검토 자료 | — | — | 완료(PR #28) |
-| [XO-03](XO-03-save-validation.md) | 저장 의미 검증과 손상 저장 보존 | P1 | — | 승인 대기 |
-| [XO-04](XO-04-technique-reward-monotonic.md) | 공법 보상 단조성 | P1 | — | 승인 대기 |
-| [XO-05](XO-05-region-event-overlap.md) | 지역 사건 보정 재계산과 개입 입력 검증 | P1 | — | 승인 대기 |
-| [XO-06](XO-06-follow-rng-isolation.md) | 관심 표시와 세계 난수 분리 | P1 | 결정 D-01(승인됨) | **승인** |
-| [XO-07](XO-07-runner-fault-and-autosave.md) | 실행기 오류 격리·정지 중 자동 저장·저장 내구성 | P1 | XO-03 | 승인 대기 |
-| [XO-08](XO-08-labels-and-records.md) | 표시·집계 용어 정합 | P2 | 결정 D-04·D-05 | 승인 대기 |
-| [XO-09](XO-09-android-input-acceptance.md) | Android 실입력 수용 검사 | P1(검증) | 결정 D-07 | 승인 대기 |
-| [XO-10](XO-10-balance-report.md) | 장기 밸런스·저장 크기 측정 보고서 | P2 | XO-06 | 승인 대기 |
-| [XO-11](XO-11-woodblock-navigation.md) | 고서 목판 테마·공통 배치·탐색 | UI | XO-07 | 구현 승인 대기(테마 사용자 지정) |
-| [XO-12](XO-12-people-and-detail-ux.md) | 인물 탐색·상세·개입·저장 UX | UI | XO-11·XO-06·XO-05 | 구현 승인 대기 |
-| [XO-13](XO-13-observation-and-history.md) | 천하 관찰 진입·사기·기록 탐색 | UI | XO-12·XO-08 | 구현 승인 대기 |
+| [XO-03](XO-03-save-validation.md) | 저장 의미 검증과 손상 저장 보존 | P1 | — | 승인(전체 개발 지시) |
+| [XO-04](XO-04-technique-reward-monotonic.md) | 공법 보상 단조성 | P1 | — | 승인(전체 개발 지시) |
+| [XO-05](XO-05-region-event-overlap.md) | 지역 사건 보정 재계산과 개입 입력 검증 | P1 | — | 승인(전체 개발 지시) |
+| [XO-06](XO-06-follow-rng-isolation.md) | 관심 표시와 세계 난수 분리 | P1 | 결정 D-01(승인됨) | 승인(전체 개발 지시) |
+| [XO-07](XO-07-runner-fault-and-autosave.md) | 실행기 오류 격리·정지 중 자동 저장·저장 내구성 | P1 | XO-03 | 승인(전체 개발 지시) |
+| [XO-08](XO-08-labels-and-records.md) | 표시·집계 용어 정합 | P2 | 결정 D-04·D-05 | 승인(전체 개발 지시) |
+| [XO-09](XO-09-android-input-acceptance.md) | Android 실입력 수용 검사 | P1(검증) | 결정 D-07 | 승인(전체 개발 지시) |
+| [XO-10](XO-10-balance-report.md) | 장기 밸런스·저장 크기 측정 보고서 | P2 | XO-06 | 승인(전체 개발 지시) |
+| [XO-11](XO-11-woodblock-navigation.md) | 고서 목판 테마·공통 배치·탐색 | UI | XO-07 | 승인(전체 개발 지시) |
+| [XO-12](XO-12-people-and-detail-ux.md) | 인물 탐색·상세·개입·저장 UX | UI | XO-11·XO-06·XO-05 | 승인(전체 개발 지시) |
+| [XO-13](XO-13-observation-and-history.md) | 천하 관찰 진입·사기·기록 탐색 | UI | XO-12·XO-08 | 승인(전체 개발 지시) |
+
+| [XO-14](XO-14-balance-and-release-targets.md) | 성장·수명·종문 회복성과 배포 목표 | 밸런스 | XO-10 | 승인(전체 개발 지시) |
 
 XO-03·04·05의 구현 준비는 독립적으로 할 수 있지만 저장 진입점의 통합은 아래 개발 계획 순서를 따른다.
 XO-04·05·06은 같은 시드의 미래를 바꾸므로 같은 릴리스 후보에 모아 버전 노트에 적는다(D-09 승인).

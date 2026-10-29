@@ -175,7 +175,7 @@ namespace Xianxia.Simulation.Systems
                     break;
             }
 
-            if (world.IsFollowed(entrant.Id) || (value >= 3 && world.Random.Chance(0.3)))
+            if (world.IsFollowed(entrant.Id) || (value >= 3 && world.LogRandom.Chance(0.3)))
             {
                 Narrator.Log(world, LogKind.SecretRealm, entrant.Name + "이(가) 비경에서 " + gain + "을(를) 얻었다.", entrant,
                     notable: true);

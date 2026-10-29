@@ -1,6 +1,6 @@
 # [XO-05] 선협 관찰 — 지역 사건 보정 재계산과 개입 입력 검증
 
-상태: 승인 대기 · 우선순위 P1 · 검토 근거: [13 §2 R-06·R-07](../../games/xianxia-observer/docs/13-claude-review.md)
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 우선순위 P1 · 검토 근거: [13 §2 R-06·R-07](../../games/xianxia-observer/docs/13-claude-review.md)
 
 ## 배경 (왜)
 비경과 수조는 지역의 `AuraModifier`(1.2/0.8)와 `Status` 문구를 시작·종료 때 **직접 대입**한다.

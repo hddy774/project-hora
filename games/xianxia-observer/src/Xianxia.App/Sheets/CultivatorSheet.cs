@@ -171,10 +171,7 @@ namespace Xianxia.App.Sheets
         {
             Navigator.Session.Runner.Write(world =>
             {
-                if (!world.Followed.Remove(Link.Id))
-                {
-                    world.Followed.Add(Link.Id);
-                }
+                world.SetFollowed(Link.Id, !world.IsFollowed(Link.Id));
 
                 return true;
             });

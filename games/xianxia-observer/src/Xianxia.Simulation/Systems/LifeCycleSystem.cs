@@ -72,7 +72,7 @@ namespace Xianxia.Simulation.Systems
             bool notable = cultivator.Realm >= 4 || wasLeader || world.IsFollowed(cultivator.Id);
             string text = cultivator.DisplayName + "(" + cultivator.RealmText + ", " + cultivator.Age + "세)이(가) "
                 + (cause == DeathCause.Collapse ? "경지가 무너져 남은 수명을 잃고 " : "수명을 다해 ") + "좌화했다.";
-            if (notable || world.Random.Chance(0.05))
+            if (notable || world.LogRandom.Chance(0.05))
             {
                 Narrator.Log(world, LogKind.Rebirth, text, cultivator, notable: notable);
             }
@@ -162,7 +162,7 @@ namespace Xianxia.Simulation.Systems
             world.Ledger.Destroy(StoneSink.Ascension, cultivator.SpiritStones);
             cultivator.SpiritStones = 0;
             SectSystem.Leave(world, cultivator);
-            world.Followed.Remove(cultivator.Id);
+            world.SetFollowed(cultivator.Id, false);
             ReplaceWithNewSoul(world, cultivator);
         }
 

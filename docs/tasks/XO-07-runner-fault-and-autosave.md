@@ -1,6 +1,6 @@
 # [XO-07] 선협 관찰 — 실행기 오류 격리·정지 중 자동 저장·저장 내구성
 
-상태: 승인 대기 · 우선순위 P1 · 선행: XO-03 병합 · 검토 근거: [13 §2 R-12~R-15](../../games/xianxia-observer/docs/13-claude-review.md)
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 우선순위 P1 · 선행: XO-03 병합 · 검토 근거: [13 §2 R-12~R-15](../../games/xianxia-observer/docs/13-claude-review.md)
 
 ## 배경 (왜)
 1. `WorldSimulator.Step` 중 예외가 나면 실행기는 정지만 하고, 반쯤 처리된 해를 다시 진행하거나 저장할 수 있다(장부 불일치 등 영구 손상).

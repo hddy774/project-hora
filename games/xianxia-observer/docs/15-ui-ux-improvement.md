@@ -1,5 +1,7 @@
 # 15. 고서 목판 UI·UX 배치 개선안
 
+현재 실행 승인과 범위는 [17 전체 구현 승인](17-implementation-acceptance.md)을 따른다.
+
 상태: **테마는 사용자 지정(2026-10-29), 배치와 구현은 검토용 제안**. 현재 구현은 [04](04-ui-ux.md)에 보존한다.
 사용자 이미지 `1000014419.jpg`를 [원본 그대로 보관](design/woodblock-reference.jpg)했다.
 [조작 가능한 배치 시안](design/woodblock-prototype.html)은 가상 데이터로 화면 흐름을 보여 주는 검토 자료다.

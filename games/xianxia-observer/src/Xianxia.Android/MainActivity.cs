@@ -3,6 +3,7 @@ using Android.App;
 using Android.Content.PM;
 using Android.Content.Res;
 using Android.OS;
+using Android.Views;
 using Avalonia.Android;
 
 namespace Xianxia.Android
@@ -17,6 +18,7 @@ namespace Xianxia.Android
         MainLauncher = true,
         Exported = true,
         ScreenOrientation = ScreenOrientation.Portrait,
+        WindowSoftInputMode = SoftInput.AdjustResize,
         ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode
             | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density
             | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.FontScale)]

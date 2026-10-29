@@ -29,6 +29,7 @@ namespace Xianxia.App.Views
         private bool _refreshQueued;
         private TopLevel? _topLevel;
         private IInsetsManager? _insets;
+        private IInputPane? _inputPane;
         private UiInputTrace? _inputTrace;
         private int _worldGeneration;
 
@@ -182,6 +183,12 @@ namespace Xianxia.App.Views
                 _topLevel.BackRequested += OnBackRequested;
                 _topLevel.ScalingChanged += OnScalingChanged;
                 _insets = _topLevel.InsetsManager;
+                _inputPane = _topLevel.InputPane;
+                if (_inputPane is not null)
+                {
+                    _inputPane.StateChanged += OnInputPaneChanged;
+                    ApplyKeyboardState(_inputPane.State == InputPaneState.Open);
+                }
                 if (_insets is not null)
                 {
                     _insets.DisplayEdgeToEdgePreference = true;
@@ -214,8 +221,14 @@ namespace Xianxia.App.Views
                 _insets.SafeAreaChanged -= OnSafeAreaChanged;
             }
 
+            if (_inputPane is not null)
+            {
+                _inputPane.StateChanged -= OnInputPaneChanged;
+            }
+
             _topLevel = null;
             _insets = null;
+            _inputPane = null;
             base.OnDetachedFromVisualTree(e);
         }
 
@@ -273,6 +286,18 @@ namespace Xianxia.App.Views
         private void OnSafeAreaChanged(object? sender, SafeAreaChangedArgs e)
         {
             ApplyInsets(e.SafeAreaPadding);
+        }
+
+        private void OnInputPaneChanged(object? sender, InputPaneStateEventArgs e)
+            => ApplyKeyboardState(e.NewState == InputPaneState.Open);
+
+        /// <summary>키보드 중에는 제목·주 탐색을 접어 검색 본문을 확보하고 진행 제어는 유지한다.</summary>
+        /// <param name="open">플랫폼 키보드가 열렸는가.</param>
+        internal void ApplyKeyboardState(bool open)
+        {
+            _header.View.IsVisible = !open;
+            _nav.View.IsVisible = !open;
+            _inputTrace?.Queue();
         }
 
         private void OnScalingChanged(object? sender, EventArgs e)

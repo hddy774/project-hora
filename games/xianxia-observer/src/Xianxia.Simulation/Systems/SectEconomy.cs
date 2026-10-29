@@ -17,6 +17,7 @@ namespace Xianxia.Simulation.Systems
         public static void Settle(World world)
         {
             ArgumentNullException.ThrowIfNull(world);
+            PayPersonalUpkeep(world);
             foreach (Sect sect in world.Sects)
             {
                 CollectTerritory(world, sect);
@@ -24,6 +25,18 @@ namespace Xianxia.Simulation.Systems
                 PayStipends(world, sect);
                 InvestInFacility(world, sect);
                 ProducePills(world, sect);
+            }
+        }
+
+        private static void PayPersonalUpkeep(World world)
+        {
+            // 녹봉은 이전이므로 세계 총량을 줄이지 않는다. 개인 자원의5%를 백년 수행에 소모한다.
+            // 가난한 인물은 반올림 없이0을 내며, 실제 차감액만 장부에 기록한다.
+            foreach (Cultivator person in world.Cultivators)
+            {
+                long expense = person.SpiritStones / 20;
+                person.SpiritStones -= expense;
+                world.Ledger.Destroy(StoneSink.Cultivation, expense);
             }
         }
 

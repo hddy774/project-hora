@@ -1,0 +1,282 @@
+[
+  {
+    "Seed": 1,
+    "Realm": 0,
+    "BaselineYears": 11,
+    "FortuneYears": 5,
+    "Reduction": 0.5454545454545454
+  },
+  {
+    "Seed": 2,
+    "Realm": 0,
+    "BaselineYears": 38,
+    "FortuneYears": 12,
+    "Reduction": 0.6842105263157895
+  },
+  {
+    "Seed": 3,
+    "Realm": 0,
+    "BaselineYears": 8,
+    "FortuneYears": 4,
+    "Reduction": 0.5
+  },
+  {
+    "Seed": 4,
+    "Realm": 0,
+    "BaselineYears": 4,
+    "FortuneYears": 2,
+    "Reduction": 0.5
+  },
+  {
+    "Seed": 5,
+    "Realm": 0,
+    "BaselineYears": 6,
+    "FortuneYears": 3,
+    "Reduction": 0.5
+  },
+  {
+    "Seed": 6,
+    "Realm": 0,
+    "BaselineYears": 3,
+    "FortuneYears": 1,
+    "Reduction": 0.6666666666666667
+  },
+  {
+    "Seed": 7,
+    "Realm": 0,
+    "BaselineYears": 31,
+    "FortuneYears": 12,
+    "Reduction": 0.6129032258064516
+  },
+  {
+    "Seed": 8,
+    "Realm": 0,
+    "BaselineYears": 15,
+    "FortuneYears": 8,
+    "Reduction": 0.4666666666666667
+  },
+  {
+    "Seed": 9,
+    "Realm": 0,
+    "BaselineYears": 8,
+    "FortuneYears": 4,
+    "Reduction": 0.5
+  },
+  {
+    "Seed": 10,
+    "Realm": 0,
+    "BaselineYears": 7,
+    "FortuneYears": 4,
+    "Reduction": 0.4285714285714286
+  },
+  {
+    "Seed": 1,
+    "Realm": 4,
+    "BaselineYears": 1513,
+    "FortuneYears": 751,
+    "Reduction": 0.5036351619299405
+  },
+  {
+    "Seed": 2,
+    "Realm": 4,
+    "BaselineYears": 2806,
+    "FortuneYears": 1403,
+    "Reduction": 0.5
+  },
+  {
+    "Seed": 3,
+    "Realm": 4,
+    "BaselineYears": 1156,
+    "FortuneYears": 447,
+    "Reduction": 0.6133217993079585
+  },
+  {
+    "Seed": 4,
+    "Realm": 4,
+    "BaselineYears": 343,
+    "FortuneYears": 172,
+    "Reduction": 0.4985422740524781
+  },
+  {
+    "Seed": 5,
+    "Realm": 4,
+    "BaselineYears": 619,
+    "FortuneYears": 309,
+    "Reduction": 0.5008077544426495
+  },
+  {
+    "Seed": 6,
+    "Realm": 4,
+    "BaselineYears": 295,
+    "FortuneYears": 149,
+    "Reduction": 0.4949152542372881
+  },
+  {
+    "Seed": 7,
+    "Realm": 4,
+    "BaselineYears": 2793,
+    "FortuneYears": 1394,
+    "Reduction": 0.5008950948800572
+  },
+  {
+    "Seed": 8,
+    "Realm": 4,
+    "BaselineYears": 1711,
+    "FortuneYears": 850,
+    "Reduction": 0.5032144944476914
+  },
+  {
+    "Seed": 9,
+    "Realm": 4,
+    "BaselineYears": 862,
+    "FortuneYears": 433,
+    "Reduction": 0.49767981438515085
+  },
+  {
+    "Seed": 10,
+    "Realm": 4,
+    "BaselineYears": 815,
+    "FortuneYears": 410,
+    "Reduction": 0.49693251533742333
+  },
+  {
+    "Seed": 1,
+    "Realm": 6,
+    "BaselineYears": 4377,
+    "FortuneYears": 2191,
+    "Reduction": 0.49942883253369885
+  },
+  {
+    "Seed": 2,
+    "Realm": 6,
+    "BaselineYears": 13014,
+    "FortuneYears": 6504,
+    "Reduction": 0.5002305209774089
+  },
+  {
+    "Seed": 3,
+    "Realm": 6,
+    "BaselineYears": 4124,
+    "FortuneYears": 2069,
+    "Reduction": 0.4983026188166828
+  },
+  {
+    "Seed": 4,
+    "Realm": 6,
+    "BaselineYears": 2079,
+    "FortuneYears": 803,
+    "Reduction": 0.6137566137566137
+  },
+  {
+    "Seed": 5,
+    "Realm": 6,
+    "BaselineYears": 2858,
+    "FortuneYears": 1433,
+    "Reduction": 0.4986004198740378
+  },
+  {
+    "Seed": 6,
+    "Realm": 6,
+    "BaselineYears": 1380,
+    "FortuneYears": 689,
+    "Reduction": 0.5007246376811594
+  },
+  {
+    "Seed": 7,
+    "Realm": 6,
+    "BaselineYears": 12982,
+    "FortuneYears": 6498,
+    "Reduction": 0.49946079186566017
+  },
+  {
+    "Seed": 8,
+    "Realm": 6,
+    "BaselineYears": 7957,
+    "FortuneYears": 6374,
+    "Reduction": 0.19894432575091114
+  },
+  {
+    "Seed": 9,
+    "Realm": 6,
+    "BaselineYears": 4021,
+    "FortuneYears": 2012,
+    "Reduction": 0.4996269584680427
+  },
+  {
+    "Seed": 10,
+    "Realm": 6,
+    "BaselineYears": 3779,
+    "FortuneYears": 1890,
+    "Reduction": 0.4998676898650437
+  },
+  {
+    "Seed": 1,
+    "Realm": 8,
+    "BaselineYears": 2253,
+    "FortuneYears": 1130,
+    "Reduction": 0.4984465157567688
+  },
+  {
+    "Seed": 2,
+    "Realm": 8,
+    "BaselineYears": 6680,
+    "FortuneYears": 3354,
+    "Reduction": 0.49790419161676647
+  },
+  {
+    "Seed": 3,
+    "Realm": 8,
+    "BaselineYears": 2768,
+    "FortuneYears": 1060,
+    "Reduction": 0.6170520231213873
+  },
+  {
+    "Seed": 4,
+    "Realm": 8,
+    "BaselineYears": 826,
+    "FortuneYears": 412,
+    "Reduction": 0.5012106537530266
+  },
+  {
+    "Seed": 5,
+    "Realm": 8,
+    "BaselineYears": 1471,
+    "FortuneYears": 741,
+    "Reduction": 0.4962610469068661
+  },
+  {
+    "Seed": 6,
+    "Realm": 8,
+    "BaselineYears": 708,
+    "FortuneYears": 353,
+    "Reduction": 0.5014124293785311
+  },
+  {
+    "Seed": 7,
+    "Realm": 8,
+    "BaselineYears": 6678,
+    "FortuneYears": 3339,
+    "Reduction": 0.5
+  },
+  {
+    "Seed": 8,
+    "Realm": 8,
+    "BaselineYears": 4083,
+    "FortuneYears": 2041,
+    "Reduction": 0.500122458976243
+  },
+  {
+    "Seed": 9,
+    "Realm": 8,
+    "BaselineYears": 2068,
+    "FortuneYears": 1032,
+    "Reduction": 0.5009671179883946
+  },
+  {
+    "Seed": 10,
+    "Realm": 8,
+    "BaselineYears": 1943,
+    "FortuneYears": 974,
+    "Reduction": 0.49871332990221307
+  }
+]

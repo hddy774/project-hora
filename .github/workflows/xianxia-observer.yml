@@ -41,10 +41,10 @@ env:
   AVALONIA_TELEMETRY_OPTOUT: 1
   GAME_DIR: games/xianxia-observer
   APPLICATION_ID: org.hora.xianxiaobserver
-  APP_VERSION: 0.1.0
-  APP_VERSION_CODE: 1
-  RELEASE_TAG: xianxia-observer/v0.1.0
-  ARTIFACT_STEM: XianxiaObserver-v0.1.0
+  APP_VERSION: 0.2.0
+  APP_VERSION_CODE: 2
+  RELEASE_TAG: xianxia-observer/v0.2.0
+  ARTIFACT_STEM: XianxiaObserver-v0.2.0
 
 jobs:
   check:
@@ -74,6 +74,8 @@ jobs:
         run: python3 -m unittest discover -s ../../tools/tests -p 'test_xianxia_progress.py' -v
       - name: Test Android focus and fresh-input evidence guards
         run: python3 -m unittest discover -s ../../tools/tests -p 'test_emulator_smoke.py' -v
+      - name: Verify APK release version consistency
+        run: python3 -m unittest discover -s ../../tools/tests -p 'test_xianxia_release_contract.py' -v
       - name: Preserve test reports and rendered screens
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

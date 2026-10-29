@@ -9,8 +9,8 @@ import shutil
 import subprocess
 
 REPOSITORY = 'hddy774/project-hora'
-TAG = 'xianxia-observer/v0.1.0'
-NAME = 'XianxiaObserver-v0.1.0.apk'
+TAG = 'xianxia-observer/v0.2.0'
+NAME = 'XianxiaObserver-v0.2.0.apk'
 PIN = '0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a'
 ROOT = Path('release-input')
 PREPARED = Path('prepared-release.json')
@@ -67,7 +67,7 @@ def verify_input(source_run=None):
     proof = json.loads((ROOT / 'SIGNING-VERIFICATION.json').read_text())
     assert proof['source_commit'] == source
     assert proof['application_id'] == 'org.hora.xianxiaobserver'
-    assert proof['version'] == '0.1.0' and proof['version_code'] == 1
+    assert proof['version'] == '0.2.0' and proof['version_code'] == 2
     assert proof['certificate_sha256'] == PIN
     assert proof['payload_matches_verified_unsigned'] is True
     assert proof['key_created'] is False and proof['original_bundle_modified'] is False
@@ -124,7 +124,7 @@ def ensure_tag(source):
 
 def prepare(source, apk, digest, run_id):
     """검증 완료 APK 하나를 같은 소스의 초안에만 첨부한다."""
-    notes = (PROJECT / 'docs/release-notes-v0.1.0.md').read_text()
+    notes = (PROJECT / 'docs/release-notes-v0.2.0.md').read_text()
     run = f'https://github.com/{REPOSITORY}/actions/runs/{run_id}'
     notes += (f'\n\n소스: `{source}`\n\nAPK SHA-256: `{digest}`\n\n'
               f'게시자 인증서 SHA-256: `{PIN}`\n\n[검사·빌드·서명·Android 실행 기록]({run})\n')
@@ -143,7 +143,7 @@ def prepare(source, apk, digest, run_id):
             assert obj['type'] == 'commit' and obj['sha'] == source
         else:
             assert 'HTTP 404' in tag.stderr
-        request = {'tag_name': TAG, 'target_commitish': source, 'name': '선협 관찰 v0.1.0',
+        request = {'tag_name': TAG, 'target_commitish': source, 'name': '선로만상록 프로젝트 v0.2.0',
                    'draft': True, 'prerelease': False, 'body': notes}
         Path('draft-request.json').write_text(json.dumps(request))
         # POST의 확정 응답 ID를 보존한다. 목록 캐시가 갱신되기를 기다리거나 초안을 중복 생성하지 않는다.

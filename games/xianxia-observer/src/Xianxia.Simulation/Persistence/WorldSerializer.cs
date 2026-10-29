@@ -48,6 +48,12 @@ namespace Xianxia.Simulation.Persistence
         /// <summary>현재 저장 형식 버전.</summary>
         public const int CurrentFormatVersion = 1;
 
+        /// <summary>압축 저장의 최대 크기(32MiB).</summary>
+        public const int MaxCompressedBytes = 32 * 1024 * 1024;
+
+        /// <summary>압축 해제 본문의 최대 크기(256MiB).</summary>
+        public const int MaxExpandedBytes = 256 * 1024 * 1024;
+
         /// <summary>세계를 gzip JSON으로 쓴다.</summary>
         /// <param name="world">세계.</param>
         /// <param name="destination">쓸 스트림.</param>
@@ -68,25 +74,44 @@ namespace Xianxia.Simulation.Persistence
         public static World Load(Stream source)
         {
             ArgumentNullException.ThrowIfNull(source);
-            World? world;
-            try
+            if (source.CanSeek && source.Length - source.Position > MaxCompressedBytes)
             {
-                using GZipStream zip = new(source, CompressionMode.Decompress, leaveOpen: true);
-                world = JsonSerializer.Deserialize(zip, WorldJsonContext.Default.World);
-            }
-            catch (Exception exception) when (exception is JsonException or InvalidDataException or IOException)
-            {
-                throw new SaveFormatException("저장 파일을 읽을 수 없습니다.", exception);
+                throw new SaveFormatException("저장 파일이 허용 크기를 초과했습니다.");
             }
 
-            if (world is null || world.FormatVersion > CurrentFormatVersion || world.Cultivators.Count == 0)
+            World? world = ReadWorld(source);
+            if (world is null)
             {
                 throw new SaveFormatException("이 버전에서 열 수 없는 저장 파일입니다.");
+            }
+
+            string? problem = WorldValidator.FindProblem(world);
+            if (problem is not null)
+            {
+                throw new SaveFormatException(problem);
             }
 
             Normalize(world);
             world.RebuildIndexes();
             return world;
+        }
+
+        /// <summary>입력 데이터의 파싱·속성 설정 오류를 저장 형식 오류로 묶는다.</summary>
+        private static World? ReadWorld(Stream source)
+        {
+            try
+            {
+                using LimitedReadStream compressed = new(source, MaxCompressedBytes);
+                using GZipStream zip = new(compressed, CompressionMode.Decompress, leaveOpen: true);
+                using LimitedReadStream expanded = new(zip, MaxExpandedBytes);
+                return JsonSerializer.Deserialize(expanded, WorldJsonContext.Default.World);
+            }
+            catch (Exception exception) when (exception is JsonException or InvalidDataException or IOException
+                or ArgumentException or NullReferenceException or OverflowException)
+            {
+                throw new SaveFormatException("저장 파일을 읽을 수 없습니다.", exception);
+            }
+
         }
 
         /// <summary>바이트 배열로 저장한다(테스트·비교용).</summary>
@@ -133,6 +158,11 @@ namespace Xianxia.Simulation.Persistence
             {
                 Pad(cultivator.Pills, 4);
                 Pad(cultivator.Talismans, 2);
+            }
+
+            foreach (StatSample sample in world.Statistics.Samples)
+            {
+                Pad(sample.RealmCounts, Realms.Count);
             }
 
             while (world.Records.FirstReach.Count < Realms.Count)

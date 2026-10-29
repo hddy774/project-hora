@@ -25,6 +25,76 @@ namespace Xianxia.Android
     public sealed class MainActivity : AvaloniaMainActivity
     {
         /// <inheritdoc/>
+        public override bool DispatchTouchEvent(MotionEvent? e)
+        {
+            if (e is null || !e.IsFromSource(InputSourceType.Touchscreen))
+            {
+                return base.DispatchTouchEvent(e);
+            }
+
+            using MotionEvent? normalized = NormalizeUndefinedTouch(e);
+            return base.DispatchTouchEvent(normalized ?? e);
+        }
+
+        // Avalonia12.1.4는 Unknown을 TouchDevice로 보내면서 LeftButtonDown/Up으로 분류해 무시한다.
+        // 터치스크린에서만 미지정 도구를 Finger로 보정한다. 실제 손가락·펜·마우스는 그대로 전달한다.
+        private static MotionEvent? NormalizeUndefinedTouch(MotionEvent source)
+        {
+            if (!HasUndefinedTool(source))
+            {
+                return null;
+            }
+
+            MotionEvent.PointerProperties[] properties = new MotionEvent.PointerProperties[source.PointerCount];
+            MotionEvent.PointerCoords[] coordinates = new MotionEvent.PointerCoords[source.PointerCount];
+            try
+            {
+                CopyPointers(source, properties, coordinates);
+
+                return MotionEvent.Obtain(source.DownTime, source.EventTime, source.Action, source.PointerCount,
+                    properties, coordinates, source.MetaState, source.ButtonState, source.XPrecision,
+                    source.YPrecision, source.DeviceId, source.EdgeFlags, source.Source, source.Flags);
+            }
+            finally
+            {
+                for (int index = 0; index < properties.Length; index++)
+                {
+                    properties[index]?.Dispose();
+                    coordinates[index]?.Dispose();
+                }
+            }
+        }
+
+        private static bool HasUndefinedTool(MotionEvent source)
+        {
+            for (int index = 0; index < source.PointerCount; index++)
+            {
+                if (source.GetToolType(index) == MotionEventToolType.Unknown)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void CopyPointers(MotionEvent source, MotionEvent.PointerProperties[] properties,
+            MotionEvent.PointerCoords[] coordinates)
+        {
+            for (int index = 0; index < source.PointerCount; index++)
+            {
+                properties[index] = new MotionEvent.PointerProperties();
+                coordinates[index] = new MotionEvent.PointerCoords();
+                source.GetPointerProperties(index, properties[index]);
+                source.GetPointerCoords(index, coordinates[index]);
+                if (properties[index].ToolType == MotionEventToolType.Unknown)
+                {
+                    properties[index].ToolType = MotionEventToolType.Finger;
+                }
+            }
+        }
+
+        /// <inheritdoc/>
         protected override void OnCreate(Bundle? savedInstanceState)
         {
             global::Xianxia.App.App.SetDeviceFontScale(Resources?.Configuration?.FontScale ?? 1);

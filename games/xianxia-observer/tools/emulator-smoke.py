@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """실제 앱 포커스·새 전환·실제 조작 좌표가 일치해야 성공하는 Android 수용 검사."""
 import hashlib
+import gzip
 import json
 from pathlib import Path
 import re
@@ -103,8 +104,7 @@ class Smoke:
         position = self.find(expression)
         self.focus()
         self.clear()
-        # API24의 input tap은 DOWN/UP 타임스탬프가 같다. 실제 손가락처럼120ms 정지 접촉한다.
-        adb('shell', 'input', 'swipe', position['x'], position['y'], position['x'], position['y'], 120)
+        adb('shell', 'input', 'tap', position['x'], position['y'])
         if expected:
             self.trace(expected)
         self.controls()
@@ -117,10 +117,13 @@ class Smoke:
             self.trace(expected)
         self.controls()
 
-    def start(self):
+    def start(self, expected_year=None):
         self.clear()
         adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
-        self.trace(r'\[xo-ui\] session loaded [1-9][0-9]*', 35)
+        pattern = r'\[xo-ui\] session loaded [0-9]+'
+        if expected_year is not None:
+            pattern = rf'\[xo-ui\] session loaded {expected_year}\b'
+        self.trace(pattern, 35)
         self.controls(15)
         self.focus()
 
@@ -182,11 +185,37 @@ class Smoke:
         assert re.search(r'(mInputShown=true|isInputViewShown\(\)=true|mIsInputViewShown=true)', state), '검색 IME 미표시'
         self.shot('search-ime')
         self.back()
+        assert 'people-search' in self.positions, 'IME 뒤로가 인물 화면까지 닫음'
+        assert '[xo-ui] tab ' not in self.logs(), 'IME 뒤로가 탭을 바꿈'
         self.focus()
         adb('shell', 'input', 'keyevent', 'KEYCODE_MOVE_END')
         for _ in range(4):
             adb('shell', 'input', 'keyevent', 'KEYCODE_DEL')
         self.controls()
+
+    def legacy_save(self):
+        # 사용자 기기에서는 실행하지 않는다. Google APIs의 일회성 CI 에뮬레이터 저장 증거를 읽는다.
+        assert adb('shell', 'getprop', 'ro.kernel.qemu').strip() == '1'
+        adb('root')
+        adb('wait-for-device')
+        deadline = time.monotonic() + 130
+        while time.monotonic() < deadline:
+            paths = adb('shell', 'find', '/data/user/0/' + PACKAGE, '-name', 'world.sav').splitlines()
+            if paths:
+                path = paths[0].strip()
+                blob = subprocess.check_output(['adb', 'exec-out', 'cat', path], timeout=45)
+                world = json.loads(gzip.decompress(blob))
+                (self.out / 'legacy-world.sav').write_bytes(blob)
+                proof = {'year': world['Year'], 'population': len(world['Cultivators']),
+                         'sha256': hashlib.sha256(blob).hexdigest(), 'path': path}
+                (self.out / 'legacy-save-proof.json').write_text(json.dumps(proof))
+                return proof
+            # 느린 첫 부팅에서 저장을 만들기 전에 홈으로 갔으면 다시 전면으로 가져온다.
+            adb('shell', 'am', 'start', '-W', '-n', PACKAGE + '/.MainActivity')
+            time.sleep(8)
+            adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
+            time.sleep(2)
+        raise AssertionError('이전 공개 APK가 실제 저장을 만들지 못함')
 
 
 def main():
@@ -201,9 +230,12 @@ def main():
     time.sleep(25)
     adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
     time.sleep(4)
+    legacy_proof = smoke.legacy_save()
     adb('shell', 'am', 'force-stop', PACKAGE)
     adb('install', '-r', apk)
-    smoke.start()  # 이전 공개0.1.0이 만든 저장을 새 APK가 실제로 복구해야 한다.
+    preserved = subprocess.check_output(['adb', 'exec-out', 'cat', legacy_proof['path']], timeout=45)
+    assert hashlib.sha256(preserved).hexdigest() == legacy_proof['sha256'], '업데이트가 구 저장 바이트를 바꿈'
+    smoke.start(legacy_proof['year'])  # 구 APK가 실제 저장한 정확한 연도를 복구해야 한다.
     smoke.shot('upgrade-loaded')
     adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
     time.sleep(2)
@@ -235,6 +267,8 @@ def main():
         adb('shell', 'settings', 'put', 'system', 'font_scale', scale)
         smoke.controls(12)
         smoke.routes(scale)
+        if scale != '1.0':
+            smoke.keyboard()
     smoke.tap('nav-world', r'\[xo-ui\] tab 0 ')
     smoke.tap('play-toggle')
     smoke.clear()

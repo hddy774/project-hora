@@ -11,13 +11,16 @@
   </Application.Resources>
   <Application.Styles>
     <FluentTheme />
+    <Style Selector="Button TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
     <Style Selector="TextBox">
-      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontSize" Value="{DynamicResource BookFont15}" />
       <Setter Property="MinHeight" Value="48" />
       <Setter Property="Padding" Value="10,8" />
     </Style>
     <Style Selector="CheckBox">
-      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontSize" Value="{DynamicResource BookFont15}" />
       <Setter Property="MinHeight" Value="48" />
     </Style>
   </Application.Styles>

@@ -23,7 +23,7 @@ namespace Xianxia.App.Controls
             BorderThickness = new Thickness(1);
             Padding = new Thickness(8, 3);
             Margin = new Thickness(0, 0, 3, 3);
-            _text = new TextBlock { FontSize = 13, FontWeight = FontWeight.Bold };
+            _text = Ui.Text("", 13, bold: true);
             Child = _text;
         }
 

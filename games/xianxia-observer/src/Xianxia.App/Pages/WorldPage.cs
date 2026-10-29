@@ -55,7 +55,8 @@ namespace Xianxia.App.Pages
 
             _map.RegionTapped += regionId => Navigator.Open(SheetLink.ToRegion(regionId));
             Body.Children.Add(Ui.Section("천하 약도", _map,
-                Ui.Muted("원 안 숫자: 거주자 · 색: 지배 종문 · 점선: 접경지 · 秘 비경 · 獸 수조 · 누르면 지역 정보", 10)));
+                Ui.Muted("색: 지배 종문 · 점선: 접경지 · 秘 비경 · 獸 수조. 큰 글자에서는 원 번호를 지역 목록과 함께 보세요."),
+                Ui.Button("지역 목록 ▾", _map.ToggleList), _map.ListView));
 
             _borders = new BorderRows(navigator);
             Body.Children.Add(Ui.Section("접경지 세력도 (±4점이면 점령)", _borders.View));

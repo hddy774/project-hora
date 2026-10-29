@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Avalonia.Controls;
 using Avalonia.Media;
 using Xianxia.App.Controls;
 using Xianxia.App.Services;
@@ -22,16 +23,18 @@ namespace Xianxia.App.Pages
         private readonly LineChart _members = new();
         private readonly LineChart _power = new();
         private readonly LineChart _treasury = new();
+        private readonly BadgeStrip _realmLegend = new();
 
         /// <summary>통계 화면을 만든다.</summary>
         /// <param name="navigator">화면 이동.</param>
         internal StatsPage(INavigator navigator) : base(navigator)
         {
             Body.Children.Add(Ui.Section("현재 경지 분포", _realms.View));
-            Body.Children.Add(Ui.Section("경지 구성 추이", _composition));
-            Body.Children.Add(Ui.Section("인구 추이 · 청운종 / 천마문 / 산수", _members));
-            Body.Children.Add(Ui.Section("전투력 추이 · 청운종 / 천마문", _power));
-            Body.Children.Add(Ui.Section("금고 추이 · 청운종 / 천마문", _treasury));
+            Body.Children.Add(Ui.Section("경지 구성 추이 · 인구 비율", _composition, _realmLegend.View,
+                Ui.Muted("가로축은 실제 표본 연도입니다. 오래된 표본의 간격이 넓어질 수 있습니다.")));
+            Body.Children.Add(Ui.Section("인구 추이 · 명", SectLegend(true), _members));
+            Body.Children.Add(Ui.Section("전투력 추이", SectLegend(false), _power));
+            Body.Children.Add(Ui.Section("금고 추이 · 영석", SectLegend(false), _treasury));
             Body.Children.Add(Ui.Section("영석 장부", _ledger.View));
             Body.Children.Add(Ui.Section("누적 사건 통계", _events.View));
         }
@@ -41,6 +44,22 @@ namespace Xianxia.App.Pages
 
         /// <inheritdoc />
         internal override string Glyph => "統";
+
+        private static Control SectLegend(bool includeRogues)
+        {
+            BadgeStrip legend = new();
+            List<BadgeSpec> badges = new()
+            {
+                new BadgeSpec("청운종", Palette.Orthodox), new BadgeSpec("천마문", Palette.Demonic),
+            };
+            if (includeRogues)
+            {
+                badges.Add(new BadgeSpec("산수", Palette.Rogue));
+            }
+
+            legend.Set(badges.ToArray());
+            return legend.View;
+        }
 
         /// <inheritdoc />
         internal override void Refresh(World world)
@@ -62,6 +81,8 @@ namespace Xianxia.App.Pages
             }
 
             _realms.End();
+            _realmLegend.Set(Enumerable.Range(0, Realms.Count)
+                .Select(realm => new BadgeSpec(Realms.Name(realm), Palette.Realm(realm))).ToArray());
             RefreshLedger(world, held);
             RefreshCharts(world.Statistics.Samples);
             _events.Begin();
@@ -95,11 +116,10 @@ namespace Xianxia.App.Pages
 
         private void RefreshCharts(List<StatSample> samples)
         {
-            int first = samples.Count == 0 ? 0 : samples[0].Year;
-            int last = samples.Count == 0 ? 0 : samples[^1].Year;
+            int[] years = samples.Select(sample => sample.Year).ToArray();
             List<IReadOnlyList<int>> layers = samples.Select(sample => (IReadOnlyList<int>)sample.RealmCounts).ToList();
             Color[] colors = Enumerable.Range(0, Realms.Count).Select(Palette.Realm).ToArray();
-            _composition.Set(layers, colors, first, last);
+            _composition.Set(layers, colors, years);
             _members.Set(new[]
             {
                 new ChartSeries("청운종", Palette.Orthodox,
@@ -107,19 +127,19 @@ namespace Xianxia.App.Pages
                 new ChartSeries("천마문", Palette.Demonic,
                     samples.Select(sample => (double)sample.DemonicMembers).ToArray()),
                 new ChartSeries("산수", Palette.Rogue, samples.Select(sample => (double)sample.Rogues).ToArray()),
-            }, first, last, Fmt.Short);
+            }, years, Fmt.Short);
             _power.Set(new[]
             {
                 new ChartSeries("청운종", Palette.Orthodox, samples.Select(sample => sample.OrthodoxPower).ToArray()),
                 new ChartSeries("천마문", Palette.Demonic, samples.Select(sample => sample.DemonicPower).ToArray()),
-            }, first, last, Fmt.Short);
+            }, years, Fmt.Short);
             _treasury.Set(new[]
             {
                 new ChartSeries("청운종", Palette.Orthodox,
                     samples.Select(sample => (double)sample.OrthodoxTreasury).ToArray()),
                 new ChartSeries("천마문", Palette.Demonic,
                     samples.Select(sample => (double)sample.DemonicTreasury).ToArray()),
-            }, first, last, Fmt.Short);
+            }, years, Fmt.Short);
         }
     }
 }

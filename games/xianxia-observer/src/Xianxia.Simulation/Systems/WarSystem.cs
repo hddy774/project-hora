@@ -221,7 +221,7 @@ namespace Xianxia.Simulation.Systems
         }
 
         /// <summary>
-        /// 지형·방어 보정: 마도 혈전 +10%, 연패 와신상담 최대 +15%, 보급선이 가까운 쪽 +10%,
+        /// 지형·방어 보정: 마도 혈전 +10%, 연패 와신상담 최대 +90%, 보급선이 가까운 쪽 +10%,
         /// 지역을 지배 중인 쪽은 진법사와 호산대진의 도움을 받는다.
         /// 접경지마다 유리한 쪽이 달라 한 종문이 모든 접경지를 계속 쥐기 어렵다.
         /// </summary>
@@ -233,8 +233,8 @@ namespace Xianxia.Simulation.Systems
             }
 
             Sect own = world.FindSect(cultivator.SectId)!;
-            // 와신상담: 연패한 종문은 패배 한 번마다 +5%(최대 +15%) 이를 악물고 싸운다.
-            double resolve = 1 + (0.05 * Math.Min(3, own.LosingStreak));
+            // 이전최대15%는10시드 중6시드의3연패를 막지 못했다. 손실 뒤 회복 여지를 강화한다.
+            double resolve = 1 + (0.30 * Math.Min(3, own.LosingStreak));
             double bonus = SectRules.IdeologyWarPower(own.Orthodox) * resolve
                 * (region.Definition.NearSectId == cultivator.SectId ? 1.1 : 1.0);
             if (region.ControllerSectId != cultivator.SectId)

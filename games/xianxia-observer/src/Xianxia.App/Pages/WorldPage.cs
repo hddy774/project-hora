@@ -2,6 +2,7 @@
 // 누적 통계, 천하 십강, 최근 연대기.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -33,6 +34,7 @@ namespace Xianxia.App.Pages
         private readonly TextBlock[] _totals = new TextBlock[8];
         private readonly RowList _strongest;
         private readonly RowList _recent;
+        private readonly RowList _watch;
 
         /// <summary>천하 탭을 만든다.</summary>
         /// <param name="navigator">화면 이동.</param>
@@ -49,13 +51,15 @@ namespace Xianxia.App.Pages
             _orthodox = new SectCard(navigator, RegionCatalog.OrthodoxSectId);
             _demonic = new SectCard(navigator, RegionCatalog.DemonicSectId);
             TextBlock versus = Ui.Text("VS", 18, Palette.Demonic, bold: true);
+            versus.HorizontalAlignment = HorizontalAlignment.Center;
             versus.VerticalAlignment = VerticalAlignment.Center;
             versus.Margin = new Thickness(6, 0);
-            Body.Children.Add(Ui.Columns("*,Auto,*", _orthodox.View, versus, _demonic.View));
+            Body.Children.Add(Ui.Column(6, _orthodox.View, versus, _demonic.View));
 
             _map.RegionTapped += regionId => Navigator.Open(SheetLink.ToRegion(regionId));
             Body.Children.Add(Ui.Section("천하 약도", _map,
-                Ui.Muted("원 안 숫자: 거주자 · 색: 지배 종문 · 점선: 접경지 · 秘 비경 · 獸 수조 · 누르면 지역 정보", 10)));
+                Ui.Muted("색: 지배 종문 · 점선: 접경지 · 秘 비경 · 獸 수조. 큰 글자에서는 원 번호를 지역 목록과 함께 보세요."),
+                Ui.Button("지역 목록 ▾", _map.ToggleList), _map.ListView));
 
             _borders = new BorderRows(navigator);
             Body.Children.Add(Ui.Section("접경지 세력도 (±4점이면 점령)", _borders.View));
@@ -75,7 +79,13 @@ namespace Xianxia.App.Pages
             _strongest = new RowList(Navigator.Open);
             Body.Children.Add(Ui.Section("천하 십강 (전투력)", _strongest.View));
             _recent = new RowList(Navigator.Open);
-            Body.Children.Add(Ui.Section("최근 연대기", _recent.View));
+            Body.Children.Insert(1, Ui.Section("최근 주요 사건", _recent.View,
+                Ui.Button("기록 전체 ›", () => navigator.Navigate(Destinations.Log))));
+            _watch = new RowList(Navigator.Open, "인물이 없습니다. 새 세계 상태를 확인해 주세요.");
+            Body.Children.Insert(1, Ui.Section("지켜볼 인물", _watch.View,
+                Ui.Muted("관심 인물을 먼저 보여 줍니다. 없으면 보관된 최근100년 돌파·대회에서 최대3명을 추천합니다."),
+                Ui.Muted("보관 밖 사건은 복원하지 않습니다. 후보가 없으면 현재 전투력 상위를 보여 줍니다."),
+                Ui.Button("인물 찾기 ›", () => navigator.Navigate(Destinations.People))));
         }
 
         /// <inheritdoc />
@@ -88,6 +98,12 @@ namespace Xianxia.App.Pages
         internal override void Refresh(World world)
         {
             RefreshWar(world);
+            Cultivator[] followed = world.Cultivators.Where(person => world.IsFollowed(person.Id))
+                .OrderBy(person => person.Id).Take(3).ToArray();
+            IReadOnlyList<Recommendation> watch = followed.Length == 0 ? RecommendationQuery.Select(world)
+                : followed.Select(person => new Recommendation(person, "관심 인물")).ToArray();
+            _watch.Update(watch.Select((entry, index) => Rows.Cultivator(world, entry.Person, index + 1,
+                entry.Person.RealmText, entry.Reason)).ToArray());
             SectSummary orthodox = Queries.Summarize(world, RegionCatalog.OrthodoxSectId);
             SectSummary demonic = Queries.Summarize(world, RegionCatalog.DemonicSectId);
             _orthodox.Refresh(world, orthodox);
@@ -135,8 +151,8 @@ namespace Xianxia.App.Pages
             {
                 _warTitle.Text = "제" + war.WarNumber + "차 정마대전 진행 중";
                 _warLine.Text = "종전까지 " + Fmt.Years(change) + " (천 년 전쟁 · 만 년 휴전)";
-                _warDetail.Text = "청운종 " + war.OrthodoxWins + "승 : " + war.DemonicWins + "승 천마문 · 사상자 "
-                    + Fmt.Number(war.Casualties) + "명";
+                _warDetail.Text = "청운종 " + war.OrthodoxWins + "승 : " + war.DemonicWins + "승 천마문 · 경지 하락 "
+                    + Fmt.Number(war.Casualties) + "건";
                 _warHighlights.Text = Highlights(war.Highlights);
                 _warHighlights.IsVisible = war.Highlights.Count > 0;
                 return;

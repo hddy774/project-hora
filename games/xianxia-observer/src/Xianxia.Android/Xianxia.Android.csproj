@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    선협 관찰 Android 실행 프로젝트(Avalonia.Android).
+    선로만상록 프로젝트 Android 실행 프로젝트(Avalonia.Android).
     android 워크로드가 필요하므로 로컬 솔루션 빌드에서는 제외하고 CI에서만 빌드한다.
   -->
   <PropertyGroup>
@@ -9,9 +9,9 @@
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
     <RootNamespace>Xianxia.Android</RootNamespace>
     <ApplicationId>org.hora.xianxiaobserver</ApplicationId>
-    <ApplicationTitle>선협 관찰</ApplicationTitle>
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
+    <ApplicationTitle>선로만상록 프로젝트</ApplicationTitle>
+    <ApplicationVersion>2</ApplicationVersion>
+    <ApplicationDisplayVersion>0.2.0</ApplicationDisplayVersion>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>

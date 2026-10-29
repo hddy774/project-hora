@@ -4,7 +4,7 @@ name: Xianxia Observer
 
 on:
   push:
-    branches: [main, 'claude/**', 'codex/**']
+    branches: [main]
     paths:
       - 'games/xianxia-observer/**'
       - '.github/workflows/xianxia-observer.yml'
@@ -19,11 +19,16 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Sign with the retained publisher certificate and publish the APK as the latest release
+        description: Publish after retained signing and both Android API checks (false signs and tests only)
         type: boolean
         default: false
       source_run_id:
         description: Reuse an exact APK from a run whose checks, signing and Android execution succeeded (publish only)
+        type: string
+        default: ''
+        required: false
+      qa_run_id:
+        description: Reuse a retained-signed APK for input QA only; publishing is disabled
         type: string
         default: ''
         required: false
@@ -32,7 +37,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: xianxia-observer-${{ github.ref }}-${{ github.event_name }}
+  group: xianxia-observer-${{ github.head_ref || github.ref_name }}-${{ github.event_name == 'workflow_dispatch' && 'release' || 'check' }}
   cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 
 env:
@@ -41,10 +46,10 @@ env:
   AVALONIA_TELEMETRY_OPTOUT: 1
   GAME_DIR: games/xianxia-observer
   APPLICATION_ID: org.hora.xianxiaobserver
-  APP_VERSION: 0.1.0
-  APP_VERSION_CODE: 1
-  RELEASE_TAG: xianxia-observer/v0.1.0
-  ARTIFACT_STEM: XianxiaObserver-v0.1.0
+  APP_VERSION: 0.2.0
+  APP_VERSION_CODE: 2
+  RELEASE_TAG: xianxia-observer/v0.2.0
+  ARTIFACT_STEM: XianxiaObserver-v0.2.0
 
 jobs:
   check:
@@ -60,6 +65,11 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+      - name: Reject incompatible APK reuse modes
+        env:
+          QA_RUN: ${{ inputs.qa_run_id }}
+          PUBLISH_REQUEST: ${{ inputs.publish }}
+        run: python3 -c "import os; assert not os.environ['QA_RUN'] or os.environ['PUBLISH_REQUEST'] != 'true'"
       - name: Restore with lock files
         run: dotnet restore XianxiaObserver.slnx --locked-mode
       - name: Verify formatting
@@ -72,6 +82,10 @@ jobs:
         run: dotnet test XianxiaObserver.slnx -c Release --no-build --logger trx --results-directory TestResults
       - name: Test PR progress updates
         run: python3 -m unittest discover -s ../../tools/tests -p 'test_xianxia_progress.py' -v
+      - name: Test Android focus and fresh-input evidence guards
+        run: python3 -m unittest discover -s ../../tools/tests -p 'test_emulator_smoke.py' -v
+      - name: Verify APK release version consistency
+        run: python3 -m unittest discover -s ../../tools/tests -p 'test_xianxia_release_contract.py' -v
       - name: Preserve test reports and rendered screens
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -85,6 +99,8 @@ jobs:
 
   android:
     name: build Android APK
+    # 개발 PR은 코어/UI 검사를 매번 수행하고, 같은 최종 APK의 기기 검사는 배포 실행에서 수행한다.
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.source_run_id == '' && inputs.qa_run_id == '' }}
     needs: check
     runs-on: ubuntu-24.04
     timeout-minutes: 40
@@ -117,7 +133,7 @@ jobs:
           dotnet publish src/Xianxia.Android/Xianxia.Android.csproj -c Release -f net10.0-android -o "$RUNNER_TEMP/apk"
           -p:AndroidSdkDirectory="$ANDROID_SDK" -p:JavaSdkDirectory="$JAVA_HOME"
       - name: Sign the release APK with the retained publisher
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner }}
         env:
           SIGNING_BUNDLE: ${{ secrets.ANDROID_SIGNING_BUNDLE }}
           RAW_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
@@ -133,7 +149,7 @@ jobs:
           bash tools/retained-sign.sh "$unsigned" "$RUNNER_TEMP/release/$ARTIFACT_STEM.apk"
       - name: Verify package identity, offline policy and ABIs
         env:
-          PUBLISH_RELEASE: ${{ github.event_name == 'workflow_dispatch' && inputs.publish }}
+          PUBLISH_RELEASE: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           set -euo pipefail
           apk=$(ls "$RUNNER_TEMP"/apk/*-Signed.apk)
@@ -161,6 +177,59 @@ jobs:
           name: xianxia-apk-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/out/
           if-no-files-found: error
+          retention-days: 14
+
+  qa_apk:
+    name: reuse signed APK for input QA
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publish && inputs.qa_run_id != '' && inputs.source_run_id == '' && github.actor == github.repository_owner }}
+    needs: check
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Resolve the exact owner-built artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.qa_run_id }}
+        run: |
+          python3 - <<'PY'
+          import json,os,re,subprocess
+          run_id=os.environ['SOURCE_RUN']
+          assert re.fullmatch(r'[1-9][0-9]*',run_id)
+          run=json.loads(subprocess.check_output(['gh','api','repos/hddy774/project-hora/actions/runs/'+run_id]))
+          assert run['event']=='workflow_dispatch' and run['actor']['login']=='hddy774'
+          assert run['head_repository']['full_name']=='hddy774/project-hora'
+          assert run['path']=='.github/workflows/xianxia-observer.yml'
+          name='xianxia-apk-'+run_id+'-'+str(run['run_attempt'])
+          with open(os.environ['GITHUB_ENV'],'a') as stream:
+              stream.write('SOURCE_ARTIFACT='+name+'\nSOURCE_SHA='+run['head_sha']+'\n')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT }}
+          path: apk
+          run-id: ${{ inputs.qa_run_id }}
+          github-token: ${{ github.token }}
+      - name: Require the retained signature proof and exact APK bytes
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib
+          path=pathlib.Path('apk')
+          proof=json.loads((path/'SIGNING-VERIFICATION.json').read_text())
+          assert proof['source_commit']==os.environ['SOURCE_SHA']
+          assert proof['application_id']==os.environ['APPLICATION_ID']
+          assert proof['version']==os.environ['APP_VERSION']
+          assert proof['version_code']==int(os.environ['APP_VERSION_CODE'])
+          assert proof['certificate_sha256']=='0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a'
+          assert proof['payload_matches_verified_unsigned'] and not proof['key_created']
+          assert hashlib.sha256((path/'XianxiaObserver-ci.apk').read_bytes()).hexdigest()==proof['signed_sha256']
+          (path/'QA-SOURCE.json').write_text(json.dumps({'source':os.environ['SOURCE_SHA'],'publish':False}))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: xianxia-apk-${{ github.run_id }}-${{ github.run_attempt }}
+          path: apk/
           retention-days: 14
 
   publish:
@@ -230,8 +299,13 @@ jobs:
         run: python3 games/xianxia-observer/tools/publish-release.py publish --source-run "$SOURCE_RUN_ID"
 
   emulator:
-    name: run APK on Android emulator
-    needs: android
+    name: run APK on Android emulator (api ${{ matrix.api }})
+    needs: [android, qa_apk]
+    if: ${{ always() && !cancelled() && (needs.android.result == 'success' || needs.qa_apk.result == 'success') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [24, 34]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -240,6 +314,10 @@ jobs:
         with:
           name: xianxia-apk-${{ github.run_id }}-${{ github.run_attempt }}
           path: apk
+      - name: Download the previous public APK for an in-place save upgrade
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download xianxia-observer/v0.1.0 --repo hddy774/project-hora --pattern XianxiaObserver-v0.1.0.apk --dir previous-apk
       - name: Enable KVM for the emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -248,18 +326,18 @@ jobs:
       - name: Install, launch, screenshot and check for crashes
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
+          api-level: ${{ matrix.api }}
           arch: x86_64
           target: google_apis
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash games/xianxia-observer/tools/emulator-smoke.sh apk/XianxiaObserver-ci.apk emulator-out
+          script: bash games/xianxia-observer/tools/emulator-smoke.sh apk/XianxiaObserver-ci.apk emulator-out previous-apk/XianxiaObserver-v0.1.0.apk
       - name: Preserve emulator screenshots and logs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: xianxia-emulator-${{ github.run_id }}-${{ github.run_attempt }}
+          name: xianxia-emulator-api${{ matrix.api }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: emulator-out
           if-no-files-found: warn
           retention-days: 14

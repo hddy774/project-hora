@@ -29,6 +29,7 @@ namespace Xianxia.Simulation.Systems
                 {
                     Close(world, realm);
                     world.SecretRealms.RemoveAt(index);
+                    RegionEvents.Refresh(world, realm.RegionId);
                 }
                 else
                 {
@@ -60,8 +61,7 @@ namespace Xianxia.Simulation.Systems
             };
             world.SecretRealms.Add(realm);
             Region region = world.Regions[regionId];
-            region.AuraModifier = 1.2;
-            region.Status = "비경 개방: " + realm.Name;
+            RegionEvents.Refresh(world, regionId);
             string text = "[" + region.Name + "] " + realm.Name + "이(가) 열렸다. (" + Realms.Name(realm.MinRealm) + "~"
                 + Realms.Name(realm.MaxRealm) + " 입장)";
             Narrator.Log(world, LogKind.SecretRealm, text);
@@ -142,15 +142,21 @@ namespace Xianxia.Simulation.Systems
             }
         }
 
-        private static int Treasure(World world, Cultivator entrant)
+        /// <summary>기존 공법과 속성을 보존하면서 비경 보물을 지급한다.</summary>
+        /// <param name="world">세계.</param>
+        /// <param name="entrant">입장 인물.</param>
+        /// <returns>기존 수확 점수.</returns>
+        internal static int Treasure(World world, Cultivator entrant)
         {
             string gain;
             int value;
             switch (world.Random.NextInt(5))
             {
                 case 0:
-                    entrant.TechniqueGrade = Math.Min(18, entrant.TechniqueGrade + 1);
-                    gain = Techniques.Name(entrant.TechniqueGrade) + " 공법";
+                    int previous = entrant.TechniqueGrade;
+                    entrant.TechniqueGrade = Techniques.ImproveByReward(previous, 1, 18);
+                    gain = (entrant.TechniqueGrade == previous ? "(이미 익힌) " : "")
+                        + Techniques.Name(entrant.TechniqueGrade) + " 공법";
                     value = 3;
                     break;
                 case 1:
@@ -164,7 +170,9 @@ namespace Xianxia.Simulation.Systems
                     value = 2;
                     break;
                 case 3:
+                    double previousQi = entrant.Qi;
                     entrant.Qi += entrant.QiRequirement * 0.3;
+                    world.Diagnostics?.AddQi(entrant, QiSource.SecretRealm, entrant.Qi - previousQi);
                     gain = "영천의 영기";
                     value = 1;
                     break;
@@ -175,7 +183,7 @@ namespace Xianxia.Simulation.Systems
                     break;
             }
 
-            if (world.IsFollowed(entrant.Id) || (value >= 3 && world.Random.Chance(0.3)))
+            if (world.IsFollowed(entrant.Id) || (value >= 3 && world.LogRandom.Chance(0.3)))
             {
                 Narrator.Log(world, LogKind.SecretRealm, entrant.Name + "이(가) 비경에서 " + gain + "을(를) 얻었다.", entrant,
                     notable: true);
@@ -204,9 +212,7 @@ namespace Xianxia.Simulation.Systems
 
         private static void Close(World world, SecretRealmState realm)
         {
-            Region region = world.Regions[realm.RegionId];
-            region.AuraModifier = 1.0;
-            region.Status = "평온";
+
             int best = -1;
             for (int index = 0; index < realm.Gains.Count; index++)
             {

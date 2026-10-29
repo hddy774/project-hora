@@ -1,0 +1,14 @@
+{
+  "seed": "7",
+  "population": 300,
+  "years": 1000,
+  "baselineOverlapYears": 0,
+  "candidateOverlapYears": 0,
+  "exactEqual": true,
+  "withoutRecordDetailsEqual": true,
+  "differentTopLevel": [],
+  "beforeSha256": "4a000230a05cd7f178eac147d460bab9e4147e7a5185fc758e702f880b39c8ce",
+  "afterSha256": "4a000230a05cd7f178eac147d460bab9e4147e7a5185fc758e702f880b39c8ce",
+  "baselineCommit": "77b7719b0370de2141bf87caa7b4ecd7eafdebc3",
+  "candidateBranch": "codex/35-region-events"
+}

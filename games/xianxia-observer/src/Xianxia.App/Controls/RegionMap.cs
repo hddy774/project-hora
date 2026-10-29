@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -44,14 +45,33 @@ namespace Xianxia.App.Controls
             (8, 11), (9, 5), (11, 5), (9, 7), (11, 6), (5, 4), (4, 7), (4, 6), (10, 9), (12, 11),
         };
 
+        private readonly StackPanel _list = new() { Spacing = 6 };
+        private readonly Button[] _regionButtons = new Button[RegionCatalog.All.Count];
+
         private IReadOnlyList<MapRegion> _regions = Array.Empty<MapRegion>();
 
         /// <summary>약도를 만든다.</summary>
         internal RegionMap()
         {
+            _list.IsVisible = Typography.Scale >= 1.2;
+            for (int id = 0; id < _regionButtons.Length; id++)
+            {
+                int selected = id;
+                Button button = Ui.Button(RegionCatalog.All[id].Name, () => RegionTapped?.Invoke(selected), "card");
+                AutomationProperties.SetAutomationId(button, "region-list-" + id);
+                _regionButtons[id] = button;
+                _list.Children.Add(button);
+            }
+
             Tapped += OnTapped;
             Cursor = new Cursor(StandardCursorType.Hand);
         }
+
+        /// <summary>지도와 동등한 연결을 제공하는 확대 가능한 지역 목록.</summary>
+        internal Control ListView => _list;
+
+        /// <summary>지역 목록을 접거나 펼친다.</summary>
+        internal void ToggleList() => _list.IsVisible = !_list.IsVisible;
 
         /// <summary>지역을 눌렀을 때(지역 번호).</summary>
         internal event Action<int>? RegionTapped;
@@ -61,6 +81,12 @@ namespace Xianxia.App.Controls
         internal void Set(IReadOnlyList<MapRegion> regions)
         {
             _regions = regions;
+            foreach (MapRegion region in regions)
+            {
+                _regionButtons[region.Id].Content = (region.Id + 1) + " · " + RegionCatalog.All[region.Id].Name
+                    + " · " + region.Residents + "명" + (region.SecretRealm ? " · 비경" : "")
+                    + (region.BeastTide ? " · 수조" : "");
+            }
             InvalidateVisual();
         }
 
@@ -84,7 +110,31 @@ namespace Xianxia.App.Controls
         /// <inheritdoc />
         protected override Size MeasureOverride(Size availableSize)
         {
-            return new Size(0, MapHeight);
+            return new Size(0, MapHeight + (20 * Typography.Scale));
+        }
+
+        /// <inheritdoc/>
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            Typography.Changed += Reflow;
+        }
+
+        /// <inheritdoc/>
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            Typography.Changed -= Reflow;
+            base.OnDetachedFromVisualTree(e);
+        }
+
+        private void Reflow()
+        {
+            if (Typography.Scale >= 1.2)
+            {
+                _list.IsVisible = true;
+            }
+
+            InvalidateVisual();
         }
 
         private static double Radius(int id)
@@ -96,8 +146,9 @@ namespace Xianxia.App.Controls
             bool bold)
         {
             FormattedText formatted = new(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
-                bold ? s_bold : s_typeface, size, Palette.Brush(color));
-            context.DrawText(formatted, new Point(center.X - (formatted.Width / 2), center.Y - (formatted.Height / 2)));
+                bold ? s_bold : s_typeface, Math.Max(13, size) * Typography.Scale, Palette.Brush(color));
+            context.DrawText(formatted, new Point(center.X - (formatted.Width / 2),
+                center.Y - (formatted.Height / 2)));
         }
 
         private Point Center(int id)
@@ -109,8 +160,9 @@ namespace Xianxia.App.Controls
 
         private void DrawSideLabel(DrawingContext context, string text, double x, Color color, bool alignRight)
         {
-            FormattedText formatted = new(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, s_typeface, 9,
-                Palette.Tint(color, 0xB0));
+            double fontSize = 13 * Typography.Scale;
+            FormattedText formatted = new(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+                s_typeface, fontSize, Palette.Brush(color));
             double left = (x * Bounds.Width) - (alignRight ? formatted.Width : 0);
             context.DrawText(formatted, new Point(left, MapHeight - 14));
         }
@@ -125,8 +177,12 @@ namespace Xianxia.App.Controls
             Pen ring = new(Palette.Brush(color), definition.Kind == RegionKind.Border ? 2.5 : 1.5,
                 definition.Kind == RegionKind.Border ? new DashStyle(new double[] { 3, 1.5 }, 0) : null);
             context.DrawEllipse(Palette.Tint(color, 0x38), ring, center, radius, radius);
-            Text(context, region.Residents.ToString(CultureInfo.InvariantCulture), center, 11, Palette.Ink, true);
-            Text(context, definition.Name, new Point(center.X, center.Y + radius + 8), 9.5, Palette.Ink, false);
+            Text(context, (Typography.Scale >= 1.2 ? region.Id + 1 : region.Residents)
+                .ToString(CultureInfo.InvariantCulture), center, 13, Palette.Ink, true);
+            if (Typography.Scale < 1.2)
+            {
+                Text(context, definition.Name, new Point(center.X, center.Y + radius + 10), 13, Palette.Ink, false);
+            }
             if (region.SecretRealm)
             {
                 DrawMarker(context, "秘", new Point(center.X + radius - 2, center.Y - radius + 2), Palette.Of(
@@ -141,6 +197,12 @@ namespace Xianxia.App.Controls
 
         private static void DrawMarker(DrawingContext context, string glyph, Point center, Color color)
         {
+            if (Typography.Scale >= 1.2)
+            {
+                context.DrawEllipse(Palette.Brush(color), null, center, 5, 5);
+                return;
+            }
+
             context.DrawEllipse(Palette.Brush(color), new Pen(Palette.Brush(Palette.PanelBack), 1.5), center, 8, 8);
             Text(context, glyph, center, 9, Palette.OnAccent, true);
         }

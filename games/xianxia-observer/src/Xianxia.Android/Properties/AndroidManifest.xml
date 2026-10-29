@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 오프라인 싱글플레이 게임이므로 인터넷 등 어떤 권한도 요청하지 않는다. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto">
-  <application android:label="선협 관찰" android:allowBackup="true" android:supportsRtl="false" />
+  <application android:label="선로만상록 프로젝트" android:allowBackup="true" android:supportsRtl="false" />
 </manifest>

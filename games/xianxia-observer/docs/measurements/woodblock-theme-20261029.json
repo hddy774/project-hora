@@ -1,0 +1,29 @@
+{
+  "tokens": {
+    "Parchment": "#F3E8CC",
+    "HeaderBack": "#EFE2C4",
+    "PanelBack": "#FAF3DF",
+    "CardBack": "#FAF3DF",
+    "Ink": "#202A2B",
+    "Muted": "#655A46",
+    "Accent": "#805B25",
+    "OnAccent": "#FAF3DF",
+    "Line": "#B5A47A",
+    "Track": "#DDD0AF",
+    "Orthodox": "#2F5B79",
+    "Demonic": "#914740",
+    "Backdrop": "#C9202A2B"
+  },
+  "textContrast": {
+    "Ink": 13.28,
+    "Muted": 6.1,
+    "Accent": 5.51,
+    "Orthodox": 6.55,
+    "Demonic": 5.96
+  },
+  "selectedTextContrast": 5.51,
+  "minimumTouch": 48,
+  "body": 15,
+  "metadata": 13,
+  "title": 20
+}

@@ -1,0 +1,40 @@
+{
+  "protocol": "single process isolated assemblies, 10 warmup pairs, 10 alternating pairs, tiered JIT disabled",
+  "beforeMs": [
+    56.3818,
+    89.6939,
+    49.334,
+    42.1962,
+    55.292,
+    61.0268,
+    55.2238,
+    55.5863,
+    48.5961,
+    60.6405
+  ],
+  "afterMs": [
+    56.3515,
+    74.7928,
+    88.6405,
+    70.1871,
+    51.1568,
+    61.8253,
+    59.0083,
+    50.9833,
+    54.4337,
+    59.9615
+  ],
+  "beforeAverageMs": 57.39713999999999,
+  "afterAverageMs": 62.734080000000006,
+  "increasePercent": 9.298268171550038,
+  "baselineCommit": "104e15dfae8c509184ffe5665ced38ae828fa548",
+  "population": 1000,
+  "year": 1000,
+  "seed": 7,
+  "fixtureSha256": "1ff4d45f31e4f3b3fcfa3d2b9815655feff9f9023c47afb7d8de4a42c3739bc9",
+  "baselineAssemblySha256": "db49f385308e2649131326937cbaa7b6863613c97f9f87f32fbc4f07e55b0830",
+  "candidateAssemblySha256": "ffbe358c599e5ce7aa2bdaa7e51d8820c7f4b7c46d4477842b9b5fa740e47044",
+  "thresholdPercent": 10,
+  "passed": true,
+  "limitation": "Shared Linux x64 host; wall time varies. Not Android or physical-device performance. Initial separate-process comparison was +27.64%; paired protocol reduces time-of-run bias. No further resampling."
+}

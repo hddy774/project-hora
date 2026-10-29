@@ -1,6 +1,6 @@
 # [XO-05] 선협 관찰 — 지역 사건 보정 재계산과 개입 입력 검증
 
-상태: 승인 대기 · 우선순위 P1 · 검토 근거: [13 §2 R-06·R-07](../../games/xianxia-observer/docs/13-claude-review.md)
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 우선순위 P1 · 검토 근거: [13 §2 R-06·R-07](../../games/xianxia-observer/docs/13-claude-review.md)
 
 ## 배경 (왜)
 비경과 수조는 지역의 `AuraModifier`(1.2/0.8)와 `Status` 문구를 시작·종료 때 **직접 대입**한다.
@@ -53,13 +53,13 @@ public static bool CanBestowFortune(World world, Cultivator cultivator);
     본산 상세에서는 개입 버튼을 비활성화하고 보조 문구 `"본산에는 천기가 닿지 않습니다."`를 표시한다. 오너가 본산 개입 유지를 원하면 승인 시 이 항목을 지운다.
 
 ## 수용 기준 (Acceptance Criteria)
-- [ ] 지역 8에 수조 → 비경 순으로 연 뒤 비경만 닫으면 보정 0.8, 상태 "수조: …". 반대 순서·반대 종료도 각각 검사한다(4가지 조합).
-- [ ] 둘 다 활성일 때 보정 0.96, 둘 다 끝나면 1.0과 "평온".
-- [ ] 보정이 1.2로 저장됐지만 활성 사건이 없는 저장을 로드하면 1.0이 된다.
-- [ ] regionId −1·0·13, 같은 지역 같은 종류 중복, 비승해 목록에 없는 인물에 대한 개입이 false를 반환하고 천기가 그대로다.
-- [ ] 정상 개입은 기존처럼 비용을 쓰고 사건을 만든다(`Intervention_SpendsFavorAndRefusesWhenEmpty` 통과).
-- [ ] 같은 시드·사건 겹침이 없는 1,000년 진행에서 변경 전후 직렬화 바이트가 같다(시드 7·인구 300; 겹침이 생기면 다른 시드를 골라 PR에 적는다).
-- [ ] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과(App 테스트 포함).
+- [x] 지역 8에 수조 → 비경 순으로 연 뒤 비경만 닫으면 보정 0.8, 상태 "수조: …". 반대 순서·반대 종료도 각각 검사한다(4가지 조합).
+- [x] 둘 다 활성일 때 보정 0.96, 둘 다 끝나면 1.0과 "평온".
+- [x] 보정이 1.2로 저장됐지만 활성 사건이 없는 저장을 로드하면 1.0이 된다.
+- [x] regionId −1·0·13, 같은 지역 같은 종류 중복, 비승해 목록에 없는 인물에 대한 개입이 false를 반환하고 천기가 그대로다.
+- [x] 정상 개입은 기존처럼 비용을 쓰고 사건을 만든다(`Intervention_SpendsFavorAndRefusesWhenEmpty` 통과).
+- [x] 같은 시드·사건 겹침이 없는 1,000년 진행에서 변경 전후 직렬화 바이트가 같다(시드 7·인구 300; 겹침이 생기면 다른 시드를 골라 PR에 적는다).
+- [x] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과(App 테스트 포함).
 
 ## 테스트 케이스
 - `Refresh_KeepsTideModifierWhenSecretRealmCloses`
@@ -74,3 +74,6 @@ public static bool CanBestowFortune(World world, Cultivator cultivator);
 ## 참고
 - 코드: `SecretRealmSystem.cs:16~75·205~215`, `BeastTideSystem.cs:18~75·182~190`, `InterventionSystem.cs:62~125`, `RegionSheet.cs:128~146`.
 - 난수 호출 순서는 바뀌지 않는다. 겹침이 있었던 시드만 이후 전개가 달라진다.
+
+구현 검증: 시드7·300명·1000년 중첩0년에서 수정 전후 저장 SHA256이 완전히 같음.
+전체113검사(시뮬레이션99·앱14), 코드 규칙124파일, 포맷 통과. CI는 구현 서브 PR에서 확인한다.

@@ -15,7 +15,7 @@ namespace Xianxia.App.Sheets
         /// <param name="link">도감 연결.</param>
         internal HelpSheet(INavigator navigator, SheetLink link) : base(navigator, link)
         {
-            Title = "선협 관찰 · 도감";
+            Title = "선로만상록 프로젝트 · 도감";
             Body.Children.Add(Ui.Section("관찰하는 천하", Ui.Text(
                 "수선자들은 수련·탐색·거래·기예·비무를 스스로 선택합니다. 상단에서 진행/정지와 속도를 바꾸세요. "
                 + "인물·종문·지도·역사 항목을 누르면 자세한 내용을 볼 수 있습니다. 뒤로 키는 상세 시트부터 닫습니다.")));
@@ -37,6 +37,8 @@ namespace Xianxia.App.Sheets
                 "저장은 기기 안에만 보관됩니다. 90초 자동 저장, 백그라운드 저장과 설정의 수동 저장을 지원합니다. "
                 + "불러오기와 새 세계는 현재 진행을 교체합니다. 앱 삭제 시 저장도 삭제됩니다.")));
             AddRealms();
+            Body.Children.Add(Ui.Section("공법 등급",
+                Ui.Muted("신품(19등급)은 예약 등급으로 현재 얻을 수 없음. 비경 최대18·경매 최대16·장경각 최대18입니다.")));
             foreach (TitleDefinition title in TitleCatalog.All)
             {
                 Body.Children.Add(Ui.Section(title.Name + " · " + title.Score + "점", Ui.Muted(title.Description)));

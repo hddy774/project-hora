@@ -1,6 +1,6 @@
 # [XO-03] 선협 관찰 — 저장 의미 검증과 손상 저장 보존
 
-상태: 승인 대기 · 우선순위 P1 · 검토 근거: [13 §2 R-01·R-15](../../games/xianxia-observer/docs/13-claude-review.md)
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 우선순위 P1 · 검토 근거: [13 §2 R-01·R-15](../../games/xianxia-observer/docs/13-claude-review.md)
 
 ## 배경 (왜)
 유효한 gzip JSON이지만 의미가 틀린 저장(예: `RegionId=999`)을 불러오면 `World.RebuildIndexes`가
@@ -57,13 +57,13 @@ namespace Xianxia.Simulation.Persistence
 12. `TryLoad`의 사용자 문구는 기존 형식을 유지하고 괄호 안에 `FindProblem` 문장을 넣는다.
 
 ## 수용 기준 (Acceptance Criteria)
-- [ ] 규칙 2~8의 위반을 각각 담은 저장 바이트가 `SaveFormatException`을 던진다(예외 종류가 다른 것은 실패).
-- [ ] 정상 세계(시드 7, 인구 300, 1,000년 진행)의 저장 → 로드가 기존처럼 성공하고 `SaveAndLoad_ContinuesExactlyTheSameHistory`가 통과한다.
-- [ ] `RegionId=999` 저장이 있을 때 `GameSession.LoadOrCreate`가 예외 없이 새 세계와 문제 문구를 돌려주고 격리 파일이 생긴다.
-- [ ] 격리를 5번 하면 `broken-*` 파일이 3개만 남는다.
-- [ ] 32 MiB 초과 파일은 읽지 않고 격리된다(테스트는 임시 폴더에 희소 파일 또는 큰 바이트로 확인).
-- [ ] 1,000명 세계 로드 시간 증가가 검증 전 대비 10% 이하(Release, 같은 기기에서 10회 평균. PR에 수치 첨부).
-- [ ] `dotnet format --verify-no-changes`, `bash ../../tools/check-code-rules.sh .`, Release 빌드 경고 0, 전체 테스트 통과.
+- [x] 규칙 2~8의 위반을 각각 담은 저장 바이트가 `SaveFormatException`을 던진다(예외 종류가 다른 것은 실패).
+- [x] 정상 세계(시드 7, 인구 300, 1,000년 진행)의 저장 → 로드가 기존처럼 성공하고 `SaveAndLoad_ContinuesExactlyTheSameHistory`가 통과한다.
+- [x] `RegionId=999` 저장이 있을 때 `GameSession.LoadOrCreate`가 예외 없이 새 세계와 문제 문구를 돌려주고 격리 파일이 생긴다.
+- [x] 격리를 5번 하면 `broken-*` 파일이 3개만 남는다.
+- [x] 32 MiB 초과 파일은 읽지 않고 격리된다(테스트는 임시 폴더에 희소 파일 또는 큰 바이트로 확인).
+- [x] 1,000명 세계 로드 시간 증가가 검증 전 대비 10% 이하(Release, 같은 기기에서 10회 평균. PR에 수치 첨부).
+- [x] `dotnet format --verify-no-changes`, `bash ../../tools/check-code-rules.sh .`, Release 빌드 경고 0, 전체 테스트 통과.
 
 ## 테스트 케이스
 - `Load_RejectsRegionOutOfRange`
@@ -85,3 +85,5 @@ namespace Xianxia.Simulation.Persistence
 - 선행 작업 없음. XO-07과 같은 파일(SaveStore)을 고치므로 XO-03을 먼저 병합한다.
 - 코드: `World.RebuildIndexes`(World.cs:197~240), `SaveStore.TryLoad`(SaveStore.cs:59~100).
 - 게임 폴더에서 검사: `dotnet restore XianxiaObserver.slnx --locked-mode && dotnet build XianxiaObserver.slnx -c Release --no-restore -warnaserror && dotnet test XianxiaObserver.slnx -c Release --no-build`.
+
+완료 근거(2026-10-29): 대표 PR #32의 상태 원본과 연결된 서브 PR/CI, 현재 구현 문서20을 따른다. Android 실제 입력·출시는 별도 XO-09/UI-QA/RELEASE-02에서 완료 전까지 추적한다.

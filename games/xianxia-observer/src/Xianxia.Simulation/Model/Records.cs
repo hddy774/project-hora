@@ -36,7 +36,7 @@ namespace Xianxia.Simulation.Model
         /// <summary>최다 영석 보유.</summary>
         public RecordEntry? Richest { get; set; }
 
-        /// <summary>최다 대비무 우승(영혼 누적).</summary>
+        /// <summary>대비무 우승한 생이 가장 많은 영혼(생 단위 누적).</summary>
         public RecordEntry? MostTournamentWins { get; set; }
     }
 
@@ -79,7 +79,7 @@ namespace Xianxia.Simulation.Model
         /// <summary>누적 천겁 통과.</summary>
         public int TotalTribulations { get; set; }
 
-        /// <summary>누적 대비무 우승.</summary>
+        /// <summary>대비무에서 우승한 생의 수. 한 생의 여러 우승은 한 번으로 센다.</summary>
         public int TournamentWins { get; set; }
 
         /// <summary>누적 전쟁 영웅.</summary>
@@ -143,6 +143,9 @@ namespace Xianxia.Simulation.Model
 
         /// <summary>상속자 없는 유품이 흩어짐.</summary>
         Death = 7,
+
+        /// <summary>개인의 백년 수행·생활 자원 소모.</summary>
+        Cultivation = 8,
     }
 
     /// <summary>
@@ -155,7 +158,7 @@ namespace Xianxia.Simulation.Model
         public List<long> Created { get; set; } = new() { 0, 0, 0, 0, 0, 0 };
 
         /// <summary>경로별 소멸량. 인덱스는 <see cref="StoneSink"/>.</summary>
-        public List<long> Destroyed { get; set; } = new() { 0, 0, 0, 0, 0, 0, 0, 0 };
+        public List<long> Destroyed { get; set; } = new() { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         /// <summary>장부상 현재 총량.</summary>
         /// <returns>생성 합 − 소멸 합.</returns>

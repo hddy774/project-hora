@@ -100,6 +100,12 @@
       },
       "xianxia.simulation": {
         "type": "Project"
+      },
+      "xianxia.tools": {
+        "type": "Project",
+        "dependencies": {
+          "Xianxia.Simulation": "[1.0.0, )"
+        }
       }
     }
   }

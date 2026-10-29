@@ -20,7 +20,9 @@ namespace Xianxia.Simulation.Systems
         {
             ArgumentNullException.ThrowIfNull(world);
             ArgumentNullException.ThrowIfNull(cultivator);
+            double previousQi = cultivator.Qi;
             cultivator.Qi += Growth.QiPerYear(world, cultivator) * world.Random.Range(0.9, 1.5) * share;
+            world.Diagnostics?.AddQi(cultivator, QiSource.Cultivation, cultivator.Qi - previousQi);
             Growth.AddInsight(cultivator, Growth.InsightPerYear(cultivator) * world.Random.Range(0.5, 1.5) * share);
             cultivator.InnerPower += (0.3 + (0.1 * cultivator.Realm)) * share;
         }
@@ -88,7 +90,7 @@ namespace Xianxia.Simulation.Systems
                 0 => GainTechnique(cultivator, world.Random.Range(1, 2)),
                 1 => GainArtifact(cultivator),
                 2 => GainInsight(cultivator, world.Random.Range(200, 400)),
-                3 => GainQi(cultivator, 0.4),
+                3 => GainQi(world, cultivator, 0.4),
                 4 => GainPill(cultivator, PillKind.Breakthrough),
                 _ => GainStones(world, cultivator, world.Random.Range(100, 500) * (cultivator.Realm + 1)),
             };
@@ -298,9 +300,19 @@ namespace Xianxia.Simulation.Systems
             return world.Random.PickWeighted(weights);
         }
 
-        private static string GainTechnique(Cultivator cultivator, int grades)
+        /// <summary>기연 공법 보상. 상위 공법은 보존하며 새로운 난수를 쓰지 않는다.</summary>
+        /// <param name="cultivator">수선자.</param>
+        /// <param name="grades">호출자가 이미 뽑은 획득 등급.</param>
+        /// <returns>기연 기록에 넣을 문장.</returns>
+        internal static string GainTechnique(Cultivator cultivator, int grades)
         {
-            cultivator.TechniqueGrade = Math.Min(15, cultivator.TechniqueGrade + grades);
+            int previous = cultivator.TechniqueGrade;
+            cultivator.TechniqueGrade = Techniques.ImproveByReward(previous, grades, 15);
+            if (cultivator.TechniqueGrade == previous)
+            {
+                return "고대 비급을 얻었으나 이미 " + Techniques.Name(previous) + " 공법을 익혀 새로 깨친 것이 없었다";
+            }
+
             return "고대 비급에서 " + Techniques.Name(cultivator.TechniqueGrade) + " 공법을 깨쳤다";
         }
 
@@ -316,9 +328,11 @@ namespace Xianxia.Simulation.Systems
             return "깨달음 " + amount + "을 얻었다";
         }
 
-        private static string GainQi(Cultivator cultivator, double ratio)
+        private static string GainQi(World world, Cultivator cultivator, double ratio)
         {
+            double previousQi = cultivator.Qi;
             cultivator.Qi += cultivator.QiRequirement * ratio;
+            world.Diagnostics?.AddQi(cultivator, QiSource.Fortune, cultivator.Qi - previousQi);
             return "천년 영약을 먹고 영기가 차올랐다";
         }
 

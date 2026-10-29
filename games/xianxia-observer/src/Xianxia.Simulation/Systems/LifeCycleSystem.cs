@@ -72,7 +72,7 @@ namespace Xianxia.Simulation.Systems
             bool notable = cultivator.Realm >= 4 || wasLeader || world.IsFollowed(cultivator.Id);
             string text = cultivator.DisplayName + "(" + cultivator.RealmText + ", " + cultivator.Age + "세)이(가) "
                 + (cause == DeathCause.Collapse ? "경지가 무너져 남은 수명을 잃고 " : "수명을 다해 ") + "좌화했다.";
-            if (notable || world.Random.Chance(0.05))
+            if (notable || world.LogRandom.Chance(0.05))
             {
                 Narrator.Log(world, LogKind.Rebirth, text, cultivator, notable: notable);
             }
@@ -109,6 +109,7 @@ namespace Xianxia.Simulation.Systems
             cultivator.Reincarnations++;
             cultivator.SectId = sect?.Id ?? 0;
             CultivatorFactory.RollLife(world, cultivator, karma, previous);
+            world.Diagnostics?.BeginLife(world.Year, cultivator);
             cultivator.SectId = 0;
             cultivator.Rank = SectRank.None;
             int region;
@@ -162,7 +163,7 @@ namespace Xianxia.Simulation.Systems
             world.Ledger.Destroy(StoneSink.Ascension, cultivator.SpiritStones);
             cultivator.SpiritStones = 0;
             SectSystem.Leave(world, cultivator);
-            world.Followed.Remove(cultivator.Id);
+            world.SetFollowed(cultivator.Id, false);
             ReplaceWithNewSoul(world, cultivator);
         }
 
@@ -247,6 +248,7 @@ namespace Xianxia.Simulation.Systems
             int sectId = world.Random.Chance(0.5) ? 0 : world.Random.Range(1, world.Sects.Count);
             int region = sectId == 0 ? world.Random.Pick(RegionCatalog.BorderIds) : RegionCatalog.HomeOf(sectId);
             Cultivator newcomer = CultivatorFactory.CreateSoul(world, 0, region, names);
+            world.Diagnostics?.BeginLife(world.Year, newcomer);
             world.Cultivators[slot] = newcomer;
             world.Register(newcomer);
             world.Regions[region].Residents.Add(newcomer);

@@ -42,7 +42,7 @@ namespace Xianxia.App.Sheets
             }).View;
             Body.Children.AddRange(new Control[]
             {
-                _description, _favor, Ui.Row(5, _secret, _tide), _facts.View, _pager.View, _residents.View,
+                _description, _favor, Ui.Cells(2, 5, _secret, _tide), _facts.View, _pager.View, _residents.View,
             });
         }
 
@@ -61,8 +61,13 @@ namespace Xianxia.App.Sheets
             Title = region.Name;
             _description.Text = region.Definition.Description;
             _favor.Text = "보유 천기 " + world.HeavenlyFavor + " / " + Balance.MaxHeavenlyFavor;
-            _secret.IsEnabled = world.HeavenlyFavor >= 3 && Queries.SecretRealmAt(world, Link.Id) is null;
-            _tide.IsEnabled = world.HeavenlyFavor >= 3 && Queries.BeastTideAt(world, Link.Id) is null;
+            if (Link.Id is 0 or 4)
+            {
+                _favor.Text += " · 본산에는 천기가 닿지 않습니다.";
+            }
+
+            _secret.IsEnabled = InterventionSystem.CanOpenSecretRealm(world, Link.Id);
+            _tide.IsEnabled = InterventionSystem.CanSummonBeastTide(world, Link.Id);
             _facts.Begin();
             if (_tab == 0)
             {
@@ -130,15 +135,8 @@ namespace Xianxia.App.Sheets
         {
             bool success = Navigator.Session.Runner.Write(world =>
             {
-                if (Link.Id < 0 || Link.Id >= world.Regions.Count)
-                {
-                    return false;
-                }
-
-                return tide ? Queries.BeastTideAt(world, Link.Id) is null
-                    && InterventionSystem.SummonBeastTide(world, Link.Id)
-                    : Queries.SecretRealmAt(world, Link.Id) is null
-                        && InterventionSystem.OpenSecretRealm(world, Link.Id);
+                return tide ? InterventionSystem.SummonBeastTide(world, Link.Id)
+                    : InterventionSystem.OpenSecretRealm(world, Link.Id);
             });
             Navigator.Toast(success ? "천기 3점을 사용했습니다." : "천기가 부족하거나 같은 사건이 진행 중입니다.");
             Navigator.Invalidate();

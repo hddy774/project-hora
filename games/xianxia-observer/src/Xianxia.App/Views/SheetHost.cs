@@ -3,11 +3,13 @@
 using System;
 using System.Collections.Generic;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Xianxia.App.Controls;
+using Xianxia.App.Services;
 using Xianxia.App.Theme;
 using Xianxia.Simulation.Model;
 
@@ -25,40 +27,57 @@ namespace Xianxia.App.Views
         private readonly ContentControl _tabs = new();
         private readonly ScrollViewer _scroll;
         private readonly Dictionary<SheetBase, Vector> _offsets = new();
+        private readonly INavigator _navigator;
+        private readonly Button _play;
+        private readonly TextBlock _state = Ui.Muted();
 
         /// <summary>시트 층을 만든다.</summary>
         /// <param name="factory">연결에 맞는 시트를 만드는 함수.</param>
-        internal SheetHost(Func<SheetLink, SheetBase?> factory)
+        /// <param name="navigator">시트 안에서 현재 진행을 확인·정지하는 연결.</param>
+        internal SheetHost(INavigator navigator, Func<SheetLink, SheetBase?> factory)
         {
+            _navigator = navigator;
             _factory = factory;
-            _title = Ui.Text(string.Empty, 15, Palette.Accent, bold: true);
+            _title = Ui.Text(string.Empty, 20, Palette.Ink, bold: true);
             _title.VerticalAlignment = VerticalAlignment.Center;
-            _title.TextWrapping = Avalonia.Media.TextWrapping.NoWrap;
-            _title.TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis;
             _back = Ui.Button("‹ 뒤로", Back, "ghost");
             Button close = Ui.Button("닫기 ×", CloseAll, "ghost");
+            AutomationProperties.SetAutomationId(close, "sheet-close");
+            AutomationProperties.SetAutomationId(_back, "sheet-back");
             Grid titleBar = Ui.Columns("Auto,*,Auto", _back, _title, close);
             _tabs.Margin = new Thickness(0, 6, 0, 2);
             _scroll = new ScrollViewer { HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
+            _play = Ui.Button("▶ 진행", TogglePlay);
+            AutomationProperties.SetAutomationId(_play, "sheet-play-toggle");
+            (_root, _card) = CreateSurface(titleBar);
+            _root.PointerPressed += OnBackdropPressed;
+        }
+
+        /// <summary>제목·탭·진행 상태를 고정하고 상세 본문만 스크롤한다.</summary>
+        private (Grid Root, Border Card) CreateSurface(Control titleBar)
+        {
             DockPanel layout = new() { LastChildFill = true };
             DockPanel.SetDock(titleBar, Dock.Top);
             DockPanel.SetDock(_tabs, Dock.Top);
+            Grid transport = Ui.Columns("*,Auto", _state, _play);
+            DockPanel.SetDock(transport, Dock.Bottom);
             layout.Children.Add(titleBar);
             layout.Children.Add(_tabs);
+            layout.Children.Add(transport);
             layout.Children.Add(_scroll);
-            _card = new Border
+            Border card = new()
             {
                 Background = Palette.Brush(Palette.PanelBack),
                 BorderBrush = Palette.Brush(Palette.Accent),
                 BorderThickness = new Thickness(2),
-                CornerRadius = new CornerRadius(12),
+                CornerRadius = new CornerRadius(2),
                 Padding = new Thickness(12, 8, 12, 12),
                 Margin = new Thickness(8, 12, 8, 12),
                 Child = layout,
             };
-            _root = new Grid { Background = Palette.Brush(Palette.Backdrop), IsVisible = false };
-            _root.Children.Add(_card);
-            _root.PointerPressed += OnBackdropPressed;
+            Grid root = new() { Background = Palette.Brush(Palette.Backdrop), IsVisible = false };
+            root.Children.Add(card);
+            return (root, card);
         }
 
         /// <summary>화면 요소.</summary>
@@ -100,6 +119,7 @@ namespace Xianxia.App.Views
 
             _stack.Add(sheet);
             Show(sheet, Vector.Zero);
+            UiTrace.Sheet(link.Kind.ToString(), link.Id);
             return true;
         }
 
@@ -111,6 +131,7 @@ namespace Xianxia.App.Views
                 return;
             }
 
+            UiTrace.SheetClosed(_stack[^1].Link.Kind.ToString());
             _stack.RemoveAt(_stack.Count - 1);
             if (Top is { } top)
             {
@@ -128,6 +149,11 @@ namespace Xianxia.App.Views
         /// <summary>모든 시트를 닫는다.</summary>
         internal void CloseAll()
         {
+            foreach (SheetBase sheet in _stack)
+            {
+                UiTrace.SheetClosed(sheet.Link.Kind.ToString());
+            }
+
             _stack.Clear();
             _offsets.Clear();
             _root.IsVisible = false;
@@ -146,6 +172,18 @@ namespace Xianxia.App.Views
 
             top.Refresh(world);
             _title.Text = top.Title;
+            bool running = _navigator.Session.Runner.IsRunning;
+            _play.Content = running ? "■ 정지" : "▶ 진행";
+            _play.IsEnabled = !_navigator.Session.Runner.IsFaulted;
+            _state.Text = _navigator.Session.Runner.IsFaulted ? "오류로 정지 · 복구 필요"
+                : (running ? "관찰 중 · " : "정지 · ")
+                    + TransportBar.SpeedText(_navigator.Session.Runner.SpeedIndex);
+        }
+
+        private void TogglePlay()
+        {
+            _navigator.Session.Runner.SetRunning(!_navigator.Session.Runner.IsRunning);
+            _navigator.Invalidate();
         }
 
         private void Show(SheetBase sheet, Vector offset)

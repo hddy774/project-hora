@@ -6,7 +6,7 @@ using Avalonia.Media.Fonts;
 
 namespace Xianxia.App
 {
-    /// <summary>선협 관찰 앱이 공통으로 쓰는 <see cref="AppBuilder"/> 확장.</summary>
+    /// <summary>선로만상록 프로젝트 앱이 공통으로 쓰는 <see cref="AppBuilder"/> 확장.</summary>
     public static class AppBuilderExtensions
     {
         /// <summary>내장 글꼴 모음의 이름(Avalonia fonts: 스킴).</summary>

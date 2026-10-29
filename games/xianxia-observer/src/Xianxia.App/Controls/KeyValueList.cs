@@ -42,7 +42,7 @@ namespace Xianxia.App.Controls
                     BorderBrush = Palette.Tint(Palette.Accent, 0x1A),
                     BorderThickness = new Thickness(0, 0, 0, 1),
                     Padding = new Thickness(0, 4),
-                    Child = Ui.Columns("Auto,*", name, text),
+                    Child = Ui.Columns("*,*", name, text),
                 };
                 _rows.Add((row, name, text));
                 _panel.Children.Add(row);

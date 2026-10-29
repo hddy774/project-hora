@@ -2,6 +2,7 @@
 // [성능] 줄 객체를 재사용하고 갱신 때는 글자·색만 바꾼다. 누르면 연결된 상세 시트를 연다.
 using System;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -68,15 +69,16 @@ namespace Xianxia.App.Controls
             _accent = new Border { Width = 3, CornerRadius = new CornerRadius(2), Margin = new Thickness(0, 0, 7, 0) };
             _leadText = new TextBlock
             {
-                FontSize = 10,
                 FontWeight = FontWeight.Bold,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
             };
+            Typography.Bind(_leadText, TextBlock.FontSizeProperty, 13);
             _lead = new Border
             {
-                Width = 24,
-                Height = 24,
+                MinWidth = 28,
+                MinHeight = 28,
+                Padding = new Thickness(4),
                 CornerRadius = new CornerRadius(12),
                 Margin = new Thickness(0, 0, 7, 0),
                 VerticalAlignment = VerticalAlignment.Center,
@@ -107,6 +109,7 @@ namespace Xianxia.App.Controls
         internal void Update(in RowModel model)
         {
             _link = model.Link;
+            AutomationProperties.SetAutomationId(View, "link-" + model.Link.Kind + "-" + model.Link.Id);
             View.IsHitTestVisible = model.Link.IsSet;
             _accent.IsVisible = model.Accent is not null;
             if (model.Accent is { } accent)

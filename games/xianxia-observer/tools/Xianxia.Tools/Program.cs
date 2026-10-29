@@ -22,35 +22,26 @@ namespace Xianxia.Tools
         public static int Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            string command = args.Length > 0 ? args[0] : "report";
-            List<ulong> seeds = new() { 1, 2, 3 };
-            int years = 30000;
-            int population = Balance.DefaultPopulation;
-            for (int index = 1; index + 1 < args.Length; index += 2)
+            ReportOptions options;
+            try
             {
-                switch (args[index])
-                {
-                    case "--seeds":
-                        seeds = new List<ulong>(Array.ConvertAll(args[index + 1].Split(','), ulong.Parse));
-                        break;
-                    case "--years":
-                        years = int.Parse(args[index + 1], CultureInfo.InvariantCulture);
-                        break;
-                    case "--population":
-                        population = int.Parse(args[index + 1], CultureInfo.InvariantCulture);
-                        break;
-                }
+                options = ReportOptions.Parse(args);
             }
-
-            if (command != "report")
+            catch (Exception exception) when (exception is ArgumentException or FormatException or OverflowException)
             {
-                Console.Error.WriteLine("알 수 없는 명령: " + command);
+                Console.Error.WriteLine(exception.Message);
                 return 2;
             }
 
-            foreach (ulong seed in seeds)
+            if (options.Balance)
             {
-                Report(seed, years, population);
+                BalanceReport.Run(options);
+                return 0;
+            }
+
+            foreach (ulong seed in options.Seeds)
+            {
+                Report(seed, options.Years, options.Population);
             }
 
             return 0;
@@ -143,7 +134,9 @@ namespace Xianxia.Tools
             }
         }
 
-        private static void PrintSummary(World world)
+        /// <summary>확장 보고도 기존 누적·전쟁·장부 항목을 그대로 출력한다.</summary>
+        /// <param name="world">종료 세계.</param>
+        internal static void PrintSummary(World world)
         {
             WorldTotals totals = world.Totals;
             Console.WriteLine("  좌화 " + totals.NaturalDeaths + " / 붕괴 " + totals.CollapseDeaths + " / 비승 "

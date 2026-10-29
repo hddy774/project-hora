@@ -36,7 +36,7 @@ namespace Xianxia.App.Sheets
                 _facts.Add("승자", world.FindSect(record.VictorSectId)?.Name ?? "무승부");
                 _facts.Add("청운종 / 천마문 승수", record.OrthodoxWins + " / " + record.DemonicWins);
                 _facts.Add("접경지 청운종 / 천마문", record.OrthodoxRegions + " / " + record.DemonicRegions);
-                _facts.Add("사상자 / 배상 영석", record.Casualties + " / " + Fmt.Number(record.Tribute));
+                _facts.Add("경지 하락 / 배상 영석", record.Casualties + " / " + Fmt.Number(record.Tribute));
                 _facts.Add("대표 결투", record.ChampionDuel);
                 rows.Add(new RowModel
                 {
@@ -49,7 +49,7 @@ namespace Xianxia.App.Sheets
             {
                 _facts.Add("상태", "전쟁 진행 중 · " + Fmt.Years(world.War.StartYear) + " 개전");
                 _facts.Add("청운종 / 천마문 승수", world.War.OrthodoxWins + " / " + world.War.DemonicWins);
-                _facts.Add("사상자", Fmt.Number(world.War.Casualties));
+                _facts.Add("경지 하락", Fmt.Number(world.War.Casualties));
                 AddHighlights(rows, world.War.Highlights);
             }
             else

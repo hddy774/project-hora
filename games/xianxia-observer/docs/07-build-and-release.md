@@ -1,5 +1,7 @@
 # 07. Android·빌드·배포
 
+> 0.1.0 작성 시점의 설계·검토 기록입니다. 0.2.0 구현과 달라진 사항은 [현재 구현 기준20](20-v0.2.0-implementation.md)과 [실측19](19-balance-v0.2.0.md)를 우선합니다.
+
 상태: 현재 개발·배포 절차와 v0.1.0의 출처 기록. 이 문서 작성에서는 재배포하지 않았다.
 
 ## 1. 개발 도구와 의존성
@@ -48,7 +50,7 @@ dotnet publish src/Xianxia.Android/Xianxia.Android.csproj -c Release -f net10.0-
 
 | 항목 | 현재 값 |
 |---|---|
-| 표시 이름 / ID | 선협 관찰 / `org.hora.xianxiaobserver` |
+| 표시 이름 / ID | 선로만상록 프로젝트 / `org.hora.xianxiaobserver` |
 | 버전 이름 / 코드 | 0.1.0 / 1 |
 | 최소 Android | API 24. 실제 API 24 실행 검증은 미실시 |
 | 현재 빌드 SDK | API 36 |

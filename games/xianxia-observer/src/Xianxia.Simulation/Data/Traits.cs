@@ -44,7 +44,7 @@ namespace Xianxia.Simulation.Data
             };
         }
 
-        /// <summary>변이 영근(뇌·빙·풍) 여부. 수련 +8%, 전투 +5%.</summary>
+        /// <summary>변이 영근(뇌·빙·풍) 여부. 수련 +5%, 전투 +5%.</summary>
         /// <param name="element">속성.</param>
         /// <returns>변이 여부.</returns>
         public static bool IsVariant(Element element)

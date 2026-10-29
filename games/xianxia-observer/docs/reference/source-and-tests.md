@@ -65,7 +65,7 @@
 ### src/Xianxia.App
 
 - [src/Xianxia.App/App.axaml](../../src/Xianxia.App/App.axaml): 설정·정의 파일
-- [src/Xianxia.App/App.axaml.cs](../../src/Xianxia.App/App.axaml.cs): 선협 관찰 Avalonia 애플리케이션 진입점. 게임 세션을 하나 만들고 플랫폼별 수명 주기에 맞춰 화면과 저장을 연결한다.
+- [src/Xianxia.App/App.axaml.cs](../../src/Xianxia.App/App.axaml.cs): 선로만상록 프로젝트 Avalonia 애플리케이션 진입점. 게임 세션을 하나 만들고 플랫폼별 수명 주기에 맞춰 화면과 저장을 연결한다.
 - [src/Xianxia.App/AppBuilderExtensions.cs](../../src/Xianxia.App/AppBuilderExtensions.cs): 앱 공통 AppBuilder 설정(내장 한글 글꼴 등록). 데스크톱·Android·테스트가 같은 설정을 쓴다.
 - [src/Xianxia.App/Controls/BadgeView.cs](../../src/Xianxia.App/Controls/BadgeView.cs): 둥근 배지(원본 Bdg). 같은 배지를 재사용하며 글자와 색만 바꾼다.
 - [src/Xianxia.App/Controls/Charts.cs](../../src/Xianxia.App/Controls/Charts.cs): 통계 그래프: 여러 계열 꺾은선(종문 세력 추이)과 누적 띠(경지 구성 추이). 원본에는 시간 추이 그래프가 없었다.

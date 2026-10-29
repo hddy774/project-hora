@@ -53,6 +53,7 @@ namespace Xianxia.Simulation.Systems
                 return false;
             }
 
+            world.Diagnostics?.RealmChanged(world.Year, cultivator);
             int realm = cultivator.Realm;
             RecordEntry entry = new(world.Year, cultivator.Id, cultivator.DisplayName, cultivator.Age,
                 Realms.Name(realm) + " " + cultivator.Age + "세");
@@ -83,6 +84,7 @@ namespace Xianxia.Simulation.Systems
         {
             ArgumentNullException.ThrowIfNull(world);
             ArgumentNullException.ThrowIfNull(cultivator);
+            world.Diagnostics?.EndLife(world.Year, cultivator);
             if (cultivator.Age >= 10_000)
             {
                 TitleSystem.Award(world, cultivator, TitleId.LongLived);
@@ -225,7 +227,7 @@ namespace Xianxia.Simulation.Systems
                 || soul.TournamentWins > records.MostTournamentWins.Value))
             {
                 records.MostTournamentWins = new RecordEntry(world.Year, soul.SoulId, soul.Name, soul.TournamentWins,
-                    "대비무 우승 " + soul.TournamentWins + "회");
+                    "대비무 우승한 생 " + soul.TournamentWins + "번");
             }
         }
     }

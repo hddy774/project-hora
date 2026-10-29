@@ -19,22 +19,61 @@ namespace Xianxia.App.Controls
     /// <summary>그래프 공통: 축 글자·범례.</summary>
     internal abstract class ChartBase : Control
     {
-        private const double LabelSize = 9;
+        private static double LabelSize => 13 * Typography.Scale;
         private static readonly Typeface s_typeface = new(AppBuilderExtensions.DefaultFontFamily);
 
         /// <summary>가로축 처음·끝 연도.</summary>
         protected (int First, int Last) Years { get; set; }
 
+        /// <summary>압축·비균일 표본의 실제 연도.</summary>
+        protected IReadOnlyList<int> SampleYears { get; private set; } = Array.Empty<int>();
+
+        /// <summary>실제 연도 비례 위치. 균일한 표본 순서로 바꾸지 않는다.</summary>
+        /// <param name="years">오름차순 실제 표본 연도.</param>
+        /// <param name="index">표본 위치.</param>
+        /// <returns>0~1 사이 위치.</returns>
+        internal static double YearFraction(IReadOnlyList<int> years, int index)
+            => years.Count < 2 || years[^1] <= years[0] ? 0
+                : Math.Clamp((double)(years[index] - years[0]) / (years[^1] - years[0]), 0, 1);
+
+        /// <summary>축과 표본 위치에 같은 연도를 적용한다.</summary>
+        /// <param name="years">실제 연도.</param>
+        protected void SetYears(IReadOnlyList<int> years)
+        {
+            SampleYears = years;
+            Years = years.Count == 0 ? (0, 0) : (years[0], years[^1]);
+        }
+
         /// <summary>그래프 높이.</summary>
         protected double PlotHeight { get; init; } = 120;
 
         /// <summary>왼쪽 축 글자 칸 너비.</summary>
-        protected const double AxisWidth = 36;
+        protected static double AxisWidth => 60 * Typography.Scale;
 
         /// <inheritdoc />
         protected override Size MeasureOverride(Size availableSize)
         {
-            return new Size(0, PlotHeight + 16);
+            return new Size(0, PlotHeight + (LabelSize * (Typography.Scale >= 1.5 ? 3 : 1.6)));
+        }
+
+        /// <inheritdoc/>
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            Typography.Changed += Reflow;
+        }
+
+        /// <inheritdoc/>
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            Typography.Changed -= Reflow;
+            base.OnDetachedFromVisualTree(e);
+        }
+
+        private void Reflow()
+        {
+            InvalidateMeasure();
+            InvalidateVisual();
         }
 
         /// <summary>글자를 그린다.</summary>
@@ -43,11 +82,17 @@ namespace Xianxia.App.Controls
         /// <param name="origin">왼쪽 위.</param>
         /// <param name="color">색.</param>
         /// <param name="alignRight">오른쪽 맞춤이면 origin.X가 오른쪽 끝.</param>
+        /// <param name="maximumWidth">빈 상태 문장의 줄바꿈 너비.</param>
         protected static void Label(DrawingContext context, string text, Point origin, Color color,
-            bool alignRight = false)
+            bool alignRight = false, double maximumWidth = double.PositiveInfinity)
         {
             FormattedText formatted = new(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, s_typeface,
                 LabelSize, Palette.Brush(color));
+            if (double.IsFinite(maximumWidth))
+            {
+                formatted.MaxTextWidth = maximumWidth;
+            }
+
             double x = alignRight ? origin.X - formatted.Width : origin.X;
             context.DrawText(formatted, new Point(x, origin.Y));
         }
@@ -62,7 +107,8 @@ namespace Xianxia.App.Controls
             Label(context, Years.First.ToString("#,0", CultureInfo.InvariantCulture) + "년",
                 new Point(plot.Left, plot.Bottom + 2), Palette.Muted);
             Label(context, Years.Last.ToString("#,0", CultureInfo.InvariantCulture) + "년",
-                new Point(plot.Right, plot.Bottom + 2), Palette.Muted, alignRight: true);
+                new Point(plot.Right, plot.Bottom + 2 + (Typography.Scale >= 1.5 ? LabelSize * 1.4 : 0)),
+                Palette.Muted, alignRight: true);
         }
     }
 
@@ -81,14 +127,13 @@ namespace Xianxia.App.Controls
 
         /// <summary>데이터를 바꾼다.</summary>
         /// <param name="series">계열.</param>
-        /// <param name="firstYear">첫 표본 연도.</param>
-        /// <param name="lastYear">마지막 표본 연도.</param>
+        /// <param name="years">각 표본의 실제 연도.</param>
         /// <param name="format">세로축 값 표시.</param>
-        internal void Set(IReadOnlyList<ChartSeries> series, int firstYear, int lastYear, Func<double, string> format)
+        internal void Set(IReadOnlyList<ChartSeries> series, IReadOnlyList<int> years, Func<double, string> format)
         {
             _series = series;
             _format = format;
-            Years = (firstYear, lastYear);
+            SetYears(years);
             InvalidateVisual();
         }
 
@@ -119,24 +164,25 @@ namespace Xianxia.App.Controls
             DrawYearAxis(context, plot);
             if (count < 2)
             {
-                Label(context, "표본이 쌓이면 그려집니다.", new Point(plot.Left + 6, plot.Top + 6), Palette.Muted);
+                Label(context, "표본이 쌓이면 그려집니다.", new Point(plot.Left + 6, plot.Top + 6), Palette.Muted,
+                    maximumWidth: Math.Max(10, plot.Width - 12));
                 return;
             }
 
             foreach (ChartSeries series in _series)
             {
-                DrawSeries(context, plot, series, count, max);
+                DrawSeries(context, plot, series, max);
             }
         }
 
-        private static void DrawSeries(DrawingContext context, Rect plot, ChartSeries series, int count, double max)
+        private void DrawSeries(DrawingContext context, Rect plot, ChartSeries series, double max)
         {
             StreamGeometry geometry = new();
             using (StreamGeometryContext stream = geometry.Open())
             {
                 for (int index = 0; index < series.Values.Count; index++)
                 {
-                    Point point = new(plot.Left + (plot.Width * index / (count - 1)),
+                    Point point = new(plot.Left + (plot.Width * YearFraction(SampleYears, index)),
                         plot.Bottom - (plot.Height * series.Values[index] / max));
                     if (index == 0)
                     {
@@ -171,14 +217,13 @@ namespace Xianxia.App.Controls
         /// <summary>데이터를 바꾼다.</summary>
         /// <param name="samples">표본마다 층별 인원.</param>
         /// <param name="colors">층 색(아래층부터).</param>
-        /// <param name="firstYear">첫 표본 연도.</param>
-        /// <param name="lastYear">마지막 표본 연도.</param>
-        internal void Set(IReadOnlyList<IReadOnlyList<int>> samples, IReadOnlyList<Color> colors, int firstYear,
-            int lastYear)
+        /// <param name="years">각 표본의 실제 연도.</param>
+        internal void Set(IReadOnlyList<IReadOnlyList<int>> samples, IReadOnlyList<Color> colors,
+            IReadOnlyList<int> years)
         {
             _samples = samples;
             _colors = colors;
-            Years = (firstYear, lastYear);
+            SetYears(years);
             InvalidateVisual();
         }
 
@@ -192,11 +237,11 @@ namespace Xianxia.App.Controls
             int count = _samples.Count;
             if (count < 2)
             {
-                Label(context, "표본이 쌓이면 그려집니다.", new Point(plot.Left + 6, plot.Top + 6), Palette.Muted);
+                Label(context, "표본이 쌓이면 그려집니다.", new Point(plot.Left + 6, plot.Top + 6), Palette.Muted,
+                    maximumWidth: Math.Max(10, plot.Width - 12));
                 return;
             }
 
-            double columnWidth = plot.Width / count;
             for (int index = 0; index < count; index++)
             {
                 IReadOnlyList<int> layers = _samples[index];
@@ -212,7 +257,11 @@ namespace Xianxia.App.Controls
                 }
 
                 double bottom = plot.Bottom;
-                double left = plot.Left + (columnWidth * index);
+                double fraction = YearFraction(SampleYears, index);
+                double start = index == 0 ? 0 : (YearFraction(SampleYears, index - 1) + fraction) / 2;
+                double end = index == count - 1 ? 1 : (fraction + YearFraction(SampleYears, index + 1)) / 2;
+                double left = plot.Left + (plot.Width * start);
+                double columnWidth = plot.Width * (end - start);
                 for (int layer = 0; layer < layers.Count && layer < _colors.Count; layer++)
                 {
                     double height = plot.Height * layers[layer] / total;

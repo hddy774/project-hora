@@ -21,7 +21,7 @@ namespace Xianxia.Simulation.Model
         /// <summary>이번 전쟁 천마문 승리 전투 수.</summary>
         public int DemonicWins { get; set; }
 
-        /// <summary>이번 전쟁에서 일어난 경지 하락 수.</summary>
+        /// <summary>이번 전쟁의 경지 하락 발생 건수(사망 인원 아님).</summary>
         public int Casualties { get; set; }
 
         /// <summary>마지막 전쟁이 끝난 해(대비무 일정 기준).</summary>
@@ -58,7 +58,7 @@ namespace Xianxia.Simulation.Model
         /// <summary>종전 시 천마문 지배 접경지 수.</summary>
         public int DemonicRegions { get; set; }
 
-        /// <summary>경지 하락 피해.</summary>
+        /// <summary>전쟁 중 경지 하락 발생 건수(중복 인물 포함).</summary>
         public int Casualties { get; set; }
 
         /// <summary>배상 영석.</summary>

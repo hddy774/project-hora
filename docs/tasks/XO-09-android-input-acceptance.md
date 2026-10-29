@@ -27,7 +27,7 @@ internal static class UiTrace
     internal static void SheetClosed(string kind);         // "[xo-ui] close {kind}"
 }
 ```
-- Android 호스트(`MainActivity.cs`)는 `UiTrace.Sink = line => Android.Util.Log.Info("XianxiaUi", line)`로 설정한다.
+- Android 호스트는 `MainApplication.CustomizeAppBuilder`에서 프레임워크 초기화 전에 `App.SetUiTraceSink`를 연결한다. 저장 복구 로그가 Activity 생성보다 앞서기 때문이다.
 - 호출 위치: 탭이 실제로 바뀐 직후(`MainView`), 시트를 연 직후·닫은 직후(`SheetHost`).
 
 ## 동작 규칙
@@ -36,7 +36,7 @@ internal static class UiTrace
    7개 탭을 차례로 탭 → 각 탭 직후 2초 안에 logcat에 `"[xo-ui] tab {i}"`가 있어야 함 → 인물 탭에서 첫 행 탭 → `sheet Cultivator` 확인 →
    뒤로 가기 → `close Cultivator` 확인 → 백그라운드·복귀 → 재실행.
 3. 판정 실패 시 스크립트는 종료 코드 1과 실패 단계 이름을 출력한다. 기존 FATAL/ANR 검사는 유지한다.
-4. 탭 좌표는 기존 식(`width × (2i+1)/14`, `height × 90%`)을 유지하되, 실패 시 스크린샷 파일명을 로그에 남긴다.
+4. 고정 비율 좌표 대신 현재 보이는 조작의 `PointToScreen` 중심 좌표와 viewport를 기록해 누른다. 초기5초와 시스템 글자 설정 후 inset 반영을 기다리고, 각 실제 입력의 새 전환은2초 기준으로 판정한다. 실패 시 PNG·logcat·window를 남긴다.
 5. API 24 job은 `google_apis` x86_64 이미지. 이미지 부팅 실패는 job 실패로 둔다(건너뛰지 않는다).
 6. `device-checklist.md` 항목(오너 수행, 각 항목 통과/실패/메모 칸): 설치·업데이트(v0.1.0 위에 설치해 저장 유지), 7탭 전환, 인물 검색 중 키보드가 입력창을 가리지 않음,
    시스템 글자 크기 최대에서 헤더·탭 글자 잘림, 제스처 내비게이션에서 하단 탭 터치, 노치·상단 여백, 뒤로 가기 순서(시트→천하→종료),
@@ -44,11 +44,11 @@ internal static class UiTrace
 7. 선택(R-18): 같은 시드 7·인구 300·1,000년 세계를 ARM64 기기와 x86_64 에뮬레이터에서 저장해 해시를 비교하는 방법을 checklist 끝에 적는다(앱 설정 화면에 저장 SHA-256 표시는 **추가하지 않는다**; adb로 파일을 꺼내 비교).
 
 ## 수용 기준 (Acceptance Criteria)
-- [ ] API 34·API 24 두 job 모두 7개 탭 로그·시트 열기/닫기 로그를 확인하고 성공.
-- [ ] 런처 창이 포커스를 가진 상황(스크립트에서 런처를 다시 띄워 재현)에서는 스크립트가 **실패**한다(음성 대조, PR에 로그 첨부).
-- [ ] UI 로그가 연간 진행 중 1초에 1줄 넘게 찍히지 않는다(60초 진행 logcat에서 `[xo-ui]` 0줄).
-- [ ] `device-checklist.md`가 존재하고 6번 항목을 모두 포함한다. 실기기 결과는 오너가 채우며 이 PR의 완료 조건이 아니다.
-- [ ] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과, actionlint 통과.
+- [x] API 34·API 24 두 job 모두 7개 탭 로그·시트 열기/닫기 로그를 확인하고 성공.
+- [x] 런처 창이 포커스를 가진 상황(스크립트에서 런처를 다시 띄워 재현)에서는 스크립트가 **실패**한다(음성 대조, PR에 로그 첨부).
+- [x] UI 로그가 연간 진행 중 1초에 1줄 넘게 찍히지 않는다(60초 진행 logcat에서 `[xo-ui]` 0줄).
+- [x] `device-checklist.md`가 존재하고 6번 항목을 모두 포함한다. 실기기 결과는 오너가 채우며 이 PR의 완료 조건이 아니다.
+- [x] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과, actionlint 통과.
 
 ## 테스트 케이스
 - `UiTrace_WritesTabLine` (Sink 주입, App 테스트)
@@ -58,3 +58,5 @@ internal static class UiTrace
 ## 참고
 - 현재 스크립트: `games/xianxia-observer/tools/emulator-smoke.sh`(75줄), 워크플로 237~250줄 부근.
 - 공개 릴리스·서명 단계는 바꾸지 않는다.
+
+최종 수용: [CI 40919843068](https://github.com/hddy774/project-hora/actions/runs/40919843068) API24·34 전체 성공. 같은 서명 APK, 각47 PNG·100/130/200%·IME·구 저장 업데이트/재실행 확인. 자세한 출처는 게임 docs/21-android-v0.2.0-verification.md. 물리 ARM64는 연결 기기가 없어 미실행이다.

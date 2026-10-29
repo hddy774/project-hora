@@ -53,7 +53,13 @@ namespace Xianxia.App.Views
 
         private void OnInput(object? sender, PointerReleasedEventArgs args) => Queue();
 
-        private void OnScroll(object? sender, ScrollChangedEventArgs args) => Queue();
+        private void OnScroll(object? sender, ScrollChangedEventArgs args)
+        {
+            if (args.OffsetDelta != Vector.Zero)
+            {
+                Queue();
+            }
+        }
 
         private void OnKey(object? sender, KeyEventArgs args) => Queue();
 
@@ -63,6 +69,15 @@ namespace Xianxia.App.Views
             TopLevel.GetTopLevel(_root)?.UpdateLayout();
             UiTrace.Sink?.Invoke("[xo-ui] controls-begin");
             Control scope = _root is MainView view && view.Sheets.IsOpen ? view.Sheets.View : _root;
+            CaptureViewport(scope);
+            if (_root is MainView main)
+            {
+                main.Session.Runner.Read(world =>
+                {
+                    UiTrace.Context(world.Year, world.HeavenlyFavor, main.Session.Runner.IsRunning);
+                    return true;
+                });
+            }
             foreach (Control control in scope.GetVisualDescendants().OfType<Control>())
             {
                 if (control is not Button && control is not TextBox)
@@ -97,6 +112,21 @@ namespace Xianxia.App.Views
             }
 
             UiTrace.Sink?.Invoke("[xo-ui] controls-end");
+        }
+
+        private static void CaptureViewport(Control scope)
+        {
+            ScrollViewer? scroll = scope.GetVisualDescendants().OfType<ScrollViewer>()
+                .Where(item => item.IsEffectivelyVisible)
+                .OrderByDescending(item => item.Bounds.Width * item.Bounds.Height).FirstOrDefault();
+            if (scroll is null)
+            {
+                return;
+            }
+
+            PixelPoint first = scroll.PointToScreen(default);
+            PixelPoint last = scroll.PointToScreen(new Point(scroll.Bounds.Width, scroll.Bounds.Height));
+            UiTrace.Viewport(first.X, first.Y, last.X, last.Y);
         }
 
         private bool IsInViewport(Control control, Point center)

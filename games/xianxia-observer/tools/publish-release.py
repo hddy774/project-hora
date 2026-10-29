@@ -42,7 +42,8 @@ def verify_source_run(run_id):
     assert run['head_repository']['full_name'] == REPOSITORY and run['actor']['login'] == 'hddy774'
     assert run['path'] == '.github/workflows/xianxia-observer.yml'
     jobs = api(f'actions/runs/{run_id}/jobs?per_page=100')['jobs']
-    required = {'format, rules, build, test', 'build Android APK', 'run APK on Android emulator'}
+    required = {'format, rules, build, test', 'build Android APK',
+                'run APK on Android emulator (api 24)', 'run APK on Android emulator (api 34)'}
     assert {job['name'] for job in jobs if job['conclusion'] == 'success'} >= required
     publishers = {'publish verified APK only as latest', 'publish previously verified APK'}
     assert all(job['conclusion'] == 'success' or job['name'] in publishers for job in jobs)

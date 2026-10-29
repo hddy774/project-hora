@@ -128,6 +128,8 @@ class Smoke:
         if expected_year is not None:
             pattern = rf'\[xo-ui\] session loaded {expected_year}\b'
         self.trace(pattern, 35)
+        # XO-09의 초기5초 대기: 저장 로드·배치 로그 뒤 첫 렌더/입력 readback을 준비한다.
+        time.sleep(5)
         self.controls(15)
         self.focus()
 

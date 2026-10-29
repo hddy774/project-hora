@@ -298,9 +298,19 @@ namespace Xianxia.Simulation.Systems
             return world.Random.PickWeighted(weights);
         }
 
-        private static string GainTechnique(Cultivator cultivator, int grades)
+        /// <summary>기연 공법 보상. 상위 공법은 보존하며 새로운 난수를 쓰지 않는다.</summary>
+        /// <param name="cultivator">수선자.</param>
+        /// <param name="grades">호출자가 이미 뽑은 획득 등급.</param>
+        /// <returns>기연 기록에 넣을 문장.</returns>
+        internal static string GainTechnique(Cultivator cultivator, int grades)
         {
-            cultivator.TechniqueGrade = Math.Min(15, cultivator.TechniqueGrade + grades);
+            int previous = cultivator.TechniqueGrade;
+            cultivator.TechniqueGrade = Techniques.ImproveByReward(previous, grades, 15);
+            if (cultivator.TechniqueGrade == previous)
+            {
+                return "고대 비급을 얻었으나 이미 " + Techniques.Name(previous) + " 공법을 익혀 새로 깨친 것이 없었다";
+            }
+
             return "고대 비급에서 " + Techniques.Name(cultivator.TechniqueGrade) + " 공법을 깨쳤다";
         }
 

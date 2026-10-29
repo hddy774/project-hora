@@ -142,15 +142,21 @@ namespace Xianxia.Simulation.Systems
             }
         }
 
-        private static int Treasure(World world, Cultivator entrant)
+        /// <summary>기존 공법과 속성을 보존하면서 비경 보물을 지급한다.</summary>
+        /// <param name="world">세계.</param>
+        /// <param name="entrant">입장 인물.</param>
+        /// <returns>기존 수확 점수.</returns>
+        internal static int Treasure(World world, Cultivator entrant)
         {
             string gain;
             int value;
             switch (world.Random.NextInt(5))
             {
                 case 0:
-                    entrant.TechniqueGrade = Math.Min(18, entrant.TechniqueGrade + 1);
-                    gain = Techniques.Name(entrant.TechniqueGrade) + " 공법";
+                    int previous = entrant.TechniqueGrade;
+                    entrant.TechniqueGrade = Techniques.ImproveByReward(previous, 1, 18);
+                    gain = (entrant.TechniqueGrade == previous ? "(이미 익힌) " : "")
+                        + Techniques.Name(entrant.TechniqueGrade) + " 공법";
                     value = 3;
                     break;
                 case 1:

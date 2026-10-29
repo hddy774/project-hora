@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Xianxia.Simulation.Data;
 using Xianxia.Simulation.Model;
+using Xianxia.Simulation.Systems;
 
 namespace Xianxia.Simulation.Persistence
 {
@@ -92,6 +93,7 @@ namespace Xianxia.Simulation.Persistence
             }
 
             Normalize(world);
+            RegionEvents.RefreshAll(world);
             world.RebuildIndexes();
             return world;
         }

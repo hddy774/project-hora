@@ -32,6 +32,7 @@ namespace Xianxia.Simulation.Systems
                 {
                     Finish(world, tide);
                     world.BeastTides.RemoveAt(index);
+                    RegionEvents.Refresh(world, tide.RegionId);
                 }
             }
         }
@@ -59,8 +60,7 @@ namespace Xianxia.Simulation.Systems
             };
             world.BeastTides.Add(tide);
             Region region = world.Regions[regionId];
-            region.AuraModifier = 0.8;
-            region.Status = "수조: " + tide.BeastName;
+            RegionEvents.Refresh(world, regionId);
             SendReinforcements(world, region, realm);
             string text = "[" + region.Name + "] " + tide.BeastName + "(" + Realms.Name(realm)
                 + ")이(가) 영수 떼를 이끌고 습격했다!";
@@ -182,8 +182,7 @@ namespace Xianxia.Simulation.Systems
         private static void Finish(World world, BeastTideState tide)
         {
             Region region = world.Regions[tide.RegionId];
-            region.AuraModifier = 1.0;
-            region.Status = "평온";
+
             if (tide.Strength > 0)
             {
                 Narrator.Log(world, LogKind.BeastTide, "[" + region.Name + "] " + tide.BeastName + "의 영수 떼가 물러갔다.");

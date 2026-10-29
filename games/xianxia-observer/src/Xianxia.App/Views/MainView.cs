@@ -29,6 +29,7 @@ namespace Xianxia.App.Views
         private bool _refreshQueued;
         private TopLevel? _topLevel;
         private IInsetsManager? _insets;
+        private UiInputTrace? _inputTrace;
         private int _worldGeneration;
 
         /// <summary>메인 화면을 만든다.</summary>
@@ -124,6 +125,8 @@ namespace Xianxia.App.Views
             _content.Content = _pages[CurrentTab].View;
             _nav.Select(CurrentTab);
             RefreshNow(force: true);
+            UiTrace.Tab(CurrentTab, _pages[CurrentTab].Name);
+            _inputTrace?.Queue();
         }
 
         /// <summary>세계를 읽어 보이는 화면을 고친다.</summary>
@@ -161,6 +164,10 @@ namespace Xianxia.App.Views
                 _sheets.Refresh(world);
                 _toasts.Refresh(world, enabled: true);
             });
+            if (force)
+            {
+                _inputTrace?.Queue();
+            }
         }
 
         /// <inheritdoc />
@@ -182,12 +189,15 @@ namespace Xianxia.App.Views
 
             _timer.Start();
             Typography.Changed += OnTypographyChanged;
+            _inputTrace = new UiInputTrace(this);
             RefreshNow(force: true);
         }
 
         /// <inheritdoc />
         protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
         {
+            _inputTrace?.Detach();
+            _inputTrace = null;
             _timer.Stop();
             Typography.Changed -= OnTypographyChanged;
             if (_topLevel is not null)

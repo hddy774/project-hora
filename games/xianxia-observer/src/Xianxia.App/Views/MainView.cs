@@ -192,19 +192,19 @@ namespace Xianxia.App.Views
         /// <summary>본문은 스크롤하고 진행·주 탐색은 화면 아래에 유지한다.</summary>
         private Grid CreateLayout()
         {
-        Grid root = new() { RowDefinitions = new RowDefinitions("Auto,*,Auto,Auto") };
-        Grid.SetRow(_header.View, 0);
-        Grid.SetRow(_content, 1);
-        Grid.SetRow(_transport.View, 2);
-        Grid.SetRow(_nav.View, 3);
-        Grid.SetRow(_toasts.View, 1);
-        Grid.SetRowSpan(_sheets.View, 4);
-        _toasts.View.ZIndex = 10;
-        _sheets.View.ZIndex = 20;
-        root.Children.AddRange(new Control[]
-        {
+            Grid root = new() { RowDefinitions = new RowDefinitions("Auto,*,Auto,Auto") };
+            Grid.SetRow(_header.View, 0);
+            Grid.SetRow(_content, 1);
+            Grid.SetRow(_transport.View, 2);
+            Grid.SetRow(_nav.View, 3);
+            Grid.SetRow(_toasts.View, 1);
+            Grid.SetRowSpan(_sheets.View, 4);
+            _toasts.View.ZIndex = 10;
+            _sheets.View.ZIndex = 20;
+            root.Children.AddRange(new Control[]
+            {
             _header.View, _content, _transport.View, _nav.View, _toasts.View, _sheets.View,
-        });
+            });
             return root;
         }
 

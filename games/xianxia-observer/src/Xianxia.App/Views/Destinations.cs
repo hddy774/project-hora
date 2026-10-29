@@ -33,8 +33,14 @@ namespace Xianxia.App.Views
         /// <returns>목적지.</returns>
         internal static string FromPage(int page) => page switch
         {
-            0 => World, 1 => Sects, 2 => People, 3 => History,
-            4 => Legacy, 5 => Stats, 6 => Log, _ => More,
+            0 => World,
+            1 => Sects,
+            2 => People,
+            3 => History,
+            4 => Legacy,
+            5 => Stats,
+            6 => Log,
+            _ => More,
         };
 
         /// <summary>문자열 목적지를 화면에 대응시킨다.</summary>
@@ -42,8 +48,14 @@ namespace Xianxia.App.Views
         /// <returns>화면 위치.</returns>
         internal static int ToPage(string destination) => destination switch
         {
-            World => 0, Sects => 1, People => 2, History => 3,
-            Legacy => 4, Stats => 5, Log => 6, More => 7,
+            World => 0,
+            Sects => 1,
+            People => 2,
+            History => 3,
+            Legacy => 4,
+            Stats => 5,
+            Log => 6,
+            More => 7,
             _ => throw new ArgumentException("알 수 없는 화면입니다.", nameof(destination)),
         };
     }

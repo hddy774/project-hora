@@ -70,7 +70,9 @@ namespace Xianxia.Simulation.Systems
 
             world.HeavenlyFavor -= Cost(InterventionKind.BestowFortune);
             Growth.AddInsight(cultivator, 400);
+            double previousQi = cultivator.Qi;
             cultivator.Qi += cultivator.QiRequirement * 0.5;
+            world.Diagnostics?.AddQi(cultivator, QiSource.HeavenlyFavor, cultivator.Qi - previousQi);
             cultivator.Injury = 0;
             cultivator.RecoveryYears = 0;
             Growth.AddDaoHeart(cultivator, 20);

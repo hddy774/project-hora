@@ -70,6 +70,10 @@ namespace Xianxia.Simulation.Model
         /// <summary>현재 연도(1틱 = 1년).</summary>
         public int Year { get; set; }
 
+        /// <summary>보고 도구의 선택적 누계. 저장·세계 규칙과 분리한다.</summary>
+        [JsonIgnore]
+        public WorldDiagnostics? Diagnostics { get; set; }
+
         /// <summary>난수 상태.</summary>
         public ulong RandomState { get; set; }
 

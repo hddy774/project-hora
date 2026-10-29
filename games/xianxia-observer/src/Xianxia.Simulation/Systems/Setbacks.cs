@@ -54,6 +54,7 @@ namespace Xianxia.Simulation.Systems
             if (cultivator.Realm > 0)
             {
                 cultivator.Realm--;
+                world.Diagnostics?.RealmChanged(world.Year, cultivator);
                 cultivator.Stage = Realms.PeakStage;
                 cultivator.Lifespan = Lifespans.For(cultivator);
             }
@@ -75,6 +76,7 @@ namespace Xianxia.Simulation.Systems
             }
 
             cultivator.Realm--;
+            world.Diagnostics?.RealmChanged(world.Year, cultivator);
             cultivator.Stage = 0;
             cultivator.Qi = 0;
             cultivator.InnerPower = Math.Max(1, cultivator.InnerPower * 0.7);

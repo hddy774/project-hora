@@ -23,7 +23,7 @@ namespace Xianxia.Simulation.Model
         /// <summary>윤회 횟수(첫 생은 0).</summary>
         public int Reincarnations { get; set; }
 
-        /// <summary>현생이 시작된 해.</summary>
+        /// <summary>16세로 현생에 입세한 해(출생 연도가 아님).</summary>
         public int BornYear { get; set; }
 
         /// <summary>나이.</summary>
@@ -104,7 +104,7 @@ namespace Xianxia.Simulation.Model
         /// <summary>공법 등급(0~19).</summary>
         public int TechniqueGrade { get; set; }
 
-        /// <summary>공법 속성. 영근과 같으면 수련 +20%.</summary>
+        /// <summary>공법 속성. 영근과 같으면 수련 +10%.</summary>
         public Element TechniqueElement { get; set; }
 
         /// <summary>기예.</summary>

@@ -130,7 +130,7 @@ namespace Xianxia.App.Sheets
                 {
                     Title = life.LifeNumber + "번째 생 · " + life.Ending,
                     Subtitle = Realms.FullName(life.Realm, life.Stage) + " · " + life.Age + "세 · "
-                        + Fmt.Years(life.BornYear) + "~" + Fmt.Years(life.DeathYear),
+                        + "입세 " + Fmt.Years(life.BornYear) + "~" + Fmt.Years(life.DeathYear),
                     Value = Fmt.Number(life.Score),
                     Caption = "업적 점수"
                 });

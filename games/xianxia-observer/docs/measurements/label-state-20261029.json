@@ -1,0 +1,17 @@
+{
+  "seed": "7",
+  "population": 300,
+  "years": 1000,
+  "baselineOverlapYears": 0,
+  "candidateOverlapYears": 0,
+  "exactEqual": false,
+  "withoutRecordDetailsEqual": false,
+  "differentTopLevel": [
+    "Log"
+  ],
+  "beforeSha256": "4a000230a05cd7f178eac147d460bab9e4147e7a5185fc758e702f880b39c8ce",
+  "afterSha256": "c0bdeae70dbb867fb9e467c3ba789735bf9fed18490d24a53b4c6833bfeb81e5",
+  "canonicalTextEqual": true,
+  "changedStrings": 1,
+  "normalization": "Only exact facility +6% to +4% display and tournament winner-life phrase; all numeric values, collections and both RNG states compared."
+}

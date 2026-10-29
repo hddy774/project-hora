@@ -2,7 +2,7 @@
   "schema_version": 1,
   "repository": "hddy774/project-hora",
   "tracking_pr": 32,
-  "updated_at": "2026-10-29T12:39:26Z",
+  "updated_at": "2026-10-29T14:54:41Z",
   "tasks": [
     {
       "id": "XO-01",
@@ -124,7 +124,7 @@
       "phase": "validation",
       "order": 7,
       "approval": "approved",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "XO-03",
         "XO-04",
@@ -132,7 +132,7 @@
         "XO-06",
         "XO-07"
       ],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
+      "note": "별도 서브 브랜치에서 UI 경로 로그와 실제 포커스/새 로그 판정, API24/34 행렬 검사를 준비 중. 물리 ARM64 기기 없음은 사용자 확인.",
       "evidence": ""
     },
     {
@@ -141,7 +141,7 @@
       "phase": "measurement",
       "order": 8,
       "approval": "approved",
-      "status": "planned",
+      "status": "done",
       "depends_on": [
         "XO-03",
         "XO-04",
@@ -149,8 +149,8 @@
         "XO-06",
         "XO-07"
       ],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
-      "evidence": ""
+      "note": "10시드3만년·3,000명10만년 원문 #53 병합·CI 통과, 영석 장부/인구/저장 왕복·진단 무영향·환경/공유 호스트 한계 기록.",
+      "evidence": "PR #49,#50,#53; CI 40891039308; docs/measurements/balance-10-seeds.txt"
     },
     {
       "id": "XO-11",
@@ -158,12 +158,12 @@
       "phase": "ui",
       "order": 10,
       "approval": "approved",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "XO-07"
       ],
-      "note": "안정화6건 병합 완료. 고서 목판 공통 색·문자·48터치·5탭 프레임을 순차 서브 PR로 구현",
-      "evidence": ""
+      "note": "테마 #47·5탭 #48·확대 접근성 #51 병합 및 CI 통과. 모든 기존 경로, 360/412×100/130/200% 렌더·48dp 검사 통과. Android 기기 수용은 별도 UI-QA/XO-09에서 추적.",
+      "evidence": "PR #47, #48, #51; CI 40889323954; App34 + 확대7"
     },
     {
       "id": "XO-12",
@@ -171,14 +171,14 @@
       "phase": "ui",
       "order": 11,
       "approval": "approved",
-      "status": "planned",
+      "status": "verifying",
       "depends_on": [
         "XO-11",
         "XO-06",
         "XO-05"
       ],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
-      "evidence": ""
+      "note": "인물 검색/쪽/스크롤 #52, 확인/취소/현재대상 재검사 #55 병합. 실제 UI3+6검사·CI 통과. Android IME/복귀 수용 진행 중.",
+      "evidence": "PR #52,#55; CI 40893053590"
     },
     {
       "id": "XO-13",
@@ -186,12 +186,12 @@
       "phase": "ui",
       "order": 12,
       "approval": "approved",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "XO-12",
         "XO-08"
       ],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
+      "note": "실제 연도 차트/색상 범례, 관심0명 추천3명, 최신 알림 보류를 병렬 서브 PR로 구현·검증 중.",
       "evidence": ""
     },
     {
@@ -216,12 +216,12 @@
       "phase": "balance",
       "order": 9,
       "approval": "approved",
-      "status": "planned",
+      "status": "verifying",
       "depends_on": [
         "XO-10"
       ],
-      "note": "10시드 실측 후 승인된 목표 범위에 맞춰 조정.",
-      "evidence": ""
+      "note": "동일10시드 재측정·기연40쌍·Simulation115검사 통과. #57에서 CI와 표본 편차/구 저장 이행 문서를 최종 확인.",
+      "evidence": "PR #57; docs/19-balance-v0.2.0.md"
     },
     {
       "id": "RELEASE-02",

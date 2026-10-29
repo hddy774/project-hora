@@ -30,10 +30,10 @@ M0-02, M0-03, M0-05는 M0-01 이후 **병렬 진행 가능**하다.
 | [XO-03](XO-03-save-validation.md) | 저장 의미 검증과 손상 저장 보존 | P1 | — | 승인 대기 |
 | [XO-04](XO-04-technique-reward-monotonic.md) | 공법 보상 단조성 | P1 | — | 승인 대기 |
 | [XO-05](XO-05-region-event-overlap.md) | 지역 사건 보정 재계산과 개입 입력 검증 | P1 | — | 승인 대기 |
-| [XO-06](XO-06-follow-rng-isolation.md) | 관심 표시와 세계 난수 분리 | P1 | 결정 D-01 | 승인 대기 |
+| [XO-06](XO-06-follow-rng-isolation.md) | 관심 표시와 세계 난수 분리 | P1 | 결정 D-01(승인됨) | 승인 대기 |
 | [XO-07](XO-07-runner-fault-and-autosave.md) | 실행기 오류 격리·정지 중 자동 저장·저장 내구성 | P1 | XO-03 | 승인 대기 |
 | [XO-08](XO-08-labels-and-records.md) | 표시·집계 용어 정합 | P2 | 결정 D-04·D-05 | 승인 대기 |
 | [XO-09](XO-09-android-input-acceptance.md) | Android 실입력 수용 검사 | P1(검증) | 결정 D-07 | 승인 대기 |
 | [XO-10](XO-10-balance-report.md) | 장기 밸런스·저장 크기 측정 보고서 | P2 | XO-06 | 승인 대기 |
 
-XO-03·04·05는 병렬 가능. XO-04·05·06은 같은 시드의 미래를 바꾸므로 한 릴리스(v0.1.1 후보)에 모아 버전 노트에 적는다.
+XO-03·04·05는 병렬 가능. XO-04·05·06은 같은 시드의 미래를 바꾸므로 한 릴리스(v0.1.1 후보)에 모아 버전 노트에 적는다(D-09 승인: 같은 시드의 미래 변경 허용).

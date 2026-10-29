@@ -4,6 +4,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Xianxia.App.Pages;
@@ -35,12 +36,16 @@ namespace Xianxia.App.Views
         private Thickness _safeArea;
         private Rect _keyboardBounds;
         private bool _keyboardOpen;
+        private bool _autoStartPending;
 
         /// <summary>메인 화면을 만든다.</summary>
         /// <param name="session">게임 세션.</param>
-        internal MainView(GameSession session)
+        /// <param name="startWhenReady">입력 영역이 준비되면 자동 진행을 시작할지.</param>
+        internal MainView(GameSession session, bool startWhenReady = false)
         {
             Session = session;
+            _autoStartPending = startWhenReady;
+            AddHandler(PointerPressedEvent, OnStartupInteraction, RoutingStrategies.Tunnel, true);
             _worldGeneration = session.WorldGeneration;
             Background = Palette.Brush(Palette.Parchment);
             Foreground = Palette.Brush(Palette.Ink);
@@ -153,6 +158,7 @@ namespace Xianxia.App.Views
                 _toasts.Show("새로 열린 세계입니다. 인물 검색과 선택을 초기화했습니다.");
                 _dirty = true;
             }
+            StartWhenInputReady();
             long version = runner.Version;
             if (!force && !_dirty && version == _lastVersion)
             {
@@ -285,6 +291,26 @@ namespace Xianxia.App.Views
                 e.Handled = true;
             }
         }
+
+        private void StartWhenInputReady()
+        {
+            if (!_autoStartPending || _topLevel is null)
+            {
+                return;
+            }
+
+            Control transport = _transport.View;
+            Point? point = transport.TranslatePoint(new Point(transport.Bounds.Width / 4,
+                transport.Bounds.Height / 2), _topLevel);
+            if (point is { } position && _topLevel.InputHitTest(position) is not null)
+            {
+                _autoStartPending = false;
+                Session.Runner.SetRunning(true);
+            }
+        }
+
+        private void OnStartupInteraction(object? sender, PointerPressedEventArgs args)
+            => _autoStartPending = false;
 
         private void OnSafeAreaChanged(object? sender, SafeAreaChangedArgs e)
         {

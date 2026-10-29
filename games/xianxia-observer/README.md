@@ -44,7 +44,7 @@ APK 한 개만 초안에 업로드 → 재다운로드 해시 검사 → 최신 
 도구의 버전과 릴리스 태그를 함께 갱신해야 합니다.
 
 키스토어는 CI의 임시 폴더에서만 사용하며 저장소나 개발 환경으로 가져오지 않습니다.
-스크린샷·로그·서명 보고서는 Actions 아티팩트에만 남고 릴리스 첨부는 APK 한 개입니다.
+전체 스크린샷·로그·서명 보고서는 Actions 아티팩트에 보관하고 대표 PNG는 문서에도 포함합니다. 릴리스 첨부는 APK 한 개입니다.
 
 게시 단계만 실패한 경우에는 워크플로의 `source_run_id`에 이전 실행 ID를 넣고 `publish=true`로
 실행하면 같은 실행의 검사·서명·Android 성공을 확인한 뒤 그 APK만 게시합니다. 재빌드하지 않습니다.
@@ -55,4 +55,6 @@ CLI에서는 같은 실행의 검사·서명·Android 성공과 아티팩트 해
 `publish --source-run <실행 ID>`를 실행합니다.
 이 경로도 인증된 저장소 소유자와 동일 실행의 출처·검사·APK 해시를 요구합니다.
 
-현재 개발 버전은 **0.2.0 / versionCode2**입니다. 변경점과 구 저장 안내는 [0.2.0 버전 노트](docs/release-notes-v0.2.0.md), [밸런스 실측](docs/19-balance-v0.2.0.md)을 봅니다.
+현재 공식 버전은 **[0.2.0 / versionCode2](https://github.com/hddy774/project-hora/releases/tag/xianxia-observer/v0.2.0)**입니다. [APK 다운로드](https://github.com/hddy774/project-hora/releases/download/xianxia-observer/v0.2.0/XianxiaObserver-v0.2.0.apk). 변경점과 구 저장 안내는 [0.2.0 버전 노트](docs/release-notes-v0.2.0.md), [밸런스 실측](docs/19-balance-v0.2.0.md)을 봅니다.
+
+공식 APK 소스는 `09e8c693e3ebb52d2495bffb1a48364eb9396dce`, SHA256은 `b381a400514ea311117bb2b28d15c68baffc00d4ea71a689c9140a69867bf2df`입니다. API24·34 공식 수용과 공개 다운로드·기존 인증서·ARM64/x86_64 확인을 마쳤습니다. 자세한 출처는 [Android 수용 증거](docs/21-android-v0.2.0-verification.md)에 있습니다.

@@ -9,6 +9,17 @@ GAME = ROOT / 'games/xianxia-observer'
 
 
 class ReleaseContractTests(unittest.TestCase):
+    def test_publisher_requires_direct_success_without_inheriting_skipped_qa(self):
+        workflow = (ROOT / '.github/workflows/xianxia-observer.yml').read_text()
+        job = workflow.split('\n  publish:\n', 1)[1].split('\n  publish_existing:\n', 1)[0]
+        condition = next(line.strip() for line in job.splitlines() if line.strip().startswith('if:'))
+        self.assertIn('always()', condition, 'Skipped optional QA must not suppress publication.')
+        self.assertIn('!cancelled()', condition)
+        for dependency in ('check', 'android', 'emulator'):
+            self.assertIn("needs." + dependency + ".result == 'success'", condition)
+        self.assertIn('inputs.publish', condition)
+        self.assertIn("inputs.source_run_id == ''", condition)
+
     def test_version_identity_and_release_targets_agree(self):
         android = ET.parse(GAME / 'src/Xianxia.Android/Xianxia.Android.csproj').getroot()
         version = android.findtext('.//ApplicationDisplayVersion')

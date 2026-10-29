@@ -43,14 +43,14 @@ internal string BackupPath { get; }   // world.sav.bak
    `.bak`은 지우지 않는다.
 
 ## 수용 기준 (Acceptance Criteria)
-- [ ] `BeforeStepForTest`로 5번째 Step에서 예외를 던지면 `IsFaulted`, 이후 `SetRunning(true)` 후 1초 동안 연도 불변, 저장 파일 미변경.
-- [ ] 오류 후 `LoadSaved`로 정상 세계를 받으면 `IsFaulted == false`이고 진행된다.
-- [ ] 정지 상태에서 개입 → 자동 저장 간격(테스트는 200ms로 주입) + 1.5초 안에 저장 콜백이 1회 호출된다. 버전이 그대로면 호출되지 않는다.
-- [ ] `Stop()` 뒤 `Start()`가 InvalidOperationException.
-- [ ] 저장 2회 후 `.bak`이 첫 저장과 같은 바이트다.
-- [ ] `world.sav`를 무작위 바이트로 바꾸면 `TryLoad`가 `.bak`에서 복구하고 손상본은 XO-03 규칙으로 격리된다.
-- [ ] 헤드리스 UI: 오류 상태에서 설정 시트 저장 버튼 비활성, 문구 표시(`CompletedUiTests`에 1건 추가).
-- [ ] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과.
+- [x] `BeforeStepForTest`로 5번째 Step에서 예외를 던지면 `IsFaulted`, 이후 `SetRunning(true)` 후 1초 동안 연도 불변, 저장 파일 미변경.
+- [x] 오류 후 `LoadSaved`로 정상 세계를 받으면 `IsFaulted == false`이고 진행된다.
+- [x] 정지 상태에서 개입 → 자동 저장 간격(테스트는 200ms로 주입) + 1.5초 안에 저장 콜백이 1회 호출된다. 버전이 그대로면 호출되지 않는다.
+- [x] `Stop()` 뒤 `Start()`가 InvalidOperationException.
+- [x] 저장 2회 후 `.bak`이 첫 저장과 같은 바이트다.
+- [x] `world.sav`를 무작위 바이트로 바꾸면 `TryLoad`가 `.bak`에서 복구하고 손상본은 XO-03 규칙으로 격리된다.
+- [x] 헤드리스 UI: 오류 상태에서 설정 시트 저장 버튼 비활성, 문구 표시(`CompletedUiTests`에 1건 추가).
+- [x] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과.
 
 ## 테스트 케이스
 - `Fault_StopsAndBlocksResume`
@@ -66,3 +66,5 @@ internal string BackupPath { get; }   // world.sav.bak
 ## 참고
 - 코드: `SimulationRunner.cs:74~98·185~275`, `SaveStore.cs:48~100`, `GameSession.cs:40~115`.
 - 저장 형식·난수 영향 없음. Android `allowBackup=true`는 `.bak`도 포함하지만 변경하지 않는다.
+
+완료 근거(2026-10-29): 대표 PR #32의 상태 원본과 연결된 서브 PR/CI, 현재 구현 문서20을 따른다. Android 실제 입력·출시는 별도 XO-09/UI-QA/RELEASE-02에서 완료 전까지 추적한다.

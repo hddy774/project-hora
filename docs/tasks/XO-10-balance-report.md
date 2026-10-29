@@ -27,11 +27,11 @@
 5. 진단 누계가 꺼져 있을 때 시뮬레이션 결과(직렬화 바이트)가 바뀌지 않아야 한다. 켜져 있어도 난수 호출을 하지 않는다.
 
 ## 수용 기준 (Acceptance Criteria)
-- [ ] 2의 모든 항목이 10시드 각각과 요약에 출력된다.
-- [ ] 진단 켬/끔 두 실행의 시드 1·1,000년 직렬화 바이트가 같다(테스트).
-- [ ] 결과 원문과 실행 명령·환경(SDK 버전, CPU)을 `measurements/balance-10-seeds.txt`와 `measurements/README.md`에 기록한다.
-- [ ] 결과 해석은 쓰지 않는다(목표 확정은 오너·클로드 몫). 표만 남긴다.
-- [ ] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과.
+- [x] 2의 모든 항목이 10시드 각각과 요약에 출력된다.
+- [x] 진단 켬/끔 두 실행의 시드 1·1,000년 직렬화 바이트가 같다(테스트).
+- [x] 결과 원문과 실행 명령·환경(SDK 버전, CPU)을 `measurements/balance-10-seeds.txt`와 `measurements/README.md`에 기록한다.
+- [x] 결과 해석은 쓰지 않는다(목표 확정은 오너·클로드 몫). 표만 남긴다.
+- [x] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과.
 
 ## 테스트 케이스
 - `Diagnostics_DoNotChangeSimulation`
@@ -41,3 +41,5 @@
 - 기존 도구: `tools/Xianxia.Tools/Program.cs`(197줄, 400줄 제한 주의).
 - 영기 증가 지점: `ActionEffects.cs:23·321`, `SecretRealmSystem.cs:167`, `InterventionSystem.cs:72`, `RelationshipSystem.cs:95`.
 - 측정 후 클로드가 [13 §3](../../games/xianxia-observer/docs/13-claude-review.md) 목표를 수치로 제안하고, 오너 결정(D-02·D-03) 뒤 밸런스 명세를 쓴다.
+
+완료 근거(2026-10-29): 대표 PR #32의 상태 원본과 연결된 서브 PR/CI, 현재 구현 문서20을 따른다. Android 실제 입력·출시는 별도 XO-09/UI-QA/RELEASE-02에서 완료 전까지 추적한다.

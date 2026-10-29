@@ -75,5 +75,9 @@ namespace Xianxia.Simulation.Model
             _savedResidentIds = null;
             return ids;
         }
+
+        /// <summary>검증용 주민 번호. 읽어도 저장된 순서를 소비하지 않는다.</summary>
+        [JsonIgnore]
+        internal IReadOnlyList<int>? SavedResidentIds => _savedResidentIds;
     }
 }

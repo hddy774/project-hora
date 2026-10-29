@@ -32,7 +32,7 @@ Android UI 포함 프레임·잠금 지연·저장 지연·전력·발열 벤치
 private 호출은 한 연산의 경계 조건을 재현할 뿐 자연 세계에서 그 상태가 나타날 빈도를 증명하지 않는다.
 
 재현 프로그램·실행법은 [추출 안내](../reference/extraction.md), 결과별 분석은
-[문제·미결정 사항](../12-open-questions.md)을 본다. 모든 변경 제안은 미승인 상태다.
+[문제·미결정 사항](../12-open-questions.md)을 본다. 당시 변경 제안이며 현재 승인·반영 여부는 대표 PR #32의 작업표를 따른다.
 
 ## 기존 React 측정
 
@@ -41,3 +41,19 @@ private 호출은 한 연산의 경계 조건을 재현할 뿐 자연 세계에�
 원본과 C#은 RNG·규칙·상태·실행 환경이 다르므로 같은 시드 번호가 같은 세계를 뜻하지 않는다.
 현재 C# 측정과 짝을 맞춘 동일 장비 반복 실험이 아니므로 수치상의 속도 개선 배수를 주장하지 않는다.
 원본의 발견 사항과 현재 구현의 변경은 [11](../11-legacy-and-decisions.md)에서 구분한다.
+
+
+## 0.2.0 변경 전 기준 (XO-10, 2026-10-29 UTC)
+
+- 보고 도구 SHA: `3ed8411297923395d7b6a9f1dc3f3a2e587078a7` (PR #50), 진단 코어 PR #49.
+- Linux x64 공유 컨테이너, INTEL XEON PLATINUM 8573C, SDK10.0.403, net10.0 Release.
+- `XIANXIA_DIAGNOSTICS=1 DOTNET_TieredCompilation=0 dotnet tools/Xianxia.Tools/bin/Release/net10.0/Xianxia.Tools.dll report --seeds 1-10 --years 30000 --population 1000 --balance --json balance-before.json`
+- 10시드 원문: [balance-10-seeds.txt](balance-10-seeds.txt), 기계 판독: [balance-before-20261029.json](balance-before-20261029.json).
+- 같은 명령의 `--seeds 1 --years 100000 --population 3000` 추가 측정: [storage-100k-20261029.json](storage-100k-20261029.json).
+- 추가 개입·관심 변경 없음. 진단 켬/끔 시드1·1,000년 저장 바이트 동일 회귀가 PR #49에 있다.
+- 저장·로드는 워밍업1회 뒤5회 평균이다. 도구가 모든 시드의 실제 영석=장부, 저장 왕복 연도·인구를 검사했다.
+- [query-3000-20261029.json](query-3000-20261029.json)은 앱의 실제 PeopleQuery 8정렬×50회 원시 표본이다.
+  `dotnet test tests/Xianxia.App.Tests/Xianxia.App.Tests.csproj -c Release --filter QueryMeasurementTests`로 재현한다.
+  시드7·인구3,000·1,000년, 정렬별 워밍업1회, 최근접 순위 p95이며 조회 전후 저장 바이트 동일을 확인한다.
+- 실행 중 같은 공유 호스트에서 포맷·빌드·검사가 일부 겹쳤다. 시간값은 참고 표본이며 정밀 회귀 임계·Android 성능 통과의 근거로 사용하지 않는다.
+  10시드 원문은 수치 조정 전 기준이고 결과 해석·조정은 별도 XO-14 변경 기록에 둔다.

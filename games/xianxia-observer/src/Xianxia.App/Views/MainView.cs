@@ -30,12 +30,14 @@ namespace Xianxia.App.Views
         private TopLevel? _topLevel;
         private IInsetsManager? _insets;
         private UiInputTrace? _inputTrace;
+        private int _worldGeneration;
 
         /// <summary>메인 화면을 만든다.</summary>
         /// <param name="session">게임 세션.</param>
         internal MainView(GameSession session)
         {
             Session = session;
+            _worldGeneration = session.WorldGeneration;
             Background = Palette.Brush(Palette.Parchment);
             Foreground = Palette.Brush(Palette.Ink);
             FontSize = 15;
@@ -133,6 +135,18 @@ namespace Xianxia.App.Views
         {
             _refreshQueued = false;
             SimulationRunner runner = Session.Runner;
+            if (_worldGeneration != Session.WorldGeneration)
+            {
+                _worldGeneration = Session.WorldGeneration;
+                foreach (PageBase page in _pages)
+                {
+                    page.ResetState();
+                }
+
+                _sheets.CloseAll();
+                _toasts.Show("새로 열린 세계입니다. 인물 검색과 선택을 초기화했습니다.");
+                _dirty = true;
+            }
             long version = runner.Version;
             if (!force && !_dirty && version == _lastVersion)
             {

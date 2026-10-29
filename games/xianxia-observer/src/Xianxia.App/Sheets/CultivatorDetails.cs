@@ -17,30 +17,29 @@ namespace Xianxia.App.Sheets
         /// <param name="world">세계.</param>
         /// <param name="person">현재 수선자.</param>
         /// <param name="tab">하위 탭 번호.</param>
-        internal static void Fill(KeyValueList facts, World world, Cultivator person, int tab)
+        /// <param name="combat">개요에서 전투력 상세를 펼쳤는가.</param>
+        internal static void Fill(KeyValueList facts, World world, Cultivator person, int tab, bool combat = false)
         {
             switch (tab)
             {
                 case 0:
                     Overview(facts, person);
+                    facts.Add("총 전투력", Fmt.Number(CombatSystem.Breakdown(world, person).Total));
+                    if (combat)
+                    {
+                        Combat(facts, world, person);
+                    }
                     break;
                 case 1:
-                    Combat(facts, world, person);
-                    break;
-                case 2:
                     Practice(facts, world, person);
-                    break;
-                case 3:
                     Inventory(facts, person);
                     break;
-                case 4:
+                case 2:
                     facts.Add("도반과 함께한 기간", Fmt.Years(person.CompanionId == 0 ? 0
                         : Math.Max(0, world.Year - person.CompanionSinceYear)));
                     break;
-                case 5:
-                    facts.Add("현재 생", person.LifeNumber + "번째 · " + Fmt.Years(person.BornYear) + " 입세");
-                    break;
                 default:
+                    facts.Add("현재 생", person.LifeNumber + "번째 · " + Fmt.Years(person.BornYear) + " 입세");
                     facts.Add("현생 / 전생 기억", person.LifeNumber + "생 / "
                         + (person.MemoryAwakened ? "각성" : "미각성"));
                     break;

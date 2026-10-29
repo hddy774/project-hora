@@ -25,15 +25,15 @@ namespace Xianxia.Android
     public sealed class MainActivity : AvaloniaMainActivity
     {
         /// <inheritdoc/>
-        public override bool DispatchTouchEvent(MotionEvent? e)
+        public override bool DispatchTouchEvent(MotionEvent? ev)
         {
-            if (e is null || !e.IsFromSource(InputSourceType.Touchscreen))
+            if (ev is null || !ev.IsFromSource(InputSourceType.Touchscreen))
             {
-                return base.DispatchTouchEvent(e);
+                return base.DispatchTouchEvent(ev);
             }
 
-            using MotionEvent? normalized = NormalizeUndefinedTouch(e);
-            return base.DispatchTouchEvent(normalized ?? e);
+            using MotionEvent? normalized = NormalizeUndefinedTouch(ev);
+            return base.DispatchTouchEvent(normalized ?? ev);
         }
 
         // Avalonia12.1.4는 Unknown을 TouchDevice로 보내면서 LeftButtonDown/Up으로 분류해 무시한다.

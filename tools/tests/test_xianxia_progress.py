@@ -55,6 +55,17 @@ class ProgressTests(unittest.TestCase):
         completed = progress.change(verified, 'XO-06', 'done', evidence='https://github.com/example/proof')
         self.assertIn('**1/3 완료**', progress.render(completed))
 
+    def test_parallel_work_can_start_during_upstream_verification_but_cannot_finish(self):
+        task = next(task for task in self.state['tasks'] if task['id'] == 'XO-12')
+        task['approval'] = 'approved'
+        for predecessor in self.state['tasks']:
+            if predecessor['id'] in task['depends_on']:
+                predecessor['status'] = 'verifying'
+        started = progress.change(self.state, 'XO-12', 'in_progress')
+        verified = progress.change(started, 'XO-12', 'verifying')
+        with self.assertRaisesRegex(ValueError, '선행'):
+            progress.change(verified, 'XO-12', 'done', evidence='검사 통과')
+
     def test_baseline_and_planning_do_not_inflate_development_count(self):
         self.assertIn('**0/3 완료**', progress.render(self.state))
         self.assertIn('- [ ] XO-06', progress.render(self.state))

@@ -61,9 +61,9 @@ def render(state):
     for task in work:
         lines.append(f"- [{'x' if task['status'] == 'done' else ' '}] {task['id']} · {task['title']}")
     lines += ['', '상태 원본: `docs/tasks/xianxia-progress.json`. 착수 → 개발 중 → 검증 중 → 완료로 갱신한다.',
-              '기획 요청이나 테마 선택은 코드 작업 승인을 뜻하지 않는다. 완료에는 수용 기준·검사 근거가 필요하다.',
+              '현재 사용자 전체 개발 승인은 원본에 반영했다. 완료에는 수용 기준·검사 근거가 필요하다.',
               '상태 변경 명령의 `--publish`가 이 영역을 즉시 반영한다. PR 체크만 수동 변경하면 다음 동기화 때 원본 값이 반영된다.',
-              'XO-09 완료와 ARM64 실기기 확인·출시 승인은 별도다. 출시 전에 실기기 결과와 D-07·D-08을 확인한다.', END]
+              'ARM64 실기기는 사용자 답변으로 연결 불가다. API24/34와 실기기 결과를 구분하고 승인된 APK 배포를 진행한다.', END]
     return '\n'.join(lines)
 
 
@@ -79,8 +79,9 @@ def change(state, task_id, status, note=None, evidence=None):
     if status in {'in_progress', 'verifying', 'done'}:
         if task['approval'] not in {'approved', 'not_required'}:
             raise ValueError('승인되지 않은 코드 작업입니다. 명세와 승인 근거를 먼저 갱신하세요.')
-        if any(tasks[dependency]['status'] != 'done' for dependency in task['depends_on']):
-            raise ValueError('선행 작업이 완료되지 않았습니다.')
+        ready = {'done'} if status == 'done' else {'verifying', 'done'}
+        if any(tasks[dependency]['status'] not in ready for dependency in task['depends_on']):
+            raise ValueError('선행 작업의 구현/검증이 준비되지 않았습니다. 완료에는 선행 모두 완료가 필요합니다.')
     if note is not None:
         task['note'] = note
     if evidence is not None:

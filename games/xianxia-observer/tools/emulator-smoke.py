@@ -25,7 +25,7 @@ class Smoke:
         self.step = 0
 
     def focus(self):
-        state = adb('shell', 'dumpsys', 'window', 'windows')
+        state = adb('shell', 'dumpsys', 'window')
         lines = [line for line in state.splitlines() if 'mCurrentFocus=' in line]
         assert lines and PACKAGE in lines[-1], '앱이 아닌 창에 포커스: ' + str(lines)
 
@@ -103,7 +103,8 @@ class Smoke:
         position = self.find(expression)
         self.focus()
         self.clear()
-        adb('shell', 'input', 'tap', position['x'], position['y'])
+        # API24의 input tap은 DOWN/UP 타임스탬프가 같다. 실제 손가락처럼120ms 정지 접촉한다.
+        adb('shell', 'input', 'swipe', position['x'], position['y'], position['x'], position['y'], 120)
         if expected:
             self.trace(expected)
         self.controls()
@@ -260,5 +261,5 @@ if __name__ == '__main__':
             out = Path(sys.argv[2])
             out.mkdir(parents=True, exist_ok=True)
             (out / 'failure-logcat.txt').write_text(adb('logcat', '-d', '-v', 'threadtime'))
-            (out / 'failure-window.txt').write_text(adb('shell', 'dumpsys', 'window', 'windows'))
+            (out / 'failure-window.txt').write_text(adb('shell', 'dumpsys', 'window'))
         raise

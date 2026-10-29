@@ -35,6 +35,21 @@ namespace Xianxia.Simulation.Data
             return s_names[Math.Clamp(grade, 0, MaxGrade)];
         }
 
+        /// <summary>보상 상한이 현재 공법보다 낮아도 등급을 내리지 않는다.</summary>
+        /// <param name="current">현재 등급(0~19).</param>
+        /// <param name="gain">획득 등급 수(1 이상).</param>
+        /// <param name="rewardCap">이 보상의 최고 등급(0~19).</param>
+        /// <returns>현재 등급 이상인 보상 결과.</returns>
+        public static int ImproveByReward(int current, int gain, int rewardCap)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(gain);
+            ArgumentOutOfRangeException.ThrowIfNegative(rewardCap);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(rewardCap, MaxGrade);
+            ArgumentOutOfRangeException.ThrowIfNegative(current);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(current, MaxGrade);
+            return Math.Max(current, (int)Math.Min(rewardCap, (long)current + gain));
+        }
+
         /// <summary>등급이 감당하는 최고 경지.</summary>
         /// <param name="grade">등급.</param>
         /// <returns>경지 인덱스.</returns>

@@ -37,7 +37,9 @@ jobs:
             const end = '<!-- pc-v020-progress:end -->';
             const current = pr.body || '';
             const a = current.indexOf(start), b = current.indexOf(end);
-            if ((a < 0) !== (b < 0) || (a >= 0 && b < a)) {
+            if ((a < 0) !== (b < 0) || (a >= 0 && b < a)
+                || current.indexOf(start, a + start.length) >= 0
+                || current.indexOf(end, b + end.length) >= 0) {
               throw new Error('Malformed progress markers; preserve existing body');
             }
             const body = a >= 0

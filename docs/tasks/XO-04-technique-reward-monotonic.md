@@ -41,12 +41,12 @@ public static int ImproveByReward(int current, int gain, int rewardCap);
 6. 두 경로 모두 공법 속성(TechniqueElement)을 바꾸지 않는다(현재 코드와 같음). 수확 점수 `value=3`도 그대로 둔다.
 
 ## 수용 기준 (Acceptance Criteria)
-- [ ] 등급 0~19 × gain 1~2 × 상한 15·18의 모든 조합에서 결과 ≥ 기존 등급(테스트로 전수 확인).
-- [ ] 기존 16·17·18등급 인물에게 기연 공법 보상을 적용하면 등급이 그대로다.
-- [ ] 기존 14등급 + gain 2 → 15(상한 적용)는 기존과 같다.
-- [ ] 기연 1회의 난수 호출 수가 변경 전과 같다(같은 시드에서 보상 직후 `Random.State` 비교).
-- [ ] 장기 불변식 테스트(`InvariantTests`) 전부 통과.
-- [ ] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과.
+- [x] 등급 0~19 × gain 1~2 × 상한 15·18의 모든 조합에서 결과 ≥ 기존 등급(테스트로 전수 확인).
+- [x] 기존 16·17·18등급 인물에게 기연 공법 보상을 적용하면 등급이 그대로다.
+- [x] 기존 14등급 + gain 2 → 15(상한 적용)는 기존과 같다.
+- [x] 기연 1회의 난수 호출 수가 변경 전과 같다(같은 시드에서 보상 직후 `Random.State` 비교).
+- [x] 장기 불변식 테스트(`InvariantTests`) 전부 통과.
+- [x] 포맷·코드 규칙·Release 빌드 경고 0·전체 테스트 통과.
 
 ## 테스트 케이스
 - `ImproveByReward_NeverLowersGrade` (전수 조합)
@@ -62,3 +62,5 @@ public static int ImproveByReward(int current, int gain, int rewardCap);
 ## 참고
 - 코드: `ActionEffects.cs:301~305`, `SecretRealmSystem.cs:145~155`(Treasure), `Techniques.cs`.
 - 같은 시드의 미래가 바뀔 수 있다(하락 사례가 있던 시드만). 버전 노트에 적는다(D-09).
+
+완료 근거(2026-10-29): 대표 PR #32의 상태 원본과 연결된 서브 PR/CI, 현재 구현 문서20을 따른다. Android 실제 입력·출시는 별도 XO-09/UI-QA/RELEASE-02에서 완료 전까지 추적한다.

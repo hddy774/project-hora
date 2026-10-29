@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Xianxia.App.Services;
 using Xianxia.App.Theme;
 
 namespace Xianxia.App.Controls
@@ -75,6 +76,7 @@ namespace Xianxia.App.Controls
             if (notify)
             {
                 _changed(Selected);
+                UiTrace.Choice(Selected);
             }
         }
 

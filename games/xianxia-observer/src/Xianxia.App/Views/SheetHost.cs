@@ -9,6 +9,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Xianxia.App.Controls;
+using Xianxia.App.Services;
 using Xianxia.App.Theme;
 using Xianxia.Simulation.Model;
 
@@ -118,6 +119,7 @@ namespace Xianxia.App.Views
 
             _stack.Add(sheet);
             Show(sheet, Vector.Zero);
+            UiTrace.Sheet(link.Kind.ToString(), link.Id);
             return true;
         }
 
@@ -129,6 +131,7 @@ namespace Xianxia.App.Views
                 return;
             }
 
+            UiTrace.SheetClosed(_stack[^1].Link.Kind.ToString());
             _stack.RemoveAt(_stack.Count - 1);
             if (Top is { } top)
             {
@@ -146,6 +149,11 @@ namespace Xianxia.App.Views
         /// <summary>모든 시트를 닫는다.</summary>
         internal void CloseAll()
         {
+            foreach (SheetBase sheet in _stack)
+            {
+                UiTrace.SheetClosed(sheet.Link.Kind.ToString());
+            }
+
             _stack.Clear();
             _offsets.Clear();
             _root.IsVisible = false;

@@ -51,9 +51,11 @@ namespace Xianxia.App.Services
                 GameSession loaded = new(store, world, world.Year.ToString("#,0",
                     System.Globalization.CultureInfo.InvariantCulture) + "년의 세계를 이어서 관찰합니다.");
                 loaded.LastSaveMessage = "저장 파일에서 불러왔습니다.";
+                UiTrace.Session(world.Year, true);
                 return loaded;
             }
 
+            UiTrace.Session(0, false);
             return new GameSession(store, WorldFactory.Create(new WorldSettings()), problem);
         }
 

@@ -25,6 +25,7 @@ namespace Xianxia.Android
         /// <inheritdoc/>
         protected override void OnCreate(Bundle? savedInstanceState)
         {
+            global::Xianxia.App.App.SetUiTraceSink(line => global::Android.Util.Log.Info("XianxiaUi", line));
             global::Xianxia.App.App.SetDeviceFontScale(Resources?.Configuration?.FontScale ?? 1);
             base.OnCreate(savedInstanceState);
         }

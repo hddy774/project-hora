@@ -1,4 +1,5 @@
 // 선로만상록 프로젝트 Avalonia 애플리케이션 진입점. 게임 세션을 하나 만들고 플랫폼별 수명 주기에 맞춰 화면과 저장을 연결한다.
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -13,6 +14,10 @@ namespace Xianxia.App
     public partial class App : Application
     {
         private GameSession? _session;
+
+        /// <summary>Android가 화면 전환 수용 로그를 플랫폼 출력에 연결한다.</summary>
+        /// <param name="sink">게임 ID·조작만 기록하는 출력.</param>
+        public static void SetUiTraceSink(Action<string> sink) => UiTrace.Sink = sink;
 
         /// <inheritdoc />
         public override void Initialize()

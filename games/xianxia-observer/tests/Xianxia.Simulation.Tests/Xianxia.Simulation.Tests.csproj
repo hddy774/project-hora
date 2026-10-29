@@ -14,4 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Xianxia.Simulation\Xianxia.Simulation.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../tools/Xianxia.Tools/Xianxia.Tools.csproj" />
+  </ItemGroup>
 </Project>

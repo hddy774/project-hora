@@ -2,7 +2,7 @@
   "schema_version": 1,
   "repository": "hddy774/project-hora",
   "tracking_pr": 32,
-  "updated_at": "2026-10-29T12:00:59Z",
+  "updated_at": "2026-10-29T12:39:26Z",
   "tasks": [
     {
       "id": "XO-01",
@@ -65,10 +65,10 @@
       "phase": "stability",
       "order": 2,
       "approval": "approved",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [],
-      "note": "저장 의미·크기 검증 코어90검사 통과, 손상 보존 App 구현 이어서 진행",
-      "evidence": ""
+      "note": "코어 #39·손상본 #41 병합, 전체93검사·CI·정상 저장/이어 진행·로드 +9.30% 통과",
+      "evidence": "https://github.com/hddy774/project-hora/pull/41"
     },
     {
       "id": "XO-04",
@@ -76,10 +76,10 @@
       "phase": "stability",
       "order": 3,
       "approval": "approved",
-      "status": "planned",
+      "status": "done",
       "depends_on": [],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
-      "evidence": ""
+      "note": "기연·비경 실제 분기와 등급80조합·전체65검사·CI 통과, #40 병합",
+      "evidence": "https://github.com/hddy774/project-hora/pull/40"
     },
     {
       "id": "XO-05",
@@ -87,12 +87,12 @@
       "phase": "stability",
       "order": 4,
       "approval": "approved",
-      "status": "planned",
+      "status": "done",
       "depends_on": [
         "XO-03"
       ],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
-      "evidence": ""
+      "note": "서브 PR #43 CI·113검사·1000년 비중첩 저장 바이트 동일성 통과 후 병합",
+      "evidence": "https://github.com/hddy774/project-hora/pull/43"
     },
     {
       "id": "XO-07",
@@ -100,12 +100,12 @@
       "phase": "stability",
       "order": 5,
       "approval": "approved",
-      "status": "planned",
+      "status": "done",
       "depends_on": [
         "XO-03"
       ],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
-      "evidence": ""
+      "note": "서브 PR #45 CI·110검사·최종 관련11검사 통과 후 병합, 모든 저장 경로 오류 격리와 백업 복구 확인",
+      "evidence": "https://github.com/hddy774/project-hora/pull/45"
     },
     {
       "id": "XO-08",
@@ -113,10 +113,10 @@
       "phase": "stability",
       "order": 6,
       "approval": "approved",
-      "status": "planned",
+      "status": "done",
       "depends_on": [],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
-      "evidence": ""
+      "note": "14항목 정합·360폭 실제 UI·58검사·CI·표시 정규화 후 세계 동일성 통과, #44 병합",
+      "evidence": "https://github.com/hddy774/project-hora/pull/44"
     },
     {
       "id": "XO-09",
@@ -158,11 +158,11 @@
       "phase": "ui",
       "order": 10,
       "approval": "approved",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "XO-07"
       ],
-      "note": "2026-10-29 사용자: 전체 개발·클로드 피드백 수용·APK 최신 릴리스 배포 승인.",
+      "note": "안정화6건 병합 완료. 고서 목판 공통 색·문자·48터치·5탭 프레임을 순차 서브 PR로 구현",
       "evidence": ""
     },
     {

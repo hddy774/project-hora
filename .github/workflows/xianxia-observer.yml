@@ -27,6 +27,11 @@ on:
         type: string
         default: ''
         required: false
+      qa_run_id:
+        description: Reuse a retained-signed APK for input QA only; publishing is disabled
+        type: string
+        default: ''
+        required: false
 
 permissions:
   contents: read
@@ -60,6 +65,11 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+      - name: Reject incompatible APK reuse modes
+        env:
+          QA_RUN: ${{ inputs.qa_run_id }}
+          PUBLISH_REQUEST: ${{ inputs.publish }}
+        run: python3 -c "import os; assert not os.environ['QA_RUN'] or os.environ['PUBLISH_REQUEST'] != 'true'"
       - name: Restore with lock files
         run: dotnet restore XianxiaObserver.slnx --locked-mode
       - name: Verify formatting
@@ -88,7 +98,7 @@ jobs:
   android:
     name: build Android APK
     # 개발 PR은 코어/UI 검사를 매번 수행하고, 같은 최종 APK의 기기 검사는 배포 실행에서 수행한다.
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.source_run_id == '' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.source_run_id == '' && inputs.qa_run_id == '' }}
     needs: check
     runs-on: ubuntu-24.04
     timeout-minutes: 40
@@ -167,6 +177,59 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  qa_apk:
+    name: reuse signed APK for input QA
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publish && inputs.qa_run_id != '' && inputs.source_run_id == '' && github.actor == github.repository_owner }}
+    needs: check
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Resolve the exact owner-built artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.qa_run_id }}
+        run: |
+          python3 - <<'PY'
+          import json,os,re,subprocess
+          run_id=os.environ['SOURCE_RUN']
+          assert re.fullmatch(r'[1-9][0-9]*',run_id)
+          run=json.loads(subprocess.check_output(['gh','api','repos/hddy774/project-hora/actions/runs/'+run_id]))
+          assert run['event']=='workflow_dispatch' and run['actor']['login']=='hddy774'
+          assert run['head_repository']['full_name']=='hddy774/project-hora'
+          assert run['path']=='.github/workflows/xianxia-observer.yml'
+          name='xianxia-apk-'+run_id+'-'+str(run['run_attempt'])
+          with open(os.environ['GITHUB_ENV'],'a') as stream:
+              stream.write('SOURCE_ARTIFACT='+name+'\nSOURCE_SHA='+run['head_sha']+'\n')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT }}
+          path: apk
+          run-id: ${{ inputs.qa_run_id }}
+          github-token: ${{ github.token }}
+      - name: Require the retained signature proof and exact APK bytes
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib
+          path=pathlib.Path('apk')
+          proof=json.loads((path/'SIGNING-VERIFICATION.json').read_text())
+          assert proof['source_commit']==os.environ['SOURCE_SHA']
+          assert proof['application_id']==os.environ['APPLICATION_ID']
+          assert proof['version']==os.environ['APP_VERSION']
+          assert proof['version_code']==int(os.environ['APP_VERSION_CODE'])
+          assert proof['certificate_sha256']=='0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a'
+          assert proof['payload_matches_verified_unsigned'] and not proof['key_created']
+          assert hashlib.sha256((path/'XianxiaObserver-ci.apk').read_bytes()).hexdigest()==proof['signed_sha256']
+          (path/'QA-SOURCE.json').write_text(json.dumps({'source':os.environ['SOURCE_SHA'],'publish':False}))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: xianxia-apk-${{ github.run_id }}-${{ github.run_attempt }}
+          path: apk/
+          retention-days: 14
+
   publish:
     name: publish verified APK only as latest
     needs: [check, android, emulator]
@@ -235,7 +298,8 @@ jobs:
 
   emulator:
     name: run APK on Android emulator (api ${{ matrix.api }})
-    needs: android
+    needs: [android, qa_apk]
+    if: ${{ always() && !cancelled() && (needs.android.result == 'success' || needs.qa_apk.result == 'success') }}
     strategy:
       fail-fast: false
       matrix:

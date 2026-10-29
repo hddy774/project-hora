@@ -46,7 +46,8 @@ def verify_source_run(run_id):
                 'run APK on Android emulator (api 24)', 'run APK on Android emulator (api 34)'}
     assert {job['name'] for job in jobs if job['conclusion'] == 'success'} >= required
     publishers = {'publish verified APK only as latest', 'publish previously verified APK'}
-    assert all(job['conclusion'] == 'success' or job['name'] in publishers for job in jobs)
+    assert all(job['conclusion'] == 'success' or job['name'] in publishers
+               or (job['name'] == 'reuse signed APK for input QA' and job['conclusion'] == 'skipped') for job in jobs)
     artifacts = api(f'actions/runs/{run_id}/artifacts?per_page=100')['artifacts']
     matches = [item for item in artifacts if item['name'] == f'xianxia-apk-{run_id}-{run["run_attempt"]}']
     assert len(matches) == 1 and not matches[0]['expired']

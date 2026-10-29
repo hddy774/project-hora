@@ -20,7 +20,12 @@ namespace Xianxia.Simulation.Systems
         {
             System.ArgumentNullException.ThrowIfNull(settings);
             int population = System.Math.Clamp(settings.Population, 100, 3000);
-            World world = new() { Settings = settings, Random = new Pcg32(settings.Seed, RandomStream) };
+            World world = new()
+            {
+                Settings = settings,
+                Random = new Pcg32(settings.Seed, RandomStream),
+                LogRandom = new Pcg32(settings.Seed, World.LogRandomStream),
+            };
             world.Sects.Add(new Sect { Id = RegionCatalog.OrthodoxSectId, Name = "청운종", Orthodox = true });
             world.Sects.Add(new Sect { Id = RegionCatalog.DemonicSectId, Name = "천마문", Orthodox = false });
             foreach (RegionDefinition definition in RegionCatalog.All)

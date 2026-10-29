@@ -9,6 +9,26 @@ namespace Xianxia.Simulation.Systems
     /// <summary>사건 서술 도우미. 모든 시스템이 같은 방식으로 기록을 남기게 한다.</summary>
     public static class Narrator
     {
+        /// <summary>빈번한 비무의 문장과 알림을 지연 생성한다. 보관 수·순서·내용은 기존과 같다.</summary>
+        /// <param name="world">세계.</param>
+        /// <param name="winner">승자.</param>
+        /// <param name="loser">패자.</param>
+        /// <param name="crossSect">종문 간 비무인가.</param>
+        /// <param name="notable">관심 알림 대상인가.</param>
+        public static void Friendly(World world, Cultivator winner, Cultivator loser, bool crossSect, bool notable)
+        {
+            LogEntry entry = world.Log.AddFriendly(world.Year, winner, loser, crossSect);
+            int id = world.IsFollowed(winner.Id) ? winner.Id : 0;
+            if (id == 0 && world.IsFollowed(loser.Id))
+            {
+                id = loser.Id;
+            }
+            if (notable && id != 0)
+            {
+                world.Chronicle.NotifyLog(entry, id);
+            }
+        }
+
         /// <summary>
         /// 로그를 남긴다. 주인공이나 상대가 관심 인물이고 <paramref name="notable"/>이면 화면 알림도 낸다.
         /// </summary>

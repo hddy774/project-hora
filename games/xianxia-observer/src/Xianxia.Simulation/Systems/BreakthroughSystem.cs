@@ -162,7 +162,7 @@ namespace Xianxia.Simulation.Systems
             }
 
             bool notable = cultivator.Realm >= 4 || world.IsFollowed(cultivator.Id);
-            if (notable || world.Random.Chance(0.25))
+            if (notable || world.LogRandom.Chance(0.25))
             {
                 string pillText = usedPill ? "(파경단 사용) " : string.Empty;
                 Narrator.Log(world, LogKind.Breakthrough, cultivator.Name + "이(가) " + pillText + target + " 돌파에 실패했다.",

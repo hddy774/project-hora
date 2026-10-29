@@ -1,6 +1,6 @@
 # [XO-13] 천하 관찰 진입·사기·기록 탐색
 
-상태: 구현 승인 대기 · 선행: XO-12·XO-08 · 근거: [15 §4~6](../../games/xianxia-observer/docs/15-ui-ux-improvement.md).
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 선행: XO-12·XO-08 · 근거: [15 §4~6](../../games/xianxia-observer/docs/15-ui-ux-improvement.md).
 
 ## 배경과 범위
 첫 화면에서 지켜볼 인물과 최근 사건을 찾고, 요약에서 상세·이력으로 이동할 수 있게 한다.

@@ -52,8 +52,14 @@ namespace Xianxia.Simulation.Model
     /// <summary>세계.</summary>
     public sealed class World
     {
+        /// <summary>로그 표본 전용 난수 스트림. 세계 규칙 난수와 분리한다.</summary>
+        public const ulong LogRandomStream = 0x4C4F47;
+
         private readonly Dictionary<int, Cultivator> _byId = new();
         private readonly Dictionary<int, SoulRecord> _soulsById = new();
+        private readonly HashSet<int> _followed = new();
+        private int _followedMinimum = int.MaxValue;
+        private int _followedMaximum = int.MinValue;
 
         /// <summary>저장 형식 버전.</summary>
         public int FormatVersion { get; set; } = 1;
@@ -69,6 +75,12 @@ namespace Xianxia.Simulation.Model
 
         /// <summary>난수 증분.</summary>
         public ulong RandomIncrement { get; set; }
+
+        /// <summary>로그 난수 상태. 상태값 0도 유효하다.</summary>
+        public ulong LogRandomState { get; set; }
+
+        /// <summary>로그 난수 증분. 0이면 로그 난수가 없던 구 저장이다.</summary>
+        public ulong LogRandomIncrement { get; set; }
 
         /// <summary>수선자(인덱스 = 자리, 비승하면 같은 자리에 새 영혼).</summary>
         public List<Cultivator> Cultivators { get; set; } = new();
@@ -137,6 +149,10 @@ namespace Xianxia.Simulation.Model
         [JsonIgnore]
         public Pcg32 Random { get; set; } = new(1, 1);
 
+        /// <summary>표시용 로그 난수. 세계의 행동·성장·전투에는 사용하지 않는다.</summary>
+        [JsonIgnore]
+        public Pcg32 LogRandom { get; set; } = new(1, LogRandomStream);
+
         /// <summary>영혼 번호로 수선자를 찾는다.</summary>
         /// <param name="soulId">영혼 번호.</param>
         /// <returns>수선자 또는 null.</returns>
@@ -188,7 +204,49 @@ namespace Xianxia.Simulation.Model
         /// <returns>관심 인물이면 true.</returns>
         public bool IsFollowed(int soulId)
         {
-            return Followed.Contains(soulId);
+            if (soulId < _followedMinimum || soulId > _followedMaximum)
+            {
+                return false;
+            }
+
+            // 전원·연속 번호 관심은 범위만으로 답한다. 드문 빈칸은 HashSet으로 확인한다.
+            return _followed.Count == (long)_followedMaximum - _followedMinimum + 1 || _followed.Contains(soulId);
+        }
+
+        /// <summary>관심 목록의 조회 색인을 다시 만든다(로드·외부 목록 교체 뒤).</summary>
+        public void RebuildFollowIndex()
+        {
+            _followed.Clear();
+            _followedMinimum = int.MaxValue;
+            _followedMaximum = int.MinValue;
+            foreach (int id in Followed)
+            {
+                _followed.Add(id);
+                _followedMinimum = System.Math.Min(_followedMinimum, id);
+                _followedMaximum = System.Math.Max(_followedMaximum, id);
+            }
+        }
+
+        /// <summary>관심 목록과 조회 색인을 함께 바꾼다. 존재하지 않는 인물은 추가하지 않는다.</summary>
+        /// <param name="soulId">영혼 번호.</param>
+        /// <param name="followed">관심 여부.</param>
+        public void SetFollowed(int soulId, bool followed)
+        {
+            if (followed && Find(soulId) is not null && _followed.Add(soulId))
+            {
+                Followed.Add(soulId);
+                _followedMinimum = System.Math.Min(_followedMinimum, soulId);
+                _followedMaximum = System.Math.Max(_followedMaximum, soulId);
+            }
+            else if (!followed)
+            {
+                _followed.Remove(soulId);
+                Followed.Remove(soulId);
+                if (soulId == _followedMinimum || soulId == _followedMaximum)
+                {
+                    RebuildFollowIndex();
+                }
+            }
         }
 
         /// <summary>
@@ -237,6 +295,9 @@ namespace Xianxia.Simulation.Model
             }
 
             Random = Pcg32.FromState(RandomState, RandomIncrement);
+            LogRandom = LogRandomIncrement == 0 ? new Pcg32(Settings.Seed, LogRandomStream)
+                : Pcg32.FromState(LogRandomState, LogRandomIncrement);
+            RebuildFollowIndex();
         }
 
         /// <summary>저장 직전에 난수 상태를 속성으로 옮긴다.</summary>
@@ -244,6 +305,8 @@ namespace Xianxia.Simulation.Model
         {
             RandomState = Random.State;
             RandomIncrement = Random.Increment;
+            LogRandomState = LogRandom.State;
+            LogRandomIncrement = LogRandom.Increment;
         }
     }
 }

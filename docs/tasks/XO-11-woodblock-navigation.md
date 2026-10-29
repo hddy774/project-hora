@@ -1,6 +1,6 @@
 # [XO-11] 고서 목판 테마·공통 프레임·탐색
 
-상태: 구현 승인 대기(테마는 사용자 지정) · 선행: XO-07 · 근거: [15](../../games/xianxia-observer/docs/15-ui-ux-improvement.md).
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 선행: XO-07 · 근거: [15](../../games/xianxia-observer/docs/15-ui-ux-improvement.md).
 
 ## 배경과 범위
 사용자가 지정한 고서 목판을 공통 테마로 적용하고 작은 버튼·7탭의 밀도를 낮춘다.

@@ -6,15 +6,6 @@ using Xianxia.Simulation.Data;
 
 namespace Xianxia.Simulation.Model
 {
-    /// <summary>사건 한 줄.</summary>
-    /// <param name="Sequence">전체 일련번호(증가만 한다).</param>
-    /// <param name="Year">연도.</param>
-    /// <param name="Kind">분류.</param>
-    /// <param name="Text">내용.</param>
-    /// <param name="SubjectId">주인공 영혼 번호(0이면 없음).</param>
-    /// <param name="OtherId">상대 영혼 번호(0이면 없음).</param>
-    public sealed record LogEntry(long Sequence, int Year, LogKind Kind, string Text, int SubjectId, int OtherId);
-
     /// <summary>
     /// 사건 기록. [성능] 고정 크기 배열 링 버퍼라 기록 추가가 O(1)이다.
     /// 화면은 <see cref="CopyNewestFirst"/>로 최신순 사본을 받아 그린다.
@@ -75,6 +66,19 @@ namespace Xianxia.Simulation.Model
             NextSequence++;
             Counts[(int)kind]++;
             Push(entry);
+            return entry;
+        }
+
+        /// <summary>빈번한 비무 문장은 읽거나 저장할 때 만든다. 이름은 사건 당시 값을 보존한다.</summary>
+        /// <param name="year">연도.</param>
+        /// <param name="winner">승자.</param>
+        /// <param name="loser">패자.</param>
+        /// <param name="crossSect">종문 간 비무인가.</param>
+        /// <returns>추가된 기록.</returns>
+        public LogEntry AddFriendly(int year, Cultivator winner, Cultivator loser, bool crossSect)
+        {
+            LogEntry entry = Add(year, LogKind.Spar, string.Empty, winner.Id, loser.Id);
+            entry.DeferFriendly(winner.Name, loser.Name, crossSect);
             return entry;
         }
 

@@ -1,6 +1,6 @@
 # [XO-09] 선협 관찰 — Android 실입력 수용 검사
 
-상태: 승인 대기 · 우선순위 P1(검증) · 선행 결정: D-07(지원 범위) · 검토 근거: [13 §2 R-19·R-18](../../games/xianxia-observer/docs/13-claude-review.md)
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 우선순위 P1(검증) · 선행 결정: D-07(지원 범위) · 검토 근거: [13 §2 R-19·R-18](../../games/xianxia-observer/docs/13-claude-review.md)
 
 ## 배경 (왜)
 v0.1.0 에뮬레이터 검사에서 Pixel Launcher ANR 창이 탭 입력을 가렸다. 지금 스크립트는 좌표를 누르고 PNG를 남길 뿐,

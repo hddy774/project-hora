@@ -1,6 +1,6 @@
 # [XO-12] 인물 탐색·상세·개입·저장 UX
 
-상태: 구현 승인 대기 · 선행: XO-11·XO-06·XO-05 · 근거: [15 §3~5](../../games/xianxia-observer/docs/15-ui-ux-improvement.md).
+상태: 승인(사용자 전체 개발 지시, 2026-10-29) · 선행: XO-11·XO-06·XO-05 · 근거: [15 §3~5](../../games/xianxia-observer/docs/15-ui-ux-improvement.md).
 
 ## 배경과 범위
 인물을 찾고 상세를 읽고 목록으로 돌아오는 흐름을 끊지 않으며 무료 관찰과 천기 소비를 구분한다.

@@ -1,0 +1,34 @@
+{
+  "Seed": 7,
+  "Population": 1000,
+  "Years": 1000,
+  "Repeats": 10,
+  "NoneMilliseconds": [
+    548.557,
+    670.3501,
+    711.7848,
+    643.6539,
+    532.3573,
+    623.4789,
+    586.2484,
+    613.4905,
+    615.0655,
+    501.3615
+  ],
+  "AllMilliseconds": [
+    555.4041,
+    582.0801,
+    784.4501,
+    712.5292,
+    655.8842,
+    780.0391,
+    642.5076,
+    626.8635,
+    617.4995,
+    574.4892
+  ],
+  "NoneMedian": 614.278,
+  "AllMedian": 634.68555,
+  "Percent": 3.3222010229895904,
+  "Protocol": "Linux .NET10 Release; DOTNET_TieredCompilation=0; compiler servers stopped; two warm-up pairs; ten alternating pairs; wall-clock median; not Android performance."
+}

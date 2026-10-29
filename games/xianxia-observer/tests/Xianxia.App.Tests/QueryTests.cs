@@ -20,7 +20,7 @@ namespace Xianxia.App.Tests
             World world = WorldFactory.Create(new WorldSettings { Seed = 21, Population = 100 });
             Cultivator target = world.Cultivators[17];
             target.DaoName = "검증도호";
-            world.Followed.Add(target.Id);
+            world.SetFollowed(target.Id, true);
             int[] ids = world.Cultivators.Select(person => person.Id).ToArray();
             ulong random = world.Random.State;
 

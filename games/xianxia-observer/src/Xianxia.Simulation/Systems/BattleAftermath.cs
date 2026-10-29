@@ -44,11 +44,9 @@ namespace Xianxia.Simulation.Systems
 
             bool notable = winner.Realm >= 5 || world.IsFollowed(winner.Id) || world.IsFollowed(loser.Id);
             double sample = kind == BattleKind.CrossSectSpar ? 0.1 : 0.015;
-            if (notable || world.Random.Chance(sample))
+            if (notable || world.LogRandom.Chance(sample))
             {
-                string prefix = kind == BattleKind.CrossSectSpar ? "[대비무] " : "[비무] ";
-                Narrator.Log(world, LogKind.Spar, prefix + winner.Name + "이(가) " + loser.Name + "에게 이겼다.",
-                    winner, loser, notable);
+                Narrator.Friendly(world, winner, loser, kind == BattleKind.CrossSectSpar, notable);
             }
             else
             {
@@ -149,7 +147,7 @@ namespace Xianxia.Simulation.Systems
             bool notable = dropped || result.Upset || winner.Realm >= 5
                 || world.IsFollowed(winner.Id) || world.IsFollowed(loser.Id);
             double sample = kind == BattleKind.War ? 0.08 : 0.3;
-            if (!notable && !world.Random.Chance(sample))
+            if (!notable && !world.LogRandom.Chance(sample))
             {
                 world.Log.CountOnly(LogKind.Battle);
                 return;

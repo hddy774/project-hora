@@ -85,6 +85,8 @@ jobs:
 
   android:
     name: build Android APK
+    # 개발 PR은 코어/UI 검사를 매번 수행하고, 같은 최종 APK의 기기 검사는 배포 실행에서 수행한다.
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.source_run_id == '' }}
     needs: check
     runs-on: ubuntu-24.04
     timeout-minutes: 40

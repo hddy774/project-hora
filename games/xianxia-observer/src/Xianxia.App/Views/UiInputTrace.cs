@@ -1,9 +1,11 @@
 // 입력 뒤 현재 보이는 조작의 실제 위치만 남긴다. 에뮬레이터가 고정 비율 좌표에 의존하지 않게 한다.
 using System;
 using System.Linq;
+using System.Text.Json;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
+using Avalonia.Controls.Platform;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -70,6 +72,7 @@ namespace Xianxia.App.Views
             UiTrace.Sink?.Invoke("[xo-ui] controls-begin");
             Control scope = _root is MainView view && view.Sheets.IsOpen ? view.Sheets.View : _root;
             CaptureViewport(scope);
+            CaptureKeyboard();
             if (_root is MainView main)
             {
                 main.Session.Runner.Read(world =>
@@ -127,6 +130,16 @@ namespace Xianxia.App.Views
             PixelPoint first = scroll.PointToScreen(default);
             PixelPoint last = scroll.PointToScreen(new Point(scroll.Bounds.Width, scroll.Bounds.Height));
             UiTrace.Viewport(first.X, first.Y, last.X, last.Y);
+        }
+
+        private void CaptureKeyboard()
+        {
+            IInputPane? input = TopLevel.GetTopLevel(_root)?.InputPane;
+            if (input?.State == InputPaneState.Open)
+            {
+                PixelPoint top = _root.PointToScreen(new Point(0, input.OccludedRect.Top));
+                UiTrace.Sink?.Invoke("[xo-ui] keyboard " + JsonSerializer.Serialize(new { top = top.Y }));
+            }
         }
 
         private bool IsInViewport(Control control, Point center)

@@ -32,6 +32,9 @@ namespace Xianxia.App.Views
         private IInputPane? _inputPane;
         private UiInputTrace? _inputTrace;
         private int _worldGeneration;
+        private Thickness _safeArea;
+        private Rect _keyboardBounds;
+        private bool _keyboardOpen;
 
         /// <summary>메인 화면을 만든다.</summary>
         /// <param name="session">게임 세션.</param>
@@ -187,7 +190,7 @@ namespace Xianxia.App.Views
                 if (_inputPane is not null)
                 {
                     _inputPane.StateChanged += OnInputPaneChanged;
-                    ApplyKeyboardState(_inputPane.State == InputPaneState.Open);
+                    ApplyKeyboardState(_inputPane.State == InputPaneState.Open, _inputPane.OccludedRect);
                 }
                 if (_insets is not null)
                 {
@@ -289,14 +292,18 @@ namespace Xianxia.App.Views
         }
 
         private void OnInputPaneChanged(object? sender, InputPaneStateEventArgs e)
-            => ApplyKeyboardState(e.NewState == InputPaneState.Open);
+            => ApplyKeyboardState(e.NewState == InputPaneState.Open, e.EndRect);
 
         /// <summary>키보드 중에는 제목·주 탐색을 접어 검색 본문을 확보하고 진행 제어는 유지한다.</summary>
         /// <param name="open">플랫폼 키보드가 열렸는가.</param>
-        internal void ApplyKeyboardState(bool open)
+        /// <param name="occluded">클라이언트 좌표에서 키보드가 가리는 영역.</param>
+        internal void ApplyKeyboardState(bool open, Rect occluded = default)
         {
+            _keyboardOpen = open;
+            _keyboardBounds = occluded;
             _header.View.IsVisible = !open;
             _nav.View.IsVisible = !open;
+            ApplyViewportPadding();
             _inputTrace?.Queue();
         }
 
@@ -309,13 +316,29 @@ namespace Xianxia.App.Views
             }
         }
 
+        /// <inheritdoc />
+        protected override void OnSizeChanged(SizeChangedEventArgs e)
+        {
+            base.OnSizeChanged(e);
+            ApplyViewportPadding();
+        }
+
+        private void ApplyViewportPadding()
+        {
+            double overlap = _keyboardOpen && _keyboardBounds.Height > 0
+                ? Math.Max(0, Bounds.Height - _keyboardBounds.Top) : 0;
+            Padding = new Thickness(_safeArea.Left, _safeArea.Top, _safeArea.Right,
+                Math.Max(_safeArea.Bottom, overlap));
+        }
+
         private void OnTypographyChanged() => RefreshNow(force: true);
 
         /// <summary>루트에서만 안전 영역을 적용해 헤더·본문·시트의 이중 여백을 피한다.</summary>
         /// <param name="padding">플랫폼 안전 영역.</param>
         internal void ApplyInsets(Thickness padding)
         {
-            Padding = padding;
+            _safeArea = padding;
+            ApplyViewportPadding();
             _inputTrace?.Queue();
         }
     }

@@ -23,6 +23,7 @@ class Smoke:
         self.viewport = None
         self.context = {}
         self.step = 0
+        self.keyboard_top = None
 
     def focus(self):
         state = adb('shell', 'dumpsys', 'window')
@@ -56,12 +57,14 @@ class Smoke:
             if start >= 0 and end > start:
                 self.positions = {}
                 for line in log[start:end].splitlines():
-                    for kind in ['control', 'viewport', 'context']:
+                    for kind in ['control', 'viewport', 'context', 'keyboard']:
                         marker = '[xo-ui] ' + kind + ' '
                         if marker not in line:
                             continue
                         value = json.loads(line.split(marker, 1)[1])
-                        if kind == 'control':
+                        if kind == 'keyboard':
+                            self.keyboard_top = value['top']
+                        elif kind == 'control':
                             self.positions[value['id']] = value
                         elif kind == 'viewport':
                             self.viewport = value
@@ -180,6 +183,11 @@ class Smoke:
         self.controls()
         state = adb('shell', 'dumpsys', 'input_method')
         assert re.search(r'(mInputShown=true|isInputViewShown\(\)=true|mIsInputViewShown=true)', state), '검색 IME 미표시'
+        self.trace(r'\[xo-ui\] keyboard ', 6)
+        self.controls()
+        assert self.keyboard_top is not None, '키보드 가림 영역 없음'
+        assert 'play-toggle' in self.positions, 'IME 중 진행 조작이 보이지 않음'
+        assert self.positions['play-toggle']['y'] < self.keyboard_top, 'IME가 진행 조작을 가림'
         self.shot('search-ime')
         self.back()
         self.focus()

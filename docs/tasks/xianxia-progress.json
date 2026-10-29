@@ -2,7 +2,7 @@
   "schema_version": 1,
   "repository": "hddy774/project-hora",
   "tracking_pr": 32,
-  "updated_at": "2026-10-29T15:17:49Z",
+  "updated_at": "2026-10-29T17:28:02Z",
   "tasks": [
     {
       "id": "XO-01",
@@ -124,7 +124,7 @@
       "phase": "validation",
       "order": 7,
       "approval": "approved",
-      "status": "verifying",
+      "status": "done",
       "depends_on": [
         "XO-03",
         "XO-04",
@@ -132,8 +132,8 @@
         "XO-06",
         "XO-07"
       ],
-      "note": "실제 입력 검사 #54/#56, 초기 연결 수정 #61 병합. 첫 API24/34는 초기 로그 누락으로 실패(통과 제외), 수정된0.2.0 서명 APK로 재실행 중.",
-      "evidence": "CI 40895054866 실패; 재검증 40899449239"
+      "note": "동일 서명 APK로 API24/34 전체 실제 입력·구 저장 업데이트·재실행·런처 음성 대조·60초 무로그 통과. 각47 PNG·기기별 저장 원본/해시 확인. #68 병합.",
+      "evidence": "https://github.com/hddy774/project-hora/actions/runs/40919843068"
     },
     {
       "id": "XO-10",
@@ -171,14 +171,14 @@
       "phase": "ui",
       "order": 11,
       "approval": "approved",
-      "status": "verifying",
+      "status": "done",
       "depends_on": [
         "XO-11",
         "XO-06",
         "XO-05"
       ],
-      "note": "인물 검색/쪽/스크롤 #52, 확인/취소/현재대상 재검사 #55 병합. 실제 UI3+6검사·CI 통과. Android IME/복귀 수용 진행 중.",
-      "evidence": "PR #52,#55; CI 40893053590"
+      "note": "검색/쪽/스크롤·4분류·기연 확인/취소/재검사 회귀와 두 API의 IME·100/130/200% 수용 통과. #52/#55/#64/#70/#68 병합.",
+      "evidence": "https://github.com/hddy774/project-hora/actions/runs/40919843068"
     },
     {
       "id": "XO-13",
@@ -186,13 +186,13 @@
       "phase": "ui",
       "order": 12,
       "approval": "approved",
-      "status": "verifying",
+      "status": "done",
       "depends_on": [
         "XO-12",
         "XO-08"
       ],
-      "note": "관찰 추천/최신 알림 #59와 실제 연도 차트/범례 #58 병합·CI·9+8검사 통과. Android 입력 최종 수용 진행 중.",
-      "evidence": "PR #58,#59; CI 40896454817,40897098208"
+      "note": "추천/알림 무영향·실제 연도 차트/범례·모든 관찰 경로 CI와 API24/34 입력 및 큰 글자 수용 통과. #58/#59 병합.",
+      "evidence": "https://github.com/hddy774/project-hora/actions/runs/40919843068"
     },
     {
       "id": "UI-QA",
@@ -200,15 +200,15 @@
       "phase": "validation",
       "order": 13,
       "approval": "approved",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "XO-11",
         "XO-12",
         "XO-13",
         "XO-09"
       ],
-      "note": "API24/34 실입력·구 공개 저장 업데이트·IME·100/130/200%·재실행·런처 음성 대조와 큰 글자 상세 배치를 검증 중.",
-      "evidence": ""
+      "note": "API24·34,100/130/200%,IME·뒤로·7상세·4인물분류·업데이트/재실행·포커스 음성 대조·60초 무로그 통과. 각47 PNG와200% 키보드 진행바 실화면 확인. 물리 ARM64는 기기없어 미실행.",
+      "evidence": "https://github.com/hddy774/project-hora/actions/runs/40919843068"
     },
     {
       "id": "XO-14",
@@ -229,13 +229,13 @@
       "phase": "release",
       "order": 14,
       "approval": "approved",
-      "status": "planned",
+      "status": "in_progress",
       "depends_on": [
         "XO-14",
         "UI-QA"
       ],
-      "note": "APK 한 개, 기존 게시자 인증서 유지, 게시 후 다운로드 해시 확인.",
-      "evidence": ""
+      "note": "13/14 수용 완료. 최종 문서/체크표 병합 후 main의 고정 SHA로 공식 서명·두 API 재검증·APK 하나 최신 릴리스 배포 진행.",
+      "evidence": "https://github.com/hddy774/project-hora/pull/32"
     }
   ]
 }

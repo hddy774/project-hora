@@ -4,7 +4,7 @@ name: Xianxia Observer
 
 on:
   push:
-    branches: [main, 'claude/**', 'codex/**']
+    branches: [main]
     paths:
       - 'games/xianxia-observer/**'
       - '.github/workflows/xianxia-observer.yml'
@@ -32,7 +32,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: xianxia-observer-${{ github.ref }}-${{ github.event_name }}
+  group: xianxia-observer-${{ github.head_ref || github.ref_name }}-${{ github.event_name == 'workflow_dispatch' && 'release' || 'check' }}
   cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 
 env:

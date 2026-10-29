@@ -38,7 +38,11 @@ namespace Xianxia.App
                     width = control.Bounds.Width,
                     height = control.Bounds.Height,
                     enabled = control.IsEffectivelyEnabled,
+                    rootVisible = top.IsVisible,
+                    rootHitVisible = top.IsHitTestVisible,
+                    rootEnabled = top.IsEffectivelyEnabled,
                     hit = top.InputHitTest(point)?.GetType().Name,
+                    viewHit = control.InputHitTest(top.TranslatePoint(point, control) ?? point)?.GetType().Name,
                 }));
             }
         }
@@ -65,14 +69,14 @@ namespace Xianxia.App
             }
 
             GameSession session = _session ??= GameSession.LoadOrCreate(SaveStore.CreateDefault());
+            session.Runner.SetRunning(false);
             session.Runner.Start();
-            session.Runner.SetRunning(true);
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow = new Window
                 {
                     Title = "선로만상록 프로젝트",
-                    Content = new MainView(session),
+                    Content = new MainView(session, startWhenReady: true),
                     Width = 412,
                     Height = 860,
                 };
@@ -80,11 +84,11 @@ namespace Xianxia.App
             }
             else if (ApplicationLifetime is IActivityApplicationLifetime activity)
             {
-                activity.MainViewFactory = () => new MainView(session);
+                activity.MainViewFactory = () => new MainView(session, startWhenReady: true);
             }
             else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
             {
-                singleView.MainView = new MainView(session);
+                singleView.MainView = new MainView(session, startWhenReady: true);
             }
 
             if (this.TryGetFeature<IActivatableLifetime>() is { } activatable)

@@ -21,6 +21,28 @@ namespace Xianxia.App.Tests
     /// <summary>좌표 입력에서 실제 게임 동작까지의 회귀.</summary>
     public sealed class PointerInputTests
     {
+        /// <summary>입력 장면을 준비하기 전에는 자동 진행으로 초기 화면을 계속 교체하지 않는다.</summary>
+        [AvaloniaTest]
+        public void AutomaticStart_WaitsForAHitTestableFrame()
+        {
+            World world = WorldFactory.Create(new WorldSettings { Seed = 7, Population = 100 });
+            GameSession session = new(new SaveStore(Path.Combine(TestContext.CurrentContext.WorkDirectory,
+                "ready-saves")), world);
+            session.Runner.SetRunning(false);
+            MainView view = new(session, startWhenReady: true);
+            view.RefreshNow(force: true);
+            Assert.That(session.Runner.IsRunning, Is.False);
+            Window window = new() { Width = 360, Height = 640, Content = view };
+            window.Show();
+            try
+            {
+                using WriteableBitmap? frame = window.CaptureRenderedFrame();
+                view.RefreshNow(force: false);
+                Assert.That(session.Runner.IsRunning, Is.True);
+            }
+            finally { window.Close(); }
+        }
+
         /// <summary>속도 선택 버튼의 실제 중심을 누르면 시트가 열린다.</summary>
         /// <param name="touch">터치이면true, 마우스이면false.</param>
         [AvaloniaTest]

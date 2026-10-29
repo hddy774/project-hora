@@ -12,7 +12,7 @@ namespace Xianxia.Simulation.Data
         /// <summary>최고 등급(신품).</summary>
         public const int MaxGrade = GradeCount - 1;
 
-        /// <summary>장경각에서 구할 수 있는 최고 등급. 신품(19)은 비경·경매로만 얻는다.</summary>
+        /// <summary>장경각에서 구할 수 있는 최고 등급. 신품(19)은 정상 획득 경로가 없는 예약 등급이다(비경 최대18·경매 최대16).</summary>
         public const int MaxPavilionGrade = 18;
 
         private static readonly string[] s_names =

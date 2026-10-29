@@ -47,7 +47,7 @@ namespace Xianxia.Simulation.Data
 
         private static readonly string[] s_facilityEffects =
         {
-            "본산·영지 수련 +6%/단계",
+            "본산·영지 수련 +4%/단계",
             "공법 상한 +3등급/단계",
             "100년마다 단약 6개/단계",
             "제자 전투력 +3%/단계",

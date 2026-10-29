@@ -113,7 +113,7 @@ namespace Xianxia.App.Pages
         {
             for (int realm = 1; realm < Realms.Count; realm++)
             {
-                AddRecord(rows, Realms.Name(realm) + " 최초", records.FirstReach[realm]);
+                AddRecord(rows, Realms.Name(realm) + " 첫 돌파(개벽 이후)", records.FirstReach[realm]);
                 AddRecord(rows, Realms.Name(realm) + " 최연소", records.YoungestReach[realm]);
             }
 
@@ -122,7 +122,7 @@ namespace Xianxia.App.Pages
             AddRecord(rows, "최고 전투력", records.HighestPower);
             AddRecord(rows, "최다 승리", records.MostWins);
             AddRecord(rows, "최다 영석", records.Richest);
-            AddRecord(rows, "최다 대비무 우승", records.MostTournamentWins);
+            AddRecord(rows, "대비무 우승이 가장 많은 영혼(생 단위)", records.MostTournamentWins);
         }
 
         private static void AddRecord(List<RowModel> rows, string label, RecordEntry? record)

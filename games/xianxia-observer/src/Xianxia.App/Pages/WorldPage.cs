@@ -135,8 +135,8 @@ namespace Xianxia.App.Pages
             {
                 _warTitle.Text = "제" + war.WarNumber + "차 정마대전 진행 중";
                 _warLine.Text = "종전까지 " + Fmt.Years(change) + " (천 년 전쟁 · 만 년 휴전)";
-                _warDetail.Text = "청운종 " + war.OrthodoxWins + "승 : " + war.DemonicWins + "승 천마문 · 사상자 "
-                    + Fmt.Number(war.Casualties) + "명";
+                _warDetail.Text = "청운종 " + war.OrthodoxWins + "승 : " + war.DemonicWins + "승 천마문 · 경지 하락 "
+                    + Fmt.Number(war.Casualties) + "건";
                 _warHighlights.Text = Highlights(war.Highlights);
                 _warHighlights.IsVisible = war.Highlights.Count > 0;
                 return;

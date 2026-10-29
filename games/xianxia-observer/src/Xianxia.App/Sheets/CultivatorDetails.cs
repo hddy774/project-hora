@@ -38,7 +38,7 @@ namespace Xianxia.App.Sheets
                         : Math.Max(0, world.Year - person.CompanionSinceYear)));
                     break;
                 case 5:
-                    facts.Add("현재 생", person.LifeNumber + "번째 · " + Fmt.Years(person.BornYear) + " 시작");
+                    facts.Add("현재 생", person.LifeNumber + "번째 · " + Fmt.Years(person.BornYear) + " 입세");
                     break;
                 default:
                     facts.Add("현생 / 전생 기억", person.LifeNumber + "생 / "

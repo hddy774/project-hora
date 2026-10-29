@@ -225,7 +225,7 @@ namespace Xianxia.Simulation.Systems
                 || soul.TournamentWins > records.MostTournamentWins.Value))
             {
                 records.MostTournamentWins = new RecordEntry(world.Year, soul.SoulId, soul.Name, soul.TournamentWins,
-                    "대비무 우승 " + soul.TournamentWins + "회");
+                    "대비무 우승한 생 " + soul.TournamentWins + "번");
             }
         }
     }

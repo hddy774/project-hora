@@ -87,7 +87,7 @@ namespace Xianxia.Simulation.Model
 
     /// <summary>끝난 한 생의 요약.</summary>
     /// <param name="LifeNumber">몇 번째 생.</param>
-    /// <param name="BornYear">태어난 해.</param>
+    /// <param name="BornYear">16세로 해당 생에 입세한 해.</param>
     /// <param name="DeathYear">끝난 해.</param>
     /// <param name="Age">끝난 나이.</param>
     /// <param name="Realm">최고 경지.</param>

@@ -47,7 +47,7 @@ namespace Xianxia.App.Pages
             _summary.Add("산수 인원 / 전투력", rogues.Members + "명 / " + Fmt.Short(rogues.Power));
             _summary.Add("수명 좌화", Fmt.Number(world.Totals.NaturalDeaths));
             _summary.Add("경지 붕괴", Fmt.Number(world.Totals.CollapseDeaths));
-            _summary.Add("전쟁 사상자", Fmt.Number(world.Wars.Sum(war => (long)war.Casualties)
+            _summary.Add("전쟁 경지 하락", Fmt.Number(world.Wars.Sum(war => (long)war.Casualties)
                 + (world.War.AtWar ? world.War.Casualties : 0)));
             _summary.End();
         }

@@ -1,7 +1,9 @@
 // 저장 파일 관리. 앱 전용 폴더에 world.sav(gzip JSON) 하나를 둔다. 인터넷 권한 없이 기기 안에만 저장한다.
 // 쓰기는 임시 파일에 쓴 뒤 바꿔치기해, 저장 중 앱이 꺼져도 이전 저장이 깨지지 않는다.
 using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using Xianxia.Simulation.Model;
 using Xianxia.Simulation.Persistence;
 
@@ -11,13 +13,17 @@ namespace Xianxia.App.Services
     internal sealed class SaveStore
     {
         private const string FileName = "world.sav";
+        private const string BrokenPrefix = FileName + ".broken-";
         private readonly string _directory;
+        private readonly TimeProvider _clock;
 
         /// <summary>저장소를 만든다.</summary>
         /// <param name="directory">저장 폴더.</param>
-        internal SaveStore(string directory)
+        /// <param name="clock">격리 이름용 UTC 시계. 세계 난수와 무관하다.</param>
+        internal SaveStore(string directory, TimeProvider? clock = null)
         {
             _directory = directory;
+            _clock = clock ?? TimeProvider.System;
         }
 
         /// <summary>저장 파일 경로.</summary>
@@ -66,6 +72,11 @@ namespace Xianxia.App.Services
 
             try
             {
+                if (FileSize > WorldSerializer.MaxCompressedBytes)
+                {
+                    throw new SaveFormatException("저장 파일이 허용 크기를 초과했습니다.");
+                }
+
                 return WorldSerializer.FromBytes(File.ReadAllBytes(FilePath));
             }
             catch (SaveFormatException exception)
@@ -90,12 +101,59 @@ namespace Xianxia.App.Services
         {
             try
             {
-                File.Move(FilePath, FilePath + ".broken", overwrite: true);
+                File.Move(FilePath, NextBrokenPath());
+                string[] files = Directory.GetFiles(_directory, BrokenPrefix + "*")
+                    .Where(IsTimestampedBroken)
+                    .OrderBy(path => Path.GetFileName(path)[..(BrokenPrefix.Length + 14)], StringComparer.Ordinal)
+                    .ThenBy(BrokenSequence).ToArray();
+                foreach (string path in files.Take(Math.Max(0, files.Length - 3)))
+                {
+                    File.Delete(path);
+                }
             }
             catch (IOException)
             {
-                // 보관에 실패해도 다음 저장이 덮어쓰므로 진행에는 문제가 없다.
+                // 격리·정리 권한이 없어도 시작 화면은 열 수 있어야 한다.
             }
+            catch (UnauthorizedAccessException)
+            {
+                // 파일 시스템 오류를 세계 손상 예외와 구분해 시작 중단을 피한다.
+            }
+        }
+
+        /// <summary>같은 초에 오래된 기본 이름이 정리됐어도 번호를 재사용하지 않는다.</summary>
+        private string NextBrokenPath()
+        {
+            string stamp = _clock.GetUtcNow().ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            string stem = Path.Combine(_directory, BrokenPrefix + stamp);
+            string[] files = Directory.GetFiles(_directory, BrokenPrefix + stamp + "*")
+                .Where(IsTimestampedBroken).ToArray();
+            int next = files.Length == 0 ? 0 : files.Max(BrokenSequence) + 1;
+            return next == 0 ? stem : stem + "-" + next.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>기존 .broken 또는 사용자가 만든 다른 이름의 자료는 정리하지 않는다.</summary>
+        private static bool IsTimestampedBroken(string path)
+        {
+            string name = Path.GetFileName(path);
+            if (name.Length < BrokenPrefix.Length + 14)
+            {
+                return false;
+            }
+
+            string stamp = name.Substring(BrokenPrefix.Length, 14);
+            return DateTimeOffset.TryParseExact(stamp, "yyyyMMddHHmmss", CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal, out _) && (name.Length == BrokenPrefix.Length + 14
+                || (name[BrokenPrefix.Length + 14] == '-' && BrokenSequence(path) > 0));
+        }
+
+        /// <summary>10以上の連番も文字列順でなく数値順に並べる。</summary>
+        private static int BrokenSequence(string path)
+        {
+            string name = Path.GetFileName(path);
+            int start = BrokenPrefix.Length + 15;
+            return name.Length > start && int.TryParse(name.AsSpan(start), NumberStyles.None,
+                CultureInfo.InvariantCulture, out int value) ? value : 0;
         }
     }
 }

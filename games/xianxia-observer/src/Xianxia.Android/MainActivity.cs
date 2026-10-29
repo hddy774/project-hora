@@ -5,10 +5,10 @@ using Avalonia.Android;
 
 namespace Xianxia.Android
 {
-    /// <summary>선협 관찰의 유일한 Activity.</summary>
+    /// <summary>선로만상록 프로젝트의 유일한 Activity.</summary>
     [Activity(
         Name = "org.hora.xianxiaobserver.MainActivity",
-        Label = "선협 관찰",
+        Label = "선로만상록 프로젝트",
         Theme = "@style/SeonhyeopTheme",
         Icon = "@mipmap/ic_launcher",
         RoundIcon = "@mipmap/ic_launcher_round",

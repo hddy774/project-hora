@@ -56,7 +56,7 @@ namespace Xianxia.App.Views
                     VerticalAlignment = VerticalAlignment.Center,
                 },
             };
-            TextBlock title = Ui.Text("선협 관찰", 15, Palette.Accent, bold: true);
+            TextBlock title = Ui.Text("선로만상록 프로젝트", 15, Palette.Accent, bold: true);
             StackPanel titles = Ui.Column(0, title, _subtitle);
             titles.VerticalAlignment = VerticalAlignment.Center;
             _year.HorizontalAlignment = HorizontalAlignment.Right;

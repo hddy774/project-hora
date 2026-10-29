@@ -1,4 +1,12 @@
-# Hora Economic Lab · 호라경제연구실
+# 선로만상록 프로젝트
+
+고서 목판과 수묵 산수 테마의 오프라인 선협 관찰 시뮬레이션입니다.
+현재 개발은 [게임 소개·실행 방법](games/xianxia-observer/README.md)과 [v0.2.0 대표 PR #32](https://github.com/hddy774/project-hora/pull/32)에서 확인할 수 있습니다.
+게임 식별자 `org.hora.xianxiaobserver`와 기존 서명은 업데이트 호환을 위해 유지합니다.
+
+아래 Hora Economic Lab 자료는 같은 저장소의 기존 경제 게임 개발 기록입니다.
+
+## Hora Economic Lab · 호라경제연구실
 
 > **🔧 C# 재설계 진행 중 (2026-10-28~)** — [현행 피드백](docs/redesign/01-feedback.md) · [새 기획서](docs/redesign/02-game-design.md) · [작업 명세](docs/tasks/README.md)
 > 규칙: [GitHub 사용](docs/standards/github-workflow.md) · [C# 코드](docs/standards/coding-conventions.md) · [개발 프로세스](docs/standards/development-process.md) · AI 지침 [AGENTS.md](AGENTS.md)

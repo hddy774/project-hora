@@ -15,7 +15,7 @@ namespace Xianxia.App.Sheets
         /// <param name="link">도감 연결.</param>
         internal HelpSheet(INavigator navigator, SheetLink link) : base(navigator, link)
         {
-            Title = "선협 관찰 · 도감";
+            Title = "선로만상록 프로젝트 · 도감";
             Body.Children.Add(Ui.Section("관찰하는 천하", Ui.Text(
                 "수선자들은 수련·탐색·거래·기예·비무를 스스로 선택합니다. 상단에서 진행/정지와 속도를 바꾸세요. "
                 + "인물·종문·지도·역사 항목을 누르면 자세한 내용을 볼 수 있습니다. 뒤로 키는 상세 시트부터 닫습니다.")));

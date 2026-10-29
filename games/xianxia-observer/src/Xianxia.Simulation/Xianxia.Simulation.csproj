@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- 선협 관찰 시뮬레이션 코어: UI·플랫폼에 의존하지 않는 순수 C# 라이브러리. -->
+  <!-- 선로만상록 프로젝트 시뮬레이션 코어: UI·플랫폼에 의존하지 않는 순수 C# 라이브러리. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>Xianxia.Simulation</RootNamespace>

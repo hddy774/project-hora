@@ -160,8 +160,9 @@ namespace Xianxia.App.Controls
 
         private void DrawSideLabel(DrawingContext context, string text, double x, Color color, bool alignRight)
         {
-            FormattedText formatted = new(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, s_typeface, 13 * Typography.Scale,
-                Palette.Brush(color));
+            double fontSize = 13 * Typography.Scale;
+            FormattedText formatted = new(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+                s_typeface, fontSize, Palette.Brush(color));
             double left = (x * Bounds.Width) - (alignRight ? formatted.Width : 0);
             context.DrawText(formatted, new Point(left, MapHeight - 14));
         }

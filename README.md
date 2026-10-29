@@ -1,7 +1,9 @@
 # 선로만상록 PC · Chronicles of Myriad Immortal Paths
 
-> **2026-10-29 다음 기획:** [PC 0.2.0 기획 — 세계관 정본 정렬](docs/plans/PC_0.2.0_PLAN.md)
-> (0.1.0 기반 통합 → 0.2.0 오행 영근·7품계·천교·영맥, Codex 작업 원장 V020-*).
+> **2026-10-29 다음 기획:** [PC 0.2.0 통합 기획 — 55개 작업·병렬 서브 PR](docs/plans/PC_0.2.0_PLAN.md)
+> (기반·오행·7품계·천교·영맥과 무인·종족·인구·지리·다목표 AI·생애 정책까지 0.2.0 통합).
+> [대표 Draft PR #2](https://github.com/hddy774/Chronicles-of-Myriad-Immortal-Paths/pull/2) ·
+> [개발 이슈 #3](https://github.com/hddy774/Chronicles-of-Myriad-Immortal-Paths/issues/3).
 >
 > **2026-09-02 현재 공식 기준:** `VERSION 0.0.22`, GitHub
 > `main@9b0fda8134c01b387bdef28caf281d99a7095190`. 로컬 Release `66/66`,

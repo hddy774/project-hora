@@ -1,0 +1,1094 @@
+{
+  "status": "기획 확장 완료·구현 전",
+  "implementation_target": "PC / Chronicles-of-Myriad-Immortal-Paths",
+  "release": "0.2.0",
+  "source_plan_commit": "58cdf9d637534e1b2f66242b1b7f25c6194111ed",
+  "notion_source": "https://app.notion.com/p/408acc9e61758108b499f2dda97e3eb5",
+  "canonical_source": "https://app.notion.com/p/3ddacc9e61758187a738e5affe98a7b7",
+  "original_tasks": 32,
+  "new_tasks": 23,
+  "total_tasks": 55,
+  "implemented_new_scope": 0,
+  "automatic_deferral_to_030": false,
+  "tasks": [
+    {
+      "id": "V020-A01",
+      "title": "0.0.27 브랜치 → 대표 통합 브랜치 병합 PR, Release·구조·XAML·원장 재검증",
+      "owner": "Docs/Release",
+      "gate": "기존 병합 지시 적용·실제 검사 통과",
+      "acceptance": "통합 기준 SHA와 실제 테스트 결과(기존 기준 75/75)",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-A02",
+      "title": "Canon Map `docs/canon/canon-map.json` + `scripts/validate-canon-map.ps1` (정본 항목·Notion URL·코드 ID·상태 Canon/PC-TEMP/Deprecated)",
+      "owner": "Core",
+      "gate": "—",
+      "acceptance": "검증 PASS, 기존 PC-TEMP 전부 등재",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-A03",
+      "title": "저장 단절 준비: schema 26/33 상수, 이전 저장 호환 불가 경로 테스트",
+      "owner": "Persistence",
+      "gate": "D-06",
+      "acceptance": "테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-A04",
+      "title": "0.2.0 내부 선행 기준선·CHANGELOG·기반 evidence 확정",
+      "owner": "Docs/Release",
+      "gate": "D-01",
+      "acceptance": "docs/evidence/0.2.0/foundation.md; 별도 0.1.0 게시 불필요",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A02",
+        "V020-A03"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-B01",
+      "title": "`QualityTier` 7품계, 경계·배율 `PC-TEMP-QUALITY-SCALE-020`, 전 사용처 이행",
+      "owner": "Core",
+      "gate": "D-02",
+      "acceptance": "경계 0.01 단위 테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A04"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-B02",
+      "title": "폐품 기능 결손 판정(공법서·법술서 손상, 법보 파손)",
+      "owner": "Simulation",
+      "gate": "D-02",
+      "acceptance": "테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-B01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-C01",
+      "title": "오행 5영근 SoA·생성·저장",
+      "owner": "Simulation",
+      "gate": "D-03",
+      "acceptance": "생성 분포·hash 테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-B01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-C02",
+      "title": "영근별 층·대원만·대표 경지, `CultivationDetailProgress` 이행",
+      "owner": "Simulation",
+      "gate": "—",
+      "acceptance": "결정론 테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-C01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-C03",
+      "title": "Work 배분(공법 오행 × 거점 적합성 × 전략), 50년 불변식 보정",
+      "owner": "Simulation",
+      "gate": "D-04",
+      "acceptance": "보정 보고서",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-C02",
+        "V020-E01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-C04",
+      "title": "오행조화 지표",
+      "owner": "Simulation",
+      "gate": "—",
+      "acceptance": "테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-C02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-C05",
+      "title": "축기 자격·축기단 보정·Preflight 원인",
+      "owner": "Simulation",
+      "gate": "—",
+      "acceptance": "테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-C03",
+        "V020-C04"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-C06",
+      "title": "과잉 흡수 영근 손상",
+      "owner": "Simulation",
+      "gate": "—",
+      "acceptance": "테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-C03"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-C07",
+      "title": "연기경 3→4층 병목 재매핑",
+      "owner": "Simulation",
+      "gate": "—",
+      "acceptance": "테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-C02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-D01",
+      "title": "입문 재정의, “범인” 상태, 입문 기간 보정",
+      "owner": "Simulation",
+      "gate": "D-05",
+      "acceptance": "중앙값 1~5년",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-C01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-E01",
+      "title": "영맥 공급·오행 적합성·탁도·안정성 생성",
+      "owner": "Simulation",
+      "gate": "—",
+      "acceptance": "생성 테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A04",
+        "V020-K01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-E02",
+      "title": "장소 점유 카운터·혼잡 효율",
+      "owner": "Simulation",
+      "gate": "—",
+      "acceptance": "성능 테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-E01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-E03",
+      "title": "AI 수행 거점 선택·이주·점유자 도전",
+      "owner": "Simulation",
+      "gate": "—",
+      "acceptance": "행동 분포 보고",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-E02",
+        "V020-C03"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-B03",
+      "title": "절대 자질 5등급 평가",
+      "owner": "Simulation",
+      "gate": "—",
+      "acceptance": "테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-C04"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-B04",
+      "title": "상대 평가·주 거점 권역·재평가 스케줄",
+      "owner": "Simulation",
+      "gate": "D-07·D-12",
+      "acceptance": "테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-B03",
+        "V020-I01",
+        "V020-K01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-B05",
+      "title": "천교·공석·보류·천교 후보",
+      "owner": "Simulation",
+      "gate": "D-11",
+      "acceptance": "결정론 테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-B04"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-B06",
+      "title": "명성 파생·AI 인지 경로 연결(행동 변경)",
+      "owner": "Simulation",
+      "gate": "D-08",
+      "acceptance": "경쟁 활성도 테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-B05"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-Q01",
+      "title": "Query DTO: 오행·천교·영맥·무인·종족·인구·계층 지도·AI 판단 이유",
+      "owner": "Queries",
+      "gate": "—",
+      "acceptance": "관찰 무영향 테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-B05",
+        "V020-E02",
+        "V020-H01",
+        "V020-I01",
+        "V020-J01",
+        "V020-K01",
+        "V020-L01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-F01",
+      "title": "인물 상세 오행 영근·조화·자격 패널",
+      "owner": "Desktop",
+      "gate": "—",
+      "acceptance": "화면 확인",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-Q01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-F02",
+      "title": "자질 평가·명성 표기",
+      "owner": "Presentation",
+      "gate": "—",
+      "acceptance": "화면 확인",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-Q01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-F03",
+      "title": "천교 보드 탭·숨은 천교 필터",
+      "owner": "Desktop",
+      "gate": "—",
+      "acceptance": "닫힘 시 query 0",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-Q01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-F04",
+      "title": "지도 영맥 레이어",
+      "owner": "Desktop",
+      "gate": "—",
+      "acceptance": "화면 확인",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-Q01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-F05",
+      "title": "용어 정합(품질명·범인·「선로만상록」)",
+      "owner": "Presentation",
+      "gate": "—",
+      "acceptance": "XAML 검증",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-F01",
+        "V020-F02",
+        "V020-F03",
+        "V020-F04"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-G01",
+      "title": "저장 schema 26/33 왕복·이전 저장 표시",
+      "owner": "Persistence",
+      "gate": "D-06",
+      "acceptance": "테스트",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-B06",
+        "V020-D01",
+        "V020-H03",
+        "V020-I03",
+        "V020-J03",
+        "V020-K03",
+        "V020-L03",
+        "V020-M02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-G02",
+      "title": "결정론(AdvanceTo·chunk·checkpoint) 전체",
+      "owner": "Tests",
+      "gate": "—",
+      "acceptance": "PASS",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-G01",
+        "V020-N01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-G03",
+      "title": "10,000명 성능·100배속 60초",
+      "owner": "Tests",
+      "gate": "실측",
+      "acceptance": "예산 통과",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-G02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-G04",
+      "title": "전 범위 보정 보고서: 입문·오행·천교·혼잡·무인·종족·인구·AI·생애",
+      "owner": "Docs/Release",
+      "gate": "—",
+      "acceptance": "보고서",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-G03"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-G05",
+      "title": "VERSION 0.2.0, CHANGELOG, evidence, traceability, Notion 동기화, package",
+      "owner": "Docs/Release",
+      "gate": "—",
+      "acceptance": "`docs/evidence/0.2.0`",
+      "status": "planned",
+      "origin": "기존 32개",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-G04",
+        "V020-N02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-H01",
+      "title": "무인 독립 10경지·수선/무예 병행 상태 계약",
+      "owner": "Core",
+      "gate": "이름·수치 PC-TEMP",
+      "acceptance": "영근 보유와 수련 경로를 혼동하지 않는 상태·저장 검사",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-H02",
+      "title": "무인 단련·돌파·부상·수명 곡선",
+      "owner": "Simulation",
+      "gate": "무도 성장 보정",
+      "acceptance": "10경지 진행·최고 기본수명600세·자동 수선 경지 부여 없음",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-H01",
+        "V020-J01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-H03",
+      "title": "무인/수선자 전투 기여와 전력 보정",
+      "owner": "Simulation",
+      "gate": "종단 전력 보정",
+      "acceptance": "동일 조건에서 무인 최고와 금단 전력이 비등한 분포·장비/환경 별도",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-H02",
+        "V020-B01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-H04",
+      "title": "무인 상세·순위·생애·성장 측정",
+      "owner": "Queries",
+      "gate": "—",
+      "acceptance": "수선 경지와 독립 표기·조회 무영향·성장/전투 보고",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-H03",
+        "V020-Q01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-I01",
+      "title": "종족·기원·몸·요괴 호칭의 독립 정의",
+      "owner": "Core",
+      "gate": "종족 상세 PC-TEMP",
+      "acceptance": "요괴를 하나의 종족으로 고정하지 않는 데이터·ID 검증",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-I02",
+      "title": "종족별 적합성·기본수명·서식·기예 연결",
+      "owner": "Simulation",
+      "gate": "정본 외 계수 PC-TEMP",
+      "acceptance": "같은 선천 영근 수치의 절대 품계는 종족·지역에 따라 바뀌지 않음",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-I01",
+        "V020-K02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-I03",
+      "title": "요괴의 발생·성장·사회/조직 참여와 기록",
+      "owner": "Simulation",
+      "gate": "발생/변화 조건 PC-TEMP",
+      "acceptance": "상태 변화 원인·자원 비용·개체/집계 보존·저장 재현",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-I02",
+        "V020-J02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-J01",
+      "title": "권역·종족·연령별 범인/무인/수선 인구 원장",
+      "owner": "Simulation",
+      "gate": "인구 기준 PC-TEMP",
+      "acceptance": "집계+개체 총량 일치·중복 계상 없음·큰 수 오버플로 검사",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-I01",
+        "V020-K01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-J02",
+      "title": "출생·사망·이주·경로 전환 인구 회계",
+      "owner": "Simulation",
+      "gate": "출산 적용 범위",
+      "acceptance": "기초+출생-사망+순이주=기말, 수선자는 소수로 분포 측정",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-J01",
+        "V020-M03"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-J03",
+      "title": "입문 후보/주목 인물 개체화와 활동 예산",
+      "owner": "Runtime",
+      "gate": "활동 인원 예산",
+      "acceptance": "개체화/집계 복귀 총량 보존·10,000명 활성 예산·chunk/저장 재현",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-J02",
+        "V020-D01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-J04",
+      "title": "인구·직업·수련 경로 관찰 조회와 화면",
+      "owner": "Queries",
+      "gate": "—",
+      "acceptance": "범인·무인·수선자 분리·인구 피라미드/이동 원인·닫힌 화면 query0",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-J03",
+        "V020-H04"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-K01",
+      "title": "대도계·세계·층계·대륙·권역·거점 ID와 통로",
+      "owner": "Core",
+      "gate": "06-51 구성안/정본 분리",
+      "acceptance": "중앙세계≠중앙대륙·5대륙/5층천은 지역 사례·순환/고아 ID 검사",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-K02",
+      "title": "지형·수계·영맥·생태·자원 공급 생성",
+      "owner": "Simulation",
+      "gate": "지리·생태 계수 PC-TEMP",
+      "acceptance": "공중/지하/심해 포함 유형·자원 한계·동일 seed·영맥 공급 단위",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-K01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-K03",
+      "title": "통로 이동·시간·위험·운송·권리와 소유",
+      "owner": "Simulation",
+      "gate": "통로 비용 PC-TEMP",
+      "acceptance": "방향 이름으로 연결 생성 금지·이동/화물/재산 중복 계상 없음",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-K02",
+        "V020-E02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-K04",
+      "title": "세계/지역 지도 계층·영맥/인구/통로 레이어",
+      "owner": "Presentation",
+      "gate": "—",
+      "acceptance": "계층 이동·목록 동등 접근·필터/뒤로/선택 보존·닫힌 화면 query0",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-K03",
+        "V020-J01",
+        "V020-Q01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-L01",
+      "title": "AI 장기 목표·당면 동기·신념 계약",
+      "owner": "Core",
+      "gate": "사용자 지시로 다목표0.2.0 포함",
+      "acceptance": "전원 전투력1위 고정 제거·목표/수단/명성/진실 분리",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-L02",
+      "title": "다목표 행동 선택·수행 전략·거점/후원 연결",
+      "owner": "Simulation",
+      "gate": "효용 계수 PC-TEMP",
+      "acceptance": "행동 완료/중단 때만 결정·숨은 천교 진실을 AI 선택에 누출하지 않음",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-L01",
+        "V020-E03",
+        "V020-B06",
+        "V020-H02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-L03",
+      "title": "목표 변화·실패 회복·사회 반응·선택 이유",
+      "owner": "Simulation",
+      "gate": "전환 임계 PC-TEMP",
+      "acceptance": "다양한 목표의 행동 분포·반복/교착/굶주림·결정론·관찰 무영향",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-L02",
+        "V020-I03",
+        "V020-K03"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-M01",
+      "title": "원영 이상 미정 수치의 출처·잠정 매개변수 정리",
+      "owner": "Core",
+      "gate": "정본 수치 결정",
+      "acceptance": "확정 수명150/300/600과 미정 상위값 분리·모든 잠정값 RequiresReview",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-M02",
+      "title": "생애 종료·윤회 개시·기억과 자질 정책",
+      "owner": "Simulation",
+      "gate": "윤회 조건",
+      "acceptance": "윤회가 자동 자질 개선을 보장하지 않음·영혼/개체/인구 회계·저장 재현",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-M01",
+        "V020-I01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-M03",
+      "title": "일반 번식과 수선가문 출산 조건의 범위 정책",
+      "owner": "Core",
+      "gate": "부모 모두 금단 조건 적용 범위",
+      "acceptance": "미확정 조건을 전 생령에 전파하지 않는 정책·원장·검사",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-A02",
+        "V020-I01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-N01",
+      "title": "통합 관찰 시나리오·교차 시스템 수용",
+      "owner": "Tests",
+      "gate": "—",
+      "acceptance": "평범한 생령→경로 선택→자원/이동→천교/명성→생애까지 실제 경로 검증",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-F05",
+        "V020-H04",
+        "V020-I03",
+        "V020-J04",
+        "V020-K04",
+        "V020-L03",
+        "V020-M02"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    },
+    {
+      "id": "V020-N02",
+      "title": "확장 범위 Canon Map·잠정값·UI 문서 일치 감사",
+      "owner": "Docs/Release",
+      "gate": "—",
+      "acceptance": "55개 요구의 출처/코드/검사/PR 누락0·정본/기획/역사 역할 중복0",
+      "status": "planned",
+      "origin": "0.3.0 이월분 및 통합 검증을 0.2.0으로 편입",
+      "release": "0.2.0",
+      "depends_on": [
+        "V020-N01"
+      ],
+      "evidence": [],
+      "verification_sha": "",
+      "sub_pr": null,
+      "issue": 3
+    }
+  ],
+  "parallel_waves": [
+    [
+      "V020-A01"
+    ],
+    [
+      "V020-A02",
+      "V020-A03"
+    ],
+    [
+      "V020-A04",
+      "V020-H01",
+      "V020-I01",
+      "V020-K01",
+      "V020-L01",
+      "V020-M01"
+    ],
+    [
+      "V020-B01",
+      "V020-E01",
+      "V020-J01",
+      "V020-K02",
+      "V020-M02",
+      "V020-M03"
+    ],
+    [
+      "V020-B02",
+      "V020-C01",
+      "V020-E02",
+      "V020-H02",
+      "V020-I02",
+      "V020-J02"
+    ],
+    [
+      "V020-C02",
+      "V020-D01",
+      "V020-H03",
+      "V020-I03",
+      "V020-K03"
+    ],
+    [
+      "V020-C03",
+      "V020-C04",
+      "V020-C07",
+      "V020-J03"
+    ],
+    [
+      "V020-C05",
+      "V020-C06",
+      "V020-E03",
+      "V020-B03"
+    ],
+    [
+      "V020-B04"
+    ],
+    [
+      "V020-B05"
+    ],
+    [
+      "V020-B06",
+      "V020-Q01"
+    ],
+    [
+      "V020-F01",
+      "V020-F02",
+      "V020-F03",
+      "V020-F04",
+      "V020-H04",
+      "V020-K04",
+      "V020-L02"
+    ],
+    [
+      "V020-F05",
+      "V020-J04",
+      "V020-L03"
+    ],
+    [
+      "V020-G01",
+      "V020-N01"
+    ],
+    [
+      "V020-G02",
+      "V020-N02"
+    ],
+    [
+      "V020-G03"
+    ],
+    [
+      "V020-G04"
+    ],
+    [
+      "V020-G05"
+    ]
+  ],
+  "tracking_pr": 2,
+  "integration_branch": "codex/next-version-plan-2026-09-02",
+  "tracking_issue": 3
+}

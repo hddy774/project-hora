@@ -1,0 +1,46 @@
+name: PC 0.2.0 planning progress
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - 'docs/plans/**'
+      - 'scripts/pc-plan-progress.py'
+      - '.github/workflows/pc-plan-progress.yml'
+permissions:
+  contents: read
+  pull-requests: write
+concurrency:
+  group: pc-v020-progress-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  planning:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate requirements and dependencies
+        run: python scripts/pc-plan-progress.py validate
+      - name: Render current progress
+        run: python scripts/pc-plan-progress.py render | tee progress.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Update representative PR progress
+        if: github.event.pull_request.number == 2 && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const {data: pr} = await github.rest.pulls.get({...context.repo, pull_number: 2});
+            if (pr.head.sha !== context.payload.pull_request.head.sha) return;
+            const section = fs.readFileSync('progress.md', 'utf8').trim();
+            const start = '<!-- pc-v020-progress:start -->';
+            const end = '<!-- pc-v020-progress:end -->';
+            const current = pr.body || '';
+            const a = current.indexOf(start), b = current.indexOf(end);
+            if ((a < 0) !== (b < 0) || (a >= 0 && b < a)) {
+              throw new Error('Malformed progress markers; preserve existing body');
+            }
+            const body = a >= 0
+              ? current.slice(0, a) + section + current.slice(b + end.length)
+              : current + '\n\n' + section;
+            if (body !== current) await github.rest.pulls.update({...context.repo, pull_number: 2, body});

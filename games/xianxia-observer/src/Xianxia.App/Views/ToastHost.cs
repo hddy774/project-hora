@@ -1,5 +1,5 @@
 // 알림(원본에 없던 기능): 연대기급 사건과 관심 인물의 주요 사건을 화면 위쪽에 잠깐 띄운다.
-// 빠른 속도에서는 한 번에 많은 알림이 오므로 최신 3건만 보이고 나머지는 "외 n건"으로 줄인다.
+// 화면에는1건만 보이고 상세나 검색 입력 중에는 최신 보관 알림의 표시를 보류한다.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +15,7 @@ namespace Xianxia.App.Views
     /// <summary>알림 층.</summary>
     internal sealed class ToastHost
     {
-        private const int MaxVisible = 3;
+        private const int MaxVisible = 1;
         private static readonly TimeSpan s_lifetime = TimeSpan.FromSeconds(5);
         private readonly StackPanel _panel = new()
         {
@@ -28,6 +28,9 @@ namespace Xianxia.App.Views
         private readonly Action<SheetLink> _open;
         private World? _world;
         private long _lastSequence;
+        private Notice? _pendingNotice;
+        private string? _pendingMessage;
+        private bool _deferred;
 
         /// <summary>알림 층을 만든다.</summary>
         /// <param name="open">알림을 눌렀을 때 시트 열기.</param>
@@ -39,18 +42,30 @@ namespace Xianxia.App.Views
         /// <summary>화면 요소.</summary>
         internal Control View => _panel;
 
+        /// <summary>상세/검색 중 기존 알림도 입력을 가리지 않게 숨긴다.</summary>
+        /// <param name="deferred">보류 여부.</param>
+        internal void SetDeferred(bool deferred)
+        {
+            _deferred = deferred;
+            _panel.IsVisible = !deferred;
+        }
+
         /// <summary>새 알림을 가져오고 오래된 알림을 지운다.</summary>
         /// <param name="world">세계.</param>
-        /// <param name="enabled">알림을 띄울지(시트가 열려 있으면 띄우지 않고 건너뛴다).</param>
+        /// <param name="enabled">상세·검색 입력을 가리지 않고 표시할 수 있는가.</param>
         internal void Refresh(World world, bool enabled)
         {
             IReadOnlyList<Notice> notices = world.Chronicle.Notices;
+            SetDeferred(!enabled);
             long newest = notices.Count == 0 ? 0 : notices[^1].Sequence;
             if (!ReferenceEquals(world, _world))
             {
                 // 새 세계·불러오기: 이전 알림은 띄우지 않는다.
                 _world = world;
                 _lastSequence = newest;
+                _pendingNotice = null;
+                _panel.Children.Clear();
+                _toasts.Clear();
                 return;
             }
 
@@ -64,16 +79,9 @@ namespace Xianxia.App.Views
             }
 
             _lastSequence = Math.Max(_lastSequence, newest);
-            if (enabled && fresh.Count > 0)
+            if (fresh.Count > 0)
             {
-                int skipped = Math.Max(0, fresh.Count - MaxVisible);
-                for (int index = skipped; index < fresh.Count; index++)
-                {
-                    Notice notice = fresh[index];
-                    string extra = index == fresh.Count - 1 && skipped > 0 ? " (외 " + skipped + "건)" : string.Empty;
-                    string text = "[" + Services.Fmt.Years(notice.Year) + "] " + notice.Text + extra;
-                    Show(text, notice.Major ? Palette.Accent : Palette.Gold, SheetLink.ToCultivator(notice.SubjectId));
-                }
+                _pendingNotice = fresh[^1];
             }
 
             Expire();
@@ -83,7 +91,14 @@ namespace Xianxia.App.Views
         /// <param name="text">내용.</param>
         internal void Show(string text)
         {
-            Show(text, Palette.Favor, SheetLink.None);
+            if (_deferred)
+            {
+                _pendingMessage = text;
+            }
+            else
+            {
+                Show(text, Palette.Favor, SheetLink.None);
+            }
         }
 
         /// <summary>시간이 지난 알림을 지운다.</summary>
@@ -97,6 +112,29 @@ namespace Xianxia.App.Views
                     _panel.Children.Remove(_toasts[index].View);
                     _toasts.RemoveAt(index);
                 }
+            }
+
+            FlushPending();
+        }
+
+        private void FlushPending()
+        {
+            if (_deferred)
+            {
+                return;
+            }
+
+            if (_pendingMessage is { } message)
+            {
+                _pendingMessage = null;
+                _pendingNotice = null;
+                Show(message, Palette.Favor, SheetLink.None);
+            }
+            else if (_pendingNotice is { } notice)
+            {
+                _pendingNotice = null;
+                string text = "[" + Services.Fmt.Years(notice.Year) + "] " + notice.Text;
+                Show(text, notice.Major ? Palette.Accent : Palette.Gold, SheetLink.ToCultivator(notice.SubjectId));
             }
         }
 

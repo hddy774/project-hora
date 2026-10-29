@@ -135,6 +135,8 @@ namespace Xianxia.App.Views
         {
             _refreshQueued = false;
             SimulationRunner runner = Session.Runner;
+            bool showNotices = !_sheets.IsOpen && _topLevel?.FocusManager?.GetFocusedElement() is not TextBox;
+            _toasts.SetDeferred(!showNotices);
             if (_worldGeneration != Session.WorldGeneration)
             {
                 _worldGeneration = Session.WorldGeneration;
@@ -162,7 +164,7 @@ namespace Xianxia.App.Views
                 _transport.Refresh(runner);
                 _pages[CurrentTab].Refresh(world);
                 _sheets.Refresh(world);
-                _toasts.Refresh(world, enabled: true);
+                _toasts.Refresh(world, enabled: showNotices);
             });
             if (force)
             {

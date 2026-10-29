@@ -1,0 +1,15 @@
+<Solution>
+  <!-- Android 실행 프로젝트(src/Xianxia.Android)는 android 워크로드가 필요해 CI에서 따로 빌드한다. -->
+  <Folder Name="/src/">
+    <Project Path="src/Xianxia.Simulation/Xianxia.Simulation.csproj" />
+    <Project Path="src/Xianxia.App/Xianxia.App.csproj" />
+    <Project Path="src/Xianxia.Desktop/Xianxia.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Xianxia.Simulation.Tests/Xianxia.Simulation.Tests.csproj" />
+    <Project Path="tests/Xianxia.App.Tests/Xianxia.App.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/Xianxia.Tools/Xianxia.Tools.csproj" />
+  </Folder>
+</Solution>

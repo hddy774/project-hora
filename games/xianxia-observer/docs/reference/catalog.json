@@ -1,0 +1,4086 @@
+{
+  "Baseline": "17b48ad1bfcb58a9d32a8def0e74caa2027cb7f0",
+  "ApkSource": "f8838425f6a3303d11171605abba47008862491c",
+  "Balance": [
+    {
+      "Name": "DefaultPopulation",
+      "Value": 1000,
+      "Description": "기본 인구(영혼 수)."
+    },
+    {
+      "Name": "InitialRogueShare",
+      "Value": 0.2,
+      "Description": "처음 떠돌이(산수) 비율."
+    },
+    {
+      "Name": "StartingAge",
+      "Value": 16,
+      "Description": "환생·탄생 나이."
+    },
+    {
+      "Name": "FirstWarYear",
+      "Value": 3000,
+      "Description": "첫 전쟁이 시작되는 해. 종문이 자리 잡을 시간을 준다."
+    },
+    {
+      "Name": "WarDuration",
+      "Value": 1000,
+      "Description": "전쟁 기간(원본 천년 전쟁)."
+    },
+    {
+      "Name": "WarCycle",
+      "Value": 11000,
+      "Description": "전쟁 주기(원본 천년 전쟁 + 만년 휴전)."
+    },
+    {
+      "Name": "TournamentInterval",
+      "Value": 1000,
+      "Description": "대비무 대회 간격(휴전 중)."
+    },
+    {
+      "Name": "TournamentOffset",
+      "Value": 500,
+      "Description": "대비무 대회가 휴전 시작 뒤 몇 년째에 처음 열리는가."
+    },
+    {
+      "Name": "AuctionInterval",
+      "Value": 300,
+      "Description": "경매 간격."
+    },
+    {
+      "Name": "StipendInterval",
+      "Value": 100,
+      "Description": "녹봉·시설 결정 간격."
+    },
+    {
+      "Name": "RecruitmentInterval",
+      "Value": 50,
+      "Description": "입문 시험 간격."
+    },
+    {
+      "Name": "RerankInterval",
+      "Value": 300,
+      "Description": "직위 재편 간격(원본 500년 → 300년)."
+    },
+    {
+      "Name": "StatisticsInterval",
+      "Value": 100,
+      "Description": "통계 표본 간격."
+    },
+    {
+      "Name": "BaseQiGain",
+      "Value": 10,
+      "Description": "기본 수련 영기(경지별 1.55배씩 증가)."
+    },
+    {
+      "Name": "QiGainPerRealm",
+      "Value": 1.55,
+      "Description": "경지당 수련 영기 증가 배율."
+    },
+    {
+      "Name": "MajorFailureQiLoss",
+      "Value": 1,
+      "Description": "대경지 돌파 실패 시 잃는 대원만 영기 비율."
+    },
+    {
+      "Name": "MinorFailureQiLoss",
+      "Value": 0.3,
+      "Description": "소경지 돌파 실패 시 잃는 영기 비율."
+    },
+    {
+      "Name": "AscensionBase",
+      "Value": 0.2,
+      "Description": "비승(반선경 대원만 → 선계) 기본 확률."
+    },
+    {
+      "Name": "DuelExponent",
+      "Value": 2.5,
+      "Description": "전투 승률 곡선의 지수. 전투력 2배면 약 85% 승리."
+    },
+    {
+      "Name": "ElementAdvantage",
+      "Value": 1.15,
+      "Description": "오행 상극 전투력 보너스."
+    },
+    {
+      "Name": "InsightMax",
+      "Value": 1000,
+      "Description": "깨달음 최댓값."
+    },
+    {
+      "Name": "DaoHeartMax",
+      "Value": 100,
+      "Description": "도심 최댓값."
+    },
+    {
+      "Name": "MaxDisciples",
+      "Value": 3,
+      "Description": "기명 제자 최대 수(원본 3명)."
+    },
+    {
+      "Name": "MaxRivals",
+      "Value": 3,
+      "Description": "숙적 최대 수."
+    },
+    {
+      "Name": "MaxHeavenlyFavor",
+      "Value": 10,
+      "Description": "천기(개입 점수) 최댓값."
+    },
+    {
+      "Name": "FavorRegenYears",
+      "Value": 200,
+      "Description": "천기 1점이 회복되는 년수."
+    },
+    {
+      "Name": "LogCapacity",
+      "Value": 600,
+      "Description": "로그 보관 수(최신순 링 버퍼)."
+    },
+    {
+      "Name": "ChronicleCapacity",
+      "Value": 1500,
+      "Description": "연대기 보관 수."
+    },
+    {
+      "Name": "StatisticsCapacity",
+      "Value": 400,
+      "Description": "통계 표본 최대 수. 넘치면 오래된 구간을 절반으로 합친다."
+    },
+    {
+      "Name": "BiographyCapacity",
+      "Value": 40,
+      "Description": "현생 생애 기록 최대 수."
+    },
+    {
+      "Name": "PastLifeCapacity",
+      "Value": 20,
+      "Description": "보관하는 전생 요약 수."
+    },
+    {
+      "Name": "HerbSellPrice",
+      "Value": 6,
+      "Description": "영초 상회 판매가(영석)."
+    },
+    {
+      "Name": "OreSellPrice",
+      "Value": 9,
+      "Description": "영철 상회 판매가(영석)."
+    },
+    {
+      "Name": "BeastCoreSellPrice",
+      "Value": 40,
+      "Description": "요단(영수 내단) 상회 판매가(영석)."
+    },
+    {
+      "Name": "MerchantMarkup",
+      "Value": 2,
+      "Description": "상회에서 재료를 살 때 판매가 대비 배율."
+    }
+  ],
+  "Realms": [
+    {
+      "Id": 0,
+      "Name": "연기경",
+      "BaseLifespan": 400,
+      "Requirements": [
+        120,
+        180,
+        220,
+        280
+      ],
+      "BaseMajorChance": 0.6,
+      "PowerBase": 100
+    },
+    {
+      "Id": 1,
+      "Name": "축기경",
+      "BaseLifespan": 800,
+      "Requirements": [
+        750,
+        1100,
+        1400,
+        1750
+      ],
+      "BaseMajorChance": 0.42,
+      "PowerBase": 280
+    },
+    {
+      "Id": 2,
+      "Name": "금단경",
+      "BaseLifespan": 1600,
+      "Requirements": [
+        3750,
+        5500,
+        7000,
+        8750
+      ],
+      "BaseMajorChance": 0.32,
+      "PowerBase": 783.9999999999999
+    },
+    {
+      "Id": 3,
+      "Name": "원영경",
+      "BaseLifespan": 3200,
+      "Requirements": [
+        17250,
+        25300,
+        32200,
+        40250
+      ],
+      "BaseMajorChance": 0.25,
+      "PowerBase": 2195.1999999999994
+    },
+    {
+      "Id": 4,
+      "Name": "화신경",
+      "BaseLifespan": 6400,
+      "Requirements": [
+        90000,
+        132000,
+        168000,
+        210000
+      ],
+      "BaseMajorChance": 0.2,
+      "PowerBase": 6146.559999999999
+    },
+    {
+      "Id": 5,
+      "Name": "합체경",
+      "BaseLifespan": 12800,
+      "Requirements": [
+        420000,
+        616000,
+        784000,
+        980000
+      ],
+      "BaseMajorChance": 0.16,
+      "PowerBase": 17210.367999999995
+    },
+    {
+      "Id": 6,
+      "Name": "도겁경",
+      "BaseLifespan": 25600,
+      "Requirements": [
+        2250000,
+        3300000,
+        4200000,
+        5250000
+      ],
+      "BaseMajorChance": 0.12,
+      "PowerBase": 48189.03039999998
+    },
+    {
+      "Id": 7,
+      "Name": "대승경",
+      "BaseLifespan": 51200,
+      "Requirements": [
+        11250000,
+        16500000,
+        21000000,
+        26250000
+      ],
+      "BaseMajorChance": 0.09,
+      "PowerBase": 134929.28511999993
+    },
+    {
+      "Id": 8,
+      "Name": "반선경",
+      "BaseLifespan": 102400,
+      "Requirements": [
+        60000000,
+        88000000,
+        112000000,
+        140000000
+      ],
+      "BaseMajorChance": 0,
+      "PowerBase": 377801.9983359998
+    }
+  ],
+  "Techniques": [
+    {
+      "Grade": 0,
+      "Name": "무급",
+      "RealmCap": "연기경",
+      "Gain": 0.75,
+      "PavilionCost": 60,
+      "MarketPrice": 40
+    },
+    {
+      "Grade": 1,
+      "Name": "1성",
+      "RealmCap": "연기경",
+      "Gain": 0.8,
+      "PavilionCost": 240,
+      "MarketPrice": 320
+    },
+    {
+      "Grade": 2,
+      "Name": "2성",
+      "RealmCap": "축기경",
+      "Gain": 0.85,
+      "PavilionCost": 540,
+      "MarketPrice": 1080
+    },
+    {
+      "Grade": 3,
+      "Name": "3성",
+      "RealmCap": "축기경",
+      "Gain": 0.9,
+      "PavilionCost": 960,
+      "MarketPrice": 2560
+    },
+    {
+      "Grade": 4,
+      "Name": "4성",
+      "RealmCap": "금단경",
+      "Gain": 0.95,
+      "PavilionCost": 1500,
+      "MarketPrice": 5000
+    },
+    {
+      "Grade": 5,
+      "Name": "5성",
+      "RealmCap": "금단경",
+      "Gain": 1,
+      "PavilionCost": 2160,
+      "MarketPrice": 8640
+    },
+    {
+      "Grade": 6,
+      "Name": "6성",
+      "RealmCap": "원영경",
+      "Gain": 1.05,
+      "PavilionCost": 2940,
+      "MarketPrice": 13720
+    },
+    {
+      "Grade": 7,
+      "Name": "7성",
+      "RealmCap": "원영경",
+      "Gain": 1.1,
+      "PavilionCost": 3840,
+      "MarketPrice": 20480
+    },
+    {
+      "Grade": 8,
+      "Name": "8성",
+      "RealmCap": "화신경",
+      "Gain": 1.15,
+      "PavilionCost": 4860,
+      "MarketPrice": 29160
+    },
+    {
+      "Grade": 9,
+      "Name": "9성",
+      "RealmCap": "화신경",
+      "Gain": 1.2,
+      "PavilionCost": 6000,
+      "MarketPrice": 40000
+    },
+    {
+      "Grade": 10,
+      "Name": "현품",
+      "RealmCap": "합체경",
+      "Gain": 1.25,
+      "PavilionCost": 7260,
+      "MarketPrice": 53240
+    },
+    {
+      "Grade": 11,
+      "Name": "지품",
+      "RealmCap": "합체경",
+      "Gain": 1.3,
+      "PavilionCost": 8640,
+      "MarketPrice": 69120
+    },
+    {
+      "Grade": 12,
+      "Name": "천품",
+      "RealmCap": "도겁경",
+      "Gain": 1.35,
+      "PavilionCost": 10140,
+      "MarketPrice": 87880
+    },
+    {
+      "Grade": 13,
+      "Name": "선품",
+      "RealmCap": "도겁경",
+      "Gain": 1.4,
+      "PavilionCost": 11760,
+      "MarketPrice": 109760
+    },
+    {
+      "Grade": 14,
+      "Name": "성품",
+      "RealmCap": "대승경",
+      "Gain": 1.4500000000000002,
+      "PavilionCost": 13500,
+      "MarketPrice": 135000
+    },
+    {
+      "Grade": 15,
+      "Name": "제품",
+      "RealmCap": "대승경",
+      "Gain": 1.5,
+      "PavilionCost": 15360,
+      "MarketPrice": 163840
+    },
+    {
+      "Grade": 16,
+      "Name": "황품",
+      "RealmCap": "대승경",
+      "Gain": 1.55,
+      "PavilionCost": 17340,
+      "MarketPrice": 196520
+    },
+    {
+      "Grade": 17,
+      "Name": "왕품",
+      "RealmCap": "반선경",
+      "Gain": 1.6,
+      "PavilionCost": 19440,
+      "MarketPrice": 233280
+    },
+    {
+      "Grade": 18,
+      "Name": "극품",
+      "RealmCap": "반선경",
+      "Gain": 1.65,
+      "PavilionCost": 21660,
+      "MarketPrice": 274360
+    },
+    {
+      "Grade": 19,
+      "Name": "신품",
+      "RealmCap": "반선경",
+      "Gain": 1.7000000000000002,
+      "PavilionCost": 24000,
+      "MarketPrice": 320000
+    }
+  ],
+  "Facilities": [
+    {
+      "Id": 0,
+      "Kind": "SpiritArray",
+      "Name": "영맥진",
+      "DisplayEffect": "본산·영지 수련 +6%/단계"
+    },
+    {
+      "Id": 1,
+      "Kind": "Pavilion",
+      "Name": "장경각",
+      "DisplayEffect": "공법 상한 +3등급/단계"
+    },
+    {
+      "Id": 2,
+      "Kind": "AlchemyHall",
+      "Name": "연단방",
+      "DisplayEffect": "100년마다 단약 6개/단계"
+    },
+    {
+      "Id": 3,
+      "Kind": "TrainingGround",
+      "Name": "연무장",
+      "DisplayEffect": "제자 전투력 +3%/단계"
+    },
+    {
+      "Id": 4,
+      "Kind": "GuardianArray",
+      "Name": "호산대진",
+      "DisplayEffect": "전쟁·수조 방어 +5%/단계"
+    }
+  ],
+  "FacilityUpgradeCosts": [
+    {
+      "CurrentLevel": 0,
+      "NextLevelCost": 20000
+    },
+    {
+      "CurrentLevel": 1,
+      "NextLevelCost": 50000
+    },
+    {
+      "CurrentLevel": 2,
+      "NextLevelCost": 125000
+    },
+    {
+      "CurrentLevel": 3,
+      "NextLevelCost": 312500
+    },
+    {
+      "CurrentLevel": 4,
+      "NextLevelCost": 781250
+    },
+    {
+      "CurrentLevel": 5,
+      "NextLevelCost": 1953125
+    }
+  ],
+  "Ranks": [
+    {
+      "Id": 0,
+      "Name": "잡역제자",
+      "Capacity": 2147483647,
+      "Stipend": 0,
+      "Growth": 1
+    },
+    {
+      "Id": 1,
+      "Name": "외문제자",
+      "Capacity": 200,
+      "Stipend": 15,
+      "Growth": 1.05
+    },
+    {
+      "Id": 2,
+      "Name": "내문제자",
+      "Capacity": 100,
+      "Stipend": 30,
+      "Growth": 1.1
+    },
+    {
+      "Id": 3,
+      "Name": "직전제자",
+      "Capacity": 50,
+      "Stipend": 60,
+      "Growth": 1.15
+    },
+    {
+      "Id": 4,
+      "Name": "장로",
+      "Capacity": 10,
+      "Stipend": 120,
+      "Growth": 1.25
+    },
+    {
+      "Id": 5,
+      "Name": "대장로",
+      "Capacity": 2,
+      "Stipend": 200,
+      "Growth": 1.35
+    },
+    {
+      "Id": 6,
+      "Name": "종주",
+      "Capacity": 1,
+      "Stipend": 300,
+      "Growth": 1.45
+    }
+  ],
+  "Regions": [
+    {
+      "Id": 0,
+      "Name": "청운 본산",
+      "Kind": 0,
+      "HomeSectId": 1,
+      "Aura": 1.6,
+      "Danger": 0.03,
+      "Herbs": 0.8,
+      "Ore": 0.6,
+      "Description": "청운종 산문과 영맥이 모인 봉우리",
+      "NearSectId": 0
+    },
+    {
+      "Id": 1,
+      "Name": "청운 동원",
+      "Kind": 1,
+      "HomeSectId": 1,
+      "Aura": 1.34,
+      "Danger": 0.08,
+      "Herbs": 1.2,
+      "Ore": 0.7,
+      "Description": "약초밭과 영천이 흐르는 동쪽 정원",
+      "NearSectId": 0
+    },
+    {
+      "Id": 2,
+      "Name": "청운 남림",
+      "Kind": 1,
+      "HomeSectId": 1,
+      "Aura": 1.3,
+      "Danger": 0.1,
+      "Herbs": 1.3,
+      "Ore": 0.8,
+      "Description": "고목 숲. 영수가 드물게 출몰한다",
+      "NearSectId": 0
+    },
+    {
+      "Id": 3,
+      "Name": "청운 북봉",
+      "Kind": 1,
+      "HomeSectId": 1,
+      "Aura": 1.26,
+      "Danger": 0.12,
+      "Herbs": 0.7,
+      "Ore": 1.2,
+      "Description": "만년설 봉우리. 영철 광맥이 있다",
+      "NearSectId": 0
+    },
+    {
+      "Id": 4,
+      "Name": "천마 본관",
+      "Kind": 0,
+      "HomeSectId": 2,
+      "Aura": 1.56,
+      "Danger": 0.04,
+      "Herbs": 0.6,
+      "Ore": 0.8,
+      "Description": "천마문 본전. 혈지(血池)가 끓는다",
+      "NearSectId": 0
+    },
+    {
+      "Id": 5,
+      "Name": "천마 서원",
+      "Kind": 1,
+      "HomeSectId": 2,
+      "Aura": 1.32,
+      "Danger": 0.1,
+      "Herbs": 1,
+      "Ore": 1,
+      "Description": "독초가 자라는 서쪽 원림",
+      "NearSectId": 0
+    },
+    {
+      "Id": 6,
+      "Name": "천마 남협",
+      "Kind": 1,
+      "HomeSectId": 2,
+      "Aura": 1.28,
+      "Danger": 0.14,
+      "Herbs": 0.8,
+      "Ore": 1.3,
+      "Description": "검은 바위 협곡",
+      "NearSectId": 0
+    },
+    {
+      "Id": 7,
+      "Name": "천마 북호",
+      "Kind": 1,
+      "HomeSectId": 2,
+      "Aura": 1.24,
+      "Danger": 0.12,
+      "Herbs": 1.1,
+      "Ore": 0.8,
+      "Description": "안개 낀 북쪽 호수",
+      "NearSectId": 0
+    },
+    {
+      "Id": 8,
+      "Name": "중원 평원",
+      "Kind": 2,
+      "HomeSectId": 0,
+      "Aura": 0.76,
+      "Danger": 0.2,
+      "Herbs": 1,
+      "Ore": 1,
+      "Description": "상회와 경매장이 있는 교역로",
+      "NearSectId": 0
+    },
+    {
+      "Id": 9,
+      "Name": "혈천 협곡",
+      "Kind": 2,
+      "HomeSectId": 0,
+      "Aura": 0.7,
+      "Danger": 0.45,
+      "Herbs": 0.7,
+      "Ore": 1.6,
+      "Description": "옛 전장의 피가 스민 협곡",
+      "NearSectId": 2
+    },
+    {
+      "Id": 10,
+      "Name": "만령 산맥",
+      "Kind": 2,
+      "HomeSectId": 0,
+      "Aura": 0.68,
+      "Danger": 0.4,
+      "Herbs": 1.4,
+      "Ore": 1.4,
+      "Description": "영수가 들끓는 산맥",
+      "NearSectId": 1
+    },
+    {
+      "Id": 11,
+      "Name": "황사 사막",
+      "Kind": 2,
+      "HomeSectId": 0,
+      "Aura": 0.66,
+      "Danger": 0.35,
+      "Herbs": 0.5,
+      "Ore": 1.5,
+      "Description": "모래 아래 고대 유적이 잠든 사막",
+      "NearSectId": 2
+    },
+    {
+      "Id": 12,
+      "Name": "옥룡 호수",
+      "Kind": 2,
+      "HomeSectId": 0,
+      "Aura": 0.72,
+      "Danger": 0.25,
+      "Herbs": 1.6,
+      "Ore": 0.6,
+      "Description": "용의 전설이 깃든 호수",
+      "NearSectId": 1
+    }
+  ],
+  "Borders": [
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "EventRegions": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "Titles": [
+    {
+      "Id": 0,
+      "Name": "불패",
+      "Description": "10연승을 거두었다",
+      "Score": 150
+    },
+    {
+      "Id": 1,
+      "Name": "백전노장",
+      "Description": "한 생에서 100번 싸웠다",
+      "Score": 120
+    },
+    {
+      "Id": 2,
+      "Name": "역천자",
+      "Description": "대경지가 더 높은 상대를 쓰러뜨렸다",
+      "Score": 250
+    },
+    {
+      "Id": 3,
+      "Name": "뇌겁을 넘은 자",
+      "Description": "천겁을 두 번 넘었다",
+      "Score": 300
+    },
+    {
+      "Id": 4,
+      "Name": "대비무 우승자",
+      "Description": "천하 대비무에서 우승했다",
+      "Score": 500
+    },
+    {
+      "Id": 5,
+      "Name": "대비무 준우승자",
+      "Description": "천하 대비무 결승에 올랐다",
+      "Score": 250
+    },
+    {
+      "Id": 6,
+      "Name": "전쟁 영웅",
+      "Description": "전쟁에서 가장 큰 공을 세웠다",
+      "Score": 400
+    },
+    {
+      "Id": 7,
+      "Name": "대표 결투 승자",
+      "Description": "종문을 대표한 결투에서 이겼다",
+      "Score": 300
+    },
+    {
+      "Id": 8,
+      "Name": "비경의 주인",
+      "Description": "비경에서 가장 많은 보물을 얻었다",
+      "Score": 200
+    },
+    {
+      "Id": 9,
+      "Name": "수조 사냥꾼",
+      "Description": "수조를 막는 데 가장 큰 공을 세웠다",
+      "Score": 250
+    },
+    {
+      "Id": 10,
+      "Name": "기예 종사",
+      "Description": "기예 숙련이 경지에 이르렀다",
+      "Score": 200
+    },
+    {
+      "Id": 11,
+      "Name": "기연아",
+      "Description": "세 번 기연을 만났다",
+      "Score": 150
+    },
+    {
+      "Id": 12,
+      "Name": "전생 각성자",
+      "Description": "전생의 기억을 되찾았다",
+      "Score": 100
+    },
+    {
+      "Id": 13,
+      "Name": "배신자",
+      "Description": "종문을 버리고 적에게 갔다",
+      "Score": 0
+    },
+    {
+      "Id": 14,
+      "Name": "신동",
+      "Description": "쉰 살 전에 금단경에 올랐다",
+      "Score": 200
+    },
+    {
+      "Id": 15,
+      "Name": "일문지주",
+      "Description": "종주에 올랐다",
+      "Score": 400
+    },
+    {
+      "Id": 16,
+      "Name": "장생자",
+      "Description": "한 생에서 만 년을 살았다",
+      "Score": 150
+    },
+    {
+      "Id": 17,
+      "Name": "천명을 받은 자",
+      "Description": "하늘이 기연을 내렸다",
+      "Score": 50
+    }
+  ],
+  "Personalities": [
+    {
+      "Id": 0,
+      "Name": "정파",
+      "OrthodoxAffinity": 0.95,
+      "DemonicAffinity": 0.15,
+      "Weights": [
+        {
+          "Action": "수련",
+          "Value": 40
+        },
+        {
+          "Action": "탐색",
+          "Value": 15
+        },
+        {
+          "Action": "거래",
+          "Value": 8
+        },
+        {
+          "Action": "기예",
+          "Value": 10
+        },
+        {
+          "Action": "비무",
+          "Value": 10
+        },
+        {
+          "Action": "임무",
+          "Value": 12
+        },
+        {
+          "Action": "이동",
+          "Value": 5
+        },
+        {
+          "Action": "지도",
+          "Value": 6
+        },
+        {
+          "Action": "요양",
+          "Value": 0
+        }
+      ]
+    },
+    {
+      "Id": 1,
+      "Name": "마도",
+      "OrthodoxAffinity": 0.1,
+      "DemonicAffinity": 0.95,
+      "Weights": [
+        {
+          "Action": "수련",
+          "Value": 34
+        },
+        {
+          "Action": "탐색",
+          "Value": 15
+        },
+        {
+          "Action": "거래",
+          "Value": 5
+        },
+        {
+          "Action": "기예",
+          "Value": 6
+        },
+        {
+          "Action": "비무",
+          "Value": 22
+        },
+        {
+          "Action": "임무",
+          "Value": 10
+        },
+        {
+          "Action": "이동",
+          "Value": 8
+        },
+        {
+          "Action": "지도",
+          "Value": 4
+        },
+        {
+          "Action": "요양",
+          "Value": 0
+        }
+      ]
+    },
+    {
+      "Id": 2,
+      "Name": "중립",
+      "OrthodoxAffinity": 0.6,
+      "DemonicAffinity": 0.6,
+      "Weights": [
+        {
+          "Action": "수련",
+          "Value": 36
+        },
+        {
+          "Action": "탐색",
+          "Value": 18
+        },
+        {
+          "Action": "거래",
+          "Value": 15
+        },
+        {
+          "Action": "기예",
+          "Value": 12
+        },
+        {
+          "Action": "비무",
+          "Value": 7
+        },
+        {
+          "Action": "임무",
+          "Value": 6
+        },
+        {
+          "Action": "이동",
+          "Value": 6
+        },
+        {
+          "Action": "지도",
+          "Value": 4
+        },
+        {
+          "Action": "요양",
+          "Value": 0
+        }
+      ]
+    },
+    {
+      "Id": 3,
+      "Name": "은둔",
+      "OrthodoxAffinity": 0.55,
+      "DemonicAffinity": 0.3,
+      "Weights": [
+        {
+          "Action": "수련",
+          "Value": 60
+        },
+        {
+          "Action": "탐색",
+          "Value": 12
+        },
+        {
+          "Action": "거래",
+          "Value": 3
+        },
+        {
+          "Action": "기예",
+          "Value": 14
+        },
+        {
+          "Action": "비무",
+          "Value": 2
+        },
+        {
+          "Action": "임무",
+          "Value": 3
+        },
+        {
+          "Action": "이동",
+          "Value": 4
+        },
+        {
+          "Action": "지도",
+          "Value": 4
+        },
+        {
+          "Action": "요양",
+          "Value": 0
+        }
+      ]
+    },
+    {
+      "Id": 4,
+      "Name": "패도",
+      "OrthodoxAffinity": 0.35,
+      "DemonicAffinity": 0.8,
+      "Weights": [
+        {
+          "Action": "수련",
+          "Value": 32
+        },
+        {
+          "Action": "탐색",
+          "Value": 12
+        },
+        {
+          "Action": "거래",
+          "Value": 5
+        },
+        {
+          "Action": "기예",
+          "Value": 5
+        },
+        {
+          "Action": "비무",
+          "Value": 30
+        },
+        {
+          "Action": "임무",
+          "Value": 8
+        },
+        {
+          "Action": "이동",
+          "Value": 8
+        },
+        {
+          "Action": "지도",
+          "Value": 4
+        },
+        {
+          "Action": "요양",
+          "Value": 0
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AuctionRecord",
+      "Description": "경매 기록.",
+      "Properties": [
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연도."
+        },
+        {
+          "Name": "Lots",
+          "Type": "IReadOnlyList<String>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "낙찰 요약."
+        },
+        {
+          "Name": "Total",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "총 낙찰가."
+        }
+      ]
+    },
+    {
+      "Name": "BeastTideState",
+      "Description": "진행 중인 수조(영수 떼 습격).",
+      "Properties": [
+        {
+          "Name": "BeastName",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이끄는 영수 이름."
+        },
+        {
+          "Name": "RegionId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "습격 지역."
+        },
+        {
+          "Name": "StartYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "시작 연도."
+        },
+        {
+          "Name": "EndYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "스스로 물러가는 연도."
+        },
+        {
+          "Name": "InitialStrength",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "처음 세력."
+        },
+        {
+          "Name": "Strength",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "남은 세력."
+        },
+        {
+          "Name": "Realm",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영수 수장의 경지(전투력 기준)."
+        },
+        {
+          "Name": "DefenderIds",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "방어자별 공훈 (영혼 번호, 공훈) — 같은 인덱스."
+        },
+        {
+          "Name": "DefenderMerit",
+          "Type": "List<Double>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "방어자 공훈."
+        },
+        {
+          "Name": "Summoned",
+          "Type": "Boolean",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천기 개입으로 불러왔는가."
+        }
+      ]
+    },
+    {
+      "Name": "Chronicle",
+      "Description": "연대기. 드문 사건만 담아 세계의 역사를 읽을 수 있게 한다.",
+      "Properties": [
+        {
+          "Name": "Entries",
+          "Type": "List<ChronicleEntry>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "항목(오래된 것부터)."
+        },
+        {
+          "Name": "NextSequence",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "다음 일련번호."
+        },
+        {
+          "Name": "NextNoticeSequence",
+          "Type": "Int64",
+          "Ignored": true,
+          "CanWrite": true,
+          "Description": "다음 알림 번호."
+        },
+        {
+          "Name": "Notices",
+          "Type": "IReadOnlyList<Notice>",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "최근 알림(최대 40)."
+        }
+      ]
+    },
+    {
+      "Name": "ChronicleEntry",
+      "Description": "연대기 항목.",
+      "Properties": [
+        {
+          "Name": "Sequence",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "일련번호."
+        },
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연도."
+        },
+        {
+          "Name": "Kind",
+          "Type": "ChronicleKind",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "분류."
+        },
+        {
+          "Name": "Text",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "내용."
+        },
+        {
+          "Name": "SubjectId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "주인공 영혼 번호(0이면 없음)."
+        }
+      ]
+    },
+    {
+      "Name": "Cultivator",
+      "Description": "수선자 한 명. 저장 파일에 그대로 직렬화되므로 공개 속성은 모두 상태다. 다른 수선자와의 관계는 객체 참조가 아니라 영혼 번호로 가리킨다.",
+      "Properties": [
+        {
+          "Name": "Id",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영혼 번호. 윤회해도 같고, 비승하면 새 영혼이 새 번호로 자리를 잇는다."
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영혼 이름(윤회해도 유지)."
+        },
+        {
+          "Name": "DaoName",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "도호. 원영경 이상에서 얻는다."
+        },
+        {
+          "Name": "Reincarnations",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "윤회 횟수(첫 생은 0)."
+        },
+        {
+          "Name": "BornYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생이 시작된 해."
+        },
+        {
+          "Name": "Age",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "나이."
+        },
+        {
+          "Name": "Lifespan",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "수명(이 나이에 이르면 좌화한다)."
+        },
+        {
+          "Name": "Realm",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "경지(0 연기경 ~ 8 반선경)."
+        },
+        {
+          "Name": "Stage",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "단계(0 초기 ~ 3 대원만)."
+        },
+        {
+          "Name": "Qi",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현재 단계에 쌓인 영기."
+        },
+        {
+          "Name": "Insight",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "깨달음(0~1000). 대경지 돌파 확률을 높이고 돌파 뒤 소모된다."
+        },
+        {
+          "Name": "DaoHeart",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "도심(0~100). 낮으면 수련이 더디고 주화입마·배신 위험이 커진다."
+        },
+        {
+          "Name": "Injury",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "누적 부상. 최대 체력에 이르면 중상으로 단계가 떨어진다."
+        },
+        {
+          "Name": "InnerPower",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "내공. 천겁과 전투력에 쓰인다(원본 cb)."
+        },
+        {
+          "Name": "RecoveryYears",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "강제 요양 남은 해(중상 후)."
+        },
+        {
+          "Name": "Comprehension",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "오성: 깨달음·돌파."
+        },
+        {
+          "Name": "Constitution",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "체질: 체력·수명·천겁 저항."
+        },
+        {
+          "Name": "Bone",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "근골: 전투력."
+        },
+        {
+          "Name": "Root",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영근: 영기 흡수."
+        },
+        {
+          "Name": "Element",
+          "Type": "Element",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영근 속성."
+        },
+        {
+          "Name": "Personality",
+          "Type": "Personality",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "성격."
+        },
+        {
+          "Name": "Ambition",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "야망(0~1). 비경 진입·결투에 영향."
+        },
+        {
+          "Name": "Caution",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "신중함(0~1). 위험 회피."
+        },
+        {
+          "Name": "Charisma",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "매력(0~1). 인연·거래·기연."
+        },
+        {
+          "Name": "SectId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "소속 종문 번호(0이면 떠돌이 산수)."
+        },
+        {
+          "Name": "Rank",
+          "Type": "SectRank",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "종문 직위."
+        },
+        {
+          "Name": "Merit",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 누적 공헌(직위 재편 기준)."
+        },
+        {
+          "Name": "ContributionPoints",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "사용 가능한 공헌점(장경각·연단방)."
+        },
+        {
+          "Name": "RegionId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현재 머무는 지역 번호."
+        },
+        {
+          "Name": "OnWarDuty",
+          "Type": "Boolean",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "전쟁 중 접경지 파견 여부."
+        },
+        {
+          "Name": "TechniqueGrade",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "공법 등급(0~19)."
+        },
+        {
+          "Name": "TechniqueElement",
+          "Type": "Element",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "공법 속성. 영근과 같으면 수련 +20%."
+        },
+        {
+          "Name": "Art",
+          "Type": "ArtKind",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "기예."
+        },
+        {
+          "Name": "ArtSkill",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "기예 숙련(0~100)."
+        },
+        {
+          "Name": "ArtifactGrade",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "법보 등급(0 없음 ~ 5 천품)."
+        },
+        {
+          "Name": "SpiritStones",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영석."
+        },
+        {
+          "Name": "Herbs",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영초."
+        },
+        {
+          "Name": "Ore",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영철."
+        },
+        {
+          "Name": "BeastCores",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "요단(영수 내단)."
+        },
+        {
+          "Name": "Pills",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "단약 보유량. 인덱스는 ."
+        },
+        {
+          "Name": "Talismans",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "부적 보유량. 인덱스는 ."
+        },
+        {
+          "Name": "LongevityPillsTaken",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생에 복용한 연수단 수(최대 3)."
+        },
+        {
+          "Name": "LastAction",
+          "Type": "CultivatorAction",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "마지막 행동."
+        },
+        {
+          "Name": "MemoryAwakened",
+          "Type": "Boolean",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생에서 전생 기억을 되찾았는가."
+        },
+        {
+          "Name": "LastTribulationYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "마지막 천겁을 겪은 해."
+        },
+        {
+          "Name": "QiRequirement",
+          "Type": "Int64",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "현재 단계 돌파에 필요한 영기."
+        },
+        {
+          "Name": "TalentTotal",
+          "Type": "Int32",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "재능 합계(오성+체질+근골+영근)."
+        },
+        {
+          "Name": "TalentGrade",
+          "Type": "Int32",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "재능 등급(1 범재 ~ 5 절세)."
+        },
+        {
+          "Name": "IsRogue",
+          "Type": "Boolean",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "떠돌이(산수) 여부."
+        },
+        {
+          "Name": "MaxHealth",
+          "Type": "Double",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "최대 체력."
+        },
+        {
+          "Name": "HealthRatio",
+          "Type": "Double",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "남은 체력 비율(0~1)."
+        },
+        {
+          "Name": "RealmText",
+          "Type": "String",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "표시용 경지 이름(예: 금단경 후기)."
+        },
+        {
+          "Name": "DisplayName",
+          "Type": "String",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "도호가 있으면 \"이름(도호)\", 없으면 이름."
+        },
+        {
+          "Name": "LifeNumber",
+          "Type": "Int32",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "몇 번째 생인가(1부터)."
+        },
+        {
+          "Name": "MasterId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "스승의 영혼 번호(0이면 없음)."
+        },
+        {
+          "Name": "DiscipleIds",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "기명 제자 영혼 번호(최대 3)."
+        },
+        {
+          "Name": "RivalIds",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "숙적 영혼 번호(최대 3)."
+        },
+        {
+          "Name": "CompanionId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "도려(도반)의 영혼 번호(0이면 없음)."
+        },
+        {
+          "Name": "CompanionSinceYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "도려를 맺은 해."
+        },
+        {
+          "Name": "Battles",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 전투 수."
+        },
+        {
+          "Name": "Wins",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 승리 수."
+        },
+        {
+          "Name": "Losses",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 패배 수."
+        },
+        {
+          "Name": "WinStreak",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현재 연승."
+        },
+        {
+          "Name": "MajorBreakthroughs",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 대경지 돌파 수."
+        },
+        {
+          "Name": "MinorBreakthroughs",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 소경지 돌파 수."
+        },
+        {
+          "Name": "TribulationsPassed",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 천겁 통과 수."
+        },
+        {
+          "Name": "Fortunes",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 기연 수."
+        },
+        {
+          "Name": "WarMerit",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이번 전쟁 공훈."
+        },
+        {
+          "Name": "LifetimeWarMerit",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 누적 전쟁 공훈."
+        },
+        {
+          "Name": "TournamentBest",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 대비무 최고 성적(0 없음, 1 우승, 2 준우승, 4 4강, 8 8강)."
+        },
+        {
+          "Name": "HighestRealm",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 최고 경지."
+        },
+        {
+          "Name": "HighestStage",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 최고 단계(최고 경지 기준)."
+        },
+        {
+          "Name": "Titles",
+          "Type": "List<TitleId>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 호칭."
+        },
+        {
+          "Name": "Biography",
+          "Type": "List<LifeEvent>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현생 주요 사건(최대 40, 오래된 것부터 지운다)."
+        },
+        {
+          "Name": "PastLives",
+          "Type": "List<PastLife>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최근 전생 요약(최대 20)."
+        }
+      ]
+    },
+    {
+      "Name": "EraState",
+      "Description": "현재 천지 대세(시대).",
+      "Properties": [
+        {
+          "Name": "Kind",
+          "Type": "EraKind",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "시대 종류."
+        },
+        {
+          "Name": "StartYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "시작 연도."
+        },
+        {
+          "Name": "EndYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "끝나는 연도."
+        },
+        {
+          "Name": "Count",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "지금까지의 시대 수."
+        }
+      ]
+    },
+    {
+      "Name": "EventLog",
+      "Description": "사건 기록. [성능] 고정 크기 배열 링 버퍼라 기록 추가가 O(1)이다. 화면은 로 최신순 사본을 받아 그린다.",
+      "Properties": [
+        {
+          "Name": "NextSequence",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "다음 일련번호."
+        },
+        {
+          "Name": "Counts",
+          "Type": "List<Int64>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "분류별 누적 건수(잘려 나간 기록 포함). 인덱스는 ."
+        },
+        {
+          "Name": "Entries",
+          "Type": "List<LogEntry>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "저장용: 오래된 것부터 나열한 현재 기록. 설정하면 버퍼를 다시 채운다."
+        },
+        {
+          "Name": "Count",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": false,
+          "Description": "현재 보관 중인 기록 수."
+        }
+      ]
+    },
+    {
+      "Name": "ImmortalRecord",
+      "Description": "비승한 선인 명부 항목.",
+      "Properties": [
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "비승 연도."
+        },
+        {
+          "Name": "SoulId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영혼 번호."
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이름(도호 포함)."
+        },
+        {
+          "Name": "Lives",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "비승까지 걸린 생 수."
+        },
+        {
+          "Name": "Age",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "비승 나이."
+        },
+        {
+          "Name": "Affiliation",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "소속."
+        }
+      ]
+    },
+    {
+      "Name": "LifeEvent",
+      "Description": "생애의 한 사건.",
+      "Properties": [
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "세계 연도."
+        },
+        {
+          "Name": "Age",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "당시 나이."
+        },
+        {
+          "Name": "Text",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "내용."
+        }
+      ]
+    },
+    {
+      "Name": "LogEntry",
+      "Description": "사건 한 줄.",
+      "Properties": [
+        {
+          "Name": "Sequence",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "전체 일련번호(증가만 한다)."
+        },
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연도."
+        },
+        {
+          "Name": "Kind",
+          "Type": "LogKind",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "분류."
+        },
+        {
+          "Name": "Text",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "내용."
+        },
+        {
+          "Name": "SubjectId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "주인공 영혼 번호(0이면 없음)."
+        },
+        {
+          "Name": "OtherId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "상대 영혼 번호(0이면 없음)."
+        }
+      ]
+    },
+    {
+      "Name": "Notice",
+      "Description": "화면 알림(토스트). 저장하지 않는다.",
+      "Properties": [
+        {
+          "Name": "Sequence",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "일련번호."
+        },
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연도."
+        },
+        {
+          "Name": "Text",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "내용."
+        },
+        {
+          "Name": "SubjectId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "관련 영혼 번호."
+        },
+        {
+          "Name": "Major",
+          "Type": "Boolean",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연대기급 사건이면 true, 관심 인물 사건이면 false."
+        }
+      ]
+    },
+    {
+      "Name": "PastLife",
+      "Description": "끝난 한 생의 요약.",
+      "Properties": [
+        {
+          "Name": "LifeNumber",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "몇 번째 생."
+        },
+        {
+          "Name": "BornYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "태어난 해."
+        },
+        {
+          "Name": "DeathYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "끝난 해."
+        },
+        {
+          "Name": "Age",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "끝난 나이."
+        },
+        {
+          "Name": "Realm",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최고 경지."
+        },
+        {
+          "Name": "Stage",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최고 단계."
+        },
+        {
+          "Name": "SectId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "마지막 소속 종문."
+        },
+        {
+          "Name": "Ending",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "끝(사망 원인 또는 비승)."
+        },
+        {
+          "Name": "Score",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "생애 업적 점수."
+        },
+        {
+          "Name": "Titles",
+          "Type": "IReadOnlyList<TitleId>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "얻은 호칭."
+        }
+      ]
+    },
+    {
+      "Name": "RecordEntry",
+      "Description": "기록 하나.",
+      "Properties": [
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "달성 연도."
+        },
+        {
+          "Name": "SoulId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영혼 번호."
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이름."
+        },
+        {
+          "Name": "Value",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "기록 값."
+        },
+        {
+          "Name": "Detail",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "설명."
+        }
+      ]
+    },
+    {
+      "Name": "Region",
+      "Description": "지역 하나. 고정 정보는 에 있다.",
+      "Properties": [
+        {
+          "Name": "Id",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "지역 번호(0~12)."
+        },
+        {
+          "Name": "ControllerSectId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "지배 종문 번호(0이면 중립)."
+        },
+        {
+          "Name": "ControlPoints",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "세력 점수(-10~10). +4 이상 청운종, -4 이하 천마문 지배(원본 규칙)."
+        },
+        {
+          "Name": "Battles",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "누적 전투 수."
+        },
+        {
+          "Name": "AuraModifier",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "일시 영기 배율(수조 중 감소, 비경 중 증가)."
+        },
+        {
+          "Name": "Status",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최근 상황 한 줄."
+        },
+        {
+          "Name": "MarketPills",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "지역 시장의 단약 재고(기예가가 만든 것). 인덱스는 ."
+        },
+        {
+          "Name": "MarketTalismans",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "지역 시장의 부적 재고. 인덱스는 ."
+        },
+        {
+          "Name": "Definition",
+          "Type": "RegionDefinition",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "고정 정의."
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "이름."
+        },
+        {
+          "Name": "Kind",
+          "Type": "RegionKind",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "종류."
+        },
+        {
+          "Name": "Aura",
+          "Type": "Double",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "현재 영기 농도(정의 × 일시 배율)."
+        },
+        {
+          "Name": "Residents",
+          "Type": "List<Cultivator>",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "현재 거주자. [성능] 매 틱 전체 목록을 걸러 상대를 찾지 않도록 지역별로 따로 유지한다. 저장하지 않고 불러온 뒤 다시 만든다."
+        },
+        {
+          "Name": "ResidentIds",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "저장용 거주자 번호(순서 포함). [결정론] 상대 고르기가 거주자 순서에 의존하므로 순서까지 저장해야 불러온 뒤에도 같은 역사가 이어진다."
+        }
+      ]
+    },
+    {
+      "Name": "SecretRealmState",
+      "Description": "열려 있는 비경.",
+      "Properties": [
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이름."
+        },
+        {
+          "Name": "RegionId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "입구 지역."
+        },
+        {
+          "Name": "OpenYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "열린 해."
+        },
+        {
+          "Name": "CloseYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "닫히는 해."
+        },
+        {
+          "Name": "MinRealm",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "들어갈 수 있는 최저 경지."
+        },
+        {
+          "Name": "MaxRealm",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "들어갈 수 있는 최고 경지."
+        },
+        {
+          "Name": "Treasures",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "남은 보물 수."
+        },
+        {
+          "Name": "Entrants",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "진입자 영혼 번호."
+        },
+        {
+          "Name": "Gains",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "진입자별 수확 점수(Entrants와 같은 순서)."
+        },
+        {
+          "Name": "Summoned",
+          "Type": "Boolean",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천기 개입으로 열렸는가."
+        }
+      ]
+    },
+    {
+      "Name": "Sect",
+      "Description": "종문 하나.",
+      "Properties": [
+        {
+          "Name": "Id",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "종문 번호(1 청운종, 2 천마문)."
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이름."
+        },
+        {
+          "Name": "Orthodox",
+          "Type": "Boolean",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "정도(true) 또는 마도(false)."
+        },
+        {
+          "Name": "Treasury",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "금고(영석). 녹봉·시설·전쟁 배상에 쓴다."
+        },
+        {
+          "Name": "Facilities",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "시설 단계. 인덱스는 ."
+        },
+        {
+          "Name": "RankCounts",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "직위별 인원. 인덱스는 . 직위 변경은 SectSystem만 한다."
+        },
+        {
+          "Name": "LeaderId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현재 종주 영혼 번호(0이면 공석)."
+        },
+        {
+          "Name": "TotalContribution",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "누적 공헌."
+        },
+        {
+          "Name": "PillStock",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연단방에 쌓인 단약(종문 공용). 인덱스는 ."
+        },
+        {
+          "Name": "WarsWon",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "전쟁 승리 수."
+        },
+        {
+          "Name": "WarsLost",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "전쟁 패배 수."
+        },
+        {
+          "Name": "LosingStreak",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연속 전쟁 패배 수(와신상담 보정)."
+        },
+        {
+          "Name": "TournamentWins",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "대비무 우승자 배출 수."
+        },
+        {
+          "Name": "Ascensions",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "비승자 배출 수."
+        },
+        {
+          "Name": "LeaderCount",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "역대 종주 수."
+        },
+        {
+          "Name": "IdeologyName",
+          "Type": "String",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "이념 이름."
+        },
+        {
+          "Name": "IdeologyDescription",
+          "Type": "String",
+          "Ignored": true,
+          "CanWrite": false,
+          "Description": "이념 설명(원본 IDEO.dc)."
+        }
+      ]
+    },
+    {
+      "Name": "SoulRecord",
+      "Description": "영혼 하나의 윤회 업적(원본 HD 계승, 경지·단계 표시 버그 수정).",
+      "Properties": [
+        {
+          "Name": "SoulId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영혼 번호."
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이름."
+        },
+        {
+          "Name": "Lives",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "끝난 생 수."
+        },
+        {
+          "Name": "BestScore",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최고 생애 점수."
+        },
+        {
+          "Name": "BestRealm",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최고 생애의 경지."
+        },
+        {
+          "Name": "BestStage",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최고 생애의 단계."
+        },
+        {
+          "Name": "BestLife",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최고 생애가 몇 번째 생인가."
+        },
+        {
+          "Name": "TopScores",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "상위 5개 생애 점수(내림차순)."
+        },
+        {
+          "Name": "TopFiveSum",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "상위 5개 합."
+        },
+        {
+          "Name": "TotalMajorBreakthroughs",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "누적 대경지 돌파."
+        },
+        {
+          "Name": "TotalWins",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "누적 승리."
+        },
+        {
+          "Name": "TotalTribulations",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "누적 천겁 통과."
+        },
+        {
+          "Name": "TournamentWins",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "누적 대비무 우승."
+        },
+        {
+          "Name": "WarHeroCount",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "누적 전쟁 영웅."
+        },
+        {
+          "Name": "TitlesEver",
+          "Type": "List<TitleId>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "얻어 본 적 있는 호칭(중복 없음)."
+        },
+        {
+          "Name": "LastEnding",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "마지막 생의 끝."
+        },
+        {
+          "Name": "Ascended",
+          "Type": "Boolean",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "비승했는가."
+        }
+      ]
+    },
+    {
+      "Name": "StatHistory",
+      "Description": "통계 이력. [성능] 표본이 상한을 넘으면 하나 걸러 지우고 간격을 두 배로 늘려, 아무리 오래 돌려도 메모리와 그래프 그리기 비용이 일정하다.",
+      "Properties": [
+        {
+          "Name": "Interval",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "표본 간격(년)."
+        },
+        {
+          "Name": "Samples",
+          "Type": "List<StatSample>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "표본(오래된 것부터)."
+        }
+      ]
+    },
+    {
+      "Name": "StatSample",
+      "Description": "한 시점의 세계 통계.",
+      "Properties": [
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연도."
+        },
+        {
+          "Name": "RealmCounts",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "경지별 인원(9칸)."
+        },
+        {
+          "Name": "OrthodoxMembers",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "청운종 인원."
+        },
+        {
+          "Name": "DemonicMembers",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천마문 인원."
+        },
+        {
+          "Name": "Rogues",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "떠돌이 인원."
+        },
+        {
+          "Name": "OrthodoxAverageRealm",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "청운종 평균 경지(단계 포함, 0~8.75)."
+        },
+        {
+          "Name": "DemonicAverageRealm",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천마문 평균 경지."
+        },
+        {
+          "Name": "OrthodoxPower",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "청운종 총 전투력."
+        },
+        {
+          "Name": "DemonicPower",
+          "Type": "Double",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천마문 총 전투력."
+        },
+        {
+          "Name": "OrthodoxTreasury",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "청운종 금고."
+        },
+        {
+          "Name": "DemonicTreasury",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천마문 금고."
+        },
+        {
+          "Name": "OrthodoxBorders",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "청운종 지배 접경지 수."
+        },
+        {
+          "Name": "DemonicBorders",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천마문 지배 접경지 수."
+        }
+      ]
+    },
+    {
+      "Name": "StoneLedger",
+      "Description": "[보존] 영석 장부. 모든 영석의 생성·소멸을 기록해 \"수선자 보유 + 종문 금고 = 생성 − 소멸\"을 검사한다. 원본은 녹봉·전리품이 장부 없이 생겨났다.",
+      "Properties": [
+        {
+          "Name": "Created",
+          "Type": "List<Int64>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "경로별 생성량. 인덱스는 ."
+        },
+        {
+          "Name": "Destroyed",
+          "Type": "List<Int64>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "경로별 소멸량. 인덱스는 ."
+        }
+      ]
+    },
+    {
+      "Name": "TournamentMatch",
+      "Description": "대비무 대회 한 경기.",
+      "Properties": [
+        {
+          "Name": "Round",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "라운드(1부터, 마지막이 결승)."
+        },
+        {
+          "Name": "WinnerId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "승자 영혼 번호."
+        },
+        {
+          "Name": "WinnerName",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "승자 이름."
+        },
+        {
+          "Name": "LoserId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "패자 영혼 번호."
+        },
+        {
+          "Name": "LoserName",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "패자 이름."
+        },
+        {
+          "Name": "Upset",
+          "Type": "Boolean",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "전투력이 낮은 쪽이 이겼는가."
+        }
+      ]
+    },
+    {
+      "Name": "TournamentRecord",
+      "Description": "대비무 대회 기록.",
+      "Properties": [
+        {
+          "Name": "Number",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "몇 번째 대회."
+        },
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연도."
+        },
+        {
+          "Name": "Entrants",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "참가자 수."
+        },
+        {
+          "Name": "ChampionId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "우승자 영혼 번호."
+        },
+        {
+          "Name": "ChampionName",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "우승자 이름."
+        },
+        {
+          "Name": "ChampionAffiliation",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "우승자 소속(종문 이름 또는 산수)."
+        },
+        {
+          "Name": "RunnerUpName",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "준우승자 이름."
+        },
+        {
+          "Name": "Prize",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "우승 상금(영석)."
+        },
+        {
+          "Name": "Matches",
+          "Type": "List<TournamentMatch>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "모든 경기."
+        }
+      ]
+    },
+    {
+      "Name": "WarRecord",
+      "Description": "끝난 전쟁 기록.",
+      "Properties": [
+        {
+          "Name": "Number",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "몇 번째 전쟁."
+        },
+        {
+          "Name": "StartYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "시작 연도."
+        },
+        {
+          "Name": "EndYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "끝난 연도."
+        },
+        {
+          "Name": "VictorSectId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "승리 종문 번호(0이면 무승부)."
+        },
+        {
+          "Name": "OrthodoxWins",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "청운종 전투 승리 수."
+        },
+        {
+          "Name": "DemonicWins",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천마문 전투 승리 수."
+        },
+        {
+          "Name": "OrthodoxRegions",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "종전 시 청운종 지배 접경지 수."
+        },
+        {
+          "Name": "DemonicRegions",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "종전 시 천마문 지배 접경지 수."
+        },
+        {
+          "Name": "Casualties",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "경지 하락 피해."
+        },
+        {
+          "Name": "Tribute",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "배상 영석."
+        },
+        {
+          "Name": "HeroName",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "공훈 1위(전쟁 영웅) 이름."
+        },
+        {
+          "Name": "HeroId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "공훈 1위 영혼 번호."
+        },
+        {
+          "Name": "ChampionDuel",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "대표 결투 요약."
+        },
+        {
+          "Name": "Highlights",
+          "Type": "List<String>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "주요 장면(최대 12줄)."
+        }
+      ]
+    },
+    {
+      "Name": "WarState",
+      "Description": "현재 전쟁(또는 휴전) 상태.",
+      "Properties": [
+        {
+          "Name": "AtWar",
+          "Type": "Boolean",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "전쟁 중이면 true."
+        },
+        {
+          "Name": "WarNumber",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "지금까지 시작된 전쟁 수(진행 중 포함)."
+        },
+        {
+          "Name": "StartYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이번 전쟁 시작 연도."
+        },
+        {
+          "Name": "OrthodoxWins",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이번 전쟁 청운종 승리 전투 수."
+        },
+        {
+          "Name": "DemonicWins",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이번 전쟁 천마문 승리 전투 수."
+        },
+        {
+          "Name": "Casualties",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이번 전쟁에서 일어난 경지 하락 수."
+        },
+        {
+          "Name": "LastWarEndYear",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "마지막 전쟁이 끝난 해(대비무 일정 기준)."
+        },
+        {
+          "Name": "Highlights",
+          "Type": "List<String>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "이번 전쟁의 주요 장면(최대 12줄)."
+        }
+      ]
+    },
+    {
+      "Name": "World",
+      "Description": "세계.",
+      "Properties": [
+        {
+          "Name": "FormatVersion",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "저장 형식 버전."
+        },
+        {
+          "Name": "Settings",
+          "Type": "WorldSettings",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "설정."
+        },
+        {
+          "Name": "Year",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "현재 연도(1틱 = 1년)."
+        },
+        {
+          "Name": "RandomState",
+          "Type": "UInt64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "난수 상태."
+        },
+        {
+          "Name": "RandomIncrement",
+          "Type": "UInt64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "난수 증분."
+        },
+        {
+          "Name": "Cultivators",
+          "Type": "List<Cultivator>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "수선자(인덱스 = 자리, 비승하면 같은 자리에 새 영혼)."
+        },
+        {
+          "Name": "Sects",
+          "Type": "List<Sect>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "종문(인덱스 0 = 청운종, 1 = 천마문)."
+        },
+        {
+          "Name": "Regions",
+          "Type": "List<Region>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "지역(인덱스 = 지역 번호)."
+        },
+        {
+          "Name": "Era",
+          "Type": "EraState",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "시대."
+        },
+        {
+          "Name": "War",
+          "Type": "WarState",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "전쟁 상태."
+        },
+        {
+          "Name": "Wars",
+          "Type": "List<WarRecord>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "끝난 전쟁."
+        },
+        {
+          "Name": "Tournaments",
+          "Type": "List<TournamentRecord>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "대비무 대회 기록."
+        },
+        {
+          "Name": "SecretRealms",
+          "Type": "List<SecretRealmState>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "열린 비경."
+        },
+        {
+          "Name": "BeastTides",
+          "Type": "List<BeastTideState>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "진행 중인 수조."
+        },
+        {
+          "Name": "Auctions",
+          "Type": "List<AuctionRecord>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "경매 기록(최근 30회)."
+        },
+        {
+          "Name": "Immortals",
+          "Type": "List<ImmortalRecord>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "비승 명부."
+        },
+        {
+          "Name": "Souls",
+          "Type": "List<SoulRecord>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영혼별 업적."
+        },
+        {
+          "Name": "Log",
+          "Type": "EventLog",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "사건 기록."
+        },
+        {
+          "Name": "Chronicle",
+          "Type": "Chronicle",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "연대기."
+        },
+        {
+          "Name": "Records",
+          "Type": "WorldRecords",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "세계 기록."
+        },
+        {
+          "Name": "Statistics",
+          "Type": "StatHistory",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "통계 이력."
+        },
+        {
+          "Name": "Ledger",
+          "Type": "StoneLedger",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "영석 장부."
+        },
+        {
+          "Name": "Totals",
+          "Type": "WorldTotals",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "누적 집계."
+        },
+        {
+          "Name": "Followed",
+          "Type": "List<Int32>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "관심 인물(영혼 번호)."
+        },
+        {
+          "Name": "HeavenlyFavor",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천기(개입 점수)."
+        },
+        {
+          "Name": "NextSoulId",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "다음 새 영혼 번호."
+        },
+        {
+          "Name": "Random",
+          "Type": "Pcg32",
+          "Ignored": true,
+          "CanWrite": true,
+          "Description": "세계 난수. 불러온 뒤 에서 상태로 복원한다."
+        }
+      ]
+    },
+    {
+      "Name": "WorldRecords",
+      "Description": "세계 기록(최초·최연소·최장수 등).",
+      "Properties": [
+        {
+          "Name": "FirstReach",
+          "Type": "List<RecordEntry>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "경지별 최초 도달(인덱스 = 경지, 아직 없으면 null)."
+        },
+        {
+          "Name": "YoungestReach",
+          "Type": "List<RecordEntry>",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "경지별 최연소 도달."
+        },
+        {
+          "Name": "LongestLife",
+          "Type": "RecordEntry",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최장수(한 생)."
+        },
+        {
+          "Name": "MostLives",
+          "Type": "RecordEntry",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최다 윤회."
+        },
+        {
+          "Name": "HighestPower",
+          "Type": "RecordEntry",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최고 전투력."
+        },
+        {
+          "Name": "MostWins",
+          "Type": "RecordEntry",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "한 생 최다 승리."
+        },
+        {
+          "Name": "Richest",
+          "Type": "RecordEntry",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최다 영석 보유."
+        },
+        {
+          "Name": "MostTournamentWins",
+          "Type": "RecordEntry",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "최다 대비무 우승(영혼 누적)."
+        }
+      ]
+    },
+    {
+      "Name": "WorldSettings",
+      "Description": "새 세계 설정.",
+      "Properties": [
+        {
+          "Name": "Seed",
+          "Type": "UInt64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "시드."
+        },
+        {
+          "Name": "Population",
+          "Type": "Int32",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "인구(영혼 수)."
+        },
+        {
+          "Name": "Name",
+          "Type": "String",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "세계 이름."
+        }
+      ]
+    },
+    {
+      "Name": "WorldTotals",
+      "Description": "세계 누적 집계.",
+      "Properties": [
+        {
+          "Name": "NaturalDeaths",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "수명이 다해 좌화한 수."
+        },
+        {
+          "Name": "CollapseDeaths",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "경지 하락으로 수명이 무너진 수."
+        },
+        {
+          "Name": "Battles",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "결투(전쟁·숙적·비경 포함) 수."
+        },
+        {
+          "Name": "Spars",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "비무(친선·대비무) 수."
+        },
+        {
+          "Name": "CrossSectSpars",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "종문 간 대비무(휴전 중) 수."
+        },
+        {
+          "Name": "MajorBreakthroughs",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "대경지 돌파 수."
+        },
+        {
+          "Name": "Tribulations",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "천겁 수."
+        },
+        {
+          "Name": "Ascensions",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "비승 수."
+        },
+        {
+          "Name": "Defections",
+          "Type": "Int64",
+          "Ignored": false,
+          "CanWrite": true,
+          "Description": "배신·귀순 수."
+        }
+      ]
+    }
+  ],
+  "Enums": [
+    {
+      "Name": "Xianxia.Simulation.Data.ArtKind",
+      "Values": [
+        {
+          "Name": "None",
+          "Value": 0,
+          "Description": "기예 없음."
+        },
+        {
+          "Name": "Alchemy",
+          "Value": 1,
+          "Description": "연단: 영초로 단약을 만든다."
+        },
+        {
+          "Name": "Refining",
+          "Value": 2,
+          "Description": "연기: 영철로 법보를 만든다."
+        },
+        {
+          "Name": "Formation",
+          "Value": 3,
+          "Description": "진법: 전쟁·수조 방어와 영맥진을 돕는다."
+        },
+        {
+          "Name": "Talisman",
+          "Value": 4,
+          "Description": "부록: 부적을 만든다."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.ChronicleKind",
+      "Values": [
+        {
+          "Name": "World",
+          "Value": 0,
+          "Description": "세계 개벽 등 세계 사건."
+        },
+        {
+          "Name": "Era",
+          "Value": 1,
+          "Description": "시대 변화."
+        },
+        {
+          "Name": "FirstRealm",
+          "Value": 2,
+          "Description": "경지 최초 도달."
+        },
+        {
+          "Name": "Ascension",
+          "Value": 3,
+          "Description": "비승."
+        },
+        {
+          "Name": "Leader",
+          "Value": 4,
+          "Description": "종주 교체."
+        },
+        {
+          "Name": "War",
+          "Value": 5,
+          "Description": "전쟁."
+        },
+        {
+          "Name": "Tournament",
+          "Value": 6,
+          "Description": "대비무 대회."
+        },
+        {
+          "Name": "SecretRealm",
+          "Value": 7,
+          "Description": "비경."
+        },
+        {
+          "Name": "BeastTide",
+          "Value": 8,
+          "Description": "수조."
+        },
+        {
+          "Name": "Auction",
+          "Value": 9,
+          "Description": "경매."
+        },
+        {
+          "Name": "Defection",
+          "Value": 10,
+          "Description": "배신·귀순."
+        },
+        {
+          "Name": "Record",
+          "Value": 11,
+          "Description": "세계 기록 경신."
+        },
+        {
+          "Name": "Death",
+          "Value": 12,
+          "Description": "고수의 좌화(사망)."
+        },
+        {
+          "Name": "Intervention",
+          "Value": 13,
+          "Description": "천기 개입."
+        },
+        {
+          "Name": "Facility",
+          "Value": 14,
+          "Description": "종문 시설."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.CultivatorAction",
+      "Values": [
+        {
+          "Name": "Cultivate",
+          "Value": 0,
+          "Description": "수련."
+        },
+        {
+          "Name": "Explore",
+          "Value": 1,
+          "Description": "탐색(자원·기연)."
+        },
+        {
+          "Name": "Trade",
+          "Value": 2,
+          "Description": "거래."
+        },
+        {
+          "Name": "Craft",
+          "Value": 3,
+          "Description": "기예 제작."
+        },
+        {
+          "Name": "Spar",
+          "Value": 4,
+          "Description": "비무·결투."
+        },
+        {
+          "Name": "Mission",
+          "Value": 5,
+          "Description": "종문 임무."
+        },
+        {
+          "Name": "Travel",
+          "Value": 6,
+          "Description": "지역 이동."
+        },
+        {
+          "Name": "Teach",
+          "Value": 7,
+          "Description": "제자 지도."
+        },
+        {
+          "Name": "Recover",
+          "Value": 8,
+          "Description": "요양(부상 회복)."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.DeathCause",
+      "Values": [
+        {
+          "Name": "Lifespan",
+          "Value": 0,
+          "Description": "수명이 다함."
+        },
+        {
+          "Name": "Collapse",
+          "Value": 1,
+          "Description": "경지가 떨어져 남은 수명이 사라짐."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.Element",
+      "Values": [
+        {
+          "Name": "Metal",
+          "Value": 0,
+          "Description": "금(金)."
+        },
+        {
+          "Name": "Wood",
+          "Value": 1,
+          "Description": "목(木)."
+        },
+        {
+          "Name": "Water",
+          "Value": 2,
+          "Description": "수(水)."
+        },
+        {
+          "Name": "Fire",
+          "Value": 3,
+          "Description": "화(火)."
+        },
+        {
+          "Name": "Earth",
+          "Value": 4,
+          "Description": "토(土)."
+        },
+        {
+          "Name": "Thunder",
+          "Value": 5,
+          "Description": "뇌(雷) 변이 영근."
+        },
+        {
+          "Name": "Ice",
+          "Value": 6,
+          "Description": "빙(氷) 변이 영근."
+        },
+        {
+          "Name": "Wind",
+          "Value": 7,
+          "Description": "풍(風) 변이 영근."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.EraKind",
+      "Values": [
+        {
+          "Name": "Calm",
+          "Value": 0,
+          "Description": "평온."
+        },
+        {
+          "Name": "Resurgence",
+          "Value": 1,
+          "Description": "영기 부흥: 수련이 빨라지고 비경이 잦다."
+        },
+        {
+          "Name": "Decline",
+          "Value": 2,
+          "Description": "말법 시대: 수련과 돌파가 어렵다."
+        },
+        {
+          "Name": "BloodMoon",
+          "Value": 3,
+          "Description": "혈월: 마도가 강해지고 수조가 잦다."
+        },
+        {
+          "Name": "BeastFrenzy",
+          "Value": 4,
+          "Description": "만수 난동: 수조가 매우 잦다."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.FacilityKind",
+      "Values": [
+        {
+          "Name": "SpiritArray",
+          "Value": 0,
+          "Description": "영맥진: 본산·영지에서 수련 속도 증가."
+        },
+        {
+          "Name": "Pavilion",
+          "Value": 1,
+          "Description": "장경각: 익힐 수 있는 공법 등급 상한."
+        },
+        {
+          "Name": "AlchemyHall",
+          "Value": 2,
+          "Description": "연단방: 단약 공급량."
+        },
+        {
+          "Name": "TrainingGround",
+          "Value": 3,
+          "Description": "연무장: 소속 제자의 전투력 증가."
+        },
+        {
+          "Name": "GuardianArray",
+          "Value": 4,
+          "Description": "호산대진: 전쟁·수조 방어."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.LogKind",
+      "Values": [
+        {
+          "Name": "Breakthrough",
+          "Value": 0,
+          "Description": "돌파."
+        },
+        {
+          "Name": "Tribulation",
+          "Value": 1,
+          "Description": "천겁."
+        },
+        {
+          "Name": "Battle",
+          "Value": 2,
+          "Description": "결투."
+        },
+        {
+          "Name": "Spar",
+          "Value": 3,
+          "Description": "비무."
+        },
+        {
+          "Name": "Injury",
+          "Value": 4,
+          "Description": "부상·경지 하락."
+        },
+        {
+          "Name": "Sect",
+          "Value": 5,
+          "Description": "종문."
+        },
+        {
+          "Name": "Relation",
+          "Value": 6,
+          "Description": "인연(사제·도려·숙적)."
+        },
+        {
+          "Name": "Fortune",
+          "Value": 7,
+          "Description": "기연."
+        },
+        {
+          "Name": "Craft",
+          "Value": 8,
+          "Description": "기예."
+        },
+        {
+          "Name": "Trade",
+          "Value": 9,
+          "Description": "거래·경매."
+        },
+        {
+          "Name": "War",
+          "Value": 10,
+          "Description": "전쟁."
+        },
+        {
+          "Name": "Tournament",
+          "Value": 11,
+          "Description": "대비무 대회."
+        },
+        {
+          "Name": "SecretRealm",
+          "Value": 12,
+          "Description": "비경."
+        },
+        {
+          "Name": "BeastTide",
+          "Value": 13,
+          "Description": "수조."
+        },
+        {
+          "Name": "Rebirth",
+          "Value": 14,
+          "Description": "윤회·좌화."
+        },
+        {
+          "Name": "Era",
+          "Value": 15,
+          "Description": "시대 변화."
+        },
+        {
+          "Name": "Ascension",
+          "Value": 16,
+          "Description": "비승."
+        },
+        {
+          "Name": "Title",
+          "Value": 17,
+          "Description": "호칭 획득."
+        },
+        {
+          "Name": "Intervention",
+          "Value": 18,
+          "Description": "천기 개입."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.Personality",
+      "Values": [
+        {
+          "Name": "Righteous",
+          "Value": 0,
+          "Description": "정파: 임무·수련 중시, 정도 종문에 잘 맞는다."
+        },
+        {
+          "Name": "Demonic",
+          "Value": 1,
+          "Description": "마도: 싸움과 약탈을 즐기고 마도 종문에 잘 맞는다."
+        },
+        {
+          "Name": "Neutral",
+          "Value": 2,
+          "Description": "중립: 거래·탐색을 즐긴다."
+        },
+        {
+          "Name": "Hermit",
+          "Value": 3,
+          "Description": "은둔: 거의 수련만 하고 싸움을 피한다."
+        },
+        {
+          "Name": "Domineering",
+          "Value": 4,
+          "Description": "패도: 힘을 숭상해 비무와 결투가 잦다."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.PillKind",
+      "Values": [
+        {
+          "Name": "Healing",
+          "Value": 0,
+          "Description": "회복단: 부상 치료."
+        },
+        {
+          "Name": "Breakthrough",
+          "Value": 1,
+          "Description": "파경단: 대경지 돌파 보조."
+        },
+        {
+          "Name": "Clarity",
+          "Value": 2,
+          "Description": "청심단: 도심 회복."
+        },
+        {
+          "Name": "Longevity",
+          "Value": 3,
+          "Description": "연수단: 수명 연장."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.RegionKind",
+      "Values": [
+        {
+          "Name": "Center",
+          "Value": 0,
+          "Description": "종문 본산(중심지)."
+        },
+        {
+          "Name": "Periphery",
+          "Value": 1,
+          "Description": "종문 주변 영지."
+        },
+        {
+          "Name": "Border",
+          "Value": 2,
+          "Description": "두 종문 사이의 접경지(전쟁 구역)."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.SectRank",
+      "Values": [
+        {
+          "Name": "None",
+          "Value": 0,
+          "Description": "직위 없는 잡역 제자(명부 정원 밖)."
+        },
+        {
+          "Name": "Outer",
+          "Value": 1,
+          "Description": "외문제자."
+        },
+        {
+          "Name": "Inner",
+          "Value": 2,
+          "Description": "내문제자."
+        },
+        {
+          "Name": "Direct",
+          "Value": 3,
+          "Description": "직전제자."
+        },
+        {
+          "Name": "Elder",
+          "Value": 4,
+          "Description": "장로."
+        },
+        {
+          "Name": "GrandElder",
+          "Value": 5,
+          "Description": "대장로."
+        },
+        {
+          "Name": "Leader",
+          "Value": 6,
+          "Description": "종주."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.TalismanKind",
+      "Values": [
+        {
+          "Name": "Attack",
+          "Value": 0,
+          "Description": "공격부: 다음 전투 전투력 증가."
+        },
+        {
+          "Name": "Thunder",
+          "Value": 1,
+          "Description": "피뢰부: 천겁 통과 확률 증가."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Data.TitleId",
+      "Values": [
+        {
+          "Name": "Undefeated",
+          "Value": 0,
+          "Description": "불패: 10연승."
+        },
+        {
+          "Name": "Veteran",
+          "Value": 1,
+          "Description": "백전노장: 한 생에서 100전."
+        },
+        {
+          "Name": "Defier",
+          "Value": 2,
+          "Description": "역천자: 대경지가 더 높은 상대를 이김."
+        },
+        {
+          "Name": "ThunderSurvivor",
+          "Value": 3,
+          "Description": "뇌겁을 넘은 자: 천겁 2회 통과."
+        },
+        {
+          "Name": "TournamentChampion",
+          "Value": 4,
+          "Description": "대비무 우승."
+        },
+        {
+          "Name": "TournamentRunnerUp",
+          "Value": 5,
+          "Description": "대비무 준우승."
+        },
+        {
+          "Name": "WarHero",
+          "Value": 6,
+          "Description": "전쟁 영웅: 전쟁 공훈 1위."
+        },
+        {
+          "Name": "Champion",
+          "Value": 7,
+          "Description": "대표 결투 승자."
+        },
+        {
+          "Name": "RealmConqueror",
+          "Value": 8,
+          "Description": "비경의 주인: 비경 최대 수혜자."
+        },
+        {
+          "Name": "BeastSlayer",
+          "Value": 9,
+          "Description": "수조 사냥꾼: 수조 격퇴 공훈 1위."
+        },
+        {
+          "Name": "GrandMaster",
+          "Value": 10,
+          "Description": "기예 종사: 기예 숙련 90 이상."
+        },
+        {
+          "Name": "Fortunate",
+          "Value": 11,
+          "Description": "기연아: 기연 3회."
+        },
+        {
+          "Name": "Awakened",
+          "Value": 12,
+          "Description": "전생 각성자."
+        },
+        {
+          "Name": "Traitor",
+          "Value": 13,
+          "Description": "배신자: 소속을 버리고 적 종문으로."
+        },
+        {
+          "Name": "Prodigy",
+          "Value": 14,
+          "Description": "신동: 50세 전에 금단경."
+        },
+        {
+          "Name": "SectMaster",
+          "Value": 15,
+          "Description": "일문지주: 종주에 오름."
+        },
+        {
+          "Name": "LongLived",
+          "Value": 16,
+          "Description": "장생자: 한 생에서 만 년 이상 삶."
+        },
+        {
+          "Name": "Chosen",
+          "Value": 17,
+          "Description": "천명을 받은 자: 천기 개입(기연 하사)을 받음."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Model.StoneSink",
+      "Values": [
+        {
+          "Name": "MerchantPurchase",
+          "Value": 0,
+          "Description": "상회에서 재료·공법 구입."
+        },
+        {
+          "Name": "Facility",
+          "Value": 1,
+          "Description": "종문 시설 건설."
+        },
+        {
+          "Name": "Auction",
+          "Value": 2,
+          "Description": "경매 낙찰."
+        },
+        {
+          "Name": "Refining",
+          "Value": 3,
+          "Description": "법보 제련 소모."
+        },
+        {
+          "Name": "Ascension",
+          "Value": 4,
+          "Description": "비승자가 가져감."
+        },
+        {
+          "Name": "War",
+          "Value": 5,
+          "Description": "전쟁 군비."
+        },
+        {
+          "Name": "Upkeep",
+          "Value": 6,
+          "Description": "종문 시설 유지비."
+        },
+        {
+          "Name": "Death",
+          "Value": 7,
+          "Description": "상속자 없는 유품이 흩어짐."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Model.StoneSource",
+      "Values": [
+        {
+          "Name": "Initial",
+          "Value": 0,
+          "Description": "처음 지급."
+        },
+        {
+          "Name": "Exploration",
+          "Value": 1,
+          "Description": "탐색 수확."
+        },
+        {
+          "Name": "MerchantSale",
+          "Value": 2,
+          "Description": "상회에 재료 판매."
+        },
+        {
+          "Name": "Territory",
+          "Value": 3,
+          "Description": "종문 영지 산출."
+        },
+        {
+          "Name": "Fortune",
+          "Value": 4,
+          "Description": "기연·비경 보물."
+        },
+        {
+          "Name": "Mission",
+          "Value": 5,
+          "Description": "임무 보수(의뢰인 지급)."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Systems.BattleKind",
+      "Values": [
+        {
+          "Name": "Spar",
+          "Value": 0,
+          "Description": "같은 종문·지역 친선 비무."
+        },
+        {
+          "Name": "CrossSectSpar",
+          "Value": 1,
+          "Description": "휴전 중 종문 간 대비무."
+        },
+        {
+          "Name": "Grudge",
+          "Value": 2,
+          "Description": "숙적·약탈 결투."
+        },
+        {
+          "Name": "War",
+          "Value": 3,
+          "Description": "전쟁 전투."
+        },
+        {
+          "Name": "SecretRealm",
+          "Value": 4,
+          "Description": "비경 보물 다툼."
+        },
+        {
+          "Name": "Tournament",
+          "Value": 5,
+          "Description": "대비무 대회."
+        }
+      ]
+    },
+    {
+      "Name": "Xianxia.Simulation.Systems.InterventionKind",
+      "Values": [
+        {
+          "Name": "BestowFortune",
+          "Value": 0,
+          "Description": "기연 하사(수선자 한 명)."
+        },
+        {
+          "Name": "OpenSecretRealm",
+          "Value": 1,
+          "Description": "비경 개방(지역)."
+        },
+        {
+          "Name": "SummonBeastTide",
+          "Value": 2,
+          "Description": "수조 소환(지역)."
+        }
+      ]
+    }
+  ]
+}

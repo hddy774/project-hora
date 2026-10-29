@@ -1,0 +1,32 @@
+{
+  "Baseline": "17b48ad1bfcb58a9d32a8def0e74caa2027cb7f0",
+  "FortuneTechnique": {
+    "Before": 18,
+    "Gain": 1,
+    "After": 15
+  },
+  "MalformedSave": {
+    "RegionId": 999,
+    "Exception": "ArgumentOutOfRangeException"
+  },
+  "FollowExperiment": {
+    "Seed": 7,
+    "Population": 100,
+    "Years": 600,
+    "ControlFollowed": 0,
+    "ObservedFollowed": 100,
+    "RandomStateEqual": false,
+    "CoreStateEqual": false
+  },
+  "EventOverlap": {
+    "Region": 8,
+    "ModifierBeforeSecretClose": 0.8,
+    "ModifierAfterSecretClose": 1,
+    "ActiveBeastTides": 1
+  },
+  "FounderRecord": {
+    "Year": 0,
+    "ExistingRealmTwoOrHigher": 2,
+    "FirstReachRealmTwo": null
+  }
+}

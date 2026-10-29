@@ -1,0 +1,266 @@
+{
+  "ticks": 30000,
+  "results": [
+    {
+      "seed": 1,
+      "msPerTick": 8.210558620166667,
+      "realmDistribution": [
+        2,
+        9,
+        19,
+        137,
+        66,
+        72,
+        153,
+        166,
+        376
+      ],
+      "firstReach": [
+        1,
+        5,
+        29,
+        69,
+        255,
+        835,
+        1680,
+        2929,
+        5311
+      ],
+      "breakthroughAttempts": 352540,
+      "saturatedShare": 0.18925511998638453,
+      "meanProbability": 0.4057007281868829,
+      "warPoints": 6736,
+      "warPointsToFirstSect": 6736,
+      "warPointMismatch": 3181,
+      "borderOwnersAfterWars": [
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      ],
+      "newbornHighRank": 35,
+      "staleRanks": 199,
+      "leaderMismatch": 1,
+      "minorDrops": 109,
+      "maxInjury": 186,
+      "minMaxHp": 76,
+      "deaths": {
+        "수명종료": 4170
+      },
+      "logByType": {
+        "돌파": 159361,
+        "비무": 1902328,
+        "부상": 50896,
+        "전투": 7050,
+        "전쟁": 5,
+        "종문": 21899,
+        "윤회": 8340,
+        "대비무": 11242,
+        "천겁": 17951
+      },
+      "logOrder": {
+        "inversions": 0,
+        "visibleTypes": {
+          "윤회": 75,
+          "종문": 45
+        }
+      },
+      "historyBadStage": 474,
+      "historyCount": 846,
+      "maxReincarnation": 14,
+      "talentShare": 0.4524917623093946,
+      "realmShare": 0.13874935739089295
+    },
+    {
+      "seed": 2,
+      "msPerTick": 8.6814439578,
+      "realmDistribution": [
+        2,
+        7,
+        19,
+        124,
+        71,
+        84,
+        147,
+        181,
+        365
+      ],
+      "firstReach": [
+        1,
+        5,
+        39,
+        81,
+        303,
+        716,
+        1531,
+        2591,
+        4668
+      ],
+      "breakthroughAttempts": 360059,
+      "saturatedShare": 0.1878192185169653,
+      "meanProbability": 0.40517590819847193,
+      "warPoints": 6911,
+      "warPointsToFirstSect": 6911,
+      "warPointMismatch": 3627,
+      "borderOwnersAfterWars": [
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      ],
+      "newbornHighRank": 31,
+      "staleRanks": 198,
+      "leaderMismatch": 2,
+      "minorDrops": 102,
+      "maxInjury": 179,
+      "minMaxHp": 80,
+      "deaths": {
+        "수명종료": 4249
+      },
+      "logByType": {
+        "돌파": 162158,
+        "비무": 1901695,
+        "부상": 50192,
+        "전투": 7212,
+        "전쟁": 5,
+        "종문": 21843,
+        "윤회": 8498,
+        "대비무": 11382,
+        "천겁": 17874
+      },
+      "logOrder": {
+        "inversions": 0,
+        "visibleTypes": {
+          "윤회": 72,
+          "종문": 48
+        }
+      },
+      "historyBadStage": 485,
+      "historyCount": 843,
+      "maxReincarnation": 15,
+      "talentShare": 0.4501164676971691,
+      "realmShare": 0.13870240030687903
+    },
+    {
+      "seed": 3,
+      "msPerTick": 8.361435009633334,
+      "realmDistribution": [
+        3,
+        8,
+        19,
+        139,
+        63,
+        94,
+        128,
+        179,
+        367
+      ],
+      "firstReach": [
+        1,
+        5,
+        33,
+        77,
+        243,
+        567,
+        1748,
+        2697,
+        5401
+      ],
+      "breakthroughAttempts": 356055,
+      "saturatedShare": 0.1869233685806968,
+      "meanProbability": 0.4028551028563446,
+      "warPoints": 6646,
+      "warPointsToFirstSect": 6646,
+      "warPointMismatch": 3380,
+      "borderOwnersAfterWars": [
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      ],
+      "newbornHighRank": 26,
+      "staleRanks": 198,
+      "leaderMismatch": 2,
+      "minorDrops": 110,
+      "maxInjury": 175,
+      "minMaxHp": 50,
+      "deaths": {
+        "수명종료": 4224
+      },
+      "logByType": {
+        "돌파": 159602,
+        "비무": 1897503,
+        "부상": 51105,
+        "전투": 6929,
+        "전쟁": 5,
+        "종문": 21864,
+        "윤회": 8448,
+        "대비무": 13735,
+        "천겁": 17697
+      },
+      "logOrder": {
+        "inversions": 0,
+        "visibleTypes": {
+          "윤회": 72,
+          "종문": 48
+        }
+      },
+      "historyBadStage": 495,
+      "historyCount": 844,
+      "maxReincarnation": 13,
+      "talentShare": 0.45516197397119734,
+      "realmShare": 0.13983493748213158
+    }
+  ]
+}

@@ -11,7 +11,7 @@ python3 - <<'PY'
 import base64, hashlib, json, os, pathlib, re, subprocess, sys, tempfile, zipfile
 PIN='0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a'
 APPLICATION_ID='org.hora.xianxiaobserver'
-VERSION='0.1.0'
+VERSION='0.2.0'
 POLICY='retained_repository_publisher_for_hora_release_request'
 phase='trusted release inputs'
 def mask(value):
@@ -75,7 +75,7 @@ try:
     if not (sdk/'apksigner').is_file() or not (sdk/'aapt').is_file(): raise ValueError('build tools 36.0.0')
     phase='new Xianxia unsigned APK identity and offline policy'
     badging=quiet([sdk/'aapt','dump','badging',unsigned],env).decode()
-    for expected_field in ("package: name='"+APPLICATION_ID+"'","versionName='"+VERSION+"'","versionCode='1'","sdkVersion:'24'"):
+    for expected_field in ("package: name='"+APPLICATION_ID+"'","versionName='"+VERSION+"'","versionCode='2'","sdkVersion:'24'"):
         if expected_field not in badging: raise ValueError('Xianxia manifest')
     if 'android.permission.INTERNET' in quiet([sdk/'aapt','dump','permissions',unsigned],env).decode(): raise ValueError('network permission')
     manifest=quiet([sdk/'aapt','dump','xmltree',unsigned,'AndroidManifest.xml'],env).decode()
@@ -108,7 +108,7 @@ try:
         if original!=result: raise ValueError('payload file set')
         for name in original:
             if hashlib.sha256(before.read(name)).digest()!=hashlib.sha256(after.read(name)).digest(): raise ValueError('payload changed')
-    report={'application_id':APPLICATION_ID,'version':VERSION,'version_code':1,'source_commit':source,
+    report={'application_id':APPLICATION_ID,'version':VERSION,'version_code':2,'source_commit':source,
             'certificate_sha256':PIN,'signing_policy':POLICY,'unsigned_sha256':expected,
             'signed_sha256':hashlib.file_digest(signed.open('rb'),'sha256').hexdigest(),
             'payload_matches_verified_unsigned':True,'original_bundle_application_id':'com.alphaexchange.offline',

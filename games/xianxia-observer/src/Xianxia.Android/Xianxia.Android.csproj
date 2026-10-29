@@ -10,8 +10,8 @@
     <RootNamespace>Xianxia.Android</RootNamespace>
     <ApplicationId>org.hora.xianxiaobserver</ApplicationId>
     <ApplicationTitle>선로만상록 프로젝트</ApplicationTitle>
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>2</ApplicationVersion>
+    <ApplicationDisplayVersion>0.2.0</ApplicationDisplayVersion>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>

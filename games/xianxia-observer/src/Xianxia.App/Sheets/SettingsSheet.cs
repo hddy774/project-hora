@@ -42,7 +42,7 @@ namespace Xianxia.App.Sheets
             Body.Children.Add(Ui.Section("세계 교체", _confirm, _load,
                 Ui.Title("새 세계 시드"), _seed, Ui.Title("인구 (100~3000)"), _population, _create,
                 Ui.Muted("새 세계는 기존 저장을 교체합니다. 같은 시드와 인구는 같은 시작 세계를 만듭니다.")));
-            Body.Children.Add(Ui.Section("선로만상록 프로젝트 0.1.0", Ui.Muted("오프라인 · Android 7.0 이상 · 한국어"),
+            Body.Children.Add(Ui.Section("선로만상록 프로젝트 0.2.0", Ui.Muted("오프라인 · Android 7.0 이상 · 한국어"),
                 Ui.Button("게임 도감 ›", () => navigator.Open(new SheetLink(LinkKind.Help, 0)), "small")));
         }
 

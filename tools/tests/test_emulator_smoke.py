@@ -37,7 +37,7 @@ class FocusTests(unittest.TestCase):
             smoke.controls = lambda: events.append('controls')
             with patch.object(MODULE, 'adb', side_effect=lambda *args: events.append(args)):
                 smoke.tap('nav-people', 'tab 2')
-            self.assertEqual(events, ['focus', 'clear', ('shell', 'input', 'tap', 12, 34),
+            self.assertEqual(events, ['focus', 'clear', ('shell', 'input', 'swipe', 12, 34, 12, 34, 120),
                                       'fresh:tab 2', 'controls'])
 
 

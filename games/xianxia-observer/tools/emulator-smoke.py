@@ -104,7 +104,8 @@ class Smoke:
         position = self.find(expression)
         self.focus()
         self.clear()
-        adb('shell', 'input', 'tap', position['x'], position['y'])
+        # 손가락 누름과 뗌을 서로 다른 Android 입력 프레임에 전달한다.
+        adb('shell', 'input', 'swipe', position['x'], position['y'], position['x'], position['y'], 120)
         if expected:
             self.trace(expected)
         self.controls()

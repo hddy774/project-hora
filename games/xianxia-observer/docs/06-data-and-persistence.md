@@ -1,5 +1,7 @@
 # 06. 데이터·저장 설계
 
+> 0.1.0 작성 시점의 설계·검토 기록입니다. 0.2.0 구현과 달라진 사항은 [현재 구현 기준20](20-v0.2.0-implementation.md)과 [실측19](19-balance-v0.2.0.md)를 우선합니다.
+
 상태: 기준 소스의 데이터 계약. 속성 전체 목록은 [데이터 사전](reference/data-dictionary.md),
 실제 숫자·열거형은 [추출 JSON](reference/catalog.json)을 함께 본다.
 

@@ -1,5 +1,7 @@
 # 03. 밸런스·콘텐츠 카탈로그
 
+> 0.1.0 작성 시점의 설계·검토 기록입니다. 0.2.0 구현과 달라진 사항은 [현재 구현 기준20](20-v0.2.0-implementation.md)과 [실측19](19-balance-v0.2.0.md)를 우선합니다.
+
 상태: 실제 코드에서 추출한 값과 실측을 정리한 검토 자료. 아래 표는 런타임 공개 API에서 추출했다.
 원본은 [catalog.json](reference/catalog.json), 재현 방법은 [추출 안내](reference/extraction.md)에 있다.
 기획 의도와 다른 표시 문자열은 그대로 인용하고 [12](12-open-questions.md)에서 분리해 다룬다.

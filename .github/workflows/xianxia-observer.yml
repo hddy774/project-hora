@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Sign with the retained publisher certificate and publish the APK as the latest release
+        description: Publish after retained signing and both Android API checks (false signs and tests only)
         type: boolean
         default: false
       source_run_id:
@@ -72,6 +72,8 @@ jobs:
         run: dotnet test XianxiaObserver.slnx -c Release --no-build --logger trx --results-directory TestResults
       - name: Test PR progress updates
         run: python3 -m unittest discover -s ../../tools/tests -p 'test_xianxia_progress.py' -v
+      - name: Test Android focus and fresh-input evidence guards
+        run: python3 -m unittest discover -s ../../tools/tests -p 'test_emulator_smoke.py' -v
       - name: Preserve test reports and rendered screens
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -119,7 +121,7 @@ jobs:
           dotnet publish src/Xianxia.Android/Xianxia.Android.csproj -c Release -f net10.0-android -o "$RUNNER_TEMP/apk"
           -p:AndroidSdkDirectory="$ANDROID_SDK" -p:JavaSdkDirectory="$JAVA_HOME"
       - name: Sign the release APK with the retained publisher
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner }}
         env:
           SIGNING_BUNDLE: ${{ secrets.ANDROID_SIGNING_BUNDLE }}
           RAW_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
@@ -135,7 +137,7 @@ jobs:
           bash tools/retained-sign.sh "$unsigned" "$RUNNER_TEMP/release/$ARTIFACT_STEM.apk"
       - name: Verify package identity, offline policy and ABIs
         env:
-          PUBLISH_RELEASE: ${{ github.event_name == 'workflow_dispatch' && inputs.publish }}
+          PUBLISH_RELEASE: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           set -euo pipefail
           apk=$(ls "$RUNNER_TEMP"/apk/*-Signed.apk)
@@ -232,8 +234,12 @@ jobs:
         run: python3 games/xianxia-observer/tools/publish-release.py publish --source-run "$SOURCE_RUN_ID"
 
   emulator:
-    name: run APK on Android emulator
+    name: run APK on Android emulator (api ${{ matrix.api }})
     needs: android
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [24, 34]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -242,6 +248,10 @@ jobs:
         with:
           name: xianxia-apk-${{ github.run_id }}-${{ github.run_attempt }}
           path: apk
+      - name: Download the previous public APK for an in-place save upgrade
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download xianxia-observer/v0.1.0 --repo hddy774/project-hora --pattern XianxiaObserver-v0.1.0.apk --dir previous-apk
       - name: Enable KVM for the emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -250,18 +260,18 @@ jobs:
       - name: Install, launch, screenshot and check for crashes
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
+          api-level: ${{ matrix.api }}
           arch: x86_64
           target: google_apis
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash games/xianxia-observer/tools/emulator-smoke.sh apk/XianxiaObserver-ci.apk emulator-out
+          script: bash games/xianxia-observer/tools/emulator-smoke.sh apk/XianxiaObserver-ci.apk emulator-out previous-apk/XianxiaObserver-v0.1.0.apk
       - name: Preserve emulator screenshots and logs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: xianxia-emulator-${{ github.run_id }}-${{ github.run_attempt }}
+          name: xianxia-emulator-api${{ matrix.api }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: emulator-out
           if-no-files-found: warn
           retention-days: 14

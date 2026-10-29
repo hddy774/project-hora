@@ -41,6 +41,21 @@ namespace Xianxia.App.Services
         internal static void Control(string id, int x, int y) => Sink?.Invoke("[xo-ui] control "
             + JsonSerializer.Serialize(new { id, x, y }));
 
+        /// <summary>현재 스크롤 가능한 실제 화면 영역.</summary>
+        /// <param name="left">왼쪽.</param>
+        /// <param name="top">위.</param>
+        /// <param name="right">오른쪽.</param>
+        /// <param name="bottom">아래.</param>
+        internal static void Viewport(int left, int top, int right, int bottom) => Sink?.Invoke("[xo-ui] viewport "
+            + JsonSerializer.Serialize(new { left, top, right, bottom }));
+
+        /// <summary>입력 뒤 확인하는 현재 게임 상태. 연간 루프에서는 출력하지 않는다.</summary>
+        /// <param name="year">게임 연도.</param>
+        /// <param name="favor">천기.</param>
+        /// <param name="running">진행 중.</param>
+        internal static void Context(int year, int favor, bool running) => Sink?.Invoke("[xo-ui] context "
+            + JsonSerializer.Serialize(new { year, favor, running }));
+
         private static void Write(string line) => (Sink ?? Console.WriteLine)("[xo-ui] " + line);
     }
 }

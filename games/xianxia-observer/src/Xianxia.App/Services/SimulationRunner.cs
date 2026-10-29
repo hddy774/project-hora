@@ -28,6 +28,11 @@ namespace Xianxia.App.Services
         private Thread? _thread;
         private bool _running;
         private bool _stopping;
+        private bool _faulted;
+        private long _lastTick;
+        private long _windowStarted;
+        private int _windowYears;
+        private double _owed;
         private int _speedIndex = DefaultSpeedIndex;
         private long _version;
         private double _measuredYearsPerSecond;
@@ -70,16 +75,39 @@ namespace Xianxia.App.Services
         /// <summary>진행 중 오류(있으면 멈춘 상태).</summary>
         internal string? Error { get; private set; }
 
-        /// <summary>실행 스레드를 시작한다(처음엔 멈춤 상태).</summary>
+        /// <summary>부분 처리된 세계는 Replace 전까지 진행·저장할 수 없다.</summary>
+        internal bool IsFaulted
+        {
+            get
+            {
+                lock (_gate)
+                {
+                    return _faulted;
+                }
+            }
+        }
+
+        /// <summary>시험 전용 Step 직전 동작. 부분 변경 뒤 오류도 재현할 수 있다.</summary>
+        internal Action<World>? BeforeStepForTest { get; set; }
+
+        /// <summary>일회 수명의 실행 스레드를 시작한다. Stop 뒤 재사용은 허용하지 않는다.</summary>
         internal void Start()
         {
-            if (_thread is not null)
+            lock (_gate)
             {
-                return;
-            }
+                if (_stopping)
+                {
+                    throw new InvalidOperationException("실행기는 한 번만 시작할 수 있습니다.");
+                }
 
-            _thread = new Thread(Loop) { IsBackground = true, Name = "Xianxia simulation" };
-            _thread.Start();
+                if (_thread is not null)
+                {
+                    return;
+                }
+
+                _thread = new Thread(Loop) { IsBackground = true, Name = "Xianxia simulation" };
+                _thread.Start();
+            }
         }
 
         /// <summary>스레드를 끝낸다.</summary>
@@ -88,6 +116,7 @@ namespace Xianxia.App.Services
             lock (_gate)
             {
                 _stopping = true;
+                _running = false;
                 Monitor.PulseAll(_gate);
             }
 
@@ -101,12 +130,12 @@ namespace Xianxia.App.Services
         {
             lock (_gate)
             {
-                _running = running;
-                if (running)
+                if (running && _faulted)
                 {
-                    Error = null;
+                    return;
                 }
 
+                _running = running;
                 Monitor.PulseAll(_gate);
             }
         }
@@ -162,6 +191,7 @@ namespace Xianxia.App.Services
             {
                 _running = false;
                 _world = world;
+                _faulted = false;
                 Error = null;
                 Interlocked.Increment(ref _version);
             }
@@ -173,6 +203,11 @@ namespace Xianxia.App.Services
         {
             lock (_gate)
             {
+                if (_faulted)
+                {
+                    return;
+                }
+
                 WorldSimulator.Run(_world, years);
                 Interlocked.Increment(ref _version);
             }
@@ -180,70 +215,85 @@ namespace Xianxia.App.Services
 
         private void Loop()
         {
-            long last = Stopwatch.GetTimestamp();
-            long lastSave = last;
+            long lastSave = Stopwatch.GetTimestamp();
             long savedVersion = Version;
-            long windowStart = last;
-            int windowYears = 0;
-            double owed = 0;
-            while (true)
+            _lastTick = lastSave;
+            _windowStarted = lastSave;
+            while (WaitForActivity())
             {
-                int speed;
-                lock (_gate)
+                if (IsRunning)
                 {
-                    while (!_running && !_stopping)
-                    {
-                        Monitor.Wait(_gate);
-                        last = Stopwatch.GetTimestamp();
-                        windowStart = last;
-                        windowYears = 0;
-                        owed = 0;
-                    }
-
-                    if (_stopping)
-                    {
-                        return;
-                    }
-
-                    speed = s_speeds[SpeedIndex];
+                    Tick();
                 }
 
-                long now = Stopwatch.GetTimestamp();
-                double elapsed = Stopwatch.GetElapsedTime(last, now).TotalSeconds;
-                last = now;
-                int budget = int.MaxValue;
-                if (speed != MaxSpeed)
+                TryAutosave(ref lastSave, ref savedVersion);
+            }
+        }
+
+        /// <summary>정지 중에도 주기적으로 깨어나 변경된 관찰 상태를 저장한다.</summary>
+        private bool WaitForActivity()
+        {
+            lock (_gate)
+            {
+                if (!_running && !_stopping)
                 {
-                    // 밀린 해는 0.2초 분량까지만 따라잡는다(멈췄다 풀릴 때 한꺼번에 뛰지 않게).
-                    owed = Math.Min(owed + (elapsed * speed), Math.Max(1, speed * 0.2));
-                    budget = (int)owed;
-                    if (budget == 0)
-                    {
-                        Thread.Sleep(Math.Clamp((int)Math.Ceiling((1 - owed) / speed * 1000), 1, 50));
-                        continue;
-                    }
+                    Monitor.Wait(_gate, TimeSpan.FromSeconds(1));
+                    _lastTick = Stopwatch.GetTimestamp();
+                    _windowStarted = _lastTick;
+                    _windowYears = 0;
+                    _owed = 0;
                 }
 
-                int done = RunSlice(budget, now);
-                owed = Math.Max(0, owed - done);
-                windowYears += done;
-                double window = Stopwatch.GetElapsedTime(windowStart).TotalSeconds;
-                if (window >= 1)
-                {
-                    Volatile.Write(ref _measuredYearsPerSecond, windowYears / window);
-                    windowStart = Stopwatch.GetTimestamp();
-                    windowYears = 0;
-                }
+                return !_stopping;
+            }
+        }
 
-                Thread.Sleep(1);
-                if (_autosave is not null && Stopwatch.GetElapsedTime(lastSave).TotalSeconds
-                    >= _autosaveInterval.TotalSeconds && Version != savedVersion)
+        /// <summary>속도 예산을 계산하고 짧은 해 묶음으로 진행한다.</summary>
+        private void Tick()
+        {
+            long now = Stopwatch.GetTimestamp();
+            int speed = s_speeds[SpeedIndex];
+            double elapsed = Stopwatch.GetElapsedTime(_lastTick, now).TotalSeconds;
+            _lastTick = now;
+            int budget = int.MaxValue;
+            if (speed != MaxSpeed)
+            {
+                // 재개 직후 밀린 해를 한꺼번에 처리하지 않는다.
+                _owed = Math.Min(_owed + (elapsed * speed), Math.Max(1, speed * 0.2));
+                budget = (int)_owed;
+                if (budget == 0)
                 {
-                    lastSave = Stopwatch.GetTimestamp();
-                    savedVersion = Version;
-                    _autosave();
+                    Thread.Sleep(Math.Clamp((int)Math.Ceiling((1 - _owed) / speed * 1000), 1, 50));
+                    return;
                 }
             }
+
+            int done = RunSlice(budget, now);
+            _owed = Math.Max(0, _owed - done);
+            _windowYears += done;
+            double window = Stopwatch.GetElapsedTime(_windowStarted).TotalSeconds;
+            if (window >= 1)
+            {
+                Volatile.Write(ref _measuredYearsPerSecond, _windowYears / window);
+                _windowStarted = Stopwatch.GetTimestamp();
+                _windowYears = 0;
+            }
+
+            Thread.Sleep(1);
+        }
+
+        /// <summary>호출은 세계 잠금 밖에서 수행한다. 저장 경로가 오류 여부를 다시 검사한다.</summary>
+        private void TryAutosave(ref long lastSave, ref long savedVersion)
+        {
+            if (_autosave is null || IsFaulted || Version == savedVersion
+                || Stopwatch.GetElapsedTime(lastSave) < _autosaveInterval)
+            {
+                return;
+            }
+
+            lastSave = Stopwatch.GetTimestamp();
+            savedVersion = Version;
+            _autosave();
         }
 
         private int RunSlice(int maxYears, long started)
@@ -256,15 +306,18 @@ namespace Xianxia.App.Services
                     while (_running && done < maxYears
                         && Stopwatch.GetElapsedTime(started).TotalSeconds < SliceSeconds)
                     {
+                        BeforeStepForTest?.Invoke(_world);
                         WorldSimulator.Step(_world);
                         done++;
                     }
                 }
                 catch (Exception exception) when (exception is not OutOfMemoryException)
                 {
-                    // 진행 중 오류는 화면에 알리고 멈춘다. 세계는 오류 직전 해까지 그대로다.
+                    // Step은 중간까지 변경됐을 수 있다. 정상본 교체 전 재개·저장을 막는다.
                     Error = exception.GetType().Name + ": " + exception.Message;
                     _running = false;
+                    _faulted = true;
+                    Interlocked.Increment(ref _version);
                 }
 
                 if (done > 0)

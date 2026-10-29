@@ -11,6 +11,9 @@ namespace Xianxia.App.Services
     /// <summary>게임 세션.</summary>
     internal sealed class GameSession
     {
+        /// <summary>부분 처리된 세계를 정상 저장에 덮어쓰지 않는 이유.</summary>
+        internal const string FaultMessage = "오류가 난 세계는 저장하지 않습니다. 마지막 저장을 불러오거나 새 세계를 시작하세요.";
+
         private readonly object _saveGate = new();
         private bool _resumeOnForeground;
 
@@ -61,24 +64,38 @@ namespace Xianxia.App.Services
             lock (_saveGate)
             {
                 // 동시에 요청된 자동·수동 저장도 캡처 순서대로 쓴다. 오래된 캡처가 새 저장을 덮지 못하게 한다.
-                (byte[] bytes, int year) = Runner.Read(world => (WorldSerializer.ToBytes(world), world.Year));
-                try
+                // 오류 확인과 캡처는 같은 잠금 안에서 한다. 확인 직후 Step이 실패하는 경합을 막는다.
+                (byte[]? bytes, int year) = Runner.Read(world => Runner.IsFaulted
+                    ? ((byte[]?)null, world.Year) : (WorldSerializer.ToBytes(world), world.Year));
+                if (bytes is null)
                 {
-                    Store.Write(bytes);
-                    LastSaveMessage = year.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture)
-                        + "년 상태를 저장했습니다(" + (bytes.Length / 1024) + "KB).";
-                    return true;
-                }
-                catch (IOException exception)
-                {
-                    LastSaveMessage = "저장 실패: " + exception.Message;
+                    LastSaveMessage = FaultMessage;
                     return false;
                 }
-                catch (UnauthorizedAccessException exception)
-                {
-                    LastSaveMessage = "저장 실패: " + exception.Message;
-                    return false;
-                }
+
+                return WriteCapture(bytes, year);
+            }
+        }
+
+        /// <summary>이미 검증한 캡처를 쓰고 환경 오류를 사용자 문구로 반환한다.</summary>
+        private bool WriteCapture(byte[] bytes, int year)
+        {
+            try
+            {
+                Store.Write(bytes);
+                LastSaveMessage = year.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture)
+                    + "년 상태를 저장했습니다(" + (bytes.Length / 1024) + "KB).";
+                return true;
+            }
+            catch (IOException exception)
+            {
+                LastSaveMessage = "저장 실패: " + exception.Message;
+                return false;
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                LastSaveMessage = "저장 실패: " + exception.Message;
+                return false;
             }
         }
 

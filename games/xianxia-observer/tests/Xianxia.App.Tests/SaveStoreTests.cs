@@ -88,6 +88,44 @@ namespace Xianxia.App.Tests
             Assert.That(new FileInfo(path).Length, Is.EqualTo(WorldSerializer.MaxCompressedBytes + 1L));
         }
 
+        /// <summary>교체 전 정상본 한 세대를 바이트 그대로 유지한다.</summary>
+        [Test]
+        public void Write_KeepsPreviousAsBackup()
+        {
+            SaveStore store = new(_directory);
+            World world = WorldFactory.Create(new WorldSettings { Seed = 7, Population = 100 });
+            byte[] first = WorldSerializer.ToBytes(world);
+            store.Write(first);
+            world.Year = 10;
+            store.Write(WorldSerializer.ToBytes(world));
+            Assert.That(File.ReadAllBytes(store.BackupPath), Is.EqualTo(first));
+            Assert.That(WorldSerializer.FromBytes(File.ReadAllBytes(store.FilePath)).Year, Is.EqualTo(10));
+        }
+
+        /// <summary>최신 저장 손상 시 백업도 의미 검증하여 복구하고 손상 증거를 남긴다.</summary>
+        [Test]
+        public void TryLoad_RecoversFromValidatedBackup()
+        {
+            SaveStore store = new(_directory, new FixedClock());
+            World world = WorldFactory.Create(new WorldSettings { Seed = 7, Population = 100 });
+            store.Write(WorldSerializer.ToBytes(world));
+            world.Year = 10;
+            store.Write(WorldSerializer.ToBytes(world));
+            File.WriteAllText(store.FilePath, "손상된 본 저장");
+            World? recovered = store.TryLoad(out string? problem);
+            Assert.That(recovered, Is.Not.Null);
+            Assert.That(recovered!.Year, Is.Zero);
+            Assert.That(problem, Does.Contain("직전 저장으로 복구했습니다."));
+            Assert.That(File.Exists(store.BackupPath), Is.True);
+            Assert.That(Directory.GetFiles(_directory, "world.sav.broken-*").Length, Is.EqualTo(1));
+            Assert.That(store.HasSave, Is.True);
+            Assert.That(store.TryLoad(out _)!.Year, Is.Zero);
+            File.WriteAllText(store.FilePath, "다시 손상");
+            File.WriteAllText(store.BackupPath, "손상된 백업");
+            Assert.That(store.TryLoad(out _), Is.Null);
+            Assert.That(File.Exists(store.BackupPath), Is.True);
+        }
+
         /// <summary>같은 초 충돌을 실제 시계 대기 없이 재현한다.</summary>
         private sealed class FixedClock : TimeProvider
         {

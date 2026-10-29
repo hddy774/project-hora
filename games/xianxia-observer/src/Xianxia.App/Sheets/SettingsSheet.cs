@@ -51,13 +51,17 @@ namespace Xianxia.App.Sheets
         {
             _world.Text = world.Settings.Name + " · " + Fmt.Years(world.Year) + " · 인구 "
                 + world.Cultivators.Count + " · 시드 " + world.Settings.Seed;
-            _save.IsEnabled = !_busy;
-            _load.IsEnabled = !_busy && Navigator.Session.Store.Exists;
+            _save.IsEnabled = !_busy && !Navigator.Session.Runner.IsFaulted;
+            _load.IsEnabled = !_busy && Navigator.Session.Store.HasSave;
             _create.IsEnabled = !_busy;
             _seed.IsEnabled = !_busy;
             _population.IsEnabled = !_busy;
             _confirm.IsEnabled = !_busy;
-            if (!_busy && string.IsNullOrEmpty(_status.Text))
+            if (Navigator.Session.Runner.IsFaulted)
+            {
+                _status.Text = GameSession.FaultMessage;
+            }
+            else if (!_busy && string.IsNullOrEmpty(_status.Text))
             {
                 _status.Text = Navigator.Session.LastSaveMessage;
             }

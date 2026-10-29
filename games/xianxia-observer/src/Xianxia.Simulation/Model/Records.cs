@@ -143,6 +143,9 @@ namespace Xianxia.Simulation.Model
 
         /// <summary>상속자 없는 유품이 흩어짐.</summary>
         Death = 7,
+
+        /// <summary>개인의 백년 수행·생활 자원 소모.</summary>
+        Cultivation = 8,
     }
 
     /// <summary>
@@ -155,7 +158,7 @@ namespace Xianxia.Simulation.Model
         public List<long> Created { get; set; } = new() { 0, 0, 0, 0, 0, 0 };
 
         /// <summary>경로별 소멸량. 인덱스는 <see cref="StoneSink"/>.</summary>
-        public List<long> Destroyed { get; set; } = new() { 0, 0, 0, 0, 0, 0, 0, 0 };
+        public List<long> Destroyed { get; set; } = new() { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         /// <summary>장부상 현재 총량.</summary>
         /// <returns>생성 합 − 소멸 합.</returns>

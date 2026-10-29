@@ -76,7 +76,7 @@ namespace Xianxia.App.Pages
         private void RefreshLedger(World world, long held)
         {
             string[] sources = { "처음 지급", "탐색", "상회 판매", "영지 산출", "기연·비경", "임무" };
-            string[] sinks = { "상회 구입", "시설", "경매", "제련", "비승", "군비", "유지비", "유품 소실" };
+            string[] sinks = { "상회 구입", "시설", "경매", "제련", "비승", "군비", "유지비", "유품 소실", "수행 자원" };
             _ledger.Begin();
             _ledger.Add("실제 보유 / 장부 총량", Fmt.Number(held) + " / " + Fmt.Number(world.Ledger.Expected()));
             _ledger.Add("보존 차이 (정상: 0)", Fmt.Number(held - world.Ledger.Expected()));

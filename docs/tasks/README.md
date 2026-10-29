@@ -35,5 +35,12 @@ M0-02, M0-03, M0-05는 M0-01 이후 **병렬 진행 가능**하다.
 | [XO-08](XO-08-labels-and-records.md) | 표시·집계 용어 정합 | P2 | 결정 D-04·D-05 | 승인 대기 |
 | [XO-09](XO-09-android-input-acceptance.md) | Android 실입력 수용 검사 | P1(검증) | 결정 D-07 | 승인 대기 |
 | [XO-10](XO-10-balance-report.md) | 장기 밸런스·저장 크기 측정 보고서 | P2 | XO-06 | 승인 대기 |
+| [XO-11](XO-11-woodblock-navigation.md) | 고서 목판 테마·공통 배치·탐색 | UI | XO-07 | 구현 승인 대기(테마 사용자 지정) |
+| [XO-12](XO-12-people-and-detail-ux.md) | 인물 탐색·상세·개입·저장 UX | UI | XO-11·XO-06·XO-05 | 구현 승인 대기 |
+| [XO-13](XO-13-observation-and-history.md) | 천하 관찰 진입·사기·기록 탐색 | UI | XO-12·XO-08 | 구현 승인 대기 |
 
-XO-03·04·05는 병렬 가능. XO-04·05·06은 같은 시드의 미래를 바꾸므로 한 릴리스(v0.1.1 후보)에 모아 버전 노트에 적는다(D-09 승인: 같은 시드의 미래 변경 허용).
+XO-03·04·05의 구현 준비는 독립적으로 할 수 있지만 저장 진입점의 통합은 아래 개발 계획 순서를 따른다.
+XO-04·05·06은 같은 시드의 미래를 바꾸므로 같은 릴리스 후보에 모아 버전 노트에 적는다(D-09 승인).
+
+후속 통합 순서·결정·새 배치 검증은 [개발 계획](../../games/xianxia-observer/docs/14-development-plan.md)을 따른다.
+실행 상태 원본은 [진행표 JSON](xianxia-progress.json), 공개 체크표는 [PR #29](https://github.com/hddy774/project-hora/pull/29)다. 승인과 실행 상태를 구분한다.

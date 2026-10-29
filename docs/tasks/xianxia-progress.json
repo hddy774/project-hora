@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "repository": "hddy774/project-hora",
+  "tracking_pr": 29,
+  "updated_at": "2026-10-29T10:58:53Z",
+  "tasks": [
+    {
+      "id": "XO-01",
+      "title": "게임 완성·APK v0.1.0 배포",
+      "phase": "baseline",
+      "order": 0,
+      "approval": "approved",
+      "status": "done",
+      "depends_on": [],
+      "note": "",
+      "evidence": "https://github.com/hddy774/project-hora/pull/28"
+    },
+    {
+      "id": "XO-02",
+      "title": "전체 기획·기술 문서",
+      "phase": "baseline",
+      "order": 0,
+      "approval": "approved",
+      "status": "done",
+      "depends_on": [],
+      "note": "",
+      "evidence": "https://github.com/hddy774/project-hora/pull/28"
+    },
+    {
+      "id": "REVIEW-29",
+      "title": "클로드 검토·XO-03~10 명세",
+      "phase": "baseline",
+      "order": 0,
+      "approval": "not_required",
+      "status": "done",
+      "depends_on": [],
+      "note": "",
+      "evidence": "https://github.com/hddy774/project-hora/pull/29"
+    },
+    {
+      "id": "PLAN-29",
+      "title": "개발 순서·고서 목판 UI/UX·진행표 기획",
+      "phase": "planning",
+      "order": 0,
+      "approval": "not_required",
+      "status": "done",
+      "depends_on": [],
+      "note": "개발 기획·고서 목판 시안·진행표 완성. 게임49·진행도구10 검사와 브라우저 시안 점검 통과",
+      "evidence": "https://github.com/hddy774/project-hora/blob/codex/29-development-plan/games/xianxia-observer/docs/14-development-plan.md"
+    },
+    {
+      "id": "XO-06",
+      "title": "관심 표시·세계 난수 분리",
+      "phase": "stability",
+      "order": 1,
+      "approval": "approved",
+      "status": "planned",
+      "depends_on": [],
+      "note": "D-01·D-09와 명세 승인됨. 구현 착수 전.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-03",
+      "title": "저장 의미 검증·손상본 보존",
+      "phase": "stability",
+      "order": 2,
+      "approval": "pending",
+      "status": "planned",
+      "depends_on": [],
+      "note": "D-06과 명세 승인 필요.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-04",
+      "title": "공법 보상 단조성",
+      "phase": "stability",
+      "order": 3,
+      "approval": "pending",
+      "status": "planned",
+      "depends_on": [],
+      "note": "보상 상한·난수 호출 수 유지. 명세 승인 필요.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-05",
+      "title": "지역 사건 중첩·개입 검증",
+      "phase": "stability",
+      "order": 4,
+      "approval": "pending",
+      "status": "planned",
+      "depends_on": [
+        "XO-03"
+      ],
+      "note": "본산 개입 차단 여부를 먼저 확정. 명세 승인 필요.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-07",
+      "title": "오류 격리·정지 자동 저장·백업",
+      "phase": "stability",
+      "order": 5,
+      "approval": "pending",
+      "status": "planned",
+      "depends_on": [
+        "XO-03"
+      ],
+      "note": "D-06과 명세 승인 필요. 오류/자동 저장/내구성으로 나눠 구현.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-08",
+      "title": "표시·기록 용어 정합",
+      "phase": "stability",
+      "order": 6,
+      "approval": "pending",
+      "status": "planned",
+      "depends_on": [],
+      "note": "D-04·D-05와 명세 승인 필요.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-09",
+      "title": "기존 7탭 Android 입력 수용",
+      "phase": "validation",
+      "order": 7,
+      "approval": "pending",
+      "status": "planned",
+      "depends_on": [
+        "XO-03",
+        "XO-04",
+        "XO-05",
+        "XO-06",
+        "XO-07"
+      ],
+      "note": "D-07과 명세 승인 필요. 실기기 결과는 출시 게이트에서 별도 확인.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-10",
+      "title": "고정 기준의 다중 시드·저장 측정",
+      "phase": "measurement",
+      "order": 8,
+      "approval": "pending",
+      "status": "planned",
+      "depends_on": [
+        "XO-03",
+        "XO-04",
+        "XO-05",
+        "XO-06",
+        "XO-07"
+      ],
+      "note": "D-02·D-03 결정용 측정. 밸런스 수치는 변경하지 않음.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-11",
+      "title": "고서 목판 테마·공통 배치·탐색",
+      "phase": "ui",
+      "order": 9,
+      "approval": "proposal",
+      "status": "planned",
+      "depends_on": [
+        "XO-07"
+      ],
+      "note": "테마는 사용자 지정. 5탭 배치와 접근성 수치는 개선 제안.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-12",
+      "title": "인물 탐색·상세·개입 UX",
+      "phase": "ui",
+      "order": 10,
+      "approval": "proposal",
+      "status": "planned",
+      "depends_on": [
+        "XO-11",
+        "XO-06",
+        "XO-05"
+      ],
+      "note": "조회 상태 유지·4개 상세 분류·비용 확인.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-13",
+      "title": "사기·기록·천하 관찰 동선",
+      "phase": "ui",
+      "order": 11,
+      "approval": "proposal",
+      "status": "planned",
+      "depends_on": [
+        "XO-12",
+        "XO-08"
+      ],
+      "note": "기존 데이터 기반 요약·빈 상태. 새 세계 규칙 없음.",
+      "evidence": ""
+    },
+    {
+      "id": "UI-QA",
+      "title": "새 배치 Android·큰 글자·접근성 재검증",
+      "phase": "validation",
+      "order": 12,
+      "approval": "proposal",
+      "status": "planned",
+      "depends_on": [
+        "XO-11",
+        "XO-12",
+        "XO-13",
+        "XO-09"
+      ],
+      "note": "5개 주 탭과 더보기의 업적·현황·기록, 모든 기존 상세 경로 검증.",
+      "evidence": ""
+    }
+  ]
+}

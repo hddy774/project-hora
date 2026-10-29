@@ -37,6 +37,9 @@
 | [11 원본 비교·설계 결정](11-legacy-and-decisions.md) | React 원본과 차이, 변경 근거, 구현 선택과 미승인 ADR | 기획·아키텍처 |
 | [12 문제·미결정 사항](12-open-questions.md) | 코드 근거와 격리 실험이 있는 검토 항목 | 우선 검토 |
 | [13 클로드 검토 결과](13-claude-review.md) | OQ 재검증, 상위 5개, 오너 결정 요청, 작업 명세 XO-03~10 | 오너·개발 |
+| [14 개발 순서·진행 관리](14-development-plan.md) | 안정화→측정→UI 개선 순서, 승인·선행·완료 정의, PR 상태표 | 오너·개발 |
+| [15 고서 목판 UI·UX 개선안](15-ui-ux-improvement.md) | 사용자 테마, 5탭·상세 배치, 접근성 수치, 조작 가능한 시안 | UI·UX·QA |
+| [16 진행표 갱신 방법](16-progress-tracking.md) | 상태 변경 즉시 PR 반영, 승인·선행·완료 게이트, 명령과 충돌 처리 | 개발·진행 관리 |
 | [데이터 사전](reference/data-dictionary.md) | 모델 28종의 공개 속성·형식·저장 여부 | 데이터 검토 |
 | [소스·테스트 색인](reference/source-and-tests.md) | 전체 소스 파일 및 검증 사례 탐색 | 세부 확인 |
 

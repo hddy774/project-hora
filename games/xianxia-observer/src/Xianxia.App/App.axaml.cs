@@ -1,8 +1,10 @@
 // 선로만상록 프로젝트 Avalonia 애플리케이션 진입점. 게임 세션을 하나 만들고 플랫폼별 수명 주기에 맞춰 화면과 저장을 연결한다.
 using System;
+using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Xianxia.App.Services;
 using Xianxia.App.Theme;
@@ -18,6 +20,28 @@ namespace Xianxia.App
         /// <summary>Android가 화면 전환 수용 로그를 플랫폼 출력에 연결한다.</summary>
         /// <param name="sink">게임 ID·조작만 기록하는 출력.</param>
         public static void SetUiTraceSink(Action<string> sink) => UiTrace.Sink = sink;
+
+        /// <summary>Android 입력 좌표와 현재 렌더 트리의 히트 검사를 연결한다.</summary>
+        /// <param name="content">Activity의 현재 화면.</param>
+        /// <param name="x">입력의 물리 가로 좌표.</param>
+        /// <param name="y">입력의 물리 세로 좌표.</param>
+        public static void TraceNativeHit(object? content, double x, double y)
+        {
+            if (content is Control control && TopLevel.GetTopLevel(control) is { } top)
+            {
+                Point point = new(x / top.RenderScaling, y / top.RenderScaling);
+                UiTrace.Sink?.Invoke("[xo-input] hit " + JsonSerializer.Serialize(new
+                {
+                    point.X,
+                    point.Y,
+                    scale = top.RenderScaling,
+                    width = control.Bounds.Width,
+                    height = control.Bounds.Height,
+                    enabled = control.IsEffectivelyEnabled,
+                    hit = top.InputHitTest(point)?.GetType().Name,
+                }));
+            }
+        }
 
         /// <inheritdoc />
         public override void Initialize()

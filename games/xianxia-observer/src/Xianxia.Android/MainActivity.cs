@@ -37,6 +37,7 @@ namespace Xianxia.Android
             bool handled = base.DispatchTouchEvent(normalized ?? ev);
             if (ev.ActionMasked is MotionEventActions.Down or MotionEventActions.Up)
             {
+                global::Xianxia.App.App.TraceNativeHit(Content, ev.GetX(), ev.GetY());
                 global::Android.Util.Log.Info("XianxiaInput", "touch " + ev.ActionMasked
                     + " tool=" + ev.GetToolType(0) + " handled=" + handled
                     + " x=" + ev.GetX().ToString(CultureInfo.InvariantCulture)

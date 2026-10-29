@@ -245,6 +245,8 @@ def main():
     preserved = subprocess.check_output(['adb', 'exec-out', 'cat', legacy_proof['path']], timeout=45)
     assert hashlib.sha256(preserved).hexdigest() == legacy_proof['sha256'], '업데이트가 구 저장 바이트를 바꿈'
     smoke.start(legacy_proof['year'])  # 구 APK가 실제 저장한 정확한 연도를 복구해야 한다.
+    smoke.tap('speed-picker', r'\[xo-ui\] sheet Speed ')
+    smoke.back(r'\[xo-ui\] close Speed')
     smoke.shot('upgrade-loaded')
     adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
     time.sleep(2)

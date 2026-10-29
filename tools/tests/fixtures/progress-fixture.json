@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "repository": "hddy774/project-hora",
+  "tracking_pr": 29,
+  "updated_at": "2026-10-29T00:00:00Z",
+  "tasks": [
+    {
+      "id": "XO-01",
+      "title": "게임 완성·APK v0.1.0 배포",
+      "phase": "baseline",
+      "order": 0,
+      "approval": "approved",
+      "status": "done",
+      "depends_on": [],
+      "note": "",
+      "evidence": "https://github.com/hddy774/project-hora/pull/28"
+    },
+    {
+      "id": "PLAN-29",
+      "title": "개발 순서·고서 목판 UI/UX·진행표 기획",
+      "phase": "planning",
+      "order": 0,
+      "approval": "not_required",
+      "status": "verifying",
+      "depends_on": [],
+      "note": "개발 순서·고서 목판 배치와 시안 작성 후 링크·브라우저·필수 검사 중",
+      "evidence": ""
+    },
+    {
+      "id": "XO-06",
+      "title": "관심 표시·세계 난수 분리",
+      "phase": "stability",
+      "order": 1,
+      "approval": "approved",
+      "status": "planned",
+      "depends_on": [],
+      "note": "D-01·D-09와 명세 승인됨. 구현 착수 전.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-03",
+      "title": "저장 의미 검증·손상본 보존",
+      "phase": "stability",
+      "order": 2,
+      "approval": "pending",
+      "status": "planned",
+      "depends_on": [],
+      "note": "D-06과 명세 승인 필요.",
+      "evidence": ""
+    },
+    {
+      "id": "XO-12",
+      "title": "인물 탐색·상세·개입 UX",
+      "phase": "ui",
+      "order": 10,
+      "approval": "proposal",
+      "status": "planned",
+      "depends_on": [
+        "XO-06"
+      ],
+      "note": "조회 상태 유지·4개 상세 분류·비용 확인.",
+      "evidence": ""
+    }
+  ]
+}

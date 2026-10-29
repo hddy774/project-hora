@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>선협 관찰 · 고서 목판 배치 시안</title>
+<style>
+@font-face { font-family: Seonhyeop; src: url('../../src/Xianxia.App/Assets/Fonts/NotoSerifKR-Regular.ttf'); }
+@font-face { font-family: Seonhyeop; src: url('../../src/Xianxia.App/Assets/Fonts/NotoSerifKR-Bold.ttf'); font-weight: 700; }
+:root { --paper:#f3e8cc; --surface:#faf3df; --ink:#202a2b; --muted:#655a46; --wood:#805b25; --line:#b5a47a; --blue:#2f5b79; --red:#914740; }
+* { box-sizing: border-box; }
+body { margin:0; color:var(--ink); background:#d8cdb4; font:15px Seonhyeop,serif; }
+.review { max-width:920px; padding:24px 16px; margin:auto; }
+h1 { font-size:24px; margin:0 0 8px; } h2 { font-size:1.15em; margin:0 0 10px; }
+p { line-height:1.6; margin:8px 0; } small,.muted { color:var(--muted); }
+.toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:16px 0; }
+.toolbar label { display:flex; gap:8px; align-items:center; }
+select,button,input { font:inherit; color:inherit; }
+button,select,input { min-height:48px; border:1px solid var(--line); border-radius:3px; background:var(--surface); padding:8px 12px; }
+button { cursor:pointer; } button:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid var(--blue); outline-offset:2px; }
+button:disabled { cursor:default; opacity:.55; } button[aria-pressed="true"],.primary { background:var(--wood); color:#fff8e6; border-color:var(--wood); }
+.phone { width:min(var(--width,360px),100%); height:var(--height,860px); margin:20px auto; border:4px double var(--ink); background:var(--paper); display:flex; flex-direction:column; font-size:calc(15px * var(--scale,1)); position:relative; }
+.phone>* { min-width:0; } .phone small { font-size:.87em; } .phone button,.phone input { font-size:1em; }
+.masthead { padding:12px 16px 8px; border-bottom:1px solid var(--line); background:linear-gradient(110deg,#e3d6b4,var(--paper)); }
+.masthead .title { display:flex; gap:8px; align-items:center; justify-content:space-between; font-weight:700; }
+.seal { background:var(--wood); color:#fff8e6; padding:4px 8px; border-radius:2px; }
+.status { display:flex; flex-wrap:wrap; gap:8px; font-size:.87em; margin-top:8px; }
+.content { flex:1; min-height:0; overflow:auto; padding:16px; scroll-behavior:smooth; }
+.wood { background:var(--ink); color:var(--paper); padding:10px 12px; font-size:1.333em; margin:-16px -16px 16px; letter-spacing:.12em; }
+.card { background:var(--surface); border:1px solid var(--line); padding:12px; margin:0 0 12px; border-radius:2px; }
+.card button { max-width:100%; } .row { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; align-items:center; }
+.blue { color:var(--blue); } .red { color:var(--red); }
+.badge { display:inline-block; padding:3px 6px; border:1px solid var(--line); font-size:.87em; margin:4px 4px 0 0; border-radius:10px; }
+.person { width:100%; text-align:left; display:block; margin-top:8px; line-height:1.6; }
+.avatar { display:inline-grid; place-items:center; width:36px; height:36px; background:var(--blue); color:var(--surface); border:3px double var(--surface); border-radius:50%; margin-right:6px; }
+.chips { display:flex; gap:8px; overflow:auto; margin:8px 0 12px; } .chips button { flex-shrink:0; }
+input { width:100%; } .timeline { border-left:1px solid var(--wood); padding-left:16px; }
+.timeline article { margin:0 0 16px; padding:0 0 12px; border-bottom:1px solid var(--line); }
+.transport { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:8px 12px; border-top:1px solid var(--line); }
+.nav { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); border-top:3px double var(--ink); }
+.nav button { border:0; border-radius:0; background:transparent; padding:8px 2px; min-width:0; line-height:1.4; }
+.nav button[aria-current="page"] { background:var(--wood); color:var(--surface); }
+.nav span { display:block; font-size:1.05em; } .nav b { font-size:.87em; font-weight:400; overflow-wrap:anywhere; }
+.mountains { width:100%; height:60px; opacity:.6; margin-bottom:8px; } .grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.grid button { min-width:0; overflow-wrap:anywhere; } .full { width:100%; }
+.chart { width:100%; height:130px; background:#f3e8cc; border-bottom:1px solid var(--line); }
+dialog { width:340px; max-width:calc(100vw - 24px); max-height:78vh; overflow:auto; border:4px double var(--ink); padding:16px; background:var(--paper); color:var(--ink); margin:0; transform:translate(-50%,-50%); font-family:Seonhyeop,serif; }
+dialog::backdrop { background:#202a2b99; } dialog .chips { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
+dialog .chips button { padding:8px 2px; min-width:0; } .actions { display:grid; gap:8px; margin-top:12px; }
+dl { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:10px; margin:12px 0; } dd { margin:0; overflow-wrap:anywhere; }
+.notice { padding:10px 12px; border:1px solid var(--red); color:var(--red); background:var(--surface); }
+.reference { max-width:720px; margin:24px auto; } .reference img { width:100%; height:auto; margin-top:12px; }
+@media(max-width:430px) { .review { padding:16px 8px; } .phone { margin:12px auto; } h1 { font-size:21px; } }
+</style>
+</head>
+<body>
+<main class="review">
+  <h1>선협 관찰 · 고서 목판</h1>
+  <p>배치 검토용 시안입니다. 연도·인물·그래프는 가상 데이터입니다. 화면 전환·검색·관심·개입 확인을 눌러 볼 수 있습니다.</p>
+  <div class="toolbar">
+    <label>논리폭 <select id="width"><option>360</option><option>412</option></select></label>
+    <label>높이 <select id="height"><option>640</option><option selected>860</option></select></label>
+    <label>글자 <select id="scale"><option value="1">100%</option><option value="1.3">130%</option><option value="2">200%</option></select></label>
+    <label>상태 <select id="scenario"><option value="normal">정상</option><option value="empty">천기 부족</option><option value="fault">진행 오류</option></select></label>
+  </div>
+  <section class="phone" id="phone" aria-label="게임 배치 시안">
+    <header class="masthead">
+      <div class="title"><span><span class="seal">仙</span> 선협 관찰</span><span>366,710년</span></div>
+      <div class="status"><span>태평성대 · 휴전</span><span id="favor">천기 6</span><span class="muted">배치 시안</span></div>
+    </header>
+    <div class="content" id="content" aria-live="polite"></div>
+    <div class="transport"><button id="run">■ 정지</button><button data-open="speed" id="speed">20년/초 · 속도</button></div>
+    <nav class="nav" aria-label="주요 화면">
+      <button data-page="world" aria-current="page"><span>天</span><b>천하</b></button>
+      <button data-page="sects"><span>門</span><b>종문</b></button>
+      <button data-page="people"><span>人</span><b>인물</b></button>
+      <button data-page="history"><span>史</span><b>사기</b></button>
+      <button data-page="more"><span>冊</span><b>더보기</b></button>
+    </nav>
+  </section>
+  <dialog id="sheet" aria-labelledby="sheet-title"><div class="row"><h2 id="sheet-title"></h2><button data-close="sheet" aria-label="상세 닫기">닫기</button></div><div id="sheet-body"></div></dialog>
+  <dialog id="confirm" aria-labelledby="confirm-title"><h2 id="confirm-title">기연 하사 확인</h2><p id="confirm-person">한현하 · 반선경 대원만</p><p>깨달음 +400 · 현재 필요 영기50% · 부상 해제 · 도심 +20</p><p id="cost"></p><div class="actions"><button id="spend" class="primary">천기 2점 사용</button><button data-close="confirm">취소</button></div></dialog>
+  <details class="reference"><summary>사용자 지정 테마 레퍼런스</summary><img src="woodblock-reference.jpg" alt="한지색 바탕·먹색 표제·수묵 산수와 판곽을 사용한 고서 목판 게임 화면 레퍼런스"></details>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const model = { page:'world', query:'', filter:'all', followed:new Set(), favor:6, running:true, speed:'20', sort:'경지', detailIndex:0, fault:false };
+const people = [ ['한현하(적봉자)','청운종','반선경 대원만'], ['제갈황명(송소자)','청운종','대승경 후기'], ['명창한(현운자)','천마문','합체경 초기'] ];
+const mountain = `<svg class="mountains" viewBox="0 0 320 60" aria-hidden="true"><path d="M0 58L32 27 48 45 78 7 105 43 125 20 152 49 190 12 216 39 239 17 273 44 300 4 320 56" fill="#a9aa9a"/><path d="M0 58L35 40 50 54 79 12 91 37 106 48 125 25 145 55 187 20 205 45 241 24 267 53 297 11 320 58" fill="none" stroke="#4f5b59"/><path d="M0 59Q90 40 160 58T320 56" fill="none" stroke="#6d7972"/></svg>`;
+const sortKeys=['경지','전투력','나이','재능','승수','영석','윤회','현생 점수'];
+const scores=[[35,9,97614,1584,100,900000,72,80277],[31,6,36096,1632,120,300000,45,75090],[20,4,53499,1407,80,600000,39,72714]];
+function title(text) { return `<h2 class="wood">${text}</h2>`; }
+function person(index) { const p=people[index]; return `<button class="person" data-person="${index}"><span class="avatar">${p[0][0]}</span><strong>${p[0]}</strong><br><span class="muted">${p[1]} · ${p[2]}</span><br><span class="badge">${model.followed.has(index)?'관심 인물':'관찰 후보'}</span></button>`; }
+function timeline() { return `<div class="timeline"><article><small>366,684년 · 돌파</small><p>한현하가 파경단의 힘으로 경지를 넘었습니다.</p><button data-person="0">인물 보기</button></article><article><small>366,654년 · 비승</small><p>천하에 새로운 비승 기록이 남았습니다.</p><button data-page="history">사기 보기</button></article></div>`; }
+function peopleList() {
+  return people.map((p,i)=>({p,i})).filter(({p,i})=>p[0].includes(model.query)&&(model.filter==='all'||model.filter==='follow'&&model.followed.has(i)||p[1]===model.filter)).sort((a,b)=>scores[b.i][sortKeys.indexOf(model.sort)]-scores[a.i][sortKeys.indexOf(model.sort)]||a.i-b.i).map(({i})=>person(i)).join('') || '<div class="card">조건에 맞는 인물이 없습니다.<button class="full" id="clear">검색·필터 초기화</button></div>';
+}
+function render() {
+  const p=model.page;
+  document.querySelectorAll('[data-page]').forEach(button=>button.removeAttribute('aria-current'));
+  document.querySelector(`.nav [data-page="${['world','sects','people','history','more'].includes(p)?p:'more'}"]`).setAttribute('aria-current','page');
+  $('favor').textContent='천기 '+model.favor;
+  $('run').textContent=model.running?'■ 정지':'▶ 진행'; $('run').disabled=model.fault;
+  $('speed').textContent=(model.speed==='최대'?'최대':model.speed+'년/초')+' · 속도';
+  let body='';
+  if(p==='world') body=title('天 下 · 천하')+`<div class="card">${mountain}<strong>태평성대 · 다음 전쟁까지 2,400년</strong><p class="muted">관심 인물을 정하고 천하의 흐름을 지켜보세요.</p></div><div class="card"><h2>${model.followed.size?'관심 인물':'주목할 인물'}</h2><small>${model.followed.size?'관심을 표시한 인물입니다.':'최근 사건·현재 전투력에 따른 예시'}</small>${person(model.followed.size?[...model.followed][0]:0)}</div><div class="card"><div class="row"><h2>최근 주요 사건</h2><button data-page="log">기록 전체</button></div>${timeline()}</div><div class="card row"><strong class="blue">청운종</strong><span>접경 3 : 2</span><strong class="red">천마문</strong></div><button class="full" data-open="region">천하 약도 · 지역 예시 보기</button>`;
+  if(p==='sects') body=title('宗 門 · 종문')+`<div class="chips"><button aria-pressed="true">청운종</button><button class="red" data-open="sect">천마문</button></div><div class="card">${mountain}<h2 class="blue">청운종</h2><p>청운을 따르는 바른 도의 길</p><dl><dt>종주</dt><dd>한현하</dd><dt>전투력</dt><dd>6억</dd><dt>금고</dt><dd>1,434.7만 영석</dd></dl><button data-person="0">종주 보기</button></div><div class="card"><h2>시설 · 5단계</h2><p>영맥진 · 수련 +4%/단계</p><p>장경각 · 공법 상한 +3등급/단계</p><p>연단방 · 단약 생산</p><p>연무장 · 전투력 보정</p><p>호산대진 · 방어</p></div>`;
+  if(p==='people') body=title('人 物 · 인물')+`<input id="query" type="search" aria-label="인물 이름 검색" placeholder="이름으로 검색" value="${model.query.replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;')}"><div class="chips">${[['all','전체'],['청운종','청운종'],['천마문','천마문'],['follow','관심']].map(([v,n])=>`<button data-filter="${v}" aria-pressed="${model.filter===v}">${n}</button>`).join('')}</div><div class="row"><small>가상 인물3명 · 실제 구현은20명/쪽</small><button data-open="sort">${model.sort}순 ▾</button></div><div id="people-list">${peopleList()}</div>`;
+  if(p==='history') body=title('史 記 · 사기')+`<div class="chips">${['연대기','천하 기록','전쟁','대회','비승','경매'].map(n=>`<button data-open="history">${n}</button>`).join('')}</div>${timeline()}`;
+  if(p==='more') body=title('冊 · 더보기')+`<div class="actions">${[['legacy','인물 업적'],['stats','천하 현황'],['log','사건 기록'],['help','도감'],['settings','설정·저장']].map(([id,name])=>`<button data-page="${id}">${name} →</button>`).join('')}</div>`;
+  if(p==='log') body=title('錄 · 사건 기록')+'<button data-page="more">← 더보기</button><p class="muted">누계와 최근 보관600건은 다릅니다.</p>'+timeline();
+  if(p==='legacy') body=title('業 · 인물 업적')+`<button data-page="more">← 더보기</button><div class="chips"><button>최고 생애</button><button>5생 합</button><button>종합</button><button>호칭</button></div>${people.map((_,i)=>person(i)).join('')}`;
+  if(p==='stats') body=title('統 · 천하 현황')+`<button data-page="more">← 더보기</button><div class="card"><h2>종문 인구 · 예시</h2><svg viewBox="0 0 320 130" class="chart" role="img" aria-label="가상 인구 추이"><path d="M0 100L30 60 65 73 100 40 150 52 200 31 260 43 320 36" stroke="#2f5b79" fill="none" stroke-width="3"/><path d="M0 30L30 65 65 56 100 82 150 65 200 90 260 80 320 94" stroke="#914740" fill="none" stroke-width="3"/></svg><p><span class="blue">청운종 ━</span> · <span class="red">천마문 ┄</span></p></div>`;
+  if(p==='help') body=title('道 · 도감')+'<button data-page="more">← 더보기</button><div class="card"><h2>관찰 시작하기</h2><p>인물을 찾아 관심 표시를 하고, 성장과 사건을 지켜보세요. 기연은 천기를 사용하는 개입입니다.</p><button data-page="people">인물 찾기</button></div>';
+  if(p==='settings') body=title('設 · 설정·저장')+`<button data-page="more">← 더보기</button><div class="card"><h2>최근 저장 · 366,700년</h2><p>${model.fault?'오류가 난 세계는 저장하지 않습니다. 마지막 저장을 불러오거나 새 세계를 시작하세요.':'저장 상태 안내 예시입니다.'}</p><div class="actions"><button ${model.fault?'disabled':''} data-open="saved">현재 세계 저장</button><button data-open="load">마지막 저장 불러오기</button></div></div><div class="card"><h2 class="red">세계 교체</h2><p>새 세계는 현재 진행과 저장 슬롯을 대체합니다.</p><button data-open="new">새 세계 시작</button></div>`;
+  $('content').innerHTML=(model.fault?'<p class="notice">진행 오류 · 저장과 재개를 멈췄습니다. <button data-page="settings">복구 안내</button></p>':'')+body;
+}
+function openSheet(kind,index=0) {
+  const p=people[index]; if(kind==='person')model.detailIndex=index; $('sheet').style.fontSize=`${15*Number($('scale').value)}px`;
+  $('sheet-title').textContent=kind==='person'?p[0]:({speed:'진행 속도',sort:'인물 정렬',region:'지역 · 옥룡 호수',sect:'천마문',history:'역사 분류',saved:'저장 안내',load:'불러오기 확인',new:'새 세계 확인'}[kind]||'상세');
+  let body='<p>이 상세는 배치 예시입니다. 실제 게임 상태는 변경되지 않습니다.</p>';
+  if(kind==='person') body=`<p>${p[1]} · ${p[2]}</p><p>세계는 ${model.running?'진행 중':'정지 중'}입니다. <button id="detail-run" ${model.fault?'disabled':''}>${model.running?'정지':'진행'}</button></p><div class="chips">${['개요','수행','인연','생애'].map(n=>`<button data-detail="${n}">${n}</button>`).join('')}</div><div id="detail-data"><dl><dt>나이 / 수명</dt><dd>97,614 / 122,225세</dd><dt>현재 지역</dt><dd>옥룡 호수</dd><dt>전투력</dt><dd>자세히 펼쳐 보기</dd></dl></div><div class="actions"><button id="follow" data-index="${index}">${model.followed.has(index)?'관심 해제':'관심 표시 · 무료'}</button><button id="fortune" ${model.favor<2||model.fault?'disabled':''}>기연 하사 · 천기 2</button></div>${model.favor<2?'<p class="muted">천기가 부족합니다.</p>':''}`;
+  if(kind==='speed') body='<div class="grid">'+['1','5','20','100','500','최대'].map(n=>`<button data-speed="${n}">${n==='최대'?n:n+'년/초'}</button>`).join('')+'</div>';
+  if(kind==='sort') body='<div class="actions">'+['경지','전투력','나이','재능','승수','영석','윤회','현생 점수'].map(n=>`<button data-sort="${n}">${n}순</button>`).join('')+'</div>';
+  if(kind==='load'||kind==='new') body=`<p>현재366,710년의 진행이 대체됩니다.</p><label><input type="checkbox" id="agree" style="width:auto;vertical-align:middle"> 세계 교체를 확인했습니다.</label><button class="full" id="replace" disabled>${kind==='load'?'366,700년 불러오기':'새 세계 시작'}</button>`;
+  $('sheet-body').innerHTML=body; place($('sheet')); $('sheet').showModal();
+}
+function place(dialog) { dialog.style.fontSize=`${15*Number($('scale').value)}px`; const r=$('phone').getBoundingClientRect(); dialog.style.left=(r.left+r.width/2)+'px'; dialog.style.top=Math.max(180,Math.min(innerHeight/2,r.top+r.height/2))+'px'; dialog.style.width=Math.min(r.width-24,390)+'px'; }
+document.addEventListener('click',event=>{
+  const b=event.target.closest('button'); if(!b)return;
+  if(b.dataset.page){model.page=b.dataset.page;render();$('content').scrollTop=0;}
+  if(b.dataset.open)openSheet(b.dataset.open);
+  if(b.dataset.person)openSheet('person',Number(b.dataset.person));
+  if(b.dataset.close)$(b.dataset.close).close();
+  if(b.dataset.filter){model.filter=b.dataset.filter;render();}
+  if(b.dataset.speed){model.speed=b.dataset.speed;$('sheet').close();render();}
+  if(b.dataset.sort){model.sort=b.dataset.sort;$('sheet').close();render();}
+  if(b.dataset.detail)$('detail-data').innerHTML='<div class="card">'+({개요:'전투력·재능·현재 위치',수행:'영기·돌파·기예·소지품',인연:'스승·제자·도려·숙적',생애:'현생 기록 · 전생 요약'}[b.dataset.detail])+'</div>';
+  if(b.id==='run'||b.id==='detail-run'){if(!model.fault)model.running=!model.running;render();if(b.id==='detail-run')b.textContent=model.running?'정지':'진행';}
+  if(b.id==='follow'){const i=Number(b.dataset.index);model.followed.has(i)?model.followed.delete(i):model.followed.add(i);b.textContent=model.followed.has(i)?'관심 해제':'관심 표시 · 무료';render();}
+  if(b.id==='fortune'){$('confirm-person').textContent=people[model.detailIndex][0]+' · '+people[model.detailIndex][2];$('cost').textContent=`천기 2점 사용 · ${model.favor} → ${model.favor-2}`;place($('confirm'));$('confirm').showModal();}
+  if(b.id==='spend'){model.favor-=2;$('confirm').close();$('sheet').close();render();}
+  if(b.id==='clear'){model.query='';model.filter='all';render();}
+  if(b.id==='replace'){$('sheet').close();model.fault=false;model.page='world';render();}
+});
+document.addEventListener('input',event=>{if(event.target.id==='query'){model.query=event.target.value;$('people-list').innerHTML=peopleList();}});
+document.addEventListener('change',event=>{
+  if(event.target.id==='width')$('phone').style.setProperty('--width',event.target.value+'px');
+  if(event.target.id==='height')$('phone').style.setProperty('--height',event.target.value+'px');
+  if(event.target.id==='scale')$('phone').style.setProperty('--scale',event.target.value);
+  if(event.target.id==='scenario'){model.fault=event.target.value==='fault';model.favor=event.target.value==='empty'?1:6;if(model.fault)model.running=false;render();}
+  if(event.target.id==='agree')$('replace').disabled=!event.target.checked;
+});
+render();
+</script>
+</body>
+</html>

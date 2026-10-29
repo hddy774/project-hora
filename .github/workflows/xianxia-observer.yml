@@ -8,10 +8,14 @@ on:
     paths:
       - 'games/xianxia-observer/**'
       - '.github/workflows/xianxia-observer.yml'
+      - 'tools/xianxia-progress.py'
+      - 'tools/tests/**'
   pull_request:
     paths:
       - 'games/xianxia-observer/**'
       - '.github/workflows/xianxia-observer.yml'
+      - 'tools/xianxia-progress.py'
+      - 'tools/tests/**'
   workflow_dispatch:
     inputs:
       publish:
@@ -66,6 +70,8 @@ jobs:
         run: dotnet build XianxiaObserver.slnx -c Release --no-restore
       - name: Test simulation and headless UI
         run: dotnet test XianxiaObserver.slnx -c Release --no-build --logger trx --results-directory TestResults
+      - name: Test PR progress updates
+        run: python3 -m unittest discover -s ../../tools/tests -p 'test_xianxia_progress.py' -v
       - name: Preserve test reports and rendered screens
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

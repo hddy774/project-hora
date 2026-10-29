@@ -57,7 +57,9 @@ namespace Xianxia.App.Tests
                 }
 
                 using WriteableBitmap frame = window.CaptureRenderedFrame()!;
-                frame.Save(Path.Combine(TestContext.CurrentContext.WorkDirectory,
+                string directory = Path.Combine(TestContext.CurrentContext.WorkDirectory, "screens");
+                Directory.CreateDirectory(directory);
+                frame.Save(Path.Combine(directory,
                     "layout-" + width + "-" + (int)(scale * 100) + ".png"), PngBitmapEncoderOptions.Default);
             }
             finally

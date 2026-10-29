@@ -46,15 +46,16 @@ namespace Xianxia.App.Views
             TextBlock glyph = new()
             {
                 Text = page.Glyph,
-                FontSize = 17,
                 HorizontalAlignment = HorizontalAlignment.Center,
             };
             TextBlock name = new()
             {
                 Text = page.Name,
-                FontSize = 13,
                 HorizontalAlignment = HorizontalAlignment.Center,
             };
+            Typography.Bind(glyph, TextBlock.FontSizeProperty, 17);
+            Typography.Bind(name, TextBlock.FontSizeProperty, 13);
+            name.TextWrapping = Avalonia.Media.TextWrapping.Wrap;
             Button button = Ui.Button(Ui.Column(0, glyph, name), () => select(position), "nav");
             AutomationProperties.SetAutomationId(button, "nav-" + Destinations.FromPage(position));
             AutomationProperties.SetName(button, page.Name);

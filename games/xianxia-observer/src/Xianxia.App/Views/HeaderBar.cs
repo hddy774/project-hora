@@ -15,6 +15,7 @@ namespace Xianxia.App.Views
     internal sealed class HeaderBar
     {
         private readonly TextBlock _year = Ui.Text("", 20, Palette.Ink, bold: true);
+        private readonly TextBlock _title = Ui.Text("선로만상록 프로젝트", 20, Palette.Ink, bold: true);
         private readonly BadgeView _era = new();
         private readonly BadgeView _war = new();
         private readonly BadgeView _favor = new();
@@ -25,11 +26,10 @@ namespace Xianxia.App.Views
         /// <param name="navigator">화면 이동.</param>
         internal HeaderBar(INavigator navigator)
         {
-            TextBlock title = Ui.Text("선로만상록 프로젝트", 20, Palette.Ink, bold: true);
-            title.VerticalAlignment = VerticalAlignment.Center;
+            _title.VerticalAlignment = VerticalAlignment.Center;
             _year.VerticalAlignment = VerticalAlignment.Center;
             _year.TextWrapping = TextWrapping.NoWrap;
-            Grid top = Ui.Columns("*,Auto", title, _year);
+            Grid top = Ui.Columns("*,Auto", _title, _year);
             top.ColumnSpacing = 8;
             WrapPanel status = new();
             _recover = Ui.Button("오류로 정지 · 복구 ›", () => navigator.Open(new SheetLink(LinkKind.Settings, 0)));
@@ -55,6 +55,7 @@ namespace Xianxia.App.Views
         /// <param name="runner">실행기.</param>
         internal void Refresh(World world, SimulationRunner runner)
         {
+            _title.Text = Typography.Scale >= 1.5 ? "선로만상록\n프로젝트" : "선로만상록 프로젝트";
             _year.Text = Fmt.Years(world.Year);
             _era.Set(new BadgeSpec(Labels.Of(world.Era.Kind), Palette.Muted));
             _war.Set(new BadgeSpec(world.War.AtWar ? "전쟁 중" : "휴전",

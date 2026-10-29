@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Xianxia.App.Services;
+using Xianxia.App.Theme;
 using Xianxia.App.Views;
 
 namespace Xianxia.App
@@ -17,7 +18,12 @@ namespace Xianxia.App
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+            Typography.Initialize();
         }
+
+        /// <summary>Android 시스템 글자 설정을 열린 화면과 새 화면에 반영한다.</summary>
+        /// <param name="scale">기기 글자 배율.</param>
+        public static void SetDeviceFontScale(double scale) => Typography.SetScale(scale);
 
         /// <inheritdoc />
         public override void OnFrameworkInitializationCompleted()

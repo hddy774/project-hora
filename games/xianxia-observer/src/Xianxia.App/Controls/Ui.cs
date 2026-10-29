@@ -3,6 +3,7 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -45,9 +46,9 @@ namespace Xianxia.App.Controls
             TextBlock block = new()
             {
                 Text = text,
-                FontSize = Math.Max(13, size),
                 TextWrapping = TextWrapping.Wrap,
             };
+            Typography.Bind(block, TextBlock.FontSizeProperty, size);
             if (color is { } value)
             {
                 block.Foreground = Palette.Brush(value);
@@ -208,6 +209,7 @@ namespace Xianxia.App.Controls
         internal static Button Button(string content, Action onClick, params string[] classes)
         {
             Button button = new() { Content = content, Theme = ButtonTheme };
+            Typography.Bind(button, TemplatedControl.FontSizeProperty, Array.IndexOf(classes, "small") >= 0 ? 13 : 15);
             button.Classes.AddRange(classes);
             button.Click += (_, _) => onClick();
             return button;
@@ -221,6 +223,7 @@ namespace Xianxia.App.Controls
         internal static Button Button(Control content, Action onClick, params string[] classes)
         {
             Button button = new() { Content = content, Theme = ButtonTheme };
+            Typography.Bind(button, TemplatedControl.FontSizeProperty, Array.IndexOf(classes, "small") >= 0 ? 13 : 15);
             button.Classes.AddRange(classes);
             button.Click += (_, _) => onClick();
             return button;
@@ -245,7 +248,7 @@ namespace Xianxia.App.Controls
         internal static Border Stat(string label, TextBlock value)
         {
             value.FontWeight = FontWeight.Bold;
-            value.FontSize = 15;
+            Typography.Bind(value, TextBlock.FontSizeProperty, 15);
             value.HorizontalAlignment = HorizontalAlignment.Center;
             value.TextWrapping = TextWrapping.Wrap;
             TextBlock name = Muted(label, 10);

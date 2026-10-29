@@ -19,7 +19,7 @@ namespace Xianxia.App.Controls
     /// <summary>그래프 공통: 축 글자·범례.</summary>
     internal abstract class ChartBase : Control
     {
-        private const double LabelSize = 9;
+        private static double LabelSize => 13 * Typography.Scale;
         private static readonly Typeface s_typeface = new(AppBuilderExtensions.DefaultFontFamily);
 
         /// <summary>가로축 처음·끝 연도.</summary>
@@ -29,12 +29,32 @@ namespace Xianxia.App.Controls
         protected double PlotHeight { get; init; } = 120;
 
         /// <summary>왼쪽 축 글자 칸 너비.</summary>
-        protected const double AxisWidth = 36;
+        protected static double AxisWidth => 60 * Typography.Scale;
 
         /// <inheritdoc />
         protected override Size MeasureOverride(Size availableSize)
         {
-            return new Size(0, PlotHeight + 16);
+            return new Size(0, PlotHeight + (LabelSize * (Typography.Scale >= 1.5 ? 3 : 1.6)));
+        }
+
+        /// <inheritdoc/>
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            Typography.Changed += Reflow;
+        }
+
+        /// <inheritdoc/>
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            Typography.Changed -= Reflow;
+            base.OnDetachedFromVisualTree(e);
+        }
+
+        private void Reflow()
+        {
+            InvalidateMeasure();
+            InvalidateVisual();
         }
 
         /// <summary>글자를 그린다.</summary>
@@ -43,11 +63,17 @@ namespace Xianxia.App.Controls
         /// <param name="origin">왼쪽 위.</param>
         /// <param name="color">색.</param>
         /// <param name="alignRight">오른쪽 맞춤이면 origin.X가 오른쪽 끝.</param>
+        /// <param name="maximumWidth">빈 상태 문장의 줄바꿈 너비.</param>
         protected static void Label(DrawingContext context, string text, Point origin, Color color,
-            bool alignRight = false)
+            bool alignRight = false, double maximumWidth = double.PositiveInfinity)
         {
             FormattedText formatted = new(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight, s_typeface,
                 LabelSize, Palette.Brush(color));
+            if (double.IsFinite(maximumWidth))
+            {
+                formatted.MaxTextWidth = maximumWidth;
+            }
+
             double x = alignRight ? origin.X - formatted.Width : origin.X;
             context.DrawText(formatted, new Point(x, origin.Y));
         }
@@ -62,7 +88,8 @@ namespace Xianxia.App.Controls
             Label(context, Years.First.ToString("#,0", CultureInfo.InvariantCulture) + "년",
                 new Point(plot.Left, plot.Bottom + 2), Palette.Muted);
             Label(context, Years.Last.ToString("#,0", CultureInfo.InvariantCulture) + "년",
-                new Point(plot.Right, plot.Bottom + 2), Palette.Muted, alignRight: true);
+                new Point(plot.Right, plot.Bottom + 2 + (Typography.Scale >= 1.5 ? LabelSize * 1.4 : 0)),
+                Palette.Muted, alignRight: true);
         }
     }
 
@@ -119,7 +146,8 @@ namespace Xianxia.App.Controls
             DrawYearAxis(context, plot);
             if (count < 2)
             {
-                Label(context, "표본이 쌓이면 그려집니다.", new Point(plot.Left + 6, plot.Top + 6), Palette.Muted);
+                Label(context, "표본이 쌓이면 그려집니다.", new Point(plot.Left + 6, plot.Top + 6), Palette.Muted,
+                    maximumWidth: Math.Max(10, plot.Width - 12));
                 return;
             }
 
@@ -192,7 +220,8 @@ namespace Xianxia.App.Controls
             int count = _samples.Count;
             if (count < 2)
             {
-                Label(context, "표본이 쌓이면 그려집니다.", new Point(plot.Left + 6, plot.Top + 6), Palette.Muted);
+                Label(context, "표본이 쌓이면 그려집니다.", new Point(plot.Left + 6, plot.Top + 6), Palette.Muted,
+                    maximumWidth: Math.Max(10, plot.Width - 12));
                 return;
             }
 

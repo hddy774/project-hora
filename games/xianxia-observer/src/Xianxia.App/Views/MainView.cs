@@ -167,6 +167,7 @@ namespace Xianxia.App.Views
             }
 
             _timer.Start();
+            Typography.Changed += OnTypographyChanged;
             RefreshNow(force: true);
         }
 
@@ -174,6 +175,7 @@ namespace Xianxia.App.Views
         protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
         {
             _timer.Stop();
+            Typography.Changed -= OnTypographyChanged;
             if (_topLevel is not null)
             {
                 _topLevel.BackRequested -= OnBackRequested;
@@ -244,6 +246,8 @@ namespace Xianxia.App.Views
         {
             ApplyInsets(e.SafeAreaPadding);
         }
+
+        private void OnTypographyChanged() => RefreshNow(force: true);
 
         /// <summary>루트에서만 안전 영역을 적용해 헤더·본문·시트의 이중 여백을 피한다.</summary>
         /// <param name="padding">플랫폼 안전 영역.</param>

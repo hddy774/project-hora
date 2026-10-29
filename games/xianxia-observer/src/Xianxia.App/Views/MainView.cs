@@ -17,6 +17,7 @@ namespace Xianxia.App.Views
     internal sealed class MainView : UserControl, INavigator
     {
         private readonly HeaderBar _header;
+        private readonly TransportBar _transport;
         private readonly NavBar _nav;
         private readonly PageBase[] _pages;
         private readonly ContentControl _content = new();
@@ -36,27 +37,19 @@ namespace Xianxia.App.Views
             Session = session;
             Background = Palette.Brush(Palette.Parchment);
             Foreground = Palette.Brush(Palette.Ink);
-            FontSize = 13;
+            FontSize = 15;
             TopLevel.SetAutoSafeAreaPadding(this, false);
             _header = new HeaderBar(this);
+            _transport = new TransportBar(this);
             _pages = new PageBase[]
             {
                 new WorldPage(this), new SectsPage(this), new PeoplePage(this), new HistoryPage(this),
-                new LegacyPage(this), new StatsPage(this), new LogPage(this),
+                new LegacyPage(this), new StatsPage(this), new LogPage(this), new MorePage(this),
             };
             _nav = new NavBar(_pages, SelectTab);
-            _sheets = new SheetHost(CreateSheet);
+            _sheets = new SheetHost(this, CreateSheet);
             _toasts = new ToastHost(Open);
-            Grid root = new() { RowDefinitions = new RowDefinitions("Auto,*,Auto") };
-            Grid.SetRow(_header.View, 0);
-            Grid.SetRow(_content, 1);
-            Grid.SetRow(_nav.View, 2);
-            Grid.SetRow(_toasts.View, 1);
-            Grid.SetRowSpan(_sheets.View, 3);
-            _toasts.View.ZIndex = 10;
-            _sheets.View.ZIndex = 20;
-            root.Children.AddRange(new Control[] { _header.View, _content, _nav.View, _toasts.View, _sheets.View });
-            Content = root;
+            Content = CreateLayout();
             _timer.Tick += (_, _) => RefreshNow(force: false);
             SelectTab(0);
             if (session.StartupNote is { } note)
@@ -70,6 +63,9 @@ namespace Xianxia.App.Views
 
         /// <summary>현재 탭 위치.</summary>
         internal int CurrentTab { get; private set; }
+
+        /// <summary>현재 화면의 안정된 목적지 ID.</summary>
+        internal string CurrentDestination => Destinations.FromPage(CurrentTab);
 
         /// <summary>탭 화면들(시험용).</summary>
         internal ReadOnlySpan<PageBase> Pages => _pages;
@@ -108,6 +104,16 @@ namespace Xianxia.App.Views
             _toasts.Show(text);
         }
 
+        /// <inheritdoc/>
+        public void Navigate(string destination) => SelectTab(Destinations.ToPage(destination));
+
+        /// <inheritdoc/>
+        public void CloseSheet()
+        {
+            _sheets.Back();
+            RefreshNow(force: true);
+        }
+
         /// <summary>탭을 바꾼다.</summary>
         /// <param name="index">탭 위치.</param>
         internal void SelectTab(int index)
@@ -136,6 +142,7 @@ namespace Xianxia.App.Views
             runner.Read(world =>
             {
                 _header.Refresh(world, runner);
+                _transport.Refresh(runner);
                 _pages[CurrentTab].Refresh(world);
                 _sheets.Refresh(world);
                 _toasts.Refresh(world, enabled: true);
@@ -182,6 +189,25 @@ namespace Xianxia.App.Views
             base.OnDetachedFromVisualTree(e);
         }
 
+        /// <summary>본문은 스크롤하고 진행·주 탐색은 화면 아래에 유지한다.</summary>
+        private Grid CreateLayout()
+        {
+        Grid root = new() { RowDefinitions = new RowDefinitions("Auto,*,Auto,Auto") };
+        Grid.SetRow(_header.View, 0);
+        Grid.SetRow(_content, 1);
+        Grid.SetRow(_transport.View, 2);
+        Grid.SetRow(_nav.View, 3);
+        Grid.SetRow(_toasts.View, 1);
+        Grid.SetRowSpan(_sheets.View, 4);
+        _toasts.View.ZIndex = 10;
+        _sheets.View.ZIndex = 20;
+        root.Children.AddRange(new Control[]
+        {
+            _header.View, _content, _transport.View, _nav.View, _toasts.View, _sheets.View,
+        });
+            return root;
+        }
+
         private SheetBase? CreateSheet(SheetLink link)
         {
             return link.Kind switch
@@ -193,13 +219,14 @@ namespace Xianxia.App.Views
                 LinkKind.War => new WarSheet(this, link),
                 LinkKind.Settings => new SettingsSheet(this, link),
                 LinkKind.Help => new HelpSheet(this, link),
+                LinkKind.Speed => new SpeedSheet(this, link),
                 _ => null,
             };
         }
 
         private void OnBackRequested(object? sender, RoutedEventArgs e)
         {
-            // Android 뒤로 키: 시트가 있으면 하나 닫고, 없으면 첫 탭으로, 첫 탭이면 시스템에 맡긴다.
+            // 상세 → 더보기 하위 → 천하 → 플랫폼 순으로 복귀한다.
             if (_sheets.IsOpen)
             {
                 _sheets.Back();
@@ -208,7 +235,7 @@ namespace Xianxia.App.Views
             }
             else if (CurrentTab != 0)
             {
-                SelectTab(0);
+                SelectTab(CurrentTab is >= 4 and <= 6 ? 7 : 0);
                 e.Handled = true;
             }
         }
@@ -218,12 +245,11 @@ namespace Xianxia.App.Views
             ApplyInsets(e.SafeAreaPadding);
         }
 
-        private void ApplyInsets(Thickness padding)
+        /// <summary>루트에서만 안전 영역을 적용해 헤더·본문·시트의 이중 여백을 피한다.</summary>
+        /// <param name="padding">플랫폼 안전 영역.</param>
+        internal void ApplyInsets(Thickness padding)
         {
-            _header.SetTopInset(padding.Top);
-            _nav.SetBottomInset(padding.Bottom);
-            _sheets.SetInsets(padding);
-            Padding = new Thickness(padding.Left, 0, padding.Right, 0);
+            Padding = padding;
         }
     }
 }

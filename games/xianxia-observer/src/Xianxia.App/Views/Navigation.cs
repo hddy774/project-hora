@@ -29,6 +29,9 @@ namespace Xianxia.App.Views
 
         /// <summary>도감(도움말).</summary>
         Help = 7,
+
+        /// <summary>관찰 속도 선택.</summary>
+        Speed = 8,
     }
 
     /// <summary>상세 시트로 가는 연결.</summary>
@@ -99,5 +102,12 @@ namespace Xianxia.App.Views
         /// <summary>짧은 안내를 띄운다.</summary>
         /// <param name="text">내용.</param>
         public void Toast(string text);
+
+        /// <summary>안정된 목적지 ID로 주요 화면 또는 더보기 하위를 연다.</summary>
+        /// <param name="destination">목적지 ID.</param>
+        public void Navigate(string destination);
+
+        /// <summary>맨 위 시트를 닫고 이전 화면으로 돌아간다.</summary>
+        public void CloseSheet();
     }
 }

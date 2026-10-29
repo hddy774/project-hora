@@ -137,6 +137,7 @@ namespace Xianxia.App.Views
             }
 
             _play.Content = running ? "■ 정지" : "▶ 진행";
+            _play.IsEnabled = !runner.IsFaulted;
             _play.Classes.Set("primary", !running);
             int speed = runner.SpeedIndex;
             for (int index = 0; index < _speeds.Length; index++)

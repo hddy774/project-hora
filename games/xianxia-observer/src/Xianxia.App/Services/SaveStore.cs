@@ -29,8 +29,14 @@ namespace Xianxia.App.Services
         /// <summary>저장 파일 경로.</summary>
         internal string FilePath => Path.Combine(_directory, FileName);
 
+        /// <summary>직전 정상 저장 한 세대.</summary>
+        internal string BackupPath => FilePath + ".bak";
+
         /// <summary>저장 파일이 있는가.</summary>
         internal bool Exists => File.Exists(FilePath);
+
+        /// <summary>본 저장이 격리된 뒤에도 남은 백업을 불러올 수 있다.</summary>
+        internal bool HasSave => Exists || File.Exists(BackupPath);
 
         /// <summary>저장 파일 크기(바이트, 없으면 0).</summary>
         internal long FileSize => Exists ? new FileInfo(FilePath).Length : 0;
@@ -55,7 +61,17 @@ namespace Xianxia.App.Services
         {
             Directory.CreateDirectory(_directory);
             string temporary = FilePath + ".tmp";
-            File.WriteAllBytes(temporary, bytes);
+            using (FileStream stream = new(temporary, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                stream.Write(bytes);
+                stream.Flush(flushToDisk: true);
+            }
+
+            if (Exists)
+            {
+                File.Copy(FilePath, BackupPath, overwrite: true);
+            }
+
             File.Move(temporary, FilePath, overwrite: true);
         }
 
@@ -67,23 +83,24 @@ namespace Xianxia.App.Services
             problem = null;
             if (!Exists)
             {
-                return null;
+                if (!File.Exists(BackupPath))
+                {
+                    return null;
+                }
+
+                problem = "현재 저장 파일이 없습니다.";
+                return RecoverBackup(ref problem);
             }
 
             try
             {
-                if (FileSize > WorldSerializer.MaxCompressedBytes)
-                {
-                    throw new SaveFormatException("저장 파일이 허용 크기를 초과했습니다.");
-                }
-
-                return WorldSerializer.FromBytes(File.ReadAllBytes(FilePath));
+                return ReadFile(FilePath);
             }
             catch (SaveFormatException exception)
             {
                 problem = "저장 파일을 읽지 못해 따로 보관했습니다(" + exception.Message + ").";
                 Quarantine();
-                return null;
+                return RecoverBackup(ref problem);
             }
             catch (IOException exception)
             {
@@ -93,6 +110,39 @@ namespace Xianxia.App.Services
             catch (UnauthorizedAccessException exception)
             {
                 problem = "저장 파일 접근이 거부되었습니다(" + exception.Message + ").";
+                return null;
+            }
+        }
+
+        /// <summary>크기를 확인한 파일만 읽고 코어와 동일하게 의미 검증한다.</summary>
+        private static World ReadFile(string path)
+        {
+            if (new FileInfo(path).Length > WorldSerializer.MaxCompressedBytes)
+            {
+                throw new SaveFormatException("저장 파일이 허용 크기를 초과했습니다.");
+            }
+
+            using FileStream stream = File.OpenRead(path);
+            return WorldSerializer.Load(stream);
+        }
+
+        /// <summary>백업도 동일 검증을 거친다. 손상 백업은 조사용으로 남긴다.</summary>
+        private World? RecoverBackup(ref string problem)
+        {
+            try
+            {
+                if (!File.Exists(BackupPath))
+                {
+                    return null;
+                }
+
+                World world = ReadFile(BackupPath);
+                problem += " 직전 저장으로 복구했습니다.";
+                return world;
+            }
+            catch (Exception exception) when (exception is SaveFormatException or IOException
+                or UnauthorizedAccessException)
+            {
                 return null;
             }
         }

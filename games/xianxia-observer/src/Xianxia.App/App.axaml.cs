@@ -4,8 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Xianxia.App.Services;
-using Xianxia.App.Views;
 using Xianxia.App.Theme;
+using Xianxia.App.Views;
 
 namespace Xianxia.App
 {

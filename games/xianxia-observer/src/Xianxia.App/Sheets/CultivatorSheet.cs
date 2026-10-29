@@ -1,5 +1,6 @@
 // 수선자 상세: 개요·수행·인연·생애. 기존 7분류 정보와 연결을 모두 보존한다.
 using System.Collections.Generic;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Xianxia.App.Controls;
 using Xianxia.App.Services;
@@ -22,6 +23,7 @@ namespace Xianxia.App.Sheets
         private readonly Button _region;
         private readonly Button _combat;
         private bool _showCombat;
+        private readonly FortuneConfirmation _confirmation;
         private int _tab;
         private int _sectId;
         private int _regionId;
@@ -33,7 +35,9 @@ namespace Xianxia.App.Sheets
         {
             _rows = new RowList(navigator.Open, "이 항목의 기록이 없습니다.");
             _follow = Ui.Button("관심", ToggleFollow, "small");
-            _fortune = Ui.Button("기연 하사 · 천기 2", BestowFortune, "small");
+            _confirmation = new FortuneConfirmation(navigator, link.Id);
+            _fortune = Ui.Button("기연 하사 · 천기 2", _confirmation.Begin, "small");
+            AutomationProperties.SetAutomationId(_fortune, "fortune-request");
             _sect = Ui.Button("소속", () => navigator.Open(SheetLink.ToSect(_sectId)), "small");
             _region = Ui.Button("지역", () => navigator.Open(SheetLink.ToRegion(_regionId)), "small");
             _combat = Ui.Button("전투력 상세 ▾", () =>
@@ -43,8 +47,9 @@ namespace Xianxia.App.Sheets
             }, "small");
             Tabs = new ChipBar(s_tabs,
                 index => { _tab = index; navigator.Invalidate(); }).View;
-            Body.Children.Add(Ui.Row(5, _follow, _fortune));
-            Body.Children.Add(Ui.Row(5, _sect, _region));
+            Body.Children.Add(Ui.Cells(2, 5, _follow, _fortune));
+            Body.Children.Add(_confirmation.View);
+            Body.Children.Add(Ui.Cells(2, 5, _sect, _region));
             Body.Children.Add(_combat);
             Body.Children.Add(_facts.View);
             Body.Children.Add(_rows.View);
@@ -187,12 +192,5 @@ namespace Xianxia.App.Sheets
             Navigator.Invalidate();
         }
 
-        private void BestowFortune()
-        {
-            bool success = Navigator.Session.Runner.Write(world => world.Find(Link.Id) is { } person
-                && InterventionSystem.BestowFortune(world, person));
-            Navigator.Toast(success ? "기연을 내렸습니다. 천기 2점을 사용했습니다." : "대상이 없거나 천기가 부족합니다.");
-            Navigator.Invalidate();
-        }
     }
 }

@@ -42,7 +42,7 @@ namespace Xianxia.App.Sheets
             }).View;
             Body.Children.AddRange(new Control[]
             {
-                _description, _favor, Ui.Row(5, _secret, _tide), _facts.View, _pager.View, _residents.View,
+                _description, _favor, Ui.Cells(2, 5, _secret, _tide), _facts.View, _pager.View, _residents.View,
             });
         }
 

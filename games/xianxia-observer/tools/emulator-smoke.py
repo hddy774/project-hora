@@ -278,6 +278,8 @@ def main():
         smoke.focus()
         smoke.clear()
         adb('shell', 'settings', 'put', 'system', 'font_scale', scale)
+        # API34는 글자 설정 뒤 IME·시스템바 inset을 순차 반영한다. 중간 좌표로 누르지 않는다.
+        time.sleep(2)
         smoke.controls(12)
         smoke.routes(scale)
         if scale != '1.0':

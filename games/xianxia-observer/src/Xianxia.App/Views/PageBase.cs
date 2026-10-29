@@ -41,6 +41,12 @@ namespace Xianxia.App.Views
         /// <summary>세계를 읽어 화면을 고친다(실행기 잠금 안에서 호출).</summary>
         /// <param name="world">세계.</param>
         internal abstract void Refresh(World world);
+
+        /// <summary>성공한 세계 교체 뒤에만 검색·선택 상태를 비운다.</summary>
+        internal virtual void ResetState()
+        {
+            View.Offset = Vector.Zero;
+        }
     }
 
     /// <summary>상세 시트(수선자·종문·지역 등). 시트 위에 다른 시트를 쌓을 수 있다.</summary>

@@ -1,5 +1,7 @@
 // 인물 탭: 8종 정렬, 소속·관심 필터, 이름 검색과 20명 단위 쪽 넘김을 제공한다.
 using System.Collections.Generic;
+using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Xianxia.App.Controls;
 using Xianxia.App.Services;
@@ -16,6 +18,9 @@ namespace Xianxia.App.Pages
         private readonly RowList _rows;
         private readonly Pager _pager;
         private readonly TextBox _search = new() { PlaceholderText = "이름·도호 검색" };
+        private readonly ChipBar _sorts;
+        private readonly ChipBar _affiliations;
+        private readonly Button _sortChoice;
         private int _sort;
         private int _affiliation;
 
@@ -25,13 +30,25 @@ namespace Xianxia.App.Pages
         {
             _rows = new RowList(navigator.Open, "조건에 맞는 인물이 없습니다.");
             _pager = new Pager(20, navigator.Invalidate);
-            ChipBar sorts = new(s_sorts, index => { _sort = index; Reset(); });
-            ChipBar affiliations = new(s_affiliations,
+            _sortChoice = Ui.Button("정렬: 경지 ▾", () => _sorts!.View.IsVisible = !_sorts.View.IsVisible);
+            _sorts = new ChipBar(s_sorts, index =>
+            {
+                _sort = index;
+                _sortChoice.Content = "정렬: " + s_sorts[index] + " ▾";
+                _sorts!.View.IsVisible = false;
+                Reset();
+            });
+            _sorts.View.IsVisible = false;
+            _affiliations = new ChipBar(s_affiliations,
                 index => { _affiliation = index; Reset(); });
+            _search.MinHeight = 48;
+            AutomationProperties.SetAutomationId(_search, "people-search");
+            AutomationProperties.SetAutomationId(_sortChoice, "people-sort");
             _search.TextChanged += (_, _) => Reset();
             Body.Children.AddRange(new Control[]
             {
-                Ui.Section("인물 탐색", _search, sorts.View, affiliations.View), _pager.View, _rows.View,
+                Ui.Section("인물 탐색", _search, _affiliations.View, _sortChoice, _sorts.View),
+                _rows.View, _pager.View,
             });
         }
 
@@ -40,6 +57,19 @@ namespace Xianxia.App.Pages
 
         /// <inheritdoc />
         internal override string Glyph => "人";
+
+        /// <inheritdoc />
+        internal override void ResetState()
+        {
+            _search.Text = string.Empty;
+            _sort = 0;
+            _affiliation = 0;
+            _sorts.Select(0, false);
+            _affiliations.Select(0, false);
+            _sortChoice.Content = "정렬: 경지 ▾";
+            _sorts.View.IsVisible = false;
+            Reset();
+        }
 
         /// <inheritdoc />
         internal override void Refresh(World world)
@@ -60,6 +90,7 @@ namespace Xianxia.App.Pages
         private void Reset()
         {
             _pager.Reset();
+            View.Offset = Vector.Zero;
             Navigator.Invalidate();
         }
     }

@@ -2,6 +2,7 @@
 // Android에서 화면(Activity)이 다시 만들어져도 세션은 그대로라 진행이 끊기지 않는다.
 using System;
 using System.IO;
+using System.Threading;
 using Xianxia.Simulation.Model;
 using Xianxia.Simulation.Persistence;
 using Xianxia.Simulation.Systems;
@@ -16,6 +17,7 @@ namespace Xianxia.App.Services
 
         private readonly object _saveGate = new();
         private bool _resumeOnForeground;
+        private int _worldGeneration;
 
         /// <summary>세션을 만든다.</summary>
         /// <param name="store">저장소.</param>
@@ -30,6 +32,9 @@ namespace Xianxia.App.Services
 
         /// <summary>저장소.</summary>
         internal SaveStore Store { get; }
+
+        /// <summary>성공한 세계 교체 횟수. 일반 시뮬레이션 갱신과 구분한다.</summary>
+        internal int WorldGeneration => Volatile.Read(ref _worldGeneration);
 
         /// <summary>실행기.</summary>
         internal SimulationRunner Runner { get; }
@@ -114,6 +119,7 @@ namespace Xianxia.App.Services
                 }
 
                 Runner.Replace(world);
+                Interlocked.Increment(ref _worldGeneration);
                 message = world.Year.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture)
                     + "년 저장을 불러왔습니다.";
                 LastSaveMessage = message;
@@ -126,6 +132,7 @@ namespace Xianxia.App.Services
         internal void NewWorld(WorldSettings settings)
         {
             Runner.Replace(WorldFactory.Create(settings));
+            Interlocked.Increment(ref _worldGeneration);
             Save();
         }
 

@@ -1,7 +1,7 @@
 # 선로만상록 프로젝트 0.2.0 Android 수용 증거
 
 후보 검증 완료: [40919843068](https://github.com/hddy774/project-hora/actions/runs/40919843068).
-API24·34 모두 성공했고 같은 APK를 설치했다. 공식 게시 실행은 대표 PR을 main에 병합한 뒤 별도로 수행한다.
+API24·34 모두 성공했고 같은 APK를 설치했다. 공식 게시도 완료했다. 아래 후보 검증 기록과 공식 배포 출처를 구분한다.
 
 | 항목 | 증거 |
 |---|---|
@@ -34,3 +34,19 @@ API24의 Unknown 도구는 터치스크린에서만 Finger로 정규화한다. A
 에뮬레이터 결과로 대체하지 않는다. 저장소 설명 변경 권한403은 별도 이슈#67에서 추적한다.
 
 ![API34 200% 글자·IME·진행 조작](screens/android-api34-ime-200.png)
+
+## 공식 최신 안정 릴리스 — 완료
+
+- [공식 APK](https://github.com/hddy774/project-hora/releases/tag/xianxia-observer/v0.2.0), 첨부 APK1개·43,505,222바이트.
+- main/태그 소스: `09e8c693e3ebb52d2495bffb1a48364eb9396dce` (대표 PR#32 squash).
+- [공식 빌드·두 API](https://github.com/hddy774/project-hora/actions/runs/40923068393): 모든 소스/서명/실입력 검사 성공.
+- [같은 APK 게시](https://github.com/hddy774/project-hora/actions/runs/40925267131): 초안 재다운로드 확인 후 최신 안정 게시 성공.
+- 공식 APK SHA256: `b381a400514ea311117bb2b28d15c68baffc00d4ea71a689c9140a69867bf2df`.
+- 공식 API24/34 각각47 PNG와 tested-apk-sha256.txt를 다시 내려받아 공개 파일과 같은 해시임을 확인했다.
+- 공개 APK를 직접 재다운로드하고 v2 서명 블록의 인증서 지문이 기존 PIN과 같은지, ARM64/x86_64가 함께 있는지 확인했다.
+- 태그가 위 main SHA를 가리키고 latest가 이 태그이며 draft/prerelease가 아니고 assets가 APK1개인지 확인했다.
+
+처음 공식 실행의 게시 작업은 선택적 QA 작업이 skipped인 선행 경로 때문에 건너뛰어졌다.
+이미 검증된 동일 APK의 게시 전용 경로로 완료했고 재빌드/교체하지 않았다. 후속 운영 보정은
+publish 조건에 always()/취소 방지/직접 선행3개 success를 명시한다. 검증 실패·취소·QA 전용 실행은 게시하지 않는다.
+공식 APK의 게임 코드와 서명 출처는 위 고정 SHA이며 이후 문서/워크플로 보정 커밋과 구분한다.

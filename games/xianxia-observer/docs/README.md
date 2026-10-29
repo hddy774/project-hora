@@ -77,3 +77,5 @@
 - [기존 React 측정 원문](measurements/legacy-30k-seeds-1-2-3.json)
 
 서명 비밀키·토큰·개인 저장 파일은 문서 묶음에 포함하지 않는다. 공개 릴리스 첨부는 기존 APK 한 개를 유지한다.
+
+- [0.2.0 Android 수용·공식 APK 배포 증거](21-android-v0.2.0-verification.md)

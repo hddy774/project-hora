@@ -2,7 +2,7 @@
   "schema_version": 1,
   "repository": "hddy774/project-hora",
   "tracking_pr": 32,
-  "updated_at": "2026-10-29T17:28:02Z",
+  "updated_at": "2026-10-29T17:55:38Z",
   "tasks": [
     {
       "id": "XO-01",
@@ -229,13 +229,13 @@
       "phase": "release",
       "order": 14,
       "approval": "approved",
-      "status": "in_progress",
+      "status": "done",
       "depends_on": [
         "XO-14",
         "UI-QA"
       ],
-      "note": "13/14 수용 완료. 최종 문서/체크표 병합 후 main의 고정 SHA로 공식 서명·두 API 재검증·APK 하나 최신 릴리스 배포 진행.",
-      "evidence": "https://github.com/hddy774/project-hora/pull/32"
+      "note": "대표 PR #32 main 09e8c69 병합. 공식 빌드40923068393의 두 API·서명 성공, 게시40925267131 성공. 최신 안정 릴리스 APK1개·공개43,505,222바이트·SHA256 b381a400514ea311117bb2b28d15c68baffc00d4ea71a689c9140a69867bf2df·기존 인증서/양 ABI 직접 검증.",
+      "evidence": "https://github.com/hddy774/project-hora/releases/tag/xianxia-observer/v0.2.0"
     }
   ]
 }

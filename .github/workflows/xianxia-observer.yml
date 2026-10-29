@@ -235,7 +235,7 @@ jobs:
   publish:
     name: publish verified APK only as latest
     needs: [check, android, emulator]
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish && inputs.source_run_id == '' && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner }}
+    if: ${{ always() && !cancelled() && needs.check.result == 'success' && needs.android.result == 'success' && needs.emulator.result == 'success' && github.event_name == 'workflow_dispatch' && inputs.publish && inputs.source_run_id == '' && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:

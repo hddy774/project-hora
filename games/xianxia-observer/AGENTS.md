@@ -1,4 +1,4 @@
-# 선협 관찰 작업 지침
+# 선로만상록 프로젝트 작업 지침
 
 루트 AGENTS.md를 따르고, 이 게임의 실제 프로젝트(net10.0·Avalonia)와 Hora 경제 게임을 구분한다.
 할당된 XO 명세와 [개발 순서](docs/14-development-plan.md), UI 작업은 [고서 목판 계획](docs/15-ui-ux-improvement.md)을 읽는다.

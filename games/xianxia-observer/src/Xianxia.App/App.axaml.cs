@@ -1,4 +1,4 @@
-// 선협 관찰 Avalonia 애플리케이션 진입점. 게임 세션을 하나 만들고 플랫폼별 수명 주기에 맞춰 화면과 저장을 연결한다.
+// 선로만상록 프로젝트 Avalonia 애플리케이션 진입점. 게임 세션을 하나 만들고 플랫폼별 수명 주기에 맞춰 화면과 저장을 연결한다.
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -8,7 +8,7 @@ using Xianxia.App.Views;
 
 namespace Xianxia.App
 {
-    /// <summary>선협 관찰 애플리케이션. 데스크톱·Android·헤드리스 테스트가 공통으로 사용한다.</summary>
+    /// <summary>선로만상록 프로젝트 애플리케이션. 데스크톱·Android·헤드리스 테스트가 공통으로 사용한다.</summary>
     public partial class App : Application
     {
         private GameSession? _session;
@@ -36,7 +36,7 @@ namespace Xianxia.App
             {
                 desktop.MainWindow = new Window
                 {
-                    Title = "선협 관찰",
+                    Title = "선로만상록 프로젝트",
                     Content = new MainView(session),
                     Width = 412,
                     Height = 860,

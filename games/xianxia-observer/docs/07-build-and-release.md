@@ -48,7 +48,7 @@ dotnet publish src/Xianxia.Android/Xianxia.Android.csproj -c Release -f net10.0-
 
 | 항목 | 현재 값 |
 |---|---|
-| 표시 이름 / ID | 선협 관찰 / `org.hora.xianxiaobserver` |
+| 표시 이름 / ID | 선로만상록 프로젝트 / `org.hora.xianxiaobserver` |
 | 버전 이름 / 코드 | 0.1.0 / 1 |
 | 최소 Android | API 24. 실제 API 24 실행 검증은 미실시 |
 | 현재 빌드 SDK | API 36 |

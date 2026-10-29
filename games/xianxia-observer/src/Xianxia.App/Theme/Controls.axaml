@@ -4,15 +4,17 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <ControlTheme x:Key="SeonhyeopButton" TargetType="Button">
     <Setter Property="Background" Value="Transparent" />
-    <Setter Property="BorderBrush" Value="#40644114" />
+    <Setter Property="BorderBrush" Value="#B5A47A" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="CornerRadius" Value="7" />
-    <Setter Property="Padding" Value="10,6" />
-    <Setter Property="FontSize" Value="12" />
-    <Setter Property="Foreground" Value="#1E0E00" />
+    <Setter Property="CornerRadius" Value="2" />
+    <Setter Property="Padding" Value="12,10" />
+    <Setter Property="FontSize" Value="15" />
+    <Setter Property="Foreground" Value="#202A2B" />
     <Setter Property="HorizontalContentAlignment" Value="Center" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="MinHeight" Value="48" />
+    <Setter Property="MinWidth" Value="48" />
     <Setter Property="Template">
       <ControlTemplate>
         <ContentPresenter Name="PART_ContentPresenter"
@@ -30,24 +32,24 @@
 
     <!-- 작은 칩: 정렬·필터 선택 -->
     <Style Selector="^.small">
-      <Setter Property="Padding" Value="7,4" />
-      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="FontSize" Value="13" />
     </Style>
 
     <!-- 선택된 칩: 원본 .xb.a -->
     <Style Selector="^.active">
-      <Setter Property="Background" Value="#7A4800" />
-      <Setter Property="BorderBrush" Value="#7A4800" />
-      <Setter Property="Foreground" Value="#FDF0D8" />
+      <Setter Property="Background" Value="#805B25" />
+      <Setter Property="BorderBrush" Value="#805B25" />
+      <Setter Property="Foreground" Value="#FAF3DF" />
       <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
     <!-- 목록 카드: 원본 .xc -->
     <Style Selector="^.card">
-      <Setter Property="Background" Value="#E4D8BC" />
-      <Setter Property="BorderBrush" Value="#33644114" />
-      <Setter Property="CornerRadius" Value="8" />
-      <Setter Property="Padding" Value="9,7" />
+      <Setter Property="Background" Value="#FAF3DF" />
+      <Setter Property="BorderBrush" Value="#B5A47A" />
+      <Setter Property="CornerRadius" Value="2" />
+      <Setter Property="Padding" Value="12,10" />
       <Setter Property="FontSize" Value="13" />
       <Setter Property="HorizontalContentAlignment" Value="Stretch" />
       <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -55,15 +57,16 @@
 
     <!-- 하단 탭: 원본 .xnt -->
     <Style Selector="^.nav">
+      <Setter Property="MinHeight" Value="64" />
       <Setter Property="BorderThickness" Value="0" />
       <Setter Property="CornerRadius" Value="0" />
       <Setter Property="Padding" Value="0,6,0,5" />
-      <Setter Property="Foreground" Value="#8A6840" />
+      <Setter Property="Foreground" Value="#655A46" />
       <Setter Property="HorizontalAlignment" Value="Stretch" />
     </Style>
     <Style Selector="^.nav.active">
       <Setter Property="Background" Value="Transparent" />
-      <Setter Property="Foreground" Value="#7A4800" />
+      <Setter Property="Foreground" Value="#805B25" />
       <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
@@ -75,14 +78,18 @@
 
     <!-- 강조 단추: 실행·확인 -->
     <Style Selector="^.primary">
-      <Setter Property="Background" Value="#7A4800" />
-      <Setter Property="BorderBrush" Value="#7A4800" />
-      <Setter Property="Foreground" Value="#FDF0D8" />
+      <Setter Property="Background" Value="#805B25" />
+      <Setter Property="BorderBrush" Value="#805B25" />
+      <Setter Property="Foreground" Value="#FAF3DF" />
       <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
     <Style Selector="^:pressed">
       <Setter Property="Opacity" Value="0.72" />
+    </Style>
+    <Style Selector="^:focus-visible">
+      <Setter Property="BorderBrush" Value="#202A2B" />
+      <Setter Property="BorderThickness" Value="2" />
     </Style>
     <Style Selector="^:disabled">
       <Setter Property="Opacity" Value="0.38" />

@@ -14,7 +14,7 @@ namespace Xianxia.App.Controls
     internal static class Ui
     {
         /// <summary>화면 가장자리 여백.</summary>
-        internal const double Gutter = 10;
+        internal const double Gutter = 16;
 
         private const string ButtonThemeKey = "SeonhyeopButton";
         private static ControlTheme? s_buttonTheme;
@@ -40,12 +40,12 @@ namespace Xianxia.App.Controls
         /// <param name="color">색(없으면 상속).</param>
         /// <param name="bold">굵게.</param>
         /// <returns>글자 블록.</returns>
-        internal static TextBlock Text(string text = "", double size = 13, Color? color = null, bool bold = false)
+        internal static TextBlock Text(string text = "", double size = 15, Color? color = null, bool bold = false)
         {
             TextBlock block = new()
             {
                 Text = text,
-                FontSize = size,
+                FontSize = Math.Max(13, size),
                 TextWrapping = TextWrapping.Wrap,
             };
             if (color is { } value)
@@ -65,7 +65,7 @@ namespace Xianxia.App.Controls
         /// <param name="text">내용.</param>
         /// <param name="size">크기.</param>
         /// <returns>글자 블록.</returns>
-        internal static TextBlock Muted(string text = "", double size = 11)
+        internal static TextBlock Muted(string text = "", double size = 13)
         {
             return Text(text, size, Palette.Muted);
         }
@@ -75,7 +75,7 @@ namespace Xianxia.App.Controls
         /// <returns>글자 블록.</returns>
         internal static TextBlock Title(string text)
         {
-            return Text(text, 13, Palette.Accent, bold: true);
+            return Text(text, 20, Palette.Ink, bold: true);
         }
 
         /// <summary>패널(원본 .xp): 연한 양피지 바탕, 둥근 테두리.</summary>
@@ -88,8 +88,8 @@ namespace Xianxia.App.Controls
                 Background = Palette.Brush(Palette.PanelBack),
                 BorderBrush = Palette.Brush(Palette.Line),
                 BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(10),
-                Padding = new Thickness(12, 10),
+                CornerRadius = new CornerRadius(2),
+                Padding = new Thickness(12),
                 Child = child,
             };
         }
@@ -120,8 +120,8 @@ namespace Xianxia.App.Controls
                 Background = Palette.Brush(Palette.CardBack),
                 BorderBrush = Palette.Brush(Palette.Line),
                 BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(8),
-                Padding = new Thickness(9, 7),
+                CornerRadius = new CornerRadius(2),
+                Padding = new Thickness(12, 10),
                 Child = child,
             };
             if (accent is { } color)
@@ -245,12 +245,12 @@ namespace Xianxia.App.Controls
         internal static Border Stat(string label, TextBlock value)
         {
             value.FontWeight = FontWeight.Bold;
-            value.FontSize = 13;
+            value.FontSize = 15;
             value.HorizontalAlignment = HorizontalAlignment.Center;
-            value.TextWrapping = TextWrapping.NoWrap;
+            value.TextWrapping = TextWrapping.Wrap;
             TextBlock name = Muted(label, 10);
             name.HorizontalAlignment = HorizontalAlignment.Center;
-            name.TextWrapping = TextWrapping.NoWrap;
+            name.TextWrapping = TextWrapping.Wrap;
             return new Border
             {
                 Background = Palette.Tint(Palette.Accent, 0x14),

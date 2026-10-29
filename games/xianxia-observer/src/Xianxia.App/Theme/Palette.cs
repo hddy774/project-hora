@@ -1,5 +1,4 @@
-// 화면 색상표. 원본의 양피지 색조(배경 #F5EDE0, 먹색 글자, 갈색 강조)를 계승하고
-// 경지·기록 분류·종문 색을 한곳에 모은다. 붓(brush)은 불변 객체로 캐시해 매 갱신마다 새로 만들지 않는다.
+// 고서 목판의 종이·먹·목색과 대비를 확보한 종문·경지·기록 분류색. 붓은 재사용한다.
 using System;
 using System.Collections.Generic;
 using Avalonia.Media;
@@ -11,66 +10,66 @@ namespace Xianxia.App.Theme
     /// <summary>색상과 붓 캐시.</summary>
     internal static class Palette
     {
-        internal static readonly Color Parchment = Color.Parse("#F5EDE0");
-        internal static readonly Color HeaderBack = Color.Parse("#E8D8B8");
-        internal static readonly Color PanelBack = Color.Parse("#EDE3CC");
-        internal static readonly Color CardBack = Color.Parse("#E4D8BC");
-        internal static readonly Color Ink = Color.Parse("#1E0E00");
-        internal static readonly Color Muted = Color.Parse("#8A6840");
-        internal static readonly Color Accent = Color.Parse("#7A4800");
-        internal static readonly Color OnAccent = Color.Parse("#FDF0D8");
-        internal static readonly Color Line = Color.Parse("#38644114");
-        internal static readonly Color Track = Color.Parse("#1F644114");
-        internal static readonly Color Orthodox = Color.Parse("#1155AA");
-        internal static readonly Color Demonic = Color.Parse("#CC4444");
-        internal static readonly Color Rogue = Color.Parse("#7F7F7F");
-        internal static readonly Color War = Color.Parse("#CC6600");
-        internal static readonly Color Peace = Color.Parse("#228855");
-        internal static readonly Color Gold = Color.Parse("#B88200");
-        internal static readonly Color Silver = Color.Parse("#7D8A96");
-        internal static readonly Color Bronze = Color.Parse("#A0623A");
-        internal static readonly Color Danger = Color.Parse("#B03A1A");
+        internal static readonly Color Parchment = Color.Parse("#F3E8CC");
+        internal static readonly Color HeaderBack = Color.Parse("#EFE2C4");
+        internal static readonly Color PanelBack = Color.Parse("#FAF3DF");
+        internal static readonly Color CardBack = Color.Parse("#FAF3DF");
+        internal static readonly Color Ink = Color.Parse("#202A2B");
+        internal static readonly Color Muted = Color.Parse("#655A46");
+        internal static readonly Color Accent = Color.Parse("#805B25");
+        internal static readonly Color OnAccent = Color.Parse("#FAF3DF");
+        internal static readonly Color Line = Color.Parse("#B5A47A");
+        internal static readonly Color Track = Color.Parse("#DDD0AF");
+        internal static readonly Color Orthodox = Color.Parse("#2F5B79");
+        internal static readonly Color Demonic = Color.Parse("#914740");
+        internal static readonly Color Rogue = Color.Parse("#565656");
+        internal static readonly Color War = Color.Parse("#8B4400");
+        internal static readonly Color Peace = Color.Parse("#16613C");
+        internal static readonly Color Gold = Color.Parse("#714E00");
+        internal static readonly Color Silver = Color.Parse("#505960");
+        internal static readonly Color Bronze = Color.Parse("#7A4A2B");
+        internal static readonly Color Danger = Color.Parse("#9E3416");
         internal static readonly Color Favor = Color.Parse("#5A3FA0");
-        internal static readonly Color Backdrop = Color.Parse("#D9281405");
+        internal static readonly Color Backdrop = Color.Parse("#C9202A2B");
 
         // 원본 RC(연기경~반선경) 색을 그대로 쓴다.
         private static readonly Color[] s_realms =
         {
-            Color.Parse("#5E9E5E"), Color.Parse("#22AA77"), Color.Parse("#1155AA"), Color.Parse("#7700BB"),
-            Color.Parse("#BB7700"), Color.Parse("#BB5522"), Color.Parse("#CC4444"), Color.Parse("#8833AA"),
-            Color.Parse("#886600"),
+            Color.Parse("#386038"), Color.Parse("#116144"), Color.Parse("#1155AA"), Color.Parse("#7700BB"),
+            Color.Parse("#794C00"), Color.Parse("#8F4018"), Color.Parse("#9B3333"), Color.Parse("#8130A1"),
+            Color.Parse("#6D5100"),
         };
 
         // LogKind 순서: 돌파, 천겁, 결투, 비무, 부상, 종문, 인연, 기연, 기예, 거래, 전쟁, 대회, 비경, 수조, 윤회, 시대, 비승, 호칭, 천기.
         private static readonly Color[] s_logKinds =
         {
-            Color.Parse("#7700BB"), Color.Parse("#887700"), Color.Parse("#BB8822"), Color.Parse("#336600"),
-            Color.Parse("#CC4433"), Color.Parse("#885500"), Color.Parse("#AA4477"), Color.Parse("#22AA77"),
-            Color.Parse("#664400"), Color.Parse("#806040"), Color.Parse("#CC6600"), Color.Parse("#33AA88"),
-            Color.Parse("#1F6F9F"), Color.Parse("#BB5522"), Color.Parse("#8833AA"), Color.Parse("#777766"),
-            Color.Parse("#B88200"), Color.Parse("#AA6600"), Color.Parse("#5A3FA0"),
+            Color.Parse("#7700BB"), Color.Parse("#615500"), Color.Parse("#725212"), Color.Parse("#306000"),
+            Color.Parse("#9B3325"), Color.Parse("#7A4C00"), Color.Parse("#903965"), Color.Parse("#116144"),
+            Color.Parse("#664400"), Color.Parse("#6C5136"), Color.Parse("#8B4400"), Color.Parse("#1B614D"),
+            Color.Parse("#175980"), Color.Parse("#8F4018"), Color.Parse("#8130A1"), Color.Parse("#555548"),
+            Color.Parse("#714E00"), Color.Parse("#814C00"), Color.Parse("#5A3FA0"),
         };
 
         // ChronicleKind 순서: 세계, 시대, 경지, 비승, 종주, 전쟁, 대회, 비경, 수조, 경매, 배신, 기록, 좌화, 천기, 시설.
         private static readonly Color[] s_chronicleKinds =
         {
-            Color.Parse("#7A4800"), Color.Parse("#777766"), Color.Parse("#7700BB"), Color.Parse("#B88200"),
-            Color.Parse("#885500"), Color.Parse("#CC6600"), Color.Parse("#33AA88"), Color.Parse("#1F6F9F"),
-            Color.Parse("#BB5522"), Color.Parse("#806040"), Color.Parse("#B03A1A"), Color.Parse("#AA6600"),
-            Color.Parse("#666666"), Color.Parse("#5A3FA0"), Color.Parse("#4D7A2A"),
+            Color.Parse("#7A4800"), Color.Parse("#555548"), Color.Parse("#7700BB"), Color.Parse("#714E00"),
+            Color.Parse("#7A4C00"), Color.Parse("#8B4400"), Color.Parse("#1B614D"), Color.Parse("#175980"),
+            Color.Parse("#8F4018"), Color.Parse("#6C5136"), Color.Parse("#9E3416"), Color.Parse("#814C00"),
+            Color.Parse("#565656"), Color.Parse("#5A3FA0"), Color.Parse("#3D6121"),
         };
 
         // 원본 GC(재능 등급 1~5) 색.
         private static readonly Color[] s_talents =
         {
-            Color.Parse("#7F7F7F"), Color.Parse("#22AA77"), Color.Parse("#1155AA"), Color.Parse("#BB7700"),
-            Color.Parse("#BB8822"),
+            Color.Parse("#565656"), Color.Parse("#116144"), Color.Parse("#1155AA"), Color.Parse("#794C00"),
+            Color.Parse("#725212"),
         };
 
         private static readonly Color[] s_elements =
         {
-            Color.Parse("#9A8A50"), Color.Parse("#3C8A3C"), Color.Parse("#2A6FB0"), Color.Parse("#C8452A"),
-            Color.Parse("#8A6A3A"), Color.Parse("#6A4AC0"), Color.Parse("#3AA0B8"), Color.Parse("#4A9A8A"),
+            Color.Parse("#5E5430"), Color.Parse("#2A632A"), Color.Parse("#21598E"), Color.Parse("#99331F"),
+            Color.Parse("#69502B"), Color.Parse("#5F42AC"), Color.Parse("#205C6B"), Color.Parse("#2B5E54"),
         };
 
         private static readonly Dictionary<uint, IBrush> s_brushes = new();

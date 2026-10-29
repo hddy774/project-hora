@@ -19,11 +19,11 @@ namespace Xianxia.App.Controls
         /// <summary>빈 배지를 만든다.</summary>
         internal BadgeView()
         {
-            CornerRadius = new CornerRadius(999);
+            CornerRadius = new CornerRadius(3);
             BorderThickness = new Thickness(1);
-            Padding = new Thickness(6, 1, 6, 2);
+            Padding = new Thickness(8, 3);
             Margin = new Thickness(0, 0, 3, 3);
-            _text = new TextBlock { FontSize = 10, FontWeight = FontWeight.Bold };
+            _text = new TextBlock { FontSize = 13, FontWeight = FontWeight.Bold };
             Child = _text;
         }
 

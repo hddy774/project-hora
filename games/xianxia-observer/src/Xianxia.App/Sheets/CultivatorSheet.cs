@@ -1,4 +1,4 @@
-// 수선자 상세: 7개 하위 탭, 관심 표시, 기연 하사. 영혼 번호로 매번 조회해 윤회 뒤에도 같은 대상을 따른다.
+// 수선자 상세: 개요·수행·인연·생애. 기존 7분류 정보와 연결을 모두 보존한다.
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Xianxia.App.Controls;
@@ -13,13 +13,15 @@ namespace Xianxia.App.Sheets
     /// <summary>현생 수선자와 비승·퇴장한 영혼의 상세 시트.</summary>
     internal sealed class CultivatorSheet : SheetBase
     {
-        private static readonly string[] s_tabs = { "개요", "전투력", "수행", "소지", "인연", "생애", "윤회" };
+        private static readonly string[] s_tabs = { "개요", "수행", "인연", "생애" };
         private readonly KeyValueList _facts = new();
         private readonly RowList _rows;
         private readonly Button _follow;
         private readonly Button _fortune;
         private readonly Button _sect;
         private readonly Button _region;
+        private readonly Button _combat;
+        private bool _showCombat;
         private int _tab;
         private int _sectId;
         private int _regionId;
@@ -34,10 +36,16 @@ namespace Xianxia.App.Sheets
             _fortune = Ui.Button("기연 하사 · 천기 2", BestowFortune, "small");
             _sect = Ui.Button("소속", () => navigator.Open(SheetLink.ToSect(_sectId)), "small");
             _region = Ui.Button("지역", () => navigator.Open(SheetLink.ToRegion(_regionId)), "small");
+            _combat = Ui.Button("전투력 상세 ▾", () =>
+            {
+                _showCombat = !_showCombat;
+                navigator.Invalidate();
+            }, "small");
             Tabs = new ChipBar(s_tabs,
                 index => { _tab = index; navigator.Invalidate(); }).View;
             Body.Children.Add(Ui.Row(5, _follow, _fortune));
             Body.Children.Add(Ui.Row(5, _sect, _region));
+            Body.Children.Add(_combat);
             Body.Children.Add(_facts.View);
             Body.Children.Add(_rows.View);
         }
@@ -50,8 +58,9 @@ namespace Xianxia.App.Sheets
             Title = person?.DisplayName ?? soul?.Name ?? "존재하지 않는 영혼";
             _follow.Content = world.IsFollowed(Link.Id) ? "★ 관심 해제" : "☆ 관심 표시";
             _follow.IsEnabled = person is not null || soul is not null;
-            _fortune.IsEnabled = person is not null
-                && world.HeavenlyFavor >= InterventionSystem.Cost(InterventionKind.BestowFortune);
+            _fortune.IsEnabled = person is not null && InterventionSystem.CanBestowFortune(world, person);
+            _combat.IsVisible = person is not null && _tab == 0;
+            _combat.Content = _showCombat ? "전투력 상세 ▴" : "전투력 상세 ▾";
             _sect.IsVisible = person is not null;
             _region.IsVisible = person is not null;
             _facts.Begin();
@@ -63,7 +72,7 @@ namespace Xianxia.App.Sheets
                 _sect.Content = Fmt.Affiliation(world, person);
                 _sect.IsEnabled = !person.IsRogue;
                 _region.Content = world.Regions[person.RegionId].Name + " ›";
-                CultivatorDetails.Fill(_facts, world, person, _tab);
+                CultivatorDetails.Fill(_facts, world, person, _tab, _showCombat);
                 FillRows(world, person, rows);
             }
             else
@@ -79,13 +88,11 @@ namespace Xianxia.App.Sheets
         {
             switch (_tab)
             {
-                case 4:
+                case 2:
                     AddRelations(world, person, rows);
                     break;
-                case 5:
+                case 3:
                     AddBiography(world, person, rows);
-                    break;
-                case 6:
                     AddPastLives(world, person, rows);
                     break;
             }
@@ -124,9 +131,10 @@ namespace Xianxia.App.Sheets
         private void AddPastLives(World world, Cultivator person, List<RowModel> rows)
         {
             AddSoul(world.FindSoul(person.Id));
+            List<RowModel> pastRows = new();
             foreach (PastLife life in person.PastLives)
             {
-                rows.Add(new RowModel
+                pastRows.Add(new RowModel
                 {
                     Title = life.LifeNumber + "번째 생 · " + life.Ending,
                     Subtitle = Realms.FullName(life.Realm, life.Stage) + " · " + life.Age + "세 · "
@@ -136,7 +144,8 @@ namespace Xianxia.App.Sheets
                 });
             }
 
-            rows.Reverse();
+            pastRows.Reverse();
+            rows.AddRange(pastRows);
         }
 
         private void AddSoul(SoulRecord? soul)

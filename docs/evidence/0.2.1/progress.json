@@ -1,13 +1,13 @@
 {
   "total": 111,
-  "completed": 49,
-  "completion_percent": 44.1,
-  "own_acceptance_count": 102,
-  "own_acceptance_percent": 91.9,
+  "completed": 50,
+  "completion_percent": 45.0,
+  "own_acceptance_count": 105,
+  "own_acceptance_percent": 94.6,
   "counts": {
-    "done": 49,
-    "validated": 53,
-    "in_progress": 9,
+    "done": 50,
+    "validated": 55,
+    "in_progress": 6,
     "planned": 0,
     "blocked": 0
   },
@@ -255,7 +255,7 @@
     {
       "id": "V021-L03",
       "title": "AI 다양성·의사결정 비용 검증",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-B04",
@@ -266,11 +266,6 @@
       "id": "V021-I03",
       "title": "12분류 장비·본명법보 계약",
       "status": "validated"
-    },
-    {
-      "id": "V021-L04",
-      "title": "인지·믿음·기억·실패 학습",
-      "status": "in_progress"
     },
     {
       "id": "V021-L05",
@@ -285,7 +280,7 @@
     {
       "id": "V021-L07",
       "title": "AI 지능·학습·공정성 검증",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-R07",
@@ -324,7 +319,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "d0cf9c5e2a9b39d0dff63c8f63b040c34bf61ab2",
-  "phase": "최종314 기능·5개 자체 검증 마감·고정 성능/성장·장기 검증",
+  "source_commit": "7fc4ad54fb9cddddf1002afba2e6c23a50f6fdf7",
+  "phase": "최종314 기능·AI108/인지 자체 수용 반영·고정 성능/성장·장기 검증",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

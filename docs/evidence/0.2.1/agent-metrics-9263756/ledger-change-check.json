@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "kind": "승인3개 원장 변경·선행 닫힘 작은 검증",
+  "baseCommit": "b979949df0b5ba3cd7c3b998c3d500545f02e523",
+  "ledgerEvidenceCommit": "7fc4ad54fb9cddddf1002afba2e6c23a50f6fdf7",
+  "baseLedgerSha256": "d896fa5444e0011dded8890c5a71ab5c3b93bb8680d029bc421ca5d2f3a8e78b",
+  "updatedLedgerSha256": "b92bf2f69c5dcbe53c0f991b3882995a2a213783edfbebe6265ebd7599f338b6",
+  "changedIds": [
+    "V021-L03",
+    "V021-L04",
+    "V021-L07"
+  ],
+  "onlyChangedTaskFields": [
+    "status",
+    "evidence"
+  ],
+  "unchangedOtherTaskRows": 108,
+  "donePromotions": [
+    "V021-L04"
+  ],
+  "after": {
+    "V021-L03": "validated",
+    "V021-L04": "done",
+    "V021-L07": "validated"
+  },
+  "counts": {
+    "done": 50,
+    "validated": 55,
+    "in_progress": 6,
+    "planned": 0,
+    "blocked": 0
+  },
+  "completionPercent": 45.0,
+  "ownAcceptance": 105,
+  "ownAcceptancePercent": 94.6,
+  "canonicalRequirementsDependenciesQuestionsAndInvariantsUnchanged": true,
+  "stillInProgress": [
+    "V021-T04",
+    "V021-T06",
+    "V021-H06",
+    "V021-H09",
+    "V021-L05",
+    "V021-Z04"
+  ],
+  "localGameExecutions": 0,
+  "largeRawReanalysisOrGzip": false,
+  "compileOrProductFingerprintRun": false,
+  "planValidatorInvocations": 1,
+  "progressGeneratedFromCommittedLedger": true
+}

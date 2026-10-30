@@ -14,8 +14,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 9759,
-      "sha256": "402e96aab276ecc70429ae3305f3e1d89b0263d92e09a694dbd528a0b382e861"
+      "bytes": 9842,
+      "sha256": "88e47bb8a05bb2b65b737e890481f3ac0b24aca1a7b2d00a66565fadbbb70d31"
     },
     {
       "path": "acceptance-approved.json",
@@ -113,6 +113,11 @@
       "sha256": "7638ec0d2f77e3be613aaecbd8008ec9f1f061c4b37dc7e780857a7fc2674faa"
     },
     {
+      "path": "ledger-change-check.json",
+      "bytes": 1298,
+      "sha256": "57587ca422eb91d3de833a6cced202ff4ffdc3f9d85e4a68d16c99e6ba4071b7"
+    },
+    {
       "path": "overlap-78.first-observation.json",
       "bytes": 19635,
       "sha256": "f0f982b70886c3477dea966dc7aa20dd01b93d9a95c5b8ca4a33b8a5d8b77a05"
@@ -121,6 +126,11 @@
       "path": "pending-plan.original.json",
       "bytes": 299,
       "sha256": "fbc43182e094a33d63e9d31a0232a8fe430704be22ed6b11dfa201f7d6a4c843"
+    },
+    {
+      "path": "plan-validation.approved.json",
+      "bytes": 346,
+      "sha256": "79d12a6bad5b9bed96313cae035ba0f5c67343f251f4c1bed7692d9af61bdf89"
     },
     {
       "path": "plan.json",
@@ -191,5 +201,18 @@
     "other108TaskRowsUnchanged": true,
     "largeMeasurementArtifactsRehashedOrRewritten": false,
     "collectionAndInitialAnalysisLedgerChanged": false
+  },
+  "approvedLedgerValidation": {
+    "validatorInvocations": 1,
+    "pureNegativeCases": 11,
+    "gameTestsExecuted": false,
+    "ledgerSourceCommit": "7fc4ad54fb9cddddf1002afba2e6c23a50f6fdf7",
+    "counts": {
+      "done": 50,
+      "validated": 55,
+      "in_progress": 6,
+      "planned": 0,
+      "blocked": 0
+    }
   }
 }

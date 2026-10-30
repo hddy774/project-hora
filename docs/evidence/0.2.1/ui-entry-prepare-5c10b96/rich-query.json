@@ -1,0 +1,67 @@
+{
+  "selection": "query",
+  "total": 12,
+  "failed": 0,
+  "results": [
+    {
+      "name": "combat public: command replay paid cooldown and saved continuation preserve actual receipts and query purity",
+      "passed": true,
+      "ms": 1731
+    },
+    {
+      "name": "INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow",
+      "passed": true,
+      "ms": 1004
+    },
+    {
+      "name": "INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory",
+      "passed": true,
+      "ms": 512
+    },
+    {
+      "name": "INV-004/006/018 public cultivation\u00B7actual time/source debit/mastery/save/query purity",
+      "passed": true,
+      "ms": 704
+    },
+    {
+      "name": "INV-009/015 rich query: voluntary guard names a person while combat cooldown names a receipt",
+      "passed": true,
+      "ms": 193
+    },
+    {
+      "name": "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+      "passed": true,
+      "ms": 227
+    },
+    {
+      "name": "INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations",
+      "passed": true,
+      "ms": 191
+    },
+    {
+      "name": "INV-009/015 rich query: delivered social requests, consented assessment and observed oath receipts",
+      "passed": true,
+      "ms": 867
+    },
+    {
+      "name": "INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context",
+      "passed": true,
+      "ms": 340
+    },
+    {
+      "name": "INV-009/016 rich query: actual recipes and stale personal resource/appraisal snapshots",
+      "passed": true,
+      "ms": 237
+    },
+    {
+      "name": "INV-007/010 rich query: action equipment policy history mapping and detached snapshots",
+      "passed": true,
+      "ms": 405
+    },
+    {
+      "name": "INV-009/010 rich query: cached people and places precede hidden truth projection",
+      "passed": true,
+      "ms": 234
+    }
+  ]
+}

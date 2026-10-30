@@ -111,16 +111,18 @@ public sealed partial class GameWorld
             case ActionKind.Breakthrough:
                 RequireAction(CultivationEngine.ActiveAttempt(metadata) && metadata.PendingTrial is null &&
                     long.TryParse(metadata.Attempt!.Id, NumberStyles.None, CultureInfo.InvariantCulture, out var attemptId) &&
-                    person.ActionTarget == attemptId && data == metadata.Attempt.Path && person.ActionRevision == metadata.Attempt.LawRevision &&
+                    attemptId > 0 && attemptId < state.NextId && person.ActionTarget == attemptId && data == metadata.Attempt.Path && person.ActionRevision == metadata.Attempt.LawRevision &&
                     person.Due >= metadata.Attempt.Due, $"person {person.Id} active formation");
                 break;
             case ActionKind.Trial:
                 RequireAction(metadata.PendingTrial is { } trial && person.Realm == Realm.Tribulation &&
-                    person.PendingLayer == trial.TargetLayer && person.Due >= trial.Due,
+                    person.PendingLayer == trial.TargetLayer && person.Due >= trial.Due && metadata.Structure is TribulationStructure trials &&
+                    (trials.CompletedTrials & (1 << (trial.Completion ? 9 : trial.TargetLayer - 1))) == 0,
                     $"person {person.Id} actual pending trial");
                 break;
             case ActionKind.Martial:
-                RequireAction(metadata.PendingTrial is null && !CultivationEngine.ActiveAttempt(metadata) && person.Martial < 10,
+                RequireAction(metadata.PendingTrial is null && !CultivationEngine.ActiveAttempt(metadata) && person.Martial < 10 &&
+                    PeopleActionError(person, "martial") is null,
                     $"person {person.Id} independent martial work");
                 break;
             case ActionKind.Travel:

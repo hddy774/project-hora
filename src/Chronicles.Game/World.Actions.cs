@@ -205,14 +205,17 @@ public sealed partial class GameWorld
             q.Place == p.Place && Month - q.Born >= 60 && (!p.Beliefs.TryGetValue($"pupil:{q.Id}:entry", out var progress) ||
                 int.Parse(progress.Value, CultureInfo.InvariantCulture) < 100));
         if (child is not null && p.Understanding.GetValueOrDefault("entry") > 0)
-        { p.Goal = "양육·교육"; p.Reason = "후손 입문 지식 전수"; Start(p, "teach", child.Id, "entry"); return; }
+        {
+            if (Start(p, "teach", child.Id, "entry") is null)
+            { p.Goal = "양육·교육"; p.Reason = "후손 입문 지식 전수"; return; }
+        }
         if (p.LessonRequests.FirstOrDefault(r => p.Understanding.GetValueOrDefault(r.Knowledge) > 0) is { } request && p.Personality[4] >= 40)
         {
             if (Start(p, "teach", request.Pupil, request.Knowledge) is null)
             { p.LessonRequests.Remove(request); p.Goal = "전수·협력"; p.Reason = "실제 배움 요청에 동의·교육 시간 예약"; return; }
         }
         var needsMethod = p.Realm == Realm.Mortal ? p.Understanding.GetValueOrDefault("entry") == 0 :
-            p.Realm > Realm.Qi && !Catalog.Paths.Any(path => path.Realm == p.Realm && p.Understanding.GetValueOrDefault(path.Id) > 0);
+            !Catalog.Paths.Any(path => path.Realm == p.Realm && p.Understanding.GetValueOrDefault(path.Id) > 0);
         if (needsMethod)
         {
             var teacher = p.ObservedPeople.Values.FirstOrDefault(q => q.Id != p.Id && q.Place == p.Place);

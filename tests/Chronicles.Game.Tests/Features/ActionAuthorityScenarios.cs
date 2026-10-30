@@ -78,6 +78,11 @@ public sealed class ActionAuthorityCorruptScenario : IFeatureScenario
             var result = world.Execute(CultivationAdapterFixture.Command(actor, "wait", marker));
             CultivationFixture.Check(!result.Accepted && world.StateHash() == initial, "public marker forgery is an ordinary atomic rejection");
         }
+        var replay = world.Checkpoint(); var trialPerson = replay.People.Single(p => p.Id == actor);
+        WorldScenarioFixtures.SetCultivation(replay, trialPerson, Realm.Tribulation);
+        replay.Cultivation[trialPerson.BodyId] = replay.Cultivation[trialPerson.BodyId] with { PendingTrial = new(1, false, 1) };
+        trialPerson.Action = ActionKind.Trial; trialPerson.PendingLayer = 1; trialPerson.Due = 1;
+        ActionAuthorityFixture.Reject(replay, "an already completed trial bit cannot become a fresh saved pending action");
     }
 }
 
@@ -177,5 +182,32 @@ public sealed class ActionAuthorityCombatRetreatScenario : IFeatureScenario
         world.AdvanceTo(3); resumed.AdvanceTo(3);
         CultivationFixture.Check(world.Checkpoint().People[1].Place == 1 && world.StateHash() == resumed.StateHash(),
             "retained receipt supports actual saved arrival after combat occupancy expiry");
+    }
+}
+
+public sealed class ActionAuthorityQiMethodScenario : IFeatureScenario
+{
+    public string Name => "INV-008/017/024 H10 action owner: a Qi actor without a current method requests real teaching before a bounded plan";
+    public void Run()
+    {
+        var world = GameWorld.Create(42, new Dictionary<string, long> { ["birth.enabled"] = 0, ["ecology.foodUse"] = 0,
+            ["ecology.disasterChance"] = 0, ["ai.planBudget"] = 1 });
+        CultivationAdapterFixture.Accepted(world, 0, "create", "공법을 찾는 연기 수행자");
+        var state = world.Checkpoint(); var actor = state.People[^1];
+        WorldScenarioFixtures.SetCultivation(state, actor, Realm.Qi);
+        // A declared initial transfer of an existing finite stack, never a new stock or money origin.
+        var food = state.Items.First(i => i.Definition == "food"); food.Owner = actor.Id;
+        foreach (var metadata in state.Inventory.Metadata.Where(m => m.Item == food.Id)) metadata.Custodian = actor.Id;
+        foreach (var other in state.People.Where(p => p.Id != actor.Id)) { other.Action = ActionKind.Wait; other.Due = 100; }
+        world = GameWorld.Restore(state); var initialStock = state.Items.Where(i => i.Definition == "food").Sum(i => i.Quantity);
+        world.AdvanceTo(1); state = world.Checkpoint(); actor = state.People.Single(p => p.Id == actor.Id);
+        CultivationFixture.Check(actor.Action == ActionKind.Wait && state.People.Where(p => p.Id != actor.Id)
+            .Any(teacher => teacher.LessonRequests.Any(r => r.Pupil == actor.Id && r.Knowledge == "path.1.0")) &&
+            actor.Journal.Any(e => e.Kind == "배움 요청" && e.Actor == actor.Id),
+            "actual Qi method absence reaches an encountered teacher instead of silently selecting unexecutable cultivation");
+        CultivationFixture.Check(actor.Understanding.GetValueOrDefault("path.1.0") == 0 &&
+            state.Items.Where(i => i.Definition == "food").Sum(i => i.Quantity) == initialStock,
+            "requesting a method grants no comprehension or fabricated supply");
+        Invariants.Validate(state);
     }
 }

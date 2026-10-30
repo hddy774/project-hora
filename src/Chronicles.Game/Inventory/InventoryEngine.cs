@@ -30,6 +30,8 @@ public static partial class InventoryEngine
             if (command.Actor != 0) PersonAt(state, command.Actor);
             var subject = command switch
             {
+                ReserveInventoryMaterials c => ReserveExternal(state, c), ReserveInventoryPhysical c => ReserveExternalPhysical(state, c),
+                ConsumeInventoryAssets c => ConsumeExternal(state, c), ReleaseInventoryAssets c => ReleaseExternal(state, c),
                 SplitInventoryItem c => Split(state, c), MergeStacks c => Merge(state, c), StoreItem c => Store(state, c),
                 TransferOwnership c => Transfer(state, c), GrantUse c => Grant(state, c), SetCustodian c => Custody(state, c),
                 EquipItem c => Equip(state, c), UnequipItem c => Unequip(state, c), BindItem c => Bind(state, c),
@@ -41,7 +43,7 @@ public static partial class InventoryEngine
                 InstallArray c => Install(state, c), MaintainArray c => Maintain(state, c), DismantleArray c => Dismantle(state, c),
                 OfferItem c => Offer(state, c), WithdrawOffer c => Withdraw(state, c), BuyItem c => Buy(state, c),
                 PlaceBid c => Bid(state, c), BeginTransport c => Transport(state, c), FinishTransport c => Delivery(state, c),
-                SettleInventory => Settle(state), _ => throw new RuleViolation("Unknown inventory command.")
+                SettleInventory c => Settle(state, c.IncludeTransport), _ => throw new RuleViolation("Unknown inventory command.")
             };
             state.Revision = checked(state.Revision + 1);
             state.Ledger.Receipts.Add(command.Id, new(signature, subject, "Accepted."));
@@ -145,7 +147,7 @@ public static partial class InventoryEngine
     {
         var item = Accessible(state, command.Actor, command.Item);
         Require(command.Quantity > 0 && command.Quantity < item.Quantity, "Split quantity must leave both stacks nonempty.");
-        Require(InventoryDefinitions.Definition(item.Definition).Item.Capacity == 0, "Containers are individual physical items.");
+        Require(InventoryDefinitions.Definition(item.Definition).Item.Capacity == 0 && InventoryDefinitions.Definition(item.Definition).Item.Kind != ItemKind.Book, "Containers are individual physical items.");
         return SplitItem(state, item, command.Quantity).Id;
     }
     private static Item SplitItem(InventoryState state, Item item, int quantity)
@@ -172,6 +174,7 @@ public static partial class InventoryEngine
     {
         var target = Accessible(state, command.Actor, command.Target); var source = Accessible(state, command.Actor, command.Source);
         Require(target.Id != source.Id && InventoryDefinitions.Definition(target.Definition).Item.Capacity == 0 &&
+            InventoryDefinitions.Definition(target.Definition).Item.Kind != ItemKind.Book &&
             target.Definition == source.Definition && target.Owner == source.Owner && target.Place == source.Place &&
             target.Container == source.Container && target.Quality == source.Quality && target.Damage == source.Damage &&
             target.Defects == source.Defects && target.BoundSoul == source.BoundSoul && target.Source == source.Source &&

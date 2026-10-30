@@ -35,7 +35,15 @@ public sealed class InventoryState
         if (BaseFingerprint.Length == 0 || BaseFingerprint != InventoryEngine.WorldFingerprint(world))
             throw new InvalidOperationException("Inventory candidate is stale; create it from the current world.");
         var snapshot = Copy(this);
-        world.Items = snapshot.Items; world.People = snapshot.People; world.Materials = snapshot.Materials;
+        if (!world.People.Select(p => p.Id).SequenceEqual(snapshot.People.Select(p => p.Id)))
+            throw new InvalidOperationException("Inventory candidates cannot create, reorder, or remove people.");
+        foreach (var pair in world.People.Zip(snapshot.People))
+        {
+            // Apply only fields this domain owns, preserving the objects held by the world's monthly actor loop.
+            pair.First.Money = pair.Second.Money; pair.First.Health = pair.Second.Health; pair.First.Work = pair.Second.Work;
+            pair.First.Skills = pair.Second.Skills; pair.First.Equipment = pair.Second.Equipment;
+        }
+        world.Items = snapshot.Items; world.Materials = snapshot.Materials;
         world.NextId = snapshot.NextId; world.Revision = snapshot.Revision;
         return snapshot.Ledger;
     }
@@ -59,6 +67,7 @@ public sealed class InventoryState
 /// <summary>Save this alongside GameState; it stores no second copy of physical items or money.</summary>
 public sealed class InventoryLedger
 {
+    public bool Initialized { get; set; }
     public int BaseCarryCapacity { get; set; } = 500;
     public int ProductionWork { get; set; } = 100;
     public int ProfessionalWork { get; set; } = 100;
@@ -123,6 +132,7 @@ public sealed class ProductionJob
     public long Due { get; set; }
     public long Reservation { get; set; }
     public long Labor { get; set; }
+    public long KnowledgeActivity { get; set; }
     public long Target { get; set; }
     public long Source { get; set; }
     public int OutputQuantity { get; set; }
@@ -154,6 +164,9 @@ public sealed class InventoryContract
     public long Id { get; set; }
     public string Kind { get; set; } = "";
     public string Status { get; set; } = "open";
+    public string AdvertisedDefinition { get; set; } = "";
+    public string AdvertisedName { get; set; } = "";
+    public int AdvertisedQuantity { get; set; }
     public long Seller { get; set; }
     public long Buyer { get; set; }
     public long Carrier { get; set; }
@@ -189,6 +202,10 @@ public sealed record InventoryReceipt(string Signature, long Subject, string Mes
 public sealed record InventoryResult(bool Accepted, string Message, InventoryState State, long Subject = 0, bool Replayed = false);
 
 public abstract record InventoryCommand(string Id, long Actor);
+public sealed record ReserveInventoryMaterials(string Id, long Actor, string Purpose, IReadOnlyDictionary<string, int> Materials) : InventoryCommand(Id, Actor);
+public sealed record ReserveInventoryPhysical(string Id, long Actor, string Purpose, long Item, int Quantity) : InventoryCommand(Id, Actor);
+public sealed record ConsumeInventoryAssets(string Id, long Actor, long Reservation) : InventoryCommand(Id, Actor);
+public sealed record ReleaseInventoryAssets(string Id, long Actor, long Reservation) : InventoryCommand(Id, Actor);
 public sealed record SplitInventoryItem(string Id, long Actor, long Item, int Quantity) : InventoryCommand(Id, Actor);
 public sealed record MergeStacks(string Id, long Actor, long Target, long Source) : InventoryCommand(Id, Actor);
 public sealed record StoreItem(string Id, long Actor, long Item, long Container = 0, bool Ground = false) : InventoryCommand(Id, Actor);
@@ -205,7 +222,7 @@ public sealed record ReleaseLabor(string Id, long Actor, long Reservation) : Inv
 public sealed record StartProduction(string Id, long Actor, string Recipe, long Due, int LaborUnits = 100, long Facility = 0,
     int FacilityCapacity = 100) : InventoryCommand(Id, Actor);
 public sealed record BeginProduction(string Id, long Actor, long Job) : InventoryCommand(Id, Actor);
-public sealed record FinishProduction(string Id, long Actor, long Job, bool Succeeded = true) : InventoryCommand(Id, Actor);
+public sealed record FinishProduction(string Id, long Actor, long Job, bool Succeeded = true, bool AwardSkill = true) : InventoryCommand(Id, Actor);
 public sealed record CancelProduction(string Id, long Actor, long Job) : InventoryCommand(Id, Actor);
 public sealed record ExtractResource(string Id, long Actor, long Source, int Quantity, long Due, int LaborUnits = 100) : InventoryCommand(Id, Actor);
 public sealed record ConsumeItem(string Id, long Actor, long Item) : InventoryCommand(Id, Actor);
@@ -224,4 +241,4 @@ public sealed record BeginTransport(string Id, long Actor, long Item, long Carri
     long Due, long Fee, bool RouteAllowed, bool CarrierConsented = false, int LaborUnits = 100) : InventoryCommand(Id, Actor);
 public sealed record FinishTransport(string Id, long Actor, long Contract, bool Delivered) : InventoryCommand(Id, Actor);
 /// <summary>System command: call after updating Month and life/place authority; settles all due offers deterministically.</summary>
-public sealed record SettleInventory(string Id) : InventoryCommand(Id, 0);
+public sealed record SettleInventory(string Id, bool IncludeTransport = true) : InventoryCommand(Id, 0);

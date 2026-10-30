@@ -95,9 +95,20 @@ public static partial class InventoryEngine
             var reserved = state.Ledger.Jobs.Where(j => j.Source == source.Id && j.Status is "reserved" or "processing").Sum(j => (long)j.OutputQuantity);
             Ensure(reserved <= source.Remaining, "Natural stock is overcommitted.");
         }
+        var committedReservations = state.Ledger.Jobs.Where(j => j.Status is "reserved" or "processing").Select(j => j.Reservation)
+            .Concat(state.Ledger.Contracts.Where(c => c.Status == "open").Select(c => c.Reservation)).ToArray();
+        var committedLabor = state.Ledger.Jobs.Where(j => j.Status is "reserved" or "processing").Select(j => j.Labor)
+            .Concat(state.Ledger.Contracts.Where(c => c.Status == "open" && c.Labor != 0).Select(c => c.Labor)).ToArray();
+        Ensure(committedReservations.Distinct().Count() == committedReservations.Length && committedLabor.Distinct().Count() == committedLabor.Length,
+            "An asset or labor reservation backs multiple independent commitments.");
         foreach (var job in state.Ledger.Jobs)
         {
             PersonAt(state, job.Actor, false);
+            Ensure(InventoryDefinitions.Recipes.ContainsKey(job.Recipe) || job.Recipe is "repair" or "extraction" or "medical-treatment" or "appraisal" or "exploration" or "array-maintenance",
+                "Unknown production process in saved state.");
+            Ensure((job.Source != 0) == (job.Recipe == "extraction") && (job.Source == 0 || (job.OutputQuantity > 0 && state.Ledger.Sources.Any(s => s.Id == job.Source))),
+                "Extraction lacks an actual finite source or positive quantity.");
+            Ensure(job.Inputs.Distinct().Count() == job.Inputs.Count, "Production input was reserved twice.");
             Ensure(job.Status is "reserved" or "processing" or "completed" or "cancelled" or "failed", "Unknown production status.");
             Ensure(state.Ledger.Reservations.Any(r => r.Id == job.Reservation) && state.Ledger.Labor.Any(l => l.Id == job.Labor), "Production lacks reservations.");
             if (job.Status is "reserved" or "processing")
@@ -129,6 +140,13 @@ public static partial class InventoryEngine
             Ensure(item.Owner == array.Owner && item.Container == 0 && item.Place == array.Place &&
                 InventoryDefinitions.Definition(item.Definition).Item.Kind == ItemKind.Array, "Installed array lost its actual physical item.");
         }
+        foreach (var binding in state.Ledger.Bindings)
+        {
+            var item = state.Items.SingleOrDefault(i => i.Id == binding.Item);
+            Ensure(binding.Soul > 0 && binding.Established <= state.Month && !string.IsNullOrWhiteSpace(binding.Evidence) &&
+                (item is null || item.BoundSoul == binding.Soul), "Formation contract lost its evidence or soul binding.");
+        }
+        Ensure(state.Ledger.Bindings.Select(b => b.Item).Distinct().Count() == state.Ledger.Bindings.Count, "One physical item has competing formation bindings.");
         Ensure(state.Ledger.Effects.Select(e => e.Cause).Distinct(StringComparer.Ordinal).Count() == state.Ledger.Effects.Count, "An effect cause was applied twice.");
         foreach (var material in state.Materials)
         {

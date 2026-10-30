@@ -1,10 +1,12 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Chronicles.Game.Inventory;
 
 /// <summary>The inventory aggregate. Items and people are the same authoritative models used by GameState.</summary>
 public sealed class InventoryState
 {
+    private static readonly JsonSerializerOptions CopyOptions = new() { PreferredObjectCreationHandling = JsonObjectCreationHandling.Populate };
     public string BaseFingerprint { get; set; } = "";
     public long Month { get; set; }
     public long NextId { get; set; } = 1;
@@ -40,10 +42,16 @@ public sealed class InventoryState
 
     internal static InventoryState Copy(InventoryState state)
     {
-        var copy = JsonSerializer.Deserialize<InventoryState>(JsonSerializer.SerializeToUtf8Bytes(state))
+        var copy = JsonSerializer.Deserialize<InventoryState>(JsonSerializer.SerializeToUtf8Bytes(state), CopyOptions)
             ?? throw new InvalidDataException("Empty inventory state.");
         copy.Materials = new(copy.Materials, StringComparer.Ordinal);
         copy.Ledger.Receipts = new(copy.Ledger.Receipts, StringComparer.Ordinal);
+        foreach (var person in copy.People)
+        {
+            person.Skills = new(person.Skills, StringComparer.Ordinal);
+            person.Understanding = new(person.Understanding, StringComparer.Ordinal);
+            person.Beliefs = new(person.Beliefs, StringComparer.Ordinal);
+        }
         return copy;
     }
 }

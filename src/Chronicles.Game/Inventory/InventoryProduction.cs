@@ -152,7 +152,8 @@ public static partial class InventoryEngine
         else if (command.Succeeded && job.Recipe == "array-maintenance")
         {
             var array = state.Ledger.Arrays.Single(a => a.Id == job.Target);
-            array.Condition = Math.Min(100, array.Condition + 25); array.PaidUntil = checked(state.Month + 12); array.Active = true;
+            Require(IntactArray(state, array), "Array frame must be repaired before funded upkeep can activate it.");
+            array.Condition = Math.Min(100 - ItemAt(state, array.Item).Damage, array.Condition + 25); array.PaidUntil = checked(state.Month + 12); array.Active = true;
             state.Ledger.Effects.Add(new($"array:{array.Id}:job:{job.Id}", array.Place, "qi.place", 10, state.Month, array.PaidUntil));
             state.Ledger.Effects.Add(new($"array:{array.Id}:defense:job:{job.Id}", array.Place, "defense.place", 10, state.Month, array.PaidUntil));
             subject = array.Id;
@@ -285,9 +286,15 @@ public static partial class InventoryEngine
         Require(array is not null && array.Owner == actor && array.Place == PersonAt(state, actor).Place, "Array is absent, remote, or not owned.");
         return array!;
     }
+    private static bool IntactArray(InventoryState state, ArrayInstallation array)
+    {
+        var item = ItemAt(state, array.Item);
+        return item.Damage < 100 && (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0;
+    }
     private static long Maintain(InventoryState state, MaintainArray command)
     {
         var array = ArrayAt(state, command.Actor, command.Installation);
+        Require(IntactArray(state, array), "Array frame requires physical repair before upkeep.");
         Require(!state.Ledger.Jobs.Any(j => j.Target == array.Id && j.Recipe == "array-maintenance" && j.Status is "reserved" or "processing"), "Array maintenance is already committed.");
         WorkDuration(state, command.Due, 100, state.Ledger.ProfessionalWork);
         var labor = AddLabor(state, command.Actor, "array-maintenance", state.Month, command.Due, 100);

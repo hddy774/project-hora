@@ -441,5 +441,29 @@ public sealed class InventoryTimingAndArrayDamageScenario : IFeatureScenario
         InventoryFixture.Accept(ref state, new DamageItem("break-array", 1, item, 100));
         InventoryFixture.Check(InventoryEngine.ActiveEffects(state, 0, "qi.place").Count == 0 && !state.Ledger.Arrays.Single().Active,
             "Destroyed array kept its live contribution until a later settlement.");
+        InventoryFixture.Add(state, "resource.02.0");
+        InventoryFixture.Reject(state, new MaintainArray("cannot-fuel-broken-frame", 1, array, 3));
+    }
+}
+
+
+public sealed class InventoryOrdinalSaveScenario : IFeatureScenario
+{
+    public string Name => "INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); var item = InventoryFixture.Add(state, "food", 2);
+        InventoryFixture.Person(state, 1).Skills["é"] = 2;
+        InventoryFixture.Person(state, 1).Skills["e\u0301"] = 3;
+        var previous = System.Globalization.CultureInfo.CurrentCulture;
+        try
+        {
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
+            InventoryFixture.Accept(ref state, new SplitInventoryItem("é", 1, item, 1));
+            InventoryFixture.Accept(ref state, new MergeStacks("e\u0301", 1, item, state.Items.Single(i => i.Id != item).Id));
+            InventoryFixture.Check(state.Ledger.Receipts.Count == 2 && InventoryFixture.Person(state, 1).Skills.Count == 2,
+                "Culture collapsed distinct stable keys during candidate copying.");
+        }
+        finally { System.Globalization.CultureInfo.CurrentCulture = previous; }
     }
 }

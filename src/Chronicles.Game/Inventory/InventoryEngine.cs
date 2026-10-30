@@ -19,7 +19,8 @@ public static partial class InventoryEngine
         ArgumentNullException.ThrowIfNull(input); ArgumentNullException.ThrowIfNull(command);
         var signature = command.GetType().Name + ":" + JsonSerializer.Serialize(command, command.GetType());
         if (string.IsNullOrWhiteSpace(command.Id)) return new(false, "Command ID is required.", input);
-        if (input.Ledger.Receipts.TryGetValue(command.Id, out var receipt))
+        var receipt = input.Ledger.Receipts.FirstOrDefault(entry => string.Equals(entry.Key, command.Id, StringComparison.Ordinal)).Value;
+        if (receipt is not null)
             return receipt.Signature == signature ? new(true, receipt.Message, input, receipt.Subject, true)
                 : new(false, "Command ID already belongs to a different request.", input);
         try

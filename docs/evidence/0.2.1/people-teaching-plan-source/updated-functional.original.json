@@ -1,0 +1,12 @@
+{
+  "selection": "people teaching public",
+  "total": 1,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests",
+      "passed": true,
+      "ms": 1587
+    }
+  ]
+}

@@ -5261,7 +5261,7 @@
         "V021-K08"
       ],
       "acceptance": "H01 기준선과 EX-01\\~06 확장 비교·예열/측정 상태 분리·실제 지연 표본·채택/기각/재검토 근거",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5276,6 +5276,12 @@
           "path": "docs/evidence/0.2.1/progress-acceptance.json",
           "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
           "note": "기능 개발 후 수행할 EX-01~06 비교·예열/측정 분리·지연 표본·채택/기각/재검토 근거가 남음."
+        },
+        {
+          "scope": "루트 승인 자체 수용·선행 마감: V021-H06",
+          "path": "docs/evidence/0.2.1/execution-41111655023/acceptance-approved.json",
+          "source": "19724b54c80614546625ec8ec73515f4793a6e96",
+          "note": "실제 EX-01~06의 고정 소스·fixture/명령·독립 예열/측정·정수 원시 지연·할당/준비/전체 비용·출력 동일성과 후보별 보류/기각 결정을 루트가 승인했다. 전체 제품 성능·릴리스 수용과 분리하며 비교 원본174/제품지문4e228을 후속 런타임 소스로 재라벨하지 않는다."
         }
       ],
       "inv_ids": [
@@ -5380,7 +5386,7 @@
         "V021-H06"
       ],
       "acceptance": "스칼라 정답·배치 전체 비용·임시 출력/부분 실패/낡은 입력 폐기·한 번 적용, 네이티브 도입 의무 없음",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5395,6 +5401,12 @@
           "path": "docs/evidence/0.2.1/progress-acceptance.json",
           "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
           "note": "현재 관리 C# 스칼라 기준은 존재함. 배치 전체 비용·정답/부분 실패·낡은 입력 폐기와 조건부 최적화 채택 판단의 측정 근거가 남음. 네이티브/SIMD 도입을 의무로 세지 않음."
+        },
+        {
+          "scope": "루트 승인 자체 수용·선행 마감: V021-H09",
+          "path": "docs/evidence/0.2.1/execution-41111655023/acceptance-approved.json",
+          "source": "19724b54c80614546625ec8ec73515f4793a6e96",
+          "note": "스칼라 정답·전체 배치/변환/검증/게시 비용·부분 실패/미지원 대체, 기존314 기능 근거의 낡은 입력/중복 적용 거부를 루트가 승인했다. 현재 SIMD 기본 채택은 기각하고 스칼라를 유지한다. 네이티브 도입 의무나 런타임 변경/롤백을 추가하지 않는다."
         }
       ],
       "inv_ids": [

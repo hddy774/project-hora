@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  Restored /home/runner/work/project-hora/project-hora/tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj (in 121 ms).
+  Restored /home/runner/work/project-hora/project-hora/src/Chronicles.Core/Chronicles.Core.csproj (in 106 ms).
+  Restored /home/runner/work/project-hora/project-hora/src/Chronicles.Game/Chronicles.Game.csproj (in 121 ms).
+  Restored /home/runner/work/project-hora/project-hora/src/Chronicles.Hosting/Chronicles.Hosting.csproj (in 121 ms).
+  Chronicles.Core -> /home/runner/work/_temp/v021-execution-41111655023-1-EX-01/build/bin/Chronicles.Core/release/Chronicles.Core.dll
+  Chronicles.Game -> /home/runner/work/_temp/v021-execution-41111655023-1-EX-01/build/bin/Chronicles.Game/release/Chronicles.Game.dll
+  Chronicles.Hosting -> /home/runner/work/_temp/v021-execution-41111655023-1-EX-01/build/bin/Chronicles.Hosting/release/Chronicles.Hosting.dll
+  Chronicles.Game.Tests -> /home/runner/work/_temp/v021-execution-41111655023-1-EX-01/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:23.27

@@ -1,0 +1,6 @@
+{
+  "measurement_exit": 0,
+  "log_exit": 0,
+  "timeout_exit_is_failure": true,
+  "completed_rows_only": "기존 CLI는 완료된 규모/반복 단위로 저장하며 중단한 현재 variant의 진행 중 raw까지 보장하지 않음"
+}

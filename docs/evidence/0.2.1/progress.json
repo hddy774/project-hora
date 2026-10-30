@@ -1,13 +1,13 @@
 {
   "total": 111,
-  "completed": 50,
-  "completion_percent": 45.0,
-  "own_acceptance_count": 105,
-  "own_acceptance_percent": 94.6,
+  "completed": 52,
+  "completion_percent": 46.8,
+  "own_acceptance_count": 107,
+  "own_acceptance_percent": 96.4,
   "counts": {
-    "done": 50,
+    "done": 52,
     "validated": 55,
-    "in_progress": 6,
+    "in_progress": 4,
     "planned": 0,
     "blocked": 0
   },
@@ -228,16 +228,6 @@
       "status": "validated"
     },
     {
-      "id": "V021-H06",
-      "title": "확장 성능 실험·지속 R&D 원장",
-      "status": "in_progress"
-    },
-    {
-      "id": "V021-H09",
-      "title": "C# 배치·SIMD·네이티브 비교 판단",
-      "status": "in_progress"
-    },
-    {
       "id": "V021-J02",
       "title": "화신 대원만 Gate·13개 자동 조건",
       "status": "validated"
@@ -319,7 +309,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "7fc4ad54fb9cddddf1002afba2e6c23a50f6fdf7",
-  "phase": "최종314 기능·AI108/인지 자체 수용 반영·고정 성능/성장·장기 검증",
+  "source_commit": "4f1c083f043b85a0449d0204253e8b0292ee0b35",
+  "phase": "최종314 기능·AI108/인지·H06/H09 자체 수용 반영·고정 성능/성장·장기 검증",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

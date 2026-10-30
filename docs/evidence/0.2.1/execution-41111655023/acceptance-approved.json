@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "kind": "루트 승인 H06/H09 자체 수용·선행 마감과 EX 후보 결정",
+  "recorded_utc": "2026-10-30T20:24:23.556302+00:00",
+  "base_commit": "4f1c083f043b85a0449d0204253e8b0292ee0b35",
+  "evidence_commit": "19724b54c80614546625ec8ec73515f4793a6e96",
+  "pull_request": "https://github.com/hddy774/project-hora/pull/204",
+  "root_authorization": "PR204 README·EX6 실제 표본/권고 검토 후 EX01/02/03/05/06 추가 기본 채택 보류·재검토, EX04 현재 SIMD 기본 채택 기각·스칼라 유지. H06/H09 자체 수용 근거 충족 승인. 이 두 작업만 validated 후 선행 닫힘을 계산한다.",
+  "changed_task_fields": [
+    "status",
+    "evidence"
+  ],
+  "changed_tasks": [
+    {
+      "id": "V021-H06",
+      "before": "in_progress",
+      "own_acceptance_state": "validated",
+      "after": "done",
+      "dependency_statuses": {
+        "V021-H04": "done",
+        "V021-H03": "done",
+        "V021-K08": "done"
+      },
+      "unfinished_dependencies": []
+    },
+    {
+      "id": "V021-H09",
+      "before": "in_progress",
+      "own_acceptance_state": "validated",
+      "after": "done",
+      "dependency_statuses": {
+        "V021-H04": "done",
+        "V021-H06": "done"
+      },
+      "unfinished_dependencies": []
+    }
+  ],
+  "closed_tasks": [
+    "V021-H06",
+    "V021-H09"
+  ],
+  "unchanged_task_rows": 109,
+  "canonical_requirements_dependencies_and_other_statuses_unchanged": true,
+  "counts": {
+    "done": 52,
+    "validated": 55,
+    "in_progress": 4,
+    "planned": 0,
+    "blocked": 0
+  },
+  "total": 111,
+  "completed": 52,
+  "completion_percent": 46.8,
+  "own_acceptance_count": 107,
+  "own_acceptance_percent": 96.4,
+  "still_in_progress": [
+    "V021-T04",
+    "V021-T06",
+    "V021-L05",
+    "V021-Z04"
+  ],
+  "decisions": [
+    {
+      "experiment": "EX-01",
+      "root_approved": true,
+      "decision": "추가 기본 채택 보류·재검토"
+    },
+    {
+      "experiment": "EX-02",
+      "root_approved": true,
+      "decision": "추가 기본 채택 보류·재검토"
+    },
+    {
+      "experiment": "EX-03",
+      "root_approved": true,
+      "decision": "추가 기본 채택 보류·재검토"
+    },
+    {
+      "experiment": "EX-04",
+      "root_approved": true,
+      "decision": "현재 SIMD 기본 채택 기각·스칼라 유지"
+    },
+    {
+      "experiment": "EX-05",
+      "root_approved": true,
+      "decision": "추가 기본 채택 보류·재검토"
+    },
+    {
+      "experiment": "EX-06",
+      "root_approved": true,
+      "decision": "추가 기본 채택 보류·재검토"
+    }
+  ],
+  "runtime_changes_applied": false,
+  "rollback_applied": false,
+  "consistent_speed_advantage_claimed": false,
+  "native_adoption_required": false,
+  "scope_boundary": {
+    "measurement_source_commit": "174e4a93f81defce44b18421629330bd280fb891",
+    "measurement_product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "measurement_workflow_run": 41111655023,
+    "measurement_runtime": ".NET 10.0.14",
+    "functional_reference_commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "functional_reference": "docs/evidence/0.2.1/invariant-final-af91fb0/functional.json",
+    "functional_result": "314/314",
+    "h09_functional_receipt": "INV-004/006/022 H09 real talent kernel: scalar/vector boundary, whole output, partial failure, stale and duplicate apply",
+    "ex01_ex02": "각2/100/1000/10000명·두 변형·독립12개월 예열/12개월 측정. EX02 실제 임신/출생·수명 사망·새 입장·슬롯 세대.",
+    "ex03_ex05_ex06": "실제2명·32개 공개 매물의 명시된 fixture/작업 범위. 10000명 AI 전체/저장/조회 성능으로 확대하지 않는다.",
+    "ex04": "actual-assess cold/warm 각각n1·직접 배치별n1. 안정적인 상위 지연 추정으로 확대하지 않는다.",
+    "artifact_limit": "각 ZIP manifest123항목 중 숨김 obj4개 누락. raw/실행DLL/PE 출처/존재119항목은 최초 수집 때 검증했으며 누락을 합성하지 않았다.",
+    "vm_limit": "각각 다른4CPU VM·일부 CPU 모델 차이·VM 사이 DLL bytes 차이·미측정 열/전원/물리호스트 부하.",
+    "runtime_followup": "후속 PGOoff 소스의 새 지문/기능/성능 근거와 이174 원본을 혼합하지 않는다.",
+    "additional_root_report": {
+      "reported_source_label": "94",
+      "reported_fingerprint_prefix": "528",
+      "result": "고정예산 네규모4개·32지표 PASS",
+      "completed_utc": "2026-10-30T20:18:45Z",
+      "attribution": "루트 통지의 약식 식별자. 원본/정확 소스 근거와 T04 최종 수용은 별도 소유 범위다."
+    }
+  },
+  "overall_product_performance_or_release_accepted_by_this_decision": false,
+  "original_measurement_files_changed": false,
+  "new_game_executions": 0,
+  "large_raw_reanalysis": false,
+  "whole_file_hash_sweep": false,
+  "gzip_rewritten": false,
+  "compilation": false,
+  "product_fingerprint_recomputed": false,
+  "historical_draft_note": "README와 review.json의49/111·원장미수정 표시는19724b5까지 초기 수집/검토 당시의 기록이다. 최신4f1c083의50/111에서 승인된 H06/H09만 반영한 현재 진행도는52/111이며 이 파일과 생성된 진행도에 명시한다.",
+  "plan_validation_report": "docs/evidence/0.2.1/execution-41111655023/plan-validation.json"
+}

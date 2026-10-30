@@ -1,0 +1,83 @@
+{
+  "observed_utc": "2026-10-30 20:09:13 UTC",
+  "scope": "GitHub REST 응답에서 아래 필드만 추출한 수집 관측이며 전체 응답/원시 성능 표본을 대체하지 않음",
+  "endpoints": [
+    "https://api.github.com/repos/hddy774/project-hora/actions/runs/41111655023",
+    "https://api.github.com/repos/hddy774/project-hora/actions/runs/41111655023/jobs?per_page=100&filter=latest"
+  ],
+  "run": {
+    "id": 41111655023,
+    "run_attempt": 1,
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "174e4a93f81defce44b18421629330bd280fb891",
+    "head_branch": "codex/v021-execution-workflow",
+    "run_started_at": "2026-10-30T19:00:47Z",
+    "created_at": "2026-10-30T19:00:47Z",
+    "updated_at": "2026-10-30T20:02:49Z",
+    "html_url": "https://github.com/hddy774/project-hora/actions/runs/41111655023"
+  },
+  "jobs": [
+    {
+      "id": 124254923059,
+      "name": "EX-06 · 고정 소스 실행 비교",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T19:00:49Z",
+      "completed_at": "2026-10-30T19:01:29Z",
+      "runner_name": "GitHub Actions 1000002440",
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124254923194,
+      "name": "EX-05 · 고정 소스 실행 비교",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T19:00:49Z",
+      "completed_at": "2026-10-30T19:01:49Z",
+      "runner_name": "GitHub Actions 1000002441",
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124254923319,
+      "name": "EX-02 · 고정 소스 실행 비교",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T19:00:50Z",
+      "completed_at": "2026-10-30T19:57:06Z",
+      "runner_name": "GitHub Actions 1000002443",
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124254923342,
+      "name": "EX-03 · 고정 소스 실행 비교",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T19:00:49Z",
+      "completed_at": "2026-10-30T19:01:50Z",
+      "runner_name": "GitHub Actions 1000002442",
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124254923348,
+      "name": "EX-01 · 고정 소스 실행 비교",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T19:01:07Z",
+      "completed_at": "2026-10-30T20:02:48Z",
+      "runner_name": "GitHub Actions 1000002445",
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124254923411,
+      "name": "EX-04 · 고정 소스 실행 비교",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T19:01:02Z",
+      "completed_at": "2026-10-30T19:03:24Z",
+      "runner_name": "GitHub Actions 1000002444",
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+	Command being timed: "timeout --signal=TERM --kill-after=30s 100m dotnet /home/runner/work/_temp/v021-execution-41111655023-1-EX-06/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll --filter INV-001/002/011 --report /home/runner/work/_temp/v021-execution-41111655023-1-EX-06/preceding-functional.json --execution-experiment EX-06 --execution-output /home/runner/work/_temp/v021-execution-41111655023-1-EX-06/raw-measurements.json --execution-source-fingerprint 4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304 --execution-listings 32 --execution-repetitions 25 --execution-warmups 2 --execution-workspace /home/runner/work/_temp/v021-execution-41111655023-1-EX-06/io"
+	User time (seconds): 8.89
+	System time (seconds): 0.26
+	Percent of CPU this job got: 140%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:06.53
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 348444
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 104285
+	Voluntary context switches: 309
+	Involuntary context switches: 157
+	Swaps: 0
+	File system inputs: 80
+	File system outputs: 184
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

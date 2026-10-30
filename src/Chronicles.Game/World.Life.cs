@@ -111,10 +111,29 @@ public sealed partial class GameWorld
         Event("출생", p.Id, mother.Id, $"{p.Name} 탄생·실제 부모/새 육신·단일 영혼 배정", $"임신 {pregnancy.Id}·법칙 r{pregnancy.LawRevision}");
     }
 
-    private void EndLife(Person p, int cause, string evidence, LifeStatus outcome = LifeStatus.Dead)
+    private sealed record LifeEndMatch(int Cause, string Evidence);
+
+    private void EndLife(Person p, int cause, string evidence, LifeStatus outcome = LifeStatus.Dead,
+        IReadOnlyList<LifeEndMatch>? actualMatches = null)
     {
         if (p.Status != LifeStatus.Alive) return;
-        var sourceRealm = p.Realm; var sourceLayer = p.Layer;
+        var sourceRealm = p.Realm; var sourceLayer = p.Layer; var sourceComplete = p.GreatPerfection;
+        var lawRevision = state.LawRevision;
+        var causeKey = FormattableString.Invariant($"life:{p.BodyId}:{Month}");
+        var matches = actualMatches ?? [new LifeEndMatch(cause, evidence)];
+        var soul = souls[p.SoulId];
+        var min = (Realm)Law("soul.minimumRealm");
+        bool Enabled(int route) => route is >= 1 and <= 12 && (Law("soul.enabledRoutes") & (1L << (route - 1))) != 0;
+        bool Eligible(int route)
+        {
+            var routeMin = route switch { 4 or 5 => Realm.Void, 6 or 7 => Realm.Integration,
+                8 or 9 => Realm.Tribulation, 10 or 11 => Realm.Mahayana, 12 => Realm.HalfImmortal, _ => min };
+            var needsComplete = route is 7 or 9 or 11 || sourceRealm == min;
+            return soul.Integrity > 0 && sourceRealm >= min && sourceRealm >= routeMin && (!needsComplete || sourceComplete);
+        }
+        var selectedRoute = matches.FirstOrDefault(match => Enabled(match.Cause) && Eligible(match.Cause))?.Cause ?? 0;
+        var matchingEvidence = string.Join(" | ", matches.Select(match => FormattableString.Invariant(
+            $"RC-{match.Cause:00}: {match.Evidence} ({(!Enabled(match.Cause) ? "비활성" : !Eligible(match.Cause) ? "자격 미달" : "적격")})")));
         ReleaseExplorationForLifeEnd(p);
         ReleaseCultivationForLifeEnd(p);
         ReleaseSlot(p);
@@ -126,16 +145,10 @@ public sealed partial class GameWorld
         if (p.Partner != 0 && people.TryGetValue(p.Partner, out var partner)) partner.Partner = 0;
         p.Partner = 0;
         if (state.Controlled == p.Id) { state.Controlled = 0; state.ViewGeneration++; }
-        var soul = souls[p.SoulId]; soul.CurrentPerson = 0;
-        var min = (Realm)Law("soul.minimumRealm");
-        var routeMin = cause switch { 4 or 5 => Realm.Void, 6 or 7 => Realm.Integration,
-            8 or 9 => Realm.Tribulation, 10 or 11 => Realm.Mahayana, 12 => Realm.HalfImmortal, _ => min };
-        var needsComplete = cause is 7 or 9 or 11 || sourceRealm == min;
-        var enabled = cause is >= 1 and <= 12 && (Law("soul.enabledRoutes") & (1L << (cause - 1))) != 0;
-        var eligible = soul.Integrity > 0 && sourceRealm >= min && sourceRealm >= routeMin && (!needsComplete || p.GreatPerfection);
+        soul.CurrentPerson = 0;
         soul.SourceRealm = sourceRealm; soul.SourceLayer = sourceLayer;
-        soul.Evidence = $"현생 {p.Id} 종료 직전 {Catalog.RealmNames[(int)sourceRealm]} {sourceLayer}층·{evidence}·법칙 r{state.LawRevision}";
-        soul.Route = enabled && eligible ? cause : 0;
+        soul.Evidence = FormattableString.Invariant($"현생 {p.Id} 종료 직전 {Catalog.RealmNames[(int)sourceRealm]} {sourceLayer}층·{evidence}·법칙 r{lawRevision}·원인키 {causeKey}·실제 일치 [{matchingEvidence}]·윤회 선택 {selectedRoute:00}");
+        soul.Route = selectedRoute;
         soul.Status = soul.Integrity == 0 ? "destroyed" : soul.Route > 0 ? "waiting" : "ended";
         soul.Ready = Month + Law("soul.crossing");
         EndPeopleLife(p);
@@ -150,7 +163,7 @@ public sealed partial class GameWorld
             p.Equipment.Clear();
         }
         PoliticsOnLifeEnded(p, heir);
-        Event(outcome == LifeStatus.Dead ? "사망" : "세계 이탈", p.Id, soul.Route, $"{p.Name} {evidence}·{(soul.Route == 0 ? "윤회 미적격" : $"RC-{soul.Route:00} 대기")}", soul.Evidence);
+        Event(outcome == LifeStatus.Dead ? "사망" : "세계 이탈", p.Id, soul.Route, $"{p.Name} {evidence}·{(soul.Route == 0 ? "윤회 미적격" : $"RC-{soul.Route:00} 대기")}", causeKey);
     }
 
     private string? Ascend(Person p)

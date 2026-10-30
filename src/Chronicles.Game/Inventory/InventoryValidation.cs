@@ -161,6 +161,9 @@ public static partial class InventoryEngine
                 (item is null || item.BoundSoul == binding.Soul), "Formation contract lost its evidence or soul binding.");
         }
         Ensure(state.Ledger.Bindings.Select(b => b.Item).Distinct().Count() == state.Ledger.Bindings.Count, "One physical item has competing formation bindings.");
+        foreach (var effect in state.Ledger.Effects.Where(e => e.ConsumptionSequence != 0))
+            Ensure(state.Ledger.Events.Any(e => e.Sequence == effect.ConsumptionSequence && e.Kind == "physical-consumption" && e.Actor == effect.Target && e.Month == effect.Start),
+                "Consumable effect lost its actual paid physical dose.");
         Ensure(state.Ledger.Effects.Select(e => e.Cause).Distinct(StringComparer.Ordinal).Count() == state.Ledger.Effects.Count, "An effect cause was applied twice.");
         foreach (var material in state.Materials)
         {

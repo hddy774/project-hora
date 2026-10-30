@@ -451,6 +451,12 @@ public sealed partial class GameWorld
         }
         return false;
     }
+    // Magnitude is basis points of current process capacity, independent of innate roots or saved progress.
+    // Start<=Month<End makes a dose taken this month available at the next monthly pulse, then expire.
+    private int InventoryGrowthBonus(Person p) => (int)Math.Min(10000, state.Inventory.Effects.Where(e => e.Target == p.Id && e.Kind == "growth" &&
+        e.Start <= Month && Month < e.End && e.ConsumptionSequence > 0 && state.Inventory.Events.Any(a =>
+            a.Sequence == e.ConsumptionSequence && a.Kind == "physical-consumption" && a.Actor == p.Id && a.Quantity == 1 &&
+            InventoryDefinitions.Definition(a.Definition).Effect == "growth")).DistinctBy(e => e.Cause).Sum(e => (long)e.Magnitude));
     private int InventoryBreakthroughBonus(Person p) => state.Inventory.Effects.Where(e => e.Target == p.Id && e.Kind == "breakthrough" &&
         e.Start <= Month && e.End > Month).DistinctBy(e => e.Cause).Sum(e => e.Magnitude);
     private void ValidateInventoryBridge()

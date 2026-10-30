@@ -1,0 +1,119 @@
+{
+  "schema": "seonro.knowledge-index-functional-proof.v1",
+  "kind": "selected-functional-source-evidence",
+  "executed_source_commit": "04908ecc3f3dd30e2b24ba85f84af9dc9d854bf9",
+  "base_commit": "2af63d897eaa3050dd738412121c8d466957d409",
+  "product_source_fingerprint": "4be2f9fc0c0092ba9b082d922febeac7cb71ad9d5bdca19e5038077a8c7b67cf",
+  "test_sources_sha256": "67f8ada6b3dbf90e7a4857ac788f693cf4e39fe11d3d3cc260b597d11262ba28",
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Core",
+      "informationalVersion": "0.2.1+04908ecc3f3dd30e2b24ba85f84af9dc9d854bf9",
+      "sha256": "1c887e4e451cb80f87ce8f3e79754b667e5f20f1f2d88d579345a29f23eb3232",
+      "bytes": 5120
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "informationalVersion": "0.2.1+04908ecc3f3dd30e2b24ba85f84af9dc9d854bf9",
+      "sha256": "796a387df5c06e939c87840dc7246932b48491b3d650ee1f5b815319487e81d0",
+      "bytes": 2255872
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "informationalVersion": "0.2.1+04908ecc3f3dd30e2b24ba85f84af9dc9d854bf9",
+      "sha256": "9c282388beea52f5201ddf8f0c718aa61b80eb672179e897c670a6f2320c3141",
+      "bytes": 23552
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "informationalVersion": "0.2.1+04908ecc3f3dd30e2b24ba85f84af9dc9d854bf9",
+      "sha256": "025d5c426da757a13b932b581ed40e263be397aa873eef9f95697a162c945b22",
+      "bytes": 1477120
+    }
+  ],
+  "configuration": "Release",
+  "sdk": "10.0.403",
+  "cpu_affinity": [
+    1
+  ],
+  "build": {
+    "command": "taskset -c 1 /workspace/.dotnet/dotnet build tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj -c Release --no-restore -v minimal",
+    "warnings": 0,
+    "errors": 0,
+    "log": "build.log",
+    "log_sha256": "597d3cb107be201652c5cafa89963394b7cd01a2a56bc92dfd86c5ea2d887c37"
+  },
+  "command_template": "taskset -c 1 /workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release [--no-build] -- --filter <selection> --report <original>",
+  "reports": [
+    {
+      "path": "knowledge-functional.json",
+      "original": "/workspace/scratch/knowledge-key-index-04908ec-knowledge.json",
+      "sha256": "10fa286ae501865f7dbceb3c75fcbad20daa180fd0765b5107c1b6a4e3a16178",
+      "selection": "knowledge",
+      "total": 32,
+      "failed": 0,
+      "compiled_names_match_source_catalog": true
+    },
+    {
+      "path": "ai-functional.json",
+      "original": "/workspace/scratch/knowledge-key-index-04908ec-ai.json",
+      "sha256": "7fdadb8ee12fc850fe8145398671118d3bad477cd9b6b0203dac44db307eeeaf",
+      "selection": "AI 수행 연결:",
+      "total": 5,
+      "failed": 0,
+      "compiled_names_match_source_catalog": true
+    },
+    {
+      "path": "evidence-functional.json",
+      "original": "/workspace/scratch/knowledge-key-index-04908ec-evidence.json",
+      "sha256": "24d0ddc8309dae5eeb749dd18a1d6e7984c3f9b402c8854243219d3f1f7796f4",
+      "selection": "감응 출처 선택:",
+      "total": 5,
+      "failed": 0,
+      "compiled_names_match_source_catalog": true
+    },
+    {
+      "path": "query-functional.json",
+      "original": "/workspace/scratch/knowledge-key-index-04908ec-query.json",
+      "sha256": "784226445d2f4235af153a78e71825f2560549f6d5bb63d0e2a01d7d3b4ef7a4",
+      "selection": "입문 준비 조회:",
+      "total": 3,
+      "failed": 0,
+      "compiled_names_match_source_catalog": true
+    },
+    {
+      "path": "oracles-functional.json",
+      "original": "/workspace/scratch/knowledge-key-index-04908ec-oracles.json",
+      "sha256": "65b079a720a0d6a5f5224c9cb166056e91d88ae428664ea812af853956d1cead",
+      "selection": "inventory owned reference:",
+      "total": 2,
+      "failed": 0,
+      "compiled_names_match_source_catalog": true
+    }
+  ],
+  "distinct_selected_scenarios": 47,
+  "new_scenario_names": 0,
+  "source_catalog_scenarios": 308,
+  "whole_functional_pass_claimed": false,
+  "measured_performance_runs": 0,
+  "growth_runs": 0,
+  "agent_metrics_runs": 0,
+  "profiling_runs": 0,
+  "product_scope": [
+    "World.KnowledgeBridge.KnowledgeFor → existing KnowledgeRuntime().Adopt(person.Id, workId, 1)",
+    "World.KnowledgeBridge.KnowledgeSource → existing KnowledgeRuntime().FindKnowledge(person.Id, workId, 1)?.SourceId"
+  ],
+  "preserved_boundaries": [
+    "Existing public Restore/Checkpoint isolation and saved KnowledgeState schema",
+    "SaveKnowledge publication timing and same-month authority visibility",
+    "Existing work/chapter/personal revision/mastery/source selection and missing lookup semantics",
+    "Existing source dedupe, actual labor/inputs, hidden personal knowledge boundary and RNG ordering",
+    "Existing fixed world oracle literals and all C# scenarios"
+  ],
+  "limitations": [
+    "Functional runner durations are not benchmark samples. No cost improvement is asserted.",
+    "Five selected reports are not a whole308-scenario report.",
+    "Internal world-owned knowledge publication/alias sharing and end-of-month deferral are outside this patch.",
+    "The base56bbfb2 whole308/308 and diagnostic profile are separate-source evidence, not measurements of this patch."
+  ]
+}

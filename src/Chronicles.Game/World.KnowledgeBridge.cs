@@ -421,16 +421,11 @@ public sealed partial class GameWorld
         error = FinishKnowledgePractice(p, activityId, successful, receipt, observation);
     partial void CancelInventoryPractice(Person p, long activityId, string sourceId) => CancelKnowledgePractice(p, activityId, sourceId);
 
-    private KnowledgeAdoption? KnowledgeFor(Person person, string workId)
-    {
-        var memory = state.Knowledge.Memories.FindLast(m => m.PersonId == person.Id && m.WorkId == workId && m.Chapter == 1);
-        if (memory is null) return null;
-        var practice = state.Knowledge.Mastery.FindLast(m => m.PersonId == person.Id && m.WorkId == workId && m.Chapter == 1)?.Mastery ?? 0;
-        return new(person.Id, workId, 1, memory.EditionId, memory.Revision, memory.Claim, memory.Comprehension, practice, memory.Belief);
-    }
+    private KnowledgeAdoption? KnowledgeFor(Person person, string workId) =>
+        KnowledgeRuntime().Adopt(person.Id, workId, 1);
 
-    private string KnowledgeSource(Person person, string workId) => state.Knowledge.Memories.FindLast(m =>
-        m.PersonId == person.Id && m.WorkId == workId && m.Chapter == 1)?.SourceId ?? "";
+    private string KnowledgeSource(Person person, string workId) =>
+        KnowledgeRuntime().FindKnowledge(person.Id, workId, 1)?.SourceId ?? "";
 
     private bool CanConsultKnowledge(Person person, string workId, long editionId) => state.Knowledge.Media.Any(m =>
         m.EditionId == editionId && !m.Destroyed && !m.Unreadable && !m.MissingChapters.Contains(1) &&

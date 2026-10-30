@@ -348,3 +348,24 @@ public sealed class PersonalSocialReceiptsProjectionScenario : IFeatureScenario
         QueryFixture.Check(before == world.StateHash(), "Social receipt queries changed authority.");
     }
 }
+
+public sealed class GuardTargetProjectionScenario : IFeatureScenario
+{
+    public string Name => "INV-009/015 rich query: voluntary guard names a person while combat cooldown names a receipt";
+    public void Run()
+    {
+        var world = GameWorld.Create(); var initial = world.Checkpoint(); var first = initial.People[0].Id; var second = initial.People[1].Id;
+        QueryFixture.Accepted(world, "possess", first);
+        QueryFixture.Accepted(world, "guard", first, second);
+        QueryFixture.Check(world.View(first).Detail!.Person.GuardTargetKind == "person" && world.View(first).Detail!.Person.ActionTarget == second,
+            "Actual voluntary allied support did not classify its known person target.");
+        QueryFixture.Accepted(world, "cancel", first);
+        QueryFixture.Accepted(world, "attack", first, second);
+        var self = world.View(first).Detail!.Person;
+        QueryFixture.Check(self.Action == "Guard" && self.GuardTargetKind == "receipt" && self.ActionData!.StartsWith("combat:", StringComparison.Ordinal),
+            "An actual combat receipt was exposed as a person target.");
+        var other = world.View(second).Detail!.Person;
+        QueryFixture.Check(other.GuardTargetKind is null && other.ActionTarget is null && other.ActionData is null,
+            "Combat receipt classification exposed another person's unobserved action context.");
+    }
+}

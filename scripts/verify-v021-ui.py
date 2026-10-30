@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Functional shell checks against a real GameSession; no profiling or load tests.
 
-Start Chronicles.Shell with --preview, then run this file. An isolated functional
-host can be selected with --url. Adapter checks replay real session replies only;
+Start Chronicles.Shell with --preview, then run this file. The default covers nine
+menus, timed bilateral social workflows and scope cleanup. --smoke-only skips the
+timed social and adapter checks. An isolated host can be selected with --url.
+Adapter checks replay real session replies only;
 they verify the JavaScript bridge and never count as domain integration evidence.
 """
 import argparse
@@ -228,6 +230,14 @@ def smoke_checks(browser):
         assert page.locator('[data-section="economy"]').count() == 1
         assert page.locator('[data-section="currency"]').count() == 1
         assert page.evaluate('() => view.economy.regions.length===0 && view.economy.naturalFlows.length===0')
+        page.evaluate('() => inspect(view.actor)')
+        page.get_by_role('button',name='경계·동료 호위',exact=True).click()
+        guard_ally = page.locator('#guardAlly option').last.get_attribute('value')
+        page.get_by_label('같은 장소로 관측한 동료').select_option(guard_ally)
+        submit(page,'경계·호위 요청')
+        assert page.evaluate("(id)=>activePerson().action==='Guard'&&activePerson().guardTargetKind==='person'&&activePerson().actionTarget===Number(id)", guard_ally)
+        page.get_by_role('button',name='작업 취소 요청',exact=True).click()
+        submit(page,'취소 요청 제출')
         social = social_workflows(page,width) if not args.smoke_only else {}
         page.get_by_role('button', name='관찰로 전환', exact=True).first.click(); settle(page)
         nav(page, '인물')
@@ -278,9 +288,9 @@ def smoke_checks(browser):
         assert not errors, errors
         assert not page.evaluate('() => document.body.scrollWidth > innerWidth')
         page.screenshot(path=str(out / f'smoke-{width}.png'), full_page=True)
-        results.append({'kind':'real_session_functional_smoke','width':width,'asset':'committed_chrome51' if args.compat else 'authoring',
+        results.append({'kind':'real_session_functional_smoke' if args.smoke_only else 'real_session_functional','width':width,'asset':'committed_chrome51' if args.compat else 'authoring',
                         'forced_legacy_dom':args.legacy_dom,'tabs':9,'javascript_errors':errors,'touch_targets_44px':True,
-                        'known_actor_switch':True,'equipment_use':True,'species_creation':True,'atomic_law_batch':True,
+                        'known_actor_switch':True,'equipment_use':True,'known_ally_guard':True,'species_creation':True,'atomic_law_batch':True,
                         'new_world_law_choice':True,'save_load':True,'native_api24_verified':False,**social})
         context.close()
     return observer_reply,play_reply

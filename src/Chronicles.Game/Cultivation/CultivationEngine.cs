@@ -348,7 +348,12 @@ public static class CultivationEngine
         if ((structure.CompletedTrials & (1 << bit)) != 0) return Reject(state, "trial-replay", "같은 소경지 겁난 재실행", "저장/명령 revision 확인");
         var risk = Math.Clamp(context.Policy.TrialRisk + state.Damage / 5 + (100 - actor.Health) * 10, 0, 10000);
         if (sample < risk) return Die(state, CultivationDeathCause.Tribulation, "소경지 실제 겁난 실패");
-        if (actor.Health <= context.Policy.TrialHealthCost) return Die(state, CultivationDeathCause.PostTribulationCollapse, "겁후 육신 회복 불가");
+        if (actor.Health <= context.Policy.TrialHealthCost)
+        {
+            var passed = state with { PendingTrial = null, Structure = structure with { CompletedTrials = structure.CompletedTrials | (1 << bit) } };
+            return Die(passed, CultivationDeathCause.PostTribulationCollapse, "겁후 육신 회복 불가") with
+            { Actor = new(Layer: trial.TargetLayer, GreatPerfection: trial.Completion, Death: CultivationDeathCause.PostTribulationCollapse) };
+        }
         return Accept(state with { PendingTrial = null, Structure = structure with { CompletedTrials = structure.CompletedTrials | (1 << bit) },
             Damage = Math.Min(10000, state.Damage + context.Policy.RecoveryPerMonth), Load = 0 },
             new(Layer: trial.TargetLayer, GreatPerfection: trial.Completion, HealthChange: -context.Policy.TrialHealthCost),
@@ -516,7 +521,7 @@ public static class CultivationEngine
         ValidPolicy(context.Policy) &&
         context.Knowledge.All(k => k.Revision >= 0 && k.Understanding is >= 0 and <= 10000 && k.Practice is >= 0 and <= 10000 && k.Error is >= 0 and <= 10000);
     private static bool ValidPolicy(CultivationPolicy policy) => policy.Revision > 0 && policy.FlowPerMonth is > 0 and <= 1000000 &&
-        policy.EntryMonths is > 0 and <= 100000000 && policy.QiMonths is >= 8 and <= 100000000 && policy.FoundationMonths is >= 8 and <= 100000000 &&
+        policy.EntryMonths is > 0 and <= 100000000 && policy.QiMonths is >= 1 and <= 100000000 && policy.FoundationMonths is >= 1 and <= 100000000 &&
         policy.UpperDurationPercent is >= 100 and <= 1000 && policy.StabilizationMonths is >= 1 and <= 1200 && policy.ConversionMonths is >= 1 and <= 1200 &&
         policy.MartialMonthsPerStage is > 0 and <= 100000000 && policy.MartialMaximumYears is >= 80 and <= 600 && policy.ReserveLimitMonths is >= 0 and <= 1200 &&
         policy.MinimumUnderstanding is > 0 and <= 10000 && policy.MinimumFormation is >= 0 and <= 10000 &&

@@ -23,9 +23,14 @@ jobs:
         run: dotnet build src/Chronicles.Shell -c Release
       - uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true
         with:
           name: product-evidence
           path: artifacts/
+          retention-days: 3
+      - name: Preserve results in job summary
+        if: always()
+        run: cat artifacts/product-tests.json >> "$GITHUB_STEP_SUMMARY"
   windows-regression:
     runs-on: windows-latest
     steps:
@@ -47,12 +52,15 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+      - uses: android-actions/setup-android@v3
       - run: dotnet workload install android
       - name: Android SDK platform
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - name: Build APK
-        run: dotnet build src/Chronicles.Android -c Release -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME"
+        run: dotnet build src/Chronicles.Android -c Release -m:1 -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME"
       - uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: android-validation-apk
           path: src/Chronicles.Android/bin/Release/net10.0-android/*Signed.apk
+          retention-days: 3

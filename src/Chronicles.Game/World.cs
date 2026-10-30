@@ -91,6 +91,8 @@ public sealed partial class GameWorld
         w.InitializeInventory();
         w.InitializeKnowledge();
         w.InitializeCultivation();
+        w.InitializeCurrency();
+        w.InitializeEcology();
         s.DomainSchema = 2;
         w.Event("창세", 0, 0, "두 반선 시조가 세계에 들어왔다. 종문·숨은 주민 없음.", "초기 프로필");
         w.Census();
@@ -127,7 +129,8 @@ public sealed partial class GameWorld
     {
         var targetKind = kind switch
         {
-            "출생" or "도려" or "거래" or "전투" or "입양" or "제안 거절" or "배움 요청" or "돌봄" or "전수" => "person",
+            "출생" or "도려" or "거래" or "전투" or "입양" or "제안 거절" or "배움 요청" or "돌봄" or "전수" or
+                "개인 요청" or "인물 평가" or "진술 전달" or "서약 성립" or "서약 파기" => "person",
             "재해" or "발견" or "고대 금제" => "place",
             "소비" or "제작" => "item",
             "사망" or "세계 이탈" or "무예" => "condition",
@@ -146,6 +149,7 @@ public sealed partial class GameWorld
         if (targetKind == "person" && target != actor && people.TryGetValue(target, out var recipient)) Append(recipient);
         if (targetKind == "place" && residents.TryGetValue((int)target, out var local))
             foreach (var p in local.Where(p => p.Id != actor && p.Status == LifeStatus.Alive)) Append(p);
+        RecordPeopleSocialEvent(entry);
     }
 
     // Public commands execute on a candidate. Rejection cannot leak partial reservations, RNG or IDs.
@@ -201,9 +205,12 @@ public sealed partial class GameWorld
         if (c.Kind == "create") return CreateExplicit(c);
         if (!people.TryGetValue(c.Actor, out var p) || p.Status != LifeStatus.Alive ||
             (state.Controlled != 0 && state.Controlled != p.Id)) return "실행할 수 없는 대상입니다.";
+        if (PeopleActionError(p, c.Kind) is { } capabilityError) return capabilityError;
+        if (TryPeopleSocialCommand(c, p, out var socialError)) return socialError;
         if (c.Kind == "cancel") return Cancel(p);
         if (TryCultivationCommand(c, p, out var domainError) || TryKnowledgeCommand(c, p, out domainError) ||
-            TryInventoryCommand(c, p, out domainError) || TryPoliticsCommand(c, p, out domainError)) return domainError;
+            TryInventoryCommand(c, p, out domainError) || TryPoliticsCommand(c, p, out domainError) ||
+            TryCurrencyCommand(c, p, out domainError)) return domainError;
         if (c.Kind == "partner") return Partner(p, c.Target);
         if (c.Kind == "conceive") return Conceive(p, c.Target);
         if (c.Kind == "trade") return Trade(p, c.Target, c.Value);
@@ -231,6 +238,7 @@ public sealed partial class GameWorld
 
     private string? Start(Person p, string kind, long target, string data)
     {
+        if (PeopleActionError(p, kind) is { } capabilityError) return capabilityError;
         var command = new GameCommand($"ai:{p.BodyId}:{Month}:{Revision}:{kind}:{state.NextId}", p.Id, kind, target, Data: data);
         if (TryCultivationCommand(command, p, out var domainError) || TryStartKnowledge(p, kind, target, data, out domainError) ||
             TryInventoryCommand(command, p, out domainError)) return domainError;
@@ -284,6 +292,7 @@ public sealed partial class GameWorld
     private string? Cancel(Person p)
     {
         var command = new GameCommand($"cancel:{p.BodyId}:{Month}:{Revision}:{state.NextId}", p.Id, "cancel");
+        if (TryPeopleSocialCommand(command, p, out var socialError)) return socialError;
         if (TryCultivationCommand(command, p, out var domainError)) return domainError;
         if (CancelKnowledge(p)) return null;
         if (TryInventoryCommand(command, p, out domainError) || TryCancelPoliticsWork(p, out domainError)) return domainError;
@@ -325,6 +334,8 @@ public sealed partial class GameWorld
         }
         SettleKnowledge();
         SettlePeopleDomain();
+        SettlePeopleSocial();
+        SettleEcology();
         state.Revision++;
         Census();
     }

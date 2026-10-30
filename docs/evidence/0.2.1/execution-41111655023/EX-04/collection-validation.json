@@ -1,0 +1,26 @@
+{
+  "collection_validated": true,
+  "source_commit": "174e4a93f81defce44b18421629330bd280fb891",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "experiment": "EX-04",
+  "rows": 44,
+  "adoption": "revisit",
+  "scope": "네 인구 규모의 실제 세계/자질 비교; 기본 반복1·소량 표본 한계 유지",
+  "preceding_functional_total": 1,
+  "full_functional_scope": "이 job은 선택 창세 검사만 수행한다. 같은 제품 지문의 전체 기능 근거는 별도 총괄 보고서/제품 CI를 따른다.",
+  "meaning": "수집 정합만 확인. H06/H09·릴리스·Android·전략 채택 수용을 자동 선언하지 않음",
+  "files_sha256": {
+    "request.json": "cc5ba1b998eb97dd3cb35a4ea78d2e9f65b639d26be79c8486ac4fce8a250b62",
+    "process-exit.json": "436e1eabc22f591bda117c3f1fa4be1f39f443e0059ff7120ef4c90a64866e0c",
+    "git-after-build.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "preceding-functional.json": "9eb81af3995030512ed17e5a39f3e6b8b42621d22c6ae7532c84a9b6076af928",
+    "build.log": "3100fe9f3511717181f8290474c12098eeccbd656ffb684ccc356e04d73d003b",
+    "raw-measurements.json": "590ec19d59cd593532cef255fcb63418609030219062771f750bcf1e74155fb9",
+    "process-resource.txt": "e6973c22fa8ebb81e1d47fec929f79449d34c43717b860a4e645a4f4e9924725",
+    "assembly-inspector.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source-environment.json": "218df53085b3deeda923c3011a4ea5c76972f17654fced8897b8eda8a0bc5d2e",
+    "dotnet-info.txt": "b84d918048476e43257f3a489c47a8e26d8c10ad39a8114f585c230b66ca879c",
+    "assembly-evidence.json": "2ebc1f51241cebde02cdd7b3c3fef6e09300bd5d1d5c5983065ee2054287320a",
+    "measurement.log": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+  }
+}

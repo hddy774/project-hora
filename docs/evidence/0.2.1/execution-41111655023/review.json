@@ -1,0 +1,2410 @@
+{
+  "schema_version": 1,
+  "kind": "seonro-execution-measurement-review-draft",
+  "prepared_utc": "2026-10-30T19:46:30.038037+00:00",
+  "workflow_run_id": 41111655023,
+  "workflow_run_attempt": 1,
+  "workflow_run_url": "https://github.com/hddy774/project-hora/actions/runs/41111655023",
+  "measurement_source_commit": "174e4a93f81defce44b18421629330bd280fb891",
+  "workflow_event_merge_commit": "e3f0dc136ee846d2b56230b0f6141906f0445917",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "functional_reference": {
+    "source_commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "total": 314,
+    "failed": 0,
+    "report_sha256": "6bb3de5ccb787eeee7a71f86295ce17c9eaa2a630cbef206f95e04beaf312e87",
+    "scope": "루트의 별도 실제 전체 기능 원본이다. 각 EX job이 직접 수행한 검사는 아래 preceding-functional.json의 선택1/1이다."
+  },
+  "all_six_experiments_collected": false,
+  "overall_performance_accepted": false,
+  "release_accepted": false,
+  "adoption_applied": false,
+  "final_acceptance_owner": "root",
+  "ledger_progress_snapshot": {
+    "done": 49,
+    "total": 111,
+    "modified_by_this_review": false
+  },
+  "later_runtime_source_policy": "이 측정은 checkout174의 당시 설정 그대로다. 이후 PGOoff 소스/지문/기능/성능 검증 결과와 합치거나 대체하지 않는다.",
+  "experiments": [
+    {
+      "id": "EX-01",
+      "status": "pending",
+      "recommendation": "pending",
+      "rationale": "네 규모 원본 수집 전이며 채택 판단을 보류한다.",
+      "status_checked_utc": "2026-10-30T19:46:30.038037+00:00",
+      "status_scope": "GitHub job in_progress, 완료 원본/실제 진행 중 표본은 아직 확보하지 못함"
+    },
+    {
+      "id": "EX-02",
+      "status": "pending",
+      "recommendation": "pending",
+      "rationale": "네 규모의 실제 생사·슬롯 원본 수집 전이며 채택 판단을 보류한다.",
+      "status_checked_utc": "2026-10-30T19:46:30.038037+00:00",
+      "status_scope": "GitHub job in_progress, 완료 원본/실제 진행 중 표본은 아직 확보하지 못함"
+    },
+    {
+      "id": "EX-03",
+      "status": "collected-and-validated",
+      "recommendation": "revisit",
+      "rationale": "재사용 인덱스 커널 이득은 있으나 cold 생성·권한 캡처·공개 거래 전체의 개선은 확인되지 않았다. 현재 기본 경로 교체를 권하지 않는다.",
+      "artifact": {
+        "id": 13002763940,
+        "name": "v021-execution-EX-03-41111655023-1",
+        "archive_bytes": 6941388,
+        "archive_sha256": "1630029f211ec056b0ce3638b478f107034d1f32439ca2c5b354196efa914836",
+        "archive_digest_verified_on_initial_download": true
+      },
+      "raw_report_sha256": "54e317beeac66dfbad33bb9ff1c10aa0aae0d82c58dc5961dd415588b0105d3f",
+      "original_file_digests": {
+        "request.json": "d1c6195c23f4d3e4ad9a294db285c874ead20273cc8fc8d8bb977968b542b50a",
+        "process-exit.json": "436e1eabc22f591bda117c3f1fa4be1f39f443e0059ff7120ef4c90a64866e0c",
+        "git-after-build.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preceding-functional.json": "20d84fb6c2ff61040d8986bea7335aa534aaa364aeb4e0a3086d57231a14aa8e",
+        "build.log": "b3f9f26a37e4b994c977313f850a13f0dcff0d4419eeda589d5a8d0d4831b215",
+        "raw-measurements.json": "54e317beeac66dfbad33bb9ff1c10aa0aae0d82c58dc5961dd415588b0105d3f",
+        "process-resource.txt": "da2d673392fc0f4303a92b3348ad0e95704b8e6cef6e97e195b13ba92d1944b0",
+        "assembly-inspector.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "source-environment.json": "4a77387331fbe54647fc604591f257f1cc9f756e8043492899cf65f88b683d7f",
+        "dotnet-info.txt": "b84d918048476e43257f3a489c47a8e26d8c10ad39a8114f585c230b66ca879c",
+        "assembly-evidence.json": "53973f7c806ca89026d1da3a32fc4d8b580bc79137936bf61296df9ca0869158",
+        "measurement.log": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+      },
+      "collection_validated": true,
+      "preceding_functional_total": 1,
+      "archive_manifest": {
+        "entries": 123,
+        "present_entries": 119,
+        "missing_hidden_intermediate_files": [
+          "build/obj/Chronicles.Hosting/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game.Tests/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Core/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs"
+        ],
+        "full_original_artifact_preservation_claim": false,
+        "all_present_manifest_entries_verified_on_initial_download": true
+      },
+      "repository_retains_subset": [
+        "raw-measurements.json",
+        "request.json",
+        "source-environment.json",
+        "assembly-evidence.json",
+        "collection-validation.json",
+        "process-exit.json",
+        "preceding-functional.json",
+        "artifact-sha256.json",
+        "process-resource.txt",
+        "dotnet-info.txt",
+        "build.log",
+        "measurement.log",
+        "git-after-build.txt"
+      ],
+      "archive_retention_scope": "원본 ZIP은 실행 artifact(14일)와 로컬 scratch에 보존한다. 저장소에는 수치·환경·출처·manifest의 원문 부분집합을 복사하며 DLL/build 전체를 커밋하지 않는다.",
+      "environment": {
+        "sdk": "10.0.403",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "os_cpu_count": 4,
+        "affinity_cpu_count": 4,
+        "cgroup_cpu_max": null,
+        "cgroup_memory_max": null,
+        "thermal_scope": "GitHub 호스트 VM·실제 호스트 열 상태 미측정",
+        "power_scope": "GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정"
+      },
+      "memory_total_kb_as_reported": "16367520 kB",
+      "cross_vm_binary_equality": false,
+      "cross_vm_binary_equality_scope": "각 job 내부 PE source/전후/copied DLL hash를 확인했다. VM 간 DLL SHA는 실제로 다르며 동일 binaries를 주장하지 않는다.",
+      "scope": "고정 후보 규칙의 완전일치·선택/누락·실제 사용권과 sale 정산. 제품 AI의 전체 목표 정책/장기 행동 분포를 대체하지 않음.",
+      "correctness_as_reported": {
+        "SameChoices": true,
+        "NoHiddenInput": true,
+        "RevokedGrantRemoved": true,
+        "ConservedSettlement": true,
+        "SettlementHash": "e03c16b913b583b6a1fffd2a38c0127e8e062b730de3e472ecec137376bcb0be",
+        "FixedRequestDecisionDistribution": {
+          "sale": 1,
+          "auction": 1,
+          "선택 없음": 1
+        }
+      },
+      "fixture_hash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+      "command_hash": "59b0743f58d8370cc21c48f98fc0f350c4b06a3ef7b536053efd47130d948e99",
+      "warmup_preparation": {
+        "Operation": 0,
+        "Nanoseconds": 5187463600,
+        "ManagedAllocatedBytes": 791624488,
+        "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+        "OutputBytes": 1968815,
+        "MatchesReference": true
+      },
+      "measured_preparation": {
+        "Operation": 0,
+        "Nanoseconds": 2204997500,
+        "ManagedAllocatedBytes": 756991640,
+        "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+        "OutputBytes": 1968815,
+        "MatchesReference": true
+      },
+      "listings": 32,
+      "repetitions": 25,
+      "warmups": 2,
+      "metrics_as_reported": [
+        {
+          "variant": "authorized-full-scan",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 20500,
+            "P95": 36800,
+            "P99": 44300
+          },
+          "managed_allocated_bytes": {
+            "P50": 4696,
+            "P95": 4696,
+            "P99": 4696
+          },
+          "output_bytes": [
+            264
+          ],
+          "includes": "동일 공개 광고/사용권 DTO의 전 후보·명시 규칙·결과 직렬화",
+          "excludes": "세계 DTO 캡처는 별도 준비 비용"
+        },
+        {
+          "variant": "authorized-index-build-and-select",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 26700,
+            "P95": 37300,
+            "P99": 52100
+          },
+          "managed_allocated_bytes": {
+            "P50": 7432,
+            "P95": 7432,
+            "P99": 7432
+          },
+          "output_bytes": [
+            264
+          ],
+          "includes": "같은 허가 입력의 명시 ID/종류 색인 구축·모든 후보 규칙·결과 직렬화",
+          "excludes": "세계 DTO 캡처는 별도 준비 비용"
+        },
+        {
+          "variant": "authorized-index-reuse",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 14800,
+            "P95": 31700,
+            "P99": 47800
+          },
+          "managed_allocated_bytes": {
+            "P50": 3856,
+            "P95": 3856,
+            "P99": 3856
+          },
+          "output_bytes": [
+            264
+          ],
+          "includes": "같은 불변 입력 지문 확인·이미 구축한 ID 색인 읽기·결과 직렬화",
+          "excludes": "색인 구축은 별도 cold variant/준비 비용"
+        },
+        {
+          "variant": "world-permission-capture-and-scan",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 15498000,
+            "P95": 19540600,
+            "P99": 20166100
+          },
+          "managed_allocated_bytes": {
+            "P50": 5351568,
+            "P95": 5351568,
+            "P99": 5351568
+          },
+          "output_bytes": [
+            264
+          ],
+          "includes": "실제 공유권한/현지광고 캡처·안전 DTO 복사/지문·전체 후보/선택/응답",
+          "excludes": "창세·출품은 별도 준비 비용"
+        },
+        {
+          "variant": "world-permission-capture-and-index",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 15634500,
+            "P95": 19870300,
+            "P99": 20127700
+          },
+          "managed_allocated_bytes": {
+            "P50": 5354304,
+            "P95": 5354304,
+            "P99": 5354304
+          },
+          "output_bytes": [
+            264
+          ],
+          "includes": "같은 실제 권한/광고 캡처·안전 DTO 복사/지문·명시 ID 색인 구축/선택/응답",
+          "excludes": "창세·출품은 별도 준비 비용"
+        },
+        {
+          "variant": "world-trade-scan-end-to-end",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 96543900,
+            "P95": 104906600,
+            "P99": 105977100
+          },
+          "managed_allocated_bytes": {
+            "P50": 34558216,
+            "P95": 34589488,
+            "P99": 34599176
+          },
+          "output_bytes": [
+            0
+          ],
+          "includes": "GameCodec 복원·후보 scan·실제 공개 sale 정산/재전송 검증·최종hash",
+          "excludes": "fixture 창세/출품은 별도 준비 비용"
+        },
+        {
+          "variant": "world-trade-index-end-to-end",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 97214800,
+            "P95": 103829600,
+            "P99": 106185800
+          },
+          "managed_allocated_bytes": {
+            "P50": 34564312,
+            "P95": 34572008,
+            "P99": 34572008
+          },
+          "output_bytes": [
+            0
+          ],
+          "includes": "GameCodec 복원·허가 입력 index 구축·실제 공개 sale 정산/재전송 검증·최종hash",
+          "excludes": "fixture 창세/출품은 별도 준비 비용"
+        }
+      ]
+    },
+    {
+      "id": "EX-04",
+      "status": "collected-and-validated",
+      "recommendation": "reject-current-default-adoption",
+      "rationale": "이 현재 SIMD 구현의 기본 채택을 권하지 않고 스칼라를 유지한다. 전체 경계/할당 악화와 n1 한계를 근거로 하며 SIMD 일반 가능성을 기각하지 않는다.",
+      "artifact": {
+        "id": 13003289114,
+        "name": "v021-execution-EX-04-41111655023-1",
+        "archive_bytes": 6942546,
+        "archive_sha256": "8b65793d71d0406166e3253d3b5810490a2876366c56328376f8777b8f0ec79e",
+        "archive_digest_verified_on_initial_download": true
+      },
+      "raw_report_sha256": "590ec19d59cd593532cef255fcb63418609030219062771f750bcf1e74155fb9",
+      "original_file_digests": {
+        "request.json": "cc5ba1b998eb97dd3cb35a4ea78d2e9f65b639d26be79c8486ac4fce8a250b62",
+        "process-exit.json": "436e1eabc22f591bda117c3f1fa4be1f39f443e0059ff7120ef4c90a64866e0c",
+        "git-after-build.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preceding-functional.json": "9eb81af3995030512ed17e5a39f3e6b8b42621d22c6ae7532c84a9b6076af928",
+        "build.log": "3100fe9f3511717181f8290474c12098eeccbd656ffb684ccc356e04d73d003b",
+        "raw-measurements.json": "590ec19d59cd593532cef255fcb63418609030219062771f750bcf1e74155fb9",
+        "process-resource.txt": "e6973c22fa8ebb81e1d47fec929f79449d34c43717b860a4e645a4f4e9924725",
+        "assembly-inspector.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "source-environment.json": "218df53085b3deeda923c3011a4ea5c76972f17654fced8897b8eda8a0bc5d2e",
+        "dotnet-info.txt": "b84d918048476e43257f3a489c47a8e26d8c10ad39a8114f585c230b66ca879c",
+        "assembly-evidence.json": "2ebc1f51241cebde02cdd7b3c3fef6e09300bd5d1d5c5983065ee2054287320a",
+        "measurement.log": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+      },
+      "collection_validated": true,
+      "preceding_functional_total": 1,
+      "archive_manifest": {
+        "entries": 123,
+        "present_entries": 119,
+        "missing_hidden_intermediate_files": [
+          "build/obj/Chronicles.Hosting/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game.Tests/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Core/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs"
+        ],
+        "full_original_artifact_preservation_claim": false,
+        "all_present_manifest_entries_verified_on_initial_download": true
+      },
+      "repository_retains_subset": [
+        "raw-measurements.json",
+        "request.json",
+        "source-environment.json",
+        "assembly-evidence.json",
+        "collection-validation.json",
+        "process-exit.json",
+        "preceding-functional.json",
+        "artifact-sha256.json",
+        "process-resource.txt",
+        "dotnet-info.txt",
+        "build.log",
+        "measurement.log",
+        "git-after-build.txt"
+      ],
+      "archive_retention_scope": "원본 ZIP은 실행 artifact(14일)와 로컬 scratch에 보존한다. 저장소에는 수치·환경·출처·manifest의 원문 부분집합을 복사하며 DLL/build 전체를 커밋하지 않는다.",
+      "environment": {
+        "sdk": "10.0.403",
+        "cpu_model": "Intel(R) Xeon(R) 6973P-C",
+        "os_cpu_count": 4,
+        "affinity_cpu_count": 4,
+        "cgroup_cpu_max": null,
+        "cgroup_memory_max": null,
+        "thermal_scope": "GitHub 호스트 VM·실제 호스트 열 상태 미측정",
+        "power_scope": "GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정"
+      },
+      "memory_total_kb_as_reported": "16366512 kB",
+      "cross_vm_binary_equality": false,
+      "cross_vm_binary_equality_scope": "각 job 내부 PE source/전후/copied DLL hash를 확인했다. VM 간 DLL SHA는 실제로 다르며 동일 binaries를 주장하지 않는다.",
+      "complete_as_reported": true,
+      "requested_complete_as_reported": true,
+      "all_owned_experiments_complete_as_reported": false,
+      "populations": [
+        2,
+        100,
+        1000,
+        10000
+      ],
+      "repetitions": 1,
+      "total_elapsed_nanoseconds": 104634042010,
+      "actual_assess_cold_and_warm_each_sample_count": 1,
+      "direct_kernel_each_variant_length_sample_count": 1,
+      "combined_cold_warm_percentiles_used_for_adoption": false,
+      "metrics_as_reported": [
+        {
+          "variant": "canonical-csharp-scalar-v1:actual-assess",
+          "population": 2,
+          "batch_length": 48,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 664589
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 181286
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 92896
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 35544
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 664589,
+              "P95Nanoseconds": 664589,
+              "P99Nanoseconds": 664589
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 181286,
+              "P95Nanoseconds": 181286,
+              "P99Nanoseconds": 181286
+            }
+          ],
+          "output_digest": "c16982d6f5ffee0b92306599fe0a5dad3893effd5e48d827b54f8dcdfee9d0f0",
+          "process_retained_managed_bytes": 17741520,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:actual-assess",
+          "population": 2,
+          "batch_length": 48,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 791663
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 134931
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 134560
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 35544
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 791663,
+              "P95Nanoseconds": 791663,
+              "P99Nanoseconds": 791663
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 134931,
+              "P95Nanoseconds": 134931,
+              "P99Nanoseconds": 134931
+            }
+          ],
+          "output_digest": "c16982d6f5ffee0b92306599fe0a5dad3893effd5e48d827b54f8dcdfee9d0f0",
+          "process_retained_managed_bytes": 17751896,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:actual-assess",
+          "population": 2,
+          "batch_length": 48,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 382677
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 127694
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 73664
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 35544
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 382677,
+              "P95Nanoseconds": 382677,
+              "P99Nanoseconds": 382677
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 127694,
+              "P95Nanoseconds": 127694,
+              "P99Nanoseconds": 127694
+            }
+          ],
+          "output_digest": "c16982d6f5ffee0b92306599fe0a5dad3893effd5e48d827b54f8dcdfee9d0f0",
+          "process_retained_managed_bytes": 17753448,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "unsupported-and-scalar:actual-assess",
+          "population": 2,
+          "batch_length": 48,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 557017
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 192100
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 73664
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 35544
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 557017,
+              "P95Nanoseconds": 557017,
+              "P99Nanoseconds": 557017
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 192100,
+              "P95Nanoseconds": 192100,
+              "P99Nanoseconds": 192100
+            }
+          ],
+          "output_digest": "c16982d6f5ffee0b92306599fe0a5dad3893effd5e48d827b54f8dcdfee9d0f0",
+          "process_retained_managed_bytes": 17754960,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:actual-assess",
+          "population": 100,
+          "batch_length": 2400,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 19604706
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 8361251
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 4693088
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 1788568
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 19604706,
+              "P95Nanoseconds": 19604706,
+              "P99Nanoseconds": 19604706
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 8361251,
+              "P95Nanoseconds": 8361251,
+              "P99Nanoseconds": 8361251
+            }
+          ],
+          "output_digest": "3ed8606072e0dcb123c97122d18b4245caad2e0f8b5a68fb18195542da494abe",
+          "process_retained_managed_bytes": 26656128,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:actual-assess",
+          "population": 100,
+          "batch_length": 2400,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 35726211
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 9155136
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 6776288
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 1788568
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 35726211,
+              "P95Nanoseconds": 35726211,
+              "P99Nanoseconds": 35726211
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 9155136,
+              "P95Nanoseconds": 9155136,
+              "P99Nanoseconds": 9155136
+            }
+          ],
+          "output_digest": "3ed8606072e0dcb123c97122d18b4245caad2e0f8b5a68fb18195542da494abe",
+          "process_retained_managed_bytes": 26657688,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:actual-assess",
+          "population": 100,
+          "batch_length": 2400,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 16557865
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 7616012
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 3731488
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 1788568
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 16557865,
+              "P95Nanoseconds": 16557865,
+              "P99Nanoseconds": 16557865
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 7616012,
+              "P95Nanoseconds": 7616012,
+              "P99Nanoseconds": 7616012
+            }
+          ],
+          "output_digest": "3ed8606072e0dcb123c97122d18b4245caad2e0f8b5a68fb18195542da494abe",
+          "process_retained_managed_bytes": 26659192,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "unsupported-and-scalar:actual-assess",
+          "population": 100,
+          "batch_length": 2400,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 15831579
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 7358279
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 3731488
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 1788568
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 15831579,
+              "P95Nanoseconds": 15831579,
+              "P99Nanoseconds": 15831579
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 7358279,
+              "P95Nanoseconds": 7358279,
+              "P99Nanoseconds": 7358279
+            }
+          ],
+          "output_digest": "3ed8606072e0dcb123c97122d18b4245caad2e0f8b5a68fb18195542da494abe",
+          "process_retained_managed_bytes": 26660704,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:actual-assess",
+          "population": 1000,
+          "batch_length": 24000,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 54468302
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 25482107
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 33378944
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 16607768
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 54468302,
+              "P95Nanoseconds": 54468302,
+              "P99Nanoseconds": 54468302
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 25482107,
+              "P95Nanoseconds": 25482107,
+              "P99Nanoseconds": 25482107
+            }
+          ],
+          "output_digest": "3b642682e0053a3ced65f2257b0339444be852a71dce2e817e6fb1b2839b8141",
+          "process_retained_managed_bytes": 97775128,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:actual-assess",
+          "population": 1000,
+          "batch_length": 24000,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 58007712
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 64139531
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 53954944
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 16480056
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 58007712,
+              "P95Nanoseconds": 58007712,
+              "P99Nanoseconds": 58007712
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 64139531,
+              "P95Nanoseconds": 64139531,
+              "P99Nanoseconds": 64139531
+            }
+          ],
+          "output_digest": "3b642682e0053a3ced65f2257b0339444be852a71dce2e817e6fb1b2839b8141",
+          "process_retained_managed_bytes": 97776720,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:actual-assess",
+          "population": 1000,
+          "batch_length": 24000,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 36997465
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 19362181
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 35794944
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 16479768
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 36997465,
+              "P95Nanoseconds": 36997465,
+              "P99Nanoseconds": 36997465
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 19362181,
+              "P95Nanoseconds": 19362181,
+              "P99Nanoseconds": 19362181
+            }
+          ],
+          "output_digest": "3b642682e0053a3ced65f2257b0339444be852a71dce2e817e6fb1b2839b8141",
+          "process_retained_managed_bytes": 97778224,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "unsupported-and-scalar:actual-assess",
+          "population": 1000,
+          "batch_length": 24000,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 36351015
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 19060883
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 35794944
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 16479768
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 36351015,
+              "P95Nanoseconds": 36351015,
+              "P99Nanoseconds": 36351015
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 19060883,
+              "P95Nanoseconds": 19060883,
+              "P99Nanoseconds": 19060883
+            }
+          ],
+          "output_digest": "3b642682e0053a3ced65f2257b0339444be852a71dce2e817e6fb1b2839b8141",
+          "process_retained_managed_bytes": 97779736,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:actual-assess",
+          "population": 10000,
+          "batch_length": 240000,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 1466260898
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 725753348
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 424210016
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 165343112
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 1466260898,
+              "P95Nanoseconds": 1466260898,
+              "P99Nanoseconds": 1466260898
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 725753348,
+              "P95Nanoseconds": 725753348,
+              "P99Nanoseconds": 725753348
+            }
+          ],
+          "output_digest": "749be45cf0882f969b77f9be3d64e4fc69f03b6f0b2e634bf5f93dd20bb02435",
+          "process_retained_managed_bytes": 1061005608,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:actual-assess",
+          "population": 10000,
+          "batch_length": 240000,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 1660575602
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 701334931
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 540370552
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 165343112
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 1660575602,
+              "P95Nanoseconds": 1660575602,
+              "P99Nanoseconds": 1660575602
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 701334931,
+              "P95Nanoseconds": 701334931,
+              "P99Nanoseconds": 701334931
+            }
+          ],
+          "output_digest": "749be45cf0882f969b77f9be3d64e4fc69f03b6f0b2e634bf5f93dd20bb02435",
+          "process_retained_managed_bytes": 1061002112,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:actual-assess",
+          "population": 10000,
+          "batch_length": 240000,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 1394454794
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 741867925
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 358770016
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 165343112
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 1394454794,
+              "P95Nanoseconds": 1394454794,
+              "P99Nanoseconds": 1394454794
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 741867925,
+              "P95Nanoseconds": 741867925,
+              "P99Nanoseconds": 741867925
+            }
+          ],
+          "output_digest": "749be45cf0882f969b77f9be3d64e4fc69f03b6f0b2e634bf5f93dd20bb02435",
+          "process_retained_managed_bytes": 1061003616,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "unsupported-and-scalar:actual-assess",
+          "population": 10000,
+          "batch_length": 240000,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 1373986744
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 748121151
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 358770016
+            },
+            {
+              "Operation": 1,
+              "CurrentThreadBytes": 165343112
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "cold-source-capture-verify-publish",
+              "Samples": 1,
+              "P50Nanoseconds": 1373986744,
+              "P95Nanoseconds": 1373986744,
+              "P99Nanoseconds": 1373986744
+            },
+            {
+              "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+              "Samples": 1,
+              "P50Nanoseconds": 748121151,
+              "P95Nanoseconds": 748121151,
+              "P99Nanoseconds": 748121151
+            }
+          ],
+          "output_digest": "749be45cf0882f969b77f9be3d64e4fc69f03b6f0b2e634bf5f93dd20bb02435",
+          "process_retained_managed_bytes": 1061005128,
+          "includes": "실제 PeopleAptitude 전체: context·선천/유전/source fingerprint·입력 복사·pool·커널·정본/범위 검증·한 번 게시·동적 학습/건강/특성·출력 배열. cold와 warm raw 표본을 별도 label로 남긴다.",
+          "excludes": "fixture/restore·별도 예열·반환값 digest/동일성 검사·GC·보고는 표본 밖. thread 할당은 background/native를 포함하지 않으며 보유 메모리는 프로세스 범위다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 0,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 19023
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 2184
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 19023,
+              "P95Nanoseconds": 19023,
+              "P99Nanoseconds": 19023
+            }
+          ],
+          "output_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "process_retained_managed_bytes": 648795056,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 0,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 4356
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 2184
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 4356,
+              "P95Nanoseconds": 4356,
+              "P99Nanoseconds": 4356
+            }
+          ],
+          "output_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "process_retained_managed_bytes": 648796080,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 0,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 4012
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 2184
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 4012,
+              "P95Nanoseconds": 4012,
+              "P99Nanoseconds": 4012
+            }
+          ],
+          "output_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "process_retained_managed_bytes": 648796984,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "unsupported-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 0,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 3807
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 2184
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 3807,
+              "P95Nanoseconds": 3807,
+              "P99Nanoseconds": 3807
+            }
+          ],
+          "output_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "process_retained_managed_bytes": 648797864,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 1,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 3759
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 2832
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 3759,
+              "P95Nanoseconds": 3759,
+              "P99Nanoseconds": 3759
+            }
+          ],
+          "output_digest": "4080559ff9be838fd739dc0596047f130248d1326699bee33e897fba336d8bbf",
+          "process_retained_managed_bytes": 648799144,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 1,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 4508
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 2704
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 4508,
+              "P95Nanoseconds": 4508,
+              "P99Nanoseconds": 4508
+            }
+          ],
+          "output_digest": "4080559ff9be838fd739dc0596047f130248d1326699bee33e897fba336d8bbf",
+          "process_retained_managed_bytes": 648800040,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 1,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 4133
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 2544
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 4133,
+              "P95Nanoseconds": 4133,
+              "P99Nanoseconds": 4133
+            }
+          ],
+          "output_digest": "4080559ff9be838fd739dc0596047f130248d1326699bee33e897fba336d8bbf",
+          "process_retained_managed_bytes": 648800944,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "unsupported-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 1,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 4344
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 2544
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 4344,
+              "P95Nanoseconds": 4344,
+              "P99Nanoseconds": 4344
+            }
+          ],
+          "output_digest": "4080559ff9be838fd739dc0596047f130248d1326699bee33e897fba336d8bbf",
+          "process_retained_managed_bytes": 648801824,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 7,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 6202
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 5736
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 6202,
+              "P95Nanoseconds": 6202,
+              "P99Nanoseconds": 6202
+            }
+          ],
+          "output_digest": "c7b98ccd3daa93e56633e18068ff325aad7b94785d1efa51693435aca417b8c2",
+          "process_retained_managed_bytes": 648803088,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 7,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 7123
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 4840
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 7123,
+              "P95Nanoseconds": 7123,
+              "P99Nanoseconds": 7123
+            }
+          ],
+          "output_digest": "c7b98ccd3daa93e56633e18068ff325aad7b94785d1efa51693435aca417b8c2",
+          "process_retained_managed_bytes": 648803984,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 7,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 6467
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 3816
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 6467,
+              "P95Nanoseconds": 6467,
+              "P99Nanoseconds": 6467
+            }
+          ],
+          "output_digest": "c7b98ccd3daa93e56633e18068ff325aad7b94785d1efa51693435aca417b8c2",
+          "process_retained_managed_bytes": 648804888,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "unsupported-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 7,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 6486
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 3816
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 6486,
+              "P95Nanoseconds": 6486,
+              "P99Nanoseconds": 6486
+            }
+          ],
+          "output_digest": "c7b98ccd3daa93e56633e18068ff325aad7b94785d1efa51693435aca417b8c2",
+          "process_retained_managed_bytes": 648805768,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 8,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 5881
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 6208
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 5881,
+              "P95Nanoseconds": 5881,
+              "P99Nanoseconds": 5881
+            }
+          ],
+          "output_digest": "cc95233fdd82373b2ecaaffd9d631f11d9d6a7fef06a1a7c0b350f225e2e6886",
+          "process_retained_managed_bytes": 648806960,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 8,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 11510
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 10080
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 11510,
+              "P95Nanoseconds": 11510,
+              "P99Nanoseconds": 11510
+            }
+          ],
+          "output_digest": "cc95233fdd82373b2ecaaffd9d631f11d9d6a7fef06a1a7c0b350f225e2e6886",
+          "process_retained_managed_bytes": 648807856,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 8,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 6567
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 4016
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 6567,
+              "P95Nanoseconds": 6567,
+              "P99Nanoseconds": 6567
+            }
+          ],
+          "output_digest": "cc95233fdd82373b2ecaaffd9d631f11d9d6a7fef06a1a7c0b350f225e2e6886",
+          "process_retained_managed_bytes": 648808760,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "unsupported-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 8,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 6603
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 4016
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 6603,
+              "P95Nanoseconds": 6603,
+              "P99Nanoseconds": 6603
+            }
+          ],
+          "output_digest": "cc95233fdd82373b2ecaaffd9d631f11d9d6a7fef06a1a7c0b350f225e2e6886",
+          "process_retained_managed_bytes": 648809640,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 9,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 4792
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 6704
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 4792,
+              "P95Nanoseconds": 4792,
+              "P99Nanoseconds": 4792
+            }
+          ],
+          "output_digest": "23b8e786050cd75983f3c81ab8ac1734cb7dc863f7040b6a1947bdcffa11096e",
+          "process_retained_managed_bytes": 648810856,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 9,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 12344
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 10448
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 12344,
+              "P95Nanoseconds": 12344,
+              "P99Nanoseconds": 12344
+            }
+          ],
+          "output_digest": "23b8e786050cd75983f3c81ab8ac1734cb7dc863f7040b6a1947bdcffa11096e",
+          "process_retained_managed_bytes": 648812008,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 9,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 6701
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 4240
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 6701,
+              "P95Nanoseconds": 6701,
+              "P99Nanoseconds": 6701
+            }
+          ],
+          "output_digest": "23b8e786050cd75983f3c81ab8ac1734cb7dc863f7040b6a1947bdcffa11096e",
+          "process_retained_managed_bytes": 648812912,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "unsupported-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 9,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 6178
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 4240
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 6178,
+              "P95Nanoseconds": 6178,
+              "P99Nanoseconds": 6178
+            }
+          ],
+          "output_digest": "23b8e786050cd75983f3c81ab8ac1734cb7dc863f7040b6a1947bdcffa11096e",
+          "process_retained_managed_bytes": 648813792,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 24,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 9544
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 13952
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 9544,
+              "P95Nanoseconds": 9544,
+              "P99Nanoseconds": 9544
+            }
+          ],
+          "output_digest": "345d78d161ff3c2a97f256b8ebefa33a862499b65f3ab003e825e6c3d3fc3d4f",
+          "process_retained_managed_bytes": 648815152,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 24,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 25248
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 25568
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 25248,
+              "P95Nanoseconds": 25248,
+              "P99Nanoseconds": 25248
+            }
+          ],
+          "output_digest": "345d78d161ff3c2a97f256b8ebefa33a862499b65f3ab003e825e6c3d3fc3d4f",
+          "process_retained_managed_bytes": 648816048,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 24,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 7133
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 7408
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 7133,
+              "P95Nanoseconds": 7133,
+              "P99Nanoseconds": 7133
+            }
+          ],
+          "output_digest": "345d78d161ff3c2a97f256b8ebefa33a862499b65f3ab003e825e6c3d3fc3d4f",
+          "process_retained_managed_bytes": 648816952,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "unsupported-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 24,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 6736
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 7408
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 6736,
+              "P95Nanoseconds": 6736,
+              "P99Nanoseconds": 6736
+            }
+          ],
+          "output_digest": "345d78d161ff3c2a97f256b8ebefa33a862499b65f3ab003e825e6c3d3fc3d4f",
+          "process_retained_managed_bytes": 648817832,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "canonical-csharp-scalar-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 2400,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 353042
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 1163936
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 353042,
+              "P95Nanoseconds": 353042,
+              "P99Nanoseconds": 353042
+            }
+          ],
+          "output_digest": "2e967a149543dba29160df95681d56ba47aeec1835ec42589d3b4a9d8abac55e",
+          "process_retained_managed_bytes": 648863944,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+          "population": 1,
+          "batch_length": 2400,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 1804184
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 2325536
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 1804184,
+              "P95Nanoseconds": 1804184,
+              "P99Nanoseconds": 1804184
+            }
+          ],
+          "output_digest": "2e967a149543dba29160df95681d56ba47aeec1835ec42589d3b4a9d8abac55e",
+          "process_retained_managed_bytes": 648864840,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "partial-output-discard-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 2400,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 195420
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 511120
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 195420,
+              "P95Nanoseconds": 195420,
+              "P99Nanoseconds": 195420
+            }
+          ],
+          "output_digest": "2e967a149543dba29160df95681d56ba47aeec1835ec42589d3b4a9d8abac55e",
+          "process_retained_managed_bytes": 648865744,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        },
+        {
+          "variant": "unsupported-and-scalar:direct-kernel",
+          "population": 1,
+          "batch_length": 2400,
+          "supported_features": "Vector.IsHardwareAccelerated=True;Vector<int>.Count=8",
+          "raw_nanoseconds": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 195420
+            }
+          ],
+          "raw_managed_allocated_bytes": [
+            {
+              "Operation": 0,
+              "CurrentThreadBytes": 511120
+            }
+          ],
+          "distributions": [
+            {
+              "OperationKind": "capture-calculate-verify-commit",
+              "Samples": 1,
+              "P50Nanoseconds": 195420,
+              "P95Nanoseconds": 195420,
+              "P99Nanoseconds": 195420
+            }
+          ],
+          "output_digest": "2e967a149543dba29160df95681d56ba47aeec1835ec42589d3b4a9d8abac55e",
+          "process_retained_managed_bytes": 648866624,
+          "includes": "같은 실제 초기 인물의 재능 요청 배치(사람 수가 아님). 입력 fingerprint·복사·임시 배열·변환·정본/범위 검증·현재 입력 대조·전체 결과 게시를 포함한다.",
+          "excludes": "초기 인물 fixture·요청 index 배열·독립 예열·반환값 digest 비교·GC·보고는 표본 밖이다. 대량 요청을 대량 인구 실행으로 주장하지 않는다."
+        }
+      ]
+    },
+    {
+      "id": "EX-05",
+      "status": "collected-and-validated",
+      "recommendation": "revisit",
+      "rationale": "기본 저장 압축 채택을 보류한다. 파일 크기 이득과 codec/원자 파일 왕복 median·할당 악화를 함께 기록하고 선택 저장 정책만 재검토한다.",
+      "artifact": {
+        "id": 13004166146,
+        "name": "v021-execution-EX-05-41111655023-1",
+        "archive_bytes": 6940482,
+        "archive_sha256": "872ef8bb9801a6ea89f49353faeba4d92ac9aa22a24af63ec50545bd1c89f535",
+        "archive_digest_verified_on_initial_download": true
+      },
+      "raw_report_sha256": "b9c277965399d285447700d12f1b8c249f524bff91e59cccfea2e7a3c10798ec",
+      "original_file_digests": {
+        "request.json": "a8935ff0d68881e544cd2a2329f2e7da2d6b3680c4a535ebff9ce051ed8e0d29",
+        "process-exit.json": "436e1eabc22f591bda117c3f1fa4be1f39f443e0059ff7120ef4c90a64866e0c",
+        "git-after-build.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preceding-functional.json": "724956a3d7b4b390be4aedb6db2616c26b1cab5c3ceeb11c4d3ff4c809a17603",
+        "build.log": "c44bf88a4bc3a80d7712297cfc1111f288ed1453f394131ef06196db8150fafd",
+        "raw-measurements.json": "b9c277965399d285447700d12f1b8c249f524bff91e59cccfea2e7a3c10798ec",
+        "process-resource.txt": "bcfd6f42522bbf9efb3d9491cb86bceb7af7b8e1fba4828753ea65e546ccbcad",
+        "assembly-inspector.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "source-environment.json": "6dcd6f1130a0158905fc88bd1fe4cb74291210301e4342da5ca9b30f5c117c6c",
+        "dotnet-info.txt": "b84d918048476e43257f3a489c47a8e26d8c10ad39a8114f585c230b66ca879c",
+        "assembly-evidence.json": "020b227b7e9319b865f29ca796ced4f79a014762b970045d763d101a4d433cc9",
+        "measurement.log": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+      },
+      "collection_validated": true,
+      "preceding_functional_total": 1,
+      "archive_manifest": {
+        "entries": 123,
+        "present_entries": 119,
+        "missing_hidden_intermediate_files": [
+          "build/obj/Chronicles.Hosting/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game.Tests/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Core/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs"
+        ],
+        "full_original_artifact_preservation_claim": false,
+        "all_present_manifest_entries_verified_on_initial_download": true
+      },
+      "repository_retains_subset": [
+        "raw-measurements.json",
+        "request.json",
+        "source-environment.json",
+        "assembly-evidence.json",
+        "collection-validation.json",
+        "process-exit.json",
+        "preceding-functional.json",
+        "artifact-sha256.json",
+        "process-resource.txt",
+        "dotnet-info.txt",
+        "build.log",
+        "measurement.log",
+        "git-after-build.txt"
+      ],
+      "archive_retention_scope": "원본 ZIP은 실행 artifact(14일)와 로컬 scratch에 보존한다. 저장소에는 수치·환경·출처·manifest의 원문 부분집합을 복사하며 DLL/build 전체를 커밋하지 않는다.",
+      "environment": {
+        "sdk": "10.0.403",
+        "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+        "os_cpu_count": 4,
+        "affinity_cpu_count": 4,
+        "cgroup_cpu_max": null,
+        "cgroup_memory_max": null,
+        "thermal_scope": "GitHub 호스트 VM·실제 호스트 열 상태 미측정",
+        "power_scope": "GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정"
+      },
+      "memory_total_kb_as_reported": "16367524 kB",
+      "cross_vm_binary_equality": false,
+      "cross_vm_binary_equality_scope": "각 job 내부 PE source/전후/copied DLL hash를 확인했다. VM 간 DLL SHA는 실제로 다르며 동일 binaries를 주장하지 않는다.",
+      "scope": "현재 schema의 같은 GameCodec envelope를 JSON 원자파일과 BCL Brotli 원자파일 후보로 저장. 새 앱 경로/serializer/SQLite를 채택하지 않음.",
+      "correctness_as_reported": {
+        "SameCanonicalEnvelope": true,
+        "CanonicalEnvelopeHash": "8bd80e151a9caf637634639b67a79595d9e75b3e88706bea87393cdf9faf3892",
+        "CanonicalBytes": 1968815,
+        "JsonAtomic": {
+          "CompletePending": true,
+          "PartialPending": true,
+          "CorruptPrimaryBackup": true,
+          "CorruptPayloadRejected": true,
+          "UnsupportedOriginalPreserved": true,
+          "SecondEnvelopeHash": "6515c0c91f03e0f912d1ea86d355ebb4df8c638a736ea409b01d096ee55f9cc5"
+        },
+        "BrotliAtomic": {
+          "CompletePending": true,
+          "PartialPending": true,
+          "CorruptPrimaryBackup": true,
+          "CorruptPayloadRejected": true,
+          "UnsupportedOriginalPreserved": true,
+          "SecondEnvelopeHash": "6515c0c91f03e0f912d1ea86d355ebb4df8c638a736ea409b01d096ee55f9cc5"
+        },
+        "CandidateVersion": "System.IO.Compression.Brotli 10.0.0.0; 현재 .NET BCL/MIT·추가 패키지/제품 채택 없음",
+        "Limitations": "기존 JSON GameCodec를 바꾸지 않는 압축 저장 후보. SQLite/선택 serializer 호환을 실행했다고 하지 않음. 동기 파일·동일 호스트의 주입 복구만 검사하며 실제 전원 손실/Android·native 메모리는 별도."
+      },
+      "fixture_hash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+      "command_hash": "59b0743f58d8370cc21c48f98fc0f350c4b06a3ef7b536053efd47130d948e99",
+      "warmup_preparation": {
+        "Operation": 0,
+        "Nanoseconds": 4673050900,
+        "ManagedAllocatedBytes": 792099600,
+        "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+        "OutputBytes": 1968815,
+        "MatchesReference": true
+      },
+      "measured_preparation": {
+        "Operation": 0,
+        "Nanoseconds": 2425049200,
+        "ManagedAllocatedBytes": 757406872,
+        "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+        "OutputBytes": 1968815,
+        "MatchesReference": true
+      },
+      "listings": 32,
+      "repetitions": 25,
+      "warmups": 2,
+      "metrics_as_reported": [
+        {
+          "variant": "json-codec-roundtrip",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 47503300,
+            "P95": 57601700,
+            "P99": 57709800
+          },
+          "managed_allocated_bytes": {
+            "P50": 25286976,
+            "P95": 25293528,
+            "P99": 25298368
+          },
+          "output_bytes": [
+            1968815
+          ],
+          "includes": "실제 GameCodec 전체 encode·schema/checksum decode·권위hash",
+          "excludes": "파일 I/O는 atomic variant, fixture 생성은 별도"
+        },
+        {
+          "variant": "brotli-codec-roundtrip",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 60643000,
+            "P95": 67553100,
+            "P99": 69155600
+          },
+          "managed_allocated_bytes": {
+            "P50": 27382552,
+            "P95": 27390056,
+            "P99": 27390544
+          },
+          "output_bytes": [
+            62663
+          ],
+          "includes": "동일 GameCodec encode·Brotli 변환/복사·길이/내용검증·GameCodec decode·권위hash",
+          "excludes": "파일 I/O는 atomic variant·native compressor 메모리 미계측"
+        },
+        {
+          "variant": "json-atomic-full-roundtrip",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 79334600,
+            "P95": 195651700,
+            "P99": 419174700
+          },
+          "managed_allocated_bytes": {
+            "P50": 43476792,
+            "P95": 43487136,
+            "P99": 43487704
+          },
+          "output_bytes": [
+            1968815
+          ],
+          "includes": "고유 작업폴더 생성/정리·현재 GameSaveStore 전체 encode/검증·Flush(true)·rename·읽기/decode·동일바이트 확인·hash",
+          "excludes": "실제 전원/프로세스 강제중단·OS/native 할당은 별도"
+        },
+        {
+          "variant": "brotli-atomic-full-roundtrip",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 112649000,
+            "P95": 131656600,
+            "P99": 146631600
+          },
+          "managed_allocated_bytes": {
+            "P50": 56139648,
+            "P95": 56146240,
+            "P99": 56147440
+          },
+          "output_bytes": [
+            62663
+          ],
+          "includes": "같은 전체 codec·압축/복사·길이/해시검증·Flush(true)·rename·읽기/해제·권위검증·고유폴더 정리",
+          "excludes": "실제 전원/프로세스 강제중단·native compressor/OS 메모리 미계측"
+        }
+      ]
+    },
+    {
+      "id": "EX-06",
+      "status": "collected-and-validated",
+      "recommendation": "revisit",
+      "rationale": "revision이 명확한 재열기 캐시만 재검토한다. cold index/캐시 생성 및 실제 View 전체에서 기본 교체의 이득은 확인되지 않았다.",
+      "artifact": {
+        "id": 13003308523,
+        "name": "v021-execution-EX-06-41111655023-1",
+        "archive_bytes": 6940999,
+        "archive_sha256": "8d0fba2733aab659d7067b5e103fa68c565502b42f9de9609edc52f0270acb68",
+        "archive_digest_verified_on_initial_download": true
+      },
+      "raw_report_sha256": "223f5be994a35fb318b961557110a2f7bf219005ad8dd21b80babc6c04720fae",
+      "original_file_digests": {
+        "request.json": "772f62f65cd4f9f933685260bde50da0866b96d92b081d7c7d006e6532179056",
+        "process-exit.json": "436e1eabc22f591bda117c3f1fa4be1f39f443e0059ff7120ef4c90a64866e0c",
+        "git-after-build.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preceding-functional.json": "3c4661875f5a795fbcbea28273a7b4e28ccf88e21e8b96ffcaa85e5a6fc00a55",
+        "build.log": "546da0e137401d28fe4d3642bd13c103baa71e50bf15314b3f45b9757fffd89d",
+        "raw-measurements.json": "223f5be994a35fb318b961557110a2f7bf219005ad8dd21b80babc6c04720fae",
+        "process-resource.txt": "b382b67cef71c35f4b94398136b55aae13dd781238b3bd3b57219799a2e7d361",
+        "assembly-inspector.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "source-environment.json": "0c44f355818c8ba5ef6f0ceed95261e7394c243a3d7db7e17d6f5bee77d9a36c",
+        "dotnet-info.txt": "b84d918048476e43257f3a489c47a8e26d8c10ad39a8114f585c230b66ca879c",
+        "assembly-evidence.json": "643d493566d021373dd6d51d678148c07ebf60a13c3e74261df2e414201379a6",
+        "measurement.log": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+      },
+      "collection_validated": true,
+      "preceding_functional_total": 1,
+      "archive_manifest": {
+        "entries": 123,
+        "present_entries": 119,
+        "missing_hidden_intermediate_files": [
+          "build/obj/Chronicles.Hosting/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game.Tests/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Core/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs"
+        ],
+        "full_original_artifact_preservation_claim": false,
+        "all_present_manifest_entries_verified_on_initial_download": true
+      },
+      "repository_retains_subset": [
+        "raw-measurements.json",
+        "request.json",
+        "source-environment.json",
+        "assembly-evidence.json",
+        "collection-validation.json",
+        "process-exit.json",
+        "preceding-functional.json",
+        "artifact-sha256.json",
+        "process-resource.txt",
+        "dotnet-info.txt",
+        "build.log",
+        "measurement.log",
+        "git-after-build.txt"
+      ],
+      "archive_retention_scope": "원본 ZIP은 실행 artifact(14일)와 로컬 scratch에 보존한다. 저장소에는 수치·환경·출처·manifest의 원문 부분집합을 복사하며 DLL/build 전체를 커밋하지 않는다.",
+      "environment": {
+        "sdk": "10.0.403",
+        "cpu_model": "Intel(R) Xeon(R) 6973P-C",
+        "os_cpu_count": 4,
+        "affinity_cpu_count": 4,
+        "cgroup_cpu_max": null,
+        "cgroup_memory_max": null,
+        "thermal_scope": "GitHub 호스트 VM·실제 호스트 열 상태 미측정",
+        "power_scope": "GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정"
+      },
+      "memory_total_kb_as_reported": "16366508 kB",
+      "cross_vm_binary_equality": false,
+      "cross_vm_binary_equality_scope": "각 job 내부 PE source/전후/copied DLL hash를 확인했다. VM 간 DLL SHA는 실제로 다르며 동일 binaries를 주장하지 않는다.",
+      "scope": "현재 실제 개인 DTO의 첫 지식 페이지/실물·장비·용기와 고정 열기/닫기 요청. 전체 도감/가상 UI 렌더·Android 입력 비용이 아님.",
+      "correctness_as_reported": {
+        "EqualRowsCountsPages": true,
+        "HiddenStateNoninterference": true,
+        "OwnEquipmentInvalidatesCache": true,
+        "ClosedFramesHaveNoRows": true,
+        "Pure": true,
+        "InventoryRows": 32,
+        "KnowledgeRows": 128
+      },
+      "fixture_hash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+      "command_hash": "59b0743f58d8370cc21c48f98fc0f350c4b06a3ef7b536053efd47130d948e99",
+      "warmup_preparation": {
+        "Operation": 0,
+        "Nanoseconds": 4082690300,
+        "ManagedAllocatedBytes": 792508256,
+        "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+        "OutputBytes": 1968815,
+        "MatchesReference": true
+      },
+      "measured_preparation": {
+        "Operation": 0,
+        "Nanoseconds": 1409506100,
+        "ManagedAllocatedBytes": 756736792,
+        "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+        "OutputBytes": 1968815,
+        "MatchesReference": true
+      },
+      "listings": 32,
+      "repetitions": 25,
+      "warmups": 2,
+      "metrics_as_reported": [
+        {
+          "variant": "authorized-full-scan",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 70000,
+            "P95": 93700,
+            "P99": 115300
+          },
+          "managed_allocated_bytes": {
+            "P50": 37632,
+            "P95": 37632,
+            "P99": 37632
+          },
+          "output_bytes": [
+            2723
+          ],
+          "includes": "같은 권한 선필터 DTO의 검색·정렬·집계·page·장비/용기·응답 직렬화",
+          "excludes": "권한 DTO 준비는 별도"
+        },
+        {
+          "variant": "read-index-build-and-search",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 92600,
+            "P95": 128700,
+            "P99": 143100
+          },
+          "managed_allocated_bytes": {
+            "P50": 74384,
+            "P95": 74384,
+            "P99": 74384
+          },
+          "output_bytes": [
+            2723
+          ],
+          "includes": "허가된 snapshot의 read index 구축·동일 요청/정렬/집계/페이지·응답 직렬화",
+          "excludes": "권한 DTO 준비는 별도"
+        },
+        {
+          "variant": "immutable-cache-build-and-read",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 94700,
+            "P95": 112800,
+            "P99": 148800
+          },
+          "managed_allocated_bytes": {
+            "P50": 74520,
+            "P95": 74520,
+            "P99": 74520
+          },
+          "output_bytes": [
+            2723
+          ],
+          "includes": "허가 snapshot의 index·행 materialization·불변 cache 구축/읽기·응답 직렬화",
+          "excludes": "권한 DTO 준비는 별도"
+        },
+        {
+          "variant": "immutable-cache-reopen",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 3900,
+            "P95": 4600,
+            "P99": 17800
+          },
+          "managed_allocated_bytes": {
+            "P50": 3544,
+            "P95": 3544,
+            "P99": 3544
+          },
+          "output_bytes": [
+            2723
+          ],
+          "includes": "Actor/세대/개인 입력 지문 검사·불변 캐시 재열기·응답 직렬화",
+          "excludes": "cache 최초 구축은 cold variant, native 할당은 미포함"
+        },
+        {
+          "variant": "world-view-scan-end-to-end",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 1744800,
+            "P95": 1905100,
+            "P99": 1928200
+          },
+          "managed_allocated_bytes": {
+            "P50": 1339512,
+            "P95": 1339512,
+            "P99": 1339512
+          },
+          "output_bytes": [
+            2723
+          ],
+          "includes": "실제 World.View 권한필터·개인 입력 복사/지문·검색/집계/직렬화 전체",
+          "excludes": "fixture 생성은 별도"
+        },
+        {
+          "variant": "world-view-index-end-to-end",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 1766800,
+            "P95": 1812700,
+            "P99": 3894700
+          },
+          "managed_allocated_bytes": {
+            "P50": 1376264,
+            "P95": 1376264,
+            "P99": 1376264
+          },
+          "output_bytes": [
+            2723
+          ],
+          "includes": "실제 World.View 권한필터·개인 입력 복사/지문·index 구축/검색/직렬화 전체",
+          "excludes": "fixture 생성은 별도"
+        },
+        {
+          "variant": "closed-window-no-view",
+          "samples": 25,
+          "nanoseconds": {
+            "P50": 600,
+            "P95": 1900,
+            "P99": 3400
+          },
+          "managed_allocated_bytes": {
+            "P50": 360,
+            "P95": 360,
+            "P99": 360
+          },
+          "output_bytes": [
+            2
+          ],
+          "includes": "닫힌 요청 gate·권위조회 호출0/행 생성0·빈 응답 직렬화",
+          "excludes": "실제 브라우저/렌더/호스트 요청 비용은 별도"
+        }
+      ]
+    }
+  ]
+}

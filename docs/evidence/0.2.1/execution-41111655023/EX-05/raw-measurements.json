@@ -1,0 +1,1402 @@
+{
+  "SourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "Runtime": ".NET 10.0.14",
+  "OS": "Ubuntu 24.04.5 LTS",
+  "ProcessArchitecture": "X64",
+  "LogicalProcessors": 4,
+  "HostScope": "\uD604\uC7AC .NET PC \uD638\uC2A4\uD2B8 \uC2E4\uD5D8; Android/Unity \uC2E4\uD589 \uADFC\uAC70\uAC00 \uC544\uB2D8",
+  "Device": "runnervm48cm3",
+  "Options": {
+    "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "Device": "runnervm48cm3",
+    "Listings": 32,
+    "Repetitions": 25,
+    "Warmups": 2,
+    "Workspace": "/home/runner/work/_temp/v021-execution-41111655023-1-EX-05/io",
+    "ThermalPowerState": "\uC774 \uD558\uB124\uC2A4\uB294 \uC5F4/\uC804\uC6D0 \uC0C1\uD0DC\uB97C \uC218\uC9D1\uD558\uC9C0 \uC54A\uC74C; \uCE21\uC815 \uD638\uC2A4\uD2B8\uC758 \uBCC4\uB3C4 \uAE30\uB85D \uD544\uC694"
+  },
+  "FixturePreparationScope": "\uAC01\uAC01 World.Create\u00B7\uACF5\uAC1C \uCD9C\uD488/GrantUse \uB3C4\uBA54\uC778\uBA85\uB839\u00B7\uAD8C\uD55C DTO \uCEA1\uCC98\u00B7GameCodec \uAC80\uC99D\uC744 \uD3EC\uD568. \uC791\uC5C5 \uCEE4\uB110 \uD45C\uBCF8\uACFC \uBCC4\uB3C4 \uAE30\uB85D\uD558\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uC5D0\uC11C \uC228\uAE30\uC9C0 \uC54A\uC74C.",
+  "WarmupPreparation": {
+    "Operation": 0,
+    "Nanoseconds": 4673050900,
+    "ManagedAllocatedBytes": 792099600,
+    "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+    "OutputBytes": 1968815,
+    "MatchesReference": true
+  },
+  "MeasuredPreparation": {
+    "Operation": 0,
+    "Nanoseconds": 2425049200,
+    "ManagedAllocatedBytes": 757406872,
+    "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+    "OutputBytes": 1968815,
+    "MatchesReference": true
+  },
+  "Comparisons": [
+    {
+      "Id": "EX-05",
+      "Scope": "\uD604\uC7AC schema\uC758 \uAC19\uC740 GameCodec envelope\uB97C JSON \uC6D0\uC790\uD30C\uC77C\uACFC BCL Brotli \uC6D0\uC790\uD30C\uC77C \uD6C4\uBCF4\uB85C \uC800\uC7A5. \uC0C8 \uC571 \uACBD\uB85C/serializer/SQLite\uB97C \uCC44\uD0DD\uD558\uC9C0 \uC54A\uC74C.",
+      "FixtureHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+      "CommandHash": "59b0743f58d8370cc21c48f98fc0f350c4b06a3ef7b536053efd47130d948e99",
+      "Correctness": {
+        "SameCanonicalEnvelope": true,
+        "CanonicalEnvelopeHash": "8bd80e151a9caf637634639b67a79595d9e75b3e88706bea87393cdf9faf3892",
+        "CanonicalBytes": 1968815,
+        "JsonAtomic": {
+          "CompletePending": true,
+          "PartialPending": true,
+          "CorruptPrimaryBackup": true,
+          "CorruptPayloadRejected": true,
+          "UnsupportedOriginalPreserved": true,
+          "SecondEnvelopeHash": "6515c0c91f03e0f912d1ea86d355ebb4df8c638a736ea409b01d096ee55f9cc5"
+        },
+        "BrotliAtomic": {
+          "CompletePending": true,
+          "PartialPending": true,
+          "CorruptPrimaryBackup": true,
+          "CorruptPayloadRejected": true,
+          "UnsupportedOriginalPreserved": true,
+          "SecondEnvelopeHash": "6515c0c91f03e0f912d1ea86d355ebb4df8c638a736ea409b01d096ee55f9cc5"
+        },
+        "CandidateVersion": "System.IO.Compression.Brotli 10.0.0.0; \uD604\uC7AC .NET BCL/MIT\u00B7\uCD94\uAC00 \uD328\uD0A4\uC9C0/\uC81C\uD488 \uCC44\uD0DD \uC5C6\uC74C",
+        "Limitations": "\uAE30\uC874 JSON GameCodec\uB97C \uBC14\uAFB8\uC9C0 \uC54A\uB294 \uC555\uCD95 \uC800\uC7A5 \uD6C4\uBCF4. SQLite/\uC120\uD0DD serializer \uD638\uD658\uC744 \uC2E4\uD589\uD588\uB2E4\uACE0 \uD558\uC9C0 \uC54A\uC74C. \uB3D9\uAE30 \uD30C\uC77C\u00B7\uB3D9\uC77C \uD638\uC2A4\uD2B8\uC758 \uC8FC\uC785 \uBCF5\uAD6C\uB9CC \uAC80\uC0AC\uD558\uBA70 \uC2E4\uC81C \uC804\uC6D0 \uC190\uC2E4/Android\u00B7native \uBA54\uBAA8\uB9AC\uB294 \uBCC4\uB3C4."
+      },
+      "Variants": [
+        {
+          "Name": "json-codec-roundtrip",
+          "Includes": "\uC2E4\uC81C GameCodec \uC804\uCCB4 encode\u00B7schema/checksum decode\u00B7\uAD8C\uC704hash",
+          "Excludes": "\uD30C\uC77C I/O\uB294 atomic variant, fixture \uC0DD\uC131\uC740 \uBCC4\uB3C4",
+          "Measurement": {
+            "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+            "FixtureHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "CommandHash": "59b0743f58d8370cc21c48f98fc0f350c4b06a3ef7b536053efd47130d948e99",
+            "KernelVersion": "EX-05:json-codec-roundtrip:v1",
+            "BatchLength": 32,
+            "SupportedFeatures": "\uAC19\uC740 \uAC1C\uC778 cached DTO/\uC2E4\uC81C \uBA85\uB839; \uAD00\uB9AC thread \uD560\uB2F9\uB9CC \uACC4\uCE21\u00B7native/I/O/OS \uBA54\uBAA8\uB9AC\uB294 \uBCC4\uB3C4",
+            "Runtime": ".NET 10.0.14",
+            "Device": "runnervm48cm3",
+            "WarmupOpeningHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "MeasuredOpeningHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "RawSamples": [
+              {
+                "Operation": 0,
+                "Nanoseconds": 45072700
+              },
+              {
+                "Operation": 1,
+                "Nanoseconds": 49266900
+              },
+              {
+                "Operation": 2,
+                "Nanoseconds": 57709800
+              },
+              {
+                "Operation": 3,
+                "Nanoseconds": 42977800
+              },
+              {
+                "Operation": 4,
+                "Nanoseconds": 52761400
+              },
+              {
+                "Operation": 5,
+                "Nanoseconds": 46285000
+              },
+              {
+                "Operation": 6,
+                "Nanoseconds": 47503300
+              },
+              {
+                "Operation": 7,
+                "Nanoseconds": 57601700
+              },
+              {
+                "Operation": 8,
+                "Nanoseconds": 45579600
+              },
+              {
+                "Operation": 9,
+                "Nanoseconds": 45851100
+              },
+              {
+                "Operation": 10,
+                "Nanoseconds": 54144300
+              },
+              {
+                "Operation": 11,
+                "Nanoseconds": 46699900
+              },
+              {
+                "Operation": 12,
+                "Nanoseconds": 47438900
+              },
+              {
+                "Operation": 13,
+                "Nanoseconds": 54325600
+              },
+              {
+                "Operation": 14,
+                "Nanoseconds": 46559100
+              },
+              {
+                "Operation": 15,
+                "Nanoseconds": 52276400
+              },
+              {
+                "Operation": 16,
+                "Nanoseconds": 43829400
+              },
+              {
+                "Operation": 17,
+                "Nanoseconds": 48519100
+              },
+              {
+                "Operation": 18,
+                "Nanoseconds": 47109700
+              },
+              {
+                "Operation": 19,
+                "Nanoseconds": 55293400
+              },
+              {
+                "Operation": 20,
+                "Nanoseconds": 46009800
+              },
+              {
+                "Operation": 21,
+                "Nanoseconds": 47531400
+              },
+              {
+                "Operation": 22,
+                "Nanoseconds": 44411300
+              },
+              {
+                "Operation": 23,
+                "Nanoseconds": 49278000
+              },
+              {
+                "Operation": 24,
+                "Nanoseconds": 47766400
+              }
+            ],
+            "Decision": "revisit",
+            "Rationale": "\uAC19\uC740 \uAD8C\uD55C \uC785\uB825\u00B7\uC2E4\uC81C \uC815\uB2F5\uACFC \uC77C\uCE58\uD55C \uC6D0\uC2DC \uD45C\uBCF8. \uD6C4\uBCF4 \uC774\uC810\u00B7\uC720\uC9C0\uBE44\u00B7\uD50C\uB7AB\uD3FC\uC744 \uAC80\uD1A0\uD558\uAE30 \uC804 \uC81C\uD488 \uCC44\uD0DD\uC73C\uB85C \uC2B9\uACA9\uD558\uC9C0 \uC54A\uC74C."
+          },
+          "RawSamples": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 45072700,
+              "ManagedAllocatedBytes": 25283616,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 49266900,
+              "ManagedAllocatedBytes": 25286976,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 2,
+              "Nanoseconds": 57709800,
+              "ManagedAllocatedBytes": 25288104,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 3,
+              "Nanoseconds": 42977800,
+              "ManagedAllocatedBytes": 25283616,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 4,
+              "Nanoseconds": 52761400,
+              "ManagedAllocatedBytes": 25290336,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 5,
+              "Nanoseconds": 46285000,
+              "ManagedAllocatedBytes": 25286976,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 6,
+              "Nanoseconds": 47503300,
+              "ManagedAllocatedBytes": 25283616,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 7,
+              "Nanoseconds": 57601700,
+              "ManagedAllocatedBytes": 25290336,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 8,
+              "Nanoseconds": 45579600,
+              "ManagedAllocatedBytes": 25286976,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 9,
+              "Nanoseconds": 45851100,
+              "ManagedAllocatedBytes": 25283616,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 10,
+              "Nanoseconds": 54144300,
+              "ManagedAllocatedBytes": 25298368,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 11,
+              "Nanoseconds": 46699900,
+              "ManagedAllocatedBytes": 25286752,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 12,
+              "Nanoseconds": 47438900,
+              "ManagedAllocatedBytes": 25283616,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 13,
+              "Nanoseconds": 54325600,
+              "ManagedAllocatedBytes": 25293528,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 14,
+              "Nanoseconds": 46559100,
+              "ManagedAllocatedBytes": 25286976,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 15,
+              "Nanoseconds": 52276400,
+              "ManagedAllocatedBytes": 25287680,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 16,
+              "Nanoseconds": 43829400,
+              "ManagedAllocatedBytes": 25286976,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 17,
+              "Nanoseconds": 48519100,
+              "ManagedAllocatedBytes": 25286752,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 18,
+              "Nanoseconds": 47109700,
+              "ManagedAllocatedBytes": 25283616,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 19,
+              "Nanoseconds": 55293400,
+              "ManagedAllocatedBytes": 25290376,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 20,
+              "Nanoseconds": 46009800,
+              "ManagedAllocatedBytes": 25286976,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 21,
+              "Nanoseconds": 47531400,
+              "ManagedAllocatedBytes": 25287144,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 22,
+              "Nanoseconds": 44411300,
+              "ManagedAllocatedBytes": 25286976,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 23,
+              "Nanoseconds": 49278000,
+              "ManagedAllocatedBytes": 25286752,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 24,
+              "Nanoseconds": 47766400,
+              "ManagedAllocatedBytes": 25283616,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            }
+          ],
+          "Nanoseconds": {
+            "P50": 47503300,
+            "P95": 57601700,
+            "P99": 57709800
+          },
+          "ManagedAllocatedBytes": {
+            "P50": 25286976,
+            "P95": 25293528,
+            "P99": 25298368
+          }
+        },
+        {
+          "Name": "brotli-codec-roundtrip",
+          "Includes": "\uB3D9\uC77C GameCodec encode\u00B7Brotli \uBCC0\uD658/\uBCF5\uC0AC\u00B7\uAE38\uC774/\uB0B4\uC6A9\uAC80\uC99D\u00B7GameCodec decode\u00B7\uAD8C\uC704hash",
+          "Excludes": "\uD30C\uC77C I/O\uB294 atomic variant\u00B7native compressor \uBA54\uBAA8\uB9AC \uBBF8\uACC4\uCE21",
+          "Measurement": {
+            "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+            "FixtureHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "CommandHash": "59b0743f58d8370cc21c48f98fc0f350c4b06a3ef7b536053efd47130d948e99",
+            "KernelVersion": "EX-05:brotli-codec-roundtrip:v1",
+            "BatchLength": 32,
+            "SupportedFeatures": "\uAC19\uC740 \uAC1C\uC778 cached DTO/\uC2E4\uC81C \uBA85\uB839; \uAD00\uB9AC thread \uD560\uB2F9\uB9CC \uACC4\uCE21\u00B7native/I/O/OS \uBA54\uBAA8\uB9AC\uB294 \uBCC4\uB3C4",
+            "Runtime": ".NET 10.0.14",
+            "Device": "runnervm48cm3",
+            "WarmupOpeningHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "MeasuredOpeningHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "RawSamples": [
+              {
+                "Operation": 0,
+                "Nanoseconds": 56299300
+              },
+              {
+                "Operation": 1,
+                "Nanoseconds": 55471100
+              },
+              {
+                "Operation": 2,
+                "Nanoseconds": 69155600
+              },
+              {
+                "Operation": 3,
+                "Nanoseconds": 55038900
+              },
+              {
+                "Operation": 4,
+                "Nanoseconds": 60192400
+              },
+              {
+                "Operation": 5,
+                "Nanoseconds": 58944900
+              },
+              {
+                "Operation": 6,
+                "Nanoseconds": 54753600
+              },
+              {
+                "Operation": 7,
+                "Nanoseconds": 65760300
+              },
+              {
+                "Operation": 8,
+                "Nanoseconds": 60643000
+              },
+              {
+                "Operation": 9,
+                "Nanoseconds": 65570700
+              },
+              {
+                "Operation": 10,
+                "Nanoseconds": 64032000
+              },
+              {
+                "Operation": 11,
+                "Nanoseconds": 61264000
+              },
+              {
+                "Operation": 12,
+                "Nanoseconds": 61674700
+              },
+              {
+                "Operation": 13,
+                "Nanoseconds": 54503100
+              },
+              {
+                "Operation": 14,
+                "Nanoseconds": 67199200
+              },
+              {
+                "Operation": 15,
+                "Nanoseconds": 56568500
+              },
+              {
+                "Operation": 16,
+                "Nanoseconds": 59563000
+              },
+              {
+                "Operation": 17,
+                "Nanoseconds": 58750300
+              },
+              {
+                "Operation": 18,
+                "Nanoseconds": 58247300
+              },
+              {
+                "Operation": 19,
+                "Nanoseconds": 65390700
+              },
+              {
+                "Operation": 20,
+                "Nanoseconds": 55143100
+              },
+              {
+                "Operation": 21,
+                "Nanoseconds": 67553100
+              },
+              {
+                "Operation": 22,
+                "Nanoseconds": 61352200
+              },
+              {
+                "Operation": 23,
+                "Nanoseconds": 62264400
+              },
+              {
+                "Operation": 24,
+                "Nanoseconds": 62916600
+              }
+            ],
+            "Decision": "revisit",
+            "Rationale": "\uAC19\uC740 \uAD8C\uD55C \uC785\uB825\u00B7\uC2E4\uC81C \uC815\uB2F5\uACFC \uC77C\uCE58\uD55C \uC6D0\uC2DC \uD45C\uBCF8. \uD6C4\uBCF4 \uC774\uC810\u00B7\uC720\uC9C0\uBE44\u00B7\uD50C\uB7AB\uD3FC\uC744 \uAC80\uD1A0\uD558\uAE30 \uC804 \uC81C\uD488 \uCC44\uD0DD\uC73C\uB85C \uC2B9\uACA9\uD558\uC9C0 \uC54A\uC74C."
+          },
+          "RawSamples": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 56299300,
+              "ManagedAllocatedBytes": 27390544,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 55471100,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 2,
+              "Nanoseconds": 69155600,
+              "ManagedAllocatedBytes": 27381904,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 3,
+              "Nanoseconds": 55038900,
+              "ManagedAllocatedBytes": 27379192,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 4,
+              "Nanoseconds": 60192400,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 5,
+              "Nanoseconds": 58944900,
+              "ManagedAllocatedBytes": 27389968,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 6,
+              "Nanoseconds": 54753600,
+              "ManagedAllocatedBytes": 27379192,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 7,
+              "Nanoseconds": 65760300,
+              "ManagedAllocatedBytes": 27385912,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 8,
+              "Nanoseconds": 60643000,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 9,
+              "Nanoseconds": 65570700,
+              "ManagedAllocatedBytes": 27379192,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 10,
+              "Nanoseconds": 64032000,
+              "ManagedAllocatedBytes": 27382816,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 11,
+              "Nanoseconds": 61264000,
+              "ManagedAllocatedBytes": 27381880,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 12,
+              "Nanoseconds": 61674700,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 13,
+              "Nanoseconds": 54503100,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 14,
+              "Nanoseconds": 67199200,
+              "ManagedAllocatedBytes": 27383256,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 15,
+              "Nanoseconds": 56568500,
+              "ManagedAllocatedBytes": 27379976,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 16,
+              "Nanoseconds": 59563000,
+              "ManagedAllocatedBytes": 27381768,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 17,
+              "Nanoseconds": 58750300,
+              "ManagedAllocatedBytes": 27390056,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 18,
+              "Nanoseconds": 58247300,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 19,
+              "Nanoseconds": 65390700,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 20,
+              "Nanoseconds": 55143100,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 21,
+              "Nanoseconds": 67553100,
+              "ManagedAllocatedBytes": 27388968,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 22,
+              "Nanoseconds": 61352200,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 23,
+              "Nanoseconds": 62264400,
+              "ManagedAllocatedBytes": 27382552,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 24,
+              "Nanoseconds": 62916600,
+              "ManagedAllocatedBytes": 27389840,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            }
+          ],
+          "Nanoseconds": {
+            "P50": 60643000,
+            "P95": 67553100,
+            "P99": 69155600
+          },
+          "ManagedAllocatedBytes": {
+            "P50": 27382552,
+            "P95": 27390056,
+            "P99": 27390544
+          }
+        },
+        {
+          "Name": "json-atomic-full-roundtrip",
+          "Includes": "\uACE0\uC720 \uC791\uC5C5\uD3F4\uB354 \uC0DD\uC131/\uC815\uB9AC\u00B7\uD604\uC7AC GameSaveStore \uC804\uCCB4 encode/\uAC80\uC99D\u00B7Flush(true)\u00B7rename\u00B7\uC77D\uAE30/decode\u00B7\uB3D9\uC77C\uBC14\uC774\uD2B8 \uD655\uC778\u00B7hash",
+          "Excludes": "\uC2E4\uC81C \uC804\uC6D0/\uD504\uB85C\uC138\uC2A4 \uAC15\uC81C\uC911\uB2E8\u00B7OS/native \uD560\uB2F9\uC740 \uBCC4\uB3C4",
+          "Measurement": {
+            "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+            "FixtureHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "CommandHash": "59b0743f58d8370cc21c48f98fc0f350c4b06a3ef7b536053efd47130d948e99",
+            "KernelVersion": "EX-05:json-atomic-full-roundtrip:v1",
+            "BatchLength": 32,
+            "SupportedFeatures": "\uAC19\uC740 \uAC1C\uC778 cached DTO/\uC2E4\uC81C \uBA85\uB839; \uAD00\uB9AC thread \uD560\uB2F9\uB9CC \uACC4\uCE21\u00B7native/I/O/OS \uBA54\uBAA8\uB9AC\uB294 \uBCC4\uB3C4",
+            "Runtime": ".NET 10.0.14",
+            "Device": "runnervm48cm3",
+            "WarmupOpeningHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "MeasuredOpeningHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "RawSamples": [
+              {
+                "Operation": 0,
+                "Nanoseconds": 76989400
+              },
+              {
+                "Operation": 1,
+                "Nanoseconds": 119549700
+              },
+              {
+                "Operation": 2,
+                "Nanoseconds": 75469300
+              },
+              {
+                "Operation": 3,
+                "Nanoseconds": 419174700
+              },
+              {
+                "Operation": 4,
+                "Nanoseconds": 78123100
+              },
+              {
+                "Operation": 5,
+                "Nanoseconds": 77740000
+              },
+              {
+                "Operation": 6,
+                "Nanoseconds": 76142000
+              },
+              {
+                "Operation": 7,
+                "Nanoseconds": 77165100
+              },
+              {
+                "Operation": 8,
+                "Nanoseconds": 191838900
+              },
+              {
+                "Operation": 9,
+                "Nanoseconds": 80209100
+              },
+              {
+                "Operation": 10,
+                "Nanoseconds": 75291900
+              },
+              {
+                "Operation": 11,
+                "Nanoseconds": 84039100
+              },
+              {
+                "Operation": 12,
+                "Nanoseconds": 68257500
+              },
+              {
+                "Operation": 13,
+                "Nanoseconds": 101892500
+              },
+              {
+                "Operation": 14,
+                "Nanoseconds": 79334600
+              },
+              {
+                "Operation": 15,
+                "Nanoseconds": 71681000
+              },
+              {
+                "Operation": 16,
+                "Nanoseconds": 86857400
+              },
+              {
+                "Operation": 17,
+                "Nanoseconds": 83330400
+              },
+              {
+                "Operation": 18,
+                "Nanoseconds": 73239000
+              },
+              {
+                "Operation": 19,
+                "Nanoseconds": 76776900
+              },
+              {
+                "Operation": 20,
+                "Nanoseconds": 125970300
+              },
+              {
+                "Operation": 21,
+                "Nanoseconds": 75414500
+              },
+              {
+                "Operation": 22,
+                "Nanoseconds": 80023100
+              },
+              {
+                "Operation": 23,
+                "Nanoseconds": 116238600
+              },
+              {
+                "Operation": 24,
+                "Nanoseconds": 195651700
+              }
+            ],
+            "Decision": "revisit",
+            "Rationale": "\uAC19\uC740 \uAD8C\uD55C \uC785\uB825\u00B7\uC2E4\uC81C \uC815\uB2F5\uACFC \uC77C\uCE58\uD55C \uC6D0\uC2DC \uD45C\uBCF8. \uD6C4\uBCF4 \uC774\uC810\u00B7\uC720\uC9C0\uBE44\u00B7\uD50C\uB7AB\uD3FC\uC744 \uAC80\uD1A0\uD558\uAE30 \uC804 \uC81C\uD488 \uCC44\uD0DD\uC73C\uB85C \uC2B9\uACA9\uD558\uC9C0 \uC54A\uC74C."
+          },
+          "RawSamples": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 76989400,
+              "ManagedAllocatedBytes": 43476208,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 119549700,
+              "ManagedAllocatedBytes": 43479808,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 2,
+              "Nanoseconds": 75469300,
+              "ManagedAllocatedBytes": 43476792,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 3,
+              "Nanoseconds": 419174700,
+              "ManagedAllocatedBytes": 43476208,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 4,
+              "Nanoseconds": 78123100,
+              "ManagedAllocatedBytes": 43476208,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 5,
+              "Nanoseconds": 77740000,
+              "ManagedAllocatedBytes": 43476224,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 6,
+              "Nanoseconds": 76142000,
+              "ManagedAllocatedBytes": 43476208,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 7,
+              "Nanoseconds": 77165100,
+              "ManagedAllocatedBytes": 43476208,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 8,
+              "Nanoseconds": 191838900,
+              "ManagedAllocatedBytes": 43481472,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 9,
+              "Nanoseconds": 80209100,
+              "ManagedAllocatedBytes": 43480368,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 10,
+              "Nanoseconds": 75291900,
+              "ManagedAllocatedBytes": 43478016,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 11,
+              "Nanoseconds": 84039100,
+              "ManagedAllocatedBytes": 43476232,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 12,
+              "Nanoseconds": 68257500,
+              "ManagedAllocatedBytes": 43476208,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 13,
+              "Nanoseconds": 101892500,
+              "ManagedAllocatedBytes": 43479816,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 14,
+              "Nanoseconds": 79334600,
+              "ManagedAllocatedBytes": 43487136,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 15,
+              "Nanoseconds": 71681000,
+              "ManagedAllocatedBytes": 43476208,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 16,
+              "Nanoseconds": 86857400,
+              "ManagedAllocatedBytes": 43479856,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 17,
+              "Nanoseconds": 83330400,
+              "ManagedAllocatedBytes": 43481632,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 18,
+              "Nanoseconds": 73239000,
+              "ManagedAllocatedBytes": 43476432,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 19,
+              "Nanoseconds": 76776900,
+              "ManagedAllocatedBytes": 43476208,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 20,
+              "Nanoseconds": 125970300,
+              "ManagedAllocatedBytes": 43487704,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 21,
+              "Nanoseconds": 75414500,
+              "ManagedAllocatedBytes": 43486728,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 22,
+              "Nanoseconds": 80023100,
+              "ManagedAllocatedBytes": 43479792,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 23,
+              "Nanoseconds": 116238600,
+              "ManagedAllocatedBytes": 43476848,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 24,
+              "Nanoseconds": 195651700,
+              "ManagedAllocatedBytes": 43476248,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 1968815,
+              "MatchesReference": true
+            }
+          ],
+          "Nanoseconds": {
+            "P50": 79334600,
+            "P95": 195651700,
+            "P99": 419174700
+          },
+          "ManagedAllocatedBytes": {
+            "P50": 43476792,
+            "P95": 43487136,
+            "P99": 43487704
+          }
+        },
+        {
+          "Name": "brotli-atomic-full-roundtrip",
+          "Includes": "\uAC19\uC740 \uC804\uCCB4 codec\u00B7\uC555\uCD95/\uBCF5\uC0AC\u00B7\uAE38\uC774/\uD574\uC2DC\uAC80\uC99D\u00B7Flush(true)\u00B7rename\u00B7\uC77D\uAE30/\uD574\uC81C\u00B7\uAD8C\uC704\uAC80\uC99D\u00B7\uACE0\uC720\uD3F4\uB354 \uC815\uB9AC",
+          "Excludes": "\uC2E4\uC81C \uC804\uC6D0/\uD504\uB85C\uC138\uC2A4 \uAC15\uC81C\uC911\uB2E8\u00B7native compressor/OS \uBA54\uBAA8\uB9AC \uBBF8\uACC4\uCE21",
+          "Measurement": {
+            "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+            "FixtureHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "CommandHash": "59b0743f58d8370cc21c48f98fc0f350c4b06a3ef7b536053efd47130d948e99",
+            "KernelVersion": "EX-05:brotli-atomic-full-roundtrip:v1",
+            "BatchLength": 32,
+            "SupportedFeatures": "\uAC19\uC740 \uAC1C\uC778 cached DTO/\uC2E4\uC81C \uBA85\uB839; \uAD00\uB9AC thread \uD560\uB2F9\uB9CC \uACC4\uCE21\u00B7native/I/O/OS \uBA54\uBAA8\uB9AC\uB294 \uBCC4\uB3C4",
+            "Runtime": ".NET 10.0.14",
+            "Device": "runnervm48cm3",
+            "WarmupOpeningHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "MeasuredOpeningHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+            "RawSamples": [
+              {
+                "Operation": 0,
+                "Nanoseconds": 119740500
+              },
+              {
+                "Operation": 1,
+                "Nanoseconds": 110186900
+              },
+              {
+                "Operation": 2,
+                "Nanoseconds": 112998500
+              },
+              {
+                "Operation": 3,
+                "Nanoseconds": 113272500
+              },
+              {
+                "Operation": 4,
+                "Nanoseconds": 112649000
+              },
+              {
+                "Operation": 5,
+                "Nanoseconds": 107631900
+              },
+              {
+                "Operation": 6,
+                "Nanoseconds": 108263400
+              },
+              {
+                "Operation": 7,
+                "Nanoseconds": 114237900
+              },
+              {
+                "Operation": 8,
+                "Nanoseconds": 108764800
+              },
+              {
+                "Operation": 9,
+                "Nanoseconds": 116564400
+              },
+              {
+                "Operation": 10,
+                "Nanoseconds": 112570000
+              },
+              {
+                "Operation": 11,
+                "Nanoseconds": 112063900
+              },
+              {
+                "Operation": 12,
+                "Nanoseconds": 113652500
+              },
+              {
+                "Operation": 13,
+                "Nanoseconds": 112687700
+              },
+              {
+                "Operation": 14,
+                "Nanoseconds": 112593800
+              },
+              {
+                "Operation": 15,
+                "Nanoseconds": 122122000
+              },
+              {
+                "Operation": 16,
+                "Nanoseconds": 131656600
+              },
+              {
+                "Operation": 17,
+                "Nanoseconds": 111027000
+              },
+              {
+                "Operation": 18,
+                "Nanoseconds": 115920500
+              },
+              {
+                "Operation": 19,
+                "Nanoseconds": 146631600
+              },
+              {
+                "Operation": 20,
+                "Nanoseconds": 109425400
+              },
+              {
+                "Operation": 21,
+                "Nanoseconds": 110218100
+              },
+              {
+                "Operation": 22,
+                "Nanoseconds": 118740200
+              },
+              {
+                "Operation": 23,
+                "Nanoseconds": 107699400
+              },
+              {
+                "Operation": 24,
+                "Nanoseconds": 109295100
+              }
+            ],
+            "Decision": "revisit",
+            "Rationale": "\uAC19\uC740 \uAD8C\uD55C \uC785\uB825\u00B7\uC2E4\uC81C \uC815\uB2F5\uACFC \uC77C\uCE58\uD55C \uC6D0\uC2DC \uD45C\uBCF8. \uD6C4\uBCF4 \uC774\uC810\u00B7\uC720\uC9C0\uBE44\u00B7\uD50C\uB7AB\uD3FC\uC744 \uAC80\uD1A0\uD558\uAE30 \uC804 \uC81C\uD488 \uCC44\uD0DD\uC73C\uB85C \uC2B9\uACA9\uD558\uC9C0 \uC54A\uC74C."
+          },
+          "RawSamples": [
+            {
+              "Operation": 0,
+              "Nanoseconds": 119740500,
+              "ManagedAllocatedBytes": 56146240,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 1,
+              "Nanoseconds": 110186900,
+              "ManagedAllocatedBytes": 56139056,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 2,
+              "Nanoseconds": 112998500,
+              "ManagedAllocatedBytes": 56145608,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 3,
+              "Nanoseconds": 113272500,
+              "ManagedAllocatedBytes": 56139064,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 4,
+              "Nanoseconds": 112649000,
+              "ManagedAllocatedBytes": 56139064,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 5,
+              "Nanoseconds": 107631900,
+              "ManagedAllocatedBytes": 56138384,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 6,
+              "Nanoseconds": 108263400,
+              "ManagedAllocatedBytes": 56139648,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 7,
+              "Nanoseconds": 114237900,
+              "ManagedAllocatedBytes": 56145688,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 8,
+              "Nanoseconds": 108764800,
+              "ManagedAllocatedBytes": 56140232,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 9,
+              "Nanoseconds": 116564400,
+              "ManagedAllocatedBytes": 56138384,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 10,
+              "Nanoseconds": 112570000,
+              "ManagedAllocatedBytes": 56139776,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 11,
+              "Nanoseconds": 112063900,
+              "ManagedAllocatedBytes": 56142416,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 12,
+              "Nanoseconds": 113652500,
+              "ManagedAllocatedBytes": 56139064,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 13,
+              "Nanoseconds": 112687700,
+              "ManagedAllocatedBytes": 56143080,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 14,
+              "Nanoseconds": 112593800,
+              "ManagedAllocatedBytes": 56139056,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 15,
+              "Nanoseconds": 122122000,
+              "ManagedAllocatedBytes": 56142416,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 16,
+              "Nanoseconds": 131656600,
+              "ManagedAllocatedBytes": 56145088,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 17,
+              "Nanoseconds": 111027000,
+              "ManagedAllocatedBytes": 56138384,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 18,
+              "Nanoseconds": 115920500,
+              "ManagedAllocatedBytes": 56135696,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 19,
+              "Nanoseconds": 146631600,
+              "ManagedAllocatedBytes": 56142456,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 20,
+              "Nanoseconds": 109425400,
+              "ManagedAllocatedBytes": 56136264,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 21,
+              "Nanoseconds": 110218100,
+              "ManagedAllocatedBytes": 56138384,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 22,
+              "Nanoseconds": 118740200,
+              "ManagedAllocatedBytes": 56139752,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 23,
+              "Nanoseconds": 107699400,
+              "ManagedAllocatedBytes": 56147440,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            },
+            {
+              "Operation": 24,
+              "Nanoseconds": 109295100,
+              "ManagedAllocatedBytes": 56135024,
+              "OutputHash": "628ffdf8714b53a05560081c889d43cf061fb8ff159e9690d0889144eb014455",
+              "OutputBytes": 62663,
+              "MatchesReference": true
+            }
+          ],
+          "Nanoseconds": {
+            "P50": 112649000,
+            "P95": 131656600,
+            "P99": 146631600
+          },
+          "ManagedAllocatedBytes": {
+            "P50": 56139648,
+            "P95": 56146240,
+            "P99": 56147440
+          }
+        }
+      ],
+      "Decision": "revisit",
+      "Rationale": "\uBCC0\uD658\u00B7\uAC80\uC99D\u00B7\uD30C\uC77C \uD06C\uAE30\u00B7\uC804\uCCB4 \uC9C0\uC5F0/\uAD00\uB9AC\uD560\uB2F9\u00B7\uBCF5\uAD6C \uD55C\uACC4\uB97C \uD568\uAED8 \uBE44\uAD50\uD55C \uD6C4 \uD310\uB2E8. \uC791\uC740 \uD30C\uC77C\uC758 \uC555\uCD95\uB9CC\uC73C\uB85C \uCC44\uD0DD\uD558\uC9C0 \uC54A\uC74C."
+    }
+  ]
+}

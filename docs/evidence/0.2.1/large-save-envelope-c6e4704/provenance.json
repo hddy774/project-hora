@@ -1,0 +1,215 @@
+{
+  "kind": "large-save-envelope-functional-fix",
+  "source_commit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "product_source_fingerprint": "dcc95b5cb52a0d3b8e6b66975b736a685f4a82250508a2434d29563bd7b9cfc0",
+  "base_commit": "9704e95508456ee317a378a9b8dac55985bf1849",
+  "base_product_source_fingerprint": "f48068bca453202a3826b870e61e9be9972aae4ce8b68e0f8ff4e0b4e0963d28",
+  "worktree": "/workspace/seonro-large-save-9704e95",
+  "tracked_source_clean_at_tests": true,
+  "configuration": "Release",
+  "cpu_affinity": "0",
+  "measurement_runs": 0,
+  "large_population_reruns": 0,
+  "new_feature_scenarios": 4,
+  "selected_storage_scenarios": 74,
+  "independent_three_copy_oracle_scenarios": 1,
+  "full_functional_suite_run_here": false,
+  "commands": [
+    [
+      "taskset",
+      "-c",
+      "0",
+      "/workspace/.dotnet/dotnet",
+      "build",
+      "tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj",
+      "-c",
+      "Release"
+    ],
+    [
+      "taskset",
+      "-c",
+      "0",
+      "/workspace/.dotnet/dotnet",
+      "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "--filter",
+      "INV-004",
+      "--report",
+      "/workspace/scratch/large-save-c6e4704-storage.json"
+    ],
+    [
+      "taskset",
+      "-c",
+      "0",
+      "/workspace/.dotnet/dotnet",
+      "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "--filter",
+      "inventory copy oracle",
+      "--report",
+      "/workspace/scratch/large-save-c6e4704-copy-oracle.json"
+    ]
+  ],
+  "probe": {
+    "purpose": "Capture legacy envelope before modifying GameCodec, from unchanged base DLLs",
+    "worktree": "/workspace/seonro-large-save-9704e95",
+    "project": "/workspace/scratch/large-save-9704-probe/Probe.csproj",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/workspace/.dotnet/dotnet",
+      "run",
+      "--project",
+      "/workspace/scratch/large-save-9704-probe/Probe.csproj",
+      "-c",
+      "Release"
+    ],
+    "seed": 191,
+    "original_envelope_binary_attached": false,
+    "captured_original_length_and_sha256": [
+      {
+        "sequence": 0,
+        "bytes": 1887246,
+        "sha256": "efbb54d69fb462bc8b553c43989adf9c02f20e6831170bdeba6dc46ad9658f7a",
+        "worldHash": "e88b532a93cf18f6ccce1f537230fd17ad1d868d2cbc89010e8fc4f955a51724",
+        "rng": 17225382594591065783
+      },
+      {
+        "sequence": 7,
+        "bytes": 1887246,
+        "sha256": "e4bd98ffc8c1e8c81c4db47c99282cb22afc32dadd6e55642acc73b65796f891",
+        "worldHash": "e88b532a93cf18f6ccce1f537230fd17ad1d868d2cbc89010e8fc4f955a51724",
+        "rng": 17225382594591065783
+      }
+    ],
+    "actual_array_equality_asserted_in_new_test": true,
+    "original_assemblies": [
+      {
+        "name": "Chronicles.Core.dll",
+        "path": "/workspace/seonro-final-9704e95/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+        "bytes": 5120,
+        "sha256": "2b03e526d70f112350f81c1913017349b3a97a1afad5c1656ecf8f19d62bfb6f",
+        "informational_version": "0.2.1+9704e95508456ee317a378a9b8dac55985bf1849"
+      },
+      {
+        "name": "Chronicles.Game.dll",
+        "path": "/workspace/seonro-final-9704e95/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+        "bytes": 2256384,
+        "sha256": "ebeb64b17c888570fbb2aa7a4aca47c2992f044b8abaf4123df4a360ede8e48a",
+        "informational_version": "0.2.1+9704e95508456ee317a378a9b8dac55985bf1849"
+      },
+      {
+        "name": "Chronicles.Hosting.dll",
+        "path": "/workspace/seonro-final-9704e95/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+        "bytes": 23552,
+        "sha256": "e6f97ffa9079b0cff66fceba72ee96841e6a6fec328762542130cc5c2c4fbbf7",
+        "informational_version": "0.2.1+9704e95508456ee317a378a9b8dac55985bf1849"
+      },
+      {
+        "name": "Chronicles.Game.Tests.dll",
+        "path": "/workspace/seonro-final-9704e95/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "bytes": 1483264,
+        "sha256": "036849a5bdb94fffc80232e6c9447332832f6504f2db66db74f542f08c2b2769",
+        "informational_version": "0.2.1+9704e95508456ee317a378a9b8dac55985bf1849"
+      }
+    ]
+  },
+  "built_assemblies": [
+    {
+      "name": "Chronicles.Core.dll",
+      "path": "/workspace/seonro-large-save-9704e95/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "93fec9fe78f1ef14eb1b06b43e29caffcc3e52a1050fef46227ac1283ec54368",
+      "informational_version": "0.2.1+c6e470458ecefe055d98f89120f08c40c0c0660d"
+    },
+    {
+      "name": "Chronicles.Game.dll",
+      "path": "/workspace/seonro-large-save-9704e95/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "bytes": 2258432,
+      "sha256": "5c459b18add7c791f7791dfb3104fadb92e9f2a9900a48831761220cfea939c3",
+      "informational_version": "0.2.1+c6e470458ecefe055d98f89120f08c40c0c0660d"
+    },
+    {
+      "name": "Chronicles.Hosting.dll",
+      "path": "/workspace/seonro-large-save-9704e95/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "9d0ae707a4f74d8b5be649a0d41c499e460b1647849e83d8fe64b5f681d562ba",
+      "informational_version": "0.2.1+c6e470458ecefe055d98f89120f08c40c0c0660d"
+    },
+    {
+      "name": "Chronicles.Game.Tests.dll",
+      "path": "/workspace/seonro-large-save-9704e95/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "bytes": 1495040,
+      "sha256": "ce6596128a552b5c908b7eece08c0bd2f9cbe3895163d5b0050b0957f3fc5aa2",
+      "informational_version": "0.2.1+c6e470458ecefe055d98f89120f08c40c0c0660d"
+    }
+  ],
+  "protocol": {
+    "legacy_json_payload_max_bytes": 134217728,
+    "binary_magic_ascii": "SEONRO-021B\\0",
+    "header_bytes": 64,
+    "version": 3,
+    "fields": [
+      {
+        "offset": 0,
+        "bytes": 12,
+        "type": "ASCII magic, terminal NUL"
+      },
+      {
+        "offset": 12,
+        "bytes": 4,
+        "type": "little-endian signed int32 version, exactly 3"
+      },
+      {
+        "offset": 16,
+        "bytes": 8,
+        "type": "little-endian signed int64 sequence >= 0"
+      },
+      {
+        "offset": 24,
+        "bytes": 8,
+        "type": "little-endian signed int64 canonical UTF8 payload length > 0, bounded by Array.MaxLength - 64"
+      },
+      {
+        "offset": 32,
+        "bytes": 32,
+        "type": "SHA256(invariant decimal sequence + LF + canonical UTF8 payload)"
+      },
+      {
+        "offset": 64,
+        "bytes": "declared length",
+        "type": "raw canonical GameState UTF8 JSON"
+      }
+    ],
+    "state_domain_schema_changed": false,
+    "version_file_changed": false,
+    "legacy_json_schema_changed": false,
+    "large_decode_has_no_intermediate_payload_utf16_string": true,
+    "binary_magic_hex": "53454f4e524f2d3032314200"
+  },
+  "source_change_paths": [
+    "src/Chronicles.Game/GameCodec.cs",
+    "src/Chronicles.Hosting/GameSaveStore.cs",
+    "src/Chronicles.Hosting/Chronicles.Hosting.csproj",
+    "tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs"
+  ],
+  "scope_limits": [
+    "Forced-small internal thresholds exercise the same binary production branch, not a real 10k rerun.",
+    "The public byte[] API still materializes a snapshot, canonical payload and returned envelope; this is not a streaming save rewrite.",
+    "Memory availability, Array.MaxLength and individual JSON value limits remain.",
+    "The original 9263756 cost run remains a failed run; this fix does not relabel it."
+  ],
+  "original_failure": {
+    "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "preserved_evidence_url": "https://github.com/hddy774/project-hora/blob/f47aa3f0eef1bc3c45f5a01a9003691f472c5a33/docs/evidence/0.2.1/baseline-9263756-save-failure/README.md",
+    "raw_files": [
+      {
+        "path": "/workspace/scratch/final-baseline-9263756.json",
+        "sha256": "45107f240eac1906fb5c95d64a16e8fe9c6f103e6cbb01734afee91b1925428c"
+      },
+      {
+        "path": "/workspace/scratch/final-baseline-9263756.log",
+        "sha256": "f91b711b79dc0264dfc560a6887b2ab06e1a591a7e9faa28fef437cdabfa4906"
+      }
+    ]
+  }
+}

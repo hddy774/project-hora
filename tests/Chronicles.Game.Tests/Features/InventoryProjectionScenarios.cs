@@ -27,11 +27,35 @@ public sealed class InventoryProjectionGuardScenario : IFeatureScenario
 
 public sealed class InventoryProjectionPublicReferenceScenario : IFeatureScenario
 {
-    public string Name => "inventory projection: 실제 공개 명령·생계 AI가 실험 factory를 거쳐 기존 두 전체 transcript와 저장 속행 일치";
+    public string Name => "inventory projection: 실제 공개 명령·생계 AI가 기본 factory를 거쳐 기존 두 전체 transcript와 저장 속행 일치";
     public void Run()
     {
         new InventoryOwnedWorldReferenceScenario(true).Run();
         new InventoryOwnedEcologyReferenceScenario(true).Run();
+    }
+}
+
+public sealed class InventoryProjectionDefaultResumeScenario : IFeatureScenario
+{
+    public string Name => "inventory projection: Create·Restore·Decode 기본 투영과 strict reference의 실제 작업·저장 재개 동등성";
+    public void Run()
+    {
+        var world = InventoryWorldFixture.Create(116); var actor = world.Checkpoint().People[0].Id;
+        InventoryFixture.Check(world.InventoryProjectionEnabled && world.InventoryProjectionSnapshots == 0, "새 세계가 기본 투영 경로를 사용하지 않습니다.");
+        InventoryWorldFixture.Accept(world, new("adopted-control", actor, "possess"));
+        var request = new GameCommand("adopted-gather", actor, "gather", Data: "food"); InventoryWorldFixture.Accept(world, request);
+        var pending = world.Checkpoint(); var job = pending.Inventory.Jobs.Single(j => j.Actor == actor && j.Status == "processing");
+        InventoryFixture.Check(world.InventoryProjectionSnapshots > 0, "공개 Execute 후보가 기본 투영 factory를 실행하지 않았습니다.");
+        var encoded = GameCodec.Encode(world); var restored = GameWorld.Restore(pending); var decoded = GameCodec.Decode(encoded); var strict = GameCodec.Decode(encoded);
+        InventoryFixture.Check(restored.InventoryProjectionEnabled && decoded.InventoryProjectionEnabled && restored.InventoryProjectionSnapshots == 0 && decoded.InventoryProjectionSnapshots == 0,
+            "복원 기본 모드가 다르거나 진단 scope가 저장·공유됐습니다.");
+        strict.UseStrictInventoryForVerification(); InventoryFixture.Check(!strict.InventoryProjectionEnabled, "반대 strict 검증 선택을 유지하지 못했습니다.");
+        foreach (var candidate in new[] { world, restored, decoded, strict }) candidate.AdvanceTo(job.Due);
+        InventoryFixture.Check(world.StateHash() == restored.StateHash() && world.StateHash() == decoded.StateHash() && world.StateHash() == strict.StateHash() &&
+            restored.InventoryProjectionSnapshots > 0 && decoded.InventoryProjectionSnapshots > 0 && strict.InventoryProjectionSnapshots == 0 &&
+            GameCodec.Encode(world).SequenceEqual(GameCodec.Encode(decoded)), "기본 투영/strict 참조/저장 재개의 실물·상태·저장 bytes가 다릅니다.");
+        var before = world.StateHash(); InventoryWorldFixture.Accept(world, request); InventoryWorldFixture.Accept(decoded, request);
+        InventoryFixture.Check(world.StateHash() == before && decoded.StateHash() == before, "기본 투영 저장 후 명령 재전송이 작업을 다시 소비했습니다.");
     }
 }
 
@@ -73,7 +97,7 @@ public sealed class InventoryProjectionStaleScenario : IFeatureScenario
         {
             var world = OwnedInventoryFixture.Create(); var strict = GameCodec.Clone(world);
             var full = InventoryState.FromWorld(strict, strict.Inventory); using var strictToken = InventoryEngine.Own(strict);
-            using var token = InventoryEngine.OwnProjectedForExperiment(world);
+            using var token = InventoryEngine.OwnProjected(world);
             InventoryFixture.Check(token.Apply(new SplitInventoryItem("projection-stale", 1, world.Items[0].Id, 2)).Accepted, "오래된 후보 준비 실패.");
             var p = world.People[1];
             switch (field)
@@ -98,7 +122,7 @@ public sealed class InventoryProjectionStaleScenario : IFeatureScenario
         Action<GameState>[] authorityChanges = [w => w.Month++, w => w.NextId++, w => w.Revision++, w => w.Items[0].Quality++, w => w.Materials["herb"].Opening++];
         foreach (var change in authorityChanges)
         {
-            var world = OwnedInventoryFixture.Create(); using var token = InventoryEngine.OwnProjectedForExperiment(world);
+            var world = OwnedInventoryFixture.Create(); using var token = InventoryEngine.OwnProjected(world);
             change(world); var before = OwnedInventoryFixture.Snapshot(world); var rejected = false;
             try { token.CommitTo(world); } catch (InvalidOperationException error) { rejected = error.Message.Contains("stale", StringComparison.Ordinal); }
             InventoryFixture.Check(rejected && before == OwnedInventoryFixture.Snapshot(world), "Person 외 실제 권위 필드의 지문이 누락됐습니다.");
@@ -108,7 +132,7 @@ public sealed class InventoryProjectionStaleScenario : IFeatureScenario
             var property = typeof(Person).GetProperty(field)!;
             var strict = OwnedInventoryFixture.Create(); var projected = GameCodec.Clone(strict);
             var full = InventoryState.FromWorld(strict, strict.Inventory); using var strictToken = InventoryEngine.Own(strict);
-            using var token = InventoryEngine.OwnProjectedForExperiment(projected);
+            using var token = InventoryEngine.OwnProjected(projected);
             property.SetValue(strict.People[1], InventoryProjectionFixture.Sentinel(property, property.GetValue(strict.People[1])));
             property.SetValue(projected.People[1], InventoryProjectionFixture.Sentinel(property, property.GetValue(projected.People[1])));
             var expected = OwnedInventoryFixture.Snapshot(strict); var fullRejected = false; var strictRejected = false;
@@ -139,7 +163,7 @@ public sealed class InventoryProjectionNoninterferenceScenario : IFeatureScenari
         var strict = GameCodec.Clone(world); var reference = InventoryState.FromWorld(strict, strict.Inventory);
         var command = new SplitInventoryItem("projection-physical", 1, world.Items[0].Id, 2); var expected = InventoryEngine.Apply(reference, command);
         InventoryFixture.Check(expected.Accepted, expected.Message); strict.Inventory = expected.State.ApplyTo(strict);
-        using var token = InventoryEngine.OwnProjectedForExperiment(world); var actual = token.Apply(command);
+        using var token = InventoryEngine.OwnProjected(world); var actual = token.Apply(command);
         InventoryFixture.Check(actual.Accepted && actual.Subject == expected.Subject && actual.Message == expected.Message, "개인지식이나 일지가 실제 입력 전이를 바꿨습니다.");
         token.CommitTo(world);
         InventoryFixture.Check(OwnedInventoryFixture.Snapshot(world) == OwnedInventoryFixture.Snapshot(strict) && privateFacts == InventoryProjectionFixture.UnusedSnapshot(world.People[1]) &&
@@ -172,7 +196,7 @@ public sealed class InventoryProjectionOwnershipScenario : IFeatureScenario
         var reservationItems = world.Inventory.Reservations.Single(r => r.Id == reserved).Items;
         var oldJob = world.Inventory.Jobs.Single(); var oldLabor = world.Inventory.Labor.First(); var oldSource = world.Inventory.Sources.Single();
         var before = OwnedInventoryFixture.Snapshot(world);
-        using (var token = InventoryEngine.OwnProjectedForExperiment(world))
+        using (var token = InventoryEngine.OwnProjected(world))
         {
             var started = token.Apply(new StartProduction("projection-start", 1, "pill", 4));
             InventoryFixture.Check(started.Accepted && token.Apply(new BeginProduction("projection-process", 1, started.Subject)).Accepted, "실제 입력 소비 준비 실패.");
@@ -188,7 +212,7 @@ public sealed class InventoryProjectionOwnershipScenario : IFeatureScenario
         for (var afterConsumption = 0; afterConsumption < 2; afterConsumption++)
         {
             world = OwnedInventoryFixture.Create(); before = OwnedInventoryFixture.Snapshot(world);
-            using var token = InventoryEngine.OwnProjectedForExperiment(world);
+            using var token = InventoryEngine.OwnProjected(world);
             var started = token.Apply(new StartProduction("projection-failed-start", 1, "pill", 2)); InventoryFixture.Check(started.Accepted, started.Message);
             if (afterConsumption == 1) InventoryFixture.Check(token.Apply(new BeginProduction("projection-paid-process", 1, started.Subject)).Accepted, "실물 소비 준비 실패.");
             var failed = token.Apply(new BeginProduction("projection-failure", 2, started.Subject));
@@ -196,10 +220,10 @@ public sealed class InventoryProjectionOwnershipScenario : IFeatureScenario
             OwnedInventoryFixture.Closed(token, world);
         }
         world = OwnedInventoryFixture.Create(); before = OwnedInventoryFixture.Snapshot(world);
-        using var exceptionToken = InventoryEngine.OwnProjectedForExperiment(world); var threw = false;
+        using var exceptionToken = InventoryEngine.OwnProjected(world); var threw = false;
         try { exceptionToken.Apply(null!); } catch (ArgumentNullException) { threw = true; }
         InventoryFixture.Check(threw && before == OwnedInventoryFixture.Snapshot(world), "실험 예외가 원본을 바꿨습니다."); OwnedInventoryFixture.Closed(exceptionToken, world);
-        using var otherWorld = InventoryEngine.OwnProjectedForExperiment(world); var wrong = false;
+        using var otherWorld = InventoryEngine.OwnProjected(world); var wrong = false;
         try { otherWorld.CommitTo(GameCodec.Clone(world)); } catch (InvalidOperationException) { wrong = true; }
         InventoryFixture.Check(wrong && before == OwnedInventoryFixture.Snapshot(world), "실험 후보가 다른 세계로 인계됐습니다."); OwnedInventoryFixture.Closed(otherWorld, world);
     }

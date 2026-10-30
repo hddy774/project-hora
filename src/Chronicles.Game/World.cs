@@ -172,7 +172,7 @@ public sealed partial class GameWorld
             return new(command.Id, false, "상태가 바뀌었습니다. 다시 확인하세요.", CommandContextRevision);
         var candidate = new GameWorld(GameCodec.Clone(state));
         candidate.scalarExecutionVerification = scalarExecutionVerification;
-        candidate.inventoryProjectionExperiment = inventoryProjectionExperiment;
+        candidate.inventoryProjection = inventoryProjection;
         var error = candidate.Apply(command);
         if (error is not null) return new(command.Id, false, error, CommandContextRevision);
         candidate.SettleKnowledge();

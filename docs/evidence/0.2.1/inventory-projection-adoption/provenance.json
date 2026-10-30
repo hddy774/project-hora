@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "kind": "private-inventory-person15-adoption-evidence",
+  "measuredSource": "b0f3aec986d9b09015021499e47627b869411b83",
+  "sourceWorktree": "/workspace/seonro-projection-b0f3aec",
+  "sourceWorktreeCleanBeforeAndAfter": true,
+  "measurementOrder": [
+    "projected-n100",
+    "projected-n1000",
+    "strict-n100"
+  ],
+  "repetitionsPerConfiguration": 1,
+  "n100SameSourceModeOnlyComparison": true,
+  "n1000ReferenceSource": "89d581d6ad68813c378f495c208c5ee8e8155cad",
+  "n1000ReferenceHas155ValidationIndexes": true,
+  "allRequestedRunsCompletedTwelveMonths": true,
+  "actualHashLawsFixtureWorkloadSaveAndCognitionBytesEqual": true,
+  "newProductDefaultMeasurementNotYetRun": true,
+  "historicalExperimentalReportsUnchanged": true,
+  "n10000Run": false,
+  "formalPerformanceGatePassed": false,
+  "artifactCopies": [
+    {
+      "file": "projected-n100.json",
+      "sourcePath": "/workspace/scratch/projection-b0f3aec-n100.json",
+      "bytes": 11092,
+      "sha256": "8a4b7e844854c9d46d6c1d6fb0f0bc9336f0772d308748725b1ca8fb84ec8f18"
+    },
+    {
+      "file": "projected-n1000.json",
+      "sourcePath": "/workspace/scratch/projection-b0f3aec-n1000.json",
+      "bytes": 11191,
+      "sha256": "7c8fca5ed15fceb6b4dfd119421628580431f623ab36a0303b164ecce39ce812"
+    },
+    {
+      "file": "strict-n100.json",
+      "sourcePath": "/workspace/scratch/strict-b0f3aec-n100.json",
+      "bytes": 11055,
+      "sha256": "7390fa624bcbd54f1d81025e3b9dc82575cd9d1943b077dc3b3db00351eb3bda"
+    },
+    {
+      "file": "strict-89d581d-n1000.json",
+      "sourcePath": "/workspace/scratch/validation-155-n1000.json",
+      "bytes": 10892,
+      "sha256": "ef99405b3ac8f9669649c0b0f54e0959c4da5e7031f6b2c9779e70ad38a0a065"
+    },
+    {
+      "file": "projected-n100-run.json",
+      "sourcePath": "/workspace/scratch/projection-b0f3aec-n100-run.json",
+      "bytes": 1765,
+      "sha256": "f4b2a42b1b192bc564de07fefc6f029a3ce99e049536afb5a8ca4df440126b5f"
+    },
+    {
+      "file": "projected-n1000-run.json",
+      "sourcePath": "/workspace/scratch/projection-b0f3aec-n1000-run.json",
+      "bytes": 1772,
+      "sha256": "457c6db9f46847f4440cb4df1e26ee7e0128ac491cbc78fa2eb8e138b90c297a"
+    },
+    {
+      "file": "strict-n100-run.json",
+      "sourcePath": "/workspace/scratch/strict-b0f3aec-n100-run.json",
+      "bytes": 1710,
+      "sha256": "86ee96abc06847aa21eb86c948b011abf8f895abfe63a0f208638f989cc9c512"
+    },
+    {
+      "file": "comparison.json",
+      "sourcePath": "/workspace/scratch/projection-b0f3aec-comparison.json",
+      "bytes": 22692,
+      "sha256": "0bd12ef9ff17781665377d8e68e8f7c4b9deb31225e7c9bbfaa6c4922671a305"
+    },
+    {
+      "file": "owned-d1bfaf5-n100.json",
+      "sourcePath": "/workspace/scratch/owned-d1bfaf5-n100.json",
+      "bytes": 10796,
+      "sha256": "82166b63e72e1bceb873f512f4c33011eb14bb80d8c8cc4c42d01e8f6ea0a457"
+    }
+  ],
+  "limitations": [
+    "단일 공유 host 측정, thermal/power/외부 build 부하 통제 없음.",
+    "N100 A/B는 같은 소스이고 N1000 비교는 다른 source/시각이다.",
+    "조회·로드·중앙값·보유메모리 등 악화한 값도 원본/비교에 포함한다.",
+    "원본의 experimental_configuration:true/complete:false를 그대로 보존한다. 채택 근거이지 새 앱 소스의 정식 전체규모 최종 게이트 판정은 아니다.",
+    "원본 저장·인지 bytes와 full state hash가 같으므로 개인지식·기억·일지를 삭제해서 얻은 결과가 아니다."
+  ],
+  "adoptionScope": "이 PR의 private GameWorld owned factory 기본만 person15. public FromWorld/Apply/ApplyTo/Own strict70필드 계약은 유지."
+}

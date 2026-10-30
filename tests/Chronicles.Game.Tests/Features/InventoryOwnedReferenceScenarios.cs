@@ -97,8 +97,8 @@ internal sealed class InventoryWorldTranscript
     internal InventoryWorldTranscript(GameWorld world, bool projected = false)
     {
         this.world = world; this.projected = projected; rows = [world.StateHash()];
-        InventoryFixture.Check(!world.InventoryProjectionExperimentEnabled, "일반 세계의 기본 경로가 strict가 아닙니다.");
-        if (projected) world.EnableInventoryProjectionForExperiment();
+        InventoryFixture.Check(world.InventoryProjectionEnabled, "일반 세계의 기본 경로가 채택된 Person 투영이 아닙니다.");
+        if (!projected) world.UseStrictInventoryForVerification();
     }
     internal void Command(GameCommand command, bool accepted = true)
     {
@@ -121,15 +121,16 @@ internal sealed class InventoryWorldTranscript
     {
         var encoded = GameCodec.Encode(world); var restored = GameCodec.Decode(encoded);
         InventoryFixture.Check(world.StateHash() == restored.StateHash() && encoded.SequenceEqual(GameCodec.Encode(restored)), "저장 왕복이 실제 권위 상태를 변경했습니다.");
-        InventoryFixture.Check(!restored.InventoryProjectionExperimentEnabled, "저장 형식이 내부 실험 모드를 노출했습니다.");
-        if (projected) restored.EnableInventoryProjectionForExperiment();
+        InventoryFixture.Check(restored.InventoryProjectionEnabled, "저장 재개가 채택된 기본 Person 투영 경로를 사용하지 않습니다.");
+        if (!projected) restored.UseStrictInventoryForVerification();
         saved = restored;
         rows.Add(Convert.ToHexStringLower(SHA256.HashData(encoded)));
     }
     internal void Assert(string expected)
     {
         Invariants.Validate(world.Checkpoint());
-        if (projected) InventoryFixture.Check(world.InventoryProjectionExperimentSnapshots > 0, "공개 기준선이 실제 투영 실험 factory를 실행하지 않았습니다.");
+        InventoryFixture.Check(projected ? world.InventoryProjectionSnapshots > 0 : world.InventoryProjectionSnapshots == 0,
+            "공개 기준선이 선택된 기본 투영/strict reference factory를 실행하지 않았습니다.");
         var actual = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("\n", rows))));
         InventoryFixture.Check(actual == expected, "기존 공개 경로와 명령·월 경계·저장 해시가 달라졌습니다: " + actual);
     }

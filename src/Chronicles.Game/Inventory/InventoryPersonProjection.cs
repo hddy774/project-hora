@@ -7,7 +7,7 @@ namespace Chronicles.Game.Inventory;
 
 public static partial class InventoryEngine
 {
-    // Internal experiment only. No projected mutable candidate is returned by any accessible API.
+    // Private world input projection. Public FromWorld/Apply/ApplyTo and Own retain the complete strict contract.
     internal sealed partial class OwnedTransaction
     {
         private static readonly HashSet<string> PersonFields = new(StringComparer.Ordinal)

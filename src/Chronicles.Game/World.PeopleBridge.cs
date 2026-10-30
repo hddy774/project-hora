@@ -151,20 +151,51 @@ public sealed partial class GameWorld
         var source = new PeopleSource(id, PeopleSourceKind.SoulTrace, "실제 현생 종료 시점의 기억/지식/행동 근거", Month,
             state.LawRevision, person.Id, person.BodyId, person.SoulId);
         int Mean(IEnumerable<int> values) { var array = values.ToArray(); return array.Length == 0 ? 0 : (int)(array.Sum(v => (long)v) / array.Length); }
+        var works = state.Knowledge.Works.ToDictionary(w => w.Id, StringComparer.Ordinal);
+        var memories = state.Knowledge.Memories.Where(m => m.PersonId == person.Id).GroupBy(m => (m.WorkId, m.Chapter))
+            .Select(g => g.OrderByDescending(m => m.Revision).First()).OrderBy(m => m.WorkId, StringComparer.Ordinal).ThenBy(m => m.Chapter).ToArray();
+        var mastery = state.Knowledge.Mastery.Where(m => m.PersonId == person.Id).GroupBy(m => (m.WorkId, m.Chapter))
+            .Select(g => g.OrderByDescending(m => m.Revision).First()).ToArray();
+        var principles = memories.Where(m => works[m.WorkId].Kind == Knowledge.KnowledgeKind.Cultivation).ToArray();
+        var techniques = memories.Where(m => works[m.WorkId].Kind is Knowledge.KnowledgeKind.Craft or Knowledge.KnowledgeKind.Spell).ToArray();
+        var history = memories.Where(m => works[m.WorkId].Kind == Knowledge.KnowledgeKind.History).ToArray();
+        var martial = memories.Where(m => works[m.WorkId].Kind == Knowledge.KnowledgeKind.Martial).ToArray();
+        string[] KnowledgeReferences(IEnumerable<Knowledge.PersonalKnowledge> values) => values.Select(m =>
+            $"knowledge:{m.WorkId}:chapter:{m.Chapter}:edition:{m.EditionId}:revision:{m.Revision}").ToArray();
+        var references = new[]
+        {
+            person.Journal.Select(e => $"event:{e.Id}").ToArray(),
+            person.ObservedPeople.Values.Select(o => $"person-observation:{person.Id}:{o.Id}:{o.Month}")
+                .Concat(state.Relations.Where(r => r.Observer == person.Id).Select(r => r.Source)).Distinct(StringComparer.Ordinal).ToArray(),
+            KnowledgeReferences(principles),
+            KnowledgeReferences(techniques),
+            person.ObservedPlaces.Values.Select(o => $"place-observation:{person.Id}:{o.Place}:{o.Month}").Concat(KnowledgeReferences(history)).ToArray(),
+            KnowledgeReferences(martial).Concat(mastery.Where(m => works[m.WorkId].Kind == Knowledge.KnowledgeKind.Martial).Select(m => m.SourceId))
+                .Concat(person.Martial > 0 ? new[] { $"martial-body:{person.BodyId}:stage:{person.Martial}" } : []).ToArray()
+        };
         var measures = new[]
         {
             Math.Min(10_000, person.Journal.Count * 100),
-            Math.Min(10_000, person.ObservedPeople.Count * 200),
-            Mean(person.Understanding.Where(k => k.Key == "entry" || k.Key.StartsWith("path.", StringComparison.Ordinal)).Select(k => k.Value)),
-            Mean(person.Skills.Where(k => k.Key is "alchemy" or "smith" or "talisman" or "array" or "farm" or "medicine").Select(k => k.Value)),
-            Math.Min(10_000, person.ObservedPlaces.Count * 200),
-            Math.Max(person.Skills.GetValueOrDefault("combat"), person.Martial * 500)
+            Math.Min(10_000, Math.Max(person.ObservedPeople.Count * 200, state.Relations.Count(r => r.Observer == person.Id) * 150)),
+            Mean(principles.Select(m => m.Comprehension * 100)),
+            Math.Max(Mean(techniques.Select(m => m.Comprehension * 100)), Mean(mastery.Where(m => works[m.WorkId].Kind is Knowledge.KnowledgeKind.Craft or Knowledge.KnowledgeKind.Spell).Select(m => m.Mastery * 100))),
+            Math.Max(Math.Min(10_000, person.ObservedPlaces.Count * 200), Mean(history.Select(m => m.Comprehension * 100))),
+            Math.Max(Math.Max(person.Skills.GetValueOrDefault("combat"), person.Martial * 500), Mean(mastery.Where(m => works[m.WorkId].Kind == Knowledge.KnowledgeKind.Martial).Select(m => m.Mastery * 100)))
         };
-        soul = soul with { CurrentPersonId = 0, Values = soul.Values.Select(v => v with
+        var captured = soul.Values.Select(v => v with
         {
             Preserved = Math.Max(v.Preserved, measures[(int)v.Domain]), Accessible = 0, Integrated = 0, HasEvidence = true,
-            DefinitionIds = v.DefinitionIds.Append($"life.{person.Id}.trace.{(int)v.Domain}").Distinct(StringComparer.Ordinal).ToArray(), Source = source
-        }).ToArray(), History = [.. soul.History, new(id, SoulTraceActionKind.LifeCapture, Month, source, RelatedIdentity: person.Id)] };
+            DefinitionIds = v.DefinitionIds.Concat(references[(int)v.Domain]).Distinct(StringComparer.Ordinal).ToArray(),
+            MayContainMisconception = v.MayContainMisconception || ((int)v.Domain switch
+            {
+                2 => principles, 3 => techniques, 4 => history, 5 => martial, _ => []
+            }).Any(m => m.Belief != Knowledge.KnowledgeBelief.Supported),
+            Source = source with { CauseId = $"{id}.domain.{(int)v.Domain}",
+                Reference = $"PC-TEMP-V021-TRACE-02·실제 {(int)v.Domain}영역 snapshot·{string.Join(',', references[(int)v.Domain])}" }
+        }).ToArray();
+        soul = soul with { CurrentPersonId = 0, Values = captured,
+            History = [.. soul.History, new(id, SoulTraceActionKind.LifeCapture, Month, source, RelatedIdentity: person.Id,
+                DomainAmounts: captured.OrderBy(v => v.Domain).Select(v => v.Preserved).ToArray())] };
         if (souls[person.SoulId].Integrity < 100)
         {
             var damage = SoulTraces.Damage(soul, new($"{id}.actual-soul-damage", SoulTraceActionKind.CrossingDamage, Month, source,
@@ -346,10 +377,18 @@ public sealed partial class GameWorld
     private void RecordSelfTraceObservation(Person person, SoulTraceProfile soul, SoulTraceDomain domain, string evidenceId)
     {
         var value = soul.Values.Single(v => v.Domain == domain);
+        var visibleReferences = value.AccessGrade switch
+        {
+            TraceAccessGrade.Sealed => [],
+            TraceAccessGrade.Latent => value.DefinitionIds.Take(1).ToArray(),
+            TraceAccessGrade.Partial => value.DefinitionIds.Take(Math.Max(1,
+                (int)((long)value.DefinitionIds.Length * value.Accessible / Math.Max(1, value.Preserved)))).ToArray(),
+            _ => value.DefinitionIds.ToArray()
+        };
         state.PeopleDomain = state.PeopleDomain with
         {
             TraceObservations = state.PeopleDomain.TraceObservations.Where(o => o.ObserverId != person.Id || o.SubjectId != person.Id || o.Domain != domain)
-                .Append(new(person.Id, person.Id, domain, value.DefinitionIds.ToArray(), value.Accessible, value.Integrated, value.MayContainMisconception,
+                .Append(new(person.Id, person.Id, domain, visibleReferences, value.Accessible, value.Integrated, value.MayContainMisconception,
                     evidenceId, Month, Month)).ToArray()
         };
     }

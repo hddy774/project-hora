@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "kind": "strict-reference-capture-before-expected-adoption",
+  "captureSource": "0680ff7de792aadd0416be5b5f0a49023c006824",
+  "aiFinalAncestor": "728d2a6751d22d2f8fa94894d0c8144600217e1f",
+  "aiProductCode": "5f2b2973b1c0d5331a5e61c09eefb2e863ed66a4",
+  "recoveryBase": "0a33b68",
+  "ruleReferences": [
+    "#169",
+    "#170",
+    "#171"
+  ],
+  "gameTree": "ba0955ea85073d4a7820de68e7a3f96537acd305",
+  "coreTree": "951768a1c4188cc7da27e2b000c806f907b9ddbb",
+  "oldGoldenSource": "751e3491789152d7279c461adcbf747d6e1b3bbf",
+  "oldExpected": {
+    "manual": "2cef8af882dcd34fec03884184a9fef5c67b8232e77a0e14c022cb84c986eec6",
+    "old-lowfood-urgent-sale": "8e88d149188b0d0c8a65334ef1827eb0675bcdd3a81602a57bb6e6d48d36f561"
+  },
+  "capturedStrict": {
+    "manual": {
+      "digest": "ec01b5c4fa2f10268514912f0885f2debbd47a9ad9cc8aec85a8b73a1c311b56",
+      "rows": 50,
+      "saves": 4
+    },
+    "policy-surplus": {
+      "digest": "904c4750ee5f986367f50ca85f8502bf63555a140ea090249eaed114b51133e1",
+      "rows": 6,
+      "saves": 2
+    }
+  },
+  "captureResult": "기존명령/거부/장비·매매·경매/저장속행 및 현행trade semantic검사를모두지난뒤 old751 fixed digest assert에서만0/2실패. expected상수는이capture시점까지미변경.",
+  "fixtureChange": "판매자성향14축을0으로명시하고4·5축100,비축law3명시. 실제1월후food7중reserve3/잉여4/교역후보양수가ordinarytrade에서split+offer됨을검사. 옛urgent12분기를강제하지않음.",
+  "noGameOrPlanningEdits": true,
+  "noCostBenchmark": true,
+  "sourceFiles": {
+    "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs": {
+      "sha256": "99d52c31b1259f3e9f997c6c77c23ba9fbfcf81db8e1db7124c0215905c367f2",
+      "gitBlob": "e37bd9094ac06a92ea46e34f407132681b928c99"
+    },
+    "tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs": {
+      "sha256": "dac41c7e4388fa3c2d48319b500bcb959fa8bf5f6d8939eea41a06db3f2e4a77",
+      "gitBlob": "c691d68536a410c15669411641ab2e099f60c4c4"
+    }
+  },
+  "patch": {
+    "file": "capture-fixture-and-helper.patch",
+    "sha256": "e102363e4366a9e92635c85f283d1577f8e4144e4b6f11152bde7cf404aff342"
+  },
+  "artifactCopies": [
+    {
+      "file": "legacy-failures.original.json",
+      "sourcePath": "/workspace/scratch/agent-cultivation-trade-old-oracles.json",
+      "bytes": 2224,
+      "sha256": "3c7fb4c76fc585ede3ac2f6b52aea1d3ca9be9114c5218b1f98fcd739dae0b46"
+    },
+    {
+      "file": "strict-capture-original-report.json",
+      "sourcePath": "/workspace/scratch/inventory-oracle-policy-strict-report.json",
+      "bytes": 2679,
+      "sha256": "cc3c27421da09bc72bdd28ca32bd7f0aefeae96548564f86494a3b15f80884b7"
+    },
+    {
+      "file": "manual-strict.original.json",
+      "sourcePath": "/workspace/scratch/inventory-oracle-policy-strict/manual-strict.json",
+      "bytes": 18935,
+      "sha256": "8597f62a9b474060b6358d377c5968611b384920a33fd12366e00f523c9abd39"
+    },
+    {
+      "file": "policy-surplus-strict.original.json",
+      "sourcePath": "/workspace/scratch/inventory-oracle-policy-strict/policy-surplus-strict.json",
+      "bytes": 2058,
+      "sha256": "68a9a351b761fb645d0e7e733cc1f5119b0b19f36f854db837b4149de0e64524"
+    }
+  ],
+  "preservation": "옛751 digest와기존docs근거는수정하지않고이파일에함께보존. capture모드출력은expected생성/대체나assert우회를하지않음."
+}

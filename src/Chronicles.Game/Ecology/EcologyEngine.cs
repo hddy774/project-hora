@@ -38,10 +38,10 @@ public static class EcologyEngine
         foreach (var entry in events.Where(e => e.Event.Kind is "physical-consumption" or "physical-loss"))
         {
             var flow = JsonSerializer.Deserialize<PhysicalFlowEvidence>(JsonSerializer.SerializeToUtf8Bytes(entry.Event))!;
-            if (flow.Quantity <= 0 || flow.Definition.Length == 0 || flow.Place < 0) continue;
+            if (flow.Quantity <= 0 || string.IsNullOrEmpty(flow.Definition) || flow.Place < 0) continue;
             var source = flow.Sequence > 0 ? $"inventory-flow:{flow.Sequence}" : $"inventory-event:{entry.Index}";
             if (flow.IsLoss)
-                state.Losses.Add(new(state.NextId++, entry.Event.Month, flow.Owner, flow.Place, flow.Definition, flow.Quantity, source));
+                state.Losses.Add(new(state.NextId++, entry.Event.Month, flow.Owner, flow.Place, flow.Definition, flow.Quantity, source, flow.OwnerObserved));
             else
             {
                 var actor = context.People.Single(p => p.Id == entry.Event.Actor);
@@ -101,7 +101,7 @@ public static class EcologyEngine
             }).ToArray();
         return new(context.Month, observer, observer ? state.Markets.Select(m => m with { Sources = m.Sources.ToArray() }).ToArray() : [],
             state.Demand.Where(d => observer || d.Sector == "person" && d.Subject == actor).ToArray(), listings, prices,
-            state.Consumption.Where(c => observer || c.Person == actor).ToArray(), state.Losses.Where(l => observer || l.Owner == actor).ToArray(),
+            state.Consumption.Where(c => observer || c.Person == actor).ToArray(), state.Losses.Where(l => observer || l.Owner == actor && l.OwnerObserved).ToArray(),
             observer ? state.NaturalFlows.Select(f => f with
             { NaturalSources = f.NaturalSources.ToArray(), Sources = f.Sources.ToArray() }).ToArray() : [],
             observer ? state.Changes.ToArray() : [], facilities,
@@ -275,7 +275,8 @@ public static class EcologyEngine
             var previous = state.Places.FirstOrDefault(p => p.Place == current.Place);
             if (previous is null) continue;
             if (previous.Teachers.Length > 0 && current.Teachers.Length == 0)
-                Change(state, context.Month, current.Place, EcologicalChangeKind.EducationLoss, previous.Teachers.Length, 0, "actual-resident-teachers-departed");
+                Change(state, context.Month, current.Place, EcologicalChangeKind.EducationLoss, previous.Teachers.Length, 0,
+                    "actual-entry-knowledge-holders-departed; surviving-readable-media-not-ruled-out");
             if (previous.Households.Except(current.Households).Any())
                 Change(state, context.Month, current.Place, EcologicalChangeKind.HouseholdLoss, previous.Households.Length, current.Households.Length, "actual-household-presence-changed");
             var residents = context.People.Where(p => p.Status == LifeStatus.Alive && p.Place == current.Place).ToArray();
@@ -364,7 +365,7 @@ public static class EcologyEngine
     // Structural DTOs keep the reader source-compatible with older inventories without inventing missing audit facts.
     private sealed record PaidSettlementEvidence(long? PaidAmount, int? PaidQuantity, int? PaidQuality, long? EndedMonth);
     private sealed record PhysicalFlowEvidence(long Sequence = 0, string Definition = "", int Quantity = 0,
-        int Place = -1, long Owner = 0, string ItemSource = "", bool IsLoss = false);
+        int Place = -1, long Owner = 0, string ItemSource = "", bool IsLoss = false, bool OwnerObserved = false);
 }
 
 internal sealed class EcologyFacts

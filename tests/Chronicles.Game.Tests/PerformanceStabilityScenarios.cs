@@ -101,10 +101,13 @@ internal static partial class PerformanceScenarios
 #if DEBUG
         throw new InvalidOperationException("성능 근거는 Release 빌드에서만 기록합니다.");
 #else
+        var arguments = Environment.GetCommandLineArgs(); var filter = Array.IndexOf(arguments, "--filter");
         return new { sourceCommit = source, sourceWorktreeClean = true, buildConfiguration = "Release", platform = "host", engine = "none",
             device = Environment.MachineName, runtime = RuntimeInformation.FrameworkDescription, os = RuntimeInformation.OSDescription,
             architecture = RuntimeInformation.ProcessArchitecture.ToString(), cpu = Environment.ProcessorCount,
             totalAvailableMemoryBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes,
+            precedingFunctionalSelection = filter >= 0 && filter + 1 < arguments.Length ? arguments[filter + 1] : "all",
+            processScope = "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
             thermalState = Environment.GetEnvironmentVariable("V021_THERMAL_STATE") ?? "not measured; host result only",
             powerState = Environment.GetEnvironmentVariable("V021_POWER_STATE") ?? "not measured; host result only" };
 #endif

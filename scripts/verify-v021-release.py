@@ -22,6 +22,10 @@ CERTIFICATE = "0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a"
 WORKFLOW = ".github/workflows/v021-release.yml"
 READINESS = "docs/evidence/0.2.1/release-readiness.json"
 RELEASE_ONLY = {"scripts/verify-v021-release.py", "scripts/v021-release-emulator.py", "scripts/publish-v021-release.py"}
+PERFORMANCE_POLICY = "v021-revision6-section11-T04"
+LEGACY_SPEED_HISTORY = "docs/evidence/0.2.1/soak.json"
+LEGACY_SPEED_HISTORY_SHA256 = "7560f882822979077b51f1ec97a6596f143c1870836515aceb9ad8a252749da8"
+PERFORMANCE_METRICS = ("monthlyP95Ms", "queryMs", "saveMs", "loadMs", "allocatedBytes", "saveBytes", "retainedManagedBytes", "serializedCognitionBytes")
 
 
 def require(condition, message):
@@ -164,29 +168,184 @@ def feature_gate(source, readiness_path=READINESS):
     return ready
 
 
+def finite_number(value, positive=False):
+    return type(value) in (int, float) and math.isfinite(value) and (value > 0 if positive else value >= 0)
+
+
+def measurement_rows(report):
+    require(isinstance(report, dict), "Population measurement report is missing")
+    require(report.get("schema_version") == 2 and report.get("kind") == "seonro-population-baseline" and report.get("complete") is True,
+            "Current declared population measurement schema is required")
+    environment = report.get("environment", {})
+    require(environment.get("buildConfiguration") == "Release" and environment.get("sourceWorktreeClean") is True and environment.get("engine") == "none" and
+            environment.get("platform") == "host" and re.fullmatch(r"[0-9a-f]{40}", environment.get("sourceCommit", "")) and
+            all(isinstance(environment.get(k), str) and environment[k].strip() for k in
+                ("device", "runtime", "os", "architecture", "thermalState", "powerState", "precedingFunctionalSelection", "processScope")),
+            "Record source, Release build, host/runtime/device and explicit thermal/power scope")
+    require(type(environment.get("cpu")) is int and environment["cpu"] > 0 and finite_number(environment.get("totalAvailableMemoryBytes"), positive=True),
+            "Actual processor count and runtime-available memory are required")
+    require(finite_number(report.get("totalElapsedSeconds"), positive=True), "Total measurement time is missing")
+    rows = report.get("reports", [])
+    require(isinstance(rows, list) and len(rows) == len({r.get("population") for r in rows}) and
+            {r.get("population") for r in rows} >= {2, 100, 1000, 10000}, "Four population baselines, including 10,000, are required")
+    require(set(report.get("completedSizes", [])) == {r["population"] for r in rows}, "Partial/incremental population reports cannot pass")
+    for row in rows:
+        require(type(row.get("population")) is int and row["population"] >= 2, "Measured initial population is invalid")
+        samples = row.get("monthlySamplesMs", [])
+        require(type(row.get("measuredMonths")) is int and row["measuredMonths"] > 0 and
+                type(row.get("repetitions")) is int and row["repetitions"] > 0 and
+                type(row.get("warmupMonths")) is int and row["warmupMonths"] > 0 and
+                len(samples) == row["measuredMonths"] * row["repetitions"] and all(finite_number(v) for v in samples),
+                "Actual monthly distribution, warmup and repetition counts are required")
+        require(all(finite_number(row.get(k)) for k in PERFORMANCE_METRICS), "Latency, allocations, memory and save-size measurements are required")
+        require(all(type(row.get(k)) is int and row[k] > 0 for k in ("saveBytes", "retainedManagedBytes", "serializedCognitionBytes")) and
+                type(row.get("openingRetainedManagedBytes")) is int and row["openingRetainedManagedBytes"] > 0,
+                "Retained managed memory and serialized bytes must be actual positive byte counts")
+        require(math.isclose(row["monthlyP95Ms"], sorted(samples)[math.ceil(len(samples) * .95) - 1], rel_tol=1e-9, abs_tol=1e-9),
+                "Monthly p95 does not match the recorded samples")
+        fixture = row.get("fixture", {})
+        require(fixture.get("population") == row["population"] and fixture.get("founders") == 2 and
+                fixture.get("syntheticEntrants") == row["population"] - 2 and isinstance(row.get("usedLaws"), dict) and row["usedLaws"],
+                "Disclose the real initial roster, synthetic status and laws")
+        require(type(row.get("workload", {}).get("peopleWithDecisions")) is int and row["workload"]["peopleWithDecisions"] > 0,
+                "A live AI workload cannot be replaced by an inert population")
+        cognition = row.get("cognition", {})
+        require(type(cognition.get("people")) is int and cognition["people"] >= row["population"] and
+                finite_number(cognition.get("beliefBudgetPerPerson"), positive=True) and finite_number(cognition.get("activeClaimBudgetPerPerson"), positive=True) and
+                finite_number(cognition.get("maximumBudgetUnitsPerPerson")) and cognition["maximumBudgetUnitsPerPerson"] <= cognition["beliefBudgetPerPerson"] and
+                cognition.get("peopleExceedingBeliefBudget") == 0 and cognition.get("peopleExceedingClaimBudget") == 0 and
+                cognition.get("serializedBytes") == row["serializedCognitionBytes"] and isinstance(cognition.get("serializedScope"), str) and
+                isinstance(row.get("retainedMemoryScope"), str) and row["retainedMemoryScope"].strip(), "L04 budget, collected-memory and cognition-byte scopes are required")
+        for name in ("beliefs", "storedClaims", "activeClaims", "peopleObservations", "placeObservations", "sourceObservations", "knownPeople", "knownPlaces"):
+            count, maximum = cognition.get("totals", {}).get(name), cognition.get("maximumPerPerson", {}).get(name)
+            require(type(count) is int and type(maximum) is int and 0 <= maximum <= count <= maximum * cognition["people"],
+                    "L04 actual totals and per-person maxima are inconsistent: " + name)
+        require(cognition["maximumPerPerson"]["activeClaims"] <= cognition["activeClaimBudgetPerPerson"], "Active personal claims exceeded their real budget")
+        require(cognition["totals"]["activeClaims"] <= cognition["totals"]["storedClaims"] and
+                cognition["maximumPerPerson"]["activeClaims"] <= cognition["maximumPerPerson"]["storedClaims"], "Active claims must be a subset of stored claims")
+        counted = ("beliefs", "activeClaims", "peopleObservations", "placeObservations", "sourceObservations")
+        maximum = cognition["maximumBudgetUnitsPerPerson"]
+        require(max(cognition["maximumPerPerson"][k] for k in counted) <= maximum <= sum(cognition["maximumPerPerson"][k] for k in counted) and
+                sum(cognition["totals"][k] for k in counted) <= maximum * cognition["people"], "Actual cognition budget-unit totals/maxima disagree")
+    return {row["population"]: row for row in rows}
+
+
+def canonical_performance_reports(baseline, measured, budget, plan, stability, baseline_sha, plan_sha):
+    """Pure evidence-contract checks. This function never executes a simulation or a benchmark."""
+    before, after = measurement_rows(baseline), measurement_rows(measured)
+    require(budget.get("schema_version") == 1 and budget.get("kind") == "seonro-performance-budget" and
+            budget.get("policy") == PERFORMANCE_POLICY and budget.get("established_after_baseline") is True and
+            budget.get("baseline_report_sha256") == baseline_sha and isinstance(budget.get("rationale"), str) and budget["rationale"].strip(),
+            "Numerical budgets must be documented after and tied to the actual baseline")
+    regression = budget.get("maximum_regression_percent")
+    require(finite_number(regression), "A measured-baseline regression allowance must be explicit")
+    for population, row in after.items():
+        limits = budget.get("limits", {}).get(str(population), {})
+        require(population in before, "A measured population has no comparison baseline")
+        for name in PERFORMANCE_METRICS:
+            require(finite_number(limits.get(name), positive=True), "Missing post-baseline population budget: " + name)
+            require(row[name] <= limits[name] and row[name] <= before[population][name] * (1 + regression / 100),
+                    "Actual population measurement exceeds the adopted budget/regression: " + name)
+    require(plan.get("schemaVersion") == 1 and plan.get("policyId") == PERFORMANCE_POLICY and
+            plan.get("baselineReportSha256") == baseline_sha and isinstance(plan.get("rationale"), str) and plan["rationale"].strip(),
+            "A documented post-baseline long-run workload plan is required")
+    cases = plan.get("cases", [])
+    require(isinstance(cases, list) and len(cases) == len({c.get("population") for c in cases}) and
+            any(c.get("population") == 10000 for c in cases), "Long-run stability must include the 10,000-person initial fixture")
+    require(stability.get("schema_version") == 1 and stability.get("kind") == "seonro-long-run-stability" and
+            stability.get("policy") == PERFORMANCE_POLICY and stability.get("passed") is True and
+            stability.get("baselineReportSha256") == baseline_sha and stability.get("planSha256") == plan_sha and
+            finite_number(stability.get("totalElapsedSeconds"), positive=True), "Actual planned long-run stability did not complete")
+    env = stability.get("environment", {})
+    require(env.get("buildConfiguration") == "Release" and env.get("sourceWorktreeClean") is True and env.get("platform") == "host" and env.get("engine") == "none" and
+            all(isinstance(env.get(k), str) and env[k].strip() for k in
+                ("sourceCommit", "device", "runtime", "os", "architecture", "thermalState", "powerState", "precedingFunctionalSelection", "processScope")), "Long-run environment/scope is missing")
+    require(type(env.get("cpu")) is int and env["cpu"] > 0 and finite_number(env.get("totalAvailableMemoryBytes"), positive=True),
+            "Long-run processor and memory environment is missing")
+    rows = stability.get("reports", [])
+    require(len(rows) == len(cases) and {r.get("population") for r in rows} == {c["population"] for c in cases}, "Long-run cases are incomplete or duplicated")
+    require(all(finite_number(r.get("elapsedSeconds"), positive=True) for r in rows) and
+            stability["totalElapsedSeconds"] >= sum(r["elapsedSeconds"] for r in rows), "Record the actual total long-run time and every case")
+    for case in cases:
+        population = case["population"]; row = next(r for r in rows if r["population"] == population)
+        horizon, interval, validation = case.get("horizonMonths"), case.get("checkpointEveryMonths"), case.get("validateEveryMonths")
+        require(population in before and type(horizon) is int and horizon > before[population]["measuredMonths"] and
+                type(interval) is int and 0 < interval <= horizon // 2 and type(validation) is int and 0 < validation <= interval and
+                finite_number(case.get("wallTimeLimitSeconds"), positive=True), "Long-run horizon/checkpoint/invariant/time plan is invalid")
+        require(row.get("passed") is True and row.get("failure") is None and row.get("targetMonths") == horizon and
+                row.get("completedMonths") == horizon and finite_number(row.get("elapsedSeconds"), positive=True) and
+                row["elapsedSeconds"] <= case["wallTimeLimitSeconds"] and type(row.get("boundaryChecks")) is int and
+                row["boundaryChecks"] >= horizon // validation, "A failed, timed-out or incomplete stability case cannot pass")
+        checkpoints = row.get("checkpoints", [])
+        require(len(checkpoints) >= 3 and checkpoints[0].get("month") == 0 and checkpoints[-1].get("month") == horizon and
+                all(a["month"] < b["month"] and b["month"] - a["month"] <= interval for a, b in zip(checkpoints, checkpoints[1:])),
+                "Long-run I/O/resume samples must span the declared horizon")
+        limits = budget.get("stability_limits", {}).get(str(population), {})
+        for checkpoint in checkpoints:
+            require(all(checkpoint.get(k) is True for k in ("invariantValid", "saveResumeEqual", "queryUnchanged", "publicCommandAccepted")) and
+                    type(checkpoint.get("people")) is int and checkpoint["people"] >= population and
+                    type(checkpoint.get("living")) is int and 0 <= checkpoint["living"] <= checkpoint["people"] and
+                    type(checkpoint.get("births")) is int and checkpoint["births"] >= 0 and
+                    type(checkpoint.get("deaths")) is int and checkpoint["deaths"] >= 0 and checkpoint["people"] == population + checkpoint["births"] and
+                    re.fullmatch(r"[0-9a-f]{64}", checkpoint.get("hash", "")) is not None,
+                    "Actual boundary, public I/O and atomic save/resume checks must pass; natural population change is allowed")
+            for name in ("retainedManagedBytes", "saveBytes"):
+                require(finite_number(limits.get(name), positive=True) and finite_number(checkpoint.get(name)) and checkpoint[name] <= limits[name],
+                        "Long-run memory/save growth exceeded its documented budget: " + name)
+        require(row.get("living") == checkpoints[-1]["living"] and row.get("births") == checkpoints[-1]["births"] and
+                row.get("deaths") == checkpoints[-1]["deaths"] and row.get("finalHash") == checkpoints[-1]["hash"] and
+                all(a["births"] <= b["births"] and a["deaths"] <= b["deaths"] for a, b in zip(checkpoints, checkpoints[1:])),
+                "Natural demographic outcomes must be retained consistently")
+        require(type(row.get("workload", {}).get("peopleWithDecisions")) is int and row["workload"]["peopleWithDecisions"] > 0,
+                "Long-run evidence must retain actual AI activity")
+
+
+def legacy_speed_comparison(report):
+    require(report.get("population") == 10000 and report.get("targetMonths") == 7200 and report.get("targetSpeed") == 100 and
+            finite_number(report.get("elapsedSeconds"), positive=True) and type(report.get("completedMonths")) is int and
+            0 <= report["completedMonths"] <= 7200 and type(report.get("living")) is int and report["living"] >= 0 and
+            finite_number(report.get("achievedSpeed")), "Preserve the original V020-G03 comparison scope")
+    speed = report["completedMonths"] / 12 * 10 / report["elapsedSeconds"]
+    met = report["completedMonths"] == 7200 and report["living"] == 10000 and report["elapsedSeconds"] <= 60 and speed >= 100
+    require(math.isclose(report["achievedSpeed"], speed, rel_tol=1e-9) and report.get("passed") is met,
+            "The legacy comparison result must not be relabelled or recalculated as a pass")
+    return met  # A truthful historical miss is retained; it is not the revision-6 numerical gate.
+
+
 def performance_gate(source, ready):
     require(ready.get("final_performance_complete") is True and ready.get("publication_enabled") is True,
             "Final performance/publication readiness is false")
     report = evidence_file(ready.get("final_performance_report"), ready.get("final_performance_report_sha256"))
-    require(report.get("schema_version") == 1 and report.get("kind") == "seonro-final-performance" and report.get("passed") is True,
+    require(report.get("schema_version") == 2 and report.get("kind") == "seonro-final-performance" and report.get("passed") is True and
+            report.get("policy") == PERFORMANCE_POLICY,
             "Final performance audit did not pass")
     require(report.get("after_feature_functional_completion") is True and
             report.get("product_source_fingerprint") == source["product_source_fingerprint"] and
             report.get("functional_report_sha256") == ready["functional_report_sha256"], "Stale or pre-feature performance evidence")
-    population = evidence_file(report.get("population_report"), report.get("population_report_sha256"))
-    rows = population.get("reports", [])
-    require({r.get("population") for r in rows} >= {2, 100, 1000, 10000}, "Final actual population measurements are incomplete")
-    limits = report.get("limits", {})
-    for name in ("monthlyP95Ms", "queryMs", "saveMs", "loadMs"):
-        limit = limits.get(name)
-        require(type(limit) in (int, float) and math.isfinite(limit) and limit > 0, "Missing explicit final performance limit: " + name)
-        require(all(type(r.get(name)) in (int, float) and math.isfinite(r[name]) and 0 <= r[name] <= limit for r in rows),
-                "Measured final performance exceeded limit: " + name)
-    soak = evidence_file(report.get("soak_report"), report.get("soak_report_sha256"))
-    require(soak.get("passed") is True and soak.get("population") == 10000 and soak.get("living") == 10000 and
-            soak.get("targetMonths", 0) >= 7200 and soak.get("completedMonths", 0) >= soak["targetMonths"] and
-            type(soak.get("elapsedSeconds")) in (int, float) and 0 < soak["elapsedSeconds"] <= 60 and
-            soak.get("achievedSpeed", 0) >= 100, "Actual final 10,000-person 100x/60-second soak is incomplete")
+    artifacts = {name: evidence_file(report.get(name + "_report"), report.get(name + "_report_sha256"))
+                 for name in ("baseline", "population", "budget", "stability")}
+    plan = evidence_file(report.get("stability_plan"), report.get("stability_plan_sha256"))
+    canonical_performance_reports(artifacts["baseline"], artifacts["population"], artifacts["budget"], plan, artifacts["stability"],
+                                  report["baseline_report_sha256"], report["stability_plan_sha256"])
+    baseline_commit = artifacts["baseline"]["environment"]["sourceCommit"]
+    run("git", "merge-base", "--is-ancestor", baseline_commit, source["source_commit"])
+    require(report.get("baseline_product_source_fingerprint") == fingerprint(baseline_commit), "Baseline source fingerprint is not the actual measured source")
+    before_environment = artifacts["baseline"]["environment"]
+    after_environment = artifacts["population"]["environment"]
+    if any(before_environment.get(k) != after_environment.get(k) for k in
+           ("device", "runtime", "os", "architecture", "cpu", "totalAvailableMemoryBytes", "thermalState", "powerState", "precedingFunctionalSelection", "processScope")):
+        require(isinstance(artifacts["budget"].get("environment_difference_rationale"), str) and
+                artifacts["budget"]["environment_difference_rationale"].strip(), "Different measurement environments require an explicit comparison limitation")
+    for measured in (artifacts["population"], artifacts["stability"]):
+        commit = measured["environment"]["sourceCommit"]
+        require(re.fullmatch(r"[0-9a-f]{40}", commit) is not None and fingerprint(commit) == source["product_source_fingerprint"],
+                "Population/stability evidence measured different product inputs")
+    require(report.get("legacy_speed_history_report") == LEGACY_SPEED_HISTORY and
+            report.get("legacy_speed_history_report_sha256") == LEGACY_SPEED_HISTORY_SHA256,
+            "Retain the original failed V020-G03 evidence without modification")
+    legacy_speed_comparison(evidence_file(LEGACY_SPEED_HISTORY, LEGACY_SPEED_HISTORY_SHA256))
+    if report.get("legacy_speed_comparison_report") is not None:
+        legacy_speed_comparison(evidence_file(report["legacy_speed_comparison_report"], report.get("legacy_speed_comparison_report_sha256")))
 
 
 def build_tools():
@@ -291,6 +450,7 @@ def self_test():
         except (ValueError, KeyError):
             failures += 1
     require(failures == 5, "Release negative guard self-test failed")
+    performance_guard_self_test()
     functional_report({"selection": "all", "total": 1, "failed": 0, "results": [{"passed": True}]})
     ready = read(ROOT / READINESS)
     if ready.get("feature_functional_complete") is not True:
@@ -303,6 +463,88 @@ def self_test():
     require(not product_path(READINESS) and not product_path("docs/evidence/0.2.1/final-performance.json") and
             product_path("src/Chronicles.Game/World.cs") and product_path("VERSION"), "Product fingerprint scope is wrong")
     print(json.dumps({"release_guard_self_tests": "passed", "actual_platform_or_performance_claim": False}))
+
+
+def performance_guard_self_test():
+    # Invented dictionaries test validator invariants only. They are never written as measurement evidence.
+    baseline_sha, plan_sha = "a" * 64, "b" * 64
+    environment = {"sourceCommit": "c" * 40, "sourceWorktreeClean": True, "buildConfiguration": "Release", "engine": "none", "platform": "host",
+                   "device": "validator fixture", "runtime": "validator fixture", "os": "validator fixture", "architecture": "test",
+                   "precedingFunctionalSelection": "validator only", "processScope": "validator only",
+                   "thermalState": "not measured", "powerState": "not measured", "cpu": 4, "totalAvailableMemoryBytes": 1000}
+    names = ("beliefs", "storedClaims", "activeClaims", "peopleObservations", "placeObservations", "sourceObservations", "knownPeople", "knownPlaces")
+    population = {"schema_version": 2, "kind": "seonro-population-baseline", "complete": True,
+                  "completedSizes": [2, 100, 1000, 10000], "environment": environment, "totalElapsedSeconds": 1,
+                  "reports": []}
+    for size in population["completedSizes"]:
+        row = {name: 1 for name in PERFORMANCE_METRICS}
+        row.update({"population": size, "measuredMonths": 2, "warmupMonths": 1, "repetitions": 1,
+                    "monthlySamplesMs": [1, 1], "fixture": {"population": size, "founders": 2, "syntheticEntrants": size - 2},
+                    "openingRetainedManagedBytes": 1,
+                    "usedLaws": {"test-only": 1}, "workload": {"peopleWithDecisions": 1}, "retainedMemoryScope": "test only",
+                    "cognition": {"people": size, "beliefBudgetPerPerson": 8, "activeClaimBudgetPerPerson": 2,
+                                  "maximumBudgetUnitsPerPerson": 0, "peopleExceedingBeliefBudget": 0, "peopleExceedingClaimBudget": 0,
+                                  "serializedBytes": 1, "serializedScope": "test only", "totals": dict.fromkeys(names, 0),
+                                  "maximumPerPerson": dict.fromkeys(names, 0)}})
+        population["reports"].append(row)
+    budget = {"schema_version": 1, "kind": "seonro-performance-budget", "policy": PERFORMANCE_POLICY,
+              "established_after_baseline": True, "baseline_report_sha256": baseline_sha, "rationale": "validator fixture only",
+              "maximum_regression_percent": 10, "limits": {str(n): dict.fromkeys(PERFORMANCE_METRICS, 10) for n in population["completedSizes"]},
+              "stability_limits": {"10000": {"retainedManagedBytes": 10, "saveBytes": 10}}}
+    plan = {"schemaVersion": 1, "policyId": PERFORMANCE_POLICY, "baselineReportSha256": baseline_sha, "rationale": "validator fixture only",
+            "cases": [{"population": 10000, "horizonMonths": 24, "checkpointEveryMonths": 12, "validateEveryMonths": 1, "wallTimeLimitSeconds": 1000}]}
+    stability = {"schema_version": 1, "kind": "seonro-long-run-stability", "policy": PERFORMANCE_POLICY, "passed": True,
+                 "environment": environment, "baselineReportSha256": baseline_sha, "planSha256": plan_sha, "totalElapsedSeconds": 101,
+                 "reports": [{"population": 10000, "passed": True, "failure": None, "targetMonths": 24, "completedMonths": 24,
+                              "elapsedSeconds": 100, "boundaryChecks": 30, "workload": {"peopleWithDecisions": 1},
+                              "living": 9976, "births": 0, "deaths": 24,
+                              "finalHash": "d" * 64,
+                              "checkpoints": [{"month": month, "people": 10000, "living": 10000 - month,
+                                               "births": 0, "deaths": month,
+                                               "hash": "d" * 64,
+                                               "invariantValid": True, "saveResumeEqual": True, "queryUnchanged": True, "publicCommandAccepted": True,
+                                               "retainedManagedBytes": 1, "saveBytes": 1} for month in (0, 12, 24)]}]}
+    canonical_performance_reports(population, population, budget, plan, stability, baseline_sha, plan_sha)
+    negative = [
+        ("partial sizes", lambda x: x[1].update(complete=False)),
+        ("missing 10k", lambda x: x[1]["reports"].pop()),
+        ("wrong baseline", lambda x: x[2].update(baseline_report_sha256="d" * 64)),
+        ("pre-baseline budget", lambda x: x[2].update(established_after_baseline=False)),
+        ("missing retained budget", lambda x: x[2]["limits"]["10000"].pop("retainedManagedBytes")),
+        ("missing collected opening memory", lambda x: x[1]["reports"][-1].pop("openingRetainedManagedBytes")),
+        ("actual regression", lambda x: x[1]["reports"][-1].update(saveBytes=9)),
+        ("nonfinite limit", lambda x: x[2].update(maximum_regression_percent=float("nan"))),
+        ("inert workload", lambda x: x[1]["reports"][-1]["workload"].update(peopleWithDecisions=0)),
+        ("dirty measured source", lambda x: x[1]["environment"].update(sourceWorktreeClean=False)),
+        ("cognition budget exceeded", lambda x: x[1]["reports"][-1]["cognition"].update(maximumBudgetUnitsPerPerson=9)),
+        ("invented per-person maximum", lambda x: x[1]["reports"][-1]["cognition"]["maximumPerPerson"].update(beliefs=1)),
+        ("failed stability", lambda x: x[4]["reports"][0].update(failure="actual failure")),
+        ("timeout", lambda x: x[4]["reports"][0].update(elapsedSeconds=1001)),
+        ("shortened horizon", lambda x: x[4]["reports"][0].update(completedMonths=12)),
+        ("missing boundary checks", lambda x: x[4]["reports"][0].update(boundaryChecks=0)),
+        ("resume mismatch", lambda x: x[4]["reports"][0]["checkpoints"][-1].update(saveResumeEqual=False)),
+        ("wrong final save hash", lambda x: x[4]["reports"][0].update(finalHash="e" * 64)),
+        ("stability memory over budget", lambda x: x[4]["reports"][0]["checkpoints"][-1].update(retainedManagedBytes=11)),
+        ("hidden synthetic inflow", lambda x: x[4]["reports"][0]["checkpoints"][-1].update(people=10001)),
+    ]
+    for name, mutation in negative:
+        values = json.loads(json.dumps([population, population, budget, plan, stability]))
+        mutation(values)
+        try:
+            canonical_performance_reports(*values, baseline_sha, plan_sha)
+        except ValueError:
+            continue
+        raise ValueError("Performance contract self-test did not reject: " + name)
+    legacy = read(ROOT / LEGACY_SPEED_HISTORY)
+    require(sha(ROOT / LEGACY_SPEED_HISTORY) == LEGACY_SPEED_HISTORY_SHA256 and legacy_speed_comparison(legacy) is False,
+            "The original failed legacy measurement must stay unchanged and failed")
+    legacy["passed"] = True
+    try:
+        legacy_speed_comparison(legacy)
+    except ValueError:
+        pass
+    else:
+        raise ValueError("Relabelled legacy miss must be rejected")
 
 
 def main():

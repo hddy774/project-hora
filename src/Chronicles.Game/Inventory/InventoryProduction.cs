@@ -62,10 +62,16 @@ public static partial class InventoryEngine
         if (extraction) flow.Extraction = checked(flow.Extraction + quantity); else flow.Production = checked(flow.Production + quantity);
         return item;
     }
+    private static void WorkDuration(InventoryState state, long due, int units, long required)
+    {
+        Require(due > state.Month && units is > 0 and <= 100 && checked((due - state.Month) * units) >= required,
+            "Reserved labor duration is insufficient for the actual work.");
+    }
     private static long StartJob(InventoryState state, StartProduction command)
     {
         Require(InventoryDefinitions.Recipes.TryGetValue(command.Recipe, out var recipe), "Unknown production recipe.");
         var actor = PersonAt(state, command.Actor);
+        WorkDuration(state, command.Due, command.LaborUnits, state.Ledger.ProductionWork);
         var labor = AddLabor(state, actor.Id, $"production:{command.Recipe}", state.Month, command.Due,
             command.LaborUnits, command.Facility, command.FacilityCapacity);
         var reservation = Reservation(state, actor.Id, "production");
@@ -91,7 +97,8 @@ public static partial class InventoryEngine
     private static long BeginJob(InventoryState state, BeginProduction command)
     {
         var job = Job(state, command.Actor, command.Job);
-        Require(job.Status == "reserved" && state.Month < job.Due, "Production is already processing or its labor interval expired.");
+        Require(job.Status == "reserved" && state.Month == state.Ledger.Labor.Single(l => l.Id == job.Labor).Start,
+            "Processing must begin at its reserved labor start; delayed work needs a new reservation.");
         foreach (var id in job.Inputs)
         {
             var item = ItemAt(state, id);
@@ -109,6 +116,7 @@ public static partial class InventoryEngine
         {
             var source = state.Ledger.Sources.Single(s => s.Id == job.Source);
             Require(source.Remaining >= job.OutputQuantity, "Reserved natural stock is missing."); source.Remaining -= job.OutputQuantity;
+            Event(state, "source-depletion", job.Actor, source.Id, $"job:{job.Id}:quantity:{job.OutputQuantity}:success:{command.Succeeded}");
             if (command.Succeeded)
                 subject = Produce(state, job.Actor, source.Definition, job.OutputQuantity, job.Quality, ItemDefect.None, 0,
                     $"extraction:{source.Id}:job:{job.Id}", [source.Origin], true).Id;
@@ -118,6 +126,28 @@ public static partial class InventoryEngine
             var target = ItemAt(state, job.Target);
             Require(target.Reserved == job.Reservation && Location(state, target.Id) == job.Place, "Repair target moved.");
             target.Damage = Math.Max(0, target.Damage - 25); subject = target.Id;
+        }
+        else if (command.Succeeded && job.Recipe == "medical-treatment")
+        {
+            var patient = PersonAt(state, job.Target);
+            Require(patient.Place == job.Place, "Patient left the actual treatment location.");
+            patient.Health = Math.Min(100, patient.Health + 10 + job.Quality / 500); subject = patient.Id;
+            var doctor = PersonAt(state, job.Actor); doctor.Skills["medicine"] = Math.Min(10000, doctor.Skills.GetValueOrDefault("medicine") + 1);
+        }
+        else if (command.Succeeded && job.Recipe == "appraisal")
+        {
+            var item = ItemAt(state, job.Target);
+            Require(item.Reserved == job.Reservation && Location(state, item.Id) == job.Place, "Appraisal target left its custody.");
+            var skill = PersonAt(state, job.Actor).Skills.GetValueOrDefault("appraisal");
+            state.Ledger.Appraisals.Add(new(job.Actor, item.Id, item.Definition, skill >= 5000 ? item.Quality : item.Quality / 1000 * 1000,
+                item.Damage, skill >= 1000 ? item.Defects : item.Defects & ItemDefect.MissingPages, state.Month));
+            PersonAt(state, job.Actor).Skills["appraisal"] = Math.Min(10000, skill + 1); subject = item.Id;
+        }
+        else if (command.Succeeded && job.Recipe == "exploration")
+        {
+            var source = state.Ledger.Sources.Single(s => s.Id == job.Target);
+            state.Ledger.Observations.Add(new(job.Actor, source.Id, source.Place, source.Remaining, state.Month, $"actual exploration:job:{job.Id}"));
+            subject = source.Id;
         }
         else if (command.Succeeded && job.Recipe == "array-maintenance")
         {
@@ -146,6 +176,7 @@ public static partial class InventoryEngine
         if (job!.Source != 0 && job.Status == "processing")
         {
             var source = state.Ledger.Sources.Single(s => s.Id == job.Source); source.Remaining -= job.OutputQuantity;
+            Event(state, "source-depletion", job.Actor, source.Id, $"job:{job.Id}:quantity:{job.OutputQuantity}:cancelled-processing");
         }
         job.Status = "cancelled"; FreeReservation(state, job.Reservation); FreeLabor(state, job.Labor);
         Event(state, "cancelled", job.Actor, job.Id, $"Unused stock released; {job.Consumed.Sum(c => c.Quantity)} consumed units are not refunded."); return job.Id;
@@ -159,6 +190,7 @@ public static partial class InventoryEngine
             !string.IsNullOrWhiteSpace(source.Origin), "Source activity does not produce this resource.");
         var reserved = state.Ledger.Jobs.Where(j => j.Source == source!.Id && j.Status is "reserved" or "processing").Sum(j => (long)j.OutputQuantity);
         Require(source!.Remaining - reserved >= command.Quantity, "Finite source has insufficient unreserved stock.");
+        WorkDuration(state, command.Due, command.LaborUnits, checked((long)command.Quantity * state.Ledger.ExtractionWorkPerUnit));
         var reservation = Reservation(state, actor.Id, "extraction");
         var labor = AddLabor(state, actor.Id, source.Activity, state.Month, command.Due, command.LaborUnits);
         var job = new ProductionJob { Id = Id(state), Actor = actor.Id, Recipe = "extraction", Source = source.Id, Place = actor.Place,
@@ -192,6 +224,7 @@ public static partial class InventoryEngine
         var target = Accessible(state, command.Actor, command.Item, true, false);
         Require(target.Reserved == 0 && target.Damage > 0 && target.Quantity == 1 &&
             InventoryDefinitions.Definition(target.Definition).OccupiedSlots.Count > 0 && state.Items.All(i => i.Container != target.Id), "Repair requires an unreserved damaged individual item with empty storage.");
+        WorkDuration(state, command.Due, 100, state.Ledger.ProfessionalWork);
         var labor = AddLabor(state, command.Actor, "repair", state.Month, command.Due, 100);
         var reservation = Reservation(state, command.Actor, "repair");
         target.Reserved = reservation.Id; reservation.Items.Add(target.Id);
@@ -200,6 +233,40 @@ public static partial class InventoryEngine
             Place = PersonAt(state, command.Actor).Place, Due = command.Due, Labor = labor, Reservation = reservation.Id,
             Inputs = inputs.Select(i => i.Id).ToList() };
         state.Ledger.Jobs.Add(job); return job.Id;
+    }
+    private static ProductionJob ProfessionalJob(InventoryState state, long actorId, string activity, long target, long due,
+        IReadOnlyDictionary<string, int> materials)
+    {
+        WorkDuration(state, due, 100, state.Ledger.ProfessionalWork);
+        var actor = PersonAt(state, actorId); var labor = AddLabor(state, actor.Id, activity, state.Month, due, 100);
+        var reservation = Reservation(state, actor.Id, activity); var inputs = ReserveInputs(state, actor.Id, materials, reservation);
+        var units = inputs.Sum(i => (long)i.Quantity);
+        var job = new ProductionJob { Id = Id(state), Actor = actor.Id, Recipe = activity, Target = target, Place = actor.Place,
+            Due = due, Labor = labor, Reservation = reservation.Id, Inputs = inputs.Select(i => i.Id).ToList(),
+            Quality = units == 0 ? 0 : (int)(inputs.Sum(i => (long)i.Quantity * i.Quality) / units) };
+        state.Ledger.Jobs.Add(job); return job;
+    }
+    private static long Treat(InventoryState state, TreatPerson command)
+    {
+        var patient = PersonAt(state, command.Patient);
+        Require(patient.Place == PersonAt(state, command.Actor).Place && (patient.Id == command.Actor || command.PatientConsented), "Treatment requires actual presence and patient agreement.");
+        return ProfessionalJob(state, command.Actor, "medical-treatment", patient.Id, command.Due,
+            new Dictionary<string, int>(StringComparer.Ordinal) { ["herb"] = 2 }).Id;
+    }
+    private static long Appraise(InventoryState state, AppraisePhysical command)
+    {
+        var item = Accessible(state, command.Actor, command.Item, false);
+        var job = ProfessionalJob(state, command.Actor, "appraisal", item.Id, command.Due,
+            new Dictionary<string, int>(StringComparer.Ordinal));
+        item.Reserved = job.Reservation; state.Ledger.Reservations.Single(r => r.Id == job.Reservation).Items.Add(item.Id);
+        return job.Id;
+    }
+    private static long Explore(InventoryState state, ExploreNaturalSource command)
+    {
+        var source = state.Ledger.Sources.SingleOrDefault(s => s.Id == command.Source);
+        Require(source is not null && source.Place == PersonAt(state, command.Actor).Place, "Exploration needs an actual local source.");
+        return ProfessionalJob(state, command.Actor, "exploration", command.Source, command.Due,
+            new Dictionary<string, int>(StringComparer.Ordinal) { ["food"] = 1 }).Id;
     }
     private static long Install(InventoryState state, InstallArray command)
     {
@@ -222,6 +289,7 @@ public static partial class InventoryEngine
     {
         var array = ArrayAt(state, command.Actor, command.Installation);
         Require(!state.Ledger.Jobs.Any(j => j.Target == array.Id && j.Recipe == "array-maintenance" && j.Status is "reserved" or "processing"), "Array maintenance is already committed.");
+        WorkDuration(state, command.Due, 100, state.Ledger.ProfessionalWork);
         var labor = AddLabor(state, command.Actor, "array-maintenance", state.Month, command.Due, 100);
         var reservation = Reservation(state, command.Actor, "array-maintenance");
         var inputs = ReserveInputs(state, command.Actor, new Dictionary<string, int>(StringComparer.Ordinal) { ["resource.02.0"] = 1 }, reservation);

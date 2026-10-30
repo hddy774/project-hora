@@ -13,7 +13,8 @@ public static partial class InventoryEngine
     { if (!condition) throw new InvalidDataException(message); }
     private static void ValidateCore(InventoryState state)
     {
-        Ensure(state.Month >= 0 && state.Revision >= 0 && state.Ledger.BaseCarryCapacity >= 0, "Invalid inventory clock or carrying profile.");
+        Ensure(state.Month >= 0 && state.Revision >= 0 && state.Ledger.BaseCarryCapacity >= 0 && state.Ledger.ProductionWork > 0 && state.Ledger.ProfessionalWork > 0 &&
+            state.Ledger.ExtractionWorkPerUnit > 0, "Invalid inventory clock, carrying profile, or work profile.");
         var ids = state.Items.Select(i => i.Id).Concat(state.People.Select(p => p.Id))
             .Concat(state.Ledger.Reservations.Select(r => r.Id)).Concat(state.Ledger.Labor.Select(l => l.Id))
             .Concat(state.Ledger.Jobs.Select(j => j.Id)).Concat(state.Ledger.Contracts.Select(c => c.Id))
@@ -43,7 +44,7 @@ public static partial class InventoryEngine
                 var parent = ItemAt(state, item.Container); var metadata = Metadata(state, parent.Id);
                 Ensure(Capacity(state, parent) > 0, "Contents are inside an unusable container.");
                 Ensure(metadata is null || metadata.AllowedContents.Count == 0 || metadata.AllowedContents.Contains(definition.Item.Kind), "Container rejects this item category.");
-                Ensure(metadata is null || metadata.AllowNestedContainers || definition.Item.Capacity == 0, "Container profile disallows nested storage.");
+                Ensure(metadata is null || metadata.AllowNestedContainers || (definition.Item.Capacity == 0 && (Metadata(state, item.Id)?.Capacity ?? 0) == 0), "Container profile disallows nested storage.");
             }
             var children = state.Items.Where(i => i.Container == item.Id).ToArray();
             if (children.Length > 0)

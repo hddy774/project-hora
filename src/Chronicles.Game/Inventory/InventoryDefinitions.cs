@@ -58,6 +58,9 @@ public static class InventoryDefinitions
         foreach (var recipe in Catalog.Recipes)
             recipes.Add(recipe.Id, new(recipe.Id, recipe.Skill, recipe.Output, recipe.Quantity,
                 new ReadOnlyDictionary<string, int>(recipe.Inputs.ToDictionary(x => x.Key, x => x.Value, StringComparer.Ordinal))));
+        recipes.Remove("bag"); recipes.Remove("soulWard");
+        Add("bag", "smith", "bag", 1, ("cloth", 4), ("ore", 2), ("resource.15.0", 1));
+        Add("soulWard", "talisman", "soulWard", 1, ("paper", 3), ("herb", 5), ("resource.08.0", 1));
         Add("growthPill", "alchemy", "growthPill", 1, ("resource.03.1", 2), ("resource.06.0", 1), ("resource.07.0", 1));
         Add("breakthroughPill", "alchemy", "breakthroughPill", 1, ("resource.03.3", 3), ("resource.02.1", 1), ("resource.07.1", 1));
         Add("greatWeapon", "smith", "greatWeapon", 1, ("resource.01.3", 3), ("resource.04.0", 1), ("resource.07.0", 1));

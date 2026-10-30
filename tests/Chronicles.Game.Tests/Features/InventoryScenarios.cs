@@ -314,3 +314,132 @@ public sealed class InventoryArrayAndAdapterScenario : IFeatureScenario
         InventoryFixture.RoundTrip(ref state);
     }
 }
+
+public sealed class InventoryProfessionalScenario : IFeatureScenario
+{
+    public string Name => "V021-K07 real medicine, appraisal and exploration consume labor and produce personal evidence";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); InventoryFixture.Add(state, "herb", 2); InventoryFixture.Person(state, 2).Health = 40;
+        InventoryFixture.Reject(state, new TreatPerson("no-consent", 1, 2, 1));
+        var job = InventoryFixture.Accept(ref state, new TreatPerson("treatment", 1, 2, 1, true));
+        InventoryFixture.Check(InventoryFixture.Person(state, 2).Health == 40, "Reserved treatment applied before work.");
+        InventoryFixture.Accept(ref state, new BeginProduction("treat-begin", 1, job)); state.Month = 1;
+        InventoryFixture.Accept(ref state, new FinishProduction("treat-finish", 1, job));
+        InventoryFixture.Check(InventoryFixture.Person(state, 2).Health > 40 && state.Materials["herb"].Consumption == 2, "Medicine did not use real herbs.");
+        var tool = InventoryFixture.Add(state, "tool", quality: 5678, defects: ItemDefect.Contamination | ItemDefect.MissingPages);
+        job = InventoryFixture.Accept(ref state, new AppraisePhysical("appraise", 1, tool, 2));
+        InventoryFixture.Accept(ref state, new BeginProduction("appraise-begin", 1, job)); state.Month = 2;
+        InventoryFixture.Accept(ref state, new FinishProduction("appraise-finish", 1, job));
+        var appraisal = state.Ledger.Appraisals.Single();
+        InventoryFixture.Check(appraisal.Appraiser == 1 && appraisal.EstimatedQuality == 5000 && appraisal.DetectedDefects == ItemDefect.MissingPages,
+            "Unskilled appraisal revealed perfect hidden state.");
+        var sourceId = state.NextId++;
+        state.Ledger.Sources.Add(new() { Id = sourceId, Definition = "resource.00.0", Activity = "source.mining", Place = 0,
+            Capacity = 20, Remaining = 12, Origin = "observed finite mine" }); InventoryFixture.Add(state, "food");
+        job = InventoryFixture.Accept(ref state, new ExploreNaturalSource("explore", 1, sourceId, 3));
+        InventoryFixture.Accept(ref state, new BeginProduction("explore-begin", 1, job)); state.Month = 3;
+        InventoryFixture.Accept(ref state, new FinishProduction("explore-finish", 1, job));
+        InventoryFixture.Check(state.Ledger.Observations.Single().Remaining == 12 && state.Ledger.Sources.Single().Remaining == 12 &&
+            state.Materials["food"].Consumption == 1, "Exploration created resources or lacked a real activity cost.");
+        InventoryFixture.RoundTrip(ref state);
+    }
+}
+
+public sealed class InventoryPreservationScenario : IFeatureScenario
+{
+    public string Name => "INV-016/018 backpack removal preserves overflow, sources stay finite, known bundles reveal no truth";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); state.Ledger.BaseCarryCapacity = 4;
+        var bag = InventoryFixture.Add(state, "bag"); var ore = InventoryFixture.Add(state, "ore", 7);
+        state.Ledger.Metadata.Add(new() { Item = bag, Custodian = 1, Capacity = 10 });
+        InventoryFixture.Accept(ref state, new EquipItem("bag", 1, bag));
+        InventoryFixture.Accept(ref state, new StoreItem("carry", 1, ore));
+        InventoryFixture.Reject(state, new UnequipItem("no-room", 1, bag));
+        InventoryFixture.Accept(ref state, new UnequipItem("ground-overflow", 1, bag, ReturnToGround: true));
+        InventoryFixture.Check(InventoryFixture.Item(state, ore).Quantity == 7 && InventoryFixture.Item(state, ore).Place == 0, "Removing storage deleted overflow.");
+        var sourceId = state.NextId++;
+        state.Ledger.Sources.Add(new() { Id = sourceId, Definition = "resource.00.0", Activity = "source.mining", Place = 0,
+            Capacity = 5, Remaining = 3, Regeneration = 0, Origin = "finite mine" });
+        state.Month = 10; state.Ledger.Sources.Single().Capacity = 100;
+        InventoryFixture.Accept(ref state, new SettleInventory("no-free-stock"));
+        InventoryFixture.Check(state.Ledger.Sources.Single().Remaining == 3, "Capacity or zero regeneration minted resources.");
+        var herbA = InventoryFixture.Add(state, "herb", 2, quality: 1000); var herbB = InventoryFixture.Add(state, "herb", 3, quality: 9000, defects: ItemDefect.Contamination);
+        var before = JsonSerializer.Serialize(state);
+        var bundles = InventoryKnowledgeQueries.GroupKnownItems([new(herbA, "known herb", 2, null, null, 1), new(herbB, "known herb", 3, null, null, 2)]);
+        InventoryFixture.Check(bundles is [{ ObservedQuantity: 5, KnownQuality: null, KnownDefects: null }] && JsonSerializer.Serialize(state) == before,
+            "Display grouping inferred hidden quality or merged real stacks.");
+        InventoryFixture.RoundTrip(ref state);
+    }
+}
+
+public sealed class InventoryCompetingAndDeathScenario : IFeatureScenario
+{
+    public string Name => "INV-017/018 competing bids and carrier/seller deaths preserve estates, escrow and cargo";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); var third = state.NextId++;
+        state.People.Add(new() { Id = third, SoulId = 99, Place = 0, Money = 1000 });
+        var item = InventoryFixture.Add(state, "armor"); var money = InventoryFixture.Money(state);
+        var auction = InventoryFixture.Accept(ref state, new OfferItem("offer", 1, item, 100, 2, true));
+        InventoryFixture.Accept(ref state, new PlaceBid("first", 2, auction, 400));
+        InventoryFixture.Accept(ref state, new PlaceBid("outbid", third, auction, 500));
+        InventoryFixture.Check(InventoryFixture.Person(state, 2).Money == 1000 && InventoryFixture.Person(state, third).Money == 500,
+            "Losing bidder was not refunded before replacement deposit.");
+        InventoryFixture.Person(state, 1).Status = LifeStatus.Dead;
+        InventoryFixture.Accept(ref state, new SettleInventory("seller-death"));
+        InventoryFixture.Check(InventoryFixture.Person(state, third).Money == 1000 && InventoryFixture.Item(state, item).Owner == 1 &&
+            InventoryFixture.Money(state) == money, "Seller death lost estate property or bidder deposit.");
+        item = InventoryFixture.Add(state, "ore", 3, owner: 2);
+        var transport = InventoryFixture.Accept(ref state, new BeginTransport("cargo", 2, item, third, 2, 1, 2, 10, true, true));
+        InventoryFixture.Person(state, third).Place = 3; InventoryFixture.Person(state, third).Status = LifeStatus.Dead;
+        InventoryFixture.Accept(ref state, new SettleInventory("carrier-death"));
+        InventoryFixture.Check(InventoryFixture.Item(state, item).Owner == 2 && InventoryFixture.Item(state, item).Place == 3 &&
+            state.Ledger.Contracts.Single(c => c.Id == transport).Status == "failed" && InventoryFixture.Money(state) == money,
+            "Carrier death teleported cargo or consumed escrow.");
+    }
+}
+
+public sealed class InventoryEquipmentDefinitionsScenario : IFeatureScenario
+{
+    public string Name => "V021-I03 all 12 equipment categories occupy slots and multi-slot contributions apply once";
+    public void Run()
+    {
+        var state = InventoryFixture.Create();
+        for (var slot = 0; slot < 12; slot++)
+        {
+            var item = InventoryFixture.Add(state, "equipment." + slot.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            InventoryFixture.Accept(ref state, new EquipItem("slot:" + slot.ToString(System.Globalization.CultureInfo.InvariantCulture), 1, item));
+        }
+        InventoryFixture.Check(InventoryFixture.Person(state, 1).Equipment.Count == 12 && InventoryEngine.EquipmentContributions(state, 1).Count == 12,
+            "Equipment categories have missing occupancy.");
+        var great = InventoryFixture.Add(state, "greatWeapon");
+        InventoryFixture.Accept(ref state, new EquipItem("two-hands", 1, great, ReturnToGround: true));
+        InventoryFixture.Check(InventoryEngine.EquipmentContributions(state, 1).Count(e => e.Item == great) == 1 &&
+            InventoryEngine.EquipmentContributions(state, 1).Single(e => e.Item == great).Slots.Count == 2, "Multi-slot equipment contributed twice.");
+        InventoryFixture.RoundTrip(ref state);
+    }
+}
+
+public sealed class InventoryTimingAndArrayDamageScenario : IFeatureScenario
+{
+    public string Name => "INV-017 production cannot bank idle time and broken arrays immediately stop contributing";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); InventoryFixture.Add(state, "herb", 3); InventoryFixture.Add(state, "wood");
+        InventoryFixture.Reject(state, new StartProduction("too-little-work", 1, "pill", 1, 1));
+        var job = InventoryFixture.Accept(ref state, new StartProduction("long-work", 1, "pill", 2, 50));
+        state.Month = 1; InventoryFixture.Reject(state, new BeginProduction("late-begin", 1, job));
+        InventoryFixture.Accept(ref state, new CancelProduction("release-late", 1, job));
+        var item = InventoryFixture.Add(state, "array"); InventoryFixture.Add(state, "resource.02.0");
+        var array = InventoryFixture.Accept(ref state, new InstallArray("install", 1, item, true));
+        job = InventoryFixture.Accept(ref state, new MaintainArray("fuel", 1, array, 2));
+        InventoryFixture.Accept(ref state, new BeginProduction("fuel-begin", 1, job)); state.Month = 2;
+        InventoryFixture.Accept(ref state, new FinishProduction("fuel-finish", 1, job));
+        InventoryFixture.Check(InventoryEngine.ActiveEffects(state, 0, "qi.place").Count == 1, "Paid array failed to activate.");
+        InventoryFixture.Accept(ref state, new DamageItem("break-array", 1, item, 100));
+        InventoryFixture.Check(InventoryEngine.ActiveEffects(state, 0, "qi.place").Count == 0 && !state.Ledger.Arrays.Single().Active,
+            "Destroyed array kept its live contribution until a later settlement.");
+    }
+}

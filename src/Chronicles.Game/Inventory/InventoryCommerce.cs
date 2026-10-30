@@ -123,7 +123,7 @@ public static partial class InventoryEngine
                 if (!sellerAlive || !buyerAlive || carrier.Status != LifeStatus.Alive) FailContract(state, contract);
                 else if (state.Month >= contract.Due)
                 {
-                    if (carrier.Place == contract.Destination)
+                    if (carrier.Place == contract.Destination && Location(state, contract.Item) == contract.Destination)
                         Delivery(state, new("system:" + Number(contract.Id), contract.Carrier, contract.Id, true));
                     else FailContract(state, contract);
                 }
@@ -152,7 +152,9 @@ public static partial class InventoryEngine
         {
             Require(source.LastMonth <= state.Month, "Source regeneration clock is in the future.");
             var growth = checked((state.Month - source.LastMonth) * source.Regeneration);
+            var remaining = source.Remaining;
             source.Remaining = Math.Min(source.Capacity, checked(source.Remaining + growth)); source.LastMonth = state.Month;
+            if (source.Remaining > remaining) Event(state, "source-regeneration", 0, source.Id, Number(source.Remaining - remaining));
         }
         foreach (var array in state.Ledger.Arrays)
         {

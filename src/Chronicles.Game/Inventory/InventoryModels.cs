@@ -52,6 +52,9 @@ public sealed class InventoryState
 public sealed class InventoryLedger
 {
     public int BaseCarryCapacity { get; set; } = 500;
+    public int ProductionWork { get; set; } = 100;
+    public int ProfessionalWork { get; set; } = 100;
+    public int ExtractionWorkPerUnit { get; set; } = 25;
     public List<ItemMetadata> Metadata { get; set; } = [];
     public List<AssetReservation> Reservations { get; set; } = [];
     public List<LaborReservation> Labor { get; set; } = [];
@@ -59,6 +62,8 @@ public sealed class InventoryLedger
     public List<InventoryContract> Contracts { get; set; } = [];
     public List<NaturalStock> Sources { get; set; } = [];
     public List<InventoryEffect> Effects { get; set; } = [];
+    public List<InventoryAppraisal> Appraisals { get; set; } = [];
+    public List<SourceObservation> Observations { get; set; } = [];
     public List<ArrayInstallation> Arrays { get; set; } = [];
     public List<BindingContract> Bindings { get; set; } = [];
     public List<InventoryEvent> Events { get; set; } = [];
@@ -155,6 +160,9 @@ public sealed class InventoryContract
     public int Destination { get; set; }
 }
 
+public sealed record InventoryAppraisal(long Appraiser, long Item, string Definition, int EstimatedQuality, int Damage, ItemDefect DetectedDefects, long Month);
+public sealed record SourceObservation(long Observer, long Source, int Place, long Remaining, long Month, string Evidence);
+public sealed record EquipmentContribution(long Item, int Quality, int Damage, IReadOnlyList<int> Slots);
 public sealed record InventoryEffect(string Cause, long Target, string Kind, int Magnitude, long Start, long End);
 public sealed class ArrayInstallation
 {
@@ -194,6 +202,9 @@ public sealed record CancelProduction(string Id, long Actor, long Job) : Invento
 public sealed record ExtractResource(string Id, long Actor, long Source, int Quantity, long Due, int LaborUnits = 100) : InventoryCommand(Id, Actor);
 public sealed record ConsumeItem(string Id, long Actor, long Item) : InventoryCommand(Id, Actor);
 public sealed record RepairItem(string Id, long Actor, long Item, long Due) : InventoryCommand(Id, Actor);
+public sealed record TreatPerson(string Id, long Actor, long Patient, long Due, bool PatientConsented = false) : InventoryCommand(Id, Actor);
+public sealed record AppraisePhysical(string Id, long Actor, long Item, long Due) : InventoryCommand(Id, Actor);
+public sealed record ExploreNaturalSource(string Id, long Actor, long Source, long Due) : InventoryCommand(Id, Actor);
 public sealed record InstallArray(string Id, long Actor, long Item, bool HasInstallationRight, int Range = 1) : InventoryCommand(Id, Actor);
 public sealed record MaintainArray(string Id, long Actor, long Installation, long Due) : InventoryCommand(Id, Actor);
 public sealed record DismantleArray(string Id, long Actor, long Installation) : InventoryCommand(Id, Actor);

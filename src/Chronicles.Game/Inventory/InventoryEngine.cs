@@ -36,6 +36,7 @@ public static partial class InventoryEngine
                 StartProduction c => StartJob(state, c), BeginProduction c => BeginJob(state, c),
                 FinishProduction c => FinishJob(state, c), CancelProduction c => CancelJob(state, c),
                 ExtractResource c => Extract(state, c), ConsumeItem c => Consume(state, c), RepairItem c => Repair(state, c),
+                TreatPerson c => Treat(state, c), AppraisePhysical c => Appraise(state, c), ExploreNaturalSource c => Explore(state, c),
                 InstallArray c => Install(state, c), MaintainArray c => Maintain(state, c), DismantleArray c => Dismantle(state, c),
                 OfferItem c => Offer(state, c), WithdrawOffer c => Withdraw(state, c), BuyItem c => Buy(state, c),
                 PlaceBid c => Bid(state, c), BeginTransport c => Transport(state, c), FinishTransport c => Delivery(state, c),
@@ -227,18 +228,21 @@ public static partial class InventoryEngine
         }
         Move(state, item, actor, 0, false);
         foreach (var slot in definition.OccupiedSlots) actor.Equipment[slot] = item.Id;
+        if (command.ReturnToGround) SpillOverflow(state, actor.Id);
         return item.Id;
     }
     private static long Unequip(InventoryState state, UnequipItem command)
     {
         var actor = PersonAt(state, command.Actor); var item = ItemAt(state, command.Item);
         Require(actor.Equipment.ContainsValue(item.Id) && item.Reserved == 0, "Equipment is absent or reserved.");
-        ClearEquipment(actor, item.Id); Move(state, item, actor, command.ReturnContainer, command.ReturnToGround); return item.Id;
+        ClearEquipment(actor, item.Id); Move(state, item, actor, command.ReturnContainer, command.ReturnToGround);
+        if (command.ReturnToGround) SpillOverflow(state, actor.Id);
+        return item.Id;
     }
     private static long Bind(InventoryState state, BindItem command)
     {
         var item = Accessible(state, command.Actor, command.Item, true, false); var actor = PersonAt(state, command.Actor);
-        Require(item.Reserved == 0 && item.Quantity == 1 && item.BoundSoul == 0 &&
+        Require(item.Reserved == 0 && item.Quantity == 1 && item.BoundSoul == 0 && actor.SoulId > 0 &&
             InventoryDefinitions.Definition(item.Definition).OccupiedSlots.Count > 0 && !string.IsNullOrWhiteSpace(command.Evidence), "Binding requires unique equipment and formation evidence.");
         item.BoundSoul = actor.SoulId; var id = Id(state);
         state.Ledger.Bindings.Add(new(id, item.Id, actor.SoulId, state.Month, command.Evidence)); return id;
@@ -255,6 +259,15 @@ public static partial class InventoryEngine
             { child.Container = 0; foreach (var entry in Tree(state, child)) entry.Place = location; }
             SpillOverflow(state, command.Actor);
         }
+        foreach (var array in state.Ledger.Arrays.Where(a => a.Item == item.Id))
+        {
+            array.Condition = Math.Min(array.Condition, 100 - item.Damage);
+            if (array.Condition == 0)
+            {
+                array.Active = false;
+                state.Ledger.Effects.RemoveAll(e => e.Cause.StartsWith($"array:{array.Id}:", StringComparison.Ordinal));
+            }
+        }
         return item.Id;
     }
     private static void SpillOverflow(InventoryState state, long actorId)
@@ -264,6 +277,7 @@ public static partial class InventoryEngine
         {
             if (CarriedWeight(state, actor) <= CarryCapacity(state, actor)) break;
             foreach (var entry in Tree(state, root)) entry.Place = actor.Place;
+            Event(state, "overflow-storage", actor.Id, root.Id, $"Preserved at ground location {actor.Place}.");
         }
     }
     private static IEnumerable<Item> CarriedRoots(InventoryState state, Person person) => state.Items.Where(i => i.Container == 0 && i.Place == -1 &&
@@ -292,5 +306,17 @@ public static partial class InventoryEngine
     }
     private static void Event(InventoryState state, string kind, long actor, long subject, string detail) =>
         state.Ledger.Events.Add(new(state.Month, kind, actor, subject, detail));
+    /// <summary>Returns one contribution for each physical item even when it occupies several slots.</summary>
+    public static IReadOnlyList<EquipmentContribution> EquipmentContributions(InventoryState state, long person)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        var actor = PersonAt(state, person, false);
+        return actor.Equipment.Values.Distinct().Order().Select(id =>
+        {
+            var item = ItemAt(state, id);
+            return new EquipmentContribution(id, item.Quality, item.Damage,
+                actor.Equipment.Where(e => e.Value == id).Select(e => e.Key).Order().ToArray());
+        }).ToArray();
+    }
     private static string Number(long value) => value.ToString(CultureInfo.InvariantCulture);
 }

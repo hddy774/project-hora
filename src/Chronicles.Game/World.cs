@@ -93,6 +93,7 @@ public sealed partial class GameWorld
         w.InitializeCultivation();
         w.InitializeCurrency();
         w.InitializeEcology();
+        w.InitializeExploration();
         s.DomainSchema = 2;
         w.Event("창세", 0, 0, "두 반선 시조가 세계에 들어왔다. 종문·숨은 주민 없음.", "초기 프로필");
         w.Census();
@@ -205,10 +206,11 @@ public sealed partial class GameWorld
         if (c.Kind == "create") return CreateExplicit(c);
         if (!people.TryGetValue(c.Actor, out var p) || p.Status != LifeStatus.Alive ||
             (state.Controlled != 0 && state.Controlled != p.Id)) return "실행할 수 없는 대상입니다.";
+        if (ValidateExplorationInteraction(c, p) is { } spaceError) return spaceError;
         if (PeopleActionError(p, c.Kind) is { } capabilityError) return capabilityError;
         if (TryPeopleSocialCommand(c, p, out var socialError)) return socialError;
         if (c.Kind == "cancel") return Cancel(p);
-        if (TryCultivationCommand(c, p, out var domainError) || TryKnowledgeCommand(c, p, out domainError) ||
+        if (TryExplorationCommand(c, p, out var domainError) || TryCultivationCommand(c, p, out domainError) || TryKnowledgeCommand(c, p, out domainError) ||
             TryInventoryCommand(c, p, out domainError) || TryPoliticsCommand(c, p, out domainError) ||
             TryCurrencyCommand(c, p, out domainError)) return domainError;
         if (c.Kind == "partner") return Partner(p, c.Target);
@@ -223,7 +225,8 @@ public sealed partial class GameWorld
     {
         if (PeopleActionError(p, kind) is { } capabilityError) return capabilityError;
         var command = new GameCommand($"ai:{p.BodyId}:{Month}:{Revision}:{kind}:{state.NextId}", p.Id, kind, target, Data: data);
-        if (TryCultivationCommand(command, p, out var domainError) || TryStartKnowledge(p, kind, target, data, out domainError) ||
+        if (ValidateExplorationInteraction(command, p) is { } spaceError) return spaceError;
+        if (TryExplorationCommand(command, p, out var domainError) || TryCultivationCommand(command, p, out domainError) || TryStartKnowledge(p, kind, target, data, out domainError) ||
             TryInventoryCommand(command, p, out domainError)) return domainError;
         if (p.Action != ActionKind.Idle) return "기존 작업이 진행 중입니다.";
         if (!PoliticsLaborAvailable(p, Month, Month + 1)) return "이미 다른 공동 작업의 인력으로 예약되어 있습니다.";
@@ -246,11 +249,16 @@ public sealed partial class GameWorld
                 return "이동 가능한 경로가 아닙니다.";
         }
         if (action == ActionKind.Care && ValidateCare(p, target) is { } careError) return careError;
+        var previous = (p.Action, p.ActionTarget, p.ActionData, p.ActionRevision, p.Due);
         p.Action = action; p.ActionTarget = target; p.ActionData = data;
         p.ActionRevision = state.LawRevision;
         p.Due = Month + (action == ActionKind.Travel ? Law("economy.travelDuration") : 1);
         try { ValidateActionOwner(p); }
-        catch (InvalidDataException) { return "실제로 시작한 작업의 출처와 예약을 확인하세요."; }
+        catch (InvalidDataException)
+        {
+            (p.Action, p.ActionTarget, p.ActionData, p.ActionRevision, p.Due) = previous;
+            return "실제로 시작한 작업의 출처와 예약을 확인하세요.";
+        }
         return null;
     }
 
@@ -259,6 +267,7 @@ public sealed partial class GameWorld
     private string? Cancel(Person p)
     {
         var command = new GameCommand($"cancel:{p.BodyId}:{Month}:{Revision}:{state.NextId}", p.Id, "cancel");
+        if (CancelExploration(p)) return null;
         if (TryCancelCombat(p, out var combatError)) return combatError;
         if (TryPeopleSocialCommand(command, p, out var socialError)) return socialError;
         if (TryCultivationCommand(command, p, out var domainError)) return domainError;
@@ -280,6 +289,7 @@ public sealed partial class GameWorld
     private void Step()
     {
         state.Month++;
+        SettleExploration();
         Regenerate();
         SettleCultivation();
         foreach (var pregnancy in state.Pregnancies.Where(x => !x.Completed && x.Due <= Month).ToArray()) Birth(pregnancy);
@@ -303,6 +313,7 @@ public sealed partial class GameWorld
         SettleKnowledge();
         SettlePeopleDomain();
         SettlePeopleSocial();
+        SettleExploration();
         SettleEcology();
         TrimCombatHistory();
         state.Revision++;

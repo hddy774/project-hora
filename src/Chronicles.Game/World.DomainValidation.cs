@@ -10,6 +10,7 @@ public sealed partial class GameWorld
         world.ValidateCurrency();
         world.ValidateEcologyDomain();
         ValidateCombatState(snapshot);
+        ValidateExplorationState(snapshot);
         Knowledge.KnowledgeAuthority.Validate(snapshot.Knowledge);
         var identities = snapshot.People.Select(p => p.Id).ToHashSet();
         var referencedPeople = snapshot.Knowledge.Editions.Select(e => e.ContributorId)

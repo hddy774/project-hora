@@ -145,7 +145,7 @@ public sealed partial class GameWorld
         var view = new InventoryState { Month = Month, NextId = state.NextId, Revision = Revision,
             Items = state.Items, People = state.People, Materials = state.Materials, Ledger = state.Inventory };
         if (items.TryGetValue(id, out var found) && (kind is null || InventoryDefinitions.Definition(found.Definition).Item.Kind == kind) &&
-            InventoryEngine.IsAccessible(view, p.Id, id)) { item = found; return true; }
+            InventoryEngine.IsAccessible(view, p.Id, id) && ExplorationCarriedItemAccessible(p, found)) { item = found; return true; }
         item = null!; return false;
     }
     private void RecordInventoryLoss(Item item, int quantity)

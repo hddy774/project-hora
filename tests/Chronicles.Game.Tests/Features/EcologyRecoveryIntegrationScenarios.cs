@@ -137,6 +137,61 @@ public sealed class EcologyTinyBeliefRecoveryScenario : IFeatureScenario
     }
 }
 
+public sealed class EcologyFailureLawScenario : IFeatureScenario
+{
+    public string Name => "ecology failure law: 실제 예약 거부 기억의 법칙별 재확인 기간·관측 수명 상한·저장 revision";
+    public void Run()
+    {
+        var definition = Laws.ById["ai.ecologyFailureMonths"];
+        EcologyRecoveryFixture.Check(definition.Provisional && definition.Unit == "개월" && definition.Minimum == 1 &&
+            definition.Maximum == 1200 && definition.DefaultValue == 3, "실패 재확인 잠정값의 중앙 정의가 기본3/허용범위/단위와 다릅니다.");
+        foreach (var (months, lifetime) in new[] { (1L, 120L), (5L, 120L), (9L, 2L) })
+        {
+            var world = EcologyRecoveryFixture.Create(3, localFood: 3); var actor = EcologyRecoveryFixture.Actor(world).Id;
+            var opening = world.Checkpoint(); var other = opening.People[1].Id;
+            var source = opening.Inventory.Sources.Single(s => s.Place == 0 && s.Definition == "food");
+            EcologyRecoveryFixture.Check(opening.Laws[definition.Id] == 3, "새 세계 기본값이 기존3개월과 다릅니다.");
+            EcologyRecoveryFixture.Accept(world, "failure-law-control", "possess", actor);
+            EcologyRecoveryFixture.Accept(world, "failure-law-source", "exploreSource", actor, data: "food");
+            EcologyRecoveryFixture.AdvanceAction(world, actor);
+            EcologyRecoveryFixture.Accept(world, "failure-law-observe", "observe");
+            EcologyRecoveryFixture.Accept(world, "failure-law-yield", "law", value: 3, data: "economy.gatherYield");
+            EcologyRecoveryFixture.Accept(world, "failure-law-other-ready", "cancel", other);
+            EcologyRecoveryFixture.Accept(world, "failure-law-actual-reservation", "gather", other, source.Id, data: "food");
+            EcologyRecoveryFixture.Accept(world, "failure-law-consumption", "law", value: 1, data: "ecology.foodUse");
+            EcologyRecoveryFixture.Accept(world, "failure-law-duration", "law", value: months, data: definition.Id);
+            var adoptedRevision = world.Checkpoint().LawRevision;
+            EcologyRecoveryFixture.Accept(world, "failure-law-lifetime", "law", value: lifetime, data: "ai.beliefLifetime");
+            var changed = world.Checkpoint();
+            EcologyRecoveryFixture.Check(changed.LawHistory.Any(h => h.Key == definition.Id && h.After == months && h.Revision == adoptedRevision) &&
+                world.View().Laws.Single(l => l.Id == definition.Id).Value == months,
+                "공개 법칙 변경이 저장 revision 또는 법칙 조회에 반영되지 않았습니다.");
+            InventoryWorldFixture.Reject(world, new("failure-law-too-small", 0, "law", Value: 0, Data: definition.Id));
+            InventoryWorldFixture.Reject(world, new("failure-law-too-large", 0, "law", Value: 1201, Data: definition.Id));
+            var restored = EcologyRecoveryFixture.Save(world); EcologyRecoveryFixture.AdvanceTogether(world, restored, 2);
+            var state = world.Checkpoint(); var person = state.People.Single(p => p.Id == actor);
+            var duration = Math.Min(months, lifetime);
+            foreach (var key in new[] { "ecology:failed:0:food", "ecology:failed:0:food:gather" })
+            {
+                var failure = person.Beliefs.GetValueOrDefault(key);
+                EcologyRecoveryFixture.Check(failure is not null && failure.Value == "Finite source has insufficient unreserved stock." &&
+                    failure.Observed == 2 && failure.Expires == 2 + duration && failure.Expires <= failure.Observed + lifetime,
+                    "실제 예약 거부가 채택한 재확인 기간이나 전체 관측 수명을 넘었습니다.");
+            }
+            EcologyRecoveryFixture.Check(state.Inventory.Sources.Single(s => s.Id == source.Id).Remaining == 3 &&
+                state.Inventory.Jobs.Single(j => j.Actor == other).Status == "processing" &&
+                state.Materials["food"].Extraction == 0 && state.Materials["food"].Production == 0,
+                "재확인 기간 변경이 실제 재고·예약·무료 출력을 바꿨습니다.");
+            EcologyRecoveryFixture.PureView(world, actor); Invariants.Validate(state);
+            EcologyRecoveryFixture.AdvanceTogether(world, restored, 3);
+            var reviewed = world.Checkpoint().People.Single(p => p.Id == actor).Beliefs.GetValueOrDefault("ecology:failed:0:food:gather");
+            EcologyRecoveryFixture.Check(reviewed is not null && reviewed.Observed == (duration == 1 ? 3 : 2),
+                "짧은 실패 기억이 실제 재시도를 허용하지 않거나 아직 유효한 예약 거부를 즉시 반복했습니다.");
+            Invariants.Validate(world.Checkpoint());
+        }
+    }
+}
+
 public sealed class EcologyFoodInformationRecoveryScenario : IFeatureScenario
 {
     public string Name => "ecology recovery: 식량 관측 전 숨은 잔량은 선택에 영향 없고 비용 없는 조사·총자원 추정 금지";

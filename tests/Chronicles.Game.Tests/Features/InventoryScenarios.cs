@@ -525,3 +525,25 @@ public sealed class InventoryKnownSourceAndOfferScenario : IFeatureScenario
         InventoryFixture.Check(InventoryKnowledgeQueries.LocalOffers(state, 2).Count == 0, "A remote market leaked into a local-only projection.");
     }
 }
+
+public sealed class InventorySharedRecipeRegistryScenario : IFeatureScenario
+{
+    public string Name => "inventory: shared recipe registry plans the exact authoritative physical input and output";
+    public void Run()
+    {
+        var shared = InventoryDefinitions.SharedRecipes;
+        InventoryFixture.Check(shared.Count == InventoryDefinitions.Recipes.Count && shared.Select(r => r.Id).Distinct(StringComparer.Ordinal).Count() == shared.Count,
+            "Public recipe registry omits or duplicates an authoritative process.");
+        foreach (var recipe in shared)
+        {
+            var actual = InventoryDefinitions.Recipes[recipe.Id];
+            InventoryFixture.Check(recipe.Name.Length > 0 && recipe.Skill == actual.Skill && recipe.Output == actual.Output && recipe.Quantity == actual.Quantity &&
+                recipe.Inputs.OrderBy(i => i.Key, StringComparer.Ordinal).SequenceEqual(actual.Inputs.OrderBy(i => i.Key, StringComparer.Ordinal)),
+                "Shared recipe planning diverged from the actual consumed inputs or physical output.");
+        }
+        InventoryFixture.Check(InventoryDefinitions.Recipes["bag"].Inputs.ContainsKey("resource.15.0") &&
+            InventoryDefinitions.Recipes["soulWard"].Inputs.ContainsKey("resource.08.0") &&
+            InventoryDefinitions.Resources.Where(r => r.Definition.StartsWith("resource.14.", StringComparison.Ordinal))
+                .All(r => InventoryDefinitions.Recipes[r.Consumer].Output == "blankBook"), "Spatial/soul/record media combinations fabricated unsupported physical capabilities.");
+    }
+}

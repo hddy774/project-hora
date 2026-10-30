@@ -1,0 +1,100 @@
+{
+  "kind": "일반 거래 생계 fallback 예산 회귀의 선택 기능 근거",
+  "sourceCommit": "02bf8f793437bf0c6aa3cfd1eacac801f31a4f99",
+  "productSourceFingerprint": "5ffb6f1f0e382812ec84c131a51decf4a4e207e65a18dd5cd805ad4ea2ddd2b2",
+  "sourceCleanForAfterRuns": true,
+  "capturedUtc": "2026-10-30T15:52:22.198640+00:00",
+  "baseline": {
+    "productBaseCommit": "c305f3a6ff7052051ea154d2a2b792453135306b",
+    "newRegressionPresentUncommitted": true,
+    "scope": "수정 전에는 새 회귀 파일만 추가하여 baseline 제품의 방문검사 없는 trade→Eco 경로를 실행했다. 새 검사0/1 실패 원문을 보존한다. 이를 baseline의 전체 테스트 지문/전체 결과라고 표시하지 않는다."
+  },
+  "reports": [
+    {
+      "path": "before-rejected.json",
+      "sha256": "ce77a23b1ee56af735159a2d45a3aacefd3f0c38310c71810e1d8db90c49af5f",
+      "selection": "AI 거래 예산:",
+      "total": 1,
+      "failed": 1
+    },
+    {
+      "path": "boundary-functional.json",
+      "sha256": "6f8de3fa28bb8abaf10a612ffd2b6329725243d00f1280d968b574c6ac04cced",
+      "selection": "AI 거래 예산:",
+      "total": 1,
+      "failed": 0
+    },
+    {
+      "path": "currency-functional.json",
+      "sha256": "456a27c7679ab95f821f7ba0df39e84928a27f2419f7d4fd21f5a0d62c0fe39c",
+      "selection": "currency",
+      "total": 9,
+      "failed": 0
+    }
+  ],
+  "selectedAfterPassed": 10,
+  "retainedBeforeFailure": 1,
+  "build": {
+    "configuration": "Release",
+    "warnings": 0,
+    "errors": 0,
+    "exitCode": 0
+  },
+  "assemblies": [
+    {
+      "name": "Chronicles.Game",
+      "sha256": "e65750f057a0b43ec870aa3dd278885ffdbc3a31320465056f2ba9bedbb1f583"
+    },
+    {
+      "name": "Chronicles.Core",
+      "sha256": "eaeb50ef384ebd352a528be6c66fa9caa4996024722badcf160db6eff175d5d0"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "sha256": "366fa8e473aae72184368f814ebd67d6b83ea42ead2af61a88a624619415e92c"
+    }
+  ],
+  "commands": [
+    {
+      "selection": "AI 거래 예산:",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "run",
+        "--project",
+        "tests/Chronicles.Game.Tests",
+        "-c",
+        "Release",
+        "--",
+        "--filter",
+        "AI 거래 예산:",
+        "--report",
+        "/workspace/scratch/agent-trade-budget-02bf8f7-functional.json"
+      ]
+    },
+    {
+      "selection": "currency",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "currency",
+        "--report",
+        "/workspace/scratch/agent-trade-budget-02bf8f7-currency.json"
+      ]
+    }
+  ],
+  "limits": [
+    "새1개 기능 시나리오는 예산1/2×영석 유무의 실제4경계를 검사한다. 예산1은World유지정산 외split/예약/출품/환전없음, 예산2는실제판매또는단일실물소비환전과동일저장재개를확인한다.",
+    "기존 currency9개 조건은 수정하지 않았다. 원래 보고서의 화폐/영석은 불변이었으며 문제는 소진된 방문 뒤 생계 출품 실행이었다.",
+    "제품 수정은World.Planning의 일반 trade fallback 앞 VisitPlanningNode 부과 한 곳이다. 긴급 생계/Actions/수행 selector/원장/Notion/법칙값은 수정하지 않았다.",
+    "169frozen은불변이다. 이leaf의base는169+root0a33이며 TTL113법칙175·혼합입문권위·UI·새copyoracle는최종Rootstack에서합류한다. 전체최신suite/성장/AIcollector/성능/네이티브성공은주장하지않는다.",
+    "충분예산의actual방문수가정확해져전체상태digest가변할수있다. 이PR에서golden상수를수정하지않았다.",
+    "기능runner의ms부수출력은성능계측으로해석하지않는다."
+  ]
+}

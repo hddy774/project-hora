@@ -1,0 +1,52 @@
+{
+  "selection": "currency",
+  "total": 9,
+  "failed": 0,
+  "results": [
+    {
+      "name": "currency planning: \uACF5\uAC1C \uCC44\uAD11\uC744 \uC778\uACC4\uD55C AI\uC758 \uD658\uC804\uACFC \uC800\uC7A5\u00B7\uC7AC\uC804\uC1A1\uC740 \uC2E4\uBB3C \uC6D0\uCC9C\uC744 \uD55C \uBC88\uB9CC \uC18C\uBE44",
+      "passed": true,
+      "ms": 2683
+    },
+    {
+      "name": "currency planning: \uC790\uAE30 \uD604\uC9C0 \uAD00\uCE21\uC73C\uB85C \uC2E4\uC81C \uCC44\uAD11\uC744 \uC608\uC57D\uD558\uACE0 \uC644\uB8CC\uD55C \uC2E4\uBB3C\uB9CC \uD658\uC804",
+      "passed": true,
+      "ms": 1389
+    },
+    {
+      "name": "currency planning: \uB2E4\uB978 \uC778\uBB3C\uC758 \uB3C8\u00B7\uAD00\uCE21\uACFC \uC6D0\uACA9\u00B7\uC608\uC57D\u00B7\uACB0\uC190 \uC601\uC11D\uC740 \uBAA9\uD45C\uB97C \uB9CC\uB4E4\uC9C0 \uC54A\uACE0 \uBE44\uD65C\uC131\u00B7\uCDA9\uBD84 \uC794\uC561\uB3C4 \uBCF4\uC874",
+      "passed": true,
+      "ms": 1250
+    },
+    {
+      "name": "currency public: exact physical burn credits once, accepts functional zero quality, and freezes rate evidence",
+      "passed": true,
+      "ms": 610
+    },
+    {
+      "name": "currency public: other crystals defects remote custody cargo and disabled conversion never burn or mint",
+      "passed": true,
+      "ms": 1057
+    },
+    {
+      "name": "currency public: auction escrow seller death and estate transfers never count as new currency origins",
+      "passed": true,
+      "ms": 552
+    },
+    {
+      "name": "currency public: exact two founder opening origins never grant money again on save or repeat initialization",
+      "passed": true,
+      "ms": 190
+    },
+    {
+      "name": "currency public: actual discovered mining source becomes spendable money only after physical token consumption",
+      "passed": true,
+      "ms": 1116
+    },
+    {
+      "name": "currency public: source-free balances repeated burns and disabled origin validation are rejected on restore",
+      "passed": true,
+      "ms": 387
+    }
+  ]
+}

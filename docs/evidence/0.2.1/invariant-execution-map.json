@@ -1,0 +1,4401 @@
+{
+  "schema": "seonro.actual-invariant-execution-map.v1",
+  "mapping_source_commit": "8745eb4440498f7aff3d0b70a3c09eb2004a908e",
+  "test_sources_sha256": "600f3285a48a19e3baa99b7d13de3d4943489180e5903e9c67e8121defffa078",
+  "execution_status": "not_asserted",
+  "scope": "실제 runner 이름/소스와 검사 범위 연결이다. 제안카탈로그 변경이나 현재 전체 통과 판정이 아니다.",
+  "catalog": {
+    "feature_scenarios": 200,
+    "program_scenarios": 38,
+    "total": 238
+  },
+  "scenarios": [
+    {
+      "name": "30경로·24재능·40특성·12장비·정의 조회 순수성",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 221
+      },
+      "invariants": [
+        "INV-007",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-001 슬롯 재사용·낡은 세대/사망 신원 거부",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 287
+      },
+      "invariants": [
+        "INV-001"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-001/002/011 정확한 창세·안정 신원·100지점",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 36
+      },
+      "invariants": [
+        "INV-001",
+        "INV-002",
+        "INV-011"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-001/004/006/012/017/022 people family public: paid care, real teaching, consented adoption, adult separation and estate versus office succession",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleFamilyIntegrationScenarios.cs",
+        "symbol": "PeoplePublicFamilyFlowScenario",
+        "line": 8
+      },
+      "invariants": [
+        "INV-001",
+        "INV-004",
+        "INV-006",
+        "INV-012",
+        "INV-017",
+        "INV-022"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-001/006/023 neutral 50.00 Qi whole-course functional formula",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationBaselineScenario",
+        "line": 115
+      },
+      "invariants": [
+        "INV-001",
+        "INV-006",
+        "INV-023"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-003 기존 임신 법칙 revision 보존",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 69
+      },
+      "invariants": [
+        "INV-003"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-003 사용자 세 정책과 0 비활성",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 46
+      },
+      "invariants": [
+        "INV-003"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-003/004/006/023 legal cultivation law edits preserve adopted work completion and active attempts",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs",
+        "symbol": "CultivationWorldLawAdoptionScenario",
+        "line": 186
+      },
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-006",
+        "INV-023"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-003/004/023 public Nascent Soul formation follows actual upper-life law and aftercare",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs",
+        "symbol": "CultivationWorldLifespanScenario",
+        "line": 166
+      },
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-023"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-003/005 법칙 일괄 적용·검증 실패 원자성·중복 재전송·플레이 권한",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/LawPresetScenarios.cs",
+        "symbol": "LawPresetScenarios",
+        "line": 5
+      },
+      "invariants": [
+        "INV-003",
+        "INV-005"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004 손상 저장·중단 파일·백업 복원",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 109
+      },
+      "invariants": [
+        "INV-004"
+      ],
+      "boundary": "host"
+    },
+    {
+      "name": "INV-004/005 host recovery: committed pending saves, authenticated sequence and immutable old originals",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/HostRecoveryScenarios.cs",
+        "symbol": "HostRecoveryScenarios",
+        "line": 6
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005"
+      ],
+      "boundary": "host"
+    },
+    {
+      "name": "INV-004/005/011/012 실제 출생·유전·단일 영혼·재전송",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 53
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-011",
+        "INV-012"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/005/017/018/024 knowledge public world: a paid reserved paper item becomes exactly one copied book",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs",
+        "symbol": "KnowledgeWorldTranscriptionScenario",
+        "line": 160
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-017",
+        "INV-018",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/005/024 knowledge public world: study resumes against its actual body book and clock without skill gain",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs",
+        "symbol": "KnowledgeWorldStudyScenario",
+        "line": 132
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningReplayScenario",
+        "line": 170
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/006/011/014 people public: frozen conception, actual birth soul and production-save continuation",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs",
+        "symbol": "PeopleWorldBirthIntegrationScenarios",
+        "line": 71
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-011",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/006/011/015 W01 public martial: ten real stages, root-free labor, saved continuation, combat and 600-year boundary",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationMartialWorldScenarios.cs",
+        "symbol": "CultivationMartialTenStagesWorldScenario",
+        "line": 5
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-011",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/006/013/023 prepare/start/fracture·mandatory Nascent failure death",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationIrreversibilityScenario",
+        "line": 185
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-013",
+        "INV-023"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/006/013/023 public scheduled fracture·restore·same life death authority",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs",
+        "symbol": "CultivationWorldFractureScenario",
+        "line": 75
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-013",
+        "INV-023"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/006/015 people: serializable aggregate, truthful founder adapters and source-backed learning without genome rewrite",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs",
+        "symbol": "PeopleStateScenarios",
+        "line": 344
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-015"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/006/015/023 fortune public: actual disaster modifies adopted breakthrough risk once without quality or resource grants",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationFortuneScenarios.cs",
+        "symbol": "CultivationAdversityFortuneWorldScenario",
+        "line": 78
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-015",
+        "INV-023"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/006/015/023 fortune public: real trial source changes one dated risk and preserves the existing RNG draw",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationFortuneScenarios.cs",
+        "symbol": "CultivationEscapeFortuneWorldScenario",
+        "line": 34
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-015",
+        "INV-023"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/006/018 public cultivation·actual time/source debit/mastery/save/query purity",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs",
+        "symbol": "CultivationWorldSourceScenario",
+        "line": 43
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/006/018/023 R06 short functional strategy comparison: actual months resources quality risk and saved continuation",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationStrategyComparisonScenario.cs",
+        "symbol": "CultivationStrategyComparisonScenario",
+        "line": 7
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-018",
+        "INV-023"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/006/022 four-process energy·actual supply·crowding·rights",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationProcessScenario",
+        "line": 151
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-022"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/008/017/018 agent planning: unknown source discovery then real extraction and production complete a saved goal",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningProductionScenario",
+        "line": 48
+      },
+      "invariants": [
+        "INV-004",
+        "INV-008",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/008/018/021 public cultivation rights·book ownership·common activity capacity",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs",
+        "symbol": "CultivationWorldBoundaryScenario",
+        "line": 106
+      },
+      "invariants": [
+        "INV-004",
+        "INV-008",
+        "INV-018",
+        "INV-021"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningBudgetScenario",
+        "line": 148
+      },
+      "invariants": [
+        "INV-004",
+        "INV-008",
+        "INV-021"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleTeachingIntegrationScenarios.cs",
+        "symbol": "PeoplePublicTeachingRequestAdapterScenario",
+        "line": 3
+      },
+      "invariants": [
+        "INV-004",
+        "INV-008",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/009 people queries public: mutating nested observer aptitude, traits, soul, evaluations and claim arrays cannot alter authority",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleReceiptIntegrationScenarios.cs",
+        "symbol": "PeoplePublicDetachedDetailScenario",
+        "line": 68
+      },
+      "invariants": [
+        "INV-004",
+        "INV-007",
+        "INV-009"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/011/012 people public genetics: configured zero mutation and frozen model/stream after law changes",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleSocialIntegrationScenarios.cs",
+        "symbol": "PeoplePublicMutationPolicyScenario",
+        "line": 224
+      },
+      "invariants": [
+        "INV-004",
+        "INV-011",
+        "INV-012"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/011/012/014 people: frozen allele inheritance, prenatal body evidence and birth-time soul assignment",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs",
+        "symbol": "PeopleInheritanceScenarios",
+        "line": 123
+      },
+      "invariants": [
+        "INV-004",
+        "INV-011",
+        "INV-012",
+        "INV-014"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/011/014/015 people public species: actual body maturity, native gestation, frozen offspring and independent birth soul",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleSocialIntegrationScenarios.cs",
+        "symbol": "PeoplePublicNonhumanBirthScenario",
+        "line": 247
+      },
+      "invariants": [
+        "INV-004",
+        "INV-011",
+        "INV-014",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/011/015 independent root-free ten-stage martial growth·600-year cap",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationMartialScenario",
+        "line": 356
+      },
+      "invariants": [
+        "INV-004",
+        "INV-011",
+        "INV-015"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/011/023 10 realm structures·30 paths·genesis provenance",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationProfilesScenario",
+        "line": 87
+      },
+      "invariants": [
+        "INV-004",
+        "INV-011",
+        "INV-023"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/012 불법 부모·신원 중복 저장 거부",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 124
+      },
+      "invariants": [
+        "INV-004",
+        "INV-012"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/012/017 실제 양육 시간·식량·사회 관계·감정·판단 이력",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/SocietyScenarios.cs",
+        "symbol": "SocietyScenarios",
+        "line": 5
+      },
+      "invariants": [
+        "INV-004",
+        "INV-012",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/013/023 every minor-stage tribulation including entry/ninth/completion",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationTribulationScenario",
+        "line": 319
+      },
+      "invariants": [
+        "INV-004",
+        "INV-013",
+        "INV-023"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/014/015 people social public: actual historical founders, lost authority and no title restoration through soul",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleSocialIntegrationScenarios.cs",
+        "symbol": "PeoplePublicTitleAndRebirthScenario",
+        "line": 153
+      },
+      "invariants": [
+        "INV-004",
+        "INV-014",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/014/023 all 30 paths form their unique realm structure once",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationTransitionsScenario",
+        "line": 264
+      },
+      "invariants": [
+        "INV-004",
+        "INV-014",
+        "INV-023"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/014/024 people public: eligible natural death, waiting-soul birth, real awakening and taught integration",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs",
+        "symbol": "PeopleWorldReincarnationScenarios",
+        "line": 227
+      },
+      "invariants": [
+        "INV-004",
+        "INV-014",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/014/024 people: six trace domains, awakening, integration, crossing loss and conserved split branches",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs",
+        "symbol": "PeopleSoulTraceScenarios",
+        "line": 164
+      },
+      "invariants": [
+        "INV-004",
+        "INV-014",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/015/023 regression·real recovery·costed route conversion·retreat boundaries",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationRecoveryScenario",
+        "line": 288
+      },
+      "invariants": [
+        "INV-004",
+        "INV-015",
+        "INV-023"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/016/017/018 public pill reservation·cancel·consume exactly once",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs",
+        "symbol": "CultivationWorldAidScenario",
+        "line": 140
+      },
+      "invariants": [
+        "INV-004",
+        "INV-016",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+        "symbol": "ActionAuthorityProductionScenario",
+        "line": 89
+      },
+      "invariants": [
+        "INV-004",
+        "INV-017",
+        "INV-018",
+        "INV-021"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/017/021 H10 action owner: a real retreat keeps route provenance after paid combat occupancy ends",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+        "symbol": "ActionAuthorityCombatRetreatScenario",
+        "line": 152
+      },
+      "invariants": [
+        "INV-004",
+        "INV-017",
+        "INV-021"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+        "symbol": "ActionAuthorityCorruptScenario",
+        "line": 48
+      },
+      "invariants": [
+        "INV-001",
+        "INV-004",
+        "INV-017",
+        "INV-021"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/017/021/024 H10 action owner: actual study and cultivation practice keep their own adopted activities",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+        "symbol": "ActionAuthorityKnowledgeScenario",
+        "line": 125
+      },
+      "invariants": [
+        "INV-004",
+        "INV-017",
+        "INV-021",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/017/024 knowledge public world: real request and teaching share both participants' labor and cancel together",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs",
+        "symbol": "KnowledgeWorldTeachingScenario",
+        "line": 195
+      },
+      "invariants": [
+        "INV-004",
+        "INV-017",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/018/024 knowledge public world: actual misreading paid experiment and rereading preserve adopted history",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs",
+        "symbol": "KnowledgeWorldCorrectionScenario",
+        "line": 229
+      },
+      "invariants": [
+        "INV-004",
+        "INV-018",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/020 politics: domain save roundtrip, resumed preparation and deterministic pure queries",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsSaveScenario",
+        "line": 307
+      },
+      "invariants": [
+        "INV-004",
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/023/024 adopted knowledge revision·actual support reservation·no book mastery",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationKnowledgeScenario",
+        "line": 231
+      },
+      "invariants": [
+        "INV-004",
+        "INV-023",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/024 knowledge bridge contract: a real reserved paper substrate may be the paid blank and reading rights revoke",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs",
+        "symbol": "KnowledgeSubstrateAndRevocationContractScenario",
+        "line": 36
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/024 knowledge public world: real genesis books and explicit personal sources with zero mastery",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs",
+        "symbol": "KnowledgeWorldGenesisScenario",
+        "line": 109
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-004/024 knowledge: an interrupted blank medium can be reused only with new paid inputs",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeCancelledTargetReuseScenario",
+        "line": 429
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/024 knowledge: changed writing laws affect future actions and preserve adopted costs",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeRuleRevisionScenario",
+        "line": 381
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/024 knowledge: corrupt lineage mastery adoption time and provenance saves are rejected",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeSaveValidationScenario",
+        "line": 288
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/024 knowledge: loss of an action's physical source prevents completion without refunding spent inputs",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeInterruptionScenario",
+        "line": 236
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/024 knowledge: mixed-edition oral teaching preserves each source and surviving transmission rights",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeMixedEditionTeachingScenario",
+        "line": 403
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/024 knowledge: only timed successful real practice earns mastery and process receipts cannot replay",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgePracticeScenario",
+        "line": 255
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeAccessScenario",
+        "line": 446
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-004/024 knowledge: transcription reserves a physical target time and exact one-use inputs",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeTranscriptionScenario",
+        "line": 205
+      },
+      "invariants": [
+        "INV-004",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-006 저장 왕복·호스트 문화권 독립",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 273
+      },
+      "invariants": [
+        "INV-006"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-006/007/004 시간 분할·조회/저장 무영향",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 98
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-007"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-006/008 agent planning: all fourteen axes affect scored goals and actual mood and completed habits change choice",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningDispositionScenario",
+        "line": 251
+      },
+      "invariants": [
+        "INV-006",
+        "INV-008"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningInformationFairnessScenario",
+        "line": 123
+      },
+      "invariants": [
+        "INV-006",
+        "INV-008"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-006/008/015/023 canonical eight axes·single-source effects·conditional potential",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs",
+        "symbol": "CultivationCombatPotentialScenario",
+        "line": 386
+      },
+      "invariants": [
+        "INV-006",
+        "INV-008",
+        "INV-015",
+        "INV-023"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-006/008/021 agent planning: cached hostility chooses a known retreat and baseline founders are never forced into fatal conflict",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningRetreatScenario",
+        "line": 312
+      },
+      "invariants": [
+        "INV-006",
+        "INV-008",
+        "INV-021"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-006/008/024 knowledge: scoped paged queries are pure isolated and culture independent",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeQueryScenario",
+        "line": 345
+      },
+      "invariants": [
+        "INV-006",
+        "INV-008",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-006/011/015 people public species: explicit body capabilities, maturity/lifespan, habitat evidence and strict projections",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleSocialIntegrationScenarios.cs",
+        "symbol": "PeoplePublicSpeciesAndProjectionScenario",
+        "line": 186
+      },
+      "invariants": [
+        "INV-006",
+        "INV-011",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-006/012/024 knowledge: parents mentors and apprentices spend both participants' time",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeTeachingScenario",
+        "line": 173
+      },
+      "invariants": [
+        "INV-006",
+        "INV-012",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-006/015 people public: actual environmental damage, timed recovery and derived-marker release",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs",
+        "symbol": "PeopleWorldMonthlyTraitScenarios",
+        "line": 284
+      },
+      "invariants": [
+        "INV-006",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-006/015 people: six foundations, 24 talents, canonical ten cognition mappings and single cause effects",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs",
+        "symbol": "PeopleAptitudeScenarios",
+        "line": 43
+      },
+      "invariants": [
+        "INV-006",
+        "INV-015"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-006/022 people: invariant absolute aptitude and scoped genius/candidate vacancies, ties and dated reevaluation",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs",
+        "symbol": "PeopleEvaluationScenarios",
+        "line": 198
+      },
+      "invariants": [
+        "INV-006",
+        "INV-022"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-007/010 rich query: action equipment policy history mapping and detached snapshots",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "RichQueryMappingScenario",
+        "line": 67
+      },
+      "invariants": [
+        "INV-007",
+        "INV-010"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "AuthoritativePolicyProjectionScenario",
+        "line": 371
+      },
+      "invariants": [
+        "INV-007",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008 인지 예산 변경·명제/인물/지점 합계",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 251
+      },
+      "invariants": [
+        "INV-008"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008 장소 ID와 인물 ID 충돌에서 사건 누출 없음",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 315
+      },
+      "invariants": [
+        "INV-008"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 230
+      },
+      "invariants": [
+        "INV-008",
+        "INV-009",
+        "INV-010"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/009/015 people receipts public: remote rejection and hidden authority cannot change an undelivered request belief",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleReceiptIntegrationScenarios.cs",
+        "symbol": "PeoplePublicRequestReceiptPrivacyScenario",
+        "line": 42
+      },
+      "invariants": [
+        "INV-008",
+        "INV-009",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/009/015 people receipts public: unseen remote oath end cannot update personal agreement knowledge",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleReceiptIntegrationScenarios.cs",
+        "symbol": "PeoplePublicOathReceiptPrivacyScenario",
+        "line": 5
+      },
+      "invariants": [
+        "INV-008",
+        "INV-009",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/015 people public: one real study credit and hidden-person source noninterference",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs",
+        "symbol": "PeopleWorldLearningVisibilityScenarios",
+        "line": 139
+      },
+      "invariants": [
+        "INV-008",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/015 people social public: completed martial routine, dated acquisition and inactivity release",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleSocialIntegrationScenarios.cs",
+        "symbol": "PeoplePublicHabitTraitScenario",
+        "line": 127
+      },
+      "invariants": [
+        "INV-008",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/015 people social public: source-active oath preference, formal breach and actual AI score change",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleSocialIntegrationScenarios.cs",
+        "symbol": "PeoplePublicOathAndPreferenceScenario",
+        "line": 96
+      },
+      "invariants": [
+        "INV-008",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/015 people: forty traits, lifecycle, conflicts, expiry, history and observed potential boundaries",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs",
+        "symbol": "PeopleTraitScenarios",
+        "line": 81
+      },
+      "invariants": [
+        "INV-008",
+        "INV-015"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-008/015/022 people social public: bilateral timed assessment, unseen fame and consented claim relay",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleSocialIntegrationScenarios.cs",
+        "symbol": "PeoplePublicAssessmentAndRelayScenario",
+        "line": 44
+      },
+      "invariants": [
+        "INV-008",
+        "INV-015",
+        "INV-022"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/017/018 agent planning: production surplus becomes a real public offer and another actor buys from its own need",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningTradeScenario",
+        "line": 73
+      },
+      "invariants": [
+        "INV-008",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/017/024 H10 action owner: a Qi actor without a current method requests real teaching before a bounded plan",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+        "symbol": "ActionAuthorityQiMethodScenario",
+        "line": 188
+      },
+      "invariants": [
+        "INV-008",
+        "INV-017",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/017/024 agent planning: an advanced authoritative recipe uses learned method and discovered actual family resources",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningRegistryScenario",
+        "line": 185
+      },
+      "invariants": [
+        "INV-008",
+        "INV-017",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningTeacherScenario",
+        "line": 206
+      },
+      "invariants": [
+        "INV-008",
+        "INV-017",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/018 agent planning: cooperation repays an actual personal obligation without inventing another person's intent",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningCooperationScenario",
+        "line": 291
+      },
+      "invariants": [
+        "INV-008",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-008/022 people: observed reputation provenance, hidden genius noninterference and bounded deterministic claims",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs",
+        "symbol": "PeopleReputationScenarios",
+        "line": 236
+      },
+      "invariants": [
+        "INV-008",
+        "INV-022"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningFailureScenario",
+        "line": 100
+      },
+      "invariants": [
+        "INV-008",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-009/010 rich query: cached people and places precede hidden truth projection",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "RichQueryPermissionScenario",
+        "line": 28
+      },
+      "invariants": [
+        "INV-009",
+        "INV-010"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-009/015 rich query: delivered social requests, consented assessment and observed oath receipts",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "PersonalSocialReceiptsProjectionScenario",
+        "line": 297
+      },
+      "invariants": [
+        "INV-009",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "PersonalOperationalContextScenario",
+        "line": 268
+      },
+      "invariants": [
+        "INV-009",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-009/015 rich query: voluntary guard names a person while combat cooldown names a receipt",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "GuardTargetProjectionScenario",
+        "line": 350
+      },
+      "invariants": [
+        "INV-009",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-009/016 rich query: actual recipes and stale personal resource/appraisal snapshots",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "ResourceAndAppraisalProjectionScenario",
+        "line": 169
+      },
+      "invariants": [
+        "INV-009",
+        "INV-016"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "ContractPrivacyProjectionScenario",
+        "line": 208
+      },
+      "invariants": [
+        "INV-009",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-009/024 knowledge: 허가한 실제 매체를 전체수·정렬·페이지 전에 필터하여 바깥 도서를 인지하지 않는다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeAccessibleSpatialFilterScenario",
+        "line": 7
+      },
+      "invariants": [
+        "INV-009",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "PersonalKnowledgeProjectionScenario",
+        "line": 132
+      },
+      "invariants": [
+        "INV-009",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-009/M05 비경 조회: 내부는 실제 휴대품과 개인 기록만 보고 바깥 신규 출품·바닥 실물을 현재 정보로 받지 않는다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "SecretInteriorQueryScenario",
+        "line": 424
+      },
+      "invariants": [
+        "INV-002",
+        "INV-007",
+        "INV-008",
+        "INV-009",
+        "INV-010",
+        "INV-016",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "PrivateCommandPerceptionRevisionScenario",
+        "line": 244
+      },
+      "invariants": [
+        "INV-009",
+        "INV-010"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-010/021 ordinary AI cultivation completion returns to the actual goal decision boundary",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs",
+        "symbol": "CultivationAiBoundaryScenario",
+        "line": 252
+      },
+      "invariants": [
+        "INV-010",
+        "INV-021"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-010/021 빙의·AI 인계에서 기존 행동 보존",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 214
+      },
+      "invariants": [
+        "INV-010",
+        "INV-021"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-011 양친 금단 바로 아래·같음",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 78
+      },
+      "invariants": [
+        "INV-011"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-011/012 people public: both-parent Golden Core boundary and explicit martial-law override",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs",
+        "symbol": "PeopleWorldReproductionPolicyScenarios",
+        "line": 114
+      },
+      "invariants": [
+        "INV-011",
+        "INV-012"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-011/015 people: independent species/body/title, both-parent Golden Core reproduction and root-free martial aptitude",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs",
+        "symbol": "PeopleEmbodimentMartialScenarios",
+        "line": 267
+      },
+      "invariants": [
+        "INV-011",
+        "INV-015"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-012 혈연 허용·제한 프리셋",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 86
+      },
+      "invariants": [
+        "INV-012"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-013 혼멸·역사 최고 경지로 자격 우회 없음",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 258
+      },
+      "invariants": [
+        "INV-013"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-013/014 화신 대원만 경계·실제 사망·대기·출생",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 183
+      },
+      "invariants": [
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-014/024 people public: coherent ready ascension, source capture and costed independent split",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs",
+        "symbol": "PeopleWorldTraceAndSplitScenarios",
+        "line": 190
+      },
+      "invariants": [
+        "INV-014",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-015/023 people: canonical eight combat axes, standard comparison, one-time realm conversion and conditional known potential",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs",
+        "symbol": "PeopleCombatScenarios",
+        "line": 300
+      },
+      "invariants": [
+        "INV-015",
+        "INV-023"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-015/024 knowledge: physical missing pages and book loss preserve learned memory",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeDefectsScenario",
+        "line": 99
+      },
+      "invariants": [
+        "INV-015",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-015/024 폐품 점수와 기능 결손 분리",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 299
+      },
+      "invariants": [
+        "INV-015",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-016/017/018 실물 출품·거래·영석 보존",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 133
+      },
+      "invariants": [
+        "INV-016",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-017 경매 예치·낙찰 단일 정산",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 143
+      },
+      "invariants": [
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-017 제작 예약·취소·소비·저장",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 154
+      },
+      "invariants": [
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-017/018/024 knowledge public world: an actual blank book carries no text until paid transcription",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs",
+        "symbol": "KnowledgeWorldBlankBookScenario",
+        "line": 270
+      },
+      "invariants": [
+        "INV-017",
+        "INV-018",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-018 물품 원장 없는 수량 복제 거부",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 267
+      },
+      "invariants": [
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-018/019 politics: vassal DAG, one resident tax and one direct-tax tribute per layer",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsTaxScenario",
+        "line": 137
+      },
+      "invariants": [
+        "INV-018",
+        "INV-019"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-018/019/020 politics: actual enforcement jurisdiction, debtor assumption and personal estate transfer preserve principal IDs",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsEnforcementAndEstateScenario",
+        "line": 352
+      },
+      "invariants": [
+        "INV-018",
+        "INV-019",
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-018/019/020 politics: succession and independence preserve one creditor, debtor and enforcement owner",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsDebtScenario",
+        "line": 161
+      },
+      "invariants": [
+        "INV-018",
+        "INV-019",
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-018/020 politics: all ten detailed policy categories use actual input and effect semantics",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsPolicyEffectsScenario",
+        "line": 269
+      },
+      "invariants": [
+        "INV-018",
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-018/020 politics: atomic adopt/prepare failure and actual worker withdrawal cannot leave usable cancelled effects",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsWorkWithdrawalScenario",
+        "line": 450
+      },
+      "invariants": [
+        "INV-018",
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-018/020 politics: insufficient real payroll records one receivable per member and period",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsPayrollArrearsScenario",
+        "line": 379
+      },
+      "invariants": [
+        "INV-018",
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-018/020 politics: organizations share actual labor, preparation rules snapshot and public account projections",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsSharedReservationsScenario",
+        "line": 425
+      },
+      "invariants": [
+        "INV-018",
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-019 politics: adult household leadership is independent from Golden Core fertility and respects its own optional realm law",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsFamilyQualificationScenario",
+        "line": 471
+      },
+      "invariants": [
+        "INV-019"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-019 politics: atomic territorial transfer preserves property and revokes former public grants",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsSovereigntyTransferScenario",
+        "line": 329
+      },
+      "invariants": [
+        "INV-019"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-019 politics: ownership, administration, passage and claims remain separate from sovereignty",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsRightsScenario",
+        "line": 86
+      },
+      "invariants": [
+        "INV-019"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-019 politics: real province founding, territorial loss, restoration and territoryless persistence",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsDynastyScenario",
+        "line": 113
+      },
+      "invariants": [
+        "INV-019"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-019/020 politics: implementation rechecks current leader, charter, jurisdiction and application revision",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsPolicyRevalidationScenario",
+        "line": 217
+      },
+      "invariants": [
+        "INV-019",
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-020 politics: actual sect founding, concurrent limit, local charter, offices, payroll and dissolution",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsSectScenario",
+        "line": 241
+      },
+      "invariants": [
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-020 politics: adopted, insufficient, prepared, implemented and cancelled policy states reserve real resources",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsPolicyLifecycleScenario",
+        "line": 188
+      },
+      "invariants": [
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-020 politics: revoked or expired local charters cancel prepared sect policy and refund escrow",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs",
+        "symbol": "PoliticsCharterChangeScenario",
+        "line": 400
+      },
+      "invariants": [
+        "INV-020"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-020 조직 금고·정책 예약·해산 역사",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 172
+      },
+      "invariants": [
+        "INV-020"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-023 원영 파단 후 취소 사망·앱 복원은 포기 아님",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 195
+      },
+      "invariants": [
+        "INV-023"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "INV-024 knowledge bridge contract: explicit genesis transmission licence and existing comprehension baseline",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs",
+        "symbol": "KnowledgeGenesisTransmissionContractScenario",
+        "line": 5
+      },
+      "invariants": [
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-024 knowledge: experiments refute adopted claims and corrections never rewrite history",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeCorrectionScenario",
+        "line": 120
+      },
+      "invariants": [
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-024 knowledge: personal misinterpretation and oral transmission do not mutate editions",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeInterpretationScenario",
+        "line": 152
+      },
+      "invariants": [
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "INV-024 knowledge: physical ownership grants neither comprehension nor mastery",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+        "symbol": "KnowledgeOwnershipScenario",
+        "line": 79
+      },
+      "invariants": [
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "RC-01 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(1)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-02 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(2)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-03 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(3)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-04 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(4)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-05 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(5)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-06 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(6)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-07 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(7)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-08 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(8)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-09 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(9)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-10 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(10)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-11 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(11)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-12 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(12)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "RC-13 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(13)",
+        "line": 9
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-013",
+        "INV-014"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-E02 ecology kernel: actual offers and funded trades produce local price evidence without extra money or goods",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyActualMarketScenario",
+        "line": 53
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-007",
+        "INV-018"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-E02/O03 ecology kernel: actor history and plans exclude private NPC wealth, stock, quality and source truth",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyPersonalInformationScenario",
+        "line": 121
+      },
+      "invariants": [
+        "INV-008",
+        "INV-009",
+        "INV-018",
+        "INV-022"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-E02/O04 ecology kernel: a real known production plan buys advertised inputs using own money and physical carrying units",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyMarketInputProcurementScenario",
+        "line": 173
+      },
+      "invariants": [
+        "INV-008",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-E02/O04 public ecology: a hungry actual NPC buys a real local offer with its own funded wealth",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyNativeBuyerScenario",
+        "line": 229
+      },
+      "invariants": [
+        "INV-005",
+        "INV-008",
+        "INV-018"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-G01/G02 public politics: one province, persistent territoryless dynasty, annual zero revenue and restoration",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicTerritoryIntegrationScenario",
+        "line": 116
+      },
+      "invariants": [
+        "INV-004",
+        "INV-018",
+        "INV-019",
+        "INV-020"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-G02 public politics: actual loan, independence, death succession and territorial loss keep public accounts distinct",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicDebtSuccessionIntegrationScenario",
+        "line": 136
+      },
+      "invariants": [
+        "INV-004",
+        "INV-012",
+        "INV-018",
+        "INV-019",
+        "INV-020"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-G03 AI politics: direct rejected founding and second-phase preparation consume no IDs or resources",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsAiRejectionAtomicityScenario",
+        "line": 257
+      },
+      "invariants": [
+        "INV-005",
+        "INV-017",
+        "INV-020",
+        "INV-022"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicPolicyIntegrationScenario",
+        "line": 57
+      },
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-005",
+        "INV-017",
+        "INV-018",
+        "INV-020"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-G03 public politics: withdrawing real reserved work refunds unfinished policy without implementation",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicWithdrawalIntegrationScenario",
+        "line": 97
+      },
+      "invariants": [
+        "INV-005",
+        "INV-017",
+        "INV-018",
+        "INV-020"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-M02 ecology kernel: actual households, market, workshop and privately explored source coexist on one real map node",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyRealColocationScenario",
+        "line": 280
+      },
+      "invariants": [
+        "INV-002",
+        "INV-018",
+        "INV-019"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-M02/O04 ecology kernel: time and population alone do not unlock markets, workshops, settlements or capacity",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyNoScheduledSettlementScenario",
+        "line": 99
+      },
+      "invariants": [
+        "INV-002",
+        "INV-018",
+        "INV-022"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicRightsIntegrationScenario",
+        "line": 209
+      },
+      "invariants": [
+        "INV-009",
+        "INV-019"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-M03/G02 public politics: actual death inheritance transfers personal land and preserves another operator's rights",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicEstateRightsIntegrationScenario",
+        "line": 235
+      },
+      "invariants": [
+        "INV-004",
+        "INV-012",
+        "INV-019",
+        "INV-020"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-O01 ecology kernel: actual extraction, finite depletion and renewable recovery reconcile to physical source receipts",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyNaturalFlowScenario",
+        "line": 79
+      },
+      "invariants": [
+        "INV-018",
+        "INV-022"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-O01/O05 ecology kernel: bounded source history and pure culture-independent isolated queries preserve world authority",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyBoundedHistoryScenario",
+        "line": 150
+      },
+      "invariants": [
+        "INV-006",
+        "INV-007",
+        "INV-008"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-O01/O05 public ecology: actual seasonal renewal, disaster depletion, route loss and recovery retain physical causes",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyNativeShockScenario",
+        "line": 254
+      },
+      "invariants": [
+        "INV-002",
+        "INV-004",
+        "INV-018"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-O02 ecology kernel: unseen remote own stock loss remains unknown until an actual owner witness exists",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyRemoteLossScopeScenario",
+        "line": 191
+      },
+      "invariants": [
+        "INV-008",
+        "INV-009",
+        "INV-018"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-O02 public ecology: actual remote spoilage stays unknown even after the owner later arrives",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyNativeRemoteLossScenario",
+        "line": 306
+      },
+      "invariants": [
+        "INV-008",
+        "INV-009",
+        "INV-018"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-O02 public ecology: automatic life and deleted-stack consumption record once and resume through GameCodec",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyNativeConsumptionScenario",
+        "line": 207
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-018"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "V021-S02 public politics: funded education queues one real request and gains knowledge only through timed teaching",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicTeachingIntegrationScenario",
+        "line": 176
+      },
+      "invariants": [
+        "INV-017",
+        "INV-018",
+        "INV-020",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicSectLifecycleScenario",
+        "line": 312
+      },
+      "invariants": [
+        "INV-004",
+        "INV-012",
+        "INV-014",
+        "INV-017",
+        "INV-019",
+        "INV-020",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-W02/G01 public politics: actual fox and pine body maturity govern consent and family leadership independently of human law",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsActualSpeciesMaturityScenario",
+        "line": 275
+      },
+      "invariants": [
+        "INV-011",
+        "INV-019"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "V021-W02/O04 public ecology: an actual juvenile pine remains dependent after human maturity and changes funded household procurement",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs",
+        "symbol": "EcologyActualDependentMaturityScenario",
+        "line": 332
+      },
+      "invariants": [
+        "INV-008",
+        "INV-011",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "combat mechanics: each canonical axis changes practical hit damage escape coordination or finite exertion",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs",
+        "symbol": "CombatAxesMechanicsScenario",
+        "line": 40
+      },
+      "invariants": [
+        "INV-015"
+      ],
+      "boundary": "mechanics"
+    },
+    {
+      "name": "combat public: actual attacked witness and reaction obey a one-fact shared cognition budget",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs",
+        "symbol": "CombatWorldCognitionScenario",
+        "line": 156
+      },
+      "invariants": [
+        "INV-008"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "combat public: actual canonical routes pay health gear and shared time and preserve busy defender work",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs",
+        "symbol": "CombatWorldCostScenario",
+        "line": 68
+      },
+      "invariants": [
+        "INV-005",
+        "INV-015",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "combat public: command replay paid cooldown and saved continuation preserve actual receipts and query purity",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs",
+        "symbol": "CombatWorldReplayScenario",
+        "line": 172
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-006",
+        "INV-007",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "combat public: defender independently counters once or spends a real known route on retreat",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs",
+        "symbol": "CombatWorldReactionScenario",
+        "line": 125
+      },
+      "invariants": [
+        "INV-002",
+        "INV-005",
+        "INV-008",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "combat public: explicit local guard intent contributes once with real supporter health time and no fabricated allies",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs",
+        "symbol": "CombatWorldSupportScenario",
+        "line": 97
+      },
+      "invariants": [
+        "INV-005",
+        "INV-015",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "combat public: hidden opponent formation is absent from actor queries and receipt inputs never enter public logs",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs",
+        "symbol": "CombatWorldPrivacyScenario",
+        "line": 196
+      },
+      "invariants": [
+        "INV-007",
+        "INV-009",
+        "INV-015"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "combat public: settled receipt history is bounded without losing current paid occupancy or chronology",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs",
+        "symbol": "CombatWorldHistoryScenario",
+        "line": 214
+      },
+      "invariants": [
+        "INV-004",
+        "INV-008",
+        "INV-021"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+        "symbol": "CurrencyAiMiningHandoffScenario",
+        "line": 48
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-008",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+        "symbol": "CurrencyAiScopeAndNeedScenario",
+        "line": 98
+      },
+      "invariants": [
+        "INV-008",
+        "INV-016",
+        "INV-017",
+        "INV-018",
+        "INV-022"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+        "symbol": "CurrencyAiObservedMiningScenario",
+        "line": 76
+      },
+      "invariants": [
+        "INV-008",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "currency public: actual discovered mining source becomes spendable money only after physical token consumption",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyIntegrationScenarios.cs",
+        "symbol": "CurrencyMiningScenario",
+        "line": 107
+      },
+      "invariants": [
+        "INV-004",
+        "INV-008",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "currency public: auction escrow seller death and estate transfers never count as new currency origins",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyIntegrationScenarios.cs",
+        "symbol": "CurrencyEscrowAndDeathScenario",
+        "line": 132
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-012",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "currency public: exact physical burn credits once, accepts functional zero quality, and freezes rate evidence",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyIntegrationScenarios.cs",
+        "symbol": "CurrencyBurnAndReplayScenario",
+        "line": 49
+      },
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-005",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "currency public: exact two founder opening origins never grant money again on save or repeat initialization",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyIntegrationScenarios.cs",
+        "symbol": "CurrencyGenesisScenario",
+        "line": 31
+      },
+      "invariants": [
+        "INV-004",
+        "INV-011",
+        "INV-018",
+        "INV-022"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "currency public: other crystals defects remote custody cargo and disabled conversion never burn or mint",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyIntegrationScenarios.cs",
+        "symbol": "CurrencyEligibilityAndCargoScenario",
+        "line": 77
+      },
+      "invariants": [
+        "INV-005",
+        "INV-016",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "currency public: source-free balances repeated burns and disabled origin validation are rejected on restore",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyIntegrationScenarios.cs",
+        "symbol": "CurrencySourceCorruptionScenario",
+        "line": 155
+      },
+      "invariants": [
+        "INV-004",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: INV-017 continuation keeps every physical reservation backed by one ledger",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicContinuationScenario",
+        "line": 31
+      },
+      "invariants": [
+        "INV-004",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: actual array installation and upkeep never create natural energy or survive destruction",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicArrayScenario",
+        "line": 205
+      },
+      "invariants": [
+        "INV-005",
+        "INV-015",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: actual source loss cancels extraction and capacity growth grants no stock",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicSourceLossScenario",
+        "line": 106
+      },
+      "invariants": [
+        "INV-005",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: canonical recipe practice consumes real inputs and cancellation never refunds the process",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicCraftScenario",
+        "line": 78
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-017",
+        "INV-018",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: completed route delivers physical cargo and blocked routes keep it at actual origin",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicTransportScenario",
+        "line": 154
+      },
+      "invariants": [
+        "INV-002",
+        "INV-004",
+        "INV-016",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: crafted sold talisman pays actual parties and protects one real hit with no use replay",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicTalismanCycleScenario",
+        "line": 296
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-015",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: finite gathering uses scheduled time and survives exact GameCodec continuation",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicGatherScenario",
+        "line": 52
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: medicine appraisal and source exploration produce real effects and personal evidence",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicProfessionalScenario",
+        "line": 181
+      },
+      "invariants": [
+        "INV-008",
+        "INV-015",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: paid growth dose improves a bottlenecked canonical pulse with real Qi debit and exact save continuation",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicGrowthPulseScenario",
+        "line": 230
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-015",
+        "INV-018",
+        "INV-023"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: real armor craft equipment soul binding combat damage and repair preserve one artifact through save",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicArtifactCycleScenario",
+        "line": 260
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-015",
+        "INV-016",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: real auction escrow and advertised snapshots settle once through the world scheduler",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicAuctionScenario",
+        "line": 129
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory public: successful real seed water farming and agreed treatment heal an actual other patient",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicFarmPatientCycleScenario",
+        "line": 333
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryOrdinalSaveScenario",
+        "line": 455
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-005/015/016 equipment replacement is atomic across occupied slots and return capacity",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryEquipmentScenario",
+        "line": 112
+      },
+      "invariants": [
+        "INV-005",
+        "INV-015",
+        "INV-016"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-016 inventory split/merge preserves hidden state, binding and provenance",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryStackScenario",
+        "line": 44
+      },
+      "invariants": [
+        "INV-016"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-016 ownership, custody, use, equipment and remote access remain independent",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryCustodyScenario",
+        "line": 68
+      },
+      "invariants": [
+        "INV-016"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-016 recursive container capacity, cycle rejection and broken-container overflow preserve stock",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryContainerScenario",
+        "line": 92
+      },
+      "invariants": [
+        "INV-016"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-016/017 shared physical reservations preserve split provenance and exclude parallel use",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventorySharedReservationScenario",
+        "line": 476
+      },
+      "invariants": [
+        "INV-016",
+        "INV-017"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-016/018 backpack removal preserves overflow, sources stay finite, known bundles reveal no truth",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryPreservationScenario",
+        "line": 354
+      },
+      "invariants": [
+        "INV-016",
+        "INV-018"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-017 care, teaching, production and defense share person and facility labor",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryLaborScenario",
+        "line": 138
+      },
+      "invariants": [
+        "INV-017"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-017 production cannot bank idle time and broken arrays immediately stop contributing",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryTimingAndArrayDamageScenario",
+        "line": 430
+      },
+      "invariants": [
+        "INV-017"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-017 real production inputs, stage cancellation, failure, use and save settlement",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryCraftingScenario",
+        "line": 156
+      },
+      "invariants": [
+        "INV-017"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-017/018 auctions fund deposits, reject reuse, refund death and settle equal deadlines once",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryAuctionScenario",
+        "line": 226
+      },
+      "invariants": [
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: INV-017/018 competing bids and carrier/seller deaths preserve estates, escrow and cargo",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryCompetingAndDeathScenario",
+        "line": 382
+      },
+      "invariants": [
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: V021-E03 real cargo preserves in-transit title, labor, fees, arrival and failure recovery location",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryTransportScenario",
+        "line": 263
+      },
+      "invariants": [
+        "INV-002",
+        "INV-016",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: V021-I01/K03-K08 all 64 resources have executable producers and consumers",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryResourcesScenario",
+        "line": 185
+      },
+      "invariants": [
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: V021-I03 all 12 equipment categories occupy slots and multi-slot contributions apply once",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryEquipmentDefinitionsScenario",
+        "line": 409
+      },
+      "invariants": [
+        "INV-015",
+        "INV-016"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: V021-K06 array rights, actual upkeep, effect expiry, and stale world candidate rejection",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryArrayAndAdapterScenario",
+        "line": 291
+      },
+      "invariants": [
+        "INV-005",
+        "INV-015",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "module_and_world"
+    },
+    {
+      "name": "inventory: V021-K07 real medicine, appraisal and exploration consume labor and produce personal evidence",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryProfessionalScenario",
+        "line": 323
+      },
+      "invariants": [
+        "INV-008",
+        "INV-015",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: consumed final stack retains typed actual quantity location quality and origin evidence",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryConsumptionAuditScenario",
+        "line": 551
+      },
+      "invariants": [
+        "INV-016",
+        "INV-018"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: known source and local offer projections never infer mutable private truth",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryKnownSourceAndOfferScenario",
+        "line": 502
+      },
+      "invariants": [
+        "INV-008",
+        "INV-009"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: paid growth dose retains its consumed physical source and never grants legacy structure work",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryGrowthDoseScenario",
+        "line": 568
+      },
+      "invariants": [
+        "INV-015",
+        "INV-018",
+        "INV-023"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "inventory: shared recipe registry plans the exact authoritative physical input and output",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventorySharedRecipeRegistryScenario",
+        "line": 529
+      },
+      "invariants": [
+        "INV-017",
+        "INV-018",
+        "INV-024"
+      ],
+      "boundary": "module"
+    },
+    {
+      "name": "비경 공개 명령: AI 정보 목표는 자기 입구 관측·지식이 있을 때만 같은 유료 입장과 저장된 진척을 선택한다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationAgentPlanningScenario",
+        "line": 239
+      },
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-008",
+        "INV-017",
+        "INV-018",
+        "INV-024"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "비경 공개 명령: 과거 개인 입구 기록은 숨은 참여·잔량을 읽지 않고 입구 밖 물리 행동을 차단한다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationPrivacySpaceScenario",
+        "line": 179
+      },
+      "invariants": [
+        "INV-002",
+        "INV-005",
+        "INV-007",
+        "INV-008",
+        "INV-009",
+        "INV-016"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "비경 공개 명령: 관측한 개방 시각과 실제 준비·계약·육신 자격을 재검사하고 거절은 원자적이다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationPreparationGatesScenario",
+        "line": 214
+      },
+      "invariants": [
+        "INV-002",
+        "INV-003",
+        "INV-004",
+        "INV-005",
+        "INV-016",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationMaintenanceScenario.cs",
+        "symbol": "ExplorationMaintenanceSpaceScenario",
+        "line": 3
+      },
+      "invariants": [
+        "INV-002",
+        "INV-016",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationFirstClaimScenario",
+        "line": 129
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-006",
+        "INV-018",
+        "INV-022"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "비경 공개 명령: 실제 도구·식량과 채택 법칙·한 번의 위험을 저장하고 월별 진척으로 유한 보상을 선점한다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationPaidProgressScenario",
+        "line": 76
+      },
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-005",
+        "INV-017",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "비경 공개 명령: 실제 사망은 입장·도구를 한 번 해제하며 새 출생의 몸에는 진척·관측을 복제하지 않는다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationDeathBodyScenario",
+        "line": 195
+      },
+      "invariants": [
+        "INV-001",
+        "INV-004",
+        "INV-011",
+        "INV-012",
+        "INV-014",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "비경 공개 명령: 실제 입장 자리를 경쟁하고 중도 귀환도 한 달·도구·이미 쓴 식량을 보존한다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationCapacityReturnScenario",
+        "line": 109
+      },
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-017"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationDiscoveryScenario",
+        "line": 57
+      },
+      "invariants": [
+        "INV-002",
+        "INV-007",
+        "INV-008",
+        "INV-009",
+        "INV-018"
+      ],
+      "boundary": "public_world"
+    },
+    {
+      "name": "비경 공개 명령: 채택한 실제 위험 실패·부상은 저장과 이후 법칙 변경으로 재추첨되지 않는다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationRiskScenario",
+        "line": 154
+      },
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-006"
+      ],
+      "boundary": "public_world"
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-001",
+      "title": "도메인별 단일 권위와 안정 신원",
+      "limits": "등록한 신원/몸/슬롯·명령 검사 범위다. 모든 미래 참조 유형이나 별도 SpiritFragment 시스템의 전 수명 조합을 증명하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "INV-001 슬롯 재사용·낡은 세대/사망 신원 거부",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "사망 뒤 슬롯 재사용 시 이전 세대 조회는0이며 죽은 신원의 빙의 명령을 새 사람에게 실행하지 않는다.",
+          "anchors": [
+            "SlotGeneration",
+            "Accepted"
+          ]
+        },
+        {
+          "scenario": "INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "원장 소유가 없는 작업·위조 marker·숫자/enum 별칭을 거절한다.",
+          "anchors": [
+            "ActionAuthorityFixture.Reject",
+            "world.Execute"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-002",
+      "title": "100지점·명시 통로·단일 실제 위치",
+      "limits": "현재 100지점·명시 이동/화물·비경 하위 공간의 실제 계약이다. 별도 신규 지도/대규모 월드는 이 이름으로 주장하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다",
+          "kinds": [
+            "positive",
+            "public_command",
+            "query_purity"
+          ],
+          "claim": "전략 노드는 100개이며 유료 현지 탐색 전 숨은 입구를 보이지 않고 발견을 타인에게 복제하지 않는다.",
+          "anchors": [
+            "Places.Count == 100",
+            "f.Reject(\"enterSecret\"",
+            "StateHash()"
+          ]
+        },
+        {
+          "scenario": "inventory public: completed route delivers physical cargo and blocked routes keep it at actual origin",
+          "kinds": [
+            "positive",
+            "negative",
+            "public_command"
+          ],
+          "claim": "실제 완료한 운송만 도착지에 화물을 두고 차단 경로는 원래 위치를 유지한다.",
+          "anchors": [
+            "\"transport\"",
+            "Place"
+          ]
+        },
+        {
+          "scenario": "비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "비경 안의 생활·바깥 자녀 부양은 바깥 바닥 물품과 실제 공간을 관통하지 않는다.",
+          "anchors": [
+            "floorHidden",
+            "Health"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-003",
+      "title": "형식화된 법칙과 시행 경계 보존",
+      "limits": "양친 금단·혈연 허용·잠정값 개발 보정은 사용자 확정 정책이다. 각 법칙의 모든 수학 조합이나 후속 보정을 통과로 확장하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "INV-003/005 법칙 일괄 적용·검증 실패 원자성·중복 재전송·플레이 권한",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "일괄 법칙은 전체 검증 후 적용하며 실패·재전송·플레이 권한 거절은 상태를 바꾸지 않는다.",
+          "anchors": [
+            "StateHash()",
+            "\"lawBatch\""
+          ]
+        },
+        {
+          "scenario": "INV-003 기존 임신 법칙 revision 보존",
+          "kinds": [
+            "positive",
+            "public_command"
+          ],
+          "claim": "잉태 뒤 임신 기간·출산 비활성 법칙을 바꿔도 기존 임신 revision과 출생 결과를 보존한다.",
+          "anchors": [
+            "LawRevision == pregnancy.LawRevision",
+            "BirthCount == 1"
+          ]
+        },
+        {
+          "scenario": "비경 공개 명령: 실제 도구·식량과 채택 법칙·한 번의 위험을 저장하고 월별 진척으로 유한 보상을 선점한다",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "입장 뒤 바뀐 기간·위험·도구 마모를 현재 입장에 소급하지 않는다.",
+          "anchors": [
+            "finished.Rules.Months == 3",
+            "finished.Rules.Risk == 0"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-004",
+      "title": "공통 저장 왕복과 중단 복구",
+      "limits": "열거한 도메인/호스트 저장·손상·중단 복구를 검사한다. 실제 OS 강제 종료·Android 재실행 증거는 별도 플랫폼 검증이다.",
+      "witnesses": [
+        {
+          "scenario": "INV-004/005 host recovery: committed pending saves, authenticated sequence and immutable old originals",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "정상 pending/primary/backup 우선순위·중단 파일·체크섬 순서와 이전 원본 보존을 실제 호스트 파일로 검사한다.",
+          "anchors": [
+            "최근 완전 pending",
+            "이전 원본 영구 보존",
+            "new GameSession"
+          ]
+        },
+        {
+          "scenario": "INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "소비된 공정의 저장과 취소가 실제 원료를 복원하지 않고 고아 작업·변조 완료시각을 거절한다.",
+          "anchors": [
+            "production cannot change",
+            "owner validation and cancellation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-005",
+      "title": "원자 전이·멱등 처리·단일 종결",
+      "limits": "등록한 명령/원인 키·취소·동시 선점의 실제 순서다. 가능한 모든 같은 tick 조합을 전수 탐색했다는 의미는 아니다.",
+      "witnesses": [
+        {
+          "scenario": "INV-004/005/017/018/024 knowledge public world: a paid reserved paper item becomes exactly one copied book",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "같은 실제 필사 명령·완료를 재전송해도 단일 책과 실제 소비만 남긴다.",
+          "anchors": [
+            "StateHash()",
+            "\"transcribe\""
+          ]
+        },
+        {
+          "scenario": "combat public: command replay paid cooldown and saved continuation preserve actual receipts and query purity",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command",
+            "query_purity"
+          ],
+          "claim": "공격 재전송·같은 시각 취소·저장 재개가 이미 지급한 체력·시간과 전투 영수증을 복제하지 않는다.",
+          "anchors": [
+            "StateHash()",
+            "\"cancel\""
+          ]
+        },
+        {
+          "scenario": "비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "동시 완료·재입장과 예전 소비 영수증 재사용으로 유한 선점을 복제하지 않는다.",
+          "anchors": [
+            "RewardQuantity == 3",
+            "FoodConsumptionSequence",
+            "GameWorld.Restore(reused)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-006",
+      "title": "엔진 독립 실행과 재현 가능한 진행",
+      "limits": "현재 단일 권위·정수 tick·명시 RNG의 분할/복원/문화권 재현이다. 사용하지 않는 병렬 worker/Unity 실행이나 성능은 증명하지 않는다. 플랫폼 의존 정적 검사는 별도 자료다.",
+      "witnesses": [
+        {
+          "scenario": "INV-006/007/004 시간 분할·조회/저장 무영향",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "determinism",
+            "query_purity"
+          ],
+          "claim": "같은 seed의 일괄/월별 advance·주기적 GameCodec 재개·중간 조회가 같은 권위 해시를 만든다.",
+          "anchors": [
+            "a.AdvanceTo(240)",
+            "a.StateHash() == b.StateHash()"
+          ]
+        },
+        {
+          "scenario": "INV-006 저장 왕복·호스트 문화권 독립",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "determinism"
+          ],
+          "claim": "호스트 문화권 변경 뒤에도 명령 식별자와 저장 해시를 보존한다.",
+          "anchors": [
+            "tr-TR",
+            "GameCodec.Decode(bytes).StateHash() == hash"
+          ]
+        },
+        {
+          "scenario": "INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "determinism",
+            "public_command"
+          ],
+          "claim": "같은 실제 목표 명령과 저장/분할 진행이 선택·실물 영수증·해시를 보존한다.",
+          "anchors": [
+            "StateHash()",
+            "GameCodec"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-007",
+      "title": "관찰 순수성과 관찰 여부 독립",
+      "limits": "실제 공개/모듈 조회와 분리된 반환값의 순수성이다. 모든 UI 그래프·플랫폼 화면 동작은 C# 보고서만으로 대체하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "INV-007/010 rich query: action equipment policy history mapping and detached snapshots",
+          "kinds": [
+            "positive",
+            "query_purity"
+          ],
+          "claim": "조회와 분리된 반환값을 변경해도 권위 상태가 변하지 않으며 장비·정책·이력이 실제 원천에 대응한다.",
+          "anchors": [
+            "StateHash()",
+            "View("
+          ]
+        },
+        {
+          "scenario": "비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다",
+          "kinds": [
+            "positive",
+            "query_purity"
+          ],
+          "claim": "입구와 인물 조회는 세계/RNG를 바꾸거나 타인의 발견을 생성하지 않는다.",
+          "anchors": [
+            "f.World.StateHash() == hash",
+            "다른 인물에게 발견"
+          ]
+        },
+        {
+          "scenario": "INV-004/009 people queries public: mutating nested observer aptitude, traits, soul, evaluations and claim arrays cannot alter authority",
+          "kinds": [
+            "negative",
+            "query_purity"
+          ],
+          "claim": "중첩 재능·특성·혼흔·평가·주장 배열을 변경해도 권위를 쓸 수 없다.",
+          "anchors": [
+            "StateHash()",
+            "mutat"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-008",
+      "title": "개인 인지 경계와 숨은 변화 비간섭",
+      "limits": "명시한 숨은 상태 비간섭·출처·실패 수정·논리 예산의 기능 검사다. 인구 단계별 메모리/저장 측정과 장기 행동 분포는 최종 별도 단계다.",
+      "witnesses": [
+        {
+          "scenario": "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+          "kinds": [
+            "negative",
+            "determinism"
+          ],
+          "claim": "개인 입력이 같은 세계의 숨은 NPC 재고·지식·부 차이는 새 관측 전 선택과 예정시각을 바꾸지 않는다.",
+          "anchors": [
+            "left.ActionData == right.ActionData",
+            "left.Due == right.Due"
+          ]
+        },
+        {
+          "scenario": "INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "잘못된 원천 믿음은 실제 실행에서 거절되고 새 실제 탐색 관측으로 교체된다.",
+          "anchors": [
+            "source",
+            "observ"
+          ]
+        },
+        {
+          "scenario": "INV-008/009/015 people receipts public: remote rejection and hidden authority cannot change an undelivered request belief",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "전달되지 않은 원격 거절·권위 변화로 개인 요청 믿음이 갱신되지 않는다.",
+          "anchors": [
+            "PeopleRequests(f.First)",
+            "JsonSerializer"
+          ]
+        },
+        {
+          "scenario": "INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "실제 탐색 예산과 원천 인지 예산을 지키고 저장한 지연 목표를 다음 결정에서 재개한다.",
+          "anchors": [
+            "PlanExpansions <= 1",
+            "GameCodec"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-009",
+      "title": "권한 우선 조회와 표시 비간섭",
+      "limits": "등록한 실제 개인 DTO·미발견 ID·허가 매체·토큰 경계다. 순수 모듈 조회와 실제 전체 GameWorld 응답을 구분한다.",
+      "witnesses": [
+        {
+          "scenario": "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+          "kinds": [
+            "negative",
+            "query_purity"
+          ],
+          "claim": "숨은 NPC 지식 진척·전역 revision이 자기 개인 지식 투영을 바꾸지 않는다.",
+          "anchors": [
+            "QueryFixture.Json",
+            "View("
+          ]
+        },
+        {
+          "scenario": "INV-009/024 knowledge: 허가한 실제 매체를 전체수·정렬·페이지 전에 필터하여 바깥 도서를 인지하지 않는다",
+          "kinds": [
+            "negative",
+            "query_purity"
+          ],
+          "claim": "허가 매체 집합을 전체수·정렬·페이지 전에 적용하여 바깥 미허가 도서가 분모와 첫 페이지에 영향을 주지 않는다.",
+          "anchors": [
+            "allowedItems:",
+            "Total == 1",
+            "KnowledgeFixture.Json"
+          ]
+        },
+        {
+          "scenario": "INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회",
+          "kinds": [
+            "negative",
+            "public_command",
+            "query_purity"
+          ],
+          "claim": "미발견 ID·플레이 법칙 명령을 거절하고 같은 인지에서는 숨은 값 차이가 표시를 바꾸지 않는다.",
+          "anchors": [
+            "View(99999999).Detail is null",
+            "플레이 법칙 권한 우회 거부"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-010",
+      "title": "조회 세대·시점·표시 의미 보존",
+      "limits": "C# 명령/조회 세대·개인 표시 토큰과 행동 보존을 검사한다. 늦은 웹 응답·실제 Android 전환·캐시/내보내기 UI는 호스트/브라우저의 별도 실행 근거가 필요하다.",
+      "witnesses": [
+        {
+          "scenario": "INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회",
+          "kinds": [
+            "positive",
+            "negative",
+            "public_command"
+          ],
+          "claim": "관찰/빙의 전환은 조회 세대와 권한 상세를 실제로 갱신한다.",
+          "anchors": [
+            "w.ViewGeneration > generation",
+            "\"observe\""
+          ]
+        },
+        {
+          "scenario": "INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context",
+          "kinds": [
+            "negative",
+            "public_command",
+            "query_purity"
+          ],
+          "claim": "숨은 NPC의 실제 분할 명령은 자기 표시 토큰을 바꾸지 않고 유효 명령 문맥을 유지한다.",
+          "anchors": [
+            "ExpectedRevision: before.Revision",
+            "QueryFixture.Json(before) == QueryFixture.Json(after)"
+          ]
+        },
+        {
+          "scenario": "INV-010/021 빙의·AI 인계에서 기존 행동 보존",
+          "kinds": [
+            "positive",
+            "public_command"
+          ],
+          "claim": "모드 전환·AI 인계는 접수한 현재 행동과 완료 시각을 취소하지 않는다.",
+          "anchors": [
+            "빙의 작업 보존",
+            "Due"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-011",
+      "title": "실제 창세·생식·생애·인구 원장",
+      "limits": "정확한 창세와 실제 공개 출산·종족/성숙 경계를 검사한다. 큰 인구의 장기 원장/성장 측정은 실행하지 않은 별도 단계다.",
+      "witnesses": [
+        {
+          "scenario": "INV-001/002/011 정확한 창세·안정 신원·100지점",
+          "kinds": [
+            "positive",
+            "metadata"
+          ],
+          "claim": "기본 창세는 정확히 두 반선·종문0·100지점이며 초기 자산 출처를 기록한다.",
+          "anchors": [
+            "s.People.Count == 2",
+            "GroupKind.Sect",
+            "창세 초기 자산"
+          ]
+        },
+        {
+          "scenario": "INV-004/006/011/014 people public: frozen conception, actual birth soul and production-save continuation",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "실제 잉태·출생에서 새 몸·단일 혼을 배정하고 동결한 초기 유전을 저장 재개한다.",
+          "anchors": [
+            "GameCodec",
+            "Birth"
+          ]
+        },
+        {
+          "scenario": "INV-011/012 people public: both-parent Golden Core boundary and explicit martial-law override",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "양친 모두 금단이라는 기본 경계와 명시적 무도 법칙 예외만 실제 임신에 적용한다.",
+          "anchors": [
+            "GoldenCore",
+            "Accepted"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-012",
+      "title": "유전·가계·교육·상속의 계승 경계",
+      "limits": "동결 유전·생물학 DAG·유료 교육/양육·상속/직책의 실제 공개 흐름과 모듈 경계를 구분한다. 예외 희귀 원형의 자연 발생률을 증명하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "INV-001/004/006/012/017/022 people family public: paid care, real teaching, consented adoption, adult separation and estate versus office succession",
+          "kinds": [
+            "positive",
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "실제 양육·양자 동의·생물학 DAG·교사/입양자·성년 분가와 재산/채무 상속·직책 승계를 분리한다.",
+          "anchors": [
+            "GameCodec",
+            "ParentOne",
+            "receivables"
+          ]
+        },
+        {
+          "scenario": "INV-004/011/012 people public genetics: configured zero mutation and frozen model/stream after law changes",
+          "kinds": [
+            "positive",
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "변이 확률0/크기0과 잉태 뒤 법칙 변경은 동결 유전 모델·선택·몸 원형을 소급 재추첨하지 않는다.",
+          "anchors": [
+            "MutationDelta",
+            "Serialize"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-013",
+      "title": "윤회 자격 증거와 단일 여정",
+      "limits": "13경로 원인 생산자·자격/혼멸 경계는 실제 검사다. 다중 동시 조건의 단일 우선순위와 다른 매칭 원인 설명 보존은 별도 실제 증거가 없다. 현재 EndLife는 단일 cause와 설명만 저장한다.",
+      "witnesses": [
+        {
+          "scenario": "INV-013 혼멸·역사 최고 경지로 자격 우회 없음",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "혼멸·현재 범인 상태는 과거 반선 이력으로 윤회 자격을 우회하지 못한다.",
+          "anchors": [
+            "Status == \"destroyed\"",
+            "과거 반선 형성 기록"
+          ]
+        },
+        {
+          "scenario": "INV-013/014 화신 대원만 경계·실제 사망·대기·출생",
+          "kinds": [
+            "positive",
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "화신 대원만 바로 아래/같음 경계와 실제 사망 후 혼의 대기/종료를 검사한다. 실제 출생은 별도 공개 출생 검사가 맡는다.",
+          "anchors": [
+            "layer == 9 ? \"waiting\" : \"ended\"",
+            "DeathCount == 1"
+          ]
+        },
+        {
+          "scenario": "RC-13 실제 원인 생산자·자동 Gate·여정 왕복",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "13번째 실제 비승 원인 생산자는 새 분혼의 단일 여정·대기 상태와 저장 왕복을 검사한다.",
+          "anchors": [
+            "case 13: Send(\"ascend\")",
+            "StateHash()"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-014",
+      "title": "분혼 정체성·출생 배정·흔적 단계",
+      "limits": "실제 출생 배정·비승 분혼·여섯 흔적의 단계와 비용을 검사한다. 태내 미배정 영혼 효과를 추정하거나 수행 분령을 독립 혼으로 간주하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "INV-014/024 people public: coherent ready ascension, source capture and costed independent split",
+          "kinds": [
+            "positive",
+            "negative",
+            "public_command"
+          ],
+          "claim": "준비된 실제 비승·비용 있는 독립 분혼은 근원과 새 SoulId를 분리하며 수행 분령을 출생 후보로 복제하지 않는다.",
+          "anchors": [
+            "Soul",
+            "Split"
+          ]
+        },
+        {
+          "scenario": "INV-004/014/024 people public: eligible natural death, waiting-soul birth, real awakening and taught integration",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "실제 죽음→대기 혼 출생→각성·유료 전수로 흔적의 접근/통합을 구분한다.",
+          "anchors": [
+            "GameCodec",
+            "Mastery"
+          ]
+        },
+        {
+          "scenario": "INV-004/014/024 people: six trace domains, awakening, integration, crossing loss and conserved split branches",
+          "kinds": [
+            "positive",
+            "negative",
+            "save_resume"
+          ],
+          "claim": "여섯 흔적의 보존·각성·통합·손실과 분혼 분기 보존을 모듈 단위로 검사한다.",
+          "anchors": [
+            "RoundTrip",
+            "Integrat"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-015",
+      "title": "효과 원천 단회 반영과 형성·현재·잠재 분리",
+      "limits": "공통 원천 단회·상태 표식 피드백 방지·현재/조건부 잠재·실제 전투의 대표 축을 검사한다. 모든 가능한 효과 조합이나 수치 균형 완료는 아니다.",
+      "witnesses": [
+        {
+          "scenario": "INV-006/015 people: six foundations, 24 talents, canonical ten cognition mappings and single cause effects",
+          "kinds": [
+            "positive",
+            "negative",
+            "save_resume"
+          ],
+          "claim": "유전·혼흔·특성이 같은 원인이면 단회 반영하고 현재/선천/후천·24재능을 분리한다.",
+          "anchors": [
+            "effects.Applied.Length == 1",
+            "baseline-included cause",
+            "24"
+          ]
+        },
+        {
+          "scenario": "combat mechanics: each canonical axis changes practical hit damage escape coordination or finite exertion",
+          "kinds": [
+            "positive",
+            "determinism"
+          ],
+          "claim": "표시값뿐 아니라 실제 명중·피해·회피·협조·유한 소모에서 8축의 의미를 검사한다.",
+          "anchors": [
+            "CombatMechanics",
+            "ControlPrecision"
+          ]
+        },
+        {
+          "scenario": "INV-004/015/023 regression·real recovery·costed route conversion·retreat boundaries",
+          "kinds": [
+            "positive",
+            "negative"
+          ],
+          "claim": "퇴행·회복·유료 경로 변환이 실제 기여를 중복 전달하거나 과거 완성 보상을 재발행하지 않는다.",
+          "anchors": [
+            "route.State.Conversions.Count == 1",
+            "historical method"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-016",
+      "title": "실물·소유·보관·접근·수납 분리",
+      "limits": "모듈의 실물/수납/권리 부정 검사와 세계의 실제 화물·비경 접근을 구분한다. 각 가능한 컨테이너 깊이를 전수 검사했다고 하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "inventory: INV-016 recursive container capacity, cycle rejection and broken-container overflow preserve stock",
+          "kinds": [
+            "positive",
+            "negative"
+          ],
+          "claim": "수납 용량·자기/후손 순환·파손 초과를 검사하고 실제 물품을 보존한다.",
+          "anchors": [
+            "cycle",
+            "overflow"
+          ]
+        },
+        {
+          "scenario": "inventory: INV-016 ownership, custody, use, equipment and remote access remain independent",
+          "kinds": [
+            "negative"
+          ],
+          "claim": "소유·보관·사용·장비·원격 접근은 별도 권한이다.",
+          "anchors": [
+            "remote",
+            "custod"
+          ]
+        },
+        {
+          "scenario": "inventory: INV-005/015/016 equipment replacement is atomic across occupied slots and return capacity",
+          "kinds": [
+            "negative"
+          ],
+          "claim": "실패한 장비 교체는 점유 슬롯과 수납 물품을 원자적으로 유지한다.",
+          "anchors": [
+            "atomic",
+            "capacity"
+          ]
+        },
+        {
+          "scenario": "비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "소유권만으로 현재 하위 공간 밖의 재고를 소비하거나 표시하지 않는다.",
+          "anchors": [
+            "floorHidden",
+            "바깥 바닥"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-017",
+      "title": "공통 예약·예치·시간 용량과 공정 소비",
+      "limits": "실제 교사/학생·돌봄/수행·제작·정책·전투의 공통 행동/예약과 취소 경계다. UI 계획 초안은 실제 수락/예약으로 세지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "INV-004/017/024 knowledge public world: real request and teaching share both participants' labor and cancel together",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "실제 교사·학생의 공통 행동 시간을 동시에 점유하고 한쪽 취소가 양쪽 교육을 함께 종료한다.",
+          "anchors": [
+            "\"requestTeaching\"",
+            "\"cancel\"",
+            "GameCodec"
+          ]
+        },
+        {
+          "scenario": "INV-004/012/017 실제 양육 시간·식량·사회 관계·감정·판단 이력",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "돌봄 시작은 완료가 아니고 돌봄/수행 중복은 거절되며 복원 후 실제 월·식량을 한 번 소비한다.",
+          "anchors": [
+            "돌봄과 수행의 시간 중복 거부",
+            "소비",
+            "GameCodec"
+          ]
+        },
+        {
+          "scenario": "INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "이미 소비한 공정의 취소는 미사용 예약 해제와 구분해 입력을 환급하지 않는다.",
+          "anchors": [
+            "job.Consumed.Count > 0",
+            "cancelled",
+            "counts.GetValueOrDefault"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-018",
+      "title": "자원·화폐·보상·경제 집계의 보존",
+      "limits": "물리 원천/생산/소비·손실·유한 보상·화폐 발행/이전의 실제 검사다. 가격/경기·장기 경제 균형이나 대량 인구 측정을 통과로 취급하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "currency public: exact two founder opening origins never grant money again on save or repeat initialization",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "두 시조의 명시 초기 화폐 원천만 발행하고 저장/중복 초기화는 새 잔액을 만들지 않는다.",
+          "anchors": [
+            "CreatedMoney",
+            "GameCodec"
+          ]
+        },
+        {
+          "scenario": "currency public: source-free balances repeated burns and disabled origin validation are rejected on restore",
+          "kinds": [
+            "negative",
+            "save_resume"
+          ],
+          "claim": "원천 없는 잔액·중복 소각·발행 원천 검증 비활성 위조 저장을 거절한다.",
+          "anchors": [
+            "RejectedSave",
+            "burn"
+          ]
+        },
+        {
+          "scenario": "V021-O01 ecology kernel: actual extraction, finite depletion and renewable recovery reconcile to physical source receipts",
+          "kinds": [
+            "positive",
+            "public_command"
+          ],
+          "claim": "실제 추출·재생·손실의 자연 원천 잔액과 물리 생산 영수증을 대조한다.",
+          "anchors": [
+            "Opening + used.Regeneration - used.Extraction - used.Loss == used.Closing",
+            "completed job"
+          ]
+        },
+        {
+          "scenario": "비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "경쟁 입장·재입장·중복 영수증은 유한 보상을 복제하지 않는다.",
+          "anchors": [
+            "entries.Sum(e => e.RewardQuantity) == 3",
+            "FoodReservation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-019",
+      "title": "주권·위임·소유·영토 주장의 분리",
+      "limits": "현재 주권/재산/운영·봉신·무영토 왕조의 공개 흐름과 모듈 DAG 검사다. 외부 영역/권리 유형을 추가했다는 의미는 아니다.",
+      "witnesses": [
+        {
+          "scenario": "V021-G01/G02 public politics: one province, persistent territoryless dynasty, annual zero revenue and restoration",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "한 주의 실제 주권으로 왕조를 세우고 무영토 상태에서도 역사/재산을 보존하되 조세는0이다.",
+          "anchors": [
+            "GameCodec",
+            "dynasty"
+          ]
+        },
+        {
+          "scenario": "INV-018/019 politics: vassal DAG, one resident tax and one direct-tax tribute per layer",
+          "kinds": [
+            "negative"
+          ],
+          "claim": "봉신 DAG·주민 조세1회·층별 직접 조세 공납을 검사하여 중복 주권/집계를 막는다.",
+          "anchors": [
+            "cycle",
+            "Tax"
+          ]
+        },
+        {
+          "scenario": "V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "실제 운영/소유권 이전은 개인 인지를 따르고 주권을 지급하지 않는다.",
+          "anchors": [
+            "\"setOperator\"",
+            "Sovereign"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-020",
+      "title": "정책 시행·관할·승계·채권의 계속 효력",
+      "limits": "실제 정책 준비/시행·승계·헌장/채권 경계와 10분류 모듈 검사를 구분한다. 모든 정책 분류를 공개 UI 명령으로 완주했다고 주장하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "채택/준비 예치/공통 노동/실제 월별 시행과 재전송의 단일 완료를 검사한다.",
+          "anchors": [
+            "GameCodec",
+            "Escrow",
+            "busy"
+          ]
+        },
+        {
+          "scenario": "V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "재원이 있는 실제 교육·봉사·승계, 현행 헌장 철회와 재출생의 직책 비복원을 검사한다.",
+          "anchors": [
+            "GameCodec",
+            "charter",
+            "office"
+          ]
+        },
+        {
+          "scenario": "INV-018/020 politics: all ten detailed policy categories use actual input and effect semantics",
+          "kinds": [
+            "positive",
+            "negative"
+          ],
+          "claim": "10대 정책 분류의 실제 입력/효과 의미를 모듈로 검사하며 공개 명령 전 분류 완주로 바꾸어 말하지 않는다.",
+          "anchors": [
+            "PolicyCatalog.All.Count == 10",
+            "funded actual teaching directive does not clone knowledge"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-021",
+      "title": "기존 행동 스케줄과 계획 경계의 정합성",
+      "limits": "현재 구현은 월별 단일 권위 목록과 typed action 소유 검증이다. 예전 제안문의 indexed heap을 현재 사용하거나 heap index 시험을 실행했다고 주장하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "원장·몸·예정시각과 일치하지 않는 단일 행동 소유 및 위조 typed marker를 저장/명령에서 거절한다.",
+          "anchors": [
+            "raw {kind}",
+            "world.Execute"
+          ]
+        },
+        {
+          "scenario": "INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "실제 예산 소진 뒤 목표를 보존하고 다음 결정/복원 시 재개한다.",
+          "anchors": [
+            "PlanExpansions <= 1",
+            "ActionKind.Wait"
+          ]
+        },
+        {
+          "scenario": "INV-010/021 ordinary AI cultivation completion returns to the actual goal decision boundary",
+          "kinds": [
+            "positive",
+            "public_command"
+          ],
+          "claim": "통상 월별 수행 완료는 Idle로 돌아가 건강·식량·목표를 다시 판단한다.",
+          "anchors": [
+            "Decision",
+            "AdvanceTo"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-022",
+      "title": "미정 정책·차단 판정·검증 근거의 비우회",
+      "limits": "사용자 확정 정책과 실제 정체/공석/자원 거절 경계를 검사한다. 근거 상태 구분은 이 매핑/검증기 정책이며 게임 검사명만으로 최신 전체/성능/Android 통과를 주장할 수 없다.",
+      "witnesses": [
+        {
+          "scenario": "V021-M02/O04 ecology kernel: time and population alone do not unlock markets, workshops, settlements or capacity",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "시간/인구만으로 공급자·시설·재산·전략 노드·수납 용량을 만들어 정체를 보정하지 않는다.",
+          "anchors": [
+            "BaseCarryCapacity == initialCapacity",
+            "Places.Count == 100"
+          ]
+        },
+        {
+          "scenario": "INV-006/022 people: invariant absolute aptitude and scoped genius/candidate vacancies, ties and dated reevaluation",
+          "kinds": [
+            "negative"
+          ],
+          "claim": "범위·동점·날짜를 가진 실제 평가에서 공석을 허용하고 숨은 천재를 정답으로 생성하지 않는다.",
+          "anchors": [
+            "vacan",
+            "RoundTrip"
+          ]
+        },
+        {
+          "scenario": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+          "kinds": [
+            "negative",
+            "public_command"
+          ],
+          "claim": "숨은 타인 자산·원격/예약/결손 영석이나 비활성·충분 잔액은 무료 채굴/환전 목표를 만들지 않는다.",
+          "anchors": [
+            "JsonSerializer.Serialize(p.Decisions.Last())",
+            "Money"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-023",
+      "title": "경지 필수 전이·돌파/중단의 경계",
+      "limits": "공개 원영 파단·채택 법칙과 모듈의 경지/겁난 전이를 구분한다. 짧은 기능 사례는 최종 수행 비용/위험 분포·성장 측정이 아니다.",
+      "witnesses": [
+        {
+          "scenario": "INV-004/006/013/023 public scheduled fracture·restore·same life death authority",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "실제 원영 파단 뒤 실패/취소는 같은 현생 사망으로 한 번 정산하고 앱 저장 복원은 포기가 아니다.",
+          "anchors": [
+            "GameCodec",
+            "Dead"
+          ]
+        },
+        {
+          "scenario": "INV-004/013/023 every minor-stage tribulation including entry/ninth/completion",
+          "kinds": [
+            "positive",
+            "negative",
+            "save_resume"
+          ],
+          "claim": "경지 진입·9소경지·완료의 실제 겁난과 비승 전 반선 경계를 모듈에서 검사한다.",
+          "anchors": [
+            "RoundTrip",
+            "Trial"
+          ]
+        },
+        {
+          "scenario": "INV-003/004/006/023 legal cultivation law edits preserve adopted work completion and active attempts",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "실행 중 시도는 채택 법칙을 유지하고 실제 이후 수행만 새 법칙을 따른다.",
+          "anchors": [
+            "GameCodec",
+            "Revision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "INV-024",
+      "title": "저작·판본·개인 지식과 실행의 분리",
+      "limits": "공개 지식/실물/시간·오독/정정과 모듈 권한·판본·숙련을 구분한다. 소유/전승 접근만으로 미독 장절이나 실전 숙련을 지급하지 않는다.",
+      "witnesses": [
+        {
+          "scenario": "INV-004/005/024 knowledge public world: study resumes against its actual body book and clock without skill gain",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "공부는 실제 몸·책·시간을 쓰며 책 소유/해독으로 실전 숙련을 지급하지 않는다.",
+          "anchors": [
+            "GameCodec",
+            "Mastery",
+            "\"Study\""
+          ]
+        },
+        {
+          "scenario": "INV-004/018/024 knowledge public world: actual misreading paid experiment and rereading preserve adopted history",
+          "kinds": [
+            "negative",
+            "save_resume",
+            "public_command"
+          ],
+          "claim": "실제 오독→유료 실험→재독은 채택 당시의 해석/행동 이력을 소급 정답화하지 않는다.",
+          "anchors": [
+            "\"experiment\"",
+            "GameCodec"
+          ]
+        },
+        {
+          "scenario": "INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding",
+          "kinds": [
+            "negative",
+            "save_resume"
+          ],
+          "claim": "열람·필사·전수 권리의 독립 만료와 스승 자신의 이해 상한을 검사한다.",
+          "anchors": [
+            "RoundTrip",
+            "Comprehension"
+          ]
+        }
+      ]
+    }
+  ]
+}

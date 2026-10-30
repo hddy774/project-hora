@@ -89,12 +89,12 @@ def notes(source, digest):
     text = (verify.ROOT / "docs/release-notes-v0.2.1.md").read_text(encoding="utf-8")
     text = "\n".join(line for line in text.splitlines() if line != "<!-- release-status: draft -->" and not line.startswith("> 미게시 초안"))
     url = "https://github.com/" + verify.REPOSITORY + "/actions/runs/" + source["run_id"]
-    return text.rstrip() + ("\n\n검증된 소스: `" + source["source_commit"] + "`\n\n"
+    return text.rstrip() + ("\n\n<details>\n<summary>소스·서명·실행 검증 정보</summary>\n\n검증된 소스: `" + source["source_commit"] + "`\n\n"
         "제품 소스 지문(SHA-256): `" + source["product_source_fingerprint"] + "`\n\n"
         "APK SHA-256: `" + digest + "`\n\n배포 인증서 SHA-256: `" + verify.CERTIFICATE + "`\n\n"
         "앱 ID: `" + verify.PACKAGE + "` · 버전 코드: `" + str(source["version_code"]) + "`\n\n"
         "실제 API 24·35 설치/실행·화면, Windows WebView2, 기능·최종 성능 근거를 확인한 APK 한 개입니다.\n\n"
-        "[빌드·서명·실제 플랫폼 검사·재다운로드 검증 기록](" + url + ")\n")
+        "[빌드·서명·실제 플랫폼 검사·재다운로드 검증 기록](" + url + ")\n\n</details>\n")
 
 
 def main():

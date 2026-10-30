@@ -29,6 +29,11 @@ public static class Invariants
         foreach (var b in state.Pregnancies) Unique(b.Id);
         var people = state.People.ToDictionary(x => x.Id); var souls = state.Souls.ToDictionary(x => x.Id);
         var items = state.Items.ToDictionary(x => x.Id); var groups = state.Groups.ToDictionary(x => x.Id);
+        Require(state.Relations.Select(r => (r.Observer, r.Other)).Distinct().Count() == state.Relations.Count &&
+            state.Relations.All(r => r.Observer != r.Other && people.ContainsKey(r.Observer) && people.ContainsKey(r.Other) &&
+                r.Month <= state.Month && r.Trust is >= -100 and <= 100 && r.Affection is >= -100 and <= 100 &&
+                r.Grievance is >= 0 and <= 100 && r.Respect is >= -100 and <= 100 && r.Dependency is >= 0 and <= 100 &&
+                r.Obligation is >= 0 and <= 100 && r.Source.Length > 0), "INV-012", "방향별 사회 관계·실제 출처");
         foreach (var p in state.People)
         {
             Require(p.Place >= 0 && p.Place < 100 && Enum.IsDefined(p.Status) && Enum.IsDefined(p.Realm), "INV-002", "인물의 실제 위치/경지");
@@ -36,6 +41,8 @@ public static class Invariants
             Require(p.Roots.Length == 5 && p.Aptitudes.Length == 6 && p.Personality.Length == 14 && p.Components.Length == 7 && p.Processes.Length == 4 &&
                 p.Roots.Concat(p.Aptitudes).All(x => x is >= 0 and <= 10000), "INV-015", "자질/공정 구조");
             Require(p.Personality.All(x => x is >= 0 and <= 100), "INV-015", "성격 범위");
+            Require(p.Mood is >= -100 and <= 100 && p.LastCare <= state.Month && p.Habits.Values.All(v => v is >= 0 and <= 100) &&
+                p.Decisions.Count <= 24 && p.Decisions.All(d => d.Month <= state.Month && d.Expansions >= 0), "INV-008", "감정·습성·실제 판단 기록");
             Require(!p.GreatPerfection || p.Layer == 9, "INV-023", "9층과 대원만의 분리");
             Require(souls.ContainsKey(p.SoulId), "INV-014", "영혼 참조");
             if (p.Status == LifeStatus.Alive)

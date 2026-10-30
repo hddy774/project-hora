@@ -50,6 +50,12 @@ public sealed partial class GameWorld
             if (p.Health == 0) { EndLife(p, 3, "실제 식량 부족·육신 붕괴"); return; }
         }
         foreach (var key in p.Beliefs.Where(x => x.Value.Expires <= Month).Select(x => x.Key).ToArray()) p.Beliefs.Remove(key);
+        p.Mood -= Math.Sign(p.Mood);
+        if (Month - p.Born < Law("care.age") && Month - p.LastCare > Law("care.interval") * 2)
+        {
+            p.Health = Math.Max(1, p.Health - 1);
+            p.Reason = "양육 노동 부족·실제 보호자 필요";
+        }
         p.Traits.RemoveAll(t => t.Expires <= Month);
         var soul = souls[p.SoulId];
         if (soul.Route > 0 && Month - p.Born > Law("birth.maturity"))
@@ -59,6 +65,7 @@ public sealed partial class GameWorld
     private void Complete(Person p)
     {
         var action = p.Action; var target = p.ActionTarget; var data = p.ActionData;
+        RecordCompletedHabit(p, action);
         p.Action = ActionKind.Idle; p.Due = 0;
         var place = state.Places[p.Place];
         switch (action)
@@ -141,6 +148,7 @@ public sealed partial class GameWorld
                 Event("제작", p.Id, product?.Id ?? 0, $"{recipe.Name}·{Catalog.Quality(resultQuality)}", $"예약 {target} 소비 완료");
                 break;
             case ActionKind.Heal: p.Health = Math.Min(100, p.Health + IntLaw("cultivation.recovery") * 2); break;
+            case ActionKind.Care: CompleteCare(p, target); break;
             case ActionKind.Teach:
                 if (people.TryGetValue(target, out var student) && student.Status == LifeStatus.Alive && student.Place == p.Place)
                 {
@@ -296,12 +304,17 @@ public sealed partial class GameWorld
 
     private void Decide(Person p)
     {
+        p.PlanExpansions = 0;
+        p.DecisionCandidates.Clear();
         var age = Month - p.Born;
         if (age < 60) { p.Goal = "성장·양육"; return; }
         p.LessonRequests.RemoveAll(r => r.Expires <= Month || !people.TryGetValue(r.Pupil, out var pupil) || pupil.Status != LifeStatus.Alive);
+        p.DecisionCandidates.Add(new("회복", p.Health < 25 ? 1200 : 0, $"자기 건강 {p.Health}·안전 선행 조건"));
         if (p.Health < 25) { p.Goal = "회복"; p.Reason = "자기 건강 부족"; Start(p, "heal", 0, ""); return; }
         var children = dependents.GetValueOrDefault(p.Id) ?? [];
         var childCount = children.Count(q => q.Status == LifeStatus.Alive && Month - q.Born < Law("birth.maturity"));
+        p.DecisionCandidates.Add(new("생계", Inventory(p.Id, "food") < (childCount + 1) * 12 ? 1000 : 0,
+            "자기 재고와 실제 부양 가족 식량 수요"));
         if (Inventory(p.Id, "food") < (childCount + 1) * 12)
         {
             p.Goal = "가계 생계"; p.Reason = "자기 재고와 실제 부양 가족 수요";
@@ -311,6 +324,14 @@ public sealed partial class GameWorld
                 if (next >= 0 && Start(p, "travel", next, "") is null) return;
             }
             Start(p, "gather", 0, "food"); return;
+        }
+        var dependent = children.Where(q => q.Status == LifeStatus.Alive && q.Place == p.Place &&
+            Month - q.Born < Law("care.age") && Month - q.LastCare >= Law("care.interval"))
+            .OrderBy(q => q.LastCare).ThenBy(q => q.Id).FirstOrDefault();
+        if (dependent is not null && Inventory(p.Id, "food") >= Law("care.food"))
+        {
+            p.Goal = "양육·돌봄"; p.Reason = "실제 보호 자녀의 돌봄 기한과 식량·자기 행동 시간";
+            if (Start(p, "care", dependent.Id, "") is null) return;
         }
         if (age >= Law("birth.maturity") && p.Partner == 0)
         {
@@ -343,7 +364,11 @@ public sealed partial class GameWorld
             { p.Goal = "지식 탐색"; p.Reason = "자신에게 부족한 공법의 실제 전수 요청"; return; }
         }
         if (DiversePlan(p)) return;
-        if (p.Understanding.GetValueOrDefault("entry") > 0 && p.Personality[1] >= p.Personality[13])
+        var studyScore = p.Personality[1] + Law("ai.studyWeight");
+        var martialScore = p.Personality[13] + 50;
+        p.DecisionCandidates.Add(new("수행", p.Understanding.GetValueOrDefault("entry") > 0 ? studyScore : 0, "자기 입문 지식·구도 성향·세계 목표 보정"));
+        p.DecisionCandidates.Add(new("무예", martialScore, "자기 경쟁 성향·육신 단련"));
+        if (p.Understanding.GetValueOrDefault("entry") > 0 && studyScore >= martialScore)
         { p.Goal = "구도"; p.Reason = "자기 지식·경지·건강과 구도 성향"; Start(p, "cultivate", 0, ""); }
         else { p.Goal = "무예"; p.Reason = "자기 기반과 경쟁 성향"; Start(p, "martial", 0, ""); }
     }

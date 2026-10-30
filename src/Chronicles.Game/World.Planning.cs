@@ -26,10 +26,14 @@ public sealed partial class GameWorld
         var choices = Enumerable.Range(0, 4).Select(goal => new
         {
             Goal = goal,
-            Score = p.Personality.Select((value, axis) => value * GoalWeights[goal][axis]).Sum()
+            Score = p.Personality.Select((value, axis) => value * GoalWeights[goal][axis]).Sum() +
+                p.Habits.GetValueOrDefault(goal switch { 0 => "Explore", 1 => "Craft", 2 => "Trade", _ => "Guard" }) +
+                (goal == 2 ? p.Mood : 0)
         }).OrderByDescending(x => x.Score).ThenBy(x => x.Goal);
         foreach (var choice in choices)
         {
+            p.DecisionCandidates.Add(new(choice.Goal switch { 0 => "탐색", 1 => "생산", 2 => "교역", _ => "조직" },
+                choice.Score, "14축 자기 성향·실제 완료 습성·최근 감정"));
             if (++p.PlanExpansions > Law("ai.planBudget")) break;
             switch (choice.Goal)
             {

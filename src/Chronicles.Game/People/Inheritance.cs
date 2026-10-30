@@ -104,6 +104,8 @@ public static class Inheritance
             (int)(frozen.Where(g => g.Target == new HeritableTarget(kind, index)).Sum(g => (long)g.Expression * g.Weight) / 10_000)).ToArray();
         var markers = context.ParentOne.Markers.Concat(context.ParentTwo.Markers)
             .Where(m => frozen.Any(g => g.GeneId == m.GeneId && g.Expression >= m.MinimumExpression))
+            .Select(m => m with { Source = frozen.Single(g => g.GeneId == m.GeneId).Sources.Single(s => s.CauseId == $"conception.{context.Id}.{m.GeneId}") with
+                { Reference = $"inherited marker {m.Id}; original source {m.Source.Reference}" } })
             .DistinctBy(m => m.Id, StringComparer.Ordinal).OrderBy(m => m.Id, StringComparer.Ordinal).ToArray();
         var record = new ConceptionRecord(context.Id, context.Month, context.LawRevision, context.SpeciesId,
             Copy(context.ParentOne), Copy(context.ParentTwo), context.Model with { Genes = context.Model.Genes.ToArray() },
@@ -173,6 +175,11 @@ public static class Inheritance
     }
 
     private static ParentGenome Copy(ParentGenome parent) => parent with { Genes = parent.Genes.ToArray(), Markers = parent.Markers.ToArray() };
+
+    public static void ValidateGenome(ParentGenome parent, GeneticModel model)
+    {
+        ArgumentNullException.ThrowIfNull(parent); ArgumentNullException.ThrowIfNull(model); model.Validate(); ValidateParent(parent, model);
+    }
 
     private static void ValidateParent(ParentGenome parent, GeneticModel model)
     {

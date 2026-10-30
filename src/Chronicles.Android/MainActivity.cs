@@ -3,6 +3,7 @@ using Android.OS;
 using Android.Webkit;
 using Chronicles.Game;
 using Java.Interop;
+using System.Text.Json;
 
 namespace Chronicles.Android;
 
@@ -26,7 +27,8 @@ public sealed class MainActivity : Activity
         web.Settings.SetSupportZoom(true);
         web.Settings.BuiltInZoomControls = true;
         web.Settings.DisplayZoomControls = false;
-        web.SetWebViewClient(new LocalOnlyClient());
+        web.SetWebViewClient(new LocalOnlyClient(this));
+        web.SetWebChromeClient(new NativeConsole());
         bridge = new NativeBridge(session);
         web.AddJavascriptInterface(bridge, "seonroNative");
         SetContentView(web);
@@ -51,9 +53,43 @@ public sealed class MainActivity : Activity
         bridge?.Dispose(); base.OnDestroy();
     }
 
-    private sealed class LocalOnlyClient : WebViewClient
+    private void CheckRender(int attempt)
+    {
+        if (web is null || IsFinishing || IsDestroyed) return;
+        const string script = "JSON.stringify({rendered:typeof view!=='undefined'&&view!==null&&document.querySelector('#content h2')?.getBoundingClientRect().height>0,heading:document.querySelector('#content h2')?.textContent,title:typeof view!=='undefined'&&view?view.title:null,version:typeof view!=='undefined'&&view?view.version:null,error:window.seonroLastHostError||null,connection:document.querySelector('#connection')?.textContent})";
+        web.EvaluateJavascript(script, new RenderCallback(this, attempt));
+    }
+
+    private sealed class RenderCallback(MainActivity activity, int attempt) : Java.Lang.Object, IValueCallback
+    {
+        public void OnReceiveValue(Java.Lang.Object? value)
+        {
+            var result = JsonSerializer.Deserialize<string>(value?.ToString() ?? "null") ?? "{}";
+            using var report = JsonDocument.Parse(result);
+            if (report.RootElement.TryGetProperty("rendered", out var rendered) && rendered.ValueKind == JsonValueKind.True)
+                global::Android.Util.Log.Info("SeonroRender", result);
+            else if (attempt < 60) activity.web?.PostDelayed(() => activity.CheckRender(attempt + 1), 250);
+            else global::Android.Util.Log.Error("SeonroRender", result);
+        }
+    }
+
+    private sealed class NativeConsole : WebChromeClient
+    {
+        public override bool OnConsoleMessage(ConsoleMessage? message)
+        {
+            global::Android.Util.Log.Warn("SeonroWeb", message?.Message() ?? "WebView message");
+            return true;
+        }
+    }
+
+    private sealed class LocalOnlyClient(MainActivity activity) : WebViewClient
     {
         public override bool ShouldOverrideUrlLoading(WebView? view, IWebResourceRequest? request) => true;
+        public override void OnPageFinished(WebView? view, string? url)
+        {
+            base.OnPageFinished(view, url);
+            activity.CheckRender(0);
+        }
     }
 }
 

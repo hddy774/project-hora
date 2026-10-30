@@ -12,8 +12,13 @@ public static class InventoryDefinitions
 {
     private static readonly ReadOnlyCollection<int> TwoHands = Array.AsReadOnly(new[] { 0, 1 });
     public static IReadOnlyDictionary<string, InventoryDefinition> Items { get; } = BuildItems();
+    public static IReadOnlyDictionary<string, ItemDefinition> SharedItems { get; } = new ReadOnlyDictionary<string, ItemDefinition>(
+        Items.ToDictionary(pair => pair.Key, pair => pair.Value.Item, StringComparer.Ordinal));
     public static IReadOnlyDictionary<string, ProductionRecipe> Recipes { get; } = BuildRecipes();
     public static IReadOnlyList<ResourceRoute> Resources { get; } = BuildRoutes();
+
+    public static string? ExtractionActivity(string id) => Resources.FirstOrDefault(route => route.Definition == id)?.Producer
+        ?? id switch { "food" or "herb" or "wood" => "source.gathering", "ore" => "source.mining", _ => null };
 
     public static InventoryDefinition Definition(string id) => Items.TryGetValue(id, out var definition)
         ? definition : throw new InvalidDataException($"Unknown inventory definition: {id}");
@@ -21,7 +26,7 @@ public static class InventoryDefinitions
     private static ReadOnlyDictionary<string, InventoryDefinition> BuildItems()
     {
         var items = new Dictionary<string, InventoryDefinition>(StringComparer.Ordinal);
-        foreach (var definition in Catalog.Items.Values)
+        foreach (var definition in Catalog.BaseItems.Values)
         {
             var effect = definition.Kind switch
             {
@@ -61,6 +66,7 @@ public static class InventoryDefinitions
         recipes.Remove("bag"); recipes.Remove("soulWard");
         Add("bag", "smith", "bag", 1, ("cloth", 4), ("ore", 2), ("resource.15.0", 1));
         Add("soulWard", "talisman", "soulWard", 1, ("paper", 3), ("herb", 5), ("resource.08.0", 1));
+        Add("farm.food", "farm", "food", 12, ("resource.12.0", 1), ("resource.06.0", 1));
         Add("growthPill", "alchemy", "growthPill", 1, ("resource.03.1", 2), ("resource.06.0", 1), ("resource.07.0", 1));
         Add("breakthroughPill", "alchemy", "breakthroughPill", 1, ("resource.03.3", 3), ("resource.02.1", 1), ("resource.07.1", 1));
         Add("greatWeapon", "smith", "greatWeapon", 1, ("resource.01.3", 3), ("resource.04.0", 1), ("resource.07.0", 1));

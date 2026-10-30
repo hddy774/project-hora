@@ -49,7 +49,7 @@ public sealed partial class KnowledgeAuthority
     }
 
     private long AccessRevision(long personId, long itemId) => state.Access.Where(a => a.PersonId == personId && a.ItemId == itemId)
-        .Select(a => a.Revision).DefaultIfEmpty().Max();
+        .Select(a => Math.Max(a.Revision, a.ChangedRevision)).DefaultIfEmpty().Max();
 
     private static void ValidateRange(int offset, int limit, long changedSinceRevision)
     {

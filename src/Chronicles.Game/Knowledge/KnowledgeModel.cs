@@ -25,7 +25,8 @@ public sealed record KnowledgeMedium(long ItemId, long EditionId, long OwnerId, 
     KnowledgeMediumKind Kind, int Quality, KnowledgeRights OwnerRights, int[] MissingChapters,
     bool Unreadable, bool Destroyed, long Revision, string SourceId);
 public sealed record KnowledgeAccess(long PersonId, long ItemId, KnowledgeRights Rights, long ExpiresMonth,
-    long GrantorId, long GrantedMonth, long Revision, string SourceId);
+    long GrantorId, long GrantedMonth, long Revision, string SourceId, bool Revoked = false,
+    long RevokedMonth = 0, string RevocationSourceId = "", long ChangedRevision = 0);
 
 /// <summary>Every semantic change appends a revision. Old revisions remain valid execution evidence.</summary>
 public sealed record PersonalKnowledge(long PersonId, string WorkId, int Chapter, long EditionId,

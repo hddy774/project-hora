@@ -366,6 +366,13 @@ public sealed class PeopleStateScenarios : IFeatureScenario
             "integrated soul traces do not directly restore free current-life proficiency");
         PeopleFixture.Check(JsonSerializer.Serialize(PeopleAdapters.FoundingGenome(change.State, GeneticModel.Provisional())) == JsonSerializer.Serialize(genome),
             "education does not enter the transmissible biological genome");
+        var inheritedCause = profiles[0].Innate.Sources[0];
+        var inheritedMarker = Traits.Acquire(TraitLedger.Empty(), new(1, profiles[0].PersonId, "body.meridian", "inherited", inheritedCause, [TraitFact.BodyPrototype]));
+        inheritedMarker = Traits.Transition(inheritedMarker.State, new(1, "manifest", inheritedCause, [TraitFact.MeridianFit]), TraitChangeKind.Awakened);
+        var baseline = Aptitudes.Assess(PeopleProfiles.Context(profiles[0], TraitLedger.Empty(), 0, 10_000, 10_000, [], new()));
+        var marked = Aptitudes.Assess(PeopleProfiles.Context(profiles[0], inheritedMarker.State, 0, 10_000, 10_000, [], new()));
+        PeopleFixture.Check(baseline.Talents[7].CurrentExpression == marked.Talents[7].CurrentExpression && marked.Effects.Applied.Length == 0,
+            "an inherited trait representing an innate source is not fed back into current talent as a second effect");
         state = state with { Profiles = state.Profiles.Select(p => p.PersonId == change.State.PersonId ? change.State : p).ToArray() };
         PeopleFixture.RoundTrip(state).Validate(1);
         var corrupted = PeopleFixture.RoundTrip(state);

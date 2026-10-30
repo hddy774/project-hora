@@ -23,7 +23,8 @@ public static partial class InventoryEngine
         ReserveTree(state, actor.Id, item, reservation);
         foreach (var entry in Tree(state, item)) entry.Place = actor.Place;
         var contract = new InventoryContract { Id = Id(state), Kind = command.Auction ? "auction" : "sale", Seller = actor.Id,
-            Item = item.Id, Reservation = reservation.Id, Price = command.Price, Due = command.Due, Origin = actor.Place, Destination = actor.Place };
+            Item = item.Id, Reservation = reservation.Id, AdvertisedDefinition = item.Definition,
+            AdvertisedName = InventoryDefinitions.Definition(item.Definition).Item.Name, AdvertisedQuantity = item.Quantity, Price = command.Price, Due = command.Due, Origin = actor.Place, Destination = actor.Place };
         state.Ledger.Contracts.Add(contract); return contract.Id;
     }
     private static long Withdraw(InventoryState state, WithdrawOffer command)
@@ -81,7 +82,8 @@ public static partial class InventoryEngine
         foreach (var entry in Tree(state, item)) entry.Place = -1;
         var metadata = Detail(state, item); metadata.Custodian = carrier.Id; metadata.Carrier = carrier.Id;
         var contract = new InventoryContract { Id = Id(state), Kind = "transport", Seller = sender.Id, Buyer = command.Recipient,
-            Carrier = carrier.Id, Item = item.Id, Reservation = reservation.Id, Labor = labor, Fee = command.Fee, Escrow = command.Fee,
+            Carrier = carrier.Id, Item = item.Id, Reservation = reservation.Id, Labor = labor,
+            AdvertisedDefinition = item.Definition, AdvertisedName = InventoryDefinitions.Definition(item.Definition).Item.Name, AdvertisedQuantity = item.Quantity, Fee = command.Fee, Escrow = command.Fee,
             Origin = sender.Place, Destination = command.Destination, Due = command.Due };
         state.Ledger.Contracts.Add(contract); return contract.Id;
     }
@@ -111,7 +113,7 @@ public static partial class InventoryEngine
         else FailContract(state, contract);
         return contract.Id;
     }
-    private static long Settle(InventoryState state)
+    private static long Settle(InventoryState state, bool includeTransport)
     {
         foreach (var contract in state.Ledger.Contracts.Where(c => c.Status == "open").OrderBy(c => c.Due).ThenBy(c => c.Id))
         {
@@ -121,7 +123,7 @@ public static partial class InventoryEngine
             {
                 var carrier = PersonAt(state, contract.Carrier, false);
                 if (!sellerAlive || !buyerAlive || carrier.Status != LifeStatus.Alive) FailContract(state, contract);
-                else if (state.Month >= contract.Due)
+                else if (includeTransport && state.Month >= contract.Due)
                 {
                     if (carrier.Place == contract.Destination && Location(state, contract.Item) == contract.Destination)
                         Delivery(state, new("system:" + Number(contract.Id), contract.Carrier, contract.Id, true));

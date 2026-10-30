@@ -44,16 +44,18 @@ public static partial class InventoryEngine
         if (!state.Materials.TryGetValue(definition, out var flow)) state.Materials.Add(definition, flow = new());
         return flow;
     }
-    private static void ConsumePhysical(InventoryState state, Item item, int quantity, bool loss = false, long actor = 0)
+    private static InventoryEvent ConsumePhysical(InventoryState state, Item item, int quantity, bool loss = false, long actor = 0)
     {
         Require(quantity > 0 && quantity <= item.Quantity, "Invalid physical consumption.");
-        state.Ledger.Events.Add(new(state.Month, loss ? "physical-loss" : "physical-consumption", actor, item.Id,
+        var audit = new InventoryEvent(state.Month, loss ? "physical-loss" : "physical-consumption", actor, item.Id,
             "Actual stock decrement before removing the physical instance.", checked(state.Ledger.NextEventSequence++), item.Definition,
             quantity, Location(state, item.Id), item.Owner, item.Source, loss, item.Quality, item.Damage, item.Defects,
-            IsAccessible(state, item.Owner, item.Id, requireUncommitted: false)));
+            IsAccessible(state, item.Owner, item.Id, requireUncommitted: false));
+        state.Ledger.Events.Add(audit);
         if (loss) Flow(state, item.Definition).Loss = checked(Flow(state, item.Definition).Loss + quantity);
         else Flow(state, item.Definition).Consumption = checked(Flow(state, item.Definition).Consumption + quantity);
         item.Quantity -= quantity; if (item.Quantity == 0) Remove(state, item);
+        return audit;
     }
     private static Item Produce(InventoryState state, long owner, string definition, int quantity, int quality,
         ItemDefect defects, long boundSoul, string source, IReadOnlyList<string> provenance, bool extraction = false)
@@ -220,16 +222,16 @@ public static partial class InventoryEngine
         Require(effect != "soulProtection" || !state.Ledger.Effects.Any(e => e.Target == actor.Id && e.Kind == effect && e.End > state.Month), "Soul protection is already active.");
         var magnitude = Math.Max(1, definition.Magnitude * (5000 + item.Quality) / 10000);
         var cause = $"item:{item.Id}:unit:{item.Quantity}";
-        var duration = effect is "defense" or "breakthrough" ? 1 : effect == "soulProtection" ? 12 : 0;
-        state.Ledger.Effects.Add(new(cause, actor.Id, effect, magnitude, state.Month, checked(state.Month + duration)));
+        var duration = effect is "defense" or "breakthrough" ? 1 : effect == "growth" ? 2 : effect == "soulProtection" ? 12 : 0;
+        var audit = ConsumePhysical(state, item, 1, actor: actor.Id);
+        state.Ledger.Effects.Add(new(cause, actor.Id, effect, magnitude, state.Month, checked(state.Month + duration), audit.Sequence));
         if (effect is "healing" or "nutrition") actor.Health = Math.Min(100, actor.Health + magnitude);
-        if (effect == "growth") actor.Work = checked(actor.Work + magnitude);
         if (item.Defects.HasFlag(ItemDefect.Contamination))
         {
             actor.Health = Math.Max(1, actor.Health - 20);
-            state.Ledger.Effects.Add(new(cause + ":contamination", actor.Id, "toxicity", 20, state.Month, state.Month));
+            state.Ledger.Effects.Add(new(cause + ":contamination", actor.Id, "toxicity", 20, state.Month, state.Month, audit.Sequence));
         }
-        ConsumePhysical(state, item, 1, actor: actor.Id); Event(state, "use", actor.Id, item.Id, cause); return item.Id;
+        Event(state, "use", actor.Id, item.Id, cause); return item.Id;
     }
     private static long Repair(InventoryState state, RepairItem command)
     {

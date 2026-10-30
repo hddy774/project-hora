@@ -12,8 +12,13 @@ on:
         type: boolean
         default: true
 
+  issue_comment:
+    types: [created]
+
 permissions:
   contents: read
+  pull-requests: read
+  issues: read
 
 concurrency:
   group: v021-owner-release-main
@@ -26,13 +31,22 @@ env:
 jobs:
   review:
     name: 전체 기능 감사
-    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner && github.triggering_actor == github.repository_owner }}
+    if: >-
+      ${{ github.ref == 'refs/heads/main' && github.repository == 'hddy774/project-hora' &&
+          github.actor == 'hddy774' && github.triggering_actor == 'hddy774' &&
+          (github.event_name == 'workflow_dispatch' ||
+           (github.event_name == 'issue_comment' && github.event.action == 'created' &&
+            github.event.issue.number == 84 && github.event.issue.state == 'closed' &&
+            github.event.issue.pull_request != null && github.event.comment.user.login == 'hddy774' &&
+            github.event.comment.body == '/선로만상록 0.2.1 릴리스')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:
       apk_name: ${{ steps.source.outputs.apk_name }}
       source_commit: ${{ steps.source.outputs.source_commit }}
       fingerprint: ${{ steps.source.outputs.product_source_fingerprint }}
+      publish: ${{ steps.source.outputs.publish }}
+      verify_upgrade: ${{ steps.source.outputs.verify_upgrade }}
     steps:
       - name: 정확한 소스 가져오기
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -42,10 +56,14 @@ jobs:
           persist-credentials: false
       - name: 릴리스 보호 조건 검증과 정확한 소스 기록
         id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           python3 scripts/verify-v021-release.py self-test
           python3 scripts/verify-v021-release.py source --output artifacts/source/source.json --github-output "$GITHUB_OUTPUT"
       - name: 서명 경로 진입 전 전체 기능 감사 완료 확인
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: python3 scripts/verify-v021-release.py gate --stage features --source artifacts/source/source.json
       - name: 정확한 소스 기록 업로드
         uses: actions/upload-artifact@v4
@@ -251,6 +269,8 @@ jobs:
           path: artifacts/functional
       - name: 소스·현재 실제 기능 검사·서명 전 바이트 재검증
         id: unsigned
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           python3 scripts/verify-v021-release.py gate --stage signing --source artifacts/unsigned/source.json --functional artifacts/functional/product-tests.json --browser artifacts/functional/ui/results.json
           python3 scripts/verify-v021-release.py apk --kind unsigned --apk artifacts/unsigned/unsigned.apk --source artifacts/unsigned/source.json --output artifacts/unsigned/rechecked-proof.json --github-output "$GITHUB_OUTPUT"
@@ -314,7 +334,7 @@ jobs:
           name: v021-signed-${{ github.run_id }}-${{ github.run_attempt }}
           path: artifacts/signed
       - name: 기존 인증서로 서명된 이전 공개 앱 내려받기(APK)
-        if: ${{ inputs.verify_upgrade }}
+        if: ${{ needs.review.outputs.verify_upgrade == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release download xianxia-observer/v0.2.0 --repo hddy774/project-hora --pattern XianxiaObserver-v0.2.0.apk --dir artifacts/previous
@@ -333,7 +353,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: python3 scripts/v021-release-emulator.py --api ${{ matrix.api }} --apk artifacts/signed/${{ needs.review.outputs.apk_name }} --source artifacts/signed/source.json --signed-proof artifacts/signed/APK-VERIFICATION.json --output artifacts/android-${{ matrix.api }} ${{ inputs.verify_upgrade && '--previous artifacts/previous/XianxiaObserver-v0.2.0.apk' || '' }}
+          script: python3 scripts/v021-release-emulator.py --api ${{ matrix.api }} --apk artifacts/signed/${{ needs.review.outputs.apk_name }} --source artifacts/signed/source.json --signed-proof artifacts/signed/APK-VERIFICATION.json --output artifacts/android-${{ matrix.api }} ${{ needs.review.outputs.verify_upgrade == 'true' && '--previous artifacts/previous/XianxiaObserver-v0.2.0.apk' || '' }}
       - name: 안드로이드 실제 실행 근거 업로드
         uses: actions/upload-artifact@v4
         if: always()
@@ -346,12 +366,14 @@ jobs:
   publish:
     name: 검증된 앱 패키지 게시(APK)
     needs: [review, portable, windows, sign, android_runtime]
-    if: ${{ always() && !cancelled() && inputs.publish && github.ref == 'refs/heads/main' && github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner && github.triggering_actor == github.repository_owner && needs.review.result == 'success' && needs.portable.result == 'success' && needs.windows.result == 'success' && needs.sign.result == 'success' && needs.android_runtime.result == 'success' }}
+    if: ${{ always() && !cancelled() && needs.review.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.repository == 'hddy774/project-hora' && github.actor == 'hddy774' && github.triggering_actor == 'hddy774' && needs.review.result == 'success' && needs.portable.result == 'success' && needs.windows.result == 'success' && needs.sign.result == 'success' && needs.android_runtime.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: write
       actions: read
+      pull-requests: read
+      issues: read
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -389,7 +411,7 @@ jobs:
       # 저장된 실제 근거만 검사합니다. 이 workflow는 성능/성장/장기 실행을 자동 시작하지 않습니다.
       # 옛 V020-G03의 100배/60초 비교 결과는 보존하며 정본 §11/T04 필수 속도 기준으로 바꾸지 않습니다.
       - name: 정본 단계별 기준선·후속 예산·장기 안정성과 동일 앱 플랫폼 근거 확인
-        run: python3 scripts/verify-v021-release.py gate --stage publish --source artifacts/signed/source.json --functional artifacts/functional/product-tests.json --browser artifacts/functional/ui/results.json --signed artifacts/signed/APK-VERIFICATION.json --windows artifacts/windows/windows-proof.json --android artifacts/android-24/android-proof.json --android artifacts/android-35/android-proof.json ${{ inputs.verify_upgrade && '--require-upgrade' || '' }}
+        run: python3 scripts/verify-v021-release.py gate --stage publish --source artifacts/signed/source.json --functional artifacts/functional/product-tests.json --browser artifacts/functional/ui/results.json --signed artifacts/signed/APK-VERIFICATION.json --windows artifacts/windows/windows-proof.json --android artifacts/android-24/android-proof.json --android artifacts/android-35/android-proof.json ${{ needs.review.outputs.verify_upgrade == 'true' && '--require-upgrade' || '' }}
       - name: 게시 준비·다운로드·검증·게시·공개 바이트 재검증
         env:
           APK_NAME: ${{ needs.review.outputs.apk_name }}

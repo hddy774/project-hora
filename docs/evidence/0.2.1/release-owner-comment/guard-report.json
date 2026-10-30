@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "kind": "owner 명령 댓글 릴리스 진입점의 순수 가드 근거",
+  "baseCommit": "ffd83f96ae1bdd60ccac60df7e0116abcde6f827",
+  "recordedUtc": "2026-10-30T20:53:48.127140+00:00",
+  "actualRepository": "hddy774/project-hora",
+  "actualCommandPosted": false,
+  "actualReleaseWorkflowStarted": false,
+  "actualSigningReleaseOrAppExecuted": false,
+  "secretsReadOrPrinted": false,
+  "selfTest": {
+    "release_guard_self_tests": "passed",
+    "request_guards": {
+      "positive_cases": 8,
+      "negative_cases": 50,
+      "api_signing_or_publication_executed": false
+    },
+    "actual_platform_or_performance_claim": false
+  },
+  "wiring": {
+    "base_commit": "ffd83f96ae1bdd60ccac60df7e0116abcde6f827",
+    "python_ast": "passed",
+    "unchanged_protected_functions": [
+      "scripts/verify-v021-release.py:version",
+      "scripts/verify-v021-release.py:product_path",
+      "scripts/verify-v021-release.py:fingerprint",
+      "scripts/verify-v021-release.py:evidence_file",
+      "scripts/verify-v021-release.py:functional_report",
+      "scripts/verify-v021-release.py:browser_report",
+      "scripts/verify-v021-release.py:feature_gate",
+      "scripts/verify-v021-release.py:measurement_rows",
+      "scripts/verify-v021-release.py:canonical_performance_reports",
+      "scripts/verify-v021-release.py:performance_gate",
+      "scripts/verify-v021-release.py:legacy_speed_comparison",
+      "scripts/verify-v021-release.py:inspect_apk",
+      "scripts/verify-v021-release.py:proof_matches",
+      "scripts/verify-v021-release.py:windows_proof",
+      "scripts/verify-v021-release.py:platform_gate",
+      "scripts/publish-v021-release.py:release",
+      "scripts/publish-v021-release.py:check_release",
+      "scripts/publish-v021-release.py:ensure_tag",
+      "scripts/publish-v021-release.py:notes",
+      "scripts/publish-v021-release.py:main"
+    ],
+    "product_fingerprint_scope_unchanged": true,
+    "manual_dispatch_options_preserved": true,
+    "source_record_positive_cases": 1,
+    "source_record_checkout_change_negative_cases": 1,
+    "actual_source_run_wrapper_positive_cases": 4,
+    "actual_source_run_wrapper_negative_cases": 5,
+    "actual_event_name_overridden": false,
+    "api_signing_publication_or_app_executed": false
+  },
+  "actionlint": {
+    "version": "1.7.12",
+    "arguments": [
+      "-shellcheck=",
+      ".github/workflows/v021-release.yml"
+    ],
+    "exitCode": 0,
+    "output": "empty"
+  },
+  "sourceFiles": [
+    {
+      "path": ".github/workflows/v021-release.yml",
+      "baseBlobSha": "6191f1039f34e94f6338e971c399a97a91e4e02b",
+      "editedBlobSha": "a621ebc90a905a53f2e14923f14702c192682a4b",
+      "sha256": "85b756bad8c7060e40bdc085dc87dc98da47d9081fd4dfd60b34a938581d92be",
+      "bytes": 20882
+    },
+    {
+      "path": "scripts/verify-v021-release.py",
+      "baseBlobSha": "1ea062f8e185cffff98b0b091b9b56e1f6c62f49",
+      "editedBlobSha": "8eae0c3d1064cc1527acb03538f554126c78ece7",
+      "sha256": "e064b2124e4fd638a47258f5ecade5e38cfd8e4fce2774af7c2beb741e3d4e9d",
+      "bytes": 63776
+    },
+    {
+      "path": "scripts/publish-v021-release.py",
+      "baseBlobSha": "eab9e116cb57a6f78e800dd873e01feda5b830ec",
+      "editedBlobSha": "8bc310ecd0c4e529f8035ee3ae53e457263594a3",
+      "sha256": "a02a6158ac6f5f620ad3206e56e6c3b3bdb9f812c705a8a76df5b3fdf0850c07",
+      "bytes": 9734
+    }
+  ],
+  "protectedScope": "Game/테스트/법칙/314/예산/성능게이트/readiness변경0. release-only파일과운영문서/가드근거만수정. fingerprint범위변경0.",
+  "manualCompatibility": "기존workflow_dispatch·publish=false·verify_upgrade선택·정상owner재실행유지. comment만publish/upgrade=true고정.",
+  "provenance": "실제issue_comment와comment/PR/요청을source에기록. event를workflow_dispatch로덮어쓰지않고publisher의실제run.event/actor/triggering_actor/source/attempt를대조한다."
+}

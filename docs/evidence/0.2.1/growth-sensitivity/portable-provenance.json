@@ -1,0 +1,22 @@
+{
+  "scope": "Unchanged frozen API validation; relative location metadata at NEW artifact creation. No JSON surgery/world/collector.",
+  "sourceCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "productSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "aggregatorScriptSha256": "ed7d8a4f2f3ea6eb217b21602150aa1aa166600ac2810156c29dcab01163b32b",
+  "entryPoints": [
+    "read",
+    "law_definitions",
+    "aggregate"
+  ],
+  "officialAggregateSha256": "bd592d544766dfff2ba39ece2a531513610ccca3b0c24b86061e9d9b0626e0ab",
+  "validatedCliDerivedSha256": "898a4c435a36c76efdc2d019a747843899686b393236a6814dcbdb9989fc9fee",
+  "portableBaselineSha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+  "cohorts": 9,
+  "observations": 459,
+  "cliComparison": "Every field identical except inputArtifacts[].path; every other artifact field identical.",
+  "officialRowsEqual": true,
+  "officialDistributionsEqual": true,
+  "originalRawShaEqual": true,
+  "rawBytesUnchanged": true,
+  "newWorldOrCollectorExecutions": 0
+}

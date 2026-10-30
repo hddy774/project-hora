@@ -1,0 +1,1 @@
+{"scope": "file packaging only; actual source observations not regenerated", "relocatedNinePathsResolve": true, "negativeCasesRejected": ["missing-one-raw", "partial-original", "different-source", "duplicate-cohort", "empty-observations", "existing-output-protected", "symlink-outside-package"], "originalRawAndOfficialBytesUnchanged": true, "newWorldOrCollectorExecutions": 0}

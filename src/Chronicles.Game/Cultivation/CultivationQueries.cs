@@ -55,14 +55,14 @@ public static class CultivationQueries
     public static CultivationInspection Inspect(CultivationState state, CultivationActor actor, CultivationPolicy policy)
     {
         ArgumentNullException.ThrowIfNull(state); ArgumentNullException.ThrowIfNull(actor); ArgumentNullException.ThrowIfNull(policy);
-        var rootTarget = policy.RequiredWork(Realm.Qi) / 5;
+        var rootTarget = CultivationEngine.RootTarget(state, policy);
         var roots = Enumerable.Range(0, 5).Select(i => new RootProgressView(ElementNames[i], (int)actor.InnateRoots.At(i),
             state.RootGrowth.At(i), rootTarget, (int)Math.Clamp(1 + state.RootGrowth.At(i) * 8 / rootTarget, 1, 9),
             state.RootGrowth.At(i) >= rootTarget, (int)state.RootDamage.At(i))).ToArray();
         var current = state.Structure is null ? [] : state.Structure.Measures.Select((v, i) => new CultivationStructureView(
-            CultivationProfiles.GrowthKeys(actor.Realm)[i], v, Target(policy.RequiredWork(actor.Realm), state.Structure.Measures.Count, i))).ToArray();
+            CultivationProfiles.GrowthKeys(actor.Realm)[i], v, Target(CultivationEngine.RealmTarget(state, policy), state.Structure.Measures.Count, i))).ToArray();
         return new(roots, current, state.Formations.Count == 0 ? null : CopyFormation(state.Formations[^1]),
-            state.Structure is null ? 0 : CultivationEngine.Maturity(state.Structure, policy), state.Damage, state.Load,
+            state.Structure is null ? 0 : CultivationEngine.Maturity(state, policy), state.Damage, state.Load,
             state.ActivePath, state.AuxiliaryPath, state.Attempt?.Phase, state.PendingTrial is null ? null : state.PendingTrial with { });
     }
 
@@ -77,7 +77,7 @@ public static class CultivationQueries
         var martialBase = 64000L * actor.MartialStage * actor.MartialStage / 100;
         var spiritual = spiritBase >= martialBase && state.Structure is not null;
         var basePower = Math.Max(spiritBase, martialBase);
-        var normalized = spiritual ? ActualAttributes(state.Structure!, policy) : CombatAxes.Uniform(actor.MartialStage * 1000);
+        var normalized = spiritual ? ActualAttributes(state.Structure!, CultivationEngine.RealmTarget(state, policy)) : CombatAxes.Uniform(actor.MartialStage * 1000);
         var quality = spiritual && state.Formations.Count > 0 ? state.Formations[^1].Quality : 10000;
         var injury = spiritual ? state.Damage : state.Martial.Injury;
         var settling = state.Attempt?.Phase is AttemptPhase.Stabilizing or AttemptPhase.Recovering ? 7000 : 10000;
@@ -86,7 +86,7 @@ public static class CultivationQueries
         for (var axis = 0; axis < 7; axis++)
             values[axis] = basePower * (5000 + normalized.At(axis) / 2) / 10000 * (5000 + quality / 2) / 10000 * condition / 10000;
         var path = CultivationProfiles.Find(state.ActivePath);
-        var maturity = spiritual ? CultivationEngine.Maturity(state.Structure!, policy) : 0;
+        var maturity = spiritual ? CultivationEngine.Maturity(state, policy) : 0;
         if (spiritual && path is not null)
         {
             // A path label contributes nothing until its actual current structure has been trained.
@@ -128,7 +128,7 @@ public static class CultivationQueries
         long sum = 0; for (var axis = 0; axis < 7; axis++) sum += values[axis] * weights[axis];
         var power = sum / weights.Sum() * policy.FlowPerMonth / Math.Max(policy.FlowPerMonth / 2, values[7]);
         var roles = spiritual && state.Structure is SpiritStructure spirit
-            ? (int)Math.Min(3, Math.Min(spirit.SubspiritFormation, spirit.ControlCapacity) * 12 / Math.Max(1, policy.RequiredWork(Realm.Spirit))) : 0;
+            ? (int)Math.Min(3, Math.Min(spirit.SubspiritFormation, spirit.ControlCapacity) * 12 / Math.Max(1, CultivationEngine.RealmTarget(state, policy))) : 0;
         return new(CombatAxes.From(values), power, situation with { }, contributions.ToArray(), roles,
             "실제 현재 구조·형성·건강·숙련/장비 효과의 조건부 투영; 승률/최종 도달 경지 예측 아님");
     }
@@ -137,7 +137,7 @@ public static class CultivationQueries
     {
         ArgumentNullException.ThrowIfNull(state); ArgumentNullException.ThrowIfNull(actor); ArgumentNullException.ThrowIfNull(knownContext);
         var quality = state.Formations.Count == 0 ? 0 : state.Formations[^1].Quality;
-        var maturity = state.Structure is null ? 0 : CultivationEngine.Maturity(state.Structure, knownContext.Policy);
+        var maturity = state.Structure is null ? 0 : CultivationEngine.Maturity(state, knownContext.Policy);
         var next = actor.Realm + 1;
         var paths = actor.Realm == Realm.HalfImmortal ? [] : CultivationProfiles.Paths
             .Where(p => p.Definition.Realm == next && knownContext.Knowledge.Any(k => k.WorkId == p.Definition.Id && k.Executable))
@@ -163,9 +163,9 @@ public static class CultivationQueries
         return new(Math.Min(requestedEnd, first.Month), requestedEnd <= first.Month ? "계획 종료" : first.Kind, requestedEnd <= first.Month);
     }
 
-    private static CombatAxes ActualAttributes(RealmStructure structure, CultivationPolicy policy)
+    private static CombatAxes ActualAttributes(RealmStructure structure, long required)
     {
-        var measures = structure.Measures; var required = policy.RequiredWork(structure.Realm);
+        var measures = structure.Measures;
         var n = measures.Select((v, i) => Math.Clamp(v * 10000 / Target(required, measures.Count, i), 0, 10000)).ToArray();
         long Get(int i) => n[i % n.Length];
         return structure switch

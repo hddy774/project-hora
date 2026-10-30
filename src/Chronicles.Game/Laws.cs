@@ -73,6 +73,7 @@ public static class Laws
         D("inventory.productionWork", "제작 작업량", "노동점", 1, 100000, 100, "월 100 노동점 기준의 개발 기본값"),
         D("inventory.professionalWork", "전문 활동 작업량", "노동점", 1, 100000, 100, "치료·감정 등의 실제 작업"),
         D("inventory.extractionWork", "단위 채집 작업량", "노동점/개", 1, 100000, 25, "원천별 실제 채집량과 기간 계산"),
+        D("currency.stoneValue", "실물 영석 환전 단위", "영석 잔액/실물 1개", 0, 1000000, 1, "0이면 환전 비활성·실물 소비와 출처 원장으로 잔액 전환"),
         D("knowledge.copyMonths", "필사 기본 시간", "개월", 1, 120, 1, "실제 매체·장절·노동 예약"),
         D("knowledge.copyPaper", "필사 장절당 종이", "개", 1, 1000, 1, "빈 매체와 추가 필사 재료의 실소비"),
         D("knowledge.copyInk", "필사 장절당 먹", "개", 1, 1000, 1, "형식별 실제 필사 재료"),

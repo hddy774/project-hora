@@ -24,7 +24,8 @@ internal static class CultivationFixture
     {
         policy ??= new();
         var state = CultivationProfiles.ForNewBody(actor.BodyId, actor.SoulId, "수용시험 출생 입력");
-        if (actor.Realm == Realm.Mortal) return state with { EntryWork = complete ? policy.RequiredWork(Realm.Mortal) : 0 };
+        if (actor.Realm == Realm.Mortal) return state with { EntryWork = complete ? policy.RequiredWork(Realm.Mortal) : 0,
+            GrowthBasis = complete ? new(policy.Revision, 0, 0, policy.RequiredWork(Realm.Mortal)) : null };
         var structure = CultivationProfiles.Empty(actor.Realm);
         if (complete) structure = Full(structure, policy);
         if (structure is TribulationStructure t && complete) structure = t with { CompletedTrials = 1023 };
@@ -32,6 +33,7 @@ internal static class CultivationFixture
         return state with
         {
             Structure = structure, ActivePath = path,
+            GrowthBasis = new(policy.Revision, policy.RequiredWork(actor.Realm), policy.RequiredWork(Realm.Qi) / 5, policy.RequiredWork(Realm.Mortal)),
             RootGrowth = actor.Realm > Realm.Qi || complete ? Elements.Uniform(policy.RequiredWork(Realm.Qi) / 5) : default,
             Formations = [new(actor.Realm, path, 5000, CultivationProfiles.FormationKeys(actor.Realm).Select(k => new FormationFactor(k, 5000)).ToArray(),
                 0, 7, 1, null, null, "수용시험 초기 구조")]
@@ -158,6 +160,12 @@ public sealed class CultivationProcessScenario : IFeatureScenario
         var flow = result.Flow!;
         CultivationFixture.Check(flow.Absorbed.Total == 5000 && flow.Refined.Total == 750 && flow.Circulated.Total == 500 && flow.Assimilated.Total == 500, "causal process capacities");
         CultivationFixture.Check(flow.HeldAfter.Total == 4250 && flow.Purged.Total == 250 && flow.Conserved && h.State.Damage > 0, "backlog and real over-absorption damage");
+        var purifying = new CultivationFixture.Harness();
+        purifying.Context = purifying.Context with { Site = purifying.Context.Site with { Turbidity = 2500 } };
+        var filtered = purifying.Run((id, rev) => new PracticeCultivation(id, rev, "path.1.0", Elements.Uniform(1)), 1);
+        CultivationFixture.Check(filtered.Flow!.Assimilated.Total == 3750 && filtered.Flow.Purged.Total == 1250 &&
+            filtered.Flow.HeldAfter.Total == 0 && purifying.State.Damage == 0 && purifying.State.Load == 0,
+            "safe impurity filtration with no held backlog is not over-absorption injury");
         h.State = CultivationFixture.RoundTrip(h.State);
         h.Context = h.Context with { Site = h.Context.Site with { Available = default } };
         result = h.Run((id, rev) => new PracticeCultivation(id, rev, "path.1.0", Elements.Uniform(1)), 2);

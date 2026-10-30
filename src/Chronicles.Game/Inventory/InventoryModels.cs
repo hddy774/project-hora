@@ -174,6 +174,10 @@ public sealed class InventoryContract
     public long Item { get; set; }
     public long Reservation { get; set; }
     public long Labor { get; set; }
+    public long? PaidAmount { get; set; }
+    public int? PaidQuantity { get; set; }
+    public int? PaidQuality { get; set; }
+    public long? EndedMonth { get; set; }
     public long Price { get; set; }
     public long Escrow { get; set; }
     public long Fee { get; set; }

@@ -31,6 +31,7 @@ public static class WorldScenarioFixtures
             var rootRequired = policy.RequiredWork(Realm.Qi) / 5;
             var rootGrowth = realm > Realm.Qi || greatPerfection ? rootRequired : (rootRequired * (layer - 1) + 7) / 8;
             metadata = metadata with { Structure = structure, ActivePath = path, RootGrowth = Elements.Uniform(rootGrowth),
+                GrowthBasis = new(snapshot.LawRevision, required, rootRequired, policy.RequiredWork(Realm.Mortal)),
                 Formations = [new(realm, path, 5000, CultivationProfiles.FormationKeys(realm).Select(key => new FormationFactor(key, 5000)).ToArray(),
                     snapshot.Month, actor.Place, snapshot.LawRevision, null, null, "기능 경계 시험의 명시 현재 구조·과거 사건 주장 없음")] };
         }

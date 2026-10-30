@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.Json;
 using Chronicles.Game.Cultivation;
 using Chronicles.Game.Knowledge;
 
@@ -64,6 +65,7 @@ public sealed class CultivationWorldSourceScenario : IFeatureScenario
             state.Cultivation[person.BodyId].RootGrowth.Total == person.Processes[3], "real elemental parcels plus opened stock balance exact absorption");
         CultivationFixture.Check(person.Roots.SequenceEqual(innate) && state.Knowledge.Mastery.Count > mastery &&
             state.Knowledge.Activities.Any(a => a.PracticeOutcome?.Successful == true && a.ActorId == person.Id), "performed public action earns real practice without innate mutation");
+        CultivationFixture.Check(person.Action == ActionKind.Idle, "an ordinary player month completes once instead of silently repeating");
         var hash = world.StateHash(); world.View(id); world.Checkpoint();
         CultivationFixture.Check(world.StateHash() == hash && GameCodec.Decode(GameCodec.Encode(world)).StateHash() == hash,
             "public observation and save are pure");
@@ -178,5 +180,92 @@ public sealed class CultivationWorldLifespanScenario : IFeatureScenario
         world.AdvanceTo(6); state = world.Checkpoint();
         CultivationFixture.Check(state.Cultivation[person.BodyId].Attempt!.Phase == AttemptPhase.Completed &&
             state.People.Single(p => p.Id == id).Action == ActionKind.Idle, "three actual subsequent months stabilize the new structure");
+    }
+}
+
+public sealed class CultivationWorldLawAdoptionScenario : IFeatureScenario
+{
+    public string Name => "INV-003/004/006/023 legal cultivation law edits preserve adopted work completion and active attempts";
+
+    private static void Laws(GameWorld world, Dictionary<string, long> changes)
+    {
+        var result = world.Execute(CultivationAdapterFixture.Command(0, "lawBatch", JsonSerializer.Serialize(changes)));
+        CultivationFixture.Check(result.Accepted, result.Message);
+    }
+
+    public void Run()
+    {
+        var (world, id) = CultivationAdapterFixture.Create();
+        var opening = world.Checkpoint(); var metadata = JsonSerializer.Serialize(opening.Cultivation);
+        var random = opening.RandomState;
+        Laws(world, new() { ["cultivation.qi"] = 1, ["cultivation.foundation"] = 1, ["cultivation.upper"] = 100 });
+        CultivationFixture.Check(JsonSerializer.Serialize(world.Checkpoint().Cultivation) == metadata &&
+            world.Checkpoint().RandomState == random, "legal reduction preserves earned roots, current structure, formation and RNG");
+        world = GameCodec.Decode(GameCodec.Encode(world));
+        Laws(world, new() { ["cultivation.qi"] = 120000, ["cultivation.foundation"] = 120000, ["cultivation.upper"] = 500 });
+        CultivationFixture.Check(JsonSerializer.Serialize(world.Checkpoint().Cultivation) == metadata,
+            "legal increase does not invalidate the previously formed current structure");
+        world = CultivationAdapterFixture.CurrentRealm(world, id, Realm.Qi, true);
+        var complete = world.Checkpoint(); var person = complete.People.Single(p => p.Id == id);
+        var completedWork = JsonSerializer.Serialize(complete.Cultivation[person.BodyId]);
+        Laws(world, new() { ["cultivation.qi"] = 1 });
+        Laws(world, new() { ["cultivation.qi"] = 120000 });
+        person = CultivationAdapterFixture.Person(world, id);
+        CultivationFixture.Check(person.GreatPerfection && person.Layer == 9 &&
+            JsonSerializer.Serialize(world.Checkpoint().Cultivation[person.BodyId]) == completedWork,
+            "completion remains tied to adopted physical units under both legal duration directions");
+        var restored = GameCodec.Decode(GameCodec.Encode(world));
+        world.AdvanceTo(1); restored.AdvanceTo(1);
+        CultivationFixture.Check(restored.StateHash() == world.StateHash(), "edited-law save/resume remains deterministic");
+
+        var attemptWorld = CultivationAdapterFixture.Create(); world = CultivationAdapterFixture.CurrentRealm(attemptWorld.World, attemptWorld.Person, Realm.Qi, true);
+        id = attemptWorld.Person;
+        var snapshot = world.Checkpoint(); person = snapshot.People.Single(p => p.Id == id); person.Lifespan = snapshot.Laws["life.qi"];
+        world = GameWorld.Restore(snapshot);
+        CultivationAdapterFixture.Accepted(world, id, "breakthrough", "path.2.0");
+        snapshot = world.Checkpoint(); var attempt = snapshot.Cultivation[person.BodyId].Attempt!;
+        var frozenAttempt = JsonSerializer.Serialize(attempt); var formations = JsonSerializer.Serialize(snapshot.Cultivation[person.BodyId].Formations);
+        Laws(world, new() { ["cultivation.foundation"] = 1, ["cultivation.upper"] = 500, ["life.foundation"] = 4800 });
+        snapshot = world.Checkpoint();
+        CultivationFixture.Check(JsonSerializer.Serialize(snapshot.Cultivation[person.BodyId].Attempt) == frozenAttempt &&
+            JsonSerializer.Serialize(snapshot.Cultivation[person.BodyId].Formations) == formations, "prepared law/knowledge/risk/target/life provenance remains frozen");
+        world = GameCodec.Decode(GameCodec.Encode(world)); world.AdvanceTo(2);
+        snapshot = world.Checkpoint(); person = snapshot.People.Single(p => p.Id == id);
+        var formed = snapshot.Cultivation[person.BodyId];
+        CultivationFixture.Check(person.Realm == Realm.Foundation && formed.GrowthBasis!.RealmWork == attempt.TargetWork &&
+            formed.GrowthBasis.LawRevision == attempt.LawRevision && formed.Formations[^1].LawRevision == attempt.LawRevision &&
+            person.Lifespan == attempt.LifespanAward && person.Lifespan == 3600,
+            "ongoing formation adopts its prepared target and life award despite later laws");
+        CultivationFixture.Check(GameCodec.Decode(GameCodec.Encode(world)).StateHash() == world.StateHash(), "formed old-revision structure saves under new live laws");
+
+        var newWorld = GameWorld.Create(42, new Dictionary<string, long> { ["birth.enabled"] = 0,
+            ["cultivation.foundation"] = 1, ["life.foundation"] = 4800, ["cultivation.breakthroughRisk"] = 0 });
+        id = newWorld.Checkpoint().People[0].Id; newWorld = CultivationAdapterFixture.CurrentRealm(newWorld, id, Realm.Qi, true);
+        CultivationAdapterFixture.Accepted(newWorld, id, "breakthrough", "path.2.0");
+        snapshot = newWorld.Checkpoint(); person = snapshot.People.Single(p => p.Id == id);
+        var adoptedNew = snapshot.Cultivation[person.BodyId].Attempt!;
+        CultivationFixture.Check(adoptedNew.TargetWork == 5000 && adoptedNew.LifespanAward == 4800,
+            "newly prepared structures use the new duration and life rules");
+    }
+}
+
+public sealed class CultivationAiBoundaryScenario : IFeatureScenario
+{
+    public string Name => "INV-010/021 ordinary AI cultivation completion returns to the actual goal decision boundary";
+    public void Run()
+    {
+        var world = GameWorld.Create(42, new Dictionary<string, long> { ["birth.enabled"] = 0,
+            ["ecology.disasterChance"] = 0, ["ecology.foodUse"] = 0, ["cultivation.entry"] = 1 });
+        var snapshot = world.Checkpoint(); var person = snapshot.People[0]; var id = person.Id;
+        WorldScenarioFixtures.SetCultivation(snapshot, person, Realm.Mortal);
+        snapshot.Cultivation[person.BodyId] = snapshot.Cultivation[person.BodyId] with
+        { EntryWork = 4999, GrowthBasis = new(snapshot.LawRevision, 0, 0, 5000) };
+        var decisions = person.Decisions.Count;
+        world = GameWorld.Restore(snapshot);
+        CultivationAdapterFixture.Accepted(world, id, "cultivate", "path.1.0");
+        world.AdvanceTo(1); snapshot = world.Checkpoint(); person = snapshot.People.Single(p => p.Id == id);
+        CultivationFixture.Check(snapshot.Cultivation[person.BodyId].EntryWork == 5000 &&
+            person.Decisions.Count == decisions + 1 && person.Decisions[^1].Month == 1,
+            "ready entry work yields to real Decide instead of silently preparing a new attempt");
     }
 }

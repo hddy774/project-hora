@@ -246,8 +246,15 @@ public sealed partial class GameWorld
         if (!PoliticsLaborAvailable(p, Month, Month + 1)) return "이미 다른 공동 작업의 인력으로 예약되어 있습니다.";
         if (p.Sealed && actionNameRequiresMovement(kind)) return "현재 봉인되어 이동할 수 없습니다.";
         if (p.Health < 10 && kind != "heal") return "먼저 회복이 필요합니다.";
-        if (!Enum.TryParse<ActionKind>(kind, true, out var action) || action == ActionKind.Idle)
-            return "알 수 없는 행동입니다.";
+        // Domain-owned work must enter its typed adapter; enum aliases/numeric strings cannot
+        // enter an old completion path without a real reservation, cultivation attempt or lesson.
+        var action = kind switch
+        {
+            "travel" => ActionKind.Travel, "explore" => ActionKind.Explore, "heal" => ActionKind.Heal,
+            "guard" => ActionKind.Guard, "wait" => ActionKind.Wait, "care" => ActionKind.Care,
+            _ => ActionKind.Idle
+        };
+        if (action == ActionKind.Idle) return "알 수 없는 행동입니다.";
         if (action == ActionKind.Travel)
         {
             if (target < 0 || target >= 100 || !p.KnownPlaces.Contains((int)target) ||

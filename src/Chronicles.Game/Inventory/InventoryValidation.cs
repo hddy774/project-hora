@@ -19,7 +19,14 @@ public static partial class InventoryEngine
             .Concat(state.Ledger.Reservations.Select(r => r.Id)).Concat(state.Ledger.Labor.Select(l => l.Id))
             .Concat(state.Ledger.Jobs.Select(j => j.Id)).Concat(state.Ledger.Contracts.Select(c => c.Id))
             .Concat(state.Ledger.Sources.Select(s => s.Id)).Concat(state.Ledger.Arrays.Select(a => a.Id)).Concat(state.Ledger.Bindings.Select(b => b.Id)).ToArray();
-        Ensure(ids.All(id => id > 0) && ids.Distinct().Count() == ids.Length && state.NextId > ids.DefaultIfEmpty().Max(), "Inventory IDs are duplicated or the allocator is stale.");
+        var seenIds = new HashSet<long>(ids.Length);
+        var maximumId = 0L;
+        foreach (var id in ids)
+        {
+            Ensure(id > 0 && seenIds.Add(id), "Inventory IDs are duplicated or the allocator is stale.");
+            maximumId = Math.Max(maximumId, id);
+        }
+        Ensure(state.NextId > maximumId, "Inventory IDs are duplicated or the allocator is stale.");
         Ensure(state.Ledger.Metadata.Select(m => m.Item).Distinct().Count() == state.Ledger.Metadata.Count, "Duplicate item metadata.");
         var read = new ValidationReadIndex(state);
         foreach (var metadata in state.Ledger.Metadata)
@@ -177,6 +184,13 @@ public static partial class InventoryEngine
     }
     private static void CheckSchedule(IEnumerable<LaborReservation> schedule, int capacity)
     {
+        // ValidateCore has already checked every interval. One positive reservation therefore has
+        // only a start load and a later zero load; retain the same capacity rejection without events.
+        if (schedule.TryGetNonEnumeratedCount(out var count) && count == 1)
+        {
+            Ensure(schedule.First().Units <= capacity, "Shared person or facility labor capacity exceeded.");
+            return;
+        }
         var used = 0;
         foreach (var change in schedule.SelectMany(l => new[] { (Month: l.Start, Units: l.Units), (Month: l.End, Units: -l.Units) })
             .GroupBy(e => e.Month).OrderBy(e => e.Key))

@@ -23,6 +23,7 @@ public sealed record PersonView(long Id, string Name, string Realm, int? Layer, 
     public long? Household { get; init; }
     public long? Sect { get; init; }
     public long? Body { get; init; }
+    public string? GuardTargetKind { get; init; }
 }
 public sealed record PlaceView(int Id, int Province, string Name, string Terrain, int? Source, int? Qi,
     IReadOnlyList<string> Facilities, IReadOnlyList<int> Neighbors, long? Sovereign, long Observed)
@@ -110,6 +111,7 @@ public sealed record DetailView(PersonView Person, IReadOnlyList<int>? Roots, IR
     public CultivationPotentialDetail? Potential { get; init; }
     public C.CombatProjection? CombatProjection { get; init; }
     public IReadOnlyList<SocialRelation> SocialRelations { get; init; } = [];
+    public P.PeopleEcologyObservation? PeopleEcology { get; init; }
 }
 public sealed record LawView(string Id, string Name, string Unit, long Minimum, long Maximum, long DefaultValue, long Value, bool Provisional, string Rationale);
 public sealed record SoulView(long Id, long Parent, long Root, long CurrentPerson, string Status, int Route, string Evidence);
@@ -129,6 +131,9 @@ public sealed record GameView(string Title, string Version, long Month, long Rev
     public Currency.CurrencyExchangeInfo? CurrencyExchange { get; init; }
     public IReadOnlyList<SpeciesView> Species { get; init; } = [];
     public IReadOnlyDictionary<string, string>? ItemNames { get; init; }
+    public IReadOnlyList<P.PeopleRequestView> PeopleRequests { get; init; } = [];
+    public IReadOnlyList<P.PeopleOathView> KnownOaths { get; init; } = [];
+    public IReadOnlyList<P.ReputationClaim> ReceivedClaims { get; init; } = [];
 }
 
 public sealed partial class GameWorld
@@ -148,7 +153,9 @@ public sealed partial class GameWorld
                 {
                     Due = p.Due, ActionTarget = p.ActionTarget, ActionData = p.ActionData, ActionRevision = p.ActionRevision,
                     Irreversible = p.Irreversible, Plan = Array.AsReadOnly(p.Plan.ToArray()), GreatPerfection = p.GreatPerfection,
-                    Partner = p.Partner, Guardian = p.Guardian, Household = p.Household, Sect = p.Sect, Body = p.BodyId
+                    Partner = p.Partner, Guardian = p.Guardian, Household = p.Household, Sect = p.Sect, Body = p.BodyId,
+                    GuardTargetKind = p.Action != ActionKind.Guard || p.ActionTarget == 0 ? "none" :
+                        p.ActionData.StartsWith("combat:", StringComparison.Ordinal) ? "receipt" : "person"
                 };
             var belief = actor.ObservedPeople[p.Id];
             return new(p.Id, belief.Name, Catalog.RealmNames[(int)belief.Realm],
@@ -256,6 +263,7 @@ public sealed partial class GameWorld
                 Cultivation = inspection is null ? null : ProjectCultivation(inspection, observer),
                 Potential = inspection is null ? null : ProjectPotential(p, inspection, observer),
                 CombatProjection = canonicalCombat,
+                PeopleEcology = permitted ? PeopleEcology(p.Id) : null,
                 SocialRelations = Array.AsReadOnly(state.Relations.Where(r => r.Month <= Month && (observer ? r.Observer == p.Id :
                     r.Observer == actor!.Id && actor.KnownPeople.Contains(r.Other) && (p.Id == actor.Id || r.Other == p.Id))).ToArray())
             };
@@ -282,7 +290,11 @@ public sealed partial class GameWorld
             Species = Array.AsReadOnly(P.SpeciesCatalog.All.Select(s => new SpeciesView(s.Id, s.Name, s.NaturalForm.ToString(),
                 s.BasicLifespanMonths, s.MaturityMonths, Array.AsReadOnly(s.Habitats.Select(h => h.ToString()).ToArray()),
                 Array.AsReadOnly(s.ResourceNeeds.ToArray()))).ToArray()),
-            ItemNames = new ReadOnlyDictionary<string, string>(I.InventoryDefinitions.Items.ToDictionary(i => i.Key, i => i.Value.Item.Name, StringComparer.Ordinal))
+            ItemNames = new ReadOnlyDictionary<string, string>(I.InventoryDefinitions.Items.ToDictionary(i => i.Key, i => i.Value.Item.Name, StringComparer.Ordinal)),
+            // Newly delivered personal requests and evidence participate in the perception token even when no detail is open.
+            PeopleRequests = Array.AsReadOnly(PeopleRequests(observer ? 0 : actor!.Id)),
+            KnownOaths = Array.AsReadOnly(PeopleKnownOaths(observer ? 0 : actor!.Id)),
+            ReceivedClaims = Array.AsReadOnly(PeopleReceivedClaims(observer ? 0 : actor!.Id))
         };
         return observer ? projection : projection with { Revision = PerceptionRevision(projection) };
     }

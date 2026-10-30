@@ -68,7 +68,7 @@ public sealed class EcologyState
 public sealed record EcologyBirthObservation(bool Enabled, int MinimumRealm, long Maturity, bool BothParents, bool MartialEquivalent);
 public sealed record EcologyContext(long Month, long Revision, IReadOnlyList<Person> People, IReadOnlyList<Group> Groups,
     IReadOnlyList<Place> Places, IReadOnlyList<Item> Items, InventoryLedger Inventory, IReadOnlyList<GameEvent> Events, long FoodUse, EcologyRules Rules,
-    EcologyBirthObservation? Birth = null);
+    EcologyBirthObservation? Birth = null, IReadOnlyDictionary<long, long>? MaturityByPerson = null);
 public sealed record PublicMarketListing(long Contract, string Kind, long Seller, int Place, string Definition,
     string Name, int Quantity, long Price, long Until, long Observed, string Source);
 public sealed record PublicPriceSample(long Month, int Place, string Definition, long PublicSupply,

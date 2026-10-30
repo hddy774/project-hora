@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Functional shell checks against a real GameSession; no profiling or load tests.
 
-Start Chronicles.Shell with --preview, then run this file. An isolated functional
-host can be selected with --url. Adapter checks replay real session replies only;
+Start Chronicles.Shell with --preview, then run this file. The default covers nine
+menus, timed bilateral social workflows and scope cleanup. --smoke-only skips the
+timed social and adapter checks. An isolated host can be selected with --url.
+Adapter checks replay real session replies only;
 they verify the JavaScript bridge and never count as domain integration evidence.
 """
 import argparse
 import json
 import os
-import sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -68,6 +69,92 @@ LEGACY_APIS = r'''() => {
 }'''
 
 
+def social_workflows(page, width):
+    def inspect_self():
+        page.evaluate('() => inspect(view.actor)')
+
+    def switch_to(person_id):
+        if page.evaluate('() => view.actor') != person_id:
+            page.evaluate('(id)=>inspect(id)', person_id)
+            page.get_by_role('button', name='이 인물로 플레이', exact=True).click(); settle(page)
+        inspect_self()
+
+    def prepare_current():
+        inspect_self(); cancel_action(page); inspect_self()
+
+    def propose(kind, target, terms=''):
+        inspect_self()
+        page.get_by_role('button', name='실연·진술·서약', exact=True).click()
+        page.get_by_label('제안 종류').select_option(kind)
+        page.get_by_label('현지에서 인지한 상대').select_option(str(target))
+        if kind == 'requestAssessment':
+            page.get_by_label('상대가 실연할 영역').select_option('21')
+        elif kind == 'requestOath':
+            page.get_by_label('한정된 약속 내용 · 1~80자').fill(terms)
+        else:
+            assert page.locator('#socialClaim option').count() > 0
+        submit(page, '상대에게 제안 전달')
+        assert page.evaluate('() => view.peopleRequests.some(r=>r.proposer===view.actor&&r.status===0)')
+
+    def consent(accept=True):
+        page.get_by_role('button', name='참여 수락 검토' if accept else '요청 거절 검토', exact=True).click()
+        submit(page, '참여 수락 제출' if accept else '거절 의사 제출')
+
+    proposer = page.evaluate('() => view.actor')
+    recipient = page.evaluate('(who)=>view.people.find(p=>p.id!==who).id', proposer)
+    propose('requestAssessment', recipient)
+    assert page.evaluate('() => view.receivedClaims.length===0')
+    switch_to(recipient)
+    assert page.get_by_role('button', name='받은 개인 요청 1건', exact=True).count() == 1
+    page.get_by_role('button', name='받은 개인 요청 1건', exact=True).click(); settle(page)
+    page.screenshot(path=str(out / f'personal-request-{width}.png'), full_page=True)
+    consent()
+    assert page.evaluate('() => view.peopleRequests.some(r=>r.status===1)')
+    assert 'people:' not in page.locator('[data-section="people-requests"]').inner_text()
+    page.get_by_role('button', name='1개월', exact=True).click(); settle(page)
+    assert page.evaluate('() => view.peopleRequests.length===0 && view.receivedClaims.some(c=>c.observerId===view.actor&&c.provenance.length===1&&c.confidence<10000)')
+    page.locator('[data-section="received-claims"] > summary').click()
+    page.screenshot(path=str(out / f'assessment-evidence-{width}.png'), full_page=True)
+    prepare_current(); switch_to(proposer); prepare_current()
+    propose('requestOath', recipient, '직접 확인한 연구를 서로 돕는다')
+    switch_to(recipient); consent()
+    page.get_by_role('button', name='1개월', exact=True).click(); settle(page)
+    assert page.evaluate('() => view.knownOaths.some(o=>o.person===view.actor&&o.knownActive&&o.observedMonth===view.month)')
+    page.screenshot(path=str(out / f'known-oath-{width}.png'), full_page=True)
+    page.get_by_role('button', name='대면 파기 통지 검토', exact=True).click()
+    submit(page, '파기 의사 통지')
+    assert page.evaluate('() => view.knownOaths.every(o=>!o.knownActive)')
+    # The third person is a real explicit adult with no assets, not a fixture-backed extra NPC.
+    page.get_by_role('button', name='관찰로 전환', exact=True).first.click(); settle(page)
+    nav(page, '인물')
+    if page.get_by_role('button', name='인물 목록', exact=True).count():
+        page.get_by_role('button', name='인물 목록', exact=True).click(); settle(page)
+    page.get_by_role('button', name='명시적 인물 편입', exact=True).click()
+    page.get_by_label('이름', exact=True).fill('전언을 듣는 영호')
+    page.get_by_label('종과 자연 육신').select_option('spirit-fox')
+    submit(page)
+    third = page.evaluate("() => view.people.find(p=>p.name==='전언을 듣는 영호').id")
+    switch_to(recipient); prepare_current()
+    page.get_by_role('button', name='탐색', exact=True).click(); settle(page)
+    page.get_by_role('button', name='1개월', exact=True).click(); settle(page)
+    assert page.evaluate('(id)=>!!person(id)', third)
+    prepare_current()
+    propose('requestReputation', third)
+    switch_to(third); prepare_current(); consent()
+    page.get_by_role('button', name='1개월', exact=True).click(); settle(page)
+    assert page.evaluate('() => view.receivedClaims.some(c=>c.observerId===view.actor&&c.provenance.length>=2)')
+    assert page.locator('[data-section="people-ecology"]').count() == 1
+    assert page.evaluate('() => view.detail.peopleEcology.person===view.actor && view.detail.peopleEcology.month<=view.month && view.detail.people.innate===null')
+    page.locator('[data-section="received-claims"] > summary').click()
+    assert not page.evaluate('() => document.body.scrollWidth > innerWidth')
+    page.screenshot(path=str(out / f'relay-and-habitat-{width}.png'), full_page=True)
+    prepare_current(); propose('requestAssessment', recipient)
+    switch_to(recipient); consent(accept=False)
+    assert page.evaluate('() => view.peopleRequests.length===0')
+    return {'assessment_consent_and_actual_evidence':True,'oath_known_notice_and_formal_breach':True,
+            'actual_claim_relay_provenance':True,'received_request_rejection':True,'nonhuman_dated_ecology':True}
+
+
 def smoke_checks(browser):
     asset = Path(__file__).resolve().parents[1] / 'src/Chronicles.Shell/index.compat.html'
     for width in (1280, 390):
@@ -87,11 +174,13 @@ def smoke_checks(browser):
         page.goto(args.url)
         page.get_by_role('heading', name='만상의 흐름', exact=True).wait_for()
         settle(page)
-        page.evaluate("() => send({type:'new',seed:42})")
+        observer_reply = page.evaluate("() => send({type:'new',seed:42})")
+        page.evaluate("() => issueCommand('law',0,0,'birth.enabled',0)")
         assert page.evaluate('() => view.people.length===2 && !view.groups.some(g=>g.kind===\'Sect\')')
         for label in ('인물', '지도', '수행', '물품', '세력', '시장', '연대기', '법칙', '세계'):
             nav(page, label)
             assert not page.evaluate('() => document.body.scrollWidth > innerWidth'), label
+            page.screenshot(path=str(out / f'menu-{label}-{width}.png'), full_page=True)
         nav(page, '지도')
         sizes = page.locator('.map button').evaluate_all('(nodes)=>nodes.map(n=>({w:n.getBoundingClientRect().width,h:n.getBoundingClientRect().height}))')
         assert len(sizes) == 100 and all(s['w'] >= 44 and s['h'] >= 44 for s in sizes), sizes[:10]
@@ -107,6 +196,10 @@ def smoke_checks(browser):
         page.get_by_role('button', name='이 인물로 플레이', exact=True).click(); settle(page)
         page.evaluate('() => inspect(view.actor)')
         assert page.evaluate('() => !view.observer && view.detail.roots===null && view.detail.people.innate===null && view.detail.combat.length===8')
+        play_reply = page.evaluate("() => send({type:'view'})")
+        nav(page,'수행')
+        page.screenshot(path=str(out / f'personal-cultivation-{width}.png'), full_page=True)
+        page.evaluate('() => inspect(view.actor)')
         assert page.get_by_role('navigation').get_by_role('button', name='법칙', exact=True).count() == 0
         other = page.evaluate('() => view.people.find(p=>p.id!==view.actor).id')
         page.evaluate('(id)=>inspect(id)', other)
@@ -137,6 +230,15 @@ def smoke_checks(browser):
         assert page.locator('[data-section="economy"]').count() == 1
         assert page.locator('[data-section="currency"]').count() == 1
         assert page.evaluate('() => view.economy.regions.length===0 && view.economy.naturalFlows.length===0')
+        page.evaluate('() => inspect(view.actor)')
+        page.get_by_role('button',name='경계·동료 호위',exact=True).click()
+        guard_ally = page.locator('#guardAlly option').last.get_attribute('value')
+        page.get_by_label('같은 장소로 관측한 동료').select_option(guard_ally)
+        submit(page,'경계·호위 요청')
+        assert page.evaluate("(id)=>activePerson().action==='Guard'&&activePerson().guardTargetKind==='person'&&activePerson().actionTarget===Number(id)", guard_ally)
+        page.get_by_role('button',name='작업 취소 요청',exact=True).click()
+        submit(page,'취소 요청 제출')
+        social = social_workflows(page,width) if not args.smoke_only else {}
         page.get_by_role('button', name='관찰로 전환', exact=True).first.click(); settle(page)
         nav(page, '인물')
         if page.get_by_role('button', name='인물 목록', exact=True).count():
@@ -186,286 +288,19 @@ def smoke_checks(browser):
         assert not errors, errors
         assert not page.evaluate('() => document.body.scrollWidth > innerWidth')
         page.screenshot(path=str(out / f'smoke-{width}.png'), full_page=True)
-        results.append({'kind':'real_session_functional_smoke','width':width,'asset':'committed_chrome51' if args.compat else 'authoring',
+        results.append({'kind':'real_session_functional_smoke' if args.smoke_only else 'real_session_functional','width':width,'asset':'committed_chrome51' if args.compat else 'authoring',
                         'forced_legacy_dom':args.legacy_dom,'tabs':9,'javascript_errors':errors,'touch_targets_44px':True,
-                        'known_actor_switch':True,'equipment_use':True,'species_creation':True,'atomic_law_batch':True,
-                        'new_world_law_choice':True,'save_load':True,'native_api24_verified':False})
+                        'known_actor_switch':True,'equipment_use':True,'known_ally_guard':True,'species_creation':True,'atomic_law_batch':True,
+                        'new_world_law_choice':True,'save_load':True,'native_api24_verified':False,**social})
         context.close()
+    return observer_reply,play_reply
 
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True, args=['--no-sandbox'])
-    if args.smoke_only:
-        smoke_checks(browser)
-        browser.close()
-        (out / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=2)+'\n')
-        print(json.dumps(results, ensure_ascii=False))
-        sys.exit(0)
-    observer_reply = play_reply = None
-    for width in (1280, 390):
-        page = browser.new_page(viewport={'width': width, 'height': 900})
-        errors = []
-        page.on('pageerror', lambda error: errors.append(str(error)))
-        page.goto(args.url)
-        page.get_by_role('heading', name='만상의 흐름', exact=True).wait_for()
-        observer_reply = page.evaluate("() => send({type:'new',seed:42})")
-        assert len(observer_reply['view']['people']) == 2
-        assert not [g for g in observer_reply['view']['groups'] if g['kind'] == 'Sect']
-        for label in ('인물', '지도', '수행', '물품', '세력', '시장', '연대기', '법칙', '세계'):
-            nav(page, label)
-            assert not page.evaluate('() => document.body.scrollWidth > innerWidth'), label
-        nav(page, '지도')
-        touch_sizes = page.locator('.map button').evaluate_all('(buttons) => buttons.map(b=>({w:b.getBoundingClientRect().width,h:b.getBoundingClientRect().height}))')
-        assert len(touch_sizes) == 100
-        assert all(b['w'] >= 44 and b['h'] >= 44 for b in touch_sizes), touch_sizes[:10]
-        page.locator('[data-section="map-table"]').get_by_text('발견한 지점의 자원·시설 수치 표', exact=True).click()
-        page.get_by_role('searchbox').press_sequentially('1주')
-        assert page.get_by_role('searchbox').input_value() == '1주'
-        assert page.locator('[data-section="map-table"]').get_attribute('open') is not None
-        assert page.get_by_role('searchbox').evaluate('(el) => el === document.activeElement')
-        page.locator('[data-section="map-table"]').get_by_text('발견한 지점의 자원·시설 수치 표', exact=True).click()
-        page.evaluate('() => {document.activeElement.blur();window.scrollTo(0,0)}')
-        page.screenshot(path=str(out / f'map-{width}.png'), full_page=True)
-
-        nav(page, '인물')
-        search_input = page.get_by_role('searchbox')
-        search_input.press_sequentially('청명')
-        assert search_input.input_value() == '청명'
-        assert search_input.evaluate('(el) => el === document.activeElement')
-        assert page.locator('tbody tr').count() == 1
-        page.get_by_role('button', name='상세', exact=True).click()
-        settle(page)
-        page.get_by_role('heading', name='오행 영근 · 0~10000점', exact=True).wait_for()
-        page.keyboard.press('Alt+ArrowLeft')
-        settle(page)
-        assert page.get_by_role('searchbox').input_value() == '청명'
-        page.get_by_role('button', name='상세', exact=True).click()
-        settle(page)
-        page.get_by_role('button', name='이 인물로 플레이', exact=True).click()
-        settle(page)
-        page.get_by_text('조작 중', exact=True).wait_for()
-        assert page.get_by_role('navigation').get_by_role('button', name='법칙', exact=True).count() == 0
-        assert page.evaluate('() => view.census.length === 0 && view.laws.length === 0 && view.souls.length === 0')
-        play_reply = page.evaluate("() => send({type:'view'})")
-
-        page.get_by_role('button', name='공법 선택·수행', exact=True).click()
-        assert page.locator('#cultivationPath option').count() == 3
-        chosen_path = page.locator('#cultivationPath option').last.get_attribute('value')
-        page.get_by_label('이해한 현재 경지 경로').select_option(chosen_path)
-        submit(page)
-        assert page.evaluate("() => view.detail.person.action === 'Cultivate'")
-        if 'actionData' in page.evaluate('() => view.detail.person'):
-            assert page.evaluate('() => view.detail.person.actionData') == chosen_path
-        page.get_by_role('button', name='작업 취소 요청', exact=True).click()
-        revision = page.evaluate('() => view.revision')
-        page.keyboard.press('Escape')
-        assert page.evaluate('() => view.revision') == revision
-        assert page.evaluate("() => view.detail.person.action === 'Cultivate'")
-        page.get_by_role('button', name='작업 취소 요청', exact=True).click()
-        submit(page, '취소 요청 제출')
-        assert page.evaluate("() => view.detail.person.action === 'Idle'")
-        assert '취소 확정' in page.locator('#feedback').inner_text()
-
-        # A request is accepted independently of the other person's eventual choice.
-        page.get_by_role('button', name='관계·양육·전수', exact=True).click()
-        page.get_by_label('제안할 행동').select_option('requestTeaching')
-        page.get_by_label('배움·전수할 지식').select_option('entry')
-        submit(page)
-        assert page.evaluate("() => activePerson().action === 'Wait'")
-        page.get_by_role('button', name='1개월', exact=True).click()
-        settle(page)
-        cancel_action(page)
-        page.get_by_role('button', name='관계·양육·전수', exact=True).click()
-        page.get_by_label('제안할 행동').select_option('adopt')
-        adoption_revision = page.evaluate('() => view.revision')
-        submit(page, accepted=False)
-        assert page.evaluate('() => view.revision') == adoption_revision
-
-        # Existing real initial assets exercise use, equipment and book reservation.
-        food_id = page.evaluate("() => view.items.find(i=>i.definition==='food').id")
-        food_before = page.evaluate('(id) => item(id).quantity', food_id)
-        open_item(page, '영곡')
-        page.get_by_role('button', name='1개 사용', exact=True).click()
-        settle(page)
-        assert page.evaluate('(id) => item(id).quantity', food_id) == food_before - 1
-        open_item(page, '채집 도구')
-        page.get_by_role('button', name='도구 장착 요청', exact=True).click()
-        settle(page)
-        assert page.evaluate('() => recentCommand.accepted')
-        # Produce a real container from gathered inputs, then verify both storage transitions.
-        page.evaluate("() => inspect(view.actor)")
-        for resource in ('herb', 'ore'):
-            page.get_by_role('button', name='재료 채집', exact=True).click()
-            page.get_by_label('채집 대상').select_option(resource)
-            submit(page)
-            page.get_by_role('button', name='1개월', exact=True).click()
-            settle(page)
-        for recipe in ('cloth', 'cloth', 'bag'):
-            page.get_by_role('button', name='제작', exact=True).click()
-            page.get_by_label('제작할 실물').select_option(recipe)
-            submit(page)
-            page.get_by_role('button', name='1개월', exact=True).click()
-            settle(page)
-        bag_id = page.evaluate("() => view.items.find(i=>i.definition==='bag').id")
-        book_id = page.evaluate("() => view.items.find(i=>i.definition==='path.1.0').id")
-        open_item(page, '청허감응편')
-        page.get_by_role('button', name='수납·꺼내기', exact=True).click()
-        page.get_by_label('대상 용기').select_option(str(bag_id))
-        submit(page)
-        assert page.evaluate('(id) => item(id).container', book_id) == bag_id
-        open_item(page, '청허감응편')
-        page.get_by_role('button', name='수납·꺼내기', exact=True).click()
-        page.get_by_label('대상 용기').select_option('0')
-        submit(page)
-        assert page.evaluate('(id) => item(id).container', book_id) == 0
-        open_item(page, '청허감응편')
-        page.get_by_role('button', name='출품', exact=True).click()
-        page.get_by_label('가격 · 영석').fill('19')
-        submit(page)
-        sale = page.evaluate("() => view.contracts.find(c=>c.kind==='sale'&&c.seller===actor()&&c.status==='open')")
-        assert sale and sale['price'] == 19
-        nav(page, '시장')
-        page.get_by_role('button', name='철회', exact=True).first.click()
-        settle(page)
-        assert page.evaluate('(id) => view.contracts.find(c=>c.id===id).status', sale['id']) == 'cancelled'
-
-        # Expose a known route by exploration, then submit real transport through UI.
-        page.evaluate("() => inspect(view.actor)")
-        page.get_by_role('button', name='탐색', exact=True).click()
-        settle(page)
-        page.get_by_role('button', name='1개월', exact=True).click()
-        settle(page)
-        cancel_action(page)
-        nav(page, '지도')
-        unknown_cells = page.locator('.map button.unknown')
-        assert unknown_cells.count() > 0
-        assert unknown_cells.first.is_disabled()
-        open_item(page, '오행행기요결')
-        page.get_by_role('button', name='운송', exact=True).click()
-        page.get_by_label('인지한 인접 목적지').wait_for()
-        destination = int(page.locator('#destination option').first.get_attribute('value'))
-        submit(page)
-        transport = page.evaluate("() => view.contracts.find(c=>c.kind==='transport'&&c.seller===actor()&&c.status==='open')")
-        assert transport and transport['place'] == destination
-        page.get_by_role('button', name='1개월', exact=True).click()
-        settle(page)
-        assert page.evaluate('() => activePerson().place') == destination
-        assert page.evaluate('(id) => view.contracts.find(c=>c.id===id).status', transport['id']) == 'completed'
-
-        # Founding and policy changes reserve real money and settle after time advances.
-        nav(page, '세력')
-        page.get_by_role('button', name='가문·종문 창설', exact=True).click()
-        page.get_by_label('조직 종류').select_option('sect')
-        submit(page)
-        sect = page.evaluate("() => view.groups.find(g=>g.kind==='Sect'&&g.leader===actor()&&!g.dissolved)")
-        assert sect
-        page.get_by_role('button', name='1개월', exact=True).click()
-        settle(page)
-        cancel_action(page)
-        card = page.locator('#group-' + str(sect['id']))
-        card.get_by_role('button', name='정책 변경', exact=True).first.click()
-        policy_key = page.get_by_role('dialog').locator('h2').inner_text()
-        before_policy = page.evaluate('([id,key]) => group(id).policies[key]', [sect['id'], policy_key])
-        next_policy = (before_policy + 1) % 3
-        page.get_by_label('시행할 정책').select_option(str(next_policy))
-        submit(page)
-        assert page.evaluate('([id,key]) => group(id).policies[key]', [sect['id'], policy_key]) == before_policy
-        page.get_by_role('button', name='1개월', exact=True).click()
-        settle(page)
-        assert page.evaluate('([id,key]) => group(id).policies[key]', [sect['id'], policy_key]) == next_policy
-        home = page.evaluate("() => view.groups.find(g=>g.kind==='Family'&&g.leader===actor())")
-        home_card = page.locator('#group-' + str(home['id']))
-        home_card.get_by_role('button', name='봉신·독립', exact=True).click()
-        page.get_by_label('상위 왕조').select_option('0')
-        submit(page)
-        assert page.evaluate('(id) => group(id).overlord', home['id']) == 0
-        assert home_card.get_by_role('button', name='주권 반납', exact=True).count() == 0
-        home_card.get_by_role('button', name='주 통치', exact=True).click()
-        page.get_by_label('통치할 주').select_option('0')
-        governance_revision = page.evaluate('() => view.revision')
-        submit(page, accepted=False)
-        assert page.evaluate('() => view.revision') == governance_revision
-
-        # Uncertain repair data leads to an authoritative rejection, not a false success.
-        open_item(page, '채집 도구')
-        page.get_by_role('button', name='수리 계획', exact=True).click()
-        rejected_revision = page.evaluate('() => view.revision')
-        submit(page, accepted=False)
-        assert page.evaluate('() => view.revision') == rejected_revision
-        assert '명령 거절' in page.locator('#feedback').inner_text()
-
-        # Save/load changes scope and clears old detail, dialogs and search state.
-        page.get_by_label('저장 슬롯').select_option('2')
-        page.get_by_role('button', name='저장', exact=True).click()
-        settle(page)
-        saved_month = page.evaluate('() => view.month')
-        page.get_by_role('button', name='1개월', exact=True).click()
-        settle(page)
-        page.get_by_role('button', name='불러오기', exact=True).click()
-        page.get_by_role('dialog').get_by_role('button', name='불러오기', exact=True).click()
-        settle(page)
-        assert page.evaluate('() => view.month') == saved_month
-        assert page.evaluate('() => history.length === 0 && Object.keys(searchByTab).length === 0')
-        page.get_by_role('button', name='관찰로 전환', exact=True).first.click()
-        settle(page)
-        assert page.evaluate('() => view.observer')
-        assert page.get_by_role('navigation').get_by_role('button', name='법칙', exact=True).count() == 1
-
-        nav(page, '법칙')
-        law = page.evaluate("() => view.laws.find(l=>l.id==='economy.travelDuration')")
-        new_value = law['value'] + 1 if law['value'] < law['maximum'] else law['value'] - 1
-        page.locator('[id="law-' + law['id'] + '"]').fill(str(new_value))
-        page.locator('.lawrow').filter(has=page.locator('[id="law-' + law['id'] + '"]')).get_by_role('button', name='적용', exact=True).click()
-        settle(page)
-        applied = page.evaluate('(id) => view.laws.find(l=>l.id===id).value', law['id'])
-        assert applied == new_value
-        page.get_by_role('button', name='값 내보내기', exact=True).click()
-        exported = json.loads(page.get_by_label('복사할 값').input_value())
-        assert exported['version'] == '0.2.1' and exported['laws'][law['id']] == applied
-        page.keyboard.press('Escape')
-        page.get_by_role('button', name='값 가져오기', exact=True).click()
-        page.get_by_label('내보낸 JSON 값 붙여넣기').fill('{"laws":{"unknown-law":1}}')
-        page.get_by_role('button', name='차이 검토', exact=True).click()
-        assert page.get_by_role('dialog').is_visible()
-        assert page.locator('#dialog-error').inner_text()
-        page.keyboard.press('Escape')
-        page.get_by_role('button', name='값 가져오기', exact=True).click()
-        page.get_by_label('내보낸 JSON 값 붙여넣기').fill(json.dumps(exported))
-        page.get_by_role('button', name='차이 검토', exact=True).click()
-        assert page.get_by_role('dialog').is_visible()
-        page.keyboard.press('Escape')
-        exported['laws'][law['id']] = law['value']
-        page.get_by_role('button', name='값 가져오기', exact=True).click()
-        page.get_by_label('내보낸 JSON 값 붙여넣기').fill(json.dumps(exported))
-        page.get_by_role('button', name='차이 검토', exact=True).click()
-        page.get_by_role('button', name='검토한 값 일괄 적용', exact=True).click()
-        settle(page)
-        assert page.evaluate('(id) => view.laws.find(l=>l.id===id).value', law['id']) == law['value']
-        nav(page, '인물')
-        if page.get_by_role('button', name='인물 목록', exact=True).count():
-            page.get_by_role('button', name='인물 목록', exact=True).click(); settle(page)
-        page.get_by_role('button', name='명시적 인물 편입', exact=True).click()
-        page.get_by_label('이름', exact=True).fill('명시 편입 검증')
-        submit(page)
-        created = page.evaluate("() => view.people.find(p=>p.name==='명시 편입 검증')")
-        assert created and created['realm'] == '범인' and created['money'] == 0
-        nav(page, '세계')
-        page.evaluate('() => {document.activeElement.blur();window.scrollTo(0,0)}')
-        page.screenshot(path=str(out / f'world-{width}.png'), full_page=True)
-        assert not errors, errors
-        results.append({'kind':'real_session_functional','width':width,'tabs':9,'javascript_errors':errors,
-                        'document_horizontal_overflow':False,'touch_map_targets_at_least_44px':True,
-                        'search_focus_and_back':True,'selected_known_path_command':True,
-                        'cancel_draft_and_confirmed':True,'use_equip_craft_bag_store_unstore_offer_withdraw':True,
-                        'explore_transport_complete':True,'repair_rejection_atomic':True,
-                        'teaching_request_accepted':True,'adult_adoption_rejection_atomic':True,
-                        'found_sect_policy_settlement':True,'vassal_independence':True,
-                        'governance_knowledge_rejection_atomic':True,'explicit_adult_assetless':True,
-                        'save_load_scope_cleanup':True,'law_export_import_validation_and_apply':True})
-        page.close()
-
+    observer_reply,play_reply = smoke_checks(browser)
     # Replay real, permission-shaped session replies to check both native adapters.
-    for adapter in ('android_sync', 'windows_async'):
+    for adapter in (() if args.smoke_only else ('android_sync', 'windows_async')):
         page = browser.new_page(viewport={'width':390,'height':900})
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))
@@ -490,7 +325,11 @@ with sync_playwright() as p:
             }}};
           }
         })();""")
-        page.route('**/api', lambda route: route.abort())
+        if args.compat:
+            asset = Path(__file__).resolve().parents[1] / 'src/Chronicles.Shell/index.compat.html'
+            page.route('**/*', lambda route: route.fulfill(status=200,content_type='text/html; charset=utf-8',body=asset.read_text()) if route.request.resource_type=='document' else route.abort())
+        else:
+            page.route('**/api', lambda route: route.abort())
         page.goto(args.url)
         page.get_by_role('heading', name='만상의 흐름', exact=True).wait_for()
         nav(page, '법칙')

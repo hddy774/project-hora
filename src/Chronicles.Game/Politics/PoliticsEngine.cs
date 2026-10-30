@@ -9,9 +9,15 @@ public static partial class PoliticsEngine
         Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(new
         {
             context.Month, context.Revision, context.LawRevision, context.Rules,
+            Maturity = context.MaturityByPerson?.OrderBy(p => p.Key).ToArray(),
             People = context.People.OrderBy(x => x.Id), Groups = context.Groups.OrderBy(x => x.Id),
             Places = context.Places.OrderBy(x => x.Id), State = state
         })));
+
+    /// <summary>The host supplies actual saved body maturity. Scalar fallback preserves older pure-domain callers.</summary>
+    public static long MaturityMonthsFor(PoliticalContext context, Person person) =>
+        context.MaturityByPerson is not null && context.MaturityByPerson.TryGetValue(person.Id, out var actual)
+            ? actual : context.Rules.MaturityMonths;
 
     public static bool ValidateForApplication(PoliticalContext context, PoliticalState state,
         PoliticalTransition transition, out string reason)
@@ -95,7 +101,7 @@ public static partial class PoliticsEngine
         var d = new PoliticalDraft(context, state);
         var p = d.Person(actor);
         if (p is null || p.Status != LifeStatus.Alive || p.Action != ActionKind.Idle ||
-            context.Month - p.Born < context.Rules.MaturityMonths || p.Money < context.Rules.FoundingTreasury ||
+            context.Month - p.Born < MaturityMonthsFor(context, p) || p.Money < context.Rules.FoundingTreasury ||
             groupId <= 0 || d.Groups.Any(g => g.Id == groupId) || d.People.Any(x => x.Id == groupId) ||
             kind == GroupKind.Family && (int)p.Realm < context.Rules.FamilyFounderMinimumRealm ||
             string.IsNullOrWhiteSpace(name) || kind is not (GroupKind.Family or GroupKind.Sect) ||
@@ -255,7 +261,7 @@ public static partial class PoliticsEngine
         var d = new PoliticalDraft(context, state); var g = d.Group(group); var p = d.Person(successor);
         if (g is null || g.Dissolved || (g.Leader != 0 && d.Person(g.Leader)?.Status == LifeStatus.Alive) ||
             (successor != 0 && (p is null || p.Status != LifeStatus.Alive || !g.Members.Contains(successor) ||
-                context.Month - p.Born < context.Rules.MaturityMonths)))
+                context.Month - p.Born < MaturityMonthsFor(context, p))))
             return PoliticalResult.Rejected("Succession requires a vacancy and an eligible current person; soul history never grants membership or office.");
         g.Leader = successor;
         d.State.Offices.RemoveAll(x => x.Group == group && (x.Name == "leader" || d.Person(x.Holder)?.Status != LifeStatus.Alive));

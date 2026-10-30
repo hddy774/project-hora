@@ -3475,7 +3475,7 @@
         "V021-N01"
       ],
       "acceptance": "선택/조작 구분·같은 신원·AI 인계·명령 ID·예약 무결성",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3486,7 +3486,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "선택/조작 구분·같은 신원·AI 인계·명령 ID·예약 무결성",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3507,7 +3513,7 @@
         "V021-F03"
       ],
       "acceptance": "시작 2명 유지·자연 출생/명시 편입·유전/자산 출처",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3518,7 +3524,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "시작 2명 유지·자연 출생/명시 편입·유전/자산 출처",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3544,7 +3556,7 @@
         "V021-N02"
       ],
       "acceptance": "이동/수행/제작/거래/관계/정치/전투·상대 판단·실제 능력",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3555,7 +3567,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "이동/수행/제작/거래/관계/정치/전투·상대 판단·실제 능력",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3576,7 +3594,7 @@
         "V021-U01"
       ],
       "acceptance": "초안/제출/취소요청/확정·뒤로/앱복원 분리·같은 tick 완료/취소 단일 종결·사망/관찰 전환",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3587,7 +3605,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "초안/제출/취소요청/확정·뒤로/앱복원 분리·같은 tick 완료/취소 단일 종결·사망/관찰 전환",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3609,7 +3633,7 @@
         "V021-N01"
       ],
       "acceptance": "규칙적 탐색·고정 상세·검색/뒤로·권한/명령·키보드·빈 상태",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3620,7 +3644,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "규칙적 탐색·고정 상세·검색/뒤로·권한/명령·키보드·빈 상태",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3641,7 +3671,7 @@
         "V021-N01"
       ],
       "acceptance": "단위/시점·선/막대/표/원형·분포/지도·출처/결측",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3652,7 +3682,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "단위/시점·선/막대/표/원형·분포/지도·출처/결측",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3680,7 +3716,7 @@
         "V021-Y03"
       ],
       "acceptance": "상세/조작·유전/발현·가계·경로·명성/평가·천교 보드",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3691,7 +3727,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "상세/조작·유전/발현·가계·경로·명성/평가·천교 보드",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3713,7 +3755,7 @@
         "V021-P03"
       ],
       "acceptance": "100지점·복수 시설·시대 변화·주권/소유·이동/기연",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3724,7 +3766,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "100지점·복수 시설·시대 변화·주권/소유·이동/기연",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3747,7 +3795,7 @@
         "V021-G02"
       ],
       "acceptance": "10분류 정책·봉신/무영토·재정·작업/시장/경매·비교",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3758,7 +3806,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "10분류 정책·봉신/무영토·재정·작업/시장/경매·비교",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3778,7 +3832,7 @@
         "V021-D01"
       ],
       "acceptance": "인물/가계/세력/지점/거래/명령의 원인-결과 왕복",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3789,7 +3843,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "인물/가계/세력/지점/거래/명령의 원인-결과 왕복",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3809,7 +3869,7 @@
         "V021-P01"
       ],
       "acceptance": "실제 월별 집계·이력 예산·후손/전생 경계·결측",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3818,7 +3878,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "실제 월별 집계·이력 예산·후손/전생 경계·결측",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3868,7 +3934,7 @@
         "V021-T07"
       ],
       "acceptance": "기능별 T07/INV·왕복 근거를 모아 전 중간 상태·최종 schema/복구·기존 파일 보존 통합 감사.",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3877,7 +3943,13 @@
       "milestone": "M5",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "기능별 T07/INV·왕복 근거를 모아 전 중간 상태·최종 schema/복구·기존 파일 보존 통합 감사.",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3899,7 +3971,7 @@
         "V021-T07"
       ],
       "acceptance": "T07과 각 기능에 등록된 INV·인구/자산/부모/유전/권리/예약/source 근거의 최종 통합 감사.",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3908,7 +3980,13 @@
       "milestone": "M5",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "T07과 각 기능에 등록된 INV·인구/자산/부모/유전/권리/예약/source 근거의 최종 통합 감사.",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3932,7 +4010,7 @@
         "V021-U07"
       ],
       "acceptance": "두 시조→가계/수행/세력/참여 연결, 조회 hash/RNG 불변",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3941,7 +4019,13 @@
       "milestone": "M5",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "두 시조→가계/수행/세력/참여 연결, 조회 hash/RNG 불변",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3961,7 +4045,7 @@
         "V021-T02"
       ],
       "acceptance": "같은 seed/명령 tick/명령열·advance 분할/배속/checkpoint 결과 일치",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3970,7 +4054,13 @@
       "milestone": "M5",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "같은 seed/명령 tick/명령열·advance 분할/배속/checkpoint 결과 일치",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4023,7 +4113,7 @@
         "V021-N03"
       ],
       "acceptance": "좁은 창·글자 확대·한국어·키보드/터치 명세·정보 통제·같은 행동/명령 피드백",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4032,7 +4122,13 @@
       "milestone": "M5",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "좁은 창·글자 확대·한국어·키보드/터치 명세·정보 통제·같은 행동/명령 피드백",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4056,7 +4152,7 @@
         "V021-H10"
       ],
       "acceptance": "55개 원래 요구·전체 새 요구의 코드/증거/문서·기획/구현 상태·엔진 없는 패키지·VERSION 일치",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4065,7 +4161,13 @@
       "milestone": "M5",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "55개 원래 요구·전체 새 요구의 코드/증거/문서·기획/구현 상태·엔진 없는 패키지·VERSION 일치",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4442,7 +4544,7 @@
         "V021-Z02"
       ],
       "acceptance": "재생/고갈·재해·서식·채집의 실제 원천과 활동/수행/이동 영향",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4453,7 +4555,13 @@
       "milestone": "M2",
       "minimal_scope": "초기 세계가 실제 참조하는 자연 원천",
       "later_scope": "재생/고갈·재해·서식·채집의 실제 원천과 활동/수행/이동 영향",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4476,7 +4584,7 @@
         "V021-I01"
       ],
       "acceptance": "양육/생리·식량/영식·저장/부패·도구/시설 수요·실제 인력/소비",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4487,7 +4595,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "양육/생리·식량/영식·저장/부패·도구/시설 수요·실제 인력/소비",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4511,7 +4625,7 @@
         "V021-L02"
       ],
       "acceptance": "전수/소문·정책 반응·멸문/유망/교육단절·원인 추적, 숨은 NPC/자원 보정 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4522,7 +4636,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "전수/소문·정책 반응·멸문/유망/교육단절·원인 추적, 숨은 NPC/자원 보정 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4576,7 +4696,7 @@
         "V021-H05"
       ],
       "acceptance": "Windows SQLite 분리·경로/엔진 경계·schema/백업·향후 모바일 어댑터 조건",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4585,7 +4705,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "Windows SQLite 분리·경로/엔진 경계·schema/백업·향후 모바일 어댑터 조건",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4606,7 +4732,7 @@
         "V021-H02"
       ],
       "acceptance": "강제 종료·부분 파일·안전 저장·복원·중복 명령/출생 방지 harness",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4615,7 +4741,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "강제 종료·부분 파일·안전 저장·복원·중복 명령/출생 방지 harness",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4667,7 +4799,7 @@
         "V021-H01"
       ],
       "acceptance": "H01 초기 기준선 후 Core/호스트 추출·owner/허용 의존 검사·기준선 정답 비교. 이전 경로 제거는 H10의 후행 산출물.",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4676,7 +4808,13 @@
       "milestone": "M1",
       "minimal_scope": "Core/호스트 추출·경계/정답 비교, 이전 경로 미제거",
       "later_scope": "H01 초기 기준선 후 Core/호스트 추출·owner/허용 의존 검사·기준선 정답 비교. 이전 경로 제거는 H10의 후행 산출물.",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4727,7 +4865,7 @@
         "V021-U02"
       ],
       "acceptance": "기존 Desktop 외곽·한국어/단위·반응형 명세·명령/조회 분리, 핵심 UI 플랫폼 역참조0",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4736,7 +4874,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "기존 Desktop 외곽·한국어/단위·반응형 명세·명령/조회 분리, 핵심 UI 플랫폼 역참조0",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4758,7 +4902,7 @@
         "V021-H02"
       ],
       "acceptance": "후보 TFM/언어·금지/전이 참조·생성 코드 검사·저장/DTO·패키지 전략. Unity 실행은 미래 검증",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4767,7 +4911,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "후보 TFM/언어·금지/전이 참조·생성 코드 검사·저장/DTO·패키지 전략. Unity 실행은 미래 검증",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4855,7 +5005,7 @@
         "V021-R04",
         "V021-Z02"
       ],
-      "acceptance": "원인 직전 자격 snapshot·13자동조건·중복 원인/혼존속·과거 최고/붕괴 후 값 오판0·윤회 버튼 없음 · 13조건 목표 유지·원인 생성 시스템/실사건과 fixture를 구분·Q-12 범위 결정 대기. 5조건 후속 이관 미확정",
+      "acceptance": "원인 직전 자격 snapshot·13자동조건·중복 원인/혼존속·과거 최고/붕괴 후 값 오판0·윤회 버튼 없음 · 13조건 목표 유지·원인 생성 시스템/실사건과 fixture를 구분·13개 실제 원인 전체 구현 범위·후속 이관 없음",
       "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
@@ -4977,7 +5127,7 @@
         "V021-U01"
       ],
       "acceptance": "선로만상록 이름·README/Notion·앱 표시·기존 규칙/manifest 차이, 버전/완료 과장 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4986,7 +5136,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "선로만상록 이름·README/Notion·앱 표시·기존 규칙/manifest 차이, 버전/완료 과장 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5566,7 +5722,7 @@
         "V021-G03"
       ],
       "acceptance": "구매력/노동/지식/운송·시설 성립·생산/회복·인구/경지 단계별 실제 연결, 자동 해금/유령 공급 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5577,7 +5733,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "구매력/노동/지식/운송·시설 성립·생산/회복·인구/경지 단계별 실제 연결, 자동 해금/유령 공급 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5598,7 +5760,7 @@
         "V021-L06"
       ],
       "acceptance": "재해/고갈/통로/승계·독점/교육 단절·후대 금단 병목·실제 적응/실패와 원장·지표·원인 기록",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5609,7 +5771,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "재해/고갈/통로/승계·독점/교육 단절·후대 금단 병목·실제 적응/실패와 원장·지표·원인 기록",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5632,7 +5800,7 @@
         "V021-N03"
       ],
       "acceptance": "관찰의 판단/형성/연쇄 원인·플레이 추정/자기지식·막대/선/표·불확실/미상·능동 명령 연결",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5643,7 +5811,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "관찰의 판단/형성/연쇄 원인·플레이 추정/자기지식·막대/선/표·불확실/미상·능동 명령 연결",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5664,7 +5838,7 @@
         "V021-Z01",
         "V021-Y01"
       ],
-      "acceptance": "반선 구조/수명/가임·비승 설정의 자료 계약·창세 출처·가짜 과거 사건 없음·생성 시조 공용. 미결 게임 값은 결정 대기.",
+      "acceptance": "반선 구조/수명/가임·비승 설정의 자료 계약·창세 출처·가짜 과거 사건 없음·생성 시조 공용. 수명·가임·비승 잠정값은 개발 보정·법칙 revision으로 관리.",
       "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
@@ -5703,7 +5877,7 @@
         "V021-Z01",
         "V021-H01"
       ],
-      "acceptance": "Q-01 a/b/c별 세대 시간·인구/금단/범인/무인 범위·성립 시점/미성립 분포·배속/플레이 시간·불확실/가정. 미선택 기본 프리셋의 결론 확정 금지.",
+      "acceptance": "Q-01 a/b/c별 세대 시간·인구/금단/범인/무인 범위·성립 시점/미성립 분포·배속/플레이 시간·불확실/가정. 사용자 선택 a를 기본으로 측정하고 b/c는 비교 가정으로 구분.",
       "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
@@ -5739,7 +5913,7 @@
         "V021-H01"
       ],
       "acceptance": "INV-ID 등록·기능별 저장 왕복/hash/RNG 시험 틀·미구현 시험과 실제 통과 구분. 제품 하네스 자체는 아직 planned.",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5748,7 +5922,13 @@
       "milestone": "M1",
       "minimal_scope": "초기 codec/hash/INV 등록·실패 주입 틀",
       "later_scope": "INV-ID 등록·기능별 저장 왕복/hash/RNG 시험 틀·미구현 시험과 실제 통과 구분. 제품 하네스 자체는 아직 planned.",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5767,7 +5947,7 @@
         "V021-T02"
       ],
       "acceptance": "대체/검증된 기능만 이전 경로 제거·이중 권위0·근거 및 필요한 호환 정답 비교.",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5776,7 +5956,13 @@
       "milestone": "M5",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "대체/검증된 기능만 이전 경로 제거·이중 권위0·근거 및 필요한 호환 정답 비교.",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "implementation/source audit; final task acceptance pending",
+          "path": "docs/evidence/0.2.1/acceptance-audit.json",
+          "source": "https://github.com/hddy774/project-hora/pull/113"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",

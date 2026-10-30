@@ -8,6 +8,9 @@ public static class PoliticalInvariants
         ArgumentNullException.ThrowIfNull(state);
         var errors = new List<string>();
         if (state.Schema != 1) errors.Add("Unsupported political state schema.");
+        if (context.MaturityByPerson is { } maturity && (maturity.Count != context.People.Count ||
+            maturity.Any(p => p.Value < 0 || !context.People.Any(person => person.Id == p.Key))))
+            errors.Add("Applied maturity must reference every actual body with nonnegative months.");
         if (context.Rules.PlacesPerProvince <= 0 || context.Rules.MaturityMonths < 0 || context.Rules.SectLimit < 0 ||
             context.Rules.FoundingTreasury < 0 || context.Rules.PolicyPreparationCost < 0 || context.Rules.PreparationMonths <= 0 ||
             context.Rules.FamilyFounderMinimumRealm is < 0 or > (int)Realm.HalfImmortal ||

@@ -6,6 +6,10 @@ namespace Chronicles.Game.Ecology;
 
 public static class EcologyEngine
 {
+    public static long MaturityMonthsFor(EcologyContext context, Person person) =>
+        context.MaturityByPerson is not null && context.MaturityByPerson.TryGetValue(person.Id, out var actual)
+            ? actual : context.Birth?.Maturity ?? 216;
+
     public static EcologyState Initialize(EcologyContext context)
     {
         var state = new EcologyState { Initialized = true, LastSettledMonth = context.Month - 1,
@@ -111,6 +115,9 @@ public static class EcologyEngine
     public static void Validate(EcologyContext context, EcologyState state)
     {
         ArgumentNullException.ThrowIfNull(context); ArgumentNullException.ThrowIfNull(state);
+        Require(context.MaturityByPerson is null || context.MaturityByPerson.Count == context.People.Count &&
+            context.MaturityByPerson.All(p => p.Value >= 0 && context.People.Any(person => person.Id == p.Key)),
+            "Applied ecological maturity must describe actual saved bodies.");
         Require(state.Schema == 1 && state.NextId > 0 && state.LastSettledMonth >= -1 && state.LastSettledMonth <= context.Month,
             "Ecology schema, clock or identity counter is invalid.");
         Require(context.Rules.HistoryMonths > 0 && context.Rules.MaximumChanges > 0 && context.Rules.FacilityActivityMonths >= 0 &&
@@ -280,7 +287,7 @@ public static class EcologyEngine
             if (previous.Households.Except(current.Households).Any())
                 Change(state, context.Month, current.Place, EcologicalChangeKind.HouseholdLoss, previous.Households.Length, current.Households.Length, "actual-household-presence-changed");
             var residents = context.People.Where(p => p.Status == LifeStatus.Alive && p.Place == current.Place).ToArray();
-            var adults = residents.Where(p => context.Birth is { } birth && context.Month - p.Born >= birth.Maturity).ToArray();
+            var adults = residents.Where(p => context.Birth is not null && context.Month - p.Born >= MaturityMonthsFor(context, p)).ToArray();
             if (context.Birth is { Enabled: true, MinimumRealm: > 0 } law && adults.Length >= 2 && adults.Any(p => p.ParentOne != 0) &&
                 adults.Where(p => law.BothParents || p.Gestates).Any() && adults.Where(p => law.BothParents || p.Gestates)
                     .All(p => (int)p.Realm < law.MinimumRealm && !(law.MartialEquivalent && p.Martial == 10)) &&

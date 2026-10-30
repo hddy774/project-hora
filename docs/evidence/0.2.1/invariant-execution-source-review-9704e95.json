@@ -1,0 +1,164 @@
+{
+  "review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "source_commit": "9704e95508456ee317a378a9b8dac55985bf1849",
+    "test_sources_sha256": "18188884d43295487f2db16a264fafc34bd2fce8a4515dcb37d3967b09fa4c67",
+    "actual_scenarios": 309,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+        "invariants": [
+          "INV-004",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "판본/매체/기억/숙련·실제 시간/권리·소급 변경·공개 full snapshot 격리; 내부 물리 투영은 동일 Media/deep MissingChapters/Access만 독립복사하고 순서/조회시점/전체 API 유지"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-017",
+          "INV-018",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "개인 key index와 같은월 Save/외부 snapshot 복원·격리·권한/실제노동 보존. Settle 두 snapshot은 첫Media만/물리동기화뒤Media+Access로 같은순서의독립사본을읽으며월말지연/alias공유없음"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PoliticsBridge.cs",
+        "invariants": [
+          "INV-006",
+          "INV-017",
+          "INV-019",
+          "INV-020",
+          "INV-023"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "성년정치 context 기본true 유지; 성년을 읽지 않는 수행Site 및 IsLaborAvailable 두 caller만 includeMaturity:false. 기존 사용권/공통노동 판정과 실제 비인간 성년 계약은 유지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgePhysicalSnapshotScenarios.cs",
+        "invariants": [
+          "INV-007",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "INV-007/024 knowledge physical snapshot: 전체 사본의 매체·접근권과 순서·동기화 시점·중첩 배열 격리가 같다"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-007/024 knowledge physical snapshot: 전체 사본의 매체·접근권과 순서·동기화 시점·중첩 배열 격리가 같다"
+        ],
+        "review_focus": []
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "review_acknowledgement": {
+    "source_commit": "9704e95508456ee317a378a9b8dac55985bf1849",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "src/Chronicles.Game/World.PoliticsBridge.cs",
+      "tests/Chronicles.Game.Tests/Features/KnowledgePhysicalSnapshotScenarios.cs"
+    ],
+    "review_note": "926→9704의제품3경로/새module검사1경로를읽고309이름·144증인을연결했다. 물리2필드의selector/deepcopy·삽입순서·첫Media/afterSync둘째Media+Access시점·공개fullClone/Save불변과성년을읽지않는노동context한caller를대조했다. 새검사의도메인JSON복원을전체GameCodec으로세지않는다. 기존926맵은byte보존snapshot으로남기고원본보고서/SourceReview/제안카탈로그/원장/Notion·C#/scripts변경0을유지한다."
+  },
+  "review_details": [
+    {
+      "path": "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "sha256": "a44198789d7f49fe7003a5978b9d7f835aeec620ce1959477c5e94b110cb2818",
+      "review_note": "공개 Checkpoint/Restore/full Clone은 유지한다. 내부 PhysicalCheckpoint는 기존 Media selector의 record/deep MissingChapters와 Access record만 별도 배열로 복제하며 필터·정렬·큰 cache·권위 alias 공유가 없다. includeAccess false는 접근권을 복사하지 않는다."
+    },
+    {
+      "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "sha256": "12bee37a99145cc0953e3303e6669908d4115a8c18416a31a5a7e8bf5dcaa4fe",
+      "review_note": "첫 물리 동기화 전 snapshot은 includeAccess:false Media만 읽는다. 같은 기존 반복/조건/Source를 거쳐 물리 동기화 뒤 둘째 snapshot은 Media+Access를 읽는다. Source/RNG/Save 즉시 반영·중간 권한 계산 순서를 바꾸지 않는다."
+    },
+    {
+      "path": "src/Chronicles.Game/World.PoliticsBridge.cs",
+      "sha256": "d87a2790d40dd7cb9625ea0042481c7248f7f40e20e6d9cfa27954a181e2df17",
+      "review_note": "IsLaborAvailable은 context의 Month/People 및 state.Labor만 읽고 성년 사전을 읽지 않는다. 이 한 caller만 includeMaturity:false로 구성하며 기존 노동 판정/일반 성년정치 기본true는 유지한다."
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/KnowledgePhysicalSnapshotScenarios.cs",
+      "sha256": "89c9068e6d864731374c37e71cf9c349b442d1eb2932f165f991b1dde93e5278",
+      "review_note": "새 이름1개는 부분 KnowledgeAuthority module의 공개 full Checkpoint 두 필드와 투영의 before/afterSync 값·삽입순서·destroyed/만료/철회·record/중첩 배열 격리·사본 변조/재조회/권한·도메인JSON복원을 대조한다. common GameCodec 전체세계 저장·public GameWorld 명령·규모성능 수용은 아니다."
+    }
+  ],
+  "supplemental_source_review": [
+    {
+      "path": "src/Chronicles.Shell/index.html",
+      "sha256": "d5309a2280e3e1cc1276ca9869f4db861bb209bf314c46e5ea672e002de991bf",
+      "unchanged_since_926": true,
+      "in_test_catalog_fingerprint": false,
+      "in_product_fingerprint": true,
+      "review_scope": "기존926 SourceReview의 HTML 검토 범위를 그대로 잇는다. 이번 제품차이에는 HTML이 없고 UI/native 검수는 C#등록/실행과 별도 근거다."
+    },
+    {
+      "path": "src/Chronicles.Shell/index.compat.html",
+      "sha256": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d",
+      "unchanged_since_926": true,
+      "in_test_catalog_fingerprint": false,
+      "in_product_fingerprint": true,
+      "review_scope": "기존926 SourceReview의 HTML 검토 범위를 그대로 잇는다. 이번 제품차이에는 HTML이 없고 UI/native 검수는 C#등록/실행과 별도 근거다."
+    }
+  ],
+  "previous_source_review": "invariant-execution-source-review-9263756.json",
+  "product_source_fingerprint": "f48068bca453202a3826b870e61e9be9972aae4ce8b68e0f8ff4e0b4e0963d28",
+  "manual_name_binding_changes_before_helper": {
+    "before_count": 308,
+    "after_count": 309,
+    "new_test_classes": 1,
+    "added_names": [
+      "INV-007/024 knowledge physical snapshot: 전체 사본의 매체·접근권과 순서·동기화 시점·중첩 배열 격리가 같다"
+    ],
+    "removed_names": [],
+    "witness_links_before": 143,
+    "witness_links_after": 144,
+    "note": "새이름/모듈경계/증인앵커를수동반영한뒤helper계획을만들어그계획의added/removed는0이다."
+  },
+  "source_review_only": true,
+  "functional_execution_status": "separate-root-report-verified",
+  "separate_functional_report": {
+    "path": "invariant-final-9704e95/functional.json",
+    "sha256": "863e0f0face78815a9b97efd28260d399515426c20c4551fa39706fe47db6aba",
+    "executed_source": "9704e95508456ee317a378a9b8dac55985bf1849",
+    "selection": "all",
+    "total": 309,
+    "failed": 0
+  },
+  "runtime_test_or_measurement_runs_by_mapping_work": 0,
+  "limits": [
+    "원본926맵/SourceReview/308보고서는보존하고새SourceRev의실행으로승격하지않는다.",
+    "기존 성장9/AI108/민감도6 자료의926출처를유지한다. 중단/복구상태나새source측정완료를이C#보고서로판정하지않는다.",
+    "검증기source선언과테스트지문만으로프로세스진위를독립인증하지않는다. 원본해시/실행출처·4DLL정보·제품fp를함께확인한다.",
+    "190의API24 probeworkflow는이번제품지문대상코드변경이아니며Native/API24완료증거로계산하지않는다.",
+    "9704의309개시점근거다. 별도926 10,000명기준선의저장예외(#191)와후속코덱추가검사는이통과에포함되지않는다."
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "self_excluded": true,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "e1c43684e487bc3639e576332d5467ef7e663b5c53cb134efc084b60bc02d6ab",
+      "bytes": 6836
+    },
+    {
+      "path": "acceptance.json",
+      "sha256": "17407505097b2ad8925ea357ed5a14bff751673321ca1e60a5e4aa7918e8f98a",
+      "bytes": 16904
+    },
+    {
+      "path": "plan-validation.json",
+      "sha256": "5f0652a8e2b0884a634a45c653bd9708bd4aaca45a5c9de1862e157e84d71102",
+      "bytes": 346
+    },
+    {
+      "path": "status-diff-check.json",
+      "sha256": "de7f2215120cd6dbecc6ed26bab9317f8aa2c7b36e09d17f592ac547cd697200",
+      "bytes": 815
+    },
+    {
+      "path": "native-ci-ui-provenance.original.json",
+      "bytes": 10185,
+      "sha256": "53630ec066677980cf9b727225ef394459dd2cf96d20a870574dc10b3da66c8c"
+    }
+  ]
+}

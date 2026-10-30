@@ -5,7 +5,10 @@ namespace Chronicles.Game;
 /// <summary>Filesystem slot adapter. The world and byte format remain owned by Chronicles.Game.</summary>
 public static class GameSaveStore
 {
-    public static void SaveAtomic(GameWorld world, string path)
+    public static void SaveAtomic(GameWorld world, string path) => SaveAtomic(world, path, GameCodec.JsonPayloadLimit);
+
+    // Force the large-envelope branch on small functional fixtures without a process-wide setting.
+    internal static void SaveAtomic(GameWorld world, string path, int jsonPayloadLimit)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         var full = Path.GetFullPath(path);
@@ -18,7 +21,7 @@ public static class GameSaveStore
             try { sequence = Math.Max(sequence, GameCodec.DecodeEnvelope(File.ReadAllBytes(candidate)).Sequence); }
             catch (InvalidDataException) { PreserveOriginal(candidate); }
         }
-        var bytes = GameCodec.Encode(world, checked(sequence + 1));
+        var bytes = GameCodec.Encode(world, checked(sequence + 1), jsonPayloadLimit);
         using (var output = new FileStream(temporary, FileMode.Create, FileAccess.Write, FileShare.None, 65536, FileOptions.WriteThrough))
         { output.Write(bytes); output.Flush(true); }
         // Validate the exact bytes before replacing a valid slot. Backup stays readable after interruption.

@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "kind": "final-frozen-source-real-session-ui-functional",
+  "observed_at_utc": "2026-10-30T17:11:31.562410+00:00",
+  "source_record": "source.json",
+  "host_record": "host-proof.json",
+  "tested_app_source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "product_source_fingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "product_and_standard_verifier_changed": false,
+  "host": {
+    "url": "http://127.0.0.1:5227",
+    "fresh_worktree": "/workspace/seonro-final-ui-9263756",
+    "real_game_session": true,
+    "api_mocked": false,
+    "only_program_difference": "5211 replaced with5227 in URL and same-origin comparison; exact temporary source/project preserved.",
+    "game_and_hosting_informational_version": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+    "configuration": "Release",
+    "build_warnings": 0,
+    "build_errors": 0,
+    "served_html_equals_committed_compat": true,
+    "old_hosts_5211_5213_touched": false,
+    "own_host_stopped_after_checks": true,
+    "cpu_affinity": [
+      2,
+      3
+    ]
+  },
+  "standard_functional": {
+    "normal_report": "full-normal.json",
+    "text200_report": "full-text200.json",
+    "widths_each": [
+      1280,
+      390
+    ],
+    "menus_per_width": 9,
+    "forced_legacy_dom": true,
+    "all_main_rows_passed": true,
+    "javascript_runtime_errors": [],
+    "document_and_body_horizontal_overflow": false,
+    "touch_targets_minimum_px": 44,
+    "actual_flows": [
+      "known path selection and cultivate command",
+      "equipment and known ally guard",
+      "species creation",
+      "save/load and actor/scope cleanup",
+      "law export/import validation and atomic law batch",
+      "policy adoption/preparation/cancellation/implementation with real budgets",
+      "consensual social requests, actual assessment/relay/oath receipts",
+      "paid secret entrance survey/travel/entry/return, carried-space boundary, finite outcome and in-secret save/restore"
+    ],
+    "normal_command": "taskset -c 2,3 python3 scripts/verify-v021-ui.py <out> --url http://127.0.0.1:5227 --compat --legacy-dom",
+    "text200_command": "taskset -c 2,3 python3 /workspace/scratch/ui-final-9263756-text200.py <out> http://127.0.0.1:5227",
+    "normal_console_error_capture": "Standard verifier captures uncaught pageerror; console.error listener additionally covered both200% main pages and all4 entry pages.",
+    "text200_main_console_errors": [],
+    "adapters": {
+      "kind": "real_reply_adapter_replay",
+      "names": [
+        "android_sync",
+        "windows_async"
+      ],
+      "domain_integration_claim": false,
+      "native_platform_execution_claim": false
+    }
+  },
+  "entry": {
+    "conditions": [
+      {
+        "case": "normal-1280",
+        "passed": true,
+        "keyboard_and_actual_touch": true,
+        "console_errors": []
+      },
+      {
+        "case": "normal-390",
+        "passed": true,
+        "keyboard_and_actual_touch": true,
+        "console_errors": []
+      },
+      {
+        "case": "text200-1280",
+        "passed": true,
+        "keyboard_and_actual_touch": true,
+        "console_errors": []
+      },
+      {
+        "case": "text200-390",
+        "passed": true,
+        "keyboard_and_actual_touch": true,
+        "console_errors": []
+      }
+    ],
+    "setup": "Public new seed42, adult creation, explicit lawBatch, actual ten-month teaching with both participants reserved; no raw mutable world fixture. All outgoing commands are preserved in raw reports.",
+    "teaching_creation_scope": "The ten-month teaching start is public command setup via issueCommand; not a visible duration-picker click claim.",
+    "actual_visible_flow": [
+      "incomplete preparation submitted by keyboard Tab/Enter and rejected",
+      "four ordinary blank-Data cultivate submissions and actual one-month advances leave actor Mortal",
+      "authorized default sensing submitted by actual touch: Target0,Data path.1.0,Actor pupil",
+      "prepared phase and actor survive toolbar save/load",
+      "formation start accepted"
+    ],
+    "knowledge_boundary": "UI checks no unlearned path.1.0 Understanding/personal chapter; this is not an authority-memory/mastery sweep. The independent root whole-core suite owns that source-level acceptance.",
+    "unobserved_external_fields_remain_null": true,
+    "prepare_dialog_minimum_target_px": 44,
+    "text200_prepare_dialog_minimum_height_px": 60,
+    "console_errors": [],
+    "javascript_errors": [],
+    "document_body_and_dialog_horizontal_overflow": false
+  },
+  "text_scale": {
+    "report": "text200-fonts-console.json",
+    "factor": 2,
+    "method": "Test-only CSSOM absolute-px font-size declarations including media/shorthand; inherited values retained; actual computed font samples recorded.",
+    "device_pixel_ratio": 1,
+    "standard_script_modified_on_disk": false,
+    "scratch_in_memory_hooks": [
+      "font multiplier and persistence assertions",
+      "touch-capable main contexts and real navigation taps",
+      "overflow diagnostic capture",
+      "console.error listener on both main width pages"
+    ],
+    "new_canonical_product_minimum_requirement": false
+  },
+  "raw_screens": {
+    "manifest": "raw-scratch-manifest.json",
+    "all_raw_reports_committed": true,
+    "representative_screens_committed": "normal/text200 final screen at both widths plus prepared/started entry at all4 conditions",
+    "other_menu_and_workflow_screens": "Preserved in scratch with exact SHA256/byte manifest."
+  },
+  "builder_check": {
+    "passed": true,
+    "authoring_sha256": "d5309a2280e3e1cc1276ca9869f4db861bb209bf314c46e5ea672e002de991bf",
+    "pinned_dependencies": "Copied already-installed dependencies only after package.json/package-lock.json byte equality with the prior checked worktree; no product file regenerated."
+  },
+  "limits": [
+    "This is Playwright Chromium against real GameSession with committed compat/forced legacy APIs, not actual API24 or API35 WebView.",
+    "Actual retained-signed APK, API24/35 installs/updates and Windows native execution remain official release-CI evidence.",
+    "No performance, profiling, growth, soak or physical-device performance measurement was run.",
+    "No product/UI/C# test/standard verifier/ledger/Notion change. Final T05 platform acceptance is a separate owner decision."
+  ],
+  "harness_replay": "Exact session harnesses retain absolute scratch/repository paths. entry-check.py reads the SCALE literal from ui-final-9263756-text200.py; adjust paths together if replaying elsewhere."
+}

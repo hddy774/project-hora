@@ -211,7 +211,7 @@ public sealed partial class GameWorld
     }
 
     private bool PoliticsLaborAvailable(Person person, long from, long until) =>
-        PoliticsEngine.IsLaborAvailable(PoliticsContext(), state.Politics, person.Id, from, until);
+        PoliticsEngine.IsLaborAvailable(PoliticsContext(includeMaturity: false), state.Politics, person.Id, from, until);
 
     private bool TryCancelPoliticsWork(Person person, out string? error)
     {

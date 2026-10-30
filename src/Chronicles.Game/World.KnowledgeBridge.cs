@@ -333,7 +333,7 @@ public sealed partial class GameWorld
         var before = authority.Revision;
         if (authority.Rules.Revision < state.LawRevision)
             CheckKnowledge(authority.ChangeRules(CurrentKnowledgeRules(), Month, "knowledge-laws:" + state.LawRevision));
-        foreach (var medium in authority.Checkpoint().Media)
+        foreach (var medium in authority.PhysicalCheckpoint(includeAccess: false).Media)
         {
             var exists = items.TryGetValue(medium.ItemId, out var actual);
             if (medium.Destroyed) continue;
@@ -348,7 +348,7 @@ public sealed partial class GameWorld
             CheckKnowledge(authority.SynchronizeMedium(medium.ItemId, owner, place, quality, missing, unreadable, !exists, Month,
                 $"physical:{medium.ItemId}:{Month}:{medium.Revision}"));
         }
-        var snapshot = authority.Checkpoint();
+        var snapshot = authority.PhysicalCheckpoint();
         foreach (var medium in snapshot.Media.Where(m => !m.Destroyed && items.ContainsKey(m.ItemId)))
         {
             var actual = items[medium.ItemId];

@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "sourceCommit": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+  "productSourceFingerprint": "cf17eee7930cc754eda7558d0496f6929d10d64fb9352d0c42ff49a08704f9e3",
+  "indexExcludesItself": true,
+  "artifacts": [
+    {
+      "file": "README.md",
+      "bytes": 8940,
+      "sha256": "3112bc04b1365790ef9a0bca4da7964c01483ca0ae7b0a7cd0fdb7fa0d30ca32"
+    },
+    {
+      "file": "artifact-manifest.json",
+      "bytes": 4780,
+      "sha256": "ba51b711636e75764ae73347986f7c9d569f91b7f2aab44df6b24f0f5992b279"
+    },
+    {
+      "file": "copy-56bbfb2-json100.json",
+      "bytes": 11304,
+      "sha256": "2898d8d856e7c9346b608fe80de3d2e78a9598287d0db0480c7480c12fa6608c"
+    },
+    {
+      "file": "copy-56bbfb2-json100.log",
+      "bytes": 1481,
+      "sha256": "f3ccbc58bfcc79792b9d4c30d7a9dba4d05ff44095df7a63e4e3d35e18222aad"
+    },
+    {
+      "file": "copy-56bbfb2-json1000.json",
+      "bytes": 11435,
+      "sha256": "13e61b3a1b89e4cf61dbffde0ae45918c0786cd08c417d01f478b6d5ab5b8e16"
+    },
+    {
+      "file": "copy-56bbfb2-json1000.log",
+      "bytes": 1536,
+      "sha256": "c9cc0ef360fcbe51878d9486e8476fd004daffbb10f9692d98a011410120c946"
+    },
+    {
+      "file": "copy-56bbfb2-typed100.json",
+      "bytes": 11328,
+      "sha256": "2f6b805cbd8ef330c40656d9c6d6001c6f67b974fa430fe6d0270ff5616de207"
+    },
+    {
+      "file": "copy-56bbfb2-typed100.log",
+      "bytes": 1481,
+      "sha256": "03d37e68fa84017d3ab42a41830f02e4417c834e261f6eaf1d46c7400a7ab55d"
+    },
+    {
+      "file": "environment-current.original.json",
+      "bytes": 668,
+      "sha256": "9c172ccd99735222da5f170284b64b493e44db7ce3ed23e2971e66a56eb00951"
+    },
+    {
+      "file": "execution-provenance.json",
+      "bytes": 8755,
+      "sha256": "b4e83d362a1111fa38fc5d0f58c6ebf0c4fdbbbd8504f24c6cb4dd37885b415f"
+    },
+    {
+      "file": "followup-9263756/copy-9263756-json100.json",
+      "bytes": 11307,
+      "sha256": "b077a9b65154e3b5ce8bc04dccc21c6685e69659d3762f4cac5795f759f28da7"
+    },
+    {
+      "file": "followup-9263756/copy-9263756-json100.log",
+      "bytes": 1480,
+      "sha256": "cedcc56d8eb3f0764b3ac95e47fd9cfa32a7f9ef9569943cb9457988365b9aa1"
+    },
+    {
+      "file": "followup-9263756/provenance-and-comparison.json",
+      "bytes": 6417,
+      "sha256": "e37b39012edc0680173bb1f7daf170a2f9af458217822bca51f7655033e0c0a6"
+    },
+    {
+      "file": "n100-comparison.json",
+      "bytes": 5895,
+      "sha256": "587e2657fcadb6fd45de6dd67401061e2eb2da15ecb4242ccac808ee4931b300"
+    },
+    {
+      "file": "profile-56bbfb2-analyze.py",
+      "bytes": 3666,
+      "sha256": "8c60ba34cc4b6f5908ae1360cc2b49e644adfeb81405690d4a5dee3184db009e"
+    },
+    {
+      "file": "profile-56bbfb2-json1000-weighted-stacks.json.gz",
+      "bytes": 158678,
+      "sha256": "9a2886d76cae9301d06b726e9af78ed55604456f4917637bc69c4f7919218e65"
+    },
+    {
+      "file": "profile-56bbfb2-json1000.log",
+      "bytes": 634,
+      "sha256": "fd72ab21e71bde7e06518863fc65a4ff07e6cb5c321b7c5648d94eacfba7e777"
+    },
+    {
+      "file": "profile-56bbfb2-json1000.speedscope.json.gz",
+      "bytes": 1067909,
+      "sha256": "0b0b00da940fb6ae62e8ce435873400d492b45bab82656e42246e4584227757a"
+    },
+    {
+      "file": "profile-diagnosis.json",
+      "bytes": 14598,
+      "sha256": "3056b0c4a1e551f2b20f5aa57099dcf9d524c8376e16a288aad9c23a3b666ee2"
+    },
+    {
+      "file": "verify-evidence.py",
+      "bytes": 3696,
+      "sha256": "318e2451737de6e58c593ddfd483cc080ca4c557ab6b6035af96ab6fd218e33e"
+    }
+  ],
+  "additionalSourceCommits": [
+    "9263756b1d00b8696fddecacb077f55d95141f26"
+  ],
+  "scope": "주 분석은56bb, 별도 후속 하위폴더 원본은926 N100 소스다."
+}

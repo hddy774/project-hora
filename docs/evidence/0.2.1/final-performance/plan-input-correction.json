@@ -1,0 +1,11 @@
+{
+  "kind": "stability-plan-input-metadata-correction",
+  "correctedAtUtc": "2026-10-30T19:10:19.712678+00:00",
+  "adoptedAtUtc": "2026-10-30T18:47:18.685570+00:00",
+  "originalSha256": "413154316567b90c2dc61ee2c1ba90103c6fd04e8be73b703067d92d1c1fa5df",
+  "executablePlanSha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+  "removedField": "adoptedAtUtc",
+  "reason": "실제 StabilityPlan은 UnmappedMemberHandling.Disallow이므로 채택 시각을 실행 입력 밖 출처로 옮김. 하네스/스키마/숫자/기간/상한 변경 없음. 실제 장기 실행 전 읽기 preflight에서 확인함.",
+  "numericalAndWorkloadFieldsUnchanged": true,
+  "actualStabilityRunAttempted": false
+}

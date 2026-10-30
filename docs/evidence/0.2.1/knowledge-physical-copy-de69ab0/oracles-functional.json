@@ -1,0 +1,17 @@
+{
+  "selection": "inventory owned reference:",
+  "total": 2,
+  "failed": 0,
+  "results": [
+    {
+      "name": "inventory owned reference: \uBA85\uC2DC \uAC70\uB798 \uC131\uD5A5\uACFC \uBE44\uCD953 \uACBD\uACC4\uC758 \uC2E4\uC81C \uBD84\uD560\u00B7\uD310\uB9E4\u00B7\uC800\uC7A5 \uACB0\uACFC \uBCF4\uC874",
+      "passed": true,
+      "ms": 13909
+    },
+    {
+      "name": "inventory owned reference: \uAE30\uC874 \uACF5\uAC1C \uC81C\uC791\u00B7\uBCF4\uAD00\u00B7\uAC70\uB798\u00B7\uC800\uC7A5\u00B7\uBA85\uB839 \uC7AC\uC804\uC1A1 \uACB0\uACFC \uBCF4\uC874",
+      "passed": true,
+      "ms": 43310
+    }
+  ]
+}

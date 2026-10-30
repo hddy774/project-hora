@@ -35,6 +35,7 @@ public static class Catalog
 
     public static IReadOnlyList<PathDefinition> Paths { get; } = BuildPaths();
     public static IReadOnlyDictionary<string, ItemDefinition> Items { get; } = BuildItems();
+    public static IReadOnlyDictionary<string, ItemDefinition> BaseItems => Items;
     public static IReadOnlyList<Recipe> Recipes { get; } = Array.AsReadOnly<Recipe>(
     [
         new("pill", "회춘단 제조", "alchemy", "pill", 1, [new("herb", 3), new("wood", 1)]),

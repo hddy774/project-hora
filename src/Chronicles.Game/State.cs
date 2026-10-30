@@ -219,6 +219,12 @@ public sealed class GameState
     public long ConsumedMoney { get; set; }
     public long BirthCount { get; set; }
     public long DeathCount { get; set; }
+    public Knowledge.KnowledgeState Knowledge { get; set; } = new();
+    public Inventory.InventoryLedger Inventory { get; set; } = new();
+    public Politics.PoliticalState Politics { get; set; } = new();
+    public People.PeopleState PeopleDomain { get; set; } = global::Chronicles.Game.People.PeopleState.Empty();
+    public SortedDictionary<long, Cultivation.CultivationState> Cultivation { get; set; } = [];
+    public SortedDictionary<int, Cultivation.Elements> CultivationSupply { get; set; } = [];
     public SortedDictionary<string, long> Laws { get; set; } = global::Chronicles.Game.Laws.CreateDefaults();
     public List<Person> People { get; set; } = [];
     public List<PopulationSlot> ActiveSlots { get; set; } = [];

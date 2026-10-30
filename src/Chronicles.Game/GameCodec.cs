@@ -19,6 +19,7 @@ public static class GameCodec
         copy.Materials = new(copy.Materials, StringComparer.Ordinal);
         copy.Commands = new(copy.Commands, StringComparer.Ordinal);
         copy.CommandSignatures = new(copy.CommandSignatures, StringComparer.Ordinal);
+        copy.Inventory.Receipts = new(copy.Inventory.Receipts, StringComparer.Ordinal);
         foreach (var p in copy.People)
         {
             p.Skills = new(p.Skills, StringComparer.Ordinal);

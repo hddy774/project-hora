@@ -74,6 +74,48 @@ LEGACY_APIS = r'''() => {
 }'''
 
 
+def policy_workflows(page, width):
+    page.evaluate('() => inspect(view.people.find(p=>p.status===\'Alive\').id)')
+    page.get_by_role('button',name='이 인물로 플레이',exact=True).click(); settle(page)
+    nav(page,'세력')
+    home = page.evaluate("() => view.groups.find(g=>g.kind==='Family'&&g.leader===view.actor)")
+    assert home
+    article = page.locator('#group-'+str(home['id']))
+    assert article.get_by_role('button',name='정책 변경',exact=True).count() == 10
+    article.get_by_role('button',name='개인 잔액으로 예산 대여',exact=True).click()
+    page.get_by_label('대여 원금 · 영석').fill('40')
+    submit(page,'원금 대여·채무 기록')
+    assert page.evaluate('(id)=>group(id).money===40&&group(id).debt===40',home['id'])
+
+    def adopt_and_prepare():
+        row=article.locator('.row.listrow').filter(has_text='경제·분배')
+        row.get_by_role('button',name='정책 변경',exact=True).click()
+        actual=page.evaluate("() => view.policyDefinitions.find(d=>d.category==='경제·분배').choices")
+        assert page.locator('#policy option').all_text_contents() == actual
+        page.get_by_label('채택할 세부 정책').select_option('2')
+        submit(page,'정책 초안 채택')
+        assert page.evaluate("(id)=>group(id).policyPreparations.some(p=>p.category==='경제·분배'&&p.stage==='Adopted')",home['id'])
+        article.get_by_role('button',name='예산·인력 준비 요청',exact=True).click(); settle(page)
+        assert page.evaluate("(id)=>group(id).policyPreparations.some(p=>p.category==='경제·분배'&&p.stage==='Preparing'&&p.escrow>0&&p.workers.includes(view.actor))&&group(id).policyEscrow>0&&group(id).policyDue>view.month",home['id'])
+        assert page.evaluate("() => activePerson().guardTargetKind==='organization'")
+
+    adopt_and_prepare()
+    assert page.evaluate('(id)=>group(id).money+group(id).policyEscrow===40',home['id'])
+    article.get_by_text('실제 정책 전이 이력',exact=True).click()
+    assert_no_horizontal_overflow(page)
+    page.screenshot(path=str(out / f'policy-preparation-{width}.png'),full_page=True)
+    article.get_by_role('button',name='초안·예약 취소 검토',exact=True).click()
+    submit(page,'초안·예약 취소 제출')
+    assert page.evaluate('(id)=>group(id).money===40&&group(id).policyEscrow===0&&Object.keys(group(id).pendingPolicies).length===0',home['id'])
+    adopt_and_prepare()
+    page.get_by_role('button',name='1개월',exact=True).click(); settle(page)
+    assert page.evaluate("(id)=>group(id).policies['경제·분배']===2&&group(id).policyEscrow===0&&group(id).policyDue===null&&Object.keys(group(id).pendingPolicies).length===0&&group(id).policyPreparations.some(p=>p.stage==='Implemented')",home['id'])
+    assert article.get_by_text('후한 급여',exact=True).count() > 0
+    assert_no_horizontal_overflow(page)
+    page.screenshot(path=str(out / f'policy-implemented-{width}.png'),full_page=True)
+    return {'policy_catalog_choices':True,'policy_adopt_prepare_cancel_implement':True,'actual_policy_budget_and_debt':True}
+
+
 def social_workflows(page, width):
     def inspect_self():
         page.evaluate('() => inspect(view.actor)')
@@ -335,6 +377,7 @@ def smoke_checks(browser):
         assert not page.locator('#dialog').evaluate('(d)=>d.open')
         assert page.locator('#dialogform').inner_text() == ''
 
+        policy = policy_workflows(page,width) if not args.smoke_only else {}
         if args.legacy_dom:
             assert page.evaluate("() => document.documentElement.hasAttribute('data-shell-legacy-grid') && typeof globalThis==='object' && typeof Object.fromEntries==='function' && typeof [].at==='function'")
             assert page.locator('#dialog').get_attribute('data-shell-legacy-dialog') is not None
@@ -347,7 +390,7 @@ def smoke_checks(browser):
                         'forced_legacy_dom':args.legacy_dom,'tabs':9,'javascript_errors':errors,'touch_targets_44px':True,
                         'known_actor_switch':True,'equipment_use':True,'known_ally_guard':True,'species_creation':True,'atomic_law_batch':True,
                         'new_world_law_choice':True,'save_load':True,'document_horizontal_overflow':False,'selected_known_path_command':True,
-                        'save_load_scope_cleanup':True,'law_export_import_validation_and_apply':True,'native_api24_verified':False,**social})
+                        'save_load_scope_cleanup':True,'law_export_import_validation_and_apply':True,'native_api24_verified':False,**social,**policy})
         context.close()
     return observer_reply,play_reply
 

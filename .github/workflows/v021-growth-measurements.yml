@@ -225,6 +225,7 @@ jobs:
             --growth "$RESULT_DIR/out/growth.json" --growth-scenario "$SCENARIO" --growth-seed "$SEED" \
             2>&1 | tee "$RESULT_DIR/logs/growth.log"
           statuses=("${PIPESTATUS[@]}")
+          set -e
           python3 - "${statuses[0]}" "${statuses[1]}" <<'PY'
           import datetime, json, os, pathlib, sys, time
           root = pathlib.Path(os.environ['RESULT_DIR'])
@@ -310,12 +311,16 @@ jobs:
       - name: 통합 경로를 체크아웃 밖에 준비
         run: |
           python3 - <<'PY'
-          import os, pathlib, re
+          import json, os, pathlib, re
           assert re.fullmatch(r'[0-9a-f]{40}', os.environ['SOURCE_SHA'])
           root = pathlib.Path(os.environ['RUNNER_TEMP']) / f"v021-growth-aggregate-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}"
           root.mkdir(parents=True, exist_ok=False)
           for name in ['inputs', 'out', 'logs', 'provenance']:
               (root / name).mkdir()
+          (root / 'provenance/request.json').write_text(json.dumps({
+              'source_commit': os.environ['SOURCE_SHA'], 'run_id': os.environ['GITHUB_RUN_ID'],
+              'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'], 'scope': '같은 실행 원본 9개의 사후 검증만 수행'},
+              ensure_ascii=False, indent=2) + '\n')
           with open(os.environ['GITHUB_ENV'], 'a') as stream:
               stream.write('AGGREGATE_DIR=' + str(root) + '\n')
           PY

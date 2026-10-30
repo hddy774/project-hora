@@ -1,0 +1,17 @@
+{
+  "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/job124334521684.log",
+  "origin_sha256": "b0cf43ef91e82486b18d8c979fefe7405876779be45f1e386562a3dd3d19c955",
+  "line_numbers_1_based": [
+    4,
+    8,
+    17,
+    18,
+    317,
+    450,
+    452,
+    545
+  ],
+  "line_bytes_unchanged": true,
+  "full_original_in_scratch": true,
+  "full_original_copied_to_repository": false
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "origin": "windows-job124326069182.log",
+    "origin_sha256": "6180747922fbb7010bdaf6f02f257855d40e0bb350547a8fd8bb0a8ea4a8c40f",
+    "excerpt": "windows-job124326069182.excerpt.txt",
+    "line_numbers_1_based": [
+      4,
+      8,
+      17,
+      18,
+      106,
+      137,
+      139,
+      303,
+      312,
+      314,
+      315
+    ],
+    "full_original_retained": true,
+    "line_bytes_unchanged": true
+  },
+  {
+    "origin": "comparison-pr213-windows-job124321984975.log",
+    "origin_sha256": "c9cc28be30feb85328d3abf84e84a01c1ab6484637490bfdf02a51c450de38b8",
+    "excerpt": "comparison-pr213-windows-job124321984975.excerpt.txt",
+    "line_numbers_1_based": [
+      4,
+      8,
+      17,
+      18,
+      106,
+      149,
+      151,
+      315,
+      322
+    ],
+    "full_original_retained": true,
+    "line_bytes_unchanged": true
+  },
+  {
+    "origin": "comparison-pr214-windows-job124324550162.log",
+    "origin_sha256": "14a525ccead6e9c8691948974f15a24fc3a60a41632553398a402335b693369f",
+    "excerpt": "comparison-pr214-windows-job124324550162.excerpt.txt",
+    "line_numbers_1_based": [
+      4,
+      8,
+      17,
+      18,
+      106,
+      149,
+      151,
+      315,
+      322
+    ],
+    "full_original_retained": true,
+    "line_bytes_unchanged": true
+  }
+]

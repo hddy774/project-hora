@@ -79,8 +79,6 @@ public sealed partial class GameWorld
         var sources = InventoryKnowledgeQueries.KnownSources(state.Inventory, person.Id).Where(o => !string.IsNullOrEmpty(o.Definition))
             .Select(o => new EcologicalKnownSource(o.Source, o.Place, o.Definition,
                 o.Remaining, o.Month, $"personal-source:{o.Source}:{o.Month}:{o.Evidence}")).ToList();
-        if (!sources.Any(s => s.Place == person.Place && s.Definition == "food") && person.ObservedPlaces.TryGetValue(person.Place, out var local))
-            sources.Add(new(0, person.Place, "food", local.Source == 0 ? 0 : null, local.Month, $"personal-local-observation:{local.Place}:{local.Month}"));
         var knownPlaces = person.KnownPlaces.Select(id =>
         {
             var observed = person.ObservedPlaces.GetValueOrDefault(id);
@@ -89,11 +87,10 @@ public sealed partial class GameWorld
         }).ToArray();
         var recipes = InventoryDefinitions.Recipes.Values.Where(r => person.Understanding.GetValueOrDefault("recipe:" + r.Id) > 0).OrderBy(r => r.Id, StringComparer.Ordinal)
             .Select(r => new EcologicalRecipe(r.Id, r.Output, r.Quantity, r.Inputs)).ToArray();
-        var dependents = state.People.Count(p => p.Status == LifeStatus.Alive && p.Guardian == person.Id && p.Place == person.Place && Month - p.Born < PeopleMaturityMonths(p));
         var planned = person.Plan.FirstOrDefault(step => step.Action == "craft" && recipes.Any(r => r.Id == step.Data));
         var workNeeds = planned is null ? [] : recipes.Single(r => r.Id == planned.Data).Inputs.Select(i => new EcologicalWorkNeed(i.Key, i.Value, planned.Data)).ToArray();
         var view = EcologyEngine.View(context, state.Ecology, person.Id);
-        return new(person.Id, Month, person.Place, person.Money, facts.FreeCarry(person), checked(Law("ecology.foodUse") * (dependents + 1)),
+        return new(person.Id, Month, person.Place, person.Money, facts.FreeCarry(person), EcologyMonthlyFoodNeed(person),
             own, view.Listings, view.PublicPrices, sources, knownPlaces, recipes, context.Rules, workNeeds);
     }
 
@@ -101,10 +98,19 @@ public sealed partial class GameWorld
     private bool TryEcologyPlan(Person person)
     {
         if (person.Action != ActionKind.Idle || person.Status != LifeStatus.Alive || person.Health < 10) return false;
-        InitializeEcology(); var decision = EcologyPlanner.Decide(EcologyDecisionFor(person));
-        if (decision is null) return false;
+        InitializeEcology(); var input = EcologyDecisionFor(person);
+        var hungry = input.Stock.Where(s => s.Available && !s.Equipped && s.Definition == "food").Sum(s => (long)s.Quantity) < EcologyFoodTarget(person);
+        if (hungry && (IsFoodProductionPlan(person) || RecentEcologyFailure(person, "food") ||
+            input.Sources.Any(s => s.Place == person.Place && s.Definition == "food" && s.ObservedRemaining == 0)))
+            return TryEcologyFoodRecovery(person, input);
+        var decision = EcologyPlanner.Decide(input);
+        if (decision is null) return hungry && TryEcologyFoodRecovery(person, input);
+        if (decision.Kind != "offer")
+        {
+            if (TryEcologyAction(person, decision)) return true;
+            return hungry && TryEcologyFoodRecovery(person, EcologyDecisionFor(person));
+        }
         var commandId = $"ecology-ai:{person.BodyId}:{Month}:{Revision}:{state.NextId}:{decision.Kind}";
-        string? error;
         if (decision.Kind == "offer")
         {
             // Split+offer use one isolated inventory candidate. An unsuccessful offer cannot leak a split or an ID.
@@ -117,22 +123,8 @@ public sealed partial class GameWorld
             var offer = current.Apply(new OfferItem(commandId, person.Id, target, decision.Price, Month + 12));
             if (!offer.Accepted) return false;
             ApplyInventory(current); person.Action = ActionKind.Guard; person.Due = Month + 1;
-            person.ActionTarget = offer.Subject; person.ActionData = "ecology:market"; error = null;
+            person.ActionTarget = offer.Subject; person.ActionData = "ecology:market";
         }
-        else if (decision.Kind is "trade" or "craft" or "gather")
-        {
-            var command = new GameCommand(commandId, person.Id, decision.Kind, decision.Target,
-                Data: decision.Kind == "craft" ? decision.Recipe : decision.Definition);
-            if (!TryInventoryCommand(command, person, out error)) return false;
-            if (error is null && decision.Kind == "trade")
-            {
-                person.Action = ActionKind.Guard; person.Due = Month + 1; person.ActionTarget = decision.Target; person.ActionData = "ecology:purchase";
-                if (decision.Recipe.Length > 0) person.Plan.RemoveAll(step => step.Action is "gather" or "mining" && step.Data == decision.Definition);
-            }
-        }
-        else error = Start(person, "travel", decision.Target, "");
-        if (error is not null)
-        { Remember(person, "ecology:lastFailure", error, decision.Evidence, 100); return false; }
         person.Goal = decision.Goal; person.Reason = decision.Evidence; return true;
     }
 }

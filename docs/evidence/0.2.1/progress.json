@@ -2,12 +2,12 @@
   "total": 111,
   "completed": 49,
   "completion_percent": 44.1,
-  "own_acceptance_count": 98,
-  "own_acceptance_percent": 88.3,
+  "own_acceptance_count": 97,
+  "own_acceptance_percent": 87.4,
   "counts": {
     "done": 49,
-    "validated": 49,
-    "in_progress": 13,
+    "validated": 48,
+    "in_progress": 14,
     "planned": 0,
     "blocked": 0
   },
@@ -275,7 +275,7 @@
     {
       "id": "V021-L05",
       "title": "다단계 목표·계획·정보 탐색",
-      "status": "validated"
+      "status": "in_progress"
     },
     {
       "id": "V021-L06",
@@ -324,7 +324,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "505efb2a164e98d1903309445bb2e223eb410ab2",
-  "phase": "최종 기능 검증·성장 보정",
+  "source_commit": "75bdae10c4129b8438c7ebf389cf44e6dce0e4fd",
+  "phase": "최종 기능 연결 보정·회귀",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

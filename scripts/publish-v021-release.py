@@ -12,8 +12,8 @@ import tempfile
 spec = importlib.util.spec_from_file_location("v021_release", Path(__file__).with_name("verify-v021-release.py"))
 verify = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(verify)
-REQUIRED_JOBS = {"Feature audit", "Portable functional and browser", "Windows actual WebView2", "Build unsigned APK",
-                 "Retained signing", "Android actual runtime (API 24)", "Android actual runtime (API 35)"}
+REQUIRED_JOBS = {"전체 기능 감사", "이식형 기능·브라우저 검증", "윈도우 실제 화면 검증(WebView2)", "서명 전 앱 패키지 빌드(APK)",
+                 "기존 인증서 서명", "안드로이드 실제 실행(API 24)", "안드로이드 실제 실행(API 35)"}
 
 
 def gh(*arguments, output=None):

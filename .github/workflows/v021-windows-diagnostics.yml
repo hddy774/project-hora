@@ -1,4 +1,4 @@
-name: 0.2.1 윈도우 실패 원인 진단
+name: 0.2.1 윈도우 환경 3회 관측
 
 on:
   pull_request:
@@ -17,14 +17,21 @@ env:
 
 jobs:
   windows:
-    name: 고정 소스의 실제 윈도우 화면 진단
+    name: 윈도우 환경 관측 ${{ matrix.sample }}
     if: >-
       ${{ github.repository == 'hddy774/project-hora' &&
           github.actor == 'hddy774' && github.triggering_actor == 'hddy774' &&
           github.event.pull_request.head.repo.full_name == github.repository &&
-          github.event.label.name == '0.2.1 윈도우 진단 실행' }}
+          github.event.label.name == '0.2.1 윈도우 환경 3회 관측' }}
     runs-on: windows-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        sample: [1, 2, 3]
+    env:
+      DIAG_SAMPLE: ${{ matrix.sample }}
     steps:
       - name: 고정 실행 요청 기록
         shell: pwsh
@@ -32,10 +39,10 @@ jobs:
           EVENT_SHA: ${{ github.sha }}
           EVENT_PR_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
-          $result = Join-Path $env:RUNNER_TEMP "v021-windows-diagnostics-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          $result = Join-Path $env:RUNNER_TEMP "v021-windows-diagnostics-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT-sample$env:DIAG_SAMPLE"
           New-Item -ItemType Directory -Force $result | Out-Null
           "RESULT_DIR=$result" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
-          @{ schema = 1; requested_utc = [DateTimeOffset]::UtcNow.ToString('o'); measured_source = '35f33db919f910c9d55c42b61b76459a08688d12'; expected_fingerprint = '528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e'; event_sha = $env:EVENT_SHA; event_pr_head = $env:EVENT_PR_HEAD; run_id = $env:GITHUB_RUN_ID; run_attempt = $env:GITHUB_RUN_ATTEMPT; label = '0.2.1 윈도우 진단 실행' } | ConvertTo-Json | Set-Content (Join-Path $result 'request.json') -Encoding utf8
+          @{ schema = 1; sample = [int]$env:DIAG_SAMPLE; planned_samples = 3; requested_utc = [DateTimeOffset]::UtcNow.ToString('o'); measured_source = '35f33db919f910c9d55c42b61b76459a08688d12'; expected_fingerprint = '528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e'; event_sha = $env:EVENT_SHA; event_pr_head = $env:EVENT_PR_HEAD; run_id = $env:GITHUB_RUN_ID; run_attempt = $env:GITHUB_RUN_ATTEMPT; label = '0.2.1 윈도우 환경 3회 관측' } | ConvertTo-Json | Set-Content (Join-Path $result 'request.json') -Encoding utf8
       - name: 지정한 정확한 제품 소스 가져오기
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -119,6 +126,52 @@ jobs:
               return $state
             } catch { return [ordered]@{ id = $target.Id; observation_error = $_.Exception.Message } }
           }
+          function Save-SmokeWindows($target, $folder) {
+            Add-Type -AssemblyName System.Drawing
+            Add-Type -TypeDefinition @'
+          using System;
+          using System.Collections.Generic;
+          using System.Runtime.InteropServices;
+          public static class SeonroWindowCapture {
+            public delegate bool Callback(IntPtr window, IntPtr data);
+            [StructLayout(LayoutKind.Sequential)] public struct Rect { public int Left, Top, Right, Bottom; }
+            [DllImport("user32.dll")] static extern bool EnumWindows(Callback callback, IntPtr data);
+            [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr window, out uint process);
+            [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr window);
+            [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr window, out Rect rect);
+            [DllImport("user32.dll", SetLastError=true)] public static extern IntPtr SendMessageTimeout(IntPtr window, uint message, IntPtr dc, IntPtr flags, uint options, uint timeout, out UIntPtr result);
+            public static IntPtr[] ForProcess(int process) {
+              var windows = new List<IntPtr>();
+              EnumWindows((window, data) => { uint owner; GetWindowThreadProcessId(window, out owner); if (owner == process && IsWindowVisible(window)) windows.Add(window); return true; }, IntPtr.Zero);
+              return windows.ToArray();
+            }
+          }
+          '@
+            $windows = @([SeonroWindowCapture]::ForProcess($target.Id))
+            if ($windows.Count -eq 0) { return @{ capture_error = '현재 테스트 PID의 visible 창 없음' } }
+            foreach ($window in $windows) {
+              $bitmap = $null; $graphics = $null
+              try {
+                $rect = [SeonroWindowCapture+Rect]::new()
+                if (-not [SeonroWindowCapture]::GetWindowRect($window, [ref]$rect)) { throw 'Window bounds unavailable' }
+                $width = $rect.Right - $rect.Left; $height = $rect.Bottom - $rect.Top
+                if ($width -lt 1 -or $height -lt 1 -or $width -gt 8192 -or $height -gt 8192) { throw 'Window bounds cannot be captured' }
+                $bitmap = [Drawing.Bitmap]::new($width, $height)
+                $graphics = [Drawing.Graphics]::FromImage($bitmap)
+                $dc = $graphics.GetHdc()
+                try {
+                  $result = [UIntPtr]::Zero
+                  # WM_PRINT: only this window's frame/client/children; bounded IPC, no desktop pixels.
+                  $reply = [SeonroWindowCapture]::SendMessageTimeout($window, 0x0317, $dc, [IntPtr]23, 2, 1000, [ref]$result)
+                  if ($reply -eq [IntPtr]::Zero) { throw 'WM_PRINT unavailable or 1000ms timeout' }
+                } finally { $graphics.ReleaseHdc($dc) }
+                $path = Join-Path $folder ('window-' + $window.ToInt64() + '.png')
+                $bitmap.Save($path, [Drawing.Imaging.ImageFormat]::Png)
+                @{ process_id = $target.Id; window = $window.ToInt64(); method = 'WM_PRINT/SendMessageTimeout'; captured_utc = [DateTimeOffset]::UtcNow.ToString('o'); width = $width; height = $height; name = [IO.Path]::GetFileName($path); sha256 = (Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant() }
+              } catch { @{ process_id = $target.Id; window = $window.ToInt64(); capture_error = $_.Exception.Message } }
+              finally { if ($graphics) { $graphics.Dispose() }; if ($bitmap) { $bitmap.Dispose() } }
+            }
+          }
           $observation = [ordered]@{ started_utc = [DateTimeOffset]::UtcNow.ToString('o'); wait_ms = 45000; image = @{ ImageOS = $env:ImageOS; ImageVersion = $env:ImageVersion; RunnerOS = $env:RUNNER_OS }; os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; webview_before = @(Get-WebViewVersions); timed_out = $false; exit_code = $null; collection_errors = @() }
           $process = $null
           try {
@@ -129,7 +182,11 @@ jobs:
               $observation.timed_out = $true
               $observation.process_before_kill = Get-SmokeProcessState $process
               $observation.webview_before_kill = @(Get-Process msedgewebview2 -ErrorAction SilentlyContinue | ForEach-Object { Get-SmokeProcessState $_ })
-              $process.Kill()
+              try {
+              $observation.windows_before_kill = @(Save-SmokeWindows $process $diagnostics)
+              foreach ($capture in $observation.windows_before_kill) { if ($capture.capture_error) { $observation.collection_errors += $capture.capture_error } }
+            } catch { $observation.collection_errors += ('Window capture: ' + $_.Exception.Message) }
+            $process.Kill()
               throw 'Desktop smoke timeout'
             }
             $observation.exit_code = $process.ExitCode
@@ -162,7 +219,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v021-windows-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/v021-windows-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}/
+          name: v021-windows-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}-sample${{ matrix.sample }}
+          path: ${{ runner.temp }}/v021-windows-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}-sample${{ matrix.sample }}/
           if-no-files-found: error
           retention-days: 14

@@ -1,0 +1,11 @@
+{
+  "requested_utc": "2026-10-30T21:57:47.7136949+00:00",
+  "measured_source": "35f33db919f910c9d55c42b61b76459a08688d12",
+  "event_sha": "b159cd2c5052151bdb3f5c8618236229cedbf70e",
+  "run_attempt": "1",
+  "label": "0.2.1 윈도우 진단 실행",
+  "expected_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "run_id": "41134808459",
+  "event_pr_head": "93b28c20b50cfae58de6e2992b1320d295ef06a3",
+  "schema": 1
+}

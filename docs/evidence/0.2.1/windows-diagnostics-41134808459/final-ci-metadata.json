@@ -1,0 +1,148 @@
+{
+  "run": {
+    "id": 41134808459,
+    "head_sha": "93b28c20b50cfae58de6e2992b1320d295ef06a3",
+    "status": "completed",
+    "conclusion": "success",
+    "run_attempt": 1,
+    "event": "pull_request",
+    "created_at": "2026-10-30T21:57:42Z",
+    "updated_at": "2026-10-30T21:59:19Z",
+    "html_url": "https://github.com/hddy774/project-hora/actions/runs/41134808459"
+  },
+  "jobs": [
+    {
+      "id": 124334521684,
+      "name": "고정 소스의 실제 윈도우 화면 진단",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T21:57:45Z",
+      "completed_at": "2026-10-30T21:59:19Z",
+      "runner_name": "GitHub Actions 1000002669",
+      "steps": [
+        {
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:57:45Z",
+          "completed_at": "2026-10-30T21:57:46Z"
+        },
+        {
+          "name": "고정 실행 요청 기록",
+          "number": 2,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:57:46Z",
+          "completed_at": "2026-10-30T21:57:47Z"
+        },
+        {
+          "name": "지정한 정확한 제품 소스 가져오기",
+          "number": 3,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:57:47Z",
+          "completed_at": "2026-10-30T21:57:56Z"
+        },
+        {
+          "name": "파이썬 실행 환경 설정(Python)",
+          "number": 4,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:57:56Z",
+          "completed_at": "2026-10-30T21:57:56Z"
+        },
+        {
+          "name": "기존 함수로 실제 소스·지문 확인",
+          "number": 5,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:57:56Z",
+          "completed_at": "2026-10-30T21:58:07Z"
+        },
+        {
+          "name": "고정 개발 도구 설정(.NET 10.0.403)",
+          "number": 6,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:58:07Z",
+          "completed_at": "2026-10-30T21:58:42Z"
+        },
+        {
+          "name": "실제 개발 도구 버전 기록",
+          "number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:58:42Z",
+          "completed_at": "2026-10-30T21:58:43Z"
+        },
+        {
+          "name": "기존 릴리스 구성으로 데스크톱 앱 빌드",
+          "number": 8,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:58:43Z",
+          "completed_at": "2026-10-30T21:59:05Z"
+        },
+        {
+          "name": "기존 45초 화면 판정과 실패 원문 보존",
+          "number": 9,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:59:05Z",
+          "completed_at": "2026-10-30T21:59:14Z"
+        },
+        {
+          "name": "성공·실패 진단 원문 업로드",
+          "number": 10,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:59:14Z",
+          "completed_at": "2026-10-30T21:59:15Z"
+        },
+        {
+          "name": "Post 고정 개발 도구 설정(.NET 10.0.403)",
+          "number": 18,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:59:15Z",
+          "completed_at": "2026-10-30T21:59:15Z"
+        },
+        {
+          "name": "Post 파이썬 실행 환경 설정(Python)",
+          "number": 19,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:59:15Z",
+          "completed_at": "2026-10-30T21:59:15Z"
+        },
+        {
+          "name": "Post 지정한 정확한 제품 소스 가져오기",
+          "number": 20,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:59:15Z",
+          "completed_at": "2026-10-30T21:59:18Z"
+        },
+        {
+          "name": "Complete job",
+          "number": 21,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T21:59:18Z",
+          "completed_at": "2026-10-30T21:59:18Z"
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13014867456,
+      "name": "v021-windows-diagnostics-41134808459-1",
+      "size_in_bytes": 2754,
+      "digest": "sha256:9fdbb6584918d2c0e99c895e7e3cb2b5e5d35fff4fa23fb6f14dc40a16661622",
+      "created_at": "2026-10-30T21:59:15Z",
+      "expires_at": "2026-11-13T21:59:14Z"
+    }
+  ]
+}

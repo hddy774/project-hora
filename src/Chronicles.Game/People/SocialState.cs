@@ -15,6 +15,9 @@ public sealed record PeopleEcologyObservation(long Person, long Body, long Month
 public sealed record PeopleGroupSnapshot(long Group, GroupKind Kind, long Leader, bool Territory, long Observed);
 public sealed record PeopleRequestView(long Id, PeopleSessionKind Kind, long Proposer, long Recipient, long Requested, long Expires,
     PeopleSessionStatus Status, int TalentIndex, string Terms);
+public sealed record PeopleOathObservation(long Person, long Oath, bool Active, long ObservedMonth, long ReceivedMonth, string EvidenceId);
+public sealed record PeopleOathView(long Id, long Person, long Other, long Began, long Until, bool KnownActive, string Terms,
+    long ObservedMonth, string EvidenceId);
 public sealed record PeopleSocialPolicy(string PolicyId = "PC-TEMP-V021-PEOPLE-SOCIAL-01", long Revision = 1,
     int RequestLifetimeMonths = 12, int MaximumPendingRequests = 8, int SessionMonths = 1, int ClaimLifetimeMonths = 120,
     int ClaimBudget = 12, int HabitThreshold = 3, int HabitLapseMonths = 24, int OathMonths = 120, bool RequiresReview = true)
@@ -31,5 +34,6 @@ public sealed record PeopleSocialState(PeopleSocialPolicy Policy, long LastEvent
     PeopleSession[] Sessions, PeopleOath[] Oaths, PeopleHabitSnapshot[] Habits, PeopleGroupSnapshot[] Groups)
 {
     public PeopleEcologyObservation[] Ecology { get; init; } = [];
+    public PeopleOathObservation[] OathObservations { get; init; } = [];
     public static PeopleSocialState Empty() => new(new(), 0, -1, [], [], [], []);
 }

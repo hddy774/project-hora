@@ -53,6 +53,8 @@ jobs:
         with:
           dotnet-version: '10.0.x'
       - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
       - run: dotnet workload install android
       - name: Android SDK platform
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'

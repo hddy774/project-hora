@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using Chronicles.Core;
 using K = Chronicles.Game.Knowledge;
 using I = Chronicles.Game.Inventory;
+using P = Chronicles.Game.People;
 
 namespace Chronicles.Game;
 
@@ -90,6 +91,7 @@ public sealed record GameView(string Title, string Version, long Month, long Rev
     // Names are set only together with values from the canonical eight-axis projection.
     public IReadOnlyList<string>? CombatAxisNames { get; init; }
     public IReadOnlyList<LawChange> LawHistory { get; init; } = [];
+    public IReadOnlyDictionary<string, string>? TraitNames { get; init; }
     public IReadOnlyList<RecipeView> Recipes { get; init; } = [];
     public IReadOnlyList<ResourceSourceView> ResourceSources { get; init; } = [];
 }
@@ -189,12 +191,13 @@ public sealed partial class GameWorld
         if (peopleView.FirstOrDefault(p => p.Id == detailId) is { } pv)
         {
             var p = people[detailId]; var permitted = observer || p.Id == actor!.Id;
-            detail = new(pv, permitted ? Array.AsReadOnly(p.Roots.ToArray()) : null, permitted ? Array.AsReadOnly(p.Aptitudes.ToArray()) : null,
-                permitted ? Array.AsReadOnly(Enumerable.Range(0, 24).Select(i => Catalog.Talent(p, i)).ToArray()) : null,
+            var innate = permitted && (observer || !state.PeopleDomain.Profiles.Any(profile => profile.PersonId == p.Id));
+            detail = new(pv, innate ? Array.AsReadOnly(p.Roots.ToArray()) : null, innate ? Array.AsReadOnly(p.Aptitudes.ToArray()) : null,
+                innate ? Array.AsReadOnly(Enumerable.Range(0, 24).Select(i => Catalog.Talent(p, i)).ToArray()) : null,
                 permitted ? Array.AsReadOnly(p.Personality.ToArray()) : null, permitted ? Array.AsReadOnly(p.Processes.ToArray()) : null,
-                permitted ? Array.AsReadOnly(p.Components.ToArray()) : null, permitted ? Array.AsReadOnly(p.Formations.ToArray()) : null,
+                innate ? Array.AsReadOnly(p.Components.ToArray()) : null, innate ? Array.AsReadOnly(p.Formations.ToArray()) : null,
                 permitted ? ReadOnly(p.Skills) : null, permitted ? ReadOnly(p.Understanding) : null,
-                permitted ? Array.AsReadOnly(p.Traits.ToArray()) : null, permitted ? Array.AsReadOnly(p.Beliefs.Values.ToArray()) : null,
+                innate ? Array.AsReadOnly(p.Traits.ToArray()) : null, permitted ? Array.AsReadOnly(p.Beliefs.Values.ToArray()) : null,
                 observer ? Array.AsReadOnly(souls[p.SoulId].Traces.ToArray()) : null, permitted ? Array.AsReadOnly(CombatAttributes(p, items)) : null)
             {
                 Knowledge = permitted ? PersonalKnowledgeFor(p, observer) : null,
@@ -208,6 +211,7 @@ public sealed partial class GameWorld
             Catalog.Paths.Where(path => observer || actor!.Understanding.GetValueOrDefault(path.Id) > 0).ToArray())
         {
             LawHistory = observer ? Array.AsReadOnly(state.LawHistory.ToArray()) : [],
+            TraitNames = new ReadOnlyDictionary<string, string>(P.TraitCatalog.All.ToDictionary(t => t.Id, t => t.Name, StringComparer.Ordinal)),
             Recipes = Array.AsReadOnly(I.InventoryDefinitions.Recipes.Values.OrderBy(r => r.Id, StringComparer.Ordinal).Select(r =>
                 new RecipeView(r.Id, Catalog.Recipes.FirstOrDefault(legacy => legacy.Id == r.Id)?.Name ?? I.InventoryDefinitions.Definition(r.Output).Item.Name + " 제작",
                     r.Skill, r.Output, I.InventoryDefinitions.Definition(r.Output).Item.Name, r.Quantity,

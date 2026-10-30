@@ -61,7 +61,17 @@ public sealed record EntranceView(int Place, string Name, long Observed, int Per
     bool? OpenNow, IReadOnlyList<long>? ActualParticipants, string Source);
 public sealed record SecretProgressView(long Id, int Place, string Status, int Progress, int Required,
     long Started, long Due, long Ended, int FoodSpent, long Tool, int Injury, long RewardItem,
-    int RewardQuantity, string Preparation, string EndReason);
+    int RewardQuantity, string Preparation, string EndReason)
+{
+    public long Person { get; init; }
+    public long? ActualBody { get; init; }
+    public long? ActualSoul { get; init; }
+    public SecretEntryRules? ActualRules { get; init; }
+    public int? ActualRisk { get; init; }
+    public int? ActualRoll { get; init; }
+    public int? ActualToolQuality { get; init; }
+    public string? ActualKnowledgeSource { get; init; }
+}
 public sealed record ExplorationView(IReadOnlyList<EntranceView> Entrances, IReadOnlyList<SecretProgressView> OwnEntries);
 
 public static class ExplorationAuthority
@@ -122,6 +132,12 @@ public static class ExplorationAuthority
                     !state.Inventory.Reservations.Any(r => r.Id == e.ToolReservation && r.Actor == e.Person && r.Active && r.Items.Contains(e.Tool)) ||
                     !state.Items.Any(i => i.Id == e.Tool && i.Owner == e.Person && i.Reserved == e.ToolReservation))
                     throw new InvalidDataException("비경의 실제 입장 자리·노동·도구 예약이 사라졌습니다.");
+                var root = state.Items.Single(i => i.Id == e.Tool);
+                while (root.Container != 0) root = state.Items.Single(i => i.Id == root.Container);
+                var custody = state.Inventory.Metadata.FirstOrDefault(m => m.Item == root.Id);
+                var holder = custody?.Carrier > 0 ? custody.Carrier : custody?.Custodian > 0 ? custody.Custodian : root.Owner;
+                if (root.Place != -1 || holder != e.Person)
+                    throw new InvalidDataException("비경 조사 도구가 실제 입장자의 휴대 실물이 아닙니다.");
             }
             else if (e.Ended < e.Started || state.Inventory.Reservations.Any(r => r.Id == e.ToolReservation && r.Active))
                 throw new InvalidDataException("종료한 비경 입장이 실제 도구 예약을 계속 보유합니다.");

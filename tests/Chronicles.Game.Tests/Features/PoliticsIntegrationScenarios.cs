@@ -65,6 +65,18 @@ public sealed class PoliticsPublicPolicyIntegrationScenario : IFeatureScenario
         PoliticsWorldFixture.Check(pending.Politics.Preparations.Single().Stage == PolicyStage.Preparing &&
             pending.Politics.Preparations.Single().Escrow == pending.Laws["politics.policyCost"] &&
             pending.Groups.Single(g => g.Id == sect).PolicyEscrow == 0, "public policy uses the authoritative domain escrow once");
+        foreach (var retiredField in new[] { "escrow", "due", "pending" })
+        {
+            var invalid = f.World.Checkpoint(); var group = invalid.Groups.Single(g => g.Id == sect);
+            if (retiredField == "escrow") { group.PolicyEscrow = 1; group.Money--; }
+            else if (retiredField == "due") group.PolicyDue = invalid.Month + 1;
+            else group.PendingPolicies["경제·분배"] = 1;
+            var rejected = false;
+            try { GameWorld.Restore(invalid); }
+            catch (InvalidDataException error) { rejected = error.Message.Contains("Retired group policy", StringComparison.Ordinal); }
+            PoliticsWorldFixture.Check(rejected && f.World.StateHash() == GameCodec.Decode(GameCodec.Encode(f.World)).StateHash(),
+                "retired policy data cannot restore as a second authority, including balanced ghost escrow; the valid source remains saveable");
+        }
         var beforeReplay = f.World.StateHash(); f.Send(command);
         PoliticsWorldFixture.Check(f.World.StateHash() == beforeReplay, "repeated command cannot reserve again");
         f.Reject(f.Command("gather", f.First, data: "food"));
@@ -251,11 +263,10 @@ public sealed class PoliticsAiRejectionAtomicityScenario : IFeatureScenario
         var state = (GameState)typeof(GameWorld).GetField("state", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(f.World)!;
         var actor = state.People.Single(p => p.Id == f.First);
         var before = f.World.StateHash();
-        var found = typeof(GameWorld).GetMethod("Found", BindingFlags.Instance | BindingFlags.NonPublic)!;
-        var rejected = found.Invoke(f.World, [actor, "sect"]);
-        PoliticsWorldFixture.Check(rejected is string && f.World.StateHash() == before, "the actual AI Found wrapper has no candidate rollback and must not consume a proposed global ID");
-        var policy = typeof(GameWorld).GetMethod("Policy", BindingFlags.Instance | BindingFlags.NonPublic)!;
-        rejected = policy.Invoke(f.World, [actor, f.Home, "영토·방위", 0L]);
+        var planning = typeof(GameWorld).GetMethod("ExecutePlanningStep", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var rejected = planning.Invoke(f.World, [actor, new PlanStep("found", 0, "sect"), null]);
+        PoliticsWorldFixture.Check(rejected is string && f.World.StateHash() == before, "the actual AI typed planning dispatch has no candidate rollback and must not consume a proposed global ID");
+        rejected = planning.Invoke(f.World, [actor, new PlanStep("policy", f.Home, "영토·방위"), null]);
         PoliticsWorldFixture.Check(rejected is string && f.World.StateHash() == before && f.World.Checkpoint().Politics.Preparations.Count == 0,
             "a direct AI policy failure after adoption preflight cannot leave a pending category, budget reservation or history");
     }

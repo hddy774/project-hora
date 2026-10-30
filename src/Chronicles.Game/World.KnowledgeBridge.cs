@@ -2,16 +2,22 @@ using System.Globalization;
 using System.Text.Json;
 using Chronicles.Game.Inventory;
 using Chronicles.Game.Knowledge;
+using Chronicles.Game.People;
 
 namespace Chronicles.Game;
 
 public sealed partial class GameWorld
 {
     private const string KnowledgeActionPrefix = "knowledge:";
+    private static readonly Dictionary<string, string> KnowledgeCommands = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["study"] = "study", ["teach"] = "teach", ["requestTeaching"] = "requestTeaching",
+        ["transcribe"] = "transcribe", ["experiment"] = "experiment", ["correctKnowledge"] = "correctKnowledge"
+    };
     private KnowledgeAuthority? knowledgeAuthority;
     private KnowledgeState? knowledgeSnapshot;
     private sealed record KnowledgeWorldAction(long Activity, long Body, long PartnerBody, string Mode,
-        string Work, long SourceItem = 0, long TargetItem = 0, long Reservation = 0, string Recipe = "");
+        string Work, long SourceItem = 0, long TargetItem = 0, long Reservation = 0, string Recipe = "", string Substrate = "paper");
 
     private KnowledgeAuthority KnowledgeRuntime()
     {
@@ -78,7 +84,8 @@ public sealed partial class GameWorld
     private bool TryKnowledgeCommand(GameCommand command, Person person, out string? error)
     {
         error = null;
-        if (command.Kind is not ("study" or "teach" or "requestTeaching" or "transcribe" or "experiment" or "correctKnowledge")) return false;
+        if (!KnowledgeCommands.TryGetValue(command.Kind, out var kind)) return false;
+        command = command with { Kind = kind };
         if (state.Knowledge.Works.Count == 0) { error = "지식 권위가 초기화되지 않았습니다."; return true; }
         SettleKnowledge();
         if (command.Kind == "requestTeaching")
@@ -100,7 +107,7 @@ public sealed partial class GameWorld
         if (person.Action != ActionKind.Idle || person.Health < 10 || person.Sealed)
         { error = "기존 노동·건강·봉인 상태를 확인하세요."; return true; }
         var months = command.Value == 0 ? 1 : command.Value;
-        if (months is < 1 or > 120) { error = "학습 기간은 1~120개월입니다."; return true; }
+        if (months < 1 || months > KnowledgeRuntime().Rules.MaximumActionMonths) { error = "현재 법칙의 학습 기간 범위를 확인하세요."; return true; }
         switch (command.Kind)
         {
             case "study":
@@ -115,7 +122,7 @@ public sealed partial class GameWorld
 
     private bool TryStartKnowledge(Person person, string kind, long target, string data, out string? error)
     {
-        if (kind is not ("study" or "teach" or "transcribe" or "experiment" or "correctKnowledge")) { error = null; return false; }
+        if (!KnowledgeCommands.ContainsKey(kind)) { error = null; return false; }
         var source = KnowledgeActionSource(person, "ai-" + kind);
         return TryKnowledgeCommand(new(source, person.Id, kind, target, Data: data), person, out error);
     }
@@ -161,19 +168,30 @@ public sealed partial class GameWorld
         var edition = state.Knowledge.Editions.Single(e => e.Id == medium.EditionId);
         var cost = KnowledgeRuntime().QuoteTranscription(KnowledgeMediumKind.Book, 1);
         if (Inventory(person.Id, "paper") < cost.Paper || Inventory(person.Id, "ink") < cost.Ink) return "실제 종이와 먹이 부족합니다.";
-        var blankSource = Owned(person.Id).Where(i => i.Definition == "paper" && i.Reserved == 0 &&
+        var paperSource = Owned(person.Id).Where(i => i.Definition == "paper" && i.Reserved == 0 &&
             (i.Place == -1 || i.Place == person.Place)).OrderBy(i => i.Id).First();
+        Item? blankSource;
+        if (command.Data.Length > 0)
+        {
+            if (!long.TryParse(command.Data, NumberStyles.None, CultureInfo.InvariantCulture, out var specified) ||
+                !items.TryGetValue(specified, out blankSource) || blankSource.Owner != person.Id || blankSource.Definition != "blankBook" ||
+                blankSource.Reserved != 0 || blankSource.Quantity != 1 || KnowledgeItemPlace(blankSource) != person.Place)
+                return "실제로 소유하고 접근할 수 있는 빈 기록책을 선택하세요.";
+        }
+        else blankSource = Owned(person.Id).Where(i => i.Definition == "blankBook" && i.Quantity == 1 && i.Reserved == 0 &&
+            KnowledgeItemPlace(i) == person.Place).OrderBy(i => i.Id).FirstOrDefault() ?? paperSource;
         var inkSource = Owned(person.Id).Where(i => i.Definition == "ink" && i.Reserved == 0 &&
             (i.Place == -1 || i.Place == person.Place)).OrderBy(i => i.Id).First();
         var request = new TranscribeKnowledgeRequest("command:" + command.Id, KnowledgeParticipantFor(person), command.Target, [1], state.NextId,
             KnowledgeMediumKind.Book, KnowledgeQuality(blankSource.Quality),
-            new("writing:" + command.Id, state.NextId, blankSource.Id, cost.Paper, inkSource.Id, cost.Ink), Month);
+            new("writing:" + command.Id, state.NextId, paperSource.Id, cost.Paper, inkSource.Id, cost.Ink), Month);
         var check = KnowledgeRuntime().PreflightTranscription(request);
         if (!check.Applied) return check.Message;
         var error = ReserveInventoryPhysical(person, blankSource.Id, 1, "knowledge-blank", out var reservation, out var blankId);
         if (error is not null) return error;
         var writing = new Dictionary<string, int>(StringComparer.Ordinal) { ["ink"] = cost.Ink };
-        if (cost.Paper > 1) writing.Add("paper", cost.Paper - 1);
+        var additionalPaper = cost.Paper - (blankSource.Definition == "paper" ? 1 : 0);
+        if (additionalPaper > 0) writing.Add("paper", additionalPaper);
         error = ReserveInventoryMaterials(person, writing, "knowledge-writing-inputs", out var writingReservation);
         if (error is not null) { ReleaseInventoryReservation(person, reservation); return error; }
         var binding = state.Items.FirstOrDefault(i => i.Reserved == writingReservation && i.BoundSoul > 0)?.BoundSoul ?? 0;
@@ -184,7 +202,7 @@ public sealed partial class GameWorld
         var result = KnowledgeRuntime().StartTranscription(request);
         if (!result.Applied) throw new InvalidOperationException(result.Message);
         SetKnowledgeAction(person, ActionKind.Craft, new(result.Id, person.BodyId, 0, "transcribe", edition.WorkId,
-            command.Target, blankId, reservation));
+            command.Target, blankId, reservation, Substrate: blankSource.Definition));
         SaveKnowledge(); return null;
     }
 
@@ -222,6 +240,7 @@ public sealed partial class GameWorld
         if (context.SourceItem > 0 && !CanReadKnowledgeItem(people[activity.ActorId], context.SourceItem))
         { CancelKnowledge(person); return true; }
         var actor = people[activity.ActorId];
+        var beforeLearning = KnowledgeFor(actor, activity.WorkId);
         KnowledgePracticeOutcome? outcome = null;
         if (context.Mode == "experiment")
         {
@@ -252,7 +271,7 @@ public sealed partial class GameWorld
                 true, hasEnergy && matches, test, !hasEnergy ? "실제 원천 부족으로 검증 불가" : matches ? "채택한 순서로 실제 공정이 성립함" : "채택한 순서에서 실제 공정이 성립하지 않음");
         }
         if (context.Mode == "transcribe" && (!items.TryGetValue(context.TargetItem, out var blank) || blank.Owner != actor.Id ||
-            blank.Definition != "paper" || blank.Quantity != 1 || blank.Reserved != context.Reservation))
+            context.Substrate is not ("paper" or "blankBook") || blank.Definition != context.Substrate || blank.Quantity != 1 || blank.Reserved != context.Reservation))
         { CancelKnowledge(person); return true; }
         KnowledgeInterpretation[]? interpretations = null;
         if (activity.Kind == KnowledgeActivityKind.Study && KnowledgeFor(actor, activity.WorkId) is null &&
@@ -266,13 +285,24 @@ public sealed partial class GameWorld
             var error = ReleaseInventoryReservation(actor, context.Reservation);
             if (error is not null) throw new InvalidOperationException(error);
             var target = items[context.TargetItem];
-            Material("paper").Consumption++; Material(context.Work).Production++;
+            Material(context.Substrate).Consumption++; Material(context.Work).Production++;
             target.Definition = context.Work; target.Source = $"실제 필사 {activity.Id}·원본 {context.SourceItem}·육신 {actor.BodyId}";
             state.Inventory.Metadata.Find(m => m.Item == target.Id)?.Provenance.Add(target.Source);
             Event("제작", actor.Id, target.Id, $"{Catalog.Items[target.Definition].Name} 필사 완료", target.Source);
         }
         SaveKnowledge();
         foreach (var id in participants) MirrorKnowledge(people[id]);
+        var afterLearning = KnowledgeFor(actor, activity.WorkId);
+        if (afterLearning is not null)
+        {
+            var skill = state.Knowledge.Works.Single(w => w.Id == activity.WorkId).SkillId;
+            RecordPeopleLearning(actor, skill, (afterLearning.Mastery - (beforeLearning?.Mastery ?? 0)) * 100,
+                (afterLearning.Comprehension - (beforeLearning?.Comprehension ?? 0)) * 100,
+                $"knowledge-learning:{actor.BodyId}:{activity.Id}", checked((int)(activity.DueMonth - activity.StartedMonth)),
+                activity.Kind == KnowledgeActivityKind.Teaching ? PeopleLearningKind.Teaching :
+                    activity.Kind == KnowledgeActivityKind.Practice ? PeopleLearningKind.Experiment : PeopleLearningKind.Reflection,
+                afterLearning.Belief != KnowledgeBelief.Supported);
+        }
         Remember(actor, "knowledge:last", context.Mode, $"실제 지식 행동 {activity.Id}·개인 revision 보존", 100);
         if (activity.TeacherId > 0)
         {
@@ -404,7 +434,10 @@ public sealed partial class GameWorld
 
     private bool CanConsultKnowledge(Person person, string workId, long editionId) => state.Knowledge.Media.Any(m =>
         m.EditionId == editionId && !m.Destroyed && !m.Unreadable && !m.MissingChapters.Contains(1) &&
-        state.Knowledge.Editions.Any(e => e.Id == editionId && e.WorkId == workId) && CanReadKnowledgeItem(person, m.ItemId));
+        state.Knowledge.Editions.Any(e => e.Id == editionId && e.WorkId == workId) && CanReadKnowledgeItem(person, m.ItemId) &&
+        (m.OwnerId == person.Id && m.OwnerRights.HasFlag(KnowledgeRights.Read) || state.Knowledge.Access.Any(a =>
+            a.ItemId == m.ItemId && a.PersonId == person.Id && a.Rights.HasFlag(KnowledgeRights.Read) &&
+            a.GrantedMonth <= Month && a.ExpiresMonth > Month && (!a.Revoked || a.RevokedMonth > Month))));
 
     private bool CanReadKnowledgeItem(Person person, long itemId) => items.TryGetValue(itemId, out var item) &&
         item.Quantity == 1 && item.Reserved == 0 && !KnowledgeUnreadable(item) &&

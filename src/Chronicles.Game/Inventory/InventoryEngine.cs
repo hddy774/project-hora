@@ -133,6 +133,13 @@ public static partial class InventoryEngine
         if (free) Uncommitted(state, item);
         return item;
     }
+    /// <summary>Pure physical authority check; observing this result never creates an item or consumes RNG.</summary>
+    public static bool IsAccessible(InventoryState state, long actor, long item, bool requireOwnership = true)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        try { Accessible(state, actor, item, requireOwnership); return true; }
+        catch (RuleViolation) { return false; }
+    }
     private static int Capacity(InventoryState state, Item item) => item.Damage >= 100 ||
         (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) != 0 ? 0 :
         Metadata(state, item.Id)?.Capacity ?? InventoryDefinitions.Definition(item.Definition).Item.Capacity;

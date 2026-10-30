@@ -153,6 +153,8 @@ public sealed partial class GameWorld
         }
         if (c.Kind == "possess")
         {
+            if (state.Controlled != 0 && c.Actor != state.Controlled && !people[state.Controlled].KnownPeople.Contains(c.Actor))
+                return "조작할 수 없는 대상입니다.";
             if (!people.TryGetValue(c.Actor, out var person) || person.Status != LifeStatus.Alive)
                 return "조작할 수 없는 대상입니다.";
             state.Controlled = person.Id; state.ViewGeneration++;

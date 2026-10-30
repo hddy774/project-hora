@@ -114,6 +114,28 @@
         "Core"
       ],
       "responsibility": "0.2.1 portable ecology authority, typed commands, filtered DTO, checked atomic save. Legacy Simulation remains an isolated baseline, never loaded by the new hosts."
+    },
+    {
+      "id": "Shell",
+      "project": "src/Chronicles.Shell/Chronicles.Shell.csproj",
+      "roots": [
+        "src/Chronicles.Shell"
+      ],
+      "allowed_dependencies": [
+        "Game"
+      ],
+      "responsibility": "0.2.1 host through serialized session and filtered view; no mutable simulation ownership."
+    },
+    {
+      "id": "Android",
+      "project": "src/Chronicles.Android/Chronicles.Android.csproj",
+      "roots": [
+        "src/Chronicles.Android"
+      ],
+      "allowed_dependencies": [
+        "Game"
+      ],
+      "responsibility": "0.2.1 host through serialized session and filtered view; no mutable simulation ownership."
     }
   ],
   "forbidden_dependencies": [

@@ -150,7 +150,7 @@ public sealed partial class GameWorld
     private void Cultivate(Person p, string chosenPath)
     {
         if (p.Realm == Realm.Mortal && p.Understanding.GetValueOrDefault("entry") == 0)
-        { p.Reason = "尚未 습득한 입문 지식이 필요"; return; }
+        { p.Reason = "아직 습득하지 않은 입문 지식이 필요"; return; }
         var place = state.Places[p.Place];
         var cost = IntLaw("cultivation.sourceCost");
         if (place.Qi < cost) { p.Reason = "영맥 공급 고갈"; return; }
@@ -187,7 +187,7 @@ public sealed partial class GameWorld
         p.Irreversible = false;
         if (failed)
         {
-            if (p.Realm == Realm.GoldenCore) { EndLife(p, 3, "金丹 파단 후 원영 형성 실패"); return; }
+            if (p.Realm == Realm.GoldenCore) { EndLife(p, 3, "금단 파단 후 원영 형성 실패"); return; }
             if (p.Realm == Realm.Tribulation) { EndLife(p, 8, "겁난 실패"); return; }
             p.Health = Math.Max(1, p.Health - 20); p.Work = p.Work * 9 / 10;
             Event("돌파 실패", p.Id, 0, $"{p.Name} 기반 손상·회복 필요", "돌파 실제 판정");

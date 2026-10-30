@@ -1,0 +1,64 @@
+{
+  "kind": "complete-population-attempt-failed-fixed-budget",
+  "assessmentAtUtc": "2026-10-30T19:11:47.764319+00:00",
+  "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "productSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "rawComplete": true,
+  "acceptedAsFinalPopulation": false,
+  "passedFixedBudget": false,
+  "rawSha256": "b42f7f015aec464575ee9df2f359a52b49ccf6d3b242bbf853bf6128b29af410",
+  "budgetSha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+  "violations": [
+    {
+      "population": 100,
+      "metric": "monthlyP95Ms",
+      "baseline": 1035.0931,
+      "observed": 2240.2229,
+      "absoluteLimit": 1294,
+      "regressionPercent": 116.42718901323947
+    },
+    {
+      "population": 10000,
+      "metric": "queryMs",
+      "baseline": 1327.3091,
+      "observed": 1769.4717,
+      "absoluteLimit": 1660,
+      "regressionPercent": 33.31270764285426
+    }
+  ],
+  "matchingStateAndWorkload": [
+    {
+      "population": 2,
+      "initialHashEqual": true,
+      "finalHashEqual": true,
+      "saveLengthEqual": true,
+      "workloadEqual": true
+    },
+    {
+      "population": 100,
+      "initialHashEqual": true,
+      "finalHashEqual": true,
+      "saveLengthEqual": true,
+      "workloadEqual": true
+    },
+    {
+      "population": 1000,
+      "initialHashEqual": true,
+      "finalHashEqual": true,
+      "saveLengthEqual": true,
+      "workloadEqual": true
+    },
+    {
+      "population": 10000,
+      "initialHashEqual": true,
+      "finalHashEqual": true,
+      "saveLengthEqual": true,
+      "workloadEqual": true
+    }
+  ],
+  "productionPathDifferencesFromBaseline": [],
+  "limitations": [
+    "게임/핵심/호스트 제품 소스는 동일하고 검증 파일1개 추가로 지문이 바뀌었다. 동일한 상태·작업량/길이는 실제대조했으나 CPU지연 원인이 코드/환경 중 무엇인지 단정하지 않는다.",
+    "동시 실행 중인 성장/행동 및 소스 지문/병합/문서 검증이 같은4CPU할당을 공유했다. 이 실행의 불합격 표본과 기준선·예산은 그대로 보존한다."
+  ]
+}

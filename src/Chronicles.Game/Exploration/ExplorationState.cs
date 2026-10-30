@@ -17,6 +17,8 @@ public sealed class SecretSite
 public sealed record EntranceObservation(long Person, long Body, int Place, long Month, int Period, int OpenMonths,
     int Offset, Realm MinimumRealm, int Capacity, int FoodCost, int ObservedOccupancy, string? RewardDefinition,
     int? ObservedStock, string Source);
+public sealed record SecretClaim(long Entry, long Person, long Body, int Place, long Month, long Item,
+    string Definition, int Quantity, string Source);
 public sealed class SecretEntry
 {
     public long Id { get; set; }
@@ -44,6 +46,7 @@ public sealed class SecretEntry
     public int Injury { get; set; }
     public long RewardItem { get; set; }
     public int RewardQuantity { get; set; }
+    public long RewardAuditSequence { get; set; }
     public string Source { get; set; } = "";
     public string EndReason { get; set; } = "";
 }
@@ -54,6 +57,7 @@ public sealed class ExplorationState
     public List<SecretSite> Sites { get; set; } = [];
     public List<EntranceObservation> Observations { get; set; } = [];
     public List<SecretEntry> Entries { get; set; } = [];
+    public List<SecretClaim> Claims { get; set; } = [];
 }
 
 public sealed record EntranceView(int Place, string Name, long Observed, int Period, int OpenMonths, int Offset,
@@ -61,7 +65,17 @@ public sealed record EntranceView(int Place, string Name, long Observed, int Per
     bool? OpenNow, IReadOnlyList<long>? ActualParticipants, string Source);
 public sealed record SecretProgressView(long Id, int Place, string Status, int Progress, int Required,
     long Started, long Due, long Ended, int FoodSpent, long Tool, int Injury, long RewardItem,
-    int RewardQuantity, string Preparation, string EndReason);
+    int RewardQuantity, string Preparation, string EndReason)
+{
+    public long Person { get; init; }
+    public long? ActualBody { get; init; }
+    public long? ActualSoul { get; init; }
+    public SecretEntryRules? ActualRules { get; init; }
+    public int? ActualRisk { get; init; }
+    public int? ActualRoll { get; init; }
+    public int? ActualToolQuality { get; init; }
+    public string? ActualKnowledgeSource { get; init; }
+}
 public sealed record ExplorationView(IReadOnlyList<EntranceView> Entrances, IReadOnlyList<SecretProgressView> OwnEntries);
 
 public static class ExplorationAuthority
@@ -73,9 +87,14 @@ public static class ExplorationAuthority
     public static void Validate(GameState state)
     {
         var data = state.Exploration;
-        if (data is null || !data.Initialized || data.NextId <= 0 || data.Sites is null || data.Entries is null || data.Observations is null ||
+        if (data is null || !data.Initialized || data.NextId <= 0 || data.Sites is null || data.Entries is null || data.Observations is null || data.Claims is null ||
             data.Sites.Count != 10 || data.Sites.Select(s => s.Place).Distinct().Count() != 10 ||
             data.Entries.Select(e => e.Id).Distinct().Count() != data.Entries.Count ||
+            data.Entries.SelectMany(e => new[] { e.ToolReservation, e.FoodReservation }).Distinct().Count() != data.Entries.Count * 2 ||
+            data.Entries.OrderBy(e => e.FoodConsumptionSequence).Zip(data.Entries.OrderBy(e => e.FoodConsumptionSequence).Skip(1))
+                .Any(pair => pair.First.FoodFinishedSequence >= pair.Second.FoodConsumptionSequence) ||
+            data.Claims.Select(c => c.Entry).Distinct().Count() != data.Claims.Count || data.Claims.Count != data.Entries.Count(e => e.RewardQuantity > 0) ||
+            data.Claims.Select(c => c.Item).Distinct().Count() != data.Claims.Count ||
             data.NextId <= data.Entries.Select(e => e.Id).DefaultIfEmpty().Max())
             throw new InvalidDataException("비경 원천·입장 식별자가 초기 세계와 일치하지 않습니다.");
         foreach (var site in data.Sites)
@@ -104,16 +123,25 @@ public static class ExplorationAuthority
                 rules is null || rules.Revision <= 0 || rules.Revision > state.LawRevision || rules.Period < 1 || rules.OpenMonths < 1 || rules.OpenMonths > rules.Period ||
                 rules.Months is < 2 or > 120 || rules.Capacity is < 1 or > 16 || !Enum.IsDefined(rules.MinimumRealm) ||
                 rules.Food is < 1 or > 100 || rules.ToolWear is < 0 or > 100 || rules.Risk is < 0 or > 10000 || rules.Injury is < 0 or > 100 ||
-                e.Progress < 0 || e.Progress > rules.Months || e.Tool <= 0 || e.ToolReservation <= 0 || e.FoodReservation <= 0 ||
+                e.Progress < 0 || e.Progress > rules.Months || e.Progress > state.Month - e.Started || e.RiskApplied != (e.Progress > 0) ||
+                e.Tool <= 0 || e.ToolReservation <= 0 || e.FoodReservation <= 0 ||
                 e.FoodConsumptionSequence <= 0 || e.FoodFinishedSequence < e.FoodConsumptionSequence ||
                 e.ToolQuality is < 0 or > 10000 || e.Understanding is < 0 or > 100 || e.Risk is < 0 or > 10000 || e.Roll is < 0 or >= 10000 ||
-                e.Injury < 0 || e.Injury > rules.Injury || e.RewardQuantity < 0 || string.IsNullOrWhiteSpace(e.Source) || string.IsNullOrWhiteSpace(e.KnowledgeSource))
+                e.Injury < 0 || e.Injury > rules.Injury || e.Injury > 0 && (!e.RiskApplied || e.Roll >= e.Risk) ||
+                e.RewardQuantity < 0 || (e.RewardQuantity == 0) != (e.RewardItem == 0) ||
+                e.Status == SecretEntryStatus.Completed && (e.Progress != rules.Months || e.Roll < e.Risk) ||
+                e.Source != "exploration:" + e.Id.ToString(System.Globalization.CultureInfo.InvariantCulture) || string.IsNullOrWhiteSpace(e.KnowledgeSource))
                 throw new InvalidDataException("비경 입장의 실제 몸·시간·준비·위험 영수증이 올바르지 않습니다.");
             var consumed = state.Inventory.Events.Where(r => r.Sequence >= e.FoodConsumptionSequence && r.Sequence <= e.FoodFinishedSequence &&
                 r.Kind == "physical-consumption" && r.Actor == e.Person && r.Definition == "food" && !r.IsLoss).Sum(r => r.Quantity);
             if (consumed != rules.Food || !state.Inventory.Reservations.Any(r => r.Id == e.FoodReservation && r.Actor == e.Person && !r.Active) ||
                 e.RewardQuantity > 0 && (e.Status != SecretEntryStatus.Completed || e.RewardItem <= 0))
                 throw new InvalidDataException("비경 준비 식량 소비와 실제 보상이 원장과 일치하지 않습니다.");
+            if (e.RewardQuantity > 0 && (e.RewardAuditSequence != e.Id || !data.Claims.Any(r => r.Entry == e.Id &&
+                r.Person == e.Person && r.Body == e.Body && r.Item == e.RewardItem && r.Place == e.Place && r.Month == e.Ended &&
+                r.Definition == data.Sites.Single(s => s.Place == e.Place).RewardDefinition && r.Quantity == e.RewardQuantity && r.Source == e.Source)) ||
+                e.RewardQuantity == 0 && e.RewardAuditSequence != 0)
+                throw new InvalidDataException("비경 선점의 실제 실물 생성 영수증이 없습니다.");
             if (Occupies(e))
             {
                 if (person.Status != LifeStatus.Alive || person.Place != e.Place || person.Action != ActionKind.Explore ||
@@ -122,6 +150,12 @@ public static class ExplorationAuthority
                     !state.Inventory.Reservations.Any(r => r.Id == e.ToolReservation && r.Actor == e.Person && r.Active && r.Items.Contains(e.Tool)) ||
                     !state.Items.Any(i => i.Id == e.Tool && i.Owner == e.Person && i.Reserved == e.ToolReservation))
                     throw new InvalidDataException("비경의 실제 입장 자리·노동·도구 예약이 사라졌습니다.");
+                var root = state.Items.Single(i => i.Id == e.Tool);
+                while (root.Container != 0) root = state.Items.Single(i => i.Id == root.Container);
+                var custody = state.Inventory.Metadata.FirstOrDefault(m => m.Item == root.Id);
+                var holder = custody?.Carrier > 0 ? custody.Carrier : custody?.Custodian > 0 ? custody.Custodian : root.Owner;
+                if (root.Place != -1 || holder != e.Person)
+                    throw new InvalidDataException("비경 조사 도구가 실제 입장자의 휴대 실물이 아닙니다.");
             }
             else if (e.Ended < e.Started || state.Inventory.Reservations.Any(r => r.Id == e.ToolReservation && r.Active))
                 throw new InvalidDataException("종료한 비경 입장이 실제 도구 예약을 계속 보유합니다.");

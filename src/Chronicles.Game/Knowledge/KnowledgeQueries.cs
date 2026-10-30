@@ -23,11 +23,11 @@ public sealed partial class KnowledgeAuthority
 
     /// <summary>Access reveals a physical catalogue entry, never unread chapter claims or another person's progress.</summary>
     public KnowledgePage<AccessibleKnowledgeView> ViewAccessible(long personId, int place, long month,
-        int offset = 0, int limit = 32, long changedSinceRevision = 0)
+        int offset = 0, int limit = 32, long changedSinceRevision = 0, IReadOnlySet<long>? allowedItems = null)
     {
         ValidateRange(offset, limit, changedSinceRevision);
         ArgumentOutOfRangeException.ThrowIfNegative(month);
-        var selected = media.Values.Where(m => !m.Destroyed && m.Place == place &&
+        var selected = media.Values.Where(m => (allowedItems is null || allowedItems.Contains(m.ItemId)) && !m.Destroyed && m.Place == place &&
             (RightsFor(personId, m, month) & KnowledgeRights.Read) != 0 &&
             Math.Max(m.Revision, AccessRevision(personId, m.ItemId)) > changedSinceRevision).OrderBy(m => m.ItemId);
         var rows = selected.Skip(offset).Take(limit).Select(m =>

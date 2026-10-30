@@ -295,3 +295,56 @@ public sealed class PersonalOperationalContextScenario : IFeatureScenario
             hidden.View(a).Places.First(p => p.Id == 0).Qi == 0, "Observer lost the actual changed environment.");
     }
 }
+
+public sealed class PersonalSocialReceiptsProjectionScenario : IFeatureScenario
+{
+    public string Name => "INV-009/015 rich query: delivered social requests, consented assessment and observed oath receipts";
+    public void Run()
+    {
+        var world = GameWorld.Create(42, new Dictionary<string, long> { ["birth.enabled"] = 0 });
+        var opening = world.Checkpoint(); var first = opening.People[0].Id; var second = opening.People[1].Id;
+        void Control(long id) => QueryFixture.Accepted(world, "possess", id);
+        void Cancel(long id)
+        {
+            Control(id);
+            if (world.Checkpoint().People.Single(p => p.Id == id).Action != ActionKind.Idle)
+                QueryFixture.Accepted(world, "cancel", id);
+        }
+        Control(first); var empty = world.View();
+        QueryFixture.Accepted(world, "requestAssessment", first, second, 21);
+        var proposed = world.View(); var request = proposed.PeopleRequests.Single();
+        QueryFixture.Check(proposed.Revision != empty.Revision && request.Proposer == first && request.Recipient == second &&
+            request.Requested == 0 && request.Expires > 0 && request.Status == Chronicles.Game.People.PeopleSessionStatus.Proposed &&
+            proposed.ReceivedClaims.Count == 0 && proposed.Detail is null && world.Checkpoint().People.All(p => p.Action == ActionKind.Idle),
+            "A delivered request omitted its dated scoped token or fabricated consent, knowledge or another person's labor.");
+        Control(second);
+        var received = world.View(first);
+        QueryFixture.Check(received.PeopleRequests.Single().Id == request.Id && received.Detail!.Decision is null && received.Detail.PeopleEcology is null,
+            "Incoming requests required private counterpart state or exposed hidden detail.");
+        QueryFixture.Accepted(world, "acceptPeopleRequest", second, request.Id);
+        QueryFixture.Check(world.View().PeopleRequests.Single().Status == Chronicles.Game.People.PeopleSessionStatus.Active,
+            "Actual accepted bilateral participation was not projected.");
+        world.AdvanceTo(1);
+        var assessed = world.View(second);
+        QueryFixture.Check(assessed.PeopleRequests.Count == 0 && assessed.ReceivedClaims.Any(c => c.ObserverId == second && c.SubjectId == second &&
+            c.ObservedMonth == 1 && c.ReceivedMonth == 1 && c.Provenance.Length > 0 && c.Confidence < 10000) && assessed.Detail!.People!.Innate is null,
+            "A real assessment did not yield dated received evidence, or became innate appraisal.");
+        var actual = world.StateHash(); var claim = assessed.ReceivedClaims[0];
+        claim.Provenance[0] = claim.Provenance[0] with { EvidenceId = "detached-caller-only" };
+        QueryFixture.Check(actual == world.StateHash() && world.View().ReceivedClaims.All(c => c.Provenance.All(h => h.EvidenceId != "detached-caller-only")),
+            "A returned provenance array retained mutable authority.");
+        Cancel(first); Cancel(second);
+        QueryFixture.Accepted(world, "requestOath", second, first, data: "실제로 서로의 연구를 돕는다");
+        var proposal = world.View().PeopleRequests.Single(); Control(first);
+        QueryFixture.Accepted(world, "acceptPeopleRequest", first, proposal.Id); world.AdvanceTo(2);
+        var known = world.View().KnownOaths.Single();
+        QueryFixture.Check(known.Person == first && known.Other == second && known.Began == 2 && known.ObservedMonth == 2 && known.KnownActive,
+            "Oath view was not the actual party's received formation snapshot.");
+        QueryFixture.Accepted(world, "breakOath", first, known.Id);
+        var ended = world.View().KnownOaths.Single();
+        QueryFixture.Check(!ended.KnownActive && ended.ObservedMonth == 2 && ended.Terms == known.Terms,
+            "Formal witnessed breach did not update the party's received oath record.");
+        var before = world.StateHash(); world.View(first); world.View(second);
+        QueryFixture.Check(before == world.StateHash(), "Social receipt queries changed authority.");
+    }
+}

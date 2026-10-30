@@ -30,15 +30,18 @@ public sealed partial class GameWorld
         Remember(person, "ecology:lastFailure", error, evidence, 100);
         var key = EcologyFailureKey(person.Place, decision.Definition);
         Remember(person, key, error, evidence, 100);
-        person.Beliefs[key] = person.Beliefs[key] with { Expires = Month + Math.Min(3, Law("ai.beliefLifetime")) };
+        if (person.Beliefs.TryGetValue(key, out var failure))
+            person.Beliefs[key] = failure with { Expires = Month + Math.Min(3, Law("ai.beliefLifetime")) };
         var actionKey = key + ":" + decision.Kind;
         Remember(person, actionKey, error, evidence, 100);
-        person.Beliefs[actionKey] = person.Beliefs[actionKey] with { Expires = Month + Math.Min(3, Law("ai.beliefLifetime")) };
+        if (person.Beliefs.TryGetValue(actionKey, out var actionFailure))
+            person.Beliefs[actionKey] = actionFailure with { Expires = Month + Math.Min(3, Law("ai.beliefLifetime")) };
         if (decision.Kind == "travel")
         {
             key = $"ecology:route-failed:{person.Place}:{decision.Target}";
             Remember(person, key, error, evidence, 100);
-            person.Beliefs[key] = person.Beliefs[key] with { Expires = Month + Math.Min(3, Law("ai.beliefLifetime")) };
+            if (person.Beliefs.TryGetValue(key, out var routeFailure))
+                person.Beliefs[key] = routeFailure with { Expires = Month + Math.Min(3, Law("ai.beliefLifetime")) };
         }
     }
 

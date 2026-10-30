@@ -104,6 +104,39 @@ public sealed class EcologyReservationRecoveryScenario : IFeatureScenario
     }
 }
 
+public sealed class EcologyTinyBeliefRecoveryScenario : IFeatureScenario
+{
+    public string Name => "ecology recovery: 믿음 예산1의 실제 채집 예약 거부와 즉시 퇴출은 무예외·권위·저장 결정론 유지";
+    public void Run()
+    {
+        var world = EcologyRecoveryFixture.Create(0, localFood: 3); var opening = world.Checkpoint();
+        var actor = opening.People[0].Id; var other = opening.People[1].Id;
+        var source = opening.Inventory.Sources.Single(s => s.Place == 0 && s.Definition == "food");
+        EcologyRecoveryFixture.Accept(world, "tiny-food-yield", "law", value: 3, data: "economy.gatherYield");
+        EcologyRecoveryFixture.Accept(world, "tiny-food-other-ready", "cancel", other);
+        EcologyRecoveryFixture.Accept(world, "tiny-food-actual-reservation", "gather", other, source.Id, data: "food");
+        EcologyRecoveryFixture.Accept(world, "tiny-food-life", "law", value: 1, data: "ecology.foodUse");
+        EcologyRecoveryFixture.Accept(world, "tiny-food-cognition", "law", value: 1, data: "ai.beliefBudget");
+        var before = world.StateHash(); var random = world.Checkpoint().RandomState;
+        var denied = world.Execute(new("tiny-food-public-rejection", actor, "gather", source.Id, Data: "food"));
+        EcologyRecoveryFixture.Check(!denied.Accepted && denied.Message == "Finite source has insufficient unreserved stock." &&
+            world.StateHash() == before && world.Checkpoint().RandomState == random,
+            "법적 예산1 경계의 실제 채집 거부가 예약·시간·RNG 권위를 바꿨습니다.");
+        var restored = EcologyRecoveryFixture.Save(world); EcologyRecoveryFixture.AdvanceTogether(world, restored, 1);
+        var state = world.Checkpoint(); var person = state.People.Single(p => p.Id == actor);
+        var cognitiveLoad = person.Beliefs.Count + person.ObservedPeople.Count + person.ObservedPlaces.Count +
+            state.Inventory.Observations.Count(o => o.Observer == actor) + world.PeopleCognitiveLoad(person);
+        EcologyRecoveryFixture.Check(cognitiveLoad == 1 && state.Laws["ai.beliefBudget"] == 1 &&
+            person.Beliefs.ContainsKey("ecology:lastFailure") && !person.Beliefs.ContainsKey("ecology:failed:0:food:gather") &&
+            person.Action == ActionKind.Explore && person.ActionData != "inventory:exploration" &&
+            state.Inventory.Jobs.Single(j => j.Actor == other).Status == "processing" &&
+            !state.Inventory.Jobs.Any(j => j.Actor == actor) && state.Inventory.Sources.Single(s => s.Id == source.Id).Remaining == 3 &&
+            EcologyRecoveryFixture.Food(world, actor) == 0,
+            "즉시 퇴출된 실패를 강제로 되살리거나 예산·실물 비용·타인의 실제 예약을 우회했습니다.");
+        EcologyRecoveryFixture.PureView(world, actor); Invariants.Validate(state);
+    }
+}
+
 public sealed class EcologyFoodInformationRecoveryScenario : IFeatureScenario
 {
     public string Name => "ecology recovery: 식량 관측 전 숨은 잔량은 선택에 영향 없고 비용 없는 조사·총자원 추정 금지";

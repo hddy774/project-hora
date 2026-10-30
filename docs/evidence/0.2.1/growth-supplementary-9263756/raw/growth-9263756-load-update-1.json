@@ -1,0 +1,19 @@
+{
+  "kind": "external-concurrent-load",
+  "reportedBy": "root",
+  "startedUtc": "2026-10-30T17:48:59Z",
+  "cpu": 4,
+  "sourceCommitPrefix": "9704e955",
+  "workload": "whole functional correctness for candidate optimizations188/189; not a benchmark",
+  "cgroupCpuMax": "400000 100000",
+  "growthSourceUnchanged": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "existingGrowthLoopPolicySeedCommandsUnchanged": true,
+  "caseElapsedInterpretation": "Concurrent quota-sharing wall time, not pure CPU time or device-speed acceptance.",
+  "endedUtc": null,
+  "status": "ended-observed",
+  "endObservedNoLaterThanUtc": "2026-10-30T17:56:54Z",
+  "endObservationEvidence": "root observed whole functional log completed 309/309",
+  "exitConfirmedUtc": "2026-10-30T17:57:15Z",
+  "exitCode": 0,
+  "endTimePrecision": "Exact exit time was not captured. End-of-work upper-bound observation and separate process exit confirmation are retained; endedUtc remains null."
+}

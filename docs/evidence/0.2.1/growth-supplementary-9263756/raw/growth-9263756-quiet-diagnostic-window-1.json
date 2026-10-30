@@ -1,0 +1,22 @@
+{
+  "kind": "external-quiet-diagnostic-window",
+  "reportedBy": "root",
+  "plannedStartUtc": "2026-10-30T19:16:00Z",
+  "plannedEndUtc": "2026-10-30T19:36:00Z",
+  "sourceCommitPrefixOfExternalDiagnostic": "af91",
+  "growthSourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "growthPidsUnchanged": [
+    120460,
+    120473
+  ],
+  "growthLoopLawsSeedsUnchanged": true,
+  "observerRestriction": "Only small log tails and process liveness; no large JSON cross-parsing, repeated hashes, compilation, source fingerprint, compression or archival during this window.",
+  "caseElapsedInterpretation": "Concurrent wall time under shared quota; not pure CPU/device-speed evidence.",
+  "actualEndUtc": null,
+  "queuedSeed2026": "Still not started; only after actual approved CPU handoff, separately recorded.",
+  "actualEndObservedNoLaterThanUtc": "2026-10-30T19:41:34.490039+00:00",
+  "endObservationEvidence": "Explicit root message: quiet actual end verified; local heavy/full DLL rehash/workflow editing released. Exact diagnostic process end time not captured here.",
+  "endPrecision": "observer receipt upper bound; planned19:36 was superseded by explicit-message gate",
+  "extraCpu3GrowthStartedUtc": "2026-10-30T19:24:10.084350+00:00",
+  "extraCpu3GrowthPid": 132980
+}

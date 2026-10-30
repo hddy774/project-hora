@@ -1,0 +1,10 @@
+{
+  "archiveChecks": "PASS",
+  "copiedFiles": 42,
+  "completedDistinctSupplementaryCohorts": 6,
+  "primaryCasesFromArchive": 0,
+  "newMeasurementsExecuted": 0,
+  "rawChanged": false,
+  "verifiedAtUtc": "2026-10-30T22:09:33.053690+00:00",
+  "verifierSha256": "afbfa9963e43c28a365c7b2be6929c82e64d934d5bad49418ed8a31d3c9fd632"
+}

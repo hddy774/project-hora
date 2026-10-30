@@ -1,0 +1,20 @@
+{
+  "kind": "completed-case-repeat-observation-not-extra-simulation",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "observedUtc": "2026-10-30T18:46:47.176870+00:00",
+  "seed": 98,
+  "scenario": "a",
+  "originalPath": "/workspace/scratch/growth-9263756-seed98.json",
+  "restartPath": "/workspace/scratch/growth-9263756-seed98-restart1.json",
+  "status": "completed",
+  "observedThroughMonth": 6000,
+  "sampleCount": 51,
+  "allNonTimingObservationFieldsEqual": true,
+  "usedLawsEqual": true,
+  "milestoneOutcomesEqual": true,
+  "originalFinalHash": "0edcf59a25387f937d5d1a61d826f1200e7d2de77ad523573f93bba0ca3f904d",
+  "restartFinalHash": "0edcf59a25387f937d5d1a61d826f1200e7d2de77ad523573f93bba0ca3f904d",
+  "finalHashEqual": true,
+  "restartCaseElapsedMs": 2068418.8365,
+  "scope": "Reads existing actual reports only. Timing differs under concurrency; this is reproducibility evidence for this completed case, not a whole9 completion or extra run. Original interrupted report bytes untouched."
+}

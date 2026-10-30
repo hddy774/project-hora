@@ -1,0 +1,16 @@
+{
+  "recordedUtc": "2026-10-30T17:17:40.767686+00:00",
+  "kind": "growth-scheduling-authorization-update",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "growthSeedsAlreadyRunning": [
+    42,
+    98
+  ],
+  "queuedSeed": 2026,
+  "authorizedNextCpu": "First actually freed CPU among1/2 after its entire a/b/c seed process exits, orCPU3 after explicit people-AI108 handoff. No mid-run migration or interruption.",
+  "sourcePolicyCommandsHorizonChanged": false,
+  "allRequiredCohorts": 9,
+  "horizonMonths": 6000,
+  "observationIntervalMonths": 120,
+  "rawOriginalReportsModified": false
+}

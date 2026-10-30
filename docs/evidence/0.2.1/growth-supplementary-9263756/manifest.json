@@ -1,0 +1,311 @@
+{
+  "kind": "supplementary-growth-interruption-archive",
+  "copiedAtUtc": "2026-10-30T22:07:56.406353+00:00",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "productSourceFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "primarySourceCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "primaryCasesFromThisArchive": 0,
+  "completedDistinctSupplementaryCohorts": 6,
+  "measurementExecutedDuringArchival": false,
+  "sourceOrRawChanged": false,
+  "files": [
+    {
+      "path": "raw/growth-9263756-build.log",
+      "originalPath": "/workspace/scratch/growth-9263756-build.log",
+      "bytes": 1013,
+      "sha256": "9599690c8bc0b5dcc7e7f115a82ee014e18994409607e0efb501a71f3532c5f6",
+      "originalMtimeUtc": "2026-10-30T17:05:56.806487+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-intentional-duplicate-stop-after-primary9-v2.json",
+      "originalPath": "/workspace/scratch/growth-9263756-intentional-duplicate-stop-after-primary9-v2.json",
+      "bytes": 13150,
+      "sha256": "166008997fca6d4612fb6aaa35fcb03e3f2460044879596385fae391470843cf",
+      "originalMtimeUtc": "2026-10-30T21:03:39.088943+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-intentional-duplicate-stop-after-primary9.json",
+      "originalPath": "/workspace/scratch/growth-9263756-intentional-duplicate-stop-after-primary9.json",
+      "bytes": 4824,
+      "sha256": "40c7489334704c1142fdc6f791d3c33a40853279f96d3e26c21e113b28fd00ea",
+      "originalMtimeUtc": "2026-10-30T21:02:01.625587+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-interruption-20261030T1810Z.json",
+      "originalPath": "/workspace/scratch/growth-9263756-interruption-20261030T1810Z.json",
+      "bytes": 4678,
+      "sha256": "dce3287bb5764362646f53489f210cb1910e48385d1fd3606a18a8c7ea7a3007",
+      "originalMtimeUtc": "2026-10-30T18:11:52.157902+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-load-update-1.json",
+      "originalPath": "/workspace/scratch/growth-9263756-load-update-1.json",
+      "bytes": 953,
+      "sha256": "33c7c4f0919859c3044d0cb49fa3666db92033b71d29940ff3c93e9dd86eda48",
+      "originalMtimeUtc": "2026-10-30T17:57:50.718809+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-preparation.json",
+      "originalPath": "/workspace/scratch/growth-9263756-preparation.json",
+      "bytes": 7137,
+      "sha256": "4a4dd7225ffa7b0222a4c0a9fe61c68c7594fb0e2c33f609cf37dff4df801ce4",
+      "originalMtimeUtc": "2026-10-30T17:09:45.721120+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-quiet-diagnostic-window-1.json",
+      "originalPath": "/workspace/scratch/growth-9263756-quiet-diagnostic-window-1.json",
+      "bytes": 1273,
+      "sha256": "b74f177c1434ed83d06252b675719c470192af11913f0e8d9a4f4a454970232f",
+      "originalMtimeUtc": "2026-10-30T19:41:34.499645+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-restart1-a98-completed-replay-observation.json",
+      "originalPath": "/workspace/scratch/growth-9263756-restart1-a98-completed-replay-observation.json",
+      "bytes": 1016,
+      "sha256": "e5e5ce1612f5ad3841f1a5b3b377b810671b6ff1e9d923bf384fbd1b1c6c773d",
+      "originalMtimeUtc": "2026-10-30T18:46:47.177090+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-restart1-early-replay-observation.json",
+      "originalPath": "/workspace/scratch/growth-9263756-restart1-early-replay-observation.json",
+      "bytes": 2867,
+      "sha256": "8d97fadd6521b936f4a113bda38b3f7da8685e347e80f83b960f98e3e83aa750",
+      "originalMtimeUtc": "2026-10-30T18:14:05.349156+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-restart1-interrupted-range-replay-observation.json",
+      "originalPath": "/workspace/scratch/growth-9263756-restart1-interrupted-range-replay-observation.json",
+      "bytes": 2574,
+      "sha256": "fa9f2ea13b80257678d8e527207fac915ac746d3148af972919e8f18de6018cc",
+      "originalMtimeUtc": "2026-10-30T18:59:22.109691+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-scheduling-update-1.json",
+      "originalPath": "/workspace/scratch/growth-9263756-scheduling-update-1.json",
+      "bytes": 604,
+      "sha256": "9c6d0b0cd0272b28eaffc63661111bafce985983ea745618db46fb6956eb2bbc",
+      "originalMtimeUtc": "2026-10-30T17:17:40.767740+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed2026-genesis.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed2026-genesis.json",
+      "bytes": 252,
+      "sha256": "441c7645381938755e661a1c33fabd8ec901b4d6c6c3fc9a65ed0aa7f47aea8d",
+      "originalMtimeUtc": "2026-10-30T19:24:11.030269+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed2026-postquiet-assemblies.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed2026-postquiet-assemblies.json",
+      "bytes": 1733,
+      "sha256": "d00fd218db1836d240392d1b490a3b91cf8f5190203d1719b48c28d4e3c65e23",
+      "originalMtimeUtc": "2026-10-30T19:41:34.499516+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed2026-run.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed2026-run.json",
+      "bytes": 4793,
+      "sha256": "c3b2ec733cfaf31177c95c9299896d084a22750b6df9e68bee9ac06e8209e788",
+      "originalMtimeUtc": "2026-10-30T21:03:38.910830+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed2026-supervisor.log",
+      "originalPath": "/workspace/scratch/growth-9263756-seed2026-supervisor.log",
+      "bytes": 4778,
+      "sha256": "75961d5d9fbec5ebb5081adebe7a01e9ea0f9bf2a368a9061f44ff324418353d",
+      "originalMtimeUtc": "2026-10-30T21:03:38.910830+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed2026.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed2026.json",
+      "bytes": 317495,
+      "sha256": "d9fd066efa915a64fbff7c820e2aa099358512874cf0415934c45c42cc15a360",
+      "originalMtimeUtc": "2026-10-30T21:02:21.940886+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed2026.log",
+      "originalPath": "/workspace/scratch/growth-9263756-seed2026.log",
+      "bytes": 11067,
+      "sha256": "9e17f4d2c54ac6965629a11e04db37cb52ffe58674e87d181707c444f1d08cfa",
+      "originalMtimeUtc": "2026-10-30T21:02:21.940886+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed42-genesis.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed42-genesis.json",
+      "bytes": 252,
+      "sha256": "8eea039869c9d03f8e2ab7186ec5b691601a994f1f1dbfcadbc630b0c644d48d",
+      "originalMtimeUtc": "2026-10-30T17:13:59.194207+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed42-restart1-genesis.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed42-restart1-genesis.json",
+      "bytes": 252,
+      "sha256": "6d508dc1f7d8fe3db4a6d95daad14b236ef09612e806ceb518b1dbab187721d8",
+      "originalMtimeUtc": "2026-10-30T18:11:53.496788+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed42-restart1-run.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed42-restart1-run.json",
+      "bytes": 3833,
+      "sha256": "594bad015a32a11f3b8e314ace81e043000922e2aeac9129abd8b6c45dd48e1e",
+      "originalMtimeUtc": "2026-10-30T21:03:38.893737+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed42-restart1-supervisor.log",
+      "originalPath": "/workspace/scratch/growth-9263756-seed42-restart1-supervisor.log",
+      "bytes": 3916,
+      "sha256": "118d0033f0bacb6b9241eeb0f6717ad42640e8c0c9f337c387b5e14fd7c0c3e6",
+      "originalMtimeUtc": "2026-10-30T21:03:38.893737+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed42-restart1.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed42-restart1.json",
+      "bytes": 437497,
+      "sha256": "158fd651be8cabf053e6b866745f07ed0ea07f3cc83b725acd8e5feef1eea7f7",
+      "originalMtimeUtc": "2026-10-30T21:03:18.805051+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed42-restart1.log",
+      "originalPath": "/workspace/scratch/growth-9263756-seed42-restart1.log",
+      "bytes": 14664,
+      "sha256": "3090da37c98e3e34307d66a6baec2d0dcf77db825bee1fa27c6b7a211165d8ab",
+      "originalMtimeUtc": "2026-10-30T21:03:18.805051+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed42-run.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed42-run.json",
+      "bytes": 2622,
+      "sha256": "ca07a01f12658297398afc64f2c7c7861dc5ec44245f77318a587fb05db2aa8d",
+      "originalMtimeUtc": "2026-10-30T17:13:58.284251+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed42.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed42.json",
+      "bytes": 148922,
+      "sha256": "a42a500fd75e36ebec65d598ce08184321b5456e194cb22bee6ee0d8677d9ac6",
+      "originalMtimeUtc": "2026-10-30T18:02:59.819103+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed42.log",
+      "originalPath": "/workspace/scratch/growth-9263756-seed42.log",
+      "bytes": 4965,
+      "sha256": "7fdb91cdc77ee65b5da60135a6a011f66cec8813b719e57730963c0f0f0b5ac0",
+      "originalMtimeUtc": "2026-10-30T18:02:59.815103+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed98-genesis.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed98-genesis.json",
+      "bytes": 252,
+      "sha256": "6d508dc1f7d8fe3db4a6d95daad14b236ef09612e806ceb518b1dbab187721d8",
+      "originalMtimeUtc": "2026-10-30T17:13:59.202207+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed98-restart1-genesis.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed98-restart1-genesis.json",
+      "bytes": 252,
+      "sha256": "5f733fbd3a4b6f48ca2d30665496f1ddfe7401a1715abfe41aa3f46a863ad304",
+      "originalMtimeUtc": "2026-10-30T18:11:53.876789+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed98-restart1-run.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed98-restart1-run.json",
+      "bytes": 3845,
+      "sha256": "cacf0152ff79e7b40128f5607d74cae6e3f4fb6177217481fd1670e782c090a5",
+      "originalMtimeUtc": "2026-10-30T21:00:27.388437+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed98-restart1-supervisor.log",
+      "originalPath": "/workspace/scratch/growth-9263756-seed98-restart1-supervisor.log",
+      "bytes": 3928,
+      "sha256": "08e078f2966f6c8c82764010a268158758663a258033cdec0adc790d2ce02c31",
+      "originalMtimeUtc": "2026-10-30T21:00:27.388547+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed98-restart1.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed98-restart1.json",
+      "bytes": 557968,
+      "sha256": "7ee75da7a89ea1f5cfa87a1a5b9d390918fbd7a0bde83807b8ef67a931629ef8",
+      "originalMtimeUtc": "2026-10-30T21:00:27.356349+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed98-restart1.log",
+      "originalPath": "/workspace/scratch/growth-9263756-seed98-restart1.log",
+      "bytes": 20325,
+      "sha256": "9429389989af99906391ea7c647ade5fa4b15755b682a85cedf219897095497f",
+      "originalMtimeUtc": "2026-10-30T21:00:27.352547+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed98-run.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed98-run.json",
+      "bytes": 2622,
+      "sha256": "ece472c22eced510626e3cf9adee8cca130d865fa665f126e80ca1ff55796708",
+      "originalMtimeUtc": "2026-10-30T17:13:58.291119+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed98.json",
+      "originalPath": "/workspace/scratch/growth-9263756-seed98.json",
+      "bytes": 274087,
+      "sha256": "fe30638464d1bee9b69f1f317c63f70a8c39daa7e72b645026ea0df16a11fab1",
+      "originalMtimeUtc": "2026-10-30T18:02:27.930985+00:00"
+    },
+    {
+      "path": "raw/growth-9263756-seed98.log",
+      "originalPath": "/workspace/scratch/growth-9263756-seed98.log",
+      "bytes": 8899,
+      "sha256": "046ea445dcffb91ae8b1551332f00e74f344e2c8dcf6c6087eff3c53a0d7dfb0",
+      "originalMtimeUtc": "2026-10-30T18:02:27.930985+00:00"
+    },
+    {
+      "path": "raw/growth-7ce-a2026-versus-926-observation-comparison.json",
+      "originalPath": "/workspace/scratch/growth-7ce-a2026-versus-926-observation-comparison.json",
+      "bytes": 2746,
+      "sha256": "280169dd1a7ee3c9120e5afa830a37e6d94b9bdc9e91b5e34d3eee8efb10e64f",
+      "originalMtimeUtc": "2026-10-30T20:21:39.342862+00:00"
+    },
+    {
+      "path": "raw/growth-7ce-a42-versus-926-observation-comparison.json",
+      "originalPath": "/workspace/scratch/growth-7ce-a42-versus-926-observation-comparison.json",
+      "bytes": 1500,
+      "sha256": "5006a52c42633cc8a7be2085e9152bd94d48368d6e31ee8ae56cfd7899fa1930",
+      "originalMtimeUtc": "2026-10-30T19:57:42.365265+00:00"
+    },
+    {
+      "path": "raw/growth-7ce-a98-versus-926-observation-comparison.json",
+      "originalPath": "/workspace/scratch/growth-7ce-a98-versus-926-observation-comparison.json",
+      "bytes": 2054,
+      "sha256": "e200c8daa68090ccef9390b7c32928400e5e66dc0fd168c1f3eb6416cb4b4374",
+      "originalMtimeUtc": "2026-10-30T19:45:02.699796+00:00"
+    },
+    {
+      "path": "raw/observed-measurement-interruption-20261030T1806Z.json",
+      "originalPath": "/workspace/scratch/observed-measurement-interruption-20261030T1806Z.json",
+      "bytes": 509,
+      "sha256": "f4f632ce6ae547d3d4c419719584270a1fba4c33459ae0e1ce0bd901808733a3",
+      "originalMtimeUtc": "2026-10-30T18:09:44.941072+00:00"
+    },
+    {
+      "path": "operation/stop-supplementary-growth-926-after-primary9.py",
+      "originalPath": "/workspace/scratch/stop-supplementary-growth-926-after-primary9.py",
+      "bytes": 8068,
+      "sha256": "80cb491d70c5f3d72f8adb7bdc175bca2c9f572b6d3fd64687f516af6c27e1db",
+      "originalMtimeUtc": "2026-10-30T21:02:01.539573+00:00"
+    },
+    {
+      "path": "operation/stop-supplementary-growth-926-after-primary9-v2.py",
+      "originalPath": "/workspace/scratch/stop-supplementary-growth-926-after-primary9-v2.py",
+      "bytes": 8685,
+      "sha256": "b8033f6a7a85390e859024faf6a815505fa0e323c68e2e5b3d3b70d3272b3595",
+      "originalMtimeUtc": "2026-10-30T21:03:38.785417+00:00"
+    },
+    {
+      "path": "operation/read-assembly-informational-version.py",
+      "originalPath": "/workspace/scratch/read-assembly-informational-version.py",
+      "bytes": 4776,
+      "sha256": "327f1c420acfca57cdb755b217ddf23a87133d5ed98cb00d90462a5418f44486",
+      "originalMtimeUtc": "2026-10-30T17:07:59.901108+00:00"
+    }
+  ],
+  "exclusions": [
+    "No DLL, build output or credentials are committed. Actual four-DLL PE/version/hash evidence is retained as metadata.",
+    "No new aggregate merges old source926 or partial reports into the primary7ce nine-case baseline."
+  ]
+}

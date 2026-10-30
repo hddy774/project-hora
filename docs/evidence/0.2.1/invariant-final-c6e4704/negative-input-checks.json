@@ -1,0 +1,43 @@
+{
+  "schema": "seonro.invariant-report-negative-checks.v1",
+  "mapping_source": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "mapped_scenarios": 313,
+  "checks": [
+    {
+      "input": "../invariant-final-9704e95/functional.json",
+      "sha256": "863e0f0face78815a9b97efd28260d399515426c20c4551fa39706fe47db6aba",
+      "selection": "all",
+      "total": 309,
+      "failed": 0,
+      "rejected": true,
+      "reason": "전체 보고서 이름 집합이 실제 등록/매핑과 다릅니다: {\"missing\": [\"INV-004 대용량 저장: UTF8 양형식·경계·순번·명령 재전송·RNG 저장 속행\", \"INV-004 대용량 저장: prefix·버전·길이·순번·체크섬·잘림·후행 자료 엄밀 거부\", \"INV-004 대용량 저장: 기존 schema2 바이트·고정 원본·구버전 정책 보존\", \"INV-004 대용량 저장: 실제 원자파일 혼합형식·pending 우선순번·backup·손상 원문 보존\"], \"unregistered\": []}",
+      "scope": "과거9704 전체309개는 새4이름이 없다. 당시 성공 기록 자체를 부정하지 않는다.",
+      "original_modified": false
+    },
+    {
+      "input": "../inventory-oracle-final-integration/whole-functional-068ecef.original.json",
+      "sha256": "d51a75bd9fb1b53261c2b85194d17174debb8914e420e37eb94d6a0d7b8fd53a",
+      "selection": "all",
+      "total": 308,
+      "failed": 3,
+      "rejected": true,
+      "reason": "실패한 실제 검사: [\"inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존\", \"INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests\", \"INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존\"]",
+      "scope": "원본 전체305/308에는 실제 실패3개가 있다.",
+      "original_modified": false
+    },
+    {
+      "input": "../large-save-envelope-c6e4704/storage-functional.json",
+      "sha256": "fecabb69150b4f79a6c52593d1c138f3eddcd58a8ea9005e4efabc5f6abc07c4",
+      "selection": "INV-004",
+      "total": 74,
+      "failed": 0,
+      "rejected": true,
+      "reason": "선택 실행 보고서로 전체 기능 통과를 주장할 수 없습니다.",
+      "scope": "동일c6의 저장 선택74개는 전체313개 실행이 아니다.",
+      "original_modified": false
+    }
+  ],
+  "runtime_executions": 0,
+  "scope": "기존 검증기 함수에 과거/실패/선택 원본을 읽기로 입력한 정적 대조다.",
+  "limit": "동일 이름/검사 지문의 다른 제품 실행은 caller source선언만으로 독립 인증하지 못하며 제품fp/원문hash/실행 provenance도 확인해야 한다."
+}

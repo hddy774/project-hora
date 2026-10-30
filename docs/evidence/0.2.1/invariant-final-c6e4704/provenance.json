@@ -1,0 +1,254 @@
+{
+  "schema": "seonro.invariant-final-functional-evidence.v1",
+  "executed_source": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "product_source_fingerprint": "dcc95b5cb52a0d3b8e6b66975b736a685f4a82250508a2434d29563bd7b9cfc0",
+  "test_sources_sha256": "829074742f2738d25dd94dee2cc5abcbe2e01beeee6ab54729625f13a18cffb2",
+  "execution_authority": "별도 루트 isolated 전체 실행 원문/4DLL/소스를 정적 대조했다. 본 매핑·감사는 runner/collector를 새로 실행하지 않았다.",
+  "root_reported_execution": {
+    "worktree": "/workspace/seonro-final-c6e4704",
+    "supervisor_pid": 123271,
+    "process_pid": 123497,
+    "cpu_affinity": [
+      0
+    ],
+    "started_utc": "2026-10-30T18:18:45.327637+00:00",
+    "ended_utc": "2026-10-30T18:24:17.486670+00:00",
+    "exit_code": 0,
+    "source_clean_at_launch": true,
+    "source_clean_at_end": true,
+    "source_clean_rechecked_readonly": true,
+    "cohosts": "CPU1/2 exact926 growth restart1; CPU3 exact926 AI108 restart1. CPU0 reserved for this functional run. Not a performance sample.",
+    "selection": "all",
+    "total": 313,
+    "failed": 0,
+    "functional_runner_sum_ms": 296633,
+    "timings_are_performance_measurements": false
+  },
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Core",
+      "source_info": "/workspace/seonro-final-c6e4704/src/Chronicles.Core/obj/Release/net10.0/Chronicles.Core.AssemblyInfo.cs",
+      "source_info_sha256": "d344d6b73fc84aebf62a676bb7f6d76221281587d1b87210bd94102892dfc653",
+      "informational_version": "0.2.1+c6e470458ecefe055d98f89120f08c40c0c0660d",
+      "dll": "/workspace/seonro-final-c6e4704/src/Chronicles.Core/bin/Release/net10.0/Chronicles.Core.dll",
+      "sha256": "4d06002c06d9baad2625a71755a677161a33c76ae8414cf178ae077afb2e4522",
+      "bytes": 5120,
+      "embedded_utf8_informational_version_matches": true,
+      "entrypoint_directory_copy": "/workspace/seonro-final-c6e4704/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "entrypoint_copy_sha256": "4d06002c06d9baad2625a71755a677161a33c76ae8414cf178ae077afb2e4522",
+      "entrypoint_copy_matches": true,
+      "matches_root_run_original": true
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "source_info": "/workspace/seonro-final-c6e4704/src/Chronicles.Game/obj/Release/net10.0/Chronicles.Game.AssemblyInfo.cs",
+      "source_info_sha256": "00056f66f36f8146b3f8cbb93fa361a948d6a050dc81a83a248e8894c264c3fd",
+      "informational_version": "0.2.1+c6e470458ecefe055d98f89120f08c40c0c0660d",
+      "dll": "/workspace/seonro-final-c6e4704/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll",
+      "sha256": "b3c3ffe81f57d12d38cc1890f02cebe4f5a04689892a69d2013e6c1221adde01",
+      "bytes": 2258432,
+      "embedded_utf8_informational_version_matches": true,
+      "entrypoint_directory_copy": "/workspace/seonro-final-c6e4704/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "entrypoint_copy_sha256": "b3c3ffe81f57d12d38cc1890f02cebe4f5a04689892a69d2013e6c1221adde01",
+      "entrypoint_copy_matches": true,
+      "matches_root_run_original": true
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "source_info": "/workspace/seonro-final-c6e4704/src/Chronicles.Hosting/obj/Release/net10.0/Chronicles.Hosting.AssemblyInfo.cs",
+      "source_info_sha256": "f3413dc5fa57ed35b610ea01072491909110e1c914b0c059f8d9dae75bc5cc17",
+      "informational_version": "0.2.1+c6e470458ecefe055d98f89120f08c40c0c0660d",
+      "dll": "/workspace/seonro-final-c6e4704/src/Chronicles.Hosting/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "sha256": "49e01cdf0495e027b2de8b41ff49b200d8089bb0d33d3bf2891b7e493f644f25",
+      "bytes": 23552,
+      "embedded_utf8_informational_version_matches": true,
+      "entrypoint_directory_copy": "/workspace/seonro-final-c6e4704/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "entrypoint_copy_sha256": "49e01cdf0495e027b2de8b41ff49b200d8089bb0d33d3bf2891b7e493f644f25",
+      "entrypoint_copy_matches": true,
+      "matches_root_run_original": true
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "source_info": "/workspace/seonro-final-c6e4704/tests/Chronicles.Game.Tests/obj/Release/net10.0/Chronicles.Game.Tests.AssemblyInfo.cs",
+      "source_info_sha256": "3f1e93ad6ec12cf65bddcdc6e61a7cf81251acf36213c1b2c47e4546e50ea970",
+      "informational_version": "0.2.1+c6e470458ecefe055d98f89120f08c40c0c0660d",
+      "dll": "/workspace/seonro-final-c6e4704/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "sha256": "055a7dbf8edb078532b27b6300eaabaf4989fecab8cbe4a45202c71b1e93a398",
+      "bytes": 1495040,
+      "embedded_utf8_informational_version_matches": true,
+      "entrypoint_directory_copy": "/workspace/seonro-final-c6e4704/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "entrypoint_copy_sha256": "055a7dbf8edb078532b27b6300eaabaf4989fecab8cbe4a45202c71b1e93a398",
+      "entrypoint_copy_matches": true,
+      "matches_root_run_original": true
+    }
+  ],
+  "runtime_directory": {
+    "path": "/workspace/seonro-final-c6e4704/tests/Chronicles.Game.Tests/bin/Release/net10.0",
+    "assembly_copies_match_all_four": true,
+    "runtimeconfig": {
+      "path": "/workspace/seonro-final-c6e4704/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.runtimeconfig.json",
+      "sha256": "9950d4583cfc9a106857c0d5b8a75b53e8774852b57b80bc3823a74d44a4d87f",
+      "content": {
+        "runtimeOptions": {
+          "tfm": "net10.0",
+          "framework": {
+            "name": "Microsoft.NETCore.App",
+            "version": "10.0.0"
+          },
+          "configProperties": {
+            "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+            "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
+          }
+        }
+      }
+    },
+    "deps": {
+      "path": "/workspace/seonro-final-c6e4704/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.deps.json",
+      "sha256": "c488abfdc41c5abafc69fd6da72c3b2f4eeb7900ea94517ecf2d6a0054da7839"
+    },
+    "verification_scope": "생성 AssemblyInfo 정보버전과 DLL 내 같은 UTF8 문자열·4DLL hash/실행 폴더 사본을 정적 확인한다. 실제 프로세스/PE리소스 전체·로드 런타임 독립 attestation은 아니다."
+  },
+  "raw_originals": [
+    {
+      "source": "/workspace/scratch/functional-final-c6e4704.json",
+      "copied_to": "functional.json",
+      "bytes_preserved": true
+    },
+    {
+      "source": "/workspace/scratch/functional-final-c6e4704.log",
+      "copied_to": "functional.log",
+      "bytes_preserved": true
+    },
+    {
+      "source": "/workspace/scratch/functional-final-c6e4704-run.json",
+      "copied_to": "root-run.original.json",
+      "bytes_preserved": true
+    },
+    {
+      "source": "/workspace/scratch/functional-final-c6e4704-supervisor-launch-failure.log",
+      "copied_to": "supervisor-launch-failure.original.log",
+      "bytes_preserved": true
+    }
+  ],
+  "initial_supervisor_failure": {
+    "path": "supervisor-launch-failure.original.log",
+    "phase": "fingerprint 문자열을 JSON으로 파싱하던 감독 래퍼 초기 단계; 게임 빌드/성공 run 시작 전",
+    "game_or_functional_test_failure": false,
+    "preserved_separately": true
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "ecfc4b5c188b67de0864cdc1177c957840c4e66eefbac7ff440fbf2ce73e35ae",
+      "bytes": 3675
+    },
+    {
+      "path": "execution-verification.json",
+      "sha256": "7148006ce0f10e2168950fdf81aab8db5c71cc2553700ace3279f7500cce45cf",
+      "bytes": 2925
+    },
+    {
+      "path": "functional.json",
+      "sha256": "5704c7e50745960585b11b77afb19f844a97991eeda7bfc3be25dece5bd07abe",
+      "bytes": 62572
+    },
+    {
+      "path": "functional.log",
+      "sha256": "f23dc5210dd7c896b12d9050be4a5de2bb1a57b93379d0bba53509e2fa196993",
+      "bytes": 38335
+    },
+    {
+      "path": "negative-input-checks.json",
+      "sha256": "aa6cf94925a4089a323cc2e2e1f758e529389c4a8438904f50ab9e4376069c9e",
+      "bytes": 2762
+    },
+    {
+      "path": "refresh-self-test.json",
+      "sha256": "8d847318540d644ade4d06baae569b93cf5573f518019b5e27f58577dce15ae3",
+      "bytes": 149
+    },
+    {
+      "path": "root-run.original.json",
+      "sha256": "17888aff876cffca6a66191bd76881f4a24f6f11b942bbc1b25bf5863ca4ef8f",
+      "bytes": 3015
+    },
+    {
+      "path": "supervisor-launch-failure.original.log",
+      "sha256": "3f285103894d7549f2e72dc6aa262503923c8fbfde5ac45cab946ea722ac366b",
+      "bytes": 1092
+    },
+    {
+      "path": "validator-self-test.json",
+      "sha256": "4432cb409c39ddfff9a0cc130234fb90178bebf104b761b3c817524ee850d73c",
+      "bytes": 171
+    }
+  ],
+  "map_verification": {
+    "scenarios": 313,
+    "invariants": 24,
+    "named_witness_links": 148,
+    "all_registered_scenarios_passed": 313,
+    "report_sha256": "5704c7e50745960585b11b77afb19f844a97991eeda7bfc3be25dece5bd07abe",
+    "mapping_execution_status": "not_asserted",
+    "map_path": "../invariant-execution-map.json",
+    "map_sha256": "74b99dc06979fe30c405823e5b08852e23edeec9c88b752c33471566ef11d0ed",
+    "markdown_path": "../invariant-execution-map.md",
+    "markdown_sha256": "9d11bf418b55479030d98f583516d35857cb6adf8dc818dc974effe8339d175c"
+  },
+  "source_review": {
+    "path": "../invariant-execution-source-review-c6e4704.json",
+    "sha256": "edb4565b6f78908b81e48861e4eb1b24c1873f5d4d0152113e1f403183f713a4",
+    "changed_source_paths": 4,
+    "changed_product_csharp_paths": 2,
+    "changed_product_csproj_paths": 1,
+    "changed_test_csharp_paths": 1,
+    "supplemental_unchanged_html_paths": 2,
+    "source_review_areas": 31
+  },
+  "acceptance_audit": {
+    "path": "../acceptance-functional-c6e4704.json",
+    "sha256": "54f92113374aa685302ecd4b5d809871f45430123aea5c64202a0bd8a73b7f74",
+    "markdown_path": "../acceptance-functional-c6e4704.md",
+    "markdown_sha256": "cb08259ad17f60ffd22c9c5bf99618a433cd381b4d484db6931ff602073153f0",
+    "tasks": [
+      "V021-D02",
+      "V021-T01",
+      "V021-T02",
+      "V021-T03"
+    ],
+    "recommendation_only": true,
+    "d02_recommendation_pending_actual_large_codec_roundtrip": true
+  },
+  "previous_map_archive": {
+    "source_commit": "9704e95508456ee317a378a9b8dac55985bf1849",
+    "scenarios": 309,
+    "named_witness_links": 144,
+    "files": [
+      {
+        "path": "../invariant-final-9704e95/map.snapshot.json",
+        "sha256": "a7bab97a39ed1abc6b7761c2e855aac980df8f367a9d5fa49fd2e95bf6da394c",
+        "bytes_equal_to_previous_committed_map": true
+      },
+      {
+        "path": "../invariant-final-9704e95/map.snapshot.md",
+        "sha256": "ba443a22abc92ac5bbd03433c3fa2c9935620a4bd6276461d3b32e8793a08cf9",
+        "bytes_equal_to_previous_committed_map": true
+      }
+    ],
+    "previous_9704_and_926_reports_provenance_source_reviews_modified": false
+  },
+  "work_by_this_mapping_task": {
+    "game_or_cli_or_scripts_or_csharp_edits": 0,
+    "feature_runner_executions": 0,
+    "performance_growth_agent_collector_profile_executions": 0,
+    "ledger_notion_readiness_proposed_catalog_edits": 0
+  },
+  "limits": [
+    "c6에서실제313개C#기능/등록증인148개연결만확인한다. 모든24INV조합·정본111작업전체완료가아니다.",
+    "새4개는작은world/byte-module/실제임시파일host범위이며128MiB초과/실제10,000명저장성공을증명하지않는다.",
+    "D02권고는수정후실제10k기본codec왕복성공전보류한다. 이전926저장실패/exit134를성공으로고쳐쓰지않는다.",
+    "기존309/308전체·성장/AI중단·복구/민감도자료를새source실행으로승격하지않는다.",
+    "검증기executed-source는호출자선언이다. 원문hash·루트실행고지·생성/내장정보버전·4DLL·제품fp를함께확인한다.",
+    "native/플랫폼·실제UI배속/벽시계속도·성능/장기안정성·전체T05·릴리스완료는별도다."
+  ]
+}

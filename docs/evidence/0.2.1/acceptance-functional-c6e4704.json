@@ -1,0 +1,613 @@
+{
+  "schema": "seonro.final-functional-acceptance-audit.v1",
+  "audit_is_recommendation_only": true,
+  "source_commit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "product_source_fingerprint": "dcc95b5cb52a0d3b8e6b66975b736a685f4a82250508a2434d29563bd7b9cfc0",
+  "canonical_source": "docs/plans/revisions/v021-notion-revision6-source.md:2201-2204;1932;2364;2370-2385",
+  "functional_evidence": {
+    "path": "invariant-final-c6e4704/functional.json",
+    "sha256": "5704c7e50745960585b11b77afb19f844a97991eeda7bfc3be25dece5bd07abe",
+    "selection": "all",
+    "total": 313,
+    "failed": 0,
+    "root_runtime_executed_by_this_audit": false
+  },
+  "previous_functional_evidence": {
+    "source": "9704e95508456ee317a378a9b8dac55985bf1849",
+    "total": 309,
+    "path": "invariant-final-9704e95/functional.json",
+    "scope": "별도 실행으로 보존;313개 통과로 원문을 변경하지 않음"
+  },
+  "selected_codec_evidence": {
+    "source": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+    "docs_commit": "0346c48260b7184a5b205cb6ce7b619b28cec4a7",
+    "path": "large-save-envelope-c6e4704/provenance.json",
+    "storage_selected_passed": 74,
+    "copy_oracle_selected_passed": 1,
+    "not_full_suite": true,
+    "small_forced_threshold_not_actual_large_population": true
+  },
+  "evidence_registry": {
+    "genesis": {
+      "name": "INV-001/002/011 정확한 창세·안정 신원·100지점",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 49
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "birth": {
+      "name": "INV-004/005/011/012 실제 출생·유전·단일 영혼·재전송",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 66
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "bad_parents": {
+      "name": "INV-004/012 불법 부모·신원 중복 저장 거부",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 137
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "split": {
+      "name": "INV-006/007/004 시간 분할·조회/저장 무영향",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 111
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "culture": {
+      "name": "INV-006 저장 왕복·호스트 문화권 독립",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 286
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "takeover": {
+      "name": "INV-010/021 빙의·AI 인계에서 기존 행동 보존",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "symbol": "Program.Test",
+        "line": 227
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "host": {
+      "name": "INV-004/005 host recovery: committed pending saves, authenticated sequence and immutable old originals",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/HostRecoveryScenarios.cs",
+        "symbol": "HostRecoveryScenarios",
+        "line": 6
+      },
+      "boundary": "host",
+      "passed_in_source_matched_full_report": true
+    },
+    "family": {
+      "name": "INV-001/004/006/012/017/022 people family public: paid care, real teaching, consented adoption, adult separation and estate versus office succession",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleFamilyIntegrationScenarios.cs",
+        "symbol": "PeoplePublicFamilyFlowScenario",
+        "line": 8
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "mutation": {
+      "name": "INV-004/011/012 people public genetics: configured zero mutation and frozen model/stream after law changes",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleSocialIntegrationScenarios.cs",
+        "symbol": "PeoplePublicMutationPolicyScenario",
+        "line": 224
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "practice": {
+      "name": "INV-004/006/018 public cultivation·actual time/source debit/mastery/save/query purity",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs",
+        "symbol": "CultivationWorldSourceScenario",
+        "line": 43
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "prepare": {
+      "name": "INV-004/006 입문 준비 조회: 토납과 감응을 분리하고 실제 준비·개시 공급과 저장을 유지한다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/EntryPreparationQueryScenarios.cs",
+        "symbol": "EntryPreparationSaveScenario",
+        "line": 37
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "lesson": {
+      "name": "INV-004/017/024 knowledge public world: real request and teaching share both participants' labor and cancel together",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs",
+        "symbol": "KnowledgeWorldTeachingScenario",
+        "line": 195
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "craft": {
+      "name": "inventory public: canonical recipe practice consumes real inputs and cancellation never refunds the process",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicCraftScenario",
+        "line": 78
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "auction_save": {
+      "name": "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs",
+        "symbol": "InventoryOwnedWorldReferenceScenario",
+        "line": 5
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "cargo_module": {
+      "name": "inventory: V021-E03 real cargo preserves in-transit title, labor, fees, arrival and failure recovery location",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs",
+        "symbol": "InventoryTransportScenario",
+        "line": 263
+      },
+      "boundary": "module",
+      "passed_in_source_matched_full_report": true
+    },
+    "cargo_world": {
+      "name": "inventory public: completed route delivers physical cargo and blocked routes keep it at actual origin",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs",
+        "symbol": "InventoryPublicTransportScenario",
+        "line": 154
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "policy": {
+      "name": "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicPolicyIntegrationScenario",
+        "line": 57
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "rights": {
+      "name": "V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicRightsIntegrationScenario",
+        "line": 209
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "sect": {
+      "name": "V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "symbol": "PoliticsPublicSectLifecycleScenario",
+        "line": 312
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "secret": {
+      "name": "비경 공개 명령: 실제 도구·식량과 채택 법칙·한 번의 위험을 저장하고 월별 진척으로 유한 보상을 선점한다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+        "symbol": "ExplorationPaidProgressScenario",
+        "line": 76
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "combat": {
+      "name": "combat public: command replay paid cooldown and saved continuation preserve actual receipts and query purity",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs",
+        "symbol": "CombatWorldReplayScenario",
+        "line": 172
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "currency_source": {
+      "name": "currency public: source-free balances repeated burns and disabled origin validation are rejected on restore",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/CurrencyIntegrationScenarios.cs",
+        "symbol": "CurrencySourceCorruptionScenario",
+        "line": 155
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "fixed_commands": {
+      "name": "INV-001/004/006/021/022 H04 world reference: actual commands, birth, cancellation, martial and save boundaries match every month",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/ExecutionInfrastructureScenarios.cs",
+        "symbol": "ExecutionWorldReferenceScenario",
+        "line": 151
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "ai_replay": {
+      "name": "INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "symbol": "AgentPlanningReplayScenario",
+        "line": 170
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "query": {
+      "name": "INV-009/010 rich query: cached people and places precede hidden truth projection",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+        "symbol": "RichQueryPermissionScenario",
+        "line": 28
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "detached": {
+      "name": "INV-004/009 people queries public: mutating nested observer aptitude, traits, soul, evaluations and claim arrays cannot alter authority",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleReceiptIntegrationScenarios.cs",
+        "symbol": "PeoplePublicDetachedDetailScenario",
+        "line": 68
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "legacy": {
+      "name": "INV-004 대용량 저장: 기존 schema2 바이트·고정 원본·구버전 정책 보존",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs",
+        "symbol": "LegacySaveEnvelopeCompatibilityScenario",
+        "line": 10
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "binary": {
+      "name": "INV-004 대용량 저장: UTF8 양형식·경계·순번·명령 재전송·RNG 저장 속행",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs",
+        "symbol": "LargeSaveEnvelopeRoundTripScenario",
+        "line": 38
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    },
+    "corrupt": {
+      "name": "INV-004 대용량 저장: prefix·버전·길이·순번·체크섬·잘림·후행 자료 엄밀 거부",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs",
+        "symbol": "LargeSaveEnvelopeCorruptionScenario",
+        "line": 72
+      },
+      "boundary": "module",
+      "passed_in_source_matched_full_report": true
+    },
+    "atomic": {
+      "name": "INV-004 대용량 저장: 실제 원자파일 혼합형식·pending 우선순번·backup·손상 원문 보존",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs",
+        "symbol": "LargeSaveAtomicRecoveryScenario",
+        "line": 101
+      },
+      "boundary": "host",
+      "passed_in_source_matched_full_report": true
+    },
+    "route13": {
+      "name": "RC-13 실제 원인 생산자·자동 Gate·여정 왕복",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/ReincarnationScenarios.cs",
+        "symbol": "ReincarnationScenarios.Run(13)",
+        "line": 9
+      },
+      "boundary": "public_world",
+      "passed_in_source_matched_full_report": true
+    }
+  },
+  "code_anchors": [
+    {
+      "path": "src/Chronicles.Game/Invariants.cs",
+      "line": 9,
+      "anchor": "public static void Validate",
+      "sha256": "1079c5da595cae2032b2985f38cfdca3cf859f3816479a5e45d2eddf1fa51a28"
+    },
+    {
+      "path": "src/Chronicles.Game/World.DomainValidation.cs",
+      "line": 5,
+      "anchor": "internal static void ValidateDomainState",
+      "sha256": "86a90d08b8eb9057183240a2489c0dd36919dce97a4ab530d87a4f6c858cc06d"
+    },
+    {
+      "path": "src/Chronicles.Game/GameCodec.cs",
+      "line": 13,
+      "anchor": "internal const int JsonPayloadLimit",
+      "sha256": "ddb307671a42f0174e4ceabf47831b9385d5d54b109e3e88128c1f59ff5a26b1"
+    },
+    {
+      "path": "src/Chronicles.Hosting/GameSaveStore.cs",
+      "line": 8,
+      "anchor": "public static void SaveAtomic",
+      "sha256": "06f48cfd001d702645f194cd5a8a662f532624ea2ceeac624b825a07fd2fb8d3"
+    },
+    {
+      "path": "src/Chronicles.Hosting/GameSession.cs",
+      "line": 58,
+      "anchor": "case \"advance\":",
+      "sha256": "633055b904f7c3fc0c42ede1d40beeefc96e8e354e463a2fb729e726fac35fad"
+    },
+    {
+      "path": "src/Chronicles.Game/World.cs",
+      "line": 285,
+      "anchor": "public void AdvanceTo",
+      "sha256": "67613d3a441ecf9fa41eaa60333c77b06b8f2b23c85ee1a85ecb3af88aa1af2e"
+    },
+    {
+      "path": "src/Chronicles.Shell/index.html",
+      "line": 157,
+      "anchor": "setInterval(() => {if (running",
+      "sha256": "d5309a2280e3e1cc1276ca9869f4db861bb209bf314c46e5ea672e002de991bf"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "V021-D02",
+      "recommendation": "기능 저장/복구 조항의 근거는 확보했으나 실제 대규모 저장 반례(#191) 수정후 save/load·hash 성공 전까지 자체 수용 권고를 보류한다.",
+      "clauses": [
+        {
+          "id": "D02-a",
+          "canonical_clause": "기능별 T07/INV·왕복 근거와 중간 상태",
+          "evidence_ids": [
+            "birth",
+            "practice",
+            "prepare",
+            "lesson",
+            "craft",
+            "auction_save",
+            "policy",
+            "secret",
+            "combat",
+            "route13"
+          ],
+          "observed_scope": "실제 잉태/공동수업/제작·경매예치/수행준비/정책준비/비경진척/전투점유/윤회대기의 공통 GameCodec 왕복과 저장후 진행을 각 작은 공개 세계에서 확인한다. 시험용 초기조건·법칙 변경이 존재하며 모든 중간 상태의 조합을 한 세계에서 열거했다는 뜻은 아니다.",
+          "remaining_evidence": "추가 제품 기능 요구 없음. 최종 선행/수용 판정은 별도 원장 조정 대상이다."
+        },
+        {
+          "id": "D02-b",
+          "canonical_clause": "최종 schema/복구·기존 파일 보존",
+          "evidence_ids": [
+            "legacy",
+            "binary",
+            "corrupt",
+            "atomic",
+            "host"
+          ],
+          "observed_scope": "상태Schema1/DomainSchema2 유지. 작은 JSON봉투2 실제 bytes 유지 및 미지원 JSON1/3/개발 DomainSchema1 거부. 내부 임계값으로 이진봉투3·논리hash/길이/순번/체크섬·양형식진행과 실제 pending/backup/손상원문 보존을 확인한다. OS 전원상실 실험이나 실제128MiB 초과 저장을 뜻하지 않는다.",
+          "remaining_evidence": "추가 제품 기능 요구 없음. 최종 선행/수용 판정은 별도 원장 조정 대상이다."
+        },
+        {
+          "id": "D02-c",
+          "canonical_clause": "전 중간 상태의 근거 경계",
+          "evidence_ids": [
+            "cargo_module",
+            "cargo_world"
+          ],
+          "observed_scope": "운송 계약은 부분 원장 JSON 왕복(module)과 실제 공개 도착/봉쇄 실패(public_world) 증거를 구분한다. 해당 공개 운송 본문 자체에는 공통 GameCodec 호출이 없다. module 왕복을 전체세계 저장이라고 표기하지 않는다.",
+          "remaining_evidence": "이 감사는 검사한 경계와 실제 source를 제시한다. 검사되지 않은 모든 조합의 저장 완료를 선언하지 않는다."
+        },
+        {
+          "id": "D02-d",
+          "canonical_clause": "알려진 실제 대규모 저장 반례의 최종 대조",
+          "evidence_ids": [
+            "binary",
+            "atomic"
+          ],
+          "observed_scope": "926의10,000명 12개월 종료후398,228,383문자 Payload 저장 예외/exit134 원본은 실패로 유지한다. c6의 작은 내부 임계값 검사는 같은 생산 분기 정확성 근거다.",
+          "remaining_evidence": "c6 고정 소스의 실제10,000명 기본 GameCodec.Encode/Decode 성공·같은hash·저장크기/형식 확인이 필요하다. 진행중4규모 기준선은 현재 완료로 세지 않는다. 저장후속행·원자파일복구는 별도의 작은 기능 증인 범위이며 새 대규모 추가 진행 요구를 만들지 않는다."
+        }
+      ],
+      "title": "최종 통합 저장 감사",
+      "canonical_acceptance": "기능별 T07/INV·왕복 근거를 모아 전 중간 상태·최종 schema/복구·기존 파일 보존 통합 감사.",
+      "dependencies_unchanged": [
+        "V021-M05",
+        "V021-K07",
+        "V021-E05",
+        "V021-S03",
+        "V021-D01",
+        "V021-P01",
+        "V021-F04",
+        "V021-G02",
+        "V021-X04",
+        "V021-R06",
+        "V021-W01",
+        "V021-W02",
+        "V021-V02",
+        "V021-J04",
+        "V021-Z03",
+        "V021-Y03",
+        "V021-O02",
+        "V021-O03",
+        "V021-N03",
+        "V021-H02",
+        "V021-I03",
+        "V021-B04",
+        "V021-K08",
+        "V021-L04",
+        "V021-L05",
+        "V021-L06",
+        "V021-R07",
+        "V021-R08",
+        "V021-O04",
+        "V021-O05",
+        "V021-T07"
+      ],
+      "no_ledger_status_mutation": true
+    },
+    {
+      "id": "V021-T01",
+      "recommendation": "등록된 기능 범위의 자체 통합 감사 수용을 권고할 근거를 확보했다. D02 등 선행 완료·정본 전체 done을 권고하는 문서는 아니다.",
+      "clauses": [
+        {
+          "id": "T01-a",
+          "canonical_clause": "INV·인구/부모/유전",
+          "evidence_ids": [
+            "genesis",
+            "birth",
+            "bad_parents",
+            "mutation",
+            "route13"
+          ],
+          "observed_scope": "Invariants의 안정신원/활성슬롯·부모DAG·출생/단일혼·frozen genome과 실제 음수/중복 거부, 실제 원인 여정/사망 분리를 작은 세계에서 검사한다.",
+          "remaining_evidence": "추가 제품 기능 요구 없음. 최종 선행/수용 판정은 별도 원장 조정 대상이다."
+        },
+        {
+          "id": "T01-b",
+          "canonical_clause": "자산/권리/예약/source",
+          "evidence_ids": [
+            "craft",
+            "auction_save",
+            "currency_source",
+            "rights",
+            "policy",
+            "lesson",
+            "secret"
+          ],
+          "observed_scope": "실물/화폐 source·예치/노동 예약·정책 비용·매체/교육/유한 보상 source를 실제 공개 명령과 restore 거부에서 검사한다. 내부 순수 원장 보조 검사는 module로 분리한다.",
+          "remaining_evidence": "추가 제품 기능 요구 없음. 최종 선행/수용 판정은 별도 원장 조정 대상이다."
+        },
+        {
+          "id": "T01-c",
+          "canonical_clause": "T07와 각 기능 등록 증거의 최종 감사",
+          "evidence_ids": [],
+          "observed_scope": "313개 이름·24INV·148개 명명 증인을 전체313/313에 대조하고 source/본문 지문/앵커·모듈/world/host 경계·실패/선택/과거 보고서 거부를 확인한다. Python 검증기 자체 시험은 C# 제품 통과 수에 더하지 않는다.",
+          "remaining_evidence": "현재 지도는 명명된 실제 범위다. 모든 가능한 불변식 조합·실측/장치·정본111작업 완료를 증명하지 않는다."
+        }
+      ],
+      "title": "최종 불변식 감사",
+      "canonical_acceptance": "T07과 각 기능에 등록된 INV·인구/자산/부모/유전/권리/예약/source 근거의 최종 통합 감사.",
+      "dependencies_unchanged": [
+        "V021-D02",
+        "V021-B02",
+        "V021-T07"
+      ],
+      "no_ledger_status_mutation": true
+    },
+    {
+      "id": "V021-T02",
+      "recommendation": "정본의 연결 기능·조회 순수성 조항은 작은 실제 세계들의 조합 근거로 자체 수용 권고 가능하다. 기본 장기 성장의 자연 성공·AI 목표 완수나 최종 선행 완료로 확대하지 않는다.",
+      "clauses": [
+        {
+          "id": "T02-a",
+          "canonical_clause": "두 시조→가계/수행/세력/참여 연결",
+          "evidence_ids": [
+            "genesis",
+            "family",
+            "practice",
+            "prepare",
+            "sect",
+            "takeover"
+          ],
+          "observed_scope": "정확히 두 반선/종문0 출발, 실제 출생→양육/교육/동의입양/성년분가/상속, 실제 개인지식·노동/비용을 쓰는 수행/감응, 종문교육/공헌/승계·참여 인계의 공개 경로를 연결한다. 여러 독립의 짧은 시험이며 law/typed 초기조건을 명시한다.",
+          "remaining_evidence": "한 개 기본 세계에서500년 자연 성장으로 모든 단계가 반드시 성공했다는 근거는 아니다. 중단된926 성장/AI와 현재 복구는 별도 실측 원문이다."
+        },
+        {
+          "id": "T02-b",
+          "canonical_clause": "조회 hash/RNG 불변",
+          "evidence_ids": [
+            "split",
+            "query",
+            "detached",
+            "secret"
+          ],
+          "observed_scope": "조회/Checkpoint 반복 뒤 hash 일치, 실제 개인 View의 hash·RandomState 불변, 반환 중첩 배열 변조의 격리, 비경 관측의 정보/조회 경계를 검사한다. C# 조회가 UI 클릭·native 실행을 의미하지 않는다.",
+          "remaining_evidence": "추가 제품 기능 요구 없음. 최종 선행/수용 판정은 별도 원장 조정 대상이다."
+        }
+      ],
+      "title": "전 범위 시나리오·조회 무영향",
+      "canonical_acceptance": "두 시조→가계/수행/세력/참여 연결, 조회 hash/RNG 불변",
+      "dependencies_unchanged": [
+        "V021-T01",
+        "V021-U03",
+        "V021-U04",
+        "V021-U05",
+        "V021-U06",
+        "V021-U07"
+      ],
+      "no_ledger_status_mutation": true
+    },
+    {
+      "id": "V021-T03",
+      "recommendation": "현재 정수 월/명령 경계의 기능 재현 조항은 자체 수용 권고 가능하다. T02 등 선행 상태 및 실측 배속·플랫폼 수용은 별도다.",
+      "clauses": [
+        {
+          "id": "T03-a",
+          "canonical_clause": "같은 seed/명령 tick/명령열",
+          "evidence_ids": [
+            "fixed_commands",
+            "ai_replay"
+          ],
+          "observed_scope": "같은 초기 세계의 실제 고정 tick 명령열·출생/취소/무인을 원본/인덱스 실행에서 월마다 hash/RNG/이벤트/슬롯으로 비교한다. AI계획은24개월/중간저장 뒤 선택·영수증·hash가 같다. 작은 기능 comparator는8명·24개월 제한이며 규모측정이 아니다.",
+          "remaining_evidence": "추가 제품 기능 요구 없음. 최종 선행/수용 판정은 별도 원장 조정 대상이다."
+        },
+        {
+          "id": "T03-b",
+          "canonical_clause": "advance 분할/배속/checkpoint 결과 일치",
+          "evidence_ids": [
+            "split",
+            "culture",
+            "prepare",
+            "binary"
+          ],
+          "observed_scope": "같은 seed의240개월 단일 advance와1개월 분할/13개월마다 codec복원, 문화권, 실제 준비/개시 출처/RNG와 양봉투 복원후2개월 속행을 대조한다. 현재 Shell 배속1/5/20/100은정수 Months를보내고 GameSession은동일 AdvanceTo로넘기는 source 구성이다.",
+          "remaining_evidence": "UI timer의 실제 벽시계 속도·모든 네이티브 호스트 타이머는 이 C# 기능 실행에서 독립 측정하지 않는다. 이는T04/T05·플랫폼 근거와 분리한다."
+        }
+      ],
+      "title": "시간·명령·결정론 회귀",
+      "canonical_acceptance": "같은 seed/명령 tick/명령열·advance 분할/배속/checkpoint 결과 일치",
+      "dependencies_unchanged": [
+        "V021-T02"
+      ],
+      "no_ledger_status_mutation": true
+    }
+  ],
+  "global_limits": [
+    "원장/status/Notion/readiness·C#/scripts변경0, 새 기능/성능/성장/AI 실행0이다.",
+    "기존 proposed test_status=not_implemented는 제안 카탈로그로 유지한다. 실제 compiled 이름/범위와 별개다.",
+    "기능/호스트 테스트의 임시파일·내부 임계값·명시 초기조건과 실제 장치/규모실측을 구분한다.",
+    "본 문서의 권고는 루트의 선행·최종수용 판정을 대체하지 않는다. 특히D02는수정후실제10k저장대조전권고보류다."
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+  "self_excluded": true,
+  "files": [
+    {
+      "path": "population.json",
+      "bytes": 39821,
+      "sha256": "3fac5fa84d5bd240352f85f97d9c279c0159aaf6d4b63160b4b5a43f89ba17de"
+    },
+    {
+      "path": "population.log",
+      "bytes": 5772,
+      "sha256": "471cdfc7bb9d984d7e83ca955d94bdb35568d0ec797fcea838b72a600609bbae"
+    },
+    {
+      "path": "population-run.original.json",
+      "bytes": 4693,
+      "sha256": "50d1a1fd9a77c721104e06f6e936eef05e775722483f08fde1d88a45f708905e"
+    },
+    {
+      "path": "population-preceding-functional.original.json",
+      "bytes": 252,
+      "sha256": "fa65f184ed7ea29975122981678e66e9c7f080574c742c6ba39dce0918d6a770"
+    },
+    {
+      "path": "population-launch.original.py",
+      "bytes": 4325,
+      "sha256": "8f7cc491149311d239202121b2ddebc73555219d5d2590a2dcc7f952aa9e3fc5"
+    },
+    {
+      "path": "population-preregistered.original.json",
+      "bytes": 1270,
+      "sha256": "e5760b4b0e54ff37b535fef0694866ce80f10215ea5446d04f7bd7bfa821dd99"
+    },
+    {
+      "path": "population-assessment.json",
+      "bytes": 19469,
+      "sha256": "ecea0b36410b7a684614717f7cb67306ebf284e7ab43c433b8baea83cd79bdf0"
+    },
+    {
+      "path": "population-94ccb5d/README.md",
+      "bytes": 5046,
+      "sha256": "4fcf0b1f830f00b8cc8f5cb2bd9b2dba58bf3a4e74f828d10b0b20535177340b"
+    }
+  ]
+}

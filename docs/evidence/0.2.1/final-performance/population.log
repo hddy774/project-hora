@@ -1,0 +1,166 @@
+PASS INV-001/002/011 정확한 창세·안정 신원·100지점
+RESULT 1/1
+PERF-BEGIN 2: 실제 fixture·독립 예열 시작
+PERF-STAGE 2: warmup_fixture
+PERF-STAGE 2: warmup_restore
+PERF-STAGE 2: warmup_hash
+PERF-STAGE 2: warmup_month_1
+PERF-STAGE 2: warmup_month_2
+PERF-STAGE 2: measured_fixture
+PERF-STAGE 2: measured_restore
+PERF-STAGE 2: opening_hash
+PERF-STAGE 2: opening_heap_collection
+PERF-STAGE 2: advancing_month_1
+PERF-MONTH 2: 1/12 · 47.7ms
+PERF-STAGE 2: advancing_month_2
+PERF-MONTH 2: 2/12 · 77.0ms
+PERF-STAGE 2: advancing_month_3
+PERF-MONTH 2: 3/12 · 110.2ms
+PERF-STAGE 2: advancing_month_4
+PERF-MONTH 2: 4/12 · 114.0ms
+PERF-STAGE 2: advancing_month_5
+PERF-MONTH 2: 5/12 · 140.9ms
+PERF-STAGE 2: advancing_month_6
+PERF-MONTH 2: 6/12 · 153.9ms
+PERF-STAGE 2: advancing_month_7
+PERF-MONTH 2: 7/12 · 171.3ms
+PERF-STAGE 2: advancing_month_8
+PERF-MONTH 2: 8/12 · 188.3ms
+PERF-STAGE 2: advancing_month_9
+PERF-MONTH 2: 9/12 · 192.7ms
+PERF-STAGE 2: advancing_month_10
+PERF-MONTH 2: 10/12 · 237.3ms
+PERF-STAGE 2: advancing_month_11
+PERF-MONTH 2: 11/12 · 227.6ms
+PERF-STAGE 2: advancing_month_12
+PERF-MONTH 2: 12/12 · 285.8ms
+PERF-STAGE 2: final_heap_collection
+PERF-STAGE 2: final_checkpoint_validation
+PERF-STAGE 2: query
+PERF-STAGE 2: save_encode
+PERF-STAGE 2: load_decode
+PERF-STAGE 2: roundtrip_hash_and_cognition
+PERF 2: advance 12mo=1946.6ms, query=35.9ms, save=173.0ms
+PERF-BEGIN 100: 실제 fixture·독립 예열 시작
+PERF-STAGE 100: warmup_fixture
+PERF-STAGE 100: warmup_restore
+PERF-STAGE 100: warmup_hash
+PERF-STAGE 100: warmup_month_1
+PERF-STAGE 100: warmup_month_2
+PERF-STAGE 100: measured_fixture
+PERF-STAGE 100: measured_restore
+PERF-STAGE 100: opening_hash
+PERF-STAGE 100: opening_heap_collection
+PERF-STAGE 100: advancing_month_1
+PERF-MONTH 100: 1/12 · 89.2ms
+PERF-STAGE 100: advancing_month_2
+PERF-MONTH 100: 2/12 · 306.4ms
+PERF-STAGE 100: advancing_month_3
+PERF-MONTH 100: 3/12 · 394.5ms
+PERF-STAGE 100: advancing_month_4
+PERF-MONTH 100: 4/12 · 531.6ms
+PERF-STAGE 100: advancing_month_5
+PERF-MONTH 100: 5/12 · 659.1ms
+PERF-STAGE 100: advancing_month_6
+PERF-MONTH 100: 6/12 · 633.3ms
+PERF-STAGE 100: advancing_month_7
+PERF-MONTH 100: 7/12 · 737.6ms
+PERF-STAGE 100: advancing_month_8
+PERF-MONTH 100: 8/12 · 743.9ms
+PERF-STAGE 100: advancing_month_9
+PERF-MONTH 100: 9/12 · 853.9ms
+PERF-STAGE 100: advancing_month_10
+PERF-MONTH 100: 10/12 · 624.1ms
+PERF-STAGE 100: advancing_month_11
+PERF-MONTH 100: 11/12 · 579.8ms
+PERF-STAGE 100: advancing_month_12
+PERF-MONTH 100: 12/12 · 955.3ms
+PERF-STAGE 100: final_heap_collection
+PERF-STAGE 100: final_checkpoint_validation
+PERF-STAGE 100: query
+PERF-STAGE 100: save_encode
+PERF-STAGE 100: load_decode
+PERF-STAGE 100: roundtrip_hash_and_cognition
+PERF 100: advance 12mo=7108.6ms, query=35.2ms, save=406.6ms
+PERF-BEGIN 1000: 실제 fixture·독립 예열 시작
+PERF-STAGE 1000: warmup_fixture
+PERF-STAGE 1000: warmup_restore
+PERF-STAGE 1000: warmup_hash
+PERF-STAGE 1000: warmup_month_1
+PERF-STAGE 1000: warmup_month_2
+PERF-STAGE 1000: measured_fixture
+PERF-STAGE 1000: measured_restore
+PERF-STAGE 1000: opening_hash
+PERF-STAGE 1000: opening_heap_collection
+PERF-STAGE 1000: advancing_month_1
+PERF-MONTH 1000: 1/12 · 650.2ms
+PERF-STAGE 1000: advancing_month_2
+PERF-MONTH 1000: 2/12 · 1643.5ms
+PERF-STAGE 1000: advancing_month_3
+PERF-MONTH 1000: 3/12 · 2236.3ms
+PERF-STAGE 1000: advancing_month_4
+PERF-MONTH 1000: 4/12 · 3274.9ms
+PERF-STAGE 1000: advancing_month_5
+PERF-MONTH 1000: 5/12 · 3358.6ms
+PERF-STAGE 1000: advancing_month_6
+PERF-MONTH 1000: 6/12 · 3943.1ms
+PERF-STAGE 1000: advancing_month_7
+PERF-MONTH 1000: 7/12 · 4250.7ms
+PERF-STAGE 1000: advancing_month_8
+PERF-MONTH 1000: 8/12 · 7295.4ms
+PERF-STAGE 1000: advancing_month_9
+PERF-MONTH 1000: 9/12 · 9063.4ms
+PERF-STAGE 1000: advancing_month_10
+PERF-MONTH 1000: 10/12 · 10583.0ms
+PERF-STAGE 1000: advancing_month_11
+PERF-MONTH 1000: 11/12 · 10971.4ms
+PERF-STAGE 1000: advancing_month_12
+PERF-MONTH 1000: 12/12 · 12628.7ms
+PERF-STAGE 1000: final_heap_collection
+PERF-STAGE 1000: final_checkpoint_validation
+PERF-STAGE 1000: query
+PERF-STAGE 1000: save_encode
+PERF-STAGE 1000: load_decode
+PERF-STAGE 1000: roundtrip_hash_and_cognition
+PERF 1000: advance 12mo=69899.3ms, query=179.8ms, save=2148.3ms
+PERF-BEGIN 10000: 실제 fixture·독립 예열 시작
+PERF-STAGE 10000: warmup_fixture
+PERF-STAGE 10000: warmup_restore
+PERF-STAGE 10000: warmup_hash
+PERF-STAGE 10000: warmup_month_1
+PERF-STAGE 10000: warmup_month_2
+PERF-STAGE 10000: measured_fixture
+PERF-STAGE 10000: measured_restore
+PERF-STAGE 10000: opening_hash
+PERF-STAGE 10000: opening_heap_collection
+PERF-STAGE 10000: advancing_month_1
+PERF-MONTH 10000: 1/12 · 21477.0ms
+PERF-STAGE 10000: advancing_month_2
+PERF-MONTH 10000: 2/12 · 61256.6ms
+PERF-STAGE 10000: advancing_month_3
+PERF-MONTH 10000: 3/12 · 69136.1ms
+PERF-STAGE 10000: advancing_month_4
+PERF-MONTH 10000: 4/12 · 64935.2ms
+PERF-STAGE 10000: advancing_month_5
+PERF-MONTH 10000: 5/12 · 69061.0ms
+PERF-STAGE 10000: advancing_month_6
+PERF-MONTH 10000: 6/12 · 76700.3ms
+PERF-STAGE 10000: advancing_month_7
+PERF-MONTH 10000: 7/12 · 83777.0ms
+PERF-STAGE 10000: advancing_month_8
+PERF-MONTH 10000: 8/12 · 81448.6ms
+PERF-STAGE 10000: advancing_month_9
+PERF-MONTH 10000: 9/12 · 82048.1ms
+PERF-STAGE 10000: advancing_month_10
+PERF-MONTH 10000: 10/12 · 84830.1ms
+PERF-STAGE 10000: advancing_month_11
+PERF-MONTH 10000: 11/12 · 74809.4ms
+PERF-STAGE 10000: advancing_month_12
+PERF-MONTH 10000: 12/12 · 77893.6ms
+PERF-STAGE 10000: final_heap_collection
+PERF-STAGE 10000: final_checkpoint_validation
+PERF-STAGE 10000: query
+PERF-STAGE 10000: save_encode
+PERF-STAGE 10000: load_decode
+PERF-STAGE 10000: roundtrip_hash_and_cognition
+PERF 10000: advance 12mo=847372.9ms, query=1416.6ms, save=17444.6ms

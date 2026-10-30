@@ -255,6 +255,14 @@ public sealed class AgentPlanningDispositionScenario : IFeatureScenario
     {
         var world = AgentPlanningFixture.Fresh(); var baseline = world.Checkpoint();
         AgentPlanningFixture.Stock(baseline, baseline.People[0].Id, "paper", 2); AgentPlanningFixture.Stock(baseline, baseline.People[0].Id, "ink", 2);
+        // Isolate the close mood/habit comparison from the independently tested food-surplus goal.
+        // Food use is zero here; keep the same finite food as the stationary other actor's ground stock.
+        foreach (var food in baseline.Items.Where(i => i.Owner == baseline.People[0].Id && i.Definition == "food"))
+        {
+            food.Owner = baseline.People[1].Id; food.Place = baseline.People[1].Place;
+            if (baseline.Inventory.Metadata.FirstOrDefault(m => m.Item == food.Id) is { } metadata)
+            { metadata.Carrier = 0; metadata.Custodian = food.Owner; }
+        }
         baseline.People[0].Personality = Enumerable.Repeat(50, 14).ToArray();
         var original = GameWorld.Restore(baseline); original.AdvanceTo(1);
         var scores = AgentPlanningFixture.Actor(original).Decisions[^1].Candidates.ToDictionary(c => c.Goal, c => c.Score, StringComparer.Ordinal);

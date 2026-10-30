@@ -80,7 +80,12 @@ public sealed partial class GameWorld
         BlockPlanningFact(p, "cultivation:" + target, error, source);
         Remember(p, "cultivation:lastFailure", error, source, 100);
         if (codes.Any(code => code is "interpretation" or "knowledge" or "consult"))
+        {
             Remember(p, "cultivation:refresh:" + requiredWork, PlanningNumber(targetKnowledge.PersonalRevision), source, 100);
+            // Preserve the selected goal's observed repair step; an unrelated production request must not
+            // replace this correction and indefinitely monopolize the saved plan.
+            return RequestPlanningKnowledge(p, requiredWork, CultivationPlanGoal);
+        }
         p.Reason = "실제 준비 거절을 기록하여 같은 전제를 즉시 반복하지 않음: " + error;
         return false;
     }

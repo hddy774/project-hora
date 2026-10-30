@@ -38,7 +38,7 @@ internal static class AgentCultivationFixture
                 "Explicit month-zero hidden comparison knowledge failed.");
             state.Knowledge = authority.Checkpoint();
         }
-        pupil.Personality = new int[14]; foreach (var axis in new[] { 1, 8, 11, 13 }) pupil.Personality[axis] = 100;
+        pupil.Personality = new int[14]; foreach (var axis in new[] { 1, 8, 10, 11, 13 }) pupil.Personality[axis] = 100;
         AgentPlanningFixture.Stock(state, pupil.Id, "food", 100); // Declared finite test stock; no economy or growth claim.
         world = GameWorld.Restore(state); Accept(world, pupil.Id, "possess"); world.AdvanceTo(1);
         Accept(world, pupil.Id, "observe"); Accept(world, teacher.Id, "cancel");
@@ -188,7 +188,13 @@ public sealed class AgentCultivationRelearningScenario : IFeatureScenario
             state.Knowledge.Memories.Any(m => m.PersonId == pupil && m.Revision == bad.Revision && m.Claim == bad.Claim) &&
             state.Knowledge.Activities.Count(a => a.ActorId == pupil && a.WorkId == "path.2.0" && a.Kind == KnowledgeActivityKind.Study && a.Status == KnowledgeActivityStatus.Completed) >= 11 &&
             state.Cultivation[p.BodyId].Attempt?.Knowledge.Revision == corrected.Revision,
-            "Actual reading time/rights were skipped, the old wrong interpretation disappeared, or preparation reused the wrong revision.");
+            "Actual reading time/rights, preserved history or prepared revision differ: " + JsonSerializer.Serialize(new
+            {
+                world.Month, corrected.Comprehension, corrected.Revision, corrected.Claim,
+                attempt = state.Cultivation[p.BodyId].Attempt,
+                actor = state.People.Where(p => p.Id == pupil).Select(p => new { p.Action, p.Goal, p.Reason, p.Plan, p.Beliefs }),
+                studyMonths = state.Knowledge.Activities.Where(a => a.ActorId == pupil && a.WorkId == "path.2.0").Select(a => new { a.Kind, a.Status, a.StartedMonth, a.DueMonth })
+            }));
         AgentCultivationFixture.Validate(world);
     }
 }

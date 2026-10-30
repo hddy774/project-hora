@@ -143,3 +143,39 @@ public sealed class ActionAuthorityKnowledgeScenario : IFeatureScenario
         CultivationFixture.Check(snapshot.Cultivation[person.BodyId].RootGrowth.Total > 0, "real cultivation proceeds after owner validation");
     }
 }
+
+public sealed class ActionAuthorityCombatRetreatScenario : IFeatureScenario
+{
+    public string Name => "INV-004/017/021 H10 action owner: a real retreat keeps route provenance after paid combat occupancy ends";
+    public void Run()
+    {
+        var world = CombatFixture.Fresh(busy: false);
+        CombatFixture.Send(world, "h10-long-retreat", 0, "law", value: 3, data: "economy.travelDuration");
+        var state = world.Checkpoint(); state.RandomState = 1;
+        var attacker = state.People[0].Id; var defender = state.People[1];
+        defender.Personality = new int[14]; defender.Health = 60; defender.KnownPlaces.Add(1);
+        var destination = state.Places[1];
+        defender.ObservedPlaces[1] = new(1, destination.Source, destination.Qi, "", state.Month);
+        world = GameWorld.Restore(state);
+        CombatFixture.Send(world, "h10-control-attacker", attacker, "possess");
+        var receipt = CombatFixture.Attack(world, "h10-actual-retreat");
+        CultivationFixture.Check(receipt.Reaction.Choice == "retreat" && world.Checkpoint().People[1].Due == 3,
+            "fixed functional source exercises actual retreat with a longer route than combat occupancy");
+        world.AdvanceTo(1); state = world.Checkpoint(); defender = state.People[1];
+        CultivationFixture.Check(defender.Action == ActionKind.Travel && defender.ActionData == $"combat:{receipt.Id}" &&
+            defender.Place == 0 && receipt.Participants.Single(p => p.Person == defender.Id).OccupiedUntil == 1,
+            "paid combat time ended while the actual route remains in flight");
+        Invariants.Validate(state);
+        var resumed = GameCodec.Decode(GameCodec.Encode(world));
+        var cancelled = GameCodec.Decode(GameCodec.Encode(world));
+        CombatFixture.Send(cancelled, "h10-control-traveller", defender.Id, "possess");
+        var health = cancelled.Checkpoint().People[1].Health;
+        CombatFixture.Send(cancelled, "h10-route-cancel-after-paid-time", defender.Id, "cancel");
+        CultivationFixture.Check(cancelled.Checkpoint().People[1].Action == ActionKind.Idle &&
+            cancelled.Checkpoint().People[1].Place == 0 && cancelled.Checkpoint().People[1].Health == health,
+            "ordinary remaining travel can cancel after paid occupancy without refunding the exchange");
+        world.AdvanceTo(3); resumed.AdvanceTo(3);
+        CultivationFixture.Check(world.Checkpoint().People[1].Place == 1 && world.StateHash() == resumed.StateHash(),
+            "retained receipt supports actual saved arrival after combat occupancy expiry");
+    }
+}

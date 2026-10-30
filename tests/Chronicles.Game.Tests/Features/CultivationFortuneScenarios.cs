@@ -42,9 +42,8 @@ public sealed class CultivationEscapeFortuneWorldScenario : IFeatureScenario
         var metadata = state.Cultivation[person.BodyId];
         state.Cultivation[person.BodyId] = metadata with
         { Structure = ((TribulationStructure)metadata.Structure!) with { CompletedTrials = 0 }, PendingTrial = new(1, false, 1) };
-        person.PendingLayer = 1;
+        person.PendingLayer = 1; person.Action = ActionKind.Trial; person.Due = 1;
         world = GameWorld.Restore(state);
-        CultivationAdapterFixture.Accepted(world, id, "trial");
         world.AdvanceTo(1); state = world.Checkpoint();
         var passed = state.Events.Single(e => e.Kind == "겁난 통과" && e.Actor == id);
         var escape = state.PeopleDomain.Traits.Traits.Single(t => t.PersonId == id && t.DefinitionId == "fortune.escape");

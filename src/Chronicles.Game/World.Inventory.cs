@@ -3,15 +3,10 @@ namespace Chronicles.Game;
 public sealed partial class GameWorld
 {
     private bool Accessible(Person p, long id, out Item item, ItemKind? kind = null)
-    {
-        if (items.TryGetValue(id, out var found) && found.Owner == p.Id && found.Reserved == 0 &&
-            (found.Place == -1 || found.Place == p.Place) &&
-            (kind is null || Catalog.Items[found.Definition].Kind == kind)) { item = found; return true; }
-        item = null!; return false;
-    }
+        => InventoryAccessible(p, id, out item, kind);
 
-    private int Inventory(long owner, string definition) => Owned(owner).Where(i =>
-        i.Definition == definition && i.Reserved == 0 && (i.Place == -1 || i.Place == people[owner].Place)).Sum(i => i.Quantity);
+    private int Inventory(long owner, string definition) => people.TryGetValue(owner, out var person)
+        ? AvailableInventory(person, definition) : 0;
 
     private Item? AddItem(long owner, string definition, int quantity, int quality, string source, string flow = "production")
     {
@@ -55,8 +50,8 @@ public sealed partial class GameWorld
 
     private void Consume(Person p, string definition, int quantity)
     {
-        foreach (var item in Owned(p.Id).Where(i => i.Definition == definition && i.Reserved == 0 &&
-                     (i.Place == -1 || i.Place == p.Place)).OrderBy(i => i.Id).ToArray())
+        foreach (var item in Owned(p.Id).Where(i => i.Definition == definition && InventoryAccessible(p, i.Id, out _))
+                     .OrderBy(i => i.Id).ToArray())
         {
             var take = Math.Min(quantity, item.Quantity); item.Quantity -= take; quantity -= take;
             Material(definition).Consumption += take;
@@ -68,8 +63,8 @@ public sealed partial class GameWorld
 
     private void Reserve(Person p, string definition, int quantity, long reservation)
     {
-        foreach (var item in Owned(p.Id).Where(i => i.Definition == definition && i.Reserved == 0 &&
-                     (i.Place == -1 || i.Place == p.Place)).OrderBy(i => i.Id).ToArray())
+        foreach (var item in Owned(p.Id).Where(i => i.Definition == definition && InventoryAccessible(p, i.Id, out _))
+                     .OrderBy(i => i.Id).ToArray())
         {
             var take = Math.Min(quantity, item.Quantity); quantity -= take;
             if (take == item.Quantity) item.Reserved = reservation;

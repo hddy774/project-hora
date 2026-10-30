@@ -43,7 +43,7 @@ internal static class InventoryFixture
 
 public sealed class InventoryStackScenario : IFeatureScenario
 {
-    public string Name => "INV-016 inventory split/merge preserves hidden state, binding and provenance";
+    public string Name => "inventory: INV-016 inventory split/merge preserves hidden state, binding and provenance";
     public void Run()
     {
         var state = InventoryFixture.Create();
@@ -67,7 +67,7 @@ public sealed class InventoryStackScenario : IFeatureScenario
 
 public sealed class InventoryCustodyScenario : IFeatureScenario
 {
-    public string Name => "INV-016 ownership, custody, use, equipment and remote access remain independent";
+    public string Name => "inventory: INV-016 ownership, custody, use, equipment and remote access remain independent";
     public void Run()
     {
         var state = InventoryFixture.Create(); var tool = InventoryFixture.Add(state, "tool");
@@ -91,7 +91,7 @@ public sealed class InventoryCustodyScenario : IFeatureScenario
 
 public sealed class InventoryContainerScenario : IFeatureScenario
 {
-    public string Name => "INV-016 recursive container capacity, cycle rejection and broken-container overflow preserve stock";
+    public string Name => "inventory: INV-016 recursive container capacity, cycle rejection and broken-container overflow preserve stock";
     public void Run()
     {
         var state = InventoryFixture.Create(); var outer = InventoryFixture.Add(state, "bag"); var inner = InventoryFixture.Add(state, "bag");
@@ -111,7 +111,7 @@ public sealed class InventoryContainerScenario : IFeatureScenario
 
 public sealed class InventoryEquipmentScenario : IFeatureScenario
 {
-    public string Name => "INV-005/015/016 equipment replacement is atomic across occupied slots and return capacity";
+    public string Name => "inventory: INV-005/015/016 equipment replacement is atomic across occupied slots and return capacity";
     public void Run()
     {
         var state = InventoryFixture.Create(); var main = InventoryFixture.Add(state, "weapon"); var off = InventoryFixture.Add(state, "equipment.1");
@@ -137,7 +137,7 @@ public sealed class InventoryEquipmentScenario : IFeatureScenario
 
 public sealed class InventoryLaborScenario : IFeatureScenario
 {
-    public string Name => "INV-017 care, teaching, production and defense share person and facility labor";
+    public string Name => "inventory: INV-017 care, teaching, production and defense share person and facility labor";
     public void Run()
     {
         var state = InventoryFixture.Create();
@@ -155,7 +155,7 @@ public sealed class InventoryLaborScenario : IFeatureScenario
 
 public sealed class InventoryCraftingScenario : IFeatureScenario
 {
-    public string Name => "INV-017 real production inputs, stage cancellation, failure, use and save settlement";
+    public string Name => "inventory: INV-017 real production inputs, stage cancellation, failure, use and save settlement";
     public void Run()
     {
         var state = InventoryFixture.Create(); InventoryFixture.Add(state, "herb", 9); InventoryFixture.Add(state, "wood", 3);
@@ -184,7 +184,7 @@ public sealed class InventoryCraftingScenario : IFeatureScenario
 
 public sealed class InventoryResourcesScenario : IFeatureScenario
 {
-    public string Name => "V021-I01/K03-K08 all 64 resources have executable producers and consumers";
+    public string Name => "inventory: V021-I01/K03-K08 all 64 resources have executable producers and consumers";
     public void Run()
     {
         InventoryFixture.Check(InventoryDefinitions.Resources.Count == 64 && InventoryDefinitions.Resources.Select(r => r.Family).Distinct().Count() == 16, "Resource families incomplete.");
@@ -225,7 +225,7 @@ public sealed class InventoryResourcesScenario : IFeatureScenario
 
 public sealed class InventoryAuctionScenario : IFeatureScenario
 {
-    public string Name => "INV-017/018 auctions fund deposits, reject reuse, refund death and settle equal deadlines once";
+    public string Name => "inventory: INV-017/018 auctions fund deposits, reject reuse, refund death and settle equal deadlines once";
     public void Run()
     {
         var state = InventoryFixture.Create(); var first = InventoryFixture.Add(state, "weapon"); var second = InventoryFixture.Add(state, "tool");
@@ -242,6 +242,11 @@ public sealed class InventoryAuctionScenario : IFeatureScenario
         InventoryFixture.Accept(ref state, new SettleInventory("settle"));
         InventoryFixture.Check(InventoryFixture.Item(state, first).Owner == 2 && state.Ledger.Contracts.Single(c => c.Id == unsold).Status == "expired" &&
             InventoryFixture.Money(state) == total, "Simultaneous auction settlement lost property or money.");
+        var settled = state.Ledger.Contracts.Single(c => c.Id == auction);
+        InventoryFixture.Check(settled.PaidAmount == 700 && settled.PaidQuantity == 1 && settled.PaidQuality == 5000 && settled.EndedMonth == 2,
+            "Actual auction payment was lost when escrow cleared.");
+        InventoryFixture.Item(state, first).Quality = 1234;
+        InventoryFixture.Check(settled.PaidQuality == 5000, "Later buyer inventory rewrote sale-time quality.");
         var before = JsonSerializer.Serialize(state); var replay = InventoryEngine.Apply(state, new SettleInventory("settle"));
         InventoryFixture.Check(replay.Accepted && replay.Replayed && JsonSerializer.Serialize(replay.State) == before, "Replay duplicated settlement.");
         InventoryFixture.Reject(state, new SettleInventory("bid"));
@@ -257,7 +262,7 @@ public sealed class InventoryAuctionScenario : IFeatureScenario
 
 public sealed class InventoryTransportScenario : IFeatureScenario
 {
-    public string Name => "V021-E03 real cargo preserves in-transit title, labor, fees, arrival and failure recovery location";
+    public string Name => "inventory: V021-E03 real cargo preserves in-transit title, labor, fees, arrival and failure recovery location";
     public void Run()
     {
         var state = InventoryFixture.Create(); var cargo = InventoryFixture.Add(state, "food", 5); var total = InventoryFixture.Money(state);
@@ -285,7 +290,7 @@ public sealed class InventoryTransportScenario : IFeatureScenario
 
 public sealed class InventoryArrayAndAdapterScenario : IFeatureScenario
 {
-    public string Name => "V021-K06 array rights, actual upkeep, effect expiry, and stale world candidate rejection";
+    public string Name => "inventory: V021-K06 array rights, actual upkeep, effect expiry, and stale world candidate rejection";
     public void Run()
     {
         var state = InventoryFixture.Create(); var item = InventoryFixture.Add(state, "array"); InventoryFixture.Add(state, "resource.02.0");
@@ -317,7 +322,7 @@ public sealed class InventoryArrayAndAdapterScenario : IFeatureScenario
 
 public sealed class InventoryProfessionalScenario : IFeatureScenario
 {
-    public string Name => "V021-K07 real medicine, appraisal and exploration consume labor and produce personal evidence";
+    public string Name => "inventory: V021-K07 real medicine, appraisal and exploration consume labor and produce personal evidence";
     public void Run()
     {
         var state = InventoryFixture.Create(); InventoryFixture.Add(state, "herb", 2); InventoryFixture.Person(state, 2).Health = 40;
@@ -348,7 +353,7 @@ public sealed class InventoryProfessionalScenario : IFeatureScenario
 
 public sealed class InventoryPreservationScenario : IFeatureScenario
 {
-    public string Name => "INV-016/018 backpack removal preserves overflow, sources stay finite, known bundles reveal no truth";
+    public string Name => "inventory: INV-016/018 backpack removal preserves overflow, sources stay finite, known bundles reveal no truth";
     public void Run()
     {
         var state = InventoryFixture.Create(); state.Ledger.BaseCarryCapacity = 4;
@@ -376,7 +381,7 @@ public sealed class InventoryPreservationScenario : IFeatureScenario
 
 public sealed class InventoryCompetingAndDeathScenario : IFeatureScenario
 {
-    public string Name => "INV-017/018 competing bids and carrier/seller deaths preserve estates, escrow and cargo";
+    public string Name => "inventory: INV-017/018 competing bids and carrier/seller deaths preserve estates, escrow and cargo";
     public void Run()
     {
         var state = InventoryFixture.Create(); var third = state.NextId++;
@@ -403,7 +408,7 @@ public sealed class InventoryCompetingAndDeathScenario : IFeatureScenario
 
 public sealed class InventoryEquipmentDefinitionsScenario : IFeatureScenario
 {
-    public string Name => "V021-I03 all 12 equipment categories occupy slots and multi-slot contributions apply once";
+    public string Name => "inventory: V021-I03 all 12 equipment categories occupy slots and multi-slot contributions apply once";
     public void Run()
     {
         var state = InventoryFixture.Create();
@@ -424,7 +429,7 @@ public sealed class InventoryEquipmentDefinitionsScenario : IFeatureScenario
 
 public sealed class InventoryTimingAndArrayDamageScenario : IFeatureScenario
 {
-    public string Name => "INV-017 production cannot bank idle time and broken arrays immediately stop contributing";
+    public string Name => "inventory: INV-017 production cannot bank idle time and broken arrays immediately stop contributing";
     public void Run()
     {
         var state = InventoryFixture.Create(); InventoryFixture.Add(state, "herb", 3); InventoryFixture.Add(state, "wood");
@@ -449,7 +454,7 @@ public sealed class InventoryTimingAndArrayDamageScenario : IFeatureScenario
 
 public sealed class InventoryOrdinalSaveScenario : IFeatureScenario
 {
-    public string Name => "INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity";
+    public string Name => "inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity";
     public void Run()
     {
         var state = InventoryFixture.Create(); var item = InventoryFixture.Add(state, "food", 2);
@@ -470,7 +475,7 @@ public sealed class InventoryOrdinalSaveScenario : IFeatureScenario
 
 public sealed class InventorySharedReservationScenario : IFeatureScenario
 {
-    public string Name => "INV-016/017 shared physical reservations preserve split provenance and exclude parallel use";
+    public string Name => "inventory: INV-016/017 shared physical reservations preserve split provenance and exclude parallel use";
     public void Run()
     {
         var state = InventoryFixture.Create(); var paper = InventoryFixture.Add(state, "paper", 3, quality: 4321, defects: ItemDefect.Contamination);
@@ -491,5 +496,71 @@ public sealed class InventorySharedReservationScenario : IFeatureScenario
         var result = InventoryEngine.Apply(candidate, new SplitInventoryItem("identity", originalPerson.Id, food.Id, 1));
         InventoryFixture.Check(result.Accepted, result.Message); result.State.ApplyTo(world);
         InventoryFixture.Check(ReferenceEquals(originalPerson, world.People[0]), "Applying accepted inventory invalidated the world's live actor reference.");
+    }
+}
+
+public sealed class InventoryKnownSourceAndOfferScenario : IFeatureScenario
+{
+    public string Name => "inventory: known source and local offer projections never infer mutable private truth";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); state.Month = 2;
+        var source = state.NextId++; var legacy = state.NextId++;
+        state.Ledger.Sources.Add(new() { Id = source, Place = 0, Definition = "resource.00.0", Activity = "source.mining", Remaining = 100, Capacity = 100, Origin = "changed actual source" });
+        state.Ledger.Observations.Add(new(1, source, 0, 12, 1, "actual past exploration", "resource.03.0", "source.gathering"));
+        state.Ledger.Observations.Add(new(2, source, 0, 100, 2, "other person's private exploration", "resource.00.0", "source.mining"));
+        state.Ledger.Observations.Add(new(1, legacy, 0, 5, 2, "legacy incomplete snapshot"));
+        var known = InventoryKnowledgeQueries.KnownSources(state.Ledger, 1);
+        InventoryFixture.Check(known is [{ Definition: "resource.03.0", Remaining: 12, Month: 1 }], "Known source projection used another observer or current source truth.");
+        var item = InventoryFixture.Add(state, "tool", quality: 1111);
+        InventoryFixture.Accept(ref state, new OfferItem("advertise", 1, item, 5, 10));
+        var beforeState = JsonSerializer.Serialize(state); var beforeView = JsonSerializer.Serialize(InventoryKnowledgeQueries.LocalOffers(state, 2));
+        InventoryFixture.Check(InventoryKnowledgeQueries.LocalOffers(state, 2) is [{ Definition: "tool", Quantity: 1, Price: 5, OwnDeposit: 0 }], "Public advertisement did not retain its actual listing snapshot.");
+        InventoryFixture.Check(JsonSerializer.Serialize(state) == beforeState, "Known projections changed authority.");
+        InventoryFixture.Item(state, item).Quality = 9999; InventoryFixture.Item(state, item).Source = "unobserved private history";
+        state.Ledger.Sources.Single().Remaining = 1;
+        InventoryFixture.Check(beforeView == JsonSerializer.Serialize(InventoryKnowledgeQueries.LocalOffers(state, 2)) &&
+            InventoryKnowledgeQueries.KnownSources(state.Ledger, 1).Single().Remaining == 12, "Private item/source changes leaked into authorized cached facts.");
+        InventoryFixture.Person(state, 2).Place = 1;
+        InventoryFixture.Check(InventoryKnowledgeQueries.LocalOffers(state, 2).Count == 0, "A remote market leaked into a local-only projection.");
+    }
+}
+
+public sealed class InventorySharedRecipeRegistryScenario : IFeatureScenario
+{
+    public string Name => "inventory: shared recipe registry plans the exact authoritative physical input and output";
+    public void Run()
+    {
+        var shared = InventoryDefinitions.SharedRecipes;
+        InventoryFixture.Check(shared.Count == InventoryDefinitions.Recipes.Count && shared.Select(r => r.Id).Distinct(StringComparer.Ordinal).Count() == shared.Count,
+            "Public recipe registry omits or duplicates an authoritative process.");
+        foreach (var recipe in shared)
+        {
+            var actual = InventoryDefinitions.Recipes[recipe.Id];
+            InventoryFixture.Check(recipe.Name.Length > 0 && recipe.Skill == actual.Skill && recipe.Output == actual.Output && recipe.Quantity == actual.Quantity &&
+                recipe.Inputs.OrderBy(i => i.Key, StringComparer.Ordinal).SequenceEqual(actual.Inputs.OrderBy(i => i.Key, StringComparer.Ordinal)),
+                "Shared recipe planning diverged from the actual consumed inputs or physical output.");
+        }
+        InventoryFixture.Check(InventoryDefinitions.Recipes["bag"].Inputs.ContainsKey("resource.15.0") &&
+            InventoryDefinitions.Recipes["soulWard"].Inputs.ContainsKey("resource.08.0") &&
+            InventoryDefinitions.Resources.Where(r => r.Definition.StartsWith("resource.14.", StringComparison.Ordinal))
+                .All(r => InventoryDefinitions.Recipes[r.Consumer].Output == "blankBook"), "Spatial/soul/record media combinations fabricated unsupported physical capabilities.");
+    }
+}
+
+public sealed class InventoryConsumptionAuditScenario : IFeatureScenario
+{
+    public string Name => "inventory: consumed final stack retains typed actual quantity location quality and origin evidence";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); state.People[0].Place = 4;
+        var item = InventoryFixture.Add(state, "pill", quality: 4321); InventoryFixture.Item(state, item).Place = 4;
+        InventoryFixture.Accept(ref state, new ConsumeItem("consume-final", 1, item));
+        var audit = state.Ledger.Events.Single(e => e.Kind == "physical-consumption");
+        InventoryFixture.Check(state.Items.All(i => i.Id != item) && audit.Subject == item && audit.Actor == 1 && audit.Owner == 1 &&
+            audit.Definition == "pill" && audit.Quantity == 1 && audit.Place == 4 && audit.Quality == 4321 && audit.ItemSource == "fixture origin" &&
+            !audit.IsLoss && audit.Sequence > 0, "Deleting the final stack erased actual consumption evidence.");
+        InventoryFixture.RoundTrip(ref state);
+        InventoryFixture.Check(state.Ledger.Events.Single(e => e.Sequence == audit.Sequence) == audit, "Save changed typed consumption evidence.");
     }
 }

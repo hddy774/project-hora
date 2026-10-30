@@ -28,15 +28,17 @@ public static class Laws
         D("care.interval", "어린 자녀 돌봄 간격", "개월", 1, 120, 4, "한 번의 돌봄은 실제 양육자 작업 한 달을 사용"),
         D("care.age", "집중 양육 종료 나이", "개월", 1, 216, 60, "초기 인간형 다섯 살까지 돌봄 노동"),
         D("care.food", "돌봄 작업 식량", "개/작업", 0, 100, 1, "생활 소비와 구분한 양육 활동의 실제 투입"),
+        D("genetics.mutationMagnitude", "잉태 유전 변이 폭", "자질점", 0, 10000, 200, "현재 잉태 원형에 고정·진행 중 임신 재추첨 없음"),
+        D("genetics.mutationChance", "잉태 전달 단위 변이 확률", "만분율", 0, 10000, 10000, "선천 원형만 대상·학습/기예 숙련 비유전"),
         D("founder.lifespan", "반선 시조 수명", "개월", 1200, 12000000, 1200000, "사용자 위임 잠정 100000년"),
         D("founder.age", "시조 시작 나이", "개월", 216, 120000, 1200, "경지 구조는 초기 조건·가짜 과거 없음"),
         D("founder.ascensionProtection", "시조 비승 보호", "개월", 0, 120000, 1200, "후대 독립까지의 기본 보호·0이면 없음"),
         D("founder.initialFood", "시조 초기 식량", "개/인", 0, 100000, 360, "창세 자산 출처에 기록"),
         D("founder.initialMoney", "시조 초기 영석", "개/인", 0, 1000000, 1000, "창세 자산 출처에 기록"),
-        D("cultivation.entry", "균형 자질 입문 기간", "개월", 1, 12000, 36, "기존 입문 비교값"),
-        D("cultivation.qi", "연기 전체 수행 기간", "개월", 1, 120000, 600, "균형 50.00·1층→대원만 총 50년"),
-        D("cultivation.foundation", "축기 전체 수행 기간", "개월", 1, 120000, 1200, "금단 도달 기간 개발 보정"),
-        D("cultivation.upper", "경지별 기간 증가", "%", 100, 500, 150, "상위 경지 잠정 비율"),
+        D("cultivation.entry", "새 육신의 균형 자질 입문 기간", "개월", 1, 12000, 36, "새 육신에서 채택·기존 목표와 진척 보존"),
+        D("cultivation.qi", "새 육신의 연기 전체 수행 기간", "개월", 1, 120000, 600, "균형 50.00 총 50년·기존 육신의 채택 목표 보존"),
+        D("cultivation.foundation", "새 형성의 축기 전체 수행 기간", "개월", 1, 120000, 1200, "새 형성에서 채택·준비 중 돌파의 기간/수명 보존"),
+        D("cultivation.upper", "새 상위 경지 형성 기간 증가", "%", 100, 500, 150, "새 형성의 잠정 비율·기존 형성 기록/진척 보존"),
         D("cultivation.breakthroughRisk", "기본 돌파 실패", "만분율", 0, 10000, 300, "자질·준비·경로 영향 별도"),
         D("cultivation.sourceCost", "수행 영기 소비", "개/월", 0, 100, 2, "지역 실제 공급·혼잡"),
         D("cultivation.recovery", "자연 회복", "건강점/월", 0, 100, 2, "회복은 논리 시간 소비"),
@@ -73,11 +75,12 @@ public static class Laws
         D("inventory.productionWork", "제작 작업량", "노동점", 1, 100000, 100, "월 100 노동점 기준의 개발 기본값"),
         D("inventory.professionalWork", "전문 활동 작업량", "노동점", 1, 100000, 100, "치료·감정 등의 실제 작업"),
         D("inventory.extractionWork", "단위 채집 작업량", "노동점/개", 1, 100000, 25, "원천별 실제 채집량과 기간 계산"),
+        D("currency.stoneValue", "실물 영석 환전 단위", "영석 잔액/실물 1개", 0, 1000000, 1, "0이면 환전 비활성·실물 소비와 출처 원장으로 잔액 전환"),
         D("knowledge.copyMonths", "필사 기본 시간", "개월", 1, 120, 1, "실제 매체·장절·노동 예약"),
-        D("knowledge.copyPaper", "필사 장절당 종이", "개", 0, 1000, 1, "빈 매체와 추가 필사 재료의 실소비"),
-        D("knowledge.copyInk", "필사 장절당 먹", "개", 0, 1000, 1, "형식별 실제 필사 재료"),
-        D("knowledge.teachMinimum", "전수 최소 기간", "개월", 1, 120, 1, "스승과 제자의 동시 실제 시간"),
-        D("knowledge.practiceMinimum", "검증 실습 최소 기간", "개월", 1, 120, 1, "책 소유나 읽기로 실전 숙련 지급하지 않음"),
+        D("knowledge.copyPaper", "필사 장절당 종이", "개", 1, 1000, 1, "빈 매체와 추가 필사 재료의 실소비"),
+        D("knowledge.copyInk", "필사 장절당 먹", "개", 1, 1000, 1, "형식별 실제 필사 재료"),
+        D("knowledge.teachMinimum", "전수 최소 이해", "%", 1, 100, 1, "개인 지식의 전수 자격·시간은 별도 실제 예약"),
+        D("knowledge.practiceMinimum", "실습 최소 이해", "%", 1, 100, 1, "실습 자격이며 책 소유나 읽기로 실전 숙련 지급하지 않음"),
         D("knowledge.maximumActionMonths", "지식 작업 최대 기간", "개월", 1, 1200, 120, "단일 예약의 한계·장기 작업은 분할"),
         D("knowledge.misreadChance", "첫 독해 오해 확률", "만분율", 0, 10000, 100, "실제로 읽은 개인 주장만 변화·판본 정답 변경 없음"),
         D("politics.sectLimit", "동시 종문 한도", "개", 0, 1000, 10, "역사상 창종 수와 구분"),
@@ -113,6 +116,8 @@ public static class Laws
                 return $"법칙 범위 오류: {d.Id}";
         if (values["founder.age"] >= values["founder.lifespan"])
             return "시조 나이는 수명보다 작아야 합니다.";
+        if (values["knowledge.copyMonths"] > values["knowledge.maximumActionMonths"])
+            return "필사 기본 시간은 단일 지식 작업 최대 기간을 넘을 수 없습니다.";
         return null;
     }
 }

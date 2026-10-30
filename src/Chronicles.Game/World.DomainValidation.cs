@@ -8,6 +8,16 @@ public sealed partial class GameWorld
         world.ValidateInventoryBridge();
         world.ValidatePeopleDomain();
         Knowledge.KnowledgeAuthority.Validate(snapshot.Knowledge);
+        var identities = snapshot.People.Select(p => p.Id).ToHashSet();
+        var referencedPeople = snapshot.Knowledge.Editions.Select(e => e.ContributorId)
+            .Concat(snapshot.Knowledge.Memories.Select(m => m.PersonId))
+            .Concat(snapshot.Knowledge.Mastery.Select(m => m.PersonId))
+            .Concat(snapshot.Knowledge.Access.SelectMany(a => new[] { a.PersonId, a.GrantorId }))
+            .Concat(snapshot.Knowledge.Activities.SelectMany(a => new[] { a.ActorId, a.TeacherId }))
+            .Concat(snapshot.Knowledge.TimeUses.Select(t => t.PersonId))
+            .Concat(snapshot.Knowledge.Evidence.SelectMany(e => new[] { e.ActorId, e.OtherPersonId }));
+        if (referencedPeople.Any(id => id != 0 && !identities.Contains(id)))
+            throw new InvalidDataException("Knowledge provenance refers to a person absent from this world.");
         if (snapshot.Knowledge.Month > snapshot.Month || snapshot.Knowledge.Works.Count == 0)
             throw new InvalidDataException("Knowledge clock/schema does not match its owning world.");
         if (snapshot.PeopleDomain.Profiles.Length != snapshot.People.Count || snapshot.PeopleDomain.Souls.Length != snapshot.Souls.Count)

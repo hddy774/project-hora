@@ -3,12 +3,16 @@ using System.Globalization;
 using System.Text.Json;
 using Chronicles.Game;
 using Chronicles.Game.Tests;
+using Chronicles.Game.Cultivation;
 
 var results = new List<object>();
 var failed = 0;
+var filterPosition = Array.IndexOf(args, "--filter");
+var selectedScenario = filterPosition >= 0 && filterPosition + 1 < args.Length ? args[filterPosition + 1] : null;
 void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
 void Test(string name, Action body)
 {
+    if (selectedScenario is not null && !name.Contains(selectedScenario, StringComparison.OrdinalIgnoreCase)) return;
     var sw = Stopwatch.StartNew();
     try { body(); results.Add(new { name, passed = true, ms = sw.ElapsedMilliseconds }); Console.WriteLine($"PASS {name}"); }
     catch (Exception e) { failed++; results.Add(new { name, passed = false, error = e.ToString() }); Console.WriteLine($"FAIL {name}: {e}"); }
@@ -58,7 +62,8 @@ Test("INV-004/005/011/012 실제 출생·유전·단일 영혼·재전송", () =
     var s = w.Checkpoint(); var child = s.People.Single(p => p.ParentOne != 0);
     Check(s.BirthCount == 1 && s.People.Count == 3 && s.Souls.Count == 3, "단일 결과");
     Check(child.Realm == Realm.Mortal && child.Formations.Count == 0 && child.Skills.Count == 0, "경지·숙련 비복제");
-    Check(child.Roots.SequenceEqual(pregnancy.Roots) && child.Aptitudes.SequenceEqual(pregnancy.Aptitudes), "유전 재추첨0");
+    Check(child.Roots.SequenceEqual(pregnancy.Roots) && child.Aptitudes.Take(5).SequenceEqual(pregnancy.Aptitudes.Take(5)) && pregnancy.Aptitudes[5] == 0 &&
+        child.Aptitudes[5] == s.PeopleDomain.Profiles.Single(profile => profile.PersonId == child.Id).Innate.Foundations[5], "유전 재추첨0");
     RoundTrip(w);
 });
 Test("INV-003 기존 임신 법칙 revision 보존", () =>
@@ -72,21 +77,23 @@ Test("INV-003 기존 임신 법칙 revision 보존", () =>
 });
 Test("INV-011 양친 금단 바로 아래·같음", () =>
 {
-    var (w, a, b) = Fresh(); var s = w.Checkpoint(); s.People[0].Realm = Realm.Foundation;
+    var (w, a, b) = Fresh(); var s = w.Checkpoint(); WorldScenarioFixtures.SetCultivation(s, s.People[0], Realm.Foundation);
     w = GameWorld.Restore(s); var before = w.StateHash();
     Check(!w.Execute(Cmd("conceive", b, a)).Accepted && before == w.StateHash(), "한쪽 축기 거절");
-    s = w.Checkpoint(); s.People[0].Realm = Realm.GoldenCore; w = GameWorld.Restore(s);
+    s = w.Checkpoint(); WorldScenarioFixtures.SetCultivation(s, s.People[0], Realm.GoldenCore); w = GameWorld.Restore(s);
     Accepted(w, Cmd("conceive", b, a));
 });
 Test("INV-012 혈연 허용·제한 프리셋", () =>
 {
     var (w, a, b) = Fresh(); Accepted(w, Cmd("conceive", b, a)); w.AdvanceTo(9);
-    var s = w.Checkpoint(); var child = s.People[2]; child.Born = -240; child.Realm = Realm.GoldenCore;
-    s.People[0].Partner = 0; s.People[1].Partner = 0; child.Partner = s.People[0].Id;
-    child.Gestates = true; s.People[0].Partner = child.Id; child.NextBirth = 0;
-    w = GameWorld.Restore(s); Accepted(w, Cmd("conceive", child.Id, a));
+    var s = w.Checkpoint(); var child = s.People[2]; child.Born = -240;
+    WorldScenarioFixtures.SetCultivation(s, child, Realm.GoldenCore);
+    var partner = s.People.Single(person => person.ParentOne == 0 && person.Gestates != child.Gestates);
+    s.People[0].Partner = 0; s.People[1].Partner = 0; child.Partner = partner.Id;
+    partner.Partner = child.Id; child.NextBirth = 0; partner.NextBirth = 0;
+    w = GameWorld.Restore(s); Accepted(w, Cmd("conceive", child.Id, partner.Id));
     s = w.Checkpoint(); s.Pregnancies.RemoveAt(1); s.Laws["birth.kinship"] = 0;
-    w = GameWorld.Restore(s); Check(!w.Execute(Cmd("conceive", child.Id, a)).Accepted, "제한 프리셋 혈연 거부");
+    w = GameWorld.Restore(s); Check(!w.Execute(Cmd("conceive", child.Id, partner.Id)).Accepted, "제한 프리셋 혈연 거부");
 });
 Test("INV-006/007/004 시간 분할·조회/저장 무영향", () =>
 {
@@ -146,13 +153,19 @@ Test("INV-017 경매 예치·낙찰 단일 정산", () =>
 Test("INV-017 제작 예약·취소·소비·저장", () =>
 {
     var (w, a, b) = Fresh(); Accepted(w, Cmd("possess", a));
-    Accepted(w, Cmd("gather", a, data: "herb")); w.AdvanceTo(1);
-    Accepted(w, Cmd("gather", a, data: "wood")); w.AdvanceTo(2);
-    Accepted(w, Cmd("craft", a, data: "pill")); Check(w.Checkpoint().Items.Any(i => i.Reserved != 0), "실재료 예약");
+    void FinishAction() => w.AdvanceTo(w.Checkpoint().People.Single(p => p.Id == a).Due);
+    Accepted(w, Cmd("gather", a, data: "herb")); FinishAction();
+    Accepted(w, Cmd("gather", a, data: "wood")); FinishAction();
+    var beforeInputs = w.Checkpoint().Materials["herb"].Consumption;
+    Accepted(w, Cmd("craft", a, data: "pill"));
+    Check(w.Checkpoint().Inventory.Jobs.Any(job => job.Actor == a && job.Status == "processing") &&
+        w.Checkpoint().Materials["herb"].Consumption > beforeInputs, "예약 후 실제 공정 개시에서 재료 소비");
     w = GameCodec.Decode(GameCodec.Encode(w)); Accepted(w, Cmd("cancel", a));
-    Check(w.Checkpoint().Items.All(i => i.Reserved == 0), "예약 회수");
-    Accepted(w, Cmd("craft", a, data: "pill")); w.AdvanceTo(3);
-    var pill = w.Checkpoint().Items.Single(i => i.Definition == "pill"); Accepted(w, Cmd("use", a, pill.Id));
+    Check(w.Checkpoint().Items.All(i => i.Reserved == 0) &&
+        w.Checkpoint().Materials["herb"].Consumption > beforeInputs, "미사용 예약 회수·이미 소비한 재료 유지");
+    for (var attempt = 0; attempt < 3 && !w.Checkpoint().Items.Any(i => i.Owner == a && i.Definition == "pill"); attempt++)
+    { Accepted(w, Cmd("craft", a, data: "pill")); FinishAction(); }
+    var pill = w.Checkpoint().Items.Single(i => i.Owner == a && i.Definition == "pill"); Accepted(w, Cmd("use", a, pill.Id));
     Check(w.Checkpoint().Items.All(i => i.Id != pill.Id), "실제 복용 소비");
 });
 Test("INV-020 조직 금고·정책 예약·해산 역사", () =>
@@ -160,7 +173,7 @@ Test("INV-020 조직 금고·정책 예약·해산 역사", () =>
     var (w, a, b) = Fresh(); Accepted(w, Cmd("possess", a)); Accepted(w, Cmd("found", a, data: "sect"));
     w.AdvanceTo(1); var g = w.Checkpoint().Groups.Single(g => g.Kind == GroupKind.Sect);
     Accepted(w, Cmd("policy", a, g.Id, 2, Catalog.PolicyNames[0]));
-    Check(w.Checkpoint().Groups.Single(x => x.Id == g.Id).PolicyEscrow > 0, "정책 예산 예약");
+    Check(w.Checkpoint().Politics.Preparations.Any(preparation => preparation.Group == g.Id && preparation.Escrow > 0), "정책 예산 예약");
     w = GameCodec.Decode(GameCodec.Encode(w)); w.AdvanceTo(2);
     Check(w.Checkpoint().Groups.Single(x => x.Id == g.Id).Policies[Catalog.PolicyNames[0]] == 2, "정책 시행");
     Accepted(w, Cmd("dissolve", a, g.Id)); Invariants.Validate(w.Checkpoint());
@@ -171,7 +184,7 @@ Test("INV-013/014 화신 대원만 경계·실제 사망·대기·출생", () =>
     foreach (var layer in Enumerable.Range(8, 2))
     {
         var (w, a, b) = Fresh(new() { ["soul.crossing"] = 0, ["birth.enabled"] = 0 });
-        var s = w.Checkpoint(); var p = s.People[0]; p.Realm = Realm.Spirit; p.Layer = layer; p.GreatPerfection = layer == 9; p.Lifespan = 1201;
+        var s = w.Checkpoint(); var p = s.People[0]; WorldScenarioFixtures.SetCultivation(s, p, Realm.Spirit, layer, layer == 9); p.Lifespan = 1201;
         w = GameWorld.Restore(s); w.AdvanceTo(1); s = w.Checkpoint();
         Check(s.People[0].Status == LifeStatus.Dead && s.DeathCount == 1, "实际 수명 종료");
         Check(s.Souls.Single(x => x.Id == p.SoulId).Status == (layer == 9 ? "waiting" : "ended"), "최소 경지 완성 경계");
@@ -181,7 +194,15 @@ Test("INV-013/014 화신 대원만 경계·실제 사망·대기·출생", () =>
 Test("INV-023 원영 파단 후 취소 사망·앱 복원은 포기 아님", () =>
 {
     var (w, a, b) = Fresh(); var s = w.Checkpoint(); var p = s.People[0];
-    p.Realm = Realm.GoldenCore; p.Irreversible = true; p.Action = ActionKind.Breakthrough; p.Due = 1;
+    WorldScenarioFixtures.SetCultivation(s, p, Realm.GoldenCore, 9, true);
+    var metadata = s.Cultivation[p.BodyId];
+    s.Cultivation[p.BodyId] = metadata with { Attempt = new CultivationAttempt("fixture-fracture", AttemptKind.RealmBreakthrough,
+        AttemptPhase.Fractured, Realm.NascentSoul, "path.4.0", 0, s.LawRevision,
+        new KnowledgeEvidence("path.4.0", "explicit-fixture", 1, 3000, 0, 0, true, false, "명시적 파단 직후 저장 경계"),
+        [], 5000, 0, 1, 0, new(Realm.GoldenCore, 5000, 10000, 0, metadata.ActivePath))
+        { TargetWork = WorldScenarioFixtures.Policy(s).RequiredWork(Realm.NascentSoul),
+          TargetRootWork = metadata.GrowthBasis!.RootWork, LifespanAward = WorldScenarioFixtures.Policy(s).Lifespan(Realm.NascentSoul) } };
+    p.Irreversible = true; p.Action = ActionKind.Breakthrough; p.Due = 1;
     w = GameWorld.Restore(s); Accepted(w, Cmd("possess", a));
     w = GameCodec.Decode(GameCodec.Encode(w)); Check(w.Checkpoint().People[0].Status == LifeStatus.Alive, "복원은 포기 아님");
     Accepted(w, Cmd("cancel", a)); s = w.Checkpoint();
@@ -207,7 +228,7 @@ Test("INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회", (
 {
     var (w, a, b) = Fresh(); Accepted(w, Cmd("possess", a));
     var baseline = JsonSerializer.Serialize(w.View(b)); var s = w.Checkpoint();
-    s.People[1].Realm = Realm.Mortal; s.People[1].Health = 12; s.People[1].Roots[0] = 0;
+    WorldScenarioFixtures.SetCultivation(s, s.People[1], Realm.Mortal); s.People[1].Health = 12; s.People[1].Roots[0] = 0;
     var changed = GameWorld.Restore(s);
     Check(baseline == JsonSerializer.Serialize(changed.View(b)), "동일 인지에서 숨은 변화 비간섭");
     Check(w.View().Laws.Count == 0 && w.View().Census.Count == 0 && w.View().Hash.Length == 0, "전역 정답 미노출");
@@ -235,7 +256,7 @@ Test("INV-013 혼멸·역사 최고 경지로 자격 우회 없음", () =>
     var (w, a, b) = Fresh(); var s = w.Checkpoint(); s.Souls[0].Integrity = 0;
     s.People[0].Lifespan = 1201; w = GameWorld.Restore(s); w.AdvanceTo(1);
     Check(w.Checkpoint().Souls[0].Status == "destroyed" && w.Checkpoint().Souls[0].Route == 0, "혼멸 윤회 불가");
-    (w,a,b) = Fresh(); s = w.Checkpoint(); s.People[0].Realm = Realm.Mortal; s.People[0].Lifespan = 1201;
+    (w,a,b) = Fresh(); s = w.Checkpoint(); WorldScenarioFixtures.SetCultivation(s, s.People[0], Realm.Mortal); s.People[0].Lifespan = 1201;
     w = GameWorld.Restore(s); w.AdvanceTo(1);
     Check(w.Checkpoint().Souls[0].Route == 0, "과거 반선 형성 기록은 현재 자격 아님");
 });
@@ -282,7 +303,9 @@ Test("INV-015/024 폐품 점수와 기능 결손 분리", () =>
     Check(w.Checkpoint().People[0].Understanding[book.Definition] > knowledge, "결손 없는 폐품 서적 실제 학습");
     s = w.Checkpoint(); s.Items.Single(i => i.Id == book.Id).Defects = ItemDefect.LostCore;
     w = GameWorld.Restore(s); knowledge = w.Checkpoint().People[0].Understanding[book.Definition];
-    Accepted(w, Cmd("study", a, book.Id)); w.AdvanceTo(2);
+    var damaged = w.StateHash();
+    Check(!w.Execute(Cmd("study", a, book.Id)).Accepted && w.StateHash() == damaged,
+        "읽을 수 없는 실제 결손 매체는 시작 전에 원자 거부");
     Check(w.Checkpoint().People[0].Understanding[book.Definition] == knowledge, "실제 결손은 학습 차단");
 });
 Test("INV-008 장소 ID와 인물 ID 충돌에서 사건 누출 없음", () =>
@@ -299,8 +322,9 @@ foreach (var feature in FeatureScenarioCatalog.Discover()) Test(feature.Name, fe
 if (args.Contains("--report", StringComparer.Ordinal))
 {
     var index = Array.IndexOf(args, "--report");
-    File.WriteAllText(args[index + 1], JsonSerializer.Serialize(new { total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));
+    File.WriteAllText(args[index + 1], JsonSerializer.Serialize(new { selection = selectedScenario ?? "all", total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));
 }
+if (results.Count == 0) throw new ArgumentException("일치하는 기능 시나리오가 없습니다.");
 Console.WriteLine($"RESULT {results.Count - failed}/{results.Count}");
 if (failed == 0 && args.Contains("--performance", StringComparer.Ordinal))
     PerformanceScenarios.Run(args[Array.IndexOf(args, "--performance") + 1]);

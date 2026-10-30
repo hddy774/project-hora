@@ -105,7 +105,8 @@ public sealed partial class GameWorld
         mother.NextBirth = Month + pregnancy.Recovery;
         mother.Health = Math.Max(1, mother.Health - pregnancy.HealthCost);
         state.BirthCount++;
-        mother.KnownPeople.Add(p.Id); father.KnownPeople.Add(p.Id);
+        mother.KnownPeople.Add(p.Id);
+        if (father.Status == LifeStatus.Alive && father.Place == p.Place) father.KnownPeople.Add(p.Id);
         Event("출생", p.Id, mother.Id, $"{p.Name} 탄생·실제 부모/새 육신·단일 영혼 배정", $"임신 {pregnancy.Id}·법칙 r{pregnancy.LawRevision}");
     }
 

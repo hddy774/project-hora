@@ -146,6 +146,7 @@ public static class CultivationProfiles
         {
             BodyId = body, SoulId = soul, RootOrigin = "창세 조건", ActivePath = path,
             RootGrowth = Elements.Uniform(policy.RequiredWork(Realm.Qi) / 5), Structure = structure,
+            GrowthBasis = new(policy.Revision, required, policy.RequiredWork(Realm.Qi) / 5, policy.RequiredWork(Realm.Mortal)),
             Formations = [new(Realm.HalfImmortal, path, 7000, FormationKeys(Realm.HalfImmortal).Select(k => new FormationFactor(k, 7000)).ToArray(),
                 month, 0, policy.Revision, null, null, "창세 조건")]
         };

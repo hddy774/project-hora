@@ -137,9 +137,16 @@ public sealed record ParentStructureEvidence(Realm Realm, int Quality, int Matur
 public sealed record CultivationFormation(Realm Realm, string Path, int Quality, IReadOnlyList<FormationFactor> Factors,
     long Month, int Place, long LawRevision, KnowledgeEvidence? Knowledge, ParentStructureEvidence? Parent, string Source);
 public sealed record PathConversion(string From, string To, long Began, long Completed, int LostProgress, string Source);
+/// <summary>Adopted physical progress units. Later duration edits apply to new structures, not earned work.</summary>
+public sealed record CultivationGrowthBasis(long LawRevision, long RealmWork, long RootWork, long EntryWork);
 public sealed record CultivationAttempt(string Id, AttemptKind Kind, AttemptPhase Phase, Realm TargetRealm, string Path,
     long PreparedMonth, long LawRevision, KnowledgeEvidence Knowledge, IReadOnlyList<long> ReservedItems,
-    int FormationQuality, int Risk, long Due, int RecoveryRemaining, ParentStructureEvidence Parent);
+    int FormationQuality, int Risk, long Due, int RecoveryRemaining, ParentStructureEvidence Parent)
+{
+    public long TargetWork { get; init; }
+    public long TargetRootWork { get; init; }
+    public long LifespanAward { get; init; }
+}
 public sealed record PendingTribulation(int TargetLayer, bool Completion, long Due);
 public sealed record MartialProgress(long Work = 0, int Injury = 0, long LastMonth = -1);
 
@@ -163,6 +170,7 @@ public sealed record CultivationState
     public int Load { get; init; }
     public long EntryWork { get; init; }
     public long EntryLastMonth { get; init; } = -1;
+    public CultivationGrowthBasis? GrowthBasis { get; init; }
     public CultivationAttempt? Attempt { get; init; }
     public PendingTribulation? PendingTrial { get; init; }
     public IReadOnlyList<CultivationFormation> Formations { get; init; } = [];
@@ -200,6 +208,7 @@ public sealed record CultivationPolicy
     public long FoundationLifespanMonths { get; init; } = 3600;
     public long GoldenCoreLifespanMonths { get; init; } = 7200;
     public long HalfImmortalLifespanMonths { get; init; } = 120000;
+    public int UpperLifespanPercent { get; init; } = 200;
 
     public long RequiredWork(Realm realm)
     {
@@ -209,10 +218,16 @@ public sealed record CultivationPolicy
         for (var i = 2; i < (int)realm; i++) months = Math.Min(100000000, months * UpperDurationPercent / 100);
         return checked(months * FlowPerMonth);
     }
-    public long Lifespan(Realm realm) => realm switch
+    public long Lifespan(Realm realm)
     {
-        Realm.Mortal => 960, Realm.Qi => QiLifespanMonths, Realm.Foundation => FoundationLifespanMonths,
-        Realm.GoldenCore => GoldenCoreLifespanMonths, Realm.HalfImmortal => HalfImmortalLifespanMonths,
-        _ => Math.Min(HalfImmortalLifespanMonths, GoldenCoreLifespanMonths * (1L << ((int)realm - 3)))
-    };
+        if (realm == Realm.Mortal) return 960;
+        if (realm == Realm.Qi) return QiLifespanMonths;
+        if (realm == Realm.Foundation) return FoundationLifespanMonths;
+        if (realm == Realm.GoldenCore) return GoldenCoreLifespanMonths;
+        if (realm == Realm.HalfImmortal) return HalfImmortalLifespanMonths;
+        var lifespan = GoldenCoreLifespanMonths;
+        for (var current = Realm.GoldenCore; current < realm; current++)
+            lifespan = Math.Min(HalfImmortalLifespanMonths, lifespan * UpperLifespanPercent / 100);
+        return lifespan;
+    }
 }

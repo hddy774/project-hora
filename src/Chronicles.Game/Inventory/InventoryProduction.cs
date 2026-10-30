@@ -44,9 +44,13 @@ public static partial class InventoryEngine
         if (!state.Materials.TryGetValue(definition, out var flow)) state.Materials.Add(definition, flow = new());
         return flow;
     }
-    private static void ConsumePhysical(InventoryState state, Item item, int quantity, bool loss = false)
+    private static void ConsumePhysical(InventoryState state, Item item, int quantity, bool loss = false, long actor = 0)
     {
         Require(quantity > 0 && quantity <= item.Quantity, "Invalid physical consumption.");
+        state.Ledger.Events.Add(new(state.Month, loss ? "physical-loss" : "physical-consumption", actor, item.Id,
+            "Actual stock decrement before removing the physical instance.", checked(state.Ledger.NextEventSequence++), item.Definition,
+            quantity, Location(state, item.Id), item.Owner, item.Source, loss, item.Quality, item.Damage, item.Defects,
+            IsAccessible(state, item.Owner, item.Id, requireUncommitted: false)));
         if (loss) Flow(state, item.Definition).Loss = checked(Flow(state, item.Definition).Loss + quantity);
         else Flow(state, item.Definition).Consumption = checked(Flow(state, item.Definition).Consumption + quantity);
         item.Quantity -= quantity; if (item.Quantity == 0) Remove(state, item);
@@ -80,6 +84,7 @@ public static partial class InventoryEngine
         var bindings = inputs.Where(i => i.BoundSoul != 0).Select(i => i.BoundSoul).Distinct().ToArray();
         Require(bindings.Length <= 1, "Different soul bindings cannot be combined.");
         var job = new ProductionJob { Id = Id(state), Actor = actor.Id, Recipe = recipe.Id, Place = actor.Place,
+            OutputDefinition = recipe.Output, OutputQuantity = recipe.Quantity,
             Due = command.Due, Labor = labor, Reservation = reservation.Id, Inputs = inputs.Select(i => i.Id).ToList(),
             Quality = (int)(inputs.Sum(i => (long)i.Quality * i.Quantity) / Math.Max(1, quantity)),
             Damage = inputs.Max(i => i.Damage), Defects = inputs.Aggregate(ItemDefect.None, (defects, item) => defects | item.Defects),
@@ -103,7 +108,7 @@ public static partial class InventoryEngine
         {
             var item = ItemAt(state, id);
             Require(item.Reserved == job.Reservation && item.Owner == command.Actor && Location(state, id) == job.Place, "Reserved ingredient became inaccessible.");
-            job.Consumed.Add(new(item.Definition, item.Quantity)); ConsumePhysical(state, item, item.Quantity);
+            job.Consumed.Add(new(item.Definition, item.Quantity)); ConsumePhysical(state, item, item.Quantity, actor: command.Actor);
         }
         job.Status = "processing"; Event(state, "process", job.Actor, job.Id, "Inputs consumed at the process boundary."); return job.Id;
     }
@@ -115,10 +120,12 @@ public static partial class InventoryEngine
         if (job.Source != 0)
         {
             var source = state.Ledger.Sources.Single(s => s.Id == job.Source);
+            if (job.OutputDefinition.Length == 0) job.OutputDefinition = source.Definition;
+            Require(source.Definition == job.OutputDefinition, "Natural source changed after the extraction commitment.");
             Require(source.Remaining >= job.OutputQuantity, "Reserved natural stock is missing."); source.Remaining -= job.OutputQuantity;
             Event(state, "source-depletion", job.Actor, source.Id, $"job:{job.Id}:quantity:{job.OutputQuantity}:success:{command.Succeeded}");
             if (command.Succeeded)
-                subject = Produce(state, job.Actor, source.Definition, job.OutputQuantity, job.Quality, ItemDefect.None, 0,
+                subject = Produce(state, job.Actor, job.OutputDefinition, job.OutputQuantity, job.Quality, ItemDefect.None, 0,
                     $"extraction:{source.Id}:job:{job.Id}", [source.Origin], true).Id;
         }
         else if (command.Succeeded && job.Recipe == "repair")
@@ -161,7 +168,8 @@ public static partial class InventoryEngine
         else if (command.Succeeded)
         {
             var recipe = InventoryDefinitions.Recipes[job.Recipe];
-            var output = Produce(state, job.Actor, recipe.Output, recipe.Quantity, job.Quality, job.Defects, job.BoundSoul,
+            if (job.OutputDefinition.Length == 0) { job.OutputDefinition = recipe.Output; job.OutputQuantity = recipe.Quantity; }
+            var output = Produce(state, job.Actor, job.OutputDefinition, job.OutputQuantity, job.Quality, job.Defects, job.BoundSoul,
                 $"production:job:{job.Id}", job.Provenance); output.Damage = job.Damage;
             subject = output.Id;
             if (command.AwardSkill)
@@ -198,7 +206,7 @@ public static partial class InventoryEngine
         var reservation = Reservation(state, actor.Id, "extraction");
         var labor = AddLabor(state, actor.Id, source.Activity, state.Month, command.Due, command.LaborUnits);
         var job = new ProductionJob { Id = Id(state), Actor = actor.Id, Recipe = "extraction", Source = source.Id, Place = actor.Place,
-            Due = command.Due, Labor = labor, Reservation = reservation.Id, OutputQuantity = command.Quantity, Quality = 5000 };
+            Due = command.Due, Labor = labor, Reservation = reservation.Id, OutputDefinition = source.Definition, OutputQuantity = command.Quantity, Quality = 5000 };
         state.Ledger.Jobs.Add(job); return job.Id;
     }
     private static long Consume(InventoryState state, ConsumeItem command)
@@ -221,7 +229,7 @@ public static partial class InventoryEngine
             actor.Health = Math.Max(1, actor.Health - 20);
             state.Ledger.Effects.Add(new(cause + ":contamination", actor.Id, "toxicity", 20, state.Month, state.Month));
         }
-        ConsumePhysical(state, item, 1); Event(state, "use", actor.Id, item.Id, cause); return item.Id;
+        ConsumePhysical(state, item, 1, actor: actor.Id); Event(state, "use", actor.Id, item.Id, cause); return item.Id;
     }
     private static long Repair(InventoryState state, RepairItem command)
     {

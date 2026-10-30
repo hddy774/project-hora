@@ -15,6 +15,7 @@ public static class InventoryDefinitions
     public static IReadOnlyDictionary<string, ItemDefinition> SharedItems { get; } = new ReadOnlyDictionary<string, ItemDefinition>(
         Items.ToDictionary(pair => pair.Key, pair => pair.Value.Item, StringComparer.Ordinal));
     public static IReadOnlyDictionary<string, ProductionRecipe> Recipes { get; } = BuildRecipes();
+    public static IReadOnlyList<Recipe> SharedRecipes { get; } = BuildSharedRecipes();
     public static IReadOnlyList<ResourceRoute> Resources { get; } = BuildRoutes();
 
     public static string? ExtractionActivity(string id) => Resources.FirstOrDefault(route => route.Definition == id)?.Producer
@@ -36,6 +37,7 @@ public static class InventoryDefinitions
                 Array.AsReadOnly(definition.EquipmentSlot < 0 ? [] : new[] { definition.EquipmentSlot }), effect,
                 effect == "healing" ? 20 : 10));
         }
+        items.Add("blankBook", new(new("blankBook", "빈 기록책", ItemKind.Book, 1, 0, -1, "내용 없는 실물 기록 매체"), Array.Empty<int>()));
         items.Add("growthPill", new(new("growthPill", "배원단", ItemKind.Pill, 1, 0, -1, "수행 보조"), Array.Empty<int>(), "growth", 100));
         items.Add("breakthroughPill", new(new("breakthroughPill", "파경단", ItemKind.Pill, 1, 0, -1, "돌파 보조"), Array.Empty<int>(), "breakthrough", 10));
         items.Add("greatWeapon", new(new("greatWeapon", "양수 중검", ItemKind.Weapon, 3, 0, 0, "양손 점유"), TwoHands));
@@ -60,7 +62,7 @@ public static class InventoryDefinitions
         void Add(string id, string skill, string output, int count, params (string Definition, int Count)[] inputs) =>
             recipes.Add(id, new(id, skill, output, count, new ReadOnlyDictionary<string, int>(
                 inputs.ToDictionary(x => x.Definition, x => x.Count, StringComparer.Ordinal))));
-        foreach (var recipe in Catalog.Recipes)
+        foreach (var recipe in Catalog.BaseRecipes)
             recipes.Add(recipe.Id, new(recipe.Id, recipe.Skill, recipe.Output, recipe.Quantity,
                 new ReadOnlyDictionary<string, int>(recipe.Inputs.ToDictionary(x => x.Key, x => x.Value, StringComparer.Ordinal))));
         recipes.Remove("bag"); recipes.Remove("soulWard");
@@ -92,10 +94,19 @@ public static class InventoryDefinitions
             Add($"consume.{R(11)}", "farm", "food", 2, (R(11), 2), (R(6), 1));
             Add($"consume.{R(12)}", "farm", R(11), 3, (R(12), 1), (R(6), 1));
             Add($"consume.{R(13)}", "smith", "cloth", 2, (R(13), 2));
-            Add($"consume.{R(14)}", "scholar", "path.1.0", 1, (R(14), 2), (R(9), 1));
+            Add($"consume.{R(14)}", "scholar", "blankBook", 1, (R(14), 2), (R(9), 1));
             Add($"consume.{R(15)}", "smith", "bag", 1, (R(15), 1), (R(13), 2));
         }
         return new(recipes);
+    }
+
+    private static ReadOnlyCollection<Recipe> BuildSharedRecipes()
+    {
+        var names = Catalog.BaseRecipes.ToDictionary(recipe => recipe.Id, recipe => recipe.Name, StringComparer.Ordinal);
+        return Recipes.Values.OrderBy(recipe => recipe.Id, StringComparer.Ordinal).Select(recipe => new Recipe(recipe.Id,
+            names.GetValueOrDefault(recipe.Id, Definition(recipe.Output).Item.Name + " 공정"), recipe.Skill, recipe.Output, recipe.Quantity,
+            recipe.Inputs.OrderBy(input => input.Key, StringComparer.Ordinal).Select(input => new KeyValuePair<string, int>(input.Key, input.Value)).ToArray()))
+            .ToList().AsReadOnly();
     }
 
     private static ReadOnlyCollection<ResourceRoute> BuildRoutes() => ResourceCatalog.All.Select(resource =>

@@ -73,7 +73,7 @@ public sealed partial class GameWorld
         foreach (var old in state.Contracts.OrderBy(c => c.Id))
         {
             var reservation = old.Status == "open" ? Id() : 0;
-            var contract = new InventoryContract { Id = old.Id, Kind = old.Kind, Seller = old.Seller, Buyer = old.Buyer,
+            var contract = new InventoryContract { Id = old.Id, Kind = old.Kind, Seller = old.Seller, Buyer = old.Kind == "transport" && old.Buyer == 0 ? old.Seller : old.Buyer,
                 Carrier = old.Carrier, Item = old.Item, Origin = old.Destination, Destination = old.Destination,
                 Price = old.Price, Escrow = old.Escrow, Due = old.Due, Status = old.Status, Reservation = reservation };
             if (items.TryGetValue(old.Item, out var item))
@@ -105,6 +105,7 @@ public sealed partial class GameWorld
             state.Inventory.Reservations.Add(new() { Id = reservation, Actor = p.Id, Purpose = "legacy-production", Items = input.Select(i => i.Id).ToList() });
             state.Inventory.Labor.Add(new() { Id = labor, Person = p.Id, Purpose = "production", Start = Math.Max(0, Math.Min(Month, p.Due - 1)), End = Math.Max(Month + 1, p.Due), Units = 100 });
             var job = new ProductionJob { Id = jobId, Actor = p.Id, Recipe = p.ActionData, Place = p.Place, Due = p.Due,
+                OutputDefinition = InventoryDefinitions.Recipes[p.ActionData].Output, OutputQuantity = InventoryDefinitions.Recipes[p.ActionData].Quantity,
                 Labor = labor, Reservation = reservation, Status = "processing", Inputs = input.Select(i => i.Id).ToList(),
                 Quality = (int)(input.Sum(i => (long)i.Quantity * i.Quality) / input.Sum(i => (long)i.Quantity)),
                 Damage = input.Max(i => i.Damage), BoundSoul = input.Where(i => i.BoundSoul != 0).Select(i => i.BoundSoul).Distinct().SingleOrDefault(),
@@ -138,6 +139,26 @@ public sealed partial class GameWorld
         }
         return inventory;
     }
+    private bool InventoryAccessible(Person p, long id, out Item item, ItemKind? kind = null)
+    {
+        var view = new InventoryState { Month = Month, NextId = state.NextId, Revision = Revision,
+            Items = state.Items, People = state.People, Materials = state.Materials, Ledger = state.Inventory };
+        if (items.TryGetValue(id, out var found) && (kind is null || InventoryDefinitions.Definition(found.Definition).Item.Kind == kind) &&
+            InventoryEngine.IsAccessible(view, p.Id, id)) { item = found; return true; }
+        item = null!; return false;
+    }
+    private void RecordInventoryLoss(Item item, int quantity)
+    {
+        if (quantity <= 0) return;
+        var view = new InventoryState { Items = state.Items, People = state.People, Ledger = state.Inventory };
+        var place = InventoryEngine.Location(view, item.Id);
+        var observed = InventoryEngine.IsAccessible(view, item.Owner, item.Id, requireUncommitted: false);
+        state.Inventory.Events.Add(new(Month, "physical-loss", 0, item.Id, "Actual physical loss before decrement.",
+            checked(state.Inventory.NextEventSequence++), item.Definition, quantity, place, item.Owner, item.Source, true,
+            item.Quality, item.Damage, item.Defects, observed));
+    }
+    private int AvailableInventory(Person p, string definition) => Owned(p.Id).Where(i => i.Definition == definition &&
+        InventoryAccessible(p, i.Id, out _)).Sum(i => i.Quantity);
     private void ApplyInventory(InventoryState inventory)
     {
         state.Inventory = inventory.ApplyTo(state); Reindex(); ProjectInventorySources(); ProjectInventoryContracts();
@@ -271,6 +292,7 @@ public sealed partial class GameWorld
     { p.Action = ActionKind.Idle; p.ActionTarget = 0; p.ActionData = ""; p.Due = 0; }
     private bool CompleteInventory(Person p)
     {
+        if (p.Due > Month) return false;
         var job = state.Inventory.Jobs.SingleOrDefault(j => j.Id == p.ActionTarget && j.Actor == p.Id);
         if (job is not null)
         {
@@ -305,6 +327,9 @@ public sealed partial class GameWorld
         if (cargo.Status == "open")
         {
             var route = items.TryGetValue(cargo.Item, out var physicalCargo) && physicalCargo.Place == -1 && p.Place == cargo.Origin && !p.Sealed && state.Places[p.Place].Neighbors.Contains(cargo.Destination) && state.Places[cargo.Destination].BlockedUntil <= Month;
+            if (route && p.Realm >= Realm.Mahayana && p.Place / 10 != cargo.Destination / 10 && Math.Max(p.Place, cargo.Destination) >= 90 &&
+                Roll(10000) < Law("hazard.portalChance"))
+            { EndLife(p, 10, "실제 운송 통로 붕괴·육신 유지 불가"); return true; }
             if (route) { state.Places[p.Place].PeopleRevision++; p.Place = cargo.Destination; state.Places[p.Place].PeopleRevision++; p.LastPeopleRevision = -1; RefreshPopulationIndices(); Observe(p); }
             var error = RunInventory(new FinishTransport(InventoryNonce("delivery", p.Id), p.Id, cargo.Id, route), out _);
             if (error is not null) RunInventory(new FinishTransport(InventoryNonce("delivery-failed", p.Id), p.Id, cargo.Id, false), out _);
@@ -365,6 +390,11 @@ public sealed partial class GameWorld
         foreach (var item in state.Items)
         {
             if (item.Damage < 100 && (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0) continue;
+            foreach (var array in state.Inventory.Arrays.Where(a => a.Item == item.Id))
+            {
+                array.Condition = 0; array.Active = false;
+                state.Inventory.Effects.RemoveAll(e => e.Cause.StartsWith($"array:{array.Id}:", StringComparison.Ordinal));
+            }
             foreach (var person in state.People)
                 foreach (var slot in person.Equipment.Where(e => e.Value == item.Id).Select(e => e.Key).ToArray()) person.Equipment.Remove(slot);
             foreach (var child in state.Items.Where(i => i.Container == item.Id).ToArray())

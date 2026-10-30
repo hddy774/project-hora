@@ -31,6 +31,11 @@ def settle(page):
     page.evaluate('() => queue')
 
 
+def assert_no_horizontal_overflow(page):
+    overflow=page.evaluate('() => ({document:document.documentElement.scrollWidth>innerWidth,body:document.body.scrollWidth>innerWidth})')
+    assert not overflow['document'] and not overflow['body'], overflow
+
+
 def nav(page, label):
     page.get_by_role('navigation', name='주 메뉴').get_by_role('button', name=label, exact=True).click()
     settle(page)
@@ -102,8 +107,9 @@ def social_workflows(page, width):
 
     proposer = page.evaluate('() => view.actor')
     recipient = page.evaluate('(who)=>view.people.find(p=>p.id!==who).id', proposer)
+    claims_before = page.evaluate('() => view.receivedClaims')
     propose('requestAssessment', recipient)
-    assert page.evaluate('() => view.receivedClaims.length===0')
+    assert page.evaluate('() => view.receivedClaims') == claims_before
     switch_to(recipient)
     assert page.get_by_role('button', name='받은 개인 요청 1건', exact=True).count() == 1
     page.get_by_role('button', name='받은 개인 요청 1건', exact=True).click(); settle(page)
@@ -146,7 +152,7 @@ def social_workflows(page, width):
     assert page.locator('[data-section="people-ecology"]').count() == 1
     assert page.evaluate('() => view.detail.peopleEcology.person===view.actor && view.detail.peopleEcology.month<=view.month && view.detail.people.innate===null')
     page.locator('[data-section="received-claims"] > summary').click()
-    assert not page.evaluate('() => document.body.scrollWidth > innerWidth')
+    assert_no_horizontal_overflow(page)
     page.screenshot(path=str(out / f'relay-and-habitat-{width}.png'), full_page=True)
     prepare_current(); propose('requestAssessment', recipient)
     switch_to(recipient); consent(accept=False)
@@ -179,7 +185,7 @@ def smoke_checks(browser):
         assert page.evaluate('() => view.people.length===2 && !view.groups.some(g=>g.kind===\'Sect\')')
         for label in ('인물', '지도', '수행', '물품', '세력', '시장', '연대기', '법칙', '세계'):
             nav(page, label)
-            assert not page.evaluate('() => document.body.scrollWidth > innerWidth'), label
+            assert_no_horizontal_overflow(page)
             page.screenshot(path=str(out / f'menu-{label}-{width}.png'), full_page=True)
         nav(page, '지도')
         sizes = page.locator('.map button').evaluate_all('(nodes)=>nodes.map(n=>({w:n.getBoundingClientRect().width,h:n.getBoundingClientRect().height}))')
@@ -197,6 +203,32 @@ def smoke_checks(browser):
         page.evaluate('() => inspect(view.actor)')
         assert page.evaluate('() => !view.observer && view.detail.roots===null && view.detail.people.innate===null && view.detail.combat.length===8')
         play_reply = page.evaluate("() => send({type:'view'})")
+        chosen_path = page.evaluate('() => view.detail.cultivation.path')
+        assert chosen_path and page.evaluate('(path)=>view.paths.some(p=>p.id===path)&&(view.detail.understanding[path]||0)>0', chosen_path)
+        def submit_current_path():
+            page.get_by_role('button',name='공법 선택·수행',exact=True).click()
+            assert page.locator('#cultivationPath option').count() > 0
+            page.get_by_label('이해한 현재 경지 경로').select_option(chosen_path)
+            submit(page)
+            assert page.evaluate("(path)=>activePerson().action==='Cultivate'&&activePerson().actionData===path", chosen_path)
+            practices = page.evaluate('(path)=>view.detail.knowledge.activities.filter(a=>a.workId===path&&a.kind==="Practice"&&a.status==="Active")', chosen_path)
+            assert len(practices) == 1 and practices[0]['adopted']
+            assert page.locator('[data-section="knowledge-activities"]').get_by_text('실습 · 진행 중', exact=False).count() > 0
+            return practices[0]['id']
+        cancelled_practice = submit_current_path()
+        revision = page.evaluate('() => view.revision')
+        page.get_by_role('button',name='작업 취소 요청',exact=True).click()
+        page.keyboard.press('Escape')
+        assert page.evaluate('() => view.revision') == revision
+        assert page.evaluate("() => activePerson().action==='Cultivate'")
+        page.get_by_role('button',name='작업 취소 요청',exact=True).click()
+        submit(page,'취소 요청 제출')
+        assert page.evaluate("(id)=>activePerson().action==='Idle'&&view.detail.knowledge.activities.some(a=>a.id===id&&a.status==='Cancelled')", cancelled_practice)
+        completed_practice = submit_current_path()
+        page.get_by_role('button',name='1개월',exact=True).click(); settle(page)
+        assert page.evaluate("(id)=>activePerson().action==='Idle'&&view.detail.knowledge.activities.some(a=>a.id===id&&a.status==='Completed'&&a.ended===view.month&&a.outcome!==null)", completed_practice)
+        assert page.evaluate('(path)=>view.detail.cultivation.path===path', chosen_path)
+
         nav(page,'수행')
         page.screenshot(path=str(out / f'personal-cultivation-{width}.png'), full_page=True)
         page.evaluate('() => inspect(view.actor)')
@@ -207,6 +239,7 @@ def smoke_checks(browser):
         page.get_by_role('button', name='이 인물로 플레이', exact=True).click(); settle(page)
         page.evaluate('() => inspect(view.actor)')
         assert page.evaluate('(id)=>view.actor===id && view.detail.person.id===id', other)
+        cancel_action(page); page.evaluate('() => inspect(view.actor)')
         open_item(page, '채집 도구')
         page.get_by_role('button', name='도구 장착 요청', exact=True).click(); settle(page)
         assert page.evaluate('() => recentCommand.accepted')
@@ -256,8 +289,19 @@ def smoke_checks(browser):
         page.evaluate('(id)=>inspect(id)', created['id'])
         assert page.evaluate("() => view.detail.people.actualBody.speciesId==='spirit-fox'")
         nav(page, '법칙')
+        page.get_by_role('button',name='값 내보내기',exact=True).click()
+        exported = json.loads(page.get_by_label('복사할 값').input_value())
+        assert exported['version'] == page.evaluate('() => view.version')
+        assert exported['laws'] == page.evaluate('() => Object.fromEntries(view.laws.map(l=>[l.id,l.value]))')
+        page.keyboard.press('Escape')
         changes = page.evaluate('() => Object.fromEntries(view.laws.slice(0,2).map(l=>[l.id,l.value===l.maximum?l.value-1:l.value+1]))')
         page.get_by_role('button', name='값 가져오기', exact=True).click()
+        revision = page.evaluate('() => view.revision')
+        page.get_by_label('내보낸 JSON 값 붙여넣기').fill('{"laws":{"not.a.world.law":1}}')
+        page.get_by_role('button',name='차이 검토',exact=True).click()
+        assert page.locator('#dialog-error').inner_text()
+        assert page.locator('#dialog').evaluate('(d)=>d.open')
+        assert page.evaluate('() => view.revision') == revision
         page.get_by_label('내보낸 JSON 값 붙여넣기').fill(json.dumps({'laws': changes}))
         page.get_by_role('button', name='차이 검토', exact=True).click()
         assert page.get_by_role('heading', name='가져올 법칙 차이 검토', exact=True).count() == 1
@@ -277,21 +321,33 @@ def smoke_checks(browser):
         assert page.evaluate('() => view.laws.every(l=>l.value===l.defaultValue)')
         page.get_by_role('button', name='저장', exact=True).click(); settle(page)
         saved = page.evaluate('() => view.hash')
+        page.evaluate('() => inspect(view.people[0].id)')
+        page.get_by_role('button',name='이 인물로 플레이',exact=True).click(); settle(page)
+        page.get_by_role('button',name='인물 목록',exact=True).click(); settle(page)
+        page.get_by_role('searchbox').fill('청명')
+        page.get_by_role('button',name='상세',exact=True).click(); settle(page)
+        assert page.evaluate('() => !view.observer && history.length>0 && Object.keys(searchByTab).length>0')
+
         page.get_by_role('button', name='불러오기', exact=True).click()
         page.get_by_role('dialog').get_by_role('button', name='불러오기', exact=True).click(); settle(page)
         assert page.evaluate('() => view.hash') == saved
+        assert page.evaluate('() => view.observer && view.actor===0 && view.detail===null && history.length===0 && Object.keys(searchByTab).length===0 && recentCommand===null')
+        assert not page.locator('#dialog').evaluate('(d)=>d.open')
+        assert page.locator('#dialogform').inner_text() == ''
+
         if args.legacy_dom:
             assert page.evaluate("() => document.documentElement.hasAttribute('data-shell-legacy-grid') && typeof globalThis==='object' && typeof Object.fromEntries==='function' && typeof [].at==='function'")
             assert page.locator('#dialog').get_attribute('data-shell-legacy-dialog') is not None
             assert page.evaluate('() => n(1234567)') == '1,234,567'
         assert page.evaluate('() => window.seonroLastHostError==null'), page.evaluate('() => window.seonroLastHostError')
         assert not errors, errors
-        assert not page.evaluate('() => document.body.scrollWidth > innerWidth')
+        assert_no_horizontal_overflow(page)
         page.screenshot(path=str(out / f'smoke-{width}.png'), full_page=True)
         results.append({'kind':'real_session_functional_smoke' if args.smoke_only else 'real_session_functional','width':width,'asset':'committed_chrome51' if args.compat else 'authoring',
                         'forced_legacy_dom':args.legacy_dom,'tabs':9,'javascript_errors':errors,'touch_targets_44px':True,
                         'known_actor_switch':True,'equipment_use':True,'known_ally_guard':True,'species_creation':True,'atomic_law_batch':True,
-                        'new_world_law_choice':True,'save_load':True,'native_api24_verified':False,**social})
+                        'new_world_law_choice':True,'save_load':True,'document_horizontal_overflow':False,'selected_known_path_command':True,
+                        'save_load_scope_cleanup':True,'law_export_import_validation_and_apply':True,'native_api24_verified':False,**social})
         context.close()
     return observer_reply,play_reply
 

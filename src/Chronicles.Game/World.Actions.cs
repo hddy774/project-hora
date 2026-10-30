@@ -10,7 +10,7 @@ public sealed partial class GameWorld
         {
             var regeneration = IntLaw("ecology.regrowth");
             var cap = IntLaw("ecology.sourceCapacity");
-            place.Source = (int)Math.Min(cap, (long)place.Source + regeneration);
+            if (!state.Inventory.Initialized) place.Source = (int)Math.Min(cap, (long)place.Source + regeneration);
             place.Qi = (int)Math.Min(cap, (long)place.Qi + regeneration);
             if (place.Facilities.Contains("수행 진법") && place.Qi > 0) place.Qi--;
             if (Month % 12 == 0 && Roll(10000) < Law("ecology.disasterChance"))
@@ -57,13 +57,13 @@ public sealed partial class GameWorld
             p.Reason = "양육 노동 부족·실제 보호자 필요";
         }
         p.Traits.RemoveAll(t => t.Expires <= Month);
-        var soul = souls[p.SoulId];
-        if (soul.Route > 0 && Month - p.Born > Law("birth.maturity"))
-            soul.Traces = soul.Traces.Select(t => t with { Accessible = Math.Min(t.Preserved, t.Accessible + 1) }).ToArray();
     }
 
     private void Complete(Person p)
     {
+        var completed = p.Action;
+        if (CompleteCultivation(p) || CompleteKnowledge(p) || CompleteInventory(p))
+        { RecordCompletedHabit(p, completed); return; }
         var action = p.Action; var target = p.ActionTarget; var data = p.ActionData;
         RecordCompletedHabit(p, action);
         p.Action = ActionKind.Idle; p.Due = 0;

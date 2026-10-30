@@ -90,7 +90,11 @@ public static class ExplorationAuthority
         if (data is null || !data.Initialized || data.NextId <= 0 || data.Sites is null || data.Entries is null || data.Observations is null || data.Claims is null ||
             data.Sites.Count != 10 || data.Sites.Select(s => s.Place).Distinct().Count() != 10 ||
             data.Entries.Select(e => e.Id).Distinct().Count() != data.Entries.Count ||
+            data.Entries.SelectMany(e => new[] { e.ToolReservation, e.FoodReservation }).Distinct().Count() != data.Entries.Count * 2 ||
+            data.Entries.OrderBy(e => e.FoodConsumptionSequence).Zip(data.Entries.OrderBy(e => e.FoodConsumptionSequence).Skip(1))
+                .Any(pair => pair.First.FoodFinishedSequence >= pair.Second.FoodConsumptionSequence) ||
             data.Claims.Select(c => c.Entry).Distinct().Count() != data.Claims.Count || data.Claims.Count != data.Entries.Count(e => e.RewardQuantity > 0) ||
+            data.Claims.Select(c => c.Item).Distinct().Count() != data.Claims.Count ||
             data.NextId <= data.Entries.Select(e => e.Id).DefaultIfEmpty().Max())
             throw new InvalidDataException("비경 원천·입장 식별자가 초기 세계와 일치하지 않습니다.");
         foreach (var site in data.Sites)
@@ -126,7 +130,7 @@ public static class ExplorationAuthority
                 e.Injury < 0 || e.Injury > rules.Injury || e.Injury > 0 && (!e.RiskApplied || e.Roll >= e.Risk) ||
                 e.RewardQuantity < 0 || (e.RewardQuantity == 0) != (e.RewardItem == 0) ||
                 e.Status == SecretEntryStatus.Completed && (e.Progress != rules.Months || e.Roll < e.Risk) ||
-                string.IsNullOrWhiteSpace(e.Source) || string.IsNullOrWhiteSpace(e.KnowledgeSource))
+                e.Source != "exploration:" + e.Id.ToString(System.Globalization.CultureInfo.InvariantCulture) || string.IsNullOrWhiteSpace(e.KnowledgeSource))
                 throw new InvalidDataException("비경 입장의 실제 몸·시간·준비·위험 영수증이 올바르지 않습니다.");
             var consumed = state.Inventory.Events.Where(r => r.Sequence >= e.FoodConsumptionSequence && r.Sequence <= e.FoodFinishedSequence &&
                 r.Kind == "physical-consumption" && r.Actor == e.Person && r.Definition == "food" && !r.IsLoss).Sum(r => r.Quantity);

@@ -143,6 +143,11 @@ public sealed class ExplorationFirstClaimScenario : IFeatureScenario
         f.Idle(f.First); f.Send("possess", f.First); f.Send("enterSecret", f.First, 8); f.World.AdvanceTo(f.World.Month + 3);
         ExplorationFixture.Check(f.Last(f.First).RewardQuantity == 0 && f.World.Checkpoint().Exploration.Entries.Sum(e => e.RewardQuantity) == 3,
             "실패/재입장이 이미 선점한 보상을 다시 발행했다.");
+        var reused = f.World.Checkpoint(); var original = reused.Exploration.Entries[0]; var last = reused.Exploration.Entries.Last();
+        last.FoodReservation = original.FoodReservation; last.FoodConsumptionSequence = original.FoodConsumptionSequence;
+        last.FoodFinishedSequence = original.FoodFinishedSequence;
+        var rejected = false; try { GameWorld.Restore(reused); } catch (InvalidDataException) { rejected = true; }
+        ExplorationFixture.Check(rejected, "예전 입장의 소비 영수증을 다른 실제 입장에 재사용했다.");
     }
 }
 

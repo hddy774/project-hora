@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "kind": "기존314 원문의 L05 관련 실제 등록 검사 29개 읽기 대조",
+  "executed_source": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+  "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "report_path": "docs/evidence/0.2.1/invariant-final-94ccb5d/functional.json",
+  "report_sha256": "afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616",
+  "report_selection": "all",
+  "report_total": 314,
+  "report_failed": 0,
+  "new_test_execution": false,
+  "features": [
+    {
+      "class": "AgentPlanningProductionScenario",
+      "name": "INV-004/008/017/018 agent planning: unknown source discovery then real extraction and production complete a saved goal",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 48,
+      "functional_result_index_zero_based": 86,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningTradeScenario",
+      "name": "INV-008/017/018 agent planning: production surplus becomes a real public offer and another actor buys from its own need",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 73,
+      "functional_result_index_zero_based": 91,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningFailureScenario",
+      "name": "INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 100,
+      "functional_result_index_zero_based": 84,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningInformationFairnessScenario",
+      "name": "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 123,
+      "functional_result_index_zero_based": 85,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningBudgetScenario",
+      "name": "INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 148,
+      "functional_result_index_zero_based": 81,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningReplayScenario",
+      "name": "INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 170,
+      "functional_result_index_zero_based": 88,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningRegistryScenario",
+      "name": "INV-008/017/024 agent planning: an advanced authoritative recipe uses learned method and discovered actual family resources",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 185,
+      "functional_result_index_zero_based": 87,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningTeacherScenario",
+      "name": "INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 206,
+      "functional_result_index_zero_based": 90,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningDispositionScenario",
+      "name": "INV-006/008 agent planning: all fourteen axes affect scored goals and actual mood and completed habits change choice",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 251,
+      "functional_result_index_zero_based": 83,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningCooperationScenario",
+      "name": "INV-008/018 agent planning: cooperation repays an actual personal obligation without inventing another person's intent",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 299,
+      "functional_result_index_zero_based": 82,
+      "passed": true
+    },
+    {
+      "class": "AgentPlanningRetreatScenario",
+      "name": "INV-006/008/021 agent planning: cached hostility chooses a known retreat and baseline founders are never forced into fatal conflict",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "class_line": 320,
+      "functional_result_index_zero_based": 89,
+      "passed": true
+    },
+    {
+      "class": "AgentEcologyTradeIntegrationScenario",
+      "name": "INV-008/017/018 agent planning: 실제 정책 비축을 넘는 식량을 일반 거래 목표에서 출품하고 보유 실물만 인도한다",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentEcologyTradeIntegrationScenario.cs",
+      "class_line": 3,
+      "functional_result_index_zero_based": 79,
+      "passed": true
+    },
+    {
+      "class": "AgentTradeBudgetBoundaryScenario",
+      "name": "INV-004/006/017/018/021 AI 거래 예산: 마지막 방문 뒤 생계 출품을 유예하고 충분한 예산에서만 실제 거래·환전을 선택한다",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentTradeBudgetScenarios.cs",
+      "class_line": 5,
+      "functional_result_index_zero_based": 92,
+      "passed": true
+    },
+    {
+      "class": "AgentEntrySourceScenario",
+      "name": "INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs",
+      "class_line": 76,
+      "functional_result_index_zero_based": 80,
+      "passed": true
+    },
+    {
+      "class": "AgentCultivationTeachingScenario",
+      "name": "INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs",
+      "class_line": 111,
+      "functional_result_index_zero_based": 78,
+      "passed": true
+    },
+    {
+      "class": "AgentCultivationRelearningScenario",
+      "name": "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs",
+      "class_line": 150,
+      "functional_result_index_zero_based": 77,
+      "passed": true
+    },
+    {
+      "class": "AgentCultivationFailureScenario",
+      "name": "INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs",
+      "class_line": 202,
+      "functional_result_index_zero_based": 75,
+      "passed": true
+    },
+    {
+      "class": "AgentCultivationInformationScenario",
+      "name": "INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다",
+      "path": "tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs",
+      "class_line": 227,
+      "functional_result_index_zero_based": 76,
+      "passed": true
+    },
+    {
+      "class": "CultivationPreparationPublicScenario",
+      "name": "INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수",
+      "path": "tests/Chronicles.Game.Tests/Features/CultivationPreparationEvidenceScenarios.cs",
+      "class_line": 131,
+      "functional_result_index_zero_based": 106,
+      "passed": true
+    },
+    {
+      "class": "CultivationPreparationQiOnlyAiScenario",
+      "name": "INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다",
+      "path": "tests/Chronicles.Game.Tests/Features/CultivationPreparationEvidenceScenarios.cs",
+      "class_line": 176,
+      "functional_result_index_zero_based": 107,
+      "passed": true
+    },
+    {
+      "class": "CultivationPreparationRelearningSourceScenario",
+      "name": "INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다",
+      "path": "tests/Chronicles.Game.Tests/Features/CultivationPreparationEvidenceScenarios.cs",
+      "class_line": 197,
+      "functional_result_index_zero_based": 108,
+      "passed": true
+    },
+    {
+      "class": "EcologyReservationRecoveryScenario",
+      "name": "ecology recovery: 실제 전량 예약 실패 뒤 유료 식량 재관측·알려진 이동·저장·제어 경계",
+      "path": "tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs",
+      "class_line": 58,
+      "functional_result_index_zero_based": 133,
+      "passed": true
+    },
+    {
+      "class": "EcologyTinyBeliefRecoveryScenario",
+      "name": "ecology recovery: 믿음 예산1의 실제 채집 예약 거부와 즉시 퇴출은 무예외·권위·저장 결정론 유지",
+      "path": "tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs",
+      "class_line": 107,
+      "functional_result_index_zero_based": 134,
+      "passed": true
+    },
+    {
+      "class": "EcologyFailureLawScenario",
+      "name": "ecology failure law: 실제 예약 거부 기억의 법칙별 재확인 기간·관측 수명 상한·저장 revision",
+      "path": "tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs",
+      "class_line": 140,
+      "functional_result_index_zero_based": 130,
+      "passed": true
+    },
+    {
+      "class": "EcologyFoodInformationRecoveryScenario",
+      "name": "ecology recovery: 식량 관측 전 숨은 잔량은 선택에 영향 없고 비용 없는 조사·총자원 추정 금지",
+      "path": "tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs",
+      "class_line": 195,
+      "functional_result_index_zero_based": 131,
+      "passed": true
+    },
+    {
+      "class": "EcologyKnownFarmRecoveryScenario",
+      "name": "ecology recovery: 실제 배운 농사·관측한 물과 종자·유료 노동으로 식량 생산하고 저장된 비축법칙 적용",
+      "path": "tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs",
+      "class_line": 259,
+      "functional_result_index_zero_based": 132,
+      "passed": true
+    },
+    {
+      "class": "InventoryFoodObservationScenario",
+      "name": "inventory source observation: 공개 food 선택은 정확한 현지 원천을 실제 비용·한 달·저장 재개로 관측",
+      "path": "tests/Chronicles.Game.Tests/Features/InventorySourceObservationScenarios.cs",
+      "class_line": 18,
+      "functional_result_index_zero_based": 149,
+      "passed": true
+    },
+    {
+      "class": "InventoryLegacyObservationScenario",
+      "name": "inventory source observation: 빈 Data는 기존 첫 미관측 선택을 유지하고 명시 정의는 fallback하지 않음",
+      "path": "tests/Chronicles.Game.Tests/Features/InventorySourceObservationScenarios.cs",
+      "class_line": 48,
+      "functional_result_index_zero_based": 150,
+      "passed": true
+    },
+    {
+      "class": "InventoryObservationDenialScenario",
+      "name": "inventory source observation: 현지 정의 부재·실물 비용 부족은 원천·돈·시간·ID·관측 무변화 거부",
+      "path": "tests/Chronicles.Game.Tests/Features/InventorySourceObservationScenarios.cs",
+      "class_line": 68,
+      "functional_result_index_zero_based": 151,
+      "passed": true
+    }
+  ],
+  "excluded_from_public_timed_evidence": [
+    {
+      "class": "CultivationPreparationContractScenario",
+      "reason": "순수 선택/계약 검사이며 실제 교습·행동 시간 경로로 세지 않는다."
+    },
+    {
+      "class": "CultivationPreparationEvidenceScenario",
+      "reason": "순수 선택/계약 검사이며 실제 교습·행동 시간 경로로 세지 않는다."
+    }
+  ],
+  "scope": "29개는 이미 실행된 전체314의 부분 인용이다. 별도의 29/29 선택 실행이나 새로운 전체 실행을 뜻하지 않는다."
+}

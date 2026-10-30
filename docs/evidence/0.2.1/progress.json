@@ -324,7 +324,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "505efb2a164e98d1903309445bb2e223eb410ab2",
-  "phase": "최종 기능 검증·성장 보정",
+  "source_commit": "b0c993bbf4f5f26b4ece5b00ab1328f78d5a8b71",
+  "phase": "최종 기능 연결 보정·회귀",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

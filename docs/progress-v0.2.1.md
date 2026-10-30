@@ -17,15 +17,15 @@
 
 **현재 단계:** 최종 성능 병목 보정·측정
 
-- 전체 기능258/258 통과 및 154/155 검증 인덱스 보강의 별도 공개 회귀 근거 보존
+- 이전 전체 기능258/258 및 실제 Windows·Android35 CI의261/261 기능·렌더/연결 성공을 출처별로 보존
 - 89d581d의 실제N1000 12개월 완주·저장 왕복 동일: 진행591.99초·누적할당232.49GB, 전체 네규모 수용 미완료
-- private후보에서 재고가 읽는15개 Person 필드만 깊게 복사하는 격리 실험과 IL 읽기집합 guard 준비
-- 공개 strict API·저장 내용·생물/개인 기록을 보존하며 후보의 미사용 데이터 복제 비용을 검증
+- PR158 입력 투영 실험 병합: 재고54/54·환전9/9, 실제 두 공개 시나리오 상태/저장 동일; 앱 기본 경로는 strict 유지
+- 격리된 opt-in 측정으로100명·1000명 비용과 상태/법칙/작업량/저장 크기 비교, 이후 기본 채택 여부 판정
 - 최종 동일 소스의 네 규모·AI·성장·장기 안정성·확장 실험·플랫폼·릴리스 근거 수집 계속
 
 **다음 단계:** 성능·성장·장기 안정성 측정 및 개발 보정 → 최종 전체 기능·실제 플랫폼 재검증 → 기존 인증서 APK와 한글 업데이트 요약 릴리스
 
 성능·성장·장기 안정성 검사는 전체 기능 개발 이후에 진행합니다.
 
-기준 소스: [89d581d6](https://github.com/hddy774/project-hora/commit/89d581d6ad68813c378f495c208c5ee8e8155cad) · [작업 원장](https://github.com/hddy774/project-hora/blob/89d581d6ad68813c378f495c208c5ee8e8155cad/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
+기준 소스: [a2d493e8](https://github.com/hddy774/project-hora/commit/a2d493e89fcf9f099b9d7eea6f28c43715295388) · [작업 원장](https://github.com/hddy774/project-hora/blob/a2d493e89fcf9f099b9d7eea6f28c43715295388/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
 <!-- v021-progress:end -->

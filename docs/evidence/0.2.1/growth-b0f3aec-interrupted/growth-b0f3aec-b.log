@@ -1,0 +1,30 @@
+PASS INV-001/002/011 정확한 창세·안정 신원·100지점
+RESULT 1/1
+GROWTH b/42 month=0/6000 population=2 descendants=0 generation=0 core=2 sects=0 dynasties=0 births=0 deaths=0 elapsed=98.2ms
+GROWTH b/42 month=120/6000 population=3 descendants=1 generation=1 core=2 sects=1 dynasties=0 births=1 deaths=0 elapsed=23438.3ms
+GROWTH b/42 month=240/6000 population=6 descendants=2 generation=1 core=2 sects=1 dynasties=0 births=2 deaths=0 elapsed=44684.0ms
+GROWTH b/42 month=360/6000 population=6 descendants=2 generation=1 core=2 sects=1 dynasties=0 births=2 deaths=0 elapsed=71514.7ms
+GROWTH b/42 month=480/6000 population=6 descendants=2 generation=1 core=2 sects=1 dynasties=0 births=2 deaths=0 elapsed=98048.3ms
+GROWTH b/42 month=600/6000 population=6 descendants=2 generation=1 core=2 sects=1 dynasties=0 births=2 deaths=0 elapsed=128617.0ms
+GROWTH b/42 month=720/6000 population=6 descendants=2 generation=1 core=2 sects=1 dynasties=0 births=2 deaths=0 elapsed=163592.6ms
+GROWTH b/42 month=840/6000 population=6 descendants=2 generation=1 core=2 sects=1 dynasties=0 births=2 deaths=0 elapsed=204362.0ms
+GROWTH b/42 month=960/6000 population=6 descendants=2 generation=1 core=2 sects=1 dynasties=0 births=2 deaths=0 elapsed=249648.5ms
+GROWTH b/42 month=1080/6000 population=3 descendants=1 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=3 elapsed=288441.7ms
+GROWTH b/42 month=1200/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=324569.1ms
+GROWTH b/42 month=1320/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=358582.0ms
+GROWTH b/42 month=1440/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=401683.9ms
+GROWTH b/42 month=1560/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=439800.3ms
+GROWTH b/42 month=1680/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=478870.0ms
+GROWTH b/42 month=1800/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=519423.9ms
+GROWTH b/42 month=1920/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=564272.7ms
+GROWTH b/42 month=2040/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=612030.7ms
+GROWTH b/42 month=2160/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=662638.5ms
+GROWTH b/42 month=2280/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=712066.1ms
+GROWTH b/42 month=2400/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=782532.6ms
+GROWTH b/42 month=2520/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=858901.0ms
+GROWTH b/42 month=2640/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=931456.0ms
+GROWTH b/42 month=2760/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=995029.9ms
+GROWTH b/42 month=2880/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=1056309.8ms
+GROWTH b/42 month=3000/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=1118126.2ms
+GROWTH b/42 month=3120/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=1182820.3ms
+GROWTH b/42 month=3240/6000 population=2 descendants=0 generation=1 core=2 sects=2 dynasties=0 births=2 deaths=4 elapsed=1257784.6ms

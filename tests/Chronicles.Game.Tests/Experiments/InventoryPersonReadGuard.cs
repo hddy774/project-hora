@@ -33,8 +33,10 @@ internal static class InventoryPersonReadGuard
                         var copyNormalizer = method.DeclaringType == typeof(InventoryState) && method.Name == "Copy" && field is "Understanding" or "Beliefs";
                         var passThrough = field == "Work" && ((method.DeclaringType == typeof(InventoryState) && method.Name == "ApplyTo") ||
                             (method.DeclaringType == typeof(InventoryEngine.OwnedTransaction) && method.Name == "CommitTo"));
+                        var typedCopyTransport = method.DeclaringType == typeof(InventoryEngine.OwnedTransaction) && method.Name == "CopyOwnedPerson" &&
+                            Projected.Contains(field, StringComparer.Ordinal);
                         var allowed = target.Name.StartsWith("get_", StringComparison.Ordinal) ? Projected.Contains(field, StringComparer.Ordinal)
-                            : field is "Money" or "Health" or "Skills" or "Equipment" || passThrough;
+                            : field is "Money" or "Health" or "Skills" or "Equipment" || passThrough || typedCopyTransport;
                         if (!allowed && !copyNormalizer) errors.Add($"{method.DeclaringType?.FullName}.{method.Name}: {target.Name}");
                     }
                     else if (target?.DeclaringType?.Assembly == typeof(Person).Assembly &&

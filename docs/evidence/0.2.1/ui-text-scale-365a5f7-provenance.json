@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "kind": "interim-real-session-text-scale-functional",
+  "observed_at_utc": "2026-10-30T14:23:40.731674+00:00",
+  "tested_app_source_commit": "365a5f7d1e96d395a8001509a769f85cd9a3ec78",
+  "tested_app_source_tree": "360efb0b05fb7c1fd49f401f09d4b8e9492a82f5",
+  "base_source_commit": "53e5f1e0c9ac3ceff14ab445a51f70ee5811c8f3",
+  "asset_snapshot_matches_b0f3aec_before_fix": true,
+  "product_change": "모바일toolbar select의max-width100px를100%로변경하고compat자산을재생성했다. 게임·검사C#과기존verify-v021-ui.py는변경하지않았다.",
+  "source_assets": {
+    "src/Chronicles.Shell/index.html": {
+      "before_blob": "9d77da5694ffb22f1f702e580ba4982e29b353d5",
+      "tested_blob": "a3689ab15996733e24206634cf437da6590577de",
+      "tested_sha256": "f1460e454da4184264365019c0f10bd3bc634eea792e1bbfcf91889eca0af204"
+    },
+    "src/Chronicles.Shell/index.compat.html": {
+      "before_blob": "35df25449383ecf9aa83ee215817f6e2577dd724",
+      "tested_blob": "c317b2a3356cf63730d0914d6b9ac7020013bc34",
+      "tested_sha256": "21f7ca84345cc29d564efc961b9391b8cc365b6a9c3cc77f163ece78998d4ee6"
+    },
+    "scripts/verify-v021-ui.py": {
+      "before_blob": "70891eb9a7b7e2ff0eb79f10863aa06218d358c1",
+      "tested_blob": "70891eb9a7b7e2ff0eb79f10863aa06218d358c1",
+      "tested_sha256": "042348d083604c9cb5b837b34d52d4c0a8792e734672cf97fd215cb4ba0adb6b"
+    }
+  },
+  "host": {
+    "url": "http://127.0.0.1:5223",
+    "kind": "fresh temporary Shell entrypoint over actual Chronicles.Hosting.GameSession",
+    "game_and_hosting_build_configuration": "Release",
+    "game_and_hosting_informational_version": "0.2.1+365a5f7d1e96d395a8001509a769f85cd9a3ec78",
+    "build_passed": true,
+    "warnings": 0,
+    "errors": 0,
+    "product_program_source": "src/Chronicles.Shell/Program.cs",
+    "verified_test_program_difference": "Only127.0.0.1:5211 replaced with127.0.0.1:5223 in URL and same-origin check. Product source was not edited.",
+    "temporary_program_sha256": "9175e260eb22573d65436dc9eec09f2e53a17f926cfefe4602691d9508b4e786",
+    "temporary_project_sha256": "54bfad5103d347f62f8f6d2341dbedefbe9785727a5dc2f57c5cda430d547812",
+    "isolated_tmpdir": "/workspace/scratch/ui-t05-53e5-preview/tmp",
+    "embedded_compat_equals_tested_asset": true,
+    "api_mocked": false,
+    "existing_old_preview_hosts_reused": false
+  },
+  "normal_command": "python3 scripts/verify-v021-ui.py <output> --url http://127.0.0.1:5223 --compat --legacy-dom",
+  "normal_passed_widths": [
+    1280,
+    390
+  ],
+  "text_scale_method": {
+    "factor": 2,
+    "method": "test-only CSSOM absolutepxfont-size declarations includingmedia rules andfont shorthand; inheritedfont values kept",
+    "modified_declarations_per_page": 41,
+    "computed_font_samples": [
+      {
+        "width": 1280,
+        "count": 41,
+        "samples": [
+          {
+            "selector": "body",
+            "size": 15,
+            "after": 30
+          },
+          {
+            "selector": "h1",
+            "size": 28,
+            "after": 56
+          },
+          {
+            "selector": "#run",
+            "size": 15,
+            "after": 30
+          },
+          {
+            "selector": "nav button",
+            "size": 15,
+            "after": 30
+          },
+          {
+            "selector": "h2",
+            "size": 27,
+            "after": 54
+          }
+        ],
+        "devicePixelRatio": 1,
+        "method": "test-only CSSOM absolute-px font-size multiplier2; inherited values retained",
+        "actual_touch_navigation": [
+          {
+            "label": "지도",
+            "tap": true,
+            "rect": {
+              "x": 15,
+              "y": 341.390625,
+              "width": 159,
+              "height": 69.5
+            }
+          },
+          {
+            "label": "세계",
+            "tap": true,
+            "rect": {
+              "x": 15,
+              "y": 190.390625,
+              "width": 159,
+              "height": 69.5
+            }
+          }
+        ]
+      },
+      {
+        "width": 390,
+        "count": 41,
+        "samples": [
+          {
+            "selector": "body",
+            "size": 14,
+            "after": 28
+          },
+          {
+            "selector": "h1",
+            "size": 23,
+            "after": 46
+          },
+          {
+            "selector": "#run",
+            "size": 12,
+            "after": 24
+          },
+          {
+            "selector": "nav button",
+            "size": 13,
+            "after": 26
+          },
+          {
+            "selector": "h2",
+            "size": 25,
+            "after": 50
+          }
+        ],
+        "devicePixelRatio": 1,
+        "method": "test-only CSSOM absolute-px font-size multiplier2; inherited values retained",
+        "actual_touch_navigation": [
+          {
+            "label": "지도",
+            "tap": true,
+            "rect": {
+              "x": 168,
+              "y": 266.953125,
+              "width": 74,
+              "height": 58.890625
+            }
+          },
+          {
+            "label": "세계",
+            "tap": true,
+            "rect": {
+              "x": 12,
+              "y": 266.953125,
+              "width": 74,
+              "height": 58.890625
+            }
+          }
+        ]
+      }
+    ],
+    "dpr": 1,
+    "additional_harness_sha256": "453670a8578a85db1695d4daeb1f7c51249fe266397611f122714fdd9e19cc45",
+    "original_verifier_sha256": "042348d083604c9cb5b837b34d52d4c0a8792e734672cf97fd215cb4ba0adb6b",
+    "on_disk_verifier_modified": false,
+    "in_memory_test_adaptations": [
+      "font-size scaling and persistence assertions",
+      "touch-capable contexts and actual navigation taps",
+      "overflow diagnostic capture"
+    ]
+  },
+  "control_reproduction": {
+    "before": {
+      "selected": "100배속",
+      "width": 100,
+      "font": "24px system-ui, -apple-system, \"Noto Sans KR\", sans-serif",
+      "paddingLeft": "7px",
+      "paddingRight": "7px",
+      "textWidth": 85.18389892578125,
+      "root": 390,
+      "viewport": 390
+    },
+    "after": {
+      "selected": "100배속",
+      "width": 122,
+      "font": "24px system-ui, -apple-system, \"Noto Sans KR\", sans-serif",
+      "paddingLeft": "7px",
+      "paddingRight": "7px",
+      "textWidth": 85.18389892578125,
+      "root": 390,
+      "viewport": 390
+    },
+    "visual_review": "390px/200%의100배속선택값은수정전마지막글자가잘렸고수정후전체문구를표시한다.전후캡처를보존한다."
+  },
+  "compat_generation_check": {
+    "command": "node scripts/build-shell-assets.mjs --check",
+    "passed": true,
+    "authoring_sha256": "f1460e454da4184264365019c0f10bd3bc634eea792e1bbfcf91889eca0af204",
+    "compat_sha256": "21f7ca84345cc29d564efc961b9391b8cc365b6a9c3cc77f163ece78998d4ee6"
+  },
+  "scope_limits": [
+    "200%/1280·390은이번검수조건이며정본의새제품최소크기·배율조건으로추가하지않는다.",
+    "실제GameSession API와compat자산의기능검사다.네이티브어댑터응답재생결과는실제Android/Windows플랫폼실행또는도메인실행증거로대체하지않는다.",
+    "AndroidAPI24/35실제기기·WebView설정의200%·서명·업그레이드·성능검사가아니다.",
+    "T05의현재소스자체검수이며최종앱소스동결뒤재검사와원장수용판정은별도로남긴다.",
+    "성능·프로파일링·인구규모·장기실행결과를포함하지않고게임권위/기획원장/Notion을변경하지않았다."
+  ],
+  "final_t05_acceptance": false
+}

@@ -22,12 +22,14 @@ public static class EcologyPlanner
                 .OrderBy(r => r.Id, StringComparer.Ordinal).FirstOrDefault();
             if (recipe is not null) return new("craft", 0, recipe.Quantity, 0, "food", recipe.Id, "실제 재료로 식량 생산", $"own-known-recipe:{recipe.Id}");
             var knownFood = input.Sources.Where(s => s.Place == input.Place && s.Definition == "food").OrderByDescending(s => s.Observed).FirstOrDefault();
-            if (knownFood?.ObservedRemaining is not 0)
-                return new("gather", knownFood?.Source ?? 0, 0, 0, "food", "", "현지 식량 확보", knownFood?.SourceEvidence ?? "own-local-food-search; availability requires actual execution");
-            var alternative = input.Places.Where(p => p.Adjacent && !p.KnownBlocked && p.ObservedSource > 0)
-                .OrderByDescending(p => p.Observed).ThenBy(p => p.Place).FirstOrDefault();
-            if (alternative is not null) return new("travel", alternative.Place, 0, 0, "food", "", "관측한 원천으로 이동",
-                $"personal-place:{alternative.Place}:observed:{alternative.Observed}:source:{alternative.ObservedSource}");
+            if (knownFood is null || knownFood.Source == 0 || knownFood.ObservedRemaining is null)
+                return new("exploreSource", 0, 0, 0, "food", "", "식량 원천의 실제 관측", "식량별 개인 관측이 없어 현지 식량만 유료 탐색");
+            if (knownFood.ObservedRemaining > 0)
+                return new("gather", knownFood.Source, 0, 0, "food", "", "현지 식량 확보", knownFood.SourceEvidence);
+            var alternative = input.Places.Where(p => p.Adjacent && !p.KnownBlocked)
+                .OrderBy(p => p.Observed).ThenBy(p => p.Place).FirstOrDefault();
+            if (alternative is not null) return new("travel", alternative.Place, 0, 0, "food", "", "알려진 인접지의 식량 정보 확인",
+                $"personal-place:{alternative.Place}:observed:{alternative.Observed}:food-availability-unknown");
             return null; // No money, usable inputs or known source does not create a supplier or recovery event.
         }
         foreach (var need in input.WorkNeeds ?? [])

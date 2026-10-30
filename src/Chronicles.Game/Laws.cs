@@ -125,6 +125,7 @@ public static class Laws
         D("ai.observationBudget", "월간 현장 주의 예산", "인물/관측", 1, 100, 4, "관측 가능한 인물 중 제한된 주의·전체 정답 복사 없음"),
         D("ai.familyWeight", "가계 유지 목표 가중치", "점", 0, 1000, 60, "양육·생계 우선순위 보정"),
         D("ai.studyWeight", "구도 목표 가중치", "점", 0, 1000, 50, "성격·자기 지식과 결합"),
+        D("ai.currencyWeight", "실물 영석 수입 목표 가중치", "점", 0, 10000, 600, "자기 잔액 부족과 현지 실물·개인 원천 관측이 있을 때만 적용·0이면 목표 비활성"),
     ]);
 
     public static IReadOnlyDictionary<string, LawDefinition> ById { get; } =

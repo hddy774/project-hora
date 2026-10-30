@@ -5,6 +5,7 @@ using I = Chronicles.Game.Inventory;
 using P = Chronicles.Game.People;
 using C = Chronicles.Game.Cultivation;
 using POL = Chronicles.Game.Politics;
+using E = Chronicles.Game.Exploration;
 
 namespace Chronicles.Game;
 
@@ -43,6 +44,7 @@ public sealed record ItemView(long Id, long Owner, string Definition, string Nam
     public long? BoundSoul { get; init; }
     public long? AppraisedMonth { get; init; }
     public IReadOnlyList<int>? EquippedSlots { get; init; }
+    public bool? IsCarried { get; init; }
 }
 public sealed record GroupView(long Id, string Name, string Kind, long Leader, long Overlord, long? Money,
     IReadOnlyList<long> Members, IReadOnlyList<int> Provinces, IReadOnlyDictionary<string, int> Policies, bool Dissolved)
@@ -140,6 +142,8 @@ public sealed record GameView(string Title, string Version, long Month, long Rev
     public IReadOnlyList<P.PeopleOathView> KnownOaths { get; init; } = [];
     public IReadOnlyList<P.ReputationClaim> ReceivedClaims { get; init; } = [];
     public IReadOnlyList<POL.PolicyDefinition> PolicyDefinitions { get; init; } = [];
+    public E.ExplorationView? Exploration { get; init; }
+    public bool InSecretRealm { get; init; }
 }
 
 public sealed partial class GameWorld
@@ -148,6 +152,9 @@ public sealed partial class GameWorld
     {
         var observer = state.Controlled == 0;
         var actor = observer ? null : people[state.Controlled];
+        var inside = actor is not null && OccupiedExploration(actor) is not null;
+        var physical = new I.InventoryState { Month = Month, NextId = state.NextId, Revision = Revision,
+            Items = state.Items, People = state.People, Materials = state.Materials, Ledger = state.Inventory };
         var visible = observer ? state.People.ToArray() : actor!.KnownPeople.Where(id => actor.ObservedPeople.ContainsKey(id))
             .Append(actor.Id).Distinct().Select(id => people[id]).ToArray();
         PersonView Projection(Person p)
@@ -187,7 +194,7 @@ public sealed partial class GameWorld
         }).ToArray();
         var inventoryOwner = observer ? detailId : actor!.Id;
         var itemView = state.Items.Where(i => observer ? inventoryOwner == 0 || i.Owner == inventoryOwner : i.Owner == inventoryOwner &&
-            (i.Place == -1 || i.Place == actor!.Place)).Select(i =>
+            I.InventoryEngine.IsAccessible(physical, actor!.Id, i.Id, requireUncommitted: false) && ExplorationCarriedItemAccessible(actor, i)).Select(i =>
         {
             var definition = I.InventoryDefinitions.Definition(i.Definition).Item;
             var equippedSlots = people.TryGetValue(i.Owner, out var owner)
@@ -204,7 +211,8 @@ public sealed partial class GameWorld
                 Place = i.Place, EquippedSlot = equippedSlots.Length == 0 ? -1 : equippedSlots[0], EquippedSlots = Array.AsReadOnly(equippedSlots),
                 // Physical ownership is not appraisal evidence; personal measurements stay at their actual observation date.
                 Defects = observer ? i.Defects : appraisal?.DetectedDefects, BoundSoul = observer ? i.BoundSoul : binding?.Soul,
-                AppraisedMonth = observer ? Month : appraisal?.Month
+                AppraisedMonth = observer ? Month : appraisal?.Month,
+                IsCarried = people.TryGetValue(i.Owner, out var bodyOwner) ? CarriedExplorationTool(bodyOwner, i) : null
             };
         }).ToArray();
         var groupView = state.Groups.Where(g => observer || g.Members.Contains(actor!.Id)).Select(g =>
@@ -227,7 +235,7 @@ public sealed partial class GameWorld
                 PolicyHistory = finance ? Array.AsReadOnly(state.Politics.PolicyHistory.Where(h => h.Group == g.Id).Select(h => h with { }).ToArray()) : null
             };
         }).ToArray();
-        var contracts = state.Contracts.Where(c => observer || (c.Destination == actor!.Place && c.Status == "open") ||
+        var contracts = state.Contracts.Where(c => observer || (!inside && c.Destination == actor!.Place && c.Status == "open") ||
             c.Seller == actor!.Id || c.Buyer == actor!.Id).Select(c =>
         {
             var party = observer || c.Seller == actor!.Id || c.Buyer == actor.Id || c.Carrier == actor.Id;
@@ -301,7 +309,8 @@ public sealed partial class GameWorld
                     Array.AsReadOnly(r.Inputs.OrderBy(input => input.Key, StringComparer.Ordinal).Select(input =>
                         new RecipeInputView(input.Key, I.InventoryDefinitions.Definition(input.Key).Item.Name, input.Value)).ToArray()))).ToArray()),
             ResourceSources = ResourceSourcesFor(actor, observer),
-            Economy = observer || actor!.Status == LifeStatus.Alive ? EconomyDetail() : null,
+            // An interior shares a map coordinate with its entrance, but cannot see the entrance's live market.
+            Economy = !inside && (observer || actor!.Status == LifeStatus.Alive) ? EconomyDetail() : null,
             CurrencyExchange = CurrencyExchangeInfo(),
             Species = Array.AsReadOnly(P.SpeciesCatalog.All.Select(s => new SpeciesView(s.Id, s.Name, s.NaturalForm.ToString(),
                 s.BasicLifespanMonths, s.MaturityMonths, Array.AsReadOnly(s.Habitats.Select(h => h.ToString()).ToArray()),
@@ -311,7 +320,8 @@ public sealed partial class GameWorld
             PeopleRequests = Array.AsReadOnly(PeopleRequests(observer ? 0 : actor!.Id)),
             KnownOaths = Array.AsReadOnly(PeopleKnownOaths(observer ? 0 : actor!.Id)),
             ReceivedClaims = Array.AsReadOnly(PeopleReceivedClaims(observer ? 0 : actor!.Id)),
-            PolicyDefinitions = POL.PolicyCatalog.All
+            PolicyDefinitions = POL.PolicyCatalog.All,
+            Exploration = ExplorationDetail(), InSecretRealm = inside
         };
         return observer ? projection : projection with { Revision = PerceptionRevision(projection) };
     }
@@ -373,7 +383,16 @@ public sealed partial class GameWorld
         // another person's unseen learning must not change this person's otherwise identical projection.
         var authority = K.KnowledgeAuthority.Restore(state.Knowledge);
         var personal = authority.ViewPersonal(p.Id, limit: 128);
-        var accessible = authority.ViewAccessible(p.Id, p.Place, Month, limit: 128);
+        IReadOnlySet<long>? allowedItems = null;
+        if (OccupiedExploration(p) is not null)
+        {
+            var physical = new I.InventoryState { Month = Month, NextId = state.NextId, Revision = Revision,
+                Items = state.Items, People = state.People, Materials = state.Materials, Ledger = state.Inventory };
+            allowedItems = state.Items.Where(i => ExplorationCarriedItemAccessible(p, i) &&
+                I.InventoryEngine.IsAccessible(physical, p.Id, i.Id, requireOwnership: false, requireUncommitted: false))
+                .Select(i => i.Id).ToHashSet();
+        }
+        var accessible = authority.ViewAccessible(p.Id, p.Place, Month, limit: 128, allowedItems: allowedItems);
         var media = accessible.Rows.Select(m =>
         {
             var appraisal = observer ? null : state.Inventory.Appraisals.Where(a => a.Appraiser == p.Id && a.Item == m.ItemId && a.Month <= Month)

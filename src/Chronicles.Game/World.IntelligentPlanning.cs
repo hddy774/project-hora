@@ -126,7 +126,7 @@ public sealed partial class GameWorld
             if (!items.TryGetValue(step.Target, out var item) || item.Owner != p.Id) return "자기 실제 출품 재고가 바뀜";
             command = command with { Value = Math.Max(1, (long)item.Quantity * (5 + p.Skills.GetValueOrDefault("trade") / 1000)) };
         }
-        if (step.Action is "split" or "bid" or "repayDebt")
+        if (step.Action is "split" or "bid" or "repayDebt" or "redeemCurrency")
         {
             if (!long.TryParse(step.Data, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var amount) || amount <= 0)
                 return "실제 수량/입찰 금액이 유효하지 않음";
@@ -135,7 +135,7 @@ public sealed partial class GameWorld
         if (PeopleActionError(p, command.Kind) is { } capabilityError) return capabilityError;
         if (ValidateExplorationInteraction(command, p) is { } spaceError) return spaceError;
         if (TryExplorationCommand(command, p, out var error) || TryCultivationCommand(command, p, out error) || TryKnowledgeCommand(command, p, out error) ||
-            TryInventoryCommand(command, p, out error) || TryPoliticsCommand(command, p, out error)) return error;
+            TryInventoryCommand(command, p, out error) || TryPoliticsCommand(command, p, out error) || TryCurrencyCommand(command, p, out error)) return error;
         return Start(p, step.Action, step.Target, step.Data);
     }
 

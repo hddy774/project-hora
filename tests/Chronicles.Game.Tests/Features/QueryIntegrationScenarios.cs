@@ -420,3 +420,40 @@ public sealed class AuthoritativePolicyProjectionScenario : IFeatureScenario
         QueryFixture.Check(hash == world.StateHash(), "Policy projection mutated authority.");
     }
 }
+
+public sealed class SecretInteriorQueryScenario : IFeatureScenario
+{
+    public string Name => "INV-009/M05 비경 조회: 내부는 실제 휴대품과 개인 기록만 보고 바깥 신규 출품·바닥 실물을 현재 정보로 받지 않는다";
+    public void Run()
+    {
+        var f = new ExplorationFixture(); f.BothSurvey(); f.Send("possess", f.First);
+        var food = f.World.Checkpoint().Items.Single(i => i.Owner == f.First && i.Definition == "food");
+        f.Send("split", f.First, food.Id, 5);
+        var ground = f.World.Checkpoint().Items.Single(i => i.Owner == f.First && i.Definition == "food" && i.Id != food.Id);
+        f.Send("store", f.First, ground.Id, data: "ground");
+        var book = f.World.Checkpoint().Items.First(i => i.Owner == f.First && i.Definition.StartsWith("path.", StringComparison.Ordinal));
+        f.Send("store", f.First, book.Id, data: "ground");
+        f.Send("enterSecret", f.First, 8);
+        var view = f.World.View(f.First); var entry = view.Exploration!.OwnEntries.Single();
+        QueryFixture.Check(view.InSecretRealm && view.Economy is null && view.Items.All(i => i.Id != ground.Id && i.Id != book.Id) &&
+            view.Items.Single(i => i.Id == entry.Tool).IsCarried == true && entry.Person == f.First && entry.ActualRules is null && entry.ActualRisk is null &&
+            entry.ActualRoll is null && entry.ActualToolQuality is null && view.Detail!.Knowledge!.Media.All(m => m.ItemId != book.Id),
+            "비경 내부의 자기 진행·휴대 공간·미상 위험 또는 외부 매체 권한 경계가 잘못되었다.");
+        var before = QueryFixture.Json(view); var hidden = f.World.Checkpoint(); hidden.Controlled = 0;
+        var outside = GameWorld.Restore(hidden);
+        var offered = hidden.Items.First(i => i.Owner == f.Second && i.Definition.StartsWith("path.", StringComparison.Ordinal));
+        QueryFixture.Accepted(outside, "offer", f.Second, offered.Id, 17, "sale");
+        var changed = outside.Checkpoint(); changed.Controlled = f.First;
+        var restored = GameWorld.Restore(changed);
+        QueryFixture.Check(before == QueryFixture.Json(restored.View(f.First)), "바깥 사람의 실제 새 출품이 내부의 동일 개인 관측·응답·토큰을 바꾸었다.");
+        var snapshot = restored.Checkpoint(); var floor = snapshot.Items.Single(i => i.Id == ground.Id); floor.Quantity--;
+        snapshot.Materials["food"].Consumption++;
+        QueryFixture.Check(before == QueryFixture.Json(GameWorld.Restore(snapshot).View(f.First)), "내부에서 확인하지 않은 바닥 실물 잔량을 현재 개인 정보로 받았다.");
+        var hash = restored.StateHash(); restored.View(); restored.View(f.First);
+        QueryFixture.Check(hash == restored.StateHash(), "비경 권한 조회가 실제 원장을 바꾸었다.");
+        QueryFixture.Accepted(restored, "returnSecret", f.First); restored.AdvanceTo(restored.Month + 1);
+        var returned = restored.View(f.First);
+        QueryFixture.Check(!returned.InSecretRealm && returned.Economy is not null && returned.Exploration!.OwnEntries.Single().Status == "Returned" &&
+            returned.Contracts.Any(c => c.Seller == f.Second && c.Status == "open"), "실제 귀환 뒤의 현장 확인을 복구하지 못했다.");
+    }
+}

@@ -331,9 +331,24 @@ if (args.Contains("--report", StringComparer.Ordinal))
 if (results.Count == 0) throw new ArgumentException("일치하는 기능 시나리오가 없습니다.");
 Console.WriteLine($"RESULT {results.Count - failed}/{results.Count}");
 if (failed == 0 && args.Contains("--performance", StringComparer.Ordinal))
-    PerformanceScenarios.Run(args[Array.IndexOf(args, "--performance") + 1]);
+{
+    var size = Array.IndexOf(args, "--performance-size"); int? population = null;
+    if (size >= 0)
+    {
+        if (size + 1 >= args.Length || !int.TryParse(args[size + 1], NumberStyles.None, CultureInfo.InvariantCulture, out var value))
+            throw new ArgumentException("--performance-size에는 명시적인 인구 규모가 필요합니다.");
+        population = value;
+    }
+    PerformanceScenarios.Run(args[Array.IndexOf(args, "--performance") + 1], population);
+}
 if (failed == 0 && args.Contains("--growth", StringComparer.Ordinal))
     GrowthScenarios.Run(args[Array.IndexOf(args, "--growth") + 1]);
 if (failed == 0 && args.Contains("--soak", StringComparer.Ordinal))
     PerformanceScenarios.Soak(args[Array.IndexOf(args, "--soak") + 1]);
+if (failed == 0 && args.Contains("--stability", StringComparer.Ordinal))
+{
+    var plan = Array.IndexOf(args, "--stability-plan");
+    if (plan < 0 || plan + 1 >= args.Length) throw new ArgumentException("--stability에는 명시적인 --stability-plan이 필요합니다.");
+    PerformanceScenarios.Stability(args[Array.IndexOf(args, "--stability") + 1], args[plan + 1]);
+}
 return failed == 0 ? 0 : 1;

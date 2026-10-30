@@ -1,0 +1,786 @@
+{
+  "schema_version": 1,
+  "kind": "people-model-provisional-source-review",
+  "language": "ko",
+  "status": "소스 읽기 검토 자료·측정 결과 아님",
+  "reviewed_product_commit": "de7a296cc647368dae7b6343943382438787a660",
+  "reviewed_sensitivity_harness_commit": "8e13f7e5ad2670fdd2b779d5c22b0d793c8d1158",
+  "harness_same_people_and_sensitivity_sources_at": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "scope": "113 Laws 외 People 생애/생식/유전/성숙/수명 관련 정적 모델과 실제 호출·보고 경계. 전체 게임 리터럴 전수 조사나 신규 전계수 sweep 요구가 아니다.",
+  "product_changes": 0,
+  "cli_changes": 0,
+  "growth_cases_executed": 0,
+  "cost_measurement_cases_executed": 0,
+  "new_calibration_or_sweep_requirements": 0,
+  "laws": {
+    "total": 113,
+    "provisional": 103,
+    "nonprovisional": 10,
+    "source": {
+      "commit": "de7a296cc647368dae7b6343943382438787a660",
+      "path": "src/Chronicles.Game/Laws.cs",
+      "line": 15,
+      "symbol": "Laws.All",
+      "sha256": "d7aa91b8949733af520211699ca61e49d22221ef4461aa4f74825a715ce6adf6"
+    },
+    "fixed_user_policy": {
+      "birth.kinship": 1,
+      "birth.bothParents": 1,
+      "birth.minimumRealm": 3
+    },
+    "fixed_policy_interpretation": "혈연 후손 허용·양친 금단은 사용자 확정값이며 잠정 수치 보정 대상으로 바꾸지 않는다. 원형 b/c는 명시적 비교조건이지 새 기본값이 아니다."
+  },
+  "models": [
+    {
+      "id": "founder-life",
+      "classification": "사용자 위임 잠정 Laws",
+      "values": {
+        "founder.lifespan": 1200000,
+        "founder.age": 1200,
+        "founder.ascensionProtection": 1200
+      },
+      "unit": "개월",
+      "actual_use": "Create가 시조 Born=-1200·Lifespan=1200000을 채택한다. 매월 나이>=개인 Lifespan이면 자연사한다. 비승 보호는 별도 조건이다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/Laws.cs",
+          "line": 33,
+          "symbol": "founder.lifespan/founder.age/founder.ascensionProtection",
+          "sha256": "d7aa91b8949733af520211699ca61e49d22221ef4461aa4f74825a715ce6adf6"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.cs",
+          "line": 57,
+          "symbol": "Create",
+          "sha256": "67613d3a441ecf9fa41eaa60333c77b06b8f2b23c85ee1a85ecb3af88aa1af2e"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.cs",
+          "line": 306,
+          "symbol": "Step",
+          "sha256": "67613d3a441ecf9fa41eaa60333c77b06b8f2b23c85ee1a85ecb3af88aa1af2e"
+        }
+      ],
+      "report_snapshot": "growth.usedLaws/provisionalPolicies; sensitivity.usedLaws/provisionalPolicies",
+      "interpretation_limit": "Laws는 입력이다. 현재 개인 Lifespan과 성장 중 수명 보상·사망 원인을 대신하지 않는다."
+    },
+    {
+      "id": "human-lifecycle",
+      "classification": "실제 Laws 우선·종족 선언과 구분",
+      "values": {
+        "life.mortal": 960,
+        "birth.maturity": 216,
+        "birth.gestation": 9,
+        "species.human.declaredBasicLifespan": 1200
+      },
+      "unit": "개월",
+      "actual_use": "인간 출생과 명시 편입의 기본수명은 life.mortal=960이다. 인간의 현재 성숙/임신 판정은 Laws를 사용한다. human 종족의 수명1200은 이 두 실제 생성 경로에서 덮어쓴다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/CreationProfiles.cs",
+          "line": 28,
+          "symbol": "PeopleCreationParser.TryParse",
+          "sha256": "0f2d09537bffcdf4fe719a2378114e39cebe639f2d799d36818dc0711790a3db"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.Life.cs",
+          "line": 91,
+          "symbol": "Birth",
+          "sha256": "76e88be3a907aecd9a1c13004fa266ff60e805a389f2c70935f756fc9fa9118e"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 75,
+          "symbol": "CheckPeopleReproduction.Context",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 130,
+          "symbol": "ApplyPeopleBodyPolicy/PeopleMaturityMonths",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        }
+      ],
+      "report_snapshot": "growth는 Laws만; sensitivity.sourceDeclaredPeoplePolicyDefaults.speciesCatalog와 adoptedPeoplePolicies.adoptedBodyReproduction을 분리",
+      "interpretation_limit": "정적 human 카탈로그의 100년을 실제 범인80년의 측정 입력으로 세면 틀린다. 이후 인간 law 편집 시 현재 판정과 과거 body 사본도 구분한다."
+    },
+    {
+      "id": "cultivation-lifespan-adoption",
+      "classification": "실제 수행 수명은 Laws 채택·모듈 선언과 구분",
+      "values": {
+        "declaredQiLifespanMonths": 1440,
+        "actualLifeQi": 1800,
+        "actualLifeFoundation": 3600,
+        "actualLifeCore": 7200,
+        "declaredHalfImmortalLifespanMonths": 120000,
+        "actualFounderLifespan": 1200000,
+        "actualUpperLifespanPercent": 200
+      },
+      "unit": "개월 / 상위 증가%",
+      "actual_use": "호스트가 CultivationPolicyForLaws로 Laws의 실제 수명 입력을 만들고 준비 시 LifespanAward를 채택한다. 성공한 실제 전이의 수명 보상은 기존 Person.Lifespan과 max를 취하므로 더 낮은 보상이 기존 종족/개인 수명을 줄이지 않는다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/Cultivation/CultivationContracts.cs",
+          "line": 207,
+          "symbol": "CultivationPolicy.Lifespan",
+          "sha256": "cb0a277169158fa0c70081d70a09d0f5ea587cb9086dd873f7987b81fe419dab"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+          "line": 345,
+          "symbol": "CultivationPolicyForLaws",
+          "sha256": "d0bda554ddbfef6b56e8f98410faf40deaa10585fbf823c8e2aefa64e66ce746"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+          "line": 201,
+          "symbol": "Prepare/LifespanAward",
+          "sha256": "08e74c481a534c8db84e38d3b442088007ac8d16dd5fa28209bd60c1e92ad49e"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+          "line": 257,
+          "symbol": "ApplyCultivationResult",
+          "sha256": "d0bda554ddbfef6b56e8f98410faf40deaa10585fbf823c8e2aefa64e66ce746"
+        }
+      ],
+      "report_snapshot": "Laws에는 실제 수명 입력이 포함된다. 선언 CultivationPolicy 전체와 인물별 현재 Lifespan 전체는 sensitivity People 정책 덤프의 필드가 아니다.",
+      "interpretation_limit": "모듈 기본 연기1440/반선120000을 실제 연기1800/시조1200000 입력으로 세지 않는다. 태어난 종족 기본수명은 수행 이후 현재 수명 전체와 다르다."
+    },
+    {
+      "id": "species-catalog",
+      "classification": "선언 카탈로그·조건부 실제 채택",
+      "values": {
+        "human": {
+          "lifespan": 1200,
+          "maturity": 216,
+          "gestation": 9
+        },
+        "spirit-fox": {
+          "lifespan": 1440,
+          "maturity": 144,
+          "gestation": 6
+        },
+        "stone-ape": {
+          "lifespan": 1800,
+          "maturity": 240,
+          "gestation": 12
+        },
+        "spirit-pine": {
+          "lifespan": 3600,
+          "maturity": 600,
+          "gestation": 12
+        },
+        "water-spirit": {
+          "lifespan": 2400,
+          "maturity": 240,
+          "gestation": 12
+        }
+      },
+      "unit": "개월",
+      "actual_use": "비인간 명시 편입은 종족의 성숙/수명을, 비인간 출생은 실제 잉태 종족의 수명을 채택한다. 몸의 생식군·생식 기능·능력·서식지도 구분한다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/Embodiment.cs",
+          "line": 15,
+          "symbol": "SpeciesDefinition/SpeciesCatalog",
+          "sha256": "e1578c10f2fd31c406255a61776df3d77e95d8c0890fd3c936643a1c8e6dfbe9"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/PeopleState.cs",
+          "line": 242,
+          "symbol": "PeopleAdapters.FromPerson",
+          "sha256": "c20a82245b8c37f944b168dd8494a59549601dfb7552aaa91da1faaa20823f41"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 112,
+          "symbol": "InitializePeopleBirth",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        }
+      ],
+      "report_snapshot": "sensitivity.sourceDeclaredPeoplePolicyDefaults.speciesCatalog; 실제 observedSpeciesIds/adoptedBodyReproduction",
+      "interpretation_limit": "원형 a/b/c는 인간 시조2명과 b의 인간 편입2명만 만든다. 정의5개를 실제 사용 종족5개로 세지 않는다. 인간 수명 필드에는 앞 행의 override가 적용된다."
+    },
+    {
+      "id": "reproduction-health",
+      "classification": "호스트 실제 상수·선언 기본 차이",
+      "values": {
+        "ReproductionPolicy.declaredMinimumHealth": 5000,
+        "World.actualMinimumHealth": 3000,
+        "Person.healthScaleMaximum": 100,
+        "BirthQualified.minimumHealth": 30
+      },
+      "unit": "재생식 건강은0..10000점, Person 건강은0..100점",
+      "actual_use": "호스트가 Person.Health*100과 MinimumHealth=3000을 전달한다. World.Life도 건강30을 검사하며 양친 건강은 실제 body 조건으로 검사된다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/Embodiment.cs",
+          "line": 22,
+          "symbol": "ReproductionPolicy",
+          "sha256": "e1578c10f2fd31c406255a61776df3d77e95d8c0890fd3c936643a1c8e6dfbe9"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 77,
+          "symbol": "CheckPeopleReproduction",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.Life.cs",
+          "line": 45,
+          "symbol": "BirthQualified",
+          "sha256": "76e88be3a907aecd9a1c13004fa266ff60e805a389f2c70935f756fc9fa9118e"
+        }
+      ],
+      "report_snapshot": "선언 reproduction 객체는5000. adoptedBodyReproduction은 생식군·성숙·임신·출처이며 이 임시 ReproductionPolicy 객체 자체는 별도 출력하지 않는다.",
+      "interpretation_limit": "선언5000을 실제 호스트 임계50점으로 오독하지 않는다. 이 감사는 실제3000을 설명하며 새 law나 sweep을 추가하지 않는다."
+    },
+    {
+      "id": "conception-law-adoption",
+      "classification": "Laws 및 실제 잉태 시점 고정",
+      "values": {
+        "birth.fertility": 80,
+        "birth.interval": 120,
+        "birth.healthCost": 12,
+        "birth.chance": 300
+      },
+      "unit": "% / 개월 / 건강점 / 만분율·월",
+      "actual_use": "현재 나이/수명 가임 비율과 건강·상호 도려·동일 공간을 검사한다. 실제 잉태가 Due·회복 기간·출산 건강비용·유전 모델을 저장하고 이후 법칙 편집으로 재추첨하지 않는다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/Laws.cs",
+          "line": 23,
+          "symbol": "birth.interval/fertility/chance/healthCost",
+          "sha256": "d7aa91b8949733af520211699ca61e49d22221ef4461aa4f74825a715ce6adf6"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.Life.cs",
+          "line": 45,
+          "symbol": "BirthQualified/Conceive/Birth",
+          "sha256": "76e88be3a907aecd9a1c13004fa266ff60e805a389f2c70935f756fc9fa9118e"
+        }
+      ],
+      "report_snapshot": "Laws 입력은 양 보고서에 포함; sensitivity의 잉태 모델은 유전 Model이며 Pregnancy 전체 사본은 아니다.",
+      "interpretation_limit": "보고서의 입력을 모든 당시 임신별 채택 상태나 실제 출산 성공으로 바꾸어 해석하지 않는다."
+    },
+    {
+      "id": "genetic-model",
+      "classification": "PC-TEMP-V021-GENETICS-01·실제 잉태별 고정",
+      "values": {
+        "targets": 10,
+        "lociPerTarget": 2,
+        "weightPerLocusBasisPoints": 5000,
+        "expressionRule": "Codominant",
+        "genetics.mutationMagnitude": 200,
+        "genetics.mutationChance": 10000
+      },
+      "unit": "몸5/영근5 목표, 총20좌위; 가중치/확률10000분율; 변이±자질점",
+      "actual_use": "각 부모에서 대립유전자1개와 변이 대상/크기를 실제 잉태 stream으로 고정한다. 몸5·영근5만 유전하며 여섯째 영혼 기반은 배정 영혼의 독립 값이다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/Inheritance.cs",
+          "line": 11,
+          "symbol": "GeneticModel.Provisional/Capture",
+          "sha256": "0ba268df2054e45c08f907395d7099d72929a736e2cc1673a9c1e08e864a5d0e"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 42,
+          "symbol": "FreezePeopleConception",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 103,
+          "symbol": "InitializePeopleBirth",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        }
+      ],
+      "report_snapshot": "sensitivity 선언 genetics와 actualFrozenConceptionModels(실제 잉태 수·최초 월·law revisions)를 분리. 변이 값은 Laws 및 실제 Model에도 포함.",
+      "interpretation_limit": "잉태가 없으면 실제 채택 모델이 없다. 모델 사본은 개인별 전체 대립유전자·선택·발달 이력 출력과 다르다. 학습 숙련은 유전하지 않는다. 변이 확률10000은 변이값 추출 분기를 항상 택한다는 뜻이며, 범위에0이 있어 실제 delta0도 가능하다."
+    },
+    {
+      "id": "initial-foundations",
+      "classification": "호스트 초기 분포·정적 공식",
+      "values": {
+        "rootsAndFoundationsMinimum": 4000,
+        "rootsAndFoundationsMaximumInclusive": 6000,
+        "personalityMinimum": 20,
+        "personalityMaximumInclusive": 80,
+        "newSoulFoundationMinimum": 4000,
+        "newSoulFoundationMaximumInclusive": 6000,
+        "birthGestatesDrawOutcomes": 2
+      },
+      "unit": "자질/영근/영혼0..10000점; 성격0..100점",
+      "actual_use": "시조/명시 편입의 초기 자질과 성격, 출생 성격·생식 기능, 신규 영혼 기반을 해당 실제 생성 지점에서 정한다. 기존 영혼은 원래 기반을 유지한다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.cs",
+          "line": 61,
+          "symbol": "Create",
+          "sha256": "67613d3a441ecf9fa41eaa60333c77b06b8f2b23c85ee1a85ecb3af88aa1af2e"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.cs",
+          "line": 350,
+          "symbol": "CreateExplicit",
+          "sha256": "67613d3a441ecf9fa41eaa60333c77b06b8f2b23c85ee1a85ecb3af88aa1af2e"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.Life.cs",
+          "line": 92,
+          "symbol": "Birth",
+          "sha256": "76e88be3a907aecd9a1c13004fa266ff60e805a389f2c70935f756fc9fa9118e"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 103,
+          "symbol": "InitializePeopleBirth",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        }
+      ],
+      "report_snapshot": "sourceDeclaredPeoplePolicyDefaults의 개별 numeric 설정 객체에는 이 분포가 별도로 없다. 제품 source commit/fingerprint가 고정한다.",
+      "interpretation_limit": "seed/상태가 실제 발생 값을 정한다. 분포의 정의만으로 어느 자질/성격이 실현됐다고 세지 않는다. RNG salt·정수 척도는 보정 계수로 세지 않는다."
+    },
+    {
+      "id": "people-tuning",
+      "classification": "PC-TEMP-V021-PEOPLE-01·저장 정책",
+      "values": {
+        "talentInnate": 6000,
+        "talentLearned": 2500,
+        "talentUnderstanding": 1500,
+        "cognitionInnate": 8000,
+        "cognitionPractice": 2000
+      },
+      "unit": "10000분율·각 혼합 합10000",
+      "actual_use": "현재 발휘와 인지에 적용하고 배운 값·이해·조건·활성 효과를 분리한다. 수행 호스트는 실제 정규화한 능력 입력을 사용한다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/Aptitudes.cs",
+          "line": 26,
+          "symbol": "PeopleTuning/Aptitudes.Assess",
+          "sha256": "2bd7b7915284801e2ff685b6f788c112274c8070340b4100e479151c7429c719"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 277,
+          "symbol": "PeopleAptitude",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+          "line": 355,
+          "symbol": "CultivationActorFor",
+          "sha256": "d0bda554ddbfef6b56e8f98410faf40deaa10585fbf823c8e2aefa64e66ce746"
+        }
+      ],
+      "report_snapshot": "sensitivity 선언 peopleTuning 및 adoptedPeoplePolicies.tuning",
+      "interpretation_limit": "정적 24재능·10인지 원천 가중치 표는 별도 source 정의다. 5개 혼합값의 출력만으로 모든 표 계수를 개별 보정했다고 주장하지 않는다."
+    },
+    {
+      "id": "evaluation",
+      "classification": "PC-TEMP-V021-EVALUATION-01·저장 정책과 주기",
+      "values": {
+        "geniusMinimumAbsolute": 48000,
+        "candidateMinimumAbsolute": 42000,
+        "minimumPopulation": 2,
+        "includeInfants": false,
+        "includeDeclining": false,
+        "evaluationIntervalMonths": 12,
+        "decliningThresholdPercent": 80
+      },
+      "unit": "절대6기반 합0..60000 / 명 / 개월 / 수명%",
+      "actual_use": "실제 조건부 모집단·동점 유보·공석을 저장한다. 이 평가의 정답은 AI/플레이에 직접 전달하지 않는다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/Evaluation.cs",
+          "line": 20,
+          "symbol": "EvaluationPolicy/PeopleEvaluation",
+          "sha256": "bbcd46fc082498757e636e2f7934aa1ad17136dd8a7c28909dfcc7dfc6aefb15"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 272,
+          "symbol": "SettlePeopleDomain/EvaluatePeopleScopes",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        }
+      ],
+      "report_snapshot": "sensitivity 선언 evaluation 및 adoptedPeoplePolicies.evaluationPolicy; 주기/쇠퇴 판정 공식은 source에만 있다.",
+      "interpretation_limit": "영아/쇠퇴 제외·빈 종족 범위는 실제 인물/명성 발생이 아니다. 외부인이 받는 소문은 별도 관측 출처를 요구한다."
+    },
+    {
+      "id": "social-reputation",
+      "classification": "PC-TEMP 저장 정책·실제 상한 조합",
+      "values": {
+        "requestLifetimeMonths": 12,
+        "maximumPendingRequests": 8,
+        "sessionMonths": 1,
+        "claimLifetimeMonths": 120,
+        "claimBudget": 12,
+        "habitThreshold": 3,
+        "habitLapseMonths": 24,
+        "oathMonths": 120,
+        "declaredMaximumClaimsPerObserver": 64
+      },
+      "unit": "개월 / 건 / 실제 완료 횟수",
+      "actual_use": "실제 요청/동의·만남·전달 출처에 적용한다. 명성 저장 상한은 min(64,12,max(1,ai.beliefBudget/4))이며 통합 인지 trim도 적용한다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/SocialState.cs",
+          "line": 23,
+          "symbol": "PeopleSocialPolicy",
+          "sha256": "ea31290ac42b9b5b9118cd9eaa58fe3f186b8324cc0969b7dcba7189dc3f23bc"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/Reputation.cs",
+          "line": 10,
+          "symbol": "ReputationPolicy",
+          "sha256": "2b28a20283cb053ddcc3beec4f69bcc56c11b1cd0d4ec915f0d556fd9c5352c3"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+          "line": 417,
+          "symbol": "ReceivePeopleClaim/TrimPeopleCognition",
+          "sha256": "b3f7855d524f3a9fed32a3b184357659a5f0d4b1499b8c89968e260db1deb8ca"
+        }
+      ],
+      "report_snapshot": "sensitivity 선언 social/reputation 및 adoptedPeoplePolicies.socialPolicy/reputationPolicy",
+      "interpretation_limit": "선언64를 모든 인물의 실제 유지 개수로 오독하지 않는다. 요청만으로 학습/동의/숙련이 생기지 않는다."
+    },
+    {
+      "id": "trait-catalog",
+      "classification": "정의 카탈로그·실제 출처별 활성",
+      "values": {
+        "definitions": 40,
+        "categories": 10,
+        "exampleMeridianTalent7Add": 500
+      },
+      "unit": "정의/범주 수 / 자질점",
+      "actual_use": "실제 획득·각성·충돌·해제·기한을 가진 활성 원인만 효과·선호에 반영하고 파생 표식을 중복 가산하지 않는다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/Traits.cs",
+          "line": 47,
+          "symbol": "TraitCatalog/Traits.ActiveEffects",
+          "sha256": "e3c361f079bed4d499b015830406c65c780ed74204ccf7fa1ea70e8a864132a1"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+          "line": 568,
+          "symbol": "SettlePeopleSocial/ApplyPeopleHabitTraits",
+          "sha256": "b3f7855d524f3a9fed32a3b184357659a5f0d4b1499b8c89968e260db1deb8ca"
+        }
+      ],
+      "report_snapshot": "sensitivity.sourceDeclaredPeoplePolicyDefaults.traitCatalog는 정의를 출력. adoptedPeoplePolicies는 활성 TraitLedger 전체를 출력하는 필드가 아니다.",
+      "interpretation_limit": "정의40개를 실제 활성40개로 세지 않는다. 원천/활성 여부는 실제 상태와 사건 근거의 문제다."
+    },
+    {
+      "id": "trace-lifecycle",
+      "classification": "PC-TEMP-V021-TRACE-02·조건부 실제 수식",
+      "values": {
+        "monthlyAwakening": 100,
+        "splitRequestedPreservation": 5000,
+        "soul.splitCost": 30
+      },
+      "unit": "흔적0..10000점 / 분혼 비용%",
+      "actual_use": "실제 종료 시6영역 근거를 캡처하고 성숙한 실제 윤회자만 보존량 안에서 월100씩 접근한다. 분혼은 영역별 요청5000과 실제 소모 비용을 적용한다. 자동 지식/숙련 복원은 없다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 164,
+          "symbol": "EndPeopleLife/SplitPeopleSoul",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+          "line": 251,
+          "symbol": "SettlePeopleDomain",
+          "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/SoulTraces.cs",
+          "line": 7,
+          "symbol": "SoulTraceValue/SoulTraces",
+          "sha256": "4e23c87c9a7ae04ccb4dfd5df3df0a5093f89b01cd2143b6492e71075f8de291"
+        }
+      ],
+      "report_snapshot": "sensitivity의 formulaOnlyReferencesForSeparateReview.traces는 source 참조. actualFrozenConceptionModels는 영혼 흔적을 출력하지 않는다.",
+      "interpretation_limit": "윤회/분혼 원인이 없으면 수식 존재를 실제 발생으로 세지 않는다. 보존/접근/통합 및 legacy0..100 투영 척도를 구분한다."
+    },
+    {
+      "id": "species-physiology",
+      "classification": "비인간 조건부 호스트 정적 공식",
+      "values": {
+        "ambientQiUnitsPerMonth": 1,
+        "mismatchHealthCost": 1,
+        "missingAmbientQiHealthCost": 1,
+        "healthCostMaximum": 2,
+        "ownHistoryMonths": 12
+      },
+      "unit": "현지 기운 개/월 / 건강점/월 / 개월",
+      "actual_use": "비인간 실제 몸이 부적합 서식지 또는 필요한 현지 기운 부족을 겪을 때 적용한다. 기존 food는 먹이·물·식물관리의 보편 유지 자원 추상화이고 별도 물/흙 재고를 생성하지 않는다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+          "line": 673,
+          "symbol": "SettlePeopleEcology",
+          "sha256": "b3f7855d524f3a9fed32a3b184357659a5f0d4b1499b8c89968e260db1deb8ca"
+        }
+      ],
+      "report_snapshot": "sourceDeclared speciesCatalog에는 서식지·요구 품목이 있으나 이 비용 수식과 실제 ecology 이력은 adoptedPeoplePolicies 필드가 아니다.",
+      "interpretation_limit": "인간만 존재하는 a/b/c에서 비인간 비용이 실제 작동했다고 세지 않는다."
+    },
+    {
+      "id": "martial-lifespan",
+      "classification": "실제 수행 엔진의 법칙 외 정적 수명",
+      "values": {
+        "baselineYears": 80,
+        "MartialMaximumYears": 600,
+        "stages": 10,
+        "yearsAddedPerStageAtDefault": 52,
+        "maximumMonths": 7200
+      },
+      "unit": "년 / 단계 / 개월",
+      "actual_use": "실제 무예 돌파 성공에서 80+(600-80)*stage/10년의 수명 하한을 주고 Person.Lifespan=max(기존,보상)으로 적용한다. 무예는 영근·수선 생식 자격과 독립이다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/Cultivation/CultivationContracts.cs",
+          "line": 206,
+          "symbol": "CultivationPolicy.MartialMaximumYears",
+          "sha256": "cb0a277169158fa0c70081d70a09d0f5ea587cb9086dd873f7987b81fe419dab"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+          "line": 390,
+          "symbol": "MartialBreakthrough",
+          "sha256": "08e74c481a534c8db84e38d3b442088007ac8d16dd5fa28209bd60c1e92ad49e"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+          "line": 257,
+          "symbol": "ApplyCultivationResult",
+          "sha256": "d0bda554ddbfef6b56e8f98410faf40deaa10585fbf823c8e2aefa64e66ce746"
+        }
+      ],
+      "report_snapshot": "Laws의 martial.period는 기간 입력이며600년 상한/80년 수식 전체를 담지 않는다. sensitivity People 선언 목록도 CultivationPolicy 전체 출력은 아니다.",
+      "interpretation_limit": "별도 MartialAptitude 모듈 정의의 계수와 이 실제 엔진을 혼동하지 않는다. 여기서는 수명 적용 경계만 읽었고 보정/측정을 추가하지 않는다."
+    },
+    {
+      "id": "formula-only-module-references",
+      "classification": "선언 존재·현재 production 직접 호출 미확인",
+      "values": {
+        "martialAptitudeWeights": [
+          5000,
+          3500,
+          1500
+        ],
+        "combatAssessmentPolicy": "PC-TEMP-V021-COMBAT-ASSESSMENT-01"
+      },
+      "unit": "10000분율 / 정책ID",
+      "actual_use": "People/MartialAptitude.Assess와 People/CombatAssessment.Assess의 production 직접 호출을 정적 검색에서 찾지 못했다. 실제 무예는 CultivationEngine, 실제 능력 입력은 CultivationActorFor의 Body/Mind를 따른다.",
+      "sources": [
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/MartialAptitude.cs",
+          "line": 10,
+          "symbol": "MartialAptitude.Assess",
+          "sha256": "475afbff4a25068d2556b244b845592ddd058686d79dbc391b958602171b4d61"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/People/CombatAssessment.cs",
+          "line": 28,
+          "symbol": "CombatAssessment.Assess",
+          "sha256": "ac8af01720a20cb50d675f10b0dc24a41f138aeae003481890a409843f0981ac"
+        },
+        {
+          "commit": "de7a296cc647368dae7b6343943382438787a660",
+          "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+          "line": 375,
+          "symbol": "CultivationActorFor.Body/Mind",
+          "sha256": "d0bda554ddbfef6b56e8f98410faf40deaa10585fbf823c8e2aefa64e66ce746"
+        }
+      ],
+      "report_snapshot": "sensitivity가 formulaOnlyReferencesForSeparateReview로 명시한 별도 수식 참조",
+      "interpretation_limit": "파일/테스트/정책ID 존재를 현재 성장 실행이 해당 계산을 사용했다는 근거로 세지 않는다. 현재 호출 여부 이상의 기능 수용 판단을 새로 추가하지 않는다."
+    }
+  ],
+  "report_coverage": {
+    "growth_source": {
+      "commit": "de7a296cc647368dae7b6343943382438787a660",
+      "path": "tests/Chronicles.Game.Tests/GrowthScenarios.cs",
+      "line": 64,
+      "symbol": "Run/UsedLaws/ProvisionalPolicies",
+      "sha256": "8420071e596fc30b5769a24ac712f834a5a8c973a4ccd2b7aa9f0e0c1b8840ae"
+    },
+    "growth_fields": "usedLaws 전량 및 provisionalPolicies(id,value,defaultValue,unit,rationale). PeopleState 정책/실제 body 모델 스냅샷은 이 원형 보고 필드에 없다.",
+    "sensitivity_source": {
+      "commit": "8e13f7e5ad2670fdd2b779d5c22b0d793c8d1158",
+      "path": "tests/Chronicles.Game.Tests/GrowthSensitivityScenarios.cs",
+      "line": 151,
+      "symbol": "SensitivityPeopleDefaults/SensitivityPeoplePolicies",
+      "sha256": "6f6e23a9e4211c4deb4a3ba29ebe98921bb6cc548f6a797e459c5c596d889996"
+    },
+    "sensitivity_declared_fields": [
+      "peopleTuning",
+      "evaluation",
+      "reputation",
+      "social",
+      "genetics",
+      "reproduction",
+      "speciesCatalog",
+      "traitCatalog",
+      "formulaOnlyReferencesForSeparateReview"
+    ],
+    "sensitivity_actual_fields": [
+      "Tuning",
+      "EvaluationPolicy",
+      "ReputationPolicy",
+      "socialPolicy",
+      "observedSpeciesIds",
+      "adoptedBodyReproduction",
+      "actualFrozenConceptionModels"
+    ],
+    "sensitivity_input_scope": "이 원본에서는 한 provisional LawId의 기본값과 다른 두 값·3seed를 허용하고 비법칙 모델은 독립 변경하지 않는다. 실제 실행 보고서가 생겼다는 뜻이 아니다.",
+    "contract_source": {
+      "commit": "8e13f7e5ad2670fdd2b779d5c22b0d793c8d1158",
+      "path": "tests/Chronicles.Game.Tests/GrowthSensitivityContracts.cs",
+      "line": 73,
+      "symbol": "Validate/CoreOutcome",
+      "sha256": "b8e4022e4eaeebc5c2bdbd811c29d59168e5cd5bcc129d24aeeb107c60306c10"
+    },
+    "existing_artifacts": [
+      {
+        "path": "docs/evidence/0.2.1/growth.json",
+        "sha256": "c795be3428321742ba0cbadbe38b00ef5b4f5666bcebfdc576be1d5ed5b29340",
+        "source_commit": null,
+        "complete": null,
+        "law_count_in_first_cohort": 62,
+        "provisional_policy_count_in_first_cohort": 0,
+        "people_policy_snapshot_in_first_cohort": false,
+        "interpretation": "과거/중단 원본. 현재 source의 완주·민감도 근거로 대체하지 않는다."
+      },
+      {
+        "path": "docs/evidence/0.2.1/growth-b0f3aec-interrupted/growth-b0f3aec-a.json",
+        "sha256": "36b4acf400c6ab86b2ec2c9bfe963cc3f1ed996ead68634188ff380fd56faa96",
+        "source_commit": "b0f3aec986d9b09015021499e47627b869411b83",
+        "complete": false,
+        "law_count_in_first_cohort": 112,
+        "provisional_policy_count_in_first_cohort": 102,
+        "people_policy_snapshot_in_first_cohort": false,
+        "interpretation": "과거/중단 원본. 현재 source의 완주·민감도 근거로 대체하지 않는다."
+      }
+    ],
+    "missing_numeric_dump_explanations": [
+      "실제 임시 ReproductionPolicy.MinimumHealth=3000과 선언 default5000의 차이",
+      "호스트 초기 자질/성격 분포·24재능/10인지 원천 표·꿈/분혼·생리 수식",
+      "실제 무예 수명600년 상한과80년 보상식",
+      "활성 특성 전체·개인 Lifespan 전체·개인별 유전자 선택/흔적의 전체 사본"
+    ],
+    "missing_explanations_are_not_sweep_requirements": true,
+    "overbroad_legacy_text": "growth limitations의 모든 사용 잠정계수 공개 문구는 보고 필드상 Laws 목록의 공개로 좁혀 읽어야 한다. 별도 People 수식의 개별 수치/실제 활성 공개나 인과 민감도를 입증하지 않는다."
+  },
+  "finite_horizon_interpretation": {
+    "horizon_months": 6000,
+    "horizon_years": 500,
+    "initial_founder_age_months": 1200,
+    "initial_founder_age_years": 100,
+    "age_at_horizon_months": 7200,
+    "age_at_horizon_years": 600,
+    "lifespan_comparison": [
+      {
+        "case": "수명-25%",
+        "lifespan_months": 900000,
+        "lifespan_years": 75000,
+        "initial_age_months": 1200,
+        "age_at_month6000": 7200,
+        "natural_death_month_if_no_other_transition": 898800,
+        "fertility_limit_age_months_at_80_percent": 720000,
+        "natural_death_within_6000": false,
+        "fertility_age_boundary_within_6000": false
+      },
+      {
+        "case": "기본",
+        "lifespan_months": 1200000,
+        "lifespan_years": 100000,
+        "initial_age_months": 1200,
+        "age_at_month6000": 7200,
+        "natural_death_month_if_no_other_transition": 1198800,
+        "fertility_limit_age_months_at_80_percent": 960000,
+        "natural_death_within_6000": false,
+        "fertility_age_boundary_within_6000": false
+      },
+      {
+        "case": "수명+25%",
+        "lifespan_months": 1500000,
+        "lifespan_years": 125000,
+        "initial_age_months": 1200,
+        "age_at_month6000": 7200,
+        "natural_death_month_if_no_other_transition": 1498800,
+        "fertility_limit_age_months_at_80_percent": 1200000,
+        "natural_death_within_6000": false,
+        "fertility_age_boundary_within_6000": false
+      }
+    ],
+    "age_minus25_percent_months": 900,
+    "age_plus25_percent_months": 1500,
+    "corresponding_age_at_horizon_months": [
+      6900,
+      7500
+    ],
+    "interpretation": "정수 경계 계산이며 성장/민감도 실행이 아니다. 세 수명 설정 모두6000개월 내 자연사·80%가임 경계를 노출하지 않는다. 효과 차이0은 이 창·실현 경로의 비노출/검열 가능성이지 수명 전구간 무영향 또는 균형 검증이 아니다.",
+    "censoring": "창 종료까지 살아서 금단 미도달한 후손은 우측 검열, 금단 전 사망/이탈은 별도 결과다. 시조 자연사 경계가 창 밖이어도 부상·기아·비승·조건부 이탈은 발생할 수 있다. 시조수명 입력은 후손 반선 수명 보상 상한에도 연결되므로 전체 downstream 무효과를 증명하지 않는다.",
+    "source": {
+      "commit": "de7a296cc647368dae7b6343943382438787a660",
+      "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+      "line": 345,
+      "symbol": "CultivationPolicyForLaws",
+      "sha256": "d0bda554ddbfef6b56e8f98410faf40deaa10585fbf823c8e2aefa64e66ce746"
+    }
+  },
+  "verification": "소스/기존 JSON 읽기, 기입한 source line·SHA256·정수 산술 확인만 수행. 새 게임 실행·측정·사용자 정책 변경 없음."
+}

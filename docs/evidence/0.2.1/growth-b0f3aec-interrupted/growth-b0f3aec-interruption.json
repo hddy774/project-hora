@@ -1,0 +1,299 @@
+{
+  "schema": "seonro-growth-interruption-v1",
+  "sourceCommit": "b0f3aec986d9b09015021499e47627b869411b83",
+  "productSourceFingerprint": "8e197e13641d2e39fffdd8fe8c47dbc8b06788f6dddaee7f35e61407847591a2",
+  "status": "interrupted",
+  "complete": false,
+  "completed_cohorts": 0,
+  "required_cohorts": 9,
+  "reason": "Root requested stop after an actual defect was confirmed in the frozen source: descendant entry work reaches its cap without an AI entry-attempt producer, and exhausted-food competition has no recovery path. Preserve actual negative observations; repair then rerun the original a/b/c x 42/98/2026, 6000-month conditions. No cohort completed.",
+  "diagnostic_authority": "Root message received 2026-10-30; this child did not infer death cause from growth aggregate data.",
+  "original_artifacts_preserved": true,
+  "original_metadata_note": "Original report and launch-metadata statuses are intentionally unchanged. External interruption record is authoritative for lifecycle stop; wrapper paused and terminated before it could rewrite original launch metadata.",
+  "concurrent_growth_processes": 3,
+  "cpu_max": "400000 100000",
+  "cpu_affinities": {
+    "a": [
+      1
+    ],
+    "b": [
+      2
+    ],
+    "c": [
+      3
+    ]
+  },
+  "measurement_scope": "Default ecosystem calibration under concurrent processes, not a final performance baseline, stability acceptance, or hardware speed claim.",
+  "runs": [
+    {
+      "scenario": "a",
+      "pid": 84249,
+      "wrapper_pid": 84235,
+      "command": [
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--report",
+        "/workspace/scratch/growth-b0f3aec-a-genesis.json",
+        "--growth",
+        "/workspace/scratch/growth-b0f3aec-a.json",
+        "--growth-scenario",
+        "a"
+      ],
+      "wrapper_command": "python3 - a",
+      "affinity": [
+        1
+      ],
+      "state_after_sigterm": "Z",
+      "linux_wait_status": 15,
+      "exit_signal": 15,
+      "exit_code": -15,
+      "stop_requested_utc": "2026-10-30T14:17:18.497845+00:00",
+      "stop_recorded_utc": "2026-10-30T14:17:18.906161+00:00",
+      "signal": "SIGTERM",
+      "seed": 42,
+      "last_observed_month": 3240,
+      "requested_horizon_months": 6000,
+      "last_observation": {
+        "month": 3240,
+        "population": 2,
+        "totalPeople": 4,
+        "founderDescendants": 0,
+        "everFounderDescendants": 2,
+        "generation": 1,
+        "livingGeneration": 0,
+        "goldenCoreOrHigher": 2,
+        "descendantGoldenCoreOrHigher": 0,
+        "mortal": 0,
+        "mortalWithoutMartial": 0,
+        "martial": 0,
+        "descendantMortal": 0,
+        "descendantMartial": 0,
+        "households": 1,
+        "families": 1,
+        "sects": 3,
+        "dynasties": 0,
+        "territorylessDynasties": 0,
+        "activeMarkets": 0,
+        "activeWorkshops": 0,
+        "activeSettlements": 0,
+        "births": 2,
+        "deaths": 2,
+        "intervalBirths": 0,
+        "intervalDeaths": 0,
+        "explicitArrivals": 0,
+        "simulationMs": 1206508.5142,
+        "caseElapsedMs": 1214587.083
+      },
+      "raw_report_status": "partial",
+      "raw_case_status": "running",
+      "raw_requested_complete": false,
+      "raw_complete": false,
+      "completed_cohorts": 0,
+      "total_required_cohorts": 9,
+      "artifacts": [
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-a.json",
+          "bytes": 122865,
+          "sha256": "36b4acf400c6ab86b2ec2c9bfe963cc3f1ed996ead68634188ff380fd56faa96"
+        },
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-a.log",
+          "bytes": 3757,
+          "sha256": "50719fcd6e7c2dfa7ac9a3e45bbdac13b88a02607bf5e98cc135a30a9f3d4644"
+        },
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-a-genesis.json",
+          "bytes": 252,
+          "sha256": "4003efc4936fc41b74b78f1afff613187d3e29e8be4dcb58f0ad51128207d067"
+        },
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-a-run.json",
+          "bytes": 6549,
+          "sha256": "0ad6563e7f839d4c3a8a53534e5cc26d813c45aa446eb5ee75356ddc5581e618"
+        }
+      ]
+    },
+    {
+      "scenario": "b",
+      "pid": 84236,
+      "wrapper_pid": 84228,
+      "command": [
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--report",
+        "/workspace/scratch/growth-b0f3aec-b-genesis.json",
+        "--growth",
+        "/workspace/scratch/growth-b0f3aec-b.json",
+        "--growth-scenario",
+        "b"
+      ],
+      "wrapper_command": "python3 - b",
+      "affinity": [
+        2
+      ],
+      "state_after_sigterm": "Z",
+      "linux_wait_status": 15,
+      "exit_signal": 15,
+      "exit_code": -15,
+      "stop_requested_utc": "2026-10-30T14:17:18.497845+00:00",
+      "stop_recorded_utc": "2026-10-30T14:17:18.907018+00:00",
+      "signal": "SIGTERM",
+      "seed": 42,
+      "last_observed_month": 3240,
+      "requested_horizon_months": 6000,
+      "last_observation": {
+        "month": 3240,
+        "population": 2,
+        "totalPeople": 6,
+        "founderDescendants": 0,
+        "everFounderDescendants": 2,
+        "generation": 1,
+        "livingGeneration": 0,
+        "goldenCoreOrHigher": 2,
+        "descendantGoldenCoreOrHigher": 0,
+        "mortal": 0,
+        "mortalWithoutMartial": 0,
+        "martial": 0,
+        "descendantMortal": 0,
+        "descendantMartial": 0,
+        "households": 1,
+        "families": 1,
+        "sects": 2,
+        "dynasties": 0,
+        "territorylessDynasties": 0,
+        "activeMarkets": 1,
+        "activeWorkshops": 0,
+        "activeSettlements": 0,
+        "births": 2,
+        "deaths": 4,
+        "intervalBirths": 0,
+        "intervalDeaths": 0,
+        "explicitArrivals": 2,
+        "simulationMs": 1249246.5184999998,
+        "caseElapsedMs": 1257723.2637
+      },
+      "raw_report_status": "partial",
+      "raw_case_status": "running",
+      "raw_requested_complete": false,
+      "raw_complete": false,
+      "completed_cohorts": 0,
+      "total_required_cohorts": 9,
+      "artifacts": [
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-b.json",
+          "bytes": 123475,
+          "sha256": "8c4401ba46ea07ae186642b6acfc4ec1dad2b1ca9b6e18a534b09a93cca09bfb"
+        },
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-b.log",
+          "bytes": 3756,
+          "sha256": "8ad4326b24090e73130ebc89f4f9808a46a600cc028b7a6a8c276602472e3aa2"
+        },
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-b-genesis.json",
+          "bytes": 252,
+          "sha256": "a9d36a7b77242518b520d20a7e3f9d604aff9f9104d19ff0443eaa990ca4db0e"
+        },
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-b-run.json",
+          "bytes": 6549,
+          "sha256": "6758180d60a33695454867c9050aee420e268621d8f7f37db0623937982002c7"
+        }
+      ]
+    },
+    {
+      "scenario": "c",
+      "pid": 84242,
+      "wrapper_pid": 84232,
+      "command": [
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--report",
+        "/workspace/scratch/growth-b0f3aec-c-genesis.json",
+        "--growth",
+        "/workspace/scratch/growth-b0f3aec-c.json",
+        "--growth-scenario",
+        "c"
+      ],
+      "wrapper_command": "python3 - c",
+      "affinity": [
+        3
+      ],
+      "state_after_sigterm": "Z",
+      "linux_wait_status": 15,
+      "exit_signal": 15,
+      "exit_code": -15,
+      "stop_requested_utc": "2026-10-30T14:17:18.497845+00:00",
+      "stop_recorded_utc": "2026-10-30T14:17:18.907817+00:00",
+      "signal": "SIGTERM",
+      "seed": 42,
+      "last_observed_month": 3240,
+      "requested_horizon_months": 6000,
+      "last_observation": {
+        "month": 3240,
+        "population": 2,
+        "totalPeople": 4,
+        "founderDescendants": 0,
+        "everFounderDescendants": 2,
+        "generation": 1,
+        "livingGeneration": 0,
+        "goldenCoreOrHigher": 2,
+        "descendantGoldenCoreOrHigher": 0,
+        "mortal": 0,
+        "mortalWithoutMartial": 0,
+        "martial": 0,
+        "descendantMortal": 0,
+        "descendantMartial": 0,
+        "households": 1,
+        "families": 1,
+        "sects": 3,
+        "dynasties": 0,
+        "territorylessDynasties": 0,
+        "activeMarkets": 0,
+        "activeWorkshops": 0,
+        "activeSettlements": 0,
+        "births": 2,
+        "deaths": 2,
+        "intervalBirths": 0,
+        "intervalDeaths": 0,
+        "explicitArrivals": 0,
+        "simulationMs": 1203878.4914,
+        "caseElapsedMs": 1211880.7224
+      },
+      "raw_report_status": "partial",
+      "raw_case_status": "running",
+      "raw_requested_complete": false,
+      "raw_complete": false,
+      "completed_cohorts": 0,
+      "total_required_cohorts": 9,
+      "artifacts": [
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-c.json",
+          "bytes": 122853,
+          "sha256": "d5d8dec8dcbd48e704b2698e0d8edb6207d65b87a7b862860f6bc4db24035378"
+        },
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-c.log",
+          "bytes": 3756,
+          "sha256": "b48eb02b9bde06c23e877518b1181a212ef322a4dd77dd06240b5fc5cf83dcc4"
+        },
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-c-genesis.json",
+          "bytes": 252,
+          "sha256": "47a8535333b4996603b4d8c782416103e21a012b3dfdf844ee625a564cea98cf"
+        },
+        {
+          "path": "/workspace/scratch/growth-b0f3aec-c-run.json",
+          "bytes": 6549,
+          "sha256": "baa98b861da69c256f16d7831b74713e4067c93900b9aac9a8532a1afd41318b"
+        }
+      ]
+    }
+  ]
+}

@@ -2,13 +2,13 @@
   "total": 111,
   "completed": 47,
   "completion_percent": 42.3,
-  "own_acceptance_count": 89,
-  "own_acceptance_percent": 80.2,
+  "own_acceptance_count": 94,
+  "own_acceptance_percent": 84.7,
   "counts": {
     "done": 47,
-    "validated": 42,
-    "in_progress": 18,
-    "planned": 4,
+    "validated": 47,
+    "in_progress": 17,
+    "planned": 0,
     "blocked": 0
   },
   "remaining": [
@@ -45,7 +45,7 @@
     {
       "id": "V021-R06",
       "title": "퇴행·회복·수행 보정",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-V01",
@@ -60,7 +60,7 @@
     {
       "id": "V021-M02",
       "title": "복수 시설·자원·비경·성립",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-M03",
@@ -70,7 +70,7 @@
     {
       "id": "V021-M05",
       "title": "탐색·기연·비경",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-K03",
@@ -155,7 +155,7 @@
     {
       "id": "V021-X03",
       "title": "동등한 인물 행동·권한",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-X04",
@@ -170,12 +170,12 @@
     {
       "id": "V021-U04",
       "title": "지도·인구·이동·권리 화면",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-U05",
       "title": "종문·정책·왕조·경제 화면",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-D02",
@@ -200,7 +200,7 @@
     {
       "id": "V021-T04",
       "title": "단계별 성능·보정·장기 안정성",
-      "status": "planned"
+      "status": "in_progress"
     },
     {
       "id": "V021-T05",
@@ -230,22 +230,22 @@
     {
       "id": "V021-H04",
       "title": "사건·동적 SoA·지역/관계 인덱스",
-      "status": "planned"
+      "status": "in_progress"
     },
     {
       "id": "V021-H06",
       "title": "확장 성능 실험·지속 R&D 원장",
-      "status": "planned"
+      "status": "in_progress"
     },
     {
       "id": "V021-H09",
       "title": "C# 배치·SIMD·네이티브 비교 판단",
-      "status": "planned"
+      "status": "in_progress"
     },
     {
       "id": "V021-J02",
       "title": "화신 대원만 Gate·13개 자동 조건",
-      "status": "validated"
+      "status": "in_progress"
     },
     {
       "id": "V021-J03",
@@ -255,7 +255,7 @@
     {
       "id": "V021-J04",
       "title": "사망/비승/분혼·대기/출생 원자 전이",
-      "status": "validated"
+      "status": "in_progress"
     },
     {
       "id": "V021-C01",
@@ -330,11 +330,11 @@
     {
       "id": "V021-H10",
       "title": "이전 경로 제거·이중 권위 정리",
-      "status": "in_progress"
+      "status": "validated"
     }
   ],
   "schema_version": 1,
-  "source_commit": "6670d2993320dbec3be8c3596d8ec962692a0762",
+  "source_commit": "c521859b3d9f17e3559889a7011decfe91e8ddf7",
   "phase": "기능 마무리·수용 근거 대조",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

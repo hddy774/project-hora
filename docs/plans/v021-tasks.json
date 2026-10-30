@@ -2435,7 +2435,7 @@
         "V021-B04"
       ],
       "acceptance": "원인별 손상·재성장·총 기간/품질/위험·전략 차이 검사",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2451,6 +2451,12 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 자체 통과·선행 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "기존 원인별 손상·퇴행/실제 회복·비용 있는 전환 근거에 PR138의 동일 전체 초기 상태 3전략 공개 비교 1/1을 결합함. 실제 채집·제조한 같은 단약으로 총 5/6/6개월, 기 20000/25000/25000, 단약 0/0/1, 형성 품질 5243/5493/5493, 채택 위험 900/780/530bps를 대조하고 중간 파일 저장 후 남은 매월 해시 일치를 확인함. 명시적 짧은 법칙·현재 경계 초기조건이며 기본 장기기간·실패빈도·성능 측정으로 확대하지 않음."
         }
       ],
       "inv_ids": [
@@ -2731,7 +2737,7 @@
         "V021-P03"
       ],
       "acceptance": "도시+비경+시장 공존, 운영 주체·시설 성립·원천 검사",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2747,6 +2753,12 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 자체 통과·선행 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "기존 실제 가계·시장·공방·개인 탐사 원천 공존 및 운영자/성립/원천 근거에 PR136의 실제 비경 입구·독립 내부 공간을 결합함. 100 전략 지점 위 시설과 별도 비경 원장이 서로 권위를 덮어쓰지 않으며 새 지점·주민·무료 수용량을 만들지 않는 실제 공유 훅과 공개 발견/공간/유한 선점 검사를 대조함. 생태 담당자도 추가 백엔드 공백이 없음을 확인함. 비경 화면은 U04의 PR142 근거로 별도 귀속하며 최신 전체 재실행으로 주장하지 않음."
         }
       ],
       "inv_ids": [
@@ -2856,7 +2868,7 @@
         "V021-N01"
       ],
       "acceptance": "정보·조건·진척·위험·동시 선점·유한 보상 재처리 검사",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2872,6 +2884,12 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 자체 통과·선행 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "PR133 모듈만으로 판정하지 않고 병합 PR136의 실제 생성/명령/월별 완료/취소/사망/행동 검증/조회 훅과 공개 비경 10/10을 확인함. 자기 정보·개방/신체/도구/식량/계약/자리 조건·저장된 법칙/단일 위험·월별 진척·유료 부분 귀환·동시 유한 선점·중복/위조 영수증·현생 종결·AI 경로를 검증함. 선택 합계 34/34는 공개 명령/조회 33건과 순수 매체 모듈 조회 1건이며 구형 일반 탐색 윤회 13건도 포함함. U04 화면은 PR142로 별도 귀속하며 최종 통합/플랫폼/측정은 보류."
         }
       ],
       "inv_ids": [
@@ -3781,7 +3799,7 @@
         "V021-N02"
       ],
       "acceptance": "이동/수행/제작/거래/관계/정치/전투·상대 판단·실제 능력",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3797,6 +3815,12 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 자체 통과·선행 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "기존 이동·수행·제작·거래·관계·정치·전투의 공개 명령과 실제 능력 검증을 유지하고, 남았던 정치 화면 연결은 PR137의 실제 카탈로그 선택/재원/공동 노동/취소/시행과 두 폭 브라우저 근거로 종료함. PR141의 실제 채광 AI 인계·자기 관측·단일 실물 환전/동일 공개 명령 재전송 3/3은 같은 행동/권한 경로를 보강함. 화면의 임의 정책값·무료 예산을 근거로 삼지 않으며 U04 및 최종 T05는 별도로 유지함."
         }
       ],
       "inv_ids": [
@@ -4000,7 +4024,7 @@
         "V021-P03"
       ],
       "acceptance": "100지점·복수 시설·시대 변화·주권/소유·이동/기연",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4016,6 +4040,12 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 자체 통과·선행 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "기존100지점·복수 시설·권리 화면과 M05의 자기 입구/진척/실내 정보 경계에 병합 PR142의 실제1280/390px 브라우저 근거를 결합함. 실제 유료 탐색·인접0→8이동·개인 입구 관측/현재 미상·준비 식량 소비/도구 예약·바닥 책 내부 비노출·1개월 중도 귀환·재입장·내부 저장복원/완주/유한 결과를 확인함. API24/최신 전체/성능/T05 전체 합격으로 확대하지 않음."
         }
       ],
       "inv_ids": [
@@ -4040,7 +4070,7 @@
         "V021-G02"
       ],
       "acceptance": "10분류 정책·봉신/무영토·재정·작업/시장/경매·비교",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4056,6 +4086,12 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 자체 통과·선행 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "병합 PR137이 정책 초안·준비 기한·예약금·채무를 실제 Politics 원장에서만 투영하고 정본 10분류 실제 선택을 최초 가계에도 표시함. 실제 원금 40 대여/동액 채무, 채택→예산·인력 준비→취소 환급/시행/이력, 비수장 재정 null, 폐기 3필드 0을 공개 조회와 1280/390px 실제 세션 브라우저로 검증함. 원래 조회 10/10은 PR 기록이며 현재 읽은 원본은 후속 비경을 포함한 12/12로 구분함. 기존 종문/왕조/경제 근거와 결합한 자체 수용 권고이며 최종 네이티브/전체 화면 검수로 확대하지 않음."
         }
       ],
       "inv_ids": [
@@ -4337,7 +4373,7 @@
         "V021-L07"
       ],
       "acceptance": "성장 단계별 엔진 없는 C# 측정·분포/장기 안정·장치/런타임 구분, Android 실측 미수행은 명시",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4346,7 +4382,14 @@
       "milestone": "M5",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "성장 단계별 엔진 없는 C# 측정·분포/장기 안정·장치/런타임 구분, Android 실측 미수행은 명시",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 최종 측정 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "전체 기능 완료 후 인구 단계·분포·장기 안정성·비용/메모리/저장 크기를 같은 기준으로 측정해야 함. 이 감사는 측정을 실행하지 않으며 과거 실패나 다른 런타임 비용을 새 제품 합격으로 바꾸지 않음."
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5098,7 +5141,7 @@
         "V021-M01"
       ],
       "acceptance": "정확한 묶음 처리·동적 SoA/인덱스·버퍼 대여 수명·무효 사건 힙 정리·권위 사건열/hash 보존",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5107,7 +5150,14 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "정확한 묶음 처리·동적 SoA/인덱스·버퍼 대여 수명·무효 사건 힙 정리·권위 사건열/hash 보존",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 명시 측정 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "현재 세대 슬롯·동적 목록·지역/부양 인덱스와 결정론 근거는 존재함. 실제 스케줄/배치/확장 비용의 비교와 채택 판단은 남아 있음. 미채택 자료구조의 강제 재작성 의무를 새로 만들지 않음."
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5170,7 +5220,7 @@
         "V021-K08"
       ],
       "acceptance": "H01 기준선과 EX-01\\~06 확장 비교·예열/측정 상태 분리·실제 지연 표본·채택/기각/재검토 근거",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5179,7 +5229,14 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "H01 기준선과 EX-01\\~06 확장 비교·예열/측정 상태 분리·실제 지연 표본·채택/기각/재검토 근거",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 명시 측정 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "기능 개발 후 수행할 EX-01~06 비교·예열/측정 분리·지연 표본·채택/기각/재검토 근거가 남음."
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5282,7 +5339,7 @@
         "V021-H06"
       ],
       "acceptance": "스칼라 정답·배치 전체 비용·임시 출력/부분 실패/낡은 입력 폐기·한 번 적용, 네이티브 도입 의무 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5291,7 +5348,14 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "스칼라 정답·배치 전체 비용·임시 출력/부분 실패/낡은 입력 폐기·한 번 적용, 네이티브 도입 의무 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 명시 측정 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "현재 관리 C# 스칼라 기준은 존재함. 배치 전체 비용·정답/부분 실패·낡은 입력 폐기와 조건부 최적화 채택 판단의 측정 근거가 남음. 네이티브/SIMD 도입을 의무로 세지 않음."
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5356,7 +5420,7 @@
         "V021-Z02"
       ],
       "acceptance": "원인 직전 자격 snapshot·13자동조건·중복 원인/혼존속·과거 최고/붕괴 후 값 오판0·윤회 버튼 없음 · 13조건 목표 유지·원인 생성 시스템/실사건과 fixture를 구분·13개 실제 원인 전체 구현 범위·후속 이관 없음",
-      "status": "validated",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5377,6 +5441,12 @@
           "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
           "path": "docs/evidence/0.2.1/progress-acceptance.json",
           "source": "V021-J02"
+        },
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 기존 불변식 수용 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "기존13개 단일 실제 원인 생산자/자격/저장 검사는 존재하나 INV-013의 여러 조건 동시 충족 계약은 아직 미충족. World.Hazards.ResolveWorldConditions가12→7→4→11에서 첫 매칭 뒤 반환하고 EndLife는 선택된 원인만 Evidence에 기록하므로, 실제 동시12/7에서 단일 여정과 다른 매칭 원인 설명을 함께 보존하는 좁은 수정/공개 저장·재처리 근거가 필요함. 루트와 인지 담당자가 기존 계약의 직접 공백으로 확인했으며 새 광범위 요구가 아님."
         }
       ],
       "inv_ids": [
@@ -5447,7 +5517,7 @@
         "V021-H02"
       ],
       "acceptance": "비승 비사망·출생 단일 영혼 배정·태내/출생 후 파생 분리·분령 노동/인구 중복0·아이템 미복제",
-      "status": "validated",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5468,6 +5538,12 @@
           "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
           "path": "docs/evidence/0.2.1/progress-acceptance.json",
           "source": "V021-J04"
+        },
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 기존 불변식 수용 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "기존 사망/비승/분혼·대기/출생 단일 영혼 및 자산 보존 검사는 유지함. 공통 INV-013에서 동시 원인이 하나의 여정만 만들면서 대체 매칭 원인을 설명에 남겨야 하는데 현재 EndLife에는 선택된 원인만 저장됨. 동시12/7의 실제 설명·단일 여정·저장/재처리 보존 후속이 완료되기 전까지 자체 수용을 보류함. 현재RC-01~13 단일 생산자 결과를 이 미검증 동시조건의 합격으로 합치지 않음."
         }
       ],
       "inv_ids": [
@@ -6392,7 +6468,7 @@
         "V021-T02"
       ],
       "acceptance": "대체/검증된 기능만 이전 경로 제거·이중 권위0·근거 및 필요한 호환 정답 비교.",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -6406,6 +6482,12 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업 자체 수용·선행 마감 감사: 자체 통과·선행 보류",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
+          "note": "PR134에서 대체된 구형 수행/제작/학습/채집 완료 권위를 출처와 함께 보관하고 현재 제품에서 제거한 변경, 중앙 양방향 행동 소유 검증, 실제 전수 요청/신체 능력 판정을 확인함. 선택 5/5와 일관된 공유 파단 초기조건 1/1을 유지하며 PR136 후 exploration:의 위조 대소문자 방어·실제 입장 소유 검증·일반 탐색보다 앞선 완료 처리와 공개 비경 10/10을 연결함. 추가 자체 기능 조항은 없다는 수행 담당자 확인도 대조함. 과거 전체 215/216과 후속 선택 1/1을 구분하고 최신 전체 합격으로 바꾸지 않음. 정본 선행 T02는 그대로 남김."
         }
       ],
       "inv_ids": [

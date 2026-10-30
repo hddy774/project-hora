@@ -192,7 +192,7 @@ public sealed record InventoryAppraisal(long Appraiser, long Item, string Defini
 public sealed record SourceObservation(long Observer, long Source, int Place, long Remaining, long Month, string Evidence,
     string Definition = "", string Activity = "");
 public sealed record EquipmentContribution(long Item, int Quality, int Damage, IReadOnlyList<int> Slots);
-public sealed record InventoryEffect(string Cause, long Target, string Kind, int Magnitude, long Start, long End);
+public sealed record InventoryEffect(string Cause, long Target, string Kind, int Magnitude, long Start, long End, long ConsumptionSequence = 0);
 public sealed class ArrayInstallation
 {
     public long Id { get; set; }

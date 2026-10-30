@@ -64,6 +64,8 @@ public sealed record RecipeView(string Id, string Name, string Skill, string Out
 public sealed record ResourceSourceView(long Id, int Place, string Definition, string Name, string Activity, long Remaining,
     long Observed, string Evidence, long? Capacity, int? Regeneration, string? Origin);
 public sealed record InventoryActivityView(long Id, string Kind, string Name, string Status, int Place, long? Started, long Due, string? OutputName, int OutputQuantity);
+public sealed record SpeciesView(string Id, string Name, string NaturalForm, long BasicLifespanMonths, long MaturityMonths,
+    IReadOnlyList<string> Habitats, IReadOnlyList<string> ResourceNeeds);
 public sealed record KnowledgeActivityView(long Id, string Kind, string Status, long Actor, long Teacher,
     string WorkId, string WorkTitle, IReadOnlyList<int> Chapters, long Started, long Due, long? Ended,
     long MediumItem, string Source, IReadOnlyList<K.KnowledgeAdoption> Adopted, K.KnowledgePracticeOutcome? Outcome);
@@ -123,6 +125,10 @@ public sealed record GameView(string Title, string Version, long Month, long Rev
     public IReadOnlyDictionary<string, string>? TraitNames { get; init; }
     public IReadOnlyList<RecipeView> Recipes { get; init; } = [];
     public IReadOnlyList<ResourceSourceView> ResourceSources { get; init; } = [];
+    public Ecology.EconomyView? Economy { get; init; }
+    public Currency.CurrencyExchangeInfo? CurrencyExchange { get; init; }
+    public IReadOnlyList<SpeciesView> Species { get; init; } = [];
+    public IReadOnlyDictionary<string, string>? ItemNames { get; init; }
 }
 
 public sealed partial class GameWorld
@@ -239,7 +245,7 @@ public sealed partial class GameWorld
                         I.InventoryDefinitions.Recipes.TryGetValue(job.Recipe, out var recipe) ? I.InventoryDefinitions.Definition(recipe.Output).Item.Name + " 제작" :
                         job.Recipe switch { "extraction" => "자원 채취", "repair" => "실물 수리", "appraisal" => "실물 감정", "exploration" => "원천 답사", "medical-treatment" => "의료", _ => "생업 작업" },
                         job.Status, job.Place, state.Inventory.Labor.FirstOrDefault(l => l.Id == job.Labor)?.Start,
-                        job.Due, I.InventoryDefinitions.Recipes.TryGetValue(job.Recipe, out var outputRecipe) ? I.InventoryDefinitions.Definition(outputRecipe.Output).Item.Name : null, job.OutputQuantity)).ToArray()) : null,
+                        job.Due, job.OutputDefinition.Length > 0 ? I.InventoryDefinitions.Definition(job.OutputDefinition).Item.Name : null, job.OutputQuantity)).ToArray()) : null,
                 Decision = permitted ? new(p.Goal, p.Reason, p.Action.ToString(), p.Due, p.PlanExpansions, Array.AsReadOnly(p.Plan.ToArray()))
                 {
                     Mood = p.Mood, LastCare = p.LastCare, Habits = ReadOnly(p.Habits),
@@ -270,7 +276,13 @@ public sealed partial class GameWorld
                     r.Skill, r.Output, I.InventoryDefinitions.Definition(r.Output).Item.Name, r.Quantity,
                     Array.AsReadOnly(r.Inputs.OrderBy(input => input.Key, StringComparer.Ordinal).Select(input =>
                         new RecipeInputView(input.Key, I.InventoryDefinitions.Definition(input.Key).Item.Name, input.Value)).ToArray()))).ToArray()),
-            ResourceSources = ResourceSourcesFor(actor, observer)
+            ResourceSources = ResourceSourcesFor(actor, observer),
+            Economy = observer || actor!.Status == LifeStatus.Alive ? EconomyDetail() : null,
+            CurrencyExchange = CurrencyExchangeInfo(),
+            Species = Array.AsReadOnly(P.SpeciesCatalog.All.Select(s => new SpeciesView(s.Id, s.Name, s.NaturalForm.ToString(),
+                s.BasicLifespanMonths, s.MaturityMonths, Array.AsReadOnly(s.Habitats.Select(h => h.ToString()).ToArray()),
+                Array.AsReadOnly(s.ResourceNeeds.ToArray()))).ToArray()),
+            ItemNames = new ReadOnlyDictionary<string, string>(I.InventoryDefinitions.Items.ToDictionary(i => i.Key, i => i.Value.Item.Name, StringComparer.Ordinal))
         };
         return observer ? projection : projection with { Revision = PerceptionRevision(projection) };
     }

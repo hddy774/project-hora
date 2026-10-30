@@ -18,6 +18,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Chronicles.Hosting/Chronicles.Hosting.csproj" />
-    <AndroidAsset Include="../Chronicles.Shell/index.html" Link="index.html" />
+    <AndroidAsset Include="../Chronicles.Shell/index.compat.html" Link="index.html" />
   </ItemGroup>
 </Project>

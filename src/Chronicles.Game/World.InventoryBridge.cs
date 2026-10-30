@@ -280,6 +280,7 @@ public sealed partial class GameWorld
         var order = command.Data.Length == 0 ? new InventoryTransportOrder(sender.Id, sender.Id, 0) : JsonSerializer.Deserialize<InventoryTransportOrder>(command.Data);
         if (order is null || !people.TryGetValue(order.Carrier, out var carrier) || sender.Action != ActionKind.Idle || carrier.Action != ActionKind.Idle)
             return "실제 운송 당사자와 노동을 확인하세요.";
+        if (PeopleActionError(carrier, "travel") is { } mobilityError) return mobilityError;
         var destination = checked((int)command.Value); var route = !carrier.Sealed && carrier.Health >= 10 && destination is >= 0 and < 100 &&
             carrier.KnownPlaces.Contains(destination) && state.Places[carrier.Place].Neighbors.Contains(destination) && state.Places[destination].BlockedUntil <= Month;
         var consent = carrier.Id == sender.Id || (carrier.KnownPeople.Contains(sender.Id) && carrier.Personality[4] >= 50 &&
@@ -452,6 +453,12 @@ public sealed partial class GameWorld
         }
         return false;
     }
+    // Magnitude is basis points of current process capacity, independent of innate roots or saved progress.
+    // Start<=Month<End makes a dose taken this month available at the next monthly pulse, then expire.
+    private int InventoryGrowthBonus(Person p) => (int)Math.Min(10000, state.Inventory.Effects.Where(e => e.Target == p.Id && e.Kind == "growth" &&
+        e.Start <= Month && Month < e.End && e.ConsumptionSequence > 0 && state.Inventory.Events.Any(a =>
+            a.Sequence == e.ConsumptionSequence && a.Kind == "physical-consumption" && a.Actor == p.Id && a.Quantity == 1 &&
+            InventoryDefinitions.Definition(a.Definition).Effect == "growth")).DistinctBy(e => e.Cause).Sum(e => (long)e.Magnitude));
     private int InventoryBreakthroughBonus(Person p) => state.Inventory.Effects.Where(e => e.Target == p.Id && e.Kind == "breakthrough" &&
         e.Start <= Month && e.End > Month).DistinctBy(e => e.Cause).Sum(e => e.Magnitude);
     private void ValidateInventoryBridge()

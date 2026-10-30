@@ -366,7 +366,8 @@ public sealed partial class GameWorld
             return Math.Clamp(talent.CurrentExpression + talent.Innate * (10000 - state.PeopleDomain.Tuning.TalentInnateWeight) / 10000, 0, 10000);
         }
         var formation = CultivationFormationAt(state.Places[p.Place], p);
-        int Assisted(int index) => Math.Clamp(Capability(index) * (10000 + formation.QiBonus * 100) / 10000, 0, 10000);
+        var assistance = 10000L + (long)formation.QiBonus * 100 + InventoryGrowthBonus(p);
+        int Assisted(int index) => (int)Math.Clamp((long)Capability(index) * assistance / 10000, 0, 10000);
         return new()
         {
             PersonId = p.Id, BodyId = p.BodyId, SoulId = p.SoulId, Realm = p.Realm, Layer = p.Layer, GreatPerfection = p.GreatPerfection,
@@ -380,8 +381,7 @@ public sealed partial class GameWorld
     {
         var place = state.Places[p.Place];
         var formation = CultivationFormationAt(place, p);
-        var political = new PoliticalContext(Month, Revision, state.LawRevision, state.People, state.Groups, state.Places,
-            new() { MaturityMonths = Law("birth.maturity"), SectLimit = IntLaw("politics.sectLimit") });
+        var political = PoliticsContext();
         var knowledge = new List<KnowledgeEvidence>();
         foreach (var work in Catalog.Paths.Select(x => x.Id).Prepend("entry"))
         {
@@ -400,7 +400,14 @@ public sealed partial class GameWorld
         var occupied = state.People.Count(q => q.Id != p.Id && q.Status == LifeStatus.Alive && q.Place == p.Place &&
             q.Action is ActionKind.Cultivate or ActionKind.Breakthrough or ActionKind.Trial);
         var policy = CultivationPolicyForWorld();
-        policy = policy with { BaseRisk = Math.Max(0, policy.BaseRisk - InventoryBreakthroughBonus(p)) };
+        // Fortune is a dated event-risk modifier, never aptitude, formation quality, assets or consent.
+        // Preparation adopts its current risk once; an actual minor trial reads the active sources at resolution.
+        var fortuneRisk = PeopleFortuneModifier(p, FortuneEventKind.Adversity) - PeopleFortuneModifier(p, FortuneEventKind.Escape);
+        policy = policy with
+        {
+            BaseRisk = (int)Math.Clamp((long)policy.BaseRisk - InventoryBreakthroughBonus(p) + fortuneRisk, 0, 10000),
+            TrialRisk = (int)Math.Clamp((long)policy.TrialRisk + fortuneRisk, 0, 10000)
+        };
         return new()
         {
             Month = Month, LawRevision = state.LawRevision, Policy = policy, Knowledge = knowledge,

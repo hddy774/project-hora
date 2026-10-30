@@ -255,6 +255,7 @@ public sealed partial class GameWorld
             _ => ActionKind.Idle
         };
         if (action == ActionKind.Idle) return "알 수 없는 행동입니다.";
+        if (action == ActionKind.Guard && ValidateCombatGuard(p, target) is { } guardError) return guardError;
         if (action == ActionKind.Travel)
         {
             if (target < 0 || target >= 100 || !p.KnownPlaces.Contains((int)target) ||
@@ -299,6 +300,7 @@ public sealed partial class GameWorld
     private string? Cancel(Person p)
     {
         var command = new GameCommand($"cancel:{p.BodyId}:{Month}:{Revision}:{state.NextId}", p.Id, "cancel");
+        if (TryCancelCombat(p, out var combatError)) return combatError;
         if (TryPeopleSocialCommand(command, p, out var socialError)) return socialError;
         if (TryCultivationCommand(command, p, out var domainError)) return domainError;
         if (CancelKnowledge(p)) return null;

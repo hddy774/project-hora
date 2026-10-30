@@ -1,0 +1,172 @@
+{
+  "review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "9704e95508456ee317a378a9b8dac55985bf1849",
+    "source_commit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+    "test_sources_sha256": "829074742f2738d25dd94dee2cc5abcbe2e01beeee6ab54729625f13a18cffb2",
+    "actual_scenarios": 313,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "src/Chronicles.Game/GameCodec.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "현재 상태Schema1/DomainSchema2 유지·기존 작은schema2 bytes와구버전거부·128MiB초과시binary봉투3/rawUTF8·같은논리checksum·정확길이/순번/손상거부·명령/RNG전체복원; 내부임계값검사와실제대규모성공구분"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Hosting/Chronicles.Hosting.csproj",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-010"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "호스트세션/원자파일·pending/backup복구·표시세대/명령/손상원문보존. 큰봉투도동일공개경로·시험용내부threshold만추가;csproj친구assembly는검사전용,OS강제종료/실제대규모성공별도"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Hosting/GameSaveStore.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-010"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "호스트세션/원자파일·pending/backup복구·표시세대/명령/손상원문보존. 큰봉투도동일공개경로·시험용내부threshold만추가;csproj친구assembly는검사전용,OS강제종료/실제대규모성공별도"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006"
+        ],
+        "registered_scenarios": [
+          "INV-004 대용량 저장: UTF8 양형식·경계·순번·명령 재전송·RNG 저장 속행",
+          "INV-004 대용량 저장: prefix·버전·길이·순번·체크섬·잘림·후행 자료 엄밀 거부",
+          "INV-004 대용량 저장: 기존 schema2 바이트·고정 원본·구버전 정책 보존",
+          "INV-004 대용량 저장: 실제 원자파일 혼합형식·pending 우선순번·backup·손상 원문 보존"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004 대용량 저장: UTF8 양형식·경계·순번·명령 재전송·RNG 저장 속행",
+          "INV-004 대용량 저장: prefix·버전·길이·순번·체크섬·잘림·후행 자료 엄밀 거부",
+          "INV-004 대용량 저장: 기존 schema2 바이트·고정 원본·구버전 정책 보존",
+          "INV-004 대용량 저장: 실제 원자파일 혼합형식·pending 우선순번·backup·손상 원문 보존"
+        ],
+        "review_focus": []
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "review_acknowledgement": {
+    "source_commit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      "src/Chronicles.Game/GameCodec.cs",
+      "src/Chronicles.Hosting/Chronicles.Hosting.csproj",
+      "src/Chronicles.Hosting/GameSaveStore.cs",
+      "tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs"
+    ],
+    "review_note": "9704→c6의제품C#2+Hosting.csproj1+신규검사C#1을읽고새4이름/실제world·byte-module·host경계를수동등록했다. 기존schema2bytes/구버전거부·상태Schema1/DomainSchema2·binary봉투3의같은논리hash/길이·실제원자파일/원문보존과내부시험seam을구분했다. 실제10,000명저장성공과전체111수용을이313기능통과로판정하지않는다."
+  },
+  "review_details": [
+    {
+      "path": "src/Chronicles.Game/GameCodec.cs",
+      "sha256": "ddb307671a42f0174e4ceabf47831b9385d5d54b109e3e88128c1f59ff5a26b1",
+      "review_note": "상태Schema1/DomainSchema2와작은JSON봉투2를유지한다. 128MiB초과canonical본문은64B version3이진봉투/rawUTF8로같은sequence+LF+payload논리hash를쓴다. strict길이·버전·순번·checksum검증뒤같은GameWorld.Restore권위검증을거친다. 실제대규모저장성공과작은임계값seam검사를구분한다."
+    },
+    {
+      "path": "src/Chronicles.Hosting/Chronicles.Hosting.csproj",
+      "sha256": "67c0948f45c259757cb699bb08d2ce2f96b44e3783865095a92971997d74cfb3",
+      "review_note": "Hosting→Game참조는유지하고검사assembly에InternalsVisibleTo만추가한다. 내부임계값seam을앱/저장설정으로노출하지않는다."
+    },
+    {
+      "path": "src/Chronicles.Hosting/GameSaveStore.cs",
+      "sha256": "06f48cfd001d702645f194cd5a8a662f532624ea2ceeac624b825a07fd2fb8d3",
+      "review_note": "공개SaveAtomic은기존기본임계값을사용하고내부overload만시험임계값을전달한다. pending작성/flush/재검증/backup/교체·복구최고순번·손상원문보존순서는같다. 호스트파일검사와실제전원상실/10k실측은구분한다."
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs",
+      "sha256": "e27c72963a002a2522cb929ff39268c7c28b617f54aa007f8a5c2ee6d7eb72dc",
+      "review_note": "신규4개는실제작은세계legacy고정원본/양형식publicpossess·2mo/RNG,byte-module손상거부,실제임시파일host혼합형식복구/원문보존이다. 내부threshold=0등으로생산분기를실행하며실제128MiB초과/10k성공을주장하지않는다."
+    }
+  ],
+  "supplemental_source_review": [
+    {
+      "path": "src/Chronicles.Shell/index.html",
+      "sha256": "d5309a2280e3e1cc1276ca9869f4db861bb209bf314c46e5ea672e002de991bf",
+      "unchanged_since_9704": true,
+      "in_test_catalog_fingerprint": false,
+      "in_product_fingerprint": true,
+      "review_scope": "HTML변경없음을hash대조했다. 기존9704/926의HTML검토를잇되C#조회검사를UI클릭/native수용으로확대하지않는다."
+    },
+    {
+      "path": "src/Chronicles.Shell/index.compat.html",
+      "sha256": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d",
+      "unchanged_since_9704": true,
+      "in_test_catalog_fingerprint": false,
+      "in_product_fingerprint": true,
+      "review_scope": "HTML변경없음을hash대조했다. 기존9704/926의HTML검토를잇되C#조회검사를UI클릭/native수용으로확대하지않는다."
+    }
+  ],
+  "previous_source_review": "invariant-execution-source-review-9704e95.json",
+  "product_source_fingerprint": "dcc95b5cb52a0d3b8e6b66975b736a685f4a82250508a2434d29563bd7b9cfc0",
+  "manual_name_binding_changes_before_helper": {
+    "before_count": 309,
+    "after_count": 313,
+    "new_test_classes": 4,
+    "added_names": [
+      "INV-004 대용량 저장: UTF8 양형식·경계·순번·명령 재전송·RNG 저장 속행",
+      "INV-004 대용량 저장: prefix·버전·길이·순번·체크섬·잘림·후행 자료 엄밀 거부",
+      "INV-004 대용량 저장: 기존 schema2 바이트·고정 원본·구버전 정책 보존",
+      "INV-004 대용량 저장: 실제 원자파일 혼합형식·pending 우선순번·backup·손상 원문 보존"
+    ],
+    "removed_names": [],
+    "witness_links_before": 144,
+    "witness_links_after": 148,
+    "note": "새4이름의실제world/module/host경계와증인앵커를수동등록한뒤helper계획을생성해그계획의added/removed는0이다."
+  },
+  "changed_path_categories": {
+    "total": 4,
+    "product_csharp": 2,
+    "product_csproj": 1,
+    "test_csharp": 1
+  },
+  "source_review_only": true,
+  "functional_execution_status": "separate-root-report-verified",
+  "separate_functional_report": {
+    "path": "invariant-final-c6e4704/functional.json",
+    "sha256": "5704c7e50745960585b11b77afb19f844a97991eeda7bfc3be25dece5bd07abe",
+    "executed_source": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+    "selection": "all",
+    "total": 313,
+    "failed": 0
+  },
+  "runtime_test_or_measurement_runs_by_mapping_work": 0,
+  "limits": [
+    "이전9704의309/144와926의308/143맵·원본·SourceReview를보존하고이번c6실행으로승격하지않는다.",
+    "실제10,000명저장성공은이작은fixture/전체기능보고서에서판정할수없다. #191원본실패·수정후별도실측을유지한다.",
+    "상태schema는그대로이고3은이진봉투버전이다. JSONschema3/옛개발상태자동호환을주장하지않는다.",
+    "감독래퍼의초기지문JSON파싱오류는게임빌드/전체성공run시작전실패이며별도원문보존한다.",
+    "성장/AI중단·복구·성능·장치/native/릴리스수용은313개C#보고서와별도다."
+  ]
+}

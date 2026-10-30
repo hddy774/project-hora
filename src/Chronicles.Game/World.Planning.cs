@@ -97,7 +97,8 @@ public sealed partial class GameWorld
                 }
                 return false;
             case "information": return TryExplorationInformationGoal(p) || StartInformationPlan(p, "", "현장에 관한 개인 관측을 늘릴 필요");
-            case "trade": return TryCurrencyPlanningGoal(p) || StartTradePlan(p, offers) || TryEcologyPlan(p);
+            case "trade": return TryCurrencyPlanningGoal(p) || StartTradePlan(p, offers) ||
+                VisitPlanningNode(p) && TryEcologyPlan(p);
             case "learning": return StartLearningPlan(p);
             case "cooperation": return StartCooperationPlan(p);
             case "retreat": return StartRetreatPlan(p);

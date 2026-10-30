@@ -90,6 +90,10 @@ internal static class InventoryProjectionFixture
 
 public sealed class InventoryProjectionStaleScenario : IFeatureScenario
 {
+    private readonly bool typedCopy;
+    public InventoryProjectionStaleScenario() { }
+    internal InventoryProjectionStaleScenario(bool typedCopy) { this.typedCopy = typedCopy; }
+    private InventoryEngine.OwnedTransaction Candidate(GameState world) => typedCopy ? InventoryEngine.OwnTypedProjectedForExperiment(world) : InventoryEngine.OwnProjected(world);
     public string Name => "inventory projection: 15개 입력별 stale와 전체 Person strict 경계·미사용 변화 보존";
     public void Run()
     {
@@ -97,7 +101,7 @@ public sealed class InventoryProjectionStaleScenario : IFeatureScenario
         {
             var world = OwnedInventoryFixture.Create(); var strict = GameCodec.Clone(world);
             var full = InventoryState.FromWorld(strict, strict.Inventory); using var strictToken = InventoryEngine.Own(strict);
-            using var token = InventoryEngine.OwnProjected(world);
+            using var token = Candidate(world);
             InventoryFixture.Check(token.Apply(new SplitInventoryItem("projection-stale", 1, world.Items[0].Id, 2)).Accepted, "오래된 후보 준비 실패.");
             var p = world.People[1];
             switch (field)
@@ -122,7 +126,7 @@ public sealed class InventoryProjectionStaleScenario : IFeatureScenario
         Action<GameState>[] authorityChanges = [w => w.Month++, w => w.NextId++, w => w.Revision++, w => w.Items[0].Quality++, w => w.Materials["herb"].Opening++];
         foreach (var change in authorityChanges)
         {
-            var world = OwnedInventoryFixture.Create(); using var token = InventoryEngine.OwnProjected(world);
+            var world = OwnedInventoryFixture.Create(); using var token = Candidate(world);
             change(world); var before = OwnedInventoryFixture.Snapshot(world); var rejected = false;
             try { token.CommitTo(world); } catch (InvalidOperationException error) { rejected = error.Message.Contains("stale", StringComparison.Ordinal); }
             InventoryFixture.Check(rejected && before == OwnedInventoryFixture.Snapshot(world), "Person 외 실제 권위 필드의 지문이 누락됐습니다.");
@@ -132,7 +136,7 @@ public sealed class InventoryProjectionStaleScenario : IFeatureScenario
             var property = typeof(Person).GetProperty(field)!;
             var strict = OwnedInventoryFixture.Create(); var projected = GameCodec.Clone(strict);
             var full = InventoryState.FromWorld(strict, strict.Inventory); using var strictToken = InventoryEngine.Own(strict);
-            using var token = InventoryEngine.OwnProjected(projected);
+            using var token = Candidate(projected);
             property.SetValue(strict.People[1], InventoryProjectionFixture.Sentinel(property, property.GetValue(strict.People[1])));
             property.SetValue(projected.People[1], InventoryProjectionFixture.Sentinel(property, property.GetValue(projected.People[1])));
             var expected = OwnedInventoryFixture.Snapshot(strict); var fullRejected = false; var strictRejected = false;

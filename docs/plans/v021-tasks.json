@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "plan_version": "0.2.1",
-  "revision": 6,
+  "revision": 7,
   "source": {
     "kind": "notion_canonical_mirror",
     "notion_page": "https://app.notion.com/p/408acc9e6175817ab59bd91bb9dc011d",
@@ -12,8 +12,9 @@
     "review_source_commit": "f0f2ba39b67e3fe8fa034a38dde8d23d1a3711d0",
     "review_provenance": "user_supplied_verbatim_document; LF normalized; no independent Claude API verification",
     "product_code_changed": false,
-    "version_file_changed": false,
-    "review_source_sha256": "470bb05dc6b7a195c5f8ac7b6998b8a1d184967d8131f803f7acf131618e0598"
+    "version_file_changed": true,
+    "review_source_sha256": "470bb05dc6b7a195c5f8ac7b6998b8a1d184967d8131f803f7acf131618e0598",
+    "decision_record": "docs/plans/v021-decisions.md"
   },
   "required_original_ids": [
     "V021-A01",
@@ -135,20 +136,17 @@
       "id": "Q-01",
       "question": "두 시조 후대의 혈연 혼인·다양성/외부 편입",
       "proposal": "혈연 허용·게임상 영향·변이/중도 생성은 세계 법칙 항목. 미선택 외부인 자동 생성 없음. 창세 검증에서 성장 단절 표시. 변이만으로 생물학적 혈연이 사라지지는 않는다. a/b/c는 비교 시나리오이며 기본값을 선택하지 않음.",
-      "status": "open",
+      "status": "resolved",
       "owner": "user",
-      "decision_required_at": "policy-sensitive acceptance",
-      "blocks": [
-        "V021-P02",
-        "V021-F02",
-        "V021-Z04"
-      ],
-      "resolution": null,
+      "decision_required_at": "resolved",
+      "blocks": [],
+      "resolution": "사용자 확정: 혈연 후손 간 허용. 외부 주민 자동 생성 없음.",
       "feedback_ids": [
         "FB-01",
         "FB-06",
         "FB-13"
-      ]
+      ],
+      "decision_date": "2026-10-30"
     },
     {
       "id": "Q-02",
@@ -263,32 +261,29 @@
       "id": "Q-09",
       "question": "출산 최소 금단 자격을 양친 모두에 적용할지 출산자에게만 적용할지",
       "proposal": "금단 최소는 유지. 적용 주체는 미선택.",
-      "status": "open",
+      "status": "resolved",
       "owner": "user",
-      "blocks": [
-        "V021-F02"
-      ],
-      "resolution": null,
-      "decision_required_at": "policy-sensitive acceptance",
+      "blocks": [],
+      "resolution": "사용자 확정: 양친 모두 금단 이상.",
+      "decision_required_at": "resolved",
       "feedback_ids": [
         "FB-01"
-      ]
+      ],
+      "decision_date": "2026-10-30"
     },
     {
       "id": "Q-10",
       "question": "반선 시조 수명·가임 기간·초기 비승 허용/보호 기간과 잠정값 허용 범위",
       "proposal": "수치·보호 기간을 임의 확정하지 않음. 초기 구조 계약과 값 결정을 분리.",
-      "status": "open",
+      "status": "resolved",
       "owner": "user",
-      "blocks": [
-        "V021-R09",
-        "V021-P02"
-      ],
-      "resolution": null,
-      "decision_required_at": "policy-sensitive acceptance",
+      "blocks": [],
+      "resolution": "사용자 위임: 시조 수명·가임·초기 비승/보호 기간 포함 잠정값 개발 보정.",
+      "decision_required_at": "resolved",
       "feedback_ids": [
         "FB-03"
-      ]
+      ],
+      "decision_date": "2026-10-30"
     },
     {
       "id": "Q-11",
@@ -356,13 +351,11 @@
       "id": "Q-15",
       "question": "PC-TEMP 게임플레이 잠정값 정책과 사용자 확인 대상 값의 범위를 채택할지",
       "proposal": "시조 수명·금단 도달 기간·기본 출산 간격은 사용자 확인 제안. 확정 전 정책 민감 값/기본 프리셋 완료 금지.",
-      "status": "open",
+      "status": "resolved",
       "owner": "user",
-      "blocks": [
-        "V021-A02"
-      ],
-      "resolution": null,
-      "decision_required_at": "policy-sensitive acceptance",
+      "blocks": [],
+      "resolution": "사용자 위임: 모든 잠정값 개발 보정. 중앙 registry의 단위/범위/근거/revision/provisional/민감도 관리.",
+      "decision_required_at": "resolved",
       "feedback_ids": [
         "FB-05"
       ],
@@ -371,7 +364,8 @@
         "user_owned_value_scope",
         "default_golden_core_period",
         "default_birth_interval"
-      ]
+      ],
+      "decision_date": "2026-10-30"
     },
     {
       "id": "Q-16",
@@ -1729,7 +1723,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-A02",
@@ -1740,9 +1735,7 @@
       "acceptance": "사용자 변경 우선·Canon/제안/미정·기존 AGENTS/manifest·품질/생식/명칭 정합화",
       "status": "planned",
       "kind": "infrastructure",
-      "blocked_by_q": [
-        "Q-15"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [],
       "early_harness": null,
@@ -1758,7 +1751,8 @@
       ],
       "proposed_tests": [
         "UnresolvedPolicy_DoesNotSilentlySelectKinshipOrSectCountingRules"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-A03",
@@ -1789,7 +1783,8 @@
       "proposed_tests": [
         "StableIdentity_SlotReuseDoesNotRetargetHistoricalReferences",
         "Transition_FailureLeavesNoPartialAuthorityMutation"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-B01",
@@ -1818,7 +1813,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-B02",
@@ -1847,7 +1843,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-P01",
@@ -1881,7 +1878,8 @@
         "StableIdentity_SlotReuseDoesNotRetargetHistoricalReferences",
         "Genesis_DefaultWorldHasTwoHalfImmortalFoundersAndNoSect",
         "AgentSchedule_InPlaceUpdatesPreserveOneNodeAndHeapIndexPerPerson"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-P02",
@@ -1903,9 +1901,7 @@
       "status": "planned",
       "kind": "feature",
       "blocked_by_q": [
-        "Q-01",
-        "Q-02",
-        "Q-10"
+        "Q-02"
       ],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
@@ -1926,7 +1922,8 @@
       "proposed_tests": [
         "Genesis_DefaultWorldHasTwoHalfImmortalFoundersAndNoSect",
         "UnresolvedPolicy_DoesNotSilentlySelectKinshipOrSectCountingRules"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-P03",
@@ -1958,7 +1955,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-F01",
@@ -1989,7 +1987,8 @@
       ],
       "proposed_tests": [
         "Genesis_DefaultWorldHasTwoHalfImmortalFoundersAndNoSect"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-F02",
@@ -2006,8 +2005,6 @@
       "status": "planned",
       "kind": "feature",
       "blocked_by_q": [
-        "Q-01",
-        "Q-09",
         "Q-11"
       ],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2034,7 +2031,8 @@
         "Transition_FailureLeavesNoPartialAuthorityMutation",
         "Genesis_DefaultWorldHasTwoHalfImmortalFoundersAndNoSect",
         "SplitSoul_UsesFormationEvidenceWithoutCopyingRootCultivationHistory"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-F03",
@@ -2067,7 +2065,8 @@
       ],
       "proposed_tests": [
         "Genealogy_AdoptionAndSoulOriginDoNotRewriteBiologicalParents"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-F04",
@@ -2102,7 +2101,8 @@
       "proposed_tests": [
         "Genealogy_AdoptionAndSoulOriginDoNotRewriteBiologicalParents",
         "Reservation_CraftingSaleAuctionAndEquipmentCannotReuseCommittedAssets"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-R01",
@@ -2132,7 +2132,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-R02",
@@ -2162,7 +2163,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-R03",
@@ -2193,7 +2195,8 @@
       ],
       "proposed_tests": [
         "Cultivation_PreparationIsNotIrreversibleAttempt"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-R04",
@@ -2225,7 +2228,8 @@
       "proposed_tests": [
         "SplitSoul_UsesFormationEvidenceWithoutCopyingRootCultivationHistory",
         "Cultivation_PreparationIsNotIrreversibleAttempt"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-R05",
@@ -2255,7 +2259,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-R06",
@@ -2285,7 +2290,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-V01",
@@ -2316,7 +2322,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-V02",
@@ -2347,7 +2354,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-W01",
@@ -2380,7 +2388,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-W02",
@@ -2410,7 +2419,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-L01",
@@ -2444,7 +2454,8 @@
       "proposed_tests": [
         "Cognition_HiddenWorldChangesDoNotAlterDecisionOrReviewTiming",
         "AgentSchedule_InPlaceUpdatesPreserveOneNodeAndHeapIndexPerPerson"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-M01",
@@ -2474,7 +2485,8 @@
       ],
       "proposed_tests": [
         "Geography_NestedSpacesPreserveOneHundredStrategicNodes"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-M02",
@@ -2505,7 +2517,8 @@
       ],
       "proposed_tests": [
         "Geography_NestedSpacesPreserveOneHundredStrategicNodes"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-M03",
@@ -2537,7 +2550,8 @@
       ],
       "proposed_tests": [
         "Sovereignty_OwnershipAndDelegationDoNotAutomaticallyCreateDynasty"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-M04",
@@ -2567,7 +2581,8 @@
       ],
       "proposed_tests": [
         "Geography_NestedSpacesPreserveOneHundredStrategicNodes"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-M05",
@@ -2601,7 +2616,8 @@
       "proposed_tests": [
         "Geography_NestedSpacesPreserveOneHundredStrategicNodes",
         "ResourceLedger_SourcesProductionConsumptionAndLossExplainBalances"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-K01",
@@ -2632,7 +2648,8 @@
       ],
       "proposed_tests": [
         "Reservation_CraftingSaleAuctionAndEquipmentCannotReuseCommittedAssets"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-K02",
@@ -2665,7 +2682,8 @@
       "proposed_tests": [
         "Genealogy_AdoptionAndSoulOriginDoNotRewriteBiologicalParents",
         "Knowledge_PhysicalOwnershipDoesNotGrantMastery"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-K03",
@@ -2695,7 +2713,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-K04",
@@ -2725,7 +2744,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-K05",
@@ -2754,7 +2774,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-K06",
@@ -2785,7 +2806,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-K07",
@@ -2815,7 +2837,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-E01",
@@ -2854,7 +2877,8 @@
         "Asset_OwnershipCustodyEquipmentAndBindingRemainIndependent",
         "Reservation_CraftingSaleAuctionAndEquipmentCannotReuseCommittedAssets",
         "ResourceLedger_SourcesProductionConsumptionAndLossExplainBalances"
-      ]
+      ],
+      "github_issue": 15
     },
     {
       "id": "V021-E02",
@@ -2884,7 +2908,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 15
     },
     {
       "id": "V021-E03",
@@ -2914,7 +2939,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 15
     },
     {
       "id": "V021-E04",
@@ -2946,7 +2972,8 @@
       "proposed_tests": [
         "Transition_FailureLeavesNoPartialAuthorityMutation",
         "Reservation_CraftingSaleAuctionAndEquipmentCannotReuseCommittedAssets"
-      ]
+      ],
+      "github_issue": 15
     },
     {
       "id": "V021-E05",
@@ -2983,7 +3010,8 @@
       ],
       "proposed_tests": [
         "ResourceLedger_SourcesProductionConsumptionAndLossExplainBalances"
-      ]
+      ],
+      "github_issue": 15
     },
     {
       "id": "V021-S01",
@@ -3016,7 +3044,8 @@
       ],
       "proposed_tests": [
         "Policy_AdoptionDoesNotCreateResourcesOrPermanentSectSpecialization"
-      ]
+      ],
+      "github_issue": 16
     },
     {
       "id": "V021-S02",
@@ -3048,7 +3077,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 16
     },
     {
       "id": "V021-S03",
@@ -3080,7 +3110,8 @@
       ],
       "proposed_tests": [
         "Policy_AdoptionDoesNotCreateResourcesOrPermanentSectSpecialization"
-      ]
+      ],
+      "github_issue": 16
     },
     {
       "id": "V021-G01",
@@ -3115,7 +3146,8 @@
       ],
       "proposed_tests": [
         "Sovereignty_OwnershipAndDelegationDoNotAutomaticallyCreateDynasty"
-      ]
+      ],
+      "github_issue": 16
     },
     {
       "id": "V021-G02",
@@ -3150,7 +3182,8 @@
       "proposed_tests": [
         "Sovereignty_OwnershipAndDelegationDoNotAutomaticallyCreateDynasty",
         "Policy_AdoptionDoesNotCreateResourcesOrPermanentSectSpecialization"
-      ]
+      ],
+      "github_issue": 16
     },
     {
       "id": "V021-G03",
@@ -3185,7 +3218,8 @@
         "Transition_FailureLeavesNoPartialAuthorityMutation",
         "Reservation_CraftingSaleAuctionAndEquipmentCannotReuseCommittedAssets",
         "Policy_AdoptionDoesNotCreateResourcesOrPermanentSectSpecialization"
-      ]
+      ],
+      "github_issue": 16
     },
     {
       "id": "V021-X01",
@@ -3216,7 +3250,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-X02",
@@ -3249,7 +3284,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-X03",
@@ -3285,7 +3321,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-X04",
@@ -3317,7 +3354,8 @@
       ],
       "proposed_tests": [
         "Transition_FailureLeavesNoPartialAuthorityMutation"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-U01",
@@ -3348,7 +3386,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-U02",
@@ -3380,7 +3419,8 @@
       ],
       "proposed_tests": [
         "Observation_QueryAndPreviewLeaveAuthorityAndRngUnchanged"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-U03",
@@ -3417,7 +3457,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-U04",
@@ -3449,7 +3490,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-U05",
@@ -3482,7 +3524,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-U06",
@@ -3512,7 +3555,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-D01",
@@ -3541,7 +3585,8 @@
       ],
       "proposed_tests": [
         "Observation_QueryAndPreviewLeaveAuthorityAndRngUnchanged"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-D02",
@@ -3601,7 +3646,8 @@
       "proposed_tests": [
         "StableIdentity_SlotReuseDoesNotRetargetHistoricalReferences",
         "Persistence_AllDomainCommitmentsSurviveRoundTrip"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-T01",
@@ -3630,7 +3676,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-T02",
@@ -3663,7 +3710,8 @@
       ],
       "proposed_tests": [
         "Observation_QueryAndPreviewLeaveAuthorityAndRngUnchanged"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-T03",
@@ -3690,7 +3738,8 @@
       ],
       "proposed_tests": [
         "Architecture_CoreAndSimulationHaveNoPlatformDependencies"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-T04",
@@ -3720,7 +3769,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-T05",
@@ -3751,7 +3801,8 @@
       ],
       "proposed_tests": [
         "QueryGeneration_LateObserverResponseIsDiscardedAfterPlaySwitch"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-T06",
@@ -3782,7 +3833,8 @@
       ],
       "proposed_tests": [
         "UnresolvedPolicy_DoesNotSilentlySelectKinshipOrSectCountingRules"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-Z01",
@@ -3812,7 +3864,8 @@
       ],
       "proposed_tests": [
         "LawValues_ZeroDisabledUnlimitedAndUnsetRemainDistinct"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-Z02",
@@ -3845,7 +3898,8 @@
       "proposed_tests": [
         "LawValues_ZeroDisabledUnlimitedAndUnsetRemainDistinct",
         "Reincarnation_EligibilityUsesImmediatelyPreCauseSnapshot"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-Z03",
@@ -3876,7 +3930,8 @@
       ],
       "proposed_tests": [
         "LawValues_ZeroDisabledUnlimitedAndUnsetRemainDistinct"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-N01",
@@ -3912,7 +3967,8 @@
         "Cognition_HiddenWorldChangesDoNotAlterDecisionOrReviewTiming",
         "Query_AuthorizationPrecedesSearchSortAggregateAndRecommendation",
         "QueryGeneration_LateObserverResponseIsDiscardedAfterPlaySwitch"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-N02",
@@ -3946,7 +4002,8 @@
       "proposed_tests": [
         "Cognition_HiddenWorldChangesDoNotAlterDecisionOrReviewTiming",
         "Query_AuthorizationPrecedesSearchSortAggregateAndRecommendation"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-N03",
@@ -3979,7 +4036,8 @@
       "proposed_tests": [
         "Query_AuthorizationPrecedesSearchSortAggregateAndRecommendation",
         "QueryGeneration_LateObserverResponseIsDiscardedAfterPlaySwitch"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-Y01",
@@ -4010,7 +4068,8 @@
       ],
       "proposed_tests": [
         "Effects_SharedCauseIsAppliedOnceAcrossInheritanceTraceAndTrait"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-Y02",
@@ -4041,7 +4100,8 @@
       ],
       "proposed_tests": [
         "Effects_SharedCauseIsAppliedOnceAcrossInheritanceTraceAndTrait"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-Y03",
@@ -4075,7 +4135,8 @@
       "proposed_tests": [
         "Genealogy_AdoptionAndSoulOriginDoNotRewriteBiologicalParents",
         "Effects_SharedCauseIsAppliedOnceAcrossInheritanceTraceAndTrait"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-O01",
@@ -4107,7 +4168,8 @@
       ],
       "proposed_tests": [
         "ResourceLedger_SourcesProductionConsumptionAndLossExplainBalances"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-O02",
@@ -4140,7 +4202,8 @@
       ],
       "proposed_tests": [
         "ResourceLedger_SourcesProductionConsumptionAndLossExplainBalances"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-O03",
@@ -4173,7 +4236,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-H01",
@@ -4200,7 +4264,8 @@
       ],
       "proposed_tests": [
         "Architecture_CoreAndSimulationHaveNoPlatformDependencies"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-H02",
@@ -4230,7 +4295,8 @@
       ],
       "proposed_tests": [
         "Persistence_AllDomainCommitmentsSurviveRoundTrip"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-H03",
@@ -4259,7 +4325,8 @@
       ],
       "proposed_tests": [
         "Persistence_AllDomainCommitmentsSurviveRoundTrip"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-H04",
@@ -4290,7 +4357,8 @@
       "proposed_tests": [
         "Architecture_CoreAndSimulationHaveNoPlatformDependencies",
         "AgentSchedule_InPlaceUpdatesPreserveOneNodeAndHeapIndexPerPerson"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-H05",
@@ -4318,7 +4386,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-H06",
@@ -4347,7 +4416,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-H07",
@@ -4377,7 +4447,8 @@
       ],
       "proposed_tests": [
         "QueryGeneration_LateObserverResponseIsDiscardedAfterPlaySwitch"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-H08",
@@ -4406,7 +4477,8 @@
       ],
       "proposed_tests": [
         "Architecture_CoreAndSimulationHaveNoPlatformDependencies"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-H09",
@@ -4434,7 +4506,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-J01",
@@ -4466,7 +4539,8 @@
       "proposed_tests": [
         "StableIdentity_SlotReuseDoesNotRetargetHistoricalReferences",
         "SplitSoul_UsesFormationEvidenceWithoutCopyingRootCultivationHistory"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-J02",
@@ -4502,7 +4576,8 @@
       ],
       "proposed_tests": [
         "Reincarnation_EligibilityUsesImmediatelyPreCauseSnapshot"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-J03",
@@ -4537,7 +4612,8 @@
       "proposed_tests": [
         "SplitSoul_UsesFormationEvidenceWithoutCopyingRootCultivationHistory",
         "Knowledge_PhysicalOwnershipDoesNotGrantMastery"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-J04",
@@ -4574,7 +4650,8 @@
       "proposed_tests": [
         "Reincarnation_EligibilityUsesImmediatelyPreCauseSnapshot",
         "SplitSoul_UsesFormationEvidenceWithoutCopyingRootCultivationHistory"
-      ]
+      ],
+      "github_issue": 10
     },
     {
       "id": "V021-C01",
@@ -4602,7 +4679,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-L02",
@@ -4633,7 +4711,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-L03",
@@ -4665,7 +4744,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-B03",
@@ -4696,7 +4776,8 @@
       ],
       "proposed_tests": [
         "Knowledge_PhysicalOwnershipDoesNotGrantMastery"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-B04",
@@ -4729,7 +4810,8 @@
       "proposed_tests": [
         "Cultivation_PreparationIsNotIrreversibleAttempt",
         "Knowledge_PhysicalOwnershipDoesNotGrantMastery"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-I01",
@@ -4760,7 +4842,8 @@
       ],
       "proposed_tests": [
         "Asset_OwnershipCustodyEquipmentAndBindingRemainIndependent"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-I02",
@@ -4794,7 +4877,8 @@
       "proposed_tests": [
         "Query_AuthorizationPrecedesSearchSortAggregateAndRecommendation",
         "Asset_OwnershipCustodyEquipmentAndBindingRemainIndependent"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-I03",
@@ -4830,7 +4914,8 @@
         "Transition_FailureLeavesNoPartialAuthorityMutation",
         "Effects_SharedCauseIsAppliedOnceAcrossInheritanceTraceAndTrait",
         "Asset_OwnershipCustodyEquipmentAndBindingRemainIndependent"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-K08",
@@ -4861,7 +4946,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 14
     },
     {
       "id": "V021-L04",
@@ -4894,7 +4980,8 @@
       "proposed_tests": [
         "Cognition_HiddenWorldChangesDoNotAlterDecisionOrReviewTiming",
         "Knowledge_PhysicalOwnershipDoesNotGrantMastery"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-L05",
@@ -4929,7 +5016,8 @@
       "proposed_tests": [
         "Cognition_HiddenWorldChangesDoNotAlterDecisionOrReviewTiming",
         "AgentSchedule_InPlaceUpdatesPreserveOneNodeAndHeapIndexPerPerson"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-L06",
@@ -4961,7 +5049,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-L07",
@@ -4992,7 +5081,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 12
     },
     {
       "id": "V021-R07",
@@ -5028,7 +5118,8 @@
       "proposed_tests": [
         "Effects_SharedCauseIsAppliedOnceAcrossInheritanceTraceAndTrait",
         "Cultivation_PreparationIsNotIrreversibleAttempt"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-R08",
@@ -5062,7 +5153,8 @@
       "proposed_tests": [
         "Effects_SharedCauseIsAppliedOnceAcrossInheritanceTraceAndTrait",
         "Cultivation_PreparationIsNotIrreversibleAttempt"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-O04",
@@ -5095,7 +5187,8 @@
       ],
       "proposed_tests": [
         "ResourceLedger_SourcesProductionConsumptionAndLossExplainBalances"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-O05",
@@ -5125,7 +5218,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 13
     },
     {
       "id": "V021-U07",
@@ -5159,7 +5253,8 @@
       ],
       "proposed_tests": [
         "Query_AuthorizationPrecedesSearchSortAggregateAndRecommendation"
-      ]
+      ],
+      "github_issue": 17
     },
     {
       "id": "V021-R09",
@@ -5173,8 +5268,7 @@
       "status": "planned",
       "kind": "feature",
       "blocked_by_q": [
-        "Q-02",
-        "Q-10"
+        "Q-02"
       ],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
@@ -5195,7 +5289,8 @@
       "proposed_tests": [
         "Genesis_DefaultWorldHasTwoHalfImmortalFoundersAndNoSect",
         "UnresolvedPolicy_DoesNotSilentlySelectKinshipOrSectCountingRules"
-      ]
+      ],
+      "github_issue": 11
     },
     {
       "id": "V021-Z04",
@@ -5207,9 +5302,7 @@
       "acceptance": "Q-01 a/b/c별 세대 시간·인구/금단/범인/무인 범위·성립 시점/미성립 분포·배속/플레이 시간·불확실/가정. 미선택 기본 프리셋의 결론 확정 금지.",
       "status": "planned",
       "kind": "infrastructure",
-      "blocked_by_q": [
-        "Q-01"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [],
       "early_harness": null,
@@ -5225,7 +5318,8 @@
       ],
       "proposed_tests": [
         "UnresolvedPolicy_DoesNotSilentlySelectKinshipOrSectCountingRules"
-      ]
+      ],
+      "github_issue": 9
     },
     {
       "id": "V021-T07",
@@ -5253,7 +5347,8 @@
       ],
       "proposed_tests": [
         "Persistence_AllDomainCommitmentsSurviveRoundTrip"
-      ]
+      ],
+      "github_issue": 18
     },
     {
       "id": "V021-H10",
@@ -5280,7 +5375,8 @@
       ],
       "proposed_tests": [
         "Evidence_ProposedTestsAndHostBenchmarksAreNotReportedAsProductPasses"
-      ]
+      ],
+      "github_issue": 9
     }
   ],
   "common_feature_acceptance": "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함. T07 제품 하네스 근거를 사용하며 계획된 시험명은 통과 증거가 아니다."

@@ -137,6 +137,62 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
           test -r /dev/kvm -a -w /dev/kvm
+      - name: 실제 검사 스크립트 준비
+        run: |
+          cat > "$RUNNER_TEMP/v021-api24-probe.py" <<'PY'
+          import importlib.util, json, pathlib, re, subprocess
+          spec = importlib.util.spec_from_file_location('native_probe', 'scripts/v021-release-emulator.py')
+          native = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(native)
+          out = pathlib.Path('artifacts/api24/runtime')
+          proof = json.loads(pathlib.Path('artifacts/api24/apk/apk.json').read_text())
+          apk = pathlib.Path('artifacts/api24/apk/API24-debug-probe.apk')
+          def capture(name, *args):
+              value = native.adb(*args)
+              (out / name).write_text(value)
+              return value
+          try:
+              api = native.adb('shell', 'getprop', 'ro.build.version.sdk').strip()
+              assert api == '24' and native.adb('shell', 'getprop', 'ro.kernel.qemu').strip() == '1', '실제 API24 에뮬레이터가 아닙니다'
+              assert not native.adb('shell', 'pm', 'list', 'packages', proof['package']).strip(), '새 설치 검사에 기존 앱이 있습니다'
+              before = capture('webview-package-before.txt', 'shell', 'dumpsys', 'package', 'com.android.webview')
+              capture('webview-service-before.txt', 'shell', 'dumpsys', 'webviewupdate')
+              stock = re.search(r'\bversionName=([^\s]+)', before)
+              assert stock, '기본 이미지의 시스템 WebView 버전이 없습니다'
+              device = {'api': int(api), 'android_release': native.adb('shell', 'getprop', 'ro.build.version.release').strip(),
+                        'abi': native.adb('shell', 'getprop', 'ro.product.cpu.abi').strip(),
+                        'system_webview_package': 'com.android.webview', 'system_webview_version_before': stock[1]}
+              assert device['abi'] == 'x86_64', '요청한 실제 x86_64 이미지가 아닙니다'
+              (out / 'device.json').write_text(json.dumps(device, ensure_ascii=False, indent=2) + '\n')
+              print(json.dumps(device, ensure_ascii=False))
+              install = native.adb('install', '--no-streaming', apk)
+              (out / 'install.txt').write_text(install)
+              assert 'Success' in install, '새 APK 설치가 성공하지 않았습니다'
+              # Reuse the unchanged official renderer/foreground/DOM checker; do not enter its signing/upgrade CLI.
+              fresh = native.actual_render(apk, proof, out / 'fresh')
+              service = capture('webview-service-after.txt', 'shell', 'dumpsys', 'webviewupdate')
+              after = capture('webview-package-after.txt', 'shell', 'dumpsys', 'package', 'com.android.webview')
+              provider = re.search(r'Current WebView package \(name, version\):\s*\(([^,]+),\s*([^\)]+)\)', service)
+              versions = [re.search(r'\bversionName=([^\s]+)', text) for text in [before, after]]
+              assert provider and all(versions), '실제 시스템 WebView 버전을 확인할 수 없습니다'
+              assert provider[1] == 'com.android.webview' and provider[2] == versions[0][1] == versions[1][1], '기본 시스템 WebView가 교체됐습니다'
+              result = {'schema_version': 1, 'kind': 'api24-debug-native-probe', 'passed': True,
+                        'api': int(api), 'system_webview_package': provider[1], 'system_webview_version': provider[2],
+                        'stock_webview_version_unchanged': True, 'fresh_install_render': fresh,
+                        'apk_sha256': proof['sha256'], 'source_commit': proof['source_commit'],
+                        'product_source_fingerprint': proof['product_source_fingerprint'],
+                        'retained_signature_or_upgrade_claim': False, 'release_publication': False}
+              (out / 'api24-proof.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+              print(json.dumps(result, ensure_ascii=False))
+          finally:
+              # Preserve diagnostics even if the unchanged render verifier fails.
+              for name, args in [('logcat-all.txt', ['logcat', '-d', '-v', 'tag']),
+                                 ('foreground-final.txt', ['shell', 'dumpsys', 'activity', 'activities'])]:
+                  raw = subprocess.run(['adb', *args], capture_output=True, timeout=45)
+                  (out / name).write_bytes(raw.stdout + raw.stderr)
+              shot = subprocess.run(['adb', 'exec-out', 'screencap', '-p'], capture_output=True, timeout=45)
+              (out / 'screen-final.png').write_bytes(shot.stdout)
+          PY
       - name: 기본 API 24의 실제 새 설치·DOM·코어 연결 확인
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -147,61 +203,7 @@ jobs:
           force-avd-creation: true
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -accel on -no-snapshot
-          script: |
-            python3 - <<'PY'
-            import importlib.util, json, pathlib, re, subprocess
-            spec = importlib.util.spec_from_file_location('native_probe', 'scripts/v021-release-emulator.py')
-            native = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(native)
-            out = pathlib.Path('artifacts/api24/runtime')
-            proof = json.loads(pathlib.Path('artifacts/api24/apk/apk.json').read_text())
-            apk = pathlib.Path('artifacts/api24/apk/API24-debug-probe.apk')
-            def capture(name, *args):
-                value = native.adb(*args)
-                (out / name).write_text(value)
-                return value
-            try:
-                api = native.adb('shell', 'getprop', 'ro.build.version.sdk').strip()
-                assert api == '24' and native.adb('shell', 'getprop', 'ro.kernel.qemu').strip() == '1', '실제 API24 에뮬레이터가 아닙니다'
-                assert not native.adb('shell', 'pm', 'list', 'packages', proof['package']).strip(), '새 설치 검사에 기존 앱이 있습니다'
-                before = capture('webview-package-before.txt', 'shell', 'dumpsys', 'package', 'com.android.webview')
-                capture('webview-service-before.txt', 'shell', 'dumpsys', 'webviewupdate')
-                stock = re.search(r'\bversionName=([^\s]+)', before)
-                assert stock, '기본 이미지의 시스템 WebView 버전이 없습니다'
-                device = {'api': int(api), 'android_release': native.adb('shell', 'getprop', 'ro.build.version.release').strip(),
-                          'abi': native.adb('shell', 'getprop', 'ro.product.cpu.abi').strip(),
-                          'system_webview_package': 'com.android.webview', 'system_webview_version_before': stock[1]}
-                assert device['abi'] == 'x86_64', '요청한 실제 x86_64 이미지가 아닙니다'
-                (out / 'device.json').write_text(json.dumps(device, ensure_ascii=False, indent=2) + '\n')
-                print(json.dumps(device, ensure_ascii=False))
-                install = native.adb('install', '--no-streaming', apk)
-                (out / 'install.txt').write_text(install)
-                assert 'Success' in install, '새 APK 설치가 성공하지 않았습니다'
-                # Reuse the unchanged official renderer/foreground/DOM checker; do not enter its signing/upgrade CLI.
-                fresh = native.actual_render(apk, proof, out / 'fresh')
-                service = capture('webview-service-after.txt', 'shell', 'dumpsys', 'webviewupdate')
-                after = capture('webview-package-after.txt', 'shell', 'dumpsys', 'package', 'com.android.webview')
-                provider = re.search(r'Current WebView package \(name, version\):\s*\(([^,]+),\s*([^\)]+)\)', service)
-                versions = [re.search(r'\bversionName=([^\s]+)', text) for text in [before, after]]
-                assert provider and all(versions), '실제 시스템 WebView 버전을 확인할 수 없습니다'
-                assert provider[1] == 'com.android.webview' and provider[2] == versions[0][1] == versions[1][1], '기본 시스템 WebView가 교체됐습니다'
-                result = {'schema_version': 1, 'kind': 'api24-debug-native-probe', 'passed': True,
-                          'api': int(api), 'system_webview_package': provider[1], 'system_webview_version': provider[2],
-                          'stock_webview_version_unchanged': True, 'fresh_install_render': fresh,
-                          'apk_sha256': proof['sha256'], 'source_commit': proof['source_commit'],
-                          'product_source_fingerprint': proof['product_source_fingerprint'],
-                          'retained_signature_or_upgrade_claim': False, 'release_publication': False}
-                (out / 'api24-proof.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
-                print(json.dumps(result, ensure_ascii=False))
-            finally:
-                # Preserve diagnostics even if the unchanged render verifier fails.
-                for name, args in [('logcat-all.txt', ['logcat', '-d', '-v', 'tag']),
-                                   ('foreground-final.txt', ['shell', 'dumpsys', 'activity', 'activities'])]:
-                    raw = subprocess.run(['adb', *args], capture_output=True, timeout=45)
-                    (out / name).write_bytes(raw.stdout + raw.stderr)
-                shot = subprocess.run(['adb', 'exec-out', 'screencap', '-p'], capture_output=True, timeout=45)
-                (out / 'screen-final.png').write_bytes(shot.stdout)
-            PY
+          script: python3 "$RUNNER_TEMP/v021-api24-probe.py"
       - name: 디버그 검사 APK와 정확한 입력 업로드
         if: always()
         uses: actions/upload-artifact@v4

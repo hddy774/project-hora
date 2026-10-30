@@ -8,7 +8,8 @@ public sealed record GeneDefinition(string Id, HeritableTarget Target, int Weigh
 public sealed record GenePair(string GeneId, int FirstAllele, int SecondAllele, PeopleSource Source);
 public sealed record InheritableMarker(string Id, string TraitDefinitionId, string GeneId, int MinimumExpression, PeopleSource Source);
 public sealed record ParentGenome(long PersonId, long BodyId, string SpeciesId, GenePair[] Genes, InheritableMarker[] Markers);
-public sealed record GeneticModel(string PolicyId, long Revision, GeneDefinition[] Genes, string Rationale, bool RequiresReview = true)
+public sealed record GeneticModel(string PolicyId, long Revision, GeneDefinition[] Genes, string Rationale, bool RequiresReview = true,
+    int MutationMagnitude = 200, int MutationChance = 10_000)
 {
     public static GeneticModel Provisional() => new("PC-TEMP-V021-GENETICS-01", 1,
         Enumerable.Range(0, 10).SelectMany(target => Enumerable.Range(0, 2).Select(unit =>
@@ -20,7 +21,8 @@ public sealed record GeneticModel(string PolicyId, long Revision, GeneDefinition
     public void Validate()
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(PolicyId);
-        if (Revision < 1 || Genes.Length == 0 || Genes.Select(g => g.Id).Distinct(StringComparer.Ordinal).Count() != Genes.Length)
+        if (Revision < 1 || MutationMagnitude is < 0 or > 10_000 || MutationChance is < 0 or > 10_000 ||
+            Genes.Length == 0 || Genes.Select(g => g.Id).Distinct(StringComparer.Ordinal).Count() != Genes.Length)
             throw new InvalidDataException("Invalid genetic model identity.");
         foreach (var gene in Genes)
         {
@@ -75,7 +77,9 @@ public static class Inheritance
         foreach (var gene in context.Model.Genes.OrderBy(g => g.Id, StringComparer.Ordinal))
         {
             var draw = context.Selections.FirstOrDefault(s => s.GeneId == gene.Id);
-            if (draw is null || draw.ParentOneAllele is < 0 or > 1 || draw.ParentTwoAllele is < 0 or > 1 || draw.MutationDelta is < -10_000 or > 10_000 || draw.MutationAllele is < 0 or > 1)
+            if (draw is null || draw.ParentOneAllele is < 0 or > 1 || draw.ParentTwoAllele is < 0 or > 1 ||
+                Math.Abs((long)draw.MutationDelta) > context.Model.MutationMagnitude || context.Model.MutationChance == 0 && draw.MutationDelta != 0 ||
+                draw.MutationAllele is < 0 or > 1)
                 return new(false, "invalid fixed allele selection", state);
             if (draw.MutationDelta != 0 && draw.MutationSource is null) return new(false, "mutation requires a cause", state);
             draw.MutationSource?.Validate();

@@ -24,7 +24,7 @@ public static class PeopleCreationParser
         else request = new(command.Data, "human");
         var name = request.Name?.Trim();
         var species = SpeciesCatalog.All.FirstOrDefault(s => string.Equals(s.Id, request.Species, StringComparison.Ordinal));
-        if (string.IsNullOrWhiteSpace(name) || name.Length > 40 || species is null || command.Value is < 0 or > 1) return false;
+        if (string.IsNullOrWhiteSpace(name) || name.Length > 40 || species is null) return false;
         var maturity = species.Id == "human" ? laws["birth.maturity"] : species.MaturityMonths;
         var lifespan = species.Id == "human" ? laws["life.mortal"] : species.BasicLifespanMonths;
         if (maturity < 0 || lifespan <= maturity) return false;

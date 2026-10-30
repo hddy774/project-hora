@@ -1,6 +1,6 @@
 namespace Chronicles.Game.People;
 
-public enum ReputationTopic { AbsoluteAptitude, Genius, GeniusCandidate, CombatStrength, Reliability, Threat, Talent, Species }
+public enum ReputationTopic { AbsoluteAptitude, Genius, GeniusCandidate, CombatStrength, Reliability, Threat, Talent, Species, SocialStanding }
 public enum ClaimOrigin { DirectObservation, Conversation, Document }
 public enum SocialReaction { SeekInformation, ConsiderRecruitment, Caution, InvestigateConflict, ContinueNormally }
 public sealed record ClaimHop(string EvidenceId, ClaimOrigin Origin, long SourcePersonId, long RecipientPersonId, long ProducedMonth, long ReceivedMonth);
@@ -58,6 +58,7 @@ public static class Reputation
         if (claims.GroupBy(c => (c.Topic, c.EvaluationScopeId, c.TalentIndex)).Any(g => g.Select(c => c.Affirmed).Distinct().Count() > 1))
             return new(SocialReaction.InvestigateConflict, ids, "known sources disagree; no hidden truth used to choose a source");
         if (claims.Any(c => c.Topic == ReputationTopic.Threat && c.Affirmed)) return new(SocialReaction.Caution, ids, "observed or relayed threat claim");
+        if (claims.Any(c => c.Topic == ReputationTopic.Reliability && !c.Affirmed)) return new(SocialReaction.Caution, ids, "known source reports a breached commitment");
         if (claims.Any(c => c.Topic is ReputationTopic.Genius or ReputationTopic.GeniusCandidate && c.Affirmed))
             return new(SocialReaction.ConsiderRecruitment, ids, "known favorable aptitude title claim");
         return new(SocialReaction.ContinueNormally, ids, "current known claims do not justify a special response");

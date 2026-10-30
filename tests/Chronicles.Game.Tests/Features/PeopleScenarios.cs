@@ -153,6 +153,7 @@ public sealed class PeopleInheritanceScenarios : IFeatureScenario
         var invalidMarker = context.ParentOne with { Markers = [new("free-technique", "soul.insight", context.Model.Genes[0].Id, 0, PeopleFixture.Source("not-biological"))] };
         PeopleFixture.Invalid(() => Inheritance.Capture(InheritanceState.Empty(), context with { ParentOne = invalidMarker }), "soul traces cannot be inherited as biological markers");
         var mutationContext = PeopleFixture.Conception(31);
+        mutationContext = mutationContext with { Model = mutationContext.Model with { MutationMagnitude = 1000 } };
         mutationContext.Selections[0] = mutationContext.Selections[0] with { MutationDelta = 1000, MutationSource = PeopleFixture.Source("mutation", PeopleSourceKind.Mutation) };
         var mutation = Inheritance.Capture(InheritanceState.Empty(), mutationContext).State.Conceptions.Single();
         PeopleFixture.Check(mutation.Genes.Single(g => g.GeneId == mutationContext.Selections[0].GeneId).ParentOneAllele == 9000, "defined mutation changes the transmitted unit rather than granting a recurring generation bonus");

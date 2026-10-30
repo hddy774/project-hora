@@ -1,0 +1,22 @@
+TYPE PoliticsEngine.<>c__DisplayClass30_0
+METHOD .ctor
+METHOD <PolicyJurisdiction>b__0
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticalPolicies.cs:309:56 → 309:71
+METHOD <PolicyJurisdiction>b__1
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticalPolicies.cs:311:51 → 312:89
+METHOD <PolicyJurisdiction>b__2
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticalPolicies.cs:317:85 → 318:123
+TYPE PoliticalDraft.<>c__DisplayClass30_0
+METHOD .ctor
+METHOD <ReleaseLabor>b__1
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticsEngine.cs:391:50 → 391:98
+METHOD <ReleaseLabor>b__0
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticsEngine.cs:394:36 → 394:84
+TYPE CultivationEngine.<>c__DisplayClass30_0
+METHOD .ctor
+METHOD <TryDebit>b__0
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Cultivation/CultivationEngine.cs:513:62 → 513:101
+TYPE ValidationReadIndex.<>c__DisplayClass30_0
+METHOD .ctor
+METHOD <CarriedWeight>b__0
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Inventory/InventoryValidationIndex.cs:124:53 → 124:112

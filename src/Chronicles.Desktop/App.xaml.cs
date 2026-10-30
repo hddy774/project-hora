@@ -35,10 +35,8 @@ public partial class App : System.Windows.Application
     {
         try
         {
-            var target = new LogOutputTarget(
-                LogOutputKind.Debug,
-                LogOutputMode.Automatic);
-            var directory = LogOutputDirectories.EnsureDirectory(target);
+            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "SeonroMansangrok", "logs", "debug", "automatic");
             var lines = new List<string>
             {
                 $"{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss.fff zzz} [ERROR] 게임 시작 실패 · VERSION {ProductInfo.Version}",

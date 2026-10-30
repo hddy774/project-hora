@@ -17,15 +17,17 @@
 
 | 경로 | 역할 |
 | --- | --- |
-| `src/Chronicles.Game` | 플랫폼 독립 세계·명령·지식·저장·조회 |
+| `src/Chronicles.Game` | 플랫폼 독립 세계·명령·지식·메모리 저장 계약·조회 |
+| `src/Chronicles.Hosting` | 직렬화된 세션·파일 슬롯·복구·호스트 facade |
 | `src/Chronicles.Shell` | 공용 화면과 로컬 개발 호스트 |
 | `src/Chronicles.Android` | Android 오프라인 앱 |
 | `src/Chronicles.Desktop` | Windows 앱 |
 | `tests/Chronicles.Game.Tests` | 기능·저장·정보 경계 시나리오 |
 | `docs/plans` | 정본 대조·결정·작업 원장 |
 | `legacy/v0.2.0` | 기존 선로만상록 출시 소스·설계·검증 자료 |
+| `legacy/windows-pre-v021` | 이전 Windows 엔진·UI·저장·테스트의 자체 참조 보관본 |
 
-새 세계 구현은 `Chronicles.Game`에서 진행합니다. 이전 Windows 시뮬레이션은 회귀 비교 자료로 보존합니다. 기존 0.2.0 저장의 연속 플레이는 지원 범위에 포함하지 않습니다.
+[현재 제품 경계와 Unity 후속 한계](docs/architecture/v021-product-boundary.md)를 따릅니다. 새 세계 구현은 `Chronicles.Game`에서 진행합니다. 이전 Windows 시뮬레이션은 회귀 비교 자료로 보존합니다. 기존 0.2.0 저장의 연속 플레이는 지원 범위에 포함하지 않습니다.
 
 ## 로컬 실행
 

@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Chronicles.Core/Chronicles.Core.csproj" />
+    <Project Path="src/Chronicles.Simulation/Chronicles.Simulation.csproj" />
+    <Project Path="src/Chronicles.Queries/Chronicles.Queries.csproj" />
+    <Project Path="src/Chronicles.Runtime/Chronicles.Runtime.csproj" />
+    <Project Path="src/Chronicles.Persistence/Chronicles.Persistence.csproj" />
+    <Project Path="src/Chronicles.Presentation/Chronicles.Presentation.csproj" />
+    <Project Path="src/Chronicles.Application/Chronicles.Application.csproj" />
+    <Project Path="src/Chronicles.Desktop/Chronicles.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Chronicles.Tests/Chronicles.Tests.csproj" />
+  </Folder>
+</Solution>

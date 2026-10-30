@@ -17,7 +17,7 @@
     <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Chronicles.Game/Chronicles.Game.csproj" />
+    <ProjectReference Include="../Chronicles.Hosting/Chronicles.Hosting.csproj" />
     <AndroidAsset Include="../Chronicles.Shell/index.html" Link="index.html" />
   </ItemGroup>
 </Project>

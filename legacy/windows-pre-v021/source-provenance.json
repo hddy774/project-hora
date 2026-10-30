@@ -1,0 +1,959 @@
+{
+  "schema_version": 1,
+  "kind": "seonro-windows-archive",
+  "source_repository": "https://github.com/hddy774/project-hora",
+  "source_snapshot": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+  "last_windows_entry_snapshot": "5279d5dab568a48d8b5ab9600bda29600c41767d",
+  "archive_solution": "legacy/windows-pre-v021/Chronicles.slnx",
+  "archive_is_current_product": false,
+  "files": [
+    {
+      "source_path": "docs/traceability/PC-ATLAS-ECONOMY-017.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-ATLAS-ECONOMY-017.md",
+      "sha256": "3647fa984953ca4f6a5f0958749b09d0a863b91e75f364d8c065de55de355262"
+    },
+    {
+      "source_path": "docs/traceability/PC-AUTHORITY-REGISTRY-021.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-AUTHORITY-REGISTRY-021.md",
+      "sha256": "9a95eca96e750fc7b3c99bbe1e5c329d8e9bb2fc582238db173c8a65d13adece"
+    },
+    {
+      "source_path": "docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md",
+      "sha256": "2c40ab783e04343c329530a69b781271d89548161a7835d63e61d730f19bc812"
+    },
+    {
+      "source_path": "docs/traceability/PC-CULTIVATION-018.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-CULTIVATION-018.md",
+      "sha256": "38243b5fcccda30201dac1efbc69ba2820a92b419935c52862bfb23c9deda2f0"
+    },
+    {
+      "source_path": "docs/traceability/PC-CULTIVATION-ACTION-019.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-CULTIVATION-ACTION-019.md",
+      "sha256": "6beb18c97d4e8a5b0abfbebc14873558a90256eb00197043576d0ac89bd2ec33"
+    },
+    {
+      "source_path": "docs/traceability/PC-CULTIVATION-DETAIL-021.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-CULTIVATION-DETAIL-021.md",
+      "sha256": "778a6222c72c361bdc2b00d19b1e889d23e8a975f5f13125e1e983fc57771917"
+    },
+    {
+      "source_path": "docs/traceability/PC-DETERMINISM-022.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-DETERMINISM-022.md",
+      "sha256": "86f6969fdb02d9335cfe0bb71571c6ef327b05115413eca191badee6e16152c5"
+    },
+    {
+      "source_path": "docs/traceability/PC-ECON-MARKET-013.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-ECON-MARKET-013.md",
+      "sha256": "8b7a49b6dddb1e3c0d2c0210c959f72193e4e157fbf24b9fde3ab76f27bab9f1"
+    },
+    {
+      "source_path": "docs/traceability/PC-ORGANIZATION-020.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-ORGANIZATION-020.md",
+      "sha256": "f1a73e08c7c5e3632ea98c1d14b4c6b5d76491b54b0b61fc98aadb1d7fe37cc8"
+    },
+    {
+      "source_path": "docs/traceability/PC-PERSON-CAUSAL-016.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-PERSON-CAUSAL-016.md",
+      "sha256": "bab0210c5e74bdab87e3ad891e550ab7669c0804d5124728b2509c909208b1a2"
+    },
+    {
+      "source_path": "docs/traceability/PC-RUNTIME-MAP-022.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-RUNTIME-MAP-022.md",
+      "sha256": "7bac44e8c595176e751b7dd3c8948c0750eec34d22d14766b9194e6af4112f4e"
+    },
+    {
+      "source_path": "docs/traceability/PC-SAVE-RUNTIME-021.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-SAVE-RUNTIME-021.md",
+      "sha256": "dd7e44971646294b65a51ead7e2dec2ac8b7baa373b325cd4ddb06c29e110ee5"
+    },
+    {
+      "source_path": "docs/traceability/PC-WORLD-GENERATION-021.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC-WORLD-GENERATION-021.md",
+      "sha256": "33564045bc3c505bdb8e599e53044874fd5e9efe6545a547233796c74ae5f6bc"
+    },
+    {
+      "source_path": "docs/traceability/PC_TEMP_REVIEW_LEDGER.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/PC_TEMP_REVIEW_LEDGER.md",
+      "sha256": "fbda7bd73d83b458ceab3766cd971135f0a7681849732fc8806cf3b156e7a610"
+    },
+    {
+      "source_path": "docs/traceability/README.md",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/README.md",
+      "sha256": "73696194bed7df087ce9bc7e828ba1c72b1ee27af8c4b4b35c791faebb3fb8c2"
+    },
+    {
+      "source_path": "docs/traceability/pc-port-ledger.json",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/docs/traceability/pc-port-ledger.json",
+      "sha256": "4597f7bcd42ea750dd6e88f99c2b0255a13e00f57d6889c724a49974a7db2294"
+    },
+    {
+      "source_path": "src/Chronicles.Application/AuthorityRegistryDiagnostics.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Application/AuthorityRegistryDiagnostics.cs",
+      "sha256": "32f6ce4a8bac40e359e52811fc6857087c110c69040b1a8af1cc014bccc00852"
+    },
+    {
+      "source_path": "src/Chronicles.Application/BoundedLogFileWriter.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Application/BoundedLogFileWriter.cs",
+      "sha256": "f8436951f2426d3b58d26c4d34c1ab087b2f4fbdcb06b8f1f52e6d6438eb0afc"
+    },
+    {
+      "source_path": "src/Chronicles.Application/Chronicles.Application.csproj",
+      "source_commit": "5279d5dab568a48d8b5ab9600bda29600c41767d",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Application/Chronicles.Application.csproj",
+      "sha256": "69ae3095a2368fe85b3c7569e7d311ad81f76a6a64155ef99ed22d85aa70b67e"
+    },
+    {
+      "source_path": "src/Chronicles.Application/GameApplicationSession.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Application/GameApplicationSession.cs",
+      "sha256": "55f738f2a82c06da14abf56d88f1ce456bd1c02976c2b565409580dfaa9f5c2f"
+    },
+    {
+      "source_path": "src/Chronicles.Application/LogOutputContracts.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Application/LogOutputContracts.cs",
+      "sha256": "e1fb4ab9f744832780519e0f71f40df18c15bee5092d2a6b41dc9f91afa5a901"
+    },
+    {
+      "source_path": "src/Chronicles.Application/RuntimeControlAuthoritySession.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Application/RuntimeControlAuthoritySession.cs",
+      "sha256": "363f4de50cfbd8bab2fe7ef928c5775f851676debca5e1705b4f6fe205ab0176"
+    },
+    {
+      "source_path": "src/Chronicles.Application/SaveOperationProgress.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Application/SaveOperationProgress.cs",
+      "sha256": "d887e1d9ce4ecaea86cde28cea22f764c44e246b1c1f6799af4d10e9647ed8dd"
+    },
+    {
+      "source_path": "src/Chronicles.Application/SaveSlotCatalog.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Application/SaveSlotCatalog.cs",
+      "sha256": "940a226863078cf7f50b13c0a1aa7dd72e3153eed3f2a1ab7cdad61880bbae86"
+    },
+    {
+      "source_path": "src/Chronicles.Core/AuthorityContracts.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Core/AuthorityContracts.cs",
+      "sha256": "13c28d26afc7a0d9bfa089621578923d8340fb97690e2d4c2e3248c41365fe7b"
+    },
+    {
+      "source_path": "src/Chronicles.Core/AuthorityRegistry.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Core/AuthorityRegistry.cs",
+      "sha256": "330d0ee7a49a988e4018ebf6142fc62dafda5255e03c92b45c5f4d849f991eb0"
+    },
+    {
+      "source_path": "src/Chronicles.Core/Chronicles.Core.csproj",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Core/Chronicles.Core.csproj",
+      "sha256": "e2c08643e21eba9123e4b319840fec508efc44b473a7cab491d6188e5f6905ca"
+    },
+    {
+      "source_path": "src/Chronicles.Core/DeterministicRandom.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Core/DeterministicRandom.cs",
+      "sha256": "86feccc6598fc802487cc39884efc1ecaab2076ef0e3fcc061858a6f4a3a2bf9"
+    },
+    {
+      "source_path": "src/Chronicles.Core/GameCalendar.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Core/GameCalendar.cs",
+      "sha256": "c85c9425faa6700c2bc19b485bd108483f7c388e36f3ecd9cf60c9f6e6628cd4"
+    },
+    {
+      "source_path": "src/Chronicles.Core/Identifiers.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Core/Identifiers.cs",
+      "sha256": "78fb0b79367075a031c4f411add5828eb3eb2c39c1082172583abe061fa2d0b0"
+    },
+    {
+      "source_path": "src/Chronicles.Core/KoreanNumberFormatter.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Core/KoreanNumberFormatter.cs",
+      "sha256": "032624aadbe9035aeaa88a4804057213116a3efc1ccc19cd7934391b48b791c9"
+    },
+    {
+      "source_path": "src/Chronicles.Core/ProductInfo.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Core/ProductInfo.cs",
+      "sha256": "e92fedeac8b1cf0461852c82a2acc609e9d72127ea3d65962ed6b6a4d7b19579"
+    },
+    {
+      "source_path": "src/Chronicles.Core/Quality.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Core/Quality.cs",
+      "sha256": "6bec66a698a5a68ce22cedf4b4b6184923a758b0fcba988c510a9b3e62593e84"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/ContentWorkspaceView.xaml",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/ContentWorkspaceView.xaml",
+      "sha256": "ab8f2addbb6f3672a043714745d0a70fc1498bf41460613603ad85a9216973d3"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/ContentWorkspaceView.xaml.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/ContentWorkspaceView.xaml.cs",
+      "sha256": "69e55881728b86ef5d823aa2f6c089a3fb77a59ee37edf938bb02dbd721e4b23"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/GameLogService.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/GameLogService.cs",
+      "sha256": "8aff6c0ac5e62ac67e4798ba6aef885c07be6c2a2bbecea14134be5a37a33cf9"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MainWindow.AgentObservation.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MainWindow.AgentObservation.cs",
+      "sha256": "ff7be388fbf648a29959b596af5dfb13ddc3c9aa349d2e5caa2eb7a90872b918"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MainWindow.PersonalRecords.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MainWindow.PersonalRecords.cs",
+      "sha256": "c1dc311d8f5dff59fde035ec5844dbf8fcd77cb6f8f38e8c21c84c529b9bff2c"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MainWindow.Rankings.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MainWindow.Rankings.cs",
+      "sha256": "d48af2fde3ed26a3f25291350544d05477d7505458f451d02025aa7c94d2fb1a"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MainWindow.SaveSlots.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MainWindow.SaveSlots.cs",
+      "sha256": "4e3f973e9360bff63c846f037ca6ddca31a20cf3e20f0b19677636a0cb0f32c9"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MainWindow.Settings.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MainWindow.Settings.cs",
+      "sha256": "7584b2c745cf5908f3574c41c1e4a06f3aebd52e48a241c6deb05c15c17fa85e"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MainWindow.Workspace.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MainWindow.Workspace.cs",
+      "sha256": "b3246054ed95d5f854152db5bab79f953bca5cebeb9a06ea7eeeb3748ba8771c"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MainWindow.WorldRecords.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MainWindow.WorldRecords.cs",
+      "sha256": "a8af9799bf0ae0eb70883600e398d37fab37431e0a9ec9e8ed05e2b82686f34d"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MainWindow.xaml",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MainWindow.xaml",
+      "sha256": "9a25a8c7c0b42b5c856516da602e1b1922caabd195888ea23e05a194ea57de7c"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MainWindow.xaml.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MainWindow.xaml.cs",
+      "sha256": "ec5db94c7e83319d07a40b0cd26c95ba306ad2588b308859f948603b15857589"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MapObservationView.xaml",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MapObservationView.xaml",
+      "sha256": "8d49b4b451a209ebf0abd8be3042f8a65a927b0e29e284b2dbec05cfac2cd211"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MapObservationView.xaml.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MapObservationView.xaml.cs",
+      "sha256": "bbdcbb3bb76402ef888b260a73db8a9ef85c09e6ef0226dff7b38e5ec94cc667"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MarketObservationView.xaml",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MarketObservationView.xaml",
+      "sha256": "cff279e18c7a93680f207cc6eaaf9a7948fb52acea2c028d012e691e0042a480"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/MarketObservationView.xaml.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/MarketObservationView.xaml.cs",
+      "sha256": "9972c193c25123411f9c11f7ffc952e079658a847abcf429415a67bcfebf9195"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/OrganizationWorkspaceView.xaml",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/OrganizationWorkspaceView.xaml",
+      "sha256": "c4886bafe69e2f18c2879b0639d857fa0527206bda6b1934aa1ddb07c64f9b6d"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs",
+      "sha256": "8d36e109ea58b6599fc991e8108ef2495f7d69e7b6fd2585fc5b90c8b0ae9cca"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/PerformanceDiagnosticsModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/PerformanceDiagnosticsModel.cs",
+      "sha256": "e70ee657851cdab6734b63095afc0ac837c3d0e9cbbe5aeb5dad79243b303933"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/PresentationModels.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/PresentationModels.cs",
+      "sha256": "b13e94744beab6ba68cf8053f8e4f6a782992449b90a731b9d5bdd637a7e23a8"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/SaveWorkspaceView.xaml",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/SaveWorkspaceView.xaml",
+      "sha256": "764ec56b488759252c8fba87d159d3f66f73e8c5c04c9625fa142b69ab1a77bd"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs",
+      "sha256": "8b23a34add3265062bebccb3ca86d82adfe665699ff4ab2821a1c1d829136ddd"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/SettingsWorkspaceView.xaml",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/SettingsWorkspaceView.xaml",
+      "sha256": "79408664b0a20b63ca6455f6efd9f3095cbd5c463aa3c536fc425c5f1ba94818"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs",
+      "sha256": "7e7e04c7db72d38938dc8fb94ec758ce734b5b5e3f20cb9df19a975a7d814460"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/WorldRecordsView.xaml",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/WorldRecordsView.xaml",
+      "sha256": "4fd1567cc619049cbfa6e97d78270041f1662b60913e5aa47a39a3648cfbd5b7"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/WorldRecordsView.xaml.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/WorldRecordsView.xaml.cs",
+      "sha256": "23e30b1a5158953053cf27d91a558bfea7357b6927639d892eef42d00f8ad3db"
+    },
+    {
+      "source_path": "src/Chronicles.Persistence/Chronicles.Persistence.csproj",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Persistence/Chronicles.Persistence.csproj",
+      "sha256": "9afd632cb3adc6ca2b9eb64a70f14ad9e4b5862c09afc617edd77b11adf08153"
+    },
+    {
+      "source_path": "src/Chronicles.Persistence/SlotSaveStore.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Persistence/SlotSaveStore.cs",
+      "sha256": "150787550597ae268430cc6bc01783d3de9f5eb348f9be5ee93e716badb8e765"
+    },
+    {
+      "source_path": "src/Chronicles.Persistence/ValueTypeJsonConverters.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Persistence/ValueTypeJsonConverters.cs",
+      "sha256": "8ad8f7da1881be33187ca89f081b0eae18b61e9e9826de86a105d7019aa9affc"
+    },
+    {
+      "source_path": "src/Chronicles.Persistence/WindowsSqlite.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Persistence/WindowsSqlite.cs",
+      "sha256": "3c17411cb33f7458f6d1a0d0ae314423d52c878e92855664aed7b853ac9f1286"
+    },
+    {
+      "source_path": "src/Chronicles.Persistence/WorldSaveCodec.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Persistence/WorldSaveCodec.cs",
+      "sha256": "2e8ea9440837c6cfb1bb04c6ddbf4a8c41b9dd37997e454e370f001ddf23481b"
+    },
+    {
+      "source_path": "src/Chronicles.Persistence/WorldSaveStore.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Persistence/WorldSaveStore.cs",
+      "sha256": "b5a6d7699dc73da5b1089def5b25e1723fee2f444dec8b97e7d67c5eaeda00ba"
+    },
+    {
+      "source_path": "src/Chronicles.Presentation/Chronicles.Presentation.csproj",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Presentation/Chronicles.Presentation.csproj",
+      "sha256": "7258dbaed5abfff23ff7fa007f90dc7271125a2b2de61424fd07a2c72492d059"
+    },
+    {
+      "source_path": "src/Chronicles.Presentation/PresentationText.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Presentation/PresentationText.cs",
+      "sha256": "45d09fcb63117b6b310abf408d250513370deeb4c5eb502658f56ea6826646a2"
+    },
+    {
+      "source_path": "src/Chronicles.Queries/Chronicles.Queries.csproj",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Queries/Chronicles.Queries.csproj",
+      "sha256": "9afd632cb3adc6ca2b9eb64a70f14ad9e4b5862c09afc617edd77b11adf08153"
+    },
+    {
+      "source_path": "src/Chronicles.Queries/PersonalCenturyChronicleProjection.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Queries/PersonalCenturyChronicleProjection.cs",
+      "sha256": "33acf21ba0a973545a57e7e5c7fb5cb5235a12938edbd1f970be364cb7d4bf9b"
+    },
+    {
+      "source_path": "src/Chronicles.Queries/WorldObservationQueries.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Queries/WorldObservationQueries.cs",
+      "sha256": "cf274c2c9632b299942bf44b815290e8195f3cafc282de46061033f62dfbaa59"
+    },
+    {
+      "source_path": "src/Chronicles.Runtime/Chronicles.Runtime.csproj",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Runtime/Chronicles.Runtime.csproj",
+      "sha256": "899b75527bb4efbae852acf1d93a153ad0a20a66af7d8d5c94ef3c341ace84b1"
+    },
+    {
+      "source_path": "src/Chronicles.Runtime/SimulationRunner.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Runtime/SimulationRunner.cs",
+      "sha256": "94bc9c78c06dd59a867b151d50a6f2684ca6c03fe34587401edac314dd46a7a2"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/AgentCausalRuntime.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/AgentCausalRuntime.cs",
+      "sha256": "b870de5d5a564615b5fac637578823fb9955679e98ad45562df33e4fe7a57cd4"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/AgentStore.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/AgentStore.cs",
+      "sha256": "502372f7c715a6d94d20b857fd372d67e0e902972c2b777361788c29c12f41c2"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/AptitudeModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/AptitudeModel.cs",
+      "sha256": "23181c71aa97e68884f2838bf02fb79dd30dab3ef8946f469e29b2b74b5f01bd"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/Chronicles.Simulation.csproj",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/Chronicles.Simulation.csproj",
+      "sha256": "90d6ef2ca7400c76ce524f259f2304e432d09c68b7940fca307b68387d5d5518"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/CityMarket.Contracts.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/CityMarket.Contracts.cs",
+      "sha256": "d71e74cdd6c3fb7aa81135feb9d42a9385a2f5a03892332fd4db22715808b3dd"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/CityMarket.Settlement.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/CityMarket.Settlement.cs",
+      "sha256": "ca211d498c2e133d4a2b37f91950ec2bd1d269b2083c5ee4a89c891bcc7d1d07"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/CityMarket.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/CityMarket.cs",
+      "sha256": "a8a29165e5a0bf6fb26c17d002b25f3188b2ebc2fcd501e3c3eb30ad93e8f2f6"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/CombatModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/CombatModel.cs",
+      "sha256": "246e52fe198068e1e6525cd49ea5c280733a3ed94c0597850aba4a2b1ab79dbc"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/CombatPowerFormula.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/CombatPowerFormula.cs",
+      "sha256": "8c0102b9d354081764139065f0c18a196915d159e3f48d8da953c351659dd779"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/ContentAuthorityCheckpointValidator.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/ContentAuthorityCheckpointValidator.cs",
+      "sha256": "6ded57067efbb769b1e998797299d2caf49bbf3cdef748145cfd13d64abd1a95"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/ContentAuthorityModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/ContentAuthorityModel.cs",
+      "sha256": "cb50e05c28fcd666e75824c9df3d5c48e19b14a8b0907129f798189b11ff0059"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/ContentAuthorityPopulation.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/ContentAuthorityPopulation.cs",
+      "sha256": "2017d656f77a6668fd83f34c3780141c68191c7e402ca52c75506fd6b58aa507"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/ContentAuthorityStore.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/ContentAuthorityStore.cs",
+      "sha256": "f3ceda57f37fbd801412e14ba33c2c7e70c4138e1308d62f9c3239b9931b0c5c"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/CultivationActionPlan.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/CultivationActionPlan.cs",
+      "sha256": "57a6698a92ba2701914d1e75d0300f6c84de52595aac04e68b29a3e2dabec1c0"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/CultivationDetailProgress.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/CultivationDetailProgress.cs",
+      "sha256": "a618db8ef1556a049a6511b41da935a95fa8e575e870dc5e78766fd187c2010a"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/CultivationModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/CultivationModel.cs",
+      "sha256": "d9a3249749654545be18afb20cf5362e9c1fd2a6929e4d939ddcf67d0bcc4f33"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/EconomyRules.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/EconomyRules.cs",
+      "sha256": "1d0f8a89e10c02b8150dcbbfbc448b6cef81dcdacad400febb0c83f45f69834b"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/FormulaRegistry.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/FormulaRegistry.cs",
+      "sha256": "bad5996099820e6e86c5935bf176eb97a48922648b5afa13581871096782177e"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs",
+      "sha256": "eef48a7dd6d4eb36794a2bba67c3aec0bd7561e0c89d25ca5e7ef9866e08f653"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/KnowledgeAuthorityModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/KnowledgeAuthorityModel.cs",
+      "sha256": "558ff1263eb40686c69277517c48299d007f1da8a0398cc4fb33f1ba60694f35"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/KnowledgeAuthorityStore.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/KnowledgeAuthorityStore.cs",
+      "sha256": "c0981bbf02a8dc29ba7f47d4b57227e95248dda1d0bfe84d491b8b6e0117e458"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/LawAuthorityModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/LawAuthorityModel.cs",
+      "sha256": "aa61c30a7720d97ca6b51d92f7d7f22e9e3ccfedd92c42678318230dc6cc1aa8"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/LawAuthorityStore.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/LawAuthorityStore.cs",
+      "sha256": "df2653111f33de0c6e5168f433031bcfb40c470c93f7e3a799391a4944a55a7f"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/MarketAuthorityModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/MarketAuthorityModel.cs",
+      "sha256": "b50d3c4bfcf699000f5057b4d3b70c4f3b5f56100355d48018e6e29e46419a22"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/OrganizationModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/OrganizationModel.cs",
+      "sha256": "c2ee88f406a6f12d9740f0429dbfb37101b0da83c7852bd8ea97e463fa6afe09"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/OrganizationTransitions.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/OrganizationTransitions.cs",
+      "sha256": "192e4ce1620aa51ea5e887ff1458ab52d80f728050badc79b89d4f13bf31d2a8"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/PersonCausalModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/PersonCausalModel.cs",
+      "sha256": "46464e3226bb80f82d5bab9932f9acb8ada9d93d1063ea950db6ff80cb2eb466"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/PersonLifeAuthority.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/PersonLifeAuthority.cs",
+      "sha256": "70517e12ec1c79b32d53839b82ad730914c715043135deff3165f3f0fd0391b4"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/Properties/AssemblyInfo.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/Properties/AssemblyInfo.cs",
+      "sha256": "19c51643cbba8fa5c142e27cf034c8e7652aa511bd4b89133fb97b4258f3fc40"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/RankingHistory.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/RankingHistory.cs",
+      "sha256": "f30ce93dfb500286141354821aa439081958892cd6fb8a8b3052a3382c16059e"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/RankingRevisionCache.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/RankingRevisionCache.cs",
+      "sha256": "7a8b3dc52c0db635d6f6c61caaa6f8969723635efaa131b39bd9dec41221c1f4"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/RealmRules.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/RealmRules.cs",
+      "sha256": "b822c0f77626b42568b2f627ccd4d06c1bdb5f37cca9abc91992bb91fcfba673"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/ReincarnationModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/ReincarnationModel.cs",
+      "sha256": "c246d6f286292cc3e4a139bab3ccfeb2b8157378f988553721c59837da2dcf5c"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/ReincarnationStore.Persistence.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/ReincarnationStore.Persistence.cs",
+      "sha256": "6b62691068657f0c209f683f33f9a8a3629678e4d1e56c81271dc2f94f65fff3"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/ReincarnationStore.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/ReincarnationStore.cs",
+      "sha256": "4436b876a37f7e407fd49c3440fe03c2a8a2beeed54dd9485c7446e21731ae66"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/RelationModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/RelationModel.cs",
+      "sha256": "1b89ae297320cf96ee56611fad37a74f1c106bdc91df173c61ca20dbe0e547cc"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/SimulationAssembly.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/SimulationAssembly.cs",
+      "sha256": "f87301e026b22466db32c65b3c59777097ae3bc06955a25cf7cbf539dc0b6730"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/SimulationModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/SimulationModel.cs",
+      "sha256": "7248be903c134b52dc54b7fb65403b8aa0b30c55c9f07d75f6661a19f0a71c14"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/SkillProgressionRules.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/SkillProgressionRules.cs",
+      "sha256": "482db9a810ecf525d058641675528732df17100af05996f00ac95adcc917ff8a"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/SpatialAuthorityStore.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/SpatialAuthorityStore.cs",
+      "sha256": "2e4aee540e58c2da4fa8cedd364e66529356fafbff18f48abdedd1b87051406f"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/TeachingModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/TeachingModel.cs",
+      "sha256": "6b90ebf6828b068e05fbf3785b044b4edb1a1c18ecf2389f1dc690450b81f6e9"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Combat.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Combat.cs",
+      "sha256": "d997a4729861ec72028a0dd84f8d67c9d01e49f1f103ff7a1473cb4c653d5ba9"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Content.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Content.cs",
+      "sha256": "ecf7f938ff086f656bab3634680314a5196386ba2d1024eabd4b605309855b47"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Cultivation.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Cultivation.cs",
+      "sha256": "195111160a83b5cba3f64f45aca8e35ad425c9d5f3b2ff57fc781672dd72c52d"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.CultivationPlans.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.CultivationPlans.cs",
+      "sha256": "7eba83167de10462e514f869f1c9c4f67cb6769b915303ba2f39c98c299ba898"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Economy.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Economy.cs",
+      "sha256": "556950aeea1dbbce432f7423a261caba98db97a8fef0cac226cb79f790e93f9d"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.GeneratedContent.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.GeneratedContent.cs",
+      "sha256": "553f746d611a5f0130676bb5bd5bae75d87a8f5de77d709cd73640650fb546f6"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Map.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Map.cs",
+      "sha256": "358be12c9f765f545eb130a4568a0d1080e754df42c908a06010eaacfa33692e"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Organizations.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Organizations.cs",
+      "sha256": "cce03131c984e466ab78ed2055ee2a595fbfb2103ccafcab6b244c9e9b30d9d7"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Persistence.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Persistence.cs",
+      "sha256": "5fbebb62e07dddefc1163d4d27e6fce8e4dff3e61fbd6f055ecf3986e1524572"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Queries.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Queries.cs",
+      "sha256": "1651cc9feca944d6403c048854454b266b6e734ff7e8db2f7d1b852b5b6a43c5"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Reincarnation.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Reincarnation.cs",
+      "sha256": "2f2b24796c9a36447764c41fdbb07e3699dc42d5e0247fb6aa00f7b76a8294c6"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Relations.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Relations.cs",
+      "sha256": "35027f403d168e2b45f5b903ba1f2cb5ad85a60a80332d8278a19fe33f5356f0"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.Teaching.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.Teaching.cs",
+      "sha256": "3eda568c63b35ddd122d6f709823ebe7f085aad99d12ec843b06f05226b2411c"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/World.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/World.cs",
+      "sha256": "874a4c33dd56f4d75d8a06d0651cf0d9f06bd74cb8284a17160ecd12120d8ec8"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/WorldAtlasModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/WorldAtlasModel.cs",
+      "sha256": "dc99bf1c2bad2b7277da2c845950644ec3660a15dff2b6a2f8702725461d67bb"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/WorldCenturyChronicle.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/WorldCenturyChronicle.cs",
+      "sha256": "c0947a7a455b45bcf6553158897ad7ff60e4bd34b603a2598e49244153c1ddc3"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/WorldCheckpoint.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/WorldCheckpoint.cs",
+      "sha256": "1d3d51d36e87487da5d20c16fd2c3fd3595c4dd1829ae8cda0a29aa444e2beba"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/WorldGenerationCatalog.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/WorldGenerationCatalog.cs",
+      "sha256": "d80a32c9ba61c1f9759097d6233632f84e9118f2c37bee2b9a6ed2bf9de6405f"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/WorldGenerationModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/WorldGenerationModel.cs",
+      "sha256": "09be57739756cff241a188c4844b89079ed3c2d7a19f44e33c486eea72df39d1"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/WorldGeographyModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/WorldGeographyModel.cs",
+      "sha256": "cb436ab438372865f6f3fe8e914ba3e662174cfe49617aa68ace901666ea65c5"
+    },
+    {
+      "source_path": "src/Chronicles.Simulation/WorldMapModel.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Simulation/WorldMapModel.cs",
+      "sha256": "560f5b654ff51953b556c1938462aac2ac012689f46860791906436ec3aa9bfe"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/AdvancePartitionInvarianceTests.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/AdvancePartitionInvarianceTests.cs",
+      "sha256": "78911e76a303ce811c84438ad2da1fd907d022f38371f770b23d3e8e051e7f5d"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/AuthorityFoundationTests.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/AuthorityFoundationTests.cs",
+      "sha256": "22c86a11339efb879177608f6e1dac3814f30f123d01d722c5eda5097e625c13"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/Chronicles.Tests.csproj",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/Chronicles.Tests.csproj",
+      "sha256": "23f75294de3338908b320838b6b2accffa3a191c527a57c65ccd537e31dc99fd"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/ContentAuthorityTests.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/ContentAuthorityTests.cs",
+      "sha256": "d255a96176b60283b30e9f416537d7cae184ebf71e574d0b2acb772c7a47a737"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/CultivationAttemptContractTests.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/CultivationAttemptContractTests.cs",
+      "sha256": "a9d078b1ad582d09cc915552a64ce1ecb0d113e7a12f42c43d7cbec4c21d22ce"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/KnowledgeAuthorityTests.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/KnowledgeAuthorityTests.cs",
+      "sha256": "e63991dbdefa05846e94691861fb9c4093a7ee21bca8cd82e82d17dde728d8f8"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/LawAuthorityTests.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/LawAuthorityTests.cs",
+      "sha256": "f9ce142b823e65b9ccc3b0b98c23d020dd58a59b0975f42231ac852c4d1a51ff"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/OrganizationCoreTests.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/OrganizationCoreTests.cs",
+      "sha256": "2a3bf79515cb8be22bbcd32af33ac8286e4d3a9671fb7da09cf06b230ef53b44"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/Program.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/Program.cs",
+      "sha256": "6907caf6046913a7a5b3d4ea75284bbde9db630f697881ba71672d11b3e8eb24"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/RuntimeGlobalUsings.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/RuntimeGlobalUsings.cs",
+      "sha256": "ea4e8aee59e034088b5d7caf661ed74b546fa00ccaedd8af1955a3673e305962"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/SqliteSlotPersistenceTests.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/SqliteSlotPersistenceTests.cs",
+      "sha256": "a695529362f556e149133b0883b0d232200fbbac981d46af7765cfd97319f389"
+    },
+    {
+      "source_path": "tests/Chronicles.Tests/WorldGenerationTests.cs",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/tests/Chronicles.Tests/WorldGenerationTests.cs",
+      "sha256": "79f035296cf02191c340db03c4a186ae0f5ab9152f4e05c665f3ea2c2031526c"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/App.xaml.cs",
+      "source_commit": "5279d5dab568a48d8b5ab9600bda29600c41767d",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/App.xaml.cs",
+      "sha256": "d128a4989851fd394d16181fc62734485f3a9c2302e65624416f1ac1fd8e3c82"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/Chronicles.Desktop.csproj",
+      "source_commit": "5279d5dab568a48d8b5ab9600bda29600c41767d",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/Chronicles.Desktop.csproj",
+      "sha256": "bba5b433ddadac5d8d353049888c094f43de436e0c4e2e08fa9e3f509fe07a2d"
+    },
+    {
+      "source_path": "docs/architecture/repository_manifest.json",
+      "source_commit": "5279d5dab568a48d8b5ab9600bda29600c41767d",
+      "archive_path": "legacy/windows-pre-v021/docs/architecture/repository_manifest.json",
+      "sha256": "317061f122d9f218cc665a0bf711cb3bd4695c6525294c9c82bf4b52b1331895"
+    },
+    {
+      "source_path": "docs/architecture/README.md",
+      "source_commit": "5279d5dab568a48d8b5ab9600bda29600c41767d",
+      "archive_path": "legacy/windows-pre-v021/docs/architecture/README.md",
+      "sha256": "b064fb793f4de48461f6ebb35a3f038b7d5f16c377b0d8894b0c6b17fbe1d423"
+    },
+    {
+      "source_path": "AGENTS.md",
+      "source_commit": "5279d5dab568a48d8b5ab9600bda29600c41767d",
+      "archive_path": "legacy/windows-pre-v021/AGENTS.md",
+      "sha256": "003ff712df8fb5944930bad16d2d95f5d2c57e443bbe33bf9cf38d4ef9aed6a4"
+    },
+    {
+      "source_path": "VERSION",
+      "source_commit": "5279d5dab568a48d8b5ab9600bda29600c41767d",
+      "archive_path": "legacy/windows-pre-v021/VERSION",
+      "sha256": "374c2ee0c45e53453feeea1e53ed7bacea934f7658b6b2c4ff1f1226379f99cf"
+    },
+    {
+      "source_path": "Directory.Build.props",
+      "source_commit": "5279d5dab568a48d8b5ab9600bda29600c41767d",
+      "archive_path": "legacy/windows-pre-v021/Directory.Build.props",
+      "sha256": "89141d27613945ffaf24065e595a9f22ffe8ea985496fe24325e71507a4b33cf"
+    },
+    {
+      "source_path": "src/Chronicles.Desktop/App.xaml",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/src/Chronicles.Desktop/App.xaml",
+      "sha256": "2a1ec8cf69de1d3136287bbe0bf57b1989824ce1fbfcbd83c90aa2424a56cafd"
+    },
+    {
+      "source_path": "scripts/validate-architecture.ps1",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/scripts/validate-architecture.ps1",
+      "sha256": "cda4a9dcbc6f3170481ebbb26d356fc02871522793b15a51c1e7336c153ff5bc"
+    },
+    {
+      "source_path": "scripts/validate-xaml-resources.ps1",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/scripts/validate-xaml-resources.ps1",
+      "sha256": "726f57a24833fbabdbdb48e599ab5daf51d8ab74e956d898cd4d04952e155d12"
+    },
+    {
+      "source_path": "scripts/validate-port-ledger.ps1",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/scripts/validate-port-ledger.ps1",
+      "sha256": "d835fd75b392c8143d48007411c7978b48b0302220bb0a7b404d7370ca786781"
+    },
+    {
+      "source_path": "scripts/generate-port-ledger.ps1",
+      "source_commit": "91e5d32fc4a9c034901f61a5bfd3ba922ce1f98b",
+      "archive_path": "legacy/windows-pre-v021/scripts/generate-port-ledger.ps1",
+      "sha256": "b831e41f0ccaee201794d7f1e3e829b5e579324a1a215539bd9b7be0c7448433"
+    }
+  ]
+}

@@ -132,6 +132,7 @@ public sealed partial class GameWorld
                 return "실제 수량/입찰 금액이 유효하지 않음";
             command = command with { Value = amount, Data = "" };
         }
+        if (PeopleActionError(p, command.Kind) is { } capabilityError) return capabilityError;
         if (TryCultivationCommand(command, p, out var error) || TryKnowledgeCommand(command, p, out error) ||
             TryInventoryCommand(command, p, out error) || TryPoliticsCommand(command, p, out error)) return error;
         return Start(p, step.Action, step.Target, step.Data);
@@ -278,7 +279,7 @@ public sealed partial class GameWorld
                 p.Personality[1] + p.Personality[3] >= p.Personality[11] ? "교육·전승" : "기예·산업";
             p.Plan = [new("policy", own.Id, category)];
         }
-        else if (p.Sect == 0 && p.Money >= Law("politics.foundCost") && Month - p.Born >= Law("birth.maturity"))
+        else if (p.Sect == 0 && p.Money >= Law("politics.foundCost") && Month - p.Born >= PeopleMaturityMonths(p))
             p.Plan = [new("found", 0, "sect")];
         else return false;
         p.Reason = "자기 실제 직책·금고/개인 재원과 성향으로 공공 작업 제안·권한은 공통 명령에서 재검사";
@@ -309,6 +310,7 @@ public sealed partial class GameWorld
 
     private void TrimPlanningCognition(Person p)
     {
+        TrimPeopleCognition(p);
         var lifetime = Law("ai.beliefLifetime");
         var latest = state.Inventory.Observations.Select((o, i) => (Observation: o, Index: i)).Where(row => row.Observation.Observer == p.Id)
             .GroupBy(row => row.Observation.Source).Select(g => g.OrderByDescending(row => row.Observation.Month).ThenByDescending(row => row.Index).First().Observation)
@@ -321,7 +323,7 @@ public sealed partial class GameWorld
             .Concat(p.ObservedPlaces.Values.Select(o => (Kind: 2, Key: PlanningNumber(o.Place), Month: o.Month, Priority: o.Place == p.Place ? 100 : 60)))
             .Concat(latest.Select(o => (Kind: 3, Key: PlanningNumber(o.Source), Month: o.Month, Priority: 70)))
             .OrderByDescending(row => row.Month).ThenByDescending(row => row.Priority).ThenBy(row => row.Kind).ThenBy(row => row.Key, StringComparer.Ordinal).ToArray();
-        foreach (var row in rows.Skip(IntLaw("ai.beliefBudget")))
+        foreach (var row in rows.Skip(Math.Max(0, IntLaw("ai.beliefBudget") - PeopleCognitiveLoad(p))))
             switch (row.Kind)
             {
                 case 0: p.Beliefs.Remove(row.Key); break;

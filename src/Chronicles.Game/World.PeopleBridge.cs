@@ -110,6 +110,7 @@ public sealed partial class GameWorld
         if (!binding.Accepted) throw new InvalidDataException(binding.Code);
         var birth = binding.State.Births.Single(b => b.BirthId == pregnancy.Id);
         person.Aptitudes = birth.Innate.Foundations.ToArray(); person.Roots = birth.Innate.ElementRoots.ToArray(); person.Species = conception.SpeciesId;
+        if (person.Species != "human") person.Lifespan = SpeciesCatalog.Get(person.Species).BasicLifespanMonths;
         var profile = ApplyPeopleBodyPolicy(PeopleAdapters.FromPerson(person, source)) with { Innate = birth.Innate };
         var reset = SoulTraces.ResetAtBirth(soul, new($"birth.{pregnancy.Id}.trace-reset", SoulTraceActionKind.BirthReset, Month, source, RelatedIdentity: person.Id));
         if (!reset.Accepted) throw new InvalidDataException(reset.Code);
@@ -131,6 +132,10 @@ public sealed partial class GameWorld
         Body = profile.Body with { Reproduction = profile.Body.Reproduction with
             { MaturityMonths = Law("birth.maturity"), GestationMonths = IntLaw("birth.gestation") } }
     } : profile;
+
+    internal long PeopleMaturityMonths(Person person) => person.Species == "human" ? Law("birth.maturity") :
+        state.PeopleDomain.Profiles.FirstOrDefault(p => p.PersonId == person.Id)?.Body.Reproduction.MaturityMonths ??
+        SpeciesCatalog.Get(person.Species).MaturityMonths;
 
     /// <summary>Call after a real completed action, with its actual gains; queries and inherited traces never call this.</summary>
     internal void RecordPeopleLearning(Person person, string knowledge, int learnedGain, int understandingGain, string eventId, int completedMonths = 1,
@@ -243,7 +248,7 @@ public sealed partial class GameWorld
             if (person.Status != LifeStatus.Alive) { EndPeopleLife(person); continue; }
             var soul = EnsurePeopleSoul(souls[person.SoulId]);
             if (soul.CurrentPersonId != person.Id) { soul = soul with { CurrentPersonId = person.Id }; StorePeopleSoul(soul); }
-            if (Month - person.Born >= Law("birth.maturity") && souls[person.SoulId].Route > 0)
+            if (Month - person.Born >= PeopleMaturityMonths(person) && souls[person.SoulId].Route > 0)
                 foreach (var value in soul.Values.Where(v => v.HasEvidence && v.Accessible < v.Preserved).ToArray())
                 {
                     var id = $"life.{person.Id}.dream.{Month}.{(int)value.Domain}";
@@ -321,7 +326,7 @@ public sealed partial class GameWorld
     private void EvaluatePeopleScopes()
     {
         var population = state.People.Select(p => new EvaluationPerson(p.Id, p.Species, p.Place / 10, p.Realm, p.Layer, p.Born,
-            Month - p.Born < 60 ? GrowthPhase.Infant : Month - p.Born < Law("birth.maturity") ? GrowthPhase.Developing :
+            Month - p.Born < Math.Min(60, PeopleMaturityMonths(p)) ? GrowthPhase.Infant : Month - p.Born < PeopleMaturityMonths(p) ? GrowthPhase.Developing :
                 (Month - p.Born) * 100 > p.Lifespan * 80 ? GrowthPhase.Declining : GrowthPhase.Mature,
             p.Status == LifeStatus.Alive, PeopleProfile(p).Innate)).ToArray();
         var scopes = new List<EvaluationScope> { new("world") };

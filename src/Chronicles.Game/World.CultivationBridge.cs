@@ -366,7 +366,8 @@ public sealed partial class GameWorld
             return Math.Clamp(talent.CurrentExpression + talent.Innate * (10000 - state.PeopleDomain.Tuning.TalentInnateWeight) / 10000, 0, 10000);
         }
         var formation = CultivationFormationAt(state.Places[p.Place], p);
-        int Assisted(int index) => Math.Clamp(Capability(index) * (10000 + formation.QiBonus * 100) / 10000, 0, 10000);
+        var assistance = 10000L + (long)formation.QiBonus * 100 + InventoryGrowthBonus(p);
+        int Assisted(int index) => (int)Math.Clamp((long)Capability(index) * assistance / 10000, 0, 10000);
         return new()
         {
             PersonId = p.Id, BodyId = p.BodyId, SoulId = p.SoulId, Realm = p.Realm, Layer = p.Layer, GreatPerfection = p.GreatPerfection,

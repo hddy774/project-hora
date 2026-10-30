@@ -37,9 +37,9 @@ public sealed partial class GameWorld
         public PoliticalAccount Holder { get; init; }
     }
 
-    private PoliticalContext PoliticsContext() => new(Month, Revision, state.LawRevision,
+    private PoliticalContext PoliticsContext(bool includeMaturity = true) => new(Month, Revision, state.LawRevision,
         state.People, state.Groups, state.Places, PoliticsRules(),
-        new SortedDictionary<long, long>(state.People.ToDictionary(p => p.Id, PeopleMaturityMonths)));
+        includeMaturity ? new SortedDictionary<long, long>(state.People.ToDictionary(p => p.Id, PeopleMaturityMonths)) : null);
 
     private PoliticalRules PoliticsRules()
     {

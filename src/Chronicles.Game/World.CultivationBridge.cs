@@ -388,7 +388,7 @@ public sealed partial class GameWorld
     {
         var place = state.Places[p.Place];
         var formation = CultivationFormationAt(place, p);
-        var political = PoliticsContext();
+        var political = PoliticsContext(includeMaturity: false);
         var knowledge = new List<KnowledgeEvidence>();
         foreach (var work in Catalog.Paths.Select(x => x.Id).Prepend("entry"))
         {

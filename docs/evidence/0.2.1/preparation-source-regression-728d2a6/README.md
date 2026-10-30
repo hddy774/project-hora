@@ -68,3 +68,16 @@ dotnet run --project tests/Chronicles.Game.Tests -c Release -- --filter 'AI 수�
 
 - `original-probe.cs.txt`: `5e15df2751ff622a409ea7f8eed247141a41bce5f4e10c50b5bc519962334801`
 - `original-probe.json`: `a915bc2df089edbf33200300d3829c404ddde87659f33d4d258868a474434ab1`
+
+## 수정 소스에서 확인한 결과
+
+구현 소스 `8a6796cdc87fc74e6e46410224b44c8cd6330b81`에서 동일 probe 입력6개를 다시 실행한
+`followup-probe.json`은 모두 수락이며, 처음4개는 기존 Qi revision7·품질5833,
+약한 신체2개는 같은 Qi revision7·품질3000을 보존한다. 준비 자원 debit은 모두0이다.
+원본 probe 프로그램에서 검토 소스 식별 문자열과 참조 프로젝트만 수정 소스로 바꾸었다.
+
+`functional-results.json`에는 실제 선택 검사12/12 결과를 기록했다.
+새 기능5개(정수 입력 경계18개 포함), 기존169 AI 수행 연결5개,
+개인 환경/관계 비관측 필터1개와 개인 지식/숨은 revision 필터1개다.
+실측 수치로 오해하지 않도록 기능 runner의 경과시간 필드는 요약에서 제외하고,
+원시 기능 보고서 SHA256을 남겼다. 전체 기능 실행이나 장기/비용 측정 결과를 이 근거로 주장하지 않는다.

@@ -1,0 +1,96 @@
+{
+  "implementationCommit": "8a6796cdc87fc74e6e46410224b44c8cd6330b81",
+  "originalCommit": "728d2a6751d22d2f8fa94894d0c8144600217e1f",
+  "kind": "bounded-functional-only",
+  "newInputBoundaries": 18,
+  "passed": 12,
+  "failed": 0,
+  "reports": [
+    {
+      "selection": "감응 출처 선택",
+      "total": 5,
+      "failed": 0,
+      "results": [
+        {
+          "name": "INV-004/006/023 감응 출처 선택: 1% 실습·전환·상위 경지 계약과 동결 출처 유지",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다",
+          "passed": true
+        }
+      ],
+      "rawFunctionalReportSha256": "c0566b8a6c03588d3610165f3d53f78a35e80d607b1c0f1df38079b67c6968e0"
+    },
+    {
+      "selection": "AI 수행 연결",
+      "total": 5,
+      "failed": 0,
+      "results": [
+        {
+          "name": "INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다",
+          "passed": true
+        },
+        {
+          "name": "INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다",
+          "passed": true
+        },
+        {
+          "name": "INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다",
+          "passed": true
+        }
+      ],
+      "rawFunctionalReportSha256": "1f57bd57ceca9778436211b7a5a7da607c7ce9fabdcc058f9d6312500713e073"
+    },
+    {
+      "selection": "own combat social and AI",
+      "total": 1,
+      "failed": 0,
+      "results": [
+        {
+          "name": "INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations",
+          "passed": true
+        }
+      ],
+      "rawFunctionalReportSha256": "b9aeb7d83f9d203162308b07d82b1f44e9f506d409d125b79e9f96b7f2355fba"
+    },
+    {
+      "selection": "knowledge provenance is personal",
+      "total": 1,
+      "failed": 0,
+      "results": [
+        {
+          "name": "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+          "passed": true
+        }
+      ],
+      "rawFunctionalReportSha256": "96061cf367aa5d69e42d6b50d6574528c196dff6127c1b5cef5ceda6716bc002"
+    }
+  ],
+  "samplerCostGrowthProfileRuns": 0,
+  "probeFiles": {
+    "followup-probe.json": "c0dc55577ad84e4e81d731a0b257495513c628995f477866d7b8030e1b46151b",
+    "original-probe.cs.txt": "5e15df2751ff622a409ea7f8eed247141a41bce5f4e10c50b5bc519962334801",
+    "original-probe.json": "a915bc2df089edbf33200300d3829c404ddde87659f33d4d258868a474434ab1"
+  }
+}

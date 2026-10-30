@@ -74,10 +74,10 @@ public static class Laws
         D("inventory.professionalWork", "전문 활동 작업량", "노동점", 1, 100000, 100, "치료·감정 등의 실제 작업"),
         D("inventory.extractionWork", "단위 채집 작업량", "노동점/개", 1, 100000, 25, "원천별 실제 채집량과 기간 계산"),
         D("knowledge.copyMonths", "필사 기본 시간", "개월", 1, 120, 1, "실제 매체·장절·노동 예약"),
-        D("knowledge.copyPaper", "필사 장절당 종이", "개", 0, 1000, 1, "빈 매체와 추가 필사 재료의 실소비"),
-        D("knowledge.copyInk", "필사 장절당 먹", "개", 0, 1000, 1, "형식별 실제 필사 재료"),
-        D("knowledge.teachMinimum", "전수 최소 기간", "개월", 1, 120, 1, "스승과 제자의 동시 실제 시간"),
-        D("knowledge.practiceMinimum", "검증 실습 최소 기간", "개월", 1, 120, 1, "책 소유나 읽기로 실전 숙련 지급하지 않음"),
+        D("knowledge.copyPaper", "필사 장절당 종이", "개", 1, 1000, 1, "빈 매체와 추가 필사 재료의 실소비"),
+        D("knowledge.copyInk", "필사 장절당 먹", "개", 1, 1000, 1, "형식별 실제 필사 재료"),
+        D("knowledge.teachMinimum", "전수 최소 이해", "%", 1, 100, 1, "개인 지식의 전수 자격·시간은 별도 실제 예약"),
+        D("knowledge.practiceMinimum", "실습 최소 이해", "%", 1, 100, 1, "실습 자격이며 책 소유나 읽기로 실전 숙련 지급하지 않음"),
         D("knowledge.maximumActionMonths", "지식 작업 최대 기간", "개월", 1, 1200, 120, "단일 예약의 한계·장기 작업은 분할"),
         D("knowledge.misreadChance", "첫 독해 오해 확률", "만분율", 0, 10000, 100, "실제로 읽은 개인 주장만 변화·판본 정답 변경 없음"),
         D("politics.sectLimit", "동시 종문 한도", "개", 0, 1000, 10, "역사상 창종 수와 구분"),
@@ -113,6 +113,8 @@ public static class Laws
                 return $"법칙 범위 오류: {d.Id}";
         if (values["founder.age"] >= values["founder.lifespan"])
             return "시조 나이는 수명보다 작아야 합니다.";
+        if (values["knowledge.copyMonths"] > values["knowledge.maximumActionMonths"])
+            return "필사 기본 시간은 단일 지식 작업 최대 기간을 넘을 수 없습니다.";
         return null;
     }
 }

@@ -528,6 +528,7 @@ public static class CultivationEngine
         policy.MinimumControl is >= 0 and <= 10000 && policy.UpperControl >= policy.MinimumControl && policy.CompletionControl >= policy.UpperControl && policy.CompletionControl <= 10000 &&
         policy.BaseRisk is >= 0 and <= 10000 && policy.TrialRisk is >= 0 and <= 10000 && policy.FailureDamage is >= 0 and <= 10000 &&
         policy.RecoveryPerMonth is >= 0 and <= 10000 && policy.ConversionLoss is >= 0 and <= 10000 && policy.TrialHealthCost is >= 0 and <= 100 && policy.FailureHealthCost is >= 0 and <= 100 &&
+        policy.UpperLifespanPercent is >= 100 and <= 1000 &&
         policy.QiLifespanMonths > 0 && policy.FoundationLifespanMonths > 0 && policy.GoldenCoreLifespanMonths > 0 && policy.HalfImmortalLifespanMonths > 0;
     private static ProcessFlow SpentFlow(Elements spent) => new(spent, spent, spent, spent, default, default, default);
     private static CultivationResult Die(CultivationState state, CultivationDeathCause cause, string detail) =>

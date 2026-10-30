@@ -12,10 +12,15 @@ public sealed partial class GameWorld
     private readonly Dictionary<long, (TalentInputStamp Stamp, InnateTalentSnapshot Values)> executionTalents = [];
     private Person[]? executionReferencePeople;
     private bool scalarExecutionVerification;
+    private ITalentBatchBackend executionTalentBackend = new ScalarTalentBackend();
     private long executionFrames, executionDueChecks, executionTalentCommits;
 
     // Verification-only choice; neither command dispatch nor save state exposes another authority.
     internal void UseScalarExecutionReferenceForVerification() => scalarExecutionVerification = true;
+    internal void UseTalentBackendForVerification(ITalentBatchBackend backend)
+    {
+        ArgumentNullException.ThrowIfNull(backend); executionTalentBackend = backend; executionTalents.Clear();
+    }
     internal (long Frames, long DueChecks, long TalentCommits, long QueueRebuilds) ExecutionDiagnostics =>
         (executionFrames, executionDueChecks, executionTalentCommits, executionQueue.Rebuilds);
 
@@ -87,7 +92,7 @@ public sealed partial class GameWorld
         var innate = PeopleProfile(person).Innate;
         var input = new TalentBatchInput(stamp, innate.Foundations, innate.ElementRoots);
         // Scalar remains the product backend. SIMD exists solely as a comparison candidate until measured.
-        var pending = InnateTalentBatch.Calculate(input, new ScalarTalentBackend());
+        var pending = InnateTalentBatch.Calculate(input, executionTalentBackend);
         var status = InnateTalentBatch.Commit(pending, ExecutionTalentStamp(person), out var values);
         if (status != TalentBatchStatus.Applied) throw new InvalidOperationException("Synchronous talent input changed before publication.");
         var complete = new InnateTalentSnapshot(innate, values);

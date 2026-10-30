@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
   "kind": "seonro-execution-measurement-review-draft",
-  "prepared_utc": "2026-10-30T19:46:30.038037+00:00",
+  "prepared_utc": "2026-10-30T20:07:43.103035+00:00",
   "workflow_run_id": 41111655023,
   "workflow_run_attempt": 1,
+  "workflow_observation_file": "workflow-observation.json",
   "workflow_run_url": "https://github.com/hddy774/project-hora/actions/runs/41111655023",
   "measurement_source_commit": "174e4a93f81defce44b18421629330bd280fb891",
   "workflow_event_merge_commit": "e3f0dc136ee846d2b56230b0f6141906f0445917",
@@ -16,7 +17,9 @@
     "report_sha256": "6bb3de5ccb787eeee7a71f86295ce17c9eaa2a630cbef206f95e04beaf312e87",
     "scope": "루트의 별도 실제 전체 기능 원본이다. 각 EX job이 직접 수행한 검사는 아래 preceding-functional.json의 선택1/1이다."
   },
-  "all_six_experiments_collected": false,
+  "all_six_experiments_collected": true,
+  "all_requested_scopes_completed": true,
+  "six_case_collection_and_review_complete": true,
   "overall_performance_accepted": false,
   "release_accepted": false,
   "adoption_applied": false,
@@ -27,22 +30,543 @@
     "modified_by_this_review": false
   },
   "later_runtime_source_policy": "이 측정은 checkout174의 당시 설정 그대로다. 이후 PGOoff 소스/지문/기능/성능 검증 결과와 합치거나 대체하지 않는다.",
+  "local_collection_analysis_scope": "EX01/02 최초 수집·작은 원문 검토 중 루트의 후속 런타임 설정 소스 CPU0 기준선이 별도로 실행 중이었다. 허용된 작은 ZIP/메타데이터/hash1회·문서/git만 수행했다. 로컬 새 측정·큰 컴파일·50MB 이상 압축/대형JSON 재파싱·이전 artifact 재해시는 하지 않았다. 원격 VM의174 실측 환경과 분리한다.",
   "experiments": [
     {
       "id": "EX-01",
-      "status": "pending",
-      "recommendation": "pending",
-      "rationale": "네 규모 원본 수집 전이며 채택 판단을 보류한다.",
-      "status_checked_utc": "2026-10-30T19:46:30.038037+00:00",
-      "status_scope": "GitHub job in_progress, 완료 원본/실제 진행 중 표본은 아직 확보하지 못함"
+      "status": "collected-and-validated",
+      "recommendation": "revisit",
+      "rationale": "네 규모에서 의미는 보전했으나 작은 규모 이득과100명 비용 악화·10000명 p95/할당 악화가 섞여 있다. 현재 실행 인프라 조합의 일관된 성능 우위 채택 주장은 보류한다.",
+      "artifact": {
+        "id": 13008301724,
+        "name": "v021-execution-EX-01-41111655023-1",
+        "archive_bytes": 6944898,
+        "archive_sha256": "86ef1ad139e00ac08ae6f5bf833bc176e6358ebd1755e6447cba337b17ceaa0e",
+        "archive_digest_verified_on_initial_download": true
+      },
+      "raw_report_sha256": "d50a81440a4257b342507b8a4b724fbb7a67aa23ff505f37d353699fd1ed6685",
+      "original_file_digests": {
+        "request.json": "1c398e6c49f3970f3df8869d66f59be97f0e7cb42b3504b23c45adc67c213f82",
+        "process-exit.json": "436e1eabc22f591bda117c3f1fa4be1f39f443e0059ff7120ef4c90a64866e0c",
+        "git-after-build.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preceding-functional.json": "d515c769557eba89c93eed6a5d6594fe7989d15140e771a2963c97cafd0491fb",
+        "build.log": "e4f27b1340628234dad17a40455df87c96a41e552be965dbef563899aff74ca7",
+        "raw-measurements.json": "d50a81440a4257b342507b8a4b724fbb7a67aa23ff505f37d353699fd1ed6685",
+        "process-resource.txt": "ee07ffb33ad8a7bf6be45da64bcc2bfdcea4b97ab84e1be4d562a34c5335c7db",
+        "assembly-inspector.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "source-environment.json": "2a6a0ff00dfe92aef18c35b29595484aced599698dba55926c69889b3cbccbac",
+        "dotnet-info.txt": "b84d918048476e43257f3a489c47a8e26d8c10ad39a8114f585c230b66ca879c",
+        "assembly-evidence.json": "1680e6497a708a276a5735af9aa477a70a3d1b60255daeeb8943f39d11d87fa4",
+        "measurement.log": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+      },
+      "collection_validated": true,
+      "preceding_functional_total": 1,
+      "archive_manifest": {
+        "entries": 123,
+        "present_entries": 119,
+        "missing_hidden_intermediate_files": [
+          "build/obj/Chronicles.Hosting/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game.Tests/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Core/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs"
+        ],
+        "full_original_artifact_preservation_claim": false,
+        "all_present_manifest_entries_verified_on_initial_download": true
+      },
+      "repository_retains_subset": [
+        "raw-measurements.json",
+        "request.json",
+        "source-environment.json",
+        "assembly-evidence.json",
+        "collection-validation.json",
+        "process-exit.json",
+        "preceding-functional.json",
+        "artifact-sha256.json",
+        "process-resource.txt",
+        "dotnet-info.txt",
+        "build.log",
+        "measurement.log",
+        "git-after-build.txt"
+      ],
+      "archive_retention_scope": "원본 ZIP은 실행 artifact(14일)와 로컬 scratch에 보존한다. 저장소에는 수치·환경·출처·manifest의 원문 부분집합을 복사하며 DLL/build 전체를 커밋하지 않는다.",
+      "environment": {
+        "sdk": "10.0.403",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor",
+        "os_cpu_count": 4,
+        "affinity_cpu_count": 4,
+        "cgroup_cpu_max": null,
+        "cgroup_memory_max": null,
+        "thermal_scope": "GitHub 호스트 VM·실제 호스트 열 상태 미측정",
+        "power_scope": "GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정"
+      },
+      "memory_total_kb_as_reported": "16367524 kB",
+      "cross_vm_binary_equality": false,
+      "cross_vm_binary_equality_scope": "각 job 내부 PE source/전후/copied DLL hash를 확인했다. VM 간 DLL SHA는 실제로 다르며 동일 binaries를 주장하지 않는다.",
+      "complete_as_reported": true,
+      "requested_complete_as_reported": true,
+      "all_owned_experiments_complete_as_reported": false,
+      "populations": [
+        2,
+        100,
+        1000,
+        10000
+      ],
+      "repetitions": 1,
+      "total_elapsed_nanoseconds": 3655948942677,
+      "same_boundaries_output_and_openings": true,
+      "all_month_quantiles_match": true,
+      "scope": "현재 typed authority를 공유하며 Person 배열/파생 열·due heap·선천 재능 캐시 경계를 함께 비교한다. 각 변형은 별도12개월 예열/12개월 측정 세계다.",
+      "metadata_scope": "all_owned_experiments_complete=false는 세 소유 실험을 한 job에서 모두 고르지 않았다는 뜻이며, 이 선택 실험의 네 규모 complete=true와 구분한다.",
+      "metrics_as_reported": [
+        {
+          "population": 2,
+          "variant": "original-person-array",
+          "advance_samples": 12,
+          "advance_p50_ns": 89101906,
+          "advance_p95_ns": 135163730,
+          "advance_p99_ns": 135163730,
+          "advance_sum_ns": 1161537148,
+          "advance_allocated_p50_bytes": 12580792,
+          "advance_allocated_sum_bytes": 148486760,
+          "process_retained_managed_bytes": 18771792,
+          "commands": [],
+          "final_births": 0,
+          "final_deaths": 0,
+          "final_living": 2,
+          "output_digest": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 2,
+          "variant": "hot-columns-due-heap",
+          "advance_samples": 12,
+          "advance_p50_ns": 49355174,
+          "advance_p95_ns": 75454675,
+          "advance_p99_ns": 75454675,
+          "advance_sum_ns": 618767324,
+          "advance_allocated_p50_bytes": 12364280,
+          "advance_allocated_sum_bytes": 146654408,
+          "process_retained_managed_bytes": 18788416,
+          "commands": [],
+          "final_births": 0,
+          "final_deaths": 0,
+          "final_living": 2,
+          "output_digest": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 100,
+          "variant": "original-person-array",
+          "advance_samples": 12,
+          "advance_p50_ns": 266889176,
+          "advance_p95_ns": 436409302,
+          "advance_p99_ns": 436409302,
+          "advance_sum_ns": 3309523318,
+          "advance_allocated_p50_bytes": 255061056,
+          "advance_allocated_sum_bytes": 3004055760,
+          "process_retained_managed_bytes": 56991120,
+          "commands": [],
+          "final_births": 0,
+          "final_deaths": 0,
+          "final_living": 100,
+          "output_digest": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        },
+        {
+          "population": 100,
+          "variant": "hot-columns-due-heap",
+          "advance_samples": 12,
+          "advance_p50_ns": 269291149,
+          "advance_p95_ns": 432323136,
+          "advance_p99_ns": 432323136,
+          "advance_sum_ns": 3385036626,
+          "advance_allocated_p50_bytes": 257989960,
+          "advance_allocated_sum_bytes": 3036456416,
+          "process_retained_managed_bytes": 57090544,
+          "commands": [],
+          "final_births": 0,
+          "final_deaths": 0,
+          "final_living": 100,
+          "output_digest": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        },
+        {
+          "population": 1000,
+          "variant": "original-person-array",
+          "advance_samples": 12,
+          "advance_p50_ns": 3514136130,
+          "advance_p95_ns": 10333514883,
+          "advance_p99_ns": 10333514883,
+          "advance_sum_ns": 60630911643,
+          "advance_allocated_p50_bytes": 3323252896,
+          "advance_allocated_sum_bytes": 40426908688,
+          "process_retained_managed_bytes": 207519736,
+          "commands": [],
+          "final_births": 0,
+          "final_deaths": 0,
+          "final_living": 1000,
+          "output_digest": "491a3903836aaa5608015c6179b2e9ea0b9b694e01b9fd0213e27adca325c2f5"
+        },
+        {
+          "population": 1000,
+          "variant": "hot-columns-due-heap",
+          "advance_samples": 12,
+          "advance_p50_ns": 3538077348,
+          "advance_p95_ns": 9857179672,
+          "advance_p99_ns": 9857179672,
+          "advance_sum_ns": 59663302677,
+          "advance_allocated_p50_bytes": 3335209680,
+          "advance_allocated_sum_bytes": 40558815656,
+          "process_retained_managed_bytes": 207974536,
+          "commands": [],
+          "final_births": 0,
+          "final_deaths": 0,
+          "final_living": 1000,
+          "output_digest": "491a3903836aaa5608015c6179b2e9ea0b9b694e01b9fd0213e27adca325c2f5"
+        },
+        {
+          "population": 10000,
+          "variant": "original-person-array",
+          "advance_samples": 12,
+          "advance_p50_ns": 71656875711,
+          "advance_p95_ns": 81763832180,
+          "advance_p99_ns": 81763832180,
+          "advance_sum_ns": 790908876301,
+          "advance_allocated_p50_bytes": 35217414832,
+          "advance_allocated_sum_bytes": 394741332872,
+          "process_retained_managed_bytes": 1549150400,
+          "commands": [],
+          "final_births": 0,
+          "final_deaths": 0,
+          "final_living": 10000,
+          "output_digest": "68e52eb8543bc480c84c188954eb60c30463b1427e73b323971a97f43f742b80"
+        },
+        {
+          "population": 10000,
+          "variant": "hot-columns-due-heap",
+          "advance_samples": 12,
+          "advance_p50_ns": 68335499567,
+          "advance_p95_ns": 81848399666,
+          "advance_p99_ns": 81848399666,
+          "advance_sum_ns": 786908047657,
+          "advance_allocated_p50_bytes": 35230286400,
+          "advance_allocated_sum_bytes": 394887890304,
+          "process_retained_managed_bytes": 1551679472,
+          "commands": [],
+          "final_births": 0,
+          "final_deaths": 0,
+          "final_living": 10000,
+          "output_digest": "68e52eb8543bc480c84c188954eb60c30463b1427e73b323971a97f43f742b80"
+        }
+      ]
     },
     {
       "id": "EX-02",
-      "status": "pending",
-      "recommendation": "pending",
-      "rationale": "네 규모의 실제 생사·슬롯 원본 수집 전이며 채택 판단을 보류한다.",
-      "status_checked_utc": "2026-10-30T19:46:30.038037+00:00",
-      "status_scope": "GitHub job in_progress, 완료 원본/실제 진행 중 표본은 아직 확보하지 못함"
+      "status": "collected-and-validated",
+      "recommendation": "revisit",
+      "rationale": "네 규모의 실제 생사·슬롯 의미는 같지만 전체 월 비용의 일관된 개선은 확인되지 않았다. 현재 조합의 성능 우위 채택 주장은 보류한다.",
+      "artifact": {
+        "id": 13008235853,
+        "name": "v021-execution-EX-02-41111655023-1",
+        "archive_bytes": 6947063,
+        "archive_sha256": "0dd95a8a37f79d746aa739963a539f2f0569a341bb53cb12886c28a220a6799d",
+        "archive_digest_verified_on_initial_download": true
+      },
+      "raw_report_sha256": "4c2c6f248fdbe4af5b45f32a38e56b86281038599147190ed731558ad29c666c",
+      "original_file_digests": {
+        "request.json": "a6ed207da247f1c35e041fd19481adce7edcc414244980c2abe0be7549a8d388",
+        "process-exit.json": "436e1eabc22f591bda117c3f1fa4be1f39f443e0059ff7120ef4c90a64866e0c",
+        "git-after-build.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preceding-functional.json": "05e047123e4edb0f14b7e7f8444dab6da570a40c572fb149b147eb625ec6cc78",
+        "build.log": "f7bb573219b6b619c7f5770d24f12f8c0e982541ccb1c62afbc74acca640f997",
+        "raw-measurements.json": "4c2c6f248fdbe4af5b45f32a38e56b86281038599147190ed731558ad29c666c",
+        "process-resource.txt": "4610a5cdc68265ffd3cd66b84e33d57297fff8da84ca784edc8581f237a8fe41",
+        "assembly-inspector.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "source-environment.json": "74380d8b0b99d31c73a87d8fb1c6ab56bc1787d10c3be9d54f1b789db4108fe5",
+        "dotnet-info.txt": "b84d918048476e43257f3a489c47a8e26d8c10ad39a8114f585c230b66ca879c",
+        "assembly-evidence.json": "5ae6830fb336e0f5af04f5aa178535c28b61257858416ddb92a2f9e4a3c56c47",
+        "measurement.log": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+      },
+      "collection_validated": true,
+      "preceding_functional_total": 1,
+      "archive_manifest": {
+        "entries": 123,
+        "present_entries": 119,
+        "missing_hidden_intermediate_files": [
+          "build/obj/Chronicles.Hosting/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Game.Tests/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs",
+          "build/obj/Chronicles.Core/release/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs"
+        ],
+        "full_original_artifact_preservation_claim": false,
+        "all_present_manifest_entries_verified_on_initial_download": true
+      },
+      "repository_retains_subset": [
+        "raw-measurements.json",
+        "request.json",
+        "source-environment.json",
+        "assembly-evidence.json",
+        "collection-validation.json",
+        "process-exit.json",
+        "preceding-functional.json",
+        "artifact-sha256.json",
+        "process-resource.txt",
+        "dotnet-info.txt",
+        "build.log",
+        "measurement.log",
+        "git-after-build.txt"
+      ],
+      "archive_retention_scope": "원본 ZIP은 실행 artifact(14일)와 로컬 scratch에 보존한다. 저장소에는 수치·환경·출처·manifest의 원문 부분집합을 복사하며 DLL/build 전체를 커밋하지 않는다.",
+      "environment": {
+        "sdk": "10.0.403",
+        "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "os_cpu_count": 4,
+        "affinity_cpu_count": 4,
+        "cgroup_cpu_max": null,
+        "cgroup_memory_max": null,
+        "thermal_scope": "GitHub 호스트 VM·실제 호스트 열 상태 미측정",
+        "power_scope": "GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정"
+      },
+      "memory_total_kb_as_reported": "16366512 kB",
+      "cross_vm_binary_equality": false,
+      "cross_vm_binary_equality_scope": "각 job 내부 PE source/전후/copied DLL hash를 확인했다. VM 간 DLL SHA는 실제로 다르며 동일 binaries를 주장하지 않는다.",
+      "complete_as_reported": true,
+      "requested_complete_as_reported": true,
+      "all_owned_experiments_complete_as_reported": false,
+      "populations": [
+        2,
+        100,
+        1000,
+        10000
+      ],
+      "repetitions": 1,
+      "total_elapsed_nanoseconds": 3333078276068,
+      "same_boundaries_output_and_openings": true,
+      "all_month_quantiles_match": true,
+      "scope": "현재 typed authority를 공유하며 Person 배열/파생 열·due heap·선천 재능 캐시 경계를 함께 비교한다. 각 변형은 별도12개월 예열/12개월 측정 세계다.",
+      "metadata_scope": "all_owned_experiments_complete=false는 세 소유 실험을 한 job에서 모두 고르지 않았다는 뜻이며, 이 선택 실험의 네 규모 complete=true와 구분한다.",
+      "metrics_as_reported": [
+        {
+          "population": 2,
+          "variant": "original-person-array",
+          "advance_samples": 12,
+          "advance_p50_ns": 68527540,
+          "advance_p95_ns": 110111265,
+          "advance_p99_ns": 110111265,
+          "advance_sum_ns": 864802066,
+          "advance_allocated_p50_bytes": 10707024,
+          "advance_allocated_sum_bytes": 135011680,
+          "process_retained_managed_bytes": 19037824,
+          "commands": [
+            {
+              "label": "command:conceive:ex02:actual-pregnancy",
+              "ns": 65747732,
+              "allocated_bytes": 6820576
+            },
+            {
+              "label": "command:create:ex02:actual-arrival-after-death",
+              "ns": 59190465,
+              "allocated_bytes": 7544560
+            }
+          ],
+          "final_births": 1,
+          "final_deaths": 1,
+          "final_living": 3,
+          "output_digest": "f6d2c64b1af317a6e04f4440d203b2a631b6fb2a913d2bb2b680f18cec63bb3c"
+        },
+        {
+          "population": 2,
+          "variant": "hot-columns-due-heap",
+          "advance_samples": 12,
+          "advance_p50_ns": 45534658,
+          "advance_p95_ns": 77202869,
+          "advance_p99_ns": 77202869,
+          "advance_sum_ns": 590477743,
+          "advance_allocated_p50_bytes": 10591184,
+          "advance_allocated_sum_bytes": 133664296,
+          "process_retained_managed_bytes": 19055792,
+          "commands": [
+            {
+              "label": "command:conceive:ex02:actual-pregnancy",
+              "ns": 20220212,
+              "allocated_bytes": 6775032
+            },
+            {
+              "label": "command:create:ex02:actual-arrival-after-death",
+              "ns": 35775398,
+              "allocated_bytes": 7501936
+            }
+          ],
+          "final_births": 1,
+          "final_deaths": 1,
+          "final_living": 3,
+          "output_digest": "f6d2c64b1af317a6e04f4440d203b2a631b6fb2a913d2bb2b680f18cec63bb3c"
+        },
+        {
+          "population": 100,
+          "variant": "original-person-array",
+          "advance_samples": 12,
+          "advance_p50_ns": 238983585,
+          "advance_p95_ns": 522179177,
+          "advance_p99_ns": 522179177,
+          "advance_sum_ns": 3127383346,
+          "advance_allocated_p50_bytes": 237478544,
+          "advance_allocated_sum_bytes": 2919821168,
+          "process_retained_managed_bytes": 57354912,
+          "commands": [
+            {
+              "label": "command:conceive:ex02:actual-pregnancy",
+              "ns": 33588359,
+              "allocated_bytes": 18063272
+            },
+            {
+              "label": "command:create:ex02:actual-arrival-after-death",
+              "ns": 60072479,
+              "allocated_bytes": 22898072
+            }
+          ],
+          "final_births": 1,
+          "final_deaths": 1,
+          "final_living": 101,
+          "output_digest": "b4b2c76546a1b20f2a4e20fa0b7cead513b6748bad605133d1e12ff16e9c77a8"
+        },
+        {
+          "population": 100,
+          "variant": "hot-columns-due-heap",
+          "advance_samples": 12,
+          "advance_p50_ns": 260661718,
+          "advance_p95_ns": 511777864,
+          "advance_p99_ns": 511777864,
+          "advance_sum_ns": 3120377063,
+          "advance_allocated_p50_bytes": 240416952,
+          "advance_allocated_sum_bytes": 2951972800,
+          "process_retained_managed_bytes": 57455704,
+          "commands": [
+            {
+              "label": "command:conceive:ex02:actual-pregnancy",
+              "ns": 57607424,
+              "allocated_bytes": 18674792
+            },
+            {
+              "label": "command:create:ex02:actual-arrival-after-death",
+              "ns": 73794055,
+              "allocated_bytes": 23500904
+            }
+          ],
+          "final_births": 1,
+          "final_deaths": 1,
+          "final_living": 101,
+          "output_digest": "b4b2c76546a1b20f2a4e20fa0b7cead513b6748bad605133d1e12ff16e9c77a8"
+        },
+        {
+          "population": 1000,
+          "variant": "original-person-array",
+          "advance_samples": 12,
+          "advance_p50_ns": 2050745888,
+          "advance_p95_ns": 8923732209,
+          "advance_p99_ns": 8923732209,
+          "advance_sum_ns": 46981679516,
+          "advance_allocated_p50_bytes": 2916452672,
+          "advance_allocated_sum_bytes": 40188490008,
+          "process_retained_managed_bytes": 209010832,
+          "commands": [
+            {
+              "label": "command:conceive:ex02:actual-pregnancy",
+              "ns": 354928144,
+              "allocated_bytes": 127392712
+            },
+            {
+              "label": "command:create:ex02:actual-arrival-after-death",
+              "ns": 459733399,
+              "allocated_bytes": 171816584
+            }
+          ],
+          "final_births": 1,
+          "final_deaths": 1,
+          "final_living": 1001,
+          "output_digest": "920b11ea12c7318cbcf441c22b29d110cf3994c95cc519dc50c877fe1b07c6dd"
+        },
+        {
+          "population": 1000,
+          "variant": "hot-columns-due-heap",
+          "advance_samples": 12,
+          "advance_p50_ns": 2046237537,
+          "advance_p95_ns": 8738053242,
+          "advance_p99_ns": 8738053242,
+          "advance_sum_ns": 46990502955,
+          "advance_allocated_p50_bytes": 2928378232,
+          "advance_allocated_sum_bytes": 40320091136,
+          "process_retained_managed_bytes": 209464488,
+          "commands": [
+            {
+              "label": "command:conceive:ex02:actual-pregnancy",
+              "ns": 342084834,
+              "allocated_bytes": 127391048
+            },
+            {
+              "label": "command:create:ex02:actual-arrival-after-death",
+              "ns": 464691527,
+              "allocated_bytes": 171812912
+            }
+          ],
+          "final_births": 1,
+          "final_deaths": 1,
+          "final_living": 1001,
+          "output_digest": "920b11ea12c7318cbcf441c22b29d110cf3994c95cc519dc50c877fe1b07c6dd"
+        },
+        {
+          "population": 10000,
+          "variant": "original-person-array",
+          "advance_samples": 12,
+          "advance_p50_ns": 60478437811,
+          "advance_p95_ns": 71228409240,
+          "advance_p99_ns": 71228409240,
+          "advance_sum_ns": 702310058763,
+          "advance_allocated_p50_bytes": 35254114472,
+          "advance_allocated_sum_bytes": 395362818616,
+          "process_retained_managed_bytes": 1558264552,
+          "commands": [
+            {
+              "label": "command:conceive:ex02:actual-pregnancy",
+              "ns": 10637629839,
+              "allocated_bytes": 1217323896
+            },
+            {
+              "label": "command:create:ex02:actual-arrival-after-death",
+              "ns": 12565204139,
+              "allocated_bytes": 1639714880
+            }
+          ],
+          "final_births": 1,
+          "final_deaths": 1,
+          "final_living": 10001,
+          "output_digest": "9bc28b5c7da9e8ae2986af26549cc41c890623be474ae54f9ac0d3d4158490af"
+        },
+        {
+          "population": 10000,
+          "variant": "hot-columns-due-heap",
+          "advance_samples": 12,
+          "advance_p50_ns": 60759399562,
+          "advance_p95_ns": 72252487368,
+          "advance_p99_ns": 72252487368,
+          "advance_sum_ns": 701751382015,
+          "advance_allocated_p50_bytes": 35267057168,
+          "advance_allocated_sum_bytes": 395509322112,
+          "process_retained_managed_bytes": 1560796040,
+          "commands": [
+            {
+              "label": "command:conceive:ex02:actual-pregnancy",
+              "ns": 10744570256,
+              "allocated_bytes": 1217387672
+            },
+            {
+              "label": "command:create:ex02:actual-arrival-after-death",
+              "ns": 12588354590,
+              "allocated_bytes": 1639777696
+            }
+          ],
+          "final_births": 1,
+          "final_deaths": 1,
+          "final_living": 10001,
+          "output_digest": "9bc28b5c7da9e8ae2986af26549cc41c890623be474ae54f9ac0d3d4158490af"
+        }
+      ]
     },
     {
       "id": "EX-03",

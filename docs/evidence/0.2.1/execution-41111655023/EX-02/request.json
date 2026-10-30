@@ -1,0 +1,13 @@
+{
+  "SOURCE_SHA": "174e4a93f81defce44b18421629330bd280fb891",
+  "EXPERIMENT": "EX-02",
+  "WORKFLOW_SOURCE_SHA": "e3f0dc136ee846d2b56230b0f6141906f0445917",
+  "GITHUB_EVENT_NAME": "pull_request",
+  "GITHUB_REPOSITORY": "hddy774/project-hora",
+  "GITHUB_WORKFLOW_REF": "hddy774/project-hora/.github/workflows/v021-execution-measurements.yml@refs/pull/198/merge",
+  "GITHUB_RUN_ID": "41111655023",
+  "GITHUB_RUN_ATTEMPT": "1",
+  "GITHUB_ACTOR": "hddy774",
+  "GITHUB_TRIGGERING_ACTOR": "hddy774",
+  "REPOSITORY_PRIVATE": "false"
+}

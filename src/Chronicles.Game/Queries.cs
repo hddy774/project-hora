@@ -4,6 +4,7 @@ using K = Chronicles.Game.Knowledge;
 using I = Chronicles.Game.Inventory;
 using P = Chronicles.Game.People;
 using C = Chronicles.Game.Cultivation;
+using POL = Chronicles.Game.Politics;
 
 namespace Chronicles.Game;
 
@@ -51,7 +52,11 @@ public sealed record GroupView(long Id, string Name, string Kind, long Leader, l
     public long? PolicyEscrow { get; init; }
     public long? Debt { get; init; }
     public long? Jurisdiction { get; init; }
+    public IReadOnlyList<PolicyPreparationView>? PolicyPreparations { get; init; }
+    public IReadOnlyList<POL.PolicyHistory>? PolicyHistory { get; init; }
 }
+public sealed record PolicyPreparationView(long Id, string Category, int Choice, string Stage, long Author,
+    int Place, long Adopted, long? Due, long Escrow, int RequiredWorkers, IReadOnlyList<long> Workers);
 public sealed record ContractView(long Id, string Kind, long Seller, long Buyer, long Item, long Price, long Due, string Status, int Place)
 {
     public long? Escrow { get; init; }
@@ -134,6 +139,7 @@ public sealed record GameView(string Title, string Version, long Month, long Rev
     public IReadOnlyList<P.PeopleRequestView> PeopleRequests { get; init; } = [];
     public IReadOnlyList<P.PeopleOathView> KnownOaths { get; init; } = [];
     public IReadOnlyList<P.ReputationClaim> ReceivedClaims { get; init; } = [];
+    public IReadOnlyList<POL.PolicyDefinition> PolicyDefinitions { get; init; } = [];
 }
 
 public sealed partial class GameWorld
@@ -155,7 +161,8 @@ public sealed partial class GameWorld
                     Irreversible = p.Irreversible, Plan = Array.AsReadOnly(p.Plan.ToArray()), GreatPerfection = p.GreatPerfection,
                     Partner = p.Partner, Guardian = p.Guardian, Household = p.Household, Sect = p.Sect, Body = p.BodyId,
                     GuardTargetKind = p.Action != ActionKind.Guard || p.ActionTarget == 0 ? "none" :
-                        p.ActionData.StartsWith("combat:", StringComparison.Ordinal) ? "receipt" : "person"
+                        p.ActionData.StartsWith("combat:", StringComparison.Ordinal) ? "receipt" :
+                        p.ActionData.StartsWith("politics:", StringComparison.Ordinal) ? "organization" : "person"
                 };
             var belief = actor.ObservedPeople[p.Id];
             return new(p.Id, belief.Name, Catalog.RealmNames[(int)belief.Realm],
@@ -203,12 +210,21 @@ public sealed partial class GameWorld
         var groupView = state.Groups.Where(g => observer || g.Members.Contains(actor!.Id)).Select(g =>
         {
             var finance = observer || g.Leader == actor!.Id;
+            var preparations = finance ? state.Politics.Preparations.Where(p => p.Group == g.Id).OrderBy(p => p.Id).ToArray() : [];
+            var pending = preparations.Where(p => p.Stage is not (POL.PolicyStage.Implemented or POL.PolicyStage.Cancelled)).ToArray();
             return new GroupView(g.Id, g.Name, g.Kind.ToString(), g.Leader, g.Overlord, finance ? g.Money : null,
                 Array.AsReadOnly(g.Members.Where(id => observer || visibleIds.Contains(id)).ToArray()), Array.AsReadOnly(g.Provinces.ToArray()),
-                ReadOnly(g.Policies), g.Dissolved)
+                ReadOnly(POL.PolicyCatalog.All.ToDictionary(d => d.Category, d => g.Policies.GetValueOrDefault(d.Category, 1), StringComparer.Ordinal)), g.Dissolved)
             {
-                PendingPolicies = finance ? ReadOnly(g.PendingPolicies) : null, PolicyDue = finance ? g.PolicyDue : null,
-                PolicyEscrow = finance ? g.PolicyEscrow : null, Debt = finance ? g.Debt : null, Jurisdiction = finance ? g.Jurisdiction : null
+                PendingPolicies = finance ? ReadOnly(pending.ToDictionary(p => p.Category, p => p.Choice, StringComparer.Ordinal)) : null,
+                PolicyDue = finance ? pending.Where(p => p.Stage == POL.PolicyStage.Preparing).Select(p => (long?)p.Due).Min() : null,
+                PolicyEscrow = finance ? preparations.Where(p => p.Stage == POL.PolicyStage.Preparing).Sum(p => p.Escrow) : null,
+                Debt = finance ? state.Politics.Obligations.Where(o => o.Debtor == POL.PoliticalAccount.Group(g.Id)).Sum(o => o.Outstanding) : null,
+                Jurisdiction = finance ? g.Jurisdiction : null,
+                PolicyPreparations = finance ? Array.AsReadOnly(preparations.Select(p => new PolicyPreparationView(p.Id, p.Category, p.Choice,
+                    p.Stage.ToString(), p.Author, p.Place, p.Adopted, p.Stage == POL.PolicyStage.Preparing ? p.Due : null,
+                    p.Escrow, p.RequiredWorkers, Array.AsReadOnly(p.Workers.ToArray()))).ToArray()) : null,
+                PolicyHistory = finance ? Array.AsReadOnly(state.Politics.PolicyHistory.Where(h => h.Group == g.Id).Select(h => h with { }).ToArray()) : null
             };
         }).ToArray();
         var contracts = state.Contracts.Where(c => observer || (c.Destination == actor!.Place && c.Status == "open") ||
@@ -294,7 +310,8 @@ public sealed partial class GameWorld
             // Newly delivered personal requests and evidence participate in the perception token even when no detail is open.
             PeopleRequests = Array.AsReadOnly(PeopleRequests(observer ? 0 : actor!.Id)),
             KnownOaths = Array.AsReadOnly(PeopleKnownOaths(observer ? 0 : actor!.Id)),
-            ReceivedClaims = Array.AsReadOnly(PeopleReceivedClaims(observer ? 0 : actor!.Id))
+            ReceivedClaims = Array.AsReadOnly(PeopleReceivedClaims(observer ? 0 : actor!.Id)),
+            PolicyDefinitions = POL.PolicyCatalog.All
         };
         return observer ? projection : projection with { Revision = PerceptionRevision(projection) };
     }

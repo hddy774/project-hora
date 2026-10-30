@@ -1,0 +1,32 @@
+{
+  "source_commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "self_excluded": true,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3269,
+      "sha256": "36fb96562b74b2bd3037ef625f28a57ae5c9c47e229748cfc6de1690118008bd"
+    },
+    {
+      "path": "functional.json",
+      "bytes": 378,
+      "sha256": "16bfb3619e56f9550356f4562512f8aa96d58ed8ca0bdc52d0d7fe0d211f229a"
+    },
+    {
+      "path": "functional.log",
+      "bytes": 127,
+      "sha256": "ecc3bcbb045288838ac91ee6b1c141bf9a02d5e440515bb217b35b4c7ecca409"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 4799,
+      "sha256": "cd915f013a92407deb07f69eb726aaf55201ca62f2d5e5863e14ec77db2c6e77"
+    },
+    {
+      "path": "release-build.log",
+      "bytes": 1077,
+      "sha256": "9aef61bef09d3b710d1f56678567188a533adec3a875665bb34b3b65fe386e92"
+    }
+  ]
+}

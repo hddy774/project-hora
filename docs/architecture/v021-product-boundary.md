@@ -66,19 +66,43 @@ Android의 네이티브 bridge 검사는 별도 실제 실행 검증이다.
 public 계약은 바뀌지 않는다. `Clone`과 명령 hash도 Game 안에 남는다. 체크섬·스키마·
 권위 불변식 검사는 플랫폼과 무관한 바이트 처리다. 파일 존재·경로 선택은 수행하지 않는다.
 
-`GameSaveStore.SaveAtomic`, `Load`와 세션 내부의 `LoadWithSource`는 Hosting 소유다.
-파일 구현을 이동할 때 다음 동작을 보존했다.
+현재 세계 본문의 `DomainSchema`는 **2로 유지**한다. 저장 봉투의 버전과 세계 상태의
+스키마는 별개다. `GameCodec`는 canonical `GameState` **UTF8 본문 바이트 수**에 따라
+다음 형식을 선택한다. 문자 수나 최종 봉투 크기를 임계값으로 쓰지 않는다.
 
-1. `SEONRO-021` envelope schema 2와 sequence, sequence+payload의 SHA-256 검증.
+| 본문 크기 | 저장 봉투 | 보존/검증 계약 |
+| --- | --- | --- |
+| 128MiB 이하 | `SEONRO-021` JSON envelope schema2 | 기존 작은 저장의 실제 바이트와 이전 schema2 읽기 유지 |
+| 128MiB 초과 | `SEONRO-021B`와 마지막 NUL, binary envelope version3 | 64바이트 헤더 뒤에 canonical UTF8 원문을 저장하고 중간 UTF16 본문 문자열 없이 읽기 |
+
+버전3 헤더는 12바이트 magic, little-endian int32 버전, int64 sequence, int64 본문 길이,
+32바이트 SHA-256 순서다. 두 형식 모두 **0 이상 sequence**와 문화권 독립 십진 sequence +
+LF + canonical UTF8 본문의 동일 논리 SHA-256을 검증한다. 이진 본문의 선언 길이는 양수이며
+`Array.MaxLength - 64` 이하고, 헤더 뒤의 실제 바이트 수와 정확히 같아야 한다. 지원하지 않는
+버전·음수 sequence·체크섬 불일치·이진 봉투의 잘림/후행 자료를 거부한 뒤 세계 불변식을
+검증한다. schema3 JSON 봉투나 이전 개발용 `DomainSchema`를 허용하는 변경은 아니다.
+
+`GameSaveStore.SaveAtomic`, `Load`와 세션 내부의 `LoadWithSource`는 Hosting 소유다.
+두 봉투는 같은 파일 어댑터를 거치며 다음 동작을 보존한다.
+
+1. 위의 봉투 선택과 sequence·길이·SHA-256 검증을 `GameCodec`가 수행.
 2. primary·`.pending`·`.backup` 중 검증을 통과한 가장 최신 sequence 선택.
 3. 실제 쓰기 flush와 다시 읽은 바이트 검증 뒤 primary 교체, 유효 primary의 backup 보존.
 4. 교체 대상의 거부된 원본을 내용 hash 이름의 `preserved/*.original`로 보존.
 5. 기존 저장을 복구할 수 없을 때 원본을 삭제하지 않고 새 세계를 여는 세션 안내.
 6. `UseCurrentLaws`로 새 세계를 열 때 현재 법칙을 복사하는 기존 명령 의미.
 
-sequence를 읽고 쓰는 두 codec 메서드는 `internal`이며 Hosting에만 friend 접근을
-허용한다. 파일 어댑터가 envelope/체크섬 계산을 복제하지 않는다. 저장 wire, 수행 공식,
-RNG 소비 순서를 구조 이동과 함께 변경하지 않는다.
+sequence를 읽고 쓰는 codec 메서드는 `internal`이며 Hosting과 기능 검증 assembly에
+friend 접근을 허용한다. 작은 실제 세계로 양형식을 검사하는 내부 임계값 전달은 공개 설정이나
+저장 상태가 아니다. 파일 어댑터가 봉투/체크섬 계산을 복제하지 않으며, 봉투 전환으로 수행
+공식·RNG 소비·세계 상태 schema를 바꾸지 않는다.
+
+public `byte[]` 계약은 전체 스냅샷·canonical 본문·반환 봉투를 메모리에 만든다. 대용량
+단일 JSON 문자열로 한 번 더 감싸는 한계를 피했지만 스트리밍 저장을 구현한 것은 아니다.
+메모리 가용량·배열 크기·개별 JSON 값의 런타임 상한은 남는다. [PR192의 고정 소스 기능
+근거](../evidence/0.2.1/large-save-envelope-c6e4704/README.md)는 기존 작은 저장 바이트와
+강제 작은 임계값의 양형식·실제 원자파일 복구를 확인한 자료다. 실제 10,000명 저장의 성공은
+그 소스의 별도 대규모 실행 원본으로 판정하며 이 기능 근거로 대신하지 않는다.
 
 파일 구현은 일반 .NET 로컬 파일 어댑터다. 클라우드 저장, 브라우저 IndexedDB, 콘솔 또는
 Unity의 저장 API를 구현했다고 주장하지 않는다. 새 플랫폼 어댑터는 바이트 codec을

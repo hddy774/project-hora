@@ -6,7 +6,7 @@ public sealed partial class GameWorld
     {
         if (!people.TryGetValue(target, out var q) || !p.KnownPeople.Contains(target) || p.Id == q.Id ||
             q.Status != LifeStatus.Alive || p.Place != q.Place || p.Partner != 0 || q.Partner != 0 ||
-            Month - p.Born < Law("birth.maturity") || Month - q.Born < Law("birth.maturity"))
+            Month - p.Born < PeopleMaturityMonths(p) || Month - q.Born < PeopleMaturityMonths(q))
             return "도려 관계를 맺을 조건이 아닙니다.";
         if (Law("birth.kinship") == 0 && Related(p, q)) return "현재 혈연 법칙에서 허용하지 않습니다.";
         // The other character makes an independent, reproducible choice from their disposition.
@@ -45,7 +45,7 @@ public sealed partial class GameWorld
     private bool BirthQualified(Person p)
     {
         var age = Month - p.Born;
-        return p.Status == LifeStatus.Alive && age >= Law("birth.maturity") &&
+        return p.Status == LifeStatus.Alive && age >= PeopleMaturityMonths(p) &&
             age * 100 <= p.Lifespan * Law("birth.fertility") && p.Health >= 30 &&
             ((int)p.Realm >= Law("birth.minimumRealm") ||
                 (Law("birth.martialEquivalent") != 0 && p.Martial == 10));
@@ -61,9 +61,10 @@ public sealed partial class GameWorld
             father.Status != LifeStatus.Alive || Month < mother.NextBirth ||
             state.Pregnancies.Any(x => x.Mother == mother.Id && !x.Completed)) return "출산 자격·회복 기간을 확인하세요.";
         if (Law("birth.kinship") == 0 && Related(mother, father)) return "현재 혈연 법칙에서 허용하지 않습니다.";
-        if (!CheckPeopleReproduction(mother, father).Eligible) return "현재 생식 프로필·양친 자격을 확인하세요.";
+        var eligibility = CheckPeopleReproduction(mother, father);
+        if (!eligibility.Eligible || eligibility.GestationMonths is null) return "현재 생식 프로필·양친 자격을 확인하세요.";
         var pregnancy = new Pregnancy { Id = Id(), Mother = mother.Id, Father = father.Id,
-            Due = Month + Law("birth.gestation"), LawRevision = state.LawRevision,
+            Due = Month + eligibility.GestationMonths.Value, LawRevision = state.LawRevision,
             Recovery = Law("birth.interval"), HealthCost = IntLaw("birth.healthCost") };
         FreezePeopleConception(pregnancy, mother, father);
         state.Pregnancies.Add(pregnancy);

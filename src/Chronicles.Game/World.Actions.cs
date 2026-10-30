@@ -280,7 +280,7 @@ public sealed partial class GameWorld
             if (q.Status != LifeStatus.Alive || q.Place != p.Place) continue;
             if (!p.KnownPeople.Contains(q.Id)) p.KnownPeople.Add(q.Id);
             p.ObservedPeople[q.Id] = new(q.Id, q.Name, q.Realm, q.Layer, q.Place, Month,
-                q.Species == "human" ? q.Gestates : null, Month - q.Born >= Law("birth.maturity"));
+                q.Species == "human" ? q.Gestates : null, Month - q.Born >= PeopleMaturityMonths(q));
         }
         p.ObservationCursor += count; p.ObservationRemaining -= count;
         p.ObservedPlaces[p.Place] = new(place.Id, place.Source, place.Qi, string.Join(',', place.Facilities), Month,
@@ -303,7 +303,7 @@ public sealed partial class GameWorld
         p.DecisionCandidates.Add(new("회복", p.Health < 25 ? 1200 : 0, $"자기 건강 {p.Health}·안전 선행 조건"));
         if (p.Health < 25) { p.Goal = "회복"; p.Reason = "자기 건강 부족"; Start(p, "heal", 0, ""); return; }
         var children = dependents.GetValueOrDefault(p.Id) ?? [];
-        var childCount = children.Count(q => q.Status == LifeStatus.Alive && Month - q.Born < Law("birth.maturity"));
+        var childCount = children.Count(q => q.Status == LifeStatus.Alive && Month - q.Born < PeopleMaturityMonths(q));
         p.DecisionCandidates.Add(new("생계", Inventory(p.Id, "food") < (childCount + 1) * 12 ? 1000 : 0,
             "자기 재고와 실제 부양 가족 식량 수요"));
         if (Inventory(p.Id, "food") < (childCount + 1) * 12)
@@ -326,7 +326,7 @@ public sealed partial class GameWorld
             if (Start(p, "care", dependent.Id, "") is null) return;
         }
         if (TryPeopleConsentPlan(p)) return;
-        if (age >= Law("birth.maturity") && p.Partner == 0)
+        if (age >= PeopleMaturityMonths(p) && p.Partner == 0)
         {
             var q = p.ObservedPeople.Values.FirstOrDefault(q => q.Id != p.Id && q.Place == p.Place &&
                 q.AppearsAdult && q.ApparentGestates != p.Gestates &&

@@ -6,7 +6,7 @@ public sealed partial class GameWorld
     {
         if (!people.TryGetValue(target, out var child) || child.Status != LifeStatus.Alive ||
             child.Guardian != guardian.Id || child.Place != guardian.Place ||
-            Month - child.Born >= Law("birth.maturity") || Inventory(guardian.Id, "food") < Law("care.food"))
+            Month - child.Born >= PeopleMaturityMonths(child) || Inventory(guardian.Id, "food") < Law("care.food"))
             return "양육 책임·현재 위치·돌봄 식량을 확인하세요.";
         return null;
     }

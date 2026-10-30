@@ -76,7 +76,7 @@ public sealed class RichQueryMappingScenario : IFeatureScenario
         a.Plan = [new("gather", 0, "ore")]; a.Guardian = b.Id;
         var tool = state.Items.Single(i => i.Owner == a.Id && i.Definition == "tool"); a.Equipment[8] = tool.Id;
         tool.Damage = 25; tool.Defects = ItemDefect.Contamination; tool.BoundSoul = a.SoulId;
-        home.Money = 60; home.PolicyEscrow = 10; home.PolicyDue = 3; home.Debt = 40; state.CreatedMoney += 70;
+        home.Money = 60; home.PolicyEscrow = 10; home.PolicyDue = 3; home.Debt = 40; a.Money -= 70;
         home.PendingPolicies[Catalog.PolicyNames[0]] = 2;
         state.Places[0].Owner = a.Id; state.Places[0].Operator = a.Id; home.Kind = GroupKind.Dynasty; home.Provinces = [0];
         foreach (var site in state.Places.Where(p => p.Province == 0)) site.Sovereign = home.Id;

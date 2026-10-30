@@ -279,7 +279,7 @@ public sealed partial class GameWorld
                 p.Personality[1] + p.Personality[3] >= p.Personality[11] ? "교육·전승" : "기예·산업";
             p.Plan = [new("policy", own.Id, category)];
         }
-        else if (p.Sect == 0 && p.Money >= Law("politics.foundCost") && Month - p.Born >= Law("birth.maturity"))
+        else if (p.Sect == 0 && p.Money >= Law("politics.foundCost") && Month - p.Born >= PeopleMaturityMonths(p))
             p.Plan = [new("found", 0, "sect")];
         else return false;
         p.Reason = "자기 실제 직책·금고/개인 재원과 성향으로 공공 작업 제안·권한은 공통 명령에서 재검사";

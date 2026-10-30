@@ -1,0 +1,54 @@
+diff --git a/tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs b/tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs
+new file mode 100644
+index 0000000..0613e18
+--- /dev/null
++++ b/tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs
+@@ -0,0 +1,23 @@
++namespace Chronicles.Game.Tests.Features;
++
++public sealed class InventoryCopyPolicyEquivalenceScenario : IFeatureScenario
++{
++    public string Name => "inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등";
++    public void Run()
++    {
++        Compare(new InventoryOwnedWorldReferenceScenario().Capture(), new InventoryOwnedWorldReferenceScenario(true).Capture(),
++            new InventoryOwnedWorldReferenceScenario(true, true).Capture(), InventoryOwnedWorldReferenceScenario.Baseline);
++        Compare(new InventoryOwnedEcologyReferenceScenario().Capture(), new InventoryOwnedEcologyReferenceScenario(true).Capture(),
++            new InventoryOwnedEcologyReferenceScenario(true, true).Capture(), InventoryOwnedEcologyReferenceScenario.Baseline);
++    }
++
++    private static void Compare(InventoryReferenceTrace strict, InventoryReferenceTrace json, InventoryReferenceTrace typed, string expected)
++    {
++        // Every independently built world must match the pre-captured constant, not another execution's actual digest.
++        strict.AssertFixed(expected); json.AssertFixed(expected); typed.AssertFixed(expected);
++        InventoryFixture.Check(strict.Mode == "strict" && strict.ProjectionSnapshots == 0 && strict.TypedSnapshots == 0 &&
++            json.Mode == "json15" && json.ProjectionSnapshots > 0 && json.TypedSnapshots == 0 &&
++            typed.Mode == "typed15" && typed.ProjectionSnapshots > 0 && typed.TypedSnapshots > 0, "삼자 대조가 실제 서로 다른 복사 경로를 실행하지 않았습니다.");
++        strict.AssertEquivalent(json); strict.AssertEquivalent(typed);
++    }
++}
+diff --git a/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs b/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs
+index e37bd90..e2a4042 100644
+--- a/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs
++++ b/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs
+@@ -8,8 +8,8 @@ public sealed class InventoryOwnedWorldReferenceScenario : IFeatureScenario
+     private readonly bool typedCopy;
+     public InventoryOwnedWorldReferenceScenario() { }
+     internal InventoryOwnedWorldReferenceScenario(bool projected, bool typedCopy = false) { this.projected = projected; this.typedCopy = typedCopy; }
+-    // Captured before changing the private transaction path, at 751e349.
+-    private const string Baseline = "2cef8af882dcd34fec03884184a9fef5c67b8232e77a0e14c022cb84c986eec6";
++    // Independently captured in strict mode at 0680ff7 after #169/#170/#171; the old751 witness is archived unchanged.
++    internal const string Baseline = "ec01b5c4fa2f10268514912f0885f2debbd47a9ad9cc8aec85a8b73a1c311b56";
+     public string Name => "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존";
+ 
+     public void Run() => Capture().AssertFixed(Baseline);
+@@ -69,7 +69,8 @@ public sealed class InventoryOwnedEcologyReferenceScenario : IFeatureScenario
+     public InventoryOwnedEcologyReferenceScenario() { }
+     internal InventoryOwnedEcologyReferenceScenario(bool projected, bool typedCopy = false) { this.projected = projected; this.typedCopy = typedCopy; }
+     // Current ordinary trade, with an explicit commercial personality, must execute private split+offer above reserve3.
+-    private const string Baseline = "8e88d149188b0d0c8a65334ef1827eb0675bcdd3a81602a57bb6e6d48d36f561";
++    // Fixed only after the strict original transcript was saved and committed at a4e1efd.
++    internal const string Baseline = "904c4750ee5f986367f50ca85f8502bf63555a140ea090249eaed114b51133e1";
+     public string Name => "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존";
+     public void Run() => Capture().AssertFixed(Baseline);
+     internal InventoryReferenceTrace Capture()

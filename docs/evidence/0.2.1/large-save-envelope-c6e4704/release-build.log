@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Chronicles.Core -> /workspace/seonro-large-save-9704e95/src/Chronicles.Core/bin/Release/net10.0/Chronicles.Core.dll
+  Chronicles.Game -> /workspace/seonro-large-save-9704e95/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll
+  Chronicles.Hosting -> /workspace/seonro-large-save-9704e95/src/Chronicles.Hosting/bin/Release/net10.0/Chronicles.Hosting.dll
+  Chronicles.Game.Tests -> /workspace/seonro-large-save-9704e95/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:32.46

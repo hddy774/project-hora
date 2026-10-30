@@ -8,8 +8,8 @@ public sealed class InventoryOwnedWorldReferenceScenario : IFeatureScenario
     private readonly bool typedCopy;
     public InventoryOwnedWorldReferenceScenario() { }
     internal InventoryOwnedWorldReferenceScenario(bool projected, bool typedCopy = false) { this.projected = projected; this.typedCopy = typedCopy; }
-    // Independently captured in strict mode at 0680ff7 after #169/#170/#171; the old751 witness is archived unchanged.
-    internal const string Baseline = "ec01b5c4fa2f10268514912f0885f2debbd47a9ad9cc8aec85a8b73a1c311b56";
+    // 최종 규칙5fece454의 독립 strict 원본을 6b37abf에 먼저 보존했다. 이전751/169 근거는 불변이다.
+    internal const string Baseline = "718295d0cfda379974aa14e87d39b3d86578a2c372d1e0beb6434eba6b3ca160";
     public string Name => "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존";
 
     public void Run() => Capture().AssertFixed(Baseline);
@@ -69,8 +69,8 @@ public sealed class InventoryOwnedEcologyReferenceScenario : IFeatureScenario
     public InventoryOwnedEcologyReferenceScenario() { }
     internal InventoryOwnedEcologyReferenceScenario(bool projected, bool typedCopy = false) { this.projected = projected; this.typedCopy = typedCopy; }
     // Current ordinary trade, with an explicit commercial personality, must execute private split+offer above reserve3.
-    // Fixed only after the strict original transcript was saved and committed at a4e1efd.
-    internal const string Baseline = "904c4750ee5f986367f50ca85f8502bf63555a140ea090249eaed114b51133e1";
+    // 최종 strict 원본과 기존 상수의 실패를 6b37abf에 보존한 뒤 명시 재채택했다.
+    internal const string Baseline = "91b47814d83c487797382f3fad308b420f20ab815bbd9b7be14f92059f18802e";
     public string Name => "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존";
     public void Run() => Capture().AssertFixed(Baseline);
     internal InventoryReferenceTrace Capture()

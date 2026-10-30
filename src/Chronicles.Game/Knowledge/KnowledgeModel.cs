@@ -64,7 +64,8 @@ public sealed record KnowledgeActivity(long Id, KnowledgeActivityKind Kind, Know
     int[] Chapters, long StartedMonth, long DueMonth, long EndedMonth, KnowledgeTransmission Transmission,
     KnowledgeAdoption[] Adopted, EditionChapter[] Claims, int[] StudyCredits, KnowledgeRules Rules,
     long TargetItemId, KnowledgeMediumKind TargetKind, int TargetQuality, KnowledgeWritingPayment? Payment,
-    string SourceId, long Revision, string CompletionSourceId, KnowledgePracticeOutcome? PracticeOutcome = null);
+    string SourceId, long Revision, string CompletionSourceId, KnowledgePracticeOutcome? PracticeOutcome = null,
+    KnowledgeInterpretation[]? Interpretations = null);
 public sealed record KnowledgeTimeUse(long PersonId, long StartedMonth, long EndedMonth, long ActivityId);
 public sealed record KnowledgeEvidence(string SourceId, string Kind, long ActorId, long OtherPersonId,
     string WorkId, long EditionId, long ItemId, int[] Chapters, long StartedMonth, long EndedMonth,

@@ -31,6 +31,7 @@ public sealed partial class KnowledgeAuthority
     }
 
     public long Revision => state.Revision;
+    public long Month => state.Month;
     public KnowledgeRules Rules => state.Rules;
     public KnowledgeState Checkpoint() => Clone(state);
 
@@ -58,7 +59,7 @@ public sealed partial class KnowledgeAuthority
     {
         var error = SourceError(sourceId, month);
         if (error is not null) return error;
-        if (!works.TryGetValue(workId, out var work)) return Reject(KnowledgeStatus.NotFound, "Unknown work.");
+        if (!ValidText(workId) || !works.TryGetValue(workId, out var work)) return Reject(KnowledgeStatus.NotFound, "Unknown work.");
         if (!Enum.IsDefined(relation) || contributorId <= 0 || month < work.CreatedMonth || !ValidEditionChapters(work, chapters))
             return Reject(KnowledgeStatus.Invalid, "Invalid edition chapters or contributor.");
         if (relation == EditionRelation.Original ? parentEditionId != 0 :
@@ -134,7 +135,7 @@ public sealed partial class KnowledgeAuthority
         var error = SourceError(sourceId, 0);
         if (error is not null) return error;
         if (!editions.TryGetValue(editionId, out var edition)) return Reject(KnowledgeStatus.NotFound, "Unknown edition.");
-        if (personId <= 0 || edition.CreatedMonth != 0 || !ValidSelection(edition, chapters) || comprehension is < 0 or > 100 ||
+        if (personId <= 0 || edition.CreatedMonth != 0 || state.Activities.Count != 0 || !ValidSelection(edition, chapters) || comprehension is < 0 or > 100 ||
             chapters.Any(c => memories.ContainsKey((personId, edition.WorkId, c))))
             return Reject(KnowledgeStatus.Invalid, "Initial knowledge requires explicit, previously unlearned genesis chapters.");
         foreach (var chapter in chapters.Order())
@@ -159,7 +160,7 @@ public sealed partial class KnowledgeAuthority
     }
 
     public PersonalKnowledge? FindKnowledge(long personId, string workId, int chapter) =>
-        memories.GetValueOrDefault((personId, workId, chapter));
+        ValidText(workId) ? memories.GetValueOrDefault((personId, workId, chapter)) : null;
 
     public KnowledgeAdoption? Adopt(long personId, string workId, int chapter, long expectedRevision = 0)
     {
@@ -169,13 +170,8 @@ public sealed partial class KnowledgeAuthority
             mastery.GetValueOrDefault((personId, workId, chapter))?.Mastery ?? 0, memory.Belief);
     }
 
-    public KnowledgeAdoption? FindAdoptedRevision(long personId, string workId, int chapter, long revision)
-    {
-        var memory = state.Memories.Find(m => m.PersonId == personId && m.WorkId == workId &&
-            m.Chapter == chapter && m.Revision == revision);
-        return memory is null ? null : new(personId, workId, chapter, memory.EditionId, memory.Revision,
-            memory.Claim, memory.Comprehension, 0, memory.Belief);
-    }
+    public PersonalKnowledge? FindPersonalRevision(long personId, string workId, int chapter, long revision) =>
+        state.Memories.Find(m => m.PersonId == personId && m.WorkId == workId && m.Chapter == chapter && m.Revision == revision);
 
     private KnowledgeResult? SourceError(string sourceId, long month)
     {

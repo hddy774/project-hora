@@ -120,7 +120,7 @@ public sealed class KnowledgeCorrectionScenario : IFeatureScenario
         var revised = a.FindKnowledge(1, KnowledgeFixture.Work, 1)!;
         KnowledgeFixture.Check(revised.Belief == KnowledgeBelief.Corrected && revised.Claim == "먼저 여과한다" && revised.PreviousRevision == contradicted.Revision,
             "Correction did not preserve the personal revision chain.");
-        KnowledgeFixture.Check(frozen.Claim == "먼저 가열한다" && a.FindAdoptedRevision(1, KnowledgeFixture.Work, 1, frozen.PersonalRevision)?.Claim == frozen.Claim,
+        KnowledgeFixture.Check(frozen.Claim == "먼저 가열한다" && a.FindPersonalRevision(1, KnowledgeFixture.Work, 1, frozen.PersonalRevision)?.Claim == frozen.Claim,
             "A previously adopted execution source was rewritten.");
         KnowledgeFixture.Check(a.FindKnowledge(1, KnowledgeFixture.Work, 2) is null && a.ViewPersonal(1).Rows.Single().Mastery == 0,
             "Correction awarded unread chapters or practical mastery.");
@@ -300,6 +300,24 @@ public sealed class KnowledgeSaveValidationScenario : IFeatureScenario
             catch (InvalidDataException) { rejected = true; }
             KnowledgeFixture.Check(rejected, "Corrupted knowledge save was accepted.");
         }
+        var studied = KnowledgeFixture.Fresh();
+        KnowledgeFixture.Study(studied, 101, [1], 0, 1, "timed-reading");
+        Action<KnowledgeState>[] readingCorruptions =
+        [
+            s => s.Memories[0] = s.Memories[0] with { Comprehension = 100 },
+            s => s.Memories[0] = s.Memories[0] with { Claim = "unlearned replacement" },
+            s => s.Memories.Clear(),
+            s => s.Activities[0].StudyCredits[0] = 99
+        ];
+        foreach (var corrupt in readingCorruptions)
+        {
+            var state = studied.Checkpoint();
+            corrupt(state);
+            var rejected = false;
+            try { KnowledgeAuthority.Restore(state); }
+            catch (InvalidDataException) { rejected = true; }
+            KnowledgeFixture.Check(rejected, "A save fabricated or removed the output of a real learning action.");
+        }
     }
 }
 
@@ -357,6 +375,76 @@ public sealed class KnowledgeRuleRevisionScenario : IFeatureScenario
         var next = request with { SourceId = "next", TargetItemId = 501, Month = 1, Payment = new("new-payment", 501, 201, 2, 202, 3) };
         var second = KnowledgeFixture.Ok(a.StartTranscription(next));
         KnowledgeFixture.Check(a.FindActivity(second)?.DueMonth == 3, "New action used old duration.");
+        KnowledgeFixture.RoundTrip(a);
+    }
+}
+
+public sealed class KnowledgeMixedEditionTeachingScenario : IFeatureScenario
+{
+    public string Name => "INV-004/024 knowledge: mixed-edition oral teaching preserves each source and surviving transmission rights";
+    public void Run()
+    {
+        var a = KnowledgeFixture.Fresh();
+        var first = KnowledgeFixture.Ok(a.CreateEdition(KnowledgeFixture.Work, 1, EditionRelation.Summary, 1,
+            [new(1, "정제에 관한 주석")], 0, "first-summary"));
+        var second = KnowledgeFixture.Ok(a.CreateEdition(KnowledgeFixture.Work, 1, EditionRelation.Summary, 1,
+            [new(2, "보관에 관한 주석")], 0, "second-summary"));
+        KnowledgeFixture.Ok(a.BindMedium(102, first, 1, 0, KnowledgeMediumKind.JadeSlip, 1, KnowledgeRights.Teach, [], false, 0, "first-slip"));
+        KnowledgeFixture.Ok(a.BindMedium(103, second, 1, 0, KnowledgeMediumKind.Inscription, 2, KnowledgeRights.Teach, [], false, 0, "second-stone"));
+        KnowledgeFixture.Ok(a.SeedInitialKnowledge(1, first, [1], 100, "initial-first"));
+        KnowledgeFixture.Ok(a.SeedInitialKnowledge(1, second, [2], 100, "initial-second"));
+        KnowledgeFixture.Ok(a.SynchronizeMedium(102, 1, 0, 1, [], true, true, 0, "lost-slip"));
+        var lesson = KnowledgeFixture.Ok(a.StartTeaching(new("mixed-lesson", KnowledgeFixture.One, KnowledgeFixture.Two,
+            KnowledgeFixture.Work, [1, 2], KnowledgeTransmission.Mentor, 0, 4)));
+        a = KnowledgeFixture.RoundTrip(a);
+        KnowledgeFixture.Ok(a.Complete(new("mixed-lesson.done", lesson, 4, [KnowledgeFixture.One, KnowledgeFixture.Two])));
+        KnowledgeFixture.Check(a.FindKnowledge(2, KnowledgeFixture.Work, 1)?.EditionId == first &&
+            a.FindKnowledge(2, KnowledgeFixture.Work, 2)?.EditionId == second && a.Checkpoint().Mastery.Count == 0,
+            "Mixed teaching lost individual edition sources or awarded mastery.");
+        KnowledgeFixture.RoundTrip(a);
+    }
+}
+
+public sealed class KnowledgeCancelledTargetReuseScenario : IFeatureScenario
+{
+    public string Name => "INV-004/024 knowledge: an interrupted blank medium can be reused only with new paid inputs";
+    public void Run()
+    {
+        var a = KnowledgeFixture.Fresh();
+        var first = KnowledgeFixture.Ok(a.StartTranscription(KnowledgeFixture.Copy()));
+        KnowledgeFixture.Ok(a.Cancel(first, 0, "cancel-before-writing"));
+        var next = KnowledgeFixture.Ok(a.StartTranscription(KnowledgeFixture.Copy("new-copy", receipt: "new-payment")));
+        a = KnowledgeFixture.RoundTrip(a);
+        KnowledgeFixture.Ok(a.Complete(new("new-copy.done", next, 2, [KnowledgeFixture.One])));
+        KnowledgeFixture.Check(a.Checkpoint().Media.Count(m => m.ItemId == 500) == 1 && a.Checkpoint().Evidence.Count(e => e.Kind == "writing-payment") == 2,
+            "Reused physical target duplicated its output or reused spent writing inputs.");
+        KnowledgeFixture.RoundTrip(a);
+    }
+}
+
+public sealed class KnowledgeAccessScenario : IFeatureScenario
+{
+    public string Name => "INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding";
+    public void Run()
+    {
+        var a = KnowledgeFixture.Fresh();
+        KnowledgeFixture.Ok(a.GrantAccess(101, 1, 2, KnowledgeRights.Read, 1, 0, "short-reading"));
+        KnowledgeFixture.Rejected(a, KnowledgeStatus.Forbidden, () => a.StartTranscription(KnowledgeFixture.Copy() with { Scribe = KnowledgeFixture.Two }));
+        var expired = KnowledgeFixture.Ok(a.StartStudy(new("short-study", KnowledgeFixture.Two, 101, [1], 0, 1)));
+        KnowledgeFixture.Rejected(a, KnowledgeStatus.Unavailable, () => a.Complete(new("expired", expired, 1, [KnowledgeFixture.Two])));
+        KnowledgeFixture.Ok(a.Cancel(expired, 1, "expired-cancel"));
+        KnowledgeFixture.Ok(a.GrantAccess(101, 1, 2, KnowledgeRights.Read | KnowledgeRights.Copy, 4, 1, "long-reading"));
+        var reading = KnowledgeFixture.Ok(a.StartStudy(new("pupil-study", KnowledgeFixture.Two, 101, [1], 1, 1)));
+        KnowledgeFixture.Ok(a.Complete(new("pupil-study.done", reading, 2, [KnowledgeFixture.Two])));
+        KnowledgeFixture.Rejected(a, KnowledgeStatus.Forbidden, () => a.StartTeaching(new("unlicensed-teaching", KnowledgeFixture.Two,
+            KnowledgeFixture.One, KnowledgeFixture.Work, [1], KnowledgeTransmission.Peer, 2, 2)));
+        KnowledgeFixture.Ok(a.GrantAccess(101, 1, 2, KnowledgeRights.Teach, 5, 2, "transmission-license"));
+        var lesson = KnowledgeFixture.Ok(a.StartTeaching(new("licensed-teaching", KnowledgeFixture.Two, KnowledgeFixture.One,
+            KnowledgeFixture.Work, [1], KnowledgeTransmission.Peer, 2, 2)));
+        a = KnowledgeFixture.RoundTrip(a);
+        KnowledgeFixture.Ok(a.Complete(new("licensed-teaching.done", lesson, 4, [KnowledgeFixture.One, KnowledgeFixture.Two])));
+        KnowledgeFixture.Check(a.FindKnowledge(1, KnowledgeFixture.Work, 1)?.Comprehension == 50 && a.ViewPersonal(1).Rows.Single().Mastery == 0,
+            "Oral teaching exceeded the source teacher's understanding or granted practical mastery.");
         KnowledgeFixture.RoundTrip(a);
     }
 }

@@ -19,7 +19,8 @@ public sealed partial class KnowledgeAuthority
         long month = 0;
         foreach (var row in snapshot.Evidence)
         {
-            Require(row is not null && ValidText(row.SourceId) && ValidText(row.Kind) && row.ActorId >= 0 && row.OtherPersonId >= 0 &&
+            Require(row is not null && ValidText(row.SourceId) && ValidText(row.Kind) && row.WorkId is not null &&
+                row.Detail is not null && row.Detail.Length <= 4096 && row.ActorId >= 0 && row.OtherPersonId >= 0 &&
                 row.StartedMonth >= 0 && row.EndedMonth >= row.StartedMonth && row.EndedMonth <= snapshot.Month &&
                 row.EndedMonth >= month && row.Revision > 0 && row.Revision <= snapshot.Revision &&
                 (row.Revision == revision || revision < long.MaxValue && row.Revision == revision + 1) &&
@@ -42,7 +43,7 @@ public sealed partial class KnowledgeAuthority
         foreach (var edition in snapshot.Editions)
         {
             Require(edition is not null && edition.Id > 0 && edition.Id < snapshot.NextId && allocated.Add(edition.Id) &&
-                editionsById.TryAdd(edition.Id, edition) && worksById.ContainsKey(edition.WorkId) && edition.ContributorId > 0 &&
+                editionsById.TryAdd(edition.Id, edition) && ValidText(edition.WorkId) && worksById.ContainsKey(edition.WorkId) && edition.ContributorId > 0 &&
                 Enum.IsDefined(edition.Relation) && edition.CreatedMonth >= worksById[edition.WorkId].CreatedMonth &&
                 edition.CreatedMonth <= snapshot.Month && ValidEditionChapters(worksById[edition.WorkId], edition.Chapters),
                 "Invalid knowledge edition.");
@@ -91,7 +92,7 @@ public sealed partial class KnowledgeAuthority
         var current = new Dictionary<(long Person, string Work, int Chapter), PersonalKnowledge>();
         foreach (var memory in snapshot.Memories)
         {
-            Require(memory is not null && memory.PersonId > 0 && worksById.ContainsKey(memory.WorkId) &&
+            Require(memory is not null && memory.PersonId > 0 && ValidText(memory.WorkId) && worksById.ContainsKey(memory.WorkId) &&
                 editionsById.TryGetValue(memory.EditionId, out var edition) && edition.WorkId == memory.WorkId &&
                 edition.Chapters.Any(c => c.Number == memory.Chapter) && ValidText(memory.Claim) && memory.StudyMonths >= 0 &&
                 memory.Decoding is >= 0 and <= 100 && memory.Comprehension is >= 0 and <= 100 && memory.Confidence is >= 0 and <= 100 &&
@@ -112,13 +113,18 @@ public sealed partial class KnowledgeAuthority
             current[key] = memory;
         }
         var activitiesById = new Dictionary<long, KnowledgeActivity>();
+        var endingSources = new HashSet<string>(StringComparer.Ordinal);
         foreach (var activity in snapshot.Activities)
         {
             Require(activity is not null && activity.Id > 0 && activity.Id < snapshot.NextId && allocated.Add(activity.Id) &&
                 activitiesById.TryAdd(activity.Id, activity) && Enum.IsDefined(activity.Kind) && Enum.IsDefined(activity.Status) &&
-                activity.ActorId > 0 && activity.Place >= 0 && worksById.ContainsKey(activity.WorkId) &&
+                activity.ActorId > 0 && activity.Place >= 0 && ValidText(activity.WorkId) && worksById.ContainsKey(activity.WorkId) &&
                 editionsById.TryGetValue(activity.EditionId, out var edition) && edition.WorkId == activity.WorkId &&
-                ValidSelection(edition, activity.Chapters) && activity.StartedMonth >= edition.CreatedMonth && activity.StartedMonth <= snapshot.Month &&
+                activity.Chapters is not null && activity.Chapters.Length is >= 1 and <= 256 &&
+                activity.Chapters.Distinct().Count() == activity.Chapters.Length &&
+                activity.Chapters.All(c => worksById[activity.WorkId].Chapters.Any(p => p.Number == c)) &&
+                (activity.Kind == KnowledgeActivityKind.Teaching || ValidSelection(edition, activity.Chapters)) &&
+                activity.StartedMonth >= edition.CreatedMonth && activity.StartedMonth <= snapshot.Month &&
                 activity.DueMonth > activity.StartedMonth && activity.Rules is not null && ValidRules(activity.Rules) &&
                 activity.DueMonth - activity.StartedMonth <= activity.Rules.MaximumActionMonths &&
                 activity.DueMonth - activity.StartedMonth >= activity.Chapters.Length && Enum.IsDefined(activity.Transmission) &&
@@ -129,17 +135,22 @@ public sealed partial class KnowledgeAuthority
                 source.OtherPersonId == activity.TeacherId && source.EndedMonth == activity.StartedMonth &&
                 source.Chapters.SequenceEqual(activity.Chapters), "Activity has no matching start evidence.");
             if (activity.Status == KnowledgeActivityStatus.Active)
-                Require(activity.EndedMonth == 0 && activity.CompletionSourceId == "" && activity.PracticeOutcome is null &&
+                Require(activity.EndedMonth == 0 && activity.CompletionSourceId == "" && activity.PracticeOutcome is null && activity.Interpretations is null &&
                     activity.Revision == source.Revision, "An active activity cannot have completion evidence.");
             else
             {
                 var end = Evidence(evidence, activity.CompletionSourceId);
-                Require(activity.EndedMonth >= activity.StartedMonth && activity.EndedMonth <= snapshot.Month &&
+                Require(endingSources.Add(activity.CompletionSourceId) && activity.EndedMonth >= activity.StartedMonth && activity.EndedMonth <= snapshot.Month &&
                     end.EndedMonth == activity.EndedMonth && end.StartedMonth == activity.StartedMonth &&
                     end.ActorId == activity.ActorId && end.Revision == activity.Revision &&
                     (activity.Status == KnowledgeActivityStatus.Cancelled ? end.Kind == "interrupted" && activity.PracticeOutcome is null :
                         end.Kind == activity.Kind.ToString() && activity.EndedMonth >= activity.DueMonth), "Invalid activity completion evidence.");
             }
+            if (activity.Interpretations is not null)
+                Require(activity.Status == KnowledgeActivityStatus.Completed && activity.Kind is KnowledgeActivityKind.Study or KnowledgeActivityKind.Teaching &&
+                    activity.Interpretations.All(i => i is not null && activity.Chapters.Contains(i.Chapter) && ValidText(i.Claim) && i.Confidence is >= 0 and <= 100) &&
+                    activity.Interpretations.Select(i => i.Chapter).Distinct().Count() == activity.Interpretations.Length,
+                    "Only completed learning can contain personal interpretations of learned chapters.");
             Require(activity.TeacherId == 0 || activity.Kind == KnowledgeActivityKind.Teaching && activity.TeacherId > 0 &&
                 activity.TeacherId != activity.ActorId, "Invalid teaching participant.");
             if (activity.Kind is KnowledgeActivityKind.Study or KnowledgeActivityKind.Transcription)
@@ -147,11 +158,20 @@ public sealed partial class KnowledgeAuthority
                     "Physical learning activity has no matching medium.");
             else Require(activity.MediumItemId == 0, "Oral teaching/practice cannot invent a physical source.");
             if (activity.Kind is KnowledgeActivityKind.Study or KnowledgeActivityKind.Teaching or KnowledgeActivityKind.Transcription)
-                Require(activity.Claims.Length == activity.Chapters.Length && activity.Claims.Select(c => c.Number).SequenceEqual(activity.Chapters) &&
-                    activity.Claims.All(c => c is not null && ValidText(c.Claim)), "Activity claims do not match selected chapters.");
+                Require(activity.Claims.Length == activity.Chapters.Length && activity.Claims.All(c => c is not null && ValidText(c.Claim)) &&
+                    activity.Claims.Select(c => c.Number).SequenceEqual(activity.Chapters), "Activity claims do not match selected chapters.");
             else Require(activity.Claims.Length == 0, "Practice cannot create new textual claims.");
             if (activity.Kind is KnowledgeActivityKind.Study or KnowledgeActivityKind.Teaching)
+            {
                 Require(activity.StudyCredits.Length == activity.Chapters.Length && activity.StudyCredits.All(c => c >= 0), "Invalid study credit snapshot.");
+                for (var i = 0; i < activity.Chapters.Length; i++)
+                {
+                    var previous = snapshot.Memories.FindLast(m => m.PersonId == activity.ActorId && m.WorkId == activity.WorkId &&
+                        m.Chapter == activity.Chapters[i] && m.Revision < source.Revision);
+                    Require(activity.StudyCredits[i] == (previous?.Claim == activity.Claims[i].Claim ? previous.StudyMonths : 0),
+                        "Study credits cannot be created or borrowed from future knowledge.");
+                }
+            }
             else Require(activity.StudyCredits.Length == 0, "Non-learning action cannot carry study credits.");
             if (activity.Kind == KnowledgeActivityKind.Teaching)
                 Require(activity.TeacherId > 0 && activity.Adopted.Length == activity.Chapters.Length, "Teaching needs the teacher's personal revisions.");
@@ -163,9 +183,20 @@ public sealed partial class KnowledgeAuthority
                     memoryByRevision.TryGetValue((adoption.PersonId, adoption.WorkId, adoption.Chapter, adoption.PersonalRevision), out var memory) &&
                     memory.Claim == adoption.Claim && memory.EditionId == adoption.EditionId && memory.Comprehension == adoption.Comprehension &&
                     memory.Belief == adoption.Belief && memory.LearnedMonth <= activity.StartedMonth && memory.Revision < source.Revision &&
-                    adoption.Mastery is >= 0 and <= 100 && adoption.Comprehension >= (activity.Kind == KnowledgeActivityKind.Teaching ?
+                    !snapshot.Memories.Any(m => m.PersonId == adoption.PersonId && m.WorkId == adoption.WorkId && m.Chapter == adoption.Chapter &&
+                        m.Revision > adoption.PersonalRevision && m.Revision < source.Revision) &&
+                    adoption.Mastery == (snapshot.Mastery.FindLast(s => s.PersonId == adoption.PersonId && s.WorkId == adoption.WorkId &&
+                        s.Chapter == adoption.Chapter && s.Revision < source.Revision)?.Mastery ?? 0) &&
+                    adoption.Comprehension >= (activity.Kind == KnowledgeActivityKind.Teaching ?
                         activity.Rules.TeachingMinimumComprehension : activity.Rules.PracticeMinimumComprehension), "Invalid personal revision adoption.");
             }
+            if (activity.Kind == KnowledgeActivityKind.Teaching)
+                Require(activity.Adopted.Select(a => a.Chapter).SequenceEqual(activity.Chapters) &&
+                    activity.Claims.Select(c => c.Claim).SequenceEqual(activity.Adopted.Select(a => a.Claim)) &&
+                    activity.EditionId == activity.Adopted[0].EditionId, "Oral teaching must use the teacher's adopted interpretations.");
+            if (activity.Kind == KnowledgeActivityKind.Study)
+                Require(activity.Claims.All(c => editionsById[activity.EditionId].Chapters.Any(p => p.Number == c.Number && p.Claim == c.Claim)),
+                    "Reading must retain the claims of the adopted physical edition.");
             if (activity.Kind == KnowledgeActivityKind.Transcription)
             {
                 var payment = activity.Payment;
@@ -187,9 +218,11 @@ public sealed partial class KnowledgeAuthority
                 if (activity.Status == KnowledgeActivityStatus.Completed)
                     Require(mediaById.TryGetValue(activity.TargetItemId, out var copied) &&
                         editionsById[copied.EditionId].ParentEditionId == activity.EditionId &&
-                        editionsById[copied.EditionId].SourceId == activity.CompletionSourceId,
+                        editionsById[copied.EditionId].SourceId == activity.CompletionSourceId &&
+                        editionsById[copied.EditionId].Chapters.SequenceEqual(activity.Claims),
                         "Completed transcription has no real output medium and copy lineage.");
-                else Require(!mediaById.ContainsKey(activity.TargetItemId), "Unfinished transcription has already minted its physical output.");
+                else if (activity.Status == KnowledgeActivityStatus.Active)
+                    Require(!mediaById.ContainsKey(activity.TargetItemId), "Active transcription has already minted its physical output.");
             }
             else Require(activity.Payment is null && activity.TargetItemId == 0, "Only transcription can spend writing inputs.");
             if (activity.Kind == KnowledgeActivityKind.Practice && activity.Status == KnowledgeActivityStatus.Completed)
@@ -204,6 +237,7 @@ public sealed partial class KnowledgeAuthority
             }
             else Require(activity.PracticeOutcome is null, "An unperformed activity cannot retain a practice outcome.");
         }
+        ValidateLearningOutputs(snapshot, evidence, worksById, editionsById);
         Require(allocated.Count == snapshot.NextId - 1, "Knowledge identity cursor cannot have holes or reuse.");
         var activeTargets = snapshot.Activities.Where(a => a.Status == KnowledgeActivityStatus.Active && a.TargetItemId > 0).Select(a => a.TargetItemId).ToArray();
         Require(activeTargets.Distinct().Count() == activeTargets.Length, "A target medium is reserved twice.");
@@ -230,7 +264,7 @@ public sealed partial class KnowledgeAuthority
         var previousSkills = new Dictionary<(long Person, string Work, int Chapter), PracticalKnowledge>();
         foreach (var skill in snapshot.Mastery)
         {
-            Require(skill is not null && skill.PersonId > 0 && worksById.ContainsKey(skill.WorkId) &&
+            Require(skill is not null && skill.PersonId > 0 && ValidText(skill.WorkId) && worksById.ContainsKey(skill.WorkId) &&
                 worksById[skill.WorkId].Chapters.Any(c => c.Number == skill.Chapter) && skill.PracticeMonths > 0 && skill.Mastery is >= 0 and <= 100,
                 "Invalid practical mastery record.");
             var source = Evidence(evidence, skill.SourceId);
@@ -245,6 +279,60 @@ public sealed partial class KnowledgeAuthority
                     worksById[skill.WorkId].Chapters.Single(c => c.Number == skill.Chapter).PracticeMonths),
                 "Practical mastery is not backed by successful, timed practice.");
             previousSkills[key] = skill;
+        }
+        Require(snapshot.Mastery.Count == snapshot.Activities.Count(a => a.Status == KnowledgeActivityStatus.Completed &&
+            a.Kind == KnowledgeActivityKind.Practice && a.PracticeOutcome!.Successful), "Successful practice is missing its mastery record.");
+    }
+
+    private static void ValidateLearningOutputs(KnowledgeState snapshot, Dictionary<string, KnowledgeEvidence> evidence,
+        Dictionary<string, KnowledgeWork> worksById, Dictionary<long, KnowledgeEdition> editionsById)
+    {
+        var completions = snapshot.Activities.Where(a => a.Status == KnowledgeActivityStatus.Completed)
+            .ToDictionary(a => a.CompletionSourceId, StringComparer.Ordinal);
+        var previous = new Dictionary<(long Person, string Work, int Chapter), PersonalKnowledge>();
+        foreach (var memory in snapshot.Memories)
+        {
+            var key = (memory.PersonId, memory.WorkId, memory.Chapter);
+            var before = previous.GetValueOrDefault(key);
+            var source = evidence[memory.SourceId];
+            if (source.Kind == "genesis-knowledge")
+                Require(before is null && memory.Claim == editionsById[memory.EditionId].Chapters.Single(c => c.Number == memory.Chapter).Claim &&
+                    memory.Confidence == 50 && memory.Belief == KnowledgeBelief.Unverified && memory.Decoding == (memory.Comprehension > 0 ? 100 : 0) &&
+                    !snapshot.Activities.Any(a => evidence[a.SourceId].Revision < memory.Revision), "Invalid genesis knowledge grant.");
+            else
+            {
+                Require(completions.TryGetValue(memory.SourceId, out var activity), "Personal knowledge has no completed learning process.");
+                if (activity.Kind is KnowledgeActivityKind.Study or KnowledgeActivityKind.Teaching)
+                {
+                    var chapterIndex = Array.IndexOf(activity.Chapters, memory.Chapter);
+                    Require(chapterIndex >= 0 && memory == LearningResult(activity, worksById[memory.WorkId], chapterIndex,
+                        before, activity.EndedMonth, activity.Revision, activity.CompletionSourceId),
+                        "Personal comprehension or interpretation is not backed by the completed learning action.");
+                }
+                else
+                {
+                    var outcome = activity.PracticeOutcome;
+                    Require(activity.Kind == KnowledgeActivityKind.Practice && before is not null && outcome is not null &&
+                        outcome.TestResult != KnowledgeTestResult.None && memory == before with
+                        {
+                            Belief = outcome.TestResult == KnowledgeTestResult.SupportsClaim ? KnowledgeBelief.Supported : KnowledgeBelief.Contradicted,
+                            Confidence = outcome.TestResult == KnowledgeTestResult.SupportsClaim ? 90 : 10,
+                            PreviousRevision = before.Revision, Revision = activity.Revision,
+                            LearnedMonth = activity.EndedMonth, SourceId = activity.CompletionSourceId
+                        }, "A verification cannot invent knowledge or silently supply the right answer.");
+                }
+            }
+            previous[key] = memory;
+        }
+        foreach (var source in snapshot.Evidence.Where(e => e.Kind == "genesis-knowledge"))
+            Require(snapshot.Memories.Count(m => m.SourceId == source.SourceId) == source.Chapters.Length,
+                "Genesis knowledge is missing its explicit chapter records.");
+        foreach (var activity in completions.Values)
+        {
+            var expected = activity.Kind is KnowledgeActivityKind.Study or KnowledgeActivityKind.Teaching ? activity.Chapters.Length :
+                activity.Kind == KnowledgeActivityKind.Practice && activity.PracticeOutcome!.TestResult != KnowledgeTestResult.None ? 1 : 0;
+            Require(snapshot.Memories.Count(m => m.SourceId == activity.CompletionSourceId) == expected,
+                "A completed knowledge action is missing or duplicating its personal output.");
         }
     }
 
@@ -280,7 +368,8 @@ public sealed partial class KnowledgeAuthority
         Chapters = activity.Chapters.ToArray(), Adopted = activity.Adopted.Select(a => a with { }).ToArray(),
         Claims = activity.Claims.Select(c => c with { }).ToArray(), StudyCredits = activity.StudyCredits.ToArray(),
         Rules = activity.Rules with { }, Payment = activity.Payment is null ? null : activity.Payment with { },
-        PracticeOutcome = activity.PracticeOutcome is null ? null : activity.PracticeOutcome with { }
+        PracticeOutcome = activity.PracticeOutcome is null ? null : activity.PracticeOutcome with { },
+        Interpretations = activity.Interpretations?.Select(i => i with { }).ToArray()
     };
 
     private static KnowledgeState Clone(KnowledgeState snapshot) => new()

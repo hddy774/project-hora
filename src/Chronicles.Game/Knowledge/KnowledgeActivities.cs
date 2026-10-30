@@ -27,7 +27,7 @@ public sealed partial class KnowledgeAuthority
         ArgumentNullException.ThrowIfNull(request);
         var error = SourceError(request.SourceId, request.Month);
         if (error is not null) return error;
-        if (!works.TryGetValue(request.WorkId, out var work)) return Reject(KnowledgeStatus.NotFound, "Unknown work.");
+        if (!ValidText(request.WorkId) || !works.TryGetValue(request.WorkId, out var work)) return Reject(KnowledgeStatus.NotFound, "Unknown work.");
         error = LearningWindow(request.Pupil, request.Month, request.Months, request.Chapters);
         if (error is not null) return error;
         if (!ValidParticipant(request.Teacher) || request.Teacher.PersonId == request.Pupil.PersonId ||
@@ -110,7 +110,8 @@ public sealed partial class KnowledgeAuthority
         if (!activities.TryGetValue(request.ActivityId, out var activity)) return Reject(KnowledgeStatus.NotFound, "Unknown activity.");
         if (activity.Status != KnowledgeActivityStatus.Active) return Reject(KnowledgeStatus.Invalid, "Activity has already ended.");
         if (request.Month < activity.DueMonth) return Reject(KnowledgeStatus.TooEarly, "Actual action time has not elapsed.");
-        if (request.Participants is null || request.Participants.Select(p => p.PersonId).Distinct().Count() != request.Participants.Length ||
+        if (request.Participants is null || request.Participants.Length != (activity.TeacherId > 0 ? 2 : 1) ||
+            request.Participants.Select(p => p.PersonId).Distinct().Count() != request.Participants.Length ||
             !Participants(activity).All(id => request.Participants.Any(p => p.PersonId == id && ValidParticipant(p) && p.Place == activity.Place)))
             return Reject(KnowledgeStatus.Unavailable, "Every participant must still be able to finish at the action's place.");
         if (activity.Kind is KnowledgeActivityKind.Study or KnowledgeActivityKind.Transcription &&
@@ -136,7 +137,8 @@ public sealed partial class KnowledgeAuthority
         else if (activity.Kind == KnowledgeActivityKind.Transcription) CompleteTranscription(activity, request);
         else CompletePractice(activity, request);
         ReplaceActivity(activity with { Status = KnowledgeActivityStatus.Completed, EndedMonth = request.Month,
-            Revision = state.Revision + 1, CompletionSourceId = request.SourceId, PracticeOutcome = request.Practice });
+            Revision = state.Revision + 1, CompletionSourceId = request.SourceId, PracticeOutcome = request.Practice,
+            Interpretations = request.Interpretations?.Select(i => i with { }).ToArray() });
         Commit(request.SourceId, activity.Kind.ToString(), activity.ActorId, activity.TeacherId, activity.WorkId,
             activity.EditionId, activity.MediumItemId, activity.Chapters, activity.StartedMonth, request.Month,
             activity.Adopted.Length == 1 ? activity.Adopted[0].PersonalRevision : 0,
@@ -219,26 +221,31 @@ public sealed partial class KnowledgeAuthority
     private void CompleteLearning(KnowledgeActivity activity, CompleteKnowledgeRequest request)
     {
         var work = works[activity.WorkId];
-        var elapsed = (int)(activity.DueMonth - activity.StartedMonth);
+        var interpreted = activity with { Interpretations = request.Interpretations };
         for (var i = 0; i < activity.Chapters.Length; i++)
-        {
-            var chapter = activity.Chapters[i];
-            var interpretation = request.Interpretations?.SingleOrDefault(p => p.Chapter == chapter);
-            var claim = interpretation?.Claim ?? activity.Claims[i].Claim;
-            var previous = FindKnowledge(activity.ActorId, activity.WorkId, chapter);
-            var credits = claim == activity.Claims[i].Claim ? activity.StudyCredits[i] : previous?.Claim == claim ? previous.StudyMonths : 0;
-            var months = (int)Math.Min(int.MaxValue, (long)credits + elapsed / activity.Chapters.Length +
-                (i < elapsed % activity.Chapters.Length ? 1 : 0));
-            var cap = activity.Kind == KnowledgeActivityKind.Teaching ? activity.Adopted[i].Comprehension : 100;
-            var comprehension = (int)Math.Min(cap, (long)months * 100 / work.Chapters.Single(c => c.Number == chapter).StudyMonths);
-            if (previous?.Claim == claim) comprehension = Math.Max(previous.Comprehension, comprehension);
-            var belief = previous?.Claim == claim ? previous.Belief :
-                previous?.Belief == KnowledgeBelief.Contradicted ? KnowledgeBelief.Corrected : KnowledgeBelief.Unverified;
-            AppendMemory(new(activity.ActorId, activity.WorkId, chapter,
-                activity.Kind == KnowledgeActivityKind.Teaching ? activity.Adopted[i].EditionId : activity.EditionId,
-                claim, months, 100, comprehension, interpretation?.Confidence ?? (previous?.Claim == claim ? previous.Confidence : 50), belief,
-                previous?.Revision ?? 0, state.Revision + 1, request.Month, request.SourceId));
-        }
+            AppendMemory(LearningResult(interpreted, work, i, FindKnowledge(activity.ActorId, activity.WorkId, activity.Chapters[i]),
+                request.Month, state.Revision + 1, request.SourceId));
+    }
+
+    private static PersonalKnowledge LearningResult(KnowledgeActivity activity, KnowledgeWork work, int index,
+        PersonalKnowledge? previous, long month, long revision, string sourceId)
+    {
+        var elapsed = (int)(activity.DueMonth - activity.StartedMonth);
+        var chapter = activity.Chapters[index];
+        var interpretation = activity.Interpretations?.SingleOrDefault(p => p.Chapter == chapter);
+        var claim = interpretation?.Claim ?? activity.Claims[index].Claim;
+        var credits = claim == activity.Claims[index].Claim ? activity.StudyCredits[index] : previous?.Claim == claim ? previous.StudyMonths : 0;
+        var months = (int)Math.Min(int.MaxValue, (long)credits + elapsed / activity.Chapters.Length +
+            (index < elapsed % activity.Chapters.Length ? 1 : 0));
+        var cap = activity.Kind == KnowledgeActivityKind.Teaching ? activity.Adopted[index].Comprehension : 100;
+        var comprehension = (int)Math.Min(cap, (long)months * 100 / work.Chapters.Single(c => c.Number == chapter).StudyMonths);
+        if (previous?.Claim == claim) comprehension = Math.Max(previous.Comprehension, comprehension);
+        var belief = previous?.Claim == claim ? previous.Belief :
+            previous?.Belief == KnowledgeBelief.Contradicted ? KnowledgeBelief.Corrected : KnowledgeBelief.Unverified;
+        return new(activity.ActorId, activity.WorkId, chapter,
+            activity.Kind == KnowledgeActivityKind.Teaching ? activity.Adopted[index].EditionId : activity.EditionId,
+            claim, months, 100, comprehension, interpretation?.Confidence ?? (previous?.Claim == claim ? previous.Confidence : 50), belief,
+            previous?.Revision ?? 0, revision, month, sourceId);
     }
 
     private void CompleteTranscription(KnowledgeActivity activity, CompleteKnowledgeRequest request)
@@ -260,6 +267,7 @@ public sealed partial class KnowledgeAuthority
         if (outcome is null || !outcome.Performed || outcome.PersonId != activity.ActorId ||
             outcome.AdoptedRevision != adopted.PersonalRevision || !ValidText(outcome.ProcessReceiptId) ||
             outcome.ProcessReceiptId == request.SourceId || !Enum.IsDefined(outcome.TestResult) ||
+            outcome.Observation is null || outcome.Observation.Length > 4096 ||
             outcome.TestResult != KnowledgeTestResult.None && !ValidText(outcome.Observation))
             return Reject(KnowledgeStatus.Invalid, "Practice needs a performed world process and evidence for the exact adopted revision.");
         if (sources.Contains(outcome.ProcessReceiptId)) return Reject(KnowledgeStatus.DuplicateSource, "Process receipt already consumed.");

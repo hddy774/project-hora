@@ -9,6 +9,7 @@ internal sealed record InventoryReferenceSave(long Month, byte[] Bytes);
 internal sealed record InventoryReferenceTrace(string Fixture, string Mode, string[] Rows, InventoryReferenceSave[] Saves,
     string Digest, long ProjectionSnapshots, long TypedSnapshots)
 {
+    private static readonly JsonSerializerOptions CaptureOptions = new() { WriteIndented = true };
     internal void AssertFixed(string expected) => InventoryFixture.Check(Digest == expected,
         "고정 strict 기준과 명령·월 경계·저장 해시가 달라졌습니다: " + Digest);
 
@@ -31,7 +32,7 @@ internal sealed record InventoryReferenceTrace(string Fixture, string Mode, stri
             sourceAssembly = typeof(GameWorld).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion,
             digest = Digest, rows = Rows, saves = Saves.Select(s => new { month = s.Month, bytes = s.Bytes.Length,
                 sha256 = Convert.ToHexStringLower(SHA256.HashData(s.Bytes)) }), projectionSnapshots = ProjectionSnapshots, typedSnapshots = TypedSnapshots
-        }, new JsonSerializerOptions { WriteIndented = true }));
+        }, CaptureOptions));
     }
 }
 

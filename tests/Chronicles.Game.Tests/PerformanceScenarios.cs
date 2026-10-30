@@ -29,6 +29,9 @@ internal static partial class PerformanceScenarios
             {
                 currentStage = "measuring"; currentMonth = month; currentSamples = samples.ToArray();
                 SaveProgress(); Console.WriteLine($"PERF-MONTH {size}: {month}/12 · {samples[^1]:F1}ms");
+            }, stage =>
+            {
+                currentStage = stage; SaveProgress(); Console.WriteLine($"PERF-STAGE {size}: {stage}");
             }));
             completedSizes.Add(size); currentPopulation = null; currentStage = "completed_population";
             SaveProgress(); // Preserve earlier real measurements even if a later large case is slow or fails.
@@ -42,27 +45,34 @@ internal static partial class PerformanceScenarios
         File.WriteAllText(pending, JsonSerializer.Serialize(report, Options)); File.Move(pending, full, overwrite: true);
     }
 
-    private static object MeasurePopulation(int size, Action<int, IReadOnlyList<double>> progress)
+    private static object MeasurePopulation(int size, Action<int, IReadOnlyList<double>> progress, Action<string> stage)
     {
         // A separate frame prevents the preceding population's world/restore snapshot from being retained by this frame.
-        var initialHash = Warmup(size);
-        var measured = GameWorld.Restore(SyntheticPopulationFixture.Build(size));
+        var initialHash = Warmup(size, stage);
+        var measured = PrepareMeasurementWorld(size, "measured", stage);
+        stage("opening_hash");
         if (measured.StateHash() != initialHash) throw new InvalidOperationException("Independent synthetic fixture builds must match before warmup.");
-        var samples = new List<double>(); var openingRetained = CollectedManagedBytes();
+        var samples = new List<double>(); stage("opening_heap_collection"); var openingRetained = CollectedManagedBytes();
         var allocation = 0L; var sw = new Stopwatch();
         for (var month = 1; month <= 12; month++)
         {
+            stage($"advancing_month_{month}");
             var beforeAllocation = GC.GetTotalAllocatedBytes();
             sw.Restart(); measured.AdvanceTo(month); sw.Stop(); samples.Add(sw.Elapsed.TotalMilliseconds);
             allocation += GC.GetTotalAllocatedBytes() - beforeAllocation;
             progress(month, samples);
         }
         // No full checkpoint clone has been created yet; the actual live world remains rooted through this measurement.
-        var retained = CollectedManagedBytes(); GC.KeepAlive(measured);
+        stage("final_heap_collection"); var retained = CollectedManagedBytes(); GC.KeepAlive(measured);
+        stage("final_checkpoint_validation");
         var final = measured.Checkpoint(); Invariants.Validate(final);
+        stage("query");
         sw.Restart(); var view = measured.View(); sw.Stop(); var queryMs = sw.Elapsed.TotalMilliseconds;
+        stage("save_encode");
         sw.Restart(); var bytes = GameCodec.Encode(measured); sw.Stop(); var saveMs = sw.Elapsed.TotalMilliseconds;
+        stage("load_decode");
         sw.Restart(); var restored = GameCodec.Decode(bytes); sw.Stop(); var loadMs = sw.Elapsed.TotalMilliseconds;
+        stage("roundtrip_hash_and_cognition");
         if (restored.StateHash() != measured.StateHash()) throw new InvalidOperationException("성능 fixture 왕복 hash");
         var sorted = samples.Order().ToArray();
         var cognition = CognitionMeasurements(final, out var cognitionBytes);
@@ -103,11 +113,19 @@ internal static partial class PerformanceScenarios
         Console.WriteLine(JsonSerializer.Serialize(report, Options));
     }
 
-    private static string Warmup(int population)
+    private static GameWorld PrepareMeasurementWorld(int population, string prefix, Action<string> stage)
     {
-        var warm = GameWorld.Restore(SyntheticPopulationFixture.Build(population));
+        stage(prefix + "_fixture"); var initial = SyntheticPopulationFixture.Build(population);
+        stage(prefix + "_restore"); return GameWorld.Restore(initial);
+    }
+
+    private static string Warmup(int population, Action<string> stage)
+    {
+        var warm = PrepareMeasurementWorld(population, "warmup", stage);
+        stage("warmup_hash");
         var initialHash = warm.StateHash();
-        warm.AdvanceTo(2);
+        stage("warmup_month_1"); warm.AdvanceTo(1);
+        stage("warmup_month_2"); warm.AdvanceTo(2);
         return initialHash;
     }
 

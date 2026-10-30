@@ -4,7 +4,11 @@ using System.Text.Json;
 using Chronicles.Game;
 using Chronicles.Game.Tests;
 using Chronicles.Game.Cultivation;
+using Chronicles.Game.Tests.Experiments;
 
+var measurementOptions = new[] { "--performance", "--growth", "--soak", "--stability", "--agent-metrics", "--execution-experiment" };
+if (measurementOptions.Count(option => args.Contains(option, StringComparer.Ordinal)) > 1)
+    throw new ArgumentException("측정 모드는 한 번에 하나만 지정하고 각각 별도 결과 파일을 사용하세요.");
 var results = new List<object>();
 var failed = 0;
 var filterPosition = Array.IndexOf(args, "--filter");
@@ -353,4 +357,6 @@ if (failed == 0 && args.Contains("--stability", StringComparer.Ordinal))
 }
 if (failed == 0 && args.Contains("--agent-metrics", StringComparer.Ordinal))
     AgentMeasurements.RunArguments(args);
+if (failed == 0 && args.Contains("--execution-experiment", StringComparer.Ordinal))
+    ExperimentArguments.Run(args);
 return failed == 0 ? 0 : 1;

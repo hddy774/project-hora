@@ -125,6 +125,8 @@ def evidence_file(path, expected):
 
 
 def functional_report(report):
+    require(isinstance(report, dict) and report.get("selection") == "all",
+            "A selected subset is not a complete functional acceptance report")
     require(isinstance(report, dict) and type(report.get("total")) is int and report["total"] > 0 and
             type(report.get("failed")) is int and report["failed"] == 0,
             "Functional suite did not pass")
@@ -280,14 +282,16 @@ def platform_gate(source, signed, windows, android, require_upgrade=False):
 def self_test():
     # Validator fixtures are not platform/performance evidence and never enable a real readiness record.
     failures = 0
-    for action in (lambda: functional_report({"total": 1, "failed": 1, "results": [{"passed": True}]}),
-                   lambda: functional_report({"total": 1, "failed": 0, "results": []}),
+    for action in (lambda: functional_report({"selection": "all", "total": 1, "failed": 1, "results": [{"passed": True}]}),
+                   lambda: functional_report({"selection": "all", "total": 1, "failed": 0, "results": []}),
+                   lambda: functional_report({"selection": "currency", "total": 1, "failed": 0, "results": [{"passed": True}]}),
                    lambda: browser_report([]), lambda: platform_gate({}, {}, {}, [])):
         try:
             action()
         except (ValueError, KeyError):
             failures += 1
-    require(failures == 4, "Release negative guard self-test failed")
+    require(failures == 5, "Release negative guard self-test failed")
+    functional_report({"selection": "all", "total": 1, "failed": 0, "results": [{"passed": True}]})
     ready = read(ROOT / READINESS)
     if ready.get("feature_functional_complete") is not True:
         try:

@@ -1,0 +1,228 @@
+{
+  "schema_version": 1,
+  "kind": "native-integration-ci-snapshot",
+  "repository": "hddy774/project-hora",
+  "version": "0.2.1",
+  "observed_at_utc": "2026-10-30T13:18:24.783Z",
+  "scope": "완료된 제품 CI의 메타데이터·필요한 로그 발췌·검증 산출물을 읽어 보존한 독립 소스 근거다. 이 실행에서 확인한 d7e76e3 트리의 기능·Windows·Android API35 결과만 나타낸다.",
+  "primary": {
+    "pull_request": "https://github.com/hddy774/project-hora/pull/84",
+    "head_commit": "d7e76e35a8b077e57f44aac0b30dbf5fafa4c005",
+    "tested_checkout_commit": "3c663df8633a058a7497a6fb1ed4bec8793931d5",
+    "checkout_ref": "refs/pull/84/merge",
+    "head_tree": "e7dbad0f979fa1365f7cd3cdd2083ac229ac8842",
+    "tested_checkout_tree": "e7dbad0f979fa1365f7cd3cdd2083ac229ac8842",
+    "head_and_checkout_trees_equal": true,
+    "tested_checkout_parents": [
+      "cefb2021c249e83d5409a892af97b67e54066a92",
+      "d7e76e35a8b077e57f44aac0b30dbf5fafa4c005"
+    ],
+    "tree_verification": {
+      "method": "GitHub Git Commit API의 tree.sha 비교",
+      "head_url": "https://api.github.com/repos/hddy774/project-hora/git/commits/d7e76e35a8b077e57f44aac0b30dbf5fafa4c005",
+      "checkout_url": "https://api.github.com/repos/hddy774/project-hora/git/commits/3c663df8633a058a7497a6fb1ed4bec8793931d5"
+    },
+    "run_id": 41056755620,
+    "run_number": 298,
+    "run_attempt": 1,
+    "run_url": "https://github.com/hddy774/project-hora/actions/runs/41056755620",
+    "workflow": ".github/workflows/v021-product.yml",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at_utc": "2026-10-30T12:37:36Z",
+    "updated_at_utc": "2026-10-30T12:41:46Z",
+    "checkout_log_at_utc": {
+      "portable": "2026-10-30T12:38:30.1994248Z",
+      "android": "2026-10-30T12:38:31.0885744Z",
+      "windows": "2026-10-30T12:38:34.4307558Z"
+    },
+    "committed_assets": {
+      "asset": "src/Chronicles.Shell/index.compat.html",
+      "target": "chrome51",
+      "verification": "node scripts/build-shell-assets.mjs --check",
+      "authoring_sha256": "e521b56a3fb32f45cabe474a00020fd2ea9e5c7bc604739bd54cd9b0f02b445c",
+      "compat_sha256": "3f1b0c670a3281e256a2be18881aca66ca2ae855673b803341f80fef2a390cae",
+      "workflow_sha256": "d15bdedb3b4462a34f182bcc2cfaebfa08ea489a65c94dc21827284d732457f7",
+      "verified_log_at_utc": "2026-10-30T12:38:33.4304313Z",
+      "android_reference": "src/Chronicles.Android/Chronicles.Android.csproj:21 AndroidAsset index.compat.html linked as index.html",
+      "windows_reference": "src/Chronicles.Desktop/Chronicles.Desktop.csproj:11 EmbeddedResource index.compat.html linked as GameShell.html"
+    },
+    "portable": {
+      "job_id": 124066444113,
+      "name": "이식형 제품 검증",
+      "url": "https://github.com/hddy774/project-hora/actions/runs/41056755620/job/124066444113",
+      "status": "completed",
+      "conclusion": "success",
+      "functional_step_number": 9,
+      "functional_command": "dotnet run --project tests/Chronicles.Game.Tests -c Release -- --report artifacts/product-tests.json",
+      "functional_result": "261/261",
+      "result_log_at_utc": "2026-10-30T12:41:37.7093716Z",
+      "report": {
+        "selection": "all",
+        "total": 261,
+        "failed": 0,
+        "result_rows": 261,
+        "passed_rows": 261,
+        "failed_scenarios": [],
+        "member": "product-tests.json",
+        "sha256": "ea5739968d8b01b127988d20eeae7bb4c8ea67665a72e7dd61f7a2406922ab92"
+      },
+      "shell_build": {
+        "passed": true,
+        "warnings": 0,
+        "errors": 0,
+        "log_at_utc": "2026-10-30T12:41:40.8107281Z"
+      },
+      "artifact": {
+        "id": 12976049819,
+        "name": "product-evidence",
+        "url": "https://github.com/hddy774/project-hora/actions/runs/41056755620/artifacts/12976049819",
+        "archive_sha256": "e9e859aeec555dfcf3a32f535823c3320f0249027959ce00135989e5cf768e27",
+        "api_digest": "sha256:e9e859aeec555dfcf3a32f535823c3320f0249027959ce00135989e5cf768e27",
+        "archive_digest_matches_api": true,
+        "expires_at_utc": "2026-11-02T12:41:40Z",
+        "members": [
+          {
+            "path": "product-tests.json",
+            "sha256": "ea5739968d8b01b127988d20eeae7bb4c8ea67665a72e7dd61f7a2406922ab92"
+          }
+        ]
+      }
+    },
+    "windows": {
+      "job_id": 124066444497,
+      "name": "윈도우 회귀·실제 화면 검증",
+      "url": "https://github.com/hddy774/project-hora/actions/runs/41056755620/job/124066444497",
+      "status": "completed",
+      "conclusion": "success",
+      "build": {
+        "passed": true,
+        "warnings": 0,
+        "errors": 0,
+        "log_at_utc": "2026-10-30T12:39:28.9055270Z"
+      },
+      "native_step": "데스크톱 실제 화면·코어 연결 검증",
+      "native_step_number": 7,
+      "log_at_utc": "2026-10-30T12:39:41.0460665Z",
+      "native_report": {
+        "passed": true,
+        "version": "0.2.1",
+        "host": "WPF WebView2",
+        "actualRenderAndBridge": true,
+        "decoded_diagnostic": {
+          "hasView": true,
+          "error": null,
+          "connection": "연결됨",
+          "heading": "만상의 흐름",
+          "source": "https://seonro.local/index.html"
+        }
+      },
+      "legacy_performance_step": "skipped"
+    },
+    "android": {
+      "job_id": 124066444382,
+      "name": "안드로이드 빌드·실제 실행 검증",
+      "url": "https://github.com/hddy774/project-hora/actions/runs/41056755620/job/124066444382",
+      "status": "completed",
+      "conclusion": "success",
+      "emulator": {
+        "api": 35,
+        "target": "default",
+        "architecture": "x86_64",
+        "profile": "pixel_6",
+        "image": "system-images;android-35;default;x86_64",
+        "configuration_log_at_utc": "2026-10-30T12:39:53.0574122Z"
+      },
+      "build": {
+        "passed": true,
+        "warnings": 0,
+        "errors": 0,
+        "log_at_utc": "2026-10-30T12:39:52.9086463Z"
+      },
+      "native_step": "안드로이드 앱 실제 설치·실행",
+      "native_step_number": 11,
+      "package": "org.hora.xianxiaobserver",
+      "apk": "src/Chronicles.Android/bin/Release/net10.0-android/org.hora.xianxiaobserver-Signed.apk",
+      "install": {
+        "command": "adb install -r src/Chronicles.Android/bin/Release/net10.0-android/org.hora.xianxiaobserver-Signed.apk",
+        "result": "Success",
+        "log_at_utc": "2026-10-30T12:40:53.3058545Z"
+      },
+      "launch": {
+        "result": "Starting: Intent",
+        "activity": "crc649632d1cee893af2a.MainActivity",
+        "log_at_utc": "2026-10-30T12:40:53.3622518Z"
+      },
+      "native_render_log_timestamp": "10-30 12:40:56.851",
+      "render_log_captured_at_utc": "2026-10-30T12:41:13.5400479Z",
+      "render_report": {
+        "rendered": true,
+        "heading": "만상의 흐름",
+        "title": "선로만상록",
+        "version": "0.2.1",
+        "error": null,
+        "connection": "연결됨"
+      },
+      "checker": {
+        "script": "scripts/verify-android-ui.py",
+        "log_at_utc": "2026-10-30T12:41:15.7210944Z",
+        "android_actual_install_launch_and_render": true,
+        "core_to_native_bridge": true,
+        "accessibility_text_export": false,
+        "accessibility_scope": "UI XML에서 전경 앱의 android.webkit.WebView와 패키지·화면 경계를 확인했다. 표시된 DOM과 코어 연결은 네이티브 렌더 보고서·검사 결과로 확인했으며 전체 접근성 텍스트 내보내기는 포함하지 않는다."
+      },
+      "foreground_webview": {
+        "class": "android.webkit.WebView",
+        "package": "org.hora.xianxiaobserver",
+        "bounds": "[0,0][1080,2400]"
+      },
+      "runtime_artifact": {
+        "id": 12977352326,
+        "name": "android-runtime-evidence",
+        "url": "https://github.com/hddy774/project-hora/actions/runs/41056755620/artifacts/12977352326",
+        "archive_sha256": "d3dad547670f6e6fea9e067bcf7bb0c43dad77bc3e932bd9a7568758ac8dac2d",
+        "api_digest": "sha256:d3dad547670f6e6fea9e067bcf7bb0c43dad77bc3e932bd9a7568758ac8dac2d",
+        "archive_digest_matches_api": true,
+        "expires_at_utc": "2026-11-02T12:41:19Z",
+        "members": [
+          {
+            "path": "android-render-log.txt",
+            "sha256": "70331727048841230d9280c267363cde7d3efd9d8c3ef78bc0eb5333daf79896"
+          },
+          {
+            "path": "android-ui.xml",
+            "sha256": "8ded39848458c36332922b87b1e6883dfe69c84c4976c6c0a62886b811156652"
+          },
+          {
+            "path": "android-screen.png",
+            "sha256": "0919d6fe1bceb89ab8f892532ece15cb45f03b4d053119765c00775b93e547a5"
+          }
+        ]
+      }
+    }
+  },
+  "failure_review": {
+    "failed_jobs": [],
+    "functional_failed": 0,
+    "native_checker_failure": false
+  },
+  "historical_evidence_preserved": "docs/evidence/0.2.1/native-integration-ci.json",
+  "not_proven_by_this_evidence": [
+    "d7e76e3 이후 소스나 후속 개인 투영 실험의 기능·동일성·비용.",
+    "실제 Android API24 설치·렌더·브리지.",
+    "기존 게시 인증서 유지, 최종 릴리스 서명 또는 API24·35에서 동일한 기존 인증서 APK 실행.",
+    "v0.2.0에서의 실제 덮어쓰기 업데이트와 저장 자료 보존.",
+    "기기 성능·프로파일링·인구 규모·장기 실행 또는 최종 릴리스·게시 수용."
+  ],
+  "audit_actions": {
+    "read_only_ci_inspection": true,
+    "reruns_triggered": false,
+    "native_execution_triggered": false,
+    "performance_execution_triggered": false,
+    "signing_or_release_triggered": false,
+    "secrets_or_full_environment_logs_included": false,
+    "source_code_or_tests_modified": false,
+    "ledger_or_notion_modified": false
+  }
+}

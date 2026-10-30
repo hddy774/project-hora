@@ -144,10 +144,32 @@ with sync_playwright() as p:
         page.get_by_role('button', name='도구 장착 요청', exact=True).click()
         settle(page)
         assert page.evaluate('() => recentCommand.accepted')
+        # Produce a real container from gathered inputs, then verify both storage transitions.
+        page.evaluate("() => inspect(view.actor)")
+        for resource in ('herb', 'ore'):
+            page.get_by_role('button', name='재료 채집', exact=True).click()
+            page.get_by_label('채집 대상').select_option(resource)
+            submit(page)
+            page.get_by_role('button', name='1개월', exact=True).click()
+            settle(page)
+        for recipe in ('cloth', 'cloth', 'bag'):
+            page.get_by_role('button', name='제작', exact=True).click()
+            page.get_by_label('제작할 실물').select_option(recipe)
+            submit(page)
+            page.get_by_role('button', name='1개월', exact=True).click()
+            settle(page)
+        bag_id = page.evaluate("() => view.items.find(i=>i.definition==='bag').id")
+        book_id = page.evaluate("() => view.items.find(i=>i.definition==='path.1.0').id")
         open_item(page, '청허감응편')
         page.get_by_role('button', name='수납·꺼내기', exact=True).click()
+        page.get_by_label('대상 용기').select_option(str(bag_id))
         submit(page)
-        assert page.evaluate('() => recentCommand.accepted')
+        assert page.evaluate('(id) => item(id).container', book_id) == bag_id
+        open_item(page, '청허감응편')
+        page.get_by_role('button', name='수납·꺼내기', exact=True).click()
+        page.get_by_label('대상 용기').select_option('0')
+        submit(page)
+        assert page.evaluate('(id) => item(id).container', book_id) == 0
         open_item(page, '청허감응편')
         page.get_by_role('button', name='출품', exact=True).click()
         page.get_by_label('가격 · 영석').fill('19')
@@ -284,7 +306,7 @@ with sync_playwright() as p:
         results.append({'kind':'real_session_functional','width':width,'tabs':9,'javascript_errors':errors,
                         'document_horizontal_overflow':False,'touch_map_targets_at_least_44px':True,
                         'search_focus_and_back':True,'selected_known_path_command':True,
-                        'cancel_draft_and_confirmed':True,'use_equip_store_offer_withdraw':True,
+                        'cancel_draft_and_confirmed':True,'use_equip_craft_bag_store_unstore_offer_withdraw':True,
                         'explore_transport_complete':True,'repair_rejection_atomic':True,
                         'teaching_request_accepted':True,'adult_adoption_rejection_atomic':True,
                         'found_sect_policy_settlement':True,'vassal_independence':True,

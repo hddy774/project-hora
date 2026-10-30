@@ -40,7 +40,7 @@ public static class GameCodec
 
     public static byte[] Encode(GameWorld world) => Encode(world, 0);
 
-    private static byte[] Encode(GameWorld world, long sequence)
+    internal static byte[] Encode(GameWorld world, long sequence)
     {
         ArgumentNullException.ThrowIfNull(world);
         var snapshot = world.Checkpoint(); Invariants.Validate(snapshot);
@@ -53,7 +53,7 @@ public static class GameCodec
 
     public static GameWorld Decode(ReadOnlySpan<byte> bytes) => DecodeEnvelope(bytes).World;
 
-    private static (GameWorld World, long Sequence) DecodeEnvelope(ReadOnlySpan<byte> bytes)
+    internal static (GameWorld World, long Sequence) DecodeEnvelope(ReadOnlySpan<byte> bytes)
     {
         try
         {
@@ -70,58 +70,4 @@ public static class GameCodec
         { throw new InvalidDataException("저장의 자료 구조가 올바르지 않습니다.", e); }
     }
 
-    public static void SaveAtomic(GameWorld world, string path)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(path);
-        var full = Path.GetFullPath(path);
-        Directory.CreateDirectory(Path.GetDirectoryName(full)!);
-        var temporary = full + ".pending";
-        var sequence = 0L;
-        foreach (var candidate in new[] { full, temporary, full + ".backup" })
-        {
-            if (!File.Exists(candidate)) continue;
-            try { sequence = Math.Max(sequence, DecodeEnvelope(File.ReadAllBytes(candidate)).Sequence); }
-            catch (InvalidDataException) { PreserveOriginal(candidate); }
-        }
-        var bytes = Encode(world, checked(sequence + 1));
-        using (var output = new FileStream(temporary, FileMode.Create, FileAccess.Write, FileShare.None, 65536, FileOptions.WriteThrough))
-        { output.Write(bytes); output.Flush(true); }
-        // Validate the exact bytes before replacing a valid slot. Backup stays readable after interruption.
-        Decode(File.ReadAllBytes(temporary));
-        if (File.Exists(full))
-        {
-            try { Decode(File.ReadAllBytes(full)); File.Copy(full, full + ".backup", true); }
-            catch (InvalidDataException) { PreserveOriginal(full); }
-        }
-        File.Move(temporary, full, true);
-    }
-
-    private static void PreserveOriginal(string path)
-    {
-        using var source = File.OpenRead(path);
-        var hash = Convert.ToHexStringLower(SHA256.HashData(source));
-        var directory = Path.Combine(Path.GetDirectoryName(path)!, "preserved");
-        Directory.CreateDirectory(directory);
-        var retained = Path.Combine(directory, Path.GetFileName(path) + "." + hash + ".original");
-        if (!File.Exists(retained)) File.Copy(path, retained, false);
-    }
-
-    public static GameWorld Load(string path) => LoadWithSource(path).World;
-
-    internal static (GameWorld World, string Source) LoadWithSource(string path)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(path);
-        GameWorld? selected = null; var sequence = -1L; var source = "";
-        foreach (var candidate in new[] { (Path: path, Source: "primary"), (Path: path + ".pending", Source: "pending"),
-                     (Path: path + ".backup", Source: "backup") })
-        {
-            try
-            {
-                var value = DecodeEnvelope(File.ReadAllBytes(candidate.Path));
-                if (value.Sequence > sequence) { selected = value.World; sequence = value.Sequence; source = candidate.Source; }
-            }
-            catch (Exception e) when (e is IOException or InvalidDataException or UnauthorizedAccessException) { }
-        }
-        return selected is null ? throw new InvalidDataException("복구할 수 있는 0.2.1 저장이 없습니다. 기존 파일은 보존됩니다.") : (selected, source);
-    }
 }

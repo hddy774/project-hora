@@ -50,6 +50,8 @@ C#도 JIT/AOT로 기계어가 됩니다. [Microsoft SIMD](https://learn.microsof
 
 향후 Unity 전환 때 [IL2CPP](https://docs.unity3d.com/6000.0/Documentation/Manual/IL2CPP.html), [Burst](https://docs.unity3d.com/Packages/com.unity.burst@1.8/manual/index.html)·Job System·필요 시 Entities를 별도로 검증합니다. 현재 Unity 의존성을 추가하지 않습니다.
 
+리팩토링 전 원본 fixture·명령열·상태 hash·비용 기준선을 먼저 확보합니다. 이후 확장 실험에서는 예열과 측정 세계를 분리하고, 버퍼 수명·취소 사건 누적·실패한 계산 배치·낡은 조회 응답을 검증합니다. 계산은 임시 결과를 확인한 뒤 한 번만 적용하며, 플레이 UI는 관측 시점·표시 세대·알려진 물품 속성을 사용합니다.
+
 연구는 **가설 → 기준선 → 최소 실험 → 정확성/성능 → 채택·수정·기각 → 근거 보존**으로 지속합니다. 출처·버전·라이선스·기기/런타임·실험 SHA·한계를 남기고, PC 수치를 Android 성능으로 대신하지 않습니다.
 
 ## 기존 구현과 저장

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: 기능·최종 성능·실제 플랫폼 조건을 모두 통과한 뒤에만 게시합니다
+        description: 전체 기능·정본 단계별 기준선/측정 후 예산·장기 안정성·실제 플랫폼 검증 뒤 게시합니다
         type: boolean
         default: false
       verify_upgrade:
@@ -386,7 +386,9 @@ jobs:
         with:
           name: v021-android-35-${{ github.run_id }}-${{ github.run_attempt }}
           path: artifacts/android-35
-      - name: 기능 완료 후 최종 성능·동일 앱의 실제 플랫폼 근거 확인(APK)
+      # 저장된 실제 근거만 검사합니다. 이 workflow는 성능/성장/장기 실행을 자동 시작하지 않습니다.
+      # 옛 V020-G03의 100배/60초 비교 결과는 보존하며 정본 §11/T04 필수 속도 기준으로 바꾸지 않습니다.
+      - name: 정본 단계별 기준선·후속 예산·장기 안정성과 동일 앱 플랫폼 근거 확인
         run: python3 scripts/verify-v021-release.py gate --stage publish --source artifacts/signed/source.json --functional artifacts/functional/product-tests.json --browser artifacts/functional/ui/results.json --signed artifacts/signed/APK-VERIFICATION.json --windows artifacts/windows/windows-proof.json --android artifacts/android-24/android-proof.json --android artifacts/android-35/android-proof.json ${{ inputs.verify_upgrade && '--require-upgrade' || '' }}
       - name: 게시 준비·다운로드·검증·게시·공개 바이트 재검증
         env:

@@ -6,6 +6,7 @@ public static partial class InventoryEngine
 {
     /// <summary>For serial GameWorld candidate execution only. The complete initial snapshot is always isolated.</summary>
     internal static OwnedTransaction Own(GameState world) => new(world);
+    internal static OwnedTransaction OwnProjectedForExperiment(GameState world) => new(world, true);
 
     internal readonly record struct OwnedResult(bool Accepted, string Message, long Subject = 0, bool Replayed = false);
     internal readonly record struct OwnedJob(long Id, string Recipe, long Due);
@@ -14,13 +15,18 @@ public static partial class InventoryEngine
     /// Owns its snapshot exclusively: no mutable model is returned, even before commit. Every rejection or exception
     /// discards the whole transaction. Commit consumes ownership before validation and transfers it at most once.
     /// </summary>
-    internal sealed class OwnedTransaction : IDisposable
+    internal sealed partial class OwnedTransaction : IDisposable
     {
         private InventoryState? candidate;
         private GameState? source;
+        private readonly bool projectedPerson;
 
-        internal OwnedTransaction(GameState world)
-        { ArgumentNullException.ThrowIfNull(world); candidate = InventoryState.FromWorld(world, world.Inventory); source = world; }
+        internal OwnedTransaction(GameState world) : this(world, false) { }
+        internal OwnedTransaction(GameState world, bool projectedPerson)
+        {
+            ArgumentNullException.ThrowIfNull(world); this.projectedPerson = projectedPerson;
+            candidate = projectedPerson ? CreateProjectedSnapshot(world) : InventoryState.FromWorld(world, world.Inventory); source = world;
+        }
 
         private InventoryState Open() => candidate ?? throw new InvalidOperationException("Inventory transaction is already consumed or discarded.");
         public void Dispose() { candidate = null; source = null; }
@@ -123,7 +129,8 @@ public static partial class InventoryEngine
             ArgumentNullException.ThrowIfNull(world);
             if (!ReferenceEquals(world, original)) throw new InvalidOperationException("Inventory transaction belongs to a different world.");
             Validate(owned);
-            if (owned.BaseFingerprint.Length == 0 || owned.BaseFingerprint != WorldFingerprint(world))
+            var currentFingerprint = projectedPerson ? ProjectedFingerprint(world) : WorldFingerprint(world);
+            if (owned.BaseFingerprint.Length == 0 || owned.BaseFingerprint != currentFingerprint)
                 throw new InvalidOperationException("Inventory candidate is stale; create it from the current world.");
             if (!world.People.Select(p => p.Id).SequenceEqual(owned.People.Select(p => p.Id)))
                 throw new InvalidOperationException("Inventory candidates cannot create, reorder, or remove people.");

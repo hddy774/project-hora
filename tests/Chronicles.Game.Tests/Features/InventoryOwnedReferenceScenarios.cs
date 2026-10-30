@@ -7,6 +7,9 @@ namespace Chronicles.Game.Tests.Features;
 
 public sealed class InventoryOwnedWorldReferenceScenario : IFeatureScenario
 {
+    private readonly bool projected;
+    public InventoryOwnedWorldReferenceScenario() { }
+    internal InventoryOwnedWorldReferenceScenario(bool projected) { this.projected = projected; }
     // Captured before changing the private transaction path, at 751e349.
     private const string Baseline = "2cef8af882dcd34fec03884184a9fef5c67b8232e77a0e14c022cb84c986eec6";
     public string Name => "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존";
@@ -17,7 +20,7 @@ public sealed class InventoryOwnedWorldReferenceScenario : IFeatureScenario
         var state = world.Checkpoint(); var actor = state.People[0].Id; var other = state.People[1].Id;
         InventoryWorldFixture.Add(state, actor, "ore", 5); InventoryWorldFixture.Add(state, actor, "cloth", 2);
         InventoryWorldFixture.Add(state, actor, "bag", 1); InventoryWorldFixture.Add(state, actor, "herb", 4);
-        world = GameWorld.Restore(state); var trace = new InventoryWorldTranscript(world);
+        world = GameWorld.Restore(state); var trace = new InventoryWorldTranscript(world, projected);
         void Apply(string id, long person, string kind, long target = 0, long value = 0, string data = "", bool expected = true) =>
             trace.Command(new(id, person, kind, target, value, data), expected);
         long Own(string definition) => world.Checkpoint().Items.Last(i => i.Owner == actor && i.Definition == definition).Id;
@@ -62,6 +65,9 @@ public sealed class InventoryOwnedWorldReferenceScenario : IFeatureScenario
 
 public sealed class InventoryOwnedEcologyReferenceScenario : IFeatureScenario
 {
+    private readonly bool projected;
+    public InventoryOwnedEcologyReferenceScenario() { }
+    internal InventoryOwnedEcologyReferenceScenario(bool projected) { this.projected = projected; }
     // The low-food decision must really execute the private split+offer caller.
     private const string Baseline = "8e88d149188b0d0c8a65334ef1827eb0675bcdd3a81602a57bb6e6d48d36f561";
     public string Name => "inventory owned reference: 실제 생계 AI의 분할·판매 후보와 저장 결과 보존";
@@ -70,7 +76,7 @@ public sealed class InventoryOwnedEcologyReferenceScenario : IFeatureScenario
         var world = InventoryWorldFixture.Create(109, new Dictionary<string, long> { ["founder.initialFood"] = 8, ["ecology.foodUse"] = 1 });
         var state = world.Checkpoint(); var seller = state.People[0].Id; var buyer = state.People[1].Id;
         state.People[1].Action = ActionKind.Guard; state.People[1].Due = 1000; world = GameWorld.Restore(state);
-        var trace = new InventoryWorldTranscript(world); var food = state.Items.Single(i => i.Owner == seller && i.Definition == "food").Id;
+        var trace = new InventoryWorldTranscript(world, projected); var food = state.Items.Single(i => i.Owner == seller && i.Definition == "food").Id;
         trace.Advance(1); state = world.Checkpoint();
         var offer = state.Inventory.Contracts.Single(c => c.Seller == seller && c.Status == "open" && c.AdvertisedDefinition == "food");
         InventoryFixture.Check(offer.Item != food && offer.AdvertisedQuantity > 0 && state.People[0].ActionData == "ecology:market" &&
@@ -82,10 +88,18 @@ public sealed class InventoryOwnedEcologyReferenceScenario : IFeatureScenario
     }
 }
 
-internal sealed class InventoryWorldTranscript(GameWorld world)
+internal sealed class InventoryWorldTranscript
 {
-    private readonly List<string> rows = [world.StateHash()];
+    private readonly GameWorld world;
+    private readonly bool projected;
+    private readonly List<string> rows;
     private GameWorld? saved;
+    internal InventoryWorldTranscript(GameWorld world, bool projected = false)
+    {
+        this.world = world; this.projected = projected; rows = [world.StateHash()];
+        InventoryFixture.Check(!world.InventoryProjectionExperimentEnabled, "일반 세계의 기본 경로가 strict가 아닙니다.");
+        if (projected) world.EnableInventoryProjectionForExperiment();
+    }
     internal void Command(GameCommand command, bool accepted = true)
     {
         var before = world.StateHash(); var result = world.Execute(command);
@@ -107,12 +121,15 @@ internal sealed class InventoryWorldTranscript(GameWorld world)
     {
         var encoded = GameCodec.Encode(world); var restored = GameCodec.Decode(encoded);
         InventoryFixture.Check(world.StateHash() == restored.StateHash() && encoded.SequenceEqual(GameCodec.Encode(restored)), "저장 왕복이 실제 권위 상태를 변경했습니다.");
+        InventoryFixture.Check(!restored.InventoryProjectionExperimentEnabled, "저장 형식이 내부 실험 모드를 노출했습니다.");
+        if (projected) restored.EnableInventoryProjectionForExperiment();
         saved = restored;
         rows.Add(Convert.ToHexStringLower(SHA256.HashData(encoded)));
     }
     internal void Assert(string expected)
     {
         Invariants.Validate(world.Checkpoint());
+        if (projected) InventoryFixture.Check(world.InventoryProjectionExperimentSnapshots > 0, "공개 기준선이 실제 투영 실험 factory를 실행하지 않았습니다.");
         var actual = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("\n", rows))));
         InventoryFixture.Check(actual == expected, "기존 공개 경로와 명령·월 경계·저장 해시가 달라졌습니다: " + actual);
     }

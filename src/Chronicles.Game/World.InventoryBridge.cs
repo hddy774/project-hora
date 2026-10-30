@@ -142,7 +142,7 @@ public sealed partial class GameWorld
     }
     private InventoryEngine.OwnedTransaction CurrentOwnedInventory()
     {
-        var transaction = InventoryEngine.Own(state);
+        var transaction = CreateOwnedInventory();
         try
         {
             transaction.TuneIfNeeded(new TuneInventoryProfile(InventoryNonce("laws"),

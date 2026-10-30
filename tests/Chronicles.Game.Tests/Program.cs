@@ -351,4 +351,6 @@ if (failed == 0 && args.Contains("--stability", StringComparer.Ordinal))
     if (plan < 0 || plan + 1 >= args.Length) throw new ArgumentException("--stability에는 명시적인 --stability-plan이 필요합니다.");
     PerformanceScenarios.Stability(args[Array.IndexOf(args, "--stability") + 1], args[plan + 1]);
 }
+if (failed == 0 && args.Contains("--agent-metrics", StringComparer.Ordinal))
+    AgentMeasurements.RunArguments(args);
 return failed == 0 ? 0 : 1;

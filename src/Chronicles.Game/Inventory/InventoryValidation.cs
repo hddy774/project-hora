@@ -21,65 +21,66 @@ public static partial class InventoryEngine
             .Concat(state.Ledger.Sources.Select(s => s.Id)).Concat(state.Ledger.Arrays.Select(a => a.Id)).Concat(state.Ledger.Bindings.Select(b => b.Id)).ToArray();
         Ensure(ids.All(id => id > 0) && ids.Distinct().Count() == ids.Length && state.NextId > ids.DefaultIfEmpty().Max(), "Inventory IDs are duplicated or the allocator is stale.");
         Ensure(state.Ledger.Metadata.Select(m => m.Item).Distinct().Count() == state.Ledger.Metadata.Count, "Duplicate item metadata.");
+        var read = new ValidationReadIndex(state);
         foreach (var metadata in state.Ledger.Metadata)
         {
-            ItemAt(state, metadata.Item);
-            if (metadata.Custodian != 0) PersonAt(state, metadata.Custodian, false);
-            if (metadata.Carrier != 0) PersonAt(state, metadata.Carrier, false);
+            read.ItemAt(metadata.Item);
+            if (metadata.Custodian != 0) read.PersonAt(metadata.Custodian);
+            if (metadata.Carrier != 0) read.PersonAt(metadata.Carrier);
             Ensure(metadata.Capacity is null or >= 0 && metadata.UseRights.Distinct().Count() == metadata.UseRights.Count, "Invalid storage profile or use rights.");
-            foreach (var user in metadata.UseRights) PersonAt(state, user, false);
+            foreach (var user in metadata.UseRights) read.PersonAt(user);
         }
         foreach (var item in state.Items)
         {
-            PersonAt(state, item.Owner, false); var definition = InventoryDefinitions.Definition(item.Definition);
+            read.PersonAt(item.Owner); var definition = InventoryDefinitions.Definition(item.Definition);
             Ensure(item.Quantity > 0 && item.Quality is >= 0 and <= 10000 && item.Damage is >= 0 and <= 100 && item.Place is >= -1 and < 100,
                 "Invalid physical item quantity, quality, damage, or location.");
             Ensure(item.BoundSoul >= 0 && ((int)item.Defects & ~15) == 0, "Invalid soul binding or defect flags.");
             Ensure(definition.Item.Kind != ItemKind.Book || item.Quantity == 1, "A bound or blank book is a unique physical medium.");
-            var root = Root(state, item); _ = Location(state, item.Id);
+            var root = read.Root(item); _ = read.Location(item.Id);
             Ensure(item.Place == root.Place, "Contained items cannot have another physical location.");
-            if (definition.Item.Capacity > 0 || (Metadata(state, item.Id)?.Capacity ?? 0) > 0)
+            if (definition.Item.Capacity > 0 || (read.Metadata(item.Id)?.Capacity ?? 0) > 0)
                 Ensure(item.Quantity == 1, "Containers cannot be stacked.");
             if (item.Container != 0)
             {
-                var parent = ItemAt(state, item.Container); var metadata = Metadata(state, parent.Id);
-                Ensure(Capacity(state, parent) > 0, "Contents are inside an unusable container.");
+                var parent = read.ItemAt(item.Container); var metadata = read.Metadata(parent.Id);
+                Ensure(read.Capacity(parent) > 0, "Contents are inside an unusable container.");
                 Ensure(metadata is null || metadata.AllowedContents.Count == 0 || metadata.AllowedContents.Contains(definition.Item.Kind), "Container rejects this item category.");
-                Ensure(metadata is null || metadata.AllowNestedContainers || (definition.Item.Capacity == 0 && (Metadata(state, item.Id)?.Capacity ?? 0) == 0), "Container profile disallows nested storage.");
+                Ensure(metadata is null || metadata.AllowNestedContainers || (definition.Item.Capacity == 0 && (read.Metadata(item.Id)?.Capacity ?? 0) == 0), "Container profile disallows nested storage.");
             }
-            var children = state.Items.Where(i => i.Container == item.Id).ToArray();
-            if (children.Length > 0)
-                Ensure(children.Sum(child => Weight(state, child)) <= Capacity(state, item), "Recursive container capacity exceeded.");
+            var children = read.Children(item.Id);
+            if (children.Count > 0)
+                Ensure(children.Sum(child => read.Weight(child)) <= read.Capacity(item), "Recursive container capacity exceeded.");
             if (item.Reserved != 0)
                 Ensure(state.Ledger.Reservations.Any(r => r.Id == item.Reserved && r.Active && r.Items.Contains(item.Id)), "Physical reservation is not backed by the common ledger.");
         }
         foreach (var person in state.People)
         {
             Ensure(person.Money >= 0 && person.Place is >= 0 and < 100, "Negative money or invalid person location.");
-            Ensure(CarriedWeight(state, person) <= CarryCapacity(state, person), "Carrying capacity exceeded; use explicit ground storage.");
+            Ensure(read.CarriedWeight(person) <= read.CarryCapacity(person), "Carrying capacity exceeded; use explicit ground storage.");
             foreach (var itemId in person.Equipment.Values.Distinct())
             {
-                var item = ItemAt(state, itemId); var definition = InventoryDefinitions.Definition(item.Definition);
+                var item = read.ItemAt(itemId); var definition = InventoryDefinitions.Definition(item.Definition);
                 var occupied = person.Equipment.Where(e => e.Value == itemId).Select(e => e.Key).Order().ToArray();
                 Ensure(occupied.SequenceEqual(definition.OccupiedSlots.Order()) && item.Quantity == 1 && item.Container == 0 && item.Place == -1 &&
-                    Location(state, item.Id) == person.Place && item.Damage < 100 &&
+                    read.Location(item.Id) == person.Place && item.Damage < 100 &&
                     (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0 && (item.BoundSoul == 0 || item.BoundSoul == person.SoulId), "Invalid equipment occupancy, location, or soul binding.");
-                Ensure(item.Owner == person.Id || (Metadata(state, item.Id)?.UseRights.Contains(person.Id) ?? false), "Equipment lacks ownership or use rights.");
-                Ensure(state.People.Count(p => p.Equipment.ContainsValue(itemId)) == 1, "An item is equipped by multiple people.");
+                Ensure(item.Owner == person.Id || (read.Metadata(item.Id)?.UseRights.Contains(person.Id) ?? false), "Equipment lacks ownership or use rights.");
+                Ensure(read.EquippedByCount(itemId) == 1, "An item is equipped by multiple people.");
                 Ensure(item.Reserved == 0 || state.Ledger.Jobs.Any(j => j.Target == item.Id && j.Recipe == "repair" && j.Reservation == item.Reserved && j.Status is "reserved" or "processing"), "Equipped item is committed to another activity.");
             }
         }
         foreach (var reservation in state.Ledger.Reservations.Where(r => r.Active))
         {
-            PersonAt(state, reservation.Actor, false);
+            read.PersonAt(reservation.Actor);
             Ensure(reservation.Items.Distinct().Count() == reservation.Items.Count, "Duplicate reserved physical item.");
             foreach (var id in reservation.Items)
-                Ensure(state.Items.Any(i => i.Id == id && i.Reserved == reservation.Id) ||
+                Ensure((read.FindItem(id) is { } physical && physical.Reserved == reservation.Id) ||
                     state.Ledger.Jobs.Any(j => j.Reservation == reservation.Id && j.Status == "processing" && j.Inputs.Contains(id)), "Active reservation lost its physical item.");
         }
         foreach (var labor in state.Ledger.Labor)
         {
-            PersonAt(state, labor.Person, false);
+            read.PersonAt(labor.Person);
             Ensure(labor.Start >= 0 && labor.End > labor.Start && labor.Units is > 0 and <= 100 && labor.FacilityCapacity > 0, "Invalid labor interval.");
         }
         foreach (var group in state.Ledger.Labor.Where(l => l.Active).GroupBy(l => l.Person)) CheckSchedule(group, 100);
@@ -104,7 +105,7 @@ public static partial class InventoryEngine
             "An asset or labor reservation backs multiple independent commitments.");
         foreach (var job in state.Ledger.Jobs)
         {
-            PersonAt(state, job.Actor, false);
+            read.PersonAt(job.Actor);
             if (job.OutputDefinition.Length > 0) InventoryDefinitions.Definition(job.OutputDefinition);
             Ensure(InventoryDefinitions.Recipes.ContainsKey(job.Recipe) || job.Recipe is "repair" or "extraction" or "medical-treatment" or "appraisal" or "exploration" or "array-maintenance",
                 "Unknown production process in saved state.");
@@ -116,32 +117,32 @@ public static partial class InventoryEngine
             if (job.Status is "reserved" or "processing")
             {
                 Ensure(state.Ledger.Reservations.Any(r => r.Id == job.Reservation && r.Active) && state.Ledger.Labor.Any(l => l.Id == job.Labor && l.Active), "Active production lost its commitments.");
-                if (job.Status == "reserved") foreach (var id in job.Inputs) ItemAt(state, id);
+                if (job.Status == "reserved") foreach (var id in job.Inputs) read.ItemAt(id);
             }
         }
         foreach (var contract in state.Ledger.Contracts)
         {
-            PersonAt(state, contract.Seller, false); if (contract.Buyer != 0) PersonAt(state, contract.Buyer, false);
-            if (contract.Carrier != 0) PersonAt(state, contract.Carrier, false);
+            read.PersonAt(contract.Seller); if (contract.Buyer != 0) read.PersonAt(contract.Buyer);
+            if (contract.Carrier != 0) read.PersonAt(contract.Carrier);
             Ensure(contract.Kind is "sale" or "auction" or "transport" && contract.Escrow >= 0 && contract.Price >= 0 && contract.Fee >= 0, "Invalid funded contract.");
             Ensure(contract.PaidAmount is null or >= 0 && contract.PaidQuantity is null or > 0 && contract.PaidQuality is null or (>= 0 and <= 10000) &&
                 (contract.EndedMonth is null || contract.EndedMonth >= 0 && contract.EndedMonth <= state.Month), "Invalid actual settlement history.");
             if (contract.Status == "open")
             {
                 Ensure(contract.PaidAmount is null && contract.EndedMonth is null, "Open contract cannot have a completed payment.");
-                var item = ItemAt(state, contract.Item);
+                var item = read.ItemAt(contract.Item);
                 Ensure(item.Reserved == contract.Reservation && item.Owner == contract.Seller &&
                     state.Ledger.Reservations.Any(r => r.Id == contract.Reservation && r.Active), "Open contract lost cargo ownership or reservation.");
                 if (contract.Kind == "transport") Ensure(contract.Escrow == contract.Fee &&
-                    Metadata(state, item.Id)?.Carrier == contract.Carrier && state.Ledger.Labor.Any(l => l.Id == contract.Labor && l.Active), "Transport lacks physical custody, fee, or labor.");
-                else Ensure(Location(state, item.Id) == contract.Destination, "Listed property left the market.");
+                    read.Metadata(item.Id)?.Carrier == contract.Carrier && state.Ledger.Labor.Any(l => l.Id == contract.Labor && l.Active), "Transport lacks physical custody, fee, or labor.");
+                else Ensure(read.Location(item.Id) == contract.Destination, "Listed property left the market.");
                 if (contract.Kind == "auction") Ensure(contract.Buyer == 0 ? contract.Escrow == 0 : contract.Escrow >= contract.Price, "Auction bid is unfunded.");
             }
             else Ensure(contract.Escrow == 0, "Terminal contract retained escrow.");
         }
         foreach (var array in state.Ledger.Arrays)
         {
-            var item = ItemAt(state, array.Item);
+            var item = read.ItemAt(array.Item);
             Ensure(item.Owner == array.Owner && item.Container == 0 && item.Place == array.Place &&
                 InventoryDefinitions.Definition(item.Definition).Item.Kind == ItemKind.Array, "Installed array lost its actual physical item.");
         }
@@ -150,13 +151,13 @@ public static partial class InventoryEngine
             sequencedEvents.Select(e => e.Sequence).Distinct().Count() == sequencedEvents.Length, "Physical audit stream sequence was reused.");
         foreach (var audit in state.Ledger.Events.Where(e => e.Definition.Length > 0))
         {
-            InventoryDefinitions.Definition(audit.Definition); PersonAt(state, audit.Owner, false);
+            InventoryDefinitions.Definition(audit.Definition); read.PersonAt(audit.Owner);
             Ensure(audit.Sequence > 0 && audit.Quantity > 0 && audit.Place is >= 0 and < 100 && audit.Month <= state.Month &&
                 audit.Kind == (audit.IsLoss ? "physical-loss" : "physical-consumption"), "Invalid typed physical decrement evidence.");
         }
         foreach (var binding in state.Ledger.Bindings)
         {
-            var item = state.Items.SingleOrDefault(i => i.Id == binding.Item);
+            var item = read.FindItem(binding.Item);
             Ensure(binding.Soul > 0 && binding.Established <= state.Month && !string.IsNullOrWhiteSpace(binding.Evidence) &&
                 (item is null || item.BoundSoul == binding.Soul), "Formation contract lost its evidence or soul binding.");
         }

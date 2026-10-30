@@ -1,13 +1,13 @@
 {
   "total": 111,
-  "completed": 47,
-  "completion_percent": 42.3,
-  "own_acceptance_count": 96,
-  "own_acceptance_percent": 86.5,
+  "completed": 48,
+  "completion_percent": 43.2,
+  "own_acceptance_count": 97,
+  "own_acceptance_percent": 87.4,
   "counts": {
-    "done": 47,
+    "done": 48,
     "validated": 49,
-    "in_progress": 15,
+    "in_progress": 14,
     "planned": 0,
     "blocked": 0
   },
@@ -228,11 +228,6 @@
       "status": "validated"
     },
     {
-      "id": "V021-H04",
-      "title": "사건·동적 SoA·지역/관계 인덱스",
-      "status": "in_progress"
-    },
-    {
       "id": "V021-H06",
       "title": "확장 성능 실험·지속 R&D 원장",
       "status": "in_progress"
@@ -334,7 +329,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "021329cca1dba34f66095e3490f79d266d76b1d5",
-  "phase": "게임 기능 개발 마감·최종 전체 검증",
+  "source_commit": "1fc111c84a9ffcc57d4c5587be2cf54f625e96a1",
+  "phase": "최종 성능 병목 보정·측정",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

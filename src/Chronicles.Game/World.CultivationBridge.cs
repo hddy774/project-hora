@@ -139,21 +139,8 @@ public sealed partial class GameWorld
                 Gain(p, p.Realm == Realm.Mortal ? "entry.practice" : "circulation", 1);
                 RecordPeopleLearning(p, p.Realm == Realm.Mortal ? "entry" : "circulation", 1, 0, command.Id);
             }
-            if (error is null)
-            {
-                ScheduleCultivation(p);
-                if (p.Action == ActionKind.Idle && state.Controlled != p.Id)
-                {
-                    metadata = state.Cultivation[p.BodyId];
-                    if (p.GreatPerfection || (p.Realm == Realm.Mortal && metadata.EntryWork >= CultivationPolicyForWorld().RequiredWork(Realm.Mortal)))
-                    {
-                        var next = NextKnownCultivationPath(p);
-                        if (next is not null) error = PrepareWorldCultivation(p,
-                            new(CultivationActionId(p, "prepare"), p.Id, "breakthrough", Data: next), false);
-                        ScheduleCultivation(p);
-                    }
-                }
-            }
+            // A completed ordinary month returns to the shared decision boundary. Readiness is not an
+            // automatic new attempt: food, recovery, care and the next goal must be considered first.
         }
         else if (action == ActionKind.Martial)
         {
@@ -287,6 +274,7 @@ public sealed partial class GameWorld
 
     private void ScheduleCultivation(Person p)
     {
+        // Only already-committed mandatory phases continue; ordinary monthly work is never repeated here.
         if (p.Status != LifeStatus.Alive || !state.Cultivation.TryGetValue(p.BodyId, out var metadata)) return;
         if (metadata.PendingTrial is not null)
         { p.Action = ActionKind.Trial; p.Due = Math.Max(Month + 1, metadata.PendingTrial.Due); p.PendingLayer = metadata.PendingTrial.TargetLayer; return; }
@@ -343,14 +331,25 @@ public sealed partial class GameWorld
         return p.Status != LifeStatus.Alive;
     }
 
-    private CultivationPolicy CultivationPolicyForWorld() => new()
+    private CultivationPolicy CultivationPolicyForWorld() => CultivationPolicyForLaws(state.Laws, state.LawRevision);
+
+    // Duration edits apply to future adopted structures/attempts. This explicit law-edit check never changes
+    // earned work, layers, completion, formation history, reservations or RNG and never repairs corrupt saves.
+    private void ReconcileCultivationLaws(IReadOnlyDictionary<string, long> beforeLaws)
     {
-        Revision = state.LawRevision, EntryMonths = IntLaw("cultivation.entry"), QiMonths = IntLaw("cultivation.qi"),
-        FoundationMonths = IntLaw("cultivation.foundation"), UpperDurationPercent = IntLaw("cultivation.upper"),
-        BaseRisk = IntLaw("cultivation.breakthroughRisk"), TrialRisk = IntLaw("cultivation.breakthroughRisk"),
-        MartialMonthsPerStage = IntLaw("martial.period"), TrialHealthCost = IntLaw("hazard.trialDamage"),
-        QiLifespanMonths = Law("life.qi"), FoundationLifespanMonths = Law("life.foundation"), GoldenCoreLifespanMonths = Law("life.core"),
-        HalfImmortalLifespanMonths = Law("founder.lifespan"), UpperLifespanPercent = IntLaw("life.upperMultiplier")
+        var before = CultivationPolicyForLaws(beforeLaws, Math.Max(1, state.LawRevision - 1));
+        foreach (var person in state.People)
+            CultivationInvariants.Validate(state.Cultivation[person.BodyId], CultivationActorFor(person), before);
+    }
+
+    private static CultivationPolicy CultivationPolicyForLaws(IReadOnlyDictionary<string, long> laws, long revision) => new()
+    {
+        Revision = revision, EntryMonths = (int)laws["cultivation.entry"], QiMonths = (int)laws["cultivation.qi"],
+        FoundationMonths = (int)laws["cultivation.foundation"], UpperDurationPercent = (int)laws["cultivation.upper"],
+        BaseRisk = (int)laws["cultivation.breakthroughRisk"], TrialRisk = (int)laws["cultivation.breakthroughRisk"],
+        MartialMonthsPerStage = (int)laws["martial.period"], TrialHealthCost = (int)laws["hazard.trialDamage"],
+        QiLifespanMonths = laws["life.qi"], FoundationLifespanMonths = laws["life.foundation"], GoldenCoreLifespanMonths = laws["life.core"],
+        HalfImmortalLifespanMonths = laws["founder.lifespan"], UpperLifespanPercent = (int)laws["life.upperMultiplier"]
     };
 
     private CultivationActor CultivationActorFor(Person p)

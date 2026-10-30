@@ -10,6 +10,7 @@ public static class Invariants
     {
         ArgumentNullException.ThrowIfNull(state);
         Require(state.Schema == 1 && state.Month >= 0 && state.Revision >= 0 && state.LawRevision >= 1, "INV-004", "저장/시간 버전");
+        Require(state.DomainSchema == 1, "INV-004", "이전 개발용 저장 형식입니다. 원본 파일은 보존됩니다.");
         Require(Laws.Validate(state.Laws) is null, "INV-003", "법칙 범위");
         Require(state.Places.Count == 100 && state.Places.Select(x => x.Id).SequenceEqual(Enumerable.Range(0, 100)), "INV-002", "정확히 100지점");
         Require(state.Places.GroupBy(x => x.Province).Count() == 10 && state.Places.GroupBy(x => x.Province).All(g => g.Count() == 10), "INV-002", "10주×10지점");
@@ -64,7 +65,7 @@ public static class Invariants
             Require(p.Skills.Values.Concat(p.Understanding.Values).All(v => v is >= 0 and <= 10000), "INV-024", "개인 숙련/이해 범위");
             foreach (var (slot, itemId) in p.Equipment)
                 Require(slot >= 0 && slot < 12 && items.TryGetValue(itemId, out var item) && item.Owner == p.Id &&
-                    item.Container == 0 && item.Quantity == 1 && Catalog.Items[item.Definition].EquipmentSlot == slot, "INV-016", "단일 실물 장착");
+                    item.Container == 0 && item.Quantity == 1 && Inventory.InventoryDefinitions.Definition(item.Definition).OccupiedSlots.Contains(slot), "INV-016", "단일 실물 장착");
         }
         foreach (var soul in state.Souls)
         {
@@ -98,7 +99,7 @@ public static class Invariants
                 Require(state.Items.Where(x => x.Container == item.Id).Sum(x => (long)x.Quantity * Catalog.Items[x.Definition].Weight) <= Catalog.Items[item.Definition].Capacity, "INV-016", "용기 용량");
             if (item.Reserved != 0)
                 Require(state.Contracts.Any(c => c.Id == item.Reserved && c.Status == "open" && c.Item == item.Id) ||
-                    state.People.Any(p => p.Action == ActionKind.Craft && p.ActionTarget == item.Reserved && p.Id == item.Owner), "INV-017", "예약 소유자");
+                    state.Inventory.Reservations.Any(r => r.Id == item.Reserved && r.Active && r.Items.Contains(item.Id)), "INV-017", "예약 소유자");
         }
         foreach (var group in state.Groups)
         {
@@ -116,10 +117,12 @@ public static class Invariants
         foreach (var c in state.Contracts)
         {
             Require(people.ContainsKey(c.Seller) && (c.Buyer == 0 || people.ContainsKey(c.Buyer)) && c.Escrow >= 0, "INV-017", "계약 당사자/예치");
-            Require(c.Status != "open" || (items.TryGetValue(c.Item, out var i) && i.Reserved == c.Id), "INV-017", "계약 실물 예약");
+            Require(c.Status != "open" || (items.TryGetValue(c.Item, out var i) &&
+                state.Inventory.Contracts.Any(contract => contract.Id == c.Id && contract.Reservation == i.Reserved)), "INV-017", "계약 실물 예약");
             Require(c.Status == "open" || c.Escrow == 0, "INV-005", "종결 예치 정산");
         }
-        var money = state.People.Sum(p => p.Money) + state.Groups.Sum(g => g.Money + g.PolicyEscrow) + state.Contracts.Sum(c => c.Escrow);
+        var money = state.People.Sum(p => p.Money) + state.Groups.Sum(g => g.Money + g.PolicyEscrow) + state.Contracts.Sum(c => c.Escrow) +
+            state.Politics.Preparations.Sum(p => p.Escrow);
         var totals = state.Items.GroupBy(i => i.Definition).ToDictionary(g => g.Key, g => g.Sum(i => (long)i.Quantity), StringComparer.Ordinal);
         Require(totals.Keys.All(state.Materials.ContainsKey), "INV-018", "실물 원천 원장 누락");
         foreach (var (definition, flow) in state.Materials)
@@ -129,5 +132,6 @@ public static class Invariants
         Require(money == state.CreatedMoney - state.ConsumedMoney, "INV-018", "영석 보존");
         Require(state.Controlled == 0 || (people.TryGetValue(state.Controlled, out var controlled) && controlled.Status == LifeStatus.Alive), "INV-009", "조작권");
         Require(state.Commands.Keys.SequenceEqual(state.CommandSignatures.Keys) && state.Commands.All(x => x.Key == x.Value.Id && x.Value.Accepted && x.Value.Revision <= state.Revision), "INV-005", "명령 멱등 원장");
+        GameWorld.ValidateDomainState(state);
     }
 }

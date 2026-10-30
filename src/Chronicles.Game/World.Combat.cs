@@ -1,6 +1,7 @@
 using System.Globalization;
 using Chronicles.Game.Combat;
 using Chronicles.Game.Cultivation;
+using Chronicles.Game.People;
 
 namespace Chronicles.Game;
 
@@ -20,6 +21,17 @@ public sealed partial class GameWorld
 
     internal static void ValidateCombatState(GameState snapshot) => CombatMechanics.Validate(snapshot);
 
+    internal void TrimCombatHistory()
+    {
+        var excess = state.Combat.Exchanges.Count - IntLaw("combat.historyLimit");
+        if (excess <= 0) return;
+        var removable = state.Combat.Exchanges.Where(e => !e.Participants.Any(p =>
+            people.TryGetValue(p.Person, out var person) && person.BodyId == p.Body && person.Status == LifeStatus.Alive &&
+            (p.OccupiedUntil > Month || person.Action == ActionKind.Travel && person.ActionData == e.Source && person.Due > Month)))
+            .OrderBy(e => e.Id).Take(excess).Select(e => e.Id).ToHashSet();
+        state.Combat.Pruned += state.Combat.Exchanges.RemoveAll(e => removable.Contains(e.Id));
+    }
+
     internal string? ValidateCombatGuard(Person person, long target)
     {
         if (target == 0) return null;
@@ -33,8 +45,13 @@ public sealed partial class GameWorld
     internal bool TryCancelCombat(Person person, out string? error)
     {
         error = null;
-        if (person.Action != ActionKind.Guard || !person.ActionData.StartsWith("combat:", StringComparison.Ordinal) || person.Due <= Month)
+        if (person.Action is not (ActionKind.Guard or ActionKind.Travel) ||
+            !person.ActionData.StartsWith("combat:", StringComparison.Ordinal) ||
+            !long.TryParse(person.ActionData.AsSpan(7), NumberStyles.None, CultureInfo.InvariantCulture, out var id))
             return false;
+        var occupiedUntil = state.Combat.Exchanges.FirstOrDefault(e => e.Id == id)?.Participants
+            .FirstOrDefault(p => p.Person == person.Id && p.Body == person.BodyId)?.OccupiedUntil ?? 0;
+        if (occupiedUntil <= Month) return false;
         error = "이미 치른 교전·지원의 행동 시간은 완료 시점까지 사용 중입니다.";
         return true;
     }
@@ -86,8 +103,8 @@ public sealed partial class GameWorld
                 if (id == principal.Id || id == opponent.Id || !people.TryGetValue(id, out var person) ||
                     person.Status != LifeStatus.Alive || person.Place != principal.Place ||
                     person.Action != ActionKind.Guard || person.ActionTarget != principal.Id || person.Due < until ||
-                    person.ActionData.StartsWith("combat:", StringComparison.Ordinal) || ValidateCombatGuard(person, principal.Id) is not null ||
-                    !PoliticsLaborAvailable(person, Month, until)) continue;
+                    person.ActionData.Length != 0 || ValidateCombatGuard(person, principal.Id) is not null ||
+                    state.Politics.Labor.Any(r => r.Person == person.Id && r.From < until && Month < r.Until)) continue;
                 var supportCost = CombatMechanics.Exertion(CultivationCombatFor(person).Axes, CultivationPolicyForWorld().FlowPerMonth, rules);
                 if (person.Health <= supportCost) continue;
                 var support = Frame(person);
@@ -114,15 +131,17 @@ public sealed partial class GameWorld
             { damage = Math.Max(1, damage / 2); to.Traits.Remove(ward); }
             to.Health = Math.Max(0, to.Health - damage);
             strikes.Add(new(from.Id, to.Id, chance, roll, hit, damage, coordination, sustainability, supporters.Select(s => s.Person.Id).ToArray()));
-            Gain(from, "combat", hit ? 10 : 3); Gain(to, "combat", hit ? 5 : 2);
+            Gain(from, "combat", hit ? 10 : 3);
             Remember(from, $"combat:{to.Id}", hit ? $"실제 명중·피해 {damage}" : "실제 빗나감", source, 100);
             Remember(to, $"combat:{from.Id}", hit ? $"실제 피격·피해 {damage}" : "실제 회피", source, 100);
         }
         Pay(attackFrame, cost); Commit(attackFrame); Strike(attacker, defender);
         // The attacked actor now has an actual current witness, without acquiring hidden paths, stock or aptitudes.
         if (!defender.KnownPeople.Contains(attacker.Id)) { defender.KnownPeople.Add(attacker.Id); defender.KnownPeople.Sort(); }
-        defender.ObservedPeople[attacker.Id] = new(attacker.Id, attacker.Name, attacker.Realm, attacker.Layer, attacker.Place,
-            Month, attacker.Gestates, Month - attacker.Born >= PeopleMaturityMonths(attacker));
+        var witnessed = new PersonObservation(attacker.Id, attacker.Name, attacker.Realm, attacker.Layer, attacker.Place,
+            Month, attacker.Species == "human" ? attacker.Gestates : null, Month - attacker.Born >= PeopleMaturityMonths(attacker));
+        defender.ObservedPeople[attacker.Id] = witnessed;
+        TrimCognition(defender);
         var reaction = new CombatReaction(defender.Id, "guard", 0, -1, -1, "실제로 목격한 교전과 자기 상태");
         if (defender.Health == 0) reaction = reaction with { Choice = "incapacitated" };
         else if (state.Controlled == defender.Id) reaction = reaction with { Choice = "controlled", Evidence = "조작 인물의 후속 선택을 보존" };
@@ -130,7 +149,7 @@ public sealed partial class GameWorld
             reaction = reaction with { Choice = "busy", Evidence = "기존 실제 작업을 덮어쓰지 않는 수동 방어" };
         else
         {
-            var observed = defender.ObservedPeople[attacker.Id];
+            var observed = witnessed;
             var wantsRetreat = defender.Health < defenseFrame.Before - defenseFrame.Before / 4 ||
                 defender.Health < 35 || observed.Realm > defender.Realm || defender.Personality[6] + defender.Personality[10] < 100;
             var destination = defender.KnownPlaces.Order().FirstOrDefault(id => state.Places[defender.Place].Neighbors.Contains(id) &&
@@ -138,14 +157,15 @@ public sealed partial class GameWorld
             var defenseCost = CombatMechanics.Exertion(CultivationCombatFor(defender).Axes, CultivationPolicyForWorld().FlowPerMonth, rules);
             if (wantsRetreat && destination >= 0 && !defender.Sealed && defender.Health > defenseCost && PeopleActionError(defender, "travel") is null)
             {
-                var chance = CombatMechanics.EscapeChance(CultivationCombatFor(defender).Axes, CultivationCombatFor(attacker).Axes);
+                var chance = Math.Clamp(CombatMechanics.EscapeChance(CultivationCombatFor(defender).Axes, CultivationCombatFor(attacker).Axes) +
+                    PeopleFortuneModifier(defender, FortuneEventKind.Escape), 0, 10000);
                 var roll = Roll(10000); Pay(defenseFrame, defenseCost); Commit(defenseFrame);
                 reaction = new(defender.Id, "escape-failed", chance, roll, destination, "실제 피격·자기 여력·현장 관측한 통로의 이탈 판정");
                 if (roll < chance)
                 {
-                    defender.Action = ActionKind.Idle; defender.Due = 0;
+                    defender.Action = ActionKind.Idle; defender.Due = 0; defender.ActionTarget = 0; defender.ActionData = "";
                     if (Start(defender, "travel", destination, "") is null)
-                    { defender.Due = Math.Max(defender.Due, until); reaction = reaction with { Choice = "retreat" }; }
+                    { defender.ActionData = source; defender.Due = Math.Max(defender.Due, until); reaction = reaction with { Choice = "retreat" }; }
                     else Commit(defenseFrame);
                 }
             }
@@ -168,6 +188,7 @@ public sealed partial class GameWorld
             EndLife(victim, 2, "전투 사망");
         Event("전투", attacker.Id, defender.Id, $"{attacker.Name}→{defender.Name} 실제 교전·피해 {strikes[0].Damage}·" +
             $"{(strikes[0].Hit ? "명중" : "빗나감")}·반응 {reaction.Choice}", source);
+        TrimCombatHistory();
         CombatMechanics.Validate(state);
         return null;
     }

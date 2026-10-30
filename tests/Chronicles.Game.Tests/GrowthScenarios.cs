@@ -12,14 +12,20 @@ internal static class GrowthScenarios
             foreach (var seed in new ulong[] { 42, 98, 2026 })
             {
                 var watch = Stopwatch.StartNew();
-                var world = GameWorld.Create(seed, new Dictionary<string, long> { ["birth.kinship"] = scenario == 0 ? 1 : 0 });
+                // Scenario a uses actual product defaults; it must detect an accidental default-policy change.
+                var world = GameWorld.Create(seed, scenario == 0 ? null : new Dictionary<string, long> { ["birth.kinship"] = 0 });
+                var opening = world.Checkpoint();
+                if (opening.Laws["birth.kinship"] != (scenario == 0 ? 1 : 0) || opening.Laws["birth.bothParents"] != 1 ||
+                    opening.Laws["birth.minimumRealm"] != (long)Realm.GoldenCore)
+                    throw new InvalidOperationException("Growth scenarios must retain the selected kinship policy and both-parents Golden Core fertility boundary.");
                 for (var month = 120; month <= 6000; month += 120)
                 {
                     world.AdvanceTo(month);
                     if (scenario == 1 && month == 240)
                         foreach (var profile in Enumerable.Range(0, 2))
                         {
-                            var result = world.Execute(new($"scenario-external-{profile}", 0, "create", 0, profile, $"명시 편입 {profile + 1}"));
+                            var result = world.Execute(new($"scenario-external-{profile}", 0, "create", 0, Data:
+                                JsonSerializer.Serialize(new { Name = $"명시 편입 {profile + 1}", Species = "human", Gestates = profile == 1 })));
                             if (!result.Accepted) throw new InvalidOperationException(result.Message);
                         }
                 }
@@ -36,7 +42,10 @@ internal static class GrowthScenarios
                     mortal = s.People.Count(p => p.Status == LifeStatus.Alive && p.Realm == Realm.Mortal),
                     martial = s.People.Count(p => p.Status == LifeStatus.Alive && p.Martial > 0),
                     sects = s.Groups.Count(g => g.Kind == GroupKind.Sect && !g.Dissolved),
-                    firstDescendantCore = s.Events.FirstOrDefault(e => e.Kind == "돌파" && e.Text.Contains("금단경", StringComparison.Ordinal))?.Month,
+                    firstDescendantCore = s.People.Where(p => p.ParentOne != 0).SelectMany(p => s.Cultivation[p.BodyId].Formations)
+                        .Where(f => f.Realm == Realm.GoldenCore).Select(f => (long?)f.Month).Min(),
+                    explicitOutsiders = scenario == 1 ? 2 : 0,
+                    outsiderProfile = "explicit public create JSON: adult human donor and gestator; Mortal, zero assets and no granted knowledge/mastery",
                     finalHash = world.StateHash(), usedLaws = s.Laws });
                 Console.WriteLine($"GROWTH {scenario}/{seed}: living={s.People.Count(p => p.Status == LifeStatus.Alive)}, births={s.BirthCount}");
             }

@@ -44,6 +44,7 @@ public sealed partial class GameWorld
             state.LawHistory.Add(new(Month, revision, key, state.Laws[key], value));
         state.Laws = candidate; state.LawRevision = revision;
         if (changes.ContainsKey("ai.beliefBudget")) foreach (var person in state.People) TrimCognition(person);
+        if (changes.ContainsKey("combat.historyLimit")) TrimCombatHistory();
         Event("법칙", 0, 0, $"세계 법칙 {changed.Length}개 적용·r{revision}", source);
         return null;
     }

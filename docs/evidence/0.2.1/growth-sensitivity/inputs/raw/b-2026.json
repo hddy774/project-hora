@@ -1,0 +1,6944 @@
+{
+  "schema_version": 2,
+  "kind": "seonro-growth-cohorts",
+  "environment": {
+    "sourceCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "sourceWorktreeClean": true,
+    "buildConfiguration": "Release",
+    "platform": "host",
+    "engine": "none",
+    "device": "runnervm48cm3",
+    "runtime": ".NET 10.0.14",
+    "os": "Ubuntu 24.04.5 LTS",
+    "architecture": "X64",
+    "cpu": 4,
+    "totalAvailableMemoryBytes": 16760340480,
+    "precedingFunctionalSelection": "INV-001/002/011",
+    "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+    "thermalState": "GitHub \uD638\uC2A4\uD2B8 VM\u00B7\uBB3C\uB9AC \uD638\uC2A4\uD2B8\uC758 \uC5F4 \uC0C1\uD0DC \uBBF8\uCE21\uC815",
+    "powerState": "GitHub \uD638\uC2A4\uD2B8 VM\u00B7\uBB3C\uB9AC \uD638\uC2A4\uD2B8\uC758 \uC804\uB825\u00B7\uC804\uC6D0 \uC0C1\uD0DC \uBBF8\uCE21\uC815"
+  },
+  "sourceCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "productSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "requestedCases": [
+    {
+      "scenario": "b",
+      "seed": 2026
+    }
+  ],
+  "requested_complete": true,
+  "complete": false,
+  "status": "requested-completed",
+  "runningCase": null,
+  "plannedCases": 9,
+  "completedCases": 1,
+  "samplesPerScenario": 3,
+  "horizonMonths": 6000,
+  "observationIntervalMonths": 120,
+  "totalElapsedMs": 5539644.1209,
+  "completionMeaning": "completed means the finite observation finished; it is not a claim that the selected preset is balanced or indefinitely viable",
+  "reports": [
+    {
+      "scenario": "b",
+      "selectedDefault": false,
+      "assumption": "b: comparison only; kinship restricted; exactly two explicit asset-free Mortal outsiders at month 240",
+      "seed": 2026,
+      "status": "completed",
+      "error": null,
+      "observedThroughMonth": 6000,
+      "timeSeries": [
+        {
+          "month": 0,
+          "population": 2,
+          "totalPeople": 2,
+          "founderDescendants": 0,
+          "everFounderDescendants": 0,
+          "generation": 0,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 0,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 0,
+          "deaths": 0,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 0,
+          "simulationMs": 0,
+          "caseElapsedMs": 194.8196
+        },
+        {
+          "month": 120,
+          "population": 3,
+          "totalPeople": 3,
+          "founderDescendants": 1,
+          "everFounderDescendants": 1,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 1,
+          "mortalWithoutMartial": 1,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 1,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 1,
+          "deaths": 0,
+          "intervalBirths": 1,
+          "intervalDeaths": 0,
+          "explicitArrivals": 0,
+          "simulationMs": 18077.3052,
+          "caseElapsedMs": 18480.5256
+        },
+        {
+          "month": 240,
+          "population": 6,
+          "totalPeople": 6,
+          "founderDescendants": 2,
+          "everFounderDescendants": 2,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 4,
+          "mortalWithoutMartial": 4,
+          "martial": 0,
+          "descendantMortal": 2,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 1,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 2,
+          "deaths": 0,
+          "intervalBirths": 1,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 35866.8955,
+          "caseElapsedMs": 36862.3464
+        },
+        {
+          "month": 360,
+          "population": 7,
+          "totalPeople": 7,
+          "founderDescendants": 3,
+          "everFounderDescendants": 3,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 4,
+          "mortalWithoutMartial": 4,
+          "martial": 0,
+          "descendantMortal": 2,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 3,
+          "deaths": 0,
+          "intervalBirths": 1,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 63438.9102,
+          "caseElapsedMs": 64607.4844
+        },
+        {
+          "month": 480,
+          "population": 6,
+          "totalPeople": 7,
+          "founderDescendants": 2,
+          "everFounderDescendants": 3,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 3,
+          "mortalWithoutMartial": 3,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 3,
+          "deaths": 1,
+          "intervalBirths": 0,
+          "intervalDeaths": 1,
+          "explicitArrivals": 2,
+          "simulationMs": 103024.055,
+          "caseElapsedMs": 104423.7886
+        },
+        {
+          "month": 600,
+          "population": 6,
+          "totalPeople": 7,
+          "founderDescendants": 2,
+          "everFounderDescendants": 3,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 3,
+          "mortalWithoutMartial": 3,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 3,
+          "deaths": 1,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 154430.5471,
+          "caseElapsedMs": 156091.5279
+        },
+        {
+          "month": 720,
+          "population": 6,
+          "totalPeople": 7,
+          "founderDescendants": 2,
+          "everFounderDescendants": 3,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 3,
+          "mortalWithoutMartial": 3,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 3,
+          "deaths": 1,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 212542.645,
+          "caseElapsedMs": 214490.8694
+        },
+        {
+          "month": 840,
+          "population": 7,
+          "totalPeople": 8,
+          "founderDescendants": 3,
+          "everFounderDescendants": 4,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 4,
+          "mortalWithoutMartial": 4,
+          "martial": 0,
+          "descendantMortal": 2,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 4,
+          "deaths": 1,
+          "intervalBirths": 1,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 286082.50299999997,
+          "caseElapsedMs": 288358.7014
+        },
+        {
+          "month": 960,
+          "population": 7,
+          "totalPeople": 8,
+          "founderDescendants": 3,
+          "everFounderDescendants": 4,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 4,
+          "mortalWithoutMartial": 4,
+          "martial": 0,
+          "descendantMortal": 2,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 4,
+          "deaths": 1,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 384386.56719999993,
+          "caseElapsedMs": 387053.1672
+        },
+        {
+          "month": 1080,
+          "population": 5,
+          "totalPeople": 9,
+          "founderDescendants": 3,
+          "everFounderDescendants": 5,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 2,
+          "mortalWithoutMartial": 2,
+          "martial": 0,
+          "descendantMortal": 2,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 5,
+          "deaths": 4,
+          "intervalBirths": 1,
+          "intervalDeaths": 3,
+          "explicitArrivals": 2,
+          "simulationMs": 476883.66779999994,
+          "caseElapsedMs": 479985.4768
+        },
+        {
+          "month": 1200,
+          "population": 4,
+          "totalPeople": 9,
+          "founderDescendants": 2,
+          "everFounderDescendants": 5,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 1,
+          "mortalWithoutMartial": 1,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 5,
+          "deaths": 5,
+          "intervalBirths": 0,
+          "intervalDeaths": 1,
+          "explicitArrivals": 2,
+          "simulationMs": 562273.7585,
+          "caseElapsedMs": 565872.4171
+        },
+        {
+          "month": 1320,
+          "population": 4,
+          "totalPeople": 9,
+          "founderDescendants": 2,
+          "everFounderDescendants": 5,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 1,
+          "mortalWithoutMartial": 1,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 5,
+          "deaths": 5,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 637764.0874,
+          "caseElapsedMs": 641869.794
+        },
+        {
+          "month": 1440,
+          "population": 4,
+          "totalPeople": 9,
+          "founderDescendants": 2,
+          "everFounderDescendants": 5,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 1,
+          "mortalWithoutMartial": 1,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 5,
+          "deaths": 5,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 726723.7947,
+          "caseElapsedMs": 731372.763
+        },
+        {
+          "month": 1560,
+          "population": 5,
+          "totalPeople": 10,
+          "founderDescendants": 3,
+          "everFounderDescendants": 6,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 2,
+          "mortalWithoutMartial": 2,
+          "martial": 0,
+          "descendantMortal": 2,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 6,
+          "deaths": 5,
+          "intervalBirths": 1,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 818239.6161,
+          "caseElapsedMs": 823443.2883
+        },
+        {
+          "month": 1680,
+          "population": 5,
+          "totalPeople": 10,
+          "founderDescendants": 3,
+          "everFounderDescendants": 6,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 2,
+          "mortalWithoutMartial": 2,
+          "martial": 0,
+          "descendantMortal": 2,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 6,
+          "deaths": 5,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 928382.6132,
+          "caseElapsedMs": 934193.1093
+        },
+        {
+          "month": 1800,
+          "population": 5,
+          "totalPeople": 11,
+          "founderDescendants": 3,
+          "everFounderDescendants": 7,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 1,
+          "mortalWithoutMartial": 1,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 7,
+          "deaths": 6,
+          "intervalBirths": 1,
+          "intervalDeaths": 1,
+          "explicitArrivals": 2,
+          "simulationMs": 1033344.6509,
+          "caseElapsedMs": 1039805.8834
+        },
+        {
+          "month": 1920,
+          "population": 5,
+          "totalPeople": 12,
+          "founderDescendants": 3,
+          "everFounderDescendants": 8,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 2,
+          "mortalWithoutMartial": 2,
+          "martial": 0,
+          "descendantMortal": 2,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 1,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 8,
+          "deaths": 7,
+          "intervalBirths": 1,
+          "intervalDeaths": 1,
+          "explicitArrivals": 2,
+          "simulationMs": 1132463.1254,
+          "caseElapsedMs": 1139604.0762
+        },
+        {
+          "month": 2040,
+          "population": 5,
+          "totalPeople": 12,
+          "founderDescendants": 3,
+          "everFounderDescendants": 8,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 1,
+          "mortalWithoutMartial": 1,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 8,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 1225790.6684,
+          "caseElapsedMs": 1233651.5739
+        },
+        {
+          "month": 2160,
+          "population": 5,
+          "totalPeople": 12,
+          "founderDescendants": 3,
+          "everFounderDescendants": 8,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 8,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 1321961.2886,
+          "caseElapsedMs": 1330582.2919
+        },
+        {
+          "month": 2280,
+          "population": 5,
+          "totalPeople": 12,
+          "founderDescendants": 3,
+          "everFounderDescendants": 8,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 8,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 1416834.7076,
+          "caseElapsedMs": 1426298.0271
+        },
+        {
+          "month": 2400,
+          "population": 6,
+          "totalPeople": 13,
+          "founderDescendants": 4,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 1,
+          "mortalWithoutMartial": 1,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 7,
+          "intervalBirths": 1,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 1536763.8659,
+          "caseElapsedMs": 1547167.5866
+        },
+        {
+          "month": 2520,
+          "population": 6,
+          "totalPeople": 13,
+          "founderDescendants": 4,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 1,
+          "mortalWithoutMartial": 1,
+          "martial": 0,
+          "descendantMortal": 1,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 1646996.1391,
+          "caseElapsedMs": 1658376.4183
+        },
+        {
+          "month": 2640,
+          "population": 6,
+          "totalPeople": 13,
+          "founderDescendants": 4,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 1,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 1770668.7475,
+          "caseElapsedMs": 1783082.4249
+        },
+        {
+          "month": 2760,
+          "population": 6,
+          "totalPeople": 13,
+          "founderDescendants": 4,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 1895909.7106,
+          "caseElapsedMs": 1909410.4705
+        },
+        {
+          "month": 2880,
+          "population": 6,
+          "totalPeople": 13,
+          "founderDescendants": 4,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 2022081.9069,
+          "caseElapsedMs": 2036620.8095
+        },
+        {
+          "month": 3000,
+          "population": 6,
+          "totalPeople": 13,
+          "founderDescendants": 4,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 2134636.6442,
+          "caseElapsedMs": 2150289.9634
+        },
+        {
+          "month": 3120,
+          "population": 6,
+          "totalPeople": 13,
+          "founderDescendants": 4,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 2268349.2574,
+          "caseElapsedMs": 2285147.908
+        },
+        {
+          "month": 3240,
+          "population": 6,
+          "totalPeople": 13,
+          "founderDescendants": 4,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 7,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 2390905.5612,
+          "caseElapsedMs": 2408863.1579
+        },
+        {
+          "month": 3360,
+          "population": 5,
+          "totalPeople": 13,
+          "founderDescendants": 3,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 8,
+          "intervalBirths": 0,
+          "intervalDeaths": 1,
+          "explicitArrivals": 2,
+          "simulationMs": 2508065.0275999997,
+          "caseElapsedMs": 2527277.4844
+        },
+        {
+          "month": 3480,
+          "population": 5,
+          "totalPeople": 13,
+          "founderDescendants": 3,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 8,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 2642404.3795999996,
+          "caseElapsedMs": 2662841.9216
+        },
+        {
+          "month": 3600,
+          "population": 4,
+          "totalPeople": 13,
+          "founderDescendants": 2,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 9,
+          "intervalBirths": 0,
+          "intervalDeaths": 1,
+          "explicitArrivals": 2,
+          "simulationMs": 2775291.1646999996,
+          "caseElapsedMs": 2797034.354
+        },
+        {
+          "month": 3720,
+          "population": 3,
+          "totalPeople": 13,
+          "founderDescendants": 1,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 1,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 10,
+          "intervalBirths": 0,
+          "intervalDeaths": 1,
+          "explicitArrivals": 2,
+          "simulationMs": 2908321.0399999996,
+          "caseElapsedMs": 2931378.7434
+        },
+        {
+          "month": 3840,
+          "population": 3,
+          "totalPeople": 13,
+          "founderDescendants": 1,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 10,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 3039382.4155999995,
+          "caseElapsedMs": 3063865.998
+        },
+        {
+          "month": 3960,
+          "population": 3,
+          "totalPeople": 13,
+          "founderDescendants": 1,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 10,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 3174613.5848999997,
+          "caseElapsedMs": 3200531.0306
+        },
+        {
+          "month": 4080,
+          "population": 3,
+          "totalPeople": 13,
+          "founderDescendants": 1,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 1,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 10,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 3297767.6474999995,
+          "caseElapsedMs": 3325191.7483
+        },
+        {
+          "month": 4200,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 1,
+          "explicitArrivals": 2,
+          "simulationMs": 3419958.6874999995,
+          "caseElapsedMs": 3448836.8169
+        },
+        {
+          "month": 4320,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 3551663.6808999996,
+          "caseElapsedMs": 3582022.9584
+        },
+        {
+          "month": 4440,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 3662461.3558999994,
+          "caseElapsedMs": 3694352.3129
+        },
+        {
+          "month": 4560,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 3795688.0372999995,
+          "caseElapsedMs": 3829151.899
+        },
+        {
+          "month": 4680,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 3934566.8048999994,
+          "caseElapsedMs": 3969598.2003
+        },
+        {
+          "month": 4800,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 4049035.8964999993,
+          "caseElapsedMs": 4085807.3074
+        },
+        {
+          "month": 4920,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 4189026.6822999995,
+          "caseElapsedMs": 4227476.1132
+        },
+        {
+          "month": 5040,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 4330166.141799999,
+          "caseElapsedMs": 4370305.2182
+        },
+        {
+          "month": 5160,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 4460468.884799999,
+          "caseElapsedMs": 4502348.8626
+        },
+        {
+          "month": 5280,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 4607127.370699999,
+          "caseElapsedMs": 4650800.013
+        },
+        {
+          "month": 5400,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 4754031.460499999,
+          "caseElapsedMs": 4799584.0786
+        },
+        {
+          "month": 5520,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 4893366.442899999,
+          "caseElapsedMs": 4940734.6323
+        },
+        {
+          "month": 5640,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 5034746.234999999,
+          "caseElapsedMs": 5083950.0875
+        },
+        {
+          "month": 5760,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 5193906.3774999995,
+          "caseElapsedMs": 5245073.4109
+        },
+        {
+          "month": 5880,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 5340789.3713,
+          "caseElapsedMs": 5393808.7582
+        },
+        {
+          "month": 6000,
+          "population": 2,
+          "totalPeople": 13,
+          "founderDescendants": 0,
+          "everFounderDescendants": 9,
+          "generation": 1,
+          "livingGeneration": 0,
+          "goldenCoreOrHigher": 2,
+          "descendantGoldenCoreOrHigher": 0,
+          "mortal": 0,
+          "mortalWithoutMartial": 0,
+          "martial": 0,
+          "descendantMortal": 0,
+          "descendantMartial": 0,
+          "households": 1,
+          "families": 1,
+          "sects": 1,
+          "dynasties": 0,
+          "territorylessDynasties": 0,
+          "activeMarkets": 0,
+          "activeWorkshops": 0,
+          "activeSettlements": 0,
+          "births": 9,
+          "deaths": 11,
+          "intervalBirths": 0,
+          "intervalDeaths": 0,
+          "explicitArrivals": 2,
+          "simulationMs": 5483860.481699999,
+          "caseElapsedMs": 5538830.2108
+        }
+      ],
+      "externalArrivals": [
+        {
+          "month": 240,
+          "person": 2601,
+          "species": "human",
+          "gestates": false,
+          "born": 24,
+          "realm": "Mortal",
+          "money": 0,
+          "items": 0,
+          "skills": 0,
+          "knowledge": 0
+        },
+        {
+          "month": 240,
+          "person": 2605,
+          "species": "human",
+          "gestates": true,
+          "born": 24,
+          "realm": "Mortal",
+          "money": 0,
+          "items": 0,
+          "skills": 0,
+          "knowledge": 0
+        }
+      ],
+      "usedLaws": {
+        "ai.beliefBudget": 48,
+        "ai.beliefLifetime": 120,
+        "ai.currencyWeight": 600,
+        "ai.ecologyFailureMonths": 3,
+        "ai.familyWeight": 60,
+        "ai.observationBudget": 4,
+        "ai.planBudget": 16,
+        "ai.studyWeight": 50,
+        "birth.bothParents": 1,
+        "birth.chance": 300,
+        "birth.enabled": 1,
+        "birth.fertility": 80,
+        "birth.gestation": 9,
+        "birth.healthCost": 12,
+        "birth.interval": 120,
+        "birth.kinship": 0,
+        "birth.martialEquivalent": 0,
+        "birth.maturity": 216,
+        "birth.minimumRealm": 3,
+        "care.age": 60,
+        "care.food": 1,
+        "care.interval": 4,
+        "combat.baseDamage": 20,
+        "combat.baseExertion": 4,
+        "combat.equipmentWear": 1,
+        "combat.exchangeMonths": 1,
+        "combat.historyLimit": 256,
+        "combat.hitMaximum": 9500,
+        "combat.hitMinimum": 1000,
+        "combat.maximumSupport": 2,
+        "cultivation.breakthroughRisk": 300,
+        "cultivation.entry": 36,
+        "cultivation.foundation": 1200,
+        "cultivation.qi": 600,
+        "cultivation.recovery": 2,
+        "cultivation.sourceCost": 2,
+        "cultivation.upper": 150,
+        "currency.stoneValue": 1,
+        "ecology.disasterChance": 20,
+        "ecology.foodUse": 1,
+        "ecology.historyChanges": 512,
+        "ecology.regrowth": 20,
+        "ecology.seasonStrength": 25,
+        "ecology.sourceCapacity": 1000,
+        "ecology.spoilage": 10,
+        "economy.craftDuration": 1,
+        "economy.defaultUnitPrice": 1,
+        "economy.facilityActivityMonths": 6,
+        "economy.foodReserveMonths": 3,
+        "economy.gatherYield": 12,
+        "economy.historyMonths": 24,
+        "economy.saleBatch": 12,
+        "economy.travelDuration": 1,
+        "exploration.capacity": 1,
+        "exploration.entryMonths": 3,
+        "exploration.foodCost": 2,
+        "exploration.injury": 10,
+        "exploration.minimumRealm": 1,
+        "exploration.openMonths": 4,
+        "exploration.openPeriod": 12,
+        "exploration.rewardQuantity": 3,
+        "exploration.risk": 1000,
+        "exploration.toolWear": 1,
+        "founder.age": 1200,
+        "founder.ascensionProtection": 1200,
+        "founder.initialFood": 360,
+        "founder.initialMoney": 1000,
+        "founder.lifespan": 1200000,
+        "genetics.mutationChance": 10000,
+        "genetics.mutationMagnitude": 200,
+        "hazard.bondDamage": 1,
+        "hazard.portalChance": 10,
+        "hazard.sealChance": 100,
+        "hazard.sealDuration": 120,
+        "hazard.structureDamage": 2,
+        "hazard.trialDamage": 10,
+        "hazard.turbidity": 95,
+        "inventory.carryCapacity": 500,
+        "inventory.extractionWork": 25,
+        "inventory.productionWork": 100,
+        "inventory.professionalWork": 100,
+        "knowledge.copyInk": 1,
+        "knowledge.copyMonths": 1,
+        "knowledge.copyPaper": 1,
+        "knowledge.maximumActionMonths": 120,
+        "knowledge.misreadChance": 100,
+        "knowledge.practiceMinimum": 1,
+        "knowledge.teachMinimum": 1,
+        "life.core": 7200,
+        "life.foundation": 3600,
+        "life.mortal": 960,
+        "life.qi": 1800,
+        "life.upperMultiplier": 200,
+        "martial.period": 120,
+        "politics.activityGrant": 5,
+        "politics.foundCost": 100,
+        "politics.founderRealm": 0,
+        "politics.policyCost": 10,
+        "politics.preparationMonths": 1,
+        "politics.preparationWorkers": 1,
+        "politics.reliefThreshold": 10,
+        "politics.salary": 1,
+        "politics.sectLimit": 10,
+        "politics.taxBasisPoints": 100,
+        "politics.tributeBasisPoints": 1000,
+        "soul.crossing": 120,
+        "soul.enabledRoutes": 8191,
+        "soul.minimumRealm": 5,
+        "soul.pactDuration": 120,
+        "soul.splitCost": 30,
+        "soul.splitLimit": 1,
+        "soul.waitingFirst": 1,
+        "world.capacityRealm": 10
+      },
+      "provisionalPolicies": [
+        {
+          "id": "birth.maturity",
+          "value": 216,
+          "defaultValue": 216,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC778\uAC04\uD615 \uAE30\uBCF8 18\uB144"
+        },
+        {
+          "id": "birth.gestation",
+          "value": 9,
+          "defaultValue": 9,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC778\uAC04\uD615 \uAE30\uBCF8"
+        },
+        {
+          "id": "birth.interval",
+          "value": 120,
+          "defaultValue": 120,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC591\uC721/\uC0DD\uACC4 \uC5EC\uC720\uB97C \uD3EC\uD568\uD55C \uCD08\uAE30 \uBCF4\uC815"
+        },
+        {
+          "id": "birth.fertility",
+          "value": 80,
+          "defaultValue": 80,
+          "unit": "%",
+          "rationale": "\uC218\uBA85\uACFC \uAC00\uC784 \uC218\uBA85 \uBD84\uB9AC"
+        },
+        {
+          "id": "birth.chance",
+          "value": 300,
+          "defaultValue": 300,
+          "unit": "\uB9CC\uBD84\uC728/\uC6D4",
+          "rationale": "\uC131\uC7A5\uACE1\uC120 \uBCF4\uC815 \uB300\uC0C1"
+        },
+        {
+          "id": "birth.healthCost",
+          "value": 12,
+          "defaultValue": 12,
+          "unit": "\uAC74\uAC15\uC810",
+          "rationale": "\uBB34\uC0C1 \uCD9C\uC0B0 \uBC29\uC9C0"
+        },
+        {
+          "id": "care.interval",
+          "value": 4,
+          "defaultValue": 4,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uD55C \uBC88\uC758 \uB3CC\uBD04\uC740 \uC2E4\uC81C \uC591\uC721\uC790 \uC791\uC5C5 \uD55C \uB2EC\uC744 \uC0AC\uC6A9"
+        },
+        {
+          "id": "care.age",
+          "value": 60,
+          "defaultValue": 60,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uCD08\uAE30 \uC778\uAC04\uD615 \uB2E4\uC12F \uC0B4\uAE4C\uC9C0 \uB3CC\uBD04 \uB178\uB3D9"
+        },
+        {
+          "id": "care.food",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C/\uC791\uC5C5",
+          "rationale": "\uC0DD\uD65C \uC18C\uBE44\uC640 \uAD6C\uBD84\uD55C \uC591\uC721 \uD65C\uB3D9\uC758 \uC2E4\uC81C \uD22C\uC785"
+        },
+        {
+          "id": "genetics.mutationMagnitude",
+          "value": 200,
+          "defaultValue": 200,
+          "unit": "\uC790\uC9C8\uC810",
+          "rationale": "\uD604\uC7AC \uC789\uD0DC \uC6D0\uD615\uC5D0 \uACE0\uC815\u00B7\uC9C4\uD589 \uC911 \uC784\uC2E0 \uC7AC\uCD94\uCCA8 \uC5C6\uC74C"
+        },
+        {
+          "id": "genetics.mutationChance",
+          "value": 10000,
+          "defaultValue": 10000,
+          "unit": "\uB9CC\uBD84\uC728",
+          "rationale": "\uC120\uCC9C \uC6D0\uD615\uB9CC \uB300\uC0C1\u00B7\uD559\uC2B5/\uAE30\uC608 \uC219\uB828 \uBE44\uC720\uC804"
+        },
+        {
+          "id": "founder.lifespan",
+          "value": 1200000,
+          "defaultValue": 1200000,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC0AC\uC6A9\uC790 \uC704\uC784 \uC7A0\uC815 100000\uB144"
+        },
+        {
+          "id": "founder.age",
+          "value": 1200,
+          "defaultValue": 1200,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uACBD\uC9C0 \uAD6C\uC870\uB294 \uCD08\uAE30 \uC870\uAC74\u00B7\uAC00\uC9DC \uACFC\uAC70 \uC5C6\uC74C"
+        },
+        {
+          "id": "founder.ascensionProtection",
+          "value": 1200,
+          "defaultValue": 1200,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uD6C4\uB300 \uB3C5\uB9BD\uAE4C\uC9C0\uC758 \uAE30\uBCF8 \uBCF4\uD638\u00B70\uC774\uBA74 \uC5C6\uC74C"
+        },
+        {
+          "id": "founder.initialFood",
+          "value": 360,
+          "defaultValue": 360,
+          "unit": "\uAC1C/\uC778",
+          "rationale": "\uCC3D\uC138 \uC790\uC0B0 \uCD9C\uCC98\uC5D0 \uAE30\uB85D"
+        },
+        {
+          "id": "founder.initialMoney",
+          "value": 1000,
+          "defaultValue": 1000,
+          "unit": "\uAC1C/\uC778",
+          "rationale": "\uCC3D\uC138 \uC790\uC0B0 \uCD9C\uCC98\uC5D0 \uAE30\uB85D"
+        },
+        {
+          "id": "cultivation.entry",
+          "value": 36,
+          "defaultValue": 36,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC0C8 \uC721\uC2E0\uC5D0\uC11C \uCC44\uD0DD\u00B7\uAE30\uC874 \uBAA9\uD45C\uC640 \uC9C4\uCC99 \uBCF4\uC874"
+        },
+        {
+          "id": "cultivation.qi",
+          "value": 600,
+          "defaultValue": 600,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uADE0\uD615 50.00 \uCD1D 50\uB144\u00B7\uAE30\uC874 \uC721\uC2E0\uC758 \uCC44\uD0DD \uBAA9\uD45C \uBCF4\uC874"
+        },
+        {
+          "id": "cultivation.foundation",
+          "value": 1200,
+          "defaultValue": 1200,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC0C8 \uD615\uC131\uC5D0\uC11C \uCC44\uD0DD\u00B7\uC900\uBE44 \uC911 \uB3CC\uD30C\uC758 \uAE30\uAC04/\uC218\uBA85 \uBCF4\uC874"
+        },
+        {
+          "id": "cultivation.upper",
+          "value": 150,
+          "defaultValue": 150,
+          "unit": "%",
+          "rationale": "\uC0C8 \uD615\uC131\uC758 \uC7A0\uC815 \uBE44\uC728\u00B7\uAE30\uC874 \uD615\uC131 \uAE30\uB85D/\uC9C4\uCC99 \uBCF4\uC874"
+        },
+        {
+          "id": "cultivation.breakthroughRisk",
+          "value": 300,
+          "defaultValue": 300,
+          "unit": "\uB9CC\uBD84\uC728",
+          "rationale": "\uC790\uC9C8\u00B7\uC900\uBE44\u00B7\uACBD\uB85C \uC601\uD5A5 \uBCC4\uB3C4"
+        },
+        {
+          "id": "cultivation.sourceCost",
+          "value": 2,
+          "defaultValue": 2,
+          "unit": "\uAC1C/\uC6D4",
+          "rationale": "\uC9C0\uC5ED \uC2E4\uC81C \uACF5\uAE09\u00B7\uD63C\uC7A1"
+        },
+        {
+          "id": "cultivation.recovery",
+          "value": 2,
+          "defaultValue": 2,
+          "unit": "\uAC74\uAC15\uC810/\uC6D4",
+          "rationale": "\uD68C\uBCF5\uC740 \uB17C\uB9AC \uC2DC\uAC04 \uC18C\uBE44"
+        },
+        {
+          "id": "martial.period",
+          "value": 120,
+          "defaultValue": 120,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uBB34\uC608 \uB3C5\uB9BD 10\uACBD\uC9C0"
+        },
+        {
+          "id": "combat.baseDamage",
+          "value": 20,
+          "defaultValue": 20,
+          "unit": "\uAC74\uAC15\uC810",
+          "rationale": "\uC5EC\uB35F \uC804\uD22C \uD2B9\uC131\uC774 \uC2E4\uC81C \uD55C \uCC28\uB840 \uAD50\uC804\uC5D0 \uBBF8\uCE58\uB294 \uAC1C\uBC1C \uAE30\uBCF8\uAC12"
+        },
+        {
+          "id": "combat.baseExertion",
+          "value": 4,
+          "defaultValue": 4,
+          "unit": "\uAC74\uAC15\uC810",
+          "rationale": "\uAD50\uC804\uACFC \uC9C0\uC6D0\uC740 \uC2E4\uC81C \uC721\uC2E0\uC758 \uC720\uD55C\uD55C \uC5EC\uB825\uC744 \uC0AC\uC6A9"
+        },
+        {
+          "id": "combat.hitMinimum",
+          "value": 1000,
+          "defaultValue": 1000,
+          "unit": "\uB9CC\uBD84\uC728",
+          "rationale": "\uC815\uBC00\u00B7\uAC10\uC9C0\u00B7\uC774\uB3D9 \uC870\uAC74\uC73C\uB85C \uACC4\uC0B0\uD55C \uC2E4\uC81C \uD310\uC815\uC758 \uD558\uD55C"
+        },
+        {
+          "id": "combat.hitMaximum",
+          "value": 9500,
+          "defaultValue": 9500,
+          "unit": "\uB9CC\uBD84\uC728",
+          "rationale": "\uC815\uBC00\u00B7\uAC10\uC9C0\u00B7\uC774\uB3D9 \uC870\uAC74\uC73C\uB85C \uACC4\uC0B0\uD55C \uC2E4\uC81C \uD310\uC815\uC758 \uC0C1\uD55C"
+        },
+        {
+          "id": "combat.exchangeMonths",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uAD50\uC804 \uD6C4 \uAC19\uC740 \uC721\uC2E0\uC758 \uB178\uB3D9\uC744 \uC911\uBCF5 \uC0AC\uC6A9\uD558\uC9C0 \uC54A\uC74C"
+        },
+        {
+          "id": "combat.equipmentWear",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uC190\uC0C1\uC810",
+          "rationale": "\uC2E4\uC81C \uC0AC\uC6A9\uD55C \uC7A5\uBE44\uC5D0\uB9CC \uC801\uC6A9\u00B70\uC774\uBA74 \uB9C8\uBAA8 \uC5C6\uC74C"
+        },
+        {
+          "id": "combat.maximumSupport",
+          "value": 2,
+          "defaultValue": 2,
+          "unit": "\uBA85",
+          "rationale": "\uC790\uC2E0\uC774 \uBA85\uC2DC\uC801\uC73C\uB85C \uACBD\uACC4 \uC911\uC778 \uD604\uC9C0 \uC778\uBB3C\uB9CC \uCC38\uC5EC\u00B70\uC774\uBA74 \uC9C0\uC6D0 \uC5C6\uC74C"
+        },
+        {
+          "id": "combat.historyLimit",
+          "value": 256,
+          "defaultValue": 256,
+          "unit": "\uAC74",
+          "rationale": "\uCD5C\uADFC \uAD50\uC804 \uC0C1\uC138 \uC608\uC0B0\u00B7\uC544\uC9C1 \uC810\uC720 \uC911\uC778 \uC2E4\uC81C \uB178\uB3D9 \uC99D\uAC70\uB294 \uBCF4\uC874"
+        },
+        {
+          "id": "life.mortal",
+          "value": 960,
+          "defaultValue": 960,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC7A0\uC815 \uC778\uAC04\uD615 80\uB144"
+        },
+        {
+          "id": "life.upperMultiplier",
+          "value": 200,
+          "defaultValue": 200,
+          "unit": "%",
+          "rationale": "\uC6D0\uC601 \uC774\uC0C1 \uC7A0\uC815\uAC12"
+        },
+        {
+          "id": "soul.crossing",
+          "value": 120,
+          "defaultValue": 120,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uCD9C\uC0DD \uBD80\uBAA8 \uC5C6\uC73C\uBA74 \uACC4\uC18D \uB300\uAE30"
+        },
+        {
+          "id": "soul.waitingFirst",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uCF1C\uC9D0/\uAEBC\uC9D0",
+          "rationale": "\uAC1C\uBC1C \uAE30\uBCF8\uC548\u00B7\uC548\uC815 SoulId \uC21C\uC11C"
+        },
+        {
+          "id": "soul.splitLimit",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C/\uADFC\uC6D0",
+          "rationale": "\uBB34\uD55C \uBD84\uD63C \uBC29\uC9C0"
+        },
+        {
+          "id": "soul.splitCost",
+          "value": 30,
+          "defaultValue": 30,
+          "unit": "%",
+          "rationale": "\uB3C5\uB9BD\uD63C \uC0DD\uC131 \uBE44\uC6A9"
+        },
+        {
+          "id": "world.capacityRealm",
+          "value": 10,
+          "defaultValue": 10,
+          "unit": "\uACBD\uC9C0",
+          "rationale": "\uC218\uC6A9 \uCD08\uACFC\uC758 \uC2E4\uC81C \uBC30\uCC99/\uC804\uC774"
+        },
+        {
+          "id": "hazard.sealChance",
+          "value": 100,
+          "defaultValue": 100,
+          "unit": "\uB9CC\uBD84\uC728/\uD0D0\uC0C9",
+          "rationale": "8\uBC88 \uC9C0\uC810 \uACC4\uC5F4\uC758 \uACE0\uB300 \uAE08\uC81C\u00B7\uC2E4\uC81C \uD0D0\uC0C9\uB9CC \uD310\uC815"
+        },
+        {
+          "id": "hazard.sealDuration",
+          "value": 120,
+          "defaultValue": 120,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uBCF5\uADC0 \uC218\uB2E8\uACFC \uC2E4\uC81C \uBD09\uC778 \uC9C0\uC18D \uD655\uC778"
+        },
+        {
+          "id": "hazard.turbidity",
+          "value": 95,
+          "defaultValue": 95,
+          "unit": "\uC810",
+          "rationale": "\uC704\uD5D8 \uD658\uACBD\uC5D0\uC11C \uC2E4\uC81C \uC218\uD589\uD560 \uB54C \uC190\uC0C1"
+        },
+        {
+          "id": "hazard.structureDamage",
+          "value": 2,
+          "defaultValue": 2,
+          "unit": "\uC810/\uC218\uD589\uC6D4",
+          "rationale": "\uD68C\uBCF5 \uBD88\uAC00 100\uC810 \uACBD\uACC4"
+        },
+        {
+          "id": "hazard.bondDamage",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uC810/\uC218\uD589\uC6D4",
+          "rationale": "\uD569\uCCB4 \uACB0\uC18D\uACFC \uC624\uD589 \uC0C1\uCDA9\u00B7\uAC74\uAC15 \uBD80\uD558"
+        },
+        {
+          "id": "hazard.portalChance",
+          "value": 10,
+          "defaultValue": 10,
+          "unit": "\uB9CC\uBD84\uC728/\uC774\uB3D9",
+          "rationale": "9\uC8FC\u219410\uC8FC \uACBD\uACC4 \uC774\uB3D9\uC758 \uC2E4\uC81C \uD1B5\uB85C \uC0AC\uACE0"
+        },
+        {
+          "id": "hazard.trialDamage",
+          "value": 10,
+          "defaultValue": 10,
+          "unit": "\uAC74\uAC15\uC810",
+          "rationale": "\uAC81\uC744 \uD1B5\uACFC\uD574\uB3C4 \uC2E4\uC81C \uC721\uC2E0 \uC190\uC0C1"
+        },
+        {
+          "id": "soul.pactDuration",
+          "value": 120,
+          "defaultValue": 120,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC2E4\uBB3C \uC0AC\uC6A9\uC73C\uB85C \uC131\uB9BD\uD55C \uD63C\uC57D\uC758 \uC790\uB3D9 \uD310\uC815"
+        },
+        {
+          "id": "ecology.foodUse",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C/\uC778\uC6D4",
+          "rationale": "\uC2E4\uC81C \uC7AC\uACE0\uC5D0\uC11C \uC18C\uBE44"
+        },
+        {
+          "id": "ecology.regrowth",
+          "value": 20,
+          "defaultValue": 20,
+          "unit": "\uAC1C/\uC6D4",
+          "rationale": "0\uC774\uBA74 \uACE0\uAC08 \uC6D0\uCC9C \uC7AC\uC0DD \uC5C6\uC74C"
+        },
+        {
+          "id": "ecology.sourceCapacity",
+          "value": 1000,
+          "defaultValue": 1000,
+          "unit": "\uAC1C",
+          "rationale": "\uC720\uD55C\uD55C \uCC44\uC9D1\u00B7\uAD11\uBB3C\u00B7\uC601\uAE30"
+        },
+        {
+          "id": "ecology.spoilage",
+          "value": 10,
+          "defaultValue": 10,
+          "unit": "%/\uB144",
+          "rationale": "\uAE30\uC874 \uC800\uC7A5\uB7C9\uC5D0\uC11C \uC18C\uC2E4 \uAE30\uB85D"
+        },
+        {
+          "id": "ecology.disasterChance",
+          "value": 20,
+          "defaultValue": 20,
+          "unit": "\uB9CC\uBD84\uC728/\uC8FC\uB144",
+          "rationale": "\uC5F0\uB3C4 \uACBD\uACC4\uC5D0\uC11C\uB9CC \uD310\uC815"
+        },
+        {
+          "id": "exploration.openPeriod",
+          "value": 12,
+          "defaultValue": 12,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uAE30\uC874 \uC9C0\uC810\uC758 \uC2E4\uC81C \uC785\uAD6C\uC5D0 \uC801\uC6A9\uD558\uB294 \uAC1C\uBC1C \uAE30\uBCF8\uAC12"
+        },
+        {
+          "id": "exploration.openMonths",
+          "value": 4,
+          "defaultValue": 4,
+          "unit": "\uAC1C\uC6D4/\uC8FC\uAE30",
+          "rationale": "\uAD00\uCE21\uD55C \uAC1C\uBC29 \uC77C\uC815\uACFC \uC2E4\uC81C \uC9C4\uC785 \uD310\uC815\uC744 \uAD6C\uBD84"
+        },
+        {
+          "id": "exploration.entryMonths",
+          "value": 3,
+          "defaultValue": 3,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uD604\uC7AC \uC721\uC2E0\u00B7\uC790\uB9AC\uB97C \uC608\uC57D\uD558\uACE0 \uC2E4\uC81C \uC2DC\uAC04\uC73C\uB85C \uC9C4\uD589"
+        },
+        {
+          "id": "exploration.capacity",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uBA85",
+          "rationale": "\uC2E4\uC81C \uC9C4\uC785 \uC608\uC57D \uACBD\uC7C1\u00B7\uC228\uC740 \uCC38\uC5EC\uC790 \uC5C6\uC74C"
+        },
+        {
+          "id": "exploration.minimumRealm",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uACBD\uC9C0",
+          "rationale": "\uC54C\uB824\uC9C4 \uC790\uACA9\uACFC \uC2E4\uC81C \uD604\uC7AC \uC721\uC2E0\uC758 \uC870\uAC74 \uAC80\uC0AC"
+        },
+        {
+          "id": "exploration.foodCost",
+          "value": 2,
+          "defaultValue": 2,
+          "unit": "\uAC1C/\uC9C4\uC785",
+          "rationale": "\uC2E4\uC81C \uC811\uADFC \uAC00\uB2A5\uD55C \uC7AC\uACE0\uC758 \uC720\uD55C \uC18C\uBE44"
+        },
+        {
+          "id": "exploration.toolWear",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uC190\uC0C1\uC810",
+          "rationale": "\uC608\uC57D\uD55C \uC2E4\uC81C \uB3C4\uAD6C\uC5D0 \uC801\uC6A9\u00B70\uC774\uBA74 \uB9C8\uBAA8 \uC5C6\uC74C"
+        },
+        {
+          "id": "exploration.risk",
+          "value": 1000,
+          "defaultValue": 1000,
+          "unit": "\uB9CC\uBD84\uC728",
+          "rationale": "\uC9C4\uC785 \uC2DC \uCC44\uD0DD\uD55C \uC704\uD5D8\uACFC \uC2E4\uC81C \uD55C \uBC88\uC758 \uD310\uC815"
+        },
+        {
+          "id": "exploration.injury",
+          "value": 10,
+          "defaultValue": 10,
+          "unit": "\uAC74\uAC15\uC810",
+          "rationale": "\uC2E4\uC81C \uC721\uC2E0 \uBD80\uB2F4\u00B70\uC774\uBA74 \uBD80\uC0C1 \uC5C6\uC74C"
+        },
+        {
+          "id": "exploration.rewardQuantity",
+          "value": 3,
+          "defaultValue": 3,
+          "unit": "\uAC1C/\uC785\uAD6C",
+          "rationale": "\uCC3D\uC138 \uC6D0\uCC9C\uC5D0 \uACE0\uC815\u00B7\uC774\uD6C4 \uBC95\uCE59 \uBCC0\uACBD\uC73C\uB85C \uC794\uB7C9 \uBC1C\uD589 \uC5C6\uC74C"
+        },
+        {
+          "id": "ecology.seasonStrength",
+          "value": 25,
+          "defaultValue": 25,
+          "unit": "%",
+          "rationale": "\uC2E4\uC81C \uC7AC\uC0DD \uAC00\uB2A5\uD55C \uC6D0\uCC9C\uC758 \uC6D4\uBCC4 \uC608\uC0B0\uC5D0 \uBC18\uC601"
+        },
+        {
+          "id": "ecology.historyChanges",
+          "value": 512,
+          "defaultValue": 512,
+          "unit": "\uAC74",
+          "rationale": "\uC2E4\uC81C \uC6D0\uCC9C\u00B7\uC2DC\uC124 \uBCC0\uD654\uC758 \uC720\uD55C \uC774\uB825"
+        },
+        {
+          "id": "economy.historyMonths",
+          "value": 24,
+          "defaultValue": 24,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC2E4\uC81C \uC218\uC694\u00B7\uC18C\uBE44\u00B7\uAC70\uB798\uC758 \uBCF4\uAD00 \uAE30\uAC04"
+        },
+        {
+          "id": "economy.facilityActivityMonths",
+          "value": 6,
+          "defaultValue": 6,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC2E4\uC81C \uC6B4\uC601\uC790\uC640 \uD65C\uB3D9 \uADFC\uAC70\uB85C \uAC70\uC810 \uD45C\uC2DC"
+        },
+        {
+          "id": "economy.foodReserveMonths",
+          "value": 3,
+          "defaultValue": 3,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC2E4\uC81C \uBD80\uC591 \uC218\uC694\uB97C \uAE30\uC900\uC73C\uB85C \uD55C \uB9E4\uB9E4 \uACC4\uD68D"
+        },
+        {
+          "id": "economy.saleBatch",
+          "value": 12,
+          "defaultValue": 12,
+          "unit": "\uAC1C",
+          "rationale": "\uC790\uAE30 \uC811\uADFC \uAC00\uB2A5 \uC2E4\uBB3C\uC5D0\uC11C\uB9CC \uCD9C\uD488"
+        },
+        {
+          "id": "economy.defaultUnitPrice",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uC601\uC11D/\uAC1C",
+          "rationale": "\uC2E4\uC81C \uCCB4\uACB0 \uC804\uC5D0\uB294 \uC81C\uC548 \uAC00\uACA9\uC73C\uB85C\uB9CC \uCDE8\uAE09"
+        },
+        {
+          "id": "economy.gatherYield",
+          "value": 12,
+          "defaultValue": 12,
+          "unit": "\uAC1C/\uC791\uC5C5",
+          "rationale": "\uC6D0\uCC9C \uC794\uB7C9\uC5D0\uC11C \uCC28\uAC10"
+        },
+        {
+          "id": "economy.craftDuration",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uB2E8\uC77C \uB178\uB3D9 \uC6A9\uB7C9"
+        },
+        {
+          "id": "economy.travelDuration",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C\uC6D4/\uD1B5\uB85C",
+          "rationale": "\uC6D0\uACA9 \uC7AC\uACE0 \uC811\uADFC \uBD88\uAC00"
+        },
+        {
+          "id": "inventory.carryCapacity",
+          "value": 500,
+          "defaultValue": 500,
+          "unit": "\uBB34\uAC8C\uC810",
+          "rationale": "\uC6A9\uAE30 \uC790\uCCB4 \uC6A9\uB7C9\uACFC \uAD6C\uBD84"
+        },
+        {
+          "id": "inventory.productionWork",
+          "value": 100,
+          "defaultValue": 100,
+          "unit": "\uB178\uB3D9\uC810",
+          "rationale": "\uC6D4 100 \uB178\uB3D9\uC810 \uAE30\uC900\uC758 \uAC1C\uBC1C \uAE30\uBCF8\uAC12"
+        },
+        {
+          "id": "inventory.professionalWork",
+          "value": 100,
+          "defaultValue": 100,
+          "unit": "\uB178\uB3D9\uC810",
+          "rationale": "\uCE58\uB8CC\u00B7\uAC10\uC815 \uB4F1\uC758 \uC2E4\uC81C \uC791\uC5C5"
+        },
+        {
+          "id": "inventory.extractionWork",
+          "value": 25,
+          "defaultValue": 25,
+          "unit": "\uB178\uB3D9\uC810/\uAC1C",
+          "rationale": "\uC6D0\uCC9C\uBCC4 \uC2E4\uC81C \uCC44\uC9D1\uB7C9\uACFC \uAE30\uAC04 \uACC4\uC0B0"
+        },
+        {
+          "id": "currency.stoneValue",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uC601\uC11D \uC794\uC561/\uC2E4\uBB3C 1\uAC1C",
+          "rationale": "0\uC774\uBA74 \uD658\uC804 \uBE44\uD65C\uC131\u00B7\uC2E4\uBB3C \uC18C\uBE44\uC640 \uCD9C\uCC98 \uC6D0\uC7A5\uC73C\uB85C \uC794\uC561 \uC804\uD658"
+        },
+        {
+          "id": "knowledge.copyMonths",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC2E4\uC81C \uB9E4\uCCB4\u00B7\uC7A5\uC808\u00B7\uB178\uB3D9 \uC608\uC57D"
+        },
+        {
+          "id": "knowledge.copyPaper",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C",
+          "rationale": "\uBE48 \uB9E4\uCCB4\uC640 \uCD94\uAC00 \uD544\uC0AC \uC7AC\uB8CC\uC758 \uC2E4\uC18C\uBE44"
+        },
+        {
+          "id": "knowledge.copyInk",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C",
+          "rationale": "\uD615\uC2DD\uBCC4 \uC2E4\uC81C \uD544\uC0AC \uC7AC\uB8CC"
+        },
+        {
+          "id": "knowledge.teachMinimum",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "%",
+          "rationale": "\uAC1C\uC778 \uC9C0\uC2DD\uC758 \uC804\uC218 \uC790\uACA9\u00B7\uC2DC\uAC04\uC740 \uBCC4\uB3C4 \uC2E4\uC81C \uC608\uC57D"
+        },
+        {
+          "id": "knowledge.practiceMinimum",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "%",
+          "rationale": "\uC2E4\uC2B5 \uC790\uACA9\uC774\uBA70 \uCC45 \uC18C\uC720\uB098 \uC77D\uAE30\uB85C \uC2E4\uC804 \uC219\uB828 \uC9C0\uAE09\uD558\uC9C0 \uC54A\uC74C"
+        },
+        {
+          "id": "knowledge.maximumActionMonths",
+          "value": 120,
+          "defaultValue": 120,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uB2E8\uC77C \uC608\uC57D\uC758 \uD55C\uACC4\u00B7\uC7A5\uAE30 \uC791\uC5C5\uC740 \uBD84\uD560"
+        },
+        {
+          "id": "knowledge.misreadChance",
+          "value": 100,
+          "defaultValue": 100,
+          "unit": "\uB9CC\uBD84\uC728",
+          "rationale": "\uC2E4\uC81C\uB85C \uC77D\uC740 \uAC1C\uC778 \uC8FC\uC7A5\uB9CC \uBCC0\uD654\u00B7\uD310\uBCF8 \uC815\uB2F5 \uBCC0\uACBD \uC5C6\uC74C"
+        },
+        {
+          "id": "politics.sectLimit",
+          "value": 10,
+          "defaultValue": 10,
+          "unit": "\uAC1C",
+          "rationale": "\uC5ED\uC0AC\uC0C1 \uCC3D\uC885 \uC218\uC640 \uAD6C\uBD84"
+        },
+        {
+          "id": "politics.foundCost",
+          "value": 100,
+          "defaultValue": 100,
+          "unit": "\uC601\uC11D",
+          "rationale": "\uAC1C\uC778\u2192\uC870\uC9C1 \uAE08\uACE0 \uC774\uC804"
+        },
+        {
+          "id": "politics.founderRealm",
+          "value": 0,
+          "defaultValue": 0,
+          "unit": "\uACBD\uC9C0",
+          "rationale": "\uC131\uB144\u00B7\uC2E4\uC81C \uAC00\uACC4 \uC790\uACA9\uACFC \uCD9C\uC0B0 \uAE08\uB2E8 \uC790\uACA9\uC744 \uBD84\uB9AC"
+        },
+        {
+          "id": "politics.policyCost",
+          "value": 10,
+          "defaultValue": 10,
+          "unit": "\uC601\uC11D",
+          "rationale": "\uC608\uC0B0 \uC608\uC57D\u00B7\uC2DC\uD589 \uD6C4 \uBE44\uC6A9"
+        },
+        {
+          "id": "politics.salary",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uC601\uC11D/\uC778",
+          "rationale": "\uBD80\uC871\uD558\uBA74 \uBBF8\uC9C0\uAE09\uC73C\uB85C \uAE30\uB85D"
+        },
+        {
+          "id": "politics.preparationMonths",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uC900\uBE44 \uC911 \uBC95\uCE59 revision\uACFC \uC2E4\uC81C \uC778\uB825\uC744 \uACE0\uC815"
+        },
+        {
+          "id": "politics.preparationWorkers",
+          "value": 1,
+          "defaultValue": 1,
+          "unit": "\uBA85",
+          "rationale": "\uAC19\uC740 \uAE30\uAC04\uC758 \uB2E4\uB978 \uB178\uB3D9\uACFC \uC911\uBCF5 \uC608\uC57D\uD558\uC9C0 \uC54A\uC74C"
+        },
+        {
+          "id": "politics.taxBasisPoints",
+          "value": 100,
+          "defaultValue": 100,
+          "unit": "\uB9CC\uBD84\uC728",
+          "rationale": "\uC2E4\uAC70\uC8FC \uB0A9\uC138\uC790\uC758 \uC2E4\uC81C \uAC00\uC6A9 \uC601\uC11D\uC5D0\uC11C \uC9D5\uC218"
+        },
+        {
+          "id": "politics.tributeBasisPoints",
+          "value": 1000,
+          "defaultValue": 1000,
+          "unit": "\uB9CC\uBD84\uC728",
+          "rationale": "\uC9C1\uC811 \uC138\uC218\uC5D0\uC11C \uACC4\uCE35\uB9C8\uB2E4 \uD55C \uBC88 \uC804\uB2EC"
+        },
+        {
+          "id": "politics.activityGrant",
+          "value": 5,
+          "defaultValue": 5,
+          "unit": "\uC601\uC11D",
+          "rationale": "\uC870\uC9C1\uC758 \uC2E4\uC81C \uC608\uC0B0\uC73C\uB85C \uC9C0\uAE09"
+        },
+        {
+          "id": "politics.reliefThreshold",
+          "value": 10,
+          "defaultValue": 10,
+          "unit": "\uC601\uC11D",
+          "rationale": "\uC815\uCC45 \uB300\uC0C1 \uC120\uC815\uC758 \uAC1C\uBC1C \uAE30\uBCF8\uAC12"
+        },
+        {
+          "id": "ai.beliefBudget",
+          "value": 48,
+          "defaultValue": 48,
+          "unit": "\uAC74",
+          "rationale": "\uB17C\uB9AC \uC2DC\uAC01\u00B7\uC548\uC815 \uC21C\uC11C\uB85C \uB9CC\uB8CC"
+        },
+        {
+          "id": "ai.beliefLifetime",
+          "value": 120,
+          "defaultValue": 120,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "\uAD00\uCC30 \uC815\uB2F5 \uC18C\uAE09 \uC5C6\uC74C"
+        },
+        {
+          "id": "ai.ecologyFailureMonths",
+          "value": 3,
+          "defaultValue": 3,
+          "unit": "\uAC1C\uC6D4",
+          "rationale": "Q-15\u00B7PC-TEMP \uC815\uBCF8 L158/L162: \uC2E4\uC81C \uC2E4\uD328\uC758 \uC9E7\uC740 \uC7AC\uD655\uC778\u00B7\uC601\uAD6C \uACE0\uAC08 \uC544\uB2D8\u00B7\uC7A0\uC815 3\uAC1C\uC6D4, \uC7AC\uAC80\uD1A0 V021-L05/V021-O05/V021-T04"
+        },
+        {
+          "id": "ai.planBudget",
+          "value": 16,
+          "defaultValue": 16,
+          "unit": "\uB178\uB4DC/\uACB0\uC815",
+          "rationale": "\uB3D9\uC77C \uC815\uBCF4\u00B7\uB3D9\uC77C \uC608\uC0B0"
+        },
+        {
+          "id": "ai.observationBudget",
+          "value": 4,
+          "defaultValue": 4,
+          "unit": "\uC778\uBB3C/\uAD00\uCE21",
+          "rationale": "\uAD00\uCE21 \uAC00\uB2A5\uD55C \uC778\uBB3C \uC911 \uC81C\uD55C\uB41C \uC8FC\uC758\u00B7\uC804\uCCB4 \uC815\uB2F5 \uBCF5\uC0AC \uC5C6\uC74C"
+        },
+        {
+          "id": "ai.familyWeight",
+          "value": 60,
+          "defaultValue": 60,
+          "unit": "\uC810",
+          "rationale": "\uC591\uC721\u00B7\uC0DD\uACC4 \uC6B0\uC120\uC21C\uC704 \uBCF4\uC815"
+        },
+        {
+          "id": "ai.studyWeight",
+          "value": 50,
+          "defaultValue": 50,
+          "unit": "\uC810",
+          "rationale": "\uC131\uACA9\u00B7\uC790\uAE30 \uC9C0\uC2DD\uACFC \uACB0\uD569"
+        },
+        {
+          "id": "ai.currencyWeight",
+          "value": 600,
+          "defaultValue": 600,
+          "unit": "\uC810",
+          "rationale": "\uC790\uAE30 \uC794\uC561 \uBD80\uC871\uACFC \uD604\uC9C0 \uC2E4\uBB3C\u00B7\uAC1C\uC778 \uC6D0\uCC9C \uAD00\uCE21\uC774 \uC788\uC744 \uB54C\uB9CC \uC801\uC6A9\u00B70\uC774\uBA74 \uBAA9\uD45C \uBE44\uD65C\uC131"
+        }
+      ],
+      "generationTimes": [
+        {
+          "generation": 1,
+          "births": 9,
+          "living": 0,
+          "firstBornMonth": 62,
+          "lastBornMonth": 2284,
+          "monthsSincePreviousGenerationFirstBirth": null,
+          "parentOneAgeAtBirthMonths": {
+            "samples": 9,
+            "minimum": 1262,
+            "median": 2197,
+            "maximum": 3484
+          },
+          "parentTwoAgeAtBirthMonths": {
+            "samples": 9,
+            "minimum": 1262,
+            "median": 2197,
+            "maximum": 3484
+          },
+          "scope": "biological founder lineage; external adult arrivals are generation 0, not invented births or soul-identity inheritance"
+        }
+      ],
+      "simulationMs": 5483860.481699999,
+      "commandMs": 457.9185,
+      "caseElapsedMs": 5539131.6136,
+      "timingScope": "simulationMs sums AdvanceTo only; commandMs covers explicit outsider command/snapshot/validation workflow; caseElapsedMs includes genesis, observations and prior report writes, before the current report write; calendar conversion is separate",
+      "finalHash": "109874308923ac21e8ee38a367f729aac5fff8ef41944b909468f8a7b90c01e4",
+      "milestoneOutcomes": {
+        "firstFounderDescendantBirth": {
+          "outcome": "observed-exact-record",
+          "exactMonth": 62,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": 2105,
+          "source": "actual retained Person.Born and biological parent DAG",
+          "historyComplete": true
+        },
+        "firstFounderDescendantCore": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "actual body Cultivation.Formations[GoldenCore].Month, including departed bodies",
+          "historyComplete": true
+        },
+        "firstAdditionalFamily": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "actual Group.Founded; original family creation, not later dynasty promotion",
+          "historyComplete": true
+        },
+        "firstSect": {
+          "outcome": "observed-exact-record",
+          "exactMonth": 1,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": 2073,
+          "source": "actual Group.Founded, including later dissolved sects",
+          "historyComplete": true
+        },
+        "firstDynasty": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "persistent Group.Kind promotion first observed between samples; Group.Founded is not its promotion date",
+          "historyComplete": true
+        },
+        "firstMarket": {
+          "outcome": "observed-exact-record",
+          "exactMonth": 10,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": 24,
+          "source": "persistent Ecology.Facilities[Market].Founded, including currently inactive activity sites",
+          "historyComplete": true
+        },
+        "firstWorkshop": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "persistent Ecology.Facilities[Workshop].Founded, including currently inactive activity sites",
+          "historyComplete": true
+        },
+        "firstSettlement": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "persistent Ecology.Facilities[Settlement].Founded, including currently inactive activity sites",
+          "historyComplete": true
+        }
+      },
+      "calendarConversion": {
+        "secondsPerYearAt1x": 10,
+        "observedSecondsAt1x": 5000,
+        "horizonSecondsAt1x": 5000,
+        "currentUiIntervalMillisecondsPerMonthAt1x": 833,
+        "nominalUiObservedSecondsAt1x": 4998,
+        "convertedSecondsBySpeed": {
+          "1": 5000,
+          "10": 500,
+          "25": 200,
+          "50": 100,
+          "100": 50
+        },
+        "scope": "calendar model and ideal current 833ms UI interval only; excludes busy/backpressure/dialog pauses/timer throttling; actual simulation/command/case milliseconds are separate, not measured play/device speed"
+      }
+    }
+  ],
+  "distributions": [
+    {
+      "scenario": "b",
+      "expectedSeeds": [
+        42,
+        98,
+        2026
+      ],
+      "startedSeeds": [
+        2026
+      ],
+      "completedSeeds": [
+        2026
+      ],
+      "complete": false,
+      "timeSeriesRanges": [
+        {
+          "month": 0,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          }
+        },
+        {
+          "month": 120,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          }
+        },
+        {
+          "month": 240,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          }
+        },
+        {
+          "month": 360,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          }
+        },
+        {
+          "month": 480,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          }
+        },
+        {
+          "month": 600,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          }
+        },
+        {
+          "month": 720,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          }
+        },
+        {
+          "month": 840,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          }
+        },
+        {
+          "month": 960,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          }
+        },
+        {
+          "month": 1080,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          }
+        },
+        {
+          "month": 1200,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          }
+        },
+        {
+          "month": 1320,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          }
+        },
+        {
+          "month": 1440,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          }
+        },
+        {
+          "month": 1560,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          }
+        },
+        {
+          "month": 1680,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          }
+        },
+        {
+          "month": 1800,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          }
+        },
+        {
+          "month": 1920,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 8,
+            "median": 8,
+            "maximum": 8
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 2040,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 8,
+            "median": 8,
+            "maximum": 8
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 2160,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 8,
+            "median": 8,
+            "maximum": 8
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 2280,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 8,
+            "median": 8,
+            "maximum": 8
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 2400,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 2520,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 2640,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 2760,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 2880,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 3000,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 3120,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 3240,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 6,
+            "median": 6,
+            "maximum": 6
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 7,
+            "median": 7,
+            "maximum": 7
+          }
+        },
+        {
+          "month": 3360,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 8,
+            "median": 8,
+            "maximum": 8
+          }
+        },
+        {
+          "month": 3480,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 5,
+            "median": 5,
+            "maximum": 5
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 8,
+            "median": 8,
+            "maximum": 8
+          }
+        },
+        {
+          "month": 3600,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 4,
+            "median": 4,
+            "maximum": 4
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          }
+        },
+        {
+          "month": 3720,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 10,
+            "median": 10,
+            "maximum": 10
+          }
+        },
+        {
+          "month": 3840,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 10,
+            "median": 10,
+            "maximum": 10
+          }
+        },
+        {
+          "month": 3960,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 10,
+            "median": 10,
+            "maximum": 10
+          }
+        },
+        {
+          "month": 4080,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 3,
+            "median": 3,
+            "maximum": 3
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 10,
+            "median": 10,
+            "maximum": 10
+          }
+        },
+        {
+          "month": 4200,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 4320,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 4440,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 4560,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 4680,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 4800,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 4920,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 5040,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 5160,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 5280,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 5400,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 5520,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 5640,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 5760,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 5880,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        },
+        {
+          "month": 6000,
+          "observedSeeds": 1,
+          "population": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "founderDescendants": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "generation": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "livingGeneration": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "goldenCoreOrHigher": {
+            "samples": 1,
+            "minimum": 2,
+            "median": 2,
+            "maximum": 2
+          },
+          "descendantCore": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "mortal": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "martial": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "households": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "sects": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "dynasties": {
+            "samples": 1,
+            "minimum": 0,
+            "median": 0,
+            "maximum": 0
+          },
+          "births": {
+            "samples": 1,
+            "minimum": 9,
+            "median": 9,
+            "maximum": 9
+          },
+          "deaths": {
+            "samples": 1,
+            "minimum": 11,
+            "median": 11,
+            "maximum": 11
+          }
+        }
+      ],
+      "milestones": {
+        "firstFounderDescendantBirth": {
+          "exactObserved": 1,
+          "intervalObserved": 0,
+          "absentWithinCompletedHorizon": 0,
+          "unknownOrPartial": 0,
+          "exactMonthRange": {
+            "samples": 1,
+            "minimum": 62,
+            "median": 62,
+            "maximum": 62
+          },
+          "scope": "observed fixed-seed counts only; interval/unknown outcomes are not zero months or probabilities"
+        },
+        "firstFounderDescendantCore": {
+          "exactObserved": 0,
+          "intervalObserved": 0,
+          "absentWithinCompletedHorizon": 1,
+          "unknownOrPartial": 0,
+          "exactMonthRange": {
+            "samples": 0,
+            "minimum": null,
+            "median": null,
+            "maximum": null
+          },
+          "scope": "observed fixed-seed counts only; interval/unknown outcomes are not zero months or probabilities"
+        },
+        "firstAdditionalFamily": {
+          "exactObserved": 0,
+          "intervalObserved": 0,
+          "absentWithinCompletedHorizon": 1,
+          "unknownOrPartial": 0,
+          "exactMonthRange": {
+            "samples": 0,
+            "minimum": null,
+            "median": null,
+            "maximum": null
+          },
+          "scope": "observed fixed-seed counts only; interval/unknown outcomes are not zero months or probabilities"
+        },
+        "firstSect": {
+          "exactObserved": 1,
+          "intervalObserved": 0,
+          "absentWithinCompletedHorizon": 0,
+          "unknownOrPartial": 0,
+          "exactMonthRange": {
+            "samples": 1,
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "scope": "observed fixed-seed counts only; interval/unknown outcomes are not zero months or probabilities"
+        },
+        "firstDynasty": {
+          "exactObserved": 0,
+          "intervalObserved": 0,
+          "absentWithinCompletedHorizon": 1,
+          "unknownOrPartial": 0,
+          "exactMonthRange": {
+            "samples": 0,
+            "minimum": null,
+            "median": null,
+            "maximum": null
+          },
+          "scope": "observed fixed-seed counts only; interval/unknown outcomes are not zero months or probabilities"
+        },
+        "firstMarket": {
+          "exactObserved": 1,
+          "intervalObserved": 0,
+          "absentWithinCompletedHorizon": 0,
+          "unknownOrPartial": 0,
+          "exactMonthRange": {
+            "samples": 1,
+            "minimum": 10,
+            "median": 10,
+            "maximum": 10
+          },
+          "scope": "observed fixed-seed counts only; interval/unknown outcomes are not zero months or probabilities"
+        },
+        "firstWorkshop": {
+          "exactObserved": 0,
+          "intervalObserved": 0,
+          "absentWithinCompletedHorizon": 1,
+          "unknownOrPartial": 0,
+          "exactMonthRange": {
+            "samples": 0,
+            "minimum": null,
+            "median": null,
+            "maximum": null
+          },
+          "scope": "observed fixed-seed counts only; interval/unknown outcomes are not zero months or probabilities"
+        },
+        "firstSettlement": {
+          "exactObserved": 0,
+          "intervalObserved": 0,
+          "absentWithinCompletedHorizon": 1,
+          "unknownOrPartial": 0,
+          "exactMonthRange": {
+            "samples": 0,
+            "minimum": null,
+            "median": null,
+            "maximum": null
+          },
+          "scope": "observed fixed-seed counts only; interval/unknown outcomes are not zero months or probabilities"
+        }
+      }
+    }
+  ],
+  "establishmentConditions": {
+    "birth": "actual mature compatible parents, both Golden Core by selected default law, consent/health/care/resources; no forced birth",
+    "family": "actual adult founder authority and real transferred founding funds; recorded Group.Founded is the creation date",
+    "sect": "actual founder/real funds/membership and current concurrent limit; no empty pre-generated sect",
+    "dynasty": "actual independent complete-province sovereignty, resident household, observed territory and administration labor; ownership/claims alone are insufficient",
+    "facility": "actual saved operators, household/work/production/public offers and physical sources; describes open-air market/workshop/trade-settlement activity, not a separately created formal city; no population/year unlock or free capacity"
+  },
+  "timeModel": {
+    "secondsPerYearAt1x": 10,
+    "convertedHorizonSecondsAt1x": 5000,
+    "currentUiIntervalMillisecondsPerMonthAt1x": 833,
+    "nominalUiHorizonSecondsAt1x": 4998,
+    "interpretation": "UI calendar conversion only, not measured device play time or an achieved speed claim; actual advance/command/case times are recorded separately"
+  },
+  "limitations": [
+    "Three fixed seeds are finite observations, not confidence bounds or a proof of future population viability.",
+    "Scenario a is the selected actual default; b/c are explicit comparison assumptions. Only b receives two declared asset-free Mortal outsiders at month 240.",
+    "All used laws and provisional coefficients are disclosed; no parameter sweep or causal sensitivity result is implied.",
+    "Persistent body/organization ledgers provide exact birth/core/family/sect dates; dynasty promotion has no dedicated typed date and is bounded by 120-month observations.",
+    "Ecology.Facilities preserves first Founded even while inactive; reopening/closure change history is bounded and is not reconstructed from sparse observations.",
+    "Total time is captured before each atomic report write; last report serialization/write is excluded. Separate stability harness covers save/resume; this growth run does not add save loops."
+  ]
+}

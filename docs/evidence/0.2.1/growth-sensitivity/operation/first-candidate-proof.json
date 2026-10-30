@@ -1,0 +1,27 @@
+{
+  "kind": "portable-aggregate-packaging-proof",
+  "sourceCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "productSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "createdUtc": "2026-10-30T21:07:36.463507+00:00",
+  "sourceAggregator": "scripts/aggregate-v021-growth.py",
+  "entryPoints": [
+    "read",
+    "law_definitions",
+    "aggregate"
+  ],
+  "frozenSourceFileSha256": "ed7d8a4f2f3ea6eb217b21602150aa1aa166600ac2810156c29dcab01163b32b",
+  "priorCliFullValidationPassed": true,
+  "priorCliDerivedAggregateSha256": "898a4c435a36c76efdc2d019a747843899686b393236a6814dcbdb9989fc9fee",
+  "officialAggregateSha256": "bd592d544766dfff2ba39ece2a531513610ccca3b0c24b86061e9d9b0626e0ab",
+  "candidateSha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+  "onlyDifferenceFromFreshValidatedCli": "inputArtifacts[].path: relative package location chosen at new artifact creation; unmodified aggregate/read/law functions and identical other metadata",
+  "allCohortRowsEqualOfficial": true,
+  "allDistributionsEqualOfficial": true,
+  "rawBytesUnchanged": true,
+  "rawInputHashesEqual": true,
+  "completedCases": 9,
+  "observations": 459,
+  "newWorldOrCollectorExecutions": 0,
+  "officialOriginalRewritten": false,
+  "candidatePath": "/workspace/chronicles-sensitivity-inputs/docs/evidence/0.2.1/growth-sensitivity/inputs/baseline-api-candidate.json"
+}

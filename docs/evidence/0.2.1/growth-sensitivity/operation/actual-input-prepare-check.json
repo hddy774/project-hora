@@ -1,0 +1,16 @@
+{
+  "scope": "Existing merged workflow Python prepare stage on real staged bytes; local uncommitted package, metadata checkoutff829 simulated, no workflow dispatch/SDK/build/C# world/collector",
+  "inputBytesUnchanged": true,
+  "sourceCommitForActualMeasurement": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "outputs": [
+    "metadata_sha=ff829a23f61e5bb76f96ad669cebede993c15e9b",
+    "plan_sha=2533de34465aeddefd697062dbb3f806b197f280e44d5e96cd147a5692bee882",
+    "baseline_sha=02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+    "horizon=6000",
+    "interval=120",
+    "wall_minutes=240",
+    "wall_file_sha=acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+    "input_artifact=v021-sensitivity-inputs-local-prepare-check-not-a-run-1"
+  ],
+  "newWorldOrCollectorExecutions": 0
+}

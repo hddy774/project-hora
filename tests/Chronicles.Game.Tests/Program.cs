@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 using Chronicles.Game;
+using Chronicles.Game.Tests;
 
 var results = new List<object>();
 var failed = 0;

@@ -1,3 +1,5 @@
+namespace Chronicles.Game.Tests;
+
 public interface IFeatureScenario
 {
     string Name { get; }

@@ -59,7 +59,8 @@ public sealed class EcologyWindow : Window, IDisposable
             await Task.Delay(250);
         }
         File.WriteAllText(Path.Combine(Path.GetTempPath(), "seonro-smoke-result.json"),
-            JsonSerializer.Serialize(new { passed, version = EcologyApplicationSession.Version, host = "WPF WebView2", actualRenderAndBridge = passed }, JsonOptions));
+            JsonSerializer.Serialize(new { passed, version = EcologyApplicationSession.Version, host = "WPF WebView2", actualRenderAndBridge = passed,
+                diagnostic = await browser.CoreWebView2.ExecuteScriptAsync("JSON.stringify({hasView:typeof view!=='undefined'&&view!==null,error:window.seonroLastHostError||null,connection:document.querySelector('#connection')?.textContent,heading:document.querySelector('#content h2')?.textContent,source:location.href})") }, JsonOptions));
         System.Windows.Application.Current.Shutdown(passed ? 0 : 1);
     }
 

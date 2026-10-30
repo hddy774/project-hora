@@ -5588,7 +5588,7 @@
         "V021-U01"
       ],
       "acceptance": "선로만상록 이름·README/Notion·앱 표시·기존 규칙/manifest 차이, 버전/완료 과장 없음",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5602,6 +5602,12 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "이름·한국어소개·Notion·앱표시·현단계·무관메타데이터제거 직접대조",
+          "path": "docs/evidence/0.2.1/repository-description-audit.json",
+          "source": "96b4b8d4bbadefdcaf1ee670e1f1609f438c30d6",
+          "note": "raw About는description/homepage null. 과거맞춤소개write403과현재수용을구분하며이슈67별도유지."
         }
       ],
       "inv_ids": [

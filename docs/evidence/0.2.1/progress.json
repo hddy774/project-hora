@@ -1,13 +1,13 @@
 {
   "total": 111,
-  "completed": 48,
-  "completion_percent": 43.2,
-  "own_acceptance_count": 97,
-  "own_acceptance_percent": 87.4,
+  "completed": 49,
+  "completion_percent": 44.1,
+  "own_acceptance_count": 98,
+  "own_acceptance_percent": 88.3,
   "counts": {
-    "done": 48,
+    "done": 49,
     "validated": 49,
-    "in_progress": 14,
+    "in_progress": 13,
     "planned": 0,
     "blocked": 0
   },
@@ -253,11 +253,6 @@
       "status": "validated"
     },
     {
-      "id": "V021-C01",
-      "title": "게임명·설명·개발 문서 정합화",
-      "status": "in_progress"
-    },
-    {
       "id": "V021-L03",
       "title": "AI 다양성·의사결정 비용 검증",
       "status": "in_progress"
@@ -329,7 +324,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "a2d493e89fcf9f099b9d7eea6f28c43715295388",
+  "source_commit": "96b4b8d4bbadefdcaf1ee670e1f1609f438c30d6",
   "phase": "최종 성능 병목 보정·측정",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

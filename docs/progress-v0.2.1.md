@@ -1,17 +1,17 @@
 <!-- v021-progress:start -->
-**선로만상록 0.2.1 전체 진행률: 43.2% (48/111개 완료)**
+**선로만상록 0.2.1 전체 진행률: 44.1% (49/111개 완료)**
 
 `████████░░░░░░░░░░░░`
 
 완료율은 정본 작업의 수용 근거와 모든 선행 작업이 확인된 `완료`만 계산합니다. 진행 중인 작업에 임의의 부분 점수를 부여하지 않습니다.
 
-자체 수용 근거 확보: 97/111개 (87.4%). 선행 대기와 최종 전체 회귀·측정·릴리스는 구분합니다.
+자체 수용 근거 확보: 98/111개 (88.3%). 선행 대기와 최종 전체 회귀·측정·릴리스는 구분합니다.
 
 | 상태 | 작업 수 |
 | --- | ---: |
-| 완료 | 48 |
+| 완료 | 49 |
 | 자체 검증 완료·선행 마감 대기 | 49 |
-| 진행 중 | 14 |
+| 진행 중 | 13 |
 | 예정 | 0 |
 | 차단 | 0 |
 
@@ -27,5 +27,5 @@
 
 성능·성장·장기 안정성 검사는 전체 기능 개발 이후에 진행합니다.
 
-기준 소스: [a2d493e8](https://github.com/hddy774/project-hora/commit/a2d493e89fcf9f099b9d7eea6f28c43715295388) · [작업 원장](https://github.com/hddy774/project-hora/blob/a2d493e89fcf9f099b9d7eea6f28c43715295388/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
+기준 소스: [96b4b8d4](https://github.com/hddy774/project-hora/commit/96b4b8d4bbadefdcaf1ee670e1f1609f438c30d6) · [작업 원장](https://github.com/hddy774/project-hora/blob/96b4b8d4bbadefdcaf1ee670e1f1609f438c30d6/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
 <!-- v021-progress:end -->

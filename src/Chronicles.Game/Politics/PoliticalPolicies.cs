@@ -133,7 +133,7 @@ public static partial class PoliticsEngine
     {
         var d = new PoliticalDraft(context, state); var g = d.Group(group); var p = d.Person(holder);
         if (!d.Leads(d.Person(actor), g) || p is not { Status: LifeStatus.Alive } || !g!.Members.Contains(holder) ||
-            context.Month - p.Born < context.Rules.MaturityMonths || string.IsNullOrWhiteSpace(office) || office == "leader")
+            context.Month - p.Born < MaturityMonthsFor(context, p) || string.IsNullOrWhiteSpace(office) || office == "leader")
             return PoliticalResult.Rejected("An office requires current leader authority and an actual adult member.");
         d.State.Offices.RemoveAll(x => x.Group == group && x.Name == office);
         d.State.Offices.Add(new(group, office, holder, context.Month));
@@ -158,7 +158,7 @@ public static partial class PoliticsEngine
         {
             case "입문·선발":
                 if (subject is not { Status: LifeStatus.Alive } || member || subject.Place != actor!.Place ||
-                    !actor.KnownPeople.Contains(subject.Id) || context.Month - subject.Born < context.Rules.MaturityMonths ||
+                    !actor.KnownPeople.Contains(subject.Id) || context.Month - subject.Born < MaturityMonthsFor(context, subject) ||
                     choice == 1 && !subject.Roots.Any(x => x > 0) || choice == 2 && subject.Realm == Realm.Mortal ||
                     g.Kind == GroupKind.Sect && subject.Sect != 0)
                     return PoliticalResult.Rejected("The actual candidate fails the active admission criteria or mutual contact requirements.");
@@ -228,9 +228,9 @@ public static partial class PoliticsEngine
                     "actual resident relief", context.Month, context.Month));
                 break;
             case "승계·인사":
-                if (!member || context.Month - subject!.Born < context.Rules.MaturityMonths)
+                if (!member || context.Month - subject!.Born < MaturityMonthsFor(context, subject))
                     return PoliticalResult.Rejected("Succession policy requires a living adult current member.");
-                var eligible = g.Members.Select(d.Person).Where(p => p is { Status: LifeStatus.Alive } && context.Month - p.Born >= context.Rules.MaturityMonths).Select(p => p!);
+                var eligible = g.Members.Select(d.Person).Where(p => p is { Status: LifeStatus.Alive } && context.Month - p.Born >= MaturityMonthsFor(context, p)).Select(p => p!);
                 var first = choice == 0 ? eligible.OrderBy(p => p.Born).ThenBy(p => p.Id).First() :
                     eligible.OrderByDescending(p => d.State.Service.FirstOrDefault(s => s.Group == g.Id && s.Person == p.Id)?.Contribution ?? 0).ThenBy(p => p.Id).First();
                 if (choice != 2 && first.Id != subject.Id) return PoliticalResult.Rejected("The proposed current person does not meet the active succession priority.");

@@ -93,7 +93,8 @@ public sealed record PoliticalRules
 }
 
 public sealed record PoliticalContext(long Month, long Revision, long LawRevision,
-    IReadOnlyList<Person> People, IReadOnlyList<Group> Groups, IReadOnlyList<Place> Places, PoliticalRules Rules);
+    IReadOnlyList<Person> People, IReadOnlyList<Group> Groups, IReadOnlyList<Place> Places, PoliticalRules Rules,
+    IReadOnlyDictionary<long, long>? MaturityByPerson = null);
 
 /// <summary>
 /// An atomic instruction set. The host must revalidate immediately before replacing these entities and

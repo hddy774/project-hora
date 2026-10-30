@@ -260,3 +260,94 @@ public sealed class PoliticsAiRejectionAtomicityScenario : IFeatureScenario
             "a direct AI policy failure after adoption preflight cannot leave a pending category, budget reservation or history");
     }
 }
+
+public sealed class PoliticsActualSpeciesMaturityScenario : IFeatureScenario
+{
+    public string Name => "V021-W02/G01 public politics: actual fox and pine body maturity govern consent and family leadership independently of human law";
+    public void Run()
+    {
+        var f = new PoliticsWorldFixture(); f.Send("observe", 0);
+        f.Send("create", 0, data: JsonSerializer.Serialize(new { Name = "성년 영호", Species = "spirit-fox" }));
+        f.Send("create", 0, data: JsonSerializer.Serialize(new { Name = "미성년 영송", Species = "spirit-pine" }));
+        var created = f.World.Checkpoint(); var fox = created.People.Single(p => p.Species == "spirit-fox").Id;
+        var pine = created.People.Single(p => p.Species == "spirit-pine").Id;
+        f.Update(s =>
+        {
+            var young = s.People.Single(p => p.Id == pine); young.Born = s.Month - 300;
+            s.People.Single(p => p.Id == f.First).Money -= s.Laws["politics.foundCost"];
+            young.Money += s.Laws["politics.foundCost"]; // Declared actual sponsor gift; no money creation.
+        });
+        f.Send("possess", f.First); f.World.AdvanceTo(1);
+        f.Send("loan", f.First, fox, f.World.Checkpoint().Laws["politics.foundCost"]);
+        f.Send("observe", 0);
+        if (f.World.Checkpoint().People.Single(p => p.Id == fox).Action != ActionKind.Idle) f.Send("cancel", fox);
+        f.Send("found", fox, data: "family");
+        PoliticsWorldFixture.Check(f.World.Checkpoint().Groups.Any(g => g.Kind == GroupKind.Family && g.Leader == fox) &&
+            f.World.Checkpoint().People.Single(p => p.Id == fox).Realm == Realm.Mortal,
+            "a real 144-month adult fox can consent and lead a funded family before the human 216-month threshold");
+        if (f.World.Checkpoint().People.Single(p => p.Id == pine).Action != ActionKind.Idle) f.Send("cancel", pine);
+        f.Send("law", 0, value: 1, data: "birth.maturity");
+        f.Reject(f.Command("found", pine, data: "family"));
+        f.Update(s => s.People.Single(p => p.Id == pine).Born = s.Month - 600);
+        f.Send("found", pine, data: "family");
+        var accepted = f.World.Checkpoint();
+        PoliticsWorldFixture.Check(accepted.Groups.Any(g => g.Kind == GroupKind.Family && g.Leader == pine) &&
+            accepted.PeopleDomain.Profiles.Single(p => p.PersonId == pine).Body.Reproduction.MaturityMonths == 600,
+            "human maturity edits cannot adultify a 300-month pine; its actual saved 600-month boundary applies");
+        Invariants.Validate(GameCodec.Decode(GameCodec.Encode(f.World)).Checkpoint());
+    }
+}
+
+public sealed class PoliticsPublicSectLifecycleScenario : IFeatureScenario
+{
+    public string Name => "V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office";
+    public void Run()
+    {
+        var f = new PoliticsWorldFixture(); f.Send("observe", 0);
+        f.Send("law", 0, value: 1, data: "birth.enabled"); f.Send("law", 0, value: 0, data: "soul.crossing");
+        f.Send("law", 0, value: 1, data: "politics.salary");
+        f.Send("conceive", f.Second, f.First);
+        f.Update(s => s.People.Single(p => p.Id == f.First).KnownPlaces = Enumerable.Range(0, 10).ToList());
+        var dynasty = f.Home; f.Send("possess", f.First); f.Send("govern", f.First, dynasty, 0); f.World.AdvanceTo(1);
+        var sect = f.FoundSect();
+        f.Send("observe", 0); f.Send("join", f.Second, sect);
+        f.Send("create", 0, data: "명시 편입 후계 제자");
+        var pupil = f.World.Checkpoint().People.Single(p => p.Id != f.First && p.Id != f.Second).Id;
+        f.Send("possess", f.First); f.World.AdvanceTo(3); f.Send("observe", 0); f.Send("join", pupil, sect);
+        if (f.World.Checkpoint().People.Single(p => p.Id == pupil).Action != ActionKind.Idle) f.Send("cancel", pupil);
+        f.Send("possess", f.First);
+        f.Send("charterSect", f.First, sect, 0, JsonSerializer.Serialize(new { Until = 20, Teaching = true, Industry = true, Fee = 3 }));
+        var charter = f.World.Checkpoint().Politics.Charters.Single().Id;
+        f.Send("appointOffice", f.First, sect, f.Second, "treasurer");
+        f.Send("policyActivity", f.First, sect, pupil, JsonSerializer.Serialize(new { Category = "교육·전승", Counterparty = f.First, Knowledge = "entry", Place = 0 }));
+        f.World.AdvanceTo(4); f.Send("observe", 0);
+        if (f.World.Checkpoint().People.Single(p => p.Id == pupil).Action != ActionKind.Idle) f.Send("cancel", pupil);
+        f.Send("possess", f.First); f.Send("teach", f.First, pupil, 1, "entry"); f.World.AdvanceTo(5);
+        var educated = f.World.Checkpoint(); var treasury = educated.Groups.Single(g => g.Id == sect).Money;
+        PoliticsWorldFixture.Check(educated.Politics.Service.Single(s => s.Group == sect && s.Person == pupil).Contribution >
+            educated.Politics.Service.FirstOrDefault(s => s.Group == sect && s.Person == f.Second)?.Contribution &&
+            educated.Knowledge.Activities.Any(a => a.ActorId == pupil && a.Kind == KnowledgeActivityKind.Teaching && a.Status == KnowledgeActivityStatus.Completed) &&
+            educated.Politics.Payments.Any(p => p.Kind.StartsWith($"payroll:{sect}:", StringComparison.Ordinal) && p.To == PoliticalAccount.Person(pupil)),
+            "actual funded class work, timed knowledge and paid salary precede succession");
+        f.Send("policy", f.First, sect, 2, "교육·전승");
+        f.Send("observe", 0);
+        if (f.World.Checkpoint().People.Single(p => p.Id == f.Second).Action != ActionKind.Idle) f.Send("cancel", f.Second);
+        f.Send("possess", f.Second); f.Update(s => s.People.Single(p => p.Id == f.First).Health = 1);
+        var originalSoul = f.World.Checkpoint().People.Single(p => p.Id == f.First).SoulId;
+        f.Send("attack", f.Second, f.First); var succeeded = f.World.Checkpoint();
+        PoliticsWorldFixture.Check(succeeded.Groups.Single(g => g.Id == sect).Leader == pupil && succeeded.Groups.Single(g => g.Id == dynasty).Leader == f.Second &&
+            succeeded.Groups.Single(g => g.Id == sect).Money == treasury && succeeded.Politics.Preparations.Single().Stage == PolicyStage.Cancelled &&
+            succeeded.Politics.Obligations.All(o => o.Debtor != PoliticalAccount.Person(pupil)),
+            "real service selects the current adult pupil; death refunds unfinished policy and preserves public treasury rather than copying estate authority");
+        f.Send("revokeCharter", f.Second, charter); f.Send("observe", 0); f.Send("possess", pupil);
+        f.Reject(f.Command("policy", pupil, sect, 0, "교육·전승"));
+        f.Send("observe", 0); f.Send("possess", f.Second);
+        var birth = f.World.Checkpoint().Pregnancies.Single().Due; f.World.AdvanceTo(birth);
+        var returned = f.World.Checkpoint().People.Single(p => p.Id != f.First && p.SoulId == originalSoul);
+        PoliticsWorldFixture.Check(returned.Sect == 0 && f.World.Checkpoint().Groups.Single(g => g.Id == sect).Leader == pupil &&
+            returned.Realm == Realm.Mortal && returned.Skills.Count == 0, "actual RC-02 birth has a new person/body and no restored sect office or mastery");
+        f.Send("possess", returned.Id); f.Reject(f.Command("policy", returned.Id, sect, 2, "승계·인사"));
+        f.Reject(f.Command("payroll", returned.Id, sect));
+        Invariants.Validate(GameCodec.Decode(GameCodec.Encode(f.World)).Checkpoint());
+    }
+}

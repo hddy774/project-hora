@@ -1,0 +1,185 @@
+{
+  "schema": "seonro-preserved-growth-artifacts-v1",
+  "preserved_utc": "2026-10-30T14:19:45.609125+00:00",
+  "sourceCommit": "b0f3aec986d9b09015021499e47627b869411b83",
+  "productSourceFingerprint": "8e197e13641d2e39fffdd8fe8c47dbc8b06788f6dddaee7f35e61407847591a2",
+  "complete": false,
+  "completed_cohorts": 0,
+  "required_cohorts": 9,
+  "files": [
+    {
+      "file": "growth-b0f3aec-a.json",
+      "bytes": 122865,
+      "sha256": "36b4acf400c6ab86b2ec2c9bfe963cc3f1ed996ead68634188ff380fd56faa96",
+      "original_path": "/workspace/scratch/growth-b0f3aec-a.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-a.log",
+      "bytes": 3757,
+      "sha256": "50719fcd6e7c2dfa7ac9a3e45bbdac13b88a02607bf5e98cc135a30a9f3d4644",
+      "original_path": "/workspace/scratch/growth-b0f3aec-a.log",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-a-genesis.json",
+      "bytes": 252,
+      "sha256": "4003efc4936fc41b74b78f1afff613187d3e29e8be4dcb58f0ad51128207d067",
+      "original_path": "/workspace/scratch/growth-b0f3aec-a-genesis.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-a-run.json",
+      "bytes": 6549,
+      "sha256": "0ad6563e7f839d4c3a8a53534e5cc26d813c45aa446eb5ee75356ddc5581e618",
+      "original_path": "/workspace/scratch/growth-b0f3aec-a-run.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-b.json",
+      "bytes": 123475,
+      "sha256": "8c4401ba46ea07ae186642b6acfc4ec1dad2b1ca9b6e18a534b09a93cca09bfb",
+      "original_path": "/workspace/scratch/growth-b0f3aec-b.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-b.log",
+      "bytes": 3756,
+      "sha256": "8ad4326b24090e73130ebc89f4f9808a46a600cc028b7a6a8c276602472e3aa2",
+      "original_path": "/workspace/scratch/growth-b0f3aec-b.log",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-b-genesis.json",
+      "bytes": 252,
+      "sha256": "a9d36a7b77242518b520d20a7e3f9d604aff9f9104d19ff0443eaa990ca4db0e",
+      "original_path": "/workspace/scratch/growth-b0f3aec-b-genesis.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-b-run.json",
+      "bytes": 6549,
+      "sha256": "6758180d60a33695454867c9050aee420e268621d8f7f37db0623937982002c7",
+      "original_path": "/workspace/scratch/growth-b0f3aec-b-run.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-c.json",
+      "bytes": 122853,
+      "sha256": "d5d8dec8dcbd48e704b2698e0d8edb6207d65b87a7b862860f6bc4db24035378",
+      "original_path": "/workspace/scratch/growth-b0f3aec-c.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-c.log",
+      "bytes": 3756,
+      "sha256": "b48eb02b9bde06c23e877518b1181a212ef322a4dd77dd06240b5fc5cf83dcc4",
+      "original_path": "/workspace/scratch/growth-b0f3aec-c.log",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-c-genesis.json",
+      "bytes": 252,
+      "sha256": "47a8535333b4996603b4d8c782416103e21a012b3dfdf844ee625a564cea98cf",
+      "original_path": "/workspace/scratch/growth-b0f3aec-c-genesis.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-c-run.json",
+      "bytes": 6549,
+      "sha256": "baa98b861da69c256f16d7831b74713e4067c93900b9aac9a8532a1afd41318b",
+      "original_path": "/workspace/scratch/growth-b0f3aec-c-run.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-interruption.json",
+      "bytes": 10013,
+      "sha256": "8b3553747e71b739b72b25e73ace1d3fa168e7ea6e7f47a13be0361c3cd3313c",
+      "original_path": "/workspace/scratch/growth-b0f3aec-interruption.json",
+      "byte_exact_copy": true
+    },
+    {
+      "file": "growth-b0f3aec-aggregate-rejection.log",
+      "bytes": 81,
+      "sha256": "11317e5f9c201cff86819ceb02126aaa7ce114f586536025adb0e4bcb8dc088b",
+      "original_path": "/workspace/scratch/growth-b0f3aec-aggregate-rejection.log",
+      "byte_exact_copy": true
+    }
+  ],
+  "checks": [
+    {
+      "scenario": "a",
+      "seed": 42,
+      "last_observed_month": 3240,
+      "observations": 28,
+      "raw_status_preserved": "running",
+      "requested_complete": false,
+      "complete": false,
+      "completed_cohorts": 0,
+      "used_laws_match_frozen_source_verified_at_launch": true,
+      "used_law_count": 112,
+      "genesis_functional_selection": "INV-001/002/011",
+      "genesis_functional_total": 1,
+      "genesis_functional_failed": 0,
+      "started_utc": "2026-10-30T13:55:55.164215+00:00",
+      "sigterm_utc": "2026-10-30T14:17:18.497845+00:00",
+      "wall_to_sigterm_seconds": 1283.33363,
+      "last_sample_case_elapsed_ms": 1214587.083,
+      "child_exit_code": -15
+    },
+    {
+      "scenario": "b",
+      "seed": 42,
+      "last_observed_month": 3240,
+      "observations": 28,
+      "raw_status_preserved": "running",
+      "requested_complete": false,
+      "complete": false,
+      "completed_cohorts": 0,
+      "used_laws_match_frozen_source_verified_at_launch": true,
+      "used_law_count": 112,
+      "genesis_functional_selection": "INV-001/002/011",
+      "genesis_functional_total": 1,
+      "genesis_functional_failed": 0,
+      "started_utc": "2026-10-30T13:55:55.149726+00:00",
+      "sigterm_utc": "2026-10-30T14:17:18.497845+00:00",
+      "wall_to_sigterm_seconds": 1283.348119,
+      "last_sample_case_elapsed_ms": 1257723.2637,
+      "child_exit_code": -15
+    },
+    {
+      "scenario": "c",
+      "seed": 42,
+      "last_observed_month": 3240,
+      "observations": 28,
+      "raw_status_preserved": "running",
+      "requested_complete": false,
+      "complete": false,
+      "completed_cohorts": 0,
+      "used_laws_match_frozen_source_verified_at_launch": true,
+      "used_law_count": 112,
+      "genesis_functional_selection": "INV-001/002/011",
+      "genesis_functional_total": 1,
+      "genesis_functional_failed": 0,
+      "started_utc": "2026-10-30T13:55:55.156842+00:00",
+      "sigterm_utc": "2026-10-30T14:17:18.497845+00:00",
+      "wall_to_sigterm_seconds": 1283.341003,
+      "last_sample_case_elapsed_ms": 1211880.7224,
+      "child_exit_code": -15
+    }
+  ],
+  "aggregate_validation": {
+    "script_source_commit": "b0f3aec986d9b09015021499e47627b869411b83",
+    "exit_code": 1,
+    "output_created": false,
+    "message": "성장 원본 통합 거절: 부분/다른 기간/조건/미완료 성장 원본",
+    "actual_simulation_executed": false,
+    "log": "growth-b0f3aec-aggregate-rejection.log"
+  },
+  "limitations": [
+    "The three processes were concurrent and pinned to CPUs 1/2/3 under cpu.max 400000 100000. Wall duration is not a pure performance or hardware-speed measurement.",
+    "Original running/partial status fields are retained byte-exactly. growth-b0f3aec-interruption.json records actual termination.",
+    "No seed98/2026 cohort started and no 6000-month cohort completed.",
+    "Cause diagnosis is attributed to the integration owner; growth reports do not contain entry-attempt counters, food-observation counters or detailed death causes."
+  ]
+}

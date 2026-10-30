@@ -15,17 +15,17 @@
 | 예정 | 0 |
 | 차단 | 0 |
 
-**현재 단계:** 최종 성능 병목 보정·측정
+**현재 단계:** 최종 기능 검증·성장 보정
 
-- 이전 전체 기능258/258 및 실제 Windows·Android35 CI의261/261 기능·렌더/연결 성공을 출처별로 보존
-- 89d581d의 실제N1000 12개월 완주·저장 왕복 동일: 진행591.99초·누적할당232.49GB, 전체 네규모 수용 미완료
-- PR158 입력 투영 실험 병합: 재고54/54·환전9/9, 실제 두 공개 시나리오 상태/저장 동일; 앱 기본 경로는 strict 유지
-- 격리된 opt-in 측정으로100명·1000명 비용과 상태/법칙/작업량/저장 크기 비교, 이후 기본 채택 여부 판정
-- 최종 동일 소스의 네 규모·AI·성장·장기 안정성·확장 실험·플랫폼·릴리스 근거 수집 계속
+- a7d77b7 전체 기능272/272 통과: 기본 재고15필드 투영 및 ID/노동일정 집계 변경 통합
+- 같은b0소스100명 직접비교9.59초→6.86초·할당30.4%감소, 1000명12개월180.71초·기존상태/법칙/작업량/저장일치 원본보존
+- 기본a와비교b/c500년·각3seed 실제성장진행; seed42의후손2명이금단도달전사망한관찰을보존하고지식/학습/수행/AI원인진단
+- 검증규칙을보존한typed깊은복사prototype 및 정상/200%글자확대의실제화면기능검수
+- 성장보정후동일최종소스의네규모·AI·장기안정성·확장실험·플랫폼·릴리스근거마감
 
-**다음 단계:** 성능·성장·장기 안정성 측정 및 개발 보정 → 최종 전체 기능·실제 플랫폼 재검증 → 기존 인증서 APK와 한글 업데이트 요약 릴리스
+**다음 단계:** 성장 병목의 원인 확인·개발 보정 → 최종 소스의 전체 기능·성능·플랫폼 검증 → 기존 인증서 APK와 한글 업데이트 요약 릴리스
 
 성능·성장·장기 안정성 검사는 전체 기능 개발 이후에 진행합니다.
 
-기준 소스: [96b4b8d4](https://github.com/hddy774/project-hora/commit/96b4b8d4bbadefdcaf1ee670e1f1609f438c30d6) · [작업 원장](https://github.com/hddy774/project-hora/blob/96b4b8d4bbadefdcaf1ee670e1f1609f438c30d6/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
+기준 소스: [505efb2a](https://github.com/hddy774/project-hora/commit/505efb2a164e98d1903309445bb2e223eb410ab2) · [작업 원장](https://github.com/hddy774/project-hora/blob/505efb2a164e98d1903309445bb2e223eb410ab2/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
 <!-- v021-progress:end -->

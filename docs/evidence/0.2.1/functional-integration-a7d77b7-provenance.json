@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "source_commit": "a7d77b76e1a5bfa70a76e900d84b697cfdd2c524",
+  "product_source_fingerprint": "ebf55e833caf642f493d6b5fff122c00d0c94220ada64641e02cd0e6cc23bdd8",
+  "report": "docs/evidence/0.2.1/functional-integration-a7d77b7.json",
+  "report_sha256": "3e1466b45b2626454601cc4c9613f4c2ec596f3b9b635555e2636f02ca1b6a28",
+  "selection": "all",
+  "passed": 272,
+  "failed": 0,
+  "process_exit_code": 0,
+  "build": "Release",
+  "source_worktree_clean_before_and_after": true,
+  "command": "taskset -c 0 /workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers -p:BuildInParallel=false -p:UseSharedCompilation=false -- --report /workspace/scratch/functional-integration-a7d77b7.json",
+  "scope": "PR161 기본15필드 입력투영과 PR162 검증집계 변경을 함께 적용한 전체 기능 검사. Source/DLL을 고정한 실제 root실행. 성장·성능 sampler는 호출하지 않음.",
+  "limitations": [
+    "실제 창세 성장의 후대금단 병목 수용과 최종 성능·플랫폼·배포는 별도. 전체 기능합격을0.2.1전체완료로바꾸지않는다.",
+    "동시 성장3프로세스가다른CPU에서실행중인공유호스트. 이 기능실행의 소요시간을성능지표로사용하지않는다."
+  ]
+}

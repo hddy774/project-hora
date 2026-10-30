@@ -1,0 +1,38 @@
+{
+  "baseCommit": "674329f455fd366640d29ca495ab6b9b5d185eaf",
+  "implementationCommit": "e15cf1cc79d023ba4f02cac04b4a6d9500167ee8",
+  "kind": "source-proof-and-existing-functional-only",
+  "changedProductFiles": [
+    "src/Chronicles.Game/World.PoliticsBridge.cs"
+  ],
+  "productChange": "PoliticsLaborAvailable uses the existing PoliticsContext(includeMaturity: false) option at one call",
+  "unchangedAuthority": {
+    "path": "src/Chronicles.Game/Politics/PoliticsEngine.cs",
+    "method": "IsLaborAvailable",
+    "firstLine": 42,
+    "lastLine": 45,
+    "bodyIdenticalToBase": true,
+    "bodySha256": "5d4893ae99e97b0f34439d4942d646fff7d8e4b623f757bc9b112c80997d00fd",
+    "reads": [
+      "from/until and context.Month",
+      "current People Id, living status and Idle action",
+      "actual overlapping Labor reservations"
+    ],
+    "readsMaturity": false,
+    "readsRules": false
+  },
+  "politicalDefaultIncludesMaturity": true,
+  "previousCultivationOmissionUnchanged": true,
+  "existingProfile": {
+    "sourceCommitPrefix": "9263756",
+    "sameCsharpAsBase": true,
+    "path": "/workspace/scratch/profile-9263756-tenk-warmup-weighted-stacks.json",
+    "sha256": "0df94d9e59d4d1512f4ec0b8c53b3c7e6367f931f9132fe49707a5e715c6f2b8",
+    "section": "warmup_advance",
+    "frame": "Chronicles.Game!Chronicles.Game.GameWorld.PoliticsLaborAvailable(class Chronicles.Game.Person,int64,int64)",
+    "inclusivePercent": 8.291135441315543,
+    "usedAsMotivationOnly": true
+  },
+  "newBenchmarkProfileGrowthPopulationRuns": 0,
+  "newTests": 0
+}

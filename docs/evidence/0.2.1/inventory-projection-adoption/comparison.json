@@ -1,0 +1,639 @@
+{
+  "schema_version": 1,
+  "kind": "inventory-projection-sampler-comparison",
+  "generatedUtc": "2026-10-30T13:43:33.482678+00:00",
+  "measuredSource": "b0f3aec986d9b09015021499e47627b869411b83",
+  "sourceIncludes": [
+    "PR158 a2d493e: private15field projection; defaultstrict",
+    "PR159 96b4b8d: growth CLI selection; inactive in these runs",
+    "sampler opt-in dbba619; final merge-source b0f3aec"
+  ],
+  "reports": {
+    "projected100": {
+      "path": "/workspace/scratch/projection-b0f3aec-n100.json",
+      "sha256": "8a4b7e844854c9d46d6c1d6fb0f0bc9336f0772d308748725b1ca8fb84ec8f18",
+      "environment": {
+        "sourceCommit": "b0f3aec986d9b09015021499e47627b869411b83",
+        "sourceWorktreeClean": true,
+        "buildConfiguration": "Release",
+        "platform": "host",
+        "engine": "none",
+        "device": "d6c5c2613b8c",
+        "runtime": ".NET 10.0.14",
+        "os": "Debian GNU/Linux 13 (trixie)",
+        "architecture": "X64",
+        "cpu": 4,
+        "totalAvailableMemoryBytes": 12884901888,
+        "precedingFunctionalSelection": "INV-001/002/011",
+        "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+        "thermalState": "not measured; host result only",
+        "powerState": "not measured; host result only"
+      },
+      "experimental_configuration": true,
+      "complete": false
+    },
+    "projected1000": {
+      "path": "/workspace/scratch/projection-b0f3aec-n1000.json",
+      "sha256": "7c8fca5ed15fceb6b4dfd119421628580431f623ab36a0303b164ecce39ce812",
+      "environment": {
+        "sourceCommit": "b0f3aec986d9b09015021499e47627b869411b83",
+        "sourceWorktreeClean": true,
+        "buildConfiguration": "Release",
+        "platform": "host",
+        "engine": "none",
+        "device": "d6c5c2613b8c",
+        "runtime": ".NET 10.0.14",
+        "os": "Debian GNU/Linux 13 (trixie)",
+        "architecture": "X64",
+        "cpu": 4,
+        "totalAvailableMemoryBytes": 12884901888,
+        "precedingFunctionalSelection": "INV-001/002/011",
+        "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+        "thermalState": "not measured; host result only",
+        "powerState": "not measured; host result only"
+      },
+      "experimental_configuration": true,
+      "complete": false
+    },
+    "strict100": {
+      "path": "/workspace/scratch/strict-b0f3aec-n100.json",
+      "sha256": "7390fa624bcbd54f1d81025e3b9dc82575cd9d1943b077dc3b3db00351eb3bda",
+      "environment": {
+        "sourceCommit": "b0f3aec986d9b09015021499e47627b869411b83",
+        "sourceWorktreeClean": true,
+        "buildConfiguration": "Release",
+        "platform": "host",
+        "engine": "none",
+        "device": "d6c5c2613b8c",
+        "runtime": ".NET 10.0.14",
+        "os": "Debian GNU/Linux 13 (trixie)",
+        "architecture": "X64",
+        "cpu": 4,
+        "totalAvailableMemoryBytes": 12884901888,
+        "precedingFunctionalSelection": "INV-001/002/011",
+        "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+        "thermalState": "not measured; host result only",
+        "powerState": "not measured; host result only"
+      },
+      "experimental_configuration": false,
+      "complete": false
+    },
+    "historicalOwned100": {
+      "path": "/workspace/scratch/owned-d1bfaf5-n100.json",
+      "sha256": "82166b63e72e1bceb873f512f4c33011eb14bb80d8c8cc4c42d01e8f6ea0a457",
+      "environment": {
+        "sourceCommit": "d1bfaf5ccb3c89854cdaaeca32a7810105180975",
+        "sourceWorktreeClean": true,
+        "buildConfiguration": "Release",
+        "platform": "host",
+        "engine": "none",
+        "device": "d6c5c2613b8c",
+        "runtime": ".NET 10.0.14",
+        "os": "Debian GNU/Linux 13 (trixie)",
+        "architecture": "X64",
+        "cpu": 4,
+        "totalAvailableMemoryBytes": 12884901888,
+        "precedingFunctionalSelection": "INV-001/002/011",
+        "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+        "thermalState": "not measured; host result only",
+        "powerState": "not measured; host result only"
+      },
+      "experimental_configuration": false,
+      "complete": false
+    },
+    "historicalValidation1000": {
+      "path": "/workspace/scratch/validation-155-n1000.json",
+      "sha256": "ef99405b3ac8f9669649c0b0f54e0959c4da5e7031f6b2c9779e70ad38a0a065",
+      "environment": {
+        "sourceCommit": "89d581d6ad68813c378f495c208c5ee8e8155cad",
+        "sourceWorktreeClean": true,
+        "buildConfiguration": "Release",
+        "platform": "host",
+        "engine": "none",
+        "device": "d6c5c2613b8c",
+        "runtime": ".NET 10.0.14",
+        "os": "Debian GNU/Linux 13 (trixie)",
+        "architecture": "X64",
+        "cpu": 4,
+        "totalAvailableMemoryBytes": 12884901888,
+        "precedingFunctionalSelection": "INV-001/002/011",
+        "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+        "thermalState": "not measured; host result only",
+        "powerState": "not measured; host result only"
+      },
+      "experimental_configuration": false,
+      "complete": false
+    }
+  },
+  "executionOrder": [
+    {
+      "kind": "inventory-projection-opt-in-measurement",
+      "source": "b0f3aec986d9b09015021499e47627b869411b83",
+      "sourceWorktreeCleanBefore": true,
+      "sourceWorktreeCleanAfter": true,
+      "population": 100,
+      "wallLimitSeconds": 1200,
+      "startedUtc": "2026-10-30T13:35:25.320546+00:00",
+      "finishedUtc": "2026-10-30T13:35:37.322986+00:00",
+      "elapsedSeconds": 12.002443003002554,
+      "exitCode": 0,
+      "timedOut": false,
+      "experimental_configuration": true,
+      "command": [
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--report",
+        "/workspace/scratch/projection-b0f3aec-n100-genesis.json",
+        "--performance",
+        "/workspace/scratch/projection-b0f3aec-n100.json",
+        "--performance-size",
+        "100",
+        "--performance-inventory-projection"
+      ],
+      "note": "One unprofiled host run per size, CPU workloads executed sequentially; shared-host builds outside this worktree are not controlled. Only explicit genesis selection 1/1 precedes sampling, not a full functional suite. N10000 not run. Experimental reports force complete=false and do not establish the strict app final gate.",
+      "artifacts": {
+        "/workspace/scratch/projection-b0f3aec-n100.json": {
+          "bytes": 11092,
+          "sha256": "8a4b7e844854c9d46d6c1d6fb0f0bc9336f0772d308748725b1ca8fb84ec8f18"
+        },
+        "/workspace/scratch/projection-b0f3aec-n100.log": {
+          "bytes": 1481,
+          "sha256": "f1b064ae8dfaa123925e97927599dcc89fc125f81839a7f9a351d58b137ba5de"
+        },
+        "/workspace/scratch/projection-b0f3aec-n100-genesis.json": {
+          "bytes": 252,
+          "sha256": "1eacd0ddcc1492b7a1174d3b173dc979d1c27362c8da736238562dc7a2a53bdc"
+        }
+      }
+    },
+    {
+      "kind": "inventory-projection-opt-in-measurement",
+      "source": "b0f3aec986d9b09015021499e47627b869411b83",
+      "sourceWorktreeCleanBefore": true,
+      "sourceWorktreeCleanAfter": true,
+      "population": 1000,
+      "wallLimitSeconds": 1200,
+      "startedUtc": "2026-10-30T13:37:04.345288+00:00",
+      "finishedUtc": "2026-10-30T13:40:35.003833+00:00",
+      "elapsedSeconds": 210.65854869099712,
+      "exitCode": 0,
+      "timedOut": false,
+      "experimental_configuration": true,
+      "command": [
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--report",
+        "/workspace/scratch/projection-b0f3aec-n1000-genesis.json",
+        "--performance",
+        "/workspace/scratch/projection-b0f3aec-n1000.json",
+        "--performance-size",
+        "1000",
+        "--performance-inventory-projection"
+      ],
+      "note": "One unprofiled host run per size, CPU workloads executed sequentially; shared-host builds outside this worktree are not controlled. Only explicit genesis selection 1/1 precedes sampling, not a full functional suite. N10000 not run. Experimental reports force complete=false and do not establish the strict app final gate.",
+      "artifacts": {
+        "/workspace/scratch/projection-b0f3aec-n1000.json": {
+          "bytes": 11191,
+          "sha256": "7c8fca5ed15fceb6b4dfd119421628580431f623ab36a0303b164ecce39ce812"
+        },
+        "/workspace/scratch/projection-b0f3aec-n1000.log": {
+          "bytes": 1537,
+          "sha256": "18077481ebef99b51c5de1c3c440d107a0b831ee1a9977504854e005e953d1de"
+        },
+        "/workspace/scratch/projection-b0f3aec-n1000-genesis.json": {
+          "bytes": 252,
+          "sha256": "3e32af2fd284aaab0a3433673c7c65094e05f5c4af4a5be8a26142763fdcfbf9"
+        }
+      }
+    },
+    {
+      "kind": "same-source-strict-measurement",
+      "source": "b0f3aec986d9b09015021499e47627b869411b83",
+      "sourceWorktreeCleanBefore": true,
+      "sourceWorktreeCleanAfter": true,
+      "population": 100,
+      "wallLimitSeconds": 1200,
+      "startedUtc": "2026-10-30T13:40:51.717714+00:00",
+      "finishedUtc": "2026-10-30T13:41:06.830569+00:00",
+      "elapsedSeconds": 15.112859716995445,
+      "exitCode": 0,
+      "timedOut": false,
+      "experimental_configuration": false,
+      "command": [
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--report",
+        "/workspace/scratch/strict-b0f3aec-n100-genesis.json",
+        "--performance",
+        "/workspace/scratch/strict-b0f3aec-n100.json",
+        "--performance-size",
+        "100"
+      ],
+      "note": "One strict N100 A/B run after the projected N1000 completed; CPU workloads executed sequentially; shared-host builds outside this worktree are not controlled. Only explicit genesis selection 1/1 precedes sampling, not a full functional suite. N10000 not run. Only N100 is requested, so the report cannot satisfy the all-size final gate.",
+      "artifacts": {
+        "/workspace/scratch/strict-b0f3aec-n100.json": {
+          "bytes": 11055,
+          "sha256": "7390fa624bcbd54f1d81025e3b9dc82575cd9d1943b077dc3b3db00351eb3bda"
+        },
+        "/workspace/scratch/strict-b0f3aec-n100.log": {
+          "bytes": 1480,
+          "sha256": "2e9324e39b211c672af3b9f9b30c05ea3ae1d81eef77299d45b2726b24bb6f7c"
+        },
+        "/workspace/scratch/strict-b0f3aec-n100-genesis.json": {
+          "bytes": 252,
+          "sha256": "901eb762ad1e0aa92d1d29d3dc65e78880b53a87c106bf1d31c4d143cc1fb017"
+        }
+      }
+    }
+  ],
+  "sameSourceN100AB": {
+    "reference": "strict100",
+    "candidate": "projected100",
+    "population": 100,
+    "equal": {
+      "initialHash": true,
+      "finalHash": true,
+      "fixture": true,
+      "usedLaws": true,
+      "workload": true,
+      "saveBytes": true,
+      "serializedCognitionBytes": true,
+      "cognition": true
+    },
+    "initialHash": "3b8a5e15d44a9f1ff366f4caab05ac868cdace20017aa32e837747f47dfa9887",
+    "finalHash": "f18e943272d2ceda8bdf8bc87a54ead8e62ca3876ab0381704e70c614937cc33",
+    "workload": {
+      "peopleWithDecisions": 100,
+      "retainedDecisionRecords": 1004,
+      "retainedInferenceExpansions": 820,
+      "maximumRetainedInferenceExpansionsPerPerson": 24,
+      "currentActions": {
+        "Cultivate": 2,
+        "Guard": 98
+      },
+      "completedKnowledgeActivities": 797,
+      "completedPhysicalJobs": 98,
+      "actualExtraction": 1176,
+      "actualProduction": 0
+    },
+    "metrics": {
+      "advance12MonthsMs": {
+        "reference": 9586.1417,
+        "candidate": 6857.417000000001,
+        "candidatePercentChange": -28.465307371786487
+      },
+      "monthlyP50Ms": {
+        "reference": 338.53885,
+        "candidate": 415.00445,
+        "candidatePercentChange": 22.586949769575938
+      },
+      "monthlyP95Ms": {
+        "reference": 4279.255,
+        "candidate": 1219.8828,
+        "candidatePercentChange": -71.49310335560746
+      },
+      "allocatedBytes": {
+        "reference": 4760528312,
+        "candidate": 3313020936,
+        "candidatePercentChange": -30.406444014863364
+      },
+      "queryMs": {
+        "reference": 50.6487,
+        "candidate": 51.3132,
+        "candidatePercentChange": 1.3119783923378092
+      },
+      "saveMs": {
+        "reference": 268.6216,
+        "candidate": 264.3214,
+        "candidatePercentChange": -1.6008392474767597
+      },
+      "loadMs": {
+        "reference": 290.729,
+        "candidate": 298.4541,
+        "candidatePercentChange": 2.657148065724435
+      },
+      "openingRetainedManagedBytes": {
+        "reference": 21076112,
+        "candidate": 21162808,
+        "candidatePercentChange": 0.41134721622280157
+      },
+      "retainedManagedBytes": {
+        "reference": 27546088,
+        "candidate": 27630664,
+        "candidatePercentChange": 0.30703452337770276
+      },
+      "saveBytes": {
+        "reference": 13311756,
+        "candidate": 13311756,
+        "candidatePercentChange": 0.0
+      },
+      "serializedCognitionBytes": {
+        "reference": 2440316,
+        "candidate": 2440316,
+        "candidatePercentChange": 0.0
+      }
+    },
+    "monthlySamplesMs": {
+      "reference": [
+        1053.9282,
+        96.4017,
+        148.7938,
+        1657.9556,
+        389.0403,
+        294.0936,
+        308.533,
+        343.8238,
+        376.3345,
+        333.2539,
+        304.7283,
+        4279.255
+      ],
+      "candidate": [
+        1082.5607,
+        206.3097,
+        323.2225,
+        1004.69,
+        776.0335,
+        428.6968,
+        454.0337,
+        358.4854,
+        401.3121,
+        307.4731,
+        294.7167,
+        1219.8828
+      ]
+    }
+  },
+  "historicalN100": {
+    "reference": "historicalOwned100",
+    "candidate": "projected100",
+    "population": 100,
+    "equal": {
+      "initialHash": true,
+      "finalHash": true,
+      "fixture": true,
+      "usedLaws": true,
+      "workload": true,
+      "saveBytes": true,
+      "serializedCognitionBytes": true,
+      "cognition": true
+    },
+    "initialHash": "3b8a5e15d44a9f1ff366f4caab05ac868cdace20017aa32e837747f47dfa9887",
+    "finalHash": "f18e943272d2ceda8bdf8bc87a54ead8e62ca3876ab0381704e70c614937cc33",
+    "workload": {
+      "peopleWithDecisions": 100,
+      "retainedDecisionRecords": 1004,
+      "retainedInferenceExpansions": 820,
+      "maximumRetainedInferenceExpansionsPerPerson": 24,
+      "currentActions": {
+        "Cultivate": 2,
+        "Guard": 98
+      },
+      "completedKnowledgeActivities": 797,
+      "completedPhysicalJobs": 98,
+      "actualExtraction": 1176,
+      "actualProduction": 0
+    },
+    "metrics": {
+      "advance12MonthsMs": {
+        "reference": 10682.905599999998,
+        "candidate": 6857.417000000001,
+        "candidatePercentChange": -35.80943933455705
+      },
+      "monthlyP50Ms": {
+        "reference": 348.05780000000004,
+        "candidate": 415.00445,
+        "candidatePercentChange": 19.23434843293268
+      },
+      "monthlyP95Ms": {
+        "reference": 4796.2144,
+        "candidate": 1219.8828,
+        "candidatePercentChange": -74.56571582788291
+      },
+      "allocatedBytes": {
+        "reference": 4986016760,
+        "candidate": 3313020936,
+        "candidatePercentChange": -33.55375452047217
+      },
+      "queryMs": {
+        "reference": 49.9946,
+        "candidate": 51.3132,
+        "candidatePercentChange": 2.637484848363636
+      },
+      "saveMs": {
+        "reference": 253.9559,
+        "candidate": 264.3214,
+        "candidatePercentChange": 4.081614170019265
+      },
+      "loadMs": {
+        "reference": 298.6888,
+        "candidate": 298.4541,
+        "candidatePercentChange": -0.07857676618608922
+      },
+      "openingRetainedManagedBytes": {
+        "reference": 21013152,
+        "candidate": 21162808,
+        "candidatePercentChange": 0.7122015773740165
+      },
+      "retainedManagedBytes": {
+        "reference": 27485088,
+        "candidate": 27630664,
+        "candidatePercentChange": 0.5296544802767311
+      },
+      "saveBytes": {
+        "reference": 13311756,
+        "candidate": 13311756,
+        "candidatePercentChange": 0.0
+      },
+      "serializedCognitionBytes": {
+        "reference": 2440316,
+        "candidate": 2440316,
+        "candidatePercentChange": 0.0
+      }
+    },
+    "monthlySamplesMs": {
+      "reference": [
+        1222.1006,
+        108.7006,
+        153.5925,
+        2073.2892,
+        353.492,
+        276.8334,
+        317.2195,
+        344.7461,
+        372.6929,
+        351.3695,
+        312.6549,
+        4796.2144
+      ],
+      "candidate": [
+        1082.5607,
+        206.3097,
+        323.2225,
+        1004.69,
+        776.0335,
+        428.6968,
+        454.0337,
+        358.4854,
+        401.3121,
+        307.4731,
+        294.7167,
+        1219.8828
+      ]
+    }
+  },
+  "historicalN1000": {
+    "reference": "historicalValidation1000",
+    "candidate": "projected1000",
+    "population": 1000,
+    "equal": {
+      "initialHash": true,
+      "finalHash": true,
+      "fixture": true,
+      "usedLaws": true,
+      "workload": true,
+      "saveBytes": true,
+      "serializedCognitionBytes": true,
+      "cognition": true
+    },
+    "initialHash": "3b9da28dc41fb7c626b45b820a5cf638ea3f1e334a5e7884bed04897a4f071de",
+    "finalHash": "827749002b8fd66bda15e4bf60a663d9a434ebd5935eddd8dbb47a59ca6bee81",
+    "workload": {
+      "peopleWithDecisions": 1000,
+      "retainedDecisionRecords": 9991,
+      "retainedInferenceExpansions": 11805,
+      "maximumRetainedInferenceExpansionsPerPerson": 24,
+      "currentActions": {
+        "Gather": 4,
+        "Cultivate": 1,
+        "Explore": 1,
+        "Guard": 994
+      },
+      "completedKnowledgeActivities": 3204,
+      "completedPhysicalJobs": 1007,
+      "actualExtraction": 12000,
+      "actualProduction": 0
+    },
+    "metrics": {
+      "advance12MonthsMs": {
+        "reference": 591991.0658,
+        "candidate": 180711.933,
+        "candidatePercentChange": -69.47387495522572
+      },
+      "monthlyP50Ms": {
+        "reference": 8240.6916,
+        "candidate": 7323.8921,
+        "candidatePercentChange": -11.125273757362796
+      },
+      "monthlyP95Ms": {
+        "reference": 344314.9603,
+        "candidate": 69468.534,
+        "candidatePercentChange": -79.8241313884612
+      },
+      "allocatedBytes": {
+        "reference": 232485298248,
+        "candidate": 103462835408,
+        "candidatePercentChange": -55.497041667713255
+      },
+      "queryMs": {
+        "reference": 175.1581,
+        "candidate": 163.3224,
+        "candidatePercentChange": -6.757152538192646
+      },
+      "saveMs": {
+        "reference": 1746.1214,
+        "candidate": 1634.665,
+        "candidatePercentChange": -6.383084246032378
+      },
+      "loadMs": {
+        "reference": 1659.9629,
+        "candidate": 1805.7908,
+        "candidatePercentChange": 8.785009592684268
+      },
+      "openingRetainedManagedBytes": {
+        "reference": 63009840,
+        "candidate": 63616608,
+        "candidatePercentChange": 0.9629734022495562
+      },
+      "retainedManagedBytes": {
+        "reference": 129708256,
+        "candidate": 79974296,
+        "candidatePercentChange": -38.34294094587163
+      },
+      "saveBytes": {
+        "reference": 75431711,
+        "candidate": 75431711,
+        "candidatePercentChange": 0.0
+      },
+      "serializedCognitionBytes": {
+        "reference": 17775470,
+        "candidate": 17775470,
+        "candidatePercentChange": 0.0
+      }
+    },
+    "monthlySamplesMs": {
+      "reference": [
+        50613.5034,
+        577.916,
+        645.195,
+        139482.7412,
+        5893.4397,
+        6225.2107,
+        7230.7554,
+        8251.7759,
+        8629.2052,
+        8229.6073,
+        11896.7557,
+        344314.9603
+      ],
+      "candidate": [
+        18403.6994,
+        590.498,
+        608.5681,
+        40338.2183,
+        6006.8376,
+        6197.4112,
+        6632.6828,
+        7188.521,
+        7732.6017,
+        7459.2632,
+        10085.0977,
+        69468.534
+      ]
+    }
+  },
+  "projectionSnapshotEvidence": {
+    "projected100": {
+      "warmup": 100,
+      "measured": 306
+    },
+    "projected1000": {
+      "warmup": 1000,
+      "measured": 3029
+    },
+    "strict100": {
+      "warmup": 0,
+      "measured": 0
+    }
+  },
+  "allocationScope": "sum of process-wide allocation deltas around each actual AdvanceTo; monthly progress JSON and console reporting are excluded",
+  "limits": [
+    "각 설정·규모는 공유 Linux host의 비프로파일 단일 실행이다. 분산이나 신뢰구간은 계산하지 않으며 열·전력·외부 빌드 부하를 통제하지 않았다.",
+    "모든 실행은 명시적 창세 선택 INV-001/002/011 1/1만 선행했다. 전체 기능수트 판정이나 자연 인구 성장 증거가 아니다.",
+    "같은 소스 N100 A/B는 mode만 다르다. d1 대비 N100 차이는155등도 포함해 projection 단독 기여로 해석하지 않는다.",
+    "N1000 historical89와 현재는 저장/상태/법칙/작업량 동일성이 확인됐지만 source와 실행시각이 다르다. 단일 실행의 시간 변화 전체를 독립 인과 효과로 단정하지 않는다.",
+    "관리 보유 메모리는 전체 process heap의 full GC 후 값으로 shared/runtime cache를 포함한다. 수치 감소를 개인지식·일지·계획 삭제로 해석하지 않는다. 실제 저장·cognition bytes와 full state hash는 그대로다.",
+    "투영 보고서는 experimental_configuration:true이고 complete:false를 강제한다. 기본 앱/공개API는strict 유지. 최종 정식 성능 게이트·앱 기본 채택·Android 측정을 뜻하지 않는다.",
+    "측정 월 진행·할당량·조회·저장·로드·보유 메모리에서 좋아진 값과 나빠진 값을 모두 보존한다.",
+    "N10000는 이 분담에서 실행하지 않았다. 새로운 COW·룰완화·검증생략은 없다."
+  ],
+  "productDefaultAdopted": false,
+  "n10000Run": false,
+  "sourceWorktreeCleanAfter": true
+}

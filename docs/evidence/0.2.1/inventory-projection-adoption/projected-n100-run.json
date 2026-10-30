@@ -1,0 +1,42 @@
+{
+  "kind": "inventory-projection-opt-in-measurement",
+  "source": "b0f3aec986d9b09015021499e47627b869411b83",
+  "sourceWorktreeCleanBefore": true,
+  "sourceWorktreeCleanAfter": true,
+  "population": 100,
+  "wallLimitSeconds": 1200,
+  "startedUtc": "2026-10-30T13:35:25.320546+00:00",
+  "finishedUtc": "2026-10-30T13:35:37.322986+00:00",
+  "elapsedSeconds": 12.002443003002554,
+  "exitCode": 0,
+  "timedOut": false,
+  "experimental_configuration": true,
+  "command": [
+    "/workspace/.dotnet/dotnet",
+    "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/projection-b0f3aec-n100-genesis.json",
+    "--performance",
+    "/workspace/scratch/projection-b0f3aec-n100.json",
+    "--performance-size",
+    "100",
+    "--performance-inventory-projection"
+  ],
+  "note": "One unprofiled host run per size, CPU workloads executed sequentially; shared-host builds outside this worktree are not controlled. Only explicit genesis selection 1/1 precedes sampling, not a full functional suite. N10000 not run. Experimental reports force complete=false and do not establish the strict app final gate.",
+  "artifacts": {
+    "/workspace/scratch/projection-b0f3aec-n100.json": {
+      "bytes": 11092,
+      "sha256": "8a4b7e844854c9d46d6c1d6fb0f0bc9336f0772d308748725b1ca8fb84ec8f18"
+    },
+    "/workspace/scratch/projection-b0f3aec-n100.log": {
+      "bytes": 1481,
+      "sha256": "f1b064ae8dfaa123925e97927599dcc89fc125f81839a7f9a351d58b137ba5de"
+    },
+    "/workspace/scratch/projection-b0f3aec-n100-genesis.json": {
+      "bytes": 252,
+      "sha256": "1eacd0ddcc1492b7a1174d3b173dc979d1c27362c8da736238562dc7a2a53bdc"
+    }
+  }
+}

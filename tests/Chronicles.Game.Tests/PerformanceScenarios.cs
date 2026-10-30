@@ -18,7 +18,7 @@ internal static partial class PerformanceScenarios
         void SaveProgress() => WriteMeasurementReport(path, new { schema_version = 2, kind = "seonro-population-baseline",
             complete = !inventoryProjectionExperiment && completedSizes.Order().SequenceEqual(SyntheticPopulationFixture.Sizes), requestedSizes, completedSizes,
             experimental_configuration = inventoryProjectionExperiment,
-            configuration = new { inventoryProjectionExperiment, inventoryCandidateMode = inventoryProjectionExperiment ? "person15-projection-experiment" : "strict" },
+            configuration = new { inventoryProjectionExperiment, inventoryCandidateMode = "person15-adopted", inventoryProjectionAdoptedByDefault = true },
             environment, totalElapsedSeconds = total.Elapsed.TotalSeconds, reports,
             inProgress = new { population = currentPopulation, stage = currentStage, completedMonths = currentMonth, monthlySamplesMs = currentSamples },
             note = "12-month live synthetic baseline; monthly timings exclude fixture/warmup/restore/full collection, total time includes them; retained memory is the collected process managed heap, not cumulative allocations or per-world attribution; numerical budgets follow measurement; partial sizes do not satisfy the final gate; not Android or legacy 100x acceptance." });
@@ -64,8 +64,8 @@ internal static partial class PerformanceScenarios
             allocation += GC.GetTotalAllocatedBytes() - beforeAllocation;
             progress(month, samples);
         }
-        var measuredProjectionSnapshots = measured.InventoryProjectionExperimentSnapshots;
-        if (inventoryProjectionExperiment && measuredProjectionSnapshots <= 0) throw new InvalidOperationException("측정 world가 투영 실험 snapshot을 실행하지 않았습니다.");
+        var measuredProjectionSnapshots = measured.InventoryProjectionSnapshots;
+        if (measuredProjectionSnapshots <= 0) throw new InvalidOperationException("측정 world가 기본 Person 투영 snapshot을 실행하지 않았습니다.");
         // No full checkpoint clone has been created yet; the actual live world remains rooted through this measurement.
         stage("final_heap_collection"); var retained = CollectedManagedBytes(); GC.KeepAlive(measured);
         stage("final_checkpoint_validation");
@@ -124,7 +124,7 @@ internal static partial class PerformanceScenarios
         stage(prefix + "_fixture"); var initial = SyntheticPopulationFixture.Build(population);
         stage(prefix + "_restore"); var world = GameWorld.Restore(initial);
         if (inventoryProjectionExperiment) world.EnableInventoryProjectionForExperiment();
-        if (world.InventoryProjectionExperimentEnabled != inventoryProjectionExperiment) throw new InvalidOperationException("측정 world의 투영 설정이 요청과 다릅니다.");
+        if (!world.InventoryProjectionEnabled) throw new InvalidOperationException("측정 world가 채택된 기본 Person 투영 경로를 사용하지 않습니다.");
         return world;
     }
 
@@ -135,8 +135,8 @@ internal static partial class PerformanceScenarios
         var initialHash = warm.StateHash();
         stage("warmup_month_1"); warm.AdvanceTo(1);
         stage("warmup_month_2"); warm.AdvanceTo(2);
-        var snapshots = warm.InventoryProjectionExperimentSnapshots;
-        if (inventoryProjectionExperiment && snapshots <= 0) throw new InvalidOperationException("예열 world가 투영 실험 snapshot을 실행하지 않았습니다.");
+        var snapshots = warm.InventoryProjectionSnapshots;
+        if (snapshots <= 0) throw new InvalidOperationException("예열 world가 기본 Person 투영 snapshot을 실행하지 않았습니다.");
         return (initialHash, snapshots);
     }
 

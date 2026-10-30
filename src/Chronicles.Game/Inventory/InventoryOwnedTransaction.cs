@@ -6,7 +6,7 @@ public static partial class InventoryEngine
 {
     /// <summary>For serial GameWorld candidate execution only. The complete initial snapshot is always isolated.</summary>
     internal static OwnedTransaction Own(GameState world) => new(world);
-    internal static OwnedTransaction OwnProjectedForExperiment(GameState world) => new(world, true);
+    internal static OwnedTransaction OwnProjected(GameState world) => new(world, true);
 
     internal readonly record struct OwnedResult(bool Accepted, string Message, long Subject = 0, bool Replayed = false);
     internal readonly record struct OwnedJob(long Id, string Recipe, long Due);

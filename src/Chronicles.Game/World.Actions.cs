@@ -65,48 +65,15 @@ public sealed partial class GameWorld
         var completed = p.Action;
         if (CompletePeopleAction(p) || CompleteCultivation(p) || CompleteKnowledge(p) || CompleteInventory(p))
         { RecordCompletedHabit(p, completed); return; }
-        var action = p.Action; var target = p.ActionTarget; var data = p.ActionData;
+        var action = p.Action; var target = p.ActionTarget;
+        if (action is not (ActionKind.Travel or ActionKind.Explore or ActionKind.Heal or ActionKind.Care or ActionKind.Guard or ActionKind.Wait) ||
+            IsTypedActionMarker(p.ActionData) && !p.ActionData.StartsWith("combat:", StringComparison.Ordinal))
+            throw new InvalidDataException("A completed action has no matching authoritative owner.");
         RecordCompletedHabit(p, action);
         p.Action = ActionKind.Idle; p.Due = 0;
         var place = state.Places[p.Place];
         switch (action)
         {
-            case ActionKind.Gather:
-            case ActionKind.Farm:
-                var definition = data is "herb" or "ore" or "wood" ? data : "food";
-                var requested = IntLaw("economy.gatherYield");
-                if (p.Equipment.TryGetValue(8, out var toolId) && items.TryGetValue(toolId, out var tool) &&
-                    tool.Damage < 100 && !tool.Defects.HasFlag(ItemDefect.BrokenCircuit))
-                    requested += requested * tool.Quality * (100 - tool.Damage) / 4000000;
-                var yield = Math.Min(place.Source, requested);
-                place.Source -= yield;
-                AddItem(p.Id, definition, yield, 3000 + place.Element * 250, $"지점 {place.Id}·월 {Month}·실제 채집", "extraction");
-                Gain(p, action == ActionKind.Farm ? "farm" : "gather", yield);
-                if (yield == 0) Remember(p, $"depleted:{place.Id}", "원천 고갈", "실제 채집 결과", 100);
-                if (action == ActionKind.Farm && !place.Facilities.Contains("경작지")) place.Facilities.Add("경작지");
-                break;
-            case ActionKind.Cultivate: Cultivate(p, data); break;
-            case ActionKind.Breakthrough: Breakthrough(p, data); break;
-            case ActionKind.Trial: Trial(p); break;
-            case ActionKind.Martial:
-                p.MartialWork += 1 + Catalog.Talent(p, 9) / 5000;
-                if (p.Martial < 10 && p.MartialWork >= Law("martial.period") * (p.Martial + 1))
-                {
-                    p.Martial++; p.MartialWork = 0;
-                    p.Lifespan = Math.Max(p.Lifespan, 960 + p.Martial * 624);
-                    Event("무예", p.Id, p.Martial, $"{p.Name} 무예 {p.Martial}경지·영근 비사용", "실제 단련");
-                }
-                break;
-            case ActionKind.Study:
-                if (Accessible(p, target, out var book, ItemKind.Book))
-                {
-                    var gain = Math.Max(1, Catalog.Talent(p, 21) / 100);
-                    if (book.Defects.HasFlag(ItemDefect.MissingPages)) gain /= 2;
-                    if (book.Damage >= 100 || book.Defects.HasFlag(ItemDefect.LostCore)) gain = 0;
-                    p.Understanding[book.Definition] = Math.Min(10000, p.Understanding.GetValueOrDefault(book.Definition) + gain);
-                    Remember(p, $"book:{book.Id}", $"이해 {p.Understanding[book.Definition]}", $"매체 {book.Id}·{book.Source}", book.Quality / 100);
-                }
-                break;
             case ActionKind.Travel:
                 if (p.Realm >= Realm.Mahayana && p.Place / 10 != target / 10 && Math.Max(p.Place, target) >= 90 &&
                     Roll(10000) < Law("hazard.portalChance"))
@@ -135,119 +102,15 @@ public sealed partial class GameWorld
                     Event("발견", p.Id, place.Id, $"{p.Name} 숨은 약초 발견·지점 보상 소진", "실제 탐색");
                 }
                 break;
-            case ActionKind.Craft:
-                var recipe = Catalog.Recipes.First(r => r.Id == data);
-                var materials = state.Items.Where(i => i.Reserved == target).ToArray();
-                var quality = materials.Length == 0 ? 0 : materials.Sum(i => i.Quality * i.Quantity) / materials.Sum(i => i.Quantity);
-                foreach (var material in materials) { Material(material.Definition).Consumption += material.Quantity; Remove(material); }
-                var proficiency = p.Skills.GetValueOrDefault(recipe.Skill);
-                var resultQuality = Math.Clamp((quality + proficiency + Catalog.Talent(p, recipe.Skill == "alchemy" ? 14 : 15)) / 3 + Roll(401) - 200, 0, 10000);
-                var product = AddItem(p.Id, recipe.Output, recipe.Quantity, resultQuality, $"제작 {p.Id}·예약 {target}·{recipe.Id}");
-                if (product is not null && resultQuality < 1000 && Roll(10000) < 5000)
-                    product.Defects = Catalog.Items[product.Definition].Kind == ItemKind.Pill ? ItemDefect.Contamination : ItemDefect.BrokenCircuit;
-                Gain(p, recipe.Skill, 25);
-                Event("제작", p.Id, product?.Id ?? 0, $"{recipe.Name}·{Catalog.Quality(resultQuality)}", $"예약 {target} 소비 완료");
-                break;
             case ActionKind.Heal: p.Health = Math.Min(100, p.Health + IntLaw("cultivation.recovery") * 2); break;
             case ActionKind.Care: CompleteCare(p, target); break;
-            case ActionKind.Teach:
-                if (people.TryGetValue(target, out var student) && student.Status == LifeStatus.Alive && student.Place == p.Place)
-                {
-                    var ceiling = p.Understanding.GetValueOrDefault(data);
-                    student.Understanding[data] = Math.Min(ceiling, student.Understanding.GetValueOrDefault(data) +
-                        Math.Max(1, Catalog.Talent(student, 11) / 50));
-                    Remember(student, $"teaching:{p.Id}:{data}", $"전수 이해 {student.Understanding[data]}", $"스승 {p.Id} 실제 교육", 80);
-                    Remember(p, $"pupil:{student.Id}:{data}", student.Understanding[data].ToString(CultureInfo.InvariantCulture), "실제 수업에서 확인한 진척", 100);
-                    student.Traits.RemoveAll(t => t.Id == "사은미보" && t.Source == $"teacher:{p.Id}");
-                    student.Traits.Add(new("사은미보", $"teacher:{p.Id}", Month, null, true));
-                }
-                break;
+
         }
         if (p.Action == ActionKind.Idle) { p.ActionTarget = 0; p.ActionData = ""; }
     }
 
     private static void Gain(Person p, string skill, int amount) =>
         p.Skills[skill] = Math.Min(10000, p.Skills.GetValueOrDefault(skill) + amount);
-
-    private long Period(Person p)
-    {
-        if (p.Realm == Realm.Mortal) return Law("cultivation.entry");
-        if (p.Realm == Realm.Qi) return Law("cultivation.qi");
-        var duration = Law("cultivation.foundation");
-        for (var i = 2; i < (int)p.Realm; i++) duration = Math.Min(100000000, duration * Law("cultivation.upper") / 100);
-        return duration;
-    }
-
-    private void Cultivate(Person p, string chosenPath)
-    {
-        if (p.Realm == Realm.Mortal && p.Understanding.GetValueOrDefault("entry") == 0)
-        { p.Reason = "아직 습득하지 않은 입문 지식이 필요"; return; }
-        if (p.Realm > Realm.Qi && !Catalog.Paths.Any(path => path.Realm == p.Realm && p.Understanding.GetValueOrDefault(path.Id) > 0))
-        { p.Reason = "현재 경지의 공법을 실제로 배워야 합니다."; return; }
-        var place = state.Places[p.Place];
-        if (CultivationHazard(p, place)) return;
-        var cost = IntLaw("cultivation.sourceCost");
-        if (place.Qi < cost) { p.Reason = "영맥 공급 고갈"; return; }
-        place.Qi -= cost;
-        var aptitude = p.Aptitudes.Sum() / 6;
-        var harmony = 10000 - (p.Roots.Max() - p.Roots.Min()) / 2;
-        p.Processes[0] = cost * 1000;
-        p.Processes[1] = p.Processes[0] * (10000 - place.Turbidity * 50) / 10000;
-        p.Processes[2] = Math.Min(p.Processes[1], Catalog.Talent(p, 7) * cost / 5);
-        p.Processes[3] = p.Processes[2] * p.Health / 100;
-        if (cost > 0 && p.Processes[3] == 0) { p.Reason = "순환·체화 기반 부족"; return; }
-        var path = Catalog.Paths.FirstOrDefault(x => x.Id == chosenPath) ??
-            Catalog.Paths.First(x => x.Realm == (p.Realm == Realm.Mortal ? Realm.Qi : p.Realm));
-        var flow = cost == 0 ? 10000 : Math.Min(10000, p.Processes[3] * 10000 / (cost * 1000));
-        var work = (long)aptitude * harmony / 10000 * flow / 10000;
-        if (p.Realm == Realm.HalfImmortal) { p.Work += work; return; }
-        p.Work += work;
-        for (var i = 0; i < p.Components.Length; i++)
-            p.Components[i] = Math.Min(10000, p.Components[i] + (int)(work / (i + 1) / Math.Max(1, Period(p) / 2)));
-        var nextLayer = Math.Min(9, 1 + (int)(p.Work * 8 / (Period(p) * 5000)));
-        if (p.Realm == Realm.Tribulation && (nextLayer > p.Layer || (p.Work >= Period(p) * 5000 && !p.GreatPerfection)))
-        {
-            p.PendingLayer = nextLayer; p.Action = ActionKind.Trial; p.Due = Month + 1;
-            return;
-        }
-        if (p.Layer != nextLayer) place.PeopleRevision++;
-        p.Layer = nextLayer;
-        p.GreatPerfection = p.Layer == 9 && p.Work >= Period(p) * 5000;
-        Gain(p, path.Id, 1);
-        if (p.Work >= Period(p) * 5000)
-        {
-            p.Action = ActionKind.Breakthrough; p.Due = Month + 1; p.ActionData = path.Id;
-            p.Irreversible = p.Realm == Realm.GoldenCore;
-        }
-    }
-
-    private void Breakthrough(Person p, string chosenPath)
-    {
-        var path = Catalog.Paths.FirstOrDefault(x => x.Id == chosenPath) ?? Catalog.Paths.First(x => x.Realm == Realm.Qi);
-        var failRisk = IntLaw("cultivation.breakthroughRisk") + path.Risk + (100 - p.Health) * 10;
-        var failed = p.Realm != Realm.Tribulation && Roll(10000) < failRisk;
-        p.Irreversible = false;
-        if (failed)
-        {
-            if (p.Realm == Realm.GoldenCore) { EndLife(p, 3, "금단 파단 후 원영 형성 실패"); return; }
-            if (p.Realm == Realm.Tribulation) { EndLife(p, 8, "겁난 실패"); return; }
-            p.Health = Math.Max(1, p.Health - 20); p.Work = p.Work * 9 / 10;
-            Event("돌파 실패", p.Id, 0, $"{p.Name} 기반 손상·회복 필요", "돌파 실제 판정");
-            return;
-        }
-        if (p.Realm < Realm.HalfImmortal) p.Realm++;
-        state.Places[p.Place].PeopleRevision++;
-        p.Layer = 1; p.Work = 0; p.GreatPerfection = false;
-        var quality = p.Aptitudes.Sum() / 6;
-        p.Formations.Add(new(p.Realm, path.Id, quality, Math.Max(0, 100 - p.Health), Month, "실제 형성"));
-        p.Lifespan = p.Realm switch
-        {
-            Realm.Qi => Law("life.qi"), Realm.Foundation => Law("life.foundation"), Realm.GoldenCore => Law("life.core"),
-            Realm.HalfImmortal => Law("founder.lifespan"), _ => Math.Min(12000000, p.Lifespan * Law("life.upperMultiplier") / 100)
-        };
-        p.Lifespan = Math.Max(p.Lifespan, Month - p.Born + 12);
-        Event("돌파", p.Id, 0, $"{p.Name} {Catalog.RealmNames[(int)p.Realm]} 진입·안착", path.Id);
-    }
 
     private void Remember(Person p, string key, string value, string source, int confidence)
     {

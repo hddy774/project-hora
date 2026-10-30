@@ -40,5 +40,6 @@ public sealed partial class GameWorld
             if (!world.items.TryGetValue(medium.ItemId, out var item) || item.Owner != medium.OwnerId ||
                 Catalog.Items[item.Definition].Kind != ItemKind.Book)
                 throw new InvalidDataException("Knowledge medium must refer to its real physical book and current owner.");
+        world.ValidateActionState();
     }
 }

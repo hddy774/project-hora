@@ -33,35 +33,4 @@ public sealed partial class GameWorld
         }
     }
 
-    private bool CultivationHazard(Person p, Place place)
-    {
-        if (p.Realm >= Realm.Void && place.Turbidity >= Law("hazard.turbidity"))
-        {
-            p.StructureDamage = Math.Min(100, p.StructureDamage + IntLaw("hazard.structureDamage"));
-            if (p.StructureDamage == 100)
-            {
-                EndLife(p, 5, "탁기 부식으로 도기 붕괴·회복 가능한 구조 소진"); return true;
-            }
-        }
-        if (p.Realm >= Realm.Integration && (p.Health < 40 || p.Roots.Max() - p.Roots.Min() > 8000))
-        {
-            p.BondStability = Math.Max(0, p.BondStability - IntLaw("hazard.bondDamage"));
-            if (p.BondStability == 0)
-            {
-                EndLife(p, 6, "형신 결속 붕괴·본령/분령 기운의 유지 경로 소진"); return true;
-            }
-        }
-        return false;
-    }
-
-    private void Trial(Person p)
-    {
-        var failed = Roll(10000) < Law("cultivation.breakthroughRisk");
-        if (failed) { EndLife(p, 8, "소경지 실제 겁난 실패·육신 상실"); return; }
-        p.Layer = p.PendingLayer; p.PendingLayer = 0; state.Places[p.Place].PeopleRevision++;
-        p.Health = Math.Max(0, p.Health - IntLaw("hazard.trialDamage"));
-        p.GreatPerfection = p.Layer == 9 && p.Work >= Period(p) * 5000;
-        Event("겁난 통과", p.Id, p.Layer, $"{p.Name} 도겁 {p.Layer}층 겁난 통과·육신 부담", "실제 소경지 겁난");
-        if (p.Health == 0) EndLife(p, 9, "겁후 회복 불가·육신 상실");
-    }
 }

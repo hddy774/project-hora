@@ -121,15 +121,16 @@ public sealed partial class GameWorld
     }
 
     /// <summary>Call after a real completed action, with its actual gains; queries and inherited traces never call this.</summary>
-    internal void RecordPeopleLearning(Person person, string knowledge, int learnedGain, int understandingGain, string eventId, int completedMonths = 1)
+    internal void RecordPeopleLearning(Person person, string knowledge, int learnedGain, int understandingGain, string eventId, int completedMonths = 1,
+        PeopleLearningKind kind = PeopleLearningKind.Practice, bool mayContainMisconception = false)
     {
         if (learnedGain <= 0 && understandingGain == 0) return;
         var profile = PeopleProfile(person);
         var source = new PeopleSource(eventId, PeopleSourceKind.Education, $"실제 완료한 {knowledge} 학습/실습", Month, state.LawRevision,
             person.Id, person.BodyId, person.SoulId);
         var index = PeopleTalentForKnowledge(knowledge);
-        var change = PeopleProfiles.Learn(profile, new(eventId, index, PeopleLearningKind.Practice, completedMonths,
-            Math.Clamp(learnedGain, 0, 10_000), Math.Clamp(understandingGain, -10_000, 10_000), knowledge, false, source));
+        var change = PeopleProfiles.Learn(profile, new(eventId, index, kind, completedMonths,
+            Math.Clamp(learnedGain, 0, 10_000), Math.Clamp(understandingGain, -10_000, 10_000), knowledge, mayContainMisconception, source));
         if (!change.Accepted) throw new InvalidDataException(change.Code);
         StorePeopleProfile(change.State);
         var soul = EnsurePeopleSoul(souls[person.SoulId]);

@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "kind": "기존 Android 제품 CI 실패 원문 보존",
+  "recordedUtc": "2026-10-30T22:22:43.830705+00:00",
+  "repository": "hddy774/project-hora",
+  "baseCommit": "3d11273bfa3daa90d34cf31e1422b9e5f21c0bfa",
+  "pullRequest": 219,
+  "prHead": "c61b05d21140772a366624324c1aea160997b6b5",
+  "actualCheckoutCommit": "fc4c2a954e19286cda316465ebd220c8e69809cf",
+  "checkoutReference": "refs/remotes/pull/219/merge",
+  "checkoutSource": "raw/job.log:96–126에 fetch·checkout·git log 기록",
+  "run": {
+    "id": 41136418480,
+    "attempt": 1,
+    "event": "pull_request",
+    "workflow": ".github/workflows/v021-product.yml",
+    "url": "https://github.com/hddy774/project-hora/actions/runs/41136418480",
+    "apiHeadSha": "c61b05d21140772a366624324c1aea160997b6b5",
+    "conclusion": "failure"
+  },
+  "job": {
+    "id": 124339878666,
+    "name": "안드로이드 빌드·실제 실행 검증",
+    "url": "https://github.com/hddy774/project-hora/actions/runs/41136418480/job/124339878666",
+    "startedAt": "2026-10-30T22:11:21Z",
+    "completedAt": "2026-10-30T22:14:49Z",
+    "conclusion": "failure",
+    "api": 35,
+    "target": "default",
+    "arch": "x86_64",
+    "profile": "pixel_6",
+    "labels": [
+      "ubuntu-latest"
+    ]
+  },
+  "artifact": {
+    "id": 13015628987,
+    "name": "android-runtime-evidence",
+    "bytes": 141030,
+    "sha256": "d6ef5c831ce3ae395e943f6f46fe66e4c536150ce5157cf53f5d7c6e5db3c97e",
+    "serverDigest": "sha256:d6ef5c831ce3ae395e943f6f46fe66e4c536150ce5157cf53f5d7c6e5db3c97e",
+    "expiresAt": "2026-11-02T22:14:46Z",
+    "apiUrl": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13015628987",
+    "archiveDownloadUrl": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13015628987/zip",
+    "localOriginalZip": "/workspace/scratch/android-pr219-job124339878666/android-runtime-evidence.zip",
+    "zipCommitted": false
+  },
+  "preservedTextFiles": [
+    {
+      "path": "metadata/connected-snapshots.json",
+      "bytes": 11935,
+      "sha256": "ffbdaa366d7c2d5a736863917f6093c88f0de63c7104d282d575b807ee3febc6"
+    },
+    {
+      "path": "metadata/job-api.json",
+      "bytes": 3972,
+      "sha256": "cee2a5c0ba918c1f47f0d20be2ba818631f8a34c54df48725445ef200b1b791f"
+    },
+    {
+      "path": "metadata/run-api.json",
+      "bytes": 12612,
+      "sha256": "0ac4b07597c50f0aab80646a365b1871305b59ae4d57746cca298245a32f7fb5"
+    },
+    {
+      "path": "raw/android-render-log.txt",
+      "bytes": 204,
+      "sha256": "c187510041c1244e2200fd512cdfcbde0ba4934abb0c617824b7a9d5ea9bec3b"
+    },
+    {
+      "path": "raw/android-ui.xml",
+      "bytes": 4146,
+      "sha256": "938794d94501058d31674442756489773bf46d15b289f7a7d0fa2b62c2a9d36d"
+    },
+    {
+      "path": "raw/job.log",
+      "bytes": 219865,
+      "sha256": "9b2f5a5671410c4343869ffef58c9cc7b81d091c1b458bde7549029bcea30387"
+    },
+    {
+      "path": "source/v021-product.yml",
+      "bytes": 6522,
+      "sha256": "d15bdedb3b4462a34f182bcc2cfaebfa08ea489a65c94dc21827284d732457f7"
+    },
+    {
+      "path": "source/verify-android-ui.py",
+      "bytes": 1420,
+      "sha256": "dd87425911506bfdbce3248b5a978dfd1133188b24d32ef35ff91378741e251f"
+    }
+  ],
+  "screenshot": {
+    "artifactPath": "android-screen.png",
+    "bytes": 152005,
+    "sha256": "5ab6097a746d150e810e9fcbec32a75471b8134c1ad512a28a0dbb3d4d329e34",
+    "dimensions": [
+      1080,
+      2400
+    ],
+    "localOriginal": "/workspace/scratch/android-pr219-job124339878666/artifact/android-screen.png",
+    "committed": false,
+    "viewImageInspected": true,
+    "observation": "실제 앱 화면 위에 Quickstep 응답 없음 대화상자와 Close app/Wait 버튼이 보임. 원인을 확정할 추가 진단은 수행하지 않음."
+  },
+  "observations": {
+    "buildStepConclusion": "success",
+    "installLog": "22:14:22.3886947Z Success",
+    "renderLogcatTimestamp": "10-30 22:14:25.674 (기기 logcat 원문; 시간대 미기재)",
+    "renderCollectedAt": "2026-10-30T22:14:42.5113471Z (runner job log)",
+    "renderReport": {
+      "rendered": true,
+      "heading": "만상의 흐름",
+      "title": "선로만상록",
+      "version": "0.2.1",
+      "error": null,
+      "connection": "연결됨"
+    },
+    "uiDumpPrintedAt": "2026-10-30T22:14:44.4954001Z",
+    "uiPackages": [
+      "android"
+    ],
+    "uiTexts": [
+      "Quickstep isn't responding",
+      "Close app",
+      "Wait"
+    ],
+    "uiWebViewPresent": false,
+    "checkerFailure": "Foreground app WebView missing",
+    "checkerExitObservedAt": "2026-10-30T22:14:45.4360173Z",
+    "stepExitCode": 1,
+    "apkUploadStepConclusion": "skipped",
+    "runtimeEvidenceUploadConclusion": "success"
+  },
+  "interpretation": {
+    "jobPassed": false,
+    "renderMarkerObserved": true,
+    "foregroundCheckPassed": false,
+    "launcherAnrRootCause": "미확정",
+    "gameOrRenderFailureClaim": false,
+    "officialRetainedSignatureOrApi24Api35Proof": false,
+    "officialReleaseExecutions": 0
+  },
+  "scope": {
+    "appOrWorldOrEmulatorExecutionsByThisTask": 0,
+    "productWorkflowGateOrTimeoutChanges": 0,
+    "secretValuesRead": false,
+    "decodedJobLogEncoding": "연결 도구가 반환한 전체 decoded content를 추가 편집 없이 UTF-8 저장. job.log SHA는 이 저장 바이트의 SHA이며 전송 ZIP/로그 네트워크 원본 바이트의 별도 동일성을 주장하지 않음.",
+    "snapshotTiming": "connected-snapshots의 전체 jobs는 최초 조회 시각 상태; run-api/job-api는 이후 조회한 실제 응답. 미완료였던 다른 job을 성공으로 합성하지 않음.",
+    "manualWorkflowDispatchOrRetry": 0,
+    "documentationPullRequestCi": "보존용 문서 PR에 따른 일반 자동 CI는 기존 실패 run의 재시도나 새 진단 실험으로 합산하지 않음."
+  },
+  "sourceFiles": [
+    {
+      "original": ".github/workflows/v021-product.yml",
+      "copy": "source/v021-product.yml",
+      "gitBlob": "3127eac4985d843c29be9a630176f9d523c069ad"
+    },
+    {
+      "original": "scripts/verify-android-ui.py",
+      "copy": "source/verify-android-ui.py",
+      "gitBlob": "a45a561e102e919a778a41c325cda9e58dcc3201"
+    }
+  ]
+}

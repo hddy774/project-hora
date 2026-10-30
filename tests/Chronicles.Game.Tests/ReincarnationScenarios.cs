@@ -1,5 +1,7 @@
 using System.Globalization;
 using Chronicles.Game;
+using Chronicles.Game.Cultivation;
+using Chronicles.Game.Tests;
 
 internal static class ReincarnationScenarios
 {
@@ -10,32 +12,41 @@ internal static class ReincarnationScenarios
             ["soul.crossing"] = 0, ["founder.ascensionProtection"] = 0, ["hazard.sealChance"] = 10000,
             ["hazard.sealDuration"] = 1, ["hazard.portalChance"] = 10000 });
         var state = world.Checkpoint(); var person = state.People[0];
-        person.Realm = route switch { 1 or 2 or 3 => Realm.Spirit, 4 or 5 => Realm.Void,
+        var realm = route switch { 1 or 2 or 3 => Realm.Spirit, 4 or 5 => Realm.Void,
             6 or 7 => Realm.Integration, 8 or 9 => Realm.Tribulation, 10 or 11 => Realm.Mahayana, _ => Realm.HalfImmortal };
-        person.GreatPerfection = true;
+        WorldScenarioFixtures.SetCultivation(state, person, realm, route == 8 ? 1 : 9, route is not (8 or 9));
         switch (route)
         {
             case 1: person.Lifespan = 1201; break;
             case 2:
-                state.People[1].Realm = Realm.HalfImmortal;
                 person.Health = 1; break;
             case 3:
                 state.Materials["food"].Loss += state.Items.Where(i => i.Owner == person.Id && i.Definition == "food").Sum(i => i.Quantity);
                 state.Items.RemoveAll(i => i.Owner == person.Id && i.Definition == "food");
                 person.Health = 1; break;
             case 4: person.Place = 8; person.KnownPlaces.Add(8); break;
-            case 5: person.StructureDamage = 99; state.Places[0].Turbidity = 100; break;
-            case 6: person.BondStability = 1; person.Health = 30; state.Places[0].Turbidity = 0; break;
+            case 5:
+                person.StructureDamage = 99; person.BondStability = 1;
+                state.Cultivation[person.BodyId] = state.Cultivation[person.BodyId] with { Damage = 9900 };
+                state.Places[0].Turbidity = 100; break;
+            case 6:
+                person.StructureDamage = 99; person.BondStability = 1; person.Health = 30;
+                state.Cultivation[person.BodyId] = state.Cultivation[person.BodyId] with { Damage = 9900 };
+                state.Places[0].Turbidity = 0; break;
             case 7: state.Laws["world.capacityRealm"] = 6; break;
             case 8:
-                person.Layer = 1; person.GreatPerfection = false; person.PendingLayer = 2;
+                person.PendingLayer = 2;
+                state.Cultivation[person.BodyId] = state.Cultivation[person.BodyId] with { PendingTrial = new(2, false, 1) };
                 person.Action = ActionKind.Trial; person.Due = 1; state.Laws["cultivation.breakthroughRisk"] = 10000; break;
             case 9:
-                person.Work = 1000000000; person.PendingLayer = 9; person.Action = ActionKind.Trial; person.Due = 1;
-                person.Health = 1; state.Laws["cultivation.breakthroughRisk"] = 0; state.Laws["hazard.trialDamage"] = 100; break;
+                person.PendingLayer = 9; person.Action = ActionKind.Trial; person.Due = 1;
+                state.Cultivation[person.BodyId] = state.Cultivation[person.BodyId] with { PendingTrial = new(9, true, 1) };
+                person.Health = 100; state.Laws["cultivation.breakthroughRisk"] = 0; state.Laws["hazard.trialDamage"] = 100; break;
             case 10: person.Place = 89; person.KnownPlaces.Add(89); person.KnownPlaces.Add(99); break;
             case 11:
-                person.Health = 1; person.StructureDamage = 99; state.Laws["soul.pactDuration"] = 1;
+                person.Health = 1; person.StructureDamage = 99; person.BondStability = 1;
+                state.Cultivation[person.BodyId] = state.Cultivation[person.BodyId] with { Damage = 9900 };
+                state.Laws["soul.pactDuration"] = 1;
                 state.Items.Add(new Item { Id = state.NextId++, Definition = "soulWard", Owner = person.Id,
                     Place = -1, Quantity = 1, Quality = 5000, Source = "원인 생산자 시험용 실제 실물 fixture" }); break;
             case 12: state.Laws["world.capacityRealm"] = 9; break;

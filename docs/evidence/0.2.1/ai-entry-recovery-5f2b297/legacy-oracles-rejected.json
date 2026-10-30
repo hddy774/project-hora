@@ -1,0 +1,17 @@
+{
+  "selection": "inventory owned reference:",
+  "total": 2,
+  "failed": 2,
+  "results": [
+    {
+      "name": "inventory owned reference: \uC2E4\uC81C \uC0DD\uACC4 AI\uC758 \uBD84\uD560\u00B7\uD310\uB9E4 \uD6C4\uBCF4\uC640 \uC800\uC7A5 \uACB0\uACFC \uBCF4\uC874",
+      "passed": false,
+      "error": "System.InvalidOperationException: Sequence contains no matching element\n   at System.Linq.ThrowHelper.ThrowNoMatchException()\n   at System.Linq.Enumerable.Single[TSource](IEnumerable\u00601 source, Func\u00602 predicate)\n   at Chronicles.Game.Tests.Features.InventoryOwnedEcologyReferenceScenario.Run() in /workspace/chronicles-knowledge/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs:line 83\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|2(String name, Action body) in /workspace/chronicles-knowledge/tests/Chronicles.Game.Tests/Program.cs:line 27"
+    },
+    {
+      "name": "inventory owned reference: \uAE30\uC874 \uACF5\uAC1C \uC81C\uC791\u00B7\uBCF4\uAD00\u00B7\uAC70\uB798\u00B7\uC800\uC7A5\u00B7\uBA85\uB839 \uC7AC\uC804\uC1A1 \uACB0\uACFC \uBCF4\uC874",
+      "passed": false,
+      "error": "System.InvalidOperationException: \uAE30\uC874 \uACF5\uAC1C \uACBD\uB85C\uC640 \uBA85\uB839\u00B7\uC6D4 \uACBD\uACC4\u00B7\uC800\uC7A5 \uD574\uC2DC\uAC00 \uB2EC\uB77C\uC84C\uC2B5\uB2C8\uB2E4: ec01b5c4fa2f10268514912f0885f2debbd47a9ad9cc8aec85a8b73a1c311b56\n   at Chronicles.Game.Tests.InventoryFixture.Check(Boolean condition, String message) in /workspace/chronicles-knowledge/tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs:line 33\n   at Chronicles.Game.Tests.Features.InventoryWorldTranscript.Assert(String expected) in /workspace/chronicles-knowledge/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs:line 143\n   at Chronicles.Game.Tests.Features.InventoryOwnedWorldReferenceScenario.Run() in /workspace/chronicles-knowledge/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs:line 63\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|2(String name, Action body) in /workspace/chronicles-knowledge/tests/Chronicles.Game.Tests/Program.cs:line 27"
+    }
+  ]
+}

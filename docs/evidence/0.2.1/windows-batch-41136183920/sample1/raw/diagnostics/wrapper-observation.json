@@ -1,0 +1,73 @@
+{
+  "started_utc": "2026-10-30T22:10:39.3113632+00:00",
+  "wait_ms": 45000,
+  "image": {
+    "ImageOS": "win25-vs2026",
+    "ImageVersion": "20261021.278.1",
+    "RunnerOS": "Windows"
+  },
+  "os": "Microsoft Windows 10.0.26100",
+  "webview_before": [
+    {
+      "kind": "installed-executable",
+      "path": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe",
+      "file_version": "155.0.4283.62",
+      "product_version": "155.0.4283.62"
+    }
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "collection_errors": [],
+  "process_started_utc": "2026-10-30T22:10:39.5075383+00:00",
+  "process_after_start": {
+    "id": 4528,
+    "name": "Chronicles",
+    "has_exited": false,
+    "responding": true,
+    "window_title": "",
+    "window_handle": 0,
+    "executable": "D:\\a\\project-hora\\project-hora\\src\\Chronicles.Desktop\\bin\\Release\\net10.0-windows\\Chronicles.exe",
+    "file_version": "0.2.1.0",
+    "product_version": "0.2.1+35f33db919f910c9d55c42b61b76459a08688d12"
+  },
+  "ended_utc": "2026-10-30T22:10:48.6167074+00:00",
+  "process_final": {
+    "id": 4528,
+    "name": null,
+    "has_exited": true
+  },
+  "webview_after": [
+    {
+      "kind": "installed-executable",
+      "path": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe",
+      "file_version": "155.0.4283.62",
+      "product_version": "155.0.4283.62"
+    }
+  ],
+  "webview_processes": [
+    {
+      "id": 2120,
+      "name": "msedgewebview2",
+      "has_exited": false,
+      "responding": true,
+      "window_title": "",
+      "window_handle": 0,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe",
+      "file_version": "155.0.4283.62",
+      "product_version": "155.0.4283.62"
+    },
+    {
+      "id": 7756,
+      "name": "msedgewebview2",
+      "has_exited": true
+    }
+  ],
+  "copied_existing_files": [
+    {
+      "sha256": "ea6c8db2409358dd1f7269753582643ed81b4c4e39d8165f5607030dde11f975",
+      "bytes": 374,
+      "last_write_utc": "2026-10-30T22:10:47.9809651Z",
+      "name": "seonro-smoke-result.json"
+    }
+  ]
+}

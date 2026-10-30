@@ -1,0 +1,99 @@
+{
+  "started_utc": "2026-10-30T22:10:40.5842657+00:00",
+  "wait_ms": 45000,
+  "image": {
+    "ImageVersion": "20261030.294.1",
+    "RunnerOS": "Windows",
+    "ImageOS": "win25-vs2026"
+  },
+  "os": "Microsoft Windows 10.0.26100",
+  "webview_before": [
+    {
+      "kind": "installed-executable",
+      "path": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.50\\msedgewebview2.exe",
+      "file_version": "156.0.4314.50",
+      "product_version": "156.0.4314.50"
+    }
+  ],
+  "timed_out": true,
+  "exit_code": null,
+  "collection_errors": [
+    "현재 테스트 PID의 visible 창 없음"
+  ],
+  "process_started_utc": "2026-10-30T22:10:40.9024395+00:00",
+  "process_after_start": {
+    "id": 6116,
+    "name": "Chronicles",
+    "has_exited": false,
+    "responding": true,
+    "window_title": "",
+    "window_handle": 0,
+    "executable": "D:\\a\\project-hora\\project-hora\\src\\Chronicles.Desktop\\bin\\Release\\net10.0-windows\\Chronicles.exe",
+    "file_version": "0.2.1.0",
+    "product_version": "0.2.1+35f33db919f910c9d55c42b61b76459a08688d12"
+  },
+  "process_before_kill": {
+    "id": 6116,
+    "name": "Chronicles",
+    "has_exited": false,
+    "responding": true,
+    "window_title": "선로만상록",
+    "window_handle": 196908,
+    "executable": "D:\\a\\project-hora\\project-hora\\src\\Chronicles.Desktop\\bin\\Release\\net10.0-windows\\Chronicles.exe",
+    "file_version": "0.2.1.0",
+    "product_version": "0.2.1+35f33db919f910c9d55c42b61b76459a08688d12"
+  },
+  "webview_before_kill": [
+    {
+      "id": 1452,
+      "name": "msedgewebview2",
+      "has_exited": false,
+      "responding": true,
+      "window_title": "",
+      "window_handle": 0,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.50\\msedgewebview2.exe",
+      "file_version": "156.0.4314.50",
+      "product_version": "156.0.4314.50"
+    },
+    {
+      "id": 6080,
+      "name": "msedgewebview2",
+      "has_exited": false,
+      "responding": true,
+      "window_title": "",
+      "window_handle": 0,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.50\\msedgewebview2.exe",
+      "file_version": "156.0.4314.50",
+      "product_version": "156.0.4314.50"
+    }
+  ],
+  "windows_before_kill": [
+    {
+      "capture_error": "현재 테스트 PID의 visible 창 없음"
+    }
+  ],
+  "wrapper_error": "Desktop smoke timeout",
+  "ended_utc": "2026-10-30T22:12:06.9850072+00:00",
+  "process_final": {
+    "id": 6116,
+    "name": null,
+    "has_exited": true
+  },
+  "webview_after": [
+    {
+      "kind": "installed-executable",
+      "path": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.50\\msedgewebview2.exe",
+      "file_version": "156.0.4314.50",
+      "product_version": "156.0.4314.50"
+    }
+  ],
+  "webview_processes": [],
+  "copied_existing_files": [
+    {
+      "bytes": 374,
+      "last_write_utc": "2026-10-30T22:11:48.5731668Z",
+      "sha256": "ea6c8db2409358dd1f7269753582643ed81b4c4e39d8165f5607030dde11f975",
+      "name": "seonro-smoke-result.json"
+    }
+  ]
+}

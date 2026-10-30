@@ -1,0 +1,13 @@
+{
+  "measured_source": "35f33db919f910c9d55c42b61b76459a08688d12",
+  "run_id": "41136183920",
+  "event_pr_head": "190e016b7d996befc7d94fd095d14e4a75cb94be",
+  "schema": 1,
+  "event_sha": "d961b26d942bf1c7e9739b7362fe3d1525f719e6",
+  "planned_samples": 3,
+  "expected_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "requested_utc": "2026-10-30T22:09:24.6998698+00:00",
+  "sample": 2,
+  "label": "0.2.1 윈도우 환경 3회 관측",
+  "run_attempt": "1"
+}

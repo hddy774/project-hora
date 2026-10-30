@@ -1,0 +1,60 @@
+[
+  {
+    "sample": 1,
+    "origin": "/workspace/scratch/windows-batch-41136183920-190e016/sample1-job.log",
+    "origin_sha256": "c468fc3042fad8c3de44ddb464eff206f8a379b42ebecbffd351a3feec336379",
+    "excerpt": "sample1-job.excerpt.txt",
+    "line_numbers_1_based": [
+      4,
+      8,
+      17,
+      18,
+      319,
+      457,
+      459,
+      603
+    ],
+    "line_bytes_unchanged": true,
+    "full_original_copied_to_repository": false,
+    "full_original_in_scratch": true
+  },
+  {
+    "sample": 2,
+    "origin": "/workspace/scratch/windows-batch-41136183920-190e016/sample2-job.log",
+    "origin_sha256": "df6617f392168da5acec4cfaeda51ee8c1d16bf11f9cd12d4dd4d269b7c21982",
+    "excerpt": "sample2-job.excerpt.txt",
+    "line_numbers_1_based": [
+      4,
+      8,
+      17,
+      18,
+      319,
+      445,
+      447,
+      591
+    ],
+    "line_bytes_unchanged": true,
+    "full_original_copied_to_repository": false,
+    "full_original_in_scratch": true
+  },
+  {
+    "sample": 3,
+    "origin": "/workspace/scratch/windows-batch-41136183920-190e016/sample3-job.log",
+    "origin_sha256": "5dbcb2c70a04a607ba2d01c429259af6b9ece7575e94ad8affb33146da816531",
+    "excerpt": "sample3-job.excerpt.txt",
+    "line_numbers_1_based": [
+      4,
+      8,
+      17,
+      18,
+      319,
+      445,
+      447,
+      591,
+      596
+    ],
+    "line_bytes_unchanged": true,
+    "full_original_copied_to_repository": false,
+    "full_original_in_scratch": true
+  }
+]

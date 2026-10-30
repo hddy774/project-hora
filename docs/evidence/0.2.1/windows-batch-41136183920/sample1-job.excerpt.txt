@@ -1,0 +1,8 @@
+2026-10-30T22:09:23.0983339Z Version: 20261021.618
+2026-10-30T22:09:23.0987876Z Region: eastus
+2026-10-30T22:09:23.0997808Z Image: windows-2025-vs2026
+2026-10-30T22:09:23.0998877Z Version: 20261021.278.1
+2026-10-30T22:09:31.9057828Z HEAD is now at 35f33db 병합: 자연 성장9조건의 관측 그림과 재현 자료
+2026-10-30T22:10:38.0373073Z Build succeeded.
+2026-10-30T22:10:38.0374746Z     0 Error(s)
+2026-10-30T22:10:48.6158409Z {"passed":true,"version":"0.2.1","host":"WPF WebView2","actualRenderAndBridge":true,"diagnostic":"\u0022{\\\u0022hasView\\\u0022:true,\\\u0022error\\\u0022:null,\\\u0022connection\\\u0022:\\\u0022\uC5F0\uACB0\uB428\\\u0022,\\\u0022heading\\\u0022:\\\u0022\uB9CC\uC0C1\uC758 \uD750\uB984\\\u0022,\\\u0022source\\\u0022:\\\u0022https://seonro.local/index.html\\\u0022}\u0022"}

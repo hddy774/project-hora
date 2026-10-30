@@ -1,0 +1,238 @@
+{
+  "schema": 1,
+  "artifact_data_validated": true,
+  "run_id": 41136183920,
+  "workflow_head": "190e016b7d996befc7d94fd095d14e4a75cb94be",
+  "actual_source": "35f33db919f910c9d55c42b61b76459a08688d12",
+  "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "fixed_samples": [
+    1,
+    2,
+    3
+  ],
+  "all_three_preserved": true,
+  "batch_gate_conclusion": "failure",
+  "samples": [
+    {
+      "sample": 1,
+      "job_id": 124339099556,
+      "runner": "GitHub Actions 1000002684",
+      "region": "eastus",
+      "gate_conclusion": "success",
+      "actual_source": "35f33db919f910c9d55c42b61b76459a08688d12",
+      "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+      "checkout_clean": true,
+      "sdk": "10.0.403",
+      "image": {
+        "ImageOS": "win25-vs2026",
+        "ImageVersion": "20261021.278.1",
+        "RunnerOS": "Windows"
+      },
+      "webview_before": [
+        {
+          "kind": "installed-executable",
+          "path": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe",
+          "file_version": "155.0.4283.62",
+          "product_version": "155.0.4283.62"
+        }
+      ],
+      "webview_before_kill": [],
+      "wait_ms": 45000,
+      "timed_out": false,
+      "exit_code": 0,
+      "process_before_kill": null,
+      "native_report": {
+        "exists": true,
+        "passed": true,
+        "actualRenderAndBridge": true,
+        "diagnostic": {
+          "hasView": true,
+          "error": null,
+          "connection": "연결됨",
+          "heading": "만상의 흐름",
+          "source": "https://seonro.local/index.html"
+        },
+        "last_write_utc": "2026-10-30T22:10:47.9809651Z",
+        "seconds_after_wrapper_start": 8.669602,
+        "sha256": "ea6c8db2409358dd1f7269753582643ed81b4c4e39d8165f5607030dde11f975",
+        "accepted_by_gate": true
+      },
+      "collection_errors": [],
+      "screenshots": [],
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "artifact": {
+        "id": 13017061874,
+        "name": "v021-windows-diagnostics-41136183920-1-sample1",
+        "size_in_bytes": 2784,
+        "digest": "sha256:cd5a2750a30c1b7c11337be55a7fb2ec5b000bf814938b770a47c5333d7b6d47",
+        "created_at": "2026-10-30T22:10:49Z",
+        "expires_at": "2026-11-13T22:10:49Z"
+      },
+      "raw_files": 8,
+      "job_log_sha256": "c468fc3042fad8c3de44ddb464eff206f8a379b42ebecbffd351a3feec336379"
+    },
+    {
+      "sample": 2,
+      "job_id": 124339099067,
+      "runner": "GitHub Actions 1000002682",
+      "region": "northcentralus",
+      "gate_conclusion": "success",
+      "actual_source": "35f33db919f910c9d55c42b61b76459a08688d12",
+      "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+      "checkout_clean": true,
+      "sdk": "10.0.403",
+      "image": {
+        "ImageOS": "win25-vs2026",
+        "ImageVersion": "20261030.294.1",
+        "RunnerOS": "Windows"
+      },
+      "webview_before": [
+        {
+          "kind": "installed-executable",
+          "path": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.50\\msedgewebview2.exe",
+          "file_version": "156.0.4314.50",
+          "product_version": "156.0.4314.50"
+        }
+      ],
+      "webview_before_kill": [],
+      "wait_ms": 45000,
+      "timed_out": false,
+      "exit_code": 0,
+      "process_before_kill": null,
+      "native_report": {
+        "exists": true,
+        "passed": true,
+        "actualRenderAndBridge": true,
+        "diagnostic": {
+          "hasView": true,
+          "error": null,
+          "connection": "연결됨",
+          "heading": "만상의 흐름",
+          "source": "https://seonro.local/index.html"
+        },
+        "last_write_utc": "2026-10-30T22:11:22.4636237Z",
+        "seconds_after_wrapper_start": 36.106659,
+        "sha256": "ea6c8db2409358dd1f7269753582643ed81b4c4e39d8165f5607030dde11f975",
+        "accepted_by_gate": true
+      },
+      "collection_errors": [],
+      "screenshots": [],
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "artifact": {
+        "id": 13016102865,
+        "name": "v021-windows-diagnostics-41136183920-1-sample2",
+        "size_in_bytes": 2803,
+        "digest": "sha256:cb792a9d1859ad325b979c62c53baef37740a41760d2b69d2265e0c05c2034c9",
+        "created_at": "2026-10-30T22:11:24Z",
+        "expires_at": "2026-11-13T22:11:23Z"
+      },
+      "raw_files": 8,
+      "job_log_sha256": "df6617f392168da5acec4cfaeda51ee8c1d16bf11f9cd12d4dd4d269b7c21982"
+    },
+    {
+      "sample": 3,
+      "job_id": 124339099399,
+      "runner": "GitHub Actions 1000002683",
+      "region": "westus3",
+      "gate_conclusion": "failure",
+      "actual_source": "35f33db919f910c9d55c42b61b76459a08688d12",
+      "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+      "checkout_clean": true,
+      "sdk": "10.0.403",
+      "image": {
+        "ImageVersion": "20261030.294.1",
+        "RunnerOS": "Windows",
+        "ImageOS": "win25-vs2026"
+      },
+      "webview_before": [
+        {
+          "kind": "installed-executable",
+          "path": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.50\\msedgewebview2.exe",
+          "file_version": "156.0.4314.50",
+          "product_version": "156.0.4314.50"
+        }
+      ],
+      "webview_before_kill": [
+        {
+          "id": 1452,
+          "name": "msedgewebview2",
+          "has_exited": false,
+          "responding": true,
+          "window_title": "",
+          "window_handle": 0,
+          "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.50\\msedgewebview2.exe",
+          "file_version": "156.0.4314.50",
+          "product_version": "156.0.4314.50"
+        },
+        {
+          "id": 6080,
+          "name": "msedgewebview2",
+          "has_exited": false,
+          "responding": true,
+          "window_title": "",
+          "window_handle": 0,
+          "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.50\\msedgewebview2.exe",
+          "file_version": "156.0.4314.50",
+          "product_version": "156.0.4314.50"
+        }
+      ],
+      "wait_ms": 45000,
+      "timed_out": true,
+      "exit_code": null,
+      "process_before_kill": {
+        "id": 6116,
+        "name": "Chronicles",
+        "has_exited": false,
+        "responding": true,
+        "window_title": "선로만상록",
+        "window_handle": 196908,
+        "executable": "D:\\a\\project-hora\\project-hora\\src\\Chronicles.Desktop\\bin\\Release\\net10.0-windows\\Chronicles.exe",
+        "file_version": "0.2.1.0",
+        "product_version": "0.2.1+35f33db919f910c9d55c42b61b76459a08688d12"
+      },
+      "native_report": {
+        "exists": true,
+        "passed": true,
+        "actualRenderAndBridge": true,
+        "diagnostic": {
+          "hasView": true,
+          "error": null,
+          "connection": "연결됨",
+          "heading": "만상의 흐름",
+          "source": "https://seonro.local/index.html"
+        },
+        "last_write_utc": "2026-10-30T22:11:48.5731668Z",
+        "seconds_after_wrapper_start": 67.988901,
+        "sha256": "ea6c8db2409358dd1f7269753582643ed81b4c4e39d8165f5607030dde11f975",
+        "accepted_by_gate": false
+      },
+      "collection_errors": [
+        "현재 테스트 PID의 visible 창 없음"
+      ],
+      "screenshots": [],
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "artifact": {
+        "id": 13016013306,
+        "name": "v021-windows-diagnostics-41136183920-1-sample3",
+        "size_in_bytes": 2932,
+        "digest": "sha256:83b102bbd0e8a95495c614f752934306ef193dfb39bdebc5367e3e80c7393f78",
+        "created_at": "2026-10-30T22:12:08Z",
+        "expires_at": "2026-11-13T22:12:07Z"
+      },
+      "raw_files": 8,
+      "job_log_sha256": "5dbcb2c70a04a607ba2d01c429259af6b9ece7575e94ad8affb33146da816531"
+    }
+  ],
+  "additional_batch_or_rerun": false,
+  "limits": [
+    "첫93b28 단일 실행과 이 배치를 합쳐 성공률을 주장하지 않는다.",
+    "sample3의 늦은 true JSON은 timeout 실패를 성공으로 바꾸지 않는다.",
+    "sample2의 새 이미지 성공과 sample3의 같은 이미지 실패를 모두 관측하여 이미지 자체의 항상 실패/명백한 버전 비호환으로 단정할 수 없다.",
+    "sample3 지연의 상세 원인은 불명이며 기존94/215의 같은 기전이라고 확정하지 않는다.",
+    "sample3 PNG0/visible창없음 진단 오류를 그대로 보존한다.",
+    "공식60000ms/release서명/동일APK API24·35/0.2.0 업데이트/기능·성능 전체판정은 별도이다."
+  ]
+}

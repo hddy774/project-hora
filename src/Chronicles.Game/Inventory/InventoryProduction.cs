@@ -164,7 +164,10 @@ public static partial class InventoryEngine
             var output = Produce(state, job.Actor, recipe.Output, recipe.Quantity, job.Quality, job.Defects, job.BoundSoul,
                 $"production:job:{job.Id}", job.Provenance); output.Damage = job.Damage;
             subject = output.Id;
-            var actor = PersonAt(state, job.Actor); actor.Skills[recipe.Skill] = Math.Min(10000, actor.Skills.GetValueOrDefault(recipe.Skill) + 1);
+            if (command.AwardSkill)
+            {
+                var actor = PersonAt(state, job.Actor); actor.Skills[recipe.Skill] = Math.Min(10000, actor.Skills.GetValueOrDefault(recipe.Skill) + 1);
+            }
         }
         job.Status = command.Succeeded ? "completed" : "failed"; FreeReservation(state, job.Reservation); FreeLabor(state, job.Labor);
         SpillOverflow(state, job.Actor);
@@ -186,8 +189,8 @@ public static partial class InventoryEngine
     {
         var actor = PersonAt(state, command.Actor); var source = state.Ledger.Sources.SingleOrDefault(s => s.Id == command.Source);
         Require(source is not null && source.Place == actor.Place && command.Quantity > 0, "Natural source is absent or remote.");
-        var route = InventoryDefinitions.Resources.SingleOrDefault(r => r.Definition == source!.Definition);
-        Require(route is not null && route.Producer == source!.Activity && source.Activity.StartsWith("source.", StringComparison.Ordinal) &&
+        var activity = InventoryDefinitions.ExtractionActivity(source!.Definition);
+        Require(activity is not null && activity == source.Activity && source.Activity.StartsWith("source.", StringComparison.Ordinal) &&
             !string.IsNullOrWhiteSpace(source.Origin), "Source activity does not produce this resource.");
         var reserved = state.Ledger.Jobs.Where(j => j.Source == source!.Id && j.Status is "reserved" or "processing").Sum(j => (long)j.OutputQuantity);
         Require(source!.Remaining - reserved >= command.Quantity, "Finite source has insufficient unreserved stock.");

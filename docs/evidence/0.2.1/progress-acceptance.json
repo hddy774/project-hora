@@ -1,47 +1,55 @@
 {
-  "형식버전": 1,
+  "형식버전": 2,
   "제품버전": "0.2.1",
-  "고정시각UTC": "2026-10-30T09:45:01Z",
+  "고정시각UTC": "2026-10-30T11:10:04Z",
   "감사소스": {
     "저장소": "https://github.com/hddy774/project-hora",
     "통합브랜치": "codex/v0.2.1",
-    "커밋": "324e601c20c7920b5a2f8df59aae321c915336f3",
+    "커밋": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
     "기존감사대상커밋": "f9c574a13ac73416ea517bea5e60845b29799194",
     "원장개정": 7,
     "원장수정": false,
     "Notion수정": false,
-    "제품코드수정": false
+    "제품코드수정": false,
+    "게임플레이통합기준": "aa3da378d37431ad4a6931fe486e6d1038ea54bc",
+    "AI환전검사병합": "6670d2993320dbec3be8c3596d8ec962692a0762",
+    "이전진행감사커밋": "324e601c20c7920b5a2f8df59aae321c915336f3"
   },
   "집계정의": [
     "전체율은 정본111개 중 수용 완료한 작업 수의 비율이며 공수·코드량·시간의 추정 비율이 아님.",
     "자체수용은 해당 작업의 모든 현재 수용조항을 근거로 판단하며 기능 경로가 있다는 사실과 구분함.",
     "완료 권고는 자체수용 통과와 모든 직접 선행의 완료가 함께 참인 고정점이다. 정본 deps를 우회하거나 변경하지 않음.",
     "진행 중50%·부분 기능 가점·임의 가중치를 사용하지 않음. 자체수용 미완료는0개 완료로 집계함.",
-    "과거195/195와 다른 소스의 CI198/198, 선택27/28 및 브라우저 결과를 각각 유지하며 현재 감사 커밋의 전체 통과라고 합치지 않음.",
-    "초기 잠정92/111에서 L04명시측정·R06기능대조·X03정책연결 미완료를 추가 확인해89/111로 보수 조정함."
+    "과거195/195·CI198/198·구형 정리215/216·통합6670d29의237/238와 소스별 선택 결과를 보존하며 최신 전체 합격으로 합치지 않음.",
+    "이전47완료/89자체통과는 과거진행감사에 보존함. 이번7건 자체수용을 더하고 기존INV-013 공백2건을 다시 보류해94개이며 정본 선행 때문에 완료47개는 그대로임.",
+    "원장현재상태는 읽은 원장의 값이며 완료권고/자체수용 제안과 다를 수 있음. 원장·생성 진행 문서·Notion은 수정하지 않음."
   ],
   "집계": {
     "정본작업수": 111,
-    "원장현재완료": 3,
-    "자체수용통과후보": 89,
-    "자체수용통과율": 80.2,
-    "자체수용보류": 22,
+    "원장현재완료": 47,
+    "원장현재자체통과선행대기": 42,
+    "자체수용통과후보": 94,
+    "자체수용통과율": 84.7,
+    "자체수용보류": 17,
     "선행포함완료권고": 47,
     "선행포함완료율": 42.3,
-    "자체통과이나선행보류": 42
+    "자체통과이나선행보류": 47
   },
-  "사용자표시권고": "수용 완료 47/111개(42.3%). 별도로 자체 조건 통과 후보 89/111개(80.2%), 선행 대기 42개. 최신 전체 회귀·최종 측정·출시는 아직 미완료.",
+  "사용자표시권고": "수용 완료47/111개(42.3%). 자체 조건 통과 후보94/111개(84.7%) 중 선행 대기47개, 자체 미완료17개. 원장현재validated42와 신규통과7·재보류2를 구분함. 마지막 전체 결과는237/238이며 정책 후속 선택2/2는 전체 재실행이 아님. INV-013 동시원인 설명·최종 측정·출시는 미완료.",
   "이번감사실행": {
     "게임기능검사": false,
     "성능성장장기프로파일검사": false,
     "문서구조참조검증": true,
     "기존보고서읽기": true,
-    "생성파일읽기": true
+    "현재소스읽기": true,
+    "GitHub병합메타데이터읽기": true,
+    "생성파일읽기": false,
+    "원장생성진행문서Notion수정": false
   },
   "입력고정": [
     {
       "경로": "docs/plans/v021-tasks.json",
-      "해시": "235ac3f2bc0201f15ec6604e9b9246247d69ebb9bcc22e092e627b4b7b187822"
+      "해시": "c5bedae73207350f76c6953b11f39cedc7e09d7b79d2c37d620d64d7bd4f8ece"
     },
     {
       "경로": "docs/evidence/0.2.1/acceptance-audit.json",
@@ -53,11 +61,35 @@
     },
     {
       "경로": "docs/architecture/v021-product-boundary.md",
-      "해시": "26b760e9cd3fd4a0e18fc150351d8cd091d20978cc093eb60d4f256a34c3e74d"
+      "해시": "a1a5df21b331e9704f9388b4d0df3a1392f7f09dc3621c65cf56564271ef18ff"
     },
     {
       "경로": "docs/evidence/0.2.1/baseline.md",
       "해시": "f904428d0f56889542cafcf4d89077ad99c467976dcddf324cdce310b910dfce"
+    },
+    {
+      "경로": "docs/evidence/0.2.1/r06-strategy-functional.json",
+      "해시": "bd966ef69cfa8271cd2209df84c08a5982b61a3dfd7141b4d9f2980882c2d016"
+    },
+    {
+      "경로": "docs/evidence/0.2.1/m05-secret-realms-functional.json",
+      "해시": "0dcf5246c6b296571d75807bccbc522e4874fed1280a03bc9188dac040dbfb30"
+    },
+    {
+      "경로": "docs/evidence/0.2.1/functional-integration-6670d29.json",
+      "해시": "277dda80f18ae36eb883440f2899fa364b0cb61cad0157248244ea284f1319bc"
+    },
+    {
+      "경로": "docs/evidence/0.2.1/repository-migration.json",
+      "해시": "3fa597801f52e4c03fa261d79c6398b4f902513f0c34acb370a7abc24574cc68"
+    },
+    {
+      "경로": "docs/evidence/0.2.1/browser-secret-functional-provenance.json",
+      "해시": "5c268a6511d6859ac24426342ab25f8bcfc7fadad527b6334d100170b5632566"
+    },
+    {
+      "경로": "docs/evidence/0.2.1/retired-policy-invariant-functional-provenance.json",
+      "해시": "3b90af1310d2e6b4a0d22676ab238e9de9f578c2b6dfa953af93d589ba5d7ed3"
     }
   ],
   "검사기록": [
@@ -413,28 +445,559 @@
           "domain_integration_claim": false
         }
       ]
+    },
+    {
+      "식별자": "R06전략공개1",
+      "경로": "docs/evidence/0.2.1/r06-strategy-functional.json",
+      "파일해시": "bd966ef69cfa8271cd2209df84c08a5982b61a3dfd7141b4d9f2980882c2d016",
+      "소스": "b8e8f0bc75be8127e8c0d53218b81d93b70ab88c",
+      "검증범위": "동일 현재조건의 실제 공개 3전략 기간·실물 비용·품질·채택 위험과 파일 저장 재개",
+      "주의": "1검사 안에 3전략을 대조함. 제품 기반은 01e4cc745626cb52a171a7b6c7914204cac2586d이며 기본 장기기간/실패빈도/성능이 아님.",
+      "새로실행": false,
+      "검사수": 1,
+      "실패수": 0,
+      "원격근거": "https://github.com/hddy774/project-hora/pull/138",
+      "전략결과": [
+        {
+          "Strategy": "바로 형성",
+          "LogicalMonths": 5,
+          "QiEnergyConsumed": 20000,
+          "PillConsumed": 0,
+          "FinalFormationQuality": 5243,
+          "PreparedRiskBps": 900
+        },
+        {
+          "Strategy": "현재 손상 회복 후 형성",
+          "LogicalMonths": 6,
+          "QiEnergyConsumed": 25000,
+          "PillConsumed": 0,
+          "FinalFormationQuality": 5493,
+          "PreparedRiskBps": 780
+        },
+        {
+          "Strategy": "회복 후 실제 단약을 예약해 형성",
+          "LogicalMonths": 6,
+          "QiEnergyConsumed": 25000,
+          "PillConsumed": 1,
+          "FinalFormationQuality": 5493,
+          "PreparedRiskBps": 530
+        }
+      ],
+      "검사소스해시": "41e208e5774790a5652e3335d5c5ec230318e69a73523fb419f3e61ebbd9f440"
+    },
+    {
+      "식별자": "비경통합선택34",
+      "경로": "docs/evidence/0.2.1/m05-secret-realms-functional.json",
+      "파일해시": "0dcf5246c6b296571d75807bccbc522e4874fed1280a03bc9188dac040dbfb30",
+      "소스": "88c57f4d012bd9c2ba08fdd64f7f3ba59daa4c76",
+      "검증범위": "공개 비경 10·기존 조회 9·비경 조회 1·실제 윤회 원인 13 및 순수 매체 조회 1",
+      "주의": "총34 중 공개 명령/조회33과 순수 모듈1을 구분함. UI/최신 전체/플랫폼/성능/릴리스 결과가 아님.",
+      "새로실행": false,
+      "검사수": 34,
+      "실패수": 0,
+      "원격근거": "https://github.com/hddy774/project-hora/pull/136",
+      "공개명령조회수": 33,
+      "순수모듈조회수": 1,
+      "읽은결과": [
+        {
+          "분류": "public_command",
+          "선택": "비경 공개 명령 10건",
+          "검사수": 10,
+          "실패수": 0,
+          "검사이름": [
+            "비경 공개 명령: AI 정보 목표는 자기 입구 관측·지식이 있을 때만 같은 유료 입장과 저장된 진척을 선택한다",
+            "비경 공개 명령: 실제 입장 자리를 경쟁하고 중도 귀환도 한 달·도구·이미 쓴 식량을 보존한다",
+            "비경 공개 명령: 실제 사망은 입장·도구를 한 번 해제하며 새 출생의 몸에는 진척·관측을 복제하지 않는다",
+            "비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다",
+            "비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다",
+            "비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다",
+            "비경 공개 명령: 실제 도구·식량과 채택 법칙·한 번의 위험을 저장하고 월별 진척으로 유한 보상을 선점한다",
+            "비경 공개 명령: 관측한 개방 시각과 실제 준비·계약·육신 자격을 재검사하고 거절은 원자적이다",
+            "비경 공개 명령: 과거 개인 입구 기록은 숨은 참여·잔량을 읽지 않고 입구 밖 물리 행동을 차단한다",
+            "비경 공개 명령: 채택한 실제 위험 실패·부상은 저장과 이후 법칙 변경으로 재추첨되지 않는다"
+          ]
+        },
+        {
+          "분류": "pure_module_query",
+          "선택": "허가 매체 선필터 1건",
+          "검사수": 1,
+          "실패수": 0,
+          "검사이름": [
+            "INV-009/024 knowledge: 허가한 실제 매체를 전체수·정렬·페이지 전에 필터하여 바깥 도서를 인지하지 않는다"
+          ]
+        },
+        {
+          "분류": "public_query_regression",
+          "선택": "기존 풍부한 조회 회귀 9건",
+          "검사수": 9,
+          "실패수": 0,
+          "검사이름": [
+            "INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory",
+            "INV-009/015 rich query: voluntary guard names a person while combat cooldown names a receipt",
+            "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+            "INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations",
+            "INV-009/015 rich query: delivered social requests, consented assessment and observed oath receipts",
+            "INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context",
+            "INV-009/016 rich query: actual recipes and stale personal resource/appraisal snapshots",
+            "INV-007/010 rich query: action equipment policy history mapping and detached snapshots",
+            "INV-009/010 rich query: cached people and places precede hidden truth projection"
+          ]
+        },
+        {
+          "분류": "public_query_regression",
+          "선택": "비경 내부 조회 1건",
+          "검사수": 1,
+          "실패수": 0,
+          "검사이름": [
+            "INV-009/M05 비경 조회: 내부는 실제 휴대품과 개인 기록만 보고 바깥 신규 출품·바닥 실물을 현재 정보로 받지 않는다"
+          ]
+        },
+        {
+          "분류": "public_command_regression",
+          "선택": "기존 윤회 원인 생산자 회귀 13건",
+          "검사수": 13,
+          "실패수": 0,
+          "검사이름": [
+            "RC-01 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-02 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-03 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-04 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-05 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-06 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-07 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-08 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-09 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-10 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-11 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-12 실제 원인 생산자·자동 Gate·여정 왕복",
+            "RC-13 실제 원인 생산자·자동 Gate·여정 왕복"
+          ]
+        }
+      ]
+    },
+    {
+      "식별자": "행동소유선택5",
+      "경로": "/workspace/chronicles-cultivation/artifacts/h10-action-tests.json",
+      "파일해시": "bdfb1cfbf8ddf168aed7db36c01daf52c5db3db349cf18893953c3d799aeaa75",
+      "소스": "4b2b676d49f87edb4f2fe222fa1c519a83bf6b1c",
+      "검증범위": "실제 활동 소유·손상 저장·소비 제작·학습/수행·도주·공법 요청",
+      "주의": "실행 보고서에는 소스가 내장되지 않아 PR134 담당자의 귀속을 사용함. 해당 변경내용 선택5/5이지 이후 전체 합격이 아님.",
+      "새로실행": false,
+      "검사수": 5,
+      "실패수": 0,
+      "원격근거": "https://github.com/hddy774/project-hora/pull/134",
+      "읽은결과": [
+        {
+          "검사이름": "INV-004/017/021 H10 action owner: a real retreat keeps route provenance after paid combat occupancy ends",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-004/017/021/024 H10 action owner: actual study and cultivation practice keep their own adopted activities",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-008/017/024 H10 action owner: a Qi actor without a current method requests real teaching before a bounded plan",
+          "통과": true
+        }
+      ]
+    },
+    {
+      "식별자": "구형행동전체실패원본216",
+      "경로": "/workspace/chronicles-cultivation/artifacts/h10-full-functional.json",
+      "파일해시": "d70f5d9bb09f74df90e03367402887a1b06924377fc218537d542920e7503871",
+      "소스": "4b2b676d49f87edb4f2fe222fa1c519a83bf6b1c",
+      "검증범위": "PR134 정리 시 전체 기능 215/216 원본",
+      "주의": "소스 귀속은 PR134 기록. 실제 형성 시도 ID/행동 연결을 누락한 공유 초기조건 실패1을 숨기지 않음. 이후 선택1/1과 구분.",
+      "새로실행": false,
+      "검사수": 216,
+      "실패수": 1,
+      "원격근거": "https://github.com/hddy774/project-hora/pull/134",
+      "실패검사": [
+        {
+          "name": "INV-023 원영 파단 후 취소 사망·앱 복원은 포기 아님",
+          "passed": false,
+          "error": "System.IO.InvalidDataException: Action authority mismatch: person 1 active formation\n   at Chronicles.Game.GameWorld.RequireAction(Boolean valid, String detail) in /workspace/chronicles-cultivation/src/Chronicles.Game/World.ActionValidation.cs:line 17\n   at Chronicles.Game.GameWorld.ValidateActionOwner(Person person) in /workspace/chronicles-cultivation/src/Chronicles.Game/World.ActionValidation.cs:line 112\n   at Chronicles.Game.GameWorld.ValidateActionState() in /workspace/chronicles-cultivation/src/Chronicles.Game/World.ActionValidation.cs:line 24\n   at Chronicles.Game.Invariants.Validate(GameState state) in /workspace/chronicles-cultivation/src/Chronicles.Game/Invariants.cs:line 138\n   at Chronicles.Game.GameWorld.Restore(GameState value) in /workspace/chronicles-cultivation/src/Chronicles.Game/World.cs:line 29\n   at Program.<>c.<<Main>$>b__0_20() in /workspace/chronicles-cultivation/tests/Chronicles.Game.Tests/Program.cs:line 207\n   at Program.<<Main>$>g__Test|0_1(String name, Action body, <>c__DisplayClass0_0&) in /workspace/chronicles-cultivation/tests/Chronicles.Game.Tests/Program.cs:line 17"
+        }
+      ]
+    },
+    {
+      "식별자": "공유파단초기조건후속1",
+      "경로": "/workspace/chronicles-cultivation/artifacts/h10-fracture-fixture.json",
+      "파일해시": "6e7caecbc3901bfa8759bca50fdcfa829ece77814adc309f3093693fc351a725",
+      "소스": "4b2b676d49f87edb4f2fe222fa1c519a83bf6b1c",
+      "검증범위": "실제 형성 시도/행동 연결을 갖춘 공유 파단 초기조건 선택1",
+      "주의": "담당자 귀속의 수정 후 선택 결과이며 전체216을 다시 실행한 결과가 아님.",
+      "새로실행": false,
+      "검사수": 1,
+      "실패수": 0,
+      "원격근거": "https://github.com/hddy774/project-hora/pull/134",
+      "읽은결과": [
+        {
+          "검사이름": "INV-023 원영 파단 후 취소 사망·앱 복원은 포기 아님",
+          "통과": true
+        }
+      ]
+    },
+    {
+      "식별자": "정책후속조회12",
+      "경로": "/tmp/chronicles-rich-query-hooked-results.json",
+      "파일해시": "58d0faae3c9b96429a15d0d6f232ae316dcd9db9feda82bac29b87f060a8b357",
+      "소스": "09adc54d7284e8b78950308e824c9904b4380563",
+      "검증범위": "실제 정책 원장 투영과 비경 공간 경계를 포함한 후속 공개 조회12",
+      "주의": "원래 PR137의10/10 원본은 덮어써졌으므로 PR본문 주장과 현재 읽은12/12를 구분함. 소스 귀속은 화면 담당자 확인.",
+      "새로실행": false,
+      "검사수": 12,
+      "실패수": 0,
+      "원격근거": "https://github.com/hddy774/project-hora/pull/137",
+      "읽은결과": [
+        {
+          "검사이름": "INV-009/010 rich query: cached people and places precede hidden truth projection",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-007/010 rich query: action equipment policy history mapping and detached snapshots",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-009/016 rich query: actual recipes and stale personal resource/appraisal snapshots",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-009/015 rich query: delivered social requests, consented assessment and observed oath receipts",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-009/015 rich query: voluntary guard names a person while combat cooldown names a receipt",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow",
+          "통과": true
+        },
+        {
+          "검사이름": "INV-009/M05 비경 조회: 내부는 실제 휴대품과 개인 기록만 보고 바깥 신규 출품·바닥 실물을 현재 정보로 받지 않는다",
+          "통과": true
+        },
+        {
+          "검사이름": "비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다",
+          "통과": true
+        }
+      ]
+    },
+    {
+      "식별자": "정책브라우저137",
+      "경로": "/tmp/chronicles-ui-policy-current/results.json",
+      "파일해시": "2a55ba26631cc1548ef67401fb1a39efb846675065b7cefca2ef1abfddc65301",
+      "소스": "cf732638931078cde16f9a1bd18a683d55223b71",
+      "검증범위": "1280/390px 실제 세션 정책 선택·재정·채무·준비·환급·시행과 응답 어댑터 재생",
+      "주의": "검증기/HTML 소스는 담당자 귀속이며 통합 헤드는4701ead. 브리지 재생을 도메인/실제 API24 합격으로 확대하지 않음. M05 입장/귀환 화면은 아직 포함되지 않음.",
+      "새로실행": false,
+      "원격근거": "https://github.com/hddy774/project-hora/pull/137",
+      "읽은결과": [
+        {
+          "kind": "real_session_functional",
+          "width": 1280,
+          "asset": "committed_chrome51",
+          "forced_legacy_dom": true,
+          "tabs": 9,
+          "javascript_errors": [],
+          "touch_targets_44px": true,
+          "known_actor_switch": true,
+          "equipment_use": true,
+          "known_ally_guard": true,
+          "species_creation": true,
+          "atomic_law_batch": true,
+          "new_world_law_choice": true,
+          "save_load": true,
+          "document_horizontal_overflow": false,
+          "selected_known_path_command": true,
+          "save_load_scope_cleanup": true,
+          "law_export_import_validation_and_apply": true,
+          "native_api24_verified": false,
+          "assessment_consent_and_actual_evidence": true,
+          "oath_known_notice_and_formal_breach": true,
+          "actual_claim_relay_provenance": true,
+          "received_request_rejection": true,
+          "nonhuman_dated_ecology": true,
+          "policy_catalog_choices": true,
+          "policy_adopt_prepare_cancel_implement": true,
+          "actual_policy_budget_and_debt": true
+        },
+        {
+          "kind": "real_session_functional",
+          "width": 390,
+          "asset": "committed_chrome51",
+          "forced_legacy_dom": true,
+          "tabs": 9,
+          "javascript_errors": [],
+          "touch_targets_44px": true,
+          "known_actor_switch": true,
+          "equipment_use": true,
+          "known_ally_guard": true,
+          "species_creation": true,
+          "atomic_law_batch": true,
+          "new_world_law_choice": true,
+          "save_load": true,
+          "document_horizontal_overflow": false,
+          "selected_known_path_command": true,
+          "save_load_scope_cleanup": true,
+          "law_export_import_validation_and_apply": true,
+          "native_api24_verified": false,
+          "assessment_consent_and_actual_evidence": true,
+          "oath_known_notice_and_formal_breach": true,
+          "actual_claim_relay_provenance": true,
+          "received_request_rejection": true,
+          "nonhuman_dated_ecology": true,
+          "policy_catalog_choices": true,
+          "policy_adopt_prepare_cancel_implement": true,
+          "actual_policy_budget_and_debt": true
+        },
+        {
+          "kind": "real_reply_adapter_replay",
+          "adapter": "android_sync",
+          "native_request_response": true,
+          "serialized_requests": true,
+          "late_observer_reply_discarded": true,
+          "scope_dialog_search_history_cleanup": true,
+          "javascript_errors": [],
+          "domain_integration_claim": false
+        },
+        {
+          "kind": "real_reply_adapter_replay",
+          "adapter": "windows_async",
+          "native_request_response": true,
+          "serialized_requests": true,
+          "late_observer_reply_discarded": true,
+          "scope_dialog_search_history_cleanup": true,
+          "javascript_errors": [],
+          "domain_integration_claim": false
+        }
+      ],
+      "배포HTML해시": "f37f7f183ab9fbc468ddfe8284bc479525448e815dc6600ae5c97b32b57bf690"
+    },
+    {
+      "식별자": "비경브라우저142",
+      "경로": "docs/evidence/0.2.1/browser-secret-functional.json",
+      "파일해시": "4cfbee0d0e8ff84847e9d2d219f2c66e3995603d0baaec56beebd5b9d0795255",
+      "소스": "1db00f8e89f1acd49d3447dda9589560d3435259",
+      "검증범위": "1280/390px 실제 유료 탐색/이동·준비·입장·정보 경계·귀환·내부 저장복원/완주",
+      "주의": "검증 소스 귀속은 화면 담당자 확인. 통합 검사 헤드는9d13a8a, PR142는b1838ec로 병합됨. 기존 정책/사회/수행과 응답 재생 범위 유지, 실제 API24/성능/T05 전체 완료가 아님.",
+      "새로실행": false,
+      "원격근거": "https://github.com/hddy774/project-hora/pull/142",
+      "읽은결과": [
+        {
+          "kind": "real_session_functional",
+          "width": 1280,
+          "asset": "committed_chrome51",
+          "forced_legacy_dom": true,
+          "tabs": 9,
+          "javascript_errors": [],
+          "touch_targets_44px": true,
+          "known_actor_switch": true,
+          "equipment_use": true,
+          "known_ally_guard": true,
+          "species_creation": true,
+          "atomic_law_batch": true,
+          "new_world_law_choice": true,
+          "save_load": true,
+          "document_horizontal_overflow": false,
+          "selected_known_path_command": true,
+          "save_load_scope_cleanup": true,
+          "law_export_import_validation_and_apply": true,
+          "native_api24_verified": false,
+          "assessment_consent_and_actual_evidence": true,
+          "oath_known_notice_and_formal_breach": true,
+          "actual_claim_relay_provenance": true,
+          "received_request_rejection": true,
+          "nonhuman_dated_ecology": true,
+          "policy_catalog_choices": true,
+          "policy_adopt_prepare_cancel_implement": true,
+          "actual_policy_budget_and_debt": true,
+          "secret_paid_survey_travel_entry": true,
+          "secret_observed_uncertainty": true,
+          "secret_carried_space_boundary": true,
+          "secret_real_return_and_preparation_cost": true,
+          "secret_inside_save_resume": true,
+          "secret_finite_outcome_observed": true
+        },
+        {
+          "kind": "real_session_functional",
+          "width": 390,
+          "asset": "committed_chrome51",
+          "forced_legacy_dom": true,
+          "tabs": 9,
+          "javascript_errors": [],
+          "touch_targets_44px": true,
+          "known_actor_switch": true,
+          "equipment_use": true,
+          "known_ally_guard": true,
+          "species_creation": true,
+          "atomic_law_batch": true,
+          "new_world_law_choice": true,
+          "save_load": true,
+          "document_horizontal_overflow": false,
+          "selected_known_path_command": true,
+          "save_load_scope_cleanup": true,
+          "law_export_import_validation_and_apply": true,
+          "native_api24_verified": false,
+          "assessment_consent_and_actual_evidence": true,
+          "oath_known_notice_and_formal_breach": true,
+          "actual_claim_relay_provenance": true,
+          "received_request_rejection": true,
+          "nonhuman_dated_ecology": true,
+          "policy_catalog_choices": true,
+          "policy_adopt_prepare_cancel_implement": true,
+          "actual_policy_budget_and_debt": true,
+          "secret_paid_survey_travel_entry": true,
+          "secret_observed_uncertainty": true,
+          "secret_carried_space_boundary": true,
+          "secret_real_return_and_preparation_cost": true,
+          "secret_inside_save_resume": true,
+          "secret_finite_outcome_observed": true
+        },
+        {
+          "kind": "real_reply_adapter_replay",
+          "adapter": "android_sync",
+          "native_request_response": true,
+          "serialized_requests": true,
+          "late_observer_reply_discarded": true,
+          "scope_dialog_search_history_cleanup": true,
+          "javascript_errors": [],
+          "domain_integration_claim": false
+        },
+        {
+          "kind": "real_reply_adapter_replay",
+          "adapter": "windows_async",
+          "native_request_response": true,
+          "serialized_requests": true,
+          "late_observer_reply_discarded": true,
+          "scope_dialog_search_history_cleanup": true,
+          "javascript_errors": [],
+          "domain_integration_claim": false
+        }
+      ],
+      "배포HTML해시": "e521b56a3fb32f45cabe474a00020fd2ea9e5c7bc604739bd54cd9b0f02b445c",
+      "실행원본경로": "/tmp/chronicles-ui-secret-current/results.json",
+      "실행원본해시": "4cfbee0d0e8ff84847e9d2d219f2c66e3995603d0baaec56beebd5b9d0795255",
+      "귀속기록": "docs/evidence/0.2.1/browser-secret-functional-provenance.json"
+    },
+    {
+      "식별자": "실제AI환전3",
+      "경로": "/tmp/currency-planning-public.log",
+      "파일해시": "a879bd7592ecec4863d1d989a39017aa99c46dc191f059e0066b80cd12cf786b",
+      "소스": "b4b491636b5e1bfa986568899a1cd76fcf544a44",
+      "검증범위": "실제 채광 인계·자기 관측 AI 채광·단일 실물 환전/저장/재전송·타인 돈/관측 비간섭",
+      "주의": "별도 JSON 보고서는 없으며 실제3/3 로그·147행 검사 원본·PR141 본문을 대조함. 본 감사가 새로 실행하지 않음. 환전 코드는aa3da37에 이미 포함되었고PR141은 검사 파일만 추가함.",
+      "새로실행": false,
+      "검사수": 3,
+      "실패수": 0,
+      "원격근거": "https://github.com/hddy774/project-hora/pull/141",
+      "읽은결과": [
+        "PASS currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비",
+        "PASS currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전",
+        "PASS currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+        "RESULT 3/3"
+      ]
+    },
+    {
+      "식별자": "통합6670전체실패원본238",
+      "경로": "docs/evidence/0.2.1/functional-integration-6670d29.json",
+      "파일해시": "277dda80f18ae36eb883440f2899fa364b0cb61cad0157248244ea284f1319bc",
+      "소스": "6670d2993320dbec3be8c3596d8ec962692a0762",
+      "검증범위": "해당 통합의 전체 기능 237/238 실패 원본 보존",
+      "주의": "보고서 자체에는 source_commit 필드가 없으므로 루트 실행 귀속·파일명·보존 커밋0b67a04로 연결함. 실제 INV-020 거부를 옛 문구로만 받던 시험1 실패. 후속 선택2/2를 합쳐 전체238/238로 쓰지 않음.",
+      "새로실행": false,
+      "검사수": 238,
+      "실패수": 1,
+      "실패검사": [
+        {
+          "name": "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+          "passed": false,
+          "error": "System.InvalidOperationException: retired policy data cannot restore as a second authority, including balanced ghost escrow; the valid source remains saveable\n   at Chronicles.Game.Tests.PoliticsWorldFixture.Check(Boolean condition, String message) in /workspace/project-hora/tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs:line 54\n   at Chronicles.Game.Tests.PoliticsPublicPolicyIntegrationScenario.Run() in /workspace/project-hora/tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs:line 77\n   at Program.<<Main>$>g__Test|0_1(String name, Action body, <>c__DisplayClass0_0&) in /workspace/project-hora/tests/Chronicles.Game.Tests/Program.cs:line 17"
+        }
+      ]
+    },
+    {
+      "식별자": "폐기정책초기조건후속2",
+      "경로": "docs/evidence/0.2.1/retired-policy-invariant-functional.json",
+      "파일해시": "4d562d1940dba68ad1e509986cabfa46746dc16b129f71dfc465474c5cc531b3",
+      "소스": "0b67a049d21db2c0a4137d2d1ef103b0e2d1f8d7",
+      "검증범위": "INV-020 공통 거부를 받도록 초기조건 catch를 수정한 뒤 실제 G03 공개 정책 선택2",
+      "주의": "파일에 소스가 내장되지 않아 루트가0b67a04 변경내용에 귀속함. 현재 읽은 보고서는2/2이며 이전 실패 원본/최신 전체 재실행과 구분함.",
+      "새로실행": false,
+      "검사수": 2,
+      "실패수": 0,
+      "읽은결과": [
+        {
+          "검사이름": "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+          "통과": true
+        },
+        {
+          "검사이름": "V021-G03 public politics: withdrawing real reserved work refunds unfinished policy without implementation",
+          "통과": true
+        }
+      ]
     }
   ],
   "동시작업확인": [
     {
       "분야": "수행",
-      "판정": "R07 자체 수용 가능. R06은 기간/품질/위험 동시 비교의 짧은 기능 근거 부족.",
-      "근거분류": "담당자 확인 및 실제 검사 본문 대조"
+      "판정": "PR138로 R06 결합 비교 부족 해소. PR134+실제 비경 연결로 H10 자체 조항도 종료 가능하며 최종 T02 선행은 그대로 유지.",
+      "근거분류": "담당자 확인·소스·선택 결과/원본 대조"
     },
     {
-      "분야": "인지",
-      "판정": "L04의 명시된 네 규모 메모리/저장 측정은 실행되지 않음. 기존 공개 기능 증거 분류를 task전체완료로 바꾸지 않음.",
-      "근거분류": "독립 감사 담당자 확인 및 정본 수용문구"
+      "분야": "생태",
+      "판정": "실제 활동시설과 독립 비경의 권위 공존에 추가 백엔드 공백 없음. 기존 생태13/13을aa3da37 재실행이라고 표시하지 않음.",
+      "근거분류": "담당자 확인·실제 시설/비경 코드 대조"
     },
     {
       "분야": "화면",
-      "판정": "정책 문제의 직접 보류는 U05 및 X03 정치 명령 연결. U03/U07까지 별도 미완료로 확대하지 않음. C01의403은 재확인하지 않아 상태 유지.",
-      "근거분류": "화면 담당자 확인 및 기존브라우저128 파일 읽기"
+      "판정": "PR137로 U05/X03 정책 부분 해결. 이어PR142 병합과 실제 비경 입장/귀환·준비/진척·저장복원 브라우저를 확인해U04 자체 수용 후보에 추가함. U01/U03/U07/T05 전체 최신 합격으로 확대하지 않음.",
+      "근거분류": "GitHub 병합 확인·담당자 확인·원본 조회12/12와 두 폭 정책/비경 브라우저 기록 읽기"
     },
     {
-      "분야": "외부 문서",
-      "판정": "소개 페이지403은 루트 담당자의 현재 보고이며 이 감사가 직접 재검증한 결과는 아님.",
-      "근거분류": "작업자 보고·완료 제외"
+      "분야": "AI 환전",
+      "판정": "PR141은 이미6670d29로 병합됨. 실제3/3 원본 로그를 읽었으며L03/L04/L07 명시 측정을 종료하지 않음.",
+      "근거분류": "GitHub 병합 메타데이터·담당자 귀속 로그·공개 검사 본문"
+    },
+    {
+      "분야": "최종 통합",
+      "판정": "루트6670d29 전체237/238 원본 및 INV-020 시험 catch 수정 뒤 선택2/2를 분리함. 24INV 실제 검사명 매핑은 인지 담당자 소유이며 중복 수정하지 않음.",
+      "근거분류": "루트 실행 귀속·보존 원본·수정 소스 읽기"
+    },
+    {
+      "분야": "윤회 동시조건",
+      "판정": "루트와 인지 담당자가 기존INV-013의 다른 매칭 원인 설명 보존 공백을 확인함. J02/J04를 다시 보류하고 실제 동시12/7 수정·단일 여정/설명·저장 재처리를 기다림. 단일13경로 통과와 구분함.",
+      "근거분류": "정본INV-013 문구·World.Hazards/World.Life 소스·담당자 확인"
+    },
+    {
+      "분야": "외부 소개",
+      "판정": "무관 릴리스/태그 정리와 About/소개403을 구분하며403 제한은 유지함.",
+      "근거분류": "루트 보고 및 repository-migration.json 읽기"
     }
   ],
   "생성파일한정확인": {
@@ -466,7 +1029,8 @@
         "해시": "8f86a2cbf00ff3eee0bda2bc0eb5e1fc19c8544d5dc650c53d0132325956b592"
       }
     ],
-    "한계": "기존 파일을 읽은 확인이며 전체 SDK/생성기 의미 분석 또는 향후 Unity 컴파일/실행 검증이 아님. 생성물을 소스로 추가하지 않음."
+    "한계": "기존 파일을 읽은 확인이며 전체 SDK/생성기 의미 분석 또는 향후 Unity 컴파일/실행 검증이 아님. 생성물을 소스로 추가하지 않음.",
+    "이력귀속": "이전 PR135의 읽기 기록을 보존함. 이번 갱신에서 생성 파일을 새로 확인하거나 빌드하지 않음."
   },
   "완료권고순서": [
     "V021-A01",
@@ -719,14 +1283,17 @@
     "V021-R03",
     "V021-R04",
     "V021-R05",
+    "V021-R06",
     "V021-V01",
     "V021-V02",
     "V021-W01",
     "V021-W02",
     "V021-L01",
     "V021-M01",
+    "V021-M02",
     "V021-M03",
     "V021-M04",
+    "V021-M05",
     "V021-K01",
     "V021-K02",
     "V021-K03",
@@ -747,10 +1314,13 @@
     "V021-G03",
     "V021-X01",
     "V021-X02",
+    "V021-X03",
     "V021-X04",
     "V021-U01",
     "V021-U02",
     "V021-U03",
+    "V021-U04",
+    "V021-U05",
     "V021-U06",
     "V021-D01",
     "V021-Z01",
@@ -772,9 +1342,7 @@
     "V021-H07",
     "V021-H08",
     "V021-J01",
-    "V021-J02",
     "V021-J03",
-    "V021-J04",
     "V021-L02",
     "V021-B03",
     "V021-B04",
@@ -790,15 +1358,10 @@
     "V021-O05",
     "V021-U07",
     "V021-R09",
-    "V021-T07"
+    "V021-T07",
+    "V021-H10"
   ],
   "자체보류식별자": [
-    "V021-R06",
-    "V021-M02",
-    "V021-M05",
-    "V021-X03",
-    "V021-U04",
-    "V021-U05",
     "V021-D02",
     "V021-T01",
     "V021-T02",
@@ -809,44 +1372,37 @@
     "V021-H04",
     "V021-H06",
     "V021-H09",
+    "V021-J02",
+    "V021-J04",
     "V021-C01",
     "V021-L03",
     "V021-L04",
     "V021-L07",
-    "V021-Z04",
-    "V021-H10"
+    "V021-Z04"
   ],
   "주요선행차단": [
     {
-      "식별자": "V021-Z04",
-      "차단된자체통과작업수": 35
+      "식별자": "V021-T02",
+      "차단된자체통과작업수": 1
+    },
+    {
+      "식별자": "V021-J02",
+      "차단된자체통과작업수": 1
     },
     {
       "식별자": "V021-L04",
       "차단된자체통과작업수": 5
     },
     {
-      "식별자": "V021-M02",
-      "차단된자체통과작업수": 17
-    },
-    {
-      "식별자": "V021-R06",
-      "차단된자체통과작업수": 2
-    },
-    {
-      "식별자": "V021-U05",
-      "차단된자체통과작업수": 0
-    },
-    {
-      "식별자": "V021-X03",
-      "차단된자체통과작업수": 1
+      "식별자": "V021-Z04",
+      "차단된자체통과작업수": 46
     }
   ],
   "원래55개대응": {
     "대응수": 55,
     "대응보존": true,
     "중복분모추가": false,
-    "자체수용충족대응수": 38,
+    "자체수용충족대응수": 45,
     "선행포함완료대응수": 18,
     "주의": "55개는111개의 원래 요구 대응표이며 166개로 합산하지 않음. 대응 보존은 구현/출시 완료가 아님."
   },
@@ -910,7 +1466,7 @@
       "식별자": "V021-A03",
       "제목": "안정 ID·자산·DTO·명령 계약",
       "정본수용조건": "신원·권리·조회·명령·원자 전이의 단일 소유와 계약 고정 · 1단계 ID/정수 시간/RNG/슬롯 세대, 2단계 명령/DTO/원자 전이 산출물을 분리 기록",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -1020,7 +1576,7 @@
       "식별자": "V021-B01",
       "제목": "공통 일곱 품계",
       "정본수용조건": "품계·경계·배율의 전 사용처와 형질/완성품 표시 이행",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -1130,7 +1686,7 @@
       "식별자": "V021-B02",
       "제목": "폐품·결손·손상",
       "정본수용조건": "서적·법보 등의 실제 결손과 점수 경계를 혼동하지 않음",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -1222,7 +1778,7 @@
       "식별자": "V021-P01",
       "제목": "동적 인구·생애·영혼 저장소",
       "정본수용조건": "출생/사망/윤회·안정 ID·슬롯 재사용·가족 참조 무결성",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -1317,7 +1873,7 @@
       "식별자": "V021-P02",
       "제목": "초기 두 인물·학습/생계 출발",
       "정본수용조건": "2명 모두 반선·종문0·숨은 주민0·자원/지식 출처·후대 금단/혈연 판정의 현재/대기/차단/미판정 구분",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -1426,7 +1982,7 @@
       "식별자": "V021-P03",
       "제목": "인구·가계 소비·분업·정착",
       "정본수용조건": "인구·노동·식량 회계, 자연 성립 시설과 집계/개체 중복 없음",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -1527,7 +2083,7 @@
       "식별자": "V021-F01",
       "제목": "도려·가족·사회 관계",
       "정본수용조건": "상호 의사·관계 변화·생식/양육/소속의 분리",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -1615,7 +2171,7 @@
       "식별자": "V021-F02",
       "제목": "임신·출생·부모·윤회 연결",
       "정본수용조건": "기본 금단 출산·양친 자격/법칙 revision·부담·한 번의 결과·새 인구/영혼 배정",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -1743,7 +2299,7 @@
       "식별자": "V021-F03",
       "제목": "유전 원형·혈맥·체질·발현",
       "정본수용조건": "부모 원형/태내/발달·출처·변이/각인, 출생 전 미배정 영혼 영향 없음·재추첨0",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -1837,7 +2393,7 @@
       "식별자": "V021-F04",
       "제목": "양육·교육·분가·상속",
       "정본수용조건": "부양 시간/재원·성장·가문 성립·입양·유산·직책 승계의 분리",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -1950,7 +2506,7 @@
       "식별자": "V021-R01",
       "제목": "오행 영근·선천 구조",
       "정본수용조건": "5영근 세부 값·유전 입력·후천 성장·현재 경지 분리",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -2028,7 +2584,7 @@
       "식별자": "V021-R02",
       "제목": "복합 수행 공정·층계",
       "정본수용조건": "흡수/정제/순환/체화·구조·부하·오행조화·진척의 인과",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -2099,7 +2655,7 @@
       "식별자": "V021-R03",
       "제목": "입문·병목·돌파·안착",
       "정본수용조건": "감응 입문·조건별 병목·자원/공정·단약 보조·실패/안착",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -2236,7 +2792,7 @@
       "식별자": "V021-R04",
       "제목": "축기·금단·상위 프로필",
       "정본수용조건": "경지별 고유 기반·형성/현재 성장·출처·잠정 상위값 연결",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -2310,7 +2866,7 @@
       "식별자": "V021-R05",
       "제목": "영맥·공급·혼잡·자리",
       "정본수용조건": "오행 공급·탁도·점유·분배·거점 판단의 실제 자원 보존",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -2408,11 +2964,11 @@
       "제목": "퇴행·회복·수행 보정",
       "정본수용조건": "원인별 손상·재성장·총 기간/품질/위험·전략 차이 검사",
       "원장현재상태": "in_progress",
-      "자체수용통과": false,
+      "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
-      "판정": "기능 검사 보류",
-      "판정근거": "중립 600개월 식·퇴행/회복·전환 손실 검사는 존재함. 수행 담당자가 동일 초기조건별 총기간·최종품질·위험을 함께 대조하는 짧은 기능 검사가 아직 없다고 확인함. 성능 실험이나 별도 보정표를 새 의무로 추가하지 않음.",
+      "판정": "자체 통과·선행 보류",
+      "판정근거": "기존 원인별 손상·퇴행/실제 회복·비용 있는 전환 근거에 PR138의 동일 전체 초기 상태 3전략 공개 비교 1/1을 결합함. 실제 채집·제조한 같은 단약으로 총 5/6/6개월, 기 20000/25000/25000, 단약 0/0/1, 형성 품질 5243/5493/5493, 채택 위험 900/780/530bps를 대조하고 중간 파일 저장 후 남은 매월 해시 일치를 확인함. 명시적 짧은 법칙·현재 경계 초기조건이며 기본 장기기간·실패빈도·성능 측정으로 확대하지 않음.",
       "직접선행": [
         "V021-R04",
         "V021-B04"
@@ -2422,7 +2978,7 @@
         "V021-B04"
       ],
       "최상위보류원인": [
-        "V021-R06"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -2430,7 +2986,9 @@
         "src/Chronicles.Game/Cultivation/CultivationContracts.cs",
         "src/Chronicles.Game/Cultivation/CultivationInvariants.cs",
         "src/Chronicles.Game/World.CultivationBridge.cs",
-        "src/Chronicles.Game/Cultivation/RealmStructures.cs"
+        "src/Chronicles.Game/Cultivation/RealmStructures.cs",
+        "docs/evidence/0.2.1/r06-strategy-functional.json",
+        "docs/evidence/0.2.1/r06-strategy-functional.md"
       ],
       "검사근거": [
         {
@@ -2499,6 +3057,17 @@
           "기존실행": [
             "root-functional-195"
           ]
+        },
+        {
+          "검사참조": "CultivationStrategyComparisonScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CultivationStrategyComparisonScenario.cs",
+          "심볼": "CultivationStrategyComparisonScenario",
+          "실제검사이름": "INV-004/006/018/023 R06 short functional strategy comparison: actual months resources quality risk and saved continuation",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 7,
+          "기존실행": [
+            "R06전략공개1"
+          ]
         }
       ]
     },
@@ -2506,7 +3075,7 @@
       "식별자": "V021-V01",
       "제목": "자질·천교·후보·공석",
       "정본수용조건": "절대/상대·권역/종족/경지·연령/성장 상태·재평가·공석 판정",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -2589,7 +3158,7 @@
       "식별자": "V021-V02",
       "제목": "명성·인지·사회 반응",
       "정본수용조건": "실제 값/정보 출처·AI 판단·숨은 천교와 전지적 누출 분리",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -2698,7 +3267,7 @@
       "식별자": "V021-W01",
       "제목": "무인 독립 10경지",
       "정본수용조건": "성장·돌파·전투 기여·수명·수선 병행·생활/생애 연결",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -2780,7 +3349,7 @@
       "식별자": "V021-W02",
       "제목": "종족·기원·요괴·생태",
       "정본수용조건": "종족/몸/호칭 분리·생식 프로필·서식/자원·사회/기예 참여",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -2873,7 +3442,7 @@
       "식별자": "V021-L01",
       "제목": "다목표 AI·실패 회복",
       "정본수용조건": "양육·생계·수행·관계·기예·정치·교역과 실제 정보·시간·교착 대응",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -2957,6 +3526,39 @@
           "기존실행": [
             "root-functional-195"
           ]
+        },
+        {
+          "검사참조": "CurrencyAiMiningHandoffScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiMiningHandoffScenario",
+          "실제검사이름": "currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 48,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiObservedMiningScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiObservedMiningScenario",
+          "실제검사이름": "currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 76,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiScopeAndNeedScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiScopeAndNeedScenario",
+          "실제검사이름": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 98,
+          "기존실행": [
+            "실제AI환전3"
+          ]
         }
       ]
     },
@@ -2964,7 +3566,7 @@
       "식별자": "V021-M01",
       "제목": "10주·100지점 실제 지도",
       "정본수용조건": "주별 10개·안정 ID·통로·층천/시설의 중복 없는 개수",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -3032,11 +3634,11 @@
       "제목": "복수 시설·자원·비경·성립",
       "정본수용조건": "도시+비경+시장 공존, 운영 주체·시설 성립·원천 검사",
       "원장현재상태": "in_progress",
-      "자체수용통과": false,
+      "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
-      "판정": "기능 통합 보류",
-      "판정근거": "시설 공존·권리·유한 원천은 확인했으나 별도 비경 입구와 내부 공간의 실제 공존은 M05 통합 후 확인해야 함.",
+      "판정": "자체 통과·선행 보류",
+      "판정근거": "기존 실제 가계·시장·공방·개인 탐사 원천 공존 및 운영자/성립/원천 근거에 PR136의 실제 비경 입구·독립 내부 공간을 결합함. 100 전략 지점 위 시설과 별도 비경 원장이 서로 권위를 덮어쓰지 않으며 새 지점·주민·무료 수용량을 만들지 않는 실제 공유 훅과 공개 발견/공간/유한 선점 검사를 대조함. 생태 담당자도 추가 백엔드 공백이 없음을 확인함. 비경 화면은 U04의 PR142 근거로 별도 귀속하며 최신 전체 재실행으로 주장하지 않음.",
       "직접선행": [
         "V021-M01",
         "V021-P03"
@@ -3045,11 +3647,9 @@
         "V021-P03"
       ],
       "최상위보류원인": [
-        "V021-M02"
+        "V021-Z04"
       ],
-      "관련후속": [
-        "V021-M05"
-      ],
+      "관련후속": [],
       "코드문서근거": [
         "src/Chronicles.Game/State.cs",
         "src/Chronicles.Game/World.cs",
@@ -3064,7 +3664,11 @@
         "src/Chronicles.Game/Politics/PoliticsEngine.cs",
         "src/Chronicles.Game/Politics/PoliticalState.cs",
         "src/Chronicles.Game/Politics/PoliticalInvariants.cs",
-        "src/Chronicles.Game/World.Politics.cs"
+        "src/Chronicles.Game/World.Politics.cs",
+        "src/Chronicles.Game/Exploration/ExplorationState.cs",
+        "src/Chronicles.Game/World.ExplorationBridge.cs",
+        "src/Chronicles.Game/World.ExplorationAccess.cs",
+        "docs/evidence/0.2.1/m05-secret-realms-functional.json"
       ],
       "검사근거": [
         {
@@ -3138,6 +3742,39 @@
             "root-functional-195",
             "ecology-maturity-121"
           ]
+        },
+        {
+          "검사참조": "ExplorationDiscoveryScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationDiscoveryScenario",
+          "실제검사이름": "비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 57,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationPrivacySpaceScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationPrivacySpaceScenario",
+          "실제검사이름": "비경 공개 명령: 과거 개인 입구 기록은 숨은 참여·잔량을 읽지 않고 입구 밖 물리 행동을 차단한다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 179,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationFirstClaimScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationFirstClaimScenario",
+          "실제검사이름": "비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 129,
+          "기존실행": [
+            "비경통합선택34"
+          ]
         }
       ]
     },
@@ -3145,7 +3782,7 @@
       "식별자": "V021-M03",
       "제목": "소유·통치·운영·통행권",
       "정본수용조건": "최고 주권/봉신/종문/개인 권리의 구분·충돌/이전 검사",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -3162,7 +3799,6 @@
         "V021-S01"
       ],
       "최상위보류원인": [
-        "V021-M02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -3244,7 +3880,7 @@
       "식별자": "V021-M04",
       "제목": "이동·경로·통로 사건",
       "정본수용조건": "체류/이동·폐쇄/우회·도착·인구와 소유물 중복 없음",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -3309,11 +3945,11 @@
       "제목": "탐색·기연·비경",
       "정본수용조건": "정보·조건·진척·위험·동시 선점·유한 보상 재처리 검사",
       "원장현재상태": "in_progress",
-      "자체수용통과": false,
+      "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
-      "판정": "기능 통합 보류",
-      "판정근거": "새 비경 모듈 PR133의 조건·준비·입장·진척·부분 귀환·동시 선점·유한 보상 및 실제 공유 훅/명령/공개 검증을 완료로 확인하지 못함.",
+      "판정": "자체 통과·선행 보류",
+      "판정근거": "PR133 모듈만으로 판정하지 않고 병합 PR136의 실제 생성/명령/월별 완료/취소/사망/행동 검증/조회 훅과 공개 비경 10/10을 확인함. 자기 정보·개방/신체/도구/식량/계약/자리 조건·저장된 법칙/단일 위험·월별 진척·유료 부분 귀환·동시 유한 선점·중복/위조 영수증·현생 종결·AI 경로를 검증함. 선택 합계 34/34는 공개 명령/조회 33건과 순수 매체 모듈 조회 1건이며 구형 일반 탐색 윤회 13건도 포함함. U04 화면은 PR142로 별도 귀속하며 최종 통합/플랫폼/측정은 보류.",
       "직접선행": [
         "V021-M02",
         "V021-M04",
@@ -3323,7 +3959,7 @@
         "V021-M02"
       ],
       "최상위보류원인": [
-        "V021-M05"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -3339,7 +3975,15 @@
         "src/Chronicles.Game/World.InventoryBridge.cs",
         "src/Chronicles.Game/World.Life.cs",
         "src/Chronicles.Game/World.Society.cs",
-        "src/Chronicles.Game/World.Population.cs"
+        "src/Chronicles.Game/World.Population.cs",
+        "src/Chronicles.Game/Exploration/ExplorationState.cs",
+        "src/Chronicles.Game/World.ExplorationBridge.cs",
+        "src/Chronicles.Game/World.ExplorationAccess.cs",
+        "src/Chronicles.Game/GameState.Exploration.cs",
+        "src/Chronicles.Game/World.ActionValidation.cs",
+        "src/Chronicles.Game/World.DomainValidation.cs",
+        "src/Chronicles.Game/Queries.cs",
+        "docs/evidence/0.2.1/m05-secret-realms-functional.json"
       ],
       "검사근거": [
         {
@@ -3388,6 +4032,139 @@
           "기존실행": [
             "root-functional-195"
           ]
+        },
+        {
+          "검사참조": "ExplorationDiscoveryScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationDiscoveryScenario",
+          "실제검사이름": "비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 57,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationPaidProgressScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationPaidProgressScenario",
+          "실제검사이름": "비경 공개 명령: 실제 도구·식량과 채택 법칙·한 번의 위험을 저장하고 월별 진척으로 유한 보상을 선점한다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 76,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationCapacityReturnScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationCapacityReturnScenario",
+          "실제검사이름": "비경 공개 명령: 실제 입장 자리를 경쟁하고 중도 귀환도 한 달·도구·이미 쓴 식량을 보존한다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 109,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationFirstClaimScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationFirstClaimScenario",
+          "실제검사이름": "비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 129,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationRiskScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationRiskScenario",
+          "실제검사이름": "비경 공개 명령: 채택한 실제 위험 실패·부상은 저장과 이후 법칙 변경으로 재추첨되지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 154,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationPrivacySpaceScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationPrivacySpaceScenario",
+          "실제검사이름": "비경 공개 명령: 과거 개인 입구 기록은 숨은 참여·잔량을 읽지 않고 입구 밖 물리 행동을 차단한다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 179,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationDeathBodyScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationDeathBodyScenario",
+          "실제검사이름": "비경 공개 명령: 실제 사망은 입장·도구를 한 번 해제하며 새 출생의 몸에는 진척·관측을 복제하지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 195,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationPreparationGatesScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationPreparationGatesScenario",
+          "실제검사이름": "비경 공개 명령: 관측한 개방 시각과 실제 준비·계약·육신 자격을 재검사하고 거절은 원자적이다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 214,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationAgentPlanningScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationAgentPlanningScenario",
+          "실제검사이름": "비경 공개 명령: AI 정보 목표는 자기 입구 관측·지식이 있을 때만 같은 유료 입장과 저장된 진척을 선택한다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 239,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationMaintenanceSpaceScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationMaintenanceScenario.cs",
+          "심볼": "ExplorationMaintenanceSpaceScenario",
+          "실제검사이름": "비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 3,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "KnowledgeAccessibleSpatialFilterScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+          "심볼": "KnowledgeAccessibleSpatialFilterScenario",
+          "실제검사이름": "INV-009/024 knowledge: 허가한 실제 매체를 전체수·정렬·페이지 전에 필터하여 바깥 도서를 인지하지 않는다",
+          "검사분류": "도메인 단위 순수 조회",
+          "현재소스줄": 7,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "SecretInteriorQueryScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+          "심볼": "SecretInteriorQueryScenario",
+          "실제검사이름": "INV-009/M05 비경 조회: 내부는 실제 휴대품과 개인 기록만 보고 바깥 신규 출품·바닥 실물을 현재 정보로 받지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 424,
+          "기존실행": [
+            "비경통합선택34",
+            "정책후속조회12"
+          ]
         }
       ]
     },
@@ -3395,7 +4172,7 @@
       "식별자": "V021-K01",
       "제목": "기예 작업·예약·공정",
       "정본수용조건": "시간 용량·실소비·중단/회수·실패·결과 원자 정산",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -3486,7 +4263,7 @@
       "식별자": "V021-K02",
       "제목": "학습·숙련·Teaching·서적",
       "정본수용조건": "초기/부모/스승/서적/도제·지식과 숙련·무료 경험 방지",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -3609,7 +4386,7 @@
       "식별자": "V021-K03",
       "제목": "연단 수직 구현",
       "정본수용조건": "실제 재료→제작→보관/판매/복용·성장/돌파/치료 효과",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -3725,7 +4502,7 @@
       "식별자": "V021-K04",
       "제목": "연기 수직 구현",
       "정본수용조건": "재료→법보/도구·수리·장착, 본명법보 계약 보존",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -3829,7 +4606,7 @@
       "식별자": "V021-K05",
       "제목": "제부 수직 구현",
       "정본수용조건": "실제 제작·판매·사용 사건·횟수·효과·중복 방지",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -3903,7 +4680,7 @@
       "식별자": "V021-K06",
       "제목": "진법 수직 구현",
       "정본수용조건": "설치권·범위·유지/보수/해체·실제 영기 공급/방어",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -3918,7 +4695,7 @@
         "V021-M02"
       ],
       "최상위보류원인": [
-        "V021-M02"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -3992,7 +4769,7 @@
       "식별자": "V021-K07",
       "제목": "필수 전문 활동",
       "정본수용조건": "영농·채집·채광·의술·감정·탐색·교역/운송의 대표 순환",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -4006,7 +4783,7 @@
         "V021-M02"
       ],
       "최상위보류원인": [
-        "V021-M02"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -4109,7 +4886,7 @@
       "식별자": "V021-E01",
       "제목": "지역 시장·실제 거래 주체",
       "정본수용조건": "실물·주체·재고·예약·자금·현지 원자 거래",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -4125,7 +4902,7 @@
         "V021-M02"
       ],
       "최상위보류원인": [
-        "V021-M02"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -4181,7 +4958,7 @@
       "식별자": "V021-E02",
       "제목": "실수급·가격·생산",
       "정본수용조건": "가계/개인/조직 수요·품질·용량·지역 가격 반응",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -4195,7 +4972,7 @@
         "V021-E01"
       ],
       "최상위보류원인": [
-        "V021-M02"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -4263,7 +5040,7 @@
       "식별자": "V021-E03",
       "제목": "교역·화물·운송 계약",
       "정본수용조건": "운송 중 소유·비용·인도/실패/반환·노동 검사",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -4277,7 +5054,7 @@
         "V021-E01"
       ],
       "최상위보류원인": [
-        "V021-M02"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -4331,7 +5108,7 @@
       "식별자": "V021-E04",
       "제목": "경매·실물·입찰 예치",
       "정본수용조건": "중복/무자금 방지·동시 종료·유찰/반환/사망 처리",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -4344,7 +5121,7 @@
         "V021-E01"
       ],
       "최상위보류원인": [
-        "V021-M02"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -4411,7 +5188,7 @@
       "식별자": "V021-E05",
       "제목": "생태 경제·공적/개인 회계",
       "정본수용조건": "생산/소비·양육·상속·조세/공납·모든 주체의 실제 회계 일치",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -4437,7 +5214,6 @@
         "V021-K07"
       ],
       "최상위보류원인": [
-        "V021-M02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -4602,6 +5378,39 @@
             "root-functional-195",
             "politics-maturity-121"
           ]
+        },
+        {
+          "검사참조": "CurrencyAiMiningHandoffScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiMiningHandoffScenario",
+          "실제검사이름": "currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 48,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiObservedMiningScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiObservedMiningScenario",
+          "실제검사이름": "currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 76,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiScopeAndNeedScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiScopeAndNeedScenario",
+          "실제검사이름": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 98,
+          "기존실행": [
+            "실제AI환전3"
+          ]
         }
       ]
     },
@@ -4609,7 +5418,7 @@
       "식별자": "V021-S01",
       "제목": "0개 시작·종합 종문 성립",
       "정본수용조건": "실제 창설/해산·10개 한도 제안·고정 특화/빈 조직/유령 재산 없음",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -4623,7 +5432,7 @@
         "V021-M02"
       ],
       "최상위보류원인": [
-        "V021-M02"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -4693,7 +5502,7 @@
       "식별자": "V021-S02",
       "제목": "종문 생활·교육·재정",
       "정본수용조건": "직책·보급·급여·충심·기여·실제 예산·정책 이행",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -4711,7 +5520,6 @@
         "V021-G03"
       ],
       "최상위보류원인": [
-        "V021-M02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -4820,7 +5628,7 @@
       "식별자": "V021-S03",
       "제목": "종문 승계·외교·왕조 관할",
       "정본수용조건": "공석/승계·인가/의무·지역 법·전생 권한 미복구",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -4837,7 +5645,6 @@
         "V021-G02"
       ],
       "최상위보류원인": [
-        "V021-M02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -4933,7 +5740,7 @@
       "식별자": "V021-G01",
       "제목": "가문·왕조·봉신 통치",
       "정본수용조건": "한 주 주권·대리 통치·최상위 관계·무순환·조세/권리 구분",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -5039,7 +5846,7 @@
       "식별자": "V021-G02",
       "제목": "정치 승계·무영토 왕조",
       "정본수용조건": "영토0·명분/실물 자산·복위/승계·채무/채권/집행권 분리, 유령 세수/중복 채권0",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -5126,7 +5933,7 @@
       "식별자": "V021-G03",
       "제목": "10대 정책·세부 선택·변경",
       "정본수용조건": "10대 세부 정책·공동 인력/재정 예약·채택/준비/이행 부족·시행 관할 재검사·변경 이력",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -5141,7 +5948,6 @@
         "V021-G01"
       ],
       "최상위보류원인": [
-        "V021-M02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -5232,6 +6038,17 @@
             "root-functional-195",
             "politics-maturity-121"
           ]
+        },
+        {
+          "검사참조": "AuthoritativePolicyProjectionScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+          "심볼": "AuthoritativePolicyProjectionScenario",
+          "실제검사이름": "INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 371,
+          "기존실행": [
+            "정책후속조회12"
+          ]
         }
       ]
     },
@@ -5239,7 +6056,7 @@
       "식별자": "V021-X01",
       "제목": "빙의·조작권·명령 기반",
       "정본수용조건": "선택/조작 구분·같은 신원·AI 인계·명령 ID·예약 무결성",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -5325,7 +6142,7 @@
       "식별자": "V021-X02",
       "제목": "새 인물 생성·세계 편입",
       "정본수용조건": "시작 2명 유지·자연 출생/명시 편입·유전/자산 출처",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -5401,11 +6218,11 @@
       "제목": "동등한 인물 행동·권한",
       "정본수용조건": "이동/수행/제작/거래/관계/정치/전투·상대 판단·실제 능력",
       "원장현재상태": "in_progress",
-      "자체수용통과": false,
+      "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
-      "판정": "화면 수용 보류",
-      "판정근거": "정치 명령의 실제 정책 선택·준비 화면 연결 부분이 정책 유령 항목 수정과 재확인을 기다림. 다른 행동의 기존 공개 검증을 무효화한다는 뜻은 아님.",
+      "판정": "자체 통과·선행 보류",
+      "판정근거": "기존 이동·수행·제작·거래·관계·정치·전투의 공개 명령과 실제 능력 검증을 유지하고, 남았던 정치 화면 연결은 PR137의 실제 카탈로그 선택/재원/공동 노동/취소/시행과 두 폭 브라우저 근거로 종료함. PR141의 실제 채광 AI 인계·자기 관측·단일 실물 환전/동일 공개 명령 재전송 3/3은 같은 행동/권한 경로를 보강함. 화면의 임의 정책값·무료 예산을 근거로 삼지 않으며 U04 및 최종 T05는 별도로 유지함.",
       "직접선행": [
         "V021-X01",
         "V021-R04",
@@ -5424,11 +6241,9 @@
         "V021-V02"
       ],
       "최상위보류원인": [
-        "V021-X03"
+        "V021-Z04"
       ],
-      "관련후속": [
-        "V021-U05"
-      ],
+      "관련후속": [],
       "코드문서근거": [
         "src/Chronicles.Game/State.cs",
         "src/Chronicles.Game/World.cs",
@@ -5447,7 +6262,9 @@
         "src/Chronicles.Game/World.Politics.cs",
         "src/Chronicles.Game/Inventory/InventoryCommerce.cs",
         "src/Chronicles.Game/World.InventoryBridge.cs",
-        "src/Chronicles.Game/World.Inventory.cs"
+        "src/Chronicles.Game/World.Inventory.cs",
+        "src/Chronicles.Game/Queries.cs",
+        "src/Chronicles.Game/World.CurrencyPlanning.cs"
       ],
       "검사근거": [
         {
@@ -5551,6 +6368,50 @@
           "기존실행": [
             "inventory-vertical-123"
           ]
+        },
+        {
+          "검사참조": "AuthoritativePolicyProjectionScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+          "심볼": "AuthoritativePolicyProjectionScenario",
+          "실제검사이름": "INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 371,
+          "기존실행": [
+            "정책후속조회12"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiMiningHandoffScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiMiningHandoffScenario",
+          "실제검사이름": "currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 48,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiObservedMiningScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiObservedMiningScenario",
+          "실제검사이름": "currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 76,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiScopeAndNeedScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiScopeAndNeedScenario",
+          "실제검사이름": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 98,
+          "기존실행": [
+            "실제AI환전3"
+          ]
         }
       ]
     },
@@ -5558,7 +6419,7 @@
       "식별자": "V021-X04",
       "제목": "플레이 시간·계획·사망 전환",
       "정본수용조건": "초안/제출/취소요청/확정·뒤로/앱복원 분리·같은 tick 완료/취소 단일 종결·사망/관찰 전환",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -5574,7 +6435,6 @@
         "V021-X03"
       ],
       "최상위보류원인": [
-        "V021-X03",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -5671,12 +6531,12 @@
       "식별자": "V021-U01",
       "제목": "통일 셸·관찰/플레이 UI",
       "정본수용조건": "규칙적 탐색·고정 상세·검색/뒤로·권한/명령·키보드·빈 상태",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
       "판정": "완료 권고",
-      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저 후속은 기존브라우저128 기록 범위만 인정하며, 별도 U05/X03 정책 문제와 U04 비경 및 T05 최종 화면 검수는 제외함.",
+      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저는 기록 소스별 실제 범위만 인정함. 정책·비경 후속은U05/U04에 개별 귀속하며 전체UI 최신 재검증이나 T05 최종 화면 합격으로 합치지 않음.",
       "직접선행": [
         "V021-A03",
         "V021-X01",
@@ -5766,12 +6626,12 @@
       "식별자": "V021-U02",
       "제목": "그래프·표·가계/관계 비교",
       "정본수용조건": "단위/시점·선/막대/표/원형·분포/지도·출처/결측",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
       "판정": "완료 권고",
-      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저 후속은 기존브라우저128 기록 범위만 인정하며, 별도 U05/X03 정책 문제와 U04 비경 및 T05 최종 화면 검수는 제외함.",
+      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저는 기록 소스별 실제 범위만 인정함. 정책·비경 후속은U05/U04에 개별 귀속하며 전체UI 최신 재검증이나 T05 최종 화면 합격으로 합치지 않음.",
       "직접선행": [
         "V021-A03",
         "V021-D01",
@@ -5852,12 +6712,12 @@
       "식별자": "V021-U03",
       "제목": "인물·가계·수행·천교 화면",
       "정본수용조건": "상세/조작·유전/발현·가계·경로·명성/평가·천교 보드",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
       "판정": "자체 통과·선행 보류",
-      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저 후속은 기존브라우저128 기록 범위만 인정하며, 별도 U05/X03 정책 문제와 U04 비경 및 T05 최종 화면 검수는 제외함.",
+      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저는 기록 소스별 실제 범위만 인정함. 정책·비경 후속은U05/U04에 개별 귀속하며 전체UI 최신 재검증이나 T05 최종 화면 합격으로 합치지 않음.",
       "직접선행": [
         "V021-U01",
         "V021-U02",
@@ -5959,11 +6819,11 @@
       "제목": "지도·인구·이동·권리 화면",
       "정본수용조건": "100지점·복수 시설·시대 변화·주권/소유·이동/기연",
       "원장현재상태": "in_progress",
-      "자체수용통과": false,
+      "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
-      "판정": "기능 통합 보류",
-      "판정근거": "100지점 지도는 존재하나 M05의 허용된 입구·자기 진척·입장/귀환 화면 연결은 미완료.",
+      "판정": "자체 통과·선행 보류",
+      "판정근거": "기존100지점·복수 시설·권리 화면과 M05의 자기 입구/진척/실내 정보 경계에 병합 PR142의 실제1280/390px 브라우저 근거를 결합함. 실제 유료 탐색·인접0→8이동·개인 입구 관측/현재 미상·준비 식량 소비/도구 예약·바닥 책 내부 비노출·1개월 중도 귀환·재입장·내부 저장복원/완주/유한 결과를 확인함. API24/최신 전체/성능/T05 전체 합격으로 확대하지 않음.",
       "직접선행": [
         "V021-U01",
         "V021-M05",
@@ -5976,11 +6836,9 @@
         "V021-P03"
       ],
       "최상위보류원인": [
-        "V021-U04"
+        "V021-Z04"
       ],
-      "관련후속": [
-        "V021-M05"
-      ],
+      "관련후속": [],
       "코드문서근거": [
         "src/Chronicles.Shell/index.html",
         "src/Chronicles.Game/Queries.cs",
@@ -5999,7 +6857,8 @@
         "src/Chronicles.Game/Ecology/EcologyEngine.cs",
         "src/Chronicles.Game/Ecology/EcologyPlanner.cs",
         "src/Chronicles.Game/World.EcologyBridge.cs",
-        "src/Chronicles.Game/GameState.Ecology.cs"
+        "src/Chronicles.Game/GameState.Ecology.cs",
+        "src/Chronicles.Game/World.ExplorationBridge.cs"
       ],
       "검사근거": [
         {
@@ -6051,6 +6910,18 @@
             "root-functional-195",
             "query-social-ui-124"
           ]
+        },
+        {
+          "검사참조": "SecretInteriorQueryScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+          "심볼": "SecretInteriorQueryScenario",
+          "실제검사이름": "INV-009/M05 비경 조회: 내부는 실제 휴대품과 개인 기록만 보고 바깥 신규 출품·바닥 실물을 현재 정보로 받지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 424,
+          "기존실행": [
+            "비경통합선택34",
+            "정책후속조회12"
+          ]
         }
       ]
     },
@@ -6059,11 +6930,11 @@
       "제목": "종문·정책·왕조·경제 화면",
       "정본수용조건": "10분류 정책·봉신/무영토·재정·작업/시장/경매·비교",
       "원장현재상태": "in_progress",
-      "자체수용통과": false,
+      "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
-      "판정": "화면 수용 보류",
-      "판정근거": "정책 선택·준비·예산 화면의 유령 항목 및 실제 명령 연결 문제를 화면 담당자가 직접 미완료로 확인함.",
+      "판정": "자체 통과·선행 보류",
+      "판정근거": "병합 PR137이 정책 초안·준비 기한·예약금·채무를 실제 Politics 원장에서만 투영하고 정본 10분류 실제 선택을 최초 가계에도 표시함. 실제 원금 40 대여/동액 채무, 채택→예산·인력 준비→취소 환급/시행/이력, 비수장 재정 null, 폐기 3필드 0을 공개 조회와 1280/390px 실제 세션 브라우저로 검증함. 원래 조회 10/10은 PR 기록이며 현재 읽은 원본은 후속 비경을 포함한 12/12로 구분함. 기존 종문/왕조/경제 근거와 결합한 자체 수용 권고이며 최종 네이티브/전체 화면 검수로 확대하지 않음.",
       "직접선행": [
         "V021-U01",
         "V021-E05",
@@ -6078,7 +6949,7 @@
         "V021-G02"
       ],
       "최상위보류원인": [
-        "V021-U05"
+        "V021-Z04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -6101,7 +6972,8 @@
         "src/Chronicles.Game/GameState.Ecology.cs",
         "src/Chronicles.Game/Currency/CurrencyModels.cs",
         "src/Chronicles.Game/World.CurrencyBridge.cs",
-        "src/Chronicles.Game/GameState.Currency.cs"
+        "src/Chronicles.Game/GameState.Currency.cs",
+        "docs/evidence/0.2.1/m05-secret-realms-functional.json"
       ],
       "검사근거": [
         {
@@ -6186,6 +7058,17 @@
           "기존실행": [
             "query-social-ui-124"
           ]
+        },
+        {
+          "검사참조": "AuthoritativePolicyProjectionScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs",
+          "심볼": "AuthoritativePolicyProjectionScenario",
+          "실제검사이름": "INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 371,
+          "기존실행": [
+            "정책후속조회12"
+          ]
         }
       ]
     },
@@ -6193,12 +7076,12 @@
       "식별자": "V021-U06",
       "제목": "사건·연대기·관찰 목록",
       "정본수용조건": "인물/가계/세력/지점/거래/명령의 원인-결과 왕복",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
       "판정": "완료 권고",
-      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저 후속은 기존브라우저128 기록 범위만 인정하며, 별도 U05/X03 정책 문제와 U04 비경 및 T05 최종 화면 검수는 제외함.",
+      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저는 기록 소스별 실제 범위만 인정함. 정책·비경 후속은U05/U04에 개별 귀속하며 전체UI 최신 재검증이나 T05 최종 화면 합격으로 합치지 않음.",
       "직접선행": [
         "V021-U01",
         "V021-D01"
@@ -6298,7 +7181,7 @@
       "식별자": "V021-D01",
       "제목": "인구·통계·가계·이력 투영",
       "정본수용조건": "실제 월별 집계·이력 예산·후손/전생 경계·결측",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -6427,7 +7310,7 @@
       "선행포함완료": false,
       "완료권고": false,
       "판정": "최종 통합 보류",
-      "판정근거": "새 비경·행동 정리·화면 후속을 포함한 고정 최종 소스에서 전 중간 상태 저장/복구와 원본 보존의 전체 통합 감사를 아직 확인하지 못함.",
+      "판정근거": "기능별 실제 저장/복구 및 원본 보존 근거는 존재함. 비경·정책·행동 정리를 포함한 고정 최종 schema의 모든 중간 상태 통합 감사가 남아 있음. 6670d29 전체 237/238의 실패 원본과 정책 초기조건 수정 후 선택 2/2를 분리하며 후속 소스 전체 통과로 합치지 않음.",
       "직접선행": [
         "V021-M05",
         "V021-K07",
@@ -6597,7 +7480,7 @@
       "선행포함완료": false,
       "완료권고": false,
       "판정": "최종 통합 보류",
-      "판정근거": "최종 고정 소스의 전체 불변식/원장 감사를 기다림. 과거 195/195와 다른 소스 CI198/198을 최신 전체 합격으로 바꾸지 않음.",
+      "판정근거": "기능별 INV 검사는 축적되었으나 최종 고정 소스의 전체 불변식/원장 감사가 남음. 6670d29 전체 237/238 중 한 실패는 실제 INV-020 거부를 옛 문구로만 받던 시험 초기조건이며 수정 후 G03 선택 2/2가 존재함. 그 후속 선택 결과를 전체 합격으로 바꾸지 않음.",
       "직접선행": [
         "V021-D02",
         "V021-B02",
@@ -6687,7 +7570,7 @@
       "선행포함완료": false,
       "완료권고": false,
       "판정": "최종 통합 보류",
-      "판정근거": "미완료 기능 및 화면 후속이 포함된 전체 정본 시나리오·조회 무영향의 최종 통합 확인이 남음.",
+      "판정근거": "새 백엔드 기능·PR142 비경 화면의 자체 근거와 6670d29 전체 실행 원본은 확인됨. D02/T01의 최종 통합 감사와 INV-013 동시조건 후속이 남아 전 범위 연결·조회 hash/RNG 무영향의 최종 완료로 계산하지 않음.",
       "직접선행": [
         "V021-T01",
         "V021-U03",
@@ -6799,7 +7682,7 @@
       "선행포함완료": false,
       "완료권고": false,
       "판정": "최종 통합 보류",
-      "판정근거": "최종 소스에서 seed/명령열/advance 분할/배속/checkpoint 일치의 통합 회귀를 다시 고정해야 함.",
+      "판정근거": "같은 seed/명령/시간 분할/저장 재개 기능 근거는 존재함. T02 뒤 고정 최종 소스의 tick·명령열·advance 분할·배속·checkpoint 통합 회귀 귀속을 마감해야 함. 다른 소스별 선택 해시 일치를 하나의 최신 전체 결과로 합치지 않음.",
       "직접선행": [
         "V021-T02"
       ],
@@ -6945,7 +7828,7 @@
       "선행포함완료": false,
       "완료권고": false,
       "판정": "최종 화면 검수 보류",
-      "판정근거": "기존 두 폭 브라우저·실제 호스트 근거는 존재함. 미완료 정책/비경 및 최종 소스의 입력·글자 확대·모드/저장 전환·기기 경계를 마감해야 함.",
+      "판정근거": "정책 PR137과 비경 입장/귀환/준비·진척/저장복원 PR142의 두 폭 실제 세션 근거는 확인됨. 고정 최종 소스의 글자 확대·한국어·키보드/터치·정보 통제·모드/저장 전환·실제 기기 범위 검수와 귀속은 아직 남음. 기존 브라우저/응답 재생/API35 근거를 API24 또는 전체 최종 화면 합격으로 확대하지 않음.",
       "직접선행": [
         "V021-T02",
         "V021-X04",
@@ -7026,7 +7909,7 @@
       "식별자": "V021-Z01",
       "제목": "세계 법칙 registry·기본 프리셋",
       "정본수용조건": "시조 2명/반선·종문0·금단 출산·화신 대원만 윤회·100지점, 자료형/0/비활성·출처·revision",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -7091,7 +7974,7 @@
       "식별자": "V021-Z02",
       "제목": "법칙 검증·원자 시행·영향 분석",
       "정본수용조건": "법칙 의존·임신/예약·적용 tick 분할·원천 잔량/재생 진척/실물 구분·0/비활성·이력",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -7221,7 +8104,7 @@
       "식별자": "V021-Z03",
       "제목": "법칙 편집·프리셋·차이/이력 UI",
       "정본수용조건": "관찰 관리의 명시 명령, 검색·기본값 복원·설명·영향·가져오기/내보내기",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -7261,7 +8144,7 @@
       "식별자": "V021-N01",
       "제목": "관찰/플레이 지식별 조회 계약",
       "정본수용조건": "초기 인지 진술 저장·Actor/지식/권한 revision 문맥·필터 후 집계의 최소 계약. 명성/수행 도메인 값은 이후 소비자에서 확장.",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -7401,7 +8284,7 @@
       "식별자": "V021-N02",
       "제목": "플레이 정보 획득·행동 검증",
       "정본수용조건": "미발견 좌표/ID·원격 재고·권한 우회 방지, 탐색/전수/소문·명령 거부 정보 경계",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -7512,6 +8395,39 @@
             "root-functional-195",
             "people-family-127"
           ]
+        },
+        {
+          "검사참조": "CurrencyAiMiningHandoffScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiMiningHandoffScenario",
+          "실제검사이름": "currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 48,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiObservedMiningScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiObservedMiningScenario",
+          "실제검사이름": "currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 76,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiScopeAndNeedScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiScopeAndNeedScenario",
+          "실제검사이름": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 98,
+          "기존실행": [
+            "실제AI환전3"
+          ]
         }
       ]
     },
@@ -7519,7 +8435,7 @@
       "식별자": "V021-N03",
       "제목": "모드 전환·캐시/화면 누출 검수",
       "정본수용조건": "지연 응답·플레이 A→B·복원·툴팁/행수/정렬/로그/추천·오류 누출0, 새 관측 전 표시 동등성",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -7708,7 +8624,7 @@
       "식별자": "V021-Y01",
       "제목": "6대 기반·24개 재능 파생",
       "정본수용조건": "선천/학습/이해/현재 발휘/알려진 평가 분리, 영향 출처와 중복 가산 검사 · 지능10요소×원천 자질/재능×학습 경로 대응표, 가중치는 PC-TEMP 정책/근거로 관리",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -7774,7 +8690,7 @@
       "식별자": "V021-Y02",
       "제목": "10분류·40특성 예시와 수명주기",
       "정본수용조건": "잠재/발현·획득/각성/해제·상충/중첩·기간·권한/역사 표식 구분",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -7890,7 +8806,7 @@
       "식별자": "V021-Y03",
       "제목": "유전·혼흔·현재 발현·인지 연결",
       "정본수용조건": "부모/환경/영혼/교육의 출처 분리·효과 한번 적용·잠재 정보 필터",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -8037,7 +8953,7 @@
       "식별자": "V021-O01",
       "제목": "계절·영맥·서식·자원 생태",
       "정본수용조건": "재생/고갈·재해·서식·채집의 실제 원천과 활동/수행/이동 영향",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -8134,7 +9050,7 @@
       "식별자": "V021-O02",
       "제목": "생활·보관·운송·정착 순환",
       "정본수용조건": "양육/생리·식량/영식·저장/부패·도구/시설 수요·실제 인력/소비",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -8248,7 +9164,7 @@
       "식별자": "V021-O03",
       "제목": "지식 확산·제도 적응·실패 세계",
       "정본수용조건": "전수/소문·정책 반응·멸문/유망/교육단절·원인 추적, 숨은 NPC/자원 보정 없음",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -8266,7 +9182,6 @@
         "V021-F04"
       ],
       "최상위보류원인": [
-        "V021-M02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -8397,7 +9312,7 @@
       "식별자": "V021-H02",
       "제목": "플랫폼 독립 저장 계약·어댑터",
       "정본수용조건": "Windows SQLite 분리·경로/엔진 경계·schema/백업·향후 모바일 어댑터 조건",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -8459,7 +9374,7 @@
       "식별자": "V021-H03",
       "제목": "호스트 중단/재개·checkpoint 복구",
       "정본수용조건": "강제 종료·부분 파일·안전 저장·복원·중복 명령/출생 방지 harness",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -8607,7 +9522,7 @@
       "식별자": "V021-H05",
       "제목": "기존 구조의 단계적 추출",
       "정본수용조건": "H01 초기 기준선 후 Core/호스트 추출·owner/허용 의존 검사·기준선 정답 비교. 이전 경로 제거는 H10의 후행 산출물.",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -8707,7 +9622,7 @@
       "식별자": "V021-H07",
       "제목": "엔진 없는 UI 표시 모델·입력 경계",
       "정본수용조건": "기존 Desktop 외곽·한국어/단위·반응형 명세·명령/조회 분리, 핵심 UI 플랫폼 역참조0",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -8770,7 +9685,7 @@
       "식별자": "V021-H08",
       "제목": "향후 Unity 연결 설계·호환 근거",
       "정본수용조건": "후보 TFM/언어·금지/전이 참조·생성 코드 검사·저장/DTO·패키지 전략. Unity 실행은 미래 검증",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -8842,7 +9757,7 @@
       "식별자": "V021-J01",
       "제목": "본혼/분혼·현생·생물학 계보 분리",
       "정본수용조건": "독립 SoulId·Parent/RootSoulId·분혼 사건·근원 자격 snapshot, 가족 DAG와 분리",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -8910,12 +9825,12 @@
       "식별자": "V021-J02",
       "제목": "화신 대원만 Gate·13개 자동 조건",
       "정본수용조건": "원인 직전 자격 snapshot·13자동조건·중복 원인/혼존속·과거 최고/붕괴 후 값 오판0·윤회 버튼 없음 · 13조건 목표 유지·원인 생성 시스템/실사건과 fixture를 구분·13개 실제 원인 전체 구현 범위·후속 이관 없음",
-      "원장현재상태": "in_progress",
-      "자체수용통과": true,
+      "원장현재상태": "validated",
+      "자체수용통과": false,
       "선행포함완료": false,
       "완료권고": false,
-      "판정": "자체 통과·선행 보류",
-      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음.",
+      "판정": "기존 불변식 수용 보류",
+      "판정근거": "기존13개 단일 실제 원인 생산자/자격/저장 검사는 존재하나 INV-013의 여러 조건 동시 충족 계약은 아직 미충족. World.Hazards.ResolveWorldConditions가12→7→4→11에서 첫 매칭 뒤 반환하고 EndLife는 선택된 원인만 Evidence에 기록하므로, 실제 동시12/7에서 단일 여정과 다른 매칭 원인 설명을 함께 보존하는 좁은 수정/공개 저장·재처리 근거가 필요함. 루트와 인지 담당자가 기존 계약의 직접 공백으로 확인했으며 새 광범위 요구가 아님.",
       "직접선행": [
         "V021-J01",
         "V021-R04",
@@ -8925,7 +9840,7 @@
         "V021-R04"
       ],
       "최상위보류원인": [
-        "V021-Z04"
+        "V021-J02"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -8998,7 +9913,7 @@
       "식별자": "V021-J03",
       "제목": "6영역 흔적·보존/접근/통합",
       "정본수용조건": "기존 6영역·분혼 분배·도하 손상·각성·새 육신/지식 분리, 공법/경지 자동 복구 없음",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -9016,6 +9931,7 @@
         "V021-V02"
       ],
       "최상위보류원인": [
+        "V021-J02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -9087,12 +10003,12 @@
       "식별자": "V021-J04",
       "제목": "사망/비승/분혼·대기/출생 원자 전이",
       "정본수용조건": "비승 비사망·출생 단일 영혼 배정·태내/출생 후 파생 분리·분령 노동/인구 중복0·아이템 미복제",
-      "원장현재상태": "in_progress",
-      "자체수용통과": true,
+      "원장현재상태": "validated",
+      "자체수용통과": false,
       "선행포함완료": false,
       "완료권고": false,
-      "판정": "자체 통과·선행 보류",
-      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음.",
+      "판정": "기존 불변식 수용 보류",
+      "판정근거": "기존 사망/비승/분혼·대기/출생 단일 영혼 및 자산 보존 검사는 유지함. 공통 INV-013에서 동시 원인이 하나의 여정만 만들면서 대체 매칭 원인을 설명에 남겨야 하는데 현재 EndLife에는 선택된 원인만 저장됨. 동시12/7의 실제 설명·단일 여정·저장/재처리 보존 후속이 완료되기 전까지 자체 수용을 보류함. 현재RC-01~13 단일 생산자 결과를 이 미검증 동시조건의 합격으로 합치지 않음.",
       "직접선행": [
         "V021-J03",
         "V021-F02",
@@ -9103,7 +10019,7 @@
         "V021-F02"
       ],
       "최상위보류원인": [
-        "V021-Z04"
+        "V021-J04"
       ],
       "관련후속": [],
       "코드문서근거": [
@@ -9195,7 +10111,7 @@
       "선행포함완료": false,
       "완료권고": false,
       "판정": "문서 접근 검증 보류",
-      "판정근거": "제품 이름·버전·현재 저장소 문서는 존재함. 루트 담당자가 보고한 소개 페이지 403과 GitHub 설명의 한글 정합화 확인이 남음. 이 감사에서 링크를 재호출하거나 Notion을 수정하지 않음.",
+      "판정근거": "제품 이름·버전·현재 저장소 문서와 8745eb4의 무관한 릴리스/태그 10개 정리 기록은 확인됨. 루트가 보고한 저장소 소개 메타데이터/소개 접근 403 제한과 한글 설명 정합화 확인은 여전히 남음. 이 감사에서 외부 소개 링크를 재호출하거나 Notion을 수정하지 않음.",
       "직접선행": [
         "V021-A02",
         "V021-U01"
@@ -9224,7 +10140,8 @@
         "docs/architecture/v021-product-boundary.md",
         "scripts/validate-architecture.ps1",
         "scripts/validate-v021-product-boundary.py",
-        "src/Chronicles.Game/Chronicles.Game.csproj"
+        "src/Chronicles.Game/Chronicles.Game.csproj",
+        "docs/evidence/0.2.1/repository-migration.json"
       ],
       "검사근거": []
     },
@@ -9232,7 +10149,7 @@
       "식별자": "V021-L02",
       "제목": "14축 성격·도심·감정/습성",
       "정본수용조건": "목표·위험/협력·관계·정책 선택과 실제 변화 원인·감정 회복·장기 경험 · M1/M2 핵심 축의 점진 활성화와 전체 정의 분리",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -9371,7 +10288,7 @@
       "식별자": "V021-B03",
       "제목": "저작/판본·매체·개인 지식",
       "정본수용조건": "저작/판본/매체·접근/기억/오해/검증·전수 출처·정정본/책 소실과 개인 지식의 분리",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -9500,7 +10417,7 @@
       "식별자": "V021-B04",
       "제목": "10경지 수행·30개 공법 예시 프로필",
       "정본수용조건": "10경지 3방법·30공법 예시·시도/개시/비가역 경계·원영 실패 사망·소경지 겁난·지식 revision",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -9602,7 +10519,7 @@
       "식별자": "V021-I01",
       "제목": "16분류 자원·다양한 물품 정의",
       "정본수용조건": "64종 예시·유효 조합·공급/채집/가공/소비·품질·품목 팽창/생성 출처",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -9680,7 +10597,7 @@
       "식별자": "V021-I02",
       "제목": "인벤토리·용기·저물대",
       "정본수용조건": "소유/보관/장착/예약·실제 스택/알려진 표시 묶음·용량/순환·파손/착탈 초과분 보존",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -9791,7 +10708,7 @@
       "식별자": "V021-I03",
       "제목": "12분류 장비·본명법보 계약",
       "정본수용조건": "슬롯/점유·장비 교체 원자성·반환처/용량/예약·결속/수리/윤회·실물 효과 중복0",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -9888,7 +10805,7 @@
       "식별자": "V021-K08",
       "제목": "공유 정의·희소 지식/물품·지연 상세",
       "정본수용조건": "정의/판본/실물/개인 진척 분리·변경분 재계산·범위 조회·화면 열기 생성/RNG0",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -10115,7 +11032,7 @@
       "식별자": "V021-L05",
       "제목": "다단계 목표·계획·정보 탐색",
       "정본수용조건": "알려진 행동 전제/예상 효과·제한 탐색·정보 획득·계획 수정/교착 복구·추론 예산·예약/재검사",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -10218,6 +11135,39 @@
           "기존실행": [
             "root-functional-195"
           ]
+        },
+        {
+          "검사참조": "CurrencyAiMiningHandoffScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiMiningHandoffScenario",
+          "실제검사이름": "currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 48,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiObservedMiningScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiObservedMiningScenario",
+          "실제검사이름": "currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 76,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiScopeAndNeedScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiScopeAndNeedScenario",
+          "실제검사이름": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 98,
+          "기존실행": [
+            "실제AI환전3"
+          ]
         }
       ]
     },
@@ -10225,7 +11175,7 @@
       "식별자": "V021-L06",
       "제목": "협상·가계/조직 협력·전투 의사결정",
       "정본수용조건": "인물별 합의/권한/인지·역할/시간·물류/책임·후퇴/전술, 집단 AI의 전지/인력 중복 없음",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -10245,7 +11195,6 @@
       ],
       "최상위보류원인": [
         "V021-L04",
-        "V021-M02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -10480,12 +11429,12 @@
       "식별자": "V021-R07",
       "제목": "10대경지·30개 수행 경로와 형성 이력",
       "정본수용조건": "각 경지3경로·강점/부담·전투/잠재 연결·보조 호환/전환·형성/현재 분리·창세 반선 프로필",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
       "판정": "자체 통과·선행 보류",
-      "판정근거": "수행 담당자가 30개 경로의 실제 형성·고유 구조·과거 불변, 보조 호환/공급15000·전환, 조건별 경로 우열과 알려진 잠재 경계의 기존 근거로 자체 수용을 확인함. R06의 기간/품질/위험 동시 비교나 최종 비용 측정으로 확대하지 않음.",
+      "판정근거": "수행 담당자가 30개 경로의 실제 형성·고유 구조·과거 불변, 보조 호환/공급15000·전환, 조건별 경로 우열과 알려진 잠재 경계의 기존 근거로 자체 수용을 확인함. R06의 새 결합 비교 근거는 별도 귀속하며 최종 비용 측정으로 확대하지 않음.",
       "직접선행": [
         "V021-R04",
         "V021-B04",
@@ -10586,7 +11535,7 @@
       "식별자": "V021-R08",
       "제목": "전투 특성·표시 전투력·조건부 잠재력",
       "정본수용조건": "8축 실제 속성·효과 원천 단일 반영·표준 상황 비교·다음 경지 변환·미확인 미래/승률 과장 없음",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -10603,7 +11552,6 @@
         "V021-R06"
       ],
       "최상위보류원인": [
-        "V021-R06",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -10749,7 +11697,7 @@
       "식별자": "V021-O04",
       "제목": "가계·공방·도시·조직의 수요/행동 순환",
       "정본수용조건": "구매력/노동/지식/운송·시설 성립·생산/회복·인구/경지 단계별 실제 연결, 자동 해금/유령 공급 없음",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -10769,7 +11717,6 @@
       ],
       "최상위보류원인": [
         "V021-L04",
-        "V021-M02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -10862,6 +11809,39 @@
             "root-functional-195",
             "ecology-maturity-121"
           ]
+        },
+        {
+          "검사참조": "CurrencyAiMiningHandoffScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiMiningHandoffScenario",
+          "실제검사이름": "currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 48,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiObservedMiningScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiObservedMiningScenario",
+          "실제검사이름": "currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 76,
+          "기존실행": [
+            "실제AI환전3"
+          ]
+        },
+        {
+          "검사참조": "CurrencyAiScopeAndNeedScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs",
+          "심볼": "CurrencyAiScopeAndNeedScenario",
+          "실제검사이름": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 98,
+          "기존실행": [
+            "실제AI환전3"
+          ]
         }
       ]
     },
@@ -10869,7 +11849,7 @@
       "식별자": "V021-O05",
       "제목": "생태 충격·회복·사회 변화 시나리오",
       "정본수용조건": "재해/고갈/통로/승계·독점/교육 단절·후대 금단 병목·실제 적응/실패와 원장·지표·원인 기록",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
@@ -10885,7 +11865,6 @@
       ],
       "최상위보류원인": [
         "V021-L04",
-        "V021-M02",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -10987,12 +11966,12 @@
       "식별자": "V021-U07",
       "제목": "AI 판단·경로/잠재·생태 비교 화면",
       "정본수용조건": "관찰의 판단/형성/연쇄 원인·플레이 추정/자기지식·막대/선/표·불확실/미상·능동 명령 연결",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "validated",
       "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
       "판정": "자체 통과·선행 보류",
-      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저 후속은 기존브라우저128 기록 범위만 인정하며, 별도 U05/X03 정책 문제와 U04 비경 및 T05 최종 화면 검수는 제외함.",
+      "판정근거": "기존 독립감사의 코드·실제 공개/도메인 검사 연결과 현재 수용조항을 대조함. 아래 근거 범위의 자체 기능 수용을 권고하며 최신 전체 회귀/측정/출시를 뜻하지 않음. 두 폭 브라우저는 기록 소스별 실제 범위만 인정함. 정책·비경 후속은U05/U04에 개별 귀속하며 전체UI 최신 재검증이나 T05 최종 화면 합격으로 합치지 않음.",
       "직접선행": [
         "V021-L06",
         "V021-R08",
@@ -11008,8 +11987,6 @@
       ],
       "최상위보류원인": [
         "V021-L04",
-        "V021-M02",
-        "V021-R06",
         "V021-Z04"
       ],
       "관련후속": [],
@@ -11103,7 +12080,7 @@
       "식별자": "V021-R09",
       "제목": "창세 반선 구조 프로필 최소 계약",
       "정본수용조건": "반선 구조/수명/가임·비승 설정의 자료 계약·창세 출처·가짜 과거 사건 없음·생성 시조 공용. 수명·가임·비승 잠정값은 개발 보정·법칙 revision으로 관리.",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -11215,7 +12192,7 @@
       "식별자": "V021-T07",
       "제목": "조기 불변식·저장 왕복 하네스",
       "정본수용조건": "INV-ID 등록·기능별 저장 왕복/hash/RNG 시험 틀·미구현 시험과 실제 통과 구분. 제품 하네스 자체는 아직 planned.",
-      "원장현재상태": "in_progress",
+      "원장현재상태": "done",
       "자체수용통과": true,
       "선행포함완료": true,
       "완료권고": true,
@@ -11300,11 +12277,11 @@
       "제목": "이전 경로 제거·이중 권위 정리",
       "정본수용조건": "대체/검증된 기능만 이전 경로 제거·이중 권위0·근거 및 필요한 호환 정답 비교.",
       "원장현재상태": "in_progress",
-      "자체수용통과": false,
+      "자체수용통과": true,
       "선행포함완료": false,
       "완료권고": false,
-      "판정": "기능 통합 보류",
-      "판정근거": "이전 경로 정리와 행위 소유자 검증 후속은 작업 중이며 새 비경 표식/활동을 중앙 행동 검증에 연결한 통합 확인이 남음. PR132의 별칭/전수 수정만으로 전체 정리를 완료로 세지 않음.",
+      "판정": "자체 통과·선행 보류",
+      "판정근거": "PR134에서 대체된 구형 수행/제작/학습/채집 완료 권위를 출처와 함께 보관하고 현재 제품에서 제거한 변경, 중앙 양방향 행동 소유 검증, 실제 전수 요청/신체 능력 판정을 확인함. 선택 5/5와 일관된 공유 파단 초기조건 1/1을 유지하며 PR136 후 exploration:의 위조 대소문자 방어·실제 입장 소유 검증·일반 탐색보다 앞선 완료 처리와 공개 비경 10/10을 연결함. 추가 자체 기능 조항은 없다는 수행 담당자 확인도 대조함. 과거 전체 215/216과 후속 선택 1/1을 구분하고 최신 전체 합격으로 바꾸지 않음. 정본 선행 T02는 그대로 남김.",
       "직접선행": [
         "V021-T02"
       ],
@@ -11312,11 +12289,9 @@
         "V021-T02"
       ],
       "최상위보류원인": [
-        "V021-H10"
+        "V021-T02"
       ],
-      "관련후속": [
-        "V021-M05"
-      ],
+      "관련후속": [],
       "코드문서근거": [
         "docs/architecture/repository_manifest.json",
         "docs/ARCHITECTURE.md",
@@ -11343,7 +12318,15 @@
         "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
         "src/Chronicles.Game/Cultivation/CultivationContracts.cs",
         "src/Chronicles.Game/Cultivation/CultivationInvariants.cs",
-        "src/Chronicles.Game/World.CultivationBridge.cs"
+        "src/Chronicles.Game/World.CultivationBridge.cs",
+        "src/Chronicles.Game/World.ActionValidation.cs",
+        "src/Chronicles.Game/World.Teaching.cs",
+        "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+        "src/Chronicles.Game/World.ExplorationBridge.cs",
+        "legacy/v021-prototypes/README.md",
+        "legacy/v021-prototypes/source-provenance.json",
+        "legacy/v021-prototypes/inventory/source-provenance.json",
+        "legacy/v021-prototypes/politics/source-provenance.json"
       ],
       "검사근거": [
         {
@@ -11392,6 +12375,171 @@
           "기존실행": [
             "root-functional-195"
           ]
+        },
+        {
+          "검사참조": "ExplorationDiscoveryScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationDiscoveryScenario",
+          "실제검사이름": "비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 57,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationPaidProgressScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationPaidProgressScenario",
+          "실제검사이름": "비경 공개 명령: 실제 도구·식량과 채택 법칙·한 번의 위험을 저장하고 월별 진척으로 유한 보상을 선점한다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 76,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationCapacityReturnScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationCapacityReturnScenario",
+          "실제검사이름": "비경 공개 명령: 실제 입장 자리를 경쟁하고 중도 귀환도 한 달·도구·이미 쓴 식량을 보존한다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 109,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationFirstClaimScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationFirstClaimScenario",
+          "실제검사이름": "비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 129,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationRiskScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationRiskScenario",
+          "실제검사이름": "비경 공개 명령: 채택한 실제 위험 실패·부상은 저장과 이후 법칙 변경으로 재추첨되지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 154,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationPrivacySpaceScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationPrivacySpaceScenario",
+          "실제검사이름": "비경 공개 명령: 과거 개인 입구 기록은 숨은 참여·잔량을 읽지 않고 입구 밖 물리 행동을 차단한다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 179,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationDeathBodyScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationDeathBodyScenario",
+          "실제검사이름": "비경 공개 명령: 실제 사망은 입장·도구를 한 번 해제하며 새 출생의 몸에는 진척·관측을 복제하지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 195,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationPreparationGatesScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationPreparationGatesScenario",
+          "실제검사이름": "비경 공개 명령: 관측한 개방 시각과 실제 준비·계약·육신 자격을 재검사하고 거절은 원자적이다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 214,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationAgentPlanningScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs",
+          "심볼": "ExplorationAgentPlanningScenario",
+          "실제검사이름": "비경 공개 명령: AI 정보 목표는 자기 입구 관측·지식이 있을 때만 같은 유료 입장과 저장된 진척을 선택한다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 239,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ExplorationMaintenanceSpaceScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ExplorationMaintenanceScenario.cs",
+          "심볼": "ExplorationMaintenanceSpaceScenario",
+          "실제검사이름": "비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 3,
+          "기존실행": [
+            "비경통합선택34"
+          ]
+        },
+        {
+          "검사참조": "ActionAuthorityCorruptScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+          "심볼": "ActionAuthorityCorruptScenario",
+          "실제검사이름": "INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 48,
+          "기존실행": [
+            "행동소유선택5"
+          ]
+        },
+        {
+          "검사참조": "ActionAuthorityProductionScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+          "심볼": "ActionAuthorityProductionScenario",
+          "실제검사이름": "INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 89,
+          "기존실행": [
+            "행동소유선택5"
+          ]
+        },
+        {
+          "검사참조": "ActionAuthorityKnowledgeScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+          "심볼": "ActionAuthorityKnowledgeScenario",
+          "실제검사이름": "INV-004/017/021/024 H10 action owner: actual study and cultivation practice keep their own adopted activities",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 125,
+          "기존실행": [
+            "행동소유선택5"
+          ]
+        },
+        {
+          "검사참조": "ActionAuthorityCombatRetreatScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+          "심볼": "ActionAuthorityCombatRetreatScenario",
+          "실제검사이름": "INV-004/017/021 H10 action owner: a real retreat keeps route provenance after paid combat occupancy ends",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 152,
+          "기존실행": [
+            "행동소유선택5"
+          ]
+        },
+        {
+          "검사참조": "ActionAuthorityQiMethodScenario",
+          "경로": "tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs",
+          "심볼": "ActionAuthorityQiMethodScenario",
+          "실제검사이름": "INV-008/017/024 H10 action owner: a Qi actor without a current method requests real teaching before a bounded plan",
+          "검사분류": "실제 세계/호스트 또는 명시 현재조건의 공개 전이",
+          "현재소스줄": 188,
+          "기존실행": [
+            "행동소유선택5"
+          ]
         }
       ]
     }
@@ -11404,10 +12552,511 @@
     "집계등식일치": true,
     "자체통과이상완료없음": true,
     "완료행의미완료선행없음": true,
-    "기존검사참조수": 179,
+    "기존검사참조수": 201,
     "검사경로심볼실재": true,
     "최신소스전체통과주장": false,
     "최종측정완료주장": false,
-    "게시완료주장": false
+    "게시완료주장": false,
+    "이전47완료89자체통과보존": true,
+    "이전완료식별자변동없음": true,
+    "신규자체수용식별자": [
+      "V021-R06",
+      "V021-M02",
+      "V021-M05",
+      "V021-H10",
+      "V021-U05",
+      "V021-X03",
+      "V021-U04"
+    ],
+    "기존자체수용재보류식별자": [
+      "V021-J02",
+      "V021-J04"
+    ],
+    "제품코드원장생성진행문서Notion변경없음": true
+  },
+  "선행대기식별자": [
+    "V021-P02",
+    "V021-P03",
+    "V021-F02",
+    "V021-F04",
+    "V021-R03",
+    "V021-R04",
+    "V021-R06",
+    "V021-V01",
+    "V021-V02",
+    "V021-M02",
+    "V021-M03",
+    "V021-M05",
+    "V021-K03",
+    "V021-K04",
+    "V021-K06",
+    "V021-K07",
+    "V021-E01",
+    "V021-E02",
+    "V021-E03",
+    "V021-E04",
+    "V021-E05",
+    "V021-S01",
+    "V021-S02",
+    "V021-S03",
+    "V021-G01",
+    "V021-G02",
+    "V021-G03",
+    "V021-X02",
+    "V021-X03",
+    "V021-X04",
+    "V021-U03",
+    "V021-U04",
+    "V021-U05",
+    "V021-Y03",
+    "V021-O02",
+    "V021-O03",
+    "V021-J03",
+    "V021-B04",
+    "V021-I03",
+    "V021-L05",
+    "V021-L06",
+    "V021-R07",
+    "V021-R08",
+    "V021-O04",
+    "V021-O05",
+    "V021-U07",
+    "V021-H10"
+  ],
+  "과거진행감사": [
+    {
+      "이름": "PR135 최초 수용 집계",
+      "감사소스": "324e601c20c7920b5a2f8df59aae321c915336f3",
+      "근거커밋": "8b44c6eff1203060900f899e3716ec27726d88f3",
+      "원격근거": "https://github.com/hddy774/project-hora/pull/135",
+      "JSON원본해시": "2a4971f1a58ef65be297deebd58f38dac45c4973cf26f8eeef64e4e0ebd90867",
+      "고정시각UTC": "2026-10-30T09:45:01Z",
+      "집계": {
+        "정본작업수": 111,
+        "원장현재완료": 3,
+        "자체수용통과후보": 89,
+        "자체수용통과율": 80.2,
+        "자체수용보류": 22,
+        "선행포함완료권고": 47,
+        "선행포함완료율": 42.3,
+        "자체통과이나선행보류": 42
+      },
+      "완료권고식별자": [
+        "V021-A01",
+        "V021-A02",
+        "V021-H01",
+        "V021-Z01",
+        "V021-A03",
+        "V021-B01",
+        "V021-M01",
+        "V021-Z02",
+        "V021-N01",
+        "V021-H05",
+        "V021-T07",
+        "V021-B02",
+        "V021-P01",
+        "V021-M04",
+        "V021-H02",
+        "V021-I01",
+        "V021-R01",
+        "V021-W02",
+        "V021-L01",
+        "V021-K01",
+        "V021-X01",
+        "V021-D01",
+        "V021-H03",
+        "V021-J01",
+        "V021-F01",
+        "V021-R05",
+        "V021-W01",
+        "V021-K02",
+        "V021-U01",
+        "V021-U02",
+        "V021-N02",
+        "V021-Y01",
+        "V021-O01",
+        "V021-I02",
+        "V021-F03",
+        "V021-R02",
+        "V021-K05",
+        "V021-U06",
+        "V021-Z03",
+        "V021-N03",
+        "V021-Y02",
+        "V021-B03",
+        "V021-R09",
+        "V021-H07",
+        "V021-L02",
+        "V021-K08",
+        "V021-H08"
+      ],
+      "자체수용통과식별자": [
+        "V021-A01",
+        "V021-A02",
+        "V021-A03",
+        "V021-B01",
+        "V021-B02",
+        "V021-P01",
+        "V021-P02",
+        "V021-P03",
+        "V021-F01",
+        "V021-F02",
+        "V021-F03",
+        "V021-F04",
+        "V021-R01",
+        "V021-R02",
+        "V021-R03",
+        "V021-R04",
+        "V021-R05",
+        "V021-V01",
+        "V021-V02",
+        "V021-W01",
+        "V021-W02",
+        "V021-L01",
+        "V021-M01",
+        "V021-M03",
+        "V021-M04",
+        "V021-K01",
+        "V021-K02",
+        "V021-K03",
+        "V021-K04",
+        "V021-K05",
+        "V021-K06",
+        "V021-K07",
+        "V021-E01",
+        "V021-E02",
+        "V021-E03",
+        "V021-E04",
+        "V021-E05",
+        "V021-S01",
+        "V021-S02",
+        "V021-S03",
+        "V021-G01",
+        "V021-G02",
+        "V021-G03",
+        "V021-X01",
+        "V021-X02",
+        "V021-X04",
+        "V021-U01",
+        "V021-U02",
+        "V021-U03",
+        "V021-U06",
+        "V021-D01",
+        "V021-Z01",
+        "V021-Z02",
+        "V021-Z03",
+        "V021-N01",
+        "V021-N02",
+        "V021-N03",
+        "V021-Y01",
+        "V021-Y02",
+        "V021-Y03",
+        "V021-O01",
+        "V021-O02",
+        "V021-O03",
+        "V021-H01",
+        "V021-H02",
+        "V021-H03",
+        "V021-H05",
+        "V021-H07",
+        "V021-H08",
+        "V021-J01",
+        "V021-J02",
+        "V021-J03",
+        "V021-J04",
+        "V021-L02",
+        "V021-B03",
+        "V021-B04",
+        "V021-I01",
+        "V021-I02",
+        "V021-I03",
+        "V021-K08",
+        "V021-L05",
+        "V021-L06",
+        "V021-R07",
+        "V021-R08",
+        "V021-O04",
+        "V021-O05",
+        "V021-U07",
+        "V021-R09",
+        "V021-T07"
+      ],
+      "선행대기식별자": [
+        "V021-P02",
+        "V021-P03",
+        "V021-F02",
+        "V021-F04",
+        "V021-R03",
+        "V021-R04",
+        "V021-V01",
+        "V021-V02",
+        "V021-M03",
+        "V021-K03",
+        "V021-K04",
+        "V021-K06",
+        "V021-K07",
+        "V021-E01",
+        "V021-E02",
+        "V021-E03",
+        "V021-E04",
+        "V021-E05",
+        "V021-S01",
+        "V021-S02",
+        "V021-S03",
+        "V021-G01",
+        "V021-G02",
+        "V021-G03",
+        "V021-X02",
+        "V021-X04",
+        "V021-U03",
+        "V021-Y03",
+        "V021-O02",
+        "V021-O03",
+        "V021-J02",
+        "V021-J03",
+        "V021-J04",
+        "V021-B04",
+        "V021-I03",
+        "V021-L05",
+        "V021-L06",
+        "V021-R07",
+        "V021-R08",
+        "V021-O04",
+        "V021-O05",
+        "V021-U07"
+      ],
+      "자체보류식별자": [
+        "V021-R06",
+        "V021-M02",
+        "V021-M05",
+        "V021-X03",
+        "V021-U04",
+        "V021-U05",
+        "V021-D02",
+        "V021-T01",
+        "V021-T02",
+        "V021-T03",
+        "V021-T04",
+        "V021-T05",
+        "V021-T06",
+        "V021-H04",
+        "V021-H06",
+        "V021-H09",
+        "V021-C01",
+        "V021-L03",
+        "V021-L04",
+        "V021-L07",
+        "V021-Z04",
+        "V021-H10"
+      ],
+      "원래55개대응": {
+        "대응수": 55,
+        "대응보존": true,
+        "중복분모추가": false,
+        "자체수용충족대응수": 38,
+        "선행포함완료대응수": 18,
+        "주의": "55개는111개의 원래 요구 대응표이며 166개로 합산하지 않음. 대응 보존은 구현/출시 완료가 아님."
+      },
+      "주의": "당시47/111·자체89/111 및 원장done3의 이력. 현재 원장/후속 근거 집계와 혼동하지 않음."
+    }
+  ],
+  "후속병합근거": [
+    {
+      "PR": 134,
+      "URL": "https://github.com/hddy774/project-hora/pull/134",
+      "헤드": "4b2b676d49f87edb4f2fe222fa1c519a83bf6b1c",
+      "병합": "6e0f77fab5a40d898fb2381c9847442cfef2e478",
+      "병합확인": true,
+      "감사소스에포함": true
+    },
+    {
+      "PR": 136,
+      "URL": "https://github.com/hddy774/project-hora/pull/136",
+      "헤드": "fb71878e65a4afe82d9b1b93a9dec7e019390d41",
+      "병합": "aa3da378d37431ad4a6931fe486e6d1038ea54bc",
+      "병합확인": true,
+      "감사소스에포함": true
+    },
+    {
+      "PR": 137,
+      "URL": "https://github.com/hddy774/project-hora/pull/137",
+      "헤드": "4701eada53a348d02734be9128a61b1fde26c9d5",
+      "병합": "bfafde3424c9657e31905698de8d4f0e12a1b702",
+      "병합확인": true,
+      "감사소스에포함": true
+    },
+    {
+      "PR": 138,
+      "URL": "https://github.com/hddy774/project-hora/pull/138",
+      "헤드": "b8e8f0bc75be8127e8c0d53218b81d93b70ab88c",
+      "병합": "9b8036ba6b106e6f6bb49a711aa6e1e268c5171e",
+      "병합확인": true,
+      "감사소스에포함": true
+    },
+    {
+      "PR": 141,
+      "URL": "https://github.com/hddy774/project-hora/pull/141",
+      "헤드": "b4b491636b5e1bfa986568899a1cd76fcf544a44",
+      "병합": "6670d2993320dbec3be8c3596d8ec962692a0762",
+      "병합확인": true,
+      "감사소스에포함": true
+    },
+    {
+      "PR": 142,
+      "URL": "https://github.com/hddy774/project-hora/pull/142",
+      "헤드": "9d13a8a8ac67e22e299f0aefb0d516ba6558cf4c",
+      "병합": "b1838ec6f8256dba6f6651745ec1c1b37ea44c26",
+      "병합확인": true,
+      "감사소스에포함": true
+    }
+  ],
+  "신규자체수용권고": [
+    {
+      "식별자": "V021-R06",
+      "이전판정": "기능 검사 보류",
+      "현재판정": "자체 통과·선행 보류",
+      "판정근거": "기존 원인별 손상·퇴행/실제 회복·비용 있는 전환 근거에 PR138의 동일 전체 초기 상태 3전략 공개 비교 1/1을 결합함. 실제 채집·제조한 같은 단약으로 총 5/6/6개월, 기 20000/25000/25000, 단약 0/0/1, 형성 품질 5243/5493/5493, 채택 위험 900/780/530bps를 대조하고 중간 파일 저장 후 남은 매월 해시 일치를 확인함. 명시적 짧은 법칙·현재 경계 초기조건이며 기본 장기기간·실패빈도·성능 측정으로 확대하지 않음.",
+      "직접선행": [
+        "V021-R04",
+        "V021-B04"
+      ],
+      "완료되지않은직접선행": [
+        "V021-R04",
+        "V021-B04"
+      ]
+    },
+    {
+      "식별자": "V021-M02",
+      "이전판정": "기능 통합 보류",
+      "현재판정": "자체 통과·선행 보류",
+      "판정근거": "기존 실제 가계·시장·공방·개인 탐사 원천 공존 및 운영자/성립/원천 근거에 PR136의 실제 비경 입구·독립 내부 공간을 결합함. 100 전략 지점 위 시설과 별도 비경 원장이 서로 권위를 덮어쓰지 않으며 새 지점·주민·무료 수용량을 만들지 않는 실제 공유 훅과 공개 발견/공간/유한 선점 검사를 대조함. 생태 담당자도 추가 백엔드 공백이 없음을 확인함. 비경 화면은 U04의 PR142 근거로 별도 귀속하며 최신 전체 재실행으로 주장하지 않음.",
+      "직접선행": [
+        "V021-M01",
+        "V021-P03"
+      ],
+      "완료되지않은직접선행": [
+        "V021-P03"
+      ]
+    },
+    {
+      "식별자": "V021-M05",
+      "이전판정": "기능 통합 보류",
+      "현재판정": "자체 통과·선행 보류",
+      "판정근거": "PR133 모듈만으로 판정하지 않고 병합 PR136의 실제 생성/명령/월별 완료/취소/사망/행동 검증/조회 훅과 공개 비경 10/10을 확인함. 자기 정보·개방/신체/도구/식량/계약/자리 조건·저장된 법칙/단일 위험·월별 진척·유료 부분 귀환·동시 유한 선점·중복/위조 영수증·현생 종결·AI 경로를 검증함. 선택 합계 34/34는 공개 명령/조회 33건과 순수 매체 모듈 조회 1건이며 구형 일반 탐색 윤회 13건도 포함함. U04 화면은 PR142로 별도 귀속하며 최종 통합/플랫폼/측정은 보류.",
+      "직접선행": [
+        "V021-M02",
+        "V021-M04",
+        "V021-N01"
+      ],
+      "완료되지않은직접선행": [
+        "V021-M02"
+      ]
+    },
+    {
+      "식별자": "V021-H10",
+      "이전판정": "기능 통합 보류",
+      "현재판정": "자체 통과·선행 보류",
+      "판정근거": "PR134에서 대체된 구형 수행/제작/학습/채집 완료 권위를 출처와 함께 보관하고 현재 제품에서 제거한 변경, 중앙 양방향 행동 소유 검증, 실제 전수 요청/신체 능력 판정을 확인함. 선택 5/5와 일관된 공유 파단 초기조건 1/1을 유지하며 PR136 후 exploration:의 위조 대소문자 방어·실제 입장 소유 검증·일반 탐색보다 앞선 완료 처리와 공개 비경 10/10을 연결함. 추가 자체 기능 조항은 없다는 수행 담당자 확인도 대조함. 과거 전체 215/216과 후속 선택 1/1을 구분하고 최신 전체 합격으로 바꾸지 않음. 정본 선행 T02는 그대로 남김.",
+      "직접선행": [
+        "V021-T02"
+      ],
+      "완료되지않은직접선행": [
+        "V021-T02"
+      ]
+    },
+    {
+      "식별자": "V021-U05",
+      "이전판정": "화면 수용 보류",
+      "현재판정": "자체 통과·선행 보류",
+      "판정근거": "병합 PR137이 정책 초안·준비 기한·예약금·채무를 실제 Politics 원장에서만 투영하고 정본 10분류 실제 선택을 최초 가계에도 표시함. 실제 원금 40 대여/동액 채무, 채택→예산·인력 준비→취소 환급/시행/이력, 비수장 재정 null, 폐기 3필드 0을 공개 조회와 1280/390px 실제 세션 브라우저로 검증함. 원래 조회 10/10은 PR 기록이며 현재 읽은 원본은 후속 비경을 포함한 12/12로 구분함. 기존 종문/왕조/경제 근거와 결합한 자체 수용 권고이며 최종 네이티브/전체 화면 검수로 확대하지 않음.",
+      "직접선행": [
+        "V021-U01",
+        "V021-E05",
+        "V021-S03",
+        "V021-G03",
+        "V021-G02"
+      ],
+      "완료되지않은직접선행": [
+        "V021-E05",
+        "V021-S03",
+        "V021-G03",
+        "V021-G02"
+      ]
+    },
+    {
+      "식별자": "V021-X03",
+      "이전판정": "화면 수용 보류",
+      "현재판정": "자체 통과·선행 보류",
+      "판정근거": "기존 이동·수행·제작·거래·관계·정치·전투의 공개 명령과 실제 능력 검증을 유지하고, 남았던 정치 화면 연결은 PR137의 실제 카탈로그 선택/재원/공동 노동/취소/시행과 두 폭 브라우저 근거로 종료함. PR141의 실제 채광 AI 인계·자기 관측·단일 실물 환전/동일 공개 명령 재전송 3/3은 같은 행동/권한 경로를 보강함. 화면의 임의 정책값·무료 예산을 근거로 삼지 않으며 U04 및 최종 T05는 별도로 유지함.",
+      "직접선행": [
+        "V021-X01",
+        "V021-R04",
+        "V021-E05",
+        "V021-S03",
+        "V021-F04",
+        "V021-W01",
+        "V021-V02",
+        "V021-N02"
+      ],
+      "완료되지않은직접선행": [
+        "V021-R04",
+        "V021-E05",
+        "V021-S03",
+        "V021-F04",
+        "V021-V02"
+      ]
+    },
+    {
+      "식별자": "V021-U04",
+      "이전판정": "기능 통합 보류",
+      "현재판정": "자체 통과·선행 보류",
+      "판정근거": "기존100지점·복수 시설·권리 화면과 M05의 자기 입구/진척/실내 정보 경계에 병합 PR142의 실제1280/390px 브라우저 근거를 결합함. 실제 유료 탐색·인접0→8이동·개인 입구 관측/현재 미상·준비 식량 소비/도구 예약·바닥 책 내부 비노출·1개월 중도 귀환·재입장·내부 저장복원/완주/유한 결과를 확인함. API24/최신 전체/성능/T05 전체 합격으로 확대하지 않음.",
+      "직접선행": [
+        "V021-U01",
+        "V021-M05",
+        "V021-M03",
+        "V021-P03"
+      ],
+      "완료되지않은직접선행": [
+        "V021-M05",
+        "V021-M03",
+        "V021-P03"
+      ]
+    }
+  ],
+  "기존자체수용재보류": [
+    {
+      "식별자": "V021-J02",
+      "이전판정": "자체 통과·선행 보류",
+      "현재판정": "기존 불변식 수용 보류",
+      "기존계약": "INV-013",
+      "판정근거": "기존13개 단일 실제 원인 생산자/자격/저장 검사는 존재하나 INV-013의 여러 조건 동시 충족 계약은 아직 미충족. World.Hazards.ResolveWorldConditions가12→7→4→11에서 첫 매칭 뒤 반환하고 EndLife는 선택된 원인만 Evidence에 기록하므로, 실제 동시12/7에서 단일 여정과 다른 매칭 원인 설명을 함께 보존하는 좁은 수정/공개 저장·재처리 근거가 필요함. 루트와 인지 담당자가 기존 계약의 직접 공백으로 확인했으며 새 광범위 요구가 아님."
+    },
+    {
+      "식별자": "V021-J04",
+      "이전판정": "자체 통과·선행 보류",
+      "현재판정": "기존 불변식 수용 보류",
+      "기존계약": "INV-013",
+      "판정근거": "기존 사망/비승/분혼·대기/출생 단일 영혼 및 자산 보존 검사는 유지함. 공통 INV-013에서 동시 원인이 하나의 여정만 만들면서 대체 매칭 원인을 설명에 남겨야 하는데 현재 EndLife에는 선택된 원인만 저장됨. 동시12/7의 실제 설명·단일 여정·저장/재처리 보존 후속이 완료되기 전까지 자체 수용을 보류함. 현재RC-01~13 단일 생산자 결과를 이 미검증 동시조건의 합격으로 합치지 않음."
+    }
+  ],
+  "최신통합실행구분": {
+    "전체": {
+      "소스": "6670d2993320dbec3be8c3596d8ec962692a0762",
+      "검사수": 238,
+      "통과수": 237,
+      "실패수": 1,
+      "근거": "통합6670전체실패원본238",
+      "최신전체합격": false
+    },
+    "후속": {
+      "소스": "0b67a049d21db2c0a4137d2d1ef103b0e2d1f8d7",
+      "검사수": 2,
+      "통과수": 2,
+      "실패수": 0,
+      "근거": "폐기정책초기조건후속2",
+      "전체재실행": false
+    },
+    "최종수용으로계산": false
   }
 }

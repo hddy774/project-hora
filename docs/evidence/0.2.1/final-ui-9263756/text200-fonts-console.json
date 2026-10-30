@@ -1,0 +1,136 @@
+{
+  "kind": "real-session-text-scale-functional",
+  "passed": true,
+  "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "original_verifier_sha256": "042348d083604c9cb5b837b34d52d4c0a8792e734672cf97fd215cb4ba0adb6b",
+  "harness_sha256": "b82c70509bb3c9c5679dc1b239e496a05e559736de5e7ba6119a1d220348b410",
+  "viewport_widths_requested": [
+    1280,
+    390
+  ],
+  "font_multiplier": 2,
+  "method": "test-only CSSOM px font-size declarations including media/shorthand; no device-scale substitution",
+  "standard_verifier_unchanged_on_disk": true,
+  "in_memory_test_adaptations": [
+    "font-size scaling and persistence assertions",
+    "touch-capable contexts and actual navigation taps",
+    "overflow diagnostic capture"
+  ],
+  "records": [
+    {
+      "width": 1280,
+      "count": 41,
+      "samples": [
+        {
+          "selector": "body",
+          "size": 15,
+          "after": 30
+        },
+        {
+          "selector": "h1",
+          "size": 28,
+          "after": 56
+        },
+        {
+          "selector": "#run",
+          "size": 15,
+          "after": 30
+        },
+        {
+          "selector": "nav button",
+          "size": 15,
+          "after": 30
+        },
+        {
+          "selector": "h2",
+          "size": 27,
+          "after": 54
+        }
+      ],
+      "devicePixelRatio": 1,
+      "method": "test-only CSSOM absolute-px font-size multiplier2; inherited values retained",
+      "actual_touch_navigation": [
+        {
+          "label": "지도",
+          "tap": true,
+          "rect": {
+            "x": 15,
+            "y": 341.390625,
+            "width": 159,
+            "height": 69.5
+          }
+        },
+        {
+          "label": "세계",
+          "tap": true,
+          "rect": {
+            "x": 15,
+            "y": 190.390625,
+            "width": 159,
+            "height": 69.5
+          }
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "count": 41,
+      "samples": [
+        {
+          "selector": "body",
+          "size": 14,
+          "after": 28
+        },
+        {
+          "selector": "h1",
+          "size": 23,
+          "after": 46
+        },
+        {
+          "selector": "#run",
+          "size": 12,
+          "after": 24
+        },
+        {
+          "selector": "nav button",
+          "size": 13,
+          "after": 26
+        },
+        {
+          "selector": "h2",
+          "size": 25,
+          "after": 50
+        }
+      ],
+      "devicePixelRatio": 1,
+      "method": "test-only CSSOM absolute-px font-size multiplier2; inherited values retained",
+      "actual_touch_navigation": [
+        {
+          "label": "지도",
+          "tap": true,
+          "rect": {
+            "x": 168,
+            "y": 266.953125,
+            "width": 74,
+            "height": 58.890625
+          }
+        },
+        {
+          "label": "세계",
+          "tap": true,
+          "rect": {
+            "x": 12,
+            "y": 266.953125,
+            "width": 74,
+            "height": 58.890625
+          }
+        }
+      ]
+    }
+  ],
+  "error": null,
+  "overflow_diagnostics": [],
+  "console_errors": [],
+  "native_api24_verified": false,
+  "performance_measurement": false
+}

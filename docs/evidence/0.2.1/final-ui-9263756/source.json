@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "repository": "hddy774/project-hora",
+  "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "source_tree": "659d823906880b2afb790d87e37c6ed421ad9e3b",
+  "product_source_fingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "release_configuration": "Release",
+  "game_and_hosting_informational_version": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+  "playwright_version": "1.62.0",
+  "cpu_affinity": [
+    2,
+    3
+  ],
+  "source_files": {
+    "src/Chronicles.Shell/index.html": "d5309a2280e3e1cc1276ca9869f4db861bb209bf314c46e5ea672e002de991bf",
+    "src/Chronicles.Shell/index.compat.html": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d",
+    "src/Chronicles.Shell/Program.cs": "12263daac1cf7393bc0bf0230db41e5142cf01678ab91e1f74a4fe9791027782",
+    "scripts/verify-v021-ui.py": "042348d083604c9cb5b837b34d52d4c0a8792e734672cf97fd215cb4ba0adb6b",
+    "src/Chronicles.Game/Queries.cs": "a7cdedf18f72b6c8812cc26ced0a9d8da6af4335fe5aa442531f45311fafaa9c",
+    "src/Chronicles.Hosting/GameSession.cs": "633055b904f7c3fc0c42ede1d40beeefc96e8e354e463a2fb729e726fac35fad"
+  }
+}

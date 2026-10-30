@@ -1,0 +1,187 @@
+{
+  "kind": "real-session-entry-prepare",
+  "width": 1280,
+  "font_multiplier": 1,
+  "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "passed": true,
+  "insufficient_feedback": "입문 토납·신식 감응 준비 부족·감응 전 토납·육체/정신 단련",
+  "actual_entry_teaching_months": 10,
+  "actual_ordinary_practice_commands": 4,
+  "ordinary_practice_did_not_auto_sense": true,
+  "entry_only_default_route": true,
+  "unobserved_site_fields_unknown": true,
+  "actual_incomplete_prepare_rejected": true,
+  "actual_ui_target0_data_path10": true,
+  "prepared_save_restore": true,
+  "actual_start_accepted": true,
+  "qi_method_understanding_or_personal_chapter_created": false,
+  "prepare_dialog_checks": [
+    {
+      "geometry": {
+        "root": 1280,
+        "body": 1280,
+        "viewport": 1280,
+        "targets": [
+          {
+            "id": "plannedPath",
+            "width": 568,
+            "height": 44
+          },
+          {
+            "id": "plannedSupport",
+            "width": 568,
+            "height": 44
+          },
+          {
+            "id": "confirm",
+            "width": 121.8125,
+            "height": 44.75
+          }
+        ]
+      },
+      "submission": "keyboard Tab and Enter"
+    },
+    {
+      "geometry": {
+        "root": 1280,
+        "body": 1280,
+        "viewport": 1280,
+        "targets": [
+          {
+            "id": "plannedPath",
+            "width": 568,
+            "height": 44
+          },
+          {
+            "id": "plannedSupport",
+            "width": 568,
+            "height": 44
+          },
+          {
+            "id": "confirm",
+            "width": 121.8125,
+            "height": 44.75
+          }
+        ]
+      },
+      "submission": "touch tap"
+    }
+  ],
+  "document_horizontal_overflow": false,
+  "javascript_errors": [],
+  "console_errors": [],
+  "commands": [
+    {
+      "id": "461cbebc-02a8-4d1c-a863-491767fcb379",
+      "actor": 0,
+      "kind": "lawBatch",
+      "target": 0,
+      "value": 0,
+      "data": "{\"birth.enabled\":0,\"ecology.foodUse\":0,\"ecology.disasterChance\":0,\"knowledge.misreadChance\":0,\"cultivation.entry\":1,\"cultivation.qi\":2,\"cultivation.foundation\":2,\"cultivation.breakthroughRisk\":0}"
+    },
+    {
+      "id": "150e9d2d-a882-406e-a5c9-8bad4a9d6a9b",
+      "actor": 0,
+      "kind": "create",
+      "target": 0,
+      "value": 0,
+      "data": "입문 화면 도제"
+    },
+    {
+      "id": "25e16792-eaf7-470f-a357-7272e459fc86",
+      "actor": 2074,
+      "kind": "possess",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "b9d61c06-baf8-4550-86a2-7a09344c31d1",
+      "actor": 2074,
+      "kind": "observe",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "da1c8682-adea-4976-b72e-dc69cbca31c1",
+      "actor": 1,
+      "kind": "cancel",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "f0fba377-6925-4a2f-a928-9eed86a84602",
+      "actor": 1,
+      "kind": "teach",
+      "target": 2074,
+      "value": 10,
+      "data": "entry"
+    },
+    {
+      "id": "5fbfedd9-cc5e-405b-937a-b13529da7ecd",
+      "actor": 2074,
+      "kind": "possess",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "b6463c94-50d9-447c-a28e-4c528a63a79d",
+      "actor": 2074,
+      "kind": "cultivationprepare",
+      "target": 0,
+      "value": 0,
+      "data": "path.1.0"
+    },
+    {
+      "id": "da7e464e-3a8f-4109-91f9-ef9744f16421",
+      "actor": 2074,
+      "kind": "cultivate",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "70354cb9-e118-4caf-8ecb-938e3482cf70",
+      "actor": 2074,
+      "kind": "cultivate",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "36301f7c-8a21-48bb-a49d-0f3c899452a6",
+      "actor": 2074,
+      "kind": "cultivate",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "b755191d-979e-4118-aad8-34f37a147a0b",
+      "actor": 2074,
+      "kind": "cultivate",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "2f51edac-06cb-4693-97b7-9acf6ccb7a00",
+      "actor": 2074,
+      "kind": "cultivationprepare",
+      "target": 0,
+      "value": 0,
+      "data": "path.1.0"
+    },
+    {
+      "id": "4cdab740-6b8a-4a28-851f-c756b15e6944",
+      "actor": 2074,
+      "kind": "cultivationstart",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "observed_at_utc": "2026-10-30T17:04:19.753429+00:00",
+  "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "product_fingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "served_equals_committed": true,
+  "served_sha256": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d",
+  "program_diff_only_url_and_origin_port": true,
+  "cpu_affinity": [
+    2,
+    3
+  ]
+}

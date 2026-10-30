@@ -1,0 +1,314 @@
+# 24개 불변식과 실제 실행 검사의 연결
+
+이 문서는 `8745eb4`의 **실제 등록 검사 238개**(feature 200개 + Program 38개)를
+INV-001~024에 역방향 검색할 수 있도록 연결한 자료다. 24개 계약의 구체적인 검사 증인은 72개 연결이며,
+같은 시나리오가 서로 다른 절을 검사하면 여러 번 연결될 수 있다.
+[기계 매핑](invariant-execution-map.json)에 정확한 실행 이름·소스·경계와 검사 본문의 호출/메시지 앵커를 저장했다.
+**매핑 작성이나 이름 등록은 제품 통과 판정이 아니다.**
+
+`docs/plans/v021-invariants.md` 및 `v021-tasks.json`의 `proposed_tests/test_status=not_implemented`는
+원래 제안 이름 카탈로그다. 해당 파일·필드를 치환하지 않았다. 지금 구현된 이름은 별도 실제 실행 매핑에 기록한다.
+이 문서는 작업 원장·Notion 완료 상태도 변경하지 않는다.
+
+## 확인한 실행 결과와 남은 차이
+
+루트의 원본 `/workspace/scratch/functional-integration-6670d29.json`은
+`6670d2993320dbec3be8c3596d8ec962692a0762`에서 **237/238, 실패1**이다.
+그 테스트 소스는 매핑 기준과 동일하지만 정책 구형 필드 거절 사례가 실패하여 검증기는 이 보고서를 반드시 거절한다.
+원본 파일은 변경하지 않았다. 당시 원본 SHA-256과 거절 사유는
+[검증기 확인 기록](invariant-execution-validator-checks.json)에 남겼다.
+이 결과를 최신 전체 통과로 사용하지 않는다.
+
+정본 INV-013의 동시 원인 절에는 구체적인 공백이 있다. 기준 소스
+`World.Hazards.ResolveWorldConditions`는 12→7→4→11의 첫 조건에서 종료하며,
+`World.Life.EndLife`는 단일 `cause`와 그 설명만 저장한다. 실제 13경로 생산자는 각각 단일 원인을 검사하므로,
+둘 이상의 실제 동시 조건에서 하나의 여정과 다른 매칭 원인의 설명을 보존했다는 증거가 아니다.
+이 좁은 수정은 별도 제품 PR로 진행하며, 여기서 통과한 것으로 처리하지 않는다.
+
+현재 런타임이 사용하지 않는 indexed heap·병렬 worker·Unity 실행은 검사했다고 주장하지 않는다.
+실제 웹의 늦은 응답 폐기·Android 재실행·대량 인구 측정도 C# 이름 통과만으로 대체하지 않는다.
+각 INV의 한계에 해당 경계를 명시했다. 새로운 제품 범위를 추가하는 요구가 아니다.
+
+## 검증기 사용
+
+저장소 루트에서 매핑 구조·전체 실제 등록 이름·소스 앵커를 확인한다.
+
+```sh
+python3 scripts/validate-v021-invariant-execution.py
+python3 scripts/validate-v021-invariant-execution.py --self-test
+```
+
+루트가 실제 전체 기능 실행을 완료한 뒤 원본 보고서와 그 실행 출처를 입력한다.
+다음 `ACTUAL_FULL_SOURCE_SHA`는 실제 빌드/실행했던 40자리 SHA로 바꾼다.
+
+```sh
+python3 scripts/validate-v021-invariant-execution.py \
+  --report /workspace/scratch/functional-integration-FINAL.json \
+  --executed-source ACTUAL_FULL_SOURCE_SHA \
+  --output /workspace/scratch/invariant-execution-FINAL.json
+```
+
+검증기는 다음을 거절한다.
+
+- 선택 실행(`--filter`)·빈 결과·중복/누락/미등록 이름·제안 이름을 실제 실행처럼 넣은 결과.
+- 실패가 하나라도 있는 보고서, 실제 행과 다른 total/failed, bool이 아닌 passed, 통과 행의 오류.
+- 중복 JSON 필드, 실제 테스트 소스 변경, 위조된 소스 위치/없는 검사 앵커, 매핑 자체의 passed 치환.
+- 선언한 실행 SHA와 매핑 사이의 서로 다른 테스트 소스.
+
+실제 테스트 이름뿐 아니라 `tests/Chronicles.Game.Tests`의 `.cs/.csproj` 전체를 지문에 넣어
+동일 이름의 검사 본문이나 fixture 변경도 재검토하게 한다. 새 등록 형식이나 동적 Name은 추정하여 생략하지 않고 거절한다.
+새 검사가 생기면 실제 본문을 검토하여 관련 INV·경계·앵커를 추가하고 테스트 소스 지문을 갱신해야 한다.
+단순히 이름을 제안 목록으로 복사하지 않는다.
+
+`--executed-source`는 호출자가 선언한 실행 출처다. 검증기는 Git의 테스트 소스와 대조하고 원본 보고서 SHA-256을 출력한다.
+보고서만으로 실제 프로세스가 어느 바이너리를 실행했는지 인증할 수는 없으므로 원본·빌드/실행 명령·별도 provenance도 함께 보존한다.
+출력이 모든 등록 이름/증인의 통과를 확인해도, INV 문장의 모든 조합·플랫폼·성능이나 111개 작업 전체 완료를 뜻하지 않는다.
+자체 시험의 정상 입력2행은 합성 fixture이며 제품 검사 통과로 세지 않는다.
+
+## 실제 검사 증인
+
+실행 경계는 `public_world`(실제 GameWorld/명령·월 정산·조회), `module`(순수 도메인),
+`module_and_world`(실제 세계 사건을 별도 모듈에 공급), `mechanics`(전투 수식), `host`(실제 파일/세션)로 구분한다.
+`public_world` 분류 자체가 모든 검사를 공개 명령으로 시작했다는 뜻은 아니며, 개별 검사 종류와 설명을 따른다.
+초기 fixture 구성과 실제 사용자 명령·시간 진행도 구분한다. 전체238개 이름의 경계는 JSON에 기록했다.
+
+### INV-001 · 도메인별 단일 권위와 안정 신원
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-001 슬롯 재사용·낡은 세대/사망 신원 거부](../../../tests/Chronicles.Game.Tests/Program.cs#L287) | `public_world` / 거절/부정, 공개 명령 | 사망 뒤 슬롯 재사용 시 이전 세대 조회는0이며 죽은 신원의 빙의 명령을 새 사람에게 실행하지 않는다. |
+| [INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion](../../../tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs#L48) | `public_world` / 거절/부정, 공개 명령 | 원장 소유가 없는 작업·위조 marker·숫자/enum 별칭을 거절한다. |
+
+범위: 등록한 신원/몸/슬롯·명령 검사 범위다. 모든 미래 참조 유형이나 별도 SpiritFragment 시스템의 전 수명 조합을 증명하지 않는다.
+
+### INV-002 · 100지점·명시 통로·단일 실제 위치
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다](../../../tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs#L57) | `public_world` / 정상 결과, 공개 명령, 조회 순수성 | 전략 노드는 100개이며 유료 현지 탐색 전 숨은 입구를 보이지 않고 발견을 타인에게 복제하지 않는다. |
+| [inventory public: completed route delivers physical cargo and blocked routes keep it at actual origin](../../../tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs#L154) | `public_world` / 정상 결과, 거절/부정, 공개 명령 | 실제 완료한 운송만 도착지에 화물을 두고 차단 경로는 원래 위치를 유지한다. |
+| [비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다](../../../tests/Chronicles.Game.Tests/Features/ExplorationMaintenanceScenario.cs#L3) | `public_world` / 거절/부정, 공개 명령 | 비경 안의 생활·바깥 자녀 부양은 바깥 바닥 물품과 실제 공간을 관통하지 않는다. |
+
+범위: 현재 100지점·명시 이동/화물·비경 하위 공간의 실제 계약이다. 별도 신규 지도/대규모 월드는 이 이름으로 주장하지 않는다.
+
+### INV-003 · 형식화된 법칙과 시행 경계 보존
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-003/005 법칙 일괄 적용·검증 실패 원자성·중복 재전송·플레이 권한](../../../tests/Chronicles.Game.Tests/Features/LawPresetScenarios.cs#L5) | `public_world` / 거절/부정, 공개 명령 | 일괄 법칙은 전체 검증 후 적용하며 실패·재전송·플레이 권한 거절은 상태를 바꾸지 않는다. |
+| [INV-003 기존 임신 법칙 revision 보존](../../../tests/Chronicles.Game.Tests/Program.cs#L69) | `public_world` / 정상 결과, 공개 명령 | 잉태 뒤 임신 기간·출산 비활성 법칙을 바꿔도 기존 임신 revision과 출생 결과를 보존한다. |
+| [비경 공개 명령: 실제 도구·식량과 채택 법칙·한 번의 위험을 저장하고 월별 진척으로 유한 보상을 선점한다](../../../tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs#L76) | `public_world` / 정상 결과, 저장/재개, 공개 명령 | 입장 뒤 바뀐 기간·위험·도구 마모를 현재 입장에 소급하지 않는다. |
+
+범위: 양친 금단·혈연 허용·잠정값 개발 보정은 사용자 확정 정책이다. 각 법칙의 모든 수학 조합이나 후속 보정을 통과로 확장하지 않는다.
+
+### INV-004 · 공통 저장 왕복과 중단 복구
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-004/005 host recovery: committed pending saves, authenticated sequence and immutable old originals](../../../tests/Chronicles.Game.Tests/Features/HostRecoveryScenarios.cs#L6) | `host` / 거절/부정, 저장/재개, 공개 명령 | 정상 pending/primary/backup 우선순위·중단 파일·체크섬 순서와 이전 원본 보존을 실제 호스트 파일로 검사한다. |
+| [INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs](../../../tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs#L89) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 소비된 공정의 저장과 취소가 실제 원료를 복원하지 않고 고아 작업·변조 완료시각을 거절한다. |
+
+범위: 열거한 도메인/호스트 저장·손상·중단 복구를 검사한다. 실제 OS 강제 종료·Android 재실행 증거는 별도 플랫폼 검증이다.
+
+### INV-005 · 원자 전이·멱등 처리·단일 종결
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-004/005/017/018/024 knowledge public world: a paid reserved paper item becomes exactly one copied book](../../../tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs#L160) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 같은 실제 필사 명령·완료를 재전송해도 단일 책과 실제 소비만 남긴다. |
+| [combat public: command replay paid cooldown and saved continuation preserve actual receipts and query purity](../../../tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs#L172) | `public_world` / 거절/부정, 저장/재개, 공개 명령, 조회 순수성 | 공격 재전송·같은 시각 취소·저장 재개가 이미 지급한 체력·시간과 전투 영수증을 복제하지 않는다. |
+| [비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다](../../../tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs#L129) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 동시 완료·재입장과 예전 소비 영수증 재사용으로 유한 선점을 복제하지 않는다. |
+
+범위: 등록한 명령/원인 키·취소·동시 선점의 실제 순서다. 가능한 모든 같은 tick 조합을 전수 탐색했다는 의미는 아니다.
+
+### INV-006 · 엔진 독립 실행과 재현 가능한 진행
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-006/007/004 시간 분할·조회/저장 무영향](../../../tests/Chronicles.Game.Tests/Program.cs#L98) | `public_world` / 정상 결과, 저장/재개, 재현성, 조회 순수성 | 같은 seed의 일괄/월별 advance·주기적 GameCodec 재개·중간 조회가 같은 권위 해시를 만든다. |
+| [INV-006 저장 왕복·호스트 문화권 독립](../../../tests/Chronicles.Game.Tests/Program.cs#L273) | `public_world` / 정상 결과, 저장/재개, 재현성 | 호스트 문화권 변경 뒤에도 명령 식별자와 저장 해시를 보존한다. |
+| [INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash](../../../tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs#L170) | `public_world` / 정상 결과, 저장/재개, 재현성, 공개 명령 | 같은 실제 목표 명령과 저장/분할 진행이 선택·실물 영수증·해시를 보존한다. |
+
+범위: 현재 단일 권위·정수 tick·명시 RNG의 분할/복원/문화권 재현이다. 사용하지 않는 병렬 worker/Unity 실행이나 성능은 증명하지 않는다. 플랫폼 의존 정적 검사는 별도 자료다.
+
+### INV-007 · 관찰 순수성과 관찰 여부 독립
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-007/010 rich query: action equipment policy history mapping and detached snapshots](../../../tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs#L67) | `public_world` / 정상 결과, 조회 순수성 | 조회와 분리된 반환값을 변경해도 권위 상태가 변하지 않으며 장비·정책·이력이 실제 원천에 대응한다. |
+| [비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다](../../../tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs#L57) | `public_world` / 정상 결과, 조회 순수성 | 입구와 인물 조회는 세계/RNG를 바꾸거나 타인의 발견을 생성하지 않는다. |
+| [INV-004/009 people queries public: mutating nested observer aptitude, traits, soul, evaluations and claim arrays cannot alter authority](../../../tests/Chronicles.Game.Tests/Features/PeopleReceiptIntegrationScenarios.cs#L68) | `public_world` / 거절/부정, 조회 순수성 | 중첩 재능·특성·혼흔·평가·주장 배열을 변경해도 권위를 쓸 수 없다. |
+
+범위: 실제 공개/모듈 조회와 분리된 반환값의 순수성이다. 모든 UI 그래프·플랫폼 화면 동작은 C# 보고서만으로 대체하지 않는다.
+
+### INV-008 · 개인 인지 경계와 숨은 변화 비간섭
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth](../../../tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs#L123) | `public_world` / 거절/부정, 재현성 | 개인 입력이 같은 세계의 숨은 NPC 재고·지식·부 차이는 새 관측 전 선택과 예정시각을 바꾸지 않는다. |
+| [INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation](../../../tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs#L100) | `public_world` / 거절/부정, 공개 명령 | 잘못된 원천 믿음은 실제 실행에서 거절되고 새 실제 탐색 관측으로 교체된다. |
+| [INV-008/009/015 people receipts public: remote rejection and hidden authority cannot change an undelivered request belief](../../../tests/Chronicles.Game.Tests/Features/PeopleReceiptIntegrationScenarios.cs#L42) | `public_world` / 거절/부정, 공개 명령 | 전달되지 않은 원격 거절·권위 변화로 개인 요청 믿음이 갱신되지 않는다. |
+| [INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save](../../../tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs#L148) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 실제 탐색 예산과 원천 인지 예산을 지키고 저장한 지연 목표를 다음 결정에서 재개한다. |
+
+범위: 명시한 숨은 상태 비간섭·출처·실패 수정·논리 예산의 기능 검사다. 인구 단계별 메모리/저장 측정과 장기 행동 분포는 최종 별도 단계다.
+
+### INV-009 · 권한 우선 조회와 표시 비간섭
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-009/024 rich query: knowledge provenance is personal and hidden revision independent](../../../tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs#L132) | `public_world` / 거절/부정, 조회 순수성 | 숨은 NPC 지식 진척·전역 revision이 자기 개인 지식 투영을 바꾸지 않는다. |
+| [INV-009/024 knowledge: 허가한 실제 매체를 전체수·정렬·페이지 전에 필터하여 바깥 도서를 인지하지 않는다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs#L7) | `module` / 거절/부정, 조회 순수성 | 허가 매체 집합을 전체수·정렬·페이지 전에 적용하여 바깥 미허가 도서가 분모와 첫 페이지에 영향을 주지 않는다. |
+| [INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회](../../../tests/Chronicles.Game.Tests/Program.cs#L230) | `public_world` / 거절/부정, 공개 명령, 조회 순수성 | 미발견 ID·플레이 법칙 명령을 거절하고 같은 인지에서는 숨은 값 차이가 표시를 바꾸지 않는다. |
+
+범위: 등록한 실제 개인 DTO·미발견 ID·허가 매체·토큰 경계다. 순수 모듈 조회와 실제 전체 GameWorld 응답을 구분한다.
+
+### INV-010 · 조회 세대·시점·표시 의미 보존
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회](../../../tests/Chronicles.Game.Tests/Program.cs#L230) | `public_world` / 정상 결과, 거절/부정, 공개 명령 | 관찰/빙의 전환은 조회 세대와 권한 상세를 실제로 갱신한다. |
+| [INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context](../../../tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs#L244) | `public_world` / 거절/부정, 공개 명령, 조회 순수성 | 숨은 NPC의 실제 분할 명령은 자기 표시 토큰을 바꾸지 않고 유효 명령 문맥을 유지한다. |
+| [INV-010/021 빙의·AI 인계에서 기존 행동 보존](../../../tests/Chronicles.Game.Tests/Program.cs#L214) | `public_world` / 정상 결과, 공개 명령 | 모드 전환·AI 인계는 접수한 현재 행동과 완료 시각을 취소하지 않는다. |
+
+범위: C# 명령/조회 세대·개인 표시 토큰과 행동 보존을 검사한다. 늦은 웹 응답·실제 Android 전환·캐시/내보내기 UI는 호스트/브라우저의 별도 실행 근거가 필요하다.
+
+### INV-011 · 실제 창세·생식·생애·인구 원장
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-001/002/011 정확한 창세·안정 신원·100지점](../../../tests/Chronicles.Game.Tests/Program.cs#L36) | `public_world` / 정상 결과, 초기 정의 | 기본 창세는 정확히 두 반선·종문0·100지점이며 초기 자산 출처를 기록한다. |
+| [INV-004/006/011/014 people public: frozen conception, actual birth soul and production-save continuation](../../../tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs#L71) | `public_world` / 정상 결과, 저장/재개, 공개 명령 | 실제 잉태·출생에서 새 몸·단일 혼을 배정하고 동결한 초기 유전을 저장 재개한다. |
+| [INV-011/012 people public: both-parent Golden Core boundary and explicit martial-law override](../../../tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs#L114) | `public_world` / 거절/부정, 공개 명령 | 양친 모두 금단이라는 기본 경계와 명시적 무도 법칙 예외만 실제 임신에 적용한다. |
+
+범위: 정확한 창세와 실제 공개 출산·종족/성숙 경계를 검사한다. 큰 인구의 장기 원장/성장 측정은 실행하지 않은 별도 단계다.
+
+### INV-012 · 유전·가계·교육·상속의 계승 경계
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-001/004/006/012/017/022 people family public: paid care, real teaching, consented adoption, adult separation and estate versus office succession](../../../tests/Chronicles.Game.Tests/Features/PeopleFamilyIntegrationScenarios.cs#L8) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령 | 실제 양육·양자 동의·생물학 DAG·교사/입양자·성년 분가와 재산/채무 상속·직책 승계를 분리한다. |
+| [INV-004/011/012 people public genetics: configured zero mutation and frozen model/stream after law changes](../../../tests/Chronicles.Game.Tests/Features/PeopleSocialIntegrationScenarios.cs#L224) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령 | 변이 확률0/크기0과 잉태 뒤 법칙 변경은 동결 유전 모델·선택·몸 원형을 소급 재추첨하지 않는다. |
+
+범위: 동결 유전·생물학 DAG·유료 교육/양육·상속/직책의 실제 공개 흐름과 모듈 경계를 구분한다. 예외 희귀 원형의 자연 발생률을 증명하지 않는다.
+
+### INV-013 · 윤회 자격 증거와 단일 여정
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-013 혼멸·역사 최고 경지로 자격 우회 없음](../../../tests/Chronicles.Game.Tests/Program.cs#L258) | `public_world` / 거절/부정, 공개 명령 | 혼멸·현재 범인 상태는 과거 반선 이력으로 윤회 자격을 우회하지 못한다. |
+| [INV-013/014 화신 대원만 경계·실제 사망·대기·출생](../../../tests/Chronicles.Game.Tests/Program.cs#L183) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령 | 화신 대원만 바로 아래/같음 경계와 실제 사망 후 혼의 대기/종료를 검사한다. 실제 출생은 별도 공개 출생 검사가 맡는다. |
+| [RC-13 실제 원인 생산자·자동 Gate·여정 왕복](../../../tests/Chronicles.Game.Tests/ReincarnationScenarios.cs#L9) | `public_world` / 정상 결과, 저장/재개, 공개 명령 | 13번째 실제 비승 원인 생산자는 새 분혼의 단일 여정·대기 상태와 저장 왕복을 검사한다. |
+
+범위: 13경로 원인 생산자·자격/혼멸 경계는 실제 검사다. 다중 동시 조건의 단일 우선순위와 다른 매칭 원인 설명 보존은 별도 실제 증거가 없다. 현재 EndLife는 단일 cause와 설명만 저장한다.
+
+### INV-014 · 분혼 정체성·출생 배정·흔적 단계
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-014/024 people public: coherent ready ascension, source capture and costed independent split](../../../tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs#L190) | `public_world` / 정상 결과, 거절/부정, 공개 명령 | 준비된 실제 비승·비용 있는 독립 분혼은 근원과 새 SoulId를 분리하며 수행 분령을 출생 후보로 복제하지 않는다. |
+| [INV-004/014/024 people public: eligible natural death, waiting-soul birth, real awakening and taught integration](../../../tests/Chronicles.Game.Tests/Features/PeopleIntegrationScenarios.cs#L227) | `public_world` / 정상 결과, 저장/재개, 공개 명령 | 실제 죽음→대기 혼 출생→각성·유료 전수로 흔적의 접근/통합을 구분한다. |
+| [INV-004/014/024 people: six trace domains, awakening, integration, crossing loss and conserved split branches](../../../tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs#L164) | `module` / 정상 결과, 거절/부정, 저장/재개 | 여섯 흔적의 보존·각성·통합·손실과 분혼 분기 보존을 모듈 단위로 검사한다. |
+
+범위: 실제 출생 배정·비승 분혼·여섯 흔적의 단계와 비용을 검사한다. 태내 미배정 영혼 효과를 추정하거나 수행 분령을 독립 혼으로 간주하지 않는다.
+
+### INV-015 · 효과 원천 단회 반영과 형성·현재·잠재 분리
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-006/015 people: six foundations, 24 talents, canonical ten cognition mappings and single cause effects](../../../tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs#L43) | `module` / 정상 결과, 거절/부정, 저장/재개 | 유전·혼흔·특성이 같은 원인이면 단회 반영하고 현재/선천/후천·24재능을 분리한다. |
+| [combat mechanics: each canonical axis changes practical hit damage escape coordination or finite exertion](../../../tests/Chronicles.Game.Tests/Features/CombatIntegrationScenarios.cs#L40) | `mechanics` / 정상 결과, 재현성 | 표시값뿐 아니라 실제 명중·피해·회피·협조·유한 소모에서 8축의 의미를 검사한다. |
+| [INV-004/015/023 regression·real recovery·costed route conversion·retreat boundaries](../../../tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs#L288) | `module` / 정상 결과, 거절/부정 | 퇴행·회복·유료 경로 변환이 실제 기여를 중복 전달하거나 과거 완성 보상을 재발행하지 않는다. |
+
+범위: 공통 원천 단회·상태 표식 피드백 방지·현재/조건부 잠재·실제 전투의 대표 축을 검사한다. 모든 가능한 효과 조합이나 수치 균형 완료는 아니다.
+
+### INV-016 · 실물·소유·보관·접근·수납 분리
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [inventory: INV-016 recursive container capacity, cycle rejection and broken-container overflow preserve stock](../../../tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs#L92) | `module` / 정상 결과, 거절/부정 | 수납 용량·자기/후손 순환·파손 초과를 검사하고 실제 물품을 보존한다. |
+| [inventory: INV-016 ownership, custody, use, equipment and remote access remain independent](../../../tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs#L68) | `module` / 거절/부정 | 소유·보관·사용·장비·원격 접근은 별도 권한이다. |
+| [inventory: INV-005/015/016 equipment replacement is atomic across occupied slots and return capacity](../../../tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs#L112) | `module` / 거절/부정 | 실패한 장비 교체는 점유 슬롯과 수납 물품을 원자적으로 유지한다. |
+| [비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다](../../../tests/Chronicles.Game.Tests/Features/ExplorationMaintenanceScenario.cs#L3) | `public_world` / 거절/부정, 공개 명령 | 소유권만으로 현재 하위 공간 밖의 재고를 소비하거나 표시하지 않는다. |
+
+범위: 모듈의 실물/수납/권리 부정 검사와 세계의 실제 화물·비경 접근을 구분한다. 각 가능한 컨테이너 깊이를 전수 검사했다고 하지 않는다.
+
+### INV-017 · 공통 예약·예치·시간 용량과 공정 소비
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-004/017/024 knowledge public world: real request and teaching share both participants' labor and cancel together](../../../tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs#L195) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 실제 교사·학생의 공통 행동 시간을 동시에 점유하고 한쪽 취소가 양쪽 교육을 함께 종료한다. |
+| [INV-004/012/017 실제 양육 시간·식량·사회 관계·감정·판단 이력](../../../tests/Chronicles.Game.Tests/Features/SocietyScenarios.cs#L5) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 돌봄 시작은 완료가 아니고 돌봄/수행 중복은 거절되며 복원 후 실제 월·식량을 한 번 소비한다. |
+| [INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs](../../../tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs#L89) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 이미 소비한 공정의 취소는 미사용 예약 해제와 구분해 입력을 환급하지 않는다. |
+
+범위: 실제 교사/학생·돌봄/수행·제작·정책·전투의 공통 행동/예약과 취소 경계다. UI 계획 초안은 실제 수락/예약으로 세지 않는다.
+
+### INV-018 · 자원·화폐·보상·경제 집계의 보존
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [currency public: exact two founder opening origins never grant money again on save or repeat initialization](../../../tests/Chronicles.Game.Tests/Features/CurrencyIntegrationScenarios.cs#L31) | `public_world` / 정상 결과, 저장/재개, 공개 명령 | 두 시조의 명시 초기 화폐 원천만 발행하고 저장/중복 초기화는 새 잔액을 만들지 않는다. |
+| [currency public: source-free balances repeated burns and disabled origin validation are rejected on restore](../../../tests/Chronicles.Game.Tests/Features/CurrencyIntegrationScenarios.cs#L155) | `public_world` / 거절/부정, 저장/재개 | 원천 없는 잔액·중복 소각·발행 원천 검증 비활성 위조 저장을 거절한다. |
+| [V021-O01 ecology kernel: actual extraction, finite depletion and renewable recovery reconcile to physical source receipts](../../../tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs#L79) | `module_and_world` / 정상 결과, 공개 명령 | 실제 추출·재생·손실의 자연 원천 잔액과 물리 생산 영수증을 대조한다. |
+| [비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다](../../../tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs#L129) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 경쟁 입장·재입장·중복 영수증은 유한 보상을 복제하지 않는다. |
+
+범위: 물리 원천/생산/소비·손실·유한 보상·화폐 발행/이전의 실제 검사다. 가격/경기·장기 경제 균형이나 대량 인구 측정을 통과로 취급하지 않는다.
+
+### INV-019 · 주권·위임·소유·영토 주장의 분리
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [V021-G01/G02 public politics: one province, persistent territoryless dynasty, annual zero revenue and restoration](../../../tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs#L116) | `public_world` / 정상 결과, 저장/재개, 공개 명령 | 한 주의 실제 주권으로 왕조를 세우고 무영토 상태에서도 역사/재산을 보존하되 조세는0이다. |
+| [INV-018/019 politics: vassal DAG, one resident tax and one direct-tax tribute per layer](../../../tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs#L137) | `module` / 거절/부정 | 봉신 DAG·주민 조세1회·층별 직접 조세 공납을 검사하여 중복 주권/집계를 막는다. |
+| [V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty](../../../tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs#L209) | `public_world` / 거절/부정, 공개 명령 | 실제 운영/소유권 이전은 개인 인지를 따르고 주권을 지급하지 않는다. |
+
+범위: 현재 주권/재산/운영·봉신·무영토 왕조의 공개 흐름과 모듈 DAG 검사다. 외부 영역/권리 유형을 추가했다는 의미는 아니다.
+
+### INV-020 · 정책 시행·관할·승계·채권의 계속 효력
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation](../../../tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs#L57) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 채택/준비 예치/공통 노동/실제 월별 시행과 재전송의 단일 완료를 검사한다. |
+| [V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office](../../../tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs#L312) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 재원이 있는 실제 교육·봉사·승계, 현행 헌장 철회와 재출생의 직책 비복원을 검사한다. |
+| [INV-018/020 politics: all ten detailed policy categories use actual input and effect semantics](../../../tests/Chronicles.Game.Tests/Features/PoliticsScenarios.cs#L269) | `module` / 정상 결과, 거절/부정 | 10대 정책 분류의 실제 입력/효과 의미를 모듈로 검사하며 공개 명령 전 분류 완주로 바꾸어 말하지 않는다. |
+
+범위: 실제 정책 준비/시행·승계·헌장/채권 경계와 10분류 모듈 검사를 구분한다. 모든 정책 분류를 공개 UI 명령으로 완주했다고 주장하지 않는다.
+
+### INV-021 · 기존 행동 스케줄과 계획 경계의 정합성
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion](../../../tests/Chronicles.Game.Tests/Features/ActionAuthorityScenarios.cs#L48) | `public_world` / 거절/부정, 공개 명령 | 원장·몸·예정시각과 일치하지 않는 단일 행동 소유 및 위조 typed marker를 저장/명령에서 거절한다. |
+| [INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save](../../../tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs#L148) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 실제 예산 소진 뒤 목표를 보존하고 다음 결정/복원 시 재개한다. |
+| [INV-010/021 ordinary AI cultivation completion returns to the actual goal decision boundary](../../../tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs#L252) | `public_world` / 정상 결과, 공개 명령 | 통상 월별 수행 완료는 Idle로 돌아가 건강·식량·목표를 다시 판단한다. |
+
+범위: 현재 구현은 월별 단일 권위 목록과 typed action 소유 검증이다. 예전 제안문의 indexed heap을 현재 사용하거나 heap index 시험을 실행했다고 주장하지 않는다.
+
+### INV-022 · 미정 정책·차단 판정·검증 근거의 비우회
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [V021-M02/O04 ecology kernel: time and population alone do not unlock markets, workshops, settlements or capacity](../../../tests/Chronicles.Game.Tests/Features/EcologyIntegrationScenarios.cs#L99) | `module_and_world` / 거절/부정, 공개 명령 | 시간/인구만으로 공급자·시설·재산·전략 노드·수납 용량을 만들어 정체를 보정하지 않는다. |
+| [INV-006/022 people: invariant absolute aptitude and scoped genius/candidate vacancies, ties and dated reevaluation](../../../tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs#L198) | `module` / 거절/부정 | 범위·동점·날짜를 가진 실제 평가에서 공석을 허용하고 숨은 천재를 정답으로 생성하지 않는다. |
+| [currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존](../../../tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs#L98) | `public_world` / 거절/부정, 공개 명령 | 숨은 타인 자산·원격/예약/결손 영석이나 비활성·충분 잔액은 무료 채굴/환전 목표를 만들지 않는다. |
+
+범위: 사용자 확정 정책과 실제 정체/공석/자원 거절 경계를 검사한다. 근거 상태 구분은 이 매핑/검증기 정책이며 게임 검사명만으로 최신 전체/성능/Android 통과를 주장할 수 없다.
+
+### INV-023 · 경지 필수 전이·돌파/중단의 경계
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-004/006/013/023 public scheduled fracture·restore·same life death authority](../../../tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs#L75) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 실제 원영 파단 뒤 실패/취소는 같은 현생 사망으로 한 번 정산하고 앱 저장 복원은 포기가 아니다. |
+| [INV-004/013/023 every minor-stage tribulation including entry/ninth/completion](../../../tests/Chronicles.Game.Tests/Features/CultivationScenarios.cs#L319) | `module` / 정상 결과, 거절/부정, 저장/재개 | 경지 진입·9소경지·완료의 실제 겁난과 비승 전 반선 경계를 모듈에서 검사한다. |
+| [INV-003/004/006/023 legal cultivation law edits preserve adopted work completion and active attempts](../../../tests/Chronicles.Game.Tests/Features/CultivationIntegrationScenarios.cs#L186) | `public_world` / 정상 결과, 저장/재개, 공개 명령 | 실행 중 시도는 채택 법칙을 유지하고 실제 이후 수행만 새 법칙을 따른다. |
+
+범위: 공개 원영 파단·채택 법칙과 모듈의 경지/겁난 전이를 구분한다. 짧은 기능 사례는 최종 수행 비용/위험 분포·성장 측정이 아니다.
+
+### INV-024 · 저작·판본·개인 지식과 실행의 분리
+
+| 정확한 실행 이름·소스 | 경계/검사 종류 | 실제 검사 범위 |
+| --- | --- | --- |
+| [INV-004/005/024 knowledge public world: study resumes against its actual body book and clock without skill gain](../../../tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs#L132) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 공부는 실제 몸·책·시간을 쓰며 책 소유/해독으로 실전 숙련을 지급하지 않는다. |
+| [INV-004/018/024 knowledge public world: actual misreading paid experiment and rereading preserve adopted history](../../../tests/Chronicles.Game.Tests/Features/KnowledgeIntegrationScenarios.cs#L229) | `public_world` / 거절/부정, 저장/재개, 공개 명령 | 실제 오독→유료 실험→재독은 채택 당시의 해석/행동 이력을 소급 정답화하지 않는다. |
+| [INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding](../../../tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs#L446) | `module` / 거절/부정, 저장/재개 | 열람·필사·전수 권리의 독립 만료와 스승 자신의 이해 상한을 검사한다. |
+
+범위: 공개 지식/실물/시간·오독/정정과 모듈 권한·판본·숙련을 구분한다. 소유/전승 접근만으로 미독 장절이나 실전 숙련을 지급하지 않는다.
+

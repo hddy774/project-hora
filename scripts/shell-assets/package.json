@@ -1,0 +1,12 @@
+{
+  "name": "@seonro/shell-assets",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "acorn": "8.15.0"
+  }
+}

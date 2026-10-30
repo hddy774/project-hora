@@ -76,7 +76,7 @@ public sealed class RichQueryMappingScenario : IFeatureScenario
         a.Plan = [new("gather", 0, "ore")]; a.Guardian = b.Id;
         var tool = state.Items.Single(i => i.Owner == a.Id && i.Definition == "tool"); a.Equipment[8] = tool.Id;
         tool.Damage = 25; tool.Defects = ItemDefect.Contamination; tool.BoundSoul = a.SoulId;
-        home.Money = 60; home.PolicyEscrow = 10; home.PolicyDue = 3; home.Debt = 40; state.CreatedMoney += 70;
+        home.Money = 60; home.PolicyEscrow = 10; home.PolicyDue = 3; home.Debt = 40; a.Money -= 70;
         home.PendingPolicies[Catalog.PolicyNames[0]] = 2;
         state.Places[0].Owner = a.Id; state.Places[0].Operator = a.Id; home.Kind = GroupKind.Dynasty; home.Provinces = [0];
         foreach (var site in state.Places.Where(p => p.Province == 0)) site.Sovereign = home.Id;
@@ -96,6 +96,10 @@ public sealed class RichQueryMappingScenario : IFeatureScenario
             organization.PendingPolicies![Catalog.PolicyNames[0]] == 2, "Pending policy/finance mapping failed.");
         QueryFixture.Check(view.LawHistory.Single().Key == "birth.enabled" && view.CombatAxisNames!.SequenceEqual(Chronicles.Game.Cultivation.CultivationQueries.AxisNames),
             "Actual history or canonical axis names were lost.");
+        QueryFixture.Check(view.Species.Select(s => s.Id).SequenceEqual(Chronicles.Game.People.SpeciesCatalog.All.Select(s => s.Id)) &&
+            view.Species.All(s => s.BasicLifespanMonths > s.MaturityMonths) && view.CurrencyExchange!.MoneyPerToken == state.Laws["currency.stoneValue"] &&
+            view.ItemNames!["resource.02.0"] == Chronicles.Game.Inventory.InventoryDefinitions.Definition("resource.02.0").Item.Name && view.Economy!.Observer,
+            "Public species/item/currency metadata or the actual economy scope was fabricated or omitted.");
         QueryFixture.Accepted(world, "possess", a.Id);
         var personal = world.View(a.Id); var remembered = personal.Places.Single(p => p.Id == 0);
         QueryFixture.Check(remembered.Source == 77 && remembered.Qi == 88 && remembered.Owner == b.Id &&
@@ -110,6 +114,8 @@ public sealed class RichQueryMappingScenario : IFeatureScenario
             "Founder initialization became automatic innate/latent or external-context appraisal.");
         QueryFixture.Check(personal.Detail.Combat!.SequenceEqual(Enumerable.Range(0,8).Select(personal.Detail.CombatProjection!.Axes.At)),
             "Legacy combat values were relabeled as canonical axes.");
+        QueryFixture.Check(!personal.Economy!.Observer && personal.Economy.Regions.Count == 0 && personal.Economy.NaturalFlows.Count == 0 &&
+            personal.Economy.Demand.All(d => d.Subject == a.Id && d.Sector == "person"), "Personal economy exposed observer-only stock/flow or private counterpart demand.");
         var ownGear = personal.Items.Single(i => i.Id == tool.Id);
         QueryFixture.Check(ownGear.EquippedSlot == 8 && ownGear.Damage is null && ownGear.Defects is null && ownGear.BoundSoul is null,
             "Physical ownership became automatic appraisal.");

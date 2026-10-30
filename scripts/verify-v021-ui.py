@@ -8,13 +8,19 @@ they verify the JavaScript bridge and never count as domain integration evidence
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('output', nargs='?', default='artifacts/ui')
 parser.add_argument('--url', default=os.environ.get('SEONRO_UI_BASE_URL', 'http://127.0.0.1:5211'))
+parser.add_argument('--smoke-only', action='store_true', help='Current scoped-domain navigation, commands and dialogs only')
+parser.add_argument('--compat', action='store_true', help='Serve committed offline Chromium 51 HTML over the real API host')
+parser.add_argument('--legacy-dom', action='store_true', help='Force fallback DOM/layout/formatting APIs; requires --compat')
 args = parser.parse_args()
+if args.legacy_dom and not args.compat:
+    parser.error('--legacy-dom requires --compat')
 out = Path(args.output)
 out.mkdir(parents=True, exist_ok=True)
 results = []
@@ -51,8 +57,150 @@ def open_item(page, definition):
     row.get_by_role('button', name='실물·행동', exact=True).click()
 
 
+LEGACY_APIS = r'''() => {
+  function remove(object, name) { Object.defineProperty(object,name,{value:undefined,writable:true,configurable:true}); }
+  ['entries','values','fromEntries','getOwnPropertyDescriptors'].forEach(name=>remove(Object,name));
+  remove(Array.prototype,'at'); remove(Element.prototype,'replaceChildren'); remove(DocumentFragment.prototype,'replaceChildren');
+  remove(window,'globalThis'); remove(window,'Intl');
+  remove(HTMLFormElement.prototype,'reportValidity'); remove(HTMLInputElement.prototype,'reportValidity');
+  remove(HTMLDialogElement.prototype,'showModal'); remove(HTMLDialogElement.prototype,'close');
+  const supports=CSS.supports.bind(CSS); CSS.supports=(name,value)=>name==='display'&&value==='grid'?false:supports(name,value);
+}'''
+
+
+def smoke_checks(browser):
+    asset = Path(__file__).resolve().parents[1] / 'src/Chronicles.Shell/index.compat.html'
+    for width in (1280, 390):
+        context = browser.new_context(viewport={'width': width, 'height': 900})
+        if args.legacy_dom:
+            context.add_init_script('(' + LEGACY_APIS + ')()')
+        if args.compat:
+            def document(route):
+                if route.request.resource_type == 'document':
+                    route.fulfill(status=200, content_type='text/html; charset=utf-8', body=asset.read_text())
+                else:
+                    route.continue_()
+            context.route('**/*', document)
+        page = context.new_page()
+        errors = []
+        page.on('pageerror', lambda error: errors.append(str(error)))
+        page.goto(args.url)
+        page.get_by_role('heading', name='만상의 흐름', exact=True).wait_for()
+        settle(page)
+        page.evaluate("() => send({type:'new',seed:42})")
+        assert page.evaluate('() => view.people.length===2 && !view.groups.some(g=>g.kind===\'Sect\')')
+        for label in ('인물', '지도', '수행', '물품', '세력', '시장', '연대기', '법칙', '세계'):
+            nav(page, label)
+            assert not page.evaluate('() => document.body.scrollWidth > innerWidth'), label
+        nav(page, '지도')
+        sizes = page.locator('.map button').evaluate_all('(nodes)=>nodes.map(n=>({w:n.getBoundingClientRect().width,h:n.getBoundingClientRect().height}))')
+        assert len(sizes) == 100 and all(s['w'] >= 44 and s['h'] >= 44 for s in sizes), sizes[:10]
+        nav(page, '인물')
+        page.get_by_role('searchbox').press_sequentially('청명')
+        assert page.locator('tbody tr').count() == 1
+        assert page.get_by_role('searchbox').evaluate('(el)=>el===document.activeElement')
+        page.get_by_role('button', name='상세', exact=True).click()
+        settle(page)
+        page.keyboard.press('Alt+ArrowLeft'); settle(page)
+        assert page.get_by_role('searchbox').input_value() == '청명'
+        page.get_by_role('button', name='상세', exact=True).click(); settle(page)
+        page.get_by_role('button', name='이 인물로 플레이', exact=True).click(); settle(page)
+        page.evaluate('() => inspect(view.actor)')
+        assert page.evaluate('() => !view.observer && view.detail.roots===null && view.detail.people.innate===null && view.detail.combat.length===8')
+        assert page.get_by_role('navigation').get_by_role('button', name='법칙', exact=True).count() == 0
+        other = page.evaluate('() => view.people.find(p=>p.id!==view.actor).id')
+        page.evaluate('(id)=>inspect(id)', other)
+        assert page.evaluate('() => view.detail.decision===null && view.detail.knowledge===null && view.detail.person.plan===null')
+        page.get_by_role('button', name='이 인물로 플레이', exact=True).click(); settle(page)
+        page.evaluate('() => inspect(view.actor)')
+        assert page.evaluate('(id)=>view.actor===id && view.detail.person.id===id', other)
+        open_item(page, '채집 도구')
+        page.get_by_role('button', name='도구 장착 요청', exact=True).click(); settle(page)
+        assert page.evaluate('() => recentCommand.accepted')
+        open_item(page, '채집 도구')
+        page.get_by_role('button', name='장비 해제', exact=True).click(); settle(page)
+        assert page.evaluate('() => recentCommand.accepted')
+        food = page.evaluate("() => view.items.find(i=>i.definition==='food')")
+        open_item(page, '영곡')
+        page.get_by_role('button', name='1개 사용', exact=True).click(); settle(page)
+        assert page.evaluate('(id)=>item(id).quantity', food['id']) == food['quantity'] - 1
+        nav(page, '물품')
+        page.get_by_role('button', name='제작 계획', exact=True).click()
+        assert page.locator('#recipe option').count() == page.evaluate('() => view.recipes.length') >= 90
+        page.get_by_label('제작법 검색').fill('저물대')
+        assert page.locator('#recipe option').count() > 0
+        revision = page.evaluate('() => view.revision')
+        page.keyboard.press('Escape')
+        assert not page.locator('#dialog').evaluate('(d)=>d.open')
+        assert page.evaluate('() => view.revision') == revision
+        nav(page, '시장')
+        assert page.locator('[data-section="economy"]').count() == 1
+        assert page.locator('[data-section="currency"]').count() == 1
+        assert page.evaluate('() => view.economy.regions.length===0 && view.economy.naturalFlows.length===0')
+        page.get_by_role('button', name='관찰로 전환', exact=True).first.click(); settle(page)
+        nav(page, '인물')
+        if page.get_by_role('button', name='인물 목록', exact=True).count():
+            page.get_by_role('button', name='인물 목록', exact=True).click(); settle(page)
+        page.get_by_role('button', name='명시적 인물 편입', exact=True).click()
+        assert page.locator('#newspecies option').count() == 5
+        page.get_by_label('이름', exact=True).fill('')
+        page.get_by_role('button', name='명령 제출', exact=True).click()
+        assert page.locator('#dialog').evaluate('(d)=>d.open')
+        page.get_by_label('이름', exact=True).fill('기능 확인 영호')
+        page.get_by_label('종과 자연 육신').select_option('spirit-fox')
+        submit(page)
+        created = page.evaluate("() => view.people.find(p=>p.name==='기능 확인 영호')")
+        assert created
+        page.evaluate('(id)=>inspect(id)', created['id'])
+        assert page.evaluate("() => view.detail.people.actualBody.speciesId==='spirit-fox'")
+        nav(page, '법칙')
+        changes = page.evaluate('() => Object.fromEntries(view.laws.slice(0,2).map(l=>[l.id,l.value===l.maximum?l.value-1:l.value+1]))')
+        page.get_by_role('button', name='값 가져오기', exact=True).click()
+        page.get_by_label('내보낸 JSON 값 붙여넣기').fill(json.dumps({'laws': changes}))
+        page.get_by_role('button', name='차이 검토', exact=True).click()
+        assert page.get_by_role('heading', name='가져올 법칙 차이 검토', exact=True).count() == 1
+        submit(page, '검토한 값 일괄 적용')
+        assert page.evaluate('(changes)=>Object.entries(changes).every(([id,value])=>view.laws.find(l=>l.id===id).value===value)', changes)
+        assert page.evaluate('() => new Set(view.lawHistory.slice(-2).map(h=>h.revision)).size===1')
+        nav(page, '세계')
+        page.get_by_role('button', name='새 세계', exact=True).click()
+        assert page.get_by_label('새 세계의 법칙').input_value() == 'current'
+        submit_new = page.get_by_role('button', name='새 세계 만들기', exact=True)
+        submit_new.click(); settle(page)
+        assert page.evaluate('(changes)=>Object.entries(changes).every(([id,value])=>view.laws.find(l=>l.id===id).value===value)', changes)
+        assert page.evaluate('() => view.people.length===2')
+        page.get_by_role('button', name='새 세계', exact=True).click()
+        page.get_by_label('새 세계의 법칙').select_option('default')
+        page.get_by_role('button', name='새 세계 만들기', exact=True).click(); settle(page)
+        assert page.evaluate('() => view.laws.every(l=>l.value===l.defaultValue)')
+        page.get_by_role('button', name='저장', exact=True).click(); settle(page)
+        saved = page.evaluate('() => view.hash')
+        page.get_by_role('button', name='불러오기', exact=True).click()
+        page.get_by_role('dialog').get_by_role('button', name='불러오기', exact=True).click(); settle(page)
+        assert page.evaluate('() => view.hash') == saved
+        if args.legacy_dom:
+            assert page.evaluate("() => document.documentElement.hasAttribute('data-shell-legacy-grid') && typeof globalThis==='object' && typeof Object.fromEntries==='function' && typeof [].at==='function'")
+            assert page.locator('#dialog').get_attribute('data-shell-legacy-dialog') is not None
+            assert page.evaluate('() => n(1234567)') == '1,234,567'
+        assert page.evaluate('() => window.seonroLastHostError==null'), page.evaluate('() => window.seonroLastHostError')
+        assert not errors, errors
+        assert not page.evaluate('() => document.body.scrollWidth > innerWidth')
+        page.screenshot(path=str(out / f'smoke-{width}.png'), full_page=True)
+        results.append({'kind':'real_session_functional_smoke','width':width,'asset':'committed_chrome51' if args.compat else 'authoring',
+                        'forced_legacy_dom':args.legacy_dom,'tabs':9,'javascript_errors':errors,'touch_targets_44px':True,
+                        'known_actor_switch':True,'equipment_use':True,'species_creation':True,'atomic_law_batch':True,
+                        'new_world_law_choice':True,'save_load':True,'native_api24_verified':False})
+        context.close()
+
+
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True, args=['--no-sandbox'])
+    if args.smoke_only:
+        smoke_checks(browser)
+        browser.close()
+        (out / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=2)+'\n')
+        print(json.dumps(results, ensure_ascii=False))
+        sys.exit(0)
     observer_reply = play_reply = None
     for width in (1280, 390):
         page = browser.new_page(viewport={'width': width, 'height': 900})
@@ -294,6 +442,8 @@ with sync_playwright() as p:
         settle(page)
         assert page.evaluate('(id) => view.laws.find(l=>l.id===id).value', law['id']) == law['value']
         nav(page, '인물')
+        if page.get_by_role('button', name='인물 목록', exact=True).count():
+            page.get_by_role('button', name='인물 목록', exact=True).click(); settle(page)
         page.get_by_role('button', name='명시적 인물 편입', exact=True).click()
         page.get_by_label('이름', exact=True).fill('명시 편입 검증')
         submit(page)

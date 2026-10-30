@@ -356,7 +356,7 @@ public sealed partial class GameWorld
     {
         var profile = state.PeopleDomain.Profiles.FirstOrDefault(x => x.PersonId == p.Id);
         var assessment = profile is null ? null : Aptitudes.Assess(PeopleProfiles.Context(profile, state.PeopleDomain.Traits, Month,
-            10000, 10000, [], state.PeopleDomain.Tuning));
+            10000, 10000, [], state.PeopleDomain.Tuning), ExecutionInnateTalents(p));
         int Capability(int index)
         {
             if (assessment is null) return Catalog.Talent(p, index);

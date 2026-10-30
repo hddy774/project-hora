@@ -39,11 +39,36 @@ internal static class PerformanceScenarios
             Options));
     }
 
+    public static void Soak(string path)
+    {
+        var world = GameWorld.Restore(Fixture(10000));
+        var watch = Stopwatch.StartNew();
+        var target = 7200L;
+        while (world.Month < target && watch.Elapsed.TotalSeconds < 60)
+        {
+            world.AdvanceTo(world.Month + 1);
+            if (world.Month % 1000 == 0) Console.WriteLine($"SOAK {world.Month}/{target} months in {watch.Elapsed.TotalSeconds:F2}s");
+        }
+        watch.Stop(); var state = world.Checkpoint(); Invariants.Validate(state);
+        var living = state.People.Count(p => p.Status == LifeStatus.Alive);
+        var report = new { population = 10000, living, elapsedSeconds = watch.Elapsed.TotalSeconds,
+            targetMonths = target, completedMonths = world.Month, targetSpeed = 100,
+            achievedSpeed = world.Month / 12d * 10 / watch.Elapsed.TotalSeconds,
+            passed = world.Month == target && living == 10000,
+            fixture = "synthetic; no births, food costs, disasters or hazards; long life overrides; not founder history or Android measurement",
+            finalHash = world.StateHash(), runtime = RuntimeInformation.FrameworkDescription, cpu = Environment.ProcessorCount };
+        File.WriteAllText(path, JsonSerializer.Serialize(report, Options));
+        Console.WriteLine(JsonSerializer.Serialize(report, Options));
+    }
+
     private static GameState Fixture(int size)
     {
         var s = GameWorld.Create(42, new Dictionary<string, long> { ["birth.enabled"] = 0,
             ["ecology.foodUse"] = 0, ["ecology.disasterChance"] = 0,
-            ["ecology.sourceCapacity"] = 1000000, ["ecology.regrowth"] = 10000 }).Checkpoint();
+            ["ecology.sourceCapacity"] = 1000000, ["ecology.regrowth"] = 10000,
+            ["life.qi"] = 120000, ["life.foundation"] = 120000, ["life.core"] = 120000,
+            ["hazard.structureDamage"] = 0, ["hazard.bondDamage"] = 0, ["hazard.sealChance"] = 0,
+            ["hazard.portalChance"] = 0, ["hazard.trialDamage"] = 0, ["cultivation.breakthroughRisk"] = 0 }).Checkpoint();
         for (var n = 2; n < size; n++)
         {
             var p = new Person { Id = s.NextId++, BodyId = s.NextId++, SoulId = s.NextId++,
@@ -52,6 +77,8 @@ internal static class PerformanceScenarios
                 Aptitudes = Enumerable.Repeat(5000, 6).ToArray(), Roots = Enumerable.Repeat(5000, 5).ToArray(),
                 Personality = Enumerable.Repeat(50, 14).ToArray(), KnownPlaces = [n % 100] };
             p.Understanding["entry"] = 10000;
+            p.Slot = s.ActiveSlots.Count; p.SlotGeneration = 1;
+            s.ActiveSlots.Add(new PopulationSlot { Person = p.Id });
             s.People.Add(p); s.Souls.Add(new Soul { Id = p.SoulId, Root = p.SoulId, CurrentPerson = p.Id, Evidence = "합성 성능 fixture" });
         }
         return s;

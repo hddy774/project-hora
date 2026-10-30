@@ -10,7 +10,13 @@ public sealed partial class GameWorld
             return "도려 관계를 맺을 조건이 아닙니다.";
         if (Law("birth.kinship") == 0 && Related(p, q)) return "현재 혈연 법칙에서 허용하지 않습니다.";
         // The other character makes an independent, reproducible choice from their disposition.
-        if (q.Personality[4] + q.Personality[5] < 60) return "상대가 제안을 거절했습니다.";
+        if (q.Personality[4] + q.Personality[5] < 60)
+        {
+            Remember(p, $"proposal:{q.Id}", "거절", "실제 도려 제안 결과", 100);
+            Event("제안 거절", p.Id, q.Id, $"{q.Name} 도려 제안을 거절했다.", "상대의 독립 의사");
+            p.Action = ActionKind.Guard; p.Due = Month + 1;
+            return null;
+        }
         p.Partner = q.Id; q.Partner = p.Id;
         Event("도려", p.Id, q.Id, $"{p.Name}·{q.Name} 상호 도려 성립", "상호 의사");
         return null;
@@ -91,7 +97,8 @@ public sealed partial class GameWorld
         soul.Status = "embodied"; soul.CurrentPerson = p.Id;
         soul.Traces = soul.Traces.Select(t => t with { Accessible = 0, Integrated = 0 }).ToArray();
         if (soul.Route > 0) p.Traits.Add(new("윤회유흔", $"Soul:{soul.Id}", Month, null, true));
-        state.People.Add(p); people.Add(p.Id, p); pregnancy.Child = p.Id;
+        BindSlot(p); state.People.Add(p); people.Add(p.Id, p); pregnancy.Child = p.Id;
+        state.Places[p.Place].PeopleRevision++;
         if (groups.TryGetValue(p.Household, out var home)) home.Members.Add(p.Id);
         mother.NextBirth = Month + pregnancy.Recovery;
         mother.Health = Math.Max(1, mother.Health - pregnancy.HealthCost);
@@ -104,9 +111,11 @@ public sealed partial class GameWorld
     {
         if (p.Status != LifeStatus.Alive) return;
         var sourceRealm = p.Realm; var sourceLayer = p.Layer;
+        ReleaseSlot(p);
         p.Irreversible = false;
         if (p.Action != ActionKind.Idle) Cancel(p);
         p.Status = outcome; p.Ended = Month;
+        state.Places[p.Place].PeopleRevision++;
         if (outcome == LifeStatus.Dead) state.DeathCount++;
         if (p.Partner != 0 && people.TryGetValue(p.Partner, out var partner)) partner.Partner = 0;
         p.Partner = 0;
@@ -117,11 +126,11 @@ public sealed partial class GameWorld
             8 or 9 => Realm.Tribulation, 10 or 11 => Realm.Mahayana, 12 => Realm.HalfImmortal, _ => min };
         var needsComplete = cause is 7 or 9 or 11 || sourceRealm == min;
         var enabled = cause is >= 1 and <= 12 && (Law("soul.enabledRoutes") & (1L << (cause - 1))) != 0;
-        var eligible = sourceRealm >= min && sourceRealm >= routeMin && (!needsComplete || p.GreatPerfection);
+        var eligible = soul.Integrity > 0 && sourceRealm >= min && sourceRealm >= routeMin && (!needsComplete || p.GreatPerfection);
         soul.SourceRealm = sourceRealm; soul.SourceLayer = sourceLayer;
         soul.Evidence = $"현생 {p.Id} 종료 직전 {Catalog.RealmNames[(int)sourceRealm]} {sourceLayer}층·{evidence}·법칙 r{state.LawRevision}";
         soul.Route = enabled && eligible ? cause : 0;
-        soul.Status = soul.Route > 0 ? "waiting" : "ended";
+        soul.Status = soul.Integrity == 0 ? "destroyed" : soul.Route > 0 ? "waiting" : "ended";
         soul.Ready = Month + Law("soul.crossing");
         if (soul.Route > 0)
             soul.Traces = Enumerable.Range(0, 6).Select(i => new Trace(Math.Min(100, p.Understanding.Count * 2 + i), 0, 0)).ToArray();
@@ -149,7 +158,8 @@ public sealed partial class GameWorld
         if (p.Realm != Realm.HalfImmortal || !p.GreatPerfection || p.Health < 90 || p.Action != ActionKind.Idle ||
             Month < Law("founder.ascensionProtection") || p.Place != 99 || p.Understanding.GetValueOrDefault("path.10.2") == 0)
             return "비승 통로·기반·시기 조건이 부족합니다.";
-        p.Status = LifeStatus.Ascended; p.Ended = Month;
+        ReleaseSlot(p); p.Status = LifeStatus.Ascended; p.Ended = Month;
+        state.Places[p.Place].PeopleRevision++;
         if (p.Partner != 0 && people.TryGetValue(p.Partner, out var partner)) partner.Partner = 0;
         p.Partner = 0;
         foreach (var group in state.Groups.Where(g => !g.Dissolved && g.Leader == p.Id))

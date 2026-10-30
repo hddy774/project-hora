@@ -12,7 +12,7 @@ public partial class App : System.Windows.Application
         try
         {
             base.OnStartup(e);
-            var window = new MainWindow();
+            var window = new EcologyWindow(e.Args.Contains("--smoke-test", StringComparer.Ordinal));
             MainWindow = window;
             window.Show();
         }

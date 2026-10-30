@@ -2,7 +2,7 @@ namespace Chronicles.Game;
 
 public sealed record ItemDefinition(string Id, string Name, ItemKind Kind, int Weight, int Capacity, int EquipmentSlot, string Use);
 public sealed record Recipe(string Id, string Name, string Skill, string Output, int Quantity, KeyValuePair<string, int>[] Inputs);
-public sealed record PathDefinition(string Id, Realm Realm, string Name, string Book, int[] CombatFactors, int SupplyCost, int Risk);
+public sealed record PathDefinition(string Id, Realm Realm, string Name, string Book, IReadOnlyList<int> CombatFactors, int SupplyCost, int Risk);
 
 public static class Catalog
 {
@@ -74,7 +74,7 @@ public static class Catalog
             {
                 int[][] factors = [[120, 80, 100, 90, 110, 80, 100, 90],
                     [85, 120, 90, 110, 80, 110, 100, 100], [100, 95, 115, 90, 100, 105, 85, 110]];
-                result.Add(new($"path.{r + 1}.{n}", (Realm)(r + 1), names[r][n], books[r][n], factors[n], n + 1, n * 100));
+                result.Add(new($"path.{r + 1}.{n}", (Realm)(r + 1), names[r][n], books[r][n], Array.AsReadOnly(factors[n]), n + 1, n * 100));
             }
         return result.AsReadOnly();
     }

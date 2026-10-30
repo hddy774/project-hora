@@ -69,7 +69,7 @@ public sealed partial class GameWorld
                 if (path.Id.EndsWith(".0", StringComparison.Ordinal))
                     p.Formations.Add(new(path.Realm, path.Id, 5000, 0, 0, "창세 초기 구조·실제 과거 없음"));
             }
-            s.People.Add(p);
+            w.BindSlot(p); s.People.Add(p);
             s.Souls.Add(new Soul { Id = p.SoulId, Root = p.SoulId, CurrentPerson = p.Id,
                 SourceRealm = Realm.HalfImmortal, SourceLayer = 9, Evidence = "창세 조건" });
             s.CreatedMoney += p.Money;
@@ -120,8 +120,29 @@ public sealed partial class GameWorld
         state.RandomState = x;
         return (int)((x * 2685821657736338717UL) % (uint)maximum);
     }
-    private void Event(string kind, long actor, long target, string message, string source) =>
-        state.Events.Add(new(Id(), Month, kind, actor, target, message, source));
+    private void Event(string kind, long actor, long target, string message, string source)
+    {
+        var targetKind = kind switch
+        {
+            "출생" or "도려" or "거래" or "전투" or "입양" or "제안 거절" or "배움 요청" => "person",
+            "재해" or "발견" or "고대 금제" => "place",
+            "소비" or "제작" => "item",
+            "사망" or "세계 이탈" or "무예" => "condition",
+            _ => "group"
+        };
+        var entry = new GameEvent(Id(), Month, kind, actor, target, message, source, targetKind);
+        if (kind is not "배움 요청" and not "혼약 만료" and not "제안 거절" and not "소비" and not "출품" and not "제작")
+            state.Events.Add(entry);
+        void Append(Person p)
+        {
+            p.Journal.Add(entry);
+            if (p.Journal.Count > 100) p.Journal.RemoveAt(0);
+        }
+        if (people.TryGetValue(actor, out var active)) Append(active);
+        if (targetKind == "person" && target != actor && people.TryGetValue(target, out var recipient)) Append(recipient);
+        if (targetKind == "place" && residents.TryGetValue((int)target, out var local))
+            foreach (var p in local.Where(p => p.Id != actor && p.Status == LifeStatus.Alive)) Append(p);
+    }
 
     // Public commands execute on a candidate. Rejection cannot leak partial reservations, RNG or IDs.
     public CommandResult Execute(GameCommand command)
@@ -169,6 +190,7 @@ public sealed partial class GameWorld
                 return "법칙 범위를 확인하세요.";
             var before = state.Laws[c.Data]; state.Laws[c.Data] = c.Value;
             if (Laws.Validate(state.Laws) is { } err) return err;
+            if (c.Data == "ai.beliefBudget") foreach (var person in state.People) TrimCognition(person);
             state.LawRevision++;
             state.LawHistory.Add(new(Month, state.LawRevision, c.Data, before, c.Value));
             Event("법칙", 0, 0, $"{definition.Name}: {before} → {c.Value}", c.Id);
@@ -190,6 +212,9 @@ public sealed partial class GameWorld
         if (c.Kind == "join") return Join(p, c.Target);
         if (c.Kind == "policy") return Policy(p, c.Target, c.Data, c.Value);
         if (c.Kind == "govern") return Govern(p, c.Target, c.Value);
+        if (c.Kind == "releaseProvince") return ReleaseProvince(p, c.Target, c.Value);
+        if (c.Kind == "adopt") return Adopt(p, c.Target);
+        if (c.Kind == "requestTeaching") return RequestTeaching(p, c.Target, c.Data);
         if (c.Kind == "vassal") return Vassal(p, c.Target, c.Value);
         if (c.Kind == "attack") return Attack(p, c.Target);
         if (c.Kind == "ascend") return Ascend(p);
@@ -226,6 +251,7 @@ public sealed partial class GameWorld
         }
         if (action == ActionKind.Teach && (!people.TryGetValue(target, out var pupil) ||
             pupil.Status != LifeStatus.Alive || pupil.Place != p.Place || !p.KnownPeople.Contains(target) ||
+            (pupil.Action != ActionKind.Idle && pupil.Action != ActionKind.Wait) ||
             !p.Understanding.TryGetValue(data, out var teacherKnowledge) || teacherKnowledge <= pupil.Understanding.GetValueOrDefault(data)))
             return "전수 조건을 만족하지 않습니다.";
         if (action == ActionKind.Cultivate && data.Length > 0 && !Catalog.Paths.Any(x => x.Id == data &&
@@ -237,6 +263,10 @@ public sealed partial class GameWorld
         p.ActionRevision = state.LawRevision;
         p.Due = Month + (action == ActionKind.Travel ? Law("economy.travelDuration") :
             action == ActionKind.Craft ? Law("economy.craftDuration") : 1);
+        if (action == ActionKind.Teach)
+        {
+            people[target].Action = ActionKind.Wait; people[target].Due = p.Due;
+        }
         return null;
     }
 
@@ -301,7 +331,8 @@ public sealed partial class GameWorld
             Aptitudes = Enumerable.Range(0, 6).Select(_ => 4000 + Roll(2001)).ToArray(),
             Roots = Enumerable.Range(0, 5).Select(_ => 4000 + Roll(2001)).ToArray(),
             Personality = Enumerable.Range(0, 14).Select(_ => 20 + Roll(61)).ToArray(), KnownPlaces = [(int)c.Target] };
-        state.People.Add(p); people.Add(p.Id, p);
+        BindSlot(p); state.People.Add(p); people.Add(p.Id, p);
+        state.Places[p.Place].PeopleRevision++;
         var soul = new Soul { Id = p.SoulId, Root = p.SoulId, CurrentPerson = p.Id, Evidence = "명시적 중도 편입·외부 기원" };
         state.Souls.Add(soul); souls.Add(soul.Id, soul);
         Event("편입", p.Id, 0, $"{p.Name} 명시 편입·자산 지급 없음", c.Id);

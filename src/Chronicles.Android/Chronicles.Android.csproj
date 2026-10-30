@@ -4,7 +4,10 @@
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
     <OutputType>Exe</OutputType>
     <ApplicationId>com.seonro.mansangrok</ApplicationId>
-    <ApplicationVersion>201</ApplicationVersion>
+    <SeonroVersionMajor>$([System.Version]::Parse('$(Version)').Major)</SeonroVersionMajor>
+    <SeonroVersionMinor>$([System.Version]::Parse('$(Version)').Minor)</SeonroVersionMinor>
+    <SeonroVersionPatch>$([System.Version]::Parse('$(Version)').Build)</SeonroVersionPatch>
+    <ApplicationVersion>$([MSBuild]::Add($([MSBuild]::Add($([MSBuild]::Multiply($(SeonroVersionMajor), 1000000)), $([MSBuild]::Multiply($(SeonroVersionMinor), 1000)))), $(SeonroVersionPatch)))</ApplicationVersion>
     <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
     <AndroidPackageFormats>apk</AndroidPackageFormats>
     <PublishTrimmed>false</PublishTrimmed>

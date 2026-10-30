@@ -14,7 +14,7 @@
     "product_code_changed": true,
     "version_file_changed": true,
     "review_source_sha256": "470bb05dc6b7a195c5f8ac7b6998b8a1d184967d8131f803f7acf131618e0598",
-    "decision_record": "docs/plans/v021-decisions.md"
+    "decision_record": "docs/plans/v021-canon-map.md"
   },
   "required_original_ids": [
     "V021-A01",
@@ -152,110 +152,99 @@
       "id": "Q-02",
       "question": "시조의 종족·생식 프로필·나이·관계·초기 지식/자산",
       "proposal": "두 명 모두 반선이라는 확정 조건 안에서 생성 프로필로 선택·검증. 경지와 기예/재능 최대값은 별개",
-      "status": "open",
-      "owner": "user",
-      "decision_required_at": "policy-sensitive acceptance",
-      "blocks": [
-        "V021-R09",
-        "V021-P02"
-      ],
-      "resolution": null,
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "decision_required_at": "resolved",
+      "blocks": [],
+      "resolution": "개발 기본안: 인간형 시조 두 명·100세·상호 도려·상보 생식 프로필·출처 있는 초기 자산/지식. 반선과 기예 최대값은 분리.",
       "feedback_ids": [
         "FB-13"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-03",
       "question": "‘종문 10개’의 생애 처리",
       "proposal": "초기0·동시 존속 최대10·창설/해산/신생 가능을 제안. 멸문 역사 수와 동시 수 분리·세계 법칙화",
-      "status": "open",
-      "owner": "user",
-      "decision_required_at": "policy-sensitive acceptance",
-      "blocks": [
-        "V021-S01"
-      ],
-      "resolution": null,
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "decision_required_at": "resolved",
+      "blocks": [],
+      "resolution": "개발 기본안: 동시 종문 최대10·초기0·해산/신생·역사 수 분리, 법칙 조절.",
       "feedback_ids": [
         "FB-13"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-04",
       "question": "무영토 왕조의 세부 성립/명분",
       "proposal": "최소 한 주 주권으로 왕조 성립, 이후 영토0 존속 제안. 처음부터 무영토 창건은 별도 예외 미정",
-      "status": "open",
-      "owner": "user",
-      "decision_required_at": "policy-sensitive acceptance",
-      "blocks": [
-        "V021-G01",
-        "V021-G02"
-      ],
-      "resolution": null,
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "decision_required_at": "resolved",
+      "blocks": [],
+      "resolution": "기존 지시 구현: 한 주 주권으로 왕조 성립, 이후 영토0 존속. 최초 무영토 창건 예외 없음.",
       "feedback_ids": [
         "FB-13"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-05",
       "question": "진행 중 새 인물 생성 프로필",
       "proposal": "자연 출생 인물 조작권 또는 명시적 중도 편입, 실제 기원/유전·자산 출처. 자유/폐쇄 계보 프리셋 차이",
-      "status": "open",
-      "owner": "user",
-      "decision_required_at": "policy-sensitive acceptance",
-      "blocks": [
-        "V021-X02"
-      ],
-      "resolution": null,
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "decision_required_at": "resolved",
+      "blocks": [],
+      "resolution": "개발 기본안: 명시 편입은 성인 범인·외부 기원·자산0. 창세는 두 명 유지.",
       "feedback_ids": [
         "FB-13"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-06",
       "question": "가문 가주 자격·산후 부담/회복",
       "proposal": "금단 출산과 별도. 기존 정본 차이·조건/비용·회복을 세계 법칙/조직 정의에 명시",
-      "status": "open",
-      "owner": "user",
-      "decision_required_at": "policy-sensitive acceptance",
-      "blocks": [
-        "V021-F04"
-      ],
-      "resolution": null,
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "decision_required_at": "resolved",
+      "blocks": [],
+      "resolution": "개발 기본안: 성년·재원·가계의 가주 자격, 출산 금단과 분리. 산후 부담/간격 법칙 보정.",
       "feedback_ids": [
         "FB-13"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-07",
       "question": "윤회 13개 세부 조건·분혼 비용/한도",
       "proposal": "최소 자격과 자동 판정은 확정, 개별 경로/확률/기간은 제안·법칙 보정·경계 검증",
-      "status": "open",
-      "owner": "user",
-      "decision_required_at": "policy-sensitive acceptance",
-      "blocks": [
-        "V021-J02",
-        "V021-J04"
-      ],
-      "resolution": null,
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "decision_required_at": "resolved",
+      "blocks": [],
+      "resolution": "개발 기본안:13실제 원인·분혼1개/근원·보존 비용30%, 법칙 조절.",
       "feedback_ids": [
         "FB-13"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-08",
       "question": "공용 C# API·저장 serializer·추가 백엔드",
       "proposal": "호환 조사·정답/성능/유지비 실험으로 결정. Unity 실제 도입은 별도 후속 단계",
-      "status": "open",
-      "owner": "developer",
-      "decision_required_at": "policy-sensitive acceptance",
-      "blocks": [
-        "V021-H02",
-        "V021-D02"
-      ],
-      "resolution": null,
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "decision_required_at": "resolved",
+      "blocks": [],
+      "resolution": "개발 선택:.NET10·JSON checked envelope·원자 파일 저장. Unity 직접 호환은 후속 검증.",
       "feedback_ids": [
         "FB-13"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-09",
@@ -289,63 +278,57 @@
       "id": "Q-11",
       "question": "무인 정점의 출산 자격 환산을 기본으로 허용할지",
       "proposal": "전투력이 금단과 비등하다는 것만으로 출산 자격을 자동 환산하지 않음.",
-      "status": "open",
-      "owner": "user",
-      "blocks": [
-        "V021-F02",
-        "V021-W01"
-      ],
-      "resolution": null,
-      "decision_required_at": "policy-sensitive acceptance",
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "blocks": [],
+      "resolution": "양친 금단 기본에서 무인 자격 자동 환산 없음, 별도 법칙으로만 변경.",
+      "decision_required_at": "resolved",
       "feedback_ids": [
         "FB-02"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-12",
       "question": "13개 윤회 조건의 실제 발동 시스템을 모두 0.2.1에 포함할지 일부를 후속으로 이관할지",
       "proposal": "현재 13개 목표 유지. 피드백의 5개 후속 이관은 실제 발동 8개로 줄어드는 범위 변경이므로 미적용.",
-      "status": "open",
-      "owner": "user",
-      "blocks": [
-        "V021-J02"
-      ],
-      "resolution": null,
-      "decision_required_at": "policy-sensitive acceptance",
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "blocks": [],
+      "resolution": "전체0.2.1 지시에 따라13경로 전체 유지. 후속 이관 없음.",
+      "decision_required_at": "resolved",
       "feedback_ids": [
         "FB-11"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-13",
       "question": "실제 출생에서 대기 영혼과 신규 영혼을 어떤 우선순위/배분으로 선택할지",
       "proposal": "단일 배정·적격 출생·결정론을 유지. 우선순위/비율은 미선택.",
-      "status": "open",
-      "owner": "user",
-      "blocks": [
-        "V021-J02",
-        "V021-J04"
-      ],
-      "resolution": null,
-      "decision_required_at": "policy-sensitive acceptance",
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "blocks": [],
+      "resolution": "개발 기본안: 적격 대기혼 ReadyMonth/SoulId FIFO, 없으면 신규혼. 법칙 조절.",
+      "decision_required_at": "resolved",
       "feedback_ids": [
         "FB-11"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-14",
       "question": "왕조 성립의 실효 통치 최소 조건을 무엇으로 할지",
       "proposal": "한 주 이상 독립 주권을 유지. 피통치 주체·행정 행사·가계 수 조건의 적용은 미선택.",
-      "status": "open",
-      "owner": "user",
-      "blocks": [
-        "V021-G01"
-      ],
-      "resolution": null,
-      "decision_required_at": "policy-sensitive acceptance",
+      "status": "resolved",
+      "owner": "developer_default_within_authorized_implementation",
+      "blocks": [],
+      "resolution": "개발 기본안:주 전체 관측·실거주 가계·독립 주권·행정 노동, 임의 금지 연대 없음.",
+      "decision_required_at": "resolved",
       "feedback_ids": [
         "FB-12"
-      ]
+      ],
+      "decision_record": "docs/plans/v021-canon-map.md"
     },
     {
       "id": "Q-15",
@@ -1705,7 +1688,7 @@
       "title": "0.2.0 편입·코드 통합 기준선",
       "deps": [],
       "acceptance": "원래 55개 요구의 대응·실제 SHA·출처를 고정, 0.2.0 선출시 의존 제거",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1716,9 +1699,9 @@
       "later_scope": "원래 55개 요구의 대응·실제 SHA·출처를 고정, 0.2.0 선출시 의존 제거",
       "evidence": [
         {
-          "scope": "partial implementation; full acceptance pending",
-          "path": "docs/evidence/0.2.1/core-tests.json",
-          "source": "src/Chronicles.Game"
+          "path": "docs/plans/v021-canon-map.md",
+          "baseline": "docs/evidence/0.2.1/baseline.md",
+          "scope": "full task contract; no claim of dependent feature completion"
         }
       ],
       "inv_ids": [
@@ -1739,7 +1722,7 @@
         "V021-A01"
       ],
       "acceptance": "사용자 변경 우선·Canon/제안/미정·기존 AGENTS/manifest·품질/생식/명칭 정합화",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1750,9 +1733,9 @@
       "later_scope": "사용자 변경 우선·Canon/제안/미정·기존 AGENTS/manifest·품질/생식/명칭 정합화",
       "evidence": [
         {
-          "scope": "partial implementation; full acceptance pending",
-          "path": "docs/evidence/0.2.1/core-tests.json",
-          "source": "src/Chronicles.Game"
+          "path": "docs/plans/v021-canon-map.md",
+          "baseline": "docs/evidence/0.2.1/baseline.md",
+          "scope": "full task contract; no claim of dependent feature completion"
         }
       ],
       "inv_ids": [
@@ -1936,9 +1919,7 @@
       "acceptance": "2명 모두 반선·종문0·숨은 주민0·자원/지식 출처·후대 금단/혈연 판정의 현재/대기/차단/미판정 구분",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-02"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -2058,9 +2039,7 @@
       "acceptance": "기본 금단 출산·양친 자격/법칙 revision·부담·한 번의 결과·새 인구/영혼 배정",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-11"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -2144,9 +2123,7 @@
       "acceptance": "부양 시간/재원·성장·가문 성립·입양·유산·직책 승계의 분리",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-06"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -2488,9 +2465,7 @@
       "acceptance": "성장·돌파·전투 기여·수명·수선 병행·생활/생애 연결",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-11"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -3263,9 +3238,7 @@
       "acceptance": "실제 창설/해산·10개 한도 제안·고정 특화/빈 조직/유령 재산 없음",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-03"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -3382,10 +3355,7 @@
       "acceptance": "한 주 주권·대리 통치·최상위 관계·무순환·조세/권리 구분",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-04",
-        "Q-14"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -3423,9 +3393,7 @@
       "acceptance": "영토0·명분/실물 자산·복위/승계·채무/채권/집행권 분리, 유령 세수/중복 채권0",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-04"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -3540,9 +3508,7 @@
       "acceptance": "시작 2명 유지·자연 출생/명시 편입·유전/자산 출처",
       "status": "planned",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-05"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -3903,9 +3869,7 @@
       "acceptance": "기능별 T07/INV·왕복 근거를 모아 전 중간 상태·최종 schema/복구·기존 파일 보존 통합 감사.",
       "status": "planned",
       "kind": "infrastructure",
-      "blocked_by_q": [
-        "Q-08"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [],
       "early_harness": null,
@@ -4576,7 +4540,7 @@
         "V021-A01"
       ],
       "acceptance": "원본 fixture/명령/hash·비용 기준선을 H05 전 확보·공용 API/언어 조사·엔진 의존0·Unity 생성 불필요",
-      "status": "planned",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4585,7 +4549,13 @@
       "milestone": "M1",
       "minimal_scope": "엔진 없는 기준선 fixture/hash/비용",
       "later_scope": "원본 fixture/명령/hash·비용 기준선을 H05 전 확보·공용 API/언어 조사·엔진 의존0·Unity 생성 불필요",
-      "evidence": [],
+      "evidence": [
+        {
+          "path": "docs/plans/v021-canon-map.md",
+          "baseline": "docs/evidence/0.2.1/baseline.md",
+          "scope": "full task contract; no claim of dependent feature completion"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4607,9 +4577,7 @@
       "acceptance": "Windows SQLite 분리·경로/엔진 경계·schema/백업·향후 모바일 어댑터 조건",
       "status": "planned",
       "kind": "infrastructure",
-      "blocked_by_q": [
-        "Q-08"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [],
       "early_harness": null,
@@ -4889,11 +4857,7 @@
       "acceptance": "원인 직전 자격 snapshot·13자동조건·중복 원인/혼존속·과거 최고/붕괴 후 값 오판0·윤회 버튼 없음 · 13조건 목표 유지·원인 생성 시스템/실사건과 fixture를 구분·Q-12 범위 결정 대기. 5조건 후속 이관 미확정",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-07",
-        "Q-12",
-        "Q-13"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -4974,10 +4938,7 @@
       "acceptance": "비승 비사망·출생 단일 영혼 배정·태내/출생 후 파생 분리·분령 노동/인구 중복0·아이템 미복제",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-07",
-        "Q-13"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
@@ -5705,9 +5666,7 @@
       "acceptance": "반선 구조/수명/가임·비승 설정의 자료 계약·창세 출처·가짜 과거 사건 없음·생성 시조 공용. 미결 게임 값은 결정 대기.",
       "status": "in_progress",
       "kind": "feature",
-      "blocked_by_q": [
-        "Q-02"
-      ],
+      "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
       "common_acceptance": [
         "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"

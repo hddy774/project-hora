@@ -2,18 +2,23 @@ namespace Chronicles.Game;
 
 public enum Realm { Mortal, Qi, Foundation, GoldenCore, NascentSoul, Spirit, Void, Integration, Tribulation, Mahayana, HalfImmortal }
 public enum LifeStatus { Alive, Dead, Ascended, Departed }
-public enum ActionKind { Idle, Gather, Cultivate, Study, Martial, Travel, Craft, Heal, Explore, Teach, Guard, Farm, Breakthrough, Trial }
+public enum ActionKind { Idle, Gather, Cultivate, Study, Martial, Travel, Craft, Heal, Explore, Teach, Guard, Farm, Breakthrough, Trial, Wait }
 public enum GroupKind { Family, Sect, Dynasty }
 public enum ItemKind { Food, Herb, Ore, Wood, Cloth, Paper, Ink, Metal, Pill, Tool, Talisman, Array, Book, Bag, Weapon, Armor }
+[Flags]
+public enum ItemDefect { None = 0, MissingPages = 1, BrokenCircuit = 2, Contamination = 4, LostCore = 8 }
 
 public sealed record Formation(Realm Realm, string Path, int Quality, int Defect, long Month, string Source);
 public sealed record Belief(string Key, string Value, int Confidence, long Observed, long Expires, string Source);
 public sealed record TraitState(string Id, string Source, long Acquired, long? Expires, bool Active);
 public sealed record Trace(int Preserved, int Accessible, int Integrated);
-public readonly record struct PersonObservation(long Id, string Name, Realm Realm, int Layer, int Place, long Month);
+public readonly record struct PersonObservation(long Id, string Name, Realm Realm, int Layer, int Place, long Month,
+    bool? ApparentGestates, bool AppearsAdult);
 public readonly record struct PlaceObservation(int Place, int Source, int Qi, string Facilities, long Month);
-public sealed record GameEvent(long Id, long Month, string Kind, long Actor, long Target, string Text, string Source);
+public sealed record GameEvent(long Id, long Month, string Kind, long Actor, long Target, string Text, string Source, string TargetKind = "person");
 public sealed record LawChange(long Month, long Revision, string Key, long Before, long After);
+public sealed record PlanStep(string Action, long Target, string Data);
+public sealed record LessonRequest(long Pupil, string Knowledge, long Requested, long Expires);
 public sealed record MonthlyCensus(long Month, int Living, int Mortal, int Martial, int Cultivators,
     int Births, int Deaths, long Money, long Food);
 public sealed record CommandResult(string Id, bool Accepted, string Message, long Revision);
@@ -28,6 +33,8 @@ public sealed class MaterialFlow
 
 public sealed class Person
 {
+    public int Slot { get; set; } = -1;
+    public uint SlotGeneration { get; set; }
     public long Id { get; set; }
     public long BodyId { get; set; }
     public long SoulId { get; set; }
@@ -55,6 +62,13 @@ public sealed class Person
     public long NextBirth { get; set; }
     public string Goal { get; set; } = "자립";
     public string Reason { get; set; } = "창세 초기 조건";
+    public List<PlanStep> Plan { get; set; } = [];
+    public List<LessonRequest> LessonRequests { get; set; } = [];
+    public List<GameEvent> Journal { get; set; } = [];
+    public int PlanExpansions { get; set; }
+    public long LastPeopleRevision { get; set; } = -1;
+    public int ObservationCursor { get; set; }
+    public int ObservationRemaining { get; set; }
     public ActionKind Action { get; set; }
     public long Due { get; set; }
     public long ActionTarget { get; set; }
@@ -88,6 +102,7 @@ public sealed class Person
 
 public sealed class Soul
 {
+    public int Integrity { get; set; } = 100;
     public long Id { get; set; }
     public long Parent { get; set; }
     public long Root { get; set; }
@@ -135,6 +150,7 @@ public sealed class Place
     public long Delegate { get; set; }
     public long BlockedUntil { get; set; }
     public int DiscoveryRemaining { get; set; } = 1;
+    public long PeopleRevision { get; set; }
 }
 
 public sealed class Item
@@ -146,6 +162,7 @@ public sealed class Item
     public int Quantity { get; set; }
     public int Quality { get; set; }
     public int Damage { get; set; }
+    public ItemDefect Defects { get; set; }
     public long Container { get; set; }
     public long Reserved { get; set; }
     public long BoundSoul { get; set; }
@@ -204,6 +221,7 @@ public sealed class GameState
     public long DeathCount { get; set; }
     public SortedDictionary<string, long> Laws { get; set; } = global::Chronicles.Game.Laws.CreateDefaults();
     public List<Person> People { get; set; } = [];
+    public List<PopulationSlot> ActiveSlots { get; set; } = [];
     public List<Soul> Souls { get; set; } = [];
     public List<Pregnancy> Pregnancies { get; set; } = [];
     public List<Place> Places { get; set; } = [];
@@ -216,4 +234,10 @@ public sealed class GameState
     public List<MonthlyCensus> Census { get; set; } = [];
     public SortedDictionary<string, CommandResult> Commands { get; set; } = new(StringComparer.Ordinal);
     public SortedDictionary<string, string> CommandSignatures { get; set; } = new(StringComparer.Ordinal);
+}
+
+public sealed class PopulationSlot
+{
+    public long Person { get; set; }
+    public uint Generation { get; set; } = 1;
 }

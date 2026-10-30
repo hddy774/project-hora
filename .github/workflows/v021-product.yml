@@ -41,6 +41,13 @@ jobs:
       - run: dotnet build src/Chronicles.Desktop -c Release
       - run: dotnet run --project tests/Chronicles.Tests -c Release
       - run: ./scripts/validate-architecture.ps1
+      - name: Desktop actual render and bridge
+        shell: pwsh
+        run: |
+          $process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru
+          if (-not $process.WaitForExit(45000)) { $process.Kill(); throw 'Desktop smoke timeout' }
+          if ($process.ExitCode -ne 0) { throw 'Desktop smoke failed' }
+          Get-Content (Join-Path ([IO.Path]::GetTempPath()) 'seonro-smoke-result.json')
   android:
     runs-on: ubuntu-latest
     steps:
@@ -58,11 +65,40 @@ jobs:
       - run: dotnet workload install android
       - name: Android SDK platform
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - run: mkdir -p artifacts
       - name: Build APK
         run: dotnet build src/Chronicles.Android -c Release -m:1 -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME"
+      - name: Enable KVM for Android runtime check
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install and launch Android app
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: default
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            adb install -r src/Chronicles.Android/bin/Release/net10.0-android/com.seonro.mansangrok-Signed.apk
+            adb shell am start -n com.seonro.mansangrok/crc649632d1cee893af2a.MainActivity
+            sleep 12
+            adb shell uiautomator dump /sdcard/seonro-ui.xml
+            adb pull /sdcard/seonro-ui.xml artifacts/android-ui.xml
+            python3 scripts/verify-android-ui.py artifacts/android-ui.xml
+            adb exec-out screencap -p > artifacts/android-screen.png
       - uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
           name: android-validation-apk
           path: src/Chronicles.Android/bin/Release/net10.0-android/*Signed.apk
+          retention-days: 3
+      - uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: android-runtime-evidence
+          path: artifacts/
           retention-days: 3

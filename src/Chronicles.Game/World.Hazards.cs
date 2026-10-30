@@ -58,7 +58,7 @@ public sealed partial class GameWorld
     {
         var failed = Roll(10000) < Law("cultivation.breakthroughRisk");
         if (failed) { EndLife(p, 8, "소경지 실제 겁난 실패·육신 상실"); return; }
-        p.Layer = p.PendingLayer; p.PendingLayer = 0;
+        p.Layer = p.PendingLayer; p.PendingLayer = 0; state.Places[p.Place].PeopleRevision++;
         p.Health = Math.Max(0, p.Health - IntLaw("hazard.trialDamage"));
         p.GreatPerfection = p.Layer == 9 && p.Work >= Period(p) * 5000;
         Event("겁난 통과", p.Id, p.Layer, $"{p.Name} 도겁 {p.Layer}층 겁난 통과·육신 부담", "실제 소경지 겁난");

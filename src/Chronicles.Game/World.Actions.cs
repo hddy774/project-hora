@@ -67,7 +67,9 @@ public sealed partial class GameWorld
             case ActionKind.Farm:
                 var definition = data is "herb" or "ore" or "wood" ? data : "food";
                 var requested = IntLaw("economy.gatherYield");
-                if (p.Equipment.ContainsKey(8)) requested += requested / 4;
+                if (p.Equipment.TryGetValue(8, out var toolId) && items.TryGetValue(toolId, out var tool) &&
+                    tool.Damage < 100 && !tool.Defects.HasFlag(ItemDefect.BrokenCircuit))
+                    requested += requested * tool.Quality * (100 - tool.Damage) / 4000000;
                 var yield = Math.Min(place.Source, requested);
                 place.Source -= yield;
                 AddItem(p.Id, definition, yield, 3000 + place.Element * 250, $"지점 {place.Id}·월 {Month}·실제 채집", "extraction");
@@ -91,7 +93,8 @@ public sealed partial class GameWorld
                 if (Accessible(p, target, out var book, ItemKind.Book))
                 {
                     var gain = Math.Max(1, Catalog.Talent(p, 21) / 100);
-                    if (book.Damage >= 100 || book.Quality < 1000) gain = 0;
+                    if (book.Defects.HasFlag(ItemDefect.MissingPages)) gain /= 2;
+                    if (book.Damage >= 100 || book.Defects.HasFlag(ItemDefect.LostCore)) gain = 0;
                     p.Understanding[book.Definition] = Math.Min(10000, p.Understanding.GetValueOrDefault(book.Definition) + gain);
                     Remember(p, $"book:{book.Id}", $"이해 {p.Understanding[book.Definition]}", $"매체 {book.Id}·{book.Source}", book.Quality / 100);
                 }
@@ -100,12 +103,18 @@ public sealed partial class GameWorld
                 if (p.Realm >= Realm.Mahayana && p.Place / 10 != target / 10 && Math.Max(p.Place, target) >= 90 &&
                     Roll(10000) < Law("hazard.portalChance"))
                     EndLife(p, 10, "실제 계역 통로 붕괴·귀환/육신 유지 불가");
-                else if (state.Places[(int)target].BlockedUntil <= Month) { p.Place = (int)target; RefreshPopulationIndices(); Observe(p); }
+                else if (state.Places[(int)target].BlockedUntil <= Month)
+                {
+                    state.Places[p.Place].PeopleRevision++; p.Place = (int)target;
+                    state.Places[p.Place].PeopleRevision++; p.LastPeopleRevision = -1;
+                    RefreshPopulationIndices(); Observe(p);
+                }
                 else Remember(p, $"blocked:{target}", "통로 봉쇄", "실제 이동 실패", 100);
                 break;
             case ActionKind.Explore:
                 foreach (var id in place.Neighbors) if (!p.KnownPlaces.Contains(id)) p.KnownPlaces.Add(id);
                 p.KnownPlaces.Sort();
+                Observe(p, true);
                 if (place.Id % 10 == 8 && p.Realm >= Realm.Void && Roll(10000) < Law("hazard.sealChance"))
                 {
                     p.Sealed = true; p.SealedUntil = Month + Law("hazard.sealDuration");
@@ -126,6 +135,8 @@ public sealed partial class GameWorld
                 var proficiency = p.Skills.GetValueOrDefault(recipe.Skill);
                 var resultQuality = Math.Clamp((quality + proficiency + Catalog.Talent(p, recipe.Skill == "alchemy" ? 14 : 15)) / 3 + Roll(401) - 200, 0, 10000);
                 var product = AddItem(p.Id, recipe.Output, recipe.Quantity, resultQuality, $"제작 {p.Id}·예약 {target}·{recipe.Id}");
+                if (product is not null && resultQuality < 1000 && Roll(10000) < 5000)
+                    product.Defects = Catalog.Items[product.Definition].Kind == ItemKind.Pill ? ItemDefect.Contamination : ItemDefect.BrokenCircuit;
                 Gain(p, recipe.Skill, 25);
                 Event("제작", p.Id, product?.Id ?? 0, $"{recipe.Name}·{Catalog.Quality(resultQuality)}", $"예약 {target} 소비 완료");
                 break;
@@ -137,6 +148,7 @@ public sealed partial class GameWorld
                     student.Understanding[data] = Math.Min(ceiling, student.Understanding.GetValueOrDefault(data) +
                         Math.Max(1, Catalog.Talent(student, 11) / 50));
                     Remember(student, $"teaching:{p.Id}:{data}", $"전수 이해 {student.Understanding[data]}", $"스승 {p.Id} 실제 교육", 80);
+                    Remember(p, $"pupil:{student.Id}:{data}", student.Understanding[data].ToString(CultureInfo.InvariantCulture), "실제 수업에서 확인한 진척", 100);
                     student.Traits.RemoveAll(t => t.Id == "사은미보" && t.Source == $"teacher:{p.Id}");
                     student.Traits.Add(new("사은미보", $"teacher:{p.Id}", Month, null, true));
                 }
@@ -161,6 +173,8 @@ public sealed partial class GameWorld
     {
         if (p.Realm == Realm.Mortal && p.Understanding.GetValueOrDefault("entry") == 0)
         { p.Reason = "아직 습득하지 않은 입문 지식이 필요"; return; }
+        if (p.Realm > Realm.Qi && !Catalog.Paths.Any(path => path.Realm == p.Realm && p.Understanding.GetValueOrDefault(path.Id) > 0))
+        { p.Reason = "현재 경지의 공법을 실제로 배워야 합니다."; return; }
         var place = state.Places[p.Place];
         if (CultivationHazard(p, place)) return;
         var cost = IntLaw("cultivation.sourceCost");
@@ -168,14 +182,14 @@ public sealed partial class GameWorld
         place.Qi -= cost;
         var aptitude = p.Aptitudes.Sum() / 6;
         var harmony = 10000 - (p.Roots.Max() - p.Roots.Min()) / 2;
-        p.Processes[0] = cost;
-        p.Processes[1] = cost * (100 - place.Turbidity / 2) / 100;
-        p.Processes[2] = Math.Min(p.Processes[1], Math.Max(1, Catalog.Talent(p, 7) / 2000));
+        p.Processes[0] = cost * 1000;
+        p.Processes[1] = p.Processes[0] * (10000 - place.Turbidity * 50) / 10000;
+        p.Processes[2] = Math.Min(p.Processes[1], Catalog.Talent(p, 7) * cost / 5);
         p.Processes[3] = p.Processes[2] * p.Health / 100;
         if (cost > 0 && p.Processes[3] == 0) { p.Reason = "순환·체화 기반 부족"; return; }
         var path = Catalog.Paths.FirstOrDefault(x => x.Id == chosenPath) ??
             Catalog.Paths.First(x => x.Realm == (p.Realm == Realm.Mortal ? Realm.Qi : p.Realm));
-        var flow = cost == 0 ? 10000 : Math.Min(10000, p.Processes[3] * 10000 / cost);
+        var flow = cost == 0 ? 10000 : Math.Min(10000, p.Processes[3] * 10000 / (cost * 1000));
         var work = (long)aptitude * harmony / 10000 * flow / 10000;
         if (p.Realm == Realm.HalfImmortal) { p.Work += work; return; }
         p.Work += work;
@@ -187,6 +201,7 @@ public sealed partial class GameWorld
             p.PendingLayer = nextLayer; p.Action = ActionKind.Trial; p.Due = Month + 1;
             return;
         }
+        if (p.Layer != nextLayer) place.PeopleRevision++;
         p.Layer = nextLayer;
         p.GreatPerfection = p.Layer == 9 && p.Work >= Period(p) * 5000;
         Gain(p, path.Id, 1);
@@ -212,6 +227,7 @@ public sealed partial class GameWorld
             return;
         }
         if (p.Realm < Realm.HalfImmortal) p.Realm++;
+        state.Places[p.Place].PeopleRevision++;
         p.Layer = 1; p.Work = 0; p.GreatPerfection = false;
         var quality = p.Aptitudes.Sum() / 6;
         p.Formations.Add(new(p.Realm, path.Id, quality, Math.Max(0, 100 - p.Health), Month, "실제 형성"));
@@ -232,32 +248,56 @@ public sealed partial class GameWorld
             var oldest = p.Beliefs.Values.OrderBy(b => b.Observed).ThenBy(b => b.Confidence).ThenBy(b => b.Key, StringComparer.Ordinal).First();
             p.Beliefs.Remove(oldest.Key);
         }
+        TrimCognition(p);
     }
 
-    private void Observe(Person p)
+    private void Observe(Person p, bool force = false)
     {
         if (!p.KnownPlaces.Contains(p.Place)) { p.KnownPlaces.Add(p.Place); p.KnownPlaces.Sort(); }
         var local = residents.GetValueOrDefault(p.Place) ?? [];
-        var count = Math.Min(local.Length, 12);
+        var place = state.Places[p.Place];
+        var observationBudget = IntLaw("ai.observationBudget");
+        if (p.LastPeopleRevision != place.PeopleRevision)
+        {
+            p.LastPeopleRevision = place.PeopleRevision;
+            p.ObservationRemaining = Math.Min(local.Length, Math.Max(1,
+                IntLaw("ai.beliefBudget") - p.Beliefs.Count - p.ObservedPlaces.Count));
+        }
+        else if (force) p.ObservationRemaining = Math.Max(p.ObservationRemaining, Math.Min(local.Length, observationBudget));
+        var count = Math.Min(p.ObservationRemaining, Math.Min(local.Length, observationBudget));
         for (var n = 0; n < count; n++)
         {
-            var q = local[(int)((p.Id + Month + n) % local.Length)];
+            var q = local[(int)((p.Id + p.ObservationCursor + n) % local.Length)];
             if (q.Status != LifeStatus.Alive || q.Place != p.Place) continue;
             if (!p.KnownPeople.Contains(q.Id)) p.KnownPeople.Add(q.Id);
-            p.ObservedPeople[q.Id] = new(q.Id, q.Name, q.Realm, q.Layer, q.Place, Month);
+            p.ObservedPeople[q.Id] = new(q.Id, q.Name, q.Realm, q.Layer, q.Place, Month,
+                q.Species == "human" ? q.Gestates : null, Month - q.Born >= Law("birth.maturity"));
         }
-        var place = state.Places[p.Place];
+        p.ObservationCursor += count; p.ObservationRemaining -= count;
         p.ObservedPlaces[p.Place] = new(place.Id, place.Source, place.Qi, string.Join(',', place.Facilities), Month);
+        TrimCognition(p);
+    }
+
+    private void TrimCognition(Person p)
+    {
         var budget = IntLaw("ai.beliefBudget");
-        if (p.ObservedPeople.Count > budget)
+        while (p.Beliefs.Count > budget)
+            p.Beliefs.Remove(p.Beliefs.Values.OrderBy(b => b.Observed).ThenBy(b => b.Key, StringComparer.Ordinal).First().Key);
+        var placeBudget = Math.Max(0, budget - p.Beliefs.Count);
+        if (p.ObservedPlaces.Count > placeBudget)
+            foreach (var id in p.ObservedPlaces.Values.OrderBy(x => x.Month).ThenBy(x => x.Place)
+                .Take(p.ObservedPlaces.Count - placeBudget).Select(x => x.Place).ToArray()) p.ObservedPlaces.Remove(id);
+        var personBudget = Math.Max(0, budget - p.Beliefs.Count - p.ObservedPlaces.Count);
+        if (p.ObservedPeople.Count > personBudget)
             foreach (var id in p.ObservedPeople.Values.OrderBy(x => x.Month).ThenBy(x => x.Id)
-                .Take(p.ObservedPeople.Count - budget).Select(x => x.Id).ToArray()) p.ObservedPeople.Remove(id);
+                .Take(p.ObservedPeople.Count - personBudget).Select(x => x.Id).ToArray()) p.ObservedPeople.Remove(id);
     }
 
     private void Decide(Person p)
     {
         var age = Month - p.Born;
         if (age < 60) { p.Goal = "성장·양육"; return; }
+        p.LessonRequests.RemoveAll(r => r.Expires <= Month || !people.TryGetValue(r.Pupil, out var pupil) || pupil.Status != LifeStatus.Alive);
         if (p.Health < 25) { p.Goal = "회복"; p.Reason = "자기 건강 부족"; Start(p, "heal", 0, ""); return; }
         var children = dependents.GetValueOrDefault(p.Id) ?? [];
         var childCount = children.Count(q => q.Status == LifeStatus.Alive && Month - q.Born < Law("birth.maturity"));
@@ -273,17 +313,35 @@ public sealed partial class GameWorld
         }
         if (age >= Law("birth.maturity") && p.Partner == 0)
         {
-            var q = p.KnownPeople.Where(people.ContainsKey).Select(id => people[id]).FirstOrDefault(q => q.Id != p.Id &&
-                q.Status == LifeStatus.Alive && q.Place == p.Place && q.Partner == 0 && q.Gestates != p.Gestates &&
-                Month - q.Born >= Law("birth.maturity") && q.Personality[4] + q.Personality[5] >= 60 &&
-                (Law("birth.kinship") != 0 || !Related(p, q)));
-            if (q is not null) Partner(p, q.Id);
+            var q = p.ObservedPeople.Values.FirstOrDefault(q => q.Id != p.Id && q.Place == p.Place &&
+                q.AppearsAdult && q.ApparentGestates != p.Gestates &&
+                !p.Beliefs.ContainsKey($"proposal:{q.Id}"));
+            if (q.Id != 0)
+            {
+                if (Partner(p, q.Id) is not null) Remember(p, $"proposal:{q.Id}", "조건 미충족", "실제 제안 결과", 100);
+                if (p.Action != ActionKind.Idle) return;
+            }
         }
         if (p.Gestates && p.Partner != 0 && BirthQualified(p) && Roll(10000) < Law("birth.chance")) Conceive(p, p.Partner);
         var child = children.FirstOrDefault(q => q.Status == LifeStatus.Alive &&
-            q.Place == p.Place && Month - q.Born >= 60 && q.Understanding.GetValueOrDefault("entry") < 1000);
+            q.Place == p.Place && Month - q.Born >= 60 && (!p.Beliefs.TryGetValue($"pupil:{q.Id}:entry", out var progress) ||
+                int.Parse(progress.Value, CultureInfo.InvariantCulture) < 100));
         if (child is not null && p.Understanding.GetValueOrDefault("entry") > 0)
         { p.Goal = "양육·교육"; p.Reason = "후손 입문 지식 전수"; Start(p, "teach", child.Id, "entry"); return; }
+        if (p.LessonRequests.FirstOrDefault(r => p.Understanding.GetValueOrDefault(r.Knowledge) > 0) is { } request && p.Personality[4] >= 40)
+        {
+            if (Start(p, "teach", request.Pupil, request.Knowledge) is null)
+            { p.LessonRequests.Remove(request); p.Goal = "전수·협력"; p.Reason = "실제 배움 요청에 동의·교육 시간 예약"; return; }
+        }
+        var needsMethod = p.Realm == Realm.Mortal ? p.Understanding.GetValueOrDefault("entry") == 0 :
+            p.Realm > Realm.Qi && !Catalog.Paths.Any(path => path.Realm == p.Realm && p.Understanding.GetValueOrDefault(path.Id) > 0);
+        if (needsMethod)
+        {
+            var teacher = p.ObservedPeople.Values.FirstOrDefault(q => q.Id != p.Id && q.Place == p.Place);
+            if (teacher.Id != 0 && RequestTeaching(p, teacher.Id, "") is null)
+            { p.Goal = "지식 탐색"; p.Reason = "자신에게 부족한 공법의 실제 전수 요청"; return; }
+        }
+        if (DiversePlan(p)) return;
         if (p.Understanding.GetValueOrDefault("entry") > 0 && p.Personality[1] >= p.Personality[13])
         { p.Goal = "구도"; p.Reason = "자기 지식·경지·건강과 구도 성향"; Start(p, "cultivate", 0, ""); }
         else { p.Goal = "무예"; p.Reason = "자기 기반과 경쟁 성향"; Start(p, "martial", 0, ""); }

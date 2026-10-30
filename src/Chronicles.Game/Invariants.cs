@@ -38,6 +38,9 @@ public static class Invariants
             Require(p.Personality.All(x => x is >= 0 and <= 100), "INV-015", "성격 범위");
             Require(!p.GreatPerfection || p.Layer == 9, "INV-023", "9층과 대원만의 분리");
             Require(souls.ContainsKey(p.SoulId), "INV-014", "영혼 참조");
+            if (p.Status == LifeStatus.Alive)
+                Require(p.Slot >= 0 && p.Slot < state.ActiveSlots.Count && state.ActiveSlots[p.Slot].Person == p.Id &&
+                    state.ActiveSlots[p.Slot].Generation == p.SlotGeneration, "INV-001", "활성 슬롯 세대");
             Require(p.ParentOne == 0 || (people.ContainsKey(p.ParentOne) && p.ParentOne < p.Id && people[p.ParentOne].Born < p.Born), "INV-012", "생물학 부모 DAG");
             Require(p.ParentTwo == 0 || (people.ContainsKey(p.ParentTwo) && p.ParentTwo < p.Id && people[p.ParentTwo].Born < p.Born), "INV-012", "생물학 부모 DAG");
             Require(p.ParentOne == 0 || p.ParentOne != p.ParentTwo, "INV-012", "동일 부모 중복");
@@ -46,6 +49,8 @@ public static class Invariants
             Require(p.Household == 0 || groups.ContainsKey(p.Household), "INV-019", "가계 참조");
             Require(p.Sect == 0 || (groups.TryGetValue(p.Sect, out var sect) && sect.Kind == GroupKind.Sect && !sect.Dissolved && sect.Members.Contains(p.Id)), "INV-019", "종문 소속");
             Require(p.Beliefs.Count <= state.Laws["ai.beliefBudget"] && p.Beliefs.All(b => b.Key == b.Value.Key && b.Value.Observed <= state.Month && b.Value.Confidence is >= 0 and <= 100), "INV-008", "개인 인지 예산/출처");
+            Require(p.Beliefs.Count + p.ObservedPeople.Count + p.ObservedPlaces.Count <= state.Laws["ai.beliefBudget"], "INV-008", "통합 인지 보관 예산");
+            Require(p.Journal.Count <= 100 && p.Journal.All(e => e.Id > 0 && e.Id < state.NextId && e.Month <= state.Month), "INV-008", "개인 실제 사건 로그 예산");
             Require(p.KnownPlaces.Distinct().Count() == p.KnownPlaces.Count && p.KnownPlaces.All(n => n >= 0 && n < 100) && p.KnownPeople.All(people.ContainsKey), "INV-009", "개인 지식 참조");
             Require(p.Action == ActionKind.Idle || (Enum.IsDefined(p.Action) && p.Due > state.Month && p.Status == LifeStatus.Alive), "INV-021", "행동 단일 용량/시각");
             Require(!p.Irreversible || (p.Action == ActionKind.Breakthrough && p.Realm == Realm.GoldenCore), "INV-023", "원영 파단 경계");
@@ -56,12 +61,15 @@ public static class Invariants
         }
         foreach (var soul in state.Souls)
         {
+            Require(soul.Integrity is >= 0 and <= 100 && (soul.Status != "waiting" || soul.Integrity > 0), "INV-013", "혼 존속 경계");
             Require(souls.ContainsKey(soul.Root) && (soul.Parent == 0 || (souls.ContainsKey(soul.Parent) && soul.Parent < soul.Id)), "INV-014", "혼 계보 DAG");
             Require(soul.CurrentPerson == 0 || (people.TryGetValue(soul.CurrentPerson, out var p) && p.SoulId == soul.Id && p.Status == LifeStatus.Alive), "INV-014", "현생 영혼 일대일");
             Require(soul.Route is >= 0 and <= 13 && soul.Traces.Length == 6 && soul.Traces.All(t => t.Integrated >= 0 && t.Integrated <= t.Accessible && t.Accessible <= t.Preserved && t.Preserved <= 100), "INV-013", "윤회/혼흔 단계");
             Require(soul.Route == 0 || !string.IsNullOrWhiteSpace(soul.Evidence), "INV-013", "원인 직전 증거");
         }
         Require(state.People.Where(p => p.Status == LifeStatus.Alive).Select(p => p.SoulId).Distinct().Count() == state.People.Count(p => p.Status == LifeStatus.Alive), "INV-014", "동시 현생 중복");
+        Require(state.ActiveSlots.Count(x => x.Person != 0) == state.People.Count(p => p.Status == LifeStatus.Alive) &&
+            state.ActiveSlots.All(x => x.Generation > 0 && (x.Person == 0 || (people.TryGetValue(x.Person, out var p) && p.Status == LifeStatus.Alive))), "INV-011", "활성 인구/슬롯 일치");
         foreach (var p in state.Pregnancies)
         {
             Require(people.ContainsKey(p.Mother) && people.ContainsKey(p.Father) && p.Mother != p.Father && p.LawRevision <= state.LawRevision && p.Roots.Length == 5 && p.Aptitudes.Length == 6, "INV-011", "임신 출처");

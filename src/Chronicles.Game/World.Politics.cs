@@ -7,6 +7,7 @@ public sealed partial class GameWorld
         if (p.Action != ActionKind.Idle || Month - p.Born < Law("birth.maturity") || p.Money < Law("politics.foundCost"))
             return "창설할 인력·자격·재원이 부족합니다.";
         if (kind != "sect" && kind != "family") return "가문 또는 종문을 선택하세요.";
+        if (kind == "family" && (int)p.Realm < Law("politics.founderRealm")) return "가문 가주 자격이 부족합니다.";
         if (kind == "sect" && (p.Sect != 0 || state.Groups.Count(g => g.Kind == GroupKind.Sect && !g.Dissolved) >= Law("politics.sectLimit")))
             return "현재 종문 창설 조건이 아닙니다.";
         var g = new Group { Id = Id(), Kind = kind == "sect" ? GroupKind.Sect : GroupKind.Family,
@@ -88,6 +89,35 @@ public sealed partial class GameWorld
         return null;
     }
 
+    private string? ReleaseProvince(Person p, long id, long province)
+    {
+        if (!groups.TryGetValue(id, out var group) || group.Leader != p.Id || group.Dissolved ||
+            province is < 0 or > 9 || !group.Provinces.Contains((int)province)) return "통치 중인 주와 권한을 확인하세요.";
+        group.Provinces.Remove((int)province);
+        foreach (var place in state.Places.Where(x => x.Province == province && x.Sovereign == group.Id))
+        { place.Sovereign = 0; place.Delegate = 0; }
+        foreach (var sect in state.Groups.Where(g => g.Kind == GroupKind.Sect && g.Jurisdiction == group.Id))
+            if (!sect.Members.Any(id => people[id].Status == LifeStatus.Alive && state.Places[people[id].Place].Sovereign == group.Id)) sect.Jurisdiction = 0;
+        Event("주권 상실", p.Id, id, $"{group.Name} {province + 1}주 주권 상실·남은 영토 {group.Provinces.Count}", "실제 권리 전이·기존 채무 유지");
+        return null;
+    }
+
+    private string? Adopt(Person p, long id)
+    {
+        if (p.Action != ActionKind.Idle || Month - p.Born < Law("birth.maturity") ||
+            !people.TryGetValue(id, out var child) || !p.KnownPeople.Contains(id) || child.Place != p.Place || child.Status != LifeStatus.Alive ||
+            Month - child.Born >= Law("birth.maturity") || child.Id == p.Id) return "입양·양육 조건을 확인하세요.";
+        if (child.Guardian != 0 && people[child.Guardian].Status == LifeStatus.Alive && child.Guardian != p.Id &&
+            people[child.Guardian].Personality[4] < 50) return "현재 양육자가 동의하지 않았습니다.";
+        child.Guardian = p.Id;
+        if (groups.TryGetValue(child.Household, out var old)) old.Members.Remove(child.Id);
+        child.Household = p.Household;
+        if (groups.TryGetValue(p.Household, out var home)) home.Members.Add(child.Id);
+        p.Action = ActionKind.Guard; p.Due = Month + 1;
+        Event("입양", p.Id, child.Id, $"{p.Name} {child.Name} 양육 인계·생물학 부모 보존", "실제 동의·양육 책임 이전");
+        return null;
+    }
+
     private string? Dissolve(Person p, long id)
     {
         if (!groups.TryGetValue(id, out var g) || g.Dissolved || g.Leader != p.Id || g.Debt != 0)
@@ -128,9 +158,15 @@ public sealed partial class GameWorld
             if (g.Kind == GroupKind.Sect)
                 foreach (var p in g.Members.Select(id => people[id]).Where(p => p.Status == LifeStatus.Alive))
                 {
-                    var pay = Math.Min(g.Money, Law("politics.salary"));
+                    var pay = Math.Min(g.Money, Law("politics.salary") * (g.Policies.GetValueOrDefault("경제·분배", 1) + 1));
                     g.Money -= pay; p.Money += pay;
                 }
+            if (g.Leader == 0 && g.Members.All(id => people[id].Status != LifeStatus.Alive) && g.Provinces.Count > 0)
+            {
+                foreach (var place in state.Places.Where(x => x.Sovereign == g.Id)) { place.Sovereign = 0; place.Delegate = 0; }
+                g.Provinces.Clear();
+                Event("통치 붕괴", 0, g.Id, $"{g.Name} 실제 통치 인력 소멸·무영토 존속", "빈 정부 세수 없음");
+            }
             if (Month % 12 == 0 && g.Kind == GroupKind.Dynasty && g.Provinces.Count > 0)
             {
                 foreach (var p in state.People.Where(p => p.Status == LifeStatus.Alive && state.Places[p.Place].Sovereign == g.Id))
@@ -145,26 +181,34 @@ public sealed partial class GameWorld
         }
     }
 
-    public static long[] CombatAttributes(Person p)
+    public static long[] CombatAttributes(Person p, IReadOnlyDictionary<long, Item>? equipment = null)
     {
         var basis = 100L;
         for (var i = 0; i < (int)p.Realm; i++) basis = Math.Min(1000000000000, basis * 4);
-        basis += p.Martial * p.Martial * 200;
+        basis += p.Martial * p.Martial * 64;
         var path = p.Formations.LastOrDefault();
         var definition = path is null ? null : Catalog.Paths.FirstOrDefault(x => x.Id == path.Path);
-        return Enumerable.Range(0, 8).Select(i => basis * (definition?.CombatFactors[i] ?? 100) / 100 * p.Health / 100).ToArray();
+        var attributes = Enumerable.Range(0, 8).Select(i => basis * (definition?.CombatFactors[i] ?? 100) / 100 * p.Health / 100).ToArray();
+        if (equipment is not null)
+            foreach (var (slot, itemId) in p.Equipment)
+                if (equipment.TryGetValue(itemId, out var item) && item.Owner == p.Id && item.Damage < 100 &&
+                    (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0)
+                {
+                    var axis = slot switch { 0 => 0, 3 => 1, 5 => 2, 6 => 3, 7 => 7, _ => -1 };
+                    if (axis >= 0) attributes[axis] += attributes[axis] * item.Quality * (100 - item.Damage) / 4000000;
+                }
+        return attributes;
     }
 
     private string? Attack(Person p, long id)
     {
         if (p.Action != ActionKind.Idle || !people.TryGetValue(id, out var q) || q.Status != LifeStatus.Alive ||
             q.Id == p.Id || q.Place != p.Place || !p.KnownPeople.Contains(q.Id)) return "전투 조건을 만족하지 않습니다.";
-        var attack = CombatAttributes(p); var defence = CombatAttributes(q);
+        var attack = CombatAttributes(p, items); var defence = CombatAttributes(q, items);
         var damage = (int)Math.Clamp(attack[0] * 25 / Math.Max(1, defence[1]), 1, 100);
         var ward = q.Traits.FirstOrDefault(t => t.Id == "호신부" && t.Active);
         if (ward is not null) { damage /= 2; q.Traits.Remove(ward); }
-        if (q.Equipment.ContainsKey(3)) damage = damage * 3 / 4;
-        if (p.Equipment.ContainsKey(0)) damage = Math.Min(100, damage + damage / 4);
+        if (q.Equipment.TryGetValue(3, out var armor)) items[armor].Damage = Math.Min(100, items[armor].Damage + 1);
         q.Health = Math.Max(0, q.Health - damage);
         Gain(p, "combat", 10); Gain(q, "combat", 5);
         p.Action = ActionKind.Guard; p.Due = Month + 1;

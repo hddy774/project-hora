@@ -74,7 +74,8 @@ public sealed partial class GameWorld
             {
                 item.Quantity -= take;
                 var split = AddItem(p.Id, definition, take, item.Quality, $"분할 {item.Id}", "transfer")!;
-                split.Reserved = reservation; split.Damage = item.Damage;
+                split.Reserved = reservation; split.Damage = item.Damage; split.Defects = item.Defects;
+                split.Container = item.Container; split.BoundSoul = item.BoundSoul; split.Place = item.Place;
             }
             if (quantity == 0) return;
         }
@@ -83,7 +84,8 @@ public sealed partial class GameWorld
 
     private string? Equip(Person p, long id)
     {
-        if (!Accessible(p, id, out var item) || item.Quantity != 1 || item.Container != 0 || item.Damage >= 100 || item.Quality < 1000)
+        if (!Accessible(p, id, out var item) || item.Quantity != 1 || item.Container != 0 || item.Damage >= 100 ||
+            (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) != 0)
             return "장착할 수 없는 실물입니다.";
         var slot = Catalog.Items[item.Definition].EquipmentSlot;
         if (slot < 0) return "장비 품목이 아닙니다.";
@@ -114,9 +116,14 @@ public sealed partial class GameWorld
 
     private string? Use(Person p, long id)
     {
-        if (!Accessible(p, id, out var item) || item.Damage >= 100 || item.Quality < 1000) return "사용할 수 없는 실물입니다.";
+        if (!Accessible(p, id, out var item) || item.Damage >= 100 || (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) != 0)
+            return "사용할 수 없는 실물입니다.";
         var kind = Catalog.Items[item.Definition].Kind;
-        if (kind == ItemKind.Pill) p.Health = Math.Min(100, p.Health + item.Quality / 200);
+        if (kind == ItemKind.Pill)
+        {
+            p.Health = Math.Clamp(p.Health + item.Quality / 200 - (item.Defects.HasFlag(ItemDefect.Contamination) ? 20 : 0), 0, 100);
+            if (p.Health == 0) EndLife(p, 3, "실제 오염 단약·육신 붕괴");
+        }
         else if (kind == ItemKind.Food) p.Health = Math.Min(100, p.Health + 1);
         else if (kind == ItemKind.Talisman)
         {

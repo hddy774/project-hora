@@ -18,10 +18,12 @@ public sealed record DetailView(PersonView Person, IReadOnlyList<int>? Roots, IR
     IReadOnlyList<Formation>? Formations, IReadOnlyDictionary<string, int>? Skills, IReadOnlyDictionary<string, int>? Understanding,
     IReadOnlyList<TraitState>? Traits, IReadOnlyList<Belief>? Beliefs, IReadOnlyList<Trace>? Traces, IReadOnlyList<long>? Combat);
 public sealed record LawView(string Id, string Name, string Unit, long Minimum, long Maximum, long DefaultValue, long Value, bool Provisional, string Rationale);
+public sealed record SoulView(long Id, long Parent, long Root, long CurrentPerson, string Status, int Route, string Evidence);
 public sealed record GameView(string Title, string Version, long Month, long Revision, long Generation,
     long Actor, bool Observer, string Hash, IReadOnlyList<PersonView> People, IReadOnlyList<PlaceView> Places,
     IReadOnlyList<ItemView> Items, IReadOnlyList<GroupView> Groups, IReadOnlyList<ContractView> Contracts,
-    IReadOnlyList<GameEvent> Events, IReadOnlyList<MonthlyCensus> Census, IReadOnlyList<LawView> Laws, DetailView? Detail);
+    IReadOnlyList<GameEvent> Events, IReadOnlyList<MonthlyCensus> Census, IReadOnlyList<LawView> Laws, DetailView? Detail,
+    IReadOnlyList<SoulView> Souls, IReadOnlyList<PathDefinition> Paths);
 
 public sealed partial class GameWorld
 {
@@ -66,8 +68,7 @@ public sealed partial class GameWorld
             g.Provinces.ToArray(), new System.Collections.ObjectModel.ReadOnlyDictionary<string, int>(new SortedDictionary<string, int>(g.Policies, StringComparer.Ordinal)), g.Dissolved)).ToArray();
         var contracts = state.Contracts.Where(c => observer || (c.Destination == actor!.Place && c.Status == "open") || c.Seller == actor!.Id || c.Buyer == actor!.Id)
             .Select(c => new ContractView(c.Id, c.Kind, c.Seller, c.Buyer, c.Item, c.Price, c.Due, c.Status, c.Destination)).ToArray();
-        var events = state.Events.Where(e => observer || (e.Actor == actor!.Id || e.Target == actor!.Id) &&
-            e.Kind is not "사망" and not "비승").TakeLast(150).ToArray();
+        var events = observer ? state.Events.TakeLast(150).ToArray() : actor!.Journal.TakeLast(100).ToArray();
         var laws = observer ? Laws.All.Select(d => new LawView(d.Id, d.Name, d.Unit, d.Minimum, d.Maximum,
             d.DefaultValue, state.Laws[d.Id], d.Provisional, d.Rationale)).ToArray() : [];
         DetailView? detail = null;
@@ -81,10 +82,12 @@ public sealed partial class GameWorld
                 permitted ? new System.Collections.ObjectModel.ReadOnlyDictionary<string, int>(new SortedDictionary<string, int>(p.Skills, StringComparer.Ordinal)) : null,
                 permitted ? new System.Collections.ObjectModel.ReadOnlyDictionary<string, int>(new SortedDictionary<string, int>(p.Understanding, StringComparer.Ordinal)) : null,
                 permitted ? p.Traits.ToArray() : null, permitted ? p.Beliefs.Values.ToArray() : null,
-                observer ? souls[p.SoulId].Traces.ToArray() : null, permitted ? CombatAttributes(p) : null);
+                observer ? souls[p.SoulId].Traces.ToArray() : null, permitted ? CombatAttributes(p, items) : null);
         }
         return new(ProductInfo.KoreanTitle, ProductInfo.Version, Month, Revision, ViewGeneration, state.Controlled, observer,
             observer ? StateHash() : "", peopleView, placesView, itemView, groupView, contracts, events,
-            observer ? state.Census.TakeLast(600).ToArray() : [], laws, detail);
+            observer ? state.Census.TakeLast(600).ToArray() : [], laws, detail,
+            observer ? state.Souls.Select(s => new SoulView(s.Id, s.Parent, s.Root, s.CurrentPerson, s.Status, s.Route, s.Evidence)).ToArray() : [],
+            Catalog.Paths.Where(path => observer || actor!.Understanding.GetValueOrDefault(path.Id) > 0).ToArray());
     }
 }

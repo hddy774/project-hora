@@ -10,8 +10,28 @@ public static class GameCodec
     private sealed record Envelope(string Format, int Schema, string Hash, string Payload);
     private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = false, MaxDepth = 64 };
 
-    internal static GameState Clone(GameState value) => JsonSerializer.Deserialize<GameState>(JsonSerializer.SerializeToUtf8Bytes(value, Options), Options)
-        ?? throw new InvalidDataException("빈 세계입니다.");
+    internal static GameState Clone(GameState value)
+    {
+        var copy = JsonSerializer.Deserialize<GameState>(JsonSerializer.SerializeToUtf8Bytes(value, Options), Options)
+            ?? throw new InvalidDataException("빈 세계입니다.");
+        // JSON collection construction must not inherit the host's linguistic comparer.
+        copy.Laws = new(copy.Laws, StringComparer.Ordinal);
+        copy.Materials = new(copy.Materials, StringComparer.Ordinal);
+        copy.Commands = new(copy.Commands, StringComparer.Ordinal);
+        copy.CommandSignatures = new(copy.CommandSignatures, StringComparer.Ordinal);
+        foreach (var p in copy.People)
+        {
+            p.Skills = new(p.Skills, StringComparer.Ordinal);
+            p.Understanding = new(p.Understanding, StringComparer.Ordinal);
+            p.Beliefs = new(p.Beliefs, StringComparer.Ordinal);
+        }
+        foreach (var g in copy.Groups)
+        {
+            g.Policies = new(g.Policies, StringComparer.Ordinal);
+            g.PendingPolicies = new(g.PendingPolicies, StringComparer.Ordinal);
+        }
+        return copy;
+    }
     public static string Hash(GameState value) => Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(value, Options)));
     internal static string CommandHash(GameCommand value) => Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(value, Options)));
 

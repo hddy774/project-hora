@@ -88,7 +88,8 @@
         "Simulation",
         "Queries",
         "Runtime",
-        "Persistence"
+        "Persistence",
+        "Game"
       ],
       "responsibility": "Application session composition, commands and save/load coordination."
     },

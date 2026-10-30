@@ -222,6 +222,77 @@ Test("INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회", (
 foreach (var route in Enumerable.Range(1, 13))
     Test($"RC-{route:00} 실제 원인 생산자·자동 Gate·여정 왕복", () => ReincarnationScenarios.Run(route));
 
+Test("INV-008 인지 예산 변경·명제/인물/지점 합계", () =>
+{
+    var (w, a, b) = Fresh(); w.AdvanceTo(24);
+    Accepted(w, Cmd("law", value: 1, data: "ai.beliefBudget"));
+    Check(w.Checkpoint().People.All(p => p.Beliefs.Count + p.ObservedPeople.Count + p.ObservedPlaces.Count <= 1), "통합 예산");
+    RoundTrip(w);
+});
+Test("INV-013 혼멸·역사 최고 경지로 자격 우회 없음", () =>
+{
+    var (w, a, b) = Fresh(); var s = w.Checkpoint(); s.Souls[0].Integrity = 0;
+    s.People[0].Lifespan = 1201; w = GameWorld.Restore(s); w.AdvanceTo(1);
+    Check(w.Checkpoint().Souls[0].Status == "destroyed" && w.Checkpoint().Souls[0].Route == 0, "혼멸 윤회 불가");
+    (w,a,b) = Fresh(); s = w.Checkpoint(); s.People[0].Realm = Realm.Mortal; s.People[0].Lifespan = 1201;
+    w = GameWorld.Restore(s); w.AdvanceTo(1);
+    Check(w.Checkpoint().Souls[0].Route == 0, "과거 반선 형성 기록은 현재 자격 아님");
+});
+Test("INV-018 물품 원장 없는 수량 복제 거부", () =>
+{
+    var s = GameWorld.Create().Checkpoint(); s.Items[0].Quantity++;
+    var rejected = false; try { GameWorld.Restore(s); } catch (InvalidDataException) { rejected = true; }
+    Check(rejected, "품목 원장과 실물 불일치 거절");
+});
+Test("INV-006 저장 왕복·호스트 문화권 독립", () =>
+{
+    var before = CultureInfo.CurrentCulture;
+    try
+    {
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+        var w = GameWorld.Create();
+        foreach (var id in "I,i,İ,a-b,ab".Split(',')) Accepted(w, new(id, 0, "observe"));
+        var hash = w.StateHash(); var bytes = GameCodec.Encode(w);
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("tr-TR");
+        Check(GameCodec.Decode(bytes).StateHash() == hash, "문화권별 정렬과 명령 식별자");
+    }
+    finally { CultureInfo.CurrentCulture = before; }
+});
+Test("INV-001 슬롯 재사용·낡은 세대/사망 신원 거부", () =>
+{
+    var (w, a, b) = Fresh(); var s = w.Checkpoint(); var old = s.People[0];
+    old.Lifespan = 1201; var slot = old.Slot; var generation = old.SlotGeneration;
+    w = GameWorld.Restore(s); w.AdvanceTo(1);
+    Accepted(w, Cmd("create", target: 0, data: "명시 편입"));
+    var fresh = w.Checkpoint().People[^1];
+    Check(fresh.Slot == slot && fresh.SlotGeneration != generation, "실제 슬롯 재사용");
+    Check(w.ResolveSlot(slot, generation) == 0 && w.ResolveSlot(slot, fresh.SlotGeneration) == fresh.Id, "세대별 조회");
+    Check(!w.Execute(Cmd("possess", a)).Accepted, "사망 신원으로 조작 불가");
+    RoundTrip(w);
+});
+Test("INV-015/024 폐품 점수와 기능 결손 분리", () =>
+{
+    var (w, a, b) = Fresh(); var s = w.Checkpoint();
+    var tool = s.Items.First(i => i.Owner == a && i.Definition == "tool"); tool.Quality = 0;
+    var book = s.Items.First(i => i.Owner == a && i.Definition == "path.1.0"); book.Quality = 0;
+    w = GameWorld.Restore(s); Accepted(w, Cmd("possess", a)); Accepted(w, Cmd("equip", a, tool.Id));
+    var knowledge = w.Checkpoint().People[0].Understanding[book.Definition];
+    Accepted(w, Cmd("study", a, book.Id)); w.AdvanceTo(1);
+    Check(w.Checkpoint().People[0].Understanding[book.Definition] > knowledge, "결손 없는 폐품 서적 실제 학습");
+    s = w.Checkpoint(); s.Items.Single(i => i.Id == book.Id).Defects = ItemDefect.LostCore;
+    w = GameWorld.Restore(s); knowledge = w.Checkpoint().People[0].Understanding[book.Definition];
+    Accepted(w, Cmd("study", a, book.Id)); w.AdvanceTo(2);
+    Check(w.Checkpoint().People[0].Understanding[book.Definition] == knowledge, "실제 결손은 학습 차단");
+});
+Test("INV-008 장소 ID와 인물 ID 충돌에서 사건 누출 없음", () =>
+{
+    var (w, a, b) = Fresh(); Accepted(w, Cmd("possess", a));
+    var before = JsonSerializer.Serialize(w.View()); var s = w.Checkpoint();
+    s.Events.Add(new(s.NextId++, s.Month, "재해", 0, a, "미발견 지점의 숨은 재해", "세계 사건", "place"));
+    w = GameWorld.Restore(s);
+    Check(JsonSerializer.Serialize(w.View()) == before, "인물/지점 ID 네임스페이스 분리");
+});
+
 if (args.Contains("--report", StringComparer.Ordinal))
 {
     var index = Array.IndexOf(args, "--report");
@@ -230,4 +301,8 @@ if (args.Contains("--report", StringComparer.Ordinal))
 Console.WriteLine($"RESULT {results.Count - failed}/{results.Count}");
 if (failed == 0 && args.Contains("--performance", StringComparer.Ordinal))
     PerformanceScenarios.Run(args[Array.IndexOf(args, "--performance") + 1]);
+if (failed == 0 && args.Contains("--growth", StringComparer.Ordinal))
+    GrowthScenarios.Run(args[Array.IndexOf(args, "--growth") + 1]);
+if (failed == 0 && args.Contains("--soak", StringComparer.Ordinal))
+    PerformanceScenarios.Soak(args[Array.IndexOf(args, "--soak") + 1]);
 return failed == 0 ? 0 : 1;

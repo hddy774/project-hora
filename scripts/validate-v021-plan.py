@@ -194,6 +194,13 @@ def self_test(data):
     def change_task(d, task_id):
         return next(t for t in d["tasks"] if t["id"] == task_id)
 
+    def decision_bypass(d):
+        # Decisions can all be resolved in later revisions; inject an open gate
+        # so this negative case still exercises bypass detection.
+        q = next(q for q in d["questions"] if q["id"] == "Q-01")
+        q.update(status="open", blocks=["V021-P02"], resolution=None)
+        change_task(d, "V021-P02")["blocked_by_q"].clear()
+
     cases = [
         ("unknown dependency", lambda d: change_task(d, "V021-N01")["deps"].append("V021-Z99")),
         ("cycle", lambda d: change_task(d, "V021-N01")["deps"].append("V021-N01")),
@@ -204,7 +211,7 @@ def self_test(data):
             t.update(deps=[x for x in t["deps"] if x != "V021-T07"])
             for t in d["tasks"]]),
         ("unknown invariant", lambda d: d["tasks"][0]["inv_ids"].append("INV-999")),
-        ("decision bypass", lambda d: change_task(d, "V021-P02")["blocked_by_q"].clear()),
+        ("decision bypass", decision_bypass),
         ("partial completion", lambda d: d["milestones"][0]["slices"][0].update(completes_task=True)),
         ("optional gate", lambda d: next(q for q in d["questions"]
                                       if q["id"] == "Q-16")["blocks"].append("V021-N03")),

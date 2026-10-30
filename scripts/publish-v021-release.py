@@ -33,13 +33,10 @@ def api(path, body=None):
 
 
 def actual_source_run(source):
-    verify.owner_context(); verify.check_source(source)
+    request = verify.owner_context(); verify.check_source(source)
     run_id, attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
     run = api("actions/runs/" + run_id)
-    verify.require(run["event"] == "workflow_dispatch" and run["actor"]["login"] == "hddy774" and
-                   run["head_repository"]["full_name"] == verify.REPOSITORY and run["head_sha"] == source["source_commit"] and
-                   run["head_branch"] == "main" and run["path"] == verify.WORKFLOW and str(run["run_attempt"]) == attempt,
-                   "Release must use this owner-run main workflow and source")
+    verify.actual_run_context(source, request, run)
     jobs = api("actions/runs/" + run_id + "/attempts/" + attempt + "/jobs?per_page=100")
     passed = {job["name"] for job in jobs["jobs"] if job["conclusion"] == "success"}
     verify.require(REQUIRED_JOBS <= passed, "Actual current-run feature/build/sign/platform jobs are incomplete")

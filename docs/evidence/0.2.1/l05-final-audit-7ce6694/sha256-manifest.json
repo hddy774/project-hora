@@ -1,12 +1,17 @@
 {
   "schema_version": 1,
   "kind": "L05 감사 문서와 소형 원문 사본 SHA256 목록",
-  "scope": "감사 문서의 보관/읽기 연결 확인이며 새 게임·기능 검증기 실행이 아니다. 원래 공식 집계/9raw는 변조하지 않는다.",
+  "scope": "L05 감사·root 승인 반영 문서와 소형 원문 사본의 SHA256 목록. 승인 전 audit.json/독립검증 원문은 보존하며 게임 실행을 추가하지 않는다.",
   "files": [
     {
       "path": "README.md",
-      "bytes": 13125,
-      "sha256": "f5df64f9a1021ae649ab7a99e1ade286010e6a14b7b139bf9d8dae3ae7b04e27"
+      "bytes": 13974,
+      "sha256": "d1368b08476dfb770d66f449d5f7b53e278a8b465d0d42af9a1c3d3a9c04181e"
+    },
+    {
+      "path": "acceptance-approved.json",
+      "bytes": 3105,
+      "sha256": "30b6d11b1d9f682100523b5d2a6c8abcc77114102bef518798f53131d5066757"
     },
     {
       "path": "audit.json",
@@ -32,6 +37,11 @@
       "path": "natural-observations.json",
       "bytes": 11828,
       "sha256": "c6893e2ef3cd400e41fd199ecf41148e97f9bb61fc392abd80e8712115586605"
+    },
+    {
+      "path": "plan-validation.approved.json",
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
     },
     {
       "path": "source-relationship.patch",

@@ -2,6 +2,22 @@ namespace Chronicles.Game.Politics;
 
 public static partial class PoliticsEngine
 {
+    public static PoliticalResult PlanPolicyChange(PoliticalContext context, PoliticalState state, long actor,
+        long group, string category, int choice, int place = -1)
+    {
+        var adoption = PlanAdoptPolicy(context, state, actor, group, category, choice, place);
+        if (adoption.Transition is not { } first) return adoption;
+        var projected = context with { People = Merge(context.People, first.People, p => p.Id),
+            Groups = Merge(context.Groups, first.Groups, g => g.Id), Places = Merge(context.Places, first.Places, p => p.Id) };
+        var preparation = PlanPreparePolicy(projected, first.NextState, actor, first.NextState.Preparations[^1].Id);
+        if (preparation.Transition is not { } second) return preparation;
+        var combined = new PoliticalTransition(first.Precondition, second.NextState, Merge(first.People, second.People, p => p.Id),
+            Merge(first.Groups, second.Groups, g => g.Id), Merge(first.Places, second.Places, p => p.Id),
+            checked(first.ConsumedMoney + second.ConsumedMoney), second.Reason);
+        return ValidateForApplication(context, state, combined, out var reason)
+            ? new(true, combined.Reason, combined) : PoliticalResult.Rejected(reason);
+    }
+
     public static PoliticalResult PlanAdoptPolicy(PoliticalContext context, PoliticalState state, long actor,
         long group, string category, int choice, int place = -1)
     {
@@ -238,13 +254,54 @@ public static partial class PoliticsEngine
         return d.Finish("Released completed political work intervals and recorded actual completed service.");
     }
 
+    public static PoliticalResult PlanCancelWork(PoliticalContext context, PoliticalState state, long person)
+    {
+        var d = new PoliticalDraft(context, state);
+        if (d.Person(person) is not { Status: LifeStatus.Alive } || !d.State.Labor.Any(r => r.Person == person && r.From <= context.Month && r.Until > context.Month))
+            return PoliticalResult.Rejected("There is no current political work for this person to cancel.");
+        foreach (var reservation in d.State.Labor.Where(r => r.Person == person && r.From <= context.Month && r.Until > context.Month).ToArray())
+        {
+            if (reservation.Purpose == "policy")
+            {
+                var prep = d.State.Preparations.First(p => p.Id == reservation.Reference);
+                d.Cancel(prep, "an actual reserved worker withdrew");
+            }
+            else
+            {
+                var participants = d.State.Labor.Where(r => r.Reference == reservation.Reference && r.Purpose == reservation.Purpose).Select(r => r.Person).ToArray();
+                for (var i = 0; i < d.State.Effects.Count; i++)
+                {
+                    var effect = d.State.Effects[i];
+                    if (effect.Id != reservation.Reference && !(effect.Kind == PoliticalEffectKind.Defense && effect.Group == reservation.Group &&
+                        participants.Contains(effect.Person) && effect.From == reservation.From && effect.Until == reservation.Until)) continue;
+                    d.State.Effects[i] = effect with { Until = context.Month };
+                    if (!d.State.RoutedEffects.Contains(effect.Id)) d.State.RoutedEffects.Add(effect.Id);
+                }
+                d.ReleaseLabor(reservation.Reference, reservation.Purpose);
+            }
+        }
+        return d.Finish("Cancelled actual political work, refunded unfinished policy escrow and ended cancelled effects without crediting unperformed service.");
+    }
+
     public static IReadOnlyList<long> DefendersAt(PoliticalContext context, PoliticalState state, int place) =>
         Array.AsReadOnly(state.Effects.Where(e => e.Kind == PoliticalEffectKind.Defense && e.Place == place && e.From <= context.Month && e.Until > context.Month &&
             context.People.Any(p => p.Id == e.Person && p.Status == LifeStatus.Alive && p.Place == place) &&
+            context.Groups.Any(g => g.Id == e.Group && !g.Dissolved && g.Members.Contains(e.Person)) &&
             context.Places.Any(p => p.Id == place && (p.Sovereign == e.Group || p.Delegate == e.Group)))
             .Select(e => e.Person).Distinct().Order().ToArray());
 
     public static bool HasDefense(PoliticalContext context, PoliticalState state, int place) => DefendersAt(context, state, place).Count != 0;
+
+    public static bool CanImplementPolicy(PoliticalContext context, PoliticalState state, long group, int place, string category) =>
+        context.Groups.FirstOrDefault(g => g.Id == group) is { } g && PolicyCatalog.IsChoice(category, g.Policies.GetValueOrDefault(category, 1)) &&
+        PolicyJurisdiction(context, state, g, place, category);
+
+    public static PoliticalResult PlanVacateDepartedOffices(PoliticalContext context, PoliticalState state)
+    {
+        var d = new PoliticalDraft(context, state);
+        d.State.Offices.RemoveAll(o => d.Person(o.Holder)?.Status != LifeStatus.Alive);
+        return d.Finish("Vacated actual departed office holders; no soul history or prior-life office was restored.");
+    }
 
     private static bool PolicyJurisdiction(PoliticalContext context, PoliticalState state, Group group, int placeId, string category)
     {

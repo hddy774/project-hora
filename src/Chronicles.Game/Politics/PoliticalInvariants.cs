@@ -69,6 +69,8 @@ public static class PoliticalInvariants
             !Enum.IsDefined(e.Kind) ||
             e.Kind == PoliticalEffectKind.Teaching && !context.People.Any(p => p.Id == e.Other)))
             errors.Add("Policy effects require actual inputs and nonnegative funded amounts.");
+        if (state.RoutedEffects.Distinct().Count() != state.RoutedEffects.Count || state.RoutedEffects.Any(id => !state.Effects.Any(e => e.Id == id)))
+            errors.Add("A completed or cancelled policy effect may be routed only once.");
         if (state.Labor.Any(r => r.From >= r.Until || !context.People.Any(p => p.Id == r.Person) ||
             !context.Groups.Any(g => g.Id == r.Group && !g.Dissolved))) errors.Add("Labor reservations require actual people, organizations and nonempty integer intervals.");
         foreach (var r in state.Labor)

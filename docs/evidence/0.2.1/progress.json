@@ -324,7 +324,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "9704e95508456ee317a378a9b8dac55985bf1849",
-  "phase": "대용량 저장 수정·최종 성능·성장 검증",
+  "source_commit": "6c16b144d82bf4c0920f1a96e06f1a44a6ca8229",
+  "phase": "네 규모 기준선 완료·최종 저장 검사와 성장/장기 검증",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

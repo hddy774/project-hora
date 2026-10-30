@@ -1,0 +1,75 @@
+{
+  "kind": "observed-completed-population-only-comparison",
+  "observedAtUtc": "2026-10-30T18:28:40.751291+00:00",
+  "oldSource": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "newSource": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "oldComplete": false,
+  "newComplete": false,
+  "rows": [
+    {
+      "population": 2,
+      "equalFields": {
+        "fixture": true,
+        "usedLaws": true,
+        "warmupMonths": true,
+        "measuredMonths": true,
+        "cognition": true,
+        "workload": true,
+        "observedPeople": true,
+        "living": true,
+        "initialHash": true,
+        "finalHash": true,
+        "saveBytes": true
+      },
+      "oldAdvance12MonthsMs": 2067.7009,
+      "newAdvance12MonthsMs": 2023.7173000000003,
+      "oldAllocatedBytes": 159885128,
+      "newAllocatedBytes": 149955944
+    },
+    {
+      "population": 100,
+      "equalFields": {
+        "fixture": true,
+        "usedLaws": true,
+        "warmupMonths": true,
+        "measuredMonths": true,
+        "cognition": true,
+        "workload": true,
+        "observedPeople": true,
+        "living": true,
+        "initialHash": true,
+        "finalHash": true,
+        "saveBytes": true
+      },
+      "oldAdvance12MonthsMs": 12692.185800000001,
+      "newAdvance12MonthsMs": 8254.7991,
+      "oldAllocatedBytes": 3105565936,
+      "newAllocatedBytes": 3062074504
+    },
+    {
+      "population": 1000,
+      "equalFields": {
+        "fixture": true,
+        "usedLaws": true,
+        "warmupMonths": true,
+        "measuredMonths": true,
+        "cognition": true,
+        "workload": true,
+        "observedPeople": true,
+        "living": true,
+        "initialHash": true,
+        "finalHash": true,
+        "saveBytes": true
+      },
+      "oldAdvance12MonthsMs": 63691.2579,
+      "newAdvance12MonthsMs": 68414.32359999999,
+      "oldAllocatedBytes": 42770953576,
+      "newAllocatedBytes": 40663913984
+    }
+  ],
+  "limitations": [
+    "Original 926 source failed at 10000 save encoding; current measurement not complete. Compare only the genuinely completed matching rows.",
+    "Separate processes/source revisions/time intervals with shared host cohosts; not per-change isolated causal speed or Android result.",
+    "Reports include save byte LENGTH, not encoded-array hash; do not claim actual saved-array equality from these row fields."
+  ]
+}

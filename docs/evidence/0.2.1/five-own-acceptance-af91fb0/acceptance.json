@@ -402,12 +402,14 @@
         },
         "artifact_review_source": "UI agent downloaded and SHA-verified fresh artifacts; root relayed exact checkout and product-equivalence observations",
         "artifact_product_tests": {
-          "path": "/workspace/scratch/native-ci-f3efb36-41109698/product-tests.json",
+          "path": "/workspace/scratch/native-ci-f3efb36-41109698/product/product-tests.json",
           "sha256": "e8efad5e51186ca0de571a433e618d38a2f6ad3f41f7808e9d9bb9b94a62d16b",
           "total": 314,
           "failed": 0,
           "read_or_downloaded_by_this_update": false
-        }
+        },
+        "product_fingerprint_equivalence_basis": "Exact GitHub compare has only documentation changes, all excluded by existing product_path; API24 explicitly computes product fingerprint on head.",
+        "merge_fingerprint_independently_recomputed": false
       },
       {
         "run_id": 41109698732,
@@ -415,17 +417,27 @@
         "platform": "Android emulator API24",
         "conclusion": "success",
         "root_confirmation": "root direct run success confirmation before the 19:34 product-jobs update; exact job/time not supplied",
-        "job_id": null,
+        "job_id": 124248619303,
         "event_head_commit": "f3efb36c2b1755dca710dcf110f41baf633145a1",
         "actual_checkout_commit": "f3efb36c2b1755dca710dcf110f41baf633145a1",
         "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
-        "whole_tree_equal_to_event_head": true
+        "whole_tree_equal_to_event_head": true,
+        "job_url": "https://github.com/hddy774/project-hora/actions/runs/41109698732/job/124248619303",
+        "ui_artifact_checked_at_utc": "2026-10-30 19:49:34 UTC"
       }
     ],
     "prior_api24_run_41105101780_relabelled": false,
     "release_certificate_same_apk_upgrade_proven": false,
     "release_and_upgrade_task": "V021-T06",
-    "event_head_commit": "f3efb36c2b1755dca710dcf110f41baf633145a1"
+    "event_head_commit": "f3efb36c2b1755dca710dcf110f41baf633145a1",
+    "ui_agent_artifact_audit": {
+      "path": "native-ci-ui-provenance.original.json",
+      "original_local_path": "/workspace/scratch/native-ci-f3efb36-41109698/provenance-summary.json",
+      "sha256": "53630ec066677980cf9b727225ef394459dd2cf96d20a870574dc10b3da66c8c",
+      "bytes_preserved": true,
+      "checked_at_utc": "2026-10-30 19:49:34 UTC",
+      "download_or_native_execution_by_this_update": false
+    }
   },
   "performance_failure_preserved": {
     "path": "final-performance/first-final-population-af91fb0/assessment.json",

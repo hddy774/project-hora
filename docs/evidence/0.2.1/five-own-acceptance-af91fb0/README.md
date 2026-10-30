@@ -27,14 +27,14 @@ root가 승인한 D02·T01·T02·T03·T05 **다섯 작업만** `in_progress`에�
 
 [926 소스 명세](../final-ui-9263756/source.json)와 [9704 검토](../invariant-execution-source-review-9704e95.json)·[c6 검토](../invariant-execution-source-review-c6e4704.json)·[af91 검토](../invariant-execution-source-review-af91fb0.json)의 보관된 동일 자산/변경 경로 감사로 이 화면 범위를 연결한다. 이 갱신에서 새 UI 실행이나 자산 재해시를 한 것은 아니다.
 
-PR196의 이벤트 head는 `f3efb36c2b1755dca710dcf110f41baf633145a1`이다. product run41109698838의 세 작업은 실제 병합 checkout `b49129f22ac1c5dc3f9d16bef9af9309c1ab63da`에서 실행됐다. UI 담당자의 새 원문 감사에서 f3→b491 차이는 문서19파일뿐이고 제품 입력/지문은 같지만 전체 트리는 다름을 확인했다. API24 run41109698732는 exact f3에서 실행됐다. 이벤트 head·실제 checkout·제품 입력 동등성을 구분하며 실제 runtime/test 입력은 af91과 같다. 다음 표의 출처는 **root가 직접 확인한 GitHub run/jobs/단계 API와 UI 담당자의 새 원문 출처 확인**이다. 이 갱신이 새 CI 실행이나 로그 다운로드를 수행했다고 기록하지 않는다.
+PR196의 이벤트 head는 `f3efb36c2b1755dca710dcf110f41baf633145a1`이다. product run41109698838의 세 작업은 실제 병합 checkout `b49129f22ac1c5dc3f9d16bef9af9309c1ab63da`에서 실행됐다. UI 담당자의 새 원문 감사에서 f3→b491 차이는 문서19파일뿐이고 제품 입력/지문은 같지만 전체 트리는 다름을 확인했다. API24 run41109698732는 exact f3에서 실행됐다. 이벤트 head·실제 checkout·제품 입력 동등성을 구분하며 실제 runtime/test 입력은 af91과 같다. 다음 표의 출처는 **root가 직접 확인한 GitHub run/jobs/단계 API와 UI 담당자의 [새 원문 출처 확인](native-ci-ui-provenance.original.json)**이다. 이 갱신이 새 CI 실행이나 로그 다운로드를 수행했다고 기록하지 않는다.
 
 | run/job | 실제 완료 범위 | root 확인 |
 | --- | --- | --- |
 | [41109698838 / 124248620691](https://github.com/hddy774/project-hora/actions/runs/41109698838/job/124248620691) | Windows/WebView2, 실제 화면·core 단계7 success | 2026-10-30 19:34 UTC, 분 단위 |
 | [41109698838 / 124248620831](https://github.com/hddy774/project-hora/actions/runs/41109698838/job/124248620831) | portable 기능 단계9 success | 같은 확인 |
 | [41109698838 / 124248620999](https://github.com/hddy774/project-hora/actions/runs/41109698838/job/124248620999) | Android API35 실제 설치·실행 단계11 success | 같은 확인 |
-| [41109698732](https://github.com/hddy774/project-hora/actions/runs/41109698732) | Android API24 run success | root의 앞선 직접 확인; 미제공 job/정확 시각은 추정하지 않음 |
+| [41109698732 / 124248619303](https://github.com/hddy774/project-hora/actions/runs/41109698732/job/124248619303) | Android API24 run/job success | root의 앞선 직접 확인과 UI 담당자의 19:49:34 UTC 새 원문 확인 |
 
 product CI의 성능 단계는 의도적으로 skipped이며 성능 합격으로 세지 않는다. PR190의 옛 API24 run41105101780을 새 run으로 재라벨하지 않았다. 실제 네이티브 렌더/브리지·사용성 근거는 공식 서명 동일 APK의 API24/35 설치·기존 릴리스 업그레이드 증거와 구분한다.
 

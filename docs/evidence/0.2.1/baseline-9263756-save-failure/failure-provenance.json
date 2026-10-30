@@ -1,0 +1,68 @@
+{
+  "kind": "observed-performance-save-failure",
+  "observedAtUtc": "2026-10-30T18:12:06.656108+00:00",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "productSourceFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "sourceWorktree": "/workspace/seonro-final-9263756",
+  "actualCommand": "taskset -c 0 /workspace/.dotnet/dotnet tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll --filter 'INV-001/002/011' --performance /workspace/scratch/final-baseline-9263756.json",
+  "observedExitCode": 134,
+  "completedSizes": [
+    2,
+    100,
+    1000
+  ],
+  "inProgress": {
+    "population": 10000,
+    "stage": "save_encode",
+    "completedMonths": 12,
+    "monthlySamplesMs": [
+      242025.8031,
+      260712.5013,
+      265511.8056,
+      230333.7783,
+      195674.0202,
+      168182.9377,
+      87455.8417,
+      85325.4214,
+      88866.2987,
+      116212.8857,
+      103311.8243,
+      107052.2444
+    ]
+  },
+  "errorType": "System.ArgumentException",
+  "errorMessage": "The JSON value of length 398228383 is too large and not supported.",
+  "errorSite": "GameCodec.Encode: outer schema2 JSON envelope string payload",
+  "complete": false,
+  "acceptedAsBaseline": false,
+  "sourceRevisionNotRelabeled": true,
+  "files": [
+    {
+      "path": "baseline.original.json",
+      "originalPath": "/workspace/scratch/final-baseline-9263756.json",
+      "bytes": 30289,
+      "sha256": "45107f240eac1906fb5c95d64a16e8fe9c6f103e6cbb01734afee91b1925428c",
+      "byteIdenticalCopy": true
+    },
+    {
+      "path": "baseline.original.log",
+      "originalPath": "/workspace/scratch/final-baseline-9263756.log",
+      "bytes": 7316,
+      "sha256": "f91b711b79dc0264dfc560a6887b2ab06e1a591a7e9faa28fef437cdabfa4906",
+      "byteIdenticalCopy": true
+    },
+    {
+      "path": "assemblies.original.json",
+      "originalPath": "/workspace/scratch/invariant-final-9263756-assemblies.json",
+      "bytes": 2031,
+      "sha256": "2bb5bbf1d03ebd6805ae4e79f07bf63c7d295b5d4117a7932cfda4cfbd211def",
+      "byteIdenticalCopy": true
+    }
+  ],
+  "limitations": [
+    "12 monthly samples for 10000 persons completed; save encoding failed before complete population row/save/load/final hash could be published.",
+    "5s EventPipe diagnostic was attached only during excluded 10000-person warmup; no measured month was traced.",
+    "CPU0 affinity, four CPU quota; growth and AI processes cohosted CPU1/2/3; root functional CPU4 was briefly cohosted 17:48:59 through observed completion17:56:54 UTC. No pure latency/Android/device claim.",
+    "Baseline final total time not reported because the process aborted; last progress elapsed is not exact process exit time."
+  ]
+}

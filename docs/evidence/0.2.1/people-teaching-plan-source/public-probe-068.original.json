@@ -1,0 +1,83 @@
+{
+  "kind": "\uC77D\uAE30 \uC9C4\uB2E8\uC758 \uACF5\uAC1C \uAE30\uB2A5 \uC7AC\uD604",
+  "sourceCommit": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "gameAssemblyVersion": "0.2.1\u002B068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "gameAssemblySha256": "595cb16bccee2ad6565771143707401cd169f1daa3e510c31815b34943890075",
+  "beforeHash": "9c3d784d835d6669063737b0b7441339d0d0b8fcf88b132e76a67e080fd44b88",
+  "afterHash": "a70099e15689657fdbca46e1ccebb42d591d040fb88351eac24d8f515e373bb7",
+  "pupil": 2073,
+  "teacher": 1,
+  "actualRequest": {
+    "Pupil": 2073,
+    "Knowledge": "entry",
+    "Requested": 1,
+    "Expires": 13
+  },
+  "publicRequest": {
+    "Pupil": 2073,
+    "Knowledge": "entry",
+    "Requested": 0,
+    "Expires": 12
+  },
+  "entry": {
+    "Id": 2079,
+    "Month": 1,
+    "Kind": "\uBC30\uC6C0 \uC694\uCCAD",
+    "Actor": 2073,
+    "Target": 1,
+    "Text": "\uC785\uBB38\uC744 \uBAA8\uB974\uB294 \uC2E4\uC81C \uD559\uC2B5\uC790 \uCCAD\uBA85\uC5D0\uAC8C \uC2E4\uC81C \uBC30\uC6C0\uC744 \uC694\uCCAD\uD588\uB2E4.",
+    "Source": "plan:2074:1:0:1:requestTeaching",
+    "TargetKind": "person"
+  },
+  "learnerAction": "Wait",
+  "Due": 2,
+  "teacherAction": "Guard",
+  "receipt": {
+    "Key": "plan:request:entry",
+    "Value": "{\u0022Teacher\u0022:1,\u0022Revision\u0022:0,\u0022Comprehension\u0022:0,\u0022Minimum\u0022:10,\u0022Claim\u0022:\u0022\u0022}",
+    "Confidence": 100,
+    "Observed": 1,
+    "Expires": 13,
+    "Source": "plan:2074:1:0:1:requestTeaching"
+  },
+  "expected": "plan:2074:1:0:1:requestTeaching",
+  "actualPlan": [
+    {
+      "Action": "awaitKnowledge",
+      "Target": 1,
+      "Data": "entry"
+    },
+    {
+      "Action": "replan",
+      "Target": 0,
+      "Data": "cultivation"
+    }
+  ],
+  "decision": {
+    "Month": 1,
+    "Goal": "\uBC30\uC6C0\u00B7\uC218\uD589 \uC900\uBE44",
+    "Reason": "\uAD00\uCE21\uD55C \uC0C1\uB300\uC5D0\uAC8C \uC2E4\uC81C \uC694\uCCAD\u00B7\uC0C1\uB300\uC758 \uC228\uC740 \uC9C0\uC2DD\uC774\uB098 \uB3D9\uC758\uB97C \uAC00\uC815\uD558\uC9C0 \uC54A\uC74C",
+    "Action": "Wait",
+    "Expansions": 1,
+    "Candidates": [
+      {
+        "Goal": "\uD68C\uBCF5",
+        "Score": 0,
+        "Evidence": "\uC790\uAE30 \uAC74\uAC15 100\u00B7\uC548\uC804 \uC120\uD589 \uC870\uAC74"
+      },
+      {
+        "Goal": "\uC0DD\uACC4",
+        "Score": 0,
+        "Evidence": "\uC790\uAE30 \uC7AC\uACE0\uC640 \uC2E4\uC81C \uBD80\uC591 \uAC00\uC871 \uC2DD\uB7C9 \uC218\uC694"
+      }
+    ]
+  },
+  "noFreeKnowledge": true,
+  "noFreePeopleLearning": true,
+  "rngUnchanged": true,
+  "saveHashEqual": true,
+  "resumedMonthlyHashEqual": true,
+  "expectedSourceMatches": true,
+  "productOrFixtureChanges": false,
+  "measuredGrowthOrCostCases": 0
+}

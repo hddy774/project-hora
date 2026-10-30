@@ -1,0 +1,38 @@
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Chronicles.Game;
+
+var world = GameWorld.Create(42, new Dictionary<string, long> {
+    ["birth.chance"] = 0, ["ecology.disasterChance"] = 0, ["birth.enabled"] = 0, ["ecology.foodUse"] = 0 });
+void Accept(GameWorld w, GameCommand c) { var r = w.Execute(c); if (!r.Accepted) throw new Exception(r.Message); }
+Accept(world, new("people-social:1", 0, "observe"));
+Accept(world, new("people-social:2", 0, "create", Data: JsonSerializer.Serialize(new { name = "입문을 모르는 실제 학습자", species = "human", gestates = false })));
+var setup = world.Checkpoint(); var pupil = setup.People.Last().Id; var teacher = setup.People.First().Id;
+foreach (var other in setup.People.Where(p => p.Id != pupil)) { other.Action = ActionKind.Guard; other.Due = 100; }
+var food = setup.Items.First(i => i.Owner == teacher && i.Definition == "food"); food.Owner = pupil;
+var metadata = setup.Inventory.Metadata.FirstOrDefault(m => m.Item == food.Id); if (metadata is not null) metadata.Custodian = pupil;
+world = GameWorld.Restore(setup);
+var publicWorld = GameCodec.Decode(GameCodec.Encode(world));
+Accept(publicWorld, new("people-public-learning-request", pupil, "requestTeaching", teacher));
+var player = publicWorld.Checkpoint().People.Single(p => p.Id == teacher).LessonRequests.Single(r => r.Pupil == pupil);
+var beforeHash = world.StateHash(); var random = world.Checkpoint().RandomState;
+var resumed = GameCodec.Decode(GameCodec.Encode(world)); world.AdvanceTo(1); resumed.AdvanceTo(1);
+var state = world.Checkpoint(); var learner = state.People.Single(p => p.Id == pupil); var instructor = state.People.Single(p => p.Id == teacher);
+var request = instructor.LessonRequests.Single(r => r.Pupil == pupil); var entry = learner.Journal.Single(e => e.Kind == "배움 요청");
+var receipt = learner.Beliefs.GetValueOrDefault("plan:request:entry"); var decision = learner.Decisions.Single(d => d.Month == 1);
+var expected = $"plan:{learner.BodyId}:{decision.Month}:{learner.Decisions.Count - 1}:{decision.Expansions}:requestTeaching";
+var saved = GameCodec.Decode(GameCodec.Encode(world)); Invariants.Validate(state);
+Console.WriteLine(JsonSerializer.Serialize(new {
+    kind="읽기 진단의 공개 기능 재현", sourceCommit="068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+    gameAssemblyVersion=typeof(GameWorld).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion,
+    gameAssemblySha256=Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(typeof(GameWorld).Assembly.Location))),
+    beforeHash, afterHash=world.StateHash(), pupil, teacher, actualRequest=request, publicRequest=player, entry,
+    learnerAction=learner.Action.ToString(), learner.Due, teacherAction=instructor.Action.ToString(), receipt, expected,
+    actualPlan=learner.Plan, decision, noFreeKnowledge=state.Knowledge.Memories.All(m=>m.PersonId!=pupil),
+    noFreePeopleLearning=state.PeopleDomain.Profiles.Single(p=>p.PersonId==pupil).Learning.Length==0,
+    rngUnchanged=random==state.RandomState, saveHashEqual=saved.StateHash()==world.StateHash(),
+    resumedMonthlyHashEqual=resumed.StateHash()==world.StateHash(),
+    expectedSourceMatches=entry.Source==expected && entry.Source==receipt?.Source,
+    productOrFixtureChanges=false, measuredGrowthOrCostCases=0
+}, new JsonSerializerOptions{WriteIndented=true}));

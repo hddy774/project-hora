@@ -193,7 +193,8 @@ public sealed partial class KnowledgeAuthority
             payment.BlankMediumItemId != request.TargetItemId || payment.Paper != cost.Paper || payment.Ink != cost.Ink ||
             !ValidMaterialItem(payment.PaperItemId, payment.Paper) || !ValidMaterialItem(payment.InkItemId, payment.Ink) ||
             payment.Paper > 0 && payment.Ink > 0 && payment.PaperItemId == payment.InkItemId ||
-            new[] { request.SourceItemId, request.TargetItemId }.Any(id => id == payment.PaperItemId || id == payment.InkItemId))
+            request.SourceItemId == payment.PaperItemId || request.SourceItemId == payment.InkItemId ||
+            request.TargetItemId == payment.InkItemId || request.TargetItemId == payment.PaperItemId && request.TargetKind != KnowledgeMediumKind.Book)
             return Reject(KnowledgeStatus.InsufficientMaterials, "Payment must identify the reserved blank medium and exact real paper/ink inputs.");
         return sources.Contains(payment.ReceiptId) ? Reject(KnowledgeStatus.DuplicateSource, "Writing receipt already consumed.") : null;
     }
@@ -238,7 +239,9 @@ public sealed partial class KnowledgeAuthority
         var months = (int)Math.Min(int.MaxValue, (long)credits + elapsed / activity.Chapters.Length +
             (index < elapsed % activity.Chapters.Length ? 1 : 0));
         var cap = activity.Kind == KnowledgeActivityKind.Teaching ? activity.Adopted[index].Comprehension : 100;
-        var comprehension = (int)Math.Min(cap, (long)months * 100 / work.Chapters.Single(c => c.Number == chapter).StudyMonths);
+        var required = work.Chapters.Single(c => c.Number == chapter).StudyMonths;
+        var initialComprehension = previous?.Claim == claim ? Math.Max(0, previous.Comprehension - (long)previous.StudyMonths * 100 / required) : 0;
+        var comprehension = (int)Math.Min(cap, initialComprehension + (long)months * 100 / required);
         if (previous?.Claim == claim) comprehension = Math.Max(previous.Comprehension, comprehension);
         var belief = previous?.Claim == claim ? previous.Belief :
             previous?.Belief == KnowledgeBelief.Contradicted ? KnowledgeBelief.Corrected : KnowledgeBelief.Unverified;
@@ -313,7 +316,8 @@ public sealed partial class KnowledgeAuthority
     {
         var rights = medium.OwnerId == person ? medium.OwnerRights : KnowledgeRights.None;
         foreach (var access in state.Access)
-            if (access.PersonId == person && access.ItemId == medium.ItemId && access.GrantedMonth <= month && access.ExpiresMonth > month)
+            if (access.PersonId == person && access.ItemId == medium.ItemId && access.GrantedMonth <= month && access.ExpiresMonth > month &&
+                (!access.Revoked || access.RevokedMonth > month))
                 rights |= access.Rights;
         return rights;
     }
@@ -324,7 +328,9 @@ public sealed partial class KnowledgeAuthority
         chapters.All(c => !medium.MissingChapters.Contains(c));
 
     private bool CanTransmit(long person, long edition, long month) => media.Values.Any(m =>
-        m.EditionId == edition && (RightsFor(person, m, month) & KnowledgeRights.Teach) != 0);
+        m.EditionId == edition && (RightsFor(person, m, month) & KnowledgeRights.Teach) != 0) ||
+        state.Evidence.Any(e => e.Kind == "genesis-knowledge" && e.ActorId == person && e.EditionId == edition &&
+            e.Detail == "explicit-genesis-transmission-licence");
 
     private void RecordReceipt(string sourceId, string kind, long person, string work, long edition, long item,
         int[] chapters, long month, string detail)

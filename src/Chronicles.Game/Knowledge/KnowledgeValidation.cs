@@ -87,6 +87,16 @@ public sealed partial class KnowledgeAuthority
             Require(source.Kind == "access" && source.Revision == access.Revision && source.ItemId == access.ItemId &&
                 source.ActorId == access.GrantorId && source.OtherPersonId == access.PersonId && source.EndedMonth == access.GrantedMonth,
                 "Access grant has no matching authority evidence.");
+            if (access.Revoked)
+            {
+                var revoked = Evidence(evidence, access.RevocationSourceId);
+                Require(access.RevokedMonth >= access.GrantedMonth && access.RevokedMonth < access.ExpiresMonth &&
+                    revoked.Kind == "access-revoked" && revoked.ItemId == access.ItemId && revoked.OtherPersonId == access.PersonId &&
+                    revoked.EndedMonth == access.RevokedMonth && revoked.Revision == access.ChangedRevision && revoked.Revision > access.Revision,
+                    "Invalid access revocation provenance.");
+            }
+            else Require(access.RevocationSourceId == "" && access.RevokedMonth == 0 && access.ChangedRevision == 0,
+                "Active access cannot contain revocation evidence.");
         }
         var memoryByRevision = new Dictionary<(long Person, string Work, int Chapter, long Revision), PersonalKnowledge>();
         var current = new Dictionary<(long Person, string Work, int Chapter), PersonalKnowledge>();
@@ -207,7 +217,7 @@ public sealed partial class KnowledgeAuthority
                     activity.TargetQuality is >= 0 and <= 6 && payment is not null && payment.BlankMediumItemId == activity.TargetItemId &&
                     payment.Paper == paper && payment.Ink == ink && ValidMaterialItem(payment.PaperItemId, paper) &&
                     ValidMaterialItem(payment.InkItemId, ink) && (paper == 0 || ink == 0 || payment.PaperItemId != payment.InkItemId) &&
-                    payment.PaperItemId != activity.TargetItemId && payment.InkItemId != activity.TargetItemId &&
+                    (payment.PaperItemId != activity.TargetItemId || activity.TargetKind == KnowledgeMediumKind.Book) && payment.InkItemId != activity.TargetItemId &&
                     payment.PaperItemId != activity.MediumItemId && payment.InkItemId != activity.MediumItemId &&
                     activity.DueMonth - activity.StartedMonth == (long)activity.Rules.TranscriptionMonthsPerChapter * count &&
                     activity.Claims.All(c => editionsById[activity.EditionId].Chapters.Any(p => p.Number == c.Number && p.Claim == c.Claim)),

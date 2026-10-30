@@ -128,9 +128,24 @@ public sealed partial class KnowledgeAuthority
         return Applied(itemId);
     }
 
+    public KnowledgeResult RevokeAccess(long itemId, long ownerId, long personId, long month, string sourceId)
+    {
+        var error = SourceError(sourceId, month);
+        if (error is not null) return error;
+        if (!media.TryGetValue(itemId, out var medium) || ownerId <= 0 || medium.OwnerId != ownerId)
+            return Reject(KnowledgeStatus.Forbidden, "Only the current owner may revoke a medium's granted access.");
+        var granted = state.Access.Where(a => a.ItemId == itemId && a.PersonId == personId && !a.Revoked && a.ExpiresMonth > month).ToArray();
+        if (granted.Length == 0) return Reject(KnowledgeStatus.NotFound, "No active access grant.");
+        foreach (var access in granted)
+            state.Access[state.Access.IndexOf(access)] = access with { Revoked = true, RevokedMonth = month,
+                RevocationSourceId = sourceId, ChangedRevision = state.Revision + 1 };
+        Commit(sourceId, "access-revoked", ownerId, personId, editions[medium.EditionId].WorkId, medium.EditionId, itemId, [], month, month);
+        return Applied(itemId);
+    }
+
     /// <summary>Explicit genesis evidence only; never grants practical mastery or copies a parent's knowledge.</summary>
     public KnowledgeResult SeedInitialKnowledge(long personId, long editionId, int[] chapters, int comprehension,
-        string sourceId)
+        string sourceId, bool canTransmit = false)
     {
         var error = SourceError(sourceId, 0);
         if (error is not null) return error;
@@ -144,7 +159,8 @@ public sealed partial class KnowledgeAuthority
             AppendMemory(new(personId, edition.WorkId, chapter, editionId, claim, 0, comprehension > 0 ? 100 : 0,
                 comprehension, 50, KnowledgeBelief.Unverified, 0, state.Revision + 1, 0, sourceId));
         }
-        Commit(sourceId, "genesis-knowledge", personId, 0, edition.WorkId, editionId, 0, chapters, 0, 0);
+        Commit(sourceId, "genesis-knowledge", personId, 0, edition.WorkId, editionId, 0, chapters, 0, 0,
+            detail: canTransmit ? "explicit-genesis-transmission-licence" : "");
         return Applied();
     }
 

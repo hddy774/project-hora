@@ -113,12 +113,12 @@ public sealed class ExplorationCapacityReturnScenario : IFeatureScenario
         f.Send("cancel", f.First); var returning = f.Last(f.First);
         ExplorationFixture.Check(returning.Status == SecretEntryStatus.Returning && returning.Due == began + 1 && f.Food(f.First) == food - 2,
             "취소가 실제 귀환 시간이나 준비 소비를 환급했다.");
-        f.Reject("enterSecret", f.Second, 8); f.Send("possess", f.First); var copy = GameCodec.Decode(GameCodec.Encode(f.World));
+        f.Reject("enterSecret", f.Second, 8); f.Freeze(f.Second); f.Send("possess", f.First); var copy = GameCodec.Decode(GameCodec.Encode(f.World));
         f.World.AdvanceTo(began + 1); copy.AdvanceTo(began + 1);
         ExplorationFixture.Check(f.World.StateHash() == copy.StateHash() && f.Last(f.First).Status == SecretEntryStatus.Returned && f.Last(f.First).RewardQuantity == 0 &&
             !f.World.Checkpoint().Inventory.Reservations.Single(r => r.Id == returning.ToolReservation).Active,
             "실제 귀환·예약 해제·중도 저장이 일치하지 않는다.");
-        f.Send("observe"); f.Send("enterSecret", f.Second, 8);
+        f.Idle(f.Second); f.Send("observe"); f.Send("enterSecret", f.Second, 8);
         ExplorationFixture.Check(f.Last(f.Second).Status == SecretEntryStatus.Active, "귀환한 실제 자리의 재사용이 막혔다.");
     }
 }
@@ -213,7 +213,7 @@ public sealed class ExplorationPreparationGatesScenario : IFeatureScenario
         var item = f.World.Checkpoint().Items.First(i => i.Owner == f.First && i.Definition == "tool").Id;
         f.Send("offer", f.First, item, 1); f.Reject("enterSecret", f.First, 8);
         var contract = f.World.Checkpoint().Inventory.Contracts.Single(c => c.Item == item && c.Status == "open").Id;
-        f.Send("withdraw", f.First, contract); f.Send("enterSecret", f.First, 8);
+        f.Send("withdraw", f.First, contract); f.Send("store", f.First, item); f.Send("enterSecret", f.First, 8);
         ExplorationFixture.Check(f.Last(f.First).Status == SecretEntryStatus.Active, "실제 개방·출품 종료 후 준비한 입장이 거절되었다.");
         var corrupt = f.World.Checkpoint(); corrupt.Exploration.Entries[0].Body++;
         var rejected = false; try { GameWorld.Restore(corrupt); } catch (InvalidDataException) { rejected = true; }

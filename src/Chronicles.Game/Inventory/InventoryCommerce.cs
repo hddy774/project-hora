@@ -31,7 +31,7 @@ public static partial class InventoryEngine
     {
         var contract = Contract(state, command.Contract);
         Require(contract.Seller == command.Actor && contract.Kind is "sale" or "auction" && contract.Buyer == 0, "A funded bid or cargo commitment cannot be withdrawn as an offer.");
-        contract.Status = "cancelled"; FreeReservation(state, contract.Reservation); return contract.Id;
+        contract.Status = "cancelled"; contract.EndedMonth = state.Month; FreeReservation(state, contract.Reservation); return contract.Id;
     }
     private static void Pay(Person payer, Person payee, long amount)
     {
@@ -43,6 +43,7 @@ public static partial class InventoryEngine
         var item = ItemAt(state, contract.Item);
         Require(item.Reserved == contract.Reservation, "Contract lost physical reservation.");
         foreach (var entry in Tree(state, item)) { entry.Owner = recipient; entry.Place = contract.Destination; }
+        contract.PaidQuantity = item.Quantity; contract.PaidQuality = item.Quality; contract.EndedMonth = state.Month;
         var metadata = Detail(state, item); metadata.Custodian = recipient; metadata.Carrier = 0;
         metadata.Provenance.Add($"contract:{contract.Id}");
         FreeReservation(state, contract.Reservation); contract.Status = "completed";
@@ -52,7 +53,7 @@ public static partial class InventoryEngine
         var contract = Contract(state, command.Contract); var buyer = PersonAt(state, command.Actor); var seller = PersonAt(state, contract.Seller);
         Require(contract.Kind == "sale" && contract.Due > state.Month && buyer.Id != seller.Id && buyer.Place == contract.Destination &&
             Location(state, contract.Item) == buyer.Place, "Sale requires live local counterparties before its deadline.");
-        Pay(buyer, seller, contract.Price); contract.Buyer = buyer.Id; HandOver(state, contract, buyer.Id);
+        Pay(buyer, seller, contract.Price); contract.PaidAmount = contract.Price; contract.Buyer = buyer.Id; HandOver(state, contract, buyer.Id);
         Event(state, "sale", buyer.Id, contract.Id, "Money transferred between actual parties; physical item received at market storage."); return contract.Id;
     }
     private static long Bid(InventoryState state, PlaceBid command)
@@ -94,7 +95,7 @@ public static partial class InventoryEngine
         var item = ItemAt(state, contract.Item); var place = Location(state, item.Id);
         foreach (var entry in Tree(state, item)) entry.Place = place;
         Detail(state, item).Carrier = 0;
-        FreeReservation(state, contract.Reservation); FreeLabor(state, contract.Labor); contract.Status = "failed";
+        FreeReservation(state, contract.Reservation); FreeLabor(state, contract.Labor); contract.Status = "failed"; contract.EndedMonth = state.Month;
         Event(state, "contract-failed", contract.Seller, contract.Id, $"Cargo remains at actual location {place}; ownership is retained and escrow refunded.");
     }
     private static long Delivery(InventoryState state, FinishTransport command)
@@ -106,7 +107,7 @@ public static partial class InventoryEngine
             var carrier = PersonAt(state, contract.Carrier); PersonAt(state, contract.Seller); PersonAt(state, contract.Buyer);
             Require(state.Month >= contract.Due && carrier.Place == contract.Destination &&
                 Location(state, contract.Item) == contract.Destination, "Delivery requires actual arrival and completed travel time.");
-            carrier.Money = checked(carrier.Money + contract.Escrow); contract.Escrow = 0;
+            contract.PaidAmount = contract.Escrow; carrier.Money = checked(carrier.Money + contract.Escrow); contract.Escrow = 0;
             HandOver(state, contract, contract.Buyer); FreeLabor(state, contract.Labor);
             Event(state, "delivered", contract.Carrier, contract.Id, "Ownership and paid carrier fee settled once at the physical destination.");
         }
@@ -137,15 +138,17 @@ public static partial class InventoryEngine
                 {
                     var buyer = PersonAt(state, contract.Buyer, false); buyer.Money = checked(buyer.Money + contract.Escrow);
                 }
-                contract.Escrow = 0; FreeReservation(state, contract.Reservation); contract.Status = "cancelled"; continue;
+                contract.Escrow = 0; FreeReservation(state, contract.Reservation); contract.Status = "cancelled"; contract.EndedMonth = state.Month; continue;
             }
             if (state.Month < contract.Due) continue;
             if (contract.Kind == "auction" && contract.Buyer != 0)
             {
-                var seller = PersonAt(state, contract.Seller); seller.Money = checked(seller.Money + contract.Escrow); contract.Escrow = 0;
+                var seller = PersonAt(state, contract.Seller); contract.PaidAmount = contract.Escrow;
+                seller.Money = checked(seller.Money + contract.Escrow); contract.Escrow = 0;
                 HandOver(state, contract, contract.Buyer);
+                Event(state, "auction-settled", contract.Buyer, contract.Id, $"quantity:{contract.PaidQuantity}:money:{contract.PaidAmount}:seller:{contract.Seller}");
             }
-            else { FreeReservation(state, contract.Reservation); contract.Status = "expired"; }
+            else { FreeReservation(state, contract.Reservation); contract.Status = "expired"; contract.EndedMonth = state.Month; }
         }
         foreach (var job in state.Ledger.Jobs.Where(j => j.Status is "reserved" or "processing").ToArray())
             if (PersonAt(state, job.Actor, false).Status != LifeStatus.Alive)

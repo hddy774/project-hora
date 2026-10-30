@@ -10,7 +10,7 @@ public static class Invariants
     {
         ArgumentNullException.ThrowIfNull(state);
         Require(state.Schema == 1 && state.Month >= 0 && state.Revision >= 0 && state.LawRevision >= 1, "INV-004", "저장/시간 버전");
-        Require(state.DomainSchema == 1, "INV-004", "이전 개발용 저장 형식입니다. 원본 파일은 보존됩니다.");
+        Require(state.DomainSchema == 2, "INV-004", "이전 개발용 저장 형식입니다. 원본 파일은 보존됩니다.");
         Require(Laws.Validate(state.Laws) is null, "INV-003", "법칙 범위");
         Require(state.Places.Count == 100 && state.Places.Select(x => x.Id).SequenceEqual(Enumerable.Range(0, 100)), "INV-002", "정확히 100지점");
         Require(state.Places.GroupBy(x => x.Province).Count() == 10 && state.Places.GroupBy(x => x.Province).All(g => g.Count() == 10), "INV-002", "10주×10지점");

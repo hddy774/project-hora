@@ -55,6 +55,7 @@ public sealed class InventoryPublicGatherScenario : IFeatureScenario
         InventoryWorldFixture.Accept(world, request); var active = world.Checkpoint();
         var job = active.Inventory.Jobs.Single(j => j.Actor == actor && j.Status == "processing");
         var source = active.Inventory.Sources.Single(s => s.Id == job.Source);
+        InventoryFixture.Check(job.OutputDefinition == "food" && job.OutputQuantity > 0, "Scheduled extraction omitted its own frozen output description.");
         InventoryFixture.Check(active.Items.Where(i => i.Owner == actor && i.Definition == "food").Sum(i => i.Quantity) ==
             before.Items.Where(i => i.Owner == actor && i.Definition == "food").Sum(i => i.Quantity), "Gathering paid inventory before the actual work completed.");
         var hash = world.StateHash(); InventoryWorldFixture.Accept(world, request);

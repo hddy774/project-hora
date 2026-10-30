@@ -67,6 +67,7 @@ public sealed class InventoryState
 /// <summary>Save this alongside GameState; it stores no second copy of physical items or money.</summary>
 public sealed class InventoryLedger
 {
+    public long NextEventSequence { get; set; } = 1;
     public bool Initialized { get; set; }
     public int BaseCarryCapacity { get; set; } = 500;
     public int ProductionWork { get; set; } = 100;
@@ -135,6 +136,7 @@ public sealed class ProductionJob
     public long KnowledgeActivity { get; set; }
     public long Target { get; set; }
     public long Source { get; set; }
+    public string OutputDefinition { get; set; } = "";
     public int OutputQuantity { get; set; }
     public List<long> Inputs { get; set; } = [];
     public List<ConsumedMaterial> Consumed { get; set; } = [];
@@ -174,6 +176,10 @@ public sealed class InventoryContract
     public long Item { get; set; }
     public long Reservation { get; set; }
     public long Labor { get; set; }
+    public long? PaidAmount { get; set; }
+    public int? PaidQuantity { get; set; }
+    public int? PaidQuality { get; set; }
+    public long? EndedMonth { get; set; }
     public long Price { get; set; }
     public long Escrow { get; set; }
     public long Fee { get; set; }
@@ -183,7 +189,8 @@ public sealed class InventoryContract
 }
 
 public sealed record InventoryAppraisal(long Appraiser, long Item, string Definition, int EstimatedQuality, int Damage, ItemDefect DetectedDefects, long Month);
-public sealed record SourceObservation(long Observer, long Source, int Place, long Remaining, long Month, string Evidence);
+public sealed record SourceObservation(long Observer, long Source, int Place, long Remaining, long Month, string Evidence,
+    string Definition = "", string Activity = "");
 public sealed record EquipmentContribution(long Item, int Quality, int Damage, IReadOnlyList<int> Slots);
 public sealed record InventoryEffect(string Cause, long Target, string Kind, int Magnitude, long Start, long End);
 public sealed class ArrayInstallation
@@ -198,7 +205,9 @@ public sealed class ArrayInstallation
     public long PaidUntil { get; set; }
 }
 public sealed record BindingContract(long Id, long Item, long Soul, long Established, string Evidence);
-public sealed record InventoryEvent(long Month, string Kind, long Actor, long Subject, string Detail);
+public sealed record InventoryEvent(long Month, string Kind, long Actor, long Subject, string Detail, long Sequence = 0,
+    string Definition = "", int Quantity = 0, int Place = -1, long Owner = 0, string ItemSource = "", bool IsLoss = false,
+    int? Quality = null, int? Damage = null, ItemDefect Defects = ItemDefect.None, bool OwnerObserved = false);
 public sealed record InventoryReceipt(string Signature, long Subject, string Message);
 public sealed record InventoryResult(bool Accepted, string Message, InventoryState State, long Subject = 0, bool Replayed = false);
 

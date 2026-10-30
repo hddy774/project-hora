@@ -91,7 +91,7 @@ public sealed partial class GameWorld
         w.InitializeInventory();
         w.InitializeKnowledge();
         w.InitializeCultivation();
-        s.DomainSchema = 1;
+        s.DomainSchema = 2;
         w.Event("창세", 0, 0, "두 반선 시조가 세계에 들어왔다. 종문·숨은 주민 없음.", "초기 프로필");
         w.Census();
         Invariants.Validate(s);
@@ -153,16 +153,21 @@ public sealed partial class GameWorld
     {
         ArgumentNullException.ThrowIfNull(command);
         if (string.IsNullOrWhiteSpace(command.Id) || command.Id.Length > 128)
-            return new(command.Id, false, "명령 식별자가 필요합니다.", Revision);
+            return new(command.Id, false, "명령 식별자가 필요합니다.", CommandContextRevision);
+        if (state.Controlled != 0 && command.Kind is not ("observe" or "possess") && command.Actor != state.Controlled)
+            return new(command.Id, false, "실행할 수 없는 대상입니다.", CommandContextRevision);
+        if (state.Controlled != 0 && command.Kind == "possess" && command.Actor != state.Controlled &&
+            !people[state.Controlled].KnownPeople.Contains(command.Actor))
+            return new(command.Id, false, "조작할 수 없는 대상입니다.", CommandContextRevision);
         var signature = GameCodec.CommandHash(command);
         if (state.Commands.TryGetValue(command.Id, out var old))
-            return state.CommandSignatures[command.Id] == signature ? old :
-                new(command.Id, false, "같은 명령 ID의 내용이 다릅니다.", Revision);
-        if (command.ExpectedRevision >= 0 && command.ExpectedRevision != Revision)
-            return new(command.Id, false, "상태가 바뀌었습니다. 다시 확인하세요.", Revision);
+            return state.CommandSignatures[command.Id] == signature ? ProjectCommandResult(old) :
+                new(command.Id, false, "같은 명령 ID의 내용이 다릅니다.", CommandContextRevision);
+        if (command.ExpectedRevision >= 0 && command.ExpectedRevision != CommandContextRevision)
+            return new(command.Id, false, "상태가 바뀌었습니다. 다시 확인하세요.", CommandContextRevision);
         var candidate = new GameWorld(GameCodec.Clone(state));
         var error = candidate.Apply(command);
-        if (error is not null) return new(command.Id, false, error, Revision);
+        if (error is not null) return new(command.Id, false, error, CommandContextRevision);
         candidate.SettleKnowledge();
         candidate.state.Revision++;
         var result = new CommandResult(command.Id, true, "명령을 적용했습니다.", candidate.Revision);
@@ -170,7 +175,7 @@ public sealed partial class GameWorld
         candidate.state.CommandSignatures.Add(command.Id, signature);
         Invariants.Validate(candidate.state);
         state = candidate.state; Reindex();
-        return result;
+        return ProjectCommandResult(result);
     }
 
     private string? Apply(GameCommand c)
@@ -337,10 +342,11 @@ public sealed partial class GameWorld
 
     private string? CreateExplicit(GameCommand c)
     {
-        if (state.Controlled != 0 || string.IsNullOrWhiteSpace(c.Data) || c.Data.Length > 40 || c.Target < 0 || c.Target >= 100)
+        if (state.Controlled != 0 || c.Target < 0 || c.Target >= 100)
             return "관찰 관리에서 이름과 위치를 지정하세요.";
-        var p = new Person { Id = Id(), BodyId = Id(), SoulId = Id(), Name = c.Data, Place = (int)c.Target,
-            Born = Month - Law("birth.maturity"), Gestates = c.Value != 0, Lifespan = Law("life.mortal"),
+        if (!TryParsePeopleCreation(c, out var profile, out var profileError)) return profileError;
+        var p = new Person { Id = Id(), BodyId = Id(), SoulId = Id(), Name = profile.Name, Species = profile.Species, Place = (int)c.Target,
+            Born = Month - profile.MaturityMonths, Gestates = profile.Gestates, Lifespan = profile.LifespanMonths,
             Aptitudes = Enumerable.Range(0, 6).Select(_ => 4000 + Roll(2001)).ToArray(),
             Roots = Enumerable.Range(0, 5).Select(_ => 4000 + Roll(2001)).ToArray(),
             Personality = Enumerable.Range(0, 14).Select(_ => 20 + Roll(61)).ToArray(), KnownPlaces = [(int)c.Target] };

@@ -105,6 +105,7 @@ public static partial class InventoryEngine
         foreach (var job in state.Ledger.Jobs)
         {
             PersonAt(state, job.Actor, false);
+            if (job.OutputDefinition.Length > 0) InventoryDefinitions.Definition(job.OutputDefinition);
             Ensure(InventoryDefinitions.Recipes.ContainsKey(job.Recipe) || job.Recipe is "repair" or "extraction" or "medical-treatment" or "appraisal" or "exploration" or "array-maintenance",
                 "Unknown production process in saved state.");
             Ensure((job.Source != 0) == (job.Recipe == "extraction") && (job.Source == 0 || (job.OutputQuantity > 0 && state.Ledger.Sources.Any(s => s.Id == job.Source))),
@@ -123,8 +124,11 @@ public static partial class InventoryEngine
             PersonAt(state, contract.Seller, false); if (contract.Buyer != 0) PersonAt(state, contract.Buyer, false);
             if (contract.Carrier != 0) PersonAt(state, contract.Carrier, false);
             Ensure(contract.Kind is "sale" or "auction" or "transport" && contract.Escrow >= 0 && contract.Price >= 0 && contract.Fee >= 0, "Invalid funded contract.");
+            Ensure(contract.PaidAmount is null or >= 0 && contract.PaidQuantity is null or > 0 && contract.PaidQuality is null or (>= 0 and <= 10000) &&
+                (contract.EndedMonth is null || contract.EndedMonth >= 0 && contract.EndedMonth <= state.Month), "Invalid actual settlement history.");
             if (contract.Status == "open")
             {
+                Ensure(contract.PaidAmount is null && contract.EndedMonth is null, "Open contract cannot have a completed payment.");
                 var item = ItemAt(state, contract.Item);
                 Ensure(item.Reserved == contract.Reservation && item.Owner == contract.Seller &&
                     state.Ledger.Reservations.Any(r => r.Id == contract.Reservation && r.Active), "Open contract lost cargo ownership or reservation.");
@@ -140,6 +144,15 @@ public static partial class InventoryEngine
             var item = ItemAt(state, array.Item);
             Ensure(item.Owner == array.Owner && item.Container == 0 && item.Place == array.Place &&
                 InventoryDefinitions.Definition(item.Definition).Item.Kind == ItemKind.Array, "Installed array lost its actual physical item.");
+        }
+        var sequencedEvents = state.Ledger.Events.Where(e => e.Sequence > 0).ToArray();
+        Ensure(state.Ledger.NextEventSequence > sequencedEvents.Select(e => e.Sequence).DefaultIfEmpty().Max() &&
+            sequencedEvents.Select(e => e.Sequence).Distinct().Count() == sequencedEvents.Length, "Physical audit stream sequence was reused.");
+        foreach (var audit in state.Ledger.Events.Where(e => e.Definition.Length > 0))
+        {
+            InventoryDefinitions.Definition(audit.Definition); PersonAt(state, audit.Owner, false);
+            Ensure(audit.Sequence > 0 && audit.Quantity > 0 && audit.Place is >= 0 and < 100 && audit.Month <= state.Month &&
+                audit.Kind == (audit.IsLoss ? "physical-loss" : "physical-consumption"), "Invalid typed physical decrement evidence.");
         }
         foreach (var binding in state.Ledger.Bindings)
         {

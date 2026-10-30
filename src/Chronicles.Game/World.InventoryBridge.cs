@@ -105,6 +105,7 @@ public sealed partial class GameWorld
             state.Inventory.Reservations.Add(new() { Id = reservation, Actor = p.Id, Purpose = "legacy-production", Items = input.Select(i => i.Id).ToList() });
             state.Inventory.Labor.Add(new() { Id = labor, Person = p.Id, Purpose = "production", Start = Math.Max(0, Math.Min(Month, p.Due - 1)), End = Math.Max(Month + 1, p.Due), Units = 100 });
             var job = new ProductionJob { Id = jobId, Actor = p.Id, Recipe = p.ActionData, Place = p.Place, Due = p.Due,
+                OutputDefinition = InventoryDefinitions.Recipes[p.ActionData].Output, OutputQuantity = InventoryDefinitions.Recipes[p.ActionData].Quantity,
                 Labor = labor, Reservation = reservation, Status = "processing", Inputs = input.Select(i => i.Id).ToList(),
                 Quality = (int)(input.Sum(i => (long)i.Quantity * i.Quality) / input.Sum(i => (long)i.Quantity)),
                 Damage = input.Max(i => i.Damage), BoundSoul = input.Where(i => i.BoundSoul != 0).Select(i => i.BoundSoul).Distinct().SingleOrDefault(),
@@ -145,6 +146,16 @@ public sealed partial class GameWorld
         if (items.TryGetValue(id, out var found) && (kind is null || InventoryDefinitions.Definition(found.Definition).Item.Kind == kind) &&
             InventoryEngine.IsAccessible(view, p.Id, id)) { item = found; return true; }
         item = null!; return false;
+    }
+    private void RecordInventoryLoss(Item item, int quantity)
+    {
+        if (quantity <= 0) return;
+        var view = new InventoryState { Items = state.Items, People = state.People, Ledger = state.Inventory };
+        var place = InventoryEngine.Location(view, item.Id);
+        var observed = InventoryEngine.IsAccessible(view, item.Owner, item.Id, requireUncommitted: false);
+        state.Inventory.Events.Add(new(Month, "physical-loss", 0, item.Id, "Actual physical loss before decrement.",
+            checked(state.Inventory.NextEventSequence++), item.Definition, quantity, place, item.Owner, item.Source, true,
+            item.Quality, item.Damage, item.Defects, observed));
     }
     private int AvailableInventory(Person p, string definition) => Owned(p.Id).Where(i => i.Definition == definition &&
         InventoryAccessible(p, i.Id, out _)).Sum(i => i.Quantity);
@@ -200,7 +211,7 @@ public sealed partial class GameWorld
                 case "gather": case "mining":
                     var definition = c.Data.Length == 0 ? c.Kind == "mining" ? "ore" : "food" : c.Data;
                     var source = state.Inventory.Sources.FirstOrDefault(s => s.Place == p.Place && (c.Target == 0 ? s.Definition == definition : s.Id == c.Target));
-                    if (source is null || (source.Definition.StartsWith("resource.", StringComparison.Ordinal) && !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == source.Id)))
+                    if (source is null || (source.Definition.StartsWith("resource.", StringComparison.Ordinal) && !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == source.Id && o.Definition == source.Definition && o.Activity == source.Activity)))
                     { error = "실제로 발견한 현지 원천이 필요합니다."; return true; }
                     var requested = Math.Min(source.Remaining, IntLaw("economy.gatherYield"));
                     var due = Month + Math.Max(1, (requested * state.Inventory.ExtractionWorkPerUnit + 99) / 100);
@@ -216,7 +227,7 @@ public sealed partial class GameWorld
                     error = BeginInventoryJob(p, new TreatPerson(c.Id, p.Id, patient?.Id ?? 0, Month + 1, consent), ActionKind.Heal); return true;
                 case "appraise": error = BeginInventoryJob(p, new AppraisePhysical(c.Id, p.Id, c.Target, Month + 1), ActionKind.Explore); return true;
                 case "exploreSource":
-                    var target = state.Inventory.Sources.FirstOrDefault(s => s.Place == p.Place && (c.Target != 0 ? s.Id == c.Target : !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == s.Id)));
+                    var target = state.Inventory.Sources.FirstOrDefault(s => s.Place == p.Place && (c.Target != 0 ? s.Id == c.Target : !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == s.Id && o.Definition.Length > 0 && o.Activity.Length > 0)));
                     error = target is null ? "탐색할 현지 원천이 없습니다." : BeginInventoryJob(p, new ExploreNaturalSource(c.Id, p.Id, target.Id, Month + 1), ActionKind.Explore); return true;
                 case "offer": error = RunInventory(new OfferItem(c.Id, p.Id, c.Target, c.Value, Month + 12, c.Data == "auction"), out _); return true;
                 case "bid": error = RunInventory(new PlaceBid(c.Id, p.Id, c.Target, c.Value), out _); return true;

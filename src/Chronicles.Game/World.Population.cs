@@ -15,7 +15,9 @@ public sealed partial class GameWorld
         var slot = state.ActiveSlots[person.Slot];
         if (slot.Person != person.Id || slot.Generation != person.SlotGeneration)
             throw new InvalidDataException("인구 슬롯 세대가 다릅니다.");
-        slot.Person = 0; slot.Generation = checked(slot.Generation + 1);
+        var nextGeneration = checked(slot.Generation + 1);
+        ForgetExecutionPerson(person);
+        slot.Person = 0; slot.Generation = nextGeneration;
     }
 
     public long ResolveSlot(int slot, uint generation) => slot >= 0 && slot < state.ActiveSlots.Count &&

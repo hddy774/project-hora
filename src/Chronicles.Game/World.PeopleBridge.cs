@@ -275,8 +275,8 @@ public sealed partial class GameWorld
     }
 
     internal AptitudeResult PeopleAptitude(Person person) => Aptitudes.Assess(PeopleProfiles.Context(PeopleProfile(person), state.PeopleDomain.Traits,
-        Month, person.Health * 100, person.Health * 100, [], state.PeopleDomain.Tuning));
-    internal int PeopleTalent(Person person, int index) => PeopleAptitude(person).Talents[index].Innate;
+        Month, person.Health * 100, person.Health * 100, [], state.PeopleDomain.Tuning), ExecutionInnateTalents(person));
+    internal int PeopleTalent(Person person, int index) => ExecutionInnateTalent(person, index);
     internal int PeopleTalentExpression(Person person, int index) => PeopleAptitude(person).Talents[index].CurrentExpression;
 
     public PeopleDetailView? PeopleDetail(long personId)

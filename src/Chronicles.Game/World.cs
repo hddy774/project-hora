@@ -171,6 +171,7 @@ public sealed partial class GameWorld
         if (command.ExpectedRevision >= 0 && command.ExpectedRevision != CommandContextRevision)
             return new(command.Id, false, "상태가 바뀌었습니다. 다시 확인하세요.", CommandContextRevision);
         var candidate = new GameWorld(GameCodec.Clone(state));
+        candidate.scalarExecutionVerification = scalarExecutionVerification;
         var error = candidate.Apply(command);
         if (error is not null) return new(command.Id, false, error, CommandContextRevision);
         candidate.SettleKnowledge();
@@ -297,15 +298,16 @@ public sealed partial class GameWorld
         SettlePolitics();
         SettleKnowledge();
         RefreshPopulationIndices();
-        var living = state.People.Where(p => p.Status == LifeStatus.Alive).ToArray();
-        foreach (var p in living)
+        using var living = BeginExecutionMonth();
+        for (var index = 0; index < living.Count; index++)
         {
+            if (!TryExecutionPerson(living.At(index), out var p)) continue;
             if (Month - p.Born >= p.Lifespan) { EndLife(p, 1, "수명 소진"); continue; }
             Maintain(p);
             if (p.Status != LifeStatus.Alive) continue;
             ResolveWorldConditions(p);
             if (p.Status != LifeStatus.Alive) continue;
-            if (p.Action != ActionKind.Idle && p.Due <= Month) Complete(p);
+            if (ExecutionActionDue(p)) Complete(p);
             if (p.Status != LifeStatus.Alive) continue;
             Observe(p);
             if (p.Action == ActionKind.Idle && state.Controlled != p.Id) { Decide(p); RecordDecision(p); }

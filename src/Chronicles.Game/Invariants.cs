@@ -106,14 +106,16 @@ public static class Invariants
         }
         foreach (var group in state.Groups)
         {
-            Require(group.Money >= 0 && group.PolicyEscrow >= 0 && group.Members.Distinct().Count() == group.Members.Count && group.Members.All(people.ContainsKey), "INV-018", "조직 금고·구성원");
+            Require(group.Money >= 0 && group.Members.Distinct().Count() == group.Members.Count && group.Members.All(people.ContainsKey), "INV-018", "조직 금고·구성원");
+            Require(group.PolicyEscrow == 0 && group.PolicyDue == 0 && group.PendingPolicies.Count == 0,
+                "INV-020", "정책 준비·인력·예산의 단일 권위");
             Require(group.Leader == 0 || (people.ContainsKey(group.Leader) && group.Members.Contains(group.Leader)), "INV-020", "직책 소유자");
             var seen = new HashSet<long> { group.Id }; var parent = group.Overlord;
             while (parent != 0)
             {
                 Require(seen.Add(parent) && groups.ContainsKey(parent), "INV-019", "봉신 DAG"); parent = groups[parent].Overlord;
             }
-            Require(group.Policies.Keys.Concat(group.PendingPolicies.Keys).All(Catalog.PolicyNames.Contains), "INV-020", "정책 분류");
+            Require(group.Policies.Keys.All(Catalog.PolicyNames.Contains), "INV-020", "정책 분류");
         }
         foreach (var place in state.Places)
             Require(place.Sovereign == 0 || (groups.TryGetValue(place.Sovereign, out var sovereign) && !sovereign.Dissolved && sovereign.Provinces.Contains(place.Province)), "INV-019", "주권 실제 근거");
@@ -124,7 +126,7 @@ public static class Invariants
                 state.Inventory.Contracts.Any(contract => contract.Id == c.Id && contract.Reservation == i.Reserved)), "INV-017", "계약 실물 예약");
             Require(c.Status == "open" || c.Escrow == 0, "INV-005", "종결 예치 정산");
         }
-        var money = state.People.Sum(p => p.Money) + state.Groups.Sum(g => g.Money + g.PolicyEscrow) + state.Contracts.Sum(c => c.Escrow) +
+        var money = state.People.Sum(p => p.Money) + state.Groups.Sum(g => g.Money) + state.Contracts.Sum(c => c.Escrow) +
             state.Politics.Preparations.Sum(p => p.Escrow);
         var totals = state.Items.GroupBy(i => i.Definition).ToDictionary(g => g.Key, g => g.Sum(i => (long)i.Quantity), StringComparer.Ordinal);
         Require(totals.Keys.All(state.Materials.ContainsKey), "INV-018", "실물 원천 원장 누락");

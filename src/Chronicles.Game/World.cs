@@ -340,7 +340,7 @@ public sealed partial class GameWorld
             living.Count(p => p.Martial > 0), living.Count(p => p.Realm > Realm.Mortal),
             (int)state.BirthCount, (int)state.DeathCount,
             state.People.Sum(p => p.Money) + state.Groups.Sum(g => g.Money) + state.Contracts.Sum(c => c.Escrow) +
-                state.Groups.Sum(g => g.PolicyEscrow) + state.Politics.Preparations.Sum(p => p.Escrow),
+                state.Politics.Preparations.Sum(p => p.Escrow),
             state.Items.Where(i => i.Definition == "food").Sum(i => (long)i.Quantity)));
     }
 

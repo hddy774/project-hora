@@ -265,7 +265,7 @@ public sealed class PeopleReputationScenarios : IFeatureScenario
 
 public sealed class PeopleEmbodimentMartialScenarios : IFeatureScenario
 {
-    public string Name => "INV-011/015 people: independent species/body/title, both-parent Golden Core reproduction and root-free martial growth";
+    public string Name => "INV-011/015 people: independent species/body/title, both-parent Golden Core reproduction and root-free martial aptitude";
 
     public void Run()
     {
@@ -289,16 +289,90 @@ public sealed class PeopleEmbodimentMartialScenarios : IFeatureScenario
             Embodiments.CanParticipate(SpeciesCatalog.Get("spirit-fox"), fox, ParticipationKind.Craft), "sapient nonhuman species can join society and use actual manipulation capabilities for crafts");
         PeopleFixture.Check(Embodiments.AssessHabitat(SpeciesCatalog.Get("spirit-pine"), HabitatKind.Forest).Suitable &&
             !Embodiments.AssessHabitat(SpeciesCatalog.Get("spirit-pine"), HabitatKind.Desert).Suitable, "ecology retains species-specific habitat and resource requirements");
-        var martial = MartialProfile.Beginner(1, 101);
-        var training = new MartialTrainingContext("training", 1, 12, 5000, 5000, 5000, 10_000, 1000, source with { Month = 1 });
-        var trained = MartialTraining.Train(martial, training);
-        PeopleFixture.Check(trained.Accepted && trained.State.Work == 60_000 && martial.Work == 0, "martial training derives only from body/mind and actual completed practice");
-        var breakthrough = MartialTraining.Breakthrough(trained.State, new("breakthrough", 2, 10_000, true, source with { Month = 2 }), MartialPolicy.Provisional());
-        PeopleFixture.Check(breakthrough.Accepted && breakthrough.State.Stage == MartialStage.Stage01 && breakthrough.State.Work == 48_000, "explicit martial breakthrough consumes preparation for one stage");
-        var maximum = breakthrough.State with { Stage = MartialStage.Stage10 };
-        PeopleFixture.Check(MartialTraining.BasicLifespanMonths(maximum, MartialPolicy.Provisional()) == 7200 && MartialTraining.CombatContribution(maximum) == 6400,
-            "tenth martial stage preserves the independent 600-year basic lifespan and calibrated contribution without reproductive realm conversion");
-        PeopleFixture.Check(JsonSerializer.Serialize(MartialTraining.Train(trained.State, training).State) == JsonSerializer.Serialize(trained.State), "martial practice retry cannot grant duplicated work");
-        PeopleFixture.RoundTrip(fox); PeopleFixture.RoundTrip(breakthrough.State);
+        var martial = MartialAptitude.Assess(new(5000, 5000, 5000, 10_000));
+        PeopleFixture.Check(martial.BodilyFoundation == 5000 && martial.CurrentExpression == 5000, "martial aptitude derives from bone, constitution and mind without a spirit-root parameter");
+        PeopleFixture.Check(MartialAptitude.Assess(new(5000, 5000, 5000, 5000)).CurrentExpression == 2500, "current martial expression retains actual bodily condition");
+        PeopleFixture.RoundTrip(fox); PeopleFixture.RoundTrip(martial);
+    }
+}
+
+public sealed class PeopleCombatScenarios : IFeatureScenario
+{
+    private static readonly string[] ExpectedAxes = ["출력·관통", "비축·지속", "제어·정밀", "방호·복원", "이동·공간", "감지·은폐", "협응·부하", "유지 비용"];
+    public string Name => "INV-015/023 people: canonical eight combat axes, standard comparison, one-time realm conversion and conditional known potential";
+
+    public void Run()
+    {
+        var source = PeopleFixture.Source("formation", PeopleSourceKind.Formation);
+        var structure = Enumerable.Repeat(1000L, 8).ToArray(); structure[7] = 100;
+        var effect = new PeopleEffect("formation.power", new(EffectDomain.Combat, 0), EffectOperation.Add, 200, source);
+        var formation = new CombatFormation(1, 10, Realm.Qi, 9, "route.qi", 0, structure, [effect], source);
+        var encounter = new StandardEncounter("solo-open-field", 1, 10, "open-field-neutral", true, 10, CombatKnowledgeLevel.Actual);
+        var context = new CombatAssessmentContext(formation, 10_000, 10_000, Enumerable.Repeat(10_000, 8).ToArray(),
+            Enumerable.Repeat(10_000, 8).ToArray(), [], encounter);
+        var before = JsonSerializer.Serialize(context);
+        var result = CombatAssessment.Assess(context);
+        PeopleFixture.Check(result.Axes.Select(a => a.Name).SequenceEqual(ExpectedAxes) && result.Axes[0].Current == 1200 && result.SustainableFraction == 10_000,
+            "actual combat inputs use canonical axes and explicit maintenance/reserve duration");
+        var duplicate = effect with { Id = "trait.same-formation", Source = source with { Kind = PeopleSourceKind.Trait } };
+        PeopleFixture.Check(CombatAssessment.Assess(context with { CurrentEffects = [duplicate] }).Axes[0].Current == 1200, "formation shown as a trait cannot increase actual combat a second time");
+        var longFight = CombatAssessment.Assess(context with { Encounter = encounter with { DurationRounds = 100 } });
+        PeopleFixture.Check(longFight.DisplayPower < result.DisplayPower && longFight.SustainableFraction == 1000, "standard encounter duration exposes actual reserve and cost limits");
+        var transferContext = new FormationTransferContext("next-realm", 2, Realm.Foundation, 1, "route.foundation",
+            Enumerable.Repeat(5000, 8).ToArray(), Enumerable.Repeat(2000L, 8).ToArray(), ["formation"], [], source with { Month = 1 });
+        var transferred = CombatAssessment.Transfer(new(formation, []), transferContext);
+        PeopleFixture.Check(transferred.Accepted && transferred.State.Current.StructureAxes[0] == 2500 && transferred.State.Current.Contributions[0].Amount == 100 &&
+            transferred.State.History[0].Previous.Id == 1, "old base and designated structural source are converted once into the next realm");
+        var repeated = CombatAssessment.Transfer(PeopleFixture.RoundTrip(transferred.State), transferContext);
+        PeopleFixture.Check(repeated.Accepted && repeated.State.Current.StructureAxes[0] == 2500 && repeated.State.History.Length == 1, "realm conversion retry cannot stack old and new structures");
+        var potential = new ConditionalPotential("next-compatible", Realm.Foundation,
+            [new("knowledge", PotentialAspect.NextRealmCompatibility, PotentialRequirementStatus.Satisfied, "observed prerequisite studied", source),
+                new("resources", PotentialAspect.GrowthCostRisk, PotentialRequirementStatus.Missing, "required materials unavailable", source),
+                new("future", PotentialAspect.InformationReliability, PotentialRequirementStatus.Unknown, "outcome remains unverified", null)], 12, 24, 6000, source);
+        CombatAssessment.ValidatePotential(potential);
+        var query = new PotentialQueryContext(20, 10, 1, false, []);
+        PeopleFixture.Check(CombatAssessment.ProjectPotential([potential], query).Length == 0, "undiscovered potential is not offered as an AI route");
+        var known = query with { Observations = [new(20, 10, potential, 0, 1)] };
+        var snapshot = JsonSerializer.Serialize(CombatAssessment.ProjectPotential([potential], known));
+        PeopleFixture.Check(snapshot == JsonSerializer.Serialize(CombatAssessment.ProjectPotential([potential with { Confidence = 10_000 }], known)), "known potential retains its actual assessment time and uncertainty despite hidden improvements");
+        PeopleFixture.Check(before == JsonSerializer.Serialize(context) && result.Axes[0].Current == CombatAssessment.Assess(context).Axes[0].Current,
+            "potential and standard comparisons leave current combat and simulation inputs unchanged");
+    }
+}
+
+public sealed class PeopleStateScenarios : IFeatureScenario
+{
+    public string Name => "INV-004/006/015 people: serializable aggregate, truthful founder adapters and source-backed learning without genome rewrite";
+
+    public void Run()
+    {
+        var world = GameWorld.Create().Checkpoint();
+        var profiles = world.People.Select(p => PeopleAdapters.FromPerson(p,
+            new($"founder.{p.Id}", PeopleSourceKind.Founding, "actual genesis profile", 0, PersonId: p.Id, BodyId: p.BodyId, SoulId: p.SoulId))).ToArray();
+        var state = PeopleState.Empty() with { Profiles = profiles, Souls = world.Souls.Select(s => PeopleAdapters.FromSoul(s, 0)).ToArray() };
+        state.Validate(0);
+        PeopleFixture.Check(state.Profiles.Length == 2 && state.Profiles.All(p => p.Development.Learned.All(v => v == 0) && p.Learning.Length == 0),
+            "importing two Half Immortal founders creates no past training or maximum skills");
+        var genome = PeopleAdapters.FoundingGenome(profiles[0], GeneticModel.Provisional());
+        PeopleFixture.Check(genome.Genes.All(g => g.Source.SoulId == 0) && genome.Genes.Length == 20, "declared founder genome keeps biological units separate from soul foundations");
+        var source = PeopleFixture.Source("actual-alchemy-lesson", PeopleSourceKind.Education, 1);
+        var learning = new PeopleLearningEvent("lesson", 14, PeopleLearningKind.Teaching, 1, 500, 250, "observed-recipe", false, source);
+        var change = PeopleProfiles.Learn(profiles[0], learning);
+        PeopleFixture.Check(change.Accepted && change.State.Development.Learned[14] == 500 && change.State.Development.Understanding[14] == 250 &&
+            JsonSerializer.Serialize(change.State.Innate) == JsonSerializer.Serialize(profiles[0].Innate), "actual lesson changes the learned domain while preserving innate formation");
+        var applied = PeopleProfiles.Learn(PeopleFixture.RoundTrip(change.State), learning);
+        PeopleFixture.Check(applied.Accepted && applied.State.Learning.Length == 1 && applied.State.Development.Learned[14] == 500, "completed lesson retry is idempotent after save/load");
+        PeopleFixture.Check(!PeopleProfiles.Learn(profiles[0], learning with { Source = source with { Kind = PeopleSourceKind.SoulTrace } }).Accepted,
+            "integrated soul traces do not directly restore free current-life proficiency");
+        PeopleFixture.Check(JsonSerializer.Serialize(PeopleAdapters.FoundingGenome(change.State, GeneticModel.Provisional())) == JsonSerializer.Serialize(genome),
+            "education does not enter the transmissible biological genome");
+        state = state with { Profiles = state.Profiles.Select(p => p.PersonId == change.State.PersonId ? change.State : p).ToArray() };
+        PeopleFixture.RoundTrip(state).Validate(1);
+        var corrupted = PeopleFixture.RoundTrip(state);
+        corrupted.Profiles[0].Development.Learned[0] = 10_000;
+        PeopleFixture.Invalid(() => corrupted.Validate(1), "aggregate rejects learned capability that has no actual source event");
+        var corruptedSoul = PeopleFixture.RoundTrip(state);
+        corruptedSoul = corruptedSoul with { Souls = corruptedSoul.Souls.Select((s, i) => i == 0 ? s with { Values = s.Values.Select((v, n) => n == 0 ? v with { Accessible = 5000 } : v).ToArray() } : s).ToArray() };
+        PeopleFixture.Invalid(() => corruptedSoul.Validate(1), "aggregate rejects traces exceeding measured preservation");
     }
 }

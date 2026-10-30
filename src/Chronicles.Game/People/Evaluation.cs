@@ -94,12 +94,14 @@ public static class PeopleEvaluation
         var existing = state.History.FirstOrDefault(e => e.EventId == context.EventId);
         if (existing is not null) return new(existing.Scope == context.Scope && existing.Month == context.Month && existing.LawRevision == context.LawRevision,
             "evaluation event already recorded", state);
+        if (state.History.Any(e => e.Scope.Id == context.Scope.Id && e.Scope != context.Scope))
+            return new(false, "scope identity has different comparison boundaries", state);
         if (state.History.Any(e => e.Scope.Id == context.Scope.Id && e.Month > context.Month)) return new(false, "cannot rewrite prior evaluation history", state);
         return new(true, "evaluation recorded at explicit simulation time", new([.. state.History, Assess(context)]));
     }
 
     public static AptitudeEvaluation? Latest(EvaluationState state, string scopeId, long month) =>
-        state.History.Where(e => e.Scope.Id == scopeId && e.Month <= month).OrderByDescending(e => e.Month).FirstOrDefault();
+        state.History.Reverse().Where(e => e.Scope.Id == scopeId && e.Month <= month).OrderByDescending(e => e.Month).FirstOrDefault();
 
     private static EvaluationSeat Seat(RelativeAptitude[] population, int threshold, int minimumPopulation, long[] reserved)
     {

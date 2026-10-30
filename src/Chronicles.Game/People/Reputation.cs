@@ -28,6 +28,8 @@ public static class Reputation
         ArgumentException.ThrowIfNullOrWhiteSpace(policy.PolicyId);
         var existing = state.Claims.FirstOrDefault(c => c.ObserverId == claim.ObserverId && c.Id == claim.Id);
         if (existing is not null) return new(Same(existing, claim), "claim identity already received", state, []);
+        if (state.Claims.Any(c => c.ObserverId == claim.ObserverId && c.ReceivedMonth > claim.ReceivedMonth))
+            return new(false, "cannot backdate a received claim", state, []);
         var other = state.Claims.Where(c => c.ObserverId != claim.ObserverId).ToArray();
         var current = state.Claims.Where(c => c.ObserverId == claim.ObserverId).Append(claim)
             .Where(c => c.ExpiresMonth is null || c.ExpiresMonth > claim.ReceivedMonth)

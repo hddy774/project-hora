@@ -280,6 +280,7 @@ public sealed partial class GameWorld
         var order = command.Data.Length == 0 ? new InventoryTransportOrder(sender.Id, sender.Id, 0) : JsonSerializer.Deserialize<InventoryTransportOrder>(command.Data);
         if (order is null || !people.TryGetValue(order.Carrier, out var carrier) || sender.Action != ActionKind.Idle || carrier.Action != ActionKind.Idle)
             return "실제 운송 당사자와 노동을 확인하세요.";
+        if (PeopleActionError(carrier, "travel") is { } mobilityError) return mobilityError;
         var destination = checked((int)command.Value); var route = !carrier.Sealed && carrier.Health >= 10 && destination is >= 0 and < 100 &&
             carrier.KnownPlaces.Contains(destination) && state.Places[carrier.Place].Neighbors.Contains(destination) && state.Places[destination].BlockedUntil <= Month;
         var consent = carrier.Id == sender.Id || (carrier.KnownPeople.Contains(sender.Id) && carrier.Personality[4] >= 50 &&

@@ -197,13 +197,15 @@ Test("INV-023 원영 파단 후 취소 사망·앱 복원은 포기 아님", () 
     var (w, a, b) = Fresh(); var s = w.Checkpoint(); var p = s.People[0];
     WorldScenarioFixtures.SetCultivation(s, p, Realm.GoldenCore, 9, true);
     var metadata = s.Cultivation[p.BodyId];
-    s.Cultivation[p.BodyId] = metadata with { Attempt = new CultivationAttempt("fixture-fracture", AttemptKind.RealmBreakthrough,
+    var attemptId = s.NextId++;
+    s.Cultivation[p.BodyId] = metadata with { Attempt = new CultivationAttempt(attemptId.ToString(CultureInfo.InvariantCulture), AttemptKind.RealmBreakthrough,
         AttemptPhase.Fractured, Realm.NascentSoul, "path.4.0", 0, s.LawRevision,
         new KnowledgeEvidence("path.4.0", "explicit-fixture", 1, 3000, 0, 0, true, false, "명시적 파단 직후 저장 경계"),
         [], 5000, 0, 1, 0, new(Realm.GoldenCore, 5000, 10000, 0, metadata.ActivePath))
         { TargetWork = WorldScenarioFixtures.Policy(s).RequiredWork(Realm.NascentSoul),
           TargetRootWork = metadata.GrowthBasis!.RootWork, LifespanAward = WorldScenarioFixtures.Policy(s).Lifespan(Realm.NascentSoul) } };
     p.Irreversible = true; p.Action = ActionKind.Breakthrough; p.Due = 1;
+    p.ActionTarget = attemptId; p.ActionData = "path.4.0"; p.ActionRevision = s.LawRevision;
     w = GameWorld.Restore(s); Accepted(w, Cmd("possess", a));
     w = GameCodec.Decode(GameCodec.Encode(w)); Check(w.Checkpoint().People[0].Status == LifeStatus.Alive, "복원은 포기 아님");
     Accepted(w, Cmd("cancel", a)); s = w.Checkpoint();

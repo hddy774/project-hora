@@ -100,9 +100,15 @@ public sealed partial class GameWorld
             var request = social.Sessions.FirstOrDefault(s => s.Id == command.Target && s.Recipient == person.Id);
             if (request is null || request.Status != PeopleSessionStatus.Proposed || request.Expires <= Month)
             { error = "현재 자신에게 실제로 도착한 요청을 선택하세요."; return true; }
-            if (kind == "rejectPeopleRequest")
-            { StorePeopleSession(request with { Status = PeopleSessionStatus.Cancelled, Ended = Month, CompletionSource = "recipient declined" }); return true; }
             var proposer = people[request.Proposer];
+            if (kind == "rejectPeopleRequest")
+            {
+                if (!PeopleObservedHere(person, proposer) || person.BodyId != request.RecipientBody || proposer.BodyId != request.ProposerBody)
+                { error = "직접 대면한 현재 요청 당사자에게 응답하세요."; return true; }
+                StorePeopleSession(request with { Status = PeopleSessionStatus.Cancelled, Ended = Month, CompletionSource = "personally delivered declined response" });
+                Event("개인 요청", person.Id, proposer.Id, "대면하여 요청 거절 의사를 직접 전달했다.", $"people:declined:{request.Id}");
+                return true;
+            }
             if (!PeopleSessionParticipantsAvailable(request, proposer, person) || proposer.Action != ActionKind.Idle || person.Action != ActionKind.Idle ||
                 !PoliticsLaborAvailable(proposer, Month, Month + policy.SessionMonths) || !PoliticsLaborAvailable(person, Month, Month + policy.SessionMonths) ||
                 state.Inventory.Labor.Any(l => l.Active && l.Purpose != "world-action" && (l.Person == proposer.Id || l.Person == person.Id) && l.Start < Month + policy.SessionMonths && l.End > Month))
@@ -115,6 +121,7 @@ public sealed partial class GameWorld
                 actor.Due = request.Due; actor.ActionTarget = request.Id; actor.ActionRevision = state.LawRevision;
                 actor.ActionData = PeopleActionPrefix + JsonSerializer.Serialize(new PeopleAction(request.Id, actor.BodyId));
             }
+            Event("개인 요청", person.Id, proposer.Id, "양측이 대면하여 실제 개인 작업 시간 사용에 동의했다.", $"people:accepted:{request.Id}");
             return true;
         }
         if (kind == "breakOath")
@@ -175,6 +182,8 @@ public sealed partial class GameWorld
             ClearPeopleAction(participant);
         }
         StorePeopleSession(session with { Status = PeopleSessionStatus.Completed, Ended = Month, CompletionSource = $"people:session:{session.Id}:completed" });
+        foreach (var participant in new[] { proposer, recipient })
+            RecordPeopleRequestObservation(participant, session.Id, PeopleSessionStatus.Completed, $"people:session:{session.Id}:completed");
         switch (session.Kind)
         {
             case PeopleSessionKind.Assessment:
@@ -205,10 +214,13 @@ public sealed partial class GameWorld
     public PeopleRequestView[] PeopleRequests(long personId)
     {
         if (state.Controlled != 0 && state.Controlled != personId) return [];
-        return state.PeopleDomain.Social.Sessions.Where(s => (personId == 0 || s.Proposer == personId || s.Recipient == personId) &&
-            s.Status is PeopleSessionStatus.Proposed or PeopleSessionStatus.Active && s.Expires > Month)
-            .OrderBy(s => s.Requested).ThenBy(s => s.Id).Select(s => new PeopleRequestView(s.Id, s.Kind, s.Proposer, s.Recipient,
-                s.Requested, s.Expires, s.Status, s.TalentIndex, s.Terms)).ToArray();
+        var sessions = state.PeopleDomain.Social.Sessions.Where(s => personId == 0 || s.Proposer == personId || s.Recipient == personId);
+        return sessions.Select(session => (Session: session, Known: state.Controlled == 0 ? session.Status :
+                state.PeopleDomain.Social.RequestObservations.FirstOrDefault(o => o.Person == personId && o.Session == session.Id && o.ReceivedMonth <= Month)?.Status))
+            .Where(row => row.Known is PeopleSessionStatus.Proposed or PeopleSessionStatus.Active && row.Session.Expires > Month)
+            .OrderBy(row => row.Session.Requested).ThenBy(row => row.Session.Id).Select(row =>
+                new PeopleRequestView(row.Session.Id, row.Session.Kind, row.Session.Proposer, row.Session.Recipient, row.Session.Requested,
+                    row.Session.Expires, row.Known!.Value, row.Session.TalentIndex, row.Session.Terms)).ToArray();
     }
 
     public ReputationClaim[] PeopleReceivedClaims(long personId)
@@ -258,7 +270,11 @@ public sealed partial class GameWorld
         if (session is null) return;
         StorePeopleSession(session with { Status = PeopleSessionStatus.Cancelled, Ended = Month, CompletionSource = reason });
         foreach (var person in state.People.Where(p => p.Id == session.Proposer || p.Id == session.Recipient))
-            if (TryPeopleAction(person, out var action) && action.Session == id) ClearPeopleAction(person);
+            if (TryPeopleAction(person, out var action) && action.Session == id)
+            {
+                RecordPeopleRequestObservation(person, id, PeopleSessionStatus.Cancelled, $"actual-own-action-cancel:{id}:{person.BodyId}:{Month}");
+                ClearPeopleAction(person);
+            }
     }
 
     private void StorePeopleSession(PeopleSession session) => SetPeopleSocial(state.PeopleDomain.Social with
@@ -272,6 +288,19 @@ public sealed partial class GameWorld
             !state.Events.Any(e => e == entry) && !state.People.Any(p => p.Journal.Contains(entry))) return;
         EnsurePeopleSocialBaselines();
         var witnesses = state.People.Where(p => p.Status == LifeStatus.Alive && p.Journal.Contains(entry)).OrderBy(p => p.Id).ToArray();
+        if (entry.Kind == "개인 요청")
+        {
+            var parts = entry.Source.Split(':');
+            if (parts.Length == 3 && parts[0] == "people" && long.TryParse(parts[2], CultureInfo.InvariantCulture, out var requestId) &&
+                state.PeopleDomain.Social.Sessions.FirstOrDefault(s => s.Id == requestId) is { } request)
+            {
+                var status = parts[1] switch { "request" => PeopleSessionStatus.Proposed, "accepted" => PeopleSessionStatus.Active,
+                    "declined" => PeopleSessionStatus.Cancelled, _ => (PeopleSessionStatus?)null };
+                if (status is { } received)
+                    foreach (var witness in witnesses.Where(w => w.Id == request.Proposer || w.Id == request.Recipient))
+                        RecordPeopleRequestObservation(witness, request.Id, received, $"event:{entry.Id}");
+            }
+        }
         if (entry.Kind == "인물 평가" && entry.Source.StartsWith("people:assessment:", StringComparison.Ordinal))
         {
             var notice = JsonSerializer.Deserialize<PeopleAssessmentNotice>(entry.Source.AsSpan("people:assessment:".Length))
@@ -320,6 +349,11 @@ public sealed partial class GameWorld
             }
             if (entry.Kind == "돌봄" && people.TryGetValue(entry.Target, out var child) && child.Guardian == actor.Id)
                 RecordPeopleTrait(actor, "dao.protection", PeopleEventSource(entry, actor), [TraitFact.ProtectionValue], true);
+            if (entry.Kind is "돌봄" or "입양" && people.TryGetValue(entry.Target, out var familyChild) && familyChild.Guardian == actor.Id)
+            {
+                RecordPeopleTrait(actor, "relation.family", PeopleEventSource(entry, actor), [TraitFact.ActualFamilyRelationship], true, familyChild.Id);
+                RecordPeopleTrait(familyChild, "relation.family", PeopleEventSource(entry, familyChild), [TraitFact.ActualFamilyRelationship], true, actor.Id);
+            }
             if (entry.Kind == "전수" && people.TryGetValue(entry.Target, out var pupil))
                 RecordPeopleTrait(pupil, "relation.teacher", PeopleEventSource(entry, pupil), [TraitFact.TeacherDebt], true, actor.Id,
                     Month + state.PeopleDomain.Social.Policy.ClaimLifetimeMonths);
@@ -513,6 +547,14 @@ public sealed partial class GameWorld
         if (observations.Any(o => o.Person == person.Id && o.Oath == oath.Id && o.Active == active)) return;
         SetPeopleSocial(state.PeopleDomain.Social with { OathObservations = observations.Where(o => o.Person != person.Id || o.Oath != oath.Id)
             .Append(new(person.Id, oath.Id, active, observedMonth, Month, evidenceId)).OrderBy(o => o.Person).ThenBy(o => o.Oath).ToArray() });
+    }
+
+    private void RecordPeopleRequestObservation(Person person, long session, PeopleSessionStatus status, string evidenceId)
+    {
+        var observations = state.PeopleDomain.Social.RequestObservations;
+        if (observations.Any(o => o.Person == person.Id && o.Session == session && o.Status == status)) return;
+        SetPeopleSocial(state.PeopleDomain.Social with { RequestObservations = observations.Where(o => o.Person != person.Id || o.Session != session)
+            .Append(new(person.Id, session, status, Month, Month, evidenceId)).OrderBy(o => o.Person).ThenBy(o => o.Session).ToArray() });
     }
 
     internal void SettlePeopleSocial()

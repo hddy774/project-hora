@@ -76,6 +76,16 @@ public static class Laws
         D("ecology.sourceCapacity", "지점 원천 상한", "개", 1, 1000000, 1000, "유한한 채집·광물·영기"),
         D("ecology.spoilage", "식량 부패", "%/년", 0, 100, 10, "기존 저장량에서 소실 기록"),
         D("ecology.disasterChance", "자연 재해 확률", "만분율/주년", 0, 10000, 20, "연도 경계에서만 판정"),
+        D("exploration.openPeriod", "비경 개방 주기", "개월", 1, 1200, 12, "기존 지점의 실제 입구에 적용하는 개발 기본값"),
+        D("exploration.openMonths", "비경 진입 가능 기간", "개월/주기", 1, 1200, 4, "관측한 개방 일정과 실제 진입 판정을 구분"),
+        D("exploration.entryMonths", "비경 탐사 작업 기간", "개월", 2, 120, 3, "현재 육신·자리를 예약하고 실제 시간으로 진행"),
+        D("exploration.capacity", "비경 동시 탐사 자리", "명", 1, 16, 1, "실제 진입 예약 경쟁·숨은 참여자 없음"),
+        D("exploration.minimumRealm", "비경 진입 최소 경지", "경지", 0, 10, 1, "알려진 자격과 실제 현재 육신의 조건 검사"),
+        D("exploration.foodCost", "비경 준비 식량", "개/진입", 1, 100, 2, "실제 접근 가능한 재고의 유한 소비"),
+        D("exploration.toolWear", "비경 도구 마모", "손상점", 0, 100, 1, "예약한 실제 도구에 적용·0이면 마모 없음"),
+        D("exploration.risk", "비경 탐사 사고 확률", "만분율", 0, 10000, 1000, "진입 시 채택한 위험과 실제 한 번의 판정"),
+        D("exploration.injury", "비경 사고 부상", "건강점", 0, 100, 10, "실제 육신 부담·0이면 부상 없음"),
+        D("exploration.rewardQuantity", "창세 비경 유한 보상량", "개/입구", 1, 100, 3, "창세 원천에 고정·이후 법칙 변경으로 잔량 발행 없음"),
         D("ecology.seasonStrength", "계절별 재생 변동", "%", 0, 100, 25, "실제 재생 가능한 원천의 월별 예산에 반영"),
         D("ecology.historyChanges", "지역 변화 보관 한도", "건", 1, 100000, 512, "실제 원천·시설 변화의 유한 이력"),
         D("economy.historyMonths", "지역 경제 월별 이력", "개월", 1, 1200, 24, "실제 수요·소비·거래의 보관 기간"),
@@ -135,6 +145,8 @@ public static class Laws
             return "필사 기본 시간은 단일 지식 작업 최대 기간을 넘을 수 없습니다.";
         if (values["combat.hitMinimum"] > values["combat.hitMaximum"])
             return "전투 명중 하한은 상한을 넘을 수 없습니다.";
+        if (values["exploration.openMonths"] > values["exploration.openPeriod"])
+            return "비경 진입 가능 기간은 개방 주기를 넘을 수 없습니다.";
         return null;
     }
 }

@@ -7,7 +7,7 @@ using Chronicles.Game.Tests;
 internal static partial class PerformanceScenarios
 {
     private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
-    public static void Run(string path, int? population = null)
+    public static void Run(string path, int? population = null, bool inventoryProjectionExperiment = false)
     {
         var total = Stopwatch.StartNew(); var environment = MeasurementEnvironment();
         if (population is { } requested && !SyntheticPopulationFixture.Sizes.Contains(requested)) throw new ArgumentOutOfRangeException(nameof(population));
@@ -16,7 +16,9 @@ internal static partial class PerformanceScenarios
         int? currentPopulation = null; var currentStage = "starting"; var currentMonth = 0;
         double[] currentSamples = [];
         void SaveProgress() => WriteMeasurementReport(path, new { schema_version = 2, kind = "seonro-population-baseline",
-            complete = completedSizes.Order().SequenceEqual(SyntheticPopulationFixture.Sizes), requestedSizes, completedSizes,
+            complete = !inventoryProjectionExperiment && completedSizes.Order().SequenceEqual(SyntheticPopulationFixture.Sizes), requestedSizes, completedSizes,
+            experimental_configuration = inventoryProjectionExperiment,
+            configuration = new { inventoryProjectionExperiment, inventoryCandidateMode = inventoryProjectionExperiment ? "person15-projection-experiment" : "strict" },
             environment, totalElapsedSeconds = total.Elapsed.TotalSeconds, reports,
             inProgress = new { population = currentPopulation, stage = currentStage, completedMonths = currentMonth, monthlySamplesMs = currentSamples },
             note = "12-month live synthetic baseline; monthly timings exclude fixture/warmup/restore/full collection, total time includes them; retained memory is the collected process managed heap, not cumulative allocations or per-world attribution; numerical budgets follow measurement; partial sizes do not satisfy the final gate; not Android or legacy 100x acceptance." });
@@ -25,7 +27,7 @@ internal static partial class PerformanceScenarios
         {
             currentPopulation = size; currentStage = "fixture_and_warmup"; currentMonth = 0; currentSamples = [];
             SaveProgress(); Console.WriteLine($"PERF-BEGIN {size}: 실제 fixture·독립 예열 시작");
-            reports.Add(MeasurePopulation(size, (month, samples) =>
+            reports.Add(MeasurePopulation(size, inventoryProjectionExperiment, (month, samples) =>
             {
                 currentStage = "measuring"; currentMonth = month; currentSamples = samples.ToArray();
                 SaveProgress(); Console.WriteLine($"PERF-MONTH {size}: {month}/12 · {samples[^1]:F1}ms");
@@ -45,11 +47,11 @@ internal static partial class PerformanceScenarios
         File.WriteAllText(pending, JsonSerializer.Serialize(report, Options)); File.Move(pending, full, overwrite: true);
     }
 
-    private static object MeasurePopulation(int size, Action<int, IReadOnlyList<double>> progress, Action<string> stage)
+    private static object MeasurePopulation(int size, bool inventoryProjectionExperiment, Action<int, IReadOnlyList<double>> progress, Action<string> stage)
     {
         // A separate frame prevents the preceding population's world/restore snapshot from being retained by this frame.
-        var initialHash = Warmup(size, stage);
-        var measured = PrepareMeasurementWorld(size, "measured", stage);
+        var warmup = Warmup(size, inventoryProjectionExperiment, stage); var initialHash = warmup.InitialHash;
+        var measured = PrepareMeasurementWorld(size, "measured", inventoryProjectionExperiment, stage);
         stage("opening_hash");
         if (measured.StateHash() != initialHash) throw new InvalidOperationException("Independent synthetic fixture builds must match before warmup.");
         var samples = new List<double>(); stage("opening_heap_collection"); var openingRetained = CollectedManagedBytes();
@@ -62,6 +64,8 @@ internal static partial class PerformanceScenarios
             allocation += GC.GetTotalAllocatedBytes() - beforeAllocation;
             progress(month, samples);
         }
+        var measuredProjectionSnapshots = measured.InventoryProjectionExperimentSnapshots;
+        if (inventoryProjectionExperiment && measuredProjectionSnapshots <= 0) throw new InvalidOperationException("측정 world가 투영 실험 snapshot을 실행하지 않았습니다.");
         // No full checkpoint clone has been created yet; the actual live world remains rooted through this measurement.
         stage("final_heap_collection"); var retained = CollectedManagedBytes(); GC.KeepAlive(measured);
         stage("final_checkpoint_validation");
@@ -78,6 +82,8 @@ internal static partial class PerformanceScenarios
         var cognition = CognitionMeasurements(final, out var cognitionBytes);
         Console.WriteLine($"PERF {size}: advance 12mo={samples.Sum():F1}ms, query={queryMs:F1}ms, save={saveMs:F1}ms");
         return new { population = size, fixture = SyntheticPopulationFixture.Describe(size), usedLaws = final.Laws,
+            experimental_configuration = inventoryProjectionExperiment,
+            inventoryProjectionSnapshots = new { warmup = warmup.ProjectionSnapshots, measured = measuredProjectionSnapshots },
             measuredMonths = 12, warmupMonths = 2, repetitions = 1, monthlySamplesMs = samples,
             advance12MonthsMs = samples.Sum(), monthlyP50Ms = (sorted[5] + sorted[6]) / 2, monthlyP95Ms = sorted[11],
             queryMs, saveMs, loadMs, allocatedBytes = allocation, saveBytes = bytes.Length,
@@ -113,20 +119,25 @@ internal static partial class PerformanceScenarios
         Console.WriteLine(JsonSerializer.Serialize(report, Options));
     }
 
-    private static GameWorld PrepareMeasurementWorld(int population, string prefix, Action<string> stage)
+    private static GameWorld PrepareMeasurementWorld(int population, string prefix, bool inventoryProjectionExperiment, Action<string> stage)
     {
         stage(prefix + "_fixture"); var initial = SyntheticPopulationFixture.Build(population);
-        stage(prefix + "_restore"); return GameWorld.Restore(initial);
+        stage(prefix + "_restore"); var world = GameWorld.Restore(initial);
+        if (inventoryProjectionExperiment) world.EnableInventoryProjectionForExperiment();
+        if (world.InventoryProjectionExperimentEnabled != inventoryProjectionExperiment) throw new InvalidOperationException("측정 world의 투영 설정이 요청과 다릅니다.");
+        return world;
     }
 
-    private static string Warmup(int population, Action<string> stage)
+    private static (string InitialHash, long ProjectionSnapshots) Warmup(int population, bool inventoryProjectionExperiment, Action<string> stage)
     {
-        var warm = PrepareMeasurementWorld(population, "warmup", stage);
+        var warm = PrepareMeasurementWorld(population, "warmup", inventoryProjectionExperiment, stage);
         stage("warmup_hash");
         var initialHash = warm.StateHash();
         stage("warmup_month_1"); warm.AdvanceTo(1);
         stage("warmup_month_2"); warm.AdvanceTo(2);
-        return initialHash;
+        var snapshots = warm.InventoryProjectionExperimentSnapshots;
+        if (inventoryProjectionExperiment && snapshots <= 0) throw new InvalidOperationException("예열 world가 투영 실험 snapshot을 실행하지 않았습니다.");
+        return (initialHash, snapshots);
     }
 
     private static object Workload(GameState state) => new

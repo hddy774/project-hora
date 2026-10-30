@@ -1,0 +1,22 @@
+{
+  "selection": "inventory source observation:",
+  "total": 3,
+  "failed": 0,
+  "results": [
+    {
+      "name": "inventory source observation: \uACF5\uAC1C food \uC120\uD0DD\uC740 \uC815\uD655\uD55C \uD604\uC9C0 \uC6D0\uCC9C\uC744 \uC2E4\uC81C \uBE44\uC6A9\u00B7\uD55C \uB2EC\u00B7\uC800\uC7A5 \uC7AC\uAC1C\uB85C \uAD00\uCE21",
+      "passed": true,
+      "ms": 2466
+    },
+    {
+      "name": "inventory source observation: \uBE48 Data\uB294 \uAE30\uC874 \uCCAB \uBBF8\uAD00\uCE21 \uC120\uD0DD\uC744 \uC720\uC9C0\uD558\uACE0 \uBA85\uC2DC \uC815\uC758\uB294 fallback\uD558\uC9C0 \uC54A\uC74C",
+      "passed": true,
+      "ms": 504
+    },
+    {
+      "name": "inventory source observation: \uD604\uC9C0 \uC815\uC758 \uBD80\uC7AC\u00B7\uC2E4\uBB3C \uBE44\uC6A9 \uBD80\uC871\uC740 \uC6D0\uCC9C\u00B7\uB3C8\u00B7\uC2DC\uAC04\u00B7ID\u00B7\uAD00\uCE21 \uBB34\uBCC0\uD654 \uAC70\uBD80",
+      "passed": true,
+      "ms": 579
+    }
+  ]
+}

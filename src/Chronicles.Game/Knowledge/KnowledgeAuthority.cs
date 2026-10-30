@@ -35,6 +35,11 @@ public sealed partial class KnowledgeAuthority
     public KnowledgeRules Rules => state.Rules;
     public KnowledgeState Checkpoint() => Clone(state);
 
+    // Detached physical fields for world synchronization; the public full snapshot stays unchanged.
+    internal (KnowledgeMedium[] Media, KnowledgeAccess[] Access) PhysicalCheckpoint(bool includeAccess = true) =>
+        (state.Media.Select(m => m with { MissingChapters = m.MissingChapters.ToArray() }).ToArray(),
+            includeAccess ? state.Access.Select(a => a with { }).ToArray() : []);
+
     public static KnowledgeAuthority Restore(KnowledgeState snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);

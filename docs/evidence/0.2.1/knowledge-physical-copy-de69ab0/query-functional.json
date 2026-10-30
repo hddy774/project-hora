@@ -1,0 +1,22 @@
+{
+  "selection": "\uC785\uBB38 \uC900\uBE44 \uC870\uD68C:",
+  "total": 3,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-009 \uC785\uBB38 \uC900\uBE44 \uC870\uD68C: \uBBF8\uAD00\uCE21 \uD604\uC7AC \uACF5\uAE09\u00B7\uC0AC\uC6A9\uAD8C \uBCC0\uD654\uB294 \uAC1C\uC778 \uAC10\uC751 \uC120\uD0DD\uC744 \uBC14\uAFB8\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 5169
+    },
+    {
+      "name": "INV-009/010 \uC785\uBB38 \uC900\uBE44 \uC870\uD68C: \uC2E4\uC81C entry \uC804\uC218\uB9CC \uAC10\uC751 \uC120\uD0DD\uC744 \uC5F4\uACE0 Qi \uACF5\uBC95\uC740 \uB9CC\uB4E4\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 2917
+    },
+    {
+      "name": "INV-004/006 \uC785\uBB38 \uC900\uBE44 \uC870\uD68C: \uD1A0\uB0A9\uACFC \uAC10\uC751\uC744 \uBD84\uB9AC\uD558\uACE0 \uC2E4\uC81C \uC900\uBE44\u00B7\uAC1C\uC2DC \uACF5\uAE09\uACFC \uC800\uC7A5\uC744 \uC720\uC9C0\uD55C\uB2E4",
+      "passed": true,
+      "ms": 3636
+    }
+  ]
+}

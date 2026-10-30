@@ -218,7 +218,7 @@ public sealed partial class GameWorld
             if (Start(p, "teach", request.Pupil, request.Knowledge) is null)
             { p.LessonRequests.Remove(request); p.Goal = "전수·협력"; p.Reason = "실제 배움 요청에 동의·교육 시간 예약"; return; }
         }
-        var needsMethod = p.Realm == Realm.Mortal ? p.Understanding.GetValueOrDefault("entry") == 0 :
+        var needsMethod = p.Realm == Realm.Mortal ? !HasCultivationPlanningSource(p) :
             !Catalog.Paths.Any(path => path.Realm == p.Realm && p.Understanding.GetValueOrDefault(path.Id) > 0);
         if (needsMethod)
         {

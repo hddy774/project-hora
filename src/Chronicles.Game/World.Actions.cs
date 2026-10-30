@@ -274,7 +274,8 @@ public sealed partial class GameWorld
                 q.Species == "human" ? q.Gestates : null, Month - q.Born >= Law("birth.maturity"));
         }
         p.ObservationCursor += count; p.ObservationRemaining -= count;
-        p.ObservedPlaces[p.Place] = new(place.Id, place.Source, place.Qi, string.Join(',', place.Facilities), Month);
+        p.ObservedPlaces[p.Place] = new(place.Id, place.Source, place.Qi, string.Join(',', place.Facilities), Month,
+            place.Sovereign, place.Owner, place.Operator, place.Delegate, place.BlockedUntil);
         TrimCognition(p);
     }
 

@@ -14,7 +14,8 @@ public sealed record TraitState(string Id, string Source, long Acquired, long? E
 public sealed record Trace(int Preserved, int Accessible, int Integrated);
 public readonly record struct PersonObservation(long Id, string Name, Realm Realm, int Layer, int Place, long Month,
     bool? ApparentGestates, bool AppearsAdult);
-public readonly record struct PlaceObservation(int Place, int Source, int Qi, string Facilities, long Month);
+public readonly record struct PlaceObservation(int Place, int Source, int Qi, string Facilities, long Month,
+    long? Sovereign = null, long? Owner = null, long? Operator = null, long? Delegate = null, long? BlockedUntil = null);
 public sealed record GameEvent(long Id, long Month, string Kind, long Actor, long Target, string Text, string Source, string TargetKind = "person");
 public sealed record LawChange(long Month, long Revision, string Key, long Before, long After);
 public sealed record PlanStep(string Action, long Target, string Data);

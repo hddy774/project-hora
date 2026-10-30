@@ -185,17 +185,9 @@ public sealed partial class GameWorld
         }
         if (c.Kind == "law")
         {
-            if (state.Controlled != 0) return "관찰 관리에서만 세계 법칙을 바꿀 수 있습니다.";
-            if (!Laws.ById.TryGetValue(c.Data, out var definition) || c.Value < definition.Minimum || c.Value > definition.Maximum)
-                return "법칙 범위를 확인하세요.";
-            var before = state.Laws[c.Data]; state.Laws[c.Data] = c.Value;
-            if (Laws.Validate(state.Laws) is { } err) return err;
-            if (c.Data == "ai.beliefBudget") foreach (var person in state.People) TrimCognition(person);
-            state.LawRevision++;
-            state.LawHistory.Add(new(Month, state.LawRevision, c.Data, before, c.Value));
-            Event("법칙", 0, 0, $"{definition.Name}: {before} → {c.Value}", c.Id);
-            return null;
+            return ChangeLaws(new Dictionary<string, long>(StringComparer.Ordinal) { [c.Data] = c.Value }, c.Id);
         }
+        if (c.Kind == "lawBatch") return ImportLaws(c);
         if (c.Kind == "create") return CreateExplicit(c);
         if (!people.TryGetValue(c.Actor, out var p) || p.Status != LifeStatus.Alive ||
             (state.Controlled != 0 && state.Controlled != p.Id)) return "실행할 수 없는 대상입니다.";

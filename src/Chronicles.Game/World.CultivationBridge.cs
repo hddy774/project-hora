@@ -350,7 +350,7 @@ public sealed partial class GameWorld
         BaseRisk = IntLaw("cultivation.breakthroughRisk"), TrialRisk = IntLaw("cultivation.breakthroughRisk"),
         MartialMonthsPerStage = IntLaw("martial.period"), TrialHealthCost = IntLaw("hazard.trialDamage"),
         QiLifespanMonths = Law("life.qi"), FoundationLifespanMonths = Law("life.foundation"), GoldenCoreLifespanMonths = Law("life.core"),
-        HalfImmortalLifespanMonths = Law("founder.lifespan")
+        HalfImmortalLifespanMonths = Law("founder.lifespan"), UpperLifespanPercent = IntLaw("life.upperMultiplier")
     };
 
     private CultivationActor CultivationActorFor(Person p)

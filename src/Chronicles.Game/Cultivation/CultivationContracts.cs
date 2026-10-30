@@ -200,6 +200,7 @@ public sealed record CultivationPolicy
     public long FoundationLifespanMonths { get; init; } = 3600;
     public long GoldenCoreLifespanMonths { get; init; } = 7200;
     public long HalfImmortalLifespanMonths { get; init; } = 120000;
+    public int UpperLifespanPercent { get; init; } = 200;
 
     public long RequiredWork(Realm realm)
     {
@@ -209,10 +210,16 @@ public sealed record CultivationPolicy
         for (var i = 2; i < (int)realm; i++) months = Math.Min(100000000, months * UpperDurationPercent / 100);
         return checked(months * FlowPerMonth);
     }
-    public long Lifespan(Realm realm) => realm switch
+    public long Lifespan(Realm realm)
     {
-        Realm.Mortal => 960, Realm.Qi => QiLifespanMonths, Realm.Foundation => FoundationLifespanMonths,
-        Realm.GoldenCore => GoldenCoreLifespanMonths, Realm.HalfImmortal => HalfImmortalLifespanMonths,
-        _ => Math.Min(HalfImmortalLifespanMonths, GoldenCoreLifespanMonths * (1L << ((int)realm - 3)))
-    };
+        if (realm == Realm.Mortal) return 960;
+        if (realm == Realm.Qi) return QiLifespanMonths;
+        if (realm == Realm.Foundation) return FoundationLifespanMonths;
+        if (realm == Realm.GoldenCore) return GoldenCoreLifespanMonths;
+        if (realm == Realm.HalfImmortal) return HalfImmortalLifespanMonths;
+        var lifespan = GoldenCoreLifespanMonths;
+        for (var current = Realm.GoldenCore; current < realm; current++)
+            lifespan = Math.Min(HalfImmortalLifespanMonths, lifespan * UpperLifespanPercent / 100);
+        return lifespan;
+    }
 }

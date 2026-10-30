@@ -108,6 +108,11 @@ public sealed class CultivationWorldFractureScenario : IFeatureScenario
         CultivationFixture.Check(p.Status == LifeStatus.Dead && live.DeathCount == 1 && live.Souls.Single(s => s.Id == p.SoulId).Route == 0,
             "actual post-fracture abandonment uses shared EndLife once, below Spirit does not auto-reincarnate");
         CultivationFixture.Check(live.Cultivation[p.BodyId].Attempt!.Phase == AttemptPhase.Failed, "irreversible metadata is failed, never recovered by cancellation");
+        live.Laws["life.upperMultiplier"] = 150;
+        var changedPolicy = (CultivationPolicy)CultivationAdapterFixture.Call(restored, "CultivationPolicyForWorld")!;
+        CultivationFixture.Check(changedPolicy.Lifespan(Realm.NascentSoul) == live.Laws["life.core"] * 150 / 100 &&
+            changedPolicy.Lifespan(Realm.Spirit) == live.Laws["life.core"] * 150 / 100 * 150 / 100,
+            "upper lifespan multiplier uses the actual world law for future successful formation");
     }
 }
 

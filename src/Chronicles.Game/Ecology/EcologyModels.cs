@@ -17,7 +17,7 @@ public sealed record EcologyRules
 
 public sealed record EcologyConsumption(long Id, long Month, long Person, long Household, long Organization,
     int Place, string Definition, int Quantity, string Source);
-public sealed record EcologyMaterialLoss(long Id, long Month, long Owner, int Place, string Definition, int Quantity, string Source);
+public sealed record EcologyMaterialLoss(long Id, long Month, long Owner, int Place, string Definition, int Quantity, string Source, bool OwnerObserved = false);
 public sealed record EcologyStockSnapshot(long Source, int Place, string Definition, long Remaining, long Capacity, long Month);
 public sealed record EcologyPlaceSnapshot(int Place, int Residents, long[] Households, long[] Teachers,
     int Qi, long BlockedUntil, long Month);

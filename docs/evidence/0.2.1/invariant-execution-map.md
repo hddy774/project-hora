@@ -1,64 +1,60 @@
 # 24개 불변식과 실제 실행 검사의 연결
 
 <!-- actual-map-metadata:begin -->
-매핑 소스: `af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a`
+매핑 소스: `94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5`
+
 테스트 소스 지문: `9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117`
 <!-- actual-map-metadata:end -->
 
 현재 실제 등록 검사는 **314개**(feature276 + Program38), **24개 불변식·증인152개 연결**이다.
-[기계 맵](invariant-execution-map.json)은 실제 이름·파일/행·관련 INV·경계·구체 주장·앵커를 기록하며 실행 상태는 계속 `not_asserted`다.
-이름의 INV 태그만으로 수용을 선언하지 않고 제안 카탈로그의 `test_status=not_implemented`·원장·Notion을 변경하지 않는다.
+새 검사0개이며 [기계 맵](invariant-execution-map.json)의 기존 이름·본문/보조 앵커·경계·INV 연결은 그대로다.
+맵의 실행 상태는 계속 `not_asserted`이고 제안 `test_status=not_implemented`·원장·진행도·readiness·Notion은 이 갱신에서 바꾸지 않는다.
 
-## af91 전체 기능 원문과 소스 검토
+## 새 런타임 설정의 실제 전체314 원문
 
-정확한 위 소스, 제품 지문 `4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304`의
-루트 **전체314/314·실패0·exit0/clean**을 [원본 JSON](invariant-final-af91fb0/functional.json),
-[로그](invariant-final-af91fb0/functional.log), [감독 실행 기록](invariant-final-af91fb0/root-run.original.json)으로 보존한다.
-JSON SHA256은 `6bb3de5ccb787eeee7a71f86295ce17c9eaa2a630cbef206f95e04beaf312e87`이다.
-실제 별도 worktree `/workspace/seonro-final-af91fb0`, CPU0, 2026-10-30 18:45:19.695632~18:50:43.734641 UTC다.
-외부 CPU1~3 작업과 공유한 기능 실행이며 합산 시간은 성능 표본이 아니다. [provenance](invariant-final-af91fb0/provenance.json)에
-실제 명령·프로세스 기록·네 DLL/정보버전·PE 메타데이터/실행폴더 사본·원문 SHA와 한계를 남겼다.
-[기존 검증기 대조](invariant-final-af91fb0/execution-verification.json)는 실제314개 이름과152개 명명 증인을 확인한다.
+소스 `94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5`, 제품 지문 `528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e`의
+루트 **전체314/314·실패0·exit0/end-clean**을 [원문 JSON](invariant-final-94ccb5d/functional.json),
+[로그](invariant-final-94ccb5d/functional.log), [감독 실행 기록](invariant-final-94ccb5d/root-run.original.json)에 바이트 그대로 보존했다.
+보고서 SHA256은 `afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616`이다.
+실제 worktree `/workspace/seonro-stable-runtime`, CPU0, 2026-10-30 19:46:40.755681~19:55:44.080518 UTC다.
+외부 성장/행동과4CPU 할당을 공유한 기능 실행이며 기능 소요 시간은 성능 표본이 아니다.
+[기존 검증기 대조](invariant-final-94ccb5d/execution-verification.json)는 실제314이름/24INV/152명명연결을 확인한다.
 
-[소스 검토](invariant-execution-source-review-af91fb0.json)는 c6 이후 새 운송 검사1파일만 변경됐음을 읽고 실제 경계를 연결했다.
-새 검사는 **host + public_world**이며 같은 작은 세계의 공개 조작/탐색/운송 후 열린 계약을 JSON2와 작은 내부 임계값의 이진3 실제 파일로 각각 저장/복원한다.
-명령 재전송·단일 정산(INV-005), 원본/복원본의 같은 due와 hash/RNG(INV-006), 소유·실물/노동 예약(INV-017), 공통 저장(INV-004)을 구분해 연결했다.
-봉쇄 주입용 Restore 뒤 다시 실제 파일 저장을 거치며, 부분 모듈 왕복만을 공통 저장으로 세지 않는다. selfcarrier/fee0 작은 fixture의 범위다.
-기존 helper·fixture와 runtime/HTML 소스 바이트는 c6와 같으며, 모든 기존 보조 앵커를 변경 없는 refresh helper로 다시 확인했다.
+[소스 검토](invariant-execution-source-review-94ccb5d.json)는 af91 이후 변경이 `Directory.Build.props`의 설명주석과
+`TieredPGO=false` 두 줄뿐임을 기록한다. src/tests/scripts·게임 규칙·명령/RNG/저장·검사 본문은 변경되지 않았다.
+실제 [Tests runtimeconfig](invariant-final-94ccb5d/runtimeconfig.original.json)의 `System.Runtime.TieredPGO=false`와
+root가 기록한 `DOTNET_TieredPGO`/`COMPlus_TieredPGO` 두 override의 null을 확인했다.
+이것은 실제 Tests 프로세스의 동적 PGO 설정이며 TieredCompilation/GC/SIMD를 끄거나 기존 모든 APK에서 같은 설정을 실행했다는 뜻이 아니다.
+[출처 기록](invariant-final-94ccb5d/provenance.json)에 네 DLL의 실제 실행 폴더 사본/SHA·생성 정보버전·PE/CLI 메타데이터를 묶었다.
 
-## 저장 수용 권고와 남은 최종 판정
+## 이전314와 출처를 구분하는 경계
 
-[D02/T01~T03 감사](acceptance-functional-af91fb0.md)는 자체 기능 조항과 원장의 선행 마감을 분리한다.
-[c6 실제 네 규모 기준선](final-performance/README.md)은 2·100·1,000·10,000명의 12개월 진행과 저장/읽기·상태 hash 확인을 완료했다.
-10,000명은 기본 codec에서 398,228,447B를 저장/읽었고, 새 소스와 runtime 제품 소스(`src/**`) 바이트는 동일하다.
-이 이전 소스 실측과 새 운송 중 파일 기능 근거를 함께 제시하되 **af91 최종 지문의 인구 실측은 진행 중이며 이 맵에서 완료로 세지 않는다**.
-따라서 모든24INV 조합·정본111개 전체·최종 T04/T05/장기 안정성·성장/행동·플랫폼·릴리스 완료는 별도다.
-작은 내부 임계값 검사는 실제 대량 저장 자체가 아니며, 대량 보고서의 상태 hash/저장 크기를 실제 저장 배열의 SHA/동일성으로 바꾸지 않는다.
+[af91의 원문/감사](invariant-final-af91fb0/README.md)·[JSON 맵 사본](invariant-final-af91fb0/map.snapshot.json)·
+[Markdown 사본](invariant-final-af91fb0/map.snapshot.md)·[당시 SourceReview](invariant-execution-source-review-af91fb0.json)는 보존한다.
+사본은 당시 provenance의 map SHA와 바이트 동일하며 원래 상대 링크는 [당시 경로](https://github.com/hddy774/project-hora/blob/6fe2eb1a9157f206ff48601194155d8bfd443481/docs/evidence/0.2.1/invariant-execution-map.md)를 따른다.
+이전 manifest의 전역 map 경로는 당시 commit의 자료이며 현재 설정의 맵으로 다시 이름 붙이지 않는다.
 
-## 과거 원본과 거절 경계
+이번에는 검사 이름과 검사 본문 지문이 같아 **기존 구조 검증기만으로 이전 af91의314 보고서가 거절되지는 않는다**.
+[별도 출처 대조](invariant-final-94ccb5d/source-attribution-checks.json)는 이전 보고서의 구조 일치와 실제 실행 source/제품 지문 불일치를 구분한다.
+현재94 원문 SHA·실제 root-run·FP528·DLL 정보버전·명시 PGO=false runtimeconfig를 함께 확인하며 이전314를 현재 실행으로 재라벨하지 않는다.
+검증기의 `--executed-source`는 호출자 선언이고 독립적인 과거 프로세스 실행 인증이 아니다.
 
-이전 [c6의313 원본/provenance](invariant-final-c6e4704/README.md)·[313 JSON 맵 사본](invariant-final-c6e4704/map.snapshot.json)·
-[Markdown 사본](invariant-final-c6e4704/map.snapshot.md)·[당시 SourceReview](invariant-execution-source-review-c6e4704.json)·[당시 감사](acceptance-functional-c6e4704.md)는 수정하지 않았다.
-사본은 이전 map hash와 byte 동일하며 Markdown 원래 상대 링크는 [당시 경로](https://github.com/hddy774/project-hora/blob/c527c2a47079abc6ba0cc3415af9658371d17efb/docs/evidence/0.2.1/invariant-execution-map.md)를 따른다.
-더 이전 [9704](invariant-final-9704e95/README.md)·[926](invariant-final-9263756/README.md)·[305/308 실패](inventory-oracle-final-integration/whole-functional-068ecef.original.json)와
-[926 대용량 저장 실패](baseline-9263756-save-failure/README.md)도 당시 source/실패로 보존한다.
-[거절 확인](invariant-final-af91fb0/negative-input-checks.json)은 이전313·선택1·합성 미등록315·실패305/308을 현재 전체 근거로 거절한다.
-`--executed-source`는 호출자 선언이므로 원문 SHA·실제 run 기록·DLL/제품 지문을 함께 확인해야 한다.
+이전 af91 고정 성능 불합격/quiet 진단·c6 기준선·f3/b491의 네이티브 결과·926 저장 실패는 각 source 그대로 보존한다.
+이 새 전체314 기능 결과를 새 네 규모 성능/장기·성장/AI·native·공식 서명/업그레이드·전체111개/릴리스 완료로 확대하지 않는다.
+해당 후속 실측과 플랫폼 판정은 새 소스의 별도 실제 자료가 필요하다.
 
 ## 읽기 전용 검증과 다음 갱신
 
 ```sh
 python3 scripts/validate-v021-invariant-execution.py \
-  --report docs/evidence/0.2.1/invariant-final-af91fb0/functional.json \
-  --executed-source af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a \
-  --output /workspace/scratch/invariant-final-recheck.json
-python3 scripts/validate-v021-invariant-execution.py --self-test
-python3 scripts/refresh-v021-invariant-execution.py --self-test
+  --report docs/evidence/0.2.1/invariant-final-94ccb5d/functional.json \
+  --executed-source 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5 \
+  --output /workspace/scratch/invariant-runtime-recheck.json
 ```
 
-이번 문서 작업은 원본 읽기·기존 Python 검증만 수행했고 C# 빌드/기능 runner·측정기 실행은0이다.
-검증기/refresh helper·제품·원장·readiness·Notion·제안 상태는 바꾸지 않았다. Python 합성 검증은 제품 C# 통과 수에 더하지 않는다.
-다음 소스에서 실제 이름/fixture/helper/제품이 바뀌면 기존 helper로 변경 계획을 만들고 관련 경계·증인·앵커를 수동 검토한 뒤 같은 출처의 전체 원문으로 대조한다.
+이 문서 갱신은 root가 새 전체 성공 종료를 확인한 뒤 원문/메타데이터를 보존하고 기존 helper·검증기로 대조했다.
+새 빌드/기능 runner/성능·성장/collector 실행과 반복 full product 지문 계산은0이다. 제품·검사·스크립트·원장·진행도·readiness는 수정하지 않았다.
+다음 소스/런타임 설정이 바뀌면 해당 실제 변경을 검토하고 같은 출처의 새 원문/메타데이터로 다시 대조한다.
 
 ## 실제 검사 증인
 

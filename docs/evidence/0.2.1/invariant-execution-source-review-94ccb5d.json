@@ -1,0 +1,84 @@
+{
+  "review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+    "test_sources_sha256": "9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117",
+    "actual_scenarios": 314,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "Directory.Build.props",
+        "invariants": [
+          "INV-006"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "SDK실행설정의TieredPGO=false와실제Tests.runtimeconfig/환경override/4DLL정보버전출처를확인한다. 명령·RNG·serializer/검사본문변경없음과새소스성능·native의별도검증을구분한다."
+        ]
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "review_acknowledgement": {
+    "source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      "Directory.Build.props"
+    ],
+    "review_note": "af91→94ccb의변경은Directory.Build.props에설명주석과TieredPGO=false를추가한2줄뿐이다. src/tests/scripts/명령·RNG·저장·검사본문은그대로다. 새314전체원문과4DLL/root-run·Tests.runtimeconfig false/환경override null을확인하며기존314/24INV/152연결의claim/경계/앵커는바꾸지않는다. 실제새성능·플랫폼·릴리스수용은별도다."
+  },
+  "review_details": [
+    {
+      "path": "Directory.Build.props",
+      "sha256": "73092236fdfe0f05de33897cdaa9b2510610465e26b51fa44b6d0563a300cb91",
+      "review_note": "af91→94ccb의변경은Directory.Build.props에설명주석과TieredPGO=false를추가한2줄뿐이다. src/tests/scripts/명령·RNG·저장·검사본문은그대로다. 새314전체원문과4DLL/root-run·Tests.runtimeconfig false/환경override null을확인하며기존314/24INV/152연결의claim/경계/앵커는바꾸지않는다. 실제새성능·플랫폼·릴리스수용은별도다.",
+      "runtime_config_evidence": "invariant-final-94ccb5d/runtimeconfig.original.json",
+      "runtime_config_tiered_pgo": false,
+      "runtime_pgo_environment_overrides": {
+        "DOTNET_TieredPGO": null,
+        "COMPlus_TieredPGO": null
+      }
+    }
+  ],
+  "previous_source_review": "invariant-execution-source-review-af91fb0.json",
+  "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "manual_name_binding_changes_before_helper": {
+    "before_count": 314,
+    "after_count": 314,
+    "new_test_classes": 0,
+    "added_names": [],
+    "removed_names": [],
+    "witness_links_before": 152,
+    "witness_links_after": 152,
+    "test_source_fingerprint_unchanged": true,
+    "note": "설정source_review_area만추가하고기존전체scenario/invariant witness는그대로유지했다."
+  },
+  "changed_path_categories": {
+    "total": 1,
+    "product_csharp": 0,
+    "product_runtime_props": 1,
+    "test_csharp": 0
+  },
+  "source_review_only": true,
+  "functional_execution_status": "separate-root-report-verified",
+  "separate_functional_report": {
+    "path": "invariant-final-94ccb5d/functional.json",
+    "sha256": "afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616",
+    "executed_source": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+    "selection": "all",
+    "total": 314,
+    "failed": 0
+  },
+  "runtime_test_or_measurement_runs_by_mapping_work": 0,
+  "limits": [
+    "같은test지문/이름은다른런타임설정의실행동일성증거가아니다. 새원문/root-run/DLL/runtimeconfig를함께묶는다.",
+    "old314보고서는구조검증만으로거절되지않을수있다. 이것을현재소스실행으로재라벨하지않는다.",
+    "PGOfalse는이번실제Tests실행설정이다. TieredCompilation/GC/SIMD/게임로직을끄거나모든기존APK/native에적용했다고주장하지않는다.",
+    "새원문은314기능의동일claim범위다. 성능·성장/행동·장기·native·공식서명/릴리스완료는별도다.",
+    "원장/진행도/readiness/제품/test/스크립트/validator변경·새runtime실행0이다."
+  ]
+}

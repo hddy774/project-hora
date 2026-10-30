@@ -1,0 +1,76 @@
+{
+  "source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+  "self_excluded": true,
+  "files": [
+    {
+      "path": "invariant-execution-map.json",
+      "sha256": "afe9f900203bfffae3312616e07eb89a5c5e49c1782bd0e2b885f8e08bb82147",
+      "bytes": 275110
+    },
+    {
+      "path": "invariant-execution-map.md",
+      "sha256": "a9cb32e64a8155c6a3cf7003d973c19a2ac14045287fa6599ad1ea5a4b22a236",
+      "bytes": 82710
+    },
+    {
+      "path": "invariant-execution-source-review-94ccb5d.json",
+      "sha256": "91eda4f7d9af9ac721aec1c45dbe778b44d31e11d6d3e27d0d631741546efe14",
+      "bytes": 4386
+    },
+    {
+      "path": "invariant-final-94ccb5d/README.md",
+      "sha256": "250665cd637ccb2935d59e0440da64da2895e1a15a9ff560265ab1c8508bd24e",
+      "bytes": 4021
+    },
+    {
+      "path": "invariant-final-94ccb5d/execution-verification.json",
+      "sha256": "42cbdf2375c91bb893a05d80013e33622d16d6b2c6338114e6dc6d42f57e1944",
+      "bytes": 2925
+    },
+    {
+      "path": "invariant-final-94ccb5d/functional.json",
+      "sha256": "afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616",
+      "bytes": 62864
+    },
+    {
+      "path": "invariant-final-94ccb5d/functional.log",
+      "sha256": "f11002a6c982cf45567d906e5d1040b0f9ebb31532fe7f395317ea0f20e71c44",
+      "bytes": 38451
+    },
+    {
+      "path": "invariant-final-94ccb5d/provenance.json",
+      "sha256": "474827bd567d04b93389df062f41c65e9a643da157ef439307097cfda5ea85c1",
+      "bytes": 13874
+    },
+    {
+      "path": "invariant-final-94ccb5d/review-acknowledgement.json",
+      "sha256": "1d4f617ac95a368854a5f73b2bb892400065021d72dc3c58976eb4eb79251a57",
+      "bytes": 575
+    },
+    {
+      "path": "invariant-final-94ccb5d/root-run.original.json",
+      "sha256": "d4ec917be070742b151acdc773a19d24893ddd1678ecd190ffee3910a279a691",
+      "bytes": 3877
+    },
+    {
+      "path": "invariant-final-94ccb5d/runtimeconfig.original.json",
+      "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+      "bytes": 371
+    },
+    {
+      "path": "invariant-final-94ccb5d/source-attribution-checks.json",
+      "sha256": "18947b4cddce6272ddc4180942771906e3809d12063986dc6cfd9f7b016848c8",
+      "bytes": 1366
+    },
+    {
+      "path": "invariant-final-af91fb0/map.snapshot.json",
+      "sha256": "299e1f066808b820f51404c8c55f1ddacd10f251cd4a69df36a7842e087cd0c3",
+      "bytes": 274825
+    },
+    {
+      "path": "invariant-final-af91fb0/map.snapshot.md",
+      "sha256": "e4067d049ddb96462a7bda5a0623f4bdce7fd25d0c3602f5c42bd0400636d2fe",
+      "bytes": 83524
+    }
+  ]
+}

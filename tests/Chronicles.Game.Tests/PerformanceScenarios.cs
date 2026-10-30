@@ -7,18 +7,21 @@ using Chronicles.Game.Tests;
 internal static partial class PerformanceScenarios
 {
     private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
-    public static void Run(string path, int? population = null, bool inventoryProjectionExperiment = false)
+    public static void Run(string path, int? population = null, bool inventoryProjectionExperiment = false, bool inventoryTypedCopyExperiment = false)
     {
         var total = Stopwatch.StartNew(); var environment = MeasurementEnvironment();
+        var experimental = inventoryProjectionExperiment || inventoryTypedCopyExperiment;
         if (population is { } requested && !SyntheticPopulationFixture.Sizes.Contains(requested)) throw new ArgumentOutOfRangeException(nameof(population));
         var requestedSizes = population is { } single ? new[] { single } : SyntheticPopulationFixture.Sizes.ToArray();
         var reports = new List<object>(); var completedSizes = new List<int>();
         int? currentPopulation = null; var currentStage = "starting"; var currentMonth = 0;
         double[] currentSamples = [];
         void SaveProgress() => WriteMeasurementReport(path, new { schema_version = 2, kind = "seonro-population-baseline",
-            complete = !inventoryProjectionExperiment && completedSizes.Order().SequenceEqual(SyntheticPopulationFixture.Sizes), requestedSizes, completedSizes,
-            experimental_configuration = inventoryProjectionExperiment,
-            configuration = new { inventoryProjectionExperiment, inventoryCandidateMode = "person15-adopted", inventoryProjectionAdoptedByDefault = true },
+            complete = !experimental && completedSizes.Order().SequenceEqual(SyntheticPopulationFixture.Sizes), requestedSizes, completedSizes,
+            experimental_configuration = experimental,
+            configuration = new { inventoryProjectionExperiment, inventoryTypedCopyExperiment,
+                inventoryCandidateMode = inventoryTypedCopyExperiment ? "person15-typed-copy-experiment" : "person15-adopted",
+                inventoryProjectionAdoptedByDefault = true, inventorySnapshotCopy = inventoryTypedCopyExperiment ? "typed" : "json" },
             environment, totalElapsedSeconds = total.Elapsed.TotalSeconds, reports,
             inProgress = new { population = currentPopulation, stage = currentStage, completedMonths = currentMonth, monthlySamplesMs = currentSamples },
             note = "12-month live synthetic baseline; monthly timings exclude fixture/warmup/restore/full collection, total time includes them; retained memory is the collected process managed heap, not cumulative allocations or per-world attribution; numerical budgets follow measurement; partial sizes do not satisfy the final gate; not Android or legacy 100x acceptance." });
@@ -27,7 +30,7 @@ internal static partial class PerformanceScenarios
         {
             currentPopulation = size; currentStage = "fixture_and_warmup"; currentMonth = 0; currentSamples = [];
             SaveProgress(); Console.WriteLine($"PERF-BEGIN {size}: 실제 fixture·독립 예열 시작");
-            reports.Add(MeasurePopulation(size, inventoryProjectionExperiment, (month, samples) =>
+            reports.Add(MeasurePopulation(size, inventoryProjectionExperiment, inventoryTypedCopyExperiment, (month, samples) =>
             {
                 currentStage = "measuring"; currentMonth = month; currentSamples = samples.ToArray();
                 SaveProgress(); Console.WriteLine($"PERF-MONTH {size}: {month}/12 · {samples[^1]:F1}ms");
@@ -47,11 +50,11 @@ internal static partial class PerformanceScenarios
         File.WriteAllText(pending, JsonSerializer.Serialize(report, Options)); File.Move(pending, full, overwrite: true);
     }
 
-    private static object MeasurePopulation(int size, bool inventoryProjectionExperiment, Action<int, IReadOnlyList<double>> progress, Action<string> stage)
+    private static object MeasurePopulation(int size, bool inventoryProjectionExperiment, bool inventoryTypedCopyExperiment, Action<int, IReadOnlyList<double>> progress, Action<string> stage)
     {
         // A separate frame prevents the preceding population's world/restore snapshot from being retained by this frame.
-        var warmup = Warmup(size, inventoryProjectionExperiment, stage); var initialHash = warmup.InitialHash;
-        var measured = PrepareMeasurementWorld(size, "measured", inventoryProjectionExperiment, stage);
+        var warmup = Warmup(size, inventoryProjectionExperiment, inventoryTypedCopyExperiment, stage); var initialHash = warmup.InitialHash;
+        var measured = PrepareMeasurementWorld(size, "measured", inventoryProjectionExperiment, inventoryTypedCopyExperiment, stage);
         stage("opening_hash");
         if (measured.StateHash() != initialHash) throw new InvalidOperationException("Independent synthetic fixture builds must match before warmup.");
         var samples = new List<double>(); stage("opening_heap_collection"); var openingRetained = CollectedManagedBytes();
@@ -66,6 +69,8 @@ internal static partial class PerformanceScenarios
         }
         var measuredProjectionSnapshots = measured.InventoryProjectionSnapshots;
         if (measuredProjectionSnapshots <= 0) throw new InvalidOperationException("측정 world가 기본 Person 투영 snapshot을 실행하지 않았습니다.");
+        var measuredTypedSnapshots = measured.InventoryTypedCopySnapshots;
+        if (inventoryTypedCopyExperiment && measuredTypedSnapshots <= 0) throw new InvalidOperationException("측정 world가 typed snapshot을 실제 실행하지 않았습니다.");
         // No full checkpoint clone has been created yet; the actual live world remains rooted through this measurement.
         stage("final_heap_collection"); var retained = CollectedManagedBytes(); GC.KeepAlive(measured);
         stage("final_checkpoint_validation");
@@ -82,8 +87,9 @@ internal static partial class PerformanceScenarios
         var cognition = CognitionMeasurements(final, out var cognitionBytes);
         Console.WriteLine($"PERF {size}: advance 12mo={samples.Sum():F1}ms, query={queryMs:F1}ms, save={saveMs:F1}ms");
         return new { population = size, fixture = SyntheticPopulationFixture.Describe(size), usedLaws = final.Laws,
-            experimental_configuration = inventoryProjectionExperiment,
+            experimental_configuration = inventoryProjectionExperiment || inventoryTypedCopyExperiment,
             inventoryProjectionSnapshots = new { warmup = warmup.ProjectionSnapshots, measured = measuredProjectionSnapshots },
+            inventoryTypedCopySnapshots = new { warmup = warmup.TypedSnapshots, measured = measuredTypedSnapshots },
             measuredMonths = 12, warmupMonths = 2, repetitions = 1, monthlySamplesMs = samples,
             advance12MonthsMs = samples.Sum(), monthlyP50Ms = (sorted[5] + sorted[6]) / 2, monthlyP95Ms = sorted[11],
             queryMs, saveMs, loadMs, allocatedBytes = allocation, saveBytes = bytes.Length,
@@ -119,25 +125,29 @@ internal static partial class PerformanceScenarios
         Console.WriteLine(JsonSerializer.Serialize(report, Options));
     }
 
-    private static GameWorld PrepareMeasurementWorld(int population, string prefix, bool inventoryProjectionExperiment, Action<string> stage)
+    private static GameWorld PrepareMeasurementWorld(int population, string prefix, bool inventoryProjectionExperiment, bool inventoryTypedCopyExperiment, Action<string> stage)
     {
         stage(prefix + "_fixture"); var initial = SyntheticPopulationFixture.Build(population);
         stage(prefix + "_restore"); var world = GameWorld.Restore(initial);
-        if (inventoryProjectionExperiment) world.EnableInventoryProjectionForExperiment();
+        if (inventoryTypedCopyExperiment) world.EnableInventoryTypedCopyForExperiment();
+        else if (inventoryProjectionExperiment) world.EnableInventoryProjectionForExperiment();
         if (!world.InventoryProjectionEnabled) throw new InvalidOperationException("측정 world가 채택된 기본 Person 투영 경로를 사용하지 않습니다.");
+        if (world.InventoryTypedCopyExperimentEnabled != inventoryTypedCopyExperiment) throw new InvalidOperationException("측정 world의 typed copy 모드가 요청과 다릅니다.");
         return world;
     }
 
-    private static (string InitialHash, long ProjectionSnapshots) Warmup(int population, bool inventoryProjectionExperiment, Action<string> stage)
+    private static (string InitialHash, long ProjectionSnapshots, long TypedSnapshots) Warmup(int population, bool inventoryProjectionExperiment, bool inventoryTypedCopyExperiment, Action<string> stage)
     {
-        var warm = PrepareMeasurementWorld(population, "warmup", inventoryProjectionExperiment, stage);
+        var warm = PrepareMeasurementWorld(population, "warmup", inventoryProjectionExperiment, inventoryTypedCopyExperiment, stage);
         stage("warmup_hash");
         var initialHash = warm.StateHash();
         stage("warmup_month_1"); warm.AdvanceTo(1);
         stage("warmup_month_2"); warm.AdvanceTo(2);
         var snapshots = warm.InventoryProjectionSnapshots;
         if (snapshots <= 0) throw new InvalidOperationException("예열 world가 기본 Person 투영 snapshot을 실행하지 않았습니다.");
-        return (initialHash, snapshots);
+        var typedSnapshots = warm.InventoryTypedCopySnapshots;
+        if (inventoryTypedCopyExperiment && typedSnapshots <= 0) throw new InvalidOperationException("예열 world가 typed snapshot을 실제 실행하지 않았습니다.");
+        return (initialHash, snapshots, typedSnapshots);
     }
 
     private static object Workload(GameState state) => new

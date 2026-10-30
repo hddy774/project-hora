@@ -51,6 +51,13 @@ public sealed record PeopleState(int Schema, PeopleTuning Tuning, EvaluationPoli
             if (!ids.Contains(oath.First) || !ids.Contains(oath.Second) || oath.First == oath.Second || oath.Began > month ||
                 oath.Until <= oath.Began || oath.Ended > month || oath.Evidence <= 0 || oath.Terms.Length > 80)
                 throw new InvalidDataException("An oath must refer to actual people, consent and a bounded term.");
+        if (Social.OathObservations.GroupBy(o => (o.Person, o.Oath)).Any(g => g.Count() > 1))
+            throw new InvalidDataException("An oath receipt must be unique for its actual recipient and agreement.");
+        foreach (var observation in Social.OathObservations)
+            if (!Social.Oaths.Any(o => o.Id == observation.Oath && (o.First == observation.Person || o.Second == observation.Person)) ||
+                observation.ObservedMonth < 0 || observation.ObservedMonth > observation.ReceivedMonth || observation.ReceivedMonth > month ||
+                string.IsNullOrWhiteSpace(observation.EvidenceId))
+                throw new InvalidDataException("An oath belief requires a personally received dated agreement/end receipt.");
         if (Social.Habits.GroupBy(h => (h.Person, h.Habit)).Any(g => g.Count() > 1))
             throw new InvalidDataException("Actual completed habit counters must be unique per person and action.");
         foreach (var habit in Social.Habits)

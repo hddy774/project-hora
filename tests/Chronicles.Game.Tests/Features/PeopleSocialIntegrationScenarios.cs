@@ -81,6 +81,9 @@ public sealed class PeoplePublicAssessmentAndRelayScenario : IFeatureScenario
         var detail = f.World.PeopleDetail(f.Second)!;
         PeopleFixture.Check(detail.Innate is null && detail.ActualBody is null && detail.ActualEvaluations is null && detail.KnownReputation.Any(c => c.Id == received.Id),
             "A received claim may be shown while actual other-person foundations/body/evaluation truth remain private.");
+        var allSubjects = f.World.PeopleReceivedClaims(third);
+        PeopleFixture.Check(allSubjects.Any(c => c.Id == received.Id) && f.World.PeopleReceivedClaims(f.First).Length == 0,
+            "All-subject claims remain scoped to the actual current recipient.");
         f.Send("observe"); f.Send("law", value: 1, data: "ai.beliefBudget"); state = f.World.Checkpoint();
         PeopleFixture.Check(state.People.All(p => p.Beliefs.Count + p.ObservedPeople.Count + p.ObservedPlaces.Count +
             state.Inventory.Observations.Where(o => o.Observer == p.Id).Select(o => o.Source).Distinct().Count() +

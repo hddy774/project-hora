@@ -14,8 +14,15 @@ public static partial class InventoryEngine
         private readonly Dictionary<long, Item> roots = [];
         private readonly Dictionary<long, long> weights = [];
         private readonly Dictionary<long, int> equippedBy = [];
+        private readonly Dictionary<long, AssetReservation> reservations = [];
+        private readonly Dictionary<long, LaborReservation> laborReservations = [];
+        private readonly HashSet<long> sourceIds = [];
+        private readonly Dictionary<long, List<ProductionJob>> activeJobsBySource = [];
+        private readonly Dictionary<long, List<ProductionJob>> processingJobsByReservation = [];
+        private readonly HashSet<(long Item, long Reservation)> equippedRepairs = [];
         private readonly InventoryState state;
         private bool equipmentIndexed;
+        private bool jobsIndexed;
 
         public ValidationReadIndex(InventoryState state)
         {
@@ -26,6 +33,11 @@ public static partial class InventoryEngine
                 Ensure(items.TryAdd(item.Id, item), "Inventory IDs are duplicated or the allocator is stale.");
             foreach (var row in state.Ledger.Metadata)
                 Ensure(metadata.TryAdd(row.Item, row), "Duplicate item metadata.");
+            // Global identity checks have already run. Indexing numeric identities neither validates
+            // later clauses nor dereferences physical/input lists that may only be visited later.
+            foreach (var reservation in state.Ledger.Reservations) reservations.Add(reservation.Id, reservation);
+            foreach (var labor in state.Ledger.Labor) laborReservations.Add(labor.Id, labor);
+            foreach (var source in state.Ledger.Sources) sourceIds.Add(source.Id);
             foreach (var item in state.Items)
             {
                 Append(owned, item.Owner, item);
@@ -38,7 +50,7 @@ public static partial class InventoryEngine
             }
         }
 
-        private static void Append(Dictionary<long, List<Item>> index, long id, Item item)
+        private static void Append<T>(Dictionary<long, List<T>> index, long id, T item)
         {
             if (!index.TryGetValue(id, out var rows)) index.Add(id, rows = []);
             rows.Add(item);
@@ -126,6 +138,55 @@ public static partial class InventoryEngine
                 equipmentIndexed = true;
             }
             return equippedBy.GetValueOrDefault(item);
+        }
+
+        public bool HasSource(long id) => sourceIds.Contains(id);
+        public bool HasReservation(long id) => reservations.ContainsKey(id);
+        public bool HasActiveReservation(long id) => reservations.TryGetValue(id, out var row) && row.Active;
+        public bool HasLabor(long id) => laborReservations.ContainsKey(id);
+        public bool HasActiveLabor(long id) => laborReservations.TryGetValue(id, out var row) && row.Active;
+        public bool BacksPhysicalItem(long reservation, long item) =>
+            reservations.TryGetValue(reservation, out var row) && row.Active && row.Items.Contains(item);
+
+        private void IndexJobs()
+        {
+            if (jobsIndexed) return;
+            foreach (var job in state.Ledger.Jobs)
+            {
+                if (job.Status is not ("reserved" or "processing")) continue;
+                Append(activeJobsBySource, job.Source, job);
+                if (job.Status == "processing") Append(processingJobsByReservation, job.Reservation, job);
+                if (job.Recipe == "repair") equippedRepairs.Add((job.Target, job.Reservation));
+            }
+            jobsIndexed = true;
+        }
+
+        public bool BacksEquippedRepair(long item, long reservation)
+        {
+            IndexJobs();
+            return equippedRepairs.Contains((item, reservation));
+        }
+
+        public bool BacksConsumedInput(long reservation, long item)
+        {
+            IndexJobs();
+            if (processingJobsByReservation.TryGetValue(reservation, out var rows))
+                // Keep job order and short-circuiting: eagerly copying every input list could visit
+                // a malformed later list before the original Any predicate would reach it.
+                foreach (var job in rows)
+                    if (job.Inputs.Contains(item)) return true;
+            return false;
+        }
+
+        public long ReservedNaturalStock(long source)
+        {
+            IndexJobs();
+            var reserved = 0L;
+            if (activeJobsBySource.TryGetValue(source, out var rows))
+                // Sum only when this source's original validation clause is reached, in original
+                // job order. Never pre-sum a later source ahead of an earlier source's rejection.
+                foreach (var job in rows) reserved = checked(reserved + job.OutputQuantity);
+            return reserved;
         }
     }
 }

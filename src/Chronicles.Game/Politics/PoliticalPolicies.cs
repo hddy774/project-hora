@@ -52,6 +52,7 @@ public static partial class PoliticsEngine
         if (workers.Length < context.Rules.PreparationWorkers)
         { prep.Stage = PolicyStage.InsufficientLabor; History(d, prep, "shared member labor is insufficient"); return d.Finish("Policy adopted but shared labor is unavailable."); }
         prep.Stage = PolicyStage.Preparing; prep.Due = due; prep.Escrow = context.Rules.PolicyPreparationCost;
+        prep.PreparationLawRevision = context.LawRevision;
         prep.RequiredWorkers = workers.Length; prep.Workers = workers.Select(p => p!.Id).ToList();
         prep.Jurisdiction = d.Place(prep.Place)!.Sovereign;
         g.Money -= prep.Escrow;
@@ -81,7 +82,7 @@ public static partial class PoliticsEngine
         foreach (var worker in prep.Workers) AdjustService(d, g.Id, worker, 1, 1);
         prep.Stage = PolicyStage.Implemented; d.ReleaseLabor(prep.Id, "policy");
         d.State.PolicyHistory.Add(new(context.Month, prep.Id, prep.Group, prep.Category, old, prep.Choice,
-            prep.Stage, "implemented after current authority and jurisdiction revalidation", prep.LawRevision));
+            prep.Stage, "implemented after current authority and jurisdiction revalidation", prep.PreparationLawRevision));
         return d.Finish("Implemented a detailed choice and consumed only its reserved preparation cost; no resources or permanent specialization were created.");
     }
 
@@ -320,7 +321,8 @@ public static partial class PoliticsEngine
 
     private static void History(PoliticalDraft d, PolicyPreparation prep, string reason) =>
         d.State.PolicyHistory.Add(new(d.Context.Month, prep.Id, prep.Group, prep.Category,
-            d.Group(prep.Group)!.Policies.GetValueOrDefault(prep.Category, 1), prep.Choice, prep.Stage, reason, prep.LawRevision));
+            d.Group(prep.Group)!.Policies.GetValueOrDefault(prep.Category, 1), prep.Choice, prep.Stage, reason,
+            prep.PreparationLawRevision == 0 ? prep.LawRevision : prep.PreparationLawRevision));
 
     private static bool ReserveActivity(PoliticalDraft d, Group g, Person[] workers, string purpose, out long id)
     {

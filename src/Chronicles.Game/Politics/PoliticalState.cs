@@ -43,6 +43,7 @@ public sealed class PolicyPreparation
     public int Place { get; set; }
     public long Jurisdiction { get; set; }
     public long LawRevision { get; set; }
+    public long PreparationLawRevision { get; set; }
     public long Adopted { get; set; }
     public long Due { get; set; }
     public long Escrow { get; set; }
@@ -80,6 +81,7 @@ public sealed record PoliticalRules
     public long MaturityMonths { get; init; } = 216;
     public int SectLimit { get; init; } = 10;
     public long FoundingTreasury { get; init; } = 100;
+    public int FamilyFounderMinimumRealm { get; init; }
     public long PolicyPreparationCost { get; init; } = 10;
     public long PreparationMonths { get; init; } = 1;
     public int PreparationWorkers { get; init; } = 1;

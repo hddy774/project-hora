@@ -167,15 +167,85 @@ jobs:
       - name: 실제 네이티브 화면·코어 연결 검증(WebView)
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force artifacts/windows | Out-Null
+          $diagnostics = Join-Path 'artifacts/windows' 'diagnostics'
+          New-Item -ItemType Directory -Force $diagnostics | Out-Null
           $report = Join-Path ([IO.Path]::GetTempPath()) 'seonro-smoke-result.json'
           Remove-Item $report -Force -ErrorAction SilentlyContinue
-          $process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru
-          if (-not $process.WaitForExit(60000)) { $process.Kill(); throw 'Actual Windows native smoke timeout' }
-          if ($process.ExitCode -ne 0 -or -not (Test-Path $report)) { throw 'Actual Windows native smoke failed' }
-          Copy-Item $report artifacts/windows/native-smoke.json
-          python scripts/verify-v021-release.py windows --source artifacts/source/source.json --raw artifacts/windows/native-smoke.json --output artifacts/windows/windows-proof.json
-          if ($LASTEXITCODE -ne 0) { throw 'Windows proof verification failed' }
+          function Get-WebViewVersions {
+            try {
+            $appId = '{F1E7E06B-78B5-43FE-A9FA-6A304597FAD5}'
+            foreach ($key in @("HKLM:\SOFTWARE\Microsoft\EdgeUpdate\Clients\$appId", "HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\$appId", "HKCU:\SOFTWARE\Microsoft\EdgeUpdate\Clients\$appId")) {
+              $item = Get-ItemProperty -LiteralPath $key -Name pv -ErrorAction SilentlyContinue
+              if ($item.pv) { [ordered]@{ kind = 'registry'; key = $key; version = [string]$item.pv } }
+            }
+            foreach ($base in @(${env:ProgramFiles(x86)}, $env:ProgramFiles, $env:LOCALAPPDATA)) {
+              if (-not $base) { continue }
+              Get-ChildItem -Path (Join-Path $base 'Microsoft/EdgeWebView/Application/*/msedgewebview2.exe') -File -ErrorAction SilentlyContinue | ForEach-Object {
+                [ordered]@{ kind = 'installed-executable'; path = $_.FullName; file_version = $_.VersionInfo.FileVersion; product_version = $_.VersionInfo.ProductVersion }
+              }
+            }
+            } catch { [ordered]@{ kind = 'observation-error'; message = $_.Exception.Message } }
+          }
+          function Get-SmokeProcessState($target) {
+            if ($null -eq $target) { return $null }
+            try {
+              $target.Refresh()
+              $state = [ordered]@{ id = $target.Id; name = $target.ProcessName; has_exited = $target.HasExited }
+              if (-not $target.HasExited) {
+                $state.responding = $target.Responding
+                $state.window_title = $target.MainWindowTitle
+                $state.window_handle = $target.MainWindowHandle.ToInt64()
+                try {
+                  $executable = Get-Item -LiteralPath $target.Path -ErrorAction Stop
+                  $state.executable = $executable.FullName
+                  $state.file_version = $executable.VersionInfo.FileVersion
+                  $state.product_version = $executable.VersionInfo.ProductVersion
+                } catch { $state.version_observation_error = $_.Exception.Message }
+              }
+              return $state
+            } catch { return [ordered]@{ id = $target.Id; observation_error = $_.Exception.Message } }
+          }
+          $observation = [ordered]@{ started_utc = [DateTimeOffset]::UtcNow.ToString('o'); wait_ms = 60000; image = @{ ImageOS = $env:ImageOS; ImageVersion = $env:ImageVersion; RunnerOS = $env:RUNNER_OS }; os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; webview_before = @(Get-WebViewVersions); timed_out = $false; exit_code = $null; collection_errors = @() }
+          $process = $null
+          try {
+            $process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru -RedirectStandardOutput (Join-Path $diagnostics 'stdout.txt') -RedirectStandardError (Join-Path $diagnostics 'stderr.txt')
+            $observation.process_started_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            $observation.process_after_start = Get-SmokeProcessState $process
+            if (-not $process.WaitForExit(60000)) {
+              $observation.timed_out = $true
+              $observation.process_before_kill = Get-SmokeProcessState $process
+              $observation.webview_before_kill = @(Get-Process msedgewebview2 -ErrorAction SilentlyContinue | ForEach-Object { Get-SmokeProcessState $_ })
+              $process.Kill()
+              throw 'Actual Windows native smoke timeout'
+            }
+            $observation.exit_code = $process.ExitCode
+            if ($process.ExitCode -ne 0 -or -not (Test-Path $report)) { throw 'Actual Windows native smoke failed' }
+            Copy-Item $report artifacts/windows/native-smoke.json
+            python scripts/verify-v021-release.py windows --source artifacts/source/source.json --raw artifacts/windows/native-smoke.json --output artifacts/windows/windows-proof.json
+            if ($LASTEXITCODE -ne 0) { throw 'Windows proof verification failed' }
+          } catch {
+            $observation.wrapper_error = $_.Exception.Message
+            throw
+          } finally {
+            $observation.ended_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            $observation.process_final = Get-SmokeProcessState $process
+            $observation.webview_after = @(Get-WebViewVersions)
+            $observation.webview_processes = @(Get-Process msedgewebview2 -ErrorAction SilentlyContinue | ForEach-Object { Get-SmokeProcessState $_ })
+            $sources = @($report)
+            $startupLogs = Join-Path $env:LOCALAPPDATA 'SeonroMansangrok/logs/debug/automatic'
+            $sources += @(Get-ChildItem $startupLogs -File -Filter 'debug-auto-*.log' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTimeUtc -ge [DateTimeOffset]::Parse($observation.started_utc).UtcDateTime } | ForEach-Object FullName)
+            $observation.copied_existing_files = @()
+            foreach ($source in $sources) {
+              if (-not (Test-Path -LiteralPath $source -PathType Leaf)) { continue }
+              try {
+                $file = Get-Item -LiteralPath $source
+                Copy-Item -LiteralPath $source -Destination $diagnostics -Force
+                $observation.copied_existing_files += @{ name = $file.Name; last_write_utc = $file.LastWriteTimeUtc.ToString('o'); bytes = $file.Length; sha256 = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant() }
+              } catch { $observation.collection_errors += $_.Exception.Message }
+            }
+            try { $observation | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $diagnostics 'wrapper-observation.json') -Encoding utf8 }
+            catch { Write-Warning ('진단 기록 실패: ' + $_.Exception.Message) }
+          }
       - name: 윈도우 실제 화면 근거 업로드
         uses: actions/upload-artifact@v4
         if: always()

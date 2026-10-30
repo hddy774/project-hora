@@ -1,0 +1,21 @@
+{
+  "baseline": "3d11273bfa3daa90d34cf31e1422b9e5f21c0bfa",
+  "checks": {
+    "before_windows_identical": true,
+    "android_and_publish_identical": true,
+    "existing_60000ms_once": true,
+    "one_app_launch": true,
+    "proof_call_unchanged": true,
+    "proof_exit_check_unchanged": true,
+    "native_exit_report_check_unchanged": true,
+    "timeout_still_throws": true,
+    "stderr_stdout_redirect": true,
+    "finally_collects_existing_raw": true,
+    "startup_logs_limited": true,
+    "no_screenshot_expansion": true,
+    "emulator_env_token_retained": true
+  },
+  "actionlint_exit": 0,
+  "additional_native_executions": 0,
+  "scope": "Windows wrapper diagnostics only; no gate/60000ms/proof call change"
+}

@@ -1,0 +1,17 @@
+{
+  "selection": "V021-G03 public politics",
+  "total": 2,
+  "failed": 0,
+  "results": [
+    {
+      "name": "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+      "passed": true,
+      "ms": 3238
+    },
+    {
+      "name": "V021-G03 public politics: withdrawing real reserved work refunds unfinished policy without implementation",
+      "passed": true,
+      "ms": 1104
+    }
+  ]
+}

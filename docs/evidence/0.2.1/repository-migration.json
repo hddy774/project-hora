@@ -28,5 +28,25 @@
     },
     "ledger_self_tests": 11,
     "performance_run": false
+  },
+  "unrelated_release_cleanup": {
+    "date": "2026-10-30",
+    "removed_releases_and_tags": [
+      "hora-economic-lab/v0.2.1",
+      "hora-economic-lab/v0.2.0",
+      "monthly-economy/v0.1.0-experimental",
+      "alpha-exchange/v1.14.0",
+      "alpha-exchange/v1.13.0",
+      "alpha-exchange/v1.12.0",
+      "alpha-exchange/v1.11.0",
+      "alpha-exchange/v1.10.0",
+      "alpha-exchange/v1.9.0",
+      "alpha-exchange/v1.8.0"
+    ],
+    "retained_releases": [
+      "xianxia-observer/v0.1.0",
+      "xianxia-observer/v0.2.0"
+    ],
+    "verification": "GitHub 릴리스 API 재조회로 선로만상록 관련 두 릴리스만 남은 것을 확인. git 이력 강제 재작성 없음."
   }
 }

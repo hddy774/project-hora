@@ -73,7 +73,7 @@ public sealed class PoliticsPublicPolicyIntegrationScenario : IFeatureScenario
             else group.PendingPolicies["경제·분배"] = 1;
             var rejected = false;
             try { GameWorld.Restore(invalid); }
-            catch (InvalidDataException error) { rejected = error.Message.Contains("Retired group policy", StringComparison.Ordinal); }
+            catch (InvalidDataException error) { rejected = error.Message.StartsWith("INV-020:", StringComparison.Ordinal); }
             PoliticsWorldFixture.Check(rejected && f.World.StateHash() == GameCodec.Decode(GameCodec.Encode(f.World)).StateHash(),
                 "retired policy data cannot restore as a second authority, including balanced ghost escrow; the valid source remains saveable");
         }

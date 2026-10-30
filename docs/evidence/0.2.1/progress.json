@@ -334,7 +334,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "76fcec72708048e605b7bcd92cdacece1853a71a",
+  "source_commit": "6670d2993320dbec3be8c3596d8ec962692a0762",
   "phase": "기능 마무리·수용 근거 대조",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

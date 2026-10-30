@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "sourceCommit": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+  "productSourceFingerprint": "cf17eee7930cc754eda7558d0496f6929d10d64fb9352d0c42ff49a08704f9e3",
+  "sourceWorktree": "/workspace/seonro-functional-56bbfb2",
+  "sourceWorktreeCleanInOriginalReports": true,
+  "sourceWorktreeCurrentlyClean": true,
+  "currentSourceStatusPorcelain": "",
+  "buildConfiguration": "Release",
+  "builds": [
+    {
+      "assembly": "Chronicles.Core",
+      "dllPath": "/workspace/seonro-functional-56bbfb2/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "dllBytes": 5120,
+      "dllSha256": "99c8a97a05fb6dab47353901327cd51f4a51d64c487c3e33479791957c6013be",
+      "informationalVersion": "0.2.1+56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+      "sourceRevisionId": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+      "versionEvidence": "생성된 AssemblyInfo 값과 실제 DLL UTF8 metadata marker가 일치한다. DLL을 로드·실행하지 않고 정적으로 읽었다.",
+      "generatedInfoOriginalPath": "/workspace/seonro-functional-56bbfb2/src/Chronicles.Core/obj/Release/net10.0/Chronicles.Core.AssemblyInfo.cs",
+      "generatedInfoSha256": "e72f3cc17304e3b20e7e992dffc0fc2e599f178dc469e4ab4e52bdcfc85a2545",
+      "generatedInfoBodyAttached": false
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "dllPath": "/workspace/seonro-functional-56bbfb2/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "dllBytes": 2256896,
+      "dllSha256": "48f6ec993bc04d55ecbdc534807678b8acb5eededc3e4fb16b9448579b03a2d2",
+      "informationalVersion": "0.2.1+56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+      "sourceRevisionId": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+      "versionEvidence": "생성된 AssemblyInfo 값과 실제 DLL UTF8 metadata marker가 일치한다. DLL을 로드·실행하지 않고 정적으로 읽었다.",
+      "generatedInfoOriginalPath": "/workspace/seonro-functional-56bbfb2/src/Chronicles.Game/obj/Release/net10.0/Chronicles.Game.AssemblyInfo.cs",
+      "generatedInfoSha256": "4e65150981b551caa0b305c000748d86f870377ea2c425559259e3e2695dc720",
+      "generatedInfoBodyAttached": false
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "dllPath": "/workspace/seonro-functional-56bbfb2/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "dllBytes": 23552,
+      "dllSha256": "9b039d95fe0bbda253dd87ec2b829c285522911bed90a641275fcf947ee6842a",
+      "informationalVersion": "0.2.1+56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+      "sourceRevisionId": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+      "versionEvidence": "생성된 AssemblyInfo 값과 실제 DLL UTF8 metadata marker가 일치한다. DLL을 로드·실행하지 않고 정적으로 읽었다.",
+      "generatedInfoOriginalPath": "/workspace/seonro-functional-56bbfb2/src/Chronicles.Hosting/obj/Release/net10.0/Chronicles.Hosting.AssemblyInfo.cs",
+      "generatedInfoSha256": "38aeac9631f8aa951f83339ce0df55b92ef28713eda263269d6f3571fd67dc19",
+      "generatedInfoBodyAttached": false
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "dllPath": "/workspace/seonro-functional-56bbfb2/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "dllBytes": 1477120,
+      "dllSha256": "09c6b14051c418b76b15ec23df3fcffe361f1cbc6070fe10c3b299fbb55fbbe8",
+      "informationalVersion": "0.2.1+56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+      "sourceRevisionId": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+      "versionEvidence": "생성된 AssemblyInfo 값과 실제 DLL UTF8 metadata marker가 일치한다. DLL을 로드·실행하지 않고 정적으로 읽었다.",
+      "generatedInfoOriginalPath": "/workspace/seonro-functional-56bbfb2/tests/Chronicles.Game.Tests/obj/Release/net10.0/Chronicles.Game.Tests.AssemblyInfo.cs",
+      "generatedInfoSha256": "ed76e178665c647ff7f7df70a7aeafda4a132564449bf5e7d4857f0f79379725",
+      "generatedInfoBodyAttached": false
+    }
+  ],
+  "sequentialRuns": [
+    {
+      "kind": "copy-56bbfb2-json100",
+      "workingDirectory": "/workspace/seonro-functional-56bbfb2",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--performance",
+        "/workspace/scratch/copy-56bbfb2-json100.json",
+        "--performance-size",
+        "100"
+      ],
+      "stdoutStderr": "/workspace/scratch/copy-56bbfb2-json100.log",
+      "commandProvenance": "root가 전달한 실제 명령. 원본 보고서/로그의source·mode·size·선행기능과 대조.",
+      "precedingFunctionalSelection": "INV-001/002/011",
+      "precedingFunctionalPassed": 1,
+      "runExitCodeReportedByRoot": 0,
+      "eventPipeDuringRun": false
+    },
+    {
+      "kind": "copy-56bbfb2-typed100",
+      "workingDirectory": "/workspace/seonro-functional-56bbfb2",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--performance",
+        "/workspace/scratch/copy-56bbfb2-typed100.json",
+        "--performance-size",
+        "100",
+        "--performance-inventory-typed-copy"
+      ],
+      "stdoutStderr": "/workspace/scratch/copy-56bbfb2-typed100.log",
+      "commandProvenance": "root가 전달한 실제 명령. 원본 보고서/로그의source·mode·size·선행기능과 대조.",
+      "precedingFunctionalSelection": "INV-001/002/011",
+      "precedingFunctionalPassed": 1,
+      "runExitCodeReportedByRoot": 0,
+      "eventPipeDuringRun": false
+    },
+    {
+      "kind": "copy-56bbfb2-json1000",
+      "workingDirectory": "/workspace/seonro-functional-56bbfb2",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--performance",
+        "/workspace/scratch/copy-56bbfb2-json1000.json",
+        "--performance-size",
+        "1000"
+      ],
+      "stdoutStderr": "/workspace/scratch/copy-56bbfb2-json1000.log",
+      "commandProvenance": "root가 전달한 실제 명령. 원본 보고서/로그의source·mode·size·선행기능과 대조.",
+      "precedingFunctionalSelection": "INV-001/002/011",
+      "precedingFunctionalPassed": 1,
+      "runExitCodeReportedByRoot": 0,
+      "eventPipeDuringRun": true
+    }
+  ],
+  "profiler": {
+    "targetPid": 107446,
+    "environment": {
+      "DOTNET_ROOT": "/workspace/.dotnet"
+    },
+    "argv": [
+      "/workspace/.dotnet-tools/dotnet-trace",
+      "collect",
+      "--process-id",
+      "107446",
+      "--profile",
+      "dotnet-sampled-thread-time",
+      "--duration",
+      "00:00:00:45",
+      "--format",
+      "Speedscope",
+      "--output",
+      "/workspace/scratch/profile-56bbfb2-json1000.nettrace"
+    ],
+    "stdoutStderr": "/workspace/scratch/profile-56bbfb2-json1000.log",
+    "nominalCollectionSeconds": 45,
+    "exitCodeReportedByRoot": 0,
+    "conversionCompletedInOriginalLog": true,
+    "startedDuring": "N1000 JSON 실행의 첫 실제 측정 월1 부근. 예열은 추적된 Advance 구간에 없음.",
+    "instrumentationScope": "관리 샘플 스레드 시간(EventPipe), GC 관련 스택/대기를 포함한다. 커널의 on-CPU 시간·전체 프로세스CPU 이용률·할당 추적값으로 해석하지 않음.",
+    "processAffinityOfCollector": "별도 캡처 없음. 실제 게임 프로세스 taskset0와 구분."
+  },
+  "timeLimits": {
+    "exactRunStartUtc": null,
+    "exactRunEndUtc": null,
+    "exactProfileStartUtc": null,
+    "exactProfileEndUtc": null,
+    "parentClockObservations": [
+      {
+        "utc": "2026-10-30 16:40:53 UTC",
+        "observation": "typed100 실행 직후 확인한 시계"
+      },
+      {
+        "utc": "2026-10-30 16:44:37 UTC",
+        "observation": "profile 완료를 확인한 시계"
+      }
+    ],
+    "rule": "파일 mtime/btime을 실행 시각으로 추정하지 않는다. 두 관측을 정확한 실행 시작·종료로 대체하지 않는다."
+  },
+  "currentEnvironmentArtifact": "environment-current.original.json",
+  "documentationScope": {
+    "newBenchmarkRuns": 0,
+    "newBuilds": 0,
+    "productCliTestChanges": 0,
+    "originalInputFilesChanged": 0,
+    "work": "기존 원본 읽기·복사·결정적 압축·정적 비교만 수행.",
+    "newDotnetApplicationOrFunctionalTestRuns": 0,
+    "staticVerification": "Python의 원본/압축/SHA/수치 대조만 수행했다."
+  }
+}

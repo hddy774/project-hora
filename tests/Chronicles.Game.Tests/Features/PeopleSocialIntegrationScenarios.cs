@@ -34,9 +34,9 @@ internal sealed class PeopleSocialPublicFixture
     }
     internal void Consent(long recipient, long request)
     { Control(recipient); Send("acceptPeopleRequest", recipient, request); }
-    internal long Create(string name, string species = "human", int place = 0)
+    internal long Create(string name, string species = "human", int place = 0, bool gestates = false)
     {
-        Send("observe"); Send("create", target: place, data: JsonSerializer.Serialize(new { name, species, gestates = false }));
+        Send("observe"); Send("create", target: place, data: JsonSerializer.Serialize(new { name, species, gestates }));
         return World.Checkpoint().People.Last().Id;
     }
 }
@@ -126,7 +126,9 @@ public sealed class PeoplePublicHabitTraitScenario : IFeatureScenario
     public string Name => "INV-008/015 people social public: completed martial routine, dated acquisition and inactivity release";
     public void Run()
     {
-        var f = new PeopleSocialPublicFixture(); f.Control(f.First);
+        var f = new PeopleSocialPublicFixture();
+        f.World = PeoplePublicFixture.Configure(f.World, s => s.People[0].Habits["Martial"] = 100);
+        f.Control(f.First);
         for (var index = 0; index < 3; index++)
         {
             f.Send("martial", f.First); f.World.AdvanceTo(f.World.Checkpoint().People.Single(p => p.Id == f.First).Due);
@@ -134,8 +136,8 @@ public sealed class PeoplePublicHabitTraitScenario : IFeatureScenario
         var state = f.World.Checkpoint();
         var routine = state.PeopleDomain.Traits.Traits.Single(t => t.PersonId == f.First && t.DefinitionId == "habit.routine");
         PeopleFixture.Check(Traits.IsActive(routine, state.Month) && routine.AcquiredMonth > 0 && routine.Source.Reference.Contains("Martial:3", StringComparison.Ordinal) &&
-            state.PeopleDomain.Social.Habits.Single(h => h.Person == f.First && h.Habit == "Martial").LastCompleted == state.Month,
-            "Three actual completed actions, not elapsed time or inherited mastery, form the dated routine.");
+            state.PeopleDomain.Social.Habits.Single(h => h.Person == f.First && h.Habit == "Martial") is { Count: 3 } observed && observed.LastCompleted == state.Month,
+            "Three actual completed actions form the dated routine even after the legacy habit counter reaches its cap; old unobserved counts grant nothing.");
         f.World = PeoplePublicFixture.Configure(f.World, s => s.PeopleDomain = s.PeopleDomain with
             { Social = s.PeopleDomain.Social with { Policy = s.PeopleDomain.Social.Policy with { HabitLapseMonths = 1 } } });
         f.Send("wait", f.First); f.World.AdvanceTo(f.World.Month + 1); f.Send("wait", f.First); f.World.AdvanceTo(f.World.Month + 1);
@@ -234,5 +236,47 @@ public sealed class PeoplePublicMutationPolicyScenario : IFeatureScenario
         var zero = zeroMagnitude.Checkpoint().PeopleDomain.Inheritance.Conceptions.Single();
         PeopleFixture.Check(zero.Model.MutationChance == 10000 && zero.Model.MutationMagnitude == 0 && zero.Selections.All(s => s.MutationDelta == 0),
             "A certain mutation draw with explicitly zero magnitude cannot alter the inherited alleles.");
+    }
+}
+
+public sealed class PeoplePublicNonhumanBirthScenario : IFeatureScenario
+{
+    public string Name => "INV-004/011/014/015 people public species: actual body maturity, native gestation, frozen offspring and independent birth soul";
+    public void Run()
+    {
+        var f = new PeopleSocialPublicFixture { World = PeoplePublicFixture.Fresh() };
+        var mother = f.Create("영송 모체", "spirit-pine", 2, true); var father = f.Create("영송 전달체", "spirit-pine", 2);
+        f.World = PeoplePublicFixture.Configure(f.World, state =>
+        {
+            foreach (var person in state.People.Where(p => p.Id == mother || p.Id == father))
+            {
+                PeoplePublicFixture.CurrentRealm(state, person, Realm.GoldenCore);
+                person.Personality[4] = 60; person.Personality[5] = 60;
+            }
+            state.People.Single(p => p.Id == mother).Born = -598;
+        });
+        f.Control(mother); f.Send("explore", mother); f.World.AdvanceTo(1);
+        f.Reject("partner", mother, father);
+        f.World.AdvanceTo(2); f.Send("partner", mother, father); f.Send("conceive", mother, father);
+        var state = f.World.Checkpoint(); var pregnancy = state.Pregnancies.Single();
+        var conception = state.PeopleDomain.Inheritance.Conceptions.Single();
+        PeopleFixture.Check(pregnancy.Due == state.Month + 12 && conception.SpeciesId == "spirit-pine" &&
+            state.People.Single(p => p.Id == mother).Born + 600 == state.Month,
+            "The actual pine body must reach its 600-month maturity and retain its native 12-month gestation.");
+        var frozen = JsonSerializer.Serialize(conception);
+        f.Send("observe"); f.Send("law", value: 1, data: "birth.gestation"); f.Control(mother);
+        var child = PeoplePublicFixture.Birth(f.World, pregnancy.Id); state = f.World.Checkpoint();
+        var profile = state.PeopleDomain.Profiles.Single(p => p.PersonId == child.Id);
+        var actualSoul = state.PeopleDomain.Souls.Single(s => s.SoulId == child.SoulId);
+        PeopleFixture.Check(child.Species == "spirit-pine" && child.Lifespan == 3600 && child.Born == pregnancy.Due &&
+            profile.Body.CurrentForm == BodyForm.RootedPlant && profile.Body.Reproduction.MaturityMonths == 600 &&
+            profile.Body.Origin == PersonOrigin.BiologicalBirth && child.ParentOne == mother && child.ParentTwo == father &&
+            child.Roots.SequenceEqual(conception.ElementRoots) && child.Aptitudes.Take(5).SequenceEqual(conception.BodyFoundations),
+            "An actual nonhuman birth retains species lifespan/body, biological parents and frozen body-only inheritance.");
+        PeopleFixture.Check(child.Aptitudes[5] == actualSoul.Foundation!.Value && child.SoulId != state.People.Single(p => p.Id == mother).SoulId &&
+            child.SoulId != state.People.Single(p => p.Id == father).SoulId && child.Realm == Realm.Mortal && child.Skills.Count == 0 && child.Understanding.Count == 0 &&
+            frozen == JsonSerializer.Serialize(state.PeopleDomain.Inheritance.Conceptions.Single()),
+            "Actual soul assignment remains independent of the body-parent DAG and returns no free parental skill/realm.");
+        PeopleFixture.Check(GameCodec.Decode(GameCodec.Encode(f.World)).StateHash() == f.World.StateHash(), "The actual native-species birth resumes identically from the production save.");
     }
 }

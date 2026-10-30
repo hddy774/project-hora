@@ -246,7 +246,9 @@ public sealed partial class GameWorld
                     error = BeginInventoryJob(p, new TreatPerson(c.Id, p.Id, patient?.Id ?? 0, Month + 1, consent), ActionKind.Heal); return true;
                 case "appraise": error = BeginInventoryJob(p, new AppraisePhysical(c.Id, p.Id, c.Target, Month + 1), ActionKind.Explore); return true;
                 case "exploreSource":
-                    var target = state.Inventory.Sources.FirstOrDefault(s => s.Place == p.Place && (c.Target != 0 ? s.Id == c.Target : !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == s.Id && o.Definition.Length > 0 && o.Activity.Length > 0)));
+                    var target = state.Inventory.Sources.FirstOrDefault(s => s.Place == p.Place &&
+                        (c.Target != 0 ? s.Id == c.Target && (c.Data.Length == 0 || s.Definition == c.Data) :
+                            c.Data.Length > 0 ? s.Definition == c.Data : !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == s.Id && o.Definition.Length > 0 && o.Activity.Length > 0)));
                     error = target is null ? "탐색할 현지 원천이 없습니다." : BeginInventoryJob(p, new ExploreNaturalSource(c.Id, p.Id, target.Id, Month + 1), ActionKind.Explore); return true;
                 case "offer": error = RunInventory(new OfferItem(c.Id, p.Id, c.Target, c.Value, Month + 12, c.Data == "auction"), out _); return true;
                 case "bid": error = RunInventory(new PlaceBid(c.Id, p.Id, c.Target, c.Value), out _); return true;

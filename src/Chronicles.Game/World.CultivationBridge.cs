@@ -15,6 +15,9 @@ public sealed partial class GameWorld
     // SettleCultivation follows source regeneration and precedes actor completions. Death cleanup precedes inheritance.
     private const long NeutralCultivationFlow = 5000;
     private const int NaturalCultivationSeats = 4;
+    // Synchronous typed feedback from the shared preparation command, consumed and cleared by its AI caller.
+    // It is not authority state or a prediction cache and never survives a decision boundary.
+    private (long Body, CultivationBlocker[] Blockers)? cultivationPreparationFeedback;
 
     private void InitializeCultivation()
     {
@@ -186,7 +189,11 @@ public sealed partial class GameWorld
         // Preview has no RNG or mutations; a failed AI preparation must not leave a physical split/reservation.
         var preview = CultivationEngine.Execute(metadata, CultivationActorFor(p),
             new PrepareCultivation(command.Id, metadata.Revision, path, itemsToUse, conversion), context, 9999);
-        if (!preview.Accepted) return CultivationFailure(preview);
+        if (!preview.Accepted)
+        {
+            cultivationPreparationFeedback = (p.BodyId, preview.Blockers.Select(b => b with { }).ToArray());
+            return CultivationFailure(preview);
+        }
         long reservation; long physical = 0;
         if (command.Target != 0)
         {
@@ -450,7 +457,8 @@ public sealed partial class GameWorld
         if (p.Realm == Realm.Mortal && KnowledgeFor(p, "entry") is not null) return "path.1.0";
         return Catalog.Paths.FirstOrDefault(path => path.Realm == realm && KnowledgeFor(p, path.Id) is not null)?.Id;
     }
-    private string? NextKnownCultivationPath(Person p) => p.Realm == Realm.HalfImmortal ? null :
+    private string? NextKnownCultivationPath(Person p) => p.Realm == Realm.Mortal && KnowledgeFor(p, "entry") is not null ? "path.1.0" :
+        p.Realm == Realm.HalfImmortal ? null :
         Catalog.Paths.FirstOrDefault(path => path.Realm == p.Realm + 1 && KnowledgeFor(p, path.Id) is not null)?.Id;
 
     private long CultivationSourceQuantum() => NeutralCultivationFlow / Math.Max(1, Law("cultivation.sourceCost"));

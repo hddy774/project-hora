@@ -1,0 +1,81 @@
+{
+  "kind": "선택 공개 기능 및 기존 전사 거부 근거",
+  "sourceCommit": "5f2b2973b1c0d5331a5e61c09eefb2e863ed66a4",
+  "productSourceFingerprint": "673c67e2c5871d77f90f9a04002b8a989392e7f75c67334a7a2e0fb909a5cc86",
+  "sourceCleanForSelectedRuns": true,
+  "capturedUtc": "2026-10-30T15:16:46.418283+00:00",
+  "build": {
+    "configuration": "Release",
+    "exitCode": 0,
+    "warnings": 0,
+    "errors": 0,
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/workspace/.dotnet/dotnet",
+      "build",
+      "tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--nologo"
+    ]
+  },
+  "assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "sha256": "74637001c87ff0b2c9a87b7b0d637f51ca2443359fba2e7988d21bde2e13349f"
+    },
+    {
+      "name": "Chronicles.Game",
+      "sha256": "93b0e5719e5cb4c2f0763fc8423a742b4fb5a37db351646cda565de66ba17251"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "sha256": "304c98bae143bf508e4d2dc1acf3d35f2bf23d98bc9731cf88d84942653e9df3"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "sha256": "306c85ebede60db81235893a27da2516a3e27aa2e00a1a3606a7ea6c10c8f02c"
+    }
+  ],
+  "reports": [
+    {
+      "path": "entry-functional.json",
+      "sha256": "e33f10ab39721e0174b2c9da08ed77388e161cd8f8348c7cfba0d1a377252e64",
+      "selection": "AI 수행 연결:",
+      "total": 5,
+      "failed": 0,
+      "meaning": "선택 기능 검사 통과·전체 suite 아님"
+    },
+    {
+      "path": "planning-functional.json",
+      "sha256": "49bff7f141d06c92458851cd5e33eae01f6dcd21f6ee096f62494bc60cd9c0e7",
+      "selection": "agent planning:",
+      "total": 12,
+      "failed": 0,
+      "meaning": "선택 기능 검사 통과·전체 suite 아님"
+    },
+    {
+      "path": "legacy-oracles-rejected.json",
+      "sha256": "3c7fb4c76fc585ede3ac2f6b52aea1d3ca9be9114c5218b1f98fcd739dae0b46",
+      "selection": "inventory owned reference:",
+      "total": 2,
+      "failed": 2,
+      "meaning": "원형 고정 전사의 실제 거부 원본·통과로 재분류하지 않음"
+    }
+  ],
+  "selectedFunctionalPassed": 17,
+  "retainedLegacyOracleFailures": 2,
+  "fullSuiteRun": false,
+  "growthOrAiMetricRunAfterFix": false,
+  "scope": [
+    "동일한 clean source5f2b297에서 공개 AI 입문/학습/돌파5개와 계획12개를 실제 실행했다. 고정 원본2개는 실패 원문과 옛 기준을 그대로 보존했다.",
+    "원래 manual world 전사는 모든 명령·거부·저장 속행 검사 뒤 옛751e349 digest와 달라져 거부했다. 현재 실제 digest는 ec01b5c4fa2f10268514912f0885f2debbd47a9ad9cc8aec85a8b73a1c311b56 이다.",
+    "원래 생계 전사는 food8/foodUse1에서 정책비축3을 넘겼어도 즉시 판매를 강제 기대하여 실제 offer가 없을 때 거부했다. 새 출품 검사는 명시 거래 성향에서 자기 비축3을 보존하고 실제 잉여4를 출품/매매한다.",
+    "옛 기준 상수·InventoryOwnedReferenceScenarios.cs는 수정하지 않았다. 같은 최종 통합 소스의 독립 strict/currentJSON/typed 전사 비교와 기준 조정은 별도 담당 및 루트 검토 대상이다.",
+    "실제 오독 회복 부정 검사의 Qi 대원만은 명시 typed 경계 fixture이다. 실제 감응/전수/재독해/실패/공급/시간/저장 검사를 성장 성공이나 전체통합 통과로 표시하지 않는다.",
+    "보고서 ms는 기능 runner의 부수 출력이며 성능 계측값으로 해석하지 않는다. 수정 후 성장9표본·AI 본측정·비용 측정은 실행하지 않았다."
+  ]
+}

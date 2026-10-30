@@ -44,7 +44,7 @@ public static class CultivationEngine
             result.Add(new("ascension", "반선 완성은 비승이 아님", "실제 통로·세계 법칙·비승 명령 확인"));
         if (path.Definition.Realm != target) result.Add(new("path-realm", "목표 경지 공법이 아님", "목표 경지 지식 확보"));
         AddAccess(result, context.Site);
-        var knowledge = Knowledge(context, pathId);
+        var knowledge = PreparationKnowledge(actor, pathId, context, conversion);
         if (knowledge is null || !knowledge.Executable || knowledge.Understanding < context.Policy.MinimumUnderstanding)
             result.Add(new("knowledge", "실제 이해/암기 또는 현장 열람 부족", "해독·학습·접근권 확보"));
         if (knowledge is not null && knowledge.Error > 5000) result.Add(new("interpretation", "채택 해석에 큰 오류", "정정·실습 검증"));
@@ -185,7 +185,7 @@ public static class CultivationEngine
         if (supports.Any(s => s is null || s.Quantity <= 0 || s.ReservedBy.Length != 0))
             return Reject(state, "reservation", "보조 실물이 없거나 이미 예약됨", "소유·사용 가능한 실제 물품 선택");
         var profile = CultivationProfiles.Find(command.PathId)!;
-        var knowledge = Knowledge(context, command.PathId)!;
+        var knowledge = PreparationKnowledge(actor, command.PathId, context, command.Conversion)!;
         var quality = FormationQuality(state, actor, knowledge, context);
         if (quality < context.Policy.MinimumFormation) return Reject(state, "formation", "실제 형성 기반 부족", "구조·정탁·육신·정신 보완");
         // Pills affect risk only; no missing prerequisite or unlearned chapter is manufactured.
@@ -439,6 +439,10 @@ public static class CultivationEngine
     }
 
     internal static bool ActiveAttempt(CultivationState state) => state.Attempt is { Phase: not (AttemptPhase.Cancelled or AttemptPhase.Completed or AttemptPhase.Failed) };
+    // Sensing follows actual pre-entry breathing knowledge; learning a Qi circulation method is a later action.
+    // The adopted work identity stays "entry" in the attempt and formation, never a fabricated path revision.
+    private static KnowledgeEvidence? PreparationKnowledge(CultivationActor actor, string path, CultivationContext context, bool conversion) =>
+        actor.Realm == Realm.Mortal && !conversion ? Knowledge(context, "entry") ?? Knowledge(context, path) : Knowledge(context, path);
     internal static KnowledgeEvidence? Knowledge(CultivationContext context, string path) => context.Knowledge.Where(k => k.WorkId == path)
         .OrderByDescending(k => k.Revision).ThenBy(k => k.EditionId, StringComparer.Ordinal).FirstOrDefault();
 

@@ -1,0 +1,254 @@
+{
+  "kind": "기본 성장 연결 공백의 읽기 전용 재현",
+  "sourceCommit": "b0f3aec986d9b09015021499e47627b869411b83",
+  "productSourceFingerprint": "8e197e13641d2e39fffdd8fe8c47dbc8b06788f6dddaee7f35e61407847591a2",
+  "seed": 42,
+  "overrides": null,
+  "assemblies": [
+    {
+      "name": "Chronicles.Game",
+      "path": "/workspace/scratch/growth-diagnosis-b0f3aec/bin/Release/net10.0/Chronicles.Game.dll",
+      "sha256": "f80725ca4cd9cda0155e4a55714ff2d536985f906b3bb378749bbfcf504ad1b4",
+      "informationalVersion": "0.2.1+b0f3aec986d9b09015021499e47627b869411b83"
+    },
+    {
+      "name": "Chronicles.Core",
+      "path": "/workspace/scratch/growth-diagnosis-b0f3aec/bin/Release/net10.0/Chronicles.Core.dll",
+      "sha256": "c192fb477ce12b5daf5d06313e49684e069840a7e8cd946c492fe8e3e7888b35",
+      "informationalVersion": "0.2.1+b0f3aec986d9b09015021499e47627b869411b83"
+    }
+  ],
+  "throughMonth": 1200,
+  "countsMatchOriginalAAtEvery120Months": true,
+  "observations": 11,
+  "finalHash": "a39f02956b1e2c5b1f18a539685ed7f8f870fc1e117bff850c3d9d333a77b936",
+  "finalSnapshotSha256": "a39f02956b1e2c5b1f18a539685ed7f8f870fc1e117bff850c3d9d333a77b936",
+  "finalCodecSha256": "413f1701133e0143c17f557906a6fb252aa481bb44c1d4680cb9ec8d2f4becdd",
+  "deaths": [
+    {
+      "id": 6825,
+      "month": 990,
+      "kind": "사망",
+      "actor": 2098,
+      "target": 0,
+      "text": "연씨 1세손 수명 소진·윤회 미적격",
+      "source": "life:2099:990",
+      "targetKind": "condition"
+    },
+    {
+      "id": 7655,
+      "month": 1141,
+      "kind": "사망",
+      "actor": 2347,
+      "target": 0,
+      "text": "연씨 2세손 수명 소진·윤회 미적격",
+      "source": "life:2348:1141",
+      "targetKind": "condition"
+    }
+  ],
+  "descendants": [
+    {
+      "id": 2098,
+      "bodyId": 2099,
+      "born": 30,
+      "ended": 990,
+      "ageMonths": 960,
+      "lifespan": 960,
+      "realm": "Mortal",
+      "health": 100,
+      "understanding": {
+        "entry": 1500
+      },
+      "activities": [
+        {
+          "key": {
+            "workId": "entry",
+            "kind": "Teaching",
+            "status": "Completed"
+          },
+          "count": 15,
+          "first": 90,
+          "last": 105,
+          "totalScheduledMonths": 15
+        },
+        {
+          "key": {
+            "workId": "entry",
+            "kind": "Practice",
+            "status": "Completed"
+          },
+          "count": 117,
+          "first": 108,
+          "last": 611,
+          "totalScheduledMonths": 117
+        }
+      ],
+      "cultivation": {
+        "bodyId": 2099,
+        "soulId": 2097,
+        "revision": 117,
+        "lastTrainingMonth": 611,
+        "rootOrigin": "출생 유전 입력·부모 36/1",
+        "rootGrowth": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "rootDamage": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "raw": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "refined": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "circulating": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "structure": null,
+        "activePath": "",
+        "auxiliaryPath": "",
+        "damage": 0,
+        "load": 0,
+        "entryWork": 180000,
+        "entryLastMonth": 611,
+        "growthBasis": {
+          "lawRevision": 1,
+          "realmWork": 0,
+          "rootWork": 0,
+          "entryWork": 180000
+        },
+        "attempt": null,
+        "pendingTrial": null,
+        "formations": [],
+        "conversions": [],
+        "martial": {
+          "work": 0,
+          "injury": 0,
+          "lastMonth": -1
+        }
+      }
+    },
+    {
+      "id": 2347,
+      "bodyId": 2348,
+      "born": 181,
+      "ended": 1141,
+      "ageMonths": 960,
+      "lifespan": 960,
+      "realm": "Mortal",
+      "health": 100,
+      "understanding": {
+        "entry": 200
+      },
+      "activities": [
+        {
+          "key": {
+            "workId": "entry",
+            "kind": "Teaching",
+            "status": "Completed"
+          },
+          "count": 2,
+          "first": 245,
+          "last": 1077,
+          "totalScheduledMonths": 2
+        },
+        {
+          "key": {
+            "workId": "entry",
+            "kind": "Practice",
+            "status": "Completed"
+          },
+          "count": 15,
+          "first": 250,
+          "last": 1065,
+          "totalScheduledMonths": 15
+        }
+      ],
+      "cultivation": {
+        "bodyId": 2348,
+        "soulId": 2346,
+        "revision": 15,
+        "lastTrainingMonth": 1065,
+        "rootOrigin": "출생 유전 입력·부모 36/1",
+        "rootGrowth": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "rootDamage": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "raw": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "refined": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "circulating": {
+          "metal": 0,
+          "wood": 0,
+          "water": 0,
+          "fire": 0,
+          "earth": 0
+        },
+        "structure": null,
+        "activePath": "",
+        "auxiliaryPath": "",
+        "damage": 0,
+        "load": 0,
+        "entryWork": 71385,
+        "entryLastMonth": 1065,
+        "growthBasis": {
+          "lawRevision": 1,
+          "realmWork": 0,
+          "rootWork": 0,
+          "entryWork": 180000
+        },
+        "attempt": null,
+        "pendingTrial": null,
+        "formations": [],
+        "conversions": [],
+        "martial": {
+          "work": 0,
+          "injury": 0,
+          "lastMonth": -1
+        }
+      }
+    }
+  ],
+  "scope": "기존 b0 DLL에 공개 Create(42)/AdvanceTo만 수행. 원형 법칙·피험조건·제품 수정 없음. 실제 사망은 범인80세 수명소진이며, 입문노동 완료 뒤 감응 선택과 고갈/예약 경합 뒤 생계 정보 회복의 연결 공백을 진단한다. 3seed500년 전체 판정·후속 보정 성공·성능 결과가 아니다. 원본 성장에는 각 관측의 전체 상태hash가 없어 전체상태 동일까지 주장하지 않는다."
+}

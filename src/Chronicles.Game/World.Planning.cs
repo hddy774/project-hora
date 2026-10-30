@@ -72,13 +72,15 @@ public sealed partial class GameWorld
         {
             "production" => PlanningStock(p, "paper") == 0 || PlanningStock(p, "ink") == 0 ? 250 : 0,
             "information" => sources.Length == 0 ? 300 : p.KnownPlaces.Count < 2 ? 100 : 0,
-            "trade" => CurrencyPlanningPriority(p) + (offers.Any(o => PlanningNeed(p, o.Definition) > 0 && o.Price <= p.Money) ? 600 : PlanningSurplus(p) is not null ? 400 : 0),
+            "trade" => CurrencyPlanningPriority(p) + (offers.Any(o => PlanningNeed(p, o.Definition) > 0 && o.Price <= p.Money) ? 600 :
+                PlanningSurplus(p) is not null || HasEcologyPlanningSurplus(p) ? 400 : 0),
             "learning" => p.LessonRequests.Count > 0 ? 100 : 0,
             "cooperation" => p.LessonRequests.Any(r => r.Expires > Month && PlanningKnownPerson(p, r.Pupil)) ||
                 state.Politics.Obligations.Any(o => o.Debtor == PoliticalAccount.Person(p.Id) && o.Outstanding > 0 && p.Money > 0) ? 700 : -10000,
             "retreat" => PlanningThreat(p) ? 3000 : -10000,
             "politics" => Month - p.Born >= PeopleMaturityMonths(p) && (p.Sect != 0 || p.Money >= Law("politics.foundCost")) ? 0 : -10000,
-            "cultivation" => KnowledgeFor(p, p.Realm == Realm.Mortal ? "entry" : $"path.{(int)p.Realm}.0") is not null ? Law("ai.studyWeight") * 5 : -10000,
+            "cultivation" => KnowledgeFor(p, "entry") is not null || Catalog.Paths.Any(path =>
+                path.Realm == p.Realm && KnowledgeFor(p, path.Id) is not null) ? Law("ai.studyWeight") * 5 : -10000,
             _ => 0
         });
     }
@@ -95,14 +97,13 @@ public sealed partial class GameWorld
                 }
                 return false;
             case "information": return TryExplorationInformationGoal(p) || StartInformationPlan(p, "", "현장에 관한 개인 관측을 늘릴 필요");
-            case "trade": return TryCurrencyPlanningGoal(p) || StartTradePlan(p, offers);
+            case "trade": return TryCurrencyPlanningGoal(p) || StartTradePlan(p, offers) || TryEcologyPlan(p);
             case "learning": return StartLearningPlan(p);
             case "cooperation": return StartCooperationPlan(p);
             case "retreat": return StartRetreatPlan(p);
             case "politics": return StartStewardshipPlan(p);
             case "cultivation":
-                p.Reason = "실제로 배운 현재 경지 지식·구도 성향·완료한 수행 습성";
-                return Start(p, "cultivate", 0, "") is null;
+                return StartCultivationPlan(p);
             case "martial":
                 p.Reason = "자기 육신·경쟁/생존 성향·실제 단련 습성";
                 return Start(p, "martial", 0, "") is null;
@@ -237,12 +238,21 @@ public sealed partial class GameWorld
     private AdvertisedInventoryOffer[] PlanningOffers(Person p) => InventoryKnowledgeQueries.LocalOffers(
         new InventoryState { Month = Month, People = [p], Ledger = state.Inventory }, p.Id).Where(o => o.Seller != p.Id).ToArray();
     private IEnumerable<Item> OwnPlanningItems(Person p) => Owned(p.Id).Where(i => i.Reserved == 0 && (i.Place == -1 || i.Place == p.Place) &&
+        ExplorationCarriedItemAccessible(p, i) &&
         (i.BoundSoul == 0 || i.BoundSoul == p.SoulId) && !state.Inventory.Metadata.Any(m => m.Item == i.Id &&
             (m.Carrier > 0 && m.Carrier != p.Id || m.Custodian > 0 && m.Custodian != p.Id)));
     private long PlanningStock(Person p, string definition) => OwnPlanningItems(p).Where(i => i.Definition == definition).Sum(i => (long)i.Quantity);
+    private bool HasEcologyPlanningSurplus(Person p)
+    {
+        var own = OwnPlanningItems(p).Where(i => !p.Equipment.ContainsValue(i.Id)).ToArray();
+        return own.Any(item => item.Container == 0 && item.BoundSoul == 0 && item.Definition is "food" or "herb" or "ore" or "wood" &&
+            !state.Inventory.Arrays.Any(a => a.Item == item.Id) &&
+            own.Where(i => i.Definition == item.Definition).Sum(i => (long)i.Quantity) > (item.Definition == "food" ? EcologyFoodTarget(p) : 2) &&
+            !state.Inventory.Contracts.Any(c => c.Seller == p.Id && c.Status == "open" && c.Due > Month && c.AdvertisedDefinition == item.Definition));
+    }
     private long PlanningNeed(Person p, string definition) => Math.Max(0, (definition switch
     {
-        "food" => 24, "tool" or "armor" or "weapon" or "bag" or "pill" or "soulWard" => 1,
+        "food" => EcologyFoodTarget(p), "tool" or "armor" or "weapon" or "bag" or "pill" or "soulWard" => 1,
         "paper" or "ink" => 2, "herb" or "ore" or "wood" => 4, _ => 1
     }) - PlanningStock(p, definition));
     private bool PlanningKnownPerson(Person p, long other) => p.KnownPeople.Contains(other) && p.ObservedPeople.TryGetValue(other, out var seen) &&

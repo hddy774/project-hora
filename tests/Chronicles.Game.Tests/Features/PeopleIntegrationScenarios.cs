@@ -12,7 +12,10 @@ internal static class PeopleBridgeFixture
 
     internal static object? Call(GameWorld world, string name, params object?[] args)
     {
-        try { return typeof(GameWorld).GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(world, args); }
+        var method = typeof(GameWorld).GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var parameters = method.GetParameters();
+        var actual = parameters.Select((p, i) => i < args.Length ? args[i] : p.DefaultValue).ToArray();
+        try { return method.Invoke(world, actual); }
         catch (TargetInvocationException error) when (error.InnerException is not null) { throw error.InnerException; }
     }
 

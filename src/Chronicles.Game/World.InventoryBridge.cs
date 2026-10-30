@@ -140,6 +140,20 @@ public sealed partial class GameWorld
         }
         return inventory;
     }
+    private InventoryEngine.OwnedTransaction CurrentOwnedInventory()
+    {
+        var transaction = InventoryEngine.Own(state);
+        try
+        {
+            transaction.TuneIfNeeded(new TuneInventoryProfile(InventoryNonce("laws"),
+                checked((int)state.Laws.GetValueOrDefault("inventory.carryCapacity", 500)),
+                checked((int)state.Laws.GetValueOrDefault("inventory.productionWork", 100)),
+                checked((int)state.Laws.GetValueOrDefault("inventory.professionalWork", 100)),
+                checked((int)state.Laws.GetValueOrDefault("inventory.extractionWork", 25))));
+            transaction.SynchronizeWorldActions(); return transaction;
+        }
+        catch { transaction.Dispose(); throw; }
+    }
     private bool InventoryAccessible(Person p, long id, out Item item, ItemKind? kind = null)
     {
         var view = new InventoryState { Month = Month, NextId = state.NextId, Revision = Revision,
@@ -164,11 +178,15 @@ public sealed partial class GameWorld
     {
         state.Inventory = inventory.ApplyTo(state); Reindex(); ProjectInventorySources(); ProjectInventoryContracts();
     }
+    private void ApplyInventory(InventoryEngine.OwnedTransaction transaction)
+    {
+        transaction.CommitTo(state); Reindex(); ProjectInventorySources(); ProjectInventoryContracts();
+    }
     private string? RunInventory(InventoryCommand command, out long subject)
     {
-        var result = InventoryEngine.Apply(CurrentInventory(), command); subject = result.Subject;
+        using var transaction = CurrentOwnedInventory(); var result = transaction.Apply(command); subject = result.Subject;
         if (!result.Accepted) return result.Message;
-        ApplyInventory(result.State); return null;
+        ApplyInventory(transaction); return null;
     }
     private string? ReserveInventoryMaterials(Person p, IReadOnlyDictionary<string, int> materials, string purpose, out long reservation) =>
         RunInventory(new ReserveInventoryMaterials(InventoryNonce(purpose, p.Id), p.Id, purpose, materials), out reservation);
@@ -185,18 +203,18 @@ public sealed partial class GameWorld
     private string? BeginInventoryJob(Person p, InventoryCommand request, ActionKind action, string? recipe = null)
     {
         if (p.Action != ActionKind.Idle || p.Health < 10) return "기존 행동과 건강을 확인하세요.";
-        var started = InventoryEngine.Apply(CurrentInventory(), request);
+        using var transaction = CurrentOwnedInventory(); var started = transaction.Apply(request);
         if (!started.Accepted) return started.Message;
-        var begun = InventoryEngine.Apply(started.State, new BeginProduction(request.Id + ":process", p.Id, started.Subject));
+        var begun = transaction.Apply(new BeginProduction(request.Id + ":process", p.Id, started.Subject));
         if (!begun.Accepted) return begun.Message;
-        var job = begun.State.Ledger.Jobs.Single(j => j.Id == started.Subject);
+        var job = transaction.Job(started.Subject);
         if (recipe is not null)
         {
             string? error = "정본 제작 지식 연결이 필요합니다."; var activity = 0L;
             BeginInventoryPractice(p, "recipe:" + recipe, checked((int)(job.Due - Month)), request.Id, ref activity, ref error);
-            if (error is not null) return error; job.KnowledgeActivity = activity;
+            if (error is not null) return error; transaction.AttachKnowledgeActivity(job.Id, activity);
         }
-        ApplyInventory(begun.State); p.Action = action; p.ActionTarget = job.Id; p.ActionData = "inventory:" + job.Recipe;
+        ApplyInventory(transaction); p.Action = action; p.ActionTarget = job.Id; p.ActionData = "inventory:" + job.Recipe;
         p.Due = job.Due; p.ActionRevision = state.LawRevision; return null;
     }
     private bool TryInventoryCommand(GameCommand c, Person p, out string? error)

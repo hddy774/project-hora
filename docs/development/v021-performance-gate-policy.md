@@ -57,3 +57,5 @@
 계획 JSON은 `schemaVersion: 1`, `policyId`, `baselineReportSha256`, `rationale`, `cases`를 갖는다. 각 case는 `population`, `horizonMonths`, `checkpointEveryMonths`, `validateEveryMonths`, `wallTimeLimitSeconds`를 명시한다. 기간은 단기 기준선보다 길고, 시작/중간/끝 저장·재개가 있어야 한다. 수치와 장기 경계 커버리지가 충분한지는 실제 계획 검토와 T04 감사에서 판단한다. JSON 형태만 맞춘 임의의 짧은 계획을 장기 생태계나 보정 검증 완료로 주장하지 않는다.
 
 기능 완료와 현재 기능 검사 fingerprint 연결, 플랫폼/서명/APK 검증, 게시 허용의 기존 보호 조건은 유지한다. 이 검증기는 실제 측정을 시작하지 않는다. T04의 실제 성장 분포·PC-TEMP 보정/민감도 검토와 최종 기능 감사도 여전히 별도 실제 근거가 필요하다.
+
+월 진행 중에는 준비/예열 단계와 실제 완료한 월별 표본을 `inProgress`에 원자적으로 보존하고 콘솔에 출력한다. 이 부분 표본은 완료된 규모 행과 구분하며 최종 게이트를 충족하지 않는다. 진행 파일·콘솔 쓰기는 월별 지연 및 인구별 `allocatedBytes` 표본 범위 밖이고, 총 경과 시간에는 포함한다. 할당은 각 실제 `AdvanceTo` 전후의 프로세스 누적 할당 차이를 합산하며 파일에 해당 범위를 명시한다.

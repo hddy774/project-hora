@@ -1,0 +1,23 @@
+{
+  "kind": "unprofiled-diagnostic-comparison",
+  "source": "751e3491789152d7279c461adcbf747d6e1b3bbf",
+  "population": 1000,
+  "wallLimitSeconds": 300,
+  "startedUtc": "2026-10-30T11:46:57.521945+00:00",
+  "elapsedSeconds": 300.01318230799734,
+  "exitCode": -9,
+  "timedOut": true,
+  "command": [
+    "/workspace/.dotnet/dotnet",
+    "/workspace/seonro-profile-751e349/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/ui-unprofiled-751e349-n1000-genesis.json",
+    "--performance",
+    "/workspace/scratch/ui-unprofiled-751e349-n1000.json",
+    "--performance-size",
+    "1000"
+  ],
+  "note": "Shared host; same source has H04 + read-index + harness changes. One run, not attributable to individual changes. Preserve original baseline and trace artifacts."
+}

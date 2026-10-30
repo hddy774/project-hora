@@ -7,7 +7,7 @@ public static partial class PoliticsEngine
         var person = account.Kind == PoliticalAccountKind.Person ? context.People.FirstOrDefault(p => p.Id == account.Id) : null;
         var group = account.Kind == PoliticalAccountKind.Group ? context.Groups.FirstOrDefault(g => g.Id == account.Id) : null;
         if (person is null && group is null) return null;
-        var reserved = group is null ? 0 : checked(group.PolicyEscrow + state.Preparations.Where(p => p.Group == account.Id).Sum(p => p.Escrow));
+        var reserved = group is null ? 0 : state.Preparations.Where(p => p.Group == account.Id).Sum(p => p.Escrow);
         return new(account, person?.Money ?? group!.Money, reserved,
             state.Obligations.Where(o => o.Creditor == account).Sum(o => o.Outstanding),
             state.Obligations.Where(o => o.Debtor == account).Sum(o => o.Outstanding));

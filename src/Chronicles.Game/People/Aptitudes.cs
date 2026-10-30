@@ -114,7 +114,9 @@ public static class Aptitudes
         return innate.Foundations.Sum();
     }
 
-    public static AptitudeResult Assess(AptitudeContext context)
+    public static AptitudeResult Assess(AptitudeContext context) => Assess(context, null);
+
+    internal static AptitudeResult Assess(AptitudeContext context, InnateTalentSnapshot? calculated)
     {
         ArgumentNullException.ThrowIfNull(context);
         context.Innate.Validate(); context.Development.Validate(); context.Tuning.Validate();
@@ -122,7 +124,7 @@ public static class Aptitudes
         PeopleChecks.Score(context.MentalCondition, nameof(context.MentalCondition));
         if ((uint)context.DomainTalentIndex >= 24) throw new InvalidDataException("Domain talent must be in 0..23.");
         var effects = PeopleEffects.Resolve(context.Effects);
-        var innateTalents = AptitudeCatalog.Talents.Select(t => Weighted(t.Inputs, context.Innate, [])).ToArray();
+        var innateTalents = calculated?.Read(context.Innate) ?? AptitudeCatalog.Talents.Select(t => Weighted(t.Inputs, context.Innate, [])).ToArray();
         var tuning = context.Tuning;
         var talents = AptitudeCatalog.Talents.Select(t =>
         {

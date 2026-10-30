@@ -1,0 +1,12 @@
+{
+  "selection": "inventory copy oracle:",
+  "total": 1,
+  "failed": 0,
+  "results": [
+    {
+      "name": "inventory copy oracle: \uD604\uD589 \uADDC\uCE59\uC758 strict\u00B7JSON15\u00B7typed15 \uB3C5\uB9BD \uC804\uCCB4 \uC804\uC0AC\u00B7\uC2E4\uC81C \uC800\uC7A5 bytes \uB3D9\uB4F1",
+      "passed": true,
+      "ms": 37864
+    }
+  ]
+}

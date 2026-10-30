@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "kind": "final-combined-strict-capture-before-fixed-expected-readoption",
+  "sourceCommit": "5fece454c64621e66a9b3399334c21cb73bc3999",
+  "productSourceFingerprint": "4653bdfbf9b4e464bdb35c7cca35db7906633ee7d095f960b84786307077e2cc",
+  "productFingerprintIncludesTests": true,
+  "sourceCleanAtRun": true,
+  "includedFrozenAncestors": {
+    "mainRecoveryTtl113": "de7a296cc647368dae7b6343943382438787a660",
+    "aiEntryTrade169": "728d2a6751d22d2f8fa94894d0c8144600217e1f",
+    "entryPreparationUi173": "9dd1b28f76d0d432cc3cb0b16f59d5e97b27c2b8",
+    "tradeBudget176": "21c9d2c1eab42aa1ec5a07f591b7423fb60f7673",
+    "sensitivityHarness177": "9e7d78bece84cd19004f17286d22635f9ffb280c",
+    "mixedEntryAuthority178": "e5e47cbd969270319268058744272c739919582f",
+    "previousOracleEvidence": "9753ffe80401abaea3ae62707081380bc0a693d5"
+  },
+  "rulesComparedToPreviousWitness": [
+    "113번째 ai.ecologyFailureMonths 기본3 중앙 법칙 추가",
+    "일반 trade→Eco fallback에 실제 VisitPlanningNode1회 부과",
+    "혼합 Entry/Qi 입문 자격과 형성 증거의 실제 출처 선택",
+    "실제 입문 준비 UI와 조회 연결",
+    "민감도 하네스 소스만 합류, 성장 실행 없음"
+  ],
+  "previousExpectedStillAsserted": {
+    "manual": "ec01b5c4fa2f10268514912f0885f2debbd47a9ad9cc8aec85a8b73a1c311b56",
+    "policy-surplus": "904c4750ee5f986367f50ca85f8502bf63555a140ea090249eaed114b51133e1"
+  },
+  "newIndependentStrict": {
+    "manual": {
+      "digest": "718295d0cfda379974aa14e87d39b3d86578a2c372d1e0beb6434eba6b3ca160",
+      "rows": 50,
+      "saves": [
+        {
+          "month": 0,
+          "bytes": 1894503,
+          "sha256": "0745b6b27a25257547f2bedc185f402dd03c0cc021b8bb9c43f80ce1303590ad"
+        },
+        {
+          "month": 2,
+          "bytes": 2066699,
+          "sha256": "c3a763315eef32285af50f54043d5674b017b4a02daa2f39ce579eb800be5a4c"
+        },
+        {
+          "month": 3,
+          "bytes": 2153647,
+          "sha256": "91bfa5a6aca685d402a3dbf77535c245b960f868d4dc1d70e468d8552bcd5956"
+        },
+        {
+          "month": 15,
+          "bytes": 3072251,
+          "sha256": "097f38dc11f713a14295aab45778fc6fadf45656442dba9e8a0c56f15ffd6071"
+        }
+      ],
+      "projectionSnapshots": 0,
+      "typedSnapshots": 0
+    },
+    "policy-surplus": {
+      "digest": "91b47814d83c487797382f3fad308b420f20ab815bbd9b7be14f92059f18802e",
+      "rows": 6,
+      "saves": [
+        {
+          "month": 1,
+          "bytes": 1962187,
+          "sha256": "4ab1ae7fb2783de513925e19a9026e4b9bb91f43da6cd72e92b13f52156d9383"
+        },
+        {
+          "month": 1,
+          "bytes": 1964128,
+          "sha256": "bbc7f15bec3c7317278e0e1f9d9288885a0f8dc98ba3201506193b882cd070ca"
+        }
+      ],
+      "projectionSnapshots": 0,
+      "typedSnapshots": 0
+    }
+  },
+  "captureResult": {
+    "total": 2,
+    "failed": 2,
+    "expectedMismatchOnly": true,
+    "meaning": "모든 실제 명령·거부·월 경계·저장 재개·fixture 의미 검사를 완료한 뒤 기존 고정 digest 비교에서만 두 건 실패. strict 원본을 먼저 보존한 후 상수를 명시 재채택한다."
+  },
+  "sourceFiles": {
+    "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs": {
+      "sha256": "2f120c481fdb54a2f067094f44688ceea9522b550ff50aa80e2d1c94d1a86761",
+      "gitBlob": "e2a404227b41cd246f2296b260cbf495ceb9a693",
+      "frozenSource": "InventoryOwnedReferenceScenarios-at-strict-capture.cs.txt"
+    },
+    "tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs": {
+      "sha256": "dac41c7e4388fa3c2d48319b500bcb959fa8bf5f6d8939eea41a06db3f2e4a77",
+      "gitBlob": "c691d68536a410c15669411641ab2e099f60c4c4",
+      "frozenSource": "InventoryReferenceTranscript-at-strict-capture.cs.txt"
+    },
+    "tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs": {
+      "sha256": "27917aae20a16d5c5f47b8188ed7b2a9e7e045d0805e2c430cba3fe99682b47d",
+      "gitBlob": "0613e18da543e1af5ed27b7a47337b54a95483a4",
+      "frozenSource": "InventoryCopyPolicyEquivalenceScenario-at-strict-capture.cs.txt"
+    }
+  },
+  "fixturePatch": {
+    "file": "fixture-and-helper-at-capture.patch",
+    "base": "751e3491789152d7279c461adcbf747d6e1b3bbf",
+    "sha256": "defae248042a17170be741a6cd5d71fdd9a6e53804f1a8972582893c7a024f01"
+  },
+  "fixtureUnchangedSincePreviousCapture": true,
+  "sourceTrees": {
+    "src/Chronicles.Game": "8aac4e1f8c15b74758d5d25ce8171fea454a5d39",
+    "src/Chronicles.Core": "951768a1c4188cc7da27e2b000c806f907b9ddbb",
+    "src/Chronicles.Hosting": "72e8516e9f9080bf1de8ebaa06369206061dcf76",
+    "tests/Chronicles.Game.Tests": "3b4ef9a27a8c9ebb2dd2cd230fde5ffca383012c"
+  },
+  "assemblies": [
+    {
+      "file": "Chronicles.Game.dll",
+      "sha256": "20e2743b820c4b81d31624e31b0241ca54c74491ffea45656f0637ede85fa008"
+    },
+    {
+      "file": "Chronicles.Core.dll",
+      "sha256": "7f454c5d06822196dcbcde9fb92120bf40b33d0b4ffd9c7f074bcf414bf0ffcf"
+    },
+    {
+      "file": "Chronicles.Game.Tests.dll",
+      "sha256": "6bb99add78079d1819ce6589bdf2f99e078992e162fe99755eed1cfa0576902a"
+    }
+  ],
+  "command": "CHRONICLES_INVENTORY_REFERENCE_CAPTURE=/workspace/scratch/inventory-oracle-final-strict /workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter \"inventory owned reference:\" --report /workspace/scratch/inventory-oracle-final-strict-report.json",
+  "artifacts": [
+    {
+      "file": "strict-before-adoption.original-report.json",
+      "sourcePath": "/workspace/scratch/inventory-oracle-final-strict-report.json",
+      "bytes": 2679,
+      "sha256": "8812e2d1060437a5cd5aaa25433608c0d3a01997790cd2fc911aec30133ac488"
+    },
+    {
+      "file": "strict-before-adoption.original.log",
+      "sourcePath": "/workspace/scratch/inventory-oracle-final-strict.log",
+      "bytes": 2098,
+      "sha256": "a6c7a4846f409d267c5ad6161c16b9010867e494f0ecf4fc746bc5db58b65239"
+    },
+    {
+      "file": "manual-strict.original.json",
+      "sourcePath": "/workspace/scratch/inventory-oracle-final-strict/manual-strict.json",
+      "bytes": 18935,
+      "sha256": "82a9071c097d514598a7c223b5051aed40c4b2e0b22641820c50a04d3775b685"
+    },
+    {
+      "file": "policy-surplus-strict.original.json",
+      "sourcePath": "/workspace/scratch/inventory-oracle-final-strict/policy-surplus-strict.json",
+      "bytes": 2058,
+      "sha256": "e68244f8a015b6026ae04a405595b185916ba1fe7cbf125d715b2664e97e9f04"
+    }
+  ],
+  "previousEvidencePreservedUnchanged": "../inventory-oracle-policy-169/",
+  "gameOrOtherAuthorFilesEditedDirectly": false,
+  "costBenchmarkProfilingGrowthSoakExecutions": 0
+}

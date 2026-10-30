@@ -1,0 +1,857 @@
+{
+  "source": "cd4688c6a908cb1001e2fe0bb84114633989ea0e",
+  "assemblyInformationalVersion": "0.2.1\u002Bfbd4a80a4691ed20abfeb58b064c916a5c4d8cb7",
+  "assemblySha256": "bc407e44a793de03dc31c957f9f50a7ff12df7337b6d70d75aca527414970ff4",
+  "fixture": "CurrencyAiScopeAndNeedScenario final budget:1 fixture reproduced literally without changing repository source",
+  "before": {
+    "Month": 0,
+    "CreatedMoney": 2000,
+    "money": 0,
+    "items": [
+      {
+        "Id": 4,
+        "Definition": "food",
+        "Quantity": 360,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 5,
+        "Definition": "tool",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 6,
+        "Definition": "path.1.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 7,
+        "Definition": "path.1.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 8,
+        "Definition": "path.1.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 9,
+        "Definition": "path.2.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 10,
+        "Definition": "path.2.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 11,
+        "Definition": "path.2.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 12,
+        "Definition": "path.3.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 13,
+        "Definition": "path.3.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 14,
+        "Definition": "path.3.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 15,
+        "Definition": "path.4.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 16,
+        "Definition": "path.4.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 17,
+        "Definition": "path.4.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 18,
+        "Definition": "path.5.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 19,
+        "Definition": "path.5.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 20,
+        "Definition": "path.5.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 21,
+        "Definition": "path.6.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 22,
+        "Definition": "path.6.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 23,
+        "Definition": "path.6.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 24,
+        "Definition": "path.7.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 25,
+        "Definition": "path.7.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 26,
+        "Definition": "path.7.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 27,
+        "Definition": "path.8.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 28,
+        "Definition": "path.8.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 29,
+        "Definition": "path.8.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 30,
+        "Definition": "path.9.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 31,
+        "Definition": "path.9.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 32,
+        "Definition": "path.9.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 33,
+        "Definition": "path.10.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 34,
+        "Definition": "path.10.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 35,
+        "Definition": "path.10.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 2073,
+        "Definition": "resource.02.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      }
+    ],
+    "currencyReceipts": [
+      {
+        "Id": 1,
+        "CommandId": "",
+        "Signature": "",
+        "Kind": 0,
+        "Month": 0,
+        "Person": 1,
+        "Body": 2,
+        "Soul": 3,
+        "Definition": "",
+        "OriginalItem": 0,
+        "ConsumedItem": 0,
+        "ConsumptionSequence": 0,
+        "Quantity": 1000,
+        "Rate": 1,
+        "Amount": 1000,
+        "Quality": 0,
+        "Damage": 0,
+        "Defects": 0,
+        "BoundSoul": 0,
+        "LawRevision": 1,
+        "Policy": "two-founder-account-opening.v1",
+        "Source": "\uCC3D\uC138 \uCD08\uAE30 \uD654\uD3D0\u00B7\uC2E4\uC81C \uC2DC\uC870 1\u00B7\uC721\uC2E0 2\u00B7\uD63C 3",
+        "Provenance": [
+          "\uCC3D\uC138 \uCD08\uAE30 \uD654\uD3D0\u00B7\uC2E4\uC81C \uC2DC\uC870 1\u00B7\uC721\uC2E0 2\u00B7\uD63C 3"
+        ]
+      },
+      {
+        "Id": 2,
+        "CommandId": "",
+        "Signature": "",
+        "Kind": 0,
+        "Month": 0,
+        "Person": 36,
+        "Body": 37,
+        "Soul": 38,
+        "Definition": "",
+        "OriginalItem": 0,
+        "ConsumedItem": 0,
+        "ConsumptionSequence": 0,
+        "Quantity": 1000,
+        "Rate": 1,
+        "Amount": 1000,
+        "Quality": 0,
+        "Damage": 0,
+        "Defects": 0,
+        "BoundSoul": 0,
+        "LawRevision": 1,
+        "Policy": "two-founder-account-opening.v1",
+        "Source": "\uCC3D\uC138 \uCD08\uAE30 \uD654\uD3D0\u00B7\uC2E4\uC81C \uC2DC\uC870 36\u00B7\uC721\uC2E0 37\u00B7\uD63C 38",
+        "Provenance": [
+          "\uCC3D\uC138 \uCD08\uAE30 \uD654\uD3D0\u00B7\uC2E4\uC81C \uC2DC\uC870 36\u00B7\uC721\uC2E0 37\u00B7\uD63C 38"
+        ]
+      }
+    ]
+  },
+  "after": {
+    "Month": 1,
+    "CreatedMoney": 2000,
+    "Money": 0,
+    "PlanExpansions": 1,
+    "Action": 10,
+    "ActionData": "ecology:market",
+    "Due": 2,
+    "Goal": "\uC2E4\uC81C \uC789\uC5EC\uD488 \uAD50\uD658",
+    "Reason": "own-item:4:own-surplus:360:quality:unknown:public-reference:recorded-local-prices",
+    "decision": {
+      "Month": 1,
+      "Goal": "\uC2E4\uC81C \uC789\uC5EC\uD488 \uAD50\uD658",
+      "Reason": "own-item:4:own-surplus:360:quality:unknown:public-reference:recorded-local-prices",
+      "Action": "Guard",
+      "Expansions": 1,
+      "Candidates": [
+        {
+          "Goal": "\uD68C\uBCF5",
+          "Score": 0,
+          "Evidence": "\uC790\uAE30 \uAC74\uAC15 100\u00B7\uC548\uC804 \uC120\uD589 \uC870\uAC74"
+        },
+        {
+          "Goal": "\uC0DD\uACC4",
+          "Score": 0,
+          "Evidence": "\uC790\uAE30 \uC7AC\uACE0\uC640 \uC2E4\uC81C \uBD80\uC591 \uAC00\uC871 \uC2DD\uB7C9 \uC218\uC694"
+        },
+        {
+          "Goal": "\uAD50\uC5ED\u00B7\uAD50\uC12D",
+          "Score": 1600,
+          "Evidence": "\uACE0\uC815 9\uBAA9\uD45C \uC810\uC218\u00B714\uCD95 \uC790\uAE30 \uC131\uD5A5\u00B7\uC644\uB8CC \uC2B5\uC131 0\u00B7\uAC10\uC815 0"
+        },
+        {
+          "Goal": "\uC9C0\uC2DD\u00B7\uC218\uB828",
+          "Score": 600,
+          "Evidence": "\uACE0\uC815 9\uBAA9\uD45C \uC810\uC218\u00B714\uCD95 \uC790\uAE30 \uC131\uD5A5\u00B7\uC644\uB8CC \uC2B5\uC131 0\u00B7\uAC10\uC815 0"
+        },
+        {
+          "Goal": "\uAE30\uC608\u00B7\uC0DD\uC0B0",
+          "Score": 450,
+          "Evidence": "\uACE0\uC815 9\uBAA9\uD45C \uC810\uC218\u00B714\uCD95 \uC790\uAE30 \uC131\uD5A5\u00B7\uC644\uB8CC \uC2B5\uC131 0\u00B7\uAC10\uC815 0"
+        },
+        {
+          "Goal": "\uD604\uC7A5 \uC815\uBCF4 \uD0D0\uC0C9",
+          "Score": 300,
+          "Evidence": "\uACE0\uC815 9\uBAA9\uD45C \uC810\uC218\u00B714\uCD95 \uC790\uAE30 \uC131\uD5A5\u00B7\uC644\uB8CC \uC2B5\uC131 0\u00B7\uAC10\uC815 0"
+        },
+        {
+          "Goal": "\uAD6C\uB3C4\u00B7\uC218\uD589",
+          "Score": 250,
+          "Evidence": "\uACE0\uC815 9\uBAA9\uD45C \uC810\uC218\u00B714\uCD95 \uC790\uAE30 \uC131\uD5A5\u00B7\uC644\uB8CC \uC2B5\uC131 0\u00B7\uAC10\uC815 0"
+        },
+        {
+          "Goal": "\uBB34\uC608\u00B7\uC790\uB9BD",
+          "Score": 0,
+          "Evidence": "\uACE0\uC815 9\uBAA9\uD45C \uC810\uC218\u00B714\uCD95 \uC790\uAE30 \uC131\uD5A5\u00B7\uC644\uB8CC \uC2B5\uC131 0\u00B7\uAC10\uC815 0"
+        },
+        {
+          "Goal": "\uC57D\uC18D\u00B7\uD611\uB825",
+          "Score": -9100,
+          "Evidence": "\uACE0\uC815 9\uBAA9\uD45C \uC810\uC218\u00B714\uCD95 \uC790\uAE30 \uC131\uD5A5\u00B7\uC644\uB8CC \uC2B5\uC131 0\u00B7\uAC10\uC815 0"
+        },
+        {
+          "Goal": "\uACF5\uB3D9\uCCB4\u00B7\uC815\uCC45",
+          "Score": -9600,
+          "Evidence": "\uACE0\uC815 9\uBAA9\uD45C \uC810\uC218\u00B714\uCD95 \uC790\uAE30 \uC131\uD5A5\u00B7\uC644\uB8CC \uC2B5\uC131 0\u00B7\uAC10\uC815 0"
+        },
+        {
+          "Goal": "\uC704\uD5D8 \uD68C\uD53C\u00B7\uD6C4\uD1F4",
+          "Score": -10100,
+          "Evidence": "\uACE0\uC815 9\uBAA9\uD45C \uC810\uC218\u00B714\uCD95 \uC790\uAE30 \uC131\uD5A5\u00B7\uC644\uB8CC \uC2B5\uC131 0\u00B7\uAC10\uC815 0"
+        }
+      ]
+    },
+    "items": [
+      {
+        "Id": 4,
+        "Definition": "food",
+        "Quantity": 348,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 5,
+        "Definition": "tool",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 6,
+        "Definition": "path.1.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 7,
+        "Definition": "path.1.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 8,
+        "Definition": "path.1.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 9,
+        "Definition": "path.2.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 10,
+        "Definition": "path.2.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 11,
+        "Definition": "path.2.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 12,
+        "Definition": "path.3.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 13,
+        "Definition": "path.3.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 14,
+        "Definition": "path.3.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 15,
+        "Definition": "path.4.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 16,
+        "Definition": "path.4.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 17,
+        "Definition": "path.4.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 18,
+        "Definition": "path.5.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 19,
+        "Definition": "path.5.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 20,
+        "Definition": "path.5.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 21,
+        "Definition": "path.6.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 22,
+        "Definition": "path.6.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 23,
+        "Definition": "path.6.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 24,
+        "Definition": "path.7.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 25,
+        "Definition": "path.7.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 26,
+        "Definition": "path.7.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 27,
+        "Definition": "path.8.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 28,
+        "Definition": "path.8.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 29,
+        "Definition": "path.8.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 30,
+        "Definition": "path.9.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 31,
+        "Definition": "path.9.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 32,
+        "Definition": "path.9.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 33,
+        "Definition": "path.10.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 34,
+        "Definition": "path.10.1",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 35,
+        "Definition": "path.10.2",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 2073,
+        "Definition": "resource.02.0",
+        "Quantity": 1,
+        "Reserved": 0,
+        "Place": -1,
+        "Container": 0,
+        "Owner": 1
+      },
+      {
+        "Id": 2075,
+        "Definition": "food",
+        "Quantity": 12,
+        "Reserved": 2076,
+        "Place": 1,
+        "Container": 0,
+        "Owner": 1
+      }
+    ],
+    "currencyReceipts": [
+      {
+        "Id": 1,
+        "CommandId": "",
+        "Signature": "",
+        "Kind": 0,
+        "Month": 0,
+        "Person": 1,
+        "Body": 2,
+        "Soul": 3,
+        "Definition": "",
+        "OriginalItem": 0,
+        "ConsumedItem": 0,
+        "ConsumptionSequence": 0,
+        "Quantity": 1000,
+        "Rate": 1,
+        "Amount": 1000,
+        "Quality": 0,
+        "Damage": 0,
+        "Defects": 0,
+        "BoundSoul": 0,
+        "LawRevision": 1,
+        "Policy": "two-founder-account-opening.v1",
+        "Source": "\uCC3D\uC138 \uCD08\uAE30 \uD654\uD3D0\u00B7\uC2E4\uC81C \uC2DC\uC870 1\u00B7\uC721\uC2E0 2\u00B7\uD63C 3",
+        "Provenance": [
+          "\uCC3D\uC138 \uCD08\uAE30 \uD654\uD3D0\u00B7\uC2E4\uC81C \uC2DC\uC870 1\u00B7\uC721\uC2E0 2\u00B7\uD63C 3"
+        ]
+      },
+      {
+        "Id": 2,
+        "CommandId": "",
+        "Signature": "",
+        "Kind": 0,
+        "Month": 0,
+        "Person": 36,
+        "Body": 37,
+        "Soul": 38,
+        "Definition": "",
+        "OriginalItem": 0,
+        "ConsumedItem": 0,
+        "ConsumptionSequence": 0,
+        "Quantity": 1000,
+        "Rate": 1,
+        "Amount": 1000,
+        "Quality": 0,
+        "Damage": 0,
+        "Defects": 0,
+        "BoundSoul": 0,
+        "LawRevision": 1,
+        "Policy": "two-founder-account-opening.v1",
+        "Source": "\uCC3D\uC138 \uCD08\uAE30 \uD654\uD3D0\u00B7\uC2E4\uC81C \uC2DC\uC870 36\u00B7\uC721\uC2E0 37\u00B7\uD63C 38",
+        "Provenance": [
+          "\uCC3D\uC138 \uCD08\uAE30 \uD654\uD3D0\u00B7\uC2E4\uC81C \uC2DC\uC870 36\u00B7\uC721\uC2E0 37\u00B7\uD63C 38"
+        ]
+      }
+    ],
+    "contracts": [
+      {
+        "Id": 2077,
+        "Kind": "sale",
+        "Status": "open",
+        "AdvertisedDefinition": "food",
+        "AdvertisedName": "\uC601\uACE1",
+        "AdvertisedQuantity": 12,
+        "Seller": 1,
+        "Buyer": 0,
+        "Carrier": 0,
+        "Item": 2075,
+        "Reservation": 2076,
+        "Labor": 0,
+        "PaidAmount": null,
+        "PaidQuantity": null,
+        "PaidQuality": null,
+        "EndedMonth": null,
+        "Price": 12,
+        "Escrow": 0,
+        "Fee": 0,
+        "Due": 13,
+        "Origin": 1,
+        "Destination": 1
+      }
+    ],
+    "inventoryReceipts": [
+      {
+        "Key": "ecology-ai:2:1:1:2075:offer",
+        "Value": {
+          "Signature": "OfferItem:{\u0022Item\u0022:2075,\u0022Price\u0022:12,\u0022Due\u0022:13,\u0022Auction\u0022:false,\u0022Id\u0022:\u0022ecology-ai:2:1:1:2075:offer\u0022,\u0022Actor\u0022:1}",
+          "Subject": 2077,
+          "Message": "Accepted."
+        }
+      },
+      {
+        "Key": "ecology-ai:2:1:1:2075:offer:split",
+        "Value": {
+          "Signature": "SplitInventoryItem:{\u0022Item\u0022:4,\u0022Quantity\u0022:12,\u0022Id\u0022:\u0022ecology-ai:2:1:1:2075:offer:split\u0022,\u0022Actor\u0022:1}",
+          "Subject": 2075,
+          "Message": "Accepted."
+        }
+      },
+      {
+        "Key": "inventory:1:0:2074:0:settle",
+        "Value": {
+          "Signature": "SettleInventory:{\u0022IncludeTransport\u0022:false,\u0022Id\u0022:\u0022inventory:1:0:2074:0:settle\u0022,\u0022Actor\u0022:0}",
+          "Subject": 0,
+          "Message": "Accepted."
+        }
+      }
+    ]
+  }
+}

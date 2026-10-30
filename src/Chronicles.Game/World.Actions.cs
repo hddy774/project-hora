@@ -170,10 +170,10 @@ public sealed partial class GameWorld
         p.DecisionCandidates.Add(new("회복", p.Health < 25 ? 1200 : 0, $"자기 건강 {p.Health}·안전 선행 조건"));
         if (p.Health < 25) { p.Goal = "회복"; p.Reason = "자기 건강 부족"; Start(p, "heal", 0, ""); return; }
         var children = dependents.GetValueOrDefault(p.Id) ?? [];
-        var childCount = children.Count(q => q.Status == LifeStatus.Alive && Month - q.Born < PeopleMaturityMonths(q));
-        p.DecisionCandidates.Add(new("생계", Inventory(p.Id, "food") < (childCount + 1) * 12 ? 1000 : 0,
+        var foodTarget = EcologyFoodTarget(p);
+        p.DecisionCandidates.Add(new("생계", Inventory(p.Id, "food") < foodTarget ? 1000 : 0,
             "자기 재고와 실제 부양 가족 식량 수요"));
-        if (Inventory(p.Id, "food") < (childCount + 1) * 12)
+        if (Inventory(p.Id, "food") < foodTarget)
         {
             p.Goal = "가계 생계"; p.Reason = "자기 재고와 실제 부양 가족 수요";
             if (TryEcologyPlan(p)) return;
@@ -218,13 +218,12 @@ public sealed partial class GameWorld
             if (Start(p, "teach", request.Pupil, request.Knowledge) is null)
             { p.LessonRequests.Remove(request); p.Goal = "전수·협력"; p.Reason = "실제 배움 요청에 동의·교육 시간 예약"; return; }
         }
-        var needsMethod = p.Realm == Realm.Mortal ? p.Understanding.GetValueOrDefault("entry") == 0 :
+        var needsMethod = p.Realm == Realm.Mortal ? !HasCultivationPlanningSource(p) :
             !Catalog.Paths.Any(path => path.Realm == p.Realm && p.Understanding.GetValueOrDefault(path.Id) > 0);
         if (needsMethod)
         {
-            var teacher = p.ObservedPeople.Values.FirstOrDefault(q => q.Id != p.Id && q.Place == p.Place);
-            if (teacher.Id != 0 && RequestTeaching(p, teacher.Id, "") is null)
-            { p.Goal = "지식 탐색"; p.Reason = "자신에게 부족한 공법의 실제 전수 요청"; return; }
+            var work = p.Realm == Realm.Mortal ? "entry" : $"path.{(int)p.Realm}.0";
+            if (RequestPlanningKnowledge(p, work, CultivationPlanGoal)) return;
         }
         if (DiversePlan(p)) return;
         var studyScore = p.Personality[1] + Law("ai.studyWeight");

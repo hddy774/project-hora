@@ -1,0 +1,12 @@
+{
+  "selection": "EX05 \uC900\uBE44 \uAE30\uB2A5",
+  "total": 1,
+  "failed": 1,
+  "results": [
+    {
+      "name": "INV-004/005/006/022 EX05 \uC900\uBE44 \uAE30\uB2A5: \uB3D9\uC77C GameCodec \uBC14\uC774\uD2B8\u00B7\uC120\uD0DD \uC555\uCD95 \uC6D0\uC790\uD30C\uC77C\u00B7\uC911\uB2E8 \uBCF5\uAD6C\u00B7\uC6D0\uBCF8 \uBCF4\uC874",
+      "passed": false,
+      "error": "System.InvalidOperationException: Decoder ran into invalid data.\n   at System.IO.Compression.BrotliStream.TryDecompress(Span\u00601 destination, Int32\u0026 bytesWritten)\n   at System.IO.Compression.BrotliStream.Read(Span\u00601 buffer)\n   at System.IO.Stream.ReadAtLeastCore(Span\u00601 buffer, Int32 minimumBytes, Boolean throwOnEndOfStream)\n   at System.IO.Stream.ReadExactly(Span\u00601 buffer)\n   at Chronicles.Game.Tests.Experiments.SnapshotStorageExperiment.CompressedAtomicSnapshot.Unpack(Byte[] wrapped, Int32 maximum) in /workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs:line 120\n   at Chronicles.Game.Tests.Experiments.SnapshotStorageExperiment.ProbeRecovery(PublicReadFixture fixture, Boolean compressedStore, String workspace) in /workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs:line 77\n   at Chronicles.Game.Tests.Experiments.SnapshotStorageExperiment.Verify(PublicReadFixture fixture, String workspace) in /workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs:line 21\n   at Chronicles.Game.Tests.SnapshotCandidateCorrectnessScenario.Run() in /workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/Features/ExecutionCandidateCorrectnessScenarios.cs:line 14\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|2(String name, Action body) in /workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/Program.cs:line 30"
+    }
+  ]
+}

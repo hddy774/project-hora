@@ -18,18 +18,25 @@ public sealed class PeoplePublicTeachingRequestAdapterScenario : IFeatureScenari
         var publicWorld = GameCodec.Decode(GameCodec.Encode(f.World));
         PeoplePublicFixture.Accept(publicWorld, new("people-public-learning-request", pupil, "requestTeaching", teacher));
         var publicRequest = publicWorld.Checkpoint().People.Single(p => p.Id == teacher).LessonRequests.Single(r => r.Pupil == pupil);
+        var randomBefore = f.World.Checkpoint().RandomState;
         f.World.AdvanceTo(1); var requested = f.World.Checkpoint();
         var actualRequest = requested.People.Single(p => p.Id == teacher).LessonRequests.Single(r => r.Pupil == pupil);
-        var source = requested.People.Single(p => p.Id == pupil).Journal.Single(e => e.Kind == "배움 요청");
+        var learner = requested.People.Single(p => p.Id == pupil);
+        var source = learner.Journal.Single(e => e.Kind == "배움 요청");
+        var receipt = learner.Beliefs["plan:request:entry"];
+        var decision = learner.Decisions.Single(d => d.Month == requested.Month);
+        var expectedSource = $"plan:{learner.BodyId}:{decision.Month}:{learner.Decisions.Count - 1}:{decision.Expansions}:requestTeaching";
         PeopleFixture.Check(actualRequest.Knowledge == publicRequest.Knowledge && actualRequest.Knowledge == "entry" && actualRequest.Requested == 1 &&
-            source.Actor == pupil && source.Target == teacher && source.Source.StartsWith("ai-knowledge-request:", StringComparison.Ordinal) &&
+            source.Actor == pupil && source.Target == teacher && source.Source == expectedSource && source.Source == receipt.Source &&
+            learner.Plan.Any(s => s.Action == "awaitKnowledge" && s.Target == teacher && s.Data == actualRequest.Knowledge) &&
             requested.People.Single(p => p.Id == pupil) is { Action: ActionKind.Wait, Due: 2 } &&
             requested.People.Single(p => p.Id == teacher).Action == ActionKind.Guard,
             "Actual AI fallback must delegate the unresolved method to the same canonical adapter, reserve its own waiting month and deliver its real source to the busy teacher.");
         PeopleFixture.Check(requested.Knowledge.Memories.All(m => m.PersonId != pupil) &&
             requested.PeopleDomain.Profiles.Single(p => p.PersonId == pupil).Learning.Length == 0,
             "A delivered request cannot grant the unknown method or any completed-learning credit.");
-        PeopleFixture.Check(GameCodec.Decode(GameCodec.Encode(f.World)).StateHash() == f.World.StateHash(), "The actual source-backed AI request survives production save continuation.");
+        PeopleFixture.Check(GameCodec.Decode(GameCodec.Encode(f.World)).StateHash() == f.World.StateHash() && requested.RandomState == randomBefore,
+            "The actual source-backed AI request survives production save continuation without consuming RNG.");
         Invariants.Validate(requested);
     }
 }

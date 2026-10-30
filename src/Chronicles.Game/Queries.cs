@@ -353,13 +353,11 @@ public sealed partial class GameWorld
         }
         // Known definitions and one's own completed structure are legitimate personal inputs. Do not run an actual-site
         // preflight merely to redact its result: hidden supply/occupancy/rights must not determine personal recommendations.
-        var known = state.Knowledge.Memories.Where(m => m.PersonId == p.Id && m.Decoding > 0 && m.Comprehension > 0)
-            .Select(m => m.WorkId).ToHashSet(StringComparer.Ordinal);
-        var routes = p.Realm == Realm.HalfImmortal ? [] : Catalog.Paths.Where(path => path.Realm == p.Realm + 1 && known.Contains(path.Id))
-            .Select(path => new PotentialRouteDetail(path.Id, path.Realm, null, inspection.Maturity, null, null,
-                C.CultivationProfiles.Find(path.Id)?.NextRequirement ?? "배운 경로의 조건을 실제 관측으로 확인해야 합니다.")).ToArray();
+        var personal = CultivationPotentialFor(p, false);
+        var routes = personal.KnownNextRoutes.Select(route =>
+            new PotentialRouteDetail(route.Path, route.TargetRealm, null, inspection.Maturity, null, null, route.Condition)).ToArray();
         return new(10000 - inspection.Maturity, inspection.Damage, null, Array.AsReadOnly(routes),
-            "자기 구조와 실제 학습한 경로 정의 기준·미관측 공급/자리/권리/미래 결과는 미상");
+            personal.InformationBasis);
     }
 
     private ReadOnlyCollection<ResourceSourceView> ResourceSourcesFor(Person? actor, bool observer)

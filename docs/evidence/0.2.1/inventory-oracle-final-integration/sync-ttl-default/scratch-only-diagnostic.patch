@@ -1,0 +1,25 @@
+--- 068ecef/InventorySynchronizationScopeScenario-original.cs
++++ scratch/InventorySynchronizationScopeScenario-probe.cs
+@@ -63,6 +63,22 @@
+         InventoryFixture.Check(world.NextId == next + 2 && rows.Single(l => l.Person == crafter.Id && l.Purpose == "world-action").Active &&
+             rows.Single(l => l.Person == carrier.Id && l.Purpose == "world-action").Active && !rows.Single(l => l.Person == appraiser.Id && l.Purpose == "world-action").Active,
+             "같은 토큰에서 취소/운송 실패 뒤 다시 만든 범위가 직전 active job/carrier 인덱스를 사용했습니다.");
++        // Scratch-only diagnostic, after every original semantic assertion and before the original final hash check.
++        var originalHash = GameCodec.Hash(world);
++        var originalCount = world.Laws.Count;
++        var originalWorld = System.Text.Json.JsonSerializer.Serialize(world);
++        var ttl = world.Laws["ai.ecologyFailureMonths"];
++        InventoryFixture.Check(world.Laws.Remove("ai.ecologyFailureMonths"), "TTL key missing in diagnostic.");
++        var withoutTtlWorld = System.Text.Json.JsonSerializer.Serialize(world);
++        File.WriteAllText("/workspace/scratch/inventory-sync-law-probe/with-ttl-world.json", originalWorld);
++        File.WriteAllText("/workspace/scratch/inventory-sync-law-probe/without-ttl-world.json", withoutTtlWorld);
++        Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new {
++            source = "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
++            assemblySource = typeof(GameWorld).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).Cast<System.Reflection.AssemblyInformationalVersionAttribute>().Single().InformationalVersion,
++            originalSemanticAssertionsCompleted = true, originalLawsCount = originalCount, originalHash,
++            removedOnlyKey = "ai.ecologyFailureMonths", removedValue = ttl, lawsCountAfter = world.Laws.Count,
++            hashAfterRemovingOnlyTtl = GameCodec.Hash(world), originalExpected = Baseline
++        }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+         var hash = GameCodec.Hash(world);
+         InventoryFixture.Check(hash == Baseline, "기존 반복 동기화·직종 취소·노동·ID 결과가 달라졌습니다: " + hash);
+     }

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "one-time-fixed-expected-readoption-after-original-evidence-commit",
+  "strictCaptureSource": "5fece454c64621e66a9b3399334c21cb73bc3999",
+  "strictOriginalCommittedBeforeEdit": "6b37abf6a5fc9519ea5e587bf9e9edd5a92a4df2",
+  "explicitConstantReadoptionCommit": "c6f5ba1b6818377877791a78daddea2e9fb1e0fb",
+  "productSourceFingerprintAtReadoption": "d2e2e491e9d6481766d0b12d16e8401a924e9dacf03cb077b01d8c8bbad7409b",
+  "productFingerprintIncludesTests": true,
+  "patch": {
+    "file": "fixed-expected-readoption.patch",
+    "sha256": "b700b90147d0194ed773cdb99c397137c0a296f6063f8ecf4c12e5981b63eb20"
+  },
+  "changedFiles": [
+    "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs"
+  ],
+  "onlyChangedTwoConstantValuesAndTwoSourceComments": true,
+  "fixtureExecutionBodyUnchanged": true,
+  "gameCoreHostingTreesUnchanged": true,
+  "newFixedExpected": {
+    "manual": "718295d0cfda379974aa14e87d39b3d86578a2c372d1e0beb6434eba6b3ca160",
+    "policy-surplus": "91b47814d83c487797382f3fad308b420f20ab815bbd9b7be14f92059f18802e"
+  },
+  "inputSpecification": "fixed-inputs.json",
+  "runtimeExpectedGenerationOrAssertionRemoval": false,
+  "remainingCliGuardIsTestOnly": "최종177 report 보호 소스 합류 후 실제 strict/JSON15/typed15 전사를 같은 최종소스에서 직접 비교한다. 원래 strict 수집의 Game/Core/fixture 경로는 유지한다.",
+  "costProfilingGrowthSoakExecutions": 0
+}

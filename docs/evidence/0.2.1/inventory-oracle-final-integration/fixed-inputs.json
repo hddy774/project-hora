@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "source": "5fece454c64621e66a9b3399334c21cb73bc3999",
+  "canonicalDefaults": "해당 source의 GameWorld.Create·113개 Laws·정확히 두 반선 시조와 저장 codec. 별도 숨은 인물/돈/시장 공급 없음.",
+  "sharedOverrides": {
+    "birth.enabled": 0,
+    "ecology.foodUse": 0,
+    "ecology.spoilage": 0,
+    "ecology.disasterChance": 0,
+    "ecology.regrowth": 0
+  },
+  "sharedFixtureSource": "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs:InventoryWorldFixture",
+  "sharedFixtureSourceBlob": "32284fe86d34beaa144af6c7eccfef886643af42",
+  "manual": {
+    "seed": 73,
+    "extraOverrides": {
+      "combat.hitMinimum": 10000,
+      "combat.hitMaximum": 10000
+    },
+    "actor": "첫 시조",
+    "other": "둘째 시조",
+    "explicitAddedPhysicalOpening": {
+      "ore": 5,
+      "cloth": 2,
+      "bag": 1,
+      "herb": 4
+    },
+    "addedItemQuality": 5000,
+    "addedItemLocation": "소유자 휴대 Place=-1·Container=0",
+    "fullOrderedCommandObjects": "manual-strict.original.json의 rows 중 command 객체. source fixture의 동적 실물/계약 ID 선택을 그대로 사용.",
+    "fixtureAndAssertions": "InventoryOwnedReferenceScenarios-at-strict-capture.cs.txt:InventoryOwnedWorldReferenceScenario",
+    "rows": 50,
+    "saves": 4
+  },
+  "policy-surplus": {
+    "seed": 109,
+    "extraOverrides": {
+      "founder.initialFood": 8,
+      "ecology.foodUse": 1,
+      "economy.foodReserveMonths": 3
+    },
+    "seller": "첫 시조",
+    "sellerPersonality": [
+      0,
+      0,
+      0,
+      0,
+      100,
+      100,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "buyer": "둘째 시조",
+    "buyerAction": "Guard",
+    "buyerDue": 1000,
+    "firstActualMonth": 1,
+    "expectedActualFood": {
+      "before": 8,
+      "afterMonthlyUse": 7,
+      "retained": 3,
+      "splitSale": 4
+    },
+    "fullOrderedCommandObjects": "policy-surplus-strict.original.json의 rows 중 command 객체.",
+    "fixtureAndAssertions": "InventoryOwnedReferenceScenarios-at-strict-capture.cs.txt:InventoryOwnedEcologyReferenceScenario",
+    "rows": 6,
+    "saves": 2
+  },
+  "modeSelection": "동일 fixture를 독립 세계로 생성하고 strict(full copy), 기본JSON15, opt-in typed15를 각각 선택. 명령/법칙/저장 형식은 경로 선택으로 바꾸지 않음.",
+  "saveContinuation": "각 저장에서 실제 encode/decode bytes와 hash 동일을 검사하고, 다음 실제 명령 응답 및 월 경계를 원래 세계와 복원 세계 양쪽에서 대조."
+}

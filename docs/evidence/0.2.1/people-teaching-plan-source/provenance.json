@@ -1,0 +1,84 @@
+{
+  "kind": "people-teaching-plan-source-reviewed-functional",
+  "schema_version": 1,
+  "language": "ko",
+  "source_commit_before_test_only_change": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "change_scope": "테스트의 낡은 접두사 기대를 실제 계획 명령ID·독립 저장 요청 출처와 대조하고 RNG 불소비를 확인. 제품/fixture/기존 의미 검사 변경 없음.",
+  "game_assembly_version_at_probe": "0.2.1+068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "game_assembly_sha256_at_probe": "595cb16bccee2ad6565771143707401cd169f1daa3e510c31815b34943890075",
+  "original_failure": {
+    "report": "unchanged-068.original.json",
+    "total": 1,
+    "failed": 1,
+    "preserved": true
+  },
+  "actual_observation": {
+    "request_work": "entry",
+    "request_month": 1,
+    "waiting_due": 2,
+    "busy_teacher_action": "Guard",
+    "source": "plan:2074:1:0:1:requestTeaching",
+    "saved_request_source": "plan:2074:1:0:1:requestTeaching",
+    "source_from_saved_decision": "plan:2074:1:0:1:requestTeaching",
+    "source_matches": true,
+    "free_knowledge_absent": true,
+    "free_people_learning_absent": true,
+    "rng_unchanged": true,
+    "save_hash_equal": true,
+    "monthly_resumed_hash_equal": true
+  },
+  "new_selected_functional": {
+    "report": "updated-functional.original.json",
+    "total": 1,
+    "failed": 0,
+    "tested_worktree_parent_commit": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+    "command": "/workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter 'people teaching public' --report /workspace/scratch/people-teaching-plan-source-functional.json"
+  },
+  "product_diff_empty": true,
+  "growth_or_cost_measurements_executed": 0,
+  "full_suite_claim": false,
+  "artifacts": [
+    {
+      "path": "unchanged-068.original.json",
+      "sha256": "f2fac767c4e7f90be7080e7ebaa07e191fcabbed6a1d83bb35a6f132ab76a3dc",
+      "bytes": 1076,
+      "original_path": "/workspace/scratch/people-teaching-068-unchanged-exact.json"
+    },
+    {
+      "path": "unchanged-068.original.log",
+      "sha256": "646729f46aaf693266a6ea04041c86a2e044fbf0a13c300f5a580d26ac071bcf",
+      "bytes": 899,
+      "original_path": "/workspace/scratch/people-teaching-068-unchanged-exact.log"
+    },
+    {
+      "path": "public-probe-068.original.json",
+      "sha256": "0f8977b5a41acb1322ed81f3a18aedd5bf64ad62ab9037757e12a89f6a79800c",
+      "bytes": 2698,
+      "original_path": "/workspace/scratch/people-teaching-068-probe.json"
+    },
+    {
+      "path": "public-probe-068.cs.txt",
+      "sha256": "456718ba74bc30343cf9b8dc105b7756228194389915649c12f35f54d77a0d66",
+      "bytes": 3417,
+      "original_path": "/workspace/scratch/people-teaching-068-probe/Program.cs"
+    },
+    {
+      "path": "public-probe-068.csproj.txt",
+      "sha256": "4ad401dd96a0f8bd6a20fa213c100782525154e3eda1367384a45e3415c6b935",
+      "bytes": 586,
+      "original_path": "/workspace/scratch/people-teaching-068-probe/Probe.csproj"
+    },
+    {
+      "path": "updated-functional.original.json",
+      "sha256": "f776a578e312d2187169eded890dc41e1d626ab0cad630c20867102f7b3550b1",
+      "bytes": 295,
+      "original_path": "/workspace/scratch/people-teaching-plan-source-functional.json"
+    },
+    {
+      "path": "updated-functional.original.log",
+      "sha256": "8006ebf94f18a82aea5108d1ef7de9927b4696b750b2a2eef67b5b8364fde62b",
+      "bytes": 151,
+      "original_path": "/workspace/scratch/people-teaching-plan-source-functional.log"
+    }
+  ]
+}

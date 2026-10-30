@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "kind": "interim-real-session-entry-prepare-functional",
+  "tested_app_source_commit": "5c10b9603797b673f5c1ed99047336a12aa317c7",
+  "tested_app_source_tree": "50814a5112c2b64d806c3398e2152a67863df1a7",
+  "required_ancestors": [
+    "0a33b68f6f37cdc1ea9f788e13ae8af6a3aa4b0a",
+    "728d2a6751d22d2f8fa94894d0c8144600217e1f"
+  ],
+  "source_files": {
+    "src/Chronicles.Game/Queries.cs": {
+      "sha256": "a7cdedf18f72b6c8812cc26ced0a9d8da6af4335fe5aa442531f45311fafaa9c",
+      "git_blob": "641bf324a5ed27553fecd355217cdd13c55073c4"
+    },
+    "src/Chronicles.Shell/index.html": {
+      "sha256": "d5309a2280e3e1cc1276ca9869f4db861bb209bf314c46e5ea672e002de991bf",
+      "git_blob": "5f99751a3a7b2c6f823b38d2fb8868575aa47b3e"
+    },
+    "src/Chronicles.Shell/index.compat.html": {
+      "sha256": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d",
+      "git_blob": "f80480a579cc08a55d7eb98fdf66cb49076de99c"
+    },
+    "scripts/verify-v021-ui.py": {
+      "sha256": "042348d083604c9cb5b837b34d52d4c0a8792e734672cf97fd215cb4ba0adb6b",
+      "git_blob": "70891eb9a7b7e2ff0eb79f10863aa06218d358c1"
+    },
+    "tests/Chronicles.Game.Tests/Features/EntryPreparationQueryScenarios.cs": {
+      "sha256": "722e162b1ed227d0324e3b6609c62b22dfa4c784c42a824ba5b08330efb5a0de",
+      "git_blob": "19b29953d6b96b6d7ee5ea310caaa4240f5bf5ef"
+    }
+  },
+  "host": {
+    "url": "http://127.0.0.1:5223",
+    "kind": "fresh isolated real GameSession and committed compat resource",
+    "game_and_hosting_informational_version": "0.2.1+5c10b9603797b673f5c1ed99047336a12aa317c7",
+    "build_configuration": "Release",
+    "build_passed": true,
+    "warnings": 0,
+    "errors": 0,
+    "temporary_program_change": "Only 127.0.0.1:5211 replaced with 127.0.0.1:5223 in URL and same-origin check; product Program.cs unchanged.",
+    "temporary_program_sha256": "9175e260eb22573d65436dc9eec09f2e53a17f926cfefe4602691d9508b4e786",
+    "temporary_project_sha256": "066eb9b59064a9fb7bf1bb3c30e3be9fe7e98d941753c0803d3d29d5c4b77ce1",
+    "isolated_tmpdir": "/workspace/scratch/ui-entry-preview/tmp",
+    "served_html_sha256": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d",
+    "served_html_equals_committed_compat": true,
+    "api_mocked": false,
+    "old_preview_reused": false
+  },
+  "entry_ui": {
+    "viewport_widths": [
+      1280,
+      390
+    ],
+    "font_multipliers": [
+      1,
+      2
+    ],
+    "all_four_conditions_passed": true,
+    "setup": "Public seed42 new world, adult create and lawBatch, actual teacher reserves both participants for 10 months; no raw world fixture. Law changes are preserved in actual outgoing command rows.",
+    "teaching_initiation": "existing public command through issueCommand; not a claim that the ten-month teaching request was created through a visible duration control",
+    "actual_visible_flow": [
+      "incomplete prepare rejected using keyboard Tab/Enter",
+      "four ordinary cultivate submissions with blank Data and actual one-month advances; actor remains Mortal",
+      "prepare by actual touch tap: Target0,Data path.1.0, Actor pupil",
+      "save and restore through toolbar/dialog; actor and prepared phase retained",
+      "actual formation start accepted"
+    ],
+    "knowledge_boundary": "UI checks own Understanding and personal chapter absence for path.1.0; authority memory/mastery absence is checked by the C# scenarios, not inferred from UI absence.",
+    "external_conditions": "Personal route does not expose current site supply/rights/occupancy/parent quality.",
+    "touch_targets_minimum_px": 44,
+    "dialog_and_document_horizontal_overflow": false,
+    "javascript_errors": []
+  },
+  "query_scenarios": {
+    "entry": {
+      "report": "entry-query.json",
+      "passed": 3,
+      "total": 3
+    },
+    "existing_rich_query": {
+      "report": "rich-query.json",
+      "passed": 12,
+      "total": 12
+    },
+    "entry_fixture": "Reuses AgentCultivationFixture with public adult creation and real ten-month teaching, declared short laws and finite food opening; not default genesis/growth evidence.",
+    "checks": [
+      "no entry evidence gives no sensing route",
+      "entry-only route does not create or expose an unlearned Qi method",
+      "incomplete preparation rejects without authority/RNG change",
+      "ordinary cultivation remains Mortal; real prepare/start and actual elemental debit",
+      "codec preserves prepared and started states",
+      "hidden current site supply/rights alternatives leave personal potential unchanged; query leaves authority/RNG unchanged"
+    ]
+  },
+  "text_scale_method": {
+    "factor": 2,
+    "method": "Test-only CSSOM absolute-px font-size declarations, including media rules and font shorthand; inherited values kept. DPR remains1.",
+    "new_product_minimum_requirement": false
+  },
+  "limits": [
+    "Functional Playwright against real GameSession; no actual Android or Windows native execution.",
+    "Android sync/Windows async replay is bridge-only; domain_integration_claim remains false.",
+    "No performance, profiling, growth, soak or final T05 closure claim.",
+    "Final acceptance belongs to the final integrated source; ledger and Notion were not changed."
+  ],
+  "session_harness_paths": "Exact scratch-session harness sources are preserved. They retain the session root /workspace/seonro-ui-entry, port5223 and SCALE source path; adjust those paths to the checked-in harness location when replaying.",
+  "observed_at_utc": "2026-10-30T15:38:48.721935+00:00",
+  "standard_functional": {
+    "normal_report": "full-normal.json",
+    "text200_report": "full-text200.json",
+    "computed_font_report": "text200-fonts.json",
+    "normal_passed_widths": [
+      1280,
+      390
+    ],
+    "text200_passed_widths": [
+      1280,
+      390
+    ],
+    "menus_per_width": 9,
+    "forced_legacy_dom": true,
+    "normal_command": "python3 scripts/verify-v021-ui.py <out> --url http://127.0.0.1:5223 --compat --legacy-dom",
+    "text200_command": "python3 /workspace/scratch/ui-entry-text-scale.py <out> http://127.0.0.1:5223",
+    "scope_save_load_atomic_law_policy_social_secret_real_workflows": true,
+    "adapter_replays_per_report": [
+      "android_sync",
+      "windows_async"
+    ],
+    "adapter_domain_integration_claim": false
+  },
+  "intermediate_findings": [
+    {
+      "source": "1ffe09babb1b488d2f28617a94a8902d68f74376",
+      "stage": "incomplete real preparation rejected",
+      "finding": "Client intersected the authorized sensing choice with the learned path catalogue; the new choice was omitted. Fixed by using authorized routes with only default entry operation fallback."
+    },
+    {
+      "source": "c08efb4b8159c7a2ccacfa668f23c51f5c2a5a4f",
+      "stage": "ordinary practice stays Mortal",
+      "finding": "A required select blocked the legitimate blank entry cultivate Data before a request was sent. Fixed only for the entry fallback option."
+    }
+  ]
+}

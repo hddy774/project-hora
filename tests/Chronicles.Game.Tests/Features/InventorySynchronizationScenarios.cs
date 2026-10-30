@@ -4,8 +4,8 @@ namespace Chronicles.Game.Tests.Features;
 
 public sealed class InventorySynchronizationScopeScenario : IFeatureScenario
 {
-    // Captured with the original scans at f0b8c9b, before adding call-local indexes.
-    private const string Baseline = "a7035140b4f98dd6b78032c590f6fe2bcd216284138fcc88e7fd36d1b733c3d0";
+    // 068ecef의113법칙 strict 원본이다. 새 TTL 키만 제거하면 옛 a703… 해시가 정확히 재현된다(48a2676 근거).
+    private const string Baseline = "78106f3f4849297ab421a258b2634c3e000a58795a8bce29cdc58cb30bcfa28e";
     public string Name => "inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존";
     public void Run()
     {

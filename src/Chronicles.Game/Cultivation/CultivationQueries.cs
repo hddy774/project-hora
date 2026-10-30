@@ -139,12 +139,19 @@ public static class CultivationQueries
         var quality = state.Formations.Count == 0 ? 0 : state.Formations[^1].Quality;
         var maturity = state.Structure is null ? 0 : CultivationEngine.Maturity(state, knownContext.Policy);
         var next = actor.Realm + 1;
+        var sensing = actor.Realm == Realm.Mortal && CultivationEngine.Knowledge(knownContext, "entry") is { Executable: true };
         var paths = actor.Realm == Realm.HalfImmortal ? [] : CultivationProfiles.Paths
-            .Where(p => p.Definition.Realm == next && knownContext.Knowledge.Any(k => k.WorkId == p.Definition.Id && k.Executable))
-            .Select(p => new PotentialRoute(p.Definition.Id, next, quality / 6, maturity,
+            .Where(p => p.Definition.Realm == next && (knownContext.Knowledge.Any(k => k.WorkId == p.Definition.Id && k.Executable) || sensing && p.Variant == 0))
+            .Select(p =>
+            {
+                var evidence = CultivationEngine.PreparationKnowledge(state, actor, p.Definition.Id, knownContext);
+                var source = evidence is null ? "" : $"준비 지식 {evidence.WorkId}·판본 {evidence.EditionId}·개인 revision {evidence.Revision}; ";
+                return new PotentialRoute(p.Definition.Id, next, quality / 6, maturity,
                 knownContext.Policy.FlowPerMonth * p.Definition.SupplyCost,
                 CultivationEngine.Preflight(state, actor, p.Definition.Id, knownContext),
-                $"{p.NextRequirement}; 부모 형성 품질은 새 형성 계산에 한 번만 전달, 현재 능력/성공 보장 아님")).ToArray();
+                source + (actor.Realm == Realm.Mortal && evidence?.WorkId == "entry" ? "실제 입문 지식·토납 준비에 근거한 감응 시도·연기 운기 공법은 입문 후 별도 학습; " : "") +
+                $"{p.NextRequirement}; 부모 형성 품질은 새 형성 계산에 한 번만 전달, 현재 능력/성공 보장 아님");
+            }).ToArray();
         return new(10000 - maturity, state.Damage, knownContext.Site.HasUseRight && knownContext.Site.Available.Total >= knownContext.Policy.FlowPerMonth,
             paths, "호출자가 제공한 자기 지식/실제 관측만 사용; 미학습 경로·미확인 미래는 제시하지 않음");
     }

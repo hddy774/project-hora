@@ -1,0 +1,12 @@
+{
+  "selection": "EX05 \uC900\uBE44 \uAE30\uB2A5",
+  "total": 1,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-004/005/006/022 EX05 \uC900\uBE44 \uAE30\uB2A5: \uB3D9\uC77C GameCodec \uBC14\uC774\uD2B8\u00B7\uC120\uD0DD \uC555\uCD95 \uC6D0\uC790\uD30C\uC77C\u00B7\uC911\uB2E8 \uBCF5\uAD6C\u00B7\uC6D0\uBCF8 \uBCF4\uC874",
+      "passed": true,
+      "ms": 4929
+    }
+  ]
+}

@@ -154,6 +154,7 @@ public sealed class NaturalStock
     public string Activity { get; set; } = "";
     public long Remaining { get; set; }
     public long Capacity { get; set; }
+    public int EcologyWeight { get; set; }
     public int Regeneration { get; set; }
     public long LastMonth { get; set; }
     public string Origin { get; set; } = "";
@@ -202,6 +203,7 @@ public sealed record InventoryReceipt(string Signature, long Subject, string Mes
 public sealed record InventoryResult(bool Accepted, string Message, InventoryState State, long Subject = 0, bool Replayed = false);
 
 public abstract record InventoryCommand(string Id, long Actor);
+public sealed record TuneInventoryProfile(string Id, int CarryCapacity, int ProductionWork, int ProfessionalWork, int ExtractionWork) : InventoryCommand(Id, 0);
 public sealed record ReserveInventoryMaterials(string Id, long Actor, string Purpose, IReadOnlyDictionary<string, int> Materials) : InventoryCommand(Id, Actor);
 public sealed record ReserveInventoryPhysical(string Id, long Actor, string Purpose, long Item, int Quantity) : InventoryCommand(Id, Actor);
 public sealed record ConsumeInventoryAssets(string Id, long Actor, long Reservation) : InventoryCommand(Id, Actor);

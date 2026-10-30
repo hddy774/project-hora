@@ -17,7 +17,10 @@ public sealed partial class GameWorld
     {
         if (state.Inventory.Initialized) { ProjectInventoryContracts(); return; }
         state.Inventory.Initialized = true;
-        state.Inventory.ExtractionWorkPerUnit = Math.Max(1, 100 / IntLaw("economy.gatherYield"));
+        state.Inventory.BaseCarryCapacity = checked((int)state.Laws.GetValueOrDefault("inventory.carryCapacity", 500));
+        state.Inventory.ProductionWork = checked((int)state.Laws.GetValueOrDefault("inventory.productionWork", 100));
+        state.Inventory.ProfessionalWork = checked((int)state.Laws.GetValueOrDefault("inventory.professionalWork", 100));
+        state.Inventory.ExtractionWorkPerUnit = checked((int)state.Laws.GetValueOrDefault("inventory.extractionWork", 25));
         foreach (var place in state.Places)
         {
             var profiles = InventorySourceProfiles(place); var totalWeight = profiles.Sum(x => x.Weight);
@@ -27,7 +30,7 @@ public sealed partial class GameWorld
                 var capacity = IntLaw("ecology.sourceCapacity") * (long)profile.Weight / totalWeight;
                 var amount = total * (long)profile.Weight / totalWeight; allocated += (int)amount;
                 state.Inventory.Sources.Add(new() { Id = Id(), Place = place.Id, Definition = profile.Definition,
-                    Activity = InventoryDefinitions.ExtractionActivity(profile.Definition)!, Remaining = amount, Capacity = capacity,
+                    Activity = InventoryDefinitions.ExtractionActivity(profile.Definition)!, Remaining = amount, Capacity = capacity, EcologyWeight = profile.Weight,
                     LastMonth = Month, Origin = $"창세 자연 원천·지점 {place.Id}·{profile.Definition}" });
             }
             var first = state.Inventory.Sources.First(s => s.Place == place.Id);
@@ -35,7 +38,7 @@ public sealed partial class GameWorld
             first.Capacity += IntLaw("ecology.sourceCapacity") - state.Inventory.Sources.Where(s => s.Place == place.Id).Sum(s => s.Capacity);
         }
         MigrateInventoryContracts();
-        ConfigureInventoryRegeneration(); ProjectInventorySources(); ProjectInventoryContracts();
+        NormalizeInventoryPhysicalState(); ConfigureInventoryRegeneration(); ProjectInventorySources(); ProjectInventoryContracts();
     }
     private static List<(string Definition, int Weight)> InventorySourceProfiles(Place place)
     {
@@ -58,7 +61,7 @@ public sealed partial class GameWorld
     {
         foreach (var place in state.Places)
         {
-            var sources = state.Inventory.Sources.Where(s => s.Place == place.Id).OrderBy(s => s.Id).ToArray();
+            var sources = state.Inventory.Sources.Where(s => s.Place == place.Id && s.EcologyWeight > 0).OrderBy(s => s.Id).ToArray();
             var renewable = sources.Where(s => s.Activity == "source.gathering" || s.Activity == "source.farming").ToArray();
             foreach (var source in sources) source.Regeneration = 0;
             for (var i = 0; i < renewable.Length; i++)
@@ -76,6 +79,11 @@ public sealed partial class GameWorld
             if (items.TryGetValue(old.Item, out var item))
             {
                 contract.Origin = item.Place < 0 ? people[item.Owner].Place : item.Place;
+                if (old.Status == "open")
+                {
+                    contract.AdvertisedDefinition = item.Definition; contract.AdvertisedName = InventoryDefinitions.Definition(item.Definition).Item.Name;
+                    contract.AdvertisedQuantity = item.Quantity;
+                }
                 if (old.Status == "open")
                 {
                     item.Reserved = reservation;
@@ -99,6 +107,7 @@ public sealed partial class GameWorld
             var job = new ProductionJob { Id = jobId, Actor = p.Id, Recipe = p.ActionData, Place = p.Place, Due = p.Due,
                 Labor = labor, Reservation = reservation, Status = "processing", Inputs = input.Select(i => i.Id).ToList(),
                 Quality = (int)(input.Sum(i => (long)i.Quantity * i.Quality) / input.Sum(i => (long)i.Quantity)),
+                Damage = input.Max(i => i.Damage), BoundSoul = input.Where(i => i.BoundSoul != 0).Select(i => i.BoundSoul).Distinct().SingleOrDefault(),
                 Defects = input.Aggregate(ItemDefect.None, (flags, i) => flags | i.Defects), Provenance = input.Select(i => i.Source).ToList() };
             foreach (var item in input) { job.Consumed.Add(new(item.Definition, item.Quantity)); Material(item.Definition).Consumption += item.Quantity; Remove(item); }
             state.Inventory.Jobs.Add(job); p.ActionTarget = jobId; p.ActionData = "inventory:" + job.Recipe;
@@ -108,6 +117,16 @@ public sealed partial class GameWorld
     private InventoryState CurrentInventory()
     {
         var inventory = InventoryState.FromWorld(state, state.Inventory);
+        var carry = checked((int)state.Laws.GetValueOrDefault("inventory.carryCapacity", 500));
+        var production = checked((int)state.Laws.GetValueOrDefault("inventory.productionWork", 100));
+        var professional = checked((int)state.Laws.GetValueOrDefault("inventory.professionalWork", 100));
+        var extraction = checked((int)state.Laws.GetValueOrDefault("inventory.extractionWork", 25));
+        if (inventory.Ledger.BaseCarryCapacity != carry || inventory.Ledger.ProductionWork != production ||
+            inventory.Ledger.ProfessionalWork != professional || inventory.Ledger.ExtractionWorkPerUnit != extraction)
+        {
+            var tuned = InventoryEngine.Apply(inventory, new TuneInventoryProfile(InventoryNonce("laws"), carry, production, professional, extraction));
+            if (!tuned.Accepted) throw new InvalidDataException(tuned.Message); inventory = tuned.State;
+        }
         foreach (var labor in inventory.Ledger.Labor.Where(l => l.Purpose == "world-action")) labor.Active = false;
         foreach (var p in inventory.People.Where(p => p.Status == LifeStatus.Alive && p.Action != ActionKind.Idle && p.Due > Month))
         {
@@ -285,17 +304,91 @@ public sealed partial class GameWorld
         if (cargo is null) return false;
         if (cargo.Status == "open")
         {
-            var route = p.Place == cargo.Origin && !p.Sealed && state.Places[p.Place].Neighbors.Contains(cargo.Destination) && state.Places[cargo.Destination].BlockedUntil <= Month;
+            var route = items.TryGetValue(cargo.Item, out var physicalCargo) && physicalCargo.Place == -1 && p.Place == cargo.Origin && !p.Sealed && state.Places[p.Place].Neighbors.Contains(cargo.Destination) && state.Places[cargo.Destination].BlockedUntil <= Month;
             if (route) { state.Places[p.Place].PeopleRevision++; p.Place = cargo.Destination; state.Places[p.Place].PeopleRevision++; p.LastPeopleRevision = -1; RefreshPopulationIndices(); Observe(p); }
-            RunInventory(new FinishTransport(InventoryNonce("delivery", p.Id), p.Id, cargo.Id, route), out _);
+            var error = RunInventory(new FinishTransport(InventoryNonce("delivery", p.Id), p.Id, cargo.Id, route), out _);
+            if (error is not null) RunInventory(new FinishTransport(InventoryNonce("delivery-failed", p.Id), p.Id, cargo.Id, false), out _);
         }
         ClearInventoryAction(p); return true;
     }
     private void SettleInventory()
     {
+        var externalLimits = state.Places.Where(place => place.Source < state.Inventory.Sources.Where(s => s.Place == place.Id).Sum(s => s.Remaining))
+            .ToDictionary(place => place.Id, place => (long)place.Source);
         ConfigureInventoryRegeneration();
         var error = RunInventory(new Inventory.SettleInventory(InventoryNonce("settle"), false), out _);
         if (error is not null) throw new InvalidDataException(error);
+        ReconcileInventorySources(externalLimits); NormalizeInventoryPhysicalState(); ProjectInventorySources();
+    }
+    private void ReconcileInventorySources(IReadOnlyDictionary<int, long> externalLimits)
+    {
+        foreach (var place in state.Places)
+        {
+            var rows = state.Inventory.Sources.Where(s => s.Place == place.Id).ToArray();
+            var governed = rows.Where(s => s.EcologyWeight > 0).ToArray(); var weight = governed.Sum(s => s.EcologyWeight);
+            var capacities = rows.ToDictionary(s => s.Id, s => s.Capacity);
+            foreach (var row in governed) capacities[row.Id] = (long)IntLaw("ecology.sourceCapacity") * row.EcologyWeight / weight;
+            if (governed.Length > 0) capacities[governed[0].Id] += IntLaw("ecology.sourceCapacity") - governed.Sum(s => capacities[s.Id]);
+            var desired = state.Inventory.Sources.Where(s => s.Place == place.Id).ToDictionary(s => s.Id, s => Math.Min(s.Remaining, capacities[s.Id]));
+            var loss = Math.Max(0, desired.Values.Sum() - externalLimits.GetValueOrDefault(place.Id, long.MaxValue));
+            foreach (var id in desired.Keys.OrderDescending().ToArray()) { var take = Math.Min(loss, desired[id]); desired[id] -= take; loss -= take; }
+            foreach (var job in state.Inventory.Jobs.Where(j => j.Source != 0 && desired.ContainsKey(j.Source) && j.Status is "reserved" or "processing").ToArray())
+            {
+                var claimed = state.Inventory.Jobs.Where(j => j.Source == job.Source && j.Status is "reserved" or "processing").Sum(j => (long)j.OutputQuantity);
+                if (claimed > desired[job.Source])
+                {
+                    var worker = people[job.Actor];
+                    var cancellation = RunInventory(new CancelProduction(InventoryNonce("source-lost", worker.Id), worker.Id, job.Id), out _);
+                    if (cancellation is not null) throw new InvalidDataException(cancellation); if (worker.ActionTarget == job.Id) ClearInventoryAction(worker);
+                }
+            }
+            foreach (var source in state.Inventory.Sources.Where(s => s.Place == place.Id))
+            {
+                var remaining = Math.Min(source.Remaining, desired[source.Id]);
+                if (remaining < source.Remaining) state.Inventory.Events.Add(new(Month, "source-loss", 0, source.Id, NumberInventory(source.Remaining - remaining)));
+                source.Remaining = remaining; source.Capacity = capacities[source.Id];
+            }
+        }
+    }
+    private static string NumberInventory(long value) => value.ToString(CultureInfo.InvariantCulture);
+    private void NormalizeInventoryPhysicalState()
+    {
+        long RootId(Item item)
+        { while (item.Container != 0) item = items[item.Container]; return item.Id; }
+        int ActualPlace(Item item)
+        {
+            var root = items[RootId(item)]; if (root.Place >= 0) return root.Place;
+            var metadata = state.Inventory.Metadata.FirstOrDefault(m => m.Item == root.Id);
+            var holder = metadata?.Carrier is > 0 ? metadata.Carrier : metadata?.Custodian is > 0 ? metadata.Custodian : root.Owner;
+            return people[holder].Place;
+        }
+        foreach (var item in state.Items)
+        {
+            if (item.Damage < 100 && (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0) continue;
+            foreach (var person in state.People)
+                foreach (var slot in person.Equipment.Where(e => e.Value == item.Id).Select(e => e.Key).ToArray()) person.Equipment.Remove(slot);
+            foreach (var child in state.Items.Where(i => i.Container == item.Id).ToArray())
+            {
+                var place = ActualPlace(child); var tree = state.Items.Where(i => RootId(i) == RootId(child)).ToArray();
+                child.Container = 0; child.Place = place;
+                foreach (var entry in tree.Where(i => RootId(i) == child.Id)) entry.Place = place;
+            }
+        }
+        foreach (var person in state.People)
+        {
+            var roots = state.Items.Where(i => i.Container == 0 && i.Place == -1 &&
+                (state.Inventory.Metadata.FirstOrDefault(m => m.Item == i.Id)?.Carrier is > 0 ? state.Inventory.Metadata.First(m => m.Item == i.Id).Carrier :
+                    state.Inventory.Metadata.FirstOrDefault(m => m.Item == i.Id)?.Custodian is > 0 ? state.Inventory.Metadata.First(m => m.Item == i.Id).Custodian : i.Owner) == person.Id).OrderByDescending(i => i.Id).ToArray();
+            var capacity = state.Inventory.BaseCarryCapacity + person.Equipment.Values.Distinct().Sum(id => InventoryDefinitions.Definition(items[id].Definition).Item.Capacity);
+            long Weight(Item root) => state.Items.Where(i => RootId(i) == root.Id).Sum(i => (long)i.Quantity * InventoryDefinitions.Definition(i.Definition).Item.Weight);
+            var held = roots.Sum(Weight);
+            foreach (var root in roots.Where(root => !person.Equipment.ContainsValue(root.Id)))
+            {
+                if (held <= capacity) break;
+                foreach (var item in state.Items.Where(i => RootId(i) == root.Id)) item.Place = person.Place;
+                held -= Weight(root); state.Inventory.Events.Add(new(Month, "overflow-storage", person.Id, root.Id, "실제 지점 초과분 보존"));
+            }
+        }
     }
     private void ProjectInventorySources()
     { foreach (var place in state.Places) place.Source = checked((int)state.Inventory.Sources.Where(s => s.Place == place.Id).Sum(s => s.Remaining)); }
@@ -312,11 +405,21 @@ public sealed partial class GameWorld
     }
     private (bool Operational, int Quality, int QiBonus, int DefenseBonus, IReadOnlyList<string> Causes) CultivationFormationAt(Place place, Person p)
     {
-        var frames = state.Inventory.Arrays.Where(a => a.Active && a.PaidUntil > Month && a.Place == place.Id && p.Place == place.Id)
+        var frames = state.Inventory.Arrays.Where(a => a.Active && a.PaidUntil > Month && p.Place == place.Id && InventoryArrayInRange(a.Place, place.Id, a.Range))
             .Select(a => (Array: a, Item: items.GetValueOrDefault(a.Item))).Where(a => a.Item is not null && a.Item.Damage < 100 &&
                 (a.Item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0).DistinctBy(a => a.Item!.Id).ToArray();
         return (frames.Length > 0, frames.Length == 0 ? 0 : (int)frames.Average(f => f.Item!.Quality * f.Array.Condition / 100),
             frames.Length * 10, frames.Length * 10, frames.Select(f => "item:" + f.Item!.Id.ToString(CultureInfo.InvariantCulture)).ToArray());
+    }
+    private bool InventoryArrayInRange(int origin, int destination, int range)
+    {
+        var visited = new HashSet<int> { origin }; var pending = new Queue<(int Place, int Distance)>(); pending.Enqueue((origin, 0));
+        while (pending.TryDequeue(out var next))
+        {
+            if (next.Place == destination) return true; if (next.Distance >= range) continue;
+            foreach (var neighbor in state.Places[next.Place].Neighbors) if (visited.Add(neighbor)) pending.Enqueue((neighbor, next.Distance + 1));
+        }
+        return false;
     }
     private int InventoryBreakthroughBonus(Person p) => state.Inventory.Effects.Where(e => e.Target == p.Id && e.Kind == "breakthrough" &&
         e.Start <= Month && e.End > Month).DistinctBy(e => e.Cause).Sum(e => e.Magnitude);

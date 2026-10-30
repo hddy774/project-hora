@@ -467,3 +467,29 @@ public sealed class InventoryOrdinalSaveScenario : IFeatureScenario
         finally { System.Globalization.CultureInfo.CurrentCulture = previous; }
     }
 }
+
+public sealed class InventorySharedReservationScenario : IFeatureScenario
+{
+    public string Name => "INV-016/017 shared physical reservations preserve split provenance and exclude parallel use";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); var paper = InventoryFixture.Add(state, "paper", 3, quality: 4321, defects: ItemDefect.Contamination);
+        var reservation = InventoryFixture.Accept(ref state, new ReserveInventoryPhysical("reserve-blank", 1, "transcription", paper, 1));
+        var physical = state.Ledger.Reservations.Single(r => r.Id == reservation).Items.Single();
+        InventoryFixture.Check(InventoryFixture.Item(state, physical).Quantity == 1 && InventoryFixture.Item(state, physical).Quality == 4321 &&
+            InventoryFixture.Item(state, physical).Defects == ItemDefect.Contamination && InventoryFixture.Item(state, physical).Source == "fixture origin", "Shared physical reservation lost real substrate state.");
+        InventoryFixture.Reject(state, new ConsumeItem("cannot-reuse", 1, physical));
+        InventoryFixture.Accept(ref state, new ReleaseInventoryAssets("release", 1, reservation));
+        reservation = InventoryFixture.Accept(ref state, new ReserveInventoryMaterials("reserve-cost", 1, "knowledge-cost",
+            new Dictionary<string, int>(StringComparer.Ordinal) { ["paper"] = 2 }));
+        InventoryFixture.Accept(ref state, new ConsumeInventoryAssets("pay", 1, reservation));
+        InventoryFixture.Check(state.Items.Where(i => i.Definition == "paper").Sum(i => i.Quantity) == 1 && state.Materials["paper"].Consumption == 2,
+            "Shared cost consumption duplicated or refunded physical stock.");
+        InventoryFixture.RoundTrip(ref state);
+        var world = GameWorld.Create(42).Checkpoint(); var originalPerson = world.People[0]; var candidate = InventoryState.FromWorld(world);
+        var food = world.Items.First(i => i.Owner == originalPerson.Id && i.Definition == "food");
+        var result = InventoryEngine.Apply(candidate, new SplitInventoryItem("identity", originalPerson.Id, food.Id, 1));
+        InventoryFixture.Check(result.Accepted, result.Message); result.State.ApplyTo(world);
+        InventoryFixture.Check(ReferenceEquals(originalPerson, world.People[0]), "Applying accepted inventory invalidated the world's live actor reference.");
+    }
+}

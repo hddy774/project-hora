@@ -4,5 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Chronicles.Core/Chronicles.Core.csproj" />
+    <InternalsVisibleTo Include="Chronicles.Hosting" />
   </ItemGroup>
 </Project>

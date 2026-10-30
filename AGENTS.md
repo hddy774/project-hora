@@ -21,28 +21,23 @@
 
 ## 의존 방향
 
+화살표는 사용하는 프로젝트에서 참조하는 프로젝트로 향한다.
+
 ```text
-Core -> Simulation -> Queries -> Runtime
-                  \-> Persistence
-Queries -> Presentation
-Application = Runtime + Persistence + Queries 조정
-Desktop = Application + Presentation
+Desktop / Android / Shell -> Hosting -> Game -> Core
+Game.Tests -> Game + Hosting
 ```
 
-- `Core`: 안정 ID, 정수 시간, 결정론적 난수, 값 타입과 정의 ID.
-- `Simulation`: AI 상태, 수행, 경지, 공법, 법술, 전투, 전투력, 랭킹, 일대기·윤회와
-  도시 시장 경제.
-- `Queries`: simulation을 읽는 불변 관찰 DTO와 revision 기반 투영.
-- `Runtime`: worker, 배속, 관찰 요청과 변경 section 통지.
-- `Persistence`: versioned save container, checksum과 원자 저장.
-- `Presentation`: 플랫폼 중립 표시 모델과 한국어 포맷.
-- `Application`: runtime·query·persistence 조정과 세션 생명주기.
-- `Desktop`: Application과 Presentation만 직접 참조하는 WPF 관찰 셸.
-- `Tests`: 공식, 결정론, 경쟁 활성도, 성능과 저장 회귀 검증.
+- `Core`: 제품 버전·표제와 명시적 상태의 결정론적 RNG. 엔진·OS·파일 의존이 없다.
+- `Game`: 단일 세계 권위, 도메인 전이·명령·정보가 제한된 DTO와 메모리 byte/hash/clone codec. 파일 경로·저장 장치·호스트를 참조하지 않는다.
+- `Hosting`: 직렬화된 `GameSession`, `GameSaveStore` 파일 슬롯·복구·원본 보존과 Desktop facade. 이 형식의 기존 CLR namespace는 유지하지만 assembly owner는 Hosting이다.
+- `Desktop`: WPF `App -> EcologyWindow`와 WebView2. `Android`/`Shell`도 같은 세션·명령·DTO를 사용한다.
+- 이전 Windows `MainWindow/Simulation/Runtime/Queries/Persistence/Application/Presentation` 및 이전 테스트는 `legacy/windows-pre-v021`에 출처와 함께 보관하며 현재 제품 참조에 넣지 않는다.
+- UI는 가변 세계를 직접 소유·수정하지 않는다. 관찰·검색·정렬은 세계와 RNG를 바꾸지 않는다.
 
-UI는 시뮬레이션의 가변 상태를 직접 소유하거나 수정하지 않는다. 관찰·검색·정렬은
-세계 상태와 난수 소비를 바꾸지 않아야 한다. 현재 파일 owner와 허용 의존은
-`docs/architecture/repository_manifest.json`을 정본으로 사용한다.
+현재 파일 owner·허용 참조는 `docs/architecture/repository_manifest.json`, 실제 진입점·저장·Unity 한계는
+[0.2.1 제품 경계](docs/architecture/v021-product-boundary.md)를 따른다.
+`python3 scripts/validate-v021-product-boundary.py --self-test`는 정적 경계만 검사하며 네이티브 실행이나 Unity 호환을 증명하지 않는다.
 
 ## 시뮬레이션 규칙
 

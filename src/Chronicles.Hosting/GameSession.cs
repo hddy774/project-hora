@@ -27,7 +27,7 @@ public sealed class GameSession
         {
             try
             {
-                var recovered = GameCodec.LoadWithSource(path); world = recovered.World;
+                var recovered = GameSaveStore.LoadWithSource(path); world = recovered.World;
                 startupNotice = RecoveryMessage(recovered.Source);
             }
             catch (Exception e) when (e is IOException or InvalidDataException or UnauthorizedAccessException)
@@ -66,13 +66,13 @@ public sealed class GameSession
                     message = request.UseCurrentLaws ? "현재 법칙으로 새 세계를 만들었습니다." : "기본 법칙으로 새 세계를 만들었습니다.";
                     break;
                 case "save":
-                    try { GameCodec.SaveAtomic(world, SlotPath(request.Slot)); message = $"슬롯 {request.Slot + 1} 저장 완료"; }
+                    try { GameSaveStore.SaveAtomic(world, SlotPath(request.Slot)); message = $"슬롯 {request.Slot + 1} 저장 완료"; }
                     catch (Exception e) when (e is IOException or UnauthorizedAccessException) { message = "저장 공간 또는 접근 권한을 확인하세요."; }
                     break;
                 case "load":
                     try
                     {
-                        var recovered = GameCodec.LoadWithSource(SlotPath(request.Slot)); world = recovered.World;
+                        var recovered = GameSaveStore.LoadWithSource(SlotPath(request.Slot)); world = recovered.World;
                         detail = 0; hostGeneration++; message = RecoveryMessage(recovered.Source);
                         if (message.Length == 0) message = "저장한 세계를 불러왔습니다.";
                     }
@@ -94,6 +94,6 @@ public sealed class GameSession
 
     public void Suspend()
     {
-        lock (gate) GameCodec.SaveAtomic(world, SlotPath(0));
+        lock (gate) GameSaveStore.SaveAtomic(world, SlotPath(0));
     }
 }

@@ -174,7 +174,7 @@ if (-not $SkipTests) {
     Write-Host "[3/5] 전체 자동 테스트"
     Invoke-DotNet @(
         'run',
-        '--project', (Join-Path $repositoryRoot 'tests\Chronicles.Tests\Chronicles.Tests.csproj'),
+        '--project', (Join-Path $repositoryRoot 'tests\Chronicles.Game.Tests\Chronicles.Game.Tests.csproj'),
         '-c', 'Release',
         '--no-build'
     )

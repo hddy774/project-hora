@@ -111,10 +111,10 @@ Test("INV-004 손상 저장·중단 파일·백업 복원", () =>
     var path = Path.Combine(Path.GetTempPath(), "seonro-" + Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture), "world.save");
     try
     {
-        var w = GameWorld.Create(); GameCodec.SaveAtomic(w, path); var hash = w.StateHash();
-        w.AdvanceTo(1); GameCodec.SaveAtomic(w, path);
+        var w = GameWorld.Create(); GameSaveStore.SaveAtomic(w, path); var hash = w.StateHash();
+        w.AdvanceTo(1); GameSaveStore.SaveAtomic(w, path);
         File.WriteAllText(path, "손상"); File.WriteAllText(path + ".pending", "중단");
-        Check(GameCodec.Load(path).StateHash() == hash, "유효 백업 복원");
+        Check(GameSaveStore.Load(path).StateHash() == hash, "유효 백업 복원");
         var bytes = GameCodec.Encode(w); bytes[bytes.Length / 2] ^= 1;
         var rejected = false; try { GameCodec.Decode(bytes); } catch (InvalidDataException) { rejected = true; }
         Check(rejected, "손상 거절");

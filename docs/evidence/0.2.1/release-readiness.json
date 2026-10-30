@@ -12,6 +12,6 @@
   "final_performance_complete": false,
   "final_performance_report": null,
   "final_performance_report_sha256": null,
-  "status": "미게시·전체 기능272/272 이후 실제 성장에서 발견한 입문/생계 연결 결함을 보정 중. 최종 같은 소스의 기능 수용·성장·성능·플랫폼 근거와 게시 허용 전에는 서명/게시할 수 없습니다.",
+  "status": "미게시·입문/생계 연결과 후속 회귀를 통합해 전체 기능308/308 통과. 기능 개발 이후 성능 마감 진행 중이며 최종 같은 소스의 작업별 수용·성장·성능·플랫폼 근거와 게시 허용 전에는 서명/게시할 수 없습니다.",
   "release_task_exception": "V021-T06은 이 배포 실행 자체의 결과를 기록하므로 사전 done 조건에 포함하지 않습니다."
 }

@@ -36,7 +36,7 @@ public static class Catalog
     public static IReadOnlyList<PathDefinition> Paths { get; } = BuildPaths();
     public static IReadOnlyDictionary<string, ItemDefinition> BaseItems { get; } = BuildItems();
     public static IReadOnlyDictionary<string, ItemDefinition> Items => Inventory.InventoryDefinitions.SharedItems;
-    public static IReadOnlyList<Recipe> Recipes { get; } = Array.AsReadOnly<Recipe>(
+    public static IReadOnlyList<Recipe> BaseRecipes { get; } = Array.AsReadOnly<Recipe>(
     [
         new("pill", "회춘단 제조", "alchemy", "pill", 1, [new("herb", 3), new("wood", 1)]),
         new("weapon", "현철검 제작", "smith", "weapon", 1, [new("ore", 4), new("wood", 1)]),
@@ -50,7 +50,7 @@ public static class Catalog
         new("armor", "호신갑 제작", "smith", "armor", 1, [new("ore", 4), new("cloth", 2)])
         ,new("soulWard", "양혼부 제작", "talisman", "soulWard", 1, [new("paper", 3), new("herb", 5)])
     ]);
-    public static IReadOnlyList<Recipe> BaseRecipes => Recipes;
+    public static IReadOnlyList<Recipe> Recipes => Inventory.InventoryDefinitions.SharedRecipes;
 
     private static System.Collections.ObjectModel.ReadOnlyCollection<PathDefinition> BuildPaths()
     {

@@ -3,7 +3,7 @@ using System.Text.Json;
 namespace Chronicles.Game;
 
 public sealed record SessionRequest(string Type = "view", GameCommand? Command = null,
-    long Months = 0, long Detail = 0, ulong Seed = 42, int Slot = 0);
+    long Months = 0, long Detail = 0, ulong Seed = 42, int Slot = 0, bool UseCurrentLaws = false);
 public sealed record SessionReply(GameView View, CommandResult? Result, string Message);
 
 /// <summary>Serializes all host access. Paths and deserialization never cross the UI bridge.</summary>
@@ -60,7 +60,11 @@ public sealed class GameSession
                     else message = "진행 기간은 1~1200개월입니다.";
                     break;
                 case "detail": detail = request.Detail; break;
-                case "new": world = GameWorld.Create(request.Seed); detail = 0; hostGeneration++; message = "새 세계를 만들었습니다."; break;
+                case "new":
+                    var rules = request.UseCurrentLaws ? world.CopyLawsForHost() : null;
+                    world = GameWorld.Create(request.Seed, rules); detail = 0; hostGeneration++;
+                    message = request.UseCurrentLaws ? "현재 법칙으로 새 세계를 만들었습니다." : "기본 법칙으로 새 세계를 만들었습니다.";
+                    break;
                 case "save":
                     try { GameCodec.SaveAtomic(world, SlotPath(request.Slot)); message = $"슬롯 {request.Slot + 1} 저장 완료"; }
                     catch (Exception e) when (e is IOException or UnauthorizedAccessException) { message = "저장 공간 또는 접근 권한을 확인하세요."; }

@@ -91,7 +91,7 @@ public sealed partial class GameWorld
         w.InitializeInventory();
         w.InitializeKnowledge();
         w.InitializeCultivation();
-        s.DomainSchema = 1;
+        s.DomainSchema = 2;
         w.Event("창세", 0, 0, "두 반선 시조가 세계에 들어왔다. 종문·숨은 주민 없음.", "초기 프로필");
         w.Census();
         Invariants.Validate(s);
@@ -342,10 +342,11 @@ public sealed partial class GameWorld
 
     private string? CreateExplicit(GameCommand c)
     {
-        if (state.Controlled != 0 || string.IsNullOrWhiteSpace(c.Data) || c.Data.Length > 40 || c.Target < 0 || c.Target >= 100)
+        if (state.Controlled != 0 || c.Target < 0 || c.Target >= 100)
             return "관찰 관리에서 이름과 위치를 지정하세요.";
-        var p = new Person { Id = Id(), BodyId = Id(), SoulId = Id(), Name = c.Data, Place = (int)c.Target,
-            Born = Month - Law("birth.maturity"), Gestates = c.Value != 0, Lifespan = Law("life.mortal"),
+        if (!TryParsePeopleCreation(c, out var profile, out var profileError)) return profileError;
+        var p = new Person { Id = Id(), BodyId = Id(), SoulId = Id(), Name = profile.Name, Species = profile.Species, Place = (int)c.Target,
+            Born = Month - profile.MaturityMonths, Gestates = profile.Gestates, Lifespan = profile.LifespanMonths,
             Aptitudes = Enumerable.Range(0, 6).Select(_ => 4000 + Roll(2001)).ToArray(),
             Roots = Enumerable.Range(0, 5).Select(_ => 4000 + Roll(2001)).ToArray(),
             Personality = Enumerable.Range(0, 14).Select(_ => 20 + Roll(61)).ToArray(), KnownPlaces = [(int)c.Target] };

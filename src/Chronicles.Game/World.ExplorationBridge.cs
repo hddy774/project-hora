@@ -178,6 +178,9 @@ public sealed partial class GameWorld
                 var amount = site.Remaining;
                 var reward = AddItem(person.Id, site.RewardDefinition, amount, 5000, $"{entry.Source}·{site.Source}·유한 선점", "extraction")!;
                 site.Remaining -= amount; entry.RewardQuantity = amount; entry.RewardItem = reward.Id;
+                entry.RewardAuditSequence = entry.Id;
+                state.Exploration.Claims.Add(new(entry.Id, person.Id, person.BodyId, entry.Place, Month, reward.Id,
+                    reward.Definition, reward.Quantity, entry.Source));
             }
             ObserveEntrance(person, site, true, entry.Source + ":실제 최종 선점 결과");
             EndExploration(person, entry, SecretEntryStatus.Completed, entry.RewardQuantity > 0 ? "실제 남은 원천을 먼저 선점하여 귀환했다." : "다른 실제 입장자가 먼저 선점하여 보상이 소진되었다.");

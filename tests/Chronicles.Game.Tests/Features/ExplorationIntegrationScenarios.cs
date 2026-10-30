@@ -100,6 +100,9 @@ public sealed class ExplorationPaidProgressScenario : IFeatureScenario
             f.World.Checkpoint().Items.Single(i => i.Id == finished.Tool).Reserved == 0,
             "실제 원천·채택 법칙·도구 해제·생산 저장의 단일 선점이 잘못되었다.");
         Invariants.Validate(f.World.Checkpoint());
+        var missingClaim = f.World.Checkpoint(); missingClaim.Exploration.Entries[0].RewardAuditSequence++;
+        var claimRejected = false; try { GameWorld.Restore(missingClaim); } catch (InvalidDataException) { claimRejected = true; }
+        ExplorationFixture.Check(claimRejected, "실제 생성 영수증이 없는 선점 저장을 복원했다.");
     }
 }
 

@@ -52,9 +52,11 @@ public sealed partial class GameWorld
         if (person.Decisions.Count > 24) person.Decisions.RemoveAt(0);
     }
 
-    private static void RecordCompletedHabit(Person person, ActionKind kind)
+    private void RecordCompletedHabit(Person person, ActionKind kind)
     {
+        if (kind == ActionKind.Idle) return;
         var key = kind.ToString();
         person.Habits[key] = Math.Min(100, person.Habits.GetValueOrDefault(key) + 1);
+        RecordPeopleCompletedAction(person, kind);
     }
 }

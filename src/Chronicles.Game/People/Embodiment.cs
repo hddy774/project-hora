@@ -14,7 +14,7 @@ public sealed record Embodiment(long PersonId, long BodyId, long SoulId, string 
     string GenderDescription, YaoguaiTitle Title, ReproductionProfile Reproduction, BodyCapabilities Capabilities, PeopleSource Source);
 public sealed record SpeciesDefinition(string Id, string Name, BodyForm NaturalForm, long BasicLifespanMonths, HabitatKind[] Habitats,
     string[] ResourceNeeds, bool Sapient, string ReproductionGroup, long MaturityMonths, int GestationMonths,
-    string PolicyId = "PC-TEMP-V021-SPECIES-01", bool RequiresReview = true);
+    string PolicyId = "PC-TEMP-V021-SPECIES-01", bool RequiresReview = true, BodyCapabilities? NaturalCapabilities = null);
 public sealed record HabitatAssessment(bool Suitable, string[] RequiredResources, string Reason);
 public sealed record ReproductivePerson(Embodiment Body, Realm CultivationRealm, int MartialStage, long AgeMonths, int Health,
     bool Alive, bool Consents, bool AlreadyGestating, long RecoveryUntilMonth);
@@ -30,11 +30,11 @@ public static class SpeciesCatalog
 {
     public static IReadOnlyList<SpeciesDefinition> All { get; } = Array.AsReadOnly<SpeciesDefinition>(
     [
-        new("human", "인간", BodyForm.Humaniform, 1200, [HabitatKind.Settlement, HabitatKind.Grassland, HabitatKind.Forest], ["food", "water"], true, "human", 216, 9),
-        new("spirit-fox", "영호", BodyForm.Quadruped, 1440, [HabitatKind.Forest, HabitatKind.Mountain], ["food", "water"], true, "fox", 144, 6),
-        new("stone-ape", "석원", BodyForm.Quadruped, 1800, [HabitatKind.Mountain, HabitatKind.Cave], ["food", "water"], true, "ape", 240, 12),
-        new("spirit-pine", "영송", BodyForm.RootedPlant, 3600, [HabitatKind.Forest, HabitatKind.Mountain], ["water", "soil"], true, "pine", 600, 12),
-        new("water-spirit", "수령", BodyForm.Spirit, 2400, [HabitatKind.Water, HabitatKind.Marsh], ["water", "ambient-qi"], true, "water-spirit", 240, 12)
+        new("human", "인간", BodyForm.Humaniform, 1200, [HabitatKind.Settlement, HabitatKind.Grassland, HabitatKind.Forest], ["food", "water"], true, "human", 216, 9, NaturalCapabilities: new(true, true, true, false)),
+        new("spirit-fox", "영호", BodyForm.Quadruped, 1440, [HabitatKind.Forest, HabitatKind.Mountain], ["food", "water"], true, "fox", 144, 6, NaturalCapabilities: new(true, false, true, false)),
+        new("stone-ape", "석원", BodyForm.Quadruped, 1800, [HabitatKind.Mountain, HabitatKind.Cave], ["food", "water"], true, "ape", 240, 12, NaturalCapabilities: new(true, true, true, false)),
+        new("spirit-pine", "영송", BodyForm.RootedPlant, 3600, [HabitatKind.Forest, HabitatKind.Mountain], ["water", "soil"], true, "pine", 600, 12, NaturalCapabilities: new(true, true, false, false)),
+        new("water-spirit", "수령", BodyForm.Spirit, 2400, [HabitatKind.Water, HabitatKind.Marsh], ["water", "ambient-qi"], true, "water-spirit", 240, 12, NaturalCapabilities: new(true, false, true, true))
     ]);
     public static SpeciesDefinition Get(string id) => All.FirstOrDefault(s => s.Id == id) ?? throw new InvalidDataException("Unknown species definition.");
 }

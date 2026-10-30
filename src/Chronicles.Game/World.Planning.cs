@@ -66,7 +66,8 @@ public sealed partial class GameWorld
         IReadOnlyList<AdvertisedInventoryOffer> offers)
     {
         long score = p.Personality.Select((value, axis) => value * goal.Weights[axis]).Sum() +
-            p.Habits.GetValueOrDefault(goal.Habit) * 3L + p.Mood * goal.MoodWeight + PeoplePreference(p, goal.Key);
+            p.Habits.GetValueOrDefault(goal.Habit) * 3L + p.Mood * goal.MoodWeight + PeoplePreference(p, goal.Key) +
+            PeoplePhysiologyPreference(p, goal.Key);
         return score + (goal.Key switch
         {
             "production" => PlanningStock(p, "paper") == 0 || PlanningStock(p, "ink") == 0 ? 250 : 0,

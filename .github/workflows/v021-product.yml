@@ -25,6 +25,8 @@ jobs:
       - run: mkdir -p artifacts
       - name: Planning ledger and negative cases
         run: python3 scripts/validate-v021-plan.py --self-test
+      - name: Static current-product boundary
+        run: python3 scripts/validate-v021-product-boundary.py --self-test --report artifacts/product-boundary.json
       - name: Portable product scenarios
         run: dotnet run --project tests/Chronicles.Game.Tests -c Release -- --report artifacts/product-tests.json
       - name: Portable shell build
@@ -49,7 +51,7 @@ jobs:
       - run: dotnet build src/Chronicles.Desktop -c Release
       - name: Legacy regression including performance — final validation only
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.final_validation }}
-        run: dotnet run --project tests/Chronicles.Tests -c Release
+        run: dotnet run --project legacy/windows-pre-v021/tests/Chronicles.Tests -c Release
       - run: ./scripts/validate-architecture.ps1
       - name: Desktop actual render and bridge
         shell: pwsh

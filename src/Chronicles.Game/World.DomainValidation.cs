@@ -7,6 +7,8 @@ public sealed partial class GameWorld
         var world = new GameWorld(snapshot);
         world.ValidateInventoryBridge();
         world.ValidatePeopleDomain();
+        world.ValidateCurrency();
+        world.ValidateEcologyDomain();
         Knowledge.KnowledgeAuthority.Validate(snapshot.Knowledge);
         var identities = snapshot.People.Select(p => p.Id).ToHashSet();
         var referencedPeople = snapshot.Knowledge.Editions.Select(e => e.ContributorId)

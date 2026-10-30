@@ -50,13 +50,19 @@ public sealed partial class GameWorld
 
     private void Consume(Person p, string definition, int quantity)
     {
+        if (quantity <= 0)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(quantity);
+            return;
+        }
+        var consumed = quantity;
         foreach (var item in Owned(p.Id).Where(i => i.Definition == definition && InventoryAccessible(p, i.Id, out _))
                      .OrderBy(i => i.Id).ToArray())
         {
             var take = Math.Min(quantity, item.Quantity); item.Quantity -= take; quantity -= take;
             Material(definition).Consumption += take;
             if (item.Quantity == 0) Remove(item);
-            if (quantity == 0) return;
+            if (quantity == 0) { RecordEcologyConsumption(p, definition, consumed); return; }
         }
         if (quantity != 0) throw new InvalidOperationException("검증된 소비량이 재고를 초과했습니다.");
     }

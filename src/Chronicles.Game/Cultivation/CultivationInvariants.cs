@@ -22,7 +22,8 @@ public static class CultivationInvariants
             for (var i = 0; i < measures.Count; i++) Require(measures[i] >= 0 && measures[i] <= required / measures.Count + (i < required % measures.Count ? 1 : 0), "current structure progress");
             Require(CultivationProfiles.Find(state.ActivePath)?.Definition.Realm == actor.Realm, "current path realm");
             Require(state.Formations.Count > 0 && state.Formations[^1].Realm == actor.Realm, "current formation evidence");
-            if (actor.GreatPerfection) Require(CultivationEngine.Complete(state, actor, policy), "whole completion is not representative ninth layer");
+            if (actor.GreatPerfection && actor.Status == LifeStatus.Alive)
+                Require(CultivationEngine.Complete(state, actor, policy), "whole completion is not representative ninth layer");
         }
         Require(state.AuxiliaryPath.Length == 0 || (state.AuxiliaryPath != state.ActivePath && CultivationProfiles.Find(state.AuxiliaryPath)?.Definition.Realm == actor.Realm), "compatible auxiliary process");
         foreach (var formation in state.Formations)

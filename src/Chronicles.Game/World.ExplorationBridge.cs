@@ -32,6 +32,15 @@ public sealed partial class GameWorld
     private SecretEntry? OccupiedExploration(Person person) => state.Exploration.Entries.FirstOrDefault(e =>
         e.Person == person.Id && e.Body == person.BodyId && ExplorationAuthority.Occupies(e));
 
+    private bool CarriedExplorationTool(Person person, Item item)
+    {
+        var root = item;
+        while (root.Container != 0) root = items[root.Container];
+        var custody = state.Inventory.Metadata.FirstOrDefault(m => m.Item == root.Id);
+        var holder = custody?.Carrier > 0 ? custody.Carrier : custody?.Custodian > 0 ? custody.Custodian : root.Owner;
+        return root.Place == -1 && holder == person.Id;
+    }
+
     internal bool ShareExplorationSpace(Person first, Person second)
     {
         var one = OccupiedExploration(first); var two = OccupiedExploration(second);
@@ -103,7 +112,7 @@ public sealed partial class GameWorld
             state.Exploration.Entries.Count(e => e.Place == site.Place && ExplorationAuthority.Occupies(e)) >= rules.Capacity)
         { error = "현장에서 입구의 현재 개방·자격·수용 조건을 충족하지 못했습니다."; return true; }
         var tool = Owned(person.Id).Where(i => i.Definition == "tool" && i.Damage < 100 && i.Defects == ItemDefect.None &&
-            InventoryAccessible(person, i.Id, out _)).OrderBy(i => i.Id).FirstOrDefault();
+            InventoryAccessible(person, i.Id, out _) && CarriedExplorationTool(person, i)).OrderBy(i => i.Id).FirstOrDefault();
         if (tool is null || AvailableInventory(person, "food") < rules.Food)
         { error = "사용 가능한 실제 조사 도구와 준비 식량이 필요합니다."; return true; }
         // Compose all physical changes on one isolated inventory candidate, including AI's direct shared dispatch.
@@ -129,6 +138,7 @@ public sealed partial class GameWorld
             Understanding = understanding, Risk = risk, Source = source };
         ApplyInventory(consumed.State);
         entry.Roll = Roll(10000); state.Exploration.NextId = checked(id + 1); state.Exploration.Entries.Add(entry);
+        state.Places[person.Place].PeopleRevision++; person.LastPeopleRevision = -1;
         person.Action = ActionKind.Explore; person.ActionTarget = id; person.ActionData = source;
         person.ActionRevision = rules.Revision; person.Due = entry.Due;
         Event("비경 입장", person.Id, 0, $"{site.Name}에 입장했다. 실제 준비 식량 {rules.Food}개와 조사 도구를 사용한다.", source);
@@ -207,6 +217,7 @@ public sealed partial class GameWorld
             ApplyInventory(released.State);
         }
         entry.Status = status; entry.Ended = Month; entry.EndReason = reason;
+        state.Places[entry.Place].PeopleRevision++; person.LastPeopleRevision = -1;
         if (person.ActionData == entry.Source)
         {
             person.Action = ActionKind.Idle; person.ActionTarget = 0; person.ActionData = ""; person.Due = 0;
@@ -238,7 +249,12 @@ public sealed partial class GameWorld
                     null, null, o.Source)).ToArray();
         var entries = state.Exploration.Entries.Where(e => observer || e.Person == actor!.Id).OrderByDescending(e => e.Id).Select(e =>
             new SecretProgressView(e.Id, e.Place, e.Status.ToString(), e.Progress, e.Rules.Months, e.Started, e.Due, e.Ended, e.Rules.Food, e.Tool,
-                e.Injury, e.RewardItem, e.RewardQuantity, "실제 식량·도구·개인 해독 지식 사용·위험은 불확실", e.EndReason)).ToArray();
+                e.Injury, e.RewardItem, e.RewardQuantity, "실제 식량·도구·개인 해독 지식 사용·위험은 불확실", e.EndReason)
+            {
+                Person = e.Person, ActualBody = observer ? e.Body : null, ActualSoul = observer ? e.Soul : null,
+                ActualRules = observer ? e.Rules : null, ActualRisk = observer ? e.Risk : null, ActualRoll = observer ? e.Roll : null,
+                ActualToolQuality = observer ? e.ToolQuality : null, ActualKnowledgeSource = observer ? e.KnowledgeSource : null
+            }).ToArray();
         return new(entrances, entries);
     }
 

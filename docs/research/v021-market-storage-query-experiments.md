@@ -1,8 +1,9 @@
 # EX-03·05·06 비교 소스 준비
 
 이 PR은 test-only 비교 소스와 작은 고정 정확성 검사3개를 추가한다.
-현재 단계에서는 **Release 빌드만 수행**하며 기능 검사·예열·성능 표본 수집은 실행하지 않았다.
-측정 결과·채택 판단·Android 통과를 작성하지 않는다. 루트의 현재 기준선 측정과 동시 부하를 만들지 않는다.
+초기 소스/빌드 이후 루트가 승인한 **작은 정확성 검사3건을 선택 실행하여 3/3 통과**했다.
+Release 빌드는 경고·오류0개다. 예열·sampler·성능 표본 수집은 실행하지 않았다.
+이 정확성 결과를 측정 결과·채택 판단·Android 통과로 바꾸지 않는다.
 공용 `ExperimentDefinition/ExperimentMeasurement/BackendSample`은 PR147의 준비 schema를 재사용한다.
 
 ## 입력과 실행 경계
@@ -26,7 +27,7 @@
 
 | ID | 기준/후보 | 정확성 경계 | 비용 범위 |
 | --- | --- | --- | --- |
-| EX-03 | 허가 광고 전체 scan / 명시 ContractId·종류 색인 / 색인 재사용 | 같은 후보 규칙·누락/선택·고정 요청 분포, 실제 사용권 철회, 숨은 실제 split 비간섭, 같은 공개 sale 정산·멱등·자산 보존 | 읽기 커널, cold index 구축 포함, 같은 GameCodec 복원·실제 정산 전체를 별도 측정 |
+| EX-03 | 허가 광고 전체 scan / 명시 ContractId·종류 색인 / 색인 재사용 | 같은 후보 규칙·누락/선택·고정 요청 분포, 실제 사용권 철회, 숨은 실제 split 비간섭, 같은 공개 sale 정산·멱등·자산 보존 | 읽기 커널, cold index 구축, 실제 권한/현지 광고 캡처 전체, 같은 GameCodec 복원·실제 정산 전체를 별도 측정 |
 | EX-05 | 현재 JSON GameCodec/GameSaveStore / 같은 envelope를 BCL Brotli로 압축한 원자파일 후보 | 동일 sequence/schema의 바이트, 내용/길이/기존 GameCodec 검증, 완전/부분 pending·backup·손상·이전 원본 보존 | codec/압축·복사·검증 roundtrip과 고유 폴더 생성/정리·Flush(true)·rename·읽기/복원 전체를 분리 |
 | EX-06 | 같은 개인 DTO scan / read index / 입력 지문에 묶인 불변 cache | 같은 행/전체수/page·장비/용기·닫힘, 실제 비공개 split 후 같은 결과, 실제 자기 장비 변경의 cache 무효화 | 커널·cold index/cache 구축·warm reopen·실제 World.View/입력복사/지문부터 응답 직렬화 전체, 닫힌 요청은 조회 호출0·행0 |
 

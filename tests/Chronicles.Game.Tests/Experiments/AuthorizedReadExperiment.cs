@@ -120,13 +120,17 @@ internal static class AuthorizedReadExperiment
                 fixture => Output(new MarketReadIndex(fixture.Market).Read(fixture.Market)), expected),
             ExecutionExperimentScenarios.Sample("EX-03", "authorized-index-reuse", "같은 불변 입력 지문 확인·이미 구축한 ID 색인 읽기·결과 직렬화", "색인 구축은 별도 cold variant/준비 비용", warm, measured, options,
                 fixture => Output((ReferenceEquals(fixture, warm) ? warmIndexed : indexed).Read(fixture.Market)), expected),
+            ExecutionExperimentScenarios.Sample("EX-03", "world-permission-capture-and-scan", "실제 공유권한/현지광고 캡처·안전 DTO 복사/지문·전체 후보/선택/응답", "창세·출품은 별도 준비 비용", warm, measured, options,
+                fixture => Output(ScanMarket(PublicReadFixture.CaptureMarket(fixture.World, fixture.Viewer))), expected),
+            ExecutionExperimentScenarios.Sample("EX-03", "world-permission-capture-and-index", "같은 실제 권한/광고 캡처·안전 DTO 복사/지문·명시 ID 색인 구축/선택/응답", "창세·출품은 별도 준비 비용", warm, measured, options,
+                fixture => { var input = PublicReadFixture.CaptureMarket(fixture.World, fixture.Viewer); return Output(new MarketReadIndex(input).Read(input)); }, expected),
             ExecutionExperimentScenarios.Sample("EX-03", "world-trade-scan-end-to-end", "GameCodec 복원·후보 scan·실제 공개 sale 정산/재전송 검증·최종hash", "fixture 창세/출품은 별도 준비 비용", warm, measured, options,
                 fixture => new(Settle(fixture, ScanMarket(fixture.Market)[0])), correctness.SettlementHash),
             ExecutionExperimentScenarios.Sample("EX-03", "world-trade-index-end-to-end", "GameCodec 복원·허가 입력 index 구축·실제 공개 sale 정산/재전송 검증·최종hash", "fixture 창세/출품은 별도 준비 비용", warm, measured, options,
                 fixture => new(Settle(fixture, new MarketReadIndex(fixture.Market).Read(fixture.Market)[0])), correctness.SettlementHash)
         };
         return new("EX-03", "고정 후보 규칙의 완전일치·선택/누락·실제 사용권과 sale 정산. 제품 AI의 전체 목표 정책/장기 행동 분포를 대체하지 않음.",
-            measured.Hash, measured.CommandHash, correctness, series, "revisit", "원시 비용과 실제 동일 결과를 비교한 뒤 채택 판단. 제품 후보 경로 변경 없음.");
+            measured.Hash, measured.CommandHash, correctness, series, series.Any(row => row.Measurement.Decision == "reject") ? "reject" : "revisit", "원시 비용과 실제 동일 결과를 비교한 뒤 채택 판단. 제품 후보 경로 변경 없음.");
     }
 
     internal sealed record MarketCorrectness(bool SameChoices, bool NoHiddenInput, bool RevokedGrantRemoved,
@@ -226,7 +230,7 @@ internal static class AuthorizedReadExperiment
                 ExecutionExperimentScenarios.Hash(Array.Empty<PersonalReadResponse>()))
         };
         return new("EX-06", "현재 실제 개인 DTO의 첫 지식 페이지/실물·장비·용기와 고정 열기/닫기 요청. 전체 도감/가상 UI 렌더·Android 입력 비용이 아님.",
-            measured.Hash, measured.CommandHash, correctness, series, "revisit", "모든 경로는 권한 필터 뒤 같은 snapshot을 사용. 캐시/index cold 비용과 전체 DTO 비용을 함께 비교해야 함.");
+            measured.Hash, measured.CommandHash, correctness, series, series.Any(row => row.Measurement.Decision == "reject") ? "reject" : "revisit", "모든 경로는 권한 필터 뒤 같은 snapshot을 사용. 캐시/index cold 비용과 전체 DTO 비용을 함께 비교해야 함.");
     }
 
     internal sealed record QueryCorrectness(bool EqualRowsCountsPages, bool HiddenStateNoninterference,

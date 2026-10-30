@@ -41,7 +41,7 @@ internal static class SnapshotStorageExperiment
                 fixture => StoreRoundTrip(fixture, compressed: true, options.Workspace), measured.Hash)
         };
         return new("EX-05", "현재 schema의 같은 GameCodec envelope를 JSON 원자파일과 BCL Brotli 원자파일 후보로 저장. 새 앱 경로/serializer/SQLite를 채택하지 않음.",
-            measured.Hash, measured.CommandHash, correctness, variants, "revisit", "변환·검증·파일 크기·전체 지연/관리할당·복구 한계를 함께 비교한 후 판단. 작은 파일의 압축만으로 채택하지 않음.");
+            measured.Hash, measured.CommandHash, correctness, variants, variants.Any(row => row.Measurement.Decision == "reject") ? "reject" : "revisit", "변환·검증·파일 크기·전체 지연/관리할당·복구 한계를 함께 비교한 후 판단. 작은 파일의 압축만으로 채택하지 않음.");
     }
 
     private static ReadStorageOutput StoreRoundTrip(PublicReadFixture fixture, bool compressed, string? workspace)

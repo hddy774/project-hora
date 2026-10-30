@@ -70,7 +70,8 @@ internal static class ExecutionMeasurementHost
         var commit = Run("git", "rev-parse", "HEAD");
         if (commit.Length != 40 || commit.Any(c => !Uri.IsHexDigit(c)) || Run("git", "status", "--porcelain", "--untracked-files=all").Length != 0)
             throw new InvalidOperationException("실험은 수정/미추적 파일이 없는 고정 소스에서만 실행합니다.");
-        var fingerprint = Run("python3", "scripts/verify-v021-release.py", "fingerprint", "--commit", commit);
+        var root = Run("git", "rev-parse", "--show-toplevel");
+        var fingerprint = Run("python3", Path.Combine(root, "scripts", "verify-v021-release.py"), "fingerprint", "--commit", commit);
         if (fingerprint.Length != 64 || fingerprint.Any(c => !Uri.IsHexDigit(c))) throw new InvalidDataException("제품 source fingerprint를 읽을 수 없습니다.");
         return new(commit, fingerprint, RuntimeInformation.FrameworkDescription, Environment.MachineName,
             RuntimeInformation.OSDescription, RuntimeInformation.ProcessArchitecture.ToString(), Environment.ProcessorCount,

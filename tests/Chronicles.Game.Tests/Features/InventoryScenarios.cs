@@ -547,3 +547,20 @@ public sealed class InventorySharedRecipeRegistryScenario : IFeatureScenario
                 .All(r => InventoryDefinitions.Recipes[r.Consumer].Output == "blankBook"), "Spatial/soul/record media combinations fabricated unsupported physical capabilities.");
     }
 }
+
+public sealed class InventoryConsumptionAuditScenario : IFeatureScenario
+{
+    public string Name => "inventory: consumed final stack retains typed actual quantity location quality and origin evidence";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); state.People[0].Place = 4;
+        var item = InventoryFixture.Add(state, "pill", quality: 4321); InventoryFixture.Item(state, item).Place = 4;
+        InventoryFixture.Accept(ref state, new ConsumeItem("consume-final", 1, item));
+        var audit = state.Ledger.Events.Single(e => e.Kind == "physical-consumption");
+        InventoryFixture.Check(state.Items.All(i => i.Id != item) && audit.Subject == item && audit.Actor == 1 && audit.Owner == 1 &&
+            audit.Definition == "pill" && audit.Quantity == 1 && audit.Place == 4 && audit.Quality == 4321 && audit.ItemSource == "fixture origin" &&
+            !audit.IsLoss && audit.Sequence > 0, "Deleting the final stack erased actual consumption evidence.");
+        InventoryFixture.RoundTrip(ref state);
+        InventoryFixture.Check(state.Ledger.Events.Single(e => e.Sequence == audit.Sequence) == audit, "Save changed typed consumption evidence.");
+    }
+}

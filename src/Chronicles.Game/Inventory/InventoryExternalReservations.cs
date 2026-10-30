@@ -33,7 +33,7 @@ public static partial class InventoryEngine
         {
             var item = ItemAt(state, id);
             Require(item.Reserved == reservation.Id && Location(state, item.Id) == actor.Place, "Reserved physical input is no longer locally accessible.");
-            ConsumePhysical(state, item, item.Quantity);
+            ConsumePhysical(state, item, item.Quantity, actor: actor.Id);
         }
         reservation.Active = false; return reservation.Id;
     }

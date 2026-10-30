@@ -105,6 +105,7 @@ public sealed partial class GameWorld
             state.Inventory.Reservations.Add(new() { Id = reservation, Actor = p.Id, Purpose = "legacy-production", Items = input.Select(i => i.Id).ToList() });
             state.Inventory.Labor.Add(new() { Id = labor, Person = p.Id, Purpose = "production", Start = Math.Max(0, Math.Min(Month, p.Due - 1)), End = Math.Max(Month + 1, p.Due), Units = 100 });
             var job = new ProductionJob { Id = jobId, Actor = p.Id, Recipe = p.ActionData, Place = p.Place, Due = p.Due,
+                OutputDefinition = InventoryDefinitions.Recipes[p.ActionData].Output, OutputQuantity = InventoryDefinitions.Recipes[p.ActionData].Quantity,
                 Labor = labor, Reservation = reservation, Status = "processing", Inputs = input.Select(i => i.Id).ToList(),
                 Quality = (int)(input.Sum(i => (long)i.Quantity * i.Quality) / input.Sum(i => (long)i.Quantity)),
                 Damage = input.Max(i => i.Damage), BoundSoul = input.Where(i => i.BoundSoul != 0).Select(i => i.BoundSoul).Distinct().SingleOrDefault(),
@@ -145,6 +146,16 @@ public sealed partial class GameWorld
         if (items.TryGetValue(id, out var found) && (kind is null || InventoryDefinitions.Definition(found.Definition).Item.Kind == kind) &&
             InventoryEngine.IsAccessible(view, p.Id, id)) { item = found; return true; }
         item = null!; return false;
+    }
+    private void RecordInventoryLoss(Item item, int quantity)
+    {
+        if (quantity <= 0) return;
+        var view = new InventoryState { Items = state.Items, People = state.People, Ledger = state.Inventory };
+        var place = InventoryEngine.Location(view, item.Id);
+        var observed = InventoryEngine.IsAccessible(view, item.Owner, item.Id, requireUncommitted: false);
+        state.Inventory.Events.Add(new(Month, "physical-loss", 0, item.Id, "Actual physical loss before decrement.",
+            checked(state.Inventory.NextEventSequence++), item.Definition, quantity, place, item.Owner, item.Source, true,
+            item.Quality, item.Damage, item.Defects, observed));
     }
     private int AvailableInventory(Person p, string definition) => Owned(p.Id).Where(i => i.Definition == definition &&
         InventoryAccessible(p, i.Id, out _)).Sum(i => i.Quantity);

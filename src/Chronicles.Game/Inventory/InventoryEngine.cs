@@ -134,10 +134,10 @@ public static partial class InventoryEngine
         return item;
     }
     /// <summary>Pure physical authority check; observing this result never creates an item or consumes RNG.</summary>
-    public static bool IsAccessible(InventoryState state, long actor, long item, bool requireOwnership = true)
+    public static bool IsAccessible(InventoryState state, long actor, long item, bool requireOwnership = true, bool requireUncommitted = true)
     {
         ArgumentNullException.ThrowIfNull(state);
-        try { Accessible(state, actor, item, requireOwnership); return true; }
+        try { Accessible(state, actor, item, requireOwnership, requireUncommitted); return true; }
         catch (RuleViolation) { return false; }
     }
     private static int Capacity(InventoryState state, Item item) => item.Damage >= 100 ||
@@ -325,7 +325,7 @@ public static partial class InventoryEngine
         labor!.Active = false; return labor.Id;
     }
     private static void Event(InventoryState state, string kind, long actor, long subject, string detail) =>
-        state.Ledger.Events.Add(new(state.Month, kind, actor, subject, detail));
+        state.Ledger.Events.Add(new(state.Month, kind, actor, subject, detail, checked(state.Ledger.NextEventSequence++)));
     /// <summary>Returns one contribution for each physical item even when it occupies several slots.</summary>
     public static IReadOnlyList<EquipmentContribution> EquipmentContributions(InventoryState state, long person)
     {

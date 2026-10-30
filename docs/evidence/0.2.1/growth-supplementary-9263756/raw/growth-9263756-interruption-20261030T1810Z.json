@@ -1,0 +1,114 @@
+{
+  "kind": "external-process-interruption",
+  "observedAtUtc": "2026-10-30T18:11:52.151856+00:00",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "productSourceFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "originals": [
+    {
+      "seed": 42,
+      "completedCases": 0,
+      "currentCase": "a:42",
+      "observedThroughMonth": 4320,
+      "rawComplete": false,
+      "rawRequestedComplete": false,
+      "rawStatus": "running"
+    },
+    {
+      "seed": 98,
+      "completedCases": 1,
+      "currentCase": "b:98",
+      "observedThroughMonth": 1800,
+      "rawComplete": false,
+      "rawRequestedComplete": false,
+      "rawStatus": "running"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/workspace/scratch/growth-9263756-seed42-genesis.json",
+      "bytes": 252,
+      "sha256": "8eea039869c9d03f8e2ab7186ec5b691601a994f1f1dbfcadbc630b0c644d48d",
+      "mtimeUtc": "2026-10-30T17:13:59.194207+00:00"
+    },
+    {
+      "path": "/workspace/scratch/growth-9263756-seed42-run.json",
+      "bytes": 2622,
+      "sha256": "ca07a01f12658297398afc64f2c7c7861dc5ec44245f77318a587fb05db2aa8d",
+      "mtimeUtc": "2026-10-30T17:13:58.284251+00:00"
+    },
+    {
+      "path": "/workspace/scratch/growth-9263756-seed42.json",
+      "bytes": 148922,
+      "sha256": "a42a500fd75e36ebec65d598ce08184321b5456e194cb22bee6ee0d8677d9ac6",
+      "mtimeUtc": "2026-10-30T18:02:59.819103+00:00"
+    },
+    {
+      "path": "/workspace/scratch/growth-9263756-seed42.log",
+      "bytes": 4965,
+      "sha256": "7fdb91cdc77ee65b5da60135a6a011f66cec8813b719e57730963c0f0f0b5ac0",
+      "mtimeUtc": "2026-10-30T18:02:59.815103+00:00"
+    },
+    {
+      "path": "/workspace/scratch/growth-9263756-seed98-genesis.json",
+      "bytes": 252,
+      "sha256": "6d508dc1f7d8fe3db4a6d95daad14b236ef09612e806ceb518b1dbab187721d8",
+      "mtimeUtc": "2026-10-30T17:13:59.202207+00:00"
+    },
+    {
+      "path": "/workspace/scratch/growth-9263756-seed98-run.json",
+      "bytes": 2622,
+      "sha256": "ece472c22eced510626e3cf9adee8cca130d865fa665f126e80ca1ff55796708",
+      "mtimeUtc": "2026-10-30T17:13:58.291119+00:00"
+    },
+    {
+      "path": "/workspace/scratch/growth-9263756-seed98.json",
+      "bytes": 274087,
+      "sha256": "fe30638464d1bee9b69f1f317c63f70a8c39daa7e72b645026ea0df16a11fab1",
+      "mtimeUtc": "2026-10-30T18:02:27.930985+00:00"
+    },
+    {
+      "path": "/workspace/scratch/growth-9263756-seed98.log",
+      "bytes": 8899,
+      "sha256": "046ea445dcffb91ae8b1551332f00e74f344e2c8dcf6c6087eff3c53a0d7dfb0",
+      "mtimeUtc": "2026-10-30T18:02:27.930985+00:00"
+    }
+  ],
+  "processes": [
+    {
+      "pid": 114044,
+      "observed": "absent"
+    },
+    {
+      "pid": 114047,
+      "state": "Z",
+      "ppid": 1,
+      "rawProcExitStatus": 9,
+      "decodedExit": -9,
+      "rawStat": "114047 (python3) Z 1 114041 114041 0 -1 4228364 4158 1262 0 0 2 0 0 0 20 0 1 0 4949009 0 0 18446744073709551615 0 0 0 0 0 0 0 16781312 2 1 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 9"
+    },
+    {
+      "pid": 114052,
+      "state": "Z",
+      "ppid": 1,
+      "rawProcExitStatus": 9,
+      "decodedExit": -9,
+      "rawStat": "114052 (dotnet) Z 1 114040 114040 0 -1 4228364 63030510 139644 0 0 269576 8958 34 14 20 0 1 0 4949012 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 214270 1 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 9"
+    },
+    {
+      "pid": 114058,
+      "state": "Z",
+      "ppid": 1,
+      "rawProcExitStatus": 9,
+      "decodedExit": -9,
+      "rawStat": "114058 (dotnet) Z 1 114041 114041 0 -1 4228364 34030846 139639 0 0 273265 5423 37 13 20 0 1 0 4949013 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 214270 1 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 9"
+    }
+  ],
+  "termination": "SIGKILL observed via raw zombie exit status9; sender and cause unconfirmed",
+  "actualWaitUnavailable": "Original wrappers are absent/zombie and tool sessions21122/17183 no longer exist; current observer cannot reap PPID1 children. No invented wait exit code.",
+  "memoryEventsAtObservation": "low 0\nhigh 0\nmax 51357\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "rootIndependentRecord": "/workspace/scratch/observed-measurement-interruption-20261030T1806Z.json",
+  "resumeSupported": false,
+  "resumeEvidence": "GrowthScenarios.cs49 explicitly excludes growth save/resume; Checkpoint() stays in memory, no durable world to resume.",
+  "preservation": "Original bytes/status/complete flags unchanged. a98 completed case retained but not spliced into restarted full9 results.",
+  "nextAction": "Same926 source, DLLs, original seeds/conditions6000mo/120; fresh paths restart1 for42/98 onCPU1/2. Seed2026 remains queued; CPU3 reserved for people AI restart."
+}

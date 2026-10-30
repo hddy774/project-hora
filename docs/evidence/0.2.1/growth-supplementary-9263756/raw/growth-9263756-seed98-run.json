@@ -1,0 +1,68 @@
+{
+  "kind": "seonro-growth-run",
+  "status": "running",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "productSourceFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "sourceWorktreeCleanAtLaunch": true,
+  "assemblies": [
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "0df975061b6a786ebc3136d6b9331ddcc42037206dca6c414ca58dfcfa9c1a94",
+      "assemblyInformationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26"
+    },
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "bytes": 2255872,
+      "sha256": "711a57912c4fdd7a94fcf7270f87a232edeb85748d6ea4ecf2ec81ce343cfa3d",
+      "assemblyInformationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26"
+    },
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "3322353f72ad49ed3d483a5f6ae4db69859b643038995705ab554601f2b09985",
+      "assemblyInformationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26"
+    },
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "bytes": 1477120,
+      "sha256": "298ff113eb93762437b8325f83fdc5cce65e03c8b69eca515a468e9a1a4cd599",
+      "assemblyInformationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26"
+    }
+  ],
+  "cwd": "/workspace/seonro-growth-9263756",
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "/workspace/.dotnet/dotnet",
+    "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/growth-9263756-seed98-genesis.json",
+    "--growth",
+    "/workspace/scratch/growth-9263756-seed98.json",
+    "--growth-seed",
+    "98"
+  ],
+  "seed": 98,
+  "scenarios": [
+    "a",
+    "b",
+    "c"
+  ],
+  "horizonMonths": 6000,
+  "observationIntervalMonths": 120,
+  "startedUtc": "2026-10-30T17:13:58.290705+00:00",
+  "wrapperPid": 114047,
+  "cpuRequested": 2,
+  "cpuMax": "400000 100000",
+  "cpusetEffective": "0-4",
+  "concurrencyScope": "Growth42/98 CPU1/2 concurrent with root baselineCPU0 and people AI108CPU3. Seed2026 queued until explicit CPU3 handoff. Wall time is concurrent calibration, not a hardware-speed claim.",
+  "actualCalibrationKeyChanges": 0,
+  "pid": 114058,
+  "affinityObserved": [
+    2
+  ]
+}

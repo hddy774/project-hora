@@ -1,0 +1,116 @@
+{
+  "kind": "seonro-growth-run",
+  "status": "process-failed",
+  "attempt": "initial-queued-seed2026",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "productSourceFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "sourceWorktreeCleanAtLaunch": true,
+  "assemblyVerification": {
+    "mode": "quiet-window startup: cached prior full-byte/CA verification reused; file sizes/mtimes recorded; no fresh hash or source fingerprint calculated",
+    "priorFullByteCheck": "restart1 launch 2026-10-30T18:11:52Z and preparation record",
+    "postQuietFullByteCheck": "pending after 19:36Z, separate metadata only"
+  },
+  "cpuHandoffEvidence": {
+    "pid": 121165,
+    "exitCode": 0,
+    "exitedUtc": "2026-10-30T19:21:29.263585Z",
+    "record": "/workspace/scratch/agent-metrics-9263756-restart1-exit.json"
+  },
+  "assemblies": [
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "0df975061b6a786ebc3136d6b9331ddcc42037206dca6c414ca58dfcfa9c1a94",
+      "assemblyInformationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "launchObservedBytes": 5120,
+      "launchObservedMtimeNs": 1793379928739733759
+    },
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "bytes": 2255872,
+      "sha256": "711a57912c4fdd7a94fcf7270f87a232edeb85748d6ea4ecf2ec81ce343cfa3d",
+      "assemblyInformationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "launchObservedBytes": 2255872,
+      "launchObservedMtimeNs": 1793379943002020525
+    },
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "3322353f72ad49ed3d483a5f6ae4db69859b643038995705ab554601f2b09985",
+      "assemblyInformationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "launchObservedBytes": 23552,
+      "launchObservedMtimeNs": 1793379944839498261
+    },
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "bytes": 1477120,
+      "sha256": "298ff113eb93762437b8325f83fdc5cce65e03c8b69eca515a468e9a1a4cd599",
+      "assemblyInformationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "launchObservedBytes": 1477120,
+      "launchObservedMtimeNs": 1793379956697844150
+    }
+  ],
+  "cwd": "/workspace/seonro-growth-9263756",
+  "command": [
+    "taskset",
+    "-c",
+    "3",
+    "/workspace/.dotnet/dotnet",
+    "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/growth-9263756-seed2026-genesis.json",
+    "--growth",
+    "/workspace/scratch/growth-9263756-seed2026.json",
+    "--growth-seed",
+    "2026"
+  ],
+  "seed": 2026,
+  "scenarios": [
+    "a",
+    "b",
+    "c"
+  ],
+  "horizonMonths": 6000,
+  "observationIntervalMonths": 120,
+  "startedUtc": "2026-10-30T19:24:10.084350+00:00",
+  "wrapperPid": 132977,
+  "wrapperSession": 132977,
+  "cpuRequested": 3,
+  "cpuMax": "400000 100000",
+  "cpusetEffective": "0-4",
+  "concurrencyScope": "Growth42/98 restart1 CPU1/2 continue; seed2026 CPU3 begins after actual AI108 exit0 handoff19:21:29Z during root af91 quiet diagnostic19:16-19:36. CPU0 reserved root. Concurrent wall time is not pure CPU/device-speed evidence.",
+  "sharedSchedulingHistory": "/workspace/scratch/growth-9263756-interruption-20261030T1810Z.json",
+  "transport": "Detached supervisor and separate child session; command/game inputs unchanged. Prior other-seed external SIGKILL sender/cause remains unknown; this seed2026 has no prior attempt.",
+  "actualCalibrationKeyChanges": 0,
+  "pid": 132980,
+  "childSession": 132980,
+  "affinityObserved": [
+    3
+  ],
+  "exitCode": -15,
+  "finishedUtc": "2026-10-30T21:03:38.907638+00:00",
+  "wallElapsedSeconds": 5968.823092381994,
+  "artifacts": [
+    {
+      "path": "/workspace/scratch/growth-9263756-seed2026.json",
+      "bytes": 317495,
+      "sha256": "d9fd066efa915a64fbff7c820e2aa099358512874cf0415934c45c42cc15a360"
+    },
+    {
+      "path": "/workspace/scratch/growth-9263756-seed2026.log",
+      "bytes": 11067,
+      "sha256": "9e17f4d2c54ac6965629a11e04db37cb52ffe58674e87d181707c444f1d08cfa"
+    },
+    {
+      "path": "/workspace/scratch/growth-9263756-seed2026-genesis.json",
+      "bytes": 252,
+      "sha256": "441c7645381938755e661a1c33fabd8ec901b4d6c6c3fc9a65ed0aa7f47aea8d"
+    }
+  ],
+  "rawReportStatus": "partial",
+  "rawComplete": false,
+  "rawRequestedComplete": false,
+  "completedCohortsInThisProcess": 1
+}

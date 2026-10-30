@@ -1,0 +1,37 @@
+{
+  "kind": "post-quiet-full-byte-revalidation",
+  "observedUtc": "2026-10-30T19:41:34.490039+00:00",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "launchUtc": "2026-10-30T19:24:10.084350+00:00",
+  "scope": "One fresh full-byte check after explicit root quiet release. Launch reused prior verified binaries and stat data; this check is separate metadata and does not rewrite raw runs.",
+  "checks": [
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "0df975061b6a786ebc3136d6b9331ddcc42037206dca6c414ca58dfcfa9c1a94",
+      "matchesPriorVerifiedBuild": true,
+      "mtimeNsUnchangedSince2026Launch": true
+    },
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "bytes": 2255872,
+      "sha256": "711a57912c4fdd7a94fcf7270f87a232edeb85748d6ea4ecf2ec81ce343cfa3d",
+      "matchesPriorVerifiedBuild": true,
+      "mtimeNsUnchangedSince2026Launch": true
+    },
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "3322353f72ad49ed3d483a5f6ae4db69859b643038995705ab554601f2b09985",
+      "matchesPriorVerifiedBuild": true,
+      "mtimeNsUnchangedSince2026Launch": true
+    },
+    {
+      "path": "/workspace/seonro-growth-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "bytes": 1477120,
+      "sha256": "298ff113eb93762437b8325f83fdc5cce65e03c8b69eca515a468e9a1a4cd599",
+      "matchesPriorVerifiedBuild": true,
+      "mtimeNsUnchangedSince2026Launch": true
+    }
+  ]
+}

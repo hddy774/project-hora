@@ -1,0 +1,145 @@
+{
+  "kind": "intentional-supplementary-duplicate-stop-after-verified-primary9",
+  "comparisonObservedUtc": "2026-10-30T21:02:01.625291+00:00",
+  "supplementarySourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "primarySourceCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "primaryOfficialAggregateSha256": "bd592d544766dfff2ba39ece2a531513610ccca3b0c24b86061e9d9b0626e0ab",
+  "primaryFinalVerificationSha256": "c74f85bd5c1aab95d403498039c1c400cab658618478c834608903a0d59196a0",
+  "primaryComplete": true,
+  "primaryCases": 9,
+  "comparisonScope": "All retained non-timing time-series prefixes, actual laws, stable inputs, already-observed milestones and all available final hashes. Completed cohorts also compare all non-timing cohort fields. Partial future cohort aggregates/unobserved states are not claimed. No world re-execution.",
+  "checks": [
+    {
+      "scenario": "a",
+      "seed": 42,
+      "observedThrough": 6000,
+      "status": "completed",
+      "samples": 51,
+      "completed": true,
+      "availableFinalHash": "559a3bcc0cbf7b8fc99b822956cbb7e91570e985f2350825ae14b8a7fb61b72e",
+      "differences": [],
+      "same": true
+    },
+    {
+      "scenario": "b",
+      "seed": 42,
+      "observedThrough": 6000,
+      "status": "completed",
+      "samples": 51,
+      "completed": true,
+      "availableFinalHash": "cd48fdd2759777f68e5c1b018ff3aab224d97c408a73a8ee16353e76521f5236",
+      "differences": [],
+      "same": true
+    },
+    {
+      "scenario": "c",
+      "seed": 42,
+      "observedThrough": 360,
+      "status": "running",
+      "samples": 4,
+      "completed": false,
+      "availableFinalHash": "41009380e2da495fef134fa2ea06e0e05ce6c61bd01d3639bf8f96e3b22d8be5",
+      "differences": [
+        "available finalHash"
+      ],
+      "same": false
+    },
+    {
+      "scenario": "a",
+      "seed": 98,
+      "observedThrough": 6000,
+      "status": "completed",
+      "samples": 51,
+      "completed": true,
+      "availableFinalHash": "0edcf59a25387f937d5d1a61d826f1200e7d2de77ad523573f93bba0ca3f904d",
+      "differences": [],
+      "same": true
+    },
+    {
+      "scenario": "b",
+      "seed": 98,
+      "observedThrough": 6000,
+      "status": "completed",
+      "samples": 51,
+      "completed": true,
+      "availableFinalHash": "4a3c49251a36821c95c4042a62b29f90659ee2dabf1682a05a362aead38b0709",
+      "differences": [],
+      "same": true
+    },
+    {
+      "scenario": "c",
+      "seed": 98,
+      "observedThrough": 6000,
+      "status": "completed",
+      "samples": 51,
+      "completed": true,
+      "availableFinalHash": "a70264fa0ff0256eb5bb8d136f23172cbe45ece104e3191a022ac2a20e0c7b71",
+      "differences": [],
+      "same": true
+    },
+    {
+      "scenario": "a",
+      "seed": 2026,
+      "observedThrough": 6000,
+      "status": "completed",
+      "samples": 51,
+      "completed": true,
+      "availableFinalHash": "6eec2261861249253f4961586013ec3ae7f5b3f462d4b39870da4d6bef5ee3a6",
+      "differences": [],
+      "same": true
+    },
+    {
+      "scenario": "b",
+      "seed": 2026,
+      "observedThrough": 3480,
+      "status": "running",
+      "samples": 30,
+      "completed": false,
+      "availableFinalHash": "61f061cc21ce14cb40f8fe54e4aa537f7b1002290c78a7da3841a9d010934245",
+      "differences": [
+        "available finalHash"
+      ],
+      "same": false
+    }
+  ],
+  "snapshots": [
+    {
+      "seed": 42,
+      "pid": 120460,
+      "stem": "/workspace/scratch/growth-9263756-seed42-restart1",
+      "beforeRawSha256": "35596deca4987a449470e0698d2ea5da8a6c1cf57a9679a7bbd50762b35bed4b",
+      "rawCompletedCases": 2,
+      "rawComplete": false,
+      "rawRequestedComplete": false,
+      "lastCase": "c:42",
+      "beforeObservedThrough": 360
+    },
+    {
+      "seed": 98,
+      "pid": 120473,
+      "stem": "/workspace/scratch/growth-9263756-seed98-restart1",
+      "beforeRawSha256": "7ee75da7a89ea1f5cfa87a1a5b9d390918fbd7a0bde83807b8ef67a931629ef8",
+      "rawCompletedCases": 3,
+      "rawComplete": false,
+      "rawRequestedComplete": true,
+      "lastCase": null,
+      "beforeObservedThrough": 6000
+    },
+    {
+      "seed": 2026,
+      "pid": 132980,
+      "stem": "/workspace/scratch/growth-9263756-seed2026",
+      "beforeRawSha256": "45f8ce070e0a79d33dbf430a6c4796e8634682b3084f6545adf4359029c9ab8e",
+      "rawCompletedCases": 1,
+      "rawComplete": false,
+      "rawRequestedComplete": false,
+      "lastCase": "b:2026",
+      "beforeObservedThrough": 3480
+    }
+  ],
+  "intent": "Root explicitly authorized ending redundant supplementary926 only after equality. Original raw/flags/logs are never rewritten; new primary7ce/long-running tasks are untouched.",
+  "terminationSender": "politics owned observer after exact PID/command/path verification",
+  "signals": [],
+  "after": [],
+  "result": "mismatch-no-signals-sent"
+}

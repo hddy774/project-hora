@@ -5,6 +5,8 @@ This verifier never signs, reads credentials, runs performance measurements, or
 publishes. Evidence-only commits do not change the product source fingerprint.
 """
 import argparse
+import copy
+from datetime import datetime
 import hashlib
 import json
 import math
@@ -20,6 +22,9 @@ REPOSITORY = "hddy774/project-hora"
 PACKAGE = "org.hora.xianxiaobserver"
 CERTIFICATE = "0832f24441f1caf335166fbc16ae0b9536e262ca48f258926a8027fc31dca25a"
 WORKFLOW = ".github/workflows/v021-release.yml"
+OWNER = "hddy774"
+RELEASE_COMMAND = "/선로만상록 0.2.1 릴리스"
+RELEASE_PR = 84
 READINESS = "docs/evidence/0.2.1/release-readiness.json"
 RELEASE_ONLY = {"scripts/verify-v021-release.py", "scripts/v021-release-emulator.py", "scripts/publish-v021-release.py"}
 PERFORMANCE_POLICY = "v021-revision6-section11-T04"
@@ -89,32 +94,153 @@ def fingerprint(commit="HEAD"):
     return digest.hexdigest()
 
 
-def owner_context():
-    require(os.environ.get("GITHUB_ACTIONS") == "true", "Release operations run in GitHub Actions only")
-    require(os.environ.get("GITHUB_REPOSITORY") == REPOSITORY and os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch",
-            "Owner manual workflow required")
-    require(os.environ.get("GITHUB_REF") == "refs/heads/main", "Release must run from merged main")
-    require(os.environ.get("GITHUB_ACTOR") == "hddy774" and os.environ.get("GITHUB_TRIGGERING_ACTOR") == "hddy774",
+def input_boolean(inputs, name, default):
+    value = inputs.get(name, default)
+    require(type(value) is bool or type(value) is str and value in ("true", "false"), "Invalid release boolean input: " + name)
+    return value is True or value == "true"
+
+
+def release_timestamp(value):
+    require(isinstance(value, str), "Release timestamp missing")
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    require(parsed.utcoffset() is not None, "Release timestamp must have a timezone")
+    return parsed
+
+
+def owner_comment(comment):
+    require(isinstance(comment, dict) and type(comment.get("id")) is int and comment["id"] > 0,
+            "Owner release comment identity missing")
+    require(comment.get("body") == RELEASE_COMMAND and comment.get("user", {}).get("login") == OWNER and
+            comment.get("author_association") == "OWNER", "Exact repository-owner release command required")
+    require(comment.get("issue_url") == "https://api.github.com/repos/" + REPOSITORY + "/issues/84" and
+            comment.get("html_url") == "https://github.com/" + REPOSITORY + "/pull/84#issuecomment-" + str(comment["id"]),
+            "Release comment belongs to a different pull request")
+    created = comment.get("created_at")
+    require(isinstance(created, str) and comment.get("updated_at") == created, "Edited release requests are rejected")
+    release_timestamp(created)
+    return comment["id"], created
+
+
+def release_request_context(environment=None, event=None):
+    environment = os.environ if environment is None else environment
+    require(environment.get("GITHUB_ACTIONS") == "true" and environment.get("GITHUB_REPOSITORY") == REPOSITORY,
+            "Release operations require this repository's GitHub Actions")
+    require(environment.get("GITHUB_ACTOR") == OWNER and environment.get("GITHUB_TRIGGERING_ACTOR") == OWNER,
             "Repository owner must request and rerun release")
-    require(run("git", "rev-parse", "HEAD").strip() == os.environ.get("GITHUB_SHA"), "Checkout is not the exact dispatched source")
+    require(environment.get("GITHUB_REF") == "refs/heads/main", "Release must run from merged main")
+    commit = environment.get("GITHUB_SHA", "")
+    require(re.fullmatch(r"[0-9a-f]{40}", commit) is not None and
+            environment.get("GITHUB_WORKFLOW_SHA") == commit and
+            environment.get("GITHUB_WORKFLOW_REF") == REPOSITORY + "/" + WORKFLOW + "@refs/heads/main",
+            "Exact main release workflow/source required")
+    require(all(re.fullmatch(r"[1-9][0-9]*", environment.get(key, "")) is not None
+                for key in ("GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT")), "Actual run and attempt identifiers required")
+    name = environment.get("GITHUB_EVENT_NAME")
+    require(name in ("workflow_dispatch", "issue_comment"), "Unsupported actual release event")
+    if event is None:
+        require(environment.get("GITHUB_EVENT_PATH"), "Actual GitHub event payload required")
+        event = read(environment["GITHUB_EVENT_PATH"])
+    require(isinstance(event, dict) and event.get("repository", {}).get("full_name") == REPOSITORY and
+            event.get("sender", {}).get("login") == OWNER, "Actual owner/repository event payload required")
+    request = {"event": name, "mode": "manual", "source_commit": commit,
+               "publish": False, "verify_upgrade": True, "pull_request": None,
+               "comment_id": None, "comment_created_at": None, "command": None}
+    if name == "workflow_dispatch":
+        require(event.get("ref") in ("main", "refs/heads/main") and "issue" not in event and "comment" not in event,
+                "Dispatch payload cannot impersonate a comment request")
+        inputs = event.get("inputs", {})
+        require(isinstance(inputs, dict), "Manual release inputs missing")
+        request.update(publish=input_boolean(inputs, "publish", False),
+                       verify_upgrade=input_boolean(inputs, "verify_upgrade", True))
+    else:
+        issue = event.get("issue", {})
+        require(event.get("action") == "created" and "inputs" not in event and
+                type(issue.get("number")) is int and issue["number"] == RELEASE_PR and issue.get("state") == "closed" and
+                issue.get("pull_request", {}).get("url") == "https://api.github.com/repos/" + REPOSITORY + "/pulls/84",
+                "A created command on merged main PR84 is required")
+        identifier, created = owner_comment(event.get("comment"))
+        request.update(mode="owner-comment", publish=True, verify_upgrade=True, pull_request=RELEASE_PR,
+                       comment_id=identifier, comment_created_at=created, command=RELEASE_COMMAND)
+    return request
+
+
+def remote_request_context(request, main_ref, pull_request=None, comment=None):
+    require(isinstance(main_ref, dict) and main_ref.get("ref") == "refs/heads/main" and main_ref.get("object", {}).get("type") == "commit" and
+            main_ref["object"].get("sha") == request["source_commit"], "Main changed after the release request")
+    if request["mode"] == "manual":
+        return None
+    require(isinstance(pull_request, dict) and type(pull_request.get("number")) is int and pull_request["number"] == RELEASE_PR and
+            pull_request.get("merged") is True and pull_request.get("state") == "closed" and
+            pull_request.get("base", {}).get("ref") == "main" and
+            pull_request.get("base", {}).get("repo", {}).get("full_name") == REPOSITORY and
+            pull_request.get("url") == "https://api.github.com/repos/" + REPOSITORY + "/pulls/84",
+            "PR84 must actually be merged into this repository's main")
+    merge = pull_request.get("merge_commit_sha", "")
+    merged_at = pull_request.get("merged_at")
+    require(re.fullmatch(r"[0-9a-f]{40}", merge) is not None and isinstance(merged_at, str), "Actual PR84 merge evidence missing")
+    identifier, created = owner_comment(comment)
+    require(identifier == request["comment_id"] and created == request["comment_created_at"],
+            "The actual original owner request changed")
+    require(release_timestamp(merged_at) <= release_timestamp(created),
+            "Release command must be created after PR84 merged")
+    require(request["publish"] is True and request["verify_upgrade"] is True and request["command"] == RELEASE_COMMAND,
+            "Comment release requires publication and retained-signature upgrade")
+    return merge
+
+
+def github_read(path):
+    require(os.environ.get("GH_TOKEN"), "Current Actions token required for release provenance reads")
+    return json.loads(run("gh", "api", "repos/" + REPOSITORY + "/" + path))
+
+
+def owner_context():
+    request = release_request_context()
+    require(run("git", "rev-parse", "HEAD").strip() == request["source_commit"], "Checkout is not the exact requested source")
+    pull, comment = None, None
+    if request["mode"] == "owner-comment":
+        pull = github_read("pulls/84")
+        comment = github_read("issues/comments/" + str(request["comment_id"]))
+    merge = remote_request_context(request, github_read("git/ref/heads/main"), pull, comment)
+    if merge is not None:
+        run("git", "merge-base", "--is-ancestor", merge, request["source_commit"])
+    return request
+
+
+def actual_run_context(source, request, metadata):
+    require(source.get("request") == request and source.get("event") == request["event"] and request["publish"] is True,
+            "Publisher must use the same actual publication request")
+    require(metadata.get("event") == request["event"] and metadata.get("actor", {}).get("login") == OWNER and
+            metadata.get("triggering_actor", {}).get("login") == OWNER and
+            metadata.get("head_repository", {}).get("full_name") == REPOSITORY and
+            metadata.get("repository", {}).get("full_name") == REPOSITORY and
+            metadata.get("head_sha") == source["source_commit"] == request["source_commit"] and
+            metadata.get("head_branch") == "main" and metadata.get("path") == WORKFLOW and
+            type(metadata.get("run_attempt")) is int and metadata["run_attempt"] > 0 and str(metadata["run_attempt"]) == source["run_attempt"] and
+            type(metadata.get("id")) is int and metadata["id"] > 0 and str(metadata["id"]) == source["run_id"],
+            "Actual release event/owner/run/attempt/main source mismatch")
+    if request["mode"] == "owner-comment":
+        require(request["verify_upgrade"] is True, "Comment publication cannot omit the upgrade check")
 
 
 def source_record():
+    request = release_request_context()
     v, code = version()
     commit = run("git", "rev-parse", "HEAD").strip()
     require(re.fullmatch(r"[0-9a-f]{40}", commit) is not None, "Missing source commit")
+    require(commit == request["source_commit"], "Source changed after release request verification")
     require(not run("git", "status", "--porcelain", "--untracked-files=no").strip(), "Tracked release checkout must be clean")
     return {"schema_version": 1, "repository": REPOSITORY, "source_commit": commit,
             "product_source_fingerprint": fingerprint(), "version": v, "version_code": code, "application_id": PACKAGE,
             "certificate_sha256": CERTIFICATE, "tag": "xianxia-observer/v" + v,
             "apk_name": "SeonroMansangrok-v" + v + ".apk", "release_name": "선로만상록 v" + v,
-            "workflow": WORKFLOW, "run_id": os.environ.get("GITHUB_RUN_ID"), "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT")}
+            "workflow": WORKFLOW, "event": request["event"], "request": request,
+            "run_id": os.environ.get("GITHUB_RUN_ID"), "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT")}
 
 
 def check_source(record):
     current = source_record()
     for key in ("schema_version", "repository", "source_commit", "product_source_fingerprint", "version", "version_code",
-                "application_id", "certificate_sha256", "tag", "apk_name", "workflow", "run_id", "run_attempt"):
+                "application_id", "certificate_sha256", "tag", "apk_name", "workflow", "event", "request", "run_id", "run_attempt"):
         require(record.get(key) == current[key], "Source/run mismatch: " + key)
     return current
 
@@ -442,6 +568,120 @@ def platform_gate(source, signed, windows, android, require_upgrade=False):
                     "Requested actual retained-signature/data upgrade failed")
 
 
+def request_guard_self_test():
+    # Pure validator dictionaries: no API, signing, workflow, app, release or credentials are used.
+    commit = "a" * 40
+    environment = {"GITHUB_ACTIONS": "true", "GITHUB_REPOSITORY": REPOSITORY,
+        "GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_REF": "refs/heads/main", "GITHUB_SHA": commit,
+        "GITHUB_WORKFLOW_SHA": commit, "GITHUB_WORKFLOW_REF": REPOSITORY + "/" + WORKFLOW + "@refs/heads/main",
+        "GITHUB_ACTOR": OWNER, "GITHUB_TRIGGERING_ACTOR": OWNER, "GITHUB_RUN_ID": "123", "GITHUB_RUN_ATTEMPT": "1"}
+    common = {"repository": {"full_name": REPOSITORY}, "sender": {"login": OWNER}}
+    manual = {**common, "ref": "main", "inputs": {"publish": "true", "verify_upgrade": "true"}}
+    comment = {"id": 321, "body": RELEASE_COMMAND, "user": {"login": OWNER}, "author_association": "OWNER",
+        "issue_url": "https://api.github.com/repos/" + REPOSITORY + "/issues/84",
+        "html_url": "https://github.com/" + REPOSITORY + "/pull/84#issuecomment-321",
+        "created_at": "2026-10-30T10:01:00Z", "updated_at": "2026-10-30T10:01:00Z"}
+    event = {**common, "action": "created", "issue": {"number": RELEASE_PR, "state": "closed",
+        "pull_request": {"url": "https://api.github.com/repos/" + REPOSITORY + "/pulls/84"}}, "comment": comment}
+    comment_environment = {**environment, "GITHUB_EVENT_NAME": "issue_comment"}
+    main_ref = {"ref": "refs/heads/main", "object": {"type": "commit", "sha": commit}}
+    pull = {"number": RELEASE_PR, "merged": True, "state": "closed", "merge_commit_sha": commit,
+        "merged_at": "2026-10-30T10:00:00Z", "url": "https://api.github.com/repos/" + REPOSITORY + "/pulls/84",
+        "base": {"ref": "main", "repo": {"full_name": REPOSITORY}}}
+    manual_request = release_request_context(environment, manual)
+    request = release_request_context(comment_environment, event)
+    require(request["event"] == "issue_comment" and request["publish"] is True and request["verify_upgrade"] is True,
+            "Comment mode must record the actual event and both mandatory options")
+    remote_request_context(manual_request, main_ref)
+    require(remote_request_context(request, main_ref, pull, comment) == commit, "Valid merged owner command rejected")
+
+    def changed(value, path, replacement):
+        result = copy.deepcopy(value); target = result
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = replacement
+        return result
+
+    cases = []
+    for name, field, value in (("repository", "GITHUB_REPOSITORY", "other/project-hora"),
+            ("actor", "GITHUB_ACTOR", "other"), ("rerun actor", "GITHUB_TRIGGERING_ACTOR", "other"),
+            ("branch", "GITHUB_REF", "refs/heads/dev"), ("unsupported event", "GITHUB_EVENT_NAME", "push"),
+            ("workflow source", "GITHUB_WORKFLOW_SHA", "b" * 40), ("workflow path", "GITHUB_WORKFLOW_REF", REPOSITORY + "/other.yml@refs/heads/main"),
+            ("missing attempt", "GITHUB_RUN_ATTEMPT", "0")):
+        cases.append((name, lambda f=field, v=value: release_request_context({**comment_environment, f: v}, event)))
+    for name, path, value in (("edited event", ["action"], "edited"), ("other PR", ["issue", "number"], 85),
+            ("ordinary issue", ["issue", "pull_request"], {}), ("unmerged event", ["issue", "state"], "open"),
+            ("command prefix", ["comment", "body"], "please " + RELEASE_COMMAND),
+            ("command newline", ["comment", "body"], RELEASE_COMMAND + "\n"),
+            ("different version", ["comment", "body"], "/선로만상록 0.2.0 릴리스"),
+            ("other author", ["comment", "user", "login"], "other"), ("non-owner association", ["comment", "author_association"], "MEMBER"),
+            ("edited original", ["comment", "updated_at"], "2026-10-30T10:02:00Z"),
+            ("other payload sender", ["sender", "login"], "other"),
+            ("other payload repository", ["repository", "full_name"], "other/project-hora")):
+        cases.append((name, lambda p=path, v=value: release_request_context(comment_environment, changed(event, p, v))))
+    cases.append(("comment disguised as dispatch", lambda: release_request_context(environment, event)))
+    cases.append(("comment input override", lambda: release_request_context(comment_environment, {**event, "inputs": {"verify_upgrade": False}})))
+    cases.append(("malformed manual boolean", lambda: release_request_context(environment, {**manual, "inputs": {"publish": "TRUE"}})))
+    for name, path, value in (("main advanced", ["object", "sha"], "b" * 40), ("other main ref", ["ref"], "refs/heads/dev")):
+        cases.append((name, lambda p=path, v=value: remote_request_context(request, changed(main_ref, p, v), pull, comment)))
+    for name, path, value in (("unmerged PR", ["merged"], False), ("other API PR", ["number"], 85),
+            ("other base", ["base", "ref"], "dev"), ("other base repository", ["base", "repo", "full_name"], "other/project-hora"),
+            ("command before merge", ["merged_at"], "2026-10-30T10:02:00Z"), ("missing actual merge", ["merge_commit_sha"], "")):
+        cases.append((name, lambda p=path, v=value: remote_request_context(request, main_ref, changed(pull, p, v), comment)))
+    for name, path, value in (("different original request", ["id"], 322), ("live comment edited", ["updated_at"], "2026-10-30T10:02:00Z"),
+            ("live command changed", ["body"], RELEASE_COMMAND + "!"), ("live comment moved", ["issue_url"], "https://api.github.com/repos/" + REPOSITORY + "/issues/85")):
+        cases.append((name, lambda p=path, v=value: remote_request_context(request, main_ref, pull, changed(comment, p, v))))
+    source = {"event": "issue_comment", "request": request, "source_commit": commit, "run_id": "123", "run_attempt": "1"}
+    metadata = {"id": 123, "event": "issue_comment", "actor": {"login": OWNER}, "triggering_actor": {"login": OWNER},
+        "head_repository": {"full_name": REPOSITORY}, "repository": {"full_name": REPOSITORY},
+        "head_sha": commit, "head_branch": "main", "path": WORKFLOW, "run_attempt": 1}
+    actual_run_context(source, request, metadata)
+    for name, path, value in (("actual event normalized", ["event"], "workflow_dispatch"), ("actual rerun actor", ["triggering_actor", "login"], "other"),
+            ("actual source changed", ["head_sha"], "b" * 40), ("actual branch", ["head_branch"], "dev"),
+            ("actual repository", ["head_repository", "full_name"], "other/project-hora"), ("actual workflow", ["path"], "other.yml"),
+            ("actual attempt mismatch", ["run_attempt"], 2), ("actual run mismatch", ["id"], 124)):
+        cases.append((name, lambda p=path, v=value: actual_run_context(source, request, changed(metadata, p, v))))
+    cases.append(("artifact event normalized", lambda: actual_run_context({**source, "event": "workflow_dispatch"}, request, metadata)))
+    cases.append(("artifact request swapped", lambda: actual_run_context({**source, "request": {**request, "comment_id": 999}}, request, metadata)))
+    cases.append(("comment upgrade removed", lambda: actual_run_context({**source, "request": {**request, "verify_upgrade": False}},
+                                                                 {**request, "verify_upgrade": False}, metadata)))
+    positives = 3
+    # Preserve existing explicit manual diagnostic choices and normal owner reruns.
+    diagnostic = release_request_context(environment, {**manual, "inputs": {"publish": False, "verify_upgrade": False}})
+    require(diagnostic["publish"] is False and diagnostic["verify_upgrade"] is False, "Manual diagnostics changed")
+    optional_upgrade = release_request_context(environment, {**manual, "inputs": {"publish": True, "verify_upgrade": False}})
+    actual_run_context({**source, "event": "workflow_dispatch", "request": optional_upgrade}, optional_upgrade,
+                       {**metadata, "event": "workflow_dispatch"})
+    positives += 2
+    for env, payload in ((environment, manual), (comment_environment, event)):
+        rerun = release_request_context({**env, "GITHUB_RUN_ATTEMPT": "2"}, payload)
+        actual_run_context({**source, "event": rerun["event"], "request": rerun, "run_attempt": "2"}, rerun,
+                           {**metadata, "event": rerun["event"], "run_attempt": 2})
+        positives += 1
+    proof_source = {"source_commit": commit, "product_source_fingerprint": "c" * 64, "run_id": "123", "run_attempt": "1"}
+    common_proof = {**proof_source, "sha256": "d" * 64}
+    signed = {**common_proof, "kind": "signed", "certificate_sha256": CERTIFICATE}
+    windows = {**common_proof, "passed": True, "actual_render_and_bridge": True}
+    android = [{**common_proof, "api": api, "signed_apk_sha256": signed["sha256"], "passed": True,
+                "fresh_install_render": True, "upgrade_requested": True,
+                "retained_signature_upgrade": True, "legacy_save_preserved": True} for api in (24, 35)]
+    platform_gate(proof_source, signed, windows, android, require_upgrade=request["verify_upgrade"])
+    positives += 1
+    for field in ("upgrade_requested", "retained_signature_upgrade", "legacy_save_preserved"):
+        bad = copy.deepcopy(android); bad[0][field] = False
+        cases.append(("mandatory comment upgrade " + field,
+                      lambda value=bad: platform_gate(proof_source, signed, windows, value, require_upgrade=request["verify_upgrade"])))
+    bad_apk = copy.deepcopy(android); bad_apk[1]["signed_apk_sha256"] = "e" * 64
+    cases.append(("different actual API35 APK", lambda: platform_gate(proof_source, signed, windows, bad_apk, require_upgrade=True)))
+    for name, operation in cases:
+        try:
+            operation()
+        except (ValueError, KeyError):
+            continue
+        raise ValueError("Release request self-test did not reject: " + name)
+    return {"positive_cases": positives, "negative_cases": len(cases), "api_signing_or_publication_executed": False}
+
+
 def self_test():
     # Validator fixtures are not platform/performance evidence and never enable a real readiness record.
     failures = 0
@@ -455,6 +695,7 @@ def self_test():
             failures += 1
     require(failures == 5, "Release negative guard self-test failed")
     performance_guard_self_test()
+    request_tests = request_guard_self_test()
     functional_report({"selection": "all", "total": 1, "failed": 0, "results": [{"passed": True}]})
     ready = read(ROOT / READINESS)
     if ready.get("feature_functional_complete") is not True:
@@ -466,7 +707,7 @@ def self_test():
             raise ValueError("Initial false readiness must prevent signing")
     require(not product_path(READINESS) and not product_path("docs/evidence/0.2.1/final-performance.json") and
             product_path("src/Chronicles.Game/World.cs") and product_path("VERSION"), "Product fingerprint scope is wrong")
-    print(json.dumps({"release_guard_self_tests": "passed", "actual_platform_or_performance_claim": False}))
+    print(json.dumps({"release_guard_self_tests": "passed", "request_guards": request_tests, "actual_platform_or_performance_claim": False}))
 
 
 def performance_guard_self_test():
@@ -584,6 +825,8 @@ def main():
             with Path(args.github_output).open("a", encoding="utf-8") as stream:
                 for key in ("source_commit", "product_source_fingerprint", "version", "version_code", "apk_name", "tag"):
                     stream.write(key + "=" + str(record[key]) + "\n")
+                for key in ("publish", "verify_upgrade"):
+                    stream.write(key + "=" + str(record["request"][key]).lower() + "\n")
         return
     if args.command == "apk":
         record = inspect_apk(args.apk, args.kind, read(args.source) if args.source else None,
@@ -603,7 +846,8 @@ def main():
     if args.stage == "publish":
         performance_gate(source, ready)
         require(args.signed and args.windows, "Signed APK and Windows proofs missing")
-        platform_gate(source, read(args.signed), read(args.windows), [read(p) for p in args.android], args.require_upgrade)
+        platform_gate(source, read(args.signed), read(args.windows), [read(p) for p in args.android],
+                      args.require_upgrade or source["request"]["verify_upgrade"])
     print(json.dumps({"gate": args.stage, "passed": True, "source_commit": source["source_commit"],
                       "product_source_fingerprint": source["product_source_fingerprint"]}))
 

@@ -78,7 +78,8 @@ public sealed partial class GameWorld
                 state.Politics.Obligations.Any(o => o.Debtor == PoliticalAccount.Person(p.Id) && o.Outstanding > 0 && p.Money > 0) ? 700 : -10000,
             "retreat" => PlanningThreat(p) ? 3000 : -10000,
             "politics" => Month - p.Born >= PeopleMaturityMonths(p) && (p.Sect != 0 || p.Money >= Law("politics.foundCost")) ? 0 : -10000,
-            "cultivation" => KnowledgeFor(p, p.Realm == Realm.Mortal ? "entry" : $"path.{(int)p.Realm}.0") is not null ? Law("ai.studyWeight") * 5 : -10000,
+            "cultivation" => KnowledgeFor(p, "entry") is not null || Catalog.Paths.Any(path =>
+                path.Realm == p.Realm && KnowledgeFor(p, path.Id) is not null) ? Law("ai.studyWeight") * 5 : -10000,
             _ => 0
         });
     }
@@ -101,8 +102,7 @@ public sealed partial class GameWorld
             case "retreat": return StartRetreatPlan(p);
             case "politics": return StartStewardshipPlan(p);
             case "cultivation":
-                p.Reason = "실제로 배운 현재 경지 지식·구도 성향·완료한 수행 습성";
-                return Start(p, "cultivate", 0, "") is null;
+                return StartCultivationPlan(p);
             case "martial":
                 p.Reason = "자기 육신·경쟁/생존 성향·실제 단련 습성";
                 return Start(p, "martial", 0, "") is null;

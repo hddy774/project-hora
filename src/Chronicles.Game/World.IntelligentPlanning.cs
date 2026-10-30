@@ -8,6 +8,12 @@ namespace Chronicles.Game;
 public sealed partial class GameWorld
 {
     private sealed record PlanningReceipt(string Kind, long Id, string Work, string Definition, long Started, long Due, string Source);
+    private sealed record PlanningKnowledgeRequest(long Teacher, long Revision, int Comprehension, int Minimum);
+    private static PlanningKnowledgeRequest? ReadPlanningKnowledgeRequest(string value)
+    {
+        try { return value.StartsWith('{') ? JsonSerializer.Deserialize<PlanningKnowledgeRequest>(value) : null; }
+        catch (JsonException) { return null; } // Old/free-text beliefs are not an authoritative process schema.
+    }
 
     private bool ContinueIntelligentPlan(Person p)
     {
@@ -19,15 +25,26 @@ public sealed partial class GameWorld
             if (step.Action == "replan")
             {
                 p.Plan.RemoveAt(0);
+                if (step.Data == CultivationPlanGoal) return StartCultivationPlan(p);
                 return InventoryDefinitions.Recipes.TryGetValue(step.Data, out var recipe) && StartProductionPlan(p, recipe);
             }
             if (step.Action == "awaitKnowledge")
             {
                 var learned = KnowledgeFor(p, step.Data);
-                if (learned is not null && learned.Comprehension >= state.Knowledge.Rules.PracticeMinimumComprehension && learned.Belief != KnowledgeBelief.Contradicted)
+                var cultivation = p.Plan.Any(s => s.Action == "replan" && s.Data == CultivationPlanGoal);
+                var minimum = cultivation ? CultivationLearningMinimum() : state.Knowledge.Rules.PracticeMinimumComprehension;
+                if (learned is not null && learned.Comprehension >= minimum && learned.Belief != KnowledgeBelief.Contradicted)
                 { p.Plan.RemoveAt(0); continue; }
                 if (!p.Beliefs.TryGetValue("plan:request:" + step.Data, out var request) || request.Expires <= Month)
                 { PlanningFailure(p, step, "요청 기억이 없거나 응답 기한이 지남·상대의 지식은 아직 모름", "요청 기록/기한"); return PausePlanning(p); }
+                if (cultivation && ReadPlanningKnowledgeRequest(request.Value) is { } previous &&
+                    learned is not null && learned.PersonalRevision > previous.Revision)
+                {
+                    if (learned.Comprehension > previous.Comprehension && learned.Belief != KnowledgeBelief.Contradicted)
+                    { p.Plan.RemoveAt(0); continue; } // Replan requests the next real lesson until the policy threshold.
+                    PlanningFailure(p, step, "실제 전수 뒤에도 필요한 개인 이해가 늘지 않아 다른 출처를 확인", KnowledgeSource(p, step.Data));
+                    return PausePlanning(p);
+                }
                 p.Reason = "실제로 전달한 배움 요청·상대가 독립적으로 선택하는 전수 응답을 기다림";
                 return Start(p, "wait", 0, "배움 응답 대기") is null;
             }
@@ -57,7 +74,11 @@ public sealed partial class GameWorld
             p.Plan.RemoveAt(0);
             if (step.Action == "requestTeaching")
             {
-                Remember(p, "plan:request:" + step.Data, PlanningNumber(step.Target), source, 100);
+                var own = KnowledgeFor(p, step.Data);
+                var minimum = p.Plan.Any(s => s.Action == "replan" && s.Data == CultivationPlanGoal) ?
+                    CultivationLearningMinimum() : state.Knowledge.Rules.PracticeMinimumComprehension;
+                Remember(p, "plan:request:" + step.Data, JsonSerializer.Serialize(new PlanningKnowledgeRequest(
+                    step.Target, own?.PersonalRevision ?? 0, own?.Comprehension ?? 0, minimum)), source, 100);
                 if (p.Beliefs.TryGetValue("plan:request:" + step.Data, out var fact))
                     p.Beliefs[fact.Key] = fact with { Expires = Month + Math.Min(12, Law("ai.beliefLifetime")) };
             }
@@ -142,15 +163,15 @@ public sealed partial class GameWorld
     private bool RequestPlanningKnowledge(Person p, string work, string targetRecipe)
     {
         var own = KnowledgeFor(p, work);
-        if (own?.Belief == KnowledgeBelief.Contradicted)
+        if (targetRecipe == CultivationPlanGoal || own?.Belief == KnowledgeBelief.Contradicted)
         {
             var book = state.Knowledge.Media.Where(m => !m.Destroyed && !m.Unreadable &&
                 state.Knowledge.Editions.Any(e => e.Id == m.EditionId && e.WorkId == work) && CanConsultKnowledge(p, work, m.EditionId))
                 .OrderBy(m => m.ItemId).FirstOrDefault();
             if (book is not null)
             {
-                p.Plan = [new("correctKnowledge", book.ItemId, ""), new("replan", 0, targetRecipe)];
-                p.Reason = "직접 검증으로 반박된 개인 이해를 실제 접근 매체로 다시 확인";
+                p.Plan = [new(own?.Belief == KnowledgeBelief.Contradicted ? "correctKnowledge" : "study", book.ItemId, ""), new("replan", 0, targetRecipe)];
+                p.Reason = "실제 접근권이 있는 매체를 읽어 필요한 개인 이해를 확보·정정";
                 return ContinueIntelligentPlan(p);
             }
         }
@@ -159,7 +180,8 @@ public sealed partial class GameWorld
                 state.Relations.Where(r => r.Observer == p.Id && r.Other == o.Id).Select(r => r.Trust + r.Respect).DefaultIfEmpty().Max()).ThenBy(o => o.Id).FirstOrDefault();
         if (teacher.Id == 0) return StartInformationPlan(p, work, "아직 직접 만난 전수 상대가 없어 실제 만남을 탐색");
         p.Plan = [new("requestTeaching", teacher.Id, work), new("awaitKnowledge", teacher.Id, work), new("replan", 0, targetRecipe)];
-        p.Goal = "배움·생산 준비"; p.Reason = "관측한 상대에게 실제 요청·상대의 숨은 지식이나 동의를 가정하지 않음";
+        p.Goal = targetRecipe == CultivationPlanGoal ? "배움·수행 준비" : "배움·생산 준비";
+        p.Reason = "관측한 상대에게 실제 요청·상대의 숨은 지식이나 동의를 가정하지 않음";
         return ContinueIntelligentPlan(p);
     }
 

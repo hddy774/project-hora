@@ -450,7 +450,8 @@ public sealed partial class GameWorld
         if (p.Realm == Realm.Mortal && KnowledgeFor(p, "entry") is not null) return "path.1.0";
         return Catalog.Paths.FirstOrDefault(path => path.Realm == realm && KnowledgeFor(p, path.Id) is not null)?.Id;
     }
-    private string? NextKnownCultivationPath(Person p) => p.Realm == Realm.HalfImmortal ? null :
+    private string? NextKnownCultivationPath(Person p) => p.Realm == Realm.Mortal && KnowledgeFor(p, "entry") is not null ? "path.1.0" :
+        p.Realm == Realm.HalfImmortal ? null :
         Catalog.Paths.FirstOrDefault(path => path.Realm == p.Realm + 1 && KnowledgeFor(p, path.Id) is not null)?.Id;
 
     private long CultivationSourceQuantum() => NeutralCultivationFlow / Math.Max(1, Law("cultivation.sourceCost"));

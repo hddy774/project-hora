@@ -1,0 +1,22 @@
+name: Validate v0.2.1 planning ledger
+on:
+  pull_request:
+    paths:
+      - 'docs/plans/**'
+      - 'scripts/validate-v021-plan.py'
+      - '.github/workflows/validate-v021-plan.yml'
+  push:
+    branches: [main, codex/v021-claude-feedback-2026-10-30]
+    paths:
+      - 'docs/plans/**'
+      - 'scripts/validate-v021-plan.py'
+      - '.github/workflows/validate-v021-plan.yml'
+permissions:
+  contents: read
+jobs:
+  planning-ledger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Validate ledger and validator negative cases
+        run: python3 scripts/validate-v021-plan.py --self-test

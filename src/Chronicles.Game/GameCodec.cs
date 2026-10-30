@@ -2,12 +2,17 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Globalization;
+using System.Buffers.Binary;
 
 namespace Chronicles.Game;
 
 public static class GameCodec
 {
     private const string Magic = "SEONRO-021";
+    // Leave ample room for the legacy JSON writer's string-token/escaping limits.
+    internal const int JsonPayloadLimit = 128 * 1024 * 1024;
+    private const int BinaryHeaderSize = 64;
+    private static ReadOnlySpan<byte> BinaryMagic => "SEONRO-021B\0"u8;
     private sealed record Envelope(string Format, int Schema, string Hash, string Payload, long Sequence);
     private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = false, MaxDepth = 64 };
 
@@ -40,16 +45,39 @@ public static class GameCodec
 
     public static byte[] Encode(GameWorld world) => Encode(world, 0);
 
-    internal static byte[] Encode(GameWorld world, long sequence)
+    internal static byte[] Encode(GameWorld world, long sequence) => Encode(world, sequence, JsonPayloadLimit);
+
+    // The explicit limit is an internal functional-test seam; it is not saved or exposed as an app setting.
+    internal static byte[] Encode(GameWorld world, long sequence, int jsonPayloadLimit)
     {
         ArgumentNullException.ThrowIfNull(world);
+        ArgumentOutOfRangeException.ThrowIfNegative(sequence);
+        ArgumentOutOfRangeException.ThrowIfNegative(jsonPayloadLimit);
         var snapshot = world.Checkpoint(); Invariants.Validate(snapshot);
-        var payload = JsonSerializer.Serialize(snapshot, Options);
-        return JsonSerializer.SerializeToUtf8Bytes(new Envelope(Magic, 2, PayloadHash(payload, sequence), payload, sequence), Options);
+        var payload = JsonSerializer.SerializeToUtf8Bytes(snapshot, Options);
+        var hash = PayloadHash(payload, sequence);
+        if (payload.Length <= jsonPayloadLimit)
+            return JsonSerializer.SerializeToUtf8Bytes(new Envelope(Magic, 2, Convert.ToHexStringLower(hash), Encoding.UTF8.GetString(payload), sequence), Options);
+        if (payload.Length > Array.MaxLength - BinaryHeaderSize)
+            throw new InvalidDataException("저장 본문이 지원하는 바이트 배열 크기를 넘었습니다.");
+        // 12-byte magic, LE int32 version, LE int64 sequence/length, 32-byte logical SHA256, raw canonical JSON.
+        var bytes = new byte[BinaryHeaderSize + payload.Length];
+        BinaryMagic.CopyTo(bytes);
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(12, 4), 3);
+        BinaryPrimitives.WriteInt64LittleEndian(bytes.AsSpan(16, 8), sequence);
+        BinaryPrimitives.WriteInt64LittleEndian(bytes.AsSpan(24, 8), payload.Length);
+        hash.CopyTo(bytes, 32);
+        payload.CopyTo(bytes, BinaryHeaderSize);
+        return bytes;
     }
 
-    private static string PayloadHash(string payload, long sequence) => Convert.ToHexStringLower(SHA256.HashData(
-        Encoding.UTF8.GetBytes(sequence.ToString(CultureInfo.InvariantCulture) + "\n" + payload)));
+    private static byte[] PayloadHash(ReadOnlySpan<byte> payload, long sequence)
+    {
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        hash.AppendData(Encoding.UTF8.GetBytes(sequence.ToString(CultureInfo.InvariantCulture) + "\n"));
+        hash.AppendData(payload);
+        return hash.GetHashAndReset();
+    }
 
     public static GameWorld Decode(ReadOnlySpan<byte> bytes) => DecodeEnvelope(bytes).World;
 
@@ -57,10 +85,11 @@ public static class GameCodec
     {
         try
         {
+            if (bytes.StartsWith(BinaryMagic)) return DecodeBinary(bytes);
             var envelope = JsonSerializer.Deserialize<Envelope>(bytes, Options) ?? throw new InvalidDataException("빈 저장입니다.");
             if (envelope.Format != Magic || envelope.Schema != 2 || envelope.Sequence < 0)
                 throw new InvalidDataException("0.2.1 저장 형식이 아닙니다. 원본은 보존됩니다.");
-            var actual = PayloadHash(envelope.Payload, envelope.Sequence);
+            var actual = Convert.ToHexStringLower(PayloadHash(Encoding.UTF8.GetBytes(envelope.Payload), envelope.Sequence));
             if (!string.Equals(actual, envelope.Hash, StringComparison.Ordinal)) throw new InvalidDataException("저장 체크섬이 다릅니다.");
             return (GameWorld.Restore(JsonSerializer.Deserialize<GameState>(envelope.Payload, Options) ??
                 throw new InvalidDataException("빈 세계입니다.")), envelope.Sequence);
@@ -70,4 +99,18 @@ public static class GameCodec
         { throw new InvalidDataException("저장의 자료 구조가 올바르지 않습니다.", e); }
     }
 
+    private static (GameWorld World, long Sequence) DecodeBinary(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length < BinaryHeaderSize || BinaryPrimitives.ReadInt32LittleEndian(bytes.Slice(12, 4)) != 3)
+            throw new InvalidDataException("대용량 저장 헤더 또는 버전이 올바르지 않습니다.");
+        var sequence = BinaryPrimitives.ReadInt64LittleEndian(bytes.Slice(16, 8));
+        var length = BinaryPrimitives.ReadInt64LittleEndian(bytes.Slice(24, 8));
+        if (sequence < 0 || length <= 0 || length > Array.MaxLength - BinaryHeaderSize || length != bytes.Length - BinaryHeaderSize)
+            throw new InvalidDataException("대용량 저장 순번 또는 본문 길이가 올바르지 않습니다.");
+        var payload = bytes[BinaryHeaderSize..];
+        if (!CryptographicOperations.FixedTimeEquals(PayloadHash(payload, sequence), bytes.Slice(32, 32)))
+            throw new InvalidDataException("저장 체크섬이 다릅니다.");
+        return (GameWorld.Restore(JsonSerializer.Deserialize<GameState>(payload, Options) ??
+            throw new InvalidDataException("빈 세계입니다.")), sequence);
+    }
 }

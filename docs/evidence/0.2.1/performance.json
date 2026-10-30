@@ -1,0 +1,64 @@
+{
+  "runtime": ".NET 10.0.14",
+  "os": "Debian GNU/Linux 13 (trixie)",
+  "cpu": 4,
+  "reports": [
+    {
+      "population": 2,
+      "fixture": "synthetic, evenly distributed; foodUse=0, births=0, disasters=0; not founder history",
+      "advance12MonthsMs": 2.0231000000000003,
+      "monthlyP50Ms": 0.1599,
+      "monthlyP95Ms": 0.2087,
+      "queryMs": 0.7568,
+      "saveMs": 2.5825,
+      "loadMs": 3.2418,
+      "allocatedBytes": 98400,
+      "saveBytes": 84621,
+      "observedPeople": 2,
+      "finalHash": "e49df453fafe2b722f2161d76d6ce0e4579fb2f2bc1936f5e8887e592d641699"
+    },
+    {
+      "population": 100,
+      "fixture": "synthetic, evenly distributed; foodUse=0, births=0, disasters=0; not founder history",
+      "advance12MonthsMs": 16.1048,
+      "monthlyP50Ms": 1.428,
+      "monthlyP95Ms": 1.6191,
+      "queryMs": 2.6329,
+      "saveMs": 11.6707,
+      "loadMs": 17.8141,
+      "allocatedBytes": 2608384,
+      "saveBytes": 380733,
+      "observedPeople": 100,
+      "finalHash": "1552238c077e4eb2feb2f821a2bbdc089a80d3876d448da86ada9b91046764cb"
+    },
+    {
+      "population": 1000,
+      "fixture": "synthetic, evenly distributed; foodUse=0, births=0, disasters=0; not founder history",
+      "advance12MonthsMs": 199.80339999999998,
+      "monthlyP50Ms": 16.1752,
+      "monthlyP95Ms": 27.8372,
+      "queryMs": 34.6982,
+      "saveMs": 170.6419,
+      "loadMs": 255.2708,
+      "allocatedBytes": 24624696,
+      "saveBytes": 4801176,
+      "observedPeople": 1000,
+      "finalHash": "e70d1749e07f1b22833fe34219905cf1f9c73ef1034000ef73b963449e628871"
+    },
+    {
+      "population": 10000,
+      "fixture": "synthetic, evenly distributed; foodUse=0, births=0, disasters=0; not founder history",
+      "advance12MonthsMs": 859.4547,
+      "monthlyP50Ms": 64.8709,
+      "monthlyP95Ms": 108.7974,
+      "queryMs": 188.1246,
+      "saveMs": 938.7079,
+      "loadMs": 1015.4708,
+      "allocatedBytes": 240532816,
+      "saveBytes": 72604528,
+      "observedPeople": 10000,
+      "finalHash": "57f02670aa7ab1a114defdead8e12b9e08f2099d60d2fd768cbebcf562366372"
+    }
+  ],
+  "note": "A 12-month synthetic cost measurement, not a 60-second real-time 100x soak or an Android device measurement."
+}

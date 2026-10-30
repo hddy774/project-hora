@@ -29,7 +29,7 @@ public sealed partial class GameWorld
     {
         var observer = state.Controlled == 0;
         var actor = observer ? null : people[state.Controlled];
-        var visible = observer ? state.People.ToArray() : actor!.KnownPeople.Where(id => actor.Beliefs.ContainsKey($"person:{id}"))
+        var visible = observer ? state.People.ToArray() : actor!.KnownPeople.Where(id => actor.ObservedPeople.ContainsKey(id))
             .Append(actor.Id).Distinct().Select(id => people[id]).ToArray();
         PersonView Projection(Person p)
         {
@@ -37,23 +37,22 @@ public sealed partial class GameWorld
                 return new(p.Id, p.Name, Catalog.RealmNames[(int)p.Realm], p.Layer, (Month - p.Born) / 12,
                     p.Status.ToString(), p.Place, p.Health, p.Money, p.Goal, p.Reason, p.Action.ToString(), Month,
                     p.ParentOne, p.ParentTwo, observer ? p.SoulId : 0, p.Martial);
-            var belief = actor.Beliefs[$"person:{p.Id}"]; var fields = belief.Value.Split('|');
-            return new(p.Id, fields[0], Catalog.RealmNames[int.Parse(fields[1], CultureInfo.InvariantCulture)],
-                int.Parse(fields[2], CultureInfo.InvariantCulture), null, "지난 관측", int.Parse(fields[3], CultureInfo.InvariantCulture),
-                null, null, null, null, null, belief.Observed, 0, 0, 0, null);
+            var belief = actor.ObservedPeople[p.Id];
+            return new(p.Id, belief.Name, Catalog.RealmNames[(int)belief.Realm],
+                belief.Layer, null, "지난 관측", belief.Place,
+                null, null, null, null, null, belief.Month, 0, 0, 0, null);
         }
         var peopleView = visible.Select(Projection).OrderBy(p => p.Id).ToArray();
         var knownPlaces = observer ? state.Places : state.Places.Where(p => actor!.KnownPlaces.Contains(p.Id));
         var placesView = knownPlaces.Select(p =>
         {
-            var belief = actor?.Beliefs.GetValueOrDefault($"place:{p.Id}");
-            var fields = belief?.Value.Split('|');
+            PlaceObservation? belief = actor is not null && actor.ObservedPlaces.TryGetValue(p.Id, out var seen) ? seen : null;
             return new PlaceView(p.Id, p.Province, p.Name, p.Terrain,
-                observer ? p.Source : fields is not null ? int.Parse(fields[0], CultureInfo.InvariantCulture) : null,
-                observer ? p.Qi : fields is not null ? int.Parse(fields[1], CultureInfo.InvariantCulture) : null,
-                observer ? p.Facilities.ToArray() : fields is { Length: > 2 } ? fields[2].Split(',', StringSplitOptions.RemoveEmptyEntries) : [],
+                observer ? p.Source : belief?.Source,
+                observer ? p.Qi : belief?.Qi,
+                observer ? p.Facilities.ToArray() : belief?.Facilities.Split(',', StringSplitOptions.RemoveEmptyEntries) ?? [],
                 p.Neighbors.Where(id => observer || actor!.KnownPlaces.Contains(id)).ToArray(),
-                observer ? p.Sovereign : null, observer ? Month : belief?.Observed ?? 0);
+                observer ? p.Sovereign : null, observer ? Month : belief?.Month ?? 0);
         }).ToArray();
         var inventoryOwner = observer ? detailId : actor!.Id;
         var itemView = state.Items.Where(i => observer ? inventoryOwner == 0 || i.Owner == inventoryOwner : i.Owner == inventoryOwner &&

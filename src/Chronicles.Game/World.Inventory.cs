@@ -10,30 +10,53 @@ public sealed partial class GameWorld
         item = null!; return false;
     }
 
-    private int Inventory(long owner, string definition) => state.Items.Where(i => i.Owner == owner &&
+    private int Inventory(long owner, string definition) => Owned(owner).Where(i =>
         i.Definition == definition && i.Reserved == 0 && (i.Place == -1 || i.Place == people[owner].Place)).Sum(i => i.Quantity);
 
-    private Item? AddItem(long owner, string definition, int quantity, int quality, string source)
+    private Item? AddItem(long owner, string definition, int quantity, int quality, string source, string flow = "production")
     {
         if (quantity <= 0) return null;
+        if (flow != "transfer")
+        {
+            var movement = Material(definition);
+            if (flow == "opening") movement.Opening += quantity;
+            else if (flow == "extraction") movement.Extraction += quantity;
+            else movement.Production += quantity;
+        }
         var item = new Item { Id = Id(), Owner = owner, Definition = definition, Quantity = quantity,
             Quality = Math.Clamp(quality, 0, 10000), Place = -1, Source = source };
-        state.Items.Add(item); items.Add(item.Id, item); return item;
+        state.Items.Add(item); items.Add(item.Id, item);
+        if (!ownedItems.TryGetValue(owner, out var inventory)) ownedItems.Add(owner, inventory = []);
+        inventory.Add(item); return item;
+    }
+
+    private List<Item> Owned(long owner) => ownedItems.GetValueOrDefault(owner) ?? [];
+    private MaterialFlow Material(string definition)
+    {
+        if (!state.Materials.TryGetValue(definition, out var flow)) state.Materials.Add(definition, flow = new());
+        return flow;
+    }
+    private void Transfer(Item item, long owner)
+    {
+        Owned(item.Owner).Remove(item); item.Owner = owner;
+        if (!ownedItems.TryGetValue(owner, out var inventory)) ownedItems.Add(owner, inventory = []);
+        inventory.Add(item);
     }
 
     private void Remove(Item item)
     {
-        state.Items.Remove(item); items.Remove(item.Id);
+        state.Items.Remove(item); items.Remove(item.Id); Owned(item.Owner).Remove(item);
         if (people.TryGetValue(item.Owner, out var owner))
             foreach (var slot in owner.Equipment.Where(x => x.Value == item.Id).Select(x => x.Key).ToArray()) owner.Equipment.Remove(slot);
     }
 
     private void Consume(Person p, string definition, int quantity)
     {
-        foreach (var item in state.Items.Where(i => i.Owner == p.Id && i.Definition == definition && i.Reserved == 0 &&
+        foreach (var item in Owned(p.Id).Where(i => i.Definition == definition && i.Reserved == 0 &&
                      (i.Place == -1 || i.Place == p.Place)).OrderBy(i => i.Id).ToArray())
         {
             var take = Math.Min(quantity, item.Quantity); item.Quantity -= take; quantity -= take;
+            Material(definition).Consumption += take;
             if (item.Quantity == 0) Remove(item);
             if (quantity == 0) return;
         }
@@ -42,7 +65,7 @@ public sealed partial class GameWorld
 
     private void Reserve(Person p, string definition, int quantity, long reservation)
     {
-        foreach (var item in state.Items.Where(i => i.Owner == p.Id && i.Definition == definition && i.Reserved == 0 &&
+        foreach (var item in Owned(p.Id).Where(i => i.Definition == definition && i.Reserved == 0 &&
                      (i.Place == -1 || i.Place == p.Place)).OrderBy(i => i.Id).ToArray())
         {
             var take = Math.Min(quantity, item.Quantity); quantity -= take;
@@ -50,7 +73,7 @@ public sealed partial class GameWorld
             else
             {
                 item.Quantity -= take;
-                var split = AddItem(p.Id, definition, take, item.Quality, $"분할 {item.Id}")!;
+                var split = AddItem(p.Id, definition, take, item.Quality, $"분할 {item.Id}", "transfer")!;
                 split.Reserved = reservation; split.Damage = item.Damage;
             }
             if (quantity == 0) return;
@@ -95,7 +118,15 @@ public sealed partial class GameWorld
         var kind = Catalog.Items[item.Definition].Kind;
         if (kind == ItemKind.Pill) p.Health = Math.Min(100, p.Health + item.Quality / 200);
         else if (kind == ItemKind.Food) p.Health = Math.Min(100, p.Health + 1);
-        else if (kind == ItemKind.Talisman) p.Traits.Add(new("호신부", $"item:{item.Id}", Month, Month + 1, true));
+        else if (kind == ItemKind.Talisman)
+        {
+            if (item.Definition == "soulWard")
+            {
+                if (p.SoulPactUntil > Month) return "이미 보호 혼약이 있습니다.";
+                p.SoulPactUntil = Month + Law("soul.pactDuration"); p.SoulPactSource = $"실물 {item.Id}·{item.Source}";
+            }
+            else p.Traits.Add(new("호신부", $"item:{item.Id}", Month, Month + 1, true));
+        }
         else if (kind == ItemKind.Array)
         {
             var place = state.Places[p.Place];
@@ -103,6 +134,7 @@ public sealed partial class GameWorld
             if (!place.Facilities.Contains("수행 진법")) place.Facilities.Add("수행 진법");
         }
         else return "사용 효과가 없는 품목입니다.";
+        Material(item.Definition).Consumption++;
         item.Quantity--; if (item.Quantity == 0) Remove(item);
         Event("소비", p.Id, id, $"{Catalog.Items[item.Definition].Name} 사용", item.Source);
         return null;
@@ -145,7 +177,7 @@ public sealed partial class GameWorld
             c.Destination != p.Place || p.Money < c.Price || !items.TryGetValue(c.Item, out var item) ||
             item.Reserved != c.Id) return "거래 조건을 만족하지 않습니다.";
         p.Money -= c.Price; people[c.Seller].Money += c.Price;
-        item.Owner = p.Id; item.Place = -1; item.Reserved = 0;
+        Transfer(item, p.Id); item.Place = -1; item.Reserved = 0;
         c.Buyer = p.Id; c.Status = "completed";
         Event("거래", p.Id, c.Seller, $"{Catalog.Items[item.Definition].Name}·{c.Price}영석 정산", $"계약 {c.Id}");
         return null;
@@ -194,7 +226,7 @@ public sealed partial class GameWorld
             }
             else if (c.Kind == "auction" && c.Buyer != 0)
             {
-                people[c.Seller].Money += c.Escrow; c.Escrow = 0; item.Owner = c.Buyer;
+                people[c.Seller].Money += c.Escrow; c.Escrow = 0; Transfer(item, c.Buyer);
                 item.Reserved = 0; c.Status = "completed";
             }
             else { item.Reserved = 0; c.Status = "expired"; }

@@ -170,7 +170,7 @@ Test("INV-013/014 화신 대원만 경계·실제 사망·대기·출생", () =>
     foreach (var layer in Enumerable.Range(8, 2))
     {
         var (w, a, b) = Fresh(new() { ["soul.crossing"] = 0, ["birth.enabled"] = 0 });
-        var s = w.Checkpoint(); var p = s.People[0]; p.Realm = Realm.Spirit; p.Layer = layer; p.Lifespan = 1201;
+        var s = w.Checkpoint(); var p = s.People[0]; p.Realm = Realm.Spirit; p.Layer = layer; p.GreatPerfection = layer == 9; p.Lifespan = 1201;
         w = GameWorld.Restore(s); w.AdvanceTo(1); s = w.Checkpoint();
         Check(s.People[0].Status == LifeStatus.Dead && s.DeathCount == 1, "实际 수명 종료");
         Check(s.Souls.Single(x => x.Id == p.SoulId).Status == (layer == 9 ? "waiting" : "ended"), "최소 경지 완성 경계");
@@ -219,10 +219,15 @@ Test("INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회", (
     Check(w.ViewGeneration > generation && w.View(b).Detail!.Aptitudes is not null, "조회 세대와 관찰 상세");
 });
 
+foreach (var route in Enumerable.Range(1, 13))
+    Test($"RC-{route:00} 실제 원인 생산자·자동 Gate·여정 왕복", () => ReincarnationScenarios.Run(route));
+
 if (args.Contains("--report", StringComparer.Ordinal))
 {
     var index = Array.IndexOf(args, "--report");
     File.WriteAllText(args[index + 1], JsonSerializer.Serialize(new { total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));
 }
 Console.WriteLine($"RESULT {results.Count - failed}/{results.Count}");
+if (failed == 0 && args.Contains("--performance", StringComparer.Ordinal))
+    PerformanceScenarios.Run(args[Array.IndexOf(args, "--performance") + 1]);
 return failed == 0 ? 0 : 1;

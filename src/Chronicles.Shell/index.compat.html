@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- seonro-compat source-sha256-lf=d2ae61a9f50263c551231746dddec0fa542ec19f70acd15936b0fb1884b9a02f shims-sha256-lf=ee834d530092d5302a2c79501be04f1e30243cff45a0562470432ca9f8f281a6 css-sha256-lf=667d7093bdb17a271ecc794d016271c29016da838d533406775199cad3a1309d compiler=esbuild@0.25.12 target=chrome51 -->
+<!-- seonro-compat source-sha256-lf=d5309a2280e3e1cc1276ca9869f4db861bb209bf314c46e5ea672e002de991bf shims-sha256-lf=ee834d530092d5302a2c79501be04f1e30243cff45a0562470432ca9f8f281a6 css-sha256-lf=667d7093bdb17a271ecc794d016271c29016da838d533406775199cad3a1309d compiler=esbuild@0.25.12 target=chrome51 -->
 <html lang="ko">
 <head>
 <meta charset="utf-8">
@@ -813,8 +813,8 @@ $("dialog").addEventListener("close", () => {
 function options(list, key = "id", label = "name") {
   return list.map((x) => '<option value="'.concat(esc(x[key]), '">').concat(esc(x[label]), "</option>")).join("");
 }
-function selectField(id, label, content) {
-  return "<label>".concat(esc(label), '<select id="').concat(id, '" required>').concat(content, "</select></label>");
+function selectField(id, label, content, required = true) {
+  return "<label>".concat(esc(label), '<select id="').concat(id, '"').concat(required ? " required" : "", ">").concat(content, "</select></label>");
 }
 function noCandidates(title, message) {
   dialog(title, "<p>".concat(esc(message), "</p>"), null);
@@ -838,7 +838,7 @@ function cultivationDialog(who = actor()) {
     return x.realm === (level === 0 ? 1 : level) && (((_a3 = d.understanding) == null ? void 0 : _a3[x.id]) || 0) > 0;
   });
   if (!paths.length && !(level === 0 && ((_b = d.understanding) == null ? void 0 : _b.entry) > 0)) return noCandidates("현재 경지 공법 미상", "수행을 시작하려면 현재 경지의 지식을 실제 공법서나 전수로 배워야 합니다. 관계·양육·전수에서 배움을 요청할 수 있습니다.");
-  dialog("공법 선택·수행", "<p>".concat(esc(p.name), " · ").concat(esc(p.realm), "</p>").concat(selectField("cultivationPath", "이해한 현재 경지 경로", paths.length ? paths.map((x) => '<option value="'.concat(esc(x.id), '">').concat(esc(x.name), " · ").concat(esc(x.book), " · 이해 ").concat(n(d.understanding[x.id]), "점</option>")).join("") : '<option value="">입문 토납 준비 · 감응 시도는 별도</option>'), "<p>경로는 실제 형성에 영향을 줍니다. 장소 영기·공급과 현재 작업 조건을 판정합니다.</p>"), () => issueCommand("cultivate", 0, 0, $("cultivationPath").value, who));
+  dialog("공법 선택·수행", "<p>".concat(esc(p.name), " · ").concat(esc(p.realm), "</p>").concat(selectField("cultivationPath", "이해한 현재 경지 경로", paths.length ? paths.map((x) => '<option value="'.concat(esc(x.id), '">').concat(esc(x.name), " · ").concat(esc(x.book), " · 이해 ").concat(n(d.understanding[x.id]), "점</option>")).join("") : '<option value="">입문 토납 준비 · 감응 시도는 별도</option>', paths.length > 0), "<p>경로는 실제 형성에 영향을 줍니다. 장소 영기·공급과 현재 작업 조건을 판정합니다.</p>"), () => issueCommand("cultivate", 0, 0, $("cultivationPath").value, who));
 }
 function craftDialog(who = actor()) {
   var _a2;

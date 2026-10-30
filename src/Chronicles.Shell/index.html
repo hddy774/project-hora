@@ -351,7 +351,7 @@ function dialog(title,fields,submit,confirmLabel='명령 제출') {
 }
 $('dialog').addEventListener('close',()=>{const el=dialogReturnFocus;dialogReturnFocus=null;if(el?.isConnected)el.focus({preventScroll:true});});
 function options(list,key='id',label='name') {return list.map(x=>`<option value="${esc(x[key])}">${esc(x[label])}</option>`).join('');}
-function selectField(id,label,content) {return `<label>${esc(label)}<select id="${id}" required>${content}</select></label>`;}
+function selectField(id,label,content,required=true) {return `<label>${esc(label)}<select id="${id}"${required?' required':''}>${content}</select></label>`;}
 function noCandidates(title,message) {dialog(title,`<p>${esc(message)}</p>`,null);}
 function placeDialog(id) {
   const p=place(id),a=activePerson(); if(!p)return;
@@ -363,7 +363,7 @@ function cultivationDialog(who=actor()) {
   if(!d||(!view.observer&&who!==view.actor))return noCandidates('수행 경로','먼저 행동 인물의 상세를 열어 자기 지식을 확인하세요.');
   const level=realms.indexOf(p.realm),paths=view.paths.filter(x=>x.realm===(level===0?1:level)&&(d.understanding?.[x.id]||0)>0);
   if(!paths.length&&!(level===0&&d.understanding?.entry>0))return noCandidates('현재 경지 공법 미상','수행을 시작하려면 현재 경지의 지식을 실제 공법서나 전수로 배워야 합니다. 관계·양육·전수에서 배움을 요청할 수 있습니다.');
-  dialog('공법 선택·수행',`<p>${esc(p.name)} · ${esc(p.realm)}</p>${selectField('cultivationPath','이해한 현재 경지 경로',paths.length?paths.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} · ${esc(x.book)} · 이해 ${n(d.understanding[x.id])}점</option>`).join(''):'<option value="">입문 토납 준비 · 감응 시도는 별도</option>')}<p>경로는 실제 형성에 영향을 줍니다. 장소 영기·공급과 현재 작업 조건을 판정합니다.</p>`,()=>issueCommand('cultivate',0,0,$('cultivationPath').value,who));
+  dialog('공법 선택·수행',`<p>${esc(p.name)} · ${esc(p.realm)}</p>${selectField('cultivationPath','이해한 현재 경지 경로',paths.length?paths.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} · ${esc(x.book)} · 이해 ${n(d.understanding[x.id])}점</option>`).join(''):'<option value="">입문 토납 준비 · 감응 시도는 별도</option>',paths.length>0)}<p>경로는 실제 형성에 영향을 줍니다. 장소 영기·공급과 현재 작업 조건을 판정합니다.</p>`,()=>issueCommand('cultivate',0,0,$('cultivationPath').value,who));
 }
 function craftDialog(who=actor()) {dialog('제작 계획',`<p>제작자 · ${esc(person(who)?.name||'미상')}</p><label>제작법 검색<input id="recipeSearch" type="search" oninput="filterRecipes(this.value)"></label>${selectField('recipe','제작할 실물',activeRecipes().map(recipeOption).join(''))}<p class="muted">실제 정의의 재료·수량을 표시합니다. 지식과 접근 가능한 미예약 재료, 시간과 노동 조건을 제출 시 판정합니다.</p>`,()=>issueCommand('craft',0,0,$('recipe').value,who));}
 function gatherDialog(who=actor()) {

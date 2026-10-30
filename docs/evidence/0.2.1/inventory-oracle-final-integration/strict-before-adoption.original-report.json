@@ -1,0 +1,17 @@
+{
+  "selection": "inventory owned reference:",
+  "total": 2,
+  "failed": 2,
+  "results": [
+    {
+      "name": "inventory owned reference: \uBA85\uC2DC \uAC70\uB798 \uC131\uD5A5\uACFC \uBE44\uCD953 \uACBD\uACC4\uC758 \uC2E4\uC81C \uBD84\uD560\u00B7\uD310\uB9E4\u00B7\uC800\uC7A5 \uACB0\uACFC \uBCF4\uC874",
+      "passed": false,
+      "error": "System.InvalidOperationException: \uACE0\uC815 strict \uAE30\uC900\uACFC \uBA85\uB839\u00B7\uC6D4 \uACBD\uACC4\u00B7\uC800\uC7A5 \uD574\uC2DC\uAC00 \uB2EC\uB77C\uC84C\uC2B5\uB2C8\uB2E4: 91b47814d83c487797382f3fad308b420f20ab815bbd9b7be14f92059f18802e\n   at Chronicles.Game.Tests.InventoryFixture.Check(Boolean condition, String message) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs:line 33\n   at Chronicles.Game.Tests.Features.InventoryReferenceTrace.AssertFixed(String expected) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs:line 13\n   at Chronicles.Game.Tests.Features.InventoryOwnedEcologyReferenceScenario.Run() in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs:line 75\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|2(String name, Action body) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Program.cs:line 28"
+    },
+    {
+      "name": "inventory owned reference: \uAE30\uC874 \uACF5\uAC1C \uC81C\uC791\u00B7\uBCF4\uAD00\u00B7\uAC70\uB798\u00B7\uC800\uC7A5\u00B7\uBA85\uB839 \uC7AC\uC804\uC1A1 \uACB0\uACFC \uBCF4\uC874",
+      "passed": false,
+      "error": "System.InvalidOperationException: \uACE0\uC815 strict \uAE30\uC900\uACFC \uBA85\uB839\u00B7\uC6D4 \uACBD\uACC4\u00B7\uC800\uC7A5 \uD574\uC2DC\uAC00 \uB2EC\uB77C\uC84C\uC2B5\uB2C8\uB2E4: 718295d0cfda379974aa14e87d39b3d86578a2c372d1e0beb6434eba6b3ca160\n   at Chronicles.Game.Tests.InventoryFixture.Check(Boolean condition, String message) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs:line 33\n   at Chronicles.Game.Tests.Features.InventoryReferenceTrace.AssertFixed(String expected) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs:line 13\n   at Chronicles.Game.Tests.Features.InventoryOwnedWorldReferenceScenario.Run() in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs:line 15\n   at Program.\u003C\u003Ec__DisplayClass0_0.\u003C\u003CMain\u003E$\u003Eg__Test|2(String name, Action body) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Program.cs:line 28"
+    }
+  ]
+}

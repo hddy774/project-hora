@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "archive_is_current_product": false,
+  "reason": "H10 removes unreachable GameWorld prototype inventory handlers after typed command dispatch became authoritative. This snapshot is provenance only and is outside current project compile roots.",
+  "source_commit": "049ef40d509e2601ffa6466c395db411d1645032",
+  "files": [
+    {
+      "original_path": "src/Chronicles.Game/World.Inventory.cs",
+      "archive_path": "legacy/v021-prototypes/inventory/World.Inventory.cs",
+      "git_blob_sha": "0cd0e23b65003027b304edd84ccd9d1515a60cef",
+      "sha256": "7c6b5a20e570cdf29c2c4131e1cbf046fcf872d0592d5c049d87442015da4dba",
+      "bytes": 12066
+    }
+  ],
+  "removed_unreachable_members": [
+    "Equip",
+    "Store",
+    "Use",
+    "Repair",
+    "Withdraw",
+    "Offer",
+    "Trade",
+    "Bid",
+    "Transport",
+    "SettleContracts"
+  ],
+  "current_authority": [
+    "src/Chronicles.Game/World.InventoryBridge.cs",
+    "src/Chronicles.Game/Inventory/"
+  ],
+  "retained_shared_members": [
+    "Owned",
+    "Inventory",
+    "AddItem",
+    "Material",
+    "Transfer",
+    "Remove",
+    "Consume"
+  ],
+  "retained_compatibility_members": {
+    "Accessible": [
+      "src/Chronicles.Game/World.cs legacy Start Study check",
+      "src/Chronicles.Game/World.Actions.cs legacy Complete Study"
+    ],
+    "Reserve": [
+      "src/Chronicles.Game/World.cs legacy Start Craft reservation"
+    ]
+  },
+  "compatibility_note": "Compatibility members remain while their actual callers exist; deletion belongs to the corresponding legacy action cleanup."
+}

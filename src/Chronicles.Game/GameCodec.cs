@@ -25,6 +25,7 @@ public static class GameCodec
             p.Skills = new(p.Skills, StringComparer.Ordinal);
             p.Understanding = new(p.Understanding, StringComparer.Ordinal);
             p.Beliefs = new(p.Beliefs, StringComparer.Ordinal);
+            p.Habits = new(p.Habits, StringComparer.Ordinal);
         }
         foreach (var g in copy.Groups)
         {

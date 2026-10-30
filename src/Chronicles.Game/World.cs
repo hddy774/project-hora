@@ -124,13 +124,14 @@ public sealed partial class GameWorld
     {
         var targetKind = kind switch
         {
-            "출생" or "도려" or "거래" or "전투" or "입양" or "제안 거절" or "배움 요청" => "person",
+            "출생" or "도려" or "거래" or "전투" or "입양" or "제안 거절" or "배움 요청" or "돌봄" or "전수" => "person",
             "재해" or "발견" or "고대 금제" => "place",
             "소비" or "제작" => "item",
             "사망" or "세계 이탈" or "무예" => "condition",
             _ => "group"
         };
         var entry = new GameEvent(Id(), Month, kind, actor, target, message, source, targetKind);
+        RecordSocialEvent(entry);
         if (kind is not "배움 요청" and not "혼약 만료" and not "제안 거절" and not "소비" and not "출품" and not "제작")
             state.Events.Add(entry);
         void Append(Person p)
@@ -185,17 +186,9 @@ public sealed partial class GameWorld
         }
         if (c.Kind == "law")
         {
-            if (state.Controlled != 0) return "관찰 관리에서만 세계 법칙을 바꿀 수 있습니다.";
-            if (!Laws.ById.TryGetValue(c.Data, out var definition) || c.Value < definition.Minimum || c.Value > definition.Maximum)
-                return "법칙 범위를 확인하세요.";
-            var before = state.Laws[c.Data]; state.Laws[c.Data] = c.Value;
-            if (Laws.Validate(state.Laws) is { } err) return err;
-            if (c.Data == "ai.beliefBudget") foreach (var person in state.People) TrimCognition(person);
-            state.LawRevision++;
-            state.LawHistory.Add(new(Month, state.LawRevision, c.Data, before, c.Value));
-            Event("법칙", 0, 0, $"{definition.Name}: {before} → {c.Value}", c.Id);
-            return null;
+            return ChangeLaws(new Dictionary<string, long>(StringComparer.Ordinal) { [c.Data] = c.Value }, c.Id);
         }
+        if (c.Kind == "lawBatch") return ImportLaws(c);
         if (c.Kind == "create") return CreateExplicit(c);
         if (!people.TryGetValue(c.Actor, out var p) || p.Status != LifeStatus.Alive ||
             (state.Controlled != 0 && state.Controlled != p.Id)) return "실행할 수 없는 대상입니다.";
@@ -240,6 +233,7 @@ public sealed partial class GameWorld
         }
         if (action == ActionKind.Study && !Accessible(p, target, out var book, ItemKind.Book))
             return "읽을 수 있는 매체가 없습니다.";
+        if (action == ActionKind.Care && ValidateCare(p, target) is { } careError) return careError;
         if (action == ActionKind.Craft)
         {
             var recipe = Catalog.Recipes.FirstOrDefault(r => r.Id == data);
@@ -306,7 +300,7 @@ public sealed partial class GameWorld
             if (p.Action != ActionKind.Idle && p.Due <= Month) Complete(p);
             if (p.Status != LifeStatus.Alive) continue;
             Observe(p);
-            if (p.Action == ActionKind.Idle && state.Controlled != p.Id) Decide(p);
+            if (p.Action == ActionKind.Idle && state.Controlled != p.Id) { Decide(p); RecordDecision(p); }
         }
         state.Revision++;
         Census();

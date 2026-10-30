@@ -89,7 +89,7 @@ public sealed partial class GameWorld
         }
         var p = new Person { Id = Id(), BodyId = Id(), SoulId = soul.Id,
             Name = $"{mother.Name[0]}씨 {state.BirthCount + 1}세손", Gestates = Roll(2) == 1,
-            Born = Month, Lifespan = Law("life.mortal"), ParentOne = mother.Id, ParentTwo = father.Id,
+            Born = Month, LastCare = Month, Lifespan = Law("life.mortal"), ParentOne = mother.Id, ParentTwo = father.Id,
             Guardian = mother.Id, Household = mother.Household, Place = mother.Place,
             Roots = pregnancy.Roots.ToArray(), Aptitudes = pregnancy.Aptitudes.ToArray(),
             Personality = Enumerable.Range(0, 14).Select(_ => 20 + Roll(61)).ToArray(),

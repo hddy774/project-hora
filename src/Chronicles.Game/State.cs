@@ -2,7 +2,7 @@ namespace Chronicles.Game;
 
 public enum Realm { Mortal, Qi, Foundation, GoldenCore, NascentSoul, Spirit, Void, Integration, Tribulation, Mahayana, HalfImmortal }
 public enum LifeStatus { Alive, Dead, Ascended, Departed }
-public enum ActionKind { Idle, Gather, Cultivate, Study, Martial, Travel, Craft, Heal, Explore, Teach, Guard, Farm, Breakthrough, Trial, Wait }
+public enum ActionKind { Idle, Gather, Cultivate, Study, Martial, Travel, Craft, Heal, Explore, Teach, Guard, Farm, Breakthrough, Trial, Wait, Care }
 public enum GroupKind { Family, Sect, Dynasty }
 public enum ItemKind { Food, Herb, Ore, Wood, Cloth, Paper, Ink, Metal, Pill, Tool, Talisman, Array, Book, Bag, Weapon, Armor }
 [Flags]
@@ -14,7 +14,8 @@ public sealed record TraitState(string Id, string Source, long Acquired, long? E
 public sealed record Trace(int Preserved, int Accessible, int Integrated);
 public readonly record struct PersonObservation(long Id, string Name, Realm Realm, int Layer, int Place, long Month,
     bool? ApparentGestates, bool AppearsAdult);
-public readonly record struct PlaceObservation(int Place, int Source, int Qi, string Facilities, long Month);
+public readonly record struct PlaceObservation(int Place, int Source, int Qi, string Facilities, long Month,
+    long? Sovereign = null, long? Owner = null, long? Operator = null, long? Delegate = null, long? BlockedUntil = null);
 public sealed record GameEvent(long Id, long Month, string Kind, long Actor, long Target, string Text, string Source, string TargetKind = "person");
 public sealed record LawChange(long Month, long Revision, string Key, long Before, long After);
 public sealed record PlanStep(string Action, long Target, string Data);
@@ -22,6 +23,11 @@ public sealed record LessonRequest(long Pupil, string Knowledge, long Requested,
 public sealed record MonthlyCensus(long Month, int Living, int Mortal, int Martial, int Cultivators,
     int Births, int Deaths, long Money, long Food);
 public sealed record CommandResult(string Id, bool Accepted, string Message, long Revision);
+public sealed record SocialRelation(long Observer, long Other, int Trust, int Affection, int Grievance,
+    int Respect, int Dependency, int Obligation, long Month, string Source);
+public sealed record DecisionCandidate(string Goal, long Score, string Evidence);
+public sealed record DecisionRecord(long Month, string Goal, string Reason, string Action,
+    int Expansions, IReadOnlyList<DecisionCandidate> Candidates);
 public sealed class MaterialFlow
 {
     public long Opening { get; set; }
@@ -62,6 +68,11 @@ public sealed class Person
     public long NextBirth { get; set; }
     public string Goal { get; set; } = "자립";
     public string Reason { get; set; } = "창세 초기 조건";
+    public int Mood { get; set; }
+    public long LastCare { get; set; }
+    public SortedDictionary<string, int> Habits { get; set; } = new(StringComparer.Ordinal);
+    public List<DecisionRecord> Decisions { get; set; } = [];
+    public List<DecisionCandidate> DecisionCandidates { get; set; } = [];
     public List<PlanStep> Plan { get; set; } = [];
     public List<LessonRequest> LessonRequests { get; set; } = [];
     public List<GameEvent> Journal { get; set; } = [];
@@ -236,6 +247,7 @@ public sealed class GameState
     public List<Group> Groups { get; set; } = [];
     public List<Contract> Contracts { get; set; } = [];
     public List<GameEvent> Events { get; set; } = [];
+    public List<SocialRelation> Relations { get; set; } = [];
     public List<LawChange> LawHistory { get; set; } = [];
     public List<MonthlyCensus> Census { get; set; } = [];
     public SortedDictionary<string, CommandResult> Commands { get; set; } = new(StringComparer.Ordinal);

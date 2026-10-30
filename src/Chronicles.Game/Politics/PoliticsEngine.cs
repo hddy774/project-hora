@@ -79,6 +79,16 @@ public static partial class PoliticsEngine
         };
     }
 
+    public static bool CanUseCultivationSite(PoliticalContext context, PoliticalState state, long person, int placeId)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        var p = context.People.FirstOrDefault(x => x.Id == person && x.Status == LifeStatus.Alive && x.Place == placeId);
+        var place = context.Places.FirstOrDefault(x => x.Id == placeId);
+        if (p is null || place is null) return false;
+        if (place.Owner == 0 && place.Operator == 0 || place.Owner == person || place.Operator == person) return true;
+        return context.Groups.Any(g => !g.Dissolved && g.Members.Contains(person) && (g.Id == place.Owner || g.Id == place.Operator));
+    }
+
     public static PoliticalResult PlanFound(PoliticalContext context, PoliticalState state, long actor,
         long groupId, string name, GroupKind kind)
     {

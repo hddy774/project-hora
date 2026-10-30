@@ -152,7 +152,9 @@ public static partial class PoliticsEngine
     public static PoliticalResult PlanPayroll(PoliticalContext context, PoliticalState state, long actor, long group)
     {
         var d = new PoliticalDraft(context, state); var g = d.Group(group);
-        if (!d.Leads(d.Person(actor), g)) return PoliticalResult.Rejected("Payroll requires current treasury authority.");
+        if (!d.Leads(d.Person(actor), g) && !(g is { Dissolved: false } && d.Person(actor) is { Status: LifeStatus.Alive } &&
+            g.Members.Contains(actor) && d.State.Offices.Any(o => o.Group == group && o.Name == "treasurer" && o.Holder == actor)))
+            return PoliticalResult.Rejected("Payroll requires current treasury authority or its actual appointed treasurer.");
         var marker = $"payroll:{group}:{context.Month}";
         if (d.State.Payments.Any(p => p.Kind == marker)) return PoliticalResult.Rejected("This payroll period already settled.");
         var requested = checked(context.Rules.BaseSalary * (g!.Policies.GetValueOrDefault("경제·분배", 1) + 1));

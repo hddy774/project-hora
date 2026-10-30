@@ -66,6 +66,7 @@ public sealed class PoliticalState
     public List<SectCharter> Charters { get; set; } = [];
     public List<PoliticalLaborReservation> Labor { get; set; } = [];
     public List<PoliticalEffect> Effects { get; set; } = [];
+    public List<long> RoutedEffects { get; set; } = [];
     public List<PolicyPreparation> Preparations { get; set; } = [];
     public List<PolicyHistory> PolicyHistory { get; set; } = [];
     public List<long> TaxPeriods { get; set; } = [];

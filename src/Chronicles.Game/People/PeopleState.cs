@@ -248,8 +248,8 @@ public static class PeopleAdapters
         return new(profile.PersonId, profile.Body.BodyId, profile.Body.SpeciesId, model.Genes.Select(g =>
         {
             var value = g.Target.Kind == HeritableTargetKind.BodyFoundation ? profile.Innate.Foundations[g.Target.Index] : profile.Innate.ElementRoots[g.Target.Index];
-            var source = new PeopleSource($"founding.body.{profile.Body.BodyId}.{g.Id}", PeopleSourceKind.Founding,
-                "declared founding body profile; no fabricated ancestry or historical training", profile.CreatedMonth,
+            var source = new PeopleSource($"founding.body.{profile.Body.BodyId}.{g.Id}", profile.Body.Origin == PersonOrigin.Founder ? PeopleSourceKind.Founding : PeopleSourceKind.Genetic,
+                "declared founding/external-origin body profile; no fabricated ancestry or historical training", profile.CreatedMonth,
                 PersonId: profile.PersonId, BodyId: profile.Body.BodyId);
             return new GenePair(g.Id, value, value, source);
         }).ToArray(), []);

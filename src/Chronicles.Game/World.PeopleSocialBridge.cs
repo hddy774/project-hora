@@ -57,6 +57,28 @@ public sealed partial class GameWorld
     internal SocialJudgment PeopleSocialJudgment(Person observer, long subjectId) =>
         Reputation.Judge(state.PeopleDomain.Reputation, new(observer.Id, subjectId, Month));
 
+    internal bool TryPeopleConsentPlan(Person person)
+    {
+        if (person.Action != ActionKind.Idle || person.Health < 30 || !PeopleProfile(person).Body.Capabilities.Communication) return false;
+        foreach (var request in state.PeopleDomain.Social.Sessions.Where(s => s.Recipient == person.Id && s.Status == PeopleSessionStatus.Proposed && s.Expires > Month)
+            .OrderBy(s => s.Requested).ThenBy(s => s.Id))
+        {
+            if (!people.TryGetValue(request.Proposer, out var proposer) || !PeopleObservedHere(person, proposer)) continue;
+            var relation = state.Relations.FirstOrDefault(r => r.Observer == person.Id && r.Other == proposer.Id);
+            var judgment = PeopleSocialJudgment(person, proposer.Id);
+            var hostile = judgment.Reaction is SocialReaction.Caution or SocialReaction.InvestigateConflict || relation?.Grievance >= 30;
+            var willing = !hostile && (request.Kind != PeopleSessionKind.Oath ||
+                (relation?.Trust ?? 0) >= 10 && person.Personality[4] + person.Personality[9] >= 100);
+            var decision = new GameCommand($"people-consent:{request.Id}:{person.BodyId}:{Month}", person.Id,
+                willing ? "acceptPeopleRequest" : "rejectPeopleRequest", request.Id);
+            if (!TryPeopleSocialCommand(decision, person, out var error) || error is not null) continue;
+            person.Goal = willing ? "대면 요청·자발적 협력" : "개인 약속 검토";
+            person.Reason = $"자신에게 실제 전달된 요청 {request.Id}·자기 관측/관계/받은 진술로 동의 판단";
+            if (person.Action != ActionKind.Idle) return true;
+        }
+        return false;
+    }
+
     internal bool TryPeopleSocialCommand(GameCommand command, Person person, out string? error)
     {
         error = null;
@@ -341,6 +363,20 @@ public sealed partial class GameWorld
 
     internal int PeopleCognitiveLoad(Person person) => state.PeopleDomain.Reputation.Claims.Count(c => c.ObserverId == person.Id &&
         (c.ExpiresMonth is null || c.ExpiresMonth > Month));
+
+    // Call immediately after the shared completed-action counter. Unlike its capped 0..100 preference counter,
+    // this dated record continues to observe real practice and therefore cannot lapse while practice continues.
+    internal void RecordPeopleCompletedAction(Person person, ActionKind kind)
+    {
+        if (kind == ActionKind.Idle) return;
+        EnsurePeopleSocialBaselines();
+        var key = kind.ToString(); var habits = state.PeopleDomain.Social.Habits.ToList();
+        var index = habits.FindIndex(h => h.Person == person.Id && h.Habit == key);
+        if (index < 0) habits.Add(new(person.Id, person.BodyId, key, 1, Month, Month, person.Habits.GetValueOrDefault(key)));
+        else habits[index] = habits[index] with { Count = checked(habits[index].Count + 1), LastCompleted = Month,
+            LastObservedCounter = person.Habits.GetValueOrDefault(key) };
+        SetPeopleSocial(state.PeopleDomain.Social with { Habits = habits.OrderBy(h => h.Person).ThenBy(h => h.Habit, StringComparer.Ordinal).ToArray() });
+    }
 
     private void EnsurePeopleSocialBaselines()
     {

@@ -22,8 +22,8 @@ public sealed partial class GameWorld
     {
         if (state.PeopleDomain.Profiles.Any(p => p.PersonId == person.Id)) return;
         var source = new PeopleSource($"person.{person.Id}.initial-profile", founder ? PeopleSourceKind.Founding : PeopleSourceKind.Development,
-            founder ? "창세 조건·가짜 과거 숙련 없음" : "실제 현생 편입/출생 프로필", Month, state.LawRevision, person.Id, person.BodyId, person.SoulId);
-        var profile = PeopleAdapters.FromPerson(person, source);
+            founder ? "창세 조건·가짜 과거 숙련 없음" : $"실제 현생 편입/출생 프로필·종족 {person.Species}·외부 기원에 과거 숙련/재산 복제 없음", Month, state.LawRevision, person.Id, person.BodyId, person.SoulId);
+        var profile = ApplyPeopleBodyPolicy(PeopleAdapters.FromPerson(person, source));
         var soul = EnsurePeopleSoul(souls[person.SoulId]);
         if (soul.Foundation is null)
         {
@@ -110,7 +110,7 @@ public sealed partial class GameWorld
         if (!binding.Accepted) throw new InvalidDataException(binding.Code);
         var birth = binding.State.Births.Single(b => b.BirthId == pregnancy.Id);
         person.Aptitudes = birth.Innate.Foundations.ToArray(); person.Roots = birth.Innate.ElementRoots.ToArray(); person.Species = conception.SpeciesId;
-        var profile = PeopleAdapters.FromPerson(person, source) with { Innate = birth.Innate };
+        var profile = ApplyPeopleBodyPolicy(PeopleAdapters.FromPerson(person, source)) with { Innate = birth.Innate };
         var reset = SoulTraces.ResetAtBirth(soul, new($"birth.{pregnancy.Id}.trace-reset", SoulTraceActionKind.BirthReset, Month, source, RelatedIdentity: person.Id));
         if (!reset.Accepted) throw new InvalidDataException(reset.Code);
         state.PeopleDomain = state.PeopleDomain with
@@ -125,6 +125,12 @@ public sealed partial class GameWorld
         if (legacySoul.Route > 0 || legacySoul.Parent != 0)
             RecordPeopleTrait(person, "soul.reborn", source, [TraitFact.RebirthEvidence], activate: true, observeSelf: false);
     }
+
+    private PeopleProfile ApplyPeopleBodyPolicy(PeopleProfile profile) => profile.Body.SpeciesId == "human" ? profile with
+    {
+        Body = profile.Body with { Reproduction = profile.Body.Reproduction with
+            { MaturityMonths = Law("birth.maturity"), GestationMonths = IntLaw("birth.gestation") } }
+    } : profile;
 
     /// <summary>Call after a real completed action, with its actual gains; queries and inherited traces never call this.</summary>
     internal void RecordPeopleLearning(Person person, string knowledge, int learnedGain, int understandingGain, string eventId, int completedMonths = 1,

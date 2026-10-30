@@ -1,0 +1,79 @@
+{
+  "kind": "seonro-agent-108-restart-provenance",
+  "statusAtLaunch": "running",
+  "recordedStartUtc": "2026-10-30T18:13:07.610459+00:00",
+  "pid": 121165,
+  "supervisorPid": 121162,
+  "sessionId": 121162,
+  "supervisorSessionId": 121162,
+  "cwd": "/workspace/seonro-agent-9263756",
+  "actualCommand": [
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/agent-metrics-9263756-restart1-preceding-functional.json",
+    "--agent-metrics",
+    "/workspace/scratch/agent-metrics-9263756-restart1.json",
+    "--agent-metrics-plan",
+    "/workspace/scratch/agent-metrics-plan-9263756.json"
+  ],
+  "requestedCommand": [
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/agent-metrics-9263756-restart1-preceding-functional.json",
+    "--agent-metrics",
+    "/workspace/scratch/agent-metrics-9263756-restart1.json",
+    "--agent-metrics-plan",
+    "/workspace/scratch/agent-metrics-plan-9263756.json"
+  ],
+  "affinity": "Cpus_allowed_list:\t3",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "productSourceFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "sourceCleanAtLaunch": true,
+  "planPath": "/workspace/scratch/agent-metrics-plan-9263756.json",
+  "planSha256": "f0df62e9edc7cd1855148dda4d9c6ee99d0d0a32d063f7e32016071feb93122b",
+  "assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "3dc3ad7a8c4ea88f345e7fbf7cf74d3a0a7f1b37a15ce3fa75ec5819d40746cd"
+    },
+    {
+      "name": "Chronicles.Game",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "d89a25e4057d4664e289d1d7733c7f2e0fad3913c07401ea1c9aa765c1d5350a"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "956989fd3808399e338764c7178fc8d3c53839c8f22b78b7bbb7bf1aa4f393cd"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "48757b90a575f409047aa2a33be0024e810373fe5eb4bb71fcae99d6b2a700f6"
+    }
+  ],
+  "output": "/workspace/scratch/agent-metrics-9263756-restart1.json",
+  "consoleLog": "/workspace/scratch/agent-metrics-9263756-restart1.log",
+  "precedingFunctional": "/workspace/scratch/agent-metrics-9263756-restart1-preceding-functional.json",
+  "oldPartial": "/workspace/scratch/agent-metrics-9263756.json",
+  "oldPartialSha256": "d223c825160d783f4e6500c289166ae170cea0ef10b36f69071727470ab27e64",
+  "oldPartialReports": 78,
+  "interruptionProvenance": "/workspace/scratch/agent-metrics-9263756-interruption-provenance.json",
+  "rootAuthorization": "외부중단 보존 후 동일926/108계획을 새경로 CPU3에서 재시작하라는 명시 지시",
+  "restartScope": "원본78건과 합치지 않는 독립 전체108 재실행; seed/기간/예산/소스/성공조건 변경 없음",
+  "cpuMax": "400000 100000",
+  "concurrentEnvironment": "CPU0 inventory 예약, CPU1/2 동일926 성장restart1, 본AI CPU3. 공유4CPU quota이며 독점CPU/순수추론지연 아님.",
+  "separation": "9704/이후 소스 최적화와 분리. 새소스 실측으로 승격하지 않음.",
+  "notes": "분리된 supervisor 세션에서 실제 child를 wait하고 종료 상태를 별도 -exit.json에 보존. 종료 뒤 root/politics CPU3해제 통지."
+}

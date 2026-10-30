@@ -1,0 +1,947 @@
+{
+  "observedUtc": "2026-10-30T19:02:43.617530+00:00",
+  "kind": "read-only-restart-overlap-observation",
+  "originalRows": 78,
+  "restartRows": 78,
+  "compared": 78,
+  "mismatches": 0,
+  "checks": [
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 0
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 1
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 2
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 3
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 4
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 5
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 6
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 7
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 8
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 9
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 10
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 11
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 12
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 13
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 42,
+        "budget": 16,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 42,
+        "budget": 16,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 42,
+        "budget": 16,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "correction",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "cooperation",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "fairness",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 0
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 1
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 2
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 3
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 4
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 5
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 6
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 7
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 8
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 9
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 10
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 11
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 12
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": 13
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 42,
+        "budget": 16,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 42,
+        "budget": 16,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 42,
+        "budget": 16,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "correction",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "cooperation",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "fairness",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 0
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 1
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 2
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 3
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 4
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 5
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 6
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 7
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 8
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 9
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 10
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 11
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 12
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "axes",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": 13
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 73,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 73,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 73,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 73,
+        "budget": 16,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 73,
+        "budget": 16,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 73,
+        "budget": 16,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "initialEqual": true,
+      "monthlyHashesEqual": true,
+      "finalEqual": true
+    }
+  ],
+  "scope": "원본78사례와재실행의겹치는게임결과만비교. 원문/실패/지연표본을합성하거나대체하지않음."
+}

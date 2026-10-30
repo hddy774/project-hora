@@ -1,0 +1,1407 @@
+{
+  "schemaVersion": 1,
+  "kind": "보존 AI 원문 독립 요약",
+  "measurementSource": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "mainRawSha256": "435c2db02e2f85b2ae2138161805786a371bf7214b306d3030a06bd3b832995d",
+  "interruptedRawSha256": "d223c825160d783f4e6500c289166ae170cea0ef10b36f69071727470ab27e64",
+  "planSha256": "f0df62e9edc7cd1855148dda4d9c6ee99d0d0a32d063f7e32016071feb93122b",
+  "runtime": {
+    "framework": ".NET 10.0.14",
+    "os": "Debian GNU/Linux 13 (trixie)",
+    "processArchitecture": "X64",
+    "processors": 1,
+    "culture": "",
+    "stopwatchFrequency": 1000000000,
+    "productVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+    "harnessVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+    "frameworkTarget": ".NETCoreApp,Version=v10.0"
+  },
+  "plan": {
+    "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "seeds": [
+      42,
+      73
+    ],
+    "horizonMonths": 144,
+    "repetitions": 2,
+    "warmupMonths": 2,
+    "planningBudgets": [
+      1,
+      16,
+      64
+    ],
+    "beliefBudget": 48,
+    "axisDelta": 1,
+    "stagnationMonths": 12,
+    "replayEveryMonths": 12,
+    "preparationLimitMonths": 120
+  },
+  "executionStatus": "completed",
+  "plannedCases": 108,
+  "collectedUniqueCases": 108,
+  "producerFailedCases": 0,
+  "independentAuditErrors": [],
+  "familyCounts": {
+    "axes": 60,
+    "paper": 12,
+    "tool": 12,
+    "ecology": 12,
+    "correction": 4,
+    "cooperation": 4,
+    "fairness": 4
+  },
+  "monthlyAdvanceSamples": 15552,
+  "monthlyStateHashes": 15552,
+  "allCasesUsedLawCount": [
+    113
+  ],
+  "declaredTargets": 32,
+  "completedTargets": 24,
+  "uncompletedTargets": 8,
+  "notApplicableTargets": 76,
+  "stagnationCandidates": 10,
+  "axisComparisons": 56,
+  "axisScoreCausalityObserved": 56,
+  "axisSelectedDecisionSequencesChanged": 0,
+  "axisActionDistributionsChanged": 0,
+  "repetitionPairs": 54,
+  "repetitionHashMismatches": 0,
+  "interruptedOverlapCases": 78,
+  "interruptedOverlapMismatches": 0,
+  "fairnessCases": 4,
+  "fairnessMismatches": 0,
+  "budgetMismatches": 0,
+  "replayMismatches": 0,
+  "groups": [
+    {
+      "family": "axes",
+      "budget": 64,
+      "cases": 60,
+      "declaredTargets": 0,
+      "completedTargets": 0,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [],
+      "actionDistribution": {
+        "Cultivate": 8460,
+        "Guard": 180
+      },
+      "goalDistribution": {
+        "구도·수행": 8460,
+        "실제 잉여품 교환": 180
+      },
+      "decisionCount": 8640,
+      "mostFrequentAction": "Cultivate",
+      "mostFrequentActionDecisionShare": 0.9791666666666666,
+      "occupiedPersonMonthsByAction": {
+        "Cultivate": 8400,
+        "Guard": 180
+      },
+      "consumedByDefinition": {},
+      "completedOutputsByDefinition": {},
+      "failureDistribution": {},
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 8640,
+        "minimum": 17.047694,
+        "p50": 96.97533,
+        "p95": 151.889481,
+        "maximum": 241.774262,
+        "mean": 99.02370189918982
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 8640,
+        "minimum": 6489816,
+        "p50": 21064472,
+        "p95": 22290496,
+        "maximum": 23281832,
+        "mean": 19951081.01111111
+      }
+    },
+    {
+      "family": "cooperation",
+      "budget": 64,
+      "cases": 4,
+      "declaredTargets": 0,
+      "completedTargets": 0,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [],
+      "actionDistribution": {
+        "Guard": 48,
+        "Study": 524,
+        "Wait": 4
+      },
+      "goalDistribution": {
+        "실제 잉여품 교환": 48,
+        "약속·협력": 4,
+        "지식·수련": 524
+      },
+      "decisionCount": 576,
+      "mostFrequentAction": "Study",
+      "mostFrequentActionDecisionShare": 0.9097222222222222,
+      "occupiedPersonMonthsByAction": {
+        "Guard": 48,
+        "Study": 520,
+        "Wait": 4
+      },
+      "consumedByDefinition": {},
+      "completedOutputsByDefinition": {},
+      "failureDistribution": {},
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 16.308575,
+        "p50": 97.797336,
+        "p95": 159.055642,
+        "maximum": 241.975359,
+        "mean": 101.44607098437501
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 7008168,
+        "p50": 22074232,
+        "p95": 24098024,
+        "maximum": 24824408,
+        "mean": 21020497.166666668
+      }
+    },
+    {
+      "family": "correction",
+      "budget": 64,
+      "cases": 4,
+      "declaredTargets": 4,
+      "completedTargets": 4,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [
+        33,
+        33,
+        33,
+        33
+      ],
+      "actionDistribution": {
+        "Craft": 4,
+        "Cultivate": 396,
+        "Explore": 100,
+        "Gather": 16,
+        "Guard": 12,
+        "Travel": 4,
+        "Wait": 16
+      },
+      "goalDistribution": {
+        "교역·교섭": 4,
+        "교역·실물 영석 전환": 12,
+        "교역·영석 채광": 12,
+        "구도·수행": 396,
+        "생산·영지": 16,
+        "정보·청심목": 108
+      },
+      "decisionCount": 548,
+      "mostFrequentAction": "Cultivate",
+      "mostFrequentActionDecisionShare": 0.7226277372262774,
+      "occupiedPersonMonthsByAction": {
+        "Craft": 4,
+        "Cultivate": 392,
+        "Explore": 100,
+        "Gather": 44,
+        "Guard": 12,
+        "Travel": 4,
+        "Wait": 16
+      },
+      "consumedByDefinition": {
+        "food": 100,
+        "wood": 8
+      },
+      "completedOutputsByDefinition": {
+        "paper": 12,
+        "resource.02.0": 116,
+        "wood": 48
+      },
+      "failureDistribution": {
+        "Natural source is absent or remote.": 8,
+        "탐색할 현지 원천이 없습니다.": 4
+      },
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 90.783004,
+        "p50": 104.493224,
+        "p95": 168.766041,
+        "maximum": 211.638823,
+        "mean": 113.65268053298611
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 20655120,
+        "p50": 23558232,
+        "p95": 29100064,
+        "maximum": 35814472,
+        "mean": 24664123.708333332
+      }
+    },
+    {
+      "family": "ecology",
+      "budget": 1,
+      "cases": 4,
+      "declaredTargets": 0,
+      "completedTargets": 0,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 2,
+      "firstCompletionMonthsAfterPreparation": [],
+      "actionDistribution": {
+        "Care": 48,
+        "Cultivate": 288,
+        "Explore": 6,
+        "Gather": 26,
+        "Guard": 48,
+        "Idle": 240,
+        "Teach": 164,
+        "Wait": 584
+      },
+      "goalDistribution": {
+        "공동체·정책": 594,
+        "관측 비용 부족에서 실제 기본 채집 시도": 6,
+        "교역·교섭": 34,
+        "구도·수행": 288,
+        "기예·생산": 2,
+        "성장·양육": 240,
+        "식량 원천의 실제 관측": 6,
+        "양육·교육": 164,
+        "양육·돌봄": 48,
+        "지식·수련": 2,
+        "현지 식량 확보": 20
+      },
+      "decisionCount": 1404,
+      "mostFrequentAction": "Wait",
+      "mostFrequentActionDecisionShare": 0.41595441595441596,
+      "occupiedPersonMonthsByAction": {
+        "Care": 48,
+        "Cultivate": 286,
+        "Explore": 6,
+        "Gather": 70,
+        "Guard": 48,
+        "Teach": 162,
+        "Wait": 744
+      },
+      "consumedByDefinition": {
+        "food": 6
+      },
+      "completedOutputsByDefinition": {
+        "food": 264
+      },
+      "failureDistribution": {},
+      "budgetDeferrals": 584,
+      "decisionsAtBudgetLimit": 920,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 14.398442,
+        "p50": 104.747589,
+        "p95": 157.847242,
+        "maximum": 208.030986,
+        "mean": 105.78503895486112
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 5667312,
+        "p50": 24643664,
+        "p95": 29193256,
+        "maximum": 36021080,
+        "mean": 23968344.541666668
+      }
+    },
+    {
+      "family": "ecology",
+      "budget": 16,
+      "cases": 4,
+      "declaredTargets": 0,
+      "completedTargets": 0,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [],
+      "actionDistribution": {
+        "Care": 48,
+        "Cultivate": 862,
+        "Explore": 8,
+        "Gather": 24,
+        "Guard": 116,
+        "Idle": 240,
+        "Teach": 134,
+        "Wait": 6
+      },
+      "goalDistribution": {
+        "공동체·정책": 54,
+        "관측 비용 부족에서 실제 기본 채집 시도": 4,
+        "구도·수행": 862,
+        "배움·생산 준비": 6,
+        "성장·양육": 240,
+        "식량 구매": 26,
+        "식량 원천의 실제 관측": 8,
+        "실제 잉여품 교환": 36,
+        "양육·교육": 132,
+        "양육·돌봄": 48,
+        "전수·협력": 2,
+        "현지 식량 확보": 20
+      },
+      "decisionCount": 1438,
+      "mostFrequentAction": "Cultivate",
+      "mostFrequentActionDecisionShare": 0.5994436717663422,
+      "occupiedPersonMonthsByAction": {
+        "Care": 48,
+        "Cultivate": 858,
+        "Explore": 8,
+        "Gather": 66,
+        "Guard": 114,
+        "Teach": 132,
+        "Wait": 138
+      },
+      "consumedByDefinition": {
+        "food": 8
+      },
+      "completedOutputsByDefinition": {
+        "food": 264
+      },
+      "failureDistribution": {
+        "요청 기억이 없거나 응답 기한이 지남·상대의 지식은 아직 모름": 2
+      },
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 20.129746,
+        "p50": 105.495077,
+        "p95": 163.677865,
+        "maximum": 208.208767,
+        "mean": 107.01978504513889
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 6624864,
+        "p50": 26563280,
+        "p95": 32928448,
+        "maximum": 36997352,
+        "mean": 25912713.680555556
+      }
+    },
+    {
+      "family": "ecology",
+      "budget": 64,
+      "cases": 4,
+      "declaredTargets": 0,
+      "completedTargets": 0,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [],
+      "actionDistribution": {
+        "Care": 48,
+        "Cultivate": 862,
+        "Explore": 8,
+        "Gather": 24,
+        "Guard": 116,
+        "Idle": 240,
+        "Teach": 134,
+        "Wait": 6
+      },
+      "goalDistribution": {
+        "공동체·정책": 54,
+        "관측 비용 부족에서 실제 기본 채집 시도": 4,
+        "구도·수행": 862,
+        "배움·생산 준비": 6,
+        "성장·양육": 240,
+        "식량 구매": 26,
+        "식량 원천의 실제 관측": 8,
+        "실제 잉여품 교환": 36,
+        "양육·교육": 132,
+        "양육·돌봄": 48,
+        "전수·협력": 2,
+        "현지 식량 확보": 20
+      },
+      "decisionCount": 1438,
+      "mostFrequentAction": "Cultivate",
+      "mostFrequentActionDecisionShare": 0.5994436717663422,
+      "occupiedPersonMonthsByAction": {
+        "Care": 48,
+        "Cultivate": 858,
+        "Explore": 8,
+        "Gather": 66,
+        "Guard": 114,
+        "Teach": 132,
+        "Wait": 138
+      },
+      "consumedByDefinition": {
+        "food": 8
+      },
+      "completedOutputsByDefinition": {
+        "food": 264
+      },
+      "failureDistribution": {
+        "요청 기억이 없거나 응답 기한이 지남·상대의 지식은 아직 모름": 2
+      },
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 16.116979,
+        "p50": 105.631667,
+        "p95": 158.276936,
+        "maximum": 195.788949,
+        "mean": 106.10359229166666
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 6625248,
+        "p50": 26567688,
+        "p95": 32930304,
+        "maximum": 36997352,
+        "mean": 25912484.152777776
+      }
+    },
+    {
+      "family": "fairness",
+      "budget": 64,
+      "cases": 4,
+      "declaredTargets": 4,
+      "completedTargets": 4,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [
+        21,
+        21,
+        21,
+        21
+      ],
+      "actionDistribution": {
+        "Craft": 4,
+        "Cultivate": 492,
+        "Explore": 64,
+        "Gather": 4,
+        "Wait": 4
+      },
+      "goalDistribution": {
+        "구도·수행": 492,
+        "생산·영지": 12,
+        "정보·청심목": 64
+      },
+      "decisionCount": 568,
+      "mostFrequentAction": "Cultivate",
+      "mostFrequentActionDecisionShare": 0.8661971830985915,
+      "occupiedPersonMonthsByAction": {
+        "Craft": 4,
+        "Cultivate": 488,
+        "Explore": 64,
+        "Gather": 12,
+        "Wait": 4
+      },
+      "consumedByDefinition": {
+        "food": 64,
+        "wood": 8
+      },
+      "completedOutputsByDefinition": {
+        "paper": 12,
+        "wood": 48
+      },
+      "failureDistribution": {},
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 19.067351,
+        "p50": 94.779989,
+        "p95": 124.947625,
+        "maximum": 174.974042,
+        "mean": 94.62440035243056
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 9226952,
+        "p50": 21400864,
+        "p95": 22698464,
+        "maximum": 23215000,
+        "mean": 20788207.402777776
+      }
+    },
+    {
+      "family": "paper",
+      "budget": 1,
+      "cases": 4,
+      "declaredTargets": 4,
+      "completedTargets": 0,
+      "uncompletedTargets": 4,
+      "stagnationCandidates": 4,
+      "firstCompletionMonthsAfterPreparation": [],
+      "actionDistribution": {
+        "Wait": 576
+      },
+      "goalDistribution": {
+        "자립": 576
+      },
+      "decisionCount": 576,
+      "mostFrequentAction": "Wait",
+      "mostFrequentActionDecisionShare": 1.0,
+      "occupiedPersonMonthsByAction": {
+        "Wait": 572
+      },
+      "consumedByDefinition": {},
+      "completedOutputsByDefinition": {},
+      "failureDistribution": {},
+      "budgetDeferrals": 576,
+      "decisionsAtBudgetLimit": 576,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 14.746568,
+        "p50": 95.401003,
+        "p95": 149.972391,
+        "maximum": 181.710072,
+        "mean": 97.80585555208333
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 6160256,
+        "p50": 19832232,
+        "p95": 20693696,
+        "maximum": 20837976,
+        "mean": 18692366.527777776
+      }
+    },
+    {
+      "family": "paper",
+      "budget": 16,
+      "cases": 4,
+      "declaredTargets": 4,
+      "completedTargets": 4,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [
+        21,
+        21,
+        21,
+        21
+      ],
+      "actionDistribution": {
+        "Craft": 4,
+        "Cultivate": 492,
+        "Explore": 64,
+        "Gather": 4,
+        "Wait": 4
+      },
+      "goalDistribution": {
+        "구도·수행": 492,
+        "생산·영지": 12,
+        "정보·청심목": 64
+      },
+      "decisionCount": 568,
+      "mostFrequentAction": "Cultivate",
+      "mostFrequentActionDecisionShare": 0.8661971830985915,
+      "occupiedPersonMonthsByAction": {
+        "Craft": 4,
+        "Cultivate": 488,
+        "Explore": 64,
+        "Gather": 12,
+        "Wait": 4
+      },
+      "consumedByDefinition": {
+        "food": 64,
+        "wood": 8
+      },
+      "completedOutputsByDefinition": {
+        "paper": 12,
+        "wood": 48
+      },
+      "failureDistribution": {},
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 19.079357,
+        "p50": 97.816512,
+        "p95": 154.016963,
+        "maximum": 172.24959,
+        "mean": 99.634153171875
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 9190248,
+        "p50": 21319752,
+        "p95": 22593032,
+        "maximum": 23124424,
+        "mean": 20708343.5
+      }
+    },
+    {
+      "family": "paper",
+      "budget": 64,
+      "cases": 4,
+      "declaredTargets": 4,
+      "completedTargets": 4,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [
+        21,
+        21,
+        21,
+        21
+      ],
+      "actionDistribution": {
+        "Craft": 4,
+        "Cultivate": 492,
+        "Explore": 64,
+        "Gather": 4,
+        "Wait": 4
+      },
+      "goalDistribution": {
+        "구도·수행": 492,
+        "생산·영지": 12,
+        "정보·청심목": 64
+      },
+      "decisionCount": 568,
+      "mostFrequentAction": "Cultivate",
+      "mostFrequentActionDecisionShare": 0.8661971830985915,
+      "occupiedPersonMonthsByAction": {
+        "Craft": 4,
+        "Cultivate": 488,
+        "Explore": 64,
+        "Gather": 12,
+        "Wait": 4
+      },
+      "consumedByDefinition": {
+        "food": 64,
+        "wood": 8
+      },
+      "completedOutputsByDefinition": {
+        "paper": 12,
+        "wood": 48
+      },
+      "failureDistribution": {},
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 19.331161,
+        "p50": 97.295723,
+        "p95": 154.434137,
+        "maximum": 171.948052,
+        "mean": 100.49405508854166
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 9190080,
+        "p50": 21318704,
+        "p95": 22593856,
+        "maximum": 23110424,
+        "mean": 20708223.180555556
+      }
+    },
+    {
+      "family": "tool",
+      "budget": 1,
+      "cases": 4,
+      "declaredTargets": 4,
+      "completedTargets": 0,
+      "uncompletedTargets": 4,
+      "stagnationCandidates": 4,
+      "firstCompletionMonthsAfterPreparation": [],
+      "actionDistribution": {
+        "Wait": 576
+      },
+      "goalDistribution": {
+        "자립": 576
+      },
+      "decisionCount": 576,
+      "mostFrequentAction": "Wait",
+      "mostFrequentActionDecisionShare": 1.0,
+      "occupiedPersonMonthsByAction": {
+        "Wait": 572
+      },
+      "consumedByDefinition": {},
+      "completedOutputsByDefinition": {},
+      "failureDistribution": {},
+      "budgetDeferrals": 576,
+      "decisionsAtBudgetLimit": 576,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 15.00839,
+        "p50": 95.89795,
+        "p95": 149.496603,
+        "maximum": 178.825029,
+        "mean": 97.37142010069445
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 6160280,
+        "p50": 19832256,
+        "p95": 20695400,
+        "maximum": 20832992,
+        "mean": 18692284.833333332
+      }
+    },
+    {
+      "family": "tool",
+      "budget": 16,
+      "cases": 4,
+      "declaredTargets": 4,
+      "completedTargets": 4,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "actionDistribution": {
+        "Craft": 4,
+        "Cultivate": 480,
+        "Explore": 64,
+        "Gather": 8,
+        "Wait": 4
+      },
+      "goalDistribution": {
+        "구도·수행": 480,
+        "생산·채집 도구": 16,
+        "정보·적철광": 12,
+        "정보·청심목": 52
+      },
+      "decisionCount": 560,
+      "mostFrequentAction": "Cultivate",
+      "mostFrequentActionDecisionShare": 0.8571428571428571,
+      "occupiedPersonMonthsByAction": {
+        "Craft": 4,
+        "Cultivate": 476,
+        "Explore": 64,
+        "Gather": 24,
+        "Wait": 4
+      },
+      "consumedByDefinition": {
+        "food": 64,
+        "ore": 8,
+        "wood": 8
+      },
+      "completedOutputsByDefinition": {
+        "ore": 48,
+        "tool": 4,
+        "wood": 48
+      },
+      "failureDistribution": {},
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 19.065227,
+        "p50": 96.883872,
+        "p95": 157.21218,
+        "maximum": 181.783791,
+        "mean": 100.08125419444444
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 9190104,
+        "p50": 21320280,
+        "p95": 22779336,
+        "maximum": 24968616,
+        "mean": 20723702.083333332
+      }
+    },
+    {
+      "family": "tool",
+      "budget": 64,
+      "cases": 4,
+      "declaredTargets": 4,
+      "completedTargets": 4,
+      "uncompletedTargets": 0,
+      "stagnationCandidates": 0,
+      "firstCompletionMonthsAfterPreparation": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "actionDistribution": {
+        "Craft": 4,
+        "Cultivate": 480,
+        "Explore": 64,
+        "Gather": 8,
+        "Wait": 4
+      },
+      "goalDistribution": {
+        "구도·수행": 480,
+        "생산·채집 도구": 16,
+        "정보·적철광": 12,
+        "정보·청심목": 52
+      },
+      "decisionCount": 560,
+      "mostFrequentAction": "Cultivate",
+      "mostFrequentActionDecisionShare": 0.8571428571428571,
+      "occupiedPersonMonthsByAction": {
+        "Craft": 4,
+        "Cultivate": 476,
+        "Explore": 64,
+        "Gather": 24,
+        "Wait": 4
+      },
+      "consumedByDefinition": {
+        "food": 64,
+        "ore": 8,
+        "wood": 8
+      },
+      "completedOutputsByDefinition": {
+        "ore": 48,
+        "tool": 4,
+        "wood": 48
+      },
+      "failureDistribution": {},
+      "budgetDeferrals": 0,
+      "decisionsAtBudgetLimit": 0,
+      "advanceMilliseconds": {
+        "samples": 576,
+        "minimum": 19.237361,
+        "p50": 97.450378,
+        "p95": 154.681636,
+        "maximum": 176.09137,
+        "mean": 99.50982972916667
+      },
+      "currentThreadAllocatedBytes": {
+        "samples": 576,
+        "minimum": 9190104,
+        "p50": 21322072,
+        "p95": 22779432,
+        "maximum": 24972304,
+        "mean": 20723671.222222224
+      }
+    }
+  ],
+  "uncompletedCases": [
+    {
+      "family": "paper",
+      "seed": 42,
+      "budget": 1,
+      "repetition": 0,
+      "axis": null
+    },
+    {
+      "family": "tool",
+      "seed": 42,
+      "budget": 1,
+      "repetition": 0,
+      "axis": null
+    },
+    {
+      "family": "paper",
+      "seed": 42,
+      "budget": 1,
+      "repetition": 1,
+      "axis": null
+    },
+    {
+      "family": "tool",
+      "seed": 42,
+      "budget": 1,
+      "repetition": 1,
+      "axis": null
+    },
+    {
+      "family": "paper",
+      "seed": 73,
+      "budget": 1,
+      "repetition": 0,
+      "axis": null
+    },
+    {
+      "family": "tool",
+      "seed": 73,
+      "budget": 1,
+      "repetition": 0,
+      "axis": null
+    },
+    {
+      "family": "paper",
+      "seed": 73,
+      "budget": 1,
+      "repetition": 1,
+      "axis": null
+    },
+    {
+      "family": "tool",
+      "seed": 73,
+      "budget": 1,
+      "repetition": 1,
+      "axis": null
+    }
+  ],
+  "stagnationCases": [
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 144
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 144
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 1,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 144
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 42,
+        "budget": 1,
+        "repetition": 1,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 144
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 73,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 144
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 73,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 144
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 73,
+        "budget": 1,
+        "repetition": 0,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 15
+    },
+    {
+      "specification": {
+        "family": "paper",
+        "seed": 73,
+        "budget": 1,
+        "repetition": 1,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 144
+    },
+    {
+      "specification": {
+        "family": "tool",
+        "seed": 73,
+        "budget": 1,
+        "repetition": 1,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 144
+    },
+    {
+      "specification": {
+        "family": "ecology",
+        "seed": 73,
+        "budget": 1,
+        "repetition": 1,
+        "axis": null
+      },
+      "maximumConsecutiveMonths": 15
+    }
+  ],
+  "correctionCases": [
+    {
+      "specification": {
+        "family": "correction",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "actualPreparationMonths": 58,
+      "correction": {
+        "source": 87,
+        "firstFailureMonth": 59,
+        "correctedMonth": 61,
+        "monthsFromFailure": 2,
+        "observed": true
+      },
+      "firstTargetCosts": {
+        "targetReceipt": {
+          "person": 1,
+          "goal": "paper",
+          "month": 91,
+          "evidence": "inventory:job:2443"
+        },
+        "elapsedMonths": 33,
+        "occupiedPersonMonthsByAction": {
+          "Wait": 2,
+          "Explore": 25,
+          "Travel": 1,
+          "Gather": 3,
+          "Craft": 1
+        },
+        "actualJobs": [
+          2313,
+          2318,
+          2323,
+          2328,
+          2333,
+          2338,
+          2343,
+          2348,
+          2353,
+          2358,
+          2363,
+          2368,
+          2373,
+          2378,
+          2383,
+          2388,
+          2393,
+          2398,
+          2403,
+          2408,
+          2413,
+          2418,
+          2423,
+          2428,
+          2433,
+          2437,
+          2443
+        ],
+        "actualConsumedByDefinition": {
+          "food": 25,
+          "wood": 2
+        }
+      }
+    },
+    {
+      "specification": {
+        "family": "correction",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "actualPreparationMonths": 58,
+      "correction": {
+        "source": 87,
+        "firstFailureMonth": 59,
+        "correctedMonth": 61,
+        "monthsFromFailure": 2,
+        "observed": true
+      },
+      "firstTargetCosts": {
+        "targetReceipt": {
+          "person": 1,
+          "goal": "paper",
+          "month": 91,
+          "evidence": "inventory:job:2443"
+        },
+        "elapsedMonths": 33,
+        "occupiedPersonMonthsByAction": {
+          "Wait": 2,
+          "Explore": 25,
+          "Travel": 1,
+          "Gather": 3,
+          "Craft": 1
+        },
+        "actualJobs": [
+          2313,
+          2318,
+          2323,
+          2328,
+          2333,
+          2338,
+          2343,
+          2348,
+          2353,
+          2358,
+          2363,
+          2368,
+          2373,
+          2378,
+          2383,
+          2388,
+          2393,
+          2398,
+          2403,
+          2408,
+          2413,
+          2418,
+          2423,
+          2428,
+          2433,
+          2437,
+          2443
+        ],
+        "actualConsumedByDefinition": {
+          "food": 25,
+          "wood": 2
+        }
+      }
+    },
+    {
+      "specification": {
+        "family": "correction",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "actualPreparationMonths": 58,
+      "correction": {
+        "source": 87,
+        "firstFailureMonth": 59,
+        "correctedMonth": 61,
+        "monthsFromFailure": 2,
+        "observed": true
+      },
+      "firstTargetCosts": {
+        "targetReceipt": {
+          "person": 1,
+          "goal": "paper",
+          "month": 91,
+          "evidence": "inventory:job:2442"
+        },
+        "elapsedMonths": 33,
+        "occupiedPersonMonthsByAction": {
+          "Wait": 2,
+          "Explore": 25,
+          "Travel": 1,
+          "Gather": 3,
+          "Craft": 1
+        },
+        "actualJobs": [
+          2312,
+          2317,
+          2322,
+          2327,
+          2332,
+          2337,
+          2342,
+          2347,
+          2352,
+          2357,
+          2362,
+          2367,
+          2372,
+          2377,
+          2382,
+          2387,
+          2392,
+          2397,
+          2402,
+          2407,
+          2412,
+          2417,
+          2422,
+          2427,
+          2432,
+          2436,
+          2442
+        ],
+        "actualConsumedByDefinition": {
+          "food": 25,
+          "wood": 2
+        }
+      }
+    },
+    {
+      "specification": {
+        "family": "correction",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "actualPreparationMonths": 58,
+      "correction": {
+        "source": 87,
+        "firstFailureMonth": 59,
+        "correctedMonth": 61,
+        "monthsFromFailure": 2,
+        "observed": true
+      },
+      "firstTargetCosts": {
+        "targetReceipt": {
+          "person": 1,
+          "goal": "paper",
+          "month": 91,
+          "evidence": "inventory:job:2442"
+        },
+        "elapsedMonths": 33,
+        "occupiedPersonMonthsByAction": {
+          "Wait": 2,
+          "Explore": 25,
+          "Travel": 1,
+          "Gather": 3,
+          "Craft": 1
+        },
+        "actualJobs": [
+          2312,
+          2317,
+          2322,
+          2327,
+          2332,
+          2337,
+          2342,
+          2347,
+          2352,
+          2357,
+          2362,
+          2367,
+          2372,
+          2377,
+          2382,
+          2387,
+          2392,
+          2397,
+          2402,
+          2407,
+          2412,
+          2417,
+          2422,
+          2427,
+          2432,
+          2436,
+          2442
+        ],
+        "actualConsumedByDefinition": {
+          "food": 25,
+          "wood": 2
+        }
+      }
+    }
+  ],
+  "cooperationCases": [
+    {
+      "specification": {
+        "family": "cooperation",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "actualPayments": [
+        {
+          "month": 1,
+          "from": {
+            "kind": 0,
+            "id": 1
+          },
+          "to": {
+            "kind": 0,
+            "id": 36
+          },
+          "amount": 10,
+          "kind": "debt repayment",
+          "reference": 1
+        }
+      ]
+    },
+    {
+      "specification": {
+        "family": "cooperation",
+        "seed": 42,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "actualPayments": [
+        {
+          "month": 1,
+          "from": {
+            "kind": 0,
+            "id": 1
+          },
+          "to": {
+            "kind": 0,
+            "id": 36
+          },
+          "amount": 10,
+          "kind": "debt repayment",
+          "reference": 1
+        }
+      ]
+    },
+    {
+      "specification": {
+        "family": "cooperation",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 0,
+        "axis": null
+      },
+      "actualPayments": [
+        {
+          "month": 1,
+          "from": {
+            "kind": 0,
+            "id": 1
+          },
+          "to": {
+            "kind": 0,
+            "id": 36
+          },
+          "amount": 10,
+          "kind": "debt repayment",
+          "reference": 1
+        }
+      ]
+    },
+    {
+      "specification": {
+        "family": "cooperation",
+        "seed": 73,
+        "budget": 64,
+        "repetition": 1,
+        "axis": null
+      },
+      "actualPayments": [
+        {
+          "month": 1,
+          "from": {
+            "kind": 0,
+            "id": 1
+          },
+          "to": {
+            "kind": 0,
+            "id": 36
+          },
+          "amount": 10,
+          "kind": "debt repayment",
+          "reference": 1
+        }
+      ]
+    }
+  ],
+  "livingCountScope": "원문 snapshots.living은 매월 전체 생존자 수다. 개별 사망 총수나 동월 출생/사망 상쇄를 따로 복원하지 않는다.",
+  "latencyScope": "실제 공개 AdvanceTo 월 경계 전체 wall ticks/현재 스레드 할당. 순수 추론 latency·exclusive CPU가 아니다. 준비/예열/조회/복제비교/보고서저장은 이 구간 밖이다.",
+  "quantileMethod": "각 family/budget의 원시 월 표본을 정렬한 최근접 상위 순위 ceil(p*N)-1. 두 반복은 결정론 대조이며 독립 seed 네 개로 세지 않는다.",
+  "censorScope": "미완수는 고정144개월에서 종료한 결과이며 성공시간으로 대체하지 않는다. 정체 후보는 유한 연속대기 관측이며 영구교착·최적전략을 단정하지 않는다."
+}

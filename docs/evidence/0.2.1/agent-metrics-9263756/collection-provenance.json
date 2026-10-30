@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "kind": "AI측정 출처와 동시환경·복구 기록",
+  "measurementSourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "measurementFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "latestComparedCommon": {
+    "commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "productFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "functionalReport": "docs/evidence/0.2.1/invariant-final-af91fb0/functional.json",
+    "functional": "314/314",
+    "scope": "별도소스의기능근거이며926의AI실측을새source/PGOoff실측으로승격하지않음"
+  },
+  "restart": {
+    "recordedStartUtc": "2026-10-30T18:13:07.610459+00:00",
+    "actualExit": {
+      "observedEndUtc": "2026-10-30T19:21:29.263585+00:00",
+      "pid": 121165,
+      "returnCode": 0,
+      "terminatedBySignal": null
+    },
+    "pid": 121165,
+    "supervisorPid": 121162,
+    "affinity": "Cpus_allowed_list:\t3",
+    "actualCommand": [
+      "/workspace/.dotnet/dotnet",
+      "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "--filter",
+      "INV-001/002/011",
+      "--report",
+      "/workspace/scratch/agent-metrics-9263756-restart1-preceding-functional.json",
+      "--agent-metrics",
+      "/workspace/scratch/agent-metrics-9263756-restart1.json",
+      "--agent-metrics-plan",
+      "/workspace/scratch/agent-metrics-plan-9263756.json"
+    ],
+    "sourceCleanAtLaunchAndAfterExit": true,
+    "fourDllHashesUnchanged": true
+  },
+  "firstAttempt": {
+    "status": "외부중단·78/108 부분",
+    "rawStatusWasRunning": true,
+    "exactInterruptionUtc": null,
+    "observedProcExitCode": 9,
+    "externalConcurrentIntervals": [
+      {
+        "reported_by": "root",
+        "started_utc": "2026-10-30T17:48:59Z",
+        "ended_utc": "2026-10-30T17:56:54Z",
+        "source_commit": "9704e95508456ee317a378a9b8dac55985bf1849",
+        "cpu_affinity": "4",
+        "activity": "기능 정확성 전체 검사(309예상), 새 벤치 아님",
+        "cgroup_cpu_max": "400000 100000",
+        "measurement_affinities": "AI3/비용0/성장1,2와공유quota",
+        "interpretation": "공유quota의외부동시부하다. AI원시global월wall값을수정/제외하지않고exclusiveCPU/onCPU/순수추론비용으로표시하지않는다. 개별월의UTC/onCPU표본을추가계측했다고주장하지않는다.",
+        "source_promotion_forbidden": true,
+        "measurement_source_remains": "9263756b1d00b8696fddecacb077f55d95141f26",
+        "ended_utc_is_observed_upper_bound": true,
+        "exact_end_utc": null,
+        "exit_confirmed_utc": "2026-10-30T17:57:15Z",
+        "root_reported_result": "전체309/309·execsession1819 exit0",
+        "end_time_scope": "정밀 종료시각 캡처 없음.17:56:54 로그전체완료관측상한 및17:57:15확정exit확인.이후CPU4추가앱/측정없음이라는root통지."
+      }
+    ],
+    "rawMergedIntoRestart": false
+  },
+  "sharedQuota": {
+    "cpuMax": "400000 100000",
+    "concurrency": "CPU0 inventory 예약, CPU1/2 동일926 성장restart1, 본AI CPU3. 공유4CPU quota이며 독점CPU/순수추론지연 아님.",
+    "interpretation": "원시월wall값은공유quota실제비용.순수추론/exclusiveCPU/onCPU가아님.표본교정/제외0."
+  },
+  "quietDiagnostic": {
+    "rootScheduledStartUtc": "2026-10-30T19:16:00Z",
+    "originalPlannedEndUtc": "2026-10-30T19:36:00Z",
+    "actualRootReportedEndUtc": "2026-10-30T19:39:51Z",
+    "resumedByExplicitRootNotice": true,
+    "localLastLargeParseBeforeQuietUtc": "2026-10-30T19:15:58.714211Z",
+    "localLastParsedCount": 100,
+    "duringQuiet": "작은로그/exitJSON/progressJSONLtail·ps/stat·원격조회만.큰JSON/gzip/SHA/fp/build0.",
+    "postprocessingVerificationUtc": "2026-10-30T19:42:28.908109+00:00",
+    "rawMonthlyTimesChanged": false,
+    "scope": "추가진단은측정후반과겹침.개별월UTC/onCPU추가계측이없어해당월을임의제외하지않음."
+  },
+  "cpu3Handoff": {
+    "actualAiEndUtc": "2026-10-30T19:21:29.263585+00:00",
+    "exitObservedAndNotifiedUtc": "2026-10-30T19:22:50Z",
+    "politicsAcknowledged": true,
+    "nextGrowthStartedUtc": "2026-10-30T19:24:10Z",
+    "nextGrowthPid": 132980,
+    "nextGrowthSource": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "furtherAiCpu3Work": false
+  },
+  "runtimeEnvironmentLimit": "실행전PGO세부환경변수는별도snapshot하지않음.향후PGOoff비교의측정으로재분류하지않음.",
+  "createdUtc": "2026-10-30T19:48:10.227669+00:00"
+}

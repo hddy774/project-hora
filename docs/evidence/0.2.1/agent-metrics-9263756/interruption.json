@@ -1,0 +1,61 @@
+{
+  "kind": "seonro-agent-measurement-external-interruption",
+  "recordedUtc": "2026-10-30T18:13:07.610169+00:00",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "originalPid": 113736,
+  "oldExecSession": 16080,
+  "oldExecWait": "Unknown process id 16080",
+  "observedProcessState": "Z/PPID1",
+  "procExitCode": 9,
+  "exactInterruptionUtc": null,
+  "externalObservation": "/workspace/scratch/observed-measurement-interruption-20261030T1806Z.json",
+  "cause": "미확정. 외부 signal9 상태만 관측, cgroup oom=0/oom_kill=0. 주체를 단정하지 않음.",
+  "originalStatus": "running",
+  "originalReports": 78,
+  "originalFailedCases": 0,
+  "originalReportMtimeUtc": "2026-10-30T18:02:47.607061+00:00",
+  "resumeReview": {
+    "file": "tests/Chronicles.Game.Tests/AgentMeasurements.cs",
+    "lines": "61-138",
+    "supported": false,
+    "reason": "Run은 빈 reports/axes로 시작하고 Save가 path를 전체 대체한다. 기존 결과 읽기/skip/resume 코드 없음."
+  },
+  "recovery": "동일926·동일계획108cases를 새 restart1 경로에서 처음부터 실행. 원본 부분 결과 합성/완료 승격 없음.",
+  "preservedArtifacts": [
+    {
+      "path": "/workspace/scratch/agent-metrics-9263756.json",
+      "bytes": 70215681,
+      "sha256": "d223c825160d783f4e6500c289166ae170cea0ef10b36f69071727470ab27e64"
+    },
+    {
+      "path": "/workspace/scratch/agent-metrics-9263756-run.json",
+      "bytes": 4574,
+      "sha256": "20d7dc7299fefd8f25674aeb9aab75ee951509a4a6cb53bf91bbd564493ec4ae"
+    },
+    {
+      "path": "/workspace/scratch/agent-metrics-9263756.log",
+      "bytes": 75,
+      "sha256": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+    },
+    {
+      "path": "/workspace/scratch/agent-metrics-9263756-preceding-functional.json",
+      "bytes": 252,
+      "sha256": "64b0e5071d7ba7a12d2b213e6021a16ce89bb4bce855250ff214eec0e57001c9"
+    },
+    {
+      "path": "/workspace/scratch/agent-metrics-plan-9263756.json",
+      "bytes": 339,
+      "sha256": "f0df62e9edc7cd1855148dda4d9c6ee99d0d0a32d063f7e32016071feb93122b"
+    },
+    {
+      "path": "/workspace/scratch/agent-metrics-plan-pending-source.json",
+      "bytes": 299,
+      "sha256": "fbc43182e094a33d63e9d31a0232a8fe430704be22ed6b11dfa201f7d6a4c843"
+    },
+    {
+      "path": "/workspace/scratch/observed-measurement-interruption-20261030T1806Z.json",
+      "bytes": 509,
+      "sha256": "f4f632ce6ae547d3d4c419719584270a1fba4c33459ae0e1ce0bd901808733a3"
+    }
+  ]
+}

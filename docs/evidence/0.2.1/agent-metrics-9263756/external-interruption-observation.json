@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-10-30T18:07:28.197122+00:00",
+  "processes": [
+    {
+      "pid": 113736,
+      "state": "Z",
+      "exit_signal": "17",
+      "exit_code": "9"
+    },
+    {
+      "pid": 114052,
+      "state": "Z",
+      "exit_signal": "17",
+      "exit_code": "9"
+    },
+    {
+      "pid": 114058,
+      "state": "Z",
+      "exit_signal": "17",
+      "exit_code": "9"
+    }
+  ],
+  "cause": "미확정: external exit status only; memory.events oom=0 oom_kill=0",
+  "original_reports_unchanged": true
+}

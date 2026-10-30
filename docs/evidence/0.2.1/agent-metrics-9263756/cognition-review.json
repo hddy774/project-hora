@@ -1,0 +1,616 @@
+{
+  "schemaVersion": 1,
+  "kind": "L04 실제 인지 저장/예산 source-reviewed 자료",
+  "sources": {
+    "artifactTreeCommit": "1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f",
+    "reviewSourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "baselineSourceCommit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+    "baseline": {
+      "path": "docs/evidence/0.2.1/final-performance/baseline.json",
+      "sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+      "url": "https://github.com/hddy774/project-hora/blob/1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f/docs/evidence/0.2.1/final-performance/baseline.json",
+      "complete": true,
+      "completedSizes": [
+        2,
+        100,
+        1000,
+        10000
+      ],
+      "configuration": {
+        "inventoryProjectionExperiment": false,
+        "inventoryTypedCopyExperiment": false,
+        "inventoryCandidateMode": "person15-adopted",
+        "inventoryProjectionAdoptedByDefault": true,
+        "inventorySnapshotCopy": "json"
+      }
+    },
+    "functional": {
+      "path": "docs/evidence/0.2.1/invariant-final-af91fb0/functional.json",
+      "sha256": "6bb3de5ccb787eeee7a71f86295ce17c9eaa2a630cbef206f95e04beaf312e87",
+      "url": "https://github.com/hddy774/project-hora/blob/1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f/docs/evidence/0.2.1/invariant-final-af91fb0/functional.json",
+      "total": 314,
+      "failed": 0
+    }
+  },
+  "newMeasurements": 0,
+  "measurements": [
+    {
+      "population": 2,
+      "measuredMonths": 12,
+      "warmupMonths": 2,
+      "repetitions": 1,
+      "serializedCognitionBytes": 177605,
+      "fullWorldMemoryCodecSaveBytes": 2916145,
+      "collectedProcessManagedBytes": 15908344,
+      "beliefBudgetPerPerson": 48,
+      "activeClaimBudgetPerPerson": 12,
+      "maximumBudgetUnitsPerPerson": 4,
+      "peopleExceedingBeliefBudget": 0,
+      "peopleExceedingClaimBudget": 0,
+      "totals": {
+        "beliefs": 0,
+        "storedClaims": 1,
+        "activeClaims": 1,
+        "peopleObservations": 4,
+        "placeObservations": 2,
+        "sourceObservations": 0,
+        "knownPeople": 4,
+        "knownPlaces": 2
+      },
+      "maximumPerPerson": {
+        "beliefs": 0,
+        "storedClaims": 1,
+        "activeClaims": 1,
+        "peopleObservations": 2,
+        "placeObservations": 1,
+        "sourceObservations": 0,
+        "knownPeople": 2,
+        "knownPlaces": 1
+      },
+      "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+      "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+    },
+    {
+      "population": 100,
+      "measuredMonths": 12,
+      "warmupMonths": 2,
+      "repetitions": 1,
+      "serializedCognitionBytes": 3477894,
+      "fullWorldMemoryCodecSaveBytes": 15219437,
+      "collectedProcessManagedBytes": 87473080,
+      "beliefBudgetPerPerson": 48,
+      "activeClaimBudgetPerPerson": 12,
+      "maximumBudgetUnitsPerPerson": 4,
+      "peopleExceedingBeliefBudget": 0,
+      "peopleExceedingClaimBudget": 0,
+      "totals": {
+        "beliefs": 0,
+        "storedClaims": 1,
+        "activeClaims": 1,
+        "peopleObservations": 102,
+        "placeObservations": 100,
+        "sourceObservations": 0,
+        "knownPeople": 102,
+        "knownPlaces": 100
+      },
+      "maximumPerPerson": {
+        "beliefs": 0,
+        "storedClaims": 1,
+        "activeClaims": 1,
+        "peopleObservations": 2,
+        "placeObservations": 1,
+        "sourceObservations": 0,
+        "knownPeople": 2,
+        "knownPlaces": 1
+      },
+      "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+      "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+    },
+    {
+      "population": 1000,
+      "measuredMonths": 12,
+      "warmupMonths": 2,
+      "repetitions": 1,
+      "serializedCognitionBytes": 23483031,
+      "fullWorldMemoryCodecSaveBytes": 80532814,
+      "collectedProcessManagedBytes": 128654296,
+      "beliefBudgetPerPerson": 48,
+      "activeClaimBudgetPerPerson": 12,
+      "maximumBudgetUnitsPerPerson": 32,
+      "peopleExceedingBeliefBudget": 0,
+      "peopleExceedingClaimBudget": 0,
+      "totals": {
+        "beliefs": 647,
+        "storedClaims": 7,
+        "activeClaims": 7,
+        "peopleObservations": 10053,
+        "placeObservations": 1003,
+        "sourceObservations": 0,
+        "knownPeople": 10053,
+        "knownPlaces": 1006
+      },
+      "maximumPerPerson": {
+        "beliefs": 9,
+        "storedClaims": 2,
+        "activeClaims": 2,
+        "peopleObservations": 20,
+        "placeObservations": 2,
+        "sourceObservations": 0,
+        "knownPeople": 20,
+        "knownPlaces": 3
+      },
+      "initialHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+      "finalHash": "491a3903836aaa5608015c6179b2e9ea0b9b694e01b9fd0213e27adca325c2f5"
+    },
+    {
+      "population": 10000,
+      "measuredMonths": 12,
+      "warmupMonths": 2,
+      "repetitions": 1,
+      "serializedCognitionBytes": 224192812,
+      "fullWorldMemoryCodecSaveBytes": 398228447,
+      "collectedProcessManagedBytes": 442950840,
+      "beliefBudgetPerPerson": 48,
+      "activeClaimBudgetPerPerson": 12,
+      "maximumBudgetUnitsPerPerson": 48,
+      "peopleExceedingBeliefBudget": 0,
+      "peopleExceedingClaimBudget": 0,
+      "totals": {
+        "beliefs": 34436,
+        "storedClaims": 5,
+        "activeClaims": 5,
+        "peopleObservations": 434902,
+        "placeObservations": 10002,
+        "sourceObservations": 0,
+        "knownPeople": 479083,
+        "knownPlaces": 10004
+      },
+      "maximumPerPerson": {
+        "beliefs": 6,
+        "storedClaims": 2,
+        "activeClaims": 2,
+        "peopleObservations": 47,
+        "placeObservations": 2,
+        "sourceObservations": 0,
+        "knownPeople": 68,
+        "knownPlaces": 3
+      },
+      "initialHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+      "finalHash": "68e52eb8543bc480c84c188954eb60c30463b1427e73b323971a97f43f742b80"
+    }
+  ],
+  "codeReview": [
+    {
+      "path": "src/Chronicles.Game/World.Actions.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "9621c9fda7a40aa019bbc82222600f651dd1bee98f985abfde1f9db9e068c284",
+      "gitBlob": "619f6685efa7b7a9f41c5a2ddd812b928f17a520",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "private void Remember",
+          "lines": [
+            118
+          ]
+        },
+        {
+          "needle": "private void Observe",
+          "lines": [
+            129
+          ]
+        },
+        {
+          "needle": "private void TrimCognition",
+          "lines": [
+            158
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.IntelligentPlanning.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "052dda0447ea7835e849e2ebf9c971db6ccace96d39ed6ab3137320e69a64b55",
+      "gitBlob": "bbb97ff838e9db465551f43f40ad270a628711f5",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "Remember(p, \"plan:completed\"",
+          "lines": [
+            67
+          ]
+        },
+        {
+          "needle": "Remember(p, \"plan:lastFailure\"",
+          "lines": [
+            323
+          ]
+        },
+        {
+          "needle": "private void TrimPlanningCognition",
+          "lines": [
+            335
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.Planning.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "b49c60328ac9af476df399ed5e8edfd152565e692f99925e997f405d7ada2c40",
+      "gitBlob": "b31af308d0681fe5958037c623e56e9a4d08bf3e",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "private bool VisitPlanningNode",
+          "lines": [
+            230
+          ]
+        },
+        {
+          "needle": "private SourceObservation[] KnownPlanningSources",
+          "lines": [
+            236
+          ]
+        },
+        {
+          "needle": "private bool PlanningKnownPerson",
+          "lines": [
+            258
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "b3f7855d524f3a9fed32a3b184357659a5f0d4b1499b8c89968e260db1deb8ca",
+      "gitBlob": "544b6cae43c8811b74339f8cf844f0a4e7097603",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "internal int PeopleCognitiveLoad",
+          "lines": [
+            427
+          ]
+        },
+        {
+          "needle": "internal void TrimPeopleCognition",
+          "lines": [
+            430
+          ]
+        },
+        {
+          "needle": "Reputation = new(state.PeopleDomain.Reputation.Claims",
+          "lines": [
+            605
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.Society.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "649ac07f1ef2180eed91a1baa5785d69a054afa9c147301e091df068dbd16dbe",
+      "gitBlob": "616808ab78ffe47855accdbf6745f64e94c5393a",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "person.Decisions.Count > 24",
+          "lines": [
+            52
+          ]
+        },
+        {
+          "needle": "person.Habits[key] = Math.Min(100",
+          "lines": [
+            59
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "67613d3a441ecf9fa41eaa60333c77b06b8f2b23c85ee1a85ecb3af88aa1af2e",
+      "gitBlob": "ed206f27eeceed6e668fab6f20314e00d713fff7",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "p.Journal.Count > 100",
+          "lines": [
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Invariants.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "1079c5da595cae2032b2985f38cfdca3cf859f3816479a5e45d2eddf1fa51a28",
+      "gitBlob": "5a894f1664acdb30c27d5c06b41ceb4d01ba39d8",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "통합 인지 보관 예산",
+          "lines": [
+            63
+          ]
+        },
+        {
+          "needle": "개인 실제 사건 로그 예산",
+          "lines": [
+            64
+          ]
+        },
+        {
+          "needle": "감정·습성·실제 판단 기록",
+          "lines": [
+            46
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Laws.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "d7aa91b8949733af520211699ca61e49d22221ef4461aa4f74825a715ce6adf6",
+      "gitBlob": "cc98786e2c4855c8c6e7402cac26cb5bf106a8bc",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "D(\"ai.beliefBudget\"",
+          "lines": [
+            122
+          ]
+        },
+        {
+          "needle": "D(\"ai.beliefLifetime\"",
+          "lines": [
+            123
+          ]
+        },
+        {
+          "needle": "D(\"ai.planBudget\"",
+          "lines": [
+            125
+          ]
+        },
+        {
+          "needle": "D(\"ai.ecologyFailureMonths\"",
+          "lines": [
+            124
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceCognitionMeasurements.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "3af57d1284f82c649f179da3c98d364bbc5bb77fcaa7ac87836e6920ed5d1924",
+      "gitBlob": "78513177028fdf753f409aa581d4f66b5b4d68c9",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "private static object CognitionMeasurements",
+          "lines": [
+            14
+          ]
+        },
+        {
+          "needle": "JsonSerializer.SerializeToUtf8Bytes",
+          "lines": [
+            28
+          ]
+        },
+        {
+          "needle": "serializedScope",
+          "lines": [
+            49
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceScenarios.cs",
+      "reviewCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "sha256": "81f96d1aaf96413ac4823ab07510ce7ae850c0a2e4c6e3331c3bdaa2e9c50488",
+      "gitBlob": "dcbd97b26c43db492df5501c1b1a9996ccae300d",
+      "sameBlobAsBaselineSource": true,
+      "callsites": [
+        {
+          "needle": "CognitionMeasurements(final",
+          "lines": [
+            87
+          ]
+        },
+        {
+          "needle": "saveBytes = bytes.Length",
+          "lines": [
+            95
+          ]
+        },
+        {
+          "needle": "retainedMemoryScope",
+          "lines": [
+            98
+          ]
+        }
+      ]
+    }
+  ],
+  "retention": {
+    "beliefBudgetUnits": "beliefs + active reputation claims + observed people + observed places + inventory source observations",
+    "defaultBeliefBudget": 48,
+    "defaultBeliefLifetimeMonths": 120,
+    "defaultObservationBudgetPerPass": 4,
+    "defaultPlanningExpansionBudget": 16,
+    "activeClaimBudget": "min(사회 ClaimBudget,max(1,ai.beliefBudget/4)); 이 측정은12",
+    "expiry": "명제는 Expires<=Month에 삭제, 원천 관측은 최신개인관측만 보존하고 TTL미만만사용. 인물/지점 기록은 통합예산으로 퇴출되며 재사용시 실제 관측시각/TTL을 확인한다.",
+    "forgettingOrder": "Remember의 명제초과는Observed→Confidence→ordinalKey; 통합예산은월내림차순→priority내림차순→kind→ordinalKey의보존순서. 같은입력에서안정적이다.",
+    "decisionHistoryMaximum": 24,
+    "personalEventJournalMaximum": 100,
+    "habitSummaryMaximumPerKind": 100,
+    "sourceAndResultSummary": "최근 plan:completed/lastFailure 명제는 실제 결과 source를 가진다. 상세 최근창과 실제 습성 집계를 분리한다. 지식해석·실습·이력과 중요한출처는별도정본에직렬화된다.",
+    "notAllFieldsIn48": "KnownPeople/KnownPlaces 식별자, 학습한 지식/숙련, 보존 이력은 통합48칸의대상이아니다. 실제10000측정에서KnownPeople최대68이므로모든인지필드가48개이하라고주장하지않는다."
+  },
+  "storageMeaning": {
+    "serializedCognitionBytes": "비압축UTF-8 JSON 인지투영길이. 개인명제/지도/관측/결정/계획/요청/습성/일지/숙련미러,원천관측/감정,평판/특성/혼적/자질/혼약관측,지식기억/실습을포함. 육신/유전체/실물/세계연대기제외. 객체별heap추정치아님.",
+    "fullWorldMemoryCodecSaveBytes": "GameCodec.Encode의전체세계바이트. 실제파일봉투/디스크압축측정으로바꾸지않음.",
+    "collectedProcessManagedBytes": "실제world를root한상태의강제fullGC뒤프로세스관리heap. 공유런타임/이전작은결과캐시포함,RSS/native/인물별heap아님."
+  },
+  "functionalEvidence": [
+    {
+      "name": "INV-008 인지 예산 변경·명제/인물/지점 합계",
+      "passed": true,
+      "ms": 5016
+    },
+    {
+      "name": "INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다",
+      "passed": true,
+      "ms": 1759
+    },
+    {
+      "name": "INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다",
+      "passed": true,
+      "ms": 1782
+    },
+    {
+      "name": "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다",
+      "passed": true,
+      "ms": 6237
+    },
+    {
+      "name": "INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다",
+      "passed": true,
+      "ms": 13841
+    },
+    {
+      "name": "INV-008/017/018 agent planning: 실제 정책 비축을 넘는 식량을 일반 거래 목표에서 출품하고 보유 실물만 인도한다",
+      "passed": true,
+      "ms": 269
+    },
+    {
+      "name": "INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다",
+      "passed": true,
+      "ms": 1963
+    },
+    {
+      "name": "INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save",
+      "passed": true,
+      "ms": 2014
+    },
+    {
+      "name": "INV-008/018 agent planning: cooperation repays an actual personal obligation without inventing another person's intent",
+      "passed": true,
+      "ms": 115
+    },
+    {
+      "name": "INV-006/008 agent planning: all fourteen axes affect scored goals and actual mood and completed habits change choice",
+      "passed": true,
+      "ms": 1290
+    },
+    {
+      "name": "INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation",
+      "passed": true,
+      "ms": 1482
+    },
+    {
+      "name": "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+      "passed": true,
+      "ms": 163
+    },
+    {
+      "name": "INV-004/008/017/018 agent planning: unknown source discovery then real extraction and production complete a saved goal",
+      "passed": true,
+      "ms": 1770
+    },
+    {
+      "name": "INV-008/017/024 agent planning: an advanced authoritative recipe uses learned method and discovered actual family resources",
+      "passed": true,
+      "ms": 2206
+    },
+    {
+      "name": "INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash",
+      "passed": true,
+      "ms": 3442
+    },
+    {
+      "name": "INV-006/008/021 agent planning: cached hostility chooses a known retreat and baseline founders are never forced into fatal conflict",
+      "passed": true,
+      "ms": 174
+    },
+    {
+      "name": "INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching",
+      "passed": true,
+      "ms": 539
+    },
+    {
+      "name": "INV-008/017/018 agent planning: production surplus becomes a real public offer and another actor buys from its own need",
+      "passed": true,
+      "ms": 295
+    },
+    {
+      "name": "INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수",
+      "passed": true,
+      "ms": 4304
+    },
+    {
+      "name": "INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다",
+      "passed": true,
+      "ms": 816
+    },
+    {
+      "name": "INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다",
+      "passed": true,
+      "ms": 2432
+    },
+    {
+      "name": "ecology failure law: 실제 예약 거부 기억의 법칙별 재확인 기간·관측 수명 상한·저장 revision",
+      "passed": true,
+      "ms": 1683
+    },
+    {
+      "name": "ecology recovery: 식량 관측 전 숨은 잔량은 선택에 영향 없고 비용 없는 조사·총자원 추정 금지",
+      "passed": true,
+      "ms": 723
+    },
+    {
+      "name": "ecology recovery: 실제 배운 농사·관측한 물과 종자·유료 노동으로 식량 생산하고 저장된 비축법칙 적용",
+      "passed": true,
+      "ms": 1075
+    },
+    {
+      "name": "ecology recovery: 실제 전량 예약 실패 뒤 유료 식량 재관측·알려진 이동·저장·제어 경계",
+      "passed": true,
+      "ms": 649
+    },
+    {
+      "name": "ecology recovery: 믿음 예산1의 실제 채집 예약 거부와 즉시 퇴출은 무예외·권위·저장 결정론 유지",
+      "passed": true,
+      "ms": 333
+    },
+    {
+      "name": "INV-024 knowledge: physical ownership grants neither comprehension nor mastery",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "INV-004/024 knowledge: only timed successful real practice earns mastery and process receipts cannot replay",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests",
+      "passed": true,
+      "ms": 262
+    }
+  ],
+  "limits": [
+    "4규모각12개월/독립예열2개월/반복1회의명시합성초기상태다. 자연10k성장근거가아니다.",
+    "측정fixture는식량소비/출생/재해비활성·명시Qi/초기이해/장수/원천조건을쓴다. 수치와준비조건은원문에있고기본자연세계로확대하지않는다.",
+    "네규모의원천관측수는0이므로이표만으로대규모원천탐색/모든TTL경계를실행했다고주장하지않는다. 실제원천/유료정보경계는별도공개기능검사와AI108교정사례에연결한다.",
+    "메모리/저장실제값은L04의근거이나고정성능예산PASS가아니다. N100 p95와10k query의별도FAIL 및이후PGO진단/재측정은root의판정범위다.",
+    "정본에없는전계수sweep/추가측정의무를만들지않는다. 원장상태는변경하지않는다."
+  ]
+}

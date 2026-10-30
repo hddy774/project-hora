@@ -6,9 +6,10 @@ using Chronicles.Game.Tests;
 using Chronicles.Game.Cultivation;
 using Chronicles.Game.Tests.Experiments;
 
-var measurementOptions = new[] { "--performance", "--growth", "--soak", "--stability", "--agent-metrics", "--execution-experiment" };
+var measurementOptions = new[] { "--performance", "--growth", "--soak", "--stability", "--agent-metrics", "--execution-experiment", "--sensitivity" };
 if (measurementOptions.Count(option => args.Contains(option, StringComparer.Ordinal)) > 1)
     throw new ArgumentException("측정 모드는 한 번에 하나만 지정하고 각각 별도 결과 파일을 사용하세요.");
+var sensitivityRequest = GrowthSensitivityContracts.Arguments(args);
 var inventoryProjectionExperiment = args.Contains("--performance-inventory-projection", StringComparer.Ordinal);
 var inventoryTypedCopyExperiment = args.Contains("--performance-inventory-typed-copy", StringComparer.Ordinal);
 if (inventoryProjectionExperiment && !args.Contains("--performance", StringComparer.Ordinal))
@@ -369,6 +370,8 @@ if (failed == 0 && args.Contains("--growth", StringComparer.Ordinal))
     }
     GrowthScenarios.Run(args[Array.IndexOf(args, "--growth") + 1], GrowthOption("--growth-scenario"), seed);
 }
+if (failed == 0 && sensitivityRequest is not null)
+    GrowthScenarios.RunSensitivity(sensitivityRequest);
 if (failed == 0 && args.Contains("--soak", StringComparer.Ordinal))
     PerformanceScenarios.Soak(args[Array.IndexOf(args, "--soak") + 1]);
 if (failed == 0 && args.Contains("--stability", StringComparer.Ordinal))

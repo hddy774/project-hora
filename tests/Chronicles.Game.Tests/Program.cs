@@ -293,6 +293,8 @@ Test("INV-008 장소 ID와 인물 ID 충돌에서 사건 누출 없음", () =>
     Check(JsonSerializer.Serialize(w.View()) == before, "인물/지점 ID 네임스페이스 분리");
 });
 
+foreach (var feature in FeatureScenarioCatalog.Discover()) Test(feature.Name, feature.Run);
+
 if (args.Contains("--report", StringComparer.Ordinal))
 {
     var index = Array.IndexOf(args, "--report");

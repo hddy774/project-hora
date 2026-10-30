@@ -45,8 +45,8 @@ public sealed partial class GameWorld
         // Domain-local request, item, contract and policy IDs are deliberately not interpreted as people.
         if (command.Kind is "attack" or "partner" or "conceive" or "adopt" or "teach" or "requestTeaching" or
             "requestAssessment" or "requestReputation" or "requestOath" or "treat" or "loan")
-            if (people.TryGetValue(command.Target, out var other) && !ShareExplorationSpace(person, other))
-                return "직접 대면할 수 있는 같은 실제 공간의 상대를 선택하세요.";
+            if (person.KnownPeople.Contains(command.Target) && people.TryGetValue(command.Target, out var other) && !ShareExplorationSpace(person, other))
+                return "실행할 수 없는 대상입니다.";
         return null;
     }
 

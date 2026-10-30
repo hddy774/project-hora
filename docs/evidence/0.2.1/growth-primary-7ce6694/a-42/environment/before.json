@@ -1,0 +1,48 @@
+{
+  "os": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+  "uname": [
+    "Linux",
+    "runnervm48cm3",
+    "7.0.0-1017-azure",
+    "#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026",
+    "x86_64",
+    "x86_64"
+  ],
+  "runner_name": "GitHub Actions 1000002436",
+  "runner_os": "Linux",
+  "runner_arch": "X64",
+  "runner_environment": "github-hosted",
+  "image_os": "ubuntu24",
+  "image_version": "20261026.354.1",
+  "os_cpu_count": 4,
+  "affinity_cpus": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor",
+  "meminfo": "MemTotal:       16367524 kB\nMemFree:        13218252 kB\nMemAvailable:   14532180 kB\nBuffers:           69728 kB\nCached:          1523852 kB\nSwapCached:            0 kB\nActive:           708104 kB\nInactive:        1134792 kB\nActive(anon):     305624 kB\nInactive(anon):        0 kB\nActive(file):     402480 kB\nInactive(file):  1134792 kB\nUnevictable:       46728 kB\nMlocked:           43656 kB\nSwapTotal:       3145724 kB\nSwapFree:        3145724 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:            668604 kB\nWriteback:             0 kB\nAnonPages:        295952 kB\nMapped:           330236 kB\nShmem:             47576 kB\nKReclaimable:      75972 kB\nSlab:             155264 kB\nSReclaimable:      75972 kB\nSUnreclaim:        79292 kB\nKernelStack:        4132 kB\nPageTables:         6844 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    11329484 kB\nCommitted_AS:    2025308 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:       38852 kB\nVmallocChunk:          0 kB\nPercpu:             2336 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:              0 kB\nCmaFree:         1478656 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:             0 kB\nGPUReclaim:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:      113792 kB\nDirectMap2M:     3026944 kB\nDirectMap1G:    15728640 kB\n",
+  "disk_bytes": {
+    "total": 154894188544,
+    "used": 63704621056,
+    "free": 91172790272
+  },
+  "cgroup": {
+    "cpu.max": null,
+    "cpuset.cpus.effective": "0-3",
+    "memory.max": null,
+    "memory.current": null,
+    "memory.peak": null,
+    "memory.events": null,
+    "memory.swap.max": null
+  },
+  "sdk": "10.0.403",
+  "dotnet_info": ".NET SDK:\n Version:           10.0.403\n Commit:            5a2162bea6\n Workload version:  10.0.400-manifests.a00bebb6\n MSBuild version:   18.9.15+5a2162bea\n\nRuntime Environment:\n OS Name:     ubuntu\n OS Version:  24.04\n OS Platform: Linux\n RID:         linux-x64\n Base Path:   /home/runner/work/_temp/v021-growth-41111524034-1-a-42/dotnet/sdk/10.0.403/\n\n.NET workloads installed:\nThere are no installed workloads to display.\nConfigured to use workload sets when installing new manifests.\nNo workload sets are installed. Run \"dotnet workload restore\" to install a workload set.\n\nHost:\n  Version:      10.0.14\n  Architecture: x64\n  Commit:       0427b9abbe\n\n.NET SDKs installed:\n  10.0.403 [/home/runner/work/_temp/v021-growth-41111524034-1-a-42/dotnet/sdk]\n\n.NET runtimes installed:\n  Microsoft.AspNetCore.App 10.0.14 [/home/runner/work/_temp/v021-growth-41111524034-1-a-42/dotnet/shared/Microsoft.AspNetCore.App]\n  Microsoft.NETCore.App 10.0.14 [/home/runner/work/_temp/v021-growth-41111524034-1-a-42/dotnet/shared/Microsoft.NETCore.App]\n\nOther architectures found:\n  None\n\nEnvironment variables:\n  DOTNET_CLI_HOME                          [/home/runner/work/_temp/v021-growth-41111524034-1-a-42/dotnet-home]\n  DOTNET_CLI_TELEMETRY_OPTOUT              [true]\n  DOTNET_INSTALL_DIR                       [/home/runner/work/_temp/v021-growth-41111524034-1-a-42/dotnet]\n  DOTNET_MULTILEVEL_LOOKUP                 [0]\n  DOTNET_NOLOGO                            [true]\n  DOTNET_ROOT                              [/home/runner/work/_temp/v021-growth-41111524034-1-a-42/dotnet]\n  DOTNET_SKIP_FIRST_TIME_EXPERIENCE        [1]\n\nglobal.json file:\n  Not found\n\nLearn more:\n  https://aka.ms/dotnet/info\n\nDownload .NET:\n  https://aka.ms/dotnet/download",
+  "runtimes": "Microsoft.AspNetCore.App 10.0.14 [/home/runner/work/_temp/v021-growth-41111524034-1-a-42/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 10.0.14 [/home/runner/work/_temp/v021-growth-41111524034-1-a-42/dotnet/shared/Microsoft.NETCore.App]",
+  "thermal_state": "GitHub 호스트 VM·물리 호스트의 열 상태 미측정",
+  "power_state": "GitHub 호스트 VM·물리 호스트의 전력·전원 상태 미측정",
+  "nominal_runner": "GitHub 공개 ubuntu-24.04 표준 4vCPU/16GB; 실제 값은 이 원본을 따름",
+  "cross_vm_limit": "9개 독립 VM의 CPU 모델·쿼터·메모리·디스크·열·전원 동일성을 보장하지 않음. 실행시간은 동일 머신의 paired 비교가 아님",
+  "scope": "원형 성장 관측. Android/기기 성능·실제 플레이 배속·인구 균형의 보편적 증명이 아님"
+}

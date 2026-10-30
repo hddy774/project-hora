@@ -1,0 +1,7 @@
+{
+  "api": 24,
+  "android_release": "7.0",
+  "abi": "x86_64",
+  "system_webview_package": "com.android.webview",
+  "system_webview_version_before": "52.0.2743.100"
+}

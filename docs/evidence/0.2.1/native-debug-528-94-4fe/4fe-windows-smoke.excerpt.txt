@@ -1,0 +1,10 @@
+2026-10-30T20:08:14.4865807Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4ab393cfca5667b5763c7ad226656df1b77ff30c:refs/remotes/pull/202/merge
+2026-10-30T20:08:18.4832490Z  * [new ref]         4ab393cfca5667b5763c7ad226656df1b77ff30c -> pull/202/merge
+2026-10-30T20:08:19.2305819Z HEAD is now at 4ab393c Merge 4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135 into b979949df0b5ba3cd7c3b998c3d500545f02e523
+2026-10-30T20:08:19.4364249Z 4ab393cfca5667b5763c7ad226656df1b77ff30c
+2026-10-30T20:09:05.3560057Z Build succeeded.
+2026-10-30T20:09:05.3561338Z     0 Error(s)
+2026-10-30T20:09:09.5420553Z   "source_commit": "4ab393cfca5667b5763c7ad226656df1b77ff30c",
+2026-10-30T20:09:09.7853383Z ##[group]Run $process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru
+2026-10-30T20:09:09.7854887Z [36;1m$process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru[0m
+2026-10-30T20:09:18.2858620Z {"passed":true,"version":"0.2.1","host":"WPF WebView2","actualRenderAndBridge":true,"diagnostic":"\u0022{\\\u0022hasView\\\u0022:true,\\\u0022error\\\u0022:null,\\\u0022connection\\\u0022:\\\u0022\uC5F0\uACB0\uB428\\\u0022,\\\u0022heading\\\u0022:\\\u0022\uB9CC\uC0C1\uC758 \uD750\uB984\\\u0022,\\\u0022source\\\u0022:\\\u0022https://seonro.local/index.html\\\u0022}\u0022"}

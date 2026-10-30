@@ -1,0 +1,14 @@
+{
+  "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "source_tree": "5ae1b72e2471122e61f27a4cb9c294e7b40b5793",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "version": "0.2.1",
+  "source_worktree_clean": true,
+  "workflow_source_commit": "4abf807fa7cb932f78f143e016ee0566a39256b7",
+  "sdk": "10.0.403",
+  "scenario": "c",
+  "seed": 98,
+  "horizon_months": 6000,
+  "observation_interval_months": 120,
+  "input_contract": "기존 CLI --growth-scenario/--growth-seed. a/b/c 가정·기간·시드·법칙 변경 없음"
+}

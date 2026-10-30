@@ -1,0 +1,57 @@
+Activity Resolver Table:
+  Non-Data Actions:
+      android.settings.WEBVIEW_LICENSE:
+        dcc4b5b com.android.webview/.chromium.LicenseActivity filter b4db85f
+          Action: "android.settings.WEBVIEW_LICENSE"
+          Category: "android.intent.category.DEFAULT"
+          AutoVerify=false
+
+Registered ContentProviders:
+  com.android.webview/.chromium.LicenseContentProvider:
+    Provider{253fff8 com.android.webview/.chromium.LicenseContentProvider}
+
+ContentProvider Authorities:
+  [com.android.webview.LicenseContentProvider]:
+    Provider{253fff8 com.android.webview/.chromium.LicenseContentProvider}
+      applicationInfo=ApplicationInfo{791bcd1 com.android.webview}
+
+Key Set Manager:
+  [com.android.webview]
+      Signing KeySets: 3
+
+Packages:
+  Package [com.android.webview] (b3b4336):
+    userId=10054
+    pkg=Package{87a4237 com.android.webview}
+    codePath=/system/app/webview
+    resourcePath=/system/app/webview
+    legacyNativeLibraryDir=/system/app/webview/lib
+    primaryCpuAbi=x86_64
+    secondaryCpuAbi=x86
+    versionCode=275610060 minSdk=21 targetSdk=24
+    versionName=52.0.2743.100
+    splits=[base]
+    apkSigningVersion=2
+    applicationInfo=ApplicationInfo{791bcd1 com.android.webview}
+    flags=[ SYSTEM HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP ]
+    privateFlags=[ RESIZEABLE_ACTIVITIES ]
+    dataDir=/data/user/0/com.android.webview
+    supportsScreens=[small, medium, large, xlarge, resizeable, anyDensity]
+    timeStamp=2017-07-12 19:57:30
+    firstInstallTime=2017-07-12 19:57:30
+    lastUpdateTime=2017-07-12 19:57:30
+    signatures=PackageSignatures{9c523a4 [d7f1f224]}
+    installPermissionsFixed=false installStatus=1
+    pkgFlags=[ SYSTEM HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP ]
+    User 0: ceDataInode=98598 installed=true hidden=false suspended=false stopped=false notLaunched=false enabled=0
+      runtime permissions:
+
+
+Dexopt state:
+  [com.android.webview]
+    Instruction Set: x86_64
+      path: /system/app/webview/webview.apk
+      status: /system/app/webview/oat/x86_64/webview.odex [compilation_filter=speed, status=kOatUpToDate]
+    Instruction Set: x86
+      path: /system/app/webview/webview.apk
+      status: /system/app/webview/oat/x86/webview.odex [compilation_filter=speed, status=kOatUpToDate]

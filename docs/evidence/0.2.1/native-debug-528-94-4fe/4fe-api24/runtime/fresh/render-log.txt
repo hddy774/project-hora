@@ -1,0 +1,574 @@
+--------- beginning of system
+W/ActivityManager: Unable to start service Intent { act=com.android.mail.action.BACKUP_DATA_CHANGED pkg=com.android.email } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.mail.action.BACKUP_DATA_CHANGED pkg=com.android.email } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.mail.action.BACKUP_DATA_CHANGED pkg=com.android.email } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.mail.action.BACKUP_DATA_CHANGED pkg=com.android.email } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.mail.action.BACKUP_DATA_CHANGED pkg=com.android.email } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.mail.action.BACKUP_DATA_CHANGED pkg=com.android.email } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.mail.action.BACKUP_DATA_CHANGED pkg=com.android.email } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.email.EXCHANGE_INTENT pkg=com.android.exchange } U=0: not found
+W/ActivityManager: Unable to start service Intent { cmp=com.android.email/.service.AttachmentService } U=0: not found
+W/ActivityManager: Unable to start service Intent { cmp=com.android.email/.service.AttachmentService } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.email.EXCHANGE_INTENT pkg=com.android.exchange } U=0: not found
+--------- beginning of main
+I/Email   : Observing account changes for notifications
+W/ActivityManager: Unable to start service Intent { cmp=com.android.email/.service.AttachmentService } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.email.EXCHANGE_INTENT pkg=com.android.exchange } U=0: not found
+W/ActivityManager: Unable to start service Intent { cmp=com.android.email/.service.AttachmentService } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.email.EXCHANGE_INTENT pkg=com.android.exchange } U=0: not found
+W/art     : Unexpected CPU variant for X86 using defaults: x86_64
+I/ActivityManager: Start proc 2602:com.android.gallery3d/u0a40 for broadcast com.android.gallery3d/com.android.camera.DisableCameraReceiver
+I/Email   : Onetime initialization: 1
+I/Email   : Onetime initialization: 2
+I/Email   : Onetime initialization: completed.
+W/ActivityManager: Unable to start service Intent { act=com.android.email.EXCHANGE_INTENT pkg=com.android.exchange } U=0: not found
+W/ActivityManager: Unable to start service Intent { act=com.android.email.EXCHANGE_INTENT pkg=com.android.exchange } U=0: not found
+I/G:DisableCameraReceiver: no back camera
+I/G:DisableCameraReceiver: disable all camera activities
+I/SystemBroadcastReceiver: Boot has been completed
+I/SystemBroadcastReceiver: toggleAppIcon() : FLAG_SYSTEM = true
+W/art     : Unexpected CPU variant for X86 using defaults: x86_64
+D/AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+D/AndroidRuntime: CheckJNI is OFF
+E/ActivityThread: Service com.android.email.service.EmailBroadcastProcessorService has leaked ServiceConnection com.android.emailcommon.service.ServiceProxy$ProxyConnection@384479e that was originally bound here
+E/ActivityThread: android.app.ServiceConnectionLeaked: Service com.android.email.service.EmailBroadcastProcessorService has leaked ServiceConnection com.android.emailcommon.service.ServiceProxy$ProxyConnection@384479e that was originally bound here
+E/ActivityThread: 	at android.app.LoadedApk$ServiceDispatcher.<init>(LoadedApk.java:1336)
+E/ActivityThread: 	at android.app.LoadedApk.getServiceDispatcher(LoadedApk.java:1231)
+E/ActivityThread: 	at android.app.ContextImpl.bindServiceCommon(ContextImpl.java:1478)
+E/ActivityThread: 	at android.app.ContextImpl.bindService(ContextImpl.java:1450)
+E/ActivityThread: 	at android.content.ContextWrapper.bindService(ContextWrapper.java:636)
+E/ActivityThread: 	at com.android.emailcommon.service.ServiceProxy.setTask(ServiceProxy.java:181)
+E/ActivityThread: 	at com.android.emailcommon.service.ServiceProxy.test(ServiceProxy.java:224)
+E/ActivityThread: 	at com.android.email.service.EmailServiceUtils.isServiceAvailable(EmailServiceUtils.java:160)
+E/ActivityThread: 	at com.android.email.provider.AccountReconciler.reconcileAccountsInternal(AccountReconciler.java:171)
+E/ActivityThread: 	at com.android.email.provider.AccountReconciler.reconcileAccounts(AccountReconciler.java:115)
+E/ActivityThread: 	at com.android.email.service.EmailBroadcastProcessorService.reconcileAndStartServices(EmailBroadcastProcessorService.java:305)
+E/ActivityThread: 	at com.android.email.service.EmailBroadcastProcessorService.onBootCompleted(EmailBroadcastProcessorService.java:295)
+E/ActivityThread: 	at com.android.email.service.EmailBroadcastProcessorService.onHandleIntent(EmailBroadcastProcessorService.java:130)
+E/ActivityThread: 	at android.app.IntentService$ServiceHandler.handleMessage(IntentService.java:68)
+E/ActivityThread: 	at android.os.Handler.dispatchMessage(Handler.java:102)
+E/ActivityThread: 	at android.os.Looper.loop(Looper.java:154)
+E/ActivityThread: 	at android.os.HandlerThread.run(HandlerThread.java:61)
+I/ActivityManager: Start proc 2616:com.android.messaging/u0a53 for broadcast com.android.messaging/.receiver.BootAndPackageReplacedReceiver
+W/ActivityManager: Unbind failed: could not find connection for android.os.BinderProxy@2fa9285
+W/System  : ClassLoader referenced unknown path: /system/app/messaging/lib/x86_64
+W/art     : Unexpected CPU variant for X86 using defaults: x86_64
+D/ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+E/memtrack: Couldn't load memtrack module (No such file or directory)
+E/android.os.Debug: failed to load memtrack module: -2
+I/Radio-JNI: register_android_hardware_Radio DONE
+D/AndroidRuntime: Calling main entry com.android.commands.am.Am
+I/ActivityManager: START u0 {flg=0x10000000 cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity} from uid 2000 on display 0
+W/art     : Unexpected CPU variant for X86 using defaults: x86_64
+I/ActivityManager: Start proc 2638:org.hora.xianxiaobserver/u0a62 for activity org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity
+D/gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 10371072
+I/MessagingApp: Upgrading shared prefs from -1 to 1
+V/OmtpBootCompletedRcvr: processing deferred subId list
+V/OmtpBootCompletedRcvr: processing subId 1
+I/OmtpVvmCarrierCfgHlpr: Requesting VVM activation for subId: 1
+D/EGL_emulation: eglMakeCurrent: 0x7b1f68a49e60: ver 3 0 (tinfo 0x7b1f68a0ca60)
+V/VvmPhoneStateListener: Signal returned: reattempting activation for 89014103211118510720
+I/OmtpVvmCarrierCfgHlpr: Requesting VVM activation for subId: 1
+I/WindowManager: Destroying surface Surface(name=com.android.launcher3/com.android.launcher3.Launcher) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.destroyOrSaveSurface:2073 com.android.server.wm.WindowManagerService.tryStartExitingAnimation:3017 com.android.server.wm.WindowManagerService.relayoutWindow:2897 com.android.server.wm.Session.relayout:215 android.view.IWindowSession$Stub.onTransact:286 com.android.server.wm.Session.onTransact:136 
+D/DOTNET  : AndroidCryptoNative_InitLibraryOnLoad: jint AndroidCryptoNative_InitLibraryOnLoad(JavaVM *, void *) in /__w/1/s/src/runtime/src/native/libs/System.Security.Cryptography.Native.Android/pal_jni.c
+I/MessagingApp: Carrier config changed. Reloading MMS config.
+I/DOTNET  : GetOptionalMethod: optional method setApplicationProtocols ([Ljava/lang/String;)V was not found
+I/DOTNET  : GetOptionalMethod: optional method getApplicationProtocol ()Ljava/lang/String; was not found
+W/MessagingApp: Rebuilt databases: reseting related state
+W/MessagingApp: canonicalizeMccMnc: invalid mccmnc:null ,null
+D/MmsServiceBroker: getCarrierConfigValues() by com.android.messaging
+W/MmsServiceBroker: MmsService not connected. Try connecting...
+I/MmsServiceBroker: Connecting to MmsService
+W/ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.bindService:1449 com.android.server.MmsServiceBroker.tryConnecting:241 com.android.server.MmsServiceBroker.-wrap3:-1 com.android.server.MmsServiceBroker$1.handleMessage:83 android.os.Handler.dispatchMessage:102 
+W/System  : ClassLoader referenced unknown path: /system/priv-app/MmsService/lib/x86_64
+D/MmsService: onCreate
+I/MmsServiceBroker: MmsService connected
+D/MmsService: getCarrierConfigValues
+I/MmsService: mms config for sub 1: null
+I/MmsService: MmsConfigManager receiver action: android.intent.action.SIM_STATE_CHANGED
+I/MmsService: MmsConfigManager receiver action: android.telephony.action.CARRIER_CONFIG_CHANGED
+I/MmsService: MmsConfigManager loads in background mcc/mnc: 310/260
+I/MmsService: MmsConfigManager loads in background mcc/mnc: 310/260
+I/MessagingApp: Carrier configs loaded: Bundle[{maxImageHeight=1944, maxMessageSize=1048576, maxImageWidth=2592}] from resources+system for subId=1
+I/MmsService: MmsConfigManager loads in background mcc/mnc: 310/260
+I/MessagingAppDataModel: Fixup: Send failed - 0 Download failed - 0
+W/MessagingApp: canonicalizeMccMnc: invalid mccmnc:null ,null
+D/MmsServiceBroker: getCarrierConfigValues() by com.android.messaging
+D/MmsService: getCarrierConfigValues
+I/MmsService: mms config for sub 1: Bundle[{httpSocketTimeout=60000, aliasMinChars=2, smsToMmsTextThreshold=-1, enableSMSDeliveryReports=true, maxMessageTextSize=-1, supportMmsContentDisposition=true, enabledTransID=false, aliasEnabled=false, supportHttpCharsetHeader=false, allowAttachAudio=true, smsToMmsTextLengthThreshold=-1, recipientLimit=2147483647, uaProfTagName=x-wap-profile, aliasMaxChars=48, maxImageHeight=1944, enableMMSDeliveryReports=false, userAgent=, config_cellBroadcastAppLinks=true, maxSubjectLength=40, httpParams=, enableGroupMms=true, emailGatewayNumber=, maxMessageSize=1048576, naiSuffix=, enableMMSReadReports=false, maxImageWidth=2592, uaProfUrl=, enabledMMS=false, enabledNotifyWapMMSC=false, sendMultipartSmsAsSeparateMessages=false, enableMultipartSMS=true}]
+I/MessagingApp: Carrier configs loaded: Bundle[{httpSocketTimeout=60000, aliasMinChars=2, smsToMmsTextThreshold=-1, enableSMSDeliveryReports=true, maxMessageTextSize=-1, supportMmsContentDisposition=true, enabledTransID=false, aliasEnabled=false, supportHttpCharsetHeader=false, allowAttachAudio=true, smsToMmsTextLengthThreshold=-1, recipientLimit=2147483647, uaProfTagName=x-wap-profile, aliasMaxChars=48, maxImageHeight=1944, enableMMSDeliveryReports=false, userAgent=, config_cellBroadcastAppLinks=true, maxSubjectLength=40, httpParams=, enableGroupMms=true, emailGatewayNumber=, maxMessageSize=1048576, naiSuffix=, enableMMSReadReports=false, maxImageWidth=2592, uaProfUrl=, enabledMMS=false, enabledNotifyWapMMSC=false, sendMultipartSmsAsSeparateMessages=false, enableMultipartSMS=true}] from resources+system for subId=1
+W/MessagingApp: canonicalizeMccMnc: invalid mccmnc:null ,null
+D/MmsServiceBroker: getCarrierConfigValues() by com.android.messaging
+D/MmsService: getCarrierConfigValues
+I/MmsService: mms config for sub 1: Bundle[{httpSocketTimeout=60000, aliasMinChars=2, smsToMmsTextThreshold=-1, enableSMSDeliveryReports=true, maxMessageTextSize=-1, supportMmsContentDisposition=true, enabledTransID=false, aliasEnabled=false, supportHttpCharsetHeader=false, allowAttachAudio=true, smsToMmsTextLengthThreshold=-1, recipientLimit=2147483647, uaProfTagName=x-wap-profile, aliasMaxChars=48, maxImageHeight=1944, enableMMSDeliveryReports=false, userAgent=, config_cellBroadcastAppLinks=true, maxSubjectLength=40, httpParams=, enableGroupMms=true, emailGatewayNumber=, maxMessageSize=1048576, naiSuffix=, enableMMSReadReports=false, maxImageWidth=2592, uaProfUrl=, enabledMMS=false, enabledNotifyWapMMSC=false, sendMultipartSmsAsSeparateMessages=false, enableMultipartSMS=true}]
+I/MessagingApp: Carrier configs loaded: Bundle[{httpSocketTimeout=60000, aliasMinChars=2, smsToMmsTextThreshold=-1, enableSMSDeliveryReports=true, maxMessageTextSize=-1, supportMmsContentDisposition=true, enabledTransID=false, aliasEnabled=false, supportHttpCharsetHeader=false, allowAttachAudio=true, smsToMmsTextLengthThreshold=-1, recipientLimit=2147483647, uaProfTagName=x-wap-profile, aliasMaxChars=48, maxImageHeight=1944, enableMMSDeliveryReports=false, userAgent=, config_cellBroadcastAppLinks=true, maxSubjectLength=40, httpParams=, enableGroupMms=true, emailGatewayNumber=, maxMessageSize=1048576, naiSuffix=, enableMMSReadReports=false, maxImageWidth=2592, uaProfUrl=, enabledMMS=false, enabledNotifyWapMMSC=false, sendMultipartSmsAsSeparateMessages=false, enableMultipartSMS=true}] from resources+system for subId=1
+I/MessagingAppDataModel: SyncMessagesAction: Starting batch for messages from -1 to 1793391030379 (message update limit = 80, message scan limit = 4000)
+I/MessagingAppDataModel: SyncMessagesAction: All messages now in sync
+D/CountryDetector: The first listener is added
+D/AlertReceiver: onReceive: a=android.intent.action.PROVIDER_CHANGED Intent { act=android.intent.action.PROVIDER_CHANGED dat=content://com.android.calendar flg=0x20000010 cmp=com.android.calendar/.alerts.AlertReceiver }
+D/AlertService: 0 Action = android.intent.action.PROVIDER_CHANGED
+I/OmtpVvmCarrierCfgHlpr: Requesting VVM activation for subId: 1
+I/MediaProvider: Upgrading media database from version 0 to 800, which will destroy all old data
+W/art     : Unexpected CPU variant for X86 using defaults: x86_64
+I/ActivityManager: Start proc 2676:com.svox.pico/u0a48 for broadcast com.svox.pico/.VoiceDataInstallerReceiver
+D/MediaProvider: Adjusting external storage paths to: /storage/emulated/0
+E/SQLiteLog: (1) no such table: files
+E/WVMExtractor: Failed to open libwvm.so: dlopen failed: library "libwvm.so" not found
+W/MediaScanner: forcing rescan of /system/media/audio/alarms/Alarm_Classic.oggsince ringtone setting didn't finish
+W/MediaProvider: Missing volume for /system; assuming invalid
+W/MediaProvider: Missing volume for /system/media; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms; assuming invalid
+E/MetadataRetrieverClient: failed to extract an album art
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Alarm_Beep_01.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Alarm_Beep_02.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Alarm_Beep_03.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Alarm_Buzzer.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Alarm_Classic.ogg; assuming invalid
+I/AlarmClock: Detected change to system default alarm ringtone; clearing caches
+D/EGL_emulation: eglMakeCurrent: 0x7b1f5868e760: ver 3 0 (tinfo 0x7b1f661ad820)
+W/MediaScanner: forcing rescan of /system/media/audio/notifications/OnTheHunt.oggsince ringtone setting didn't finish
+W/MediaProvider: Missing volume for /system/media/audio/notifications; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Alarm_Rooster_02.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Argon.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Barium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Carbon.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Cesium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Fermium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Hassium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Helium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Krypton.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Neon.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Neptunium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Nobelium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Osmium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Oxygen.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Platinum.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Plutonium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Promethium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/alarms/Scandium.ogg; assuming invalid
+E/MetadataRetrieverClient: failed to extract an album art
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Adara.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Aldebaran.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Altair.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Alya.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Antares.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Antimony.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Arcturus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Argon.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Beat_Box_Android.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Bellatrix.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Beryllium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Betelgeuse.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/CaffeineSnake.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Canopus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Capella.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Castor.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/CetiAlpha.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Cobalt.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Cricket.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/DearDeer.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Deneb.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Doink.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/DontPanic.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Drip.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Electra.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/F1_MissedCall.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/F1_New_MMS.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/F1_New_SMS.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Fluorine.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Fomalhaut.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Gallium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Heaven.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Helium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Highwire.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Hojus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Iridium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Krypton.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/KzurbSonar.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Lalande.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Merope.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Mira.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/OnTheHunt.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Palladium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Plastic_Pipe.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Polaris.ogg; assuming invalid
+E/MetadataRetrieverClient: failed to extract an album art
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Pollux.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Procyon.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Proxima.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Radon.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Rubidium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Selenium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Shaula.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Sirrah.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/SpaceSeed.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Spica.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Strontium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Syrma.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/TaDa.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Talitha.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Tejat.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Thallium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Tinkerbell.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Upsilon.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Vega.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Voila.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Xenon.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/Zirconium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/arcturus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/moonbeam.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/pixiedust.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/pizzicato.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/regulus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/sirius.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/tweeters.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/notifications/vega.ogg; assuming invalid
+E/MetadataRetrieverClient: failed to extract an album art
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/ANDROMEDA.ogg; assuming invalid
+W/MediaScanner: Error opening directory '/oem/media/', skipping: No such file or directory.
+W/MediaProvider: Missing volume for /system/media/audio/ui; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Andromeda.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Aquila.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/ArgoNavis.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Atria.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/BOOTES.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Backroad.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/BeatPlucker.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/BentleyDubs.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Big_Easy.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/BirdLoop.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Bollywood.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/BussaMove.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/CANISMAJOR.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/CASSIOPEIA.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Cairo.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Calypso_Steel.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/CanisMajor.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/CaribbeanIce.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Carina.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Centaurus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Champagne_Edition.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Club_Cubano.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/CrayonRock.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/CrazyDream.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/CurveBall.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Cygnus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/DancinFool.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Ding.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/DonMessWivIt.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Draco.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/DreamTheme.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Eastern_Sky.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Enter_the_Nexus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Eridani.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/EtherShake.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/FreeFlight.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/FriendlyGhost.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Funk_Yall.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/GameOverGuitar.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Gimme_Mo_Town.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Girtab.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Glacial_Groove.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Growl.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/HalfwayHome.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Hydra.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/InsertCoin.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Kuma.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/LoopyLounge.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/LoveFlute.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Lyra.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Machina.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/MidEvilJaunt.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/MildlyAlarming.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Nairobi.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Nassau.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/NewPlayer.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/No_Limits.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Noises1.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Noises2.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Noises3.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/OrganDub.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Orion.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/PERSEUS.ogg; assuming invalid
+E/MetadataRetrieverClient: failed to extract an album art
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Paradise_Island.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Pegasus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Perseus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Playa.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Pyxis.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Rasalas.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Revelation.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Rigel.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Ring_Classic_02.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Ring_Digital_02.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Ring_Synth_02.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Ring_Synth_04.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Road_Trip.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/RomancingTheTone.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Safari.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Savannah.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Scarabaeus.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Sceptrum.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Seville.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Shes_All_That.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/SilkyWay.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/SitarVsSitar.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Solarium.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/SpringyJalopy.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Steppin_Out.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Terminated.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Testudo.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Themos.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Third_Eye.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Thunderfoot.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/TwirlAway.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/URSAMINOR.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/UrsaMinor.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/VeryAlarmed.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Vespa.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/World.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/Zeta.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ringtones/hydra.ogg; assuming invalid
+E/MetadataRetrieverClient: failed to extract an album art
+W/MediaProvider: Missing volume for /system/media/audio/ui/Dock.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/Effect_Tick.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/KeypressDelete.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/KeypressInvalid.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/KeypressReturn.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/KeypressSpacebar.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/KeypressStandard.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/Lock.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/LowBattery.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/Trusted.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/Undock.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/Unlock.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/VideoRecord.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/VideoStop.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/WirelessChargingStarted.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/camera_click.ogg; assuming invalid
+W/MediaProvider: Missing volume for /system/media/audio/ui/camera_focus.ogg; assuming invalid
+V/MediaScanner: pruneDeadThumbnailFiles... android.content.ContentProviderClient$CursorWrapperInner@a150767
+V/MediaScanner: /pruneDeadThumbnailFiles... android.content.ContentProviderClient$CursorWrapperInner@a150767
+E/TaskPersister: File error accessing recents directory (directory doesn't exist?).
+I/art     : Starting a blocking GC Explicit
+I/art     : Explicit concurrent mark sweep GC freed 3177(170KB) AllocSpace objects, 0(0B) LOS objects, 40% free, 4MB/6MB, paused 541us total 5.141ms
+I/GlobalDismissManager: no sender configured
+D/AlertService: Beginning updateAlertNotification
+D/AlertService: No fired or scheduled alerts
+D/AlertService: Scheduling next alarm with AlarmScheduler. sEventReminderReceived: null
+D/AlarmScheduler: No events found starting within 1 week.
+W/System  : ClassLoader referenced unknown path: /system/app/webview/lib/x86_64
+I/WebViewFactory: Loading com.android.webview version 52.0.2743.100 (code 275610060)
+I/cr_LibraryLoader: Time to load native libraries: 2 ms (timestamps 4509-4511)
+I/cr_LibraryLoader: Expected native library version number "52.0.2743.100", actual native library version number "52.0.2743.100"
+V/WebViewChromiumFactoryProvider: Binding Chromium to main looper Looper (main, tid 1) {d879831}
+I/cr_LibraryLoader: Expected native library version number "52.0.2743.100", actual native library version number "52.0.2743.100"
+I/chromium: [INFO:library_loader_hooks.cc(143)] Chromium logging enabled: level = 0, default verbosity = 0
+I/cr_BrowserStartup: Initializing chromium process, singleProcess=true
+D/        : HostConnection::get() New Host Connection established 0x7b1f4fa255e0, tid 2638
+D/EGL_emulation: eglCreateContext: 0x7b1f4fe6f300: maj 3 min 0 rcv 3
+D/EGL_emulation: eglMakeCurrent: 0x7b1f4fe6f300: ver 3 0 (tinfo 0x7b1f4fadc7a0)
+E/eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+E/eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+I/cr_DRP  : No DRP key due to exception:java.lang.ClassNotFoundException: com.android.webview.chromium.Drp
+W/cr_media: Requires BLUETOOTH permission
+W/cr_AwContents: onDetachedFromWindow called when already detached. Ignoring
+I/cr_Ime  : ImeThread is not enabled.
+E/SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+E/libEGL  : validate_display:99 error 3008 (EGL_BAD_DISPLAY)
+I/VideoCapabilities: Unsupported profile 4 for video/mp4v-es
+D/        : HostConnection::get() New Host Connection established 0x7b1f4f89b1a0, tid 2723
+D/EGL_emulation: eglCreateContext: 0x7b1f4fb0fb00: maj 3 min 0 rcv 3
+D/EGL_emulation: eglMakeCurrent: 0x7b1f4fb0fb00: ver 3 0 (tinfo 0x7b1f4f9d6440)
+E/eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+E/eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+E/eglCodecCommon: glUtilsParamSize: unknow param 0x00008a34
+E/eglCodecCommon: glUtilsParamSize: unknow param 0x00008073
+E/eglCodecCommon: glUtilsParamSize: unknow param 0x000088ff
+I/OpenGLRenderer: Initialized EGL, version 1.4
+D/OpenGLRenderer: Swap behavior 1
+D/        : HostConnection::get() New Host Connection established 0x7b1f68a146a0, tid 2726
+D/EGL_emulation: eglCreateContext: 0x7b1f68a4b080: maj 3 min 0 rcv 3
+D/EGL_emulation: eglMakeCurrent: 0x7b1f68a4b080: ver 3 0 (tinfo 0x7b1f4d467140)
+E/eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+E/eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+I/art     : Background partial concurrent mark sweep GC freed 5313(228KB) AllocSpace objects, 3(788KB) LOS objects, 22% free, 13MB/17MB, paused 5.671ms total 18.219ms
+D/EGL_emulation: eglMakeCurrent: 0x7b1f68a4b080: ver 3 0 (tinfo 0x7b1f4d467140)
+W/cr_BindingManager: Cannot call determinedVisibility() - never saw a connection for the pid: 2638
+I/ActivityManager: Displayed org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity: +6s696ms
+D/AndroidRuntime: Shutting down VM
+I/WindowManager: Destroying surface Surface(name=Starting org.hora.xianxiaobserver) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.destroyOrSaveSurface:2073 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.WindowStateAnimator.finishExit:565 com.android.server.wm.WindowStateAnimator.stepAnimationLocked:491 com.android.server.wm.WindowAnimator.updateWindowsLocked:303 com.android.server.wm.WindowAnimator.animateLocked:704 
+W/SeonroWeb: The key "viewport-fit" is not recognized and ignored.
+I/art     : Background partial concurrent mark sweep GC freed 81(2848B) AllocSpace objects, 1(9MB) LOS objects, 14% free, 22MB/26MB, paused 10.604ms total 17.386ms
+I/art     : Background partial concurrent mark sweep GC freed 9(240B) AllocSpace objects, 1(9MB) LOS objects, 14% free, 22MB/26MB, paused 5.584ms total 20.669ms
+I/art     : Background sticky concurrent mark sweep GC freed 4(120B) AllocSpace objects, 0(0B) LOS objects, 0% free, 31MB/31MB, paused 5.219ms total 9.258ms
+I/art     : Background partial concurrent mark sweep GC freed 16(464B) AllocSpace objects, 2(18MB) LOS objects, 11% free, 31MB/35MB, paused 13.988ms total 38.869ms
+I/art     : Starting a blocking GC Explicit
+I/art     : Explicit concurrent mark sweep GC freed 17(2632B) AllocSpace objects, 1(9MB) LOS objects, 14% free, 22MB/26MB, paused 1.199ms total 11.929ms
+I/art     : WaitForGcToComplete blocked for 18.959ms for cause Background
+D/AlarmManagerService: Kernel timezone updated to 0 minutes west of GMT
+D/AlarmManagerService: Setting time of day to sec=1793391039
+W/AlarmManagerService: Unable to set rtc to 1793391039: No such device
+D/ConditionProviders.SCP: onReceive android.intent.action.TIME_SET
+D/ConditionProviders.SCP: notifyCondition condition://android/schedule?days=6.7&start=23.30&end=10.0&exitAtAlarm=false STATE_FALSE reason=!meetsSchedule
+D/ConditionProviders.SCP: notifyCondition condition://android/schedule?days=1.2.3.4.5&start=22.0&end=7.0&exitAtAlarm=false STATE_FALSE reason=!meetsSchedule
+D/ConditionProviders.SCP: Scheduling evaluate for Fri Oct 30 22:00:00 UTC 2026 (1793397600000), in +1h49m20s991ms, now=Fri Oct 30 20:10:39 UTC 2026 (1793391039009)
+I/AlarmClock: AlarmInitReceiver android.intent.action.TIME_SET
+V/AlarmClock: AlarmInitReceiver finished
+I/art     : Background partial concurrent mark sweep GC freed 14(400B) AllocSpace objects, 2(18MB) LOS objects, 11% free, 31MB/35MB, paused 5.955ms total 25.695ms
+I/art     : Background sticky concurrent mark sweep GC freed 4(120B) AllocSpace objects, 0(0B) LOS objects, 0% free, 31MB/31MB, paused 5.133ms total 15.654ms
+I/InputReader: Reconfiguring input devices.  changes=0x00000010
+I/InputReader: Reconfiguring input devices.  changes=0x00000010
+I/InputReader: Reconfiguring input devices.  changes=0x00000010
+I/InputReader: Reconfiguring input devices.  changes=0x00000010
+I/InputReader: Reconfiguring input devices.  changes=0x00000010
+I/InputReader: Reconfiguring input devices.  changes=0x00000010
+D/CarrierSvcBindHelper: No carrier app for: 0
+D/CarrierSvcBindHelper: No carrier app for: 0
+D/CarrierSvcBindHelper: No carrier app for: 0
+W/LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+W/GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+W/GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+W/ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+W/LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+W/GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+W/GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+W/ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+W/LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+W/GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+W/GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+W/ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+W/LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+W/GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+W/GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+W/ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+D/CarrierSvcBindHelper: No carrier app for: 0
+W/LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+W/GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+W/GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+W/ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+D/CarrierSvcBindHelper: No carrier app for: 0
+W/LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+W/GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+W/GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+W/ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+D/CarrierSvcBindHelper: No carrier app for: 0
+I/art     : Background sticky concurrent mark sweep GC freed 2(56B) AllocSpace objects, 0(0B) LOS objects, 0% free, 50MB/50MB, paused 19.571ms total 42.469ms
+W/BackupManagerService: dataChanged but no participant pkg='com.android.launcher3' uid=10014
+W/ActivityManager: Launch timeout has expired, giving up wake lock!
+W/BackupManagerService: dataChanged but no participant pkg='com.android.launcher3' uid=10014
+I/art     : Background partial concurrent mark sweep GC freed 21(616B) AllocSpace objects, 3(27MB) LOS objects, 11% free, 31MB/35MB, paused 8.828ms total 28.881ms
+D/WifiStateMachine: CMD_AUTO_CONNECT sup state DisconnectedState my state DisconnectedState nid=0 roam=false
+D/WifiStateMachine: CMD_AUTO_CONNECT will save config -> "AndroidWifi" nid=0
+D/WifiNetworkHistory: saving network history: "AndroidWifi"NONE gw: null Network Selection-status: NETWORK_SELECTION_ENABLED ephemeral=false choice:null link:0 status:1 nid:0 hasEverConnected: false
+V/WifiNetworkHistory: writeKnownNetworkHistory write config "AndroidWifi"NONE
+D/WifiStateMachine: CMD_AUTO_CONNECT did save config ->  nid=0
+I/wpa_supplicant: wlan0: SME: Trying to authenticate with 02:00:00:00:01:00 (SSID='AndroidWifi' freq=2412 MHz)
+I/hostapd : wlan1: STA 02:00:00:44:55:66 IEEE 802.11: authenticated
+I/hostapd : wlan1: STA 02:00:00:44:55:66 IEEE 802.11: authenticated
+I/wpa_supplicant: wlan0: Trying to associate with 02:00:00:00:01:00 (SSID='AndroidWifi' freq=2412 MHz)
+D/WifiNetworkHistory: saving network history: "AndroidWifi"NONE gw: null Network Selection-status: NETWORK_SELECTION_ENABLED ephemeral=false choice:null link:0 status:1 nid:0 hasEverConnected: false
+V/WifiNetworkHistory: writeKnownNetworkHistory write config "AndroidWifi"NONE
+I/hostapd : wlan1: STA 02:00:00:44:55:66 IEEE 802.11: associated (aid 1)
+I/hostapd : wlan1: STA 02:00:00:44:55:66 IEEE 802.11: associated (aid 1)
+I/hostapd : wlan1: AP-STA-CONNECTED 02:00:00:44:55:66
+I/wpa_supplicant: wlan0: Associated with 02:00:00:00:01:00
+I/wpa_supplicant: wlan0: CTRL-EVENT-CONNECTED - Connection to 02:00:00:00:01:00 completed [id=0 id_str=%7B%22creatorUid%22%3A%22-1%22%2C%22configKey%22%3A%22%5C%22AndroidWifi%5C%22NONE%22%7D]
+I/wpa_supplicant: wlan0: CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+E/WifiScanner: listener cannot be found
+D/ConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "AndroidWifi", failover: false, available: true, roaming: false, metered: false]}  network{101}  nethandle{433808132830}  lp{{LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} }
+D/ConnectivityService: NetworkAgentInfo [WIFI () - 101] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+D/WifiStateMachine: Start Dhcp Watchdog 1
+D/WifiNative-wlan0: configureNeighborDiscoveryOffload(true)
+W/art     : Suspending all threads took: 17.768ms
+W/art     : Suspending all threads took: 5.857ms
+I/art     : Background partial concurrent mark sweep GC freed 15(448B) AllocSpace objects, 2(18MB) LOS objects, 11% free, 31MB/35MB, paused 7.972ms total 43.810ms
+I/art     : Background sticky concurrent mark sweep GC freed 49227(2MB) AllocSpace objects, 11(232KB) LOS objects, 26% free, 10MB/14MB, paused 18.915ms total 66.647ms
+D/DhcpClient: Broadcasting DHCPDISCOVER
+D/DhcpClient: Receive thread started
+W/BackupManagerService: dataChanged but no participant pkg='com.android.launcher3' uid=10014
+I/art     : Background partial concurrent mark sweep GC freed 18(544B) AllocSpace objects, 3(27MB) LOS objects, 14% free, 22MB/26MB, paused 5.961ms total 15.757ms
+W/BackupManagerService: dataChanged but no participant pkg='com.android.launcher3' uid=10014
+I/art     : Background sticky concurrent mark sweep GC freed 4(120B) AllocSpace objects, 0(0B) LOS objects, 0% free, 31MB/31MB, paused 10.563ms total 24.288ms
+I/art     : Background sticky concurrent mark sweep GC freed 4(120B) AllocSpace objects, 0(0B) LOS objects, 0% free, 40MB/40MB, paused 5.925ms total 57.890ms
+I/art     : Background sticky concurrent mark sweep GC freed 1(16B) AllocSpace objects, 0(0B) LOS objects, 0% free, 50MB/50MB, paused 8.446ms total 42.320ms
+I/dnsmasq : DHCPDISCOVER(wlan1) 02:00:00:44:55:66 
+I/dnsmasq : DHCPOFFER(wlan1) 192.168.100.188 02:00:00:44:55:66 
+D/DhcpClient: Received packet: 02:00:00:44:55:66 OFFER, ip /192.168.100.188, mask /255.255.255.0, DNS servers: /10.0.2.3 , gateways [/192.168.100.1] lease time 14400, domain null
+D/DhcpClient: Got pending lease: IP address 192.168.100.188/24 Gateway 192.168.100.1  DNS servers: [ 10.0.2.3 ] Domains  DHCP server /192.168.100.1 Vendor info null lease 14400 seconds
+D/DhcpClient: Broadcasting DHCPREQUEST ciaddr=0.0.0.0 request=192.168.100.188 serverid=192.168.100.1
+I/dnsmasq : DHCPREQUEST(wlan1) 192.168.100.188 02:00:00:44:55:66 
+I/dnsmasq : DHCPACK(wlan1) 192.168.100.188 02:00:00:44:55:66 android-37aec12d942c8490
+D/DhcpClient: Received packet: 02:00:00:44:55:66 ACK: your new IP /192.168.100.188, netmask /255.255.255.0, gateways [/192.168.100.1] DNS servers: /10.0.2.3 , lease time 14400
+D/DhcpClient: Confirmed lease: IP address 192.168.100.188/24 Gateway 192.168.100.1  DNS servers: [ 10.0.2.3 ] Domains  DHCP server /192.168.100.1 Vendor info null lease 14400 seconds
+D/CommandListener: Setting iface cfg
+D/DhcpClient: Scheduling renewal in 7199s
+D/DhcpClient: Scheduling rebind in 12599s
+D/DhcpClient: Scheduling expiry in 14399s
+E/WifiNative-HAL: setBssidBlacklist cmd 0 size 0
+D/ConnectivityService: NetworkAgentInfo [WIFI () - 101] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to CONNECTED
+D/ConnectivityService: Adding iface wlan0 to network 101
+E/WifiStateMachine: Did not find remoteAddress {192.168.100.1} in /proc/net/arp
+E/WifiStateMachine: Did not find remoteAddress {192.168.100.1} in /proc/net/arp
+W/AlarmManager: Unrecognized alarm listener com.android.server.wifi.WifiConnectivityManager$3@54dcc5b
+E/WifiScanner: listener cannot be found
+I/art     : Background sticky concurrent mark sweep GC freed 4(120B) AllocSpace objects, 0(0B) LOS objects, 0% free, 31MB/31MB, paused 10.388ms total 20.479ms
+E/Netd    : netlink response contains error (File exists)
+D/ConnectivityService: Setting DNS servers for network 101 to [/10.0.2.3]
+I/GnssLocationProvider: WakeLock acquired by sendMessage(5, 0, null)
+I/GnssLocationProvider: WakeLock acquired by sendMessage(6, 0, null)
+I/GnssLocationProvider: WakeLock acquired by handleInjectNtpTime()
+I/GnssLocationProvider: WakeLock released by handleMessage(5, 0, null)
+I/GnssLocationProvider: WakeLock released by handleMessage(6, 0, null)
+I/GnssLocationProvider: WakeLock acquired by sendMessage(10, 0, null)
+I/GnssLocationProvider: WakeLock released by handleInjectNtpTime()
+I/GnssLocationProvider: WakeLock released by handleMessage(10, 0, null)
+D/WifiNetworkAgent: NetworkAgent: Received signal strength thresholds: []
+D/WifiNative-HAL: stopRssiMonitoring, cmdId 0
+D/ConnectivityService: NetworkAgentInfo [WIFI () - 101] validation passed
+D/ConnectivityService: Switching to new default network: NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: "AndroidWifi", failover: false, available: true, roaming: false, metered: false]}  network{101}  nethandle{433808132830}  lp{{InterfaceName: wlan0 LinkAddresses: [fe80::ff:fe44:5566/64,fec0::ff:fe44:5566/64,fec0::7db4:a9eb:cfaf:9648/64,192.168.100.188/24,]  Routes: [fe80::/64 -> :: wlan0,::/0 -> fe80::ff:fe00:100 wlan0,fec0::/64 -> :: wlan0,192.168.100.0/24 -> 0.0.0.0 wlan0,0.0.0.0/0 -> 192.168.100.1 wlan0,] DnsAddresses: [10.0.2.3,] Domains: null MTU: 0 TcpBufferSizes: 524288,1048576,2097152,262144,524288,1048576}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -50]}  Score{60}  everValidated{true}  lastValidated{true}  created{true} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} }
+V/IdletimerController: runCmd(/system/bin/ip6tables -w -t raw -A idletimer_raw_PREROUTING -i wlan0 -j IDLETIMER --timeout 15 --label 1 --send_nl_msg 1) res_ipv4=0, res_ipv6=0
+V/IdletimerController: runCmd(/system/bin/ip6tables -w -t mangle -A idletimer_mangle_POSTROUTING -o wlan0 -j IDLETIMER --timeout 15 --label 1 --send_nl_msg 1) res_ipv4=0, res_ipv6=0
+D/ConnectivityService: Sending DISCONNECTED broadcast for type 0 NetworkAgentInfo [MOBILE (LTE) - 100] isDefaultNetwork=true
+D/ConnectivityService: Sending CONNECTED broadcast for type 1 NetworkAgentInfo [WIFI () - 101] isDefaultNetwork=true
+D/WifiNetworkHistory: saving network history: "AndroidWifi"NONE gw: null Network Selection-status: NETWORK_SELECTION_ENABLED ephemeral=false choice:null link:0 status:0 nid:0 hasEverConnected: true
+V/WifiNetworkHistory: writeKnownNetworkHistory write config "AndroidWifi"NONE
+W/art     : Suspending all threads took: 5.832ms
+I/art     : Background partial concurrent mark sweep GC freed 14(400B) AllocSpace objects, 2(18MB) LOS objects, 11% free, 31MB/35MB, paused 14.305ms total 44.266ms
+I/ActivityManager: Waited long enough for: ServiceRecord{9a14f46 u0 com.android.calendar/.alerts.InitAlarmsService}
+I/art     : Background partial concurrent mark sweep GC freed 9(240B) AllocSpace objects, 1(9MB) LOS objects, 11% free, 31MB/35MB, paused 11.198ms total 34.307ms
+I/art     : Background partial concurrent mark sweep GC freed 17(496B) AllocSpace objects, 3(27MB) LOS objects, 14% free, 22MB/26MB, paused 7.086ms total 23.733ms
+I/art     : Background partial concurrent mark sweep GC freed 14(400B) AllocSpace objects, 2(18MB) LOS objects, 11% free, 31MB/35MB, paused 8.257ms total 39.255ms
+I/art     : Background partial concurrent mark sweep GC freed 14(400B) AllocSpace objects, 2(18MB) LOS objects, 14% free, 22MB/26MB, paused 6.917ms total 27.671ms
+I/art     : Background partial concurrent mark sweep GC freed 13(352B) AllocSpace objects, 2(18MB) LOS objects, 11% free, 31MB/35MB, paused 19.409ms total 60.697ms
+I/ActivityManager: Killing 1871:com.android.settings:CryptKeeper/1000 (adj 906): empty #17
+I/art     : Background sticky concurrent mark sweep GC freed 1(40B) AllocSpace objects, 0(0B) LOS objects, 0% free, 22MB/22MB, paused 5.901ms total 12.797ms
+D/ActivityManager: cleanUpApplicationRecord -- 1871
+I/art     : Background sticky concurrent mark sweep GC freed 3(72B) AllocSpace objects, 0(0B) LOS objects, 0% free, 31MB/31MB, paused 7.686ms total 34.231ms
+I/art     : Background partial concurrent mark sweep GC freed 10(288B) AllocSpace objects, 1(9MB) LOS objects, 14% free, 22MB/26MB, paused 5.467ms total 21.277ms
+I/art     : Background sticky concurrent mark sweep GC freed 6(184B) AllocSpace objects, 0(0B) LOS objects, 0% free, 40MB/40MB, paused 6.608ms total 21.937ms
+I/art     : Background partial concurrent mark sweep GC freed 14(400B) AllocSpace objects, 2(18MB) LOS objects, 11% free, 31MB/35MB, paused 8.140ms total 38.928ms
+I/art     : Background partial concurrent mark sweep GC freed 21(616B) AllocSpace objects, 2(10MB) LOS objects, 11% free, 31MB/35MB, paused 8.247ms total 37.745ms
+I/art     : Starting a blocking GC Explicit
+I/art     : Explicit concurrent mark sweep GC freed 19(552B) AllocSpace objects, 3(27MB) LOS objects, 14% free, 22MB/26MB, paused 2.492ms total 26.731ms
+I/art     : WaitForGcToComplete blocked for 27.103ms for cause Background
+I/art     : Background sticky concurrent mark sweep GC freed 0(0B) AllocSpace objects, 0(0B) LOS objects, 0% free, 31MB/31MB, paused 7.840ms total 14.956ms
+I/art     : Background partial concurrent mark sweep GC freed 14(400B) AllocSpace objects, 2(18MB) LOS objects, 14% free, 22MB/26MB, paused 7.905ms total 13.816ms
+I/art     : Background sticky concurrent mark sweep GC freed 4(120B) AllocSpace objects, 0(0B) LOS objects, 0% free, 31MB/31MB, paused 11.160ms total 19.222ms
+I/art     : Background partial concurrent mark sweep GC freed 17(496B) AllocSpace objects, 2(18MB) LOS objects, 14% free, 22MB/26MB, paused 5.495ms total 14.067ms
+I/art     : Background partial concurrent mark sweep GC freed 14(400B) AllocSpace objects, 2(18MB) LOS objects, 14% free, 22MB/26MB, paused 7.254ms total 18.445ms
+I/art     : Background partial concurrent mark sweep GC freed 14(400B) AllocSpace objects, 2(18MB) LOS objects, 11% free, 31MB/35MB, paused 5.094ms total 51.779ms
+I/art     : Background partial concurrent mark sweep GC freed 14(400B) AllocSpace objects, 2(18MB) LOS objects, 11% free, 31MB/35MB, paused 9.138ms total 38.164ms
+I/art     : Background sticky concurrent mark sweep GC freed 6(184B) AllocSpace objects, 0(0B) LOS objects, 0% free, 40MB/40MB, paused 5.020ms total 14.691ms
+I/art     : Background partial concurrent mark sweep GC freed 17(496B) AllocSpace objects, 3(27MB) LOS objects, 14% free, 22MB/26MB, paused 7.133ms total 19.112ms
+I/art     : Background sticky concurrent mark sweep GC freed 3(72B) AllocSpace objects, 0(0B) LOS objects, 0% free, 40MB/40MB, paused 5.443ms total 11.253ms
+I/art     : Background sticky concurrent mark sweep GC freed 4(120B) AllocSpace objects, 1(1600KB) LOS objects, 0% free, 31MB/31MB, paused 15.523ms total 21.010ms
+I/ActivityManager: Killing 2096:com.android.carrierconfig/u0a3 (adj 906): empty #17
+I/ActivityManager: Killing 2026:com.android.cellbroadcastreceiver/u0a4 (adj 906): empty #18
+D/ActivityManager: cleanUpApplicationRecord -- 2026
+D/ActivityManager: cleanUpApplicationRecord -- 2096
+W/SeonroWeb: Refused to load the image 'https://seonro.local/favicon.ico' because it violates the following Content Security Policy directive: "img-src data:".
+I/SeonroRender: {"rendered":true,"heading":"만상의 흐름","title":"선로만상록","version":"0.2.1","error":null,"connection":"연결됨"}
+D/InitAlarmsService: Clearing and rescheduling alarms.

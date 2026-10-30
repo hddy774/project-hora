@@ -1,0 +1,114 @@
+ACTIVITY MANAGER ACTIVITIES (dumpsys activity activities)
+Display #0 (activities from top to bottom):
+  Stack #1:
+  mFullscreen=true
+  mBounds=null
+    Task id #3
+    mFullscreen=true
+    mBounds=null
+    mMinWidth=-1
+    mMinHeight=-1
+    mLastNonFullscreenBounds=null
+    * TaskRecord{346c605 #3 A=org.hora.xianxiaobserver U=0 StackId=1 sz=1}
+      userId=0 effectiveUid=u0a62 mCallingUid=2000 mUserSetupComplete=true mCallingPackage=null
+      affinity=org.hora.xianxiaobserver
+      intent={flg=0x10000000 cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity}
+      realActivity=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity
+      autoRemoveRecents=false isPersistable=true numFullscreen=1 taskType=0 mTaskToReturnTo=1
+      rootWasReset=false mNeverRelinquishIdentity=true mReuseTask=false mLockTaskAuth=LOCK_TASK_AUTH_PINNABLE
+      Activities=[ActivityRecord{af0310b u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity t3}]
+      askedCompatMode=false inRecents=true isAvailable=true
+      lastThumbnail=null lastThumbnailFile=/data/system_ce/0/recent_images/3_task_thumbnail.png
+      stackId=1
+      hasBeenVisible=true mResizeMode=RESIZE_MODE_RESIZEABLE isResizeable=true firstActiveTime=1793391030365 lastActiveTime=1793391030365 (inactive for 32s)
+      * Hist #0: ActivityRecord{af0310b u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity t3}
+          packageName=org.hora.xianxiaobserver processName=org.hora.xianxiaobserver
+          launchedFromUid=2000 launchedFromPackage=null userId=0
+          app=ProcessRecord{256065a 2638:org.hora.xianxiaobserver/u0a62}
+          Intent { flg=0x10000000 cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }
+          frontOfTask=true task=TaskRecord{346c605 #3 A=org.hora.xianxiaobserver U=0 StackId=1 sz=1}
+          taskAffinity=org.hora.xianxiaobserver
+          realActivity=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity
+          baseDir=/data/app/org.hora.xianxiaobserver-1/base.apk
+          dataDir=/data/user/0/org.hora.xianxiaobserver
+          stateNotNeeded=false componentSpecified=true mActivityType=0
+          compat={420dpi} labelRes=0x0 icon=0x7f010000 theme=0x103022e
+          config={1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h842dp 420dpi nrml long port finger -keyb/v/h -nav/h s.7}
+          taskConfigOverride={1.0 ?mcc?mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/?}
+          taskDescription: iconFilename=null label="null" color=ff212121
+          launchFailed=false launchCount=1 lastLaunchTime=-31s622ms
+          haveState=false icicle=null
+          state=RESUMED stopped=false delayedResume=false finishing=false
+          keysPaused=false inHistory=true visible=true sleeping=false idle=true mStartingWindowState=STARTING_WINDOW_SHOWN
+          fullscreen=true noDisplay=false immersive=false launchMode=0
+          frozenBeforeDestroy=false forceNewConfig=false
+          mActivityType=APPLICATION_ACTIVITY_TYPE
+          waitingVisible=false nowVisible=true lastVisibleTime=-24s975ms
+          resizeMode=RESIZE_MODE_RESIZEABLE
+
+    Running activities (most recent first):
+      TaskRecord{346c605 #3 A=org.hora.xianxiaobserver U=0 StackId=1 sz=1}
+        Run #0: ActivityRecord{af0310b u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity t3}
+
+    mResumedActivity: ActivityRecord{af0310b u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity t3}
+
+  Stack #0:
+  mFullscreen=true
+  mBounds=null
+    Task id #2
+    mFullscreen=true
+    mBounds=null
+    mMinWidth=-1
+    mMinHeight=-1
+    mLastNonFullscreenBounds=null
+    * TaskRecord{82c508b #2 I=com.android.launcher3/.Launcher U=0 StackId=0 sz=1}
+      userId=0 effectiveUid=u0a14 mCallingUid=0 mUserSetupComplete=true mCallingPackage=null
+      intent={act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.Launcher}
+      realActivity=com.android.launcher3/.Launcher
+      autoRemoveRecents=false isPersistable=true numFullscreen=1 taskType=1 mTaskToReturnTo=1
+      rootWasReset=false mNeverRelinquishIdentity=true mReuseTask=false mLockTaskAuth=LOCK_TASK_AUTH_PINNABLE
+      Activities=[ActivityRecord{7a1d63e u0 com.android.launcher3/.Launcher t2}]
+      askedCompatMode=false inRecents=true isAvailable=true
+      lastThumbnail=null lastThumbnailFile=/data/system_ce/0/recent_images/2_task_thumbnail.png
+      stackId=0
+      hasBeenVisible=true mResizeMode=RESIZE_MODE_FORCE_RESIZEABLE isResizeable=false firstActiveTime=1793391030312 lastActiveTime=1793391030312 (inactive for 32s)
+      * Hist #0: ActivityRecord{7a1d63e u0 com.android.launcher3/.Launcher t2}
+          packageName=com.android.launcher3 processName=com.android.launcher3
+          launchedFromUid=0 launchedFromPackage=null userId=0
+          app=ProcessRecord{1ead568 2283:com.android.launcher3/u0a14}
+          Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.Launcher }
+          frontOfTask=true task=TaskRecord{82c508b #2 I=com.android.launcher3/.Launcher U=0 StackId=0 sz=1}
+          taskAffinity=null
+          realActivity=com.android.launcher3/.Launcher
+          baseDir=/system/priv-app/Launcher3/Launcher3.apk
+          dataDir=/data/user/0/com.android.launcher3
+          stateNotNeeded=true componentSpecified=false mActivityType=1
+          compat={420dpi} labelRes=0x7f0d0004 icon=0x7f030000 theme=0x7f10000f
+          config={1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h842dp 420dpi nrml long port finger -keyb/v/h -nav/h s.7}
+          taskConfigOverride={1.0 ?mcc?mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/?}
+          taskDescription: iconFilename=null label="null" color=ff009688
+          launchFailed=false launchCount=0 lastLaunchTime=-42s411ms
+          haveState=true icicle=Bundle[mParcelledData.dataSize=4360]
+          state=STOPPED stopped=true delayedResume=false finishing=false
+          keysPaused=false inHistory=true visible=false sleeping=false idle=true mStartingWindowState=STARTING_WINDOW_SHOWN
+          fullscreen=true noDisplay=false immersive=false launchMode=2
+          frozenBeforeDestroy=false forceNewConfig=false
+          mActivityType=HOME_ACTIVITY_TYPE
+          waitingVisible=false nowVisible=false lastVisibleTime=-41s269ms
+          resizeMode=RESIZE_MODE_FORCE_RESIZEABLE
+
+    Running activities (most recent first):
+      TaskRecord{82c508b #2 I=com.android.launcher3/.Launcher U=0 StackId=0 sz=1}
+        Run #0: ActivityRecord{7a1d63e u0 com.android.launcher3/.Launcher t2}
+
+    mLastPausedActivity: ActivityRecord{7a1d63e u0 com.android.launcher3/.Launcher t2}
+
+  mFocusedActivity: ActivityRecord{af0310b u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity t3}
+  mFocusedStack=ActivityStack{472bd81 stackId=1, 1 tasks} mLastFocusedStack=ActivityStack{472bd81 stackId=1, 1 tasks}
+  mSleepTimeout=false
+  mCurTaskIdForUser={0=3}
+  mUserStackInFront={}
+  mActivityContainers={0=ActivtyContainer{0}A, 1=ActivtyContainer{1}A}
+  mLockTaskModeState=NONE mLockTaskPackages (userId:packages)=
+    0:[]
+ mLockTaskModeTasks[]

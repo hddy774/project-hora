@@ -242,6 +242,11 @@ public sealed class InventoryAuctionScenario : IFeatureScenario
         InventoryFixture.Accept(ref state, new SettleInventory("settle"));
         InventoryFixture.Check(InventoryFixture.Item(state, first).Owner == 2 && state.Ledger.Contracts.Single(c => c.Id == unsold).Status == "expired" &&
             InventoryFixture.Money(state) == total, "Simultaneous auction settlement lost property or money.");
+        var settled = state.Ledger.Contracts.Single(c => c.Id == auction);
+        InventoryFixture.Check(settled.PaidAmount == 700 && settled.PaidQuantity == 1 && settled.PaidQuality == 5000 && settled.EndedMonth == 2,
+            "Actual auction payment was lost when escrow cleared.");
+        InventoryFixture.Item(state, first).Quality = 1234;
+        InventoryFixture.Check(settled.PaidQuality == 5000, "Later buyer inventory rewrote sale-time quality.");
         var before = JsonSerializer.Serialize(state); var replay = InventoryEngine.Apply(state, new SettleInventory("settle"));
         InventoryFixture.Check(replay.Accepted && replay.Replayed && JsonSerializer.Serialize(replay.State) == before, "Replay duplicated settlement.");
         InventoryFixture.Reject(state, new SettleInventory("bid"));

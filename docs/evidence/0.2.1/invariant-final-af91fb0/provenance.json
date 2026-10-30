@@ -274,7 +274,7 @@
     "map_path": "../invariant-execution-map.json",
     "map_sha256": "299e1f066808b820f51404c8c55f1ddacd10f251cd4a69df36a7842e087cd0c3",
     "markdown_path": "../invariant-execution-map.md",
-    "markdown_sha256": "681ffcc9229e247ab46fb5aab57082a59a98604253dbd91e3fa70252e655442a"
+    "markdown_sha256": "e4067d049ddb96462a7bda5a0623f4bdce7fd25d0c3602f5c42bd0400636d2fe"
   },
   "source_review": {
     "path": "../invariant-execution-source-review-af91fb0.json",
@@ -286,7 +286,7 @@
   },
   "acceptance_audit": {
     "path": "../acceptance-functional-af91fb0.json",
-    "sha256": "642a857d3b4e34e74cfa089402c9a6f32440a598d5ea281f0a20530f51b91fe1",
+    "sha256": "e483899c9957f7b364a3dd99056ea8114efed853ff2b7249b28bc1bb717d5875",
     "markdown_path": "../acceptance-functional-af91fb0.md",
     "recommendation_only": true,
     "tasks": [
@@ -317,8 +317,8 @@
   "files": [
     {
       "path": "README.md",
-      "sha256": "76043d38b0b3a87b9f964f5fe055ff0100940479905cb57dcb5476f5681814c2",
-      "bytes": 3619
+      "sha256": "3f3b3288fca04c8147f5e21483715f0738cb686636070415506428e23aff82c9",
+      "bytes": 3636
     },
     {
       "path": "execution-verification.json",
@@ -365,5 +365,6 @@
       "sha256": "4432cb409c39ddfff9a0cc130234fb90178bebf104b761b3c817524ee850d73c",
       "bytes": 171
     }
-  ]
+  ],
+  "documentation_snapshot_utc": "2026-10-30T19:03:16.008406+00:00"
 }

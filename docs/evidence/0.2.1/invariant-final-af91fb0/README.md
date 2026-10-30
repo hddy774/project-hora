@@ -10,6 +10,6 @@
 
 이전 [c6의313 원문/provenance](../invariant-final-c6e4704/README.md)·[313 JSON 맵 사본](../invariant-final-c6e4704/map.snapshot.json)·[Markdown 사본](../invariant-final-c6e4704/map.snapshot.md)·[SourceReview](../invariant-execution-source-review-c6e4704.json)·[당시 감사](../acceptance-functional-c6e4704.md)는 그대로 둔다. 새 사본은 기존 provenance의 map SHA와 대조했으며 Markdown 원래 상대 링크는 [당시 경로](https://github.com/hddy774/project-hora/blob/c527c2a47079abc6ba0cc3415af9658371d17efb/docs/evidence/0.2.1/invariant-execution-map.md)를 따른다. 그 앞309/308 및 실제 실패 원본도 보존한다.
 
-[D02/T01~T03 감사](../acceptance-functional-af91fb0.md)는 c6의 실제 네 규모·10,000명 기본 저장/읽기/hash 완료와 runtime 바이트가 같은 af91의 실제 운송 중 파일 저장1개를 결합한다. D02 기능 조항의 자체 수용 근거와 원장의 선행 마감은 분리한다. **af91 최종 지문의 population 실측은 진행 중**이며 이 문서로 최종 T04/T05·장기 안정성·성장/AI·플랫폼·릴리스 완료를 채우지 않는다.
+[D02/T01~T03 감사](../acceptance-functional-af91fb0.md)는 c6의 실제 네 규모·10,000명 기본 저장/읽기/hash 완료와 runtime 소스(`src/**`) 바이트가 같은 af91의 실제 운송 중 파일 저장1개를 결합한다. D02 기능 조항의 자체 수용 근거와 원장의 선행 마감은 분리한다. **af91 최종 지문의 population 실측은 진행 중**이며 이 문서로 최종 T04/T05·장기 안정성·성장/AI·플랫폼·릴리스 완료를 채우지 않는다.
 
 이 문서 작업은 기존 원문과 소스의 읽기·작은 Python 검증만 수행했다. 새 runtime/build/bench/collector 실행, C#/제품/테스트/validator/스크립트·제안 `test_status=not_implemented`·원장·readiness·Notion 변경은0이다.

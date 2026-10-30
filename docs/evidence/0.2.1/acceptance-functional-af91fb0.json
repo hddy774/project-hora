@@ -399,7 +399,7 @@
   "tasks": [
     {
       "id": "V021-D02",
-      "recommendation": "수정후 c6 실제 네규모/10,000명 기본 저장·읽기/hash 성공과 runtime동일한 af91의 운송중 실제 파일 왕복1개까지 확인해 D02 기능 조항 자체 수용을 권고할 근거가 충족됐다. af91 최종지문 population은 진행중이며 원장의 선행마감/done/최종릴리스 판정은 root가 별도로 결정한다.",
+      "recommendation": "수정후 c6 실제 네규모/10,000명 기본 저장·읽기/hash 성공과 runtime소스가동일한 af91의 운송중 실제 파일 왕복1개까지 확인해 D02 기능 조항 자체 수용을 권고할 근거가 충족됐다. af91 최종지문 population은 진행중이며 원장의 선행마감/done/최종릴리스 판정은 root가 별도로 결정한다.",
       "clauses": [
         {
           "id": "D02-a",
@@ -451,7 +451,7 @@
             "binary",
             "atomic"
           ],
-          "observed_scope": "이전926의 실제10,000명 저장 예외/exit134는 실패로 보존한다. 수정된 c6에서 네규모 모두12개월→기본GameCodec저장/읽기·hash검증까지 실제완료했고 10,000명 저장크기398,228,447B·최종hash68e52eb8…42b80을 원문으로 확인했다. af91과runtime제품은byte동일하고 test1개만 추가됐다.",
+          "observed_scope": "이전926의 실제10,000명 저장 예외/exit134는 실패로 보존한다. 수정된 c6에서 네규모 모두12개월→기본GameCodec저장/읽기·hash검증까지 실제완료했고 10,000명 저장크기398,228,447B·최종hash68e52eb8…42b80을 원문으로 확인했다. af91과runtime제품소스(src/**)는byte동일하고 test1개만 추가됐다.",
           "remaining_evidence": "af91 최종제품지문의 별도 네규모population은 root가 진행중이다. c6측정을 af91소스로 재라벨하거나 최종T04/T05/장기/릴리스완료로 세지 않는다."
         }
       ],

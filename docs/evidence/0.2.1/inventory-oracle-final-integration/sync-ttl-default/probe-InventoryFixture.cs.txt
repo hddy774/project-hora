@@ -1,0 +1,44 @@
+using System.Text.Json;
+using Chronicles.Game.Inventory;
+
+namespace Chronicles.Game.Tests;
+
+internal static class InventoryFixture
+{
+    internal static InventoryState Create() => new()
+    {
+        NextId = 5,
+        People = [new() { Id = 1, SoulId = 3, Place = 0, Money = 1000 }, new() { Id = 2, SoulId = 4, Place = 0, Money = 1000 }]
+    };
+    internal static long Add(InventoryState state, string definition, int count = 1, long owner = 1, int quality = 5000,
+        ItemDefect defects = ItemDefect.None, string source = "fixture origin")
+    {
+        var item = new Item { Id = state.NextId++, Owner = owner, Definition = definition, Quantity = count, Quality = quality,
+            Defects = defects, Place = 0, Source = source }; state.Items.Add(item);
+        if (!state.Materials.TryGetValue(definition, out var flow)) state.Materials.Add(definition, flow = new());
+        flow.Opening += count; return item.Id;
+    }
+    internal static long Accept(ref InventoryState state, InventoryCommand command)
+    {
+        var before = JsonSerializer.Serialize(state); var result = InventoryEngine.Apply(state, command);
+        Check(JsonSerializer.Serialize(state) == before, "Accepted command mutated its input.");
+        Check(result.Accepted, command.GetType().Name + ": " + result.Message); state = result.State; return result.Subject;
+    }
+    internal static void Reject(InventoryState state, InventoryCommand command)
+    {
+        var before = JsonSerializer.Serialize(state); var result = InventoryEngine.Apply(state, command);
+        Check(!result.Accepted && JsonSerializer.Serialize(state) == before && ReferenceEquals(result.State, state), "Rejected command changed authority.");
+    }
+    internal static void Check(bool condition, string message)
+    { if (!condition) throw new InvalidOperationException(message); }
+    internal static void RoundTrip(ref InventoryState state)
+    {
+        var before = JsonSerializer.Serialize(state); state = JsonSerializer.Deserialize<InventoryState>(before)!;
+        InventoryEngine.Validate(state); Check(before == JsonSerializer.Serialize(state), "Inventory save roundtrip changed state.");
+    }
+    internal static Item Item(InventoryState state, long id) => state.Items.Single(i => i.Id == id);
+    internal static Person Person(InventoryState state, long id) => state.People.Single(p => p.Id == id);
+    internal static long Money(InventoryState state) => state.People.Sum(p => p.Money) + state.Ledger.Contracts.Sum(c => c.Escrow);
+}
+
+public interface IFeatureScenario { string Name { get; } void Run(); }

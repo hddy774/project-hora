@@ -1,0 +1,32 @@
+using System.Text.Json;
+using Chronicles.Game.Inventory;
+
+namespace Chronicles.Game.Tests.Features;
+
+internal static class OwnedInventoryFixture
+{
+    internal static GameState Create()
+    {
+        var inventory = InventoryFixture.Create();
+        InventoryFixture.Add(inventory, "herb", 10); InventoryFixture.Add(inventory, "wood", 2);
+        InventoryFixture.Add(inventory, "ore", 5); InventoryFixture.Add(inventory, "bag"); InventoryFixture.Add(inventory, "tool");
+        inventory.Ledger.Metadata.Add(new() { Item = inventory.Items[0].Id, Custodian = 1, Provenance = ["실제 검사 출처"] });
+        return new() { NextId = inventory.NextId, People = inventory.People, Items = inventory.Items, Materials = inventory.Materials, Inventory = inventory.Ledger };
+    }
+    internal static string Snapshot(GameState world) => JsonSerializer.Serialize(world);
+    internal static long Item(GameState world, string definition) => world.Items.Single(i => i.Definition == definition).Id;
+    internal static void Closed(InventoryEngine.OwnedTransaction transaction, GameState world)
+    {
+        var before = Snapshot(world);
+        Action[] operations = [() => transaction.CommitTo(world), () => transaction.Apply(new SplitInventoryItem("closed", 1, 5, 1)),
+            () => transaction.ItemQuantity(5), () => transaction.Job(1), () => transaction.AttachKnowledgeActivity(1, 1),
+            () => transaction.TuneIfNeeded(new("closed-tune", 500, 100, 100, 25)), () => transaction.SynchronizeWorldActions()];
+        foreach (var operation in operations)
+        {
+            var rejected = false; try { operation(); } catch (InvalidOperationException) { rejected = true; }
+            InventoryFixture.Check(rejected && before == Snapshot(world), "소비·폐기된 인벤토리 토큰이 재사용되거나 세계를 바꿨습니다.");
+        }
+        transaction.Dispose(); transaction.Dispose();
+    }
+}
+

@@ -1,0 +1,1 @@
+new Chronicles.Game.Tests.Features.InventorySynchronizationScopeScenario().Run();

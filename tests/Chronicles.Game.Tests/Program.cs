@@ -346,7 +346,23 @@ if (failed == 0 && args.Contains("--performance", StringComparer.Ordinal))
     PerformanceScenarios.Run(args[Array.IndexOf(args, "--performance") + 1], population);
 }
 if (failed == 0 && args.Contains("--growth", StringComparer.Ordinal))
-    GrowthScenarios.Run(args[Array.IndexOf(args, "--growth") + 1]);
+{
+    string? GrowthOption(string option)
+    {
+        var index = Array.IndexOf(args, option);
+        if (index < 0) return null;
+        if (index != Array.LastIndexOf(args, option) || index + 1 >= args.Length || args[index + 1].StartsWith("--", StringComparison.Ordinal))
+            throw new ArgumentException(option + " 뒤에 중복되지 않은 값을 지정하세요.");
+        return args[index + 1];
+    }
+    var seedText = GrowthOption("--growth-seed"); ulong? seed = null;
+    if (seedText is not null)
+    {
+        if (!ulong.TryParse(seedText, NumberStyles.None, CultureInfo.InvariantCulture, out var value)) throw new ArgumentException("성장 seed는 42/98/2026 중 하나여야 합니다.");
+        seed = value;
+    }
+    GrowthScenarios.Run(args[Array.IndexOf(args, "--growth") + 1], GrowthOption("--growth-scenario"), seed);
+}
 if (failed == 0 && args.Contains("--soak", StringComparer.Ordinal))
     PerformanceScenarios.Soak(args[Array.IndexOf(args, "--soak") + 1]);
 if (failed == 0 && args.Contains("--stability", StringComparer.Ordinal))

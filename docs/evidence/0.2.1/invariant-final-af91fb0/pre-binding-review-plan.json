@@ -1,0 +1,24 @@
+{
+  "schema": "seonro.invariant-map-review-plan.v1",
+  "from_source": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "source_commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "test_sources_sha256": "9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117",
+  "actual_scenarios": 314,
+  "added_names": [
+    "INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패"
+  ],
+  "removed_names": [],
+  "changed_source_paths": [
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs",
+      "invariants": [],
+      "registered_scenarios": [
+        "INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패"
+      ],
+      "unclassified_product_source": false,
+      "named_witnesses": [],
+      "review_focus": []
+    }
+  ],
+  "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+}

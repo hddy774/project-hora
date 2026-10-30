@@ -1,0 +1,8 @@
+{
+  "source_commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "scenario_bindings_reviewed": true,
+  "reviewed_paths": [
+    "tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs"
+  ],
+  "review_note": "c6→af91의변경은새운송검사1파일뿐이다. 실제공개명령→운송중JSON2/작은임계값binary3파일SaveAtomic/Load→같은명령재전송→같은due배송/봉쇄실패와asset/labor예약·fullhash/RNG/NextId·단일event를읽고host+public_world/INV004·005·006·017로수동연결했다. selfcarrier/fee0,봉쇄주입Restore뒤실제파일왕복,작은fixture와별도c6실제대량저장을구분한다."
+}

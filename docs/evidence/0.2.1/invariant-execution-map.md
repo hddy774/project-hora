@@ -1,95 +1,70 @@
 # 24개 불변식과 실제 실행 검사의 연결
 
 <!-- actual-map-metadata:begin -->
-매핑 소스: `c6e470458ecefe055d98f89120f08c40c0c0660d`
-
-테스트 소스 지문: `829074742f2738d25dd94dee2cc5abcbe2e01beeee6ab54729625f13a18cffb2`
+매핑 소스: `af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a`
+테스트 소스 지문: `9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117`
 <!-- actual-map-metadata:end -->
 
-현재 실제 등록 검사는 **313개**(feature275 + Program38), **24개 불변식·증인148개 연결**이다.
-이전9704의309/144 연결에 코덱 검사4개를 추가했다. 전체 이름·경계·관련 INV·증인의 실제 주장·부정/저장/명령 종류·앵커는
-[기계 매핑](invariant-execution-map.json)에 있다. 같은 검사는 여러 절에 연결될 수 있으며 **매핑 자체의 실행 상태는 `not_asserted`**다.
+현재 실제 등록 검사는 **314개**(feature276 + Program38), **24개 불변식·증인152개 연결**이다.
+[기계 맵](invariant-execution-map.json)은 실제 이름·파일/행·관련 INV·경계·구체 주장·앵커를 기록하며 실행 상태는 계속 `not_asserted`다.
+이름의 INV 태그만으로 수용을 선언하지 않고 제안 카탈로그의 `test_status=not_implemented`·원장·Notion을 변경하지 않는다.
 
-`docs/plans/v021-invariants.md`와 `v021-tasks.json`의 `proposed_tests/test_status=not_implemented`는 원래 제안 이름 카탈로그다.
-제안 상태·원장·Notion을 변경하지 않았다. 이름의 INV 태그를 자동 수용 근거로 쓰지 않으며 도메인 JSON 복원을 공통 GameCodec 전체 세계 저장으로 세지 않는다.
+## af91 전체 기능 원문과 소스 검토
 
-## c6 기준 기능 원본과 매핑 판정
+정확한 위 소스, 제품 지문 `4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304`의
+루트 **전체314/314·실패0·exit0/clean**을 [원본 JSON](invariant-final-af91fb0/functional.json),
+[로그](invariant-final-af91fb0/functional.log), [감독 실행 기록](invariant-final-af91fb0/root-run.original.json)으로 보존한다.
+JSON SHA256은 `6bb3de5ccb787eeee7a71f86295ce17c9eaa2a630cbef206f95e04beaf312e87`이다.
+실제 별도 worktree `/workspace/seonro-final-af91fb0`, CPU0, 2026-10-30 18:45:19.695632~18:50:43.734641 UTC다.
+외부 CPU1~3 작업과 공유한 기능 실행이며 합산 시간은 성능 표본이 아니다. [provenance](invariant-final-af91fb0/provenance.json)에
+실제 명령·프로세스 기록·네 DLL/정보버전·PE 메타데이터/실행폴더 사본·원문 SHA와 한계를 남겼다.
+[기존 검증기 대조](invariant-final-af91fb0/execution-verification.json)는 실제314개 이름과152개 명명 증인을 확인한다.
 
-루트가 별도 `/workspace/seonro-final-c6e4704`에서 정확한 위 소스로 실행한 **전체 C# 기능313/313**이 통과했다.
-[JSON 원본](invariant-final-c6e4704/functional.json)·[실행 로그](invariant-final-c6e4704/functional.log)·[감독 실행 기록](invariant-final-c6e4704/root-run.original.json)은 bytes 그대로 보존했다.
-JSON SHA256은 `5704c7e50745960585b11b77afb19f844a97991eeda7bfc3be25dece5bd07abe`다.
-CPU0·외부 부하·18:18:45.327637~18:24:17.486670 UTC·exit0/clean, 네 assembly의 생성/내장 정보 버전·DLL 해시·실행 폴더 사본은
-[출처 기록](invariant-final-c6e4704/provenance.json)에 있다. 제품 소스 지문은 `dcc95b5cb52a0d3b8e6b66975b736a685f4a82250508a2434d29563bd7b9cfc0`다.
-기능 runner 합산296.633초는 성능 표본이 아니다. 매핑 작업에서 runner·계측기를 새로 실행하지 않았다.
+[소스 검토](invariant-execution-source-review-af91fb0.json)는 c6 이후 새 운송 검사1파일만 변경됐음을 읽고 실제 경계를 연결했다.
+새 검사는 **host + public_world**이며 같은 작은 세계의 공개 조작/탐색/운송 후 열린 계약을 JSON2와 작은 내부 임계값의 이진3 실제 파일로 각각 저장/복원한다.
+명령 재전송·단일 정산(INV-005), 원본/복원본의 같은 due와 hash/RNG(INV-006), 소유·실물/노동 예약(INV-017), 공통 저장(INV-004)을 구분해 연결했다.
+봉쇄 주입용 Restore 뒤 다시 실제 파일 저장을 거치며, 부분 모듈 왕복만을 공통 저장으로 세지 않는다. selfcarrier/fee0 작은 fixture의 범위다.
+기존 helper·fixture·제품/HTML 바이트는 c6와 같으며, 모든 기존 보조 앵커를 변경 없는 refresh helper로 다시 확인했다.
 
-[대조 결과](invariant-final-c6e4704/execution-verification.json)는313개 실제 이름 전부와148개 증인 연결의 통과를 확인한다.
-이는 24개 문장의 모든 조합·정본111개 전체·전체 T05·native·성능/성장·안정성·APK 릴리스 완료를 뜻하지 않는다.
-[D02/T01~T03 조항별 감사 초안](acceptance-functional-c6e4704.md)은 공개 세계/module/host 경계와 자체 수용 권고·선행 마감을 구분한다.
-특히 **D02는 알려진 실제10,000명 저장 반례(#191)의 수정후 실제 큰 본문 저장/읽기 성공 전까지 수용 권고를 보류**한다.
+## 저장 수용 권고와 남은 최종 판정
 
-기존 [9704 원본/검증](invariant-final-9704e95/README.md)·[9704 JSON 맵 사본](invariant-final-9704e95/map.snapshot.json)·
-[Markdown 사본](invariant-final-9704e95/map.snapshot.md)·[당시 SourceReview](invariant-execution-source-review-9704e95.json)를 보존한다.
-맵 사본은 이전 bytes 그대로이며 원래 상대 링크는 [당시 경로](https://github.com/hddy774/project-hora/blob/d795f7027ac078ba729ca1881f101a7e96e3e5e1/docs/evidence/0.2.1/invariant-execution-map.md)를 따른다.
-그 앞의 [926 원본](invariant-final-9263756/README.md)과308/143 맵 사본·과거237/238/305/308 실패도 수정하지 않았다.
-[입력 거절 확인](invariant-final-c6e4704/negative-input-checks.json)은 이전309개 전체(새4이름 누락), 실패305/308, 선택74개 보고서를 현재 전체 근거로 거절한다.
-`--executed-source`는 호출자 선언이다. 같은 테스트의 다른 제품 실행은 원문 hash·실행 고지·4DLL·제품 지문까지 함께 대조해야 한다.
+[D02/T01~T03 감사](acceptance-functional-af91fb0.md)는 자체 기능 조항과 원장의 선행 마감을 분리한다.
+[c6 실제 네 규모 기준선](final-performance/README.md)은 2·100·1,000·10,000명의 12개월 진행과 저장/읽기·상태 hash 확인을 완료했다.
+10,000명은 기본 codec에서 398,228,447B를 저장/읽었고, 새 소스와 runtime 제품 바이트는 동일하다.
+이 이전 소스 실측과 새 운송 중 파일 기능 근거를 함께 제시하되 **af91 최종 지문의 인구 실측은 진행 중이며 이 맵에서 완료로 세지 않는다**.
+따라서 모든24INV 조합·정본111개 전체·최종 T04/T05/장기 안정성·성장/행동·플랫폼·릴리스 완료는 별도다.
+작은 내부 임계값 검사는 실제 대량 저장 자체가 아니며, 대량 보고서의 상태 hash/저장 크기를 실제 저장 배열의 SHA/동일성으로 바꾸지 않는다.
 
-초기 감독 래퍼가 지문 명령의 문자열을 JSON으로 읽으려던 [오류 원문](invariant-final-c6e4704/supervisor-launch-failure.original.log)은 별도로 보존했다.
-게임 빌드/성공 run 시작 전의 래퍼 실패이며, 이를 게임 기능 실패나 조용히 생략한 재실행으로 바꾸지 않는다.
-기존926 성장/AI의 중단·재시작/복구는 그 실행의 원문으로 판단하며 이번313개 통과로 덮어 쓰지 않는다.
+## 과거 원본과 거절 경계
 
-## 소스 검토와 실제 경계
+이전 [c6의313 원본/provenance](invariant-final-c6e4704/README.md)·[313 JSON 맵 사본](invariant-final-c6e4704/map.snapshot.json)·
+[Markdown 사본](invariant-final-c6e4704/map.snapshot.md)·[당시 SourceReview](invariant-execution-source-review-c6e4704.json)·[당시 감사](acceptance-functional-c6e4704.md)는 수정하지 않았다.
+사본은 이전 map hash와 byte 동일하며 Markdown 원래 상대 링크는 [당시 경로](https://github.com/hddy774/project-hora/blob/c527c2a47079abc6ba0cc3415af9658371d17efb/docs/evidence/0.2.1/invariant-execution-map.md)를 따른다.
+더 이전 [9704](invariant-final-9704e95/README.md)·[926](invariant-final-9263756/README.md)·[305/308 실패](inventory-oracle-final-integration/whole-functional-068ecef.original.json)와
+[926 대용량 저장 실패](baseline-9263756-save-failure/README.md)도 당시 source/실패로 보존한다.
+[거절 확인](invariant-final-af91fb0/negative-input-checks.json)은 이전313·선택1·합성 미등록315·실패305/308을 현재 전체 근거로 거절한다.
+`--executed-source`는 호출자 선언이므로 원문 SHA·실제 run 기록·DLL/제품 지문을 함께 확인해야 한다.
 
-[이번 SourceReview](invariant-execution-source-review-c6e4704.json)는9704→c6의 변경4경로를 제품 C#2·Hosting csproj1·검사 C#1로 구분한다.
-상태Schema1/DomainSchema2·기존 작은 schema2 JSON 봉투 bytes/읽기를 유지하고,128MiB초과 canonical 본문은64바이트 헤더의 이진봉투3/rawUTF8를 사용한다.
-논리 checksum 입력(sequence+LF+payload)·명령/RNG·복원 권위 검증과 공개 원자파일 경로/원본 보존을 유지한다. JSON schema3이나 이전 개발 상태를 새로 허용하지 않는다.
-
-새4개는 작은 실제 세계의 legacy 고정 원본·양형식 경계/public possess 재전송·2개월/RNG(**public_world**2개), 손상 byte/codec 거부(**module**1개),
-실제 혼합형식 원자파일/pending/backup/손상 원문 보존(**host**1개)다. 내부 임계값 seam으로 같은 생산 분기를 실행하며 실제128MiB초과/10,000명 저장 성공은 별도다.
-[선택74/74·독립 세 복사 경로1/1](large-save-envelope-c6e4704/README.md)은 원저자의 실제 선택 근거이며 전체313개와 구분한다.
-
-기존 물리 사본 module·개인 key index·성년 사전을 읽지 않는 context caller·H04/EX·재고 strict/JSON15/typed15 검토 범위는 유지한다.
-`index.html`/`index.compat.html`은9704와 byte 동일함을 별도 기록했다. HTML은 C# 지문 밖·제품 지문 안의 범위다.
-[이전 SourceReview](invariant-execution-source-review-9704e95.json)를 잇되 C# 조회·API24 probe workflow를 UI 클릭/native 통과로 확대하지 않는다.
-
-## 검증과 다음 소스 갱신
+## 읽기 전용 검증과 다음 갱신
 
 ```sh
-python3 scripts/validate-v021-invariant-execution.py
+python3 scripts/validate-v021-invariant-execution.py \
+  --report docs/evidence/0.2.1/invariant-final-af91fb0/functional.json \
+  --executed-source af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a \
+  --output /workspace/scratch/invariant-final-recheck.json
 python3 scripts/validate-v021-invariant-execution.py --self-test
 python3 scripts/refresh-v021-invariant-execution.py --self-test
-python3 scripts/validate-v021-invariant-execution.py \
-  --report docs/evidence/0.2.1/invariant-final-c6e4704/functional.json \
-  --executed-source c6e470458ecefe055d98f89120f08c40c0c0660d \
-  --output /workspace/scratch/invariant-final-recheck.json
 ```
 
-[검증기 자체 시험](invariant-final-c6e4704/validator-self-test.json)은 합성 정상1개와 잘못된 보고서9개·잘못된 맵8개·중복JSON 거절을 검사한다.
-[갱신 helper 자체 시험](invariant-final-c6e4704/refresh-self-test.json)은 미검토 갱신9개를 거절하며 링크 외 의미를 자동 변경하지 않는다.
-이 합성 자체 시험은 제품 기능 통과로 세지 않는다.
-검증기는 선택·실패·빈 결과·누락/중복/미등록 이름·집계/bool 불일치·통과 행의 오류·없는 앵커와 테스트 지문 변경을 거절한다.
-전체 `.cs/.csproj` 지문으로 이름이 같아도 검사 본문·fixture·helper가 바뀌면 다시 검토한다.
-
-다음 소스가 바뀌면 해당 소스를 checkout한 뒤 아래 계획을 만들고 실제 변경 본문을 읽는다.
-
-```sh
-python3 scripts/refresh-v021-invariant-execution.py \
-  --source FINAL_SOURCE_SHA --plan /workspace/scratch/invariant-review-next.json
-```
-
-새/삭제 이름과 관련 INV·실제 경계·증인/보조 앵커는 수동 갱신한다. 새 제품 경로를 `source_review_areas`에 분류하고,
-이번 변경 경로와 정확히 같은 `reviewed_paths`, 대상40자리 SHA, `scenario_bindings_reviewed:true`, 구체적 `review_note`를 기록한다.
-준비한 검토 파일로 `--apply --reviewed <검토JSON>`을 실행하면 helper는 기존 연결의 출처·행·지문과 Markdown 링크만 갱신한다.
-미검토/다른 SHA·누락/중복 경로·새/삭제 이름·미분류 제품 소스·없는 앵커나 대상과 다른 작업트리 제품/검사 소스는 거절한다.
-최신 전체 보고서는 별도 실제 실행 원본과 출처로 다시 대조하며 이전 원문을 수정하지 않는다. 제품-only 변경은 별도 제품 지문/실행 provenance도 갱신한다.
-
-
+이번 문서 작업은 원본 읽기·기존 Python 검증만 수행했고 C# 빌드/기능 runner·측정기 실행은0이다.
+검증기/refresh helper·제품·원장·readiness·Notion·제안 상태는 바꾸지 않았다. Python 합성 검증은 제품 C# 통과 수에 더하지 않는다.
+다음 소스에서 실제 이름/fixture/helper/제품이 바뀌면 기존 helper로 변경 계획을 만들고 관련 경계·증인·앵커를 수동 검토한 뒤 같은 출처의 전체 원문으로 대조한다.
 
 ## 실제 검사 증인
 
 경계는 `public_world`(GameWorld/실제 명령·월 정산·조회), `module`(순수/부분 도메인·byte codec), `module_and_world`(별도 모듈 비교와 실제 세계),
 `mechanics`(수식), `host`(파일/세션/별도 CLI)다. `public_world` 자체가 모든 fixture 구성을 공개 명령으로 만들었다는 뜻은 아니다.
-각 증인의 실제 주장과 한계를 따른다. 전체313개 이름의 관련 INV와 경계는 JSON에 있다.
+각 증인의 실제 주장과 한계를 따른다. 전체314개 이름의 관련 INV와 경계는 JSON에 있다.
 
 ### INV-001 · 도메인별 단일 권위와 안정 신원
 
@@ -141,6 +116,7 @@ python3 scripts/refresh-v021-invariant-execution.py \
 | [INV-004 대용량 저장: UTF8 양형식·경계·순번·명령 재전송·RNG 저장 속행](../../../tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs#L38) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 작은 실제 세계의 내부 임계값 seam으로 양형식·정확한 길이 경계·UTF8 본문/논리 체크섬·순번7/상한·음수 거부를 대조한다. 공개 possess 재전송과2개월 속행의 hash/RNG·최종 작은 저장 bytes가 같으며 실제128MiB 초과/대규모 성공 근거는 아니다. |
 | [INV-004 대용량 저장: prefix·버전·길이·순번·체크섬·잘림·후행 자료 엄밀 거부](../../../tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs#L72) | `module` / 거절/부정 | 작은 실제 세계에서 만든 봉투의 byte/codec 부정 검사다. prefix·버전·길이·순번·체크섬·본문·잘림·후행 자료와 올바른 체크섬의 잘못된 JSON을 거절한다. 세계의 실제 명령/시간 진행이나 대규모 저장은 실행하지 않는다. |
 | [INV-004 대용량 저장: 실제 원자파일 혼합형식·pending 우선순번·backup·손상 원문 보존](../../../tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs#L101) | `host` / 정상 결과, 거절/부정, 저장/재개 | 실제 임시파일 host에서 내부 임계값으로 schema2→이진3→schema2·순번·완전 pending 우선·작은 backup 복구·손상 원문 보존을 검사한다. 다음 순번 overflow 실패가 유효 primary/pending/backup bytes를 덮지 않으며 OS 강제종료/전원상실·실제10,000명 재실측은 아니다. |
+| [INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패](../../../tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs#L7) | `host` + `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 공개 운송 중 열린 계약과 봉쇄 복귀 계약을 JSON2/public SaveAtomic 및 작은 임계값 binary3의 실제 파일로 각각 저장/Load한다. owner·운반자 원위치·예약·due·순번/RNG/ID/fullhash와 저장후 배송/실패를 비교한다. selfcarrier/fee0 작은fixture이며 실제대량/제삼자수수료/전원상실 실험은 아니다. |
 
 범위: 열거한 도메인/호스트 저장·손상·중단 복구를 검사한다. 실제 OS 강제 종료·Android 재실행 증거는 별도 플랫폼 검증이다.
 
@@ -163,6 +139,7 @@ python3 scripts/refresh-v021-invariant-execution.py \
 | [inventory projection: mutable 참조·재사용·예외·두 번째 처리 및 소비 후 실패의 원자성](../../../tests/Chronicles.Game.Tests/Features/InventoryProjectionScenarios.cs#L182) | `module` / 정상 결과, 거절/부정 | 부분 후보 소비/예약 후 인계가 Person 동일성과 중첩 참조 격리를 유지한다. 두번째 처리·소비 후 실패·예외·다른세계 인계/재사용이 원본·실물·ID·원장을 유출하지 않는다. |
 | [inventory typed copy reference: 실제 후보 JSON 형태·ordinal·검증·원본 격리 일치](../../../tests/Chronicles.Game.Tests/Features/InventoryTypedSnapshotScenarios.cs#L193) | `module` / 정상 결과, 거절/부정 | 부분 typed 후보가 JSON 형태/지문/ordinal과 같고 원본 참조를 노출하지 않는다. 수량0/allocator stale/음수 돈의 기존 검증 오류도 같으며 인계 전 원본은 불변이다. |
 | [inventory typed integration: opaque 전이·영수증·재인계·실패와 동일15필드 stale 계약](../../../tests/Chronicles.Game.Tests/Features/InventoryTypedIntegrationScenarios.cs#L40) | `module` / 정상 결과, 거절/부정 | 부분 JSON/typed 후보의 동일15 stale/opaque 전이·영수증·예약/생산/소비/한번인계를 비교한다. 두번째 처리 실패는 allocator/실물/원장을 유출하지 않는다. Clone을 공통 저장으로 세지 않는다. |
+| [INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패](../../../tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs#L7) | `host` + `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 원본/복원본 모두 같은 실제 운송 명령을 운송중과종결후 재전송해 hash불변과같은응답을 확인한다. 배송/봉쇄실패 정산event가한번이고 escrow0·예약해제가 같다. 모든동시명령/위탁당사자조합을 전수탐색한것은 아니다. |
 
 범위: 등록한 명령/원인 키·취소·동시 선점의 실제 순서다. 가능한 모든 같은 tick 조합을 전수 탐색했다는 의미는 아니다.
 
@@ -181,6 +158,7 @@ python3 scripts/refresh-v021-invariant-execution.py \
 | [inventory typed copy transcript: 현재 JSON 후보와 실제 예약·생산·소비·장비·거부·재전송 연결](../../../tests/Chronicles.Game.Tests/Features/InventoryTypedSnapshotScenarios.cs#L223) | `module_and_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 부분 JSON/typed 후보의 예약·소비·생산·장비·거절/재전송 응답과 상태를 비교하고 원본에는 인계하지 않는다. 별도 실제 공개 수동 전사/저장을 호출하며 그 호출은 typed 기본 채택 증거가 아니다. |
 | [inventory typed integration: 실제 typed factory를 통과한 두 공개 전체 transcript·저장 속행 일치](../../../tests/Chronicles.Game.Tests/Features/InventoryTypedIntegrationScenarios.cs#L5) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 명시 opt-in typed15로 두 독립 실제 세계 전사를 실행해 같은 소스 strict 고정 기준과 명령·실물·저장 결과를 검사한다. 일반 앱의 typed 채택/성능 통과를 뜻하지 않는다. |
 | [inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등](../../../tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs#L3) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 두 실제 세계를 strict/JSON15/typed15로 각각 독립 생성해 선보존 같은 소스 고정값·실제 다른 factory counter·전체 Rows·실제 저장 bytes를 대조한다. 옛751 해시 보존/typed 기본 채택은 주장하지 않는다. |
+| [INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패](../../../tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs#L7) | `host` + `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 같은 공개 입력의 원본/복원본을 같은 운송 due까지 진행해 전체hash/RNG를 비교하고 JSON2/이진3 독립실행 최종hash도 대조한다. 실제 장치/대량 성능이 아닌 작은세계 정수월 경계다. |
 
 범위: 현재 C# 원본/실제 hot columns·기한 큐·scalar/Vector 경계의 작은 명령·월별·저장·문화권 재현이다. 실제 등록의 기능 비교와 최종 규모별 시간/할당 실측을 구분하며 병렬 worker·Unity·네이티브 실행으로 확대하지 않는다.
 
@@ -313,6 +291,7 @@ python3 scripts/refresh-v021-invariant-execution.py \
 | [ecology recovery: 실제 전량 예약 실패 뒤 유료 식량 재관측·알려진 이동·저장·제어 경계](../../../tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs#L58) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성, 조회 순수성 | 타인의 실제 작업이 식량 전량을 예약한 경계에서 AI는 거절을 짧게 기억하고 한 달/식량 비용의 재관측 후 알려진 인접지로 움직인다. 제어 중 인물에는 회복AI를 적용하지 않고 무료 식량/영구 고갈을 만들지 않는다. |
 | [inventory source observation: 공개 food 선택은 정확한 현지 원천을 실제 비용·한 달·저장 재개로 관측](../../../tests/Chronicles.Game.Tests/Features/InventorySourceObservationScenarios.cs#L18) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 정확한 현지 food 원천을 식량1/한달을 지불해 관측하며 완료 전 개인 정보는 없다. 저장 재개·실제 잔량·중복 무소비와 알려진 원천의 유료 재관측을 검사한다. |
 | [inventory validation boundary: 단일 노동·인접·겹침·시설 용량과 선행 invalid 오류를 보존](../../../tests/Chronicles.Game.Tests/Features/InventoryValidationBoundaryScenarios.cs#L24) | `module` / 정상 결과, 거절/부정 | 부분 노동 원장의 단일/인접/겹침·시설 capacity/불일치·long 끝 경계에서 기존 거절 우선순위와 원본 불변을 검사한다. 모든 interval 오류가 group 용량 오류보다 먼저다. |
+| [INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패](../../../tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs#L7) | `host` + `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 운송중 실제 asset/labor예약ID·active·운반자/custodian·due와같은실물소유를 파일왕복전후 대조한다. 실제배송완료와봉쇄실패가원위치/예약해제를보존하며부분원장만의왕복으로확대하지 않는다. |
 
 범위: 실제 교사/학생·돌봄/수행·제작·정책·전투의 공통 행동/예약과 취소 경계다. UI 계획 초안은 실제 수락/예약으로 세지 않는다.
 

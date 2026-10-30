@@ -1,0 +1,1448 @@
+{
+  "review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "89d581d6ad68813c378f495c208c5ee8e8155cad",
+    "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "test_sources_sha256": "67f8ada6b3dbf90e7a4857ac788f693cf4e39fe11d3d3cc260b597d11262ba28",
+    "actual_scenarios": 308,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationQueries.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Ecology/EcologyPlanner.cs",
+        "invariants": [
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "정의별 개인 원천 관측/미상과 실제 유료 관측·채집·알려진 이동 선택; 총원천값을 식량 실재/고갈로 추정하지 않음"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Inventory/InventoryOwnedSnapshotCopy.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "소비형 후보 인계/참조·실패·오류 순서·actualPerson15 읽기집합/전체strict·미사용 변화/관측보존, JSON15기본과typed opt-in 복사·실물/노동 보존"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Inventory/InventoryOwnedTransaction.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "소비형 후보 인계/참조·실패·오류 순서·actualPerson15 읽기집합/전체strict·미사용 변화/관측보존, JSON15기본과typed opt-in 복사·실물/노동 보존"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Inventory/InventoryPersonProjection.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "소비형 후보 인계/참조·실패·오류 순서·actualPerson15 읽기집합/전체strict·미사용 변화/관측보존, JSON15기본과typed opt-in 복사·실물/노동 보존"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Inventory/InventoryValidation.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "소비형 후보 인계/참조·실패·오류 순서·actualPerson15 읽기집합/전체strict·미사용 변화/관측보존, JSON15기본과typed opt-in 복사·실물/노동 보존"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Laws.cs",
+        "invariants": [
+          "INV-003",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "ai.ecologyFailureMonths 중앙 잠정값·범위/단위/기본·저장revision과 관측 전체수명 상한. 사용자 확정 생식정책 변경과 분리"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Queries.cs",
+        "invariants": [
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-010",
+          "INV-015",
+          "INV-016",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "권한을 검색/집계/페이지보다 먼저 적용·개인 context·누출/무상 생성·반환값 분리"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.Actions.cs",
+        "invariants": [
+          "INV-002",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-008",
+          "INV-010",
+          "INV-017",
+          "INV-021",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "행동 한 개·기한·실제 공간/노동, 자기/부양 식량 law target·urgent경계, Qi-only/entry source 존재 caller와 개인 학습 계획 연결"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-013",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "정본 수행 전이·실제 원천/준비조건·entry/Qi 자기 evidence 공유 선택·실제 거절 typed feedback/재학습·동결 지식과 공통 시작/완료/저장"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.CultivationPlanning.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-013",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "정본 수행 전이·실제 원천/준비조건·entry/Qi 자기 evidence 공유 선택·실제 거절 typed feedback/재학습·동결 지식과 공통 시작/완료/저장"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.EcologyBridge.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 자기 비축/부양과 유료 관측·재고/권한/실패 회복·분할/출품 원자 후보; unlearned/new source/무료정보·성장 claim과 분리"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.EcologyRecovery.cs",
+        "invariants": [
+          "INV-002",
+          "INV-003",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 부양수×법칙 식량수요/비축, 거절 원천·기간·인지예산/퇴출, 개인 관측·유료 비용·농사 출처/입력·알려진 이동과 실제 공통 어댑터"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.IntelligentPlanning.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-017",
+          "INV-021",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "개인 request 상태/claim/revision·정책 최소이해까지 실제 재전수; 접근 가능한 교본 독해/정정과 전수대기·영수증으로만 재계획"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.InventoryBridge.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-008",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "공개 명령·같은Person/실물·노동 인계와 paid source 정의선택; candidate/Execute mode 전파·Restore/Decode 기본 모드/diagnostic 비저장 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.InventoryProjection.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-008",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "공개 명령·같은Person/실물·노동 인계와 paid source 정의선택; candidate/Execute mode 전파·Restore/Decode 기본 모드/diagnostic 비저장 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-017",
+          "INV-018",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "개인 chapter1 최신revision·mastery/source 조회를 기존 권위 key index와 연결; 같은월 Save publication·외부 snapshot 참조변경 복원·격리/권한·실제노동 경계. ownership/월말지연 변경없음"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.Planning.cs",
+        "invariants": [
+          "INV-006",
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "개인 지식·유한 보유 잉여/공개출품·실제 공간·법칙 비축·trade fallback 실제방문 부과·cultivation own-source score"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PoliticsBridge.cs",
+        "invariants": [
+          "INV-006",
+          "INV-017",
+          "INV-019",
+          "INV-020",
+          "INV-023"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "성년이 필요한 정치 context는 기본true 유지; 성년을 읽지 않는 수행Site 사용권 context만 false로 구성. CanUse 권한함수·실물/사용권·비인간 성년 계약 유지"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.cs",
+        "invariants": [
+          "INV-001",
+          "INV-003",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-011",
+          "INV-017",
+          "INV-021"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "공개 dispatch·고정 월 순서·RNG·정산/인계·실제 인구"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/InventoryPersonReadGuard.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존"
+        ],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다",
+          "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다",
+          "INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다",
+          "INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다",
+          "INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006 입문 준비 조회: 토납과 감응을 분리하고 실제 준비·개시 공급과 저장을 유지한다",
+          "INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수",
+          "INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다",
+          "INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다",
+          "INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다",
+          "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다",
+          "INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다",
+          "INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다",
+          "INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다",
+          "INV-009 입문 준비 조회: 미관측 현재 공급·사용권 변화는 개인 감응 선택을 바꾸지 않는다",
+          "INV-009/010 입문 준비 조회: 실제 entry 전수만 감응 선택을 열고 Qi 공법은 만들지 않는다"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentEcologyTradeIntegrationScenario.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-008",
+          "INV-017",
+          "INV-018",
+          "INV-021"
+        ],
+        "registered_scenarios": [
+          "INV-008/017/018 agent planning: 실제 정책 비축을 넘는 식량을 일반 거래 목표에서 출품하고 보유 실물만 인도한다"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-008/017/018 agent planning: 실제 정책 비축을 넘는 식량을 일반 거래 목표에서 출품하고 보유 실물만 인도한다"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash",
+          "INV-004/008/017/018 agent planning: unknown source discovery then real extraction and production complete a saved goal",
+          "INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save",
+          "INV-006/008 agent planning: all fourteen axes affect scored goals and actual mood and completed habits change choice",
+          "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+          "INV-006/008/021 agent planning: cached hostility chooses a known retreat and baseline founders are never forced into fatal conflict",
+          "INV-008/017/018 agent planning: production surplus becomes a real public offer and another actor buys from its own need",
+          "INV-008/017/024 agent planning: an advanced authoritative recipe uses learned method and discovered actual family resources",
+          "INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching",
+          "INV-008/018 agent planning: cooperation repays an actual personal obligation without inventing another person's intent",
+          "INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash",
+          "INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save",
+          "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+          "INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/AgentTradeBudgetScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-017",
+          "INV-018",
+          "INV-021"
+        ],
+        "registered_scenarios": [
+          "INV-004/006/017/018/021 AI 거래 예산: 마지막 방문 뒤 생계 출품을 유예하고 충분한 예산에서만 실제 거래·환전을 선택한다"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006/017/018/021 AI 거래 예산: 마지막 방문 뒤 생계 출품을 유예하고 충분한 예산에서만 실제 거래·환전을 선택한다"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/CultivationPreparationEvidenceScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-015",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수",
+          "INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다",
+          "INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다",
+          "INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다",
+          "INV-004/006/023 감응 출처 선택: 1% 실습·전환·상위 경지 계약과 동결 출처 유지"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수",
+          "INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다",
+          "INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다",
+          "INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다",
+          "INV-004/006/023 감응 출처 선택: 1% 실습·전환·상위 경지 계약과 동결 출처 유지"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs",
+        "invariants": [
+          "INV-002",
+          "INV-003",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "ecology failure law: 실제 예약 거부 기억의 법칙별 재확인 기간·관측 수명 상한·저장 revision",
+          "ecology recovery: 믿음 예산1의 실제 채집 예약 거부와 즉시 퇴출은 무예외·권위·저장 결정론 유지",
+          "ecology recovery: 식량 관측 전 숨은 잔량은 선택에 영향 없고 비용 없는 조사·총자원 추정 금지",
+          "ecology recovery: 실제 배운 농사·관측한 물과 종자·유료 노동으로 식량 생산하고 저장된 비축법칙 적용",
+          "ecology recovery: 실제 전량 예약 실패 뒤 유료 식량 재관측·알려진 이동·저장·제어 경계"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "V021-M02/O04 ecology kernel: time and population alone do not unlock markets, workshops, settlements or capacity",
+          "V021-O01 ecology kernel: actual extraction, finite depletion and renewable recovery reconcile to physical source receipts",
+          "ecology failure law: 실제 예약 거부 기억의 법칙별 재확인 기간·관측 수명 상한·저장 revision",
+          "ecology recovery: 믿음 예산1의 실제 채집 예약 거부와 즉시 퇴출은 무예외·권위·저장 결정론 유지",
+          "ecology recovery: 식량 관측 전 숨은 잔량은 선택에 영향 없고 비용 없는 조사·총자원 추정 금지",
+          "ecology recovery: 실제 배운 농사·관측한 물과 종자·유료 노동으로 식량 생산하고 저장된 비축법칙 적용",
+          "ecology recovery: 실제 전량 예약 실패 뒤 유료 식량 재관측·알려진 이동·저장·제어 경계"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/EntryPreparationQueryScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-010",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "INV-004/006 입문 준비 조회: 토납과 감응을 분리하고 실제 준비·개시 공급과 저장을 유지한다",
+          "INV-009 입문 준비 조회: 미관측 현재 공급·사용권 변화는 개인 감응 선택을 바꾸지 않는다",
+          "INV-009/010 입문 준비 조회: 실제 entry 전수만 감응 선택을 열고 Qi 공법은 만들지 않는다"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006 입문 준비 조회: 토납과 감응을 분리하고 실제 준비·개시 공급과 저장을 유지한다",
+          "INV-009 입문 준비 조회: 미관측 현재 공급·사용권 변화는 개인 감응 선택을 바꾸지 않는다",
+          "INV-009/010 입문 준비 조회: 실제 entry 전수만 감응 선택을 열고 Qi 공법은 만들지 않는다"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/GrowthSensitivityContractScenarios.cs",
+        "invariants": [
+          "INV-003",
+          "INV-005",
+          "INV-006",
+          "INV-022"
+        ],
+        "registered_scenarios": [
+          "T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes",
+          "T04 sensitivity contract: completed nine-cohort baseline, physical conditions, hashes and aggregate originals; no growth",
+          "T04 sensitivity contract: fixed policies, law bounds, source/build identity and strict plan JSON; no measurement",
+          "T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims",
+          "T04 sensitivity contract: two-case partitions remain partial, only six complete, duplicate/CLI/output overwrite rejected"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes",
+          "T04 sensitivity contract: completed nine-cohort baseline, physical conditions, hashes and aggregate originals; no growth",
+          "T04 sensitivity contract: fixed policies, law bounds, source/build identity and strict plan JSON; no measurement",
+          "T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims",
+          "T04 sensitivity contract: two-case partitions remain partial, only six complete, duplicate/CLI/output overwrite rejected"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [
+          "inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-008",
+          "INV-015",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-021"
+        ],
+        "registered_scenarios": [
+          "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존",
+          "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등",
+          "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존",
+          "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존",
+          "inventory projection: 실제 공개 명령·생계 AI가 기본 factory를 거쳐 기존 두 전체 transcript와 저장 속행 일치",
+          "inventory typed copy transcript: 현재 JSON 후보와 실제 예약·생산·소비·장비·거부·재전송 연결",
+          "inventory typed integration: 실제 typed factory를 통과한 두 공개 전체 transcript·저장 속행 일치"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryProjectionScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-008",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [
+          "inventory projection: 15개 입력별 stale와 전체 Person strict 경계·미사용 변화 보존",
+          "inventory projection: 70개 schema·실제 IL reader와 컴파일러 람다의 금지 읽기 자기검출",
+          "inventory projection: Create·Restore·Decode 기본 투영과 strict reference의 실제 작업·저장 재개 동등성",
+          "inventory projection: mutable 참조·재사용·예외·두 번째 처리 및 소비 후 실패의 원자성",
+          "inventory projection: 모든 미사용 필드의 실제 명령 비간섭과 개인 원천 관측·물리 ledger 보존",
+          "inventory projection: 실제 공개 명령·생계 AI가 기본 factory를 거쳐 기존 두 전체 transcript와 저장 속행 일치"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory projection: 15개 입력별 stale와 전체 Person strict 경계·미사용 변화 보존",
+          "inventory projection: 70개 schema·실제 IL reader와 컴파일러 람다의 금지 읽기 자기검출",
+          "inventory projection: Create·Restore·Decode 기본 투영과 strict reference의 실제 작업·저장 재개 동등성",
+          "inventory projection: mutable 참조·재사용·예외·두 번째 처리 및 소비 후 실패의 원자성",
+          "inventory projection: 모든 미사용 필드의 실제 명령 비간섭과 개인 원천 관측·물리 ledger 보존",
+          "inventory projection: 실제 공개 명령·생계 AI가 기본 factory를 거쳐 기존 두 전체 transcript와 저장 속행 일치"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs",
+        "invariants": [
+          "INV-006",
+          "INV-008"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등",
+          "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존",
+          "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존",
+          "inventory projection: 실제 공개 명령·생계 AI가 기본 factory를 거쳐 기존 두 전체 transcript와 저장 속행 일치",
+          "inventory typed copy transcript: 현재 JSON 후보와 실제 예약·생산·소비·장비·거부·재전송 연결",
+          "inventory typed integration: 실제 typed factory를 통과한 두 공개 전체 transcript·저장 속행 일치"
+        ],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음."
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventorySourceObservationScenarios.cs",
+        "invariants": [
+          "INV-002",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-008",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [
+          "inventory source observation: 공개 food 선택은 정확한 현지 원천을 실제 비용·한 달·저장 재개로 관측",
+          "inventory source observation: 빈 Data는 기존 첫 미관측 선택을 유지하고 명시 정의는 fallback하지 않음",
+          "inventory source observation: 현지 정의 부재·실물 비용 부족은 원천·돈·시간·ID·관측 무변화 거부"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory source observation: 공개 food 선택은 정확한 현지 원천을 실제 비용·한 달·저장 재개로 관측",
+          "inventory source observation: 빈 Data는 기존 첫 미관측 선택을 유지하고 명시 정의는 fallback하지 않음",
+          "inventory source observation: 현지 정의 부재·실물 비용 부족은 원천·돈·시간·ID·관측 무변화 거부"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventorySynchronizationScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-016",
+          "INV-017",
+          "INV-021"
+        ],
+        "registered_scenarios": [
+          "inventory sync: 공개 custom comparer와 내부 Ordinal 영수증의 대소문자 구분·재전송·충돌 보존",
+          "inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존",
+          "inventory sync: 중복 ID·교차 namespace·잘못된 프로필·메타데이터의 기존 초기 거부 우선순위 보존"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory sync: 공개 custom comparer와 내부 Ordinal 영수증의 대소문자 구분·재전송·충돌 보존",
+          "inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존",
+          "inventory sync: 중복 ID·교차 namespace·잘못된 프로필·메타데이터의 기존 초기 거부 우선순위 보존"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryTypedIntegrationScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [
+          "inventory typed integration: instance 선택·Execute 전파·실제 counter와 Restore 기본 JSON 보존",
+          "inventory typed integration: opaque 전이·영수증·재인계·실패와 동일15필드 stale 계약",
+          "inventory typed integration: 실제 typed factory를 통과한 두 공개 전체 transcript·저장 속행 일치"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory typed integration: instance 선택·Execute 전파·실제 counter와 Restore 기본 JSON 보존",
+          "inventory typed integration: opaque 전이·영수증·재인계·실패와 동일15필드 stale 계약",
+          "inventory typed integration: 실제 typed factory를 통과한 두 공개 전체 transcript·저장 속행 일치"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryTypedSnapshotScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [
+          "inventory typed copy fields: 전 원장 sentinel·현재 JSON Person defaults·모든 중첩 참조 격리",
+          "inventory typed copy reference: 실제 후보 JSON 형태·ordinal·검증·원본 격리 일치",
+          "inventory typed copy schema: 도달한 모든 필드와 명시 Person15 footprint 누락 거부",
+          "inventory typed copy transcript: 현재 JSON 후보와 실제 예약·생산·소비·장비·거부·재전송 연결"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory typed copy fields: 전 원장 sentinel·현재 JSON Person defaults·모든 중첩 참조 격리",
+          "inventory typed copy reference: 실제 후보 JSON 형태·ordinal·검증·원본 격리 일치",
+          "inventory typed copy schema: 도달한 모든 필드와 명시 Person15 footprint 누락 거부",
+          "inventory typed copy transcript: 현재 JSON 후보와 실제 예약·생산·소비·장비·거부·재전송 연결"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryValidationBoundaryScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-017"
+        ],
+        "registered_scenarios": [
+          "inventory validation boundary: 단일 노동·인접·겹침·시설 용량과 선행 invalid 오류를 보존",
+          "inventory validation boundary: 빈 ID·양수·교차 중복·원래 수집 순서·최대 allocator 경계를 보존"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory validation boundary: 단일 노동·인접·겹침·시설 용량과 선행 invalid 오류를 보존",
+          "inventory validation boundary: 빈 ID·양수·교차 중복·원래 수집 순서·최대 allocator 경계를 보존"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/PeopleTeachingIntegrationScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-017",
+          "INV-021",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/GrowthScenarios.cs",
+        "invariants": [
+          "INV-003",
+          "INV-005",
+          "INV-006",
+          "INV-011",
+          "INV-012",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "명시 계측 opt-in/원형 source·요청부분vs9전체; 민감도 one-law·source/build/원본9·고정정책·기간검열·노동/flow/usedPolicy 계약. 합성계약과 실제계측결과 엄격분리"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/GrowthSensitivityContracts.cs",
+        "invariants": [
+          "INV-003",
+          "INV-005",
+          "INV-006",
+          "INV-011",
+          "INV-012",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "명시 계측 opt-in/원형 source·요청부분vs9전체; 민감도 one-law·source/build/원본9·고정정책·기간검열·노동/flow/usedPolicy 계약. 합성계약과 실제계측결과 엄격분리"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/GrowthSensitivityScenarios.cs",
+        "invariants": [
+          "INV-003",
+          "INV-005",
+          "INV-006",
+          "INV-011",
+          "INV-012",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "명시 계측 opt-in/원형 source·요청부분vs9전체; 민감도 one-law·source/build/원본9·고정정책·기간검열·노동/flow/usedPolicy 계약. 합성계약과 실제계측결과 엄격분리"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/PerformanceScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "측정/안정성 명시 진입점·source/fixture·논리 시간·보고서/중단 구분. 기능 이름 통과와 별도"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "invariants": [
+          "INV-001",
+          "INV-002",
+          "INV-003",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-010",
+          "INV-011",
+          "INV-012",
+          "INV-013",
+          "INV-014",
+          "INV-015",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-020",
+          "INV-021",
+          "INV-022",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "30경로·24재능·40특성·12장비·정의 조회 순수성",
+          "INV-001 슬롯 재사용·낡은 세대/사망 신원 거부",
+          "INV-001/002/011 정확한 창세·안정 신원·100지점",
+          "INV-003 기존 임신 법칙 revision 보존",
+          "INV-003 사용자 세 정책과 0 비활성",
+          "INV-004 손상 저장·중단 파일·백업 복원",
+          "INV-004/005/011/012 실제 출생·유전·단일 영혼·재전송",
+          "INV-004/012 불법 부모·신원 중복 저장 거부",
+          "INV-006 저장 왕복·호스트 문화권 독립",
+          "INV-006/007/004 시간 분할·조회/저장 무영향",
+          "INV-008 인지 예산 변경·명제/인물/지점 합계",
+          "INV-008 장소 ID와 인물 ID 충돌에서 사건 누출 없음",
+          "INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회",
+          "INV-010/021 빙의·AI 인계에서 기존 행동 보존",
+          "INV-011 양친 금단 바로 아래·같음",
+          "INV-012 혈연 허용·제한 프리셋",
+          "INV-013 혼멸·역사 최고 경지로 자격 우회 없음",
+          "INV-013/014 화신 대원만 경계·실제 사망·대기·출생",
+          "INV-015/024 폐품 점수와 기능 결손 분리",
+          "INV-016/017/018 실물 출품·거래·영석 보존",
+          "INV-017 경매 예치·낙찰 단일 정산",
+          "INV-017 제작 예약·취소·소비·저장",
+          "INV-018 물품 원장 없는 수량 복제 거부",
+          "INV-020 조직 금고·정책 예약·해산 역사",
+          "INV-023 원영 파단 후 취소 사망·앱 복원은 포기 아님"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-001 슬롯 재사용·낡은 세대/사망 신원 거부",
+          "INV-001/002/011 정확한 창세·안정 신원·100지점",
+          "INV-003 기존 임신 법칙 revision 보존",
+          "INV-006 저장 왕복·호스트 문화권 독립",
+          "INV-006/007/004 시간 분할·조회/저장 무영향",
+          "INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회",
+          "INV-010/021 빙의·AI 인계에서 기존 행동 보존",
+          "INV-013 혼멸·역사 최고 경지로 자격 우회 없음",
+          "INV-013/014 화신 대원만 경계·실제 사망·대기·출생",
+          "T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes"
+        ],
+        "review_focus": [
+          "실제 등록/RC13·filter/집계·명시 계측모드 dispatch, early sensitivity+report 입력보존; 작은 CLI 거절은 collector실행증거 아님"
+        ]
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "review_acknowledgement": {
+    "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "src/Chronicles.Game/Cultivation/CultivationQueries.cs",
+      "src/Chronicles.Game/Ecology/EcologyPlanner.cs",
+      "src/Chronicles.Game/Inventory/InventoryOwnedSnapshotCopy.cs",
+      "src/Chronicles.Game/Inventory/InventoryOwnedTransaction.cs",
+      "src/Chronicles.Game/Inventory/InventoryPersonProjection.cs",
+      "src/Chronicles.Game/Inventory/InventoryValidation.cs",
+      "src/Chronicles.Game/Laws.cs",
+      "src/Chronicles.Game/Queries.cs",
+      "src/Chronicles.Game/World.Actions.cs",
+      "src/Chronicles.Game/World.CultivationBridge.cs",
+      "src/Chronicles.Game/World.CultivationPlanning.cs",
+      "src/Chronicles.Game/World.EcologyBridge.cs",
+      "src/Chronicles.Game/World.EcologyRecovery.cs",
+      "src/Chronicles.Game/World.IntelligentPlanning.cs",
+      "src/Chronicles.Game/World.InventoryBridge.cs",
+      "src/Chronicles.Game/World.InventoryProjection.cs",
+      "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "src/Chronicles.Game/World.Planning.cs",
+      "src/Chronicles.Game/World.PoliticsBridge.cs",
+      "src/Chronicles.Game/World.cs",
+      "tests/Chronicles.Game.Tests/Experiments/InventoryPersonReadGuard.cs",
+      "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
+      "tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/AgentEcologyTradeIntegrationScenario.cs",
+      "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/AgentTradeBudgetScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/CultivationPreparationEvidenceScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/EntryPreparationQueryScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/GrowthSensitivityContractScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryProjectionScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs",
+      "tests/Chronicles.Game.Tests/Features/InventorySourceObservationScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventorySynchronizationScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryTypedIntegrationScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryTypedSnapshotScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryValidationBoundaryScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/PeopleTeachingIntegrationScenarios.cs",
+      "tests/Chronicles.Game.Tests/GrowthScenarios.cs",
+      "tests/Chronicles.Game.Tests/GrowthSensitivityContracts.cs",
+      "tests/Chronicles.Game.Tests/GrowthSensitivityScenarios.cs",
+      "tests/Chronicles.Game.Tests/PerformanceScenarios.cs",
+      "tests/Chronicles.Game.Tests/Program.cs"
+    ],
+    "review_note": "89d581d→9263756의46개C#경로와기존/신규308등록이름·143증인을읽었다. 새45이름(옛생계rename1포함)과역사/원천/권한·module/public_world/host·부정/저장/명령앵커를수동대조했다. CLI1·179의Sync/PeopleTeaching/EX05세회귀·183개인index/184성년context를재검토했고typed기본미채택/JSON유지를확인했다. HTML2는C#지문외별도출처범위다. 원장·Notion/제안상태·제품/CLI/scripts/C#변경0;맵은실행통과를저장하지 않는다. 최종실제whole결과는별도926원본/프로세스출처로확인한다."
+  },
+  "review_details": [
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "review_note": "entry/Qi 최신 실제 증거 자격과 정수 형성품질 selector를 공유. 동률Qi·부적격 거절·pure preflight/잠재·상위/전환/1%보통실습과 준비최소값 분리. 무료Qi기억/성공보장 없음.",
+      "sha256": "b1e36a663b66000da97cb5d0f0a613a35a5638f80f54e74815cd7f12fb5ff632"
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationQueries.cs",
+      "review_note": "entry/Qi 최신 실제 증거 자격과 정수 형성품질 selector를 공유. 동률Qi·부적격 거절·pure preflight/잠재·상위/전환/1%보통실습과 준비최소값 분리. 무료Qi기억/성공보장 없음.",
+      "sha256": "8b675be8b5c3c02c3c6591d42c3285ce6e84bf36fbb66c59e4da1c809adae6cb"
+    },
+    {
+      "path": "src/Chronicles.Game/Ecology/EcologyPlanner.cs",
+      "review_note": "식량별 실제 개인 관측 부재/잔량과 유료 exploreSource·채집·알려진 인접 이동만 선택. 총원천을 식량으로 가정하거나 무료 실패회복을 지급하지 않음.",
+      "sha256": "255a4d8e3cd9fddc5d0f2e58dd80bf9cc893c29c3e09be4230b3cc5a6c5d0917"
+    },
+    {
+      "path": "src/Chronicles.Game/Inventory/InventoryOwnedSnapshotCopy.cs",
+      "review_note": "공개 full/strict 계약을 유지하는 내부15필드 JSON투영과 명시typed복사 후보를 읽음. 전역원장/중첩참조·ordinal·stale/인계·검증오류순서/단일노동 경계 유지. typed기본 미채택.",
+      "sha256": "87ae5e7bd7972ae74c5c3803fd9fe0808ecc28f318741d15b78ce6e8f7c3bcc7"
+    },
+    {
+      "path": "src/Chronicles.Game/Inventory/InventoryOwnedTransaction.cs",
+      "review_note": "공개 full/strict 계약을 유지하는 내부15필드 JSON투영과 명시typed복사 후보를 읽음. 전역원장/중첩참조·ordinal·stale/인계·검증오류순서/단일노동 경계 유지. typed기본 미채택.",
+      "sha256": "f2199fe2f88a20057e31d65139f331643f4301be51c2035ffcf042daccd06c3e"
+    },
+    {
+      "path": "src/Chronicles.Game/Inventory/InventoryPersonProjection.cs",
+      "review_note": "공개 full/strict 계약을 유지하는 내부15필드 JSON투영과 명시typed복사 후보를 읽음. 전역원장/중첩참조·ordinal·stale/인계·검증오류순서/단일노동 경계 유지. typed기본 미채택.",
+      "sha256": "4a909e7bcbd91c60100ca41db6928a9dcfd64c53510e788173ed6e9e4b36b1dc"
+    },
+    {
+      "path": "src/Chronicles.Game/Inventory/InventoryValidation.cs",
+      "review_note": "공개 full/strict 계약을 유지하는 내부15필드 JSON투영과 명시typed복사 후보를 읽음. 전역원장/중첩참조·ordinal·stale/인계·검증오류순서/단일노동 경계 유지. typed기본 미채택.",
+      "sha256": "9b0b901a6052513111bd4f125ddea74df0fafcb3781cce47746970e485bb3d74"
+    },
+    {
+      "path": "src/Chronicles.Game/Laws.cs",
+      "review_note": "실패 재확인 ai.ecologyFailureMonths의 중앙 잠정3개월/범위1..1200/단위/원천 추가. 사용자 생식정책 불변이고 전체관측수명으로 상한. 113법칙에 따른 고정statehash 변경원인과 분리.",
+      "sha256": "d7aa91b8949733af520211699ca61e49d22221ef4461aa4f74825a715ce6adf6"
+    },
+    {
+      "path": "src/Chronicles.Game/Queries.cs",
+      "review_note": "개인 known-context Potential 경로만 표시하여 entry 감응 선택과 Qi운기 지식을 구분. 현장실제 preflight 후redaction을 하지 않으며 미관측공급/자리/권리/품질null 유지.",
+      "sha256": "a7cdedf18f72b6c8812cc26ced0a9d8da6af4335fe5aa442531f45311fafaa9c"
+    },
+    {
+      "path": "src/Chronicles.Game/World.Actions.cs",
+      "review_note": "부양식량12 고정치를 저장된 foodReserve/foodUse target으로 정합화. Mortal needsMethod는entry/Qi 자기 source존재와 일치하고 실제 학습계획을 요청. 건강/식량/돌봄 우선순위·공통 노동 불변.",
+      "sha256": "9621c9fda7a40aa019bbc82222600f651dd1bee98f985abfde1f9db9e068c284"
+    },
+    {
+      "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+      "review_note": "entry 기반 다음 준비 경로와 실패typed feedback·동결출처 연결. Site사용권 context만 includeMaturity:false로 구성하고 사용권함수는 불변. domain/AI 선택·source/실제지불·일반player자동돌파 금지 유지.",
+      "sha256": "3ae92e75fd1555ec1a70c434f4e3816d39de79c60858af32ba5afb55a0cf626c"
+    },
+    {
+      "path": "src/Chronicles.Game/World.CultivationPlanning.cs",
+      "review_note": "자기 entry/Qi/현재/다음 경지 증거·정책최소이해·실제EntryWork/GP·손상·preflight/거절코드와개인edition/revision으로 준비/회복/재학습한다. 부모/타인 숨은 지식이나 미래성공을 가정하지 않음.",
+      "sha256": "3178ae2cc66d31f03b75def8397573af6a888210ac2df6d37505bbe0c8dba608"
+    },
+    {
+      "path": "src/Chronicles.Game/World.EcologyBridge.cs",
+      "review_note": "자기정의별관측·실제부양/법칙비축을 사용하고 hungry 회복과 일반거래 잉여를 구분. split+offer 단일후보, actualadapter 유료관측/실패기억/실제공정만 사용.",
+      "sha256": "1f003b9f3ab974874c20fb020248d5f7d081a2480968fa515fd9f475783b4d8f"
+    },
+    {
+      "path": "src/Chronicles.Game/World.EcologyRecovery.cs",
+      "review_note": "실제 예약거절의 dated source/법칙expiry/인지budget퇴출을 보존. 농사지식·교본/관측교사·유한물/종자·실제작업·알려진이동으로만 회복하며 관측비용/노동을 면제하지 않음.",
+      "sha256": "7ea3fc1e53245c1c0f2258f6959f9e42d5824f80caac1dfd84359d885825d504"
+    },
+    {
+      "path": "src/Chronicles.Game/World.IntelligentPlanning.cs",
+      "review_note": "저장된 요청의실제revision/claim·정책이해도까지재요청/독서/정정·교사독립응답대기·완료영수증 재계획. 무료이해상향/응답강제 없음.",
+      "sha256": "052dda0447ea7835e849e2ebf9c971db6ccace96d39ed6ab3137320e69a64b55"
+    },
+    {
+      "path": "src/Chronicles.Game/World.InventoryBridge.cs",
+      "review_note": "현재owned factory에서 기본JSON15/명시typed를 전달. 명시exploreSource Data/Target/현지정의 선택은 일치할때만 사용하고 빈Data기존첫미관측 경계를 유지.",
+      "sha256": "e055ecf59cf6462c8eccc54a0cc33429e7743a24deb5ec9eac3dce9d24fe57e2"
+    },
+    {
+      "path": "src/Chronicles.Game/World.InventoryProjection.cs",
+      "review_note": "Create/Restore/Decode기본JSON15 유지·typed선택/strict검증은instance진단범위이며상태로저장하지 않음. Execute후보에같은모드/counter전달.",
+      "sha256": "21c67847cb3c44329edc53ee88b71b9631fbc6ce20600388ab27a3bc06a93c3f"
+    },
+    {
+      "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "review_note": "KnowledgeFor/Source helper2만이미존재하는Authority.Adopt/FindKnowledge key index로연결. last/chapter1/mastery/개인source·같은월Save반영·외부snapshot불일치복원 유지. alias/소유권이전/월말저장지연0.",
+      "sha256": "084295ddc1e3a6661e4821ffbbed46ec723bfa023ac6499f0e64573c002859e9"
+    },
+    {
+      "path": "src/Chronicles.Game/World.Planning.cs",
+      "review_note": "법칙비축을넘는자기유한잉여점수·현재실제공간/개인관측, 일반trade의Eco추가선택에VisitPlanningNode부과. cultivation점수는같은own-source계약이며예산1대기/2실제비용 경계를보존.",
+      "sha256": "b49c60328ac9af476df399ed5e8edfd152565e692f99925e997f405d7ada2c40"
+    },
+    {
+      "path": "src/Chronicles.Game/World.PoliticsBridge.cs",
+      "review_note": "PoliticsContext의includeMaturity기본true유지. 성년을읽지않는CanUseCultivationSite만false로요청하며 모든성년정치 caller/사용권함수불변. 새lookup/권한cache채택0.",
+      "sha256": "0216681286aa523f7cda11f1884a88c2c1f7b7f14490686ebfb4716b63c0d620"
+    },
+    {
+      "path": "src/Chronicles.Game/World.cs",
+      "review_note": "공개Execute격리후보에재고instance진단모드만전달. actualSave/명령/RNG/왕복계약불변이며worldauthoritative상태나외부전체clone소유권변경없음.",
+      "sha256": "67613d3a441ecf9fa41eaa60333c77b06b8f2b23c85ee1a85ecb3af88aa1af2e"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Experiments/InventoryPersonReadGuard.cs",
+      "review_note": "실제Inventory IL메서드/컴파일러람다 Person읽기·쓰기·helper 경계를명시15/미사용55로분류. schema추가/금지Journal·Work write자기검출. 성능계측이나향후모든간접읽기전면증명으로확장하지 않음.",
+      "sha256": "969b21c3bb84c92a8e07670c3747d544446dba47c7b403c516b5fd21df8e7c7d"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
+      "review_note": "EX05 Verify가실제동일GameCodec바이트와임시원자파일복구를확인. 손상Brotli InvalidOperation/EOF를InvalidData로정상화하고backup/손상원문byte보존을검사. Measure/sampler와Verify분리·SQLite/제품압축/전원손실채택주장0.",
+      "sha256": "fc6ffd1fe6b6df1bb73eede3e3569ac9a1bd761d687ef9b9b76285ddf7063938"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: AgentEntrySourceScenario, AgentCultivationTeachingScenario, AgentCultivationRelearningScenario, AgentCultivationFailureScenario, AgentCultivationInformationScenario",
+      "sha256": "ce80320d6aa6f76bd3b974634a25969124c1a781274603c2a3c1fba940002882"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/AgentEcologyTradeIntegrationScenario.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: AgentEcologyTradeIntegrationScenario",
+      "sha256": "43447e1eca68b0461f640cdc15844bbe1eca3d8704138e39632e66bb0db2d0a8"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
+      "review_note": "기존Mood/Habit근접점수fixture에서유한식량을실제다른인물소유로이관해새잉여goal을격리. 총재료/돈을민팅하거나예산/전제/성공검사를완화하지 않음.",
+      "sha256": "1daa6eeace503f09259480e30f9fb3651d1a4260624dc8aeea3e6252ea08e606"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/AgentTradeBudgetScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: AgentTradeBudgetBoundaryScenario",
+      "sha256": "28a0834e2ca97f3d8002b124319c1658ba0e2c4de8290b0caf25cc6f28b30a52"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/CultivationPreparationEvidenceScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: CultivationPreparationEvidenceScenario, CultivationPreparationContractScenario, CultivationPreparationPublicScenario, CultivationPreparationQiOnlyAiScenario, CultivationPreparationRelearningSourceScenario",
+      "sha256": "827f0c76148611520f7c2e10bfbb3bb63a25cef856293568bfe0e59ce7d49e84"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: EcologyReservationRecoveryScenario, EcologyTinyBeliefRecoveryScenario, EcologyFailureLawScenario, EcologyFoodInformationRecoveryScenario, EcologyKnownFarmRecoveryScenario",
+      "sha256": "e1b906fc04b4d698fa42fb8d1f0781bbefdf4eb5ca992b53fb4580654793611e"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/EntryPreparationQueryScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: EntryPreparationKnownRouteScenario, EntryPreparationSaveScenario, EntryPreparationHiddenSiteScenario",
+      "sha256": "722e162b1ed227d0324e3b6609c62b22dfa4c784c42a824ba5b08330efb5a0de"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/GrowthSensitivityContractScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: SensitivityPlanContractScenario, SensitivityBaselineContractScenario, SensitivityAdoptedPolicyContractScenario, SensitivityPartitionContractScenario",
+      "sha256": "3da6225bf11e59357323a0f71be14ece32746951141d760fb9f767333355528a"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: InventoryCopyPolicyEquivalenceScenario",
+      "sha256": "27917aae20a16d5c5f47b8188ed7b2a9e7e045d0805e2c430cba3fe99682b47d"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs",
+      "review_note": "기존두actual-world전사를수동/명시거래성향·비축3으로분리. 독립strict원본先보존후현재소스상수를1회재채택·old751/169원본실패보존. helper는별도InventoryReferenceTranscript로이동.",
+      "sha256": "dd252e55105242137d23f3f19a6bde1e7779a4ce363d3f73a832e81401a615ae"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventoryProjectionScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: InventoryProjectionGuardScenario, InventoryProjectionStaleScenario, InventoryProjectionOwnershipScenario, InventoryProjectionNoninterferenceScenario, InventoryProjectionDefaultResumeScenario, InventoryProjectionPublicReferenceScenario",
+      "sha256": "ed05e9c17eadbf54edb7711adbacf3a9e6f600f8299c0ad507b538c3ac2e3e47"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs",
+      "review_note": "독립world각각고정상수확인·전체Rows/actualSavebyte[]동등·실제factorycounter·명령거절/재전송/월경계/저장속행 확인. optionalcapture는상수변경/검사우회 없음.",
+      "sha256": "dac41c7e4388fa3c2d48319b500bcb959fa8bf5f6d8939eea41a06db3f2e4a77"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventorySourceObservationScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: InventoryFoodObservationScenario, InventoryLegacyObservationScenario, InventoryObservationDenialScenario",
+      "sha256": "f3f66f85581a3883813046a0c0d757a9011f53d0ebe53ab96927d9155bdfd951"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventorySynchronizationScenarios.cs",
+      "review_note": "partialInventoryfixture의동기화/취소/ID/마지막노동행검사불변. TTL한law추가로fullhash만78106기준으로수정, olda703은한키제거시재현한원문근거별도보존. publicGameWorld검사로분류하지 않음.",
+      "sha256": "99c6bd53fd74b06be47f176ae505b4ee58240d8a6d59ff51b91aa83f2265c1dc"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventoryTypedIntegrationScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: InventoryTypedPublicReferenceScenario, InventoryTypedWorldResumeScenario, InventoryTypedOwnerContractScenario",
+      "sha256": "af884d392e905a8acc494479d530172c24c716c6731cee6c54050b0628b2baf6"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventoryTypedSnapshotScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: InventoryTypedSchemaScenario, InventoryTypedAllFieldsScenario, InventoryTypedSnapshotReferenceScenario, InventoryTypedEngineTranscriptScenario",
+      "sha256": "9e67e05368294d022b832bbcf39a38beb3a9b08db84a68fad8a7320f41136dcf"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/InventoryValidationBoundaryScenarios.cs",
+      "review_note": "새정적이름각각의실제본문/fixture·권한·거절·실물/시간·모듈/세계/호스트/저장경계를수동검토하고기계map의claim/anchors에명시: InventorySingletonScheduleBoundaryScenario, InventorySinglePassIdBoundaryScenario",
+      "sha256": "05fcd1ddea17e6ea9a191226b57efef9930da8d9787f50a53ece4540d36bc0ce"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/PeopleTeachingIntegrationScenarios.cs",
+      "review_note": "실제AI요청출처를새계획/결정/plan영수증과대조하고awaitKnowledge·teacher독립busy·unknownmemory0·완료학습0·저장/RNG무소비를강화. oldsourceprefix만교체한것이아님.",
+      "sha256": "0caf04c0d2ca3f86040df82f6c79689b8160757d4d35197620dfde798dec4537"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/GrowthScenarios.cs",
+      "review_note": "기준9개와CLI요청부분을분리하고실제sourceCapture/지문/원형6000관찰창을보존. 완료는관측종료이며인구/생존성공아님. 정적호출범위만검토하며이번맵작성은Run실행0.",
+      "sha256": "8420071e596fc30b5769a24ac712f834a5a8c973a4ccd2b7aa9f0e0c1b8840ae"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/GrowthSensitivityContracts.cs",
+      "review_note": "one-provisional-law×2비기본값×3고정seed·사용자정책거절·source/지문/clean/Release4빌드·실제9기준/원본SHA·물리원천·창/검열·2/6완료/고유출력계약을읽음. 합성계약을실제성장으로세지 않음.",
+      "sha256": "b8e4022e4eaeebc5c2bdbd811c29d59168e5cd5bcc129d24aeeb107c60306c10"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/GrowthSensitivityScenarios.cs",
+      "review_note": "Run은명시opt-in·매월실제Advance/개인후손검열·노동점유/재료flow·snapshot정책vs선언defaults를분리. 완전월별trace/노동생산성/수요추정/수식PC-TEMP전수완료주장없음. 이번Run/프로파일실행0.",
+      "sha256": "6f6e23a9e4211c4deb4a3ba29ebe98921bb6cc548f6a797e459c5c596d889996"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceScenarios.cs",
+      "review_note": "기본JSON15와명시typed실험모드/실제counter·독립예열/측정·부분규모완료/experimental표시를분리. fixture/workload변경후옛b0비교를새기준으로승격하지 않음. 정적검토만실행.",
+      "sha256": "81f96d1aaf96413ac4823ab07510ce7ae850c0a2e4c6e3331c3bdaa2e9c50488"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Program.cs",
+      "review_note": "기존308등록/13RC/선택보고서와명시measurement모드를분리. sensitivity+report는실제기능쓰기전에거절한다. CLI자식작은회귀와collector실행을구분.",
+      "sha256": "1fcaf22e3e8fd2e95c32c0c7780457a7a68bcdb5feaf8b9732e3e354f47c80e1"
+    }
+  ],
+  "supplemental_source_review": [
+    {
+      "path": "src/Chronicles.Shell/index.html",
+      "sha256": "d5309a2280e3e1cc1276ca9869f4db861bb209bf314c46e5ea672e002de991bf",
+      "in_test_catalog_fingerprint": false,
+      "in_product_fingerprint": true,
+      "review_scope": "knownNextRoutes 기반준비후보/entry토납빈Data선택required해제·unknown·Qi별도학습표시와기존호환변환을읽음. C#query3개와실제browser/native검수는별도근거이며맵작성중UI/네이티브실행0."
+    },
+    {
+      "path": "src/Chronicles.Shell/index.compat.html",
+      "sha256": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d",
+      "in_test_catalog_fingerprint": false,
+      "in_product_fingerprint": true,
+      "review_scope": "knownNextRoutes 기반준비후보/entry토납빈Data선택required해제·unknown·Qi별도학습표시와기존호환변환을읽음. C#query3개와실제browser/native검수는별도근거이며맵작성중UI/네이티브실행0."
+    }
+  ],
+  "product_source_fingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "source_review_only": true,
+  "functional_execution_status": "separate-root-report-verified",
+  "runtime_test_or_measurement_runs_by_mapping_work": 0,
+  "limits": [
+    "제안카탈로그 not_implemented/원장/Notion과이전원본보고서는수정하지 않는다.",
+    "기존검증기는테스트지문/이름과호출자선언source를검사하며실제프로세스진위는원본hash/빌드실행provenance로별도확인한다.",
+    "같은테스트본문의제품-only변경은테스트지문만으로구별할수없으므로56bb308/308을926실행으로승격하지 않는다.",
+    "SourceReview는제품/성능·성장·플랫폼·릴리스통과가아니다."
+  ],
+  "separate_functional_report": {
+    "path": "invariant-final-9263756/functional.json",
+    "sha256": "453d4b2f567f77d14115b9294fdd78187e76808c4ed37f7b4af056dcf5ad2708",
+    "executed_source": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "selection": "all",
+    "total": 308,
+    "failed": 0
+  },
+  "manual_name_binding_changes_before_helper": {
+    "before_count": 264,
+    "after_count": 308,
+    "new_test_classes": 44,
+    "added_names_including_rename": [
+      "INV-004/006 입문 준비 조회: 토납과 감응을 분리하고 실제 준비·개시 공급과 저장을 유지한다",
+      "INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수",
+      "INV-004/006/017/018/021 AI 거래 예산: 마지막 방문 뒤 생계 출품을 유예하고 충분한 예산에서만 실제 거래·환전을 선택한다",
+      "INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다",
+      "INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다",
+      "INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다",
+      "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다",
+      "INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다",
+      "INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다",
+      "INV-004/006/023 감응 출처 선택: 1% 실습·전환·상위 경지 계약과 동결 출처 유지",
+      "INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다",
+      "INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다",
+      "INV-008/017/018 agent planning: 실제 정책 비축을 넘는 식량을 일반 거래 목표에서 출품하고 보유 실물만 인도한다",
+      "INV-009 입문 준비 조회: 미관측 현재 공급·사용권 변화는 개인 감응 선택을 바꾸지 않는다",
+      "INV-009/010 입문 준비 조회: 실제 entry 전수만 감응 선택을 열고 Qi 공법은 만들지 않는다",
+      "T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes",
+      "T04 sensitivity contract: completed nine-cohort baseline, physical conditions, hashes and aggregate originals; no growth",
+      "T04 sensitivity contract: fixed policies, law bounds, source/build identity and strict plan JSON; no measurement",
+      "T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims",
+      "T04 sensitivity contract: two-case partitions remain partial, only six complete, duplicate/CLI/output overwrite rejected",
+      "ecology failure law: 실제 예약 거부 기억의 법칙별 재확인 기간·관측 수명 상한·저장 revision",
+      "ecology recovery: 믿음 예산1의 실제 채집 예약 거부와 즉시 퇴출은 무예외·권위·저장 결정론 유지",
+      "ecology recovery: 식량 관측 전 숨은 잔량은 선택에 영향 없고 비용 없는 조사·총자원 추정 금지",
+      "ecology recovery: 실제 배운 농사·관측한 물과 종자·유료 노동으로 식량 생산하고 저장된 비축법칙 적용",
+      "ecology recovery: 실제 전량 예약 실패 뒤 유료 식량 재관측·알려진 이동·저장·제어 경계",
+      "inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등",
+      "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존",
+      "inventory projection: 15개 입력별 stale와 전체 Person strict 경계·미사용 변화 보존",
+      "inventory projection: 70개 schema·실제 IL reader와 컴파일러 람다의 금지 읽기 자기검출",
+      "inventory projection: Create·Restore·Decode 기본 투영과 strict reference의 실제 작업·저장 재개 동등성",
+      "inventory projection: mutable 참조·재사용·예외·두 번째 처리 및 소비 후 실패의 원자성",
+      "inventory projection: 모든 미사용 필드의 실제 명령 비간섭과 개인 원천 관측·물리 ledger 보존",
+      "inventory projection: 실제 공개 명령·생계 AI가 기본 factory를 거쳐 기존 두 전체 transcript와 저장 속행 일치",
+      "inventory source observation: 공개 food 선택은 정확한 현지 원천을 실제 비용·한 달·저장 재개로 관측",
+      "inventory source observation: 빈 Data는 기존 첫 미관측 선택을 유지하고 명시 정의는 fallback하지 않음",
+      "inventory source observation: 현지 정의 부재·실물 비용 부족은 원천·돈·시간·ID·관측 무변화 거부",
+      "inventory typed copy fields: 전 원장 sentinel·현재 JSON Person defaults·모든 중첩 참조 격리",
+      "inventory typed copy reference: 실제 후보 JSON 형태·ordinal·검증·원본 격리 일치",
+      "inventory typed copy schema: 도달한 모든 필드와 명시 Person15 footprint 누락 거부",
+      "inventory typed copy transcript: 현재 JSON 후보와 실제 예약·생산·소비·장비·거부·재전송 연결",
+      "inventory typed integration: instance 선택·Execute 전파·실제 counter와 Restore 기본 JSON 보존",
+      "inventory typed integration: opaque 전이·영수증·재인계·실패와 동일15필드 stale 계약",
+      "inventory typed integration: 실제 typed factory를 통과한 두 공개 전체 transcript·저장 속행 일치",
+      "inventory validation boundary: 단일 노동·인접·겹침·시설 용량과 선행 invalid 오류를 보존",
+      "inventory validation boundary: 빈 ID·양수·교차 중복·원래 수집 순서·최대 allocator 경계를 보존"
+    ],
+    "removed_names": [
+      "inventory owned reference: 실제 생계 AI의 분할·판매 후보와 저장 결과 보존"
+    ],
+    "rename": {
+      "symbol": "InventoryOwnedEcologyReferenceScenario",
+      "before": "inventory owned reference: 실제 생계 AI의 분할·판매 후보와 저장 결과 보존",
+      "after": "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존"
+    },
+    "witness_links_before": 98,
+    "witness_links_after": 143,
+    "note": "이름/경계/관련INV/증인앵커를수동반영한뒤갱신helper계획을만들었으므로그계획의added/removed는0이다. 이목록이원래89d581d맵과의실제이름차이다."
+  }
+}

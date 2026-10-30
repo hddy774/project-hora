@@ -1,0 +1,38 @@
+{
+  "kind": "validator-input-checks-only",
+  "negative_inputs": [
+    {
+      "input": "docs/evidence/0.2.1/functional-integration-3ba78ce.json",
+      "sha256": "8d9d5f66d1ac9bd7459fc318697252b7c592502d0ea0b46eb095d0659b51edfc",
+      "input_total": 258,
+      "input_failed": 0,
+      "rejected": true,
+      "error": "전체 보고서 이름 집합이 실제 등록/매핑과 다릅니다: {\"missing\": [\"INV-004/006 입문 준비 조회: 토납과 감응을 분리하고 실제 준비·개시 공급과 저장을 유지한다\", \"INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수\", \"INV-004/006/017/018/021 AI 거래 예산: 마지막 방문 뒤 생계 출품을 유예하고 충분한 예산에서만 실제 거래·환전을 선택한다\", \"INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다\", \"INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다\", \"INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다\", \"INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다\", \"INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다\", \"INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다\", \"INV-004/006/023 감응 출처 선택: 1% 실습·전환·상위 경지 계약과 동결 출처 유지\", \"INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다\", \"INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다\", \"INV-008/017/018 agent planning: 실제 정책 비축을 넘는 식량을 일반 거래 목표에서 출품하고 보유 실물만 인도한다\", \"INV-009 입문 준비 조회: 미관측 현재 공급·사용권 변화는 개인 감응 선택을 바꾸지 않는다\", \"INV-009/010 입문 준비 조회: 실제 entry 전수만 감응 선택을 열고 Qi 공법은 만들지 않는다\", \"T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes\", \"T04 sensitivity contract: completed nine-cohort baseline, physical conditions, hashes and aggregate originals; no growth\", \"T04 sensitivity contract: fixed policies, law bounds, source/build identity and strict plan JSON; no measurement\", \"T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims\", \"T04 sensitivity contract: two-case partitions remain partial, only six complete, duplicate/CLI/output overwrite rejected\", \"ecology failure law: 실제 예약 거부 기억의 법칙별 재확인 기간·관측 수명 상한·저장 revision\", \"ecology recovery: 믿음 예산1의 실제 채집 예약 거부와 즉시 퇴출은 무예외·권위·저장 결정론 유지\", \"ecology recovery: 식량 관측 전 숨은 잔량은 선택에 영향 없고 비용 없는 조사·총자원 추정 금지\", \"ecology recovery: 실제 배운 농사·관측한 물과 종자·유료 노동으로 식량 생산하고 저장된 비축법칙 적용\", \"ecology recovery: 실제 전량 예약 실패 뒤 유료 식량 재관측·알려진 이동·저장·제어 경계\", \"inventory commitment reference: 같은 원천의 동시 예약·진행·취소 소비와 호출 사이 변경을 보존\", \"inventory commitment reference: 소비되어 없는 입력의 예약 연결·동시 작업·위조·취소를 보존\", \"inventory commitment reference: 앞 원천 오류·뒤 입력 오류·long overflow의 기존 거부 순서를 보존\", \"inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등\", \"inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존\", \"inventory projection: 15개 입력별 stale와 전체 Person strict 경계·미사용 변화 보존\", \"inventory projection: 70개 schema·실제 IL reader와 컴파일러 람다의 금지 읽기 자기검출\", \"inventory projection: Create·Restore·Decode 기본 투영과 strict reference의 실제 작업·저장 재개 동등성\", \"inventory projection: mutable 참조·재사용·예외·두 번째 처리 및 소비 후 실패의 원자성\", \"inventory projection: 모든 미사용 필드의 실제 명령 비간섭과 개인 원천 관측·물리 ledger 보존\", \"inventory projection: 실제 공개 명령·생계 AI가 기본 factory를 거쳐 기존 두 전체 transcript와 저장 속행 일치\", \"inventory source observation: 공개 food 선택은 정확한 현지 원천을 실제 비용·한 달·저장 재개로 관측\", \"inventory source observation: 빈 Data는 기존 첫 미관측 선택을 유지하고 명시 정의는 fallback하지 않음\", \"inventory source observation: 현지 정의 부재·실물 비용 부족은 원천·돈·시간·ID·관측 무변화 거부\", \"inventory sync: 공개 custom comparer와 내부 Ordinal 영수증의 대소문자 구분·재전송·충돌 보존\", \"inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존\", \"inventory sync: 중복 ID·교차 namespace·잘못된 프로필·메타데이터의 기존 초기 거부 우선순위 보존\", \"inventory typed copy fields: 전 원장 sentinel·현재 JSON Person defaults·모든 중첩 참조 격리\", \"inventory typed copy reference: 실제 후보 JSON 형태·ordinal·검증·원본 격리 일치\", \"inventory typed copy schema: 도달한 모든 필드와 명시 Person15 footprint 누락 거부\", \"inventory typed copy transcript: 현재 JSON 후보와 실제 예약·생산·소비·장비·거부·재전송 연결\", \"inventory typed integration: instance 선택·Execute 전파·실제 counter와 Restore 기본 JSON 보존\", \"inventory typed integration: opaque 전이·영수증·재인계·실패와 동일15필드 stale 계약\", \"inventory typed integration: 실제 typed factory를 통과한 두 공개 전체 transcript·저장 속행 일치\", \"inventory validation boundary: 단일 노동·인접·겹침·시설 용량과 선행 invalid 오류를 보존\", \"inventory validation boundary: 빈 ID·양수·교차 중복·원래 수집 순서·최대 allocator 경계를 보존\"], \"unregistered\": [\"inventory owned reference: 실제 생계 AI의 분할·판매 후보와 저장 결과 보존\"]}"
+    },
+    {
+      "input": "docs/evidence/0.2.1/inventory-oracle-final-integration/whole-functional-068ecef.original.json",
+      "sha256": "d51a75bd9fb1b53261c2b85194d17174debb8914e420e37eb94d6a0d7b8fd53a",
+      "input_total": 308,
+      "input_failed": 3,
+      "rejected": true,
+      "error": "실패한 실제 검사: [\"inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존\", \"INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests\", \"INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존\"]"
+    },
+    {
+      "input": "docs/evidence/0.2.1/knowledge-key-index-04908ec/knowledge-functional.json",
+      "sha256": "10fa286ae501865f7dbceb3c75fcbad20daa180fd0765b5107c1b6a4e3a16178",
+      "input_total": 32,
+      "input_failed": 0,
+      "rejected": true,
+      "error": "선택 실행 보고서로 전체 기능 통과를 주장할 수 없습니다."
+    }
+  ],
+  "same_test_source_provenance_limit": {
+    "input": "docs/evidence/0.2.1/inventory-oracle-final-integration/whole-functional-56bbfb2.original.json",
+    "sha256": "8c5eace887992255a31ab67b07ed38c2d90e1f1bdc93a6018bed9d93a3849743",
+    "old_executed_source": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+    "structural_report_only_accepts": true,
+    "used_as_current_report": false,
+    "reason": "이전56bb의308개이름/테스트지문은같지만제품source는926과다르다. 결과이름/테스트지문만으로실행프로세스진위를확인할수없어원본hash·isolated출처·실제4DLL정보/제품지문을별도로확인했다."
+  },
+  "product_test_run_claimed": false
+}

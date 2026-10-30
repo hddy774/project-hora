@@ -1,0 +1,248 @@
+name: 0.2.1 API 24 실제 화면 조기 확인
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/v021-api24-probe.yml'
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'VERSION'
+      - 'Directory.Build.props'
+      - 'Directory.Build.targets'
+      - 'Directory.Packages.props'
+      - 'global.json'
+      - 'NuGet.config'
+      - 'NuGet.Config'
+      - 'Chronicles.slnx'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v021-api24-probe-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  api24:
+    name: API 24 디버그 APK 새 설치·실제 화면 연결
+    if: ${{ github.repository == 'hddy774/project-hora' && ((github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || (github.event_name == 'workflow_dispatch' && github.actor == github.repository_owner && github.triggering_actor == github.repository_owner)) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PROBE_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: 정확한 요청 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.PROBE_SOURCE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 소스·제품 지문과 검사 범위 기록
+        run: |
+          mkdir -p artifacts/api24/apk artifacts/api24/runtime
+          python3 - <<'PY'
+          import hashlib, importlib.util, json, os, pathlib, re, subprocess
+          spec = importlib.util.spec_from_file_location('release_check', 'scripts/verify-v021-release.py')
+          check = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(check)
+          commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          expected = os.environ['PROBE_SOURCE_SHA']
+          assert re.fullmatch(r'[0-9a-f]{40}', expected) and commit == expected, '요청 SHA와 실제 체크아웃이 다릅니다'
+          record = {'schema_version': 1, 'kind': 'api24-debug-native-probe',
+                    'source_commit': commit,
+                    'source_tree': subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], text=True).strip(),
+                    'product_source_fingerprint': check.fingerprint(commit),
+                    'event_sha': os.environ['GITHUB_SHA'], 'event_name': os.environ['GITHUB_EVENT_NAME'],
+                    'run_id': os.environ['GITHUB_RUN_ID'], 'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+                    'version': pathlib.Path('VERSION').read_text().strip(),
+                    'workflow_sha256': hashlib.sha256(pathlib.Path('.github/workflows/v021-api24-probe.yml').read_bytes()).hexdigest(),
+                    'scope': 'API24 x86_64 기본 이미지의 디버그 APK 새 설치·DOM·실제 GameSession 연결만 검증',
+                    'retained_signature_or_upgrade_claim': False, 'release_publication': False}
+          pathlib.Path('artifacts/api24/source.json').write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n')
+          print(json.dumps(record, ensure_ascii=False))
+          PY
+      - name: 자바 개발 도구 설정(Java)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: 개발 도구 설정(.NET)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: 안드로이드 도구 설정(Android SDK)
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - name: 안드로이드 빌드 대상 설치(Android SDK 36)
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: 안드로이드 개발 구성 설치(.NET 워크로드)
+        run: dotnet workload install android
+      - name: 릴리스 구성의 디버그 서명 검사 APK 빌드
+        run: |
+          dotnet build src/Chronicles.Android -c Release -m:1 -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME" -p:AndroidKeyStore=false
+          cp src/Chronicles.Android/bin/Release/net10.0-android/org.hora.xianxiaobserver-Signed.apk artifacts/api24/apk/API24-debug-probe.apk
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging artifacts/api24/apk/API24-debug-probe.apk > artifacts/api24/apk/badging.txt
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs artifacts/api24/apk/API24-debug-probe.apk > artifacts/api24/apk/debug-certificate.txt
+          python3 - <<'PY'
+          import hashlib, json, pathlib, re, shutil, zipfile
+          out = pathlib.Path('artifacts/api24/apk')
+          source = json.loads(pathlib.Path('artifacts/api24/source.json').read_text())
+          badging = (out / 'badging.txt').read_text()
+          certificate = (out / 'debug-certificate.txt').read_text()
+          assert 'CN=Android Debug' in certificate, '디버그 검사 인증서가 아닙니다'
+          def field(pattern):
+              match = re.search(pattern, badging, re.MULTILINE)
+              assert match, 'APK 메타데이터가 없습니다: ' + pattern
+              return match[1]
+          package = field(r"^package: name='([^']+)'")
+          activity = field(r"^launchable-activity: name='([^']+)'")
+          assert package == 'org.hora.xianxiaobserver' and field(r"^sdkVersion:'([^']+)'") == '24'
+          assert field(r"^targetSdkVersion:'([^']+)'") == '36' and 'x86_64' in field(r'^native-code:(.+)$')
+          assert field(r"^package: .*versionName='([^']+)'") == source['version']
+          apk = out / 'API24-debug-probe.apk'
+          with zipfile.ZipFile(apk) as archive:
+              asset = archive.read('assets/index.html')
+          assert asset == pathlib.Path('src/Chronicles.Shell/index.compat.html').read_bytes(), 'APK에 정확한 compat 자산이 없습니다'
+          versions = {}
+          for project in ['Game', 'Hosting']:
+              info = pathlib.Path(f'src/Chronicles.{project}/obj/Release/net10.0/Chronicles.{project}.AssemblyInfo.cs').read_text()
+              match = re.search(r'AssemblyInformationalVersionAttribute\("([^"]+)"\)', info)
+              assert match and source['source_commit'] in match[1], 'APK 빌드 의존 소스 SHA가 다릅니다'
+              versions[project] = match[1]
+          proof = {'schema_version': 1, 'kind': 'debug-probe-not-release-apk',
+                   'sha256': hashlib.sha256(apk.read_bytes()).hexdigest(), 'bytes': apk.stat().st_size,
+                   'package': package, 'launchable_activity': activity, 'version': source['version'],
+                   'minimum_sdk': 24, 'target_sdk': 36, 'debug_signing_only': True,
+                   'compat_asset_sha256': hashlib.sha256(asset).hexdigest(), 'assembly_versions': versions,
+                   'source_commit': source['source_commit'], 'product_source_fingerprint': source['product_source_fingerprint']}
+          (out / 'apk.json').write_text(json.dumps(proof, ensure_ascii=False, indent=2) + '\n')
+          shutil.copyfile('artifacts/api24/source.json', out / 'source.json')
+          print(json.dumps(proof, ensure_ascii=False))
+          PY
+      - name: GitHub 러너의 실제 하드웨어 가속 확인(KVM)
+        run: |
+          test "$GITHUB_ACTIONS" = true
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          test -c /dev/kvm
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          test -r /dev/kvm -a -w /dev/kvm
+      - name: 기본 API 24의 실제 새 설치·DOM·코어 연결 확인
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 24
+          target: default
+          arch: x86_64
+          profile: pixel_6
+          force-avd-creation: true
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -accel on -no-snapshot
+          script: |
+            python3 - <<'PY'
+            import importlib.util, json, pathlib, re, subprocess
+            spec = importlib.util.spec_from_file_location('native_probe', 'scripts/v021-release-emulator.py')
+            native = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(native)
+            out = pathlib.Path('artifacts/api24/runtime')
+            proof = json.loads(pathlib.Path('artifacts/api24/apk/apk.json').read_text())
+            apk = pathlib.Path('artifacts/api24/apk/API24-debug-probe.apk')
+            def capture(name, *args):
+                value = native.adb(*args)
+                (out / name).write_text(value)
+                return value
+            try:
+                api = native.adb('shell', 'getprop', 'ro.build.version.sdk').strip()
+                assert api == '24' and native.adb('shell', 'getprop', 'ro.kernel.qemu').strip() == '1', '실제 API24 에뮬레이터가 아닙니다'
+                assert not native.adb('shell', 'pm', 'list', 'packages', proof['package']).strip(), '새 설치 검사에 기존 앱이 있습니다'
+                before = capture('webview-package-before.txt', 'shell', 'dumpsys', 'package', 'com.android.webview')
+                capture('webview-service-before.txt', 'shell', 'dumpsys', 'webviewupdate')
+                stock = re.search(r'\bversionName=([^\s]+)', before)
+                assert stock, '기본 이미지의 시스템 WebView 버전이 없습니다'
+                device = {'api': int(api), 'android_release': native.adb('shell', 'getprop', 'ro.build.version.release').strip(),
+                          'abi': native.adb('shell', 'getprop', 'ro.product.cpu.abi').strip(),
+                          'system_webview_package': 'com.android.webview', 'system_webview_version_before': stock[1]}
+                assert device['abi'] == 'x86_64', '요청한 실제 x86_64 이미지가 아닙니다'
+                (out / 'device.json').write_text(json.dumps(device, ensure_ascii=False, indent=2) + '\n')
+                print(json.dumps(device, ensure_ascii=False))
+                install = native.adb('install', '--no-streaming', apk)
+                (out / 'install.txt').write_text(install)
+                assert 'Success' in install, '새 APK 설치가 성공하지 않았습니다'
+                # Reuse the unchanged official renderer/foreground/DOM checker; do not enter its signing/upgrade CLI.
+                fresh = native.actual_render(apk, proof, out / 'fresh')
+                service = capture('webview-service-after.txt', 'shell', 'dumpsys', 'webviewupdate')
+                after = capture('webview-package-after.txt', 'shell', 'dumpsys', 'package', 'com.android.webview')
+                provider = re.search(r'Current WebView package \(name, version\):\s*\(([^,]+),\s*([^\)]+)\)', service)
+                versions = [re.search(r'\bversionName=([^\s]+)', text) for text in [before, after]]
+                assert provider and all(versions), '실제 시스템 WebView 버전을 확인할 수 없습니다'
+                assert provider[1] == 'com.android.webview' and provider[2] == versions[0][1] == versions[1][1], '기본 시스템 WebView가 교체됐습니다'
+                result = {'schema_version': 1, 'kind': 'api24-debug-native-probe', 'passed': True,
+                          'api': int(api), 'system_webview_package': provider[1], 'system_webview_version': provider[2],
+                          'stock_webview_version_unchanged': True, 'fresh_install_render': fresh,
+                          'apk_sha256': proof['sha256'], 'source_commit': proof['source_commit'],
+                          'product_source_fingerprint': proof['product_source_fingerprint'],
+                          'retained_signature_or_upgrade_claim': False, 'release_publication': False}
+                (out / 'api24-proof.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+                print(json.dumps(result, ensure_ascii=False))
+            finally:
+                # Preserve diagnostics even if the unchanged render verifier fails.
+                for name, args in [('logcat-all.txt', ['logcat', '-d', '-v', 'tag']),
+                                   ('foreground-final.txt', ['shell', 'dumpsys', 'activity', 'activities'])]:
+                    raw = subprocess.run(['adb', *args], capture_output=True, timeout=45)
+                    (out / name).write_bytes(raw.stdout + raw.stderr)
+                shot = subprocess.run(['adb', 'exec-out', 'screencap', '-p'], capture_output=True, timeout=45)
+                (out / 'screen-final.png').write_bytes(shot.stdout)
+            PY
+      - name: 디버그 검사 APK와 정확한 입력 업로드
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v021-api24-debug-apk-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/api24/apk/
+          if-no-files-found: error
+          retention-days: 14
+      - name: 실제 API 24 원시 로그·화면·출처 업로드
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v021-api24-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            artifacts/api24/source.json
+            artifacts/api24/runtime/
+            artifacts/api24/apk/apk.json
+            artifacts/api24/apk/badging.txt
+            artifacts/api24/apk/debug-certificate.txt
+          if-no-files-found: error
+          retention-days: 14
+      - name: 조기 확인 결과와 공식 릴리스 구분
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          source = pathlib.Path('artifacts/api24/source.json')
+          proof = pathlib.Path('artifacts/api24/runtime/api24-proof.json')
+          lines = ['## API 24 디버그 APK 조기 확인', '',
+                   '이 검사는 유지 인증서 APK의 API24/35 설치·업데이트 또는 공식 릴리스 검증을 대신하지 않습니다.']
+          if source.exists():
+              value = json.loads(source.read_text())
+              lines += ['', '소스: `' + value['source_commit'] + '`',
+                        '제품 지문: `' + value['product_source_fingerprint'] + '`']
+          if proof.exists():
+              value = json.loads(proof.read_text())
+              lines += ['', '실제 API: ' + str(value['api']),
+                        '기본 WebView: `' + value['system_webview_package'] + ' ' + value['system_webview_version'] + '`',
+                        'APK SHA256: `' + value['apk_sha256'] + '`', '새 설치·실제 DOM·코어 연결: 통과']
+          else:
+              lines += ['', '실제 검증 통과 근거가 없습니다. 실패 단계와 원시 artifact를 확인해야 합니다.']
+          with pathlib.Path(os.environ['GITHUB_STEP_SUMMARY']).open('a') as stream:
+              stream.write('\n'.join(lines) + '\n')
+          PY

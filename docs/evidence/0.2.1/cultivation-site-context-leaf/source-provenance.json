@@ -1,0 +1,31 @@
+{
+  "baseCommit": "2af63d897eaa3050dd738412121c8d466957d409",
+  "implementationCommit": "39d38da3cb78841eb8fdeacc98307d28671380f4",
+  "kind": "source-proof-and-bounded-functional-only",
+  "productFiles": {
+    "src/Chronicles.Game/World.PoliticsBridge.cs": "0216681286aa523f7cda11f1884a88c2c1f7b7f14490686ebfb4716b63c0d620",
+    "src/Chronicles.Game/World.CultivationBridge.cs": "3ae92e75fd1555ec1a70c434f4e3816d39de79c60858af32ba5afb55a0cf626c"
+  },
+  "unchangedAuthority": {
+    "file": "src/Chronicles.Game/Politics/PoliticsEngine.cs",
+    "method": "CanUseCultivationSite",
+    "firstLine": 88,
+    "lastLine": 95,
+    "bodyIdenticalToBase": true,
+    "bodySha256": "1c7ea0cf7e094d8b62248e00cc2769291e621de4bd4c84df03d37eb04dcc64e6",
+    "readsMaturity": false,
+    "readsRules": false,
+    "reads": [
+      "actual current living person and place",
+      "place Owner and Operator",
+      "current non-dissolved group membership"
+    ]
+  },
+  "contextFactory": {
+    "defaultIncludesMaturity": true,
+    "onlyMaturityOmissionCaller": "src/Chronicles.Game/World.CultivationBridge.cs:391",
+    "sameAuthorityCall": "src/Chronicles.Game/World.CultivationBridge.cs:424"
+  },
+  "newPerformanceProfileGrowthRuns": 0,
+  "newTests": 0
+}

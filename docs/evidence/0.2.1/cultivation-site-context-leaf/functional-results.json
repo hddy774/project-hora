@@ -1,0 +1,132 @@
+{
+  "baseCommit": "2af63d897eaa3050dd738412121c8d466957d409",
+  "implementationCommit": "39d38da3cb78841eb8fdeacc98307d28671380f4",
+  "kind": "existing-bounded-functional-only",
+  "total": 18,
+  "failed": 0,
+  "reports": [
+    {
+      "selection": "public cultivation rights",
+      "total": 1,
+      "failed": 0,
+      "results": [
+        {
+          "name": "INV-004/008/018/021 public cultivation rights·book ownership·common activity capacity",
+          "passed": true
+        }
+      ],
+      "rawFunctionalReportSha256": "e3dc8562bdb3394bad305b0edf872e5453bfb21125614b24b44d6860202483fc"
+    },
+    {
+      "selection": "public politics",
+      "total": 9,
+      "failed": 0,
+      "results": [
+        {
+          "name": "V021-W02/G01 public politics: actual fox and pine body maturity govern consent and family leadership independently of human law",
+          "passed": true
+        },
+        {
+          "name": "V021-G02 public politics: actual loan, independence, death succession and territorial loss keep public accounts distinct",
+          "passed": true
+        },
+        {
+          "name": "V021-M03/G02 public politics: actual death inheritance transfers personal land and preserves another operator's rights",
+          "passed": true
+        },
+        {
+          "name": "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+          "passed": true
+        },
+        {
+          "name": "V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty",
+          "passed": true
+        },
+        {
+          "name": "V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office",
+          "passed": true
+        },
+        {
+          "name": "V021-S02 public politics: funded education queues one real request and gains knowledge only through timed teaching",
+          "passed": true
+        },
+        {
+          "name": "V021-G01/G02 public politics: one province, persistent territoryless dynasty, annual zero revenue and restoration",
+          "passed": true
+        },
+        {
+          "name": "V021-G03 public politics: withdrawing real reserved work refunds unfinished policy without implementation",
+          "passed": true
+        }
+      ],
+      "rawFunctionalReportSha256": "da417add2df29f59b98112a21b1e864ecc0a0c41f0d9b8cd6b2d40d2d92f6e90"
+    },
+    {
+      "selection": "AI 수행 연결",
+      "total": 5,
+      "failed": 0,
+      "results": [
+        {
+          "name": "INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다",
+          "passed": true
+        },
+        {
+          "name": "INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다",
+          "passed": true
+        },
+        {
+          "name": "INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다",
+          "passed": true
+        }
+      ],
+      "rawFunctionalReportSha256": "9daed3f340b1e970b6cb428306f4e39cdbed7b9ae36637f0ad8aa7ad78e8c686"
+    },
+    {
+      "selection": "inventory owned reference",
+      "total": 2,
+      "failed": 0,
+      "results": [
+        {
+          "name": "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존",
+          "passed": true
+        },
+        {
+          "name": "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존",
+          "passed": true
+        }
+      ],
+      "rawFunctionalReportSha256": "7831e25a3bd35c7cc3946041ed09b7d02784139b5d335d77c7769cb0c8f3b81f"
+    },
+    {
+      "selection": "own combat social and AI",
+      "total": 1,
+      "failed": 0,
+      "results": [
+        {
+          "name": "INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations",
+          "passed": true
+        }
+      ],
+      "rawFunctionalReportSha256": "c9426273f67dd9418e0436a86cff34cca58abc25ccc15b49f5ea4309b3821820"
+    }
+  ],
+  "fixedWorldOracles": {
+    "InventoryOwnedWorldReferenceScenario": "718295d0cfda379974aa14e87d39b3d86578a2c372d1e0beb6434eba6b3ca160",
+    "InventoryOwnedEcologyReferenceScenario": "91b47814d83c487797382f3fad308b420f20ab815bbd9b7be14f92059f18802e"
+  },
+  "releaseBuild": {
+    "warnings": 0,
+    "errors": 0,
+    "rawLogSha256": "d567304023f87f978897407684d78d9fe3338048a2b8d9ce88b1d2a44ffb52e7"
+  },
+  "newBenchmarkProfileGrowthPopulationRuns": 0,
+  "newTests": 0
+}

@@ -30,6 +30,7 @@ public static partial class InventoryEngine
             if (command.Actor != 0) PersonAt(state, command.Actor);
             var subject = command switch
             {
+                TuneInventoryProfile c => TuneProfile(state, c),
                 ReserveInventoryMaterials c => ReserveExternal(state, c), ReserveInventoryPhysical c => ReserveExternalPhysical(state, c),
                 ConsumeInventoryAssets c => ConsumeExternal(state, c), ReleaseInventoryAssets c => ReleaseExternal(state, c),
                 SplitInventoryItem c => Split(state, c), MergeStacks c => Merge(state, c), StoreItem c => Store(state, c),
@@ -55,6 +56,14 @@ public static partial class InventoryEngine
         { return new(false, error.Message, input); }
     }
 
+    private static long TuneProfile(InventoryState state, TuneInventoryProfile command)
+    {
+        Require(command.CarryCapacity >= 0 && command.ProductionWork > 0 && command.ProfessionalWork > 0 && command.ExtractionWork > 0, "Invalid inventory work or carry law.");
+        state.Ledger.BaseCarryCapacity = command.CarryCapacity; state.Ledger.ProductionWork = command.ProductionWork;
+        state.Ledger.ProfessionalWork = command.ProfessionalWork; state.Ledger.ExtractionWorkPerUnit = command.ExtractionWork;
+        foreach (var person in state.People) SpillOverflow(state, person.Id);
+        return 0;
+    }
     private static long TotalMoney(InventoryState state) => checked(state.People.Sum(p => p.Money) + state.Ledger.Contracts.Sum(c => c.Escrow));
     private static long Id(InventoryState state) => checked(state.NextId++);
     private static Person PersonAt(InventoryState state, long id, bool alive = true)
@@ -276,7 +285,7 @@ public static partial class InventoryEngine
     }
     private static void SpillOverflow(InventoryState state, long actorId)
     {
-        var actor = PersonAt(state, actorId);
+        var actor = PersonAt(state, actorId, false);
         foreach (var root in CarriedRoots(state, actor).Where(i => !actor.Equipment.ContainsValue(i.Id)).OrderByDescending(i => i.Id).ToArray())
         {
             if (CarriedWeight(state, actor) <= CarryCapacity(state, actor)) break;

@@ -3,6 +3,7 @@ using Chronicles.Core;
 using K = Chronicles.Game.Knowledge;
 using I = Chronicles.Game.Inventory;
 using P = Chronicles.Game.People;
+using C = Chronicles.Game.Cultivation;
 
 namespace Chronicles.Game;
 
@@ -62,23 +63,51 @@ public sealed record RecipeInputView(string Definition, string Name, int Quantit
 public sealed record RecipeView(string Id, string Name, string Skill, string Output, string OutputName, int Quantity, IReadOnlyList<RecipeInputView> Inputs);
 public sealed record ResourceSourceView(long Id, int Place, string Definition, string Name, string Activity, long Remaining,
     long Observed, string Evidence, long? Capacity, int? Regeneration, string? Origin);
+public sealed record InventoryActivityView(long Id, string Kind, string Name, string Status, int Place, long? Started, long Due, string? OutputName, int OutputQuantity);
 public sealed record KnowledgeActivityView(long Id, string Kind, string Status, long Actor, long Teacher,
     string WorkId, string WorkTitle, IReadOnlyList<int> Chapters, long Started, long Due, long? Ended,
     long MediumItem, string Source, IReadOnlyList<K.KnowledgeAdoption> Adopted, K.KnowledgePracticeOutcome? Outcome);
+public sealed record AccessibleBookView(long ItemId, long EditionId, string WorkId, string Title, int? Quality,
+    K.KnowledgeRights Rights, int? ReadableChapterCount, bool? Unreadable, long? AppraisedMonth);
 public sealed record PersonalKnowledgeDetail(IReadOnlyList<K.PersonalKnowledgeView> Chapters, int PersonalTotal,
-    IReadOnlyList<K.AccessibleKnowledgeView> Media, int AccessibleTotal, IReadOnlyList<K.PersonalKnowledge> History,
+    IReadOnlyList<AccessibleBookView> Media, int AccessibleTotal, IReadOnlyList<K.PersonalKnowledge> History,
     IReadOnlyList<K.PracticalKnowledge> PracticeHistory, IReadOnlyList<K.KnowledgeEvidence> Evidence,
     IReadOnlyList<KnowledgeActivityView> Activities, IReadOnlyList<K.KnowledgeWork> Works,
     IReadOnlyList<K.KnowledgeEdition>? Editions);
 public sealed record DecisionView(string Goal, string Reason, string Action, long Due, int PlanExpansions,
-    IReadOnlyList<PlanStep> Plan);
+    IReadOnlyList<PlanStep> Plan)
+{
+    public int Mood { get; init; }
+    public long LastCare { get; init; }
+    public IReadOnlyDictionary<string, int>? Habits { get; init; }
+    public IReadOnlyList<DecisionCandidate> Candidates { get; init; } = [];
+    public IReadOnlyList<DecisionRecord> History { get; init; } = [];
+}
+public sealed record RootProgressDetail(string Element, int? InnateQuality, long Growth, long Required, int Layer, bool Complete, int Damage);
+public sealed record FormationKnowledgeDetail(string WorkId, string EditionId, long Revision, int Understanding,
+    int Practice, int? Error, bool Memorized, bool CanConsult, string Source);
+public sealed record CultivationFormationDetail(Realm Realm, string Path, int? Quality, IReadOnlyList<C.FormationFactor>? Factors,
+    long Month, int Place, long LawRevision, FormationKnowledgeDetail? Knowledge, C.ParentStructureEvidence? Parent, string Source);
+public sealed record CultivationDetail(IReadOnlyList<RootProgressDetail> Roots, IReadOnlyList<C.CultivationStructureView> Current,
+    CultivationFormationDetail? Formation, int Maturity, int Damage, int Load, string Path, string Auxiliary,
+    C.AttemptPhase? Phase, C.PendingTribulation? Trial);
+public sealed record PotentialRouteDetail(string Path, Realm TargetRealm, int? ParentQualityCarried, int CurrentMaturityCarried,
+    long? MinimumSupplyToStart, IReadOnlyList<C.CultivationBlocker>? Missing, string Condition);
+public sealed record CultivationPotentialDetail(int StructuralHeadroom, int CurrentDamage, bool? HasActualRecoverySupply,
+    IReadOnlyList<PotentialRouteDetail> KnownNextRoutes, string InformationBasis);
 public sealed record DetailView(PersonView Person, IReadOnlyList<int>? Roots, IReadOnlyList<int>? Aptitudes,
     IReadOnlyList<int>? Talents, IReadOnlyList<int>? Personality, IReadOnlyList<int>? Processes, IReadOnlyList<int>? Components,
     IReadOnlyList<Formation>? Formations, IReadOnlyDictionary<string, int>? Skills, IReadOnlyDictionary<string, int>? Understanding,
     IReadOnlyList<TraitState>? Traits, IReadOnlyList<Belief>? Beliefs, IReadOnlyList<Trace>? Traces, IReadOnlyList<long>? Combat)
 {
     public PersonalKnowledgeDetail? Knowledge { get; init; }
+    public IReadOnlyList<InventoryActivityView>? InventoryActivities { get; init; }
     public DecisionView? Decision { get; init; }
+    public P.PeopleDetailView? People { get; init; }
+    public CultivationDetail? Cultivation { get; init; }
+    public CultivationPotentialDetail? Potential { get; init; }
+    public C.CombatProjection? CombatProjection { get; init; }
+    public IReadOnlyList<SocialRelation> SocialRelations { get; init; } = [];
 }
 public sealed record LawView(string Id, string Name, string Unit, long Minimum, long Maximum, long DefaultValue, long Value, bool Provisional, string Rationale);
 public sealed record SoulView(long Id, long Parent, long Root, long CurrentPerson, string Status, int Route, string Evidence);
@@ -175,12 +204,13 @@ public sealed partial class GameWorld
             var party = observer || c.Seller == actor!.Id || c.Buyer == actor.Id || c.Carrier == actor.Id;
             // Current public listings are visible. Closed contracts never inspect a counterparty's later private inventory.
             var listing = observer || c.Status == "open" && (c.Destination == actor!.Place || c.Seller == actor.Id);
+            var advertised = state.Inventory.Contracts.FirstOrDefault(known => known.Id == c.Id);
             var offered = listing ? items.GetValueOrDefault(c.Item) : null;
             return new ContractView(c.Id, c.Kind, c.Seller, c.Buyer, c.Item, c.Price, c.Due, c.Status, c.Destination)
             {
                 Escrow = party ? c.Escrow : null, Carrier = party ? c.Carrier : null,
-                ItemName = offered is null ? null : I.InventoryDefinitions.Definition(offered.Definition).Item.Name,
-                ItemQuantity = offered?.Quantity,
+                ItemName = advertised?.AdvertisedName.Length > 0 ? advertised.AdvertisedName : offered is null ? null : I.InventoryDefinitions.Definition(offered.Definition).Item.Name,
+                ItemQuantity = advertised?.AdvertisedQuantity > 0 ? advertised.AdvertisedQuantity : offered?.Quantity,
                 ItemQuality = offered is null ? null : observer ? Catalog.Quality(offered.Quality) : "미감정"
             };
         }).ToArray();
@@ -192,16 +222,36 @@ public sealed partial class GameWorld
         {
             var p = people[detailId]; var permitted = observer || p.Id == actor!.Id;
             var innate = permitted && (observer || !state.PeopleDomain.Profiles.Any(profile => profile.PersonId == p.Id));
+            var hasCultivation = permitted && state.Cultivation.ContainsKey(p.BodyId);
+            var inspection = hasCultivation ? CultivationInspectionFor(p) : null;
+            var canonicalCombat = hasCultivation ? CultivationCombatFor(p, observer) : null;
             detail = new(pv, innate ? Array.AsReadOnly(p.Roots.ToArray()) : null, innate ? Array.AsReadOnly(p.Aptitudes.ToArray()) : null,
                 innate ? Array.AsReadOnly(Enumerable.Range(0, 24).Select(i => Catalog.Talent(p, i)).ToArray()) : null,
                 permitted ? Array.AsReadOnly(p.Personality.ToArray()) : null, permitted ? Array.AsReadOnly(p.Processes.ToArray()) : null,
                 innate ? Array.AsReadOnly(p.Components.ToArray()) : null, innate ? Array.AsReadOnly(p.Formations.ToArray()) : null,
                 permitted ? ReadOnly(p.Skills) : null, permitted ? ReadOnly(p.Understanding) : null,
                 innate ? Array.AsReadOnly(p.Traits.ToArray()) : null, permitted ? Array.AsReadOnly(p.Beliefs.Values.ToArray()) : null,
-                observer ? Array.AsReadOnly(souls[p.SoulId].Traces.ToArray()) : null, permitted ? Array.AsReadOnly(CombatAttributes(p, items)) : null)
+                observer ? Array.AsReadOnly(souls[p.SoulId].Traces.ToArray()) : null, canonicalCombat is null ? null : Array.AsReadOnly(Enumerable.Range(0, 8).Select(canonicalCombat.Axes.At).ToArray()))
             {
                 Knowledge = permitted ? PersonalKnowledgeFor(p, observer) : null,
-                Decision = permitted ? new(p.Goal, p.Reason, p.Action.ToString(), p.Due, p.PlanExpansions, Array.AsReadOnly(p.Plan.ToArray())) : null
+                InventoryActivities = permitted ? Array.AsReadOnly(state.Inventory.Jobs.Where(job => job.Actor == p.Id).OrderBy(job => job.Id)
+                    .Select(job => new InventoryActivityView(job.Id, job.Recipe,
+                        I.InventoryDefinitions.Recipes.TryGetValue(job.Recipe, out var recipe) ? I.InventoryDefinitions.Definition(recipe.Output).Item.Name + " 제작" :
+                        job.Recipe switch { "extraction" => "자원 채취", "repair" => "실물 수리", "appraisal" => "실물 감정", "exploration" => "원천 답사", "medical-treatment" => "의료", _ => "생업 작업" },
+                        job.Status, job.Place, state.Inventory.Labor.FirstOrDefault(l => l.Id == job.Labor)?.Start,
+                        job.Due, I.InventoryDefinitions.Recipes.TryGetValue(job.Recipe, out var outputRecipe) ? I.InventoryDefinitions.Definition(outputRecipe.Output).Item.Name : null, job.OutputQuantity)).ToArray()) : null,
+                Decision = permitted ? new(p.Goal, p.Reason, p.Action.ToString(), p.Due, p.PlanExpansions, Array.AsReadOnly(p.Plan.ToArray()))
+                {
+                    Mood = p.Mood, LastCare = p.LastCare, Habits = ReadOnly(p.Habits),
+                    Candidates = Array.AsReadOnly(p.DecisionCandidates.ToArray()),
+                    History = Array.AsReadOnly(p.Decisions.Select(d => d with { Candidates = Array.AsReadOnly(d.Candidates.ToArray()) }).ToArray())
+                } : null,
+                People = PeopleDetail(p.Id),
+                Cultivation = inspection is null ? null : ProjectCultivation(inspection, observer),
+                Potential = inspection is null ? null : ProjectPotential(p, inspection, observer),
+                CombatProjection = canonicalCombat,
+                SocialRelations = Array.AsReadOnly(state.Relations.Where(r => r.Month <= Month && (observer ? r.Observer == p.Id :
+                    r.Observer == actor!.Id && actor.KnownPeople.Contains(r.Other) && (p.Id == actor.Id || r.Other == p.Id))).ToArray())
             };
         }
         return new(ProductInfo.KoreanTitle, ProductInfo.Version, Month, Revision, ViewGeneration, state.Controlled, observer,
@@ -211,6 +261,7 @@ public sealed partial class GameWorld
             Catalog.Paths.Where(path => observer || actor!.Understanding.GetValueOrDefault(path.Id) > 0).ToArray())
         {
             LawHistory = observer ? Array.AsReadOnly(state.LawHistory.ToArray()) : [],
+            CombatAxisNames = detail?.CombatProjection is null ? null : C.CultivationQueries.AxisNames,
             TraitNames = new ReadOnlyDictionary<string, string>(P.TraitCatalog.All.ToDictionary(t => t.Id, t => t.Name, StringComparer.Ordinal)),
             Recipes = Array.AsReadOnly(I.InventoryDefinitions.Recipes.Values.OrderBy(r => r.Id, StringComparer.Ordinal).Select(r =>
                 new RecipeView(r.Id, Catalog.Recipes.FirstOrDefault(legacy => legacy.Id == r.Id)?.Name ?? I.InventoryDefinitions.Definition(r.Output).Item.Name + " 제작",
@@ -221,20 +272,52 @@ public sealed partial class GameWorld
         };
     }
 
+    private static CultivationDetail ProjectCultivation(C.CultivationInspection source, bool observer)
+    {
+        var roots = source.Roots.Select(r => new RootProgressDetail(r.Element, observer ? r.InnateQuality : null,
+            r.Growth, r.Required, r.Layer, r.Complete, r.Damage)).ToArray();
+        var formed = source.Formation;
+        var known = formed?.Knowledge;
+        var formation = formed is null ? null : new CultivationFormationDetail(formed.Realm, formed.Path, observer ? formed.Quality : null,
+            observer ? Array.AsReadOnly(formed.Factors.Select(f => f with { }).ToArray()) : null,
+            formed.Month, formed.Place, formed.LawRevision, known is null ? null : new(known.WorkId, known.EditionId, known.Revision,
+                known.Understanding, known.Practice, observer ? known.Error : null, known.Memorized, known.CanConsult, known.Source),
+            observer && formed.Parent is not null ? formed.Parent with { } : null, formed.Source);
+        return new(Array.AsReadOnly(roots), Array.AsReadOnly(source.Current.Select(c => c with { }).ToArray()), formation,
+            source.Maturity, source.Damage, source.Load, source.Path, source.Auxiliary, source.Phase, source.Trial is null ? null : source.Trial with { });
+    }
+
+    private CultivationPotentialDetail ProjectPotential(Person p, C.CultivationInspection inspection, bool observer)
+    {
+        if (observer)
+        {
+            var actual = CultivationPotentialFor(p);
+            return new(actual.StructuralHeadroom, actual.CurrentDamage, actual.HasActualRecoverySupply,
+                Array.AsReadOnly(actual.KnownNextRoutes.Select(r => new PotentialRouteDetail(r.Path, r.TargetRealm, r.ParentQualityCarried,
+                    r.CurrentMaturityCarried, r.MinimumSupplyToStart, Array.AsReadOnly(r.Missing.Select(m => m with { }).ToArray()), r.Condition)).ToArray()),
+                actual.InformationBasis);
+        }
+        // Known definitions and one's own completed structure are legitimate personal inputs. Do not run an actual-site
+        // preflight merely to redact its result: hidden supply/occupancy/rights must not determine personal recommendations.
+        var known = state.Knowledge.Memories.Where(m => m.PersonId == p.Id && m.Decoding > 0 && m.Comprehension > 0)
+            .Select(m => m.WorkId).ToHashSet(StringComparer.Ordinal);
+        var routes = p.Realm == Realm.HalfImmortal ? [] : Catalog.Paths.Where(path => path.Realm == p.Realm + 1 && known.Contains(path.Id))
+            .Select(path => new PotentialRouteDetail(path.Id, path.Realm, null, inspection.Maturity, null, null,
+                C.CultivationProfiles.Find(path.Id)?.NextRequirement ?? "배운 경로의 조건을 실제 관측으로 확인해야 합니다.")).ToArray();
+        return new(10000 - inspection.Maturity, inspection.Damage, null, Array.AsReadOnly(routes),
+            "자기 구조와 실제 학습한 경로 정의 기준·미관측 공급/자리/권리/미래 결과는 미상");
+    }
+
     private ReadOnlyCollection<ResourceSourceView> ResourceSourcesFor(Person? actor, bool observer)
     {
         if (observer) return Array.AsReadOnly(state.Inventory.Sources.OrderBy(s => s.Id).Select(s =>
             new ResourceSourceView(s.Id, s.Place, s.Definition, I.InventoryDefinitions.Definition(s.Definition).Item.Name,
                 s.Activity, s.Remaining, Month, s.Origin, s.Capacity, s.Regeneration, s.Origin)).ToArray());
-        var sources = state.Inventory.Sources.ToDictionary(s => s.Id);
         return Array.AsReadOnly(state.Inventory.Observations.Where(o => o.Observer == actor!.Id && o.Month <= Month)
-            .GroupBy(o => o.Source).Select(g => g.OrderByDescending(o => o.Month).First()).Where(o => sources.ContainsKey(o.Source))
-            .OrderBy(o => o.Source).Select(o =>
-            {
-                var source = sources[o.Source];
-                return new ResourceSourceView(o.Source, o.Place, source.Definition, I.InventoryDefinitions.Definition(source.Definition).Item.Name,
-                    source.Activity, o.Remaining, o.Month, o.Evidence, null, null, null);
-            }).ToArray());
+            .GroupBy(o => o.Source).Select(g => g.OrderByDescending(o => o.Month).First()).OrderBy(o => o.Source)
+            .Select(o => new ResourceSourceView(o.Source, o.Place, o.Definition,
+                I.InventoryDefinitions.Items.TryGetValue(o.Definition, out var known) ? known.Item.Name : "원천 종류 미상·재탐사 필요",
+                o.Activity, o.Remaining, o.Month, o.Evidence, null, null, null)).ToArray());
     }
 
     private static ReadOnlyDictionary<string, int> ReadOnly(IDictionary<string, int> values) =>
@@ -247,6 +330,14 @@ public sealed partial class GameWorld
         var authority = K.KnowledgeAuthority.Restore(state.Knowledge);
         var personal = authority.ViewPersonal(p.Id, limit: 128);
         var accessible = authority.ViewAccessible(p.Id, p.Place, Month, limit: 128);
+        var media = accessible.Rows.Select(m =>
+        {
+            var appraisal = observer ? null : state.Inventory.Appraisals.Where(a => a.Appraiser == p.Id && a.Item == m.ItemId && a.Month <= Month)
+                .OrderByDescending(a => a.Month).FirstOrDefault();
+            int? quality = observer ? m.Quality : appraisal is null ? null : Array.IndexOf(Catalog.QualityNames.ToArray(), Catalog.Quality(appraisal.EstimatedQuality));
+            return new AccessibleBookView(m.ItemId, m.EditionId, m.WorkId, m.Title, quality, m.Rights,
+                observer ? m.ReadableChapterCount : null, observer ? m.Unreadable : null, observer ? Month : appraisal?.Month);
+        }).ToArray();
         var workIds = personal.Rows.Select(r => r.WorkId).Concat(accessible.Rows.Select(r => r.WorkId)).ToHashSet(StringComparer.Ordinal);
         var history = state.Knowledge.Memories.Where(m => m.PersonId == p.Id).OrderBy(m => m.Revision).ToArray();
         var practice = state.Knowledge.Mastery.Where(m => m.PersonId == p.Id).OrderBy(m => m.Revision).ToArray();
@@ -260,7 +351,7 @@ public sealed partial class GameWorld
         var works = state.Knowledge.Works.Where(w => workIds.Contains(w.Id)).Select(w => w with { Chapters = w.Chapters.ToArray() }).ToArray();
         var editions = observer ? state.Knowledge.Editions.Where(e => workIds.Contains(e.WorkId))
             .Select(e => e with { Chapters = e.Chapters.ToArray() }).ToArray() : null;
-        return new(personal.Rows, personal.Total, accessible.Rows, accessible.Total, Array.AsReadOnly(history), Array.AsReadOnly(practice),
+        return new(personal.Rows, personal.Total, Array.AsReadOnly(media), accessible.Total, Array.AsReadOnly(history), Array.AsReadOnly(practice),
             Array.AsReadOnly(evidence), Array.AsReadOnly(activities), Array.AsReadOnly(works), editions is null ? null : Array.AsReadOnly(editions));
     }
 }

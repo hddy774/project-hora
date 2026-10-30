@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "kind": "seonro-r06-short-functional-strategy-comparison",
+  "passed": true,
+  "version": "0.2.1",
+  "execution_claim": "짧은 공개 명령 기능 비교·실행 시간/성능/인구 성장 측정 없음",
+  "initial_month": 3,
+  "actor": 1,
+  "body": 2,
+  "declarations": {
+    "realm": "Qi",
+    "layer": 9,
+    "great_perfection": true,
+    "health": 50,
+    "current_damage": 500,
+    "past_events_fabricated": false
+  },
+  "laws": {
+    "birth.enabled": 0,
+    "ecology.foodUse": 0,
+    "ecology.regrowth": 0,
+    "ecology.spoilage": 0,
+    "ecology.disasterChance": 0,
+    "cultivation.entry": 1,
+    "cultivation.qi": 1,
+    "cultivation.foundation": 1,
+    "cultivation.upper": 100,
+    "cultivation.recovery": 0,
+    "cultivation.sourceCost": 2,
+    "cultivation.breakthroughRisk": 300,
+    "economy.craftDuration": 1,
+    "inventory.extractionWork": 1
+  },
+  "actual_common_pill": {
+    "item": 2089,
+    "producer_job": 2088,
+    "Quality": 5000,
+    "Source": "production:job:2088",
+    "consumed_inputs": [
+      {
+        "definition": "herb",
+        "quantity": 3
+      },
+      {
+        "definition": "wood",
+        "quantity": 1
+      }
+    ]
+  },
+  "strategies": [
+    {
+      "Strategy": "바로 형성",
+      "InitialStateHash": "da878f6800f90c8edc5e25c314221de43aa5db19e0762e64a76ef1e30acf1cb0",
+      "LogicalMonths": 5,
+      "QiEnergyConsumed": 20000,
+      "UnopenedQiConsumed": 8,
+      "PillConsumed": 0,
+      "PillRemaining": 1,
+      "PreparedRiskBps": 900,
+      "PreparedQuality": 5243,
+      "FinalFormationQuality": 5243,
+      "FinalDamage": 0,
+      "FinalHealth": 53,
+      "PrepareEvent": 2092,
+      "FormationEvent": 2095,
+      "RecoveryEvents": [],
+      "StabilizationEvents": [
+        2096,
+        2097,
+        2098
+      ],
+      "ReservedPhysicalItems": [],
+      "Phases": [
+        {
+          "Month": 0,
+          "Phase": "Prepared",
+          "Due": 0
+        },
+        {
+          "Month": 1,
+          "Phase": "Started",
+          "Due": 2
+        },
+        {
+          "Month": 2,
+          "Phase": "Stabilizing",
+          "Due": 3
+        },
+        {
+          "Month": 3,
+          "Phase": "Stabilizing",
+          "Due": 4
+        },
+        {
+          "Month": 4,
+          "Phase": "Stabilizing",
+          "Due": 5
+        },
+        {
+          "Month": 5,
+          "Phase": "Completed",
+          "Due": 6
+        }
+      ],
+      "SavedMonth": 1,
+      "SavedStateHash": "7098170f26ddedd2b72e51a189bb7d4ac91589a982b4eb705dc64a7bd7532745",
+      "SavedBytesSha256": "4da21b69783edc0a01e52d6c64fb935b7349d6a16d67222bbad9566c29c90bfa",
+      "FinalStateHash": "9de00e1496641324d93be3b3df82932e2be25c18b6ccb9354da6278afb0f8614",
+      "RestoredContinuationMatches": true
+    },
+    {
+      "Strategy": "현재 손상 회복 후 형성",
+      "InitialStateHash": "da878f6800f90c8edc5e25c314221de43aa5db19e0762e64a76ef1e30acf1cb0",
+      "LogicalMonths": 6,
+      "QiEnergyConsumed": 25000,
+      "UnopenedQiConsumed": 10,
+      "PillConsumed": 0,
+      "PillRemaining": 1,
+      "PreparedRiskBps": 780,
+      "PreparedQuality": 5493,
+      "FinalFormationQuality": 5493,
+      "FinalDamage": 0,
+      "FinalHealth": 55,
+      "PrepareEvent": 2093,
+      "FormationEvent": 2096,
+      "RecoveryEvents": [
+        2091
+      ],
+      "StabilizationEvents": [
+        2097,
+        2098,
+        2099
+      ],
+      "ReservedPhysicalItems": [],
+      "Phases": [
+        {
+          "Month": 1,
+          "Phase": "Prepared",
+          "Due": 1
+        },
+        {
+          "Month": 2,
+          "Phase": "Started",
+          "Due": 3
+        },
+        {
+          "Month": 3,
+          "Phase": "Stabilizing",
+          "Due": 4
+        },
+        {
+          "Month": 4,
+          "Phase": "Stabilizing",
+          "Due": 5
+        },
+        {
+          "Month": 5,
+          "Phase": "Stabilizing",
+          "Due": 6
+        },
+        {
+          "Month": 6,
+          "Phase": "Completed",
+          "Due": 7
+        }
+      ],
+      "SavedMonth": 2,
+      "SavedStateHash": "660ab22fcbe078dc10205ba51b721ea04a00f5093459ef0c02e101ce0cd96538",
+      "SavedBytesSha256": "d9d9fb6a4ed89d44571058454a24ba78eb8ee05d59abbfce2bb9b97e96b81062",
+      "FinalStateHash": "7d708087a88a2095fad8bfdc6fe312cb640ac21074eb94dfe8960f253c2c3ff0",
+      "RestoredContinuationMatches": true
+    },
+    {
+      "Strategy": "회복 후 실제 단약을 예약해 형성",
+      "InitialStateHash": "da878f6800f90c8edc5e25c314221de43aa5db19e0762e64a76ef1e30acf1cb0",
+      "LogicalMonths": 6,
+      "QiEnergyConsumed": 25000,
+      "UnopenedQiConsumed": 10,
+      "PillConsumed": 1,
+      "PillRemaining": 0,
+      "PreparedRiskBps": 530,
+      "PreparedQuality": 5493,
+      "FinalFormationQuality": 5493,
+      "FinalDamage": 0,
+      "FinalHealth": 55,
+      "PrepareEvent": 2093,
+      "FormationEvent": 2096,
+      "RecoveryEvents": [
+        2091
+      ],
+      "StabilizationEvents": [
+        2097,
+        2098,
+        2099
+      ],
+      "ReservedPhysicalItems": [
+        2089
+      ],
+      "Phases": [
+        {
+          "Month": 1,
+          "Phase": "Prepared",
+          "Due": 1
+        },
+        {
+          "Month": 2,
+          "Phase": "Started",
+          "Due": 3
+        },
+        {
+          "Month": 3,
+          "Phase": "Stabilizing",
+          "Due": 4
+        },
+        {
+          "Month": 4,
+          "Phase": "Stabilizing",
+          "Due": 5
+        },
+        {
+          "Month": 5,
+          "Phase": "Stabilizing",
+          "Due": 6
+        },
+        {
+          "Month": 6,
+          "Phase": "Completed",
+          "Due": 7
+        }
+      ],
+      "SavedMonth": 2,
+      "SavedStateHash": "ed40f9c14f5cb090a47a268695cdb2771e210a87fecf671375e0fafbb0fc6d82",
+      "SavedBytesSha256": "5e295a65df58b091e922bac6968378d92bd593ab44012a3cd37d7c9b8c6e7986",
+      "FinalStateHash": "f25cff520d41f8ed1fa66c78093c18b14762dcd80c633a72e42f430f3a7b91bf",
+      "RestoredContinuationMatches": true
+    }
+  ],
+  "source": {
+    "product_base_commit": "01e4cc745626cb52a171a7b6c7914204cac2586d",
+    "scenario": "tests/Chronicles.Game.Tests/Features/CultivationStrategyComparisonScenario.cs",
+    "scenario_sha256": "41e208e5774790a5652e3335d5c5ec230318e69a73523fb419f3e61ebbd9f440",
+    "command": "/workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release -- --filter 'R06 short functional' --report artifacts/r06-functional-tests.json",
+    "functional_result": {
+      "selected": 1,
+      "passed": 1,
+      "failed": 0
+    },
+    "actual_evidence_payload_sha256": "35eb0352af0b8768fce7dde88f00819bfeb9d00d15f18a8cd6ce68a2f78f098b",
+    "time_measurement_used": false,
+    "performance_or_population_growth_claim": false
+  }
+}

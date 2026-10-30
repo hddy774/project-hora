@@ -390,7 +390,8 @@ public sealed partial class GameWorld
             if (adopted is null) continue;
             var memory = state.Knowledge.Memories.FindLast(m => m.PersonId == p.Id && m.WorkId == work && m.Chapter == 1);
             knowledge.Add(new(work, adopted.EditionId.ToString(CultureInfo.InvariantCulture), adopted.PersonalRevision,
-                adopted.Comprehension * 100, adopted.Mastery * 100, adopted.Belief == KnowledgeBelief.Contradicted ? 10000 : 0,
+                adopted.Comprehension * 100, adopted.Mastery * 100,
+                adopted.Claim == CanonicalKnowledgeClaim(work) ? 0 : 8000,
                 memory is { Decoding: > 0, Comprehension: > 0 }, CanConsultKnowledge(p, work, adopted.EditionId), KnowledgeSource(p, work)));
         }
         var quantum = CultivationSourceQuantum(); var yield = CultivationParcel(place, quantum);
@@ -474,7 +475,42 @@ public sealed partial class GameWorld
     private CultivationPotential CultivationPotentialFor(Person p) =>
         CultivationQueries.Potential(state.Cultivation[p.BodyId], CultivationActorFor(p), CultivationContextFor(p));
 
-    private CombatProjection CultivationCombatFor(Person p)
+    private CultivationPotential CultivationPotentialFor(Person p, bool observer)
+    {
+        if (observer) return CultivationPotentialFor(p);
+        var knowledge = new List<KnowledgeEvidence>();
+        foreach (var work in Catalog.Paths.Select(x => x.Id).Prepend("entry"))
+        {
+            var adopted = KnowledgeFor(p, work);
+            var memory = state.Knowledge.Memories.FindLast(m => m.PersonId == p.Id && m.WorkId == work && m.Chapter == 1);
+            if (adopted is null || memory is not { Decoding: > 0, Comprehension: > 0 }) continue;
+            knowledge.Add(new(work, adopted.EditionId.ToString(CultureInfo.InvariantCulture), adopted.PersonalRevision,
+                adopted.Comprehension * 100, adopted.Mastery * 100, adopted.Belief == KnowledgeBelief.Contradicted ? 10000 : 0,
+                true, false, memory.SourceId));
+        }
+        // These are explicit neutral assumptions, not a fresh read of hidden personal aptitudes or the site.
+        var neutralActor = new CultivationActor { PersonId = p.Id, BodyId = p.BodyId, SoulId = p.SoulId,
+            Realm = p.Realm, Layer = p.Layer, GreatPerfection = p.GreatPerfection, Health = p.Health,
+            Status = p.Status, MartialStage = p.Martial };
+        var context = new CultivationContext { Month = Month, Knowledge = knowledge };
+        var potential = CultivationQueries.Potential(state.Cultivation[p.BodyId], neutralActor, context);
+        string[] externalChecks = ["right", "seat", "formation-site", "window", "self-control"];
+        return potential with
+        {
+            HasActualRecoverySupply = false,
+            KnownNextRoutes = potential.KnownNextRoutes.Select(route => route with
+            {
+                Missing = [.. route.Missing.Where(b => !externalChecks.Contains(b.Code, StringComparer.Ordinal)),
+                    new("unknown-site", "현재 공급·자리·사용권·형성 환경은 확인 전 미상", "실제 현장 관측·권리 확인·준비 검사")],
+                Condition = route.Condition + "; 기본 법칙/중립 수용 가정에 따른 조건부 계획"
+            }).ToArray(),
+            InformationBasis = "실제 자기 기억과 완료한 구조만 사용; 현재 환경·권한·숨은 자질은 미상, 중립 기본법칙을 가정"
+        };
+    }
+
+    private CombatProjection CultivationCombatFor(Person p) => CultivationCombatFor(p, true);
+
+    private CombatProjection CultivationCombatFor(Person p, bool observer)
     {
         var metadata = state.Cultivation[p.BodyId]; var effects = new List<CombatSourceEffect>();
         void Skill(string id, int value, params int[] axes)
@@ -494,10 +530,10 @@ public sealed partial class GameWorld
             var axes = p.Equipment.Where(e => e.Value == itemId).Select(e => e.Key switch
             { 0 or 1 => 0, 2 or 3 or 7 => 3, 4 => 5, 5 => 4, 6 => 2, _ => -1 }).Where(axis => axis >= 0).Distinct().ToArray();
             var multipliers = Enumerable.Repeat(10000L, 8).ToArray(); foreach (var axis in axes) multipliers[axis] += item.Quality * (100 - item.Damage) / 400;
-            effects.Add(new($"item:{item.Id}", state.Inventory.Effects.Count + item.Damage, default, CombatAxes.From(multipliers)));
+            effects.Add(new($"item:{item.Id}", metadata.Revision, default, CombatAxes.From(multipliers)));
         }
-        var traitEffects = PeopleEffects.Resolve(Traits.ActiveEffects(state.PeopleDomain.Traits, p.Id, Month)
-            .Where(e => e.Target.Domain == EffectDomain.Combat)).Applied;
+        var traitEffects = observer ? PeopleEffects.Resolve(Traits.ActiveEffects(state.PeopleDomain.Traits, p.Id, Month)
+            .Where(e => e.Target.Domain == EffectDomain.Combat)).Applied : [];
         foreach (var cause in traitEffects.GroupBy(e => e.Source.CauseId, StringComparer.Ordinal))
         {
             if (effects.Any(e => e.SourceId == cause.Key)) continue;
@@ -507,15 +543,19 @@ public sealed partial class GameWorld
                 else multiply[effect.Target.Index] = multiply[effect.Target.Index] * (10000 + effect.Amount) / 10000;
             effects.Add(new(cause.Key, cause.Max(e => e.Source.Revision), CombatAxes.From(add), CombatAxes.From(multiply)));
         }
+        if (!observer)
+            return CultivationQueries.Combat(metadata,
+                new() { PersonId = p.Id, BodyId = p.BodyId, SoulId = p.SoulId, Realm = p.Realm, Layer = p.Layer,
+                    GreatPerfection = p.GreatPerfection, Health = p.Health, Status = p.Status, MartialStage = p.Martial },
+                new(), new() { Name = "자기 기억·현재 구조/장비·중립 기준전·기본법칙 가정" }, effects);
         var formation = CultivationFormationAt(state.Places[p.Place], p);
-        var activeFrames = state.Inventory.Arrays.Where(a => a.Place == p.Place && a.Active && a.PaidUntil > Month)
-            .Select(a => a.Item).ToHashSet();
-        var defenses = state.Inventory.Effects.Where(e => e.Target == p.Place && e.Kind == "defense.place" && e.Start <= Month && Month < e.End)
+        var activeFrames = formation.Causes.ToHashSet(StringComparer.Ordinal);
+        var defenses = state.Inventory.Effects.Where(e => e.Kind == "defense.place" && e.Start <= Month && Month < e.End)
             .GroupBy(e => e.Cause, StringComparer.Ordinal).Select(g => g.OrderByDescending(e => e.Start).First());
         foreach (var defense in defenses)
         {
-            var array = state.Inventory.Arrays.FirstOrDefault(a => a.Place == p.Place && defense.Cause.StartsWith($"array:{a.Id}:", StringComparison.Ordinal));
-            if (array is null || !activeFrames.Contains(array.Item) || !items.TryGetValue(array.Item, out var frame) ||
+            var array = state.Inventory.Arrays.FirstOrDefault(a => defense.Cause.StartsWith($"array:{a.Id}:", StringComparison.Ordinal));
+            if (array is null || !activeFrames.Contains($"item:{array.Item}") || !items.TryGetValue(array.Item, out var frame) ||
                 frame.Damage >= 100 || (frame.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) != 0) continue;
             var cause = $"item:{frame.Id}";
             if (effects.Any(e => e.SourceId == cause)) continue;

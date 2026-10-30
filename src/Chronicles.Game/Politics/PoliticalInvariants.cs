@@ -10,6 +10,7 @@ public static class PoliticalInvariants
         if (state.Schema != 1) errors.Add("Unsupported political state schema.");
         if (context.Rules.PlacesPerProvince <= 0 || context.Rules.MaturityMonths < 0 || context.Rules.SectLimit < 0 ||
             context.Rules.FoundingTreasury < 0 || context.Rules.PolicyPreparationCost < 0 || context.Rules.PreparationMonths <= 0 ||
+            context.Rules.FamilyFounderMinimumRealm is < 0 or > (int)Realm.HalfImmortal ||
             context.Rules.PreparationWorkers <= 0 || context.Rules.TaxBasisPoints is < 0 or > 10000 ||
             context.Rules.TributeBasisPoints is < 0 or > 10000 || context.Rules.BaseSalary < 0 ||
             context.Rules.ActivityGrant < 0 || context.Rules.ReliefThreshold < 0)
@@ -43,6 +44,9 @@ public static class PoliticalInvariants
         }
         foreach (var p in context.Places)
         {
+            if (p.Owner != 0 && !context.People.Any(person => person.Id == p.Owner) && !context.Groups.Any(g => g.Id == p.Owner && !g.Dissolved) ||
+                p.Operator != 0 && !context.People.Any(person => person.Id == p.Operator) && !context.Groups.Any(g => g.Id == p.Operator && !g.Dissolved))
+                errors.Add("Property and operation rights require actual personal estates or current organizational holders.");
             if (p.Sovereign != 0 && !context.Groups.Any(g => !g.Dissolved && g.Kind == GroupKind.Dynasty && g.Id == p.Sovereign && g.Provinces.Contains(p.Province)))
                 errors.Add("Sovereign places require an actual dynasty and controlled province.");
             if (p.Delegate != 0 && (p.Sovereign == 0 || !context.Groups.Any(g => !g.Dissolved && g.Id == p.Delegate)))

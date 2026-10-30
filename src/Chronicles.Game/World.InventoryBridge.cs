@@ -281,6 +281,7 @@ public sealed partial class GameWorld
     { p.Action = ActionKind.Idle; p.ActionTarget = 0; p.ActionData = ""; p.Due = 0; }
     private bool CompleteInventory(Person p)
     {
+        if (p.Due > Month) return false;
         var job = state.Inventory.Jobs.SingleOrDefault(j => j.Id == p.ActionTarget && j.Actor == p.Id);
         if (job is not null)
         {
@@ -315,6 +316,9 @@ public sealed partial class GameWorld
         if (cargo.Status == "open")
         {
             var route = items.TryGetValue(cargo.Item, out var physicalCargo) && physicalCargo.Place == -1 && p.Place == cargo.Origin && !p.Sealed && state.Places[p.Place].Neighbors.Contains(cargo.Destination) && state.Places[cargo.Destination].BlockedUntil <= Month;
+            if (route && p.Realm >= Realm.Mahayana && p.Place / 10 != cargo.Destination / 10 && Math.Max(p.Place, cargo.Destination) >= 90 &&
+                Roll(10000) < Law("hazard.portalChance"))
+            { EndLife(p, 10, "실제 운송 통로 붕괴·육신 유지 불가"); return true; }
             if (route) { state.Places[p.Place].PeopleRevision++; p.Place = cargo.Destination; state.Places[p.Place].PeopleRevision++; p.LastPeopleRevision = -1; RefreshPopulationIndices(); Observe(p); }
             var error = RunInventory(new FinishTransport(InventoryNonce("delivery", p.Id), p.Id, cargo.Id, route), out _);
             if (error is not null) RunInventory(new FinishTransport(InventoryNonce("delivery-failed", p.Id), p.Id, cargo.Id, false), out _);
@@ -375,6 +379,11 @@ public sealed partial class GameWorld
         foreach (var item in state.Items)
         {
             if (item.Damage < 100 && (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0) continue;
+            foreach (var array in state.Inventory.Arrays.Where(a => a.Item == item.Id))
+            {
+                array.Condition = 0; array.Active = false;
+                state.Inventory.Effects.RemoveAll(e => e.Cause.StartsWith($"array:{array.Id}:", StringComparison.Ordinal));
+            }
             foreach (var person in state.People)
                 foreach (var slot in person.Equipment.Where(e => e.Value == item.Id).Select(e => e.Key).ToArray()) person.Equipment.Remove(slot);
             foreach (var child in state.Items.Where(i => i.Container == item.Id).ToArray())

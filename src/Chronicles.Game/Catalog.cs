@@ -50,6 +50,7 @@ public static class Catalog
         new("armor", "호신갑 제작", "smith", "armor", 1, [new("ore", 4), new("cloth", 2)])
         ,new("soulWard", "양혼부 제작", "talisman", "soulWard", 1, [new("paper", 3), new("herb", 5)])
     ]);
+    public static IReadOnlyList<Recipe> BaseRecipes => Recipes;
 
     private static System.Collections.ObjectModel.ReadOnlyCollection<PathDefinition> BuildPaths()
     {

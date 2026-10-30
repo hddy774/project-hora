@@ -206,6 +206,18 @@ public sealed class ContractPrivacyProjectionScenario : IFeatureScenario
     public string Name => "INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory";
     public void Run()
     {
+        var own = GameWorld.Create(); var ownState = own.Checkpoint(); var seller = ownState.People[0].Id;
+        var unappraised = ownState.Items.First(i => i.Owner == seller && i.Definition == "food");
+        QueryFixture.Accepted(own, "possess", seller);
+        QueryFixture.Check(own.View().Items.Single(i => i.Id == unappraised.Id).QualityValue is null, "Unappraised ownership exposed actual quality.");
+        QueryFixture.Accepted(own, "offer", seller, unappraised.Id, 19, "sale");
+        var ownOffer = own.View().Contracts.Single();
+        QueryFixture.Check(ownOffer.ItemQuality == "미감정" && own.View().Items.Single(i => i.Id == unappraised.Id).QualityValue is null,
+            "Advertising an unappraised owned item exposed its authority quality.");
+        QueryFixture.Accepted(own, "withdraw", seller, ownOffer.Id);
+        QueryFixture.Check(own.View().Items.Single(i => i.Id == unappraised.Id).QualityValue is null &&
+            own.View().Contracts.Single().ItemQuality is null or "미감정", "Withdrawing an advertisement created appraisal knowledge.");
+
         var world = GameWorld.Create(); var state = world.Checkpoint(); var a = state.People[0].Id; var b = state.People[1].Id;
         var food = state.Items.First(i => i.Owner == b && i.Definition == "food");
         QueryFixture.Accepted(world, "offer", b, food.Id, 17, "sale");
@@ -222,5 +234,58 @@ public sealed class ContractPrivacyProjectionScenario : IFeatureScenario
         QueryFixture.Check(before == QueryFixture.Json(GameWorld.Restore(changed).View()), "Closed sale read a buyer's later private inventory.");
         QueryFixture.Check(world.View().Contracts.Single(c => c.Id == contract.Id).ItemQuantity == food.Quantity,
             "Immutable advertised quantity was lost after the sale closed.");
+    }
+}
+
+public sealed class PrivateCommandPerceptionRevisionScenario : IFeatureScenario
+{
+    public string Name => "INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context";
+    public void Run()
+    {
+        var world = GameWorld.Create(); var initial = world.Checkpoint(); var a = initial.People[0].Id; var b = initial.People[1].Id;
+        QueryFixture.Accepted(world, "possess", a);
+        var before = world.View(a); var state = world.Checkpoint();
+        var food = state.Items.First(i => i.Owner == b && i.Definition == "food");
+        var privateChange = Chronicles.Game.Inventory.InventoryEngine.Apply(
+            Chronicles.Game.Inventory.InventoryState.FromWorld(state, state.Inventory),
+            new Chronicles.Game.Inventory.SplitInventoryItem("query.private-npc.split", b, food.Id, 1));
+        QueryFixture.Check(privateChange.Accepted, privateChange.Message);
+        state.Inventory = privateChange.State.ApplyTo(state);
+        var changed = GameWorld.Restore(state); var after = changed.View(a);
+        QueryFixture.Check(QueryFixture.Json(before) == QueryFixture.Json(after), "A real unobserved NPC inventory command changed the player's response or token.");
+        var tool = changed.Checkpoint().Items.Single(i => i.Owner == a && i.Definition == "tool");
+        var result = changed.Execute(new("query.valid-own-context", a, "equip", tool.Id, ExpectedRevision: before.Revision));
+        QueryFixture.Check(result.Accepted, "The still-current personal context token was unusable after a private NPC command: " + result.Message);
+        QueryFixture.Check(result.Revision == changed.View().Revision && changed.Checkpoint().People[0].Equipment.ContainsValue(tool.Id),
+            "The own command result exposed a global revision or did not commit its real equipment change.");
+    }
+}
+
+public sealed class PersonalOperationalContextScenario : IFeatureScenario
+{
+    public string Name => "INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations";
+    public void Run()
+    {
+        var state = GameWorld.Create().Checkpoint(); var a = state.People[0].Id; var b = state.People[1].Id;
+        state.Controlled = a;
+        state.Relations.Add(new(a, b, 0, 0, 0, 0, 0, 0, 0, "창세의 실제 도려 관계"));
+        state.Relations.Add(new(b, a, 40, 70, 0, 0, 0, 0, 0, "상대의 비공개 관계 상태"));
+        var world = GameWorld.Restore(state); var before = world.View(a);
+        QueryFixture.Check(before.Detail!.SocialRelations.Single().Observer == a && before.Detail.Decision is not null,
+            "Own directional social/decision context was omitted.");
+        var changed = world.Checkpoint();
+        changed.Places[0].Qi = 0; changed.Places[0].Turbidity = 99; changed.Places[0].Owner = b;
+        changed.CultivationSupply[0] = default;
+        changed.Inventory.Effects.Add(new("query.private-effect", b, "defense", 7, 0, 1));
+        changed.Relations[1] = changed.Relations[1] with { Trust = -90, Affection = -70, Grievance = 90 };
+        changed.People[1].Mood = -80;
+        changed.People[1].DecisionCandidates = [new("비공개 후보", 9999, "새로운 비공개 판단 근거")];
+        var hidden = GameWorld.Restore(changed);
+        QueryFixture.Check(QueryFixture.Json(before) == QueryFixture.Json(hidden.View(a)), "Fresh hidden site/NPC/other-direction facts affected own projected context.");
+        QueryFixture.Check(hidden.View(b).Detail!.Decision is null && hidden.View(b).Detail!.SocialRelations.All(r => r.Observer == a),
+            "NPC reasoning or reverse private emotion leaked through selected-person detail.");
+        QueryFixture.Accepted(hidden, "observe");
+        QueryFixture.Check(hidden.View(a).Detail!.Potential!.HasActualRecoverySupply == false &&
+            hidden.View(a).Places.First(p => p.Id == 0).Qi == 0, "Observer lost the actual changed environment.");
     }
 }

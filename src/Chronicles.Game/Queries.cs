@@ -254,14 +254,16 @@ public sealed partial class GameWorld
                     r.Observer == actor!.Id && actor.KnownPeople.Contains(r.Other) && (p.Id == actor.Id || r.Other == p.Id))).ToArray())
             };
         }
-        return new(ProductInfo.KoreanTitle, ProductInfo.Version, Month, Revision, ViewGeneration, state.Controlled, observer,
+        var projection = new GameView(ProductInfo.KoreanTitle, ProductInfo.Version, Month, Revision, ViewGeneration, state.Controlled, observer,
             observer ? StateHash() : "", peopleView, placesView, itemView, groupView, contracts, events,
             observer ? state.Census.TakeLast(600).ToArray() : [], laws, detail,
             observer ? state.Souls.Select(s => new SoulView(s.Id, s.Parent, s.Root, s.CurrentPerson, s.Status, s.Route, s.Evidence)).ToArray() : [],
             Catalog.Paths.Where(path => observer || actor!.Understanding.GetValueOrDefault(path.Id) > 0).ToArray())
         {
             LawHistory = observer ? Array.AsReadOnly(state.LawHistory.ToArray()) : [],
-            CombatAxisNames = detail?.CombatProjection is null ? null : C.CultivationQueries.AxisNames,
+            // Every combat value exposed here comes from the canonical projection. Public labels must not
+            // depend on which detail is open: navigation is excluded from the personal command token.
+            CombatAxisNames = C.CultivationQueries.AxisNames,
             TraitNames = new ReadOnlyDictionary<string, string>(P.TraitCatalog.All.ToDictionary(t => t.Id, t => t.Name, StringComparer.Ordinal)),
             Recipes = Array.AsReadOnly(I.InventoryDefinitions.Recipes.Values.OrderBy(r => r.Id, StringComparer.Ordinal).Select(r =>
                 new RecipeView(r.Id, Catalog.Recipes.FirstOrDefault(legacy => legacy.Id == r.Id)?.Name ?? I.InventoryDefinitions.Definition(r.Output).Item.Name + " 제작",
@@ -270,6 +272,7 @@ public sealed partial class GameWorld
                         new RecipeInputView(input.Key, I.InventoryDefinitions.Definition(input.Key).Item.Name, input.Value)).ToArray()))).ToArray()),
             ResourceSources = ResourceSourcesFor(actor, observer)
         };
+        return observer ? projection : projection with { Revision = PerceptionRevision(projection) };
     }
 
     private static CultivationDetail ProjectCultivation(C.CultivationInspection source, bool observer)

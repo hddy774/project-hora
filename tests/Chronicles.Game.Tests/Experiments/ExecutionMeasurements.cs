@@ -23,8 +23,10 @@ internal static class ExecutionMeasurements
             throw new ArgumentException("이전/부분 결과를 보존하도록 새 출력 경로를 지정하세요.", nameof(request));
         if (request.Repetitions < 1 || request.Populations.Length == 0 ||
             request.Populations.Distinct().Count() != request.Populations.Length ||
-            request.Populations.Any(n => !SyntheticPopulationFixture.Sizes.Contains(n)))
+            request.Populations.Any(n => !SyntheticPopulationFixture.Sizes.Contains(n)) ||
+            request.SelectedExperiment is not (null or "EX-01" or "EX-02" or "EX-04"))
             throw new ArgumentException("지원 규모와 독립 반복 수를 명시하세요.", nameof(request));
+        var experiments = request.SelectedExperiment is { } single ? new[] { single } : new[] { "EX-01", "EX-02", "EX-04" };
         var began = Stopwatch.GetTimestamp(); var host = ExecutionMeasurementHost.Capture(); var rows = new List<ExecutionMeasuredVariant>();
         var finished = new List<string>(); var requestedComplete = false; string? failure = null;
         void Save() => ExecutionMeasurementHost.Write(request.OutputPath, new
@@ -32,6 +34,8 @@ internal static class ExecutionMeasurements
             schema_version = 1, kind = "seonro-execution-ex01-ex02-ex04", failure, host,
             complete = requestedComplete && request.Populations.Order().SequenceEqual(SyntheticPopulationFixture.Sizes),
             requested_complete = requestedComplete,
+            requested_experiments = experiments,
+            all_owned_experiments_complete = requestedComplete && experiments.Length == 3 && request.Populations.Order().SequenceEqual(SyntheticPopulationFixture.Sizes),
             total_elapsed_nanoseconds = checked((long)((Int128)(Stopwatch.GetTimestamp() - began) * 1_000_000_000 / Stopwatch.Frequency)),
             requested_populations = request.Populations, repetitions = request.Repetitions, finished, rows,
             adoption = "revisit", mandatory_population_baseline_replacement = false,
@@ -44,19 +48,34 @@ internal static class ExecutionMeasurements
             {
                 for (var repetition = 0; repetition < request.Repetitions; repetition++)
                 {
-                    var initial = SyntheticPopulationFixture.Build(population);
-                    WorldPair("EX-01", initial, [], population, repetition, host, rows);
-                    finished.Add($"EX-01:population:{population}:repetition:{repetition}"); Save();
-                    var lifecycle = LifecycleFixture(population);
-                    WorldPair("EX-02", lifecycle.Initial, lifecycle.Script, population, repetition, host, rows);
-                    finished.Add($"EX-02:population:{population}:repetition:{repetition}"); Save();
-                    TalentWorld(initial, population, repetition, host, rows);
-                    finished.Add($"EX-04:population:{population}:repetition:{repetition}"); Save();
+                    GameState? initial = null;
+                    if (experiments.Contains("EX-01"))
+                    {
+                        initial = SyntheticPopulationFixture.Build(population);
+                        WorldPair("EX-01", initial, [], population, repetition, host, rows);
+                        finished.Add($"EX-01:population:{population}:repetition:{repetition}"); Save();
+                    }
+                    if (experiments.Contains("EX-02"))
+                    {
+                        var lifecycle = LifecycleFixture(population);
+                        WorldPair("EX-02", lifecycle.Initial, lifecycle.Script, population, repetition, host, rows);
+                        finished.Add($"EX-02:population:{population}:repetition:{repetition}"); Save();
+                    }
+                    if (experiments.Contains("EX-04"))
+                    {
+                        initial ??= SyntheticPopulationFixture.Build(population);
+                        TalentWorld(initial, population, repetition, host, rows);
+                        finished.Add($"EX-04:population:{population}:repetition:{repetition}"); Save();
+                    }
                 }
             }
             // The direct numerical cases add explicit empty, small, vector-boundary and larger batches.
-            TalentKernel(SyntheticPopulationFixture.Build(2), host, rows, request.Repetitions);
-            finished.Add("EX-04:direct-kernel-boundaries"); requestedComplete = true; Save();
+            if (experiments.Contains("EX-04"))
+            {
+                TalentKernel(SyntheticPopulationFixture.Build(2), host, rows, request.Repetitions);
+                finished.Add("EX-04:direct-kernel-boundaries");
+            }
+            requestedComplete = true; Save();
         }
         catch (Exception e)
         { failure = e.GetType().Name + ": " + e.Message; Save(); throw; }

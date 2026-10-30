@@ -2,7 +2,7 @@
 
 이 문서는 측정 진입점과 비용 범위다. 이번 변경에서 측정·대량 인구·성장·장기 실행은 하지 않았다. Release 빌드와 두 시조의 짧은 EX02 생사 초기조건 1/1, 실제 EX04 backend 선택 기능 검사 1/1을 확인했다. 실제 수치·속도 채택·회귀 예산은 별도 결과가 나온 뒤 판단한다. EX03·05·06은 별도 담당자의 소스로 연결한다.
 
-테스트 assembly의 명시적 진입점은 `ExecutionMeasurements.Run(new ExecutionMeasurementRequest(outputPath, populations, repetitions))`다. 자동 기능 발견은 이 메서드를 호출하지 않는다. 지원 규모는 기존의 명시 합성 초기조건 2/100/1,000/10,000명이며, 반복은 같은 프로세스의 독립적인 새 세계다. 다른 프로세스·PC/Android 반복으로 주장하지 않는다. 앞선 기능 검사/JIT·공유 캐시의 영향 가능성을 환경에 적는다.
+테스트 assembly의 명시적 진입점은 `ExecutionMeasurements.Run(new ExecutionMeasurementRequest(outputPath, populations, repetitions, selectedExperiment))`다. 마지막 값은 `EX-01`/`EX-02`/`EX-04` 하나 또는 세 실험 모두를 뜻하는 null이다. 자동 기능 발견은 이 메서드를 호출하지 않는다. 지원 규모는 기존의 명시 합성 초기조건 2/100/1,000/10,000명이며, 반복은 같은 프로세스의 독립적인 새 세계다. 다른 프로세스·PC/Android 반복으로 주장하지 않는다. 앞선 기능 검사/JIT·공유 캐시의 영향 가능성을 환경에 적는다.
 
 | 실험 | 실제 비교 |
 | --- | --- |
@@ -15,7 +15,7 @@ EX02의 추가 선언은 `birth.enabled=1`, `birth.fertility=100`, 첫 시조의
 
 실제 `PeopleAptitude` 비교의 backend 선택은 internal 검증 옵션뿐이다. 일반 앱 명령·세이브·선천값·학습·수행 권한을 추가하지 않으며, 제품 기본 backend는 스칼라다. 모든 후보 출력은 기존 배치의 정본 검증과 현재 source/인물/몸/영혼/슬롯/생사/revision 검사를 거친다. 실패/미지원의 표본은 스칼라 대체까지 지불한 실제 비용이며 실패한 숫자를 적용하지 않는다.
 
-측정 시작 시 Release·수정/미추적 파일 없는 실제 git commit을 검사한다. 제품 fingerprint는 기존 릴리스 검증기의 `fingerprint --commit`에서 가져온다. 새 출력 경로만 허용하여 옛 실패·부분 결과를 덮어쓰지 않는다. 각 완료 실험 직후 pending 파일을 원자 교체하고 예외가 있으면 `failure`와 `complete:false`를 보존한다. 요청 규모 일부만 끝난 결과는 `requested_complete`로 구분하며 네 규모 전부가 없으면 `complete:true`가 되지 않는다.
+측정 시작 시 Release·수정/미추적 파일 없는 실제 git commit을 검사한다. 제품 fingerprint는 기존 릴리스 검증기의 `fingerprint --commit`에서 가져온다. 새 출력 경로만 허용하여 옛 실패·부분 결과를 덮어쓰지 않는다. 각 완료 실험 직후 pending 파일을 원자 교체하고 예외가 있으면 `failure`와 `complete:false`를 보존한다. 요청 규모 일부만 끝난 결과는 `requested_complete`로 구분하며 네 규모 전부가 없으면 `complete:true`가 되지 않는다. 선택 실험은 `requested_experiments`, 세 실험·네 규모 모두의 완료는 별도의 `all_owned_experiments_complete`로 구분한다.
 
 월 진행/명령 표본은 실제 권위 호출 전체와 내부 열·큐·캐시·fingerprint·배치 검증·게시 비용을 포함한다. fixture/restore, 별도 예열, 관찰용 clone/hash/digest, 최종 불변식·GC·보고는 표본 밖이다. 직접 커널의 요청 index 배열 생성도 제외한다. 상위 전체 시간은 소스 확인·fixture·예열·GC·앞선 보고 쓰기를 포함하고 마지막 보고 쓰기만 제외한다. 반환값 비교의 비용과 측정 밖 준비를 숨기지 않는다.
 

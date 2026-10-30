@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Chronicles.Game.Tests.Experiments;
 
-internal sealed record ExecutionMeasurementRequest(string OutputPath, int[] Populations, int Repetitions = 1);
+internal sealed record ExecutionMeasurementRequest(string OutputPath, int[] Populations, int Repetitions = 1, string? SelectedExperiment = null);
 internal sealed record ExperimentHostIdentity(string Commit, string ProductSourceFingerprint, string Runtime, string Device,
     string OperatingSystem, string Architecture, int CpuCount, string ThermalState, string PowerState, string ProcessScope);
 internal sealed record AllocationSample(long Operation, long CurrentThreadBytes);

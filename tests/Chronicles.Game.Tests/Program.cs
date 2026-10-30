@@ -6,9 +6,12 @@ using Chronicles.Game.Tests;
 
 var results = new List<object>();
 var failed = 0;
+var filterPosition = Array.IndexOf(args, "--filter");
+var selectedScenario = filterPosition >= 0 && filterPosition + 1 < args.Length ? args[filterPosition + 1] : null;
 void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
 void Test(string name, Action body)
 {
+    if (selectedScenario is not null && !name.Contains(selectedScenario, StringComparison.OrdinalIgnoreCase)) return;
     var sw = Stopwatch.StartNew();
     try { body(); results.Add(new { name, passed = true, ms = sw.ElapsedMilliseconds }); Console.WriteLine($"PASS {name}"); }
     catch (Exception e) { failed++; results.Add(new { name, passed = false, error = e.ToString() }); Console.WriteLine($"FAIL {name}: {e}"); }
@@ -299,8 +302,9 @@ foreach (var feature in FeatureScenarioCatalog.Discover()) Test(feature.Name, fe
 if (args.Contains("--report", StringComparer.Ordinal))
 {
     var index = Array.IndexOf(args, "--report");
-    File.WriteAllText(args[index + 1], JsonSerializer.Serialize(new { total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));
+    File.WriteAllText(args[index + 1], JsonSerializer.Serialize(new { selection = selectedScenario ?? "all", total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));
 }
+if (results.Count == 0) throw new ArgumentException("일치하는 기능 시나리오가 없습니다.");
 Console.WriteLine($"RESULT {results.Count - failed}/{results.Count}");
 if (failed == 0 && args.Contains("--performance", StringComparer.Ordinal))
     PerformanceScenarios.Run(args[Array.IndexOf(args, "--performance") + 1]);

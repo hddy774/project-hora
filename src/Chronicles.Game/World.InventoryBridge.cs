@@ -73,7 +73,7 @@ public sealed partial class GameWorld
         foreach (var old in state.Contracts.OrderBy(c => c.Id))
         {
             var reservation = old.Status == "open" ? Id() : 0;
-            var contract = new InventoryContract { Id = old.Id, Kind = old.Kind, Seller = old.Seller, Buyer = old.Buyer,
+            var contract = new InventoryContract { Id = old.Id, Kind = old.Kind, Seller = old.Seller, Buyer = old.Kind == "transport" && old.Buyer == 0 ? old.Seller : old.Buyer,
                 Carrier = old.Carrier, Item = old.Item, Origin = old.Destination, Destination = old.Destination,
                 Price = old.Price, Escrow = old.Escrow, Due = old.Due, Status = old.Status, Reservation = reservation };
             if (items.TryGetValue(old.Item, out var item))
@@ -138,6 +138,16 @@ public sealed partial class GameWorld
         }
         return inventory;
     }
+    private bool InventoryAccessible(Person p, long id, out Item item, ItemKind? kind = null)
+    {
+        var view = new InventoryState { Month = Month, NextId = state.NextId, Revision = Revision,
+            Items = state.Items, People = state.People, Materials = state.Materials, Ledger = state.Inventory };
+        if (items.TryGetValue(id, out var found) && (kind is null || InventoryDefinitions.Definition(found.Definition).Item.Kind == kind) &&
+            InventoryEngine.IsAccessible(view, p.Id, id)) { item = found; return true; }
+        item = null!; return false;
+    }
+    private int AvailableInventory(Person p, string definition) => Owned(p.Id).Where(i => i.Definition == definition &&
+        InventoryAccessible(p, i.Id, out _)).Sum(i => i.Quantity);
     private void ApplyInventory(InventoryState inventory)
     {
         state.Inventory = inventory.ApplyTo(state); Reindex(); ProjectInventorySources(); ProjectInventoryContracts();

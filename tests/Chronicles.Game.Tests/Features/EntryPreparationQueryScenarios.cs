@@ -23,6 +23,8 @@ public sealed class EntryPreparationKnownRouteScenario : IFeatureScenario
         QueryFixture.Check(detail.Understanding!.GetValueOrDefault("path.1.0") == 0 &&
             !world.Checkpoint().Knowledge.Memories.Any(m => m.PersonId == pupil && m.WorkId == "path.1.0"),
             "A sensing choice manufactured Qi-method knowledge.");
+        QueryFixture.Check(world.View(pupil).Paths.All(p => p.Id != "path.1.0"),
+            "A sensing operation exposed an unlearned Qi-method definition as learned knowledge.");
         QueryFixture.Check(route.ParentQualityCarried is null && route.MinimumSupplyToStart is null && route.Missing is null &&
             detail.Potential.HasActualRecoverySupply is null, "Personal sensing exposed authority appraisal or live site preflight.");
         QueryFixture.Check(world.StateHash() == before, "Entry projection changed authority, IDs or RNG.");

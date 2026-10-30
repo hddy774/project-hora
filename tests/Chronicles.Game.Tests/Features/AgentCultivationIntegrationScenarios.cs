@@ -38,7 +38,7 @@ internal static class AgentCultivationFixture
                 "Explicit month-zero hidden comparison knowledge failed.");
             state.Knowledge = authority.Checkpoint();
         }
-        pupil.Personality = new int[14]; foreach (var axis in new[] { 1, 8, 11, 13 }) pupil.Personality[axis] = 100;
+        pupil.Personality = new int[14]; foreach (var axis in new[] { 1, 8, 10, 11, 13 }) pupil.Personality[axis] = 100;
         AgentPlanningFixture.Stock(state, pupil.Id, "food", 100); // Declared finite test stock; no economy or growth claim.
         world = GameWorld.Restore(state); Accept(world, pupil.Id, "possess"); world.AdvanceTo(1);
         Accept(world, pupil.Id, "observe"); Accept(world, teacher.Id, "cancel");
@@ -130,6 +130,10 @@ public sealed class AgentCultivationTeachingScenario : IFeatureScenario
         {
             world.AdvanceTo(world.Month + 1); replay.AdvanceTo(replay.Month + 1);
             AgentCultivationFixture.Check(world.StateHash() == replay.StateHash(), "Repeated teaching/next-realm planning failed deterministic resume.");
+            var current = world.Checkpoint();
+            if ((current.Knowledge.Memories.LastOrDefault(m => m.PersonId == pupil && m.WorkId == "path.1.0")?.Comprehension ?? 0) < 10)
+                AgentCultivationFixture.Check(!current.Knowledge.Activities.Any(a => a.ActorId == pupil && a.WorkId == "path.1.0" && a.Kind == KnowledgeActivityKind.Practice),
+                    "AI trained a Qi method at the production-only one-percent threshold.");
         }
         state = world.Checkpoint(); var p = state.People.Single(p => p.Id == pupil);
         var lessons = state.Knowledge.Activities.Where(a => a.ActorId == pupil && a.WorkId == "path.1.0" && a.Kind == KnowledgeActivityKind.Teaching && a.Status == KnowledgeActivityStatus.Completed).ToArray();
@@ -139,6 +143,58 @@ public sealed class AgentCultivationTeachingScenario : IFeatureScenario
             p.Realm == Realm.Foundation && next is { Kind: AttemptKind.RealmBreakthrough, Knowledge.WorkId: "path.2.0" } && next.Knowledge.Understanding >= 1000,
             "AI used production's one-percent threshold, omitted paid repeated lessons, or never chose the next real breakthrough.");
         AgentCultivationFixture.Check(p.Decisions.All(d => d.Expansions <= state.Laws["ai.planBudget"]), "Learning/entry planning exceeded its actual search budget.");
+        AgentCultivationFixture.Validate(world);
+    }
+}
+
+public sealed class AgentCultivationRelearningScenario : IFeatureScenario
+{
+    public string Name => "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다";
+    public void Run()
+    {
+        var (world, pupil, teacher) = AgentCultivationFixture.Create();
+        AgentCultivationFixture.Accept(world, pupil, "observe"); AgentCultivationFixture.Accept(world, teacher, "cancel");
+        AgentCultivationFixture.Accept(world, teacher, "teach", pupil, 10, "path.1.0"); AgentCultivationFixture.Accept(world, pupil, "possess");
+        world.AdvanceTo(world.Month + 10);
+        AgentCultivationFixture.Accept(world, pupil, "observe"); AgentCultivationFixture.Accept(world, teacher, "cancel");
+        AgentCultivationFixture.Accept(world, 0, "law", value: 10000, data: "knowledge.misreadChance");
+        var state = world.Checkpoint(); var p = state.People.Single(p => p.Id == pupil);
+        // This one failure-boundary setup is declared, not claimed as an earned realm or a growth result.
+        WorldScenarioFixtures.SetCultivation(state, p, Realm.Qi, 9, true);
+        foreach (var other in state.People.Where(p => p.Id != pupil)) { other.Action = ActionKind.Guard; other.Due = state.Month + 1000; }
+        var book = state.Items.First(i => i.Owner == teacher && i.Definition == "path.2.0"); book.Owner = pupil;
+        if (state.Inventory.Metadata.FirstOrDefault(m => m.Item == book.Id) is { } metadata) metadata.Custodian = pupil;
+        var authority = KnowledgeAuthority.Restore(state.Knowledge);
+        AgentCultivationFixture.Check(authority.SynchronizeMedium(book.Id, pupil, p.Place, 3, [], false, false, state.Month,
+            "fixture:declared-foundation-book-transfer").Applied, "Declared physical medium transfer was inconsistent.");
+        state.Knowledge = authority.Checkpoint(); state.Controlled = pupil;
+        world = GameWorld.Restore(state);
+        AgentCultivationFixture.Accept(world, pupil, "study", book.Id, 10); world.AdvanceTo(world.Month + 10);
+        var bad = world.Checkpoint().Knowledge.Memories.Last(m => m.PersonId == pupil && m.WorkId == "path.2.0");
+        AgentCultivationFixture.Check(bad.Comprehension == 10 && bad.Belief == KnowledgeBelief.Unverified, "Actual initial misreading fixture did not preserve an untested belief.");
+        AgentCultivationFixture.Accept(world, pupil, "observe"); world.AdvanceTo(world.Month + 1);
+        state = world.Checkpoint(); p = state.People.Single(p => p.Id == pupil);
+        AgentCultivationFixture.Check(p.Beliefs.GetValueOrDefault("cultivation:lastFailure")?.Source.Contains(":codes:interpretation", StringComparison.Ordinal) == true &&
+            state.Cultivation[p.BodyId].Attempt is null && state.Knowledge.Memories.Last(m => m.PersonId == pupil && m.WorkId == "path.2.0").Claim == bad.Claim,
+            "A real preflight rejection either went unobserved or rewrote personal interpretation without learning.");
+        var replay = GameCodec.Decode(GameCodec.Encode(world));
+        for (var i = 0; i < 20 && world.Checkpoint().Cultivation[p.BodyId].Attempt is null; i++)
+        {
+            world.AdvanceTo(world.Month + 1); replay.AdvanceTo(replay.Month + 1);
+            AgentCultivationFixture.Check(world.StateHash() == replay.StateHash(), "Saved preflight rejection/relearning diverged.");
+        }
+        state = world.Checkpoint(); var corrected = state.Knowledge.Memories.Last(m => m.PersonId == pupil && m.WorkId == "path.2.0");
+        AgentCultivationFixture.Check(corrected.Claim != bad.Claim && corrected.Comprehension >= 10 &&
+            state.Knowledge.Memories.Any(m => m.PersonId == pupil && m.Revision == bad.Revision && m.Claim == bad.Claim) &&
+            state.Knowledge.Activities.Count(a => a.ActorId == pupil && a.WorkId == "path.2.0" && a.Kind == KnowledgeActivityKind.Study && a.Status == KnowledgeActivityStatus.Completed) >= 11 &&
+            state.Cultivation[p.BodyId].Attempt?.Knowledge.Revision == corrected.Revision,
+            "Actual reading time/rights, preserved history or prepared revision differ: " + JsonSerializer.Serialize(new
+            {
+                world.Month, corrected.Comprehension, corrected.Revision, corrected.Claim,
+                attempt = state.Cultivation[p.BodyId].Attempt,
+                actor = state.People.Where(p => p.Id == pupil).Select(p => new { p.Action, p.Goal, p.Reason, p.Plan, p.Beliefs }),
+                studyMonths = state.Knowledge.Activities.Where(a => a.ActorId == pupil && a.WorkId == "path.2.0").Select(a => new { a.Kind, a.Status, a.StartedMonth, a.DueMonth })
+            }));
         AgentCultivationFixture.Validate(world);
     }
 }

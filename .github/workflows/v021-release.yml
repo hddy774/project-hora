@@ -68,11 +68,20 @@ jobs:
         with:
           dotnet-version: '10.0.x'
       - name: Planning and portable product checks
+        # Native and portable hosts package the same checked-in compatibility asset.
         run: |
           mkdir -p artifacts/functional
           python3 scripts/validate-v021-plan.py --self-test
+          python3 scripts/validate-v021-product-boundary.py --self-test --report artifacts/functional/product-boundary.json
           dotnet run --project tests/Chronicles.Game.Tests -c Release -- --report artifacts/functional/product-tests.json
           dotnet build src/Chronicles.Shell -c Release
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify packaged offline UI asset
+        run: |
+          npm ci --prefix scripts/shell-assets --ignore-scripts --no-audit --no-fund
+          node scripts/build-shell-assets.mjs --check
       - name: Install browser validation runtime
         run: |
           python3 -m pip install playwright==1.55.0

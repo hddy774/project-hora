@@ -1,0 +1,101 @@
+{
+  "scope": "INV013 실제 동시 원인1건과 기존 실제 윤회 원인13건의 선택 기능 검사이며 최신 통합 전체 결과가 아니다.",
+  "source_commit": "8bdb21e496f992a2bc9415e76593e1e886079c12",
+  "integration_base": "b1838ec6f8256dba6f6651745ec1c1b37ea44c26",
+  "build": {
+    "command": "/workspace/.dotnet/dotnet build tests/Chronicles.Game.Tests -c Release --no-restore -m:1 -p:UseSharedCompilation=false",
+    "passed": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  "command": "/workspace/.dotnet/dotnet run --no-build --project tests/Chronicles.Game.Tests -c Release -- --filter '원인' --report /tmp/reincarnation-cause-functional.json",
+  "report": {
+    "selection": "원인",
+    "total": 14,
+    "failed": 0,
+    "results": [
+      {
+        "name": "RC-01 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 1407
+      },
+      {
+        "name": "RC-02 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 281
+      },
+      {
+        "name": "RC-03 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 530
+      },
+      {
+        "name": "RC-04 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 948
+      },
+      {
+        "name": "RC-05 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 698
+      },
+      {
+        "name": "RC-06 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 683
+      },
+      {
+        "name": "RC-07 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 519
+      },
+      {
+        "name": "RC-08 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 486
+      },
+      {
+        "name": "RC-09 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 464
+      },
+      {
+        "name": "RC-10 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 450
+      },
+      {
+        "name": "RC-11 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 315
+      },
+      {
+        "name": "RC-12 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 211
+      },
+      {
+        "name": "RC-13 실제 원인 생산자·자동 Gate·여정 왕복",
+        "passed": true,
+        "ms": 134
+      },
+      {
+        "name": "INV-004/005/006/013 윤회 공개 동시 원인: 실제 12·7의 단일 우선 선택과 활성·완성 경계·대체 설명·안정 키를 저장하고 재처리한다",
+        "passed": true,
+        "ms": 1552
+      }
+    ]
+  },
+  "coverage": [
+    "공개 법칙 변경 뒤 실제 월 경계에서 12+7 동시 조건·한 여정·기존 안정 순서",
+    "12비활성+7활성의 유효 매칭7 선택과 실제 Departed 유지",
+    "둘 다 비활성은 여정0이며 실제 종료 유지",
+    "미완성 반선은 7 조건 미일치",
+    "종료직전 경지/층·동일 난수상태·body/tick 안정 원인키·실제 대체 설명·기한 저장",
+    "같은 명령/동일 tick 재처리·GameCodec 전후 동일 해시",
+    "유료 실제 탐색의 금제+실제 소모한 혼약이 있어도 복구도구 존재/건강한 혼약은 거짓 종료 원인으로 추가하지 않음",
+    "기존13 실제 원인 생산자·Gate·비승 분혼 분리"
+  ],
+  "performance_executed": false,
+  "ledger_or_notion_status_changed": false
+}

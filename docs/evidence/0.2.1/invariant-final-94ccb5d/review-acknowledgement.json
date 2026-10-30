@@ -1,0 +1,8 @@
+{
+  "source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+  "scenario_bindings_reviewed": true,
+  "reviewed_paths": [
+    "Directory.Build.props"
+  ],
+  "review_note": "af91→94ccb의변경은Directory.Build.props에설명주석과TieredPGO=false를추가한2줄뿐이다. src/tests/scripts/명령·RNG·저장·검사본문은그대로다. 새314전체원문과4DLL/root-run·Tests.runtimeconfig false/환경override null을확인하며기존314/24INV/152연결의claim/경계/앵커는바꾸지않는다. 실제새성능·플랫폼·릴리스수용은별도다."
+}

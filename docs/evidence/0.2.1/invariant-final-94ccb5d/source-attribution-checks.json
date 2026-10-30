@@ -1,0 +1,25 @@
+{
+  "schema": "seonro.same-catalog-runtime-source-attribution.v1",
+  "target_source": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+  "target_product_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "same_catalog_test_fingerprint_as_af91": true,
+  "current_report": {
+    "path": "functional.json",
+    "sha256": "afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616",
+    "root_run_source_matches": true,
+    "root_run_product_fingerprint_matches": true,
+    "accepted_as_current_runtime_evidence": true
+  },
+  "previous_report": {
+    "path": "../invariant-final-af91fb0/functional.json",
+    "sha256": "6bb3de5ccb787eeee7a71f86295ce17c9eaa2a630cbef206f95e04beaf312e87",
+    "structural_name_and_test_catalog_check_accepts": true,
+    "root_run_source": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "root_run_product_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "runtime_source_matches_target": false,
+    "accepted_as_current_runtime_evidence": false,
+    "original_modified": false
+  },
+  "scope": "기존검증기는이름/검사본문지문을검사한다. 같은314검사의서로다른런타임설정은실제root-run/제품FP/DLL/runtimeconfig출처로구분하며검증기를수정하거나old314를거절했다고주장하지않는다.",
+  "runtime_executions": 0
+}

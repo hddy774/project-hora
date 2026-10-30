@@ -193,3 +193,112 @@ public sealed class PeopleSoulTraceScenarios : IFeatureScenario
         PeopleFixture.RoundTrip(damaged.State).Validate(); PeopleFixture.RoundTrip(split.Source).Validate();
     }
 }
+
+public sealed class PeopleEvaluationScenarios : IFeatureScenario
+{
+    public string Name => "INV-006/022 people: invariant absolute aptitude and scoped genius/candidate vacancies, ties and dated reevaluation";
+
+    public void Run()
+    {
+        EvaluationPerson Person(long id, int aptitude, string species, int region, GrowthPhase growth = GrowthPhase.Developing) =>
+            new(id, species, region, Realm.Qi, 1, -120, growth, true, PeopleFixture.Innate(aptitude));
+        var people = new[] { Person(1, 9000, "human", 1), Person(2, 8500, "spirit-fox", 1), Person(3, 8000, "human", 2),
+            Person(4, 7500, "human", 1, GrowthPhase.Infant), Person(5, 5000, "human", 2) };
+        var context = new EvaluationContext("world-0", new("world"), 0, 1, new(), people);
+        var original = JsonSerializer.Serialize(context);
+        var world = PeopleEvaluation.Assess(context);
+        PeopleFixture.Check(world.Genius.PersonId == 1 && world.Candidate.PersonId == 2 && world.Population.Length == 5, "one genius and one distinct candidate in the actual scope");
+        var local = PeopleEvaluation.Assess(context with { Scope = new("region2-human", Region: 2, SpeciesId: "human") });
+        PeopleFixture.Check(local.Genius.PersonId == 3 && local.Candidate.Status == EvaluationSeatStatus.VacantBelowThreshold, "local comparison may change title while preserving a candidate vacancy");
+        PeopleFixture.Check(world.Population.Single(p => p.PersonId == 3).AbsoluteIndex == local.Population.Single(p => p.PersonId == 3).AbsoluteIndex &&
+            world.Population.Single(p => p.PersonId == 3).RelativeRank > local.Population.Single(p => p.PersonId == 3).RelativeRank, "region and species do not alter absolute aptitude");
+        var sameInputOtherSpecies = people[0] with { SpeciesId = "stone-ape", Region = 9 };
+        PeopleFixture.Check(Aptitudes.AbsoluteIndex(sameInputOtherSpecies.Innate) == world.Population[0].AbsoluteIndex, "absolute aptitude is invariant to a species/region label");
+        var tiedPeople = people.Select(p => p.PersonId == 2 ? p with { Innate = PeopleFixture.Innate(9000) } : p).ToArray();
+        var tied = PeopleEvaluation.Assess(context with { People = tiedPeople });
+        PeopleFixture.Check(tied.Genius.Status == EvaluationSeatStatus.DeferredTie && tied.Genius.PersonId is null && tied.Genius.Contenders.Length == 2 && tied.Candidate.PersonId == 3,
+            "equal top aptitude defers the genius seat without arbitrarily declaring a winner");
+        var infant = PeopleEvaluation.Assess(context with { Scope = new("infants", Growth: GrowthPhase.Infant), Policy = new(MinimumPopulation: 1) });
+        PeopleFixture.Check(infant.Genius.Status == EvaluationSeatStatus.VacantNoEligiblePerson, "growth phase affects title eligibility independently of aptitude");
+        var empty = PeopleEvaluation.Assess(context with { Scope = new("none", CultivationRealm: Realm.HalfImmortal) });
+        PeopleFixture.Check(empty.Population.Length == 0 && empty.Genius.Status == EvaluationSeatStatus.VacantPopulation, "empty realm scope remains vacant");
+        var history = PeopleEvaluation.Record(EvaluationState.Empty(), context);
+        var later = PeopleEvaluation.Record(history.State, context with { EventId = "world-12", Month = 12, People = tiedPeople });
+        PeopleFixture.Check(PeopleEvaluation.Latest(later.State, "world", 0)!.Genius.PersonId == 1 && PeopleEvaluation.Latest(later.State, "world", 12)!.Genius.Status == EvaluationSeatStatus.DeferredTie,
+            "evaluation time and actual history distinguish changed assessments");
+        PeopleFixture.Check(!PeopleEvaluation.Record(later.State, context with { EventId = "retroactive", Month = 1 }).Accepted, "later evidence cannot rewrite earlier evaluations");
+        PeopleFixture.Check(original == JsonSerializer.Serialize(context), "evaluation is a pure snapshot calculation");
+        PeopleFixture.RoundTrip(later.State);
+    }
+}
+
+public sealed class PeopleReputationScenarios : IFeatureScenario
+{
+    public string Name => "INV-008/022 people: observed reputation provenance, hidden genius noninterference and bounded deterministic claims";
+
+    public void Run()
+    {
+        ReputationClaim Claim(string id, bool affirmed = true, int confidence = 9000, long received = 1, long? expires = 10) =>
+            new(id, 99, 1, ReputationTopic.Genius, affirmed, affirmed ? "reported genius" : "disputed genius", null, null, confidence,
+                0, received, expires, "world", null, [new($"observation.{id}", ClaimOrigin.DirectObservation, 1, 99, 0, received)]);
+        var empty = ReputationState.Empty();
+        PeopleFixture.Check(Reputation.Judge(empty, new(99, 1, 1)).Reaction == SocialReaction.SeekInformation, "actual hidden genius confers no observed fame");
+        var received = Reputation.Receive(empty, Claim("rumor"), new());
+        PeopleFixture.Check(received.Accepted && Reputation.KnownClaims(received.State, new(99, 1, 0)).Length == 0 &&
+            Reputation.KnownClaims(received.State, new(100, 1, 1)).Length == 0, "claims require actual receipt and the matching observer");
+        PeopleFixture.Check(Reputation.Judge(received.State, new(99, 1, 1)).Reaction == SocialReaction.ConsiderRecruitment, "known title claim can influence a social decision");
+        var snapshot = PeopleFixture.RoundTrip(received.State);
+        PeopleFixture.Check(Reputation.Receive(snapshot, Claim("rumor"), new()).Accepted && snapshot.Claims.Length == 1, "same claim replay after serialization is idempotent");
+        PeopleFixture.Check(!Reputation.Receive(snapshot, Claim("rumor", affirmed: false), new()).Accepted, "claim identity cannot be reused to overwrite its testimony");
+        var conflict = Reputation.Receive(snapshot, Claim("dispute", affirmed: false, received: 2), new());
+        PeopleFixture.Check(conflict.Accepted && Reputation.Judge(conflict.State, new(99, 1, 2)).Reaction == SocialReaction.InvestigateConflict, "contradictory reports remain uncertain instead of consulting actual aptitude");
+        PeopleFixture.Check(Reputation.KnownClaims(conflict.State, new(99, 1, 10)).Length == 0, "claims expire at an explicit simulation boundary");
+        var wrongRecipient = Claim("bad-chain") with { Provenance = [new("bad", ClaimOrigin.Conversation, 5, 98, 0, 1)] };
+        PeopleFixture.Invalid(() => Reputation.Receive(empty, wrongRecipient, new()), "provenance chain must reach the actual observer");
+        var bounded = Reputation.Receive(conflict.State, Claim("weak", confidence: 100, received: 3), new(MaximumClaimsPerObserver: 2));
+        PeopleFixture.Check(bounded.Accepted && bounded.State.Claims.Length == 2 && bounded.ForgottenClaimIds.Contains("weak", StringComparer.Ordinal), "retention is deterministic and does not grant weaker rumors unbounded memory");
+        var before = JsonSerializer.Serialize(bounded.State);
+        Reputation.KnownClaims(bounded.State, new(99, 1, 3)); Reputation.Judge(bounded.State, new(99, 1, 3));
+        PeopleFixture.Check(before == JsonSerializer.Serialize(bounded.State), "reading reputation cannot generate or correct a hidden fact");
+    }
+}
+
+public sealed class PeopleEmbodimentMartialScenarios : IFeatureScenario
+{
+    public string Name => "INV-011/015 people: independent species/body/title, both-parent Golden Core reproduction and root-free martial growth";
+
+    public void Run()
+    {
+        var source = PeopleFixture.Source("body-profile");
+        Embodiment Body(long id, ReproductiveFunction functions, string species = "human", string group = "human") =>
+            new(id, id + 100, id + 200, species, BodyForm.Humaniform, PersonOrigin.BiologicalBirth, "self-described", YaoguaiTitle.None,
+                new(group, functions, 216, 9, source), new(true, true, true, false), source);
+        var gestator = new ReproductivePerson(Body(1, ReproductiveFunction.Gestator), Realm.GoldenCore, 0, 240, 10_000, true, true, false, 0);
+        var donor = new ReproductivePerson(Body(2, ReproductiveFunction.Donor), Realm.GoldenCore, 10, 240, 10_000, true, true, false, 0);
+        var context = new ReproductionContext(0, gestator, donor, true, true, new(), []);
+        PeopleFixture.Check(Embodiments.CheckReproduction(context).Eligible, "biological kin are allowed under the selected user policy");
+        PeopleFixture.Check(!Embodiments.CheckReproduction(context with { Donor = donor with { CultivationRealm = Realm.Foundation } }).Eligible,
+            "one parent below Golden Core remains ineligible even at the tenth martial stage");
+        PeopleFixture.Check(!Embodiments.CheckReproduction(context with { Policy = new(AllowBiologicalKin: false) }).Eligible, "an explicitly different world kinship policy is respected");
+        var fox = Body(3, ReproductiveFunction.Donor, "spirit-fox", "fox") with { Origin = PersonOrigin.AwakenedBeast, Title = YaoguaiTitle.BeastCultivator,
+            CurrentForm = BodyForm.Humaniform, Capabilities = new(true, false, true, true) };
+        PeopleFixture.Check(!Embodiments.CheckReproduction(context with { Donor = donor with { Body = fox } }).Eligible, "humaniform appearance does not turn a fox reproductive body into a human");
+        var cross = context with { Donor = donor with { Body = fox }, ExplicitCompatibility = [new("human", "fox", "spirit-fox", source)] };
+        PeopleFixture.Check(Embodiments.CheckReproduction(cross).Eligible, "cross-species reproduction uses an actual defined compatibility rule");
+        PeopleFixture.Check(Embodiments.CanParticipate(SpeciesCatalog.Get("spirit-fox"), fox, ParticipationKind.Organization) &&
+            Embodiments.CanParticipate(SpeciesCatalog.Get("spirit-fox"), fox, ParticipationKind.Craft), "sapient nonhuman species can join society and use actual manipulation capabilities for crafts");
+        PeopleFixture.Check(Embodiments.AssessHabitat(SpeciesCatalog.Get("spirit-pine"), HabitatKind.Forest).Suitable &&
+            !Embodiments.AssessHabitat(SpeciesCatalog.Get("spirit-pine"), HabitatKind.Desert).Suitable, "ecology retains species-specific habitat and resource requirements");
+        var martial = MartialProfile.Beginner(1, 101);
+        var training = new MartialTrainingContext("training", 1, 12, 5000, 5000, 5000, 10_000, 1000, source with { Month = 1 });
+        var trained = MartialTraining.Train(martial, training);
+        PeopleFixture.Check(trained.Accepted && trained.State.Work == 60_000 && martial.Work == 0, "martial training derives only from body/mind and actual completed practice");
+        var breakthrough = MartialTraining.Breakthrough(trained.State, new("breakthrough", 2, 10_000, true, source with { Month = 2 }), MartialPolicy.Provisional());
+        PeopleFixture.Check(breakthrough.Accepted && breakthrough.State.Stage == MartialStage.Stage01 && breakthrough.State.Work == 48_000, "explicit martial breakthrough consumes preparation for one stage");
+        var maximum = breakthrough.State with { Stage = MartialStage.Stage10 };
+        PeopleFixture.Check(MartialTraining.BasicLifespanMonths(maximum, MartialPolicy.Provisional()) == 7200 && MartialTraining.CombatContribution(maximum) == 6400,
+            "tenth martial stage preserves the independent 600-year basic lifespan and calibrated contribution without reproductive realm conversion");
+        PeopleFixture.Check(JsonSerializer.Serialize(MartialTraining.Train(trained.State, training).State) == JsonSerializer.Serialize(trained.State), "martial practice retry cannot grant duplicated work");
+        PeopleFixture.RoundTrip(fox); PeopleFixture.RoundTrip(breakthrough.State);
+    }
+}

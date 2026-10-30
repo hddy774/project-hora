@@ -213,26 +213,9 @@ public sealed partial class GameWorld
             TryCurrencyCommand(c, p, out domainError)) return domainError;
         if (c.Kind == "partner") return Partner(p, c.Target);
         if (c.Kind == "conceive") return Conceive(p, c.Target);
-        if (c.Kind == "trade") return Trade(p, c.Target, c.Value);
-        if (c.Kind == "offer") return Offer(p, c.Target, c.Value, c.Data);
-        if (c.Kind == "bid") return Bid(p, c.Target, c.Value);
-        if (c.Kind == "equip") return Equip(p, c.Target);
-        if (c.Kind == "store") return Store(p, c.Target, c.Value);
-        if (c.Kind == "use") return Use(p, c.Target);
-        if (c.Kind == "found") return Found(p, c.Data);
-        if (c.Kind == "join") return Join(p, c.Target);
-        if (c.Kind == "policy") return Policy(p, c.Target, c.Data, c.Value);
-        if (c.Kind == "govern") return Govern(p, c.Target, c.Value);
-        if (c.Kind == "releaseProvince") return ReleaseProvince(p, c.Target, c.Value);
         if (c.Kind == "adopt") return Adopt(p, c.Target);
-        if (c.Kind == "requestTeaching") return RequestTeaching(p, c.Target, c.Data);
-        if (c.Kind == "vassal") return Vassal(p, c.Target, c.Value);
         if (c.Kind == "attack") return Attack(p, c.Target);
         if (c.Kind == "ascend") return Ascend(p);
-        if (c.Kind == "repair") return Repair(p, c.Target);
-        if (c.Kind == "withdraw") return Withdraw(p, c.Target);
-        if (c.Kind == "transport") return Transport(p, c.Target, c.Value);
-        if (c.Kind == "dissolve") return Dissolve(p, c.Target);
         return Start(p, c.Kind, c.Target, c.Data);
     }
 

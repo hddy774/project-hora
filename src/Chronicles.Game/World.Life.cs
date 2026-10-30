@@ -5,7 +5,7 @@ public sealed partial class GameWorld
     private string? Partner(Person p, long target)
     {
         if (!people.TryGetValue(target, out var q) || !p.KnownPeople.Contains(target) || p.Id == q.Id ||
-            q.Status != LifeStatus.Alive || p.Place != q.Place || p.Partner != 0 || q.Partner != 0 ||
+            q.Status != LifeStatus.Alive || !ShareExplorationSpace(p, q) || p.Partner != 0 || q.Partner != 0 ||
             Month - p.Born < PeopleMaturityMonths(p) || Month - q.Born < PeopleMaturityMonths(q))
             return "도려 관계를 맺을 조건이 아닙니다.";
         if (Law("birth.kinship") == 0 && Related(p, q)) return "현재 혈연 법칙에서 허용하지 않습니다.";
@@ -54,7 +54,7 @@ public sealed partial class GameWorld
     private string? Conceive(Person p, long target)
     {
         if (Law("birth.enabled") == 0 || !people.TryGetValue(target, out var q) ||
-            p.Partner != q.Id || q.Partner != p.Id || p.Place != q.Place || p.Gestates == q.Gestates)
+            p.Partner != q.Id || q.Partner != p.Id || !ShareExplorationSpace(p, q) || p.Gestates == q.Gestates)
             return "출산 조건을 만족하지 않습니다.";
         var mother = p.Gestates ? p : q; var father = p.Gestates ? q : p;
         if (!BirthQualified(mother) || (Law("birth.bothParents") != 0 && !BirthQualified(father)) ||
@@ -107,7 +107,7 @@ public sealed partial class GameWorld
         mother.Health = Math.Max(1, mother.Health - pregnancy.HealthCost);
         state.BirthCount++;
         mother.KnownPeople.Add(p.Id);
-        if (father.Status == LifeStatus.Alive && father.Place == p.Place) father.KnownPeople.Add(p.Id);
+        if (father.Status == LifeStatus.Alive && ShareExplorationSpace(father, p)) father.KnownPeople.Add(p.Id);
         Event("출생", p.Id, mother.Id, $"{p.Name} 탄생·실제 부모/새 육신·단일 영혼 배정", $"임신 {pregnancy.Id}·법칙 r{pregnancy.LawRevision}");
     }
 
@@ -115,6 +115,7 @@ public sealed partial class GameWorld
     {
         if (p.Status != LifeStatus.Alive) return;
         var sourceRealm = p.Realm; var sourceLayer = p.Layer;
+        ReleaseExplorationForLifeEnd(p);
         ReleaseCultivationForLifeEnd(p);
         ReleaseSlot(p);
         p.Irreversible = false;

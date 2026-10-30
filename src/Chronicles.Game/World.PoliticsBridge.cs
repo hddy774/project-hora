@@ -231,7 +231,7 @@ public sealed partial class GameWorld
         people.TryGetValue(g.Leader, out var leader) && PoliticsAgreement(proposer, leader) ? leader.Id : 0;
     private bool PoliticsAgreement(Person proposer, Person respondent) => respondent.Status == LifeStatus.Alive &&
         Month - respondent.Born >= PeopleMaturityMonths(respondent) && (proposer.Id == respondent.Id ||
-            respondent.Place == proposer.Place && proposer.KnownPeople.Contains(respondent.Id) && respondent.KnownPeople.Contains(proposer.Id) &&
+            ShareExplorationSpace(respondent, proposer) && proposer.KnownPeople.Contains(respondent.Id) && respondent.KnownPeople.Contains(proposer.Id) &&
             respondent.Personality[4] + proposer.Personality[4] >= 50);
 
     private long PoliticsSuccessor(Group group)

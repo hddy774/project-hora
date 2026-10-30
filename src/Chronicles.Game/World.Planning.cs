@@ -94,7 +94,7 @@ public sealed partial class GameWorld
                     if (StartProductionPlan(p, recipe)) return true;
                 }
                 return false;
-            case "information": return StartInformationPlan(p, "", "현장에 관한 개인 관측을 늘릴 필요");
+            case "information": return TryExplorationInformationGoal(p) || StartInformationPlan(p, "", "현장에 관한 개인 관측을 늘릴 필요");
             case "trade": return StartTradePlan(p, offers);
             case "learning": return StartLearningPlan(p);
             case "cooperation": return StartCooperationPlan(p);

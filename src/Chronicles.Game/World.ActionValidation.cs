@@ -8,7 +8,7 @@ namespace Chronicles.Game;
 
 public sealed partial class GameWorld
 {
-    private static readonly string[] TypedActionPrefixes = ["knowledge:", "inventory:", "people:", "politics:", "combat:", "cultivation."];
+    private static readonly string[] TypedActionPrefixes = ["knowledge:", "inventory:", "people:", "politics:", "combat:", "cultivation.", "exploration:"];
     private static bool IsTypedActionMarker(string data) => data is not null &&
         TypedActionPrefixes.Any(prefix => data.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
 
@@ -68,6 +68,8 @@ public sealed partial class GameWorld
         if (data.StartsWith("knowledge:", StringComparison.Ordinal)) { ValidateKnowledgeActionOwner(person); return; }
         if (data.StartsWith("inventory:", StringComparison.Ordinal)) { ValidateInventoryActionOwner(person); return; }
         if (data.StartsWith("people:", StringComparison.Ordinal)) { ValidatePeopleActionOwner(person); return; }
+        if (data.StartsWith("exploration:", StringComparison.Ordinal))
+        { RequireAction(ValidateExplorationAction(person) is null, $"person {person.Id} actual secret entry"); return; }
         if (data.StartsWith("politics:", StringComparison.Ordinal))
         {
             RequireAction(person.Action == ActionKind.Guard && state.Politics.Labor.Any(r => r.Person == person.Id &&

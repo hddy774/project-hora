@@ -39,7 +39,7 @@ public sealed partial class GameWorld
         var foodNeed = IntLaw("ecology.foodUse");
         var provider = p;
         if (Inventory(p.Id, "food") < foodNeed && p.Guardian != 0 && people.TryGetValue(p.Guardian, out var guardian) &&
-            guardian.Status == LifeStatus.Alive && guardian.Place == p.Place) provider = guardian;
+            guardian.Status == LifeStatus.Alive && ShareExplorationSpace(guardian, p)) provider = guardian;
         if (Inventory(provider.Id, "food") >= foodNeed)
         {
             Consume(provider, "food", foodNeed);
@@ -63,6 +63,8 @@ public sealed partial class GameWorld
     private void Complete(Person p)
     {
         var completed = p.Action;
+        if (CompleteExploration(p))
+        { if (p.Action == ActionKind.Idle) RecordCompletedHabit(p, completed); return; }
         if (CompletePeopleAction(p) || CompleteCultivation(p) || CompleteKnowledge(p) || CompleteInventory(p))
         { RecordCompletedHabit(p, completed); return; }
         var action = p.Action; var target = p.ActionTarget;
@@ -90,6 +92,7 @@ public sealed partial class GameWorld
                 foreach (var id in place.Neighbors) if (!p.KnownPlaces.Contains(id)) p.KnownPlaces.Add(id);
                 p.KnownPlaces.Sort();
                 Observe(p, true);
+                DiscoverExplorationEntrance(p);
                 if (place.Id % 10 == 8 && p.Realm >= Realm.Void && Roll(10000) < Law("hazard.sealChance"))
                 {
                     p.Sealed = true; p.SealedUntil = Month + Law("hazard.sealDuration");
@@ -126,7 +129,7 @@ public sealed partial class GameWorld
     private void Observe(Person p, bool force = false)
     {
         if (!p.KnownPlaces.Contains(p.Place)) { p.KnownPlaces.Add(p.Place); p.KnownPlaces.Sort(); }
-        var local = residents.GetValueOrDefault(p.Place) ?? [];
+        var local = (residents.GetValueOrDefault(p.Place) ?? []).Where(q => ShareExplorationSpace(p, q)).ToArray();
         var place = state.Places[p.Place];
         var observationBudget = IntLaw("ai.observationBudget");
         if (p.LastPeopleRevision != place.PeopleRevision)
@@ -140,14 +143,15 @@ public sealed partial class GameWorld
         for (var n = 0; n < count; n++)
         {
             var q = local[(int)((p.Id + p.ObservationCursor + n) % local.Length)];
-            if (q.Status != LifeStatus.Alive || q.Place != p.Place) continue;
+            if (q.Status != LifeStatus.Alive || !ShareExplorationSpace(p, q)) continue;
             if (!p.KnownPeople.Contains(q.Id)) p.KnownPeople.Add(q.Id);
             p.ObservedPeople[q.Id] = new(q.Id, q.Name, q.Realm, q.Layer, q.Place, Month,
                 q.Species == "human" ? q.Gestates : null, Month - q.Born >= PeopleMaturityMonths(q));
         }
         p.ObservationCursor += count; p.ObservationRemaining -= count;
-        p.ObservedPlaces[p.Place] = new(place.Id, place.Source, place.Qi, string.Join(',', place.Facilities), Month,
-            place.Sovereign, place.Owner, place.Operator, place.Delegate, place.BlockedUntil);
+        if (OccupiedExploration(p) is null)
+            p.ObservedPlaces[p.Place] = new(place.Id, place.Source, place.Qi, string.Join(',', place.Facilities), Month,
+                place.Sovereign, place.Owner, place.Operator, place.Delegate, place.BlockedUntil);
         TrimCognition(p);
     }
 

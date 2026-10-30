@@ -245,36 +245,12 @@ public sealed partial class GameWorld
                 !state.Places[p.Place].Neighbors.Contains((int)target) || state.Places[(int)target].BlockedUntil > Month)
                 return "이동 가능한 경로가 아닙니다.";
         }
-        if (action == ActionKind.Study && !Accessible(p, target, out var book, ItemKind.Book))
-            return "읽을 수 있는 매체가 없습니다.";
         if (action == ActionKind.Care && ValidateCare(p, target) is { } careError) return careError;
-        if (action == ActionKind.Craft)
-        {
-            var recipe = Catalog.Recipes.FirstOrDefault(r => r.Id == data);
-            if (recipe is null || p.Understanding.GetValueOrDefault(recipe.Skill) == 0) return "제작 지식이 부족합니다.";
-            if (recipe.Inputs.Any(i => Inventory(p.Id, i.Key) < i.Value)) return "재료가 부족합니다.";
-            var reservation = Id();
-            foreach (var input in recipe.Inputs) Reserve(p, input.Key, input.Value, reservation);
-            target = reservation;
-        }
-        if (action == ActionKind.Teach && (!people.TryGetValue(target, out var pupil) ||
-            pupil.Status != LifeStatus.Alive || pupil.Place != p.Place || !p.KnownPeople.Contains(target) ||
-            (pupil.Action != ActionKind.Idle && pupil.Action != ActionKind.Wait) ||
-            !p.Understanding.TryGetValue(data, out var teacherKnowledge) || teacherKnowledge <= pupil.Understanding.GetValueOrDefault(data)))
-            return "전수 조건을 만족하지 않습니다.";
-        if (action == ActionKind.Cultivate && data.Length > 0 && !Catalog.Paths.Any(x => x.Id == data &&
-            (x.Realm == p.Realm || (p.Realm == Realm.Mortal && x.Realm == Realm.Qi)) && p.Understanding.GetValueOrDefault(x.Id) > 0))
-            return "알고 있는 현재 경지 공법을 선택하세요.";
-        if (action == ActionKind.Breakthrough && (p.Realm == Realm.HalfImmortal || p.Work < Period(p) * 5000))
-            return "돌파 준비가 완료되지 않았습니다.";
         p.Action = action; p.ActionTarget = target; p.ActionData = data;
         p.ActionRevision = state.LawRevision;
-        p.Due = Month + (action == ActionKind.Travel ? Law("economy.travelDuration") :
-            action == ActionKind.Craft ? Law("economy.craftDuration") : 1);
-        if (action == ActionKind.Teach)
-        {
-            people[target].Action = ActionKind.Wait; people[target].Due = p.Due;
-        }
+        p.Due = Month + (action == ActionKind.Travel ? Law("economy.travelDuration") : 1);
+        try { ValidateActionOwner(p); }
+        catch (InvalidDataException) { return "실제로 시작한 작업의 출처와 예약을 확인하세요."; }
         return null;
     }
 

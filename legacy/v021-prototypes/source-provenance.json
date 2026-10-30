@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "seonro-v021-replaced-prototypes",
+  "source_repository": "https://github.com/hddy774/project-hora",
+  "source_snapshot": "02312d2adafdaec46ad6a372c6d161c73885d523",
+  "current_product": false,
+  "files": [
+    {
+      "source_path": "src/Chronicles.Game/World.Actions.cs",
+      "archive_path": "legacy/v021-prototypes/src/Chronicles.Game/World.Actions.cs",
+      "source_commit": "02312d2adafdaec46ad6a372c6d161c73885d523",
+      "sha256": "94cb3a930571672860c087da2c29e19e2f69b4f7d8bda66df5d6eb4650f5d500"
+    },
+    {
+      "source_path": "src/Chronicles.Game/World.Hazards.cs",
+      "archive_path": "legacy/v021-prototypes/src/Chronicles.Game/World.Hazards.cs",
+      "source_commit": "02312d2adafdaec46ad6a372c6d161c73885d523",
+      "sha256": "ebd705fb47ac08dbc25915563c8cc7d66a26ce33c84a120cfee12838e8650534"
+    },
+    {
+      "source_path": "src/Chronicles.Game/World.cs",
+      "archive_path": "legacy/v021-prototypes/src/Chronicles.Game/World.cs",
+      "source_commit": "02312d2adafdaec46ad6a372c6d161c73885d523",
+      "sha256": "133649b32a143b1d3520fb662590cc7cdb5c45871de22fb3ccd73d68b07b9141"
+    }
+  ]
+}

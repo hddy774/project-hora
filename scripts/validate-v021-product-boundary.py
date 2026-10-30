@@ -154,6 +154,19 @@ def validate():
         require(path.as_posix().startswith(LEGACY + "/") and ".." not in path.parts, "Archive path escapes its boundary")
         require(hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == entry["sha256"], "Archived source changed: " + str(path))
         require(re.fullmatch(r"[0-9a-f]{40}", entry["source_commit"]) is not None, "Archive source commit missing")
+    prototype_root = "legacy/v021-prototypes"
+    prototypes = json.loads(text(prototype_root + "/source-provenance.json"))
+    require(prototypes.get("current_product") is False and len(prototypes.get("files", [])) == 3, "Replaced prototype provenance missing")
+    for entry in prototypes["files"]:
+        path = Path(entry["archive_path"])
+        require(path.as_posix().startswith(prototype_root + "/") and ".." not in path.parts and
+                hashlib.sha256((ROOT / path).read_bytes()).hexdigest() == entry["sha256"] and
+                re.fullmatch(r"[0-9a-f]{40}", entry["source_commit"]) is not None, "Replaced prototype source changed")
+    actions = csharp_code(text("src/Chronicles.Game/World.Actions.cs"))
+    require(not re.search(r"\b(?:void\s+(?:Cultivate|Breakthrough)|long\s+Period)\s*\(", actions), "Raw cultivation authority reintroduced")
+    require(not re.search(r"case\s+ActionKind\.(?:Gather|Farm|Cultivate|Breakthrough|Trial|Martial|Study|Craft|Teach)\s*:", actions),
+            "Replaced typed completion reintroduced")
+    require("world.ValidateActionState();" in text("src/Chronicles.Game/World.DomainValidation.cs"), "Typed action ownership validation is not wired")
     archive_projects = {p.get("Path") for p in ET.fromstring(text(LEGACY + "/Chronicles.slnx")).findall(".//Project")}
     for project in archive_projects:
         path = ROOT / LEGACY / project
@@ -170,6 +183,7 @@ def validate():
             "working_tree_dirty": bool(subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"], cwd=ROOT, text=True).strip()),
             "projects": inventory, "host_closures": {host: closure(graph, host) for host in HOSTS},
             "source_checks": scans, "archive_files_verified": len(archive["files"]),
+            "replaced_prototype_files_verified": len(prototypes["files"]),
             "execution_claims": {"game_functional_tests": False, "native_runtime": False, "unity": False, "performance": False},
             "limitations": ["Text/XML source guard, not a C# semantic or evaluated MSBuild graph proof.",
                             "SDK-generated code and transitive framework internals require build/runtime validation.",

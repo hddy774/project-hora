@@ -20,7 +20,8 @@ public sealed record ReproductivePerson(Embodiment Body, Realm CultivationRealm,
     bool Alive, bool Consents, bool AlreadyGestating, long RecoveryUntilMonth);
 public sealed record ReproductionCompatibility(string GroupOne, string GroupTwo, string ChildSpeciesId, PeopleSource Source);
 public sealed record ReproductionPolicy(Realm MinimumRealm = Realm.GoldenCore, bool AllowBiologicalKin = true,
-    int MinimumHealth = 5000, string PolicyId = "PC-TEMP-V021-REPRODUCTION-01", long Revision = 1, bool RequiresReview = true);
+    int MinimumHealth = 5000, string PolicyId = "PC-TEMP-V021-REPRODUCTION-01", long Revision = 1, bool RequiresReview = true,
+    bool RequireBothParents = true, bool AllowMartialEquivalent = false);
 public sealed record ReproductionContext(long Month, ReproductivePerson Gestator, ReproductivePerson Donor, bool BiologicalKin,
     bool HasCareSupport, ReproductionPolicy Policy, ReproductionCompatibility[] ExplicitCompatibility);
 public sealed record ReproductionEligibility(bool Eligible, string Code, string? ChildSpeciesId, int? GestationMonths);
@@ -89,8 +90,9 @@ public static class Embodiments
         if (one.Body.PersonId == two.Body.PersonId || one.Body.BodyId == two.Body.BodyId || one.Body.SoulId == two.Body.SoulId)
             return new(false, "distinct actual parents required", null, null);
         if (!one.Alive || !two.Alive || !one.Consents || !two.Consents) return new(false, "living consenting parents required", null, null);
-        // Martial power and social titles do not satisfy this cultivation-realm rule.
-        if (one.CultivationRealm < policy.MinimumRealm || two.CultivationRealm < policy.MinimumRealm)
+        // Martial equivalence exists only when an explicit world-law override enables it.
+        bool Qualified(ReproductivePerson person) => person.CultivationRealm >= policy.MinimumRealm || policy.AllowMartialEquivalent && person.MartialStage == 10;
+        if (!Qualified(one) || policy.RequireBothParents && !Qualified(two))
             return new(false, "both parents must satisfy the cultivation realm law", null, null);
         if (!policy.AllowBiologicalKin && context.BiologicalKin) return new(false, "biological kin disallowed by this explicit world policy", null, null);
         if ((one.Body.Reproduction.Functions & ReproductiveFunction.Gestator) == 0 || (two.Body.Reproduction.Functions & ReproductiveFunction.Donor) == 0)

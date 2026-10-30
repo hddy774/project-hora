@@ -99,6 +99,14 @@ public static class AptitudeCatalog
 
 public static class Aptitudes
 {
+    /// <summary>Pure compatibility projection for Catalog; all 24 formulas remain in one source map.</summary>
+    public static int InnateTalent(int[] foundations, int[] elementRoots, int index)
+    {
+        PeopleChecks.Scores(foundations, 6, nameof(foundations)); PeopleChecks.Scores(elementRoots, 5, nameof(elementRoots));
+        if ((uint)index >= 24) throw new ArgumentOutOfRangeException(nameof(index));
+        return Weighted(AptitudeCatalog.Talents[index].Inputs, new(foundations, elementRoots, []), []);
+    }
+
     public static int AbsoluteIndex(InnateProfile innate)
     {
         ArgumentNullException.ThrowIfNull(innate);

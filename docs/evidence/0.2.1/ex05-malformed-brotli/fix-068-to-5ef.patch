@@ -1,0 +1,37 @@
+diff --git a/tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs b/tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs
+index b7da338..b840b71 100644
+--- a/tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs
++++ b/tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs
+@@ -76,6 +76,15 @@ internal static class SnapshotStorageExperiment
+         var rejected = false;
+         try { if (compressedStore) GameCodec.Decode(CompressedAtomicSnapshot.Unpack(corrupt, MaximumPlainBytes)); else GameCodec.Decode(corrupt); }
+         catch (InvalidDataException) { rejected = true; }
++        if (compressedStore)
++        {
++            File.WriteAllBytes(path, corrupt);
++            backup &= Load().StateHash() == fixture.Hash;
++            Save(next);
++            var retained = Directory.GetFiles(Path.Combine(directory.Path, "preserved"))
++                .Any(file => File.ReadAllBytes(file).SequenceEqual(corrupt));
++            ExecutionExperimentScenarios.Require(backup && retained, "실제 손상 압축 primary의 backup 복구·원문 byte 보존이 필요합니다.");
++        }
+         foreach (var file in new[] { path, path + ".pending", path + ".backup" }) if (File.Exists(file)) File.Delete(file);
+         var unsupported = new byte[] { 0xff, 0, 0x12, 0x7f }; File.WriteAllBytes(path, unsupported); Save(next);
+         var preserved = Directory.Exists(Path.Combine(directory.Path, "preserved")) && Directory.GetFiles(Path.Combine(directory.Path, "preserved"))
+@@ -117,9 +126,14 @@ internal static class SnapshotStorageExperiment
+             if (length is <= 0 || length > maximum) throw new InvalidDataException("선택 저장 후보의 해제 크기 제한 위반");
+             var expected = reader.ReadBytes(32); var plain = new byte[length];
+             using var decompressor = new BrotliStream(input, CompressionMode.Decompress, leaveOpen: true);
+-            try { decompressor.ReadExactly(plain); }
++            try
++            {
++                decompressor.ReadExactly(plain);
++                if (decompressor.ReadByte() != -1) throw new InvalidDataException("선택 저장 후보의 길이/내용 불일치");
++            }
+             catch (EndOfStreamException error) { throw new InvalidDataException("중단된 압축 저장", error); }
+-            if (decompressor.ReadByte() != -1 || !SHA256.HashData(plain).AsSpan().SequenceEqual(expected))
++            catch (InvalidOperationException error) { throw new InvalidDataException("손상된 압축 저장", error); }
++            if (!SHA256.HashData(plain).AsSpan().SequenceEqual(expected))
+                 throw new InvalidDataException("선택 저장 후보의 길이/내용 불일치");
+             return plain;
+         }

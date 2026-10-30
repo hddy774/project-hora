@@ -36,7 +36,6 @@ public static partial class InventoryEngine
                     if (holder != item.Owner) Append(borrowedRoots, holder, item);
                 }
             }
-            foreach (var rows in children.Values) rows.Sort((left, right) => left.Id.CompareTo(right.Id));
         }
 
         private static void Append(Dictionary<long, List<Item>> index, long id, Item item)

@@ -4,7 +4,8 @@ public static partial class InventoryEngine
 {
     internal sealed partial class OwnedTransaction
     {
-        // Prototype only: the caller supplies the unchanged reference fingerprint. No factory selects this path yet.
+        // The caller supplies the unchanged reference fingerprint. The default JSON factory does not select this
+        // prototype; explicit typed-copy experiments may call it.
         private static InventoryState CreateTypedProjectedSnapshot(GameState world, string baseFingerprint)
         {
             ArgumentNullException.ThrowIfNull(world); ArgumentNullException.ThrowIfNull(baseFingerprint);

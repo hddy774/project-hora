@@ -8,8 +8,8 @@ public sealed partial class GameWorld
     private long CurrencyPlanningPriority(Person p)
     {
         if (p.Status != LifeStatus.Alive || p.Action != ActionKind.Idle || Law("currency.stoneValue") == 0 ||
-            p.Money >= Law("politics.foundCost")) return 0;
-        return CurrencyPlanningStone(p) is not null || CurrencyPlanningSource(p) is not null ? 600 : 0;
+            p.Money >= Law("politics.foundCost") || PeopleActionError(p, "redeemCurrency") is not null) return 0;
+        return CurrencyPlanningStone(p) is not null || CurrencyPlanningSource(p) is not null ? Law("ai.currencyWeight") : 0;
     }
 
     private bool TryCurrencyPlanningGoal(Person p)

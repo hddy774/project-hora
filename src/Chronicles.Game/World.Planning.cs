@@ -72,7 +72,7 @@ public sealed partial class GameWorld
         {
             "production" => PlanningStock(p, "paper") == 0 || PlanningStock(p, "ink") == 0 ? 250 : 0,
             "information" => sources.Length == 0 ? 300 : p.KnownPlaces.Count < 2 ? 100 : 0,
-            "trade" => offers.Any(o => PlanningNeed(p, o.Definition) > 0 && o.Price <= p.Money) ? 600 : PlanningSurplus(p) is not null ? 400 : 0,
+            "trade" => CurrencyPlanningPriority(p) + (offers.Any(o => PlanningNeed(p, o.Definition) > 0 && o.Price <= p.Money) ? 600 : PlanningSurplus(p) is not null ? 400 : 0),
             "learning" => p.LessonRequests.Count > 0 ? 100 : 0,
             "cooperation" => p.LessonRequests.Any(r => r.Expires > Month && PlanningKnownPerson(p, r.Pupil)) ||
                 state.Politics.Obligations.Any(o => o.Debtor == PoliticalAccount.Person(p.Id) && o.Outstanding > 0 && p.Money > 0) ? 700 : -10000,
@@ -95,7 +95,7 @@ public sealed partial class GameWorld
                 }
                 return false;
             case "information": return TryExplorationInformationGoal(p) || StartInformationPlan(p, "", "현장에 관한 개인 관측을 늘릴 필요");
-            case "trade": return StartTradePlan(p, offers);
+            case "trade": return TryCurrencyPlanningGoal(p) || StartTradePlan(p, offers);
             case "learning": return StartLearningPlan(p);
             case "cooperation": return StartCooperationPlan(p);
             case "retreat": return StartRetreatPlan(p);

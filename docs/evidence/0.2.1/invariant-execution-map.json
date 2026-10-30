@@ -1,13 +1,13 @@
 {
   "schema": "seonro.actual-invariant-execution-map.v1",
-  "mapping_source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
-  "test_sources_sha256": "67f8ada6b3dbf90e7a4857ac788f693cf4e39fe11d3d3cc260b597d11262ba28",
+  "mapping_source_commit": "9704e95508456ee317a378a9b8dac55985bf1849",
+  "test_sources_sha256": "18188884d43295487f2db16a264fafc34bd2fce8a4515dcb37d3967b09fa4c67",
   "execution_status": "not_asserted",
-  "scope": "308개 실제 등록 이름과24개 불변식의143개 구체 증인 연결이다. 원래 제안카탈로그/원장이나 전체 기능·측정·플랫폼 판정 자체가 아니며 실행 상태는 not_asserted다.",
+  "scope": "309개 실제 등록 이름과24개 불변식의144개 구체 증인 연결이다. 이전926의308/143맵은별도snapshot으로보존한다. 원래 제안카탈로그/원장이나모든수용·측정·플랫폼판정자체가아니며실행상태는not_asserted다.",
   "catalog": {
-    "feature_scenarios": 270,
+    "feature_scenarios": 271,
     "program_scenarios": 38,
-    "total": 308
+    "total": 309
   },
   "scenarios": [
     {
@@ -1473,6 +1473,19 @@
         "INV-015"
       ],
       "boundary": "public_world"
+    },
+    {
+      "name": "INV-007/024 knowledge physical snapshot: 전체 사본의 매체·접근권과 순서·동기화 시점·중첩 배열 격리가 같다",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgePhysicalSnapshotScenarios.cs",
+        "symbol": "KnowledgePhysicalSnapshotScenario",
+        "line": 6
+      },
+      "boundary": "module",
+      "invariants": [
+        "INV-007",
+        "INV-024"
+      ]
     },
     {
       "name": "INV-008 인지 예산 변경·명제/인물/지점 합계",
@@ -5351,6 +5364,33 @@
             "StateHash()",
             "mutat"
           ]
+        },
+        {
+          "scenario": "INV-007/024 knowledge physical snapshot: 전체 사본의 매체·접근권과 순서·동기화 시점·중첩 배열 격리가 같다",
+          "kinds": [
+            "positive",
+            "negative",
+            "query_purity",
+            "save_resume"
+          ],
+          "claim": "부분 지식 모듈에서 공개 전체 사본의 두 필드와 독립 투영의 모든 값/순서·동기화 전후·destroyed/만료/철회 기록을 비교한다. record/중첩 배열·공개 전체 사본 변조가 권위/다른 사본/권한 조회로 유출되지 않고 도메인 JSON 복원도 같다. 공통 GameCodec 전체 세계 저장·공개 GameWorld 명령 증거는 아니다.",
+          "anchors": [
+            "Json(first.Media) == Json(before.Media)",
+            "Json(new { second.Media, second.Access }) == expected",
+            "!ReferenceEquals(second.Access, secondAgain.Access)",
+            "KnowledgeFixture.Json(authority) == unchanged",
+            "authority.ViewAccessible(4, 1, 2)",
+            "KnowledgeFixture.RoundTrip(authority)"
+          ],
+          "supporting_checks": [
+            {
+              "path": "tests/Chronicles.Game.Tests/Features/KnowledgeScenarios.cs",
+              "anchors": [
+                "JsonSerializer.Serialize(authority.Checkpoint())",
+                "KnowledgeAuthority.Restore(JsonSerializer.Deserialize<KnowledgeState>(before)!)"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -7078,7 +7118,7 @@
         "INV-018",
         "INV-024"
       ],
-      "focus": "판본/매체/기억/숙련·실제 시간·입력/권리·조회 선필터/소급 변경"
+      "focus": "판본/매체/기억/숙련·실제 시간/권리·소급 변경·공개 full snapshot 격리; 내부 물리 투영은 동일 Media/deep MissingChapters/Access만 독립복사하고 순서/조회시점/전체 API 유지"
     },
     {
       "path_prefix": "src/Chronicles.Game/People/",
@@ -7328,7 +7368,7 @@
         "INV-018",
         "INV-024"
       ],
-      "focus": "개인 chapter1 최신revision·mastery/source 조회를 기존 권위 key index와 연결; 같은월 Save publication·외부 snapshot 참조변경 복원·격리/권한·실제노동 경계. ownership/월말지연 변경없음"
+      "focus": "개인 key index와 같은월 Save/외부 snapshot 복원·격리·권한/실제노동 보존. Settle 두 snapshot은 첫Media만/물리동기화뒤Media+Access로 같은순서의독립사본을읽으며월말지연/alias공유없음"
     },
     {
       "path_prefix": "src/Chronicles.Game/World.PoliticsBridge.cs",
@@ -7339,60 +7379,18 @@
         "INV-020",
         "INV-023"
       ],
-      "focus": "성년이 필요한 정치 context는 기본true 유지; 성년을 읽지 않는 수행Site 사용권 context만 false로 구성. CanUse 권한함수·실물/사용권·비인간 성년 계약 유지"
+      "focus": "성년정치 context 기본true 유지; 성년을 읽지 않는 수행Site 및 IsLaborAvailable 두 caller만 includeMaturity:false. 기존 사용권/공통노동 판정과 실제 비인간 성년 계약은 유지"
     }
   ],
   "last_source_review": {
-    "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "source_commit": "9704e95508456ee317a378a9b8dac55985bf1849",
     "scenario_bindings_reviewed": true,
     "reviewed_paths": [
-      "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
-      "src/Chronicles.Game/Cultivation/CultivationQueries.cs",
-      "src/Chronicles.Game/Ecology/EcologyPlanner.cs",
-      "src/Chronicles.Game/Inventory/InventoryOwnedSnapshotCopy.cs",
-      "src/Chronicles.Game/Inventory/InventoryOwnedTransaction.cs",
-      "src/Chronicles.Game/Inventory/InventoryPersonProjection.cs",
-      "src/Chronicles.Game/Inventory/InventoryValidation.cs",
-      "src/Chronicles.Game/Laws.cs",
-      "src/Chronicles.Game/Queries.cs",
-      "src/Chronicles.Game/World.Actions.cs",
-      "src/Chronicles.Game/World.CultivationBridge.cs",
-      "src/Chronicles.Game/World.CultivationPlanning.cs",
-      "src/Chronicles.Game/World.EcologyBridge.cs",
-      "src/Chronicles.Game/World.EcologyRecovery.cs",
-      "src/Chronicles.Game/World.IntelligentPlanning.cs",
-      "src/Chronicles.Game/World.InventoryBridge.cs",
-      "src/Chronicles.Game/World.InventoryProjection.cs",
+      "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
       "src/Chronicles.Game/World.KnowledgeBridge.cs",
-      "src/Chronicles.Game/World.Planning.cs",
       "src/Chronicles.Game/World.PoliticsBridge.cs",
-      "src/Chronicles.Game/World.cs",
-      "tests/Chronicles.Game.Tests/Experiments/InventoryPersonReadGuard.cs",
-      "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
-      "tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/AgentEcologyTradeIntegrationScenario.cs",
-      "tests/Chronicles.Game.Tests/Features/AgentPlanningIntegrationScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/AgentTradeBudgetScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/CultivationPreparationEvidenceScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/EcologyRecoveryIntegrationScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/EntryPreparationQueryScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/GrowthSensitivityContractScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs",
-      "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/InventoryProjectionScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs",
-      "tests/Chronicles.Game.Tests/Features/InventorySourceObservationScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/InventorySynchronizationScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/InventoryTypedIntegrationScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/InventoryTypedSnapshotScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/InventoryValidationBoundaryScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/PeopleTeachingIntegrationScenarios.cs",
-      "tests/Chronicles.Game.Tests/GrowthScenarios.cs",
-      "tests/Chronicles.Game.Tests/GrowthSensitivityContracts.cs",
-      "tests/Chronicles.Game.Tests/GrowthSensitivityScenarios.cs",
-      "tests/Chronicles.Game.Tests/PerformanceScenarios.cs",
-      "tests/Chronicles.Game.Tests/Program.cs"
+      "tests/Chronicles.Game.Tests/Features/KnowledgePhysicalSnapshotScenarios.cs"
     ],
-    "review_note": "89d581d→9263756의46개C#경로와기존/신규308등록이름·143증인을읽었다. 새45이름(옛생계rename1포함)과역사/원천/권한·module/public_world/host·부정/저장/명령앵커를수동대조했다. CLI1·179의Sync/PeopleTeaching/EX05세회귀·183개인index/184성년context를재검토했고typed기본미채택/JSON유지를확인했다. HTML2는C#지문외별도출처범위다. 원장·Notion/제안상태·제품/CLI/scripts/C#변경0;맵은실행통과를저장하지 않는다. 최종실제whole결과는별도926원본/프로세스출처로확인한다."
+    "review_note": "926→9704의제품3경로/새module검사1경로를읽고309이름·144증인을연결했다. 물리2필드의selector/deepcopy·삽입순서·첫Media/afterSync둘째Media+Access시점·공개fullClone/Save불변과성년을읽지않는노동context한caller를대조했다. 새검사의도메인JSON복원을전체GameCodec으로세지않는다. 기존926맵은byte보존snapshot으로남기고원본보고서/SourceReview/제안카탈로그/원장/Notion·C#/scripts변경0을유지한다."
   }
 }

@@ -1,53 +1,60 @@
 # 24개 불변식과 실제 실행 검사의 연결
 
 <!-- actual-map-metadata:begin -->
-매핑 소스: `9263756b1d00b8696fddecacb077f55d95141f26`
+매핑 소스: `9704e95508456ee317a378a9b8dac55985bf1849`
 
-테스트 소스 지문: `67f8ada6b3dbf90e7a4857ac788f693cf4e39fe11d3d3cc260b597d11262ba28`
+테스트 소스 지문: `18188884d43295487f2db16a264fafc34bd2fce8a4515dcb37d3967b09fa4c67`
 <!-- actual-map-metadata:end -->
 
-현재 실제 등록 검사는 **308개**(feature270 + Program38)다. 이전264개에서 새 검사44개와 생계 전사 이름1개 변경을 검토하여
-**24개 불변식·증인143개 연결**로 갱신했다. 전체 이름의 경계·관련 INV, 증인의 실제 주장·부정/저장/명령 종류·앵커는
+현재 실제 등록 검사는 **309개**(feature271 + Program38), **24개 불변식·증인144개 연결**이다.
+기존 926의308개/143개 연결에 물리 사본 모듈 검사1개를 추가했다. 전체 이름의 경계·관련 INV와 증인의 실제 주장·부정/저장/명령 종류·앵커는
 [기계 매핑](invariant-execution-map.json)에 있다. 같은 검사는 여러 절에 연결될 수 있으며 **매핑 자체의 실행 상태는 `not_asserted`**다.
 
-`docs/plans/v021-invariants.md` 및 `v021-tasks.json`의 `proposed_tests/test_status=not_implemented`는 원래 제안 이름 카탈로그다.
-해당 상태·원장·Notion을 변경하지 않았다. 이름의 INV 태그를 자동 수용 근거로 쓰지 않는다. 예를 들어 감응 출처의 순수 모듈 검사 이름에
-INV004가 있어도 공통 GameCodec 저장을 실행하지 않으면 그 경계의 전체 세계 저장 증거로 세지 않는다.
+`docs/plans/v021-invariants.md`와 `v021-tasks.json`의 `proposed_tests/test_status=not_implemented`는 원래 제안 이름 카탈로그다.
+해당 상태·원장·Notion을 변경하지 않았다. 이름의 INV 태그를 자동 수용 근거로 쓰지 않는다.
+새 물리 사본 검사의 도메인 JSON 복원도 공통 GameCodec 전체 세계 저장·공개 GameWorld 명령 검사로 세지 않는다.
 
-## 정확한 최종 기능 원본과 매핑 판정
+## 9704 기준 기능 원본과 매핑 판정
 
-루트가 별도 `/workspace/seonro-final-9263756`에서 정확한 위 소스로 실행한 **전체 C# 기능308/308**이 통과했다.
-[JSON 원본](invariant-final-9263756/functional.json)·[실행 로그 원본](invariant-final-9263756/functional.log)을 bytes 그대로 보존했다.
-JSON SHA256은 `453d4b2f567f77d14115b9294fdd78187e76808c4ed37f7b4af056dcf5ad2708`이다.
-실행 소스·clean 재확인·네 assembly의 실제 정보 버전/해시·실행 디렉터리 복사본과
-제품 소스 지문 `7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634`는
-[별도 출처 기록](invariant-final-9263756/provenance.json)에 있다.
+루트가 별도 `/workspace/seonro-final-9704e95`에서 정확한 위 소스로 실행한 **전체 C# 기능309/309**이 통과했다.
+[JSON 원본](invariant-final-9704e95/functional.json)·[실행 로그 원본](invariant-final-9704e95/functional.log)을 bytes 그대로 보존했다.
+JSON SHA256은 `863e0f0face78815a9b97efd28260d399515426c20c4551fa39706fe47db6aba`다.
+CPU4·외부 부하 존재·17:48:59~17:56:54 UTC(루트 관찰 종료17:57:15)·exit0/clean 실행 고지는
+[출처 기록](invariant-final-9704e95/provenance.json)에 있다. 네 assembly의 생성/내장 정보 버전·DLL 해시와 실행 폴더 복사본을 정적으로 대조했다.
+제품 소스 지문은 `f48068bca453202a3826b870e61e9be9972aae4ce8b68e0f8ff4e0b4e0963d28`다.
 
-[대조 결과](invariant-final-9263756/execution-verification.json)는 실제308개 이름 전부와 명명된143개 증인 연결의 통과를 확인한다.
+[대조 결과](invariant-final-9704e95/execution-verification.json)는 실제309개 이름 전부와 명명된144개 증인 연결의 통과를 확인한다.
 이는 24개 문장의 모든 조합·정본111개 작업 전체·전체 T05·native·플랫폼·성능/성장·안정성·APK 릴리스 완료를 뜻하지 않는다.
-기능 runner의 합산 소요 시간은 비용 비교 표본으로 사용하지 않는다. 이 매핑 작업은 기능 runner나 계측기를 새로 실행하지 않았다.
+기능 runner의 합산361.946초는 비용 비교 표본으로 사용하지 않는다. 매핑 작업은 기능 runner나 계측기를 새로 실행하지 않았다.
 
-이전 `6670d29`의237/238 및 `068ecef`의305/308 실패 원본은 수정하지 않았다. 이전258/258과272/272·56bbfb2의308/308도 각 실행 소스의 기록으로 남긴다.
-[입력 거절 확인](invariant-final-9263756/negative-input-checks.json)은 이전258개 보고서·실패305/308·선택32개 보고서의 거절을 기록한다.
-56bbfb2와926은 테스트본문/이름이 같으므로 **구조 검증만으로 두 제품 실행을 구분할 수 없다**. 앞선308/308을 현재 소스 실행으로 승격하지 않고,
-이번 원본 해시와 실제 빌드/실행 출처·제품 지문을 함께 확인했다. `--executed-source`는 호출자 선언이며 프로세스 진위를 독립 인증하는 기능이 아니다.
+기존 [926 원본·검증](invariant-final-9263756/README.md)·[926 맵 JSON 사본](invariant-final-9263756/map.snapshot.json)·
+[926 맵 Markdown 사본](invariant-final-9263756/map.snapshot.md)·[당시 소스 검토](invariant-execution-source-review-9263756.json)는 보존한다.
+맵 두 사본은 이전 파일 bytes 그대로이며, Markdown의 원래 상대 링크가 필요하면
+[당시 경로의 문서](https://github.com/hddy774/project-hora/blob/92ba0d1f1e182e686b4e702d1dc4b7c0e06db6a8/docs/evidence/0.2.1/invariant-execution-map.md)를 따른다.
+이전6670d29의237/238·068ecef의305/308 및 이전 전체/선택 원문을 고치지 않았다.
+[입력 거절 확인](invariant-final-9704e95/negative-input-checks.json)은 기존926의308개 보고서(새 이름 누락)·실패305/308·선택33개 보고서의 거절을 기록한다.
+`--executed-source`는 호출자 선언이며 프로세스 진위를 독립 인증하지 않는다. 같은 테스트를 가진 다른 제품 실행은 원문 해시·실행 출처·제품 지문까지 함께 대조해야 한다.
 
-초기 INV013 동시 원인 공백의 별도 PR146과 당시 [선택14/14 근거](reincarnation-concurrent-causes.json)는 보존했다.
-현재 맵은 실제 동시12/7·활성/미완성/복구도구/혼약·안정 키·대체 설명·저장/재처리 검사와13원인 생산자를 구분한다.
-H04는 현재 versioned-token PriorityQueue와 Person별 active/ready 사전이며 옛 제안의 제자리 heap 위치배열 채택을 주장하지 않는다.
-H09/EX의 작은 정확성과 민감도 합성 계약은 실제 sampler 실행·native/Unity 채택과 구분한다.
+이309개는 **9704 기준 시점**의 기능 검사다. 루트가 보고한 별도926의10,000명 기준선 저장 예외(#191), 중단된 AI/성장 실행과 이후 코덱 수정·추가 검사는
+이 보고서의 통과로 해소했다고 주장하지 않는다. 기존926의 성장/AI/민감도 자료도9704 실행으로 승격하지 않는다.
 
 ## 소스 검토와 실제 경계
 
-[이번 소스 검토](invariant-execution-source-review-9263756.json)는 이전89d581d 이후 변경 C# 경로46개를 정확히 검토하고
-검토 영역31개로 연결한다. CLI 입력보존1개, 이슈179의 Sync/PeopleTeaching/EX05 세 회귀, 개인 지식 index와 수행 사용권 context 변경을 다시 읽었다.
-`index.html`과 `index.compat.html`의 출처·해시는 **C# 테스트 지문 외 별도 검토 범위**로 기록했다. 이 문서의 C# 조회 검사는 UI 클릭/native 증거가 아니다.
-이전 [45개 경로 검토](invariant-execution-source-review-89d581d.json)는 당시 기록으로 유지한다.
+[이번 소스 검토](invariant-execution-source-review-9704e95.json)는926→9704의 C# 변경4개 경로(제품3개·새 검사1개)를 읽고 기존31개 검토 영역에 연결한다.
+`PhysicalCheckpoint`는 공개 전체 사본과 같은 Media/deep MissingChapters·Access만 독립복사한다.
+첫 호출은 Media만, 실제 물리 동기화 뒤 둘째 호출은 Media+Access를 읽으며 순서·권한 판정·Source/RNG·즉시 Save와 공개 전체 Clone은 유지한다.
+새 검사는 값/삽입순서·동기화 전후·destroyed/만료/철회·record/중첩 배열 격리·사본 변조 후 재조회·도메인 JSON 복원을 대조하는 **module** 검사다.
+노동 사용 가능 판정은 성년 사전을 읽지 않는 한 caller의 context만 `includeMaturity:false`로 구성하며 일반 정치 성년 context 기본true는 유지한다.
 
-현재 일반 재고 경로는 JSON Person15이며 typed15는 명시 실험이다. 같은 소스의 독립 strict·JSON15·typed15 전체 전사/실제 저장 bytes를 대조하고,
-옛751/169 버그 고정 해시를 그대로 보존한다는 표현은 제거했다. 옛 실패·상수 재채택 원문은 보존한다.
+`index.html`과 `index.compat.html`은926과 byte 동일함을 별도 기록했다. 두 HTML은 C# 테스트 지문 밖·제품 지문 안의 범위이며 이 문서의 C# 조회 검사는 UI 클릭/native 증거가 아니다.
+이전 [46개 C# 경로+HTML2 검토](invariant-execution-source-review-9263756.json)와 [45개 경로 검토](invariant-execution-source-review-89d581d.json)는 당시 기록으로 유지한다.
+API24 probe workflow190의 추가만으로 native 실행·API24 수용을 주장하지 않는다.
+
+현재 일반 재고 경로는 JSON Person15이며 typed15는 명시 실험이다. 같은 소스의 독립 strict·JSON15·typed15 전체 전사/실제 저장 bytes를 대조한다.
+옛751/169 버그 고정 해시를 그대로 보존한다는 주장은 하지 않으며 옛 실패·상수 재채택 원문은 유지한다.
 부분 Inventory fixture·typed/투영 schema/alias/stale 검사를 실제 공개 GameWorld 생사나 전체 codec 저장으로 분류하지 않는다.
-감응·학습의 짧은 기간/유한 재고·명시 Qi 대원만/교본 인계 fixture도 기본 장기 성장 성공과 구분한다.
+감응·학습의 실제 개인 출처·실제 준비/개시, INV013 동시12/7·단일 여정·대체 설명·13원인 생산자도 기존 증인 범위대로 유지한다.
+H04의 versioned-token PriorityQueue/active·ready 사전은 옛 제안의 제자리 heap 채택과 다르며, H09/EX·민감도 합성 계약은 실제 sampler 실행·native/Unity 채택과 구분한다.
 
 ## 검증과 다음 소스 갱신
 
@@ -56,13 +63,13 @@ python3 scripts/validate-v021-invariant-execution.py
 python3 scripts/validate-v021-invariant-execution.py --self-test
 python3 scripts/refresh-v021-invariant-execution.py --self-test
 python3 scripts/validate-v021-invariant-execution.py \
-  --report docs/evidence/0.2.1/invariant-final-9263756/functional.json \
-  --executed-source 9263756b1d00b8696fddecacb077f55d95141f26 \
+  --report docs/evidence/0.2.1/invariant-final-9704e95/functional.json \
+  --executed-source 9704e95508456ee317a378a9b8dac55985bf1849 \
   --output /workspace/scratch/invariant-final-recheck.json
 ```
 
-[검증기 자체 시험](invariant-final-9263756/validator-self-test.json)은 합성 정상1개와 잘못된 보고서9개·잘못된 맵8개·중복JSON 거절을 검사한다.
-[갱신 helper 자체 시험](invariant-final-9263756/refresh-self-test.json)은 미검토 갱신9개를 거절하며 링크 외 의미를 자동 변경하지 않는다.
+[검증기 자체 시험](invariant-final-9704e95/validator-self-test.json)은 합성 정상1개와 잘못된 보고서9개·잘못된 맵8개·중복JSON 거절을 검사한다.
+[갱신 helper 자체 시험](invariant-final-9704e95/refresh-self-test.json)은 미검토 갱신9개를 거절하며 링크 외 의미를 자동 변경하지 않는다.
 이 합성 자체 시험은 제품 기능 통과로 세지 않는다.
 검증기는 선택·실패·빈 결과·누락/중복/미등록 이름·집계/bool 불일치·통과 행의 오류·없는 앵커와 테스트 지문 변경을 거절한다.
 전체 `.cs/.csproj` 지문으로 이름이 같아도 검사 본문·fixture·helper가 바뀌면 다시 검토한다.
@@ -80,11 +87,12 @@ python3 scripts/refresh-v021-invariant-execution.py \
 미검토/다른 SHA·누락/중복 경로·새/삭제 이름·미분류 제품 소스·없는 앵커나 대상과 다른 작업트리 제품/검사 소스는 거절한다.
 최신 전체 보고서는 별도 실제 실행 원본과 출처로 다시 대조하며 이전 원문을 수정하지 않는다. 제품-only 변경은 별도 제품 지문/실행 provenance도 갱신한다.
 
+
 ## 실제 검사 증인
 
 경계는 `public_world`(GameWorld/실제 명령·월 정산·조회), `module`(순수/부분 도메인), `module_and_world`(별도 모듈 비교와 실제 세계),
 `mechanics`(수식), `host`(파일/세션/별도 CLI)다. `public_world` 자체가 모든 fixture 구성을 공개 명령으로 만들었다는 뜻은 아니다.
-각 증인의 실제 주장과 한계를 따른다. 전체308개 이름의 관련 INV와 경계는 JSON에 있다.
+각 증인의 실제 주장과 한계를 따른다. 전체309개 이름의 관련 INV와 경계는 JSON에 있다.
 
 ### INV-001 · 도메인별 단일 권위와 안정 신원
 
@@ -182,6 +190,7 @@ python3 scripts/refresh-v021-invariant-execution.py \
 | [INV-007/010 rich query: action equipment policy history mapping and detached snapshots](../../../tests/Chronicles.Game.Tests/Features/QueryIntegrationScenarios.cs#L67) | `public_world` / 정상 결과, 조회 순수성 | 조회와 분리된 반환값을 변경해도 권위 상태가 변하지 않으며 장비·정책·이력이 실제 원천에 대응한다. |
 | [비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다](../../../tests/Chronicles.Game.Tests/Features/ExplorationIntegrationScenarios.cs#L57) | `public_world` / 정상 결과, 조회 순수성 | 입구와 인물 조회는 세계/RNG를 바꾸거나 타인의 발견을 생성하지 않는다. |
 | [INV-004/009 people queries public: mutating nested observer aptitude, traits, soul, evaluations and claim arrays cannot alter authority](../../../tests/Chronicles.Game.Tests/Features/PeopleReceiptIntegrationScenarios.cs#L68) | `public_world` / 거절/부정, 조회 순수성 | 중첩 재능·특성·혼흔·평가·주장 배열을 변경해도 권위를 쓸 수 없다. |
+| [INV-007/024 knowledge physical snapshot: 전체 사본의 매체·접근권과 순서·동기화 시점·중첩 배열 격리가 같다](../../../tests/Chronicles.Game.Tests/Features/KnowledgePhysicalSnapshotScenarios.cs#L6) | `module` / 정상 결과, 거절/부정, 조회 순수성, 저장/재개 | 부분 지식 모듈에서 공개 전체 사본의 두 필드와 독립 투영의 모든 값/순서·동기화 전후·destroyed/만료/철회 기록을 비교한다. record/중첩 배열·공개 전체 사본 변조가 권위/다른 사본/권한 조회로 유출되지 않고 도메인 JSON 복원도 같다. 공통 GameCodec 전체 세계 저장·공개 GameWorld 명령 증거는 아니다. |
 
 범위: 실제 공개/모듈 조회와 분리된 반환값의 순수성이다. 모든 UI 그래프·플랫폼 화면 동작은 C# 보고서만으로 대체하지 않는다.
 

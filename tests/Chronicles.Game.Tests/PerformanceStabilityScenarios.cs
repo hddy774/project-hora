@@ -35,61 +35,80 @@ internal static partial class PerformanceScenarios
         var directory = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, Path.GetFileNameWithoutExtension(path) + "-saves");
         if (Directory.Exists(directory)) throw new IOException("새 검증 출력 경로를 지정하세요. 기존 저장 근거는 덮어쓰지 않습니다.");
         Directory.CreateDirectory(directory);
-        var reports = new List<object>(); var allPassed = true;
-        foreach (var workload in plan.Cases)
+        var reports = new List<object>(); var allPassed = true; var finishedCases = new List<int>();
+        int? runningPopulation = null; string? executionFailure = null;
+        void SaveProgress()
         {
-            var watch = Stopwatch.StartNew();
-            var world = GameWorld.Restore(SyntheticPopulationFixture.Build(workload.Population));
-            var fixtureSeconds = watch.Elapsed.TotalSeconds;
-            var checkpoints = new List<object>(); var boundaryChecks = 0; string? failure = null;
-            var slot = Path.Combine(directory, $"population-{workload.Population}.seonro");
-            void Checkpoint()
-            {
-                var retained = CollectedManagedBytes(); GC.KeepAlive(world);
-                var state = world.Checkpoint(); Invariants.Validate(state); boundaryChecks++;
-                var beforeQuery = world.StateHash(); world.View();
-                if (world.StateHash() != beforeQuery) throw new InvalidDataException("장기 조회가 세계를 변경했습니다.");
-                var command = world.Execute(new($"stability:{workload.Population}:{world.Month}", 0, "observe"));
-                if (!command.Accepted) throw new InvalidDataException(command.Message);
-                var hash = world.StateHash();
-                GameSaveStore.SaveAtomic(world, slot); world = GameSaveStore.Load(slot);
-                if (world.StateHash() != hash) throw new InvalidDataException("실제 파일 저장·재개 hash가 다릅니다.");
-                Invariants.Validate(world.Checkpoint()); boundaryChecks++;
-                checkpoints.Add(new { month = world.Month, people = state.People.Count,
-                    living = state.People.Count(p => p.Status == LifeStatus.Alive), births = state.BirthCount, deaths = state.DeathCount,
-                    retainedManagedBytes = retained, saveBytes = new FileInfo(slot).Length,
-                    invariantValid = true, saveResumeEqual = true, queryUnchanged = true, publicCommandAccepted = true,
-                    hash, workload = Workload(state) });
-            }
-            try
-            {
-                Checkpoint();
-                while (world.Month < workload.HorizonMonths && watch.Elapsed.TotalSeconds < workload.WallTimeLimitSeconds)
-                {
-                    world.AdvanceTo(world.Month + 1); // Real AI, work, births, deaths and physical flows remain active.
-                    if (world.Month % workload.ValidateEveryMonths == 0)
-                    { Invariants.Validate(world.Checkpoint()); boundaryChecks++; }
-                    if (world.Month % workload.CheckpointEveryMonths == 0 || world.Month == workload.HorizonMonths) Checkpoint();
-                }
-                if (world.Month % workload.CheckpointEveryMonths != 0 && world.Month != workload.HorizonMonths) Checkpoint();
-            }
-            catch (Exception error) when (error is InvalidDataException or InvalidOperationException or IOException or UnauthorizedAccessException)
-            { failure = error.ToString(); }
-            watch.Stop(); var final = world.Checkpoint();
-            var passed = failure is null && world.Month == workload.HorizonMonths &&
-                watch.Elapsed.TotalSeconds <= workload.WallTimeLimitSeconds && checkpoints.Count >= 3;
-            allPassed &= passed;
-            reports.Add(new { population = workload.Population, targetMonths = workload.HorizonMonths, completedMonths = world.Month,
-                elapsedSeconds = watch.Elapsed.TotalSeconds, fixtureSeconds, boundaryChecks, checkpoints, passed, failure,
-                living = final.People.Count(p => p.Status == LifeStatus.Alive), births = final.BirthCount, deaths = final.DeathCount,
-                fixture = SyntheticPopulationFixture.Describe(workload.Population), usedLaws = final.Laws,
-                workload = Workload(final), finalHash = world.StateHash() });
+            var complete = allPassed && finishedCases.Count == plan.Cases.Length;
+            WriteMeasurementReport(path, new { schema_version = 1, kind = "seonro-long-run-stability",
+                policy = PerformancePolicy, environment, baselineReportSha256 = plan.BaselineReportSha256,
+                planSha256 = Convert.ToHexStringLower(SHA256.HashData(bytes)), totalElapsedSeconds = total.Elapsed.TotalSeconds,
+                complete, status = allPassed ? complete ? "completed" : "running" : "failed",
+                runningPopulation, finishedCases, executionFailure, passed = complete, reports,
+                limitations = "Declared synthetic initial conditions, not founder growth history. Total time includes fixture, real AI, checks, observer I/O, atomic save/resume and prior report writes; it is captured before the current report write. Case time excludes final result projection/report writing. Natural death/population change is allowed; no 100x/60-second claim or fixed living population is required." });
         }
-        File.WriteAllText(path, JsonSerializer.Serialize(new { schema_version = 1, kind = "seonro-long-run-stability",
-            policy = PerformancePolicy, environment, baselineReportSha256 = plan.BaselineReportSha256,
-            planSha256 = Convert.ToHexStringLower(SHA256.HashData(bytes)), totalElapsedSeconds = total.Elapsed.TotalSeconds,
-            passed = allPassed, reports,
-            limitations = "Declared synthetic initial conditions, not founder growth history. Total and case time include fixture, actual AI, invariant checks, observer I/O and atomic file save/resume. Natural death/population change is allowed; no 100x/60-second claim or fixed living population is required." }, Options));
+        SaveProgress();
+        try
+        {
+            foreach (var workload in plan.Cases)
+            {
+                runningPopulation = workload.Population; SaveProgress();
+                var watch = Stopwatch.StartNew();
+                var world = GameWorld.Restore(SyntheticPopulationFixture.Build(workload.Population));
+                var fixtureSeconds = watch.Elapsed.TotalSeconds;
+                var checkpoints = new List<object>(); var boundaryChecks = 0; string? failure = null;
+                var slot = Path.Combine(directory, $"population-{workload.Population}.seonro");
+                void Checkpoint()
+                {
+                    var retained = CollectedManagedBytes(); GC.KeepAlive(world);
+                    var state = world.Checkpoint(); Invariants.Validate(state); boundaryChecks++;
+                    var beforeQuery = world.StateHash(); world.View();
+                    if (world.StateHash() != beforeQuery) throw new InvalidDataException("장기 조회가 세계를 변경했습니다.");
+                    var command = world.Execute(new($"stability:{workload.Population}:{world.Month}", 0, "observe"));
+                    if (!command.Accepted) throw new InvalidDataException(command.Message);
+                    var hash = world.StateHash();
+                    GameSaveStore.SaveAtomic(world, slot); world = GameSaveStore.Load(slot);
+                    if (world.StateHash() != hash) throw new InvalidDataException("실제 파일 저장·재개 hash가 다릅니다.");
+                    Invariants.Validate(world.Checkpoint()); boundaryChecks++;
+                    checkpoints.Add(new { month = world.Month, people = state.People.Count,
+                        living = state.People.Count(p => p.Status == LifeStatus.Alive), births = state.BirthCount, deaths = state.DeathCount,
+                        retainedManagedBytes = retained, saveBytes = new FileInfo(slot).Length,
+                        invariantValid = true, saveResumeEqual = true, queryUnchanged = true, publicCommandAccepted = true,
+                        hash, workload = Workload(state) });
+                    Console.WriteLine($"STABILITY population={workload.Population} month={world.Month}/{workload.HorizonMonths} living={state.People.Count(p => p.Status == LifeStatus.Alive)} elapsed={watch.Elapsed.TotalSeconds:F2}s");
+                }
+                try
+                {
+                    Checkpoint();
+                    while (world.Month < workload.HorizonMonths && watch.Elapsed.TotalSeconds < workload.WallTimeLimitSeconds)
+                    {
+                        world.AdvanceTo(world.Month + 1); // Real AI, work, births, deaths and physical flows remain active.
+                        if (world.Month % workload.ValidateEveryMonths == 0)
+                        { Invariants.Validate(world.Checkpoint()); boundaryChecks++; }
+                        if (world.Month % workload.CheckpointEveryMonths == 0 || world.Month == workload.HorizonMonths) Checkpoint();
+                    }
+                    if (world.Month % workload.CheckpointEveryMonths != 0 && world.Month != workload.HorizonMonths) Checkpoint();
+                }
+                catch (Exception error) when (error is InvalidDataException or InvalidOperationException or IOException or UnauthorizedAccessException)
+                { failure = error.ToString(); }
+                watch.Stop(); var final = world.Checkpoint();
+                var passed = failure is null && world.Month == workload.HorizonMonths &&
+                    watch.Elapsed.TotalSeconds <= workload.WallTimeLimitSeconds && checkpoints.Count >= 3;
+                allPassed &= passed;
+                reports.Add(new { population = workload.Population, targetMonths = workload.HorizonMonths, completedMonths = world.Month,
+                    elapsedSeconds = watch.Elapsed.TotalSeconds, fixtureSeconds, boundaryChecks, checkpoints, passed, failure,
+                    living = final.People.Count(p => p.Status == LifeStatus.Alive), births = final.BirthCount, deaths = final.DeathCount,
+                    fixture = SyntheticPopulationFixture.Describe(workload.Population), usedLaws = final.Laws,
+                    workload = Workload(final), finalHash = world.StateHash() });
+                finishedCases.Add(workload.Population); runningPopulation = null; SaveProgress();
+                Console.WriteLine($"STABILITY CASE population={workload.Population} month={world.Month}/{workload.HorizonMonths} living={final.People.Count(p => p.Status == LifeStatus.Alive)} elapsed={watch.Elapsed.TotalSeconds:F2}s result={(passed ? "completed" : "failed")}");
+            }
+        }
+        catch (Exception error) when (error is InvalidDataException or InvalidOperationException or IOException or UnauthorizedAccessException)
+        {
+            allPassed = false; executionFailure = error.ToString(); SaveProgress();
+            throw;
+        }
     }
 
     private static object MeasurementEnvironment()

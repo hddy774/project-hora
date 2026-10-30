@@ -254,6 +254,8 @@ def canonical_performance_reports(baseline, measured, budget, plan, stability, b
             any(c.get("population") == 10000 for c in cases), "Long-run stability must include the 10,000-person initial fixture")
     require(stability.get("schema_version") == 1 and stability.get("kind") == "seonro-long-run-stability" and
             stability.get("policy") == PERFORMANCE_POLICY and stability.get("passed") is True and
+            stability.get("complete") is True and stability.get("status") == "completed" and
+            stability.get("runningPopulation") is None and stability.get("executionFailure") is None and
             stability.get("baselineReportSha256") == baseline_sha and stability.get("planSha256") == plan_sha and
             finite_number(stability.get("totalElapsedSeconds"), positive=True), "Actual planned long-run stability did not complete")
     env = stability.get("environment", {})
@@ -264,6 +266,8 @@ def canonical_performance_reports(baseline, measured, budget, plan, stability, b
             "Long-run processor and memory environment is missing")
     rows = stability.get("reports", [])
     require(len(rows) == len(cases) and {r.get("population") for r in rows} == {c["population"] for c in cases}, "Long-run cases are incomplete or duplicated")
+    require(isinstance(stability.get("finishedCases"), list) and len(stability["finishedCases"]) == len(cases) and
+            set(stability["finishedCases"]) == {c["population"] for c in cases}, "A completion flag cannot replace actual finished stability cases")
     require(all(finite_number(r.get("elapsedSeconds"), positive=True) for r in rows) and
             stability["totalElapsedSeconds"] >= sum(r["elapsedSeconds"] for r in rows), "Record the actual total long-run time and every case")
     for case in cases:
@@ -494,6 +498,7 @@ def performance_guard_self_test():
     plan = {"schemaVersion": 1, "policyId": PERFORMANCE_POLICY, "baselineReportSha256": baseline_sha, "rationale": "validator fixture only",
             "cases": [{"population": 10000, "horizonMonths": 24, "checkpointEveryMonths": 12, "validateEveryMonths": 1, "wallTimeLimitSeconds": 1000}]}
     stability = {"schema_version": 1, "kind": "seonro-long-run-stability", "policy": PERFORMANCE_POLICY, "passed": True,
+                 "complete": True, "status": "completed", "runningPopulation": None, "finishedCases": [10000], "executionFailure": None,
                  "environment": environment, "baselineReportSha256": baseline_sha, "planSha256": plan_sha, "totalElapsedSeconds": 101,
                  "reports": [{"population": 10000, "passed": True, "failure": None, "targetMonths": 24, "completedMonths": 24,
                               "elapsedSeconds": 100, "boundaryChecks": 30, "workload": {"peopleWithDecisions": 1},
@@ -519,6 +524,11 @@ def performance_guard_self_test():
         ("cognition budget exceeded", lambda x: x[1]["reports"][-1]["cognition"].update(maximumBudgetUnitsPerPerson=9)),
         ("invented per-person maximum", lambda x: x[1]["reports"][-1]["cognition"]["maximumPerPerson"].update(beliefs=1)),
         ("failed stability", lambda x: x[4]["reports"][0].update(failure="actual failure")),
+        ("partial stability", lambda x: x[4].update(complete=False)),
+        ("running stability", lambda x: x[4].update(status="running", runningPopulation=10000)),
+        ("failed execution", lambda x: x[4].update(status="failed", executionFailure="actual failure")),
+        ("numeric completion flag", lambda x: x[4].update(complete=1)),
+        ("forged completion flag", lambda x: x[4].update(finishedCases=[])),
         ("timeout", lambda x: x[4]["reports"][0].update(elapsedSeconds=1001)),
         ("shortened horizon", lambda x: x[4]["reports"][0].update(completedMonths=12)),
         ("missing boundary checks", lambda x: x[4]["reports"][0].update(boundaryChecks=0)),

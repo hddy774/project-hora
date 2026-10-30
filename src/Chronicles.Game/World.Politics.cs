@@ -4,30 +4,8 @@ public sealed partial class GameWorld
 {
     private string? Found(Person p, string kind)
     {
-        if (p.Action != ActionKind.Idle || Month - p.Born < Law("birth.maturity") || p.Money < Law("politics.foundCost"))
-            return "창설할 인력·자격·재원이 부족합니다.";
-        if (kind != "sect" && kind != "family") return "가문 또는 종문을 선택하세요.";
-        if (kind == "family" && (int)p.Realm < Law("politics.founderRealm")) return "가문 가주 자격이 부족합니다.";
-        if (kind == "sect" && (p.Sect != 0 || state.Groups.Count(g => g.Kind == GroupKind.Sect && !g.Dissolved) >= Law("politics.sectLimit")))
-            return "현재 종문 창설 조건이 아닙니다.";
-        var g = new Group { Id = Id(), Kind = kind == "sect" ? GroupKind.Sect : GroupKind.Family,
-            Name = $"{p.Name}{(kind == "sect" ? "종" : "가")}", Leader = p.Id, Founded = Month,
-            Members = [p.Id], Money = Law("politics.foundCost"),
-            Policies = new(Catalog.PolicyNames.ToDictionary(n => n, _ => 1, StringComparer.Ordinal), StringComparer.Ordinal) };
-        p.Money -= g.Money; state.Groups.Add(g); groups.Add(g.Id, g);
-        if (g.Kind == GroupKind.Sect)
-        {
-            p.Sect = g.Id; p.Traits.Add(new("창종지조", $"group:{g.Id}", Month, null, true));
-            g.Jurisdiction = state.Places[p.Place].Sovereign;
-        }
-        else
-        {
-            if (groups.TryGetValue(p.Household, out var old)) old.Members.Remove(p.Id);
-            p.Household = g.Id;
-        }
-        p.Action = ActionKind.Guard; p.Due = Month + 1;
-        Event("창설", p.Id, g.Id, $"{g.Name} 창설·실제 창설금 이전", "명시 창설");
-        return null;
+        TryPoliticsCommand(new($"ai-politics:{p.BodyId}:{Month}:{Revision}:{state.NextId}", p.Id, "found", Data: kind), p, out var error);
+        return error;
     }
 
     private string? Join(Person p, long id)
@@ -43,15 +21,8 @@ public sealed partial class GameWorld
 
     private string? Policy(Person p, long id, string policy, long value)
     {
-        if (!groups.TryGetValue(id, out var g) || g.Dissolved || g.Leader != p.Id ||
-            !Catalog.PolicyNames.Contains(policy) || value is < 0 or > 2 ||
-            g.PendingPolicies.Count != 0 || g.Money < Law("politics.policyCost") || p.Action != ActionKind.Idle)
-            return "정책 권한·준비금·노동 용량을 확인하세요.";
-        g.PolicyEscrow = Law("politics.policyCost"); g.Money -= g.PolicyEscrow;
-        g.PendingPolicies[policy] = (int)value; g.PolicyDue = Month + 1;
-        p.Action = ActionKind.Guard; p.Due = Month + 1;
-        Event("정책 준비", p.Id, g.Id, $"{g.Name} {policy} 준비·예산 예약", $"법칙 r{state.LawRevision}");
-        return null;
+        TryPoliticsCommand(new($"ai-politics:{p.BodyId}:{Month}:{Revision}:{state.NextId}", p.Id, "policy", id, value, policy), p, out var error);
+        return error;
     }
 
     private string? Govern(Person p, long id, long province)
@@ -204,12 +175,13 @@ public sealed partial class GameWorld
     {
         if (p.Action != ActionKind.Idle || !people.TryGetValue(id, out var q) || q.Status != LifeStatus.Alive ||
             q.Id == p.Id || q.Place != p.Place || !p.KnownPeople.Contains(q.Id)) return "전투 조건을 만족하지 않습니다.";
-        var attack = CombatAttributes(p, items); var defence = CombatAttributes(q, items);
-        var damage = (int)Math.Clamp(attack[0] * 25 / Math.Max(1, defence[1]), 1, 100);
+        var attack = CultivationCombatFor(p).Axes; var defence = CultivationCombatFor(q).Axes;
+        var damage = (int)Math.Clamp(attack.OutputPenetration * 25 / Math.Max(1, defence.ProtectionRecovery), 1, 100);
         var ward = q.Traits.FirstOrDefault(t => t.Id == "호신부" && t.Active);
         if (ward is not null) { damage /= 2; q.Traits.Remove(ward); }
         if (q.Equipment.TryGetValue(3, out var armor)) items[armor].Damage = Math.Min(100, items[armor].Damage + 1);
         q.Health = Math.Max(0, q.Health - damage);
+        NormalizeInventoryPhysicalState();
         Gain(p, "combat", 10); Gain(q, "combat", 5);
         p.Action = ActionKind.Guard; p.Due = Month + 1;
         if (q.Health == 0) EndLife(q, 2, "전투 사망");

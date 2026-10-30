@@ -45,6 +45,9 @@ public sealed partial class GameWorld
 
     private void Remove(Item item)
     {
+        state.Inventory.Metadata.RemoveAll(m => m.Item == item.Id);
+        foreach (var reservation in state.Inventory.Reservations.Where(r => r.Items.Remove(item.Id)))
+            if (reservation.Items.Count == 0) reservation.Active = false;
         state.Items.Remove(item); items.Remove(item.Id); Owned(item.Owner).Remove(item);
         if (people.TryGetValue(item.Owner, out var owner))
             foreach (var slot in owner.Equipment.Where(x => x.Value == item.Id).Select(x => x.Key).ToArray()) owner.Equipment.Remove(slot);
@@ -166,15 +169,8 @@ public sealed partial class GameWorld
 
     private string? Offer(Person p, long itemId, long price, string kind)
     {
-        if (price <= 0 || price > 1000000000 || !Accessible(p, itemId, out var item) ||
-            item.Container != 0 || p.Equipment.ContainsValue(itemId) || state.Items.Any(i => i.Container == itemId))
-            return "출품할 수 없는 실물·가격입니다.";
-        var c = new Contract { Id = Id(), Kind = kind == "auction" ? "auction" : "sale", Seller = p.Id, Item = itemId,
-            Price = price, Destination = p.Place, Due = Month + 12 };
-        item.Place = p.Place; item.Reserved = c.Id; state.Contracts.Add(c);
-        if (!state.Places[p.Place].Facilities.Contains("시장")) state.Places[p.Place].Facilities.Add("시장");
-        Event("출품", p.Id, c.Id, $"{Catalog.Items[item.Definition].Name} 출품·{price}영석", item.Source);
-        return null;
+        TryInventoryCommand(new($"ai-offer:{p.BodyId}:{Month}:{Revision}:{state.NextId}", p.Id, "offer", itemId, price, kind), p, out var error);
+        return error;
     }
 
     private string? Trade(Person p, long contractId, long unused)

@@ -34,8 +34,8 @@ public static class Catalog
     { "무기", "보조 법보", "의복", "갑주", "머리", "신발", "장신구", "호신", "도구", "단로", "진기", "저물대" });
 
     public static IReadOnlyList<PathDefinition> Paths { get; } = BuildPaths();
-    public static IReadOnlyDictionary<string, ItemDefinition> Items { get; } = BuildItems();
-    public static IReadOnlyDictionary<string, ItemDefinition> BaseItems => Items;
+    public static IReadOnlyDictionary<string, ItemDefinition> BaseItems { get; } = BuildItems();
+    public static IReadOnlyDictionary<string, ItemDefinition> Items => Inventory.InventoryDefinitions.SharedItems;
     public static IReadOnlyList<Recipe> Recipes { get; } = Array.AsReadOnly<Recipe>(
     [
         new("pill", "회춘단 제조", "alchemy", "pill", 1, [new("herb", 3), new("wood", 1)]),
@@ -102,15 +102,6 @@ public static class Catalog
     public static int Talent(Person p, int index)
     {
         if ((uint)index >= Talents.Count) throw new ArgumentOutOfRangeException(nameof(index));
-        if (index < 5) return p.Roots[index];
-        var a = p.Aptitudes;
-        return index switch
-        {
-            5 => (p.Roots.Min() + a[3]) / 2,
-            6 => (a[0] + a[4]) / 2, 7 => (a[1] + a[4]) / 2, 8 or 9 => (a[1] + a[2]) / 2,
-            10 or 19 => (a[4] + a[5]) / 2, 14 => (a[3] + a[4] + p.Roots[3]) / 3,
-            15 => (a[1] + a[3] + p.Roots[0]) / 3, 18 => (a[3] + p.Roots[1] + p.Roots[4]) / 3,
-            _ => (a[3] + a[4]) / 2
-        };
+        return People.Aptitudes.InnateTalent(p.Aptitudes, p.Roots, index);
     }
 }

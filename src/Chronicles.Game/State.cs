@@ -218,6 +218,7 @@ public sealed class Contract
 public sealed class GameState
 {
     public int Schema { get; set; } = 1;
+    public int DomainSchema { get; set; }
     public ulong Seed { get; set; }
     public ulong RandomState { get; set; }
     public long Month { get; set; }

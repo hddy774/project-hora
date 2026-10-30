@@ -61,11 +61,11 @@ public sealed partial class GameWorld
             father.Status != LifeStatus.Alive || Month < mother.NextBirth ||
             state.Pregnancies.Any(x => x.Mother == mother.Id && !x.Completed)) return "출산 자격·회복 기간을 확인하세요.";
         if (Law("birth.kinship") == 0 && Related(mother, father)) return "현재 혈연 법칙에서 허용하지 않습니다.";
-        int[] Mix(int[] a, int[] b) => a.Select((v, i) => Math.Clamp((v + b[i]) / 2 + Roll(401) - 200, 0, 10000)).ToArray();
+        if (!CheckPeopleReproduction(mother, father).Eligible) return "현재 생식 프로필·양친 자격을 확인하세요.";
         var pregnancy = new Pregnancy { Id = Id(), Mother = mother.Id, Father = father.Id,
             Due = Month + Law("birth.gestation"), LawRevision = state.LawRevision,
-            Recovery = Law("birth.interval"), HealthCost = IntLaw("birth.healthCost"),
-            Roots = Mix(mother.Roots, father.Roots), Aptitudes = Mix(mother.Aptitudes, father.Aptitudes) };
+            Recovery = Law("birth.interval"), HealthCost = IntLaw("birth.healthCost") };
+        FreezePeopleConception(pregnancy, mother, father);
         state.Pregnancies.Add(pregnancy);
         Event("잉태", mother.Id, father.Id, $"{mother.Name} 잉태·유전 원형 확정", $"법칙 r{state.LawRevision}");
         return null;
@@ -98,6 +98,8 @@ public sealed partial class GameWorld
         soul.Traces = soul.Traces.Select(t => t with { Accessible = 0, Integrated = 0 }).ToArray();
         if (soul.Route > 0) p.Traits.Add(new("윤회유흔", $"Soul:{soul.Id}", Month, null, true));
         BindSlot(p); state.People.Add(p); people.Add(p.Id, p); pregnancy.Child = p.Id;
+        InitializePeopleBirth(p, pregnancy);
+        InitializeCultivationPerson(p);
         state.Places[p.Place].PeopleRevision++;
         if (groups.TryGetValue(p.Household, out var home)) home.Members.Add(p.Id);
         mother.NextBirth = Month + pregnancy.Recovery;
@@ -111,6 +113,7 @@ public sealed partial class GameWorld
     {
         if (p.Status != LifeStatus.Alive) return;
         var sourceRealm = p.Realm; var sourceLayer = p.Layer;
+        ReleaseCultivationForLifeEnd(p);
         ReleaseSlot(p);
         p.Irreversible = false;
         if (p.Action != ActionKind.Idle) Cancel(p);
@@ -132,8 +135,7 @@ public sealed partial class GameWorld
         soul.Route = enabled && eligible ? cause : 0;
         soul.Status = soul.Integrity == 0 ? "destroyed" : soul.Route > 0 ? "waiting" : "ended";
         soul.Ready = Month + Law("soul.crossing");
-        if (soul.Route > 0)
-            soul.Traces = Enumerable.Range(0, 6).Select(i => new Trace(Math.Min(100, p.Understanding.Count * 2 + i), 0, 0)).ToArray();
+        EndPeopleLife(p);
         var heir = state.People.Where(x => x.Status == LifeStatus.Alive && (x.ParentOne == p.Id || x.ParentTwo == p.Id))
             .OrderBy(x => x.Born).ThenBy(x => x.Id).FirstOrDefault();
         heir ??= state.People.FirstOrDefault(x => x.Status == LifeStatus.Alive && x.Household == p.Household);
@@ -144,12 +146,7 @@ public sealed partial class GameWorld
             { Transfer(item, heir.Id); item.Container = 0; item.Place = p.Place; }
             p.Equipment.Clear();
         }
-        foreach (var g in state.Groups.Where(g => !g.Dissolved && g.Leader == p.Id))
-        {
-            g.Leader = g.Members.Where(id => people.TryGetValue(id, out var x) && x.Status == LifeStatus.Alive &&
-                Month - x.Born >= Law("birth.maturity")).Order().FirstOrDefault();
-            if (g.Leader == 0) Event("공석", 0, g.Id, $"{g.Name} 수장 공석", evidence);
-        }
+        PoliticsOnLifeEnded(p, heir);
         Event(outcome == LifeStatus.Dead ? "사망" : "세계 이탈", p.Id, soul.Route, $"{p.Name} {evidence}·{(soul.Route == 0 ? "윤회 미적격" : $"RC-{soul.Route:00} 대기")}", soul.Evidence);
     }
 
@@ -162,18 +159,18 @@ public sealed partial class GameWorld
         state.Places[p.Place].PeopleRevision++;
         if (p.Partner != 0 && people.TryGetValue(p.Partner, out var partner)) partner.Partner = 0;
         p.Partner = 0;
-        foreach (var group in state.Groups.Where(g => !g.Dissolved && g.Leader == p.Id))
-            group.Leader = group.Members.Where(id => people[id].Status == LifeStatus.Alive).Order().FirstOrDefault();
         var root = souls[p.SoulId]; root.Status = "ascended"; root.CurrentPerson = 0;
+        EndPeopleLife(p);
+        PoliticsOnLifeEnded(p, null);
         if (state.Controlled == p.Id) { state.Controlled = 0; state.ViewGeneration++; }
         if ((Law("soul.enabledRoutes") & (1L << 12)) != 0 && root.SplitCount < Law("soul.splitLimit"))
         {
             root.SplitCount++;
             var split = new Soul { Id = Id(), Parent = root.Id, Root = root.Root, Route = 13, Status = "waiting",
                 Ready = Month + Law("soul.crossing"), SourceRealm = p.Realm, SourceLayer = p.Layer,
-                Evidence = $"실제 비승 {p.Id}·독립 분혼 {root.SplitCount}·법칙 r{state.LawRevision}",
-                Traces = root.Traces.Select(t => new Trace(t.Preserved * (100 - IntLaw("soul.splitCost")) / 100, 0, 0)).ToArray() };
+                Evidence = $"실제 비승 {p.Id}·독립 분혼 {root.SplitCount}·법칙 r{state.LawRevision}" };
             state.Souls.Add(split); souls.Add(split.Id, split);
+            SplitPeopleSoul(root, split);
         }
         Event("비승", p.Id, 0, $"{p.Name} 비승·사망 집계 없음·재산/직책 자동 복제 없음", "실제 통로 99");
         return null;

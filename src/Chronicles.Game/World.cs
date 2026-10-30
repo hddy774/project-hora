@@ -56,7 +56,7 @@ public sealed partial class GameWorld
         {
             var p = new Person { Id = w.Id(), BodyId = w.Id(), SoulId = w.Id(),
                 Name = i == 0 ? "청명" : "연화", Gestates = i == 1, Born = -w.Law("founder.age"),
-                Lifespan = w.Law("founder.lifespan"), Realm = Realm.HalfImmortal, Layer = 9, GreatPerfection = true,
+                Lifespan = w.Law("founder.lifespan"), Realm = Realm.HalfImmortal, Layer = 5, GreatPerfection = false,
                 Money = w.Law("founder.initialMoney"), KnownPlaces = [0],
                 Roots = Enumerable.Range(0, 5).Select(_ => 4000 + w.Roll(2001)).ToArray(),
                 Aptitudes = Enumerable.Range(0, 6).Select(_ => 4000 + w.Roll(2001)).ToArray(),
@@ -66,12 +66,10 @@ public sealed partial class GameWorld
             foreach (var path in Catalog.Paths)
             {
                 p.Understanding[path.Id] = 3000;
-                if (path.Id.EndsWith(".0", StringComparison.Ordinal))
-                    p.Formations.Add(new(path.Realm, path.Id, 5000, 0, 0, "창세 초기 구조·실제 과거 없음"));
             }
             w.BindSlot(p); s.People.Add(p);
             s.Souls.Add(new Soul { Id = p.SoulId, Root = p.SoulId, CurrentPerson = p.Id,
-                SourceRealm = Realm.HalfImmortal, SourceLayer = 9, Evidence = "창세 조건" });
+                SourceRealm = Realm.HalfImmortal, SourceLayer = 5, Evidence = "창세 조건" });
             s.CreatedMoney += p.Money;
             w.AddItem(p.Id, "food", w.IntLaw("founder.initialFood"), 5000, "창세 초기 자산", "opening");
             w.AddItem(p.Id, "tool", 1, 5000, "창세 초기 자산", "opening");
@@ -89,6 +87,11 @@ public sealed partial class GameWorld
             w.Observe(p);
         }
         w.Reindex();
+        w.InitializePeopleDomain();
+        w.InitializeInventory();
+        w.InitializeKnowledge();
+        w.InitializeCultivation();
+        s.DomainSchema = 1;
         w.Event("창세", 0, 0, "두 반선 시조가 세계에 들어왔다. 종문·숨은 주민 없음.", "초기 프로필");
         w.Census();
         Invariants.Validate(s);
@@ -160,6 +163,7 @@ public sealed partial class GameWorld
         var candidate = new GameWorld(GameCodec.Clone(state));
         var error = candidate.Apply(command);
         if (error is not null) return new(command.Id, false, error, Revision);
+        candidate.SettleKnowledge();
         candidate.state.Revision++;
         var result = new CommandResult(command.Id, true, "명령을 적용했습니다.", candidate.Revision);
         candidate.state.Commands.Add(command.Id, result);
@@ -193,6 +197,8 @@ public sealed partial class GameWorld
         if (!people.TryGetValue(c.Actor, out var p) || p.Status != LifeStatus.Alive ||
             (state.Controlled != 0 && state.Controlled != p.Id)) return "실행할 수 없는 대상입니다.";
         if (c.Kind == "cancel") return Cancel(p);
+        if (TryCultivationCommand(c, p, out var domainError) || TryKnowledgeCommand(c, p, out domainError) ||
+            TryInventoryCommand(c, p, out domainError) || TryPoliticsCommand(c, p, out domainError)) return domainError;
         if (c.Kind == "partner") return Partner(p, c.Target);
         if (c.Kind == "conceive") return Conceive(p, c.Target);
         if (c.Kind == "trade") return Trade(p, c.Target, c.Value);
@@ -220,7 +226,11 @@ public sealed partial class GameWorld
 
     private string? Start(Person p, string kind, long target, string data)
     {
+        var command = new GameCommand($"ai:{p.BodyId}:{Month}:{Revision}:{kind}:{state.NextId}", p.Id, kind, target, Data: data);
+        if (TryCultivationCommand(command, p, out var domainError) || TryStartKnowledge(p, kind, target, data, out domainError) ||
+            TryInventoryCommand(command, p, out domainError)) return domainError;
         if (p.Action != ActionKind.Idle) return "기존 작업이 진행 중입니다.";
+        if (!PoliticsLaborAvailable(p, Month, Month + 1)) return "이미 다른 공동 작업의 인력으로 예약되어 있습니다.";
         if (p.Sealed && actionNameRequiresMovement(kind)) return "현재 봉인되어 이동할 수 없습니다.";
         if (p.Health < 10 && kind != "heal") return "먼저 회복이 필요합니다.";
         if (!Enum.TryParse<ActionKind>(kind, true, out var action) || action == ActionKind.Idle)
@@ -268,6 +278,10 @@ public sealed partial class GameWorld
 
     private string? Cancel(Person p)
     {
+        var command = new GameCommand($"cancel:{p.BodyId}:{Month}:{Revision}:{state.NextId}", p.Id, "cancel");
+        if (TryCultivationCommand(command, p, out var domainError)) return domainError;
+        if (CancelKnowledge(p)) return null;
+        if (TryInventoryCommand(command, p, out domainError) || TryCancelPoliticsWork(p, out domainError)) return domainError;
         if (p.Action == ActionKind.Idle) return "취소할 작업이 없습니다.";
         if (p.Irreversible) { EndLife(p, 3, "파단 후 형성 중단"); return null; }
         foreach (var i in state.Items.Where(i => i.Reserved == p.ActionTarget && p.Action == ActionKind.Craft)) i.Reserved = 0;
@@ -285,9 +299,11 @@ public sealed partial class GameWorld
     {
         state.Month++;
         Regenerate();
+        SettleCultivation();
         foreach (var pregnancy in state.Pregnancies.Where(x => !x.Completed && x.Due <= Month).ToArray()) Birth(pregnancy);
-        SettleContracts();
-        SettleGroups();
+        SettleInventory();
+        SettlePolitics();
+        SettleKnowledge();
         RefreshPopulationIndices();
         var living = state.People.Where(p => p.Status == LifeStatus.Alive).ToArray();
         foreach (var p in living)
@@ -302,6 +318,8 @@ public sealed partial class GameWorld
             Observe(p);
             if (p.Action == ActionKind.Idle && state.Controlled != p.Id) { Decide(p); RecordDecision(p); }
         }
+        SettleKnowledge();
+        SettlePeopleDomain();
         state.Revision++;
         Census();
     }
@@ -312,7 +330,8 @@ public sealed partial class GameWorld
         state.Census.Add(new(Month, living.Length, living.Count(p => p.Realm == Realm.Mortal && p.Martial == 0),
             living.Count(p => p.Martial > 0), living.Count(p => p.Realm > Realm.Mortal),
             (int)state.BirthCount, (int)state.DeathCount,
-            state.People.Sum(p => p.Money) + state.Groups.Sum(g => g.Money) + state.Contracts.Sum(c => c.Escrow) + state.Groups.Sum(g => g.PolicyEscrow),
+            state.People.Sum(p => p.Money) + state.Groups.Sum(g => g.Money) + state.Contracts.Sum(c => c.Escrow) +
+                state.Groups.Sum(g => g.PolicyEscrow) + state.Politics.Preparations.Sum(p => p.Escrow),
             state.Items.Where(i => i.Definition == "food").Sum(i => (long)i.Quantity)));
     }
 
@@ -329,6 +348,8 @@ public sealed partial class GameWorld
         state.Places[p.Place].PeopleRevision++;
         var soul = new Soul { Id = p.SoulId, Root = p.SoulId, CurrentPerson = p.Id, Evidence = "명시적 중도 편입·외부 기원" };
         state.Souls.Add(soul); souls.Add(soul.Id, soul);
+        InitializePeoplePerson(p);
+        InitializeCultivationPerson(p);
         Event("편입", p.Id, 0, $"{p.Name} 명시 편입·자산 지급 없음", c.Id);
         Observe(p);
         return null;

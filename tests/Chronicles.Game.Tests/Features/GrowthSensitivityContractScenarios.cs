@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Diagnostics;
 using Chronicles.Game;
 using Chronicles.Game.People;
 
@@ -196,5 +197,40 @@ public sealed class SensitivityAdoptedPolicyContractScenario : IFeatureScenario
             definitions.GetProperty("reputation").GetProperty("maximumClaimsPerObserver").GetInt32() == new ReputationPolicy().MaximumClaimsPerObserver &&
             definitions.GetProperty("speciesCatalog").GetArrayLength() > 0 &&
             definitions.GetProperty("genetics").GetProperty("policyId").GetString() == "PC-TEMP-V021-GENETICS-01");
+    }
+}
+
+public sealed class SensitivityReportInputPreservationScenario : IFeatureScenario
+{
+    public string Name => "T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes";
+    public void Run()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "sensitivity-input-guard-" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(directory);
+        try
+        {
+            var baselinePath = Path.Combine(directory, "baseline.json"); var planPath = Path.Combine(directory, "plan.json");
+            var baseline = SensitivityContractFixture.Bytes(SensitivityContractFixture.Baseline());
+            var plan = JsonSerializer.SerializeToUtf8Bytes(SensitivityContractFixture.Plan(baseline) with { BaselineReportPath = baselinePath }, SensitivityContractFixture.Json);
+            File.WriteAllBytes(baselinePath, baseline); File.WriteAllBytes(planPath, plan);
+            foreach (var report in new[] { planPath, baselinePath })
+            {
+                var output = Path.Combine(directory, Path.GetFileNameWithoutExtension(report) + "-never-collected.json");
+                var host = Environment.ProcessPath ?? throw new InvalidOperationException("CLI host path is unavailable.");
+                var start = new ProcessStartInfo(host) { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
+                if (Path.GetFileNameWithoutExtension(host).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) start.ArgumentList.Add(typeof(SensitivityReportInputPreservationScenario).Assembly.Location);
+                string[] arguments = ["--filter", "no-matching-cli-sentinel-" + Guid.NewGuid().ToString("N"), "--report", report,
+                    "--sensitivity", output, "--sensitivity-plan", planPath];
+                foreach (var argument in arguments) start.ArgumentList.Add(argument);
+                using var process = Process.Start(start) ?? throw new InvalidOperationException("CLI guard child could not start.");
+                var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync();
+                if (!process.WaitForExit(10000)) { process.Kill(entireProcessTree: true); throw new InvalidOperationException("CLI guard child did not exit promptly."); }
+                var text = stdout.GetAwaiter().GetResult(); var error = stderr.GetAwaiter().GetResult();
+                SensitivityContractFixture.Check(process.ExitCode != 0 && error.Contains("--sensitivity + --report", StringComparison.Ordinal) &&
+                    !text.Contains("PASS ", StringComparison.Ordinal) && !text.Contains("RESULT ", StringComparison.Ordinal) && !text.Contains("SENSITIVITY ", StringComparison.Ordinal) &&
+                    File.ReadAllBytes(planPath).SequenceEqual(plan) && File.ReadAllBytes(baselinePath).SequenceEqual(baseline) &&
+                    !File.Exists(output) && !File.Exists(output + ".pending") && !File.Exists(output + ".lock"));
+            }
+        }
+        finally { Directory.Delete(directory, recursive: true); }
     }
 }

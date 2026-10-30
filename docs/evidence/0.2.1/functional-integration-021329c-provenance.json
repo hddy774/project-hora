@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "source_commit": "021329cca1dba34f66095e3490f79d266d76b1d5",
+  "report": "docs/evidence/0.2.1/functional-integration-021329c.json",
+  "report_sha256": "4a9a10494783766935cb9cde58c717be411c4eb6e8cd8c74457b22722e5aad45",
+  "selection": "all",
+  "passed": 239,
+  "total": 239,
+  "failed": 0,
+  "runtime": ".NET 10.0.14",
+  "command": "dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers -p:BuildInParallel=false -p:UseSharedCompilation=false -- --report ...",
+  "game_feature_development_complete": true,
+  "performance_growth_soak_profile_executed": false,
+  "limitations": [
+    "이후 구조 최적화·측정 하네스 변경의 최종 전체 통과를 뜻하지 않는다.",
+    "실제 플랫폼·최종 측정·릴리스는 별도 검증한다."
+  ]
+}

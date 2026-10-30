@@ -97,6 +97,7 @@ public static partial class PoliticsEngine
         if (p is null || p.Status != LifeStatus.Alive || p.Action != ActionKind.Idle ||
             context.Month - p.Born < context.Rules.MaturityMonths || p.Money < context.Rules.FoundingTreasury ||
             groupId <= 0 || d.Groups.Any(g => g.Id == groupId) || d.People.Any(x => x.Id == groupId) ||
+            kind == GroupKind.Family && (int)p.Realm < context.Rules.FamilyFounderMinimumRealm ||
             string.IsNullOrWhiteSpace(name) || kind is not (GroupKind.Family or GroupKind.Sect) ||
             !IsLaborAvailable(context, state, actor, context.Month, context.Month + 1))
             return PoliticalResult.Rejected("Founding requires a living adult, actual treasury, a unique group ID and available labor.");
@@ -185,14 +186,28 @@ public static partial class PoliticsEngine
         int placeId, PoliticalRight right, PoliticalAccount recipient)
     {
         var d = new PoliticalDraft(context, state); var place = d.Place(placeId);
-        if (place is null || !Exists(context, recipient) ||
+        if (place is null || (!Exists(context, recipient) && !(right == PoliticalRight.Operation && recipient.Id == 0)) ||
             !(place.Owner == actor && d.Person(actor)?.Status == LifeStatus.Alive ||
               d.Leads(d.Person(actor), d.Group(place.Owner))) ||
             right is not (PoliticalRight.Ownership or PoliticalRight.Operation))
             return PoliticalResult.Rejected("Only a living owner or its current leader can transfer property or appoint its operator.");
-        if (right == PoliticalRight.Ownership) { place.Owner = recipient.Id; place.Operator = 0; }
+        if (right == PoliticalRight.Ownership) place.Owner = recipient.Id;
         else place.Operator = recipient.Id;
         return d.Finish("Transferred the specified property right without changing political authority.");
+    }
+
+    public static PoliticalResult PlanDepartedPersonalRights(PoliticalContext context, PoliticalState state, long departed, long actualHeir = 0)
+    {
+        var d = new PoliticalDraft(context, state); var person = d.Person(departed);
+        if (person is null || person.Status == LifeStatus.Alive ||
+            actualHeir != 0 && (person.Status != LifeStatus.Dead || d.Person(actualHeir) is not { Status: LifeStatus.Alive }))
+            return PoliticalResult.Rejected("Personal estate rights require actual departure and a real living physical heir only after death.");
+        foreach (var place in d.Places)
+        {
+            if (place.Operator == departed) place.Operator = 0;
+            if (actualHeir != 0 && place.Owner == departed) place.Owner = actualHeir;
+        }
+        return d.Finish("Transferred actual inherited private land and ended departed personal operation; sovereignty, unrelated operation and soul history confer no inheritance.");
     }
 
     public static PoliticalResult PlanPassage(PoliticalContext context, PoliticalState state, long actor,
@@ -269,7 +284,7 @@ public static partial class PoliticsEngine
         {
             if (place.Delegate == group) place.Delegate = 0;
             if (place.Operator == group) place.Operator = 0;
-            if (place.Owner == group) { place.Owner = actor; place.Operator = 0; }
+            if (place.Owner == group) place.Owner = actor;
         }
         d.Transfer(account, PoliticalAccount.Person(actor), g.Money, "dissolution", group);
         g.Leader = 0; g.Dissolved = true;

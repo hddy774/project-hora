@@ -102,7 +102,9 @@ public sealed class PoliticsRightsScenario : IFeatureScenario
         f.Apply(PoliticsEngine.PlanPassage(f.Context, f.State, a, 0, PoliticalAccount.Person(b), 15));
         PoliticalFixture.Check(PoliticsEngine.HasRight(f.Context, f.State, PoliticalAccount.Person(b), 0, PoliticalRight.Passage), "explicit passage exists");
         f.Apply(PoliticsEngine.PlanProperty(f.Context, f.State, a, 0, PoliticalRight.Ownership, PoliticalAccount.Person(b)));
-        PoliticalFixture.Check(f.Place(0).Owner == b && f.Place(0).Operator == 0 && f.Place(0).Sovereign == PoliticalFixture.FirstGroup, "ownership transfer preserves political authority");
+        PoliticalFixture.Check(f.Place(0).Owner == b && f.Place(0).Operator == b && f.Place(0).Sovereign == PoliticalFixture.FirstGroup, "ownership transfer preserves separate operation and political authority");
+        f.Apply(PoliticsEngine.PlanProperty(f.Context, f.State, b, 0, PoliticalRight.Operation, PoliticalAccount.Person(0)));
+        PoliticalFixture.Check(f.Place(0).Operator == 0, "current owner can explicitly revoke operation separately");
         f.SetMonth(15);
         PoliticalFixture.Check(!PoliticsEngine.HasRight(f.Context, f.State, PoliticalAccount.Person(b), 0, PoliticalRight.Passage), "passage expires in integer time");
     }
@@ -442,5 +444,43 @@ public sealed class PoliticsSharedReservationsScenario : IFeatureScenario
         PoliticalFixture.Check(f.State.Preparations.Single(p => p.Id == id).Stage == PolicyStage.Implemented &&
             f.State.ConsumedMoney == 10 && f.State.Service.Single(s => s.Group == PoliticalFixture.FirstGroup && s.Person == f.First).Contribution == 1,
             "a changed rule does not rewrite a prior funded preparation or its actual completed service");
+    }
+}
+
+public sealed class PoliticsWorkWithdrawalScenario : IFeatureScenario
+{
+    public string Name => "INV-018/020 politics: atomic adopt/prepare failure and actual worker withdrawal cannot leave usable cancelled effects";
+    public void Run()
+    {
+        var f = new PoliticalFixture(); var before = PoliticsEngine.Fingerprint(f.Context, f.State);
+        PoliticalFixture.Rejected(PoliticsEngine.PlanPolicyChange(f.Context, f.State, f.First, PoliticalFixture.FirstGroup, "영토·방위", 0));
+        PoliticalFixture.Check(PoliticsEngine.Fingerprint(f.Context, f.State) == before, "failed second phase cannot leak adoption or budget changes");
+        f.Apply(PoliticsEngine.PlanPolicyChange(f.Context, f.State, f.First, PoliticalFixture.FirstGroup, "경제·분배", 2));
+        f.Apply(PoliticsEngine.PlanCancelWork(f.Context, f.State, f.First));
+        PoliticalFixture.Check(f.State.Preparations.Single().Stage == PolicyStage.Cancelled && f.State.Labor.Count == 0 &&
+            f.Group(PoliticalFixture.FirstGroup).Money == 1000 && f.State.Service.Count == 0, "worker withdrawal refunds unfinished preparation and credits no unperformed service");
+        f.GiveSovereignty(PoliticalFixture.FirstGroup, 0); f.Group(PoliticalFixture.FirstGroup).Policies["영토·방위"] = 0;
+        f.Apply(PoliticsEngine.PlanPolicyActivity(f.Context, f.State, new(f.First, PoliticalFixture.FirstGroup, "영토·방위", f.First, Place: 0)));
+        PoliticalFixture.Check(PoliticsEngine.HasDefense(f.Context, f.State, 0), "actual paid worker supplies current defense");
+        f.Apply(PoliticsEngine.PlanCancelWork(f.Context, f.State, f.First));
+        PoliticalFixture.Check(!PoliticsEngine.HasDefense(f.Context, f.State, 0) && f.State.Labor.Count == 0 && f.State.RoutedEffects.Count == 1 &&
+            f.Person(f.First).Money == 1005 && f.Group(PoliticalFixture.FirstGroup).Money == 995, "cancelled defense stops immediately and its already transferred real pay remains conserved");
+    }
+}
+
+public sealed class PoliticsFamilyQualificationScenario : IFeatureScenario
+{
+    public string Name => "INV-019 politics: adult household leadership is independent from Golden Core fertility and respects its own optional realm law";
+    public void Run()
+    {
+        var f = new PoliticalFixture(); f.Person(f.First).Realm = Realm.Mortal;
+        f.SetRules(f.Context.Rules with { FamilyFounderMinimumRealm = (int)Realm.GoldenCore });
+        var before = PoliticsEngine.Fingerprint(f.Context, f.State);
+        PoliticalFixture.Rejected(PoliticsEngine.PlanFound(f.Context, f.State, f.First, 10009, "actual family", GroupKind.Family));
+        PoliticalFixture.Check(PoliticsEngine.Fingerprint(f.Context, f.State) == before, "the configured family-head threshold rejects atomically");
+        f.SetRules(f.Context.Rules with { FamilyFounderMinimumRealm = 0 });
+        f.Apply(PoliticsEngine.PlanFound(f.Context, f.State, f.First, 10009, "actual family", GroupKind.Family));
+        PoliticalFixture.Check(f.Person(f.First).Realm == Realm.Mortal && f.Person(f.First).Household == 10009 && f.Group(10009).Money == 100 &&
+            f.Person(f.First).Money == 900 && f.Context.People.Count == 2, "a funded adult mortal may lead a real household without gaining reproductive realm qualification or population");
     }
 }

@@ -35,6 +35,7 @@ public static partial class InventoryEngine
             Ensure(item.Quantity > 0 && item.Quality is >= 0 and <= 10000 && item.Damage is >= 0 and <= 100 && item.Place is >= -1 and < 100,
                 "Invalid physical item quantity, quality, damage, or location.");
             Ensure(item.BoundSoul >= 0 && ((int)item.Defects & ~15) == 0, "Invalid soul binding or defect flags.");
+            Ensure(definition.Item.Kind != ItemKind.Book || item.Quantity == 1, "A bound or blank book is a unique physical medium.");
             var root = Root(state, item); _ = Location(state, item.Id);
             Ensure(item.Place == root.Place, "Contained items cannot have another physical location.");
             if (definition.Item.Capacity > 0 || (Metadata(state, item.Id)?.Capacity ?? 0) > 0)
@@ -90,7 +91,7 @@ public static partial class InventoryEngine
         foreach (var source in state.Ledger.Sources)
         {
             InventoryDefinitions.Definition(source.Definition);
-            Ensure(source.Place is >= 0 and < 100 && source.Remaining >= 0 && source.Capacity >= source.Remaining && source.Regeneration >= 0 &&
+            Ensure(source.Place is >= 0 and < 100 && source.Remaining >= 0 && source.Capacity >= source.Remaining && source.Regeneration >= 0 && source.EcologyWeight >= 0 &&
                 source.LastMonth <= state.Month && !string.IsNullOrWhiteSpace(source.Origin), "Invalid finite natural stock.");
             var reserved = state.Ledger.Jobs.Where(j => j.Source == source.Id && j.Status is "reserved" or "processing").Sum(j => (long)j.OutputQuantity);
             Ensure(reserved <= source.Remaining, "Natural stock is overcommitted.");

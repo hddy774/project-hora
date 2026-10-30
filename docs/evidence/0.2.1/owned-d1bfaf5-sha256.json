@@ -1,0 +1,50 @@
+{
+  "/workspace/scratch/owned-d1bfaf5-build.log": {
+    "bytes": 1009,
+    "sha256": "2687cb192e354ebd60793a645a9ba0c5e17313f8663784ab933bd02f16a98650"
+  },
+  "/workspace/scratch/owned-d1bfaf5-run.py": {
+    "bytes": 2470,
+    "sha256": "48e48746e4fb979dd417613a5b91ff36b4281a76fa4df23e042903b0953b5f39"
+  },
+  "/workspace/scratch/owned-d1bfaf5-comparison.json": {
+    "bytes": 13223,
+    "sha256": "5a7b3b4e4b4be8062e4a6bf6e009d5c29c8c75d2a9a73627f37654292c5f973b"
+  },
+  "/workspace/scratch/owned-d1bfaf5-comparison.txt": {
+    "bytes": 2509,
+    "sha256": "647553374c2b55559f63348efbc0b4a076712dd0b3d756ca5cd84dfd4d5d447c"
+  },
+  "/workspace/scratch/owned-d1bfaf5-n100.json": {
+    "bytes": 10796,
+    "sha256": "82166b63e72e1bceb873f512f4c33011eb14bb80d8c8cc4c42d01e8f6ea0a457"
+  },
+  "/workspace/scratch/owned-d1bfaf5-n100.log": {
+    "bytes": 579,
+    "sha256": "7259839ee6c30b173b1a665b60f229ee829938e479b4051942ebd06b3b8db4e0"
+  },
+  "/workspace/scratch/owned-d1bfaf5-n100-run.json": {
+    "bytes": 1688,
+    "sha256": "05ffee00f0d0abf6265c27d23ac658100ea2d97370d0a170b77b5c0c8a14c5c3"
+  },
+  "/workspace/scratch/owned-d1bfaf5-n100-genesis.json": {
+    "bytes": 252,
+    "sha256": "01aba0b6f0a8d98c615eb89821cbf594bb596ba4f6863d8b8c136f4bad20093f"
+  },
+  "/workspace/scratch/owned-d1bfaf5-n1000.json": {
+    "bytes": 1442,
+    "sha256": "7574ebc01e8c07a9295d8429f19f708a06eaff3e34e01346772fb6e8feec2716"
+  },
+  "/workspace/scratch/owned-d1bfaf5-n1000.log": {
+    "bytes": 230,
+    "sha256": "681412652fa37c6834cda962090f67862f86647798f4f7fd168137c29c1e8a60"
+  },
+  "/workspace/scratch/owned-d1bfaf5-n1000-run.json": {
+    "bytes": 1694,
+    "sha256": "275e3141128addd6765d923853ad3b3a85f0b7b9cbeeacba6ba2a4479fc1e76b"
+  },
+  "/workspace/scratch/owned-d1bfaf5-n1000-genesis.json": {
+    "bytes": 252,
+    "sha256": "3e32af2fd284aaab0a3433673c7c65094e05f5c4af4a5be8a26142763fdcfbf9"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "source_commit": "3ba78ce8d6dd734ebf1ec1a1fb939db34e90d923",
+  "report": "docs/evidence/0.2.1/functional-integration-3ba78ce.json",
+  "report_sha256": "8d9d5f66d1ac9bd7459fc318697252b7c592502d0ea0b46eb095d0659b51edfc",
+  "selection": "all",
+  "total": 258,
+  "failed": 0,
+  "scope": "모든 등록 기능·부정·저장·시간분할·조회 경계 검사. 각 실험의 작은 정확성 사례를 포함하되 sampler/성능 실측은 실행하지 않음.",
+  "limitations": [
+    "후속 검증기 성능 개선 이후에는 해당 소스의 회귀 근거를 다시 확인한다.",
+    "네 규모 성능·성장·AI/확장 실험·장기 안정성·실제 플랫폼·릴리스는 별도 판정한다."
+  ]
+}

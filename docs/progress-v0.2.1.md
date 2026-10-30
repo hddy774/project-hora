@@ -17,15 +17,15 @@
 
 **현재 단계:** 최종 성능 병목 보정·측정
 
-- 게임 기능 마감 소스021329c의 전체239/239 통과 근거 보존
-- H04 정확성 수용 마감: 실제 열·슬롯·버퍼·기한 큐의 스칼라 참조 해시 일치, 별도 비용 측정은 계속
-- 첫 기준선2/100명만 완료; 1000명 미완료를 부분 기록으로 보존하고 재고 복제·검증 병목 진단
-- 재고 읽기 인덱스148 병합 및 단일 소유 트랜잭션으로 중복 복제를 제거하는 후속 검증
-- 성능·성장 시계열·AI 지표·확장 실험 수집기를 통합한 최종 소스에서 실제 측정 진행
+- 최신 통합 소스3ba78ce의 전체 기능258/258 통과 근거 보존; 실제 sampler 결과와 구분
+- 소비형 재고 후보153 병합: 공개 결과/저장 동일, N100 12개월10.68초·초기 기준선 대비50.8% 감소
+- N1000은300초 상한에서3개월만 완료; 부분/미완료 원본과 불리한 지표도 보존
+- 실제 d1 N1000 관리 프로파일: 전체검증48.46%·복제30.69%; PDB로 자원별 전체작업 필터 할당 확인
+- 호출별 job/source/reservation/labor 읽기 인덱스로 실제 검증 병목을 보정한 뒤 최종 실측
 
 **다음 단계:** 성능·성장·장기 안정성 측정 및 개발 보정 → 최종 전체 기능·실제 플랫폼 재검증 → 기존 인증서 APK와 한글 업데이트 요약 릴리스
 
 성능·성장·장기 안정성 검사는 전체 기능 개발 이후에 진행합니다.
 
-기준 소스: [1fc111c8](https://github.com/hddy774/project-hora/commit/1fc111c84a9ffcc57d4c5587be2cf54f625e96a1) · [작업 원장](https://github.com/hddy774/project-hora/blob/1fc111c84a9ffcc57d4c5587be2cf54f625e96a1/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
+기준 소스: [3ba78ce8](https://github.com/hddy774/project-hora/commit/3ba78ce8d6dd734ebf1ec1a1fb939db34e90d923) · [작업 원장](https://github.com/hddy774/project-hora/blob/3ba78ce8d6dd734ebf1ec1a1fb939db34e90d923/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
 <!-- v021-progress:end -->

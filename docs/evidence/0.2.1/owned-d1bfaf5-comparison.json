@@ -1,0 +1,379 @@
+{
+  "schema_version": 1,
+  "kind": "owned-inventory-source-comparison",
+  "generatedUtc": "2026-10-30T12:17:17.130572+00:00",
+  "source": "d1bfaf5ccb3c89854cdaaeca32a7810105180975",
+  "unprofiled": true,
+  "repetitionsPerSize": 1,
+  "n100": {
+    "sourceReports": {
+      "baseline97": {
+        "path": "/workspace/scratch/performance-baseline-97ba603.json",
+        "sha256": "3a3a4cc6f2afb5e8c3abbcd9a97eb3c193e45af8ad83840f1544170e07c08fc0",
+        "environment": {
+          "sourceCommit": "97ba6030367754b4338ab6a04ec57ef76ae2122d",
+          "sourceWorktreeClean": true,
+          "buildConfiguration": "Release",
+          "platform": "host",
+          "engine": "none",
+          "device": "d6c5c2613b8c",
+          "runtime": ".NET 10.0.14",
+          "os": "Debian GNU/Linux 13 (trixie)",
+          "architecture": "X64",
+          "cpu": 4,
+          "totalAvailableMemoryBytes": 12884901888,
+          "precedingFunctionalSelection": "INV-001/002/011",
+          "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+          "thermalState": "not measured; host result only",
+          "powerState": "not measured; host result only"
+        },
+        "reportCompletedSizes": [
+          2,
+          100
+        ]
+      },
+      "post751": {
+        "path": "/workspace/scratch/ui-unprofiled-751e349-n100.json",
+        "sha256": "c4a3c0d5f83f411892941978b49fa0e3ca719a8ce2656a36f3da54648150c04e",
+        "environment": {
+          "sourceCommit": "751e3491789152d7279c461adcbf747d6e1b3bbf",
+          "sourceWorktreeClean": true,
+          "buildConfiguration": "Release",
+          "platform": "host",
+          "engine": "none",
+          "device": "d6c5c2613b8c",
+          "runtime": ".NET 10.0.14",
+          "os": "Debian GNU/Linux 13 (trixie)",
+          "architecture": "X64",
+          "cpu": 4,
+          "totalAvailableMemoryBytes": 12884901888,
+          "precedingFunctionalSelection": "INV-001/002/011",
+          "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+          "thermalState": "not measured; host result only",
+          "powerState": "not measured; host result only"
+        },
+        "reportCompletedSizes": [
+          100
+        ]
+      },
+      "owned": {
+        "path": "/workspace/scratch/owned-d1bfaf5-n100.json",
+        "sha256": "82166b63e72e1bceb873f512f4c33011eb14bb80d8c8cc4c42d01e8f6ea0a457",
+        "environment": {
+          "sourceCommit": "d1bfaf5ccb3c89854cdaaeca32a7810105180975",
+          "sourceWorktreeClean": true,
+          "buildConfiguration": "Release",
+          "platform": "host",
+          "engine": "none",
+          "device": "d6c5c2613b8c",
+          "runtime": ".NET 10.0.14",
+          "os": "Debian GNU/Linux 13 (trixie)",
+          "architecture": "X64",
+          "cpu": 4,
+          "totalAvailableMemoryBytes": 12884901888,
+          "precedingFunctionalSelection": "INV-001/002/011",
+          "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+          "thermalState": "not measured; host result only",
+          "powerState": "not measured; host result only"
+        },
+        "reportCompletedSizes": [
+          100
+        ]
+      }
+    },
+    "equalToPrior": {
+      "baseline97": {
+        "initialHash": true,
+        "finalHash": true,
+        "fixture": true,
+        "usedLaws": true,
+        "workload": true,
+        "saveBytes": true,
+        "serializedCognitionBytes": true,
+        "cognition": true
+      },
+      "post751": {
+        "initialHash": true,
+        "finalHash": true,
+        "fixture": true,
+        "usedLaws": true,
+        "workload": true,
+        "saveBytes": true,
+        "serializedCognitionBytes": true,
+        "cognition": true
+      }
+    },
+    "metrics": {
+      "advance12MonthsMs": {
+        "values": {
+          "baseline97": 21705.6769,
+          "post751": 18730.4006,
+          "owned": 10682.905599999998
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": -50.78289587918818,
+          "post751": -42.96488458447602
+        }
+      },
+      "monthlyP50Ms": {
+        "values": {
+          "baseline97": 334.86705,
+          "post751": 380.42185,
+          "owned": 348.05780000000004
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": 3.9391006072410084,
+          "post751": -8.507410917643131
+        }
+      },
+      "monthlyP95Ms": {
+        "values": {
+          "baseline97": 11541.4045,
+          "post751": 9529.5699,
+          "owned": 4796.2144
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": -58.443407819213,
+          "post751": -49.670190256960076
+        }
+      },
+      "queryMs": {
+        "values": {
+          "baseline97": 26.6367,
+          "post751": 53.3575,
+          "owned": 49.9946
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": 87.69066738747667,
+          "post751": -6.302581642693161
+        }
+      },
+      "saveMs": {
+        "values": {
+          "baseline97": 205.7247,
+          "post751": 290.778,
+          "owned": 253.9559
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": 23.444535342620497,
+          "post751": -12.663303276038762
+        }
+      },
+      "loadMs": {
+        "values": {
+          "baseline97": 251.5504,
+          "post751": 320.3629,
+          "owned": 298.6888
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": 18.73914730407904,
+          "post751": -6.765483768563718
+        }
+      },
+      "allocatedBytes": {
+        "values": {
+          "baseline97": 8791001696,
+          "post751": 8012909576,
+          "owned": 4986016760
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": -43.282723261574496,
+          "post751": -37.775202469101224
+        }
+      },
+      "saveBytes": {
+        "values": {
+          "baseline97": 13311756,
+          "post751": 13311756,
+          "owned": 13311756
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": 0.0,
+          "post751": 0.0
+        }
+      },
+      "openingRetainedManagedBytes": {
+        "values": {
+          "baseline97": 80094408,
+          "post751": 21041256,
+          "owned": 21013152
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": -73.7645204893705,
+          "post751": -0.13356617114491653
+        }
+      },
+      "retainedManagedBytes": {
+        "values": {
+          "baseline97": 86431984,
+          "post751": 27518656,
+          "owned": 27485088
+        },
+        "ownedPercentChangeFrom": {
+          "baseline97": -68.20032732327421,
+          "post751": -0.12198270148077173
+        }
+      }
+    },
+    "monthlySamplesMs": {
+      "baseline97": [
+        2778.7652,
+        75.7537,
+        82.7395,
+        4952.6505,
+        255.7285,
+        285.7023,
+        310.9056,
+        355.2696,
+        397.0234,
+        344.2567,
+        325.4774,
+        11541.4045
+      ],
+      "post751": [
+        2694.2031,
+        114.6241,
+        170.2505,
+        3627.132,
+        372.0939,
+        303.154,
+        338.5047,
+        399.3855,
+        421.6073,
+        388.7498,
+        371.1258,
+        9529.5699
+      ],
+      "owned": [
+        1222.1006,
+        108.7006,
+        153.5925,
+        2073.2892,
+        353.492,
+        276.8334,
+        317.2195,
+        344.7461,
+        372.6929,
+        351.3695,
+        312.6549,
+        4796.2144
+      ]
+    },
+    "identicalInitialHash": "3b8a5e15d44a9f1ff366f4caab05ac868cdace20017aa32e837747f47dfa9887",
+    "identicalFinalHash": "f18e943272d2ceda8bdf8bc87a54ead8e62ca3876ab0381704e70c614937cc33",
+    "identicalWorkload": {
+      "peopleWithDecisions": 100,
+      "retainedDecisionRecords": 1004,
+      "retainedInferenceExpansions": 820,
+      "maximumRetainedInferenceExpansionsPerPerson": 24,
+      "currentActions": {
+        "Cultivate": 2,
+        "Guard": 98
+      },
+      "completedKnowledgeActivities": 797,
+      "completedPhysicalJobs": 98,
+      "actualExtraction": 1176,
+      "actualProduction": 0
+    },
+    "allocationScope": "sum of process-wide allocation deltas around each actual AdvanceTo; monthly progress JSON and console reporting are excluded"
+  },
+  "n1000": {
+    "status": "capped_partial",
+    "runMetadata": {
+      "kind": "owned-inventory-unprofiled-measurement",
+      "source": "d1bfaf5ccb3c89854cdaaeca32a7810105180975",
+      "sourceWorktreeCleanBefore": true,
+      "sourceWorktreeCleanAfter": true,
+      "population": 1000,
+      "wallLimitSeconds": 300,
+      "startedUtc": "2026-10-30T12:11:30.967346+00:00",
+      "finishedUtc": "2026-10-30T12:16:30.988571+00:00",
+      "elapsedSeconds": 300.02123013899836,
+      "exitCode": -9,
+      "timedOut": true,
+      "command": [
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-owned-d1bfaf5/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--report",
+        "/workspace/scratch/owned-d1bfaf5-n1000-genesis.json",
+        "--performance",
+        "/workspace/scratch/owned-d1bfaf5-n1000.json",
+        "--performance-size",
+        "1000"
+      ],
+      "note": "Shared host, one unprofiled run per size; concurrent unrelated builds may affect timing. Sampler preceded only by explicitly selected genesis 1/1, not a full functional suite. N10000 not run. Allocation scope differs from older loop-wide baselines: current allocation includes process-wide deltas only around AdvanceTo, excluding monthly progress reporting.",
+      "artifacts": {
+        "/workspace/scratch/owned-d1bfaf5-n1000.json": {
+          "bytes": 1442,
+          "sha256": "7574ebc01e8c07a9295d8429f19f708a06eaff3e34e01346772fb6e8feec2716"
+        },
+        "/workspace/scratch/owned-d1bfaf5-n1000.log": {
+          "bytes": 230,
+          "sha256": "681412652fa37c6834cda962090f67862f86647798f4f7fd168137c29c1e8a60"
+        },
+        "/workspace/scratch/owned-d1bfaf5-n1000-genesis.json": {
+          "bytes": 252,
+          "sha256": "3e32af2fd284aaab0a3433673c7c65094e05f5c4af4a5be8a26142763fdcfbf9"
+        }
+      }
+    },
+    "samplerComplete": false,
+    "completedPopulationRows": 0,
+    "completedSizes": [],
+    "lastPersistedProgress": {
+      "population": 1000,
+      "stage": "measuring",
+      "completedMonths": 3,
+      "monthlySamplesMs": [
+        90775.6694,
+        693.2356,
+        688.0215
+      ]
+    },
+    "lastPersistedSamplerElapsedSeconds": 187.9053014,
+    "nextUncompletedMeasurementMonth": 4,
+    "nextMonthEvidence": "순차 하네스에서 마지막 완료된 측정 월은3이며 4월 완료 로그나 완성 population row가 없음. cap은 process wall time 300초로 fixture/예열/측정 모두 포함.",
+    "completedMeasuredAdvanceMs": 92156.9265,
+    "full12MonthTimeMs": null,
+    "allocatedBytes": null,
+    "queryMs": null,
+    "saveMs": null,
+    "loadMs": null,
+    "retainedManagedBytes": null,
+    "initialHash": null,
+    "finalHash": null,
+    "unavailableReason": "인구1000의 완성 행은0개. 부분 하네스는 월별 시간만 저장하므로 나머지 최종값·해시는 측정 완료 근거가 없음.",
+    "historical751": {
+      "elapsedSeconds": 300.01318230799734,
+      "timedOut": true,
+      "exitCode": -9,
+      "completedPopulationRows": 0,
+      "completedMeasurementMonths": null,
+      "note": "과거 하네스는 완성 인구 행만 저장했고 월 진행 원본이 없으므로 과거 측정 월 수를0으로 간주하거나 새3개월과 속도를 비교하지 않음."
+    }
+  },
+  "n10000": {
+    "status": "not_run_not_authorized_in_this_assignment"
+  },
+  "limitations": [
+    "단일 공유 호스트의 각 규모 1회 실행이며 분산·신뢰구간을 추정하지 않음. 별도 무관한 빌드 부하는 통제하지 못함.",
+    "선행 기능 선택 INV-001/002/011 1/1은 창세 검사만 의미하며 전체 기능수트 판정이 아님.",
+    "97 기준은 N2 이후 N100을 같은 프로세스에서 측정했고 751·owned는 N100만 선택했으므로 보유 managed heap 차이를 월드별 객체 감소에 귀속할 수 없음.",
+    "owned 할당량은 각 AdvanceTo 전후 process-wide delta 합으로 월별 진행 JSON·console 기록을 제외함. 과거 기준은 전체 월 루프를 포함한 집계로 범위가 소량 다름.",
+    "시간·조회·저장·로드·보유 메모리의 개선과 악화 값을 모두 보존함. N100의 전체 진행 시간 개선이 Android, 성장/장기 안정성, N10000 또는 최종 성능 게이트 통과를 뜻하지 않음.",
+    "일부 규모만 완료하면 sampler complete=false가 유지되는 전규모 계약을 따름."
+  ],
+  "execution": {
+    "releaseBuildWarnings": 0,
+    "releaseBuildErrors": 0,
+    "functionalSelection": "INV-001/002/011",
+    "functionalSelectionPassedPerProcess": "1/1",
+    "functionalSuiteWasRun": false,
+    "productSourceModified": false,
+    "n10000Run": false,
+    "sourceWorktreeCleanAfterBothRuns": true,
+    "extraBenchmarkRepetitions": 0
+  }
+}

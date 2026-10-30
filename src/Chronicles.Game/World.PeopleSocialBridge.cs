@@ -16,16 +16,19 @@ public sealed partial class GameWorld
 
     internal string? PeopleActionError(Person person, string kind)
     {
+        kind = kind.ToLowerInvariant();
         var profile = state.PeopleDomain.Profiles.FirstOrDefault(p => p.PersonId == person.Id);
         if (profile is null) return "현재 육신 프로필이 없습니다.";
         var body = profile.Body; var species = SpeciesCatalog.Get(body.SpeciesId);
         if (kind == "travel" && !body.Capabilities.Mobility) return "현재 육신에는 실제 이동 능력/운반 수단이 없습니다.";
+        if (kind == "martial" && !body.Capabilities.Mobility && !body.Capabilities.SpiritualManipulation)
+            return "현재 육신에는 무예 동작에 필요한 실제 이동/기운 조작 능력이 없습니다.";
         var participation = kind switch
         {
-            "craft" or "repair" or "transcribe" or "installArray" or "upkeepArray" or "equip" or "store" or "redeemCurrency" => ParticipationKind.Craft,
+            "craft" or "repair" or "transcribe" or "installarray" or "upkeeparray" or "equip" or "store" or "redeemcurrency" => ParticipationKind.Craft,
             "farm" => ParticipationKind.Agriculture,
-            "teach" or "requestTeaching" or "requestAssessment" or "requestReputation" or "requestOath" or "acceptPeopleRequest" => ParticipationKind.Conversation,
-            "govern" or "policy" or "adoptPolicy" or "preparePolicy" or "implementPolicy" or "found" => ParticipationKind.Governance,
+            "teach" or "requestteaching" or "requestassessment" or "requestreputation" or "requestoath" or "acceptpeoplerequest" or "rejectpeoplerequest" => ParticipationKind.Conversation,
+            "govern" or "policy" or "adoptpolicy" or "preparepolicy" or "implementpolicy" or "found" => ParticipationKind.Governance,
             "martial" => ParticipationKind.Martial,
             _ => (ParticipationKind?)null
         };

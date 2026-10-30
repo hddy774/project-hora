@@ -1,0 +1,252 @@
+using Chronicles.Core;
+
+namespace Chronicles.Simulation;
+
+public sealed record AgentCheckpoint(
+    string Name,
+    ushort SpiritualRoot,
+    ushort Bone,
+    ushort Constitution,
+    ushort Comprehension,
+    ushort Mind,
+    ushort Soul,
+    long BirthTick,
+    int LifeNumber,
+    ushort BottleneckFailures,
+    RealmStage RealmStage,
+    byte RealmLayer,
+    int CultivationProgress,
+    CultivationState CultivationState,
+    CultivationBottleneckCause CultivationBottleneckCause,
+    ushort TechniqueQuality,
+    ushort TechniqueMastery,
+    ushort SpellQuality,
+    ushort SpellMastery,
+    int CombatExperience,
+    int Wins,
+    int Losses,
+    int Health,
+    int MaximumHealth,
+    int Qi,
+    int MaximumQi,
+    AgentActivity Activity,
+    long NextDecisionTick,
+    long LastActionMonth,
+    long LastActionTick,
+    int ActionsTaken,
+    int TargetRank,
+    int Opponent,
+    int LastOpponent,
+    long LastCombatTick,
+    long CombatStartedTick,
+    byte CombatActions,
+    bool Guarding,
+    int ChallengesIssued,
+    long SpiritStones,
+    int GrowthPills,
+    int BreakthroughPills,
+    int MissionsCompleted,
+    byte ActiveMissionMaterial,
+    int[] MaterialInventory,
+    ushort[] EquippedTreasureQualities,
+    PersonalLogEntry[] PersonalLog,
+    LifeChronicleEntry[] Chronicle,
+    CultivationCheckpoint? Cultivation = null,
+    SkillProgressCheckpoint? SkillProgress = null,
+    CombatAuthorityCheckpoint? CombatAuthority = null,
+    MapAgentCheckpoint? Map = null,
+    CombatProgressCheckpoint? CombatProgress = null,
+    AptitudeDetailCheckpoint? AptitudeDetails = null,
+    PersonIdentityCheckpoint? Identity = null,
+    AgentDecisionCheckpoint? Decision = null,
+    TeachingCheckpoint? Teaching = null,
+    PersonLifeAuthorityCheckpoint? LifeAuthority = null);
+
+public sealed record AptitudeDetailCheckpoint(
+    int FormulaRevision,
+    bool RequiresReview,
+    ushort[] InnateComponents);
+
+public sealed record CityMarketCheckpoint(
+    long TreasurySpiritStones,
+    long PurchaseTransactions,
+    long SaleTransactions,
+    long MissionDeliveries,
+    long MaterialsProcessed,
+    long PillsProduced,
+    long TreasuresProduced,
+    long TechniqueBooksProduced,
+    long SpellBooksProduced,
+    int[] Stock,
+    long[] Prices,
+    long[] Supply,
+    long[] Demand,
+    long TreasureQualityHundredths,
+    long[]? QualityHundredths = null,
+    CityProductionCheckpoint[]? ProductionQueue = null,
+    long LastIndustryMonth = 0,
+    long SpiritStonesMined = 0,
+    long RemainingSpiritStoneOre = 0,
+    long MiningMissionCount = 0,
+    long SpiritStoneReserveTarget = 0,
+    long[]? RecentSupply = null,
+    long[]? RecentDemand = null,
+    long[]? SupplyWindowBuckets = null,
+    long[]? DemandWindowBuckets = null,
+    int CurrentFlowBucket = 0,
+    long AuthorityRevision = 0,
+    long[]? LastSettlementSourceByAgent = null,
+    MarketTradeCheckpoint[]? RecentTrades = null,
+    long NextTradeSequence = 0,
+    MarketAuthorityCheckpoint? Authority = null);
+
+public readonly record struct CityProductionCheckpoint(
+    int GoodId,
+    ushort QualityHundredths,
+    int CompletedMonths,
+    int RequiredMonths,
+    int MaterialCost,
+    long SpiritStoneCost);
+
+public readonly record struct MarketTradeCheckpoint(
+    long Sequence,
+    long SourceResultId,
+    long Tick,
+    int AgentId,
+    MarketTradeKind Kind,
+    int GoodId,
+    int Count,
+    long UnitPrice,
+    long TotalSpiritStones,
+    ushort QualityHundredths);
+
+public sealed record RankingHistoryFrameCheckpoint(
+    long Tick,
+    int[] CombatPowerTop,
+    int[] RealmTop,
+    int[] WealthTop,
+    long[]? CombatPowerPositionChangeTotals = null,
+    long[]? RealmPositionChangeTotals = null,
+    long[]? WealthPositionChangeTotals = null);
+
+public sealed record RankingHistoryCheckpoint(RankingHistoryFrameCheckpoint[] Frames);
+
+public sealed record WorldCenturyAccumulatorCheckpoint(
+    long CenturyIndex,
+    int[] RealmBreakthroughCounts,
+    int[] RealmBreakthroughUniqueCounts,
+    ulong[][] RealmBreakthroughAgentBits,
+    long[] CombatPowerPositionChanges,
+    long[] RealmPositionChanges,
+    long[] AptitudePositionChanges,
+    long[] WealthPositionChanges,
+    int[] PreviousCombatPowerTop,
+    int[] PreviousRealmTop,
+    int[] PreviousAptitudeTop,
+    int[] PreviousWealthTop,
+    WorldChronicleLeader CombatPowerLeader,
+    WorldChronicleLeader RealmLeader,
+    WorldChronicleLeader AptitudeLeader,
+    WorldChronicleLeader WealthLeader,
+    long LastRankingSampleYear,
+    int DeathCount,
+    int UniqueDeathCount,
+    ulong[] DeathAgentBits,
+    int ReincarnationEntryCount,
+    int UniqueReincarnationEntryCount,
+    ulong[] ReincarnationEntryAgentBits,
+    int RebirthCount,
+    int UniqueRebirthCount,
+    ulong[] RebirthAgentBits,
+    int ReincarnationRiverResidents,
+    long CombatsCompleted,
+    long MonsterHunts,
+    long MissionsCompleted,
+    long SpiritStonesMined,
+    long TreasuresCrafted,
+    long PillsCrafted,
+    int SecretRealmsDiscovered = 0,
+    int UniqueSecretRealmDiscoverers = 0,
+    ulong[]? SecretRealmDiscovererBits = null);
+
+public sealed record WorldCenturyChronicleCheckpoint(
+    long Sequence,
+    WorldCenturyChronicleEntry[] Entries,
+    WorldCenturyAccumulatorCheckpoint Current);
+
+public sealed record DecisionRankingCheckpoint(
+    long LastProcessedMonth,
+    int[] CombatRanksByAgent,
+    int[] RealmRanksByAgent,
+    int[] AptitudeRanksByAgent,
+    int[] WealthRanksByAgent,
+    bool CombatDirty,
+    bool RealmDirty,
+    bool AptitudeDirty,
+    bool WealthDirty);
+
+public sealed record WorldCheckpoint(
+    int SchemaVersion,
+    ulong Seed,
+    ulong RandomState,
+    long Tick,
+    AgentCheckpoint[] Agents,
+    WorldEvent[] Events,
+    long EventSequence,
+    long ChronicleSequence,
+    long PersonalLogSequence,
+    int TotalBreakthroughs,
+    int TotalChallenges,
+    int TotalCombatsStarted,
+    int TotalCombatsCompleted,
+    int ActiveCombats,
+    int TotalDeaths,
+    int TotalReincarnations,
+    int TotalMissionsCompleted,
+    int TotalTreasuresCrafted,
+    int TotalPillsCrafted,
+    int TotalMaterialsSold,
+    long LastRankingRefreshTick,
+    long RankingMovementFromTick,
+    int RankingRisenCount,
+    int RankingFallenCount,
+    int RankingUnchangedCount,
+    long RankingTotalAbsoluteMovement,
+    CityMarketCheckpoint Market,
+    WorldMapCheckpoint? Map = null,
+    int[]? EliteCombatChangedCounts = null,
+    int[]? EliteRealmChangedCounts = null,
+    WorldEvent[]? WorldChronicle = null,
+    RankingHistoryCheckpoint? RankingHistory = null,
+    WorldCenturyChronicleCheckpoint? CenturyChronicle = null,
+    RelationStoreCheckpoint? Relations = null,
+    ReincarnationStoreCheckpoint? Reincarnation = null,
+    AgentCausalStoreCheckpoint? Causal = null,
+    WorldAtlasCheckpoint? Atlas = null,
+    WorldBalanceConfiguration? Balance = null,
+    OrganizationStoreCheckpoint? Organizations = null,
+    ContentAuthorityCheckpoint? Content = null,
+    KnowledgeAuthorityCheckpoint? Knowledge = null,
+    LawAuthorityCheckpoint? Laws = null,
+    WorldGenerationCheckpoint? Generation = null,
+    DecisionRankingCheckpoint? DecisionRankings = null)
+{
+    public const int CurrentSchemaVersion = 31;
+}
+
+/// <summary>
+/// Safe-boundary authority bundle. Its constructor is internal so persistence callers
+/// cannot pair an arbitrary checkpoint with an unrelated logical state hash.
+/// </summary>
+public sealed class WorldAuthorityCheckpoint
+{
+    internal WorldAuthorityCheckpoint(WorldCheckpoint checkpoint, ulong stateHash)
+    {
+        Checkpoint = checkpoint;
+        StateHash = stateHash;
+    }
+
+    public WorldCheckpoint Checkpoint { get; }
+
+    public ulong StateHash { get; }
+}

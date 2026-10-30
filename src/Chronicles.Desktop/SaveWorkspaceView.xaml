@@ -1,0 +1,169 @@
+<UserControl x:Class="Chronicles.Desktop.SaveWorkspaceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="210" />
+        </Grid.RowDefinitions>
+
+        <Border Style="{StaticResource PanelStyle}" Padding="18,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="저장 · 9개 세계 슬롯"
+                               Foreground="{StaticResource PrimaryTextBrush}"
+                               FontSize="24"
+                               FontWeight="SemiBold" />
+                    <TextBlock Text="각 카드는 독립된 SQLite 세계와 복구 후보를 사용합니다. 목록 관찰은 권위 payload를 해제하지 않습니다."
+                               Margin="0,5,0,0"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="11" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Margin="0,0,6,0" Click="RefreshButton_Click">새로고침</Button>
+                    <Button Click="OpenRootButton_Click">저장 폴더</Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ItemsControl x:Name="SlotItemsControl" Grid.Row="2">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="3" Columns="3" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource PanelStyle}"
+                            Margin="4"
+                            Padding="12,10"
+                            BorderBrush="{Binding BorderBrush}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Title}"
+                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                           FontSize="15"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Status}"
+                                           Foreground="{Binding StatusBrush}"
+                                           FontSize="10" />
+                            </Grid>
+                            <TextBlock Grid.Row="1"
+                                       Margin="0,5,0,0"
+                                       Text="{Binding SavedAt}"
+                                       Foreground="{StaticResource SecondaryTextBrush}"
+                                       FontSize="10" />
+                            <StackPanel Grid.Row="2" Margin="0,7,0,6">
+                                <TextBlock Text="{Binding WorldLine}"
+                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                           FontSize="11"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding LeaderLine}"
+                                           Margin="0,3,0,0"
+                                           Foreground="{StaticResource AccentBrush}"
+                                           FontSize="11"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding FileLine}"
+                                           Margin="0,3,0,0"
+                                           Foreground="{StaticResource SecondaryTextBrush}"
+                                           FontSize="9"
+                                           TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <WrapPanel Grid.Row="3">
+                                <Button MinWidth="62"
+                                        Margin="0,0,4,0"
+                                        Tag="{Binding SlotId}"
+                                        Click="SelectButton_Click">상세</Button>
+                                <Button MinWidth="62"
+                                        Margin="4,0"
+                                        Tag="{Binding SlotId}"
+                                        Click="SaveButton_Click"
+                                        Content="{Binding SaveLabel}" />
+                                <Button MinWidth="62"
+                                        Margin="4,0"
+                                        Tag="{Binding SlotId}"
+                                        IsEnabled="{Binding CanLoad}"
+                                        Click="LoadButton_Click">불러오기</Button>
+                                <Button MinWidth="52"
+                                        Margin="4,0,0,0"
+                                        Tag="{Binding SlotId}"
+                                        IsEnabled="{Binding HasFiles}"
+                                        Click="FolderButton_Click">폴더</Button>
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Border Grid.Row="4" Style="{StaticResource PanelStyle}" Padding="14,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="SelectedSlotTitleText"
+                           Text="슬롯을 선택해 주세요."
+                           Foreground="{StaticResource PrimaryTextBrush}"
+                           FontSize="16"
+                           FontWeight="SemiBold" />
+                <TabControl Grid.Row="1" Margin="0,7,0,0" Background="Transparent" BorderThickness="0">
+                    <TabItem Header="세계">
+                        <TextBlock x:Name="SelectedWorldText" Margin="10,8" TextWrapping="Wrap" />
+                    </TabItem>
+                    <TabItem Header="기록">
+                        <TextBlock x:Name="SelectedRecordText" Margin="10,8" TextWrapping="Wrap" />
+                    </TabItem>
+                    <TabItem Header="파일">
+                        <TextBlock x:Name="SelectedFileText" Margin="10,8" TextWrapping="Wrap" />
+                    </TabItem>
+                </TabControl>
+                <TextBlock x:Name="StatusText"
+                           Grid.Row="2"
+                           Text="저장 목록 대기"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="10" />
+                <Grid x:Name="OperationProgressPanel"
+                      Grid.Row="3"
+                      Margin="0,6,0,0"
+                      Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ProgressBar x:Name="OperationProgressBar"
+                                 Height="6"
+                                 Minimum="0"
+                                 Maximum="100"
+                                 VerticalAlignment="Center" />
+                    <TextBlock x:Name="OperationProgressText"
+                               Grid.Column="1"
+                               Margin="10,0,0,0"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="10" />
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,82 +1,47 @@
-# 선로만상록 프로젝트
+# 선로만상록
 
-고서 목판과 수묵 산수 테마의 오프라인 선협 관찰 시뮬레이션입니다.
-현재 개발은 [게임 소개·실행 방법](games/xianxia-observer/README.md)과 [v0.2.0 대표 PR #32](https://github.com/hddy774/project-hora/pull/32)에서 확인할 수 있습니다.
-게임 식별자 `org.hora.xianxiaobserver`와 기존 서명은 업데이트 호환을 위해 유지합니다.
+두 반선 시조에서 시작해 출생·수행·생업·가족·종문·왕조와 윤회가 이어지는 선협 생태계 시뮬레이션입니다. 관찰과 플레이는 같은 세계와 명령 규칙을 사용합니다.
 
-아래 Hora Economic Lab 자료는 같은 저장소의 기존 경제 게임 개발 기록입니다.
+현재 **0.2.1 전체 기능을 개발 중**입니다. 게임 엔진 없이 C#으로 세계를 구현하며, Android와 Windows가 같은 세계 코어와 화면을 사용합니다. 기능 구현·통합 검증을 마친 뒤 성능 시험과 최종 APK 배포를 진행합니다.
 
-## Hora Economic Lab · 호라경제연구실
+## 개발과 기획
 
-> **🔧 C# 재설계 진행 중 (2026-10-28~)** — [현행 피드백](docs/redesign/01-feedback.md) · [새 기획서](docs/redesign/02-game-design.md) · [작업 명세](docs/tasks/README.md)
-> 규칙: [GitHub 사용](docs/standards/github-workflow.md) · [C# 코드](docs/standards/coding-conventions.md) · [개발 프로세스](docs/standards/development-process.md) · AI 지침 [AGENTS.md](AGENTS.md)
-> 아래 내용은 현재 공개된 Godot 버전(v0.2.1) 기준입니다.
+- [통합 기획 — Notion](https://app.notion.com/p/408acc9e6175817ab59bd91bb9dc011d)
+- [111개 작업·24개 불변식 원장](docs/plans/v021-tasks.json) · [정책과 개발 기본값](docs/plans/v021-canon-map.md)
+- [GitHub 이슈](https://github.com/hddy774/project-hora/issues) · [메인·서브 PR](https://github.com/hddy774/project-hora/pulls)
+- [개발 증거](docs/evidence/0.2.1) · [작업 분야와 통합 경계](docs/plans/v021-workstreams.md)
 
-## C# 코어 개발
+2026-10-30 사용자 결정: 혈연 후손 간 허용, 출산은 양친 모두 금단 이상, 잠정 수치는 개발 보정에 위임합니다. 기본 창세는 반선 시조 2명·종문 0개이며 윤회 13개 목표를 유지합니다.
 
-[PR #19](https://github.com/hddy774/project-hora/pull/19)의 M0 명세를 따라 `src/`에서 엔진 독립 코어를 개발합니다.
-`.NET Standard 2.1 / C# 9` 라이브러리 두 개와 `.NET 8` 테스트·개발 도구를 분리했습니다.
-현재 설치형 게임은 아래의 Godot v0.2.1이며, 새 코어의 진행 상황은 구현 PR별 수용 기준에서 확인할 수 있습니다.
+## 소스 구성
+
+| 경로 | 역할 |
+| --- | --- |
+| `src/Chronicles.Game` | 플랫폼 독립 세계·명령·지식·저장·조회 |
+| `src/Chronicles.Shell` | 공용 화면과 로컬 개발 호스트 |
+| `src/Chronicles.Android` | Android 오프라인 앱 |
+| `src/Chronicles.Desktop` | Windows 앱 |
+| `tests/Chronicles.Game.Tests` | 기능·저장·정보 경계 시나리오 |
+| `docs/plans` | 정본 대조·결정·작업 원장 |
+| `legacy/v0.2.0` | 기존 선로만상록 출시 소스·설계·검증 자료 |
+
+새 세계 구현은 `Chronicles.Game`에서 진행합니다. 이전 Windows 시뮬레이션은 회귀 비교 자료로 보존합니다. 기존 0.2.0 저장의 연속 플레이는 지원 범위에 포함하지 않습니다.
+
+## 로컬 실행
+
+.NET 10 SDK를 사용합니다.
 
 ```bash
-dotnet restore --locked-mode
-dotnet format --verify-no-changes
-bash tools/check-code-rules.sh
-dotnet build -c Release -warnaserror
-dotnet test -c Release
+dotnet run --project tests/Chronicles.Game.Tests -c Release
+python3 scripts/validate-v021-plan.py --self-test
+dotnet run --project src/Chronicles.Shell
 ```
 
-SDK는 `global.json`, NuGet 버전은 `Directory.Packages.props`와 프로젝트별 잠금 파일에서 관리합니다.
-새 클라이언트의 엔진은 기획서 Q1에 따라 별도로 결정합니다.
-
-M0 코어는 USD 센트 금액·최소 단위 수량, 고정 환율 표시, 정수 ID, PCG32 난수와 월 처리 골격을 제공합니다.
-금액 배분의 잔여 센트는 최대 나머지 순서로 배정하고, 같은 나머지는 입력 인덱스로 해소합니다.
+Android는 Android workload·SDK 36·JDK 21 설치 후 빌드합니다. 앱 ID는 기존 배포의 `org.hora.xianxiaobserver`를 유지합니다. 배포 서명은 GitHub CI의 기존 인증서로 수행하며 저장소에 키를 저장하지 않습니다.
 
 ```bash
-dotnet run -c Release --project tools/Hora.Tools -- bench-pipeline
-dotnet run -c Release --project tools/Hora.Tools -- bench-money --job short --filter '*'
+dotnet build src/Chronicles.Android -c Release
+dotnet run --project src/Chronicles.Desktop -c Release
 ```
 
-`bench-pipeline`은 **빈 시스템 10개 × 120개월**의 호출·단계 전환 비용을 측정합니다.
-실제 경제 시스템과 Android 성능은 후속 구현에서 별도로 측정합니다.
-정산 결과와 시간 목록은 다음 정산 시작 전까지 유효한 재사용 버퍼입니다.
-보고 화면은 결과를 읽은 후 `BeginPlanning()`을 호출하며, 정산 중인 세계를 다른 스레드에서 조회하지 않습니다.
-난수 스트림은 최대 1,000개의 고정 등록 인덱스를 사용하므로 기존 순서를 유지하고 끝에 시스템을 추가합니다.
-M0에는 실제 거래·저장·클라이언트가 아직 포함되지 않습니다.
-
-## 현재 공개 게임
-
-**한 달의 결정이 사람·기업·도시와 세계 경제로 이어지는 경제 생태계 시뮬레이션 게임입니다.**
-
-플레이어는 세계 안의 인물 한 명으로 취업·창업·투자·기업 경영·정치 활동을 선택합니다. 기업의 생산과 거래, 가계의 노동과 소비, 정부 예산과 국제 무역을 연결하고 그 결과와 원인을 관찰하는 게임을 개발하고 있습니다.
-
-## 게임의 핵심
-
-- **1턴 = 1개월:** 계획 중에는 시간이 멈추고 다음 달을 눌렀을 때만 정산합니다.
-- **실제 도시에서 시작하는 경제:** 유한한 재고·자금·인력과 생산시설을 도시별로 계산하고 국가·세 대륙·세계로 집계합니다.
-- **인물과 회사의 분리:** 개인 재산·직위·법인 자금·소유권을 구분하고 AI와 플레이어가 같은 행동 규칙을 사용합니다.
-- **타일 건설과 공급망:** 건설 자재·시공 인력·기간, 생산 원료·운전자금·납기를 함께 관리합니다.
-- **자유로운 경제 활동:** 산업·연구·소프트웨어·금융·정치·외교·공공조달을 연결하는 것이 전체 개발 목표입니다.
-- **설명 가능한 결과:** 가격·재고·급여·공사 지연·현금 흐름의 원인을 실제 사건과 장부에서 추적합니다.
-
-<img src="games/monthly-economy/docs/screenshots/v0.2.1-main-usd.png" width="360" alt="호라경제연구실의 실제 실행 화면" />
-
-## 화면과 실행
-
-세로 화면의 하단에는 **메인 · 사업 · 시장 · 자산 · 확장**의 다섯 탭을 둡니다. 월 진행 버튼은 별도 작업 영역입니다. UI·아이콘·건물 그래픽은 생성한 리소스로 구성하고 금액·날짜·진척은 실제 게임 데이터에서 표시합니다.
-
-- [게임 소스와 실행 안내](games/monthly-economy/README.md)
-- [전체 요구 추적표](games/monthly-economy/docs/requirements.md)
-- [설계 결정과 미정 항목](games/monthly-economy/docs/decisions.md)
-- [테스트·배포 검증 기록](games/monthly-economy/docs/validation.md)
-- [공개 릴리스](https://github.com/hddy774/project-hora/releases)
-
-**v0.2.1**은 생성 이미지 UI와 인물·산업·금융·정치·군수 모듈을 연결한 개발 릴리스입니다. [최신 다운로드](https://github.com/hddy774/project-hora/releases/latest)에서 실제 게시 파일과 검증 기록을 확인할 수 있습니다. 전체 기획의 남은 심도·장기 균형·실제 기기 검증은 요구 추적표와 검증 문서에 구분해 기록합니다.
-
-화폐는 **미국 달러(USD)**입니다. **$1M=100만 달러**, **$1B=10억 달러**로 축약하며 원화 보기는 **1달러=1,000원**을 적용합니다. 상품은 실제 단위를 사용하고, 처리·건설·연구 등의 진행 상태를 막대로 확인합니다. 최신 릴리스 첨부는 **Android APK 한 개**입니다.
-
-Godot 4.6.3 기반으로 오프라인 싱글플레이와 Android 세로 화면을 우선 검증합니다. 출시 기기 규모·균형 수치·온라인 기능은 확인된 결과와 설계 결정을 구분해 관리합니다.
-
-## 이전 프로젝트
-
-알파 익스체인지의 기존 배포 자료는 [보관 안내](docs/legacy/alpha-exchange.md)와 이전 릴리스에서 확인할 수 있습니다. 이 저장소의 메인 설명과 향후 호라경제연구실 릴리스는 **Hora Economic Lab · 호라경제연구실**을 기준으로 관리합니다.
+[저장소 이전 기록](docs/evidence/0.2.1/repository-migration.json)에 출처와 보존 범위를 남겼습니다. 선로만상록과 관계없는 경제 실험 프로젝트는 현재 소스에서 제거했습니다.

@@ -1,5 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="../Hora.Domain/Hora.Domain.csproj" />
-  </ItemGroup>
-</Project>

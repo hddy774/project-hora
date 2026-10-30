@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-30",
+  "destination": "hddy774/project-hora",
+  "previous_destination_head": "cefb2021c249e83d5409a892af97b67e54066a92",
+  "imported_source_repository": "hddy774/Chronicles-of-Myriad-Immortal-Paths",
+  "imported_source_head": "f7541e285bad4f17bf1309c1e93d9ce21967faeb",
+  "retained_v020_files": 287,
+  "legacy_archive_sha256": "d6bb9930c72557ab99082fae2e6f0befe81653c3a9e4f713e4633bc50a89392a",
+  "source_archive_sha256": "57e6493fdfef1df8a2c7414e19901de61e93acfe0c31ea85a3329a1bffa9cf2a",
+  "history_policy": "Both source histories preserved as merge parents; no force push or history rewrite. Unrelated material removed from current tree.",
+  "issue_mapping": {
+    "3": 73,
+    "9": 74,
+    "10": 75,
+    "11": 76,
+    "12": 77,
+    "13": 78,
+    "14": 79,
+    "15": 80,
+    "16": 81,
+    "17": 82,
+    "18": 83
+  },
+  "functional_verification": {
+    "portable_scenarios": {
+      "passed": 38,
+      "total": 38
+    },
+    "ledger_self_tests": 11,
+    "performance_run": false
+  }
+}

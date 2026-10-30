@@ -1,0 +1,212 @@
+<UserControl x:Class="Chronicles.Desktop.MarketObservationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinWidth="320">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="240" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="4,2,4,10">
+            <StackPanel>
+                <TextBlock Text="만상성 공동 시장"
+                           Foreground="{StaticResource PrimaryTextBrush}"
+                           FontSize="17"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="분류와 검색으로 상품을 좁힌 뒤 가격·수급·생산을 확인합니다."
+                           Margin="0,3,0,0"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="10"
+                           TextWrapping="Wrap" />
+                <TextBlock x:Name="RecentFlowText"
+                           Margin="0,3,0,0"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="9"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+            <TextBlock x:Name="TreasuryText"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       Foreground="{StaticResource AccentBrush}"
+                       FontSize="12"
+                       FontWeight="SemiBold" />
+        </Grid>
+
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,9">
+            <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
+                <StackPanel>
+                    <TextBlock Text="전체 재고" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" />
+                    <TextBlock x:Name="TotalStockText" Margin="0,2,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+            <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
+                <StackPanel>
+                    <TextBlock Text="활성 제안·예약" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" />
+                    <TextBlock x:Name="ContractCountText" Margin="0,2,0,0" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+            <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
+                <StackPanel>
+                    <TextBlock Text="미충족 수요" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" />
+                    <TextBlock x:Name="UnmetDemandText" Margin="0,2,0,0" Foreground="{StaticResource DangerBrush}" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+            <Border Margin="3" Padding="8" CornerRadius="6" Background="{StaticResource PanelAltBrush}">
+                <StackPanel>
+                    <TextBlock Text="제작 중" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" />
+                    <TextBlock x:Name="ProductionCountText" Margin="0,2,0,0" Foreground="{StaticResource PositiveBrush}" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <StackPanel Grid.Row="2" Margin="3,0,3,8">
+            <UniformGrid Columns="5">
+                <RadioButton GroupName="MarketFilter" Tag="All" Content="전체" IsChecked="True" Style="{StaticResource SegmentToggleStyle}" Padding="5" Click="MarketFilterButton_Click" />
+                <RadioButton GroupName="MarketFilter" Tag="Material" Content="재료" Style="{StaticResource SegmentToggleStyle}" Padding="5" Click="MarketFilterButton_Click" />
+                <RadioButton GroupName="MarketFilter" Tag="Pill" Content="단약" Style="{StaticResource SegmentToggleStyle}" Padding="5" Click="MarketFilterButton_Click" />
+                <RadioButton GroupName="MarketFilter" Tag="Treasure" Content="법보" Style="{StaticResource SegmentToggleStyle}" Padding="5" Click="MarketFilterButton_Click" />
+                <RadioButton GroupName="MarketFilter" Tag="Book" Content="서적" Style="{StaticResource SegmentToggleStyle}" Padding="5" Click="MarketFilterButton_Click" />
+            </UniformGrid>
+            <TextBox x:Name="SearchBox"
+                     Margin="0,6,0,0"
+                     Padding="8,5"
+                     ToolTip="상품명 또는 대경지 검색"
+                     TextChanged="SearchBox_TextChanged" />
+        </StackPanel>
+
+        <DataGrid x:Name="MarketGrid"
+                  Grid.Row="3"
+                  AutoGenerateColumns="False"
+                  CanUserSortColumns="False"
+                  IsReadOnly="True"
+                  HeadersVisibility="Column"
+                  EnableRowVirtualization="True"
+                  SelectionMode="Single"
+                  SelectionChanged="MarketGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="상품" Binding="{Binding Name}" Width="*" />
+                <DataGridTextColumn Header="현재가" Binding="{Binding CurrentPrice}" Width="76" />
+                <DataGridTextColumn Header="재고" Binding="{Binding Stock}" Width="52" />
+                <DataGridTextColumn Header="12개월 수급" Binding="{Binding Flow}" Width="92" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TabControl x:Name="DetailTabControl"
+                    Grid.Row="4"
+                    Margin="0,9,0,0"
+                    Background="{StaticResource PanelBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    Foreground="{StaticResource PrimaryTextBrush}"
+                    SelectionChanged="DetailTabControl_SelectionChanged">
+            <TabItem Header="상품 개요">
+                <StackPanel Margin="10,8">
+                    <TextBlock x:Name="DetailNameText" Foreground="{StaticResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" />
+                    <TextBlock x:Name="DetailTypeText" Margin="0,3,0,0" Foreground="{StaticResource AccentBrush}" FontSize="10" />
+                    <TextBlock x:Name="DetailDescriptionText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="11" TextWrapping="Wrap" />
+                    <TextBlock x:Name="DetailQualityText" Margin="0,7,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="가격·수급">
+                <StackPanel Margin="10,8">
+                    <TextBlock x:Name="DetailPriceText" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock x:Name="DetailFlowText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="11" TextWrapping="Wrap" />
+                    <TextBlock x:Name="DetailDemandText" Margin="0,7,0,0" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="도시 생산">
+                <StackPanel Margin="10,8">
+                    <TextBlock x:Name="DetailProductionStateText" Foreground="{StaticResource PositiveBrush}" FontSize="11" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock x:Name="DetailProductionText" Margin="0,8,0,0" Foreground="{StaticResource PrimaryTextBrush}" FontSize="10" TextWrapping="Wrap" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="제안·예약">
+                <Grid Margin="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.25*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="도시 판매 Offer"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="9" />
+                    <TextBlock Grid.Column="2"
+                               Text="최근 Reservation"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="9" />
+                    <DataGrid x:Name="OfferGrid"
+                              Grid.Row="1"
+                              Margin="0,5,0,0"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              HeadersVisibility="Column"
+                              EnableRowVirtualization="True"
+                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Offer" Binding="{Binding Id}" Width="92" />
+                            <DataGridTextColumn Header="상품" Binding="{Binding Good}" Width="*" />
+                            <DataGridTextColumn Header="가용" Binding="{Binding Available}" Width="50" />
+                            <DataGridTextColumn Header="상태" Binding="{Binding Status}" Width="64" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid x:Name="ReservationGrid"
+                              Grid.Row="1"
+                              Grid.Column="2"
+                              Margin="0,5,0,0"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              HeadersVisibility="Column"
+                              EnableRowVirtualization="True"
+                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Reservation" Binding="{Binding Id}" Width="94" />
+                            <DataGridTextColumn Header="상품" Binding="{Binding Good}" Width="*" />
+                            <DataGridTextColumn Header="상태" Binding="{Binding Status}" Width="70" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="최근 거래">
+                <Grid>
+                    <ListBox x:Name="RecentTradeList"
+                             Background="{StaticResource PanelBrush}"
+                             BorderThickness="0"
+                             AutomationProperties.Name="최근 100건 시장 거래">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="10,7">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Time}"
+                                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                                   FontSize="9" />
+                                        <TextBlock Text="{Binding Summary}"
+                                                   Margin="0,2,0,0"
+                                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                                   FontSize="10"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock x:Name="RecentTradeEmptyText"
+                               Text="최근 거래가 없습니다."
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="10"
+                               Visibility="Collapsed" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

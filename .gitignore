@@ -1,20 +1,16 @@
-# New monthly-economy development project; retain existing distribution files.
-**/.godot/
-builds/
-**/builds/
-**/build/
-**/__pycache__/
-**/docs/screenshots/*.import
-*.keystore
-*.jks
-*.p12
-.DS_Store
-*.log
-
-# Engine-independent C# core and its verification artifacts.
 bin/
 obj/
-*.user
 .vs/
-BenchmarkDotNet.Artifacts/
+.idea/
+artifacts/
 TestResults/
+*.user
+*.suo
+*.nupkg
+*.zip
+*.keystore
+*.jks
+*.signing-secret
+
+*.p12
+**/__pycache__/

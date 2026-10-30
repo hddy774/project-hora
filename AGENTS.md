@@ -1,54 +1,61 @@
-# AGENTS.md — AI 구현 에이전트(Codex) 작업 지침
+# 개발 규칙
 
-이 파일은 이 저장소에서 작업하는 **모든 AI 에이전트가 가장 먼저 읽는** 지침이다.
-구현은 Codex, 기획·명세·리뷰는 Claude, 결정·병합은 사람(프로젝트 오너)이 맡는다.
+## 제품 경계
 
-## 1. 프로젝트 한 줄 요약
-Hora Economic Lab(호라경제연구실) — 1턴=1개월 경제·경영 시뮬레이션. 세로 화면 Android 우선, 오프라인 싱글플레이.
-C#으로 재설계 중이며, 기존 Godot/GDScript 구현(`games/monthly-economy/`)은 **참고용 구버전**이다. 수정하지 않는다.
+- 0.2.1 정본은 Notion 408acc9e6175817ab59bd91bb9dc011d와 docs/plans/v021-tasks.json이다.
+- 관찰과 플레이는 같은 세계를 사용한다. 플레이는 개인 지식·권한에 제한되며 AI와 같은 명령을 쓴다.
+- 기본 창세는 정확히 두 반선 시조·종문 0개다. 숨은 주민이나 시장 공급자를 만들지 않는다.
+- 혈연 후손 간 혼인/출산 허용, 양친 모두 금단 이상, 잠정값 개발 보정 위임은 2026-10-30 사용자 확정이다.
+- AI는 생존·양육·수행·생업·관계·정치 등 여러 목표를 가지며 전지적 상태를 읽지 않는다.
+- 게임의 핵심 권위 시스템은 수행과 전투이며, 랭킹·도시 경제는 두 시스템의 성장과
+  경쟁을 연결한다.
+- 가문·종문·왕조·경제·윤회 13경로 등 0.2.1 전체 범위는 사용자 승인 개발 대상이다.
 
-## 2. 작업 전에 반드시 읽을 문서
-1. 할당된 작업 명세: `docs/tasks/<ID>-*.md` ← **이것이 작업 범위의 기준**
-2. 코드 규칙: `docs/standards/coding-conventions.md`
-3. 필요 시: 기획서 `docs/redesign/02-game-design.md`, 프로세스 `docs/standards/development-process.md`, Git 규칙 `docs/standards/github-workflow.md`
+## 저장소·개발 순서
 
-## 3. 절대 규칙
-- **명세 범위만 구현한다.** 범위 밖 개선이 필요하면 PR 본문 "후속 제안"에 적고 손대지 않는다.
-- 명세가 모호하거나 서로 모순되면 **추측해서 구현하지 말고** 질문을 남기고 멈춘다.
-- `main` 에 직접 push 금지. 브랜치: `codex/<이슈번호>-<짧은-설명>`.
-- 병합·릴리스·태그 생성 금지 (사람만 한다).
-- 비밀 정보(키스토어, API 키) 커밋 금지.
-- 테스트를 삭제·비활성화(`[Ignore]`)해서 통과시키지 않는다.
+- 정본 저장소는 `hddy774/project-hora`다. 다른 프로젝트 자료를 추가하지 않는다.
+- 소스·관련 기획·증거를 이 저장소에 저장한다. main 직접 push 대신 0.2.1 메인 PR과 여러 서브 PR을 사용한다.
+- 사용자는 0.2.1 전체 개발·PR 병합·최신 릴리스와 APK 게시까지 승인했다.
+- 기능별 정확성 검사는 개발 중 수행한다. 성능·프로파일링·대량 인구·성장/장기 실행 시험은 모든 기능 개발이 끝난 뒤 마무리 단계에서만 수행한다.
+- 기존 Android 앱 ID `org.hora.xianxiaobserver`와 배포 인증서를 유지한다. 키스토어·비밀 값은 로컬로 가져오거나 출력하지 않는다.
 
-## 4. 코드 규칙 핵심 (상세는 coding-conventions.md)
-- 우선순위: 정확성 → **성능** → 가독성·유지보수성 → 간결함. 이해하기 힘든 압축 금지.
-- **주석 필수**: 모든 파일 상단 헤더, 모든 타입 `/// <summary>`, 모든 public/internal 멤버 XML 주석, 복잡한 로직에 "왜" 주석. 주석은 한국어, 식별자는 영어.
-- 크기 제한: 파일 400줄, 메서드 40줄, 중첩 3단계, 한 줄 120자.
-- 코어(`src/Hora.Domain`, `src/Hora.Simulation`): .NET Standard 2.1 + **C# 9**, 엔진 API 참조 금지.
-  C# 10+ 문법(file-scoped namespace, global using, record struct, required) 금지.
-- 돈은 `Money`(센트 `long`), 수량은 `Quantity`, ID는 전용 `readonly struct`. 돈에 `float/double` 금지.
-- 결정론: `System.Random`, `DateTime.Now`, `Guid.NewGuid()`, `Dictionary` 순회 순서 의존 금지.
-- 핫 패스(월 정산 반복문): LINQ·람다 캡처·루프 내 `new`·문자열 생성·박싱 금지.
-- 예상 가능한 실패는 `Result`/`CommandResult` 반환, 예외는 버그·환경 오류에만.
+## 의존 방향
 
-## 5. 작업 완료 전 체크
-```bash
-dotnet format --verify-no-changes
-dotnet build -warnaserror
-dotnet test
+```text
+Core -> Simulation -> Queries -> Runtime
+                  \-> Persistence
+Queries -> Presentation
+Application = Runtime + Persistence + Queries 조정
+Desktop = Application + Presentation
 ```
-- 명세의 수용 기준을 PR 본문에 항목별로 체크한다.
-- 성능 수용 기준이 있으면 벤치마크 수치를 PR에 첨부한다.
-- 커밋 메시지: Conventional Commits (`feat(market): 도시별 호가 매칭 추가`), 본문에 "왜", 꼬리말에 `Refs #이슈`.
 
-## 6. 저장소 구조
-```
-src/Hora.Domain/        순수 C# — ID, Money, 상태 구조체, 정의 데이터 타입
-src/Hora.Simulation/    순수 C# — 월 정산 시스템, 명령, AI
-src/Hora.Client/        엔진 프로젝트 (엔진 결정 후 생성, ADR 참고)
-tests/                  NUnit 테스트 (대상 프로젝트와 1:1)
-tools/Hora.Tools/       벤치마크·밸런스 시뮬레이터 CLI
-data/                   정의 JSON + schema
-docs/                   기획(redesign) · 규칙(standards) · 명세(tasks) · 결정(decisions)
-games/monthly-economy/  구버전 Godot 구현 (읽기 전용 참고)
-```
+- `Core`: 안정 ID, 정수 시간, 결정론적 난수, 값 타입과 정의 ID.
+- `Simulation`: AI 상태, 수행, 경지, 공법, 법술, 전투, 전투력, 랭킹, 일대기·윤회와
+  도시 시장 경제.
+- `Queries`: simulation을 읽는 불변 관찰 DTO와 revision 기반 투영.
+- `Runtime`: worker, 배속, 관찰 요청과 변경 section 통지.
+- `Persistence`: versioned save container, checksum과 원자 저장.
+- `Presentation`: 플랫폼 중립 표시 모델과 한국어 포맷.
+- `Application`: runtime·query·persistence 조정과 세션 생명주기.
+- `Desktop`: Application과 Presentation만 직접 참조하는 WPF 관찰 셸.
+- `Tests`: 공식, 결정론, 경쟁 활성도, 성능과 저장 회귀 검증.
+
+UI는 시뮬레이션의 가변 상태를 직접 소유하거나 수정하지 않는다. 관찰·검색·정렬은
+세계 상태와 난수 소비를 바꾸지 않아야 한다. 현재 파일 owner와 허용 의존은
+`docs/architecture/repository_manifest.json`을 정본으로 사용한다.
+
+## 시뮬레이션 규칙
+
+- 세계 시간은 정수 tick만 사용하고 벽시계 시간을 권위 상태에 저장하지 않는다.
+- AI는 매 렌더 프레임이 아니라 행동 완료·중단 시점에 다음 결정을 내린다.
+- 난수는 명시적 seed와 안정된 stream으로만 소비한다.
+- 전투력은 경지·자질·공법·법술·전투 경험·법보의 기여도를 각각 계산하고 조회에 공개한다.
+- 동일 seed와 동일 명령은 동일 상태 해시와 동일 랭킹을 만들어야 한다.
+
+## 변경과 검증
+
+- `VERSION`이 애플리케이션 버전의 유일한 원본이다.
+- 이번 통합 목표 VERSION은 사용자 지정 0.2.1이다. 서브 PR마다 patch를 올리지 않는다.
+- 기능 단위로 테스트한 뒤 작은 커밋을 만들고 원격 개발 브랜치에 푸시한다.
+- 생성물과 `bin/obj/artifacts`는 커밋하지 않는다.
+- 릴리스 전에는 Release 빌드, 전체 테스트, 10,000명 성능 검증과 패키지 실행 확인을 수행한다.

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Chronicles.Core/Chronicles.Core.csproj" />
+    <ProjectReference Include="../Chronicles.Game/Chronicles.Game.csproj" />
+    <ProjectReference Include="../Chronicles.Simulation/Chronicles.Simulation.csproj" />
+    <ProjectReference Include="../Chronicles.Queries/Chronicles.Queries.csproj" />
+    <ProjectReference Include="../Chronicles.Runtime/Chronicles.Runtime.csproj" />
+    <ProjectReference Include="../Chronicles.Persistence/Chronicles.Persistence.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,311 @@
+<UserControl x:Class="Chronicles.Desktop.MapObservationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinWidth="320">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="250" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="12" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.ColumnSpan="3" Margin="3,0,3,9">
+            <StackPanel>
+                <TextBlock Text="하천대륙 지리 관찰"
+                           Foreground="{StaticResource PrimaryTextBrush}"
+                           FontSize="17"
+                           FontWeight="SemiBold" />
+                <TextBlock x:Name="GeographySummaryText"
+                           Margin="0,3,0,0"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="10"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                <RadioButton GroupName="GeographyLayer"
+                             Style="{StaticResource SegmentToggleStyle}"
+                             IsChecked="True"
+                             Tag="1"
+                             Click="GeographyLayerButton_Click">제1층천 · 범인계</RadioButton>
+                <RadioButton GroupName="GeographyLayer"
+                             Style="{StaticResource SegmentToggleStyle}"
+                             Margin="5,0,0,0"
+                             Tag="2"
+                             Click="GeographyLayerButton_Click">제2층천 · 수선계</RadioButton>
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="1" Style="{StaticResource PanelStyle}" Padding="9">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="대륙의 주(권역) 10×10 · 오천주만 상세 구현"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="9" />
+                <ItemsControl x:Name="ProvinceTileList" Grid.Row="1" Margin="0,7,0,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="10" Columns="10" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Tag="{Binding ProvinceId}"
+                                    IsEnabled="{Binding IsEnabled}"
+                                    Click="ProvinceTileButton_Click"
+                                    Margin="1"
+                                    Padding="0"
+                                    ToolTip="{Binding ToolTip}"
+                                    Background="{Binding Background}"
+                                    BorderBrush="{Binding Border}"
+                                    BorderThickness="1">
+                                <TextBlock Text="{Binding Label}"
+                                           FontSize="8"
+                                           Foreground="{StaticResource PrimaryTextBrush}"
+                                           TextAlignment="Center" />
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource PanelStyle}" Padding="9">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="PointGridTitleText"
+                           Text="오천주 지점 10×10"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="9" />
+                <ItemsControl x:Name="PointTileList" Grid.Row="1" Margin="0,7,0,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="10" Columns="10" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Tag="{Binding PointId}"
+                                    Click="PointTileButton_Click"
+                                    Margin="1"
+                                    Padding="0"
+                                    ToolTip="{Binding ToolTip}"
+                                    Background="{Binding Background}"
+                                    BorderBrush="{Binding Border}"
+                                    BorderThickness="1">
+                                <Grid>
+                                    <TextBlock Text="{Binding Label}"
+                                               FontSize="8"
+                                               Foreground="{StaticResource PrimaryTextBrush}"
+                                               TextAlignment="Center" />
+                                    <TextBlock Text="{Binding Marker}"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Top"
+                                               Margin="0,-3,1,0"
+                                               FontSize="7"
+                                               Foreground="{StaticResource AccentBrush}" />
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" Grid.ColumnSpan="3" Margin="0,10,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Margin="8,0,8,5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="PointDetailHeaderText"
+                               Foreground="{StaticResource PrimaryTextBrush}"
+                               FontSize="15"
+                               FontWeight="SemiBold" />
+                    <TextBlock x:Name="PointStableIdText"
+                               Margin="10,3,0,0"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="10" />
+                </StackPanel>
+                <TextBlock x:Name="PointAuthorityStatusText"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="9" />
+            </Grid>
+            <TabControl x:Name="PointDetailTabControl"
+                        Grid.Row="1"
+                        Background="{StaticResource PanelBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        SelectionChanged="PointDetailTabControl_SelectionChanged">
+                <TabItem Header="지점 개요">
+                    <Grid Margin="12,9">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="230" />
+                            <ColumnDefinition Width="18" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock x:Name="PointCoordinateText"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       FontSize="10" />
+                            <TextBlock x:Name="PointTerrainSummaryText"
+                                       Margin="0,8,0,0"
+                                       Foreground="{StaticResource PrimaryTextBrush}"
+                                       FontSize="12" />
+                        </StackPanel>
+                        <TextBlock x:Name="PointDescriptionText"
+                                   Grid.Column="2"
+                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                   FontSize="11"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="지역 활동">
+                    <Grid Margin="9,7">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <UniformGrid Columns="4">
+                            <StackPanel Margin="4"><TextBlock Text="현재 수선자" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointRegionPopulationText" Margin="0,3,0,0" FontWeight="SemiBold" /></StackPanel>
+                            <StackPanel Margin="4"><TextBlock Text="최고 경지" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointRegionHighestRealmText" Margin="0,3,0,0" FontWeight="SemiBold" /></StackPanel>
+                            <StackPanel Margin="4"><TextBlock Text="평균 전투력" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointRegionAveragePowerText" Margin="0,3,0,0" FontWeight="SemiBold" /></StackPanel>
+                            <StackPanel Margin="4"><TextBlock Text="최고 전투력" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointRegionMaximumPowerText" Margin="0,3,0,0" FontWeight="SemiBold" /></StackPanel>
+                        </UniformGrid>
+                        <TextBlock x:Name="PointRegionActivityText"
+                                   Grid.Row="1"
+                                   Margin="4,8,4,0"
+                                   Foreground="{StaticResource PrimaryTextBrush}"
+                                   FontSize="10"
+                                   TextWrapping="Wrap" />
+                        <Button x:Name="StrongestAgentButton"
+                                Grid.Row="2"
+                                Margin="4,7,4,0"
+                                HorizontalContentAlignment="Left"
+                                Click="StrongestAgentButton_Click" />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="수선자">
+                    <Grid Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid Margin="0,0,0,6">
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="PreviousAgentPageButton" Content="이전" Padding="8,4" Click="PreviousAgentPageButton_Click" />
+                                <Button x:Name="NextAgentPageButton" Content="다음" Margin="5,0,0,0" Padding="8,4" Click="NextAgentPageButton_Click" />
+                            </StackPanel>
+                            <TextBlock x:Name="AgentPageText"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource SecondaryTextBrush}"
+                                       FontSize="9" />
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <TextBlock x:Name="AgentDataUnavailableText"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{StaticResource SecondaryTextBrush}"
+                                       Text="DataUnavailable · 현재 지점의 인물 권위가 아직 연결되지 않았습니다." />
+                            <DataGrid x:Name="MapAgentGrid"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      EnableRowVirtualization="True"
+                                      ScrollViewer.CanContentScroll="True"
+                                      SelectionMode="Single"
+                                      SelectionChanged="MapAgentGrid_SelectionChanged">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="#" Binding="{Binding Rank}" Width="48" />
+                                    <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="*" />
+                                    <DataGridTextColumn Header="경지" Binding="{Binding Realm}" Width="112" />
+                                    <DataGridTextColumn Header="전투력" Binding="{Binding CombatPower}" Width="78" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="요수 생태">
+                    <Grid Margin="8">
+                        <TextBlock x:Name="MonsterDataStatusText"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{StaticResource SecondaryTextBrush}" />
+                        <DataGrid x:Name="MonsterGrid"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  EnableRowVirtualization="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="요수" Binding="{Binding Name}" Width="*" />
+                                <DataGridTextColumn Header="개체" Binding="{Binding Population}" Width="70" />
+                                <DataGridTextColumn Header="위험" Binding="{Binding Danger}" Width="70" />
+                                <DataGridTextColumn Header="특성" Binding="{Binding Trait}" Width="80" />
+                                <DataGridTextColumn Header="전리품" Binding="{Binding Drop}" Width="90" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="정착지">
+                    <Grid Margin="10,8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <UniformGrid Columns="6">
+                            <StackPanel><TextBlock Text="사회" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointSocietyText" Margin="0,3,0,0" /></StackPanel>
+                            <StackPanel><TextBlock Text="대도시" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointLargeCityText" Margin="0,3,0,0" /></StackPanel>
+                            <StackPanel><TextBlock Text="소도시" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointSmallCityText" Margin="0,3,0,0" /></StackPanel>
+                            <StackPanel><TextBlock Text="촌" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointVillageText" Margin="0,3,0,0" /></StackPanel>
+                            <StackPanel><TextBlock Text="종문" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointSectText" Margin="0,3,0,0" /></StackPanel>
+                            <StackPanel><TextBlock Text="가문" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointClanText" Margin="0,3,0,0" /></StackPanel>
+                        </UniformGrid>
+                        <TextBlock x:Name="PointSettlementAuthorityText"
+                                   Grid.Row="1"
+                                   Margin="0,10,0,0"
+                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                   FontSize="10"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="자원 · 영맥">
+                    <Grid Margin="10,8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <UniformGrid Columns="5">
+                            <StackPanel><TextBlock Text="자연 환경" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointTerrainText" Margin="0,3,0,0" /></StackPanel>
+                            <StackPanel><TextBlock Text="지리 영맥" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointVeinText" Margin="0,3,0,0" /></StackPanel>
+                            <StackPanel><TextBlock Text="지리 광산" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointMineText" Margin="0,3,0,0" /></StackPanel>
+                            <StackPanel><TextBlock Text="생령 기준선" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointBeastText" Margin="0,3,0,0" /></StackPanel>
+                            <StackPanel><TextBlock Text="인접 이동 거리" Foreground="{StaticResource SecondaryTextBrush}" FontSize="9" /><TextBlock x:Name="PointDistanceText" Margin="0,3,0,0" /></StackPanel>
+                        </UniformGrid>
+                        <TextBlock x:Name="PointProductionVeinText"
+                                   Grid.Row="1"
+                                   Margin="0,10,0,0"
+                                   Foreground="{StaticResource SecondaryTextBrush}"
+                                   FontSize="10"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</UserControl>

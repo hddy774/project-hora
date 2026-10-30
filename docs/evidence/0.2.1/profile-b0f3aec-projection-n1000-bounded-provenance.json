@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "kind": "bounded-managed-profile-provenance",
+  "measured_source_commit": "b0f3aec986d9b09015021499e47627b869411b83",
+  "measured_source_tree": "0d7ee6fe36afd4fc5c807f0094e5aa45c3a1a684",
+  "build_configuration": "Release",
+  "reused_worktree": "/workspace/seonro-projection-b0f3aec",
+  "worktree_tracked_clean_at_run": true,
+  "source_verification": "Game/Tests generated AssemblyInformationalVersion and embedded DLL version strings match0.2.1+b0f3aec986d9b09015021499e47627b869411b83",
+  "experimental_configuration": true,
+  "inventory_candidate_mode": "person15-projection-experiment",
+  "opt_in_argument": "--performance-inventory-projection",
+  "profile": "dotnet-sampled-thread-time,gc-verbose",
+  "collector_version": "10.0.750501",
+  "collection_duration_seconds": 50,
+  "runtime_limit_seconds": 55,
+  "runtime_elapsed_seconds": 54.75249433899444,
+  "collector_exit_code": 0,
+  "own_collector_pid": 82941,
+  "own_runtime_pid": 82950,
+  "existing_process_attached": false,
+  "kernel_cpu_sampling": false,
+  "completed_12_month_benchmark": false,
+  "source_code_changed": false,
+  "ledger_changed": false,
+  "raw_artifacts": [
+    {
+      "name": "ui-profile-b0f3aec-projection-n1000-bounded.nettrace",
+      "workspace_path": "/workspace/scratch/ui-profile-b0f3aec-projection-n1000-bounded.nettrace",
+      "bytes": 58654078,
+      "sha256": "e657a01dff73f95821ec9832963ddad80336b2214f70af5d571538332ed16bd5",
+      "committed": false
+    },
+    {
+      "name": "ui-profile-b0f3aec-projection-n1000-bounded.speedscope.json",
+      "workspace_path": "/workspace/scratch/ui-profile-b0f3aec-projection-n1000-bounded.speedscope.json",
+      "bytes": 80480980,
+      "sha256": "15ef756ad5a7511cb39689fc8a70054c21b3efb3ef055e7ebf52508e0924cc14",
+      "committed": false
+    }
+  ],
+  "run_receipt": {
+    "kind": "bounded-managed-profile-diagnostic",
+    "source": "b0f3aec986d9b09015021499e47627b869411b83",
+    "population": 1000,
+    "experimental_configuration": true,
+    "inventoryCandidateMode": "person15-projection-experiment",
+    "buildBinarySha256": {
+      "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll": "0e850ab26ffef8a6db94e8ad1240775a89444567aea617ecd0e0229c5290227f",
+      "/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll": "f80725ca4cd9cda0155e4a55714ff2d536985f906b3bb378749bbfcf504ad1b4"
+    },
+    "startedUtc": "2026-10-30T13:43:15.414079+00:00",
+    "elapsedSeconds": 54.75249433899444,
+    "collectionDurationSeconds": 50,
+    "runtimeLimitSeconds": 55,
+    "collectorPid": 82941,
+    "seenOwnProcessGroupMembers": [
+      82941,
+      82950
+    ],
+    "cleanupSignals": [
+      {
+        "pid": 82950,
+        "signal": "SIGTERM",
+        "atSeconds": 54.74732534899522
+      },
+      {
+        "pid": 82950,
+        "signal": "SIGKILL final owned-group cleanup",
+        "atSeconds": 54.74912215599761
+      }
+    ],
+    "collectorExitCode": 0,
+    "command": [
+      "/workspace/.dotnet-tools/dotnet-trace",
+      "collect",
+      "--profile",
+      "dotnet-sampled-thread-time,gc-verbose",
+      "--buffersize",
+      "64",
+      "--duration",
+      "00:00:00:50",
+      "--format",
+      "Speedscope",
+      "--output",
+      "/workspace/scratch/ui-profile-b0f3aec-projection-n1000-bounded.nettrace",
+      "--show-child-io",
+      "--",
+      "/workspace/.dotnet/dotnet",
+      "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "--filter",
+      "INV-001/002/011",
+      "--report",
+      "/workspace/scratch/ui-profile-b0f3aec-projection-n1000-bounded-genesis.json",
+      "--performance",
+      "/workspace/scratch/ui-profile-b0f3aec-projection-n1000-bounded-diagnostic-partial.json",
+      "--performance-size",
+      "1000",
+      "--performance-inventory-projection"
+    ],
+    "note": "Own launched private child group only; no existing-process attach. Managed sampled thread time + GC allocation samples, not kernel CPU. Planned bounded stop: no completed12month benchmark/time claim."
+  },
+  "supporting_scratch_digests": {
+    "ui-profile-b0f3aec-projection-n1000-bounded.nettrace": "e657a01dff73f95821ec9832963ddad80336b2214f70af5d571538332ed16bd5",
+    "ui-profile-b0f3aec-projection-n1000-bounded.speedscope.json": "15ef756ad5a7511cb39689fc8a70054c21b3efb3ef055e7ebf52508e0924cc14",
+    "ui-profile-b0f3aec-projection-n1000-bounded-run.json": "1730119f6d4f0d0f36ee24023480e341de5a6b7246355efbaf1c5c6794e2b21b",
+    "ui-profile-b0f3aec-projection-n1000-bounded-weighted-stacks.json": "57d5279d908fca926bc81eeb1faaf14677b43af328ad779fc76cf61c13e5f965",
+    "ui-profile-b0f3aec-projection-n1000-bounded-whole-main.json": "98e2eb9a69609399df736637359a337fe8b950e7e6bffd51482dec2a6463dea5",
+    "ui-profile-b0f3aec-projection-n1000-bounded-allocation-warmup.json": "4088bdafb41b6dfc56b3befa3d707542f06bbc7fcef3632c9dfd53af2b5f3eee",
+    "ui-profile-b0f3aec-projection-n1000-bounded-allocation-measured.json": "b8dc71ba8844184433750bfb97dca57919cced3bd4a8a535daadd227a3a9626a",
+    "ui-profile-b0f3aec-projection-n1000-bounded-allocation-source.txt": "1213e2b11fb3be04b5b477ca8614370a0379e1848742e967532a95ee0624a721",
+    "ui-profile-b0f3aec-projection-n1000-bounded-genesis.json": "b9210bdfa8ae6bcf395eb9f413fc52c37a9c82034fe92b1ebbe767f9b602b0ea",
+    "ui-profile-b0f3aec-projection-n1000-bounded-diagnostic-partial.json": "08f8a7e83d814dbab4a00b744139ee2c233bd2db9e894c0eac0e2a40484fa809",
+    "ui-profile-b0f3aec-projection-n1000-bounded-diagnosis.json": "b1176f2a26e249528f59767adb6e4dcc6440c537b430e2d55eecbf0c60b829c2",
+    "ui-profile-b0f3aec-projection-n1000-bounded-diagnosis.txt": "01bbd99e33365de48f584b06112415bed3693efc2f6e9023d8c688048561ce1e"
+  },
+  "scope": "소스b0f3aec의명시적15필드투영실험을50초관리스택/GC로진단했다. 전체주앱스레드·예열Advance·측정Advance표본을구분하며1~3월및4월시작일부만측정구간에포함된다. 정식무프로파일비용·12개월완료·현재제품기본동작의합격을주장하지않는다. 큰원시trace/speedscope는scratch만보존하며내용해시를기록한다."
+}

@@ -36,6 +36,7 @@ public static class InventoryDefinitions
                 Array.AsReadOnly(definition.EquipmentSlot < 0 ? [] : new[] { definition.EquipmentSlot }), effect,
                 effect == "healing" ? 20 : 10));
         }
+        items.Add("blankBook", new(new("blankBook", "빈 기록책", ItemKind.Book, 1, 0, -1, "내용 없는 실물 기록 매체"), Array.Empty<int>()));
         items.Add("growthPill", new(new("growthPill", "배원단", ItemKind.Pill, 1, 0, -1, "수행 보조"), Array.Empty<int>(), "growth", 100));
         items.Add("breakthroughPill", new(new("breakthroughPill", "파경단", ItemKind.Pill, 1, 0, -1, "돌파 보조"), Array.Empty<int>(), "breakthrough", 10));
         items.Add("greatWeapon", new(new("greatWeapon", "양수 중검", ItemKind.Weapon, 3, 0, 0, "양손 점유"), TwoHands));
@@ -92,7 +93,7 @@ public static class InventoryDefinitions
             Add($"consume.{R(11)}", "farm", "food", 2, (R(11), 2), (R(6), 1));
             Add($"consume.{R(12)}", "farm", R(11), 3, (R(12), 1), (R(6), 1));
             Add($"consume.{R(13)}", "smith", "cloth", 2, (R(13), 2));
-            Add($"consume.{R(14)}", "scholar", "path.1.0", 1, (R(14), 2), (R(9), 1));
+            Add($"consume.{R(14)}", "scholar", "blankBook", 1, (R(14), 2), (R(9), 1));
             Add($"consume.{R(15)}", "smith", "bag", 1, (R(15), 1), (R(13), 2));
         }
         return new(recipes);

@@ -199,9 +199,11 @@ public sealed class PeoplePublicSpeciesAndProjectionScenario : IFeatureScenario
             state.PeopleDomain.Profiles.Single(p => p.PersonId == water).Body.Capabilities.SpiritualManipulation,
             "Explicit species entry creates its actual body/maturity/lifespan/source and supplies no imaginary assets.");
         f.Control(fox); var craft = f.Reject("craft", fox, data: "paper");
+        var uppercaseCraft = f.Reject("TRANSCRIBE", fox);
         f.Control(pine); var travel = f.Reject("travel", pine, 1);
-        PeopleFixture.Check(craft.Message.Contains("현재 육신", StringComparison.Ordinal) && travel.Message.Contains("현재 육신", StringComparison.Ordinal),
-            "Nonhuman action failures must be caused by the actual manipulation/movement body gate.");
+        var martial = f.Reject("martial", pine); var uppercaseMartial = f.Reject("MARTIAL", pine);
+        PeopleFixture.Check(new[] { craft, uppercaseCraft, travel, martial, uppercaseMartial }.All(r => r.Message.Contains("현재 육신", StringComparison.Ordinal)),
+            "Canonical and case-insensitive domain aliases must enforce the same actual body gates without reservations, IDs or RNG mutations.");
         f.Send("wait", pine); f.World.AdvanceTo(1);
         var ecology = f.World.PeopleEcology(pine)!;
         PeopleFixture.Check(ecology.Month == 1 && !ecology.HabitatSuitable && ecology.GenericMaintenanceAbstraction && ecology.HealthCost > 0 &&

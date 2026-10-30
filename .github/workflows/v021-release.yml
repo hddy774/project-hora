@@ -113,6 +113,9 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
@@ -335,7 +338,7 @@ jobs:
           name: v021-android-35-${{ github.run_id }}-${{ github.run_attempt }}
           path: artifacts/android-35
       - name: Require final post-feature performance and actual same-APK platform evidence
-        run: python3 scripts/verify-v021-release.py gate --stage publish --source artifacts/signed/source.json --functional artifacts/functional/product-tests.json --browser artifacts/functional/ui/results.json --signed artifacts/signed/APK-VERIFICATION.json --windows artifacts/windows/windows-proof.json --android artifacts/android-24/android-proof.json --android artifacts/android-35/android-proof.json
+        run: python3 scripts/verify-v021-release.py gate --stage publish --source artifacts/signed/source.json --functional artifacts/functional/product-tests.json --browser artifacts/functional/ui/results.json --signed artifacts/signed/APK-VERIFICATION.json --windows artifacts/windows/windows-proof.json --android artifacts/android-24/android-proof.json --android artifacts/android-35/android-proof.json ${{ inputs.verify_upgrade && '--require-upgrade' || '' }}
       - name: Prepare, download, verify, publish, and verify public exact bytes
         env:
           APK_NAME: ${{ needs.review.outputs.apk_name }}

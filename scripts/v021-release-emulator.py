@@ -35,21 +35,27 @@ def package_state():
     return {"uid": uid[1], "first_install_time": first[1].strip()}
 
 
-def launch(activity):
+def launch(activity, transcript=None):
     adb("logcat", "-c")
-    output = adb("shell", "am", "start", "-W", "-n", PACKAGE + "/" + activity)
-    verify.require("Error:" not in output and "Exception" not in output, "Android launch did not succeed")
+    result = subprocess.run(["adb", "shell", "am", "start", "-W", "-n", PACKAGE + "/" + activity],
+                            capture_output=True, text=True, timeout=45)
+    output = result.stdout + result.stderr
+    if transcript is not None:
+        Path(transcript).write_text(output, encoding="utf-8")
+    verify.require(result.returncode == 0 and "Status: ok" in output and "Error:" not in output and "Exception" not in output,
+                   "Android launch did not succeed")
     return output
 
 
 def actual_render(apk, proof, out):
     out.mkdir(parents=True, exist_ok=True)
     verify.require(verify.sha(apk) == proof["sha256"], "APK bytes changed before installation")
-    (out / "launch.txt").write_text(launch(proof["launchable_activity"]), encoding="utf-8")
+    launch(proof["launchable_activity"], out / "launch.txt")
     deadline = time.monotonic() + 90
     logs = ""
     while time.monotonic() < deadline:
         logs = adb("logcat", "-d", "-v", "tag")
+        (out / "render-log.txt").write_text(logs, encoding="utf-8")
         verify.require("FATAL EXCEPTION" not in logs and "Fatal signal" not in logs, "Actual Android process crashed")
         matches = []
         for line in logs.splitlines():
@@ -73,6 +79,7 @@ def actual_render(apk, proof, out):
     (out / "screen.png").write_bytes(adb("exec-out", "screencap", "-p", binary=True))
     checked = subprocess.run([sys.executable, "scripts/verify-android-ui.py", str(out / "ui.xml"), str(out / "render-log.txt")],
                              cwd=verify.ROOT, capture_output=True, text=True)
+    (out / "dom-checker.txt").write_text(checked.stdout + checked.stderr, encoding="utf-8")
     verify.require(checked.returncode == 0, "Actual visible DOM/native GameSession validation failed")
     (out / "dom-proof.json").write_text(checked.stdout, encoding="utf-8")
     dom = json.loads(checked.stdout)

@@ -90,7 +90,7 @@ def owner_context():
     require(os.environ.get("GITHUB_REPOSITORY") == REPOSITORY and os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch",
             "Owner manual workflow required")
     require(os.environ.get("GITHUB_REF") == "refs/heads/main", "Release must run from merged main")
-    require(os.environ.get("GITHUB_ACTOR") == "hddy774" and os.environ.get("GITHUB_TRIGGERING_ACTOR", "hddy774") == "hddy774",
+    require(os.environ.get("GITHUB_ACTOR") == "hddy774" and os.environ.get("GITHUB_TRIGGERING_ACTOR") == "hddy774",
             "Repository owner must request and rerun release")
     require(run("git", "rev-parse", "HEAD").strip() == os.environ.get("GITHUB_SHA"), "Checkout is not the exact dispatched source")
 
@@ -250,11 +250,19 @@ def windows_proof(source, raw):
     proof = read(raw)
     require(proof.get("passed") is True and proof.get("actualRenderAndBridge") is True and proof.get("version") == source["version"] and
             proof.get("host") == "WPF WebView2", "Actual Windows WebView2 render/bridge check failed")
+    diagnostic = proof.get("diagnostic")
+    for _ in range(3):
+        if not isinstance(diagnostic, str):
+            break
+        diagnostic = json.loads(diagnostic)
+    require(isinstance(diagnostic, dict) and diagnostic.get("hasView") is True and diagnostic.get("error") is None and
+            diagnostic.get("connection") == "연결됨" and diagnostic.get("heading") == "만상의 흐름",
+            "Windows visible DOM/connection diagnostics did not verify")
     return {"kind": "windows-webview2", "passed": True, "actual_render_and_bridge": True, "raw_sha256": sha(raw),
             **{k: source[k] for k in ("source_commit", "product_source_fingerprint", "run_id", "run_attempt")}}
 
 
-def platform_gate(source, signed, windows, android):
+def platform_gate(source, signed, windows, android, require_upgrade=False):
     proof_matches(source, signed)
     require(signed.get("kind") == "signed" and signed.get("certificate_sha256") == CERTIFICATE, "Retained-signed APK proof missing")
     proof_matches(source, windows)
@@ -264,8 +272,8 @@ def platform_gate(source, signed, windows, android):
         proof_matches(source, report)
         require(report.get("signed_apk_sha256") == signed["sha256"] and report.get("passed") is True and
                 report.get("fresh_install_render") is True, "Android checked a different APK or failed real render")
-        if report.get("upgrade_requested") is True:
-            require(report.get("retained_signature_upgrade") is True and report.get("legacy_save_preserved") is True,
+        if require_upgrade or report.get("upgrade_requested") is True:
+            require(report.get("upgrade_requested") is True and report.get("retained_signature_upgrade") is True and report.get("legacy_save_preserved") is True,
                     "Requested actual retained-signature/data upgrade failed")
 
 
@@ -303,6 +311,7 @@ def main():
     for field in ("functional", "browser", "signed", "windows"):
         p.add_argument("--" + field)
     p.add_argument("--android", action="append", default=[])
+    p.add_argument("--require-upgrade", action="store_true")
     p = sub.add_parser("apk"); p.add_argument("--kind", choices=("unsigned", "signed", "previous"), required=True)
     p.add_argument("--apk", required=True); p.add_argument("--source"); p.add_argument("--signing-proof"); p.add_argument("--output", required=True)
     p.add_argument("--github-output")
@@ -338,7 +347,7 @@ def main():
     if args.stage == "publish":
         performance_gate(source, ready)
         require(args.signed and args.windows, "Signed APK and Windows proofs missing")
-        platform_gate(source, read(args.signed), read(args.windows), [read(p) for p in args.android])
+        platform_gate(source, read(args.signed), read(args.windows), [read(p) for p in args.android], args.require_upgrade)
     print(json.dumps({"gate": args.stage, "passed": True, "source_commit": source["source_commit"],
                       "product_source_fingerprint": source["product_source_fingerprint"]}))
 

@@ -53,8 +53,12 @@ def submit(page, label='명령 제출', accepted=True):
 def cancel_action(page):
     # Setup cleanup uses the same public command as the visible cancellation UI.
     if page.evaluate("() => activePerson()?.action !== 'Idle'"):
-        reply = page.evaluate("() => issueCommand('cancel')")
+        inside=page.evaluate('() => !!view.inSecretRealm')
+        reply = page.evaluate("() => issueCommand(view.inSecretRealm?'returnSecret':'cancel')")
         assert reply['result']['accepted'], reply['message']
+        if inside:
+            page.get_by_role('button',name='1개월',exact=True).click(); settle(page)
+            assert not page.evaluate('() => view.inSecretRealm')
 
 
 def open_item(page, definition):
@@ -72,6 +76,96 @@ LEGACY_APIS = r'''() => {
   remove(HTMLDialogElement.prototype,'showModal'); remove(HTMLDialogElement.prototype,'close');
   const supports=CSS.supports.bind(CSS); CSS.supports=(name,value)=>name==='display'&&value==='grid'?false:supports(name,value);
 }'''
+
+
+def secret_workflows(page, width):
+    who=page.evaluate('() => view.actor')
+    page.get_by_role('button',name='관찰로 전환',exact=True).first.click(); settle(page)
+    # Configure a short deterministic functional case through the real public law command.
+    settings={'birth.enabled':0,'ecology.disasterChance':0,'hazard.sealChance':0,
+              'exploration.openPeriod':12,'exploration.openMonths':12,'exploration.entryMonths':2,'exploration.risk':0,'exploration.capacity':2}
+    reply=page.evaluate('(settings)=>issueCommand(\'lawBatch\',0,0,JSON.stringify(settings),0)',settings)
+    assert reply['result']['accepted'],reply['message']
+    page.evaluate('(id)=>inspect(id)',who)
+    page.get_by_role('button',name='이 인물로 플레이',exact=True).click(); settle(page)
+
+    def self_detail():
+        page.evaluate('() => inspect(view.actor)')
+
+    def finish_current():
+        for _ in range(12):
+            if page.evaluate("() => activePerson().action==='Idle'"):
+                return
+            page.get_by_role('button',name='1개월',exact=True).click(); settle(page)
+            assert page.evaluate("() => activePerson().status==='Alive'")
+        raise AssertionError('The real bounded action did not finish.')
+
+    for destination in range(1,9):
+        self_detail(); cancel_action(page); self_detail()
+        page.get_by_role('button',name='탐색',exact=True).click(); settle(page); finish_current()
+        name=page.evaluate('(id)=>place(id)?.name',destination)
+        assert name,'A paid local survey did not reveal the next actual neighbor.'
+        nav(page,'지도')
+        page.locator('.map').get_by_role('button',name=name,exact=True).click()
+        submit(page,'이동 요청'); finish_current()
+        assert page.evaluate('(id)=>activePerson().place===id',destination)
+    self_detail()
+    page.get_by_role('button',name='탐색',exact=True).click(); settle(page); finish_current()
+    assert page.evaluate('() => view.exploration.entrances.length===1&&view.exploration.entrances[0].place===8&&view.exploration.entrances[0].openNow===null&&view.exploration.entrances[0].actualParticipants===null')
+    book=page.evaluate("() => view.items.find(i=>i.definition==='path.1.0')")
+    open_item(page,book['name'])
+    page.get_by_role('button',name='수납·꺼내기',exact=True).click()
+    page.get_by_label('대상 용기').select_option('ground'); submit(page)
+    assert page.evaluate('(id)=>item(id).isCarried===false&&item(id).place===8',book['id'])
+    nav(page,'지도')
+    gate=page.locator('[data-secret-place="8"]')
+    assert gate.get_by_text('종류 미상',exact=False).count()>0
+    gate.get_by_role('button',name='비경 입장 준비',exact=True).click()
+    revision=page.evaluate('() => view.revision')
+    page.keyboard.press('Escape')
+    assert page.evaluate('() => view.revision')==revision
+
+    def enter():
+        gate.get_by_role('button',name='비경 입장 준비',exact=True).click()
+        submit(page,'현재 조건으로 입장 요청')
+        assert page.evaluate('() => view.inSecretRealm&&view.economy===null')
+        e=page.evaluate('() => view.exploration.ownEntries.find(e=>e.status===\'Active\')')
+        assert e and e['person']==who and e['actualRisk'] is None and e['actualRoll'] is None and e['actualRules'] is None
+        assert page.evaluate('(id)=>!item(id)',book['id'])
+        return e
+
+    first=enter()
+    assert_no_horizontal_overflow(page)
+    page.screenshot(path=str(out/f'secret-active-{width}.png'),full_page=True)
+    nav(page,'시장')
+    assert page.locator('[data-section="economy"]').count()==0
+    assert page.get_by_text('비경 안에서는 바깥의 새 출품·시세·거점을 확인할 수 없습니다.',exact=False).count()>0
+    nav(page,'지도')
+    page.get_by_role('button',name='귀환 준비 검토',exact=True).click()
+    submit(page,'귀환 시작 요청')
+    assert page.evaluate('() => view.inSecretRealm&&view.exploration.ownEntries.some(e=>e.status===\'Returning\')')
+    finish_current()
+    assert page.evaluate('(id)=>!view.inSecretRealm&&view.exploration.ownEntries.find(e=>e.id===id).status===\'Returned\'&&view.exploration.ownEntries.find(e=>e.id===id).rewardQuantity===0',first['id'])
+    assert page.evaluate('(id)=>!!item(id)',book['id'])
+    second=enter()
+    page.get_by_role('button',name='1개월',exact=True).click(); settle(page)
+    assert page.evaluate('(id)=>view.inSecretRealm&&view.exploration.ownEntries.find(e=>e.id===id).progress===1',second['id'])
+    page.get_by_label('저장 슬롯').select_option('1')
+    page.get_by_role('button',name='저장',exact=True).click(); settle(page)
+    page.get_by_role('button',name='불러오기',exact=True).click()
+    page.get_by_role('dialog').get_by_role('button',name='불러오기',exact=True).click(); settle(page)
+    assert page.evaluate('(id)=>view.inSecretRealm&&view.exploration.ownEntries.find(e=>e.id===id).progress===1',second['id'])
+    finish_current()
+    ended=page.evaluate('(id)=>view.exploration.ownEntries.find(e=>e.id===id)',second['id'])
+    assert ended['status']=='Completed' and ended['progress']==ended['required'] and not page.evaluate('() => view.inSecretRealm')
+    if ended['rewardQuantity']:
+        assert page.evaluate('(e)=>item(e.rewardItem).quantity===e.rewardQuantity&&item(e.rewardItem).qualityValue===null',ended)
+    else:
+        assert ended['endReason']
+    assert_no_horizontal_overflow(page)
+    page.screenshot(path=str(out/f'secret-completed-{width}.png'),full_page=True)
+    return {'secret_paid_survey_travel_entry':True,'secret_observed_uncertainty':True,'secret_carried_space_boundary':True,
+            'secret_real_return_and_preparation_cost':True,'secret_inside_save_resume':True,'secret_finite_outcome_observed':True}
 
 
 def policy_workflows(page, width):
@@ -378,6 +472,7 @@ def smoke_checks(browser):
         assert page.locator('#dialogform').inner_text() == ''
 
         policy = policy_workflows(page,width) if not args.smoke_only else {}
+        secret = secret_workflows(page,width) if not args.smoke_only else {}
         if args.legacy_dom:
             assert page.evaluate("() => document.documentElement.hasAttribute('data-shell-legacy-grid') && typeof globalThis==='object' && typeof Object.fromEntries==='function' && typeof [].at==='function'")
             assert page.locator('#dialog').get_attribute('data-shell-legacy-dialog') is not None
@@ -390,7 +485,7 @@ def smoke_checks(browser):
                         'forced_legacy_dom':args.legacy_dom,'tabs':9,'javascript_errors':errors,'touch_targets_44px':True,
                         'known_actor_switch':True,'equipment_use':True,'known_ally_guard':True,'species_creation':True,'atomic_law_batch':True,
                         'new_world_law_choice':True,'save_load':True,'document_horizontal_overflow':False,'selected_known_path_command':True,
-                        'save_load_scope_cleanup':True,'law_export_import_validation_and_apply':True,'native_api24_verified':False,**social,**policy})
+                        'save_load_scope_cleanup':True,'law_export_import_validation_and_apply':True,'native_api24_verified':False,**social,**policy,**secret})
         context.close()
     return observer_reply,play_reply
 

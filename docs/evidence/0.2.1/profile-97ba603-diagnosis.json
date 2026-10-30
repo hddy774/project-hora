@@ -1,0 +1,667 @@
+{
+  "kind": "seonro-managed-profile-diagnostic",
+  "isFormalBaseline": false,
+  "source": "97ba6030367754b4338ab6a04ec57ef76ae2122d",
+  "worktree": "/workspace/seonro-profile-97ba603",
+  "configuration": "Release net10.0; DOTNET_ROOT=/workspace/.dotnet; dotnet-trace 10.0.750501",
+  "selectedFunctionalTests": {
+    "filter": "INV-001/002/011",
+    "total": 1,
+    "failed": 0
+  },
+  "collection": {
+    "profile": "dotnet-sampled-thread-time,gc-verbose",
+    "kernelCpuSampling": false,
+    "approximateFrequencyHz": 100,
+    "process": "own launched child, no baseline attach",
+    "populations": [
+      100
+    ]
+  },
+  "phase": {
+    "coldStart": "genesis selected test + fixture construction/restore/JIT occur before measured AdvanceTo",
+    "warmup": "independent fixture; AdvanceTo(2); same process/shared JIT",
+    "measurement": "fresh deterministic fixture; 12 AdvanceTo(month) calls; one repetition",
+    "measuredWindowMs": [
+      [
+        9383.809380344726,
+        34869.4578155
+      ]
+    ],
+    "weightedThreadMs": 25485.64843515527,
+    "excluded": "genesis/build/fixture/warmup/end checkpoint-query-save-load and other threads excluded from phase weights"
+  },
+  "diagnosticOnlyHarness": {
+    "monthlySamplesMs": [
+      3416.4296,
+      109.6473,
+      164.8835,
+      5645.7252,
+      434.9966,
+      358.8352,
+      388.9272,
+      432.4284,
+      506.5815,
+      465.1586,
+      521.2791,
+      13013.7715
+    ],
+    "advance12MonthsMs": 25458.663700000005,
+    "monthlyP50Ms": 450.07759999999996,
+    "monthlyP95Ms": 13013.7715,
+    "allocatedBytes": 8777890784,
+    "queryMs": 64.597,
+    "saveMs": 288.8189,
+    "loadMs": 334.6947,
+    "retainedManagedBytes": 27905200,
+    "saveBytes": 13311756,
+    "workload": {
+      "peopleWithDecisions": 100,
+      "retainedDecisionRecords": 1004,
+      "retainedInferenceExpansions": 820,
+      "maximumRetainedInferenceExpansionsPerPerson": 24,
+      "currentActions": {
+        "Cultivate": 2,
+        "Guard": 98
+      },
+      "completedKnowledgeActivities": 797,
+      "completedPhysicalJobs": 98,
+      "actualExtraction": 1176,
+      "actualProduction": 0
+    }
+  },
+  "inclusiveTop20AppNonRoot": [
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Decide(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 16500.61153572026,
+      "percent": 64.74471927878861
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.TryEcologyPlan(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 12425.97535884,
+      "percent": 48.75675575003
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryState.Copy(class Chronicles.Game.Inventory.InventoryState)",
+      "weighted_thread_ms": 12076.71201991944,
+      "percent": 47.3863243097266
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Apply(class Chronicles.Game.Inventory.InventoryState,class Chronicles.Game.Inventory.InventoryCommand)",
+      "weighted_thread_ms": 8307.45691034327,
+      "percent": 32.5966079751922
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.ValidateCore(class Chronicles.Game.Inventory.InventoryState)",
+      "weighted_thread_ms": 7471.750365731481,
+      "percent": 29.317481894731156
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Validate(class Chronicles.Game.Inventory.InventoryState)",
+      "weighted_thread_ms": 7471.750365731481,
+      "percent": 29.317481894731156
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryState.ApplyTo(class Chronicles.Game.GameState)",
+      "weighted_thread_ms": 6795.818300302131,
+      "percent": 26.665275233601204
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.CurrentInventory()",
+      "weighted_thread_ms": 6615.89523572727,
+      "percent": 25.959297259241826
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Complete(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 5908.325027041068,
+      "percent": 23.182949580717906
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.CompleteInventory(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 5304.462320729866,
+      "percent": 20.813527010020334
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.ApplyInventory(class Chronicles.Game.Inventory.InventoryState)",
+      "weighted_thread_ms": 4926.648205534877,
+      "percent": 19.33106869173863
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.CarriedWeight(class Chronicles.Game.Inventory.InventoryState,class Chronicles.Game.Person)",
+      "weighted_thread_ms": 4307.215966484557,
+      "percent": 16.900554747287185
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.RunInventory(class Chronicles.Game.Inventory.InventoryCommand,int64&)",
+      "weighted_thread_ms": 4046.619462190829,
+      "percent": 15.87803218931979
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+<>c__DisplayClass48_0.<CarriedRoots>b__0(class Chronicles.Game.Item)",
+      "weighted_thread_ms": 3910.3832862893323,
+      "percent": 15.343471821950166
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Start(class Chronicles.Game.Person,class System.String,int64,class System.String)",
+      "weighted_thread_ms": 3588.0374339850296,
+      "percent": 14.078658595304322
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.TryInventoryCommand(class Chronicles.Game.GameCommand,class Chronicles.Game.Person,class System.String&)",
+      "weighted_thread_ms": 3237.7623304824865,
+      "percent": 12.70425721645077
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleInventory()",
+      "weighted_thread_ms": 1254.671520987351,
+      "percent": 4.923051199500339
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleEcology()",
+      "weighted_thread_ms": 1065.8583720595961,
+      "percent": 4.18219051703364
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Ecology.EcologyEngine.Settle(class Chronicles.Game.Ecology.EcologyContext,class Chronicles.Game.Ecology.EcologyState)",
+      "weighted_thread_ms": 1031.8544399164984,
+      "percent": 4.04876667172864
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Ecology.EcologyEngine.Validate(class Chronicles.Game.Ecology.EcologyContext,class Chronicles.Game.Ecology.EcologyState)",
+      "weighted_thread_ms": 876.3831732491071,
+      "percent": 3.4387320984943495
+    }
+  ],
+  "exclusiveTop20ManagedLeaf": [
+    {
+      "frame": "System.Private.CoreLib!System.Threading.Thread.<PollGC>g__PollGCWorker|67_0()",
+      "weighted_thread_ms": 5479.096376992453,
+      "percent": 21.498752095451916
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+<>c__DisplayClass48_0.<CarriedRoots>b__0(class Chronicles.Game.Item)",
+      "weighted_thread_ms": 3237.80499150564,
+      "percent": 12.704424608790273
+    },
+    {
+      "frame": "System.Text.Json!System.Text.Json.JsonReaderHelper.TranscodeHelper(value class System.ReadOnlySpan`1<unsigned int8>)",
+      "weighted_thread_ms": 3219.080197655272,
+      "percent": 12.630952694202696
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.ValidateCore(class Chronicles.Game.Inventory.InventoryState)",
+      "weighted_thread_ms": 1111.6285045770474,
+      "percent": 4.361782308209396
+    },
+    {
+      "frame": "System.Text.Json!dynamicClass..ctor()",
+      "weighted_thread_ms": 905.8254576574764,
+      "percent": 3.5542570555433373
+    },
+    {
+      "frame": "System.Text.Json!System.Text.Json.Serialization.JsonCollectionConverter`2[System.__Canon,System.__Canon].OnTryRead(value class System.Text.Json.Utf8JsonReader&,class System.Type,class System.Text.Json.JsonSerializerOptions,value class System.Text.Json.ReadStack&,!0&)",
+      "weighted_thread_ms": 738.0244540759959,
+      "percent": 2.8958433447506646
+    },
+    {
+      "frame": "System.Linq!System.Linq.Enumerable.Where(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Func`2<!!0,bool>)",
+      "weighted_thread_ms": 730.7103740421426,
+      "percent": 2.8671445260705637
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Metadata(class Chronicles.Game.Inventory.InventoryState,int64)",
+      "weighted_thread_ms": 671.2044878401975,
+      "percent": 2.633656701135092
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Ecology.EcologyEngine+<>c__DisplayClass6_7.<Validate>b__25(int64)",
+      "weighted_thread_ms": 545.7285260601366,
+      "percent": 2.1413170139604953
+    },
+    {
+      "frame": "System.Private.CoreLib!System.Collections.Generic.List`1[System.__Canon].AddWithResize(!0)",
+      "weighted_thread_ms": 543.9980005861871,
+      "percent": 2.134526817986661
+    },
+    {
+      "frame": "System.Text.Json!System.Text.Json.Serialization.Converters.SmallObjectWithParameterizedConstructorConverter`5[System.__Canon,System.__Canon,System.Int64,System.__Canon,System.__Canon].InitializeConstructorArgumentCaches(value class System.Text.Json.ReadStack&,class System.Text.Json.JsonSerializerOptions)",
+      "weighted_thread_ms": 505.2080665830654,
+      "percent": 1.9823237688791706
+    },
+    {
+      "frame": "System.Text.Json!dynamicClass..ctor(class System.String,int64,class System.String,class System.Object)",
+      "weighted_thread_ms": 452.1371958098043,
+      "percent": 1.774085509184533
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Knowledge.KnowledgeAuthority+<>c.<Clone>b__83_7(class Chronicles.Game.Knowledge.KnowledgeEvidence)",
+      "weighted_thread_ms": 419.4059955788143,
+      "percent": 1.6456555800255004
+    },
+    {
+      "frame": "System.Private.CoreLib!System.Buffer.MemmoveInternal(unsigned int8&,unsigned int8&,unsigned int)",
+      "weighted_thread_ms": 402.2680834181847,
+      "percent": 1.5784102352416125
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Person..ctor()",
+      "weighted_thread_ms": 394.92449924576977,
+      "percent": 1.5495956489025613
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryState.Copy(class Chronicles.Game.Inventory.InventoryState)",
+      "weighted_thread_ms": 394.9150988012898,
+      "percent": 1.5495587636551487
+    },
+    {
+      "frame": "System.Linq!System.Linq.Enumerable.Any(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Func`2<!!0,bool>)",
+      "weighted_thread_ms": 380.9096830968956,
+      "percent": 1.4946046362762475
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryState.ApplyTo(class Chronicles.Game.GameState)",
+      "weighted_thread_ms": 339.9354204320098,
+      "percent": 1.3338307687047035
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.CurrentInventory()",
+      "weighted_thread_ms": 336.6577539672289,
+      "percent": 1.320969936565704
+    },
+    {
+      "frame": "System.Linq!System.Linq.Enumerable.Sum(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Func`2<!!0,!!1>)",
+      "weighted_thread_ms": 228.26491874045496,
+      "percent": 0.8956606276714664
+    }
+  ],
+  "callsites": {
+    "step_children": [
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Decide(class Chronicles.Game.Person)",
+        "weighted_thread_ms": 16500.61153572026,
+        "percent": 64.74471927878861
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Complete(class Chronicles.Game.Person)",
+        "weighted_thread_ms": 5908.325027041068,
+        "percent": 23.182949580717906
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleInventory()",
+        "weighted_thread_ms": 1254.671520987351,
+        "percent": 4.923051199500339
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleEcology()",
+        "weighted_thread_ms": 1065.8583720595961,
+        "percent": 4.18219051703364
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettlePolitics()",
+        "weighted_thread_ms": 633.5020478085662,
+        "percent": 2.4857207358110784
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Maintain(class Chronicles.Game.Person)",
+        "weighted_thread_ms": 42.49740161547743,
+        "percent": 0.16675032508435572
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleKnowledge()",
+        "weighted_thread_ms": 27.423372131819633,
+        "percent": 0.10760319558513347
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettlePeopleDomain()",
+        "weighted_thread_ms": 16.65201039474232,
+        "percent": 0.06533877463275486
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettlePeopleSocial()",
+        "weighted_thread_ms": 16.294033860331183,
+        "percent": 0.0639341545567856
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Observe(class Chronicles.Game.Person,bool)",
+        "weighted_thread_ms": 9.346774514064236,
+        "percent": 0.03667465843706437
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.RecordDecision(class Chronicles.Game.Person)",
+        "weighted_thread_ms": 4.181127561827452,
+        "percent": 0.016405811970865707
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleCultivation()",
+        "weighted_thread_ms": 4.17964176309215,
+        "percent": 0.01639998202802912
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Regenerate()",
+        "weighted_thread_ms": 1.2021599848303595,
+        "percent": 0.004717007644082866
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.RefreshPopulationIndices()",
+        "weighted_thread_ms": 0.8502569784941443,
+        "percent": 0.003336218737606407
+      },
+      {
+        "frame": "<self>",
+        "weighted_thread_ms": 0.05315273374981189,
+        "percent": 0.0002085594717554537
+      }
+    ],
+    "inventory_copy_parents": [
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Apply(class Chronicles.Game.Inventory.InventoryState,class Chronicles.Game.Inventory.InventoryCommand)",
+        "weighted_thread_ms": 4342.094382747067,
+        "percent": 17.037409873227002
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryState.ApplyTo(class Chronicles.Game.GameState)",
+        "weighted_thread_ms": 3914.472326930443,
+        "percent": 15.359516305383712
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.CurrentInventory()",
+        "weighted_thread_ms": 3820.145310241929,
+        "percent": 14.989398131115886
+      }
+    ],
+    "ecology_children": [
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Apply(class Chronicles.Game.Inventory.InventoryState,class Chronicles.Game.Inventory.InventoryCommand)",
+        "weighted_thread_ms": 4257.700526359164,
+        "percent": 16.706267204431928
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.ApplyInventory(class Chronicles.Game.Inventory.InventoryState)",
+        "weighted_thread_ms": 4117.360218037633,
+        "percent": 16.155603136854413
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.CurrentInventory()",
+        "weighted_thread_ms": 3972.6100878519464,
+        "percent": 15.587635911872939
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.GameWorld.EcologyDecisionFor(class Chronicles.Game.Person)",
+        "weighted_thread_ms": 72.02980741362808,
+        "percent": 0.2826288983656744
+      },
+      {
+        "frame": "Chronicles.Game!Chronicles.Game.Ecology.EcologyPlanner.Decide(class Chronicles.Game.Ecology.EcologyDecisionInput)",
+        "weighted_thread_ms": 6.2734450134848885,
+        "percent": 0.024615598969148486
+      },
+      {
+        "frame": "<self>",
+        "weighted_thread_ms": 0.001274164143978851,
+        "percent": 4.9995359043768746e-06
+      }
+    ],
+    "people_any": [
+      {
+        "frame": "Any matching frame (deduplicated per stack)",
+        "weighted_thread_ms": 151.96281855645066,
+        "percent": 0.5962682053905717
+      }
+    ],
+    "json_any": [
+      {
+        "frame": "Any matching frame (deduplicated per stack)",
+        "weighted_thread_ms": 13708.397724708995,
+        "percent": 53.78869507514447
+      }
+    ]
+  },
+  "allocations": {
+    "count": 60730,
+    "sampledAllocationBytes": 8782896856,
+    "top": [
+      {
+        "type": "System.Byte[]",
+        "ticks": 1807,
+        "sampledAllocationBytes": 2473639840
+      },
+      {
+        "type": "System.String",
+        "ticks": 11622,
+        "sampledAllocationBytes": 1254661904
+      },
+      {
+        "type": "<>c__DisplayClass21_0",
+        "ticks": 6966,
+        "sampledAllocationBytes": 742050368
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeEvidence",
+        "ticks": 3482,
+        "sampledAllocationBytes": 371088568
+      },
+      {
+        "type": "System.Int32[]",
+        "ticks": 2588,
+        "sampledAllocationBytes": 276132384
+      },
+      {
+        "type": "System.Text.Json.ArgumentState",
+        "ticks": 2491,
+        "sampledAllocationBytes": 265456752
+      },
+      {
+        "type": "ListWhereIterator`1[Chronicles.Game.Inventory.ProductionJob]",
+        "ticks": 1964,
+        "sampledAllocationBytes": 209303480
+      },
+      {
+        "type": "System.Text.Json.Arguments`4[System.String,System.Int64,System.String,System.Object]",
+        "ticks": 1754,
+        "sampledAllocationBytes": 186917304
+      },
+      {
+        "type": "Chronicles.Game.Inventory.NaturalStock",
+        "ticks": 1743,
+        "sampledAllocationBytes": 185748208
+      },
+      {
+        "type": "System.Func`2[Chronicles.Game.Inventory.ProductionJob,System.Boolean]",
+        "ticks": 1628,
+        "sampledAllocationBytes": 173490504
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeActivity",
+        "ticks": 1461,
+        "sampledAllocationBytes": 155748528
+      },
+      {
+        "type": "Chronicles.Game.DecisionCandidate",
+        "ticks": 1441,
+        "sampledAllocationBytes": 153619152
+      },
+      {
+        "type": "Entry[System.Int64][]",
+        "ticks": 863,
+        "sampledAllocationBytes": 102932600
+      },
+      {
+        "type": "Chronicles.Game.DecisionCandidate[]",
+        "ticks": 936,
+        "sampledAllocationBytes": 99756616
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.PersonalKnowledge",
+        "ticks": 744,
+        "sampledAllocationBytes": 79311920
+      },
+      {
+        "type": "<>c__DisplayClass91_6",
+        "ticks": 689,
+        "sampledAllocationBytes": 73447136
+      },
+      {
+        "type": "Node[System.Collections.Generic.KeyValuePair`2[System.String,System.Int32]]",
+        "ticks": 670,
+        "sampledAllocationBytes": 71431872
+      },
+      {
+        "type": "System.Collections.Generic.HashSet`1[System.Int64]",
+        "ticks": 551,
+        "sampledAllocationBytes": 58704824
+      },
+      {
+        "type": "Chronicles.Game.Person",
+        "ticks": 526,
+        "sampledAllocationBytes": 56068192
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeAdoption",
+        "ticks": 495,
+        "sampledAllocationBytes": 52776896
+      },
+      {
+        "type": "System.Int64",
+        "ticks": 433,
+        "sampledAllocationBytes": 46142624
+      },
+      {
+        "type": "DistinctIterator`1[System.Int64]",
+        "ticks": 429,
+        "sampledAllocationBytes": 45704856
+      },
+      {
+        "type": "System.Int64[]",
+        "ticks": 408,
+        "sampledAllocationBytes": 44345192
+      },
+      {
+        "type": "ArraySelectIterator`2[Chronicles.Game.Knowledge.KnowledgeAdoption,Chronicles.Game.Knowledge.KnowledgeAdoption]",
+        "ticks": 335,
+        "sampledAllocationBytes": 35694968
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeTimeUse",
+        "ticks": 331,
+        "sampledAllocationBytes": 35288840
+      },
+      {
+        "type": "System.Func`2[Chronicles.Game.Item,System.Boolean]",
+        "ticks": 327,
+        "sampledAllocationBytes": 34833632
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.PracticalKnowledge",
+        "ticks": 325,
+        "sampledAllocationBytes": 34636736
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeRules",
+        "ticks": 311,
+        "sampledAllocationBytes": 33159264
+      },
+      {
+        "type": "Chronicles.Game.PlaceObservation",
+        "ticks": 295,
+        "sampledAllocationBytes": 31400624
+      },
+      {
+        "type": "Chronicles.Game.Inventory.NaturalStock[]",
+        "ticks": 288,
+        "sampledAllocationBytes": 31325912
+      }
+    ]
+  },
+  "limitations": [
+    "Managed sampled thread time is not a kernel CPU measurement; GC safepoint/wait time may appear on managed frames. Inclusive percentages overlap and must not be added. Tiny percentages are below stable 100Hz discrimination.",
+    "Single profiled N100 run, warmup2 + measured12 months; no N1000 run and no four-size PASS claim. Diagnostic harness JSON has baseline-shaped schema but this collection is not the formal unprofiled baseline.",
+    "Other compiler/game processes were present at launch, and parent stopped its baseline during this period; absolute times cannot quantify isolated CPU cost or regression.",
+    "GCAllocationTick byte attribution is sampling-estimated, while harness allocatedBytes is the process cumulative managed allocation delta for 12 monthly calls. Allocation types alone do not prove caller attribution.",
+    "GC-start counts near sampled phase endpoints include two harness induced compacting starts; do not read all 545 starts as simulation pause count."
+  ],
+  "sourceHotspots": [
+    {
+      "path": "src/Chronicles.Game/Inventory/InventoryModels.cs",
+      "lines": [
+        20,
+        23,
+        31,
+        34,
+        37,
+        51,
+        53
+      ],
+      "finding": "FromWorld -> Copy+Validate; ApplyTo -> Validate+Copy; Copy serializes and deserializes all items/people/materials/ledger including full Person cognition/history."
+    },
+    {
+      "path": "src/Chronicles.Game/Inventory/InventoryEngine.cs",
+      "lines": [
+        13,
+        17,
+        28,
+        29,
+        52,
+        79,
+        303,
+        304,
+        305
+      ],
+      "finding": "Apply validates input, copies aggregate, validates output; WorldFingerprint serializes the full physical/person authority; Metadata uses SingleOrDefault; CarriedRoots checks metadata up to three times per item."
+    },
+    {
+      "path": "src/Chronicles.Game/Inventory/InventoryValidation.cs",
+      "lines": [
+        14,
+        56,
+        59
+      ],
+      "finding": "Each full validation loops all people and recomputes carried weight by scanning all items and metadata."
+    },
+    {
+      "path": "src/Chronicles.Game/World.InventoryBridge.cs",
+      "lines": [
+        119,
+        121,
+        163,
+        169,
+        188,
+        190,
+        341,
+        346
+      ],
+      "finding": "CurrentInventory builds isolated candidate; command application and accepted write-back add copies/validation; production starts use two Apply calls."
+    },
+    {
+      "path": "src/Chronicles.Game/World.EcologyBridge.cs",
+      "lines": [
+        101,
+        104,
+        111,
+        114,
+        117,
+        119
+      ],
+      "finding": "Actual ecology planner input/decision only0.30% together; offer transaction CurrentInventory/Apply/ApplyInventory dominates its48.76% parent."
+    },
+    {
+      "path": "src/Chronicles.Game/World.cs",
+      "lines": [
+        289,
+        296,
+        308,
+        311,
+        314,
+        317
+      ],
+      "finding": "Measured monthly loop; Decide64.74%, Complete23.18%, SettleInventory4.92%, SettleEcology4.18%, SettlePolitics2.49%; People settlement small in N100."
+    }
+  ],
+  "recommendations": [
+    "First optimize inventory aggregate copy/validation and linear lookup amplification. Preserve input immutability, rejected-transition atomicity, replay receipts, stale-candidate fingerprint, live Person object identity, comparers, conservation and exact deterministic outcomes.",
+    "Use explicit deep-copy/smaller domain projection and operation-local indexes or batched carried-weight validation; do not simply share mutable authority or suppress correctness checks. Measure same source/fixture after each concrete change.",
+    "Do not allocate People batch/index work based on N100 as the primary fix: all People/aptitude-related stacks deduplicated0.60%, SettlePeopleDomain0.0653%, StorePeopleSoul0.0302%, EvaluatePeopleScopes0.0110%. N1000 may differ but was not diagnosed here."
+  ],
+  "productChanges": false,
+  "ledgerChanges": false,
+  "githubChanges": false
+}

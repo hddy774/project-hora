@@ -1,0 +1,25 @@
+{
+  "self_excluded": true,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "c25f38618bd7c0aa0335e7ce1720fd80d5321001765154250d4a9b1249f06f0c",
+      "bytes": 6334
+    },
+    {
+      "path": "acceptance.json",
+      "sha256": "39051ea5444a95b53db9a2b7d53e5d376460751ba8eacfdaea6e2b0f3ab34d1f",
+      "bytes": 14611
+    },
+    {
+      "path": "plan-validation.json",
+      "sha256": "5f0652a8e2b0884a634a45c653bd9708bd4aaca45a5c9de1862e157e84d71102",
+      "bytes": 346
+    },
+    {
+      "path": "status-diff-check.json",
+      "sha256": "de7f2215120cd6dbecc6ed26bab9317f8aa2c7b36e09d17f592ac547cd697200",
+      "bytes": 815
+    }
+  ]
+}

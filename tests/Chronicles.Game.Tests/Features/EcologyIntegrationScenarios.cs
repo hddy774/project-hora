@@ -328,3 +328,24 @@ public sealed class EcologyNativeRemoteLossScenario : IFeatureScenario
             "later arrival cannot retroactively change a source event's witness or reveal its cause");
     }
 }
+
+public sealed class EcologyActualDependentMaturityScenario : IFeatureScenario
+{
+    public string Name => "V021-W02/O04 public ecology: an actual juvenile pine remains dependent after human maturity and changes funded household procurement";
+    public void Run()
+    {
+        var f = new EcologyFixture(livelihood: true, initialFood: 4); f.Send("observe", 0);
+        f.Send("create", 0, data: JsonSerializer.Serialize(new { Name = "실제 영송 피양육자", Species = "spirit-pine" }));
+        var setup = f.World.Checkpoint(); var pine = setup.People.Single(p => p.Species == "spirit-pine");
+        pine.Born = setup.Month - 300; pine.Guardian = f.First; pine.Action = ActionKind.Wait; pine.Due = 10000;
+        f.World = GameWorld.Restore(setup);
+        var offered = f.World.Checkpoint().Items.Single(i => i.Owner == f.Second && i.Definition == "food");
+        f.Send("offer", f.Second, offered.Id, 4); var contract = f.World.Checkpoint().Inventory.Contracts.Single(c => c.Item == offered.Id).Id;
+        f.Send("possess", f.Second); f.World.AdvanceTo(1); var actual = f.World.Checkpoint();
+        EcologyFixture.Check(actual.Inventory.Contracts.Single(c => c.Id == contract).Buyer == f.First &&
+            actual.PeopleDomain.Profiles.Single(p => p.PersonId == pine.Id).Body.Reproduction.MaturityMonths == 600 &&
+            actual.Ecology.Trades.Any(t => t.Contract == contract && t.Buyer == f.First),
+            "the guardian's real planner budgets for the 300-month pine using its saved 600-month maturity and buys actual stock, rather than treating it as a human adult");
+        Invariants.Validate(GameCodec.Decode(GameCodec.Encode(f.World)).Checkpoint());
+    }
+}

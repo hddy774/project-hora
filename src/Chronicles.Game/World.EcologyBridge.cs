@@ -16,7 +16,8 @@ public sealed partial class GameWorld
     };
     private EcologyContext CurrentEcology() => new(Month, Revision, state.People, state.Groups, state.Places, state.Items,
         state.Inventory, state.Events, Law("ecology.foodUse"), CurrentEcologyRules(),
-        new(Law("birth.enabled") != 0, IntLaw("birth.minimumRealm"), Law("birth.maturity"), Law("birth.bothParents") != 0, Law("birth.martialEquivalent") != 0));
+        new(Law("birth.enabled") != 0, IntLaw("birth.minimumRealm"), Law("birth.maturity"), Law("birth.bothParents") != 0, Law("birth.martialEquivalent") != 0),
+        new SortedDictionary<long, long>(state.People.ToDictionary(p => p.Id, PeopleMaturityMonths)));
 
     // Call after inventory initialization in Create/Restore, before later physical consumption is recorded.
     private void InitializeEcology()
@@ -88,7 +89,7 @@ public sealed partial class GameWorld
         }).ToArray();
         var recipes = InventoryDefinitions.Recipes.Values.Where(r => person.Understanding.GetValueOrDefault("recipe:" + r.Id) > 0).OrderBy(r => r.Id, StringComparer.Ordinal)
             .Select(r => new EcologicalRecipe(r.Id, r.Output, r.Quantity, r.Inputs)).ToArray();
-        var dependents = state.People.Count(p => p.Status == LifeStatus.Alive && p.Guardian == person.Id && p.Place == person.Place && Month - p.Born < Law("birth.maturity"));
+        var dependents = state.People.Count(p => p.Status == LifeStatus.Alive && p.Guardian == person.Id && p.Place == person.Place && Month - p.Born < PeopleMaturityMonths(p));
         var planned = person.Plan.FirstOrDefault(step => step.Action == "craft" && recipes.Any(r => r.Id == step.Data));
         var workNeeds = planned is null ? [] : recipes.Single(r => r.Id == planned.Data).Inputs.Select(i => new EcologicalWorkNeed(i.Key, i.Value, planned.Data)).ToArray();
         var view = EcologyEngine.View(context, state.Ecology, person.Id);

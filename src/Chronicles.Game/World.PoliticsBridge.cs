@@ -38,7 +38,8 @@ public sealed partial class GameWorld
     }
 
     private PoliticalContext PoliticsContext() => new(Month, Revision, state.LawRevision,
-        state.People, state.Groups, state.Places, PoliticsRules());
+        state.People, state.Groups, state.Places, PoliticsRules(),
+        new SortedDictionary<long, long>(state.People.ToDictionary(p => p.Id, PeopleMaturityMonths)));
 
     private PoliticalRules PoliticsRules()
     {
@@ -229,14 +230,14 @@ public sealed partial class GameWorld
     private long PoliticsGroupConsent(Person proposer, long group) => groups.TryGetValue(group, out var g) &&
         people.TryGetValue(g.Leader, out var leader) && PoliticsAgreement(proposer, leader) ? leader.Id : 0;
     private bool PoliticsAgreement(Person proposer, Person respondent) => respondent.Status == LifeStatus.Alive &&
-        Month - respondent.Born >= Law("birth.maturity") && (proposer.Id == respondent.Id ||
+        Month - respondent.Born >= PeopleMaturityMonths(respondent) && (proposer.Id == respondent.Id ||
             respondent.Place == proposer.Place && proposer.KnownPeople.Contains(respondent.Id) && respondent.KnownPeople.Contains(proposer.Id) &&
             respondent.Personality[4] + proposer.Personality[4] >= 50);
 
     private long PoliticsSuccessor(Group group)
     {
         var candidates = group.Members.Where(people.ContainsKey).Select(id => people[id]).Where(p =>
-            p.Status == LifeStatus.Alive && Month - p.Born >= Law("birth.maturity"));
+            p.Status == LifeStatus.Alive && Month - p.Born >= PeopleMaturityMonths(p));
         return group.Policies.GetValueOrDefault("승계·인사", 1) switch
         {
             0 => candidates.OrderBy(p => p.Born).ThenBy(p => p.Id).Select(p => p.Id).FirstOrDefault(),

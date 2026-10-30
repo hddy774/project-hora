@@ -1,0 +1,9 @@
+2026-10-30T21:33:09.6871894Z Version: 20261021.618
+2026-10-30T21:33:09.6874470Z Region: westus2
+2026-10-30T21:33:09.6881367Z Image: windows-2025-vs2026
+2026-10-30T21:33:09.6881961Z Version: 20261021.278.1
+2026-10-30T21:33:16.9284760Z HEAD is now at 8a2e9eb Merge 38681979c3692d0fee3d4c857f7e5813df955fe0 into b5526184aebc8152a87abc31a6d66888ed830bea
+2026-10-30T21:34:10.9567186Z Build succeeded.
+2026-10-30T21:34:10.9568547Z     0 Error(s)
+2026-10-30T21:34:14.6275164Z [36;1mif (-not $process.WaitForExit(45000)) { $process.Kill(); throw 'Desktop smoke timeout' }[0m
+2026-10-30T21:34:22.5915289Z {"passed":true,"version":"0.2.1","host":"WPF WebView2","actualRenderAndBridge":true,"diagnostic":"\u0022{\\\u0022hasView\\\u0022:true,\\\u0022error\\\u0022:null,\\\u0022connection\\\u0022:\\\u0022\uC5F0\uACB0\uB428\\\u0022,\\\u0022heading\\\u0022:\\\u0022\uB9CC\uC0C1\uC758 \uD750\uB984\\\u0022,\\\u0022source\\\u0022:\\\u0022https://seonro.local/index.html\\\u0022}\u0022"}

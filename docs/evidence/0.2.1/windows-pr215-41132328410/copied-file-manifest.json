@@ -1,0 +1,58 @@
+[
+  {
+    "path": "windows-job124326069182.log",
+    "origin": "/workspace/scratch/native-pr215-41132328410/windows-job124326069182.log",
+    "bytes": 24678,
+    "sha256": "6180747922fbb7010bdaf6f02f257855d40e0bb350547a8fd8bb0a8ea4a8c40f",
+    "byte_identical": true
+  },
+  {
+    "path": "comparison-pr213-windows-job124321984975.log",
+    "origin": "/workspace/scratch/native-pr215-41132328410/comparison-pr213-windows-job124321984975.log",
+    "bytes": 26071,
+    "sha256": "c9cc28be30feb85328d3abf84e84a01c1ab6484637490bfdf02a51c450de38b8",
+    "byte_identical": true
+  },
+  {
+    "path": "comparison-pr214-windows-job124324550162.log",
+    "origin": "/workspace/scratch/native-pr215-41132328410/comparison-pr214-windows-job124324550162.log",
+    "bytes": 26070,
+    "sha256": "14a525ccead6e9c8691948974f15a24fc3a60a41632553398a402335b693369f",
+    "byte_identical": true
+  },
+  {
+    "path": "diagnostic-summary.json",
+    "origin": "/workspace/scratch/native-pr215-41132328410/diagnostic-summary.json",
+    "bytes": 5739,
+    "sha256": "0af3638a1738e449527df2f5b6a1db0899c36867c761c1f691ae4ebb766ce908",
+    "byte_identical": true
+  },
+  {
+    "path": "excerpt-provenance.json",
+    "origin": "/workspace/scratch/native-pr215-41132328410/excerpt-provenance.json",
+    "bytes": 1278,
+    "sha256": "4724a69825e1cba8858b4f5d22c5d657510c1653c16c017b84bb76226cba5bc5",
+    "byte_identical": true
+  },
+  {
+    "path": "windows-job124326069182.excerpt.txt",
+    "origin": "/workspace/scratch/native-pr215-41132328410/windows-job124326069182.excerpt.txt",
+    "bytes": 945,
+    "sha256": "de34ddb7c4e5a6ca30e084f7616734d6b1b9aa91cccc16fab4b232bab0572266",
+    "byte_identical": true
+  },
+  {
+    "path": "comparison-pr213-windows-job124321984975.excerpt.txt",
+    "origin": "/workspace/scratch/native-pr215-41132328410/comparison-pr213-windows-job124321984975.excerpt.txt",
+    "bytes": 984,
+    "sha256": "330e6468516dffb0303565a19f9c606a7fdd4c529ca6a150bcb0471f3cc12e9b",
+    "byte_identical": true
+  },
+  {
+    "path": "comparison-pr214-windows-job124324550162.excerpt.txt",
+    "origin": "/workspace/scratch/native-pr215-41132328410/comparison-pr214-windows-job124324550162.excerpt.txt",
+    "bytes": 982,
+    "sha256": "f57d408ff5fabb781689a7f0498a4f0275851d7c3652d47cf7ead1c599ca9198",
+    "byte_identical": true
+  }
+]

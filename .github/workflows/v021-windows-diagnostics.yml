@@ -1,0 +1,168 @@
+name: 0.2.1 윈도우 실패 원인 진단
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v021-windows-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+  cancel-in-progress: false
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  windows:
+    name: 고정 소스의 실제 윈도우 화면 진단
+    if: >-
+      ${{ github.repository == 'hddy774/project-hora' &&
+          github.actor == 'hddy774' && github.triggering_actor == 'hddy774' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.label.name == '0.2.1 윈도우 진단 실행' }}
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: 고정 실행 요청 기록
+        shell: pwsh
+        env:
+          EVENT_SHA: ${{ github.sha }}
+          EVENT_PR_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          $result = Join-Path $env:RUNNER_TEMP "v021-windows-diagnostics-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory -Force $result | Out-Null
+          "RESULT_DIR=$result" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
+          @{ schema = 1; requested_utc = [DateTimeOffset]::UtcNow.ToString('o'); measured_source = '35f33db919f910c9d55c42b61b76459a08688d12'; expected_fingerprint = '528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e'; event_sha = $env:EVENT_SHA; event_pr_head = $env:EVENT_PR_HEAD; run_id = $env:GITHUB_RUN_ID; run_attempt = $env:GITHUB_RUN_ATTEMPT; label = '0.2.1 윈도우 진단 실행' } | ConvertTo-Json | Set-Content (Join-Path $result 'request.json') -Encoding utf8
+      - name: 지정한 정확한 제품 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 35f33db919f910c9d55c42b61b76459a08688d12
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 파이썬 실행 환경 설정(Python)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 기존 함수로 실제 소스·지문 확인
+        shell: pwsh
+        run: |
+          @'
+          import importlib.util, json, os, pathlib, subprocess, sys
+          sys.dont_write_bytecode = True
+          spec = importlib.util.spec_from_file_location('release_verify', 'scripts/verify-v021-release.py')
+          verifier = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(verifier)
+          actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          clean = subprocess.check_output(['git', 'status', '--porcelain'], text=True).strip() == ''
+          fp = verifier.fingerprint()
+          record = {'source_commit': actual, 'product_source_fingerprint': fp, 'checkout_clean': clean}
+          pathlib.Path(os.environ['RESULT_DIR'], 'source.json').write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8')
+          if actual != '35f33db919f910c9d55c42b61b76459a08688d12' or fp != '528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e' or not clean:
+              raise SystemExit('고정 소스/지문/clean 조건 불일치')
+          '@ | python -
+          if ($LASTEXITCODE -ne 0) { throw 'Source verification failed' }
+      - name: 고정 개발 도구 설정(.NET 10.0.403)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.403'
+      - name: 실제 개발 도구 버전 기록
+        shell: pwsh
+        run: |
+          $sdk = (dotnet --version).Trim()
+          if ($LASTEXITCODE -ne 0 -or $sdk -ne '10.0.403') { throw 'SDK version mismatch' }
+          $sdk | Set-Content (Join-Path $env:RESULT_DIR 'sdk.txt') -Encoding utf8
+          dotnet --list-runtimes | Set-Content (Join-Path $env:RESULT_DIR 'runtimes.txt') -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'Runtime observation failed' }
+      - name: 기존 릴리스 구성으로 데스크톱 앱 빌드
+        run: dotnet build src/Chronicles.Desktop -c Release
+      - name: 기존 45초 화면 판정과 실패 원문 보존
+        shell: pwsh
+        run: |
+          $diagnostics = Join-Path $env:RESULT_DIR 'diagnostics'
+          New-Item -ItemType Directory -Force $diagnostics | Out-Null
+          $report = Join-Path ([IO.Path]::GetTempPath()) 'seonro-smoke-result.json'
+          Remove-Item $report -Force -ErrorAction SilentlyContinue
+          function Get-WebViewVersions {
+            try {
+            $appId = '{F1E7E06B-78B5-43FE-A9FA-6A304597FAD5}'
+            foreach ($key in @("HKLM:\SOFTWARE\Microsoft\EdgeUpdate\Clients\$appId", "HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\$appId", "HKCU:\SOFTWARE\Microsoft\EdgeUpdate\Clients\$appId")) {
+              $item = Get-ItemProperty -LiteralPath $key -Name pv -ErrorAction SilentlyContinue
+              if ($item.pv) { [ordered]@{ kind = 'registry'; key = $key; version = [string]$item.pv } }
+            }
+            foreach ($base in @(${env:ProgramFiles(x86)}, $env:ProgramFiles, $env:LOCALAPPDATA)) {
+              if (-not $base) { continue }
+              Get-ChildItem -Path (Join-Path $base 'Microsoft/EdgeWebView/Application/*/msedgewebview2.exe') -File -ErrorAction SilentlyContinue | ForEach-Object {
+                [ordered]@{ kind = 'installed-executable'; path = $_.FullName; file_version = $_.VersionInfo.FileVersion; product_version = $_.VersionInfo.ProductVersion }
+              }
+            }
+            } catch { [ordered]@{ kind = 'observation-error'; message = $_.Exception.Message } }
+          }
+          function Get-SmokeProcessState($target) {
+            if ($null -eq $target) { return $null }
+            try {
+              $target.Refresh()
+              $state = [ordered]@{ id = $target.Id; name = $target.ProcessName; has_exited = $target.HasExited }
+              if (-not $target.HasExited) {
+                $state.responding = $target.Responding
+                $state.window_title = $target.MainWindowTitle
+                $state.window_handle = $target.MainWindowHandle.ToInt64()
+                try {
+                  $executable = Get-Item -LiteralPath $target.Path -ErrorAction Stop
+                  $state.executable = $executable.FullName
+                  $state.file_version = $executable.VersionInfo.FileVersion
+                  $state.product_version = $executable.VersionInfo.ProductVersion
+                } catch { $state.version_observation_error = $_.Exception.Message }
+              }
+              return $state
+            } catch { return [ordered]@{ id = $target.Id; observation_error = $_.Exception.Message } }
+          }
+          $observation = [ordered]@{ started_utc = [DateTimeOffset]::UtcNow.ToString('o'); wait_ms = 45000; image = @{ ImageOS = $env:ImageOS; ImageVersion = $env:ImageVersion; RunnerOS = $env:RUNNER_OS }; os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; webview_before = @(Get-WebViewVersions); timed_out = $false; exit_code = $null; collection_errors = @() }
+          $process = $null
+          try {
+            $process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru -RedirectStandardOutput (Join-Path $diagnostics 'stdout.txt') -RedirectStandardError (Join-Path $diagnostics 'stderr.txt')
+            $observation.process_started_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            $observation.process_after_start = Get-SmokeProcessState $process
+            if (-not $process.WaitForExit(45000)) {
+              $observation.timed_out = $true
+              $observation.process_before_kill = Get-SmokeProcessState $process
+              $observation.webview_before_kill = @(Get-Process msedgewebview2 -ErrorAction SilentlyContinue | ForEach-Object { Get-SmokeProcessState $_ })
+              $process.Kill()
+              throw 'Desktop smoke timeout'
+            }
+            $observation.exit_code = $process.ExitCode
+            Get-Content $report
+            if ($process.ExitCode -ne 0) { throw 'Desktop smoke failed' }
+          } catch {
+            $observation.wrapper_error = $_.Exception.Message
+            throw
+          } finally {
+            $observation.ended_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            $observation.process_final = Get-SmokeProcessState $process
+            $observation.webview_after = @(Get-WebViewVersions)
+            $observation.webview_processes = @(Get-Process msedgewebview2 -ErrorAction SilentlyContinue | ForEach-Object { Get-SmokeProcessState $_ })
+            $sources = @($report)
+            $startupLogs = Join-Path $env:LOCALAPPDATA 'SeonroMansangrok/logs/debug/automatic'
+            $sources += @(Get-ChildItem $startupLogs -File -Filter 'debug-auto-*.log' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTimeUtc -ge [DateTimeOffset]::Parse($observation.started_utc).UtcDateTime } | ForEach-Object FullName)
+            $observation.copied_existing_files = @()
+            foreach ($source in $sources) {
+              if (-not (Test-Path -LiteralPath $source -PathType Leaf)) { continue }
+              try {
+                $file = Get-Item -LiteralPath $source
+                Copy-Item -LiteralPath $source -Destination $diagnostics -Force
+                $observation.copied_existing_files += @{ name = $file.Name; last_write_utc = $file.LastWriteTimeUtc.ToString('o'); bytes = $file.Length; sha256 = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant() }
+              } catch { $observation.collection_errors += $_.Exception.Message }
+            }
+            try { $observation | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $diagnostics 'wrapper-observation.json') -Encoding utf8 }
+            catch { Write-Warning ('진단 기록 실패: ' + $_.Exception.Message) }
+          }
+      - name: 성공·실패 진단 원문 업로드
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v021-windows-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/v021-windows-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: error
+          retention-days: 14

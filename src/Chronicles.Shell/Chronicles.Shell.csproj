@@ -2,6 +2,6 @@
   <PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Chronicles.Hosting/Chronicles.Hosting.csproj" />
-    <EmbeddedResource Include="index.html" />
+    <EmbeddedResource Include="index.compat.html" LogicalName="Chronicles.Shell.index.html" />
   </ItemGroup>
 </Project>

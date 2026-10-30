@@ -564,3 +564,21 @@ public sealed class InventoryConsumptionAuditScenario : IFeatureScenario
         InventoryFixture.Check(state.Ledger.Events.Single(e => e.Sequence == audit.Sequence) == audit, "Save changed typed consumption evidence.");
     }
 }
+
+public sealed class InventoryGrowthDoseScenario : IFeatureScenario
+{
+    public string Name => "inventory: paid growth dose retains its consumed physical source and never grants legacy structure work";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); state.People[0].Work = 123;
+        var pill = InventoryFixture.Add(state, "growthPill");
+        InventoryFixture.Accept(ref state, new ConsumeItem("actual-growth-dose", 1, pill));
+        var dose = state.Ledger.Effects.Single(e => e.Kind == "growth");
+        InventoryFixture.Check(state.People[0].Work == 123 && state.Items.All(i => i.Id != pill) && dose.Magnitude == 100 && dose.Start == 0 && dose.End == 2 &&
+            state.Ledger.Events.Any(e => e.Sequence == dose.ConsumptionSequence && e.Subject == pill && e.Kind == "physical-consumption" && e.Quantity == 1),
+            "Growth effect created free legacy progress or lost the actual paid dose.");
+        InventoryFixture.RoundTrip(ref state); state.Month = 1;
+        InventoryFixture.Check(InventoryEngine.ActiveEffects(state, 1, "growth").Count == 1, "Paid dose expired before its next monthly process boundary.");
+        state.Month = 2; InventoryFixture.Check(InventoryEngine.ActiveEffects(state, 1, "growth").Count == 0, "One dose became a permanent process capacity increase.");
+    }
+}

@@ -172,25 +172,5 @@ public sealed partial class GameWorld
     }
 
     private string? Attack(Person p, long id)
-    {
-        if (p.Action != ActionKind.Idle || !people.TryGetValue(id, out var q) || q.Status != LifeStatus.Alive ||
-            q.Id == p.Id || q.Place != p.Place || !p.KnownPeople.Contains(q.Id)) return "전투 조건을 만족하지 않습니다.";
-        var attack = CultivationCombatFor(p).Axes; var defence = CultivationCombatFor(q).Axes;
-        var damage = (int)Math.Clamp(attack.OutputPenetration * 25 / Math.Max(1, defence.ProtectionRecovery), 1, 100);
-        var ward = q.Traits.FirstOrDefault(t => t.Id == "호신부" && t.Active);
-        if (ward is not null) { damage /= 2; q.Traits.Remove(ward); }
-        if (q.Equipment.TryGetValue(3, out var armor)) items[armor].Damage = Math.Min(100, items[armor].Damage + 1);
-        q.Health = Math.Max(0, q.Health - damage);
-        NormalizeInventoryPhysicalState();
-        Gain(p, "combat", 10); Gain(q, "combat", 5);
-        p.Action = ActionKind.Guard; p.Due = Month + 1;
-        if (q.Health == 0) EndLife(q, 2, "전투 사망");
-        else if (q.Personality[6] < 50)
-        {
-            var escape = state.Places[q.Place].Neighbors.FirstOrDefault(n => q.KnownPlaces.Contains(n) && state.Places[n].BlockedUntil <= Month, -1);
-            if (escape >= 0 && q.Action == ActionKind.Idle) Start(q, "travel", escape, "");
-        }
-        Event("전투", p.Id, q.Id, $"{p.Name}→{q.Name} 피해 {damage}·{q.Health} 건강", "실제 전투력/방어");
-        return null;
-    }
+        => ExecuteCombatAttack(p, id);
 }

@@ -110,6 +110,7 @@ public sealed partial class GameWorld
         if (!binding.Accepted) throw new InvalidDataException(binding.Code);
         var birth = binding.State.Births.Single(b => b.BirthId == pregnancy.Id);
         person.Aptitudes = birth.Innate.Foundations.ToArray(); person.Roots = birth.Innate.ElementRoots.ToArray(); person.Species = conception.SpeciesId;
+        if (person.Species != "human") person.Lifespan = SpeciesCatalog.Get(person.Species).BasicLifespanMonths;
         var profile = ApplyPeopleBodyPolicy(PeopleAdapters.FromPerson(person, source)) with { Innate = birth.Innate };
         var reset = SoulTraces.ResetAtBirth(soul, new($"birth.{pregnancy.Id}.trace-reset", SoulTraceActionKind.BirthReset, Month, source, RelatedIdentity: person.Id));
         if (!reset.Accepted) throw new InvalidDataException(reset.Code);

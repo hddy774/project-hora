@@ -1,6 +1,8 @@
 using Chronicles.Game;
 using Chronicles.Game.Cultivation;
 
+namespace Chronicles.Game.Tests;
+
 /// <summary>Explicit functional-test initial conditions. Production restore never repairs inconsistent authority.</summary>
 public static class WorldScenarioFixtures
 {

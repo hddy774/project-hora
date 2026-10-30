@@ -4,6 +4,27 @@ using Chronicles.Game.Knowledge;
 
 namespace Chronicles.Game.Tests.Features;
 
+public sealed class KnowledgeAccessibleSpatialFilterScenario : IFeatureScenario
+{
+    public string Name => "INV-009/024 knowledge: 허가한 실제 매체를 전체수·정렬·페이지 전에 필터하여 바깥 도서를 인지하지 않는다";
+    public void Run()
+    {
+        var authority = KnowledgeFixture.Fresh();
+        for (var id = 1000; id < 1129; id++)
+            KnowledgeFixture.Ok(authority.BindMedium(id, 1, 1, 0, KnowledgeMediumKind.Book, 0,
+                KnowledgeRights.Read, [], false, 0, "외부 실물 검사 " + id));
+        KnowledgeFixture.Ok(authority.BindMedium(9999, 1, 1, 0, KnowledgeMediumKind.Book, 0,
+            KnowledgeRights.Read, [], false, 0, "실제 허가한 휴대 매체"));
+        var before = KnowledgeFixture.Json(authority); var allowed = new HashSet<long> { 9999 };
+        var page = authority.ViewAccessible(1, 0, 0, limit: 1, allowedItems: allowed);
+        KnowledgeFixture.Check(page.Total == 1 && page.Rows is [{ ItemId: 9999 }], "바깥 도서가 첫 페이지나 전체수에 영향을 주었다.");
+        KnowledgeFixture.Check(authority.ViewAccessible(1, 0, 0, offset: 1, allowedItems: allowed).Rows.Count == 0 &&
+            authority.ViewAccessible(1, 0, 0, allowedItems: new HashSet<long>()).Total == 0 &&
+            authority.ViewAccessible(1, 0, 0).Total == 131, "순수 허가 매체 필터나 기존 호출의 권한 계약이 달라졌다.");
+        KnowledgeFixture.Check(KnowledgeFixture.Json(authority) == before, "허가 매체 조회가 권위나 개인 학습을 만들었다.");
+    }
+}
+
 internal static class KnowledgeFixture
 {
     internal const string Work = "craft.solvent";

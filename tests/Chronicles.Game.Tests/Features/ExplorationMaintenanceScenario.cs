@@ -11,7 +11,7 @@ public sealed class ExplorationMaintenanceSpaceScenario : IFeatureScenario
         var ground = floor.World.Checkpoint().Items.Single(i => i.Owner == floor.First && i.Definition == "food" && i.Id != original.Id);
         floor.Send("store", floor.First, ground.Id, data: "ground"); floor.Send("enterSecret", floor.First, 8);
         var health = floor.World.Checkpoint().People.Single(p => p.Id == floor.First).Health;
-        ExplorationFixture.Check(floor.World.View(floor.First).Items.All(i => i.Id != ground.Id), "바깥 바닥 실물을 내부 휴대 재고로 표시했다.");
+        var floorHidden = floor.World.View(floor.First).Items.All(i => i.Id != ground.Id);
         floor.World.AdvanceTo(floor.World.Month + 1); var state = floor.World.Checkpoint();
         ExplorationFixture.Check(state.People.Single(p => p.Id == floor.First).Health == health - 2 &&
             state.Items.Single(i => i.Id == ground.Id).Quantity == ground.Quantity,
@@ -25,6 +25,7 @@ public sealed class ExplorationMaintenanceSpaceScenario : IFeatureScenario
         ExplorationFixture.Check(state.People.Single(p => p.Id == child.Id).Health == childHealth - 2 &&
             family.Food(family.Second) == guardianFood - 1,
             "바깥 아이가 내부 보호자의 실제 휴대 식량을 공간 너머로 소비했다.");
+        ExplorationFixture.Check(floorHidden, "바깥 바닥 실물을 내부 휴대 재고로 표시했다.");
         Invariants.Validate(state);
     }
 }

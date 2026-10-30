@@ -57,11 +57,12 @@ jobs:
       horizon: ${{ steps.stage.outputs.horizon }}
       interval: ${{ steps.stage.outputs.interval }}
       wall_minutes: ${{ steps.stage.outputs.wall_minutes }}
+      wall_file_sha: ${{ steps.stage.outputs.wall_file_sha }}
       input_artifact: ${{ steps.stage.outputs.input_artifact }}
     env:
       METADATA_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.metadata_sha }}
       BUNDLE_PATH: ${{ github.event_name == 'workflow_dispatch' && inputs.bundle_path || 'docs/evidence/0.2.1/growth-sensitivity/inputs' }}
-      WALL_MINUTES: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.wall_minutes) || vars.V021_SENSITIVITY_WALL_MINUTES }}
+      WALL_MINUTES: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.wall_minutes) || '' }}
       WORKFLOW_SOURCE_SHA: ${{ github.workflow_sha }}
     steps:
       - name: 입력 요청과 체크아웃 밖 경로 기록
@@ -77,8 +78,6 @@ jobs:
                      'PRODUCT_FINGERPRINT', 'WORKFLOW_SOURCE_SHA', 'GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'GITHUB_EVENT_NAME']}
           (root / 'provenance/request.json').write_text(json.dumps(request, ensure_ascii=False, indent=2) + '\n')
           assert re.fullmatch('[0-9a-f]{40}', os.environ['METADATA_SHA']), '계획 원본의 정확한 SHA40이 필요합니다'
-          assert re.fullmatch('[0-9]+', os.environ.get('WALL_MINUTES', '')), '기준선 실측 뒤 실행 상한을 먼저 확정하세요'
-          assert 1 <= int(os.environ['WALL_MINUTES']) <= 330, '업로드 시간을 남기는 1~330분 CLI 상한만 허용합니다'
           PY
       - name: 워크플로와 입력 문서 소스 체크아웃
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -90,7 +89,7 @@ jobs:
         id: stage
         run: |
           python3 - <<'PY'
-          import hashlib, json, os, pathlib, shutil, subprocess
+          import hashlib, json, os, pathlib, re, shutil, subprocess
           workspace = pathlib.Path(os.environ['GITHUB_WORKSPACE']).resolve()
           root = pathlib.Path(os.environ['RESULT_DIR'])
           assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() == os.environ['METADATA_SHA']
@@ -99,6 +98,15 @@ jobs:
           assert all(not p.is_symlink() for p in source.rglob('*')), '이동 가능한 실제 파일만 사용합니다'
           target = root / 'inputs'
           shutil.copytree(source, target)
+          wall_bytes = (target / 'cli-wall-minutes.txt').read_bytes()
+          def wall_value(data):
+              assert re.fullmatch(rb'[0-9]+(?:\r?\n)?', data), 'CLI 상한 파일은 순수 ASCII 정수 한 줄이어야 합니다'
+              value = int(data)
+              assert 1 <= value <= 330, '기준선 실측·관찰창에 근거한 1~330분 상한을 먼저 확정하세요'
+              return value
+          wall_minutes = wall_value(wall_bytes)
+          if os.environ['GITHUB_EVENT_NAME'] == 'workflow_dispatch':
+              assert wall_value(os.environ['WALL_MINUTES'].encode('ascii')) == wall_minutes, '수동 상한도 버전 관리된 실제 채택값과 일치해야 합니다'
           plan_bytes = (target / 'plan.json').read_bytes()
           plan = json.loads(plan_bytes)
           assert plan['schemaVersion'] == 1 and plan['kind'] == 'seonro-growth-sensitivity-plan'
@@ -137,7 +145,8 @@ jobs:
           artifact = 'v021-sensitivity-inputs-' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT']
           values = {'metadata_sha': os.environ['METADATA_SHA'], 'plan_sha': digest(plan_bytes),
                     'baseline_sha': digest(baseline_bytes), 'horizon': plan['horizonMonths'],
-                    'interval': plan['observationIntervalMonths'], 'wall_minutes': os.environ['WALL_MINUTES'],
+                    'interval': plan['observationIntervalMonths'], 'wall_minutes': wall_minutes,
+                    'wall_file_sha': digest(wall_bytes),
                     'input_artifact': artifact}
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.writelines(str(k) + '=' + str(v) + '\n' for k, v in values.items())
@@ -179,6 +188,7 @@ jobs:
       HORIZON_MONTHS: ${{ needs.prepare.outputs.horizon }}
       INTERVAL_MONTHS: ${{ needs.prepare.outputs.interval }}
       WALL_MINUTES: ${{ needs.prepare.outputs.wall_minutes }}
+      WALL_FILE_SHA: ${{ needs.prepare.outputs.wall_file_sha }}
       WORKFLOW_SOURCE_SHA: ${{ github.workflow_sha }}
     steps:
       - name: 실제 측정·입력·빌드를 체크아웃 밖에 준비
@@ -255,6 +265,7 @@ jobs:
                     'horizon_months': int(os.environ['HORIZON_MONTHS']), 'observation_interval_months': int(os.environ['INTERVAL_MONTHS']),
                     'metadata_source_commit': os.environ['METADATA_SHA'], 'plan_sha256': os.environ['PLAN_SHA'],
                     'baseline_sha256': os.environ['BASELINE_SHA'], 'wall_minutes': int(os.environ['WALL_MINUTES']),
+                    'wall_minutes_file_sha256': os.environ['WALL_FILE_SHA'],
                     'runtime_environment': {k: v for k, v in os.environ.items() if k.startswith('DOTNET_')},
                     'input_contract': '기존 --sensitivity/--sensitivity-plan/--sensitivity-seed. 기본a·한 잠정법칙·값2개·세 실제seed; 새로운 프로그램/보고서 schema 없음'}
           (root / 'provenance/source.json').write_text(json.dumps(source, ensure_ascii=False, indent=2) + '\n')
@@ -309,6 +320,7 @@ jobs:
                   'seed': int(os.environ['SEED']), 'plan_sha256': os.environ['PLAN_SHA'], 'baseline_sha256': os.environ['BASELINE_SHA'],
                   'started_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'monotonic_started': time.monotonic(),
                   'wall_cap_minutes': int(os.environ['WALL_MINUTES']),
+                  'wall_minutes_file_sha256': os.environ['WALL_FILE_SHA'],
                   'timeout_meaning': '부분/중단은 실패로 보존하며 관찰창·시드·법칙이나 완료 플래그를 바꾸지 않음'}
           (root / 'provenance/process-start.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
           PY

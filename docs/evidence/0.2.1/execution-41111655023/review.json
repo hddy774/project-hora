@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "kind": "seonro-execution-measurement-review-draft",
+  "kind": "seonro-execution-measurement-review",
   "prepared_utc": "2026-10-30T20:07:43.103035+00:00",
   "workflow_run_id": 41111655023,
   "workflow_run_attempt": 1,
@@ -24,6 +24,8 @@
   "release_accepted": false,
   "adoption_applied": false,
   "final_acceptance_owner": "root",
+  "root_acceptance_file": "acceptance-approved.json",
+  "historical_draft_scope": "이 수치 검토와 아래49/111 snapshot은19724b5까지의 초기 기록이다. 후속 루트 승인 H06/H09 상태·근거와 현재52/111은acceptance-approved.json 및 생성 진행도를 따른다. 실측 원본·수치와 전체 성능/릴리스 미수용 범위는 보존한다.",
   "ledger_progress_snapshot": {
     "done": 49,
     "total": 111,

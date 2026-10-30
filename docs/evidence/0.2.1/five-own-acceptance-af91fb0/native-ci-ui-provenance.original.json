@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "kind": "read-only-native-ci-reference",
+  "checked_at_utc": "2026-10-30 19:49:34 UTC",
+  "reported_pr_head": "f3efb36c2b1755dca710dcf110f41baf633145a1",
+  "product_actual_checkout": "b49129f22ac1c5dc3f9d16bef9af9309c1ab63da",
+  "product_actual_tree": "935054ab0ce3cbc3013abf0c31661f13d3d7db23",
+  "api24_actual_checkout": "f3efb36c2b1755dca710dcf110f41baf633145a1",
+  "api24_actual_tree": "ac984d9adf1761f40ea3a6fe6e5a835b82e26ec6",
+  "product_source_fingerprint_from_api24": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "comparison": {
+    "whole_trees_equal": false,
+    "changed_paths": [
+      "docs/architecture/v021-product-boundary.md",
+      "docs/evidence/0.2.1/acceptance-functional-c6e4704.json",
+      "docs/evidence/0.2.1/acceptance-functional-c6e4704.md",
+      "docs/evidence/0.2.1/invariant-execution-map.json",
+      "docs/evidence/0.2.1/invariant-execution-map.md",
+      "docs/evidence/0.2.1/invariant-execution-source-review-c6e4704.json",
+      "docs/evidence/0.2.1/invariant-final-9704e95/map.snapshot.json",
+      "docs/evidence/0.2.1/invariant-final-9704e95/map.snapshot.md",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/README.md",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/execution-verification.json",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/functional.json",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/functional.log",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/negative-input-checks.json",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/provenance.json",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/refresh-self-test.json",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/root-run.original.json",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/supervisor-launch-failure.original.log",
+      "docs/evidence/0.2.1/invariant-final-c6e4704/validator-self-test.json",
+      "docs/plans/v021-canon-map.md"
+    ],
+    "all_changed_files_are_docs": true,
+    "product_fingerprint_recomputed_for_merge": false,
+    "product_equivalence_basis": "Exact GitHub compare has only documentation changes, all excluded by existing product_path; API24 explicitly computes product fingerprint on head."
+  },
+  "product_run": 41109698838,
+  "api24_run": 41109698732,
+  "product_jobs": [
+    {
+      "id": 124248620691,
+      "name": "윈도우 회귀·실제 화면 검증",
+      "conclusion": "success"
+    },
+    {
+      "id": 124248620831,
+      "name": "이식형 제품 검증",
+      "conclusion": "success"
+    },
+    {
+      "id": 124248620999,
+      "name": "안드로이드 빌드·실제 실행 검증",
+      "conclusion": "success"
+    }
+  ],
+  "api24_jobs": [
+    {
+      "id": 124248619303,
+      "name": "API 24 디버그 APK 새 설치·실제 화면 연결",
+      "conclusion": "success"
+    }
+  ],
+  "windows_runtime": {
+    "passed": true,
+    "version": "0.2.1",
+    "host": "WPF WebView2",
+    "actualRenderAndBridge": true,
+    "diagnostic": "\"{\\\"hasView\\\":true,\\\"error\\\":null,\\\"connection\\\":\\\"연결됨\\\",\\\"heading\\\":\\\"만상의 흐름\\\",\\\"source\\\":\\\"https://seonro.local/index.html\\\"}\""
+  },
+  "android35_validator_output": [
+    {
+      "android_actual_install_launch_and_render": true,
+      "core_to_native_bridge": true,
+      "world_view": "만상의 흐름",
+      "version": "0.2.1",
+      "accessibility_text_export": false
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13003896017,
+      "name": "product-evidence",
+      "bytes": 15611,
+      "zip_digest": "sha256:aefdac34c4c9fbb880872f7ce9977b1d63bdf6066fdead71bc36ba42ec1e0096"
+    },
+    {
+      "id": 13003398132,
+      "name": "android-runtime-evidence",
+      "bytes": 146252,
+      "zip_digest": "sha256:67fdbb151afaa96dd268b4505172bb347fdced6b451b4f41cae33cbc068aeb45"
+    },
+    {
+      "id": 13002219289,
+      "name": "android-validation-apk",
+      "bytes": 43111534,
+      "zip_digest": "sha256:4edc0054022bdc3b61285167f3071f7b94e558d855f6dcd84799cc4598bec215"
+    },
+    {
+      "id": 13003740972,
+      "name": "v021-api24-native-evidence-41109698732-1",
+      "bytes": 302406,
+      "zip_digest": "sha256:f582cb243570747efcabcd99a12b01b85563967c39f14cb4d2ad707578b12680"
+    },
+    {
+      "id": 13001669285,
+      "name": "v021-api24-debug-apk-41109698732-1",
+      "bytes": 43113760,
+      "zip_digest": "sha256:c47ac2a7f9b8be248d62c5164136ee80b11a7b89becc43ccdfbf2b3cfc63966b"
+    }
+  ],
+  "limits": [
+    "References collected CI executions on the exact stated checkouts, not a new local native execution.",
+    "No assertion that whole source trees are equal.",
+    "API24 APK is debug-signed fresh install only; no retained certificate or 0.2.0 upgrade claim.",
+    "Different APK builds for API24 and API35; not the official same retained-signed APK release matrix.",
+    "No device performance, physical thermal/power, latest PGO source, publication, or final release claim."
+  ],
+  "functional": {
+    "total": 314,
+    "passed": 314,
+    "failed": 0,
+    "raw_sha256": "e8efad5e51186ca0de571a433e618d38a2f6ad3f41f7808e9d9bb9b94a62d16b"
+  },
+  "api24": {
+    "proof_sha256": "950709ba2a8d847996f070f469da1e7e3f98a8c82dd96fe6c4185490b2e36be5",
+    "source_sha256": "74d8ddd4f063514faec81897b731d34fbf7ccfcbb9c55698c23c546c142d15fc",
+    "webview": "52.0.2743.100",
+    "provider": "Android WebViewFactory actual-load log plus unchanged package versions",
+    "apk_metadata_sha256": "517fc58c101635e63374779f6d7abf5c12e45ae618fe70e36b6c9f464c823383",
+    "reported_apk_sha256": "6ea98d5d3ce82fcfe895129f10e84562093c208d147f3bdb15047adc8023fc5f",
+    "apk_binary_independently_downloaded": false,
+    "referenced_dom_files_sha256_verified": true
+  },
+  "api35": {
+    "actual_api_level_from_job_log": 35,
+    "render": {
+      "rendered": true,
+      "heading": "만상의 흐름",
+      "title": "선로만상록",
+      "version": "0.2.1",
+      "error": null,
+      "connection": "연결됨"
+    },
+    "render_log_sha256": "0645681ccdc416d799a60282fbdaf783b1b2c7ec6499c610ace13c88fab39fd5",
+    "screenshot_sha256": "3c7dbad1c889f13820aa5eadb355d9361c8fbb37b68df303e638748dc5b3510d",
+    "ui_sha256": "8ded39848458c36332922b87b1e6883dfe69c84c4976c6c0a62886b811156652"
+  },
+  "downloaded_file_manifest": {
+    "product/product-boundary.json": {
+      "bytes": 3543,
+      "sha256": "0fc0aff8966ee1344f10dd21a5e31e706b8b1dc738f43332236111b62f82c32f"
+    },
+    "product/product-tests.json": {
+      "bytes": 62855,
+      "sha256": "e8efad5e51186ca0de571a433e618d38a2f6ad3f41f7808e9d9bb9b94a62d16b"
+    },
+    "api24/apk/apk.json": {
+      "bytes": 777,
+      "sha256": "517fc58c101635e63374779f6d7abf5c12e45ae618fe70e36b6c9f464c823383"
+    },
+    "api24/apk/badging.txt": {
+      "bytes": 995,
+      "sha256": "322f0c4814816f7f4d61ad1b4e8ee12d902e2c12317858619728214da258f1dc"
+    },
+    "api24/apk/debug-certificate.txt": {
+      "bytes": 307,
+      "sha256": "1cd0bfc46c9656252427157c5773bf6bd8de4f98e1e8feab621dba8ae2786b58"
+    },
+    "api24/runtime/api24-proof.json": {
+      "bytes": 1117,
+      "sha256": "950709ba2a8d847996f070f469da1e7e3f98a8c82dd96fe6c4185490b2e36be5"
+    },
+    "api24/runtime/device.json": {
+      "bytes": 166,
+      "sha256": "1b7e2d0fe372cc20eeedf8ed2c0745b9782b49c5f7cf4579ace93ba18f3c2139"
+    },
+    "api24/runtime/foreground-final.txt": {
+      "bytes": 7260,
+      "sha256": "3378e005072da73f32ba74173f60a3f4f8fc4f1aa48e0fd633134fa59347382e"
+    },
+    "api24/runtime/fresh/dom-checker.txt": {
+      "bytes": 172,
+      "sha256": "3d5b3294b4ebea2dd0f4955619cc9befeadf654a6f2a782f4ffacec2ab31260e"
+    },
+    "api24/runtime/fresh/dom-proof.json": {
+      "bytes": 172,
+      "sha256": "3d5b3294b4ebea2dd0f4955619cc9befeadf654a6f2a782f4ffacec2ab31260e"
+    },
+    "api24/runtime/fresh/foreground.txt": {
+      "bytes": 7261,
+      "sha256": "21a3a395b1146617acbb8533c4215fcae898b65ecf8bfbdbfdb435fb85ad3ef1"
+    },
+    "api24/runtime/fresh/launch.txt": {
+      "bytes": 221,
+      "sha256": "feb2364a860a2a841e946e1e494a0907bcb1288ddabbac09f85b41b3aeb741b6"
+    },
+    "api24/runtime/fresh/render-log.txt": {
+      "bytes": 42781,
+      "sha256": "e79623f8dab2db442a90943af17ccc3f187066b785972ff5103bffddb18960b2"
+    },
+    "api24/runtime/fresh/screen.png": {
+      "bytes": 150703,
+      "sha256": "744566794980aebfb3325112fb84dd660da523ae9d70bb5783430d41e1d30c57"
+    },
+    "api24/runtime/fresh/ui.xml": {
+      "bytes": 2150,
+      "sha256": "b65dff9ad74682ba844b5b244fc53a5f7a297944daf727821362a6aeb9fbd7a4"
+    },
+    "api24/runtime/install.txt": {
+      "bytes": 32,
+      "sha256": "8cfe21ca9831863004ad6eb25b313f8944786f7a01b291da8fbbe61cc0c847e5"
+    },
+    "api24/runtime/logcat-all.txt": {
+      "bytes": 44108,
+      "sha256": "3697d269211a0cef49622f37ea0ad01431289f865c5325f033b45207c8fb8a2a"
+    },
+    "api24/runtime/screen-final.png": {
+      "bytes": 150703,
+      "sha256": "744566794980aebfb3325112fb84dd660da523ae9d70bb5783430d41e1d30c57"
+    },
+    "api24/runtime/webview-package-after.txt": {
+      "bytes": 2262,
+      "sha256": "49c836ff127671ae29cb82527d4bfa95e8fd8e4a15c4ad54c02e9593808b852b"
+    },
+    "api24/runtime/webview-package-before.txt": {
+      "bytes": 2262,
+      "sha256": "49c836ff127671ae29cb82527d4bfa95e8fd8e4a15c4ad54c02e9593808b852b"
+    },
+    "api24/runtime/webview-service-after.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "api24/runtime/webview-service-before.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "api24/source.json": {
+      "bytes": 733,
+      "sha256": "74d8ddd4f063514faec81897b731d34fbf7ccfcbb9c55698c23c546c142d15fc"
+    },
+    "api35/android-render-log.txt": {
+      "bytes": 204,
+      "sha256": "0645681ccdc416d799a60282fbdaf783b1b2c7ec6499c610ace13c88fab39fd5"
+    },
+    "api35/android-screen.png": {
+      "bytes": 159191,
+      "sha256": "3c7dbad1c889f13820aa5eadb355d9361c8fbb37b68df303e638748dc5b3510d"
+    },
+    "api35/android-ui.xml": {
+      "bytes": 1809,
+      "sha256": "8ded39848458c36332922b87b1e6883dfe69c84c4976c6c0a62886b811156652"
+    }
+  }
+}

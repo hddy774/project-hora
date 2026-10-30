@@ -1,0 +1,54 @@
+{
+  "schema": "seonro.invariant-report-negative-checks.v1",
+  "mapping_source": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "mapped_scenarios": 314,
+  "checks": [
+    {
+      "input": "invariant-final-c6e4704/functional.json",
+      "sha256": "5704c7e50745960585b11b77afb19f844a97991eeda7bfc3be25dece5bd07abe",
+      "selection": "all",
+      "total": 313,
+      "failed": 0,
+      "rejected": true,
+      "reason": "전체 보고서 이름 집합이 실제 등록/매핑과 다릅니다: {\"missing\": [\"INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패\"], \"unregistered\": []}",
+      "scope": "기존313전체는새운송이름1개가없다.",
+      "original_modified": false
+    },
+    {
+      "input": "transport-save-af91fb0/functional.json",
+      "sha256": "16bfb3619e56f9550356f4562512f8aa96d58ed8ca0bdc52d0d7fe0d211f229a",
+      "selection": "INV-004/017 운송 저장:",
+      "total": 1,
+      "failed": 0,
+      "rejected": true,
+      "reason": "선택 실행 보고서로 전체 기능 통과를 주장할 수 없습니다.",
+      "scope": "현재source의선택1은전체314가아니다.",
+      "original_modified": false
+    },
+    {
+      "input": "inventory-oracle-final-integration/whole-functional-068ecef.original.json",
+      "sha256": "d51a75bd9fb1b53261c2b85194d17174debb8914e420e37eb94d6a0d7b8fd53a",
+      "selection": "all",
+      "total": 308,
+      "failed": 3,
+      "rejected": true,
+      "reason": "실패한 실제 검사: [\"inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존\", \"INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests\", \"INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존\"]",
+      "scope": "실제305/308원문에는실패3개가있다.",
+      "original_modified": false
+    },
+    {
+      "input": "memory-only synthetic extra unregistered 315th row",
+      "synthetic": true,
+      "actual_runtime_run": false,
+      "base_input": "invariant-final-af91fb0/functional.json",
+      "mutations": [
+        "total=315",
+        "append one unregistered passed row"
+      ],
+      "rejected": true,
+      "reason": "전체 보고서 이름 집합이 실제 등록/매핑과 다릅니다: {\"missing\": [], \"unregistered\": [\"합성 미등록315 검사 - 실행하지 않음\"]}"
+    }
+  ],
+  "runtime_executions": 0,
+  "scope": "기존검증기에원문/메모리합성입력만넣은정적대조. old/selected 원문변경0."
+}

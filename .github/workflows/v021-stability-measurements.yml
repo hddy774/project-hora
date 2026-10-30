@@ -1,0 +1,424 @@
+# 사후 계획은 완전 기준선 이후 루트가 등록한다. 소유자 라벨 전 실행0.
+name: 0.2.1 장기 안정성 실측 수집
+'on':
+  pull_request:
+    types:
+    - labeled
+permissions:
+  contents: read
+concurrency:
+  group: v021-stability-${{ github.run_id }}-${{ github.run_attempt }}
+  cancel-in-progress: false
+env:
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+  DOTNET_MULTILEVEL_LOOKUP: '0'
+  V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+  V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  stability:
+    name: 고정 소스·실제 파일 저장/재개 장기 안정성
+    if: ${{ github.repository == 'hddy774/project-hora' && github.actor == github.repository_owner && github.triggering_actor == github.repository_owner
+      && github.event.action == 'labeled' && github.event.label.name == '0.2.1 안정성 실측 실행' && github.event.pull_request.head.repo.full_name ==
+      github.repository }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
+      WORKFLOW_SOURCE_SHA: ${{ github.workflow_sha }}
+      REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+      PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+      BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+    steps:
+    - name: 요청 원본 보존·정확한 소스 입력 검증
+      shell: bash
+      run: |
+        python3 - <<'PY'
+        import json, os, pathlib, re
+        temp = pathlib.Path(os.environ['RUNNER_TEMP'])
+        root = temp / f"v021-stability-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}"
+        root.mkdir(parents=True, exist_ok=False)
+        with open(os.environ['GITHUB_ENV'], 'a') as out:
+            out.write('RESULT_DIR=' + str(root) + '\n')
+            out.write('DOTNET_INSTALL_DIR=' + str(temp / 'v021-stability-dotnet') + '\n')
+            out.write('DOTNET_ROOT=' + str(temp / 'v021-stability-dotnet') + '\n')
+            out.write('DOTNET_CLI_HOME=' + str(temp / 'v021-stability-dotnet-home') + '\n')
+        for name in ['tmp', 'inputs', 'assemblies']: (root / name).mkdir()
+        with open(os.environ['GITHUB_ENV'], 'a') as out:
+            for key, value in {'NUGET_PACKAGES': temp / 'v021-stability-nuget', 'NUGET_HTTP_CACHE_PATH': temp / 'v021-stability-nuget-http', 'TMPDIR': root / 'tmp', 'TMP': root / 'tmp', 'TEMP': root / 'tmp'}.items():
+                out.write(f'{key}={value}\n')
+        data = {key: os.environ.get(key) for key in [
+            'SOURCE_SHA', 'WORKFLOW_SOURCE_SHA',
+            'GITHUB_EVENT_NAME', 'GITHUB_REPOSITORY', 'GITHUB_WORKFLOW_REF',
+            'GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'GITHUB_ACTOR',
+            'GITHUB_TRIGGERING_ACTOR', 'REPOSITORY_PRIVATE', 'PLAN_PATH', 'BASELINE_PATH']}
+        (root / 'request.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+        if re.fullmatch(r'[0-9a-f]{40}', os.environ['SOURCE_SHA']) is None:
+            raise SystemExit('브랜치/태그/축약 ref 대신 정확한 소문자 SHA40을 지정해야 합니다.')
+        if os.environ['REPOSITORY_PRIVATE'] != 'false':
+            raise SystemExit('이 수집 경로는 확인한 public 저장소의 표준 러너 사양만 대상으로 합니다.')
+        PY
+    - name: 이벤트에 고정된 실제 소스 가져오기
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        repository: hddy774/project-hora
+        ref: ${{ env.SOURCE_SHA }}
+        fetch-depth: 0
+        persist-credentials: false
+    - name: 격리된 동일 개발 도구 설정(.NET SDK 10.0.403)
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.403
+    - name: 소스 지문·실제 러너 CPU/메모리·실행 환경 보존
+      shell: bash
+      run: |
+        set -o pipefail
+        python3 - <<'PY' 2>&1 | tee "$RESULT_DIR/environment.log"
+        import json, os, pathlib, platform, shutil, subprocess
+        root = pathlib.Path(os.environ['RESULT_DIR'])
+        def run(*args):
+            return subprocess.check_output(args, text=True).strip()
+        def optional(path):
+            p = pathlib.Path(path)
+            return p.read_text().strip() if p.is_file() else None
+        sha = run('git', 'rev-parse', 'HEAD')
+        if sha != os.environ['SOURCE_SHA'] or run('git', 'status', '--porcelain', '--untracked-files=all'):
+            raise SystemExit('실제 HEAD와 입력 SHA가 다르거나 소스가 깨끗하지 않습니다.')
+        sdk = run('dotnet', '--version')
+        (root / 'dotnet-info.txt').write_text(run('dotnet', '--info') + '\n')
+        if sdk != '10.0.403':
+            raise SystemExit(f'실제 SDK {sdk}가 요청한 10.0.403과 다릅니다. 다른 SDK로 대체하지 않습니다.')
+        fingerprint = run('python3', 'scripts/verify-v021-release.py', 'fingerprint', '--commit', sha)
+        if len(fingerprint) != 64 or any(c not in '0123456789abcdef' for c in fingerprint):
+            raise SystemExit('실제 제품 SHA256 지문을 확인하지 못했습니다.')
+        version = pathlib.Path('VERSION').read_text().strip()
+        if version != '0.2.1':
+            raise SystemExit('이번 수집 대상 VERSION은 0.2.1입니다.')
+        meminfo = {a: b.strip() for a, b in (line.split(':', 1) for line in pathlib.Path('/proc/meminfo').read_text().splitlines())}
+        cpu = next((line.split(':', 1)[1].strip() for line in pathlib.Path('/proc/cpuinfo').read_text().splitlines() if line.startswith('model name')), '미상')
+        data = {
+            'source_commit': sha, 'product_source_fingerprint': fingerprint, 'version': version,
+            'product_ci_checks_url': f'https://github.com/hddy774/project-hora/commit/{sha}/checks',
+            'ci_link_scope': '정확 커밋 제품CI 링크이며 이 job의 전체 재실행/CI성공 주장은 아님',
+            'workflow_source_commit': os.environ['WORKFLOW_SOURCE_SHA'], 'sdk': sdk,
+            'dotnet_info': run('dotnet', '--info'), 'os': platform.platform(), 'uname': list(platform.uname()),
+            'runner_name': os.environ.get('RUNNER_NAME'), 'runner_os': os.environ.get('RUNNER_OS'),
+            'runner_arch': os.environ.get('RUNNER_ARCH'), 'image_os': os.environ.get('ImageOS'),
+            'image_version': os.environ.get('ImageVersion'), 'cpu_model': cpu,
+            'os_cpu_count': os.cpu_count(), 'affinity_cpu_count': len(os.sched_getaffinity(0)),
+            'meminfo': meminfo, 'disk_bytes': dict(shutil.disk_usage(root)._asdict()),
+            'cgroup_cpu_max': optional('/sys/fs/cgroup/cpu.max'),
+            'cgroup_memory_max': optional('/sys/fs/cgroup/memory.max'),
+            'thermal_scope': os.environ['V021_THERMAL_STATE'], 'power_scope': os.environ['V021_POWER_STATE'],
+            'runner_class': 'public ubuntu-24.04·공식 표준 4vCPU/16GB·실제 값은 이 기록을 따름',
+            'host_limit': '별도 GitHub VM이며 로컬 기준선과 같은 물리 CPU·열·전원을 보장하지 않음',
+            'measurement_scope': '기존 stability 실제 파일 저장/재개 하네스. PC 결과이며 Android/Unity 수용 근거가 아님'}
+        (root / 'source-environment.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+        with open(os.environ['GITHUB_ENV'], 'a') as out:
+            out.write('PRODUCT_FINGERPRINT=' + fingerprint + '\n')
+            out.write('PRODUCT_VERSION=' + version + '\n')
+        PY
+    - name: 사후 계획·기준선 원문 hash와 같은 입력의 기존 전체 기능 검증
+      shell: bash
+      run: |
+        set -o pipefail
+        python3 - <<'PY' 2>&1 | tee "$RESULT_DIR/preflight.log"
+        import importlib.util,json,os,pathlib,re,shutil,subprocess
+        root=pathlib.Path(os.environ['RESULT_DIR']); checkout=pathlib.Path.cwd().resolve()
+        def run(*args): return subprocess.check_output(args,text=True).strip()
+        def module(name,path):
+            spec=importlib.util.spec_from_file_location(name,path)
+            value=importlib.util.module_from_spec(spec); spec.loader.exec_module(value); return value
+        check=module('release_check','scripts/verify-v021-release.py')
+        validator=module('invariant_check','scripts/validate-v021-invariant-execution.py')
+        assert os.environ.get('RUNNER_ENVIRONMENT')=='github-hosted' and os.environ.get('GITHUB_ACTIONS')=='true'
+        assert os.cpu_count()==4 and len(os.sched_getaffinity(0))==4,'예정한 public 4CPU 러너가 아닙니다.'
+        runtimes=run('dotnet','--list-runtimes'); (root/'dotnet-runtimes.txt').write_text(runtimes+'\n')
+        assert re.search(r'^Microsoft\.NETCore\.App 10\.0\.14 \[',runtimes,re.MULTILINE),'runtime10.0.14가 없습니다.'
+        def tracked(relative):
+            path=(checkout/relative).resolve()
+            assert path.is_relative_to(checkout) and path.is_file()
+            run('git','ls-files','--error-unmatch',str(path.relative_to(checkout))); return path
+        pending={'source_commit':os.environ['SOURCE_SHA'],'product_source_fingerprint':os.environ['PRODUCT_FINGERPRINT'],
+         'plan_path':os.environ['PLAN_PATH'],'baseline_path':os.environ['BASELINE_PATH'],'validation_completed':False,'raw_inputs':[]}
+        for key,name in [('PLAN_PATH','stability-plan.json'),('BASELINE_PATH','baseline.json')]:
+            path=(checkout/os.environ[key]).resolve()
+            item={'path':os.environ[key],'exists':path.is_file()}
+            if path.is_file() and path.is_relative_to(checkout):
+                item['sha256']=check.sha(path); shutil.copyfile(path,root/'inputs'/name)
+            pending['raw_inputs'].append(item)
+        (root/'input-provenance.json').write_text(json.dumps(pending,ensure_ascii=False,indent=2)+'\n')
+        plan_path=tracked(os.environ['PLAN_PATH']); baseline_path=tracked(os.environ['BASELINE_PATH'])
+        baseline=check.read(baseline_path); baseline_sha=check.sha(baseline_path); baseline_rows=check.measurement_rows(baseline)
+        baseline_source=baseline['environment']['sourceCommit']
+        run('git','merge-base','--is-ancestor',baseline_source,os.environ['SOURCE_SHA'])
+        def normalized(value,names):
+            assert isinstance(value,dict)
+            aliases={name.lower():name for name in names}; result={}
+            for key,item in value.items():
+                name=aliases.get(key.lower())
+                assert name is not None and name not in result,'미지원/중복 계획 필드입니다.'
+                result[name]=item
+            assert set(result)==set(names); return result
+        plan=normalized(check.read(plan_path),['schemaVersion','policyId','baselineReportSha256','rationale','cases'])
+        assert type(plan['schemaVersion']) is int and plan['schemaVersion']==1
+        assert plan['policyId']=='v021-revision6-section11-T04' and plan['baselineReportSha256']==baseline_sha
+        assert isinstance(plan['rationale'],str) and plan['rationale'].strip()
+        assert isinstance(plan['cases'],list) and plan['cases']
+        cases=[normalized(case,['population','horizonMonths','checkpointEveryMonths','validateEveryMonths','wallTimeLimitSeconds']) for case in plan['cases']]
+        assert len({case['population'] for case in cases})==len(cases) and any(case['population']==10000 for case in cases)
+        for case in cases:
+            population,horizon,checkpoint,validate=[case[key] for key in ['population','horizonMonths','checkpointEveryMonths','validateEveryMonths']]
+            assert type(population) is int and population in [2,100,1000,10000] and population in baseline_rows
+            assert type(horizon) is int and 12<horizon<2**63
+            assert type(checkpoint) is int and 0<checkpoint<=min(2**31-1,horizon//2)
+            assert type(validate) is int and 0<validate<=checkpoint
+            assert check.finite_number(case['wallTimeLimitSeconds'],positive=True)
+        plan['cases']=cases
+        mapping=check.read(tracked('docs/evidence/0.2.1/invariant-execution-map.json'))
+        actual,test_fingerprint=validator.validate_map(mapping,checkout)
+        full_source=mapping['mapping_source_commit']
+        assert check.fingerprint(full_source)==os.environ['PRODUCT_FINGERPRINT'],'기존 전체 기능과 현재 제품/검사 입력이 다릅니다.'
+        review_path=tracked(f'docs/evidence/0.2.1/invariant-execution-source-review-{full_source[:7]}.json')
+        proof=check.read(review_path)['separate_functional_report']
+        assert proof['executed_source']==full_source and proof['selection']=='all'
+        full_report_path=tracked('docs/evidence/0.2.1/'+proof['path'])
+        assert check.sha(full_report_path)==proof['sha256']
+        validator.validate_report(check.read(full_report_path),{row['name'] for row in actual})
+        assert validator.committed_test_fingerprint(checkout,full_source)==test_fingerprint
+        for path,name in [(plan_path,'stability-plan.json'),(baseline_path,'baseline.json'),
+         (full_report_path,'full-functional.original.json'),(review_path,'full-source-review.original.json')]:
+            shutil.copyfile(path,root/'inputs'/name)
+        record={'source_commit':os.environ['SOURCE_SHA'],'product_source_fingerprint':os.environ['PRODUCT_FINGERPRINT'],
+         'plan_path':os.environ['PLAN_PATH'],'plan_sha256':check.sha(plan_path),'normalized_plan':plan,
+         'baseline_path':os.environ['BASELINE_PATH'],'baseline_sha256':baseline_sha,
+         'baseline_source':baseline_source,'baseline_product_source_fingerprint':check.fingerprint(baseline_source),
+         'full_functional_source':full_source,'full_functional_report_sha256':proof['sha256'],
+         'full_functional_scenarios':len(actual),'test_sources_sha256':test_fingerprint,
+         'validation_completed':True,'scope':'기존 전체 원문과 같은 제품/검사 지문을 대조하며 이번 job은 선택 창세1개만 실행한다.'}
+        (root/'input-provenance.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
+        PY
+    - name: 고정 소스 Release 네 assembly 빌드
+      shell: bash
+      run: |
+        set -o pipefail
+        dotnet build tests/Chronicles.Game.Tests -c Release --artifacts-path "$RESULT_DIR/build" \
+          -p:ContinuousIntegrationBuild=true -p:SourceRevisionId="$SOURCE_SHA" \
+          -p:IncludeSourceRevisionInInformationalVersion=true 2>&1 | tee "$RESULT_DIR/build.log"
+        git status --porcelain --untracked-files=all > "$RESULT_DIR/git-after-build.txt"
+        test ! -s "$RESULT_DIR/git-after-build.txt"
+        python3 - <<'PY'
+        import os, pathlib
+        root = pathlib.Path(os.environ['RESULT_DIR']).resolve()
+        files = list((root / 'build' / 'bin').rglob('Chronicles.Game.Tests.dll'))
+        if len(files) != 1 or not files[0].resolve().is_relative_to(root):
+            raise SystemExit('checkout 밖의 유일한 실제 Tests DLL을 찾지 못했습니다.')
+        with open(os.environ['GITHUB_ENV'], 'a') as out:
+            out.write('TEST_DLL=' + str(files[0]) + '\n')
+            out.write('TEST_DLL_DIR=' + str(files[0].parent) + '\n')
+        PY
+    - name: 실제 네 DLL의 소스 revision·PE 정보·SHA256 검증
+      shell: bash
+      run: |
+        inspector="$RESULT_DIR/pe-inspector"
+        mkdir -p "$inspector" "$RESULT_DIR/assemblies"
+        cat > "$inspector/Inspector.csproj" <<'XML'
+        <Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup></Project>
+        XML
+        cat > "$inspector/Program.cs" <<'CS'
+        using System.Reflection.Metadata;
+        using System.Reflection.PortableExecutable;
+        using System.Runtime.InteropServices;
+        using System.Security.Cryptography;
+        using System.Text.Json;
+        var folder = Path.GetFullPath(args[0]); var sha = args[1]; var version = args[2]; var output = args[3];
+        var rows = new List<object>();
+        foreach (var name in new[] { "Chronicles.Core", "Chronicles.Game", "Chronicles.Hosting", "Chronicles.Game.Tests" })
+        {
+            var path = Path.Combine(folder, name + ".dll");
+            using var stream = File.OpenRead(path); using var pe = new PEReader(stream);
+            var metadata = pe.GetMetadataReader(); var definition = metadata.GetAssemblyDefinition(); string? information = null, configuration = null;
+            foreach (var handle in definition.GetCustomAttributes())
+            {
+                var attribute = metadata.GetCustomAttribute(handle);
+                EntityHandle parent = attribute.Constructor.Kind switch
+                {
+                    HandleKind.MemberReference => metadata.GetMemberReference((MemberReferenceHandle)attribute.Constructor).Parent,
+                    HandleKind.MethodDefinition => metadata.GetMethodDefinition((MethodDefinitionHandle)attribute.Constructor).GetDeclaringType(),
+                    _ => default
+                };
+                if (parent.Kind != HandleKind.TypeReference) continue;
+                var type = metadata.GetTypeReference((TypeReferenceHandle)parent);
+                if (metadata.GetString(type.Namespace) != "System.Reflection") continue;
+                var attributeName = metadata.GetString(type.Name);
+                if (attributeName is not ("AssemblyInformationalVersionAttribute" or "AssemblyConfigurationAttribute")) continue;
+                var value = metadata.GetBlobReader(attribute.Value);
+                if (value.ReadUInt16() != 1) throw new InvalidDataException("잘못된 assembly 정보 형식");
+                if (attributeName == "AssemblyInformationalVersionAttribute") information = value.ReadSerializedString();
+                else configuration = value.ReadSerializedString();
+            }
+            if (metadata.GetString(definition.Name) != name || information != version + "+" + sha || configuration != "Release")
+                throw new InvalidDataException(name + " 실제 DLL의 소스 revision이 고정 소스와 다릅니다: " + information);
+            rows.Add(new { name, version = definition.Version.ToString(), informationalVersion = information, configuration,
+                bytes = new FileInfo(path).Length, sha256 = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(path))) });
+        }
+        File.WriteAllText(output, JsonSerializer.Serialize(new { source_commit = sha, runtime = RuntimeInformation.FrameworkDescription,
+            cpu_count = Environment.ProcessorCount, os = RuntimeInformation.OSDescription,
+            gc_available_memory_bytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes, assemblies = rows }, new JsonSerializerOptions { WriteIndented = true }));
+        if (RuntimeInformation.FrameworkDescription != ".NET 10.0.14")
+            throw new InvalidOperationException("실제 runtime이 기준선의 .NET 10.0.14와 다릅니다: " + RuntimeInformation.FrameworkDescription);
+        CS
+        set -o pipefail
+        dotnet run --project "$inspector/Inspector.csproj" -c Release -- \
+          "$TEST_DLL_DIR" "$SOURCE_SHA" "$PRODUCT_VERSION" \
+          "$RESULT_DIR/assembly-evidence.json" 2>&1 | tee "$RESULT_DIR/assembly-inspector.log"
+        for name in Chronicles.Core Chronicles.Game Chronicles.Hosting Chronicles.Game.Tests; do
+          cp "$TEST_DLL_DIR/$name.dll" "$RESULT_DIR/assemblies/"
+        done
+        cp "$TEST_DLL_DIR/Chronicles.Game.Tests.runtimeconfig.json" "$RESULT_DIR/assemblies/"
+        cp "$TEST_DLL_DIR/Chronicles.Game.Tests.deps.json" "$RESULT_DIR/assemblies/"
+    - name: 선택 창세1개와 기존 안정성 CLI 실행·330분 실제 상한
+      shell: bash
+      run: |
+        python3 - <<'PY'
+        import datetime,json,os,pathlib,subprocess
+        assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()==os.environ['SOURCE_SHA']
+        assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=all'],text=True).strip()
+        root=pathlib.Path(os.environ['RESULT_DIR'])
+        command=['dotnet','exec','--fx-version','10.0.14',os.environ['TEST_DLL'],'--filter','INV-001/002/011',
+         '--report',str(root/'pre.json'),'--stability',str(root/'result.json'),'--stability-plan',os.environ['PLAN_PATH']]
+        (root/'measurement-process.json').write_text(json.dumps({'status':'starting',
+         'started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'command':command,'wall_cap_seconds':330*60,
+         'cap_exit_is_failure':True,'case_time_limits':'검토된 계획의 하네스 값. 외부330분 cap은 이를 바꾸지 않음.',
+         'checkpoint_logs':'0개월·각 실제 파일 checkpoint·끝의 STABILITY 로그를 그대로 보존한다.'},ensure_ascii=False,indent=2)+'\n')
+        PY
+        set +e
+        /usr/bin/time -v -o "$RESULT_DIR/process-resource.txt" timeout --signal=TERM --kill-after=30s 330m \
+         dotnet exec --fx-version 10.0.14 "$TEST_DLL" --filter 'INV-001/002/011' --report "$RESULT_DIR/pre.json" \
+         --stability "$RESULT_DIR/result.json" --stability-plan "$PLAN_PATH" 2>&1 | tee "$RESULT_DIR/measurement.log"
+        statuses=("${PIPESTATUS[@]}")
+        set -e
+        python3 - "$RESULT_DIR" "${statuses[0]}" "${statuses[1]}" <<'PY'
+        import datetime,json,pathlib,sys
+        path=pathlib.Path(sys.argv[1])/'measurement-process.json'; record=json.loads(path.read_text())
+        record.update(status='process-ended',ended_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+         process_exit_code=int(sys.argv[2]),tee_exit_code=int(sys.argv[3]),outer_wall_cap_or_kill=int(sys.argv[2]) in [124,137])
+        path.write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
+        PY
+        test "${statuses[0]}" -eq 0
+        test "${statuses[1]}" -eq 0
+    - name: 종료 코드와 별도로 실제 완료·원래 저장/재개 경계 대조
+      shell: bash
+      run: |
+        set -o pipefail
+        python3 - <<'PY' 2>&1 | tee "$RESULT_DIR/verification.log"
+        import importlib.util,json,os,pathlib,re,subprocess
+        root=pathlib.Path(os.environ['RESULT_DIR'])
+        spec=importlib.util.spec_from_file_location('release_check','scripts/verify-v021-release.py')
+        check=importlib.util.module_from_spec(spec); spec.loader.exec_module(check)
+        inputs=check.read(root/'input-provenance.json')
+        assert check.sha(os.environ['PLAN_PATH'])==inputs['plan_sha256'] and check.sha(os.environ['BASELINE_PATH'])==inputs['baseline_sha256']
+        pre=check.read(root/'pre.json')
+        assert pre['selection']=='INV-001/002/011' and pre['total']==1 and pre['failed']==0
+        assert len(pre['results'])==1 and pre['results'][0]['passed'] is True and not pre['results'][0].get('error')
+        assert pre['results'][0]['name']=='INV-001/002/011 정확한 창세·안정 신원·100지점'
+        report=check.read(root/'result.json'); plan=inputs['normalized_plan']; cases=plan['cases']
+        assert report['schema_version']==1 and report['kind']=='seonro-long-run-stability' and report['policy']==plan['policyId']
+        assert report['baselineReportSha256']==inputs['baseline_sha256'] and report['planSha256']==inputs['plan_sha256']
+        assert report['complete'] is True and report['passed'] is True and report['status']=='completed'
+        assert report['runningPopulation'] is None and report['executionFailure'] is None
+        env=report['environment']
+        assert env['sourceCommit']==os.environ['SOURCE_SHA'] and env['sourceWorktreeClean'] is True
+        assert env['buildConfiguration']=='Release' and env['platform']=='host' and env['engine']=='none'
+        assert env['runtime']=='.NET 10.0.14' and env['precedingFunctionalSelection']=='INV-001/002/011'
+        assert type(env['cpu']) is int and env['cpu']>0 and check.finite_number(env['totalAvailableMemoryBytes'],positive=True)
+        assert all(isinstance(env[key],str) and env[key].strip() for key in ['device','os','architecture','thermalState','powerState','processScope'])
+        rows=report['reports']; populations={case['population'] for case in cases}
+        assert len(rows)==len(cases) and {row['population'] for row in rows}==populations
+        assert len(report['finishedCases'])==len(cases) and set(report['finishedCases'])==populations
+        assert check.finite_number(report['totalElapsedSeconds'],positive=True) and report['totalElapsedSeconds']>=sum(row['elapsedSeconds'] for row in rows)
+        for case in cases:
+            row=next(row for row in rows if row['population']==case['population'])
+            horizon,interval,validation=[case[key] for key in ['horizonMonths','checkpointEveryMonths','validateEveryMonths']]
+            assert row['passed'] is True and row['failure'] is None and row['targetMonths']==horizon and row['completedMonths']==horizon
+            assert check.finite_number(row['elapsedSeconds'],positive=True) and row['elapsedSeconds']<=case['wallTimeLimitSeconds']
+            assert type(row['boundaryChecks']) is int and row['boundaryChecks']>=horizon//validation
+            points=row['checkpoints']
+            assert len(points)>=3 and points[0]['month']==0 and points[-1]['month']==horizon
+            assert all(0<b['month']-a['month']<=interval for a,b in zip(points,points[1:]))
+            for point in points:
+                assert all(point[key] is True for key in ['invariantValid','saveResumeEqual','queryUnchanged','publicCommandAccepted'])
+                assert type(point['people']) is int and point['people']>=case['population']
+                assert type(point['births']) is int and point['births']>=0 and point['people']==case['population']+point['births']
+                assert type(point['deaths']) is int and point['deaths']>=0
+                assert type(point['living']) is int and 0<=point['living']<=point['people']
+                assert re.fullmatch(r'[0-9a-f]{64}',point['hash'])
+                assert all(type(point[key]) is int and point[key]>0 for key in ['saveBytes','retainedManagedBytes'])
+            assert all(row[key]==points[-1][key] for key in ['living','births','deaths']) and row['finalHash']==points[-1]['hash']
+            assert all(a['births']<=b['births'] and a['deaths']<=b['deaths'] for a,b in zip(points,points[1:]))
+            assert type(row['workload']['peopleWithDecisions']) is int and row['workload']['peopleWithDecisions']>0
+        assert not subprocess.check_output(['git','status','--porcelain','--untracked-files=all'],text=True).strip()
+        (root/'collection-verification.json').write_text(json.dumps({'collection_complete':True,
+         'source_commit':os.environ['SOURCE_SHA'],'product_source_fingerprint':os.environ['PRODUCT_FINGERPRINT'],
+         'plan_sha256':inputs['plan_sha256'],'baseline_sha256':inputs['baseline_sha256'],'functional_selection_passed':1,
+         'full_functional_rerun':False,'completed_populations':sorted(populations),
+         'scope':'원래 하네스의 계획/입출력 완료 대조다. 최종 사후 수치예산·릴리스 수용은 별도다.'},ensure_ascii=False,indent=2)+'\n')
+        PY
+    - name: 성공·실패·부분 원문과 실제 slot SHA/크기 manifest 보존
+      shell: bash
+      run: |
+        python3 - <<'PY'
+        import datetime,hashlib,json,os,pathlib,re,shutil,subprocess,time
+        root=pathlib.Path(os.environ['RESULT_DIR']); started=time.monotonic()
+        def sha(path):
+            with path.open('rb') as stream: return hashlib.file_digest(stream,'sha256').hexdigest()
+        slots,errors=[],[]
+        for path in sorted((root/'result-saves').rglob('*')):
+            if path.is_file():
+                try: slots.append({'path':str(path.relative_to(root)),'bytes':path.stat().st_size,'sha256':sha(path)})
+                except OSError as error: errors.append({'path':str(path.relative_to(root)),'error':str(error)})
+        log=root/'measurement.log'
+        lines=re.findall(r'^STABILITY population=\d+ month=\d+/\d+ living=\d+ elapsed=[^\r\n]+',log.read_text(errors='replace'),re.MULTILINE) if log.is_file() else []
+        reports={}
+        for name in ['pre.json','result.json','result.json.pending','measurement-process.json','collection-verification.json']:
+            path=root/name
+            if path.is_file():
+                try:
+                    data=json.loads(path.read_text())
+                    reports[name]={key:data[key] for key in ['status','complete','passed','runningPopulation','finishedCases','executionFailure',
+                     'process_exit_code','tee_exit_code','outer_wall_cap_or_kill','collection_complete'] if key in data}
+                except (ValueError,OSError) as error: reports[name]={'parse_error':str(error),'raw_preserved':True}
+        git=subprocess.run(['git','status','--porcelain','--untracked-files=all'],capture_output=True,text=True)
+        record={'collected_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'slot_files':slots,'slot_errors':errors,
+         'original_checkpoint_console_lines':lines,'report_states':reports,'git_status_exit_code':git.returncode,'git_status':git.stdout,
+         'final_disk_bytes':dict(shutil.disk_usage(root)._asdict()),'manifest_elapsed_seconds':time.monotonic()-started,
+         'save_file_upload':False,'actual_harness_file_io_or_resume_skipped':False,
+         'scope':'큰slot 파일은 삭제/변경하지 않고 최종SHA/크기만 업로드한다. raw진행 보고서·로그는 수정하지 않는다.',
+         'limits':'330분cap은partial/실패 그대로다. runner소실/강제job종료에는 마지막업로드를 보장하지 못한다. slot hash는 종료뒤 별도비용이다.'}
+        (root/'slot-manifest.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
+        paths=list(root.glob('*.json'))+list(root.glob('*.json.pending'))+list(root.glob('*.log'))+list(root.glob('*.txt'))
+        paths+=list((root/'inputs').glob('*'))+list((root/'assemblies').glob('*'))
+        rows=[{'path':str(path.relative_to(root)),'bytes':path.stat().st_size,'sha256':sha(path)} for path in sorted(set(paths)) if path.is_file() and path.name!='artifact-manifest.json']
+        (root/'artifact-manifest.json').write_text(json.dumps(rows,ensure_ascii=False,indent=2)+'\n')
+        with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as output:
+            output.write('고정 소스: '+os.environ['SOURCE_SHA']+'\n\n')
+            output.write('raw/부분JSON·로그·실제slot SHA/크기를 보존하고 큰 저장본문은 업로드에서 제외합니다.\n')
+            output.write('collection-verification.json이 없으면 수집완료가 아닙니다. 최종수치예산/릴리스수용은 별도입니다.\n')
+        if errors or git.returncode or git.stdout.strip(): raise SystemExit('최종 manifest/clean소스 확인 실패. 원문은 보존합니다.')
+        PY
+      if: ${{ always() && env.RESULT_DIR != '' }}
+    - name: 성공·실패·부분 근거 업로드(14일·큰 저장본문 제외)
+      if: ${{ always() && env.RESULT_DIR != '' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: stability-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        path: |
+          ${{ env.RESULT_DIR }}/*.json
+          ${{ env.RESULT_DIR }}/*.json.pending
+          ${{ env.RESULT_DIR }}/*.log
+          ${{ env.RESULT_DIR }}/*.txt
+          ${{ env.RESULT_DIR }}/inputs/*
+          ${{ env.RESULT_DIR }}/assemblies/*
+        if-no-files-found: warn
+        retention-days: 14

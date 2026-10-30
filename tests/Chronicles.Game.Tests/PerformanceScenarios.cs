@@ -13,14 +13,24 @@ internal static partial class PerformanceScenarios
         if (population is { } requested && !SyntheticPopulationFixture.Sizes.Contains(requested)) throw new ArgumentOutOfRangeException(nameof(population));
         var requestedSizes = population is { } single ? new[] { single } : SyntheticPopulationFixture.Sizes.ToArray();
         var reports = new List<object>(); var completedSizes = new List<int>();
+        int? currentPopulation = null; var currentStage = "starting"; var currentMonth = 0;
+        double[] currentSamples = [];
         void SaveProgress() => WriteMeasurementReport(path, new { schema_version = 2, kind = "seonro-population-baseline",
             complete = completedSizes.Order().SequenceEqual(SyntheticPopulationFixture.Sizes), requestedSizes, completedSizes,
             environment, totalElapsedSeconds = total.Elapsed.TotalSeconds, reports,
+            inProgress = new { population = currentPopulation, stage = currentStage, completedMonths = currentMonth, monthlySamplesMs = currentSamples },
             note = "12-month live synthetic baseline; monthly timings exclude fixture/warmup/restore/full collection, total time includes them; retained memory is the collected process managed heap, not cumulative allocations or per-world attribution; numerical budgets follow measurement; partial sizes do not satisfy the final gate; not Android or legacy 100x acceptance." });
         SaveProgress();
         foreach (var size in requestedSizes)
         {
-            reports.Add(MeasurePopulation(size)); completedSizes.Add(size);
+            currentPopulation = size; currentStage = "fixture_and_warmup"; currentMonth = 0; currentSamples = [];
+            SaveProgress(); Console.WriteLine($"PERF-BEGIN {size}: 실제 fixture·독립 예열 시작");
+            reports.Add(MeasurePopulation(size, (month, samples) =>
+            {
+                currentStage = "measuring"; currentMonth = month; currentSamples = samples.ToArray();
+                SaveProgress(); Console.WriteLine($"PERF-MONTH {size}: {month}/12 · {samples[^1]:F1}ms");
+            }));
+            completedSizes.Add(size); currentPopulation = null; currentStage = "completed_population";
             SaveProgress(); // Preserve earlier real measurements even if a later large case is slow or fails.
         }
     }
@@ -32,19 +42,21 @@ internal static partial class PerformanceScenarios
         File.WriteAllText(pending, JsonSerializer.Serialize(report, Options)); File.Move(pending, full, overwrite: true);
     }
 
-    private static object MeasurePopulation(int size)
+    private static object MeasurePopulation(int size, Action<int, IReadOnlyList<double>> progress)
     {
         // A separate frame prevents the preceding population's world/restore snapshot from being retained by this frame.
         var initialHash = Warmup(size);
         var measured = GameWorld.Restore(SyntheticPopulationFixture.Build(size));
         if (measured.StateHash() != initialHash) throw new InvalidOperationException("Independent synthetic fixture builds must match before warmup.");
         var samples = new List<double>(); var openingRetained = CollectedManagedBytes();
-        var allocation = GC.GetTotalAllocatedBytes(); var sw = new Stopwatch();
+        var allocation = 0L; var sw = new Stopwatch();
         for (var month = 1; month <= 12; month++)
         {
+            var beforeAllocation = GC.GetTotalAllocatedBytes();
             sw.Restart(); measured.AdvanceTo(month); sw.Stop(); samples.Add(sw.Elapsed.TotalMilliseconds);
+            allocation += GC.GetTotalAllocatedBytes() - beforeAllocation;
+            progress(month, samples);
         }
-        allocation = GC.GetTotalAllocatedBytes() - allocation;
         // No full checkpoint clone has been created yet; the actual live world remains rooted through this measurement.
         var retained = CollectedManagedBytes(); GC.KeepAlive(measured);
         var final = measured.Checkpoint(); Invariants.Validate(final);
@@ -59,6 +71,7 @@ internal static partial class PerformanceScenarios
             measuredMonths = 12, warmupMonths = 2, repetitions = 1, monthlySamplesMs = samples,
             advance12MonthsMs = samples.Sum(), monthlyP50Ms = (sorted[5] + sorted[6]) / 2, monthlyP95Ms = sorted[11],
             queryMs, saveMs, loadMs, allocatedBytes = allocation, saveBytes = bytes.Length,
+            allocationScope = "sum of process-wide allocation deltas around each actual AdvanceTo; monthly progress JSON and console reporting are excluded",
             openingRetainedManagedBytes = openingRetained, retainedManagedBytes = retained, serializedCognitionBytes = cognitionBytes,
             retainedMemoryScope = "process managed heap after blocking compacting full GC, finalizer drain and second full GC; includes actual rooted world, shared/runtime caches and prior small result rows; excludes RSS/native memory; not a sum of per-person object sizes",
             cognition, observedPeople = view.People.Count, living = final.People.Count(p => p.Status == LifeStatus.Alive),

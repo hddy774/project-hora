@@ -353,8 +353,7 @@
     "native_evidence_provided_separately": true
   },
   "native_ci_evidence": {
-    "source_commit": "f3efb36c2b1755dca710dcf110f41baf633145a1",
-    "source_relationship": "PR196 docs head; actual runtime/test inputs are af91 plus evidence docs. Source labels remain separate.",
+    "source_relationship": "PR196 event head is f3efb36. Product CI jobs actually check out merge b49129f; only 19 docs paths differ and product inputs/fingerprint match, but whole trees are not identical. API24 actually checks out exact f3efb36. These are separate from the af91 functional run.",
     "observation_source": "root direct GitHub run/jobs/step API confirmation in this session; not a new native run by this update",
     "independent_job_log_download_by_this_update": false,
     "runs": [
@@ -392,7 +391,23 @@
             "url": "https://github.com/hddy774/project-hora/actions/runs/41109698838/job/124248620999"
           }
         ],
-        "performance_step": "intentionally skipped; not a performance pass"
+        "performance_step": "intentionally skipped; not a performance pass",
+        "event_head_commit": "f3efb36c2b1755dca710dcf110f41baf633145a1",
+        "actual_checkout_commit": "b49129f22ac1c5dc3f9d16bef9af9309c1ab63da",
+        "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "whole_tree_equal_to_event_head": false,
+        "changed_paths_from_event_head": {
+          "count": 19,
+          "scope": "docs only; no product_path changes as independently checked by UI agent"
+        },
+        "artifact_review_source": "UI agent downloaded and SHA-verified fresh artifacts; root relayed exact checkout and product-equivalence observations",
+        "artifact_product_tests": {
+          "path": "/workspace/scratch/native-ci-f3efb36-41109698/product-tests.json",
+          "sha256": "e8efad5e51186ca0de571a433e618d38a2f6ad3f41f7808e9d9bb9b94a62d16b",
+          "total": 314,
+          "failed": 0,
+          "read_or_downloaded_by_this_update": false
+        }
       },
       {
         "run_id": 41109698732,
@@ -400,12 +415,17 @@
         "platform": "Android emulator API24",
         "conclusion": "success",
         "root_confirmation": "root direct run success confirmation before the 19:34 product-jobs update; exact job/time not supplied",
-        "job_id": null
+        "job_id": null,
+        "event_head_commit": "f3efb36c2b1755dca710dcf110f41baf633145a1",
+        "actual_checkout_commit": "f3efb36c2b1755dca710dcf110f41baf633145a1",
+        "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "whole_tree_equal_to_event_head": true
       }
     ],
     "prior_api24_run_41105101780_relabelled": false,
     "release_certificate_same_apk_upgrade_proven": false,
-    "release_and_upgrade_task": "V021-T06"
+    "release_and_upgrade_task": "V021-T06",
+    "event_head_commit": "f3efb36c2b1755dca710dcf110f41baf633145a1"
   },
   "performance_failure_preserved": {
     "path": "final-performance/first-final-population-af91fb0/assessment.json",

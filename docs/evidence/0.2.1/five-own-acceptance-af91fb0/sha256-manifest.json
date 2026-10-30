@@ -3,13 +3,13 @@
   "files": [
     {
       "path": "README.md",
-      "sha256": "c25f38618bd7c0aa0335e7ce1720fd80d5321001765154250d4a9b1249f06f0c",
-      "bytes": 6334
+      "sha256": "e66bf7b75f093f3542b49da0da622b5b5bfa1e7800d6ffdea1ad05412f62b600",
+      "bytes": 6761
     },
     {
       "path": "acceptance.json",
-      "sha256": "39051ea5444a95b53db9a2b7d53e5d376460751ba8eacfdaea6e2b0f3ab34d1f",
-      "bytes": 14611
+      "sha256": "27bcbc282b0f566b33dbfe6506a0dca7968bf36d79446add7c4462ce07a76f50",
+      "bytes": 16037
     },
     {
       "path": "plan-validation.json",

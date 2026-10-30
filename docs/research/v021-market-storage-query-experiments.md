@@ -5,6 +5,7 @@
 Release 빌드는 경고·오류0개다. 예열·sampler·성능 표본 수집은 실행하지 않았다.
 이 정확성 결과를 측정 결과·채택 판단·Android 통과로 바꾸지 않는다.
 공용 `ExperimentDefinition/ExperimentMeasurement/BackendSample`은 PR147의 준비 schema를 재사용한다.
+[작은 정확성 실행 근거](../evidence/0.2.1/market-storage-query-experiment-correctness.json)는 실제 실행한 세 선택 결과와 실측 미실행을 구분한다.
 
 ## 입력과 실행 경계
 

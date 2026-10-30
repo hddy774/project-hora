@@ -109,13 +109,13 @@ public static class TraitCatalog
         Add("relation.grievance", "구원미해", TraitCategory.Relationship, TraitLayer.Relationship, TraitPurpose.Relationship, TraitFact.ActualGrievance, related: true);
         Add("relation.family", "세교지연", TraitCategory.Relationship, TraitLayer.Relationship, TraitPurpose.Relationship, TraitFact.ActualFamilyRelationship, related: true);
         Add("fortune.good", "길운상조", TraitCategory.Fortune, TraitLayer.Experience, TraitPurpose.Fortune, TraitFact.GoodFortuneEvent,
-            fortune: [new(FortuneEventKind.Discovery, 500)]);
+            fortune: [new(FortuneEventKind.Discovery, 500)], stacking: TraitStacking.Strongest);
         Add("fortune.bad", "액운미산", TraitCategory.Fortune, TraitLayer.Experience, TraitPurpose.Fortune, TraitFact.BadFortuneEvent,
-            fortune: [new(FortuneEventKind.Adversity, 500)]);
+            fortune: [new(FortuneEventKind.Adversity, 500)], stacking: TraitStacking.Strongest);
         Add("fortune.escape", "봉흉유로", TraitCategory.Fortune, TraitLayer.Experience, TraitPurpose.Fortune, TraitFact.EscapeOpportunity,
-            fortune: [new(FortuneEventKind.Escape, 500)]);
+            fortune: [new(FortuneEventKind.Escape, 500)], stacking: TraitStacking.Strongest);
         Add("fortune.encounter", "기연상인", TraitCategory.Fortune, TraitLayer.Experience, TraitPurpose.Fortune, TraitFact.EncounterResonance,
-            fortune: [new(FortuneEventKind.Encounter, 500)], related: true);
+            fortune: [new(FortuneEventKind.Encounter, 500)], related: true, stacking: TraitStacking.Strongest);
         Add("scar.meridian", "경맥구상", TraitCategory.DaoScar, TraitLayer.Body, TraitPurpose.DerivedMarker, TraitFact.MeridianDamage);
         Add("scar.foundation", "도기불온", TraitCategory.DaoScar, TraitLayer.Body, TraitPurpose.DerivedMarker, TraitFact.FoundationDamage);
         Add("scar.elements", "오행실형", TraitCategory.DaoScar, TraitLayer.Body, TraitPurpose.DerivedMarker, TraitFact.ElementImbalance);

@@ -57,6 +57,9 @@ public sealed partial class GameWorld
     internal SocialJudgment PeopleSocialJudgment(Person observer, long subjectId) =>
         Reputation.Judge(state.PeopleDomain.Reputation, new(observer.Id, subjectId, Month));
 
+    internal int PeopleFortuneModifier(Person person, FortuneEventKind eventKind) => Math.Clamp(
+        Traits.ActiveFortune(state.PeopleDomain.Traits, person.Id, Month, eventKind).Sum(e => e.ModifierBasisPoints), -10000, 10000);
+
     internal bool TryPeopleConsentPlan(Person person)
     {
         if (person.Action != ActionKind.Idle || person.Health < 30 || !PeopleProfile(person).Body.Capabilities.Communication) return false;
@@ -363,6 +366,17 @@ public sealed partial class GameWorld
 
     internal int PeopleCognitiveLoad(Person person) => state.PeopleDomain.Reputation.Claims.Count(c => c.ObserverId == person.Id &&
         (c.ExpiresMonth is null || c.ExpiresMonth > Month));
+
+    internal void TrimPeopleCognition(Person person)
+    {
+        var maximum = Math.Min(state.PeopleDomain.ReputationPolicy.MaximumClaimsPerObserver,
+            Math.Min(state.PeopleDomain.Social.Policy.ClaimBudget, Math.Max(1, IntLaw("ai.beliefBudget") / 4)));
+        var claims = state.PeopleDomain.Reputation.Claims;
+        var retained = claims.Where(c => c.ObserverId == person.Id && (c.ExpiresMonth is null || c.ExpiresMonth > Month))
+            .OrderByDescending(c => c.Confidence).ThenByDescending(c => c.ReceivedMonth).ThenBy(c => c.Id, StringComparer.Ordinal).Take(maximum).ToArray();
+        state.PeopleDomain = state.PeopleDomain with { Reputation = new(claims.Where(c => c.ObserverId != person.Id).Concat(retained)
+            .OrderBy(c => c.ObserverId).ThenBy(c => c.Id, StringComparer.Ordinal).ToArray()) };
+    }
 
     // Call immediately after the shared completed-action counter. Unlike its capped 0..100 preference counter,
     // this dated record continues to observe real practice and therefore cannot lapse while practice continues.

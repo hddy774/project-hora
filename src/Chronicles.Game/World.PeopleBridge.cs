@@ -158,6 +158,9 @@ public sealed partial class GameWorld
 
     internal void EndPeopleLife(Person person)
     {
+        foreach (var session in state.PeopleDomain.Social.Sessions.Where(s => s.Status == PeopleSessionStatus.Active &&
+            (s.Proposer == person.Id || s.Recipient == person.Id)).ToArray())
+            CancelPeopleSession(session.Id, "실제 참여자의 현재 육신 상태 종료");
         var soul = EnsurePeopleSoul(souls[person.SoulId]); var id = $"life.{person.Id}.trace-capture";
         if (soul.History.Any(h => h.EventId == id)) return;
         var source = new PeopleSource(id, PeopleSourceKind.SoulTrace, "실제 현생 종료 시점의 기억/지식/행동 근거", Month,

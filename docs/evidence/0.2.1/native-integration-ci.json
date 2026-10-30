@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "kind": "native-integration-ci-snapshot",
+  "repository": "hddy774/project-hora",
+  "version": "0.2.1",
+  "observed_at_utc": "2026-10-30T09:00:11Z",
+  "scope": "Read-only inspection of completed GitHub Actions jobs and relevant log excerpts. This immutable source snapshot is not final-release readiness or qualification of later commits.",
+  "primary": {
+    "pull_request": "https://github.com/hddy774/project-hora/pull/121",
+    "head_commit": "0cfe7e0aa5542fbd96ef3ebf60e4ca26d903e8a1",
+    "tested_checkout_commit": "edf92a53bced2c722a217bc9862a96fa7451aa39",
+    "checkout_ref": "refs/pull/121/merge",
+    "head_and_checkout_tree": "7359730c965b4ec5a5d45c4a086c8d098ff8616f",
+    "head_and_checkout_trees_equal": true,
+    "run_id": 41029195356,
+    "run_number": 147,
+    "run_url": "https://github.com/hddy774/project-hora/actions/runs/41029195356",
+    "workflow": ".github/workflows/v021-product.yml",
+    "status": "completed",
+    "conclusion": "success",
+    "committed_assets": {
+      "packaging_commit": "e742923137596bdf4864af229cbf93c85f05a93d",
+      "packaging_commit_is_head_ancestor": true,
+      "asset": "src/Chronicles.Shell/index.compat.html",
+      "target": "chrome51",
+      "verification": "node scripts/build-shell-assets.mjs --check",
+      "authoring_sha256": "ffa2f21285184e6c7e71fdee08b1b71653370beeb82e8d50751ffba49e6ecb2b",
+      "verified_log_at_utc": "2026-10-30T08:55:29.1478547Z",
+      "android_reference": "src/Chronicles.Android/Chronicles.Android.csproj:21 AndroidAsset index.compat.html linked as index.html",
+      "windows_reference": "src/Chronicles.Desktop/Chronicles.Desktop.csproj:11 EmbeddedResource index.compat.html linked as GameShell.html"
+    },
+    "portable": {
+      "job_id": 123974554155,
+      "url": "https://github.com/hddy774/project-hora/actions/runs/41029195356/job/123974554155",
+      "conclusion": "success",
+      "functional_result": "198/198",
+      "result_log_at_utc": "2026-10-30T08:59:34.3514432Z",
+      "shell_build": { "passed": true, "warnings": 0, "errors": 0 }
+    },
+    "windows": {
+      "job_id": 123974554345,
+      "url": "https://github.com/hddy774/project-hora/actions/runs/41029195356/job/123974554345",
+      "conclusion": "success",
+      "build": { "passed": true, "warnings": 0, "errors": 0 },
+      "native_step": "Desktop actual render and bridge",
+      "native_step_number": 7,
+      "log_at_utc": "2026-10-30T08:56:46.4967844Z",
+      "native_report": {
+        "passed": true,
+        "version": "0.2.1",
+        "host": "WPF WebView2",
+        "actualRenderAndBridge": true,
+        "decoded_diagnostic": {
+          "hasView": true,
+          "error": null,
+          "connection": "연결됨",
+          "heading": "만상의 흐름",
+          "source": "https://seonro.local/index.html"
+        }
+      },
+      "legacy_performance_step": "skipped"
+    },
+    "android": {
+      "job_id": 123974554396,
+      "url": "https://github.com/hddy774/project-hora/actions/runs/41029195356/job/123974554396",
+      "conclusion": "success",
+      "emulator": { "api": 35, "target": "default", "architecture": "x86_64", "profile": "pixel_6" },
+      "build": { "passed": true, "warnings": 0, "errors": 0 },
+      "native_step": "Install and launch Android app",
+      "native_step_number": 11,
+      "package": "org.hora.xianxiaobserver",
+      "apk": "src/Chronicles.Android/bin/Release/net10.0-android/org.hora.xianxiaobserver-Signed.apk",
+      "install": { "result": "Success", "log_at_utc": "2026-10-30T08:58:11.9108913Z" },
+      "launch": { "result": "Starting: Intent", "activity": "crc649632d1cee893af2a.MainActivity", "log_at_utc": "2026-10-30T08:58:12.1507145Z" },
+      "native_render_log_timestamp": "10-30 08:58:23.471",
+      "render_log_captured_at_utc": "2026-10-30T08:58:32.3114285Z",
+      "render_report": {
+        "rendered": true,
+        "heading": "만상의 흐름",
+        "title": "선로만상록",
+        "version": "0.2.1",
+        "error": null,
+        "connection": "연결됨"
+      },
+      "checker": {
+        "script": "scripts/verify-android-ui.py",
+        "log_at_utc": "2026-10-30T08:58:34.6108650Z",
+        "android_actual_install_launch_and_render": true,
+        "core_to_native_bridge": true,
+        "accessibility_text_export": false,
+        "accessibility_scope": "The accessibility tree exposed the foreground app WebView; visible DOM and GameSession reply were verified by the native render report. Full accessibility text export is not claimed."
+      },
+      "runtime_artifact": {
+        "id": 12965482065,
+        "name": "android-runtime-evidence",
+        "url": "https://github.com/hddy774/project-hora/actions/runs/41029195356/artifacts/12965482065",
+        "archive_sha256": "d38254e2090eae1d14bad4c54d4eb4f99da8ef3d45df957da78e7dba1ce45087",
+        "expires_at_utc": "2026-11-02T08:58:38Z"
+      }
+    }
+  },
+  "historical_comparison": {
+    "scope": "Separate earlier run; its results do not substitute for the primary source snapshot.",
+    "pull_request": "https://github.com/hddy774/project-hora/pull/120",
+    "head_commit": "4660a9d59d969a7eda2542322b1818989341f09e",
+    "tested_checkout_commit": "327fa5ff63e82bbfab3c9bf86c7e44bf20aa4e5a",
+    "checkout_ref": "refs/pull/120/merge",
+    "tested_checkout_tree": "7eee64342e94a1a27542dc8e85d07b13531c3a4e",
+    "run_id": 41028675361,
+    "run_number": 139,
+    "run_url": "https://github.com/hddy774/project-hora/actions/runs/41028675361",
+    "conclusion": "success",
+    "jobs": [
+      { "name": "portable", "id": 123972865382, "url": "https://github.com/hddy774/project-hora/actions/runs/41028675361/job/123972865382", "conclusion": "success", "functional_result": "194/194" },
+      { "name": "windows-regression", "id": 123972865663, "url": "https://github.com/hddy774/project-hora/actions/runs/41028675361/job/123972865663", "conclusion": "success", "actualRenderAndBridge": true },
+      { "name": "android", "id": 123972865127, "url": "https://github.com/hddy774/project-hora/actions/runs/41028675361/job/123972865127", "conclusion": "success", "api": 35, "android_actual_install_launch_and_render": true, "core_to_native_bridge": true }
+    ]
+  },
+  "failure_review": {
+    "primary_failed_jobs": [],
+    "primary_checker_failure": false,
+    "checker_expected_version": "Read from committed VERSION; no old-version literal is used.",
+    "older_pr115_run": "https://github.com/hddy774/project-hora/actions/runs/41027223636",
+    "older_pr115_scope": "Head 746fb4b7211bd03ecba18b81d319264aa3b63ec5, before packaging commit e742923. Windows and Android succeeded; portable was 172/183 with strict currency-origin errors in older agent-planning fixtures. These are historical failures, not failures of the primary run."
+  },
+  "not_proven_by_this_evidence": [
+    "Actual Android API 24 installation, rendering, and bridge operation.",
+    "Retained publisher certificate, final release signing, or same retained-signed APK on API 24 and 35.",
+    "In-place upgrade from the retained v0.2.0 release and preservation of its saved source.",
+    "Final feature acceptance, later source commits, performance, profiling, population growth, soak, or publication readiness."
+  ],
+  "audit_actions": {
+    "read_only_ci_inspection": true,
+    "reruns_triggered": false,
+    "native_execution_triggered": false,
+    "performance_execution_triggered": false,
+    "signing_or_release_triggered": false,
+    "secrets_or_full_logs_included": false
+  }
+}

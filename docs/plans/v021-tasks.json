@@ -11,7 +11,7 @@
     "review_source_path": "docs/plans/reviews/v021-claude-review-2026-10-30.md",
     "review_source_commit": "f0f2ba39b67e3fe8fa034a38dde8d23d1a3711d0",
     "review_provenance": "user_supplied_verbatim_document; LF normalized; no independent Claude API verification",
-    "product_code_changed": false,
+    "product_code_changed": true,
     "version_file_changed": true,
     "review_source_sha256": "470bb05dc6b7a195c5f8ac7b6998b8a1d184967d8131f803f7acf131618e0598",
     "decision_record": "docs/plans/v021-decisions.md"
@@ -1705,7 +1705,7 @@
       "title": "0.2.0 편입·코드 통합 기준선",
       "deps": [],
       "acceptance": "원래 55개 요구의 대응·실제 SHA·출처를 고정, 0.2.0 선출시 의존 제거",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1714,7 +1714,13 @@
       "milestone": "M1",
       "minimal_scope": "고정 코드/문서 출처와 기존 기준선 선정",
       "later_scope": "원래 55개 요구의 대응·실제 SHA·출처를 고정, 0.2.0 선출시 의존 제거",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -1733,7 +1739,7 @@
         "V021-A01"
       ],
       "acceptance": "사용자 변경 우선·Canon/제안/미정·기존 AGENTS/manifest·품질/생식/명칭 정합화",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1742,7 +1748,13 @@
       "milestone": "M2",
       "minimal_scope": "확정 규칙·미결 Q·최소 매개변수 자료형/출처 원장",
       "later_scope": "사용자 변경 우선·Canon/제안/미정·기존 AGENTS/manifest·품질/생식/명칭 정합화",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -1763,7 +1775,7 @@
         "V021-H01"
       ],
       "acceptance": "신원·권리·조회·명령·원자 전이의 단일 소유와 계약 고정 · 1단계 ID/정수 시간/RNG/슬롯 세대, 2단계 명령/DTO/원자 전이 산출물을 분리 기록",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1772,7 +1784,13 @@
       "milestone": "M2",
       "minimal_scope": "ID/정수시간/RNG/세대 및 최소 명령/DTO 계약",
       "later_scope": "신원·권리·조회·명령·원자 전이의 단일 소유와 계약 고정 · 1단계 ID/정수 시간/RNG/슬롯 세대, 2단계 명령/DTO/원자 전이 산출물을 분리 기록",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -1793,7 +1811,7 @@
         "V021-A03"
       ],
       "acceptance": "품계·경계·배율의 전 사용처와 형질/완성품 표시 이행",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1804,7 +1822,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "품계·경계·배율의 전 사용처와 형질/완성품 표시 이행",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -1823,7 +1847,7 @@
         "V021-B01"
       ],
       "acceptance": "서적·법보 등의 실제 결손과 점수 경계를 혼동하지 않음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1834,7 +1858,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "서적·법보 등의 실제 결손과 점수 경계를 혼동하지 않음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -1854,7 +1884,7 @@
         "V021-H05"
       ],
       "acceptance": "출생/사망/윤회·안정 ID·슬롯 재사용·가족 참조 무결성",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1865,7 +1895,13 @@
       "milestone": "M2",
       "minimal_scope": "시조2명·출생1회를 담는 동적 인구/신원",
       "later_scope": "출생/사망/윤회·안정 ID·슬롯 재사용·가족 참조 무결성",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -1898,7 +1934,7 @@
         "V021-K02"
       ],
       "acceptance": "2명 모두 반선·종문0·숨은 주민0·자원/지식 출처·후대 금단/혈연 판정의 현재/대기/차단/미판정 구분",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-02"
@@ -1911,7 +1947,13 @@
       "milestone": "M2",
       "minimal_scope": "반선2명·종문0·출처 있는 최소 세계",
       "later_scope": "2명 모두 반선·종문0·숨은 주민0·자원/지식 출처·후대 금단/혈연 판정의 현재/대기/차단/미판정 구분",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -1935,7 +1977,7 @@
         "V021-O01"
       ],
       "acceptance": "인구·노동·식량 회계, 자연 성립 시설과 집계/개체 중복 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1946,7 +1988,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "인구·노동·식량 회계, 자연 성립 시설과 집계/개체 중복 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -1966,7 +2014,7 @@
         "V021-L01"
       ],
       "acceptance": "상호 의사·관계 변화·생식/양육/소속의 분리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1977,7 +2025,13 @@
       "milestone": "M2",
       "minimal_scope": "상호 의사·관계·생식/양육 분리",
       "later_scope": "상호 의사·관계 변화·생식/양육/소속의 분리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2002,7 +2056,7 @@
         "V021-W01"
       ],
       "acceptance": "기본 금단 출산·양친 자격/법칙 revision·부담·한 번의 결과·새 인구/영혼 배정",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-11"
@@ -2015,7 +2069,13 @@
       "milestone": "M2",
       "minimal_scope": "실제 두 시조의 출생1회·인구/Body/Person/Soul 단일 전이·저장/복원, 미시험 분기는 미검증",
       "later_scope": "기본 금단 출산·양친 자격/법칙 revision·부담·한 번의 결과·새 인구/영혼 배정",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2044,7 +2104,7 @@
         "V021-J01"
       ],
       "acceptance": "부모 원형/태내/발달·출처·변이/각인, 출생 전 미배정 영혼 영향 없음·재추첨0",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2055,7 +2115,13 @@
       "milestone": "M2",
       "minimal_scope": "부모 원형으로 한 번 생성하는 유전 결과·태내/영혼 배정 경계",
       "later_scope": "부모 원형/태내/발달·출처·변이/각인, 출생 전 미배정 영혼 영향 없음·재추첨0",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2076,7 +2142,7 @@
         "V021-K02"
       ],
       "acceptance": "부양 시간/재원·성장·가문 성립·입양·유산·직책 승계의 분리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-06"
@@ -2089,7 +2155,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "부양 시간/재원·성장·가문 성립·입양·유산·직책 승계의 분리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2112,7 +2184,7 @@
         "V021-P01"
       ],
       "acceptance": "5영근 세부 값·유전 입력·후천 성장·현재 경지 분리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2123,7 +2195,13 @@
       "milestone": "M2",
       "minimal_scope": "창세/출생에 쓰는 최소 오행 영근·원형 출처",
       "later_scope": "5영근 세부 값·유전 입력·후천 성장·현재 경지 분리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2143,7 +2221,7 @@
         "V021-R05"
       ],
       "acceptance": "흡수/정제/순환/체화·구조·부하·오행조화·진척의 인과",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2154,7 +2232,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "흡수/정제/순환/체화·구조·부하·오행조화·진척의 인과",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2174,7 +2258,7 @@
         "V021-P02"
       ],
       "acceptance": "감응 입문·조건별 병목·자원/공정·단약 보조·실패/안착",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2185,7 +2269,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "감응 입문·조건별 병목·자원/공정·단약 보조·실패/안착",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2205,7 +2295,7 @@
         "V021-R03"
       ],
       "acceptance": "경지별 고유 기반·형성/현재 성장·출처·잠정 상위값 연결",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2216,7 +2306,13 @@
       "milestone": "M2",
       "minimal_scope": "금단 이상 자격의 타입/경계 판정, 10경지 전 성장 아님",
       "later_scope": "경지별 고유 기반·형성/현재 성장·출처·잠정 상위값 연결",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2239,7 +2335,7 @@
         "V021-R01"
       ],
       "acceptance": "오행 공급·탁도·점유·분배·거점 판단의 실제 자원 보존",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2250,7 +2346,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "오행 공급·탁도·점유·분배·거점 판단의 실제 자원 보존",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2270,7 +2372,7 @@
         "V021-B04"
       ],
       "acceptance": "원인별 손상·재성장·총 기간/품질/위험·전략 차이 검사",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2281,7 +2383,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "원인별 손상·재성장·총 기간/품질/위험·전략 차이 검사",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2302,7 +2410,7 @@
         "V021-W02"
       ],
       "acceptance": "절대/상대·권역/종족/경지·연령/성장 상태·재평가·공석 판정",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2313,7 +2421,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "절대/상대·권역/종족/경지·연령/성장 상태·재평가·공석 판정",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2334,7 +2448,7 @@
         "V021-N01"
       ],
       "acceptance": "실제 값/정보 출처·AI 판단·숨은 천교와 전지적 누출 분리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2345,7 +2459,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "실제 값/정보 출처·AI 판단·숨은 천교와 전지적 누출 분리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2366,7 +2486,7 @@
         "V021-B01"
       ],
       "acceptance": "성장·돌파·전투 기여·수명·수선 병행·생활/생애 연결",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-11"
@@ -2379,7 +2499,13 @@
       "milestone": "M2",
       "minimal_scope": "무인 자격 접점과 미결 감지, 무인 전체 성장 아님",
       "later_scope": "성장·돌파·전투 기여·수명·수선 병행·생활/생애 연결",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2399,7 +2525,7 @@
         "V021-B01"
       ],
       "acceptance": "종족/몸/호칭 분리·생식 프로필·서식/자원·사회/기예 참여",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2410,7 +2536,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "종족/몸/호칭 분리·생식 프로필·서식/자원·사회/기예 참여",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2431,7 +2563,7 @@
         "V021-N01"
       ],
       "acceptance": "양육·생계·수행·관계·기예·정치·교역과 실제 정보·시간·교착 대응",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2442,7 +2574,13 @@
       "milestone": "M2",
       "minimal_scope": "두 인물의 인지 기반 최소 의사/행동 접점, 전체 AI 아님",
       "later_scope": "양육·생계·수행·관계·기예·정치·교역과 실제 정보·시간·교착 대응",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2464,7 +2602,7 @@
         "V021-A03"
       ],
       "acceptance": "주별 10개·안정 ID·통로·층천/시설의 중복 없는 개수",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2475,7 +2613,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "주별 10개·안정 ID·통로·층천/시설의 중복 없는 개수",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2496,7 +2640,7 @@
         "V021-P03"
       ],
       "acceptance": "도시+비경+시장 공존, 운영 주체·시설 성립·원천 검사",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2507,7 +2651,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "도시+비경+시장 공존, 운영 주체·시설 성립·원천 검사",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2529,7 +2679,7 @@
         "V021-S01"
       ],
       "acceptance": "최고 주권/봉신/종문/개인 권리의 구분·충돌/이전 검사",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2540,7 +2690,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "최고 주권/봉신/종문/개인 권리의 구분·충돌/이전 검사",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2560,7 +2716,7 @@
         "V021-M01"
       ],
       "acceptance": "체류/이동·폐쇄/우회·도착·인구와 소유물 중복 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2571,7 +2727,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "체류/이동·폐쇄/우회·도착·인구와 소유물 중복 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2593,7 +2755,7 @@
         "V021-N01"
       ],
       "acceptance": "정보·조건·진척·위험·동시 선점·유한 보상 재처리 검사",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2604,7 +2766,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "정보·조건·진척·위험·동시 선점·유한 보상 재처리 검사",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2627,7 +2795,7 @@
         "V021-P01"
       ],
       "acceptance": "시간 용량·실소비·중단/회수·실패·결과 원자 정산",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2638,7 +2806,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "시간 용량·실소비·중단/회수·실패·결과 원자 정산",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2659,7 +2833,7 @@
         "V021-L01"
       ],
       "acceptance": "초기/부모/스승/서적/도제·지식과 숙련·무료 경험 방지",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2670,7 +2844,13 @@
       "milestone": "M2",
       "minimal_scope": "초기 지식/매체·학습 접점, 무료 숙련 없음",
       "later_scope": "초기/부모/스승/서적/도제·지식과 숙련·무료 경험 방지",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2693,7 +2873,7 @@
         "V021-R03"
       ],
       "acceptance": "실제 재료→제작→보관/판매/복용·성장/돌파/치료 효과",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2704,7 +2884,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "실제 재료→제작→보관/판매/복용·성장/돌파/치료 효과",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2724,7 +2910,7 @@
         "V021-I03"
       ],
       "acceptance": "재료→법보/도구·수리·장착, 본명법보 계약 보존",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2735,7 +2921,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "재료→법보/도구·수리·장착, 본명법보 계약 보존",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2754,7 +2946,7 @@
         "V021-K02"
       ],
       "acceptance": "실제 제작·판매·사용 사건·횟수·효과·중복 방지",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2765,7 +2957,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "실제 제작·판매·사용 사건·횟수·효과·중복 방지",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2786,7 +2984,7 @@
         "V021-R05"
       ],
       "acceptance": "설치권·범위·유지/보수/해체·실제 영기 공급/방어",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2797,7 +2995,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "설치권·범위·유지/보수/해체·실제 영기 공급/방어",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2817,7 +3021,7 @@
         "V021-M02"
       ],
       "acceptance": "영농·채집·채광·의술·감정·탐색·교역/운송의 대표 순환",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2828,7 +3032,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "영농·채집·채광·의술·감정·탐색·교역/운송의 대표 순환",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2850,7 +3060,7 @@
         "V021-N01"
       ],
       "acceptance": "실물·주체·재고·예약·자금·현지 원자 거래",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2861,7 +3071,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "실물·주체·재고·예약·자금·현지 원자 거래",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2888,7 +3104,7 @@
         "V021-K01"
       ],
       "acceptance": "가계/개인/조직 수요·품질·용량·지역 가격 반응",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2899,7 +3115,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "가계/개인/조직 수요·품질·용량·지역 가격 반응",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2919,7 +3141,7 @@
         "V021-M04"
       ],
       "acceptance": "운송 중 소유·비용·인도/실패/반환·노동 검사",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2930,7 +3152,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "운송 중 소유·비용·인도/실패/반환·노동 검사",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2949,7 +3177,7 @@
         "V021-E01"
       ],
       "acceptance": "중복/무자금 방지·동시 종료·유찰/반환/사망 처리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2960,7 +3188,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "중복/무자금 방지·동시 종료·유찰/반환/사망 처리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -2989,7 +3223,7 @@
         "V021-K07"
       ],
       "acceptance": "생산/소비·양육·상속·조세/공납·모든 주체의 실제 회계 일치",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3000,7 +3234,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "생산/소비·양육·상속·조세/공납·모든 주체의 실제 회계 일치",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3021,7 +3261,7 @@
         "V021-K02"
       ],
       "acceptance": "실제 창설/해산·10개 한도 제안·고정 특화/빈 조직/유령 재산 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-03"
@@ -3034,7 +3274,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "실제 창설/해산·10개 한도 제안·고정 특화/빈 조직/유령 재산 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3057,7 +3303,7 @@
         "V021-G03"
       ],
       "acceptance": "직책·보급·급여·충심·기여·실제 예산·정책 이행",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3068,7 +3314,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "직책·보급·급여·충심·기여·실제 예산·정책 이행",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3089,7 +3341,7 @@
         "V021-G02"
       ],
       "acceptance": "공석/승계·인가/의무·지역 법·전생 권한 미복구",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3100,7 +3352,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "공석/승계·인가/의무·지역 법·전생 권한 미복구",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3122,7 +3380,7 @@
         "V021-F04"
       ],
       "acceptance": "한 주 주권·대리 통치·최상위 관계·무순환·조세/권리 구분",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-04",
@@ -3136,7 +3394,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "한 주 주권·대리 통치·최상위 관계·무순환·조세/권리 구분",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3157,7 +3421,7 @@
         "V021-F04"
       ],
       "acceptance": "영토0·명분/실물 자산·복위/승계·채무/채권/집행권 분리, 유령 세수/중복 채권0",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-04"
@@ -3170,7 +3434,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "영토0·명분/실물 자산·복위/승계·채무/채권/집행권 분리, 유령 세수/중복 채권0",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3193,7 +3463,7 @@
         "V021-G01"
       ],
       "acceptance": "10대 세부 정책·공동 인력/재정 예약·채택/준비/이행 부족·시행 관할 재검사·변경 이력",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3204,7 +3474,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "10대 세부 정책·공동 인력/재정 예약·채택/준비/이행 부족·시행 관할 재검사·변경 이력",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3843,7 +4119,7 @@
         "V021-A02"
       ],
       "acceptance": "시조 2명/반선·종문0·금단 출산·화신 대원만 윤회·100지점, 자료형/0/비활성·출처·revision",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3854,7 +4130,13 @@
       "milestone": "M2",
       "minimal_scope": "시조2/반선·금단 출산·혈연의 최소 타입 정의, 미결 값은 미설정",
       "later_scope": "시조 2명/반선·종문0·금단 출산·화신 대원만 윤회·100지점, 자료형/0/비활성·출처·revision",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3875,7 +4157,7 @@
         "V021-A03"
       ],
       "acceptance": "법칙 의존·임신/예약·적용 tick 분할·원천 잔량/재생 진척/실물 구분·0/비활성·이력",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3886,7 +4168,13 @@
       "milestone": "M2",
       "minimal_scope": "초기 생식 자격의 법칙 revision·원자 설정",
       "later_scope": "법칙 의존·임신/예약·적용 tick 분할·원천 잔량/재생 진척/실물 구분·0/비활성·이력",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3909,7 +4197,7 @@
         "V021-U01"
       ],
       "acceptance": "관찰 관리의 명시 명령, 검색·기본값 복원·설명·영향·가져오기/내보내기",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3920,7 +4208,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "관찰 관리의 명시 명령, 검색·기본값 복원·설명·영향·가져오기/내보내기",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3940,7 +4234,7 @@
         "V021-A03"
       ],
       "acceptance": "초기 인지 진술 저장·Actor/지식/권한 revision 문맥·필터 후 집계의 최소 계약. 명성/수행 도메인 값은 이후 소비자에서 확장.",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3951,7 +4245,13 @@
       "milestone": "M2",
       "minimal_scope": "개인 인지/권한과 최소 관찰 DTO",
       "later_scope": "초기 인지 진술 저장·Actor/지식/권한 revision 문맥·필터 후 집계의 최소 계약. 명성/수행 도메인 값은 이후 소비자에서 확장.",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -3979,7 +4279,7 @@
         "V021-X01"
       ],
       "acceptance": "미발견 좌표/ID·원격 재고·권한 우회 방지, 탐색/전수/소문·명령 거부 정보 경계",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3990,7 +4290,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "미발견 좌표/ID·원격 재고·권한 우회 방지, 탐색/전수/소문·명령 거부 정보 경계",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4013,7 +4319,7 @@
         "V021-U01"
       ],
       "acceptance": "지연 응답·플레이 A→B·복원·툴팁/행수/정렬/로그/추천·오류 누출0, 새 관측 전 표시 동등성",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4024,7 +4330,13 @@
       "milestone": "M4",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "지연 응답·플레이 A→B·복원·툴팁/행수/정렬/로그/추천·오류 누출0, 새 관측 전 표시 동등성",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4047,7 +4359,7 @@
         "V021-A03"
       ],
       "acceptance": "선천/학습/이해/현재 발휘/알려진 평가 분리, 영향 출처와 중복 가산 검사 · 지능10요소×원천 자질/재능×학습 경로 대응표, 가중치는 PC-TEMP 정책/근거로 관리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4058,7 +4370,13 @@
       "milestone": "M2",
       "minimal_scope": "반선 초기 프로필에 필요한 파생 요소",
       "later_scope": "선천/학습/이해/현재 발휘/알려진 평가 분리, 영향 출처와 중복 가산 검사 · 지능10요소×원천 자질/재능×학습 경로 대응표, 가중치는 PC-TEMP 정책/근거로 관리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4079,7 +4397,7 @@
         "V021-Z01"
       ],
       "acceptance": "잠재/발현·획득/각성/해제·상충/중첩·기간·권한/역사 표식 구분",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4090,7 +4408,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "잠재/발현·획득/각성/해제·상충/중첩·기간·권한/역사 표식 구분",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4112,7 +4436,7 @@
         "V021-V02"
       ],
       "acceptance": "부모/환경/영혼/교육의 출처 분리·효과 한번 적용·잠재 정보 필터",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4123,7 +4447,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "부모/환경/영혼/교육의 출처 분리·효과 한번 적용·잠재 정보 필터",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4517,7 +4847,7 @@
         "V021-Z01"
       ],
       "acceptance": "독립 SoulId·Parent/RootSoulId·분혼 사건·근원 자격 snapshot, 가족 DAG와 분리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4528,7 +4858,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "독립 SoulId·Parent/RootSoulId·분혼 사건·근원 자격 snapshot, 가족 DAG와 분리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4551,7 +4887,7 @@
         "V021-Z02"
       ],
       "acceptance": "원인 직전 자격 snapshot·13자동조건·중복 원인/혼존속·과거 최고/붕괴 후 값 오판0·윤회 버튼 없음 · 13조건 목표 유지·원인 생성 시스템/실사건과 fixture를 구분·Q-12 범위 결정 대기. 5조건 후속 이관 미확정",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-07",
@@ -4566,7 +4902,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "원인 직전 자격 snapshot·13자동조건·중복 원인/혼존속·과거 최고/붕괴 후 값 오판0·윤회 버튼 없음 · 13조건 목표 유지·원인 생성 시스템/실사건과 fixture를 구분·Q-12 범위 결정 대기. 5조건 후속 이관 미확정",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4589,7 +4931,7 @@
         "V021-V02"
       ],
       "acceptance": "기존 6영역·분혼 분배·도하 손상·각성·새 육신/지식 분리, 공법/경지 자동 복구 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4600,7 +4942,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "기존 6영역·분혼 분배·도하 손상·각성·새 육신/지식 분리, 공법/경지 자동 복구 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4624,7 +4972,7 @@
         "V021-H02"
       ],
       "acceptance": "비승 비사망·출생 단일 영혼 배정·태내/출생 후 파생 분리·분령 노동/인구 중복0·아이템 미복제",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-07",
@@ -4638,7 +4986,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "비승 비사망·출생 단일 영혼 배정·태내/출생 후 파생 분리·분령 노동/인구 중복0·아이템 미복제",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4691,7 +5045,7 @@
         "V021-Z02"
       ],
       "acceptance": "목표·위험/협력·관계·정책 선택과 실제 변화 원인·감정 회복·장기 경험 · M1/M2 핵심 축의 점진 활성화와 전체 정의 분리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4702,7 +5056,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "목표·위험/협력·관계·정책 선택과 실제 변화 원인·감정 회복·장기 경험 · M1/M2 핵심 축의 점진 활성화와 전체 정의 분리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4724,7 +5084,7 @@
         "V021-O02"
       ],
       "acceptance": "고정 조건/실제 생태계에서 행동 분포·지배 전략·정체·추론 비용 비교 · 나머지 축을 하나씩 활성화한 인과/다양성 보정·지배 전략 분리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4735,7 +5095,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "고정 조건/실제 생태계에서 행동 분포·지배 전략·정체·추론 비용 비교 · 나머지 축을 하나씩 활성화한 인과/다양성 보정·지배 전략 분리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4755,7 +5121,7 @@
         "V021-B02"
       ],
       "acceptance": "저작/판본/매체·접근/기억/오해/검증·전수 출처·정정본/책 소실과 개인 지식의 분리",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4766,7 +5132,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "저작/판본/매체·접근/기억/오해/검증·전수 출처·정정본/책 소실과 개인 지식의 분리",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4787,7 +5159,7 @@
         "V021-R04"
       ],
       "acceptance": "10경지 3방법·30공법 예시·시도/개시/비가역 경계·원영 실패 사망·소경지 겁난·지식 revision",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4798,7 +5170,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "10경지 3방법·30공법 예시·시도/개시/비가역 경계·원영 실패 사망·소경지 겁난·지식 revision",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4821,7 +5199,7 @@
         "V021-Z01"
       ],
       "acceptance": "64종 예시·유효 조합·공급/채집/가공/소비·품질·품목 팽창/생성 출처",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4832,7 +5210,13 @@
       "milestone": "M2",
       "minimal_scope": "초기 자산이 실제 참조하는 물품/자원 정의",
       "later_scope": "64종 예시·유효 조합·공급/채집/가공/소비·품질·품목 팽창/생성 출처",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4854,7 +5238,7 @@
         "V021-K01"
       ],
       "acceptance": "소유/보관/장착/예약·실제 스택/알려진 표시 묶음·용량/순환·파손/착탈 초과분 보존",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4865,7 +5249,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "소유/보관/장착/예약·실제 스택/알려진 표시 묶음·용량/순환·파손/착탈 초과분 보존",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4889,7 +5279,7 @@
         "V021-R04"
       ],
       "acceptance": "슬롯/점유·장비 교체 원자성·반환처/용량/예약·결속/수리/윤회·실물 효과 중복0",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4900,7 +5290,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "슬롯/점유·장비 교체 원자성·반환처/용량/예약·결속/수리/윤회·실물 효과 중복0",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4926,7 +5322,7 @@
         "V021-Y02"
       ],
       "acceptance": "정의/판본/실물/개인 진척 분리·변경분 재계산·범위 조회·화면 열기 생성/RNG0",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4937,7 +5333,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "정의/판본/실물/개인 진척 분리·변경분 재계산·범위 조회·화면 열기 생성/RNG0",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4957,7 +5359,7 @@
         "V021-N01"
       ],
       "acceptance": "관측/주장·확신/유효기간·모순/오해·결과 귀인·경험 출처, 숨은 실제 정보/무료 숙련 유입0 · 인물당 믿음 예산·결정론적 만료/망각/요약·중요 이력/원천 보존·2/100/1000/10000 메모리/저장 측정",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4968,7 +5370,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "관측/주장·확신/유효기간·모순/오해·결과 귀인·경험 출처, 숨은 실제 정보/무료 숙련 유입0 · 인물당 믿음 예산·결정론적 만료/망각/요약·중요 이력/원천 보존·2/100/1000/10000 메모리/저장 측정",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -4993,7 +5401,7 @@
         "V021-K08"
       ],
       "acceptance": "알려진 행동 전제/예상 효과·제한 탐색·정보 획득·계획 수정/교착 복구·추론 예산·예약/재검사",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5004,7 +5412,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "알려진 행동 전제/예상 효과·제한 탐색·정보 획득·계획 수정/교착 복구·추론 예산·예약/재검사",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5029,7 +5443,7 @@
         "V021-F04"
       ],
       "acceptance": "인물별 합의/권한/인지·역할/시간·물류/책임·후퇴/전술, 집단 AI의 전지/인력 중복 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5040,7 +5454,13 @@
       "milestone": "M3",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "인물별 합의/권한/인지·역할/시간·물류/책임·후퇴/전술, 집단 AI의 전지/인력 중복 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5061,7 +5481,7 @@
         "V021-O05"
       ],
       "acceptance": "장기 과제 완수·자원/노동 효율·잘못된 믿음 교정·탐험/협력·교착·예산/재현·정보 동등성 지표",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5072,7 +5492,13 @@
       "milestone": "M5",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "장기 과제 완수·자원/노동 효율·잘못된 믿음 교정·탐험/협력·교착·예산/재현·정보 동등성 지표",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5095,7 +5521,7 @@
         "V021-R09"
       ],
       "acceptance": "각 경지3경로·강점/부담·전투/잠재 연결·보조 호환/전환·형성/현재 분리·창세 반선 프로필",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5106,7 +5532,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "각 경지3경로·강점/부담·전투/잠재 연결·보조 호환/전환·형성/현재 분리·창세 반선 프로필",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5130,7 +5562,7 @@
         "V021-R06"
       ],
       "acceptance": "8축 실제 속성·효과 원천 단일 반영·표준 상황 비교·다음 경지 변환·미확인 미래/승률 과장 없음",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5141,7 +5573,13 @@
       "milestone": "M2",
       "minimal_scope": "M1 필수 부분 범위 없음",
       "later_scope": "8축 실제 속성·효과 원천 단일 반영·표준 상황 비교·다음 경지 변환·미확인 미래/승률 과장 없음",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5265,7 +5703,7 @@
         "V021-Y01"
       ],
       "acceptance": "반선 구조/수명/가임·비승 설정의 자료 계약·창세 출처·가짜 과거 사건 없음·생성 시조 공용. 미결 게임 값은 결정 대기.",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "feature",
       "blocked_by_q": [
         "Q-02"
@@ -5278,7 +5716,13 @@
       "milestone": "M2",
       "minimal_scope": "확정된 반선 초기 구조·수명/생식/비승 설정",
       "later_scope": "반선 구조/수명/가임·비승 설정의 자료 계약·창세 출처·가짜 과거 사건 없음·생성 시조 공용. 미결 게임 값은 결정 대기.",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",
@@ -5300,7 +5744,7 @@
         "V021-H01"
       ],
       "acceptance": "Q-01 a/b/c별 세대 시간·인구/금단/범인/무인 범위·성립 시점/미성립 분포·배속/플레이 시간·불확실/가정. 미선택 기본 프리셋의 결론 확정 금지.",
-      "status": "planned",
+      "status": "in_progress",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5309,7 +5753,13 @@
       "milestone": "M2",
       "minimal_scope": "a/b/c 가정별 추정, 기본 프리셋 결론은 결정 대기",
       "later_scope": "Q-01 a/b/c별 세대 시간·인구/금단/범인/무인 범위·성립 시점/미성립 분포·배속/플레이 시간·불확실/가정. 미선택 기본 프리셋의 결론 확정 금지.",
-      "evidence": [],
+      "evidence": [
+        {
+          "scope": "partial implementation; full acceptance pending",
+          "path": "docs/evidence/0.2.1/core-tests.json",
+          "source": "src/Chronicles.Game"
+        }
+      ],
       "inv_ids": [
         "INV-001",
         "INV-004",

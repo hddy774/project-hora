@@ -69,7 +69,17 @@
   "new_growth_or_performance_runs": 0,
   "product_fingerprint_recomputed": false,
   "readiness_or_notion_changed": false,
-  "progress_generation": "승인 원장을 가진 공개 commit에서 scripts/update-v021-progress.py를 1회 실행해 공식 문서·JSON에 연결한다.",
+  "progress_generation": {
+    "command": "python3 scripts/update-v021-progress.py",
+    "executions": 1,
+    "generated_from_commit": "01ae14a3d7e289094533dc3989da4cdd15dc8477",
+    "paths": [
+      "docs/progress-v0.2.1.md",
+      "docs/evidence/0.2.1/progress.json"
+    ],
+    "source_has_approved_ledger": true,
+    "published_to_github_by_script": false
+  },
   "upstream_growth_evidence": {
     "pull_request": "https://github.com/hddy774/project-hora/pull/211",
     "frozen_commit": "38c639a3a68b32176bfae243f6a5a5293357d59b",

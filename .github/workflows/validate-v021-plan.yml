@@ -1,4 +1,4 @@
-name: Validate v0.2.1 planning ledger
+name: 0.2.1 기획 원장 검증
 on:
   pull_request:
     paths:
@@ -15,8 +15,10 @@ permissions:
   contents: read
 jobs:
   planning-ledger:
+    name: 기획 원장·검증기 확인
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - name: Validate ledger and validator negative cases
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: 원장과 검증기의 거부 사례 확인
         run: python3 scripts/validate-v021-plan.py --self-test

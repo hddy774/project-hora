@@ -76,8 +76,6 @@ public sealed class RichQueryMappingScenario : IFeatureScenario
         a.Plan = [new("gather", 0, "ore")]; a.Guardian = b.Id;
         var tool = state.Items.Single(i => i.Owner == a.Id && i.Definition == "tool"); a.Equipment[8] = tool.Id;
         tool.Damage = 25; tool.Defects = ItemDefect.Contamination; tool.BoundSoul = a.SoulId;
-        home.Money = 60; home.PolicyEscrow = 10; home.PolicyDue = 3; home.Debt = 40; a.Money -= 70;
-        home.PendingPolicies[Catalog.PolicyNames[0]] = 2;
         state.Places[0].Owner = a.Id; state.Places[0].Operator = a.Id; home.Kind = GroupKind.Dynasty; home.Provinces = [0];
         foreach (var site in state.Places.Where(p => p.Province == 0)) site.Sovereign = home.Id;
         state.Places[0].Delegate = home.Id; state.Places[0].BlockedUntil = 4;
@@ -92,8 +90,8 @@ public sealed class RichQueryMappingScenario : IFeatureScenario
         QueryFixture.Check(gear.EquippedSlot == 8 && gear.Place == -1 && gear.Defects == ItemDefect.Contamination &&
             gear.BoundSoul == a.SoulId && gear.Damage == 25, "Equipment fields were fabricated or omitted.");
         var organization = view.Groups.Single(g => g.Id == home.Id);
-        QueryFixture.Check(organization.PolicyEscrow == 10 && organization.PolicyDue == 3 && organization.Debt == 40 &&
-            organization.PendingPolicies![Catalog.PolicyNames[0]] == 2, "Pending policy/finance mapping failed.");
+        QueryFixture.Check(organization.PolicyEscrow == 0 && organization.PolicyDue is null && organization.Debt == 0 &&
+            organization.PendingPolicies!.Count == 0, "A world with no real preparation acquired phantom policy finance.");
         QueryFixture.Check(view.LawHistory.Single().Key == "birth.enabled" && view.CombatAxisNames!.SequenceEqual(Chronicles.Game.Cultivation.CultivationQueries.AxisNames),
             "Actual history or canonical axis names were lost.");
         QueryFixture.Check(view.Species.Select(s => s.Id).SequenceEqual(Chronicles.Game.People.SpeciesCatalog.All.Select(s => s.Id)) &&
@@ -367,5 +365,58 @@ public sealed class GuardTargetProjectionScenario : IFeatureScenario
         var other = world.View(second).Detail!.Person;
         QueryFixture.Check(other.GuardTargetKind is null && other.ActionTarget is null && other.ActionData is null,
             "Combat receipt classification exposed another person's unobserved action context.");
+    }
+}
+
+public sealed class AuthoritativePolicyProjectionScenario : IFeatureScenario
+{
+    public string Name => "INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow";
+    public void Run()
+    {
+        var world = GameWorld.Create(42, new Dictionary<string, long>
+        { ["birth.enabled"] = 0, ["politics.salary"] = 0, ["ecology.disasterChance"] = 0, ["ecology.spoilage"] = 0 });
+        var opening = world.Checkpoint(); var first = opening.People[0].Id; var second = opening.People[1].Id;
+        QueryFixture.Accepted(world, "possess", first);
+        QueryFixture.Accepted(world, "found", first, data: "sect"); world.AdvanceTo(1);
+        var sect = world.Checkpoint().Groups.Single(g => g.Kind == GroupKind.Sect && g.Leader == first).Id;
+        QueryFixture.Accepted(world, "loan", first, sect, 40, JsonSerializer.Serialize(new { basis = "실제 정책 준비 예산의 한정 대여" }));
+        var treasury = world.Checkpoint().Groups.Single(g => g.Id == sect).Money;
+        QueryFixture.Accepted(world, "adoptPolicy", first, sect, 2, "경제·분배");
+        var adopted = world.View().Groups.Single(g => g.Id == sect); var draft = adopted.PolicyPreparations!.Single();
+        QueryFixture.Check(draft.Stage == "Adopted" && adopted.PendingPolicies!["경제·분배"] == 2 && adopted.PolicyDue is null &&
+            adopted.PolicyEscrow == 0 && adopted.Money == treasury && adopted.Debt == 40,
+            "An unprepared actual draft became paid work, or its real separate-account loan was omitted.");
+        QueryFixture.Accepted(world, "preparePolicy", first, draft.Id);
+        var preparedState = world.Checkpoint(); var prepared = world.View(first).Groups.Single(g => g.Id == sect);
+        var actual = preparedState.Politics.Preparations.Single(p => p.Id == draft.Id);
+        QueryFixture.Check(actual.Stage == Chronicles.Game.Politics.PolicyStage.Preparing && prepared.PolicyEscrow == actual.Escrow &&
+            actual.Escrow == preparedState.Laws["politics.policyCost"] && prepared.PolicyDue == actual.Due && prepared.Money == treasury - actual.Escrow &&
+            prepared.PolicyPreparations!.Single().Workers.SequenceEqual(actual.Workers) && preparedState.Politics.Labor.Any(l => l.Reference == actual.Id && l.Person == first) &&
+            world.View(first).Detail!.Person.GuardTargetKind == "organization",
+            "The projection did not follow the single real budget/labor reservation or misidentified political work as allied guard.");
+        QueryFixture.Accepted(world, "adoptPolicy", first, sect, 1, "교육·전승");
+        var unfundedLabor = world.Checkpoint().Politics.Preparations.Single(p => p.Group == sect && p.Category == "교육·전승");
+        QueryFixture.Accepted(world, "preparePolicy", first, unfundedLabor.Id);
+        var busy = world.View().Groups.Single(g => g.Id == sect);
+        QueryFixture.Check(busy.PolicyPreparations!.Single(p => p.Id == unfundedLabor.Id).Stage == "InsufficientLabor" &&
+            busy.PendingPolicies!.Count == 2 && busy.PolicyEscrow == actual.Escrow && busy.PolicyDue == actual.Due,
+            "Real unavailable labor fabricated a second escrow/deadline or hid the adopted choice.");
+        QueryFixture.Accepted(world, "cancelPolicy", first, unfundedLabor.Id);
+        QueryFixture.Check(world.View().Groups.Single(g => g.Id == sect).PendingPolicies!.Count == 1,
+            "Cancelled policy history remained a pending choice.");
+        world = GameCodec.Decode(GameCodec.Encode(world)); world.AdvanceTo(2);
+        var implemented = world.View().Groups.Single(g => g.Id == sect);
+        QueryFixture.Check(implemented.Policies["경제·분배"] == 2 && implemented.PendingPolicies!.Count == 0 && implemented.PolicyDue is null &&
+            implemented.PolicyEscrow == 0 && implemented.Debt == 40 && implemented.PolicyHistory!.Any(h => h.Stage == Chronicles.Game.Politics.PolicyStage.Implemented) &&
+            implemented.PolicyPreparations!.Any(p => p.Stage == "Cancelled"), "Settled/cancelled actual history was confused with active preparation finance.");
+        QueryFixture.Check(world.Checkpoint().Groups.All(g => g.PendingPolicies.Count == 0 && g.PolicyDue == 0 && g.PolicyEscrow == 0),
+            "A public policy flow wrote the retired duplicate preparation authority.");
+        QueryFixture.Accepted(world, "possess", second);
+        var other = world.View().Groups.Single(g => g.Kind == "Family");
+        QueryFixture.Check(other.PendingPolicies is null && other.PolicyEscrow is null && other.PolicyDue is null && other.Debt is null &&
+            other.PolicyPreparations is null && other.PolicyHistory is null && !world.View().Groups.Any(g => g.Id == sect),
+            "Nonleader/member scope revealed a private preparation or another organization's finance.");
+        var hash = world.StateHash(); world.View(); world.View(first);
+        QueryFixture.Check(hash == world.StateHash(), "Policy projection mutated authority.");
     }
 }

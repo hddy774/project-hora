@@ -207,7 +207,7 @@ public sealed class ArrayInstallation
 public sealed record BindingContract(long Id, long Item, long Soul, long Established, string Evidence);
 public sealed record InventoryEvent(long Month, string Kind, long Actor, long Subject, string Detail, long Sequence = 0,
     string Definition = "", int Quantity = 0, int Place = -1, long Owner = 0, string ItemSource = "", bool IsLoss = false,
-    int? Quality = null, int? Damage = null, ItemDefect Defects = ItemDefect.None);
+    int? Quality = null, int? Damage = null, ItemDefect Defects = ItemDefect.None, bool OwnerObserved = false);
 public sealed record InventoryReceipt(string Signature, long Subject, string Message);
 public sealed record InventoryResult(bool Accepted, string Message, InventoryState State, long Subject = 0, bool Replayed = false);
 

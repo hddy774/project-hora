@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Chronicles.Game.Currency;
 
 public enum CurrencyOriginKind { Genesis, PhysicalStone }
@@ -44,10 +46,11 @@ public static class CurrencyPolicy
         try { ValidateCore(ledger, world); }
         catch (OverflowException error) { throw new InvalidDataException("화폐 출처 합계가 허용 범위를 넘었습니다.", error); }
     }
-    private static void Require(bool condition, string message)
+    private static void Require([DoesNotReturnIf(false)] bool condition, string message)
     { if (!condition) throw new InvalidDataException(message); }
     private static void ValidateCore(CurrencyLedger ledger, GameState world)
     {
+        Require(ledger.Receipts is not null && ledger.Receipts.All(r => r is not null), "화폐 원천 영수증 목록이 손상되었습니다.");
         Require(ledger.Initialized, "화폐 창세 출처가 초기화되지 않았습니다.");
         var founders = world.People.OrderBy(p => p.Id).Take(2).ToArray();
         Require(founders.Length == 2 && founders.All(p => p.ParentOne == 0 && p.ParentTwo == 0 && p.Born <= 0), "실제 두 시조의 화폐 출처가 필요합니다.");
@@ -64,6 +67,7 @@ public static class CurrencyPolicy
         long created = 0;
         foreach (var receipt in ledger.Receipts)
         {
+            Require(receipt.CommandId is not null && receipt.Signature is not null && receipt.Definition is not null && receipt.Policy is not null, "화폐 영수증의 필수 값이 없습니다.");
             var person = world.People.SingleOrDefault(p => p.Id == receipt.Person);
             Require(person is not null && person.BodyId == receipt.Body && person.SoulId == receipt.Soul && receipt.Month >= 0 && receipt.Month <= world.Month &&
                 receipt.LawRevision > 0 && receipt.LawRevision <= world.LawRevision && receipt.Amount >= 0 && receipt.Provenance is { Count: > 0 } &&

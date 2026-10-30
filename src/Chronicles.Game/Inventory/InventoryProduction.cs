@@ -49,7 +49,8 @@ public static partial class InventoryEngine
         Require(quantity > 0 && quantity <= item.Quantity, "Invalid physical consumption.");
         state.Ledger.Events.Add(new(state.Month, loss ? "physical-loss" : "physical-consumption", actor, item.Id,
             "Actual stock decrement before removing the physical instance.", checked(state.Ledger.NextEventSequence++), item.Definition,
-            quantity, Location(state, item.Id), item.Owner, item.Source, loss, item.Quality, item.Damage, item.Defects));
+            quantity, Location(state, item.Id), item.Owner, item.Source, loss, item.Quality, item.Damage, item.Defects,
+            IsAccessible(state, item.Owner, item.Id, requireUncommitted: false)));
         if (loss) Flow(state, item.Definition).Loss = checked(Flow(state, item.Definition).Loss + quantity);
         else Flow(state, item.Definition).Consumption = checked(Flow(state, item.Definition).Consumption + quantity);
         item.Quantity -= quantity; if (item.Quantity == 0) Remove(state, item);

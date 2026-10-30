@@ -92,7 +92,7 @@
       "bytes": 2059
     }
   ],
-  "invariant": "각독립실행은미리보존한strict상수와일치해야하고,그뒤에만전체행/실제byte배열을서로비교한다. 매실행actual로expected생성/교체/삭제하지않음.",
+  "invariant": "각 독립 실행은 미리 보존한 strict 상수와 일치해야 하고, 그 뒤에만 전체 행과 실제 byte 배열을 서로 비교한다. 매 실행 actual로 expected를 생성·교체·삭제하지 않는다.",
   "oracleChangeRationale": {
     "manual": "동일한원래수동명령에서도수정된trade목표로다른실제AI행동이달라져세계전사digest가변함. strict실행원본ec01은169원저자의보고와같음.",
     "policy-surplus": "옛food8즉시생계offer는urgent12전제였음. 현재비축3에서ordinarytrade를선택하는명시성향4/5=100fixture로현실화해private split+offer·구매인도·저장재개를보장."
@@ -123,5 +123,113 @@
   "unchangedProductTreesComparedToStrictCapture": {
     "src/Chronicles.Game": true,
     "src/Chronicles.Core": true
-  }
+  },
+  "oldFailedVsNewStrict": {
+    "historicalOriginal": "legacy-failures.original.json",
+    "old751FullTranscriptAvailableHere": false,
+    "manual": {
+      "fixtureAndCommands": "기존 수동 fixture와 명령은 유지. 변경된 다른 실제 AI의 거래 행동을 포함한 현행 세계 전사는 고정 strict 원본으로 다시 수집.",
+      "oldDigest": "2cef8af882dcd34fec03884184a9fef5c67b8232e77a0e14c022cb84c986eec6",
+      "newStrictDigest": "ec01b5c4fa2f10268514912f0885f2debbd47a9ad9cc8aec85a8b73a1c311b56"
+    },
+    "policy-surplus": {
+      "oldFailure": "옛 food8 fixture는 urgent12 하위 분기에서만 즉시 offer. 새 비축3 규칙에서는 Single에 해당 매물이 없어 실패.",
+      "changedPremise": "거래 성향4·5=100과 비축3을 명시하여 일반 교역을 선택. 실제 식량7 중3 보유,4 분할 판매.",
+      "newStrictDigest": "904c4750ee5f986367f50ca85f8502bf63555a140ea090249eaed114b51133e1"
+    },
+    "limitation": "옛751의 전체 행 원본이 이 폴더에 없으므로 그 전사와의 행별 차이를 주장하지 않음. 옛 상수·현행 소스에서의 실패 원문·fixture patch·새 strict 전체 행을 각각 보존."
+  },
+  "functionalReports": [
+    {
+      "file": "three-way-functional.json",
+      "selection": "inventory copy oracle:",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "sha256": "27d4b5fa2c972949aa436623e880165d01be02a04d4d6873fe175f709810479f"
+    },
+    {
+      "file": "inventory-functional.json",
+      "selection": "inventory",
+      "total": 68,
+      "passed": 68,
+      "failed": 0,
+      "sha256": "7d1609ccd952e58f951382ef5e96ffb212edaacf332106a90e0db706c94a1bae"
+    },
+    {
+      "file": "currency-functional.json",
+      "selection": "currency",
+      "total": 9,
+      "passed": 8,
+      "failed": 1,
+      "sha256": "bea6a6d0f5aeda3a2da072afb5fd4aecd3f67863617ea0fc54fac5a770ac3b85"
+    }
+  ],
+  "knownRegression": {
+    "status": "별도 제품 수정 대기. 현재 draft는 환전 9/9 또는 전체 기능 통과를 주장하지 않음.",
+    "scenario": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+    "location": "tests/Chronicles.Game.Tests/Features/CurrencyPlanningScenarios.cs:141",
+    "diagnosticOriginal": "currency-budget-diagnostic.original.json",
+    "diagnosticProbeSource": "currency-budget-diagnostic-probe.cs.txt",
+    "diagnosticAssembly": {
+      "informationalVersion": "0.2.1+fbd4a80a4691ed20abfeb58b064c916a5c4d8cb7",
+      "sha256": "bc407e44a793de03dc31c957f9f50a7ff12df7337b6d70d75aca527414970ff4"
+    },
+    "actual": {
+      "planExpansions": 1,
+      "goal": "실제 잉여품 교환",
+      "action": "Guard",
+      "actionData": "ecology:market",
+      "due": 2,
+      "createdMoneyBefore": 2000,
+      "createdMoneyAfter": 2000,
+      "actorMoneyBefore": 0,
+      "actorMoneyAfter": 0,
+      "stoneId": 2073,
+      "stoneQuantityBefore": 1,
+      "stoneQuantityAfter": 1,
+      "currencyReceiptKinds": [
+        "Genesis",
+        "Genesis"
+      ],
+      "foodOriginalId": 4,
+      "foodBefore": 360,
+      "foodAfter": 348,
+      "splitId": 2075,
+      "splitQuantity": 12,
+      "reservation": 2076,
+      "saleContract": 2077,
+      "price": 12
+    },
+    "meaning": "환전으로 화폐나 실물이 복제되지 않았으나, 예산1을 소진한 trade fallback이 실제 식량 split+offer를 수행함. Game/Planning/Currency 검사 파일은 이 PR에서 수정하지 않음."
+  },
+  "diagnosticArtifacts": [
+    {
+      "file": "currency-budget-diagnostic.original.json",
+      "sha256": "4398afdab3d4252daf81d3565e2a1aee427a30144668b5182bcc08733b38e82f",
+      "bytes": 20718
+    },
+    {
+      "file": "currency-budget-diagnostic-probe.cs.txt",
+      "sha256": "ae5430aa3d60c9323bdfd177ecbd7a044210a77f22a55bb7d7598b51f642b40f",
+      "bytes": 2749
+    }
+  ],
+  "reproductionCommands": [
+    {
+      "purpose": "삼자 독립 전체 전사·실제 저장 bytes 직접 대조",
+      "runSource": "fbd4a80a4691ed20abfeb58b064c916a5c4d8cb7",
+      "command": "CHRONICLES_INVENTORY_REFERENCE_CAPTURE=<capture-directory> /workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter \"inventory copy oracle:\" --report <report.json>"
+    },
+    {
+      "purpose": "inventory 선택 회귀",
+      "runSource": "fbd4a80a4691ed20abfeb58b064c916a5c4d8cb7",
+      "command": "/workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter inventory --report <report.json>"
+    },
+    {
+      "purpose": "추가 currency 선택 회귀: 현재 실패1을 포함한 원본 보존",
+      "runSource": "fbd4a80a4691ed20abfeb58b064c916a5c4d8cb7",
+      "command": "/workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter currency --report <report.json>"
+    }
+  ]
 }

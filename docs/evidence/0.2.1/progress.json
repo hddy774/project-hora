@@ -2,12 +2,12 @@
   "total": 111,
   "completed": 47,
   "completion_percent": 42.3,
-  "own_acceptance_count": 94,
-  "own_acceptance_percent": 84.7,
+  "own_acceptance_count": 96,
+  "own_acceptance_percent": 86.5,
   "counts": {
     "done": 47,
-    "validated": 47,
-    "in_progress": 17,
+    "validated": 49,
+    "in_progress": 15,
     "planned": 0,
     "blocked": 0
   },
@@ -245,7 +245,7 @@
     {
       "id": "V021-J02",
       "title": "화신 대원만 Gate·13개 자동 조건",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-J03",
@@ -255,7 +255,7 @@
     {
       "id": "V021-J04",
       "title": "사망/비승/분혼·대기/출생 원자 전이",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-C01",
@@ -334,7 +334,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "c521859b3d9f17e3559889a7011decfe91e8ddf7",
-  "phase": "기능 마무리·수용 근거 대조",
+  "source_commit": "021329cca1dba34f66095e3490f79d266d76b1d5",
+  "phase": "게임 기능 개발 마감·최종 전체 검증",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

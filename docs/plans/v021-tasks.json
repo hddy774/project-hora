@@ -5420,7 +5420,7 @@
         "V021-Z02"
       ],
       "acceptance": "원인 직전 자격 snapshot·13자동조건·중복 원인/혼존속·과거 최고/붕괴 후 값 오판0·윤회 버튼 없음 · 13조건 목표 유지·원인 생성 시스템/실사건과 fixture를 구분·13개 실제 원인 전체 구현 범위·후속 이관 없음",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5447,6 +5447,13 @@
           "path": "docs/evidence/0.2.1/progress-acceptance.json",
           "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
           "note": "기존13개 단일 실제 원인 생산자/자격/저장 검사는 존재하나 INV-013의 여러 조건 동시 충족 계약은 아직 미충족. World.Hazards.ResolveWorldConditions가12→7→4→11에서 첫 매칭 뒤 반환하고 EndLife는 선택된 원인만 Evidence에 기록하므로, 실제 동시12/7에서 단일 여정과 다른 매칭 원인 설명을 함께 보존하는 좁은 수정/공개 저장·재처리 근거가 필요함. 루트와 인지 담당자가 기존 계약의 직접 공백으로 확인했으며 새 광범위 요구가 아님."
+        },
+        {
+          "scope": "실제 동시 윤회 원인·단일 여정·대체 설명 및 기존13원인생산자 선택14/14",
+          "path": "docs/evidence/0.2.1/reincarnation-concurrent-causes.json",
+          "source": "8bdb21e496f992a2bc9415e76593e1e886079c12",
+          "integration_pr": 146,
+          "integration_commit": "021329cca1dba34f66095e3490f79d266d76b1d5"
         }
       ],
       "inv_ids": [
@@ -5517,7 +5524,7 @@
         "V021-H02"
       ],
       "acceptance": "비승 비사망·출생 단일 영혼 배정·태내/출생 후 파생 분리·분령 노동/인구 중복0·아이템 미복제",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5544,6 +5551,13 @@
           "path": "docs/evidence/0.2.1/progress-acceptance.json",
           "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
           "note": "기존 사망/비승/분혼·대기/출생 단일 영혼 및 자산 보존 검사는 유지함. 공통 INV-013에서 동시 원인이 하나의 여정만 만들면서 대체 매칭 원인을 설명에 남겨야 하는데 현재 EndLife에는 선택된 원인만 저장됨. 동시12/7의 실제 설명·단일 여정·저장/재처리 보존 후속이 완료되기 전까지 자체 수용을 보류함. 현재RC-01~13 단일 생산자 결과를 이 미검증 동시조건의 합격으로 합치지 않음."
+        },
+        {
+          "scope": "실제 동시 윤회 원인·단일 여정·대체 설명 및 기존13원인생산자 선택14/14",
+          "path": "docs/evidence/0.2.1/reincarnation-concurrent-causes.json",
+          "source": "8bdb21e496f992a2bc9415e76593e1e886079c12",
+          "integration_pr": 146,
+          "integration_commit": "021329cca1dba34f66095e3490f79d266d76b1d5"
         }
       ],
       "inv_ids": [

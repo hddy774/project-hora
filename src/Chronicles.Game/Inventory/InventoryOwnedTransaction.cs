@@ -33,7 +33,8 @@ public static partial class InventoryEngine
                 ArgumentNullException.ThrowIfNull(command);
                 var signature = command.GetType().Name + ":" + JsonSerializer.Serialize(command, command.GetType());
                 if (string.IsNullOrWhiteSpace(command.Id)) return Reject("Command ID is required.");
-                var receipt = current.Ledger.Receipts.FirstOrDefault(entry => string.Equals(entry.Key, command.Id, StringComparison.Ordinal)).Value;
+                // FromWorld.Copy always restores an Ordinal comparer; the public custom-comparer path stays separate.
+                current.Ledger.Receipts.TryGetValue(command.Id, out var receipt);
                 if (receipt is not null)
                     return receipt.Signature == signature ? new(true, receipt.Message, receipt.Subject, true)
                         : Reject("Command ID already belongs to a different request.");
@@ -96,12 +97,20 @@ public static partial class InventoryEngine
             try
             {
                 foreach (var labor in current.Ledger.Labor.Where(l => l.Purpose == "world-action")) labor.Active = false;
+                // Fresh for this call: subsequent commands may cancel jobs or finish cargo on the same owned snapshot.
+                var activeJobs = current.Ledger.Jobs.Where(j => j.Status is "reserved" or "processing").Select(j => (j.Actor, j.Id)).ToHashSet();
+                var activeCarriers = current.Ledger.Contracts.Where(c => c.Status == "open").Select(c => (c.Carrier, c.Id)).ToHashSet();
+                var lastLabor = new Dictionary<(long Person, long End), LaborReservation>();
+                foreach (var labor in current.Ledger.Labor.Where(l => l.Purpose == "world-action"))
+                    lastLabor[(labor.Person, labor.End)] = labor;
                 foreach (var p in current.People.Where(p => p.Status == LifeStatus.Alive && p.Action != ActionKind.Idle && p.Due > current.Month))
                 {
-                    if (current.Ledger.Jobs.Any(j => j.Actor == p.Id && j.Id == p.ActionTarget && j.Status is "reserved" or "processing") ||
-                        current.Ledger.Contracts.Any(c => c.Carrier == p.Id && c.Id == p.ActionTarget && c.Status == "open")) continue;
-                    var row = current.Ledger.Labor.LastOrDefault(l => l.Person == p.Id && l.Purpose == "world-action" && l.End == p.Due);
-                    if (row is null) current.Ledger.Labor.Add(new() { Id = current.NextId++, Person = p.Id, Purpose = "world-action", Start = current.Month, End = p.Due, Units = 100 });
+                    if (activeJobs.Contains((p.Id, p.ActionTarget)) || activeCarriers.Contains((p.Id, p.ActionTarget))) continue;
+                    if (!lastLabor.TryGetValue((p.Id, p.Due), out var row))
+                    {
+                        row = new() { Id = current.NextId++, Person = p.Id, Purpose = "world-action", Start = current.Month, End = p.Due, Units = 100 };
+                        current.Ledger.Labor.Add(row); lastLabor[(p.Id, p.Due)] = row;
+                    }
                     else row.Active = true;
                 }
             }

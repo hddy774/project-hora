@@ -345,6 +345,7 @@ public sealed partial class GameWorld
         SettlePeopleDomain();
         SettlePeopleSocial();
         SettleEcology();
+        TrimCombatHistory();
         state.Revision++;
         Census();
     }

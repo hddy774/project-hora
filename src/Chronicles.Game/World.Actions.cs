@@ -27,7 +27,8 @@ public sealed partial class GameWorld
         if (Month % 12 == 0)
             foreach (var item in state.Items.Where(i => i.Definition == "food" && i.Reserved == 0).ToArray())
             {
-                item.Quantity -= item.Quantity * IntLaw("ecology.spoilage") / 100;
+                var lost = item.Quantity * IntLaw("ecology.spoilage") / 100;
+                Material(item.Definition).Loss += lost; item.Quantity -= lost;
                 if (item.Quantity == 0) Remove(item);
             }
     }
@@ -69,13 +70,14 @@ public sealed partial class GameWorld
                 if (p.Equipment.ContainsKey(8)) requested += requested / 4;
                 var yield = Math.Min(place.Source, requested);
                 place.Source -= yield;
-                AddItem(p.Id, definition, yield, 3000 + place.Element * 250, $"지점 {place.Id}·월 {Month}·실제 채집");
+                AddItem(p.Id, definition, yield, 3000 + place.Element * 250, $"지점 {place.Id}·월 {Month}·실제 채집", "extraction");
                 Gain(p, action == ActionKind.Farm ? "farm" : "gather", yield);
                 if (yield == 0) Remember(p, $"depleted:{place.Id}", "원천 고갈", "실제 채집 결과", 100);
                 if (action == ActionKind.Farm && !place.Facilities.Contains("경작지")) place.Facilities.Add("경작지");
                 break;
             case ActionKind.Cultivate: Cultivate(p, data); break;
             case ActionKind.Breakthrough: Breakthrough(p, data); break;
+            case ActionKind.Trial: Trial(p); break;
             case ActionKind.Martial:
                 p.MartialWork += 1 + Catalog.Talent(p, 9) / 5000;
                 if (p.Martial < 10 && p.MartialWork >= Law("martial.period") * (p.Martial + 1))
@@ -95,16 +97,24 @@ public sealed partial class GameWorld
                 }
                 break;
             case ActionKind.Travel:
-                if (state.Places[(int)target].BlockedUntil <= Month) { p.Place = (int)target; RefreshPopulationIndices(); Observe(p); }
+                if (p.Realm >= Realm.Mahayana && p.Place / 10 != target / 10 && Math.Max(p.Place, target) >= 90 &&
+                    Roll(10000) < Law("hazard.portalChance"))
+                    EndLife(p, 10, "실제 계역 통로 붕괴·귀환/육신 유지 불가");
+                else if (state.Places[(int)target].BlockedUntil <= Month) { p.Place = (int)target; RefreshPopulationIndices(); Observe(p); }
                 else Remember(p, $"blocked:{target}", "통로 봉쇄", "실제 이동 실패", 100);
                 break;
             case ActionKind.Explore:
                 foreach (var id in place.Neighbors) if (!p.KnownPlaces.Contains(id)) p.KnownPlaces.Add(id);
                 p.KnownPlaces.Sort();
+                if (place.Id % 10 == 8 && p.Realm >= Realm.Void && Roll(10000) < Law("hazard.sealChance"))
+                {
+                    p.Sealed = true; p.SealedUntil = Month + Law("hazard.sealDuration");
+                    Event("고대 금제", p.Id, place.Id, $"{p.Name} 고대 금제에 봉인·실제 귀환 수단 필요", "실제 비경 탐색");
+                }
                 if (place.DiscoveryRemaining > 0)
                 {
                     place.DiscoveryRemaining--;
-                    AddItem(p.Id, "herb", 3, 6000, $"지점 {place.Id} 유한 탐색 보상");
+                    AddItem(p.Id, "herb", 3, 6000, $"지점 {place.Id} 유한 탐색 보상", "extraction");
                     Event("발견", p.Id, place.Id, $"{p.Name} 숨은 약초 발견·지점 보상 소진", "실제 탐색");
                 }
                 break;
@@ -112,7 +122,7 @@ public sealed partial class GameWorld
                 var recipe = Catalog.Recipes.First(r => r.Id == data);
                 var materials = state.Items.Where(i => i.Reserved == target).ToArray();
                 var quality = materials.Length == 0 ? 0 : materials.Sum(i => i.Quality * i.Quantity) / materials.Sum(i => i.Quantity);
-                foreach (var material in materials) Remove(material);
+                foreach (var material in materials) { Material(material.Definition).Consumption += material.Quantity; Remove(material); }
                 var proficiency = p.Skills.GetValueOrDefault(recipe.Skill);
                 var resultQuality = Math.Clamp((quality + proficiency + Catalog.Talent(p, recipe.Skill == "alchemy" ? 14 : 15)) / 3 + Roll(401) - 200, 0, 10000);
                 var product = AddItem(p.Id, recipe.Output, recipe.Quantity, resultQuality, $"제작 {p.Id}·예약 {target}·{recipe.Id}");
@@ -152,6 +162,7 @@ public sealed partial class GameWorld
         if (p.Realm == Realm.Mortal && p.Understanding.GetValueOrDefault("entry") == 0)
         { p.Reason = "아직 습득하지 않은 입문 지식이 필요"; return; }
         var place = state.Places[p.Place];
+        if (CultivationHazard(p, place)) return;
         var cost = IntLaw("cultivation.sourceCost");
         if (place.Qi < cost) { p.Reason = "영맥 공급 고갈"; return; }
         place.Qi -= cost;
@@ -170,7 +181,14 @@ public sealed partial class GameWorld
         p.Work += work;
         for (var i = 0; i < p.Components.Length; i++)
             p.Components[i] = Math.Min(10000, p.Components[i] + (int)(work / (i + 1) / Math.Max(1, Period(p) / 2)));
-        p.Layer = Math.Min(9, 1 + (int)(p.Work * 8 / (Period(p) * 5000)));
+        var nextLayer = Math.Min(9, 1 + (int)(p.Work * 8 / (Period(p) * 5000)));
+        if (p.Realm == Realm.Tribulation && (nextLayer > p.Layer || (p.Work >= Period(p) * 5000 && !p.GreatPerfection)))
+        {
+            p.PendingLayer = nextLayer; p.Action = ActionKind.Trial; p.Due = Month + 1;
+            return;
+        }
+        p.Layer = nextLayer;
+        p.GreatPerfection = p.Layer == 9 && p.Work >= Period(p) * 5000;
         Gain(p, path.Id, 1);
         if (p.Work >= Period(p) * 5000)
         {
@@ -183,7 +201,7 @@ public sealed partial class GameWorld
     {
         var path = Catalog.Paths.FirstOrDefault(x => x.Id == chosenPath) ?? Catalog.Paths.First(x => x.Realm == Realm.Qi);
         var failRisk = IntLaw("cultivation.breakthroughRisk") + path.Risk + (100 - p.Health) * 10;
-        var failed = Roll(10000) < failRisk;
+        var failed = p.Realm != Realm.Tribulation && Roll(10000) < failRisk;
         p.Irreversible = false;
         if (failed)
         {
@@ -194,7 +212,7 @@ public sealed partial class GameWorld
             return;
         }
         if (p.Realm < Realm.HalfImmortal) p.Realm++;
-        p.Layer = 1; p.Work = 0;
+        p.Layer = 1; p.Work = 0; p.GreatPerfection = false;
         var quality = p.Aptitudes.Sum() / 6;
         p.Formations.Add(new(p.Realm, path.Id, quality, Math.Max(0, 100 - p.Health), Month, "실제 형성"));
         p.Lifespan = p.Realm switch
@@ -226,10 +244,14 @@ public sealed partial class GameWorld
             var q = local[(int)((p.Id + Month + n) % local.Length)];
             if (q.Status != LifeStatus.Alive || q.Place != p.Place) continue;
             if (!p.KnownPeople.Contains(q.Id)) p.KnownPeople.Add(q.Id);
-            Remember(p, $"person:{q.Id}", $"{q.Name}|{(int)q.Realm}|{q.Layer}|{q.Place}", "현장 관측", 100);
+            p.ObservedPeople[q.Id] = new(q.Id, q.Name, q.Realm, q.Layer, q.Place, Month);
         }
-        Remember(p, $"place:{p.Place}", $"{state.Places[p.Place].Source}|{state.Places[p.Place].Qi}|{string.Join(',', state.Places[p.Place].Facilities)}", "현장 관측", 100);
-        Remember(p, "self", $"{p.Health}|{p.Money}|{p.Work}", "자기 감각", 100);
+        var place = state.Places[p.Place];
+        p.ObservedPlaces[p.Place] = new(place.Id, place.Source, place.Qi, string.Join(',', place.Facilities), Month);
+        var budget = IntLaw("ai.beliefBudget");
+        if (p.ObservedPeople.Count > budget)
+            foreach (var id in p.ObservedPeople.Values.OrderBy(x => x.Month).ThenBy(x => x.Id)
+                .Take(p.ObservedPeople.Count - budget).Select(x => x.Id).ToArray()) p.ObservedPeople.Remove(id);
     }
 
     private void Decide(Person p)

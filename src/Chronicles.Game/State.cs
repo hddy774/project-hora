@@ -2,7 +2,7 @@ namespace Chronicles.Game;
 
 public enum Realm { Mortal, Qi, Foundation, GoldenCore, NascentSoul, Spirit, Void, Integration, Tribulation, Mahayana, HalfImmortal }
 public enum LifeStatus { Alive, Dead, Ascended, Departed }
-public enum ActionKind { Idle, Gather, Cultivate, Study, Martial, Travel, Craft, Heal, Explore, Teach, Guard, Farm, Breakthrough }
+public enum ActionKind { Idle, Gather, Cultivate, Study, Martial, Travel, Craft, Heal, Explore, Teach, Guard, Farm, Breakthrough, Trial }
 public enum GroupKind { Family, Sect, Dynasty }
 public enum ItemKind { Food, Herb, Ore, Wood, Cloth, Paper, Ink, Metal, Pill, Tool, Talisman, Array, Book, Bag, Weapon, Armor }
 
@@ -10,11 +10,21 @@ public sealed record Formation(Realm Realm, string Path, int Quality, int Defect
 public sealed record Belief(string Key, string Value, int Confidence, long Observed, long Expires, string Source);
 public sealed record TraitState(string Id, string Source, long Acquired, long? Expires, bool Active);
 public sealed record Trace(int Preserved, int Accessible, int Integrated);
+public readonly record struct PersonObservation(long Id, string Name, Realm Realm, int Layer, int Place, long Month);
+public readonly record struct PlaceObservation(int Place, int Source, int Qi, string Facilities, long Month);
 public sealed record GameEvent(long Id, long Month, string Kind, long Actor, long Target, string Text, string Source);
 public sealed record LawChange(long Month, long Revision, string Key, long Before, long After);
 public sealed record MonthlyCensus(long Month, int Living, int Mortal, int Martial, int Cultivators,
     int Births, int Deaths, long Money, long Food);
 public sealed record CommandResult(string Id, bool Accepted, string Message, long Revision);
+public sealed class MaterialFlow
+{
+    public long Opening { get; set; }
+    public long Extraction { get; set; }
+    public long Production { get; set; }
+    public long Consumption { get; set; }
+    public long Loss { get; set; }
+}
 
 public sealed class Person
 {
@@ -36,6 +46,7 @@ public sealed class Person
     public int Place { get; set; }
     public Realm Realm { get; set; }
     public int Layer { get; set; } = 1;
+    public bool GreatPerfection { get; set; }
     public long Work { get; set; }
     public int Martial { get; set; }
     public int MartialWork { get; set; }
@@ -52,6 +63,13 @@ public sealed class Person
     public int[] Processes { get; set; } = new int[4];
     public int[] Components { get; set; } = new int[7];
     public bool Irreversible { get; set; }
+    public int PendingLayer { get; set; }
+    public int StructureDamage { get; set; }
+    public int BondStability { get; set; } = 100;
+    public long SealedUntil { get; set; }
+    public bool Sealed { get; set; }
+    public long SoulPactUntil { get; set; }
+    public string SoulPactSource { get; set; } = "";
     public int[] Roots { get; set; } = new int[5];
     public int[] Aptitudes { get; set; } = new int[6];
     public int[] Personality { get; set; } = new int[14];
@@ -60,6 +78,8 @@ public sealed class Person
     public SortedDictionary<string, int> Skills { get; set; } = new(StringComparer.Ordinal);
     public SortedDictionary<string, int> Understanding { get; set; } = new(StringComparer.Ordinal);
     public SortedDictionary<string, Belief> Beliefs { get; set; } = new(StringComparer.Ordinal);
+    public SortedDictionary<long, PersonObservation> ObservedPeople { get; set; } = [];
+    public SortedDictionary<int, PlaceObservation> ObservedPlaces { get; set; } = [];
     public List<int> KnownPlaces { get; set; } = [];
     public List<long> KnownPeople { get; set; } = [];
     public SortedDictionary<int, long> Equipment { get; set; } = [];
@@ -188,6 +208,7 @@ public sealed class GameState
     public List<Pregnancy> Pregnancies { get; set; } = [];
     public List<Place> Places { get; set; } = [];
     public List<Item> Items { get; set; } = [];
+    public SortedDictionary<string, MaterialFlow> Materials { get; set; } = new(StringComparer.Ordinal);
     public List<Group> Groups { get; set; } = [];
     public List<Contract> Contracts { get; set; } = [];
     public List<GameEvent> Events { get; set; } = [];

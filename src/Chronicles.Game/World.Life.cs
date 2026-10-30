@@ -100,13 +100,14 @@ public sealed partial class GameWorld
         Event("출생", p.Id, mother.Id, $"{p.Name} 탄생·실제 부모/새 육신·단일 영혼 배정", $"임신 {pregnancy.Id}·법칙 r{pregnancy.LawRevision}");
     }
 
-    private void EndLife(Person p, int cause, string evidence)
+    private void EndLife(Person p, int cause, string evidence, LifeStatus outcome = LifeStatus.Dead)
     {
         if (p.Status != LifeStatus.Alive) return;
         var sourceRealm = p.Realm; var sourceLayer = p.Layer;
         p.Irreversible = false;
         if (p.Action != ActionKind.Idle) Cancel(p);
-        p.Status = LifeStatus.Dead; p.Ended = Month; state.DeathCount++;
+        p.Status = outcome; p.Ended = Month;
+        if (outcome == LifeStatus.Dead) state.DeathCount++;
         if (p.Partner != 0 && people.TryGetValue(p.Partner, out var partner)) partner.Partner = 0;
         p.Partner = 0;
         if (state.Controlled == p.Id) { state.Controlled = 0; state.ViewGeneration++; }
@@ -116,7 +117,7 @@ public sealed partial class GameWorld
             8 or 9 => Realm.Tribulation, 10 or 11 => Realm.Mahayana, 12 => Realm.HalfImmortal, _ => min };
         var needsComplete = cause is 7 or 9 or 11 || sourceRealm == min;
         var enabled = cause is >= 1 and <= 12 && (Law("soul.enabledRoutes") & (1L << (cause - 1))) != 0;
-        var eligible = sourceRealm >= min && sourceRealm >= routeMin && (!needsComplete || sourceLayer == 9);
+        var eligible = sourceRealm >= min && sourceRealm >= routeMin && (!needsComplete || p.GreatPerfection);
         soul.SourceRealm = sourceRealm; soul.SourceLayer = sourceLayer;
         soul.Evidence = $"현생 {p.Id} 종료 직전 {Catalog.RealmNames[(int)sourceRealm]} {sourceLayer}층·{evidence}·법칙 r{state.LawRevision}";
         soul.Route = enabled && eligible ? cause : 0;
@@ -130,8 +131,8 @@ public sealed partial class GameWorld
         if (heir is not null)
         {
             heir.Money += p.Money; p.Money = 0;
-            foreach (var item in state.Items.Where(i => i.Owner == p.Id && i.Reserved == 0))
-            { item.Owner = heir.Id; item.Container = 0; }
+            foreach (var item in Owned(p.Id).Where(i => i.Reserved == 0).ToArray())
+            { Transfer(item, heir.Id); item.Container = 0; item.Place = p.Place; }
             p.Equipment.Clear();
         }
         foreach (var g in state.Groups.Where(g => !g.Dissolved && g.Leader == p.Id))
@@ -140,15 +141,19 @@ public sealed partial class GameWorld
                 Month - x.Born >= Law("birth.maturity")).Order().FirstOrDefault();
             if (g.Leader == 0) Event("공석", 0, g.Id, $"{g.Name} 수장 공석", evidence);
         }
-        Event("사망", p.Id, soul.Route, $"{p.Name} {evidence}·{(soul.Route == 0 ? "윤회 미적격" : $"RC-{soul.Route:00} 대기")}", soul.Evidence);
+        Event(outcome == LifeStatus.Dead ? "사망" : "세계 이탈", p.Id, soul.Route, $"{p.Name} {evidence}·{(soul.Route == 0 ? "윤회 미적격" : $"RC-{soul.Route:00} 대기")}", soul.Evidence);
     }
 
     private string? Ascend(Person p)
     {
-        if (p.Realm != Realm.HalfImmortal || p.Layer != 9 || p.Health < 90 || p.Action != ActionKind.Idle ||
+        if (p.Realm != Realm.HalfImmortal || !p.GreatPerfection || p.Health < 90 || p.Action != ActionKind.Idle ||
             Month < Law("founder.ascensionProtection") || p.Place != 99 || p.Understanding.GetValueOrDefault("path.10.2") == 0)
             return "비승 통로·기반·시기 조건이 부족합니다.";
         p.Status = LifeStatus.Ascended; p.Ended = Month;
+        if (p.Partner != 0 && people.TryGetValue(p.Partner, out var partner)) partner.Partner = 0;
+        p.Partner = 0;
+        foreach (var group in state.Groups.Where(g => !g.Dissolved && g.Leader == p.Id))
+            group.Leader = group.Members.Where(id => people[id].Status == LifeStatus.Alive).Order().FirstOrDefault();
         var root = souls[p.SoulId]; root.Status = "ascended"; root.CurrentPerson = 0;
         if (state.Controlled == p.Id) { state.Controlled = 0; state.ViewGeneration++; }
         if ((Law("soul.enabledRoutes") & (1L << 12)) != 0 && root.SplitCount < Law("soul.splitLimit"))

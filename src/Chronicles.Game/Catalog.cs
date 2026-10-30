@@ -47,6 +47,7 @@ public static class Catalog
         new("bag", "저물대 제작", "smith", "bag", 1, [new("cloth", 4), new("ore", 2)]),
         new("cloth", "영포 직조", "farm", "cloth", 2, [new("herb", 3)]),
         new("armor", "호신갑 제작", "smith", "armor", 1, [new("ore", 4), new("cloth", 2)])
+        ,new("soulWard", "양혼부 제작", "talisman", "soulWard", 1, [new("paper", 3), new("herb", 5)])
     ]);
 
     private static System.Collections.ObjectModel.ReadOnlyCollection<PathDefinition> BuildPaths()
@@ -90,6 +91,7 @@ public static class Catalog
         Add("talisman", "호신부", ItemKind.Talisman, use: "한 번의 방어"); Add("array", "수행 진기", ItemKind.Array, 10);
         Add("bag", "저물대", ItemKind.Bag, 11, 200); Add("weapon", "현철검", ItemKind.Weapon, 0);
         Add("armor", "호신갑", ItemKind.Armor, 3);
+        Add("soulWard", "양혼부", ItemKind.Talisman, use: "기한 있는 보호 혼약");
         foreach (var path in Paths) Add(path.Id, path.Book, ItemKind.Book, use: "공법 학습");
         for (var i = 0; i < EquipmentSlots.Count; i++)
             Add($"equipment.{i}", EquipmentSlots[i], i == 11 ? ItemKind.Bag : ItemKind.Tool, i, i == 11 ? 100 : 0);

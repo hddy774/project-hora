@@ -36,6 +36,7 @@ public static class Invariants
             Require(p.Roots.Length == 5 && p.Aptitudes.Length == 6 && p.Personality.Length == 14 && p.Components.Length == 7 && p.Processes.Length == 4 &&
                 p.Roots.Concat(p.Aptitudes).All(x => x is >= 0 and <= 10000), "INV-015", "자질/공정 구조");
             Require(p.Personality.All(x => x is >= 0 and <= 100), "INV-015", "성격 범위");
+            Require(!p.GreatPerfection || p.Layer == 9, "INV-023", "9층과 대원만의 분리");
             Require(souls.ContainsKey(p.SoulId), "INV-014", "영혼 참조");
             Require(p.ParentOne == 0 || (people.ContainsKey(p.ParentOne) && p.ParentOne < p.Id && people[p.ParentOne].Born < p.Born), "INV-012", "생물학 부모 DAG");
             Require(p.ParentTwo == 0 || (people.ContainsKey(p.ParentTwo) && p.ParentTwo < p.Id && people[p.ParentTwo].Born < p.Born), "INV-012", "생물학 부모 DAG");
@@ -104,6 +105,12 @@ public static class Invariants
             Require(c.Status == "open" || c.Escrow == 0, "INV-005", "종결 예치 정산");
         }
         var money = state.People.Sum(p => p.Money) + state.Groups.Sum(g => g.Money + g.PolicyEscrow) + state.Contracts.Sum(c => c.Escrow);
+        var totals = state.Items.GroupBy(i => i.Definition).ToDictionary(g => g.Key, g => g.Sum(i => (long)i.Quantity), StringComparer.Ordinal);
+        Require(totals.Keys.All(state.Materials.ContainsKey), "INV-018", "실물 원천 원장 누락");
+        foreach (var (definition, flow) in state.Materials)
+            Require(flow.Opening >= 0 && flow.Extraction >= 0 && flow.Production >= 0 && flow.Consumption >= 0 && flow.Loss >= 0 &&
+                totals.GetValueOrDefault(definition) == flow.Opening + flow.Extraction + flow.Production - flow.Consumption - flow.Loss,
+                "INV-018", "품목별 생산/소비/소실 보존");
         Require(money == state.CreatedMoney - state.ConsumedMoney, "INV-018", "영석 보존");
         Require(state.Controlled == 0 || (people.TryGetValue(state.Controlled, out var controlled) && controlled.Status == LifeStatus.Alive), "INV-009", "조작권");
         Require(state.Commands.Keys.SequenceEqual(state.CommandSignatures.Keys) && state.Commands.All(x => x.Key == x.Value.Id && x.Value.Accepted && x.Value.Revision <= state.Revision), "INV-005", "명령 멱등 원장");

@@ -1,11 +1,11 @@
 {
-  "total": 18,
+  "total": 31,
   "failed": 0,
   "results": [
     {
       "name": "INV-001/002/011 \uC815\uD655\uD55C \uCC3D\uC138\u00B7\uC548\uC815 \uC2E0\uC6D0\u00B7100\uC9C0\uC810",
       "passed": true,
-      "ms": 167
+      "ms": 187
     },
     {
       "name": "INV-003 \uC0AC\uC6A9\uC790 \uC138 \uC815\uCC45\uACFC 0 \uBE44\uD65C\uC131",
@@ -15,7 +15,7 @@
     {
       "name": "INV-004/005/011/012 \uC2E4\uC81C \uCD9C\uC0DD\u00B7\uC720\uC804\u00B7\uB2E8\uC77C \uC601\uD63C\u00B7\uC7AC\uC804\uC1A1",
       "passed": true,
-      "ms": 47
+      "ms": 48
     },
     {
       "name": "INV-003 \uAE30\uC874 \uC784\uC2E0 \uBC95\uCE59 revision \uBCF4\uC874",
@@ -30,67 +30,132 @@
     {
       "name": "INV-012 \uD608\uC5F0 \uD5C8\uC6A9\u00B7\uC81C\uD55C \uD504\uB9AC\uC14B",
       "passed": true,
-      "ms": 13
+      "ms": 14
     },
     {
       "name": "INV-006/007/004 \uC2DC\uAC04 \uBD84\uD560\u00B7\uC870\uD68C/\uC800\uC7A5 \uBB34\uC601\uD5A5",
       "passed": true,
-      "ms": 793
+      "ms": 922
     },
     {
       "name": "INV-004 \uC190\uC0C1 \uC800\uC7A5\u00B7\uC911\uB2E8 \uD30C\uC77C\u00B7\uBC31\uC5C5 \uBCF5\uC6D0",
       "passed": true,
-      "ms": 34
+      "ms": 28
     },
     {
       "name": "INV-004/012 \uBD88\uBC95 \uBD80\uBAA8\u00B7\uC2E0\uC6D0 \uC911\uBCF5 \uC800\uC7A5 \uAC70\uBD80",
       "passed": true,
-      "ms": 5
+      "ms": 7
     },
     {
       "name": "INV-016/017/018 \uC2E4\uBB3C \uCD9C\uD488\u00B7\uAC70\uB798\u00B7\uC601\uC11D \uBCF4\uC874",
       "passed": true,
-      "ms": 23
+      "ms": 27
     },
     {
       "name": "INV-017 \uACBD\uB9E4 \uC608\uCE58\u00B7\uB099\uCC30 \uB2E8\uC77C \uC815\uC0B0",
       "passed": true,
-      "ms": 16
+      "ms": 20
     },
     {
       "name": "INV-017 \uC81C\uC791 \uC608\uC57D\u00B7\uCDE8\uC18C\u00B7\uC18C\uBE44\u00B7\uC800\uC7A5",
       "passed": true,
-      "ms": 24
+      "ms": 31
     },
     {
       "name": "INV-020 \uC870\uC9C1 \uAE08\uACE0\u00B7\uC815\uCC45 \uC608\uC57D\u00B7\uD574\uC0B0 \uC5ED\uC0AC",
       "passed": true,
-      "ms": 24
+      "ms": 28
     },
     {
       "name": "INV-013/014 \uD654\uC2E0 \uB300\uC6D0\uB9CC \uACBD\uACC4\u00B7\uC2E4\uC81C \uC0AC\uB9DD\u00B7\uB300\uAE30\u00B7\uCD9C\uC0DD",
       "passed": true,
-      "ms": 34
+      "ms": 39
     },
     {
       "name": "INV-023 \uC6D0\uC601 \uD30C\uB2E8 \uD6C4 \uCDE8\uC18C \uC0AC\uB9DD\u00B7\uC571 \uBCF5\uC6D0\uC740 \uD3EC\uAE30 \uC544\uB2D8",
       "passed": true,
-      "ms": 14
+      "ms": 19
     },
     {
       "name": "INV-010/021 \uBE59\uC758\u00B7AI \uC778\uACC4\uC5D0\uC11C \uAE30\uC874 \uD589\uB3D9 \uBCF4\uC874",
       "passed": true,
-      "ms": 9
+      "ms": 12
     },
     {
       "name": "30\uACBD\uB85C\u00B724\uC7AC\uB2A5\u00B740\uD2B9\uC131\u00B712\uC7A5\uBE44\u00B7\uC815\uC758 \uC870\uD68C \uC21C\uC218\uC131",
       "passed": true,
-      "ms": 4
+      "ms": 5
     },
     {
       "name": "INV-008/009/010 \uAD00\uCC30\u2192\uD50C\uB808\uC774\u00B7\uC228\uC740 \uC0C1\uD0DC \uBE44\uAC04\uC12D\u00B7ID \uC6B0\uD68C",
       "passed": true,
-      "ms": 39
+      "ms": 52
+    },
+    {
+      "name": "RC-01 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 16
+    },
+    {
+      "name": "RC-02 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 15
+    },
+    {
+      "name": "RC-03 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 16
+    },
+    {
+      "name": "RC-04 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 20
+    },
+    {
+      "name": "RC-05 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 15
+    },
+    {
+      "name": "RC-06 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 16
+    },
+    {
+      "name": "RC-07 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 13
+    },
+    {
+      "name": "RC-08 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 14
+    },
+    {
+      "name": "RC-09 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 19
+    },
+    {
+      "name": "RC-10 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 18
+    },
+    {
+      "name": "RC-11 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 15
+    },
+    {
+      "name": "RC-12 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 13
+    },
+    {
+      "name": "RC-13 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 16
     }
   ]
 }

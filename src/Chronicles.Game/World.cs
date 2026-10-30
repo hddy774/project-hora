@@ -13,6 +13,7 @@ public sealed partial class GameWorld
     private Dictionary<long, Item> items = [];
     private Dictionary<long, Soul> souls = [];
     private Dictionary<long, Group> groups = [];
+    private Dictionary<long, List<Item>> ownedItems = [];
     private Dictionary<int, Person[]> residents = [];
     private Dictionary<long, Person[]> dependents = [];
 
@@ -55,7 +56,7 @@ public sealed partial class GameWorld
         {
             var p = new Person { Id = w.Id(), BodyId = w.Id(), SoulId = w.Id(),
                 Name = i == 0 ? "청명" : "연화", Gestates = i == 1, Born = -w.Law("founder.age"),
-                Lifespan = w.Law("founder.lifespan"), Realm = Realm.HalfImmortal, Layer = 9,
+                Lifespan = w.Law("founder.lifespan"), Realm = Realm.HalfImmortal, Layer = 9, GreatPerfection = true,
                 Money = w.Law("founder.initialMoney"), KnownPlaces = [0],
                 Roots = Enumerable.Range(0, 5).Select(_ => 4000 + w.Roll(2001)).ToArray(),
                 Aptitudes = Enumerable.Range(0, 6).Select(_ => 4000 + w.Roll(2001)).ToArray(),
@@ -72,9 +73,9 @@ public sealed partial class GameWorld
             s.Souls.Add(new Soul { Id = p.SoulId, Root = p.SoulId, CurrentPerson = p.Id,
                 SourceRealm = Realm.HalfImmortal, SourceLayer = 9, Evidence = "창세 조건" });
             s.CreatedMoney += p.Money;
-            w.AddItem(p.Id, "food", w.IntLaw("founder.initialFood"), 5000, "창세 초기 자산");
-            w.AddItem(p.Id, "tool", 1, 5000, "창세 초기 자산");
-            foreach (var path in Catalog.Paths) w.AddItem(p.Id, path.Id, 1, 5000, "창세 초기 지식 매체");
+            w.AddItem(p.Id, "food", w.IntLaw("founder.initialFood"), 5000, "창세 초기 자산", "opening");
+            w.AddItem(p.Id, "tool", 1, 5000, "창세 초기 자산", "opening");
+            foreach (var path in Catalog.Paths) w.AddItem(p.Id, path.Id, 1, 5000, "창세 초기 지식 매체", "opening");
         }
         w.Reindex();
         s.People[0].Partner = s.People[1].Id; s.People[1].Partner = s.People[0].Id;
@@ -100,6 +101,7 @@ public sealed partial class GameWorld
         items = state.Items.ToDictionary(p => p.Id);
         souls = state.Souls.ToDictionary(p => p.Id);
         groups = state.Groups.ToDictionary(p => p.Id);
+        ownedItems = state.Items.GroupBy(i => i.Owner).ToDictionary(g => g.Key, g => g.ToList());
         RefreshPopulationIndices();
     }
     private void RefreshPopulationIndices()
@@ -201,6 +203,7 @@ public sealed partial class GameWorld
     private string? Start(Person p, string kind, long target, string data)
     {
         if (p.Action != ActionKind.Idle) return "기존 작업이 진행 중입니다.";
+        if (p.Sealed && actionNameRequiresMovement(kind)) return "현재 봉인되어 이동할 수 없습니다.";
         if (p.Health < 10 && kind != "heal") return "먼저 회복이 필요합니다.";
         if (!Enum.TryParse<ActionKind>(kind, true, out var action) || action == ActionKind.Idle)
             return "알 수 없는 행동입니다.";
@@ -237,6 +240,8 @@ public sealed partial class GameWorld
         return null;
     }
 
+    private static bool actionNameRequiresMovement(string kind) => kind.Equals("travel", StringComparison.OrdinalIgnoreCase);
+
     private string? Cancel(Person p)
     {
         if (p.Action == ActionKind.Idle) return "취소할 작업이 없습니다.";
@@ -265,6 +270,8 @@ public sealed partial class GameWorld
         {
             if (Month - p.Born >= p.Lifespan) { EndLife(p, 1, "수명 소진"); continue; }
             Maintain(p);
+            if (p.Status != LifeStatus.Alive) continue;
+            ResolveWorldConditions(p);
             if (p.Status != LifeStatus.Alive) continue;
             if (p.Action != ActionKind.Idle && p.Due <= Month) Complete(p);
             if (p.Status != LifeStatus.Alive) continue;

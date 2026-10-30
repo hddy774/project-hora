@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "api24-debug-native-probe",
+  "source_commit": "4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+  "source_tree": "9dabe42e10d385ab9e0dda4f1242a5d3fb024d31",
+  "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "event_sha": "4ab393cfca5667b5763c7ad226656df1b77ff30c",
+  "event_name": "pull_request",
+  "run_id": "41120849667",
+  "run_attempt": "1",
+  "version": "0.2.1",
+  "workflow_sha256": "11b78eae7ad81be07bd412dc02e7fec7a59a662ce2ded70dad5eebb6a3063267",
+  "scope": "API24 x86_64 기본 이미지의 디버그 APK 새 설치·DOM·실제 GameSession 연결만 검증",
+  "retained_signature_or_upgrade_claim": false,
+  "release_publication": false
+}

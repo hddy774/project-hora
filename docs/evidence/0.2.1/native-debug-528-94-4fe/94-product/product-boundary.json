@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "kind": "seonro-v021-static-product-boundary",
+  "passed": true,
+  "source_commit": "cbf09633cb2022a4125e1001978c579b54d09a64",
+  "working_tree_dirty": false,
+  "projects": [
+    {
+      "module": "Core",
+      "project": "src/Chronicles.Core/Chronicles.Core.csproj",
+      "framework": "net10.0",
+      "references": [],
+      "packages": [],
+      "manual_csharp_files": 2
+    },
+    {
+      "module": "Game",
+      "project": "src/Chronicles.Game/Chronicles.Game.csproj",
+      "framework": "net10.0",
+      "references": [
+        "Core"
+      ],
+      "packages": [],
+      "manual_csharp_files": 95
+    },
+    {
+      "module": "Hosting",
+      "project": "src/Chronicles.Hosting/Chronicles.Hosting.csproj",
+      "framework": "net10.0",
+      "references": [
+        "Game"
+      ],
+      "packages": [],
+      "manual_csharp_files": 4
+    },
+    {
+      "module": "Shell",
+      "project": "src/Chronicles.Shell/Chronicles.Shell.csproj",
+      "framework": "net10.0",
+      "references": [
+        "Hosting"
+      ],
+      "packages": [],
+      "manual_csharp_files": 1
+    },
+    {
+      "module": "Android",
+      "project": "src/Chronicles.Android/Chronicles.Android.csproj",
+      "framework": "net10.0-android",
+      "references": [
+        "Hosting"
+      ],
+      "packages": [],
+      "manual_csharp_files": 1
+    },
+    {
+      "module": "Desktop",
+      "project": "src/Chronicles.Desktop/Chronicles.Desktop.csproj",
+      "framework": "net10.0-windows",
+      "references": [
+        "Hosting"
+      ],
+      "packages": [
+        "Microsoft.Web.WebView2"
+      ],
+      "manual_csharp_files": 2
+    },
+    {
+      "module": "GameTests",
+      "project": "tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj",
+      "framework": "net10.0",
+      "references": [
+        "Game",
+        "Hosting"
+      ],
+      "packages": [],
+      "manual_csharp_files": 77
+    }
+  ],
+  "host_closures": {
+    "Desktop": [
+      "Core",
+      "Desktop",
+      "Game",
+      "Hosting"
+    ],
+    "Android": [
+      "Android",
+      "Core",
+      "Game",
+      "Hosting"
+    ],
+    "Shell": [
+      "Core",
+      "Game",
+      "Hosting",
+      "Shell"
+    ]
+  },
+  "source_checks": [
+    {
+      "module": "Core",
+      "source_owner_checked": true,
+      "no_old_authority_namespace": true
+    },
+    {
+      "module": "Game",
+      "source_owner_checked": true,
+      "no_old_authority_namespace": true
+    },
+    {
+      "module": "Hosting",
+      "source_owner_checked": true,
+      "no_old_authority_namespace": true
+    },
+    {
+      "module": "Shell",
+      "source_owner_checked": true,
+      "no_old_authority_namespace": true
+    },
+    {
+      "module": "Android",
+      "source_owner_checked": true,
+      "no_old_authority_namespace": true
+    },
+    {
+      "module": "Desktop",
+      "source_owner_checked": true,
+      "no_old_authority_namespace": true
+    },
+    {
+      "module": "GameTests",
+      "source_owner_checked": true,
+      "no_old_authority_namespace": true
+    }
+  ],
+  "archive_files_verified": 158,
+  "replaced_prototype_files_verified": 3,
+  "execution_claims": {
+    "game_functional_tests": false,
+    "native_runtime": false,
+    "unity": false,
+    "performance": false
+  },
+  "limitations": [
+    "Text/XML source guard, not a C# semantic or evaluated MSBuild graph proof.",
+    "SDK-generated code and transitive framework internals require build/runtime validation.",
+    "net10.0 and reflection-based serializer do not establish Unity/IL2CPP compatibility."
+  ]
+}

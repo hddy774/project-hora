@@ -1,0 +1,177 @@
+{
+  "files": {
+    "4fe-api24/apk/apk.json": {
+      "bytes": 777,
+      "sha256": "523849e239d5d91522cb846bab455323492a732f4f7324671faba6ec526f92a6"
+    },
+    "4fe-api24/apk/badging.txt": {
+      "bytes": 995,
+      "sha256": "322f0c4814816f7f4d61ad1b4e8ee12d902e2c12317858619728214da258f1dc"
+    },
+    "4fe-api24/runtime/api24-proof.json": {
+      "bytes": 1117,
+      "sha256": "4a184052e1603559b38f62281ff99520929a6785418561a90abfe67437dc7f71"
+    },
+    "4fe-api24/runtime/device.json": {
+      "bytes": 166,
+      "sha256": "1b7e2d0fe372cc20eeedf8ed2c0745b9782b49c5f7cf4579ace93ba18f3c2139"
+    },
+    "4fe-api24/runtime/foreground-final.txt": {
+      "bytes": 7263,
+      "sha256": "33fb164f089580eaaaf956113dbc8ef581e8630eed0a6fe47a5f9f1ba758a8e4"
+    },
+    "4fe-api24/runtime/fresh/dom-checker.txt": {
+      "bytes": 172,
+      "sha256": "3d5b3294b4ebea2dd0f4955619cc9befeadf654a6f2a782f4ffacec2ab31260e"
+    },
+    "4fe-api24/runtime/fresh/dom-proof.json": {
+      "bytes": 172,
+      "sha256": "3d5b3294b4ebea2dd0f4955619cc9befeadf654a6f2a782f4ffacec2ab31260e"
+    },
+    "4fe-api24/runtime/fresh/foreground.txt": {
+      "bytes": 7263,
+      "sha256": "92c3eb30a3236e411198d9af84ca2c1a087a0dd81ed1939d4503ea948a370989"
+    },
+    "4fe-api24/runtime/fresh/launch.txt": {
+      "bytes": 221,
+      "sha256": "9d4da00615bb5207b4b104d0f8d9795a42c680620c7064675f63b468d94b467f"
+    },
+    "4fe-api24/runtime/fresh/render-log.txt": {
+      "bytes": 60735,
+      "sha256": "588fef0a9f462dab4b1ba5447a296bb3a77ebc3b7022643a39b95637a4b44816"
+    },
+    "4fe-api24/runtime/fresh/ui.xml": {
+      "bytes": 2150,
+      "sha256": "b65dff9ad74682ba844b5b244fc53a5f7a297944daf727821362a6aeb9fbd7a4"
+    },
+    "4fe-api24/runtime/install.txt": {
+      "bytes": 32,
+      "sha256": "8cfe21ca9831863004ad6eb25b313f8944786f7a01b291da8fbbe61cc0c847e5"
+    },
+    "4fe-api24/runtime/webview-package-after.txt": {
+      "bytes": 2262,
+      "sha256": "9da749bf7edc5fd2f445f6ace8fb98844bd13282d381ce39dee6d60af0d0d772"
+    },
+    "4fe-api24/runtime/webview-package-before.txt": {
+      "bytes": 2262,
+      "sha256": "9da749bf7edc5fd2f445f6ace8fb98844bd13282d381ce39dee6d60af0d0d772"
+    },
+    "4fe-api24/runtime/webview-service-after.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "4fe-api24/runtime/webview-service-before.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "4fe-api24/source.json": {
+      "bytes": 733,
+      "sha256": "e8e5bf1ec68e340838892cf13e88cfeb2e126d0f5316a0ad5f2d06ac3ea4908a"
+    },
+    "4fe-api24-webview-provider.excerpt.txt": {
+      "bytes": 230,
+      "sha256": "2e151ebdc81d672e5d37d2b77a7bb00952d7a2fd63876f3ef797ef66a74e250b"
+    },
+    "4fe-api24.artifact.json": {
+      "bytes": 142,
+      "sha256": "c0c16c4472192dd0e791188ac8f346f4ba6cc3f18953f7d2329aa72435fa7a4d"
+    },
+    "4fe-api35/android-render-log.txt": {
+      "bytes": 204,
+      "sha256": "d699e9485e7fd6ad69cbec9e07a1b574f360639a7d9774bc5fca186636c7c133"
+    },
+    "4fe-api35/android-ui.xml": {
+      "bytes": 1809,
+      "sha256": "8ded39848458c36332922b87b1e6883dfe69c84c4976c6c0a62886b811156652"
+    },
+    "4fe-api35.artifact.json": {
+      "bytes": 142,
+      "sha256": "89bec912e3ceafd3f2e1a9dbf8d132d915636b1458da13d6d5cf7c4baa789827"
+    },
+    "4fe-product/product-boundary.json": {
+      "bytes": 3543,
+      "sha256": "82166898a30c45da0e9fcb35b17bd6a75ac70cb7c5b0e5a926584ea105e7a6f4"
+    },
+    "4fe-product/product-tests.json": {
+      "bytes": 62882,
+      "sha256": "881a3769b3b2834848b5eaa82b4ba9b0ab8cc6294d56e7a69a05a381fb40ff26"
+    },
+    "4fe-product.artifact.json": {
+      "bytes": 119,
+      "sha256": "92b2dcf29b6ae6ca42726bceea3dce86943d122d1b410a8314a91f34fd5a4815"
+    },
+    "4fe-windows-smoke.excerpt.txt": {
+      "bytes": 1496,
+      "sha256": "8b5c260522bb9f6744611467033104485c4bbf44dcd4747e7cf5794cdd937e82"
+    },
+    "94-api24-failure/apk/apk.json": {
+      "bytes": 777,
+      "sha256": "b0a8e44836a92a4931ac58865cfe666ef42519f9be60feb8c9ffc59d6fdd8a9d"
+    },
+    "94-api24-failure/apk/badging.txt": {
+      "bytes": 995,
+      "sha256": "322f0c4814816f7f4d61ad1b4e8ee12d902e2c12317858619728214da258f1dc"
+    },
+    "94-api24-failure/source.json": {
+      "bytes": 733,
+      "sha256": "8a278eb788371c8f5e123632fe06bdc6423a34ca4406f969ae79e14ee651bf45"
+    },
+    "94-api24-failure.artifact.json": {
+      "bytes": 147,
+      "sha256": "944d33f6f1440a5d6070f381a70e2d2a6c979075e57c992ed7ba64a50773c2af"
+    },
+    "94-api24-kvm-failure.excerpt.txt": {
+      "bytes": 3928,
+      "sha256": "cf94c6bcdc9dee692e952a6d44b2214445a131958805dba6c58a4f699d9a64b4"
+    },
+    "94-api35/android-render-log.txt": {
+      "bytes": 204,
+      "sha256": "fccd6e8ac787d8c2e3216978b5bacf7a48460913f9a815c083e2efc6a673b71b"
+    },
+    "94-api35/android-ui.xml": {
+      "bytes": 1809,
+      "sha256": "8ded39848458c36332922b87b1e6883dfe69c84c4976c6c0a62886b811156652"
+    },
+    "94-api35.artifact.json": {
+      "bytes": 141,
+      "sha256": "ea40fc52db4768cfc583d6744ac95b1f6b43b931d14df22808d4924e3d7aba68"
+    },
+    "94-product/product-boundary.json": {
+      "bytes": 3543,
+      "sha256": "72eab96636634c8db167f1df1704474179df860f16e2bfcdf2b743b98ba3810c"
+    },
+    "94-product/product-tests.json": {
+      "bytes": 62890,
+      "sha256": "3b51c63a6dd3e446cf56d8e825d0e9bd1d63eade688f6af66e2080fad672c2be"
+    },
+    "94-product.artifact.json": {
+      "bytes": 142,
+      "sha256": "6ac53c78215973d3c940adf5351dab2a4d33096ea28f557acb68d70b5cae1a6f"
+    },
+    "94-windows-failure.excerpt.txt": {
+      "bytes": 1590,
+      "sha256": "a454c418ced21b05697dacb69b32da366454919e4cc76c95e98c570c53ff6bce"
+    },
+    "README.md": {
+      "bytes": 3061,
+      "sha256": "05174dea71835311cc1200b79a146873b280fd129de86a463fecf9d29922f55e"
+    },
+    "copied-file-manifest.json": {
+      "bytes": 13128,
+      "sha256": "7549d007c53ccabf5f40842c23068c3fe51c00f5e6f4f305457b7fef357783a5"
+    },
+    "diagnostic-summary.json": {
+      "bytes": 12714,
+      "sha256": "09f0d33eb593adcc948166087acc7c50fe797bb1a42e9e50ab12af54157d8f74"
+    },
+    "excerpt-provenance.json": {
+      "bytes": 3389,
+      "sha256": "c039c67d6cb0fbb2b8533cf771716edf6ad171ce2296116e8fa390a38188fca4"
+    },
+    "final-run-results.json": {
+      "bytes": 687,
+      "sha256": "685a2876d0ba0b5941b4918d146a7df00b307679c929c06810556502e295bd89"
+    }
+  },
+  "manifest_excludes_itself": true
+}

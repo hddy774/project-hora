@@ -1,0 +1,106 @@
+{
+  "excerpts": [
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-windows-job124276843674.log",
+      "source_decoded_utf8_sha256": "4b31c18b724878f3f3717df43d5df02ff656425597cc32773c131fceaab3d301",
+      "source_bytes": 24601,
+      "copied_full_source": false,
+      "excerpt_path": "94-windows-failure.excerpt.txt",
+      "excerpt_sha256": "a454c418ced21b05697dacb69b32da366454919e4cc76c95e98c570c53ff6bce",
+      "original_line_numbers_1based": [
+        79,
+        81,
+        106,
+        109,
+        137,
+        139,
+        152,
+        301,
+        302,
+        303,
+        312,
+        314,
+        315
+      ],
+      "selection": "HEAD is now|cbf09633cb2022a4125e1001978c579b54d09a64|Build succeeded|0 Error\\(s\\)|Start-Process.*smoke-test|WaitForExit\\(45000\\)|Desktop smoke timeout|##\\[error\\]",
+      "selected_line_bytes_modified": false
+    },
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api24-job124276843196.log",
+      "source_decoded_utf8_sha256": "556cda35a9693a5b804438ce2282e198deaf5eb24a73d9414a3b617fbb4b1481",
+      "source_bytes": 229743,
+      "copied_full_source": false,
+      "excerpt_path": "94-api24-kvm-failure.excerpt.txt",
+      "excerpt_sha256": "cf94c6bcdc9dee692e952a6d44b2214445a131958805dba6c58a4f699d9a64b4",
+      "original_line_numbers_1based": [
+        40,
+        58,
+        281,
+        282,
+        289,
+        290,
+        307,
+        310,
+        348,
+        350,
+        366,
+        392,
+        411,
+        1383,
+        1411,
+        1553,
+        1573,
+        1575,
+        1578,
+        1583,
+        1584,
+        1585,
+        1586,
+        1591,
+        1598,
+        1599,
+        1612,
+        1655,
+        1703
+      ],
+      "selection": "HEAD is now|94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5|Build succeeded|0 Error\\(s\\)|KERNEL==|udevadm|test -r /dev/kvm|##\\[error\\]",
+      "selected_line_bytes_modified": false
+    },
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-windows-job124286751202.log",
+      "source_decoded_utf8_sha256": "c881b50bcbc1896eb263c84167c9cfbcee4a576b4a5fdbcf1406e06e02c96a3c",
+      "source_bytes": 26148,
+      "copied_full_source": false,
+      "excerpt_path": "4fe-windows-smoke.excerpt.txt",
+      "excerpt_sha256": "8b5c260522bb9f6744611467033104485c4bbf44dcd4747e7cf5794cdd937e82",
+      "original_line_numbers_1based": [
+        79,
+        81,
+        106,
+        109,
+        149,
+        151,
+        164,
+        313,
+        314,
+        322
+      ],
+      "selection": "HEAD is now|4ab393cfca5667b5763c7ad226656df1b77ff30c|Build succeeded|0 Error\\(s\\)|Start-Process.*smoke-test|actualRenderAndBridge",
+      "selected_line_bytes_modified": false
+    },
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/logcat-all.txt",
+      "source_decoded_utf8_sha256": "488bec0053a4c034e2dad94dfb8ef93d7f245a40dccb9eb36bb74331454db5b4",
+      "source_bytes": 62008,
+      "copied_full_source": false,
+      "excerpt_path": "4fe-api24-webview-provider.excerpt.txt",
+      "excerpt_sha256": "2e151ebdc81d672e5d37d2b77a7bb00952d7a2fd63876f3ef797ef66a74e250b",
+      "original_line_numbers_1based": [
+        363,
+        573
+      ],
+      "selection": "WebViewFactory.*Loading|SeonroRender:",
+      "selected_line_bytes_modified": false
+    }
+  ]
+}

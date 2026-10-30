@@ -1,0 +1,23 @@
+{
+  "command": [
+    "dotnet",
+    "/home/runner/work/_temp/v021-growth-41111524034-1-a-42/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/home/runner/work/_temp/v021-growth-41111524034-1-a-42/out/genesis.json",
+    "--growth",
+    "/home/runner/work/_temp/v021-growth-41111524034-1-a-42/out/growth.json",
+    "--growth-scenario",
+    "a",
+    "--growth-seed",
+    "42"
+  ],
+  "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "scenario": "a",
+  "seed": 42,
+  "started_at_utc": "2026-10-30T19:00:16.999856+00:00",
+  "monotonic_started": 164.841025992,
+  "wall_cap_minutes": 330,
+  "timeout_meaning": "중단이면 실패·원시 partial/pending 보존. 6000개월 단축이나 완주 재라벨이 아님"
+}

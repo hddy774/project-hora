@@ -1,0 +1,176 @@
+{
+  "run": {
+    "id": 41111524034,
+    "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-30T18:59:45Z",
+    "updated_at": "2026-10-30T20:51:13Z",
+    "run_attempt": 1,
+    "url": "https://github.com/hddy774/project-hora/actions/runs/41111524034"
+  },
+  "jobs": [
+    {
+      "id": 124254591322,
+      "name": "성장 b · 시드 42 · 6000개월",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T18:59:48Z",
+      "completed_at": "2026-10-30T20:25:42Z",
+      "runner_name": "GitHub Actions 1000002428"
+    },
+    {
+      "id": 124254591394,
+      "name": "성장 a · 시드 2026 · 6000개월",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T18:59:48Z",
+      "completed_at": "2026-10-30T19:57:57Z",
+      "runner_name": "GitHub Actions 1000002429"
+    },
+    {
+      "id": 124254591447,
+      "name": "성장 b · 시드 2026 · 6000개월",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T18:59:48Z",
+      "completed_at": "2026-10-30T20:32:55Z",
+      "runner_name": "GitHub Actions 1000002430"
+    },
+    {
+      "id": 124254591567,
+      "name": "성장 c · 시드 98 · 6000개월",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T18:59:48Z",
+      "completed_at": "2026-10-30T19:26:07Z",
+      "runner_name": "GitHub Actions 1000002433"
+    },
+    {
+      "id": 124254591586,
+      "name": "성장 c · 시드 42 · 6000개월",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T18:59:48Z",
+      "completed_at": "2026-10-30T20:26:49Z",
+      "runner_name": "GitHub Actions 1000002432"
+    },
+    {
+      "id": 124254591611,
+      "name": "성장 a · 시드 98 · 6000개월",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T18:59:48Z",
+      "completed_at": "2026-10-30T19:28:45Z",
+      "runner_name": "GitHub Actions 1000002434"
+    },
+    {
+      "id": 124254591630,
+      "name": "성장 b · 시드 98 · 6000개월",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T18:59:48Z",
+      "completed_at": "2026-10-30T20:51:02Z",
+      "runner_name": "GitHub Actions 1000002431"
+    },
+    {
+      "id": 124254591645,
+      "name": "성장 c · 시드 2026 · 6000개월",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T18:59:48Z",
+      "completed_at": "2026-10-30T20:28:30Z",
+      "runner_name": "GitHub Actions 1000002435"
+    },
+    {
+      "id": 124254591665,
+      "name": "성장 a · 시드 42 · 6000개월",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T18:59:48Z",
+      "completed_at": "2026-10-30T19:54:11Z",
+      "runner_name": "GitHub Actions 1000002436"
+    },
+    {
+      "id": 124306120369,
+      "name": "같은 소스의 완료 원본 9개 통합",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T20:51:05Z",
+      "completed_at": "2026-10-30T20:51:12Z",
+      "runner_name": "GitHub Actions 1000002589"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13010985300,
+      "name": "v021-growth-41111524034-1-b-2026",
+      "bytes": 1290832,
+      "digest": "sha256:b16902db1cba518ba6ee6fd46cb964c1e432a3cb6d2a6f6543dee9d1e2448bc2",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "id": 13010597728,
+      "name": "v021-growth-aggregate-41111524034-1",
+      "bytes": 88424,
+      "digest": "sha256:0624c0ba9501b90c577f43a21e26d41dadfdacd60430efe7f78259156f637493",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "id": 13010567953,
+      "name": "v021-growth-41111524034-1-b-98",
+      "bytes": 1291008,
+      "digest": "sha256:8e101c92c5c27dfcd89844467b374843785ec007de91eb7b61bb9eca1c38221f",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "id": 13010020342,
+      "name": "v021-growth-41111524034-1-c-42",
+      "bytes": 1290744,
+      "digest": "sha256:93a35d02b560c65493fea36c3f6c66e23f2b9b657372d8a1b798f0a9e00edc10",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "id": 13009845862,
+      "name": "v021-growth-41111524034-1-c-2026",
+      "bytes": 1290574,
+      "digest": "sha256:a2b39e10e376bc76de27e0c3c940f4f3e26c3cac05681291643b5d63096d2915",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "id": 13009557239,
+      "name": "v021-growth-41111524034-1-b-42",
+      "bytes": 1290831,
+      "digest": "sha256:66952ebcf841d2cc0143663483b552ad539b5b10e1314f8d456386b34443b249",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "id": 13008420766,
+      "name": "v021-growth-41111524034-1-a-2026",
+      "bytes": 1290398,
+      "digest": "sha256:e63280b00fefbe2325986af464c942f4fb3a5c8823204cc5daf6275d9e70002d",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "id": 13007920695,
+      "name": "v021-growth-41111524034-1-a-42",
+      "bytes": 1290950,
+      "digest": "sha256:218c77bff0eac51598f0f7e2bfd5f3c08b14728a5fadefa8d549aebae99ec39e",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "id": 13005552105,
+      "name": "v021-growth-41111524034-1-a-98",
+      "bytes": 1289658,
+      "digest": "sha256:e39de87e72673330cf0662de18c5d9f11ec83ea1cf9318be0ec18ab244792e80",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "id": 13004698470,
+      "name": "v021-growth-41111524034-1-c-98",
+      "bytes": 1289696,
+      "digest": "sha256:9b9a80118240d7c826785c67820430cafd3840e4b496e1e6bc99b84f58c0bf3f",
+      "head_sha": "7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    }
+  ]
+}

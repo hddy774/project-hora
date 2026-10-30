@@ -1,0 +1,268 @@
+{
+  "schema_version": 1,
+  "copied_files": {
+    "diagnostic-summary.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/diagnostic-summary.json",
+      "bytes": 12714,
+      "sha256": "09f0d33eb593adcc948166087acc7c50fe797bb1a42e9e50ab12af54157d8f74",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "final-run-results.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/final-run-results.json",
+      "bytes": 687,
+      "sha256": "685a2876d0ba0b5941b4918d146a7df00b307679c929c06810556502e295bd89",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-api24-failure/apk/apk.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api24-failure/apk/apk.json",
+      "bytes": 777,
+      "sha256": "b0a8e44836a92a4931ac58865cfe666ef42519f9be60feb8c9ffc59d6fdd8a9d",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-api24-failure/apk/badging.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api24-failure/apk/badging.txt",
+      "bytes": 995,
+      "sha256": "322f0c4814816f7f4d61ad1b4e8ee12d902e2c12317858619728214da258f1dc",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-api24-failure/source.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api24-failure/source.json",
+      "bytes": 733,
+      "sha256": "8a278eb788371c8f5e123632fe06bdc6423a34ca4406f969ae79e14ee651bf45",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-api24-failure.artifact.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api24-failure.artifact.json",
+      "bytes": 147,
+      "sha256": "944d33f6f1440a5d6070f381a70e2d2a6c979075e57c992ed7ba64a50773c2af",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-api35/android-render-log.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api35/android-render-log.txt",
+      "bytes": 204,
+      "sha256": "fccd6e8ac787d8c2e3216978b5bacf7a48460913f9a815c083e2efc6a673b71b",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-api35/android-ui.xml": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api35/android-ui.xml",
+      "bytes": 1809,
+      "sha256": "8ded39848458c36332922b87b1e6883dfe69c84c4976c6c0a62886b811156652",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-api35.artifact.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api35.artifact.json",
+      "bytes": 141,
+      "sha256": "ea40fc52db4768cfc583d6744ac95b1f6b43b931d14df22808d4924e3d7aba68",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-product/product-boundary.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-product/product-boundary.json",
+      "bytes": 3543,
+      "sha256": "72eab96636634c8db167f1df1704474179df860f16e2bfcdf2b743b98ba3810c",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-product/product-tests.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-product/product-tests.json",
+      "bytes": 62890,
+      "sha256": "3b51c63a6dd3e446cf56d8e825d0e9bd1d63eade688f6af66e2080fad672c2be",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "94-product.artifact.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-product.artifact.json",
+      "bytes": 142,
+      "sha256": "6ac53c78215973d3c940adf5351dab2a4d33096ea28f557acb68d70b5cae1a6f",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/apk/apk.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/apk/apk.json",
+      "bytes": 777,
+      "sha256": "523849e239d5d91522cb846bab455323492a732f4f7324671faba6ec526f92a6",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/apk/badging.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/apk/badging.txt",
+      "bytes": 995,
+      "sha256": "322f0c4814816f7f4d61ad1b4e8ee12d902e2c12317858619728214da258f1dc",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/api24-proof.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/api24-proof.json",
+      "bytes": 1117,
+      "sha256": "4a184052e1603559b38f62281ff99520929a6785418561a90abfe67437dc7f71",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/device.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/device.json",
+      "bytes": 166,
+      "sha256": "1b7e2d0fe372cc20eeedf8ed2c0745b9782b49c5f7cf4579ace93ba18f3c2139",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/foreground-final.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/foreground-final.txt",
+      "bytes": 7263,
+      "sha256": "33fb164f089580eaaaf956113dbc8ef581e8630eed0a6fe47a5f9f1ba758a8e4",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/fresh/dom-checker.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/fresh/dom-checker.txt",
+      "bytes": 172,
+      "sha256": "3d5b3294b4ebea2dd0f4955619cc9befeadf654a6f2a782f4ffacec2ab31260e",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/fresh/dom-proof.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/fresh/dom-proof.json",
+      "bytes": 172,
+      "sha256": "3d5b3294b4ebea2dd0f4955619cc9befeadf654a6f2a782f4ffacec2ab31260e",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/fresh/foreground.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/fresh/foreground.txt",
+      "bytes": 7263,
+      "sha256": "92c3eb30a3236e411198d9af84ca2c1a087a0dd81ed1939d4503ea948a370989",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/fresh/launch.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/fresh/launch.txt",
+      "bytes": 221,
+      "sha256": "9d4da00615bb5207b4b104d0f8d9795a42c680620c7064675f63b468d94b467f",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/fresh/render-log.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/fresh/render-log.txt",
+      "bytes": 60735,
+      "sha256": "588fef0a9f462dab4b1ba5447a296bb3a77ebc3b7022643a39b95637a4b44816",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/fresh/ui.xml": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/fresh/ui.xml",
+      "bytes": 2150,
+      "sha256": "b65dff9ad74682ba844b5b244fc53a5f7a297944daf727821362a6aeb9fbd7a4",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/install.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/install.txt",
+      "bytes": 32,
+      "sha256": "8cfe21ca9831863004ad6eb25b313f8944786f7a01b291da8fbbe61cc0c847e5",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/webview-package-after.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/webview-package-after.txt",
+      "bytes": 2262,
+      "sha256": "9da749bf7edc5fd2f445f6ace8fb98844bd13282d381ce39dee6d60af0d0d772",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/webview-package-before.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/webview-package-before.txt",
+      "bytes": 2262,
+      "sha256": "9da749bf7edc5fd2f445f6ace8fb98844bd13282d381ce39dee6d60af0d0d772",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/webview-service-after.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/webview-service-after.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/runtime/webview-service-before.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/webview-service-before.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24/source.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/source.json",
+      "bytes": 733,
+      "sha256": "e8e5bf1ec68e340838892cf13e88cfeb2e126d0f5316a0ad5f2d06ac3ea4908a",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api24.artifact.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24.artifact.json",
+      "bytes": 142,
+      "sha256": "c0c16c4472192dd0e791188ac8f346f4ba6cc3f18953f7d2329aa72435fa7a4d",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api35/android-render-log.txt": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api35/android-render-log.txt",
+      "bytes": 204,
+      "sha256": "d699e9485e7fd6ad69cbec9e07a1b574f360639a7d9774bc5fca186636c7c133",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api35/android-ui.xml": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api35/android-ui.xml",
+      "bytes": 1809,
+      "sha256": "8ded39848458c36332922b87b1e6883dfe69c84c4976c6c0a62886b811156652",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-api35.artifact.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api35.artifact.json",
+      "bytes": 142,
+      "sha256": "89bec912e3ceafd3f2e1a9dbf8d132d915636b1458da13d6d5cf7c4baa789827",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-product/product-boundary.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-product/product-boundary.json",
+      "bytes": 3543,
+      "sha256": "82166898a30c45da0e9fcb35b17bd6a75ac70cb7c5b0e5a926584ea105e7a6f4",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-product/product-tests.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-product/product-tests.json",
+      "bytes": 62882,
+      "sha256": "881a3769b3b2834848b5eaa82b4ba9b0ab8cc6294d56e7a69a05a381fb40ff26",
+      "copy_kind": "byte-identical UTF-8 source file"
+    },
+    "4fe-product.artifact.json": {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-product.artifact.json",
+      "bytes": 119,
+      "sha256": "92b2dcf29b6ae6ca42726bceea3dce86943d122d1b410a8314a91f34fd5a4815",
+      "copy_kind": "byte-identical UTF-8 source file"
+    }
+  },
+  "complete_artifact_copy_claim": false,
+  "original_zip_dll_png_or_generated_bin_committed": false,
+  "scope": "Only named UTF-8 source files are byte-identical copies. Other files in original CI manifests remain references; excerpts/README/coverage are declared derived documents.",
+  "explicitly_omitted_native_files": [
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api24-failure/apk/debug-certificate.txt",
+      "bytes": 307,
+      "sha256": "e2c121d002b7bc217fb877c5266751145dd03c426813d58242f3730334ba4d8c",
+      "copied": false
+    },
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/94-api35/android-screen.png",
+      "bytes": 158703,
+      "sha256": "5cbb9b1bae6147c4303593682d563e6081c5823aefc7923637005eecd16a1f50",
+      "copied": false
+    },
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/apk/debug-certificate.txt",
+      "bytes": 307,
+      "sha256": "555c1f541c642d43fbad01cf654c3cefab91e0bbcac543f0d550e60bd5efb8d1",
+      "copied": false
+    },
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/fresh/screen.png",
+      "bytes": 149840,
+      "sha256": "62e2249a11e3dc5bccc7af91e0244056fb72760d7cd810824894490c9d765576",
+      "copied": false
+    },
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/logcat-all.txt",
+      "bytes": 62008,
+      "sha256": "488bec0053a4c034e2dad94dfb8ef93d7f245a40dccb9eb36bb74331454db5b4",
+      "copied": false
+    },
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api24/runtime/screen-final.png",
+      "bytes": 149840,
+      "sha256": "62e2249a11e3dc5bccc7af91e0244056fb72760d7cd810824894490c9d765576",
+      "copied": false
+    },
+    {
+      "source_path": "/workspace/scratch/native-diagnostics-94-4fe/4fe-api35/android-screen.png",
+      "bytes": 158589,
+      "sha256": "c5e4658cd7c6859d7eb24b5cc6a4cefae23c8b55f0532574bbb2ee0d94fbdbfc",
+      "copied": false
+    }
+  ]
+}

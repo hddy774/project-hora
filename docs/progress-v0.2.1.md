@@ -25,5 +25,5 @@
 
 성능·성장·장기 안정성 검사는 전체 기능 개발 이후에 진행합니다.
 
-기준 소스: [db90dbde](https://github.com/hddy774/project-hora/commit/db90dbde87ba420ab9ac06cb49d3491671540b98) · [작업 원장](https://github.com/hddy774/project-hora/blob/db90dbde87ba420ab9ac06cb49d3491671540b98/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
+기준 소스: [76fcec72](https://github.com/hddy774/project-hora/commit/76fcec72708048e605b7bcd92cdacece1853a71a) · [작업 원장](https://github.com/hddy774/project-hora/blob/76fcec72708048e605b7bcd92cdacece1853a71a/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
 <!-- v021-progress:end -->

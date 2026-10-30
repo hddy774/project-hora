@@ -16,7 +16,7 @@ internal static class AgentPlanningFixture
         var state = world.Checkpoint();
         state.People[1].Action = ActionKind.Guard; state.People[1].Due = 1000;
         var actor = state.People[0];
-        state.CreatedMoney -= actor.Money; actor.Money = 0;
+        state.People[1].Money = checked(state.People[1].Money + actor.Money); actor.Money = 0;
         if (goal is not null) { actor.Plan = [new("replan", 0, goal)]; actor.Goal = "실제 생산 목표"; }
         return GameWorld.Restore(state);
     }
@@ -125,8 +125,12 @@ public sealed class AgentPlanningInformationFairnessScenario : IFeatureScenario
     public string Name => "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth";
     public void Run()
     {
-        var a = AgentPlanningFixture.Fresh("paper"); var hidden = a.Checkpoint(); var other = hidden.People[1];
-        other.Money += 17; hidden.CreatedMoney += 17; AgentPlanningFixture.Stock(hidden, other.Id, "herb", 1);
+        var a = AgentPlanningFixture.Fresh("paper");
+        AgentPlanningFixture.Accept(a, "unknown-funds-recipient", "create", target: 99, data: "정보 밖 실제 인물");
+        var baseline = a.Checkpoint(); baseline.People[1].Money -= 17; baseline.People[2].Money += 17;
+        baseline.People[2].Action = ActionKind.Guard; baseline.People[2].Due = 1000;
+        a = GameWorld.Restore(baseline); var hidden = a.Checkpoint(); var other = hidden.People[1];
+        other.Money += 17; hidden.People[2].Money -= 17; AgentPlanningFixture.Stock(hidden, other.Id, "herb", 1);
         var authority = KnowledgeAuthority.Restore(hidden.Knowledge);
         var edition = hidden.Knowledge.Editions.First(e => e.WorkId == "path.1.0").Id;
         AgentPlanningFixture.Check(authority.SeedInitialKnowledge(other.Id, edition, [2], 70, "fixture:hidden-private-knowledge").Applied,

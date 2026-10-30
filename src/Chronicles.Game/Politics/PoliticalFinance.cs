@@ -2,6 +2,17 @@ namespace Chronicles.Game.Politics;
 
 public static partial class PoliticsEngine
 {
+    public static PoliticalAccountBalance? DescribeAccount(PoliticalContext context, PoliticalState state, PoliticalAccount account)
+    {
+        var person = account.Kind == PoliticalAccountKind.Person ? context.People.FirstOrDefault(p => p.Id == account.Id) : null;
+        var group = account.Kind == PoliticalAccountKind.Group ? context.Groups.FirstOrDefault(g => g.Id == account.Id) : null;
+        if (person is null && group is null) return null;
+        var reserved = group is null ? 0 : checked(group.PolicyEscrow + state.Preparations.Where(p => p.Group == account.Id).Sum(p => p.Escrow));
+        return new(account, person?.Money ?? group!.Money, reserved,
+            state.Obligations.Where(o => o.Creditor == account).Sum(o => o.Outstanding),
+            state.Obligations.Where(o => o.Debtor == account).Sum(o => o.Outstanding));
+    }
+
     public static bool CanEnforce(PoliticalContext context, PoliticalObligation obligation) =>
         obligation.Outstanding > 0 && obligation.Enforcer != 0 && context.Groups.Any(g =>
             g.Id == obligation.Enforcer && !g.Dissolved && g.Leader != 0 &&

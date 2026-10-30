@@ -21,13 +21,15 @@ public sealed record PoliticalService(long Group, long Person, long Contribution
 public sealed record PassageGrant(long Id, long Grantor, PoliticalAccount Holder, int Place, long Until);
 public sealed record DiplomaticAccord(long Id, long FirstGroup, long SecondGroup, int Level, long Created);
 public sealed record SectCharter(long Id, long Sect, long Sovereign, int Province, bool Teaching,
-    bool Industry, long Granted, long Until);
+    bool Industry, long Granted, long Until, bool Active = true);
 public sealed record PoliticalLaborReservation(long Id, long Group, long Person, long From, long Until,
     string Purpose, long Reference);
 public sealed record PoliticalEffect(long Id, PoliticalEffectKind Kind, long Group, long Person, long Other,
     int Place, long Amount, string Subject, long From, long Until);
 public sealed record PoliticalPlaceRights(int Place, long LocalSovereign, long HighestOverlord,
     long Administrator, long Owner, long Operator, IReadOnlyList<TerritorialClaim> Claims);
+public sealed record PoliticalAccountBalance(PoliticalAccount Account, long AvailableMoney,
+    long ReservedMoney, long Receivables, long Debt);
 public sealed record PolicyHistory(long Month, long Preparation, long Group, string Category, int Before,
     int After, PolicyStage Stage, string Reason, long LawRevision);
 
@@ -52,6 +54,7 @@ public sealed class PolicyPreparation
 /// <summary>Serializable political facts. Existing people, groups and places remain the authoritative entities.</summary>
 public sealed class PoliticalState
 {
+    public int Schema { get; set; } = 1;
     public long NextId { get; set; } = 1;
     public List<TerritorialClaim> Claims { get; set; } = [];
     public List<PoliticalObligation> Obligations { get; set; } = [];

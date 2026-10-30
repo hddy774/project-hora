@@ -394,3 +394,53 @@ public sealed class PoliticsPayrollArrearsScenario : IFeatureScenario
             f.State.Obligations.Single(o => o.Id == id).Outstanding == 1, "actual later funds pay the original employee receivable");
     }
 }
+
+public sealed class PoliticsCharterChangeScenario : IFeatureScenario
+{
+    public string Name => "INV-020 politics: revoked or expired local charters cancel prepared sect policy and refund escrow";
+    public void Run()
+    {
+        var f = new PoliticalFixture(); f.GiveSovereignty(PoliticalFixture.FirstGroup, 0); const long sect = 10005;
+        f.Apply(PoliticsEngine.PlanFound(f.Context, f.State, f.Second, sect, "chartered sect", GroupKind.Sect)); f.ReleaseWork();
+        f.Apply(PoliticsEngine.PlanCharter(f.Context, f.State, f.First, sect, f.Second, 0, true, true, 15, 0));
+        f.Apply(PoliticsEngine.PlanAdoptPolicy(f.Context, f.State, f.Second, sect, "교육·전승", 0));
+        var id = f.State.Preparations[^1].Id;
+        f.Apply(PoliticsEngine.PlanPreparePolicy(f.Context, f.State, f.Second, id));
+        var charter = f.State.Charters[^1].Id;
+        f.Apply(PoliticsEngine.PlanRevokeCharter(f.Context, f.State, f.First, charter));
+        f.SetMonth(14); f.Apply(PoliticsEngine.PlanImplementPolicy(f.Context, f.State, id));
+        PoliticalFixture.Check(f.State.Preparations[^1].Stage == PolicyStage.Cancelled && f.Group(sect).Money == 100 &&
+            !f.State.Charters.Single().Active && f.State.ConsumedMoney == 0, "revoked authority cannot implement a prior prepared policy");
+        f.Apply(PoliticsEngine.PlanCharter(f.Context, f.State, f.First, sect, f.Second, 0, true, true, 15, 0));
+        f.Apply(PoliticsEngine.PlanAdoptPolicy(f.Context, f.State, f.Second, sect, "기예·산업", 0)); id = f.State.Preparations[^1].Id;
+        f.Apply(PoliticsEngine.PlanPreparePolicy(f.Context, f.State, f.Second, id));
+        f.SetMonth(15); f.Apply(PoliticsEngine.PlanImplementPolicy(f.Context, f.State, id));
+        PoliticalFixture.Check(f.State.Preparations[^1].Stage == PolicyStage.Cancelled && f.Group(sect).Money == 100 && f.State.Charters.Count == 2,
+            "expiry is checked against current integer time while historical grants survive");
+    }
+}
+
+public sealed class PoliticsSharedReservationsScenario : IFeatureScenario
+{
+    public string Name => "INV-018/020 politics: organizations share actual labor, preparation rules snapshot and public account projections";
+    public void Run()
+    {
+        var f = new PoliticalFixture(); f.Group(PoliticalFixture.SecondGroup).Members.Add(f.First);
+        f.Person(f.Second).Action = ActionKind.Cultivate;
+        var id = f.Adopt("경제·분배", 2);
+        f.Apply(PoliticsEngine.PlanPreparePolicy(f.Context, f.State, f.First, id));
+        var account = PoliticsEngine.DescribeAccount(f.Context, f.State, PoliticalAccount.Group(PoliticalFixture.FirstGroup))!;
+        PoliticalFixture.Check(account.AvailableMoney == 990 && account.ReservedMoney == 10 && account.Debt == 0 && account.Receivables == 0,
+            "projection separates spendable public treasury, escrow and owned obligations");
+        f.Apply(PoliticsEngine.PlanAdoptPolicy(f.Context, f.State, f.Second, PoliticalFixture.SecondGroup, "경제·분배", 0));
+        var otherId = f.State.Preparations[^1].Id;
+        f.Apply(PoliticsEngine.PlanPreparePolicy(f.Context, f.State, f.Second, otherId));
+        PoliticalFixture.Check(f.State.Preparations.Single(p => p.Id == otherId).Stage == PolicyStage.InsufficientLabor &&
+            f.Group(PoliticalFixture.SecondGroup).Money == 1000 && f.State.Labor.Count == 1, "one person's work cannot be reserved by a second organization");
+        f.SetRules(f.Context.Rules with { PreparationWorkers = 2, PolicyPreparationCost = 20 });
+        f.SetMonth(13); f.Apply(PoliticsEngine.PlanImplementPolicy(f.Context, f.State, id));
+        PoliticalFixture.Check(f.State.Preparations.Single(p => p.Id == id).Stage == PolicyStage.Implemented &&
+            f.State.ConsumedMoney == 10 && f.State.Service.Single(s => s.Group == PoliticalFixture.FirstGroup && s.Person == f.First).Contribution == 1,
+            "a changed rule does not rewrite a prior funded preparation or its actual completed service");
+    }
+}

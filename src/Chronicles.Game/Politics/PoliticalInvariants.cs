@@ -7,6 +7,7 @@ public static class PoliticalInvariants
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(state);
         var errors = new List<string>();
+        if (state.Schema != 1) errors.Add("Unsupported political state schema.");
         if (context.Rules.PlacesPerProvince <= 0 || context.Rules.MaturityMonths < 0 || context.Rules.SectLimit < 0 ||
             context.Rules.FoundingTreasury < 0 || context.Rules.PolicyPreparationCost < 0 || context.Rules.PreparationMonths <= 0 ||
             context.Rules.PreparationWorkers <= 0 || context.Rules.TaxBasisPoints is < 0 or > 10000 ||
@@ -65,6 +66,7 @@ public static class PoliticalInvariants
             errors.Add("Charters, passage and accords must reference real political actors, places and valid terms.");
         if (state.Effects.Any(e => e.Amount < 0 || e.Until < e.From || !context.People.Any(p => p.Id == e.Person) ||
             !context.Groups.Any(g => g.Id == e.Group) || !context.Places.Any(p => p.Id == e.Place) ||
+            !Enum.IsDefined(e.Kind) ||
             e.Kind == PoliticalEffectKind.Teaching && !context.People.Any(p => p.Id == e.Other)))
             errors.Add("Policy effects require actual inputs and nonnegative funded amounts.");
         if (state.Labor.Any(r => r.From >= r.Until || !context.People.Any(p => p.Id == r.Person) ||
@@ -72,14 +74,17 @@ public static class PoliticalInvariants
         foreach (var r in state.Labor)
             if (state.Labor.Any(other => other.Id != r.Id && other.Person == r.Person && other.From < r.Until && r.From < other.Until))
             { errors.Add("A person's labor cannot be reserved twice across political categories or groups."); break; }
-        if (state.TaxPeriods.Distinct().Count() != state.TaxPeriods.Count) errors.Add("A tax period may settle only once.");
+        if (state.TaxPeriods.Distinct().Count() != state.TaxPeriods.Count || state.TaxPeriods.Any(p => p <= 0 || p % 12 != 0))
+            errors.Add("A completed integer tax year may settle only once.");
         if (state.Offices.GroupBy(x => (x.Group, x.Name)).Any(g => g.Count() > 1) ||
             state.Offices.Any(o => !context.Groups.Any(g => !g.Dissolved && g.Id == o.Group && g.Members.Contains(o.Holder))))
             errors.Add("Offices reference one actual current member per office.");
         if (state.Service.GroupBy(x => (x.Group, x.Person)).Any(g => g.Count() > 1) ||
-            state.Service.Any(s => s.Contribution < 0 || s.Loyalty is < 0 or > 100 || !context.People.Any(p => p.Id == s.Person)))
+            state.Service.Any(s => s.Contribution < 0 || s.Loyalty is < 0 or > 100 || !context.People.Any(p => p.Id == s.Person) || !context.Groups.Any(g => g.Id == s.Group)))
             errors.Add("Contribution and loyalty records must reference real people and bounded values.");
         if (state.Preparations.Any(p => !context.Groups.Any(g => g.Id == p.Group) || !PolicyCatalog.IsChoice(p.Category, p.Choice) ||
+            !Enum.IsDefined(p.Stage) || !context.People.Any(person => person.Id == p.Author) || !context.Places.Any(at => at.Id == p.Place) ||
+            p.Workers.Distinct().Count() != p.Workers.Count ||
             p.Stage == PolicyStage.Preparing && (p.Due <= p.Adopted || p.RequiredWorkers <= 0 || p.Workers.Count != p.RequiredWorkers ||
                 p.Workers.Any(id => !state.Labor.Any(r => r.Person == id && r.Reference == p.Id && r.Purpose == "policy"))) ||
             p.Stage != PolicyStage.Preparing && p.Escrow != 0))
@@ -87,6 +92,6 @@ public static class PoliticalInvariants
         return errors;
     }
 
-    private static bool KnownAccount(PoliticalContext context, PoliticalAccount account) => account.Id > 0 &&
+    private static bool KnownAccount(PoliticalContext context, PoliticalAccount account) => Enum.IsDefined(account.Kind) && account.Id > 0 &&
         (account.Kind == PoliticalAccountKind.Person ? context.People.Any(p => p.Id == account.Id) : context.Groups.Any(g => g.Id == account.Id));
 }

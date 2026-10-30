@@ -62,6 +62,7 @@ public static partial class PoliticsEngine
         var old = g.Policies.GetValueOrDefault(prep.Category, 1);
         g.Policies[prep.Category] = prep.Choice;
         d.State.ConsumedMoney = checked(d.State.ConsumedMoney + prep.Escrow); prep.Escrow = 0;
+        foreach (var worker in prep.Workers) AdjustService(d, g.Id, worker, 1, 1);
         prep.Stage = PolicyStage.Implemented; d.ReleaseLabor(prep.Id, "policy");
         d.State.PolicyHistory.Add(new(context.Month, prep.Id, prep.Group, prep.Category, old, prep.Choice,
             prep.Stage, "implemented after current authority and jurisdiction revalidation", prep.LawRevision));
@@ -89,9 +90,25 @@ public static partial class PoliticsEngine
             !g.Members.Any(id => d.Person(id) is { Status: LifeStatus.Alive } p && d.Place(p.Place)?.Province == province))
             return PoliticalResult.Rejected("A sect charter requires real local members, both current leaders, current territorial law and a funded explicit fee.");
         var id = d.Id(); g.Jurisdiction = sovereign;
+        for (var i = 0; i < d.State.Charters.Count; i++)
+            if (d.State.Charters[i] is { Active: true } prior && prior.Sect == sect && prior.Province == province)
+                d.State.Charters[i] = prior with { Active = false };
         d.State.Charters.Add(new(id, sect, sovereign, province, teaching, industry, context.Month, until));
         d.Transfer(PoliticalAccount.Group(sect), PoliticalAccount.Group(sovereign), fee, "sect charter fee", id);
         return d.Finish("Authorized specified sect activities under current local law and transferred the real charter fee.");
+    }
+
+    public static PoliticalResult PlanRevokeCharter(PoliticalContext context, PoliticalState state,
+        long sovereignActor, long charter)
+    {
+        var d = new PoliticalDraft(context, state); var index = d.State.Charters.FindIndex(c => c.Id == charter && c.Active);
+        if (index < 0) return PoliticalResult.Rejected("Unknown active sect charter.");
+        var prior = d.State.Charters[index];
+        if (!d.Leads(d.Person(sovereignActor), d.Group(prior.Sovereign)) ||
+            !d.Places.Any(p => p.Province == prior.Province && p.Sovereign == prior.Sovereign))
+            return PoliticalResult.Rejected("Only the actual current local sovereign can revoke its charter.");
+        d.State.Charters[index] = prior with { Active = false };
+        return d.Finish("Revoked current sect permission while preserving the historical charter and its actual fee transfer.");
     }
 
     public static PoliticalResult PlanOffice(PoliticalContext context, PoliticalState state,
@@ -221,10 +238,13 @@ public static partial class PoliticsEngine
         return d.Finish("Released completed political work intervals and recorded actual completed service.");
     }
 
-    public static bool HasDefense(PoliticalContext context, PoliticalState state, int place) =>
-        state.Effects.Any(e => e.Kind == PoliticalEffectKind.Defense && e.Place == place && e.From <= context.Month && e.Until > context.Month &&
+    public static IReadOnlyList<long> DefendersAt(PoliticalContext context, PoliticalState state, int place) =>
+        Array.AsReadOnly(state.Effects.Where(e => e.Kind == PoliticalEffectKind.Defense && e.Place == place && e.From <= context.Month && e.Until > context.Month &&
             context.People.Any(p => p.Id == e.Person && p.Status == LifeStatus.Alive && p.Place == place) &&
-            context.Places.Any(p => p.Id == place && (p.Sovereign == e.Group || p.Delegate == e.Group)));
+            context.Places.Any(p => p.Id == place && (p.Sovereign == e.Group || p.Delegate == e.Group)))
+            .Select(e => e.Person).Distinct().Order().ToArray());
+
+    public static bool HasDefense(PoliticalContext context, PoliticalState state, int place) => DefendersAt(context, state, place).Count != 0;
 
     private static bool PolicyJurisdiction(PoliticalContext context, PoliticalState state, Group group, int placeId, string category)
     {
@@ -236,7 +256,7 @@ public static partial class PoliticsEngine
         if (category == "영토·방위" || category == "민생·구휼" && group.Kind == GroupKind.Dynasty)
             return place.Sovereign == group.Id || place.Delegate == group.Id;
         if (group.Kind == GroupKind.Sect && place.Sovereign != 0 && category is "교육·전승" or "기예·산업")
-            return group.Jurisdiction == place.Sovereign && state.Charters.Any(c => c.Sect == group.Id && c.Sovereign == place.Sovereign &&
+            return group.Jurisdiction == place.Sovereign && state.Charters.Any(c => c.Active && c.Sect == group.Id && c.Sovereign == place.Sovereign &&
                 c.Province == place.Province && c.Until > context.Month && (category == "교육·전승" ? c.Teaching : c.Industry));
         return group.Kind != GroupKind.Sect || group.Jurisdiction == place.Sovereign;
     }

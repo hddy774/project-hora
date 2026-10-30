@@ -269,7 +269,7 @@ public static partial class PoliticsEngine
         return d.Finish("Dissolved the real organization, refunded preparation escrow and transferred its actual remaining money.");
     }
 
-    internal static bool Exists(PoliticalContext context, PoliticalAccount account) => account.Id > 0 &&
+    internal static bool Exists(PoliticalContext context, PoliticalAccount account) => Enum.IsDefined(account.Kind) && account.Id > 0 &&
         (account.Kind == PoliticalAccountKind.Person ? context.People.Any(p => p.Id == account.Id) :
             context.Groups.Any(g => g.Id == account.Id && !g.Dissolved));
 

@@ -43,6 +43,13 @@ public static class Laws
         D("cultivation.sourceCost", "수행 영기 소비", "개/월", 0, 100, 2, "지역 실제 공급·혼잡"),
         D("cultivation.recovery", "자연 회복", "건강점/월", 0, 100, 2, "회복은 논리 시간 소비"),
         D("martial.period", "무예 경지 기본 기간", "개월", 1, 12000, 120, "무예 독립 10경지"),
+        D("combat.baseDamage", "전투 기본 타격", "건강점", 1, 100, 20, "여덟 전투 특성이 실제 한 차례 교전에 미치는 개발 기본값"),
+        D("combat.baseExertion", "전투 기본 소모", "건강점", 1, 30, 4, "교전과 지원은 실제 육신의 유한한 여력을 사용"),
+        D("combat.hitMinimum", "전투 명중 하한", "만분율", 0, 10000, 1000, "정밀·감지·이동 조건으로 계산한 실제 판정의 하한"),
+        D("combat.hitMaximum", "전투 명중 상한", "만분율", 0, 10000, 9500, "정밀·감지·이동 조건으로 계산한 실제 판정의 상한"),
+        D("combat.exchangeMonths", "교전 행동 점유", "개월", 1, 120, 1, "교전 후 같은 육신의 노동을 중복 사용하지 않음"),
+        D("combat.equipmentWear", "교전 장비 마모", "손상점", 0, 100, 1, "실제 사용한 장비에만 적용·0이면 마모 없음"),
+        D("combat.maximumSupport", "교전 자발적 지원 한도", "명", 0, 3, 2, "자신이 명시적으로 경계 중인 현지 인물만 참여·0이면 지원 없음"),
         D("life.mortal", "범인 기본수명", "개월", 12, 2400, 960, "잠정 인간형 80년"),
         D("life.qi", "연기 기본수명", "개월", 12, 120000, 1800, "정본 연기150년", false),
         D("life.foundation", "축기 기본수명", "개월", 12, 120000, 3600, "정본 축기300년", false),
@@ -125,6 +132,8 @@ public static class Laws
             return "시조 나이는 수명보다 작아야 합니다.";
         if (values["knowledge.copyMonths"] > values["knowledge.maximumActionMonths"])
             return "필사 기본 시간은 단일 지식 작업 최대 기간을 넘을 수 없습니다.";
+        if (values["combat.hitMinimum"] > values["combat.hitMaximum"])
+            return "전투 명중 하한은 상한을 넘을 수 없습니다.";
         return null;
     }
 }

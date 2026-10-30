@@ -33,8 +33,13 @@ public sealed partial class GameWorld
     internal bool TryCancelCombat(Person person, out string? error)
     {
         error = null;
-        if (person.Action != ActionKind.Guard || !person.ActionData.StartsWith("combat:", StringComparison.Ordinal) || person.Due <= Month)
+        if (person.Action is not (ActionKind.Guard or ActionKind.Travel) ||
+            !person.ActionData.StartsWith("combat:", StringComparison.Ordinal) ||
+            !long.TryParse(person.ActionData.AsSpan(7), NumberStyles.None, CultureInfo.InvariantCulture, out var id))
             return false;
+        var occupiedUntil = state.Combat.Exchanges.FirstOrDefault(e => e.Id == id)?.Participants
+            .FirstOrDefault(p => p.Person == person.Id && p.Body == person.BodyId)?.OccupiedUntil ?? 0;
+        if (occupiedUntil <= Month) return false;
         error = "이미 치른 교전·지원의 행동 시간은 완료 시점까지 사용 중입니다.";
         return true;
     }
@@ -86,8 +91,8 @@ public sealed partial class GameWorld
                 if (id == principal.Id || id == opponent.Id || !people.TryGetValue(id, out var person) ||
                     person.Status != LifeStatus.Alive || person.Place != principal.Place ||
                     person.Action != ActionKind.Guard || person.ActionTarget != principal.Id || person.Due < until ||
-                    person.ActionData.StartsWith("combat:", StringComparison.Ordinal) || ValidateCombatGuard(person, principal.Id) is not null ||
-                    !PoliticsLaborAvailable(person, Month, until)) continue;
+                    person.ActionData.Length != 0 || ValidateCombatGuard(person, principal.Id) is not null ||
+                    state.Politics.Labor.Any(r => r.Person == person.Id && r.From < until && Month < r.Until)) continue;
                 var supportCost = CombatMechanics.Exertion(CultivationCombatFor(person).Axes, CultivationPolicyForWorld().FlowPerMonth, rules);
                 if (person.Health <= supportCost) continue;
                 var support = Frame(person);
@@ -121,8 +126,10 @@ public sealed partial class GameWorld
         Pay(attackFrame, cost); Commit(attackFrame); Strike(attacker, defender);
         // The attacked actor now has an actual current witness, without acquiring hidden paths, stock or aptitudes.
         if (!defender.KnownPeople.Contains(attacker.Id)) { defender.KnownPeople.Add(attacker.Id); defender.KnownPeople.Sort(); }
-        defender.ObservedPeople[attacker.Id] = new(attacker.Id, attacker.Name, attacker.Realm, attacker.Layer, attacker.Place,
+        var witnessed = new PersonObservation(attacker.Id, attacker.Name, attacker.Realm, attacker.Layer, attacker.Place,
             Month, attacker.Gestates, Month - attacker.Born >= PeopleMaturityMonths(attacker));
+        defender.ObservedPeople[attacker.Id] = witnessed;
+        TrimCognition(defender);
         var reaction = new CombatReaction(defender.Id, "guard", 0, -1, -1, "실제로 목격한 교전과 자기 상태");
         if (defender.Health == 0) reaction = reaction with { Choice = "incapacitated" };
         else if (state.Controlled == defender.Id) reaction = reaction with { Choice = "controlled", Evidence = "조작 인물의 후속 선택을 보존" };
@@ -130,7 +137,7 @@ public sealed partial class GameWorld
             reaction = reaction with { Choice = "busy", Evidence = "기존 실제 작업을 덮어쓰지 않는 수동 방어" };
         else
         {
-            var observed = defender.ObservedPeople[attacker.Id];
+            var observed = witnessed;
             var wantsRetreat = defender.Health < defenseFrame.Before - defenseFrame.Before / 4 ||
                 defender.Health < 35 || observed.Realm > defender.Realm || defender.Personality[6] + defender.Personality[10] < 100;
             var destination = defender.KnownPlaces.Order().FirstOrDefault(id => state.Places[defender.Place].Neighbors.Contains(id) &&
@@ -144,7 +151,7 @@ public sealed partial class GameWorld
                 if (roll < chance)
                 {
                     defender.Action = ActionKind.Idle; defender.Due = 0;
-                    if (Start(defender, "travel", destination, "") is null)
+                    if (Start(defender, "travel", destination, source) is null)
                     { defender.Due = Math.Max(defender.Due, until); reaction = reaction with { Choice = "retreat" }; }
                     else Commit(defenseFrame);
                 }

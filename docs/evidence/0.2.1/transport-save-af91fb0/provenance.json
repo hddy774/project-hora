@@ -1,0 +1,100 @@
+{
+  "kind": "public-in-flight-transport-actual-save-functional-proof",
+  "source_commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "base_commit": "bfd250fa2c62fe4a14a7eb1700bcbd27e663fb95",
+  "base_product_source_fingerprint": "dcc95b5cb52a0d3b8e6b66975b736a685f4a82250508a2434d29563bd7b9cfc0",
+  "runtime_sources_identical_to_base": true,
+  "tracked_source_clean_during_build_and_execution": true,
+  "worktree": "/workspace/seonro-transport-save-bfd250f",
+  "configuration": "Release",
+  "cpu_affinity": "0",
+  "registered_feature_cases_added": 1,
+  "selected_feature_cases_passed": 1,
+  "selected_feature_cases_failed": 0,
+  "new_performance_growth_or_large_population_runs": 0,
+  "full_functional_suite_run_here": false,
+  "commands": [
+    [
+      "taskset",
+      "-c",
+      "0",
+      "/workspace/.dotnet/dotnet",
+      "build",
+      "tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj",
+      "-c",
+      "Release"
+    ],
+    [
+      "taskset",
+      "-c",
+      "0",
+      "/workspace/.dotnet/dotnet",
+      "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "--filter",
+      "INV-004/017 운송 저장:",
+      "--report",
+      "/workspace/scratch/transport-save-af91fb0-functional.json"
+    ]
+  ],
+  "case_name": "INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패",
+  "source_path": "tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs",
+  "formats": [
+    {
+      "name": "JSON envelope schema2",
+      "store_call": "public GameSaveStore.SaveAtomic(world,path)"
+    },
+    {
+      "name": "binary envelope version3",
+      "store_call": "internal GameSaveStore.SaveAtomic(world,path,0)",
+      "forced_small_fixture": true
+    }
+  ],
+  "actual_paths": [
+    "public possess/explore/transport accepted before first in-flight save",
+    "actual GameSaveStore write/flush/read/decode/load with header-format and sequence assertions",
+    "in-flight contract ownership, carrier origin, item reservation, labor, deadline and full state/RNG/NextId equality",
+    "same command replay before and after terminal settlement preserves original and restored hashes",
+    "original/restored same-due real delivery completion with one event and reservation/labor release",
+    "public return transport accepted, then explicit BlockedUntil fixture applied with GameWorld.Restore, then actual in-flight file save and load",
+    "original/restored same-due real failure keeps physical origin and clears reservations once",
+    "identical final world hash across independent JSON2 and binary3 runs",
+    "finally cleanup of the complete temporary directory"
+  ],
+  "limits": [
+    "A small fixed world is used; this new scenario is not a large-population or performance run.",
+    "Sender, carrier and recipient are the same real founder and fee is zero; this case does not add third-party fee/consent coverage.",
+    "The blocked-route fixture Restore precedes the real save/load; Restore alone is not counted as the codec proof.",
+    "The earlier 313-case/c6 performance originals retain their own source labels; this added test changes the product source fingerprint."
+  ],
+  "built_assemblies": [
+    {
+      "name": "Chronicles.Core.dll",
+      "path": "/workspace/seonro-transport-save-bfd250f/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "96a0a1dce2cb0a96263171c3cad5ab3cbe46b8ea49937e50c85b0db4c0f05f7e",
+      "informational_version": "0.2.1+af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a"
+    },
+    {
+      "name": "Chronicles.Game.dll",
+      "path": "/workspace/seonro-transport-save-bfd250f/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "bytes": 2258432,
+      "sha256": "3df8ed3ebe0a477d6c9c0f8a486aea41b20b8e14b14ad276fbe2bdbbfa3f5f48",
+      "informational_version": "0.2.1+af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a"
+    },
+    {
+      "name": "Chronicles.Hosting.dll",
+      "path": "/workspace/seonro-transport-save-bfd250f/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "1ba2a51c7a3b7408e8e89307f30bbc7444e2fbf1f3a7919c3e5999a9f32f86f7",
+      "informational_version": "0.2.1+af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a"
+    },
+    {
+      "name": "Chronicles.Game.Tests.dll",
+      "path": "/workspace/seonro-transport-save-bfd250f/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "bytes": 1500672,
+      "sha256": "4e43283897efb51c9ac258af9733aa59c238f4238681bc8893827401f17f1f53",
+      "informational_version": "0.2.1+af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a"
+    }
+  ]
+}

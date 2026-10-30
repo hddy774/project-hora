@@ -1,4 +1,4 @@
-name: 0.2.1 product validation
+name: 0.2.1 제품 검증
 on:
   pull_request:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       final_validation:
-        description: Run the legacy regression and performance suite after all features are complete
+        description: 모든 기능 완료 후 이전 회귀·성능 검사 전체를 실행합니다
         type: boolean
         default: false
 permissions:
@@ -16,51 +16,62 @@ concurrency:
   cancel-in-progress: true
 jobs:
   portable:
+    name: 이식형 제품 검증
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-dotnet@v4
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: 개발 도구 설정(.NET)
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-      - run: mkdir -p artifacts
-      - uses: actions/setup-node@v4
+      - name: 검증 산출물 폴더 준비
+        run: mkdir -p artifacts
+      - name: 자바스크립트 실행 환경 설정(Node.js)
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify committed offline UI asset
+      - name: 커밋된 오프라인 화면 자산 검증
         run: |
           npm ci --prefix scripts/shell-assets --ignore-scripts --no-audit --no-fund
           node scripts/build-shell-assets.mjs --check
-      - name: Planning ledger and negative cases
+      - name: 기획 원장과 거부 사례 검증
         run: python3 scripts/validate-v021-plan.py --self-test
-      - name: Static current-product boundary
+      - name: 현재 제품 경계 정적 검증
         run: python3 scripts/validate-v021-product-boundary.py --self-test --report artifacts/product-boundary.json
-      - name: Portable product scenarios
+      - name: 이식형 제품 기능 시나리오 검증
         run: dotnet run --project tests/Chronicles.Game.Tests -c Release -- --report artifacts/product-tests.json
-      - name: Portable shell build
+      - name: 공용 화면 호스트 빌드(Shell)
         run: dotnet build src/Chronicles.Shell -c Release
-      - uses: actions/upload-artifact@v4
+      - name: 제품 검증 근거 업로드
+        uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
         with:
           name: product-evidence
           path: artifacts/
           retention-days: 3
-      - name: Preserve results in job summary
+      - name: 작업 요약에 검증 결과 보존
         if: always()
         run: cat artifacts/product-tests.json >> "$GITHUB_STEP_SUMMARY"
   windows-regression:
+    name: 윈도우 회귀·실제 화면 검증
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-dotnet@v4
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: 개발 도구 설정(.NET)
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-      - run: dotnet build src/Chronicles.Desktop -c Release
-      - name: Legacy regression including performance — final validation only
+      - name: 윈도우 데스크톱 앱 빌드
+        run: dotnet build src/Chronicles.Desktop -c Release
+      - name: 이전 회귀·성능 검사 — 모든 기능 완료 후 최종 검증 전용
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.final_validation }}
         run: dotnet run --project legacy/windows-pre-v021/tests/Chronicles.Tests -c Release
-      - run: ./scripts/validate-architecture.ps1
-      - name: Desktop actual render and bridge
+      - name: 현재 제품 아키텍처 검증
+        run: ./scripts/validate-architecture.ps1
+      - name: 데스크톱 실제 화면·코어 연결 검증
         shell: pwsh
         run: |
           $process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru
@@ -68,31 +79,38 @@ jobs:
           Get-Content (Join-Path ([IO.Path]::GetTempPath()) 'seonro-smoke-result.json')
           if ($process.ExitCode -ne 0) { throw 'Desktop smoke failed' }
   android:
+    name: 안드로이드 빌드·실제 실행 검증
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-java@v4
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: 자바 개발 도구 설정(Java)
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
-      - uses: actions/setup-dotnet@v4
+      - name: 개발 도구 설정(.NET)
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-      - uses: android-actions/setup-android@v3
+      - name: 안드로이드 도구 설정(Android SDK)
+        uses: android-actions/setup-android@v3
         with:
           packages: 'platform-tools'
-      - run: dotnet workload install android
-      - name: Android SDK platform
+      - name: 안드로이드 개발 구성 설치(.NET 워크로드)
+        run: dotnet workload install android
+      - name: 안드로이드 빌드 대상 설치(Android SDK)
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
-      - run: mkdir -p artifacts
-      - name: Build APK
+      - name: 검증 산출물 폴더 준비
+        run: mkdir -p artifacts
+      - name: 앱 패키지 빌드(APK)
         run: dotnet build src/Chronicles.Android -c Release -m:1 -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME"
-      - name: Enable KVM for Android runtime check
+      - name: 안드로이드 실행 검증용 하드웨어 가속 허용(KVM)
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Install and launch Android app
+      - name: 안드로이드 앱 실제 설치·실행
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -111,13 +129,15 @@ jobs:
             cat artifacts/android-ui.xml
             adb exec-out screencap -p > artifacts/android-screen.png
             python3 scripts/verify-android-ui.py artifacts/android-ui.xml artifacts/android-render-log.txt
-      - uses: actions/upload-artifact@v4
+      - name: 설치 검증용 앱 패키지(APK) 업로드
+        uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
           name: android-validation-apk
           path: src/Chronicles.Android/bin/Release/net10.0-android/*Signed.apk
           retention-days: 3
-      - uses: actions/upload-artifact@v4
+      - name: 안드로이드 실제 실행 근거 업로드
+        uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
         with:

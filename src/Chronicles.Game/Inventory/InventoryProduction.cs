@@ -146,7 +146,7 @@ public static partial class InventoryEngine
         else if (command.Succeeded && job.Recipe == "exploration")
         {
             var source = state.Ledger.Sources.Single(s => s.Id == job.Target);
-            state.Ledger.Observations.Add(new(job.Actor, source.Id, source.Place, source.Remaining, state.Month, $"actual exploration:job:{job.Id}"));
+            state.Ledger.Observations.Add(new(job.Actor, source.Id, source.Place, source.Remaining, state.Month, $"actual exploration:job:{job.Id}", source.Definition, source.Activity));
             subject = source.Id;
         }
         else if (command.Succeeded && job.Recipe == "array-maintenance")

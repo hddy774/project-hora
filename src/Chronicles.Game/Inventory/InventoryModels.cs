@@ -183,7 +183,8 @@ public sealed class InventoryContract
 }
 
 public sealed record InventoryAppraisal(long Appraiser, long Item, string Definition, int EstimatedQuality, int Damage, ItemDefect DetectedDefects, long Month);
-public sealed record SourceObservation(long Observer, long Source, int Place, long Remaining, long Month, string Evidence);
+public sealed record SourceObservation(long Observer, long Source, int Place, long Remaining, long Month, string Evidence,
+    string Definition = "", string Activity = "");
 public sealed record EquipmentContribution(long Item, int Quality, int Damage, IReadOnlyList<int> Slots);
 public sealed record InventoryEffect(string Cause, long Target, string Kind, int Magnitude, long Start, long End);
 public sealed class ArrayInstallation

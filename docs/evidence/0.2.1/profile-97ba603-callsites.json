@@ -1,0 +1,142 @@
+{
+  "step_children": [
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Decide(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 16500.61153572026,
+      "percent": 64.74471927878861
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Complete(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 5908.325027041068,
+      "percent": 23.182949580717906
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleInventory()",
+      "weighted_thread_ms": 1254.671520987351,
+      "percent": 4.923051199500339
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleEcology()",
+      "weighted_thread_ms": 1065.8583720595961,
+      "percent": 4.18219051703364
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettlePolitics()",
+      "weighted_thread_ms": 633.5020478085662,
+      "percent": 2.4857207358110784
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Maintain(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 42.49740161547743,
+      "percent": 0.16675032508435572
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleKnowledge()",
+      "weighted_thread_ms": 27.423372131819633,
+      "percent": 0.10760319558513347
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettlePeopleDomain()",
+      "weighted_thread_ms": 16.65201039474232,
+      "percent": 0.06533877463275486
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettlePeopleSocial()",
+      "weighted_thread_ms": 16.294033860331183,
+      "percent": 0.0639341545567856
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Observe(class Chronicles.Game.Person,bool)",
+      "weighted_thread_ms": 9.346774514064236,
+      "percent": 0.03667465843706437
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.RecordDecision(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 4.181127561827452,
+      "percent": 0.016405811970865707
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettleCultivation()",
+      "weighted_thread_ms": 4.17964176309215,
+      "percent": 0.01639998202802912
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Regenerate()",
+      "weighted_thread_ms": 1.2021599848303595,
+      "percent": 0.004717007644082866
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.RefreshPopulationIndices()",
+      "weighted_thread_ms": 0.8502569784941443,
+      "percent": 0.003336218737606407
+    },
+    {
+      "frame": "<self>",
+      "weighted_thread_ms": 0.05315273374981189,
+      "percent": 0.0002085594717554537
+    }
+  ],
+  "inventory_copy_parents": [
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Apply(class Chronicles.Game.Inventory.InventoryState,class Chronicles.Game.Inventory.InventoryCommand)",
+      "weighted_thread_ms": 4342.094382747067,
+      "percent": 17.037409873227002
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryState.ApplyTo(class Chronicles.Game.GameState)",
+      "weighted_thread_ms": 3914.472326930443,
+      "percent": 15.359516305383712
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.CurrentInventory()",
+      "weighted_thread_ms": 3820.145310241929,
+      "percent": 14.989398131115886
+    }
+  ],
+  "ecology_children": [
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Apply(class Chronicles.Game.Inventory.InventoryState,class Chronicles.Game.Inventory.InventoryCommand)",
+      "weighted_thread_ms": 4257.700526359164,
+      "percent": 16.706267204431928
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.ApplyInventory(class Chronicles.Game.Inventory.InventoryState)",
+      "weighted_thread_ms": 4117.360218037633,
+      "percent": 16.155603136854413
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.CurrentInventory()",
+      "weighted_thread_ms": 3972.6100878519464,
+      "percent": 15.587635911872939
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.EcologyDecisionFor(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 72.02980741362808,
+      "percent": 0.2826288983656744
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Ecology.EcologyPlanner.Decide(class Chronicles.Game.Ecology.EcologyDecisionInput)",
+      "weighted_thread_ms": 6.2734450134848885,
+      "percent": 0.024615598969148486
+    },
+    {
+      "frame": "<self>",
+      "weighted_thread_ms": 0.001274164143978851,
+      "percent": 4.9995359043768746e-06
+    }
+  ],
+  "people_any": [
+    {
+      "frame": "Any matching frame (deduplicated per stack)",
+      "weighted_thread_ms": 151.96281855645066,
+      "percent": 0.5962682053905717
+    }
+  ],
+  "json_any": [
+    {
+      "frame": "Any matching frame (deduplicated per stack)",
+      "weighted_thread_ms": 13708.397724708995,
+      "percent": 53.78869507514447
+    }
+  ]
+}

@@ -5141,7 +5141,7 @@
         "V021-M01"
       ],
       "acceptance": "정확한 묶음 처리·동적 SoA/인덱스·버퍼 대여 수명·무효 사건 힙 정리·권위 사건열/hash 보존",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5156,6 +5156,12 @@
           "path": "docs/evidence/0.2.1/progress-acceptance.json",
           "source": "314db9e3264b3a5430a61e11fc9df7baba10ab07",
           "note": "현재 세대 슬롯·동적 목록·지역/부양 인덱스와 결정론 근거는 존재함. 실제 스케줄/배치/확장 비용의 비교와 채택 판단은 남아 있음. 미채택 자료구조의 강제 재작성 의무를 새로 만들지 않음."
+        },
+        {
+          "scope": "H04 수용: 실제 동적 인구 열·안정 ID/슬롯 세대·반환 후 대여 접근 거부·실제 기한 토큰/무효 힙 재구축을 스칼라 참조와 대조. 월별 전체 hash/사건열/RNG/생사·저장 재개 동일. 선택 기능6/6·조회12/12·행동 권한5/5. H06/H09 비용 측정 수용과 별도.",
+          "path": "docs/evidence/0.2.1/execution-infrastructure-functional.json",
+          "source": "fb22e9139a97aadcb3d52afa710c09124fbe2d26",
+          "integration_pr": 147
         }
       ],
       "inv_ids": [

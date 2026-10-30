@@ -1,0 +1,10 @@
+scenario,seed,population,living_founder_descendants,ever_founder_descendants,living_descendant_core_or_higher,first_core_outcome,first_core_exact_month,first_core_world_year,first_core_entity
+a,42,3,1,17,0,not-formed-within-observed-horizon,,,
+a,98,2,0,0,0,not-formed-within-observed-horizon,,,
+a,2026,2,0,6,0,not-formed-within-observed-horizon,,,
+b,42,3,1,11,0,not-formed-within-observed-horizon,,,
+b,98,2,0,12,0,not-formed-within-observed-horizon,,,
+b,2026,2,0,9,0,not-formed-within-observed-horizon,,,
+c,42,5,3,13,0,not-formed-within-observed-horizon,,,
+c,98,2,0,0,0,not-formed-within-observed-horizon,,,
+c,2026,5,3,8,1,observed-exact-record,4326,360.5,8042

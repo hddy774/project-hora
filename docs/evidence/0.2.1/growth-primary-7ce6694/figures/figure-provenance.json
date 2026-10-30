@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "kind": "문서 전용 자연 성장 그림",
+  "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "document_base": "3d86f6c1fd9a2aa8ebb5204b1d6b2273f797b130",
+  "observations": 459,
+  "cases": 9,
+  "seeds_per_scenario": 3,
+  "world_months": [
+    0,
+    6000
+  ],
+  "observation_interval_months": 120,
+  "font": {
+    "family": "Noto Sans CJK JP",
+    "file": "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "label_glyphs_missing": [],
+    "svg_fonttype": "path"
+  },
+  "matplotlib": "3.10.8",
+  "python": "3.12.14",
+  "input_files": [
+    {
+      "path_relative_to_input_root": "a-42/out/growth.json",
+      "sha256": "082ca6277ca53b54017cdd9c93bcfc55378231c0780fe2d7a1c0300f867cea95",
+      "bytes": 188970
+    },
+    {
+      "path_relative_to_input_root": "a-98/out/growth.json",
+      "sha256": "310525a4d7f51a1e6639f7843153f1ad3bcb2bc0dab12ac117a9fecb089252e4",
+      "bytes": 188055
+    },
+    {
+      "path_relative_to_input_root": "a-2026/out/growth.json",
+      "sha256": "d8638d24c90884c4509a9486ffea72de1bd68356b0794cc6d1c8467cee986d8a",
+      "bytes": 188776
+    },
+    {
+      "path_relative_to_input_root": "b-42/out/growth.json",
+      "sha256": "f05a73400e8e0065365b4875f6be849dad072e104d83f2903da88ee5f6aa4e17",
+      "bytes": 189459
+    },
+    {
+      "path_relative_to_input_root": "b-98/out/growth.json",
+      "sha256": "296796360fe85c4b472c10c97dd6bf720048fb050c963b091dca444b5fe9556d",
+      "bytes": 189538
+    },
+    {
+      "path_relative_to_input_root": "b-2026/out/growth.json",
+      "sha256": "ba6d219dd465210b7f407b8027d846e540f5d20ee79e2684360c4a7e7c7d539c",
+      "bytes": 189488
+    },
+    {
+      "path_relative_to_input_root": "c-42/out/growth.json",
+      "sha256": "486b98d6e8829457390d73097e5102cb211410ae8be7629da7c36bd1d98e6035",
+      "bytes": 188846
+    },
+    {
+      "path_relative_to_input_root": "c-98/out/growth.json",
+      "sha256": "68d5ba5b781f505f47716f827b73adfbc4ea925fc7cf2071a699620ac4e44493",
+      "bytes": 188030
+    },
+    {
+      "path_relative_to_input_root": "c-2026/out/growth.json",
+      "sha256": "88d32f189f8ff5551666524bd07f06c4808cd9ea9b076c9e9386c21ef18c2c62",
+      "bytes": 188770
+    }
+  ],
+  "final_records": [
+    {
+      "scenario": "a",
+      "seed": 42,
+      "population": 3,
+      "living_founder_descendants": 1,
+      "ever_founder_descendants": 17,
+      "living_descendant_core_or_higher": 0,
+      "first_core_outcome": "not-formed-within-observed-horizon",
+      "first_core_exact_month": null,
+      "first_core_world_year": null,
+      "first_core_entity": null
+    },
+    {
+      "scenario": "a",
+      "seed": 98,
+      "population": 2,
+      "living_founder_descendants": 0,
+      "ever_founder_descendants": 0,
+      "living_descendant_core_or_higher": 0,
+      "first_core_outcome": "not-formed-within-observed-horizon",
+      "first_core_exact_month": null,
+      "first_core_world_year": null,
+      "first_core_entity": null
+    },
+    {
+      "scenario": "a",
+      "seed": 2026,
+      "population": 2,
+      "living_founder_descendants": 0,
+      "ever_founder_descendants": 6,
+      "living_descendant_core_or_higher": 0,
+      "first_core_outcome": "not-formed-within-observed-horizon",
+      "first_core_exact_month": null,
+      "first_core_world_year": null,
+      "first_core_entity": null
+    },
+    {
+      "scenario": "b",
+      "seed": 42,
+      "population": 3,
+      "living_founder_descendants": 1,
+      "ever_founder_descendants": 11,
+      "living_descendant_core_or_higher": 0,
+      "first_core_outcome": "not-formed-within-observed-horizon",
+      "first_core_exact_month": null,
+      "first_core_world_year": null,
+      "first_core_entity": null
+    },
+    {
+      "scenario": "b",
+      "seed": 98,
+      "population": 2,
+      "living_founder_descendants": 0,
+      "ever_founder_descendants": 12,
+      "living_descendant_core_or_higher": 0,
+      "first_core_outcome": "not-formed-within-observed-horizon",
+      "first_core_exact_month": null,
+      "first_core_world_year": null,
+      "first_core_entity": null
+    },
+    {
+      "scenario": "b",
+      "seed": 2026,
+      "population": 2,
+      "living_founder_descendants": 0,
+      "ever_founder_descendants": 9,
+      "living_descendant_core_or_higher": 0,
+      "first_core_outcome": "not-formed-within-observed-horizon",
+      "first_core_exact_month": null,
+      "first_core_world_year": null,
+      "first_core_entity": null
+    },
+    {
+      "scenario": "c",
+      "seed": 42,
+      "population": 5,
+      "living_founder_descendants": 3,
+      "ever_founder_descendants": 13,
+      "living_descendant_core_or_higher": 0,
+      "first_core_outcome": "not-formed-within-observed-horizon",
+      "first_core_exact_month": null,
+      "first_core_world_year": null,
+      "first_core_entity": null
+    },
+    {
+      "scenario": "c",
+      "seed": 98,
+      "population": 2,
+      "living_founder_descendants": 0,
+      "ever_founder_descendants": 0,
+      "living_descendant_core_or_higher": 0,
+      "first_core_outcome": "not-formed-within-observed-horizon",
+      "first_core_exact_month": null,
+      "first_core_world_year": null,
+      "first_core_entity": null
+    },
+    {
+      "scenario": "c",
+      "seed": 2026,
+      "population": 5,
+      "living_founder_descendants": 3,
+      "ever_founder_descendants": 8,
+      "living_descendant_core_or_higher": 1,
+      "first_core_outcome": "observed-exact-record",
+      "first_core_exact_month": 4326,
+      "first_core_world_year": 360.5,
+      "first_core_entity": 8042
+    }
+  ],
+  "first_core_time_source": "실제 신체 Cultivation.Formations[GoldenCore].Month; 세계 개시 후 경과 시간",
+  "lines_are_visual_guides_only": true,
+  "interpolation_or_smoothing": false,
+  "probability_or_causal_inference": false,
+  "beyond_500_year_prediction": false,
+  "sensitivity_results_included": false,
+  "current_528_cost_measurements_included": false,
+  "game_or_measurement_executed": false,
+  "original_files_modified": false
+}

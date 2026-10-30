@@ -8,7 +8,7 @@ namespace Chronicles.Game;
 public sealed partial class GameWorld
 {
     private sealed record PlanningReceipt(string Kind, long Id, string Work, string Definition, long Started, long Due, string Source);
-    private sealed record PlanningKnowledgeRequest(long Teacher, long Revision, int Comprehension, int Minimum);
+    private sealed record PlanningKnowledgeRequest(long Teacher, long Revision, int Comprehension, int Minimum, string Claim = "");
     private static PlanningKnowledgeRequest? ReadPlanningKnowledgeRequest(string value)
     {
         try { return value.StartsWith('{') ? JsonSerializer.Deserialize<PlanningKnowledgeRequest>(value) : null; }
@@ -33,14 +33,15 @@ public sealed partial class GameWorld
                 var learned = KnowledgeFor(p, step.Data);
                 var cultivation = p.Plan.Any(s => s.Action == "replan" && s.Data == CultivationPlanGoal);
                 var minimum = cultivation ? CultivationLearningMinimum() : state.Knowledge.Rules.PracticeMinimumComprehension;
-                if (learned is not null && learned.Comprehension >= minimum && learned.Belief != KnowledgeBelief.Contradicted)
+                if (learned is not null && learned.Comprehension >= minimum && learned.Belief != KnowledgeBelief.Contradicted &&
+                    (!cultivation || !CultivationNeedsRelearning(p, step.Data)))
                 { p.Plan.RemoveAt(0); continue; }
                 if (!p.Beliefs.TryGetValue("plan:request:" + step.Data, out var request) || request.Expires <= Month)
                 { PlanningFailure(p, step, "요청 기억이 없거나 응답 기한이 지남·상대의 지식은 아직 모름", "요청 기록/기한"); return PausePlanning(p); }
                 if (cultivation && ReadPlanningKnowledgeRequest(request.Value) is { } previous &&
                     learned is not null && learned.PersonalRevision > previous.Revision)
                 {
-                    if (learned.Comprehension > previous.Comprehension && learned.Belief != KnowledgeBelief.Contradicted)
+                    if ((learned.Comprehension > previous.Comprehension || learned.Claim != previous.Claim) && learned.Belief != KnowledgeBelief.Contradicted)
                     { p.Plan.RemoveAt(0); continue; } // Replan requests the next real lesson until the policy threshold.
                     PlanningFailure(p, step, "실제 전수 뒤에도 필요한 개인 이해가 늘지 않아 다른 출처를 확인", KnowledgeSource(p, step.Data));
                     return PausePlanning(p);
@@ -78,7 +79,7 @@ public sealed partial class GameWorld
                 var minimum = p.Plan.Any(s => s.Action == "replan" && s.Data == CultivationPlanGoal) ?
                     CultivationLearningMinimum() : state.Knowledge.Rules.PracticeMinimumComprehension;
                 Remember(p, "plan:request:" + step.Data, JsonSerializer.Serialize(new PlanningKnowledgeRequest(
-                    step.Target, own?.PersonalRevision ?? 0, own?.Comprehension ?? 0, minimum)), source, 100);
+                    step.Target, own?.PersonalRevision ?? 0, own?.Comprehension ?? 0, minimum, own?.Claim ?? "")), source, 100);
                 if (p.Beliefs.TryGetValue("plan:request:" + step.Data, out var fact))
                     p.Beliefs[fact.Key] = fact with { Expires = Month + Math.Min(12, Law("ai.beliefLifetime")) };
             }

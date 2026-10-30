@@ -52,7 +52,7 @@ public static partial class InventoryEngine
             if (children.Count > 0)
                 Ensure(children.Sum(child => read.Weight(child)) <= read.Capacity(item), "Recursive container capacity exceeded.");
             if (item.Reserved != 0)
-                Ensure(state.Ledger.Reservations.Any(r => r.Id == item.Reserved && r.Active && r.Items.Contains(item.Id)), "Physical reservation is not backed by the common ledger.");
+                Ensure(read.BacksPhysicalItem(item.Reserved, item.Id), "Physical reservation is not backed by the common ledger.");
         }
         foreach (var person in state.People)
         {
@@ -67,7 +67,7 @@ public static partial class InventoryEngine
                     (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0 && (item.BoundSoul == 0 || item.BoundSoul == person.SoulId), "Invalid equipment occupancy, location, or soul binding.");
                 Ensure(item.Owner == person.Id || (read.Metadata(item.Id)?.UseRights.Contains(person.Id) ?? false), "Equipment lacks ownership or use rights.");
                 Ensure(read.EquippedByCount(itemId) == 1, "An item is equipped by multiple people.");
-                Ensure(item.Reserved == 0 || state.Ledger.Jobs.Any(j => j.Target == item.Id && j.Recipe == "repair" && j.Reservation == item.Reserved && j.Status is "reserved" or "processing"), "Equipped item is committed to another activity.");
+                Ensure(item.Reserved == 0 || read.BacksEquippedRepair(item.Id, item.Reserved), "Equipped item is committed to another activity.");
             }
         }
         foreach (var reservation in state.Ledger.Reservations.Where(r => r.Active))
@@ -76,7 +76,7 @@ public static partial class InventoryEngine
             Ensure(reservation.Items.Distinct().Count() == reservation.Items.Count, "Duplicate reserved physical item.");
             foreach (var id in reservation.Items)
                 Ensure((read.FindItem(id) is { } physical && physical.Reserved == reservation.Id) ||
-                    state.Ledger.Jobs.Any(j => j.Reservation == reservation.Id && j.Status == "processing" && j.Inputs.Contains(id)), "Active reservation lost its physical item.");
+                    read.BacksConsumedInput(reservation.Id, id), "Active reservation lost its physical item.");
         }
         foreach (var labor in state.Ledger.Labor)
         {
@@ -94,7 +94,7 @@ public static partial class InventoryEngine
             InventoryDefinitions.Definition(source.Definition);
             Ensure(source.Place is >= 0 and < 100 && source.Remaining >= 0 && source.Capacity >= source.Remaining && source.Regeneration >= 0 && source.EcologyWeight >= 0 &&
                 source.LastMonth <= state.Month && !string.IsNullOrWhiteSpace(source.Origin), "Invalid finite natural stock.");
-            var reserved = state.Ledger.Jobs.Where(j => j.Source == source.Id && j.Status is "reserved" or "processing").Sum(j => (long)j.OutputQuantity);
+            var reserved = read.ReservedNaturalStock(source.Id);
             Ensure(reserved <= source.Remaining, "Natural stock is overcommitted.");
         }
         var committedReservations = state.Ledger.Jobs.Where(j => j.Status is "reserved" or "processing").Select(j => j.Reservation)
@@ -109,14 +109,14 @@ public static partial class InventoryEngine
             if (job.OutputDefinition.Length > 0) InventoryDefinitions.Definition(job.OutputDefinition);
             Ensure(InventoryDefinitions.Recipes.ContainsKey(job.Recipe) || job.Recipe is "repair" or "extraction" or "medical-treatment" or "appraisal" or "exploration" or "array-maintenance",
                 "Unknown production process in saved state.");
-            Ensure((job.Source != 0) == (job.Recipe == "extraction") && (job.Source == 0 || (job.OutputQuantity > 0 && state.Ledger.Sources.Any(s => s.Id == job.Source))),
+            Ensure((job.Source != 0) == (job.Recipe == "extraction") && (job.Source == 0 || (job.OutputQuantity > 0 && read.HasSource(job.Source))),
                 "Extraction lacks an actual finite source or positive quantity.");
             Ensure(job.Inputs.Distinct().Count() == job.Inputs.Count, "Production input was reserved twice.");
             Ensure(job.Status is "reserved" or "processing" or "completed" or "cancelled" or "failed", "Unknown production status.");
-            Ensure(state.Ledger.Reservations.Any(r => r.Id == job.Reservation) && state.Ledger.Labor.Any(l => l.Id == job.Labor), "Production lacks reservations.");
+            Ensure(read.HasReservation(job.Reservation) && read.HasLabor(job.Labor), "Production lacks reservations.");
             if (job.Status is "reserved" or "processing")
             {
-                Ensure(state.Ledger.Reservations.Any(r => r.Id == job.Reservation && r.Active) && state.Ledger.Labor.Any(l => l.Id == job.Labor && l.Active), "Active production lost its commitments.");
+                Ensure(read.HasActiveReservation(job.Reservation) && read.HasActiveLabor(job.Labor), "Active production lost its commitments.");
                 if (job.Status == "reserved") foreach (var id in job.Inputs) read.ItemAt(id);
             }
         }
@@ -132,9 +132,9 @@ public static partial class InventoryEngine
                 Ensure(contract.PaidAmount is null && contract.EndedMonth is null, "Open contract cannot have a completed payment.");
                 var item = read.ItemAt(contract.Item);
                 Ensure(item.Reserved == contract.Reservation && item.Owner == contract.Seller &&
-                    state.Ledger.Reservations.Any(r => r.Id == contract.Reservation && r.Active), "Open contract lost cargo ownership or reservation.");
+                    read.HasActiveReservation(contract.Reservation), "Open contract lost cargo ownership or reservation.");
                 if (contract.Kind == "transport") Ensure(contract.Escrow == contract.Fee &&
-                    read.Metadata(item.Id)?.Carrier == contract.Carrier && state.Ledger.Labor.Any(l => l.Id == contract.Labor && l.Active), "Transport lacks physical custody, fee, or labor.");
+                    read.Metadata(item.Id)?.Carrier == contract.Carrier && read.HasActiveLabor(contract.Labor), "Transport lacks physical custody, fee, or labor.");
                 else Ensure(read.Location(item.Id) == contract.Destination, "Listed property left the market.");
                 if (contract.Kind == "auction") Ensure(contract.Buyer == 0 ? contract.Escrow == 0 : contract.Escrow >= contract.Price, "Auction bid is unfunded.");
             }

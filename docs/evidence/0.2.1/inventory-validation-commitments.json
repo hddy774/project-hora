@@ -1,0 +1,326 @@
+{
+  "형식버전": 1,
+  "작업": "재고 검증 호출 범위의 작업·원천·예약·노동 읽기 인덱스",
+  "기준커밋": "3ba78ce8d6dd734ebf1ec1a1fb939db34e90d923",
+  "참조고정커밋": "59cfab52f1cbd5e4e42120991982abd07c8a614a",
+  "생산변경커밋": "c9758dc1ced8cca1a09d7039db20eaf19f7edd79",
+  "소스파일": [
+    {
+      "경로": "src/Chronicles.Game/Inventory/InventoryValidation.cs",
+      "SHA256": "0ee7ab1fb94727e3c7da22f5a062f3c1b3841fba4e7863da0c5ece29dbe028d6"
+    },
+    {
+      "경로": "src/Chronicles.Game/Inventory/InventoryValidationIndex.cs",
+      "SHA256": "e2f236eda87dd559952968398043c0b06c6f1c7761e190ef7d1434af9d6f07b6"
+    },
+    {
+      "경로": "tests/Chronicles.Game.Tests/Features/InventoryCommitmentValidationScenarios.cs",
+      "SHA256": "8e211c4157fe3b00d837453f7e26ab11e43fea7ac78bd7677c231318896c17b2"
+    }
+  ],
+  "실행귀속": [
+    "변경 전 참조3은 제품 검증기3ba78ce를 수정하기 전에 임시 해시 출력으로 수집하고,59cfab5에 기대값을 고정했다.",
+    "변경 후 재고46은59cfab5 작업 트리에서 생산 변경을 적용한 뒤 실행했다. 그 제품/검사 파일 바이트는c9758dc와 동일함을 확인했다. 커밋 전 실행을 커밋 후 재실행으로 표시하지 않는다.",
+    "화폐9는 생산 변경을c9758dc에 커밋·push한 뒤 해당 소스로 빌드해 실행했다."
+  ],
+  "실행한명령": [
+    "dotnet run --project tests/Chronicles.Game.Tests -c Release --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter 'inventory commitment reference' --report /workspace/scratch/inventory-commitment-reference-3ba78ce.json",
+    "dotnet run --project tests/Chronicles.Game.Tests -c Release --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter 'inventory' --report /workspace/scratch/inventory-validation-jobs-functional.json",
+    "dotnet run --project tests/Chronicles.Game.Tests -c Release --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter 'currency' --report /workspace/scratch/inventory-validation-jobs-currency.json"
+  ],
+  "고정참조": {
+    "동시원천예약진행취소": "06b5a5a8247bc114b5da061f2e62b825e87b7c7bdb71952027084f81683ac13c",
+    "소비입력예약위조취소": "caf0efd99a57151cba9a1a31bae6de7bb41f62eb8cf5aab7f43eb28b53362ae8",
+    "원천입력오버플로거부순서": "2e0087a9b2b08d26dc4a850d35cfc057325d170785ce71309ef0cc8970b2e23b",
+    "기존공개제작보관거래저장재전송": "2cef8af882dcd34fec03884184a9fef5c67b8232e77a0e14c022cb84c986eec6",
+    "기존공개AI분할판매저장": "8e88d149188b0d0c8a65334ef1827eb0675bcdd3a81602a57bb6e6d48d36f561",
+    "기존검증어댑터지문": "c817b2675a79b1bd1e5fb2b3d1503f695bf04620e100ab4c43a4d6899b411f32",
+    "기존검증응답해시거부": "7ed31d02e2947132e8087bc0db6a6d3cf6776a320a1f312677df57bc74e376be"
+  },
+  "보존한계약": [
+    "Validate의 호출 수·검증절 순서·거절 문구·공개 mutable API·복제·세계 지문은 변경하지 않는다.",
+    "호출 안에서만 쓰는 숫자ID 맵과 원래 job 순서의 그룹을 만든다. 읽기 검증이 권위 상태를 수정하거나 후속 호출에 인덱스를 재사용하지 않는다.",
+    "각 source의 기존 정의/유한 재고 검증 뒤에만 해당 그룹의 수량을 원래 job 순서로checked long 합산한다. 다른 source를 미리 합산하지 않는다.",
+    "processing 입력은 원래 예약 검증이 해당 입력을 확인할 때만 원래 job 순서로Contains 검사한다. 뒤의 잘못된 입력 목록을 먼저 방문하지 않는다.",
+    "OutputQuantity는int다. 작은 참조는2×int.MaxValue의long 합산과 음수 수량의 기존 늦은 거부, 앞 source 오류가 뒤 long 재료 회계 overflow보다 먼저 거부되는 순서를 확인한다. 실현 불가능한 source-sum overflow를 실행했다고 주장하지 않는다."
+  ],
+  "기존진단근거": {
+    "소유자": "UI 담당자",
+    "소스": "d1bfaf5",
+    "구간": "N1000 firstWarmupAdvance의 관리 스레드100Hz/GC 진단",
+    "진단": "/workspace/scratch/ui-profile-d1bfaf5-n1000-bounded-diagnosis.json",
+    "진단SHA256": "9b647d8ee727dd8636306522a711a08ea3a03663db9503222004c3190b5c0dbb",
+    "할당소스": "/workspace/scratch/ui-profile-d1bfaf5-n1000-bounded-allocation-source.txt",
+    "할당소스SHA256": "c6fc86af853f2c42acc8ab92bb1218043069a79813e08f9dfa11a73209e1b44d",
+    "주의": "기존 자료를 읽기만 했다. 이 변경 후 비용이나 속도 향상 측정값이 아니다."
+  },
+  "검사기록": [
+    {
+      "이름": "변경전참조3",
+      "원본경로": "/workspace/scratch/inventory-commitment-reference-3ba78ce.json",
+      "원본SHA256": "a4a44eee15a995fd24ed3e9b4d103aaf964e2ab0d2699e84fae9498c689ba817",
+      "선택": "inventory commitment reference",
+      "검사수": 3,
+      "실패수": 0,
+      "결과": [
+        {
+          "이름": "inventory commitment reference: 앞 원천 오류·뒤 입력 오류·long overflow의 기존 거부 순서를 보존",
+          "통과": true
+        },
+        {
+          "이름": "inventory commitment reference: 소비되어 없는 입력의 예약 연결·동시 작업·위조·취소를 보존",
+          "통과": true
+        },
+        {
+          "이름": "inventory commitment reference: 같은 원천의 동시 예약·진행·취소 소비와 호출 사이 변경을 보존",
+          "통과": true
+        }
+      ]
+    },
+    {
+      "이름": "변경후재고46",
+      "원본경로": "/workspace/scratch/inventory-validation-jobs-functional.json",
+      "원본SHA256": "97051bdb3033b29f28422f9e492984ba214449cd43cee9303ef10a0c15ef0700",
+      "선택": "inventory",
+      "검사수": 46,
+      "실패수": 0,
+      "결과": [
+        {
+          "이름": "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+          "통과": true
+        },
+        {
+          "이름": "INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory",
+          "통과": true
+        },
+        {
+          "이름": "inventory commitment reference: 앞 원천 오류·뒤 입력 오류·long overflow의 기존 거부 순서를 보존",
+          "통과": true
+        },
+        {
+          "이름": "inventory owned reference: 실제 생계 AI의 분할·판매 후보와 저장 결과 보존",
+          "통과": true
+        },
+        {
+          "이름": "inventory owned parity: 공개 복사 경로와 예약·처리·전용 연결·재전송 결과 및 직렬화 일치",
+          "통과": true
+        },
+        {
+          "이름": "inventory owned failure: 두 번째 처리·판매 실패와 예외가 전체 후보·ID·재료를 폐기",
+          "통과": true
+        },
+        {
+          "이름": "inventory owned lifetime: 단일 인계·불변 결과·기존 참조 격리와 소비 후 재사용 거부",
+          "통과": true
+        },
+        {
+          "이름": "inventory owned rejection: ID 충돌·빈 ID·오버플로와 기존 오류 우선순위 보존",
+          "통과": true
+        },
+        {
+          "이름": "inventory owned stale: 월·할당자·개정·실물·사람·재료 지문과 원래 세계 인계 경계",
+          "통과": true
+        },
+        {
+          "이름": "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존",
+          "통과": true
+        },
+        {
+          "이름": "inventory commitment reference: 소비되어 없는 입력의 예약 연결·동시 작업·위조·취소를 보존",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: actual array installation and upkeep never create natural energy or survive destruction",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: real armor craft equipment soul binding combat damage and repair preserve one artifact through save",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: real auction escrow and advertised snapshots settle once through the world scheduler",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: INV-017 continuation keeps every physical reservation backed by one ledger",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: canonical recipe practice consumes real inputs and cancellation never refunds the process",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: successful real seed water farming and agreed treatment heal an actual other patient",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: finite gathering uses scheduled time and survives exact GameCodec continuation",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: paid growth dose improves a bottlenecked canonical pulse with real Qi debit and exact save continuation",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: medicine appraisal and source exploration produce real effects and personal evidence",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: actual source loss cancels extraction and capacity growth grants no stock",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: crafted sold talisman pays actual parties and protects one real hit with no use replay",
+          "통과": true
+        },
+        {
+          "이름": "inventory public: completed route delivers physical cargo and blocked routes keep it at actual origin",
+          "통과": true
+        },
+        {
+          "이름": "inventory commitment reference: 같은 원천의 동시 예약·진행·취소 소비와 호출 사이 변경을 보존",
+          "통과": true
+        },
+        {
+          "이름": "inventory validation scope: 이전 실제 명령·해시·거부 결과와 호출 사이 변경을 보존",
+          "통과": true
+        },
+        {
+          "이름": "inventory: V021-K06 array rights, actual upkeep, effect expiry, and stale world candidate rejection",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-017/018 auctions fund deposits, reject reuse, refund death and settle equal deadlines once",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-017/018 competing bids and carrier/seller deaths preserve estates, escrow and cargo",
+          "통과": true
+        },
+        {
+          "이름": "inventory: consumed final stack retains typed actual quantity location quality and origin evidence",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-016 recursive container capacity, cycle rejection and broken-container overflow preserve stock",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-017 real production inputs, stage cancellation, failure, use and save settlement",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-016 ownership, custody, use, equipment and remote access remain independent",
+          "통과": true
+        },
+        {
+          "이름": "inventory: V021-I03 all 12 equipment categories occupy slots and multi-slot contributions apply once",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-005/015/016 equipment replacement is atomic across occupied slots and return capacity",
+          "통과": true
+        },
+        {
+          "이름": "inventory: paid growth dose retains its consumed physical source and never grants legacy structure work",
+          "통과": true
+        },
+        {
+          "이름": "inventory: known source and local offer projections never infer mutable private truth",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-017 care, teaching, production and defense share person and facility labor",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-016/018 backpack removal preserves overflow, sources stay finite, known bundles reveal no truth",
+          "통과": true
+        },
+        {
+          "이름": "inventory: V021-K07 real medicine, appraisal and exploration consume labor and produce personal evidence",
+          "통과": true
+        },
+        {
+          "이름": "inventory: V021-I01/K03-K08 all 64 resources have executable producers and consumers",
+          "통과": true
+        },
+        {
+          "이름": "inventory: shared recipe registry plans the exact authoritative physical input and output",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-016/017 shared physical reservations preserve split provenance and exclude parallel use",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-016 inventory split/merge preserves hidden state, binding and provenance",
+          "통과": true
+        },
+        {
+          "이름": "inventory: INV-017 production cannot bank idle time and broken arrays immediately stop contributing",
+          "통과": true
+        },
+        {
+          "이름": "inventory: V021-E03 real cargo preserves in-transit title, labor, fees, arrival and failure recovery location",
+          "통과": true
+        }
+      ]
+    },
+    {
+      "이름": "변경후화폐9",
+      "원본경로": "/workspace/scratch/inventory-validation-jobs-currency.json",
+      "원본SHA256": "b0c2516f8aba76640f481cd64f03f36f7df24dcb976770e99c553cf2721ac3e2",
+      "선택": "currency",
+      "검사수": 9,
+      "실패수": 0,
+      "결과": [
+        {
+          "이름": "currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비",
+          "통과": true
+        },
+        {
+          "이름": "currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전",
+          "통과": true
+        },
+        {
+          "이름": "currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존",
+          "통과": true
+        },
+        {
+          "이름": "currency public: exact physical burn credits once, accepts functional zero quality, and freezes rate evidence",
+          "통과": true
+        },
+        {
+          "이름": "currency public: other crystals defects remote custody cargo and disabled conversion never burn or mint",
+          "통과": true
+        },
+        {
+          "이름": "currency public: auction escrow seller death and estate transfers never count as new currency origins",
+          "통과": true
+        },
+        {
+          "이름": "currency public: exact two founder opening origins never grant money again on save or repeat initialization",
+          "통과": true
+        },
+        {
+          "이름": "currency public: actual discovered mining source becomes spendable money only after physical token consumption",
+          "통과": true
+        },
+        {
+          "이름": "currency public: source-free balances repeated burns and disabled origin validation are rejected on restore",
+          "통과": true
+        }
+      ]
+    }
+  ],
+  "성능벤치성장장기프로파일실행": false,
+  "새성능수치주장": false,
+  "최신전체기능합격주장": false,
+  "원장수정": false,
+  "Notion수정": false
+}

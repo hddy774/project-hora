@@ -8,8 +8,9 @@ namespace Chronicles.Game.Tests.Features;
 public sealed class InventoryOwnedWorldReferenceScenario : IFeatureScenario
 {
     private readonly bool projected;
+    private readonly bool typedCopy;
     public InventoryOwnedWorldReferenceScenario() { }
-    internal InventoryOwnedWorldReferenceScenario(bool projected) { this.projected = projected; }
+    internal InventoryOwnedWorldReferenceScenario(bool projected, bool typedCopy = false) { this.projected = projected; this.typedCopy = typedCopy; }
     // Captured before changing the private transaction path, at 751e349.
     private const string Baseline = "2cef8af882dcd34fec03884184a9fef5c67b8232e77a0e14c022cb84c986eec6";
     public string Name => "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존";
@@ -20,7 +21,7 @@ public sealed class InventoryOwnedWorldReferenceScenario : IFeatureScenario
         var state = world.Checkpoint(); var actor = state.People[0].Id; var other = state.People[1].Id;
         InventoryWorldFixture.Add(state, actor, "ore", 5); InventoryWorldFixture.Add(state, actor, "cloth", 2);
         InventoryWorldFixture.Add(state, actor, "bag", 1); InventoryWorldFixture.Add(state, actor, "herb", 4);
-        world = GameWorld.Restore(state); var trace = new InventoryWorldTranscript(world, projected);
+        world = GameWorld.Restore(state); var trace = new InventoryWorldTranscript(world, projected, typedCopy);
         void Apply(string id, long person, string kind, long target = 0, long value = 0, string data = "", bool expected = true) =>
             trace.Command(new(id, person, kind, target, value, data), expected);
         long Own(string definition) => world.Checkpoint().Items.Last(i => i.Owner == actor && i.Definition == definition).Id;
@@ -66,8 +67,9 @@ public sealed class InventoryOwnedWorldReferenceScenario : IFeatureScenario
 public sealed class InventoryOwnedEcologyReferenceScenario : IFeatureScenario
 {
     private readonly bool projected;
+    private readonly bool typedCopy;
     public InventoryOwnedEcologyReferenceScenario() { }
-    internal InventoryOwnedEcologyReferenceScenario(bool projected) { this.projected = projected; }
+    internal InventoryOwnedEcologyReferenceScenario(bool projected, bool typedCopy = false) { this.projected = projected; this.typedCopy = typedCopy; }
     // The low-food decision must really execute the private split+offer caller.
     private const string Baseline = "8e88d149188b0d0c8a65334ef1827eb0675bcdd3a81602a57bb6e6d48d36f561";
     public string Name => "inventory owned reference: 실제 생계 AI의 분할·판매 후보와 저장 결과 보존";
@@ -76,7 +78,7 @@ public sealed class InventoryOwnedEcologyReferenceScenario : IFeatureScenario
         var world = InventoryWorldFixture.Create(109, new Dictionary<string, long> { ["founder.initialFood"] = 8, ["ecology.foodUse"] = 1 });
         var state = world.Checkpoint(); var seller = state.People[0].Id; var buyer = state.People[1].Id;
         state.People[1].Action = ActionKind.Guard; state.People[1].Due = 1000; world = GameWorld.Restore(state);
-        var trace = new InventoryWorldTranscript(world, projected); var food = state.Items.Single(i => i.Owner == seller && i.Definition == "food").Id;
+        var trace = new InventoryWorldTranscript(world, projected, typedCopy); var food = state.Items.Single(i => i.Owner == seller && i.Definition == "food").Id;
         trace.Advance(1); state = world.Checkpoint();
         var offer = state.Inventory.Contracts.Single(c => c.Seller == seller && c.Status == "open" && c.AdvertisedDefinition == "food");
         InventoryFixture.Check(offer.Item != food && offer.AdvertisedQuantity > 0 && state.People[0].ActionData == "ecology:market" &&
@@ -92,13 +94,16 @@ internal sealed class InventoryWorldTranscript
 {
     private readonly GameWorld world;
     private readonly bool projected;
+    private readonly bool typedCopy;
     private readonly List<string> rows;
     private GameWorld? saved;
-    internal InventoryWorldTranscript(GameWorld world, bool projected = false)
+    internal InventoryWorldTranscript(GameWorld world, bool projected = false, bool typedCopy = false)
     {
-        this.world = world; this.projected = projected; rows = [world.StateHash()];
-        InventoryFixture.Check(world.InventoryProjectionEnabled, "일반 세계의 기본 경로가 채택된 Person 투영이 아닙니다.");
-        if (!projected) world.UseStrictInventoryForVerification();
+        if (typedCopy && !projected) throw new ArgumentException("Typed transcript requires the projected input contract.", nameof(typedCopy));
+        this.world = world; this.projected = projected; this.typedCopy = typedCopy; rows = [world.StateHash()];
+        InventoryFixture.Check(world.InventoryProjectionEnabled && !world.InventoryTypedCopyExperimentEnabled, "일반 세계의 기본 경로가 채택된 JSON Person 투영이 아닙니다.");
+        if (typedCopy) world.EnableInventoryTypedCopyForExperiment();
+        else if (!projected) world.UseStrictInventoryForVerification();
     }
     internal void Command(GameCommand command, bool accepted = true)
     {
@@ -121,8 +126,9 @@ internal sealed class InventoryWorldTranscript
     {
         var encoded = GameCodec.Encode(world); var restored = GameCodec.Decode(encoded);
         InventoryFixture.Check(world.StateHash() == restored.StateHash() && encoded.SequenceEqual(GameCodec.Encode(restored)), "저장 왕복이 실제 권위 상태를 변경했습니다.");
-        InventoryFixture.Check(restored.InventoryProjectionEnabled, "저장 재개가 채택된 기본 Person 투영 경로를 사용하지 않습니다.");
-        if (!projected) restored.UseStrictInventoryForVerification();
+        InventoryFixture.Check(restored.InventoryProjectionEnabled && !restored.InventoryTypedCopyExperimentEnabled, "저장 재개가 채택된 기본 JSON Person 투영 경로를 사용하지 않습니다.");
+        if (typedCopy) restored.EnableInventoryTypedCopyForExperiment();
+        else if (!projected) restored.UseStrictInventoryForVerification();
         saved = restored;
         rows.Add(Convert.ToHexStringLower(SHA256.HashData(encoded)));
     }
@@ -131,6 +137,8 @@ internal sealed class InventoryWorldTranscript
         Invariants.Validate(world.Checkpoint());
         InventoryFixture.Check(projected ? world.InventoryProjectionSnapshots > 0 : world.InventoryProjectionSnapshots == 0,
             "공개 기준선이 선택된 기본 투영/strict reference factory를 실행하지 않았습니다.");
+        InventoryFixture.Check(typedCopy ? world.InventoryTypedCopySnapshots > 0 : world.InventoryTypedCopySnapshots == 0,
+            "공개 기준선이 실제 선택된 typed/JSON factory를 실행하지 않았습니다.");
         var actual = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("\n", rows))));
         InventoryFixture.Check(actual == expected, "기존 공개 경로와 명령·월 경계·저장 해시가 달라졌습니다: " + actual);
     }

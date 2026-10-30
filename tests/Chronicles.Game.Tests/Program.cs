@@ -10,8 +10,11 @@ var measurementOptions = new[] { "--performance", "--growth", "--soak", "--stabi
 if (measurementOptions.Count(option => args.Contains(option, StringComparer.Ordinal)) > 1)
     throw new ArgumentException("측정 모드는 한 번에 하나만 지정하고 각각 별도 결과 파일을 사용하세요.");
 var inventoryProjectionExperiment = args.Contains("--performance-inventory-projection", StringComparer.Ordinal);
+var inventoryTypedCopyExperiment = args.Contains("--performance-inventory-typed-copy", StringComparer.Ordinal);
 if (inventoryProjectionExperiment && !args.Contains("--performance", StringComparer.Ordinal))
     throw new ArgumentException("--performance-inventory-projection은 --performance와 함께 명시적으로 선택하세요.");
+if (inventoryTypedCopyExperiment && !args.Contains("--performance", StringComparer.Ordinal))
+    throw new ArgumentException("--performance-inventory-typed-copy는 --performance와 함께 명시적으로 선택하세요.");
 var results = new List<object>();
 var failed = 0;
 var filterPosition = Array.IndexOf(args, "--filter");
@@ -346,7 +349,7 @@ if (failed == 0 && args.Contains("--performance", StringComparer.Ordinal))
             throw new ArgumentException("--performance-size에는 명시적인 인구 규모가 필요합니다.");
         population = value;
     }
-    PerformanceScenarios.Run(args[Array.IndexOf(args, "--performance") + 1], population, inventoryProjectionExperiment);
+    PerformanceScenarios.Run(args[Array.IndexOf(args, "--performance") + 1], population, inventoryProjectionExperiment, inventoryTypedCopyExperiment);
 }
 if (failed == 0 && args.Contains("--growth", StringComparer.Ordinal))
 {

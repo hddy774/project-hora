@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json;
 using Chronicles.Core;
 using Chronicles.Game;
+using Chronicles.Game.People;
 using Chronicles.Game.Tests.Experiments;
 
 internal static partial class GrowthScenarios
@@ -14,6 +15,7 @@ internal static partial class GrowthScenarios
         "AdvanceTo is called for every actual month. Original growth and cumulative labor series use the plan interval; latest monthly progress and actual hash are saved atomically. A full per-month labor trace is not retained.",
         "Labor is occupied real person-months and active inventory reservation unit-months at interval start, including waits. It is not productive output or a second labor authority; completions and physical flow deltas are separate.",
         "Individual first-core outcomes use actual retained body formations and Person.Ended. Death/departure before core and living right-censoring are distinct; baseline cohort rows do not supply individual terminal histories.",
+        "Saved People policies and frozen conception models are actual checkpoint data. Source-declared defaults/catalogs are separate and do not assert every species/trait/formula was used. Formula-only PC-TEMP references need the separate source inventory review; no non-law policy parameter is independently perturbed.",
         "Baseline-window rows are existing observations only, without interpolation. Exact baseline milestones after the plan horizon are censored; a 120-month dynasty interval crossing the horizon remains uncertain.",
         "Monthly snapshot/hash/report costs are part of case elapsed time but outside simulationMs. The last report write is excluded from its own timing. No hardware-speed acceptance is inferred."
     ];
@@ -27,6 +29,7 @@ internal static partial class GrowthScenarios
         internal object? LastMonthLabor { get; set; }
         internal long InventoryReservedUnitMonths { get; set; }
         internal Dictionary<string, long> CompletedJobsByRecipe { get; } = new(StringComparer.Ordinal);
+        internal object? AdoptedPeoplePolicies { get; set; }
         internal object[] DescendantOutcomes { get; set; } = [];
         internal Dictionary<string, long> OccupiedPersonMonths { get; } = new(StringComparer.Ordinal);
     }
@@ -59,7 +62,7 @@ internal static partial class GrowthScenarios
             c.Cohort.SimulationMs, c.Cohort.CommandMs, c.Cohort.CaseElapsedMs, c.Cohort.FinalHash,
             lawDifferences = new[] { new { id = plan.LawKey, baseline = validated.DefaultValue, actual = c.Value, delta = c.Value - validated.DefaultValue } },
             c.LaborAtObservationIntervals, c.LastMonthLabor, c.InventoryReservedUnitMonths, c.CompletedJobsByRecipe,
-            occupiedPersonMonthsByAction = c.OccupiedPersonMonths, c.DescendantOutcomes,
+            occupiedPersonMonthsByAction = c.OccupiedPersonMonths, c.DescendantOutcomes, c.AdoptedPeoplePolicies,
             calendarConversion = new { secondsPerYearAt1x = 10, observedSecondsAt1x = c.ProgressMonth / 12d * 10,
                 horizonSecondsAt1x = plan.HorizonMonths / 12d * 10, scope = "calendar conversion only; actual simulation/case milliseconds are separate" }
         };
@@ -70,6 +73,7 @@ internal static partial class GrowthScenarios
             {
                 schema_version = 1, kind = "seonro-growth-sensitivity", counterfactual = true, selectedBloodPolicy = "a", usesProductDefaultLaws = false, changedLaw = plan.LawKey,
                 sourceCommit = source.Commit, productSourceFingerprint = source.Fingerprint, source.Builds, environment,
+                sourceDeclaredPeoplePolicyDefaults = SensitivityPeopleDefaults,
                 plan, planSha256 = GrowthSensitivityContracts.Digest(planBytes), baselineReportResolvedPath = baselinePath,
                 baselineReportSha256 = GrowthSensitivityContracts.Digest(baselineBytes), baselineCompletedCases = 9,
                 requestedCases = requested, requested_complete = state.RequestedComplete, complete = state.Complete, status = state.Status,
@@ -97,6 +101,7 @@ internal static partial class GrowthScenarios
                     before.Groups.All(g => g.Kind != GroupKind.Sect), "민감도 창세가 선택 정책/실제 두 반선 조건과 다릅니다.");
                 var founders = before.People.Select(p => p.Id).ToHashSet(); var initialGroups = before.Groups.Select(g => g.Id).ToHashSet();
                 current.Cohort.UsedLaws = before.Laws; current.LawRevision = before.LawRevision;
+                current.AdoptedPeoplePolicies = SensitivityPeoplePolicies(before.PeopleDomain, before.Month);
                 current.Cohort.ProvisionalPolicies = Laws.All.Where(l => l.Provisional).Select(l => (object)new
                 { l.Id, value = before.Laws[l.Id], l.DefaultValue, l.Unit, l.Minimum, l.Maximum, l.Provisional, l.Rationale, lawRevision = before.LawRevision }).ToArray();
                 void Observe(GameState state)
@@ -111,6 +116,7 @@ internal static partial class GrowthScenarios
                     var advance = Stopwatch.StartNew(); world.AdvanceTo(month); advance.Stop(); current.Cohort.SimulationMs += advance.Elapsed.TotalMilliseconds;
                     var after = world.Checkpoint(); Invariants.Validate(after);
                     current.LastMonthLabor = SensitivityLabor(before, after, current); current.ProgressMonth = month;
+                    current.AdoptedPeoplePolicies = SensitivityPeoplePolicies(after.PeopleDomain, after.Month);
                     current.DescendantOutcomes = SensitivityDescendants(after, founders, completed: false);
                     if (month % plan.ObservationIntervalMonths == 0)
                     {
@@ -141,6 +147,33 @@ internal static partial class GrowthScenarios
         return new(host.Commit, host.ProductSourceFingerprint, true, assemblies.Select(assembly => new SensitivityBuild(assembly.GetName().Name!,
             assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "", GrowthSensitivityContracts.Digest(File.ReadAllBytes(assembly.Location)))).ToArray());
     }
+
+    private static readonly object SensitivityPeopleDefaults = new
+    {
+        scope = "Source declarations/catalogs only, not claims of adoption or execution. Actual checkpoint policies are separate. No manual non-law policy overrides are performed.",
+        peopleTuning = new PeopleTuning(), evaluation = new EvaluationPolicy(), reputation = new ReputationPolicy(), social = new PeopleSocialPolicy(),
+        genetics = GeneticModel.Provisional(), reproduction = new ReproductionPolicy(), speciesCatalog = SpeciesCatalog.All, traitCatalog = TraitCatalog.All,
+        sourceAnchors = new { peopleTuning = "src/Chronicles.Game/People/Aptitudes.cs:PeopleTuning", evaluation = "src/Chronicles.Game/People/Evaluation.cs:EvaluationPolicy",
+            reputation = "src/Chronicles.Game/People/Reputation.cs:ReputationPolicy", social = "src/Chronicles.Game/People/SocialState.cs:PeopleSocialPolicy",
+            genetics = "src/Chronicles.Game/People/Inheritance.cs:GeneticModel.Provisional", reproduction = "src/Chronicles.Game/People/Embodiment.cs:ReproductionPolicy",
+            species = "src/Chronicles.Game/People/Embodiment.cs:SpeciesCatalog", traits = "src/Chronicles.Game/People/Traits.cs:TraitCatalog" },
+        formulaOnlyReferencesForSeparateReview = new { martial = "PC-TEMP-V021-MARTIAL-APTITUDE-01; src/Chronicles.Game/People/MartialAptitude.cs:Assess",
+            combat = "PC-TEMP-V021-COMBAT-ASSESSMENT-01; src/Chronicles.Game/People/CombatAssessment.cs",
+            traces = "PC-TEMP-V021-TRACE-02; src/Chronicles.Game/World.PeopleBridge.cs" }
+    };
+
+    internal static object SensitivityDeclaredPeoplePolicies() => SensitivityPeopleDefaults;
+
+    internal static object SensitivityPeoplePolicies(PeopleState checkpoint, long observedMonth) => new
+    {
+        observedMonth, checkpoint.Tuning, checkpoint.EvaluationPolicy, checkpoint.ReputationPolicy, socialPolicy = checkpoint.Social.Policy,
+        observedSpeciesIds = checkpoint.Profiles.Select(p => p.Body.SpeciesId).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray(),
+        adoptedBodyReproduction = checkpoint.Profiles.Select(p => new { p.PersonId, p.Body.SpeciesId, p.Body.Reproduction, p.Body.Capabilities, p.Body.Source }).ToArray(),
+        actualFrozenConceptionModels = checkpoint.Inheritance.Conceptions.GroupBy(c => ExecutionMeasurementHost.Digest(c.Model), StringComparer.Ordinal)
+            .Select(group => new { model = group.First().Model, actualConceptions = group.Count(), firstConceptionMonth = group.Min(c => c.Month),
+                lawRevisions = group.Select(c => c.LawRevision).Distinct().Order().ToArray(), sourceAnchor = "src/Chronicles.Game/People/Inheritance.cs:ConceptionRecord.Model" }).ToArray(),
+        scope = "Adopted checkpoint values, not replacement static defaults. No conception means no adopted conception-model claim; declared but absent species are not marked used. Source formulas and non-law policies are not independently swept."
+    };
 
     private static object SensitivityLabor(GameState before, GameState after, SensitivityCase current)
     {

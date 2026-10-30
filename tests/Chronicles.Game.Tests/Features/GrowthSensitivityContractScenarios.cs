@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Chronicles.Game;
+using Chronicles.Game.People;
 
 namespace Chronicles.Game.Tests.Features;
 
@@ -177,5 +178,23 @@ public sealed class SensitivityPartitionContractScenario : IFeatureScenario
             SensitivityContractFixture.Check(File.ReadAllText(baseline) == "original");
         }
         finally { Directory.Delete(directory, recursive: true); }
+    }
+}
+
+public sealed class SensitivityAdoptedPolicyContractScenario : IFeatureScenario
+{
+    public string Name => "T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims";
+    public void Run()
+    {
+        var checkpoint = PeopleState.Empty() with { Tuning = new PeopleTuning(Revision: 77), ReputationPolicy = new ReputationPolicy(MaximumClaimsPerObserver: 17) };
+        var snapshot = JsonSerializer.SerializeToElement(GrowthScenarios.SensitivityPeoplePolicies(checkpoint, 12), SensitivityContractFixture.Json);
+        var definitions = JsonSerializer.SerializeToElement(GrowthScenarios.SensitivityDeclaredPeoplePolicies(), SensitivityContractFixture.Json);
+        SensitivityContractFixture.Check(snapshot.GetProperty("tuning").GetProperty("revision").GetInt64() == 77 &&
+            snapshot.GetProperty("reputationPolicy").GetProperty("maximumClaimsPerObserver").GetInt32() == 17 &&
+            snapshot.GetProperty("observedMonth").GetInt64() == 12 && snapshot.GetProperty("observedSpeciesIds").GetArrayLength() == 0 &&
+            snapshot.GetProperty("actualFrozenConceptionModels").GetArrayLength() == 0 &&
+            definitions.GetProperty("reputation").GetProperty("maximumClaimsPerObserver").GetInt32() == new ReputationPolicy().MaximumClaimsPerObserver &&
+            definitions.GetProperty("speciesCatalog").GetArrayLength() > 0 &&
+            definitions.GetProperty("genetics").GetProperty("policyId").GetString() == "PC-TEMP-V021-GENETICS-01");
     }
 }

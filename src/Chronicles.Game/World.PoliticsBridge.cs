@@ -48,6 +48,7 @@ public sealed partial class GameWorld
         {
             MaturityMonths = Law("birth.maturity"), SectLimit = IntLaw("politics.sectLimit"),
             FoundingTreasury = Law("politics.foundCost"), PolicyPreparationCost = Law("politics.policyCost"),
+            FamilyFounderMinimumRealm = IntLaw("politics.founderRealm"),
             BaseSalary = Law("politics.salary"), PreparationMonths = Value("politics.preparationMonths", defaults.PreparationMonths),
             PreparationWorkers = checked((int)Value("politics.preparationWorkers", defaults.PreparationWorkers)),
             TaxBasisPoints = checked((int)Value("politics.taxBasisPoints", defaults.TaxBasisPoints)),
@@ -73,7 +74,7 @@ public sealed partial class GameWorld
         {
             case "found":
                 if (c.Data is not ("sect" or "family")) { error = "가문 또는 종문을 선택하세요."; return true; }
-                plan = PoliticsEngine.PlanFound(context, domain, p.Id, Id(), $"{p.Name}{(c.Data == "sect" ? "종" : "가")}",
+                plan = PoliticsEngine.PlanFound(context, domain, p.Id, state.NextId, $"{p.Name}{(c.Data == "sect" ? "종" : "가")}",
                     c.Data == "sect" ? GroupKind.Sect : GroupKind.Family);
                 break;
             case "join":
@@ -115,6 +116,9 @@ public sealed partial class GameWorld
                 if (c.Target is < 0 or >= 100 || !p.KnownPlaces.Contains((int)c.Target))
                 { error = "개인이 아는 실제 지점을 선택하세요."; return true; }
                 var holder = options.Holder.Id == 0 ? PoliticsAccount(c.Value) : options.Holder;
+                if (c.Kind == "delegate" ? c.Value != 0 && !PoliticsKnowsAccount(p, PoliticalAccount.Group(c.Value)) :
+                    !(c.Kind == "setOperator" && holder.Id == 0) && !PoliticsKnowsAccount(p, holder))
+                { error = "개인이 아는 실제 권리 수령자를 선택하세요."; return true; }
                 plan = c.Kind == "delegate" ? PoliticsEngine.PlanDelegate(context, domain, p.Id, (int)c.Target, c.Value) :
                     c.Kind == "grantPassage" ? PoliticsEngine.PlanPassage(context, domain, p.Id, (int)c.Target, holder, options.Until) :
                     PoliticsEngine.PlanProperty(context, domain, p.Id, (int)c.Target,
@@ -145,7 +149,9 @@ public sealed partial class GameWorld
                 plan = PoliticsEngine.PlanCharter(context, domain, p.Id, c.Target, PoliticsGroupConsent(p, c.Target),
                     (int)c.Value, options.Teaching, options.Industry, options.Until, options.Fee); break;
             case "revokeCharter": plan = PoliticsEngine.PlanRevokeCharter(context, domain, p.Id, c.Target); break;
-            case "appointOffice": plan = PoliticsEngine.PlanOffice(context, domain, p.Id, c.Target, c.Data, c.Value); break;
+            case "appointOffice":
+                if (!PoliticsKnowsAccount(p, PoliticalAccount.Person(c.Value))) { error = "개인이 아는 현재 구성원을 선택하세요."; return true; }
+                plan = PoliticsEngine.PlanOffice(context, domain, p.Id, c.Target, c.Data, c.Value); break;
             case "policyActivity":
                 if (options.Category == "대외·외교")
                 {
@@ -153,6 +159,9 @@ public sealed partial class GameWorld
                     if (consenting == 0) { error = "상대 조직 현 수장의 실제 동의가 필요합니다."; return true; }
                     options = options with { Counterparty = consenting };
                 }
+                else if (options.Category is not ("경제·분배" or "영토·방위") && !PoliticsKnowsAccount(p, PoliticalAccount.Person(c.Value)) ||
+                    options.Category == "교육·전승" && !PoliticsKnowsAccount(p, PoliticalAccount.Person(options.Counterparty)))
+                { error = "개인이 아는 실제 정책 참여자를 선택하세요."; return true; }
                 plan = PoliticsEngine.PlanPolicyActivity(context, domain, new(p.Id, c.Target, options.Category,
                     c.Value, options.Counterparty, options.Knowledge, options.Place)); break;
             case "payroll": plan = PoliticsEngine.PlanPayroll(context, domain, p.Id, c.Target); break;
@@ -175,6 +184,11 @@ public sealed partial class GameWorld
     {
         if (!result.Accepted || result.Transition is not { } transition) return result.Message;
         if (!PoliticsEngine.ValidateForApplication(PoliticsContext(), state.Politics, transition, out var error)) return error;
+        var addedGroups = transition.Groups.Where(g => !groups.ContainsKey(g.Id)).OrderBy(g => g.Id).ToArray();
+        for (var i = 0; i < addedGroups.Length; i++)
+            if (addedGroups[i].Id != state.NextId + i) return "새 조직의 안정 신원이 바뀌었습니다. 다시 확인하세요.";
+        // AI invokes this adapter directly, so allocate global IDs only after all pure checks accept.
+        state.NextId = checked(state.NextId + addedGroups.Length);
         foreach (var update in transition.People)
         {
             var current = people[update.Id];
@@ -207,6 +221,9 @@ public sealed partial class GameWorld
     }
 
     private PoliticalAccount PoliticsAccount(long id) => groups.ContainsKey(id) ? PoliticalAccount.Group(id) : PoliticalAccount.Person(id);
+    private bool PoliticsKnowsAccount(Person actor, PoliticalAccount account) => account.Kind == PoliticalAccountKind.Person
+        ? account.Id == actor.Id || actor.KnownPeople.Contains(account.Id)
+        : account.Id == actor.Household || account.Id == actor.Sect || groups.TryGetValue(account.Id, out var group) && actor.KnownPeople.Contains(group.Leader);
     private long PoliticsAccountConsent(Person proposer, PoliticalAccount account) => account.Kind == PoliticalAccountKind.Group
         ? PoliticsGroupConsent(proposer, account.Id) : people.TryGetValue(account.Id, out var respondent) && PoliticsAgreement(proposer, respondent) ? respondent.Id : 0;
     private long PoliticsGroupConsent(Person proposer, long group) => groups.TryGetValue(group, out var g) &&
@@ -261,6 +278,9 @@ public sealed partial class GameWorld
     // Call after actual physical inheritance and after changing the person's life status; replace old automatic office loops.
     private void PoliticsOnLifeEnded(Person person, Person? actualHeir)
     {
+        if (state.Places.Any(place => place.Operator == person.Id || person.Status == LifeStatus.Dead && actualHeir is not null && place.Owner == person.Id))
+            RequirePoliticalSettlement(PoliticsEngine.PlanDepartedPersonalRights(PoliticsContext(), state.Politics, person.Id,
+                person.Status == LifeStatus.Dead ? actualHeir?.Id ?? 0 : 0));
         if (person.Status == LifeStatus.Dead && actualHeir is not null && state.Politics.Obligations.Any(o =>
             o.Creditor == PoliticalAccount.Person(person.Id) || o.Debtor == PoliticalAccount.Person(person.Id)))
             RequirePoliticalSettlement(PoliticsEngine.PlanEstateObligations(PoliticsContext(), state.Politics, person.Id, actualHeir.Id, actualHeir.Id));

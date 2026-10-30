@@ -5,9 +5,9 @@
   "source_snapshot": "049ef40d509e2601ffa6466c395db411d1645032",
   "archive_is_current_product": false,
   "reason": "Unused prototype handlers and settlement retained beside the typed political domain after command fallbacks were retired.",
-  "retired_members": ["Found", "Join", "Policy", "Govern", "ReleaseProvince", "Vassal", "Dissolve", "SettleGroups"],
-  "preserved_product_members": ["Adopt", "CombatAttributes", "Attack"],
-  "replacement": "World.PoliticsBridge typed commands, Politics pure transitions, and the monthly SettlePolitics hook",
+  "retired_members": ["Found", "Join", "Policy", "Govern", "ReleaseProvince", "Vassal", "Dissolve", "SettleGroups", "CombatAttributes"],
+  "preserved_product_members": ["Adopt", "Attack"],
+  "replacement": "World.PoliticsBridge typed commands, Politics pure transitions, monthly SettlePolitics, and canonical CultivationCombatFor combat projection",
   "legacy_group_fields": {
     "fields": ["PendingPolicies", "PolicyDue", "PolicyEscrow"],
     "compatibility": "Retained serialized shape requires empty/zero values. Nonzero prototype data is rejected, never silently converted or counted as current preparation money.",

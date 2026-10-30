@@ -18,25 +18,6 @@ public sealed partial class GameWorld
         return null;
     }
 
-    public static long[] CombatAttributes(Person p, IReadOnlyDictionary<long, Item>? equipment = null)
-    {
-        var basis = 100L;
-        for (var i = 0; i < (int)p.Realm; i++) basis = Math.Min(1000000000000, basis * 4);
-        basis += p.Martial * p.Martial * 64;
-        var path = p.Formations.LastOrDefault();
-        var definition = path is null ? null : Catalog.Paths.FirstOrDefault(x => x.Id == path.Path);
-        var attributes = Enumerable.Range(0, 8).Select(i => basis * (definition?.CombatFactors[i] ?? 100) / 100 * p.Health / 100).ToArray();
-        if (equipment is not null)
-            foreach (var (slot, itemId) in p.Equipment)
-                if (equipment.TryGetValue(itemId, out var item) && item.Owner == p.Id && item.Damage < 100 &&
-                    (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0)
-                {
-                    var axis = slot switch { 0 => 0, 3 => 1, 5 => 2, 6 => 3, 7 => 7, _ => -1 };
-                    if (axis >= 0) attributes[axis] += attributes[axis] * item.Quality * (100 - item.Damage) / 4000000;
-                }
-        return attributes;
-    }
-
     private string? Attack(Person p, long id)
         => ExecuteCombatAttack(p, id);
 }

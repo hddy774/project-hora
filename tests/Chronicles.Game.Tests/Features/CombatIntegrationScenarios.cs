@@ -210,3 +210,26 @@ public sealed class CombatWorldPrivacyScenario : IFeatureScenario
             "actual hidden opponent axes or rolls leaked through a play projection/event source");
     }
 }
+
+public sealed class CombatWorldHistoryScenario : IFeatureScenario
+{
+    public string Name => "combat public: settled receipt history is bounded without losing current paid occupancy or chronology";
+    public void Run()
+    {
+        var world = CombatFixture.Fresh(); var actor = world.Checkpoint().People[0].Id;
+        CombatFixture.Send(world, "finite-receipt-budget", 0, "law", value: 8, data: "combat.historyLimit");
+        CombatFixture.Send(world, "bounded-miss-fixture", 0, "lawBatch", data: "{\"combat.hitMinimum\":0,\"combat.hitMaximum\":0}");
+        CombatFixture.Send(world, "history-actor", actor, "possess");
+        for (var count = 0; count < 10; count++)
+        {
+            CombatFixture.Attack(world, "actual-receipt-" + count);
+            if (count < 9) world.AdvanceTo(world.Month + 1);
+        }
+        var state = world.Checkpoint(); var last = state.Combat.Exchanges.Last();
+        CombatFixture.Check(state.Combat.Exchanges.Count == 8 && state.Combat.Pruned == 2 && state.Combat.NextId == 11 &&
+            last.Participants.Single(p => p.Person == actor).OccupiedUntil == state.Month + 1 &&
+            state.Events.Count(e => e.Kind == "전투") == 10, "history cap lost committed labor, stable IDs or actual experienced chronology");
+        CombatFixture.Reject(world, "last-paid-slot-still-held", actor, "cancel");
+        var loaded = GameCodec.Decode(GameCodec.Encode(world)); CombatFixture.Check(world.StateHash() == loaded.StateHash(), "bounded combat history failed actual save");
+    }
+}

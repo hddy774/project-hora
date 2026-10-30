@@ -16,6 +16,7 @@ public sealed record CombatExchange(long Id, long Month, int Place, CombatRules 
 public sealed class CombatLedger
 {
     public long NextId { get; set; } = 1;
+    public long Pruned { get; set; }
     public List<CombatExchange> Exchanges { get; set; } = [];
 }
 
@@ -52,7 +53,8 @@ public static class CombatMechanics
     public static void Validate(GameState state)
     {
         var ledger = state.Combat;
-        if (ledger is null || ledger.NextId < 1 || ledger.Exchanges is null ||
+        if (ledger is null || ledger.NextId < 1 || ledger.Pruned < 0 || ledger.Exchanges is null ||
+            ledger.Pruned != ledger.NextId - 1 - ledger.Exchanges.Count ||
             ledger.Exchanges.Select(e => e.Id).Distinct().Count() != ledger.Exchanges.Count ||
             ledger.NextId <= ledger.Exchanges.Select(e => e.Id).DefaultIfEmpty().Max())
             throw new InvalidDataException("전투 영수증 식별자가 올바르지 않습니다.");
@@ -78,6 +80,10 @@ public static class CombatMechanics
                 if (p.OccupiedUntil > state.Month && person.Status == LifeStatus.Alive &&
                     (person.Action is not (ActionKind.Guard or ActionKind.Travel) || person.Due < p.OccupiedUntil || person.ActionData != exchange.Source))
                     throw new InvalidDataException("확정된 전투의 실제 행동 시간이 해제되었습니다.");
+                if (person.Status == LifeStatus.Alive && person.Action == ActionKind.Travel && person.ActionData == exchange.Source &&
+                    (exchange.Reaction.Choice != "retreat" || exchange.Reaction.Person != p.Person ||
+                        exchange.Reaction.Destination != person.ActionTarget || person.Due < p.OccupiedUntil))
+                    throw new InvalidDataException("전투 이탈의 실제 이동 경로와 영수증이 일치하지 않습니다.");
             }
             foreach (var strike in exchange.Strikes)
             {

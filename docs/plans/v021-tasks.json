@@ -5709,7 +5709,7 @@
         "V021-O02"
       ],
       "acceptance": "고정 조건/실제 생태계에서 행동 분포·지배 전략·정체·추론 비용 비교 · 나머지 축을 하나씩 활성화한 인과/다양성 보정·지배 전략 분리",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5725,6 +5725,18 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "root 승인: 작업 자체 수용·선행 마감 별도 계산",
+          "path": "docs/evidence/0.2.1/agent-metrics-9263756/summary.json",
+          "source": "0aea4c28c166dafc0018969bfd8b860d416a575a",
+          "note": "고정926 AI108의 고정/생태계 분포·실제 월비용·정체와 56/56 점수인과를 대조했다. +1축 선택변화0/56도 보존하며 선행 B04/G03/O02를 기다린다."
+        },
+        {
+          "scope": "승인된3개만 원장 반영·선행 닫힘 계산",
+          "path": "docs/evidence/0.2.1/agent-metrics-9263756/acceptance-approved.json",
+          "source": "https://github.com/hddy774/project-hora/pull/205",
+          "note": "2026-10-30 root 검토·승인. 소스926 실측과 af91/후속PGOoff 기능·비용 출처를 분리하고 L05/T04/T06/H06/H09/Z04는진행중유지."
         }
       ],
       "inv_ids": [
@@ -6014,7 +6026,7 @@
         "V021-N01"
       ],
       "acceptance": "관측/주장·확신/유효기간·모순/오해·결과 귀인·경험 출처, 숨은 실제 정보/무료 숙련 유입0 · 인물당 믿음 예산·결정론적 만료/망각/요약·중요 이력/원천 보존·2/100/1000/10000 메모리/저장 측정",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -6030,6 +6042,18 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "root 승인: 작업 자체 수용·선행 마감 별도 계산",
+          "path": "docs/evidence/0.2.1/agent-metrics-9263756/cognition-review.json",
+          "source": "0aea4c28c166dafc0018969bfd8b860d416a575a",
+          "note": "c6 실제2/100/1000/10000 인지/저장bytes, 통합48·active claim12 예산초과0, TTL/안정퇴출/최근기록과 af91 전체314 기능 근거를 root가 승인했다. 고정성능예산FAIL과분리하며 L02/N01 done을확인했다."
+        },
+        {
+          "scope": "승인된3개만 원장 반영·선행 닫힘 계산",
+          "path": "docs/evidence/0.2.1/agent-metrics-9263756/acceptance-approved.json",
+          "source": "https://github.com/hddy774/project-hora/pull/205",
+          "note": "2026-10-30 root 검토·승인. 소스926 실측과 af91/후속PGOoff 기능·비용 출처를 분리하고 L05/T04/T06/H06/H09/Z04는진행중유지."
         }
       ],
       "inv_ids": [
@@ -6153,7 +6177,7 @@
         "V021-O05"
       ],
       "acceptance": "장기 과제 완수·자원/노동 효율·잘못된 믿음 교정·탐험/협력·교착·예산/재현·정보 동등성 지표",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -6169,6 +6193,18 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "root 승인: 작업 자체 수용·선행 마감 별도 계산",
+          "path": "docs/evidence/0.2.1/agent-metrics-9263756/summary.json",
+          "source": "0aea4c28c166dafc0018969bfd8b860d416a575a",
+          "note": "108수집은목표108성공이아니다. 32목표24완수/8미달·10정체,실제교정/상환·품목별소비/월점유,54반복쌍hash동일·fairness4/4·예산/재현위반0을보존한다. 선행L06/R08/O05를기다린다."
+        },
+        {
+          "scope": "승인된3개만 원장 반영·선행 닫힘 계산",
+          "path": "docs/evidence/0.2.1/agent-metrics-9263756/acceptance-approved.json",
+          "source": "https://github.com/hddy774/project-hora/pull/205",
+          "note": "2026-10-30 root 검토·승인. 소스926 실측과 af91/후속PGOoff 기능·비용 출처를 분리하고 L05/T04/T06/H06/H09/Z04는진행중유지."
         }
       ],
       "inv_ids": [

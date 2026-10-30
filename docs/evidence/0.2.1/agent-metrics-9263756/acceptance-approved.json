@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "kind": "root 승인 후 L03/L04/L07 자체 수용·선행 마감 반영",
+  "recordedUtc": "2026-10-30T20:04:27.671623+00:00",
+  "baseCommit": "b979949df0b5ba3cd7c3b998c3d500545f02e523",
+  "evidenceCommit": "0aea4c28c166dafc0018969bfd8b860d416a575a",
+  "pullRequest": "https://github.com/hddy774/project-hora/pull/205",
+  "rootAuthorization": "PR205 감사문서·인지 수치·범위 검토 후 L03/L04/L07 자체 수용 반영 승인. 이3개만수정하고closure계산하면L04만done,나머지2개validated.",
+  "changedTaskFields": [
+    "status",
+    "evidence"
+  ],
+  "changedTasks": [
+    {
+      "id": "V021-L03",
+      "before": "in_progress",
+      "after": "validated",
+      "dependencyStatuses": {
+        "V021-L02": "done",
+        "V021-B04": "validated",
+        "V021-G03": "validated",
+        "V021-O02": "validated"
+      },
+      "unfinishedDependencies": [
+        "V021-B04",
+        "V021-G03",
+        "V021-O02"
+      ]
+    },
+    {
+      "id": "V021-L04",
+      "before": "in_progress",
+      "after": "done",
+      "dependencyStatuses": {
+        "V021-L02": "done",
+        "V021-N01": "done"
+      },
+      "unfinishedDependencies": []
+    },
+    {
+      "id": "V021-L07",
+      "before": "in_progress",
+      "after": "validated",
+      "dependencyStatuses": {
+        "V021-L06": "validated",
+        "V021-R08": "validated",
+        "V021-O05": "validated"
+      },
+      "unfinishedDependencies": [
+        "V021-L06",
+        "V021-R08",
+        "V021-O05"
+      ]
+    }
+  ],
+  "closedTasks": [
+    "V021-L04"
+  ],
+  "unchangedTaskRows": 108,
+  "canonicalRequirementsDependenciesAndOtherStatusesUnchanged": true,
+  "counts": {
+    "done": 50,
+    "validated": 55,
+    "in_progress": 6,
+    "planned": 0,
+    "blocked": 0
+  },
+  "total": 111,
+  "completed": 50,
+  "completionPercent": 45.0,
+  "ownAcceptance": 105,
+  "ownAcceptancePercent": 94.6,
+  "stillInProgress": [
+    "V021-L05",
+    "V021-T04",
+    "V021-T06",
+    "V021-H06",
+    "V021-H09",
+    "V021-Z04"
+  ],
+  "scopeBoundary": {
+    "measurementSourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "measurementFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+    "af91FunctionalSourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "af91Functional": "314/314",
+    "additionalRootReportedRuntimeOnlyFunctional": {
+      "reportedSourceLabel": "94",
+      "result": "314/314",
+      "completedUtc": "2026-10-30T19:55:44Z",
+      "reportedShaPrefix": "afaa049",
+      "attribution": "루트 통지의 약식 식별자. PGOoff 런타임 변경·Game 전이 로직 동일이라는 root 검토 범위이며 원문AI108의 source/latency를 변경하지 않는다."
+    }
+  },
+  "newGameExecutions": 0,
+  "largeRawReanalysis": false,
+  "gzipRewritten": false,
+  "wholeFileHashSweep": false,
+  "compilation": false,
+  "productFingerprintRecomputed": false,
+  "historicalDraftNote": "acceptance-review.json/md의원장미수정표현은승인전초안시점이다. 이번승인에따른실제원장변경은본파일과새progress에명시한다."
+}

@@ -10,12 +10,17 @@
   "stagnationCandidates": 10,
   "allOriginalsPreserved": true,
   "newGameRunsDuringAnalysis": 0,
-  "ledgerChanged": false,
+  "ledgerChanged": true,
   "files": [
     {
       "path": "README.md",
-      "bytes": 8987,
-      "sha256": "13d0f71eef28c82523e96e9ed49f4665b9e50f15599c340874fafe611369eec1"
+      "bytes": 9759,
+      "sha256": "402e96aab276ecc70429ae3305f3e1d89b0263d92e09a694dbd528a0b382e861"
+    },
+    {
+      "path": "acceptance-approved.json",
+      "bytes": 3121,
+      "sha256": "6d5314f8bc1f3df306d023a5c83f111b0e69871ac42f9c8b54f2213ecc28030f"
     },
     {
       "path": "acceptance-review.json",
@@ -24,8 +29,8 @@
     },
     {
       "path": "acceptance-review.md",
-      "bytes": 8046,
-      "sha256": "3df3a7583c02ff413039e73f4d9207f209bf9d6531452b14b3c5fed1051b6576"
+      "bytes": 8198,
+      "sha256": "d71e65898929f882377481af12a2831233a8da3fed542c5ca87a35c10db67482"
     },
     {
       "path": "analyze.py",
@@ -173,5 +178,18 @@
       "sha256": "5ebca71f24da4b9de69c3b74d2e8be5069b69a5ef66727e8ee066e8d0420abf5"
     }
   ],
-  "verification": "JSON/JSONL 문법·Python AST·문서 상대링크·분석기 독립감사0오류 및압축복원SHA동일확인. 새기능/성능실행아님."
+  "verification": "JSON/JSONL 문법·Python AST·문서 상대링크·분석기 독립감사0오류 및압축복원SHA동일확인. 새기능/성능실행아님.",
+  "ledgerUpdateByRootApproval": {
+    "changedTasks": [
+      "V021-L03",
+      "V021-L04",
+      "V021-L07"
+    ],
+    "closedTasks": [
+      "V021-L04"
+    ],
+    "other108TaskRowsUnchanged": true,
+    "largeMeasurementArtifactsRehashedOrRewritten": false,
+    "collectionAndInitialAnalysisLedgerChanged": false
+  }
 }

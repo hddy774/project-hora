@@ -7,6 +7,7 @@ public static partial class InventoryEngine
     /// <summary>For serial GameWorld candidate execution only. The complete initial snapshot is always isolated.</summary>
     internal static OwnedTransaction Own(GameState world) => new(world);
     internal static OwnedTransaction OwnProjected(GameState world) => new(world, true);
+    internal static OwnedTransaction OwnTypedProjectedForExperiment(GameState world) => new(world, true, true);
 
     internal readonly record struct OwnedResult(bool Accepted, string Message, long Subject = 0, bool Replayed = false);
     internal readonly record struct OwnedJob(long Id, string Recipe, long Due);
@@ -22,10 +23,14 @@ public static partial class InventoryEngine
         private readonly bool projectedPerson;
 
         internal OwnedTransaction(GameState world) : this(world, false) { }
-        internal OwnedTransaction(GameState world, bool projectedPerson)
+        internal OwnedTransaction(GameState world, bool projectedPerson) : this(world, projectedPerson, false) { }
+        internal OwnedTransaction(GameState world, bool projectedPerson, bool typedCopy)
         {
             ArgumentNullException.ThrowIfNull(world); this.projectedPerson = projectedPerson;
-            candidate = projectedPerson ? CreateProjectedSnapshot(world) : InventoryState.FromWorld(world, world.Inventory); source = world;
+            if (typedCopy && !projectedPerson) throw new ArgumentException("Typed copying requires the private Person projection.", nameof(typedCopy));
+            candidate = !projectedPerson ? InventoryState.FromWorld(world, world.Inventory) : typedCopy
+                ? CreateTypedProjectedSnapshot(world, ProjectedFingerprint(world)) : CreateProjectedSnapshot(world);
+            source = world;
         }
 
         private InventoryState Open() => candidate ?? throw new InvalidOperationException("Inventory transaction is already consumed or discarded.");

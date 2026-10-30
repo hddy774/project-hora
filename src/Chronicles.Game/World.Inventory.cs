@@ -2,9 +2,6 @@ namespace Chronicles.Game;
 
 public sealed partial class GameWorld
 {
-    private bool Accessible(Person p, long id, out Item item, ItemKind? kind = null)
-        => InventoryAccessible(p, id, out item, kind);
-
     private int Inventory(long owner, string definition) => people.TryGetValue(owner, out var person)
         ? AvailableInventory(person, definition) : 0;
 
@@ -65,25 +62,6 @@ public sealed partial class GameWorld
             if (quantity == 0) { RecordEcologyConsumption(p, definition, consumed); return; }
         }
         if (quantity != 0) throw new InvalidOperationException("검증된 소비량이 재고를 초과했습니다.");
-    }
-
-    private void Reserve(Person p, string definition, int quantity, long reservation)
-    {
-        foreach (var item in Owned(p.Id).Where(i => i.Definition == definition && InventoryAccessible(p, i.Id, out _))
-                     .OrderBy(i => i.Id).ToArray())
-        {
-            var take = Math.Min(quantity, item.Quantity); quantity -= take;
-            if (take == item.Quantity) item.Reserved = reservation;
-            else
-            {
-                item.Quantity -= take;
-                var split = AddItem(p.Id, definition, take, item.Quality, $"분할 {item.Id}", "transfer")!;
-                split.Reserved = reservation; split.Damage = item.Damage; split.Defects = item.Defects;
-                split.Container = item.Container; split.BoundSoul = item.BoundSoul; split.Place = item.Place;
-            }
-            if (quantity == 0) return;
-        }
-        throw new InvalidOperationException("예약 전 재료 검사 실패");
     }
 
 }

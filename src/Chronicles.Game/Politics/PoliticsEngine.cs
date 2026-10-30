@@ -308,7 +308,7 @@ public static partial class PoliticsEngine
     internal static List<T> Merge<T>(IReadOnlyList<T> current, IReadOnlyList<T> changes, Func<T, long> key) =>
         current.Where(x => !changes.Any(y => key(y) == key(x))).Concat(changes).OrderBy(key).ToList();
     internal static long Balance(PoliticalContext context, PoliticalState state) => checked(
-        context.People.Sum(p => p.Money) + context.Groups.Sum(g => checked(g.Money + g.PolicyEscrow)) + state.Preparations.Sum(p => p.Escrow));
+        context.People.Sum(p => p.Money) + context.Groups.Sum(g => g.Money) + state.Preparations.Sum(p => p.Escrow));
 }
 
 internal sealed class PoliticalDraft

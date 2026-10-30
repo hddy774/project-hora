@@ -23,7 +23,9 @@ public static class PoliticalInvariants
             context.People.Any(p => context.Groups.Any(g => g.Id == p.Id)) ||
             context.Places.Select(p => p.Id).Distinct().Count() != context.Places.Count)
             errors.Add("Political inputs contain duplicate stable entity IDs.");
-        if (context.People.Any(p => p.Money < 0) || context.Groups.Any(g => g.Money < 0 || g.PolicyEscrow < 0) ||
+        if (context.Groups.Any(g => g.PolicyEscrow != 0 || g.PolicyDue != 0 || g.PendingPolicies.Count != 0))
+            errors.Add("Retired group policy fields must remain empty/zero; current preparation and escrow authority is Politics.Preparations.");
+        if (context.People.Any(p => p.Money < 0) || context.Groups.Any(g => g.Money < 0) ||
             state.ConsumedMoney < 0 || state.Preparations.Any(p => p.Escrow < 0)) errors.Add("Political money cannot be negative.");
         var allIds = state.Claims.Select(x => x.Id).Concat(state.Obligations.Select(x => x.Id))
             .Concat(state.Passage.Select(x => x.Id)).Concat(state.Accords.Select(x => x.Id)).Concat(state.Charters.Select(x => x.Id))

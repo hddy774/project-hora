@@ -60,6 +60,24 @@ def replace_block(body, block):
     return block + "\n" + body
 
 
+def domain_body(body, tasks):
+    states = {task["id"]: task["status"] for task in tasks}
+    def checkbox(match):
+        identifier = match.group(1)
+        return "- [" + ("x" if states[identifier] == "done" else " ") + "] " + identifier + ":" if identifier in states else match.group(0)
+    body = re.sub(r"- \[[ xX]\] (V021-[A-Z]\d\d):", checkbox, body)
+    begin, end = "<!-- v021-domain-progress:start -->", "<!-- v021-domain-progress:end -->"
+    completed = sum(task["status"] == "done" for task in tasks)
+    block = (begin + f'\n**분야 진행률: {completed}/{len(tasks)}개 완료 ({completed * 100 / len(tasks):.1f}%)**\n\n'
+             + "수용 근거와 선행 작업의 마감을 확인한 정본 상태입니다. "
+             + f'[전체 진행률](https://github.com/{REPOSITORY}/issues/73)에서 현재 단계와 남은 작업을 확인할 수 있습니다.\n' + end)
+    if begin in body or end in body:
+        if body.count(begin) != 1 or body.count(end) != 1 or body.index(begin) > body.index(end):
+            raise ValueError("분야 진행도 구간 표시가 손상되어 기존 본문을 보존합니다.")
+        return re.sub(re.escape(begin) + r"[\s\S]*?" + re.escape(end), lambda _: block, body, count=1)
+    return block + "\n\n" + body
+
+
 def request(method, path, token, payload=None):
     data = None if payload is None else json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = urllib.request.Request("https://api.github.com/repos/" + REPOSITORY + path, data=data, method=method,
@@ -92,6 +110,15 @@ def main():
         for path in ("/issues/73", "/pulls/84"):
             entity = request("GET", path, token)
             updated = replace_block(entity.get("body") or "", block)
+            if updated != entity.get("body"):
+                request("PATCH", path, token, {"body": updated})
+        for number in range(74, 84):
+            tasks = [task for task in data["tasks"] if task.get("github_issue") == number]
+            if not tasks:
+                continue
+            path = "/issues/" + str(number)
+            entity = request("GET", path, token)
+            updated = domain_body(entity.get("body") or "", tasks)
             if updated != entity.get("body"):
                 request("PATCH", path, token, {"body": updated})
     print(json.dumps({key: summary[key] for key in ("completed", "total", "completion_percent", "phase")}, ensure_ascii=False))

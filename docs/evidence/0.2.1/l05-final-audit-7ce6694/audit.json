@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "kind": "L05 최종 자체 수용 근거 감사 초안",
+  "prepared_at_utc": "2026-10-30T21:05:56.894444+00:00",
+  "document_base_commit": "ff829a23f61e5bb76f96ad669cebede993c15e9b",
+  "canonical": {
+    "task_id": "V021-L05",
+    "title": "다단계 목표·계획·정보 탐색",
+    "acceptance": "알려진 행동 전제/예상 효과·제한 탐색·정보 획득·계획 수정/교착 복구·추론 예산·예약/재검사",
+    "common_acceptance": [
+      "새 상태의 저장 왕복 테스트와 불변식(INV-ID) 등록 포함"
+    ],
+    "inv_ids": [
+      "INV-001",
+      "INV-004",
+      "INV-006",
+      "INV-022",
+      "INV-008",
+      "INV-021"
+    ],
+    "current_status_in_base": "in_progress",
+    "dependency_statuses_in_base": {
+      "V021-L04": "done",
+      "V021-R07": "validated",
+      "V021-I03": "validated",
+      "V021-K08": "done"
+    }
+  },
+  "recommendation": {
+    "own_evidence": "충족 권고(승인 전)",
+    "suggested_status_if_root_approves": "validated",
+    "done_promotion": false,
+    "unfinished_direct_dependencies": [
+      "V021-R07",
+      "V021-I03"
+    ],
+    "ledger_written": false,
+    "progress_written": false,
+    "z04_t04_t06_or_release_verdict_included": false,
+    "rationale": "이전 보류 사유였던 수정 후 통합 공개 기능과 최종 자연9의 출처·완료범위가 모두 입력됐다. 미달/정체/금단 부재를 보존한 유한 자료를 정본 기능 조항과 대조한다."
+  },
+  "clause_bindings": [
+    {
+      "clause": "알려진 행동 전제/예상 효과",
+      "actual_registered_classes": [
+        "AgentPlanningProductionScenario",
+        "AgentPlanningRegistryScenario",
+        "AgentPlanningTeacherScenario",
+        "AgentEntrySourceScenario",
+        "AgentCultivationTeachingScenario"
+      ],
+      "meaning_and_boundary": "관측된 원천·실제 개인 지식/실물로 공정과 전수·토납·감응을 이어간다. 실제 실행 전제와 영수증을 재검사한다."
+    },
+    {
+      "clause": "제한 탐색·정보 획득",
+      "actual_registered_classes": [
+        "AgentPlanningBudgetScenario",
+        "AgentPlanningInformationFairnessScenario",
+        "InventoryFoodObservationScenario",
+        "InventoryLegacyObservationScenario",
+        "InventoryObservationDenialScenario",
+        "EcologyFoodInformationRecoveryScenario"
+      ],
+      "meaning_and_boundary": "개인 관측/접근권한·현지 정의·유료 관측을 사용한다. 명시 target/정의 불일치는 다른 원천으로 우회하지 않는다."
+    },
+    {
+      "clause": "계획 수정/교착 복구",
+      "actual_registered_classes": [
+        "AgentPlanningFailureScenario",
+        "AgentCultivationRelearningScenario",
+        "AgentCultivationFailureScenario",
+        "EcologyReservationRecoveryScenario",
+        "EcologyKnownFarmRecoveryScenario"
+      ],
+      "meaning_and_boundary": "실제 거부/오독/감응 실패를 보존하고 재관측·재독해·새 시도·알려진 이동·배운 농사로 유한 회복 경로를 실행한다. 모든 자연 seed의 영구 생존 보장은 아니다."
+    },
+    {
+      "clause": "추론 예산",
+      "actual_registered_classes": [
+        "AgentPlanningBudgetScenario",
+        "AgentTradeBudgetBoundaryScenario",
+        "EcologyTinyBeliefRecoveryScenario"
+      ],
+      "meaning_and_boundary": "예산1 퇴출·거래 마지막 방문 경계·충분한 예산의 실제 출품/환전을 검사한다. 예산 소진 뒤 추가 실물 예약/환전/난수는 없다."
+    },
+    {
+      "clause": "예약/재검사",
+      "actual_registered_classes": [
+        "EcologyReservationRecoveryScenario",
+        "EcologyFailureLawScenario",
+        "InventoryFoodObservationScenario"
+      ],
+      "meaning_and_boundary": "같은 식량 원천 전량의 실제 타인 예약 때문에 실패한 뒤 짧은 거부 기억·유료 재관측·예약 상태 재검사·법칙/관측 수명 상한을 따른다."
+    },
+    {
+      "clause": "새 상태 저장/불변식 공통 조항",
+      "actual_registered_classes": [
+        "AgentPlanningReplayScenario",
+        "AgentPlanningBudgetScenario",
+        "AgentEntrySourceScenario",
+        "AgentCultivationTeachingScenario",
+        "EcologyReservationRecoveryScenario",
+        "EcologyKnownFarmRecoveryScenario",
+        "AgentTradeBudgetBoundaryScenario"
+      ],
+      "meaning_and_boundary": "실제 명령 재전송·저장 속행·세계 해시/RNG·실물/지식 영수증을 대조한다. 기존24 INV 증인표와 전체314의 실행 출처는 별도 문서를 따른다."
+    }
+  ],
+  "functional": {
+    "source": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+    "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+    "report_path": "docs/evidence/0.2.1/invariant-final-94ccb5d/functional.json",
+    "report_sha256": "afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616",
+    "selection": "all",
+    "total": 314,
+    "failed": 0,
+    "source_review_path": "docs/evidence/0.2.1/invariant-execution-source-review-94ccb5d.json",
+    "l05_feature_rows": "functional-evidence.json",
+    "new_execution": false
+  },
+  "source_relationship": {
+    "growth_source": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "growth_product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "functional_source": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+    "functional_product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+    "compared_paths": [
+      "src",
+      "tests",
+      "scripts",
+      "Directory.Build.props",
+      "Directory.Build.targets",
+      "global.json"
+    ],
+    "changed_paths": [
+      "Directory.Build.props"
+    ],
+    "src_tests_scripts_same_blobs": true,
+    "change": "Directory.Build.props 주석 한 줄과 TieredPGO=false 한 줄",
+    "patch": "source-relationship.patch",
+    "same_whole_tree_claim": false,
+    "costs_are_paired_or_transferred_to_94": false,
+    "fingerprints_recomputed": false,
+    "note": "두 소스의 게임/검사 입력 동일을 정적으로 연결한다. 서로 다른 런타임 PGO·호스트의 비용은 합산하거나 소스를 승격하지 않는다.",
+    "document_base_vs_functional_input_changed_paths": [],
+    "document_base_source_matches_functional_input_paths": true
+  },
+  "historical_counterexample": {
+    "source_commit": "b0f3aec986d9b09015021499e47627b869411b83",
+    "product_source_fingerprint": "8e197e13641d2e39fffdd8fe8c47dbc8b06788f6dddaee7f35e61407847591a2",
+    "preserved_partial_readme": "docs/evidence/0.2.1/growth-b0f3aec-interrupted/README.md",
+    "partial_cases": 3,
+    "completed_6000_cases": 0,
+    "last_observed_month_each": 3240,
+    "diagnosis": "docs/evidence/0.2.1/growth-diagnosis-b0f3aec-seed42.json",
+    "diagnostic_seed": 42,
+    "diagnostic_through_month": 1200,
+    "diagnostic_descendant": 2098,
+    "diagnostic_entry_work": 180000,
+    "diagnostic_attempt": null,
+    "diagnostic_death": "990개월 수명 소진·윤회 미적격. 식량 사망이라고 바꾸지 않는다.",
+    "distinct_food_counterexample": "식량 예약경합 회복 공백은 별도 원인 진단/공개 회복 검사를 따른다. 성장 DTO에 예약경합·사인·관측 횟수 필드가 있다고 가정하지 않는다.",
+    "repairs_and_integration_prs": [
+      168,
+      169,
+      172,
+      174,
+      175,
+      176,
+      178
+    ],
+    "tracking_issues": [
+      170,
+      171
+    ],
+    "historical_raws_modified": false
+  },
+  "ai108": {
+    "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "source_fingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+    "source_pr": 205,
+    "summary_path": "docs/evidence/0.2.1/agent-metrics-9263756/summary.json",
+    "acceptance_review_path": "docs/evidence/0.2.1/agent-metrics-9263756/acceptance-review.md",
+    "main_raw_sha256": "435c2db02e2f85b2ae2138161805786a371bf7214b306d3030a06bd3b832995d",
+    "collected_cases": 108,
+    "horizon_months": 144,
+    "monthly_samples": 15552,
+    "declared_targets": 32,
+    "completed_targets": 24,
+    "uncompleted_targets": 8,
+    "stagnation_candidates": 10,
+    "axis_score_causality": 56,
+    "axis_comparisons": 56,
+    "axis_selected_sequences_changed": 0,
+    "repetition_pairs": 54,
+    "repetition_hash_mismatches": 0,
+    "budget_mismatches": 0,
+    "replay_mismatches": 0,
+    "fairness_cases": 4,
+    "fairness_mismatches": 0,
+    "scope": "108건 수집을 108목표 성공으로 바꾸지 않는다. 정체 후보는 영구 교착 단정이 아니며 목표 미완수는 null을 유지한다. 926 측정을 94 또는 자연9로 재라벨하지 않는다.",
+    "large_raw_reparsed_or_decompressed_in_this_audit": false
+  },
+  "natural9": {
+    "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "run_url": "https://github.com/hddy774/project-hora/actions/runs/41111524034",
+    "run_id": 41111524034,
+    "official_artifact_id": 13010597728,
+    "official_artifact_url": "https://github.com/hddy774/project-hora/actions/runs/41111524034/artifacts/13010597728",
+    "official_aggregate_sha256": "bd592d544766dfff2ba39ece2a531513610ccca3b0c24b86061e9d9b0626e0ab",
+    "official_provenance_sha256": "3750b5196220d793de701d11f8615bed8c7bb1d09893f475ece783c3f205a766",
+    "upstream_repository_directory": "docs/evidence/0.2.1/growth-primary-7ce6694/",
+    "verification_original": "growth-final-verification.original.json",
+    "verified_at_utc": "2026-10-30T20:54:56.027201+00:00",
+    "independently_verified_cases": 9,
+    "horizon_months": 6000,
+    "observation_interval_months": 120,
+    "observations_total": 459,
+    "all_input_sha_and_raw_rows_match_official": true,
+    "verification_performed_by": "UI 담당의 고정된 final-verification 원문을 인용",
+    "raws_reverified_here": false,
+    "selected_final_rows": "natural-observations.json",
+    "default_a_core_outcome": "seed42/98/2026 모두 관측창 내 후손 금단 미성립",
+    "exact_core": {
+      "scenario": "c",
+      "seed": 2026,
+      "month": 4326,
+      "entity": 8042,
+      "source": "실제 body Cultivation.Formations[GoldenCore].Month; 사망 육신 이력 포함"
+    },
+    "no_birth_cases": [
+      {
+        "scenario": "a",
+        "seed": 98
+      },
+      {
+        "scenario": "c",
+        "seed": 98
+      }
+    ],
+    "completion_meaning": "유한 관찰과 원문/출처/집계 검증 종료. 모든 seed 성장·무한 생존·균형 성공이 아니다.",
+    "missing_attempt_counts_or_death_causes_imputed": false,
+    "laws_or_parameters_changed": false
+  },
+  "original_copies": [
+    {
+      "source_path": "/workspace/scratch/growth-41111524034-7ce6694/final-verification.json",
+      "stored_path": "growth-final-verification.original.json",
+      "sha256": "c74f85bd5c1aab95d403498039c1c400cab658618478c834608903a0d59196a0",
+      "bytes": 5278,
+      "byte_identical": true
+    },
+    {
+      "source_path": "/workspace/scratch/growth-41111524034-7ce6694/official-aggregate/provenance/aggregate.json",
+      "stored_path": "growth-aggregate-provenance.original.json",
+      "sha256": "3750b5196220d793de701d11f8615bed8c7bb1d09893f475ece783c3f205a766",
+      "bytes": 1682,
+      "byte_identical": true
+    }
+  ],
+  "work_performed": {
+    "new_game_executions": 0,
+    "builds": 0,
+    "new_growth_or_performance_runs": 0,
+    "validator_changes_or_executions": 0,
+    "new_test_cases": 0,
+    "product_or_script_changes": false,
+    "whole_product_fingerprint_recalculated": false,
+    "large_ai_raw_reanalysis": false,
+    "ledger_or_readiness_changes": false
+  }
+}

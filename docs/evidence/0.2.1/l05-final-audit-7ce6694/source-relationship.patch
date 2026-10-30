@@ -1,0 +1,12 @@
+diff --git a/Directory.Build.props b/Directory.Build.props
+index e15a0d3..a2a3ffa 100644
+--- a/Directory.Build.props
++++ b/Directory.Build.props
+@@ -7,5 +7,7 @@
+     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+     <Deterministic>true</Deterministic>
+     <AnalysisLevel>latest-recommended</AnalysisLevel>
++    <!-- 인구 규모를 순차 전환하는 호스트 실측의 실행 비용을 안정화한다. -->
++    <TieredPGO>false</TieredPGO>
+   </PropertyGroup>
+ </Project>

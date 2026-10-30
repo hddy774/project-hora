@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "kind": "root 승인 후 L05 한 행 자체 수용 반영",
+  "recorded_utc": "2026-10-30T21:13:28.332265+00:00",
+  "ledger_base_commit": "5378f794d9161b95061d0695ac79573c0dcf2ab5",
+  "reviewed_draft_commit": "535cb0e0397eea05c1af765c337bec296526dbf7",
+  "pull_request": "https://github.com/hddy774/project-hora/pull/210",
+  "root_authorization": "PR210 README·조항별29기능·AI108 한계·자연9표/원문 출처를 root가 검토하고 L05만 validated와 근거 반영을 승인했다. done 승격0, 다른110행/요구·deps·정책·제안 test_status 변경0.",
+  "changed_task": "V021-L05",
+  "changed_task_fields": [
+    "status",
+    "evidence"
+  ],
+  "before": "in_progress",
+  "after": "validated",
+  "unchanged_other_task_rows": 110,
+  "canonical_other_fields_and_proposed_test_statuses_unchanged": true,
+  "dependency_statuses": {
+    "V021-L04": "done",
+    "V021-R07": "validated",
+    "V021-I03": "validated",
+    "V021-K08": "done"
+  },
+  "unfinished_direct_dependencies": [
+    "V021-R07",
+    "V021-I03"
+  ],
+  "eligible_validated_tasks_for_done": [],
+  "closed_tasks": [],
+  "counts_before": {
+    "done": 52,
+    "validated": 55,
+    "in_progress": 4
+  },
+  "counts_after": {
+    "done": 52,
+    "validated": 56,
+    "in_progress": 3
+  },
+  "total": 111,
+  "completed": 52,
+  "completion_percent": 46.8,
+  "own_acceptance": 108,
+  "own_acceptance_percent": 97.3,
+  "still_in_progress": [
+    "V021-T04",
+    "V021-T06",
+    "V021-Z04"
+  ],
+  "ledger_sha256_before": "ea1a19daf602692a6f477da99717592a1e767708637b2326ee1adea6eead89df",
+  "ledger_sha256_after": "ad47595386d88fbc0ef901a4a3828d9fde93e494af31e4c5655f6bd69cf80fc1",
+  "plan_validation": {
+    "path": "plan-validation.approved.json",
+    "command": "python3 scripts/validate-v021-plan.py --self-test --write-report docs/evidence/0.2.1/l05-final-audit-7ce6694/plan-validation.approved.json",
+    "executions": 1,
+    "passed": true,
+    "negative_self_tests_passed": 11,
+    "game_tests_executed": false
+  },
+  "preserved_limits": [
+    "AI108 선언목표32중24완수/8미달·정체10",
+    "기본a3 모두 관측창 내 후손금단 미성립",
+    "a98/c98 출생0",
+    "c2026의 실제 후손금단4326개월·인물8042",
+    "자연DTO에 없는 시도수·상세사인·복구횟수 추정0",
+    "Z04/T04/T06·장기·공식서명/업그레이드·릴리스 판정 별도"
+  ],
+  "new_builds_or_game_runs": 0,
+  "new_growth_or_performance_runs": 0,
+  "product_fingerprint_recomputed": false,
+  "readiness_or_notion_changed": false,
+  "progress_generation": {
+    "command": "python3 scripts/update-v021-progress.py",
+    "executions": 1,
+    "generated_from_commit": "01ae14a3d7e289094533dc3989da4cdd15dc8477",
+    "paths": [
+      "docs/progress-v0.2.1.md",
+      "docs/evidence/0.2.1/progress.json"
+    ],
+    "source_has_approved_ledger": true,
+    "published_to_github_by_script": false
+  },
+  "upstream_growth_evidence": {
+    "pull_request": "https://github.com/hddy774/project-hora/pull/211",
+    "frozen_commit": "38c639a3a68b32176bfae243f6a5a5293357d59b",
+    "path": "docs/evidence/0.2.1/growth-primary-7ce6694/",
+    "note": "UI 담당의9raw/공식집계/메타/독립검증 보관 원문을 고정commit으로 연결. 실제 실행 source7ce/FP4e는 그대로다."
+  }
+}

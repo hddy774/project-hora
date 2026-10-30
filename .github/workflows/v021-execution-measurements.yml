@@ -236,6 +236,7 @@ jobs:
             "${arguments[@]}" \
             2>&1 | tee "$RESULT_DIR/measurement.log"
           statuses=("${PIPESTATUS[@]}")
+          set -e
           python3 - "$RESULT_DIR" "${statuses[0]}" "${statuses[1]}" <<'PY'
           import json, pathlib, sys
           pathlib.Path(sys.argv[1], 'process-exit.json').write_text(json.dumps({

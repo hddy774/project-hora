@@ -57,7 +57,10 @@ public static class Invariants
             Require(p.Household == 0 || groups.ContainsKey(p.Household), "INV-019", "가계 참조");
             Require(p.Sect == 0 || (groups.TryGetValue(p.Sect, out var sect) && sect.Kind == GroupKind.Sect && !sect.Dissolved && sect.Members.Contains(p.Id)), "INV-019", "종문 소속");
             Require(p.Beliefs.Count <= state.Laws["ai.beliefBudget"] && p.Beliefs.All(b => b.Key == b.Value.Key && b.Value.Observed <= state.Month && b.Value.Confidence is >= 0 and <= 100), "INV-008", "개인 인지 예산/출처");
-            Require(p.Beliefs.Count + p.ObservedPeople.Count + p.ObservedPlaces.Count <= state.Laws["ai.beliefBudget"], "INV-008", "통합 인지 보관 예산");
+            Require(p.Beliefs.Count + p.ObservedPeople.Count + p.ObservedPlaces.Count +
+                state.Inventory.Observations.Count(o => o.Observer == p.Id) +
+                state.PeopleDomain.Reputation.Claims.Count(c => c.ObserverId == p.Id && (c.ExpiresMonth is null || c.ExpiresMonth > state.Month)) <=
+                state.Laws["ai.beliefBudget"], "INV-008", "통합 인지 보관 예산");
             Require(p.Journal.Count <= 100 && p.Journal.All(e => e.Id > 0 && e.Id < state.NextId && e.Month <= state.Month), "INV-008", "개인 실제 사건 로그 예산");
             Require(p.KnownPlaces.Distinct().Count() == p.KnownPlaces.Count && p.KnownPlaces.All(n => n >= 0 && n < 100) && p.KnownPeople.All(people.ContainsKey), "INV-009", "개인 지식 참조");
             Require(p.Action == ActionKind.Idle || (Enum.IsDefined(p.Action) && p.Due > state.Month && p.Status == LifeStatus.Alive), "INV-021", "행동 단일 용량/시각");

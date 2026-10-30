@@ -63,9 +63,10 @@ public sealed partial class GameWorld
         {
             var sources = state.Inventory.Sources.Where(s => s.Place == place.Id && s.EcologyWeight > 0).OrderBy(s => s.Id).ToArray();
             var renewable = sources.Where(s => s.Activity == "source.gathering" || s.Activity == "source.farming").ToArray();
+            var budget = EcologyRegrowthBudget(place);
             foreach (var source in sources) source.Regeneration = 0;
             for (var i = 0; i < renewable.Length; i++)
-                renewable[i].Regeneration = IntLaw("ecology.regrowth") / renewable.Length + (i < IntLaw("ecology.regrowth") % renewable.Length ? 1 : 0);
+                renewable[i].Regeneration = budget / renewable.Length + (i < budget % renewable.Length ? 1 : 0);
         }
     }
     private void MigrateInventoryContracts()

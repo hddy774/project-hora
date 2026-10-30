@@ -15,19 +15,19 @@ public sealed class HostRecoveryScenarios : IFeatureScenario
         {
             var path = Path.Combine(directory, "world-0.seonro");
             var world = GameWorld.Create(42, new Dictionary<string, long> { ["birth.enabled"] = 0 });
-            GameCodec.SaveAtomic(world, path); var previous = File.ReadAllBytes(path); var priorHash = world.StateHash();
-            world.AdvanceTo(1); GameCodec.SaveAtomic(world, path); var current = File.ReadAllBytes(path);
+            GameSaveStore.SaveAtomic(world, path); var previous = File.ReadAllBytes(path); var priorHash = world.StateHash();
+            world.AdvanceTo(1); GameSaveStore.SaveAtomic(world, path); var current = File.ReadAllBytes(path);
             File.WriteAllBytes(path, previous); File.WriteAllBytes(path + ".pending", current);
-            Require(GameCodec.Load(path).StateHash() == world.StateHash(), "최근 완전 pending이 이전 primary보다 우선");
+            Require(GameSaveStore.Load(path).StateHash() == world.StateHash(), "최근 완전 pending이 이전 primary보다 우선");
             var session = new GameSession(directory);
             var recovered = session.Handle(new());
             Require(recovered.View.Month == 1 && recovered.Message.Contains("중단", StringComparison.Ordinal), "호스트 복구 사실 표시");
             File.WriteAllText(path + ".pending", "부분 파일");
-            Require(GameCodec.Load(path).StateHash() == priorHash, "부분 pending은 유효 primary를 덮지 않음");
+            Require(GameSaveStore.Load(path).StateHash() == priorHash, "부분 pending은 유효 primary를 덮지 않음");
             File.WriteAllText(path, "손상"); File.WriteAllBytes(path + ".pending", current);
-            Require(GameCodec.Load(path).StateHash() == world.StateHash(), "손상 primary에서 완전 pending 복구");
+            Require(GameSaveStore.Load(path).StateHash() == world.StateHash(), "손상 primary에서 완전 pending 복구");
             File.WriteAllText(path + ".pending", "부분 파일");
-            Require(GameCodec.Load(path).StateHash() == priorHash, "primary와 pending 손상 시 유효 backup 복구");
+            Require(GameSaveStore.Load(path).StateHash() == priorHash, "primary와 pending 손상 시 유효 backup 복구");
             var altered = JsonNode.Parse(current)!;
             altered["Sequence"] = altered["Sequence"]!.GetValue<long>() + 1;
             var rejected = false;

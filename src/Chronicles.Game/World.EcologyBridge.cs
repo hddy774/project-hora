@@ -67,7 +67,7 @@ public sealed partial class GameWorld
     private EcologyDecisionInput EcologyDecisionFor(Person person)
     {
         var context = CurrentEcology(); var facts = new EcologyFacts(context);
-        var own = state.Items.Where(i => i.Owner == person.Id).OrderBy(i => i.Id).Select(item =>
+        var own = state.Items.Where(i => i.Owner == person.Id && facts.Accessible(person, i)).OrderBy(i => i.Id).Select(item =>
         {
             var appraisal = state.Inventory.Appraisals.LastOrDefault(a => a.Appraiser == person.Id && a.Item == item.Id && a.Month <= Month);
             var available = facts.Accessible(person, item);
@@ -75,8 +75,8 @@ public sealed partial class GameWorld
                 InventoryDefinitions.Definition(item.Definition).Item.Weight, available, person.Equipment.ContainsValue(item.Id),
                 available && item.Container == 0 && item.BoundSoul == 0 && !state.Inventory.Arrays.Any(a => a.Item == item.Id));
         }).ToArray();
-        var sources = state.Inventory.Observations.Where(o => o.Observer == person.Id).GroupBy(o => o.Source).Select(g => g.OrderByDescending(o => o.Month).First())
-            .Select(o => new EcologicalKnownSource(o.Source, o.Place, state.Inventory.Sources.Single(s => s.Id == o.Source).Definition,
+        var sources = InventoryKnowledgeQueries.KnownSources(state.Inventory, person.Id).Where(o => !string.IsNullOrEmpty(o.Definition))
+            .Select(o => new EcologicalKnownSource(o.Source, o.Place, o.Definition,
                 o.Remaining, o.Month, $"personal-source:{o.Source}:{o.Month}:{o.Evidence}")).ToList();
         if (!sources.Any(s => s.Place == person.Place && s.Definition == "food") && person.ObservedPlaces.TryGetValue(person.Place, out var local))
             sources.Add(new(0, person.Place, "food", local.Source == 0 ? 0 : null, local.Month, $"personal-local-observation:{local.Place}:{local.Month}"));

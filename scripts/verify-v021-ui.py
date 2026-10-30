@@ -290,7 +290,7 @@ with sync_playwright() as p:
         page.get_by_role('button', name='값 가져오기', exact=True).click()
         page.get_by_label('내보낸 JSON 값 붙여넣기').fill(json.dumps(exported))
         page.get_by_role('button', name='차이 검토', exact=True).click()
-        page.get_by_role('button', name='검토한 값 순차 적용', exact=True).click()
+        page.get_by_role('button', name='검토한 값 일괄 적용', exact=True).click()
         settle(page)
         assert page.evaluate('(id) => view.laws.find(l=>l.id===id).value', law['id']) == law['value']
         nav(page, '인물')

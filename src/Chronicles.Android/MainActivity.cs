@@ -8,6 +8,7 @@ using System.Text.Json;
 namespace Chronicles.Android;
 
 [Activity(Label = "선로만상록", MainLauncher = true, Exported = true, ScreenOrientation = global::Android.Content.PM.ScreenOrientation.Portrait,
+    WindowSoftInputMode = global::Android.Views.SoftInput.AdjustResize,
     ConfigurationChanges = global::Android.Content.PM.ConfigChanges.Orientation | global::Android.Content.PM.ConfigChanges.ScreenSize)]
 public sealed class MainActivity : Activity
 {
@@ -56,7 +57,7 @@ public sealed class MainActivity : Activity
     private void CheckRender(int attempt)
     {
         if (web is null || IsFinishing || IsDestroyed) return;
-        const string script = "JSON.stringify({rendered:typeof view!=='undefined'&&view!==null&&document.querySelector('#content h2')?.getBoundingClientRect().height>0,heading:document.querySelector('#content h2')?.textContent,title:typeof view!=='undefined'&&view?view.title:null,version:typeof view!=='undefined'&&view?view.version:null,error:window.seonroLastHostError||null,connection:document.querySelector('#connection')?.textContent})";
+        const string script = "(function(){var h=document.querySelector('#content h2');var c=document.querySelector('#connection');var v=typeof view!=='undefined'&&view?view:null;return JSON.stringify({rendered:!!(v&&h&&h.getBoundingClientRect().height>0),heading:h?h.textContent:null,title:v?v.title:null,version:v?v.version:null,error:window.seonroLastHostError||null,connection:c?c.textContent:null});})()";
         web.EvaluateJavascript(script, new RenderCallback(this, attempt));
     }
 

@@ -1,0 +1,340 @@
+{
+  "total": 111,
+  "completed": 47,
+  "completion_percent": 42.3,
+  "own_acceptance_count": 89,
+  "own_acceptance_percent": 80.2,
+  "counts": {
+    "done": 47,
+    "validated": 42,
+    "in_progress": 18,
+    "planned": 4,
+    "blocked": 0
+  },
+  "remaining": [
+    {
+      "id": "V021-P02",
+      "title": "초기 두 인물·학습/생계 출발",
+      "status": "validated"
+    },
+    {
+      "id": "V021-P03",
+      "title": "인구·가계 소비·분업·정착",
+      "status": "validated"
+    },
+    {
+      "id": "V021-F02",
+      "title": "임신·출생·부모·윤회 연결",
+      "status": "validated"
+    },
+    {
+      "id": "V021-F04",
+      "title": "양육·교육·분가·상속",
+      "status": "validated"
+    },
+    {
+      "id": "V021-R03",
+      "title": "입문·병목·돌파·안착",
+      "status": "validated"
+    },
+    {
+      "id": "V021-R04",
+      "title": "축기·금단·상위 프로필",
+      "status": "validated"
+    },
+    {
+      "id": "V021-R06",
+      "title": "퇴행·회복·수행 보정",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-V01",
+      "title": "자질·천교·후보·공석",
+      "status": "validated"
+    },
+    {
+      "id": "V021-V02",
+      "title": "명성·인지·사회 반응",
+      "status": "validated"
+    },
+    {
+      "id": "V021-M02",
+      "title": "복수 시설·자원·비경·성립",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-M03",
+      "title": "소유·통치·운영·통행권",
+      "status": "validated"
+    },
+    {
+      "id": "V021-M05",
+      "title": "탐색·기연·비경",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-K03",
+      "title": "연단 수직 구현",
+      "status": "validated"
+    },
+    {
+      "id": "V021-K04",
+      "title": "연기 수직 구현",
+      "status": "validated"
+    },
+    {
+      "id": "V021-K06",
+      "title": "진법 수직 구현",
+      "status": "validated"
+    },
+    {
+      "id": "V021-K07",
+      "title": "필수 전문 활동",
+      "status": "validated"
+    },
+    {
+      "id": "V021-E01",
+      "title": "지역 시장·실제 거래 주체",
+      "status": "validated"
+    },
+    {
+      "id": "V021-E02",
+      "title": "실수급·가격·생산",
+      "status": "validated"
+    },
+    {
+      "id": "V021-E03",
+      "title": "교역·화물·운송 계약",
+      "status": "validated"
+    },
+    {
+      "id": "V021-E04",
+      "title": "경매·실물·입찰 예치",
+      "status": "validated"
+    },
+    {
+      "id": "V021-E05",
+      "title": "생태 경제·공적/개인 회계",
+      "status": "validated"
+    },
+    {
+      "id": "V021-S01",
+      "title": "0개 시작·종합 종문 성립",
+      "status": "validated"
+    },
+    {
+      "id": "V021-S02",
+      "title": "종문 생활·교육·재정",
+      "status": "validated"
+    },
+    {
+      "id": "V021-S03",
+      "title": "종문 승계·외교·왕조 관할",
+      "status": "validated"
+    },
+    {
+      "id": "V021-G01",
+      "title": "가문·왕조·봉신 통치",
+      "status": "validated"
+    },
+    {
+      "id": "V021-G02",
+      "title": "정치 승계·무영토 왕조",
+      "status": "validated"
+    },
+    {
+      "id": "V021-G03",
+      "title": "10대 정책·세부 선택·변경",
+      "status": "validated"
+    },
+    {
+      "id": "V021-X02",
+      "title": "새 인물 생성·세계 편입",
+      "status": "validated"
+    },
+    {
+      "id": "V021-X03",
+      "title": "동등한 인물 행동·권한",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-X04",
+      "title": "플레이 시간·계획·사망 전환",
+      "status": "validated"
+    },
+    {
+      "id": "V021-U03",
+      "title": "인물·가계·수행·천교 화면",
+      "status": "validated"
+    },
+    {
+      "id": "V021-U04",
+      "title": "지도·인구·이동·권리 화면",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-U05",
+      "title": "종문·정책·왕조·경제 화면",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-D02",
+      "title": "최종 통합 저장 감사",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-T01",
+      "title": "최종 불변식 감사",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-T02",
+      "title": "전 범위 시나리오·조회 무영향",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-T03",
+      "title": "시간·명령·결정론 회귀",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-T04",
+      "title": "단계별 성능·보정·장기 안정성",
+      "status": "planned"
+    },
+    {
+      "id": "V021-T05",
+      "title": "엔진 없는 UI·모드/입력 사용성",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-T06",
+      "title": "통합 릴리스·근거·버전 일치",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-Y03",
+      "title": "유전·혼흔·현재 발현·인지 연결",
+      "status": "validated"
+    },
+    {
+      "id": "V021-O02",
+      "title": "생활·보관·운송·정착 순환",
+      "status": "validated"
+    },
+    {
+      "id": "V021-O03",
+      "title": "지식 확산·제도 적응·실패 세계",
+      "status": "validated"
+    },
+    {
+      "id": "V021-H04",
+      "title": "사건·동적 SoA·지역/관계 인덱스",
+      "status": "planned"
+    },
+    {
+      "id": "V021-H06",
+      "title": "확장 성능 실험·지속 R&D 원장",
+      "status": "planned"
+    },
+    {
+      "id": "V021-H09",
+      "title": "C# 배치·SIMD·네이티브 비교 판단",
+      "status": "planned"
+    },
+    {
+      "id": "V021-J02",
+      "title": "화신 대원만 Gate·13개 자동 조건",
+      "status": "validated"
+    },
+    {
+      "id": "V021-J03",
+      "title": "6영역 흔적·보존/접근/통합",
+      "status": "validated"
+    },
+    {
+      "id": "V021-J04",
+      "title": "사망/비승/분혼·대기/출생 원자 전이",
+      "status": "validated"
+    },
+    {
+      "id": "V021-C01",
+      "title": "게임명·설명·개발 문서 정합화",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-L03",
+      "title": "AI 다양성·의사결정 비용 검증",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-B04",
+      "title": "10경지 수행·30개 공법 예시 프로필",
+      "status": "validated"
+    },
+    {
+      "id": "V021-I03",
+      "title": "12분류 장비·본명법보 계약",
+      "status": "validated"
+    },
+    {
+      "id": "V021-L04",
+      "title": "인지·믿음·기억·실패 학습",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-L05",
+      "title": "다단계 목표·계획·정보 탐색",
+      "status": "validated"
+    },
+    {
+      "id": "V021-L06",
+      "title": "협상·가계/조직 협력·전투 의사결정",
+      "status": "validated"
+    },
+    {
+      "id": "V021-L07",
+      "title": "AI 지능·학습·공정성 검증",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-R07",
+      "title": "10대경지·30개 수행 경로와 형성 이력",
+      "status": "validated"
+    },
+    {
+      "id": "V021-R08",
+      "title": "전투 특성·표시 전투력·조건부 잠재력",
+      "status": "validated"
+    },
+    {
+      "id": "V021-O04",
+      "title": "가계·공방·도시·조직의 수요/행동 순환",
+      "status": "validated"
+    },
+    {
+      "id": "V021-O05",
+      "title": "생태 충격·회복·사회 변화 시나리오",
+      "status": "validated"
+    },
+    {
+      "id": "V021-U07",
+      "title": "AI 판단·경로/잠재·생태 비교 화면",
+      "status": "validated"
+    },
+    {
+      "id": "V021-Z04",
+      "title": "창세 성장 곡선 추정·프리셋 타당성 보고",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-H10",
+      "title": "이전 경로 제거·이중 권위 정리",
+      "status": "in_progress"
+    }
+  ],
+  "schema_version": 1,
+  "source_commit": "db90dbde87ba420ab9ac06cb49d3491671540b98",
+  "phase": "기능 마무리·수용 근거 대조",
+  "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
+}

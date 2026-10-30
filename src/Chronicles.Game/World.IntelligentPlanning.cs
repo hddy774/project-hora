@@ -133,7 +133,8 @@ public sealed partial class GameWorld
             command = command with { Value = amount, Data = "" };
         }
         if (PeopleActionError(p, command.Kind) is { } capabilityError) return capabilityError;
-        if (TryCultivationCommand(command, p, out var error) || TryKnowledgeCommand(command, p, out error) ||
+        if (ValidateExplorationInteraction(command, p) is { } spaceError) return spaceError;
+        if (TryExplorationCommand(command, p, out var error) || TryCultivationCommand(command, p, out error) || TryKnowledgeCommand(command, p, out error) ||
             TryInventoryCommand(command, p, out error) || TryPoliticsCommand(command, p, out error)) return error;
         return Start(p, step.Action, step.Target, step.Data);
     }

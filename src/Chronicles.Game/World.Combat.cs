@@ -37,7 +37,7 @@ public sealed partial class GameWorld
         if (target == 0) return null;
         if (!people.TryGetValue(target, out var protectedPerson) || target == person.Id || protectedPerson.Status != LifeStatus.Alive ||
             !person.KnownPeople.Contains(target) || !person.ObservedPeople.TryGetValue(target, out var observation) ||
-            observation.Place != person.Place || protectedPerson.Place != person.Place)
+            observation.Place != person.Place || !ShareExplorationSpace(protectedPerson, person))
             return "직접 관측하고 같은 장소에 있는 상대만 자발적으로 경계할 수 있습니다.";
         return PeopleActionError(person, "martial");
     }
@@ -63,7 +63,7 @@ public sealed partial class GameWorld
     private string? ExecuteCombatAttack(Person attacker, long target)
     {
         if (attacker.Action != ActionKind.Idle || !people.TryGetValue(target, out var defender) ||
-            defender.Status != LifeStatus.Alive || defender.Health <= 0 || defender.Id == attacker.Id || defender.Place != attacker.Place ||
+            defender.Status != LifeStatus.Alive || defender.Health <= 0 || defender.Id == attacker.Id || !ShareExplorationSpace(defender, attacker) ||
             !attacker.KnownPeople.Contains(defender.Id)) return "전투 조건을 만족하지 않습니다.";
         if (PeopleActionError(attacker, "martial") is { } capabilityError) return capabilityError;
         var rules = CombatRulesForWorld(); var until = checked(Month + rules.Months);

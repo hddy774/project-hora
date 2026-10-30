@@ -248,12 +248,13 @@ public sealed partial class GameWorld
     }
 
     private bool PeopleObservedHere(Person observer, Person subject) => observer.Status == LifeStatus.Alive && subject.Status == LifeStatus.Alive &&
-        observer.Place == subject.Place && observer.ObservedPeople.TryGetValue(subject.Id, out var known) && known.Place == observer.Place &&
+        ShareExplorationSpace(observer, subject) && observer.ObservedPeople.TryGetValue(subject.Id, out var known) && known.Place == observer.Place &&
         known.Month <= Month && Month - known.Month <= Law("ai.beliefLifetime");
 
-    private static bool PeopleSessionParticipantsAvailable(PeopleSession session, Person proposer, Person recipient) =>
+    private bool PeopleSessionParticipantsAvailable(PeopleSession session, Person proposer, Person recipient) =>
         proposer.Status == LifeStatus.Alive && recipient.Status == LifeStatus.Alive && proposer.Health >= 10 && recipient.Health >= 10 &&
-        proposer.BodyId == session.ProposerBody && recipient.BodyId == session.RecipientBody && proposer.Place == session.Place && recipient.Place == session.Place;
+        proposer.BodyId == session.ProposerBody && recipient.BodyId == session.RecipientBody && proposer.Place == session.Place &&
+        recipient.Place == session.Place && ShareExplorationSpace(proposer, recipient);
 
     private static bool TryPeopleAction(Person person, out PeopleAction action)
     {

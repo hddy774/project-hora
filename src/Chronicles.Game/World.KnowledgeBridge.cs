@@ -146,7 +146,7 @@ public sealed partial class GameWorld
     {
         var work = ResolveKnowledgeWork(command.Data, teacher);
         if (work is null || !people.TryGetValue(command.Target, out var pupil) || pupil.Status != LifeStatus.Alive ||
-            !teacher.KnownPeople.Contains(pupil.Id) || pupil.Place != teacher.Place || pupil.Health < 10 ||
+            !teacher.KnownPeople.Contains(pupil.Id) || !ShareExplorationSpace(pupil, teacher) || pupil.Health < 10 ||
             pupil.Action != ActionKind.Idle && (pupil.Action != ActionKind.Wait || pupil.ActionData.StartsWith(KnowledgeActionPrefix, StringComparison.Ordinal)))
             return "실제 지식·같은 장소·상대의 노동 용량을 확인하세요.";
         var transmission = pupil.ParentOne == teacher.Id || pupil.ParentTwo == teacher.Id || pupil.Guardian == teacher.Id ? KnowledgeTransmission.Parent :

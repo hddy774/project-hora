@@ -1703,6 +1703,11 @@
           "path": "docs/plans/v021-canon-map.md",
           "baseline": "docs/evidence/0.2.1/baseline.md",
           "scope": "full task contract; no claim of dependent feature completion"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-A01"
         }
       ],
       "inv_ids": [
@@ -1737,6 +1742,11 @@
           "path": "docs/plans/v021-canon-map.md",
           "baseline": "docs/evidence/0.2.1/baseline.md",
           "scope": "full task contract; no claim of dependent feature completion"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-A02"
         }
       ],
       "inv_ids": [
@@ -1759,7 +1769,7 @@
         "V021-H01"
       ],
       "acceptance": "신원·권리·조회·명령·원자 전이의 단일 소유와 계약 고정 · 1단계 ID/정수 시간/RNG/슬롯 세대, 2단계 명령/DTO/원자 전이 산출물을 분리 기록",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1773,6 +1783,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-A03"
         }
       ],
       "inv_ids": [
@@ -1795,7 +1810,7 @@
         "V021-A03"
       ],
       "acceptance": "품계·경계·배율의 전 사용처와 형질/완성품 표시 이행",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1811,6 +1826,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-B01"
         }
       ],
       "inv_ids": [
@@ -1831,7 +1851,7 @@
         "V021-B01"
       ],
       "acceptance": "서적·법보 등의 실제 결손과 점수 경계를 혼동하지 않음",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1847,6 +1867,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-B02"
         }
       ],
       "inv_ids": [
@@ -1868,7 +1893,7 @@
         "V021-H05"
       ],
       "acceptance": "출생/사망/윤회·안정 ID·슬롯 재사용·가족 참조 무결성",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1884,6 +1909,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-P01"
         }
       ],
       "inv_ids": [
@@ -1918,7 +1948,7 @@
         "V021-K02"
       ],
       "acceptance": "2명 모두 반선·종문0·숨은 주민0·자원/지식 출처·후대 금단/혈연 판정의 현재/대기/차단/미판정 구분",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1934,6 +1964,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-P02"
         }
       ],
       "inv_ids": [
@@ -1959,7 +1994,7 @@
         "V021-O01"
       ],
       "acceptance": "인구·노동·식량 회계, 자연 성립 시설과 집계/개체 중복 없음",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -1975,6 +2010,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-P03"
         }
       ],
       "inv_ids": [
@@ -1996,7 +2036,7 @@
         "V021-L01"
       ],
       "acceptance": "상호 의사·관계 변화·생식/양육/소속의 분리",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2012,6 +2052,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-F01"
         }
       ],
       "inv_ids": [
@@ -2038,7 +2083,7 @@
         "V021-W01"
       ],
       "acceptance": "기본 금단 출산·양친 자격/법칙 revision·부담·한 번의 결과·새 인구/영혼 배정",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2054,6 +2099,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-F02"
         }
       ],
       "inv_ids": [
@@ -2084,7 +2134,7 @@
         "V021-J01"
       ],
       "acceptance": "부모 원형/태내/발달·출처·변이/각인, 출생 전 미배정 영혼 영향 없음·재추첨0",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2100,6 +2150,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-F03"
         }
       ],
       "inv_ids": [
@@ -2122,7 +2177,7 @@
         "V021-K02"
       ],
       "acceptance": "부양 시간/재원·성장·가문 성립·입양·유산·직책 승계의 분리",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2138,6 +2193,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-F04"
         }
       ],
       "inv_ids": [
@@ -2162,7 +2222,7 @@
         "V021-P01"
       ],
       "acceptance": "5영근 세부 값·유전 입력·후천 성장·현재 경지 분리",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2178,6 +2238,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-R01"
         }
       ],
       "inv_ids": [
@@ -2199,7 +2264,7 @@
         "V021-R05"
       ],
       "acceptance": "흡수/정제/순환/체화·구조·부하·오행조화·진척의 인과",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2215,6 +2280,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-R02"
         }
       ],
       "inv_ids": [
@@ -2236,7 +2306,7 @@
         "V021-P02"
       ],
       "acceptance": "감응 입문·조건별 병목·자원/공정·단약 보조·실패/안착",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2252,6 +2322,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-R03"
         }
       ],
       "inv_ids": [
@@ -2273,7 +2348,7 @@
         "V021-R03"
       ],
       "acceptance": "경지별 고유 기반·형성/현재 성장·출처·잠정 상위값 연결",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2289,6 +2364,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-R04"
         }
       ],
       "inv_ids": [
@@ -2313,7 +2393,7 @@
         "V021-R01"
       ],
       "acceptance": "오행 공급·탁도·점유·분배·거점 판단의 실제 자원 보존",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2329,6 +2409,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-R05"
         }
       ],
       "inv_ids": [
@@ -2388,7 +2473,7 @@
         "V021-W02"
       ],
       "acceptance": "절대/상대·권역/종족/경지·연령/성장 상태·재평가·공석 판정",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2404,6 +2489,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-V01"
         }
       ],
       "inv_ids": [
@@ -2426,7 +2516,7 @@
         "V021-N01"
       ],
       "acceptance": "실제 값/정보 출처·AI 판단·숨은 천교와 전지적 누출 분리",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2442,6 +2532,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-V02"
         }
       ],
       "inv_ids": [
@@ -2464,7 +2559,7 @@
         "V021-B01"
       ],
       "acceptance": "성장·돌파·전투 기여·수명·수선 병행·생활/생애 연결",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2480,6 +2575,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-W01"
         }
       ],
       "inv_ids": [
@@ -2501,7 +2601,7 @@
         "V021-B01"
       ],
       "acceptance": "종족/몸/호칭 분리·생식 프로필·서식/자원·사회/기예 참여",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2517,6 +2617,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-W02"
         }
       ],
       "inv_ids": [
@@ -2539,7 +2644,7 @@
         "V021-N01"
       ],
       "acceptance": "양육·생계·수행·관계·기예·정치·교역과 실제 정보·시간·교착 대응",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2555,6 +2660,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-L01"
         }
       ],
       "inv_ids": [
@@ -2578,7 +2688,7 @@
         "V021-A03"
       ],
       "acceptance": "주별 10개·안정 ID·통로·층천/시설의 중복 없는 개수",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2594,6 +2704,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-M01"
         }
       ],
       "inv_ids": [
@@ -2655,7 +2770,7 @@
         "V021-S01"
       ],
       "acceptance": "최고 주권/봉신/종문/개인 권리의 구분·충돌/이전 검사",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2671,6 +2786,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-M03"
         }
       ],
       "inv_ids": [
@@ -2692,7 +2812,7 @@
         "V021-M01"
       ],
       "acceptance": "체류/이동·폐쇄/우회·도착·인구와 소유물 중복 없음",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2708,6 +2828,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-M04"
         }
       ],
       "inv_ids": [
@@ -2771,7 +2896,7 @@
         "V021-P01"
       ],
       "acceptance": "시간 용량·실소비·중단/회수·실패·결과 원자 정산",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2787,6 +2912,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-K01"
         }
       ],
       "inv_ids": [
@@ -2809,7 +2939,7 @@
         "V021-L01"
       ],
       "acceptance": "초기/부모/스승/서적/도제·지식과 숙련·무료 경험 방지",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2825,6 +2955,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-K02"
         }
       ],
       "inv_ids": [
@@ -2849,7 +2984,7 @@
         "V021-R03"
       ],
       "acceptance": "실제 재료→제작→보관/판매/복용·성장/돌파/치료 효과",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2865,6 +3000,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-K03"
         }
       ],
       "inv_ids": [
@@ -2886,7 +3026,7 @@
         "V021-I03"
       ],
       "acceptance": "재료→법보/도구·수리·장착, 본명법보 계약 보존",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2902,6 +3042,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-K04"
         }
       ],
       "inv_ids": [
@@ -2922,7 +3067,7 @@
         "V021-K02"
       ],
       "acceptance": "실제 제작·판매·사용 사건·횟수·효과·중복 방지",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2938,6 +3083,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-K05"
         }
       ],
       "inv_ids": [
@@ -2960,7 +3110,7 @@
         "V021-R05"
       ],
       "acceptance": "설치권·범위·유지/보수/해체·실제 영기 공급/방어",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -2976,6 +3126,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-K06"
         }
       ],
       "inv_ids": [
@@ -2997,7 +3152,7 @@
         "V021-M02"
       ],
       "acceptance": "영농·채집·채광·의술·감정·탐색·교역/운송의 대표 순환",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3013,6 +3168,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-K07"
         }
       ],
       "inv_ids": [
@@ -3036,7 +3196,7 @@
         "V021-N01"
       ],
       "acceptance": "실물·주체·재고·예약·자금·현지 원자 거래",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3052,6 +3212,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-E01"
         }
       ],
       "inv_ids": [
@@ -3080,7 +3245,7 @@
         "V021-K01"
       ],
       "acceptance": "가계/개인/조직 수요·품질·용량·지역 가격 반응",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3096,6 +3261,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-E02"
         }
       ],
       "inv_ids": [
@@ -3117,7 +3287,7 @@
         "V021-M04"
       ],
       "acceptance": "운송 중 소유·비용·인도/실패/반환·노동 검사",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3133,6 +3303,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-E03"
         }
       ],
       "inv_ids": [
@@ -3153,7 +3328,7 @@
         "V021-E01"
       ],
       "acceptance": "중복/무자금 방지·동시 종료·유찰/반환/사망 처리",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3169,6 +3344,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-E04"
         }
       ],
       "inv_ids": [
@@ -3199,7 +3379,7 @@
         "V021-K07"
       ],
       "acceptance": "생산/소비·양육·상속·조세/공납·모든 주체의 실제 회계 일치",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3215,6 +3395,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-E05"
         }
       ],
       "inv_ids": [
@@ -3237,7 +3422,7 @@
         "V021-K02"
       ],
       "acceptance": "실제 창설/해산·10개 한도 제안·고정 특화/빈 조직/유령 재산 없음",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3253,6 +3438,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-S01"
         }
       ],
       "inv_ids": [
@@ -3277,7 +3467,7 @@
         "V021-G03"
       ],
       "acceptance": "직책·보급·급여·충심·기여·실제 예산·정책 이행",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3293,6 +3483,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-S02"
         }
       ],
       "inv_ids": [
@@ -3315,7 +3510,7 @@
         "V021-G02"
       ],
       "acceptance": "공석/승계·인가/의무·지역 법·전생 권한 미복구",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3331,6 +3526,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-S03"
         }
       ],
       "inv_ids": [
@@ -3354,7 +3554,7 @@
         "V021-F04"
       ],
       "acceptance": "한 주 주권·대리 통치·최상위 관계·무순환·조세/권리 구분",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3370,6 +3570,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-G01"
         }
       ],
       "inv_ids": [
@@ -3392,7 +3597,7 @@
         "V021-F04"
       ],
       "acceptance": "영토0·명분/실물 자산·복위/승계·채무/채권/집행권 분리, 유령 세수/중복 채권0",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3408,6 +3613,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-G02"
         }
       ],
       "inv_ids": [
@@ -3432,7 +3642,7 @@
         "V021-G01"
       ],
       "acceptance": "10대 세부 정책·공동 인력/재정 예약·채택/준비/이행 부족·시행 관할 재검사·변경 이력",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3448,6 +3658,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-G03"
         }
       ],
       "inv_ids": [
@@ -3475,7 +3690,7 @@
         "V021-N01"
       ],
       "acceptance": "선택/조작 구분·같은 신원·AI 인계·명령 ID·예약 무결성",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3491,6 +3706,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-X01"
         }
       ],
       "inv_ids": [
@@ -3513,7 +3733,7 @@
         "V021-F03"
       ],
       "acceptance": "시작 2명 유지·자연 출생/명시 편입·유전/자산 출처",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3529,6 +3749,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-X02"
         }
       ],
       "inv_ids": [
@@ -3594,7 +3819,7 @@
         "V021-U01"
       ],
       "acceptance": "초안/제출/취소요청/확정·뒤로/앱복원 분리·같은 tick 완료/취소 단일 종결·사망/관찰 전환",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3610,6 +3835,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-X04"
         }
       ],
       "inv_ids": [
@@ -3633,7 +3863,7 @@
         "V021-N01"
       ],
       "acceptance": "규칙적 탐색·고정 상세·검색/뒤로·권한/명령·키보드·빈 상태",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3649,6 +3879,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-U01"
         }
       ],
       "inv_ids": [
@@ -3671,7 +3906,7 @@
         "V021-N01"
       ],
       "acceptance": "단위/시점·선/막대/표/원형·분포/지도·출처/결측",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3687,6 +3922,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-U02"
         }
       ],
       "inv_ids": [
@@ -3716,7 +3956,7 @@
         "V021-Y03"
       ],
       "acceptance": "상세/조작·유전/발현·가계·경로·명성/평가·천교 보드",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3732,6 +3972,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-U03"
         }
       ],
       "inv_ids": [
@@ -3832,7 +4077,7 @@
         "V021-D01"
       ],
       "acceptance": "인물/가계/세력/지점/거래/명령의 원인-결과 왕복",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3848,6 +4093,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-U06"
         }
       ],
       "inv_ids": [
@@ -3869,7 +4119,7 @@
         "V021-P01"
       ],
       "acceptance": "실제 월별 집계·이력 예산·후손/전생 경계·결측",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -3883,6 +4133,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-D01"
         }
       ],
       "inv_ids": [
@@ -4186,7 +4441,7 @@
         "V021-A02"
       ],
       "acceptance": "시조 2명/반선·종문0·금단 출산·화신 대원만 윤회·100지점, 자료형/0/비활성·출처·revision",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4202,6 +4457,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-Z01"
         }
       ],
       "inv_ids": [
@@ -4224,7 +4484,7 @@
         "V021-A03"
       ],
       "acceptance": "법칙 의존·임신/예약·적용 tick 분할·원천 잔량/재생 진척/실물 구분·0/비활성·이력",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4240,6 +4500,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-Z02"
         }
       ],
       "inv_ids": [
@@ -4264,7 +4529,7 @@
         "V021-U01"
       ],
       "acceptance": "관찰 관리의 명시 명령, 검색·기본값 복원·설명·영향·가져오기/내보내기",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4280,6 +4545,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-Z03"
         }
       ],
       "inv_ids": [
@@ -4301,7 +4571,7 @@
         "V021-A03"
       ],
       "acceptance": "초기 인지 진술 저장·Actor/지식/권한 revision 문맥·필터 후 집계의 최소 계약. 명성/수행 도메인 값은 이후 소비자에서 확장.",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4317,6 +4587,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-N01"
         }
       ],
       "inv_ids": [
@@ -4346,7 +4621,7 @@
         "V021-X01"
       ],
       "acceptance": "미발견 좌표/ID·원격 재고·권한 우회 방지, 탐색/전수/소문·명령 거부 정보 경계",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4362,6 +4637,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-N02"
         }
       ],
       "inv_ids": [
@@ -4386,7 +4666,7 @@
         "V021-U01"
       ],
       "acceptance": "지연 응답·플레이 A→B·복원·툴팁/행수/정렬/로그/추천·오류 누출0, 새 관측 전 표시 동등성",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4402,6 +4682,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-N03"
         }
       ],
       "inv_ids": [
@@ -4426,7 +4711,7 @@
         "V021-A03"
       ],
       "acceptance": "선천/학습/이해/현재 발휘/알려진 평가 분리, 영향 출처와 중복 가산 검사 · 지능10요소×원천 자질/재능×학습 경로 대응표, 가중치는 PC-TEMP 정책/근거로 관리",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4442,6 +4727,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-Y01"
         }
       ],
       "inv_ids": [
@@ -4464,7 +4754,7 @@
         "V021-Z01"
       ],
       "acceptance": "잠재/발현·획득/각성/해제·상충/중첩·기간·권한/역사 표식 구분",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4480,6 +4770,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-Y02"
         }
       ],
       "inv_ids": [
@@ -4503,7 +4798,7 @@
         "V021-V02"
       ],
       "acceptance": "부모/환경/영혼/교육의 출처 분리·효과 한번 적용·잠재 정보 필터",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4519,6 +4814,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-Y03"
         }
       ],
       "inv_ids": [
@@ -4544,7 +4844,7 @@
         "V021-Z02"
       ],
       "acceptance": "재생/고갈·재해·서식·채집의 실제 원천과 활동/수행/이동 영향",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4560,6 +4860,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-O01"
         }
       ],
       "inv_ids": [
@@ -4584,7 +4889,7 @@
         "V021-I01"
       ],
       "acceptance": "양육/생리·식량/영식·저장/부패·도구/시설 수요·실제 인력/소비",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4600,6 +4905,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-O02"
         }
       ],
       "inv_ids": [
@@ -4625,7 +4935,7 @@
         "V021-L02"
       ],
       "acceptance": "전수/소문·정책 반응·멸문/유망/교육단절·원인 추적, 숨은 NPC/자원 보정 없음",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4641,6 +4951,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-O03"
         }
       ],
       "inv_ids": [
@@ -4675,6 +4990,11 @@
           "path": "docs/plans/v021-canon-map.md",
           "baseline": "docs/evidence/0.2.1/baseline.md",
           "scope": "full task contract; no claim of dependent feature completion"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-H01"
         }
       ],
       "inv_ids": [
@@ -4696,7 +5016,7 @@
         "V021-H05"
       ],
       "acceptance": "Windows SQLite 분리·경로/엔진 경계·schema/백업·향후 모바일 어댑터 조건",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4710,6 +5030,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-H02"
         }
       ],
       "inv_ids": [
@@ -4732,7 +5057,7 @@
         "V021-H02"
       ],
       "acceptance": "강제 종료·부분 파일·안전 저장·복원·중복 명령/출생 방지 harness",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4746,6 +5071,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-H03"
         }
       ],
       "inv_ids": [
@@ -4799,7 +5129,7 @@
         "V021-H01"
       ],
       "acceptance": "H01 초기 기준선 후 Core/호스트 추출·owner/허용 의존 검사·기준선 정답 비교. 이전 경로 제거는 H10의 후행 산출물.",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4813,6 +5143,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-H05"
         }
       ],
       "inv_ids": [
@@ -4865,7 +5200,7 @@
         "V021-U02"
       ],
       "acceptance": "기존 Desktop 외곽·한국어/단위·반응형 명세·명령/조회 분리, 핵심 UI 플랫폼 역참조0",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4879,6 +5214,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-H07"
         }
       ],
       "inv_ids": [
@@ -4902,7 +5242,7 @@
         "V021-H02"
       ],
       "acceptance": "후보 TFM/언어·금지/전이 참조·생성 코드 검사·저장/DTO·패키지 전략. Unity 실행은 미래 검증",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4916,6 +5256,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-H08"
         }
       ],
       "inv_ids": [
@@ -4966,7 +5311,7 @@
         "V021-Z01"
       ],
       "acceptance": "독립 SoulId·Parent/RootSoulId·분혼 사건·근원 자격 snapshot, 가족 DAG와 분리",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -4982,6 +5327,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-J01"
         }
       ],
       "inv_ids": [
@@ -5006,7 +5356,7 @@
         "V021-Z02"
       ],
       "acceptance": "원인 직전 자격 snapshot·13자동조건·중복 원인/혼존속·과거 최고/붕괴 후 값 오판0·윤회 버튼 없음 · 13조건 목표 유지·원인 생성 시스템/실사건과 fixture를 구분·13개 실제 원인 전체 구현 범위·후속 이관 없음",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5022,6 +5372,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-J02"
         }
       ],
       "inv_ids": [
@@ -5046,7 +5401,7 @@
         "V021-V02"
       ],
       "acceptance": "기존 6영역·분혼 분배·도하 손상·각성·새 육신/지식 분리, 공법/경지 자동 복구 없음",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5062,6 +5417,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-J03"
         }
       ],
       "inv_ids": [
@@ -5087,7 +5447,7 @@
         "V021-H02"
       ],
       "acceptance": "비승 비사망·출생 단일 영혼 배정·태내/출생 후 파생 분리·분령 노동/인구 중복0·아이템 미복제",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5103,6 +5463,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-J04"
         }
       ],
       "inv_ids": [
@@ -5163,7 +5528,7 @@
         "V021-Z02"
       ],
       "acceptance": "목표·위험/협력·관계·정책 선택과 실제 변화 원인·감정 회복·장기 경험 · M1/M2 핵심 축의 점진 활성화와 전체 정의 분리",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5179,6 +5544,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-L02"
         }
       ],
       "inv_ids": [
@@ -5239,7 +5609,7 @@
         "V021-B02"
       ],
       "acceptance": "저작/판본/매체·접근/기억/오해/검증·전수 출처·정정본/책 소실과 개인 지식의 분리",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5255,6 +5625,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-B03"
         }
       ],
       "inv_ids": [
@@ -5277,7 +5652,7 @@
         "V021-R04"
       ],
       "acceptance": "10경지 3방법·30공법 예시·시도/개시/비가역 경계·원영 실패 사망·소경지 겁난·지식 revision",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5293,6 +5668,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-B04"
         }
       ],
       "inv_ids": [
@@ -5317,7 +5697,7 @@
         "V021-Z01"
       ],
       "acceptance": "64종 예시·유효 조합·공급/채집/가공/소비·품질·품목 팽창/생성 출처",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5333,6 +5713,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-I01"
         }
       ],
       "inv_ids": [
@@ -5356,7 +5741,7 @@
         "V021-K01"
       ],
       "acceptance": "소유/보관/장착/예약·실제 스택/알려진 표시 묶음·용량/순환·파손/착탈 초과분 보존",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5372,6 +5757,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-I02"
         }
       ],
       "inv_ids": [
@@ -5397,7 +5787,7 @@
         "V021-R04"
       ],
       "acceptance": "슬롯/점유·장비 교체 원자성·반환처/용량/예약·결속/수리/윤회·실물 효과 중복0",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5413,6 +5803,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-I03"
         }
       ],
       "inv_ids": [
@@ -5440,7 +5835,7 @@
         "V021-Y02"
       ],
       "acceptance": "정의/판본/실물/개인 진척 분리·변경분 재계산·범위 조회·화면 열기 생성/RNG0",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5456,6 +5851,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-K08"
         }
       ],
       "inv_ids": [
@@ -5519,7 +5919,7 @@
         "V021-K08"
       ],
       "acceptance": "알려진 행동 전제/예상 효과·제한 탐색·정보 획득·계획 수정/교착 복구·추론 예산·예약/재검사",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5535,6 +5935,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-L05"
         }
       ],
       "inv_ids": [
@@ -5561,7 +5966,7 @@
         "V021-F04"
       ],
       "acceptance": "인물별 합의/권한/인지·역할/시간·물류/책임·후퇴/전술, 집단 AI의 전지/인력 중복 없음",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5577,6 +5982,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-L06"
         }
       ],
       "inv_ids": [
@@ -5639,7 +6049,7 @@
         "V021-R09"
       ],
       "acceptance": "각 경지3경로·강점/부담·전투/잠재 연결·보조 호환/전환·형성/현재 분리·창세 반선 프로필",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5655,6 +6065,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-R07"
         }
       ],
       "inv_ids": [
@@ -5680,7 +6095,7 @@
         "V021-R06"
       ],
       "acceptance": "8축 실제 속성·효과 원천 단일 반영·표준 상황 비교·다음 경지 변환·미확인 미래/승률 과장 없음",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5696,6 +6111,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-R08"
         }
       ],
       "inv_ids": [
@@ -5722,7 +6142,7 @@
         "V021-G03"
       ],
       "acceptance": "구매력/노동/지식/운송·시설 성립·생산/회복·인구/경지 단계별 실제 연결, 자동 해금/유령 공급 없음",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5738,6 +6158,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-O04"
         }
       ],
       "inv_ids": [
@@ -5760,7 +6185,7 @@
         "V021-L06"
       ],
       "acceptance": "재해/고갈/통로/승계·독점/교육 단절·후대 금단 병목·실제 적응/실패와 원장·지표·원인 기록",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5776,6 +6201,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-O05"
         }
       ],
       "inv_ids": [
@@ -5800,7 +6230,7 @@
         "V021-N03"
       ],
       "acceptance": "관찰의 판단/형성/연쇄 원인·플레이 추정/자기지식·막대/선/표·불확실/미상·능동 명령 연결",
-      "status": "in_progress",
+      "status": "validated",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5816,6 +6246,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-U07"
         }
       ],
       "inv_ids": [
@@ -5839,7 +6274,7 @@
         "V021-Y01"
       ],
       "acceptance": "반선 구조/수명/가임·비승 설정의 자료 계약·창세 출처·가짜 과거 사건 없음·생성 시조 공용. 수명·가임·비승 잠정값은 개발 보정·법칙 revision으로 관리.",
-      "status": "in_progress",
+      "status": "done",
       "kind": "feature",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5855,6 +6290,11 @@
           "scope": "partial implementation; full acceptance pending",
           "path": "docs/evidence/0.2.1/core-tests.json",
           "source": "src/Chronicles.Game"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-R09"
         }
       ],
       "inv_ids": [
@@ -5913,7 +6353,7 @@
         "V021-H01"
       ],
       "acceptance": "INV-ID 등록·기능별 저장 왕복/hash/RNG 시험 틀·미구현 시험과 실제 통과 구분. 제품 하네스 자체는 아직 planned.",
-      "status": "in_progress",
+      "status": "done",
       "kind": "infrastructure",
       "blocked_by_q": [],
       "decision_gate_phase": "policy-sensitive acceptance; independent preparation allowed",
@@ -5927,6 +6367,11 @@
           "scope": "implementation/source audit; final task acceptance pending",
           "path": "docs/evidence/0.2.1/acceptance-audit.json",
           "source": "https://github.com/hddy774/project-hora/pull/113"
+        },
+        {
+          "scope": "작업별 수용 근거 대조; 최종 전체 회귀·성능·릴리스와 구분",
+          "path": "docs/evidence/0.2.1/progress-acceptance.json",
+          "source": "V021-T07"
         }
       ],
       "inv_ids": [

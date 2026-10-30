@@ -6,7 +6,8 @@ public static partial class PoliticsEngine
         obligation.Outstanding > 0 && obligation.Enforcer != 0 && context.Groups.Any(g =>
             g.Id == obligation.Enforcer && !g.Dissolved && g.Leader != 0 &&
             context.People.Any(p => p.Id == g.Leader && p.Status == LifeStatus.Alive)) &&
-        context.Places.Any(p => p.Province == obligation.Province && p.Sovereign == obligation.Enforcer);
+        context.Places.Any(p => p.Province == obligation.Province && p.Sovereign == obligation.Enforcer) &&
+        DebtorWithinJurisdiction(context, obligation.Debtor, obligation.Province);
 
     public static PoliticalResult PlanLoan(PoliticalContext context, PoliticalState state, long actor,
         PoliticalAccount creditor, PoliticalAccount debtor, long debtorConsent, long amount,
@@ -63,6 +64,52 @@ public static partial class PoliticsEngine
             return PoliticalResult.Rejected("Enforcement assignment requires creditor consent and current jurisdiction acceptance.");
         d.State.Obligations[index] = loan with { Enforcer = newEnforcer };
         return d.Finish("Changed only enforcement ownership; the creditor and debtor are unchanged.");
+    }
+
+    public static PoliticalResult PlanEnforceDebt(PoliticalContext context, PoliticalState state,
+        long enforcerActor, long obligation, long amount)
+    {
+        var d = new PoliticalDraft(context, state); var index = d.State.Obligations.FindIndex(o => o.Id == obligation);
+        if (index < 0) return PoliticalResult.Rejected("Unknown obligation.");
+        var loan = d.State.Obligations[index];
+        if (!Authorized(context, enforcerActor, PoliticalAccount.Group(loan.Enforcer)) || !CanEnforce(context, loan) ||
+            !Exists(context, loan.Creditor) || amount <= 0 || amount > loan.Outstanding || d.Money(loan.Debtor) < amount)
+            return PoliticalResult.Rejected("Actual debt enforcement requires current jurisdiction over the debtor or its local property, a current enforcer and available principal.");
+        d.Transfer(loan.Debtor, loan.Creditor, amount, "enforced repayment", obligation);
+        d.State.Obligations[index] = loan with { Outstanding = loan.Outstanding - amount };
+        return d.Finish("Enforced a funded payment to the actual creditor without transferring its receivable to the enforcer.");
+    }
+
+    public static PoliticalResult PlanNovateDebt(PoliticalContext context, PoliticalState state,
+        long creditorActor, long obligation, PoliticalAccount newDebtor, long consentingNewDebtor)
+    {
+        var d = new PoliticalDraft(context, state); var index = d.State.Obligations.FindIndex(x => x.Id == obligation);
+        if (index < 0) return PoliticalResult.Rejected("Unknown obligation.");
+        var loan = d.State.Obligations[index];
+        if (!Authorized(context, creditorActor, loan.Creditor) || !Authorized(context, consentingNewDebtor, newDebtor) ||
+            !Exists(context, newDebtor) || newDebtor == loan.Creditor)
+            return PoliticalResult.Rejected("Debt assumption requires the current creditor and a real consenting new debtor.");
+        d.State.Obligations[index] = loan with { Debtor = newDebtor };
+        return d.Finish("Changed the debtor on one existing obligation; principal, creditor and enforcement owner were preserved.");
+    }
+
+    public static PoliticalResult PlanEstateObligations(PoliticalContext context, PoliticalState state,
+        long deceased, long heir, long consentingHeir)
+    {
+        var d = new PoliticalDraft(context, state);
+        if (d.Person(deceased) is not { Status: LifeStatus.Dead } || deceased == heir ||
+            !Authorized(context, consentingHeir, PoliticalAccount.Person(heir)))
+            return PoliticalResult.Rejected("Estate obligation transfer requires an actual deceased person and a real accepting current heir.");
+        var prior = PoliticalAccount.Person(deceased); var next = PoliticalAccount.Person(heir);
+        for (var i = 0; i < d.State.Obligations.Count; i++)
+        {
+            var loan = d.State.Obligations[i];
+            var creditor = loan.Creditor == prior ? next : loan.Creditor;
+            var debtor = loan.Debtor == prior ? next : loan.Debtor;
+            d.State.Obligations[i] = loan with { Creditor = creditor, Debtor = debtor,
+                Outstanding = creditor == debtor ? 0 : loan.Outstanding };
+        }
+        return d.Finish("Transferred only actual estate receivables and liabilities to an explicit current heir, preserving obligation IDs and public accounts; self-debt extinguishes.");
     }
 
     public static PoliticalResult PlanCollectTax(PoliticalContext context, PoliticalState state)
@@ -127,6 +174,14 @@ public static partial class PoliticsEngine
         context.Places.Count(p => p.Province == province && p.Sovereign == group.Id) == context.Rules.PlacesPerProvince &&
         group.Members.Any(id => context.People.Any(p => p.Id == id && p.Status == LifeStatus.Alive &&
             context.Places.Any(place => place.Id == p.Place && place.Province == province)));
+
+    private static bool DebtorWithinJurisdiction(PoliticalContext context, PoliticalAccount debtor, int province)
+    {
+        var person = debtor.Kind == PoliticalAccountKind.Person ? context.People.FirstOrDefault(p => p.Id == debtor.Id) :
+            context.People.FirstOrDefault(p => p.Id == context.Groups.FirstOrDefault(g => g.Id == debtor.Id)?.Leader);
+        return person is { Status: LifeStatus.Alive } && context.Places.Any(p => p.Id == person.Place && p.Province == province) ||
+            context.Places.Any(p => p.Province == province && p.Owner == debtor.Id);
+    }
 
     private static long Rate(long amount, int basisPoints) => checked(amount / 10000 * basisPoints + amount % 10000 * basisPoints / 10000);
 }

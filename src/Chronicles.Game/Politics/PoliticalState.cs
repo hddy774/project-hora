@@ -26,6 +26,8 @@ public sealed record PoliticalLaborReservation(long Id, long Group, long Person,
     string Purpose, long Reference);
 public sealed record PoliticalEffect(long Id, PoliticalEffectKind Kind, long Group, long Person, long Other,
     int Place, long Amount, string Subject, long From, long Until);
+public sealed record PoliticalPlaceRights(int Place, long LocalSovereign, long HighestOverlord,
+    long Administrator, long Owner, long Operator, IReadOnlyList<TerritorialClaim> Claims);
 public sealed record PolicyHistory(long Month, long Preparation, long Group, string Category, int Before,
     int After, PolicyStage Stage, string Reason, long LawRevision);
 

@@ -212,7 +212,10 @@ public static partial class PoliticsEngine
         var d = new PoliticalDraft(context, state);
         foreach (var r in d.State.Labor.Where(x => x.Until <= context.Month && x.Purpose != "policy").ToArray())
         {
-            if (r.Purpose is "teaching" or "funded activity" or "defense") AdjustService(d, r.Group, r.Person, 1, 1);
+            if (r.Purpose is "teaching" or "funded activity" or "defense" &&
+                d.Person(r.Person) is { Status: LifeStatus.Alive } p && d.Group(r.Group)?.Members.Contains(p.Id) == true &&
+                (p.Action == ActionKind.Idle || p.ActionData == $"politics:{r.Purpose}:{r.Reference}"))
+                AdjustService(d, r.Group, r.Person, 1, 1);
             d.ReleaseLabor(r.Reference, r.Purpose);
         }
         return d.Finish("Released completed political work intervals and recorded actual completed service.");

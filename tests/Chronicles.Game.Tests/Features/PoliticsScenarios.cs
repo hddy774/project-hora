@@ -323,3 +323,74 @@ public sealed class PoliticsSaveScenario : IFeatureScenario
         PoliticalFixture.Check(original.Accepted && resumed.Accepted && JsonSerializer.Serialize(original) == JsonSerializer.Serialize(resumed), "resumed policy plan equals uninterrupted plan");
     }
 }
+
+public sealed class PoliticsSovereigntyTransferScenario : IFeatureScenario
+{
+    public string Name => "INV-019 politics: atomic territorial transfer preserves property and revokes former public grants";
+    public void Run()
+    {
+        var f = new PoliticalFixture(); f.GiveSovereignty(PoliticalFixture.FirstGroup, 0); f.Place(0).Owner = f.First;
+        f.Apply(PoliticsEngine.PlanPassage(f.Context, f.State, f.First, 0, PoliticalAccount.Person(f.Second), 100));
+        f.Apply(PoliticsEngine.PlanTransferSovereignty(f.Context, f.State, f.First, PoliticalFixture.FirstGroup,
+            PoliticalFixture.SecondGroup, f.Second, 0));
+        var rights = PoliticsEngine.DescribeRights(f.Context, f.State, 0)!;
+        PoliticalFixture.Check(rights.LocalSovereign == PoliticalFixture.SecondGroup && rights.HighestOverlord == PoliticalFixture.SecondGroup &&
+            rights.Owner == f.First && rights.Claims.Count == 2 && f.Group(PoliticalFixture.FirstGroup).Provinces.Count == 0, "actual sovereignty moves, prior claims and private land remain");
+        PoliticalFixture.Check(!PoliticsEngine.HasRight(f.Context, f.State, PoliticalAccount.Person(f.Second), 0, PoliticalRight.Passage), "former sovereign permission is no longer current");
+        f.ReleaseWork();
+        f.Apply(PoliticsEngine.PlanVassalage(f.Context, f.State, f.Second, PoliticalFixture.SecondGroup, PoliticalFixture.FirstGroup, f.First));
+        rights = PoliticsEngine.DescribeRights(f.Context, f.State, 0)!;
+        PoliticalFixture.Check(rights.LocalSovereign == PoliticalFixture.SecondGroup && rights.HighestOverlord == PoliticalFixture.FirstGroup, "local sovereign and highest political relationship remain separately visible");
+        f.SetMonth(24); var treasury = f.Group(PoliticalFixture.FirstGroup).Money;
+        f.Apply(PoliticsEngine.PlanCollectTax(f.Context, f.State));
+        PoliticalFixture.Check(f.Group(PoliticalFixture.FirstGroup).Money == treasury && !f.State.Payments.Any(p => p.Kind == "vassal tribute"), "territoryless overlord has zero territorial tax or ghost tribute");
+    }
+}
+
+public sealed class PoliticsEnforcementAndEstateScenario : IFeatureScenario
+{
+    public string Name => "INV-018/019/020 politics: actual enforcement jurisdiction, debtor assumption and personal estate transfer preserve principal IDs";
+    public void Run()
+    {
+        var f = new PoliticalFixture(); f.GiveSovereignty(PoliticalFixture.FirstGroup, 0);
+        f.Apply(PoliticsEngine.PlanLoan(f.Context, f.State, f.First, PoliticalAccount.Person(f.First),
+            PoliticalAccount.Group(PoliticalFixture.SecondGroup), f.Second, 40, PoliticalFixture.FirstGroup, 0, "funded loan"));
+        var id = f.State.Obligations.Single().Id;
+        f.Person(f.Second).Place = 10;
+        PoliticalFixture.Check(!PoliticsEngine.CanEnforce(f.Context, f.State.Obligations[0]), "named enforcer cannot enforce over a foreign debtor without local assets");
+        PoliticalFixture.Rejected(PoliticsEngine.PlanEnforceDebt(f.Context, f.State, f.First, id, 5));
+        f.Person(f.Second).Place = 0;
+        f.Apply(PoliticsEngine.PlanEnforceDebt(f.Context, f.State, f.First, id, 5));
+        PoliticalFixture.Check(f.Person(f.First).Money == 965 && f.Group(PoliticalFixture.FirstGroup).Money == 1000 && f.State.Obligations[0].Outstanding == 35,
+            "enforcement pays the actual personal creditor, not the public enforcer treasury");
+        f.Apply(PoliticsEngine.PlanNovateDebt(f.Context, f.State, f.First, id, PoliticalAccount.Person(f.Second), f.Second));
+        PoliticalFixture.Check(f.State.Obligations[0].Debtor == PoliticalAccount.Person(f.Second) && f.State.Obligations[0].Id == id &&
+            f.State.Obligations[0].Enforcer == PoliticalFixture.FirstGroup, "debtor assumption changes only the existing debtor");
+        PoliticalFixture.Rejected(PoliticsEngine.PlanEstateObligations(f.Context, f.State, f.First, f.Second, f.Second));
+        f.Person(f.First).Status = LifeStatus.Dead;
+        f.Apply(PoliticsEngine.PlanEstateObligations(f.Context, f.State, f.First, f.Second, f.Second));
+        PoliticalFixture.Check(f.State.Obligations.Count == 1 && f.State.Obligations[0].Id == id && f.State.Obligations[0].Outstanding == 0 &&
+            f.State.Obligations[0].Enforcer == PoliticalFixture.FirstGroup, "actual estate transfer extinguishes inherited self-debt without copying its receivable");
+    }
+}
+
+public sealed class PoliticsPayrollArrearsScenario : IFeatureScenario
+{
+    public string Name => "INV-018/020 politics: insufficient real payroll records one receivable per member and period";
+    public void Run()
+    {
+        var f = new PoliticalFixture(); f.Group(PoliticalFixture.FirstGroup).Members.Add(f.Second);
+        f.Group(PoliticalFixture.FirstGroup).Money = 0;
+        f.Apply(PoliticsEngine.PlanPayroll(f.Context, f.State, f.First, PoliticalFixture.FirstGroup));
+        PoliticalFixture.Check(f.State.Obligations.Count == 2 && f.State.Obligations.Sum(o => o.Outstanding) == 4 &&
+            f.Context.People.All(p => p.Money == 1000), "no treasury creates no salary money; actual arrears remain separately owed");
+        PoliticalFixture.Rejected(PoliticsEngine.PlanPayroll(f.Context, f.State, f.First, PoliticalFixture.FirstGroup));
+        PoliticalFixture.Check(f.State.Obligations.Count == 2 && f.State.Service.All(s => s.Loyalty == 45), "zero-funded payroll period cannot duplicate employee claims or loyalty changes");
+        var id = f.State.Obligations.First(o => o.Creditor == PoliticalAccount.Person(f.First)).Id;
+        PoliticalFixture.Rejected(PoliticsEngine.PlanRepayment(f.Context, f.State, f.First, id, 1));
+        f.Group(PoliticalFixture.FirstGroup).Money = 1;
+        f.Apply(PoliticsEngine.PlanRepayment(f.Context, f.State, f.First, id, 1));
+        PoliticalFixture.Check(f.Person(f.First).Money == 1001 && f.Group(PoliticalFixture.FirstGroup).Money == 0 &&
+            f.State.Obligations.Single(o => o.Id == id).Outstanding == 1, "actual later funds pay the original employee receivable");
+    }
+}

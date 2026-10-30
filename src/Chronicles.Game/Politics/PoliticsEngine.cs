@@ -52,6 +52,14 @@ public static partial class PoliticsEngine
         return 0;
     }
 
+    public static PoliticalPlaceRights? DescribeRights(PoliticalContext context, PoliticalState state, int placeId)
+    {
+        var place = context.Places.FirstOrDefault(p => p.Id == placeId);
+        return place is null ? null : new(place.Id, place.Sovereign, TopOverlord(context, place.Sovereign),
+            place.Delegate, place.Owner, place.Operator,
+            Array.AsReadOnly(state.Claims.Where(c => c.Active && c.Province == place.Province).OrderBy(c => c.Id).ToArray()));
+    }
+
     public static bool HasRight(PoliticalContext context, PoliticalState state, PoliticalAccount holder,
         int placeId, PoliticalRight right)
     {
@@ -115,7 +123,7 @@ public static partial class PoliticsEngine
         foreach (var place in places) { place.Sovereign = group; place.Delegate = 0; }
         g.Kind = GroupKind.Dynasty; g.Provinces.Add(province); g.Provinces.Sort();
         d.Claim(group, province, "actual independent sovereignty");
-        d.Reserve(g, [p!], context.Month + 1, "administration", province);
+        d.Reserve(g, [p!], context.Month + 1, "administration", d.Id());
         return d.Finish("One complete province establishes a dynasty; ownership and delegated administration are unchanged rights.");
     }
 
@@ -195,6 +203,25 @@ public static partial class PoliticsEngine
             return PoliticalResult.Rejected("Only the current sovereign leader can release a controlled province.");
         d.ReleaseProvince(g, province);
         return d.Finish("Released territorial authority; the dynasty, its claims, actual assets and obligations persist with zero territorial tax.");
+    }
+
+    public static PoliticalResult PlanTransferSovereignty(PoliticalContext context, PoliticalState state,
+        long sovereignActor, long fromGroup, long toGroup, long acceptingLeader, int province)
+    {
+        var d = new PoliticalDraft(context, state); var from = d.Group(fromGroup); var to = d.Group(toGroup);
+        var recipient = d.Person(acceptingLeader); var places = d.Places.Where(p => p.Province == province).ToArray();
+        if (fromGroup == toGroup || !d.Leads(d.Person(sovereignActor), from) || !from!.Provinces.Contains(province) ||
+            !d.Leads(recipient, to) || to!.Kind == GroupKind.Sect || to.Kind == GroupKind.Family && to.Overlord != 0 ||
+            places.Length != context.Rules.PlacesPerProvince || places.Any(p => p.Sovereign != fromGroup || !recipient!.KnownPlaces.Contains(p.Id)) ||
+            !to.Members.Any(id => d.Person(id) is { Status: LifeStatus.Alive } p && p.Household == toGroup && places.Any(at => at.Id == p.Place)) ||
+            !IsLaborAvailable(context, state, acceptingLeader, context.Month, context.Month + 1))
+            return PoliticalResult.Rejected("Territorial transfer requires the current sovereign, the accepting current leader, a fully observed resident household and available administration.");
+        d.ReleaseProvince(from, province);
+        foreach (var place in places) { place.Sovereign = toGroup; place.Delegate = 0; }
+        to.Kind = GroupKind.Dynasty; to.Provinces.Add(province); to.Provinces.Sort();
+        d.Claim(toGroup, province, "accepted transfer of actual sovereignty");
+        d.Reserve(to, [recipient!], context.Month + 1, "administration", d.Id());
+        return d.Finish("Transferred a complete province atomically while preserving both dynasties' claims, personal property and all obligation owners.");
     }
 
     public static PoliticalResult PlanSuccession(PoliticalContext context, PoliticalState state,

@@ -15,6 +15,7 @@ public static class PoliticalInvariants
             errors.Add("Political rule values are outside their supported units or ranges.");
         if (context.People.Select(p => p.Id).Distinct().Count() != context.People.Count ||
             context.Groups.Select(g => g.Id).Distinct().Count() != context.Groups.Count ||
+            context.People.Any(p => context.Groups.Any(g => g.Id == p.Id)) ||
             context.Places.Select(p => p.Id).Distinct().Count() != context.Places.Count)
             errors.Add("Political inputs contain duplicate stable entity IDs.");
         if (context.People.Any(p => p.Money < 0) || context.Groups.Any(g => g.Money < 0 || g.PolicyEscrow < 0) ||
@@ -48,10 +49,24 @@ public static class PoliticalInvariants
         }
         if (state.Claims.Any(c => !context.Groups.Any(g => g.Id == c.Group) || !context.Places.Any(p => p.Province == c.Province)))
             errors.Add("Territorial claims reference historical groups and actual provinces.");
-        if (state.Obligations.Any(o => o.Outstanding < 0 || o.Creditor == o.Debtor ||
+        if (state.Claims.Where(c => c.Active).GroupBy(c => (c.Group, c.Province)).Any(g => g.Count() > 1))
+            errors.Add("The same active territorial claim cannot be duplicated.");
+        if (state.Obligations.Any(o => o.Outstanding < 0 || o.Outstanding > 0 && o.Creditor == o.Debtor ||
             !KnownAccount(context, o.Creditor) || !KnownAccount(context, o.Debtor) ||
             o.Enforcer != 0 && !context.Groups.Any(g => g.Id == o.Enforcer)))
             errors.Add("Obligations require separate real creditor and debtor accounts and explicit enforcement ownership.");
+        if (state.Payments.Any(p => p.Amount < 0 || !KnownAccount(context, p.From) || !KnownAccount(context, p.To)))
+            errors.Add("Payment history requires actual accounts and nonnegative transfers.");
+        if (state.Passage.Any(p => !KnownAccount(context, p.Holder) || !context.Groups.Any(g => g.Id == p.Grantor) || !context.Places.Any(at => at.Id == p.Place)) ||
+            state.Charters.Any(c => !context.Groups.Any(g => g.Id == c.Sect && g.Kind == GroupKind.Sect) ||
+                !context.Groups.Any(g => g.Id == c.Sovereign) || !context.Places.Any(p => p.Province == c.Province) || c.Until <= c.Granted) ||
+            state.Accords.Any(a => a.FirstGroup >= a.SecondGroup || a.Level is < 0 or > 2 ||
+                !context.Groups.Any(g => g.Id == a.FirstGroup) || !context.Groups.Any(g => g.Id == a.SecondGroup)))
+            errors.Add("Charters, passage and accords must reference real political actors, places and valid terms.");
+        if (state.Effects.Any(e => e.Amount < 0 || e.Until < e.From || !context.People.Any(p => p.Id == e.Person) ||
+            !context.Groups.Any(g => g.Id == e.Group) || !context.Places.Any(p => p.Id == e.Place) ||
+            e.Kind == PoliticalEffectKind.Teaching && !context.People.Any(p => p.Id == e.Other)))
+            errors.Add("Policy effects require actual inputs and nonnegative funded amounts.");
         if (state.Labor.Any(r => r.From >= r.Until || !context.People.Any(p => p.Id == r.Person) ||
             !context.Groups.Any(g => g.Id == r.Group && !g.Dissolved))) errors.Add("Labor reservations require actual people, organizations and nonempty integer intervals.");
         foreach (var r in state.Labor)

@@ -493,3 +493,30 @@ public sealed class InventorySharedReservationScenario : IFeatureScenario
         InventoryFixture.Check(ReferenceEquals(originalPerson, world.People[0]), "Applying accepted inventory invalidated the world's live actor reference.");
     }
 }
+
+public sealed class InventoryKnownSourceAndOfferScenario : IFeatureScenario
+{
+    public string Name => "inventory: known source and local offer projections never infer mutable private truth";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); state.Month = 2;
+        var source = state.NextId++; var legacy = state.NextId++;
+        state.Ledger.Sources.Add(new() { Id = source, Place = 0, Definition = "resource.00.0", Activity = "source.mining", Remaining = 100, Capacity = 100, Origin = "changed actual source" });
+        state.Ledger.Observations.Add(new(1, source, 0, 12, 1, "actual past exploration", "resource.03.0", "source.gathering"));
+        state.Ledger.Observations.Add(new(2, source, 0, 100, 2, "other person's private exploration", "resource.00.0", "source.mining"));
+        state.Ledger.Observations.Add(new(1, legacy, 0, 5, 2, "legacy incomplete snapshot"));
+        var known = InventoryKnowledgeQueries.KnownSources(state.Ledger, 1);
+        InventoryFixture.Check(known is [{ Definition: "resource.03.0", Remaining: 12, Month: 1 }], "Known source projection used another observer or current source truth.");
+        var item = InventoryFixture.Add(state, "tool", quality: 1111);
+        InventoryFixture.Accept(ref state, new OfferItem("advertise", 1, item, 5, 10));
+        var beforeState = JsonSerializer.Serialize(state); var beforeView = JsonSerializer.Serialize(InventoryKnowledgeQueries.LocalOffers(state, 2));
+        InventoryFixture.Check(InventoryKnowledgeQueries.LocalOffers(state, 2) is [{ Definition: "tool", Quantity: 1, Price: 5, OwnDeposit: 0 }], "Public advertisement did not retain its actual listing snapshot.");
+        InventoryFixture.Check(JsonSerializer.Serialize(state) == beforeState, "Known projections changed authority.");
+        InventoryFixture.Item(state, item).Quality = 9999; InventoryFixture.Item(state, item).Source = "unobserved private history";
+        state.Ledger.Sources.Single().Remaining = 1;
+        InventoryFixture.Check(beforeView == JsonSerializer.Serialize(InventoryKnowledgeQueries.LocalOffers(state, 2)) &&
+            InventoryKnowledgeQueries.KnownSources(state.Ledger, 1).Single().Remaining == 12, "Private item/source changes leaked into authorized cached facts.");
+        InventoryFixture.Person(state, 2).Place = 1;
+        InventoryFixture.Check(InventoryKnowledgeQueries.LocalOffers(state, 2).Count == 0, "A remote market leaked into a local-only projection.");
+    }
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "seonro-agent-108-completion-observation",
+  "observedUtc": "2026-10-30T19:23:33.693097+00:00",
+  "measurementSourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "measurementFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "pid": 121165,
+  "processPresent": false,
+  "actualSupervisorExit": {
+    "observedEndUtc": "2026-10-30T19:21:29.263585+00:00",
+    "pid": 121165,
+    "returnCode": 0,
+    "terminatedBySignal": null
+  },
+  "consoleResult": {
+    "collected": 108,
+    "collectionErrors": 0,
+    "source": "agent-metrics-9263756-restart1.log"
+  },
+  "lastIndependentLargeReportAuditUtc": "2026-10-30T19:15:58.714211Z",
+  "lastIndependentLargeReportAuditCount": 100,
+  "finalLargeReportAudit": "19:36 조용한 진단 창 종료 뒤 별도 수행 예정. 완료 수치는 현재 생산자 콘솔과 실제 wait 종료값에 근거.",
+  "handoff": "19:22:50 종료 관측 뒤 root/politics에 CPU3 해제 통지. 본 에이전트 CPU3 추가 작업 없음.",
+  "quietInterval": {
+    "rootScheduledStartUtc": "2026-10-30T19:16:00Z",
+    "rootScheduledEndUtc": "2026-10-30T19:36:00Z",
+    "localHeavyWorkDeferred": true,
+    "deferred": [
+      "큰JSON전체파싱",
+      "원문78겹침재계산",
+      "압축",
+      "전체파일해시검증",
+      "컴파일",
+      "git fingerprint"
+    ],
+    "permittedObservation": "작은 콘솔/종료JSON/기존progressJSONL 및 ps/stat 메타데이터"
+  },
+  "rootReportedLatestCommon": {
+    "shortCommit": "af91fb0",
+    "fingerprintPrefix": "4e228",
+    "functional": "314/314",
+    "scope": "루트의 별도 최신 소스 기능 근거. 본926 AI측정의 소스·성능표본을 승격하지 않음."
+  }
+}

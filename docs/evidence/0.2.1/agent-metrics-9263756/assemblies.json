@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "scope": "DLL \uBA54\uD0C0\uB370\uC774\uD130 \uC77D\uAE30\uB9CC. EntryPoint/\uAE30\uB2A5\uAC80\uC0AC/AI/\uC131\uC7A5/\uBE44\uC6A9 \uB8E8\uD504\uB97C \uD638\uCD9C\uD558\uC9C0 \uC54A\uC74C.",
+  "assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "informationalVersion": "0.2.1\u002B9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "3dc3ad7a8c4ea88f345e7fbf7cf74d3a0a7f1b37a15ce3fa75ec5819d40746cd"
+    },
+    {
+      "name": "Chronicles.Game",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "informationalVersion": "0.2.1\u002B9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "d89a25e4057d4664e289d1d7733c7f2e0fad3913c07401ea1c9aa765c1d5350a"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "informationalVersion": "0.2.1\u002B9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "956989fd3808399e338764c7178fc8d3c53839c8f22b78b7bbb7bf1aa4f393cd"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "informationalVersion": "0.2.1\u002B9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "48757b90a575f409047aa2a33be0024e810373fe5eb4bb71fcae99d6b2a700f6"
+    }
+  ],
+  "metricsCasesExecuted": 0
+}

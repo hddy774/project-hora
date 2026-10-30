@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "seeds": [
+    42,
+    73
+  ],
+  "horizonMonths": 144,
+  "repetitions": 2,
+  "warmupMonths": 2,
+  "planningBudgets": [
+    1,
+    16,
+    64
+  ],
+  "beliefBudget": 48,
+  "axisDelta": 1,
+  "stagnationMonths": 12,
+  "replayEveryMonths": 12,
+  "preparationLimitMonths": 120
+}

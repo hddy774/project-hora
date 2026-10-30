@@ -1,0 +1,4538 @@
+[
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 0,
+    "name": "생존",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1551,
+        "difference": 1
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9495,
+        "difference": 5
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 1,
+    "name": "구도",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1650,
+        "difference": 0
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1555,
+        "difference": 5
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8299,
+        "difference": 1
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8649,
+        "difference": 1
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 2,
+    "name": "가족",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9496,
+        "difference": 4
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 3,
+    "name": "호기심",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1255,
+        "difference": 5
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8300,
+        "difference": 0
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 4,
+    "name": "협력",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 5,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 5,
+    "name": "신뢰",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1450,
+        "difference": 0
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8299,
+        "difference": 1
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8646,
+        "difference": 4
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9501,
+        "difference": -1
+      }
+    ],
+    "changedScoredGoals": 5,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 6,
+    "name": "위험",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1499,
+        "difference": -1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1449,
+        "difference": -1
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1254,
+        "difference": 4
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8300,
+        "difference": 0
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8651,
+        "difference": -1
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9505,
+        "difference": -5
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 7,
+    "name": "야심",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1553,
+        "difference": 3
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1501,
+        "difference": 1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8295,
+        "difference": 5
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 8,
+    "name": "인내",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1554,
+        "difference": 4
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 9,
+    "name": "명예",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8296,
+        "difference": 4
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8646,
+        "difference": 4
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9499,
+        "difference": 1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 10,
+    "name": "자율",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1500,
+        "difference": 0
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8652,
+        "difference": -2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9499,
+        "difference": 1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 11,
+    "name": "규율",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1554,
+        "difference": 4
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8295,
+        "difference": 5
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 12,
+    "name": "공감",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1501,
+        "difference": 1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 0,
+    "axis": 13,
+    "name": "경쟁",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1553,
+        "difference": 3
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1255,
+        "difference": 5
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9501,
+        "difference": -1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 0,
+    "name": "생존",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1551,
+        "difference": 1
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9495,
+        "difference": 5
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 1,
+    "name": "구도",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1650,
+        "difference": 0
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1555,
+        "difference": 5
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8299,
+        "difference": 1
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8649,
+        "difference": 1
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 2,
+    "name": "가족",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9496,
+        "difference": 4
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 3,
+    "name": "호기심",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1255,
+        "difference": 5
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8300,
+        "difference": 0
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 4,
+    "name": "협력",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 5,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 5,
+    "name": "신뢰",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1450,
+        "difference": 0
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8299,
+        "difference": 1
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8646,
+        "difference": 4
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9501,
+        "difference": -1
+      }
+    ],
+    "changedScoredGoals": 5,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 6,
+    "name": "위험",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1499,
+        "difference": -1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1449,
+        "difference": -1
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1254,
+        "difference": 4
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8300,
+        "difference": 0
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8651,
+        "difference": -1
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9505,
+        "difference": -5
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 7,
+    "name": "야심",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1553,
+        "difference": 3
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1501,
+        "difference": 1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8295,
+        "difference": 5
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 8,
+    "name": "인내",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1554,
+        "difference": 4
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 9,
+    "name": "명예",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8296,
+        "difference": 4
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8646,
+        "difference": 4
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9499,
+        "difference": 1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 10,
+    "name": "자율",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1500,
+        "difference": 0
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8652,
+        "difference": -2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9499,
+        "difference": 1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 11,
+    "name": "규율",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1554,
+        "difference": 4
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8295,
+        "difference": 5
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 12,
+    "name": "공감",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1501,
+        "difference": 1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 42,
+    "repetition": 1,
+    "axis": 13,
+    "name": "경쟁",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1553,
+        "difference": 3
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1255,
+        "difference": 5
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9501,
+        "difference": -1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 0,
+    "name": "생존",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1551,
+        "difference": 1
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9495,
+        "difference": 5
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 1,
+    "name": "구도",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1650,
+        "difference": 0
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1555,
+        "difference": 5
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8299,
+        "difference": 1
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8649,
+        "difference": 1
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 2,
+    "name": "가족",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9496,
+        "difference": 4
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 3,
+    "name": "호기심",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1255,
+        "difference": 5
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8300,
+        "difference": 0
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 4,
+    "name": "협력",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 5,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 5,
+    "name": "신뢰",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1450,
+        "difference": 0
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8299,
+        "difference": 1
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8646,
+        "difference": 4
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9501,
+        "difference": -1
+      }
+    ],
+    "changedScoredGoals": 5,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 6,
+    "name": "위험",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1499,
+        "difference": -1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1449,
+        "difference": -1
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1254,
+        "difference": 4
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8300,
+        "difference": 0
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8651,
+        "difference": -1
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9505,
+        "difference": -5
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 7,
+    "name": "야심",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1553,
+        "difference": 3
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1501,
+        "difference": 1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8295,
+        "difference": 5
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 8,
+    "name": "인내",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1554,
+        "difference": 4
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 9,
+    "name": "명예",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8296,
+        "difference": 4
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8646,
+        "difference": 4
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9499,
+        "difference": 1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 10,
+    "name": "자율",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1500,
+        "difference": 0
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8652,
+        "difference": -2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9499,
+        "difference": 1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 11,
+    "name": "규율",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1554,
+        "difference": 4
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8295,
+        "difference": 5
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 12,
+    "name": "공감",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1501,
+        "difference": 1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 0,
+    "axis": 13,
+    "name": "경쟁",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1553,
+        "difference": 3
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1255,
+        "difference": 5
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9501,
+        "difference": -1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 0,
+    "name": "생존",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1551,
+        "difference": 1
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9495,
+        "difference": 5
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 1,
+    "name": "구도",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1650,
+        "difference": 0
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1555,
+        "difference": 5
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8299,
+        "difference": 1
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8649,
+        "difference": 1
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 2,
+    "name": "가족",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9496,
+        "difference": 4
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 3,
+    "name": "호기심",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1255,
+        "difference": 5
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8300,
+        "difference": 0
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 4,
+    "name": "협력",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 5,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 5,
+    "name": "신뢰",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1450,
+        "difference": 0
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8299,
+        "difference": 1
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8646,
+        "difference": 4
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9501,
+        "difference": -1
+      }
+    ],
+    "changedScoredGoals": 5,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 6,
+    "name": "위험",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1499,
+        "difference": -1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1449,
+        "difference": -1
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1254,
+        "difference": 4
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8300,
+        "difference": 0
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8651,
+        "difference": -1
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9505,
+        "difference": -5
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 7,
+    "name": "야심",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1553,
+        "difference": 3
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1501,
+        "difference": 1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8295,
+        "difference": 5
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9500,
+        "difference": 0
+      }
+    ],
+    "changedScoredGoals": 7,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 8,
+    "name": "인내",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1554,
+        "difference": 4
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1504,
+        "difference": 4
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 9,
+    "name": "명예",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1652,
+        "difference": 2
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8296,
+        "difference": 4
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8646,
+        "difference": 4
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9499,
+        "difference": 1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 10,
+    "name": "자율",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1552,
+        "difference": 2
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1500,
+        "difference": 0
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1452,
+        "difference": 2
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1252,
+        "difference": 2
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8652,
+        "difference": -2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9499,
+        "difference": 1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 11,
+    "name": "규율",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1554,
+        "difference": 4
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1503,
+        "difference": 3
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1253,
+        "difference": 3
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8295,
+        "difference": 5
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8648,
+        "difference": 2
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 9,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 12,
+    "name": "공감",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1651,
+        "difference": 1
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1550,
+        "difference": 0
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1501,
+        "difference": 1
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1451,
+        "difference": 1
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1250,
+        "difference": 0
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8298,
+        "difference": 2
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8645,
+        "difference": 5
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9498,
+        "difference": 2
+      }
+    ],
+    "changedScoredGoals": 6,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  },
+  {
+    "seed": 73,
+    "repetition": 1,
+    "axis": 13,
+    "name": "경쟁",
+    "baseValue": 50,
+    "changedValue": 51,
+    "deltas": [
+      {
+        "goal": "회복",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "생계",
+        "baseline": 0,
+        "changed": 0,
+        "difference": 0
+      },
+      {
+        "goal": "교역·교섭",
+        "baseline": 1650,
+        "changed": 1653,
+        "difference": 3
+      },
+      {
+        "goal": "구도·수행",
+        "baseline": 1550,
+        "changed": 1553,
+        "difference": 3
+      },
+      {
+        "goal": "지식·수련",
+        "baseline": 1500,
+        "changed": 1502,
+        "difference": 2
+      },
+      {
+        "goal": "기예·생산",
+        "baseline": 1450,
+        "changed": 1453,
+        "difference": 3
+      },
+      {
+        "goal": "무예·자립",
+        "baseline": 1250,
+        "changed": 1255,
+        "difference": 5
+      },
+      {
+        "goal": "현장 정보 탐색",
+        "baseline": 1250,
+        "changed": 1251,
+        "difference": 1
+      },
+      {
+        "goal": "공동체·정책",
+        "baseline": -8300,
+        "changed": -8297,
+        "difference": 3
+      },
+      {
+        "goal": "약속·협력",
+        "baseline": -8650,
+        "changed": -8650,
+        "difference": 0
+      },
+      {
+        "goal": "위험 회피·후퇴",
+        "baseline": -9500,
+        "changed": -9501,
+        "difference": -1
+      }
+    ],
+    "changedScoredGoals": 8,
+    "scoreCausalityObserved": true,
+    "selectedDecisionSequenceEqualToBaseline": true,
+    "actionDistributionEqualToBaseline": true,
+    "goalDistributionEqualToBaseline": true
+  }
+]

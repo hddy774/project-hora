@@ -117,6 +117,21 @@ public static class CultivationProfiles
         _ => []
     };
 
+    public static IReadOnlyList<string> GrowthKeys(Realm realm) => realm switch
+    {
+        Realm.Qi => ["정탁", "경맥실습", "육신적응", "신식각성"],
+        Realm.Foundation => ["영근연결", "단전용량", "경맥망", "기반안정", "오행조화"],
+        Realm.GoldenCore => ["확장", "정련", "강화", "순환"],
+        Realm.NascentSoul => ["영태성숙", "정양", "명령정밀", "경맥연계"],
+        Realm.Spirit => ["성체성숙", "분령형성", "제어용량", "동조"],
+        Realm.Void => ["결함제거", "연결재구축", "오행재조화", "용량검증"],
+        Realm.Integration => ["본령합류", "분령합류", "협응", "결속"],
+        Realm.Tribulation => ["응겁준비", "겁후회복", "대응협응"],
+        Realm.Mahayana => ["공법회통", "형신원융", "전이적응"],
+        Realm.HalfImmortal => ["온양", "계역적응", "통로준비"],
+        _ => []
+    };
+
     public static CultivationState ForNewBody(long body, long soul, string rootOrigin) =>
         new() { BodyId = body, SoulId = soul, RootOrigin = rootOrigin };
 

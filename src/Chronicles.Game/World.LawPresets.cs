@@ -4,6 +4,8 @@ namespace Chronicles.Game;
 
 public sealed partial class GameWorld
 {
+    internal SortedDictionary<string, long> CopyLawsForHost() => new(state.Laws, StringComparer.Ordinal);
+
     private string? ImportLaws(GameCommand command)
     {
         if (command.Data.Length > 65536) return "법칙 파일이 너무 큽니다.";

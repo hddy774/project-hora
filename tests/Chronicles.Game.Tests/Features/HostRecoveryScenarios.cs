@@ -44,6 +44,14 @@ public sealed class HostRecoveryScenarios : IFeatureScenario
             var retained = Directory.GetFiles(Path.Combine(oldDirectory, "preserved"));
             Require(retained.Length == 1 && File.ReadAllBytes(retained[0]).SequenceEqual(original), "반복 저장 후에도 이전 원본 영구 보존");
             Require(new GameSession(oldDirectory).Handle(new()).View.Month == 1, "새 저장 자체의 실제 호스트 재실행");
+            fresh.Handle(new("command", new("preset-age", 0, "law", Value: 600, Data: "founder.age")));
+            fresh.Handle(new("command", new("preset-money", 0, "law", Value: 300, Data: "founder.initialMoney")));
+            var custom = fresh.Handle(new("new", Seed: 99, UseCurrentLaws: true));
+            Require(custom.View.People.Count == 2 && custom.View.People.All(p => p.Age == 50 && p.Money == 300),
+                "현재 법칙을 새 창세의 실제 초기 나이·자산에 적용");
+            var defaults = fresh.Handle(new("new", Seed: 99));
+            Require(defaults.View.People.Count == 2 && defaults.View.People.All(p => p.Age == 100 && p.Money == 1000),
+                "명시적 기본 법칙 창세는 이전 프리셋과 분리");
         }
         finally { Directory.Delete(directory, true); }
     }

@@ -108,15 +108,15 @@ public sealed partial class GameWorld
         if (decision.Kind == "offer")
         {
             // Split+offer use one isolated inventory candidate. An unsuccessful offer cannot leak a split or an ID.
-            var current = CurrentInventory(); var item = current.Items.Single(i => i.Id == decision.Target); var target = item.Id;
-            if (decision.Quantity < item.Quantity)
+            using var current = CurrentOwnedInventory(); var target = decision.Target;
+            if (decision.Quantity < current.ItemQuantity(target))
             {
-                var split = InventoryEngine.Apply(current, new SplitInventoryItem(commandId + ":split", person.Id, item.Id, decision.Quantity));
-                if (!split.Accepted) return false; current = split.State; target = split.Subject;
+                var split = current.Apply(new SplitInventoryItem(commandId + ":split", person.Id, target, decision.Quantity));
+                if (!split.Accepted) return false; target = split.Subject;
             }
-            var offer = InventoryEngine.Apply(current, new OfferItem(commandId, person.Id, target, decision.Price, Month + 12));
+            var offer = current.Apply(new OfferItem(commandId, person.Id, target, decision.Price, Month + 12));
             if (!offer.Accepted) return false;
-            ApplyInventory(offer.State); person.Action = ActionKind.Guard; person.Due = Month + 1;
+            ApplyInventory(current); person.Action = ActionKind.Guard; person.Due = Month + 1;
             person.ActionTarget = offer.Subject; person.ActionData = "ecology:market"; error = null;
         }
         else if (decision.Kind is "trade" or "craft" or "gather")

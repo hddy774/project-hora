@@ -27,25 +27,7 @@ public static partial class InventoryEngine
         {
             Validate(input);
             var state = InventoryState.Copy(input);
-            if (command.Actor != 0) PersonAt(state, command.Actor);
-            var subject = command switch
-            {
-                TuneInventoryProfile c => TuneProfile(state, c),
-                ReserveInventoryMaterials c => ReserveExternal(state, c), ReserveInventoryPhysical c => ReserveExternalPhysical(state, c),
-                ConsumeInventoryAssets c => ConsumeExternal(state, c), ReleaseInventoryAssets c => ReleaseExternal(state, c),
-                SplitInventoryItem c => Split(state, c), MergeStacks c => Merge(state, c), StoreItem c => Store(state, c),
-                TransferOwnership c => Transfer(state, c), GrantUse c => Grant(state, c), SetCustodian c => Custody(state, c),
-                EquipItem c => Equip(state, c), UnequipItem c => Unequip(state, c), BindItem c => Bind(state, c),
-                DamageItem c => Damage(state, c), ReserveLabor c => Labor(state, c), ReleaseLabor c => Release(state, c),
-                StartProduction c => StartJob(state, c), BeginProduction c => BeginJob(state, c),
-                FinishProduction c => FinishJob(state, c), CancelProduction c => CancelJob(state, c),
-                ExtractResource c => Extract(state, c), ConsumeItem c => Consume(state, c), RepairItem c => Repair(state, c),
-                TreatPerson c => Treat(state, c), AppraisePhysical c => Appraise(state, c), ExploreNaturalSource c => Explore(state, c),
-                InstallArray c => Install(state, c), MaintainArray c => Maintain(state, c), DismantleArray c => Dismantle(state, c),
-                OfferItem c => Offer(state, c), WithdrawOffer c => Withdraw(state, c), BuyItem c => Buy(state, c),
-                PlaceBid c => Bid(state, c), BeginTransport c => Transport(state, c), FinishTransport c => Delivery(state, c),
-                SettleInventory c => Settle(state, c.IncludeTransport), _ => throw new RuleViolation("Unknown inventory command.")
-            };
+            var subject = ExecuteMutation(state, command);
             state.Revision = checked(state.Revision + 1);
             state.Ledger.Receipts.Add(command.Id, new(signature, subject, "Accepted."));
             Validate(state);
@@ -54,6 +36,30 @@ public static partial class InventoryEngine
         }
         catch (Exception error) when (error is RuleViolation or InvalidDataException or OverflowException)
         { return new(false, error.Message, input); }
+    }
+
+    // Both isolated public candidates and the private owned transaction use exactly the same rules.
+    private static long ExecuteMutation(InventoryState state, InventoryCommand command)
+    {
+        if (command.Actor != 0) PersonAt(state, command.Actor);
+        return command switch
+        {
+            TuneInventoryProfile c => TuneProfile(state, c),
+            ReserveInventoryMaterials c => ReserveExternal(state, c), ReserveInventoryPhysical c => ReserveExternalPhysical(state, c),
+            ConsumeInventoryAssets c => ConsumeExternal(state, c), ReleaseInventoryAssets c => ReleaseExternal(state, c),
+            SplitInventoryItem c => Split(state, c), MergeStacks c => Merge(state, c), StoreItem c => Store(state, c),
+            TransferOwnership c => Transfer(state, c), GrantUse c => Grant(state, c), SetCustodian c => Custody(state, c),
+            EquipItem c => Equip(state, c), UnequipItem c => Unequip(state, c), BindItem c => Bind(state, c),
+            DamageItem c => Damage(state, c), ReserveLabor c => Labor(state, c), ReleaseLabor c => Release(state, c),
+            StartProduction c => StartJob(state, c), BeginProduction c => BeginJob(state, c),
+            FinishProduction c => FinishJob(state, c), CancelProduction c => CancelJob(state, c),
+            ExtractResource c => Extract(state, c), ConsumeItem c => Consume(state, c), RepairItem c => Repair(state, c),
+            TreatPerson c => Treat(state, c), AppraisePhysical c => Appraise(state, c), ExploreNaturalSource c => Explore(state, c),
+            InstallArray c => Install(state, c), MaintainArray c => Maintain(state, c), DismantleArray c => Dismantle(state, c),
+            OfferItem c => Offer(state, c), WithdrawOffer c => Withdraw(state, c), BuyItem c => Buy(state, c),
+            PlaceBid c => Bid(state, c), BeginTransport c => Transport(state, c), FinishTransport c => Delivery(state, c),
+            SettleInventory c => Settle(state, c.IncludeTransport), _ => throw new RuleViolation("Unknown inventory command.")
+        };
     }
 
     private static long TuneProfile(InventoryState state, TuneInventoryProfile command)

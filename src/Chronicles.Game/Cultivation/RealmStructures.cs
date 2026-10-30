@@ -90,7 +90,7 @@ public sealed record CultivationPathProfile(PathDefinition Definition, IReadOnly
 
 public static class CultivationProfiles
 {
-    public static IReadOnlyList<CultivationPathProfile> Paths { get; } = BuildPaths();
+    public static IReadOnlyList<CultivationPathProfile> Paths { get; } = Array.AsReadOnly(BuildPaths());
     public static CultivationPathProfile? Find(string id) => Paths.FirstOrDefault(p => p.Definition.Id == id);
     public static RealmStructure Empty(Realm realm) => realm switch
     {

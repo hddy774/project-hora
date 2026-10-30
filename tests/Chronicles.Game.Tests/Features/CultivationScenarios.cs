@@ -211,6 +211,12 @@ public sealed class CultivationIrreversibilityScenario : IFeatureScenario
         for (var month = 3; month <= 5; month++) success.Run((id, rev) => new StabilizeCultivation(id, rev), month);
         CultivationFixture.Check(success.State.Attempt!.Phase == AttemptPhase.Completed, "stabilization consumes three actual monthly supplies");
         CultivationInvariants.Validate(success.State, success.Actor, success.Context.Policy);
+        var recoverable = new CultivationFixture.Harness(Realm.Foundation, true);
+        recoverable.Run((id, rev) => new PrepareCultivation(id, rev, "path.3.0"), 0);
+        recoverable.Run((id, rev) => new StartCultivation(id, rev));
+        recoverable.Run((id, rev) => new ResolveCultivation(id, rev), 10, 0);
+        CultivationFixture.Check(recoverable.State.Attempt!.Phase == AttemptPhase.Recovering && recoverable.State.Attempt.Due == 11 && recoverable.Actor.Layer < 9, "recoverable failure schedules a fresh future recovery boundary");
+        recoverable.Reject(new StabilizeCultivation(recoverable.Id(), recoverable.State.Revision));
     }
 }
 
@@ -290,6 +296,7 @@ public sealed class CultivationRecoveryScenario : IFeatureScenario
         route.Run((id, rev) => new PrepareCultivation(id, rev, "path.3.1", Conversion: true));
         route.Run((id, rev) => new StartCultivation(id, rev));
         CultivationFixture.Check(route.State.Structure!.Total < route.Context.Policy.RequiredWork(Realm.GoldenCore) && route.State.ActivePath == "path.3.0", "conversion has real partial shutdown and loss");
+        CultivationInvariants.Validate(route.State, route.Actor, route.Context.Policy);
         route.Run((id, rev) => new ResolveCultivation(id, rev), 3);
         CultivationFixture.Check(route.State.ActivePath == "path.3.1" && route.State.Formations.Single().Path == "path.3.0" && route.State.Conversions.Count == 1, "current conversion does not edit historical method or award formation twice");
         var segment = CultivationQueries.NextRetreatSegment(route.State, 3, 100, [new(3, "실제 돌봄 배정")]);
@@ -347,6 +354,11 @@ public sealed class CultivationMartialScenario : IFeatureScenario
         a.Actor = a.Actor with { InnateRoots = default }; b.Actor = b.Actor with { InnateRoots = Elements.Uniform(10000) };
         var ra = a.Run((id, rev) => new TrainMartial(id, rev), 1); var rb = b.Run((id, rev) => new TrainMartial(id, rev), 1);
         CultivationFixture.Check(CultivationFixture.Json(ra.State) == CultivationFixture.Json(rb.State) && ra.Actor == rb.Actor && ra.SupplyDebit.Total == 0, "martial work ignores all spiritual roots/supply");
+        a.State = a.State with { Martial = a.State.Martial with { Injury = 2000 } };
+        a.Context = a.Context with { Site = a.Context.Site with { Available = default } };
+        var recovered = a.Run((id, rev) => new RecoverCultivation(id, rev), 2);
+        CultivationFixture.Check(recovered.SupplyDebit.Total == 0 && a.State.Martial.Injury == 1500, "martial-only recovery needs time, not spiritual supply or roots");
+        a.State = a.State with { Martial = a.State.Martial with { Injury = 0 } };
         for (var stage = 1; stage <= 10; stage++)
         {
             a.State = a.State with { Martial = a.State.Martial with { Work = a.Context.Policy.MartialMonthsPerStage * stage * a.Context.Policy.FlowPerMonth } };

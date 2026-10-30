@@ -106,7 +106,8 @@ public static class CultivationEngine
         var flow = p.FlowPerMonth * costs;
         var request = Elements.Allocate(flow * command.Intensity / 10000, command.Allocation);
         var fair = Elements.Map(context.Site.Available, value => value / Math.Max(1, context.Site.Claimants));
-        var absorbCapacity = Elements.Allocate(flow * actor.Absorption / 5000, command.Allocation);
+        var absorbCapacity = Elements.Allocate(flow * actor.Absorption / 5000 *
+            (command.Focus == TrainingFocus.Absorption ? 12500 : 10000) / 10000, command.Allocation);
         absorbCapacity = Elements.Zip(absorbCapacity, actor.InnateRoots, (amount, root) => amount * root / 5000);
         absorbCapacity = Elements.Zip(absorbCapacity, state.RootDamage, (amount, damage) => amount * (10000 - damage) / 10000);
         var absorbed = Elements.Limit(Elements.Limit(request, fair), absorbCapacity);
@@ -152,7 +153,9 @@ public static class CultivationEngine
         var structureLimit = p.RequiredWork(actor.Realm) * progressLimit / 10000;
         // Tribulation never crosses more than the very next unperformed encounter in one interval.
         if (actor.Realm == Realm.Tribulation) structureLimit = Math.Min(structureLimit, (p.RequiredWork(actor.Realm) * actor.Layer + 7) / 8);
-        next = next with { Structure = Grow(next.Structure!, assimilated.Total, profile.GrowthWeights, structureLimit, p.RequiredWork(actor.Realm), context.Site) };
+        var weights = command.Focus == TrainingFocus.Structure ? next.Structure!.Measures.Select((value, i) =>
+            (int)Math.Max(1, 10000 - value * 10000 / Target(p.RequiredWork(actor.Realm), next.Structure.Measures.Count, i))).ToArray() : profile.GrowthWeights;
+        next = next with { Structure = Grow(next.Structure!, assimilated.Total, weights, structureLimit, p.RequiredWork(actor.Realm), context.Site) };
         var layer = Layer(next, actor.Realm, p);
         var complete = actor.Realm == Realm.Tribulation ? Maturity(next.Structure!, p) == 10000 : Complete(next, actor, p);
         if (actor.Realm == Realm.Tribulation && (layer > actor.Layer || (complete && !actor.GreatPerfection)))
@@ -211,7 +214,8 @@ public static class CultivationEngine
             Due = context.Month + (attempt.Kind == AttemptKind.RouteConversion ? context.Policy.ConversionMonths : 1) } };
         if (attempt.Kind == AttemptKind.RouteConversion)
             next = next with { Structure = Scale(next.Structure!, 10000 - context.Policy.ConversionLoss), AuxiliaryPath = "", Load = context.Policy.ConversionLoss };
-        return Accept(next, supply: debit, supports: attempt.ReservedItems.Select(id => new SupportDelta(id, SupportOperation.Consume, attempt.Id, 1)).ToArray(),
+        return Accept(next, attempt.Kind == AttemptKind.RouteConversion ? new(Layer: Layer(next, actor.Realm, context.Policy), GreatPerfection: false) : null,
+            supply: debit, supports: attempt.ReservedItems.Select(id => new SupportDelta(id, SupportOperation.Consume, attempt.Id, 1)).ToArray(),
             notices: [new("개시", actor.Realm == Realm.GoldenCore && attempt.Kind != AttemptKind.RouteConversion ? "파단 전 개시, 아직 안전 취소 가능" : "형성/교정 공정 개시", attempt.Path)],
             flow: SpentFlow(debit));
     }
@@ -239,9 +243,10 @@ public static class CultivationEngine
         if (sample < attempt.Risk)
         {
             if (attempt.Phase == AttemptPhase.Fractured) return Die(state, CultivationDeathCause.CoreFracture, "파단 후 원영 형성 실패");
-            return Accept(state with { Attempt = attempt with { Phase = AttemptPhase.Recovering, RecoveryRemaining = context.Policy.StabilizationMonths },
-                Damage = Math.Min(10000, state.Damage + context.Policy.FailureDamage), Structure = state.Structure is null ? null : Scale(state.Structure, 9000) },
-                new(HealthChange: -context.Policy.FailureHealthCost, GreatPerfection: false), notices: [new("형성 실패", "손상·회복 필요", attempt.Path)]);
+            var failed = state with { Attempt = attempt with { Phase = AttemptPhase.Recovering, RecoveryRemaining = context.Policy.StabilizationMonths, Due = context.Month + 1 },
+                Damage = Math.Min(10000, state.Damage + context.Policy.FailureDamage), Structure = state.Structure is null ? null : Scale(state.Structure, 9000) };
+            return Accept(failed, new(Layer: Layer(failed, actor.Realm, context.Policy), HealthChange: -context.Policy.FailureHealthCost, GreatPerfection: false),
+                notices: [new("형성 실패", "손상·회복 필요", attempt.Path)]);
         }
         if (attempt.Kind == AttemptKind.RouteConversion)
         {
@@ -299,7 +304,9 @@ public static class CultivationEngine
     {
         if (ActiveAttempt(state)) return Reject(state, "attempt", "진행 중 공정은 일반 휴식으로 전환 불가", "전용 안착/회복 또는 안전 취소");
         if (context.Month <= state.LastTrainingMonth) return Reject(state, "time", "이미 처리한 수행 월", "다음 월까지 진행");
-        if (!TryDebit(context, context.Policy.FlowPerMonth, out var debit)) return Reject(state, "supply", "구조 회복 공급 부족", "실제 공급 확보");
+        Elements debit = default;
+        var structuralRecovery = state.Structure is not null && (state.Damage > 0 || state.RootDamage.Total > 0);
+        if (structuralRecovery && !TryDebit(context, context.Policy.FlowPerMonth, out debit)) return Reject(state, "supply", "구조 회복 공급 부족", "실제 공급 확보");
         var treatment = command.MedicalTreatment ? context.Supports.FirstOrDefault(s => s.Kind == "pill" && s.Quantity > 0 && s.ReservedBy.Length == 0) : null;
         if (command.MedicalTreatment && treatment is null) return Reject(state, "medicine", "실제 치료 물품 없음", "물품 확보 또는 자연 회복");
         var rate = context.Policy.RecoveryPerMonth * (treatment is null ? 1 : 2);
@@ -506,9 +513,17 @@ public static class CultivationEngine
         state.RootGrowth.Nonnegative && state.RootDamage.Nonnegative && state.RootDamage.Maximum <= 10000 &&
         state.Raw.Nonnegative && state.Refined.Nonnegative && state.Circulating.Nonnegative && state.Damage is >= 0 and <= 10000 &&
         context.Month >= 0 && context.Site.Available.Nonnegative && context.Site.Claimants > 0 && context.Site.Turbidity is >= 0 and <= 10000 &&
-        context.Policy.FlowPerMonth is > 0 and <= 1000000 && context.Policy.EntryMonths > 0 && context.Policy.QiMonths >= 8 && context.Policy.FoundationMonths >= 8 &&
-        context.Policy.UpperDurationPercent is >= 100 and <= 1000 && context.Policy.StabilizationMonths >= 1 && context.Policy.MartialMaximumYears is >= 80 and <= 600 &&
+        ValidPolicy(context.Policy) &&
         context.Knowledge.All(k => k.Revision >= 0 && k.Understanding is >= 0 and <= 10000 && k.Practice is >= 0 and <= 10000 && k.Error is >= 0 and <= 10000);
+    private static bool ValidPolicy(CultivationPolicy policy) => policy.Revision > 0 && policy.FlowPerMonth is > 0 and <= 1000000 &&
+        policy.EntryMonths is > 0 and <= 100000000 && policy.QiMonths is >= 8 and <= 100000000 && policy.FoundationMonths is >= 8 and <= 100000000 &&
+        policy.UpperDurationPercent is >= 100 and <= 1000 && policy.StabilizationMonths is >= 1 and <= 1200 && policy.ConversionMonths is >= 1 and <= 1200 &&
+        policy.MartialMonthsPerStage is > 0 and <= 100000000 && policy.MartialMaximumYears is >= 80 and <= 600 && policy.ReserveLimitMonths is >= 0 and <= 1200 &&
+        policy.MinimumUnderstanding is > 0 and <= 10000 && policy.MinimumFormation is >= 0 and <= 10000 &&
+        policy.MinimumControl is >= 0 and <= 10000 && policy.UpperControl >= policy.MinimumControl && policy.CompletionControl >= policy.UpperControl && policy.CompletionControl <= 10000 &&
+        policy.BaseRisk is >= 0 and <= 10000 && policy.TrialRisk is >= 0 and <= 10000 && policy.FailureDamage is >= 0 and <= 10000 &&
+        policy.RecoveryPerMonth is >= 0 and <= 10000 && policy.ConversionLoss is >= 0 and <= 10000 && policy.TrialHealthCost is >= 0 and <= 100 && policy.FailureHealthCost is >= 0 and <= 100 &&
+        policy.QiLifespanMonths > 0 && policy.FoundationLifespanMonths > 0 && policy.GoldenCoreLifespanMonths > 0 && policy.HalfImmortalLifespanMonths > 0;
     private static ProcessFlow SpentFlow(Elements spent) => new(spent, spent, spent, spent, default, default, default);
     private static CultivationResult Die(CultivationState state, CultivationDeathCause cause, string detail) =>
         Accept(state with { Attempt = state.Attempt is null ? null : state.Attempt with { Phase = AttemptPhase.Failed }, PendingTrial = null },

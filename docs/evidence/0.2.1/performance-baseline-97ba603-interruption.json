@@ -1,0 +1,11 @@
+{
+  "kind": "seonro-partial-baseline-interruption",
+  "source_commit": "97ba6030367754b4338ab6a04ec57ef76ae2122d",
+  "completed_sizes": [
+    2,
+    100
+  ],
+  "complete": false,
+  "reason": "1000명 단계의 준비·월 진행이 수분 동안 완료되지 않아 알고리즘 진단으로 전환. 완료되지 않은 단계의 시간을 완성 측정값으로 계산하지 않음. 실제 네 규모 최종 측정은 최적화 후 다시 수행.",
+  "after_game_feature_completion": true
+}

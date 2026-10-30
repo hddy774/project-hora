@@ -111,7 +111,7 @@ internal static partial class PerformanceScenarios
         }
     }
 
-    private static object MeasurementEnvironment()
+    internal static object MeasurementEnvironment()
     {
         var source = MeasurementGit("rev-parse", "HEAD");
         if (source.Length != 40 || source.Any(c => !Uri.IsHexDigit(c)) ||

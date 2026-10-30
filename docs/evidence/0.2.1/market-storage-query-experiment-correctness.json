@@ -1,0 +1,72 @@
+{
+  "scope": "EX03/05/06 비교 소스의 작은 고정 정확성3건만 실행. 실측·예열·채택/기각/재검토 실행 결과가 아님.",
+  "tested_source_contents_commit": "f309a6b04f662e87f795ad77bcac3e27f62829f5",
+  "source_attribution": "선택 검사에 빌드한 C# 내용은 검사 직후 바꾸지 않고 이 커밋에 저장했다. 보고서 자체는 실행 Git SHA를 인증하지 않는다.",
+  "integration_base": "63a58c3",
+  "build": {
+    "command": "/workspace/.dotnet/dotnet build tests/Chronicles.Game.Tests -c Release --no-restore -m:1 -p:UseSharedCompilation=false",
+    "configuration": "Release",
+    "warnings": 0,
+    "errors": 0,
+    "passed": true
+  },
+  "functional_total": 3,
+  "functional_failed": 0,
+  "reports": [
+    {
+      "experiment": "EX-03",
+      "command": "/workspace/.dotnet/dotnet run --no-build --project tests/Chronicles.Game.Tests -c Release -- --filter 'EX03 준비 기능' --report /tmp/ex03-candidate-correctness.json",
+      "report": {
+        "selection": "EX03 준비 기능",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-005/008/009/017/018 EX03 준비 기능: 실제 공개 광고·사용권의 scan/index 선택·누락·철회·정산 정합",
+            "passed": true,
+            "ms": 3222
+          }
+        ]
+      }
+    },
+    {
+      "experiment": "EX-05",
+      "command": "/workspace/.dotnet/dotnet run --no-build --project tests/Chronicles.Game.Tests -c Release -- --filter 'EX05 준비 기능' --report /tmp/ex05-candidate-correctness.json",
+      "report": {
+        "selection": "EX05 준비 기능",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존",
+            "passed": true,
+            "ms": 4423
+          }
+        ]
+      }
+    },
+    {
+      "experiment": "EX-06",
+      "command": "/workspace/.dotnet/dotnet run --no-build --project tests/Chronicles.Game.Tests -c Release -- --filter 'EX06 준비 기능' --report /tmp/ex06-candidate-correctness.json",
+      "report": {
+        "selection": "EX06 준비 기능",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-007/008/009/010/016/024 EX06 준비 기능: 권한 선필터 scan/index/cache·숨은 변화 비간섭·실제 장비 무효화",
+            "passed": true,
+            "ms": 2483
+          }
+        ]
+      }
+    }
+  ],
+  "sampler_entrypoint_called": false,
+  "benchmark_warmup_executed": false,
+  "benchmark_raw_samples": [],
+  "performance_executed_by_this_subtask": false,
+  "automatic_discovery_boundary": "세 IFeatureScenario는 VerifyMarket/Verify/VerifyQueries만 호출하며 명시적 Run/Sample/Stopwatch는 호출하지 않는다.",
+  "production_features_modified": false,
+  "ledger_or_notion_status_changed": false
+}

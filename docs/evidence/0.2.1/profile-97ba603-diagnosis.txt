@@ -1,0 +1,73 @@
+97ba603 N100 관리 스택 진단 (정식 기준선 아님)
+소스 97ba6030367754b4338ab6a04ec57ef76ae2122d
+Release 빌드 0 warning/error. 선택 창세 검사 1/1 PASS.
+커널 CPU샘플 권한 없음: dotnet-sampled-thread-time100Hz + gc-verbose; 자신이 시작한 자식 프로세스만 수집.
+독립fixture2개월 warmup 뒤 새fixture12개월,1회. 아래 비중은 MeasurePopulation→AdvanceTo 구간9.384–34.869초만; setup/warmup/query/save/load/다른 thread 제외.
+12개월 진단시간 25458.7ms; 실제 누적관리할당 8,777,890,784bytes. trace/동시부하 포함; 기준선 수치로 사용 금지.
+
+주병목: InventoryState.Copy47.39%, Validate29.32%; JSON하위 중복제외53.79%.
+Copy직접부모: CurrentInventory14.99% + InventoryEngine.Apply17.04% + ApplyTo15.36%.
+TryEcologyPlan48.76% 중 input+planner는0.30%, 나머지는 재고전환의 복제·검증.
+People계열 중복제외0.60%. N100에서는 People batch/index가 최우선 근거 아님.
+
+inclusive source top20 (부모/자식 중복, 합산 금지):
+ 1  64.74%   16500.6ms Chronicles.Game!Chronicles.Game.GameWorld.Decide(class Chronicles.Game.Person)
+ 2  48.76%   12426.0ms Chronicles.Game!Chronicles.Game.GameWorld.TryEcologyPlan(class Chronicles.Game.Person)
+ 3  47.39%   12076.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryState.Copy(class Chronicles.Game.Inventory.InventoryState)
+ 4  32.60%    8307.5ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Apply(class Chronicles.Game.Inventory.InventoryState,class Chronicles.Game.Inventory.InventoryCommand)
+ 5  29.32%    7471.8ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.ValidateCore(class Chronicles.Game.Inventory.InventoryState)
+ 6  29.32%    7471.8ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Validate(class Chronicles.Game.Inventory.InventoryState)
+ 7  26.67%    6795.8ms Chronicles.Game!Chronicles.Game.Inventory.InventoryState.ApplyTo(class Chronicles.Game.GameState)
+ 8  25.96%    6615.9ms Chronicles.Game!Chronicles.Game.GameWorld.CurrentInventory()
+ 9  23.18%    5908.3ms Chronicles.Game!Chronicles.Game.GameWorld.Complete(class Chronicles.Game.Person)
+10  20.81%    5304.5ms Chronicles.Game!Chronicles.Game.GameWorld.CompleteInventory(class Chronicles.Game.Person)
+11  19.33%    4926.6ms Chronicles.Game!Chronicles.Game.GameWorld.ApplyInventory(class Chronicles.Game.Inventory.InventoryState)
+12  16.90%    4307.2ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.CarriedWeight(class Chronicles.Game.Inventory.InventoryState,class Chronicles.Game.Person)
+13  15.88%    4046.6ms Chronicles.Game!Chronicles.Game.GameWorld.RunInventory(class Chronicles.Game.Inventory.InventoryCommand,int64&)
+14  15.34%    3910.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+<>c__DisplayClass48_0.<CarriedRoots>b__0(class Chronicles.Game.Item)
+15  14.08%    3588.0ms Chronicles.Game!Chronicles.Game.GameWorld.Start(class Chronicles.Game.Person,class System.String,int64,class System.String)
+16  12.70%    3237.8ms Chronicles.Game!Chronicles.Game.GameWorld.TryInventoryCommand(class Chronicles.Game.GameCommand,class Chronicles.Game.Person,class System.String&)
+17   4.92%    1254.7ms Chronicles.Game!Chronicles.Game.GameWorld.SettleInventory()
+18   4.18%    1065.9ms Chronicles.Game!Chronicles.Game.GameWorld.SettleEcology()
+19   4.05%    1031.9ms Chronicles.Game!Chronicles.Game.Ecology.EcologyEngine.Settle(class Chronicles.Game.Ecology.EcologyContext,class Chronicles.Game.Ecology.EcologyState)
+20   3.44%     876.4ms Chronicles.Game!Chronicles.Game.Ecology.EcologyEngine.Validate(class Chronicles.Game.Ecology.EcologyContext,class Chronicles.Game.Ecology.EcologyState)
+
+exclusive top20 (CPU_TIME/UNMANAGED_CODE_TIME 표시프레임을 제외한 가장 깊은 실제프레임):
+ 1  21.50%    5479.1ms System.Private.CoreLib!System.Threading.Thread.<PollGC>g__PollGCWorker|67_0()
+ 2  12.70%    3237.8ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+<>c__DisplayClass48_0.<CarriedRoots>b__0(class Chronicles.Game.Item)
+ 3  12.63%    3219.1ms System.Text.Json!System.Text.Json.JsonReaderHelper.TranscodeHelper(value class System.ReadOnlySpan`1<unsigned int8>)
+ 4   4.36%    1111.6ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.ValidateCore(class Chronicles.Game.Inventory.InventoryState)
+ 5   3.55%     905.8ms System.Text.Json!dynamicClass..ctor()
+ 6   2.90%     738.0ms System.Text.Json!System.Text.Json.Serialization.JsonCollectionConverter`2[System.__Canon,System.__Canon].OnTryRead(value class System.Text.Json.Utf8JsonReader&,class System.Type,class System.Text.Json.JsonSerializerOptions,value class System.Text.Json.ReadStack&,!0&)
+ 7   2.87%     730.7ms System.Linq!System.Linq.Enumerable.Where(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Func`2<!!0,bool>)
+ 8   2.63%     671.2ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Metadata(class Chronicles.Game.Inventory.InventoryState,int64)
+ 9   2.14%     545.7ms Chronicles.Game!Chronicles.Game.Ecology.EcologyEngine+<>c__DisplayClass6_7.<Validate>b__25(int64)
+10   2.13%     544.0ms System.Private.CoreLib!System.Collections.Generic.List`1[System.__Canon].AddWithResize(!0)
+11   1.98%     505.2ms System.Text.Json!System.Text.Json.Serialization.Converters.SmallObjectWithParameterizedConstructorConverter`5[System.__Canon,System.__Canon,System.Int64,System.__Canon,System.__Canon].InitializeConstructorArgumentCaches(value class System.Text.Json.ReadStack&,class System.Text.Json.JsonSerializerOptions)
+12   1.77%     452.1ms System.Text.Json!dynamicClass..ctor(class System.String,int64,class System.String,class System.Object)
+13   1.65%     419.4ms Chronicles.Game!Chronicles.Game.Knowledge.KnowledgeAuthority+<>c.<Clone>b__83_7(class Chronicles.Game.Knowledge.KnowledgeEvidence)
+14   1.58%     402.3ms System.Private.CoreLib!System.Buffer.MemmoveInternal(unsigned int8&,unsigned int8&,unsigned int)
+15   1.55%     394.9ms Chronicles.Game!Chronicles.Game.Person..ctor()
+16   1.55%     394.9ms Chronicles.Game!Chronicles.Game.Inventory.InventoryState.Copy(class Chronicles.Game.Inventory.InventoryState)
+17   1.49%     380.9ms System.Linq!System.Linq.Enumerable.Any(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Func`2<!!0,bool>)
+18   1.33%     339.9ms Chronicles.Game!Chronicles.Game.Inventory.InventoryState.ApplyTo(class Chronicles.Game.GameState)
+19   1.32%     336.7ms Chronicles.Game!Chronicles.Game.GameWorld.CurrentInventory()
+20   0.90%     228.3ms System.Linq!System.Linq.Enumerable.Sum(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Func`2<!!0,!!1>)
+
+GCAllocationTick 표본 top10 (정확한 타입별 할당량 아님):
+ 2,473,639,840 bytes,  1,807 ticks System.Byte[]
+ 1,254,661,904 bytes, 11,622 ticks System.String
+   742,050,368 bytes,  6,966 ticks <>c__DisplayClass21_0
+   371,088,568 bytes,  3,482 ticks Chronicles.Game.Knowledge.KnowledgeEvidence
+   276,132,384 bytes,  2,588 ticks System.Int32[]
+   265,456,752 bytes,  2,491 ticks System.Text.Json.ArgumentState
+   209,303,480 bytes,  1,964 ticks ListWhereIterator`1[Chronicles.Game.Inventory.ProductionJob]
+   186,917,304 bytes,  1,754 ticks System.Text.Json.Arguments`4[System.String,System.Int64,System.String,System.Object]
+   185,748,208 bytes,  1,743 ticks Chronicles.Game.Inventory.NaturalStock
+   173,490,504 bytes,  1,628 ticks System.Func`2[Chronicles.Game.Inventory.ProductionJob,System.Boolean]
+
+전체 할당표본합 8,782,896,856bytes / 60,730ticks. phase근방GC시작545건중 할당유발543건, harness강제압축2건; pause시간/서로다른collection정확수 아님.
+
+권장 변경범위: InventoryModels.Copy/FromWorld/ApplyTo, InventoryEngine.Apply/Metadata/CarriedRoots, InventoryValidation.ValidateCore, World.InventoryBridge. 입력불변/실패원자성/receipt replay/stale검사/Person identity/보존법칙 유지. AI기능 축소로 수치를 맞추지 않음.
+동시 compiler/game부하와 profiler 영향 있음; 미세비중은100Hz 해상도상 정밀순위 근거 아님. N1000 및 최종4규모 수용 수행하지 않음. 제품소스/원장/GitHub변경 없음.
+정확한 소스라인/한계/전체목록은 같은prefix-diagnosis.json 및 weighted-stacks.json 참조.

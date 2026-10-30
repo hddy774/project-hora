@@ -172,12 +172,18 @@ jobs:
               fresh = native.actual_render(apk, proof, out / 'fresh')
               service = capture('webview-service-after.txt', 'shell', 'dumpsys', 'webviewupdate')
               after = capture('webview-package-after.txt', 'shell', 'dumpsys', 'package', 'com.android.webview')
-              provider = re.search(r'Current WebView package \(name, version\):\s*\(([^,]+),\s*([^\)]+)\)', service)
+              # API24's service dump can be empty. Require Android's actual provider-load record instead.
+              loaded = (out / 'fresh' / 'render-log.txt').read_text()
+              provider = re.search(r'\bWebViewFactory:\s*Loading (\S+) version (\S+) \(code (\d+)\)', loaded)
               versions = [re.search(r'\bversionName=([^\s]+)', text) for text in [before, after]]
-              assert provider and all(versions), '실제 시스템 WebView 버전을 확인할 수 없습니다'
+              assert provider and all(versions), '실제로 로드한 시스템 WebView 버전을 확인할 수 없습니다'
               assert provider[1] == 'com.android.webview' and provider[2] == versions[0][1] == versions[1][1], '기본 시스템 WebView가 교체됐습니다'
+              service_provider = re.search(r'Current WebView package \(name, version\):\s*\(([^,]+),\s*([^\)]+)\)', service)
+              if service_provider:
+                  assert service_provider[1] == provider[1] and service_provider[2].strip() == provider[2], 'WebView 서비스와 실제 로딩 기록이 다릅니다'
               result = {'schema_version': 1, 'kind': 'api24-debug-native-probe', 'passed': True,
                         'api': int(api), 'system_webview_package': provider[1], 'system_webview_version': provider[2],
+                        'system_webview_version_code': int(provider[3]), 'provider_evidence': 'Android WebViewFactory actual-load log plus unchanged package versions',
                         'stock_webview_version_unchanged': True, 'fresh_install_render': fresh,
                         'apk_sha256': proof['sha256'], 'source_commit': proof['source_commit'],
                         'product_source_fingerprint': proof['product_source_fingerprint'],

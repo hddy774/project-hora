@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "sourceCommit": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+  "reports": [
+    "copy-56bbfb2-json100.json",
+    "copy-56bbfb2-typed100.json"
+  ],
+  "comparisonScope": "같은 소스의 순차 프로세스 두 개, 모드별 독립 2개월 예열·12개월·1회다. 역순·반복 분산 검증을 하지 않은 호스트 표본이다.",
+  "exactEqualityChecks": {
+    "fixture": true,
+    "usedLaws": true,
+    "workload": true,
+    "initialHash": true,
+    "finalHash": true,
+    "saveBytes": true,
+    "serializedCognitionBytes": true,
+    "cognition": true,
+    "measuredMonths": true,
+    "warmupMonths": true,
+    "repetitions": true,
+    "living": true,
+    "allocationScope": true,
+    "retainedMemoryScope": true
+  },
+  "canonicalJsonDigestAlgorithm": "UTF-8 json.dumps(sort_keys=True,separators=(comma,colon),ensure_ascii=False) SHA256",
+  "fixtureDigest": "92dff1803f03e129c777b0ce1f24cdeca0077682ad5975a527ff50d5fae67bd1",
+  "usedLawsDigest": "039de24bd300e97df80a82b07f1ec9bf813049f035c9704602c6b3255f7a3869",
+  "workloadDigest": "185881d12ea0ed18deb573b806bff8086dbe3c4d5e89a2941a881fa4f696616a",
+  "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+  "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c",
+  "usedLawsCount": 113,
+  "saveBytes": 15219437,
+  "projectionCounters": {
+    "json15": {
+      "warmup": 2,
+      "measured": 13
+    },
+    "typed15": {
+      "warmup": 2,
+      "measured": 13
+    }
+  },
+  "typedCounters": {
+    "json15": {
+      "warmup": 0,
+      "measured": 0
+    },
+    "typed15": {
+      "warmup": 2,
+      "measured": 13
+    }
+  },
+  "metrics": [
+    {
+      "metric": "advance12MonthsMs",
+      "unit": "ms",
+      "json15": 8776.7925,
+      "typed15": 8952.629900000002,
+      "typedMinusJson": 175.83740000000216,
+      "typedRelativePercent": 2.0034357654006536
+    },
+    {
+      "metric": "monthlyP50Ms",
+      "unit": "ms",
+      "json15": 742.4102,
+      "typed15": 764.5735,
+      "typedMinusJson": 22.163299999999936,
+      "typedRelativePercent": 2.9853172814705315
+    },
+    {
+      "metric": "monthlyP95Ms",
+      "unit": "ms",
+      "json15": 1202.7774,
+      "typed15": 1270.6893,
+      "typedMinusJson": 67.91190000000006,
+      "typedRelativePercent": 5.646256738778104
+    },
+    {
+      "metric": "queryMs",
+      "unit": "ms",
+      "json15": 117.0704,
+      "typed15": 106.5747,
+      "typedMinusJson": -10.4957,
+      "typedRelativePercent": -8.965289261845863
+    },
+    {
+      "metric": "saveMs",
+      "unit": "ms",
+      "json15": 740.3043,
+      "typed15": 729.1982,
+      "typedMinusJson": -11.10609999999997,
+      "typedRelativePercent": -1.5002074147077045
+    },
+    {
+      "metric": "loadMs",
+      "unit": "ms",
+      "json15": 821.655,
+      "typed15": 870.6417,
+      "typedMinusJson": 48.98670000000004,
+      "typedRelativePercent": 5.961954835058514
+    },
+    {
+      "metric": "allocatedBytes",
+      "unit": "B",
+      "json15": 3166338224,
+      "typed15": 3154503296,
+      "typedMinusJson": -11834928,
+      "typedRelativePercent": -0.3737733357192987
+    },
+    {
+      "metric": "openingRetainedManagedBytes",
+      "unit": "B",
+      "json15": 21095152,
+      "typed15": 20966304,
+      "typedMinusJson": -128848,
+      "typedRelativePercent": -0.61079436640229
+    },
+    {
+      "metric": "retainedManagedBytes",
+      "unit": "B",
+      "json15": 28020816,
+      "typed15": 27879144,
+      "typedMinusJson": -141672,
+      "typedRelativePercent": -0.5055955543907072
+    },
+    {
+      "metric": "saveBytes",
+      "unit": "B",
+      "json15": 15219437,
+      "typed15": 15219437,
+      "typedMinusJson": 0,
+      "typedRelativePercent": 0.0
+    },
+    {
+      "metric": "serializedCognitionBytes",
+      "unit": "B",
+      "json15": 3477894,
+      "typed15": 3477894,
+      "typedMinusJson": 0,
+      "typedRelativePercent": 0.0
+    },
+    {
+      "metric": "totalElapsedSeconds",
+      "unit": "s",
+      "json15": 12.6104321,
+      "typed15": 12.8055907,
+      "typedMinusJson": 0.19515859999999918,
+      "typedRelativePercent": 1.5475964538915299
+    }
+  ],
+  "workload": {
+    "peopleWithDecisions": 100,
+    "retainedDecisionRecords": 1200,
+    "retainedInferenceExpansions": 1213,
+    "maximumRetainedInferenceExpansionsPerPerson": 25,
+    "currentActions": {
+      "Cultivate": 100
+    },
+    "completedKnowledgeActivities": 1090,
+    "completedPhysicalJobs": 0,
+    "actualExtraction": 0,
+    "actualProduction": 0
+  },
+  "decision": {
+    "defaultInventorySnapshotCopy": "json",
+    "typedDefaultAdopted": false,
+    "reason": "전이 시간은 2.00% 늘고 할당은 0.37% 줄었다. 조회·저장은 개선되고 복원은 악화했다. 실제 재고 후보는 예열 2회·측정 13회로 제한되어 이 한 표본만으로 기본 형식화 복사 채택을 뒷받침하지 못한다.",
+    "futureScope": "형식화 복사는 재검토 대상으로 남긴다. 별도 실제 비용 근거와 승인이 필요하다."
+  },
+  "gateScope": {
+    "jsonOriginalComplete": false,
+    "typedOriginalComplete": false,
+    "typedExperimentalConfiguration": true,
+    "finalPerformanceGateSatisfiedByTheseTwoReports": false
+  },
+  "b0Comparison": "최종 소스는 실제 1% 실습 자격의 수행 경로와 새 AI의 foodUse=0 시 식량 목표0 연결을 반영한다. 이 N100의 현재 작업은 Cultivate100·완료 실물 작업0·추출0·생산0이다. 과거 b0f3aec의 실물 작업 포함 부하와 다르므로 두 소스 사이 속도 개선률을 산출하지 않는다.",
+  "saveEqualityScope": "초기·최종 상태 해시와 저장 크기의 동일성이다. 원본 비용 보고서는 encoded-save SHA·byte배열을 저장하지 않아 저장 byte배열 동일을 이 자료로 주장하지 않는다. 실제 byte배열 동등 검사는 별도의 기능 삼자 사례 근거다."
+}

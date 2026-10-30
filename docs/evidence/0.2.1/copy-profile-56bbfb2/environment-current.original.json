@@ -1,0 +1,16 @@
+{
+  "capturedForDocumentationUtc": "2026-10-30T17:04:21.459892+00:00",
+  "meaning": "실행 후 문서화 시점의 현재 한계/affinity 정적 읽기. 실제 측정의 시작/종료 시각이나 당시에 캡처한 utilization 자료가 아님.",
+  "cpuMaxOriginal": "400000 100000\n",
+  "cpuQuotaCores": 4.0,
+  "memoryMaxOriginal": "17179869184\n",
+  "memoryLimitBytes": 17179869184,
+  "procSelfStatusCpuLines": [
+    "Cpus_allowed:\t1f",
+    "Cpus_allowed_list:\t0-4"
+  ],
+  "measurementReportGcAvailableBytes": 12884901888,
+  "measurementReportEffectiveCpuCount": 1,
+  "rootReportedBenchmarkCpuAffinity": "taskset -c 0",
+  "measuredThermalOrPowerState": false
+}

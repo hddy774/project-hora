@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "scope": "별도 후속 소스의 단일 N100 표본. 주56bb profile·형식화 비교와 구분.",
+  "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "productSourceFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "worktree": "/workspace/seonro-final-9263756",
+  "worktreeClean": true,
+  "combinedChanges": [
+    "#183",
+    "#184"
+  ],
+  "mode": "기본 JSON15",
+  "population": 100,
+  "measuredMonths": 12,
+  "repetitions": 1,
+  "exactEqualityChecks": {
+    "fixture": true,
+    "usedLaws": true,
+    "workload": true,
+    "initialHash": true,
+    "finalHash": true,
+    "saveBytes": true,
+    "serializedCognitionBytes": true,
+    "inventoryProjectionSnapshots": true,
+    "inventoryTypedCopySnapshots": true,
+    "measuredMonths": true,
+    "warmupMonths": true,
+    "repetitions": true
+  },
+  "saveEqualityScope": "초기·최종 상태 hash와 저장 크기가 같다. 이 비용 원본은 encoded-save SHA나 byte배열을 보존하지 않으므로 실제 저장byte배열 동일을 이 자료로 주장하지 않는다.",
+  "metrics": [
+    {
+      "metric": "advance12MonthsMs",
+      "unit": "ms",
+      "json56bbfb2": 8776.7925,
+      "json9263756": 8373.9138,
+      "relativePercent": -4.59027258534367
+    },
+    {
+      "metric": "monthlyP50Ms",
+      "unit": "ms",
+      "json56bbfb2": 742.4102,
+      "json9263756": 710.79045,
+      "relativePercent": -4.259067291909522
+    },
+    {
+      "metric": "monthlyP95Ms",
+      "unit": "ms",
+      "json56bbfb2": 1202.7774,
+      "json9263756": 1126.9184,
+      "relativePercent": -6.306985814665285
+    },
+    {
+      "metric": "queryMs",
+      "unit": "ms",
+      "json56bbfb2": 117.0704,
+      "json9263756": 97.7101,
+      "relativePercent": -16.53731429977177
+    },
+    {
+      "metric": "saveMs",
+      "unit": "ms",
+      "json56bbfb2": 740.3043,
+      "json9263756": 669.5804,
+      "relativePercent": -9.553355289169597
+    },
+    {
+      "metric": "loadMs",
+      "unit": "ms",
+      "json56bbfb2": 821.655,
+      "json9263756": 711.3441,
+      "relativePercent": -13.4254522883692
+    },
+    {
+      "metric": "allocatedBytes",
+      "unit": "B",
+      "json56bbfb2": 3166338224,
+      "json9263756": 3105307104,
+      "relativePercent": -1.9274984440196683
+    },
+    {
+      "metric": "retainedManagedBytes",
+      "unit": "B",
+      "json56bbfb2": 28020816,
+      "json9263756": 28020264,
+      "relativePercent": -0.001969964043873669
+    },
+    {
+      "metric": "saveBytes",
+      "unit": "B",
+      "json56bbfb2": 15219437,
+      "json9263756": 15219437,
+      "relativePercent": 0.0
+    }
+  ],
+  "builds": [
+    {
+      "name": "Chronicles.Core",
+      "sourceRevisionId": "9263756b1d00b8696fddecacb077f55d95141f26",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "dllPath": "/workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "2bf92dca196bce3b32206ba183163ab82f609c1ab43b0d1b547490ac5cecfb98",
+      "generatedAssemblyInfoPath": "/workspace/seonro-final-9263756/src/Chronicles.Core/obj/Release/net10.0/Chronicles.Core.AssemblyInfo.cs",
+      "generatedAssemblyInfoSha256": "07d87c27f606d3d5ab6782e0c64ac9abc1618297ff30084840771b1fd9a6fc8f"
+    },
+    {
+      "name": "Chronicles.Game",
+      "sourceRevisionId": "9263756b1d00b8696fddecacb077f55d95141f26",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "dllPath": "/workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "bytes": 2255872,
+      "sha256": "00592b07727563940a80cd26c4f861ebab436a7a645301b07f75371bd1f0eb99",
+      "generatedAssemblyInfoPath": "/workspace/seonro-final-9263756/src/Chronicles.Game/obj/Release/net10.0/Chronicles.Game.AssemblyInfo.cs",
+      "generatedAssemblyInfoSha256": "d35a3fa1ae22bacc79986f61a28f27baf596df786cf216e496b40d8e817d8a8a"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "sourceRevisionId": "9263756b1d00b8696fddecacb077f55d95141f26",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "dllPath": "/workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "40608a76380212edd3436c295ab60a6339e2fe1fe9f3aa6b67d4ac180b96c28a",
+      "generatedAssemblyInfoPath": "/workspace/seonro-final-9263756/src/Chronicles.Hosting/obj/Release/net10.0/Chronicles.Hosting.AssemblyInfo.cs",
+      "generatedAssemblyInfoSha256": "daaea66afe2d972ca11e373db1e68b066a18d1efc824a3126ba7ccb2c58de124"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "sourceRevisionId": "9263756b1d00b8696fddecacb077f55d95141f26",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "dllPath": "/workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "bytes": 1477120,
+      "sha256": "636e28f907740d89471a4a14d37cbdcff183f348ef19c890a9058f6f79ebb80f",
+      "generatedAssemblyInfoPath": "/workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/obj/Release/net10.0/Chronicles.Game.Tests.AssemblyInfo.cs",
+      "generatedAssemblyInfoSha256": "8af20fcd0282361c41b6c597c8986647ba4446b9c5684f9c64bfff521f7954aa"
+    }
+  ],
+  "executionProvenance": "root가 전달한 독립 동일 CLI, CPU0 고정, GUI·다른 실측 시작 전. 새 문서 작업에서 측정을 실행하지 않음.",
+  "argv": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--performance",
+    "/workspace/scratch/copy-9263756-json100.json",
+    "--performance-size",
+    "100"
+  ],
+  "reportOriginal": "copy-9263756-json100.json",
+  "logOriginal": "copy-9263756-json100.log",
+  "unprofiledReportedByParent": true,
+  "limitations": "순차 N1001회에 두 최적화가 함께 반영됐다. 개별 원인·다른 규모·Android 효과로 확대하지 않으며, 진행 중인 최종4규모 기준선 원본과 구분한다. 주56bb의45초 포함 비율을 이 새 소스의 비율로 재사용하지 않는다.",
+  "finalPerformanceGateSatisfied": false,
+  "newDocumentationMeasurements": 0,
+  "exactStartUtc": null,
+  "exactEndUtc": null
+}

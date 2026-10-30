@@ -18,6 +18,7 @@ public sealed record PeopleState(int Schema, PeopleTuning Tuning, EvaluationPoli
 {
     public long SettledThroughMonth { get; init; } = -1;
     public ParentGenome[] Genomes { get; init; } = [];
+    public PeopleSocialState Social { get; init; } = PeopleSocialState.Empty();
     public static PeopleState Empty() => new(1, new(), new(), new(), [], [], InheritanceState.Empty(), TraitLedger.Empty(),
         EvaluationState.Empty(), ReputationState.Empty(), [], [], [], []);
 
@@ -25,12 +26,44 @@ public sealed record PeopleState(int Schema, PeopleTuning Tuning, EvaluationPoli
     {
         if (Schema != 1 || month < 0 || SettledThroughMonth > month || SettledThroughMonth < -1) throw new InvalidDataException("Invalid people schema or simulation time.");
         Tuning.Validate(); EvaluationPolicy.Validate();
+        Social.Policy.Validate();
+        if (Social.LastEvent < 0 || Social.SettledThrough > month || Social.SettledThrough < -1)
+            throw new InvalidDataException("People social time/source cursor is invalid.");
         if (ReputationPolicy.MaximumClaimsPerObserver < 1 || ReputationPolicy.Revision < 1) throw new InvalidDataException("Invalid reputation policy.");
         RequireUnique(Profiles.Select(p => p.PersonId), "person profiles"); RequireUnique(Profiles.Select(p => p.Body.BodyId), "bodies");
         RequireUnique(Souls.Select(s => s.SoulId), "souls"); RequireUnique(Traits.Traits.Select(t => t.Id), "traits");
         RequireUnique(Inheritance.Conceptions.Select(c => c.Id), "conceptions"); RequireUnique(Inheritance.Births.Select(b => b.BirthId), "births");
         RequireUnique(Genomes.Select(g => g.PersonId), "transmissible genomes");
         var ids = Profiles.Select(p => p.PersonId).ToHashSet(); var soulIds = Souls.Select(s => s.SoulId).ToHashSet();
+        RequireUnique(Social.Sessions.Select(s => s.Id), "personal sessions"); RequireUnique(Social.Oaths.Select(o => o.Id), "personal oaths");
+        foreach (var session in Social.Sessions)
+        {
+            if (!ids.Contains(session.Proposer) || !ids.Contains(session.Recipient) || session.Proposer == session.Recipient ||
+                session.ProposerBody <= 0 || session.RecipientBody <= 0 || session.Place is < 0 or >= 100 || session.Requested < 0 ||
+                session.Requested > month || session.Expires <= session.Requested || !Enum.IsDefined(session.Status) || !Enum.IsDefined(session.Kind) ||
+                session.TalentIndex is < 0 or > 23 || session.Terms.Length > 80 ||
+                session.Status == PeopleSessionStatus.Active && (session.Started > month || session.Due <= session.Started) ||
+                session.Status == PeopleSessionStatus.Completed && (session.Ended > month || session.Ended < session.Due))
+                throw new InvalidDataException("Invalid real personal session, time or participants.");
+            if (session.SharedClaim is { } claim) global::Chronicles.Game.People.Reputation.Validate(claim);
+        }
+        foreach (var oath in Social.Oaths)
+            if (!ids.Contains(oath.First) || !ids.Contains(oath.Second) || oath.First == oath.Second || oath.Began > month ||
+                oath.Until <= oath.Began || oath.Ended > month || oath.Evidence <= 0 || oath.Terms.Length > 80)
+                throw new InvalidDataException("An oath must refer to actual people, consent and a bounded term.");
+        if (Social.Habits.GroupBy(h => (h.Person, h.Habit)).Any(g => g.Count() > 1))
+            throw new InvalidDataException("Actual completed habit counters must be unique per person and action.");
+        foreach (var habit in Social.Habits)
+            if (!ids.Contains(habit.Person) || habit.Body <= 0 || habit.Count < 0 || habit.LastObservedCounter < 0 || habit.FirstTracked < 0 ||
+                habit.LastCompleted < habit.FirstTracked || habit.LastCompleted > month)
+                throw new InvalidDataException("Invalid actual observed habit history.");
+        foreach (var ecology in Social.Ecology)
+        {
+            ecology.Source.Validate();
+            if (!ids.Contains(ecology.Person) || ecology.Body <= 0 || ecology.Month > month || ecology.Month < 0 ||
+                ecology.Place is < 0 or >= 100 || !Enum.IsDefined(ecology.Habitat) || ecology.AmbientQiConsumed is < 0 or > 1 || ecology.HealthCost is < 0 or > 2)
+                throw new InvalidDataException("Invalid personally experienced ecology source.");
+        }
         foreach (var genome in Genomes)
         {
             var profile = Profiles.FirstOrDefault(p => p.PersonId == genome.PersonId);
@@ -200,7 +233,8 @@ public static class PeopleAdapters
         var origin = source.Kind == PeopleSourceKind.Founding ? PersonOrigin.Founder : person.ParentOne != 0 ? PersonOrigin.BiologicalBirth : PersonOrigin.ExplicitArrival;
         var body = new Embodiment(person.Id, person.BodyId, person.SoulId, person.Species, species.NaturalForm, origin, "", YaoguaiTitle.None,
             new(species.ReproductionGroup, person.Gestates ? ReproductiveFunction.Gestator : ReproductiveFunction.Donor,
-                species.MaturityMonths, species.GestationMonths, source), new(true, species.NaturalForm == BodyForm.Humaniform, true, false), source);
+                species.MaturityMonths, species.GestationMonths, source), species.NaturalCapabilities ??
+                new(species.Sapient, species.NaturalForm == BodyForm.Humaniform, species.NaturalForm != BodyForm.RootedPlant, false), source);
         var profile = new PeopleProfile(person.Id, source.Month, new(person.Aptitudes.ToArray(), person.Roots.ToArray(), [source]), TalentDevelopment.Empty(), body, []);
         PeopleProfiles.Validate(profile);
         return profile;

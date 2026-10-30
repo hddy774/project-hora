@@ -4,7 +4,7 @@ public enum TraitCategory { Constitution, Bloodline, SoulTrace, Temperament, Dao
 public enum TraitLayer { Body, Bloodline, Soul, Experience, Relationship, Institution }
 public enum TraitPurpose { Mechanical, DerivedMarker, Preference, Relationship, Fortune, HistoricalTitle, AuthorityReference }
 public enum TraitStatus { Latent, Active, Suppressed, Released, Expired }
-public enum TraitStacking { UniqueDefinition, Strongest }
+public enum TraitStacking { UniqueDefinition, Strongest, PerRelatedEntity }
 public enum TraitChangeKind { Acquired, Awakened, Suppressed, Released, Expired }
 public enum TraitFact
 {
@@ -59,7 +59,8 @@ public static class TraitCatalog
             TraitStacking stacking = TraitStacking.UniqueDefinition) =>
             result.Add(new(id, name, category, layer, purpose, acquire, awaken ?? acquire,
                 purpose == TraitPurpose.AuthorityReference ? TraitFact.AuthorityRevoked : TraitFact.Resolved,
-                stacking, conflicts ?? [], effects ?? [], preferences ?? [], fortune ?? [], related, inherits));
+                related && stacking == TraitStacking.UniqueDefinition ? TraitStacking.PerRelatedEntity : stacking,
+                conflicts ?? [], effects ?? [], preferences ?? [], fortune ?? [], related, inherits));
         TraitEffectTemplate Talent(int index, int amount) => new(new(EffectDomain.Talent, index), EffectOperation.Add, amount);
         Add("body.meridian", "통맥영체", TraitCategory.Constitution, TraitLayer.Body, TraitPurpose.Mechanical, TraitFact.BodyPrototype, TraitFact.MeridianFit,
             inherits: true, effects: [Talent(7, 500)]);
@@ -146,7 +147,8 @@ public static class Traits
         if (context.ExpiresMonth <= context.Source.Month) return new(false, "invalid expiry", state);
         if (state.Traits.Any(t => t.PersonId == context.PersonId && t.DefinitionId == context.DefinitionId &&
             t.Status is not (TraitStatus.Released or TraitStatus.Expired) &&
-            (definition.Stacking == TraitStacking.UniqueDefinition || t.Source.CauseId == context.Source.CauseId)))
+            (definition.Stacking == TraitStacking.UniqueDefinition ||
+                definition.Stacking == TraitStacking.PerRelatedEntity && t.RelatedEntityId == context.RelatedEntityId || t.Source.CauseId == context.Source.CauseId)))
             return new(false, "trait stacking conflict", state);
         var trait = new PersonTrait(context.Id, context.PersonId, context.DefinitionId, TraitStatus.Latent, context.Strength,
             context.Source.Month, null, context.ExpiresMonth, context.RelatedEntityId, context.Source,

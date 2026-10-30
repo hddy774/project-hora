@@ -46,13 +46,19 @@ public sealed partial class GameWorld
             ProjectPeoplePregnancy(pregnancy, captured); return;
         }
         InitializePeoplePerson(mother); InitializePeoplePerson(father);
-        var model = GeneticModel.Provisional();
+        var model = GeneticModel.Provisional() with
+        {
+            MutationMagnitude = checked((int)state.Laws.GetValueOrDefault("genetics.mutationMagnitude", 200)),
+            MutationChance = checked((int)state.Laws.GetValueOrDefault("genetics.mutationChance", 10_000)), Revision = state.LawRevision
+        };
+        model.Validate();
         var random = new DeterministicRandom(state.Seed ^ unchecked((ulong)pregnancy.Id * 0x9E3779B97F4A7C15UL) ^ 0x47454E4554494353UL);
         var selections = model.Genes.Select(g =>
         {
-            var one = random.NextInt(2); var two = random.NextInt(2); var mutation = random.NextInt(401) - 200;
+            var one = random.NextInt(2); var two = random.NextInt(2);
+            var mutation = random.NextInt(10_000) < model.MutationChance ? random.NextInt(model.MutationMagnitude * 2 + 1) - model.MutationMagnitude : 0;
             return new AlleleSelection(g.Id, one, two, mutation, mutation == 0 ? null : new PeopleSource($"conception.{pregnancy.Id}.mutation.{g.Id}",
-                PeopleSourceKind.Mutation, "정의된 잉태 stream의 전달 단위 변이·±200 잠정 범위", Month, model.Revision), random.NextInt(2));
+                PeopleSourceKind.Mutation, $"정의된 잉태 stream·변이 범위 ±{model.MutationMagnitude}·확률 {model.MutationChance}/10000", Month, model.Revision), random.NextInt(2));
         }).ToArray();
         var change = Inheritance.Capture(state.PeopleDomain.Inheritance, new(pregnancy.Id, Month, pregnancy.LawRevision, mother.Species,
             PeopleGenome(mother), PeopleGenome(father), model, selections));
@@ -117,7 +123,7 @@ public sealed partial class GameWorld
             RecordPeopleTrait(person, marker.TraitDefinitionId, marker.Source with { Month = Month, Reference = $"출생 시 잠재 편입: {marker.Source.Reference}" },
                 [TraitCatalog.Get(marker.TraitDefinitionId).Acquisition], activate: false);
         if (legacySoul.Route > 0 || legacySoul.Parent != 0)
-            RecordPeopleTrait(person, "soul.reborn", source, [TraitFact.RebirthEvidence], activate: true);
+            RecordPeopleTrait(person, "soul.reborn", source, [TraitFact.RebirthEvidence], activate: true, observeSelf: false);
     }
 
     /// <summary>Call after a real completed action, with its actual gains; queries and inherited traces never call this.</summary>
@@ -290,8 +296,17 @@ public sealed partial class GameWorld
     {
         state.PeopleDomain.Validate(Month);
         foreach (var profile in state.PeopleDomain.Profiles)
+        {
             if (!people.TryGetValue(profile.PersonId, out var person) || person.BodyId != profile.Body.BodyId || person.SoulId != profile.Body.SoulId)
                 throw new InvalidDataException("People domain and world person/body/soul identities disagree.");
+            if (!person.Roots.SequenceEqual(profile.Innate.ElementRoots) || !person.Aptitudes.SequenceEqual(profile.Innate.Foundations) ||
+                person.Species != profile.Body.SpeciesId || person.Gestates != ((profile.Body.Reproduction.Functions & ReproductiveFunction.Gestator) != 0))
+                throw new InvalidDataException("Raw person aptitude/species/reproduction values are compatibility projections of the authoritative people profile.");
+            var soul = state.PeopleDomain.Souls.Single(s => s.SoulId == person.SoulId);
+            if (person.Status == LifeStatus.Alive && (soul.Foundation is null || soul.Foundation.Value != profile.Innate.Foundations[(int)FoundationKind.Soul]))
+                throw new InvalidDataException("The living body's soul foundation must belong to its actual assigned soul.");
+        }
+        ValidatePeopleSocial();
     }
 
     private void EvaluatePeopleScopes()
@@ -331,38 +346,33 @@ public sealed partial class GameWorld
     }
 
     internal void RecordPeopleTrait(Person person, string definitionId, PeopleSource source, TraitFact[] facts, bool activate,
-        long relatedEntityId = 0, long? expiresMonth = null)
+        long relatedEntityId = 0, long? expiresMonth = null, bool observeSelf = true)
     {
-        var same = state.PeopleDomain.Traits.Traits.FirstOrDefault(t => t.PersonId == person.Id && t.DefinitionId == definitionId &&
+        var trait = state.PeopleDomain.Traits.Traits.FirstOrDefault(t => t.PersonId == person.Id && t.DefinitionId == definitionId &&
             t.Source.CauseId == source.CauseId && t.Status is not (TraitStatus.Expired or TraitStatus.Released));
-        if (same is not null)
+        if (trait is null)
         {
-            if (activate && same.Status != TraitStatus.Active)
-            {
-                var manifest = Traits.Transition(state.PeopleDomain.Traits, new(same.Id, $"trait.{same.Id}.awakened.{Month}", source, facts), TraitChangeKind.Awakened);
-                if (manifest.Accepted) state.PeopleDomain = state.PeopleDomain with
-                {
-                    Traits = manifest.State,
-                    TraitObservations = state.PeopleDomain.TraitObservations.Where(o => o.ObserverId != person.Id || o.SubjectId != person.Id || o.DefinitionId != definitionId)
-                        .Append(new(person.Id, person.Id, definitionId, TraitStatus.Active, Month, Month, same.ExpiresMonth, source.CauseId)).ToArray()
-                };
-            }
-            ProjectPeopleTraits(person); return;
+            var id = Id();
+            var acquired = Traits.Acquire(state.PeopleDomain.Traits, new(id, person.Id, definitionId, $"trait.{id}.acquired", source, facts,
+                ExpiresMonth: expiresMonth, RelatedEntityId: relatedEntityId));
+            if (!acquired.Accepted) return;
+            state.PeopleDomain = state.PeopleDomain with { Traits = acquired.State };
+            trait = acquired.State.Traits.Single(t => t.Id == id);
         }
-        var id = Id();
-        var acquire = Traits.Acquire(state.PeopleDomain.Traits, new(id, person.Id, definitionId, $"trait.{id}.acquired", source, facts,
-            ExpiresMonth: expiresMonth, RelatedEntityId: relatedEntityId));
-        if (!acquire.Accepted) return;
-        state.PeopleDomain = state.PeopleDomain with { Traits = acquire.State };
-        if (!activate) return;
-        var awakening = Traits.Transition(state.PeopleDomain.Traits, new(id, $"trait.{id}.awakened", source, facts), TraitChangeKind.Awakened);
-        if (!awakening.Accepted) return;
-        state.PeopleDomain = state.PeopleDomain with
+        if (activate && trait.Status != TraitStatus.Active)
         {
-            Traits = awakening.State,
-            TraitObservations = state.PeopleDomain.TraitObservations.Where(o => o.ObserverId != person.Id || o.SubjectId != person.Id || o.DefinitionId != definitionId)
-                .Append(new(person.Id, person.Id, definitionId, TraitStatus.Active, Month, Month, expiresMonth, source.CauseId)).ToArray()
-        };
+            var awakened = Traits.Transition(state.PeopleDomain.Traits,
+                new(trait.Id, $"trait.{trait.Id}.awakened.{Month}", source, facts), TraitChangeKind.Awakened);
+            if (!awakened.Accepted) return;
+            state.PeopleDomain = state.PeopleDomain with { Traits = awakened.State };
+            trait = awakened.State.Traits.Single(t => t.Id == trait.Id);
+        }
+        if (activate && observeSelf && trait.Status == TraitStatus.Active)
+            state.PeopleDomain = state.PeopleDomain with
+            {
+                TraitObservations = state.PeopleDomain.TraitObservations.Where(o => o.ObserverId != person.Id || o.SubjectId != person.Id || o.DefinitionId != definitionId)
+                    .Append(new(person.Id, person.Id, definitionId, TraitStatus.Active, Month, Month, trait.ExpiresMonth, source.CauseId)).ToArray()
+            };
         ProjectPeopleTraits(person);
     }
 
@@ -385,6 +395,12 @@ public sealed partial class GameWorld
                 (int)((long)value.DefinitionIds.Length * value.Accessible / Math.Max(1, value.Preserved)))).ToArray(),
             _ => value.DefinitionIds.ToArray()
         };
+        if (value.AccessGrade != TraceAccessGrade.Sealed && state.PeopleDomain.Traits.Traits.Any(t => t.PersonId == person.Id && t.DefinitionId == "soul.reborn"))
+        {
+            var rebirth = state.PeopleDomain.Traits.Traits.First(t => t.PersonId == person.Id && t.DefinitionId == "soul.reborn");
+            RecordPeopleTrait(person, "soul.reborn", rebirth.Source with { Month = Month, Reference = "실제 자각한 꿈/흔적에서 확인한 윤회 단서" },
+                [TraitFact.RebirthEvidence], activate: true, observeSelf: true);
+        }
         state.PeopleDomain = state.PeopleDomain with
         {
             TraceObservations = state.PeopleDomain.TraceObservations.Where(o => o.ObserverId != person.Id || o.SubjectId != person.Id || o.Domain != domain)

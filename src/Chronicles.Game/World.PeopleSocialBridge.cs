@@ -145,8 +145,8 @@ public sealed partial class GameWorld
             if (shared is null) { error = "자신이 실제로 받은 현재 진술만 전달할 수 있습니다."; return true; }
         }
         var terms = sessionKind == PeopleSessionKind.Oath ? command.Data.Trim() : "";
-        if (sessionKind == PeopleSessionKind.Oath && (Month - person.Born < PeopleProfile(person).Body.Reproduction.MaturityMonths ||
-            Month - recipient.Born < PeopleProfile(recipient).Body.Reproduction.MaturityMonths))
+        if (sessionKind == PeopleSessionKind.Oath && (Month - person.Born < PeopleMaturityMonths(person) ||
+            Month - recipient.Born < PeopleMaturityMonths(recipient)))
         { error = "현재 육신의 성숙 후 양측이 직접 동의한 한정 서약만 체결할 수 있습니다."; return true; }
         if (terms.Length > 80 || sessionKind == PeopleSessionKind.Oath && terms.Length == 0)
         { error = "서약의 한정된 약속 내용을 1~80자로 적으세요."; return true; }

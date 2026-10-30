@@ -329,7 +329,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "89d581d6ad68813c378f495c208c5ee8e8155cad",
+  "source_commit": "a2d493e89fcf9f099b9d7eea6f28c43715295388",
   "phase": "최종 성능 병목 보정·측정",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

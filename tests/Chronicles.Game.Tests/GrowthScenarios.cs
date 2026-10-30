@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
 using Chronicles.Game;
+using Chronicles.Game.Tests.Experiments;
 
 internal static partial class GrowthScenarios
 {
@@ -8,16 +9,25 @@ internal static partial class GrowthScenarios
     private const long HorizonMonths = 6000;
     private const long ObservationInterval = 120;
     private static readonly ulong[] Seeds = [42, 98, 2026];
-    public static void Run(string path)
+    private static readonly string[] ScenarioNames = ["a", "b", "c"];
+    public static void Run(string path, string? selectedScenario = null, ulong? selectedSeed = null)
     {
+        if (selectedScenario is not null && selectedScenario is not ("a" or "b" or "c")) throw new ArgumentException("성장 조건은 a/b/c 중 하나여야 합니다.", nameof(selectedScenario));
+        if (selectedSeed is { } requestedSeed && !Seeds.Contains(requestedSeed)) throw new ArgumentOutOfRangeException(nameof(selectedSeed));
+        var requestedCases = Enumerable.Range(0, 3).SelectMany(scenario => Seeds.Select(seed => new { scenario = ScenarioNames[scenario], seed }))
+            .Where(c => (selectedScenario is null || c.scenario == selectedScenario) && (selectedSeed is null || c.seed == selectedSeed)).ToArray();
         var total = Stopwatch.StartNew(); var environment = PerformanceScenarios.MeasurementEnvironment();
+        var source = ExecutionMeasurementHost.Capture();
         var reports = new List<GrowthCohort>(); string? runningCase = null;
         void SaveProgress()
         {
             var complete = reports.Count == 9 && reports.All(r => r.Status == "completed");
+            var requestedComplete = reports.Count == requestedCases.Length && reports.All(r => r.Status == "completed");
             var full = Path.GetFullPath(path); Directory.CreateDirectory(Path.GetDirectoryName(full)!);
             var report = new { schema_version = 2, kind = "seonro-growth-cohorts", environment,
-                complete, status = reports.Any(r => r.Status == "failed") ? "failed" : complete ? "completed" : "partial",
+                sourceCommit = source.Commit, productSourceFingerprint = source.ProductSourceFingerprint,
+                requestedCases, requested_complete = requestedComplete,
+                complete, status = reports.Any(r => r.Status == "failed") ? "failed" : complete ? "completed" : requestedComplete ? "requested-completed" : "partial",
                 runningCase, plannedCases = 9, completedCases = reports.Count(r => r.Status == "completed"), samplesPerScenario = 3,
                 horizonMonths = HorizonMonths, observationIntervalMonths = ObservationInterval, totalElapsedMs = total.Elapsed.TotalMilliseconds,
                 completionMeaning = "completed means the finite observation finished; it is not a claim that the selected preset is balanced or indefinitely viable",
@@ -43,6 +53,7 @@ internal static partial class GrowthScenarios
         for (var scenario = 0; scenario < 3; scenario++)
             foreach (var seed in Seeds)
             {
+                if (selectedScenario is not null && ScenarioNames[scenario] != selectedScenario || selectedSeed is not null && seed != selectedSeed) continue;
                 var cohort = new GrowthCohort(scenario, seed); reports.Add(cohort);
                 runningCase = cohort.Scenario + ":" + seed; SaveProgress();
                 var watch = Stopwatch.StartNew();

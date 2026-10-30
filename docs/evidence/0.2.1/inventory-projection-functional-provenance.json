@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "source_commit": "e9807e926cfe2be964ba5eed851a8c2c7ab8b5b5",
+  "integration_commit": "a2d493e89fcf9f099b9d7eea6f28c43715295388",
+  "integration_pr": 158,
+  "reports": [
+    {
+      "path": "docs/evidence/0.2.1/inventory-projection-inventory-functional.json",
+      "sha256": "debd8ad2ff1f7dd959acf6e183acf6eca033f6f06f49cd74323b1dc17cf57afc",
+      "selected_count": 54
+    },
+    {
+      "path": "docs/evidence/0.2.1/inventory-projection-currency-functional.json",
+      "sha256": "64469118cea63e5cd9cd9fe47b03c2ab35471642ab75e623300e51bc3a79da6e",
+      "selected_count": 9
+    }
+  ],
+  "scope": "기본 strict 유지, 별도 instance-scope 입력 투영 실험의 선택 회귀54+9. 기존70필드 stale·실험15필드·미사용55필드 원본 보존·IL 읽기 가드·실제 두 공개 시나리오 전체 transcript 일치. 전체 기능/실측/앱 기본 채택 수용과 구분.",
+  "performance_measured_in_these_reports": false
+}

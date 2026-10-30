@@ -215,7 +215,7 @@ public sealed class Contract
     public string Status { get; set; } = "open";
 }
 
-public sealed class GameState
+public sealed partial class GameState
 {
     public int Schema { get; set; } = 1;
     public int DomainSchema { get; set; }

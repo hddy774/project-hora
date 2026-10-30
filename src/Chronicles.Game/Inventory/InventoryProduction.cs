@@ -83,6 +83,7 @@ public static partial class InventoryEngine
         var bindings = inputs.Where(i => i.BoundSoul != 0).Select(i => i.BoundSoul).Distinct().ToArray();
         Require(bindings.Length <= 1, "Different soul bindings cannot be combined.");
         var job = new ProductionJob { Id = Id(state), Actor = actor.Id, Recipe = recipe.Id, Place = actor.Place,
+            OutputDefinition = recipe.Output, OutputQuantity = recipe.Quantity,
             Due = command.Due, Labor = labor, Reservation = reservation.Id, Inputs = inputs.Select(i => i.Id).ToList(),
             Quality = (int)(inputs.Sum(i => (long)i.Quality * i.Quantity) / Math.Max(1, quantity)),
             Damage = inputs.Max(i => i.Damage), Defects = inputs.Aggregate(ItemDefect.None, (defects, item) => defects | item.Defects),
@@ -118,10 +119,12 @@ public static partial class InventoryEngine
         if (job.Source != 0)
         {
             var source = state.Ledger.Sources.Single(s => s.Id == job.Source);
+            if (job.OutputDefinition.Length == 0) job.OutputDefinition = source.Definition;
+            Require(source.Definition == job.OutputDefinition, "Natural source changed after the extraction commitment.");
             Require(source.Remaining >= job.OutputQuantity, "Reserved natural stock is missing."); source.Remaining -= job.OutputQuantity;
             Event(state, "source-depletion", job.Actor, source.Id, $"job:{job.Id}:quantity:{job.OutputQuantity}:success:{command.Succeeded}");
             if (command.Succeeded)
-                subject = Produce(state, job.Actor, source.Definition, job.OutputQuantity, job.Quality, ItemDefect.None, 0,
+                subject = Produce(state, job.Actor, job.OutputDefinition, job.OutputQuantity, job.Quality, ItemDefect.None, 0,
                     $"extraction:{source.Id}:job:{job.Id}", [source.Origin], true).Id;
         }
         else if (command.Succeeded && job.Recipe == "repair")
@@ -164,7 +167,8 @@ public static partial class InventoryEngine
         else if (command.Succeeded)
         {
             var recipe = InventoryDefinitions.Recipes[job.Recipe];
-            var output = Produce(state, job.Actor, recipe.Output, recipe.Quantity, job.Quality, job.Defects, job.BoundSoul,
+            if (job.OutputDefinition.Length == 0) { job.OutputDefinition = recipe.Output; job.OutputQuantity = recipe.Quantity; }
+            var output = Produce(state, job.Actor, job.OutputDefinition, job.OutputQuantity, job.Quality, job.Defects, job.BoundSoul,
                 $"production:job:{job.Id}", job.Provenance); output.Damage = job.Damage;
             subject = output.Id;
             if (command.AwardSkill)
@@ -201,7 +205,7 @@ public static partial class InventoryEngine
         var reservation = Reservation(state, actor.Id, "extraction");
         var labor = AddLabor(state, actor.Id, source.Activity, state.Month, command.Due, command.LaborUnits);
         var job = new ProductionJob { Id = Id(state), Actor = actor.Id, Recipe = "extraction", Source = source.Id, Place = actor.Place,
-            Due = command.Due, Labor = labor, Reservation = reservation.Id, OutputQuantity = command.Quantity, Quality = 5000 };
+            Due = command.Due, Labor = labor, Reservation = reservation.Id, OutputDefinition = source.Definition, OutputQuantity = command.Quantity, Quality = 5000 };
         state.Ledger.Jobs.Add(job); return job.Id;
     }
     private static long Consume(InventoryState state, ConsumeItem command)

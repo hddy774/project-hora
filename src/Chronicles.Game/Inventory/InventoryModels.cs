@@ -136,6 +136,7 @@ public sealed class ProductionJob
     public long KnowledgeActivity { get; set; }
     public long Target { get; set; }
     public long Source { get; set; }
+    public string OutputDefinition { get; set; } = "";
     public int OutputQuantity { get; set; }
     public List<long> Inputs { get; set; } = [];
     public List<ConsumedMaterial> Consumed { get; set; } = [];

@@ -105,6 +105,7 @@ public static partial class InventoryEngine
         foreach (var job in state.Ledger.Jobs)
         {
             PersonAt(state, job.Actor, false);
+            if (job.OutputDefinition.Length > 0) InventoryDefinitions.Definition(job.OutputDefinition);
             Ensure(InventoryDefinitions.Recipes.ContainsKey(job.Recipe) || job.Recipe is "repair" or "extraction" or "medical-treatment" or "appraisal" or "exploration" or "array-maintenance",
                 "Unknown production process in saved state.");
             Ensure((job.Source != 0) == (job.Recipe == "extraction") && (job.Source == 0 || (job.OutputQuantity > 0 && state.Ledger.Sources.Any(s => s.Id == job.Source))),

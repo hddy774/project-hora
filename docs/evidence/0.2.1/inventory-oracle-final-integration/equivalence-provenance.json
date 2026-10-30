@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "kind": "final-integration-independent-fixed-copy-equivalence",
+  "functionalRunSource": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+  "productSourceFingerprint": "cf17eee7930cc754eda7558d0496f6929d10d64fb9352d0c42ff49a08704f9e3",
+  "productFingerprintIncludesTests": true,
+  "sourceCleanAtFunctionalRunStart": true,
+  "strictOriginalSource": "5fece454c64621e66a9b3399334c21cb73bc3999",
+  "strictOriginalEvidenceCommit": "6b37abf6a5fc9519ea5e587bf9e9edd5a92a4df2",
+  "explicitTwoConstantReadoptionCommit": "c6f5ba1b6818377877791a78daddea2e9fb1e0fb",
+  "includedFrozenAncestors": {
+    "entryTrade169": "728d2a6751d22d2f8fa94894d0c8144600217e1f",
+    "entryUi173": "9dd1b28f76d0d432cc3cb0b16f59d5e97b27c2b8",
+    "ttlLaw175": "de7a296cc647368dae7b6343943382438787a660",
+    "tradeBudget176": "21c9d2c1eab42aa1ec5a07f591b7423fb60f7673",
+    "sensitivityHarnessAndGuard177": "93649f1300040df88f7feafed552ef78e39895c6",
+    "mixedEvidence178": "e5e47cbd969270319268058744272c739919582f",
+    "teachingSource180": "6f6b0bb68595174251c519e1bed0f8d1735dfcd6",
+    "brotliBoundary181": "5ef9d30aed82c71db56fd65df00149dae48b0023",
+    "syncLiteralReadoption": "1fb5ab737011790fef1825694250ce8c6dc4a297",
+    "brotliEvidence181": "37f8d7e9913e34861a017f08c5a933e022277e39"
+  },
+  "sameBytesSinceStrictOriginal": {
+    "src/Chronicles.Game": true,
+    "src/Chronicles.Core": true,
+    "src/Chronicles.Hosting": true,
+    "tests/Chronicles.Game.Tests/Features/InventoryIntegrationScenarios.cs": true,
+    "tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs": true,
+    "tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs": true
+  },
+  "twoFixtureBodiesUnchangedExceptFixedConstantValuesAndSourceComments": true,
+  "cliOnlyDifferenceSinceStrictOriginal": {
+    "patch": "cli-guard-after-strict-capture.patch",
+    "sha256": "225d3cce9bd35ab66d2f21d9d84c6c960c5ea0f13fa024b54ba45b0312e0ad71",
+    "meaning": "sensitivityRequest가 있을 때 --report를 조기에 거절하는 두 줄. 기록한 모든 기능 명령은 --sensitivity가 없어 이 조건은 false."
+  },
+  "fullInputs": "fixed-inputs.json",
+  "constantPatch": "fixed-expected-readoption.patch",
+  "comparisons": [
+    {
+      "fixture": "manual",
+      "digest": "718295d0cfda379974aa14e87d39b3d86578a2c372d1e0beb6434eba6b3ca160",
+      "rows": 50,
+      "saves": 4,
+      "allFinalRowsEqual": true,
+      "actualSavedByteArraysDirectlyEqualInCSharpFunctionalCase": true,
+      "storedSaveLengthsAndSha256Equal": true,
+      "strictFinalRowsEqualToPreAdoptionOriginal": true,
+      "strictFinalSaveLengthsAndSha256EqualToPreAdoptionOriginal": true,
+      "modeCounters": {
+        "strict": {
+          "projectionSnapshots": 0,
+          "typedSnapshots": 0
+        },
+        "json15": {
+          "projectionSnapshots": 34,
+          "typedSnapshots": 0
+        },
+        "typed15": {
+          "projectionSnapshots": 34,
+          "typedSnapshots": 34
+        }
+      }
+    },
+    {
+      "fixture": "policy-surplus",
+      "digest": "91b47814d83c487797382f3fad308b420f20ab815bbd9b7be14f92059f18802e",
+      "rows": 6,
+      "saves": 2,
+      "allFinalRowsEqual": true,
+      "actualSavedByteArraysDirectlyEqualInCSharpFunctionalCase": true,
+      "storedSaveLengthsAndSha256Equal": true,
+      "strictFinalRowsEqualToPreAdoptionOriginal": true,
+      "strictFinalSaveLengthsAndSha256EqualToPreAdoptionOriginal": true,
+      "modeCounters": {
+        "strict": {
+          "projectionSnapshots": 0,
+          "typedSnapshots": 0
+        },
+        "json15": {
+          "projectionSnapshots": 3,
+          "typedSnapshots": 0
+        },
+        "typed15": {
+          "projectionSnapshots": 3,
+          "typedSnapshots": 3
+        }
+      }
+    }
+  ],
+  "selectedReports": [
+    {
+      "file": "accepted-three-way.json",
+      "selection": "inventory copy oracle:",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "sha256": "358b8c0f1a90d8663ec3a1bd69a617b9910660e1d5094e64b5dbafbc3bd0e146"
+    },
+    {
+      "file": "accepted-inventory.json",
+      "selection": "inventory",
+      "total": 68,
+      "passed": 68,
+      "failed": 0,
+      "sha256": "ec45b35ba03aea7f4939aa97ec56e1c924c95838b2bc22e73e678b72edf18734"
+    },
+    {
+      "file": "accepted-currency.json",
+      "selection": "currency",
+      "total": 9,
+      "passed": 9,
+      "failed": 0,
+      "sha256": "8090697ae6223536d9e85288c425891b0e2062dd6895c905cc28a2a5ea7d3bdf"
+    }
+  ],
+  "selectedCaseOverlap": "별도 삼자1건은 inventory68에도 포함되므로 이를 합쳐69개의 고유 사례라고 세지 않음.",
+  "runtimeExpectedGenerationOrAssertionRemoval": false,
+  "defaultAppInventoryMode": "JSON15",
+  "typedMode": "명시 opt-in 검사만. 기본 앱의 형식화 복사 채택을 이 근거로 주장하지 않음.",
+  "gameOrOtherAuthorSourcesEditedDirectlyByIntegrator": false,
+  "costProfilingGrowthSoakExecutions": 0,
+  "wholeFunctionalReport": {
+    "file": "whole-functional-56bbfb2.original.json",
+    "source": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+    "selection": "all",
+    "total": 308,
+    "passed": 308,
+    "failed": 0,
+    "sha256": "8c5eace887992255a31ab67b07ed38c2d90e1f1bdc93a6018bed9d93a3849743",
+    "executedBy": "root in isolated clean worktree",
+    "sourceCleanReportedByParent": true,
+    "productSourceFingerprintReportedByParent": "cf17eee7930cc754eda7558d0496f6929d10d64fb9352d0c42ff49a08704f9e3",
+    "rawLogSourcePath": "/workspace/scratch/functional-integration-56bbfb2.log",
+    "rawLogSha256": "f613de3002566d1596fbf5637b5eefe1d1a7aff2e2c8ae88bc61e686e711799d"
+  },
+  "previousWholeFailurePreserved": {
+    "file": "whole-functional-068ecef.original.json",
+    "total": 308,
+    "passed": 305,
+    "failed": 3,
+    "trackingIssue": "#179"
+  },
+  "functionalCommands": [
+    {
+      "selection": "inventory copy oracle:",
+      "command": "taskset -c 1 env CHRONICLES_INVENTORY_REFERENCE_CAPTURE=/workspace/scratch/inventory-oracle-accepted-all /workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter \"inventory copy oracle:\" --report /workspace/scratch/inventory-oracle-accepted-three-way.json"
+    },
+    {
+      "selection": "inventory",
+      "command": "taskset -c 1 /workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter inventory --report /workspace/scratch/inventory-oracle-accepted-inventory.json"
+    },
+    {
+      "selection": "currency",
+      "command": "taskset -c 1 /workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter currency --report /workspace/scratch/inventory-oracle-accepted-currency.json"
+    }
+  ],
+  "scope": "이 통합 기능 검사의 원본과 소스 연결이다. 성능·성장·네이티브·서명·릴리스 결과는 별도 근거에서 판정한다. 기능 보고서의 부수 ms를 성능 측정으로 해석하지 않는다.",
+  "postRunDocumentationContinuation": {
+    "ancestor": "37f8d7e9913e34861a017f08c5a933e022277e39",
+    "parentIsFunctionalSource": true,
+    "changedPaths": [
+      "docs/evidence/0.2.1/ex05-malformed-brotli/README.md",
+      "docs/evidence/0.2.1/ex05-malformed-brotli/after.original.json",
+      "docs/evidence/0.2.1/ex05-malformed-brotli/before.original.json",
+      "docs/evidence/0.2.1/ex05-malformed-brotli/fix-068-to-5ef.patch",
+      "docs/evidence/0.2.1/ex05-malformed-brotli/provenance.json"
+    ],
+    "productSourceFingerprintUnchanged": true,
+    "newCodeBuildOrFunctionalRuns": 0
+  }
+}

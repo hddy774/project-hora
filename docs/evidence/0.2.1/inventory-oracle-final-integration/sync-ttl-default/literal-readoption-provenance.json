@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "originalEvidenceCommit": "48a2676",
+  "literalReadoptionCommit": "1fb5ab737011790fef1825694250ce8c6dc4a297",
+  "onlyChange": "고정 상수 한 값과 근거 주석 한 줄. 원래 fixture·명령·모든 의미 검사 유지.",
+  "newFixedHash": "78106f3f4849297ab421a258b2634c3e000a58795a8bce29cdc58cb30bcfa28e",
+  "patchFile": "literal-readoption.patch",
+  "patchSha256": "3df5a6027d14ccec9a1ccc5d5afcb4f591b982506450fd02cc0d86668ef05ad2",
+  "selectedFunctionalReport": "selected-after-literal.original.json",
+  "selectedPassed": 1,
+  "selectedFailed": 0,
+  "selectedReportSha256": "e58faac526fe8ca2d213050e511fd752c9235d4a85aaa123d412cabf789a1b9e",
+  "patchContextLines": 0
+}

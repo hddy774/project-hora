@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "repository": "hddy774/project-hora",
+  "version": "0.2.1",
+  "feature_functional_complete": false,
+  "publication_enabled": false,
+  "audited_source_commit": null,
+  "product_source_fingerprint": null,
+  "task_ledger_sha256": null,
+  "functional_report": null,
+  "functional_report_sha256": null,
+  "final_performance_complete": false,
+  "final_performance_report": null,
+  "final_performance_report_sha256": null,
+  "status": "미게시·기능 개발 중. 전체 기능 감사 후 최종 성능 검사를 수행하며, 실제 증거와 같은 제품 소스 지문을 기록하기 전에는 서명/게시할 수 없습니다.",
+  "release_task_exception": "V021-T06은 이 배포 실행 자체의 결과를 기록하므로 사전 done 조건에 포함하지 않습니다."
+}

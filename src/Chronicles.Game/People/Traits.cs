@@ -224,7 +224,7 @@ public static class Traits
                 o.ObservedMonth <= context.Month && o.AcquiredMonth <= context.Month)
             .OrderBy(o => o.DefinitionId, StringComparer.Ordinal).ThenByDescending(o => o.AcquiredMonth)
             .DistinctBy(o => o.DefinitionId, StringComparer.Ordinal)
-            .Select(o => new KnownTrait(o.DefinitionId, o.Status, o.ObservedMonth, o.EvidenceId, null)).ToArray();
+            .Select(o => new KnownTrait(o.DefinitionId, o.ExpiresMonth <= context.Month ? TraitStatus.Expired : o.Status, o.ObservedMonth, o.EvidenceId, null)).ToArray();
     }
 
     private static IEnumerable<PersonTrait> Active(TraitLedger state, long personId, long month) =>

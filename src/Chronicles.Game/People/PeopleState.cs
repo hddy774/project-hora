@@ -16,18 +16,32 @@ public sealed record PeopleState(int Schema, PeopleTuning Tuning, EvaluationPoli
     EvaluationState Evaluations, ReputationState Reputation, FormationState[] CombatFormations,
     TraitObservation[] TraitObservations, TraceObservation[] TraceObservations, PotentialObservation[] PotentialObservations)
 {
+    public long SettledThroughMonth { get; init; } = -1;
+    public ParentGenome[] Genomes { get; init; } = [];
     public static PeopleState Empty() => new(1, new(), new(), new(), [], [], InheritanceState.Empty(), TraitLedger.Empty(),
         EvaluationState.Empty(), ReputationState.Empty(), [], [], [], []);
 
     public void Validate(long month)
     {
-        if (Schema != 1 || month < 0) throw new InvalidDataException("Invalid people schema or simulation time.");
+        if (Schema != 1 || month < 0 || SettledThroughMonth > month || SettledThroughMonth < -1) throw new InvalidDataException("Invalid people schema or simulation time.");
         Tuning.Validate(); EvaluationPolicy.Validate();
         if (ReputationPolicy.MaximumClaimsPerObserver < 1 || ReputationPolicy.Revision < 1) throw new InvalidDataException("Invalid reputation policy.");
         RequireUnique(Profiles.Select(p => p.PersonId), "person profiles"); RequireUnique(Profiles.Select(p => p.Body.BodyId), "bodies");
         RequireUnique(Souls.Select(s => s.SoulId), "souls"); RequireUnique(Traits.Traits.Select(t => t.Id), "traits");
         RequireUnique(Inheritance.Conceptions.Select(c => c.Id), "conceptions"); RequireUnique(Inheritance.Births.Select(b => b.BirthId), "births");
+        RequireUnique(Genomes.Select(g => g.PersonId), "transmissible genomes");
         var ids = Profiles.Select(p => p.PersonId).ToHashSet(); var soulIds = Souls.Select(s => s.SoulId).ToHashSet();
+        foreach (var genome in Genomes)
+        {
+            var profile = Profiles.FirstOrDefault(p => p.PersonId == genome.PersonId);
+            var birth = Inheritance.Births.FirstOrDefault(b => b.PersonId == genome.PersonId);
+            var conception = birth is null ? null : Inheritance.Conceptions.FirstOrDefault(c => c.Id == birth.ConceptionId);
+            if (profile is null || profile.Body.BodyId != genome.BodyId || profile.Body.SpeciesId != genome.SpeciesId)
+                throw new InvalidDataException("Transmissible genome must belong to its actual biological body.");
+            global::Chronicles.Game.People.Inheritance.ValidateGenome(genome, conception?.Model ?? GeneticModel.Provisional());
+            if (conception is not null && genome.Genes.Any(g => !conception.Genes.Any(f => f.GeneId == g.GeneId && f.ParentOneAllele == g.FirstAllele && f.ParentTwoAllele == g.SecondAllele)))
+                throw new InvalidDataException("A descendant's frozen genetic units cannot be rewritten by current learning or development.");
+        }
         foreach (var profile in Profiles)
         {
             PeopleProfiles.Validate(profile);
@@ -145,8 +159,10 @@ public static class PeopleProfiles
         PeopleEffect[] otherEffects, PeopleTuning tuning, int domainTalentIndex = 9)
     {
         ArgumentNullException.ThrowIfNull(profile); ArgumentNullException.ThrowIfNull(traits); ArgumentNullException.ThrowIfNull(otherEffects);
-        return new(profile.Innate, profile.Development, physicalCondition, mentalCondition,
-            Traits.ActiveEffects(traits, profile.PersonId, month).Concat(otherEffects).ToArray(), tuning, domainTalentIndex);
+        var baselineCauses = profile.Innate.Sources.Select(s => s.CauseId).ToHashSet(StringComparer.Ordinal);
+        var effects = Traits.ActiveEffects(traits, profile.PersonId, month).Concat(otherEffects).Select(e =>
+            baselineCauses.Contains(e.Source.CauseId) && e.Role == EffectRole.Contribution ? e with { Role = EffectRole.IncludedInBaseline } : e).ToArray();
+        return new(profile.Innate, profile.Development, physicalCondition, mentalCondition, effects, tuning, domainTalentIndex);
     }
 
     public static void Validate(PeopleProfile profile)

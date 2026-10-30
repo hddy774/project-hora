@@ -1,7 +1,7 @@
 namespace Chronicles.Game.People;
 
 public enum SoulTraceDomain { AutobiographicalMemory, RelationshipSocialMemory, CultivationPrinciplesRealmKnowledge, TechniqueSpellPillCraftKnowledge, WorldFactionEnvironmentKnowledge, EmbodiedActionTrace }
-public enum SoulTraceActionKind { Awakening, Integration, CrossingDamage, BirthReset, SplitSource, SplitChild }
+public enum SoulTraceActionKind { Awakening, Integration, CrossingDamage, BirthReset, SplitSource, SplitChild, LifeCapture }
 public enum TracePreservationGrade { Lost, Fragment, Partial, Intact }
 public enum TraceAccessGrade { Sealed, Latent, Partial, Immediate }
 public sealed record SoulTraceValue(SoulTraceDomain Domain, int Preserved, int Accessible, int Integrated, bool HasEvidence,
@@ -12,8 +12,9 @@ public sealed record SoulTraceValue(SoulTraceDomain Domain, int Preserved, int A
 }
 public sealed record SoulTraceAction(string EventId, SoulTraceActionKind Kind, long Month, PeopleSource Source,
     SoulTraceDomain? Domain = null, int Amount = 0, long RelatedIdentity = 0, int[]? DomainAmounts = null);
+public sealed record SoulFoundation(int Value, PeopleSource Source);
 public sealed record SoulTraceProfile(long SoulId, long ParentSoulId, long RootSoulId, long CurrentPersonId,
-    SoulTraceValue[] Values, SoulTraceAction[] History)
+    SoulTraceValue[] Values, SoulTraceAction[] History, SoulFoundation? Foundation = null)
 {
     public static SoulTraceProfile WithoutEvidence(long soulId) => new(soulId, 0, soulId, 0,
         Enum.GetValues<SoulTraceDomain>().Select(d => new SoulTraceValue(d, 0, 0, 0, false, [], false, null)).ToArray(), []);
@@ -39,6 +40,11 @@ public sealed record SoulTraceProfile(long SoulId, long ParentSoulId, long RootS
         {
             action.Source.Validate();
             if (action.Month != action.Source.Month || !Enum.IsDefined(action.Kind)) throw new InvalidDataException("Invalid trace event evidence.");
+        }
+        if (Foundation is { } foundation)
+        {
+            PeopleChecks.Score(foundation.Value, nameof(foundation.Value)); foundation.Source.Validate();
+            if (foundation.Source.SoulId != SoulId) throw new InvalidDataException("Soul foundation provenance must identify its actual soul.");
         }
     }
 }
@@ -133,7 +139,10 @@ public static class SoulTraces
         var frozenAction = action with { Amount = costBasisPoints, DomainAmounts = action.DomainAmounts.ToArray() };
         var parent = state with { Values = parentValues.ToArray(), History = [.. state.History, frozenAction] };
         var child = new SoulTraceProfile(childSoulId, state.SoulId, state.RootSoulId, 0, childValues.ToArray(),
-            [frozenAction with { Kind = SoulTraceActionKind.SplitChild, RelatedIdentity = state.SoulId }]);
+            [frozenAction with { Kind = SoulTraceActionKind.SplitChild, RelatedIdentity = state.SoulId }], state.Foundation is { } foundation
+                ? new(foundation.Value * (10_000 - costBasisPoints) / 10_000,
+                    new($"{action.EventId}.soul-foundation", PeopleSourceKind.SoulTrace, $"independent split of soul {state.SoulId}; provisional preservation cost", action.Month,
+                        action.Source.Revision, SoulId: childSoulId)) : null);
         parent.Validate(); child.Validate();
         return new(true, "independent soul branch; distributed preservation without present-life skills or property", parent, child, lost);
     }

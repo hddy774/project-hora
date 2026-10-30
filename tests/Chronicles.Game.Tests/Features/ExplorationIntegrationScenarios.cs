@@ -235,3 +235,38 @@ public sealed class ExplorationPreparationGatesScenario : IFeatureScenario
             "실제 고정된 육신의 이동/도구 적합을 무시했거나 거절이 물품을 지급했다.");
     }
 }
+
+public sealed class ExplorationAgentPlanningScenario : IFeatureScenario
+{
+    public string Name => "비경 공개 명령: AI 정보 목표는 자기 입구 관측·지식이 있을 때만 같은 유료 입장과 저장된 진척을 선택한다";
+    public void Run()
+    {
+        static void ResumeInformationAgent(ExplorationFixture fixture)
+        {
+            fixture.Idle(fixture.First); var state = fixture.World.Checkpoint(); var person = state.People[0];
+            person.Personality = new int[14];
+            foreach (var axis in new[] { 3, 6, 10 }) person.Personality[axis] = 100;
+            person.Plan.Clear(); state.Controlled = 0; fixture.World = GameWorld.Restore(state);
+        }
+
+        var unknown = new ExplorationFixture(); ResumeInformationAgent(unknown); unknown.World.AdvanceTo(1);
+        var unobserved = unknown.World.Checkpoint();
+        ExplorationFixture.Check(unobserved.Exploration.Entries.Count == 0 && unobserved.Exploration.Observations.Count == 0 &&
+            unobserved.People[0].ActionData == "inventory:exploration", "AI가 현지 입구를 관측하기 전에 비경의 실제 내부를 읽고 입장했다.");
+
+        var known = new ExplorationFixture(); known.Survey(known.First); var food = known.Food(known.First);
+        var source = known.World.Checkpoint().Knowledge.Memories.Last(m => m.PersonId == known.First && m.WorkId == "entry" && m.Chapter == 1).SourceId;
+        ResumeInformationAgent(known); known.World.AdvanceTo(known.World.Month + 1); var started = known.Last(known.First);
+        var actor = known.World.Checkpoint().People[0];
+        ExplorationFixture.Check(actor.ActionData == "exploration:" + started.Id && actor.Goal == "정보 탐색·알려진 유적" &&
+            actor.DecisionCandidates.Any(c => c.Goal == "현장 정보 탐색") && actor.PlanExpansions > 0 &&
+            started.Progress == 0 && started.KnowledgeSource == source && started.Understanding == 100 && known.Food(known.First) == food - 2,
+            "AI 정보 목표가 실제 개인 관측·초기 지식 출처·준비 식량·실행 비용을 거치지 않았다.");
+        known.Send("possess", known.First); var saved = GameCodec.Decode(GameCodec.Encode(known.World));
+        var end = known.World.Month + started.Rules.Months; known.World.AdvanceTo(end);
+        for (var month = saved.Month + 1; month <= end; month++) saved.AdvanceTo(month);
+        ExplorationFixture.Check(known.World.StateHash() == saved.StateHash() && known.Last(known.First).Status == SecretEntryStatus.Completed &&
+            known.Last(known.First).RewardQuantity == 3 && known.World.Checkpoint().Exploration.Claims.Count == 1,
+            "AI가 선택한 실제 입장의 월별 진척·유한 선점이 저장 후 다른 결과를 냈다.");
+    }
+}

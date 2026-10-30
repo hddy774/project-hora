@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "kind": "sync-full-world-golden-single-law-cause-before-literal-readoption",
+  "source": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "productSourceFingerprint": "bc700f5f9711eaa9577b45c0b593bbe55039a9c9a1e64b20dcf1e851ad49dcd4",
+  "oldScanReferenceSourceFromExistingComment": "f0b8c9b5e9e390d611db38e402f5a6ae1fe5af7f",
+  "firstCommittedScenarioSource": "27ebba38910b882f6736e010b2053e965bb30cc0",
+  "scenarioPrefixByteEqualToFirstCommittedScenario": true,
+  "oldSourceLimitation": "f0b8c9b는 원래 주석이 기록한 scan 구현 출처이며 이 새 test 파일 자체는 포함하지 않는다. 파일의 최초 커밋27ebba3과 현재 원래 ScopeScenario 본문이 byte 동일함을 별도로 확인했다. 진단을 옛 source의 새 실행으로 표시하지 않는다.",
+  "originalScenarioBlob": "c7add524ba2037c7661bd167255498e9674026a4",
+  "probe": "원본 InventoryFixture·OwnedInventoryFixture·ScopeScenario를 scratch 전용 assembly로 복사하고, 원래 모든 의미 검사 뒤·최종 hash 직전에만 진단을 추가했다. 마지막 원래 baseline 검사도 보존하여 TTL 키 제거 후 종료0을 확인했다. 원저자/제품/fixture command를 수정하지 않았다.",
+  "originalSemanticAssertionsUnchangedAndPassed": true,
+  "originalFixedHash": "a7035140b4f98dd6b78032c590f6fe2bcd216284138fcc88e7fd36d1b733c3d0",
+  "current113LawActual": "78106f3f4849297ab421a258b2634c3e000a58795a8bce29cdc58cb30bcfa28e",
+  "onlyDifferenceBetweenFullCapturedWorlds": {
+    "removedPath": [
+      "Laws",
+      "ai.ecologyFailureMonths"
+    ],
+    "removedValue": 3,
+    "beforeLawCount": 113,
+    "afterLawCount": 112,
+    "allOtherFieldsDeepEqual": true
+  },
+  "hashAfterRemovingOnlyThisKey": "a7035140b4f98dd6b78032c590f6fe2bcd216284138fcc88e7fd36d1b733c3d0",
+  "originalFinalAssertPassedAfterSingleKeyRemoval": true,
+  "probeExitCode": 0,
+  "sourceFileAwaitingAuthorizedLiteralReadoption": "tests/Chronicles.Game.Tests/Features/InventorySynchronizationScenarios.cs",
+  "diagnosticPatch": {
+    "file": "scratch-only-diagnostic.patch",
+    "sha256": "3b75ce7c20e93056f824cee3cde11ebadf13e2f82e5b1fa4143ff1d3a49948ef"
+  },
+  "artifacts": [
+    {
+      "file": "probe-InventoryFixture.cs.txt",
+      "bytes": 2581,
+      "sha256": "48f0da905f181366633f49ae41fe24dc4ef410d9950e98efa70c4406d55955d8"
+    },
+    {
+      "file": "probe-OwnedInventoryFixture.cs.txt",
+      "bytes": 1920,
+      "sha256": "bade594cbc799797850060ec789f34e1a0db7aa4390d73ceaca515afa5c4353f"
+    },
+    {
+      "file": "probe-Program.cs.txt",
+      "bytes": 82,
+      "sha256": "d29e1d54af82c16ea092daccef37c6759b1d034d54143a4bd08d2158799a02c3"
+    },
+    {
+      "file": "probe-Project.csproj.txt",
+      "bytes": 615,
+      "sha256": "0484c6ad03ea3cdf7efe987a2e3a49c568f5692ada7ca813890184675f6abd7f"
+    },
+    {
+      "file": "probe-SynchronizationScope.cs.txt",
+      "bytes": 7535,
+      "sha256": "80b134f15cc9e9fdb2fc4ef5a1add389e07435c1dac1e6bcada4d6dbc9f128a1"
+    },
+    {
+      "file": "probe-output.original.json",
+      "bytes": 576,
+      "sha256": "aaac78debd820ba8ab9fd9429b9896324db2ed8119e17cfe52cf81f1c0af29df"
+    },
+    {
+      "file": "scratch-only-diagnostic.patch",
+      "bytes": 2348,
+      "sha256": "3b75ce7c20e93056f824cee3cde11ebadf13e2f82e5b1fa4143ff1d3a49948ef"
+    },
+    {
+      "file": "with-ttl-world.original.json",
+      "bytes": 23316,
+      "sha256": "78106f3f4849297ab421a258b2634c3e000a58795a8bce29cdc58cb30bcfa28e"
+    },
+    {
+      "file": "without-ttl-world.original.json",
+      "bytes": 23288,
+      "sha256": "a7035140b4f98dd6b78032c590f6fe2bcd216284138fcc88e7fd36d1b733c3d0"
+    }
+  ],
+  "reports": [
+    {
+      "file": "inventory-068ecef-before-sync-update.json",
+      "total": 68,
+      "failed": 1,
+      "selection": "inventory",
+      "sha256": "12f7e6851874a9ae1520cfc622a1ee0c14aa5b518657285b63e9a94b569ef756"
+    },
+    {
+      "file": "three-way-068ecef.json",
+      "total": 1,
+      "failed": 0,
+      "selection": "inventory copy oracle:",
+      "sha256": "21b8937f36e02809cbe2b051e444a2a12b0f1cdc1088d6099c366fb27fb03961"
+    },
+    {
+      "file": "currency-068ecef.json",
+      "total": 9,
+      "failed": 0,
+      "selection": "currency",
+      "sha256": "336837878e5971efd80bfcdf91db66b3db33744c2d9b0c767310363387570f86"
+    },
+    {
+      "file": "whole-functional-068ecef.original.json",
+      "total": 308,
+      "failed": 3,
+      "selection": "all",
+      "sha256": "d51a75bd9fb1b53261c2b85194d17174debb8914e420e37eb94d6a0d7b8fd53a"
+    }
+  ],
+  "rootFullReport": "../whole-functional-068ecef.original.json",
+  "rootFullSourceReportedByParent": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "rootTrackingIssue": "#179",
+  "knownSeparateFailures": [
+    "PeopleTeachingRequestAdapterScenario",
+    "EX05 Brotli corruption exception boundary"
+  ],
+  "trackedProductOrTestSourceEditedBeforeProbe": false,
+  "command": "taskset -c 1 /workspace/.dotnet/dotnet run --project /workspace/scratch/inventory-sync-law-probe/Probe.csproj -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false",
+  "costProfilingGrowthSoakExecutions": 0
+}

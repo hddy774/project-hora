@@ -19,6 +19,6 @@ EX02의 추가 선언은 `birth.enabled=1`, `birth.fertility=100`, 첫 시조의
 
 월 진행/명령 표본은 실제 권위 호출 전체와 내부 열·큐·캐시·fingerprint·배치 검증·게시 비용을 포함한다. fixture/restore, 별도 예열, 관찰용 clone/hash/digest, 최종 불변식·GC·보고는 표본 밖이다. 직접 커널의 요청 index 배열 생성도 제외한다. 상위 전체 시간은 소스 확인·fixture·예열·GC·앞선 보고 쓰기를 포함하고 마지막 보고 쓰기만 제외한다. 반환값 비교의 비용과 측정 밖 준비를 숨기지 않는다.
 
-원시 시간은 `Stopwatch.GetTimestamp`의 실제 차이를 정수 ns로 변환한다. thread 할당은 같은 동기 호출 전후의 `GC.GetAllocatedBytesForCurrentThread` 차이며 다른 스레드·네이티브·RSS가 아니다. 보유 메모리는 full GC→finalizer→full GC 후 실제 세계를 참조한 전체 프로세스 관리 힙이다. 공통 fixture·런타임/공유 캐시·작은 이전 결과를 포함하고 세계별 귀속값으로 해석하지 않는다. 마지막 full clone을 만들기 전에 채집한다.
+원시 시간은 `Stopwatch.GetTimestamp`의 실제 차이를 정수 ns로 변환한다. thread 할당은 같은 동기 호출 전후의 `GC.GetAllocatedBytesForCurrentThread` 차이며 다른 스레드·네이티브·RSS가 아니다. 보유 메모리는 full GC→finalizer→full GC 후 실제 세계를 참조한 전체 프로세스 관리 힙이다. 공통 fixture·런타임/공유 캐시·이전 결과와 JIT 수명이 남은 현재 반환 출력을 포함할 수 있으며 세계별 귀속값으로 해석하지 않는다. 마지막 full clone을 만들기 전에 채집한다.
 
 모든 raw 표본과 operation label을 남긴다. 월 진행·서로 다른 공개 명령·cold/warm을 별도 그룹으로 나누고 각 그룹의 실제 n 및 nearest-rank p50/p95/p99를 기록한다. 소량 n은 반복을 가정해 부풀리지 않는다. 같은 프로세스/JIT·변형 순서·작은 표본·전체 경계 overhead·유지비를 검토하기 전에는 `revisit` 상태다. 숫자만 빠르다고 자동 채택하지 않는다. 실제 최종 측정과 원시 근거를 저장한 뒤 H06/H09 수용 및 채택/기각/재검토를 닫는다.

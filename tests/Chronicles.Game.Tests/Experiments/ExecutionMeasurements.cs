@@ -21,7 +21,7 @@ internal static class ExecutionMeasurements
     {
         if (string.IsNullOrWhiteSpace(request.OutputPath) || File.Exists(request.OutputPath) || File.Exists(request.OutputPath + ".pending"))
             throw new ArgumentException("이전/부분 결과를 보존하도록 새 출력 경로를 지정하세요.", nameof(request));
-        if (request.Repetitions is < 1 or > 10 || request.Populations.Length == 0 ||
+        if (request.Repetitions < 1 || request.Populations.Length == 0 ||
             request.Populations.Distinct().Count() != request.Populations.Length ||
             request.Populations.Any(n => !SyntheticPopulationFixture.Sizes.Contains(n)))
             throw new ArgumentException("지원 규모와 독립 반복 수를 명시하세요.", nameof(request));

@@ -137,9 +137,16 @@ public sealed record ParentStructureEvidence(Realm Realm, int Quality, int Matur
 public sealed record CultivationFormation(Realm Realm, string Path, int Quality, IReadOnlyList<FormationFactor> Factors,
     long Month, int Place, long LawRevision, KnowledgeEvidence? Knowledge, ParentStructureEvidence? Parent, string Source);
 public sealed record PathConversion(string From, string To, long Began, long Completed, int LostProgress, string Source);
+/// <summary>Adopted physical progress units. Later duration edits apply to new structures, not earned work.</summary>
+public sealed record CultivationGrowthBasis(long LawRevision, long RealmWork, long RootWork, long EntryWork);
 public sealed record CultivationAttempt(string Id, AttemptKind Kind, AttemptPhase Phase, Realm TargetRealm, string Path,
     long PreparedMonth, long LawRevision, KnowledgeEvidence Knowledge, IReadOnlyList<long> ReservedItems,
-    int FormationQuality, int Risk, long Due, int RecoveryRemaining, ParentStructureEvidence Parent);
+    int FormationQuality, int Risk, long Due, int RecoveryRemaining, ParentStructureEvidence Parent)
+{
+    public long TargetWork { get; init; }
+    public long TargetRootWork { get; init; }
+    public long LifespanAward { get; init; }
+}
 public sealed record PendingTribulation(int TargetLayer, bool Completion, long Due);
 public sealed record MartialProgress(long Work = 0, int Injury = 0, long LastMonth = -1);
 
@@ -163,6 +170,7 @@ public sealed record CultivationState
     public int Load { get; init; }
     public long EntryWork { get; init; }
     public long EntryLastMonth { get; init; } = -1;
+    public CultivationGrowthBasis? GrowthBasis { get; init; }
     public CultivationAttempt? Attempt { get; init; }
     public PendingTribulation? PendingTrial { get; init; }
     public IReadOnlyList<CultivationFormation> Formations { get; init; } = [];

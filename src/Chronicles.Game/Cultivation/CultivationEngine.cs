@@ -60,7 +60,7 @@ public static class CultivationEngine
         }
         else if (actor.Realm == Realm.Mortal)
         {
-            if (state.EntryWork < context.Policy.RequiredWork(Realm.Mortal) || actor.Mind < context.Policy.MinimumControl || actor.InnateRoots.Maximum == 0)
+            if (state.EntryWork < EntryTarget(state, context.Policy) || actor.Mind < context.Policy.MinimumControl || actor.InnateRoots.Maximum == 0)
                 result.Add(new("sensing", "입문 토납·신식 감응 준비 부족", "감응 전 토납·육체/정신 단련"));
         }
         else
@@ -94,7 +94,9 @@ public static class CultivationEngine
         {
             // Deliberate circulation is not an entry prerequisite. Pre-sensing breathing trains the entry itself.
             var work = Math.Max(1, (long)(actor.Body + actor.Mind) / 2);
-            return Accept(state with { EntryWork = Math.Min(context.Policy.RequiredWork(Realm.Mortal), state.EntryWork + work),
+            var target = EntryTarget(state, context.Policy);
+            return Accept(state with { EntryWork = Math.Min(target, state.EntryWork + work),
+                GrowthBasis = state.GrowthBasis ?? new(context.LawRevision, 0, 0, target),
                 EntryLastMonth = context.Month, LastTrainingMonth = context.Month }, notices: [new("감응 준비", "감응 전 토납·신식 준비", knowledge.Source)]);
         }
         var auxiliary = state.AuxiliaryPath.Length == 0 ? null : Knowledge(context, state.AuxiliaryPath);
@@ -128,10 +130,12 @@ public static class CultivationEngine
         var rawKept = Elements.Map(raw, v => Math.Min(v, maximumHeld));
         var refinedKept = Elements.Map(refined, v => Math.Min(v, maximumHeld));
         var circulationKept = Elements.Map(circulating, v => Math.Min(v, maximumHeld));
-        purged += raw - rawKept + refined - refinedKept + circulating - circulationKept;
+        var overflow = raw - rawKept + refined - refinedKept + circulating - circulationKept;
+        purged += overflow;
         var process = new ProcessFlow(absorbed, purified, toCirculate, assimilated, purged, before, rawKept + refinedKept + circulationKept);
         if (!process.Conserved) throw new InvalidOperationException("Elemental process conservation failed.");
-        var pressure = Math.Max(0, absorbed.Total - assimilated.Total);
+        // Safely filtered turbidity is a material loss, not energy retained beyond structural control.
+        var pressure = Math.Max(0, process.HeldAfter.Total - process.HeldBefore.Total + overflow.Total);
         var excess = (int)Math.Min(1000, pressure * 10000 / Math.Max(1, flow) / 20);
         var rootDamage = Elements.Zip(state.RootDamage, Elements.Allocate(excess * 5L, command.Allocation), (x, y) => Math.Min(10000, x + y));
         var next = state with
@@ -146,25 +150,26 @@ public static class CultivationEngine
         var progressLimit = ProgressLimit(actor, knowledge, p, blockers);
         if (actor.Realm == Realm.Qi)
         {
-            var perRoot = p.RequiredWork(Realm.Qi) / 5;
+            var perRoot = RootTarget(state, p);
             var limit = Math.Min(perRoot, perRoot * progressLimit / 10000);
             next = next with { RootGrowth = Elements.Zip(next.RootGrowth, assimilated, (old, added) => Math.Max(old, Math.Min(limit, old + added))) };
         }
-        var structureLimit = p.RequiredWork(actor.Realm) * progressLimit / 10000;
+        var required = RealmTarget(state, p);
+        var structureLimit = required * progressLimit / 10000;
         // Tribulation never crosses more than the very next unperformed encounter in one interval.
-        if (actor.Realm == Realm.Tribulation) structureLimit = Math.Min(structureLimit, (p.RequiredWork(actor.Realm) * actor.Layer + 7) / 8);
+        if (actor.Realm == Realm.Tribulation) structureLimit = Math.Min(structureLimit, (required * actor.Layer + 7) / 8);
         var weights = command.Focus == TrainingFocus.Structure ? next.Structure!.Measures.Select((value, i) =>
-            (int)Math.Max(1, 10000 - value * 10000 / Target(p.RequiredWork(actor.Realm), next.Structure.Measures.Count, i))).ToArray() : profile.GrowthWeights;
-        next = next with { Structure = Grow(next.Structure!, assimilated.Total, weights, structureLimit, p.RequiredWork(actor.Realm), context.Site) };
+            (int)Math.Max(1, 10000 - value * 10000 / Target(required, next.Structure.Measures.Count, i))).ToArray() : profile.GrowthWeights;
+        next = next with { Structure = Grow(next.Structure!, assimilated.Total, weights, structureLimit, required, context.Site) };
         var layer = Layer(next, actor.Realm, p);
-        var complete = actor.Realm == Realm.Tribulation ? Maturity(next.Structure!, p) == 10000 : Complete(next, actor, p);
+        var complete = actor.Realm == Realm.Tribulation ? Maturity(next, p) == 10000 : Complete(next, actor, p);
         if (actor.Realm == Realm.Tribulation && (layer > actor.Layer || (complete && !actor.GreatPerfection)))
         {
             next = next with { PendingTrial = new(Math.Min(9, actor.Layer + 1), actor.Layer == 9, context.Month + 1) };
             layer = actor.Layer; complete = false;
         }
         if (actor.Realm == Realm.Void && next.Structure is VoidStructure v && v.ClearedDefects > v.RebuiltChannels)
-            next = next with { Load = Math.Max(next.Load, (int)Math.Min(10000, (v.ClearedDefects - v.RebuiltChannels) * 10000 / Math.Max(1, p.RequiredWork(actor.Realm) / 4))) };
+            next = next with { Load = Math.Max(next.Load, (int)Math.Min(10000, (v.ClearedDefects - v.RebuiltChannels) * 10000 / Math.Max(1, required / 4))) };
         return Accept(next, new(Layer: layer, GreatPerfection: complete, HealthChange: excess > 0 ? -1 : 0), absorbed,
             notices: [new("공정 실습", $"흡수 {absorbed.Total}→정제 {purified.Total}→순환 {toCirculate.Total}→체화 {assimilated.Total}", knowledge.WorkId)],
             blockers: blockers, flow: process);
@@ -189,7 +194,12 @@ public static class CultivationEngine
             (100 - actor.Health) * 10 + knowledge.Error / 5 - pillBonus, 0, 10000);
         var kind = command.Conversion ? AttemptKind.RouteConversion : actor.Realm == Realm.Mortal ? AttemptKind.Entry : AttemptKind.RealmBreakthrough;
         var attempt = new CultivationAttempt(command.Id, kind, AttemptPhase.Prepared, profile.Definition.Realm, command.PathId,
-            context.Month, context.LawRevision, knowledge with { }, items.ToArray(), quality, risk, context.Month, 0, ParentEvidence(state, actor, context.Policy));
+            context.Month, context.LawRevision, knowledge with { }, items.ToArray(), quality, risk, context.Month, 0, ParentEvidence(state, actor, context.Policy))
+        {
+            TargetWork = command.Conversion ? RealmTarget(state, context.Policy) : context.Policy.RequiredWork(profile.Definition.Realm),
+            TargetRootWork = profile.Definition.Realm == Realm.Qi ? context.Policy.RequiredWork(Realm.Qi) / 5 : RootTarget(state, context.Policy),
+            LifespanAward = context.Policy.Lifespan(profile.Definition.Realm)
+        };
         return Accept(state with { Attempt = attempt }, supports: items.Select(id => new SupportDelta(id, SupportOperation.Reserve, attempt.Id, 1)).ToArray(),
             notices: [new("돌파 준비", "자격 검사·실물 예약 완료, 아직 미개시", command.PathId)]);
     }
@@ -261,11 +271,12 @@ public static class CultivationEngine
         var next = state with
         {
             ActivePath = attempt.Path, AuxiliaryPath = "", Structure = CultivationProfiles.Empty(attempt.TargetRealm),
+            GrowthBasis = new(attempt.LawRevision, attempt.TargetWork, attempt.TargetRootWork, EntryTarget(state, context.Policy)),
             Formations = [.. state.Formations, formation], Load = 0,
             Attempt = attempt with { Phase = AttemptPhase.Stabilizing, RecoveryRemaining = context.Policy.StabilizationMonths, Due = context.Month + 1 },
             PendingTrial = attempt.TargetRealm == Realm.Tribulation ? new(1, false, context.Month + 1) : null
         };
-        return Accept(next, new(attempt.TargetRealm, 1, false, LifespanFloorMonths: context.Policy.Lifespan(attempt.TargetRealm)),
+        return Accept(next, new(attempt.TargetRealm, 1, false, LifespanFloorMonths: attempt.LifespanAward),
             notices: [new("형성", "새 고유 구조 형성·안착 필요, 이전 구조 효과는 한 번 변환", attempt.Path)]);
     }
 
@@ -407,16 +418,23 @@ public static class CultivationEngine
     internal static bool Complete(CultivationState state, CultivationActor actor, CultivationPolicy policy)
     {
         if (state.Structure is null) return false;
-        var complete = Maturity(state.Structure, policy) == 10000;
-        if (actor.Realm == Realm.Qi) complete &= state.RootGrowth.Minimum >= policy.RequiredWork(Realm.Qi) / 5;
+        var complete = Maturity(state, policy) == 10000;
+        if (actor.Realm == Realm.Qi) complete &= state.RootGrowth.Minimum >= RootTarget(state, policy);
         if (actor.Realm == Realm.Tribulation) complete &= state.Structure is TribulationStructure { CompletedTrials: 1023 };
         return complete;
     }
 
-    internal static int Maturity(RealmStructure structure, CultivationPolicy policy)
+    internal static long RealmTarget(CultivationState state, CultivationPolicy policy) =>
+        state.GrowthBasis is { RealmWork: > 0 } basis ? basis.RealmWork : policy.RequiredWork(state.Structure?.Realm ?? Realm.Mortal);
+    internal static long RootTarget(CultivationState state, CultivationPolicy policy) =>
+        state.GrowthBasis is { RootWork: > 0 } basis ? basis.RootWork : policy.RequiredWork(Realm.Qi) / 5;
+    internal static long EntryTarget(CultivationState state, CultivationPolicy policy) =>
+        state.GrowthBasis is { EntryWork: > 0 } basis ? basis.EntryWork : policy.RequiredWork(Realm.Mortal);
+    internal static int Maturity(CultivationState state, CultivationPolicy policy)
     {
-        var required = policy.RequiredWork(structure.Realm);
-        var values = structure.Measures;
+        if (state.Structure is null) return 0;
+        var required = RealmTarget(state, policy);
+        var values = state.Structure.Measures;
         return (int)Math.Clamp(Enumerable.Range(0, values.Count).Min(i => values[i] * 10000 / Target(required, values.Count, i)), 0, 10000);
     }
 
@@ -427,8 +445,8 @@ public static class CultivationEngine
     private static int Layer(CultivationState state, Realm realm, CultivationPolicy policy)
     {
         if (realm == Realm.Mortal || state.Structure is null) return 1;
-        if (realm == Realm.Qi) return (int)Math.Clamp(1 + state.RootGrowth.Maximum * 8 / Math.Max(1, policy.RequiredWork(Realm.Qi) / 5), 1, 9);
-        var values = state.Structure.Measures; var required = policy.RequiredWork(realm); var layer = 1;
+        if (realm == Realm.Qi) return (int)Math.Clamp(1 + state.RootGrowth.Maximum * 8 / Math.Max(1, RootTarget(state, policy)), 1, 9);
+        var values = state.Structure.Measures; var required = RealmTarget(state, policy); var layer = 1;
         for (var next = 2; next <= 9; next++)
             if (Enumerable.Range(0, values.Count).All(i => values[i] >= (Target(required, values.Count, i) * (next - 1) + 7) / 8)) layer = next;
         return layer;
@@ -498,12 +516,12 @@ public static class CultivationEngine
     }
     private static int FormationQuality(CultivationState state, CultivationActor actor, KnowledgeEvidence knowledge, CultivationContext context)
     {
-        var harmony = Math.Clamp(10000 - (state.RootGrowth.Maximum - state.RootGrowth.Minimum) * 10000 / Math.Max(1, context.Policy.RequiredWork(Realm.Qi) / 5), 0, 10000);
+        var harmony = Math.Clamp(10000 - (state.RootGrowth.Maximum - state.RootGrowth.Minimum) * 10000 / Math.Max(1, RootTarget(state, context.Policy)), 0, 10000);
         var parentQuality = state.Formations.Count == 0 ? (int)(actor.InnateRoots.Total / 5) : state.Formations[^1].Quality;
         return (int)Math.Clamp(((long)parentQuality + actor.Circulation + actor.Body + actor.Mind + knowledge.Understanding + harmony) / 6 - state.Damage / 2 - knowledge.Error / 2, 0, 10000);
     }
     private static ParentStructureEvidence ParentEvidence(CultivationState state, CultivationActor actor, CultivationPolicy policy) =>
-        new(actor.Realm, state.Formations.Count == 0 ? 0 : state.Formations[^1].Quality, state.Structure is null ? 0 : Maturity(state.Structure, policy), state.Damage, state.ActivePath);
+        new(actor.Realm, state.Formations.Count == 0 ? 0 : state.Formations[^1].Quality, state.Structure is null ? 0 : Maturity(state, policy), state.Damage, state.ActivePath);
     private static FormationFactor[] FormationFactors(Realm realm, CultivationState state, CultivationActor actor, int quality, CultivationPolicy policy)
     {
         _ = state; _ = policy;
@@ -515,6 +533,7 @@ public static class CultivationEngine
         actor.InnateRoots.Nonnegative && actor.InnateRoots.Maximum <= 10000 &&
         new[] { actor.Absorption, actor.Refinement, actor.Circulation, actor.Assimilation, actor.Body, actor.Mind }.All(v => v is >= 0 and <= 10000) &&
         (actor.Realm == Realm.Mortal ? state.Structure is null : state.Structure?.Realm == actor.Realm) &&
+        (actor.Realm == Realm.Mortal || state.GrowthBasis is { RealmWork: > 0, RootWork: > 0 }) &&
         state.RootGrowth.Nonnegative && state.RootDamage.Nonnegative && state.RootDamage.Maximum <= 10000 &&
         state.Raw.Nonnegative && state.Refined.Nonnegative && state.Circulating.Nonnegative && state.Damage is >= 0 and <= 10000 &&
         context.Month >= 0 && context.Site.Available.Nonnegative && context.Site.Claimants > 0 && context.Site.Turbidity is >= 0 and <= 10000 &&

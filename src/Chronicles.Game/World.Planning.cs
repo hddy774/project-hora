@@ -79,8 +79,7 @@ public sealed partial class GameWorld
                 state.Politics.Obligations.Any(o => o.Debtor == PoliticalAccount.Person(p.Id) && o.Outstanding > 0 && p.Money > 0) ? 700 : -10000,
             "retreat" => PlanningThreat(p) ? 3000 : -10000,
             "politics" => Month - p.Born >= PeopleMaturityMonths(p) && (p.Sect != 0 || p.Money >= Law("politics.foundCost")) ? 0 : -10000,
-            "cultivation" => KnowledgeFor(p, "entry") is not null || Catalog.Paths.Any(path =>
-                path.Realm == p.Realm && KnowledgeFor(p, path.Id) is not null) ? Law("ai.studyWeight") * 5 : -10000,
+            "cultivation" => HasCultivationPlanningSource(p) ? Law("ai.studyWeight") * 5 : -10000,
             _ => 0
         });
     }

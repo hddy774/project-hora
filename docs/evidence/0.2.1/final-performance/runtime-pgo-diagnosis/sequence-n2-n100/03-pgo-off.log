@@ -1,0 +1,85 @@
+PASS INV-001/002/011 정확한 창세·안정 신원·100지점
+RESULT 1/1
+PERF-BEGIN 2: 실제 fixture·독립 예열 시작
+PERF-STAGE 2: warmup_fixture
+PERF-STAGE 2: warmup_restore
+PERF-STAGE 2: warmup_hash
+PERF-STAGE 2: warmup_month_1
+PERF-STAGE 2: warmup_month_2
+PERF-STAGE 2: measured_fixture
+PERF-STAGE 2: measured_restore
+PERF-STAGE 2: opening_hash
+PERF-STAGE 2: opening_heap_collection
+PERF-STAGE 2: advancing_month_1
+PERF-MONTH 2: 1/12 · 47.5ms
+PERF-STAGE 2: advancing_month_2
+PERF-MONTH 2: 2/12 · 77.5ms
+PERF-STAGE 2: advancing_month_3
+PERF-MONTH 2: 3/12 · 110.5ms
+PERF-STAGE 2: advancing_month_4
+PERF-MONTH 2: 4/12 · 119.9ms
+PERF-STAGE 2: advancing_month_5
+PERF-MONTH 2: 5/12 · 140.4ms
+PERF-STAGE 2: advancing_month_6
+PERF-MONTH 2: 6/12 · 150.4ms
+PERF-STAGE 2: advancing_month_7
+PERF-MONTH 2: 7/12 · 175.0ms
+PERF-STAGE 2: advancing_month_8
+PERF-MONTH 2: 8/12 · 179.5ms
+PERF-STAGE 2: advancing_month_9
+PERF-MONTH 2: 9/12 · 198.3ms
+PERF-STAGE 2: advancing_month_10
+PERF-MONTH 2: 10/12 · 241.3ms
+PERF-STAGE 2: advancing_month_11
+PERF-MONTH 2: 11/12 · 246.0ms
+PERF-STAGE 2: advancing_month_12
+PERF-MONTH 2: 12/12 · 282.0ms
+PERF-STAGE 2: final_heap_collection
+PERF-STAGE 2: final_checkpoint_validation
+PERF-STAGE 2: query
+PERF-STAGE 2: save_encode
+PERF-STAGE 2: load_decode
+PERF-STAGE 2: roundtrip_hash_and_cognition
+PERF 2: advance 12mo=1968.2ms, query=37.5ms, save=172.0ms
+PERF-BEGIN 100: 실제 fixture·독립 예열 시작
+PERF-STAGE 100: warmup_fixture
+PERF-STAGE 100: warmup_restore
+PERF-STAGE 100: warmup_hash
+PERF-STAGE 100: warmup_month_1
+PERF-STAGE 100: warmup_month_2
+PERF-STAGE 100: measured_fixture
+PERF-STAGE 100: measured_restore
+PERF-STAGE 100: opening_hash
+PERF-STAGE 100: opening_heap_collection
+PERF-STAGE 100: advancing_month_1
+PERF-MONTH 100: 1/12 · 107.7ms
+PERF-STAGE 100: advancing_month_2
+PERF-MONTH 100: 2/12 · 364.1ms
+PERF-STAGE 100: advancing_month_3
+PERF-MONTH 100: 3/12 · 436.1ms
+PERF-STAGE 100: advancing_month_4
+PERF-MONTH 100: 4/12 · 478.6ms
+PERF-STAGE 100: advancing_month_5
+PERF-MONTH 100: 5/12 · 612.8ms
+PERF-STAGE 100: advancing_month_6
+PERF-MONTH 100: 6/12 · 665.1ms
+PERF-STAGE 100: advancing_month_7
+PERF-MONTH 100: 7/12 · 708.0ms
+PERF-STAGE 100: advancing_month_8
+PERF-MONTH 100: 8/12 · 944.1ms
+PERF-STAGE 100: advancing_month_9
+PERF-MONTH 100: 9/12 · 709.7ms
+PERF-STAGE 100: advancing_month_10
+PERF-MONTH 100: 10/12 · 574.2ms
+PERF-STAGE 100: advancing_month_11
+PERF-MONTH 100: 11/12 · 495.5ms
+PERF-STAGE 100: advancing_month_12
+PERF-MONTH 100: 12/12 · 727.1ms
+PERF-STAGE 100: final_heap_collection
+PERF-STAGE 100: final_checkpoint_validation
+PERF-STAGE 100: query
+PERF-STAGE 100: save_encode
+PERF-STAGE 100: load_decode
+PERF-STAGE 100: roundtrip_hash_and_cognition
+PERF 100: advance 12mo=6823.2ms, query=52.1ms, save=421.6ms
+PERF-BEGIN 1000: 실제 fixture·독립 예열 시작

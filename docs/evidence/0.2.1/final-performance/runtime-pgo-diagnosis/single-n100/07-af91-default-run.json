@@ -1,0 +1,40 @@
+{
+  "index": 7,
+  "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "runtimeConfiguration": "default",
+  "startedUtc": "2026-10-30T19:37:04.638867+00:00",
+  "eligibleForFinalPerformanceGate": false,
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--performance",
+    "/workspace/scratch/n100-c6-af91-diagnosis-1/07-af91-default.json",
+    "--performance-size",
+    "100"
+  ],
+  "configuredTieredPGO": null,
+  "status": "completed",
+  "pid": 133769,
+  "endedUtc": "2026-10-30T19:37:17.905388+00:00",
+  "exitCode": 0,
+  "processTreeUserSeconds": 12.83117,
+  "processTreeSystemSeconds": 0.344989,
+  "reportSha256": "3ab74ef36dea95a91d4609b848e54b317cc7a713ca894c95f084763e53e23786",
+  "metrics": {
+    "advance12MonthsMs": 8796.3884,
+    "monthlyP50Ms": 751.5445500000001,
+    "monthlyP95Ms": 1207.3508,
+    "queryMs": 99.444,
+    "saveMs": 661.4468,
+    "loadMs": 776.6406,
+    "allocatedBytes": 3063432568,
+    "saveBytes": 15219437,
+    "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+    "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+  }
+}

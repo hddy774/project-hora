@@ -1,0 +1,62 @@
+{
+  "index": 1,
+  "runtimeConfiguration": "default",
+  "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--performance",
+    "/workspace/scratch/population-sequence-af91-diagnosis-1/01-default.json"
+  ],
+  "startedUtc": "2026-10-30T19:38:42.769879+00:00",
+  "eligibleForFinalPerformanceGate": false,
+  "configuredTieredPGO": null,
+  "status": "diagnostic-boundary-collected",
+  "pid": 133830,
+  "stopBoundaryObservedUtc": "2026-10-30T19:39:03.181198+00:00",
+  "stopBoundaryLine": "PERF-BEGIN 1000: 실제 fixture·독립 예열 시작",
+  "endedUtc": "2026-10-30T19:39:03.212832+00:00",
+  "exitCode": -15,
+  "intentionalDiagnosticStop": true,
+  "processTreeUserSeconds": 20.118057,
+  "processTreeSystemSeconds": 0.272467,
+  "reportSha256": "fbac638b2b110bbb6ccf39ad403d1538dddbad71da4b07922be52aa846184c97",
+  "rawComplete": false,
+  "completedSizes": [
+    2,
+    100
+  ],
+  "metrics": [
+    {
+      "population": 2,
+      "advance12MonthsMs": 2049.6898,
+      "monthlyP50Ms": 163.79505,
+      "monthlyP95Ms": 276.8714,
+      "queryMs": 38.6245,
+      "saveMs": 181.4524,
+      "loadMs": 185.4422,
+      "allocatedBytes": 149950368,
+      "saveBytes": 2916145,
+      "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+      "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+    },
+    {
+      "population": 100,
+      "advance12MonthsMs": 11383.257499999998,
+      "monthlyP50Ms": 915.61055,
+      "monthlyP95Ms": 1769.7958,
+      "queryMs": 70.8561,
+      "saveMs": 1110.5765,
+      "loadMs": 1235.7386,
+      "allocatedBytes": 3063582312,
+      "saveBytes": 15219437,
+      "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+      "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+    }
+  ]
+}

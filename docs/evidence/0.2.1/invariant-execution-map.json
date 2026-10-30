@@ -1,9 +1,9 @@
 {
   "schema": "seonro.actual-invariant-execution-map.v1",
-  "mapping_source_commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "mapping_source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
   "test_sources_sha256": "9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117",
   "execution_status": "not_asserted",
-  "scope": "314개 실제 등록 이름과24개 불변식의152개 구체 증인 연결이다. 이전c6 313/148·9704 309/144·926 308/143맵은별도snapshot으로보존한다. 제안카탈로그/원장이나정본111개전체수용·최종실측판정이아니며맵실행상태는not_asserted다.",
+  "scope": "새런타임설정94ccb 소스의314개 실제등록 이름·24INV·152명명연결이다. 이전af91의같은314/152와그이전맵을snapshot으로보존한다. 제품설정지문과실제실행출처를분리검증하며맵실행상태는not_asserted·정본111전체/성능/native수용판정은아니다.",
   "catalog": {
     "feature_scenarios": 276,
     "program_scenarios": 38,
@@ -7581,14 +7581,21 @@
         "INV-023"
       ],
       "focus": "성년정치 context 기본true 유지; 성년을 읽지 않는 수행Site 및 IsLaborAvailable 두 caller만 includeMaturity:false. 기존 사용권/공통노동 판정과 실제 비인간 성년 계약은 유지"
+    },
+    {
+      "path_prefix": "Directory.Build.props",
+      "invariants": [
+        "INV-006"
+      ],
+      "focus": "SDK실행설정의TieredPGO=false와실제Tests.runtimeconfig/환경override/4DLL정보버전출처를확인한다. 명령·RNG·serializer/검사본문변경없음과새소스성능·native의별도검증을구분한다."
     }
   ],
   "last_source_review": {
-    "source_commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
     "scenario_bindings_reviewed": true,
     "reviewed_paths": [
-      "tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs"
+      "Directory.Build.props"
     ],
-    "review_note": "c6→af91의변경은새운송검사1파일뿐이다. 실제공개명령→운송중JSON2/작은임계값binary3파일SaveAtomic/Load→같은명령재전송→같은due배송/봉쇄실패와asset/labor예약·fullhash/RNG/NextId·단일event를읽고host+public_world/INV004·005·006·017로수동연결했다. selfcarrier/fee0,봉쇄주입Restore뒤실제파일왕복,작은fixture와별도c6실제대량저장을구분한다."
+    "review_note": "af91→94ccb의변경은Directory.Build.props에설명주석과TieredPGO=false를추가한2줄뿐이다. src/tests/scripts/명령·RNG·저장·검사본문은그대로다. 새314전체원문과4DLL/root-run·Tests.runtimeconfig false/환경override null을확인하며기존314/24INV/152연결의claim/경계/앵커는바꾸지않는다. 실제새성능·플랫폼·릴리스수용은별도다."
   }
 }

@@ -1,0 +1,24 @@
+{
+  "kind": "post-runtime-fix-full-population-verification",
+  "createdUtc": "2026-10-30T20:00:06.258447+00:00",
+  "sourceCommit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+  "productFingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "fullFunctionalSha256": "afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616",
+  "runtimeChange": "Directory.Build.props TieredPGO=false; inherited DOTNET/COMPlus_TieredPGO both unset",
+  "requestedPopulations": [
+    2,
+    100,
+    1000,
+    10000
+  ],
+  "warmupMonths": 2,
+  "measuredMonths": 12,
+  "repetitions": 1,
+  "eventPipeAttached": false,
+  "budgetReportSha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+  "baselineReportSha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+  "maximumRegressionPercent": 25,
+  "originalFailuresPreserved": true,
+  "retryPolicy": "One full verification after this actual product setting change; no repeat until a lucky pass. Diagnose and review any further material failure.",
+  "cohosts": "RootCPU0, old926growth CPU1/2/3. Heavy local compile/gzip/large raw parsing paused; small docs/map validation/metadata work may occur. Shared4CPUquota; thermal/power unmeasured; not physical Android."
+}

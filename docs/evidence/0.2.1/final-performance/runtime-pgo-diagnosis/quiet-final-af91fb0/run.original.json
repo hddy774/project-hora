@@ -1,0 +1,102 @@
+{
+  "kind": "root-preregistered-one-quiet-population-verification",
+  "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "fingerprintCommandResult": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "worktree": "/workspace/seonro-final-af91fb0",
+  "sourceWorktreeCleanAtLaunch": true,
+  "startedUtc": "2026-10-30T19:17:38.003904+00:00",
+  "supervisorPid": 132596,
+  "supervisorSession": 132596,
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/final-population-af91fb0-quiet1-preceding-functional.json",
+    "--performance",
+    "/workspace/scratch/final-population-af91fb0-quiet1.json"
+  ],
+  "requestedPopulations": [
+    2,
+    100,
+    1000,
+    10000
+  ],
+  "controlProtocol": "docs/evidence/0.2.1/final-performance/quiet-verification-preregistered.json",
+  "firstFailedAttemptKept": true,
+  "status": "completed",
+  "cohosts": "CPU1/2 exact926 growth restart1; CPU3 exact926 AI108 restart1. CPU0 reserved for this functional run. CPU0 pinned one CPU, host4CPU quota; growth and AI cohost external load. No EventPipe/trace attached to this process. Thermal and power state not measured; not Android or exclusive physical-host CPU latency.",
+  "pid": 132820,
+  "exitCode": 0,
+  "endedUtc": "2026-10-30T19:35:14.036730+00:00",
+  "sourceCommitAtEnd": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "sourceWorktreeCleanAtEnd": true,
+  "reportSha256": "97f0dcf3b26c95917c0bfa4e5c91e3cfd951dc811c0aad7fcb81828b469ad8fe",
+  "measurementSummary": {
+    "complete": true,
+    "completedSizes": [
+      2,
+      100,
+      1000,
+      10000
+    ],
+    "inProgress": {
+      "population": null,
+      "stage": "completed_population",
+      "completedMonths": 12,
+      "monthlySamplesMs": [
+        19294.1947,
+        57631.1013,
+        64732.4407,
+        59833.8802,
+        68856.4677,
+        74639.1481,
+        71838.8686,
+        74865.4614,
+        78096.9804,
+        82661.8756,
+        71022.7438,
+        72618.9509
+      ]
+    },
+    "totalElapsedSeconds": 1054.9415362
+  },
+  "assemblies": [
+    {
+      "path": "/workspace/seonro-final-af91fb0/src/Chronicles.Core/bin/Release/net10.0/Chronicles.Core.dll",
+      "sha256": "8fa53da4bf3b0ebabc772319e9e70ffcf06384d3eab61bfe338b67fe887aae31",
+      "bytes": 5120,
+      "generatedInformationalVersionLines": [
+        "[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"0.2.1+af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a\")]"
+      ]
+    },
+    {
+      "path": "/workspace/seonro-final-af91fb0/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll",
+      "sha256": "3f01ddc6fb816573fd53e4daaf01760e10e56086661920cc65537dd7ca010e49",
+      "bytes": 2258432,
+      "generatedInformationalVersionLines": [
+        "[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"0.2.1+af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a\")]"
+      ]
+    },
+    {
+      "path": "/workspace/seonro-final-af91fb0/src/Chronicles.Hosting/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "sha256": "f127c4816f0d2474cdc58d91bacfcff7e22bc340135ae629c10d08d0d1b0649b",
+      "bytes": 23552,
+      "generatedInformationalVersionLines": [
+        "[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"0.2.1+af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a\")]"
+      ]
+    },
+    {
+      "path": "/workspace/seonro-final-af91fb0/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "sha256": "501e56f365113e628cae6a02dff3bf0b91e78531d245659d006c9a23eaf48baa",
+      "bytes": 1500672,
+      "generatedInformationalVersionLines": [
+        "[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"0.2.1+af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a\")]"
+      ]
+    }
+  ]
+}

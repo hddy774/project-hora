@@ -1,0 +1,311 @@
+{
+  "schema": "seonro.invariant-final-provenance.v1",
+  "source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+  "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "test_sources_sha256": "9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117",
+  "run": {
+    "original": "root-run.original.json",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/workspace/.dotnet/dotnet",
+      "run",
+      "--project",
+      "tests/Chronicles.Game.Tests",
+      "-c",
+      "Release",
+      "--disable-build-servers",
+      "-p:BuildInParallel=false",
+      "-p:UseSharedCompilation=false",
+      "--",
+      "--report",
+      "/workspace/scratch/functional-final-94ccb5d.json"
+    ],
+    "worktree": "/workspace/seonro-stable-runtime",
+    "supervisor_pid": 135068,
+    "supervisor_session": 135068,
+    "process_pid": 135292,
+    "started_utc": "2026-10-30T19:46:40.755681+00:00",
+    "ended_utc": "2026-10-30T19:55:44.080518+00:00",
+    "exit_code": 0,
+    "source_clean_at_launch": true,
+    "source_clean_at_end": true,
+    "cohosts": "CPU1/2 exact926 growth restart1; CPU3 exact926 growth seed2026. Other agents may postprocess on CPU4 within shared4CPU quota. CPU0 reserved for this functional run. Not a performance sample.",
+    "selection": "all",
+    "total": 314,
+    "failed": 0,
+    "functional_runner_sum_ms": 509356,
+    "timings_are_performance_measurements": false
+  },
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Core",
+      "source_module_path": "/workspace/seonro-stable-runtime/src/Chronicles.Core/bin/Release/net10.0/Chronicles.Core.dll",
+      "source_module_sha256_from_root_run": "2b8c7b724650103bb3daa71c40319773e00b93c1f1b57ad120703a4551a13a72",
+      "source_module_bytes_from_root_run": 5120,
+      "source_module_rehashed_by_this_readout": false,
+      "actual_entrypoint_copy": "/workspace/seonro-stable-runtime/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "entrypoint_copy_sha256": "2b8c7b724650103bb3daa71c40319773e00b93c1f1b57ad120703a4551a13a72",
+      "entrypoint_copy_matches_root_run": true,
+      "generated_assembly_info": "/workspace/seonro-stable-runtime/src/Chronicles.Core/obj/Release/net10.0/Chronicles.Core.AssemblyInfo.cs",
+      "generated_info_sha256": "93a973384686363b774b4591277eda287ef19fb104712682696edcee17b0cafa",
+      "informational_version": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "coff_machine_hex": "0x14c",
+        "optional_header_magic_hex": "0x10b",
+        "cli_header_bytes": 72,
+        "cli_flags_hex": "0x1",
+        "metadata_root_signature": "BSJB",
+        "metadata_version": "v4.0.30319",
+        "metadata_bytes": 2336,
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+        "scope": "PE/CLI metadata and serialized value are read statically, not an independent historical process-load/attribute-constructor attestation."
+      }
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "source_module_path": "/workspace/seonro-stable-runtime/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll",
+      "source_module_sha256_from_root_run": "ad2072c49849d57c8781a9f13f9d36607b4d2cda77e74d1524a95aebf76fb3c4",
+      "source_module_bytes_from_root_run": 2258432,
+      "source_module_rehashed_by_this_readout": false,
+      "actual_entrypoint_copy": "/workspace/seonro-stable-runtime/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "entrypoint_copy_sha256": "ad2072c49849d57c8781a9f13f9d36607b4d2cda77e74d1524a95aebf76fb3c4",
+      "entrypoint_copy_matches_root_run": true,
+      "generated_assembly_info": "/workspace/seonro-stable-runtime/src/Chronicles.Game/obj/Release/net10.0/Chronicles.Game.AssemblyInfo.cs",
+      "generated_info_sha256": "1c327b3c8228ec5b33a23261e89bf1d5072f5984d3be960df140187ec8d9097c",
+      "informational_version": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "coff_machine_hex": "0x14c",
+        "optional_header_magic_hex": "0x10b",
+        "cli_header_bytes": 72,
+        "cli_flags_hex": "0x1",
+        "metadata_root_signature": "BSJB",
+        "metadata_version": "v4.0.30319",
+        "metadata_bytes": 1344060,
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+        "scope": "PE/CLI metadata and serialized value are read statically, not an independent historical process-load/attribute-constructor attestation."
+      }
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "source_module_path": "/workspace/seonro-stable-runtime/src/Chronicles.Hosting/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "source_module_sha256_from_root_run": "2f5ddec12de41790c669bdf4f60712fbad4e66eea6d590ebb68aa5ac9c29df45",
+      "source_module_bytes_from_root_run": 23552,
+      "source_module_rehashed_by_this_readout": false,
+      "actual_entrypoint_copy": "/workspace/seonro-stable-runtime/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "entrypoint_copy_sha256": "2f5ddec12de41790c669bdf4f60712fbad4e66eea6d590ebb68aa5ac9c29df45",
+      "entrypoint_copy_matches_root_run": true,
+      "generated_assembly_info": "/workspace/seonro-stable-runtime/src/Chronicles.Hosting/obj/Release/net10.0/Chronicles.Hosting.AssemblyInfo.cs",
+      "generated_info_sha256": "03c1a9c7802f470201418ba20eb03255d16194d1e200c1fce5511542f567fc25",
+      "informational_version": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "coff_machine_hex": "0x14c",
+        "optional_header_magic_hex": "0x10b",
+        "cli_header_bytes": 72,
+        "cli_flags_hex": "0x1",
+        "metadata_root_signature": "BSJB",
+        "metadata_version": "v4.0.30319",
+        "metadata_bytes": 13832,
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+        "scope": "PE/CLI metadata and serialized value are read statically, not an independent historical process-load/attribute-constructor attestation."
+      }
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "source_module_path": "/workspace/seonro-stable-runtime/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "source_module_sha256_from_root_run": "8b694e78ffd709a69a729a5c8f83eb54b2ac5373768c4c09361746d00bdd7f5d",
+      "source_module_bytes_from_root_run": 1500672,
+      "source_module_rehashed_by_this_readout": false,
+      "actual_entrypoint_copy": "/workspace/seonro-stable-runtime/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "entrypoint_copy_sha256": "8b694e78ffd709a69a729a5c8f83eb54b2ac5373768c4c09361746d00bdd7f5d",
+      "entrypoint_copy_matches_root_run": true,
+      "generated_assembly_info": "/workspace/seonro-stable-runtime/tests/Chronicles.Game.Tests/obj/Release/net10.0/Chronicles.Game.Tests.AssemblyInfo.cs",
+      "generated_info_sha256": "515fd03021e8e071922bde6fbdfda21e4d58a7a3169ebba5e9033cf0ea3c5601",
+      "informational_version": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "coff_machine_hex": "0x14c",
+        "optional_header_magic_hex": "0x10b",
+        "cli_header_bytes": 72,
+        "cli_flags_hex": "0x1",
+        "metadata_root_signature": "BSJB",
+        "metadata_version": "v4.0.30319",
+        "metadata_bytes": 935484,
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+        "scope": "PE/CLI metadata and serialized value are read statically, not an independent historical process-load/attribute-constructor attestation."
+      }
+    }
+  ],
+  "actual_runtime_configuration": {
+    "original_copy": "runtimeconfig.original.json",
+    "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+    "content": {
+      "runtimeOptions": {
+        "tfm": "net10.0",
+        "framework": {
+          "name": "Microsoft.NETCore.App",
+          "version": "10.0.0"
+        },
+        "configProperties": {
+          "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+          "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+          "System.Runtime.TieredPGO": false
+        }
+      }
+    },
+    "root_recorded_pgo_environment_overrides": {
+      "DOTNET_TieredPGO": null,
+      "COMPlus_TieredPGO": null
+    },
+    "only_actual_test_process_config_claimed": true
+  },
+  "runtime_directory": {
+    "path": "/workspace/seonro-stable-runtime/tests/Chronicles.Game.Tests/bin/Release/net10.0",
+    "deps_sha256": "c488abfdc41c5abafc69fd6da72c3b2f4eeb7900ea94517ecf2d6a0054da7839",
+    "verification_scope": "root의 과거 프로세스/종료/clean 기록과 현재 정적 네 DLL 사본/PE 정보버전을 대조한다. 과거 실제 로드의 독립 인증은 아니다."
+  },
+  "raw_originals": [
+    {
+      "source": "/workspace/scratch/functional-final-94ccb5d.json",
+      "copied_to": "functional.json",
+      "bytes_preserved": true
+    },
+    {
+      "source": "/workspace/scratch/functional-final-94ccb5d.log",
+      "copied_to": "functional.log",
+      "bytes_preserved": true
+    },
+    {
+      "source": "/workspace/scratch/functional-final-94ccb5d-run.json",
+      "copied_to": "root-run.original.json",
+      "bytes_preserved": true
+    }
+  ],
+  "previous_map_archive": {
+    "source_commit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "scenarios": 314,
+    "named_witness_links": 152,
+    "files": [
+      {
+        "path": "../invariant-final-af91fb0/map.snapshot.json",
+        "sha256": "299e1f066808b820f51404c8c55f1ddacd10f251cd4a69df36a7842e087cd0c3",
+        "bytes_equal_to_previous_map": true
+      },
+      {
+        "path": "../invariant-final-af91fb0/map.snapshot.md",
+        "sha256": "e4067d049ddb96462a7bda5a0623f4bdce7fd25d0c3602f5c42bd0400636d2fe",
+        "bytes_equal_to_previous_map": true
+      }
+    ],
+    "old_raw_source_review_provenance_manifest_unchanged": true
+  },
+  "source_review": {
+    "path": "../invariant-execution-source-review-94ccb5d.json",
+    "sha256": "91eda4f7d9af9ac721aec1c45dbe778b44d31e11d6d3e27d0d631741546efe14",
+    "changed_source_paths": [
+      "Directory.Build.props"
+    ],
+    "changed_product_or_test_csharp_paths": 0,
+    "source_review_areas": 32
+  },
+  "map_verification": {
+    "scenarios": 314,
+    "invariants": 24,
+    "named_witness_links": 152,
+    "all_registered_scenarios_passed": 314,
+    "report_sha256": "afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616",
+    "mapping_execution_status": "not_asserted",
+    "map_path": "../invariant-execution-map.json",
+    "map_sha256": "afe9f900203bfffae3312616e07eb89a5c5e49c1782bd0e2b885f8e08bb82147",
+    "markdown_path": "../invariant-execution-map.md",
+    "markdown_sha256": "a9cb32e64a8155c6a3cf7003d973c19a2ac14045287fa6599ad1ea5a4b22a236"
+  },
+  "work_by_this_mapping_task": {
+    "product_test_cli_script_validator_edits": 0,
+    "feature_runner_executions": 0,
+    "performance_growth_agent_collector_profile_executions": 0,
+    "ledger_progress_readiness_notion_edits": 0,
+    "full_product_fingerprint_recalculations": 0
+  },
+  "limits": [
+    "새기능314 전체와같은24/152연결만현재source에귀속한다. 성능/native/장기/릴리스는별도다.",
+    "같은test지문인old314는구조검증만으로거절되지않을수있다. 실제root-run/FP528/DLL/runtimeconfig를함께확인하며old원문을재라벨하지않는다.",
+    "실제Tests.runtimeconfig PGO=false/override둘다null을확인했다. 모든과거APK/native/장치에같은설정이실행됐다고주장하지않는다.",
+    "oldaf91성능불합격/quiet자료·c6기준선·f3/b491 native기록·이전실패는그source그대로보존한다.",
+    "원장/진행도/기존수용감사는변경하지않는다."
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "250665cd637ccb2935d59e0440da64da2895e1a15a9ff560265ab1c8508bd24e",
+      "bytes": 4021
+    },
+    {
+      "path": "execution-verification.json",
+      "sha256": "42cbdf2375c91bb893a05d80013e33622d16d6b2c6338114e6dc6d42f57e1944",
+      "bytes": 2925
+    },
+    {
+      "path": "functional.json",
+      "sha256": "afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616",
+      "bytes": 62864
+    },
+    {
+      "path": "functional.log",
+      "sha256": "f11002a6c982cf45567d906e5d1040b0f9ebb31532fe7f395317ea0f20e71c44",
+      "bytes": 38451
+    },
+    {
+      "path": "review-acknowledgement.json",
+      "sha256": "1d4f617ac95a368854a5f73b2bb892400065021d72dc3c58976eb4eb79251a57",
+      "bytes": 575
+    },
+    {
+      "path": "root-run.original.json",
+      "sha256": "d4ec917be070742b151acdc773a19d24893ddd1678ecd190ffee3910a279a691",
+      "bytes": 3877
+    },
+    {
+      "path": "runtimeconfig.original.json",
+      "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+      "bytes": 371
+    },
+    {
+      "path": "source-attribution-checks.json",
+      "sha256": "18947b4cddce6272ddc4180942771906e3809d12063986dc6cfd9f7b016848c8",
+      "bytes": 1366
+    }
+  ]
+}

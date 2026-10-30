@@ -2,6 +2,8 @@
   <Folder Name="/src/">
     <Project Path="src/Chronicles.Core/Chronicles.Core.csproj" />
     <Project Path="src/Chronicles.Game/Chronicles.Game.csproj" />
+    <Project Path="src/Chronicles.Shell/Chronicles.Shell.csproj" />
+    <Project Path="src/Chronicles.Android/Chronicles.Android.csproj" />
     <Project Path="src/Chronicles.Simulation/Chronicles.Simulation.csproj" />
     <Project Path="src/Chronicles.Queries/Chronicles.Queries.csproj" />
     <Project Path="src/Chronicles.Runtime/Chronicles.Runtime.csproj" />

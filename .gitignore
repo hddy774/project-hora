@@ -8,3 +8,6 @@ TestResults/
 *.suo
 *.nupkg
 *.zip
+*.keystore
+*.jks
+*.signing-secret

@@ -147,7 +147,8 @@ Test("INV-017 경매 예치·낙찰 단일 정산", () =>
     Accepted(w, Cmd("offer", a, item.Id, 10, "auction")); var contract = w.Checkpoint().Contracts.Single();
     Accepted(w, Cmd("bid", b, contract.Id, 20)); var s = w.Checkpoint(); Check(s.Contracts.Single().Escrow == 20, "입찰 예치");
     w = GameCodec.Decode(GameCodec.Encode(w)); w.AdvanceTo(12);
-    s = w.Checkpoint(); Check(s.Contracts.Single().Status == "completed" && s.Contracts.Single().Escrow == 0, "낙찰 종결");
+    s = w.Checkpoint(); var settled = s.Contracts.Single(c => c.Id == contract.Id);
+    Check(settled.Status == "completed" && settled.Escrow == 0, "낙찰 종결");
     Check(s.Items.Single(i => i.Id == item.Id).Owner == b, "낙찰 실물"); Invariants.Validate(s);
 });
 Test("INV-017 제작 예약·취소·소비·저장", () =>
@@ -171,7 +172,7 @@ Test("INV-017 제작 예약·취소·소비·저장", () =>
 Test("INV-020 조직 금고·정책 예약·해산 역사", () =>
 {
     var (w, a, b) = Fresh(); Accepted(w, Cmd("possess", a)); Accepted(w, Cmd("found", a, data: "sect"));
-    w.AdvanceTo(1); var g = w.Checkpoint().Groups.Single(g => g.Kind == GroupKind.Sect);
+    w.AdvanceTo(1); var g = w.Checkpoint().Groups.Single(g => g.Kind == GroupKind.Sect && g.Leader == a);
     Accepted(w, Cmd("policy", a, g.Id, 2, Catalog.PolicyNames[0]));
     Check(w.Checkpoint().Politics.Preparations.Any(preparation => preparation.Group == g.Id && preparation.Escrow > 0), "정책 예산 예약");
     w = GameCodec.Decode(GameCodec.Encode(w)); w.AdvanceTo(2);
@@ -229,6 +230,7 @@ Test("INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회", (
     var (w, a, b) = Fresh(); Accepted(w, Cmd("possess", a));
     var baseline = JsonSerializer.Serialize(w.View(b)); var s = w.Checkpoint();
     WorldScenarioFixtures.SetCultivation(s, s.People[1], Realm.Mortal); s.People[1].Health = 12; s.People[1].Roots[0] = 0;
+    s.PeopleDomain.Profiles.Single(p => p.PersonId == b).Innate.ElementRoots[0] = 0;
     var changed = GameWorld.Restore(s);
     Check(baseline == JsonSerializer.Serialize(changed.View(b)), "동일 인지에서 숨은 변화 비간섭");
     Check(w.View().Laws.Count == 0 && w.View().Census.Count == 0 && w.View().Hash.Length == 0, "전역 정답 미노출");

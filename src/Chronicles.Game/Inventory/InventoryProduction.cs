@@ -44,9 +44,12 @@ public static partial class InventoryEngine
         if (!state.Materials.TryGetValue(definition, out var flow)) state.Materials.Add(definition, flow = new());
         return flow;
     }
-    private static void ConsumePhysical(InventoryState state, Item item, int quantity, bool loss = false)
+    private static void ConsumePhysical(InventoryState state, Item item, int quantity, bool loss = false, long actor = 0)
     {
         Require(quantity > 0 && quantity <= item.Quantity, "Invalid physical consumption.");
+        state.Ledger.Events.Add(new(state.Month, loss ? "physical-loss" : "physical-consumption", actor, item.Id,
+            "Actual stock decrement before removing the physical instance.", checked(state.Ledger.NextEventSequence++), item.Definition,
+            quantity, Location(state, item.Id), item.Owner, item.Source, loss, item.Quality, item.Damage, item.Defects));
         if (loss) Flow(state, item.Definition).Loss = checked(Flow(state, item.Definition).Loss + quantity);
         else Flow(state, item.Definition).Consumption = checked(Flow(state, item.Definition).Consumption + quantity);
         item.Quantity -= quantity; if (item.Quantity == 0) Remove(state, item);
@@ -103,7 +106,7 @@ public static partial class InventoryEngine
         {
             var item = ItemAt(state, id);
             Require(item.Reserved == job.Reservation && item.Owner == command.Actor && Location(state, id) == job.Place, "Reserved ingredient became inaccessible.");
-            job.Consumed.Add(new(item.Definition, item.Quantity)); ConsumePhysical(state, item, item.Quantity);
+            job.Consumed.Add(new(item.Definition, item.Quantity)); ConsumePhysical(state, item, item.Quantity, actor: command.Actor);
         }
         job.Status = "processing"; Event(state, "process", job.Actor, job.Id, "Inputs consumed at the process boundary."); return job.Id;
     }
@@ -221,7 +224,7 @@ public static partial class InventoryEngine
             actor.Health = Math.Max(1, actor.Health - 20);
             state.Ledger.Effects.Add(new(cause + ":contamination", actor.Id, "toxicity", 20, state.Month, state.Month));
         }
-        ConsumePhysical(state, item, 1); Event(state, "use", actor.Id, item.Id, cause); return item.Id;
+        ConsumePhysical(state, item, 1, actor: actor.Id); Event(state, "use", actor.Id, item.Id, cause); return item.Id;
     }
     private static long Repair(InventoryState state, RepairItem command)
     {

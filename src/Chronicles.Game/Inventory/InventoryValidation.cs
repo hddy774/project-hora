@@ -144,6 +144,15 @@ public static partial class InventoryEngine
             Ensure(item.Owner == array.Owner && item.Container == 0 && item.Place == array.Place &&
                 InventoryDefinitions.Definition(item.Definition).Item.Kind == ItemKind.Array, "Installed array lost its actual physical item.");
         }
+        var sequencedEvents = state.Ledger.Events.Where(e => e.Sequence > 0).ToArray();
+        Ensure(state.Ledger.NextEventSequence > sequencedEvents.Select(e => e.Sequence).DefaultIfEmpty().Max() &&
+            sequencedEvents.Select(e => e.Sequence).Distinct().Count() == sequencedEvents.Length, "Physical audit stream sequence was reused.");
+        foreach (var audit in state.Ledger.Events.Where(e => e.Definition.Length > 0))
+        {
+            InventoryDefinitions.Definition(audit.Definition); PersonAt(state, audit.Owner, false);
+            Ensure(audit.Sequence > 0 && audit.Quantity > 0 && audit.Place is >= 0 and < 100 && audit.Month <= state.Month &&
+                audit.Kind == (audit.IsLoss ? "physical-loss" : "physical-consumption"), "Invalid typed physical decrement evidence.");
+        }
         foreach (var binding in state.Ledger.Bindings)
         {
             var item = state.Items.SingleOrDefault(i => i.Id == binding.Item);

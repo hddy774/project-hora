@@ -325,7 +325,7 @@ public static partial class InventoryEngine
         labor!.Active = false; return labor.Id;
     }
     private static void Event(InventoryState state, string kind, long actor, long subject, string detail) =>
-        state.Ledger.Events.Add(new(state.Month, kind, actor, subject, detail));
+        state.Ledger.Events.Add(new(state.Month, kind, actor, subject, detail, checked(state.Ledger.NextEventSequence++)));
     /// <summary>Returns one contribution for each physical item even when it occupies several slots.</summary>
     public static IReadOnlyList<EquipmentContribution> EquipmentContributions(InventoryState state, long person)
     {

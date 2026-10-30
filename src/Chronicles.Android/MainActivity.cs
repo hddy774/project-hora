@@ -56,7 +56,7 @@ public sealed class MainActivity : Activity
     private void CheckRender(int attempt)
     {
         if (web is null || IsFinishing || IsDestroyed) return;
-        const string script = "JSON.stringify({rendered:typeof view!=='undefined'&&view!==null&&document.querySelector('#content h2')!==null,title:typeof view!=='undefined'&&view?view.title:null,version:typeof view!=='undefined'&&view?view.version:null,error:window.seonroLastHostError||null,connection:document.querySelector('#connection')?.textContent})";
+        const string script = "JSON.stringify({rendered:typeof view!=='undefined'&&view!==null&&document.querySelector('#content h2')?.getBoundingClientRect().height>0,heading:document.querySelector('#content h2')?.textContent,title:typeof view!=='undefined'&&view?view.title:null,version:typeof view!=='undefined'&&view?view.version:null,error:window.seonroLastHostError||null,connection:document.querySelector('#connection')?.textContent})";
         web.EvaluateJavascript(script, new RenderCallback(this, attempt));
     }
 

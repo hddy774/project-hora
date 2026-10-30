@@ -15,6 +15,7 @@ public sealed class EcologyWindow : Window, IDisposable
     private static readonly JsonSerializerOptions JsonOptions = new();
     private bool disposed;
     private readonly bool smokeTest;
+    private const string LocalPage = "https://seonro.local/index.html";
 
     public EcologyWindow(bool smokeTest = false)
     {
@@ -32,13 +33,18 @@ public sealed class EcologyWindow : Window, IDisposable
             await browser.EnsureCoreWebView2Async(environment);
             browser.CoreWebView2.Settings.AreDevToolsEnabled = false;
             browser.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            browser.CoreWebView2.NavigationStarting += (_, e) => e.Cancel = e.Uri != "about:blank";
+            browser.CoreWebView2.NavigationStarting += (_, e) => e.Cancel = e.Uri != LocalPage;
             browser.CoreWebView2.NewWindowRequested += (_, e) => e.Handled = true;
             browser.CoreWebView2.WebMessageReceived += OnMessage;
             if (smokeTest) browser.CoreWebView2.NavigationCompleted += OnSmokeNavigation;
             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("GameShell.html")!;
             using var reader = new StreamReader(stream);
-            browser.NavigateToString(await reader.ReadToEndAsync());
+            var assets = Path.Combine(data, "assets");
+            Directory.CreateDirectory(assets);
+            await File.WriteAllTextAsync(Path.Combine(assets, "index.html"), await reader.ReadToEndAsync());
+            browser.CoreWebView2.SetVirtualHostNameToFolderMapping("seonro.local", assets,
+                CoreWebView2HostResourceAccessKind.DenyCors);
+            browser.CoreWebView2.Navigate(LocalPage);
         }
         catch (Exception e) when (e is WebView2RuntimeNotFoundException or InvalidOperationException or IOException)
         {
@@ -50,6 +56,7 @@ public sealed class EcologyWindow : Window, IDisposable
 
     private async void OnSmokeNavigation(object? sender, CoreWebView2NavigationCompletedEventArgs args)
     {
+        if (browser.Source?.AbsoluteUri != LocalPage) return;
         var passed = false;
         for (var attempt = 0; attempt < 40 && !disposed; attempt++)
         {
@@ -66,7 +73,7 @@ public sealed class EcologyWindow : Window, IDisposable
 
     private async void OnMessage(object? sender, CoreWebView2WebMessageReceivedEventArgs args)
     {
-        if (args.Source != "about:blank") return;
+        if (args.Source != LocalPage) return;
         try
         {
             using var document = JsonDocument.Parse(args.WebMessageAsJson);

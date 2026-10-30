@@ -100,8 +100,8 @@ jobs:
             adb shell uiautomator dump /sdcard/seonro-ui.xml
             adb pull /sdcard/seonro-ui.xml artifacts/android-ui.xml
             cat artifacts/android-ui.xml
-            python3 scripts/verify-android-ui.py artifacts/android-ui.xml
             adb exec-out screencap -p > artifacts/android-screen.png
+            python3 scripts/verify-android-ui.py artifacts/android-ui.xml artifacts/android-render-log.txt
       - uses: actions/upload-artifact@v4
         continue-on-error: true
         with:

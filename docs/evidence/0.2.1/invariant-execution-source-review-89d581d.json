@@ -1,0 +1,1059 @@
+{
+  "review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "8745eb4440498f7aff3d0b70a3c09eb2004a908e",
+    "source_commit": "89d581d6ad68813c378f495c208c5ee8e8155cad",
+    "test_sources_sha256": "f47efb61cf9a5f7c4aeaa2a707fbf536bbdee5de150676db5a4e99b648e01029",
+    "actual_scenarios": 264,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "src/Chronicles.Game/Chronicles.Game.csproj",
+        "invariants": [
+          "INV-001",
+          "INV-006",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "assembly 참조·테스트 전용 접근·현재 호스트/미래 플랫폼 경계 변경"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Execution/InnateTalentBatch.cs",
+        "invariants": [
+          "INV-001",
+          "INV-006",
+          "INV-015",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006/022 H09 real talent kernel: scalar/vector boundary, whole output, partial failure, stale and duplicate apply"
+        ],
+        "review_focus": [
+          "lease/몸·세대 수명, 큐 active/무효 토큰/안정순서·재구축, 전체 batch 게시/낡은 입력·fallback"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Execution/PopulationColumns.cs",
+        "invariants": [
+          "INV-001",
+          "INV-006",
+          "INV-015",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "lease/몸·세대 수명, 큐 active/무효 토큰/안정순서·재구축, 전체 batch 게시/낡은 입력·fallback"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Execution/ScopedLease.cs",
+        "invariants": [
+          "INV-001",
+          "INV-006",
+          "INV-015",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "lease/몸·세대 수명, 큐 active/무효 토큰/안정순서·재구축, 전체 batch 게시/낡은 입력·fallback"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Execution/StableEventQueue.cs",
+        "invariants": [
+          "INV-001",
+          "INV-006",
+          "INV-015",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "lease/몸·세대 수명, 큐 active/무효 토큰/안정순서·재구축, 전체 batch 게시/낡은 입력·fallback"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Inventory/InventoryEngine.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-016",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "소비형 후보 인계/참조·원자 실패·오류 우선순위·호출범위 인덱스·사용권/수납/약정/원천 보존"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Inventory/InventoryOwnedTransaction.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-016",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "소비형 후보 인계/참조·원자 실패·오류 우선순위·호출범위 인덱스·사용권/수납/약정/원천 보존"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Inventory/InventoryValidation.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-016",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "소비형 후보 인계/참조·원자 실패·오류 우선순위·호출범위 인덱스·사용권/수납/약정/원천 보존"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Inventory/InventoryValidationIndex.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-016",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "소비형 후보 인계/참조·원자 실패·오류 우선순위·호출범위 인덱스·사용권/수납/약정/원천 보존"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/People/Aptitudes.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "선천/현재/잠재와 원천 단회, 생식/영혼/흔적·관측과 재능 커널"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/People/InnateTalentSnapshot.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006/022 H09 real talent kernel: scalar/vector boundary, whole output, partial failure, stale and duplicate apply"
+        ],
+        "review_focus": [
+          "선천/현재/잠재와 원천 단회, 생식/영혼/흔적·관측과 재능 커널"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-013",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "정본 수행 전이/현재 구조·실제 입력·원천·동결 지식·사망/시도"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.EcologyBridge.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 생계 후보·개인 관측·재고/권한과 공통 정산의 호출 연결"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.ExecutionBridge.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-006",
+          "INV-015",
+          "INV-021"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 월별 실행과 scalar 비교, 생사/복원·동기화 때 인덱스 재생성"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.Hazards.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-013"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/005/006/013 윤회 공개 동시 원인: 실제 12·7의 단일 우선 선택과 활성·완성 경계·대체 설명·안정 키를 저장하고 재처리한다"
+        ],
+        "review_focus": [
+          "실제 동시 종료조건/복구수단·기존 안정 우선순위와 실제 현생 결과"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.InventoryBridge.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-016",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "공개 명령과 같은 Person 객체·실물/노동 원장 연결, 후보 install/cancel 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.Life.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-011",
+          "INV-012",
+          "INV-013",
+          "INV-014"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/005/006/013 윤회 공개 동시 원인: 실제 12·7의 단일 우선 선택과 활성·완성 경계·대체 설명·안정 키를 저장하고 재처리한다"
+        ],
+        "review_focus": [
+          "실제 생애/출생·단일 혼·재산/직책 분리·종료직전 Gate/다중원인·안정 키"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.Population.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-006",
+          "INV-011",
+          "INV-021"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "안정 슬롯·세대/생사·순서/확장과 옛 행동 토큰 재사용 방지"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.cs",
+        "invariants": [
+          "INV-001",
+          "INV-003",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-011",
+          "INV-017",
+          "INV-021"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "공개 dispatch·고정 월 순서·RNG·정산/인계·실제 인구"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/AgentMeasurements.cs",
+        "invariants": [
+          "INV-006",
+          "INV-008",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "계측 전용 fixture/명령·개인 입력·논리 예산·보고서의 출처/집계. 작은 기능 통과를 실측으로 바꾸지 않음",
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음."
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/AuthorizedReadExperiment.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존",
+          "INV-005/008/009/017/018 EX03 준비 기능: 실제 공개 광고·사용권의 scan/index 선택·누락·철회·정산 정합",
+          "INV-007/008/009/010/016/024 EX06 준비 기능: 권한 선필터 scan/index/cache·숨은 변화 비간섭·실제 장비 무효화"
+        ],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/ExecutionComparisonHarness.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-011",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-001/004/006/011/022 EX02 functional input: actual frozen conception, father death, reused slot and birth without measurement",
+          "INV-001/004/006/021/022 H04 saved life boundary: real lifespan death and explicit new arrival reuse no old token",
+          "INV-001/004/006/021/022 H04 world reference: actual commands, birth, cancellation, martial and save boundaries match every month",
+          "INV-004/006/017/022 H04 shared work: earlier teacher clears later pupil's due token in the actual month"
+        ],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/ExecutionExperimentScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/ExecutionMeasurementContracts.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/ExecutionMeasurements.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-011",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-001/004/006/011/022 EX02 functional input: actual frozen conception, father death, reused slot and birth without measurement"
+        ],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/ExperimentArguments.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/ExperimentEvidence.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존"
+        ],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "작은 정확성 Verify/Compare와 실제 계측 Run 분리·독립fixture/명령/hash·권한 입력·실측 허위 주장 방지"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/ExecutionCandidateCorrectnessScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-010",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-022",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존",
+          "INV-005/008/009/017/018 EX03 준비 기능: 실제 공개 광고·사용권의 scan/index 선택·누락·철회·정산 정합",
+          "INV-007/008/009/010/016/024 EX06 준비 기능: 권한 선필터 scan/index/cache·숨은 변화 비간섭·실제 장비 무효화"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존",
+          "INV-005/008/009/017/018 EX03 준비 기능: 실제 공개 광고·사용권의 scan/index 선택·누락·철회·정산 정합",
+          "INV-007/008/009/010/016/024 EX06 준비 기능: 권한 선필터 scan/index/cache·숨은 변화 비간섭·실제 장비 무효화"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/ExecutionInfrastructureScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-011",
+          "INV-015",
+          "INV-017",
+          "INV-021",
+          "INV-022",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "INV-001/004/006/021/022 H04 dynamic hot columns: original person order, slot generations and lease relocation lifetime",
+          "INV-001/004/006/021/022 H04 saved life boundary: real lifespan death and explicit new arrival reuse no old token",
+          "INV-001/004/006/021/022 H04 world reference: actual commands, birth, cancellation, martial and save boundaries match every month",
+          "INV-001/004/006/022 H04 actual due queue contracts: same-month changes, cancellation, generation and stable rebuild",
+          "INV-004/006/017/022 H04 shared work: earlier teacher clears later pupil's due token in the actual month",
+          "INV-004/006/022 H09 real talent kernel: scalar/vector boundary, whole output, partial failure, stale and duplicate apply"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-001/004/006/021/022 H04 dynamic hot columns: original person order, slot generations and lease relocation lifetime",
+          "INV-001/004/006/021/022 H04 saved life boundary: real lifespan death and explicit new arrival reuse no old token",
+          "INV-001/004/006/021/022 H04 world reference: actual commands, birth, cancellation, martial and save boundaries match every month",
+          "INV-001/004/006/022 H04 actual due queue contracts: same-month changes, cancellation, generation and stable rebuild",
+          "INV-004/006/017/022 H04 shared work: earlier teacher clears later pupil's due token in the actual month",
+          "INV-004/006/022 H09 real talent kernel: scalar/vector boundary, whole output, partial failure, stale and duplicate apply"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/ExecutionLifecycleFixtureScenario.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015",
+          "INV-022"
+        ],
+        "registered_scenarios": [
+          "INV-001/004/006/011/022 EX02 functional input: actual frozen conception, father death, reused slot and birth without measurement",
+          "INV-004/006/022 EX04 functional input: actual scalar vector partial backend selection preserves full aptitude and world hash"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-001/004/006/011/022 EX02 functional input: actual frozen conception, father death, reused slot and birth without measurement",
+          "INV-004/006/022 EX04 functional input: actual scalar vector partial backend selection preserves full aptitude and world hash"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryCommitmentValidationScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [
+          "inventory commitment reference: 같은 원천의 동시 예약·진행·취소 소비와 호출 사이 변경을 보존",
+          "inventory commitment reference: 소비되어 없는 입력의 예약 연결·동시 작업·위조·취소를 보존",
+          "inventory commitment reference: 앞 원천 오류·뒤 입력 오류·long overflow의 기존 거부 순서를 보존"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory commitment reference: 같은 원천의 동시 예약·진행·취소 소비와 호출 사이 변경을 보존",
+          "inventory commitment reference: 소비되어 없는 입력의 예약 연결·동시 작업·위조·취소를 보존",
+          "inventory commitment reference: 앞 원천 오류·뒤 입력 오류·long overflow의 기존 거부 순서를 보존"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-008",
+          "INV-015",
+          "INV-016",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [
+          "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존",
+          "inventory owned reference: 실제 생계 AI의 분할·판매 후보와 저장 결과 보존"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존",
+          "inventory owned reference: 실제 생계 AI의 분할·판매 후보와 저장 결과 보존"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryOwnedTransactionScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-016",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [
+          "inventory owned failure: 두 번째 처리·판매 실패와 예외가 전체 후보·ID·재료를 폐기",
+          "inventory owned lifetime: 단일 인계·불변 결과·기존 참조 격리와 소비 후 재사용 거부",
+          "inventory owned parity: 공개 복사 경로와 예약·처리·전용 연결·재전송 결과 및 직렬화 일치",
+          "inventory owned rejection: ID 충돌·빈 ID·오버플로와 기존 오류 우선순위 보존",
+          "inventory owned stale: 월·할당자·개정·실물·사람·재료 지문과 원래 세계 인계 경계"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory owned failure: 두 번째 처리·판매 실패와 예외가 전체 후보·ID·재료를 폐기",
+          "inventory owned lifetime: 단일 인계·불변 결과·기존 참조 격리와 소비 후 재사용 거부",
+          "inventory owned parity: 공개 복사 경로와 예약·처리·전용 연결·재전송 결과 및 직렬화 일치",
+          "inventory owned rejection: ID 충돌·빈 ID·오버플로와 기존 오류 우선순위 보존",
+          "inventory owned stale: 월·할당자·개정·실물·사람·재료 지문과 원래 세계 인계 경계",
+          "inventory sync: 공개 custom comparer와 내부 Ordinal 영수증의 대소문자 구분·재전송·충돌 보존",
+          "inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존",
+          "inventory sync: 중복 ID·교차 namespace·잘못된 프로필·메타데이터의 기존 초기 거부 우선순위 보존"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventorySynchronizationScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-005",
+          "INV-006",
+          "INV-016",
+          "INV-017",
+          "INV-021"
+        ],
+        "registered_scenarios": [
+          "inventory sync: 공개 custom comparer와 내부 Ordinal 영수증의 대소문자 구분·재전송·충돌 보존",
+          "inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존",
+          "inventory sync: 중복 ID·교차 namespace·잘못된 프로필·메타데이터의 기존 초기 거부 우선순위 보존"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory sync: 공개 custom comparer와 내부 Ordinal 영수증의 대소문자 구분·재전송·충돌 보존",
+          "inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존",
+          "inventory sync: 중복 ID·교차 namespace·잘못된 프로필·메타데이터의 기존 초기 거부 우선순위 보존"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/InventoryValidationScopeScenarios.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-016",
+          "INV-017",
+          "INV-018"
+        ],
+        "registered_scenarios": [
+          "inventory validation scope: 이전 실제 명령·해시·거부 결과와 호출 사이 변경을 보존"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "inventory validation scope: 이전 실제 명령·해시·거부 결과와 호출 사이 변경을 보존"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-005",
+          "INV-009",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-017",
+          "INV-018",
+          "INV-019",
+          "INV-020",
+          "INV-022",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "V021-G01/G02 public politics: one province, persistent territoryless dynasty, annual zero revenue and restoration",
+          "V021-G02 public politics: actual loan, independence, death succession and territorial loss keep public accounts distinct",
+          "V021-G03 AI politics: direct rejected founding and second-phase preparation consume no IDs or resources",
+          "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+          "V021-G03 public politics: withdrawing real reserved work refunds unfinished policy without implementation",
+          "V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty",
+          "V021-M03/G02 public politics: actual death inheritance transfers personal land and preserves another operator's rights",
+          "V021-S02 public politics: funded education queues one real request and gains knowledge only through timed teaching",
+          "V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office",
+          "V021-W02/G01 public politics: actual fox and pine body maturity govern consent and family leadership independently of human law"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "V021-G01/G02 public politics: one province, persistent territoryless dynasty, annual zero revenue and restoration",
+          "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+          "V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty",
+          "V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/ReincarnationCauseIntegrationScenario.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-013"
+        ],
+        "registered_scenarios": [
+          "INV-004/005/006/013 윤회 공개 동시 원인: 실제 12·7의 단일 우선 선택과 활성·완성 경계·대체 설명·안정 키를 저장하고 재처리한다"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/005/006/013 윤회 공개 동시 원인: 실제 12·7의 단일 우선 선택과 활성·완성 경계·대체 설명·안정 키를 저장하고 재처리한다"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/GrowthObservations.cs",
+        "invariants": [
+          "INV-006",
+          "INV-011",
+          "INV-012",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "성장 계측 전용 source/fixture/인구·자원 원장과 기록/차단 판단 형식. 여기서는 계측 결과를 검토하지 않음"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/GrowthScenarios.cs",
+        "invariants": [
+          "INV-006",
+          "INV-011",
+          "INV-012",
+          "INV-018",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "성장 계측 전용 source/fixture/인구·자원 원장과 기록/차단 판단 형식. 여기서는 계측 결과를 검토하지 않음"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/PerformanceCognitionMeasurements.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "측정/안정성 명시 진입점·source/fixture·논리 시간·보고서/중단 구분. 기능 이름 통과와 별도"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/PerformanceScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "측정/안정성 명시 진입점·source/fixture·논리 시간·보고서/중단 구분. 기능 이름 통과와 별도"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "측정/안정성 명시 진입점·source/fixture·논리 시간·보고서/중단 구분. 기능 이름 통과와 별도"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Program.cs",
+        "invariants": [
+          "INV-001",
+          "INV-002",
+          "INV-003",
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-010",
+          "INV-011",
+          "INV-012",
+          "INV-013",
+          "INV-014",
+          "INV-015",
+          "INV-016",
+          "INV-017",
+          "INV-018",
+          "INV-020",
+          "INV-021",
+          "INV-022",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "30경로·24재능·40특성·12장비·정의 조회 순수성",
+          "INV-001 슬롯 재사용·낡은 세대/사망 신원 거부",
+          "INV-001/002/011 정확한 창세·안정 신원·100지점",
+          "INV-003 기존 임신 법칙 revision 보존",
+          "INV-003 사용자 세 정책과 0 비활성",
+          "INV-004 손상 저장·중단 파일·백업 복원",
+          "INV-004/005/011/012 실제 출생·유전·단일 영혼·재전송",
+          "INV-004/012 불법 부모·신원 중복 저장 거부",
+          "INV-006 저장 왕복·호스트 문화권 독립",
+          "INV-006/007/004 시간 분할·조회/저장 무영향",
+          "INV-008 인지 예산 변경·명제/인물/지점 합계",
+          "INV-008 장소 ID와 인물 ID 충돌에서 사건 누출 없음",
+          "INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회",
+          "INV-010/021 빙의·AI 인계에서 기존 행동 보존",
+          "INV-011 양친 금단 바로 아래·같음",
+          "INV-012 혈연 허용·제한 프리셋",
+          "INV-013 혼멸·역사 최고 경지로 자격 우회 없음",
+          "INV-013/014 화신 대원만 경계·실제 사망·대기·출생",
+          "INV-015/024 폐품 점수와 기능 결손 분리",
+          "INV-016/017/018 실물 출품·거래·영석 보존",
+          "INV-017 경매 예치·낙찰 단일 정산",
+          "INV-017 제작 예약·취소·소비·저장",
+          "INV-018 물품 원장 없는 수량 복제 거부",
+          "INV-020 조직 금고·정책 예약·해산 역사",
+          "INV-023 원영 파단 후 취소 사망·앱 복원은 포기 아님"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-001 슬롯 재사용·낡은 세대/사망 신원 거부",
+          "INV-001/002/011 정확한 창세·안정 신원·100지점",
+          "INV-003 기존 임신 법칙 revision 보존",
+          "INV-006 저장 왕복·호스트 문화권 독립",
+          "INV-006/007/004 시간 분할·조회/저장 무영향",
+          "INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회",
+          "INV-010/021 빙의·AI 인계에서 기존 행동 보존",
+          "INV-013 혼멸·역사 최고 경지로 자격 우회 없음",
+          "INV-013/014 화신 대원만 경계·실제 사망·대기·출생"
+        ],
+        "review_focus": [
+          "실제 등록 이름/RC13·보고서 집계·filter와 명시 측정 flag dispatch 분리"
+        ]
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "acknowledgement": {
+    "source_commit": "89d581d6ad68813c378f495c208c5ee8e8155cad",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      "src/Chronicles.Game/Chronicles.Game.csproj",
+      "src/Chronicles.Game/Execution/InnateTalentBatch.cs",
+      "src/Chronicles.Game/Execution/PopulationColumns.cs",
+      "src/Chronicles.Game/Execution/ScopedLease.cs",
+      "src/Chronicles.Game/Execution/StableEventQueue.cs",
+      "src/Chronicles.Game/Inventory/InventoryEngine.cs",
+      "src/Chronicles.Game/Inventory/InventoryOwnedTransaction.cs",
+      "src/Chronicles.Game/Inventory/InventoryValidation.cs",
+      "src/Chronicles.Game/Inventory/InventoryValidationIndex.cs",
+      "src/Chronicles.Game/People/Aptitudes.cs",
+      "src/Chronicles.Game/People/InnateTalentSnapshot.cs",
+      "src/Chronicles.Game/World.CultivationBridge.cs",
+      "src/Chronicles.Game/World.EcologyBridge.cs",
+      "src/Chronicles.Game/World.ExecutionBridge.cs",
+      "src/Chronicles.Game/World.Hazards.cs",
+      "src/Chronicles.Game/World.InventoryBridge.cs",
+      "src/Chronicles.Game/World.Life.cs",
+      "src/Chronicles.Game/World.PeopleBridge.cs",
+      "src/Chronicles.Game/World.Population.cs",
+      "src/Chronicles.Game/World.cs",
+      "tests/Chronicles.Game.Tests/AgentMeasurements.cs",
+      "tests/Chronicles.Game.Tests/Experiments/AuthorizedReadExperiment.cs",
+      "tests/Chronicles.Game.Tests/Experiments/ExecutionComparisonHarness.cs",
+      "tests/Chronicles.Game.Tests/Experiments/ExecutionExperimentScenarios.cs",
+      "tests/Chronicles.Game.Tests/Experiments/ExecutionMeasurementContracts.cs",
+      "tests/Chronicles.Game.Tests/Experiments/ExecutionMeasurements.cs",
+      "tests/Chronicles.Game.Tests/Experiments/ExperimentArguments.cs",
+      "tests/Chronicles.Game.Tests/Experiments/ExperimentEvidence.cs",
+      "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
+      "tests/Chronicles.Game.Tests/Features/ExecutionCandidateCorrectnessScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/ExecutionInfrastructureScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/ExecutionLifecycleFixtureScenario.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryCommitmentValidationScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryOwnedTransactionScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventorySynchronizationScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/InventoryValidationScopeScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/PoliticsIntegrationScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/ReincarnationCauseIntegrationScenario.cs",
+      "tests/Chronicles.Game.Tests/GrowthObservations.cs",
+      "tests/Chronicles.Game.Tests/GrowthScenarios.cs",
+      "tests/Chronicles.Game.Tests/PerformanceCognitionMeasurements.cs",
+      "tests/Chronicles.Game.Tests/PerformanceScenarios.cs",
+      "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs",
+      "tests/Chronicles.Game.Tests/Program.cs"
+    ],
+    "review_note": "8745 이후 실제264 이름/신규26 본문·모듈/세계/호스트 경계와 증인98을 대조했다. H04/H09 관련 helper·임대/큐/원본비교·현재 재능 입력과 INV013 다중원인, 재고 owned/sync/validation 및 EX 작은 Verify 호출을 검토했다. 계측 전용 파일은 등록/호출 분리와 지문 영향만 검토하며 계측 정확성/실측 통과를 주장하지 않는다. 기존 제안 상태·원장·Notion·게임/검사 C#는 변경하지 않았다."
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "scope": "실제264이름/24불변식/98증인 정적 연결과 helper·보고서 검증만. 최신264 전체 실행·측정 통과가 아님.",
+  "mapping_source_commit": "89d581d6ad68813c378f495c208c5ee8e8155cad",
+  "test_sources_sha256": "f47efb61cf9a5f7c4aeaa2a707fbf536bbdee5de150676db5a4e99b648e01029",
+  "static_mapping": {
+    "actual_scenarios": 264,
+    "invariants": 24,
+    "witnesses": 98
+  },
+  "validator_self_test": {
+    "validator_self_test_only": true,
+    "accepted_synthetic_report": 1,
+    "rejected_invalid_reports": 9,
+    "rejected_invalid_maps": 8,
+    "rejected_duplicate_json": true
+  },
+  "refresh_helper_self_test": {
+    "refresh_helper_self_test_only": true,
+    "valid_review": 1,
+    "rejected_unreviewed_updates": 9,
+    "markdown_link_update_preserved_prose": true
+  },
+  "historical_full_report": {
+    "path": "docs/evidence/0.2.1/functional-integration-3ba78ce.json",
+    "source_commit": "3ba78ce8d6dd734ebf1ec1a1fb939db34e90d923",
+    "sha256": "8d9d5f66d1ac9bd7459fc318697252b7c592502d0ea0b46eb095d0659b51edfc",
+    "total": 258,
+    "failed": 0,
+    "valid_historical_pass": true,
+    "rejected_as_current_full_report": true,
+    "missing_current_scenarios": [
+      "inventory commitment reference: 같은 원천의 동시 예약·진행·취소 소비와 호출 사이 변경을 보존",
+      "inventory commitment reference: 소비되어 없는 입력의 예약 연결·동시 작업·위조·취소를 보존",
+      "inventory commitment reference: 앞 원천 오류·뒤 입력 오류·long overflow의 기존 거부 순서를 보존",
+      "inventory sync: 공개 custom comparer와 내부 Ordinal 영수증의 대소문자 구분·재전송·충돌 보존",
+      "inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존",
+      "inventory sync: 중복 ID·교차 namespace·잘못된 프로필·메타데이터의 기존 초기 거부 우선순위 보존"
+    ],
+    "validator_error": "전체 보고서 이름 집합이 실제 등록/매핑과 다릅니다: {\"missing\": [\"inventory commitment reference: 같은 원천의 동시 예약·진행·취소 소비와 호출 사이 변경을 보존\", \"inventory commitment reference: 소비되어 없는 입력의 예약 연결·동시 작업·위조·취소를 보존\", \"inventory commitment reference: 앞 원천 오류·뒤 입력 오류·long overflow의 기존 거부 순서를 보존\", \"inventory sync: 공개 custom comparer와 내부 Ordinal 영수증의 대소문자 구분·재전송·충돌 보존\", \"inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존\", \"inventory sync: 중복 ID·교차 namespace·잘못된 프로필·메타데이터의 기존 초기 거부 우선순위 보존\"], \"unregistered\": []}"
+  },
+  "current_full_product_pass_claimed": false,
+  "game_or_test_cs_changed": false,
+  "ledger_or_notion_status_changed": false,
+  "benchmark_executed": false,
+  "refresh_helper_actual_copy_check": {
+    "source_commit": "89d581d6ad68813c378f495c208c5ee8e8155cad",
+    "current_name_set_preserved": true,
+    "incorrect_markdown_line_corrected": true,
+    "all_other_markdown_prose_preserved": true,
+    "different_source_review_rejected": true,
+    "product_pass_claimed": false
+  }
+}

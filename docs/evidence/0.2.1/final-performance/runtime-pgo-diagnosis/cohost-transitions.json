@@ -1,0 +1,9 @@
+{
+  "quietRunStartUtc": "2026-10-30T19:17:38.003904+00:00",
+  "quietRunEndUtc": "2026-10-30T19:35:14.036730+00:00",
+  "cpu3AIEndedUtc": "2026-10-30T19:21:29.263585+00:00",
+  "cpu3Growth2026StartedUtc": "2026-10-30T19:24:10.084350+00:00",
+  "otherCohosts": "CPU1/2 growth926 restart1 remained active without pause. CPU0 final; CPU3 AI then growth2026; shared4CPU quota. Quiet only excludes additional local heavy work, not existing growth/AI.",
+  "observedQuietEndUtc": "2026-10-30T19:39:51.657575+00:00",
+  "quietEndScope": "Last bounded diagnostic process completed; agents were explicitly released afterward."
+}

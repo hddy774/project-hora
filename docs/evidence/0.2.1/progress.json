@@ -2,12 +2,12 @@
   "total": 111,
   "completed": 49,
   "completion_percent": 44.1,
-  "own_acceptance_count": 97,
-  "own_acceptance_percent": 87.4,
+  "own_acceptance_count": 102,
+  "own_acceptance_percent": 91.9,
   "counts": {
     "done": 49,
-    "validated": 48,
-    "in_progress": 14,
+    "validated": 53,
+    "in_progress": 9,
     "planned": 0,
     "blocked": 0
   },
@@ -180,22 +180,22 @@
     {
       "id": "V021-D02",
       "title": "최종 통합 저장 감사",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-T01",
       "title": "최종 불변식 감사",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-T02",
       "title": "전 범위 시나리오·조회 무영향",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-T03",
       "title": "시간·명령·결정론 회귀",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-T04",
@@ -205,7 +205,7 @@
     {
       "id": "V021-T05",
       "title": "엔진 없는 UI·모드/입력 사용성",
-      "status": "in_progress"
+      "status": "validated"
     },
     {
       "id": "V021-T06",
@@ -324,7 +324,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "6c16b144d82bf4c0920f1a96e06f1a44a6ca8229",
-  "phase": "네 규모 기준선 완료·최종 저장 검사와 성장/장기 검증",
+  "source_commit": "d0cf9c5e2a9b39d0dff63c8f63b040c34bf61ab2",
+  "phase": "최종314 기능·5개 자체 검증 마감·고정 성능/성장·장기 검증",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

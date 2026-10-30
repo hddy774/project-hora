@@ -1,0 +1,31 @@
+{
+  "schema": "seonro.five-own-status-diff-check.v1",
+  "base_commit": "1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f",
+  "ledger_evidence_commit": "d0cf9c5e2a9b39d0dff63c8f63b040c34bf61ab2",
+  "changed_ids": [
+    "V021-D02",
+    "V021-T01",
+    "V021-T02",
+    "V021-T03",
+    "V021-T05"
+  ],
+  "only_changed_task_fields": [
+    "status",
+    "evidence"
+  ],
+  "unchanged_other_task_rows": 106,
+  "done_promotions": 0,
+  "counts": {
+    "done": 49,
+    "validated": 53,
+    "in_progress": 9,
+    "planned": 0,
+    "blocked": 0
+  },
+  "completed_percent": 44.1,
+  "own_acceptance_count": 102,
+  "own_acceptance_percent": 91.9,
+  "canonical_requirements_dependencies_proposed_catalog_unchanged": true,
+  "src_tests_scripts_workflows_VERSION_readiness_performance_unchanged": true,
+  "local_game_runtime_executions": 0
+}

@@ -123,8 +123,11 @@ public static partial class InventoryEngine
             PersonAt(state, contract.Seller, false); if (contract.Buyer != 0) PersonAt(state, contract.Buyer, false);
             if (contract.Carrier != 0) PersonAt(state, contract.Carrier, false);
             Ensure(contract.Kind is "sale" or "auction" or "transport" && contract.Escrow >= 0 && contract.Price >= 0 && contract.Fee >= 0, "Invalid funded contract.");
+            Ensure(contract.PaidAmount is null or >= 0 && contract.PaidQuantity is null or > 0 && contract.PaidQuality is null or (>= 0 and <= 10000) &&
+                (contract.EndedMonth is null || contract.EndedMonth >= 0 && contract.EndedMonth <= state.Month), "Invalid actual settlement history.");
             if (contract.Status == "open")
             {
+                Ensure(contract.PaidAmount is null && contract.EndedMonth is null, "Open contract cannot have a completed payment.");
                 var item = ItemAt(state, contract.Item);
                 Ensure(item.Reserved == contract.Reservation && item.Owner == contract.Seller &&
                     state.Ledger.Reservations.Any(r => r.Id == contract.Reservation && r.Active), "Open contract lost cargo ownership or reservation.");

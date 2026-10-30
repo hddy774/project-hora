@@ -200,7 +200,7 @@ public sealed partial class GameWorld
                 case "gather": case "mining":
                     var definition = c.Data.Length == 0 ? c.Kind == "mining" ? "ore" : "food" : c.Data;
                     var source = state.Inventory.Sources.FirstOrDefault(s => s.Place == p.Place && (c.Target == 0 ? s.Definition == definition : s.Id == c.Target));
-                    if (source is null || (source.Definition.StartsWith("resource.", StringComparison.Ordinal) && !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == source.Id)))
+                    if (source is null || (source.Definition.StartsWith("resource.", StringComparison.Ordinal) && !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == source.Id && o.Definition == source.Definition && o.Activity == source.Activity)))
                     { error = "실제로 발견한 현지 원천이 필요합니다."; return true; }
                     var requested = Math.Min(source.Remaining, IntLaw("economy.gatherYield"));
                     var due = Month + Math.Max(1, (requested * state.Inventory.ExtractionWorkPerUnit + 99) / 100);
@@ -216,7 +216,7 @@ public sealed partial class GameWorld
                     error = BeginInventoryJob(p, new TreatPerson(c.Id, p.Id, patient?.Id ?? 0, Month + 1, consent), ActionKind.Heal); return true;
                 case "appraise": error = BeginInventoryJob(p, new AppraisePhysical(c.Id, p.Id, c.Target, Month + 1), ActionKind.Explore); return true;
                 case "exploreSource":
-                    var target = state.Inventory.Sources.FirstOrDefault(s => s.Place == p.Place && (c.Target != 0 ? s.Id == c.Target : !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == s.Id)));
+                    var target = state.Inventory.Sources.FirstOrDefault(s => s.Place == p.Place && (c.Target != 0 ? s.Id == c.Target : !state.Inventory.Observations.Any(o => o.Observer == p.Id && o.Source == s.Id && o.Definition.Length > 0 && o.Activity.Length > 0)));
                     error = target is null ? "탐색할 현지 원천이 없습니다." : BeginInventoryJob(p, new ExploreNaturalSource(c.Id, p.Id, target.Id, Month + 1), ActionKind.Explore); return true;
                 case "offer": error = RunInventory(new OfferItem(c.Id, p.Id, c.Target, c.Value, Month + 12, c.Data == "auction"), out _); return true;
                 case "bid": error = RunInventory(new PlaceBid(c.Id, p.Id, c.Target, c.Value), out _); return true;

@@ -242,6 +242,11 @@ public sealed class InventoryAuctionScenario : IFeatureScenario
         InventoryFixture.Accept(ref state, new SettleInventory("settle"));
         InventoryFixture.Check(InventoryFixture.Item(state, first).Owner == 2 && state.Ledger.Contracts.Single(c => c.Id == unsold).Status == "expired" &&
             InventoryFixture.Money(state) == total, "Simultaneous auction settlement lost property or money.");
+        var settled = state.Ledger.Contracts.Single(c => c.Id == auction);
+        InventoryFixture.Check(settled.PaidAmount == 700 && settled.PaidQuantity == 1 && settled.PaidQuality == 5000 && settled.EndedMonth == 2,
+            "Actual auction payment was lost when escrow cleared.");
+        InventoryFixture.Item(state, first).Quality = 1234;
+        InventoryFixture.Check(settled.PaidQuality == 5000, "Later buyer inventory rewrote sale-time quality.");
         var before = JsonSerializer.Serialize(state); var replay = InventoryEngine.Apply(state, new SettleInventory("settle"));
         InventoryFixture.Check(replay.Accepted && replay.Replayed && JsonSerializer.Serialize(replay.State) == before, "Replay duplicated settlement.");
         InventoryFixture.Reject(state, new SettleInventory("bid"));
@@ -491,5 +496,54 @@ public sealed class InventorySharedReservationScenario : IFeatureScenario
         var result = InventoryEngine.Apply(candidate, new SplitInventoryItem("identity", originalPerson.Id, food.Id, 1));
         InventoryFixture.Check(result.Accepted, result.Message); result.State.ApplyTo(world);
         InventoryFixture.Check(ReferenceEquals(originalPerson, world.People[0]), "Applying accepted inventory invalidated the world's live actor reference.");
+    }
+}
+
+public sealed class InventoryKnownSourceAndOfferScenario : IFeatureScenario
+{
+    public string Name => "inventory: known source and local offer projections never infer mutable private truth";
+    public void Run()
+    {
+        var state = InventoryFixture.Create(); state.Month = 2;
+        var source = state.NextId++; var legacy = state.NextId++;
+        state.Ledger.Sources.Add(new() { Id = source, Place = 0, Definition = "resource.00.0", Activity = "source.mining", Remaining = 100, Capacity = 100, Origin = "changed actual source" });
+        state.Ledger.Observations.Add(new(1, source, 0, 12, 1, "actual past exploration", "resource.03.0", "source.gathering"));
+        state.Ledger.Observations.Add(new(2, source, 0, 100, 2, "other person's private exploration", "resource.00.0", "source.mining"));
+        state.Ledger.Observations.Add(new(1, legacy, 0, 5, 2, "legacy incomplete snapshot"));
+        var known = InventoryKnowledgeQueries.KnownSources(state.Ledger, 1);
+        InventoryFixture.Check(known is [{ Definition: "resource.03.0", Remaining: 12, Month: 1 }], "Known source projection used another observer or current source truth.");
+        var item = InventoryFixture.Add(state, "tool", quality: 1111);
+        InventoryFixture.Accept(ref state, new OfferItem("advertise", 1, item, 5, 10));
+        var beforeState = JsonSerializer.Serialize(state); var beforeView = JsonSerializer.Serialize(InventoryKnowledgeQueries.LocalOffers(state, 2));
+        InventoryFixture.Check(InventoryKnowledgeQueries.LocalOffers(state, 2) is [{ Definition: "tool", Quantity: 1, Price: 5, OwnDeposit: 0 }], "Public advertisement did not retain its actual listing snapshot.");
+        InventoryFixture.Check(JsonSerializer.Serialize(state) == beforeState, "Known projections changed authority.");
+        InventoryFixture.Item(state, item).Quality = 9999; InventoryFixture.Item(state, item).Source = "unobserved private history";
+        state.Ledger.Sources.Single().Remaining = 1;
+        InventoryFixture.Check(beforeView == JsonSerializer.Serialize(InventoryKnowledgeQueries.LocalOffers(state, 2)) &&
+            InventoryKnowledgeQueries.KnownSources(state.Ledger, 1).Single().Remaining == 12, "Private item/source changes leaked into authorized cached facts.");
+        InventoryFixture.Person(state, 2).Place = 1;
+        InventoryFixture.Check(InventoryKnowledgeQueries.LocalOffers(state, 2).Count == 0, "A remote market leaked into a local-only projection.");
+    }
+}
+
+public sealed class InventorySharedRecipeRegistryScenario : IFeatureScenario
+{
+    public string Name => "inventory: shared recipe registry plans the exact authoritative physical input and output";
+    public void Run()
+    {
+        var shared = InventoryDefinitions.SharedRecipes;
+        InventoryFixture.Check(shared.Count == InventoryDefinitions.Recipes.Count && shared.Select(r => r.Id).Distinct(StringComparer.Ordinal).Count() == shared.Count,
+            "Public recipe registry omits or duplicates an authoritative process.");
+        foreach (var recipe in shared)
+        {
+            var actual = InventoryDefinitions.Recipes[recipe.Id];
+            InventoryFixture.Check(recipe.Name.Length > 0 && recipe.Skill == actual.Skill && recipe.Output == actual.Output && recipe.Quantity == actual.Quantity &&
+                recipe.Inputs.OrderBy(i => i.Key, StringComparer.Ordinal).SequenceEqual(actual.Inputs.OrderBy(i => i.Key, StringComparer.Ordinal)),
+                "Shared recipe planning diverged from the actual consumed inputs or physical output.");
+        }
+        InventoryFixture.Check(InventoryDefinitions.Recipes["bag"].Inputs.ContainsKey("resource.15.0") &&
+            InventoryDefinitions.Recipes["soulWard"].Inputs.ContainsKey("resource.08.0") &&
+            InventoryDefinitions.Resources.Where(r => r.Definition.StartsWith("resource.14.", StringComparison.Ordinal))
+                .All(r => InventoryDefinitions.Recipes[r.Consumer].Output == "blankBook"), "Spatial/soul/record media combinations fabricated unsupported physical capabilities.");
     }
 }

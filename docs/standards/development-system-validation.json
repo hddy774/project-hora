@@ -55,7 +55,44 @@
     "log": "validation/core-format.log",
     "all_repository_format_claim": false
   },
-  "static_checks": {
+  "root_owned_links_pending_at_base": [
+    "docs/plans/reviews/v021-claude-pr84-review-2026-10-31.md",
+    "docs/reviews/v0.2.1-review-guide.md",
+    "docs/tasks/V021-REVIEW-STRUCTURE.md"
+  ],
+  "original_feedback_preserved": {
+    "receipt": "1/1",
+    "path": "docs/plans/reviews/v021-claude-review-2026-10-30.md",
+    "sha256": "470bb05dc6b7a195c5f8ac7b6998b8a1d184967d8131f803f7acf131618e0598"
+  },
+  "new_game_test_cases": 0,
+  "new_performance_growth_soak_or_profile_runs": 0,
+  "previous_528_evidence_promoted_to_new_config": false,
+  "final_product_fingerprint": null,
+  "final_validation_owner": "통합 담당의 새 source/제품 지문 최종검증",
+  "files": [
+    {
+      "path": "validation/core-format.log",
+      "bytes": 145,
+      "sha256": "2655028f8b0484c4bb043c8863924e6f0470939d9766a4d07390293cc87b0662"
+    },
+    {
+      "path": "validation/functional.original.json",
+      "bytes": 252,
+      "sha256": "6d508dc1f7d8fe3db4a6d95daad14b236ef09612e806ceb518b1dbab187721d8"
+    },
+    {
+      "path": "validation/functional.original.log",
+      "bytes": 75,
+      "sha256": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+    },
+    {
+      "path": "validation/release-build.log",
+      "bytes": 1048,
+      "sha256": "0970de78c99775818cf187c9d4d15825a1970a78257eefe6ec604fa01cd5eb54"
+    }
+  ],
+  "static_checks_at_original_base": {
     "markdown_files": 23,
     "local_links_checked": 76,
     "missing_links_owned_by_root_only": [
@@ -129,42 +166,57 @@
     "git_attributes": "docs/evidence/0.2.1/release-readiness.json: linguist-generated: true",
     "broad_formatting_performed": false
   },
-  "root_owned_links_pending_at_base": [
-    "docs/plans/reviews/v021-claude-pr84-review-2026-10-31.md",
-    "docs/reviews/v0.2.1-review-guide.md",
-    "docs/tasks/V021-REVIEW-STRUCTURE.md"
-  ],
-  "original_feedback_preserved": {
-    "receipt": "1/1",
-    "path": "docs/plans/reviews/v021-claude-review-2026-10-30.md",
-    "sha256": "470bb05dc6b7a195c5f8ac7b6998b8a1d184967d8131f803f7acf131618e0598"
+  "owned_edits_to_existing_evidence_legacy_product_tests_workflows": false,
+  "post_integration_static_checks": {
+    "root_review_ancestor": "59f00dc2bd95f5abdce9652e1d771ff34d541cc0",
+    "markdown_files_checked": 26,
+    "local_links_checked": 89,
+    "missing_local_links": [],
+    "release_sdk_settings": [
+      {
+        "job": "portable",
+        "version": "10.0.403"
+      },
+      {
+        "job": "windows",
+        "version": "10.0.403"
+      },
+      {
+        "job": "android_build",
+        "version": "10.0.403"
+      }
+    ],
+    "android_sdk_leaf_source": "451151a644cbaaa1f88c05be2921bbdd68d601a4",
+    "android_sdk_settings": [
+      {
+        "path": ".github/workflows/v021-product.yml",
+        "job": "portable",
+        "version": "10.0.403",
+        "connector_reported_source_blob": "fc794d29d31ab999f8a446af4b0bc017e2e2c4c3"
+      },
+      {
+        "path": ".github/workflows/v021-product.yml",
+        "job": "windows-regression",
+        "version": "10.0.403",
+        "connector_reported_source_blob": "fc794d29d31ab999f8a446af4b0bc017e2e2c4c3"
+      },
+      {
+        "path": ".github/workflows/v021-product.yml",
+        "job": "android",
+        "version": "10.0.403",
+        "connector_reported_source_blob": "fc794d29d31ab999f8a446af4b0bc017e2e2c4c3"
+      },
+      {
+        "path": ".github/workflows/v021-api24-probe.yml",
+        "job": "api24",
+        "version": "10.0.403",
+        "connector_reported_source_blob": "426c63b207d30b9a245348c4b76ec25e0cf9fe4b"
+      }
+    ],
+    "single_integrated_sdk_head_claim": false,
+    "prior_feedback_sha_unchanged": true,
+    "no_src_tests_legacy_changes_from_tested_base": true
   },
-  "existing_evidence_legacy_product_tests_workflows_changed": false,
-  "new_game_test_cases": 0,
-  "new_performance_growth_soak_or_profile_runs": 0,
-  "previous_528_evidence_promoted_to_new_config": false,
-  "final_product_fingerprint": null,
-  "final_validation_owner": "통합 담당의 새 source/제품 지문 최종검증",
-  "files": [
-    {
-      "path": "validation/core-format.log",
-      "bytes": 145,
-      "sha256": "2655028f8b0484c4bb043c8863924e6f0470939d9766a4d07390293cc87b0662"
-    },
-    {
-      "path": "validation/functional.original.json",
-      "bytes": 252,
-      "sha256": "6d508dc1f7d8fe3db4a6d95daad14b236ef09612e806ceb518b1dbab187721d8"
-    },
-    {
-      "path": "validation/functional.original.log",
-      "bytes": 75,
-      "sha256": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
-    },
-    {
-      "path": "validation/release-build.log",
-      "bytes": 1048,
-      "sha256": "0970de78c99775818cf187c9d4d15825a1970a78257eefe6ec604fa01cd5eb54"
-    }
-  ]
+  "root_owned_links_pending_now": [],
+  "post_integration_static_checked_at_utc": "2026-10-31T00:52:01.120184+00:00"
 }

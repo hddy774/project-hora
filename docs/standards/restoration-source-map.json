@@ -247,5 +247,7 @@
     "docs/reviews/v0.2.1-review-guide.md",
     "docs/tasks/V021-REVIEW-STRUCTURE.md"
   ],
-  "product_fingerprint_impact": "global.json 신규 추가는 제품 입력 변경. 기존FP528 실행 원문은 과거 소스에 보존하며 새 설정 최종 검증은 별도다."
+  "product_fingerprint_impact": "global.json 신규 추가는 제품 입력 변경. 기존FP528 실행 원문은 과거 소스에 보존하며 새 설정 최종 검증은 별도다.",
+  "root_review_integration_commit": "59f00dc2bd95f5abdce9652e1d771ff34d541cc0",
+  "root_review_paths_linked_and_present": true
 }

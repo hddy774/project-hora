@@ -88,7 +88,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 기획·이식형 제품 검증
         # Native and portable hosts package the same checked-in compatibility asset.
         run: |
@@ -154,7 +154,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 정확한 소스 기록 내려받기
         uses: actions/download-artifact@v4
         with:
@@ -275,7 +275,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 안드로이드 도구 설정(Android SDK)
         uses: android-actions/setup-android@v3
         with:

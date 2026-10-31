@@ -145,5 +145,62 @@
     }
   ],
   "workflow_files_edited_by_this_task": [],
-  "scope": "404767의 관측 스냅샷. release3곳은root, product3/API24 1곳은별도담당이수정한다. 합류후현재값은검증기록에별도로남긴다. 고정7ce/4fe실측job원문 source/SDK를바꾸지않는다."
+  "scope": "404767의 관측 스냅샷. release3곳은root, product3/API24 1곳은별도담당이수정한다. 합류후현재값은검증기록에별도로남긴다. 고정7ce/4fe실측job원문 source/SDK를바꾸지않는다.",
+  "verified_owner_fixes": [
+    {
+      "source": "59f00dc2bd95f5abdce9652e1d771ff34d541cc0",
+      "pr": 230,
+      "owner": "root",
+      "settings": [
+        {
+          "job": "portable",
+          "version": "10.0.403"
+        },
+        {
+          "job": "windows",
+          "version": "10.0.403"
+        },
+        {
+          "job": "android_build",
+          "version": "10.0.403"
+        }
+      ],
+      "merged_as_ancestor_here": true
+    },
+    {
+      "source": "451151a644cbaaa1f88c05be2921bbdd68d601a4",
+      "pr": 226,
+      "owner": "Android/product 담당",
+      "settings": [
+        {
+          "path": ".github/workflows/v021-product.yml",
+          "job": "portable",
+          "version": "10.0.403",
+          "connector_reported_source_blob": "fc794d29d31ab999f8a446af4b0bc017e2e2c4c3"
+        },
+        {
+          "path": ".github/workflows/v021-product.yml",
+          "job": "windows-regression",
+          "version": "10.0.403",
+          "connector_reported_source_blob": "fc794d29d31ab999f8a446af4b0bc017e2e2c4c3"
+        },
+        {
+          "path": ".github/workflows/v021-product.yml",
+          "job": "android",
+          "version": "10.0.403",
+          "connector_reported_source_blob": "fc794d29d31ab999f8a446af4b0bc017e2e2c4c3"
+        },
+        {
+          "path": ".github/workflows/v021-api24-probe.yml",
+          "job": "api24",
+          "version": "10.0.403",
+          "connector_reported_source_blob": "426c63b207d30b9a245348c4b76ec25e0cf9fe4b"
+        }
+      ],
+      "merged_as_ancestor_here": false,
+      "verification": "GitHub 연결도구의 고정ref 본문을 읽어 SDK설정4개를 대조했다. Android leaf는 별도 통합한다."
+    }
+  ],
+  "source_group_total_exact_pins": 12,
+  "single_final_integrated_head_audit": "모든 leaf 병합 후 root가 수행. 여러 source의 정적 대조를 단일HEAD 실행으로 쓰지 않는다."
 }

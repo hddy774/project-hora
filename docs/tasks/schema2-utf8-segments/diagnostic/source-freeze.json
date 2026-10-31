@@ -1,0 +1,94 @@
+{
+  "frozen_utc": "2026-10-31T02:46:55.689082+00:00",
+  "source_commit": "13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+  "source_tree": "b9cd876f8f78098230444ef5c72af3d5b1fc948c",
+  "source_worktree_clean": true,
+  "product_source_fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+  "sdk": "10.0.403",
+  "runtime": "10.0.14",
+  "cpu_affinity": [
+    3
+  ],
+  "runtimeconfig": {
+    "runtimeOptions": {
+      "tfm": "net10.0",
+      "framework": {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      "configProperties": {
+        "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+        "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+        "System.Runtime.TieredPGO": false
+      }
+    }
+  },
+  "environment": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_TieredCompilation": null,
+    "COMPlus_TieredCompilation": null,
+    "DOTNET_gcServer": null,
+    "COMPlus_gcServer": null,
+    "DOTNET_GCHeapHardLimit": null,
+    "COMPlus_GCHeapHardLimit": null
+  },
+  "assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "informational": "0.2.1+13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+      "configuration": "Release",
+      "sha256": "84845cfed2d9d0f4dbdc97a13075366615b3c8b2367480c174035707735e3b63"
+    },
+    {
+      "name": "Chronicles.Game",
+      "informational": "0.2.1+13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+      "configuration": "Release",
+      "sha256": "fe42671f0eb463291e8562af23477d45459f230998d7f3a5689eb71b69b3396e"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "informational": "0.2.1+13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+      "configuration": "Release",
+      "sha256": "83bc763e05f32ba634426a78a0806ea187dc5b187c9a0085041898a7077388e3"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "informational": "0.2.1+13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+      "configuration": "Release",
+      "sha256": "72f2cab07140a36a751f918ca0c90574ca706f195753b52d77593c30e0d06954"
+    }
+  ],
+  "original_5f_assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "informational": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "sha256": "2a42c4a3ef020a4444226d81c7dc53b2d0ed879970ea1f0b9b6caf9456d9312f"
+    },
+    {
+      "name": "Chronicles.Game",
+      "informational": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "sha256": "5e4ee185e1d3415ea0fa4a51d4d09302b20650f4bdd58342eab77c55bf364986"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "informational": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "sha256": "04e77c90fd738f30718a892e6e2ac4442b1b633dc9433f46cc8cb3d49ae93f20"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "informational": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "sha256": "100dab96d742b5800c4f59e6802e8f588f3cb3fa0714a56ba6d46472f59f8860"
+    }
+  ],
+  "byte_comparisons": 12,
+  "original_plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+  "single_authorized_diagnostic": {
+    "cap_seconds": 200,
+    "stop": "after N2/120 case report is written, external SIGTERM; preserve partial original; no later-case completion or whole pass claim"
+  }
+}

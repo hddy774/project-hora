@@ -1,0 +1,96 @@
+{
+  "source_commit": "13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+  "started_utc": "2026-10-31T02:45:49.150922+00:00",
+  "cpu_affinity": [
+    3
+  ],
+  "runs": [
+    {
+      "name": "segments",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-schema2-segments-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "schema2 UTF8 segments:",
+        "--report",
+        "/workspace/scratch/schema2-segments-5f789c8/segments.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 4.283982674009167,
+      "ended_utc": "2026-10-31T02:45:53.435020+00:00"
+    },
+    {
+      "name": "envelopes",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-schema2-segments-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "대용량 저장:",
+        "--report",
+        "/workspace/scratch/schema2-segments-5f789c8/envelopes.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 4.783380059991032,
+      "ended_utc": "2026-10-31T02:45:58.219072+00:00"
+    },
+    {
+      "name": "threshold",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-schema2-segments-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "저장 봉투 기본 경계:",
+        "--report",
+        "/workspace/scratch/schema2-segments-5f789c8/threshold.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.029343700996833,
+      "ended_utc": "2026-10-31T02:46:01.248722+00:00"
+    },
+    {
+      "name": "host",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-schema2-segments-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "host recovery:",
+        "--report",
+        "/workspace/scratch/schema2-segments-5f789c8/host.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.279357681996771,
+      "ended_utc": "2026-10-31T02:46:04.528475+00:00"
+    },
+    {
+      "name": "culture",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-schema2-segments-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "저장 왕복·호스트 문화권 독립",
+        "--report",
+        "/workspace/scratch/schema2-segments-5f789c8/culture.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.2167134190094657,
+      "ended_utc": "2026-10-31T02:46:05.745680+00:00"
+    }
+  ],
+  "scope": "Selected functional compatibility only; not the single N2 diagnostic",
+  "ended_utc": "2026-10-31T02:46:05.746013+00:00"
+}

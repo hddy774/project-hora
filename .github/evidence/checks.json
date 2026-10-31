@@ -4,7 +4,7 @@
     "passed": 27,
     "exitCode": 0,
     "scope": "mock guards, draft ID/pagination and draft URL versus canonical published URL, metadata/hash, Actions ZIP JSON versus release octet bytes, redirect, public/index/idempotence; no real API writes in self-tests",
-    "log": "checks/draft-url-self-test.log"
+    "log": "checks/final-owner-body-self-test.log"
   },
   "actualLocalOriginalZipHashesPassed": 6,
   "actualOriginalBytes": 9937563,
@@ -38,10 +38,11 @@
     "actions-zip-media-self-test.log": "0d4ddad078b164a3ff698e07fb2df0542b08a5548aee9e84f0ad59a1a6f4d0d7",
     "actions-zip-415-before.log": "38887854e84b143f01cf29ad6ced78696ed5c2232afdbe6722d85f2c2cc208d3",
     "draft-url-self-test.log": "8302a6eebc9c55df405ed0e448af7c3036be24788e80db1d7bafc698c1754c4d",
-    "draft-untagged-url-before.log": "d6dd6280c2f575169dacbc5ccf21e6df19499e14e96e8478cf8ac1eee07c1f65"
+    "draft-untagged-url-before.log": "d6dd6280c2f575169dacbc5ccf21e6df19499e14e96e8478cf8ac1eee07c1f65",
+    "final-owner-body-self-test.log": "8fc01e25915ff7819dd7d9e03079f1d1450f3bc5928c6bb55ce3dbf21571e312"
   },
   "scope": {
-    "changedFiles": 27,
+    "changedFiles": 28,
     "selectedProductChanges": 0,
     "baseProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
     "newTreeProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
@@ -122,5 +123,10 @@
     "fixedIdTagTargetPrereleaseUnchanged": true,
     "publicAssetUrlGuardUnchanged": true,
     "existingHttp415EvidenceUnchanged": true
+  },
+  "publicBodyKoreanLabels": {
+    "checked": true,
+    "originalStatusFieldsChanged": false,
+    "manifestChanged": false
   }
 }

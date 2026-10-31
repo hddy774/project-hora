@@ -226,8 +226,8 @@ class EvidenceArchive:
 
     def body(self, state):
         return ("## 민감도 원형 근거 보관\n\n상태: " + state + "\n\n"
-                "원래 실행은 failure이며4완주·2CLI-timeout partial입니다. 원문/complete=false 값을 보존합니다.\n"
-                "제품 v0.2.1 최신 릴리스/APK와 별개인 prerelease이며 합격/보정 효과로 재라벨하지 않습니다.\n\n"
+                "원래 실행은 실패(failure)이며 4개 조건 완주·2개 조건은 명령 실행 시간 상한(CLI timeout)으로 부분 종료했습니다. 원문/complete=false 값을 보존합니다.\n"
+                "제품 v0.2.1 최신 릴리스/APK와 별개인 사전 릴리스(prerelease)이며 합격/보정 효과로 재라벨하지 않습니다.\n\n"
                 "고정 manifest SHA256: `" + MANIFEST_SHA256 + "`\n\n"
                 "현재 보관 요청: https://github.com/" + REPOSITORY + "/actions/runs/" + str(self.request["run_id"]))
 

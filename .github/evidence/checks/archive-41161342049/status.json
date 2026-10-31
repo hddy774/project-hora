@@ -1,0 +1,16 @@
+{
+  "error": "GitHub 요청 실패: HTTP 415",
+  "phase": "original-download",
+  "request": {
+    "action": "labeled",
+    "actor": "hddy774",
+    "attempt": 1,
+    "event": "pull_request",
+    "head_sha": "a8709c0de824c3071d97ecb6cd9a86ab73641b13",
+    "label": "evidence-archive:v021-sensitivity-20261031",
+    "pr": 242,
+    "repository": "hddy774/project-hora",
+    "run_id": 41161342049
+  },
+  "state": "실패"
+}

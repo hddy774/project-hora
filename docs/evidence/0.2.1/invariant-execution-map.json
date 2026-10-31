@@ -1,13 +1,13 @@
 {
   "schema": "seonro.actual-invariant-execution-map.v1",
-  "mapping_source_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
-  "test_sources_sha256": "75e7cb849f6d113bff4c2cc4acd8cc408a0ec7907ab1b7cd8c0f0d02b3d1b21a",
+  "mapping_source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "test_sources_sha256": "a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b",
   "execution_status": "not_asserted",
-  "scope": "5f789c8/FP a8634의 실제 등록321개와24INV·167증인 연결이다. 기존 df314개/152연결은 보존하고 새7개를 수동 연결했다. not_asserted 유지·맵 자체는 실행 결과/성능/장기/native/111개 수용 판정이 아니다.",
+  "scope": "7901f34/FPc91c의 실제323등록·24INV·171증인 연결이다. 이전5f321/167을 보존하고 새 schema2 UTF8 조각2개/4연결을 수동 추가한다. not_asserted 유지·맵은 실행/성능/장기/native/111개 수용 판정이 아니다.",
   "catalog": {
-    "feature_scenarios": 283,
+    "feature_scenarios": 285,
     "program_scenarios": 38,
-    "total": 321
+    "total": 323
   },
   "scenarios": [
     {
@@ -455,6 +455,32 @@
         "path": "tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs",
         "symbol": "KnowledgeOwnedWorldCacheScenario",
         "line": 63
+      },
+      "boundary": "public_world",
+      "invariants": [
+        "INV-004",
+        "INV-006"
+      ]
+    },
+    {
+      "name": "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs",
+        "symbol": "Schema2SegmentBoundaryCompatibilityScenario",
+        "line": 55
+      },
+      "boundary": "module",
+      "invariants": [
+        "INV-004",
+        "INV-006"
+      ]
+    },
+    {
+      "name": "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs",
+        "symbol": "Schema2SegmentWorldCompatibilityScenario",
+        "line": 9
       },
       "boundary": "public_world",
       "invariants": [
@@ -5171,6 +5197,39 @@
             "opening.Revision = long.MaxValue",
             "world.Checkpoint().Knowledge.Activities.Count == 0"
           ]
+        },
+        {
+          "scenario": "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "determinism"
+          ],
+          "claim": "실제 GameWorld의 사건 텍스트만 바꾼 fixture에서 두 문화권·Unicode/lone surrogate·빈 값/긴 문자열과 순번0/7/long.MaxValue의 기본 schema2 전체 bytes를 독립 기존 encoder와 대조한다. 공통 Decode 뒤 순번/Hash/RNG와 원본을 유지한다. 공개 행동 명령·월 진행·실제 파일/성능 검사는 아니다.",
+          "anchors": [
+            "new[] { \"en-US\", \"tr-TR\" }",
+            "new string('x', 32767)",
+            "new[] { 0L, 7, long.MaxValue }",
+            "actual.AsSpan().SequenceEqual(before)",
+            "var decoded = GameCodec.DecodeEnvelope(actual)",
+            "decoded.World.Checkpoint().RandomState == random"
+          ]
+        },
+        {
+          "scenario": "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+          "kinds": [
+            "positive",
+            "determinism"
+          ],
+          "claim": "private schema2 writer를 reflection delegate로 호출하는 모듈 검사다. 빈 payload·16KiB 전후 길이와 경계에 걸친 유효 UTF8 문자/escape, 순번0/상한을 독립 이전 serializer의 전체 bytes와 대조하고 property 순서를 확인한다. 임의 UTF8 본문이며 실제 GameWorld·공통 Decode/파일·월 진행 검사는 아니다.",
+          "anchors": [
+            "GetMethod(\"EncodeJsonEnvelope\", BindingFlags.NonPublic | BindingFlags.Static)",
+            "Verify(encode, [])",
+            "new[] { 1, 16383, 16384, 16385 }",
+            "new[] { 16381, 16382, 16383, 16384, 16385 }",
+            "actual.AsSpan().SequenceEqual(before)",
+            "properties.SequenceEqual(PropertyOrder)"
+          ]
         }
       ]
     },
@@ -5814,6 +5873,39 @@
             "candidate.AdvanceTo(2)",
             "world.StateHash() == restored.StateHash() && world.StateHash() == fromInput.StateHash()",
             "completed.Count == 2"
+          ]
+        },
+        {
+          "scenario": "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트",
+          "kinds": [
+            "positive",
+            "save_resume",
+            "determinism"
+          ],
+          "claim": "실제 GameWorld의 사건 텍스트만 바꾼 fixture에서 두 문화권·Unicode/lone surrogate·빈 값/긴 문자열과 순번0/7/long.MaxValue의 기본 schema2 전체 bytes를 독립 기존 encoder와 대조한다. 공통 Decode 뒤 순번/Hash/RNG와 원본을 유지한다. 공개 행동 명령·월 진행·실제 파일/성능 검사는 아니다.",
+          "anchors": [
+            "new[] { \"en-US\", \"tr-TR\" }",
+            "new string('x', 32767)",
+            "new[] { 0L, 7, long.MaxValue }",
+            "actual.AsSpan().SequenceEqual(before)",
+            "var decoded = GameCodec.DecodeEnvelope(actual)",
+            "decoded.World.Checkpoint().RandomState == random"
+          ]
+        },
+        {
+          "scenario": "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+          "kinds": [
+            "positive",
+            "determinism"
+          ],
+          "claim": "private schema2 writer를 reflection delegate로 호출하는 모듈 검사다. 빈 payload·16KiB 전후 길이와 경계에 걸친 유효 UTF8 문자/escape, 순번0/상한을 독립 이전 serializer의 전체 bytes와 대조하고 property 순서를 확인한다. 임의 UTF8 본문이며 실제 GameWorld·공통 Decode/파일·월 진행 검사는 아니다.",
+          "anchors": [
+            "GetMethod(\"EncodeJsonEnvelope\", BindingFlags.NonPublic | BindingFlags.Static)",
+            "Verify(encode, [])",
+            "new[] { 1, 16383, 16384, 16385 }",
+            "new[] { 16381, 16382, 16383, 16384, 16385 }",
+            "actual.AsSpan().SequenceEqual(before)",
+            "properties.SequenceEqual(PropertyOrder)"
           ]
         }
       ]
@@ -7716,7 +7808,7 @@
         "INV-005",
         "INV-006"
       ],
-      "focus": "기존 canonical serializer/Options와 Hash 출력·예외·RNG를 per-call 비파일 SHA stream에서도 보존한다. 기본 UTF8본문16MiB 초과에서 기존 binary3를 선택하며 작은 JSON2 bytes/이전 큰 JSON 읽기·논리checksum·순번·Decode/Clone 경계는 유지한다. 기능과 실제 성능/장기 수용을 구분한다."
+      "focus": "기존 canonical serializer/Options와 Hash 출력·예외·RNG를 per-call 비파일 SHA stream에서도 보존한다. 기본 UTF8본문16MiB 초과에서 기존 binary3를 선택하며 작은 JSON2 bytes/이전 큰 JSON 읽기·논리checksum·순번·Decode/Clone 경계는 유지한다. 기능과 실제 성능/장기 수용을 구분한다.; schema2 Payload를 전체 UTF16 문자열 없이16KiB UTF8 조각으로 작성하되 원래 property 순서·Encoder/indent/depth·escape·전체 bytes를 유지한다. 내부 binary/Decode/논리checksum·기본16MiB 경계는 그대로다."
     },
     {
       "path_prefix": "src/Chronicles.Hosting/",
@@ -7992,18 +8084,12 @@
     }
   ],
   "last_source_review": {
-    "source_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
+    "source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
     "scenario_bindings_reviewed": true,
     "reviewed_paths": [
-      "src/Chronicles.Game/CanonicalHashSink.cs",
       "src/Chronicles.Game/GameCodec.cs",
-      "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
-      "src/Chronicles.Game/World.KnowledgeBridge.cs",
-      "tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs",
-      "tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs",
-      "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs"
+      "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs"
     ],
-    "review_note": "새 Hash3/기본16MiB 경계1/소유지식3의 실제7Name·경계·주장·앵커를 먼저 수동 연결했다. 기존314개 행과152증인은 그대로다. canonical Hash oracle/실패·새 기본 host 저장·모듈/실제 world 소유격리를 분리하며 NoInlining은 기존 장기 사례 stack 수명 경계/같은 계획·시간·검증·IO 순서의 하네스 변경으로 검토했다. 새 실제 전체 결과는 종료0 확인 뒤 별도 원문으로만 연결하며 성능·장기·111 수용을 주장하지 않는다."
+    "review_note": "새 schema2 UTF8 조각2Name의 실제 GameWorld/codec 비교와 private writer 모듈 경계를 수동 연결했다. 두 검사는 INV004/006에만 연결하고 기존321개 행·167증인의 claim/kinds/anchors와24제목/한계를 보존한다. 전체 실행 결과는 root 종료0 확인 뒤 별도 실제 원문으로 연결하며 저장 byte 동등과 새 성능/장기 수용을 구분한다."
   }
 }

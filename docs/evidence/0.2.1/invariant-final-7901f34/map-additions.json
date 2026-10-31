@@ -1,0 +1,60 @@
+{
+  "source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "new_scenarios": 2,
+  "new_witness_links": 4,
+  "manual_bindings": [
+    {
+      "name": "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs",
+        "symbol": "Schema2SegmentWorldCompatibilityScenario",
+        "line": 9
+      },
+      "boundary": "public_world",
+      "invariants": [
+        "INV-004",
+        "INV-006"
+      ],
+      "kinds": [
+        "positive",
+        "save_resume",
+        "determinism"
+      ],
+      "claim": "실제 GameWorld의 사건 텍스트만 바꾼 fixture에서 두 문화권·Unicode/lone surrogate·빈 값/긴 문자열과 순번0/7/long.MaxValue의 기본 schema2 전체 bytes를 독립 기존 encoder와 대조한다. 공통 Decode 뒤 순번/Hash/RNG와 원본을 유지한다. 공개 행동 명령·월 진행·실제 파일/성능 검사는 아니다.",
+      "anchors": [
+        "new[] { \"en-US\", \"tr-TR\" }",
+        "new string('x', 32767)",
+        "new[] { 0L, 7, long.MaxValue }",
+        "actual.AsSpan().SequenceEqual(before)",
+        "var decoded = GameCodec.DecodeEnvelope(actual)",
+        "decoded.World.Checkpoint().RandomState == random"
+      ]
+    },
+    {
+      "name": "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+      "source": {
+        "path": "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs",
+        "symbol": "Schema2SegmentBoundaryCompatibilityScenario",
+        "line": 55
+      },
+      "boundary": "module",
+      "invariants": [
+        "INV-004",
+        "INV-006"
+      ],
+      "kinds": [
+        "positive",
+        "determinism"
+      ],
+      "claim": "private schema2 writer를 reflection delegate로 호출하는 모듈 검사다. 빈 payload·16KiB 전후 길이와 경계에 걸친 유효 UTF8 문자/escape, 순번0/상한을 독립 이전 serializer의 전체 bytes와 대조하고 property 순서를 확인한다. 임의 UTF8 본문이며 실제 GameWorld·공통 Decode/파일·월 진행 검사는 아니다.",
+      "anchors": [
+        "GetMethod(\"EncodeJsonEnvelope\", BindingFlags.NonPublic | BindingFlags.Static)",
+        "Verify(encode, [])",
+        "new[] { 1, 16383, 16384, 16385 }",
+        "new[] { 16381, 16382, 16383, 16384, 16385 }",
+        "actual.AsSpan().SequenceEqual(before)",
+        "properties.SequenceEqual(PropertyOrder)"
+      ]
+    }
+  ]
+}

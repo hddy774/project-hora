@@ -87,7 +87,45 @@ def main():
     log = (ROOT / 'collector/job-124465144337.log').read_bytes()
     assert digest(log) == collector['failureLogSha256'] and b'AssertionError' in log and b'exit code 1' in log
     publication = read('publication.json')
-    assert publication['publicationStatus'] == 'pending' and publication['publicAssetBytesVerified'] is False
+    if publication['publicationStatus'] == 'pending':
+        assert publication['publicAssetBytesVerified'] is False
+    else:
+        assert publication['publicationStatus'] == 'verified-complete'
+        assert publication['publicAssetBytesVerified'] is True
+        assert (publication['archiveRun'], publication['archiveAttempt'], publication['archiveSourcePr']) == (41177374470, 1, 263)
+        assert publication['archiveSourceCommit'] == '46c484e3ffb4bdac69725ff789c959ef3721c475'
+        assert publication['actualMeasuredRun'] == 41159864831 and publication['actualMeasuredSource'] == SOURCE
+        assert publication['releaseId'] == 429767706 and publication['targetCommit'] == SOURCE
+        assert publication['releaseTag'] == 'evidence/v0.2.1-sensitivity-41159864831'
+        assert publication['prerelease'] is True and publication['makeLatest'] is False
+        assert publication['indexAssetId'] == 694601640 and publication['indexBytes'] == 24058
+        assert publication['indexAssetName'] == 'sensitivity-artifact-index-41159864831.json'
+        assert publication['actualIndexSha256'] == '20168d0596fa0f9d17f933d37a732e0af3725513c3aeb897ec769efc29c7d9cd'
+        assert publication['indexWholeBytesVerified'] is True
+        url_prefix = 'https://github.com/hddy774/project-hora/releases/download/' + publication['releaseTag'] + '/'
+        assert publication['indexPublicUrl'] == url_prefix + publication['indexAssetName']
+        assert publication['zipAssetCount'] == 6 and publication['publicAssetCount'] == 7
+        original_assets = {a['artifactId']: a for a in read('verification/artifacts.json')['artifacts']}
+        fixed_asset_ids = {13033147298: 694601192, 13030660873: 694601250, 13032846688: 694601297,
+                           13025494772: 694601347, 13026322503: 694601399, 13032956600: 694601490}
+        assert len(publication['zipAssets']) == 6
+        assert {a['sourceArtifactId'] for a in publication['zipAssets']} == set(original_assets) == set(fixed_asset_ids)
+        for asset in publication['zipAssets']:
+            original = original_assets[asset['sourceArtifactId']]
+            assert asset['assetId'] == fixed_asset_ids[asset['sourceArtifactId']]
+            assert asset['name'] == original['name'] + '.zip'
+            assert asset['bytes'] == original['bytes'] and asset['sha256'] == original['sha256']
+            assert asset['publicUrl'] == url_prefix + asset['name']
+            assert asset['wholeBytesVerified'] is True and asset['httpStatus'] == 200
+        assert publication['zipBytesTotal'] == sum(a['bytes'] for a in publication['zipAssets']) == 9952241
+        public_check = publication['publicReadVerification']
+        assert public_check['httpStatusAll'] == 200 and public_check['wholeBytesAll'] is True
+        assert public_check['authorizationSent'] is False and public_check['cookieSent'] is False
+        assert public_check['requestCount'] == 14
+        assert public_check['proofSha256'] == '46ba73f7be59d57045bff89c2df78ae0c9622b031ae2cc34de92b499838e42fe'
+        assert publication['archiveManifestSha256'] == '6d4dba436640d3251794e1c1c401646cbbcbb6fdb3af4ba4eee0c85d177b1135'
+        assert publication['originalBatchFailureAndRawFlagsUnchanged'] is True
+        assert publication['differentPlanUniqueConditionsAreNotAggregatePass'] is True
     for label, target in re.findall(r'\[([^\]]+)\]\(([^)]+)\)', (ROOT / 'README.md').read_text()):
         if not target.startswith(('https://', 'http://')):
             assert (ROOT / target.split('#')[0]).exists(), (label, target)

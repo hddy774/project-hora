@@ -5,8 +5,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 6254,
-      "sha256": "2afaf0bf0a41f58976eeff005dd8b53c2fe7965e0645eff090eae602f9d65410",
+      "bytes": 7223,
+      "sha256": "3028350fff8c16c372590119da7d9062340d88e3d1f009301f650c80b04f7553",
       "kind": "new derived documentation or read-only verifier"
     },
     {
@@ -150,8 +150,8 @@
     },
     {
       "path": "publication.json",
-      "bytes": 798,
-      "sha256": "3066c23481de6e94233f69c9875788524a584bae86aeabe94daa9dd6be12e21f",
+      "bytes": 5635,
+      "sha256": "e24388fe54010921ae0ef25127730aa294eb76f3f68ae3f62fdd2aa835936664",
       "kind": "new derived documentation or read-only verifier"
     },
     {
@@ -204,8 +204,8 @@
     },
     {
       "path": "verify-evidence.py",
-      "bytes": 8419,
-      "sha256": "fc3b564d236f28731a69475c24d59c8eb1e5a1d4e2f6f5fe05b360b37d084d33",
+      "bytes": 11640,
+      "sha256": "53c069ce0bd0cf05d071b3cd02b9f2f09685da7b49f135af0415d7d24ebf55b2",
       "kind": "new derived documentation or read-only verifier"
     }
   ]

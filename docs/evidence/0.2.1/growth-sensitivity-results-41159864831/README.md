@@ -39,7 +39,9 @@ collection ZIP의90개 파일 중89개는 세 개별 시드 ZIP과 byte가 같�
 
 ## 원형 보관과 읽기 검증
 
-[6 ZIP 실물 검증](verification/artifacts.json)은 3seed·inputs·prepare·collection의 실제 크기/SHA/CRC·ID·만료일을 기록한다. 이들은 현재 Actions/로컬에 있으며 [영속보관 상태](publication.json)는 **pending·공개 byte 미검증**이다. 예정 tag는 `evidence/v0.2.1-sensitivity-41159864831`, 예정 index는 `sensitivity-artifact-index-41159864831.json`이다. [예정 보관 URL](https://github.com/hddy774/project-hora/releases/tag/evidence/v0.2.1-sensitivity-41159864831)을 실제 게시 완료로 표시하지 않는다.
+[6 ZIP 실물 검증](verification/artifacts.json)의 3seed·inputs·prepare·collection은 [별도 근거 사전릴리스](https://github.com/hddy774/project-hora/releases/tag/evidence/v0.2.1-sensitivity-41159864831)에 원형 그대로 보관됐다. [공개 색인](https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/sensitivity-artifact-index-41159864831.json)은 asset694601640·24,058바이트, SHA256 `20168d0596fa0f9d17f933d37a732e0af3725513c3aeb897ec769efc29c7d9cd`다. [영속보관 상태](publication.json)는 **verified-complete**이며 6 ZIP과 색인 총7개를 실제 무인증 whole-byte 다운로드로 확인했다. 7개 자산의 최종 응답은 HTTP200이었다. 리다이렉트를 포함한14요청 모두 Authorization/Cookie 없이 진행됐고, ZIP6개의 manifest SHA와 색인의 server SHA가 일치했다. 전체 검증 원형 폴더는 root의 별도 증거 PR이 소유하며 여기에는 작은 참조만 둔다.
+
+실제 보관 실행은41177374470/attempt1, release429767706이며 보관 도구 소스는 PR263의 `46c484e3ffb4bdac69725ff789c959ef3721c475`다. 실제 측정 소스7ce와 구분한다. 사전릴리스/비latest 계약과 기존 릴리스 보호3항목의 원문은 유지됐다. 수집기 오류 로그18,953바이트는 이 Git 폴더의 원형 사본이며, collection ZIP에만 있는 고유 파일은 request다. 보관 완료가 두 배치의 FAIL·raw false나 다른 계획에 걸친 고유6관측의 의미를 바꾸지 않는다.
 
 ```text
 python3 docs/evidence/0.2.1/growth-sensitivity-results-41159864831/verify-evidence.py

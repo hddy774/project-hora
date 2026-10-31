@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "baseline_commit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "tested_source": "baseline plus the exact seven file SHA256 records in member-comparison.json; worktree candidate, not claimed as a clean baseline build",
+  "source_files": [
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "bytes": 6587,
+      "sha256": "6b0779a0a0061ef19a598beea23f4c5ab6a80d5a1bb56387b7abd90ec6fd5809",
+      "lines": 93,
+      "members": 8
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+      "bytes": 16799,
+      "sha256": "0c965e44ed6c3454a181709efb1f3b49d3a094b88bf8da10ee067653fbbf7adf",
+      "lines": 217,
+      "members": 11
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+      "bytes": 9320,
+      "sha256": "5fbbdf95bf2c071eccca373dbfc8b3ec43b8cc7f64e878bfb7f2ae47500fd3fc",
+      "lines": 118,
+      "members": 2
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+      "bytes": 4459,
+      "sha256": "38895bf1c86893f9225b7a0df53ca0d4b97d5028cc409b2db1cb3856f64e3f20",
+      "lines": 66,
+      "members": 7
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialTraits.cs",
+      "bytes": 12596,
+      "sha256": "c3d84b4b2afc9f7372137baf9b77a6c12512948f9ec94773d2d5813ed2f9c12f",
+      "lines": 154,
+      "members": 8
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+      "bytes": 3119,
+      "sha256": "1b506e983980c90f65838064fe3ad46ae65536be89ed751e82eeccda5e072d0c",
+      "lines": 50,
+      "members": 3
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+      "bytes": 5103,
+      "sha256": "b188c64def2c2eae27dec7963944bf450e77ba7495f0cd99af1103aed68c53b5",
+      "lines": 76,
+      "members": 4
+    }
+  ],
+  "member_comparison": {
+    "members": 43,
+    "methods": 40,
+    "full_member_text_identical": true,
+    "tokens_identical": true,
+    "method_bodies_identical": true,
+    "member_trivia_identical": true,
+    "field_initializer_order_and_file_retained": true,
+    "new_members": 0,
+    "removed_members": 0
+  },
+  "release_build": {
+    "exit_code": 0,
+    "warnings": 0,
+    "errors": 0,
+    "cpu": "2",
+    "max_msbuild_nodes": 1,
+    "shared_compilation": false,
+    "record": "release-build.json"
+  },
+  "functional": {
+    "existing_filter": "people",
+    "total": 29,
+    "failed": 0,
+    "exit_code": 0,
+    "cpu": "2",
+    "report": "people-functional.json",
+    "report_sha256": "75fab4f381660b3a3c7d9f7a41c0a62543d5ff50cea6abf798998e0301f84efd"
+  },
+  "static": {
+    "product_boundary_self_test": {
+      "exit_code": 0,
+      "report": "product-boundary.json"
+    },
+    "plan_self_test": {
+      "exit_code": 0,
+      "negative_self_tests_passed": 11,
+      "tasks": 111,
+      "projection_sha256": "1603a1bb89e0c018df0571fe29a6d22ae6f04f9cc7b0141d8ebeff4c4c893bc5"
+    },
+    "git_diff_check": {
+      "exit_code": 0
+    },
+    "single_file_text_dependencies_found": []
+  },
+  "scope": {
+    "production_files": "the original World.PeopleSocialBridge.cs and six new method-only partials",
+    "public_api_changes": false,
+    "runtime_logic_changes": false,
+    "rng_changes": false,
+    "shared_validator_changes": false,
+    "new_feature_tests": false,
+    "performance_growth_soak_runs": false
+  },
+  "old_evidence": "FP528 and prior native/performance proofs remain evidence of their original source; integration source must be verified by root separately"
+}

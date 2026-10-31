@@ -1,0 +1,62 @@
+[
+  {
+    "path": "REVIEW.md",
+    "bytes": 3439,
+    "sha256": "335df0fa50fa295ee0cfff6ef5ed003ac915f0cba3b153ed5a0cd1482a2e5173"
+  },
+  {
+    "path": "TASK.md",
+    "bytes": 2031,
+    "sha256": "ce0bc82954fda7c6a73706d7eae6d6c71875597426f49f981ea371dd3eeda36c"
+  },
+  {
+    "path": "inspector/Inspector.csproj",
+    "bytes": 571,
+    "sha256": "2801f96b34c76614f0a6635214721ef3efbfb15abe31bd341fc0ccd6b0b985b3"
+  },
+  {
+    "path": "inspector/Program.cs",
+    "bytes": 8970,
+    "sha256": "9a1516ab14959d810e58b3f3a6a869913397235b4aa24254669c134426eb32d2"
+  },
+  {
+    "path": "member-comparison.json",
+    "bytes": 31790,
+    "sha256": "795053900a635baca502ef2f8e5b9281d78abeb318c72237daa0b353e36f99dd"
+  },
+  {
+    "path": "people-functional-run.json",
+    "bytes": 695,
+    "sha256": "2f3049d97d8ed6e74978f46244063ce6eb4167da369b102a1f6440d3b19b9483"
+  },
+  {
+    "path": "people-functional.json",
+    "bytes": 5317,
+    "sha256": "75fab4f381660b3a3c7d9f7a41c0a62543d5ff50cea6abf798998e0301f84efd"
+  },
+  {
+    "path": "people-functional.log",
+    "bytes": 3428,
+    "sha256": "0093da407b188e411db828160743fa961f849c1b914ae163c356e49610b60661"
+  },
+  {
+    "path": "product-boundary.json",
+    "bytes": 3543,
+    "sha256": "29a6092bc54dabd8659ddc3e4ff4f019f0caf17df1a6e2e3f2effa349f7dbd2f"
+  },
+  {
+    "path": "release-build.json",
+    "bytes": 594,
+    "sha256": "cec889477ea4bac8a1ccfdab2dc4df7675acb1ed396eb43d202371240c146165"
+  },
+  {
+    "path": "release-build.log",
+    "bytes": 1117,
+    "sha256": "38d47de2d328665e43c7f584d6b616288554839d6dfd216249c7edeb0717676e"
+  },
+  {
+    "path": "verification.json",
+    "bytes": 3501,
+    "sha256": "38696781969edce5212162e4c199cfcbf104dddc4244f1dfd9b69394cd2944bd"
+  }
+]

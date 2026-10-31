@@ -1,0 +1,21 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "people",
+    "--report",
+    "/workspace/scratch/people-social-split-404767a/people-functional.json"
+  ],
+  "started_utc": "2026-10-31T00:38:53.744895+00:00",
+  "ended_utc": "2026-10-31T00:39:28.548849+00:00",
+  "exit_code": 0,
+  "total": 29,
+  "failed": 0,
+  "report_sha256": "75fab4f381660b3a3c7d9f7a41c0a62543d5ff50cea6abf798998e0301f84efd",
+  "log_sha256": "0093da407b188e411db828160743fa961f849c1b914ae163c356e49610b60661",
+  "source_snapshot": "member-comparison.json seven source SHA256 records, unchanged after build"
+}

@@ -1,0 +1,21 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "dotnet",
+    "build",
+    "tests/Chronicles.Game.Tests",
+    "-c",
+    "Release",
+    "-m:1",
+    "-p:UseSharedCompilation=false"
+  ],
+  "cwd": "/workspace/seonro-people-bridge-split-404767a",
+  "source_baseline": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "source_snapshot": "member-comparison.json seven file SHA256 records",
+  "started_utc": "2026-10-31T00:37:58.264333+00:00",
+  "ended_utc": "2026-10-31T00:38:29.937029+00:00",
+  "exit_code": 0,
+  "log_sha256": "38d47de2d328665e43c7f584d6b616288554839d6dfd216249c7edeb0717676e"
+}

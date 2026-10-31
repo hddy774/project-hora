@@ -1,0 +1,34 @@
+{
+  "base_source": "f3627aa4db4282a8aebb572bffe2048261e0756a",
+  "unchanged_helper_ast": [
+    "ReadinessError",
+    "require",
+    "inspect_dialog",
+    "foreground_app",
+    "_bytes",
+    "Reader",
+    "main"
+  ],
+  "original_readiness_loop_ast_identical": true,
+  "original_reader_ast_identical": true,
+  "original_test_names_retained": 15,
+  "original_test_bodies_identical": 14,
+  "explicitly_updated_policy_subcase": {
+    "name": "test_launch_status_and_requested_activity_are_both_required",
+    "only_AST_change": "timeout immediate-rejection subcase replaced with unknown-status rejection; authorized pending timeout has separate tests"
+  },
+  "new_test_names": [
+    "test_android_launch_timeout_never_ready_uses_original_90_second_deadline",
+    "test_android_launch_timeout_rejects_nonzero_other_activity_errors_and_unknown_status",
+    "test_android_launch_timeout_waits_for_delayed_real_verifier",
+    "test_install_log_capture_and_launch_share_original_90_second_deadline",
+    "test_launch_parser_requires_one_known_status_and_one_exact_activity",
+    "test_os_launch_failure_is_terminal_and_preserves_stderr",
+    "test_pending_launch_cannot_pass_without_pid_or_complete_screenshot",
+    "test_pending_launch_keeps_foreground_dom_crash_and_anr_requirements",
+    "test_subprocess_launch_timeout_is_terminal_with_partial_android_timeout_output"
+  ],
+  "test_count": 24,
+  "new_am_start_or_reader_instances": false,
+  "same_loop_ast_sha256": "b86c3e1d70fd98fc5480612c412691b7e7ae3e7480243166b41c3af181a031ca"
+}

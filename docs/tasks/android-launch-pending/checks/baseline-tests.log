@@ -1,0 +1,20 @@
+test_app_anr_and_unknown_never_tap_or_run_the_verifier (__main__.AndroidReadinessTests.test_app_anr_and_unknown_never_tap_or_run_the_verifier) ... ok
+test_app_unknown_and_mismatched_owner_dialogs_are_rejected (__main__.AndroidReadinessTests.test_app_unknown_and_mismatched_owner_dialogs_are_rejected) ... ok
+test_deadline_is_not_reset_by_repeated_launcher_wait (__main__.AndroidReadinessTests.test_deadline_is_not_reset_by_repeated_launcher_wait) ... ok
+test_dialog_appearing_at_screenshot_is_handled_before_acceptance (__main__.AndroidReadinessTests.test_dialog_appearing_at_screenshot_is_handled_before_acceptance) ... ok
+test_external_wait_then_real_verifier_success_preserves_before_and_after (__main__.AndroidReadinessTests.test_external_wait_then_real_verifier_success_preserves_before_and_after) ... ok
+test_invalid_or_other_package_xml_cannot_pass_by_matching_raw_strings (__main__.AndroidReadinessTests.test_invalid_or_other_package_xml_cannot_pass_by_matching_raw_strings) ... ok
+test_launch_error_on_stderr_keeps_failure_diagnostics (__main__.AndroidReadinessTests.test_launch_error_on_stderr_keeps_failure_diagnostics) ... ok
+test_launch_status_and_requested_activity_are_both_required (__main__.AndroidReadinessTests.test_launch_status_and_requested_activity_are_both_required) ... ok
+test_other_foreground_does_not_pass_even_with_app_xml_and_render (__main__.AndroidReadinessTests.test_other_foreground_does_not_pass_even_with_app_xml_and_render) ... ok
+test_own_crash_is_terminal_even_with_old_good_render_marker (__main__.AndroidReadinessTests.test_own_crash_is_terminal_even_with_old_good_render_marker) ... ok
+test_real_quickstep_xml_maps_only_the_wait_resource_and_bounds (__main__.AndroidReadinessTests.test_real_quickstep_xml_maps_only_the_wait_resource_and_bounds) ... ok
+test_real_verifier_rejects_wrong_dom_and_stale_prelaunch_marker (__main__.AndroidReadinessTests.test_real_verifier_rejects_wrong_dom_and_stale_prelaunch_marker) ... ok
+test_real_windows_only_dump_cannot_supply_current_focus (__main__.AndroidReadinessTests.test_real_windows_only_dump_cannot_supply_current_focus) ... ok
+test_stale_launcher_xml_never_taps_the_current_app (__main__.AndroidReadinessTests.test_stale_launcher_xml_never_taps_the_current_app) ... ok
+test_timed_out_ui_preserves_partial_diagnostics_without_new_deadline (__main__.AndroidReadinessTests.test_timed_out_ui_preserves_partial_diagnostics_without_new_deadline) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.151s
+
+OK

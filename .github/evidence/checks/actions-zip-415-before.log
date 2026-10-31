@@ -1,0 +1,21 @@
+test_actions_zip_entry_json_and_release_asset_octet_are_distinct (test_http_client.HttpClientTests.test_actions_zip_entry_json_and_release_asset_octet_are_distinct) ... ERROR
+
+======================================================================
+ERROR: test_actions_zip_entry_json_and_release_asset_octet_are_distinct (test_http_client.HttpClientTests.test_actions_zip_entry_json_and_release_asset_octet_are_distinct)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-evidence-archive/.github/evidence/test_http_client.py", line 35, in test_actions_zip_entry_json_and_release_asset_octet_are_distinct
+    run.prepare_originals()
+  File "/workspace/seonro-evidence-archive/.github/evidence/archive_sensitivity.py", line 220, in prepare_originals
+    self.client.download(API_ROOT + "actions/artifacts/" + str(item["id"]) + "/zip", path, item["bytes"])
+  File "/workspace/seonro-evidence-archive/.github/evidence/http_client.py", line 92, in download
+    with self._open(url, media="application/octet-stream", public=public) as response:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/seonro-evidence-archive/.github/evidence/http_client.py", line 69, in _open
+    raise ArchiveError("GitHub 요청 실패: HTTP " + str(error.code)) from None
+http_client.ArchiveError: GitHub 요청 실패: HTTP 415
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (errors=1)

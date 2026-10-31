@@ -1,0 +1,8 @@
+{
+  "method": "GET",
+  "url": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13024674339/zip",
+  "authorizationSent": false,
+  "accept": "application/octet-stream",
+  "status": 415,
+  "body": "{\"message\":\"Unsupported 'Accept' header: 'application/octet-stream'. Must accept 'application/json'.\",\"documentation_url\":\"https://docs.github.com/v3/media\",\"status\":\"415\"}"
+}

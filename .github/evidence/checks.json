@@ -1,10 +1,10 @@
 {
   "baseCommit": "b15992b6150afb8e4f3348501c51051a7f7733d0",
   "selfTests": {
-    "passed": 23,
+    "passed": 24,
     "exitCode": 0,
-    "scope": "mock context/metadata/hash/transport/draft/public/index/idempotence plus absent draft tag, paginated discovery, fixed release ID; no real API writes",
-    "log": "checks/draft-release-self-test.log"
+    "scope": "mock guards, draft ID and pagination, metadata/hash, Actions ZIP JSON entry versus release octet bytes, redirect, public/index/idempotence; no real API writes in self-tests",
+    "log": "checks/actions-zip-media-self-test.log"
   },
   "actualLocalOriginalZipHashesPassed": 6,
   "actualOriginalBytes": 9937563,
@@ -19,26 +19,27 @@
   "workflowTrigger": "owner-only pull_request.labeled exact dedicated label",
   "tokenSource": "actual execute step GH_TOKEN=${{ github.token }} only",
   "gameOrMeasurementExecutions": 0,
-  "actualArchiveReleaseCalls": 0,
-  "executionLabelAttached": false,
+  "executionLabelAttached": true,
   "existingProductGateOrReadinessChanges": false,
   "sourceFingerprintSelectionChanged": false,
   "snapshotCredentialPatternScan": "no credential/private-key pattern found",
   "codeLines": {
     ".github/evidence/http_client.py": 107,
-    ".github/evidence/archive_sensitivity.py": 393,
+    ".github/evidence/archive_sensitivity.py": 394,
     ".github/evidence/test_archive.py": 379,
-    ".github/evidence/test_http_client.py": 64,
+    ".github/evidence/test_http_client.py": 92,
     ".github/evidence/test_release_lookup.py": 81
   },
   "logSha256": {
     "actionlint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "self-test.log": "3adb5d5b1d02ecd3b14c597f77cdda1e82e381541c2ae294f7f404037b1334c2",
     "draft-tag-404-before.log": "3f303afcc24eafd9b209e7e86ee46096f156d3e7236c3eef8c7fd9ff70be43ec",
-    "draft-release-self-test.log": "1a66c546dbfcdc1e25f96f679e1b16217d5c6dfbab083a733551d00385ef9f1d"
+    "draft-release-self-test.log": "1a66c546dbfcdc1e25f96f679e1b16217d5c6dfbab083a733551d00385ef9f1d",
+    "actions-zip-media-self-test.log": "0d4ddad078b164a3ff698e07fb2df0542b08a5548aee9e84f0ad59a1a6f4d0d7",
+    "actions-zip-415-before.log": "38887854e84b143f01cf29ad6ced78696ed5c2232afdbe6722d85f2c2cc208d3"
   },
   "scope": {
-    "changedFiles": 14,
+    "changedFiles": 25,
     "selectedProductChanges": 0,
     "baseProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
     "newTreeProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
@@ -59,5 +60,52 @@
     "discovery": "authenticated releases?per_page=100&page=N; full pagination, unique exact tag, no draft/published ambiguity",
     "subsequentReads": "GET releases/{pinned release_id}; ID/tag/target/prerelease checks retained",
     "workflowAndHttpClientChanged": false
+  },
+  "actualArchiveReleaseWrites": 0,
+  "executionLabelsAttachedByImplementation": 0,
+  "actualOwnerExecution": {
+    "runId": 41161342049,
+    "attempt": 1,
+    "sourceCommit": "a8709c0de824c3071d97ecb6cd9a86ab73641b13",
+    "event": "pull_request",
+    "actor": "hddy774",
+    "triggeringActor": "hddy774",
+    "conclusion": "failure",
+    "phase": "original-download",
+    "httpStatus": 415,
+    "statusArtifactId": 13026938746,
+    "statusZipBytes": 420,
+    "statusZipSha256": "ab8b13764abb1788b28fd7b714185e80cd816dd08cbf4f4fa8afe3383656a818",
+    "directory": "checks/archive-41161342049",
+    "publicArchiveCreated": false,
+    "latestReleaseIdObserved": 428209007,
+    "latestApkIdObserved": 689402166,
+    "automaticReruns": 0,
+    "implementationRelabels": 0
+  },
+  "actionsZipMediaRegression": {
+    "beforeSourceCommit": "a8709c0de824c3071d97ecb6cd9a86ab73641b13",
+    "beforeExitCode": 1,
+    "beforeLog": "checks/actions-zip-415-before.log",
+    "beforeObservedFailure": "actual transport mock rejects first Actions artifact ZIP entry with HTTP415",
+    "afterExitCode": 0,
+    "afterLog": "checks/actions-zip-media-self-test.log",
+    "fixedActionsEntryAccept": "application/json",
+    "draftAndPublicReleaseAssetAccept": "application/octet-stream",
+    "originalBytesAndShaChecksUnchanged": true,
+    "crossHostAuthorizationStrippingUnchanged": true,
+    "sourceRunPerRequestUrlLoggingAvailable": false,
+    "firstArtifactConclusion": "fixed source call order plus same first URL HTTP415 response; not a captured per-URL trace"
+  },
+  "firstExecutionRawSha256": {
+    "anonymous-actions-zip-accept-probe.json": "0249d2fbd556fd88d01d5dfd2a4ae529eb5ace5d313eb4f4a0a212977b8a8893",
+    "status.json": "f064212319ef6158f6b19fa2df30298c3b093fc6c90b74dbbf1fbe26483ed4d6",
+    "jobs.json": "15e4aa636474437fab5506688439eab103ec557e96d17794163bb5d01c34e955",
+    "README.md": "c453fdb965eb6e2944d5e9ce87ecb294e36a77924b5703f12b3d414811ae0771",
+    "job-124419348718.log.json": "f44762106001dd23f61cfaffbb3abed42c52d194443660135cf98631ad52b878",
+    "latest-after.json": "753e51fde3355e24e20ab027e5d8936decb300354dece868a399a3b31ccc3041",
+    "run.json": "18ecff6143ae27f6f7adae7fe77fb92b306ed6d5c765033862fe544b5e8043b7",
+    "artifacts.json": "147add2936e0f9b4e7f314e235a003ee3217c80efd640373cca1020f5c1deaff",
+    "releases-after.json": "47155e7884c7b75c2d604d464f479da2b33c8d428371740e7b3ef16e1c98869a"
   }
 }

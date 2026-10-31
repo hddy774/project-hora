@@ -113,7 +113,7 @@ class FakeGitHub:
         self.events.append(("UPLOAD", name, None))
         return copy.deepcopy(asset)
 
-    def download(self, url, destination, expected_bytes, public=False):
+    def download(self, url, destination, expected_bytes, public=False, media="application/octet-stream"):
         self.events.append(("PUBLIC" if public else "DOWNLOAD", url, None))
         if "/actions/artifacts/" in url:
             assert not self.source_unavailable

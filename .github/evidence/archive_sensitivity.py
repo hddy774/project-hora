@@ -217,7 +217,8 @@ class EvidenceArchive:
         self.metadata_check()
         for item in self.manifest["artifacts"]:
             path = self.output / "original" / item["planned_asset_name"]
-            self.client.download(API_ROOT + "actions/artifacts/" + str(item["id"]) + "/zip", path, item["bytes"])
+            self.client.download(API_ROOT + "actions/artifacts/" + str(item["id"]) + "/zip", path, item["bytes"],
+                                 media="application/json")
             self.verify_file(path, item)
 
     def body(self, state):

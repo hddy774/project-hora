@@ -86,10 +86,10 @@ class GitHubClient:
         ensure(len(data) <= 2 * 1024 * 1024, "API 메타데이터 크기가 한도를 넘었습니다")
         return json.loads(data)
 
-    def download(self, url, destination, expected_bytes, public=False):
+    def download(self, url, destination, expected_bytes, public=False, media="application/octet-stream"):
         target = Path(destination)
         target.parent.mkdir(parents=True, exist_ok=True)
-        with self._open(url, media="application/octet-stream", public=public) as response:
+        with self._open(url, media=media, public=public) as response:
             with target.open("wb") as stream:
                 size = 0
                 while chunk := response.read(65536):

@@ -27,6 +27,7 @@
 2. 실제 소유자 요청/현재 PR/현재 run을 확인한다. stale head, 다른 actor/attempt/event/label을 거부한다.
    인증된 release 목록을100개 단위로 끝까지 읽어 고정 tag와 일치하는 유일한 draft/published 객체를 찾는다. 여러 객체가 같은 tag를 가리키면 쓰기 전에 중단한다. 생성/발견 뒤에는 release ID를 고정하고 모든 재조회에 `GET releases/{id}`를 사용한다. 아직 tag가 없는 draft를 published-by-tag API의404로 없다고 판단하지 않는다.
 3. 원래 run의 ID/attempt/event/source/failure와 artifact6개의 name/bytes/server digest/run을 대조한다. 원문 ZIP을 내려받아 전체 SHA256을 확인한 뒤에만 보관 release를 생성한다.
+   Actions의 `/actions/artifacts/{id}/zip` 진입은 고정 `Accept: application/json`으로 signed ZIP redirect를 받는다. release asset의 인증/공개 byte 다운로드는 기존 `application/octet-stream`을 유지한다. 어느 경로든 받은 원문 bytes/SHA 검사를 생략하지 않는다.
 4. 별도 draft에6ZIP을 올리고 인증된 draft 다운로드의 전체 byte SHA를 재검증한다. 기존 이름이 다르면 중단하며 기존 자산 삭제·교체 경로는 없다.
 5. prerelease로 게시하며 `make_latest=false`를 명시한다. 공개 URL을 **인증 없이** 내려받아 ZIP6개의 bytes/SHA를 다시 확인한다. redirect가 다른 호스트로 이동하면 Authorization을 제거하고 HTTPS만 허용한다.
 6. 이 단계가 모두 통과한 뒤 작은 `state=complete` index를 만들고 공개 다운로드까지 검증한다. index에는 원래 manifest/run 원문, 실패/부분 결과, 영속 asset ID/URL/bytes/SHA, 최초 검증 시각/실행이 들어간다.
@@ -58,3 +59,5 @@
 - 정상 재실행/만료된 Actions 원형/부분 게시에서 immutable 사본을 재사용하는 경계를 확인한다.
 
 mock 검사는 실제 게시/권한/공개 다운로드 성공의 증거가 아니다. Python/manifest/YAML/actionlint·범위/FP 대조 결과는 [checks.json](checks.json)에 기록한다. 실제 영속 URL과 검증 index는 root가 라벨로 실행한 뒤에만 확정한다.
+
+첫 소유자 실행 [run41161342049](checks/archive-41161342049/README.md)은 원형 다운로드 HTTP415로 실패했으며 원문·source·상태 ZIP 해시·기존 latest metadata를 분리 보존했다. 이 실패를 수정 후 mock24/24나 향후 실제 실행 성공으로 덮어쓰지 않는다. 현재 공개 archive/index는 없고 후속 실행은 root가 별도로 조율한다.

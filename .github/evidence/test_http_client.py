@@ -13,6 +13,34 @@ from http_client import ArchiveError, GitHubClient, NoCrossHostAuthorization, ht
 
 
 class HttpClientTests(unittest.TestCase):
+    def test_actions_zip_entry_json_and_release_asset_octet_are_distinct(self):
+        from test_release_lookup import fixture
+        manifest, client, request = fixture()
+        captured = []
+        class MediaBoundary:
+            def open(self, message, **_kwargs):
+                accept = message.get_header("Accept")
+                captured.append((message.full_url, accept))
+                if "/actions/artifacts/" in message.full_url:
+                    if accept != "application/json":
+                        raise urllib.error.HTTPError(message.full_url, 415, "Unsupported Accept", {}, None)
+                    identifier = int(message.full_url.split("/artifacts/", 1)[1].split("/", 1)[0])
+                    return io.BytesIO(client.originals[identifier])
+                assert accept == "application/octet-stream", "release 자산의 byte 미디어를 바꾸면 안 됩니다"
+                return io.BytesIO(b"ZIP")
+        transport = GitHubClient("unit-secret", MediaBoundary())
+        client.download = transport.download
+        with tempfile.TemporaryDirectory() as directory:
+            run = archive.EvidenceArchive(client, manifest, "snapshot", request, directory)
+            run.prepare_originals()
+            self.assertEqual(len(captured), 6)
+            self.assertTrue(all(accept == "application/json" for _, accept in captured))
+            path = Path(directory) / "release.zip"
+            transport.download(archive.API_ROOT + "releases/assets/100", path, 3)
+            transport.download("https://github.com/" + archive.REPOSITORY + "/releases/download/tag/file.zip",
+                               path, 3, public=True)
+            self.assertEqual([accept for _, accept in captured[-2:]], ["application/octet-stream"] * 2)
+
     def test_delete_and_asset_replacement_are_rejected_before_transport(self):
         class NoTransport:
             def open(self, *_args, **_kwargs):

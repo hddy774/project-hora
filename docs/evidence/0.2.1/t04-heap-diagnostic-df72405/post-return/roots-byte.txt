@@ -1,0 +1,46 @@
+Loading core dump: /workspace/scratch/t04-retained-heap-plan-5398700/actual-post-return-fresh/after-return.dmp ...
+Description:
+  Displays info about references (or roots) to an object at the specified 
+  address.
+
+Usage:
+  > gcroot [<target>] [options]
+
+Arguments:
+  <target>
+
+Options:
+  -gcgen     Implementation helper for !findroots.
+  -nostacks  Do not use stack roots.
+  -limit     Limits the amount of roots to find
+
+GCRoot looks for references (or roots) to an object. These can exist in four
+places:
+
+   1. On the stack
+   2. Within a GC Handle
+   3. In an object ready for finalization
+   4. As a member of an object found in 1, 2 or 3 above.
+
+First, all stacks will be searched for roots, then handle tables, and finally
+the reachable queue of the finalizer. Some caution about the stack roots: 
+GCRoot doesn't attempt to determine if a stack root it encountered is valid 
+or is old (discarded) data. You would have to use !ClrStack and !U to 
+disassemble the frame that the local or argument value belongs to in order to 
+determine if it is still in use.
+
+Because people often want to restrict the search to gc handles and reachable
+objects, there is a -nostacks option.
+
+The -all option forces all roots to be displayed instead of just the unique roots.
+Caching GC roots, this may take a while.
+Subsequent runs of this command will be faster.
+
+Found 0 unique roots.
+         Address               MT           Size
+    7f2599800048     7f34a01dcbb8    268,435,480 
+
+Statistics:
+          MT Count   TotalSize Class Name
+7f34a01dcbb8     1 268,435,480 System.Char[]
+Total 1 objects, 268,435,480 bytes

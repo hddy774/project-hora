@@ -1,0 +1,541 @@
+{
+  "verification": "INTEGRITY_PASS;outcome reported verbatim,not whole-plan acceptance",
+  "verifiedAtUtc": "2026-10-31T06:26:05.943677+00:00",
+  "runId": 41159864831,
+  "artifact": {
+    "id": 13032846688,
+    "name": "v021-sensitivity-41159864831-1-seed-2026",
+    "size_in_bytes": 1625931,
+    "url": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13032846688",
+    "archive_download_url": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13032846688/zip",
+    "expired": false,
+    "created_at": "2026-10-31T06:25:19Z",
+    "expires_at": "2026-11-14T06:25:18Z",
+    "updated_at": "2026-10-31T06:25:19Z",
+    "digest": "sha256:7815561651967db607cbd7cdc98b9c8e0654786707445af4d043a4a1d510e1dd",
+    "workflow_run": {
+      "id": 41159864831,
+      "repository_id": 1402702966,
+      "head_repository_id": 1402702966,
+      "head_branch": "codex/v021-sensitivity-order-only",
+      "head_sha": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6"
+    }
+  },
+  "zipSha256": "7815561651967db607cbd7cdc98b9c8e0654786707445af4d043a4a1d510e1dd",
+  "rawSha256": "1bbfe1c7a186837780482e32151c31aeb24f90c34337d2e759cd55eed29509f4",
+  "source": {
+    "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "source_tree": "5ae1b72e2471122e61f27a4cb9c294e7b40b5793",
+    "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "version": "0.2.1",
+    "source_worktree_clean": true,
+    "workflow_source_commit": "836ff97e930e82af36a6f5fae6dae575c109f7d9",
+    "sdk": "10.0.403",
+    "scenario": "a",
+    "seed": 2026,
+    "horizon_months": 6000,
+    "observation_interval_months": 120,
+    "metadata_source_commit": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+    "plan_sha256": "74068850c36350beaf547665fc15aeb2da799899d47fedb9bd8f2a0568a6b653",
+    "baseline_sha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+    "wall_minutes": 240,
+    "wall_minutes_file_sha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+    "runtime_environment": {
+      "DOTNET_ROOT": "/home/runner/work/_temp/v021-sensitivity-41159864831-1-2026/dotnet",
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "true",
+      "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+      "DOTNET_INSTALL_DIR": "/home/runner/work/_temp/v021-sensitivity-41159864831-1-2026/dotnet",
+      "DOTNET_CLI_HOME": "/home/runner/work/_temp/v021-sensitivity-41159864831-1-2026/dotnet-home",
+      "DOTNET_MULTILEVEL_LOOKUP": "0",
+      "DOTNET_NOLOGO": "true"
+    },
+    "input_contract": "기존 --sensitivity/--sensitivity-plan/--sensitivity-seed. 기본a·한 잠정법칙·값2개·세 실제seed; 새로운 프로그램/보고서 schema 없음"
+  },
+  "actualStart": {
+    "command": [
+      "dotnet",
+      "/home/runner/work/_temp/v021-sensitivity-41159864831-1-2026/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll",
+      "--filter",
+      "INV-001/002/011",
+      "--sensitivity",
+      "/home/runner/work/_temp/v021-sensitivity-41159864831-1-2026/out/sensitivity.json",
+      "--sensitivity-plan",
+      "/home/runner/work/_temp/v021-sensitivity-41159864831-1-2026/inputs/plan.json",
+      "--sensitivity-seed",
+      "2026"
+    ],
+    "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "metadata_source_commit": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+    "seed": 2026,
+    "plan_sha256": "74068850c36350beaf547665fc15aeb2da799899d47fedb9bd8f2a0568a6b653",
+    "baseline_sha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+    "started_at_utc": "2026-10-31T02:25:17.835124+00:00",
+    "monotonic_started": 359.573122763,
+    "wall_cap_minutes": 240,
+    "wall_minutes_file_sha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+    "timeout_meaning": "부분/중단은 실패로 보존하며 관찰창·시드·법칙이나 완료 플래그를 바꾸지 않음"
+  },
+  "actualExit": {
+    "process_exit": 124,
+    "log_exit": 0,
+    "finished_at_utc": "2026-10-31T06:25:17.959429+00:00",
+    "wall_seconds_including_genesis_logging_and_report_io": 14400.124296791,
+    "raw_sensitivity_report_modified_by_workflow": false
+  },
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Core",
+      "path": "/workspace/scratch/sensitivity-41159864831-7ce/seed-2026/provenance/assemblies/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "a0202259dd35545b31a55c77713d7d7f517f7c81ab21f7df3114d00df09df3a6",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "path": "/workspace/scratch/sensitivity-41159864831-7ce/seed-2026/provenance/assemblies/Chronicles.Game.dll",
+      "bytes": 2258432,
+      "sha256": "f192fb02d7eb2acde247ac51e1805d1f41aab815c15cbefe0cf9c741a501ec5f",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "path": "/workspace/scratch/sensitivity-41159864831-7ce/seed-2026/provenance/assemblies/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "fcee188c537fc148b9d16dba347d704f17eb7ede2d9229cb1c2fb87f31a1ac4e",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "path": "/workspace/scratch/sensitivity-41159864831-7ce/seed-2026/provenance/assemblies/Chronicles.Game.Tests.dll",
+      "bytes": 1500672,
+      "sha256": "55bfdea15fab08456172ab12b126f601ca58708a70bc04514a48a736c5b7e413",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    }
+  ],
+  "rawComplete": false,
+  "rawRequestedComplete": false,
+  "rawStatus": "partial",
+  "rawCompletedCases": 1,
+  "cases": [
+    {
+      "lawValue": 1500,
+      "seed": 2026,
+      "status": "completed",
+      "error": null,
+      "progressMonth": 6000,
+      "observedThroughMonth": 6000,
+      "sampleCount": 51,
+      "actual6000Complete": true,
+      "canonicalUniqueConditionAdded": true,
+      "finalHash": "4b3a9e38dedf4b2af1b56b62d29642864d4b714d354b90ef7c8e248eb5968497",
+      "oldHashComparedOnlyAtSameCompleteHorizon": false,
+      "oldFinalHashEqual": null,
+      "oldSameValuePrefix": {
+        "matchedMonths": 46,
+        "throughMonth": 5400,
+        "allNonTimingPointsEqual": true,
+        "differentMonthCount": 0,
+        "firstDifferences": []
+      },
+      "baseline1200Prefix": {
+        "matchedMonths": 51,
+        "throughMonth": 6000,
+        "allNonTimingPointsEqual": true,
+        "differentMonthCount": 0,
+        "firstDifferences": []
+      },
+      "individualSnapshotMonth": 6000,
+      "descendantOutcomes": [
+        {
+          "id": 2105,
+          "bodyId": 2106,
+          "born": 62,
+          "ended": 1862,
+          "status": "Dead",
+          "entryMonth": 241,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 2409,
+          "bodyId": 2410,
+          "born": 194,
+          "ended": 1994,
+          "status": "Dead",
+          "entryMonth": 378,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 3585,
+          "bodyId": 3586,
+          "born": 375,
+          "ended": 419,
+          "status": "Dead",
+          "entryMonth": null,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 5833,
+          "bodyId": 5834,
+          "born": 707,
+          "ended": 2507,
+          "status": "Dead",
+          "entryMonth": 897,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 7351,
+          "bodyId": 7352,
+          "born": 870,
+          "ended": 908,
+          "status": "Dead",
+          "entryMonth": null,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 10028,
+          "bodyId": 10029,
+          "born": 1204,
+          "ended": 1253,
+          "status": "Dead",
+          "entryMonth": null,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        }
+      ],
+      "entryRecords": 3,
+      "foundationRecords": 0,
+      "coreRecords": 0,
+      "lastSample": {
+        "month": 6000,
+        "population": 2,
+        "totalPeople": 8,
+        "founderDescendants": 0,
+        "everFounderDescendants": 6,
+        "generation": 1,
+        "livingGeneration": 0,
+        "goldenCoreOrHigher": 2,
+        "descendantGoldenCoreOrHigher": 0,
+        "mortal": 0,
+        "mortalWithoutMartial": 0,
+        "martial": 0,
+        "descendantMortal": 0,
+        "descendantMartial": 0,
+        "households": 1,
+        "families": 1,
+        "sects": 2,
+        "dynasties": 0,
+        "territorylessDynasties": 0,
+        "activeMarkets": 0,
+        "activeWorkshops": 0,
+        "activeSettlements": 0,
+        "births": 6,
+        "deaths": 6,
+        "intervalBirths": 0,
+        "intervalDeaths": 0,
+        "explicitArrivals": 0,
+        "simulationMs": 3497742.0041000065,
+        "caseElapsedMs": 8282550.3723
+      },
+      "milestoneOutcomes": {
+        "firstFounderDescendantBirth": {
+          "outcome": "observed-exact-record",
+          "exactMonth": 62,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": 2105,
+          "source": "actual retained Person.Born and biological parent DAG",
+          "historyComplete": true
+        },
+        "firstFounderDescendantCore": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "actual body Cultivation.Formations[GoldenCore].Month, including departed bodies",
+          "historyComplete": true
+        },
+        "firstAdditionalFamily": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "actual Group.Founded; original family creation, not later dynasty promotion",
+          "historyComplete": true
+        },
+        "firstSect": {
+          "outcome": "observed-exact-record",
+          "exactMonth": 1,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": 2073,
+          "source": "actual Group.Founded, including later dissolved sects",
+          "historyComplete": true
+        },
+        "firstDynasty": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "persistent Group.Kind promotion first observed between samples; Group.Founded is not its promotion date",
+          "historyComplete": true
+        },
+        "firstMarket": {
+          "outcome": "observed-exact-record",
+          "exactMonth": 10,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": 24,
+          "source": "persistent Ecology.Facilities[Market].Founded, including currently inactive activity sites",
+          "historyComplete": true
+        },
+        "firstWorkshop": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "persistent Ecology.Facilities[Workshop].Founded, including currently inactive activity sites",
+          "historyComplete": true
+        },
+        "firstSettlement": {
+          "outcome": "not-formed-within-observed-horizon",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "persistent Ecology.Facilities[Settlement].Founded, including currently inactive activity sites",
+          "historyComplete": true
+        }
+      },
+      "caseElapsedMs": 8282815.5412,
+      "simulationMs": 3497742.0041000065
+    },
+    {
+      "lawValue": 900,
+      "seed": 2026,
+      "status": "running",
+      "error": null,
+      "progressMonth": 5052,
+      "observedThroughMonth": 5040,
+      "sampleCount": 43,
+      "actual6000Complete": false,
+      "canonicalUniqueConditionAdded": false,
+      "finalHash": "a796f5cd75e92301e2442aba07c75f6d58a925fd1560190aed19f9b01addb0fe",
+      "oldHashComparedOnlyAtSameCompleteHorizon": false,
+      "oldFinalHashEqual": null,
+      "oldSameValuePrefix": {
+        "matchedMonths": 43,
+        "throughMonth": 5040,
+        "allNonTimingPointsEqual": true,
+        "differentMonthCount": 0,
+        "firstDifferences": []
+      },
+      "baseline1200Prefix": {
+        "matchedMonths": 43,
+        "throughMonth": 5040,
+        "allNonTimingPointsEqual": true,
+        "differentMonthCount": 0,
+        "firstDifferences": []
+      },
+      "individualSnapshotMonth": 5052,
+      "descendantOutcomes": [
+        {
+          "id": 2105,
+          "bodyId": 2106,
+          "born": 62,
+          "ended": 1862,
+          "status": "Dead",
+          "entryMonth": 241,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 2409,
+          "bodyId": 2410,
+          "born": 194,
+          "ended": 1994,
+          "status": "Dead",
+          "entryMonth": 378,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 3585,
+          "bodyId": 3586,
+          "born": 375,
+          "ended": 419,
+          "status": "Dead",
+          "entryMonth": null,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 5833,
+          "bodyId": 5834,
+          "born": 707,
+          "ended": 2507,
+          "status": "Dead",
+          "entryMonth": 897,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 7351,
+          "bodyId": 7352,
+          "born": 870,
+          "ended": 908,
+          "status": "Dead",
+          "entryMonth": null,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        },
+        {
+          "id": 10028,
+          "bodyId": 10029,
+          "born": 1204,
+          "ended": 1253,
+          "status": "Dead",
+          "entryMonth": null,
+          "foundationMonth": null,
+          "firstCoreMonth": null,
+          "outcome": "death-before-core"
+        }
+      ],
+      "entryRecords": 3,
+      "foundationRecords": 0,
+      "coreRecords": 0,
+      "lastSample": {
+        "month": 5040,
+        "population": 2,
+        "totalPeople": 8,
+        "founderDescendants": 0,
+        "everFounderDescendants": 6,
+        "generation": 1,
+        "livingGeneration": 0,
+        "goldenCoreOrHigher": 2,
+        "descendantGoldenCoreOrHigher": 0,
+        "mortal": 0,
+        "mortalWithoutMartial": 0,
+        "martial": 0,
+        "descendantMortal": 0,
+        "descendantMartial": 0,
+        "households": 1,
+        "families": 1,
+        "sects": 2,
+        "dynasties": 0,
+        "territorylessDynasties": 0,
+        "activeMarkets": 0,
+        "activeWorkshops": 0,
+        "activeSettlements": 0,
+        "births": 6,
+        "deaths": 6,
+        "intervalBirths": 0,
+        "intervalDeaths": 0,
+        "explicitArrivals": 0,
+        "simulationMs": 2631619.3429000014,
+        "caseElapsedMs": 6088874.5024
+      },
+      "milestoneOutcomes": {
+        "firstFounderDescendantBirth": {
+          "outcome": "observed-exact-record",
+          "exactMonth": 62,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": 2105,
+          "source": "actual retained Person.Born and biological parent DAG",
+          "historyComplete": true
+        },
+        "firstFounderDescendantCore": {
+          "outcome": "not-yet-observed-partial",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "actual body Cultivation.Formations[GoldenCore].Month, including departed bodies",
+          "historyComplete": true
+        },
+        "firstAdditionalFamily": {
+          "outcome": "not-yet-observed-partial",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "actual Group.Founded; original family creation, not later dynasty promotion",
+          "historyComplete": true
+        },
+        "firstSect": {
+          "outcome": "observed-exact-record",
+          "exactMonth": 1,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": 2073,
+          "source": "actual Group.Founded, including later dissolved sects",
+          "historyComplete": true
+        },
+        "firstDynasty": {
+          "outcome": "not-yet-observed-partial",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "persistent Group.Kind promotion first observed between samples; Group.Founded is not its promotion date",
+          "historyComplete": true
+        },
+        "firstMarket": {
+          "outcome": "observed-exact-record",
+          "exactMonth": 10,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": 24,
+          "source": "persistent Ecology.Facilities[Market].Founded, including currently inactive activity sites",
+          "historyComplete": true
+        },
+        "firstWorkshop": {
+          "outcome": "not-yet-observed-partial",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "persistent Ecology.Facilities[Workshop].Founded, including currently inactive activity sites",
+          "historyComplete": true
+        },
+        "firstSettlement": {
+          "outcome": "not-yet-observed-partial",
+          "exactMonth": null,
+          "afterMonthExclusive": null,
+          "byMonthInclusive": null,
+          "entity": null,
+          "source": "persistent Ecology.Facilities[Settlement].Founded, including currently inactive activity sites",
+          "historyComplete": true
+        }
+      },
+      "caseElapsedMs": 6114937.6936,
+      "simulationMs": 2642308.376200002
+    }
+  ],
+  "canonicalUniqueConditionsAdded": 1,
+  "all900DuplicatesAdded": 0,
+  "wholePlanAccepted": false,
+  "scope": "Original ZIP/source/input/PE/CLI exit/report audit only. Partial horizons are not compared to full-horizon world hashes. Source7ce is separate from latest product source.",
+  "newGameMeasurementsOrRemoteWrites": 0,
+  "rawChanged": false
+}

@@ -1,0 +1,13 @@
+{
+  "publicationStatus": "pending",
+  "publicAssetBytesVerified": false,
+  "releaseId": null,
+  "indexAssetId": null,
+  "actualIndexSha256": null,
+  "plannedTag": "evidence/v0.2.1-sensitivity-41159864831",
+  "plannedIndexAsset": "sensitivity-artifact-index-41159864831.json",
+  "plannedReleaseUrl": "https://github.com/hddy774/project-hora/releases/tag/evidence/v0.2.1-sensitivity-41159864831",
+  "plannedIndexUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/sensitivity-artifact-index-41159864831.json",
+  "warning": "Planned URLs only;publication and public-byte verification have not been observed by this report. Six original ZIPs remain in local source andActions pending root-controlled durable archive.",
+  "oldBatchUnchanged": true
+}

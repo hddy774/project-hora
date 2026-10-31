@@ -1,0 +1,212 @@
+{
+  "kind": "small-evidence-files-manifest",
+  "baseCommit": "ae8353401d694cb36e76b1f76677d09add82b39d",
+  "scope": "one new docs folder only; manifest excludes itself; originalZIP/DLL/large rawJSON outsideGit",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 6254,
+      "sha256": "2afaf0bf0a41f58976eeff005dd8b53c2fe7965e0645eff090eae602f9d65410",
+      "kind": "new derived documentation or read-only verifier"
+    },
+    {
+      "path": "cli-wall-minutes.txt",
+      "bytes": 4,
+      "sha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-42/inputs/cli-wall-minutes.txt"
+    },
+    {
+      "path": "collector/index.json",
+      "bytes": 2640,
+      "sha256": "144342200e456003ab25c7ea48562fb7fb47aa273e829ba24ca61919e9fb609b",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "collector-failure-index.json"
+    },
+    {
+      "path": "collector/job-124465144337.log",
+      "bytes": 18953,
+      "sha256": "9ba99714464b944104e2fd86bcb594a33b95813d0e71fa33d020d3c37f5cb7a8",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "collector-job-124465144337.log"
+    },
+    {
+      "path": "collector/request.json",
+      "bytes": 417,
+      "sha256": "5e815e1da448b72619aafe3bb2b4cac24e2da434a978f16c6deb69098c886891",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "collection/provenance/request.json"
+    },
+    {
+      "path": "metadata/artifacts.json",
+      "bytes": 5105,
+      "sha256": "0f34b959bdf73e130e7e06f7b4fc2a2a564739020af9f8f55e79809259f0937c",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "api/artifacts-20261031T062636Z.json"
+    },
+    {
+      "path": "metadata/jobs.json",
+      "bytes": 22534,
+      "sha256": "da2dde1bd42a8c59f8e0a7a8a2f95257e96cc5ec95d053b740f089da03f35d95",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "api/jobs-20261031T062636Z.json"
+    },
+    {
+      "path": "metadata/prepare-request.json",
+      "bytes": 477,
+      "sha256": "d433f1d173430d3e235f86835d38acbaa4a284a84bac012bb35118a34f0ce1ca",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "prepare/request.json"
+    },
+    {
+      "path": "metadata/prepare-staged.json",
+      "bytes": 442,
+      "sha256": "f4371ba851260edb1ec593e1a45899f014a7d52d86e4335d988de17811f1fb2a",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "prepare/staged.json"
+    },
+    {
+      "path": "metadata/run.json",
+      "bytes": 14219,
+      "sha256": "65f1f72f65406621b882b6a21e382af23b9d1ecf6c2db2f0c99f4ea10338ed27",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "api/run-20261031T062636Z.json"
+    },
+    {
+      "path": "metadata/seed-2026/process-exit.json",
+      "bytes": 231,
+      "sha256": "e28ab0a485ecd62f17e01835855d4c253646a8c6502e257cdfb0513382185523",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-2026/provenance/process-exit.json"
+    },
+    {
+      "path": "metadata/seed-2026/process-start.json",
+      "bytes": 1142,
+      "sha256": "bca8c4b23228f2ce8e255b4b2d3e9063aef648837098bec32e9737309a9c5e2f",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-2026/provenance/process-start.json"
+    },
+    {
+      "path": "metadata/seed-2026/source.json",
+      "bytes": 1492,
+      "sha256": "3b974ad52ddf19f098b625a1416aa20e0f500804b641f1d8b69c421b86930623",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-2026/provenance/source.json"
+    },
+    {
+      "path": "metadata/seed-42/process-exit.json",
+      "bytes": 234,
+      "sha256": "49ae4d1e4e2289db1fc8e1a103a40c7b890c93ce059647ecb37b842cf9b8f5c1",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-42/provenance/process-exit.json"
+    },
+    {
+      "path": "metadata/seed-42/process-start.json",
+      "bytes": 1131,
+      "sha256": "2d6cddc86f4bb88dca2aaaa10404750995dd376d19364ce3411d1caedd976842",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-42/provenance/process-start.json"
+    },
+    {
+      "path": "metadata/seed-42/source.json",
+      "bytes": 1484,
+      "sha256": "bdef72dccf0411f4df31aff09ace095acceb8ac69ab0cd77196a1e129ecbcab9",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-42/provenance/source.json"
+    },
+    {
+      "path": "metadata/seed-98/process-exit.json",
+      "bytes": 228,
+      "sha256": "00e09a75e56a1dc11c625ad8e5a9e8b84a02df605682731c6ba1bc58e96faaf3",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-98/provenance/process-exit.json"
+    },
+    {
+      "path": "metadata/seed-98/process-start.json",
+      "bytes": 1129,
+      "sha256": "ead16dee4fbea167e8a1a1ff462eab4ee19a3047ffca2b56d28dfb9afab035f7",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-98/provenance/process-start.json"
+    },
+    {
+      "path": "metadata/seed-98/source.json",
+      "bytes": 1484,
+      "sha256": "d9046109e95955e37f705a194d50e39b0201f078a2a3690c9cd29ce28f312ca2",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-98/provenance/source.json"
+    },
+    {
+      "path": "plan.json",
+      "bytes": 1690,
+      "sha256": "74068850c36350beaf547665fc15aeb2da799899d47fedb9bd8f2a0568a6b653",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-42/inputs/plan.json"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 2921,
+      "sha256": "42dd6440e4b55982fe71e993fa7ce69063a9576d207b0a0c3d345744511e2425",
+      "kind": "new derived documentation or read-only verifier"
+    },
+    {
+      "path": "publication.json",
+      "bytes": 798,
+      "sha256": "3066c23481de6e94233f69c9875788524a584bae86aeabe94daa9dd6be12e21f",
+      "kind": "new derived documentation or read-only verifier"
+    },
+    {
+      "path": "read-pe-version.py",
+      "bytes": 4776,
+      "sha256": "327f1c420acfca57cdb755b217ddf23a87133d5ed98cb00d90462a5418f44486",
+      "kind": "byte-identical original read-only PE parser",
+      "originalPath": "/workspace/scratch/read-assembly-informational-version.py"
+    },
+    {
+      "path": "unique-conditions.json",
+      "bytes": 12348,
+      "sha256": "33cc094e5b4955c6b1f1a80b936a87bc4c2881355d6fdbd4291eb993e9ad923b",
+      "kind": "new derived documentation or read-only verifier"
+    },
+    {
+      "path": "verification/artifacts.json",
+      "bytes": 2638,
+      "sha256": "e608a640432ca53f8a6d84540e4bc2af6e167c5a3ab20228df55f0b32c848941",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "final-artifact-verification.json"
+    },
+    {
+      "path": "verification/prepare.json",
+      "bytes": 3183,
+      "sha256": "82a9598495f4a3d4be28873dd0e7e938f77c9cc369fb1c44b0cb17bfce0f3275",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "prepare-independent-verification.json"
+    },
+    {
+      "path": "verification/seed-2026.json",
+      "bytes": 19342,
+      "sha256": "fc85026c31c39504a50a4a4655931e32248cd2995bc5634243d13e2b530d2180",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-2026-outcome-verification.json"
+    },
+    {
+      "path": "verification/seed-42.json",
+      "bytes": 23663,
+      "sha256": "0e1ea11986674238e7681007d8f50e1daafeada4a1456fadf67edb68cfe12049",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-42-outcome-verification.json"
+    },
+    {
+      "path": "verification/seed-98.json",
+      "bytes": 7858,
+      "sha256": "04177f6434874e37a931d6cbb22b545c16ce1c9451d0e602ff8ab85ea8d43757",
+      "kind": "byte-identical copied evidence",
+      "originalScratchRelativePath": "seed-98-duplicate-verification.json"
+    },
+    {
+      "path": "verify-evidence.py",
+      "bytes": 8419,
+      "sha256": "fc3b564d236f28731a69475c24d59c8eb1e5a1d4e2f6f5fe05b360b37d084d33",
+      "kind": "new derived documentation or read-only verifier"
+    }
+  ]
+}

@@ -12,7 +12,7 @@
     "in_progress": 2
   },
   "beforeLedgerSha256": "ad47595386d88fbc0ef901a4a3828d9fde93e494af31e4c5655f6bd69cf80fc1",
-  "afterLedgerSha256": "8cc0adcd36e041a1bb30c6d56988f4367f62ca90315481f5c374e6d87edf5114",
+  "afterLedgerSha256": "7a311ba5c7be854f61e44bc33cbd075a6bfd7b685633c15b7fa016217b3747ee",
   "promotedAlreadyValidated": 56,
   "waves": [
     [

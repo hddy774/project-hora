@@ -1,0 +1,72 @@
+{
+  "observed_utc": "2026-10-31T04:03:29.417789+00:00",
+  "status": "abnormal_termination_incomplete",
+  "child_pid": 170032,
+  "child_state": "Z",
+  "parent_now": "1",
+  "linux_wait_status": 9,
+  "derived_child_exit_code": -9,
+  "termination_signal": "SIGKILL",
+  "kill_time_unknown": true,
+  "parent_wrapper_absent": true,
+  "exec_session_59499_unavailable": true,
+  "reason": "미확정. SIGKILL 흔적과 cgroup counters만으로 앱 오류·OOM·도구 종료 원인을 단정하지 않는다.",
+  "cgroup_memory_events_observed": "low 0\nhigh 0\nmax 79256\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "cgroup_memory_max_bytes": 17179869184,
+  "cgroup_memory_peak_bytes": 17179893760,
+  "originals": [
+    {
+      "path": "diagnostic.json",
+      "bytes": 2050,
+      "sha256": "6af780564d1597620f2734f55123ffc1cb511cbd45c3cec62d7ec0439fc4e86d"
+    },
+    {
+      "path": "result.json",
+      "bytes": 24527,
+      "sha256": "667fb465be7aaacbcb5873b7763fbe8d1932e1250b418a4e8b1c209d7260e34b"
+    },
+    {
+      "path": "measurement.log",
+      "bytes": 994,
+      "sha256": "b531610d0ebf5b2d29a7a7eb41c4b73200fc5800d74d0ebe34e9e7d711c41d62"
+    },
+    {
+      "path": "preceding-functional.json",
+      "bytes": 252,
+      "sha256": "fabbee5cc283b27a46cc2a367ee3f01797ba2efc81d24110e7e3f919ea31a18b"
+    }
+  ],
+  "slots": [
+    {
+      "path": "result-saves/population-100.seonro",
+      "bytes": 43906293,
+      "sha256": "b69ab9ee858b39f32e0b7cc4216a744c5d68912a7c8a78a4720a7a26c55d5d36"
+    },
+    {
+      "path": "result-saves/population-100.seonro.backup",
+      "bytes": 35513530,
+      "sha256": "a0e8dc02a36d8b2e8eb87db99f728bdf65678623f3f3e9bd37a53bc943513666"
+    },
+    {
+      "path": "result-saves/population-1000.seonro",
+      "bytes": 94252646,
+      "sha256": "13963d180c546c934e32e22b46fc11a7578416c60752e709a9a898c41d0a63f4"
+    },
+    {
+      "path": "result-saves/population-1000.seonro.backup",
+      "bytes": 23035565,
+      "sha256": "ff49e518e279b5febaaa24595650ed827c4738df08d9c621f54c0336869995c8"
+    },
+    {
+      "path": "result-saves/population-2.seonro",
+      "bytes": 5027868,
+      "sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6"
+    },
+    {
+      "path": "result-saves/population-2.seonro.backup",
+      "bytes": 4663494,
+      "sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13"
+    }
+  ],
+  "scope": "원래 raw/status를 수정하지 않은 종료 관측. N2/N100 개별120개월은 기록되어 있지만 N1000 및 전체4사례 미완료. T04/정식수치 합격 아님. 원격41163711116 변경0."
+}

@@ -1,0 +1,956 @@
+{
+  "recorded_utc": "2026-10-31T07:19:22.297030+00:00",
+  "scope": "과거source660/FPc91 actualdata 읽기 검토. 현재0eaf수용 아님. 원래검증기/입력/예산 변경0.",
+  "canonical": {
+    "passed": false,
+    "exception": "ValueError",
+    "message": "Long-run memory/save growth exceeded its documented budget: retainedManagedBytes"
+  },
+  "inputs": {
+    "baseline_sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+    "plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+    "budget_sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+    "population_7901_sha256": "7fb6131cb7154566517bd4f81d0646b1cf5c5c3c8af5232bcd76bd49e8e612b7",
+    "full_functional_sha256": "1cca9aea9ffdef4149282cf8586fbbaf653288a62c31b5beccbe9b1bcd2706ba",
+    "result_sha256": "2bef619b754572cf7cd72d46b9acae008162786df7eddfe5eecc9248bca2e9bb",
+    "source660_verifier_sha256": "e064b2124e4fd638a47258f5ecade5e38cfd8e4fce2774af7c2beb741e3d4e9d"
+  },
+  "all_stability_limit_checks": [
+    {
+      "population": 2,
+      "kind": "elapsedSeconds",
+      "actual": 46.3464726,
+      "limit": 167,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "month": 0,
+      "kind": "retainedManagedBytes",
+      "actual": 14624848,
+      "limit": 47725032,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "month": 0,
+      "kind": "saveBytes",
+      "actual": 1915470,
+      "limit": 8748435,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "month": 30,
+      "kind": "retainedManagedBytes",
+      "actual": 22124960,
+      "limit": 47725032,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "month": 30,
+      "kind": "saveBytes",
+      "actual": 3982267,
+      "limit": 8748435,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "month": 60,
+      "kind": "retainedManagedBytes",
+      "actual": 30777312,
+      "limit": 47725032,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "month": 60,
+      "kind": "saveBytes",
+      "actual": 4336258,
+      "limit": 8748435,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "month": 90,
+      "kind": "retainedManagedBytes",
+      "actual": 47817272,
+      "limit": 47725032,
+      "excess": 92240,
+      "passed": false
+    },
+    {
+      "population": 2,
+      "month": 90,
+      "kind": "saveBytes",
+      "actual": 4663494,
+      "limit": 8748435,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "month": 120,
+      "kind": "retainedManagedBytes",
+      "actual": 48053472,
+      "limit": 47725032,
+      "excess": 328440,
+      "passed": false
+    },
+    {
+      "population": 2,
+      "month": 120,
+      "kind": "saveBytes",
+      "actual": 5027868,
+      "limit": 8748435,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "kind": "elapsedSeconds",
+      "actual": 135.2576379,
+      "limit": 309,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 0,
+      "kind": "retainedManagedBytes",
+      "actual": 47481304,
+      "limit": 262419240,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 0,
+      "kind": "saveBytes",
+      "actual": 3988028,
+      "limit": 45658311,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 30,
+      "kind": "retainedManagedBytes",
+      "actual": 93349880,
+      "limit": 262419240,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 30,
+      "kind": "saveBytes",
+      "actual": 19007237,
+      "limit": 45658311,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 60,
+      "kind": "retainedManagedBytes",
+      "actual": 102424928,
+      "limit": 262419240,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 60,
+      "kind": "saveBytes",
+      "actual": 27298934,
+      "limit": 45658311,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 90,
+      "kind": "retainedManagedBytes",
+      "actual": 178228616,
+      "limit": 262419240,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 90,
+      "kind": "saveBytes",
+      "actual": 35513530,
+      "limit": 45658311,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 120,
+      "kind": "retainedManagedBytes",
+      "actual": 187633744,
+      "limit": 262419240,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "month": 120,
+      "kind": "saveBytes",
+      "actual": 43906293,
+      "limit": 45658311,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "kind": "elapsedSeconds",
+      "actual": 1015.5501967,
+      "limit": 1575,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 0,
+      "kind": "retainedManagedBytes",
+      "actual": 164605280,
+      "limit": 995045448,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 0,
+      "kind": "saveBytes",
+      "actual": 23035565,
+      "limit": 241598442,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 30,
+      "kind": "retainedManagedBytes",
+      "actual": 352450272,
+      "limit": 995045448,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 30,
+      "kind": "saveBytes",
+      "actual": 94252646,
+      "limit": 241598442,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 60,
+      "kind": "retainedManagedBytes",
+      "actual": 389024944,
+      "limit": 995045448,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 60,
+      "kind": "saveBytes",
+      "actual": 129339785,
+      "limit": 241598442,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 90,
+      "kind": "retainedManagedBytes",
+      "actual": 693786888,
+      "limit": 995045448,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 90,
+      "kind": "saveBytes",
+      "actual": 163392036,
+      "limit": 241598442,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 120,
+      "kind": "retainedManagedBytes",
+      "actual": 730907912,
+      "limit": 995045448,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "month": 120,
+      "kind": "saveBytes",
+      "actual": 199347513,
+      "limit": 241598442,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "kind": "elapsedSeconds",
+      "actual": 13070.0566897,
+      "limit": 15098,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "month": 0,
+      "kind": "retainedManagedBytes",
+      "actual": 731429912,
+      "limit": 2192400000,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "month": 0,
+      "kind": "saveBytes",
+      "actual": 138939484,
+      "limit": 1194685341,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "month": 30,
+      "kind": "retainedManagedBytes",
+      "actual": 2594900560,
+      "limit": 2192400000,
+      "excess": 402500560,
+      "passed": false
+    },
+    {
+      "population": 10000,
+      "month": 30,
+      "kind": "saveBytes",
+      "actual": 544399816,
+      "limit": 1194685341,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "month": 60,
+      "kind": "retainedManagedBytes",
+      "actual": 1600677392,
+      "limit": 2192400000,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "month": 60,
+      "kind": "saveBytes",
+      "actual": 610285696,
+      "limit": 1194685341,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "month": 90,
+      "kind": "retainedManagedBytes",
+      "actual": 1653588672,
+      "limit": 2192400000,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "month": 90,
+      "kind": "saveBytes",
+      "actual": 668150785,
+      "limit": 1194685341,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "month": 120,
+      "kind": "retainedManagedBytes",
+      "actual": 636416672,
+      "limit": 2192400000,
+      "excess": 0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "month": 120,
+      "kind": "saveBytes",
+      "actual": 730975582,
+      "limit": 1194685341,
+      "excess": 0,
+      "passed": true
+    }
+  ],
+  "stability_checks_passed": 41,
+  "stability_checks_total": 44,
+  "artifact_manifest_files": 29,
+  "artifact_manifest_all_verified": true,
+  "artifact_manifest_checks": [
+    {
+      "path": "assemblies/Chronicles.Core.dll",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "assemblies/Chronicles.Game.Tests.deps.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "assemblies/Chronicles.Game.Tests.dll",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "assemblies/Chronicles.Game.Tests.runtimeconfig.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "assemblies/Chronicles.Game.dll",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "assemblies/Chronicles.Hosting.dll",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "assembly-evidence.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "assembly-inspector.log",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "build.log",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "collection-verification.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "dotnet-info.txt",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "dotnet-runtimes.txt",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "environment.log",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "git-after-build.txt",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "input-provenance.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "inputs/baseline.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "inputs/full-functional.original.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "inputs/full-source-review.original.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "inputs/stability-plan.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "measurement-process.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "measurement.log",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "pre.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "preflight.log",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "process-resource.txt",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "request.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "result.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "slot-manifest.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "source-environment.json",
+      "bytes_equal": true,
+      "sha_equal": true
+    },
+    {
+      "path": "verification.log",
+      "bytes_equal": true,
+      "sha_equal": true
+    }
+  ],
+  "assembly_hash_checks": [
+    {
+      "name": "Chronicles.Core",
+      "actual_bytes": 5120,
+      "sha_equal": true
+    },
+    {
+      "name": "Chronicles.Game",
+      "actual_bytes": 2259968,
+      "sha_equal": true
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "actual_bytes": 23552,
+      "sha_equal": true
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "actual_bytes": 1521152,
+      "sha_equal": true
+    }
+  ],
+  "all_twenty_checkpoints_original_flags_passed": true,
+  "all_case_horizon_120": true,
+  "measured_source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "stability_source": "6607234b405921cc39e9527cbea42a7667a709be",
+  "limitations": [
+    "원래canonical함수는N2 90개월retained초과에서거부했으며이거부를유지했다. 모든4시간+20*2상한은원문수치표로추가전수대조(41/44통과).",
+    "실제8slot파일본문은artifact에없고runner생성SHA/크기만확보했다. manifest크기는120/90개월point와대조했지만로컬복원재실행/독립slot바이너리hash재검증을하지않았다.",
+    "4DLL은원격실제PE정보+다운로드파일SHA가일치한다. 하네스actualruntime/명령·deps는확인했으나in-process모든로드DLL의독립SHA인증은제공되지않는다.",
+    "old660/c91결과는현재2db/0eaf T04수용으로사용하지않는다.",
+    "GitHub AMD EPYC4vCPU VM과로컬pop32의CPU/열/전원은동일물리환경이아니며메모리초과원인을환경·캐시로단정하지않는다."
+  ],
+  "review_finished_utc": "2026-10-31T07:20:57.499588+00:00",
+  "population_32_original_checks": [
+    {
+      "population": 2,
+      "metric": "monthlyP95Ms",
+      "actual": 263.5452,
+      "absolute_limit": 326,
+      "regression_limit": 325.630375,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "queryMs",
+      "actual": 34.5216,
+      "absolute_limit": 45,
+      "regression_limit": 44.936875,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "saveMs",
+      "actual": 175.7712,
+      "absolute_limit": 222,
+      "regression_limit": 221.88150000000002,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "loadMs",
+      "actual": 170.4656,
+      "absolute_limit": 238,
+      "regression_limit": 237.34675,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "allocatedBytes",
+      "actual": 144316360,
+      "absolute_limit": 187444930,
+      "regression_limit": 187444930.0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "saveBytes",
+      "actual": 2916145,
+      "absolute_limit": 3645182,
+      "regression_limit": 3645181.25,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "retainedManagedBytes",
+      "actual": 15711008,
+      "absolute_limit": 19885430,
+      "regression_limit": 19885430.0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "serializedCognitionBytes",
+      "actual": 177605,
+      "absolute_limit": 222007,
+      "regression_limit": 222006.25,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "monthlyP95Ms",
+      "actual": 710.6924,
+      "absolute_limit": 1294,
+      "regression_limit": 1293.866375,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "queryMs",
+      "actual": 32.2905,
+      "absolute_limit": 84,
+      "regression_limit": 83.87174999999999,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "saveMs",
+      "actual": 427.8972,
+      "absolute_limit": 805,
+      "regression_limit": 804.8446250000001,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "loadMs",
+      "actual": 485.2332,
+      "absolute_limit": 1087,
+      "regression_limit": 1086.825875,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "allocatedBytes",
+      "actual": 1015014272,
+      "absolute_limit": 3827593130,
+      "regression_limit": 3827593130.0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "saveBytes",
+      "actual": 15219437,
+      "absolute_limit": 19024297,
+      "regression_limit": 19024296.25,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "retainedManagedBytes",
+      "actual": 35693208,
+      "absolute_limit": 109341350,
+      "regression_limit": 109341350.0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "serializedCognitionBytes",
+      "actual": 3477894,
+      "absolute_limit": 4347368,
+      "regression_limit": 4347367.5,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "monthlyP95Ms",
+      "actual": 3066.5347,
+      "absolute_limit": 13276,
+      "regression_limit": 13275.872625,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "queryMs",
+      "actual": 160.621,
+      "absolute_limit": 211,
+      "regression_limit": 210.10025,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "saveMs",
+      "actual": 1760.4507,
+      "absolute_limit": 4316,
+      "regression_limit": 4315.2595,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "loadMs",
+      "actual": 2071.4965,
+      "absolute_limit": 2658,
+      "regression_limit": 2657.6875,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "allocatedBytes",
+      "actual": 9984902352,
+      "absolute_limit": 50829892480,
+      "regression_limit": 50829892480.0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "saveBytes",
+      "actual": 53378857,
+      "absolute_limit": 100666018,
+      "regression_limit": 100666017.5,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "retainedManagedBytes",
+      "actual": 122850768,
+      "absolute_limit": 160817870,
+      "regression_limit": 160817870.0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "serializedCognitionBytes",
+      "actual": 23483031,
+      "absolute_limit": 29353789,
+      "regression_limit": 29353788.75,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "monthlyP95Ms",
+      "actual": 62203.5982,
+      "absolute_limit": 92389,
+      "regression_limit": 92388.480125,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "queryMs",
+      "actual": 1193.5379,
+      "absolute_limit": 1660,
+      "regression_limit": 1659.136375,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "saveMs",
+      "actual": 18155.4476,
+      "absolute_limit": 20001,
+      "regression_limit": 20000.826875,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "loadMs",
+      "actual": 21110.103,
+      "absolute_limit": 22570,
+      "regression_limit": 22569.499624999997,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "allocatedBytes",
+      "actual": 323110070200,
+      "absolute_limit": 498637372810,
+      "regression_limit": 498637372810.0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "saveBytes",
+      "actual": 398228447,
+      "absolute_limit": 497785559,
+      "regression_limit": 497785558.75,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "retainedManagedBytes",
+      "actual": 432219688,
+      "absolute_limit": 553688550,
+      "regression_limit": 553688550.0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "serializedCognitionBytes",
+      "actual": 224192812,
+      "absolute_limit": 280241015,
+      "regression_limit": 280241015.0,
+      "passed": true
+    }
+  ],
+  "all_32_population_metrics_passed": true,
+  "slot_manifest_checks": [
+    {
+      "path": "result-saves/population-2.seonro",
+      "bytes": 5027868,
+      "sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+      "matches_checkpoint_month": 120,
+      "bytes_match": true,
+      "sha_syntax_valid": true,
+      "body_in_artifact": false
+    },
+    {
+      "path": "result-saves/population-2.seonro.backup",
+      "bytes": 4663494,
+      "sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13",
+      "matches_checkpoint_month": 90,
+      "bytes_match": true,
+      "sha_syntax_valid": true,
+      "body_in_artifact": false
+    },
+    {
+      "path": "result-saves/population-100.seonro",
+      "bytes": 43906293,
+      "sha256": "b69ab9ee858b39f32e0b7cc4216a744c5d68912a7c8a78a4720a7a26c55d5d36",
+      "matches_checkpoint_month": 120,
+      "bytes_match": true,
+      "sha_syntax_valid": true,
+      "body_in_artifact": false
+    },
+    {
+      "path": "result-saves/population-100.seonro.backup",
+      "bytes": 35513530,
+      "sha256": "a0e8dc02a36d8b2e8eb87db99f728bdf65678623f3f3e9bd37a53bc943513666",
+      "matches_checkpoint_month": 90,
+      "bytes_match": true,
+      "sha_syntax_valid": true,
+      "body_in_artifact": false
+    },
+    {
+      "path": "result-saves/population-1000.seonro",
+      "bytes": 199347513,
+      "sha256": "4cfcd688a1955e30e03582d570d23eaffd696ac44455e4b1f9b8573011697445",
+      "matches_checkpoint_month": 120,
+      "bytes_match": true,
+      "sha_syntax_valid": true,
+      "body_in_artifact": false
+    },
+    {
+      "path": "result-saves/population-1000.seonro.backup",
+      "bytes": 163392036,
+      "sha256": "31755ce1fd82cda7da29ba08e410ac67bfa6342974e5f593d25a57bffde0efd2",
+      "matches_checkpoint_month": 90,
+      "bytes_match": true,
+      "sha_syntax_valid": true,
+      "body_in_artifact": false
+    },
+    {
+      "path": "result-saves/population-10000.seonro",
+      "bytes": 730975582,
+      "sha256": "3537206ec0bc7bdf75c6e30ff5c7ad2cc05547d9c5c40f9f89117f9f152dcbaa",
+      "matches_checkpoint_month": 120,
+      "bytes_match": true,
+      "sha_syntax_valid": true,
+      "body_in_artifact": false
+    },
+    {
+      "path": "result-saves/population-10000.seonro.backup",
+      "bytes": 668150785,
+      "sha256": "8a7c74a32c6554dd960320fa790e0340142d65e49177bea3faf87522111ad57e",
+      "matches_checkpoint_month": 90,
+      "bytes_match": true,
+      "sha_syntax_valid": true,
+      "body_in_artifact": false
+    }
+  ],
+  "all_eight_recorded_slot_sizes_match_120_or_90_month_points": true,
+  "source_environment_verified": {
+    "source": "6607234b405921cc39e9527cbea42a7667a709be",
+    "fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+    "sdk": "10.0.403",
+    "runtime": ".NET 10.0.14",
+    "actual_cpu": 4,
+    "actual_affinity_cpu": 4,
+    "cpu_model": "AMD EPYC 7763 64-Core Processor",
+    "total_available_memory_bytes": 16760344576,
+    "build_warnings": 0,
+    "build_errors": 0,
+    "source_clean": true,
+    "actual_loaded_runtime": ".NET 10.0.14",
+    "process_test_DLL": "/home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll",
+    "assembly_inspection_scope": "GHA 실제 PEReader의4DLL 메타데이터·버전/Release/source기록과 내려받은4DLL 전체SHA 일치. 재검토는Game코드를실행하거나DLL을로드하지 않음.",
+    "process_load_limit": "하네스 runtime은실제프로세스기록이고 PE는실제파일기록. in-process 모든로드assembly의주소/별도SHA인증자료는없음.",
+    "deps_runtime_files": [
+      "Chronicles.Core.dll",
+      "Chronicles.Game.Tests.dll",
+      "Chronicles.Game.dll",
+      "Chronicles.Hosting.dll"
+    ],
+    "PGO": false
+  },
+  "full_functional_323_verified": true,
+  "preceding_functional_selection_only_one": true,
+  "actual_measurement_seconds": 14282.4000853,
+  "new_game_native_performance_runs": 0,
+  "current_0eaf_acceptance": false
+}

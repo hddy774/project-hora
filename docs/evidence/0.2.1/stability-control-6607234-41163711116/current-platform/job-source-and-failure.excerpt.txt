@@ -1,0 +1,21 @@
+2026-10-31T06:59:37.3244432Z [command]/usr/bin/git log -1 --format=%H
+2026-10-31T06:59:37.3278324Z c5f6220e51eb0e9ac16df5db836f153b4093fe48
+2026-10-31T07:02:22.0222843Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-31T07:02:22.0496394Z 
+2026-10-31T07:02:24.0563992Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-31T07:02:24.0832060Z 
+2026-10-31T07:02:24.9885476Z INFO         | Boot completed in 31342 ms
+2026-10-31T07:02:24.9910581Z INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+2026-10-31T07:02:26.0886882Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-31T07:02:26.1156785Z 1
+2026-10-31T07:02:26.1164388Z Emulator booted.
+2026-10-31T07:02:26.1190939Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell input keyevent 82
+2026-10-31T07:02:33.0347267Z Disabling animations.
+2026-10-31T07:02:33.0402759Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global window_animation_scale 0.0
+2026-10-31T07:02:33.1576329Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global transition_animation_scale 0.0
+2026-10-31T07:02:33.2398670Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global animator_duration_scale 0.0
+2026-10-31T07:02:33.3312096Z ##[endgroup]
+2026-10-31T07:02:33.3470126Z [command]/usr/bin/sh -c python3 scripts/android_readiness.py --apk src/Chronicles.Android/bin/Release/net10.0-android/org.hora.xianxiaobserver-Signed.apk --activity crc649632d1cee893af2a.MainActivity --output artifacts/android-runtime
+2026-10-31T07:02:37.4787612Z Actual Android readiness failed: Actual APK installation failed
+2026-10-31T07:02:37.4881229Z ##[error]The process '/usr/bin/sh' failed with exit code 1
+2026-10-31T07:02:37.4882525Z ##[group]Terminate Emulator

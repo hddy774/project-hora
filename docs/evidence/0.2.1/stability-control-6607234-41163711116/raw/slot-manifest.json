@@ -1,0 +1,105 @@
+{
+  "collected_utc": "2026-10-31T07:16:05.052034+00:00",
+  "slot_files": [
+    {
+      "path": "result-saves/population-100.seonro",
+      "bytes": 43906293,
+      "sha256": "b69ab9ee858b39f32e0b7cc4216a744c5d68912a7c8a78a4720a7a26c55d5d36"
+    },
+    {
+      "path": "result-saves/population-100.seonro.backup",
+      "bytes": 35513530,
+      "sha256": "a0e8dc02a36d8b2e8eb87db99f728bdf65678623f3f3e9bd37a53bc943513666"
+    },
+    {
+      "path": "result-saves/population-1000.seonro",
+      "bytes": 199347513,
+      "sha256": "4cfcd688a1955e30e03582d570d23eaffd696ac44455e4b1f9b8573011697445"
+    },
+    {
+      "path": "result-saves/population-1000.seonro.backup",
+      "bytes": 163392036,
+      "sha256": "31755ce1fd82cda7da29ba08e410ac67bfa6342974e5f593d25a57bffde0efd2"
+    },
+    {
+      "path": "result-saves/population-10000.seonro",
+      "bytes": 730975582,
+      "sha256": "3537206ec0bc7bdf75c6e30ff5c7ad2cc05547d9c5c40f9f89117f9f152dcbaa"
+    },
+    {
+      "path": "result-saves/population-10000.seonro.backup",
+      "bytes": 668150785,
+      "sha256": "8a7c74a32c6554dd960320fa790e0340142d65e49177bea3faf87522111ad57e"
+    },
+    {
+      "path": "result-saves/population-2.seonro",
+      "bytes": 5027868,
+      "sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6"
+    },
+    {
+      "path": "result-saves/population-2.seonro.backup",
+      "bytes": 4663494,
+      "sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13"
+    }
+  ],
+  "slot_errors": [],
+  "original_checkpoint_console_lines": [
+    "STABILITY population=2 month=0/120 living=2 elapsed=0.84s",
+    "STABILITY population=2 month=30/120 living=2 elapsed=10.51s",
+    "STABILITY population=2 month=60/120 living=2 elapsed=22.19s",
+    "STABILITY population=2 month=90/120 living=2 elapsed=34.19s",
+    "STABILITY population=2 month=120/120 living=2 elapsed=46.35s",
+    "STABILITY population=100 month=0/120 living=100 elapsed=0.56s",
+    "STABILITY population=100 month=30/120 living=100 elapsed=19.63s",
+    "STABILITY population=100 month=60/120 living=100 elapsed=50.20s",
+    "STABILITY population=100 month=90/120 living=100 elapsed=88.47s",
+    "STABILITY population=100 month=120/120 living=100 elapsed=135.26s",
+    "STABILITY population=1000 month=0/120 living=1000 elapsed=3.69s",
+    "STABILITY population=1000 month=30/120 living=1000 elapsed=117.43s",
+    "STABILITY population=1000 month=60/120 living=1000 elapsed=309.55s",
+    "STABILITY population=1000 month=90/120 living=1000 elapsed=594.76s",
+    "STABILITY population=1000 month=120/120 living=1000 elapsed=1015.55s",
+    "STABILITY population=10000 month=0/120 living=10000 elapsed=67.37s",
+    "STABILITY population=10000 month=30/120 living=10000 elapsed=2133.12s",
+    "STABILITY population=10000 month=60/120 living=10000 elapsed=4968.47s",
+    "STABILITY population=10000 month=90/120 living=10000 elapsed=8438.01s",
+    "STABILITY population=10000 month=120/120 living=10000 elapsed=13070.05s"
+  ],
+  "report_states": {
+    "pre.json": {},
+    "result.json": {
+      "status": "completed",
+      "complete": true,
+      "passed": true,
+      "runningPopulation": null,
+      "finishedCases": [
+        2,
+        100,
+        1000,
+        10000
+      ],
+      "executionFailure": null
+    },
+    "measurement-process.json": {
+      "status": "process-ended",
+      "process_exit_code": 0,
+      "tee_exit_code": 0,
+      "outer_wall_cap_or_kill": false
+    },
+    "collection-verification.json": {
+      "collection_complete": true
+    }
+  },
+  "git_status_exit_code": 0,
+  "git_status": "",
+  "final_disk_bytes": {
+    "total": 154894188544,
+    "used": 65615015936,
+    "free": 89262395392
+  },
+  "manifest_elapsed_seconds": 2.3874773629995616,
+  "save_file_upload": false,
+  "actual_harness_file_io_or_resume_skipped": false,
+  "scope": "큰slot 파일은 삭제/변경하지 않고 최종SHA/크기만 업로드한다. raw진행 보고서·로그는 수정하지 않는다.",
+  "limits": "330분cap은partial/실패 그대로다. runner소실/강제job종료에는 마지막업로드를 보장하지 못한다. slot hash는 종료뒤 별도비용이다."
+}

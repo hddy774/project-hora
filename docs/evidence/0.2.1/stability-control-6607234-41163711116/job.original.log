@@ -1,0 +1,1080 @@
+﻿2026-10-31T03:17:18.1767229Z Current runner version: '2.338.2'
+2026-10-31T03:17:18.1794762Z ##[group]Runner Image Provisioner
+2026-10-31T03:17:18.1795766Z Hosted Compute Agent
+2026-10-31T03:17:18.1796482Z Version: 20261021.618
+2026-10-31T03:17:18.1797156Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-31T03:17:18.1797895Z Build Date: 2026-10-21T00:45:21Z
+2026-10-31T03:17:18.1798675Z Worker ID: {22e05020-2acd-4a63-8399-b5c272e3de28}
+2026-10-31T03:17:18.1799870Z Region: southcentralus
+2026-10-31T03:17:18.1800543Z Cloud: Azure
+2026-10-31T03:17:18.1801136Z ##[endgroup]
+2026-10-31T03:17:18.1803160Z ##[group]Operating System
+2026-10-31T03:17:18.1804058Z Ubuntu
+2026-10-31T03:17:18.1804648Z 24.04.5
+2026-10-31T03:17:18.1805219Z LTS
+2026-10-31T03:17:18.1805774Z ##[endgroup]
+2026-10-31T03:17:18.1806360Z ##[group]Runner Image
+2026-10-31T03:17:18.1807028Z Image: ubuntu-24.04
+2026-10-31T03:17:18.1807659Z Version: 20261025.353.1
+2026-10-31T03:17:18.1809353Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-31T03:17:18.1811063Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+2026-10-31T03:17:18.1812193Z ##[endgroup]
+2026-10-31T03:17:18.1813372Z ##[group]GITHUB_TOKEN Permissions
+2026-10-31T03:17:18.1815606Z Contents: read
+2026-10-31T03:17:18.1816296Z Metadata: read
+2026-10-31T03:17:18.1816954Z ##[endgroup]
+2026-10-31T03:17:18.1819507Z Secret source: Actions
+2026-10-31T03:17:18.1820608Z Cache mode: write
+2026-10-31T03:17:18.1821584Z Prepare workflow directory
+2026-10-31T03:17:18.2356214Z Prepare all required actions
+2026-10-31T03:17:18.2406455Z Getting action download info
+2026-10-31T03:17:18.5082649Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-31T03:17:18.6165040Z Download action repository 'actions/setup-dotnet@v4' (SHA:67a3573c9a986a3f9c594539f4ab511d57bb3ce9)
+2026-10-31T03:17:19.1107711Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-31T03:17:19.3104114Z Complete job name: 고정 소스·실제 파일 저장/재개 장기 안정성
+2026-10-31T03:17:19.3898063Z ##[group]Run python3 - <<'PY'
+2026-10-31T03:17:19.3898872Z [36;1mpython3 - <<'PY'[0m
+2026-10-31T03:17:19.3899715Z [36;1mimport json, os, pathlib, re[0m
+2026-10-31T03:17:19.3900450Z [36;1mtemp = pathlib.Path(os.environ['RUNNER_TEMP'])[0m
+2026-10-31T03:17:19.3901529Z [36;1mroot = temp / f"v021-stability-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}"[0m
+2026-10-31T03:17:19.3902559Z [36;1mroot.mkdir(parents=True, exist_ok=False)[0m
+2026-10-31T03:17:19.3903327Z [36;1mwith open(os.environ['GITHUB_ENV'], 'a') as out:[0m
+2026-10-31T03:17:19.3904096Z [36;1m    out.write('RESULT_DIR=' + str(root) + '\n')[0m
+2026-10-31T03:17:19.3905021Z [36;1m    out.write('DOTNET_INSTALL_DIR=' + str(temp / 'v021-stability-dotnet') + '\n')[0m
+2026-10-31T03:17:19.3906116Z [36;1m    out.write('DOTNET_ROOT=' + str(temp / 'v021-stability-dotnet') + '\n')[0m
+2026-10-31T03:17:19.3907255Z [36;1m    out.write('DOTNET_CLI_HOME=' + str(temp / 'v021-stability-dotnet-home') + '\n')[0m
+2026-10-31T03:17:19.3908322Z [36;1mfor name in ['tmp', 'inputs', 'assemblies']: (root / name).mkdir()[0m
+2026-10-31T03:17:19.3909334Z [36;1mwith open(os.environ['GITHUB_ENV'], 'a') as out:[0m
+2026-10-31T03:17:19.3910969Z [36;1m    for key, value in {'NUGET_PACKAGES': temp / 'v021-stability-nuget', 'NUGET_HTTP_CACHE_PATH': temp / 'v021-stability-nuget-http', 'TMPDIR': root / 'tmp', 'TMP': root / 'tmp', 'TEMP': root / 'tmp'}.items():[0m
+2026-10-31T03:17:19.3912515Z [36;1m        out.write(f'{key}={value}\n')[0m
+2026-10-31T03:17:19.3913239Z [36;1mdata = {key: os.environ.get(key) for key in [[0m
+2026-10-31T03:17:19.3913946Z [36;1m    'SOURCE_SHA', 'WORKFLOW_SOURCE_SHA',[0m
+2026-10-31T03:17:19.3914787Z [36;1m    'GITHUB_EVENT_NAME', 'GITHUB_REPOSITORY', 'GITHUB_WORKFLOW_REF',[0m
+2026-10-31T03:17:19.3915701Z [36;1m    'GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'GITHUB_ACTOR',[0m
+2026-10-31T03:17:19.3916963Z [36;1m    'GITHUB_TRIGGERING_ACTOR', 'REPOSITORY_PRIVATE', 'PLAN_PATH', 'BASELINE_PATH']}[0m
+2026-10-31T03:17:19.3918194Z [36;1m(root / 'request.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')[0m
+2026-10-31T03:17:19.3919521Z [36;1mif re.fullmatch(r'[0-9a-f]{40}', os.environ['SOURCE_SHA']) is None:[0m
+2026-10-31T03:17:19.3920499Z [36;1m    raise SystemExit('브랜치/태그/축약 ref 대신 정확한 소문자 SHA40을 지정해야 합니다.')[0m
+2026-10-31T03:17:19.3921389Z [36;1mif os.environ['REPOSITORY_PRIVATE'] != 'false':[0m
+2026-10-31T03:17:19.3922258Z [36;1m    raise SystemExit('이 수집 경로는 확인한 public 저장소의 표준 러너 사양만 대상으로 합니다.')[0m
+2026-10-31T03:17:19.3923037Z [36;1mPY[0m
+2026-10-31T03:17:19.3947530Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-31T03:17:19.3948566Z env:
+2026-10-31T03:17:19.3949291Z   DOTNET_NOLOGO: true
+2026-10-31T03:17:19.3949856Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T03:17:19.3950469Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T03:17:19.3951134Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T03:17:19.3952003Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T03:17:19.3952689Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T03:17:19.3953320Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:19.3954119Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T03:17:19.3954851Z   REPOSITORY_PRIVATE: false
+2026-10-31T03:17:19.3955581Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T03:17:19.3956517Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T03:17:19.3957276Z ##[endgroup]
+2026-10-31T03:17:19.4577450Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+2026-10-31T03:17:19.4578332Z with:
+2026-10-31T03:17:19.4578831Z   repository: hddy774/project-hora
+2026-10-31T03:17:19.4579881Z   ref: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:19.4580537Z   fetch-depth: 0
+2026-10-31T03:17:19.4581083Z   persist-credentials: false
+2026-10-31T03:17:19.4585308Z   token: ***
+2026-10-31T03:17:19.4585802Z   ssh-strict: true
+2026-10-31T03:17:19.4586283Z   ssh-user: git
+2026-10-31T03:17:19.4586749Z   clean: true
+2026-10-31T03:17:19.4587239Z   sparse-checkout-cone-mode: true
+2026-10-31T03:17:19.4587836Z   fetch-tags: false
+2026-10-31T03:17:19.4588339Z   show-progress: true
+2026-10-31T03:17:19.4588839Z   lfs: false
+2026-10-31T03:17:19.4589455Z   submodules: false
+2026-10-31T03:17:19.4589954Z   set-safe-directory: true
+2026-10-31T03:17:19.4590513Z   allow-unsafe-pr-checkout: false
+2026-10-31T03:17:19.4591071Z env:
+2026-10-31T03:17:19.4591521Z   DOTNET_NOLOGO: true
+2026-10-31T03:17:19.4592086Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T03:17:19.4592686Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T03:17:19.4593307Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T03:17:19.4594035Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T03:17:19.4594702Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T03:17:19.4670605Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:19.4671646Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T03:17:19.4672488Z   REPOSITORY_PRIVATE: false
+2026-10-31T03:17:19.4673279Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T03:17:19.4674246Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T03:17:19.4675169Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T03:17:19.4676063Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:19.4676968Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:19.4677827Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T03:17:19.4678704Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T03:17:19.4679985Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T03:17:19.4681243Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:19.4682097Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:19.4682915Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:19.4683616Z ##[endgroup]
+2026-10-31T03:17:19.7787827Z Syncing repository: hddy774/project-hora
+2026-10-31T03:17:19.7790784Z ##[group]Getting Git version info
+2026-10-31T03:17:19.7792125Z Working directory is '/home/runner/work/project-hora/project-hora'
+2026-10-31T03:17:19.7793690Z [command]/usr/bin/git version
+2026-10-31T03:17:19.7907065Z git version 2.56.0
+2026-10-31T03:17:19.7928534Z ##[endgroup]
+2026-10-31T03:17:19.7943630Z Temporarily overriding HOME='/home/runner/work/_temp/2ffcaec4-17ce-41f4-bd2b-e234a17e9ac4' before making global git config changes
+2026-10-31T03:17:19.7946433Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-31T03:17:19.7951031Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/project-hora/project-hora
+2026-10-31T03:17:19.8008127Z Deleting the contents of '/home/runner/work/project-hora/project-hora'
+2026-10-31T03:17:19.8012739Z ##[group]Initializing the repository
+2026-10-31T03:17:19.8018481Z [command]/usr/bin/git init /home/runner/work/project-hora/project-hora
+2026-10-31T03:17:19.8154734Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-31T03:17:19.8156983Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-31T03:17:19.8158951Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-31T03:17:19.8161246Z hint: call:
+2026-10-31T03:17:19.8161992Z hint:
+2026-10-31T03:17:19.8162991Z hint: 	git config --global init.defaultBranch <name>
+2026-10-31T03:17:19.8164117Z hint:
+2026-10-31T03:17:19.8165218Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-31T03:17:19.8167256Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-31T03:17:19.8168753Z hint:
+2026-10-31T03:17:19.8169773Z hint: 	git branch -m <name>
+2026-10-31T03:17:19.8170624Z hint:
+2026-10-31T03:17:19.8171851Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-31T03:17:19.8174030Z Initialized empty Git repository in /home/runner/work/project-hora/project-hora/.git/
+2026-10-31T03:17:19.8182112Z [command]/usr/bin/git remote add origin https://github.com/hddy774/project-hora
+2026-10-31T03:17:19.8248309Z ##[endgroup]
+2026-10-31T03:17:19.8250346Z ##[group]Disabling automatic garbage collection
+2026-10-31T03:17:19.8253593Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-31T03:17:19.8288910Z ##[endgroup]
+2026-10-31T03:17:19.8290567Z ##[group]Setting up auth
+2026-10-31T03:17:19.8297692Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-31T03:17:19.8342486Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-31T03:17:19.8780075Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-31T03:17:19.8825964Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-31T03:17:19.9068389Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-31T03:17:19.9115630Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-31T03:17:19.9355838Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-31T03:17:19.9403489Z ##[endgroup]
+2026-10-31T03:17:19.9404608Z ##[group]Fetching the repository
+2026-10-31T03:17:19.9418000Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-31T03:17:21.3540434Z From https://github.com/hddy774/project-hora
+2026-10-31T03:17:21.3544506Z  * [new branch]      ccr-0713189c-f6gu2y      -> origin/ccr-0713189c-f6gu2y
+2026-10-31T03:17:21.3547891Z  * [new branch]      claude/game-redesign-dev-standards-6g5lm3 -> origin/claude/game-redesign-dev-standards-6g5lm3
+2026-10-31T03:17:21.3553039Z  * [new branch]      claude/korean-game-feedback-rlkguq -> origin/claude/korean-game-feedback-rlkguq
+2026-10-31T03:17:21.3557219Z  * [new branch]      codex/19-csharp-scaffold -> origin/codex/19-csharp-scaffold
+2026-10-31T03:17:21.3560341Z  * [new branch]      codex/19-deterministic-random -> origin/codex/19-deterministic-random
+2026-10-31T03:17:21.3562882Z  * [new branch]      codex/19-money-display   -> origin/codex/19-money-display
+2026-10-31T03:17:21.3565100Z  * [new branch]      codex/19-month-context   -> origin/codex/19-month-context
+2026-10-31T03:17:21.3567323Z  * [new branch]      codex/19-month-pipeline  -> origin/codex/19-month-pipeline
+2026-10-31T03:17:21.3570233Z  * [new branch]      codex/19-quantity-allocation -> origin/codex/19-quantity-allocation
+2026-10-31T03:17:21.3572582Z  * [new branch]      codex/19-typed-ids       -> origin/codex/19-typed-ids
+2026-10-31T03:17:21.3574730Z  * [new branch]      codex/29-development-plan -> origin/codex/29-development-plan
+2026-10-31T03:17:21.3576914Z  * [new branch]      codex/30-observation     -> origin/codex/30-observation
+2026-10-31T03:17:21.3579306Z  * [new branch]      codex/30-release-v020    -> origin/codex/30-release-v020
+2026-10-31T03:17:21.3582212Z  * [new branch]      codex/30-save-validation -> origin/codex/30-save-validation
+2026-10-31T03:17:21.3584706Z  * [new branch]      codex/33-final-acceptance -> origin/codex/33-final-acceptance
+2026-10-31T03:17:21.3587160Z  * [new branch]      codex/33-final-verification -> origin/codex/33-final-verification
+2026-10-31T03:17:21.3589987Z  * [new branch]      codex/33-parallel-progress -> origin/codex/33-parallel-progress
+2026-10-31T03:17:21.3592787Z  * [new branch]      codex/33-v020-implementation-docs -> origin/codex/33-v020-implementation-docs
+2026-10-31T03:17:21.3595436Z  * [new branch]      codex/34-runner-safety   -> origin/codex/34-runner-safety
+2026-10-31T03:17:21.3597746Z  * [new branch]      codex/34-save-quarantine -> origin/codex/34-save-quarantine
+2026-10-31T03:17:21.3600083Z  * [new branch]      codex/35-labels          -> origin/codex/35-labels
+2026-10-31T03:17:21.3602329Z  * [new branch]      codex/35-region-events   -> origin/codex/35-region-events
+2026-10-31T03:17:21.3604608Z  * [new branch]      codex/35-rewards         -> origin/codex/35-rewards
+2026-10-31T03:17:21.3607567Z  * [new branch]      codex/36-balance-report  -> origin/codex/36-balance-report
+2026-10-31T03:17:21.3610712Z  * [new branch]      codex/36-baseline-measurements -> origin/codex/36-baseline-measurements
+2026-10-31T03:17:21.3614018Z  * [new branch]      codex/36-growth-balance  -> origin/codex/36-growth-balance
+2026-10-31T03:17:21.3616672Z  * [new branch]      codex/36-growth-diagnostics -> origin/codex/36-growth-diagnostics
+2026-10-31T03:17:21.3620066Z  * [new branch]      codex/37-accessible-typography -> origin/codex/37-accessible-typography
+2026-10-31T03:17:21.3622818Z  * [new branch]      codex/37-five-tab-frame  -> origin/codex/37-five-tab-frame
+2026-10-31T03:17:21.3625518Z  * [new branch]      codex/37-fortune-confirmation -> origin/codex/37-fortune-confirmation
+2026-10-31T03:17:21.3628046Z  * [new branch]      codex/37-game-name       -> origin/codex/37-game-name
+2026-10-31T03:17:21.3630686Z  * [new branch]      codex/37-ime-occlusion   -> origin/codex/37-ime-occlusion
+2026-10-31T03:17:21.3633155Z  * [new branch]      codex/37-observation-entry -> origin/codex/37-observation-entry
+2026-10-31T03:17:21.3635742Z  * [new branch]      codex/37-person-exploration -> origin/codex/37-person-exploration
+2026-10-31T03:17:21.3638374Z  * [new branch]      codex/37-sheet-accessibility -> origin/codex/37-sheet-accessibility
+2026-10-31T03:17:21.3641392Z  * [new branch]      codex/37-woodblock-navigation -> origin/codex/37-woodblock-navigation
+2026-10-31T03:17:21.3644443Z  * [new branch]      codex/37-world-recommendations -> origin/codex/37-world-recommendations
+2026-10-31T03:17:21.3647261Z  * [new branch]      codex/38-android-input-evidence -> origin/codex/38-android-input-evidence
+2026-10-31T03:17:21.3650092Z  * [new branch]      codex/38-android-matrix  -> origin/codex/38-android-matrix
+2026-10-31T03:17:21.3652652Z  * [new branch]      codex/38-current-input-fix -> origin/codex/38-current-input-fix
+2026-10-31T03:17:21.3655394Z  * [new branch]      codex/38-font-ime-evidence -> origin/codex/38-font-ime-evidence
+2026-10-31T03:17:21.3657982Z  * [new branch]      codex/38-parallel-pr-workflow -> origin/codex/38-parallel-pr-workflow
+2026-10-31T03:17:21.3660976Z  * [new branch]      codex/38-publication-evidence -> origin/codex/38-publication-evidence
+2026-10-31T03:17:21.3663384Z  * [new branch]      codex/38-qa-reuse        -> origin/codex/38-qa-reuse
+2026-10-31T03:17:21.3665736Z  * [new branch]      codex/38-release-v020-contract -> origin/codex/38-release-v020-contract
+2026-10-31T03:17:21.3668521Z  * [new branch]      codex/38-upgrade-evidence-fix -> origin/codex/38-upgrade-evidence-fix
+2026-10-31T03:17:21.3671385Z  * [new branch]      codex/r03-evidence-archive -> origin/codex/r03-evidence-archive
+2026-10-31T03:17:21.3673677Z  * [new branch]      codex/v0.2.1             -> origin/codex/v0.2.1
+2026-10-31T03:17:21.3675820Z  * [new branch]      codex/v021-acceptance-audit -> origin/codex/v021-acceptance-audit
+2026-10-31T03:17:21.3679631Z  * [new branch]      codex/v021-acceptance-refresh -> origin/codex/v021-acceptance-refresh
+2026-10-31T03:17:21.3682608Z  * [new branch]      codex/v021-action-authority-cleanup -> origin/codex/v021-action-authority-cleanup
+2026-10-31T03:17:21.3686409Z  * [new branch]      codex/v021-agent-measurement-harness -> origin/codex/v021-agent-measurement-harness
+2026-10-31T03:17:21.3689667Z  * [new branch]      codex/v021-agent-metrics-9263756 -> origin/codex/v021-agent-metrics-9263756
+2026-10-31T03:17:21.3692227Z  * [new branch]      codex/v021-agent-planning -> origin/codex/v021-agent-planning
+2026-10-31T03:17:21.3694780Z  * [new branch]      codex/v021-ai-entry-recovery -> origin/codex/v021-ai-entry-recovery
+2026-10-31T03:17:21.3697599Z  * [new branch]      codex/v021-android-quickstep-record -> origin/codex/v021-android-quickstep-record
+2026-10-31T03:17:21.3700632Z  * [new branch]      codex/v021-android-readiness -> origin/codex/v021-android-readiness
+2026-10-31T03:17:21.3703036Z  * [new branch]      codex/v021-api24-probe   -> origin/codex/v021-api24-probe
+2026-10-31T03:17:21.3706444Z  * [new branch]      codex/v021-canonical-performance-gate -> origin/codex/v021-canonical-performance-gate
+2026-10-31T03:17:21.3709721Z  * [new branch]      codex/v021-canonical-stream-hash -> origin/codex/v021-canonical-stream-hash
+2026-10-31T03:17:21.3712431Z  * [new branch]      codex/v021-combat-exchange -> origin/codex/v021-combat-exchange
+2026-10-31T03:17:21.3715064Z  * [new branch]      codex/v021-compact-save-threshold -> origin/codex/v021-compact-save-threshold
+2026-10-31T03:17:21.3717900Z  * [new branch]      codex/v021-copy-profile-56bbfb2 -> origin/codex/v021-copy-profile-56bbfb2
+2026-10-31T03:17:21.3720826Z  * [new branch]      codex/v021-cultivation   -> origin/codex/v021-cultivation
+2026-10-31T03:17:21.3723827Z  * [new branch]      codex/v021-cultivation-bridge -> origin/codex/v021-cultivation-bridge
+2026-10-31T03:17:21.3726807Z  * [new branch]      codex/v021-cultivation-engine-split -> origin/codex/v021-cultivation-engine-split
+2026-10-31T03:17:21.3731032Z  * [new branch]      codex/v021-cultivation-fortune -> origin/codex/v021-cultivation-fortune
+2026-10-31T03:17:21.3733756Z  * [new branch]      codex/v021-cultivation-life-law -> origin/codex/v021-cultivation-life-law
+2026-10-31T03:17:21.3736520Z  * [new branch]      codex/v021-cultivation-pressure -> origin/codex/v021-cultivation-pressure
+2026-10-31T03:17:21.3740603Z  * [new branch]      codex/v021-cultivation-query-scope -> origin/codex/v021-cultivation-query-scope
+2026-10-31T03:17:21.3743823Z  * [new branch]      codex/v021-cultivation-site-context -> origin/codex/v021-cultivation-site-context
+2026-10-31T03:17:21.3746417Z  * [new branch]      codex/v021-currency      -> origin/codex/v021-currency
+2026-10-31T03:17:21.3748749Z  * [new branch]      codex/v021-currency-planning -> origin/codex/v021-currency-planning
+2026-10-31T03:17:21.3751787Z  * [new branch]      codex/v021-currency-planning-proof -> origin/codex/v021-currency-planning-proof
+2026-10-31T03:17:21.3755333Z  * [new branch]      codex/v021-currency-proof -> origin/codex/v021-currency-proof
+2026-10-31T03:17:21.3758090Z  * [new branch]      codex/v021-development-system -> origin/codex/v021-development-system
+2026-10-31T03:17:21.3760791Z  * [new branch]      codex/v021-ecology       -> origin/codex/v021-ecology
+2026-10-31T03:17:21.3763117Z  * [new branch]      codex/v021-ecology-acceptance -> origin/codex/v021-ecology-acceptance
+2026-10-31T03:17:21.3765690Z  * [new branch]      codex/v021-ecology-failure-law -> origin/codex/v021-ecology-failure-law
+2026-10-31T03:17:21.3768397Z  * [new branch]      codex/v021-ecology-food-recovery -> origin/codex/v021-ecology-food-recovery
+2026-10-31T03:17:21.3771120Z  * [new branch]      codex/v021-ecology-maturity -> origin/codex/v021-ecology-maturity
+2026-10-31T03:17:21.3773687Z  * [new branch]      codex/v021-ex05-malformed-brotli -> origin/codex/v021-ex05-malformed-brotli
+2026-10-31T03:17:21.3776613Z  * [new branch]      codex/v021-execution-experiments -> origin/codex/v021-execution-experiments
+2026-10-31T03:17:21.3779690Z  * [new branch]      codex/v021-execution-measurements -> origin/codex/v021-execution-measurements
+2026-10-31T03:17:21.3782275Z  * [new branch]      codex/v021-execution-review -> origin/codex/v021-execution-review
+2026-10-31T03:17:21.3784684Z  * [new branch]      codex/v021-execution-workflow -> origin/codex/v021-execution-workflow
+2026-10-31T03:17:21.3787009Z  * [new branch]      codex/v021-exploration   -> origin/codex/v021-exploration
+2026-10-31T03:17:21.3789285Z  * [new branch]      codex/v021-final-314-map -> origin/codex/v021-final-314-map
+2026-10-31T03:17:21.3791649Z  * [new branch]      codex/v021-final-ui-t05-9263756 -> origin/codex/v021-final-ui-t05-9263756
+2026-10-31T03:17:21.3794174Z  * [new branch]      codex/v021-five-own-acceptance -> origin/codex/v021-five-own-acceptance
+2026-10-31T03:17:21.3796838Z  * [new branch]      codex/v021-food-source-observation -> origin/codex/v021-food-source-observation
+2026-10-31T03:17:21.3799568Z  * [new branch]      codex/v021-growth-926-archive -> origin/codex/v021-growth-926-archive
+2026-10-31T03:17:21.3802166Z  * [new branch]      codex/v021-growth-b0-interruption -> origin/codex/v021-growth-b0-interruption
+2026-10-31T03:17:21.3804941Z  * [new branch]      codex/v021-growth-cohort-partition -> origin/codex/v021-growth-cohort-partition
+2026-10-31T03:17:21.3807445Z  * [new branch]      codex/v021-growth-figures -> origin/codex/v021-growth-figures
+2026-10-31T03:17:21.3809890Z  * [new branch]      codex/v021-growth-measurements -> origin/codex/v021-growth-measurements
+2026-10-31T03:17:21.3812485Z  * [new branch]      codex/v021-growth-native-evidence -> origin/codex/v021-growth-native-evidence
+2026-10-31T03:17:21.3815013Z  * [new branch]      codex/v021-growth-sensitivity -> origin/codex/v021-growth-sensitivity
+2026-10-31T03:17:21.3817777Z  * [new branch]      codex/v021-growth-sensitivity-ci -> origin/codex/v021-growth-sensitivity-ci
+2026-10-31T03:17:21.3820864Z  * [new branch]      codex/v021-growth-sensitivity-inputs -> origin/codex/v021-growth-sensitivity-inputs
+2026-10-31T03:17:21.3823573Z  * [new branch]      codex/v021-growth-series-source -> origin/codex/v021-growth-series-source
+2026-10-31T03:17:21.3826007Z  * [new branch]      codex/v021-invariant-5f789c8 -> origin/codex/v021-invariant-5f789c8
+2026-10-31T03:17:21.3828332Z  * [new branch]      codex/v021-invariant-7901f34 -> origin/codex/v021-invariant-7901f34
+2026-10-31T03:17:21.3830989Z  * [new branch]      codex/v021-invariant-9263756 -> origin/codex/v021-invariant-9263756
+2026-10-31T03:17:21.3833300Z  * [new branch]      codex/v021-invariant-9704e95 -> origin/codex/v021-invariant-9704e95
+2026-10-31T03:17:21.3835622Z  * [new branch]      codex/v021-invariant-c6e4704 -> origin/codex/v021-invariant-c6e4704
+2026-10-31T03:17:21.3837939Z  * [new branch]      codex/v021-invariant-df72405 -> origin/codex/v021-invariant-df72405
+2026-10-31T03:17:21.3840577Z  * [new branch]      codex/v021-invariant-execution-map -> origin/codex/v021-invariant-execution-map
+2026-10-31T03:17:21.3843186Z  * [new branch]      codex/v021-invariant-final-map -> origin/codex/v021-invariant-final-map
+2026-10-31T03:17:21.3845408Z  * [new branch]      codex/v021-inventory     -> origin/codex/v021-inventory
+2026-10-31T03:17:21.3847517Z  * [new branch]      codex/v021-inventory-bridge -> origin/codex/v021-inventory-bridge
+2026-10-31T03:17:21.3849840Z  * [new branch]      codex/v021-inventory-h10 -> origin/codex/v021-inventory-h10
+2026-10-31T03:17:21.3852192Z  * [new branch]      codex/v021-inventory-integration -> origin/codex/v021-inventory-integration
+2026-10-31T03:17:21.3854834Z  * [new branch]      codex/v021-inventory-oracle-policy -> origin/codex/v021-inventory-oracle-policy
+2026-10-31T03:17:21.3857279Z  * [new branch]      codex/v021-inventory-owned -> origin/codex/v021-inventory-owned
+2026-10-31T03:17:21.3860113Z  * [new branch]      codex/v021-inventory-projection-default -> origin/codex/v021-inventory-projection-default
+2026-10-31T03:17:21.3863431Z  * [new branch]      codex/v021-inventory-projection-experiment -> origin/codex/v021-inventory-projection-experiment
+2026-10-31T03:17:21.3866309Z  * [new branch]      codex/v021-inventory-sync-index -> origin/codex/v021-inventory-sync-index
+2026-10-31T03:17:21.3868814Z  * [new branch]      codex/v021-inventory-typed-copy -> origin/codex/v021-inventory-typed-copy
+2026-10-31T03:17:21.3871527Z  * [new branch]      codex/v021-inventory-typed-optin -> origin/codex/v021-inventory-typed-optin
+2026-10-31T03:17:21.3874262Z  * [new branch]      codex/v021-inventory-validation-index -> origin/codex/v021-inventory-validation-index
+2026-10-31T03:17:21.3877241Z  * [new branch]      codex/v021-inventory-validation-jobs -> origin/codex/v021-inventory-validation-jobs
+2026-10-31T03:17:21.3880368Z  * [new branch]      codex/v021-inventory-validation-singleton -> origin/codex/v021-inventory-validation-singleton
+2026-10-31T03:17:21.3883106Z  * [new branch]      codex/v021-inventory-vertical -> origin/codex/v021-inventory-vertical
+2026-10-31T03:17:21.3885382Z  * [new branch]      codex/v021-inventory-views -> origin/codex/v021-inventory-views
+2026-10-31T03:17:21.3887447Z  * [new branch]      codex/v021-knowledge     -> origin/codex/v021-knowledge
+2026-10-31T03:17:21.3889655Z  * [new branch]      codex/v021-knowledge-bridge -> origin/codex/v021-knowledge-bridge
+2026-10-31T03:17:21.3892060Z  * [new branch]      codex/v021-knowledge-integration -> origin/codex/v021-knowledge-integration
+2026-10-31T03:17:21.3894540Z  * [new branch]      codex/v021-knowledge-key-index -> origin/codex/v021-knowledge-key-index
+2026-10-31T03:17:21.3897191Z  * [new branch]      codex/v021-knowledge-owned-checkpoint -> origin/codex/v021-knowledge-owned-checkpoint
+2026-10-31T03:17:21.3900172Z  * [new branch]      codex/v021-knowledge-physical-copy -> origin/codex/v021-knowledge-physical-copy
+2026-10-31T03:17:21.3902613Z  * [new branch]      codex/v021-l05-final-audit -> origin/codex/v021-l05-final-audit
+2026-10-31T03:17:21.3904886Z  * [new branch]      codex/v021-large-save-envelope -> origin/codex/v021-large-save-envelope
+2026-10-31T03:17:21.3907255Z  * [new branch]      codex/v021-native-ci-evidence -> origin/codex/v021-native-ci-evidence
+2026-10-31T03:17:21.3909941Z  * [new branch]      codex/v021-native-ci-evidence-d7e76e3 -> origin/codex/v021-native-ci-evidence-d7e76e3
+2026-10-31T03:17:21.3912664Z  * [new branch]      codex/v021-notion-retention-index -> origin/codex/v021-notion-retention-index
+2026-10-31T03:17:21.3915050Z  * [new branch]      codex/v021-people        -> origin/codex/v021-people
+2026-10-31T03:17:21.3917129Z  * [new branch]      codex/v021-people-acceptance -> origin/codex/v021-people-acceptance
+2026-10-31T03:17:21.3919418Z  * [new branch]      codex/v021-people-bridge -> origin/codex/v021-people-bridge
+2026-10-31T03:17:21.3921656Z  * [new branch]      codex/v021-people-bridge-split -> origin/codex/v021-people-bridge-split
+2026-10-31T03:17:21.3924267Z  * [new branch]      codex/v021-people-capability-aliases -> origin/codex/v021-people-capability-aliases
+2026-10-31T03:17:21.3926832Z  * [new branch]      codex/v021-people-family-flow -> origin/codex/v021-people-family-flow
+2026-10-31T03:17:21.3929328Z  * [new branch]      codex/v021-people-family-proof -> origin/codex/v021-people-family-proof
+2026-10-31T03:17:21.3931905Z  * [new branch]      codex/v021-people-provisional-audit -> origin/codex/v021-people-provisional-audit
+2026-10-31T03:17:21.3934340Z  * [new branch]      codex/v021-people-receipts -> origin/codex/v021-people-receipts
+2026-10-31T03:17:21.3936430Z  * [new branch]      codex/v021-people-social -> origin/codex/v021-people-social
+2026-10-31T03:17:21.3938807Z  * [new branch]      codex/v021-people-social-acceptance -> origin/codex/v021-people-social-acceptance
+2026-10-31T03:17:21.3941849Z  * [new branch]      codex/v021-people-teaching-plan-source -> origin/codex/v021-people-teaching-plan-source
+2026-10-31T03:17:21.3944631Z  * [new branch]      codex/v021-performance-review-guide -> origin/codex/v021-performance-review-guide
+2026-10-31T03:17:21.3947178Z  * [new branch]      codex/v021-planning-fixture -> origin/codex/v021-planning-fixture
+2026-10-31T03:17:21.3949421Z  * [new branch]      codex/v021-policy-query  -> origin/codex/v021-policy-query
+2026-10-31T03:17:21.3951356Z  * [new branch]      codex/v021-politics      -> origin/codex/v021-politics
+2026-10-31T03:17:21.3953471Z  * [new branch]      codex/v021-politics-acceptance -> origin/codex/v021-politics-acceptance
+2026-10-31T03:17:21.3955722Z  * [new branch]      codex/v021-politics-bridge -> origin/codex/v021-politics-bridge
+2026-10-31T03:17:21.3958062Z  * [new branch]      codex/v021-politics-labor-context -> origin/codex/v021-politics-labor-context
+2026-10-31T03:17:21.3960843Z  * [new branch]      codex/v021-politics-retire-prototype -> origin/codex/v021-politics-retire-prototype
+2026-10-31T03:17:21.3963480Z  * [new branch]      codex/v021-population-94-evidence -> origin/codex/v021-population-94-evidence
+2026-10-31T03:17:21.3966106Z  * [new branch]      codex/v021-population-harness-schema -> origin/codex/v021-population-harness-schema
+2026-10-31T03:17:21.3968696Z  * [new branch]      codex/v021-preparation-evidence -> origin/codex/v021-preparation-evidence
+2026-10-31T03:17:21.3971149Z  * [new branch]      codex/v021-product-boundary -> origin/codex/v021-product-boundary
+2026-10-31T03:17:21.3973586Z  * [new branch]      codex/v021-profile-b0f3aec-evidence -> origin/codex/v021-profile-b0f3aec-evidence
+2026-10-31T03:17:21.3976121Z  * [new branch]      codex/v021-progress-acceptance -> origin/codex/v021-progress-acceptance
+2026-10-31T03:17:21.3978742Z  * [new branch]      codex/v021-progress-final-measurement -> origin/codex/v021-progress-final-measurement
+2026-10-31T03:17:21.3981448Z  * [new branch]      codex/v021-progress-refresh -> origin/codex/v021-progress-refresh
+2026-10-31T03:17:21.3983719Z  * [new branch]      codex/v021-projection-sampler -> origin/codex/v021-projection-sampler
+2026-10-31T03:17:21.3986181Z  * [new branch]      codex/v021-r06-strategy-comparison -> origin/codex/v021-r06-strategy-comparison
+2026-10-31T03:17:21.3988782Z  * [new branch]      codex/v021-reincarnation-causes -> origin/codex/v021-reincarnation-causes
+2026-10-31T03:17:21.3991445Z  * [new branch]      codex/v021-release-emulator-token -> origin/codex/v021-release-emulator-token
+2026-10-31T03:17:21.3994190Z  * [new branch]      codex/v021-release-notes-korean-summary -> origin/codex/v021-release-notes-korean-summary
+2026-10-31T03:17:21.3997057Z  * [new branch]      codex/v021-release-owner-comment -> origin/codex/v021-release-owner-comment
+2026-10-31T03:17:21.3999505Z  * [new branch]      codex/v021-release-pipeline -> origin/codex/v021-release-pipeline
+2026-10-31T03:17:21.4002030Z  * [new branch]      codex/v021-release-windows-diagnostics -> origin/codex/v021-release-windows-diagnostics
+2026-10-31T03:17:21.4004495Z  * [new branch]      codex/v021-review-closeout -> origin/codex/v021-review-closeout
+2026-10-31T03:17:21.4006938Z  * [new branch]      codex/v021-review-navigation-progress -> origin/codex/v021-review-navigation-progress
+2026-10-31T03:17:21.4009439Z  * [new branch]      codex/v021-rich-queries  -> origin/codex/v021-rich-queries
+2026-10-31T03:17:21.4011475Z  * [new branch]      codex/v021-runtime-314-map -> origin/codex/v021-runtime-314-map
+2026-10-31T03:17:21.4013709Z  * [new branch]      codex/v021-runtime-preparation -> origin/codex/v021-runtime-preparation
+2026-10-31T03:17:21.4016115Z  * [new branch]      codex/v021-schema2-utf8-segments -> origin/codex/v021-schema2-utf8-segments
+2026-10-31T03:17:21.4018272Z  * [new branch]      codex/v021-secret-ui     -> origin/codex/v021-secret-ui
+2026-10-31T03:17:21.4020608Z  * [new branch]      codex/v021-sensitivity-order-only -> origin/codex/v021-sensitivity-order-only
+2026-10-31T03:17:21.4023396Z  * [new branch]      codex/v021-sensitivity-results-41131479924 -> origin/codex/v021-sensitivity-results-41131479924
+2026-10-31T03:17:21.4025902Z  * [new branch]      codex/v021-shell-compat  -> origin/codex/v021-shell-compat
+2026-10-31T03:17:21.4028099Z  * [new branch]      codex/v021-social-workflows -> origin/codex/v021-social-workflows
+2026-10-31T03:17:21.4030636Z  * [new branch]      codex/v021-stability-case-lifetime -> origin/codex/v021-stability-case-lifetime
+2026-10-31T03:17:21.4033032Z  * [new branch]      codex/v021-stability-history -> origin/codex/v021-stability-history
+2026-10-31T03:17:21.4035264Z  * [new branch]      codex/v021-stability-workflow -> origin/codex/v021-stability-workflow
+2026-10-31T03:17:21.4037425Z  * [new branch]      codex/v021-stable-runtime -> origin/codex/v021-stable-runtime
+2026-10-31T03:17:21.4039773Z  * [new branch]      codex/v021-storage-boundary-docs -> origin/codex/v021-storage-boundary-docs
+2026-10-31T03:17:21.4042153Z  * [new branch]      codex/v021-t04-heap-diagnostic -> origin/codex/v021-t04-heap-diagnostic
+2026-10-31T03:17:21.4044394Z  * [new branch]      codex/v021-trade-budget  -> origin/codex/v021-trade-budget
+2026-10-31T03:17:21.4046573Z  * [new branch]      codex/v021-transport-save-proof -> origin/codex/v021-transport-save-proof
+2026-10-31T03:17:21.4048616Z  * [new branch]      codex/v021-ui            -> origin/codex/v021-ui
+2026-10-31T03:17:21.4050667Z  * [new branch]      codex/v021-ui-entry-prepare -> origin/codex/v021-ui-entry-prepare
+2026-10-31T03:17:21.4052821Z  * [new branch]      codex/v021-ui-release-checks -> origin/codex/v021-ui-release-checks
+2026-10-31T03:17:21.4054914Z  * [new branch]      codex/v021-ui-text-scale -> origin/codex/v021-ui-text-scale
+2026-10-31T03:17:21.4057076Z  * [new branch]      codex/v021-windows-diagnostics -> origin/codex/v021-windows-diagnostics
+2026-10-31T03:17:21.4059628Z  * [new branch]      codex/v021-workflow-korean-labels -> origin/codex/v021-workflow-korean-labels
+2026-10-31T03:17:21.4061999Z  * [new branch]      history/pc-0.0.23-ui-migration -> origin/history/pc-0.0.23-ui-migration
+2026-10-31T03:17:21.4064962Z  * [new branch]      history/source/codex/next-version-plan-2026-09-02 -> origin/history/source/codex/next-version-plan-2026-09-02
+2026-10-31T03:17:21.4068101Z  * [new branch]      history/source/codex/pc-0.0.23-ui-migration -> origin/history/source/codex/pc-0.0.23-ui-migration
+2026-10-31T03:17:21.4071569Z  * [new branch]      history/source/codex/technical-audit-2026-09-02 -> origin/history/source/codex/technical-audit-2026-09-02
+2026-10-31T03:17:21.4075323Z  * [new branch]      history/source/codex/technical-audit-2026-09-02-docs-only -> origin/history/source/codex/technical-audit-2026-09-02-docs-only
+2026-10-31T03:17:21.4078468Z  * [new branch]      history/source/codex/v0.2.1 -> origin/history/source/codex/v0.2.1
+2026-10-31T03:17:21.4081565Z  * [new branch]      history/source/codex/v020-integrated-parallel-plan -> origin/history/source/codex/v020-integrated-parallel-plan
+2026-10-31T03:17:21.4085224Z  * [new branch]      history/source/codex/v020-observation-and-market-contract -> origin/history/source/codex/v020-observation-and-market-contract
+2026-10-31T03:17:21.4088665Z  * [new branch]      history/source/codex/v020-progress-uniqueness -> origin/history/source/codex/v020-progress-uniqueness
+2026-10-31T03:17:21.4091641Z  * [new branch]      history/source/codex/v021-ai-desktop -> origin/history/source/codex/v021-ai-desktop
+2026-10-31T03:17:21.4094301Z  * [new branch]      history/source/codex/v021-android-shell -> origin/history/source/codex/v021-android-shell
+2026-10-31T03:17:21.4097397Z  * [new branch]      history/source/codex/v021-claude-feedback-2026-10-30 -> origin/history/source/codex/v021-claude-feedback-2026-10-30
+2026-10-31T03:17:21.4100836Z  * [new branch]      history/source/codex/v021-ecology-performance -> origin/history/source/codex/v021-ecology-performance
+2026-10-31T03:17:21.4103882Z  * [new branch]      history/source/codex/v021-policy-foundation -> origin/history/source/codex/v021-policy-foundation
+2026-10-31T03:17:21.4106661Z  * [new branch]      history/source/codex/v021-world-life -> origin/history/source/codex/v021-world-life
+2026-10-31T03:17:21.4108867Z  * [new branch]      history/source/main      -> origin/history/source/main
+2026-10-31T03:17:21.4110788Z  * [new branch]      main                     -> origin/main
+2026-10-31T03:17:21.4112364Z  * [new tag]         evidence/v0.2.1-20261031 -> evidence/v0.2.1-20261031
+2026-10-31T03:17:21.4114070Z  * [new tag]         xianxia-observer/v0.1.0  -> xianxia-observer/v0.1.0
+2026-10-31T03:17:21.4115777Z  * [new tag]         xianxia-observer/v0.2.0  -> xianxia-observer/v0.2.0
+2026-10-31T03:17:21.4119686Z [command]/usr/bin/git rev-parse --verify --quiet 6607234b405921cc39e9527cbea42a7667a709be^{object}
+2026-10-31T03:17:21.4121545Z 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:21.4124373Z ##[endgroup]
+2026-10-31T03:17:21.4125858Z ##[group]Determining the checkout info
+2026-10-31T03:17:21.4127517Z ##[endgroup]
+2026-10-31T03:17:21.4128486Z [command]/usr/bin/git sparse-checkout disable
+2026-10-31T03:17:21.4131377Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-31T03:17:21.4134635Z ##[group]Checking out the ref
+2026-10-31T03:17:21.4136273Z [command]/usr/bin/git checkout --progress --force 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:21.6176993Z Note: switching to '6607234b405921cc39e9527cbea42a7667a709be'.
+2026-10-31T03:17:21.6179496Z 
+2026-10-31T03:17:21.6180845Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-31T03:17:21.6183009Z changes and commit them, and you can discard any commits you make in this
+2026-10-31T03:17:21.6184956Z state without impacting any branches by switching back to a branch.
+2026-10-31T03:17:21.6186083Z 
+2026-10-31T03:17:21.6186830Z If you want to create a new branch to retain commits you create, you may
+2026-10-31T03:17:21.6188597Z do so (now or later) by using -c with the switch command. Example:
+2026-10-31T03:17:21.6189909Z 
+2026-10-31T03:17:21.6190368Z   git switch -c <new-branch-name>
+2026-10-31T03:17:21.6191073Z 
+2026-10-31T03:17:21.6191499Z Or undo this operation with:
+2026-10-31T03:17:21.6192158Z 
+2026-10-31T03:17:21.6192540Z   git switch -
+2026-10-31T03:17:21.6193048Z 
+2026-10-31T03:17:21.6193893Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-31T03:17:21.6195091Z 
+2026-10-31T03:17:21.6195919Z HEAD is now at 6607234 다섯 성능 변경과 최신 전체 검증의 리뷰 입구 통합 (#247)
+2026-10-31T03:17:21.6204653Z ##[endgroup]
+2026-10-31T03:17:21.6256198Z [command]/usr/bin/git log -1 --format=%H
+2026-10-31T03:17:21.6290306Z 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:21.6301862Z ##[group]Removing auth
+2026-10-31T03:17:21.6304875Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-31T03:17:21.6345448Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-31T03:17:21.6589205Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-31T03:17:21.6625296Z http.https://github.com/.extraheader
+2026-10-31T03:17:21.6637172Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-31T03:17:21.6682162Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-31T03:17:21.6923204Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-31T03:17:21.6965643Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-31T03:17:21.7201700Z ##[endgroup]
+2026-10-31T03:17:21.7471891Z ##[group]Run actions/setup-dotnet@v4
+2026-10-31T03:17:21.7473256Z with:
+2026-10-31T03:17:21.7474324Z   dotnet-version: 10.0.403
+2026-10-31T03:17:21.7475522Z   cache: false
+2026-10-31T03:17:21.7476587Z env:
+2026-10-31T03:17:21.7477602Z   DOTNET_NOLOGO: true
+2026-10-31T03:17:21.7478785Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T03:17:21.7480428Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T03:17:21.7481776Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T03:17:21.7483342Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T03:17:21.7484821Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T03:17:21.7486431Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:21.7488570Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T03:17:21.7490474Z   REPOSITORY_PRIVATE: false
+2026-10-31T03:17:21.7492055Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T03:17:21.7494127Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T03:17:21.7496066Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T03:17:21.7497962Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:21.7500147Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:21.7502030Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T03:17:21.7503938Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T03:17:21.7505883Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T03:17:21.7507862Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:21.7509949Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:21.7511780Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:21.7513328Z ##[endgroup]
+2026-10-31T03:17:21.9109562Z (node:2410) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-31T03:17:21.9112943Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-31T03:17:21.9150924Z [command]/home/runner/work/_actions/actions/setup-dotnet/v4/externals/install-dotnet.sh --skip-non-versioned-files --runtime dotnet --channel LTS
+2026-10-31T03:17:22.3183703Z dotnet-install: Attempting to download using aka.ms link https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.14/dotnet-runtime-10.0.14-linux-x64.tar.gz
+2026-10-31T03:17:22.6455328Z dotnet-install: Remote file https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.14/dotnet-runtime-10.0.14-linux-x64.tar.gz size is 36673986 bytes.
+2026-10-31T03:17:22.6462862Z dotnet-install: Extracting archive from https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.14/dotnet-runtime-10.0.14-linux-x64.tar.gz
+2026-10-31T03:17:23.3124559Z dotnet-install: Downloaded file size is 36673986 bytes.
+2026-10-31T03:17:23.3125689Z dotnet-install: The remote and local file sizes are equal.
+2026-10-31T03:17:23.3414227Z dotnet-install: Installed version is 10.0.14
+2026-10-31T03:17:23.3474745Z dotnet-install: Adding to current process PATH: `/home/runner/work/_temp/v021-stability-dotnet`. Note: This change will be visible only when sourcing script.
+2026-10-31T03:17:23.3476831Z dotnet-install: Note that the script does not resolve dependencies during installation.
+2026-10-31T03:17:23.3478714Z dotnet-install: To check the list of dependencies, go to https://learn.microsoft.com/dotnet/core/install, select your operating system and check the "Dependencies" section.
+2026-10-31T03:17:23.3480888Z dotnet-install: Installation finished successfully.
+2026-10-31T03:17:23.3535674Z [command]/home/runner/work/_actions/actions/setup-dotnet/v4/externals/install-dotnet.sh --skip-non-versioned-files --version 10.0.403
+2026-10-31T03:17:24.1639741Z dotnet-install: Attempting to download using primary link https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-linux-x64.tar.gz
+2026-10-31T03:17:25.3752784Z dotnet-install: Remote file https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-linux-x64.tar.gz size is 240199984 bytes.
+2026-10-31T03:17:25.3755057Z dotnet-install: Extracting archive from https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-linux-x64.tar.gz
+2026-10-31T03:17:29.9440950Z dotnet-install: Downloaded file size is 240199984 bytes.
+2026-10-31T03:17:29.9441793Z dotnet-install: The remote and local file sizes are equal.
+2026-10-31T03:17:30.1919232Z dotnet-install: Installed version is 10.0.403
+2026-10-31T03:17:30.1980166Z dotnet-install: Adding to current process PATH: `/home/runner/work/_temp/v021-stability-dotnet`. Note: This change will be visible only when sourcing script.
+2026-10-31T03:17:30.1981929Z dotnet-install: Note that the script does not resolve dependencies during installation.
+2026-10-31T03:17:30.1983300Z dotnet-install: To check the list of dependencies, go to https://learn.microsoft.com/dotnet/core/install, select your operating system and check the "Dependencies" section.
+2026-10-31T03:17:30.1984662Z dotnet-install: Installation finished successfully.
+2026-10-31T03:17:30.2171017Z ##[group]Run set -o pipefail
+2026-10-31T03:17:30.2171428Z [36;1mset -o pipefail[0m
+2026-10-31T03:17:30.2171771Z [36;1mpython3 - <<'PY' 2>&1 | tee "$RESULT_DIR/environment.log"[0m
+2026-10-31T03:17:30.2172202Z [36;1mimport json, os, pathlib, platform, shutil, subprocess[0m
+2026-10-31T03:17:30.2172619Z [36;1mroot = pathlib.Path(os.environ['RESULT_DIR'])[0m
+2026-10-31T03:17:30.2172959Z [36;1mdef run(*args):[0m
+2026-10-31T03:17:30.2173302Z [36;1m    return subprocess.check_output(args, text=True).strip()[0m
+2026-10-31T03:17:30.2173669Z [36;1mdef optional(path):[0m
+2026-10-31T03:17:30.2173939Z [36;1m    p = pathlib.Path(path)[0m
+2026-10-31T03:17:30.2174277Z [36;1m    return p.read_text().strip() if p.is_file() else None[0m
+2026-10-31T03:17:30.2174646Z [36;1msha = run('git', 'rev-parse', 'HEAD')[0m
+2026-10-31T03:17:30.2175142Z [36;1mif sha != os.environ['SOURCE_SHA'] or run('git', 'status', '--porcelain', '--untracked-files=all'):[0m
+2026-10-31T03:17:30.2175758Z [36;1m    raise SystemExit('실제 HEAD와 입력 SHA가 다르거나 소스가 깨끗하지 않습니다.')[0m
+2026-10-31T03:17:30.2176141Z [36;1msdk = run('dotnet', '--version')[0m
+2026-10-31T03:17:30.2176523Z [36;1m(root / 'dotnet-info.txt').write_text(run('dotnet', '--info') + '\n')[0m
+2026-10-31T03:17:30.2176905Z [36;1mif sdk != '10.0.403':[0m
+2026-10-31T03:17:30.2177284Z [36;1m    raise SystemExit(f'실제 SDK {sdk}가 요청한 10.0.403과 다릅니다. 다른 SDK로 대체하지 않습니다.')[0m
+2026-10-31T03:17:30.2177913Z [36;1mfingerprint = run('python3', 'scripts/verify-v021-release.py', 'fingerprint', '--commit', sha)[0m
+2026-10-31T03:17:30.2178534Z [36;1mif len(fingerprint) != 64 or any(c not in '0123456789abcdef' for c in fingerprint):[0m
+2026-10-31T03:17:30.2179502Z [36;1m    raise SystemExit('실제 제품 SHA256 지문을 확인하지 못했습니다.')[0m
+2026-10-31T03:17:30.2179923Z [36;1mversion = pathlib.Path('VERSION').read_text().strip()[0m
+2026-10-31T03:17:30.2180265Z [36;1mif version != '0.2.1':[0m
+2026-10-31T03:17:30.2180590Z [36;1m    raise SystemExit('이번 수집 대상 VERSION은 0.2.1입니다.')[0m
+2026-10-31T03:17:30.2181221Z [36;1mmeminfo = {a: b.strip() for a, b in (line.split(':', 1) for line in pathlib.Path('/proc/meminfo').read_text().splitlines())}[0m
+2026-10-31T03:17:30.2182112Z [36;1mcpu = next((line.split(':', 1)[1].strip() for line in pathlib.Path('/proc/cpuinfo').read_text().splitlines() if line.startswith('model name')), '미상')[0m
+2026-10-31T03:17:30.2182734Z [36;1mdata = {[0m
+2026-10-31T03:17:30.2183116Z [36;1m    'source_commit': sha, 'product_source_fingerprint': fingerprint, 'version': version,[0m
+2026-10-31T03:17:30.2183760Z [36;1m    'product_ci_checks_url': f'https://github.com/hddy774/project-hora/commit/{sha}/checks',[0m
+2026-10-31T03:17:30.2184331Z [36;1m    'ci_link_scope': '정확 커밋 제품CI 링크이며 이 job의 전체 재실행/CI성공 주장은 아님',[0m
+2026-10-31T03:17:30.2184812Z [36;1m    'workflow_source_commit': os.environ['WORKFLOW_SOURCE_SHA'], 'sdk': sdk,[0m
+2026-10-31T03:17:30.2185427Z [36;1m    'dotnet_info': run('dotnet', '--info'), 'os': platform.platform(), 'uname': list(platform.uname()),[0m
+2026-10-31T03:17:30.2186077Z [36;1m    'runner_name': os.environ.get('RUNNER_NAME'), 'runner_os': os.environ.get('RUNNER_OS'),[0m
+2026-10-31T03:17:30.2186676Z [36;1m    'runner_arch': os.environ.get('RUNNER_ARCH'), 'image_os': os.environ.get('ImageOS'),[0m
+2026-10-31T03:17:30.2187223Z [36;1m    'image_version': os.environ.get('ImageVersion'), 'cpu_model': cpu,[0m
+2026-10-31T03:17:30.2187746Z [36;1m    'os_cpu_count': os.cpu_count(), 'affinity_cpu_count': len(os.sched_getaffinity(0)),[0m
+2026-10-31T03:17:30.2188293Z [36;1m    'meminfo': meminfo, 'disk_bytes': dict(shutil.disk_usage(root)._asdict()),[0m
+2026-10-31T03:17:30.2188779Z [36;1m    'cgroup_cpu_max': optional('/sys/fs/cgroup/cpu.max'),[0m
+2026-10-31T03:17:30.2189485Z [36;1m    'cgroup_memory_max': optional('/sys/fs/cgroup/memory.max'),[0m
+2026-10-31T03:17:30.2190059Z [36;1m    'thermal_scope': os.environ['V021_THERMAL_STATE'], 'power_scope': os.environ['V021_POWER_STATE'],[0m
+2026-10-31T03:17:30.2190862Z [36;1m    'runner_class': 'public ubuntu-24.04·공식 표준 4vCPU/16GB·실제 값은 이 기록을 따름',[0m
+2026-10-31T03:17:30.2191370Z [36;1m    'host_limit': '별도 GitHub VM이며 로컬 기준선과 같은 물리 CPU·열·전원을 보장하지 않음',[0m
+2026-10-31T03:17:30.2191900Z [36;1m    'measurement_scope': '기존 stability 실제 파일 저장/재개 하네스. PC 결과이며 Android/Unity 수용 근거가 아님'}[0m
+2026-10-31T03:17:30.2192556Z [36;1m(root / 'source-environment.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')[0m
+2026-10-31T03:17:30.2193117Z [36;1mwith open(os.environ['GITHUB_ENV'], 'a') as out:[0m
+2026-10-31T03:17:30.2193522Z [36;1m    out.write('PRODUCT_FINGERPRINT=' + fingerprint + '\n')[0m
+2026-10-31T03:17:30.2193931Z [36;1m    out.write('PRODUCT_VERSION=' + version + '\n')[0m
+2026-10-31T03:17:30.2194249Z [36;1mPY[0m
+2026-10-31T03:17:30.2217524Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-31T03:17:30.2217903Z env:
+2026-10-31T03:17:30.2218101Z   DOTNET_NOLOGO: true
+2026-10-31T03:17:30.2218343Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T03:17:30.2218636Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T03:17:30.2218934Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T03:17:30.2219561Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T03:17:30.2219890Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T03:17:30.2220186Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:30.2220567Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T03:17:30.2220929Z   REPOSITORY_PRIVATE: false
+2026-10-31T03:17:30.2221283Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T03:17:30.2221757Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T03:17:30.2222380Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T03:17:30.2222819Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:30.2223231Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:30.2223653Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T03:17:30.2224094Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T03:17:30.2224537Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T03:17:30.2224994Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:30.2225400Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:30.2225795Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:30.2226122Z ##[endgroup]
+2026-10-31T03:17:31.3509747Z ##[group]Run set -o pipefail
+2026-10-31T03:17:31.3510189Z [36;1mset -o pipefail[0m
+2026-10-31T03:17:31.3510519Z [36;1mpython3 - <<'PY' 2>&1 | tee "$RESULT_DIR/preflight.log"[0m
+2026-10-31T03:17:31.3510982Z [36;1mimport importlib.util,json,os,pathlib,re,shutil,subprocess[0m
+2026-10-31T03:17:31.3511542Z [36;1mroot=pathlib.Path(os.environ['RESULT_DIR']); checkout=pathlib.Path.cwd().resolve()[0m
+2026-10-31T03:17:31.3512105Z [36;1mdef run(*args): return subprocess.check_output(args,text=True).strip()[0m
+2026-10-31T03:17:31.3512514Z [36;1mdef module(name,path):[0m
+2026-10-31T03:17:31.3512854Z [36;1m    spec=importlib.util.spec_from_file_location(name,path)[0m
+2026-10-31T03:17:31.3513413Z [36;1m    value=importlib.util.module_from_spec(spec); spec.loader.exec_module(value); return value[0m
+2026-10-31T03:17:31.3513993Z [36;1mcheck=module('release_check','scripts/verify-v021-release.py')[0m
+2026-10-31T03:17:31.3514566Z [36;1mvalidator=module('invariant_check','scripts/validate-v021-invariant-execution.py')[0m
+2026-10-31T03:17:31.3515271Z [36;1massert os.environ.get('RUNNER_ENVIRONMENT')=='github-hosted' and os.environ.get('GITHUB_ACTIONS')=='true'[0m
+2026-10-31T03:17:31.3515954Z [36;1massert os.cpu_count()==4 and len(os.sched_getaffinity(0))==4,'예정한 public 4CPU 러너가 아닙니다.'[0m
+2026-10-31T03:17:31.3516628Z [36;1mruntimes=run('dotnet','--list-runtimes'); (root/'dotnet-runtimes.txt').write_text(runtimes+'\n')[0m
+2026-10-31T03:17:31.3517362Z [36;1massert re.search(r'^Microsoft\.NETCore\.App 10\.0\.14 \[',runtimes,re.MULTILINE),'runtime10.0.14가 없습니다.'[0m
+2026-10-31T03:17:31.3517890Z [36;1mdef tracked(relative):[0m
+2026-10-31T03:17:31.3518174Z [36;1m    path=(checkout/relative).resolve()[0m
+2026-10-31T03:17:31.3518553Z [36;1m    assert path.is_relative_to(checkout) and path.is_file()[0m
+2026-10-31T03:17:31.3519341Z [36;1m    run('git','ls-files','--error-unmatch',str(path.relative_to(checkout))); return path[0m
+2026-10-31T03:17:31.3520081Z [36;1mpending={'source_commit':os.environ['SOURCE_SHA'],'product_source_fingerprint':os.environ['PRODUCT_FINGERPRINT'],[0m
+2026-10-31T03:17:31.3520942Z [36;1m 'plan_path':os.environ['PLAN_PATH'],'baseline_path':os.environ['BASELINE_PATH'],'validation_completed':False,'raw_inputs':[]}[0m
+2026-10-31T03:17:31.3521717Z [36;1mfor key,name in [('PLAN_PATH','stability-plan.json'),('BASELINE_PATH','baseline.json')]:[0m
+2026-10-31T03:17:31.3522212Z [36;1m    path=(checkout/os.environ[key]).resolve()[0m
+2026-10-31T03:17:31.3522594Z [36;1m    item={'path':os.environ[key],'exists':path.is_file()}[0m
+2026-10-31T03:17:31.3523007Z [36;1m    if path.is_file() and path.is_relative_to(checkout):[0m
+2026-10-31T03:17:31.3523477Z [36;1m        item['sha256']=check.sha(path); shutil.copyfile(path,root/'inputs'/name)[0m
+2026-10-31T03:17:31.3523920Z [36;1m    pending['raw_inputs'].append(item)[0m
+2026-10-31T03:17:31.3524425Z [36;1m(root/'input-provenance.json').write_text(json.dumps(pending,ensure_ascii=False,indent=2)+'\n')[0m
+2026-10-31T03:17:31.3525114Z [36;1mplan_path=tracked(os.environ['PLAN_PATH']); baseline_path=tracked(os.environ['BASELINE_PATH'])[0m
+2026-10-31T03:17:31.3526089Z [36;1mbaseline=check.read(baseline_path); baseline_sha=check.sha(baseline_path); baseline_rows=check.measurement_rows(baseline)[0m
+2026-10-31T03:17:31.3526748Z [36;1mbaseline_source=baseline['environment']['sourceCommit'][0m
+2026-10-31T03:17:31.3527241Z [36;1mrun('git','merge-base','--is-ancestor',baseline_source,os.environ['SOURCE_SHA'])[0m
+2026-10-31T03:17:31.3527685Z [36;1mdef normalized(value,names):[0m
+2026-10-31T03:17:31.3527972Z [36;1m    assert isinstance(value,dict)[0m
+2026-10-31T03:17:31.3528325Z [36;1m    aliases={name.lower():name for name in names}; result={}[0m
+2026-10-31T03:17:31.3528694Z [36;1m    for key,item in value.items():[0m
+2026-10-31T03:17:31.3529211Z [36;1m        name=aliases.get(key.lower())[0m
+2026-10-31T03:17:31.3529685Z [36;1m        assert name is not None and name not in result,'미지원/중복 계획 필드입니다.'[0m
+2026-10-31T03:17:31.3530236Z [36;1m        result[name]=item[0m
+2026-10-31T03:17:31.3530549Z [36;1m    assert set(result)==set(names); return result[0m
+2026-10-31T03:17:31.3531139Z [36;1mplan=normalized(check.read(plan_path),['schemaVersion','policyId','baselineReportSha256','rationale','cases'])[0m
+2026-10-31T03:17:31.3531807Z [36;1massert type(plan['schemaVersion']) is int and plan['schemaVersion']==1[0m
+2026-10-31T03:17:31.3532441Z [36;1massert plan['policyId']=='v021-revision6-section11-T04' and plan['baselineReportSha256']==baseline_sha[0m
+2026-10-31T03:17:31.3533075Z [36;1massert isinstance(plan['rationale'],str) and plan['rationale'].strip()[0m
+2026-10-31T03:17:31.3533541Z [36;1massert isinstance(plan['cases'],list) and plan['cases'][0m
+2026-10-31T03:17:31.3534291Z [36;1mcases=[normalized(case,['population','horizonMonths','checkpointEveryMonths','validateEveryMonths','wallTimeLimitSeconds']) for case in plan['cases']][0m
+2026-10-31T03:17:31.3535227Z [36;1massert len({case['population'] for case in cases})==len(cases) and any(case['population']==10000 for case in cases)[0m
+2026-10-31T03:17:31.3535761Z [36;1mfor case in cases:[0m
+2026-10-31T03:17:31.3536377Z [36;1m    population,horizon,checkpoint,validate=[case[key] for key in ['population','horizonMonths','checkpointEveryMonths','validateEveryMonths']][0m
+2026-10-31T03:17:31.3537232Z [36;1m    assert type(population) is int and population in [2,100,1000,10000] and population in baseline_rows[0m
+2026-10-31T03:17:31.3537773Z [36;1m    assert type(horizon) is int and 12<horizon<2**63[0m
+2026-10-31T03:17:31.3538219Z [36;1m    assert type(checkpoint) is int and 0<checkpoint<=min(2**31-1,horizon//2)[0m
+2026-10-31T03:17:31.3538701Z [36;1m    assert type(validate) is int and 0<validate<=checkpoint[0m
+2026-10-31T03:17:31.3539400Z [36;1m    assert check.finite_number(case['wallTimeLimitSeconds'],positive=True)[0m
+2026-10-31T03:17:31.3539823Z [36;1mplan['cases']=cases[0m
+2026-10-31T03:17:31.3540241Z [36;1mmapping=check.read(tracked('docs/evidence/0.2.1/invariant-execution-map.json'))[0m
+2026-10-31T03:17:31.3540797Z [36;1mactual,test_fingerprint=validator.validate_map(mapping,checkout)[0m
+2026-10-31T03:17:31.3541231Z [36;1mfull_source=mapping['mapping_source_commit'][0m
+2026-10-31T03:17:31.3541772Z [36;1massert check.fingerprint(full_source)==os.environ['PRODUCT_FINGERPRINT'],'기존 전체 기능과 현재 제품/검사 입력이 다릅니다.'[0m
+2026-10-31T03:17:31.3542526Z [36;1mreview_path=tracked(f'docs/evidence/0.2.1/invariant-execution-source-review-{full_source[:7]}.json')[0m
+2026-10-31T03:17:31.3543129Z [36;1mproof=check.read(review_path)['separate_functional_report'][0m
+2026-10-31T03:17:31.3543624Z [36;1massert proof['executed_source']==full_source and proof['selection']=='all'[0m
+2026-10-31T03:17:31.3544139Z [36;1mfull_report_path=tracked('docs/evidence/0.2.1/'+proof['path'])[0m
+2026-10-31T03:17:31.3544576Z [36;1massert check.sha(full_report_path)==proof['sha256'][0m
+2026-10-31T03:17:31.3545095Z [36;1mvalidator.validate_report(check.read(full_report_path),{row['name'] for row in actual})[0m
+2026-10-31T03:17:31.3545871Z [36;1massert validator.committed_test_fingerprint(checkout,full_source)==test_fingerprint[0m
+2026-10-31T03:17:31.3546488Z [36;1mfor path,name in [(plan_path,'stability-plan.json'),(baseline_path,'baseline.json'),[0m
+2026-10-31T03:17:31.3547170Z [36;1m (full_report_path,'full-functional.original.json'),(review_path,'full-source-review.original.json')]:[0m
+2026-10-31T03:17:31.3547730Z [36;1m    shutil.copyfile(path,root/'inputs'/name)[0m
+2026-10-31T03:17:31.3548300Z [36;1mrecord={'source_commit':os.environ['SOURCE_SHA'],'product_source_fingerprint':os.environ['PRODUCT_FINGERPRINT'],[0m
+2026-10-31T03:17:31.3549280Z [36;1m 'plan_path':os.environ['PLAN_PATH'],'plan_sha256':check.sha(plan_path),'normalized_plan':plan,[0m
+2026-10-31T03:17:31.3549910Z [36;1m 'baseline_path':os.environ['BASELINE_PATH'],'baseline_sha256':baseline_sha,[0m
+2026-10-31T03:17:31.3550710Z [36;1m 'baseline_source':baseline_source,'baseline_product_source_fingerprint':check.fingerprint(baseline_source),[0m
+2026-10-31T03:17:31.3551414Z [36;1m 'full_functional_source':full_source,'full_functional_report_sha256':proof['sha256'],[0m
+2026-10-31T03:17:31.3552011Z [36;1m 'full_functional_scenarios':len(actual),'test_sources_sha256':test_fingerprint,[0m
+2026-10-31T03:17:31.3552606Z [36;1m 'validation_completed':True,'scope':'기존 전체 원문과 같은 제품/검사 지문을 대조하며 이번 job은 선택 창세1개만 실행한다.'}[0m
+2026-10-31T03:17:31.3553261Z [36;1m(root/'input-provenance.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')[0m
+2026-10-31T03:17:31.3553736Z [36;1mPY[0m
+2026-10-31T03:17:31.3578301Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-31T03:17:31.3578891Z env:
+2026-10-31T03:17:31.3579504Z   DOTNET_NOLOGO: true
+2026-10-31T03:17:31.3579917Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T03:17:31.3580370Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T03:17:31.3580859Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T03:17:31.3581282Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T03:17:31.3581616Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T03:17:31.3581922Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:31.3582318Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T03:17:31.3582683Z   REPOSITORY_PRIVATE: false
+2026-10-31T03:17:31.3583039Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T03:17:31.3583513Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T03:17:31.3583956Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T03:17:31.3584393Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:31.3584810Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:31.3585240Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T03:17:31.3585667Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T03:17:31.3586113Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T03:17:31.3586575Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:31.3586990Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:31.3587388Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:31.3587879Z   PRODUCT_FINGERPRINT: c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1
+2026-10-31T03:17:31.3588337Z   PRODUCT_VERSION: 0.2.1
+2026-10-31T03:17:31.3588563Z ##[endgroup]
+2026-10-31T03:17:32.4403426Z ##[group]Run set -o pipefail
+2026-10-31T03:17:32.4403947Z [36;1mset -o pipefail[0m
+2026-10-31T03:17:32.4404420Z [36;1mdotnet build tests/Chronicles.Game.Tests -c Release --artifacts-path "$RESULT_DIR/build" \[0m
+2026-10-31T03:17:32.4405079Z [36;1m  -p:ContinuousIntegrationBuild=true -p:SourceRevisionId="$SOURCE_SHA" \[0m
+2026-10-31T03:17:32.4405730Z [36;1m  -p:IncludeSourceRevisionInInformationalVersion=true 2>&1 | tee "$RESULT_DIR/build.log"[0m
+2026-10-31T03:17:32.4406581Z [36;1mgit status --porcelain --untracked-files=all > "$RESULT_DIR/git-after-build.txt"[0m
+2026-10-31T03:17:32.4407078Z [36;1mtest ! -s "$RESULT_DIR/git-after-build.txt"[0m
+2026-10-31T03:17:32.4407393Z [36;1mpython3 - <<'PY'[0m
+2026-10-31T03:17:32.4407637Z [36;1mimport os, pathlib[0m
+2026-10-31T03:17:32.4407968Z [36;1mroot = pathlib.Path(os.environ['RESULT_DIR']).resolve()[0m
+2026-10-31T03:17:32.4408445Z [36;1mfiles = list((root / 'build' / 'bin').rglob('Chronicles.Game.Tests.dll'))[0m
+2026-10-31T03:17:32.4408962Z [36;1mif len(files) != 1 or not files[0].resolve().is_relative_to(root):[0m
+2026-10-31T03:17:32.4409824Z [36;1m    raise SystemExit('checkout 밖의 유일한 실제 Tests DLL을 찾지 못했습니다.')[0m
+2026-10-31T03:17:32.4410260Z [36;1mwith open(os.environ['GITHUB_ENV'], 'a') as out:[0m
+2026-10-31T03:17:32.4410628Z [36;1m    out.write('TEST_DLL=' + str(files[0]) + '\n')[0m
+2026-10-31T03:17:32.4411009Z [36;1m    out.write('TEST_DLL_DIR=' + str(files[0].parent) + '\n')[0m
+2026-10-31T03:17:32.4411356Z [36;1mPY[0m
+2026-10-31T03:17:32.4431278Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-31T03:17:32.4431623Z env:
+2026-10-31T03:17:32.4431813Z   DOTNET_NOLOGO: true
+2026-10-31T03:17:32.4432044Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T03:17:32.4432305Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T03:17:32.4432580Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T03:17:32.4432937Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T03:17:32.4433261Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T03:17:32.4433548Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:32.4433913Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T03:17:32.4434268Z   REPOSITORY_PRIVATE: false
+2026-10-31T03:17:32.4434618Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T03:17:32.4435079Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T03:17:32.4435513Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T03:17:32.4435963Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:32.4436377Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:32.4436784Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T03:17:32.4437199Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T03:17:32.4437628Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T03:17:32.4438068Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:32.4438461Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:32.4438842Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:32.4439615Z   PRODUCT_FINGERPRINT: c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1
+2026-10-31T03:17:32.4440050Z   PRODUCT_VERSION: 0.2.1
+2026-10-31T03:17:32.4440267Z ##[endgroup]
+2026-10-31T03:17:33.2014312Z   Determining projects to restore...
+2026-10-31T03:17:34.2320797Z   Restored /home/runner/work/project-hora/project-hora/src/Chronicles.Game/Chronicles.Game.csproj (in 118 ms).
+2026-10-31T03:17:34.2331653Z   Restored /home/runner/work/project-hora/project-hora/src/Chronicles.Core/Chronicles.Core.csproj (in 103 ms).
+2026-10-31T03:17:34.2334067Z   Restored /home/runner/work/project-hora/project-hora/tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj (in 118 ms).
+2026-10-31T03:17:34.2336816Z   Restored /home/runner/work/project-hora/project-hora/src/Chronicles.Hosting/Chronicles.Hosting.csproj (in 118 ms).
+2026-10-31T03:17:37.3295237Z   Chronicles.Core -> /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Core/release/Chronicles.Core.dll
+2026-10-31T03:17:48.3017017Z   Chronicles.Game -> /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game/release/Chronicles.Game.dll
+2026-10-31T03:17:48.6992418Z   Chronicles.Hosting -> /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Hosting/release/Chronicles.Hosting.dll
+2026-10-31T03:17:55.5189467Z   Chronicles.Game.Tests -> /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll
+2026-10-31T03:17:55.5439665Z 
+2026-10-31T03:17:55.5459953Z Build succeeded.
+2026-10-31T03:17:55.5462204Z     0 Warning(s)
+2026-10-31T03:17:55.5462974Z     0 Error(s)
+2026-10-31T03:17:55.5463568Z 
+2026-10-31T03:17:55.5464115Z Time Elapsed 00:00:22.73
+2026-10-31T03:17:55.6070612Z ##[group]Run inspector="$RESULT_DIR/pe-inspector"
+2026-10-31T03:17:55.6071078Z [36;1minspector="$RESULT_DIR/pe-inspector"[0m
+2026-10-31T03:17:55.6071450Z [36;1mmkdir -p "$inspector" "$RESULT_DIR/assemblies"[0m
+2026-10-31T03:17:55.6071835Z [36;1mcat > "$inspector/Inspector.csproj" <<'XML'[0m
+2026-10-31T03:17:55.6072795Z [36;1m<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup></Project>[0m
+2026-10-31T03:17:55.6073699Z [36;1mXML[0m
+2026-10-31T03:17:55.6073926Z [36;1mcat > "$inspector/Program.cs" <<'CS'[0m
+2026-10-31T03:17:55.6074237Z [36;1musing System.Reflection.Metadata;[0m
+2026-10-31T03:17:55.6074580Z [36;1musing System.Reflection.PortableExecutable;[0m
+2026-10-31T03:17:55.6074930Z [36;1musing System.Runtime.InteropServices;[0m
+2026-10-31T03:17:55.6075256Z [36;1musing System.Security.Cryptography;[0m
+2026-10-31T03:17:55.6075587Z [36;1musing System.Text.Json;[0m
+2026-10-31T03:17:55.6076069Z [36;1mvar folder = Path.GetFullPath(args[0]); var sha = args[1]; var version = args[2]; var output = args[3];[0m
+2026-10-31T03:17:55.6076579Z [36;1mvar rows = new List<object>();[0m
+2026-10-31T03:17:55.6077113Z [36;1mforeach (var name in new[] { "Chronicles.Core", "Chronicles.Game", "Chronicles.Hosting", "Chronicles.Game.Tests" })[0m
+2026-10-31T03:17:55.6077635Z [36;1m{[0m
+2026-10-31T03:17:55.6077895Z [36;1m    var path = Path.Combine(folder, name + ".dll");[0m
+2026-10-31T03:17:55.6078539Z [36;1m    using var stream = File.OpenRead(path); using var pe = new PEReader(stream);[0m
+2026-10-31T03:17:55.6080210Z [36;1m    var metadata = pe.GetMetadataReader(); var definition = metadata.GetAssemblyDefinition(); string? information = null, configuration = null;[0m
+2026-10-31T03:17:55.6081027Z [36;1m    foreach (var handle in definition.GetCustomAttributes())[0m
+2026-10-31T03:17:55.6081377Z [36;1m    {[0m
+2026-10-31T03:17:55.6081665Z [36;1m        var attribute = metadata.GetCustomAttribute(handle);[0m
+2026-10-31T03:17:55.6082100Z [36;1m        EntityHandle parent = attribute.Constructor.Kind switch[0m
+2026-10-31T03:17:55.6082455Z [36;1m        {[0m
+2026-10-31T03:17:55.6082970Z [36;1m            HandleKind.MemberReference => metadata.GetMemberReference((MemberReferenceHandle)attribute.Constructor).Parent,[0m
+2026-10-31T03:17:55.6083912Z [36;1m            HandleKind.MethodDefinition => metadata.GetMethodDefinition((MethodDefinitionHandle)attribute.Constructor).GetDeclaringType(),[0m
+2026-10-31T03:17:55.6084756Z [36;1m            _ => default[0m
+2026-10-31T03:17:55.6084994Z [36;1m        };[0m
+2026-10-31T03:17:55.6085291Z [36;1m        if (parent.Kind != HandleKind.TypeReference) continue;[0m
+2026-10-31T03:17:55.6085777Z [36;1m        var type = metadata.GetTypeReference((TypeReferenceHandle)parent);[0m
+2026-10-31T03:17:55.6086327Z [36;1m        if (metadata.GetString(type.Namespace) != "System.Reflection") continue;[0m
+2026-10-31T03:17:55.6086813Z [36;1m        var attributeName = metadata.GetString(type.Name);[0m
+2026-10-31T03:17:55.6087456Z [36;1m        if (attributeName is not ("AssemblyInformationalVersionAttribute" or "AssemblyConfigurationAttribute")) continue;[0m
+2026-10-31T03:17:55.6088110Z [36;1m        var value = metadata.GetBlobReader(attribute.Value);[0m
+2026-10-31T03:17:55.6088613Z [36;1m        if (value.ReadUInt16() != 1) throw new InvalidDataException("잘못된 assembly 정보 형식");[0m
+2026-10-31T03:17:55.6089620Z [36;1m        if (attributeName == "AssemblyInformationalVersionAttribute") information = value.ReadSerializedString();[0m
+2026-10-31T03:17:55.6090260Z [36;1m        else configuration = value.ReadSerializedString();[0m
+2026-10-31T03:17:55.6090598Z [36;1m    }[0m
+2026-10-31T03:17:55.6091062Z [36;1m    if (metadata.GetString(definition.Name) != name || information != version + "+" + sha || configuration != "Release")[0m
+2026-10-31T03:17:55.6091990Z [36;1m        throw new InvalidDataException(name + " 실제 DLL의 소스 revision이 고정 소스와 다릅니다: " + information);[0m
+2026-10-31T03:17:55.6092779Z [36;1m    rows.Add(new { name, version = definition.Version.ToString(), informationalVersion = information, configuration,[0m
+2026-10-31T03:17:55.6093613Z [36;1m        bytes = new FileInfo(path).Length, sha256 = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(path))) });[0m
+2026-10-31T03:17:55.6094167Z [36;1m}[0m
+2026-10-31T03:17:55.6094704Z [36;1mFile.WriteAllText(output, JsonSerializer.Serialize(new { source_commit = sha, runtime = RuntimeInformation.FrameworkDescription,[0m
+2026-10-31T03:17:55.6095507Z [36;1m    cpu_count = Environment.ProcessorCount, os = RuntimeInformation.OSDescription,[0m
+2026-10-31T03:17:55.6096367Z [36;1m    gc_available_memory_bytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes, assemblies = rows }, new JsonSerializerOptions { WriteIndented = true }));[0m
+2026-10-31T03:17:55.6097180Z [36;1mif (RuntimeInformation.FrameworkDescription != ".NET 10.0.14")[0m
+2026-10-31T03:17:55.6097857Z [36;1m    throw new InvalidOperationException("실제 runtime이 기준선의 .NET 10.0.14와 다릅니다: " + RuntimeInformation.FrameworkDescription);[0m
+2026-10-31T03:17:55.6098406Z [36;1mCS[0m
+2026-10-31T03:17:55.6098609Z [36;1mset -o pipefail[0m
+2026-10-31T03:17:55.6099239Z [36;1mdotnet run --project "$inspector/Inspector.csproj" -c Release -- \[0m
+2026-10-31T03:17:55.6099748Z [36;1m  "$TEST_DLL_DIR" "$SOURCE_SHA" "$PRODUCT_VERSION" \[0m
+2026-10-31T03:17:55.6100264Z [36;1m  "$RESULT_DIR/assembly-evidence.json" 2>&1 | tee "$RESULT_DIR/assembly-inspector.log"[0m
+2026-10-31T03:17:55.6100921Z [36;1mfor name in Chronicles.Core Chronicles.Game Chronicles.Hosting Chronicles.Game.Tests; do[0m
+2026-10-31T03:17:55.6101452Z [36;1m  cp "$TEST_DLL_DIR/$name.dll" "$RESULT_DIR/assemblies/"[0m
+2026-10-31T03:17:55.6101777Z [36;1mdone[0m
+2026-10-31T03:17:55.6102179Z [36;1mcp "$TEST_DLL_DIR/Chronicles.Game.Tests.runtimeconfig.json" "$RESULT_DIR/assemblies/"[0m
+2026-10-31T03:17:55.6102796Z [36;1mcp "$TEST_DLL_DIR/Chronicles.Game.Tests.deps.json" "$RESULT_DIR/assemblies/"[0m
+2026-10-31T03:17:55.6122705Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-31T03:17:55.6123045Z env:
+2026-10-31T03:17:55.6123230Z   DOTNET_NOLOGO: true
+2026-10-31T03:17:55.6123453Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T03:17:55.6123719Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T03:17:55.6123996Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T03:17:55.6124491Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T03:17:55.6124803Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T03:17:55.6125088Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:55.6125462Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T03:17:55.6125806Z   REPOSITORY_PRIVATE: false
+2026-10-31T03:17:55.6126163Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T03:17:55.6126648Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T03:17:55.6127086Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T03:17:55.6127517Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:55.6127922Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:55.6128331Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T03:17:55.6128750Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T03:17:55.6129493Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T03:17:55.6129956Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:55.6130356Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:55.6130750Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:55.6131254Z   PRODUCT_FINGERPRINT: c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1
+2026-10-31T03:17:55.6131842Z   PRODUCT_VERSION: 0.2.1
+2026-10-31T03:17:55.6132391Z   TEST_DLL: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll
+2026-10-31T03:17:55.6133189Z   TEST_DLL_DIR: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release
+2026-10-31T03:17:55.6133672Z ##[endgroup]
+2026-10-31T03:17:57.6515347Z ##[group]Run python3 - <<'PY'
+2026-10-31T03:17:57.6515718Z [36;1mpython3 - <<'PY'[0m
+2026-10-31T03:17:57.6516033Z [36;1mimport datetime,json,os,pathlib,subprocess[0m
+2026-10-31T03:17:57.6516632Z [36;1massert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()==os.environ['SOURCE_SHA'][0m
+2026-10-31T03:17:57.6517385Z [36;1massert not subprocess.check_output(['git','status','--porcelain','--untracked-files=all'],text=True).strip()[0m
+2026-10-31T03:17:57.6517941Z [36;1mroot=pathlib.Path(os.environ['RESULT_DIR'])[0m
+2026-10-31T03:17:57.6518458Z [36;1mcommand=['dotnet','exec','--fx-version','10.0.14',os.environ['TEST_DLL'],'--filter','INV-001/002/011',[0m
+2026-10-31T03:17:57.6519691Z [36;1m '--report',str(root/'pre.json'),'--stability',str(root/'result.json'),'--stability-plan',os.environ['PLAN_PATH']][0m
+2026-10-31T03:17:57.6520390Z [36;1m(root/'measurement-process.json').write_text(json.dumps({'status':'starting',[0m
+2026-10-31T03:17:57.6521225Z [36;1m 'started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'command':command,'wall_cap_seconds':330*60,[0m
+2026-10-31T03:17:57.6521951Z [36;1m 'cap_exit_is_failure':True,'case_time_limits':'검토된 계획의 하네스 값. 외부330분 cap은 이를 바꾸지 않음.',[0m
+2026-10-31T03:17:57.6522641Z [36;1m 'checkpoint_logs':'0개월·각 실제 파일 checkpoint·끝의 STABILITY 로그를 그대로 보존한다.'},ensure_ascii=False,indent=2)+'\n')[0m
+2026-10-31T03:17:57.6523141Z [36;1mPY[0m
+2026-10-31T03:17:57.6523331Z [36;1mset +e[0m
+2026-10-31T03:17:57.6523778Z [36;1m/usr/bin/time -v -o "$RESULT_DIR/process-resource.txt" timeout --signal=TERM --kill-after=30s 330m \[0m
+2026-10-31T03:17:57.6524501Z [36;1m dotnet exec --fx-version 10.0.14 "$TEST_DLL" --filter 'INV-001/002/011' --report "$RESULT_DIR/pre.json" \[0m
+2026-10-31T03:17:57.6525237Z [36;1m --stability "$RESULT_DIR/result.json" --stability-plan "$PLAN_PATH" 2>&1 | tee "$RESULT_DIR/measurement.log"[0m
+2026-10-31T03:17:57.6526018Z [36;1mstatuses=("${PIPESTATUS[@]}")[0m
+2026-10-31T03:17:57.6526311Z [36;1mset -e[0m
+2026-10-31T03:17:57.6526618Z [36;1mpython3 - "$RESULT_DIR" "${statuses[0]}" "${statuses[1]}" <<'PY'[0m
+2026-10-31T03:17:57.6527218Z [36;1mimport datetime,json,pathlib,sys[0m
+2026-10-31T03:17:57.6527722Z [36;1mpath=pathlib.Path(sys.argv[1])/'measurement-process.json'; record=json.loads(path.read_text())[0m
+2026-10-31T03:17:57.6528459Z [36;1mrecord.update(status='process-ended',ended_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),[0m
+2026-10-31T03:17:57.6529660Z [36;1m process_exit_code=int(sys.argv[2]),tee_exit_code=int(sys.argv[3]),outer_wall_cap_or_kill=int(sys.argv[2]) in [124,137])[0m
+2026-10-31T03:17:57.6530321Z [36;1mpath.write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')[0m
+2026-10-31T03:17:57.6530703Z [36;1mPY[0m
+2026-10-31T03:17:57.6530905Z [36;1mtest "${statuses[0]}" -eq 0[0m
+2026-10-31T03:17:57.6531165Z [36;1mtest "${statuses[1]}" -eq 0[0m
+2026-10-31T03:17:57.6550906Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-31T03:17:57.6551268Z env:
+2026-10-31T03:17:57.6551463Z   DOTNET_NOLOGO: true
+2026-10-31T03:17:57.6551691Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T03:17:57.6551964Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T03:17:57.6552247Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T03:17:57.6552597Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T03:17:57.6552910Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T03:17:57.6553194Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T03:17:57.6553568Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T03:17:57.6553920Z   REPOSITORY_PRIVATE: false
+2026-10-31T03:17:57.6554268Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T03:17:57.6554732Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T03:17:57.6555182Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T03:17:57.6555811Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:57.6556230Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T03:17:57.6556668Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T03:17:57.6557091Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T03:17:57.6557568Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T03:17:57.6558014Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:57.6558414Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:57.6558799Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T03:17:57.6559541Z   PRODUCT_FINGERPRINT: c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1
+2026-10-31T03:17:57.6559980Z   PRODUCT_VERSION: 0.2.1
+2026-10-31T03:17:57.6560526Z   TEST_DLL: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll
+2026-10-31T03:17:57.6561340Z   TEST_DLL_DIR: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release
+2026-10-31T03:17:57.6561851Z ##[endgroup]
+2026-10-31T03:17:58.8295355Z PASS INV-001/002/011 정확한 창세·안정 신원·100지점
+2026-10-31T03:17:58.8539772Z RESULT 1/1
+2026-10-31T03:17:59.7267331Z STABILITY population=2 month=0/120 living=2 elapsed=0.84s
+2026-10-31T03:18:09.3976657Z STABILITY population=2 month=30/120 living=2 elapsed=10.51s
+2026-10-31T03:18:21.0770342Z STABILITY population=2 month=60/120 living=2 elapsed=22.19s
+2026-10-31T03:18:33.0715552Z STABILITY population=2 month=90/120 living=2 elapsed=34.19s
+2026-10-31T03:18:45.2313449Z STABILITY population=2 month=120/120 living=2 elapsed=46.35s
+2026-10-31T03:18:45.2863023Z STABILITY CASE population=2 month=120/120 living=2 elapsed=46.35s result=completed
+2026-10-31T03:18:45.8511447Z STABILITY population=100 month=0/120 living=100 elapsed=0.56s
+2026-10-31T03:19:04.9153542Z STABILITY population=100 month=30/120 living=100 elapsed=19.63s
+2026-10-31T03:19:35.4822650Z STABILITY population=100 month=60/120 living=100 elapsed=50.20s
+2026-10-31T03:20:13.7581992Z STABILITY population=100 month=90/120 living=100 elapsed=88.47s
+2026-10-31T03:21:00.5441474Z STABILITY population=100 month=120/120 living=100 elapsed=135.26s
+2026-10-31T03:21:01.1425347Z STABILITY CASE population=100 month=120/120 living=100 elapsed=135.26s result=completed
+2026-10-31T03:21:04.8325512Z STABILITY population=1000 month=0/120 living=1000 elapsed=3.69s
+2026-10-31T03:22:58.5759207Z STABILITY population=1000 month=30/120 living=1000 elapsed=117.43s
+2026-10-31T03:26:10.6899646Z STABILITY population=1000 month=60/120 living=1000 elapsed=309.55s
+2026-10-31T03:30:55.9060727Z STABILITY population=1000 month=90/120 living=1000 elapsed=594.76s
+2026-10-31T03:37:56.6931562Z STABILITY population=1000 month=120/120 living=1000 elapsed=1015.55s
+2026-10-31T03:37:59.6359952Z STABILITY CASE population=1000 month=120/120 living=1000 elapsed=1015.55s result=completed
+2026-10-31T03:39:07.0026403Z STABILITY population=10000 month=0/120 living=10000 elapsed=67.37s
+2026-10-31T04:13:32.7550581Z STABILITY population=10000 month=30/120 living=10000 elapsed=2133.12s
+2026-10-31T05:00:48.1026806Z STABILITY population=10000 month=60/120 living=10000 elapsed=4968.47s
+2026-10-31T05:58:37.6474635Z STABILITY population=10000 month=90/120 living=10000 elapsed=8438.01s
+2026-10-31T07:15:49.7038018Z STABILITY population=10000 month=120/120 living=10000 elapsed=13070.05s
+2026-10-31T07:16:01.2587020Z STABILITY CASE population=10000 month=120/120 living=10000 elapsed=13070.06s result=completed
+2026-10-31T07:16:02.3170799Z ##[group]Run set -o pipefail
+2026-10-31T07:16:02.3186826Z [36;1mset -o pipefail[0m
+2026-10-31T07:16:02.3194833Z [36;1mpython3 - <<'PY' 2>&1 | tee "$RESULT_DIR/verification.log"[0m
+2026-10-31T07:16:02.3202419Z [36;1mimport importlib.util,json,os,pathlib,re,subprocess[0m
+2026-10-31T07:16:02.3205191Z [36;1mroot=pathlib.Path(os.environ['RESULT_DIR'])[0m
+2026-10-31T07:16:02.3219266Z [36;1mspec=importlib.util.spec_from_file_location('release_check','scripts/verify-v021-release.py')[0m
+2026-10-31T07:16:02.3226017Z [36;1mcheck=importlib.util.module_from_spec(spec); spec.loader.exec_module(check)[0m
+2026-10-31T07:16:02.3241321Z [36;1minputs=check.read(root/'input-provenance.json')[0m
+2026-10-31T07:16:02.3253730Z [36;1massert check.sha(os.environ['PLAN_PATH'])==inputs['plan_sha256'] and check.sha(os.environ['BASELINE_PATH'])==inputs['baseline_sha256'][0m
+2026-10-31T07:16:02.3262400Z [36;1mpre=check.read(root/'pre.json')[0m
+2026-10-31T07:16:02.3285082Z [36;1massert pre['selection']=='INV-001/002/011' and pre['total']==1 and pre['failed']==0[0m
+2026-10-31T07:16:02.3294180Z [36;1massert len(pre['results'])==1 and pre['results'][0]['passed'] is True and not pre['results'][0].get('error')[0m
+2026-10-31T07:16:02.3304961Z [36;1massert pre['results'][0]['name']=='INV-001/002/011 정확한 창세·안정 신원·100지점'[0m
+2026-10-31T07:16:02.3315332Z [36;1mreport=check.read(root/'result.json'); plan=inputs['normalized_plan']; cases=plan['cases'][0m
+2026-10-31T07:16:02.3325860Z [36;1massert report['schema_version']==1 and report['kind']=='seonro-long-run-stability' and report['policy']==plan['policyId'][0m
+2026-10-31T07:16:02.3338736Z [36;1massert report['baselineReportSha256']==inputs['baseline_sha256'] and report['planSha256']==inputs['plan_sha256'][0m
+2026-10-31T07:16:02.3344776Z [36;1massert report['complete'] is True and report['passed'] is True and report['status']=='completed'[0m
+2026-10-31T07:16:02.3350118Z [36;1massert report['runningPopulation'] is None and report['executionFailure'] is None[0m
+2026-10-31T07:16:02.3352810Z [36;1menv=report['environment'][0m
+2026-10-31T07:16:02.3358565Z [36;1massert env['sourceCommit']==os.environ['SOURCE_SHA'] and env['sourceWorktreeClean'] is True[0m
+2026-10-31T07:16:02.3364316Z [36;1massert env['buildConfiguration']=='Release' and env['platform']=='host' and env['engine']=='none'[0m
+2026-10-31T07:16:02.3368254Z [36;1massert env['runtime']=='.NET 10.0.14' and env['precedingFunctionalSelection']=='INV-001/002/011'[0m
+2026-10-31T07:16:02.3372418Z [36;1massert type(env['cpu']) is int and env['cpu']>0 and check.finite_number(env['totalAvailableMemoryBytes'],positive=True)[0m
+2026-10-31T07:16:02.3377518Z [36;1massert all(isinstance(env[key],str) and env[key].strip() for key in ['device','os','architecture','thermalState','powerState','processScope'])[0m
+2026-10-31T07:16:02.3378746Z [36;1mrows=report['reports']; populations={case['population'] for case in cases}[0m
+2026-10-31T07:16:02.3382620Z [36;1massert len(rows)==len(cases) and {row['population'] for row in rows}==populations[0m
+2026-10-31T07:16:02.3385915Z [36;1massert len(report['finishedCases'])==len(cases) and set(report['finishedCases'])==populations[0m
+2026-10-31T07:16:02.3389957Z [36;1massert check.finite_number(report['totalElapsedSeconds'],positive=True) and report['totalElapsedSeconds']>=sum(row['elapsedSeconds'] for row in rows)[0m
+2026-10-31T07:16:02.3393323Z [36;1mfor case in cases:[0m
+2026-10-31T07:16:02.3396622Z [36;1m    row=next(row for row in rows if row['population']==case['population'])[0m
+2026-10-31T07:16:02.3399944Z [36;1m    horizon,interval,validation=[case[key] for key in ['horizonMonths','checkpointEveryMonths','validateEveryMonths']][0m
+2026-10-31T07:16:02.3403815Z [36;1m    assert row['passed'] is True and row['failure'] is None and row['targetMonths']==horizon and row['completedMonths']==horizon[0m
+2026-10-31T07:16:02.3407670Z [36;1m    assert check.finite_number(row['elapsedSeconds'],positive=True) and row['elapsedSeconds']<=case['wallTimeLimitSeconds'][0m
+2026-10-31T07:16:02.3411416Z [36;1m    assert type(row['boundaryChecks']) is int and row['boundaryChecks']>=horizon//validation[0m
+2026-10-31T07:16:02.3412127Z [36;1m    points=row['checkpoints'][0m
+2026-10-31T07:16:02.3415378Z [36;1m    assert len(points)>=3 and points[0]['month']==0 and points[-1]['month']==horizon[0m
+2026-10-31T07:16:02.3419168Z [36;1m    assert all(0<b['month']-a['month']<=interval for a,b in zip(points,points[1:]))[0m
+2026-10-31T07:16:02.3419834Z [36;1m    for point in points:[0m
+2026-10-31T07:16:02.3423548Z [36;1m        assert all(point[key] is True for key in ['invariantValid','saveResumeEqual','queryUnchanged','publicCommandAccepted'])[0m
+2026-10-31T07:16:02.3427451Z [36;1m        assert type(point['people']) is int and point['people']>=case['population'][0m
+2026-10-31T07:16:02.3431224Z [36;1m        assert type(point['births']) is int and point['births']>=0 and point['people']==case['population']+point['births'][0m
+2026-10-31T07:16:02.3434863Z [36;1m        assert type(point['deaths']) is int and point['deaths']>=0[0m
+2026-10-31T07:16:02.3440573Z [36;1m        assert type(point['living']) is int and 0<=point['living']<=point['people'][0m
+2026-10-31T07:16:02.3444183Z [36;1m        assert re.fullmatch(r'[0-9a-f]{64}',point['hash'])[0m
+2026-10-31T07:16:02.3444990Z [36;1m        assert all(type(point[key]) is int and point[key]>0 for key in ['saveBytes','retainedManagedBytes'])[0m
+2026-10-31T07:16:02.3448672Z [36;1m    assert all(row[key]==points[-1][key] for key in ['living','births','deaths']) and row['finalHash']==points[-1]['hash'][0m
+2026-10-31T07:16:02.3456831Z [36;1m    assert all(a['births']<=b['births'] and a['deaths']<=b['deaths'] for a,b in zip(points,points[1:]))[0m
+2026-10-31T07:16:02.3464665Z [36;1m    assert type(row['workload']['peopleWithDecisions']) is int and row['workload']['peopleWithDecisions']>0[0m
+2026-10-31T07:16:02.3474748Z [36;1massert not subprocess.check_output(['git','status','--porcelain','--untracked-files=all'],text=True).strip()[0m
+2026-10-31T07:16:02.3482832Z [36;1m(root/'collection-verification.json').write_text(json.dumps({'collection_complete':True,[0m
+2026-10-31T07:16:02.3489305Z [36;1m 'source_commit':os.environ['SOURCE_SHA'],'product_source_fingerprint':os.environ['PRODUCT_FINGERPRINT'],[0m
+2026-10-31T07:16:02.3490345Z [36;1m 'plan_sha256':inputs['plan_sha256'],'baseline_sha256':inputs['baseline_sha256'],'functional_selection_passed':1,[0m
+2026-10-31T07:16:02.3494115Z [36;1m 'full_functional_rerun':False,'completed_populations':sorted(populations),[0m
+2026-10-31T07:16:02.3497763Z [36;1m 'scope':'원래 하네스의 계획/입출력 완료 대조다. 최종 사후 수치예산·릴리스 수용은 별도다.'},ensure_ascii=False,indent=2)+'\n')[0m
+2026-10-31T07:16:02.3501195Z [36;1mPY[0m
+2026-10-31T07:16:02.3630221Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-31T07:16:02.3638369Z env:
+2026-10-31T07:16:02.3645908Z   DOTNET_NOLOGO: true
+2026-10-31T07:16:02.3654219Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T07:16:02.3662224Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T07:16:02.3665580Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T07:16:02.3666126Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T07:16:02.3669219Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T07:16:02.3672391Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T07:16:02.3678122Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T07:16:02.3686377Z   REPOSITORY_PRIVATE: false
+2026-10-31T07:16:02.3693723Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T07:16:02.3703445Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T07:16:02.3711923Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T07:16:02.3720935Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T07:16:02.3731662Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T07:16:02.3741094Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T07:16:02.3749507Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T07:16:02.3759443Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T07:16:02.3764854Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T07:16:02.3770425Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T07:16:02.3771038Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T07:16:02.3773778Z   PRODUCT_FINGERPRINT: c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1
+2026-10-31T07:16:02.3777036Z   PRODUCT_VERSION: 0.2.1
+2026-10-31T07:16:02.3781245Z   TEST_DLL: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll
+2026-10-31T07:16:02.3786614Z   TEST_DLL_DIR: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release
+2026-10-31T07:16:02.3794383Z ##[endgroup]
+2026-10-31T07:16:02.5322275Z ##[group]Run python3 - <<'PY'
+2026-10-31T07:16:02.5322772Z [36;1mpython3 - <<'PY'[0m
+2026-10-31T07:16:02.5325925Z [36;1mimport datetime,hashlib,json,os,pathlib,re,shutil,subprocess,time[0m
+2026-10-31T07:16:02.5331735Z [36;1mroot=pathlib.Path(os.environ['RESULT_DIR']); started=time.monotonic()[0m
+2026-10-31T07:16:02.5340262Z [36;1mdef sha(path):[0m
+2026-10-31T07:16:02.5346398Z [36;1m    with path.open('rb') as stream: return hashlib.file_digest(stream,'sha256').hexdigest()[0m
+2026-10-31T07:16:02.5347065Z [36;1mslots,errors=[],[][0m
+2026-10-31T07:16:02.5351064Z [36;1mfor path in sorted((root/'result-saves').rglob('*')):[0m
+2026-10-31T07:16:02.5354404Z [36;1m    if path.is_file():[0m
+2026-10-31T07:16:02.5358447Z [36;1m        try: slots.append({'path':str(path.relative_to(root)),'bytes':path.stat().st_size,'sha256':sha(path)})[0m
+2026-10-31T07:16:02.5366932Z [36;1m        except OSError as error: errors.append({'path':str(path.relative_to(root)),'error':str(error)})[0m
+2026-10-31T07:16:02.5371281Z [36;1mlog=root/'measurement.log'[0m
+2026-10-31T07:16:02.5375015Z [36;1mlines=re.findall(r'^STABILITY population=\d+ month=\d+/\d+ living=\d+ elapsed=[^\r\n]+',log.read_text(errors='replace'),re.MULTILINE) if log.is_file() else [][0m
+2026-10-31T07:16:02.5378756Z [36;1mreports={}[0m
+2026-10-31T07:16:02.5386088Z [36;1mfor name in ['pre.json','result.json','result.json.pending','measurement-process.json','collection-verification.json']:[0m
+2026-10-31T07:16:02.5396018Z [36;1m    path=root/name[0m
+2026-10-31T07:16:02.5400078Z [36;1m    if path.is_file():[0m
+2026-10-31T07:16:02.5400514Z [36;1m        try:[0m
+2026-10-31T07:16:02.5403458Z [36;1m            data=json.loads(path.read_text())[0m
+2026-10-31T07:16:02.5407008Z [36;1m            reports[name]={key:data[key] for key in ['status','complete','passed','runningPopulation','finishedCases','executionFailure',[0m
+2026-10-31T07:16:02.5412160Z [36;1m             'process_exit_code','tee_exit_code','outer_wall_cap_or_kill','collection_complete'] if key in data}[0m
+2026-10-31T07:16:02.5417518Z [36;1m        except (ValueError,OSError) as error: reports[name]={'parse_error':str(error),'raw_preserved':True}[0m
+2026-10-31T07:16:02.5427998Z [36;1mgit=subprocess.run(['git','status','--porcelain','--untracked-files=all'],capture_output=True,text=True)[0m
+2026-10-31T07:16:02.5434712Z [36;1mrecord={'collected_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'slot_files':slots,'slot_errors':errors,[0m
+2026-10-31T07:16:02.5435989Z [36;1m 'original_checkpoint_console_lines':lines,'report_states':reports,'git_status_exit_code':git.returncode,'git_status':git.stdout,[0m
+2026-10-31T07:16:02.5440547Z [36;1m 'final_disk_bytes':dict(shutil.disk_usage(root)._asdict()),'manifest_elapsed_seconds':time.monotonic()-started,[0m
+2026-10-31T07:16:02.5444597Z [36;1m 'save_file_upload':False,'actual_harness_file_io_or_resume_skipped':False,[0m
+2026-10-31T07:16:02.5445447Z [36;1m 'scope':'큰slot 파일은 삭제/변경하지 않고 최종SHA/크기만 업로드한다. raw진행 보고서·로그는 수정하지 않는다.',[0m
+2026-10-31T07:16:02.5449614Z [36;1m 'limits':'330분cap은partial/실패 그대로다. runner소실/강제job종료에는 마지막업로드를 보장하지 못한다. slot hash는 종료뒤 별도비용이다.'}[0m
+2026-10-31T07:16:02.5453768Z [36;1m(root/'slot-manifest.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')[0m
+2026-10-31T07:16:02.5458203Z [36;1mpaths=list(root.glob('*.json'))+list(root.glob('*.json.pending'))+list(root.glob('*.log'))+list(root.glob('*.txt'))[0m
+2026-10-31T07:16:02.5462851Z [36;1mpaths+=list((root/'inputs').glob('*'))+list((root/'assemblies').glob('*'))[0m
+2026-10-31T07:16:02.5463930Z [36;1mrows=[{'path':str(path.relative_to(root)),'bytes':path.stat().st_size,'sha256':sha(path)} for path in sorted(set(paths)) if path.is_file() and path.name!='artifact-manifest.json'][0m
+2026-10-31T07:16:02.5480798Z [36;1m(root/'artifact-manifest.json').write_text(json.dumps(rows,ensure_ascii=False,indent=2)+'\n')[0m
+2026-10-31T07:16:02.5484796Z [36;1mwith open(os.environ['GITHUB_STEP_SUMMARY'],'a') as output:[0m
+2026-10-31T07:16:02.5487601Z [36;1m    output.write('고정 소스: '+os.environ['SOURCE_SHA']+'\n\n')[0m
+2026-10-31T07:16:02.5494359Z [36;1m    output.write('raw/부분JSON·로그·실제slot SHA/크기를 보존하고 큰 저장본문은 업로드에서 제외합니다.\n')[0m
+2026-10-31T07:16:02.5499595Z [36;1m    output.write('collection-verification.json이 없으면 수집완료가 아닙니다. 최종수치예산/릴리스수용은 별도입니다.\n')[0m
+2026-10-31T07:16:02.5504991Z [36;1mif errors or git.returncode or git.stdout.strip(): raise SystemExit('최종 manifest/clean소스 확인 실패. 원문은 보존합니다.')[0m
+2026-10-31T07:16:02.5511459Z [36;1mPY[0m
+2026-10-31T07:16:02.5538950Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-31T07:16:02.5542009Z env:
+2026-10-31T07:16:02.5545149Z   DOTNET_NOLOGO: true
+2026-10-31T07:16:02.5548021Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T07:16:02.5551830Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T07:16:02.5560215Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T07:16:02.5577627Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T07:16:02.5580292Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T07:16:02.5585084Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T07:16:02.5590255Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T07:16:02.5590789Z   REPOSITORY_PRIVATE: false
+2026-10-31T07:16:02.5596306Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T07:16:02.5599683Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T07:16:02.5600279Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T07:16:02.5603869Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T07:16:02.5606998Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T07:16:02.5610096Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T07:16:02.5612768Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T07:16:02.6130615Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T07:16:02.6137474Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T07:16:02.6144680Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T07:16:02.6154328Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T07:16:02.6167188Z   PRODUCT_FINGERPRINT: c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1
+2026-10-31T07:16:02.6170655Z   PRODUCT_VERSION: 0.2.1
+2026-10-31T07:16:02.6173191Z   TEST_DLL: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll
+2026-10-31T07:16:02.6174393Z   TEST_DLL_DIR: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release
+2026-10-31T07:16:02.6175177Z ##[endgroup]
+2026-10-31T07:16:05.1250362Z ##[group]Run actions/upload-artifact@v4
+2026-10-31T07:16:05.1259907Z with:
+2026-10-31T07:16:05.1268617Z   name: stability-6607234b405921cc39e9527cbea42a7667a709be-41163711116-1
+2026-10-31T07:16:05.1279131Z   path: /home/runner/work/_temp/v021-stability-41163711116-1/*.json
+/home/runner/work/_temp/v021-stability-41163711116-1/*.json.pending
+/home/runner/work/_temp/v021-stability-41163711116-1/*.log
+/home/runner/work/_temp/v021-stability-41163711116-1/*.txt
+/home/runner/work/_temp/v021-stability-41163711116-1/inputs/*
+/home/runner/work/_temp/v021-stability-41163711116-1/assemblies/*
+
+2026-10-31T07:16:05.1284924Z   if-no-files-found: warn
+2026-10-31T07:16:05.1289519Z   retention-days: 14
+2026-10-31T07:16:05.1293402Z   compression-level: 6
+2026-10-31T07:16:05.1296745Z   overwrite: false
+2026-10-31T07:16:05.1300113Z   include-hidden-files: false
+2026-10-31T07:16:05.1303253Z env:
+2026-10-31T07:16:05.1307535Z   DOTNET_NOLOGO: true
+2026-10-31T07:16:05.1317207Z   DOTNET_CLI_TELEMETRY_OPTOUT: true
+2026-10-31T07:16:05.1322373Z   DOTNET_MULTILEVEL_LOOKUP: 0
+2026-10-31T07:16:05.1324223Z   V021_THERMAL_STATE: GitHub 호스트 VM·실제 호스트 열 상태 미측정
+2026-10-31T07:16:05.1329723Z   V021_POWER_STATE: GitHub 호스트 VM·실제 호스트 전력·전원 상태 미측정
+2026-10-31T07:16:05.1332848Z   PYTHONDONTWRITEBYTECODE: 1
+2026-10-31T07:16:05.1333322Z   SOURCE_SHA: 6607234b405921cc39e9527cbea42a7667a709be
+2026-10-31T07:16:05.1338899Z   WORKFLOW_SOURCE_SHA: 0352a5a0cd298179f613875a7bbcca9dd4632027
+2026-10-31T07:16:05.1344704Z   REPOSITORY_PRIVATE: false
+2026-10-31T07:16:05.1350056Z   PLAN_PATH: docs/evidence/0.2.1/final-performance/stability-plan.json
+2026-10-31T07:16:05.1355921Z   BASELINE_PATH: docs/evidence/0.2.1/final-performance/baseline.json
+2026-10-31T07:16:05.1356620Z   RESULT_DIR: /home/runner/work/_temp/v021-stability-41163711116-1
+2026-10-31T07:16:05.1359967Z   DOTNET_INSTALL_DIR: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T07:16:05.1365229Z   DOTNET_ROOT: /home/runner/work/_temp/v021-stability-dotnet
+2026-10-31T07:16:05.1365887Z   DOTNET_CLI_HOME: /home/runner/work/_temp/v021-stability-dotnet-home
+2026-10-31T07:16:05.1366537Z   NUGET_PACKAGES: /home/runner/work/_temp/v021-stability-nuget
+2026-10-31T07:16:05.1375322Z   NUGET_HTTP_CACHE_PATH: /home/runner/work/_temp/v021-stability-nuget-http
+2026-10-31T07:16:05.1380488Z   TMPDIR: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T07:16:05.1384834Z   TMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T07:16:05.1390250Z   TEMP: /home/runner/work/_temp/v021-stability-41163711116-1/tmp
+2026-10-31T07:16:05.1396439Z   PRODUCT_FINGERPRINT: c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1
+2026-10-31T07:16:05.1399607Z   PRODUCT_VERSION: 0.2.1
+2026-10-31T07:16:05.1404833Z   TEST_DLL: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll
+2026-10-31T07:16:05.1411926Z   TEST_DLL_DIR: /home/runner/work/_temp/v021-stability-41163711116-1/build/bin/Chronicles.Game.Tests/release
+2026-10-31T07:16:05.1412709Z ##[endgroup]
+2026-10-31T07:16:05.3437149Z (node:5834) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-31T07:16:05.3440410Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-31T07:16:05.3627575Z With the provided path, there will be 30 files uploaded
+2026-10-31T07:16:05.3634258Z Artifact name is valid!
+2026-10-31T07:16:05.3637746Z Root directory input is valid!
+2026-10-31T07:16:05.6468619Z Beginning upload of artifact content to blob storage
+2026-10-31T07:16:05.8503668Z (node:5834) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-31T07:16:06.1837216Z Uploaded bytes 1317632
+2026-10-31T07:16:06.2248403Z Finished uploading artifact content to blob storage!
+2026-10-31T07:16:06.2250103Z SHA256 digest of uploaded artifact zip is a16bbe0148b4d074ef192692ed779e76fdfdccd758d196b0c53d6d7c4aff677f
+2026-10-31T07:16:06.2251183Z Finalizing artifact upload
+2026-10-31T07:16:06.7326456Z Artifact stability-6607234b405921cc39e9527cbea42a7667a709be-41163711116-1.zip successfully finalized. Artifact ID 13034730710
+2026-10-31T07:16:06.7328786Z Artifact stability-6607234b405921cc39e9527cbea42a7667a709be-41163711116-1 has been successfully uploaded! Final size is 1317632 bytes. Artifact ID is 13034730710
+2026-10-31T07:16:06.7335118Z Artifact download URL: https://github.com/hddy774/project-hora/actions/runs/41163711116/artifacts/13034730710
+2026-10-31T07:16:06.7557681Z Post job cleanup.
+2026-10-31T07:16:06.8808478Z (node:5847) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-31T07:16:06.8810160Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-31T07:16:06.9059622Z Post job cleanup.
+2026-10-31T07:16:07.0005512Z [command]/usr/bin/git version
+2026-10-31T07:16:07.0084984Z git version 2.56.0
+2026-10-31T07:16:07.0129587Z Temporarily overriding HOME='/home/runner/work/_temp/a976ecb7-f068-4aab-9e59-db81b57c9bbb' before making global git config changes
+2026-10-31T07:16:07.0131486Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-31T07:16:07.0136056Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/project-hora/project-hora
+2026-10-31T07:16:07.0189448Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-31T07:16:07.0238018Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-31T07:16:07.0517947Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-31T07:16:07.0597991Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-31T07:16:07.0914476Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-31T07:16:07.0975198Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-31T07:16:07.1523203Z Cleaning up orphan processes
+2026-10-31T07:16:07.2164847Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, actions/setup-dotnet@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

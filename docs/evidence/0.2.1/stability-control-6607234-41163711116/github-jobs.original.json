@@ -1,0 +1,104 @@
+{
+  "jobs": [
+    {
+      "id": 124426612830,
+      "name": "고정 소스·실제 파일 저장/재개 장기 안정성",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 41163711116,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "요청 원본 보존·정확한 소스 입력 검증",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "이벤트에 고정된 실제 소스 가져오기",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "격리된 동일 개발 도구 설정(.NET SDK 10.0.403)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "소스 지문·실제 러너 CPU/메모리·실행 환경 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "사후 계획·기준선 원문 hash와 같은 입력의 기존 전체 기능 검증",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "고정 소스 Release 네 assembly 빌드",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "실제 네 DLL의 소스 revision·PE 정보·SHA256 검증",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "선택 창세1개와 기존 안정성 CLI 실행·330분 실제 상한",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "종료 코드와 별도로 실제 완료·원래 저장/재개 경계 대조",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "성공·실패·부분 원문과 실제 slot SHA/크기 manifest 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "성공·실패·부분 근거 업로드(14일·큰 저장본문 제외)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post 격리된 동일 개발 도구 설정(.NET SDK 10.0.403)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Post 이벤트에 고정된 실제 소스 가져오기",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    }
+  ]
+}

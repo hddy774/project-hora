@@ -1,0 +1,147 @@
+[
+  {
+    "path": "assemblies/Chronicles.Core.dll",
+    "bytes": 5120,
+    "sha256": "ff384fa92d98a8088a9ff6e8b9cec0c5c109296932f619dd2306c3c69c1fd4f4"
+  },
+  {
+    "path": "assemblies/Chronicles.Game.Tests.deps.json",
+    "bytes": 1634,
+    "sha256": "c488abfdc41c5abafc69fd6da72c3b2f4eeb7900ea94517ecf2d6a0054da7839"
+  },
+  {
+    "path": "assemblies/Chronicles.Game.Tests.dll",
+    "bytes": 1521152,
+    "sha256": "a86df6e3ae67682f02653ded4bc49d7aaa04174675881c2b29d1dfa8e437d0e7"
+  },
+  {
+    "path": "assemblies/Chronicles.Game.Tests.runtimeconfig.json",
+    "bytes": 371,
+    "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7"
+  },
+  {
+    "path": "assemblies/Chronicles.Game.dll",
+    "bytes": 2259968,
+    "sha256": "e6ae82e31f71a38531e6930f3a29b44b24b83b8abab1cac8d452b2df9668b0d5"
+  },
+  {
+    "path": "assemblies/Chronicles.Hosting.dll",
+    "bytes": 23552,
+    "sha256": "7b0d75589c38cf0e027d0c6bbad156d5a4a950b23d459b42f03f5bcc30216019"
+  },
+  {
+    "path": "assembly-evidence.json",
+    "bytes": 1412,
+    "sha256": "2f537e0e0ae98ae4f91482523539552e6a36e1dd268d24b19692e836b9cbff00"
+  },
+  {
+    "path": "assembly-inspector.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "build.log",
+    "bytes": 1116,
+    "sha256": "c79f0f32bb9e1d5a51362bf06b157b39380f555467a46118dd4fee770df9b58f"
+  },
+  {
+    "path": "collection-verification.json",
+    "bytes": 639,
+    "sha256": "a670948b5ee8318e945700d38ddc3389334540ed420c97235824d72bc60ff626"
+  },
+  {
+    "path": "dotnet-info.txt",
+    "bytes": 1673,
+    "sha256": "e376bb177f27b86f2638e94d527d335876aea3cd84f2f5f696ce35bb10eab6f6"
+  },
+  {
+    "path": "dotnet-runtimes.txt",
+    "bytes": 220,
+    "sha256": "0e2db0eadddcf6081e4fbd00c3cf88ff103b7aa537ce41782884e84512a1a47f"
+  },
+  {
+    "path": "environment.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "git-after-build.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "input-provenance.json",
+    "bytes": 3126,
+    "sha256": "db59499d372eefd7636ad566a25011cb6c83fce24d4cfccfc1c5d3802b807045"
+  },
+  {
+    "path": "inputs/baseline.json",
+    "bytes": 39836,
+    "sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484"
+  },
+  {
+    "path": "inputs/full-functional.original.json",
+    "bytes": 65010,
+    "sha256": "1cca9aea9ffdef4149282cf8586fbbaf653288a62c31b5beccbe9b1bcd2706ba"
+  },
+  {
+    "path": "inputs/full-source-review.original.json",
+    "bytes": 8273,
+    "sha256": "e992a34688aa0bdcaa8df84da1e4a0e63d1dfadb583caa3497dfa229e8fe70f5"
+  },
+  {
+    "path": "inputs/stability-plan.json",
+    "bytes": 1903,
+    "sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46"
+  },
+  {
+    "path": "measurement-process.json",
+    "bytes": 1008,
+    "sha256": "0184e496307f6e4c1b7f89306b942ab7da97c7b7063a5cf994542d6845747252"
+  },
+  {
+    "path": "measurement.log",
+    "bytes": 1733,
+    "sha256": "ff83d6c2a6be1dcc9102e220d5fb565322ed6d1d119290a03814b0a15d2ff858"
+  },
+  {
+    "path": "pre.json",
+    "bytes": 253,
+    "sha256": "317386eb57df39f7aaa4a94783c8b5657a025baccd05828c297a9b1e68e38c7a"
+  },
+  {
+    "path": "preflight.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "process-resource.txt",
+    "bytes": 1197,
+    "sha256": "2994a34e38cbf26c5488ac83266f9cf2e8074319012c3d367b9130a4f0efbc25"
+  },
+  {
+    "path": "request.json",
+    "bytes": 651,
+    "sha256": "590a38d46199356f09eeb8ce9c96198b3fcd6b82afb48e62a6c86beabc201148"
+  },
+  {
+    "path": "result.json",
+    "bytes": 48599,
+    "sha256": "2bef619b754572cf7cd72d46b9acae008162786df7eddfe5eecc9248bca2e9bb"
+  },
+  {
+    "path": "slot-manifest.json",
+    "bytes": 4166,
+    "sha256": "44f2becdd95b6b84ca4801e4f7b4d325cc55e7d0771602c253f6751be4bcb840"
+  },
+  {
+    "path": "source-environment.json",
+    "bytes": 5175,
+    "sha256": "6aa913d159ba0275b6f668723d5f9a6a7879940c90c11295d59d8ae026a24e9a"
+  },
+  {
+    "path": "verification.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "kind": "선로만상록 통합 SDK 설치 설정 감사",
+  "observed_source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+  "all_installers_exact": true,
+  "installer_count": 12,
+  "global_sdk": {
+    "version": "10.0.403",
+    "rollForward": "disable",
+    "allowPrerelease": false
+  },
+  "installers": [
+    {
+      "workflow": ".github/workflows/v021-api24-probe.yml",
+      "line": 80,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-execution-measurements.yml",
+      "line": 87,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-growth-measurements.yml",
+      "line": 86,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-growth-sensitivity.yml",
+      "line": 222,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-product.yml",
+      "line": 27,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-product.yml",
+      "line": 68,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-product.yml",
+      "line": 97,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-release.yml",
+      "line": 91,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-release.yml",
+      "line": 157,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-release.yml",
+      "line": 278,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-stability-measurements.yml",
+      "line": 72,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    },
+    {
+      "workflow": ".github/workflows/v021-windows-diagnostics.yml",
+      "line": 77,
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true
+    }
+  ],
+  "prior_work_split_audit": "docs/standards/sdk-workflow-audit.json",
+  "scope": "실제 통합 Git 소스의 구성 대조이며 플랫폼별 실행 SDK·서명 APK 검증은 각 실행 원문에서 확인한다."
+}

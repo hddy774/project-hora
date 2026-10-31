@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "kind": "seonro-performance-budget",
+  "policy": "v021-revision6-section11-T04",
+  "established_after_baseline": true,
+  "adopted_at_utc": "2026-10-30T18:47:18.685570+00:00",
+  "baseline_report_sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+  "baseline_source_commit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "baseline_product_source_fingerprint": "dcc95b5cb52a0d3b8e6b66975b736a685f4a82250508a2434d29563bd7b9cfc0",
+  "maximum_regression_percent": 25,
+  "rationale": "2026-10-30 18:41:37 UTC에 실제 네 규모 저장/읽기까지 종료0·complete:true를 확인한 뒤 채택한다. 동일 fixture·법칙·해시·작업량인 후속 최종 소스에 월별 p95/조회/저장/읽기/누적 할당/저장 bytes/수집 보유 관리힙/인지 투영 bytes 각각 기준선의 125% 절대 상한과 25% 회귀 상한을 동시에 적용한다. 단일 프로세스 12개월 표본과 공유 호스트의 변동을 감안한 허용폭이며 Android 속도나 실기기 메모리 보장을 뜻하지 않는다. 장기 보유 메모리는 초기/12개월 실제 큰 값의3배, 저장은 12개월 bytes의3배를 미리 상한으로 고정한다. 실패가 생기면 원문을 보존하고 원인/설계를 검토하며 결과를 보고 임의로 숫자를 올리지 않는다.",
+  "limits": {
+    "2": {
+      "monthlyP95Ms": 326,
+      "queryMs": 45,
+      "saveMs": 222,
+      "loadMs": 238,
+      "allocatedBytes": 187444930,
+      "saveBytes": 3645182,
+      "retainedManagedBytes": 19885430,
+      "serializedCognitionBytes": 222007
+    },
+    "100": {
+      "monthlyP95Ms": 1294,
+      "queryMs": 84,
+      "saveMs": 805,
+      "loadMs": 1087,
+      "allocatedBytes": 3827593130,
+      "saveBytes": 19024297,
+      "retainedManagedBytes": 109341350,
+      "serializedCognitionBytes": 4347368
+    },
+    "1000": {
+      "monthlyP95Ms": 13276,
+      "queryMs": 211,
+      "saveMs": 4316,
+      "loadMs": 2658,
+      "allocatedBytes": 50829892480,
+      "saveBytes": 100666018,
+      "retainedManagedBytes": 160817870,
+      "serializedCognitionBytes": 29353789
+    },
+    "10000": {
+      "monthlyP95Ms": 92389,
+      "queryMs": 1660,
+      "saveMs": 20001,
+      "loadMs": 22570,
+      "allocatedBytes": 498637372810,
+      "saveBytes": 497785559,
+      "retainedManagedBytes": 553688550,
+      "serializedCognitionBytes": 280241015
+    }
+  },
+  "stability_limits": {
+    "2": {
+      "retainedManagedBytes": 47725032,
+      "saveBytes": 8748435
+    },
+    "100": {
+      "retainedManagedBytes": 262419240,
+      "saveBytes": 45658311
+    },
+    "1000": {
+      "retainedManagedBytes": 995045448,
+      "saveBytes": 241598442
+    },
+    "10000": {
+      "retainedManagedBytes": 2192400000,
+      "saveBytes": 1194685341
+    }
+  },
+  "environment_difference_rationale": "기준선과 후속 인구 측정은 동일 Linux 호스트·SDK10.0.403/runtime10.0.14·CPU0 한 개 affinity에서 수집한다. 장기 검사는 별도 GitHub-hosted ubuntu24 VM의 실제4CPU/가용메모리를 별도로 기록한다. 장기 월별 속도를 이 단일CPU 기준선의 인과적 개선율로 주장하지 않으며 시간 상한은 아래 동일 작업의 보수적 완료 상한이다. 열·전원·Android 실기기는 미측정이다."
+}

@@ -1,0 +1,41 @@
+{
+  "source_commit": "4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+  "runtime": ".NET 10.0.14",
+  "cpu_count": 4,
+  "os": "Ubuntu 24.04.5 LTS",
+  "gc_available_memory_bytes": 16760348672,
+  "assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "version": "0.2.1.0",
+      "informationalVersion": "0.2.1\u002B4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+      "configuration": "Release",
+      "bytes": 5120,
+      "sha256": "0c60072674f8d01215b2dde68f05ac8c0f0316dd0350d99f80ce0f63fbf9a3e7"
+    },
+    {
+      "name": "Chronicles.Game",
+      "version": "0.2.1.0",
+      "informationalVersion": "0.2.1\u002B4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+      "configuration": "Release",
+      "bytes": 2258432,
+      "sha256": "e35eac6484d3df6c23ed6d33abc952b408530e87fb13b739f5cf5c7d91d91bee"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "version": "0.2.1.0",
+      "informationalVersion": "0.2.1\u002B4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+      "configuration": "Release",
+      "bytes": 23552,
+      "sha256": "f8e78462d6cc13d3b07d24e2e91a3628b12fa8c650a2f19996362da82c5d9b4c"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "version": "0.2.1.0",
+      "informationalVersion": "0.2.1\u002B4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+      "configuration": "Release",
+      "bytes": 1500672,
+      "sha256": "74be68cd2363126c66018b8a78a1733cfc11ca1fce4b4ca0a4b77a6ec118b98e"
+    }
+  ]
+}

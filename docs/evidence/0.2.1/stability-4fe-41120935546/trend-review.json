@@ -1,0 +1,439 @@
+{
+  "kind": "readonly-history-versus-measurement-scope-review",
+  "source_commit": "4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+  "new_execution": false,
+  "new_profile": false,
+  "source_changes": false,
+  "result_sha256": "99c684a45c3134bf7527a911e0f277209077cdd758ac937307eeb8db27721f01",
+  "reviewed_files": [
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs",
+      "sha256": "dbcfefd6bc2a53f7e153399f375aa511f3ede0ba84d001c2fd38bc0199dcb1ee"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceCognitionMeasurements.cs",
+      "sha256": "3af57d1284f82c649f179da3c98d364bbc5bb77fcaa7ac87836e6920ed5d1924"
+    },
+    {
+      "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "sha256": "12bee37a99145cc0953e3303e6669908d4115a8c18416a31a5a7e8bf5dcaa4fe"
+    },
+    {
+      "path": "src/Chronicles.Game/Knowledge/KnowledgeActivities.cs",
+      "sha256": "9a95aefda5334a90a10d6b084601edfcaeb9617be79874c59f4ab324e9b4fdb1"
+    },
+    {
+      "path": "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "sha256": "a44198789d7f49fe7003a5978b9d7f835aeec620ce1959477c5e94b110cb2818"
+    },
+    {
+      "path": "src/Chronicles.Game/Knowledge/KnowledgeValidation.cs",
+      "sha256": "2c1bb083aeed266c0f9e5a7eaff727598191b75a7a561877fc2305175133ed41"
+    },
+    {
+      "path": "src/Chronicles.Game/GameCodec.cs",
+      "sha256": "ddb307671a42f0174e4ceabf47831b9385d5d54b109e3e88128c1f59ff5a26b1"
+    },
+    {
+      "path": "src/Chronicles.Hosting/GameSaveStore.cs",
+      "sha256": "06f48cfd001d702645f194cd5a8a662f532624ea2ceeac624b825a07fd2fb8d3"
+    }
+  ],
+  "checkpoint_trends": [
+    {
+      "population": 2,
+      "points": [
+        {
+          "month": 0,
+          "elapsed_seconds_from_original_console": 0.46,
+          "retained_managed_bytes": 14616624,
+          "save_bytes": 1915470,
+          "workload": {
+            "peopleWithDecisions": 0,
+            "retainedDecisionRecords": 0,
+            "retainedInferenceExpansions": 0,
+            "maximumRetainedInferenceExpansionsPerPerson": 0,
+            "currentActions": {
+              "Idle": 2
+            },
+            "completedKnowledgeActivities": 0,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 30,
+          "elapsed_seconds_from_original_console": 8.64,
+          "retained_managed_bytes": 46418864,
+          "save_bytes": 3982267,
+          "workload": {
+            "peopleWithDecisions": 2,
+            "retainedDecisionRecords": 48,
+            "retainedInferenceExpansions": 73,
+            "maximumRetainedInferenceExpansionsPerPerson": 49,
+            "currentActions": {
+              "Cultivate": 2
+            },
+            "completedKnowledgeActivities": 48,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 60,
+          "elapsed_seconds_from_original_console": 19.33,
+          "retained_managed_bytes": 97082048,
+          "save_bytes": 4336258,
+          "workload": {
+            "peopleWithDecisions": 2,
+            "retainedDecisionRecords": 48,
+            "retainedInferenceExpansions": 72,
+            "maximumRetainedInferenceExpansionsPerPerson": 48,
+            "currentActions": {
+              "Cultivate": 2
+            },
+            "completedKnowledgeActivities": 108,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 90,
+          "elapsed_seconds_from_original_console": 30.03,
+          "retained_managed_bytes": 164513968,
+          "save_bytes": 4663494,
+          "workload": {
+            "peopleWithDecisions": 2,
+            "retainedDecisionRecords": 48,
+            "retainedInferenceExpansions": 72,
+            "maximumRetainedInferenceExpansionsPerPerson": 48,
+            "currentActions": {
+              "Cultivate": 2
+            },
+            "completedKnowledgeActivities": 168,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 120,
+          "elapsed_seconds_from_original_console": 40.83,
+          "retained_managed_bytes": 114483728,
+          "save_bytes": 5027868,
+          "workload": {
+            "peopleWithDecisions": 2,
+            "retainedDecisionRecords": 48,
+            "retainedInferenceExpansions": 53,
+            "maximumRetainedInferenceExpansionsPerPerson": 29,
+            "currentActions": {
+              "Cultivate": 2
+            },
+            "completedKnowledgeActivities": 228,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        }
+      ]
+    },
+    {
+      "population": 100,
+      "points": [
+        {
+          "month": 0,
+          "elapsed_seconds_from_original_console": 0.46,
+          "retained_managed_bytes": 123340608,
+          "save_bytes": 3988028,
+          "workload": {
+            "peopleWithDecisions": 0,
+            "retainedDecisionRecords": 0,
+            "retainedInferenceExpansions": 0,
+            "maximumRetainedInferenceExpansionsPerPerson": 0,
+            "currentActions": {
+              "Idle": 100
+            },
+            "completedKnowledgeActivities": 0,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 30,
+          "elapsed_seconds_from_original_console": 21.46,
+          "retained_managed_bytes": 200409816,
+          "save_bytes": 28642572,
+          "workload": {
+            "peopleWithDecisions": 100,
+            "retainedDecisionRecords": 2400,
+            "retainedInferenceExpansions": 2425,
+            "maximumRetainedInferenceExpansionsPerPerson": 49,
+            "currentActions": {
+              "Cultivate": 100
+            },
+            "completedKnowledgeActivities": 2890,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 60,
+          "elapsed_seconds_from_original_console": 85.26,
+          "retained_managed_bytes": 112056552,
+          "save_bytes": 41529266,
+          "workload": {
+            "peopleWithDecisions": 100,
+            "retainedDecisionRecords": 2400,
+            "retainedInferenceExpansions": 2424,
+            "maximumRetainedInferenceExpansionsPerPerson": 48,
+            "currentActions": {
+              "Cultivate": 100
+            },
+            "completedKnowledgeActivities": 5890,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 90,
+          "elapsed_seconds_from_original_console": 188.82,
+          "retained_managed_bytes": 191122312,
+          "save_bytes": 54293925,
+          "workload": {
+            "peopleWithDecisions": 100,
+            "retainedDecisionRecords": 2400,
+            "retainedInferenceExpansions": 2424,
+            "maximumRetainedInferenceExpansionsPerPerson": 48,
+            "currentActions": {
+              "Cultivate": 100
+            },
+            "completedKnowledgeActivities": 8890,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 115,
+          "elapsed_seconds_from_original_console": 329.39,
+          "retained_managed_bytes": 201584576,
+          "save_bytes": 65047350,
+          "workload": {
+            "peopleWithDecisions": 100,
+            "retainedDecisionRecords": 2400,
+            "retainedInferenceExpansions": 2410,
+            "maximumRetainedInferenceExpansionsPerPerson": 34,
+            "currentActions": {
+              "Cultivate": 100
+            },
+            "completedKnowledgeActivities": 11390,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        }
+      ]
+    },
+    {
+      "population": 1000,
+      "points": [
+        {
+          "month": 0,
+          "elapsed_seconds_from_original_console": 3.2,
+          "retained_managed_bytes": 1235174752,
+          "save_bytes": 23035565,
+          "workload": {
+            "peopleWithDecisions": 0,
+            "retainedDecisionRecords": 0,
+            "retainedInferenceExpansions": 0,
+            "maximumRetainedInferenceExpansionsPerPerson": 0,
+            "currentActions": {
+              "Idle": 1000
+            },
+            "completedKnowledgeActivities": 0,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 30,
+          "elapsed_seconds_from_original_console": 437.67,
+          "retained_managed_bytes": 409606800,
+          "save_bytes": 141722209,
+          "workload": {
+            "peopleWithDecisions": 1000,
+            "retainedDecisionRecords": 24000,
+            "retainedInferenceExpansions": 27829,
+            "maximumRetainedInferenceExpansionsPerPerson": 86,
+            "currentActions": {
+              "Gather": 1,
+              "Cultivate": 400,
+              "Travel": 6,
+              "Wait": 593
+            },
+            "completedKnowledgeActivities": 11601,
+            "completedPhysicalJobs": 16,
+            "actualExtraction": 3,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 59,
+          "elapsed_seconds_from_original_console": 1650.95,
+          "retained_managed_bytes": 205755152,
+          "save_bytes": 193378160,
+          "workload": {
+            "peopleWithDecisions": 1000,
+            "retainedDecisionRecords": 24000,
+            "retainedInferenceExpansions": 27519,
+            "maximumRetainedInferenceExpansionsPerPerson": 84,
+            "currentActions": {
+              "Cultivate": 400,
+              "Travel": 6,
+              "Guard": 1,
+              "Wait": 593
+            },
+            "completedKnowledgeActivities": 23203,
+            "completedPhysicalJobs": 21,
+            "actualExtraction": 39,
+            "actualProduction": 5
+          }
+        }
+      ]
+    },
+    {
+      "population": 10000,
+      "points": [
+        {
+          "month": 0,
+          "elapsed_seconds_from_original_console": 53.08,
+          "retained_managed_bytes": 1636171920,
+          "save_bytes": 138939484,
+          "workload": {
+            "peopleWithDecisions": 0,
+            "retainedDecisionRecords": 0,
+            "retainedInferenceExpansions": 0,
+            "maximumRetainedInferenceExpansionsPerPerson": 0,
+            "currentActions": {
+              "Idle": 10000
+            },
+            "completedKnowledgeActivities": 0,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 0,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 30,
+          "elapsed_seconds_from_original_console": 2273.78,
+          "retained_managed_bytes": 2747000768,
+          "save_bytes": 544399816,
+          "workload": {
+            "peopleWithDecisions": 10000,
+            "retainedDecisionRecords": 240000,
+            "retainedInferenceExpansions": 278312,
+            "maximumRetainedInferenceExpansionsPerPerson": 72,
+            "currentActions": {
+              "Cultivate": 399,
+              "Travel": 19,
+              "Explore": 2,
+              "Teach": 2,
+              "Wait": 9578
+            },
+            "completedKnowledgeActivities": 11616,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 3,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 60,
+          "elapsed_seconds_from_original_console": 5740.6,
+          "retained_managed_bytes": 1765654912,
+          "save_bytes": 610285696,
+          "workload": {
+            "peopleWithDecisions": 10000,
+            "retainedDecisionRecords": 240000,
+            "retainedInferenceExpansions": 284005,
+            "maximumRetainedInferenceExpansionsPerPerson": 73,
+            "currentActions": {
+              "Cultivate": 399,
+              "Travel": 44,
+              "Explore": 1,
+              "Teach": 2,
+              "Wait": 9554
+            },
+            "completedKnowledgeActivities": 23643,
+            "completedPhysicalJobs": 0,
+            "actualExtraction": 3,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 90,
+          "elapsed_seconds_from_original_console": 10340.73,
+          "retained_managed_bytes": 757436632,
+          "save_bytes": 668150785,
+          "workload": {
+            "peopleWithDecisions": 10000,
+            "retainedDecisionRecords": 240000,
+            "retainedInferenceExpansions": 286759,
+            "maximumRetainedInferenceExpansionsPerPerson": 87,
+            "currentActions": {
+              "Cultivate": 400,
+              "Travel": 74,
+              "Explore": 2,
+              "Wait": 9524
+            },
+            "completedKnowledgeActivities": 35653,
+            "completedPhysicalJobs": 12,
+            "actualExtraction": 3,
+            "actualProduction": 0
+          }
+        },
+        {
+          "month": 120,
+          "elapsed_seconds_from_original_console": 16005.4,
+          "retained_managed_bytes": 826843352,
+          "save_bytes": 730975582,
+          "workload": {
+            "peopleWithDecisions": 10000,
+            "retainedDecisionRecords": 240000,
+            "retainedInferenceExpansions": 285152,
+            "maximumRetainedInferenceExpansionsPerPerson": 96,
+            "currentActions": {
+              "Cultivate": 400,
+              "Travel": 66,
+              "Explore": 1,
+              "Wait": 9533
+            },
+            "completedKnowledgeActivities": 47651,
+            "completedPhysicalJobs": 42,
+            "actualExtraction": 3,
+            "actualProduction": 0
+          }
+        }
+      ]
+    }
+  ],
+  "confirmed": [
+    "Save bytes increase at every observed checkpoint in each case; this is persisted content, not only a transient managed-heap observation.",
+    "Knowledge Activities/TimeUses/Mastery/Evidence are retained histories; Begin/Complete call SaveKnowledge, which typed-clones all saved knowledge lists. CanReserve and ReplaceActivity scan histories. No percentage attribution is measured.",
+    "CollectedManagedBytes performs two forced full GCs then GC.GetTotalMemory over the whole shared process; four cases are sequential, not isolated processes. The current Checkpoint state clone is made after that memory sample.",
+    "GameWorld holds canonical Knowledge plus its detached KnowledgeAuthority snapshot. GameSaveStore performs full Decode/Restore validation for existing/temporary/backup slots and Load. Those real IO/check costs are in case elapsed time.",
+    "Retained managed bytes decrease at later checkpoints although save bytes and completed activities increase; actual values are in checkpoint_trends. This does not identify which cache or object graph remains live."
+  ],
+  "unconfirmed": [
+    "Exact byte contributions of each authority ledger/history are not observable from uploaded slot metadata alone.",
+    "Prior case/local snapshot JIT liveness and framework JSON/array-pool caches may contribute to spikes; no heap trace proves which one. No explicit application-wide GameWorld cache was found in the searched paths.",
+    "Only aggregate checkpoint elapsed times exist; advance/validation/query/codec/IO allocation and CPU percentages cannot be separated without a later authorized profile."
+  ],
+  "interpretation": "Keep all original time/memory/save failures. Measurement-scope confounding is not a waiver or a reason to raise budgets."
+}

@@ -1,0 +1,46 @@
+test_launch_parser_requires_one_known_status_and_one_exact_activity (__main__.AndroidReadinessTests.test_launch_parser_requires_one_known_status_and_one_exact_activity) ... 
+  test_launch_parser_requires_one_known_status_and_one_exact_activity (__main__.AndroidReadinessTests.test_launch_parser_requires_one_known_status_and_one_exact_activity) (changed='Starting: Intent { cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }\nStatus: timeout\nActivity: org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity\nWaitTime: 10094\nComplete\nStatus:\n') ... FAIL
+  test_launch_parser_requires_one_known_status_and_one_exact_activity (__main__.AndroidReadinessTests.test_launch_parser_requires_one_known_status_and_one_exact_activity) (changed='Starting: Intent { cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }\nStatus: timeout\nActivity: org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity\nWaitTime: 10094\nComplete\nStatus: unknown extra\n') ... FAIL
+  test_launch_parser_requires_one_known_status_and_one_exact_activity (__main__.AndroidReadinessTests.test_launch_parser_requires_one_known_status_and_one_exact_activity) (changed='Starting: Intent { cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }\nStatus: timeout\nActivity: org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity\nWaitTime: 10094\nComplete\nActivity:\n') ... FAIL
+  test_launch_parser_requires_one_known_status_and_one_exact_activity (__main__.AndroidReadinessTests.test_launch_parser_requires_one_known_status_and_one_exact_activity) (changed='Starting: Intent { cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }\nStatus: timeout\nActivity: org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity\nWaitTime: 10094\nComplete\nActivity: invalid activity\n') ... FAIL
+
+======================================================================
+FAIL: test_launch_parser_requires_one_known_status_and_one_exact_activity (__main__.AndroidReadinessTests.test_launch_parser_requires_one_known_status_and_one_exact_activity) (changed='Starting: Intent { cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }\nStatus: timeout\nActivity: org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity\nWaitTime: 10094\nComplete\nStatus:\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-android-launch-pending-f3627aa/scripts/test-android-readiness.py", line 466, in test_launch_parser_requires_one_known_status_and_one_exact_activity
+    with self.subTest(changed=changed), self.assertRaises(native.ReadinessError):
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ReadinessError not raised
+
+======================================================================
+FAIL: test_launch_parser_requires_one_known_status_and_one_exact_activity (__main__.AndroidReadinessTests.test_launch_parser_requires_one_known_status_and_one_exact_activity) (changed='Starting: Intent { cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }\nStatus: timeout\nActivity: org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity\nWaitTime: 10094\nComplete\nStatus: unknown extra\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-android-launch-pending-f3627aa/scripts/test-android-readiness.py", line 466, in test_launch_parser_requires_one_known_status_and_one_exact_activity
+    with self.subTest(changed=changed), self.assertRaises(native.ReadinessError):
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ReadinessError not raised
+
+======================================================================
+FAIL: test_launch_parser_requires_one_known_status_and_one_exact_activity (__main__.AndroidReadinessTests.test_launch_parser_requires_one_known_status_and_one_exact_activity) (changed='Starting: Intent { cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }\nStatus: timeout\nActivity: org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity\nWaitTime: 10094\nComplete\nActivity:\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-android-launch-pending-f3627aa/scripts/test-android-readiness.py", line 466, in test_launch_parser_requires_one_known_status_and_one_exact_activity
+    with self.subTest(changed=changed), self.assertRaises(native.ReadinessError):
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ReadinessError not raised
+
+======================================================================
+FAIL: test_launch_parser_requires_one_known_status_and_one_exact_activity (__main__.AndroidReadinessTests.test_launch_parser_requires_one_known_status_and_one_exact_activity) (changed='Starting: Intent { cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }\nStatus: timeout\nActivity: org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity\nWaitTime: 10094\nComplete\nActivity: invalid activity\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-android-launch-pending-f3627aa/scripts/test-android-readiness.py", line 466, in test_launch_parser_requires_one_known_status_and_one_exact_activity
+    with self.subTest(changed=changed), self.assertRaises(native.ReadinessError):
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ReadinessError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=4)

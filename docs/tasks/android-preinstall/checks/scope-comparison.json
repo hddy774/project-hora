@@ -1,0 +1,40 @@
+{
+  "base_source": "356c1cf6baf38b87477a63eee6f25c29f5baf2ce",
+  "unchanged_top_level_definitions": [
+    "ReadinessError",
+    "require",
+    "check_launch",
+    "inspect_dialog",
+    "foreground_app",
+    "_bytes",
+    "main"
+  ],
+  "unchanged_original_app_readiness_while_AST": true,
+  "unchanged_command_deadline_and_remaining_AST": true,
+  "snapshot_default_app_PID_true": true,
+  "snapshot_default_complete_predicate_equals_original_after_expanding_default_required_tuple": true,
+  "old24_names_preserved": true,
+  "old23_test_bodies_AST_identical": true,
+  "one_adapted_fixture": "test_install_log_capture_and_launch_share_original_90_second_deadline",
+  "all_original_assertions_in_adapted_fixture_unchanged": true,
+  "new16_names": [
+    "test_existing_no_install_callers_do_not_execute_preinstall_gate",
+    "test_install_errors_including_offline_are_never_retried_after_prepare",
+    "test_install_timeout_is_not_retried_or_replaced_with_a_new_deadline",
+    "test_preinstall_capture_timeout_never_proceeds_to_install",
+    "test_preinstall_continuous_offline_uses_one_90_second_deadline",
+    "test_preinstall_framework_and_ui_readiness_are_not_transport_success",
+    "test_preinstall_gate_keeps_final_pid_dom_and_png_requirements",
+    "test_preinstall_popup_at_screenshot_needs_fresh_matching_dialog_before_wait",
+    "test_preinstall_probe_unknown_errors_os_failure_and_timeout_are_terminal",
+    "test_preinstall_rejects_app_unknown_dialog_and_crash_before_install",
+    "test_preinstall_stale_quickstep_xml_never_taps_normal_focus",
+    "test_preinstall_time_reduces_remaining_install_and_launch_budget",
+    "test_preinstall_unknown_boot_values_are_not_waited_or_accepted",
+    "test_preinstall_wait_consumes_the_same_budget_without_install_or_am",
+    "test_preinstall_waits_for_transport_boot_and_actual_quickstep_fixture",
+    "test_preinstall_waits_only_for_known_offline_probe_forms"
+  ],
+  "oldwhile_AST_sha256": "b86c3e1d70fd98fc5480612c412691b7e7ae3e7480243166b41c3af181a031ca",
+  "Reader_started_and_deadline_assignment_AST_identical": true
+}

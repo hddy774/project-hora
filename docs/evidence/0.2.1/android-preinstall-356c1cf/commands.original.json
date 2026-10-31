@@ -1,0 +1,137 @@
+[
+  {
+    "path": "prelaunch-logcat.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 255,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 53.242
+  },
+  {
+    "path": "install.txt",
+    "command": [
+      "adb",
+      "install",
+      "-r",
+      "src/Chronicles.Android/bin/Release/net10.0-android/org.hora.xianxiaobserver-Signed.apk"
+    ],
+    "returncode": 1,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 63.361
+  },
+  {
+    "path": "final/render-log.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 1224.113
+  },
+  {
+    "path": "final/foreground.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 1256.226
+  },
+  {
+    "path": "final/pid.txt",
+    "command": [
+      "adb",
+      "shell",
+      "pidof",
+      "org.hora.xianxiaobserver"
+    ],
+    "returncode": 1,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 1291.223
+  },
+  {
+    "path": "final/remove-stale-ui.txt",
+    "command": [
+      "adb",
+      "shell",
+      "rm",
+      "-f",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 1315.397
+  },
+  {
+    "path": "final/uiautomator.txt",
+    "command": [
+      "adb",
+      "shell",
+      "uiautomator",
+      "dump",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 3463.217
+  },
+  {
+    "path": "final/ui.xml",
+    "command": [
+      "adb",
+      "exec-out",
+      "cat",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 3477.582
+  },
+  {
+    "path": "final/screen.png",
+    "command": [
+      "adb",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 3914.517
+  },
+  {
+    "path": "final/window.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "window"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 3947.575
+  }
+]

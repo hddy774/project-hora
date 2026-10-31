@@ -16,6 +16,13 @@ VERSION = (native.ROOT / "VERSION").read_text().strip()
 QUICKSTEP = Path(__file__).with_name("fixtures").joinpath("android-quickstep.xml").read_text()
 WINDOWS_ONLY = Path(__file__).with_name("fixtures").joinpath("android-window-windows-only.txt").read_text()
 LAUNCH_TIMEOUT = Path(__file__).with_name("fixtures").joinpath("android-launch-timeout-api24-41165712717.txt").read_bytes()
+PREINSTALL_FIXTURES = Path(__file__).with_name("fixtures")
+INSTALL_OFFLINE = (PREINSTALL_FIXTURES / "android-preinstall-offline-41178765537.stderr.txt").read_bytes()
+PREINSTALL_QUICKSTEP = (PREINSTALL_FIXTURES / "android-preinstall-quickstep-41178765537.xml").read_text()
+PREINSTALL_FOCUS = (PREINSTALL_FIXTURES / "android-preinstall-quickstep-41178765537.focus.txt").read_text()
+PREINSTALL_ANR = (PREINSTALL_FIXTURES / "android-preinstall-quickstep-41178765537.log").read_text()
+LAUNCHER_UI = '<hierarchy><node package="com.android.launcher3" class="android.widget.FrameLayout" /></hierarchy>'
+LAUNCHER_FOCUS = 'mCurrentFocus=Window{ u0 com.android.launcher3/.uioverrides.QuickstepLauncher }'
 APP_UI = '<hierarchy><node package="org.hora.xianxiaobserver" class="android.webkit.WebView" text="만상의 흐름" /></hierarchy>'
 APP_LOG = 'I/SeonroRender: ' + json.dumps({"rendered": True, "heading": "만상의 흐름", "title": "선로만상록",
     "version": VERSION, "error": None, "connection": "연결됨"}, ensure_ascii=False) + '\n'
@@ -38,6 +45,7 @@ class Device:
         self.clock, self.xml, self.logs, self.window = clock, xml, logs, window
         self.calls, self.taps, self.checker_results = [], [], []
         self.launches, self.cleared = 0, False
+        self.installs = 0
         self.after_wait = None
         self.timeout_ui = False
         self.stale_only = False
@@ -56,6 +64,10 @@ class Device:
             output = b""
         elif command[:2] == ["logcat", "-d"]:
             output = ("" if self.stale_only and self.cleared else self.logs).encode()
+        elif command == ["get-state"]:
+            output = b"device\n"
+        elif command == ["shell", "getprop", "sys.boot_completed"]:
+            output = b"1\n"
         elif command[:3] == ["shell", "am", "start"]:
             self.launches += 1
             output = ("Status: ok\nActivity: " + native.PACKAGE + "/" + ACTIVITY + "\nComplete\n").encode()
@@ -84,6 +96,7 @@ class Device:
                 self.xml, self.logs, self.window = self.after_wait
             output = b""
         elif command[:1] == ["install"]:
+            self.installs += 1
             output = b"Success\n"
         else:
             raise AssertionError("Unexpected operation: " + repr(args))
@@ -113,6 +126,44 @@ class PendingLaunchDevice(Device):
             return subprocess.CompletedProcess(args, self.launch_code, self.launch_output, self.launch_stderr)
         if self.ready_after is not None and self.clock.now() >= self.ready_after:
             self.xml, self.logs, self.window = APP_UI, APP_LOG, WINDOW
+        return super().run(args, **kwargs)
+
+
+class PreinstallDevice(Device):
+    """기기 단계에는 앱이 없으며 AM 뒤에만 앱 응답을 제공하는 모의 장치."""
+    def __init__(self, clock, *, transport=("device",), boot=("1",), frames=None):
+        super().__init__(clock, xml=LAUNCHER_UI, logs="", window=LAUNCHER_FOCUS)
+        self.transport, self.boot = list(transport), list(boot)
+        self.frames = list(frames or [(LAUNCHER_UI, "", LAUNCHER_FOCUS)])
+        self.after_wait = (LAUNCHER_UI, "", LAUNCHER_FOCUS)
+        self.install_result = (0, b"Success\n", b"")
+        self.app_frame = (APP_UI, APP_LOG, WINDOW)
+        self.probes = 0
+
+    def run(self, args, **kwargs):
+        command = args[1:]
+        if command == ["get-state"]:
+            result = super().run(args, **kwargs)
+            self.probes += 1
+            self.xml, self.logs, self.window = self.frames.pop(0) if len(self.frames) > 1 else self.frames[0]
+            state = self.transport.pop(0) if len(self.transport) > 1 else self.transport[0]
+            if state == "offline":
+                return subprocess.CompletedProcess(args, 1, b"", INSTALL_OFFLINE)
+            return subprocess.CompletedProcess(args, result.returncode, state.encode() + b"\n", b"")
+        if command == ["shell", "getprop", "sys.boot_completed"]:
+            super().run(args, **kwargs)
+            value = self.boot.pop(0) if len(self.boot) > 1 else self.boot[0]
+            return subprocess.CompletedProcess(args, 0, value.encode() + b"\n", b"")
+        if command[:1] == ["install"]:
+            super().run(args, **kwargs)
+            return subprocess.CompletedProcess(args, *self.install_result)
+        if command[:3] == ["shell", "am", "start"]:
+            result = super().run(args, **kwargs)
+            self.xml, self.logs, self.window = self.app_frame
+            return result
+        if command[:2] == ["shell", "pidof"] and self.launches == 0:
+            super().run(args, **kwargs)
+            return subprocess.CompletedProcess(args, 1, b"", b"")
         return super().run(args, **kwargs)
 
 
@@ -335,16 +386,23 @@ class AndroidReadinessTests(unittest.TestCase):
     def test_install_log_capture_and_launch_share_original_90_second_deadline(self):
         clock = Clock()
         device = PendingLaunchDevice(clock)
+        device.xml, device.logs, device.window = LAUNCHER_UI, "", LAUNCHER_FOCUS
         original = device.run
+        startup_log_seen = False
 
         def consume_startup_budget(args, **kwargs):
-            if args[1:3] == ["logcat", "-d"] and not device.cleared:
+            nonlocal startup_log_seen
+            if args[1:3] == ["logcat", "-d"] and not startup_log_seen:
+                startup_log_seen = True
                 clock.sleep(4)
             elif args[1:2] == ["install"]:
                 clock.sleep(40)
             elif args[1:3] == ["logcat", "-c"]:
                 clock.sleep(2)
-            return original(args, **kwargs)
+            result = original(args, **kwargs)
+            if args[1:4] == ["shell", "am", "start"]:
+                device.xml, device.logs, device.window = "<hierarchy />", "", "mCurrentFocus=null"
+            return result
 
         device.run = consume_startup_budget
         with tempfile.TemporaryDirectory() as directory:
@@ -492,6 +550,295 @@ class AndroidReadinessTests(unittest.TestCase):
                 self.assertFalse((out / "dom-proof.json").exists())
                 self.assertEqual(device.checker_results, [])
                 self.assertEqual(device.launches, 1)
+
+    def test_preinstall_waits_for_transport_boot_and_actual_quickstep_fixture(self):
+        blocked = (PREINSTALL_QUICKSTEP, PREINSTALL_ANR, PREINSTALL_FOCUS)
+        normal = (LAUNCHER_UI, "", LAUNCHER_FOCUS)
+        device = PreinstallDevice(Clock(), transport=("offline", "device"), boot=("0", "1"),
+            frames=[blocked, blocked, blocked, normal])
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            self.assertTrue(self.execute(device, out, timeout=90, install_apk="fixture.apk")["passed"])
+            prep = json.loads((out / "preinstall.json").read_text())
+            self.assertEqual(prep["state"], "ready")
+            self.assertEqual(prep["attempts"], 4)
+            self.assertEqual(prep["ready_at_ms"], 3000)
+            self.assertEqual((device.installs, device.launches), (1, 1))
+            self.assertEqual(device.taps, [["540", "1332"]])
+            self.assertEqual(device.checker_results, [0])
+            self.assertEqual((out / "preinstall-001/transport.txt.stderr.txt").read_bytes(), INSTALL_OFFLINE)
+            self.assertEqual((out / "preinstall-003/device/ui.xml").read_text(), PREINSTALL_QUICKSTEP)
+            events = json.loads((out / "launcher-waits.json").read_text())
+            self.assertEqual(events[0]["phase"], "preinstall")
+            self.assertIn("com.android.launcher3", (out / events[0]["after"] / "ui.xml").read_text())
+            install = next(i for i, c in enumerate(device.calls) if c["args"][1:2] == ["install"])
+            self.assertIn("--no-streaming", device.calls[install]["args"])
+            self.assertFalse(any(c["args"][1:3] == ["shell", "pidof"] for c in device.calls[:install]))
+
+    def test_preinstall_continuous_offline_uses_one_90_second_deadline(self):
+        device = PreinstallDevice(Clock(), transport=("offline",))
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            with self.assertRaisesRegex(native.ReadinessError, "deadline"):
+                self.execute(device, out, timeout=90, install_apk="fixture.apk")
+            self.assertEqual(device.clock.now(), 90)
+            self.assertEqual((device.installs, device.launches), (0, 0))
+            self.assertEqual(device.taps, [])
+            self.assertFalse(json.loads((out / "readiness.json").read_text())["passed"])
+            self.assertIsNone(json.loads((out / "preinstall.json").read_text())["ready_at_ms"])
+            self.assertTrue(all(c["time"] < 90 for c in device.calls))
+
+    def test_preinstall_framework_and_ui_readiness_are_not_transport_success(self):
+        cases = [
+            {"boot": ("0",)}, {"boot": ("",)},
+            {"frames": [("<hierarchy />", "", LAUNCHER_FOCUS)]},
+            {"frames": [(LAUNCHER_UI, "", "mCurrentFocus=null")]},
+            {"frames": [(LAUNCHER_UI, "", PREINSTALL_FOCUS)]},
+        ]
+        for change in cases:
+            device = PreinstallDevice(Clock(), **change)
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                with self.assertRaisesRegex(native.ReadinessError, "deadline"):
+                    self.execute(device, Path(directory), timeout=3, install_apk="fixture.apk")
+                self.assertEqual(device.clock.now(), 3)
+                self.assertEqual((device.installs, device.launches), (0, 0))
+                self.assertEqual(device.taps, [])
+
+    def test_preinstall_rejects_app_unknown_dialog_and_crash_before_install(self):
+        frames = [
+            (PREINSTALL_QUICKSTEP.replace("Quickstep", "선로만상록"), "", WINDOW),
+            (PREINSTALL_QUICKSTEP.replace("Quickstep", "Settings"), "", LAUNCHER_FOCUS),
+            (PREINSTALL_QUICKSTEP, "", PREINSTALL_FOCUS.replace("com.android.launcher3", native.PACKAGE)),
+            (PREINSTALL_QUICKSTEP, "", PREINSTALL_FOCUS.replace("com.android.launcher3", "com.android.settings")),
+            (LAUNCHER_UI, "ANR in " + native.PACKAGE, LAUNCHER_FOCUS),
+            (LAUNCHER_UI, "FATAL EXCEPTION: main", LAUNCHER_FOCUS),
+        ]
+        for frame in frames:
+            device = PreinstallDevice(Clock(), frames=[frame])
+            with self.subTest(frame=frame), tempfile.TemporaryDirectory() as directory:
+                out = Path(directory)
+                with self.assertRaises(native.ReadinessError):
+                    self.execute(device, out, timeout=3, install_apk="fixture.apk")
+                self.assertEqual((device.installs, device.launches), (0, 0))
+                self.assertEqual(device.taps, [])
+                self.assertEqual(device.checker_results, [])
+                self.assertFalse(json.loads((out / "readiness.json").read_text())["passed"])
+
+    def test_preinstall_probe_unknown_errors_os_failure_and_timeout_are_terminal(self):
+        cases = [
+            (1, b"", b"error: no devices/emulators found\n"),
+            (0, b"unauthorized\n", b""),
+            (1, b"partial", INSTALL_OFFLINE),
+            (1, b"", INSTALL_OFFLINE + b"other error\n"),
+            (2, b"", INSTALL_OFFLINE), "timeout", "os_error",
+        ]
+        for failure in cases:
+            device = PreinstallDevice(Clock())
+            original = device.run
+
+            def fail_probe(args, **kwargs):
+                result = original(args, **kwargs)
+                if args[1:] == ["get-state"]:
+                    if failure == "timeout":
+                        device.clock.sleep(kwargs["timeout"])
+                        raise subprocess.TimeoutExpired(args, kwargs["timeout"], output=b"device\n")
+                    if failure == "os_error":
+                        raise OSError("fixture adb unavailable")
+                    return subprocess.CompletedProcess(args, *failure)
+                return result
+
+            device.run = fail_probe
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
+                out = Path(directory)
+                with self.assertRaises(native.ReadinessError):
+                    self.execute(device, out, timeout=3, install_apk="fixture.apk")
+                self.assertEqual(device.probes, 1)
+                self.assertEqual((device.installs, device.launches), (0, 0))
+                self.assertFalse(json.loads((out / "readiness.json").read_text())["passed"])
+
+    def test_preinstall_unknown_boot_values_are_not_waited_or_accepted(self):
+        for value in ["unknown", "2", "1\n0", "offline"]:
+            device = PreinstallDevice(Clock(), boot=(value,))
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as directory:
+                with self.assertRaisesRegex(native.ReadinessError, "probe"):
+                    self.execute(device, Path(directory), timeout=3, install_apk="fixture.apk")
+                self.assertEqual(device.probes, 1)
+                self.assertEqual((device.installs, device.launches), (0, 0))
+
+    def test_preinstall_waits_only_for_known_offline_probe_forms(self):
+        cases = [("transport", (0, b"offline\n", b"")),
+                 ("transport", (1, b"", b"error: device offline\n")),
+                 ("transport", (255, b"", INSTALL_OFFLINE)),
+                 ("boot", (1, b"", INSTALL_OFFLINE))]
+        for phase, reply in cases:
+            device = PreinstallDevice(Clock())
+            original = device.run
+            first = True
+
+            def one_offline(args, **kwargs):
+                nonlocal first
+                result = original(args, **kwargs)
+                match = args[1:] == (["get-state"] if phase == "transport" else
+                    ["shell", "getprop", "sys.boot_completed"])
+                if first and match:
+                    first = False
+                    return subprocess.CompletedProcess(args, *reply)
+                return result
+
+            device.run = one_offline
+            with self.subTest(phase=phase, reply=reply), tempfile.TemporaryDirectory() as directory:
+                self.assertTrue(self.execute(device, Path(directory), timeout=5, install_apk="fixture.apk")["passed"])
+                self.assertEqual(device.clock.now(), 1)
+                self.assertEqual((device.installs, device.launches), (1, 1))
+
+    def test_preinstall_capture_timeout_never_proceeds_to_install(self):
+        device = PreinstallDevice(Clock())
+        device.timeout_ui = True
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            with self.assertRaisesRegex(native.ReadinessError, "observation"):
+                self.execute(device, out, timeout=90, install_apk="fixture.apk")
+            self.assertEqual(device.probes, 1)
+            self.assertEqual((device.installs, device.launches), (0, 0))
+            self.assertFalse(json.loads((out / "readiness.json").read_text())["passed"])
+            commands = json.loads((out / "commands.json").read_text())
+            self.assertTrue(any(c["timed_out"] and c["path"].startswith("preinstall-") for c in commands))
+
+    def test_install_errors_including_offline_are_never_retried_after_prepare(self):
+        cases = [(1, b"", INSTALL_OFFLINE), (1, b"Failure [INSTALL_FAILED_INVALID_APK]\n", b""),
+                 (0, b"partial install\n", b""), (0, b"Success\nFailure reported\n", b""),
+                 (0, b"Success\n", b"Error: fixture failure\n")]
+        for failure in cases:
+            device = PreinstallDevice(Clock())
+            device.install_result = failure
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
+                out = Path(directory)
+                with self.assertRaisesRegex(native.ReadinessError, "installation failed"):
+                    self.execute(device, out, timeout=90, install_apk="fixture.apk")
+                self.assertEqual((device.installs, device.launches), (1, 0))
+                self.assertEqual((out / "install.txt.stderr.txt").read_bytes(), failure[2])
+                self.assertFalse(json.loads((out / "readiness.json").read_text())["passed"])
+
+    def test_install_timeout_is_not_retried_or_replaced_with_a_new_deadline(self):
+        device = PreinstallDevice(Clock())
+        original = device.run
+
+        def timeout_install(args, **kwargs):
+            result = original(args, **kwargs)
+            if args[1:2] == ["install"]:
+                device.clock.sleep(kwargs["timeout"])
+                raise subprocess.TimeoutExpired(args, kwargs["timeout"], output=b"partial install", stderr=b"timeout")
+            return result
+
+        device.run = timeout_install
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            with self.assertRaisesRegex(native.ReadinessError, "installation failed"):
+                self.execute(device, out, timeout=90, install_apk="fixture.apk")
+            self.assertEqual(device.clock.now(), 45)
+            self.assertEqual((device.installs, device.launches), (1, 0))
+            install = next(c for c in json.loads((out / "commands.json").read_text()) if c["path"] == "install.txt")
+            self.assertTrue(install["timed_out"])
+            self.assertEqual((out / "install.txt").read_bytes(), b"partial install")
+
+    def test_preinstall_stale_quickstep_xml_never_taps_normal_focus(self):
+        device = PreinstallDevice(Clock(), frames=[
+            (PREINSTALL_QUICKSTEP, PREINSTALL_ANR, LAUNCHER_FOCUS),
+            (LAUNCHER_UI, "", LAUNCHER_FOCUS)])
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            self.assertTrue(self.execute(device, out, timeout=5, install_apk="fixture.apk")["passed"])
+            self.assertEqual(device.taps, [])
+            self.assertEqual((device.installs, device.launches), (1, 1))
+            self.assertEqual(device.probes, 2)
+
+    def test_preinstall_popup_at_screenshot_needs_fresh_matching_dialog_before_wait(self):
+        device = PreinstallDevice(Clock())
+        original = device.run
+        popped = False
+
+        def late_popup(args, **kwargs):
+            nonlocal popped
+            result = original(args, **kwargs)
+            if args[1:3] == ["exec-out", "screencap"] and not popped:
+                popped = True
+                device.xml, device.logs, device.window = PREINSTALL_QUICKSTEP, PREINSTALL_ANR, PREINSTALL_FOCUS
+                device.frames = [(PREINSTALL_QUICKSTEP, PREINSTALL_ANR, PREINSTALL_FOCUS),
+                                 (LAUNCHER_UI, "", LAUNCHER_FOCUS)]
+            return result
+
+        device.run = late_popup
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            self.assertTrue(self.execute(device, out, timeout=5, install_apk="fixture.apk")["passed"])
+            events = json.loads((out / "launcher-waits.json").read_text())
+            self.assertEqual(len(events), 1)
+            self.assertEqual(events[0]["before"], "preinstall-002/device")
+            self.assertEqual(device.taps, [["540", "1332"]])
+            self.assertEqual((device.installs, device.launches), (1, 1))
+
+    def test_preinstall_wait_consumes_the_same_budget_without_install_or_am(self):
+        device = PreinstallDevice(Clock(), frames=[(PREINSTALL_QUICKSTEP, PREINSTALL_ANR, PREINSTALL_FOCUS)])
+        original = device.run
+
+        def wait_uses_budget(args, **kwargs):
+            result = original(args, **kwargs)
+            if args[1:4] == ["shell", "input", "tap"]:
+                device.clock.sleep(kwargs["timeout"])
+            return result
+
+        device.run = wait_uses_budget
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaisesRegex(native.ReadinessError, "deadline"):
+                self.execute(device, Path(directory), timeout=2, install_apk="fixture.apk")
+            self.assertEqual(device.clock.now(), 2)
+            self.assertEqual((device.installs, device.launches), (0, 0))
+            self.assertEqual(len(device.taps), 1)
+            self.assertTrue(all(c["time"] < 2 for c in device.calls))
+
+    def test_preinstall_gate_keeps_final_pid_dom_and_png_requirements(self):
+        for missing in ["pid", "DOM", "PNG"]:
+            device = PreinstallDevice(Clock())
+            if missing == "DOM":
+                device.app_frame = (APP_UI, APP_LOG.replace("만상의 흐름", "잘못된 화면"), WINDOW)
+            original = device.run
+
+            def missing_final(args, **kwargs):
+                result = original(args, **kwargs)
+                if device.launches:
+                    if missing == "pid" and args[1:3] == ["shell", "pidof"]:
+                        return subprocess.CompletedProcess(args, 0, b"", b"")
+                    if missing == "PNG" and args[1:3] == ["exec-out", "screencap"]:
+                        return subprocess.CompletedProcess(args, 1, b"", b"failed")
+                return result
+
+            device.run = missing_final
+            with self.subTest(missing=missing), tempfile.TemporaryDirectory() as directory:
+                out = Path(directory)
+                with self.assertRaisesRegex(native.ReadinessError, "deadline"):
+                    self.execute(device, out, timeout=3, install_apk="fixture.apk")
+                self.assertEqual((device.installs, device.launches), (1, 1))
+                self.assertFalse(json.loads((out / "readiness.json").read_text())["passed"])
+                self.assertFalse((out / "dom-proof.json").exists())
+
+    def test_existing_no_install_callers_do_not_execute_preinstall_gate(self):
+        device = Device(Clock())
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            self.assertTrue(self.execute(device, out)["passed"])
+            self.assertFalse((out / "preinstall.json").exists())
+            self.assertFalse(any(c["args"][1:] == ["get-state"] for c in device.calls))
+            self.assertEqual((device.installs, device.launches), (0, 1))
+
+    def test_preinstall_time_reduces_remaining_install_and_launch_budget(self):
+        device = PreinstallDevice(Clock(), transport=("offline",) * 55 + ("device",))
+        with tempfile.TemporaryDirectory() as directory:
+            self.assertTrue(self.execute(device, Path(directory), timeout=90, install_apk="fixture.apk")["passed"])
+            self.assertEqual(device.clock.now(), 55)
+            install = next(c for c in device.calls if c["args"][1:2] == ["install"])
+            launch = next(c for c in device.calls if c["args"][1:4] == ["shell", "am", "start"])
+            self.assertEqual((install["timeout"], launch["timeout"]), (35, 35))
+            self.assertEqual((device.installs, device.launches), (1, 1))
 
 
 if __name__ == "__main__":

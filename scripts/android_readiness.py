@@ -98,6 +98,7 @@ class Reader:
         self.started = clock()
         self.deadline = self.started + timeout  # One deadline for install, launch, polling, Wait and final diagnostics.
         self.commands, self.waits, self.latest = [], [], None
+        self.preinstall = None
         self.out.mkdir(parents=True, exist_ok=True)
 
     def remaining(self):
@@ -122,11 +123,11 @@ class Reader:
                               "elapsed_ms": round((self.clock() - self.started) * 1000, 3)})
         return code, stdout.decode("utf-8", errors="replace"), stdout
 
-    def snapshot(self, name):
+    def snapshot(self, name, *, require_app_pid=True):
         path = self.out / name
         log = self.command(path, "render-log.txt", ["adb", "logcat", "-d", "-v", "tag"])
         activities = self.command(path, "foreground.txt", ["adb", "shell", "dumpsys", "activity", "activities"])
-        pid = self.command(path, "pid.txt", ["adb", "shell", "pidof", PACKAGE])
+        pid = self.command(path, "pid.txt", ["adb", "shell", "pidof", PACKAGE]) if require_app_pid else (None, "", b"")
         remote = "/sdcard/v021-readiness-ui.xml"
         removed = self.command(path, "remove-stale-ui.txt", ["adb", "shell", "rm", "-f", remote])
         dumped = self.command(path, "uiautomator.txt", ["adb", "shell", "uiautomator", "dump", remote])
@@ -143,9 +144,10 @@ class Reader:
                           for n in tree.iter("node"))
         except ET.ParseError:
             valid_ui, webview = False, False
+        required = (log, activities, windows, pid, ui, screen) if require_app_pid else (log, activities, windows, ui, screen)
         value = {"path": path, "logs": log[1], "activities": activities[1], "windows": windows[1],
                  "pid": pid[1].strip() if pid[0] == 0 else "", "xml": ui[1], "webview": webview,
-                 "complete": all(x[0] == 0 for x in (log, activities, windows, pid, ui, screen)) and
+                 "complete": all(x[0] == 0 for x in required) and
                              valid_ui and screen[2].startswith(b"\x89PNG\r\n\x1a\n")}
         self.latest = value
         return value
@@ -158,6 +160,82 @@ class Reader:
                     shutil.copyfile(source, self.out / name)
         (self.out / "commands.json").write_text(json.dumps(self.commands, ensure_ascii=False, indent=2) + "\n")
         (self.out / "launcher-waits.json").write_text(json.dumps(self.waits, ensure_ascii=False, indent=2) + "\n")
+        if self.preinstall is not None:
+            (self.out / "preinstall.json").write_text(json.dumps(self.preinstall, ensure_ascii=False, indent=2) + "\n")
+
+
+def _preinstall_probe(reader, path, name, args, allowed):
+    code, output, _ = reader.command(path, name, args)
+    record = reader.commands[-1]
+    stderr = (path / (name + ".stderr.txt")).read_text(encoding="utf-8", errors="replace").strip()
+    require(not record["timed_out"] and code is not None, "Preinstall ADB probe timed out or could not execute")
+    # 전송이 명시적으로 offline인 읽기 probe만 기다린다. 설치 오류를 재시도하지 않는다.
+    if code in (1, 255) and not output.strip() and stderr in ("adb: device offline", "error: device offline"):
+        return "offline"
+    require(code == 0 and not stderr and output.strip() in allowed, "Unknown preinstall ADB probe result: " + name)
+    return output.strip()
+
+
+def _normal_device_ui(observed):
+    nodes = list(ET.fromstring(observed["xml"]).iter("node"))
+    focused = [line for line in observed["windows"].splitlines() if "mCurrentFocus" in line]
+    normal_focus = any("Window{" in line and "Application Not Responding:" not in line and
+                       "Application Error:" not in line for line in focused)
+    dialog_xml = any(n.attrib.get("resource-id", "").endswith(("/alertTitle", "/aerr_wait", "/aerr_close", "/parentPanel")) or
+                     "Dialog" in n.attrib.get("class", "") for n in nodes)
+    return bool(nodes) and normal_focus and not dialog_xml
+
+
+def _prepare_install(reader, sleep):
+    """설치 전에 기기만 준비한다. 앱 PID나 render 성공을 뜻하지 않는다."""
+    state = {"state": "waiting", "attempts": 0, "transport": None, "boot_completed": None, "ready_at_ms": None}
+    reader.preinstall = state
+    while reader.remaining() > 0:
+        state["attempts"] += 1
+        path = reader.out / ("preinstall-" + str(state["attempts"]).zfill(3))
+        state["state"] = "transport_wait"
+        state["transport"] = _preinstall_probe(reader, path, "transport.txt", ["adb", "get-state"], ("device", "offline"))
+        if state["transport"] == "device":
+            state["state"] = "framework_wait"
+            state["boot_completed"] = _preinstall_probe(reader, path, "boot.txt",
+                ["adb", "shell", "getprop", "sys.boot_completed"], ("", "0", "1"))
+            if state["boot_completed"] == "offline":
+                state.update(state="transport_wait", transport="offline")
+            if state["boot_completed"] == "1":
+                state["state"] = "device_ui"
+                first_command = len(reader.commands)
+                observed = reader.snapshot(str(path.relative_to(reader.out) / "device"), require_app_pid=False)
+                wait = inspect_dialog(observed["xml"], observed["windows"], observed["logs"])
+                require(observed["complete"] and not any(c["timed_out"] for c in reader.commands[first_command:]),
+                        "Preinstall device observation incomplete or timed out")
+                if wait:
+                    state["state"] = "launcher_wait"
+                    event = {**wait, "number": len(reader.waits) + 1, "phase": "preinstall",
+                             "before": str(observed["path"].relative_to(reader.out)),
+                             "observed_utc": datetime.now(timezone.utc).isoformat(),
+                             "elapsed_before_ms": round((reader.clock() - reader.started) * 1000, 3)}
+                    reader.waits.append(event)
+                    event["tap_started_utc"] = datetime.now(timezone.utc).isoformat()
+                    code, _, _ = reader.command(observed["path"], "wait-tap.txt", ["adb", "shell", "input", "tap", *wait["tap"]])
+                    event["tap_completed_utc"] = datetime.now(timezone.utc).isoformat()
+                    event["tap_returncode"] = code
+                    require(code == 0, "External launcher Wait action failed before install")
+                    require(reader.remaining() > 0, "Preinstall device readiness deadline exceeded")
+                    first_command = len(reader.commands)
+                    after = reader.snapshot("preinstall-wait-after-" + str(event["number"]).zfill(3), require_app_pid=False)
+                    event.update(after=str(after["path"].relative_to(reader.out)),
+                                 after_utc=datetime.now(timezone.utc).isoformat(),
+                                 elapsed_after_ms=round((reader.clock() - reader.started) * 1000, 3),
+                                 after_capture_complete=after["complete"])
+                    inspect_dialog(after["xml"], after["windows"], after["logs"])
+                    require(after["complete"] and not any(c["timed_out"] for c in reader.commands[first_command:]),
+                            "Preinstall Wait observation incomplete or timed out")
+                    # 다음 회차에서 새 transport/UI를 확인하며 이전 좌표를 다시 쓰지 않는다.
+                elif _normal_device_ui(observed) and reader.remaining() > 0:
+                    state.update(state="ready", ready_at_ms=round((reader.clock() - reader.started) * 1000, 3))
+                    return
+        sleep(max(0, min(1, reader.remaining())))
+    raise ReadinessError("Preinstall device readiness deadline exceeded")
 
 
 def await_ready(activity, version, out, *, install_apk=None, timeout=90, runner=subprocess.run,
@@ -171,8 +249,12 @@ def await_ready(activity, version, out, *, install_apk=None, timeout=90, runner=
         # Preserve the previous log before clearing stale render markers for this one launch.
         reader.command(reader.out, "prelaunch-logcat.txt", ["adb", "logcat", "-d", "-v", "tag"])
         if install_apk is not None:
-            code, installed, _ = reader.command(reader.out, "install.txt", ["adb", "install", "-r", install_apk], 45)
-            require(code == 0 and re.search(r"(?m)^Success\s*$", installed), "Actual APK installation failed")
+            _prepare_install(reader, sleep)
+            code, installed, _ = reader.command(reader.out, "install.txt", ["adb", "install", "-r", "--no-streaming", install_apk], 45)
+            install_stderr = (reader.out / "install.txt.stderr.txt").read_text(encoding="utf-8", errors="replace")
+            require(code == 0 and re.search(r"(?m)^Success\s*$", installed) and
+                    not re.search(r"Failure|Error|Exception", installed + "\n" + install_stderr, re.IGNORECASE),
+                    "Actual APK installation failed")
         require(reader.command(reader.out, "clear-logcat.txt", ["adb", "logcat", "-c"])[0] == 0, "Could not clear stale Android render log")
         code, launched, _ = reader.command(reader.out, "launch.txt", ["adb", "shell", "am", "start", "-W", "-n", PACKAGE + "/" + activity], 45)
         launch = {"adb_returncode": code, "subprocess_timed_out": reader.commands[-1]["timed_out"],

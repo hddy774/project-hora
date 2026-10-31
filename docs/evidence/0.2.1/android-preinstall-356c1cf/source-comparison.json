@@ -1,0 +1,24 @@
+{
+  "basis": "public unauthenticated GitHub Git commit API; exact SHA",
+  "commits": [
+    {
+      "sha": "356c1cf6baf38b87477a63eee6f25c29f5baf2ce",
+      "tree": "e72e644f5a2079bb3edcfa6e2748dc900e1047cd",
+      "parents": [
+        "5ae8f9451cbc4c1f80c94c256a2c08a5168d7c9b",
+        "6aac646c91e8f1fd26f7ea44737d099761f9556b"
+      ]
+    },
+    {
+      "sha": "c5f6220e51eb0e9ac16df5db836f153b4093fe48",
+      "tree": "e72e644f5a2079bb3edcfa6e2748dc900e1047cd",
+      "parents": [
+        "cefb2021c249e83d5409a892af97b67e54066a92",
+        "356c1cf6baf38b87477a63eee6f25c29f5baf2ce"
+      ]
+    }
+  ],
+  "whole_trees_equal": true,
+  "reported_head_product_fingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+  "fingerprint_not_recomputed_by_incident_reader": true
+}

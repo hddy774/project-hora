@@ -1,0 +1,50 @@
+{
+  "status": "completed",
+  "closedCaptureOnly": true,
+  "newGameRuns": 0,
+  "cpu": 1,
+  "start": "2026-10-31T02:16:10.310624+00:00",
+  "end": "2026-10-31T02:16:22.837537+00:00",
+  "seconds": 12.526916742324829,
+  "withinOriginalCap": true,
+  "commands": [
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet-tools/dotnet-trace",
+        "convert",
+        "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/cpu.nettrace",
+        "--format",
+        "Speedscope",
+        "--output",
+        "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/cpu-converted"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "python3",
+        "/workspace/scratch/knowledge-df72405-analyze.py",
+        "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/scratch/ui-profile-d1-trace-reader/bin/Release/net10.0/TraceReader.dll",
+        "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/cpu.nettrace",
+        "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/allocation-reader-no-warmup.json"
+      ],
+      "exit": 0
+    }
+  ]
+}

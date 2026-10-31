@@ -1,0 +1,165 @@
+{
+  "note": "GCAllocationTick sampled byte estimates; interval from managed AdvanceTo stacks, not exact allocations per object/type",
+  "measured": {
+    "count": 0,
+    "sampledAllocationBytes": 0,
+    "top": []
+  },
+  "all": {
+    "count": 143554,
+    "sampledAllocationBytes": 15967430992,
+    "top": [
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeEvidence",
+        "ticks": 42363,
+        "sampledAllocationBytes": 4515424008
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeActivity",
+        "ticks": 23263,
+        "sampledAllocationBytes": 2480068656
+      },
+      {
+        "type": "System.Int32[]",
+        "ticks": 15316,
+        "sampledAllocationBytes": 1632376128
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeAdoption",
+        "ticks": 8254,
+        "sampledAllocationBytes": 879991488
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.PracticalKnowledge",
+        "ticks": 6936,
+        "sampledAllocationBytes": 739906064
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgePracticeOutcome",
+        "ticks": 6012,
+        "sampledAllocationBytes": 641015560
+      },
+      {
+        "type": "ArraySelectIterator\u00602[Chronicles.Game.Knowledge.KnowledgeAdoption,Chronicles.Game.Knowledge.KnowledgeAdoption]",
+        "ticks": 5517,
+        "sampledAllocationBytes": 588176800
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeRules",
+        "ticks": 5393,
+        "sampledAllocationBytes": 574963976
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeTimeUse",
+        "ticks": 5210,
+        "sampledAllocationBytes": 556532488
+      },
+      {
+        "type": "System.Byte[]",
+        "ticks": 332,
+        "sampledAllocationBytes": 533926120
+      },
+      {
+        "type": "System.String",
+        "ticks": 4346,
+        "sampledAllocationBytes": 513158136
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeAdoption[]",
+        "ticks": 3724,
+        "sampledAllocationBytes": 397004576
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeEvidence[]",
+        "ticks": 2311,
+        "sampledAllocationBytes": 327598648
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.PersonalKnowledge",
+        "ticks": 1439,
+        "sampledAllocationBytes": 153362040
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeActivity[]",
+        "ticks": 888,
+        "sampledAllocationBytes": 104798440
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.PracticalKnowledge[]",
+        "ticks": 883,
+        "sampledAllocationBytes": 104309104
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeTimeUse[]",
+        "ticks": 870,
+        "sampledAllocationBytes": 102831400
+      },
+      {
+        "type": "System.Func\u00602[Chronicles.Game.Inventory.NaturalStock,System.Boolean]",
+        "ticks": 939,
+        "sampledAllocationBytes": 100027184
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeChapter",
+        "ticks": 494,
+        "sampledAllocationBytes": 52650968
+      },
+      {
+        "type": "\u003C\u003Ec__DisplayClass6_8",
+        "ticks": 489,
+        "sampledAllocationBytes": 52058032
+      },
+      {
+        "type": "System.Text.Json.ArgumentState",
+        "ticks": 447,
+        "sampledAllocationBytes": 47655368
+      },
+      {
+        "type": "System.Int64",
+        "ticks": 383,
+        "sampledAllocationBytes": 40825744
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.EditionChapter",
+        "ticks": 357,
+        "sampledAllocationBytes": 38035000
+      },
+      {
+        "type": "System.Int64[]",
+        "ticks": 352,
+        "sampledAllocationBytes": 37521816
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeEdition",
+        "ticks": 341,
+        "sampledAllocationBytes": 36343056
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeWork",
+        "ticks": 300,
+        "sampledAllocationBytes": 31982632
+      },
+      {
+        "type": "System.Text.Json.Arguments\u00604[System.String,System.Int64,System.String,System.Object]",
+        "ticks": 270,
+        "sampledAllocationBytes": 28789448
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeChapter[]",
+        "ticks": 216,
+        "sampledAllocationBytes": 23032720
+      },
+      {
+        "type": "Chronicles.Game.DecisionCandidate",
+        "ticks": 213,
+        "sampledAllocationBytes": 22702840
+      },
+      {
+        "type": "Entry[System.Int64][]",
+        "ticks": 200,
+        "sampledAllocationBytes": 22031768
+      }
+    ]
+  },
+  "gcStarts": []
+}

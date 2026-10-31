@@ -1,0 +1,122 @@
+{
+  "source": "db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+  "cpu": 1,
+  "selection": "explicit filters, not whole",
+  "runs": [
+    {
+      "filter": "knowledge",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "run",
+        "--project",
+        "tests/Chronicles.Game.Tests",
+        "-c",
+        "Release",
+        "--no-build",
+        "--",
+        "--filter",
+        "knowledge",
+        "--report",
+        "/workspace/scratch/knowledge-owned-selected-db0feae/0.json"
+      ],
+      "start": "2026-10-31T02:10:37.105542+00:00",
+      "end": "2026-10-31T02:10:52.552613+00:00",
+      "exit": 0
+    },
+    {
+      "filter": "AI 수행 연결",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "run",
+        "--project",
+        "tests/Chronicles.Game.Tests",
+        "-c",
+        "Release",
+        "--no-build",
+        "--",
+        "--filter",
+        "AI 수행 연결",
+        "--report",
+        "/workspace/scratch/knowledge-owned-selected-db0feae/1.json"
+      ],
+      "start": "2026-10-31T02:10:52.553018+00:00",
+      "end": "2026-10-31T02:11:57.368390+00:00",
+      "exit": 0
+    },
+    {
+      "filter": "감응 출처 선택",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "run",
+        "--project",
+        "tests/Chronicles.Game.Tests",
+        "-c",
+        "Release",
+        "--no-build",
+        "--",
+        "--filter",
+        "감응 출처 선택",
+        "--report",
+        "/workspace/scratch/knowledge-owned-selected-db0feae/2.json"
+      ],
+      "start": "2026-10-31T02:11:57.368501+00:00",
+      "end": "2026-10-31T02:12:29.241057+00:00",
+      "exit": 0
+    },
+    {
+      "filter": "inventory owned reference:",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "run",
+        "--project",
+        "tests/Chronicles.Game.Tests",
+        "-c",
+        "Release",
+        "--no-build",
+        "--",
+        "--filter",
+        "inventory owned reference:",
+        "--report",
+        "/workspace/scratch/knowledge-owned-selected-db0feae/3.json"
+      ],
+      "start": "2026-10-31T02:12:29.241167+00:00",
+      "end": "2026-10-31T02:12:46.917278+00:00",
+      "exit": 0
+    },
+    {
+      "filter": "inventory copy oracle:",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "run",
+        "--project",
+        "tests/Chronicles.Game.Tests",
+        "-c",
+        "Release",
+        "--no-build",
+        "--",
+        "--filter",
+        "inventory copy oracle:",
+        "--report",
+        "/workspace/scratch/knowledge-owned-selected-db0feae/4.json"
+      ],
+      "start": "2026-10-31T02:12:46.917409+00:00",
+      "end": "2026-10-31T02:13:31.293831+00:00",
+      "exit": 0
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "source": "df7240556a260202a248e57b1f9868e372b9d995",
+  "capturedBeforeCandidateRun": true,
+  "at": "2026-10-31T02:12:43.863946+00:00",
+  "cpu": 1,
+  "selection": "finite deterministic comparison, not performance",
+  "driverSha256": "a7ab6f1f45794f49c948d10a827127063c9f5b385b28aaac84b37e93a22543fe",
+  "dlls": [
+    {
+      "name": "Chronicles.Core",
+      "sha256": "5590a4755ad10d447da4c664801df72c7bf9e2ef23d91b0b9ac32d1f987b0d04"
+    },
+    {
+      "name": "Chronicles.Game",
+      "sha256": "c4f021717c612e963a6955fced6fc13b97e6fdfb2b19568ba7f0e8749a24584b"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "sha256": "0941a57f4832c1a840110d0bb9e3f456ea59d4a071fe73108e038ff146096638"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "sha256": "34ad36799b0bef8c8437a2efab6ddb49b5d8296ec6649ec9bf391b6c6ae1e0d7"
+    }
+  ],
+  "raw": [
+    {
+      "path": "old/boundaries.json",
+      "bytes": 23404,
+      "sha256": "c6e24bcf3f9d080b1d680dcf8f34c835e4043bfede8c22e9dbc7ad4bafadf596"
+    },
+    {
+      "path": "old/physical-failure-42-month2.save",
+      "bytes": 2050605,
+      "sha256": "2694741e9d8281c388aadc893569032bd4ba878e6c138c245c21a8d816d66866"
+    },
+    {
+      "path": "old/physical-failure-42-primed.save",
+      "bytes": 1978626,
+      "sha256": "c9acde40dab4f81fc39baf2b4b4c041be3e9603131d572e9da7694fa6e8239e0"
+    },
+    {
+      "path": "old/transitions-42-month1.save",
+      "bytes": 1980015,
+      "sha256": "2907242d2d476c6146d2690578c2d140d5902cb4ee962065a9b8418eff403fac"
+    },
+    {
+      "path": "old/transitions-42-month2.save",
+      "bytes": 2061601,
+      "sha256": "da0deaf60dfaa49fb0323684a80109015fe083fb3d3b649ba5f586099cbc551d"
+    },
+    {
+      "path": "old/transitions-42-month3.save",
+      "bytes": 2130743,
+      "sha256": "ab965030b4f96a1a85004e4dbe6cedc4cc83e741b5811063e63ee00acc7dee3c"
+    },
+    {
+      "path": "old/transitions-42-month4.save",
+      "bytes": 2205846,
+      "sha256": "a6b3d5d41b91c813edb35c0eef8d6122a980c6d73800e1e453a33bd686a45685"
+    },
+    {
+      "path": "old/transitions-42-month5.save",
+      "bytes": 2282870,
+      "sha256": "ff059a043674b104ebdbf6e4c2c8ba5b38fbc02f1e638c7a4250425156ad4de3"
+    },
+    {
+      "path": "old/transitions-42-month6.save",
+      "bytes": 2357072,
+      "sha256": "ceb97634817057d11937eaa899411dccb81640a2ec31f5892466fabbbc7f2d25"
+    },
+    {
+      "path": "old/transitions-42-month7.save",
+      "bytes": 2426583,
+      "sha256": "85499d3604c5a2e23dbc4d0795d5eb9ebc72a94187f06eca971cd8275454a938"
+    },
+    {
+      "path": "old/transitions-42-month8.save",
+      "bytes": 2501823,
+      "sha256": "383024843621bb40156f51a387c871007b115de712855eadd91797cd4cb747d0"
+    },
+    {
+      "path": "old/transitions-42-opening.save",
+      "bytes": 1908305,
+      "sha256": "f6d6891ce4a632953e305ec5100b70ebdb1add4ad955bc53b3ea079180888e1f"
+    },
+    {
+      "path": "old/transitions-73-month1.save",
+      "bytes": 1980017,
+      "sha256": "0165b23e31672fdf16785792bcdf494c9935a18e7370709527df491bce4ff598"
+    },
+    {
+      "path": "old/transitions-73-month2.save",
+      "bytes": 2061603,
+      "sha256": "335a53c029f443ca1b36a5fffd2271c7040795c1eb9c00b240352fea899eb531"
+    },
+    {
+      "path": "old/transitions-73-month3.save",
+      "bytes": 2130745,
+      "sha256": "ad73b4208339ac14793d8b4e18cfa6c123376c460e6e1e578cb955d562bd701e"
+    },
+    {
+      "path": "old/transitions-73-month4.save",
+      "bytes": 2205848,
+      "sha256": "64b8f5093fe73deb9dca4306e681508b421824a0e9de3788347fe9097d81f66b"
+    },
+    {
+      "path": "old/transitions-73-month5.save",
+      "bytes": 2282872,
+      "sha256": "485cf2282c0482f726f5f79125cd46f6877f78b206ef6d181bb5d9dbfcf4db50"
+    },
+    {
+      "path": "old/transitions-73-month6.save",
+      "bytes": 2357074,
+      "sha256": "f214d319c6af29d10af2e3ee54e56662022f1a156921cdd4931fbeb1f4f8b86f"
+    },
+    {
+      "path": "old/transitions-73-month7.save",
+      "bytes": 2426585,
+      "sha256": "3a4b2722e6ba8202e754d99b1814d80fc9d2f19f3613566e2bd20403db8a5ccb"
+    },
+    {
+      "path": "old/transitions-73-month8.save",
+      "bytes": 2501825,
+      "sha256": "6c2f64c2d9ff3df4b02a6999a5ea06329170db4c63d6777295c47cdc272e2890"
+    },
+    {
+      "path": "old/transitions-73-opening.save",
+      "bytes": 1908307,
+      "sha256": "d838e888b06f50f49daf7a5ba7c68c54702c7d6b93da2922b8e76c9cca6e28d2"
+    }
+  ]
+}

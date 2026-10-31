@@ -1,0 +1,194 @@
+{
+  "diagnostic_batch": 2,
+  "prior_attempt": "/workspace/scratch/knowledge-df72405-n100-late-cpu1/",
+  "target_change_reason": "batch1 preparation consumed229s; explicit root batch2 target month30 instead of60; original performance plan unchanged",
+  "kind": "bounded-cpu-allocation-diagnostic",
+  "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+  "preparation_start_utc": "2026-10-31T01:43:53.231235+00:00",
+  "reach_late_deadline_utc": "2026-10-31T01:46:53.231235+00:00",
+  "total_deadline_utc": "2026-10-31T01:46:53.231235+00:00",
+  "cpu_affinity": [
+    1
+  ],
+  "profile_seconds": 30,
+  "late_target": "STABILITY population=100 month=30/120",
+  "final_performance_acceptance": false,
+  "status": "captured",
+  "game_code_changes": 0,
+  "remote_reruns": 0,
+  "historical_inputs_unchanged": true,
+  "runtime_environment_whitelist": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_gcServer": null,
+    "COMPlus_gcServer": null,
+    "DOTNET_GCHeapHardLimit": null
+  },
+  "prior_actual_full_functional": {
+    "path": "/workspace/scratch/v021-integration-df72405/functional.json",
+    "sha256": "6f334c51dd49f8059a0199dc86533f218d1f583017b7943368739413ee688f66",
+    "total": 314,
+    "failed": 0
+  },
+  "product_source_fingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+  "sdk": "10.0.403",
+  "assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "5590a4755ad10d447da4c664801df72c7bf9e2ef23d91b0b9ac32d1f987b0d04",
+      "embedded_source_string_verified": true
+    },
+    {
+      "name": "Chronicles.Game",
+      "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "bytes": 2258432,
+      "sha256": "c4f021717c612e963a6955fced6fc13b97e6fdfb2b19568ba7f0e8749a24584b",
+      "embedded_source_string_verified": true
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "0941a57f4832c1a840110d0bb9e3f456ea59d4a071fe73108e038ff146096638",
+      "embedded_source_string_verified": true
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "bytes": 1500672,
+      "sha256": "34ad36799b0bef8c8437a2efab6ddb49b5d8296ec6649ec9bf391b6c6ae1e0d7",
+      "embedded_source_string_verified": true
+    }
+  ],
+  "runtimeconfig": {
+    "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.runtimeconfig.json",
+    "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+    "properties": {
+      "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+      "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+      "System.Runtime.TieredPGO": false
+    }
+  },
+  "inputs": {
+    "baseline.json": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+    "budget.json": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+    "stability-plan.json": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46"
+  },
+  "game_command": [
+    "/workspace/.dotnet/dotnet",
+    "exec",
+    "--fx-version",
+    "10.0.14",
+    "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/knowledge-df72405-n100-month30-cpu1-diag2/pre.json",
+    "--stability",
+    "/workspace/scratch/knowledge-df72405-n100-month30-cpu1-diag2/diagnostic-partial.json",
+    "--stability-plan",
+    "/workspace/seonro-integration-df72405/docs/evidence/0.2.1/final-performance/stability-plan.json"
+  ],
+  "app_started_utc": "2026-10-31T01:43:53.821566+00:00",
+  "app_pid": 154159,
+  "app_affinity": [
+    1
+  ],
+  "late_observed_utc": "2026-10-31T01:44:57.466375+00:00",
+  "pre_profile_console_lines": [
+    "STABILITY population=2 month=0/120 living=2 elapsed=0.50s",
+    "STABILITY population=2 month=30/120 living=2 elapsed=9.60s",
+    "STABILITY population=2 month=60/120 living=2 elapsed=19.86s",
+    "STABILITY population=2 month=90/120 living=2 elapsed=29.72s",
+    "STABILITY population=2 month=120/120 living=2 elapsed=40.00s",
+    "STABILITY CASE population=2 month=120/120 living=2 elapsed=40.00s result=completed",
+    "STABILITY population=100 month=0/120 living=100 elapsed=0.46s",
+    "STABILITY population=100 month=30/120 living=100 elapsed=22.47s"
+  ],
+  "collector_command": [
+    "/workspace/.dotnet-tools/dotnet-trace",
+    "collect",
+    "--process-id",
+    "154159",
+    "--profile",
+    "dotnet-sampled-thread-time,gc-verbose",
+    "--buffersize",
+    "64",
+    "--duration",
+    "00:00:00:30",
+    "--output",
+    "/workspace/scratch/knowledge-df72405-n100-month30-cpu1-diag2/cpu.nettrace"
+  ],
+  "collector_started_utc": "2026-10-31T01:44:57.466411+00:00",
+  "collector_pid": 154248,
+  "collector_affinity": [
+    1
+  ],
+  "collector_ended_utc": "2026-10-31T01:45:28.012844+00:00",
+  "collector_exit": 0,
+  "app_stopped_only_private_group": true,
+  "app_exit": -15,
+  "ended_utc": "2026-10-31T01:45:28.028434+00:00",
+  "total_seconds_from_preregistered_start": 94.79721760749817,
+  "within_total_cap": true,
+  "source_clean_after": true,
+  "observed_checkpoint_console_lines": [
+    "STABILITY population=2 month=0/120 living=2 elapsed=0.50s",
+    "STABILITY population=2 month=30/120 living=2 elapsed=9.60s",
+    "STABILITY population=2 month=60/120 living=2 elapsed=19.86s",
+    "STABILITY population=2 month=90/120 living=2 elapsed=29.72s",
+    "STABILITY population=2 month=120/120 living=2 elapsed=40.00s",
+    "STABILITY CASE population=2 month=120/120 living=2 elapsed=40.00s result=completed",
+    "STABILITY population=100 month=0/120 living=100 elapsed=0.46s",
+    "STABILITY population=100 month=30/120 living=100 elapsed=22.47s"
+  ],
+  "files": [
+    {
+      "path": "cpu.nettrace",
+      "bytes": 33015438,
+      "sha256": "d1a5db8305adcd013fb00b9c9c8dee69cf6f07f9c3f768591a8d3a67d2d301ac"
+    },
+    {
+      "path": "collector.log",
+      "bytes": 548,
+      "sha256": "8c3ecf9424ad63c78def86b9a49c0e69e44e8e6910787efaf1965149a139425f"
+    },
+    {
+      "path": "game.log",
+      "bytes": 582,
+      "sha256": "10c1bb47ab3bde454b4c809c53a6186932ffcb59fd40970326369f7ecf6a8f8e"
+    },
+    {
+      "path": "pre.json",
+      "bytes": 252,
+      "sha256": "174c11f0cc3e13e459bbd9d3bbdca8c80acdfd27e6ea309a8abf200d91ff586f"
+    },
+    {
+      "path": "diagnostic-partial.json",
+      "bytes": 13013,
+      "sha256": "9d26cbce7d4375c38e25046a39bbf4507f0190819aa1826c233c816750dfe0b5"
+    },
+    {
+      "path": "diagnostic-partial-saves/population-2.seonro",
+      "bytes": 5027868,
+      "sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6"
+    },
+    {
+      "path": "diagnostic-partial-saves/population-2.seonro.backup",
+      "bytes": 4663494,
+      "sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13"
+    },
+    {
+      "path": "diagnostic-partial-saves/population-100.seonro.backup",
+      "bytes": 3988028,
+      "sha256": "0d1501b698ee25477af32eaa81a1b007ae3c7a28fa1bbdc6a7a5d5c7adcb2a00"
+    },
+    {
+      "path": "diagnostic-partial-saves/population-100.seonro",
+      "bytes": 28642572,
+      "sha256": "59b244023e8caf146ceb4e758cf7ed6e241e5aafa50cc88f53cada5000df3879"
+    }
+  ]
+}

@@ -1,0 +1,833 @@
+[
+  {
+    "scenario": "transitions-42",
+    "boundary": "opening",
+    "Month": 0,
+    "hash": "b274631458972765651752dd199523f0dd09120cea80df676070c70ab8a9b7f6",
+    "save": "f6d6891ce4a632953e305ec5100b70ebdb1add4ad955bc53b3ea079180888e1f",
+    "knowledge": "1be676dd32c619f336100abdbac7a8ced7f73535c2ca58e834f8d6921a8610c3",
+    "RandomState": 1483668231674529035,
+    "NextId": 2079,
+    "activities": 0,
+    "evidence": 580,
+    "memories": 260,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "request",
+      "Actor": 2073,
+      "Kind": "requestTeaching",
+      "Target": 1,
+      "Value": 0,
+      "Data": "entry",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "request",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 2
+    },
+    "hash": "b35cd208fe57b25abf33ca85db141f1c03b6510f57598a7a4f89425a931036f8"
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "lesson",
+      "Actor": 1,
+      "Kind": "teach",
+      "Target": 2073,
+      "Value": 2,
+      "Data": "entry",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "lesson",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 3
+    },
+    "hash": "c645247b89f73246509e81bda9e351102982a73a26170684da01c3a0c5f0c974"
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "lesson",
+      "Actor": 1,
+      "Kind": "teach",
+      "Target": 2073,
+      "Value": 2,
+      "Data": "entry",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "lesson",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 3
+    },
+    "hash": "c645247b89f73246509e81bda9e351102982a73a26170684da01c3a0c5f0c974"
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "busy-gather",
+      "Actor": 1,
+      "Kind": "gather",
+      "Target": 0,
+      "Value": 0,
+      "Data": "food",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "busy-gather",
+      "Accepted": false,
+      "Message": "\uAE30\uC874 \uD589\uB3D9\uACFC \uAC74\uAC15\uC744 \uD655\uC778\uD558\uC138\uC694.",
+      "Revision": 3
+    },
+    "hash": "c645247b89f73246509e81bda9e351102982a73a26170684da01c3a0c5f0c974"
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "control",
+      "Actor": 1,
+      "Kind": "possess",
+      "Target": 0,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "control",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 900005637907250
+    },
+    "hash": "60d4689caf074d5e4f8e2a3a0a6f361e5f3697e2be83ec486cc77050bd52fcc9"
+  },
+  {
+    "scenario": "transitions-42",
+    "boundary": "month1",
+    "Month": 1,
+    "hash": "34865c488842141449d3d737a134ee9b947b5640727717b451687ce63a1a123e",
+    "save": "2907242d2d476c6146d2690578c2d140d5902cb4ee962065a9b8418eff403fac",
+    "knowledge": "f21b6fc8a56c9b68caf1032b7a38f5c6369d635ae5ecf5815a5a78fc8411ef86",
+    "RandomState": 1483668231674529035,
+    "NextId": 2083,
+    "activities": 1,
+    "evidence": 581,
+    "memories": 260,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-42",
+    "boundary": "month2",
+    "Month": 2,
+    "hash": "81a66ccae2c7bad19f1c1fe7a4cc9fd2c212139ba8c5916729cddf94bf0b3d40",
+    "save": "da0deaf60dfaa49fb0323684a80109015fe083fb3d3b649ba5f586099cbc551d",
+    "knowledge": "087e07c0f88f2a9e8cc7ec32adb9ae140b37de15cb13fd8c2bb380c3a7dfb6c5",
+    "RandomState": 1483668231674529035,
+    "NextId": 2086,
+    "activities": 1,
+    "evidence": 582,
+    "memories": 261,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "study",
+      "Actor": 1,
+      "Kind": "study",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "study",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 8260622517160369
+    },
+    "hash": "09a2d39c12efaa9ee435063e529438abc573e2938065d37f4215534698aa5091"
+  },
+  {
+    "scenario": "transitions-42",
+    "boundary": "month3",
+    "Month": 3,
+    "hash": "88afdaccd7cf594c7788628aaae1299e4f738b93a09c78e0c1e7e7e57a22c291",
+    "save": "ab965030b4f96a1a85004e4dbe6cedc4cc83e741b5811063e63ee00acc7dee3c",
+    "knowledge": "8ee80b024faced223dbbdf9f236e78742bb8ea6d72482c581f001a41d27de66a",
+    "RandomState": 1483668231674529035,
+    "NextId": 2086,
+    "activities": 2,
+    "evidence": 584,
+    "memories": 262,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "copy",
+      "Actor": 1,
+      "Kind": "transcribe",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "copy",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 4846176583286952
+    },
+    "hash": "b671e6f3774962b3f5d3a47b3f55470b1c7f3afa7197c22d2d009358899e3899"
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "copy",
+      "Actor": 1,
+      "Kind": "transcribe",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "copy",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 4846176583286952
+    },
+    "hash": "b671e6f3774962b3f5d3a47b3f55470b1c7f3afa7197c22d2d009358899e3899"
+  },
+  {
+    "scenario": "transitions-42",
+    "boundary": "month4",
+    "Month": 4,
+    "hash": "442b79d3018ed7d96b24153216291df68c0de7d0a6b788f455be35fb29ca974e",
+    "save": "a6b3d5d41b91c813edb35c0eef8d6122a980c6d73800e1e453a33bd686a45685",
+    "knowledge": "cc99fa172147ac2746d388a61fd60af3d1813a031f8683b9942a507cc3764d8e",
+    "RandomState": 1483668231674529035,
+    "NextId": 2092,
+    "activities": 3,
+    "evidence": 587,
+    "memories": 262,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "experiment",
+      "Actor": 1,
+      "Kind": "experiment",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "experiment",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 6285024184242840
+    },
+    "hash": "996cc31bd2db8801c4d62fa39439e6dee3917543d36a1d74711a93564e1641d1"
+  },
+  {
+    "scenario": "transitions-42",
+    "boundary": "month5",
+    "Month": 5,
+    "hash": "b84a717c7d9a94c733d413df0d42cb76e1d39e56b5521cd470161a2ab8adac39",
+    "save": "ff059a043674b104ebdbf6e4c2c8ba5b38fbc02f1e638c7a4250425156ad4de3",
+    "knowledge": "1778d7d0e8885caa1bfa9f36ed326ea62021805b03e4eecdcdc549a8d78e7e71",
+    "RandomState": 1483668231674529035,
+    "NextId": 2097,
+    "activities": 4,
+    "evidence": 590,
+    "memories": 263,
+    "mastery": 1
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "cultivate",
+      "Actor": 1,
+      "Kind": "cultivate",
+      "Target": 0,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "cultivate",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 7686492511978005
+    },
+    "hash": "4241f2aef8b3c37cc2b69c5bd21e694335585d9cf999476ae315d40f06cf88ae"
+  },
+  {
+    "scenario": "transitions-42",
+    "boundary": "month6",
+    "Month": 6,
+    "hash": "ba458cdd6333f088081af044a5d369ba0d1101c96a0d72ebea9c46cb5c92b87a",
+    "save": "ceb97634817057d11937eaa899411dccb81640a2ec31f5892466fabbbc7f2d25",
+    "knowledge": "6b562de400da37d8fc04230c9064a7a1f029fbfb4a86ac68f6f00bc5c5a64c68",
+    "RandomState": 1483668231674529035,
+    "NextId": 2098,
+    "activities": 5,
+    "evidence": 593,
+    "memories": 263,
+    "mastery": 2
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "cancelled-study",
+      "Actor": 1,
+      "Kind": "study",
+      "Target": 6,
+      "Value": 2,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "cancelled-study",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 8169556577005474
+    },
+    "hash": "debc73fc29eb8018b7318de854bd3a9bab11be424555087fa946018d59500704"
+  },
+  {
+    "scenario": "transitions-42",
+    "boundary": "month7",
+    "Month": 7,
+    "hash": "261a394ad9f1f202da2533f59978ab337ced606403fc44aafe946e2e7cb8c98d",
+    "save": "85499d3604c5a2e23dbc4d0795d5eb9ebc72a94187f06eca971cd8275454a938",
+    "knowledge": "b88004f3522029ca062eb56d78a17ddef25423b266354489cb341aed1aeb7c59",
+    "RandomState": 1483668231674529035,
+    "NextId": 2099,
+    "activities": 6,
+    "evidence": 594,
+    "memories": 263,
+    "mastery": 2
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "cancel-study",
+      "Actor": 1,
+      "Kind": "cancel",
+      "Target": 0,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "cancel-study",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 5679725760517238
+    },
+    "hash": "dd9e9998e56cbc0a3dbe5c957e12d7de3076859e15229c38372e645bd3b07739"
+  },
+  {
+    "scenario": "transitions-42",
+    "command": {
+      "Id": "final-study",
+      "Actor": 1,
+      "Kind": "study",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "final-study",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 1180436610681123
+    },
+    "hash": "0ca1c75a2f12871e366a0297900caa9bd08c2f8b69040194382536c7e62f1e52"
+  },
+  {
+    "scenario": "transitions-42",
+    "boundary": "month8",
+    "Month": 8,
+    "hash": "62ba2c1a92817f75cee3d637a895ac890180fa6282f5dbe300c2e0f2468b1865",
+    "save": "383024843621bb40156f51a387c871007b115de712855eadd91797cd4cb747d0",
+    "knowledge": "357afcf3eea1c890c11d49bbab87e249c769b28d3a15d84bd124cc7105ba4b41",
+    "RandomState": 1483668231674529035,
+    "NextId": 2101,
+    "activities": 7,
+    "evidence": 597,
+    "memories": 264,
+    "mastery": 2
+  },
+  {
+    "scenario": "transitions-73",
+    "boundary": "opening",
+    "Month": 0,
+    "hash": "219243b59fb43e74cbf55060851080768088366f182b337d728f8e3d6be3c311",
+    "save": "d838e888b06f50f49daf7a5ba7c68c54702c7d6b93da2922b8e76c9cca6e28d2",
+    "knowledge": "1be676dd32c619f336100abdbac7a8ced7f73535c2ca58e834f8d6921a8610c3",
+    "RandomState": 18161262773120362492,
+    "NextId": 2079,
+    "activities": 0,
+    "evidence": 580,
+    "memories": 260,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "request",
+      "Actor": 2073,
+      "Kind": "requestTeaching",
+      "Target": 1,
+      "Value": 0,
+      "Data": "entry",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "request",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 2
+    },
+    "hash": "2fd04b5b0ea405935091b5c59a932be469eb42d154b941752365afc8cc54f11d"
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "lesson",
+      "Actor": 1,
+      "Kind": "teach",
+      "Target": 2073,
+      "Value": 2,
+      "Data": "entry",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "lesson",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 3
+    },
+    "hash": "dce0dfe5f38c595aa2ecfed96e53c2938de03f284d239efb9e17fb22a93a492a"
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "lesson",
+      "Actor": 1,
+      "Kind": "teach",
+      "Target": 2073,
+      "Value": 2,
+      "Data": "entry",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "lesson",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 3
+    },
+    "hash": "dce0dfe5f38c595aa2ecfed96e53c2938de03f284d239efb9e17fb22a93a492a"
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "busy-gather",
+      "Actor": 1,
+      "Kind": "gather",
+      "Target": 0,
+      "Value": 0,
+      "Data": "food",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "busy-gather",
+      "Accepted": false,
+      "Message": "\uAE30\uC874 \uD589\uB3D9\uACFC \uAC74\uAC15\uC744 \uD655\uC778\uD558\uC138\uC694.",
+      "Revision": 3
+    },
+    "hash": "dce0dfe5f38c595aa2ecfed96e53c2938de03f284d239efb9e17fb22a93a492a"
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "control",
+      "Actor": 1,
+      "Kind": "possess",
+      "Target": 0,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "control",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 900005637907250
+    },
+    "hash": "8c68291f0e5336fd5debd813f644b0e2b44a5e2091a4c804770d09ce0bd150e2"
+  },
+  {
+    "scenario": "transitions-73",
+    "boundary": "month1",
+    "Month": 1,
+    "hash": "75bffd5409da741b3712d6a80892f0c389e007a143076a043708a839bd93cfbf",
+    "save": "0165b23e31672fdf16785792bcdf494c9935a18e7370709527df491bce4ff598",
+    "knowledge": "f21b6fc8a56c9b68caf1032b7a38f5c6369d635ae5ecf5815a5a78fc8411ef86",
+    "RandomState": 18161262773120362492,
+    "NextId": 2083,
+    "activities": 1,
+    "evidence": 581,
+    "memories": 260,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-73",
+    "boundary": "month2",
+    "Month": 2,
+    "hash": "6e0a1184406ce89996221fac494261fe6b08f9d66412b1e2577fc59aa5085629",
+    "save": "335a53c029f443ca1b36a5fffd2271c7040795c1eb9c00b240352fea899eb531",
+    "knowledge": "087e07c0f88f2a9e8cc7ec32adb9ae140b37de15cb13fd8c2bb380c3a7dfb6c5",
+    "RandomState": 18161262773120362492,
+    "NextId": 2086,
+    "activities": 1,
+    "evidence": 582,
+    "memories": 261,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "study",
+      "Actor": 1,
+      "Kind": "study",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "study",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 8260622517160369
+    },
+    "hash": "4c9137c060f146ec5ed2bb8e47f5beaeeea1dc7d08e8344275f7472d315c182b"
+  },
+  {
+    "scenario": "transitions-73",
+    "boundary": "month3",
+    "Month": 3,
+    "hash": "031f982c6212e35d77901bf22cc6a2306acb1442842aee15351c9c43f7c72a36",
+    "save": "ad73b4208339ac14793d8b4e18cfa6c123376c460e6e1e578cb955d562bd701e",
+    "knowledge": "8ee80b024faced223dbbdf9f236e78742bb8ea6d72482c581f001a41d27de66a",
+    "RandomState": 18161262773120362492,
+    "NextId": 2086,
+    "activities": 2,
+    "evidence": 584,
+    "memories": 262,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "copy",
+      "Actor": 1,
+      "Kind": "transcribe",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "copy",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 4846176583286952
+    },
+    "hash": "9f28f0a34dff12f7fa6afad8b714d649b3271556987f1730d94c26d3d2c14d59"
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "copy",
+      "Actor": 1,
+      "Kind": "transcribe",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "copy",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 4846176583286952
+    },
+    "hash": "9f28f0a34dff12f7fa6afad8b714d649b3271556987f1730d94c26d3d2c14d59"
+  },
+  {
+    "scenario": "transitions-73",
+    "boundary": "month4",
+    "Month": 4,
+    "hash": "775ed5380d7007386ef50d3de1d503d5b077a9e46313d92b14235a82e41a23c9",
+    "save": "64b8f5093fe73deb9dca4306e681508b421824a0e9de3788347fe9097d81f66b",
+    "knowledge": "cc99fa172147ac2746d388a61fd60af3d1813a031f8683b9942a507cc3764d8e",
+    "RandomState": 18161262773120362492,
+    "NextId": 2092,
+    "activities": 3,
+    "evidence": 587,
+    "memories": 262,
+    "mastery": 0
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "experiment",
+      "Actor": 1,
+      "Kind": "experiment",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "experiment",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 6285024184242840
+    },
+    "hash": "b9a0ab77c16f7aff5b582e9a590e7f665a56e5ddb8ac76530b7bf7f4ca3d97c6"
+  },
+  {
+    "scenario": "transitions-73",
+    "boundary": "month5",
+    "Month": 5,
+    "hash": "a996b96fd96493217a6ed1d512221e959a29d5357d22b7a91db8c7f2e8e9cfff",
+    "save": "485cf2282c0482f726f5f79125cd46f6877f78b206ef6d181bb5d9dbfcf4db50",
+    "knowledge": "1778d7d0e8885caa1bfa9f36ed326ea62021805b03e4eecdcdc549a8d78e7e71",
+    "RandomState": 18161262773120362492,
+    "NextId": 2097,
+    "activities": 4,
+    "evidence": 590,
+    "memories": 263,
+    "mastery": 1
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "cultivate",
+      "Actor": 1,
+      "Kind": "cultivate",
+      "Target": 0,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "cultivate",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 7686492511978005
+    },
+    "hash": "0500fc2613891f19c283b3e880b30aed6e50c28be05a1ec9ec9cefb8866b25c9"
+  },
+  {
+    "scenario": "transitions-73",
+    "boundary": "month6",
+    "Month": 6,
+    "hash": "bf6d0d9a97ebaeef6415e4714f4dc91018de76f76f9ff1af9976f5b533e8cb5c",
+    "save": "f214d319c6af29d10af2e3ee54e56662022f1a156921cdd4931fbeb1f4f8b86f",
+    "knowledge": "6b562de400da37d8fc04230c9064a7a1f029fbfb4a86ac68f6f00bc5c5a64c68",
+    "RandomState": 18161262773120362492,
+    "NextId": 2098,
+    "activities": 5,
+    "evidence": 593,
+    "memories": 263,
+    "mastery": 2
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "cancelled-study",
+      "Actor": 1,
+      "Kind": "study",
+      "Target": 6,
+      "Value": 2,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "cancelled-study",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 772923402846278
+    },
+    "hash": "16ee9ba5b29b9081288e9511046919b723c0df0ac3e6c2842f1bcc0eb1a2ae8d"
+  },
+  {
+    "scenario": "transitions-73",
+    "boundary": "month7",
+    "Month": 7,
+    "hash": "8141e33c841ca81c145c35ea002df51f184a77c4cf4abbd5f08ae3b33cb3d98e",
+    "save": "3a4b2722e6ba8202e754d99b1814d80fc9d2f19f3613566e2bd20403db8a5ccb",
+    "knowledge": "b88004f3522029ca062eb56d78a17ddef25423b266354489cb341aed1aeb7c59",
+    "RandomState": 18161262773120362492,
+    "NextId": 2099,
+    "activities": 6,
+    "evidence": 594,
+    "memories": 263,
+    "mastery": 2
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "cancel-study",
+      "Actor": 1,
+      "Kind": "cancel",
+      "Target": 0,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "cancel-study",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 5814586506586009
+    },
+    "hash": "d6c2aeb42ef24152bdbde6828ae8baf98cea9cca6e82194fbd32b03a543cd080"
+  },
+  {
+    "scenario": "transitions-73",
+    "command": {
+      "Id": "final-study",
+      "Actor": 1,
+      "Kind": "study",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "final-study",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 7633552882057706
+    },
+    "hash": "27f6c36790d7f417f50293ca2dce4b4cbb9dbb2798eeb7b4e30b11a87218edd1"
+  },
+  {
+    "scenario": "transitions-73",
+    "boundary": "month8",
+    "Month": 8,
+    "hash": "5261caa1e499aea5b7db78d577a1085778eea2cea10219ac91e1162779e43b06",
+    "save": "6c2f64c2d9ff3df4b02a6999a5ea06329170db4c63d6777295c47cdc272e2890",
+    "knowledge": "357afcf3eea1c890c11d49bbab87e249c769b28d3a15d84bd124cc7105ba4b41",
+    "RandomState": 18161262773120362492,
+    "NextId": 2101,
+    "activities": 7,
+    "evidence": 597,
+    "memories": 264,
+    "mastery": 2
+  },
+  {
+    "scenario": "physical-failure-42",
+    "command": {
+      "Id": "physical-control",
+      "Actor": 1,
+      "Kind": "possess",
+      "Target": 0,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "physical-control",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 2862001937983010
+    },
+    "hash": "463c19ae570be2d90756e25e86d284f3e4288be2883d8d22b41c8006cfbae602"
+  },
+  {
+    "scenario": "physical-failure-42",
+    "boundary": "primed",
+    "Month": 1,
+    "hash": "63ebda24a993b737f8ce68929658905cd692f4e1ccf2f16edb3e0d3174dc115c",
+    "save": "c9acde40dab4f81fc39baf2b4b4c041be3e9603131d572e9da7694fa6e8239e0",
+    "knowledge": "1be676dd32c619f336100abdbac7a8ced7f73535c2ca58e834f8d6921a8610c3",
+    "RandomState": 1483668231674529035,
+    "NextId": 2081,
+    "activities": 0,
+    "evidence": 580,
+    "memories": 260,
+    "mastery": 0
+  },
+  {
+    "scenario": "physical-failure-42",
+    "command": {
+      "Id": "physical-failure",
+      "Actor": 1,
+      "Kind": "experiment",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "physical-failure",
+      "Accepted": false,
+      "Message": "Ingredient belongs to another soul.",
+      "Revision": 7045146244780943
+    },
+    "hash": "63ebda24a993b737f8ce68929658905cd692f4e1ccf2f16edb3e0d3174dc115c"
+  },
+  {
+    "scenario": "physical-failure-42",
+    "command": {
+      "Id": "post-failure-study",
+      "Actor": 1,
+      "Kind": "study",
+      "Target": 6,
+      "Value": 0,
+      "Data": "",
+      "ExpectedRevision": -1
+    },
+    "result": {
+      "Id": "post-failure-study",
+      "Accepted": true,
+      "Message": "\uBA85\uB839\uC744 \uC801\uC6A9\uD588\uC2B5\uB2C8\uB2E4.",
+      "Revision": 4563541451154850
+    },
+    "hash": "4352b54473f0c494912ba0c1a22ffa2602fea0735997469379610f3d24aecb92"
+  },
+  {
+    "scenario": "physical-failure-42",
+    "boundary": "month2",
+    "Month": 2,
+    "hash": "bedc955d90eadb1d1722426938f434189d57aa41d8bdd8c038dcf43f50fea686",
+    "save": "2694741e9d8281c388aadc893569032bd4ba878e6c138c245c21a8d816d66866",
+    "knowledge": "b293bef3d18749616d12a6796ca78720998e08bdcb06cd0fc1228ce91b1dc1d5",
+    "RandomState": 1483668231674529035,
+    "NextId": 2081,
+    "activities": 1,
+    "evidence": 582,
+    "memories": 261,
+    "mastery": 0
+  }
+]

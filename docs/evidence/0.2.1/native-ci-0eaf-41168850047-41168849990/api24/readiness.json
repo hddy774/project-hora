@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "reason": "",
+  "launch": {
+    "adb_returncode": 0,
+    "subprocess_timed_out": false,
+    "raw_status_lines": [
+      "Status: ok"
+    ],
+    "state": "wait_complete",
+    "android_status": "ok"
+  },
+  "deadline_seconds": 90,
+  "attempts": 8,
+  "launcher_wait_count": 0,
+  "elapsed_ms": 32345.077,
+  "last_snapshot": "attempt-008",
+  "final_diagnostics_share_launch_deadline": true
+}

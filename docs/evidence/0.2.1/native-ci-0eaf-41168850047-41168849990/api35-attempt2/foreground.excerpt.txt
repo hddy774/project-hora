@@ -1,0 +1,1 @@
+    topResumedActivity=ActivityRecord{24d672 u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity t8}

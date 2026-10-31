@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5765,
+      "sha256": "2f0bee7879fcbe6faa9afc733511271306f52111f829e588031827dcc898f7b3"
+    },
+    {
+      "path": "api24/apk-producer.original.json",
+      "bytes": 777,
+      "sha256": "6a35099a04af0b4dc782a3fb97d6ce70a7356c245d3750149dc9b4b7c730a798"
+    },
+    {
+      "path": "api24/commands.json",
+      "bytes": 20735,
+      "sha256": "7245f8de0fd05b0bf0bf85b48f10f51b3074577701f492a52fd3253ddbb332c8"
+    },
+    {
+      "path": "api24/device.original.json",
+      "bytes": 166,
+      "sha256": "1b7e2d0fe372cc20eeedf8ed2c0745b9782b49c5f7cf4579ace93ba18f3c2139"
+    },
+    {
+      "path": "api24/dom-proof.json",
+      "bytes": 171,
+      "sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4"
+    },
+    {
+      "path": "api24/foreground.excerpt.txt",
+      "bytes": 222,
+      "sha256": "555e3719f957879377017425fda499d39dc234b75a9fa39e49e88f5d63142d55"
+    },
+    {
+      "path": "api24/install.original.txt",
+      "bytes": 32,
+      "sha256": "8cfe21ca9831863004ad6eb25b313f8944786f7a01b291da8fbbe61cc0c847e5"
+    },
+    {
+      "path": "api24/launch.txt",
+      "bytes": 221,
+      "sha256": "ec512c6da616bc341d91e8250791fef3929ee8a98d322511f20df8a800bcbdf6"
+    },
+    {
+      "path": "api24/native-proof.original.json",
+      "bytes": 1117,
+      "sha256": "18bbac03ff6ffaf847c98b694ec87cc26fafd88aca46e6845718c8314c029eec"
+    },
+    {
+      "path": "api24/pid.txt",
+      "bytes": 5,
+      "sha256": "afd832464de099109b1a30266dde6dc738e79a297c09c1c278702cb4dc456383"
+    },
+    {
+      "path": "api24/readiness.json",
+      "bytes": 408,
+      "sha256": "d9d258ec90ea4dace84c89556e9bdade5de1e584fd9f481fc44bd32e9bcef5b4"
+    },
+    {
+      "path": "api24/render-marker.excerpt.txt",
+      "bytes": 145,
+      "sha256": "b6abc6a1766834e329cb29a3261a212e9be879be676b03f9872a8468fce75731"
+    },
+    {
+      "path": "api24/source.original.json",
+      "bytes": 733,
+      "sha256": "aa65bedbbf8f145e525e6df05ec6057330716b3a5d84a49c7c5771fc52a40994"
+    },
+    {
+      "path": "api24/ui.xml",
+      "bytes": 26795,
+      "sha256": "07ccc5781d3aacdfdb7607f37b928f3e5695f3c9b5b40108b8c903310594578d"
+    },
+    {
+      "path": "api24/window-focus.excerpt.txt",
+      "bytes": 95,
+      "sha256": "984acbb26d9e3a4c01fdf0e1318321a2a0c0ed41cb79b20d004e2ac408d86568"
+    },
+    {
+      "path": "api35-attempt1/commands.json",
+      "bytes": 2572,
+      "sha256": "f4f6c417532020100ef0e1909c7c9408d16533e1e3c859cf79a1502d1030277c"
+    },
+    {
+      "path": "api35-attempt1/install.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api35-attempt1/install.txt.stderr.txt",
+      "bytes": 20,
+      "sha256": "a7d0391f2b9ecc7dc302d6ca042251f413b26e1f1ee29d396e7db3df0701640f"
+    },
+    {
+      "path": "api35-attempt1/readiness.json",
+      "bytes": 263,
+      "sha256": "6814e4ac44336efa336eecda9ab2373495b996fb4ce32aadd5d43a844289399a"
+    },
+    {
+      "path": "api35-attempt1/source-and-failure.excerpt.txt",
+      "bytes": 2129,
+      "sha256": "58dcb02fbee1fcf9c9b8a2938210715016b5c8ff2309b3881c57c4f45ac5285f"
+    },
+    {
+      "path": "api35-attempt2/commands.json",
+      "bytes": 6055,
+      "sha256": "ee44a18d179197826655f8a966475ba1da0219973f669da4562e6abe04e4e404"
+    },
+    {
+      "path": "api35-attempt2/dom-proof.json",
+      "bytes": 171,
+      "sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4"
+    },
+    {
+      "path": "api35-attempt2/foreground.excerpt.txt",
+      "bytes": 112,
+      "sha256": "87adba50dff9e6cbe635569b692923243ca7190c4a46e3aa13a992d229f09eae"
+    },
+    {
+      "path": "api35-attempt2/install.txt",
+      "bytes": 86,
+      "sha256": "233537971ed6f3c1ca9c428b9f94f8469fe512661dd6a875261726de0e37fac8"
+    },
+    {
+      "path": "api35-attempt2/launch.txt",
+      "bytes": 224,
+      "sha256": "e1e93dbaf145b30ecc20454e7608aa76a8ed6601cfcddef1981cbf1874f0941d"
+    },
+    {
+      "path": "api35-attempt2/pid.txt",
+      "bytes": 5,
+      "sha256": "75623a11684303d5637862bf064c2564ac2b21b06158e774d416eb869d2ad33e"
+    },
+    {
+      "path": "api35-attempt2/readiness.json",
+      "bytes": 408,
+      "sha256": "8a5485bf4f06d07c380bef8f9de98f97bfd6fd277bcb481e3bfc020abb88e699"
+    },
+    {
+      "path": "api35-attempt2/render-marker.excerpt.txt",
+      "bytes": 145,
+      "sha256": "b6abc6a1766834e329cb29a3261a212e9be879be676b03f9872a8468fce75731"
+    },
+    {
+      "path": "api35-attempt2/source-and-proof.excerpt.txt",
+      "bytes": 1166,
+      "sha256": "5e2fd42c8f6649b172d7e342213eae7062adaed897a987c82f2950af8fbabd06"
+    },
+    {
+      "path": "api35-attempt2/ui.xml",
+      "bytes": 26990,
+      "sha256": "5cef67ab05fca6f09f94398b9c4d77bde003cfd81961e0a9dcd02c485e166301"
+    },
+    {
+      "path": "api35-attempt2/window-focus.excerpt.txt",
+      "bytes": 95,
+      "sha256": "7bced1f0ad96bd709f4cf9d55db45209b733c586ccb766e1e5b909e090c4934a"
+    },
+    {
+      "path": "portable/product-tests.original.json",
+      "bytes": 65027,
+      "sha256": "6952ed57d2509baebeb185cea9a4bad4a4587ae8a19588347d3932dd0c67b85b"
+    },
+    {
+      "path": "portable/source-and-result.excerpt.txt",
+      "bytes": 236,
+      "sha256": "6a8e142e1420bb15740544f31b39f6f22ec0539e2c4aaec96f9b92c228aa9947"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 7695,
+      "sha256": "8bf80642878b8d4148156c94d5578217ef5e96347d71a63c5f516033cf249c01"
+    },
+    {
+      "path": "retention-manifest.json",
+      "bytes": 20205,
+      "sha256": "23c47bf9db0829e21adce88bae9ef659f34103b6dbdea3fb95ebe692d5ca76c2"
+    },
+    {
+      "path": "review-checks.json",
+      "bytes": 1686,
+      "sha256": "9bd8ca75603e3768ddeee38671cbb49ce88f53d178e2bbacad7aca81165c3b38"
+    },
+    {
+      "path": "screenshots/api24-final.png",
+      "bytes": 150046,
+      "sha256": "84d5b6520599168c91b1c5481ac87efa2b05b19c24bdab9a4081326a80bf4afe"
+    },
+    {
+      "path": "screenshots/api35-attempt2-final.png",
+      "bytes": 157832,
+      "sha256": "9e5faf8c676971e5d2da12fcb4f57aa8ebbc7102d3c962b4ec2333b5ffd6346e"
+    },
+    {
+      "path": "source-equivalence.json",
+      "bytes": 3079,
+      "sha256": "29d53854b841c429154ec6bad0bdbc47371a4fcbf0f3ea7b992bfa47f068bf3d"
+    },
+    {
+      "path": "windows/source-and-native.excerpt.txt",
+      "bytes": 715,
+      "sha256": "12dba4b905ba6694b6472bdfcce9b0ec876c57916257b28392c24e4b009c470d"
+    }
+  ]
+}

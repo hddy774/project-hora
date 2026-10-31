@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "kind": "api24-debug-native-probe",
+  "passed": true,
+  "api": 24,
+  "system_webview_package": "com.android.webview",
+  "system_webview_version": "52.0.2743.100",
+  "system_webview_version_code": 275610060,
+  "provider_evidence": "Android WebViewFactory actual-load log plus unchanged package versions",
+  "stock_webview_version_unchanged": true,
+  "fresh_install_render": {
+    "passed": true,
+    "render_log_sha256": "5ff1865431c3579fd25a01cd361a0a31067b1d1803e4d4357d0543649535a59e",
+    "ui_sha256": "07ccc5781d3aacdfdb7607f37b928f3e5695f3c9b5b40108b8c903310594578d",
+    "screenshot_sha256": "84d5b6520599168c91b1c5481ac87efa2b05b19c24bdab9a4081326a80bf4afe",
+    "dom_proof_sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4"
+  },
+  "apk_sha256": "45fbcef0468dcff3517b5ac95d4b40993028fd42c5f02cf2ea4b54e3f9c530ae",
+  "source_commit": "9e8df4b2813522343c01c523826597fcf7fee948",
+  "product_source_fingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+  "retained_signature_or_upgrade_claim": false,
+  "release_publication": false
+}

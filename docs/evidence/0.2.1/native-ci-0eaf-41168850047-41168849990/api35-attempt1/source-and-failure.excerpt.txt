@@ -1,0 +1,19 @@
+2026-10-31T04:30:59.4256519Z HEAD is now at 0c8a64c Merge 9e8df4b2813522343c01c523826597fcf7fee948 into f3627aa4db4282a8aebb572bffe2048261e0756a
+2026-10-31T04:30:59.4272010Z ##[endgroup]
+2026-10-31T04:30:59.4325615Z [command]/usr/bin/git log -1 --format=%H
+2026-10-31T04:30:59.4358749Z 0c8a64cc577009667e9ba5beedaa4e38ec0001c3
+2026-10-31T04:33:41.8748647Z Emulator booted.
+2026-10-31T04:33:41.8772805Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell input keyevent 82
+2026-10-31T04:33:41.9446916Z Disabling animations.
+2026-10-31T04:33:41.9475571Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global window_animation_scale 0.0
+2026-10-31T04:33:41.9990192Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global transition_animation_scale 0.0
+2026-10-31T04:33:42.0499348Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global animator_duration_scale 0.0
+2026-10-31T04:33:42.1132940Z ##[endgroup]
+2026-10-31T04:33:42.1160202Z [command]/usr/bin/sh -c python3 scripts/android_readiness.py --apk src/Chronicles.Android/bin/Release/net10.0-android/org.hora.xianxiaobserver-Signed.apk --activity crc649632d1cee893af2a.MainActivity --output artifacts/android-runtime
+2026-10-31T04:33:42.1918654Z INFO         | Boot completed in 30815 ms
+2026-10-31T04:33:42.1947864Z INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+2026-10-31T04:33:42.3310144Z WARNING      | adb command '/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put system screen_off_timeout 2147483647 ' failed: ''
+2026-10-31T04:33:42.8339251Z WARNING      | adb command '/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put system screen_off_timeout 2147483647 ' failed: 'adb: device offline'
+2026-10-31T04:33:52.3575040Z Actual Android readiness failed: Actual APK installation failed
+2026-10-31T04:33:52.3663327Z ##[error]The process '/usr/bin/sh' failed with exit code 1
+2026-10-31T04:33:52.3666239Z ##[group]Terminate Emulator

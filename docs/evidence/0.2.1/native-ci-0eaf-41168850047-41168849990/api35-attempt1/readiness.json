@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "reason": "Actual APK installation failed",
+  "launch": null,
+  "deadline_seconds": 90,
+  "attempts": 0,
+  "launcher_wait_count": 0,
+  "elapsed_ms": 10116.484,
+  "last_snapshot": "final",
+  "final_diagnostics_share_launch_deadline": true
+}

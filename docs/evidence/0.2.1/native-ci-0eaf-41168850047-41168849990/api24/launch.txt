@@ -1,0 +1,7 @@
+Starting: Intent { cmp=org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity }
+Status: ok
+Activity: org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity
+ThisTime: 6380
+TotalTime: 6380
+WaitTime: 6384
+Complete

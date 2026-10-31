@@ -1,0 +1,7 @@
+2026-10-31T04:42:31.7708220Z [command]/usr/bin/git log -1 --format=%H
+2026-10-31T04:42:31.7739270Z 0c8a64cc577009667e9ba5beedaa4e38ec0001c3
+2026-10-31T04:44:23.6159634Z [command]/usr/bin/sh -c \sdkmanager --install 'system-images;android-35;default;x86_64' --channel=0 > /dev/null
+2026-10-31T04:44:42.4560870Z [command]/usr/bin/sh -c \echo no | avdmanager create avd --force -n test --package 'system-images;android-35;default;x86_64' --device 'pixel_6'
+2026-10-31T04:44:43.5381759Z INFO         | Android emulator version 37.2.13.0 (build_id 16740729) (CL:N/A)
+2026-10-31T04:44:43.5808355Z INFO         | Found systemPath /usr/local/lib/android/sdk/system-images/android-35/default/x86_64/
+2026-10-31T04:45:31.7916451Z {"passed": true, "render_log_sha256": "1313b4004b418efd5c9cc55c644d7461818c4445f24276fc460eb9e5177ff441", "ui_sha256": "5cef67ab05fca6f09f94398b9c4d77bde003cfd81961e0a9dcd02c485e166301", "screenshot_sha256": "9e5faf8c676971e5d2da12fcb4f57aa8ebbc7102d3c962b4ec2333b5ffd6346e", "dom_proof_sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4", "apk_sha256": "bee3a0853e6705d860e079bc5a7cea9c4f04680114969b39fdb9336227970fd1"}
